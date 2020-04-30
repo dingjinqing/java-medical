@@ -8,26 +8,15 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.CouponPackRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -43,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CouponPack extends TableImpl<CouponPackRecord> {
 
-    private static final long serialVersionUID = 1972823753;
+    private static final long serialVersionUID = 1233256072;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_coupon_pack</code>
@@ -137,6 +126,11 @@ public class CouponPack extends TableImpl<CouponPackRecord> {
      * The column <code>mini_shop_471752.b2c_coupon_pack.del_time</code>.
      */
     public final TableField<CouponPackRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_coupon_pack.show_cart</code>. 购物车是否展示，1是
+     */
+    public final TableField<CouponPackRecord, Byte> SHOW_CART = createField("show_cart", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "购物车是否展示，1是");
 
     /**
      * Create a <code>mini_shop_471752.b2c_coupon_pack</code> table reference

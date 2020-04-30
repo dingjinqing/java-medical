@@ -665,12 +665,12 @@ public class CardCreateService extends ShopBaseService{
 	private void initCardApplicableGoodsCfg(CardParam card, MemberCardRecordBuilder cardBuilder) {
 		logger().info("初始化适用商品配置");
 		Byte isExchange = card.getIsExchange();
-		assert (isExchangNonGoods(isExchange) || isExchangPartGoods(isExchange)
-				|| isExchangAllGoods(isExchange)) : "适用商品类型参数";
+		assert (isExchangNonGoods(isExchange) || CardUtil.isExchangPartGoods(isExchange)
+				|| CardUtil.isExchangAllGoods(isExchange)) : "适用商品类型参数";
 
 		if (isExchangNonGoods(isExchange)) {
 			cardBuilder.isExchang(isExchange);
-		} else if (isExchangPartGoods(isExchange) && isNotNull(card.getExchangGoods())) {
+		} else if (CardUtil.isExchangPartGoods(isExchange) && isNotNull(card.getExchangGoods())) {
 
 			if (card.getExchangGoods().size() > 0) {
 				// 1.兑换次数2.运费策略 3. 商品id
@@ -680,7 +680,7 @@ public class CardCreateService extends ShopBaseService{
 			} else {
 				cardBuilder.isExchang(MCARD_ISE_NON).exchangGoods(null);
 			}
-		} else if (isExchangAllGoods(isExchange)) {
+		} else if (CardUtil.isExchangAllGoods(isExchange)) {
 			cardBuilder.isExchang(isExchange).exchangGoods(null);
 		}
 		
@@ -822,14 +822,6 @@ public class CardCreateService extends ShopBaseService{
 		return MCARD_ISE_NON.equals(isExchange);
 	}
 
-	private boolean isExchangPartGoods(Byte isExchange) {
-		return MCARD_ISE_PART.equals(isExchange);
-	}
-
-	private boolean isExchangAllGoods(Byte isExchange) {
-		return MCARD_ISE_ALL.equals(isExchange);
-	}
-	
 	private boolean isAllowPayOwnGoods(CardParam param) {
 		return BUTTON_ON.equals(param.getPowerPayOwnGood());
 	}

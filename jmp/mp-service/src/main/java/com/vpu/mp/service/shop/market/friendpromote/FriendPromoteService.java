@@ -458,7 +458,7 @@ public class FriendPromoteService extends ShopBaseService {
 						fpa)
 				.where(fpl.PROMOTE_ID.eq(fpa.ID).and(
 						fpa.DEL_FLAG.eq(ZERO)).and(fpl.DEL_FLAG.eq(ZERO)).and(fpl.PROMOTE_STATUS.eq(ZERO))
-								.and(dateFormat(fpl.LAUNCH_TIME, DateUtil.DATE_MYSQL_DAY).eq(date).or(fpa.END_TIME.eq(DateUtil.getLocalDateTime()))))
+								.and(dateFormat(fpl.LAUNCH_TIME, DateUtil.DATE_MYSQL_DAY).eq(date).or(fpa.END_TIME.le(DateUtil.getLocalDateTime()))))
 				.fetch();
 		List<FriendPromoteSelectVo> into = new ArrayList<FriendPromoteSelectVo>();
 		if (fetch != null) {
@@ -797,7 +797,7 @@ public class FriendPromoteService extends ShopBaseService {
             .on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
             .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId))
             .fetchOneInto(String.class);
-        if(goodsInfo.getGoodsImg()==null){
+        if(goodsInfo.getGoodsImg()==null|| "".equals(goodsInfo.getGoodsImg()) ||StringUtils.isNullOrEmpty(goodsInfo.getGoodsImg())){
             goodsInfo.setGoodsImg(goodsImage);
         }
         //图片地址添加域名
@@ -1967,4 +1967,22 @@ public class FriendPromoteService extends ShopBaseService {
 				MarketVo.class);
 		return pageResult;
 	}
+
+    /**
+     * 小程序-根据actCode获得当前活动的活动说明
+     * @param actCode actCode
+     * @return {{@link promoteActCopywriting}}
+     */
+	public promoteActCopywriting getActCopywriting(String actCode){
+	    String activityCopywriting = db().select(FRIEND_PROMOTE_ACTIVITY.ACTIVITY_COPYWRITING)
+            .from(FRIEND_PROMOTE_ACTIVITY)
+            .where(FRIEND_PROMOTE_ACTIVITY.ACT_CODE.eq(actCode))
+            .fetchOptionalInto(String.class)
+            .orElse(null);
+	    promoteActCopywriting actCopywriting = new promoteActCopywriting();
+	    if (activityCopywriting!=null){
+	        actCopywriting = Util.json2Object(activityCopywriting,promoteActCopywriting.class,false);
+        }
+	    return actCopywriting;
+    }
 }

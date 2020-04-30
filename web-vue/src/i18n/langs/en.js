@@ -416,6 +416,11 @@ import {
 import {
   en as refundDialog
 } from './views/admin_new/en/index/orderManagement/virtualGoodsOrder/refundDialogEn'
+// 批量发货
+import {
+  en as bulkShipment
+} from './views/admin_new/en/index/orderManagement/bulkShipmentEn'
+
 // 打包一口价
 import {
   en as packagePrice
@@ -1038,6 +1043,7 @@ const en = {
   memberCardOrder, // 虚拟商品订单-会员卡订单
   couponPackageOrder, // 虚拟商品订单- 优惠券包订单
   refundDialog, // 虚拟商品订单-手动退款弹窗
+  bulkShipment, // 批量发货
 
   // 营销
   marketManage, // 营销管理

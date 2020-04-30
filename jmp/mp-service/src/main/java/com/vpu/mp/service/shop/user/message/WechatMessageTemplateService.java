@@ -91,7 +91,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
 
         if( param.getMpTemplateData() != null && !success ){
             if( !saas().getShopApp(param.getShopId()).config.messageConfigService.checkConfig(param.getType()) ){
-                logger().debug("【消息模板监听】---商家{}未开通{}类型的公众号消息推送",param.getShopId(),param.getType());
+                logger().info("【消息模板监听】---商家{}未开通{}类型的公众号消息推送",param.getShopId(),param.getType());
                 return false;
             }
             if(StringUtils.isBlank(info.getMpOpenId()) ){
@@ -209,40 +209,29 @@ public class WechatMessageTemplateService extends ShopBaseService {
                     .build();
     			resultList.add(info);
     		}
-    		return resultList;
+    		//return resultList;
     	}else if( param.getMaTemplateData()!=null ||type>4000 ){
     		//发小程序的
-            String appId = mpAuthShopService.getAuthShopByShopId(getShopId()).get(MP_AUTH_SHOP.APP_ID);
+            //String appId = mpAuthShopService.getAuthShopByShopId(getShopId()).get(MP_AUTH_SHOP.APP_ID);
             List<UserRecord> userList = userService.getUserRecordByIds(userIdList);
-            Map<Integer,UserRecord> userMap = userList.stream()
-                .collect(Collectors.toMap(UserRecord::getUserId, x->x));
-            List<MpOfficialAccountUserRecord> accountUserList =
-            		saas.getShopApp(shopId).officialAccountUser.getAccountUserListByUnionIds(
-                    userList.stream()
-                        .map(x->x.get(USER.WX_UNION_ID))
-                        .collect(Collectors.toList())
-                );
-            Map<String,MpOfficialAccountUserRecord> accountUserAccountMap = accountUserList.stream()
-                .collect(Collectors.toMap(MpOfficialAccountUserRecord::getUnionid, x->x));
-            userIdList.stream()
-                .filter(userMap::containsKey)
-                .forEach(x->{
-                    UserRecord user= userMap.get(x);
-                    WxUserInfo.WxUserInfoBuilder builder = WxUserInfo.builder()
-                        .userId(x)
-                        .maAppId(appId)
-                        .maOpenId(user.getWxOpenid());
-                    if( accountUserAccountMap.containsKey(user.getWxUnionId()) ){
-                        MpOfficialAccountUserRecord record = accountUserAccountMap.get(user.getWxUnionId());
-                        builder.isSubscribe(Boolean.TRUE)
-                        	.userId(x)
-                            .mpAppId(record.getAppId())
-                            .mpOpenId(record.getOpenid());
-                    }
-                    resultList.add(builder.build());
-                });
+            for (UserRecord userRecord : userList) {
+            	if(!haveInfo(userRecord.getUserId(), resultList)) {
+            		WxUserInfo info=WxUserInfo.builder()
+        					.userId(userRecord.getUserId()).build();
+            		resultList.add(info);
+            	}
+			}
             return resultList;
         }
         return resultList;
+    }
+    
+    private boolean haveInfo(Integer userId,List<WxUserInfo> resultList) {
+    	for (WxUserInfo wxUserInfo : resultList) {
+			if(wxUserInfo.getUserId().equals(userId)) {
+				return true;
+			}
+		}
+		return false;
     }
 }

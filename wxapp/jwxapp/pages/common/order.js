@@ -73,22 +73,20 @@ var order = {
   },
   // 再次购买
   addCart({
-    order_sn: orderSn,
-    order_id: orderId
+    order_sn: orderSn
   }) {
-    console.log(orderSn, orderId);
+    console.log(orderSn);
     util.api(
-      "/api/wxapp/order/Repurchase",
+      "/api/wxapp/order/repurchase",
       res => {
+        console.log(res)
         if (res.error == 0) {
           util.toast_success("已加入购物车");
         } else {
           util.showModal("提示", res.message);
         }
       }, {
-        orderId: orderId,
-        orderSn: orderSn,
-        action: 2
+        orderSn
       }
     );
   },
@@ -312,7 +310,7 @@ var order = {
         break
       }
     }
-    return isAward
+    return isAward 
   }
 };
 

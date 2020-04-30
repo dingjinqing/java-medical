@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.Arrays;
+
 /**
  * 订单操作返回值
  * @author 王帅
@@ -20,6 +22,9 @@ public class ExecuteResult {
     /**errorCode参数*/
     private String[] errorParam;
 
+    public Object[] getErrorParam(){
+        return errorParam == null ? null : Arrays.copyOf(errorParam, errorParam.length, Object[].class);
+    }
     /**
      * 是否成功
      * @return true成功 false否

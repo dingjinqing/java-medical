@@ -314,6 +314,7 @@ public final class RedisLockAspect extends ShopBaseService {
             for (int i = 0, length = keys.size(); i < length; i++) {
                 pipeline.eval(script, Collections.singletonList(keys.get(i)), Collections.singletonList(value));
             }
+            //异步调用，不关心执行结构（默认执行成功）
             pipeline.sync();
         }
     }

@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommentGoods extends TableImpl<CommentGoodsRecord> {
 
-    private static final long serialVersionUID = 1272196790;
+    private static final long serialVersionUID = -188109035;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_comment_goods</code>
@@ -171,6 +171,16 @@ public class CommentGoods extends TableImpl<CommentGoodsRecord> {
      * The column <code>mini_shop_471752.b2c_comment_goods.top_time</code>. 置顶时间
      */
     public final TableField<CommentGoodsRecord, Timestamp> TOP_TIME = createField("top_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "置顶时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_comment_goods.is_show</code>. 是否买家秀
+     */
+    public final TableField<CommentGoodsRecord, Byte> IS_SHOW = createField("is_show", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否买家秀");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_comment_goods.show_time</code>. 买家秀时间
+     */
+    public final TableField<CommentGoodsRecord, Timestamp> SHOW_TIME = createField("show_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "买家秀时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_comment_goods</code> table reference

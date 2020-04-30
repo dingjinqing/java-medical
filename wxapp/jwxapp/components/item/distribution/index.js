@@ -18,7 +18,8 @@ global.wxComponent({
     },
     price:Number,
     goodsPrice:String,
-    goodsId:Number
+    goodsId:Number,
+    linePrice:Number
   },
 
   /**
@@ -46,6 +47,7 @@ global.wxComponent({
           distributionShowData = [...distributionShowData,{name:'预估间接返利',type:data.rebateRatio.selfPurchase === 1 ? 2 : 4,price:this.getDistributionPrice(data.rebateRatio.selfPurchase === 1 ? 2 : 4)}]
         }
       }
+      if(data.sendCoupon && data.sendCoupon.length > 0) this.setSendCoupon(data.sendCoupon)
       this.setData({
         distributionShowData
       })
@@ -97,8 +99,26 @@ global.wxComponent({
         goodsPrice:this.data.goodsPrice,
         rebateId:this.data.distribution.rebateRatio.rebateId,
         rebateRatio:this.data.distribution.rebateRatio.rebateRatio,
-        goodsId:this.data.goodsId
+        goodsId:this.data.goodsId,
+        linePrice:this.data.linePrice
       })}`,'navigateTo')
+    },
+    setSendCoupon(couponList){
+      this.setData({
+        sendCoupon:true,
+        awardInfo:{
+          stepInfo:{
+            hasStep:false
+          },
+          message:null,
+          giftInfo: {
+            giftType: 1,
+            awardInfo: {
+              couponView:couponList
+            }
+          }
+        }
+      })
     }
   }
 })

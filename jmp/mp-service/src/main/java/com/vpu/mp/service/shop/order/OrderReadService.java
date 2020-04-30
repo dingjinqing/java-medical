@@ -1,6 +1,13 @@
 package com.vpu.mp.service.shop.order;
 
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnStatusChangeRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DistributionConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -14,6 +21,7 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.auth.ShopManageVo;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
@@ -24,7 +32,13 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
-import com.vpu.mp.service.pojo.shop.order.*;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.OrderParam;
+import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
+import com.vpu.mp.service.pojo.shop.order.OrderSimpleInfoVo;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
@@ -32,7 +46,12 @@ import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.must.OrderMustVo;
 import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
-import com.vpu.mp.service.pojo.shop.order.refund.*;
+import com.vpu.mp.service.pojo.shop.order.refund.OperatorRecord;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnListVo;
+import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
@@ -43,6 +62,10 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDe
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayOrderDetails;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipFailModel;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListVo;
+import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
@@ -58,6 +81,8 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.refund.AfterSaleServiceVo;
 import com.vpu.mp.service.pojo.wxapp.order.refund.ReturnOrderListMp;
+import com.vpu.mp.service.saas.privilege.ChildAccountService;
+import com.vpu.mp.service.saas.shop.ShopAccountService;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
@@ -84,6 +109,8 @@ import com.vpu.mp.service.shop.order.record.ReturnStatusChangeService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
 import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
+import com.vpu.mp.service.shop.order.ship.BulkshipmentRecordDetailService;
+import com.vpu.mp.service.shop.order.ship.BulkshipmentRecordService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
 import com.vpu.mp.service.shop.order.store.StoreOrderService;
 import com.vpu.mp.service.shop.order.sub.SubOrderService;
@@ -107,8 +134,18 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
@@ -127,7 +164,7 @@ public class OrderReadService extends ShopBaseService {
     @Autowired
     public AdminMarketOrderInfoService marketOrderInfo;
 	@Autowired
-	private OrderGoodsService orderGoods;
+	public OrderGoodsService orderGoods;
 	@Autowired
 	private ShipInfoService shipInfo;
 	@Autowired
@@ -182,11 +219,19 @@ public class OrderReadService extends ShopBaseService {
     private ShopCommonConfigService shopCommonConfigService;
     @Autowired
     private OrderGoodsRebateService orderGoodsRebate;
-	/**
-	 * 订单查询
-	 * @param param
-	 * @return PageResult
-	 */
+    @Autowired
+    private BulkshipmentRecordService batchRecord;
+    @Autowired
+    private BulkshipmentRecordDetailService batchDetailRecord;
+    @Autowired
+    private ShopAccountService shopAccount;
+    @Autowired
+    private ChildAccountService childAccount;
+    /**
+     * 订单查询
+     * @param param
+     * @return PageResult
+     */
 	public OrderQueryVo getPageList(OrderPageListQueryParam param) {
 		logger.info("订单综合查询开始");
 		OrderQueryVo result = new OrderQueryVo();
@@ -669,6 +714,11 @@ public class OrderReadService extends ShopBaseService {
 		order.setIsRemindShip(OrderOperationJudgment.isShowRemindShip(order) ? YES : NO);
 		//10.评价（查看评价、评价有礼/商品评价）
 		order.setIsShowCommentType(getCommentType(order));
+		//好友代付
+        if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
+            order.setPayOperationTime(order.getExpireTime().getTime() - Instant.now().toEpochMilli());
+            order.setIsShowFriendPay(order.getPayOperationTime() > 0 ? YES : NO);
+        }
 		//TODO 幸运大抽奖 分享优惠卷。。。。
 		/**按钮-end*/
 	}
@@ -696,8 +746,7 @@ public class OrderReadService extends ShopBaseService {
             //补款设置时间与补款是否可支付
             setBkPayOperation(order);
 		} else if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
-            order.setPayOperationTime(order.getExpireTime().getTime() - currenTmilliseconds);
-            order.setIsShowFriendPay(order.getPayOperationTime() > 0 ? YES : NO);
+		    //好友代付在外层处理
         } else {
 			//普通订单待支付取消时间
 			order.setPayOperationTime(order.getExpireTime().getTime() - currenTmilliseconds);
@@ -937,13 +986,82 @@ public class OrderReadService extends ShopBaseService {
                                 BigDecimalUtil.BIGDECIMAL_ZERO);
                     }
                 }
-                //分销员真实姓名展示优先级：提现申请填写信息>成为分销员申请表填写信息>用户信息
             }
+            List<Integer> rebateUserIds = rebateVos.stream().map(OrderRebateVo::getRebateUserId).distinct().collect(Collectors.toList());
+            //分销员真实姓名展示优先级：提现申请填写信息>成为分销员申请表填写信息>用户信息
+            HashMap<Integer, String> name = new HashMap<>(rebateUserIds.size());
+            for (Integer userId: rebateUserIds ) {
+                //提现申请填写信息
+                String realName = saas().getShopApp(getShopId()).withdraw.getUserRealName(userId);
+                if(!StringUtils.isBlank(realName)) {
+                    name.put(userId, realName);
+                    continue;
+                }
+                if(StringUtils.isBlank(realName)) {
+                    //成为分销员申请表填写信息
+                    realName = saas().getShopApp(getShopId()).mpDistribution.getDistributorRealName(userId);
+                    if(!StringUtils.isBlank(realName)) {
+                        name.put(userId, realName);
+                        continue;
+                    }
+                }
+                if(StringUtils.isBlank(realName)) {
+                    //用户信息
+                    UserInfo userInfo = user.getUserInfo(userId);
+                    if(userInfo != null && !StringUtils.isBlank(userInfo.getRealName())) {
+                        name.put(userId, userInfo.getRealName());
+                    }
+                }
+            }
+            //set realname
+            rebateVos.forEach(x->x.setRealName(name.get(x.getRebateUserId())));
             //排序
             rebateVos.sort(Comparator.comparing(OrderRebateVo::getRebateUserId));
             return rebateVos;
         }
         return null;
+    }
+
+
+    public PageResult<BatchShipListVo> batchShipList(BatchShipListParam param) {
+        PageResult<BatchShipListVo> result = batchRecord.batchShipList(param);
+        if(CollectionUtils.isEmpty(result.dataList)) {
+            return result;
+        }
+        List<Integer> sysIds = result.dataList.stream().filter(x -> x.getSysId() != null && x.getSysId() > 0).map(BatchShipListVo::getSysId).collect(Collectors.toList());
+        List<Integer> accountIds = result.dataList.stream().filter(x -> x.getAccountId() != null && x.getAccountId() > 0).map(BatchShipListVo::getAccountId).collect(Collectors.toList());
+        Map<Integer, ShopManageVo> sys = shopAccount.getByIds(sysIds).stream().collect(Collectors.toMap(ShopManageVo::getSysId, Function.identity()));
+        Map<Integer, SystemChildAccountRecord> account = childAccount.getByAccountIds(accountIds).stream().collect(Collectors.toMap(SystemChildAccountRecord::getAccountId, Function.identity()));
+        result.dataList.forEach(
+            x->{
+                if(x.getSysId() != null && x.getSysId() > 0) {
+                    ShopManageVo vo = sys.get(x.getSysId());
+                    if(vo != null) {
+                        x.setUserName(vo.getUserName());
+                        x.setMobile(vo.getMobile());
+                    }
+                }else if(x.getAccountId() != null && x.getAccountId() > 0) {
+                    SystemChildAccountRecord vo = account.get(x.getAccountId());
+                    if(vo != null) {
+                        x.setChildUserName(vo.getAccountName());
+                        x.setChildMobile(vo.getMobile());
+                    }
+                }
+            }
+        );
+        return result;
+    }
+
+    public Workbook downloadFailData(Integer batchId, String lang) {
+        List<BatchShipFailModel> data = batchDetailRecord.getFailDataByBatchId(batchId);
+        for (BatchShipFailModel vo : data) {
+            String messages = Util.translateMessage(lang, vo.getFailReason(), null, "messages");
+            vo.setFailReason(messages);
+        }
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+        excelWriter.writeModelList(data, BatchShipFailModel.class);
+        return workbook;
     }
     /*********************************************************************************************************/
 

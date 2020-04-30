@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
+import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -135,6 +136,10 @@ public class GroupBuyDetailVo {
      * 优惠卷信息
      */
     private List<CouponView> couponViews;
+    /**
+     * 参加活动的用户打标签标签列表
+     */
+    private List<TagVo> tagList;
 
 
     @Setter

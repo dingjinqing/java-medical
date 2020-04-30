@@ -1,15 +1,18 @@
 package com.vpu.mp.service.saas.privilege;
 
-import static com.vpu.mp.db.main.tables.SystemChildAccount.SYSTEM_CHILD_ACCOUNT;
-import static com.vpu.mp.db.main.tables.SystemRole.SYSTEM_ROLE;
-
+import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.Util;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
-import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.Util;
+import java.util.Collections;
+import java.util.List;
+
+import static com.vpu.mp.db.main.tables.SystemChildAccount.SYSTEM_CHILD_ACCOUNT;
+import static com.vpu.mp.db.main.tables.SystemRole.SYSTEM_ROLE;
 
 /**
  * 
@@ -69,4 +72,11 @@ public class ChildAccountService extends MainBaseService {
 				.limit(pageNo * pageRows, pageRows).fetch();
 
 	}
+
+    public List<SystemChildAccountRecord> getByAccountIds(List<Integer> accountIds) {
+        if (CollectionUtils.isEmpty(accountIds)) {
+            return Collections.emptyList();
+        }
+        return db().selectFrom(SYSTEM_CHILD_ACCOUNT).where(SYSTEM_CHILD_ACCOUNT.ACCOUNT_ID.in(accountIds)).fetch();
+    }
 }

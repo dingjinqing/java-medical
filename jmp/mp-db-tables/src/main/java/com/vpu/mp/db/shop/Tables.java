@@ -1086,4 +1086,8 @@ public class Tables {
      * The table <code>jmini_shop_489258.b2c_give_card_record</code>.
      */
     public static final GiveCardRecord GIVE_CARD_RECORD = com.vpu.mp.db.shop.tables.GiveCardRecord.GIVE_CARD_RECORD;
+    /**
+     * The table <code>jmini_shop_489258.b2c_checked_goods_cart</code>.
+     */
+    public static final CheckedGoodsCart CHECKED_GOODS_CART = com.vpu.mp.db.shop.tables.CheckedGoodsCart.CHECKED_GOODS_CART;
 }

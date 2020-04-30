@@ -12,13 +12,14 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let {goodsPrice,rebateId,rebateRatio,goodsId} = options
+    let {goodsPrice,rebateId,rebateRatio,goodsId,linePrice = null} = options
     console.log(goodsPrice)
     this.setData({
       goodsPrice,
       rebateId,
       rebateRatio,
-      goodsId
+      goodsId,
+      linePrice
     })
     this.initShareRebateData()
   },
@@ -30,12 +31,15 @@ global.wxPage({
           productList:res.content.rebatePrice.map(item=>{
             item.prdPrice = item.advisePrice
             return item
-          })
+          }),
         })
         this.getRebateInfo()
+        this.getShareImage()
+        this.getCouponData(res.content.couponList)
       }
     },{
-      goodsId:this.data.goodsId
+      goodsId:this.data.goodsId,
+      rebateId:this.data.rebateId
     })
   },
   setPrdPrice(e){
@@ -74,6 +78,59 @@ global.wxPage({
     this.setData({
       rebateInfo:parseFloat(rebateInfo).toFixed(2)
     })
+  },
+  getShareImage(){
+    util.api('/api/wxapp/rebate/share/info',res=>{
+      if(res.error === 0){
+        this.setData({
+          shareData:{
+            title:res.content.shareDoc,
+            imageUrl:res.content.imgUrl
+          }
+        })
+      }
+      console.log(res)
+    },{
+      targetId:this.data.goodsId,
+      linePrice:this.data.linePrice
+    })
+  },
+  getCouponData(couponList){
+    if(!couponList || couponList.length === 0) return
+    this.setData({
+      couponData:this.resetCouponData(couponList),
+      giveCoupon:true
+    })
+  },
+  resetCouponData(couponList){
+    return couponList.map(item=>{
+      item.canUseTime = this.getTimeLimit(item)
+      return item
+    })
+  },
+  getTimeLimit(couponItem){
+    if(couponItem.validityType === 0){
+      return `${couponItem.startTime} —— ${couponItem.endTime}`
+    } else {
+      return `领取后${couponItem.validity > 0 ? couponItem.validity + '天' : ''}${couponItem.validityHour > 0 ? couponItem.validityHour + '小时' : ''}${couponItem.validityMinute > 0 ? couponItem.validityMinute + '分钟' : ''}内有效`
+    }
+  },
+  toogleCouponGive(e){
+    let {type} = e.currentTarget.dataset
+    this.setData({
+      giveCoupon:!!Number(type)
+    })
+  },
+  chooseCouponData(e){
+    let {id} = e.currentTarget.dataset
+    let targetIndex = this.data.couponData.findIndex(item=>item.id === id)
+    this.setData({
+      [`couponData[${targetIndex}].checked`]: !this.data.couponData[targetIndex].checked
+    })
+    this.setData({
+      checkedCouponIds:this.data.couponData.filter(item=>item.checked === true).map(item=>item.id)
+    })
+    console.log(this.data.checkedCouponIds)
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -123,6 +180,7 @@ global.wxPage({
   onShareAppMessage: function () {
     let rebateConfig = {}
     let date = new Date();
+    if(this.data.giveCoupon && this.data.checkedCouponIds && this.data.checkedCouponIds.length > 0) rebateConfig['couponIds'] = this.data.checkedCouponIds.join(',')
     rebateConfig['rebateTime'] = parseInt(date.getTime()/1000)
     rebateConfig['rebatePrice'] = this.data.productList.reduce((defaultData,item)=>{
       defaultData[item.prdId] = item.prdPrice
@@ -134,12 +192,12 @@ global.wxPage({
       rebateConfig:JSON.stringify(rebateConfig)
     })}`)
     return {
-      title: '【特价专享】唯一渠道，专享价格，等你来抢！',
       path: `/pages/item/item${util.getUrlParams({
         gid:this.data.goodsId,
         inviteId:util.getCache("user_id"),
-        rebateConfig
-      })}`
+        rebateConfig:JSON.stringify(rebateConfig)
+      })}`,
+      ...this.data.shareData
     }
   }
 })

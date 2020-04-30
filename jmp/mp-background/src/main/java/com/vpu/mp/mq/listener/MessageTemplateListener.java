@@ -42,7 +42,7 @@ public class MessageTemplateListener implements BaseRabbitHandler {
 
     @RabbitHandler
     public void handler(@Payload RabbitMessageParam param, Message message, Channel channel){
-    	log.debug("【消息模板监听】----收到消息");
+    	log.info("【消息模板监听】----收到消息");
         ShopApplication shopApplication = saas.getShopApp(param.getShopId());
 
         List<Integer> failList = new ArrayList<>();
@@ -50,9 +50,9 @@ public class MessageTemplateListener implements BaseRabbitHandler {
             getUserInfoList(param.getUserIdList(),param.getType(),param.getShopId(),param);
         int allSize = userInfoList.size();
         if( allSize  != param.getUserIdList().size() ){
-            log.debug("【消息模板监听】---推送消息接收人数不对");
-            log.debug("【消息模板监听】---UserIdSize-->{},UserId--->{}",param.getUserIdList().size(),param.getUserIdList().get(0));
-            log.debug("【消息模板监听】---WxUserSize-->{}",allSize);
+            log.info("【消息模板监听】---推送消息接收人数不对");
+            log.info("【消息模板监听】---UserIdSize-->{},UserId--->{}",param.getUserIdList().size(),param.getUserIdList().get(0));
+            log.info("【消息模板监听】---WxUserSize-->{}",allSize);
         }
         for (WxUserInfo info : userInfoList) {
             if (saas.getShopApp(param.getShopId()).wechatMessageTemplateService.sendMessage(param, info)) {

@@ -64,7 +64,7 @@ global.wxPage({
   },
   // 规则详情
   toRule: function () {
-    util.jumpToWeb('/wxapp/promote/help')
+    util.jumpToWeb('/wxapp/promote/help', '&actCode=' + actCode);
   },
   // 发起助力
   shareGoods: function (e) {
@@ -74,7 +74,7 @@ global.wxPage({
     }
     if (promote_info.promoteStatus == 0) {
       // 打开分享弹窗
-      this.setData({
+      that.setData({
         share_good: true
       })
     }
@@ -424,7 +424,7 @@ function launchAct(that) {
         // 发起助力成功
         launch_id = res.content.launchId;
         launch_user_id = res.content.launchUserId;
-        this.setData({
+        that.setData({
           share_good: true
         })
       } else {
@@ -460,8 +460,8 @@ function launchAct(that) {
           });
         } else if (res.content.msg == 6) {
           util.showModal('提示', '您已发起快邀请好友助力吧', function () {
-            util.reLaunch({
-              url: '/pages/index/index'
+            that.setData({
+              share_good: true
             })
           });
         } else if (res.content.msg == 7) {

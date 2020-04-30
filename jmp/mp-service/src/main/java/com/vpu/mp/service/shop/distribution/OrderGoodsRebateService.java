@@ -7,7 +7,6 @@ import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
@@ -56,8 +55,7 @@ public class OrderGoodsRebateService extends ShopBaseService {
             result.add(record);
         }
         //成本控制
-        DistributionStrategyParam strategy = rebateRecords.get(0).getStrategy();
-        if(strategy.getCostProtection() == OrderConstant.YES && BigDecimalUtil.compareTo(goodsTotalRebateMoney, check) > 0) {
+        if(rebateRecords.get(0).getStrategy().getCostProtection() == OrderConstant.YES && BigDecimalUtil.compareTo(goodsTotalRebateMoney, check) > 0) {
             BigDecimal limitRatio = BigDecimalUtil.divide(check, goodsTotalRebateMoney, RoundingMode.HALF_DOWN);
             for (OrderGoodsRebateRecord record: result) {
                 record.setTotalRebateMoney(BigDecimalUtil.multiply(record.getTotalRebateMoney(), limitRatio));
@@ -78,7 +76,7 @@ public class OrderGoodsRebateService extends ShopBaseService {
             .fetch();
     }
     public List<OrderRebateVo> getByOrderSn(String orderSn) {
-        return db().select(TABLE.asterisk(),TABLE_USER.USERNAME, TABLE_ORDRE_GOODS.GOODS_NAME, TABLE_ORDRE_GOODS.CAN_CALCULATE_MONEY, TABLE_ORDRE_GOODS.COST_PRICE,TABLE_ORDRE_GOODS.GOODS_NUMBER, TABLE_ORDRE_GOODS.RETURN_NUMBER, TABLE_ORDRE_GOODS.FANLI_STRATEGY).from(TABLE)
+        return db().select(TABLE.asterisk(),TABLE_USER.USERNAME, TABLE_USER.MOBILE, TABLE_ORDRE_GOODS.GOODS_NAME, TABLE_ORDRE_GOODS.CAN_CALCULATE_MONEY, TABLE_ORDRE_GOODS.COST_PRICE,TABLE_ORDRE_GOODS.GOODS_NUMBER, TABLE_ORDRE_GOODS.RETURN_NUMBER, TABLE_ORDRE_GOODS.FANLI_STRATEGY).from(TABLE)
             .leftJoin(TABLE_USER).on(TABLE_USER.USER_ID.eq(TABLE.REBATE_USER_ID))
             .leftJoin(TABLE_ORDRE_GOODS).on(TABLE_ORDRE_GOODS.REC_ID.eq(TABLE.REC_ID))
             .where(TABLE.ORDER_SN.eq(orderSn))

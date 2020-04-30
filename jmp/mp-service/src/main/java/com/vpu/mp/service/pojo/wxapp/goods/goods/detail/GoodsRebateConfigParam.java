@@ -13,6 +13,10 @@ import java.util.Map;
  */
 @Data
 public class GoodsRebateConfigParam {
+    /**分销赠送优惠券*/
+    private String couponIds;
+    /**分销改价后价格*/
     private Map<Integer,BigDecimal> rebatePrice;
+    /**分销改价时间*/
     private Long rebateTime;
 }

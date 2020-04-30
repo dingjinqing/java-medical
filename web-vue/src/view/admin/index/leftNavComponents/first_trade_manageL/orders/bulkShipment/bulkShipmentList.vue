@@ -3,10 +3,10 @@
     <div class="top">
       <div class="explanation">
         <div class="explanation-con">
-          <span>说明：</span>
+          <span>{{$t('bulkShipment.desc')}}：</span>
           <ul>
-            <ol>1、批量发货目前仅支持快递订单，暂不支持自提订单和同城配送方式的订单</ol>
-            <ol>2、目前批量发货仅支持整订单发货</ol>
+            <ol>1、{{$t('bulkShipment.shipDesc1')}}</ol>
+            <ol>2、{{$t('bulkShipment.shipDesc2')}}</ol>
           </ul>
         </div>
         <el-button
@@ -14,23 +14,24 @@
           type="primary"
           size="small"
           @click="bulkShipmentClickHandle"
-        >批量发货</el-button>
+        >{{$t('bulkShipment.bulkShipping')}}</el-button>
       </div>
       <el-form
         :inline="true"
         class="form-filters"
         size="small"
       >
-        <el-form-item label="批次号：">
+        <el-form-item :label="$t('bulkShipment.batchNum')+'：'">
           <el-input
+            v-model="queryParams.batchId"
             class="filter-input"
-            placeholder="请输入批次号"
+            :placeholder="$t('bulkShipment.piBatchNum')"
           ></el-input>
         </el-form-item>
-        <el-form-item label="操作时间：">
+        <el-form-item :label="$t('bulkShipment.operateTime')+'：'">
           <el-date-picker
             type="datetime"
-            v-model="queryParams.beginTime"
+            v-model="queryParams.start"
             :placeholder="$t('goodsImport.psTime')"
             size="small"
             style="width:170px;"
@@ -42,7 +43,7 @@
           <span style="display:inline-block; margin:0 10px;line-height:30px;">{{$t('goodsImport.to')}}</span>
           <el-date-picker
             type="datetime"
-            v-model="queryParams.endTime"
+            v-model="queryParams.end"
             :placeholder="$t('goodsImport.psTime')"
             size="small"
             style="width:170px;"
@@ -51,6 +52,13 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             :picker-options="endTimePicker"
           ></el-date-picker>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            size="small"
+            @click="initDataList"
+          >{{$t('bulkShipment.filter')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -61,29 +69,65 @@
         border
       >
         <el-table-column
-          label="批次号"
+          :label="$t('bulkShipment.batchNum')"
           align="center"
+          prop="id"
         ></el-table-column>
         <el-table-column
-          label="操作时间"
+          :label="$t('bulkShipment.operateTime')"
           align="center"
+          prop="createTime"
         ></el-table-column>
         <el-table-column
-          label="操作人"
+          :label="$t('bulkShipment.operater')"
           align="center"
+        >
+          <template slot-scope="{row}">
+            <div>
+              <div v-if="row.sysId > 0">
+                {{row.userName+"："+row.mobile}}
+              </div>
+              <div v-else-if="row.accountId">
+                {{row.childUserName+'：'+row.childMobile}}
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          :label="$t('bulkShipment.successNum')"
+          align="center"
+          prop="successNum"
         ></el-table-column>
         <el-table-column
-          label="发货成功单数"
+          :label="$t('bulkShipment.failedNum')"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="{row}">
+            <div>
+              {{row.totalNum - row.successNum}}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
-          label="发货失败单数"
+          :label="$t('bulkShipment.operate')"
           align="center"
-        ></el-table-column>
-        <el-table-column
-          label="操作"
-          align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="{row}">
+            <div>
+              <el-tooltip
+                v-if="row.totalNum - row.successNum > 0"
+                effect="light"
+                placement="top"
+                :content="$t('bulkShipment.downfaildata')"
+              >
+                <el-button
+                  type="text"
+                  @click="downloadFailData(row)"
+                >{{$t('bulkShipment.downfaildata')}}</el-button>
+              </el-tooltip>
+            </div>
+          </template>
+        </el-table-column>
       </el-table>
       <pagination
         :page-params.sync="pageParams"
@@ -93,7 +137,7 @@
     </div>
     <!-- 批量发货 -->
     <el-dialog
-      title="批量发货"
+      :title="$t('bulkShipment.bulkShipping')"
       :visible.sync="bulkShipmentDialogVisible"
     >
       <div class="dialog-content">
@@ -122,7 +166,7 @@
         </div>
         <p class="import-popup-title">{{$t('goodsImport.setp2')}}</p>
         <div class="card-box">
-          <span>上传文件：</span>
+          <span>{{$t('bulkShipment.uploadFile')}}：</span>
           <div style="display:inline-block;">
             <el-input
               size="small"
@@ -149,8 +193,8 @@
               >{{$t('goodsImport.browse')}}...</el-button>
             </el-upload>
           </div>
-          <p>导入规则：1、文件当前仅支持excel格式。</p>
-          <p style="margin-left: 70px;">2、导入文件中订单编号、快递公司名称需与系统中一致</p>
+          <p>{{$t('bulkShipment.importRules')}}：1、{{$t('bulkShipment.importR1')}}</p>
+          <p style="margin-left: 70px;">2、{{$t('bulkShipment.importR2')}}</p>
         </div>
       </div>
       <div
@@ -161,14 +205,15 @@
           type="primary"
           size="small"
           @click="uploadRequest"
-        >确认上传并发货</el-button>
+        >{{$t('bulkShipment.confirm')}}</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-// import { download } from '@/util/excelUtil.js'
+import { getBatchListApi, downloadFailOrder, uplaodBulkShipmentFileApi } from '@/api/admin/orderManage/bulkShipment.js'
+import { download } from '@/util/excelUtil.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -196,11 +241,11 @@ export default {
     }
   },
   watch: {
-    'uploadFile.name' (val) {
+    'uploadData.name' (val) {
       if (!val) {
         this.$refs.upload.clearFiles()
         this.fileList = []
-        this.uploadFile = {}
+        this.uploadData = {}
       }
     },
     lang (newData) {
@@ -211,20 +256,34 @@ export default {
     this.initDataList()
   },
   methods: {
-    initDataList () { },
+    initDataList () {
+      let params = Object.assign({}, this.queryParams)
+      getBatchListApi(params).then(res => {
+        if (res.error === 0) {
+          console.log(res.content)
+          this.tableData = res.content.dataList
+          this.pageParams = res.content.page
+        }
+      })
+    },
     bulkShipmentClickHandle () {
       this.bulkShipmentDialogVisible = true
     },
-    // 下载模板
-    downloadExportModule () {
-
+    // 下载失败数据
+    downloadFailData (row) {
+      let id = row.id
+      downloadFailOrder({ id: id }).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '批量发货失败列表.xlsx'
+        download(res, decodeURIComponent(fileName))
+      })
     },
     beforefileUpload (file) {
       console.log('beforeUpload...')
       let isXls = /\.(xls|xlsx|csv)$/.test(file.name)
       if (!isXls) {
         this.$message.warning(this.$t('goodsImport.support'))
-        this.uploadFile = {}
+        this.uploadData = {}
         this.fileList = []
         return false
       }
@@ -232,7 +291,7 @@ export default {
     },
     fileChange (file, fileList) {
       console.log('fileChange: ', file, fileList)
-      this.uploadFile = file
+      this.uploadData = file
       this.fileList = [fileList[fileList.length - 1]]
     },
     uploadFileRequest () {
@@ -240,16 +299,16 @@ export default {
       that.loading = true
       let formdata = new FormData()
       formdata.append('file', this.fileList[0].raw)
-      formdata.append('isUpdate', this.uploadData.isUpdate)
-      // uploadGoodsApi(formdata).then(res => {
-      //   console.log('res:', res)
-      //   if (res.error === 0) {
-      //     that.$message.success(that.$t('goodsImport.uploadSuccess'))
-      //     that.importGoodsDialogVisible = false
-      //   } else {
-      //     that.$message.error(res.message)
-      //   }
-      // })
+      uplaodBulkShipmentFileApi(formdata).then(res => {
+        console.log('res:', res)
+        if (res.error === 0) {
+          that.$message.success(that.$t('goodsImport.uploadSuccess'))
+          that.bulkShipmentDialogVisible = false
+          that.initDataList()
+        } else {
+          that.$message.error(res.message)
+        }
+      })
     },
     // 点击上传按钮
     uploadRequest () {

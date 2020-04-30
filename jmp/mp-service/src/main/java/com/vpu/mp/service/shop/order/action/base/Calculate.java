@@ -884,14 +884,26 @@ public class Calculate extends ShopBaseService {
             BigDecimal canRebateMoney = BigDecimalUtil.subtrac(bo.getDiscountedTotalPrice(), BigDecimalUtil.multiply(avgScoreDiscount, new BigDecimal(bo.getGoodsNumber())));
             //zero check
             canRebateMoney = BigDecimalUtil.compareTo(canRebateMoney, null) > 0 ? canRebateMoney : BigDecimalUtil.BIGDECIMAL_ZERO;
-            //成本价保护(最大返利金额)
+            if(BigDecimalUtil.compareTo(canRebateMoney, null) < 1) {
+                logger().info("初步计算可返利金额为0（支付价格 - 积分平均抵扣；此时未进行佣金计算方式）");
+                continue;
+            }
+            //成本价保护(最大返利金额)->as (实际利润)
             BigDecimal check =  BigDecimalUtil.subtrac(canRebateMoney, BigDecimalUtil.multiply(bo.getCostPrice(), new BigDecimal(bo.getGoodsNumber())));
             //商品返利计算
             List<RebateRecord> rebateRecords = calculateGoodsRebate(cfg, bo, goingStrategy, userInfo, isFs);
             if(CollectionUtils.isNotEmpty(rebateRecords)) {
                 //同一个商品返利策略一样，取第一个即可
                 DistributionStrategyParam strategy = rebateRecords.get(0).getStrategy();
-                if(strategy.getCostProtection() == OrderConstant.YES) {
+                //佣金计算方式
+                if(DistributionConstant.STRATEGY_TYPE_PROFIT.equals(strategy.getStrategyType())) {
+                    //商品实际利润（实际支付金额-成本价）* 佣金比例'
+                    canRebateMoney = check;
+                    if(BigDecimalUtil.compareTo(canRebateMoney, null) < 1) {
+                        logger().info("佣金计算方式为商品实际利润时可返利金额为0");
+                        continue;
+                    }
+                } else if(strategy.getCostProtection() == OrderConstant.YES) {
                     if(BigDecimalUtil.compareTo(check, BigDecimalUtil.BIGDECIMAL_ZERO) < 1) {
                         logger().info("成本价保护策略生效");
                         bo.setFanliStrategy("成本价保护策略生效");

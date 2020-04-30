@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.goods;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.*;
@@ -17,12 +18,18 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionNumConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelSelectListVo;
+import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncGoodsPrdParam;
+import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductMqParam;
+import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductParam;
+import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncStockParam;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
@@ -47,6 +54,8 @@ import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.market.live.LiveService;
 import com.vpu.mp.service.shop.member.MemberCardService;
+import com.vpu.mp.service.shop.store.store.StoreGoodsService;
+import com.vpu.mp.service.shop.store.store.StoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -140,6 +149,10 @@ public class GoodsService extends ShopBaseService {
     private BargainProcessorDao bargainProcessorDao;
     @Autowired
     private GroupBuyProcessorDao groupBuyProcessorDao;
+    @Autowired
+    private StoreService storeService;
+    @Autowired
+    private StoreGoodsService storeGoodsService;
 
     /**
      * 获取全品牌，标签，商家分类数据,平台分类数据
@@ -349,9 +362,9 @@ public class GoodsService extends ShopBaseService {
         // 拼接过滤条件
         Condition condition = this.buildOptions(goodsPageListParam);
 
-        SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
+        SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,
             GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS.GOODS_AD, GOODS.IS_ON_SALE, GOODS.LIMIT_BUY_NUM, GOODS.GOODS_WEIGHT, GOODS.UNIT,
-            GOODS_BRAND.BRAND_NAME,
+            GOODS_BRAND.BRAND_NAME,GOODS.GOODS_NUMBER,
             GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.CREATE_TIME,
             GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_SN, GOODS_SPEC_PRODUCT.PRD_COST_PRICE, GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,
             GOODS_SPEC_PRODUCT.PRD_IMG, GOODS_SPEC_PRODUCT.PRD_CODES)
@@ -762,6 +775,15 @@ public class GoodsService extends ShopBaseService {
             fetchAnyInto(GoodsSmallVo.class);
         goods.setGoodsImg(getImgFullUrlUtil(goods.getGoodsImg()));
         return goods;
+    }
+
+    /**
+     * 根据id获取商品运费模板id
+     * @param goodsId 商品id
+     * @return id or null
+     */
+    public Integer getGoodsDeliverTemplateIdById(Integer goodsId){
+        return db().select(GOODS.DELIVER_TEMPLATE_ID).from(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchAny(GOODS.DELIVER_TEMPLATE_ID);
     }
 
     /**
@@ -2579,5 +2601,101 @@ public class GoodsService extends ShopBaseService {
         } catch (Exception e) {
             logger().debug("商品修改-同步es数据异常："+e.getMessage());
         }
+    }
+
+    /**
+     * pos同步商品信息 上下架和价格
+     * @param posSyncProductParam
+     * @return
+     */
+    public ApiJsonResult posSyncProductMq(PosSyncProductParam posSyncProductParam){
+        ApiJsonResult apiJsonResult = new ApiJsonResult();
+        Integer posShopId = posSyncProductParam.getShopId();
+        if (posShopId == null) {
+            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            apiJsonResult.setMsg("缺少必传参数shop_id");
+            return  apiJsonResult;
+        }
+        StoreRecord storeRecord = storeService.getStoreByPosShopId(posShopId);
+        if (storeRecord == null) {
+            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            apiJsonResult.setMsg("该店铺没有对应的门店");
+            return  apiJsonResult;
+        }
+
+        if (posSyncProductParam.getGoodsList() == null || posSyncProductParam.getGoodsList().size() == 0) {
+            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            apiJsonResult.setMsg("缺少商品");
+            return  apiJsonResult;
+        }
+        PosSyncProductMqParam mqParam = new PosSyncProductMqParam();
+        mqParam.setShopId(getShopId());
+        mqParam.setStoreId(storeRecord.getStoreId());
+        mqParam.setGoodsPrdList(posSyncProductParam.getGoodsList());
+        // 调用消息队列
+        saas.taskJobMainService.dispatchImmediately(mqParam, PosSyncProductMqParam.class.getName(), getShopId(),
+            TaskJobsConstant.TaskJobEnum.POS_SYNC_PRODUCT.getExecutionType());
+//        posSyncProductMqCallback(storeRecord.getStoreId(),posSyncProductParam.getGoodsList());
+        return apiJsonResult;
+    }
+
+    /**
+     * pos 同步商品规格信息
+     * @param storeId 门店id
+     * @param goodsPrdList 规格同步信息
+     */
+    public void posSyncProductMqCallback(Integer storeId,List<PosSyncGoodsPrdParam> goodsPrdList){
+        Map<String, PosSyncGoodsPrdParam> posPrdMap = goodsPrdList.stream().collect(Collectors.toMap(PosSyncGoodsPrdParam::getPrdSn, Function.identity()));
+        // 过滤掉prdSn无法匹配上的
+        List<GoodsSpecProductRecord> goodsSpecPrdBySns = goodsSpecProductService.getGoodsSpecPrdBySn(posPrdMap.keySet());
+
+        // 待更新规格条码字段的规格集合
+        List<GoodsSpecProductRecord> goodsSpecPrdReadyToUpdate = new ArrayList<>(goodsSpecPrdBySns.size()/2);
+        List<PosSyncGoodsPrdParam> storePrdReadyToUpdate = new ArrayList<>(posPrdMap.size());
+        goodsSpecPrdBySns.forEach(prdRecord->{
+            PosSyncGoodsPrdParam posSyncGoodsPrdParam = posPrdMap.get(prdRecord.getPrdSn());
+            if (!Objects.equals(prdRecord.getPrdCodes(), posSyncGoodsPrdParam.getPrdCodes())) {
+                prdRecord.setPrdCodes(posSyncGoodsPrdParam.getPrdCodes());
+                goodsSpecPrdReadyToUpdate.add(prdRecord);
+            }
+
+            posSyncGoodsPrdParam.setPrdId(prdRecord.getPrdId());
+            storePrdReadyToUpdate.add(posSyncGoodsPrdParam);
+        });
+        db().batchUpdate(goodsSpecPrdReadyToUpdate).execute();
+        storeGoodsService.batchUpdateForSyncPosProduct(storeId,storePrdReadyToUpdate);
+    }
+
+    /**
+     * pos 对接 同步规格数量
+     * @param param
+     * @return
+     */
+    public ApiJsonResult posSyncStock(PosSyncStockParam param){
+        ApiJsonResult apiJsonResult = new ApiJsonResult();
+        Integer posShopId = param.getPosShopId();
+        if (posShopId == null) {
+            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            apiJsonResult.setMsg("缺少必传参数shop_id");
+            return  apiJsonResult;
+        }
+
+        StoreRecord storeRecord = storeService.getStoreByPosShopId(posShopId);
+        if (storeRecord == null) {
+            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            apiJsonResult.setMsg("该店铺没有对应的门店");
+            return  apiJsonResult;
+        }
+
+        List<GoodsSpecProductRecord> goodsSpecPrdBySns = goodsSpecProductService.getGoodsSpecPrdBySn(Collections.singleton(param.getPrdSn()));
+        if (goodsSpecPrdBySns == null || goodsSpecPrdBySns.size() == 0) {
+            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            apiJsonResult.setMsg("该prd_sn没有对应的商品");
+            return  apiJsonResult;
+        }
+        Integer prdId = goodsSpecPrdBySns.get(0).getPrdId();
+        Integer prdNum = (int) (Math.floor(param.getNumber()));
+        storeGoodsService.updatePrdNumForPosSyncStock(storeRecord.getStoreId(),prdId,prdNum);
+        return apiJsonResult;
     }
 }

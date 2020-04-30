@@ -66,6 +66,9 @@ public class OrderActionService extends ShopBaseService{
         }else if (param.getIsMp() != null && OrderConstant.IS_MP_MQ == param.getIsMp()){
             record.setActionUser("mq");
             record.setActionNote("mq," + record.getActionNote());
+        }else if (param.getIsMp() != null && OrderConstant.IS_MP_POS == param.getIsMp()){
+            record.setActionUser("pos");
+            record.setActionNote("pos" + record.getActionNote());
         }
 		record.insert();
 	}

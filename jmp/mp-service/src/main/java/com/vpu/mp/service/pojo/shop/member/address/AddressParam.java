@@ -15,6 +15,12 @@ public class AddressParam {
      * 微信地址
      */
     @NotNull
-   public WxAddress wxAddress;
+    public WxAddress wxAddress;
+    /**
+     * 商品id
+     */
+    private Integer goodsId;
+    private Integer userId;
+    private String lang;
 
 }

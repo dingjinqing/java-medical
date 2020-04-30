@@ -26,7 +26,4 @@ public class GoodsDetailMpParam {
     private Byte activityType;
     /**分销商品改价信息*/
     private GoodsRebateConfigParam rebateConfig;
-    /**分销赠送优惠券*/
-    private String couponIds;
-
 }

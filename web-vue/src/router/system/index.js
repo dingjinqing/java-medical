@@ -5,7 +5,7 @@ const routes = [{
     title: '概览'
   },
   component: () => import('@/view/system/layout/index'),
-  // redirect: '/system/overview/overview_index',
+  redirect: '/system/overview/overview_index',
   children: [
     // 概述子路由
     {

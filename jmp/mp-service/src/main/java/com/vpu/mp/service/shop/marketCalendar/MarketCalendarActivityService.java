@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.db.shop.tables.records.MarketCalendarActivityRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.saas.marketCalendar.MarketCalendarSysVo;
 import com.vpu.mp.service.pojo.saas.marketCalendar.MarketMqParam;
 import com.vpu.mp.service.pojo.saas.marketCalendar.MarketSysActivityMqParam;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAct;
@@ -69,6 +70,7 @@ public class MarketCalendarActivityService extends ShopBaseService {
 								shopIds = String.valueOf(getShopId());
 							}
 							sysCalActInfo.setShopUseNum(sysCalActInfo.getShopUseNum() + 1);
+							sysCalActInfo.setShopIds(shopIds);
 							int update = sysCalActInfo.update();
 							logger().info("更新主库calendar_activity的活动id：{}；结果：{}", sysCalActId, update);
 							if (update > 0) {
@@ -125,15 +127,16 @@ public class MarketCalendarActivityService extends ShopBaseService {
 	 * @param param
 	 * @return 
 	 */
-	public boolean getPushInfoInner(MarketMqParam param) {
+	public boolean getPushInfoInner(MarketMqParam param,Integer calendarId) {
 		List<MarketSysActivityMqParam> list = param.getList();
+		MarketCalendarSysVo vo = param.getVo();
 		boolean flag = true;
 		for (MarketSysActivityMqParam item : list) {
 			MarketCalendarActivityRecord record = db().selectFrom(MARKET_CALENDAR_ACTIVITY)
 					.where(MARKET_CALENDAR_ACTIVITY.SYS_CAL_ACT_ID.eq(item.getId())).fetchAny();
 			if (record != null) {
 				// 更新
-				record.setCalendarId(item.getId());
+				record.setCalendarId(calendarId);
 				record.setActivityType(item.getActivityType());
 				if (!record.getActivityType().equals(item.getActivityType())) {
 					record.reset(MARKET_CALENDAR_ACTIVITY.ACTIVITY_ID);
@@ -148,6 +151,7 @@ public class MarketCalendarActivityService extends ShopBaseService {
 				}
 			} else {
 				record = db().newRecord(MARKET_CALENDAR_ACTIVITY, item);
+				record.setCalendarId(calendarId);
 				record.setSysCalActId(item.getId());
 				record.reset(MARKET_CALENDAR_ACTIVITY.ID);
 				int insert = record.insert();

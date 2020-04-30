@@ -28,7 +28,6 @@ public class GroupIntegrationDefineParam {
 	@NotBlank
 	private String name;
 	/** 活动宣传语 */
-	@Max(10)
 	private String advertise;
 	
 	/** 开始时间*/

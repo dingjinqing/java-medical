@@ -11,6 +11,7 @@
         :rules="fromRules"
         label-width="150px"
         :label-position="'right'"
+        v-if="!ruleShow"
       >
         <el-form-item
           :label="$t('groupBuy.groupBuyActivity') + '：'"
@@ -327,6 +328,55 @@
           >
           </el-date-picker>
         </el-form-item>
+
+        <el-form-item
+          label="活动预告："
+          prop="preTime"
+        >
+          <div>
+            <span class="noticeTip">活动开始前会在商品详情中展示活动预告信息</span>
+            <el-popover
+              placement="right-start"
+              width="220"
+              trigger="hover"
+            >
+              <el-image :src="$imageHost + '/image/admin/share/advance_seckill.jpg'"></el-image>
+              <el-button
+                slot="reference"
+                type="text"
+                style="margin: 0 20 0 0px"
+              >查看示例</el-button>
+            </el-popover>
+          </div>
+          <div>
+            <el-radio
+              v-model="form.preTime"
+              :label="1"
+              :disabled='isEdite'
+              @change="preTimeChange"
+            >活动开始前
+              <el-input
+                v-model="form.preTimeValue"
+                :disabled='isEdite'
+                style="width: 80px;"
+                size="small"
+              ></el-input>小时进行预告
+            </el-radio>
+            <el-radio
+              v-model="form.preTime"
+              :label="-1"
+              @change="preTimeChange"
+              :disabled='isEdite'
+            >活动创建完成后即进行预告</el-radio>
+            <el-radio
+              v-model="form.preTime"
+              :label="0"
+              @change="preTimeChange"
+              :disabled='isEdite'
+            >不进行活动预告</el-radio>
+          </div>
+        </el-form-item>
+
         <el-form-item
           :label="$t('groupBuy.limitAmount') + '：'"
           prop="limitAmount"
@@ -609,9 +659,62 @@
             </div>
 
           </el-form-item>
-        </div>
 
+          <el-form-item
+            label="同步打标签："
+            prop=""
+          >
+            <el-checkbox
+              v-model="form.activityTag"
+              :true-label="1"
+              :false-label="0"
+            >给参与活动用户打标签</el-checkbox>
+            <span
+              class="el-icon-question"
+              style="color: #666;"
+            ></span>
+            <span
+              class="labelStyle"
+              @click="selectLabel"
+            >选择标签</span>
+            <div v-if="pickLabel.length > 0">
+              <p style="color: #999;">最多可设置3个标签</p>
+              <div
+                v-for="(item, index) in pickLabel"
+                :key="index"
+                class="labelContent"
+              >
+                {{item.value}}
+                <i
+                  class="el-icon-close"
+                  @click="deleteLabel(index)"
+                  style="color: #999; margin-left: 3px;cursorL pointer;"
+                ></i>
+              </div>
+            </div>
+          </el-form-item>
+
+          <el-form-item
+            label="活动规则说明："
+            prop=""
+            :required="true"
+          >
+            <el-button
+              type="primary"
+              size="small"
+              @click="friendHelpRule"
+            >设置规则说明</el-button>
+          </el-form-item>
+        </div>
       </el-form>
+
+      <!-- 规则说明 -->
+      <ActivityRule
+        v-if="ruleShow"
+        @ActivityMsg="activityMsg"
+        :sendMsg="sendMsg"
+        :template="template"
+      />
 
       <!--添加商品弹窗-->
       <choosingGoods
@@ -637,7 +740,10 @@
         :imageSize="[800, 800]"
       />
 
-      <div class="footer">
+      <div
+        class="footer"
+        v-if="!ruleShow"
+      >
         <el-button
           size="small"
           type="primary"
@@ -657,6 +763,14 @@
       @confrim="getProductdata"
     />
 
+    <!-- 标签弹窗 -->
+    <LabelDialog
+      :dialogVisible="labelDialogVisible"
+      :multipleLimit="3"
+      @resultLabelDatas="resultLabelDatas"
+      :chooseLabelBack="activityTagIdList"
+    />
+
   </div>
 </template>
 <script>
@@ -668,7 +782,7 @@ import ImageDalog from '@/components/admin/imageDalog'
 import actShare from '@/components/admin/marketManage/marketActivityShareSetting'
 // import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
 // import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
-import { addGroupBuyActivity, updateGroupBuy } from '@/api/admin/marketManage/spellGroup.js'
+import { addGroupBuyActivity, getGroupBuyDetail, updateGroupBuy } from '@/api/admin/marketManage/spellGroup.js'
 import { getSelectGoods } from '@/api/admin/marketManage/distribution.js'
 import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
 
@@ -678,9 +792,11 @@ export default {
     addCouponDialog,
     actShare,
     ImageDalog,
-    spellGroupDialog: () => import('./spellGroupDialog')
+    spellGroupDialog: () => import('./spellGroupDialog'),
+    LabelDialog: () => import('@/components/admin/labelDialog'),
+    ActivityRule: () => import('@/components/admin/activityRule')
   },
-  props: ['isEdite', 'editData'],
+  props: ['isEdite', 'editId'],
   filters: {
     formatLeastConsume (useConsumeRestrict, leastConsume) {
       if (useConsumeRestrict === 0) {
@@ -726,6 +842,19 @@ export default {
         callback()
       }
     }
+    // 自定义活动预告
+    var validatePreTime = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/
+      if ((value !== 0) && (value !== -1) && (value !== 1)) {
+        callback(new Error('请选择活动预告类型'))
+      } else if (value === 1 && this.form.preTimeValue === '') {
+        callback(new Error('请填写活动预告时间'))
+      } else if (value === 1 && !re.test(this.form.preTimeValue)) {
+        callback(new Error('活动预告时间填写不正确'))
+      } else {
+        callback()
+      }
+    }
     return {
       // from 表单数据
       form: {
@@ -755,9 +884,20 @@ export default {
         },
         product: [],
         shareInfo: '',
-        stock: 0 // 活动总库存
+        stock: 0, // 活动总库存
+        preTime: 1, // 活动预告
+        preTimeValue: '24', // 预告时间值
+        activityTag: false, // 同步打标签
+        activityTagId: null, // 标签id值
+
+        // 规则说明
+        activityCopywriting: {
+          document: '',
+          isUseDefault: 0
+        }
       },
       goodsIdList: [],
+      activityTagIdList: [],
       // 校验表单
       fromRules: {
         name: [
@@ -784,7 +924,10 @@ export default {
           { required: true, validator: dateValid, trigger: 'blur' }
         ],
         'share.shareDoc': [{ validator: shareDocValid, trigger: 'blur' }],
-        shareInfo: [{ required: true, validator: shareInfoValid, trigger: 'blur' }]
+        shareInfo: [{ required: true, validator: shareInfoValid, trigger: 'blur' }],
+        preTime: [
+          { required: true, validator: validatePreTime, trigger: 'change' }
+        ]
       },
       // 选中商品id
       goodsRow: {},
@@ -795,7 +938,6 @@ export default {
 
       rewardCouponList: [],
       rewardCouponIds: [],
-      props: ['isEdite'],
       submitStatus: false,
       grouponType: [],
       isShowChoosingGoodsDialog: false,
@@ -823,13 +965,33 @@ export default {
       showSpecDialog: false,
       productInfo: {},
       disabledFlag: true, // 是否可编辑
-      showGrouperPrice: false
+      showGrouperPrice: false,
+
+      labelDialogVisible: false, // 标签弹窗
+      labelList: [], // 标签列表数据
+      pickLabel: [], // 选中标签列表
+
+      ruleShow: false, // 规则组件
+      sendMsg: null, // 回显规则内容
+      // 默认模板内容
+      template: `
+        <div style="line-height: 1.5;">
+          <p>如何才算拼团成功？</p>
+          <p>每个团的有效期为24小时，有效期内找到满足人数的小伙伴参与拼团，拼团即会成功。</p>
+          <p>拼团失败怎么办？</p>
+          <p>若24小时内未凑够拼团人数，则拼团失败，失败后系统会自动将所有支付的货款原路返回，具体到账时间按照各支付渠道为准。</p>
+          <div>
+            <p>拼团流程</p>
+            <image src="http://mpdevimg2.weipubao.cn/image/wxapp/icon_group4.png" style="max-width: 100%;"></image>
+          </div>
+        </div>
+      `
     }
   },
   mounted () {
     // 初始化语言
     this.langDefault()
-    if (this.isEdite) {
+    if (this.isEdite === true) {
       this.editActivityInit()
       this.arrorFlag = false
     }
@@ -879,39 +1041,65 @@ export default {
 
     // 编辑活动初始化
     editActivityInit () {
-      console.log('this.isEdite', this.isEdite)
-      if (this.isEdite) {
-        let data = this.editData
-        console.log(data, 'init data')
-        this.form.id = data.id
-        this.form.activityType = data.activityType
-        this.form.name = data.name
-        this.form.goodsId = data.goodsId
-        this.form.level = data.level
-        // this.getGoodsInfo(data.goodsId)
-        this.form.product = this.initEditProduct(data.goodsList)
-        this.form.isGrouperCheap = data.isGrouperCheap
-        this.form.startTime = data.startTime
-        this.form.endTime = data.endTime
-        this.form.validityDate = [data.startTime, data.endTime]
-        this.form.limitAmount = data.limitAmount
-        this.form.limitBuyNum = data.limitBuyNum
-        this.form.limitMaxNum = data.limitMaxNum
-        this.form.joinLimit = data.joinLimit
-        this.form.openLimit = data.openLimit
-        this.form.isDefault = data.isDefault
-        this.form.shippingType = data.shippingType
-        this.form.beginNum = data.beginNum
-        if (data.rewardCouponId) {
-          this.form.rewardCouponId = data.rewardCouponId.split(',')
-          this.rewardCouponIds = data.rewardCouponId.split(',')
-          this.getCouponList(this.rewardCouponIds.map(Number))
+      getGroupBuyDetail({ id: this.editId }).then(res => {
+        if (res.error === 0) {
+          let data = res.content
+          console.log(data, 'init data')
+          this.form.id = data.id
+          this.form.activityType = data.activityType
+          this.form.name = data.name
+          this.form.goodsId = data.goodsId
+          this.form.level = data.level
+          this.form.product = this.initEditProduct(data.goodsList)
+          this.form.isGrouperCheap = data.isGrouperCheap
+          this.form.startTime = data.startTime
+          this.form.endTime = data.endTime
+          this.form.validityDate = [data.startTime, data.endTime]
+          this.form.limitAmount = data.limitAmount
+          this.form.limitBuyNum = data.limitBuyNum
+          this.form.limitMaxNum = data.limitMaxNum
+          this.form.joinLimit = data.joinLimit
+          this.form.openLimit = data.openLimit
+          this.form.isDefault = data.isDefault
+          this.form.shippingType = data.shippingType
+          this.form.beginNum = data.beginNum
+          if (data.rewardCouponId) {
+            this.form.rewardCouponId = data.rewardCouponId.split(',')
+            this.rewardCouponIds = data.rewardCouponId.split(',')
+            this.getCouponList(this.rewardCouponIds.map(Number))
+          }
+          if (this.form.isGrouperCheap === 1) {
+            this.showGrouperPrice = true
+          } else {
+            this.showGrouperPrice = false
+          }
+          this.form.share = data.share
+          // 活动预告
+          this.form.preTime = data.preTime
+          if (this.form.preTime > 0) {
+            this.form.preTimeValue = this.form.preTime
+            this.form.preTime = 1
+          } else if (this.form.preTime === 0) {
+            this.form.preTime = 24
+            this.form.preTime = 0
+          } else {
+            this.form.preTime = -1
+          }
+
+          // 标签id tagList
+          if (data.tagList && data.tagList.length > 0) {
+            this.pickLabel = data.tagList
+            this.activityTagIdList = []
+            data.tagList.forEach(item => {
+              this.activityTagIdList.push(item.id)
+            })
+          } else {
+            this.activityTagIdList = []
+          }
+          this.form.activityTag = Boolean(data.activityTag)
+          this.form.activityCopywriting = JSON.parse(data.activityCopywriting)
         }
-        if (this.form.isGrouperCheap === 1) {
-          this.showGrouperPrice = true
-        }
-        this.form.share = data.share
-      }
+      })
     },
 
     // 获取商品信息
@@ -950,6 +1138,14 @@ export default {
         console.log('提交表单', formName)
         console.log('this.form', this.form)
         if (valid) {
+          // 活动预告
+          if (this.form.preTime === 1) {
+            this.form.preTime = Number(this.form.preTimeValue)
+          }
+          this.form.activityTag = Number(this.form.activityTag)
+          this.form.activityTagId = String(this.activityTagIdList)
+          this.form.activityCopywriting = JSON.stringify(this.form.activityCopywriting)
+
           // let goodsId = this.form.goodsId.join(',')
           this.form.product.forEach((item, index) => {
             item.productId = item.prdId
@@ -1024,9 +1220,11 @@ export default {
       // 可编辑状态
       this.disabledFlag = false
     },
-    changeSwitchState () {
-      if (this.form.isGrouperCheap === 1) {
+    changeSwitchState (val) {
+      if (val === 1) {
         this.showGrouperPrice = true
+      } else {
+        this.showGrouperPrice = false
       }
     },
     getProductdata ({ goodsId, prdInfo }) {
@@ -1191,6 +1389,52 @@ export default {
       if (res != null) {
         this.form.share.shareImg = res.imgPath
       }
+    },
+    // 活动预告类型切换
+    preTimeChange (e) {
+      this.$refs['form'].validateField('preTime')
+    },
+
+    // 标签弹窗
+    selectLabel () {
+      if (this.isEdite === true) {
+        return false
+      }
+      this.labelDialogVisible = !this.labelDialogVisible
+    },
+
+    // 删除标签
+    deleteLabel (index) {
+      if (this.isEdite === true) {
+        this.$message.warning('编辑状态不可操作')
+        return false
+      }
+      this.pickLabel.splice(index, 1)
+      this.activityTagIdList = []
+      this.pickLabel.forEach(item => {
+        this.activityTagIdList.push(item.id)
+        console.log(this.activityTagIdList)
+      })
+    },
+
+    // 标签弹窗回调函数
+    resultLabelDatas (row) {
+      this.pickLabel = row
+      this.activityTagIdList = []
+      this.pickLabel.forEach(item => {
+        this.activityTagIdList.push(item.id)
+      })
+    },
+
+    // 设置规则说明
+    friendHelpRule () {
+      this.ruleShow = true
+      this.sendMsg = this.form.activityCopywriting
+    },
+    // 规则说明回调函数
+    activityMsg (data) {
+      this.ruleShow = false
+      this.form.activityCopywriting = data
     }
   }
 }
@@ -1372,5 +1616,21 @@ export default {
 .number {
   font-size: 20px;
   font-weight: bold;
+}
+.labelStyle {
+  color: #5a8bff;
+  cursor: pointer;
+}
+.labelContent {
+  display: inline-block;
+  height: 30px;
+  background: rgba(235, 241, 255, 1);
+  border: 1px solid rgba(180, 202, 255, 1);
+  border-radius: 2px;
+  text-align: center;
+  line-height: 30px;
+  padding: 0 10px;
+  margin-right: 10px;
+  color: #666;
 }
 </style>

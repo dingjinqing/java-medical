@@ -76,23 +76,17 @@ public class AdminMemberCardController extends AdminBaseController {
 	}
 
 	/**
-	 *  返回相应的会员卡列表
-	 * @param param
-	 * @return
+	 *	返回相应的会员卡列表
 	 */
 	@PostMapping("/card/list")
 	public JsonResult getCardList(@RequestBody SearchCardParam param) {
 		logger().info("获取会员卡列表");
 		PageResult<? extends BaseCardVo> result = shop().member.card.getCardList(param);
-		
 		return success(result);
 	}
 
 	/**
-	 * 设置会员卡使用状态或停用状态
-	 * 
-	 * @param param
-	 * @return
+	 *	 设置会员卡使用状态或停用状态
 	 */
 	@PostMapping("/card/power")
 	public JsonResult powerCard(@RequestBody PowerCardParam param) {
@@ -102,10 +96,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	}
 
 	/**
-	 * 删除会员卡
-	 * 
-	 * @param param
-	 * @return
+	 * 	删除会员卡
 	 */
 	@PostMapping("/card/delete")
 	public JsonResult deleteCard(@RequestBody @Valid CardIdParam param) {

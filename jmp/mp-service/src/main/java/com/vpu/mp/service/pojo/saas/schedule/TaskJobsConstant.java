@@ -65,7 +65,11 @@ public class TaskJobsConstant {
     	/** 组团瓜分积分开奖的异步操作*/
     	GROUP_INTEGRATION_MQ(1013, RabbitConfig.EXCHANGE_MARKETING, RabbitConfig.BINDING_EXCHANGE_GROUP_INTEGRATION_MQ_KEY),
     	/** system营销日历推送到各个店铺*/
-    	SYS_CALENDAR_MQ(1014, RabbitConfig.EXCHANGE_MARKETING, RabbitConfig.BINDING_EXCHANGE_SYS_CALENDAR_MQ_KEY);
+    	SYS_CALENDAR_MQ(1014, RabbitConfig.EXCHANGE_MARKETING, RabbitConfig.BINDING_EXCHANGE_SYS_CALENDAR_MQ_KEY),
+        /**批量发货*/
+        BATCH_SHIP(1015,RabbitConfig.EXCHANGE_ORDER,RabbitConfig.BINDING_EXCHANGE_BATCH_SHIP_KEY),
+        /**pos对接pos_sync_product*/
+        POS_SYNC_PRODUCT(1016,RabbitConfig.EXCHANGE_POS_SYNC,RabbitConfig.BINDING_EXCHANGE_POS_SYNC_PRODUCT_KEY);
     	
         private Integer executionType;
         private String exchangeName;

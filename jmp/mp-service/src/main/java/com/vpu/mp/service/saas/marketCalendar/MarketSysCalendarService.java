@@ -141,7 +141,7 @@ public class MarketSysCalendarService extends MainBaseService {
 		}
 		logger().info("更新营销活动id:{},名称：{}，结果：{}", calendarId, param.getEventName(), update);
 		calendarActivityService.editCalendarAct(param, calendarId);
-		toPush(calendarId);
+		toEditNoPush(calendarId);
 		return update == 1 ? true : false;
 	}
 	
@@ -158,17 +158,37 @@ public class MarketSysCalendarService extends MainBaseService {
 		MarketCalendarRecord record = getInfoById(calendarId);
 		if (record != null&&record.getPubFlag().equals(CalendarAction.ZERO)) {
 			//创建个队列任务去同步
-			MarketMqParam param=new MarketMqParam();
-			Result<MarketCalendarActivityRecord> result = calendarActivityService.getInfoByCalendarId(record.getId());
-			List<MarketSysActivityMqParam> list = result.into(MarketSysActivityMqParam.class);
-			param.setList(list);
-			MarketCalendarSysVo into = record.into(MarketCalendarSysVo.class);
-			param.setVo(into);
-			logger().info("准备发队列");
-			saas.taskJobMainService.dispatchImmediately(param,MarketMqParam.class.getName(),0,TaskJobEnum.SYS_CALENDAR_MQ.getExecutionType());
+			push(record);
 			record.setPubFlag(CalendarAction.ONE);
 			int update = record.update();
 			logger().info("更新状态为已同步：{}",update);
+		}
+	}
+
+	/**
+	 * 同步
+	 * @param record
+	 */
+	private void push(MarketCalendarRecord record) {
+		MarketMqParam param=new MarketMqParam();
+		Result<MarketCalendarActivityRecord> result = calendarActivityService.getInfoByCalendarId(record.getId());
+		List<MarketSysActivityMqParam> list = result.into(MarketSysActivityMqParam.class);
+		param.setList(list);
+		MarketCalendarSysVo into = record.into(MarketCalendarSysVo.class);
+		param.setVo(into);
+		logger().info("准备发队列");
+		saas.taskJobMainService.dispatchImmediately(param,MarketMqParam.class.getName(),0,TaskJobEnum.SYS_CALENDAR_MQ.getExecutionType());
+	}
+	
+	/**
+	 * 编辑时候推送过的再推送
+	 * @param calendarId
+	 */
+	public void toEditNoPush(Integer calendarId) {
+		logger().info("toEditNoPush同步");
+		MarketCalendarRecord record = getInfoById(calendarId);
+		if (record != null&&record.getPubFlag().equals(CalendarAction.ONE)) {
+			push(record);
 		}
 	}
 	
@@ -180,7 +200,11 @@ public class MarketSysCalendarService extends MainBaseService {
 	public boolean del(Integer id) {
 		int execute = db().update(MARKET_CALENDAR).set(MARKET_CALENDAR.DEL_FLAG, DelFlag.DISABLE_VALUE)
 				.where(MARKET_CALENDAR.ID.eq(id)).execute();
-		return execute > 0 ? true : false;
+		boolean flag=execute > 0 ? true : false;
+		if(flag) {
+			toEditNoPush(id);
+		}
+		return flag;
 	}
 	
 	/**

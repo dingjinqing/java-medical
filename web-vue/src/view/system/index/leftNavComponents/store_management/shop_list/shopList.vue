@@ -110,8 +110,21 @@ export default {
       this.tabActive = 'third'
       this.isShowShopList = true
     }
+
+    // 处理是否由营销日历跳进来的
+    this.handleToCalenderTurn()
   },
   methods: {
+    // 处理是否由营销日历跳进来的
+    handleToCalenderTurn () {
+      if (this.$route.params.id !== undefined) {
+        this.shopTypes = '2'
+        this.firstShow = false
+        this.secondShow = true
+        this.isShowShopList = false
+        this.isShopVersion = false
+      }
+    },
     getUserName () {
       console.log(this.$route.params.name)
       if (this.$route.params.name) {
@@ -149,6 +162,7 @@ export default {
       }
     },
     handleClick (tab, event) {
+      this.$route.params.id = undefined
       if (this.tabActive === 'first') {
         this.shopTypes = '1'
         this.firstShow = true

@@ -140,8 +140,12 @@ public enum MpTemplateConfig {
             "OPENTM204958750",
             "店铺新订单成交通知",
             "{{first.DATA}}订单金额：{{keyword1.DATA}}订单详情：{{keyword2.DATA}}订单号：{{keyword3.DATA}}买家会员：{{keyword4.DATA}}{{remark.DATA}}"
-        );
-    
+        ),
+	GET_CARD(
+		"OPENTM405766398",
+		"会员卡领取成功通知",
+		"{{first.DATA}}会员卡：{{keyword1.DATA}}会员类型：{{keyword2.DATA}}关联手机：{{keyword3.DATA}}有效期至：{{keyword4.DATA}}{{remark.DATA}}"
+	);
 	/**
 	 * 模板编号
 	 */

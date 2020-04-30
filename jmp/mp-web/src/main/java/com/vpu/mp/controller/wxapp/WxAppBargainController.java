@@ -4,9 +4,7 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.*;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -74,6 +72,7 @@ public class WxAppBargainController extends WxAppBaseController {
 
     /**
      * 帮助砍价用户列表
+     *
      * @param param
      * @return
      */

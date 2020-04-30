@@ -52,7 +52,7 @@
               >
                 <div
                   class="calendar_info_item"
-                  :class="itemC.eventStatus === 3?'':'in_progress'"
+                  :class="itemC.eventStatus === 3 || itemC.pubFlag === 0?'':'in_progress'"
                   v-for="(itemC,indexC) in item.data"
                   :key="indexC"
                 >
@@ -66,11 +66,11 @@
                   <div class="middle_text">{{itemC.eventName}}</div>
                   <div
                     class="bottom_text"
-                    :style="itemC.eventStatus===3?'corlor:#999':''"
-                  >{{itemC.eventStatus===4?'已结束':itemC.eventStatus===2?'进行中':itemC.eventStatus===3?'已失效':''}}</div>
+                    :style="itemC.eventStatus===3||itemC.pubFlag === 0?'corlor:#999':''"
+                  >{{itemC.pubFlag===0?'未发布':itemC.eventStatus===4?'已结束':itemC.eventStatus===2?'进行中':itemC.eventStatus===3?'已失效':''}}</div>
                   <div
                     class="bottom_text"
-                    v-if="itemC.eventStatus===1"
+                    v-if="itemC.eventStatus===1&&itemC.pubFlag===1"
                   >
                     剩<span>{{itemC.downTime}}</span>天
                   </div>
@@ -78,19 +78,16 @@
                     <div class="shadow_setMain">
                       <a
                         href="javascript:;"
-                        :style="itemC.pubFlag===1?'margin-right:20px':''"
+                        @click="handleToReleas(itemC)"
+                        v-if="itemC.pubFlag === 0"
+                      ><i class="iconfont iconfabu"></i></a>
+                      <a
+                        href="javascript:;"
                         @click="handleToAdd(false,itemC)"
                       ><i class="iconfont iconbianji"></i></a>
                       <a
                         href="javascript:;"
-                        :style="itemC.source !== 1 || itemC.eventStatus===3?'margin-right:20px':''"
-                        @click="handleToAdd(false,itemC)"
-                      ><i class="iconfont iconbianji"></i></a>
-                      <a
-                        href="javascript:;"
-                        style="margin-left:20px"
                         @click="handleToDel(index,indexC)"
-                        v-if="itemC.source !== 1 || itemC.eventStatus===3"
                       ><i class="iconfont iconshanchu2"></i></a>
                     </div>
 
@@ -102,13 +99,13 @@
         </vue-scroll>
       </div>
     </div>
-    <!--二次删除缺人弹窗-->
+    <!--二次删除确认弹窗-->
     <el-dialog
       title="提醒"
       :visible.sync="dialogVisible"
       width="20%"
     >
-      <div style="text-align:center">确认删除本事件么？</div>
+      <div style="text-align:center">{{isClickPublick?'确认要发布该营销事件么？':'确认删除本事件么？'}}</div>
       <span
         slot="footer"
         class="dialog-footer"
@@ -125,7 +122,7 @@
 <script>
 import vuescroll from 'vuescroll'
 import Vue from 'vue'
-import { systemGetCalendarList, deltCalendarEvent } from '@/api/admin/firstWebManage/calender/calender.js'
+import { systemGetCalendarList, systemDelEvent, systemReleaseAct } from '@/api/admin/firstWebManage/calender/calender.js'
 Vue.use(vuescroll)
 export default {
   data () {
@@ -209,7 +206,9 @@ export default {
           onlyShowBarOnScroll: false, // 是否只有滚动的时候才显示滚动条
           background: '#eee'
         }
-      }
+      },
+      isClickPublick: false,
+      publickId: ''
     }
   },
   mounted () {
@@ -285,28 +284,39 @@ export default {
         }
       })
     },
-    // 点击编辑
-    handleToEdit (itemC) {
-      console.log(itemC)
-    },
     // 点击删除
     handleToDel (index, indexC) {
+      this.isClickPublick = false
       this.delIndex = index
       this.delIndexC = indexC
       this.dialogVisible = true
     },
     handleToDelSure (index, indexC) {
-      this.dialogVisible = false
-      let id = this.calenderData[index].data[indexC].id
-      deltCalendarEvent(id).then(res => {
-        if (res.error === 0) {
-          this.calenderData[index].data.splice(indexC, 1)
-          this.$message.success({
-            message: '删除成功',
-            showClose: true
-          })
-        }
-      })
+      if (this.isClickPublick) {
+        systemReleaseAct(this.publickId).then(res => {
+          if (res.error === 0) {
+            this.$message.success({
+              message: '发布成功',
+              showClose: true
+            })
+            this.isClickPublick = false
+            this.dialogVisible = false
+            this.handleToInit(this.dateValue)
+          }
+        })
+      } else {
+        this.dialogVisible = false
+        let id = this.calenderData[index].data[indexC].id
+        systemDelEvent(id).then(res => {
+          if (res.error === 0) {
+            this.calenderData[index].data.splice(indexC, 1)
+            this.$message.success({
+              message: '删除成功',
+              showClose: true
+            })
+          }
+        })
+      }
     },
     // 点击添加营销事件
     handleToAdd (flag, item) {
@@ -332,6 +342,13 @@ export default {
     handleToChange (res) {
       console.log(res)
       this.handleToInit()
+    },
+    // 点击发布icon
+    handleToReleas (item) {
+      console.log(item)
+      this.publickId = item.id
+      this.isClickPublick = true
+      this.dialogVisible = true
     }
   }
 }
@@ -501,7 +518,7 @@ export default {
                 background-color: rgba(0, 0, 0, 0);
                 border-radius: 4px;
                 z-index: 3;
-                justify-content: center;
+                justify-content: space-around;
                 align-items: center;
                 transition: background-color 0.5s ease;
                 a {

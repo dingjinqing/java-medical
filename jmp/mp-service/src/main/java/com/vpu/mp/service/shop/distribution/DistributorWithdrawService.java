@@ -1,16 +1,5 @@
 package com.vpu.mp.service.shop.distribution;
 
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTION_WITHDRAW;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
-
-import java.math.BigDecimal;
-
-import org.jooq.Record;
-import org.jooq.SelectJoinStep;
-import org.jooq.impl.DSL;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -18,6 +7,16 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawDetailVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawListVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawSumDetailVo;
+import org.jooq.Record;
+import org.jooq.SelectJoinStep;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+
+import static com.vpu.mp.db.shop.Tables.DISTRIBUTION_WITHDRAW;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 
 /**
  * 分销提现相关
@@ -145,4 +144,17 @@ public class DistributorWithdrawService extends ShopBaseService{
 				.withdrawCrash(doneWithDraw)
 				.build();
 	}
+
+    /**
+     * 根据userid获取分销提现记录的真实姓名
+     * @param userId
+     * @return
+     */
+    public String getUserRealName(Integer userId) {
+        return db().select(DISTRIBUTION_WITHDRAW.REAL_NAME)
+            .from(DISTRIBUTION_WITHDRAW)
+            .where(DISTRIBUTION_WITHDRAW.USER_ID.eq(userId).and(DISTRIBUTION_WITHDRAW.STATUS.gt((byte)2)))
+            .orderBy(DISTRIBUTION_WITHDRAW.CREATE_TIME.desc())
+            .fetchAnyInto(String.class);
+    }
 }

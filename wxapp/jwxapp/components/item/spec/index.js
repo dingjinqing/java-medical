@@ -34,7 +34,8 @@ global.wxComponent({
       type: Object,
       value: null
     },
-    roomId:String
+    roomId:String,
+    canShip:Boolean
   },
 
   /**

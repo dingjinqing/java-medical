@@ -11,10 +11,11 @@
       <div class="mi-content">
         <h2 class="mi-title">{{$t('memberIntroductionDialog.templateDownload')}}</h2>
         <div class="mi-model">
-          {{$t('memberIntroductionDialog.downloadTemplate')}}<el-button
-            type="text"
-            @click="downloadTemplate"
-          >{{$t('memberIntroductionDialog.template')}}</el-button>
+          {{$t('memberIntroductionDialog.downloadTemplate')}}<el-link
+            type="primary"
+            :underline="false"
+            :href="downLoadSrc"
+          >{{$t('memberIntroductionDialog.template')}}</el-link>
           <div>
             <el-checkbox
               v-model="importInfo.cardCheck"
@@ -211,6 +212,7 @@ export default {
       importInfo: {
         filename: ''
       },
+      downLoadSrc: `${this.$imageHost}/temp/excel/zh_CN/user/User_Import_Template.xlsx`,
       loading: false,
       setUpoptionsOne: [], // 普通会员卡数据
       setUpoptionsTwo: [], // 限次会员卡数据
@@ -241,9 +243,18 @@ export default {
           groupCheck: false
         })
       }
+    },
+    lang (newData) {
+      if (newData === 'zh_CN') {
+        this.downLoadSrc = `${this.$imageHost}/temp/excel/zh_CN/user/User_Import_Template.xlsx`
+      }
+      if (newData === 'en_US') {
+        this.downLoadSrc = `${this.$imageHost}/temp/excel/en_US/user/User_Import_Template.xlsx`
+      }
     }
   },
   mounted () {
+    this.langDefault()
     this.initSelects()
   },
   methods: {

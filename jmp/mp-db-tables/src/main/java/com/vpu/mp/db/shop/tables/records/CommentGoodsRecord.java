@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommentGoodsRecord extends UpdatableRecordImpl<CommentGoodsRecord> {
 
-    private static final long serialVersionUID = 1714186391;
+    private static final long serialVersionUID = -810212734;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_comment_goods.id</code>.
@@ -351,6 +351,34 @@ public class CommentGoodsRecord extends UpdatableRecordImpl<CommentGoodsRecord> 
         return (Timestamp) get(22);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_comment_goods.is_show</code>. 是否买家秀
+     */
+    public void setIsShow(Byte value) {
+        set(23, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_comment_goods.is_show</code>. 是否买家秀
+     */
+    public Byte getIsShow() {
+        return (Byte) get(23);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_comment_goods.show_time</code>. 买家秀时间
+     */
+    public void setShowTime(Timestamp value) {
+        set(24, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_comment_goods.show_time</code>. 买家秀时间
+     */
+    public Timestamp getShowTime() {
+        return (Timestamp) get(24);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -377,7 +405,7 @@ public class CommentGoodsRecord extends UpdatableRecordImpl<CommentGoodsRecord> 
     /**
      * Create a detached, initialised CommentGoodsRecord
      */
-    public CommentGoodsRecord(Integer id, Integer shopId, Integer userId, Byte commstar, Integer userScore, Byte anonymousflag, String commtag, Integer goodsId, String orderSn, String commNote, String commImg, Integer commentAwardId, Byte flag, Byte delFlag, Byte isShopAdd, String bogusUsername, String bogusUserAvatar, Timestamp createTime, Timestamp updateTime, Integer recId, Integer prdId, Byte isTop, Timestamp topTime) {
+    public CommentGoodsRecord(Integer id, Integer shopId, Integer userId, Byte commstar, Integer userScore, Byte anonymousflag, String commtag, Integer goodsId, String orderSn, String commNote, String commImg, Integer commentAwardId, Byte flag, Byte delFlag, Byte isShopAdd, String bogusUsername, String bogusUserAvatar, Timestamp createTime, Timestamp updateTime, Integer recId, Integer prdId, Byte isTop, Timestamp topTime, Byte isShow, Timestamp showTime) {
         super(CommentGoods.COMMENT_GOODS);
 
         set(0, id);
@@ -403,5 +431,7 @@ public class CommentGoodsRecord extends UpdatableRecordImpl<CommentGoodsRecord> 
         set(20, prdId);
         set(21, isTop);
         set(22, topTime);
+        set(23, isShow);
+        set(24, showTime);
     }
 }

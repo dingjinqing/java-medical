@@ -106,7 +106,7 @@ public class SecKillProcessorDao extends ShopBaseService {
         }
 
         GoodsActivityAnnounceMpVo mpVo = new GoodsActivityAnnounceMpVo();
-        mpVo.setActivityType(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
+        mpVo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
         mpVo.setStartTime(activityInfo.get(SEC_KILL_DEFINE.START_TIME));
         mpVo.setRealPrice(activityInfo.get(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE));
         return mpVo;

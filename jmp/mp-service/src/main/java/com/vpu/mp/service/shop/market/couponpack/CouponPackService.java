@@ -1,28 +1,5 @@
 package com.vpu.mp.service.shop.market.couponpack;
 
-import static com.vpu.mp.db.shop.tables.CouponPack.COUPON_PACK;
-import static com.vpu.mp.db.shop.tables.CouponPackVoucher.COUPON_PACK_VOUCHER;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Record;
-import org.jooq.Record4;
-import org.jooq.SelectSeekStep1;
-import org.jooq.SelectWhereStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.CouponPackRecord;
@@ -36,48 +13,51 @@ import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
+import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
-import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackAddParam;
-import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackConstant;
-import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackDetailListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackDetailListQueryVo;
-import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackOrderExportVo;
-import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackOrderListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackOrderListQueryVo;
-import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackUpdateParam;
-import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackUpdateVo;
-import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackUpdateVoucherVo;
-import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackVoucherAddParam;
-import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
+import com.vpu.mp.service.pojo.shop.market.couponpack.*;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackActBaseVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackActInfoVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackCheckVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackOrderBeforeParam;
-import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackOrderBeforeVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackOrderParam;
-import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackVoucherBo;
-import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackVoucherVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.*;
 import com.vpu.mp.service.pojo.wxapp.member.card.GeneralUserCardVo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
+import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
 import com.vpu.mp.service.shop.order.virtual.VirtualOrderService;
-
 import jodd.util.StringUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Record;
+import org.jooq.Record4;
+import org.jooq.SelectSeekStep1;
+import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.CouponPack.COUPON_PACK;
+import static com.vpu.mp.db.shop.tables.CouponPackVoucher.COUPON_PACK_VOUCHER;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * @author: 王兵兵
@@ -102,6 +82,8 @@ public class CouponPackService extends ShopBaseService {
     private ShopCommonConfigService shopCommonConfigService;
     @Autowired
     private TradeService tradeService;
+    @Autowired
+    private GoodsService goodsService;
 
 
 
@@ -201,8 +183,7 @@ public class CouponPackService extends ShopBaseService {
      */
     public CouponPackUpdateVo getCouponPackById(Integer id){
         CouponPackUpdateVo res =
-        db().select(COUPON_PACK.ID,COUPON_PACK.ACT_NAME,COUPON_PACK.START_TIME,COUPON_PACK.END_TIME,COUPON_PACK.PACK_NAME,COUPON_PACK.LIMIT_GET_TIMES,COUPON_PACK.TOTAL_AMOUNT,COUPON_PACK.ACCESS_MODE,COUPON_PACK.ACCESS_COST,COUPON_PACK.ACT_RULE).
-        from(COUPON_PACK).
+            db().selectFrom(COUPON_PACK).
         where(COUPON_PACK.ID.eq(id)).and(COUPON_PACK.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).
         fetchOneInto(CouponPackUpdateVo.class);
 
@@ -448,7 +429,7 @@ public class CouponPackService extends ShopBaseService {
         vo.setInvoiceSwitch(shopCommonConfigService.getInvoice());
         vo.setScoreProportion(memberService.score.scoreCfgService.getScoreProportion());
         vo.setIsShowServiceTerms(shopCommonConfigService.getServiceTerms());
-        if(vo.getIsShowServiceTerms() == 1){
+        if (vo.getIsShowServiceTerms().equals(BaseConstant.YES)) {
             vo.setServiceChoose(tradeService.getServiceChoose());
             vo.setServiceName(tradeService.getServiceName());
             vo.setServiceDocument(tradeService.getServiceDocument());
@@ -590,13 +571,89 @@ public class CouponPackService extends ShopBaseService {
                 couponPackOrderService.updateStillSendFlag(order.getOrderSn(),CouponPackConstant.STILL_SEND_FLAG_FINISH);
             }
         });
-
-
     }
-    
+
+    /**
+     * 购物车里可用的优惠券礼包
+     *
+     * @param userId
+     * @param cartGoodsIdsList
+     * @return
+     */
+    public CouponPackCartVo getCartCouponPack(Integer userId, List<Integer> cartGoodsIdsList) {
+        CouponPackCartVo vo = new CouponPackCartVo();
+        Set<Integer> cartGoodsIds = new HashSet<>(cartGoodsIdsList);
+
+        List<CouponPackRecord> usablePackList = db().selectFrom(COUPON_PACK)
+            .where(COUPON_PACK.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .and(COUPON_PACK.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+            .and(COUPON_PACK.ISSUED_AMOUNT.lt(COUPON_PACK.TOTAL_AMOUNT))
+            .and(COUPON_PACK.START_TIME.le(DateUtil.getLocalDateTime()))
+            .and(COUPON_PACK.END_TIME.ge(DateUtil.getLocalDateTime()))
+            .and(COUPON_PACK.SHOW_CART.eq(BaseConstant.YES))
+            .fetch();
+
+        if (usablePackList != null && usablePackList.size() > 0) {
+            for (CouponPackRecord couponPackRecord : usablePackList) {
+                //该礼包里是否有可用的优惠券
+                boolean isApplicable = false;
+                //是否全是折扣券
+                boolean onlyDiscount = true;
+                Set<Integer> applicableGoodsIds = new HashSet<>();
+                List<CouponPackVoucherVo> voucherVos = couponPackVoucherService.getCouponPackVoucherList(couponPackRecord.getId());
+                //包里的优惠券张数
+                int totalAmount = 0;
+                //包里的优惠券总价值
+                BigDecimal totalValue = BigDecimal.ZERO;
+                for (CouponPackVoucherVo voucher : voucherVos) {
+                    totalAmount += voucher.getTotalAmount();
+                    if (voucher.getActCode().equals(CouponConstant.ACT_CODE_VOUCHER)) {
+                        onlyDiscount = false;
+                        totalValue = BigDecimalUtil.add(totalValue, BigDecimalUtil.multiply(voucher.getDenomination(), new BigDecimal(voucher.getTotalAmount())));
+                    }
+                    if (voucher.getIsAllGoodsUse()) {
+                        isApplicable = true;
+                        break;
+                    }
+                    if (StringUtil.isNotEmpty(voucher.getRecommendGoodsId())) {
+                        applicableGoodsIds.addAll(Util.splitValueToList(voucher.getRecommendGoodsId()));
+                    }
+                    if (StringUtil.isNotEmpty(voucher.getRecommendCatId()) || StringUtil.isNotEmpty(voucher.getRecommendSortId())) {
+                        List<Integer> goodsIds = goodsService.getOnShelfGoodsIdList(Util.splitValueToList(voucher.getRecommendCatId()), Util.splitValueToList(voucher.getRecommendSortId()), Collections.emptyList());
+                        applicableGoodsIds.addAll(goodsIds);
+                    }
+                }
+                if (!isApplicable) {
+                    applicableGoodsIds.retainAll(cartGoodsIds);
+                    if (CollectionUtils.isNotEmpty(applicableGoodsIds)) {
+                        isApplicable = true;
+                    }
+                }
+                if (isApplicable) {
+                    CouponPackCartVo.PackInfo pack = new CouponPackCartVo.PackInfo();
+                    pack.setActId(couponPackRecord.getId());
+                    pack.setPackName(couponPackRecord.getPackName());
+                    pack.setOnlyDiscount(onlyDiscount);
+                    pack.setIsReceive(couponPackOrderService.getUserCouponPackBuyCount(couponPackRecord.getId(), userId) > 0 ? true : false);
+                    pack.setTotalAmount(totalAmount);
+                    pack.setTotalValue(totalValue);
+                    vo.getPackList().add(pack);
+                }
+            }
+            if (CollectionUtils.isNotEmpty(vo.getPackList())) {
+                Optional<CouponPackCartVo.PackInfo> max = vo.getPackList().stream().max((x, y) -> x.getTotalValue().compareTo(y.getTotalValue()));
+                vo.setMaxReduce(max.isPresent() ? max.get().getTotalValue() : null);
+                return vo;
+            }
+            return null;
+        } else {
+            return null;
+        }
+    }
+
 	/**
 	 * 营销日历用id查询活动
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -607,7 +664,7 @@ public class CouponPackService extends ShopBaseService {
 
 	/**
 	 * 营销日历用查询目前正常的活动
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */

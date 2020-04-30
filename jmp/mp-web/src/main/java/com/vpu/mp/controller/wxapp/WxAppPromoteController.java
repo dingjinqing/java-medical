@@ -87,4 +87,5 @@ public class WxAppPromoteController extends WxAppBaseController {
 
         return success(vo);
     }
+
 }

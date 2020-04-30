@@ -31,17 +31,22 @@ export default {
   },
   mounted () {
     document.title = '拼团规则'
+    document.documentElement.style.fontSize = window.innerWidth + 'px'
     this.initGroupRules()
   },
   methods: {
     initGroupRules () {
       let param = {
-        id: this.$route.query.gid
+        id: this.$route.query.gid,
+        shopId: this.$route.query.shop_id
       }
       pinRulesApi(param).then(res => {
         console.log(res)
         if (res.error === 0) {
-          this.myRules = res.content
+          let content = JSON.parse(res.content)
+          console.log(content)
+          this.myRules = content.document
+          this.isUseDefault = content.is_use_default
         }
       })
     }
@@ -49,23 +54,41 @@ export default {
 }
 </script>
 
+<style>
+strong {
+  font-weight: bold;
+}
+.group-buy-page img {
+  width: 100%;
+  height: auto;
+}
+</style>
 <style scoped>
 .group-buy-page {
+  width: 100%;
   height: 100%;
   line-height: 1.4;
-  padding: 0 0.27rem;
+  padding: 10px 15px;
   background: #fff;
+  word-break: break-all;
+}
+.group-buy-page strong {
+  font-weight: bold;
 }
 .group-buy-page h2 {
   color: #000;
-  font-size: 0.29rem;
+  font-size: 16px;
   font-weight: bold;
-  margin-top: 0.2rem;
-  margin-bottom: 0.13rem;
+  margin-top: 10px;
+  margin-bottom: 13px;
 }
 .group-buy-page p {
   color: #888;
-  font-size: 0.29rem;
+  font-size: 16px;
+}
+.group-buy-page img {
+  width: 100%;
+  height: auto;
 }
 .group-buy-img {
   width: 100%;

@@ -17,11 +17,14 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.verify.verifyParam;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -258,5 +261,37 @@ public class AdminOrderController extends AdminBaseController {
         Workbook workbook =shop().readOrder.exportOrderList(param,columns,getLang());
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.ORDER_EXPORT_FILE_NAME ,OrderConstant.LANGUAGE_TYPE_EXCEL,OrderConstant.LANGUAGE_TYPE_EXCEL) + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
         export2Excel(workbook,fileName,response);
+    }
+
+    /**
+     * 批量发货
+     */
+    @PostMapping("/ship/batch")
+    public JsonResult batchShip(BatchShipParam param) {
+        try {
+            param.setLang(getLang());
+            param.setAdminInfo(adminAuth.user());
+            shop().writeOrder.batchShip(param);
+            return success();
+        } catch (MpException e) {
+            return fail(e.getErrorCode(), e.getCodeParam());
+        }
+    }
+
+    /**
+     * 批量发货查询
+     */
+    @PostMapping("/ship/batch/list")
+    public JsonResult batchShipList(@RequestBody BatchShipListParam param) {
+        return success(shop().readOrder.batchShipList(param));
+    }
+
+    /**
+     * 批量发货失败数据下载
+     */
+    @PostMapping("/ship/batch/fail/download/{batchId}")
+    public void downloadFailData(@PathVariable Integer batchId, HttpServletResponse response) {
+        Workbook workbook = shop().readOrder.downloadFailData(batchId, getLang());
+        export2Excel(workbook, DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE), response);
     }
 }

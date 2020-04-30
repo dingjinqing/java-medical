@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -41,11 +42,18 @@ import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record3;
+import org.jooq.Result;
+import jodd.util.StringUtil;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -96,6 +104,10 @@ public class GroupBuyService extends ShopBaseService {
     private ShopCommonConfigService shopCommonConfigService;
     @Autowired
     private QrCodeService qrCode;
+    @Autowired
+    private TagService tagService;
+    @Autowired
+    private EsDataUpdateMqService esDataUpdateMqService;
 
 
     /**
@@ -121,6 +133,8 @@ public class GroupBuyService extends ShopBaseService {
                 productDefineRecord.insert();
             });
         });
+
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(groupBuy.getGoodsId()), getShopId(), DBOperating.UPDATE);
     }
 
     /**
@@ -171,10 +185,13 @@ public class GroupBuyService extends ShopBaseService {
      * @param id id
      */
     public int deleteGroupBuy(Integer id) {
-        return db().update(GROUP_BUY_DEFINE)
+        db().update(GROUP_BUY_DEFINE)
             .set(GROUP_BUY_DEFINE.DEL_FLAG, DelFlag.DISABLE.getCode())
             .where(GROUP_BUY_DEFINE.ID.eq(id))
             .execute();
+        GroupBuyDefineRecord record = getGroupBuyRecord(id);
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(record.getGoodsId()), getShopId(), DBOperating.UPDATE);
+        return 1;
     }
 
     /**
@@ -202,6 +219,9 @@ public class GroupBuyService extends ShopBaseService {
             });
         });
 
+        GroupBuyDefineRecord record = getGroupBuyRecord(param.getId());
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(record.getGoodsId()), getShopId(), DBOperating.UPDATE);
+
     }
 
     /**
@@ -227,19 +247,21 @@ public class GroupBuyService extends ShopBaseService {
      */
     public int changeStatusActivity(Integer id, Byte status) {
         if (ACTIVITY_STATUS_DISABLE.equals(status)) {
-            return db().update(GROUP_BUY_DEFINE)
+            db().update(GROUP_BUY_DEFINE)
                 .set(GROUP_BUY_DEFINE.STATUS, ACTIVITY_STATUS_DISABLE)
                 .where(GROUP_BUY_DEFINE.ID.eq(id))
                 .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_NORMAL))
                 .execute();
         } else if (ACTIVITY_STATUS_NORMAL.equals(status)) {
-            return db().update(GROUP_BUY_DEFINE)
+            db().update(GROUP_BUY_DEFINE)
                 .set(GROUP_BUY_DEFINE.STATUS, ACTIVITY_STATUS_NORMAL)
                 .where(GROUP_BUY_DEFINE.ID.eq(id))
                 .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_DISABLE))
                 .execute();
         }
-        return 0;
+        GroupBuyDefineRecord record = getGroupBuyRecord(id);
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(record.getGoodsId()), getShopId(), DBOperating.UPDATE);
+        return 1;
     }
 
 
@@ -297,6 +319,9 @@ public class GroupBuyService extends ShopBaseService {
         List<Integer> ids = Util.splitValueToList(groupBuy.getRewardCouponId());
         List<CouponView> couponViews = couponService.getCouponViewByIds(ids);
         groupBuy.setCouponViews(couponViews);
+        if(groupBuy.getActivityTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(groupBuy.getActivityTagId())){
+            groupBuy.setTagList(tagService.getTagsById(Util.splitValueToList(groupBuy.getActivityTagId())));
+        }
         groupBuy.setGoodsList(goodsList);
         groupBuy.setProductList(buyProductVos);
         groupBuy.setShare(Util.parseJson(groupBuy.getShareConfig(), GroupBuyShareConfigVo.class));
@@ -795,7 +820,7 @@ public class GroupBuyService extends ShopBaseService {
         goodsIds.removeAll(otherGoodsIds);
         return goodsIds;
     }
-    
+
     /**
      * 营销日历用id查询活动
      * @param id
@@ -807,7 +832,7 @@ public class GroupBuyService extends ShopBaseService {
 						GROUP_BUY_DEFINE.START_TIME, GROUP_BUY_DEFINE.END_TIME)
 				.from(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(id)).fetchAnyInto(MarketVo.class);
 	}
-	
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param

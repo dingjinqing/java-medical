@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.coupon;
 
-import com.vpu.mp.db.shop.tables.DivisionReceiveRecord;
 import com.vpu.mp.db.shop.tables.records.DivisionReceiveRecordRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -20,6 +19,7 @@ import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponDelParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponPageDecorationVo;
 import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.member.tag.UserTagService;
 import org.jooq.Record;
 import org.jooq.Record5;
 import org.jooq.Result;
@@ -35,9 +35,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.db.shop.Tables.DIVISION_RECEIVE_RECORD;
-import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_PAY_AWARD;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.PAY_AWARD_GIVE_STATUS_RECEIVED;
 
 /**
  * @author: 王兵兵
@@ -50,6 +47,10 @@ public class CouponMpService extends ShopBaseService {
 
     @Autowired
     public CouponService coupon;
+
+    @Autowired
+    public UserTagService userTag;
+
     /**
      * 获取装修模块优惠券列表
      * @param moduleCoupon
@@ -346,7 +347,7 @@ public class CouponMpService extends ShopBaseService {
                 }
             }
         }
-        if ("random".equals(couponRecord.getActCode())||"voucher".equals(couponRecord.getActCode())){
+        if (CouponConstant.ACT_CODE_RANDOM.equals(couponRecord.getActCode()) || CouponConstant.ACT_CODE_VOUCHER.equals(couponRecord.getActCode())) {
             vo.setUnit("元");
         }else {
             vo.setUnit("折");
@@ -382,9 +383,10 @@ public class CouponMpService extends ShopBaseService {
         Result<Record> fetch = db().select().from(MRKING_VOUCHER)
             .where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and((MRKING_VOUCHER.END_TIME.ge(nowDate)).or(MRKING_VOUCHER.VALIDITY_TYPE.eq(BaseConstant.COUPON_VALIDITY_TYPE_FLEXIBLE)))
             .and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_NORMAL)).and(MRKING_VOUCHER.RECOMMEND_GOODS_ID.eq("")).and(MRKING_VOUCHER.SURPLUS.gt(0)).fetch();
-        if(fetch != null)
+        if(fetch != null) {
             return fetch.into(CouponPageDecorationVo.class);
-        else
+        } else{
             return null;
+        }
     }
 }

@@ -28,7 +28,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	@PostMapping("/list")
 	public JsonResult getPageList(@RequestBody GoodsCommentPageListParam param) {
 
-		PageResult<GoodsCommentVo> pageResult = shop().goods.goodsComment.getPageList(param);
+		GoodsCommentListVo pageResult = shop().goods.goodsComment.getPageList(param);
 
 		return success(pageResult);
 	}
@@ -221,6 +221,28 @@ public class AdminGoodsCommentController extends AdminBaseController {
     @PostMapping("/cancelTop")
     public JsonResult cancelTop(@RequestBody GoodsCommentIdParam param){
         shop().goods.goodsComment.cancelTop(param);
+        return success();
+    }
+
+    /**
+     * 设置买家秀
+     * @param param 评价记录id
+     * @return
+     */
+    @PostMapping("/setShow")
+    public JsonResult setShow(@RequestBody GoodsCommentIdParam param){
+        shop().goods.goodsComment.setShow(param);
+        return success();
+    }
+
+    /**
+     * 取消买家秀
+     * @param param 评价记录id
+     * @return
+     */
+    @PostMapping("/cancelShow")
+    public JsonResult cancelShow(@RequestBody GoodsCommentIdParam param){
+        shop().goods.goodsComment.cancelShow(param);
         return success();
     }
 }

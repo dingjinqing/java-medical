@@ -20,7 +20,7 @@ public class SysCalendarAct {
 	private String recommendLink;
 	
 	/** 编辑时候传的id */
-	private Integer activityId = 0;
+	private Integer id = 0;
 	/** 编辑时候传的 是否已删除：0否，1是 */
 	private Byte delFlag = 0;
 	

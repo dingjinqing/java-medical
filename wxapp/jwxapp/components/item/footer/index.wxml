@@ -7,6 +7,9 @@
     includes:includes
   }
 </wxs>
+<view class="ship-tips" wx:if="{{!canShip && position === 'footer'}}">
+  注：当前所在区域不可配送
+</view>
 <view class="footer">
   <block wx:if="{{position === 'footer' && !filter.includes([4,8],activity.activityType)}}">
     <view class="small_view" bindtap="backHome">

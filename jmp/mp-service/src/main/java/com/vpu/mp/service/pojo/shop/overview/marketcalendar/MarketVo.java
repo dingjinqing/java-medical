@@ -24,4 +24,8 @@ public class MarketVo {
 	private String activityType;
 	/** b2c_market_calendar_activity的id值*/
 	private Integer calActId;
+	
+	private Byte recommendType;
+	private String recommendLink;
+	private Boolean isRecommend=false;
 }

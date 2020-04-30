@@ -1,15 +1,5 @@
 package com.vpu.mp.service.shop.task.wechat;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import org.jooq.Result;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
@@ -20,6 +10,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
 import com.vpu.mp.service.pojo.shop.coupon.CouponWxVo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.FpRewardContent;
@@ -28,7 +19,6 @@ import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
-import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
@@ -51,8 +41,16 @@ import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
 import com.vpu.mp.service.shop.user.user.UserService;
-
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.Result;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 
@@ -110,7 +108,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 			return null;
 		}
 		List<CouponWxVo> list = coupon.getExpiringCouponList();
-		String page = "pages/couponlist/couponlist";
+		String page = "pages/coupon/coupon";
 		String keyword1 = "尊敬的用户，您的优惠券";
 		String keyword11 = "即将到期";
 		for (CouponWxVo couponWxVo : list) {
@@ -368,7 +366,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 			if(rewardIds!=null) {
 				MrkingVoucherRecord coupon = couponGiveService.getInfoById(rewardIds);
 				//TODO sendPromoteDrawMessage
-				String value=coupon.getActCode().equals("voucher")?"元":"折";
+                String value = coupon.getActCode().equals(CouponConstant.ACT_CODE_VOUCHER) ? "元" : "折";
 				goodsName=String.valueOf(coupon.getDenomination())+value+"优惠券";
 			}
 		}else {

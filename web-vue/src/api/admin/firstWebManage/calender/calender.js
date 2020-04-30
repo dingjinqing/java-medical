@@ -65,3 +65,43 @@ export function systemSaveEvent (data) {
     data: data
   })
 }
+//  system  营销日历 文本弹窗接口
+export function articleDataList (data) {
+  return service({
+    url: '/api/system/article/list',
+    method: 'post',
+    data: data
+  })
+}
+
+//  system  营销日历 文本弹窗文章分类接口
+export function articleclassifyList (data) {
+  return service({
+    url: '/api/system/article/category/allList',
+    method: 'post'
+  })
+}
+
+// system  营销日历 发布接口
+export function systemReleaseAct (calendarId) {
+  return service({
+    url: `/api/system/calendar/market/pub/${calendarId}`,
+    method: 'get'
+  })
+}
+
+// system 营销日历 删除事件
+export function systemDelEvent (calendarId) {
+  return service({
+    url: `/api/system/calendar/market/del/${calendarId}`,
+    method: 'get'
+  })
+}
+
+// sysytem 营销日历 单个事件详情
+export function systemEventDeatil (calendarId) {
+  return service({
+    url: `/api/system/calendar/info/${calendarId}`,
+    method: 'get'
+  })
+}

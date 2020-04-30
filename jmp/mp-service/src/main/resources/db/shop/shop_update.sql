@@ -179,6 +179,9 @@ ALTER TABLE `b2c_group_draw` ADD COLUMN `activity_copywriting` text COMMENT '活
 
 -- 20200423订单商品表增加加价购id
 ALTER TABLE `b2c_order_goods` ADD COLUMN `purchase_id` int(11) NOT NULL DEFAULT 0 COMMENT '加价购活动id';
+
+-- 20200427优惠券礼包活动添加购物车展示选项
+ALTER TABLE `b2c_coupon_pack` ADD COLUMN `show_cart` tinyint(1) DEFAULT '1' COMMENT '购物车是否展示，1是';
 /***********************2.10*********************END*/
 
 /***********************2.11*********************BEGIN*/
@@ -385,6 +388,28 @@ ALTER TABLE `b2c_order_goods_rebate` ADD COLUMN `rec_id` int(11) NOT NULL DEFAUL
 
 -- 2020年04月21日 ws
 ALTER TABLE `b2c_order_goods` MODIFY COLUMN `fanli_strategy` VARCHAR ( 2999 ) DEFAULT '' COMMENT '返利配置详情';
+
+
+-- 2020年04月24日 添加 已选活动商品表
+CREATE TABLE IF NOT EXISTS `b2c_checked_goods_cart` (
+	`id` int(20) NOT NULL AUTO_INCREMENT,
+	`action` TINYINT(1) DEFAULT 0 COMMENT '活动类型: 1：限次卡兑换',
+	`identity_id` VARCHAR(50) DEFAULT '0' NULL COMMENT '活动ID',
+	`user_id` INT(8) NOT NULL DEFAULT 0 COMMENT '用户ID',
+	`goods_id` INT(8) NOT NULL DEFAULT 0 COMMENT '商品ID',
+	`product_id` INT(11) NOT NULL DEFAULT 0 COMMENT '商品规格组合的产品ID',
+	`goods_number` INT(8) NOT NULL DEFAULT 1 COMMENT '商品数量',
+	`create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+	`update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+	PRIMARY KEY (`id`),
+	INDEX `user_id` (`user_id`),
+  	INDEX `action` (`action`),
+  	INDEX `identity_id` (`identity_id`),
+  	INDEX `product_id` (`product_id`)
+);
+
+
+
 /*********************2.11*************************END*/
 
 /*********************2.12*************************START*/
@@ -472,5 +497,34 @@ ALTER TABLE `b2c_distribution_strategy` ADD COLUMN `strategy_type` tinyint(1) NU
 
 -- 2020.04.26 好友助力 添加活动规则说明
 ALTER TABLE `b2c_friend_promote_activity` ADD COLUMN `activity_copywriting` text COMMENT '活动说明';
+-- 批量发货记录表
+create table  IF NOT EXISTS `b2c_bulkshipment_record` (
+  `id`          int not null auto_increment,
+  `sys_id`      int(9)  default null comment '操作员ID',
+  `account_id`  int(9)  default null comment 'SUB操作员ID',
+  `total_num`   int          default 0 comment '总数',
+  `success_num` int          default 0 comment '成功数',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  primary key (`id`)
+);
+
+
+-- 批量发货详细记录表
+create table IF NOT EXISTS `b2c_bulkshipment_record_detail` (
+  `id`            int(9) not null auto_increment,
+  `batch_id`      int(9) not null comment'批次id',
+  `status`        tinyint(1)  not null  comment '0成功 1 失败',
+  `fail_reason`   varchar(100) null  default '' comment'失败原因',
+  `order_sn`      varchar(20) null  default ''comment'订单号',
+  `shipping_name` varchar(50) null  comment'快递公司',
+  `shipping_no`   varchar(20) null comment '快递单号',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  primary key (`id`)
+);
+-- 评论表添加买家秀相关字段
+ALTER TABLE `b2c_comment_goods` ADD COLUMN `is_show` tinyint(2) DEFAULT '0' COMMENT '是否买家秀';
+ALTER TABLE `b2c_comment_goods` ADD COLUMN `show_time` timestamp NULL DEFAULT NULL COMMENT '买家秀时间';
 /*********************2.12*************************END*/
 

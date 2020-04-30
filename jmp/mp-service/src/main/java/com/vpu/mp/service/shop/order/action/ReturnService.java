@@ -136,17 +136,17 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             !Byte.valueOf(OrderConstant.RETURN_OPERATE_ADMIN_REFUSE_RETURN_GOODS_APPLY).equals(param.getReturnOperate())){
            //非提交物流、非撤销校验
             if(param.getReturnMoney() == null){
-                ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_RETURNMONEY, null);
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_RETURNMONEY, "退款时未输入退商品金额",null);
             }
             if(param.getShippingFee() == null){
-                ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_SHIPPINGFEE, null);
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_SHIPPINGFEE, "退款时未输入退运费金额",null);
             }
         }
 		//获取订单详情
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		if(order == null) {
             logger.error("退款退货执行异常，订单不存在");
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, "订单不存在",null);
 		}
 		//result
         ExecuteResult result = ExecuteResult.create();
@@ -222,7 +222,10 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 						//退款订单记录
 						returnStatusChange.addRecord(rOrder, param.getIsMp(), OrderConstant.RETURN_OPERATE[param.getReturnOperate()]);
 						return;
-					}
+					} else if(param.getIsMp().equals(OrderConstant.IS_MP_ADMIN) && Byte.valueOf(OrderConstant.RT_GOODS).equals(param.getReturnType())) {
+                        //后台直接发起退货退款时设置退款状态为4以便于后续操作
+                        rOrder.setRefundStatus(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
+                    }
 					if(param.getIsMp() == OrderConstant.IS_MP_Y) {
                         logger.info("买家操作完成");
 						return;
@@ -356,7 +359,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		Iterator<RefundVoGoods> currentGoods = goods.get(currentOrder.getOrderSn()).iterator();
 		//如果后台查询且满足手动退款则需查询已退金额
 		Map<Integer, BigDecimal> manualReturnMoney = null;
-		if((isMp != OrderConstant.IS_MP_Y) && vo.getReturnType()[OrderConstant.RT_MANUAL] == true) {
+		if((isMp != OrderConstant.IS_MP_Y) && vo.getReturnType()[OrderConstant.RT_MANUAL]) {
 			manualReturnMoney = returnOrderGoods.getManualReturnMoney(param.getOrderSn());
 		}
 		while (currentGoods.hasNext()) {
@@ -387,7 +390,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 				oneGoods.setIsCanReturn(OrderConstant.IS_CAN_RETURN_Y);
 			}
 			//如果后台查询且满足手动退款则需查询已退金额
-			if(isMp != OrderConstant.IS_MP_Y && vo.getReturnType()[3] == true) {
+			if(isMp != OrderConstant.IS_MP_Y && vo.getReturnType()[3]) {
 				oneGoods.setReturnMoney(manualReturnMoney.get(oneGoods.getRecId()) == null ? BigDecimal.ZERO : manualReturnMoney.get(oneGoods.getRecId()));
 			}
 		}

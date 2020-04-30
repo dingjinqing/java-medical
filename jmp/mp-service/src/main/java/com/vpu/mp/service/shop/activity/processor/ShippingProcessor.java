@@ -1,0 +1,116 @@
+package com.vpu.mp.service.shop.activity.processor;
+
+import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.address.AddressCode;
+import com.vpu.mp.service.pojo.shop.member.address.AddressInfo;
+import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.DeliverFeeAddressDetailVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
+import com.vpu.mp.service.shop.goods.GoodsDeliverTemplateService;
+import com.vpu.mp.service.shop.member.AddressService;
+import com.vpu.mp.service.shop.order.action.CreateService;
+import com.vpu.mp.service.shop.order.action.base.Calculate;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import java.math.BigDecimal;
+import java.util.Comparator;
+
+/**
+ * 配送信息,运费设置
+ * @author 孔德成
+ * @date 2020/4/28
+ */
+@Component
+@Slf4j
+public class ShippingProcessor implements Processor,GoodsDetailProcessor {
+    @Autowired
+    private AddressService addressService;
+    @Autowired
+    private CreateService createService;
+    @Autowired
+    private GoodsDeliverTemplateService shippingFeeTemplate;
+    @Autowired
+    private Calculate calculate;
+
+    @Override
+    public Byte getPriority() {
+        return Byte.MAX_VALUE-1;
+    }
+
+    @Override
+    public Byte getActivityType() {
+        return BaseConstant.ACTIVITY_TYPE_GENERAL;
+    }
+
+
+    /**
+     * 商品详情页
+     * 1 已设置位置 未设置收货地址 显示当前位置
+     * 2 未设置位置 未设置地址 显示不可配送
+     * 3 设置地址 显示地址
+     * 计算运费
+     *
+     * @param goodsDetailMpBo  商品详情对象{@link com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo}
+     * @param param
+     */
+    @Override
+    public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
+        DeliverFeeAddressDetailVo vo =new DeliverFeeAddressDetailVo();
+        UserAddressVo defaultAddress = createService.getDefaultAddress(param.getUserId(), null);
+        int defaultNum  = Integer.valueOf(0).equals(goodsDetailMpBo.getLimitBuyNum())? 1:goodsDetailMpBo.getLimitBuyNum();
+        BigDecimal prdRealPrice = goodsDetailMpBo.getProducts().stream().max(Comparator.comparing(GoodsPrdMpVo::getPrdRealPrice)).get().getPrdRealPrice();
+        if (defaultAddress!=null){
+            log.info("商品详情-用户地址信息{}",defaultAddress);
+            vo.setAddress(defaultAddress);
+            BigDecimal totalPrice = BigDecimalUtil.multiply(prdRealPrice, BigDecimal.valueOf(defaultNum));
+            BigDecimal totalWeight = BigDecimalUtil.multiply(goodsDetailMpBo.getGoodsWeight(), BigDecimal.valueOf(defaultNum));
+            try {
+                vo.setDeliverPrice(shippingFeeTemplate.getShippingFeeByTemplate(defaultAddress.getDistrictCode(), goodsDetailMpBo.getDeliverTemplateId(), defaultNum, totalPrice, totalWeight));
+            } catch (MpException e) {
+                log.error("商品详情-获取邮费信息失败");
+                String messages = Util.translateMessage("", e.getErrorCode().getMessage(), "messages");
+                vo.setMessage(messages);
+                vo.setStatus((byte)2);
+                e.printStackTrace();
+            }catch (NullPointerException e1){
+                e1.printStackTrace();
+            }
+        }else if (param.getLat()!=null&&param.getLon()!=null){
+            AddressInfo geocoderAddressInfo = addressService.getGeocoderAddressInfo(param.getLat(), param.getLon());
+            AddressCode address = addressService.getUserAddress(geocoderAddressInfo);
+            if (address!=null){
+                defaultAddress =new UserAddressVo();
+                defaultAddress.setProvinceName(address.getProvinceName());
+                defaultAddress.setProvinceCode(address.getProvinceCode());
+                defaultAddress.setCityCode(address.getCityCode());
+                defaultAddress.setCityName(address.getCityName());
+                defaultAddress.setDistrictCode(address.getDistrictCode());
+                defaultAddress.setDistrictName(address.getDistrictName());
+                vo.setAddress(defaultAddress);
+            }
+            // 商品信息在活动创建后又进行了修改，导致两者的规格交集为空
+            if (goodsDetailMpBo.getProducts().size() != 0) {
+                // 处理运费信息
+                log.debug("小程序-商品详情-处理运费信息");
+                BigDecimal deliverPrice = calculate.calculateShippingFee(param.getUserId(),
+                        param.getLon(), param.getLat(),
+                        param.getGoodsId(),
+                        goodsDetailMpBo.getDeliverTemplateId(),
+                        defaultNum,goodsDetailMpBo.getProducts().get(0).getPrdRealPrice(),
+                        goodsDetailMpBo.getGoodsWeight());
+                goodsDetailMpBo.setDeliverPrice(deliverPrice);
+            }
+        }else {
+            vo.setStatus((byte)2);
+            vo.setMessage(Util.translateMessage("", JsonResultCode.CODE_ORDER_CALCULATE_SHIPPING_FEE_ERROR.getMessage(), "messages"));
+        }
+        goodsDetailMpBo.setDeliverFeeAddressVo(vo);
+    }
+}

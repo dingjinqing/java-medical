@@ -1,10 +1,17 @@
-// components/item/address_choose/index.js
+const util = require('../../../utils/util.js');
 Component({
   /**
    * 组件的属性列表
    */
   properties: {
-
+    addressInfo:{
+      type:Object,
+      value:null,
+      observer(){
+        this.initAddress()
+      }
+    },
+    goodsId:Number
   },
 
   /**
@@ -18,6 +25,12 @@ Component({
    * 组件的方法列表
    */
   methods: {
+    initAddress(){
+      let {provinceName = '',cityName = '',districtName = '',address = ''} = this.data.addressInfo
+      this.setData({
+        addressText: `${provinceName}${cityName}${districtName}${address}`
+      })
+    },
     chooseAddress(){
       wx.chooseAddress({
         success: (res) => {
@@ -25,6 +38,16 @@ Component({
           this.setData({
             addressText: `${provinceName}${cityName}${countyName}${detailInfo}`
           })
+          util.api(
+            '/api/wxapp/address/choose',
+            res => {
+              console.log(res)
+              if (res.error === 0) {
+                this.triggerEvent('addressChange',{...res.content})
+              }
+            },
+            { wxAddress: { ...res }, goodsId:this.data.goodsId }
+          )
         },
         fail: () => {
           wx.getSetting({

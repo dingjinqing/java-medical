@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.cart.list;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import lombok.Data;
@@ -91,6 +92,10 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
          * 活动名称
          */
         private String name;
+        /**
+         * 使用 1生效 2不生效
+         */
+        private Byte userd;
         /**满多少金额，活动中指定使用满金额策略时使用*/
         private BigDecimal fullMoney;
         /**满几件或第几件（第X件打折），活动中指定使用满件数策略时使用*/
@@ -100,6 +105,10 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
         private BigDecimal reduceMoney;
         /**折扣，活动中指定使用满件数策略时使用*/
         private BigDecimal discount;
+        /**
+         * 优惠总金额
+         */
+        private BigDecimal reduceTotalMoney =BigDecimal.ZERO;
     }
 
 

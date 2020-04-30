@@ -46,4 +46,6 @@ public class CouponDetailsVo {
    * 最小面额
    */
     private BigDecimal randomMax;
+    private Byte couponTag;
+    private String couponTagId;
 }
