@@ -49,6 +49,7 @@
             size="small"
           >{{$t('orderCommon.filter')}}</el-button>
           <el-button
+            @click="exportDataList"
             type="default"
             size="small"
           >{{$t('orderCommon.exportTable')}}</el-button>
@@ -137,6 +138,11 @@
       :dataInfo="refundInfo"
       :show.sync="showRefund"
     />
+    <!-- 导出数据确认弹窗 -->
+    <exportForm
+      :show.sync="showExportConfirm"
+      :param="this.searchParams"
+    />
   </div>
 </template>
 
@@ -145,7 +151,8 @@ import { getCouponPackageOrderList } from '@/api/admin/orderManage/virtualGoodsO
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
-    ManualRefund: () => import('./refundDialog')
+    ManualRefund: () => import('./refundDialog'),
+    exportForm: () => import('./couponPackageOrderExportDialog.vue')
   },
   data () {
     return {
@@ -156,6 +163,7 @@ export default {
       showRefund: false,
       refundInfo: null,
       applicationTime: '',
+      showExportConfirm: false, // 是否展示导出数据弹窗
 
       // 原始表格数据
       originalData: []
@@ -239,6 +247,11 @@ export default {
         this.$set(this.refundInfo, 'action', 'refund')
         this.showRefund = true
       }
+    },
+    exportDataList () {
+      this.searchParams.startTime = this.applicationTime[0]
+      this.searchParams.endTime = this.applicationTime[1]
+      this.showExportConfirm = true
     }
   },
   filters: {
