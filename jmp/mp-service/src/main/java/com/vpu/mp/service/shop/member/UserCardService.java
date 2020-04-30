@@ -376,6 +376,7 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	private Integer checkAndUpgradeUserCard(Integer userId) throws MpException {
+		logger().info("检测并升级卡");
 		Integer cardId = null;
 		// 获取用户累积获得积分和累积消费总额
 		Integer userTotalScore = scoreService.getAccumulationScore(userId);
@@ -397,8 +398,8 @@ public class UserCardService extends ShopBaseService {
 			uGrade = userCardDao.getUserCardGrade(userId);
 		}
 
-
-
+		boolean flag = false;
+		MemberCardRecord oldGradeCard = null,newGradeCard = null;
 		for (MemberCardRecord gCard : gCardList) {
 			if (!StringUtils.isBlank(gCard.getGradeCondition())) {
 				// 升级条件
@@ -407,14 +408,19 @@ public class UserCardService extends ShopBaseService {
 				if (isCardGradeGtUserGrade(uGrade, gCard)) {
 					if (isSatisfyUpgradeCondition(userTotalScore, amount, gradeCondition)) {
 						cardId = gCard.getId();
-						MemberCardRecord oldGradeCard = getUserGradeCard(userId);
-						String operation = "admin option";
-						changeUserGradeCard(userId, oldGradeCard, gCard, operation);
+						oldGradeCard = getUserGradeCard(userId);
+						newGradeCard = gCard;
+						flag = true;
 					} else {
 						break;
 					}
 				}
 			}
+		}
+		//	升级
+		if(flag) {
+			String operation = "领取等级卡";
+			changeUserGradeCard(userId, oldGradeCard, newGradeCard, operation);
 		}
 		return cardId;
 	}
@@ -1807,11 +1813,12 @@ public class UserCardService extends ShopBaseService {
 				vo.setIsMostGrade(true);
 			}
 			String cardNo = getCardNoByUserAndCardId(param.getUserId(), cardId);
+			logger().info("领取的会员卡卡号为： " + cardNo);
 			if (StringUtils.isBlank(cardNo)) {
-				logger().info("领取失败");
+				logger().info("没有查询到卡号");
 				throw new CardReceiveFailException();
 			}
-			logger().info("领取的会员卡卡号为： " + cardNo);
+			
 			MemberCardRecord newCard = memberCardService.getCardById(cardId);
 			
 			GradeCardData data = new GradeCardData();
