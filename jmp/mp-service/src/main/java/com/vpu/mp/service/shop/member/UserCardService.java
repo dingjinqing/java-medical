@@ -466,7 +466,11 @@ public class UserCardService extends ShopBaseService {
 	 * 	检测可升级到的等级卡
 	 */
 	private Integer checkCardCanUpgrade(Integer userId) throws MemberCardNullException {
+		
 		String uGrade = userCardDao.getUserCardGrade(userId);
+		if(StringUtils.isBlank(uGrade)) {
+			uGrade = CardConstant.LOWEST_GRADE;
+		}
 		Integer cardId = null;
 		if (!StringUtils.isBlank(uGrade)) {
 			List<MemberCardRecord> gradeCard = getAvailGradeCard();
@@ -484,6 +488,7 @@ public class UserCardService extends ShopBaseService {
 				}
 			}
 		}
+		logger().info("检测可升级到的等级卡"+cardId);
 		return cardId;
 	}
 
