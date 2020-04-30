@@ -400,7 +400,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
             userId(userId).
             orderSn(orderSn).
             //下单金额
-            amount(money.negate()).
+            amount(money).
             remarkCode(RemarkTemplate.ORDER_REBATE.code).
             remarkData(userInfo.getUsername()).
             payment("fanli").
