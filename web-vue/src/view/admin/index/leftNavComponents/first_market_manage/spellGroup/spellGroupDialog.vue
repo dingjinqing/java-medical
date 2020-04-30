@@ -165,7 +165,7 @@ export default {
           })
           return false
         }
-        if (!this.secKillProduct[i].grouperPrice) {
+        if (!this.secKillProduct[i].grouperPrice && (this.isShowGrouperPrice === true)) {
           this.$message.error({
             message: '请输入团长价格'
           })
