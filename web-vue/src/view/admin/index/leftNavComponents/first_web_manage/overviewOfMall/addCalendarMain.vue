@@ -133,7 +133,7 @@
                         href="javascript:;"
                       ><i class="iconfont iconchakanxiangqing"></i></a>
                       <a
-                        @click="handleToAllHiddenIcon(3)"
+                        @click="handleToAllHiddenIcon(3,index,item)"
                         href="javascript:;"
                       ><i class="iconfont iconxiugai"></i></a>
                       <a
@@ -624,6 +624,11 @@ export default {
                   calActId: itemP.calActId
                 }
               }
+              if (itemP.id) {
+                obj.isRecommend = false
+              } else {
+                obj.isRecommend = true
+              }
               arr.push(obj)
             }
           })
@@ -724,6 +729,7 @@ export default {
     handleToChoiseDetilSure () {
       console.log('触发')
       // this.chioseDetailVal
+      console.log(this.chioseDetailVal)
       let { id, actName, actStatus, startTime, endTime, isPermanent, activityType } = this.chioseDetailVal
       let obj = {
         id: id,
@@ -734,9 +740,13 @@ export default {
         isPermanent: isPermanent,
         activityType: activityType
       }
+      if (this.ruleFormBottom.haveChoiseData[this.clickChoiseIndex].choiseActData.calActId) {
+        obj.calActId = this.ruleFormBottom.haveChoiseData[this.clickChoiseIndex].choiseActData.calActId
+      }
       this.ruleFormBottom.haveChoiseData[this.clickChoiseIndex].isRecommend = false
       this.ruleFormBottom.haveChoiseData[this.clickChoiseIndex].choiseActData = obj
       this.detailActVisible = false
+      console.log(this.ruleFormBottom.haveChoiseData)
     },
     // 具体活动表格选中
     handleCurrentChange (val) {
@@ -776,6 +786,7 @@ export default {
                 }
               } else {
                 act = 'edit'
+                console.log(this.ruleFormBottom.haveChoiseData)
                 this.ruleFormBottom.haveChoiseData.forEach((item, index) => {
                   let obj = {
                     activityType: item.activityType,
@@ -841,6 +852,9 @@ export default {
           })
           break
         case 3:
+          console.log(item)
+          this.handleToInitActData(item)
+          this.clickChoiseIndex = index
           this.isClickIconChoiseAct = true
           this.detailActVisible = true
           this.$refs.singleTable.setCurrentRow()
