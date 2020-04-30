@@ -673,7 +673,8 @@ export default {
     stopCardStatus (id) {
       let data = {
         id,
-        'flag': 2
+        'flag': 2,
+        cardType: this.currentCardType
       }
       changeCardStatueRequest(data).then(res => {
         if (res.error === 0) {

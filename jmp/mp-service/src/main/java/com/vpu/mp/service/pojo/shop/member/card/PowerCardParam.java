@@ -14,4 +14,9 @@ public class PowerCardParam {
 	
 	/** 是否使用 1:使用中，2:停止使用 */
 	private Byte flag;
+	
+	/**
+	 * 	会员卡类型
+	 */
+	private Byte cardType=(byte)0;
 }
