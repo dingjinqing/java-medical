@@ -138,7 +138,7 @@ global.wxPage({
     var that = this;
     var form_id = e.detail.formId;
     var open_id = util.getCache("openid");
-    util.api('/api/card/getcard', function (res) {
+    util.api('/api/card/getCard', function (res) {
       if (res.content >= 0) {
         is_grade = 0;
         user_center[0].get_grade = 0
@@ -156,7 +156,7 @@ global.wxPage({
       } else {
         util.toast_fail('领取失败');
       }
-    }, { card_info: '', type: 1, form_id: form_id, open_id: open_id });
+    }, { cardInfo: { cardId: null }, getType: 2, form_id: form_id, open_id: open_id});
   },
   lookRule: function (e) {
     var sign_rule = e.currentTarget.dataset.rule;
