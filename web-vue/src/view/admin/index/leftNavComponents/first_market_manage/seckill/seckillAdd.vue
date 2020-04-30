@@ -269,10 +269,16 @@
             :false-label="0"
             :disabled="this.isEdite"
           >给参与活动用户打标签</el-checkbox>
-          <span
-            class="el-icon-question"
-            style="color: #666;"
-          ></span>
+          <el-tooltip
+            content="成功下单并完成支付的算作参与活动用户"
+            placement="top"
+            effect="light"
+          >
+            <span
+              class="el-icon-question"
+              style="color: #666;cursor: pointer;"
+            ></span>
+          </el-tooltip>
           <span
             class="labelStyle"
             @click="selectLabel"

@@ -522,32 +522,28 @@
                   </div>
                 </el-form-item>
 
-                <el-form-item label="优惠叠加：">
+                <el-form-item :label="$t('ordinaryCoupon.couponOverlay') + '：'">
                   <el-checkbox
                     v-model="param.couponOverlay"
                     :true-label="1"
                     :false-label="0"
-                  >不与限时降价、首单特惠、会员价活动共用</el-checkbox>
+                  >{{ $t('ordinaryCoupon.couponOverlayTip') }}</el-checkbox>
                 </el-form-item>
                 <el-form-item
-                  label="同步打标签："
+                  :label="$t('ordinaryCoupon.couponTag') + '：'"
                   v-if="param.type===0"
                 >
                   <el-checkbox
                     v-model="param.couponTag"
                     :true-label="1"
                     :false-label="0"
-                  >给领券用户打标签</el-checkbox>
-                  <span
-                    class="el-icon-question"
-                    style="color: #666;"
-                  ></span>
+                  >{{ $t('ordinaryCoupon.couponTagTip1') }}</el-checkbox>
                   <span
                     class="labelStyle"
                     @click="selectLabel"
-                  >选择标签</span>
+                  >{{ $t('ordinaryCoupon.couponTagTip2') }}</span>
                   <div v-if="pickLabel.length > 0">
-                    <p style="color: #999;">最多可设置3个标签</p>
+                    <p style="color: #999;">{{ $t('ordinaryCoupon.couponTagTip3') }}</p>
                     <div
                       v-for="(item, index) in pickLabel"
                       :key="index"
