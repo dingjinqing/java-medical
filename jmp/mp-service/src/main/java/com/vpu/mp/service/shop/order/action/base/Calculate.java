@@ -222,9 +222,6 @@ public class Calculate extends ShopBaseService {
                     defaultMarketing.getCard().setBos(new ArrayList<>());
                 }
                 defaultMarketing.getCard().getBos().add(bo);
-                //标记该商品参与会员卡打折且该卡不可使用优惠券
-                bo.setNoUseCoupon(OrderConstant.YES);
-
             }
             if (OrderConstant.D_T_FULL_REDUCE.equals(discountType) && bo.getPurchasePriceId() != null && bo.getPurchasePriceId() > 0) {
                 continue;
@@ -367,6 +364,12 @@ public class Calculate extends ShopBaseService {
             //不使用会员卡
             List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), null);
             vo.setMemberCards(validCardList);
+        }
+        if(vo.getDefaultMemberCard() != null && CollectionUtils.isNotEmpty(vo.getDefaultMemberCard().getBos())) {
+            //标记该商品参与会员卡打折且该卡不可使用优惠券
+            if(vo.getDefaultMemberCard().getInfo().getMarketActivities().contains(CardMarketActivity.COUPON)) {
+                vo.getDefaultMemberCard().getBos().forEach(x->x.setNoUseCoupon(OrderConstant.YES));
+            }
         }
         logger().info("获取可用会员卡列表end,列表：{}，此次选择：{}", vo.getMemberCards(), vo.getDefaultMemberCard());
 
