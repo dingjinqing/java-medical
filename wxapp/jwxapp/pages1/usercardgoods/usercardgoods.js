@@ -21,9 +21,10 @@ global.wxPage({
     this.setData({
       page_name: '兑换商品'
     })
-    let { cardNo } = options
+    let { cardNo, cardId } = options
     this.setData({
-      cardNo
+      cardNo,
+      cardId
     })
     this.requestGoodsList() // 请求兑换商品列表的数据
     this.requestCartGoodsList() // 请求已选择的兑换商品数据
@@ -109,11 +110,15 @@ global.wxPage({
     })
   },
   showSpecDialog (e) { // 调起规格弹窗
-    console.log(e.currentTarget.dataset.goodsid)
+    console.log(e.currentTarget.dataset.goodsnumber)
+    if (!e.currentTarget.dataset.goodsnumber) {
+      util.toast_success(`${e.currentTarget.dataset.goodsName} 库存为0`)
+      return
+    }
     util.api("/api/wxapp/goods/detail", res => {
       if (res.error === 0) {
         let productsInfo = {
-          activity: res.content.activity,
+          activity: null,
           defaultPrd: res.content.defaultPrd,
           goodsId: res.content.goodsId,
           goodsImgs: res.content.goodsImgs,
@@ -217,27 +222,27 @@ global.wxPage({
   },
   to_goods: function (e) {
     console.log('to_goods')
-    // let goods_id = e.currentTarget.dataset.goods_id;
-    // util.api('/api/wxapp/card/exchange/judge', function (res) {
-    //   if (res.error == 0) {
-    //     util.navigateTo({
-    //       url: `/pages/item/item?gid=${goods_id}&aid=1&atp=${card_no}`,
-    //     })
-    //   } else {
-    //     util.showModal('提示', res.message, function () {
-    //       util.jumpLink('/pages/item/item?good_id=' + goods_id, 'navigateTo')
-    //     }, true, '取消', '原价购买')
-    //   }
-    // }, { cardNo: cardNo, goodsId: goodsId, isList: 2 })
-    // if (card_info.exchang_surplus == 0) {
-    //   util.showModal('提示', '此卡无剩余可兑换次数', function () {
-    //     util.jumpLink('/pages/item/item?good_id=' + goods_id, 'navigateTo')
-    //   }, true, '取消', '原价购买')
-    // } else {
-    //   util.navigateTo({
-    //     url: `/pages/item/item?gid=${goods_id}&aid=1&atp=${card_no}`,
-    //   })
-    // }
+    let goods_id = e.currentTarget.dataset.goods_id;
+    util.api('/api/wxapp/card/exchange/judge', function (res) {
+      if (res.error == 0) {
+        util.navigateTo({
+          url: `/pages/item/item?gid=${goods_id}&cardNo=${this.data.cardNo}&cardId=${this.data.cardId}&isChange=1`,
+        })
+      } else {
+        util.showModal('提示', res.message, function () {
+          util.jumpLink('/pages/item/item?gid=' + goods_id, 'navigateTo')
+        }, true, '取消', '原价购买')
+      }
+    }, { cardNo: cardNo, goodsId: goodsId, isList: 2 })
+    if (this.data.exchangSurplus == 0) {
+      util.showModal('提示', '此卡无剩余可兑换次数', function () {
+        util.jumpLink('/pages/item/item?gid=' + goods_id, 'navigateTo')
+      }, true, '取消', '原价购买')
+    } else {
+      util.navigateTo({
+        url: `/pages/item/item?gid=${goods_id}&cardNo=${this.data.cardNo}&cardId=${this.data.cardId}&isChange=1`,
+      })
+    }
   },
   /**
    * 页面上拉触底事件的处理函数
