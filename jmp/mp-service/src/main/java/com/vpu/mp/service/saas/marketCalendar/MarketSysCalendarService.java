@@ -156,7 +156,7 @@ public class MarketSysCalendarService extends MainBaseService {
 	 */
 	public void toPush(Integer calendarId) {
 		MarketCalendarRecord record = getInfoById(calendarId);
-		if (record != null&&record.getPubFlag().equals(CalendarAction.ZERO)) {
+		if (record != null&&record.getPubFlag().equals(CalendarAction.ONE)) {
 			//创建个队列任务去同步
 			MarketMqParam param=new MarketMqParam();
 			Result<MarketCalendarActivityRecord> result = calendarActivityService.getInfoByCalendarId(record.getId());
@@ -166,9 +166,9 @@ public class MarketSysCalendarService extends MainBaseService {
 			param.setVo(into);
 			logger().info("准备发队列");
 			saas.taskJobMainService.dispatchImmediately(param,MarketMqParam.class.getName(),0,TaskJobEnum.SYS_CALENDAR_MQ.getExecutionType());
-			record.setPubFlag(CalendarAction.ONE);
-			int update = record.update();
-			logger().info("更新状态为已同步：{}",update);
+//			record.setPubFlag(CalendarAction.ONE);
+//			int update = record.update();
+//			logger().info("更新状态为已同步：{}",update);
 		}
 	}
 	
