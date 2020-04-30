@@ -506,14 +506,17 @@ global.wxPage({
   // 提交审核申请
   bind_submit: function (e) {
     var user_info = {};
+    var config = []
     var that = this;
     // 会员昵称
     if (this.data.if_username == 1) {
       user_info.username = user_nick_name
+      config.push('username')
     }
     // 手机号
     if (this.data.if_mobile == 1) {
       user_info.mobile = mobile;
+      config.push('mobile')
     }
     //真实名字
     if (this.data.if_realname == 1) {
@@ -525,6 +528,7 @@ global.wxPage({
         util.showModal("提示", "请输入真实姓名");
         return false;
       }
+      config.push('real_name')
     }
     // 身份证
     if (this.data.if_cid == 1) {
@@ -541,14 +545,17 @@ global.wxPage({
         return false;
       }
       user_info.cid = id_num;
+      config.push('cid')
     }
     // 所在行业
     if (this.data.if_work == 1) {
       user_info.industry_info = work_select;
+      config.push('industry_info')
     }
     // 分销员分组
     if (this.data.if_rebate_group == 1) {
       user_info.rebate_group = this.data.rebate_groups[this.data.group_select].id
+      config.push('rebate_group')
     }
     //所在地
     if (this.data.if_citydoce == 1) {
@@ -556,6 +563,7 @@ global.wxPage({
       user_info.city_code = regionCode[1];
       user_info.district_code = regionCode[2];
       user_info.address = "";
+      config.push('address')
     }
     //性别
     if (this.data.if_sex == 1) {
@@ -564,6 +572,7 @@ global.wxPage({
       } else if (sex_index == 2) {
         user_info.sex = 'f';
       }
+      config.push('sex')
     }
     //生日
     if (this.data.if_birthdayyear == 1 && dates != undefined) {
@@ -571,22 +580,29 @@ global.wxPage({
       user_info.birthday_year = date_arr[0];
       user_info.birthday_month = date_arr[1];
       user_info.birthday_day = date_arr[2];
+      config.push('birthday_year')
+      config.push('birthday_month')
+      config.push('birthday_day')
     }
     // 婚姻状况
     if (this.data.if_mar == 1) {
       user_info.marital_status = marry_index;
+      config.push('marital_status')
     }
     // 教育程度
     if (this.data.if_edu == 1) {
       user_info.education = edu_select;
+      config.push('education')
     }
     // 备注
     if (this.data.if_remark == 1) {
       user_info.remarks = remarks;
+      config.push('remarks')
     }
     // 上传图片
     if (this.data.if_upImage == 1) {
       user_info.upload_image = that.data.comm_img[0];
+      config.push('upload_image')
     }
     // 邀请码
     if (this.data.if_invitation == 1) {
@@ -691,7 +707,7 @@ global.wxPage({
           }
         }, {
           activationFields: user_info,
-          configFields: "[]"
+          configFields: JSON.stringify(config)
         })
 
       } else {
