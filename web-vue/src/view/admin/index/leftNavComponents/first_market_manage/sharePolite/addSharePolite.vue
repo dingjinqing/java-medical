@@ -94,6 +94,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     :default-time="['00:00:00', '23:59:59']"
                     size="small"
+                    align="center"
                   >
                   </el-date-picker>
                 </el-form-item>
@@ -445,6 +446,7 @@
       :singleElection="true"
       :tuneUpCoupon="tuneUpCoupon"
       @handleToCheck="handleToCheck"
+      :couponBack="couponIdList"
       ref="templateRefresh"
     />
   </div>
@@ -592,6 +594,7 @@ export default {
       },
       goodIdList: [],
       isOnlyShowChooseGoods: false,
+      couponIdList: [], // 优惠券
       // 表单字段校验
       fieldValidation: {
         // 活动名称
@@ -652,11 +655,10 @@ export default {
           stock.push(item.surplus)
         }
       })
-      console.log(stock, 'stock')
       this.param.shareRules[this.index].coupon_name = name.toString()
       this.param.shareRules[this.index].coupon = arr.toString()
       this.param.shareRules[this.index].couponStock = stock.toString()
-      console.log('conpon', arr.toString())
+      this.$forceUpdate()
     },
     // 选择商品弹窗
     showChoosingGoods () {
@@ -678,7 +680,6 @@ export default {
     },
     addItem () {
       let obj = {
-        // coupon: ''
         invite_num: '', // 邀请数量
         reward_type: 1, // 奖励类型
         score: '', // 积分
@@ -781,36 +782,37 @@ export default {
         this.flag = 1
       }
       if (this.param.id != null) {
-        // // this.$route.params.id
-        // console.log(JSON.parse(JSON.stringify('route:' + this.$route.params.id)))
-        // console.log(JSON.parse(JSON.stringify('param:' + this.param.id)))
         getShareRewardInfo(this.param.id).then((res) => {
-          console.log(JSON.parse(JSON.stringify(res)))
           console.log(res)
           if (res.error === 0) {
-            this.param = res.content
-            this.param.shareRules = res.content.shareRules
-            console.log(this.param.shareRules)
-            // 获取优惠券库存
-            this.param.shareRules.map((item, index) => {
-              console.log(item)
-              if (item.reward_type === 2) {
-                coupondetail(item.coupon).then((res) => {
-                  console.log(res)
-                  item.coupon_name = res.content[0].actName
-                  item.couponStock = res.content[0].surplus
-                  console.log(item.couponName)
-                  console.log(item.couponStock)
-                }).catch(() => {
-                  this.$message.error('优惠券库存查询失败！')
-                })
+            this.$nextTick(() => {
+              let data = res.content.shareRules
+              // 获取优惠券库存
+              data.map((item, index) => {
+                console.log(item)
+                if (item.reward_type === 2) {
+                  coupondetail(item.coupon).then((res) => {
+                    console.log(res)
+                    item.coupon_name = res.content[0].actName
+                    if (res.content[0].surplus === 0) {
+                      item.couponStock = '不限制'
+                    } else {
+                      item.couponStock = res.content[0].surplus
+                    }
+                    this.couponIdList = res.content.map(item => item.id)
+                  }).catch(() => {
+                    this.$message.error('优惠券库存查询失败！')
+                  })
+                }
+              })
+              this.param.shareRules = Object.assign(res.content.shareRules, data)
+
+              this.param = res.content
+              this.param.effectiveDate = [this.param.startTime, this.param.endTime]
+              if (res.content.condition === 2) {
+                this.selectGoods = res.content.goodsIds.split(',').length
               }
             })
-
-            this.param.effectiveDate = [this.param.startTime, this.param.endTime]
-            if (res.content.condition === 2) {
-              this.selectGoods = res.content.goodsIds.split(',').length
-            }
           }
         }).catch(() => {
           this.$message.error('活动查询失败！')
