@@ -75,6 +75,7 @@ import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.member.card.base.CardMarketActivity;
+import com.vpu.mp.service.pojo.shop.member.card.base.UserCardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -873,5 +874,19 @@ public class UserCardDaoService extends ShopBaseService{
 			.leftJoin(USER).on(USER.USER_ID.eq(USER_CARD.USER_ID))
 			.where(USER_CARD.CARD_ID.eq(cardId));
 		return query;
+	}
+	
+	
+	/**
+	 * 	设置所有用户的等级卡为废除状态
+	 */
+	public int setAllUserGradeCardDelete(Integer cardId) {
+		logger().info("设置所有用户的等级卡为废除状态");
+		int num = db().update(USER_CARD)
+			.set(USER_CARD.FLAG,UserCardConstant.FLAG_DEL)
+			.where(USER_CARD.CARD_ID.eq(cardId))
+			.and(USER_CARD.FLAG.notEqual(UserCardConstant.FLAG_DEL))
+			.execute();
+		return num;
 	}
 }

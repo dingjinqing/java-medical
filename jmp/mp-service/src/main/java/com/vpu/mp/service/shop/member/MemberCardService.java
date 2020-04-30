@@ -453,18 +453,20 @@ public class MemberCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 设置会员卡启动或禁止状态
+	 * 	设置会员卡启动或禁止状态
 	 *
 	 * @param param
 	 */
 	public void powerCard(PowerCardParam param) {
-		/**
-		 * UPDATE b2c_member_card set flag = 51 where id=825;
-		 */
-		/** SQL语句执行 */
+		logger().info("设置会员卡启动或禁止状态");
 		int result = db().update(MEMBER_CARD).set(MEMBER_CARD.FLAG, param.getFlag())
 				.where(MEMBER_CARD.ID.eq(param.getId())).execute();
 		logger().info("设置会员卡状态成功，受影响行： " + result);
+		
+		//	停止使用
+		if(CardUtil.isStopUsing(param.getFlag())) {
+			userCardService.deleteAllUserGradeCard(param.getId());
+		}
 	}
 
 	/**
@@ -473,10 +475,6 @@ public class MemberCardService extends ShopBaseService {
 	 * @param
 	 */
 	public void deleteCard(@Valid CardIdParam param) {
-		/**
-		 * update `b2c_member_card` set `is_delete` = '1' where `id` = '819'
-		 */
-		/** 假删除会员卡 */
 		int result = db().update(MEMBER_CARD).set(MEMBER_CARD.DEL_FLAG, MCARD_DF_YES)
 				.where(MEMBER_CARD.ID.eq(param.getId())).execute();
 		logger().info("删除会员卡成功，受影响行： " + result);
@@ -490,35 +488,6 @@ public class MemberCardService extends ShopBaseService {
 		MemberCardRecord card = cardDao.getCardById(cardId);
 		return card;
 	}
-	
-	
-	
-
-	
-
-	
-
-
-
-	
-
-
-	
-
-
-
-
-
-
-	
-
-
-	
-
-
-
-
-
 
 	/**
 	 * 获取已经发放的卡的数量
