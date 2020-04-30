@@ -57,17 +57,26 @@
           <div class="filters_item">
             <span>{{$t('order.applyTime')}}：</span>
             <el-date-picker
-              v-model="applyTime"
-              type="daterange"
-              :range-separator="$t('membershipIntroduction.to')"
-              :start-placeholder="$t('membershipIntroduction.Starttime')"
-              :end-placeholder="$t('membershipIntroduction.Endtime')"
+              v-model="applyTime.startTime"
+              type="datetime"
+              :placeholder="$t('membershipIntroduction.Starttime')"
               value-format="yyyy-MM-dd HH:mm:ss"
-              :default-time="['00:00:00','23:59:59']"
+              class="default_input"
+              @change="datePickerChange(true,applyTime)"
               size="small"
-              :picker-options="pickerOptions"
-            >
-            </el-date-picker>
+            />
+             至
+            <el-date-picker
+              v-model="applyTime.endTime"
+              type="datetime"
+              :placeholder="$t('membershipIntroduction.Endtime')"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              class="default_input"
+              @change="datePickerChange(false,applyTime)"
+              :picker-options="applyEndTime"
+              default-time="23:59:59"
+              size="small"
+            />
           </div>
           <div class="filters_item">
             <el-button
@@ -275,7 +284,10 @@ export default {
   },
   data () {
     return {
-      applyTime: null,
+      applyTime: {
+        startTime: null,
+        endTime: null
+      },
       paymentTypeMap: {},
       goodsTypeMap: {},
       pageParams: {
@@ -332,7 +344,12 @@ export default {
         { value: '3', label: '已完成' }
       ],
       refundOrderList: [],
-      orderBriefData: {}
+      orderBriefData: {},
+      applyEndTime: {
+        disabledDate: time => {
+          return time.getTime() < new Date(this.applyTime.startTime).getTime()
+        }
+      }
     }
   },
   mounted () {
@@ -348,10 +365,6 @@ export default {
     lang () {
       this.langDefault()
       this.arrayToMap()
-    },
-    applyTime (val) {
-      this.searchParams.returnStart = val ? val[0] : null
-      this.searchParams.returnEnd = val ? val[1] : null
     },
     tabIndex (val) {
       if (val === -1) {
@@ -381,6 +394,8 @@ export default {
       this.refundOrderList = null
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
+      this.searchParams.returnStart = this.applyTime.startTime
+      this.searchParams.returnEnd = this.applyTime.endTime
       list(this.searchParams).then(res => {
         console.log(res)
         this.pageParams = res.content.list.page
@@ -488,6 +503,20 @@ export default {
           orderSn: orderSn
         }
       })
+    },
+    /* 验证输入的时间范围是否合法 */
+    datePickerChange (isStart, target) {
+      if (target.startTime === null || target.endTime === null) {
+        return
+      }
+      if (new Date(target.startTime).getTime() <= new Date(target.endTime).getTime()) {
+        return
+      }
+      if (isStart) {
+        target.startTime = null
+      } else {
+        target.endTime = null
+      }
     }
   }
 }

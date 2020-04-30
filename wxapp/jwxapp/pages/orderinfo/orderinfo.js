@@ -147,7 +147,7 @@ global.wxPage({
   },
   // 订单下按钮事件集合
   handleOperate (e) {
-    orderEvent.handleBtnEvent(e);
+    orderEvent.handleBtnEvent(e,'orderInfo',this);
   },
   // 拼团详情
   goGroupBuyingDetail (e) {

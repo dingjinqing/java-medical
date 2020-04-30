@@ -25,10 +25,10 @@
 	<view class="footer" slot="footer">
 		<view class="selected-price">
 			<view>
-				优惠<text style="color:{{comColor}};">￥{{totalMoney.discountMoney || 0.00}}</text>
+				优惠<text style="color:{{comColor}};">￥{{cartData.totalMoney.discountMoney || 0.00}}</text>
 			</view>
 			<view>
-				应付<text style="color:{{comColor}};">￥{{totalMoney.totalSelectMoney || 0.00}}</text>
+				应付<text style="color:{{comColor}};">￥{{cartData.totalMoney.totalSelectMoney || 0.00}}</text>
 			</view>
 		</view>
 		<view class="selected" style="background-color:{{commonColor}}" bindtap="showSelected">已选{{cartData.totalSelectNumber}}件</view>

@@ -53,14 +53,17 @@ var order = {
   //发货
   confirmation({
     order_sn: orderSn,
-    order_id: orderId
+    order_id: orderId,
+    page = null,
+    self = null
   }) {
     util.api(
       "/api/wxapp/order/operation",
       res => {
         if (res.error == 0) {
           util.toast_success("收货成功");
-          this.requestList()
+          if(page === 'orderList') self.requestList()
+          if(page === 'orderInfo') self.requestOrderInfo()
         } else {
           util.showModal("提示", res.message);
         }
@@ -211,7 +214,7 @@ var order = {
     return result;
   },
   // 订单下按钮事件
-  handleBtnEvent(e) {
+  handleBtnEvent(e,page,self) {
     console.log(e)
     let optionList = {
       orderInfo: (() => {
@@ -256,7 +259,7 @@ var order = {
     if (operate_info.indexOf("-") != -1) {
       operate_info = operate_info.substring(0, operate_info.indexOf("-"));
     }
-    optionList[operate_info]().call(this, e.currentTarget.dataset)
+    optionList[operate_info]().call(this, {...e.currentTarget.dataset,page,self})
   },
   getOrderStatus(orderData) {
     let typeArray = orderData.orderType;
