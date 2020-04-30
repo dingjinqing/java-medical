@@ -463,16 +463,14 @@ public class MemberCardService extends ShopBaseService {
 				.where(MEMBER_CARD.ID.eq(param.getId())).execute();
 		logger().info("设置会员卡状态成功，受影响行： " + result);
 		
-		//	停止使用
-		if(CardUtil.isStopUsing(param.getFlag())) {
+		//	等级卡停止使用
+		if(CardUtil.isGradeCard(param.getCardType()) && CardUtil.isStopUsing(param.getFlag())) {
 			userCardService.deleteAllUserGradeCard(param.getId());
 		}
 	}
 
 	/**
-	 * 删除会员卡
-	 *
-	 * @param
+	 * 	删除会员卡
 	 */
 	public void deleteCard(@Valid CardIdParam param) {
 		int result = db().update(MEMBER_CARD).set(MEMBER_CARD.DEL_FLAG, MCARD_DF_YES)
