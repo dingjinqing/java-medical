@@ -81,7 +81,8 @@ public class QuestionService extends MainBaseService {
      */
     public PageResult<FeedbackVo> getPageByParam(FeedBackParam feedBackParam){
         SelectWhereStep<?> selectWhereStep = db().select().from(SHOP_QUESTION_FEEDBACK);
-        selectWhereStep.where(buildParam(feedBackParam));
+        selectWhereStep.where(buildParam(feedBackParam)).orderBy(SHOP_QUESTION_FEEDBACK.CREATE_TIME.desc());
+
         PageResult<FeedbackBo> pageResult =
             getPageResult(selectWhereStep,feedBackParam.getCurrentPage(),feedBackParam.getPageRows(), FeedbackBo.class);
 

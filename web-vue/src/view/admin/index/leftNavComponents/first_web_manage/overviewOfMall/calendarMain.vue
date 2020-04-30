@@ -271,6 +271,9 @@ export default {
             } else {
               item.targetbox = true
             }
+            item.data.forEach((itemC, indexC) => {
+              itemC.eventTime = itemC.eventTime.split('-')[1] + '-' + itemC.eventTime.split('-')[2]
+            })
           })
           console.log(res.content.data)
           this.calenderData = res.content.data

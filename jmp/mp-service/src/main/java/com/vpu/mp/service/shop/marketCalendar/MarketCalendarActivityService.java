@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.marketCalendar;
 import static com.vpu.mp.db.shop.tables.MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -55,16 +56,17 @@ public class MarketCalendarActivityService extends ShopBaseService {
 				Integer sysCalActId = activityRecord.getSysCalActId();
 				if (sysCalActId > 0) {
 					logger().info("为推荐活动calendar_activity的id:{}", sysCalActId);
-					activityRecord.setActivityId(calendarAct.getActivityId());
+					Integer activityId = calendarAct.getActivityId();
+					activityRecord.setActivityId(activityId);
 					Byte isSync = activityRecord.getIsSync();
-					if (isSync == 0) {
+					if (isSync == 0 && activityId > 0) {
 						// 没同步到system
 						logger().info("没有同步到system");
 						com.vpu.mp.db.main.tables.records.MarketCalendarActivityRecord sysCalActInfo = saas.shop.calendarService.calendarActivityService
 								.getInfoById(sysCalActId);
 						if (sysCalActInfo != null) {
 							String shopIds = sysCalActInfo.getShopIds();
-							if (!StringUtils.isEmpty(shopIds)) {
+							if (!Objects.equals(shopIds, "")) {
 								shopIds = "," + getShopId();
 							} else {
 								shopIds = String.valueOf(getShopId());
