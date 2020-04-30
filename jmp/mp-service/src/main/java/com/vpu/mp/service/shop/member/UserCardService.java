@@ -469,7 +469,7 @@ public class UserCardService extends ShopBaseService {
 		
 		String uGrade = userCardDao.getUserCardGrade(userId);
 		if(StringUtils.isBlank(uGrade)) {
-			uGrade = CardConstant.LOWEST_GRADE;
+			uGrade = "v0";
 		}
 		Integer cardId = null;
 		if (!StringUtils.isBlank(uGrade)) {
