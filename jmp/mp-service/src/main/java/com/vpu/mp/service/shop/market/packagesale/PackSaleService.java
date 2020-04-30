@@ -441,6 +441,8 @@ public class PackSaleService extends ShopBaseService {
         vo.setGoods(goods);
 
         vo.setTotalMoney(packageGoodsCartService.getUserPackageMoney(userId,packageSaleRecord,allNumber));
+        vo.setDelMarket(shopCommonConfigService.getDelMarket());
+        vo.setShowCart(shopCommonConfigService.getShowCart());
 
 	    return vo;
     }
@@ -533,7 +535,7 @@ public class PackSaleService extends ShopBaseService {
         vo.setGoodsList(goodsList);
         vo.setTotalSelectNumber(packageGoodsCartService.getUserGroupGoodsNumber(userId,param.getPackageId()));
         vo.setTotalSelectMoney(packageGoodsCartService.getUserPackageMoney(userId,packageSaleRecord));
-
+        vo.setTotalMoney(packageGoodsCartService.getUserPackageMoney(userId, packageSaleRecord, groups.stream().mapToInt(PackSaleParam.GoodsGroup::getGoodsNumber).sum()));
         return vo;
     }
 
