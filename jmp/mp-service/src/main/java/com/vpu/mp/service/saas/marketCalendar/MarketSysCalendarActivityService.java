@@ -4,6 +4,7 @@ import static com.vpu.mp.db.main.tables.MarketCalendarActivity.MARKET_CALENDAR_A
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +46,7 @@ public class MarketSysCalendarActivityService extends MainBaseService {
 	public void editCalendarAct(MarketCalendarParam param, Integer calendarId) {
 		List<SysCalendarAct> calendarActList = param.getCalendarAct();
 		for (SysCalendarAct sysCalendarAct : calendarActList) {
-			Integer id = sysCalendarAct.getActivityId();
+			Integer id = sysCalendarAct.getId();
 			if (id != null && id != 0) {
 				MarketCalendarActivityRecord record = db().selectFrom(MARKET_CALENDAR_ACTIVITY).where(
 						MARKET_CALENDAR_ACTIVITY.ID.eq(id).and(MARKET_CALENDAR_ACTIVITY.CALENDAR_ID.eq(calendarId)))
@@ -86,8 +87,12 @@ public class MarketSysCalendarActivityService extends MainBaseService {
 				.fetchInto(SysCalendarActVo.class);
 		for (SysCalendarActVo item : list) {
 			String shopIds = item.getShopIds();
-			String[] split = shopIds.split(",");
-			item.setShopNum(split.length);
+			if(StringUtils.isEmpty(shopIds)) {
+				item.setShopNum(0);
+			}else {
+				String[] split = shopIds.split(",");
+				item.setShopNum(split.length);				
+			}
 		}
 		return list;
 	}

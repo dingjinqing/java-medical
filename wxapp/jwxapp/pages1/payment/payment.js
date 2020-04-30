@@ -26,6 +26,7 @@ global.wxPage({
       useInfo: JSON.parse(useInfo),
       buttonName: this.getButtonData(+goodsType),
       goodsType: +goodsType,
+      hasUseInfo: this.getUseInfo(JSON.parse(useInfo)),
       cardNo
     })
     this.selectComponent('#recommend').requestData()
@@ -63,6 +64,10 @@ global.wxPage({
     }, {
       orderSn: this.data.orderSn
     })
+  },
+  getUseInfo(useInfo) {
+    if(Object.values(useInfo).some(item=>item > 0)) return true
+    return false
   },
   getAwardInfo({
     currentAwardTimes: currentStep,

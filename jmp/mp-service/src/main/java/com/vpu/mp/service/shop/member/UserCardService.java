@@ -316,7 +316,6 @@ public class UserCardService extends ShopBaseService {
 			};
 			List<Integer> arrayList = Collections.<Integer>singletonList(userId);
 			MaSubscribeData data = MaSubscribeData.builder().data307(maData).build();
-			
 			RabbitMessageParam param2 = RabbitMessageParam.builder()
 					.maTemplateData(
 							MaTemplateData.builder().config(SubcribeTemplateCategory.USER_GRADE).data(data).build())
@@ -419,6 +418,7 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	private Integer checkAndUpgradeUserCard(Integer userId) throws MpException {
+		logger().info("检测并升级卡");
 		Integer cardId = null;
 		// 获取用户累积获得积分和累积消费总额
 		Integer userTotalScore = scoreService.getAccumulationScore(userId);
@@ -439,9 +439,12 @@ public class UserCardService extends ShopBaseService {
 			}
 			uGrade = userCardDao.getUserCardGrade(userId);
 		}
-
-
-
+		logger().info("此时的会员卡等级："+uGrade);
+		MemberCardRecord userGradeCard = userCardDao.getUserGradeCard(userId);
+		cardId = userGradeCard.getId();
+		
+		boolean flag = false;
+		MemberCardRecord oldGradeCard = null,newGradeCard = null;
 		for (MemberCardRecord gCard : gCardList) {
 			if (!StringUtils.isBlank(gCard.getGradeCondition())) {
 				// 升级条件
@@ -450,14 +453,19 @@ public class UserCardService extends ShopBaseService {
 				if (isCardGradeGtUserGrade(uGrade, gCard)) {
 					if (isSatisfyUpgradeCondition(userTotalScore, amount, gradeCondition)) {
 						cardId = gCard.getId();
-						MemberCardRecord oldGradeCard = getUserGradeCard(userId);
-						String operation = "admin option";
-						changeUserGradeCard(userId, oldGradeCard, gCard, operation);
+						oldGradeCard = getUserGradeCard(userId);
+						newGradeCard = gCard;
+						flag = true;
 					} else {
 						break;
 					}
 				}
 			}
+		}
+		//	升级
+		if(flag) {
+			String operation = "领取等级卡";
+			changeUserGradeCard(userId, oldGradeCard, newGradeCard, operation);
 		}
 		return cardId;
 	}
@@ -466,7 +474,14 @@ public class UserCardService extends ShopBaseService {
 	 * 	检测可升级到的等级卡
 	 */
 	private Integer checkCardCanUpgrade(Integer userId) throws MemberCardNullException {
-		String uGrade = userCardDao.getUserCardGrade(userId);
+		String userCardGrade = userCardDao.getUserCardGrade(userId);
+		final String uGrade;
+		if(StringUtils.isBlank(userCardGrade)) {
+			uGrade = CardConstant.LOWEST_GRADE;
+		}else {
+			uGrade = userCardGrade;
+		}
+		
 		Integer cardId = null;
 		if (!StringUtils.isBlank(uGrade)) {
 			List<MemberCardRecord> gradeCard = getAvailGradeCard();
@@ -484,6 +499,7 @@ public class UserCardService extends ShopBaseService {
 				}
 			}
 		}
+		logger().info("检测可升级到的等级卡"+cardId);
 		return cardId;
 	}
 
@@ -1740,9 +1756,7 @@ public class UserCardService extends ShopBaseService {
 	 * @throws MpException
 	 */
 	public CardReceiveVo getCard(UserIdAndCardIdParam param) throws MpException {
-		if(param.getCardId()==null) {
-			return null;
-		}
+		logger().info("领取会员卡");
 		CardReceiveVo vo = new CardReceiveVo();
 		//	第一次领取
 		boolean firstGet = true;
@@ -1803,11 +1817,12 @@ public class UserCardService extends ShopBaseService {
 				vo.setIsMostGrade(true);
 			}
 			String cardNo = getCardNoByUserAndCardId(param.getUserId(), cardId);
+			logger().info("领取的会员卡卡号为： " + cardNo);
 			if (StringUtils.isBlank(cardNo)) {
-				logger().info("领取失败");
+				logger().info("没有查询到卡号");
 				throw new CardReceiveFailException();
 			}
-			logger().info("领取的会员卡卡号为： " + cardNo);
+			
 			MemberCardRecord newCard = memberCardService.getCardById(cardId);
 
 			GradeCardData data = new GradeCardData();

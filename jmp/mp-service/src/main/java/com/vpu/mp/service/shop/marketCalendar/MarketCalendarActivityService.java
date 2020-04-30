@@ -70,6 +70,7 @@ public class MarketCalendarActivityService extends ShopBaseService {
 								shopIds = String.valueOf(getShopId());
 							}
 							sysCalActInfo.setShopUseNum(sysCalActInfo.getShopUseNum() + 1);
+							sysCalActInfo.setShopIds(shopIds);
 							int update = sysCalActInfo.update();
 							logger().info("更新主库calendar_activity的活动id：{}；结果：{}", sysCalActId, update);
 							if (update > 0) {

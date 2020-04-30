@@ -583,7 +583,7 @@
         </table>
       </div>
     </div>
-    <div class="order-list-table">
+    <div class="order-list-table" v-if="rebateList">
       <div class="title">返利详情</div>
       <div class="table_box">
         <table width="100%">
@@ -959,6 +959,7 @@ export default {
     },
     rebateList () {
       let target = ''
+      if (!this.order.rebateList || this.order.rebateList.length === 0) return
       return this.order.rebateList.map(item => {
         if (target !== item.rebateUserId) {
           target = item.rebateUserId

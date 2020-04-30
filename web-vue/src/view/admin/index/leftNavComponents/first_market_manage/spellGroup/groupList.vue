@@ -26,7 +26,7 @@
 
     </div>
     <addGroupBuy
-      :editData="editData"
+      :editId="editId"
       :isEdite="isEdite"
       @addGroupBuySubmit="addGroupBuySubmit"
       v-if="tableListView===false"
@@ -232,7 +232,6 @@ import shareDialog from '@/components/admin/shareDialog'
 import {
   changeStatusActivity,
   deleteGroupBuyActivity,
-  getGroupBuyDetail,
   groupBuyList,
   shareActivity
 } from '@/api/admin/marketManage/spellGroup.js'
@@ -257,6 +256,7 @@ export default {
       tabInfo: this.$t('groupBuy.tabInfo'),
       activityTypeText: [],
       editData: {},
+      editId: '', // 编辑的活动id
       isEdite: true,
       loading: false,
       showShareDialog: false, // 分享弹窗
@@ -406,20 +406,9 @@ export default {
     },
     // 编辑
     editActivity (id) {
-      console.log('编辑', id)
-      let obj = {
-        id: id
-      }
       this.isEdite = true
-      getGroupBuyDetail(obj).then(res => {
-        if (res.error === 0) {
-          console.log('拼团详情', res)
-          this.editData = res.content
-          this.showTabAddGroup(this.$t('groupBuy.editActivity'))
-        } else {
-          this.$message.error(res.message)
-        }
-      })
+      this.editId = id
+      this.showTabAddGroup(this.$t('groupBuy.editActivity'))
     },
     showTabAddGroup (title) {
       if (this.tabSwitch === '6' || this.tabInfo.length > 5) {
