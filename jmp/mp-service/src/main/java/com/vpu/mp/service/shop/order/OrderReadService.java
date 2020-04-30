@@ -65,6 +65,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipFailModel;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListVo;
+import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
@@ -985,8 +986,36 @@ public class OrderReadService extends ShopBaseService {
                                 BigDecimalUtil.BIGDECIMAL_ZERO);
                     }
                 }
-                //分销员真实姓名展示优先级：提现申请填写信息>成为分销员申请表填写信息>用户信息
             }
+            List<Integer> rebateUserIds = rebateVos.stream().map(OrderRebateVo::getRebateUserId).distinct().collect(Collectors.toList());
+            //分销员真实姓名展示优先级：提现申请填写信息>成为分销员申请表填写信息>用户信息
+            HashMap<Integer, String> name = new HashMap<>(rebateUserIds.size());
+            for (Integer userId: rebateUserIds ) {
+                //提现申请填写信息
+                String realName = saas().getShopApp(getShopId()).withdraw.getUserRealName(userId);
+                if(!StringUtils.isBlank(realName)) {
+                    name.put(userId, realName);
+                    break;
+                }
+                if(!StringUtils.isBlank(realName)) {
+                    //成为分销员申请表填写信息
+                    realName = saas().getShopApp(getShopId()).mpDistribution.getDistributorRealName(userId);
+                    if(!StringUtils.isBlank(realName)) {
+                        name.put(userId, realName);
+                        break;
+                    }
+                }
+                if(!StringUtils.isBlank(realName)) {
+                    //用户信息
+                    UserInfo userInfo = user.getUserInfo(userId);
+                    if(userInfo != null && !StringUtils.isBlank(userInfo.getRealName())) {
+                        name.put(userId, userInfo.getRealName());
+                        break;
+                    }
+                }
+            }
+            //set realname
+            rebateVos.forEach(x->x.setRealName(name.get(x.getRebateUserId())));
             //排序
             rebateVos.sort(Comparator.comparing(OrderRebateVo::getRebateUserId));
             return rebateVos;

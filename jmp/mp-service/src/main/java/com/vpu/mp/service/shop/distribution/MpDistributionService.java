@@ -1,7 +1,5 @@
 package com.vpu.mp.service.shop.distribution;
 
-import com.vpu.mp.db.shop.tables.DistributorLevel;
-import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.DistributorApplyRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
@@ -12,17 +10,30 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
-import com.vpu.mp.service.pojo.shop.distribution.*;
+import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorInvitedListParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorInvitedListVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelParam;
+import com.vpu.mp.service.pojo.shop.distribution.RebateCenterVo;
+import com.vpu.mp.service.pojo.shop.distribution.UserTotalFanliVo;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
 import com.vpu.mp.service.pojo.shop.member.data.EducationVo;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.data.MarriageData;
-import com.vpu.mp.service.pojo.wxapp.distribution.*;
+import com.vpu.mp.service.pojo.wxapp.distribution.ActivationInfoVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
+import com.vpu.mp.service.pojo.wxapp.distribution.RebateOrderParam;
+import com.vpu.mp.service.pojo.wxapp.distribution.RebateOrderVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.UserBaseInfoVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.UserBindParam;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
-import org.joda.time.DateTime;
-import org.jooq.*;
+import org.jooq.Record;
+import org.jooq.Record2;
+import org.jooq.SelectOnConditionStep;
+import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +43,14 @@ import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_APPLY;
+import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
+import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
+import static com.vpu.mp.db.shop.Tables.ORDER_GOODS_REBATE;
+import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
+import static com.vpu.mp.db.shop.Tables.USER_FANLI_STATISTICS;
 import static org.jooq.impl.DSL.sum;
 
 /**
@@ -520,5 +538,23 @@ public class MpDistributionService extends ShopBaseService{
              return 0; //邀请保护失效
          else
              return 1;  //邀请保护有效
+     }
+
+    /**
+     *
+     * @param userId
+     * @return
+     */
+     public String getDistributorRealName(Integer userId) {
+         DistributorApplyParam record = db().selectFrom(DISTRIBUTOR_APPLY)
+             .where(DISTRIBUTOR_APPLY.USER_ID.eq(userId)
+                 .and(DISTRIBUTOR_APPLY.CONFIG_FIELDS.like(likeValue("real_name")))
+                 .and(DISTRIBUTOR_APPLY.STATUS.eq((byte) 1)))
+             .orderBy(DISTRIBUTOR_APPLY.CREATE_TIME.desc())
+             .fetchAnyInto(DistributorApplyParam.class);
+         if (record != null && record.getActivationFields() != null && !StringUtils.isBlank(record.getActivationFields().getRealName())) {
+             return record.getActivationFields().getRealName();
+         }
+         return null;
      }
 }
