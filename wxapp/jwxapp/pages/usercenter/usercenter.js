@@ -139,7 +139,7 @@ global.wxPage({
     var form_id = e.detail.formId;
     var open_id = util.getCache("openid");
     util.api('/api/card/getCard', function (res) {
-      if (res.content >= 0) {
+      if (res.error === 0) {
         is_grade = 0;
         user_center[0].get_grade = 0
         that.setData({
@@ -148,8 +148,8 @@ global.wxPage({
         })
         util.toast_success('领取成功', function () {
           setTimeout(function () {
-            util.jumpLink(`/pages/usercardinfo/usercardinfo?card_no=${res.content}`, 'navigateTo')
-          }, 2000);
+            util.jumpLink(`/pages/cardinfo/cardinfo?cardNo=${res.content.cardNo}`)
+          }, 1000);
         });
       } else if (res.content == -1) {
         util.toast_fail('此卡已存在');
