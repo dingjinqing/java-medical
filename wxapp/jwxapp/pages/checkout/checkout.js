@@ -327,7 +327,7 @@ global.wxPage({
       return
     }
     let couponList = coupons.map(item => {
-      let newItem = JSON.parse(JSON.stringify(item))
+      let newItem = JSON.parse(JSON.stringify({...item,...item.info}))
       if (newItem.type === 0) {
         if (newItem.useConsumeRestrict === 1) {
           newItem.text = `${this.$t('components.decorate.full')}${
@@ -355,7 +355,7 @@ global.wxPage({
     })
     let couponArray = [{ couponSn: null, text: '不使用优惠券' }, ...couponList]
     let defaultCouponIndex =
-      (defaultCoupon && couponArray.findIndex(item => item.couponSn === defaultCoupon.couponSn)) ||
+      (defaultCoupon && couponArray.findIndex(item => item.couponSn === defaultCoupon.info.couponSn)) ||
       0
     this.setData({
       couponArray,
@@ -597,11 +597,10 @@ global.wxPage({
   },
   // 提交订单
   confirmOrder() {
-    console.log(11111)
+    if(!this.canSubmit()) return
     util.throttle(this.confirm,5000)()
   },
   confirm(){
-    if(!this.canSubmit()) return
     util.getNeedTemplateId('add_order',()=>{
       let { orderGoods: goods, orderAmount, paymentList, activityType, activityId } =
         this.data.orderInfo || {}
@@ -612,7 +611,7 @@ global.wxPage({
       } = this.data.usePayInfo
       let addressId = (this.data.orderInfo.address && this.data.orderInfo.address.addressId) || null
       let couponSn =
-        (this.data.orderInfo.defaultCoupon && this.data.orderInfo.defaultCoupon.couponSn) || null
+        (this.data.orderInfo.defaultCoupon && this.data.orderInfo.defaultCoupon.info.couponSn) || null
       let memberCardNo =
         (this.data.orderInfo.defaultMemberCard && this.data.orderInfo.defaultMemberCard.cardNo) ||
         null

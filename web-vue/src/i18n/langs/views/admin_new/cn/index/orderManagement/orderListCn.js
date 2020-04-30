@@ -293,6 +293,7 @@ export const cn = {
   orderExportConfirmTip_2: '条数据,是否确认导出？',
   filterCondition: '筛选条件：',
   orderExportLimitTip: '导出条数（一次最多导出5000条数据）',
+  orderExportLimitTip2: '一次最多导出5000条数据',
   recordTypeObj: {
     0: '商家',
     1: '买家',

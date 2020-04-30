@@ -182,6 +182,7 @@ export const en = {
     'data according to the following conditions, confirm the export?',
   filterCondition: 'Filter Condition：',
   orderExportLimitTip: 'Export number(export up to 5000 data at a time)',
+  orderExportLimitTip2: 'export up to 5000 data at a time',
   orderStatusList: [
     [null, 'all orders'],
     [0, 'Pending payment'],

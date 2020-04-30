@@ -93,7 +93,7 @@
         placeholder=""
         size="small"
         :min="exportRowStart"
-        :max="searchParam.exportRowEnd"
+        :max="totalRows"
         :precision="0"
         style="width: 150px;"
         controls-position="right"
@@ -177,6 +177,10 @@ export default {
       this.$emit('update:show', false)
     },
     confirm () {
+      if ((this.exportRowEnd - this.exportRowStart) > 5000) {
+        this.$message.warning(this.$t('order.orderExportLimitTip2'))
+        return false
+      }
       this.loading = true
       this.searchParam.exportRowStart = this.exportRowStart
       this.searchParam.exportRowEnd = this.exportRowEnd

@@ -260,6 +260,13 @@ export default {
         display: table-cell;
         vertical-align: middle;
       }
+      > td:last-of-type {
+        padding: 10px;
+        /deep/ .el-checkbox{
+          width: 160px;
+          margin-right:0;
+        }
+      }
       > td {
         border: 1px solid #ddd;
       }
