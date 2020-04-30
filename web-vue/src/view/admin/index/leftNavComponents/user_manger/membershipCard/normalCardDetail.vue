@@ -39,7 +39,8 @@
           <!-- 包邮 -->
           <cardFreeshipCfg
             v-bind.sync="freeship"
-            ref="freeship">
+            ref="freeship"
+          >
           </cardFreeshipCfg>
           <!-- 自定义权益 -->
           <cardCustomRights v-bind.sync="customRights">
@@ -274,8 +275,8 @@ export default {
       },
       // 包邮信息
       freeship: {
-        num: null,
-        type: null,
+        num: 0,
+        type: -1,
         valid: false
       },
       cardRenew: {
@@ -471,7 +472,7 @@ export default {
                   pwdName: item.name,
                   pwdId: item.batchId,
                   action: item.action,
-                  disabled: true }
+                  disabled: true                }
               )
             }
           })
