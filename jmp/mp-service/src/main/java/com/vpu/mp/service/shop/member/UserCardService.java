@@ -435,14 +435,14 @@ public class UserCardService extends ShopBaseService {
 			// 升级条件
 			GradeConditionJson gradeCondition = getGradeCondition(userTotalScore, amount, gCard);
 			if (isSatisfyUpgradeCondition(userTotalScore, amount, gradeCondition)) {
-				List<String> cardNoList = addUserCard(userId, gCard.getId());
-				for(String cano: cardNoList) {
-					logger().info(cano);
-				}
+				addUserCard(userId, gCard.getId());
 			}
 			uGrade = userCardDao.getUserCardGrade(userId);
 		}
 		logger().info("此时的会员卡等级："+uGrade);
+		MemberCardRecord userGradeCard = userCardDao.getUserGradeCard(userId);
+		cardId = userGradeCard.getId();
+		
 		boolean flag = false;
 		MemberCardRecord oldGradeCard = null,newGradeCard = null;
 		for (MemberCardRecord gCard : gCardList) {
