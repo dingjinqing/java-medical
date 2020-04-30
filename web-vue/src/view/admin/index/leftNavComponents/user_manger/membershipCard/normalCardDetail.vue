@@ -289,13 +289,7 @@ export default {
       // 自定义权益
       customRights: {
         customRightsFlag: 'off',
-        customRightsAll: [
-          {
-            crightName: 'hhh1',
-            crightImage: null,
-            crightContent: 'Good Night'
-          }
-        ]
+        customRightsAll: []
       }
     }
   },
@@ -472,8 +466,8 @@ export default {
                   pwdName: item.name,
                   pwdId: item.batchId,
                   action: item.action,
-                  disabled: true }
-
+                  disabled: true
+                }
               )
             }
           })
