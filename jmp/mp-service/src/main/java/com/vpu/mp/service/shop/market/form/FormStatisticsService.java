@@ -176,6 +176,7 @@ public class FormStatisticsService extends ShopBaseService {
      * @param param 表单信息
      */
     public void updateFormInfo(FormUpdateParam param) {
+        param.setState(param.getStatus());
         FormPageRecord fpRecord = new FormPageRecord();
         FieldsUtil.assignNotNull(param, fpRecord);
         if (db().fetchExists(fp, fp.PAGE_ID.eq(param.getPageId()))) {
