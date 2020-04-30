@@ -206,7 +206,7 @@ public class ReturnOrderService extends ShopBaseService{
 		if(defaultMoney == null) {
 			returnOrder.setMoney(param.getReturnMoney() == null ? BigDecimal.ZERO : param.getReturnMoney());
 		}else {
-			returnOrder.setMoney(defaultMoney == null ? BigDecimal.ZERO : defaultMoney);
+			returnOrder.setMoney(defaultMoney);
 		}
 		returnOrder.setOrderId(order.getOrderId());
 		returnOrder.setOrderSn(order.getOrderSn());

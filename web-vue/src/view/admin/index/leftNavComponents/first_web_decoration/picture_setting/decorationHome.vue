@@ -1338,18 +1338,6 @@ export default {
         })
         return
       }
-<<<<<<< HEAD
-      // 积分兑换模块数量限制
-      let integralNum = 0
-      saveMosulesData.forEach((item, index) => {
-        if (item.module_name === 'm_integral') {
-          integralNum++
-        }
-      })
-      if (integralNum > 6) {
-        this.$message.error({
-          message: '积分兑换模块最多上传6个',
-=======
       // 公众号数量控制
       let officialAccounts = 0
       saveMosulesData.forEach((item, index) => {
@@ -1360,15 +1348,11 @@ export default {
       if (officialAccounts > 1) {
         this.$message.error({
           message: '公众号模块最多上传1个',
->>>>>>> f49b2cf0ab... 修复表单bug
           showClose: true
         })
         return
       }
-<<<<<<< HEAD
-=======
 
->>>>>>> f49b2cf0ab... 修复表单bug
       if (flag === 0) {
         console.log(this.modulesData)
         this.saveTwoDialogVisible = true

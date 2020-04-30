@@ -303,6 +303,22 @@
               </div>
             </div>
             <div class="set_item">
+              <div class="item_title"><em>*</em> {{$t('addCouponPackage.showCartTip')}}：</div>
+              <div class="item_right">
+                <p>
+                  <el-radio
+                    v-model="param.showCart"
+                    :label='1'
+                  >{{$t('addCouponPackage.support')}}</el-radio>
+                  <el-radio
+                    v-model="param.showCart"
+                    :label='0'
+                  >{{$t('addCouponPackage.notSupport')}}</el-radio>
+                </p>
+              </div>
+
+            </div>
+            <div class="set_item">
               <div class="item_title"><em>*</em> {{$t('addCouponPackage.rule')}}：</div>
               <el-form-item
                 class="item_right"
@@ -444,6 +460,7 @@ export default {
         packName: '',
         limitGetTimes: '',
         totalAmount: '',
+        showCart: 1,
         actRule: '',
         accessMode: 0,
         effectiveDate: '',

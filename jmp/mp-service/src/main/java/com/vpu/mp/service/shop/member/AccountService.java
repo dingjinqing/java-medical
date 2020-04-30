@@ -9,20 +9,30 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RemarkUtil;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
+import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.member.account.*;
 import com.vpu.mp.service.pojo.shop.member.builder.UserAccountRecordBuilder;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
+import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.distribution.UserTotalFanliService;
 import com.vpu.mp.service.shop.member.dao.AccountDao;
 import com.vpu.mp.service.shop.member.dao.UserAccountDao;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
+import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
+
 import jodd.util.StringUtil;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.tools.StringUtils;
@@ -34,6 +44,7 @@ import org.springframework.util.Assert;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
@@ -90,6 +101,43 @@ public class AccountService extends ShopBaseService {
 			saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] {RecordContentTemplate.MEMBER_ACCOUNT.code}), String.valueOf(user.getUserId()),user.getUsername(),account);
 		});
 		
+		// 发送消息
+		String subscribueRemark = null;
+		if(RemarkTemplate.USER_INPUT_MSG.code.equals(param.getRemarkId())) {
+			subscribueRemark = param.getRemarkData();
+		}else {
+			String message = RemarkTemplate.getMessageByCode(param.getRemarkId());
+			subscribueRemark = Util.translateMessage(null, message,"","remark", param.getRemarkData());
+		}
+		
+		// 订阅消息
+		String[][] maData = new String[][] {
+			{String.valueOf(param.getAmount())},
+			{String.valueOf(newAccount)},
+			{Util.getdate("yyyy-MM-dd HH:mm:ss")},
+			{subscribueRemark}
+		};
+		
+		List<Integer> arrayList = Collections.<Integer>singletonList(param.getUserId());
+		MaSubscribeData data = MaSubscribeData.builder().data307(maData).build();
+		
+		// 公众号消息
+		String[][] mpData = new String[][] {
+			{"您好，您会有新的余额变动"},
+			{Util.getdate("yyyy-MM-dd HH:mm:ss")},
+			{String.valueOf(param.getAmount())},
+			{String.valueOf(newAccount)},
+			{subscribueRemark}
+		};
+		RabbitMessageParam param2 = RabbitMessageParam.builder()
+				.maTemplateData(
+						MaTemplateData.builder().config(SubcribeTemplateCategory.BALANCE_CHANGE).data(data).build())
+				.mpTemplateData(
+						MpTemplateData.builder().config(MpTemplateConfig.MONEY_CHANGE).data(mpData).build())
+				.page("pages/account/account").shopId(getShopId())
+				.userIdList(arrayList)
+				.type(MessageTemplateConfigConstant.MONEY_CHANGE).build();
+		saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());		
 	}
 
 	/**

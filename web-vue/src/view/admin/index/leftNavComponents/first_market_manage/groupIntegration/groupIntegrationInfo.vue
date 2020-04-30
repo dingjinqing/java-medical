@@ -31,7 +31,6 @@
             :disabled="edit"
              maxlength="10"
              type="text"
-             show-word-limit
           ></el-input>
           <el-popover
             placement="right-start"
@@ -400,7 +399,7 @@ export default {
         this.$message.warning(this.$t('groupIntegration.warningInfo2'))
         return false
       }
-      if (parseInt(this.activity.startTime) > parseInt(this.activity.endTime)) {
+      if (this.activity.startTime > this.activity.endTime) {
         this.$message.warning(this.$t('groupIntegration.warningInfo3'))
         return false
       }

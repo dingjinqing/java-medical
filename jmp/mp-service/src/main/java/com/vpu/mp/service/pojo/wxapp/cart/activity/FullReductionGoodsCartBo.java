@@ -26,6 +26,10 @@ public class FullReductionGoodsCartBo {
      */
     private Integer productId;
     /**
+     * 是否选中
+     */
+    private Byte isChecked;
+    /**
      * 购物车id
      */
     private Integer cartId;
@@ -37,6 +41,10 @@ public class FullReductionGoodsCartBo {
      * 钱
      */
     private BigDecimal money;
+    /**
+     * 折扣价
+     */
+    private BigDecimal reduceMoney;
 
     private CartActivityInfo.FullReductionRule fullReductionRule;
     private CartActivityInfo  fullReduction;

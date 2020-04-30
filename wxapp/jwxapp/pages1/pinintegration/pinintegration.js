@@ -207,7 +207,7 @@ global.wxPage({
     })
     return {
       title: "【" + usernames + "@你】与我一起瓜分积分！",
-      // imageUrl: that.data.imageUrl + '/image/admin/poster_image/pin_inte_bg1.png',
+      imageUrl: that.data.imageUrl + '/image/admin/poster_image/pin_inte_bg1.png',
       path: '/pages1/pinintegration/pinintegration?pid=' + that.data.pinInte_id + '&invite_user=' + util.getCache('user_id') + '&gid=' + that.data.group_id,
     }
   },

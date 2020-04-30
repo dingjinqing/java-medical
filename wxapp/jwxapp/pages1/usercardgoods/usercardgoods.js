@@ -1,13 +1,16 @@
 var util = require('../../utils/util.js')
 var scene;
 global.wxPage({
-
   /**
    * 页面的初始数据
    */
   data: {
+    cartData: [],
+    dataList: [],
     pageParams: null,
-    searchText: null
+    searchText: null,
+    totalNumber: 0,  //已选择兑换商品的数量
+    exchangSurplus: 0 // 剩余兑换总数量
   },
 
   /**
@@ -18,12 +21,12 @@ global.wxPage({
     this.setData({
       page_name: '兑换商品'
     })
-    let { ruleId } = options
+    let { cardNo } = options
     this.setData({
-      ruleId
+      cardNo
     })
     this.requestGoodsList() // 请求兑换商品列表的数据
-    // this.requestCartGoodsList() // 请求已选择的兑换商品数据
+    this.requestCartGoodsList() // 请求已选择的兑换商品数据
   },
 
 
@@ -31,43 +34,72 @@ global.wxPage({
     let currentPage = this.data.pageParams
       ? this.data.pageParams.currentPage
       : 1;
-    util.api('/api/wxapp/freeship/goods/list', res => {
+    util.api('/api/wxapp/card/change/goodslist', res => {
+      console.log(res)
       if (res.error === 0 && res.content !== null) {
         this.setData({
-          pageParams: res.content.pageResult.page,
-          ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.pageResult.dataList,
-          delMarket: res.content.delMarket,
-          showCart: {
-            ...res.content.showCart,
-            show_cart: 1
-          },
-          ruleInfo: res.content.freeShippingRule
+          pageParams: res.content.goodsPageResult.page,
+          ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.goodsPageResult.dataList,
+          totalNumber: res.content.totalNumber,
+          exchangSurplus: res.content.cardInfo.exchang_surplus
+          // delMarket: res.content.delMarket,
+          // showCart: {
+          //   ...res.content.showCart,
+          //   show_cart: 1
+          // },
+          // ruleInfo: res.content.freeShippingRule
         });
       }
     }, {
-      searchText: this.data.searchText,
-      ruleId: this.data.ruleId,
+      search: this.data.searchText,
+      cardNo: this.data.cardNo,
       currentPage: currentPage,
-      pageRows: 20,
-      scene: scene
+      pageRows: 20
     })
   },
   requestCartGoodsList () {
-    util.api('/api/wxapp/freeship/cart/goods/list', res => {
+    util.api('/api/wxapp/card/change/checkedlist', res => {
+      console.log(res)
       if (res.error === 0) {
+        res.content.goodsList.dataList.forEach((item, index) => {
+          item.goodsPrice = item.marketPrice
+          item.cartNumber = item.goodsNumber
+        })
+        console.log(res.content.goodsList.dataList)
         this.setData({
-          cartData: res.content
+          cartData: res.content.goodsList.dataList,
+          totalNumber: res.content.totalNumber
         })
       }
     }, {
-      ruleId: this.data.ruleId,
+      identityId: this.data.cardNo,
     })
+  },
+  deletCart (res) {
+    console.log(res)
+    util.api('/api/wxapp/card/change/remove', res => {
+      console.log(res)
+      if (res.error === 0) {
+        util.toast_success('删除成功')
+        this.requestCartGoodsList()
+      } else {
+        util.toast_fail('删除失败')
+      }
+    }, {
+      identityId: this.data.cardNo,
+      productId: res.detail.productId,
+      goodsId: res.detail.goodsId
+    })
+  },
+  cartNumChange (res) {
+    console.log(res)
+    this.addCart(res.detail)
   },
   getSearchText (data) { // 点击搜索
     this.setData({
       searchText: data.detail,
       'pageParams.currentPage': 1,
-      dataList: null
+      dataList: []
     })
     this.requestGoodsList()
   },
@@ -77,7 +109,7 @@ global.wxPage({
     })
   },
   showSpecDialog (e) { // 调起规格弹窗
-    console.log(e)
+    console.log(e.currentTarget.dataset.goodsid)
     util.api("/api/wxapp/goods/detail", res => {
       if (res.error === 0) {
         let productsInfo = {
@@ -96,9 +128,9 @@ global.wxPage({
         })
       }
     }, {
-      goodsId: e.detail.goodsId,
-      activityId: e.detail.activityId,
-      activityType: e.detail.activityType,
+      goodsId: e.currentTarget.dataset.goodsid,
+      activityId: null,
+      activityType: null,
       userId: util.getCache("user_id"),
       lon: null,
       lat: null
@@ -111,6 +143,7 @@ global.wxPage({
   },
   getProductData (e) { // 获取规格弹窗操作回传数据
     console.log(e)
+
     this.setData({
       product: e.detail,
       limitInfo: {
@@ -120,6 +153,7 @@ global.wxPage({
         prdNumber: e.detail.prdNumber
       }
     })
+
   },
   getGoodsNum (e) { // 获取选中的规格弹窗里商品数量
     this.setData({
@@ -127,27 +161,50 @@ global.wxPage({
     });
     console.log(this.data.productInfo)
   },
-  addCart () {
-    let { goodsNum: goodsNumber, prdId } = this.data.productInfo
+  addCart (res) {
+    console.log(res.id)
+    let paramsPrdNumber = ''
+    let paramsPrdId = ''
+    let paramsGoodsId = ''
+
+    if (res.id != undefined) {
+      console.log('plus')
+      if (res.type == "plus") {
+        res.cartNumber++
+      } else {
+        res.cartNumber--
+      }
+      let { cartNumber, productId, goodsId } = res
+      paramsPrdNumber = cartNumber
+      paramsPrdId = productId
+      paramsGoodsId = goodsId
+    } else {
+      let { goodsNum, prdId, goodsId } = this.data.productInfo
+      paramsPrdNumber = goodsNum
+      paramsPrdId = prdId
+      paramsGoodsId = goodsId
+    }
+    console.log(this.data.productInfo)
     console.log('已选择')
-    // util.api(
-    //   "/api/wxapp/cart/add",
-    //   res => {
-    //     if (res.error == 0) {
-    //       util.toast_success('添加成功')
-    //       this.requestCartGoodsList()
-    //     } else {
-    //       util.toast_fail('添加失败')
-    //     }
-    //     this.bindCloseSpec()
-    //   },
-    //   {
-    //     goodsNumber: goodsNumber,
-    //     prdId: prdId
-    //   }
-    // );
-    util.toast_success('添加成功')
-    this.bindCloseSpec()
+    util.api('/api/wxapp/card/change/add', res => {
+      console.log(res)
+      if (res.error === 0) {
+        if (res.id == undefined) {
+          util.toast_success('添加成功')
+        }
+        this.requestCartGoodsList()
+        this.bindCloseSpec()
+      } else {
+        if (res.id == undefined) {
+          util.toast_success('添加失败')
+        }
+      }
+    }, {
+      goodsId: paramsGoodsId,
+      productId: paramsPrdId,
+      prdNumber: paramsPrdNumber,
+      cardNo: this.data.cardNo,
+    })
   },
   cartChange () {
     console.log(123)
@@ -155,12 +212,38 @@ global.wxPage({
   },
   goCheckOut () {
     console.log('点击立即兑换跳转结算页面')
-    util.jumpLink('pages/checkout/checkout', 'navigateTo')
+    //  this.data.cartData   
+    // util.jumpLink('pages/checkout/checkout', 'navigateTo')
+  },
+  to_goods: function (e) {
+    console.log('to_goods')
+    // let goods_id = e.currentTarget.dataset.goods_id;
+    // util.api('/api/wxapp/card/exchange/judge', function (res) {
+    //   if (res.error == 0) {
+    //     util.navigateTo({
+    //       url: `/pages/item/item?gid=${goods_id}&aid=1&atp=${card_no}`,
+    //     })
+    //   } else {
+    //     util.showModal('提示', res.message, function () {
+    //       util.jumpLink('/pages/item/item?good_id=' + goods_id, 'navigateTo')
+    //     }, true, '取消', '原价购买')
+    //   }
+    // }, { cardNo: cardNo, goodsId: goodsId, isList: 2 })
+    // if (card_info.exchang_surplus == 0) {
+    //   util.showModal('提示', '此卡无剩余可兑换次数', function () {
+    //     util.jumpLink('/pages/item/item?good_id=' + goods_id, 'navigateTo')
+    //   }, true, '取消', '原价购买')
+    // } else {
+    //   util.navigateTo({
+    //     url: `/pages/item/item?gid=${goods_id}&aid=1&atp=${card_no}`,
+    //   })
+    // }
   },
   /**
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
+    console.log('触底')
     if (
       this.data.pageParams &&
       this.data.pageParams.currentPage === this.data.pageParams.lastPage

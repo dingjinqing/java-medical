@@ -354,7 +354,7 @@ public class WxCardDetailService extends ShopBaseService{
 	}
 	
 	/**
-	 * 处理可兑换的商品
+	 * 	处理可兑换的商品
 	 */
 	public List<GoodsSmallVo> getExchangGoodsDetail(WxAppUserCardVo userCard) {
 		List<GoodsSmallVo> res = Collections.<GoodsSmallVo>emptyList();

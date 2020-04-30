@@ -1,10 +1,6 @@
 package com.vpu.mp.controller.wxapp;
 
 
-import com.vpu.mp.service.foundation.util.RequestUtil;
-import com.vpu.mp.service.pojo.shop.member.account.*;
-import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingParam;
-import com.vpu.mp.service.pojo.shop.member.buy.CardToPayParam;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +12,19 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.RequestUtil;
+import com.vpu.mp.service.pojo.shop.member.account.CardReceiveVo;
+import com.vpu.mp.service.pojo.shop.member.account.CardRenewCheckoutParam;
+import com.vpu.mp.service.pojo.shop.member.account.CardRenewCheckoutVo;
+import com.vpu.mp.service.pojo.shop.member.account.CardRenewParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardGetParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardJudgeVo;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardMaParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
+import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
+import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingParam;
+import com.vpu.mp.service.pojo.shop.member.buy.CardToPayParam;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.exception.CardActivateException;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
@@ -25,7 +34,13 @@ import com.vpu.mp.service.pojo.shop.member.ucard.CardUseListParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.ReceiveCardParam;
 import com.vpu.mp.service.pojo.wxapp.card.CardUpgradeVo;
+import com.vpu.mp.service.pojo.wxapp.card.param.CardAddExchangeGoodsParam;
+import com.vpu.mp.service.pojo.wxapp.card.param.CardExchaneGoodsJudgeParam;
+import com.vpu.mp.service.pojo.wxapp.card.param.CardExchangeGoodsParam;
+import com.vpu.mp.service.pojo.wxapp.card.vo.CardCheckedGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.card.vo.CardExchangeGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
+import com.vpu.mp.service.pojo.wxapp.user.UserCheckedGoodsParam;
 
 /**
 * @author 黄壮壮
@@ -255,5 +270,67 @@ public class WxAppCardController extends WxAppBaseController {
 	}
 	
 	
+	/**
+	 * 	限次卡兑换商品列表
+	 */
+	@PostMapping("/api/wxapp/card/change/goodslist")
+	public JsonResult changeGoodsList(@RequestBody @Validated CardExchangeGoodsParam param) {
+		logger().info("兑换商品列表");
+		param.setUserId(wxAppAuth.user().getUserId());
+		CardExchangeGoodsVo vo = shop().user.wxUserCardService.exchangeSvc.changeGoodsList(param);
+		return success(vo);
+	}
+
+	/**
+	 * 限次卡是否兑换商品
+	 */
+	@PostMapping("/api/wxapp/card/exchange/judge")
+	public JsonResult changeGoodsList(@RequestBody @Validated CardExchaneGoodsJudgeParam param) {
+		logger().info("限次卡是否兑换商品判断");
+		param.setUserId(wxAppAuth.user().getUserId());
+		shop().user.wxUserCardService.exchangeSvc.judgeCardGoods(param);
+		return success();
+	}
 	
+	/**
+	 * 限次卡是否能够兑换单个商品校验
+	 */
+	@PostMapping("/api/card/exchange/tobuy/judge")
+	public JsonResult judgeCardExchangeTobuy(@RequestBody @Validated CardExchaneGoodsJudgeParam param) {
+		logger().info("限次卡是否兑换商品判断");
+		param.setUserId(wxAppAuth.user().getUserId());
+		shop().user.wxUserCardService.exchangeSvc.judgeCardGoods(param);
+		return success();
+	}
+	
+	/**
+	 * 兑换商品加购
+	 */
+	@PostMapping("/api/wxapp/card/change/add")
+	public JsonResult addExchangeGoods(@RequestBody CardAddExchangeGoodsParam param) {
+		logger().info("限次卡是否兑换商品判断");
+		param.setUserId(wxAppAuth.user().getUserId());
+		shop().user.wxUserCardService.exchangeSvc.addExchangeGoods(param);
+		return success();
+	}
+	
+	/**
+	 * 已选商品列表
+	 */
+	@PostMapping("/api/wxapp/card/change/checkedlist")
+	public JsonResult changeCheckedGoodsList(@RequestBody UserCheckedGoodsParam param) {
+		param.setUserId(wxAppAuth.user().getUserId());
+		CardCheckedGoodsVo vo = shop().user.wxUserCardService.exchangeSvc.changeCheckedGoodsList(param);
+		return success(vo);
+	}
+	
+	/**
+	 * 兑换商品删除
+	 */
+	@PostMapping("/api/wxapp/card/change/remove")
+	public JsonResult removeChoosedGoods(@RequestBody UserCheckedGoodsParam param) {
+		logger().info("兑换商品删除");
+		shop().user.wxUserCardService.exchangeSvc.removeChoosedGoods(param);
+		return success();
+	}
 }

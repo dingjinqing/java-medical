@@ -231,6 +231,7 @@
                     <el-link
                       type="primary"
                       :underline="false"
+                      @click="goRefundInfo(item.returnOrderSn)"
                     >{{$t('order.returnInfo')}}</el-link>
                   </td>
                   <td>

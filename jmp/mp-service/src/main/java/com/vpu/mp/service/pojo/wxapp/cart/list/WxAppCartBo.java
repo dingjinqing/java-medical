@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.wxapp.cart.list;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackCartVo;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 购物车业务类
@@ -45,6 +47,14 @@ public class WxAppCartBo {
      */
     List<WxAppCartGoods> cartGoodsList;
     /**
+     * 满折满减 k活动id
+     */
+    Map<Integer,List<WxAppCartGoods>> FullReductionGoodsMap;
+    /**
+     * 加价购 k活动id
+     */
+    Map<Integer,List<WxAppCartGoods>> PurchasePriceGoodsMap;
+    /**
      * 购物车 - 失效商品
      */
     private List<WxAppCartGoods> invalidCartList;
@@ -57,6 +67,10 @@ public class WxAppCartBo {
      * 提示信息
      */
     private String notice ;
+    /**
+     *
+     */
+    private CouponPackCartVo couponPackage;
 
     @JsonIgnore
     private Byte activityType;
