@@ -279,7 +279,7 @@ public class DistributorLevelService extends ShopBaseService{
 			DistributorSpendVo userSpend = this.getTotalSpend(upUser.getUserId());
 			for(DistributorLevelRecord level : autoLevels) {
 				//不用升级
-				if(upUser.getDistributorLevel() > level.getLevelId()){
+				if(upUser.getDistributorLevel() >= level.getLevelId()){
 					continue;
 				}
 				//累计邀请用户数

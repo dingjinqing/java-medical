@@ -11,6 +11,8 @@ public class TagSrcConstant {
     public final static Short COUPON = 2;
     /**		砍价	*/
     public final static Short BARGAIN = 3;
+    /** 拼团*/
+    public final static Short GROUPBUY =4;
     /**		秒杀	*/
     public final static Short SECKILL = 5;
     /** 	限时降价 */

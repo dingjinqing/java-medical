@@ -38,6 +38,16 @@ global.wxPage({
     util.api('/api/wxapp/card/change/goodslist', res => {
       console.log(res)
       if (res.error === 0 && res.content !== null) {
+        res.content.goodsPageResult.dataList.forEach((item, index) => {
+          if (item.marketPrice) {
+            if (item.shopPrice < item.marketPrice) {
+              item.showLinePrice = true
+            } else {
+              item.showLinePrice = false
+            }
+          }
+
+        })
         this.setData({
           pageParams: res.content.goodsPageResult.page,
           ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.goodsPageResult.dataList,
@@ -221,7 +231,7 @@ global.wxPage({
     // util.jumpLink('pages/checkout/checkout', 'navigateTo')
   },
   to_goods: function (e) {
-    console.log('to_goods')
+    console.log('to_goods', this.data)
     let goods_id = e.currentTarget.dataset.goods_id;
     util.api('/api/wxapp/card/exchange/judge', function (res) {
       if (res.error == 0) {
@@ -233,7 +243,7 @@ global.wxPage({
           util.jumpLink('/pages/item/item?gid=' + goods_id, 'navigateTo')
         }, true, '取消', '原价购买')
       }
-    }, { cardNo: cardNo, goodsId: goodsId, isList: 2 })
+    }, { cardNo: this.data.cardNo, goodsId: goods_id, isList: 2 })
     if (this.data.exchangSurplus == 0) {
       util.showModal('提示', '此卡无剩余可兑换次数', function () {
         util.jumpLink('/pages/item/item?gid=' + goods_id, 'navigateTo')

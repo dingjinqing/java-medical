@@ -1,19 +1,17 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.google.common.collect.Lists;
-import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
-import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
-import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
+import com.vpu.mp.service.pojo.shop.member.tag.TagSrcConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
@@ -27,8 +25,10 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
+import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record3;
@@ -63,6 +63,8 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
     private OrderGoodsService orderGoodsService;
     @Autowired
     private OrderInfoService orderInfoService;
+    @Autowired
+    private TagService tagService;
 
     /*****处理器优先级*****/
     @Override
@@ -228,6 +230,9 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
                 //拼团价-团长价
                 goods.setGrouperGoodsReduce(groupBuyProduct.getGroupPrice().subtract(groupBuyProduct.getGrouperPrice()));
             }
+        }
+        if(groupBuyRecord.getActivityTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(groupBuyRecord.getActivityTagId())){
+            tagService.userTagSvc.addActivityTag(param.getWxUserInfo().getUserId(), Util.stringToList(groupBuyRecord.getActivityTagId()), TagSrcConstant.GROUPBUY,groupBuyRecord.getId());
         }
     }
 

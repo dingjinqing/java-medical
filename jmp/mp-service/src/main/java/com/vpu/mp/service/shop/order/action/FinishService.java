@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.action;
 
+import com.beust.jcommander.internal.Lists;
 import com.vpu.mp.db.shop.tables.records.FanliGoodsStatisticsRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
@@ -52,7 +53,9 @@ import org.springframework.util.comparator.Comparators;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
@@ -182,7 +185,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
         //该订单返利总计
         BigDecimal total = BIGDECIMAL_ZERO;
         //
-        ArrayList<Integer> updateLevel = new ArrayList<>();
+        Collection<Integer> updateLevel = new HashSet<>();
         for (OrderGoodsRecord one: goods) {
             if(OrderConstant.YES == one.getIsGift()) {
                 //赠品不参与
@@ -219,6 +222,8 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
                 if(BigDecimalUtil.compareTo(entry.getValue(), BIGDECIMAL_ZERO) < 1) {
                     continue;
                 }
+                //重算等级
+                updateLevel.add(entry.getKey());
                 //判断当前分销等级
                 Byte level = entry.getKey().equals(order.getUserId()) ? DistributionConstant.REBATE_LEVEL_0 : entry.getKey().equals(order.getFanliUserId()) ? DistributionConstant.REBATE_LEVEL_1 : DistributionConstant.REBATE_LEVEL_2;
                 //更改分销员数据汇总表
@@ -240,8 +245,11 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
         updateUserLevel(updateLevel);
     }
 
-    private void updateUserLevel(ArrayList<Integer> updateLevel) {
-        mpDistributionGoods.distributorLevel.updateUserLevel(updateLevel, "自动升级");
+    private void updateUserLevel(Collection<Integer> updateLevel) {
+        if(CollectionUtils.isEmpty(updateLevel)) {
+            return;
+        }
+        mpDistributionGoods.distributorLevel.updateUserLevel(Lists.newArrayList(updateLevel), "自动升级");
     }
 
     /**
@@ -399,7 +407,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
         AccountData accountData = AccountData.newBuilder().
             userId(userId).
             orderSn(orderSn).
-            //下单金额
+            //返利金额
             amount(money).
             remarkCode(RemarkTemplate.ORDER_REBATE.code).
             remarkData(userInfo.getUsername()).

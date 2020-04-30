@@ -792,30 +792,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         calculate.calculateCoupon(param, vo);
         //处理当前优惠卷
         BigDecimal couponDiscount = calculate.calculateOrderGoodsDiscount(vo.getDefaultCoupon(), bos, OrderConstant.D_T_COUPON);
-        //包邮策略
-        if (vo.getDeliverType().equals(DELIVER_TYPE_COURIER) && (param.getActivityType() == null || BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(param.getActivityType()))){
-            List<Integer> goodsIds = fullPackage(vo.getAddress(), bos, tolalNumberAndPrice, param.getDate());
-            bos.forEach(bo->{
-                if (goodsIds.contains(bo.getGoodsId())){
-                    bo.setFreeShip((int) OrderConstant.YES);
-                }
-            });
-        }
-        //计算运费
-        if(vo.getAddress() != null){
-            //有可用地址的用户
-            vo.setShippingFee(calculate.calculateShippingFee(vo.getAddress().getDistrictCode(), bos, param.getStoreId()));
-            //判断是否可以发货
-            vo.setCanShipping(isShipping(bos));
-        }else{
-            vo.setShippingFee(BigDecimal.ZERO);
-            //判断是否可以发货
-            vo.setCanShipping(NO);
-        }
-        //活动免运费
-        activityFreeDelivery(vo, param.getIsFreeShippingAct());
-        //会员卡免运费
-        memberCardFreeDelivery(vo);
+        //运费计算、包邮处理逻辑
+        shippingFeeLogic(param, vo, bos, tolalNumberAndPrice);
         //折扣商品金额
         BigDecimal tolalDiscountAfterPrice = BigDecimalUtil.addOrSubtrac(
             BigDecimalUtil.BigDecimalPlus.create(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE], BigDecimalUtil.Operator.subtrac),
@@ -907,6 +885,40 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         // 积分使用规则
         setScorePayRule(vo);
         logger().info("金额处理赋值(processOrderBeforeVo),end");
+    }
+
+    /**
+     * 运费计算、包邮处理逻辑
+     * @param param
+     * @param vo
+     * @param bos
+     * @param tolalNumberAndPrice
+     */
+    private void shippingFeeLogic(OrderBeforeParam param, OrderBeforeVo vo, List<OrderGoodsBo> bos, BigDecimal[] tolalNumberAndPrice) {
+        //包邮策略
+        if (vo.getDeliverType().equals(DELIVER_TYPE_COURIER) && (param.getActivityType() == null || BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(param.getActivityType()))){
+            List<Integer> goodsIds = fullPackage(vo.getAddress(), bos, tolalNumberAndPrice, param.getDate());
+            bos.forEach(bo->{
+                if (goodsIds.contains(bo.getGoodsId())){
+                    bo.setFreeShip((int) OrderConstant.YES);
+                }
+            });
+        }
+        //计算运费
+        if(vo.getAddress() != null){
+            //有可用地址的用户
+            vo.setShippingFee(calculate.calculateShippingFee(vo.getAddress().getDistrictCode(), bos, param.getStoreId()));
+            //判断是否可以发货
+            vo.setCanShipping(isShipping(bos));
+        }else{
+            vo.setShippingFee(BigDecimal.ZERO);
+            //判断是否可以发货
+            vo.setCanShipping(NO);
+        }
+        //活动免运费
+        activityFreeDelivery(vo, param.getIsFreeShippingAct());
+        //会员卡免运费
+        memberCardFreeDelivery(vo);
     }
 
     /**

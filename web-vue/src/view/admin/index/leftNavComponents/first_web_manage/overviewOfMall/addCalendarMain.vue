@@ -730,6 +730,10 @@ export default {
       console.log('触发')
       // this.chioseDetailVal
       console.log(this.chioseDetailVal)
+      if (!this.chioseDetailVal) {
+        this.detailActVisible = false
+        return
+      }
       let { id, actName, actStatus, startTime, endTime, isPermanent, activityType } = this.chioseDetailVal
       let obj = {
         id: id,
@@ -884,15 +888,16 @@ export default {
     handleToClickReason (item) {
       console.log(item)
       if (item.recommendType === 1) {
-        window.location.href = item.recommendLink
+        window.open(item.recommendLink, '_blank')
       } else {
-        this.$router.push({
+        let routeData = this.$router.resolve({
           path: '/admin/home/shopMain',
           query: {
             id: Number(item.recommendLink),
             change_components: '8'
           }
         })
+        window.open(routeData.href, '_blank')
       }
       // recommendLink
       // this.$router.push({

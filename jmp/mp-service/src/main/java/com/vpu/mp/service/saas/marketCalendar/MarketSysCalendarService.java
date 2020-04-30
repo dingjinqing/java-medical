@@ -185,6 +185,7 @@ public class MarketSysCalendarService extends MainBaseService {
 	 * @param calendarId
 	 */
 	public void toEditNoPush(Integer calendarId) {
+		logger().info("toEditNoPush同步");
 		MarketCalendarRecord record = getInfoById(calendarId);
 		if (record != null&&record.getPubFlag().equals(CalendarAction.ONE)) {
 			push(record);
@@ -199,7 +200,11 @@ public class MarketSysCalendarService extends MainBaseService {
 	public boolean del(Integer id) {
 		int execute = db().update(MARKET_CALENDAR).set(MARKET_CALENDAR.DEL_FLAG, DelFlag.DISABLE_VALUE)
 				.where(MARKET_CALENDAR.ID.eq(id)).execute();
-		return execute > 0 ? true : false;
+		boolean flag=execute > 0 ? true : false;
+		if(flag) {
+			toEditNoPush(id);
+		}
+		return flag;
 	}
 	
 	/**
