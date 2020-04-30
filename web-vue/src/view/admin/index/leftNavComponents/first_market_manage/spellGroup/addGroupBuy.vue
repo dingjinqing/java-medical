@@ -909,6 +909,8 @@ export default {
         }
         if (this.form.isGrouperCheap === 1) {
           this.showGrouperPrice = true
+        } else {
+          this.showGrouperPrice = true
         }
         this.form.share = data.share
       }
@@ -1024,9 +1026,11 @@ export default {
       // 可编辑状态
       this.disabledFlag = false
     },
-    changeSwitchState () {
-      if (this.form.isGrouperCheap === 1) {
+    changeSwitchState (val) {
+      if (val === 1) {
         this.showGrouperPrice = true
+      } else {
+        this.showGrouperPrice = false
       }
     },
     getProductdata ({ goodsId, prdInfo }) {
