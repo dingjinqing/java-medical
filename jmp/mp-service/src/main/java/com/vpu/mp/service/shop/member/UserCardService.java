@@ -273,7 +273,6 @@ public class UserCardService extends ShopBaseService {
 			};
 			List<Integer> arrayList = Collections.<Integer>singletonList(userId);
 			MaSubscribeData data = MaSubscribeData.builder().data307(maData).build();
-			
 			RabbitMessageParam param2 = RabbitMessageParam.builder()
 					.maTemplateData(
 							MaTemplateData.builder().config(SubcribeTemplateCategory.USER_GRADE).data(data).build())
@@ -393,11 +392,14 @@ public class UserCardService extends ShopBaseService {
 			// 升级条件
 			GradeConditionJson gradeCondition = getGradeCondition(userTotalScore, amount, gCard);
 			if (isSatisfyUpgradeCondition(userTotalScore, amount, gradeCondition)) {
-				addUserCard(userId, gCard.getId());
+				List<String> cardNoList = addUserCard(userId, gCard.getId());
+				for(String cano: cardNoList) {
+					logger().info(cano);
+				}
 			}
 			uGrade = userCardDao.getUserCardGrade(userId);
 		}
-
+		logger().info("此时的会员卡等级："+uGrade);
 		boolean flag = false;
 		MemberCardRecord oldGradeCard = null,newGradeCard = null;
 		for (MemberCardRecord gCard : gCardList) {
