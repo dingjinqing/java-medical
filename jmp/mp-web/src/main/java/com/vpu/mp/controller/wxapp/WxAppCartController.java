@@ -40,14 +40,14 @@ public class WxAppCartController extends WxAppBaseController {
                 if (cartList.getPurchasePriceGoodsMap().containsKey(next.getActivityId())){
                     cartList.getPurchasePriceGoodsMap().get(next.getActivityId()).add(next);
                 }else {
-                    cartList.getPurchasePriceGoodsMap().put(next.getActivityId(), Collections.singletonList(next));
+                    cartList.getPurchasePriceGoodsMap().put(next.getActivityId(),  new ArrayList(Collections.singletonList(next)));
                 }
                 iterator.remove();
             }else if (BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION.equals(next.getActivityType())){
                 if (cartList.getFullReductionGoodsMap().containsKey(next.getActivityId())){
                     cartList.getFullReductionGoodsMap().get(next.getActivityId()).add(next);
                 }else {
-                    cartList.getFullReductionGoodsMap().put(next.getActivityId(), Collections.singletonList(next));
+                    cartList.getFullReductionGoodsMap().put(next.getActivityId(),  new ArrayList(Collections.singletonList(next)));
                 }
                 iterator.remove();
             }
