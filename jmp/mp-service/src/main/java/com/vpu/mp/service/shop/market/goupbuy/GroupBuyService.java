@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -38,6 +39,7 @@ import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -57,7 +59,6 @@ import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.*;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
 
 /**
  * @author 孔德成
@@ -91,6 +92,8 @@ public class GroupBuyService extends ShopBaseService {
     private ShopCommonConfigService shopCommonConfigService;
     @Autowired
     private QrCodeService qrCode;
+    @Autowired
+    private EsDataUpdateMqService esDataUpdateMqService;
 
 
     /**
@@ -116,6 +119,8 @@ public class GroupBuyService extends ShopBaseService {
                 productDefineRecord.insert();
             });
         });
+
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(groupBuy.getGoodsId()), getShopId(), DBOperating.UPDATE);
     }
 
     /**
@@ -166,10 +171,13 @@ public class GroupBuyService extends ShopBaseService {
      * @param id id
      */
     public int deleteGroupBuy(Integer id) {
-        return db().update(GROUP_BUY_DEFINE)
+        db().update(GROUP_BUY_DEFINE)
             .set(GROUP_BUY_DEFINE.DEL_FLAG, DelFlag.DISABLE.getCode())
             .where(GROUP_BUY_DEFINE.ID.eq(id))
             .execute();
+        GroupBuyDefineRecord record = getGroupBuyRecord(id);
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(record.getGoodsId()), getShopId(), DBOperating.UPDATE);
+        return 1;
     }
 
     /**
@@ -197,6 +205,9 @@ public class GroupBuyService extends ShopBaseService {
             });
         });
 
+        GroupBuyDefineRecord record = getGroupBuyRecord(param.getId());
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(record.getGoodsId()), getShopId(), DBOperating.UPDATE);
+
     }
 
     /**
@@ -222,19 +233,21 @@ public class GroupBuyService extends ShopBaseService {
      */
     public int changeStatusActivity(Integer id, Byte status) {
         if (ACTIVITY_STATUS_DISABLE.equals(status)) {
-            return db().update(GROUP_BUY_DEFINE)
+            db().update(GROUP_BUY_DEFINE)
                 .set(GROUP_BUY_DEFINE.STATUS, ACTIVITY_STATUS_DISABLE)
                 .where(GROUP_BUY_DEFINE.ID.eq(id))
                 .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_NORMAL))
                 .execute();
         } else if (ACTIVITY_STATUS_NORMAL.equals(status)) {
-            return db().update(GROUP_BUY_DEFINE)
+            db().update(GROUP_BUY_DEFINE)
                 .set(GROUP_BUY_DEFINE.STATUS, ACTIVITY_STATUS_NORMAL)
                 .where(GROUP_BUY_DEFINE.ID.eq(id))
                 .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_DISABLE))
                 .execute();
         }
-        return 0;
+        GroupBuyDefineRecord record = getGroupBuyRecord(id);
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(record.getGoodsId()), getShopId(), DBOperating.UPDATE);
+        return 1;
     }
 
 

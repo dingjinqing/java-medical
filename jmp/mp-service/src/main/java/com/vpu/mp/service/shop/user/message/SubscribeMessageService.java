@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.google.common.base.Objects;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.SubscribeMessageRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -194,6 +195,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		//拼装报文
 		WxMaSubscribeMessage postData = assembleData(data, config, page, templateId, user.getWxOpenid(),secondId);
 		if(postData==null) {
+			logger().info("拼装报文失败，为空");
 			return false;
 		}
 		//进行要发送数据的格式校验 
@@ -237,6 +239,10 @@ public class SubscribeMessageService extends ShopBaseService {
 			logger().info("未解析出小程序中塞入需要的值，类目id：{}",secondId);
 			return null;
 		}
+		if(!Objects.equal(config.getKidList().length, stringData.length)) {
+			logger().info("传送的字段长度不对，类目id：{},定义长度：{}，传送长度：{}", secondId, config.getKidList().length, stringData.length);
+			return null;
+		}
 		for (int i = 0, len = stringData.length; i < len; i++) {
 			String[] values = stringData[i];
 			wxDatalist.add(new WxMaSubscribeMessageData(names.get(i), values[0]));
@@ -266,7 +272,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			stringData=(String[][]) invoke;
 		} catch (Exception e) {
 			logger().info(e.getMessage(),e);
-			return stringData;
+			return null;
 		}
 		return stringData;
 	}

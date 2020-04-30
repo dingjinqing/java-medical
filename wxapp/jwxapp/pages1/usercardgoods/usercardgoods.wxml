@@ -16,7 +16,7 @@
 		 wx:if="{{dataList.length}}"
 		>
 			<view class='each_goods clearfix' wx:for='{{pageItem}}' wx:for-item="item" wx:for-index="itemIndex" wx:key='itemIndex'>
-				<view class='goods_lefts' bindtap='to_goods' data-goods_id="{{item.goodsId}}">
+				<view class='goods_lefts' bindtap='to_goods' data-goodsNumber="{{item.goodsNumber}}" data-goods_id="{{item.goodsId}}">
 					<image src='{{item.goodsImg}}' wx:if='{{item.goodsNumber}}'/>
 					<image class="sell_out" wx:if='{{!item.goodsNumber}}' src="{{imageUrl}}image/wxapp/goods_sell_out.png" />
 					<!--
@@ -41,7 +41,7 @@
 							</view>
 							<view class='original_price' wx:if='{{item.marketPrice!=null && item.marketPrice != "" && item.marketPrice != 0}}'>￥{{item.marketPrice}}</view>
 						</view>
-						<view class='btn_add_cart' data-goodsId='{{item.goodsId}}' bindtap="showSpecDialog">
+						<view class='btn_add_cart' data-goodsName="{{item.goodsName}}" data-goodsId='{{item.goodsId}}' data-goodsNumber="{{item.goodsNumber}}" bindtap="showSpecDialog">
 							<text class='iconfont icontianjia' style='color:{{comColor}};font-size:50rpx;'/>
 						</view>
 					</view>
