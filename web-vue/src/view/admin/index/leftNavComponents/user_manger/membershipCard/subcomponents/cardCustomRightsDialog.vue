@@ -5,9 +5,9 @@
             title="自定义权限"
             width="30%"
         >
-            <el-form :inline-message="true">
-                <el-form-item label="权益名称:" :rules="[{required: true}]">
-                    <el-input v-model="right.crightName" size="small" style="width: 165px;" ></el-input>
+            <el-form :inline-message="true" :model="$data" ref="ruleForm">
+                <el-form-item label="权益名称:" prop="right.crightName" :rules="myRule.crightName" >
+                    <el-input v-model="$data.right.crightName" size="small" style="width: 165px;" ></el-input>
                     <span class="tips">最多可填20个字</span>
                 </el-form-item>
                 <el-form-item label="权益图标:" :rules="[{required: true}]">
@@ -16,7 +16,7 @@
                     </span>
                     <span class="tips">建议尺寸：30*30像素</span>
                 </el-form-item>
-                <el-form-item label="权益说明:" :rules="[{required: true}]" class="right-content">
+                <el-form-item label="权益说明:" prop="right.crightContent" :rules="myRule.crightContent" class="right-content">
                     <div class="content">
                         <el-input
                             type="textarea"
@@ -24,7 +24,7 @@
                             maxlength="200"
                             show-word-limit
                             placeholder="请输入内容"
-                            v-model="right.crightContent"
+                            v-model="$data.right.crightContent"
                             style="width: 300px;">
                         </el-input>
                     </div>
@@ -102,7 +102,25 @@ export default {
       // 图片是否百分之百
       whFlag: false,
       // 是否是返回新对象
-      createNewFlag: false
+      createNewFlag: false,
+      myRule: {
+        crightName: [
+          {
+            required: true,
+            message: '不能为空'
+          },
+          {
+            pattern: /^.{1,20}$/,
+            message: '最多可填20个字'
+          }
+        ],
+        crightContent: [
+          {
+            required: true,
+            message: '不能为空'
+          }
+        ]
+      }
     }
   },
   methods: {
@@ -124,6 +142,13 @@ export default {
       this.whFlag = Boolean(res && res.imgUrl)
     },
     handleRights () {
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          this.generateNewData()
+        }
+      })
+    },
+    generateNewData () {
       if (this.createNewFlag) {
         // create
         this.$emit('createNewRight', {...this.right})

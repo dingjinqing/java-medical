@@ -1038,11 +1038,11 @@ export default {
       console.log(this.form.product)
       let target = this.form.product.find(item => { return item.goodsId === goodsId })
       let index = this.form.product.findIndex(item => { return item.goodsId === goodsId })
-      this.$set(this.form.product[index], 'groupBuyPrice', prdInfo[0].secKillPrice)
+      this.$set(this.form.product[index], 'groupPrice', prdInfo[0].groupPrice)
       console.log(this.form.product)
       this.$set(this.form.product[index], 'stock', prdInfo[0].stock)
       if (this.form.isGrouperCheap === 1) {
-        this.$set(this.form.product[index], 'commanderDiscounts', prdInfo[0].secKillPrice)
+        this.$set(this.form.product[index], 'grouperPrice', prdInfo[0].grouperPrice)
       }
       target.goodsSpecProducts = prdInfo
       this.changePriceInput(target, true)
