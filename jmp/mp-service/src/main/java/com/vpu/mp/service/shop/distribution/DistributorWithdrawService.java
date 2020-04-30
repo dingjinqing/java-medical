@@ -152,6 +152,7 @@ public class DistributorWithdrawService extends ShopBaseService{
      */
     public String getUserRealName(Integer userId) {
         return db().select(DISTRIBUTION_WITHDRAW.REAL_NAME)
+            .from(DISTRIBUTION_WITHDRAW)
             .where(DISTRIBUTION_WITHDRAW.USER_ID.eq(userId).and(DISTRIBUTION_WITHDRAW.STATUS.gt((byte)2)))
             .orderBy(DISTRIBUTION_WITHDRAW.CREATE_TIME.desc())
             .fetchAnyInto(String.class);
