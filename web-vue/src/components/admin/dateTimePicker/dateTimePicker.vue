@@ -25,20 +25,22 @@
       >
       </el-date-picker>
     </div>
-    <div v-show="showPicker === 3">
+    <div v-show="showPicker === 3" class="start-end">
       <!-- 开始时间 -->
       <el-date-picker
         :value="startTime"
         type="date"
+        style="width:130px"
         value-format="yyyy-MM-dd [00]:[00]:[00]"
         size="small"
         :placeholder="$t(`dateTimePicker.startTime`)"
         @change="getEndTime">
       </el-date-picker>
-      <span>{{$t(`dateTimePicker.to`)}}</span>
+      <span class="to">{{$t(`dateTimePicker.to`)}}</span>
       <el-date-picker
         :value="endTime"
         type="date"
+        style="width:130px"
         value-format="yyyy-MM-dd [23]:[59]:[59]"
         size="small"
         :placeholder="$t(`dateTimePicker.endTime`)"
@@ -106,3 +108,13 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.start-end{
+  .to{
+    margin: 0 5px;
+  }
+  /deep/ .el-input__inner{
+   width: 130px !important;
+  }
+}
+</style>
