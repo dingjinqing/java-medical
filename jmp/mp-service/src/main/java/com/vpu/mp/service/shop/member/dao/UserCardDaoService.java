@@ -363,7 +363,7 @@ public class UserCardDaoService extends ShopBaseService{
 			.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
 			.fetchAnyInto(String.class);
 	}
-
+	
 	/**
 	 *	 获取用户等级
 	 *	@return 等级 || null
