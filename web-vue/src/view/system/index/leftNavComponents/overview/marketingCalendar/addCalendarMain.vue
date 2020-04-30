@@ -751,11 +751,15 @@ export default {
                 } else {
                   recommendLink = item.nTextLink
                 }
+                console.log()
                 let obj = {
                   activityType: item.activityType,
                   recommendType: item.radio,
                   recommendLink: recommendLink,
                   delFlag: item.delFlag
+                }
+                if (item.id) {
+                  obj.id = item.id
                 }
                 calendarAct.push(obj)
               })
