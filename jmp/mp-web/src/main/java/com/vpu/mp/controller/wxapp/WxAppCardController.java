@@ -82,14 +82,14 @@ public class WxAppCardController extends WxAppBaseController {
 	@PostMapping(value="/api/card/getCard")
 	public JsonResult getCard(@RequestBody @Validated UserCardGetParam param) {
 		UserIdAndCardIdParam para = new UserIdAndCardIdParam();
-		logger().info("领取会员卡");
+		logger().info("领取会员卡请求");
 		WxAppSessionUser user = wxAppAuth.user();
 		para.setUserId(user.getUserId());
 		para.setGetType(param.getGetType());
 		para.setCardId(param.getCardId()!=null?param.getCardId():param.getCardInfo().getCardId());
 		try {
 			CardReceiveVo vo = shop().user.userCard.getCard(para);
-			if(!StringUtils.isBlank(vo.getCardNo())) {
+			if(vo!=null && !StringUtils.isBlank(vo.getCardNo())) {
 				return success(vo);
 			}else {
 				return fail();

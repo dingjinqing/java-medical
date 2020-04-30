@@ -1746,9 +1746,7 @@ public class UserCardService extends ShopBaseService {
 	 * @throws MpException
 	 */
 	public CardReceiveVo getCard(UserIdAndCardIdParam param) throws MpException {
-		if(param.getCardId()==null) {
-			return null;
-		}
+		logger().info("领取会员卡");
 		CardReceiveVo vo = new CardReceiveVo();
 		//	第一次领取
 		boolean firstGet = true;
