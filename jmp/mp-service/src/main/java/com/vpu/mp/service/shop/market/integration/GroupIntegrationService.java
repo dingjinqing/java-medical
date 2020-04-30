@@ -770,7 +770,8 @@ public class GroupIntegrationService extends ShopBaseService {
 				GroupIntegrationListRecord inviteInfo = groupIntegrationList.getUserIntegrationInfo(userId, pinInteId,
 						groupId);
 				Short inviteNum = inviteInfo.getInviteNum();
-				inviteInfo.setInviteNum(inviteNum++);
+				inviteNum++;
+				inviteInfo.setInviteNum(inviteNum);
 				int update = inviteInfo.update();
 				logger().info("更新inviNum:{}，结果：{}", inviteNum,update);
 				int num = groupInfo.size() + 1;
