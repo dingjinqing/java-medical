@@ -28,17 +28,17 @@
     <div v-show="showPicker === 3" class="start-end">
       <!-- 开始时间 -->
       <el-date-picker
-        :value="startTime"
+        v-model="startTime"
         type="date"
         style="width:130px"
         value-format="yyyy-MM-dd [00]:[00]:[00]"
         size="small"
         :placeholder="$t(`dateTimePicker.startTime`)"
-        @change="getEndTime">
+        @change="getStartTime">
       </el-date-picker>
       <span class="to">{{$t(`dateTimePicker.to`)}}</span>
       <el-date-picker
-        :value="endTime"
+        v-model="endTime"
         type="date"
         style="width:130px"
         value-format="yyyy-MM-dd [23]:[59]:[59]"
@@ -57,19 +57,16 @@ export default {
     showPicker: {
       type: Number,
       require: true
-    },
-    startTime: {
-      type: String
-    },
-    endTime: {
-      type: String
     }
   },
   data () {
     return {
       // value: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)]
       value: [],
-      value1: ``
+      value1: ``,
+      startTime: null,
+      endTime: null
+
     }
   },
   mounted () {
@@ -100,10 +97,10 @@ export default {
       }
     },
     getEndTime (val) {
-      this.$emit('update:endTime', val)
+      this.$emit('endTime', val)
     },
     getStartTime (val) {
-      this.$emit('update:startTime', val)
+      this.$emit('startTime', val)
     }
   }
 }

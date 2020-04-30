@@ -66,17 +66,10 @@
             :class="specialliNavTwo"
           >
             <span>{{$t('membershipIntroduction.registrationTime')}}</span>
-            <el-date-picker
-              v-model="datePickerVal"
-              type="daterange"
-              :range-separator="$t('membershipIntroduction.to')"
-              :start-placeholder="$t('membershipIntroduction.Starttime')"
-              :end-placeholder="$t('membershipIntroduction.Endtime')"
-              value-format='yyyy-MM-dd HH:mm:ss'
-              :default-time="['00:00:00','23:59:59']"
-              size="small"
-            >
-            </el-date-picker>
+            <date-time-picker
+              :showPicker='3'
+              @startTime="registStartTime = $event"
+              @endTime="registEndTime = $event"/>
           </div>
         </li>
         <li>
@@ -96,8 +89,8 @@
            <div class="liNav">
             <span id="distritor-span">{{$t('membershipIntroduction.distributorTip')}} </span>
             <el-select v-model="isDistributor" size="small">
-              <el-option v-for="opt of distributorOpts"
-                :key="opt"
+              <el-option v-for="(opt,index) in distributorOpts"
+                :key="index"
                 :label="opt.label"
                 :value="opt.id">
               </el-option>
@@ -917,12 +910,13 @@ import { membershipListRequest, allUserCardRequest, allSourceRequest, allTagRequ
 import { getAllMemberCardByClassRequest, setCardForMemberRequest, getAllAvailableMemberCardRequest } from '@/api/admin/memberManage/memberCard.js'
 import { mapActions } from 'vuex'
 import ChoosingGoods from '@/components/admin/choosingGoods'
+import DateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
 import SetUpMemCDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipList/setUpMemCDialog'
 import SelectingUsersDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipList/selectingUsersDialog'
 import membershipExportDialog from './membershipExportDialog'
 import ModifyData from './modifyData'
 export default {
-  components: { ChoosingGoods, SetUpMemCDialog, SelectingUsersDialog, ModifyData, membershipExportDialog },
+  components: { ChoosingGoods, DateTimePicker, SetUpMemCDialog, SelectingUsersDialog, ModifyData, membershipExportDialog },
   props: ['labelText'],
   data () {
     return {
@@ -950,7 +944,8 @@ export default {
       noImg: this.$imageHost + '/image/admin/no_data.png',
       membershipCardVal: 0,
       labelVal: [],
-      datePickerVal: '',
+      registStartTime: null,
+      registEndTime: null,
       checkPhone: false,
       checkIntegr: false,
       balance: false,
@@ -1110,8 +1105,8 @@ export default {
           'source': this.sourceValue,
           'sourceLabel': sourceLabel ? sourceLabel.label : '',
           'inviteUserName': this.inviteUserName,
-          'createTime': this.datePickerVal ? this.datePickerVal[0] : null,
-          'endTime': this.datePickerVal ? this.datePickerVal[1] : null,
+          'createTime': this.registStartTime,
+          'endTime': this.registEndTime,
           'cardId': this.membershipCardVal,
           'membershipCardLabel': membershipCardLabel ? membershipCardLabel.cardName : '',
           'tagName': this.labelVal,
@@ -1176,8 +1171,8 @@ export default {
         'source': this.sourceValue,
         'cardId': this.membershipCardVal,
         'tagName': this.labelVal,
-        'createTime': this.datePickerVal ? this.datePickerVal[0] : null,
-        'endTime': this.datePickerVal ? this.datePickerVal[1] : null,
+        'createTime': this.registStartTime,
+        'endTime': this.registEndTime,
         'inviteUserName': this.inviteUserName,
         'loginStartTime': this.datePickerVal_one ? this.datePickerVal_one[0] : null,
         'loginEndTime': this.datePickerVal_one ? this.datePickerVal_one[1] : null,
