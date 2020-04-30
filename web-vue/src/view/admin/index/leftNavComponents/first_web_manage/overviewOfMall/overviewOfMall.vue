@@ -1184,6 +1184,9 @@ export default {
       getOverviewActivity().then(res => {
         console.log(res)
         if (res.error === 0) {
+          res.content.forEach((item, index) => {
+            item.eventTime = item.eventTime.split('-')[1] + '-' + item.eventTime.split('-')[2]
+          })
           this.calenderdata = res.content
         }
       })

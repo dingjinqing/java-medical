@@ -105,19 +105,21 @@
             prop="createTime"
             label="反馈时间"
             align="center"
-            width="200"
+            width="180"
           >
           </el-table-column>
           <el-table-column
             prop="version"
             label="使用版本"
             align="center"
+            width="120"
           >
           </el-table-column>
           <el-table-column
             prop="categoryId"
             label="问题类型"
             align="center"
+            width="120"
           >
           </el-table-column>
           <el-table-column
@@ -285,6 +287,21 @@ export default {
       problemFeedbackList(params).then(res => {
         console.log(res)
         if (res.error === 0) {
+          res.content.dataList.forEach((item, index) => {
+            switch (item.categoryId) {
+              case 0:
+                item.categoryId = '其他'
+                break
+              case 1:
+                item.categoryId = '产品建议'
+                break
+              case 2:
+                item.categoryId = '网页异常'
+                break
+              case 3:
+                item.categoryId = '功能使用咨询'
+            }
+          })
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
         }
