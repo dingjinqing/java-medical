@@ -1144,4 +1144,27 @@ public class JsonResultMessage {
     public static final String GOODS_EXCEL_IMPORT_NUM_OUT_OF_SIZE = "goods.excel.import.num.out.of.size";
 
 
+
+    /**
+     * 优惠券礼包订单导出
+     */
+    public static final String VIRTUAL_ORDER_COUPON_PACK_FILE_NAME = "virtual.order.coupon_pack.file_name";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_PACK_NAME = "virtual.order.coupon_pack.pack_name";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_ORDER_SN = "virtual.order.coupon_pack.order_sn";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_PRICE = "virtual.order.coupon_pack.price";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_USERNAME = "virtual.order.coupon_pack.username";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_MOBILE = "virtual.order.coupon_pack.mobile";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_CREATE_TIME = "virtual.order.coupon_pack.create_time";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_MONEY_PAID = "virtual.order.coupon_pack.money_paid";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_USE_ACCOUNT = "virtual.order.coupon_pack.use_account";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_MEMBER_CARD_BALANCE = "virtual.order.coupon_pack.member_card_balance";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_USE_SCORE = "virtual.order.coupon_pack.use_score";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_ORDER_STATUS_NAME = "virtual.order.coupon_pack.order_status_name";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_RETURN_TIME = "virtual.order.coupon_pack.return_time";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_RETURN_SCORE = "virtual.order.coupon_pack.return_score";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_RETURN_ACOUNT = "virtual.order.coupon_pack.return_account";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_RETURN_MONEY = "virtual.order.coupon_pack.return_money";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_RETURN_CARD_BALANCE = "virtual.order.coupon_pack.return_card_balance";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_REFUNDED = "virtual.order.coupon_pack.refunded";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_PAYMENT_SUCCESSFUL = "virtual.order.coupon_pack.payment_successful";
 }
