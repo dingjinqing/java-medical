@@ -481,7 +481,7 @@ export default {
                   pwdName: item.name,
                   pwdId: item.batchId,
                   action: item.action,
-                  disabled: true                }
+                  disabled: true }
               )
             }
           })
