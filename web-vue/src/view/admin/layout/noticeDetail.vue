@@ -19,13 +19,13 @@
           <el-col :span="2">
             <span>关键词</span>
           </el-col>
-          <el-col :span="22"><span class="inner">{{ detailData.keyword }}</span></el-col>
+          <el-col :span="21"><span class="inner">{{ detailData.keyword }}</span></el-col>
         </el-row>
         <el-row>
           <el-col :span="2">
             <span class="summary">摘要</span>
           </el-col>
-          <el-col :span="22"><span class="inner">{{ detailData.desc }}</span></el-col>
+          <el-col :span="21"><span class="inner">{{ detailData.desc }}</span></el-col>
         </el-row>
       </div>
       <div
@@ -118,12 +118,15 @@ export default {
           text-align: left;
         }
       }
+      .el-col {
+  min-height: 1px
+}
     }
     .sectionContent {
       width: 100%;
       margin-top: 20px;
       min-height: 300px;
-      background: #f1f1f1;
+      // background: #f1f1f1;
       text-align: left;
     }
   }

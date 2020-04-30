@@ -13,6 +13,7 @@ import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record2;
 import org.jooq.Result;
@@ -129,12 +130,12 @@ public class GoodsSearchMpService extends ShopBaseService {
      */
     private PageResult<GoodsListMpBo> searchGoodsForGroupBuyQrCode(GoodsSearchMpParam param) {
         int activityId = param.getActId();
-        Condition goodsBaseCondition = goodsMpService.getGoodsBaseCondition();
-        List<Integer> goodsIds = groupBuyService.getGroupBuyCanUseGoodsIds(activityId, goodsBaseCondition);
-
+        List<Integer> goodsIds = groupBuyService.getGroupBuyCanUseGoodsIds(activityId, goodsMpService.getGoodsBaseCondition());
+        param.setGoodsIds(goodsIds);
+        Condition condition = buildSearchCondition(param);
         List<SortField<?>> sortFields = buildSearchOrderFields(param);
 
-        return goodsMpService.findActivityGoodsListCapsulesDao(GOODS.GOODS_ID.in(goodsIds), sortFields, param.getCurrentPage(), param.getPageRows(), null);
+        return goodsMpService.findActivityGoodsListCapsulesDao(condition, sortFields, param.getCurrentPage(), param.getPageRows(), null);
     }
 
     /**
@@ -144,29 +145,28 @@ public class GoodsSearchMpService extends ShopBaseService {
      */
     private PageResult<GoodsListMpBo> searchGoodsForSecKillQrCode(GoodsSearchMpParam param) {
         int activityId = param.getActId();
-        Condition goodsBaseCondition = goodsMpService.getGoodsBaseCondition();
-        List<Integer> goodsIds = seckillService.getSecKillCanUseGoodsIds(activityId, goodsBaseCondition);
-
+        List<Integer> goodsIds = seckillService.getSecKillCanUseGoodsIds(activityId, goodsMpService.getGoodsBaseCondition());
+        param.setGoodsIds(goodsIds);
+        Condition condition = buildSearchCondition(param);
         List<SortField<?>> sortFields = buildSearchOrderFields(param);
 
-        return goodsMpService.findActivityGoodsListCapsulesDao(GOODS.GOODS_ID.in(goodsIds), sortFields, param.getCurrentPage(), param.getPageRows(), null);
+        return goodsMpService.findActivityGoodsListCapsulesDao(condition, sortFields, param.getCurrentPage(), param.getPageRows(), null);
     }
 
     /**
-     * admin秒杀活动扫码进入
+     * 小程序优惠券进入
      * @param param GoodsSearchMpParam
      * @return 该活动下的有效商品信息
      */
     private PageResult<GoodsListMpBo> searchGoodsForVoucher(GoodsSearchMpParam param){
         logger().debug("优惠券跳转商品搜索页面");
         int voucherId = param.getActId();
-        Condition goodsBaseCondition = goodsMpService.getGoodsBaseCondition();
         Condition goodsCouponCondition = couponService.buildGoodsSearchCondition(voucherId);
-
-        goodsBaseCondition = goodsCouponCondition.and(goodsBaseCondition);
+        Condition condition = buildSearchCondition(param);
+        condition =  condition.and(goodsCouponCondition);
         List<SortField<?>> sortFields = buildSearchOrderFields(param);
 
-        return goodsMpService.findActivityGoodsListCapsulesDao(goodsBaseCondition, sortFields, param.getCurrentPage(), param.getPageRows(), null);
+        return goodsMpService.findActivityGoodsListCapsulesDao(condition, sortFields, param.getCurrentPage(), param.getPageRows(), null);
     }
 
     /**
@@ -219,20 +219,24 @@ public class GoodsSearchMpService extends ShopBaseService {
     private Condition buildSearchCondition(GoodsSearchMpParam param) {
         Condition condition = goodsMpService.getGoodsBaseCondition();
 
-        if (param.getKeyWords() != null) {
+        if (StringUtils.isNotBlank(param.getKeyWords())) {
             condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getKeyWords())));
+        }
+
+        // 页面从拼团、秒杀、优惠券跳转至搜索页面，在对应商品范围内进行进一步条件搜索
+        if (param.getGoodsIds() != null && param.getGoodsIds().size()>0) {
+            condition = condition.and(GOODS.GOODS_ID.in(param.getGoodsIds()));
         }
 
         // 当es挂掉的时候，只查询和商家分类直接关联的商品，不进行子项查询。（功能退级）
         if (param.getSortIds() != null && param.getSortIds().size() > 0) {
             condition = condition.and(GOODS.SORT_ID.in(param.getSortIds()));
         }
-
         if (param.getBrandIds() != null && param.getBrandIds().size() > 0) {
             condition = condition.and(GOODS.BRAND_ID.in(param.getBrandIds()));
         }
-
         // 从数据库搜索时仅匹配直接关联商品的标签和关联了全部商品的标签
+        // 标签直接取的是或的关系
         if (param.getLabelIds() != null && param.getLabelIds().size() > 0) {
             Result<Record2<Integer, Byte>> labelCoupleList = goodsLabelMpService.getGoodsLabelsCoupleTypeInfoByIds(param.getLabelIds());
             boolean allType = false;

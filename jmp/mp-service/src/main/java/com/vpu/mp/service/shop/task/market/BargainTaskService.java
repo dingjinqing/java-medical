@@ -204,7 +204,7 @@ public class BargainTaskService extends ShopBaseService {
      */
     private void sendBargainProgressNotify(int userId, BigDecimal bargainPrice, String goodsName, Integer recordId, Integer bargainUserNumber) {
         //订阅消息
-        String[][] maData = new String[][]{{goodsName}, {"已有" + bargainUserNumber.toString() + "人砍价"}, {"03时00分00秒"}, {"留给你的时间不多了，快召集好友吧！"}};
+        String[][] maData = new String[][]{{goodsName}, {"已有" + bargainUserNumber.toString() + "人砍价"}, {"只剩3小时"}};
         MaSubscribeData buildData = MaSubscribeData.builder().data307(maData).build();
 
         //模板消息

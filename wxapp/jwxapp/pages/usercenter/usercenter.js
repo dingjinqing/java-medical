@@ -138,8 +138,8 @@ global.wxPage({
     var that = this;
     var form_id = e.detail.formId;
     var open_id = util.getCache("openid");
-    util.api('/api/card/getcard', function (res) {
-      if (res.content >= 0) {
+    util.api('/api/card/getCard', function (res) {
+      if (res.error === 0) {
         is_grade = 0;
         user_center[0].get_grade = 0
         that.setData({
@@ -148,15 +148,15 @@ global.wxPage({
         })
         util.toast_success('领取成功', function () {
           setTimeout(function () {
-            util.jumpLink(`/pages/usercardinfo/usercardinfo?card_no=${res.content}`, 'navigateTo')
-          }, 2000);
+            util.jumpLink(`/pages/cardinfo/cardinfo?cardNo=${res.content.cardNo}`)
+          }, 1000);
         });
       } else if (res.content == -1) {
         util.toast_fail('此卡已存在');
       } else {
         util.toast_fail('领取失败');
       }
-    }, { card_info: '', type: 1, form_id: form_id, open_id: open_id });
+    }, { cardInfo: { cardId: null }, getType: 2, form_id: form_id, open_id: open_id});
   },
   lookRule: function (e) {
     var sign_rule = e.currentTarget.dataset.rule;
