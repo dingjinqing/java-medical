@@ -8,6 +8,7 @@
         <block wx:for="{{useInfo}}" wx:for-item="useItem" wx:key="index">
           <text wx:if="{{useItem > 0}}">{{test[index]}}：<text style="color:{{comColor}}">{{index === 'useScore' ? useItem + i18n.$t(localePack,"pages.order.score") : '￥' + useItem}}</text></text>
         </block>
+         <text wx:if="{{!hasUseInfo}}"><text style="color:{{comColor}}">支付完成</text></text>
       </view>
     </view>
     <view class="button-info">
