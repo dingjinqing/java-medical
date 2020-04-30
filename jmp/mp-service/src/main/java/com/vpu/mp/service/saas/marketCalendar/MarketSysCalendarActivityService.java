@@ -46,7 +46,7 @@ public class MarketSysCalendarActivityService extends MainBaseService {
 	public void editCalendarAct(MarketCalendarParam param, Integer calendarId) {
 		List<SysCalendarAct> calendarActList = param.getCalendarAct();
 		for (SysCalendarAct sysCalendarAct : calendarActList) {
-			Integer id = sysCalendarAct.getActivityId();
+			Integer id = sysCalendarAct.getId();
 			if (id != null && id != 0) {
 				MarketCalendarActivityRecord record = db().selectFrom(MARKET_CALENDAR_ACTIVITY).where(
 						MARKET_CALENDAR_ACTIVITY.ID.eq(id).and(MARKET_CALENDAR_ACTIVITY.CALENDAR_ID.eq(calendarId)))
