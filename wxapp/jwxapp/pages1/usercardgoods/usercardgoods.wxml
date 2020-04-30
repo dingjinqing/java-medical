@@ -39,7 +39,7 @@
 							<view class='sale_price' style='color:{{comColor}}'>￥
 								<text>{{item.shopPrice}}</text>
 							</view>
-							<view class='original_price' wx:if='{{item.marketPrice!=null && item.marketPrice != "" && item.marketPrice != 0}}'>￥{{item.marketPrice}}</view>
+							<view class='original_price' wx:if='{{item.marketPrice!=null && item.marketPrice != "" && item.marketPrice != 0&item.showLinePrice}}'>￥{{item.marketPrice}}</view>
 						</view>
 						<view class='btn_add_cart' data-goodsName="{{item.goodsName}}" data-goodsId='{{item.goodsId}}' data-goodsNumber="{{item.goodsNumber}}" bindtap="showSpecDialog">
 							<text class='iconfont icontianjia' style='color:{{comColor}};font-size:50rpx;'/>

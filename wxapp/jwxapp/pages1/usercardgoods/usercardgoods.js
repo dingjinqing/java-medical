@@ -38,6 +38,16 @@ global.wxPage({
     util.api('/api/wxapp/card/change/goodslist', res => {
       console.log(res)
       if (res.error === 0 && res.content !== null) {
+        res.content.goodsPageResult.dataList.forEach((item, index) => {
+          if (item.marketPrice) {
+            if (item.shopPrice < item.marketPrice) {
+              item.showLinePrice = true
+            } else {
+              item.showLinePrice = false
+            }
+          }
+
+        })
         this.setData({
           pageParams: res.content.goodsPageResult.page,
           ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.goodsPageResult.dataList,
