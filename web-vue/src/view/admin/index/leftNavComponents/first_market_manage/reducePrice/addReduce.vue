@@ -48,11 +48,11 @@
         >{{$t('reducePriceList.edit')}}</el-button>
       </el-form-item>
       <el-form-item
-        label="活动预告："
+        :label="$t('reducePriceList.preTime') + '：'"
         prop="preTime"
       >
         <div>
-          <span class="noticeTip">活动开始前会在商品详情中展示活动预告信息</span>
+          <span class="noticeTip">{{$t('reducePriceList.preTimeTip1')}}</span>
           <el-popover
             placement="right-start"
             width="220"
@@ -63,7 +63,7 @@
               slot="reference"
               type="text"
               style="margin: 0 20 0 0px"
-            >查看示例</el-button>
+            >{{$t('reducePriceList.preTimeTip2')}}</el-button>
           </el-popover>
         </div>
         <div>
@@ -72,26 +72,26 @@
             :label="1"
             @change="preTimeChange"
             :disabled="isEditFlag"
-          >活动开始前
+          >{{$t('reducePriceList.preTimeTip3')}}
             <el-input
               v-model="reduceData.preTimeValue"
               :disabled="isEditFlag"
               style="width: 80px;"
               size="small"
-            ></el-input>小时进行预告
+            ></el-input>{{$t('reducePriceList.preTimeTip4')}}
           </el-radio>
           <el-radio
             v-model="reduceData.preTime"
             :label="-1"
             @change="preTimeChange"
             :disabled="isEditFlag"
-          >活动创建完成后即进行预告</el-radio>
+          >{{$t('reducePriceList.preTimeTip5')}}</el-radio>
           <el-radio
             v-model="reduceData.preTime"
             :label="0"
             @change="preTimeChange"
             :disabled="isEditFlag"
-          >不进行活动预告</el-radio>
+          >{{$t('reducePriceList.preTimeTip6')}}</el-radio>
         </div>
       </el-form-item>
       <el-form-item
@@ -157,6 +157,7 @@
         <span
           @click="onlyShowChoosingGoods"
           style="color: #e4393c"
+          v-if="goodsIdList && goodsIdList.length > 0"
         >{{$t('adSharePolite.alreadyChoose')}}{{this.goodsIdList.length}}{{$t('adSharePolite.goods')}}</span>
       </el-form-item>
       <div
@@ -350,7 +351,7 @@
         </el-table>
       </div>
       <el-form-item
-        label="同步打标签："
+        :label="$t('reducePriceList.activityTag') + '：'"
         prop=""
       >
         <el-checkbox
@@ -358,17 +359,23 @@
           :true-label="1"
           :false-label="0"
           :disabled="isEditFlag"
-        >给参与活动用户打标签</el-checkbox>
-        <span
-          class="el-icon-question"
-          style="color: #666;"
-        ></span>
+        >{{$t('reducePriceList.activityTagTip1')}}</el-checkbox>
+        <el-tooltip
+          :content="$t('reducePriceList.activityTagTip2')"
+          placement="top"
+          effect="light"
+        >
+          <span
+            class="el-icon-question"
+            style="color: #666;cursor: pointer;"
+          ></span>
+        </el-tooltip>
         <span
           class="labelStyle"
           @click="selectLabel"
-        >选择标签</span>
+        >{{$t('reducePriceList.activityTagTip3')}}</span>
         <div v-if="pickLabel.length > 0">
-          <p style="color: #999;">最多可设置3个标签</p>
+          <p style="color: #999;">{{$t('reducePriceList.activityTagTip4')}}</p>
           <div
             v-for="(item, index) in pickLabel"
             :key="index"
@@ -581,7 +588,7 @@ export default {
     // 自定义活动预告
     var validatePreTime = (rule, value, callback) => {
       var re = /^[1-9]\d*$/
-      if (!value) {
+      if (value !== -1 && value !== 0 && value !== 1) {
         callback(new Error('请选择活动预告类型'))
       } else if (value === 1 && this.reduceData.preTimeValue === '') {
         callback(new Error('请填写活动预告时间'))
