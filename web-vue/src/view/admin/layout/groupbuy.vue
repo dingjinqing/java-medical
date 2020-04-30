@@ -58,6 +58,10 @@ export default {
 strong {
   font-weight: bold;
 }
+.group-buy-page img {
+  width: 100%;
+  height: auto;
+}
 </style>
 <style scoped>
 .group-buy-page {
