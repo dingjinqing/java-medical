@@ -4,5 +4,7 @@ export const en = {
   pleaseSelectTheEndTime: `endTime`,
   pleaseSelectTheTime: `time`,
   pleaseSelectDate: `selectDate`,
-  pleaseSelectDateAndTime: `dateAndTime`
+  pleaseSelectDateAndTime: `dateAndTime`,
+  startTime: 'StartTime',
+  endTime: 'End Time'
 }
