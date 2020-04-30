@@ -995,14 +995,14 @@ public class OrderReadService extends ShopBaseService {
                 String realName = saas().getShopApp(getShopId()).withdraw.getUserRealName(userId);
                 if(!StringUtils.isBlank(realName)) {
                     name.put(userId, realName);
-                    break;
+                    continue;
                 }
                 if(!StringUtils.isBlank(realName)) {
                     //成为分销员申请表填写信息
                     realName = saas().getShopApp(getShopId()).mpDistribution.getDistributorRealName(userId);
                     if(!StringUtils.isBlank(realName)) {
                         name.put(userId, realName);
-                        break;
+                        continue;
                     }
                 }
                 if(!StringUtils.isBlank(realName)) {
@@ -1010,7 +1010,6 @@ public class OrderReadService extends ShopBaseService {
                     UserInfo userInfo = user.getUserInfo(userId);
                     if(userInfo != null && !StringUtils.isBlank(userInfo.getRealName())) {
                         name.put(userId, userInfo.getRealName());
-                        break;
                     }
                 }
             }
