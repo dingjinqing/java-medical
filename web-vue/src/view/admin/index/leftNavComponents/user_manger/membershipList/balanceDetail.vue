@@ -21,19 +21,10 @@
         </div>
         <div class="receiveDetailDate">
           <span>{{$t('membershipIntroduction.time')}}：</span>
-          <el-date-picker
-            v-model="dateInput"
-            type="daterange"
-            align="center"
-            unlink-panels
-            :range-separator="$t('membershipIntroduction.to')"
-            :start-placeholder="$t('membershipIntroduction.Starttime')"
-            :end-placeholder="$t('membershipIntroduction.Endtime')"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            :default-time="['00:00:00','23:59:59']"
-            size="small"
-          >
-          </el-date-picker>
+            <date-time-picker
+              :showPicker='3'
+              @startTime="startTime = $event"
+              @endTime="endTime = $event"/>
         </div>
         <div>
           <el-button
@@ -92,10 +83,14 @@
 </template>
 <script>
 import { accountDetailRequest } from '@/api/admin/membershipList.js'
+import DateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
 export default {
-  components: { pagination },
+  components: {
+    pagination,
+    DateTimePicker
+  },
   data () {
     return {
       // 用户id
@@ -107,7 +102,8 @@ export default {
       },
       orderSn: '',
       nameInput: '',
-      dateInput: null,
+      startTime: null,
+      endTime: null,
       tbodyFlag: false,
       clickIindex: null,
       noImg: this.$imageHost + '/image/admin/no_data.png',
@@ -147,15 +143,14 @@ export default {
     // 获取会员余额详细信息
     getUserDetailAcountData () {
       this.clearData()
-      console.log(this.dateInput)
       let obj = {
         'currentPage': this.pageParams.currentPage,
         'pageRows': this.pageParams.pageRows,
         'userId': this.id,
         'userName': this.username,
         'orderSn': this.orderSn,
-        'startTime': this.dateInput ? this.dateInput[0] : null,
-        'endTime': this.dateInput ? this.dateInput[1] : null
+        'startTime': this.startTime,
+        'endTime': this.endTime
       }
       console.log(obj)
 
