@@ -161,7 +161,6 @@
               type="primary"
               download
             >{{$t('goodsImport.fileTemp')}}</el-link>
-            <span>{{lang}}</span>
           </div>
         </div>
         <p class="import-popup-title">{{$t('goodsImport.setp2')}}</p>
@@ -253,6 +252,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     this.initDataList()
   },
   methods: {
