@@ -287,8 +287,3 @@ td {
   margin: 10px;
 }
 </style>
-<style>
-.receiveDetailDate .el-input__inner .el-range-separator {
-  width: 20%;
-}
-</style>
