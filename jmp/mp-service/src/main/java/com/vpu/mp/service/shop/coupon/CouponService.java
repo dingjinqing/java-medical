@@ -226,6 +226,7 @@ public class CouponService extends ShopBaseService {
                     condition = condition.or(GOODS.SORT_ID.in(sortIds));
                 }
             }
+
            return condition;
         }
     }
