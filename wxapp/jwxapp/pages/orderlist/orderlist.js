@@ -117,7 +117,7 @@ global.wxPage({
   },
   // 订单下按钮事件集合
   handleOperate(e) {
-    orderEvent.handleBtnEvent(e);
+    orderEvent.handleBtnEvent(e,'orderList',this);
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

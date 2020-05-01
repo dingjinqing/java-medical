@@ -38,16 +38,21 @@ global.wxPage({
     util.api('/api/wxapp/packagesale/goodslist', res => {
       console.log(res)
       if (res.error === 0 && res.content) {
+        if(currentPage === 1){
+          this.setData({
+            dataList:[]
+          })
+        }
         this.setData({
           pageParams: res.content.goods.page,
           ['dataList[' + (parseInt(currentPage) - 1) + ']']: this.resetGoodsList(res.content.goods.dataList),
           tabList: res.content.tabList,
           ruleText: this.getRuleText(res.content),
-          totalMoney: res.content.totalMoney,
           totalGoodsNumber: res.content.totalGoodsNumber,
           rule: res.content.title,
+          delMarket:this.data.isFirstLoad ? res.content.delMarket : this.data.delMarket,
           showCart: this.data.isFirstLoad ? {
-            cart_type: 1,
+            cart_type: res.content.showCart.cart_type,
             show_cart: 1
           } : this.data.showCart,
           isFirstLoad: false
@@ -73,7 +78,8 @@ global.wxPage({
         this.setData({
           cartData: {
             cartGoodsList: this.resetCartList(res.content),
-            totalSelectNumber: res.content.totalSelectNumber
+            totalSelectNumber: res.content.totalSelectNumber,
+            totalMoney: res.content.totalMoney
           }
         })
       }
@@ -269,7 +275,6 @@ global.wxPage({
           if(!type) util.toast_success('添加成功')
           if(type === 'delete') util.toast_success('删除成功')
           this.requestCartGoodsList()
-          this.requestGoodsList()
         } else if (res.error == 0 && res.content.state !== 0) {
           let errorMessage = {
             1: '该一口价活动已删除',

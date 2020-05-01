@@ -236,7 +236,7 @@ export default {
         ]
       },
       isOnlyShowChooseGoods: false,
-      tmpact: null
+      tmpact: []
 
     }
   },

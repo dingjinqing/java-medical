@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.market.packagesale;
 
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,6 +47,9 @@ public class PackageSaleGoodsListVo {
      * 总金额合优惠金额
      */
     private TotalMoney totalMoney;
+
+    private Byte delMarket;
+    private ShowCartConfig showCart;
 
     @Setter
     @Getter

@@ -1340,10 +1340,10 @@ export default {
       console.log(val)
       if (val === -1) {
         this.activityType = -1
-        this.preTime = 24
+        this.param.preTime = 24
       } else if (val === 0) {
         this.activityType = 0
-        this.preTime = 24
+        this.param.preTime = 24
       } else if (val > 0) {
         this.activityType = 1
         this.param.preTime = val
