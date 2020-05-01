@@ -54,8 +54,6 @@ global.wxPage({
           totalPrice: res.content.totalPrice
         })
 
-        // this.selectComponent('#recommend').requestData() //请求推荐商品
-
         this.data.cartGoodsList.forEach((item, index) => {
           item.isSales = 0
           item.isSeckill = 0 // 秒杀
@@ -208,6 +206,9 @@ global.wxPage({
               item.limitMinStyle = 1
             }
           })
+          this.data.fullList[key].push({
+            currentRule: this.data.fullList[key][0].currentRule.condition
+          })
         }
         for(let key  in this.data.purchaseList) {
           this.data.purchaseList[key].forEach((item, index) => {
@@ -276,14 +277,21 @@ global.wxPage({
               item.limitMinStyle = 1
             }
           })
+          this.data.purchaseList[key].push({
+            currentRule: this.data.purchaseList[key][0].currentRule.condition
+          })
         }
         this.setData({
           cartGoodsList: this.data.cartGoodsList,
           fullList: this.data.fullList,
           purchaseList: this.data.purchaseList,
         })
+        console.log(this.data.fullList)
+        console.log(this.data.purchaseList)
       }
     })
+
+    this.selectComponent('#recommend').requestData() //推荐商品请求
   },
 
   // 更改选中状态
@@ -620,10 +628,6 @@ global.wxPage({
       }
     }, { cartIds: cartIds })
   },
-  
-  // onReachBottom: function () {
-  //   this.selectComponent('#recommend').requestData()
-  // },
 
   // 显示促销弹窗
   proClcik: function (e) {
@@ -757,6 +761,13 @@ global.wxPage({
       activityType: activityType,
       isChecked: 1
     })
+  },
+
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom: function() {
+    this.selectComponent('#recommend').requestData()
   },
 
   // 列表无数据跳转
