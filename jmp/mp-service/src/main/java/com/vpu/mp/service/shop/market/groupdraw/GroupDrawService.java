@@ -976,25 +976,25 @@ public class GroupDrawService extends ShopBaseService {
 			vo.setCode(JsonResultCode.PARTICIPATED_IN_EVENT);
 			return vo;
 		}
-		JoinGroupListRecord userJoinGroupInfo = getUserJoinGroupInfo(userId, groupDrawId, groupId, false);
-		// 不是团长
-		if (userJoinGroupInfo != null && userJoinGroupInfo.getIsGrouper().equals(ZERO)) {
-			int joinGroupNumber = getJoinGroupNumber(userId, groupDrawId);
-			Short joinLimit = groupDraw.getJoinLimit();
-			if (joinGroupNumber >= Integer.valueOf(String.valueOf(joinLimit))) {
-				logger().info("参团已达上限");
-				vo.setCode(JsonResultCode.PARTICIPANTS_IS_MAX);
-				return vo;
-			}
+		if(groupId!=null) {
+			JoinGroupListRecord userJoinGroupInfo = getUserJoinGroupInfo(userId, groupDrawId, groupId, false);
+			// 不是团长
+			if (userJoinGroupInfo != null && userJoinGroupInfo.getIsGrouper().equals(ZERO)) {
+				int joinGroupNumber = getJoinGroupNumber(userId, groupDrawId);
+				Short joinLimit = groupDraw.getJoinLimit();
+				if (joinGroupNumber >= Integer.valueOf(String.valueOf(joinLimit))) {
+					logger().info("参团已达上限");
+					vo.setCode(JsonResultCode.PARTICIPANTS_IS_MAX);
+					return vo;
+				}
+			}			
 		}
-		if (userJoinGroupInfo != null && userJoinGroupInfo.getIsGrouper().equals(ONE)) {
-			int openGroupNumber = getOpenGroupNumber(userId, groupDrawId);
-			Short openLimit = groupDraw.getOpenLimit();
-			if (openGroupNumber >= Integer.valueOf(String.valueOf(openLimit))) {
-				logger().info("开团已达上限");
-				vo.setCode(JsonResultCode.GROUP_UPPER_LIMIT);
-				return vo;
-			}
+		int openGroupNumber = getOpenGroupNumber(userId, groupDrawId);
+		Short openLimit = groupDraw.getOpenLimit();
+		if (openGroupNumber >= Integer.valueOf(String.valueOf(openLimit))) {
+			logger().info("开团已达上限");
+			vo.setCode(JsonResultCode.GROUP_UPPER_LIMIT);
+			return vo;
 		}
 		logger().info("成功");
 		vo.setCode(JsonResultCode.CODE_SUCCESS);
