@@ -1068,7 +1068,8 @@ public class GroupDrawService extends ShopBaseService {
 				.eq(groupDrawId).and(JOIN_GROUP_LIST.GROUP_ID.eq(groupId).and(JOIN_GROUP_LIST.USER_ID.eq(userId))))
 				.fetchAny();
 		if (record != null) {
-			record.setInviteUserNum(record.getInviteUserNum() + 1);
+			int num=record.getInviteUserNum() + 1;
+			record.setInviteUserNum(num);
 			int update = record.update();
 			log.info("增加邀请用户数" + update);
 		}
