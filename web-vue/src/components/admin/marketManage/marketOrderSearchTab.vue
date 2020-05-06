@@ -7,6 +7,7 @@
           v-model="requestParams.goodsName"
           :placeholder="$t('marketCommon.goodsName')"
           size="small"
+          clearable
           class="default_input"
         ></el-input>
       </div>
@@ -15,6 +16,7 @@
           v-model="requestParams.orderSn"
           :placeholder="$t('marketCommon.orderSn')"
           size="small"
+          clearable
           class="default_input"
         ></el-input>
       </div>
@@ -40,6 +42,7 @@
           v-model="requestParams.consignee"
           :placeholder="$t('marketCommon.consigneeNamePlaceholder')"
           size="small"
+          clearable
           class="default_input"
         ></el-input>
       </div>
@@ -48,6 +51,7 @@
           v-model="requestParams.mobile"
           :placeholder="$t('marketCommon.consigneeMobilePlaceholder')"
           size="small"
+          clearable
           class="default_input"
         ></el-input>
       </div>
