@@ -14,7 +14,7 @@ export const en = {
   alreadydeliver: 'After delivery',
   autoconfirmgoods: 'Day, automatic confirmation of receipt',
 
-  alreadyconfirmgoods: 'Confirm the automatic order completion time setting after receiving the goods (non-returnable if the order is completed)',
+  alreadyconfirmgoods: 'Confirm the automatic order completion time setting after receiving the goods (Cannot apply for return or replacement)',
   confirmgoodslater: 'After confirming receipt',
   orderautodone: 'Day, order completion',
 
