@@ -268,6 +268,7 @@ global.wxComponent({
       value: 0
     },
     goodsNumber: Number,
+    inviteId:Number,
     roomId: String
   },
   /**
@@ -494,6 +495,7 @@ global.wxComponent({
         params.preSaleInfo = JSON.stringify(params.preSaleInfo)
       }
       if (this.data.roomId) params.roomId = this.data.roomId
+      if (this.data.activity && this.data.activity.activityType === 8 && this.data.inviteId) params.inviteId = this.data.inviteId
       if (this.data.activity && this.data.activity.activityType === 1) {
         util.getNeedTemplateId('invite', () => {
           util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ ...params })}`, "navigateTo")
