@@ -32,7 +32,7 @@ public class GroupDrawGroupService extends ShopBaseService {
 	public PageResult<GroupListVo> getGroupList(GroupListParam param) {
 		SelectConditionStep<Record8<Integer, String, String, Timestamp, Timestamp, Integer, String, String>> select = db()
 				.select(JOIN_GROUP_LIST.GROUP_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, JOIN_GROUP_LIST.OPEN_TIME,
-						JOIN_GROUP_LIST.END_TIME, USER.USER_ID, USER.USERNAME, USER.MOBILE)
+						JOIN_GROUP_LIST.END_TIME, USER.USER_ID, USER.USERNAME.as("userName"), USER.MOBILE)
 				.from(JOIN_GROUP_LIST).leftJoin(GOODS).on(GOODS.GOODS_ID.eq(JOIN_GROUP_LIST.GOODS_ID)).leftJoin(USER)
 				.on(USER.USER_ID.eq(JOIN_GROUP_LIST.USER_ID)).where(JOIN_GROUP_LIST.GROUP_DRAW_ID
 						.eq(param.getGroupDrawId()).and(JOIN_GROUP_LIST.IS_GROUPER.eq(ONE)));
@@ -43,7 +43,7 @@ public class GroupDrawGroupService extends ShopBaseService {
 		List<GroupListVo> dataList = pageResult.getDataList();
 		for (GroupListVo groupListVo : dataList) {
 			Integer into = db().select(DSL.count()).from(JOIN_GROUP_LIST)
-					.where(JOIN_GROUP_LIST.GROUP_ID.eq(param.getGroupId())).fetchAnyInto(Integer.class);
+					.where(JOIN_GROUP_LIST.GROUP_ID.eq(groupListVo.getGroupId())).fetchAnyInto(Integer.class);
 			groupListVo.setUserCount(into == null ? 0 : into);
 			groupListVo.setGoodsImg(imageUrl(groupListVo.getGoodsImg()));
 		}
