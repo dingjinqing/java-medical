@@ -91,7 +91,7 @@
         <div class="specInfoWrap">
           <table class="specInfoWrapTable">
             <tr>
-              <th class="specInfoWrapTableThSkuName"></th>
+              <th class="specInfoWrapTableThSkuName">SKU</th>
               <th class="specInfoWrapTableInputTh">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopPrice')}}</th>
               <th class="specInfoWrapTableInputTh">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopCost')}}</th>
               <th class="specInfoWrapTableInputTh">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecMarketPrice')}}</th>
@@ -223,13 +223,13 @@
       </el-form-item>
       <!--商品会员价格设置table-->
       <el-form-item
-        label="$t('goodsAddEditInfo.stockAndPriceInfo.goodsGradeMemberSetting')"
+        :label="$t('goodsAddEditInfo.stockAndPriceInfo.goodsGradeMemberSetting')"
         v-if="memberCardPrdShow"
       >
         <div class="specInfoWrap">
           <table class="specInfoWrapTable" v-if="specInfoSwitch">
             <tr>
-              <th class="specInfoWrapTableThSkuName"></th>
+              <th class="specInfoWrapTableThSkuName">SKU</th>
               <!--规格价格(元)-->
               <th class="specInfoWrapTableInputTh">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecPrdPrice')}}</th>
               <template v-for="item in memberCards">
@@ -1475,7 +1475,6 @@ export default {
   border: 1px solid #ccc;
   color: #333;
   padding: 10px;
-  min-width: 1000px;
   overflow-x: auto;
 }
 
@@ -1534,6 +1533,9 @@ export default {
   right: -8px;
   cursor: pointer;
   opacity: 0.8;
+}
+.specInfoWrap .specInfoWrapTable{
+  min-width: 1000px;
 }
 .specInfoWrap .specInfoWrapTable .specInfoWrapTableThSkuName{
   min-width: 200px;
