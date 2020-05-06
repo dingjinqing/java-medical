@@ -1343,4 +1343,34 @@ public class GroupDrawService extends ShopBaseService {
 				MarketVo.class);
 		return pageResult;
 	}
+	
+	/**
+	 * 获取抽奖码数量
+	 * @param groupDrawId
+	 * @param userId
+	 * @param goodsId
+	 * @return
+	 */
+	public int getDrawNum(Integer groupDrawId, Integer userId, Integer goodsId) {
+		Integer num = db().select(DSL.count()).from(JOIN_DRAW_LIST)
+				.where(JOIN_DRAW_LIST.GROUP_DRAW_ID.eq(groupDrawId)
+						.and(JOIN_DRAW_LIST.USER_ID.eq(userId).and(JOIN_DRAW_LIST.GOODS_ID.eq(goodsId))))
+				.fetchAnyInto(Integer.class);
+		return num == null ? 0 : num;
+	}
+	
+	/**
+	 * 获取邀请人数
+	 * @param groupDrawId
+	 * @param userId
+	 * @param goodsId
+	 * @return
+	 */
+	public int getInviteNum(Integer groupDrawId, Integer userId, Integer goodsId) {
+		Integer num = db().select(DSL.count()).from(JOIN_GROUP_LIST)
+				.where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId)
+						.and(JOIN_GROUP_LIST.INVITE_USER_ID.eq(userId).and(JOIN_GROUP_LIST.GOODS_ID.eq(goodsId))))
+				.fetchAnyInto(Integer.class);
+		return num == null ? 0 : num;
+	}
 }

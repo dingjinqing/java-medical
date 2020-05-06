@@ -14,9 +14,11 @@ import org.jooq.Record10;
 import org.jooq.Record7;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.GroupDrawInvite.GROUP_DRAW_INVITE;
 import static com.vpu.mp.db.shop.tables.JoinDrawList.JOIN_DRAW_LIST;
@@ -32,6 +34,8 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
  */
 @Service
 public class GroupDrawJoinUserService extends ShopBaseService {
+	@Autowired
+	private GroupDrawService groupDrawService;
 
 	/** 查询别名 **/
 	private static final String ALIAS_NEW = "n";
@@ -92,6 +96,12 @@ public class GroupDrawJoinUserService extends ShopBaseService {
 				.where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(param.getGroupDrawId()));
 		select = buildOptions(select, param);
 		select.orderBy(JOIN_GROUP_LIST.OPEN_TIME.desc());
+		PageResult<JoinUserListVo> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), JoinUserListVo.class);
+		List<JoinUserListVo> dataList = pageResult.getDataList();
+		for (JoinUserListVo vo : dataList) {
+			vo.setDrawNum(groupDrawService.getDrawNum(vo.getGroupDrawId(), vo.getUserId(), vo.getGoodsId()));
+			vo.setInviteNum(groupDrawService.getInviteNum(vo.getGroupDrawId(), vo.getUserId(), vo.getGoodsId()));
+		}
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), JoinUserListVo.class);
 	}
 
