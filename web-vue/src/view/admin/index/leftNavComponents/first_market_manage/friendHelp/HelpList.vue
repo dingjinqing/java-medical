@@ -415,25 +415,55 @@ export default {
     },
     // 删除优惠券
     delAct (id) {
-      let delParam = {
-        'id': id
-      }
-      deleteActive(delParam).then(res => {
-        if (res.error === 0) {
-          alert('删除成功！')
-          this.handleClick()
-        }
+      this.$confirm(this.$t('seckill.deleteTip'), {
+        confirmButtonText: this.$t('seckill.sure'),
+        cancelButtonText: this.$t('seckill.cancel'),
+        type: 'warning'
+      }).then(() => {
+        deleteActive({ id: id }).then(res => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('seckill.deleteSuccess') })
+            this.handleClick()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: this.$t('seckill.deleteFail') })
       })
     },
     // 停用启用优惠券
     startOrBlock (id) {
-      let switchParam = {
-        'id': id
+      var tip = ''
+      if (this.tabSwitch === '4') {
+        // 启用
+        tip = this.$t('seckill.startTip')
+      } else {
+        // 停用
+        tip = this.$t('seckill.stopTip')
       }
-      switchAct(switchParam).then(res => {
-        if (res.error === 0) {
-          alert('修改成功！')
-          this.handleClick()
+      this.$confirm(tip, {
+        confirmButtonText: this.$t('seckill.sure'),
+        cancelButtonText: this.$t('seckill.cancel'),
+        type: 'warning'
+      }).then(() => {
+        switchAct({ id: id }).then(res => {
+          if (res.error === 0) {
+            if (this.tabSwitch === '4') {
+              // 启用
+              this.$message.success({ message: this.$t('seckill.startSuccess') })
+            } else {
+              // 停用
+              this.$message.success({ message: this.$t('seckill.stopSuccess') })
+            }
+            this.handleClick()
+          }
+        })
+      }).catch(() => {
+        if (this.tabSwitch === '4') {
+          // 启用
+          this.$message.info({ message: this.$t('seckill.startFail') })
+        } else {
+          // 停用
+          this.$message.info({ message: this.$t('seckill.stopFail') })
         }
       })
     },

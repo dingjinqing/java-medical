@@ -119,11 +119,13 @@ export default {
         4: '已发货',
         5: '已收货/已自提',
         6: '订单完成',
-        7: '售后中',
-        8: '售后完成',
-        9: '待接单',
-        10: '已接单-取件中',
-        11: '已取件-配送中'
+        7: '退货中',
+        8: '退货完成',
+        9: '退款中',
+        10: '退款完成',
+        11: '拼团中',
+        12: '已成团',
+        13: '送礼完成'
       }
     }
   },
@@ -153,8 +155,7 @@ export default {
         obj.orderSn = this.requestParams.orderSn
       }
       if (this.requestParams.selectedOrderStatus !== undefined) {
-        // obj.orderStatusName = this.requestParams.selectedOrderStatus
-        obj.orderStatusName = this.orderStatusArr[this.requestParams.selectedOrderStatus]
+        obj.orderStatus = this.requestParams.selectedOrderStatus === null ? -1 : this.requestParams.selectedOrderStatus
       }
       if (this.requestParams.consignee) {
         obj.consigneeName = this.requestParams.consignee
@@ -177,9 +178,13 @@ export default {
       console.log(obj)
       orderLotteryList(obj).then((res) => {
         if (res.error === 0) {
-          this.tableData = res.content.dataList
-          this.pageParams = res.content.page
           this.loading = false
+          this.pageParams = res.content.page
+          // 订单状态
+          res.content.dataList.forEach(item => {
+            item.orderStatusName = this.orderStatusArr[item.orderStatus === -1 ? null : item.orderStatus]
+          })
+          this.tableData = res.content.dataList
         }
       })
     },

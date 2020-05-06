@@ -1,12 +1,6 @@
 package com.vpu.mp.service.saas.shop;
 
-import com.vpu.mp.db.main.tables.records.AppAuthRecord;
-import com.vpu.mp.db.main.tables.records.MarketCalendarActivityRecord;
-import com.vpu.mp.db.main.tables.records.MarketCalendarRecord;
-import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
-import com.vpu.mp.db.main.tables.records.ShopOperationRecord;
-import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
+import com.vpu.mp.db.main.tables.records.*;
 import com.vpu.mp.service.foundation.database.DatasourceManager;
 import com.vpu.mp.service.foundation.database.DbConfig;
 import com.vpu.mp.service.foundation.service.MainBaseService;
@@ -31,12 +25,7 @@ import com.vpu.mp.service.saas.shop.official.MpOfficialAccountService;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountUserService;
 import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageService;
 import jodd.util.StringUtil;
-import org.jooq.DatePart;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Record11;
-import org.jooq.Result;
-import org.jooq.SelectWhereStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -107,25 +96,28 @@ public class ShopService extends MainBaseService {
     
     @Autowired
     public ShopAppService shopApp;
-    
+
     @Autowired
     public StoreManageService storeManageService;
-    
+
     @Autowired
     public ThirdPartyMsgServices thirdPartyMsgServices;
-    
+
     @Autowired
     public MarketSysCalendarService calendarService;
 
-	public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
-		SelectWhereStep<?> select = db()
-				.select(SHOP.SYS_ID, SHOP.SHOP_ID, SHOP.SHOP_NAME, SHOP.SHOP_TYPE, SHOP.MOBILE, SHOP.CREATED,
-						SHOP.IS_ENABLED, SHOP_ACCOUNT.USER_NAME, SHOP.SHOP_FLAG, SHOP.HID_BOTTOM, SHOP.RECEIVE_MOBILE,
-						SHOP.SHOP_PHONE, SHOP.SHOP_NOTICE, SHOP.SHOP_WX, SHOP.SHOP_EMAIL, SHOP.SHOP_QQ, SHOP.MEMBER_KEY,
-						SHOP.TENANCY_NAME, MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.NICK_NAME,
-						MP_AUTH_SHOP.PRINCIPAL_NAME,SHOP.VERSION_CONFIG,SHOP.SHOP_LANGUAGE,SHOP.CURRENCY)
-				.from(SHOP).join(SHOP_ACCOUNT).on(SHOP.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID)).leftJoin(MP_AUTH_SHOP)
-				.on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID, Integer.class)));
+    @Autowired
+    public ShopApplyService shopApply;
+
+    public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
+        SelectWhereStep<?> select = db()
+            .select(SHOP.SYS_ID, SHOP.SHOP_ID, SHOP.SHOP_NAME, SHOP.SHOP_TYPE, SHOP.MOBILE, SHOP.CREATED,
+                SHOP.IS_ENABLED, SHOP_ACCOUNT.USER_NAME, SHOP.SHOP_FLAG, SHOP.HID_BOTTOM, SHOP.RECEIVE_MOBILE,
+                SHOP.SHOP_PHONE, SHOP.SHOP_NOTICE, SHOP.SHOP_WX, SHOP.SHOP_EMAIL, SHOP.SHOP_QQ, SHOP.MEMBER_KEY,
+                SHOP.TENANCY_NAME, MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.NICK_NAME,
+                MP_AUTH_SHOP.PRINCIPAL_NAME, SHOP.VERSION_CONFIG, SHOP.SHOP_LANGUAGE, SHOP.CURRENCY)
+            .from(SHOP).join(SHOP_ACCOUNT).on(SHOP.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID)).leftJoin(MP_AUTH_SHOP)
+            .on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID, Integer.class)));
 		select = this.buildOptions(select, param);
 		select.orderBy(SHOP.CREATED.desc());
 		PageResult<ShopListQueryResultVo> result = this.getPageResult(select, param.currentPage, param.pageRows,
