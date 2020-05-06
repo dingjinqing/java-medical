@@ -77,7 +77,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item
-          label="同步打标签："
+          :label="$t('purchase.syncTags')+'：'"
           class="label-con"
         >
           <el-checkbox
@@ -85,11 +85,11 @@
             :true-label="1"
             :false-label="0"
             disabled
-          >给参与活动用户打标签</el-checkbox>
+          >{{$t('purchase.tagIn')}}</el-checkbox>
           <el-tooltip
             effect="light"
             placement="top"
-            content="成功下单并完成支付的算作参与活动用户"
+            :content="$t('purchase.placed')"
           >
             <i class="el-icon-question"></i>
           </el-tooltip>
@@ -97,12 +97,12 @@
             type="text"
             @click="selectLabel"
             disabled
-          >选择标签</el-button>
+          >{{$t('purchase.sLabel')}}</el-button>
           <div
             class="label-model"
             v-if="pickLabel.length > 0"
           >
-            <p>最多可设置3个标签</p>
+            <p>{{$t('purchase.sL3')}}</p>
             <ul class="label-wrap">
               <li
                 class="user-label"
@@ -310,7 +310,7 @@
               <el-alert
                 type="warning"
                 show-icon
-                :title="'换购规则1：购满'+ purcahse_rule1.fullPrice +'元，加价'+purcahse_rule1.purchasePrice+'元换购以下商品'"
+                :title="$t('purchase.redemRules')+'1：'+$t('purchase.buyFull')+ purcahse_rule1.fullPrice +$t('purchase.yuan')+'，'+$t('purchase.increase')+purcahse_rule1.purchasePrice+$t('purchase.followGoods')"
                 :closable="false"
               ></el-alert>
             </div>
@@ -376,7 +376,7 @@
               <el-alert
                 type="warning"
                 show-icon
-                :title="'换购规则2：购满'+ purcahse_rule2.fullPrice +'元，加价'+purcahse_rule2.purchasePrice+'元换购以下商品'"
+                :title="$t('purchase.redemRules')+'2：'+$t('purchase.buyFull')+ purcahse_rule2.fullPrice +$t('purchase.yuan')+'，'+$t('purchase.increase')+purcahse_rule2.purchasePrice+$t('purchase.followGoods')"
                 :closable="false"
               ></el-alert>
             </div>
@@ -442,7 +442,7 @@
               <el-alert
                 type="warning"
                 show-icon
-                :title="'换购规则3：购满'+ purcahse_rule3.fullPrice +'元，加价'+purcahse_rule3.purchasePrice+'元换购以下商品'"
+                :title="$t('purchase.redemRules')+'3：'+$t('purchase.buyFull')+ purcahse_rule3.fullPrice +$t('purchase.yuan')+'，'+$t('purchase.increase')+purcahse_rule3.purchasePrice+$t('purchase.followGoods')"
                 :closable="false"
               ></el-alert>
             </div>

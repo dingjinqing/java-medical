@@ -90,6 +90,15 @@ export const en = {
   choosepriority: 'Please select event priority',
   chooseTime: 'Please select an event time',
   chooseMain: 'Please select the main product! ',
-  chooseRedemp: 'Please select a redemption item! '
-
+  chooseRedemp: 'Please select a redemption item! ',
+  syncTags: 'Synchronize tags',
+  tagIn: 'Tag users participating in the event',
+  placed: 'Successfully placed an order and completed payment is counted as a participating user',
+  sLabel: 'Select label',
+  sL3: 'Up to 3 labels can be set',
+  redemRules: 'Redemption rules',
+  buyFull: 'Buy Full',
+  yuan: 'yuan',
+  increase: 'Add price',
+  followGoods: 'Yuan redeem the following goods'
 }
