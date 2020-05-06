@@ -1120,8 +1120,15 @@ public class CouponService extends ShopBaseService {
      * @return
      */
     public ShareQrCodeVo getMpQrCode(Integer couponId){
-        String pathParam=String.format("couponId=%d", couponId);
-        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.DISCOUN_COUPON, pathParam);
+        MrkingVoucherRecord mrkingVoucherRecord = getOneCouponById(couponId);
+
+        String imageUrl;
+        String pathParam = String.format("couponId=%d", couponId);
+        if (mrkingVoucherRecord.getUseScore().equals(BaseConstant.YES) && mrkingVoucherRecord.getScoreNumber() != null) {
+            imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.SCORE_COUPON, pathParam);
+        } else {
+            imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.DISCOUN_COUPON, pathParam);
+        }
 
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
