@@ -140,5 +140,19 @@ export const en = {
     'Number of participating users',
     'Group users',
     'Number of new users'
+  ],
+  statusList: [
+    {
+      value: null,
+      label: 'Please select'
+    },
+    {
+      value: true,
+      label: 'Has formed a group'
+    },
+    {
+      value: false,
+      label: 'Unformed'
+    }
   ]
 }

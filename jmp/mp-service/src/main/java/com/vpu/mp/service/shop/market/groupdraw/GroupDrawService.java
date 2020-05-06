@@ -1127,7 +1127,7 @@ public class GroupDrawService extends ShopBaseService {
 		newRecord.setInviteUserId(inviteUserId);
 		newRecord.setOrderSn(order.getOrderSn());
 		newRecord.setStatus(status);
-
+		newRecord.setOpenTime(DateUtil.getSqlTimestamp());
 		int insert = newRecord.insert();
 		log.info("插入结果" + insert);
 		if (status.equals(ZERO)) {

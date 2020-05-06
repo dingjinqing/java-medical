@@ -140,5 +140,19 @@ export const cn = {
     '参与用户数',
     '成团用户数',
     '拉新用户数'
+  ],
+  statusList: [
+    {
+      value: null,
+      label: '请选择'
+    },
+    {
+      value: true,
+      label: '已成团'
+    },
+    {
+      value: false,
+      label: '未成团'
+    }
   ]
 }
