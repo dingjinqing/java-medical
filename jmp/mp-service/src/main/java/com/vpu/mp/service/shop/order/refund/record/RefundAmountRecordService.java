@@ -105,6 +105,6 @@ public class RefundAmountRecordService extends ShopBaseService{
      */
     public BigDecimal getOrderRefundAmount(String orderSn){
         List<BigDecimal> result = db().select(TABLE.REFUND_MONEY).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchInto(BigDecimal.class);
-        return result.stream().reduce(BigDecimalUtil::add).get();
+        return result.stream().reduce(BigDecimalUtil.BIGDECIMAL_ZERO, BigDecimalUtil::add);
     }
 }
