@@ -202,12 +202,12 @@
             <div class="boxWrapper">
               <div class="textDesc">{{$t('luckyDraw.rulesSetting')}}</div>
               <el-form-item
-                label="活动规则："
+                :label="$t('luckyDraw.activityRules')+'：'"
                 prop=""
               >
                 <el-radio-group v-model="requestParam.chanceType">
-                  <el-radio :label="0">每人N次</el-radio>
-                  <el-radio :label="1">每人每天N次</el-radio>
+                  <el-radio :label="0">{{$t('luckyDraw.perN')}}</el-radio>
+                  <el-radio :label="1">{{$t('luckyDraw.perNperDay')}}</el-radio>
                 </el-radio-group>
               </el-form-item>
 
@@ -223,16 +223,16 @@
                 ></el-input>
                 <span style="color:#999;">{{$t('luckyDraw.freePizeTimes')}}</span> -->
                 <el-radio-group v-model="freeChanceType">
-                  <el-radio :label="1">可免费抽奖
+                  <el-radio :label="1">{{$t('luckyDraw.freeDraw')}}
                     <el-input
                       v-model.number="freeChances"
                       style="width:80px;"
                       size="small"
                       :min="1"
-                    ></el-input>次
+                    ></el-input>{{$t('luckyDraw.times')}}
                   </el-radio>
-                  <el-radio :label="0">不可免费抽奖</el-radio>
-                  <el-radio :label="-1">不限制次数</el-radio>
+                  <el-radio :label="0">{{$t('luckyDraw.noFreeDraws')}}</el-radio>
+                  <el-radio :label="-1">{{$t('luckyDraw.unlimitedTime')}}</el-radio>
                 </el-radio-group>
               </el-form-item>
 
@@ -291,17 +291,17 @@
                 prop="noAwardScore"
               >
                 <el-radio-group v-model="noAwardScoreType">
-                  <el-radio :label="1">赠送
+                  <el-radio :label="1">{{$t('luckyDraw.gift')}}
                     <el-input
                       v-model.number="noAwardScore"
                       style="width:80px;"
                       size="small"
                     ></el-input>
-                    积分
+                    {{$t('luckyDraw.integral')}}
                   </el-radio>
-                  <el-radio :label="0">不赠送</el-radio>
+                  <el-radio :label="0">{{$t('luckyDraw.noGift')}}</el-radio>
                 </el-radio-group>
-                <span class="tips">仅送给未中奖的用户</span>
+                <span class="tips">{{$t('luckyDraw.onlyNotPrize')}}</span>
                 <!-- <el-input
                   size="small"
                   :placeholder="$t('luckyDraw.nullIsNoPoints')"

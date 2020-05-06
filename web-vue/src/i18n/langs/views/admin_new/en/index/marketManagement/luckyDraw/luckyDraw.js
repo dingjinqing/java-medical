@@ -173,5 +173,15 @@ export const en = {
   jumpRaffleDetails: 'Jump to the raffle details page',
   jumpGetUserList: 'Jump to get new user list page',
   consumed: 'null means no points are consumed',
-  fetchDataFail: 'Failed to get data'
+  fetchDataFail: 'Failed to get data',
+  perN: 'N times per person',
+  perNperDay: 'N times per person per day',
+  freeDraw: 'Free lottery draw',
+  noFreeDraws: 'No free draws',
+  unlimitedTime: 'Unlimited times',
+  gift: 'Gift',
+  integral: 'integral',
+  noGift: 'Do not give away',
+  onlyNotPrize: 'Only to users who have not won the prize',
+  times: 'times'
 }

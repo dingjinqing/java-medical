@@ -174,5 +174,15 @@ export const cn = {
   jumpRaffleDetails: '跳转到抽奖详情页面',
   jumpGetUserList: '跳转到获取新用户列表页面',
   consumed: '为空表示不消耗积分',
-  fetchDataFail: '获取数据失败'
+  fetchDataFail: '获取数据失败',
+  perN: '每人N次',
+  perNperDay: '每人每天N次',
+  freeDraw: '可免费抽奖',
+  noFreeDraws: '不可免费抽奖',
+  unlimitedTime: '不限制次数',
+  gift: '赠送',
+  integral: '积分',
+  noGift: '不赠送',
+  onlyNotPrize: '仅送给未中奖的用户',
+  times: '次'
 }
