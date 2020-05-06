@@ -275,7 +275,8 @@ global.wxComponent({
       observer (val) {
         this.initFooter()
       }
-    }
+    },
+    cardExchange:Object
   },
   /**
    * 组件的初始数据
@@ -350,6 +351,10 @@ global.wxComponent({
       if (this.checkPosition('right')) return
       this.actCheckOut()
     },
+    checkExchange () {
+      if (this.checkPosition('right')) return
+      this.exchangeOperate()
+    },
     goBargain () {
       util.api('/api/wxapp/bargain/apply', res => {
         if (res.error == 0) {
@@ -403,6 +408,14 @@ global.wxComponent({
             delete buttonData['buttonInfo']['left']
           }
         }
+        if (this.data.cardExchange && this.data.cardExchange.isChange && this.data.cardExchange.cardNo && this.data.cardExchange.cardId){
+          buttonData['buttonInfo'] = {
+            right:{
+              name:"加入已选商品清单",
+              event:'checkExchange'
+            }
+          }
+        }
         if (!this.data.goodsNumber || !this.data.canShip) {
           let errorMessage = '商品已售罄'
           if(!this.data.canShip) errorMessage='不可配送'
@@ -424,6 +437,14 @@ global.wxComponent({
         }
         if (this.data.activity && this.data.activity.activityType === 10 && (!this.data.triggerButton || this.data.triggerButton === 'right')) {
           buttonData['buttonInfo']['right'].right = this.data.activity.preSaleType !== 1 ? `￥${this.data.productInfo.actProduct.depositPrice}` : ''
+        }
+        if (this.data.cardExchange && this.data.cardExchange.isChange && this.data.cardExchange.cardNo && this.data.cardExchange.cardId){
+          buttonData['buttonInfo'] = {
+            right:{
+              name:"加入已选商品清单",
+              event:'exchangeOperate'
+            }
+          }
         }
         if (!this.data.goodsNumber  || !this.data.canShip) {
           let errorMessage = '商品已售罄'
@@ -513,6 +534,29 @@ global.wxComponent({
         util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ ...params })}`, "navigateTo")
       }
       this.triggerEvent('close')
+    },
+    exchangeOperate(){
+      console.log(this.data.productInfo)
+      let {goodsId,prdId:productId,goodsNum:prdNumber} = this.data.productInfo
+      let {cardNo,cardId} = this.data.cardExchange
+      util.api('/api/wxapp/card/change/add', res => {
+        console.log(res)
+        if (res.error === 0) {
+            util.toast_success(this.$t('page1.usercardgoods.successfullyAdded'),()=>{
+              util.jumpLink(`pages1/usercardgoods/usercardgoods${this.getUrlParams({
+                cardNo,
+                cardId
+              })}`,'navigateTo')
+            })
+        } else {
+            util.toast_success(this.$t('page1.usercardgoods.addFailed'))
+        }
+      }, {
+        goodsId,
+        productId,
+        prdNumber,
+        cardNo
+      })
     },
     //整合参数
     getUrlParams (obj) {
