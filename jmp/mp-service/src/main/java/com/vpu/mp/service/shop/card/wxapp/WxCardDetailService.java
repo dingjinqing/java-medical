@@ -165,6 +165,7 @@ public class WxCardDetailService extends ShopBaseService{
 		}
 		//	优惠券
 		UserCardVo voTmp = new UserCardVo();
+		voTmp.setSendCouponType(memberCardRecord.getSendCouponType());
 		this.dealSendCouponInfo(voTmp, lang);
 		card.setCouponPack(voTmp.getCouponPack());
 		card.setCoupons(voTmp.getCoupons());
