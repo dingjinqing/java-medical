@@ -166,6 +166,7 @@ public class WxCardDetailService extends ShopBaseService{
 		//	优惠券
 		UserCardVo voTmp = new UserCardVo();
 		voTmp.setSendCouponType(memberCardRecord.getSendCouponType());
+		voTmp.setSendCouponIds(memberCardRecord.getSendCouponIds());
 		this.dealSendCouponInfo(voTmp, lang);
 		card.setCouponPack(voTmp.getCouponPack());
 		card.setCoupons(voTmp.getCoupons());
@@ -410,7 +411,7 @@ public class WxCardDetailService extends ShopBaseService{
 	
 	/**
 	 * 	处理会员卡相应的优惠券信息
-	 * @param userCard
+	 * @param userCard 需要有优惠券类型，优惠券Id
 	 * @param lang
 	 */
 	public void dealSendCouponInfo(UserCardVo userCard,String lang) {
