@@ -1356,6 +1356,7 @@ public class GroupDrawService extends ShopBaseService {
 				.where(JOIN_DRAW_LIST.GROUP_DRAW_ID.eq(groupDrawId)
 						.and(JOIN_DRAW_LIST.USER_ID.eq(userId).and(JOIN_DRAW_LIST.GOODS_ID.eq(goodsId))))
 				.fetchAnyInto(Integer.class);
+		log.info("获取抽奖码数量:{}",num);
 		return num == null ? 0 : num;
 	}
 	
@@ -1371,6 +1372,7 @@ public class GroupDrawService extends ShopBaseService {
 				.where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId)
 						.and(JOIN_GROUP_LIST.INVITE_USER_ID.eq(userId).and(JOIN_GROUP_LIST.GOODS_ID.eq(goodsId))))
 				.fetchAnyInto(Integer.class);
+		log.info("获取邀请人数:{}",num);
 		return num == null ? 0 : num;
 	}
 }
