@@ -1154,15 +1154,15 @@ public class GroupDrawService extends ShopBaseService {
 		if (size >= Integer.valueOf(String.valueOf(limitAmount))) {
 			// 修改订单状态
 			List<GroupDrawList> groupUserList = getGroupList(groupDrawId, groupId, ZERO);
-			String[] s = new String[] {};
+			List<String> list=new ArrayList<String>();
 			for (int i = 0; i < groupUserList.size(); i++) {
 				String orderSn = groupUserList.get(i).getOrderSn();
-				s[i] = orderSn;
+				list.add(orderSn);
 			}
 			// order_info
 			int execute = db().update(ORDER_INFO).set(ORDER_INFO.ORDER_STATUS, OrderConstant.ORDER_PIN_SUCCESSS)
-					.set(ORDER_INFO.ORDER_STATUS_NAME, "已成团").where(ORDER_INFO.ORDER_SN.in(s)).execute();
-			log.info("已成团" + s + "结果" + execute);
+					.set(ORDER_INFO.ORDER_STATUS_NAME, "已成团").where(ORDER_INFO.ORDER_SN.in(list)).execute();
+			log.info("已成团" + list.toString() + "结果" + execute);
 			// 修改参团状态
 			int execute2 = db().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.STATUS, ONE)
 					.set(JOIN_GROUP_LIST.END_TIME, DateUtil.getLocalDateTime())
