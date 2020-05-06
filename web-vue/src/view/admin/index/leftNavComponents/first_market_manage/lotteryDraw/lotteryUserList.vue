@@ -22,10 +22,10 @@
           <el-date-picker
             size="small"
             v-model="requestParams.startTime"
-            type="datetime"
+            type="date"
             clearable
             class="inputWidth"
-            value-format="yyyy-MM-dd 00:00:00"
+             value-format="yyyy-MM-dd HH:mm:ss"
             :placeholder="$t('actionRecord.startTime')"
           >
           </el-date-picker>
@@ -33,10 +33,10 @@
           <el-date-picker
             size="small"
             v-model="requestParams.endTime"
-            type="datetime"
+            type="date"
             clearable
             class="inputWidth"
-            value-format="yyyy-MM-dd 00:00:00"
+            value-format="yyyy-MM-dd [23]:[59]:[59]"
             default-time="23:59:59"
             :placeholder="$t('actionRecord.endTime')"
           >
@@ -75,6 +75,7 @@
             v-model="requestParams.minInviteUserCount"
             clearable
             class="inputWidth"
+             type="number"
           ></el-input>
           {{ $t('lotteryDraw.to') }}
           <el-input
@@ -82,6 +83,7 @@
             v-model="requestParams.maxInviteUserCount"
             clearable
             class="inputWidth"
+            type="number"
           ></el-input>
         </el-form-item>
         <el-form-item
@@ -144,6 +146,7 @@
           type="primary"
           class="item"
           style="margin-left: 10px;"
+          @click="resetDataList"
         >{{ $t('lotteryDraw.resetSelect') }}</el-button>
       </el-form>
     </div>
@@ -158,9 +161,13 @@
       >
         <el-table-column
           :label="$t('lotteryDraw.username')"
-          prop="username"
+          prop="userName"
           align="center"
-        ></el-table-column>
+        >
+        <template slot-scope="scope">
+           <el-link type="primary" :underline="false" @click="viewUserHanlder(scope.row.userId)">{{scope.row.userName}}</el-link>
+         </template>
+        </el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.mobile')"
           prop="mobile"
@@ -168,14 +175,18 @@
         ></el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.startTime')"
-          prop="createTime"
+          prop="openTime"
           align="center"
         ></el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.orderSn')"
           prop="orderSn"
           align="center"
-        ></el-table-column>
+        >
+        <template slot-scope="scope">
+           <el-link type="primary" :underline="false" @click="getOrder(scope.row.orderSn)">{{scope.row.orderSn}}</el-link>
+         </template>
+        </el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.isGrouper')"
           align="center"
@@ -192,17 +203,17 @@
         ></el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.groupTime')"
-          prop=""
+          prop="endTime"
           align="center"
         ></el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.codeCount')"
-          prop="codeCount"
+          prop="drawNum"
           align="center"
         ></el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.minInviteUserCount')"
-          prop="inviteUserNum"
+          prop="inviteNum"
           align="center"
         ></el-table-column>
       </el-table>
@@ -226,21 +237,9 @@ export default {
   data () {
     return {
       // 成团状态
-      statusList: [{
-        value: true,
-        label: '已成团'
-      }, {
-        value: false,
-        label: '未成团'
-      }],
+      statusList: this.$t('lotteryDraw.statusList'),
       // 是否团长
-      groupList: [{
-        value: true,
-        label: '是'
-      }, {
-        value: false,
-        label: '否'
-      }],
+      groupList: this.$t('lotteryDraw.groupList'),
       loading: false,
       pageParams: {}, // 分页
       requestParams: {
@@ -270,8 +269,6 @@ export default {
       this.requestParams.groupDrawId = Number(this.$route.query.id)
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
-      this.requestParams.minInviteUserCount = Number(this.requestParams.minInviteUserCount)
-      this.requestParams.maxInviteUserCount = Number(this.requestParams.maxInviteUserCount)
 
       userLotteryList(this.requestParams).then((res) => {
         if (res.error === 0) {
@@ -280,6 +277,38 @@ export default {
           this.loading = false
         }
       })
+    },
+    // 查看用户明细
+    viewUserHanlder (tagId) {
+      this.$router.push({
+        path: '/admin/home/main/membershipInformation',
+        query: {
+          userId: tagId
+        }
+      })
+    },
+    getOrder (orderSn) {
+      // 跳转订单详情页面
+      this.$router.push({
+        path: '/admin/home/main/orders/info',
+        query: {
+          orderSn: orderSn
+        }
+      })
+    },
+    resetDataList () {
+      this.requestParams = {
+        nickName: '', // 昵称
+        startTime: '',
+        endTime: '',
+        orderSn: '', // 订单号
+        mobile: '', // 手机号
+        minInviteUserCount: null, // 最小邀请人数
+        maxInviteUserCount: null, // 最大邀请人数
+        groupId: '', // 团ID
+        grouped: '', // 成团状态
+        isGrouper: '' // 团长id
+      }
     }
   }
 

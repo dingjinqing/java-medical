@@ -97,6 +97,8 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     private Integer groupId;
     /** 是否是团长*/
     private Byte isGrouper;
+    /** 邀请人id*/
+    private Integer inviteId=0;
 
     /**
      * 砍价下单标记
