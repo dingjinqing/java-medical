@@ -825,8 +825,8 @@ public class MemberCardService extends ShopBaseService {
 		String[][] mpData = new String[][] {
 			{"您好，您的"+cardFullDetail.getMemberCard().getCardName()+"有新的余额变动"},
 			{Util.getdate("yyyy-MM-dd HH:mm:ss")},
-			{String.valueOf(data.getMoney())},
-			{String.valueOf(userCard.getMoney().add(data.getMoney()))},
+			{String.valueOf(data.getMoney().abs())},
+			{String.valueOf(userCard.getMoney().add(data.getMoney()).abs())},
 			{isConsump(data)?"消费":""}
 		};
 		MaSubscribeData data2 = MaSubscribeData.builder().data307(maData).build();

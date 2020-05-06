@@ -125,8 +125,8 @@ public class AccountService extends ShopBaseService {
 		String[][] mpData = new String[][] {
 			{"您好，您会有新的余额变动"},
 			{Util.getdate("yyyy-MM-dd HH:mm:ss")},
-			{String.valueOf(param.getAmount())},
-			{String.valueOf(newAccount)},
+			{String.valueOf(param.getAmount().abs())},
+			{String.valueOf(newAccount.abs())},
 			{subscribueRemark}
 		};
 		RabbitMessageParam param2 = RabbitMessageParam.builder()
