@@ -3,6 +3,7 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.market.form.FormDetailVo;
+import com.vpu.mp.service.pojo.shop.market.form.pojo.FormInfoBo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.market.form.FormGetParam;
 import com.vpu.mp.service.pojo.wxapp.market.form.FormSubmitDataParam;
@@ -30,7 +31,7 @@ public class WxAppFormDecorationController extends WxAppBaseController{
     public JsonResult getInfo(@RequestBody @Validated FormGetParam param){
         Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
-        FormDetailVo formDecorationInfo = shop().formService.getFormDecorationInfo(param.getPageId(), param.getUserId(),getLang());
+        FormInfoBo formDecorationInfo = shop().formService.getFormDecorationInfo(param.getPageId(), param.getUserId(),getLang());
         return success(formDecorationInfo);
     }
 
