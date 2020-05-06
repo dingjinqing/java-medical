@@ -221,6 +221,28 @@ global.wxPage({
           card_activation = card_info.activation;
         }
         that.getUpgradeCondition(cardInfo)
+        // 处理开卡送券
+        if (cardInfo.cardType == 0 && cardInfo.sendCouponSwitch == 1 && cardInfo.coupons) {
+          cardInfo.coupons.forEach((item, index) => {
+            if (item.timeType == 0) {
+              console.log(typeof item.expireTime)
+              let time = JSON.parse(item.expireTime)
+              console.log(time, item.expireTime)
+              let showTime = '领券起'
+              Object.keys(time).forEach((itemC, indexC) => {
+                console.log(itemC, indexC)
+                if (itemC == 'day') {
+                  showTime = showTime + `${time.day}天`
+                } else if (itemC == 'hour') {
+                  showTime = showTime + `${time.hour}小时`
+                } else if (itemC == 'minute') {
+                  showTime = showTime + `${time.minute}分钟`
+                }
+              })
+              item.expireTime = showTime
+            }
+          })
+        }
         that.setData({
           cardInfo: cardInfo
         })
