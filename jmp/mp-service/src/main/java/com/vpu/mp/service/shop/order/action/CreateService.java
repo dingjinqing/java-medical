@@ -988,6 +988,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param beforeVo
      */
     private void setOtherValue(OrderInfoRecord order, CreateOrderBo orderBo, OrderBeforeVo beforeVo){
+        Timestamp currentTime = DateUtil.getSqlTimestamp();
         //TODO 订单类型拼接(支付有礼)
         orderBo.getOrderType().addAll(orderGoods.getGoodsType(orderBo.getOrderGoodsBo(), order.getInsteadPayMoney()));//支付信息
         if(BigDecimalUtil.addOrSubtrac(
@@ -1022,6 +1023,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_PAY);
                 order.setOrderStatus(OrderConstant.ORDER_WAIT_PAY);
             }
+            if(order.getBkOrderPaid() != null && order.getBkOrderPaid() != OrderConstant.BK_PAY_NO) {
+                order.setPayTime(currentTime);
+            }
         }else if(beforeVo.getOrderPayWay() != null && OrderConstant.PAY_WAY_FRIEND_PAYMENT == beforeVo.getOrderPayWay() && BigDecimalUtil.compareTo(beforeVo.getInsteadPayMoney(), BigDecimal.ZERO) == 1) {
             //代付（代付金额大于0）->待支付
             logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_PAY);
@@ -1038,6 +1042,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_DELIVERY);
                     order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
                 }
+                order.setPayTime(currentTime);
             }else {
                 logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_PAY);
                 order.setOrderStatus(OrderConstant.ORDER_WAIT_PAY);

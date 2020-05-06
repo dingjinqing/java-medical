@@ -1,6 +1,11 @@
 package com.vpu.mp.service.shop.order;
 
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnStatusChangeRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -22,14 +27,24 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
-import com.vpu.mp.service.pojo.shop.order.*;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.OrderParam;
+import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.must.OrderMustVo;
-import com.vpu.mp.service.pojo.shop.order.refund.*;
+import com.vpu.mp.service.pojo.shop.order.refund.OperatorRecord;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnListVo;
+import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
@@ -102,8 +117,17 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
@@ -323,6 +347,8 @@ public class OrderReadService extends ShopBaseService {
 			vo.setGoods(goods.get(vo.getOrderId()));
 			//设置订单操作
 			OrderOperationJudgment.operationSet(vo,returningCount.get(vo.getOrderId()),ship.canBeShipped(vo.getOrderSn()));
+			//手动退款退货按钮显示
+            showManualReturn(vo);
 		}
 		//设置订单支付方式（无子单）
 		orderInfo.setPayCodeList(mainOrder,prizesSns);
@@ -339,7 +365,34 @@ public class OrderReadService extends ShopBaseService {
 		return mainOrder;
 	}
 
-	/**
+    /**
+     * admin显示手动退款退货按钮
+     * @param vo
+     */
+    private void showManualReturn(OrderInfoVo vo) {
+        //微信支付超一年不可退款
+        if(OrderConstant.PAY_CODE_WX_PAY.equals(vo.getPayCode())) {
+            Calendar instance = Calendar.getInstance();
+            instance.add(Calendar.YEAR, 1);
+            if(instance.getTimeInMillis() > System.currentTimeMillis()) {
+                vo.setShowManualReturn(false);
+                return;
+            }
+        }
+        //订单状态：待付款、取消、关闭时不可退款
+        if(vo.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY || vo.getOrderStatus() == OrderConstant.ORDER_CANCELLED || vo.getOrderStatus() == OrderConstant.ORDER_CLOSED) {
+            vo.setShowManualReturn(false);
+            return;
+        }
+        //订单无可退商品且无可退金额
+        if(!orderGoods.canReturnGoodsNumber(vo.getOrderSn()) && BigDecimalUtil.compareTo(orderInfo.getOrderFinalAmount(vo , Boolean.TRUE), returnOrder.getReturnMoney(vo.getOrderSn())) < 1) {
+            vo.setShowManualReturn(false);
+            return;
+        }
+        vo.setShowManualReturn(true);
+    }
+
+    /**
 	 * 退货、款订单
 	 * @return
 	 */
