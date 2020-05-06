@@ -41,6 +41,16 @@ public class AdminCouponPackController extends AdminBaseController {
     public JsonResult getCouponPackPageList(@RequestBody @Validated CouponPackPageListQueryParam param) {
         return success(shop().couponPack.getPageList(param));
     }
+    
+    
+    /**
+     * 优惠券礼包活动下拉框
+     */
+    @PostMapping(value = "/api/admin/market/couponpack/list/all")
+    public JsonResult getAllCouponPackPageList() {
+    	return success(shop().couponPack.getAllValidCouponPack());
+    }
+    
 
     /**
      *添加 优惠券礼包活动

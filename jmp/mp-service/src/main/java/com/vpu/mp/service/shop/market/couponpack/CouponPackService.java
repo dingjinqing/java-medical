@@ -22,6 +22,7 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.couponpack.*;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardCouponPack;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
@@ -129,6 +130,10 @@ public class CouponPackService extends ShopBaseService {
 
         return res;
     }
+    
+   
+    
+    
 
     /**
      * 查询条件
@@ -680,6 +685,17 @@ public class CouponPackService extends ShopBaseService {
 				MarketVo.class);
 		return pageResult;
 	}
+	
+	/**
+	 * 获取所有的可用优惠券礼包活动
+	 */ 
+	public List<UserCardCouponPack> getAllValidCouponPack(){
+		return db().select(COUPON_PACK.ID,COUPON_PACK.ACT_NAME,COUPON_PACK.PACK_NAME)
+			.where(COUPON_PACK.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+			.orderBy(COUPON_PACK.CREATE_TIME.desc())
+			.fetchInto(UserCardCouponPack.class);
+	}
+	
 
 
 }
