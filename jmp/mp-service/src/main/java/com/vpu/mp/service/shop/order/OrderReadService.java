@@ -375,7 +375,7 @@ public class OrderReadService extends ShopBaseService {
             Calendar instance = Calendar.getInstance();
             instance.setTimeInMillis(vo.getPayTime().getTime());
             instance.add(Calendar.YEAR, 1);
-            if(instance.getTimeInMillis() >= System.currentTimeMillis()) {
+            if(instance.getTimeInMillis() < System.currentTimeMillis()) {
                 vo.setShowManualReturn(false);
                 return;
             }
