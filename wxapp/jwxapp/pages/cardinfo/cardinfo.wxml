@@ -287,7 +287,7 @@
 				</block>
 			</view>
 			<!--开卡送券-->
-			<view class="card_item_title" wx:if="{{cardInfo.cardType === 5 && cardInfo.sendCouponSwitch == 1}}">
+			<view class="card_item_title" wx:if="{{cardInfo.cardType === 0 && cardInfo.sendCouponSwitch == 1}}">
 				<view class="item_title_left">
 					<image mode="widthFix" src="{{ imageUrl }}/image/admin/card_send_coupon.png" />
 				</view>
@@ -296,7 +296,7 @@
 				</view>
 
 			</view>
-			<view class="card_item_content" wx:if="{{cardInfo.cardType === 5 && cardInfo.sendCouponSwitch == 1&&cardInfo.coupons}}">
+			<view class="card_item_content" wx:if="{{cardInfo.cardType === 0 && cardInfo.sendCouponSwitch == 1&&cardInfo.coupons}}">
 
 				<block wx:if="{{cardInfo.sendCouponType == 0}}">
 					<text class="counponTitle">领取<text wx:if="{{cardInfo.activation == 1}}">并激活</text>

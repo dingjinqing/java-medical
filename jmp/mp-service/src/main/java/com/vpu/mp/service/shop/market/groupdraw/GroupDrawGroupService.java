@@ -26,7 +26,7 @@ import com.vpu.mp.service.pojo.shop.market.groupdraw.group.GroupListVo;
 @Service
 public class GroupDrawGroupService extends ShopBaseService {
 	
-	private static final byte ZERO = 1;
+	private static final byte ZERO = 0;
 	private static final byte ONE = 1;
 	private static final byte TWO = 2;
 
@@ -65,7 +65,7 @@ public class GroupDrawGroupService extends ShopBaseService {
 			select.and(JOIN_GROUP_LIST.OPEN_TIME.le(param.getEndTime()));
 		}
 		if (!StringUtils.isEmpty(param.getMobile())) {
-			select.and(USER.USERNAME.like(likeValue(param.getMobile())));
+			select.and(USER.MOBILE.like(likeValue(param.getMobile())));
 		}
 		if (null != param.getGrouped()) {
 			if(param.getGrouped()) {

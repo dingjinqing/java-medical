@@ -19,14 +19,28 @@
       >
         <el-table-column
           :label="$t('lotteryDraw.orderSn')"
-          prop="orderSn"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <span
+              class="linkStyle"
+              @click="orderHandler(scope.row.orderSn)"
+            >{{scope.row.orderSn}}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.goodsId')"
-          prop="goodsName"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <div class="goodImge">
+              <div>
+                <img :src="$imageHost+'/'+scope.row.goodsImg">
+              </div>
+              <div class="name">{{scope.row.goodsName}}</div>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.isGroup')"
           align="center"
@@ -94,20 +108,19 @@ export default {
       // 订单状态
       orderStatusArr: {
         null: '全部订单',
-        1: '待付款',
-        2: '订单取消',
-        3: '订单关闭',
-        4: '代发货/待核销',
-        5: '已发货',
-        6: '已收货/已自提',
-        7: '订单完成',
-        8: '退货中',
-        9: '退货完成',
-        10: '退款中',
-        11: '退款完成',
-        12: '送礼完成'
-      },
-      createTime: '' // 创建时间
+        0: '待付款',
+        1: '订单取消',
+        2: '订单关闭',
+        3: '待发货/待核销',
+        4: '已发货',
+        5: '已收货/已自提',
+        6: '订单完成',
+        7: '售后中',
+        8: '售后完成',
+        9: '待接单',
+        10: '已接单-取件中',
+        11: '已取件-配送中'
+      }
     }
   },
   watch: {
@@ -121,6 +134,7 @@ export default {
     }
   },
   methods: {
+    // 筛选
     initDataList () {
       this.loading = true
       var obj = {}
@@ -128,45 +142,40 @@ export default {
       obj.currentPage = this.pageParams.currentPage
       obj.pageRows = this.pageParams.pageRows
       console.log(this.requestParams)
-      obj.goodsName = this.requestParams.goodsName
-      obj.orderSn = this.requestParams.orderSn
-      obj.orderStatusName = this.requestParams.selectedOrderStatus
-      obj.consigneeName = this.requestParams.consignee
-      obj.mobile = this.requestParams.mobile
-      obj.createTime = this.requestParams.createTimeStart
-      obj.provinceCode = this.requestParams.provinceCode
-      obj.cityCode = this.requestParams.cityCode
-      obj.districtCode = this.requestParams.districtCode
+      if (this.requestParams.goodsName) {
+        obj.goodsName = this.requestParams.goodsName
+      }
+      if (this.requestParams.orderSn) {
+        obj.orderSn = this.requestParams.orderSn
+      }
+      if (this.requestParams.selectedOrderStatus !== undefined) {
+        // obj.orderStatusName = this.requestParams.selectedOrderStatus
+        obj.orderStatusName = this.orderStatusArr[this.requestParams.selectedOrderStatus]
+      }
+      if (this.requestParams.consignee) {
+        obj.consigneeName = this.requestParams.consignee
+      }
+      if (this.requestParams.mobile) {
+        obj.mobile = this.requestParams.mobile
+      }
+      if (this.requestParams.createTimeStart) {
+        obj.createTime = this.requestParams.createTimeStart
+      }
+      if (this.requestParams.provinceCode) {
+        obj.provinceCode = this.requestParams.provinceCode
+      }
+      if (this.requestParams.cityCode) {
+        obj.cityCode = this.requestParams.cityCode
+      }
+      if (this.requestParams.districtCode) {
+        obj.districtCode = this.requestParams.districtCode
+      }
       console.log(obj)
       orderLotteryList(obj).then((res) => {
         if (res.error === 0) {
           this.tableData = res.content.dataList
-          // this.handleData(res.content.dataList)
           this.pageParams = res.content.page
           this.loading = false
-        }
-      })
-    },
-
-    // 表格数据处理
-    handleData (data) {
-      console.log('订单状态', this.orderStatusArr)
-
-      data.forEach(item => {
-        item.orderStatusText = this.orderStatusArr[item.orderStatus]
-        item.name = this.$route.query.name
-        item.goods.forEach(val => {
-          item.goodsPrice = val.goodsPrice
-          item.goodsName = val.goodsName
-        })
-      })
-      this.tableData = data
-    },
-
-    getOrderStatusText (index) {
-      this.orderStatus.forEach(item => {
-        if (item.value === index) {
-          return item.label
         }
       })
     },
@@ -182,8 +191,17 @@ export default {
       }).catch(() => {
         this.$message.info({ message: '已取消导出' })
       })
-    }
+    },
 
+    // 跳转订单详情
+    orderHandler (orderSn) {
+      this.$router.push({
+        name: 'orderInfo',
+        query: {
+          orderSn: orderSn
+        }
+      })
+    }
   }
 }
 </script>
@@ -230,5 +248,29 @@ export default {
 }
 .el-main {
   padding: inherit;
+}
+.goodImge {
+  display: flex;
+}
+.goodImge img {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border: 1px solid #ccc;
+}
+.goodImge .name {
+  width: 115px;
+  height: 40px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  margin-left: 12px;
+  text-align: left;
+}
+.linkStyle {
+  color: #5a8bff;
+  cursor: pointer;
 }
 </style>
