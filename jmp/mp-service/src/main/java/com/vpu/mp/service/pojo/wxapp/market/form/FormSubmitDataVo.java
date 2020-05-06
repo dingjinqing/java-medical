@@ -18,7 +18,7 @@ public class FormSubmitDataVo {
      */
     private Integer submitId;
     /**
-     * 0成功 1 表单失效 2表单不能频繁提交 3提交次数达到上限
+     * 0成功 1 表单失效 2表单不能频繁提交 3提交次数达到上限 4表单校验失败
      */
     private Byte status= NumberUtils.BYTE_ZERO;
     private String message;
