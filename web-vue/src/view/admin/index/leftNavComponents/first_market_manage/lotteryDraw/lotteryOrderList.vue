@@ -52,9 +52,13 @@
         </el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.consignee')"
-          prop="consigneeRealName"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <p>{{scope.row.consigneeRealName}}</p>
+            <p>{{scope.row.mobile}}</p>
+          </template>
+        </el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.isWinDraw')"
           align="center"
