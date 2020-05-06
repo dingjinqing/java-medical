@@ -112,33 +112,30 @@
 export default {
   data () {
     return {
-      formData: {},
+      formData: {
+        version: 1
+      },
       oldVersion: '',
       newVersion: '',
       switchErpVersionVisible: false
     }
   },
-  watch: {
-    'formData.version': {
-      handler: function (newVal, oldVal) {
-        console.log(this.newVersion, newVal, this.oldVersion, oldVal)
-        this.newVersion = newVal
-        this.oldVersion = oldVal
-        if (newVal) {
-
-        }
-      }
-    }
+  mounted () {
+    this.oldVersion = this.formData.version
   },
   methods: {
     versionChange (val) {
-      console.log(val)
+      console.log('change:', val, this.oldVersion)
       if (this.oldVersion) {
+        this.newVersion = val
         this.$set(this.formData, 'version', this.oldVersion)
       }
       this.switchErpVersionVisible = !this.switchErpVersionVisible
     },
     confirmSwitchVersion () {
+      console.log('newVersion...', this.newVersion)
+      this.$set(this.formData, 'version', this.newVersion)
+      this.oldVersion = this.newVersion
       this.switchErpVersionVisible = false
     },
     cancelSwitchVersion () {
