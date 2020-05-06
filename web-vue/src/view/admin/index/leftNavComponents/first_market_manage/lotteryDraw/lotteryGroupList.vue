@@ -2,7 +2,7 @@
   <div class="content">
 
     <div class="main">
-      <el-form label-width="100px">
+      <el-form label-width="100px" :inline="true">
         <el-form-item
           :label="$t('lotteryDraw.groupName') + '：'"
           class="item"
@@ -23,10 +23,10 @@
           <el-date-picker
             size="small"
             v-model="requestParams.startTime"
-            type="datetime"
+            type="date"
             clearable
             class="inputWidth"
-            value-format="yyyy-MM-dd 00:00:00"
+            value-format="yyyy-MM-dd HH:mm:ss"
             :placeholder="$t('actionRecord.startTime')"
           >
           </el-date-picker>
@@ -34,11 +34,10 @@
           <el-date-picker
             size="small"
             v-model="requestParams.endTime"
-            type="datetime"
+            type="date"
             clearable
             class="inputWidth"
-            value-format="yyyy-MM-dd 00:00:00"
-            default-time="23:59:59"
+            value-format="yyyy-MM-dd [23]:[59]:[59]"
             :placeholder="$t('actionRecord.endTime')"
           >
           </el-date-picker>
@@ -55,6 +54,8 @@
             class="inputWidth"
           ></el-input>
         </el-form-item>
+      </el-form>
+      <el-form label-width="100px" :inline="true">
         <el-form-item
           :label="$t('lotteryDraw.mobile') + '：'"
           class="item"
@@ -85,20 +86,25 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-button
-          size="small"
-          type="primary"
+        <el-form-item
+        label=""
           class="item"
-          style="margin-left: 10px;"
-          @click="initDataList"
-        >{{ $t('lotteryDraw.select') }}</el-button>
-        <el-button
-          size="small"
-          type="primary"
-          class="item"
-          style="margin-left: 10px;"
-          @click="resetDataList"
-        >{{ $t('lotteryDraw.resetSelect') }}</el-button>
+        >
+          <el-button
+            size="small"
+            type="primary"
+            class="item"
+            style="margin-left: 10px;"
+            @click="initDataList"
+          >{{ $t('lotteryDraw.select') }}</el-button>
+          <el-button
+            size="small"
+            type="primary"
+            class="item"
+            style="margin-left: 10px;"
+            @click="resetDataList"
+          >{{ $t('lotteryDraw.resetSelect') }}</el-button>
+        </el-form-item>
       </el-form>
     </div>
 
@@ -132,9 +138,13 @@
         ></el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.groupName')"
-          prop="grouperName"
+          prop="userName"
           align="center"
-        ></el-table-column>
+        >
+         <template slot-scope="scope">
+           <el-link type="primary" :underline="false" @click="viewUserHanlder(scope.row.userId)">{{scope.row.userName}}</el-link>
+         </template>
+        </el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.grouperMobile')"
           prop="mobile"
@@ -166,13 +176,7 @@ export default {
   data () {
     return {
       // 成团状态
-      statusList: [{
-        value: true,
-        label: '已成团'
-      }, {
-        value: false,
-        label: '未成团'
-      }],
+      statusList: this.$t('lotteryDraw.statusList'),
       loading: false,
       pageParams: {}, // 分页
       requestParams: {
@@ -217,6 +221,15 @@ export default {
         mobile: '',
         grouped: null
       }
+    },
+    // 查看用户明细
+    viewUserHanlder (tagId) {
+      this.$router.push({
+        path: '/admin/home/main/membershipInformation',
+        query: {
+          userId: tagId
+        }
+      })
     }
   }
 

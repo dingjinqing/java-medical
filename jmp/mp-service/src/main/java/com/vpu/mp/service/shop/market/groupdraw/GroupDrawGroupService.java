@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.market.groupdraw;
 
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.JoinGroupList.JOIN_GROUP_LIST;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -25,9 +25,8 @@ import com.vpu.mp.service.pojo.shop.market.groupdraw.group.GroupListVo;
  */
 @Service
 public class GroupDrawGroupService extends ShopBaseService {
-
 	
-	private static final byte ZERO = 1;
+	private static final byte ZERO = 0;
 	private static final byte ONE = 1;
 	private static final byte TWO = 2;
 
@@ -51,7 +50,7 @@ public class GroupDrawGroupService extends ShopBaseService {
 		}
 		return pageResult;
 
-    }
+	}
 
 	public SelectConditionStep<Record8<Integer, String, String, Timestamp, Timestamp, Integer, String, String>> buildOptions(
 			SelectConditionStep<Record8<Integer, String, String, Timestamp, Timestamp, Integer, String, String>> select,
@@ -66,7 +65,7 @@ public class GroupDrawGroupService extends ShopBaseService {
 			select.and(JOIN_GROUP_LIST.OPEN_TIME.le(param.getEndTime()));
 		}
 		if (!StringUtils.isEmpty(param.getMobile())) {
-			select.and(USER.USERNAME.like(likeValue(param.getMobile())));
+			select.and(USER.MOBILE.like(likeValue(param.getMobile())));
 		}
 		if (null != param.getGrouped()) {
 			if(param.getGrouped()) {
