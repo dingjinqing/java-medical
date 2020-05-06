@@ -21,9 +21,9 @@ public class GroupListVo {
     /** 成团时间 **/
     private Timestamp endTime;
     /** 团长id **/
-    private Integer grouperId;
+    private Integer userId;
     /** 团长昵称 **/
-    private String grouperName;
+    private String userName;
     /** 团长手机号 **/
     private String mobile;
 }
