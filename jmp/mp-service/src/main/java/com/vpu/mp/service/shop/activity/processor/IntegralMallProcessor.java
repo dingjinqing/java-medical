@@ -94,9 +94,6 @@ public class IntegralMallProcessor implements Processor,GoodsDetailProcessor, Cr
         IntegralConvertSelectVo activityInfo = dao.getDetail(param.getActivityId());
         dao.orderCheck(param, activityInfo);
         dao.orderInit(param, activityInfo);
-        param.getGoods().forEach(goods -> {
-            goods.getGoodsInfo().setIsOnSale(BaseConstant.YES);
-        });
     }
 
     @Override
