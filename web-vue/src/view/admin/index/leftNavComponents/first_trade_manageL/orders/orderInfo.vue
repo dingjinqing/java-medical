@@ -303,7 +303,7 @@
                         {{$t('order.partShipText')}}</span>
                     </div>
                     <div class="right">
-                      <span @click="manualReturn(oneOrder.orderSn,oneOrder.orderId,oneOrder.createTime)">{{$t('order.manualReturnText')}}</span>
+                      <span @click="manualReturn(oneOrder.orderSn,oneOrder.orderId,oneOrder.createTime)" v-if="order.showManualReturn === 1">{{$t('order.manualReturnText')}}</span>
                       <span @click="goComment(oneOrder.orderSn)">{{$t('order.comment')}}</span>
                     </div>
                   </div>
