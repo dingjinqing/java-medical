@@ -220,7 +220,24 @@ public class WxShareRewardService extends ShopBaseService {
         // 获取活动信息详情
         ShareRewardInfoVo info = shareReward.getShareInfo(activityId);
         List<ShareRule> rules = info.getShareRules();
-        rules.forEach(rule -> rule.setUserInfoList(getBatchUserList(getAttendUserList(userId, goodsId, activityId, rule.getRuleLevel()))));
+        ShareAwardRecordRecord awardRecord = shareReward.getShareAwardRecord(activityId, userId, goodsId);
+        rules.forEach(rule -> {
+            rule.setUserInfoList(getBatchUserList(getAttendUserList(userId, goodsId, activityId, rule.getRuleLevel())));
+            if (awardRecord != null) {
+                switch (rule.getRuleLevel()) {
+                    case 1:
+                        rule.setShareState(awardRecord.getFirstAward());
+                        break;
+                    case 2:
+                        rule.setShareState(awardRecord.getSecondAward());
+                        break;
+                    case 3:
+                        rule.setShareState(awardRecord.getThirdAward());
+                        break;
+                    default:
+                }
+            }
+        });
         // 获取每日用户可分享次数上限参数
         int limitNum = shareReward.getDailyShareAwardValue();
         return GoodsShareDetail.builder().dailyShareLimit(limitNum).infoVo(info).build();
