@@ -228,11 +228,12 @@ public class OrderReadService extends ShopBaseService {
     private ShopAccountService shopAccount;
     @Autowired
     private ChildAccountService childAccount;
-    /**
-     * 订单查询
-     * @param param
-     * @return PageResult
-     */
+
+	/**
+	 * 订单查询
+	 * @param param
+	 * @return PageResult
+	 */
 	public OrderQueryVo getPageList(OrderPageListQueryParam param) {
 		logger.info("订单综合查询开始");
 		OrderQueryVo result = new OrderQueryVo();
@@ -428,7 +429,7 @@ public class OrderReadService extends ShopBaseService {
             return;
         }
         //订单无可退商品且无可退金额
-        if(!orderGoods.canReturnGoodsNumber(vo.getOrderSn()) && BigDecimalUtil.compareTo(orderInfo.getOrderFinalAmount(vo , Boolean.TRUE), returnOrder.getReturnMoney(vo.getOrderSn())) < 1) {
+        if(!orderGoods.canReturnGoodsNumber(vo.getOrderSn()) && BigDecimalUtil.compareTo(orderInfo.getOrderFinalAmount(vo , Boolean.TRUE), refundAmountRecord.getOrderRefundAmount(vo.getOrderSn())) < 1) {
             vo.setShowManualReturn(false);
             return;
         }

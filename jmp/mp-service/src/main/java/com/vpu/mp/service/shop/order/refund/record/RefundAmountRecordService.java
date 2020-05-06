@@ -1,6 +1,15 @@
 package com.vpu.mp.service.shop.order.refund.record;
 
-import static com.vpu.mp.db.shop.tables.RefundAmountRecord.REFUND_AMOUNT_RECORD;
+import com.vpu.mp.db.shop.tables.RefundAmountRecord;
+import com.vpu.mp.db.shop.tables.records.RefundAmountRecordRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import org.jooq.Record2;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
@@ -8,17 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import static com.vpu.mp.db.shop.tables.RefundAmountRecord.REFUND_AMOUNT_RECORD;
 
-import com.vpu.mp.db.shop.tables.RefundAmountRecord;
-import com.vpu.mp.db.shop.tables.records.RefundAmountRecordRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.shop.order.info.OrderInfoService;;
+;
 
 /**
  * Table:REFUND_AMOUNT_RECORD
@@ -96,4 +97,14 @@ public class RefundAmountRecordService extends ShopBaseService{
 		record.setRetId(retId);
 		record.insert();
 	}
+
+    /**
+     * 	获取该订单退款总金额
+     * @param orderSn
+     * @return BigDecimal
+     */
+    public BigDecimal getOrderRefundAmount(String orderSn){
+        List<BigDecimal> result = db().select(TABLE.REFUND_MONEY).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchInto(BigDecimal.class);
+        return result.stream().reduce(BigDecimalUtil::add).get();
+    }
 }
