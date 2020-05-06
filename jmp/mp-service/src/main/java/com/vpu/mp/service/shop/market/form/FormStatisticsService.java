@@ -55,11 +55,13 @@ import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.elasticsearch.common.Strings;
 import org.jooq.Record6;
 import org.jooq.Record8;
 import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
 import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -451,21 +453,64 @@ public class FormStatisticsService extends ShopBaseService {
 
         vo.setParticipantsNum(getFormFeedUserNum(pageId));
 
-        vo.setSexList(getFeedStatisticData(pageId, M_SEX));
-        vo.setChooseList(getFeedStatisticData(pageId, M_CHOOSE));
-        vo.setSlideList(getFeedStatisticData(pageId, M_SLIDE));
+        vo.setOneVo(getFeedStatisticDataNew(pageId));
+        String pageContent = vo.getPageContent();
+        Map<String, FormModulesBo> stringMapMap = Util.json2Object(pageContent, new TypeReference<Map<String, FormModulesBo>>() {
+        }, true);
+        vo.getOneVo().forEach(c->{
+            c.setConfirm(stringMapMap.get(c.getCurIdx()).getConfirm());
+            Map<String,String> selects;
+            if (stringMapMap.get(c.getCurIdx()).getModule_name().equals(M_CHOOSE)){
+                c.setShowTypes(stringMapMap.get(c.getCurIdx()).getShow_types());
+                selects = stringMapMap.get(c.getCurIdx()).getSelects();
+                Map<String, String> finalSelects = selects;
+                if (c.getShowTypes().equals(NumberUtils.BYTE_ZERO)){
+                    c.getInnerVo().forEach(l->{
+                        l.setModuleValue(finalSelects.get(l.getModuleValue().substring(1,l.getModuleValue().length()-1)));
+                    });
+                }
+                if (c.getShowTypes().equals(NumberUtils.BYTE_ONE)){
+                    c.getInnerVo().forEach(l->{
+                        String arrString = l.getModuleValue().substring(1,l.getModuleValue().length()-1);
+                        String[] arr = arrString.split(",");
+                        String moduleValues = "";
+                        for (int i=0;i<arr.length;i++){
+                            moduleValues = moduleValues + " " + finalSelects.get(arr[i].substring(1,arr[i].length()-1));
+                        }
+                        l.setModuleValue(moduleValues);
+                    });
+                }
+            }
+        });
 
-        vo.setSexTotal(sumVotes(vo.getSexList()));
-        vo.setChooseTotal(sumVotes(vo.getChooseList()));
-        vo.setSlideTotal(sumVotes(vo.getSlideList()));
-
-        calPercentage(vo.getSexTotal(), vo.getSexList());
-        calPercentage(vo.getChooseTotal(), vo.getChooseList());
-        calPercentage(vo.getSlideTotal(), vo.getSlideList());
 
         return vo;
     }
-
+    public List<FeedBackOneVo> getFeedStatisticDataNew(int pageId) {
+        List<FeedBackOneVo> feedBackOneVoList = new ArrayList<>();
+        List<String> curIdx = db().selectDistinct(fsd.CUR_IDX)
+            .from(fsd)
+            .where(fsd.PAGE_ID.eq(pageId))
+            .fetchInto(String.class);
+        curIdx.forEach(idx->{
+            FeedBackOneVo feedBackOneVo = new FeedBackOneVo();
+            feedBackOneVo.setCurIdx(idx);
+            List<FeedBackInnerVo> innerVo = db().select(fsd.MODULE_NAME
+                , fsd.MODULE_TYPE
+                , fsd.MODULE_VALUE
+                , DSL.count().as("votes"))
+                .from(fsd)
+                .where(fsd.PAGE_ID.eq(pageId))
+                .and(fsd.CUR_IDX.eq(idx))
+                .groupBy(fsd.MODULE_VALUE,fsd.MODULE_NAME,fsd.MODULE_TYPE)
+                .fetchInto(FeedBackInnerVo.class);
+            feedBackOneVo.setInnerVo(innerVo);
+            feedBackOneVo.setTotalVotes(sumVotes(innerVo));
+            calPercentage(feedBackOneVo.getTotalVotes(),innerVo);
+            feedBackOneVoList.add(feedBackOneVo);
+        });
+        return feedBackOneVoList;
+    }
     private void calPercentage(int total, List<FeedBackInnerVo> list) {
         list.forEach(e -> e.setPercentage(getIntPercentage(total, e.getVotes())));
     }

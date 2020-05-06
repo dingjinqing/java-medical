@@ -541,6 +541,8 @@ public class WxCardDetailService extends ShopBaseService{
 					UserCardCoupon.builder()
 						.id(coupon.getId())
 						.name(coupon.getActName())
+						.actCode(coupon.getActCode())
+						.denomination(coupon.getDenomination())
 						.suiteGoodsType(suiteGoodsType)
 						.couponCondition(couponCon)
 						.timeType(timeType)

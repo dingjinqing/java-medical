@@ -27,6 +27,7 @@ public class UserCardCoupon {
 	 */
 	private String name;
 	
+	
 	/**
 	 * 	优惠券使用条件范围描述
 	 * 	全部商品 | 部分商品
@@ -65,5 +66,10 @@ public class UserCardCoupon {
 	 */
 	private BigDecimal leastConsume;
 	
+	/** 优惠券类型，voucher指定金额券，discount折扣券 */
+    private String actCode;
+    
+    /** 面额 */
+    private BigDecimal denomination;
 	
 }
