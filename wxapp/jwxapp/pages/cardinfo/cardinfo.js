@@ -30,7 +30,7 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log(options, '腾飞测试++++++++++++++++++')
+    console.log(options, '腾飞测试++++++++++++++++++', this.data)
     if (!util.check_setting(options)) return;
     wx.hideShareMenu();
     let cardNo = options.cardNo ? options.cardNo : null
@@ -47,6 +47,12 @@ global.wxPage({
       is_fullprice = options.is_fullprice;
     } else {
       is_fullprice = 0
+    }
+    if (this.data.linColor) {
+      let linColor = this.data.linColor.slice(0, this.data.linColor.lastIndexOf(',')) + ',0.3)';
+      this.setData({
+        bgColor: linColor
+      })
     }
     seckillId = options.seckillId ? options.seckillId : 0;
     code = options.code ? options.code : 0;
@@ -109,7 +115,28 @@ global.wxPage({
         //   }
         // ]
         cardInfo.custom_rights_flag = 1
-
+        // 处理开卡送券
+        if (cardInfo.cardType == 0 && cardInfo.sendCouponSwitch == 1 && cardInfo.coupons) {
+          cardInfo.coupons.forEach((item, index) => {
+            if (item.timeType == 0) {
+              console.log(typeof item.expireTime)
+              let time = JSON.parse(item.expireTime)
+              console.log(time, item.expireTime)
+              let showTime = '领券起'
+              Object.keys(time).forEach((itemC, indexC) => {
+                console.log(itemC, indexC)
+                if (itemC == 'day') {
+                  showTime = showTime + `${time.day}天`
+                } else if (itemC == 'hour') {
+                  showTime = showTime + `${time.hour}小时`
+                } else if (itemC == 'minute') {
+                  showTime = showTime + `${time.minute}分钟`
+                }
+              })
+              item.expireTime = showTime
+            }
+          })
+        }
         that.setData({
           cardInfo: cardInfo
         })
@@ -600,12 +627,12 @@ global.wxPage({
   // 点击优惠卷
   viewCoupon (e) {
     let coupon_id = e.currentTarget.dataset.coupon_id;
-    util.jumpLink('/pages/getCoupon/getCoupon?code=' + coupon_id, 'navigateTo')
+    util.jumpLink('/pages/getCoupon/getCoupon?couponId=' + coupon_id, 'navigateTo')
 
   },
   to_cou_package (e) {
     let pack_id = e.currentTarget.dataset.pack_id;
-    util.jumpLink("/pages/couponpackage/couponpackage?pack_id=" + pack_id)
+    util.jumpLink("/pages/couponpackage/couponpackage?packId=" + pack_id)
   },
   // 点击会员专享
   to_search: function (e) {
