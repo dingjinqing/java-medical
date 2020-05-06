@@ -32,13 +32,42 @@
           </el-select>
         </el-form-item>
         <el-form-item  :label="$t('groupIntegration.endTime')">
-          <el-date-picker
-            style="width: 300px"
-            size="small"
-            type="datetimerange"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            v-model="timeRange"
-          ></el-date-picker>
+          <section style="display: flex">
+            <div>
+              <el-form-item
+                prop='startTime'
+                style="margin-bottom:0;"
+              >
+                <el-date-picker
+                  v-model="condition.startTime"
+                  type="date"
+                  :placeholder="$t('groupIntegration.pleaseSelectStartTime')"
+                  size="small"
+                  style="width: 150px;"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                >
+                </el-date-picker>
+              </el-form-item>
+            </div>
+            <span style="margin: 1px 5px 0px -6px;">{{$t('groupIntegration.to')}}</span>
+            <div>
+              <el-form-item
+                prop="endTime"
+                style="margin-bottom:0"
+              >
+                <el-date-picker
+                  v-model="condition.endTime"
+                  type="date"
+                  size="small"
+                  :placeholder="$t('groupIntegration.pleaseSelectEndTime')"
+                  style="width: 150px;"
+                  value-format="yyyy-MM-dd [23]:[59]:[59]"
+                  default-time="23:59:59"
+                >
+                </el-date-picker>
+              </el-form-item>
+            </div>
+          </section>
         </el-form-item>
         <el-button
           size="small"
@@ -220,14 +249,6 @@ export default {
   },
   methods: {
     onSubmit () {
-      if (!this.timeRange) {
-        this.condition.startTime = ''
-        this.condition.endTime = ''
-      } else {
-        this.condition.startTime = this.timeRange[0]
-        this.condition.endTime = this.timeRange[1]
-      }
-      this.pageInfo.currentPage = 1
       this.loadTable()
     },
     loadTable () {
