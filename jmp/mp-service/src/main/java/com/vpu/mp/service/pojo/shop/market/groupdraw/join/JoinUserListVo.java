@@ -29,8 +29,14 @@ public class JoinUserListVo {
     /** 成团时间 **/
     private Timestamp endTime;
     /** 邀请用户数量 **/
-    private Short inviteUserNum;
+    private Integer inviteNum;
 
     /** 抽奖码数量 **/
     private Short codeCount;
+    
+    private Integer groupDrawId;
+    
+    private Integer goodsId;
+    
+    private Integer drawNum;
 }

@@ -207,7 +207,9 @@ public class PictorialService extends ShopBaseService {
         // 设置用户名
         ImageUtil.addFont(bgBufferedImage, userInfo.getUserName(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getUserNameX(), imgPx.getUserNameY(), PictorialImgPx.HEAD_FONT_COLOR, false);
         // 设置宣传语
-        ImageUtil.addFont(bgBufferedImage, shareDoc, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getShareDocX(), imgPx.getShareDocY(), PictorialImgPx.HEAD_FONT_COLOR, false);
+        if (shareDoc != null) {
+            ImageUtil.addFont(bgBufferedImage, shareDoc, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getShareDocX(), imgPx.getShareDocY(), PictorialImgPx.HEAD_FONT_COLOR, false);
+        }
 
         // 设置商品图片
         goodsImg = ImageUtil.resizeImage(imgPx.getGoodsWidth(), imgPx.getGoodsHeight(), goodsImg);

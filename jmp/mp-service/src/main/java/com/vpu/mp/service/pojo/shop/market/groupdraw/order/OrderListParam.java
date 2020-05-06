@@ -16,7 +16,7 @@ public class OrderListParam extends BasePageParam {
     private Integer groupDrawId;
     private String goodsName;
     private String orderSn;
-    private String orderStatusName;
+    private Byte orderStatus=-1;
     private String consigneeName;
     private String mobile;
     private Timestamp createTime;
