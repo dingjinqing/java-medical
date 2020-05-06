@@ -690,9 +690,12 @@ public class CouponPackService extends ShopBaseService {
 	 * 获取所有的可用优惠券礼包活动
 	 */ 
 	public List<UserCardCouponPack> getAllValidCouponPack(){
+		/**  状态过滤	*/
+		Timestamp now = DateUtil.getLocalDateTime();
 		return db().select(COUPON_PACK.ID,COUPON_PACK.ACT_NAME,COUPON_PACK.PACK_NAME)
 				.from(COUPON_PACK)
 				.where(COUPON_PACK.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+				.and((COUPON_PACK.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(COUPON_PACK.START_TIME.lt(now)).and(COUPON_PACK.END_TIME.gt(now)))
 				.orderBy(COUPON_PACK.CREATE_TIME.desc())
 				.fetchInto(UserCardCouponPack.class);
 	}
