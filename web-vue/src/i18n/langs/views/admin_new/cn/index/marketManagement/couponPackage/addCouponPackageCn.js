@@ -64,6 +64,7 @@ export const cn = {
   validaAccessCost: '请填写领取价格！',
   validVoucher: '请选择礼包内优惠券！',
   validStrategy3: '请完整填写所选优惠券的发券数量和策略！',
+  validStrategy4: '请设置延时发放策略',
 
   validName: '请填写活动名称',
   validStartTime: '请填写有效期开始时间',

@@ -93,7 +93,10 @@
                       </el-tooltip>
                     </div>
 
-                    <div v-if="item.flag !== 3"   @click="handleToTips(2,item,index,0)">
+                    <div
+                      v-if="item.flag !== 3"
+                      @click="handleToTips(2,item,index,0)"
+                    >
                       <el-tooltip
                         class="item"
                         effect="dark"
@@ -127,7 +130,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane
-           :label="$t('memberCard.limitCard')"
+          :label="$t('memberCard.limitCard')"
           name="second"
         >
           <div class="firstDiv">
@@ -219,7 +222,7 @@
                         :content="item.flag===2?'启用':'停用'"
                         placement="top-start"
                       >
-                        <img :src="item.flag===2?item.useIcon.img1:item.noUseIcon.img2">
+                        <img :src="item.flag===2?item.noUseIcon.img2:item.useIcon.img1">
                       </el-tooltip>
                     </div>
 
@@ -303,14 +306,14 @@
                         {{$t('memberCard.ForeverEffective')}}
                       </span>
                     </div>
-                  <div class="grade_condition">
-                    <p class="grade_tip">{{$t('memberCard.gradeCondition')}}</p>
-                    <div class="grade_detail">
-                      <p> {{$t('memberCard.gradeScore')}} {{item.gradeConditionJson.gradeScore}}{{$t('memberCard.unitM')}}</p>
-                      <p>{{$t('memberCard.or')}}</p>
-                      <p>{{$t('memberCard.gradeAmountCon')}}{{item.gradeConditionJson.gradeMoney}}{{$t('memberCard.yuan')}}</p>
+                    <div class="grade_condition">
+                      <p class="grade_tip">{{$t('memberCard.gradeCondition')}}</p>
+                      <div class="grade_detail">
+                        <p> {{$t('memberCard.gradeScore')}} {{item.gradeConditionJson.gradeScore}}{{$t('memberCard.unitM')}}</p>
+                        <p>{{$t('memberCard.or')}}</p>
+                        <p>{{$t('memberCard.gradeAmountCon')}}{{item.gradeConditionJson.gradeMoney}}{{$t('memberCard.yuan')}}</p>
+                      </div>
                     </div>
-                  </div>
                   </div>
                   <div class="card_edit">
                     <div @click="handleToTips(0,item,index,2)">
@@ -343,7 +346,7 @@
                         :content="item.flag===2?'启用':'停用'"
                         placement="top-start"
                       >
-                        <img :src="item.flag===2?item.useIcon.img1:item.noUseIcon.img2">
+                        <img :src="item.flag===2?item.noUseIcon.img2:item.useIcon.img1">
                       </el-tooltip>
                     </div>
                   </div>
@@ -1004,15 +1007,15 @@ export default {
                 }
               }
             }
-            .grade_condition{
+            .grade_condition {
               margin-top: 5px;
               color: #fff;
               line-height: normal;
               font-size: 12px;
-              .grade_tip{
+              .grade_tip {
                 color: #fff;
               }
-              .grade_detail{
+              .grade_detail {
                 padding-left: 20px;
               }
             }

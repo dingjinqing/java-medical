@@ -171,8 +171,8 @@ public class ScoreService extends ShopBaseService {
 
 				// 订阅消息
 				String[][] maData = new String[][] {
-					{String.valueOf(score)},
-					{String.valueOf(totalScore)},
+					{String.valueOf(Math.abs(score))},
+					{String.valueOf(Math.abs(totalScore))},
 					{subscribueRemark}
 				};
 				List<Integer> arrayList = Collections.<Integer>singletonList(param.getUserId());
