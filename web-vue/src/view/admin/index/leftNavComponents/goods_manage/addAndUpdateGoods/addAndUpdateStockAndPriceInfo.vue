@@ -91,7 +91,7 @@
         <div class="specInfoWrap">
           <table class="specInfoWrapTable">
             <tr>
-              <th></th>
+              <th>SKU</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopPrice')}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopCost')}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecMarketPrice')}}</th>
@@ -242,7 +242,7 @@
         <div class="specInfoWrap">
           <table class="specInfoWrapTable" v-if="specInfoSwitch">
             <tr>
-              <th class="specInfoWrapTableThSkuName"></th>
+              <th class="specInfoWrapTableThSkuName">SKU</th>
               <!--规格价格（元）-->
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.prdPrice')}}</th>
               <template v-for="item in memberCards">
@@ -1591,7 +1591,6 @@ export default {
   border: 1px solid #ccc;
   color: #333;
   padding: 10px;
-  min-width: 1000px;
   overflow-x: auto;
 }
 
@@ -1650,6 +1649,10 @@ export default {
   right: -8px;
   cursor: pointer;
   opacity: 0.8;
+}
+
+.specInfoWrap .specInfoWrapTable{
+  min-width: 1000px;
 }
 .specInfoWrap .specInfoWrapTable .specInfoWrapTableThSkuName{
   min-width: 200px;
