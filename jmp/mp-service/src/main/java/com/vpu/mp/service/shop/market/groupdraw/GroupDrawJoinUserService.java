@@ -102,7 +102,7 @@ public class GroupDrawJoinUserService extends ShopBaseService {
 			vo.setDrawNum(groupDrawService.getDrawNum(vo.getGroupDrawId(), vo.getUserId(), vo.getGoodsId()));
 			vo.setInviteNum(groupDrawService.getInviteNum(vo.getGroupDrawId(), vo.getUserId(), vo.getGoodsId()));
 		}
-		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), JoinUserListVo.class);
+		return pageResult;
 	}
 
 	private SelectConditionStep<Record> buildOptions(SelectConditionStep<Record> select, JoinUserListParam param) {
