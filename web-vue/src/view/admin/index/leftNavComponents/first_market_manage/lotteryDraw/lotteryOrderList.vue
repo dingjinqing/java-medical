@@ -40,8 +40,7 @@
           :label="$t('lotteryDraw.consignee')"
           prop="consigneeRealName"
           align="center"
-        >
-        </el-table-column>
+        ></el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.isWinDraw')"
           align="center"
@@ -124,10 +123,22 @@ export default {
   methods: {
     initDataList () {
       this.loading = true
-      this.requestParams.groupDrawId = this.$route.query.id
-      this.requestParams.currentPage = this.pageParams.currentPage
-      this.requestParams.pageRows = this.pageParams.pageRows
-      orderLotteryList(this.requestParams).then((res) => {
+      var obj = {}
+      obj.groupDrawId = this.$route.query.id
+      obj.currentPage = this.pageParams.currentPage
+      obj.pageRows = this.pageParams.pageRows
+      console.log(this.requestParams)
+      obj.goodsName = this.requestParams.goodsName
+      obj.orderSn = this.requestParams.orderSn
+      obj.orderStatusName = this.requestParams.selectedOrderStatus
+      obj.consigneeName = this.requestParams.consignee
+      obj.mobile = this.requestParams.mobile
+      obj.createTime = this.requestParams.createTimeStart
+      obj.provinceCode = this.requestParams.provinceCode
+      obj.cityCode = this.requestParams.cityCode
+      obj.districtCode = this.requestParams.districtCode
+      console.log(obj)
+      orderLotteryList(obj).then((res) => {
         if (res.error === 0) {
           this.tableData = res.content.dataList
           // this.handleData(res.content.dataList)
