@@ -84,7 +84,10 @@
         </el-form>
       </el-form-item>
       <!-- 可配送区域组件 -->
-      <el-form-item label="配送区域：">
+      <el-form-item
+        label="配送区域："
+        :required="true"
+      >
         <LocatTPTable
           ref="regionData"
           :flag="flag"
@@ -275,6 +278,10 @@ export default {
       }
 
       var regionData = this.$refs['regionData'].getTableData()
+      if (regionData[1] && regionData[1].length === 0) {
+        this.$message.warning('可配送区域不能为空')
+        return stats++
+      }
       if (regionData[0] === true) {
         this.delivery.contentParam.areaParam = regionData[1]
         if (this.delivery.contentParam.limitParam.limit_deliver_area === 1 && regionData[1].length === 0) {
