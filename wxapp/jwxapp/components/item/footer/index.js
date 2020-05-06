@@ -276,7 +276,8 @@ global.wxComponent({
         this.initFooter()
       }
     },
-    cardExchange:Object
+    cardExchange:Object,
+    inviteId:Number
   },
   /**
    * 组件的初始数据
@@ -526,6 +527,7 @@ global.wxComponent({
         params.preSaleInfo = JSON.stringify(params.preSaleInfo)
       }
       if (this.data.roomId) params.roomId = this.data.roomId
+      if (this.data.activity && this.data.activity.activityType === 8 && this.data.inviteId) params.inviteId = this.data.inviteId
       if (this.data.activity && this.data.activity.activityType === 1) {
         util.getNeedTemplateId('invite', () => {
           util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ ...params })}`, "navigateTo")

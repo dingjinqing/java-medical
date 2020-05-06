@@ -61,7 +61,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     let goods = []
-    let { goodsList, activityType, activityId, recordId, preSaleInfo=null,roomId=null } = options
+    let { goodsList, activityType, activityId, recordId, preSaleInfo=null,roomId=null,inviteId=null } = options
     console.log(options)
     JSON.parse(goodsList).forEach(item => {
       let {
@@ -83,7 +83,8 @@ global.wxPage({
       'params.activityType': activityType,
       'params.activityId': activityId,
       'params.recordId': recordId,
-      'params.roomId':roomId
+      'params.roomId':roomId,
+      inviteId
     })
     if (options.groupid) {
       this.setData({
@@ -625,6 +626,7 @@ global.wxPage({
         delete addParams.insteadPayNum
       }
       if (this.data.params.roomId) addParams.roomId = Number(this.data.params.roomId)
+      if (this.data.inviteId) addParams.inviteId = Number(this.data.inviteId)
       console.log(addParams)
       let params = {
         goods,
