@@ -232,8 +232,6 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
                 userTotalFanli.updateTotalRebate(entry.getKey(), entry.getValue(), user.getInviteCount(entry.getKey()));
                 //返利增加余额
                 addRebateAccount(entry.getKey(), order.getOrderSn(), entry.getValue(), order.getUserId());
-                //消息推送
-                sendMessage.rebate(entry.getKey(), order.getOrderSn(), entry.getValue(), order.getUserId());
             }
             db().batchUpdate(updateRecords).execute();
 

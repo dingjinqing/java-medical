@@ -220,6 +220,10 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
             //后台设置此次需要的积分
             param.setScoreDiscount(param.getScoreDiscount() + goods.getGoodsScore() * goods.getGoodsNumber());
         }
+        //积分兑换跳过下架校验
+        param.getGoods().forEach(goods -> {
+            goods.getGoodsInfo().setIsOnSale(BaseConstant.YES);
+        });
     }
 
     /**
