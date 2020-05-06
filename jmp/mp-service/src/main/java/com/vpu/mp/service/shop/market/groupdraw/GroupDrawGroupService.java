@@ -25,7 +25,8 @@ import com.vpu.mp.service.pojo.shop.market.groupdraw.group.GroupListVo;
  */
 @Service
 public class GroupDrawGroupService extends ShopBaseService {
-
+	
+	private static final byte ZERO = 1;
 	private static final byte ONE = 1;
 	private static final byte TWO = 2;
 
@@ -67,7 +68,11 @@ public class GroupDrawGroupService extends ShopBaseService {
 			select.and(USER.USERNAME.like(likeValue(param.getMobile())));
 		}
 		if (null != param.getGrouped()) {
-			select.and(JOIN_GROUP_LIST.STATUS.eq((param.getGrouped() ? ONE : TWO)));
+			if(param.getGrouped()) {
+				select.and(JOIN_GROUP_LIST.STATUS.eq(ONE));
+			}else {
+				select.and(JOIN_GROUP_LIST.STATUS.eq(TWO)).or(JOIN_GROUP_LIST.STATUS.eq(ZERO));				
+			}
 		}
 		if (null != param.getGroupId()) {
 			select.and(JOIN_GROUP_LIST.GROUP_ID.eq(param.getGroupId()));

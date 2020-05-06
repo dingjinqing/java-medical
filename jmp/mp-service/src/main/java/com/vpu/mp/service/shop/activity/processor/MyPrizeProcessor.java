@@ -67,6 +67,10 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
         param.setMemberCardNo(StringUtils.EMPTY);
         param.setCouponSn(StringUtils.EMPTY);
         param.setIsFreeShippingAct(YES);
+        //下架商品可以购买
+        param.getGoods().forEach(goods -> {
+            goods.getGoodsInfo().setIsOnSale(BaseConstant.YES);
+        });
         PrizeRecordRecord prizeRecord = prizeRecordService.getById(param.getActivityId());
         if (prizeRecord.getPrizeStatus().equals(PRIZE_STATUS_RECEIVED)) {
             logger().info("奖品已经领取过了");
