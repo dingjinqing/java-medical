@@ -105,7 +105,7 @@
         </el-table-column>
         <el-table-column
           label="昵称"
-          width="120"
+          width="115"
           align="center"
         >
           <template slot-scope="scope">
@@ -120,7 +120,7 @@
         <el-table-column
           prop="mobile"
           label="手机号"
-          width="120"
+          width="115"
           align="center"
         >
         </el-table-column>
@@ -416,18 +416,19 @@ export default {
     .operation {
       display: flex;
       justify-content: center;
+      margin-left: 30px;
       span {
         cursor: pointer;
         color: #5a8bff;
       }
       .opt-item {
-        width: 60px;
+        width: 58px;
         display: block;
       }
 
       .content-left {
         text-align: left;
-        margin-left: 15px;
+        margin-left: 3px;
       }
     }
   }
