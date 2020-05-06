@@ -75,14 +75,18 @@
                   </span>
                 </div>
                 <!--图片-->
-                <img
-                  v-if="item.moduleName === 'm_imgs'"
-                  :src="item.moduleValue"
-                  style="display: inline-block;margin-right:10px"
-                  width="65px"
-                  height="65px"
-                  class="click_comm"
-                >
+                <div v-if="item.moduleName === 'm_imgs'">
+                  <img
+                    v-for="(itemC,indexC) in item.moduleValue"
+                    :key="indexC"
+                    :src="itemC"
+                    style="display: inline-block;margin-right:10px"
+                    width="65px"
+                    height="65px"
+                    class="click_comm"
+                  >
+                </div>
+
                 <!--上传视频-->
                 <a
                   :href="item.moduleValue.video_src"
@@ -193,8 +197,9 @@ moduleValueList: null
                   //   slideIndex: '',
                   //   slideArr: ''
                   // }
+                  let value = JSON.parse(item.moduleValue)
                   item.moduleValueList.forEach((itemC, indexC) => {
-                    if (item.moduleValue === itemC) {
+                    if (value === itemC) {
                       item.moduleValue = itemC
                     }
                   })
@@ -227,8 +232,9 @@ moduleValueList: null
                   item.simple = true
                   break
                 case 'm_imgs':
+                  console.log(item)
                   item.simple = false
-                  item.moduleValue = JSON.parse(item.moduleValue)[0]
+                  item.moduleValue = JSON.parse(item.moduleValue)
                   break
                 case 'm_upload_video':
                   console.log(item)
