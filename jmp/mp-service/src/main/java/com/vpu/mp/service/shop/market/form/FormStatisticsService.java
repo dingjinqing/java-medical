@@ -489,10 +489,16 @@ public class FormStatisticsService extends ShopBaseService {
     }
     public List<FeedBackOneVo> getFeedStatisticDataNew(int pageId) {
         List<FeedBackOneVo> feedBackOneVoList = new ArrayList<>();
+        List<String> moduleName = new ArrayList<>();
+        moduleName.add(M_SEX);
+        moduleName.add(M_CHOOSE);
+        moduleName.add(M_SLIDE);
         List<String> curIdx = db().selectDistinct(fsd.CUR_IDX)
             .from(fsd)
             .where(fsd.PAGE_ID.eq(pageId))
+            .and(fsd.MODULE_NAME.in(moduleName))
             .fetchInto(String.class);
+
         curIdx.forEach(idx->{
             FeedBackOneVo feedBackOneVo = new FeedBackOneVo();
             feedBackOneVo.setCurIdx(idx);
@@ -503,6 +509,7 @@ public class FormStatisticsService extends ShopBaseService {
                 .from(fsd)
                 .where(fsd.PAGE_ID.eq(pageId))
                 .and(fsd.CUR_IDX.eq(idx))
+                .and(fsd.MODULE_NAME.in(moduleName))
                 .groupBy(fsd.MODULE_VALUE,fsd.MODULE_NAME,fsd.MODULE_TYPE)
                 .fetchInto(FeedBackInnerVo.class);
             feedBackOneVo.setInnerVo(innerVo);
