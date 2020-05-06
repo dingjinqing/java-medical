@@ -20,7 +20,7 @@ public class UserCardCoupon {
 	/**
 	 * 优惠券或优惠券礼包Id
 	 */
-	private Integer Id;
+	private Integer id;
 	
 	/**
 	 * 优惠券或优惠券礼包名称
