@@ -66,17 +66,10 @@
             :class="specialliNavTwo"
           >
             <span>{{$t('membershipIntroduction.registrationTime')}}</span>
-            <el-date-picker
-              v-model="datePickerVal"
-              type="daterange"
-              :range-separator="$t('membershipIntroduction.to')"
-              :start-placeholder="$t('membershipIntroduction.Starttime')"
-              :end-placeholder="$t('membershipIntroduction.Endtime')"
-              value-format='yyyy-MM-dd HH:mm:ss'
-              :default-time="['00:00:00','23:59:59']"
-              size="small"
-            >
-            </el-date-picker>
+            <date-time-picker
+              :showPicker='3'
+              @startTime="registStartTime = $event"
+              @endTime="registEndTime = $event"/>
           </div>
         </li>
         <li>
@@ -96,8 +89,8 @@
            <div class="liNav">
             <span id="distritor-span">{{$t('membershipIntroduction.distributorTip')}} </span>
             <el-select v-model="isDistributor" size="small">
-              <el-option v-for="opt of distributorOpts"
-                :key="opt"
+              <el-option v-for="(opt,index) in distributorOpts"
+                :key="index"
                 :label="opt.label"
                 :value="opt.id">
               </el-option>
@@ -136,19 +129,13 @@
           </div>
         </li>
         <li>
-          <div>
-            <span>{{$t('membershipIntroduction.reacord')}}</span>
-            <el-date-picker
-              v-model="datePickerVal_one"
-              type="daterange"
-              :range-separator="$t('membershipIntroduction.to')"
-              :start-placeholder="$t('membershipIntroduction.startdata')"
-              :end-placeholder="$t('membershipIntroduction.enddate')"
-              value-format='yyyy-MM-dd HH:mm:ss'
-              :default-time="['00:00:00', '23:59:59']"
-              size="small"
-            >
-            </el-date-picker>
+          <div class="liNav date">
+            <span >{{$t('membershipIntroduction.reacord')}}</span>
+            <date-time-picker
+              :showPicker='3'
+              @startTime="loginStartTime = $event"
+              @endTime="loginEndTime = $event"
+              class="date-picker-item"/>
           </div>
           <div class="hiddenRight">
             <span>{{$t('membershipIntroduction.PassengerUnitPrice')}}</span>
@@ -166,19 +153,13 @@
           </div>
         </li>
         <li>
-          <div>
+          <div class="liNav date">
             <span>{{$t('membershipIntroduction.behavior')}}</span>
-            <el-date-picker
-              v-model="datePickerVal_two"
-              type="daterange"
-              :range-separator="$t('membershipIntroduction.to')"
-              :start-placeholder="$t('membershipIntroduction.startdata')"
-              :end-placeholder="$t('membershipIntroduction.enddate')"
-              value-format='yyyy-MM-dd HH:mm:ss'
-              :default-time="['00:00:00', '23:59:59']"
-              size="small"
-            >
-            </el-date-picker>
+            <date-time-picker
+              :showPicker='3'
+              @startTime="cartStartTime = $event"
+              @endTime="cartEndTime = $event"
+              class="date-picker-item"/>
           </div>
           <div class="hiddenRight">
             <span>{{$t('membershipIntroduction.purchasetimes')}}</span>
@@ -196,19 +177,13 @@
           </div>
         </li>
         <li class="specialLi">
-          <div>
+          <div class="liNav date">
             <span>{{$t('membershipIntroduction.transaction')}}</span>
-            <el-date-picker
-              v-model="datePickerVal_three"
-              type="daterange"
-              :range-separator="$t('membershipIntroduction.to')"
-              :start-placeholder="$t('membershipIntroduction.startdata')"
-              :end-placeholder="$t('membershipIntroduction.enddate')"
-              value-format='yyyy-MM-dd HH:mm:ss'
-              :default-time="['00:00:00', '23:59:59']"
-              size="small"
-            >
-            </el-date-picker>
+             <date-time-picker
+              :showPicker='3'
+              @startTime="buyStartTime = $event"
+              @endTime="buyEndTime = $event"
+              class="date-picker-item"/>
           </div>
           <div>
             <div  class="brand_title">
@@ -917,12 +892,13 @@ import { membershipListRequest, allUserCardRequest, allSourceRequest, allTagRequ
 import { getAllMemberCardByClassRequest, setCardForMemberRequest, getAllAvailableMemberCardRequest } from '@/api/admin/memberManage/memberCard.js'
 import { mapActions } from 'vuex'
 import ChoosingGoods from '@/components/admin/choosingGoods'
+import DateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
 import SetUpMemCDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipList/setUpMemCDialog'
 import SelectingUsersDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipList/selectingUsersDialog'
 import membershipExportDialog from './membershipExportDialog'
 import ModifyData from './modifyData'
 export default {
-  components: { ChoosingGoods, SetUpMemCDialog, SelectingUsersDialog, ModifyData, membershipExportDialog },
+  components: { ChoosingGoods, DateTimePicker, SetUpMemCDialog, SelectingUsersDialog, ModifyData, membershipExportDialog },
   props: ['labelText'],
   data () {
     return {
@@ -950,7 +926,8 @@ export default {
       noImg: this.$imageHost + '/image/admin/no_data.png',
       membershipCardVal: 0,
       labelVal: [],
-      datePickerVal: '',
+      registStartTime: null,
+      registEndTime: null,
       checkPhone: false,
       checkIntegr: false,
       balance: false,
@@ -958,9 +935,12 @@ export default {
       noLanding: false,
       importMembership: false,
       goodsIdsArr: [],
-      datePickerVal_one: '',
-      datePickerVal_two: '',
-      datePickerVal_three: '',
+      loginStartTime: null,
+      loginEndTime: null,
+      cartStartTime: null,
+      cartEndTime: null,
+      buyStartTime: null,
+      buyEndTime: null,
       frequencyLeft: '',
       frequencyRight: '',
       ArrowArr: [
@@ -1110,18 +1090,18 @@ export default {
           'source': this.sourceValue,
           'sourceLabel': sourceLabel ? sourceLabel.label : '',
           'inviteUserName': this.inviteUserName,
-          'createTime': this.datePickerVal ? this.datePickerVal[0] : null,
-          'endTime': this.datePickerVal ? this.datePickerVal[1] : null,
+          'createTime': this.registStartTime,
+          'endTime': this.registEndTime,
           'cardId': this.membershipCardVal,
           'membershipCardLabel': membershipCardLabel ? membershipCardLabel.cardName : '',
           'tagName': this.labelVal,
           'tagSourceLabel': tagLabels.length > 0 ? tagLabels.join(',') : [],
-          'loginStartTime': this.datePickerVal_one ? this.datePickerVal_one[0] : null,
-          'loginEndTime': this.datePickerVal_one ? this.datePickerVal_one[1] : null,
-          'cartStartTime': this.datePickerVal_two ? this.datePickerVal_two[0] : null,
-          'cartEndTime': this.datePickerVal_two ? this.datePickerVal_two[1] : null,
-          'buyStartTime': this.datePickerVal_three ? this.datePickerVal_three[0] : null,
-          'buyEndTime': this.datePickerVal_three ? this.datePickerVal_three[1] : null,
+          'loginStartTime': this.loginStartTime,
+          'loginEndTime': this.loginEndTime,
+          'cartStartTime': this.cartStartTime,
+          'cartEndTime': this.cartEndTime,
+          'buyStartTime': this.buyStartTime,
+          'buyEndTime': this.buyEndTime,
           'unitPriceLow': this.unitPriceLeft,
           'unitPriceHight': this.unitPriceRight,
           'buyCountLow': this.frequencyLeft,
@@ -1176,15 +1156,15 @@ export default {
         'source': this.sourceValue,
         'cardId': this.membershipCardVal,
         'tagName': this.labelVal,
-        'createTime': this.datePickerVal ? this.datePickerVal[0] : null,
-        'endTime': this.datePickerVal ? this.datePickerVal[1] : null,
+        'createTime': this.registStartTime,
+        'endTime': this.registEndTime,
         'inviteUserName': this.inviteUserName,
-        'loginStartTime': this.datePickerVal_one ? this.datePickerVal_one[0] : null,
-        'loginEndTime': this.datePickerVal_one ? this.datePickerVal_one[1] : null,
-        'cartStartTime': this.datePickerVal_two ? this.datePickerVal_two[0] : null,
-        'cartEndTime': this.datePickerVal_two ? this.datePickerVal_two[1] : null,
-        'buyStartTime': this.datePickerVal_three ? this.datePickerVal_three[0] : null,
-        'buyEndTime': this.datePickerVal_three ? this.datePickerVal_three[1] : null,
+        'loginStartTime': this.loginStartTime,
+        'loginEndTime': this.loginEndTime,
+        'cartStartTime': this.cartStartTime,
+        'cartEndTime': this.cartEndTime,
+        'buyStartTime': this.buyStartTime,
+        'buyEndTime': this.buyEndTime,
         'unitPriceLow': this.unitPriceLeft,
         'unitPriceHight': this.unitPriceRight,
         'buyCountLow': this.frequencyLeft,
@@ -2371,5 +2351,8 @@ img {
 #distritor-span{
   display: block;
   width: 100px;
+}
+.date-picker-item{
+  margin-left: 75px;
 }
 </style>

@@ -20,19 +20,11 @@
         </div>
         <div class="receiveDetailDate">
           <span>{{$t('membershipIntroduction.time')}}：</span>
-          <el-date-picker
-            v-model="dateInput"
-            type="daterange"
-            align="right"
-            unlink-panels
-            :range-separator="$t('membershipIntroduction.to')"
-            :start-placeholder="$t('membershipIntroduction.Starttime')"
-            :end-placeholder="$t('membershipIntroduction.Endtime')"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            :default-time="['00:00:00','23:59:59']"
-            size="small"
-          >
-          </el-date-picker>
+           <date-time-picker
+              :showPicker='3'
+              @startTime="startTime = $event"
+              @endTime="endTime = $event"
+            />
         </div>
         <div>
           <el-button
@@ -138,8 +130,12 @@
 import { scoreDetailRequest } from '@/api/admin/membershipList.js'
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
+import DateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
 export default {
-  components: { pagination },
+  components: {
+    pagination,
+    DateTimePicker
+  },
   data () {
     return {
       id: '', // 用户id
@@ -149,7 +145,8 @@ export default {
       }, // 分页信息
       orderSn: '', // 订单号码
       nameInput: '',
-      dateInput: null,
+      startTime: null,
+      endTime: null,
       membershipCardOptins: [
       ],
       membershipCardValue: '',
@@ -185,8 +182,8 @@ export default {
         'userId': this.id,
         'userName': this.userName,
         'orderSn': this.orderSn,
-        'startTime': this.dateInput ? this.dateInput[0] : null,
-        'endTime': this.dateInput ? this.dateInput[1] : null
+        'startTime': this.startTime,
+        'endTime': this.endTime
 
       }
 
@@ -217,7 +214,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 .noData {
   height: 100px;
   display: flex;
@@ -320,12 +317,6 @@ thead td {
   padding: 8px 10px;
   vertical-align: middle !important;
 }
-/* thead td:nth-of-type(1) {
-  width: 220px;
-}
-thead td:nth-of-type(2) {
-  width: 104px;
-} */
 
 tbody td {
   text-align: center;
@@ -339,13 +330,5 @@ td {
 }
 .content_two td:nth-of-type(2) {
   width: 490px !important;
-}
-</style>
-<style>
-.receiveDetailMain .top .el-input__inner {
-  width: 170px !important;
-}
-.receiveDetail .receiveDetailMain .receiveDetailDate .el-input__inner {
-  width: 350px !important;
 }
 </style>

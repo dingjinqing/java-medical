@@ -11,12 +11,14 @@
                     <div class="content" v-for="(item,index) in customRightsAll"
                         :key="index">
                         <span class="content-item">{{item.crightName}}</span>
-                        <el-tooltip content="编辑" placement="top" effect="light">
-                            <i class="el-icon-edit-outline icon-style" @click="callRightDialog(index)"></i>
-                        </el-tooltip>
-                        <el-tooltip content="删除" placement="top" effect="light">
-                            <i class="el-icon-delete icon-style" @click="deleteRight(index)"></i>
-                        </el-tooltip>
+                        <div class="content-right">
+                          <el-tooltip content="编辑" placement="top" effect="light">
+                              <i class="el-icon-edit-outline icon-style" @click="callRightDialog(index)"></i>
+                          </el-tooltip>
+                          <el-tooltip content="删除" placement="top" effect="light">
+                              <i class="el-icon-delete icon-style" @click="deleteRight(index)"></i>
+                          </el-tooltip>
+                        </div>
                     </div>
                 </div>
                 <div class="content-container no-content" v-else>
@@ -105,14 +107,22 @@ export default {
     .content-container{
         background: #fff;
         border: 1px dashed #ccc;
-        margin-right: 50%;
+        margin-right: 35%;
         margin-top: 10px;
         padding-bottom: 10px;
         .content{
             padding: 10px 0 0 20px;
             .content-item{
                 display: inline-block;
-                width: 230px;
+            }
+            .content-right{
+              float: right;
+              margin-right: 20%;
+            }
+            .content-right::after {
+                content: "";
+                clear: both;
+                display: table;
             }
             .icon-style{
                 font-size: 22px;

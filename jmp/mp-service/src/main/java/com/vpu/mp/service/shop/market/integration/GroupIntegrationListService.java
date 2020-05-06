@@ -346,7 +346,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 			step.and(USER.USERNAME.like(this.likeValue(param.getUsername())));
 		}
 		if(param.getStartTime() != null) {
-			step.and(GROUP_INTEGRATION_LIST.END_TIME.ge(param.getStartTime()));
+			step.and(GROUP_INTEGRATION_LIST.START_TIME.ge(param.getStartTime()));
 		}
 		if(param.getEndTime() != null) {
 			step.and(GROUP_INTEGRATION_LIST.END_TIME.le(param.getEndTime()));
@@ -390,7 +390,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 			select.and(GROUP_INTEGRATION_LIST.STATUS.eq(param.getStatus()));
 		}
 		if(param.getStartTime() != null) {
-			select.and(GROUP_INTEGRATION_LIST.END_TIME.ge(param.getStartTime()));
+			select.and(GROUP_INTEGRATION_LIST.START_TIME.ge(param.getStartTime()));
 		}
 		if(param.getEndTime() != null) {
 			select.and(GROUP_INTEGRATION_LIST.END_TIME.le(param.getEndTime()));

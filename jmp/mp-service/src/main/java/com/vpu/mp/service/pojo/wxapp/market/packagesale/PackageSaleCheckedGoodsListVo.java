@@ -18,6 +18,10 @@ public class PackageSaleCheckedGoodsListVo {
     private Integer totalSelectNumber;
     //所选商品总价
     private BigDecimal totalSelectMoney;
+    /**
+     * 总金额合优惠金额
+     */
+    private PackageSaleGoodsListVo.TotalMoney totalMoney;
 
 
     @Getter

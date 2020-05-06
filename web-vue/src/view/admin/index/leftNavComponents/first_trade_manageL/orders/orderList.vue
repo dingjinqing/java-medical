@@ -240,6 +240,7 @@
             </el-date-picker> -->
             <el-date-picker
               v-model="orderTime.startTime"
+              type="datetime"
               :placeholder="$t('membershipIntroduction.Starttime')"
               value-format="yyyy-MM-dd HH:mm:ss"
               class="default_input"
@@ -249,11 +250,13 @@
              至
             <el-date-picker
               v-model="orderTime.endTime"
+              type="datetime"
               :placeholder="$t('membershipIntroduction.Endtime')"
               value-format="yyyy-MM-dd HH:mm:ss"
               class="default_input"
               @change="datePickerChange(false,orderTime)"
               :picker-options="orderEndTime"
+              default-time="23:59:59"
               size="small"
             />
           </div>
@@ -275,6 +278,7 @@
             </el-date-picker> -->
             <el-date-picker
               v-model="completeTime.startTime"
+              type="datetime"
               :placeholder="$t('membershipIntroduction.Starttime')"
               value-format="yyyy-MM-dd HH:mm:ss"
               @change="datePickerChange(true,completeTime)"
@@ -284,11 +288,13 @@
              至
             <el-date-picker
               v-model="completeTime.endTime"
+              type="datetime"
               :placeholder="$t('membershipIntroduction.Endtime')"
               value-format="yyyy-MM-dd HH:mm:ss"
               @change="datePickerChange(false,completeTime)"
               :picker-options="completeEndTime"
               class="default_input"
+              default-time="23:59:59"
               size="small"
             />
           </div>

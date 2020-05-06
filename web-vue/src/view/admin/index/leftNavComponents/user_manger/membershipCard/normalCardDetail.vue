@@ -305,7 +305,7 @@ export default {
         cardTag: 'off',
         cardTagId: []
       },
-      marketActivities: ['COUPON', 'MEMBER_PRICE']
+      marketActivities: []
     }
   },
   mounted () {
