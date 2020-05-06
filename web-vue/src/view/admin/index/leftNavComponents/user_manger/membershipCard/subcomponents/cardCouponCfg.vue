@@ -33,7 +33,10 @@
               <span class="coupon-info">
                 {{ $t('memberCard.offerInfo') }}
               </span>
-              <span v-if="couponError"  class="coupon-error-tip">{{$t('memberCard.couponErrorTip')}}</span>
+              <span
+                v-if="couponError"
+                class="coupon-error-tip"
+              >{{$t('memberCard.couponErrorTip')}}</span>
             </div>
             <div
               v-if="ruleForm.couponType==='1'"
@@ -104,6 +107,12 @@
                 label="2"
               >{{ $t('memberCard.sendCoupon') }}
               </el-radio>
+              <div>
+                <select-coupon-pack
+                  @selectCouponPack="setCouponPack"
+                  :myPack="ruleForm.couponPack"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -120,7 +129,8 @@
 <script>
 export default {
   components: {
-    AddCouponDialog: () => import('@/components/admin/addCouponDialog')
+    AddCouponDialog: () => import('@/components/admin/addCouponDialog'),
+    selectCouponPack: () => import('@/components/admin/coupon/selectCouponPack')
   },
   props: {
     val: {
@@ -193,6 +203,10 @@ export default {
       console.log('删除优惠券', index)
       this.ruleForm.couponList.splice(index, 1)
       this.ruleForm.couponIdList = this.ruleForm.couponList.map(({ id }) => id)
+    },
+    setCouponPack (val) {
+      console.log('选择优惠券礼包')
+      this.ruleForm.couponPack = val
     }
   }
 }
@@ -208,8 +222,8 @@ export default {
       color: #9d9d9d;
       margin-left: 25px;
     }
-    .coupon-error-tip{
-      color: #F56C6C;
+    .coupon-error-tip {
+      color: #f56c6c;
       font-size: 12px;
     }
     .send-coupon {

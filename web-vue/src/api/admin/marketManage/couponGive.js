@@ -52,3 +52,12 @@ export function getUserNum (data) {
     data: data
   })
 }
+
+// 获取预期发放人数
+export function getAllValidCouponPack () {
+  return service({
+    url: '/api/admin/market/couponpack/list/all',
+    method: 'post',
+    data: null
+  })
+}

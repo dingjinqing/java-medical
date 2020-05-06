@@ -22,7 +22,8 @@
           <div v-show="Number(cardEffectTime.expiredType) !== 2">
             <cardRenewCfg
               v-bind.sync="cardRenew"
-              ref="cardRenew" />
+              ref="cardRenew"
+            />
           </div>
 
           <cardStoreCfg
@@ -85,8 +86,10 @@
         </div>
         <div class="advance-setting">
           <div class="rightTitle">高级设置</div>
-          <card-advance-cfg :cardTag="cardTag"
-              :cardType="cardType"/>
+          <card-advance-cfg
+            :cardTag="cardTag"
+            :cardType="cardType"
+          />
         </div>
       </div>
     </div>
@@ -232,6 +235,7 @@ export default {
         couponType: '1',
         couponIdList: [],
         couponList: [],
+        couponPack: null,
         valid: false
       },
       cardEffectTime: cardEffectTimeTmp,
@@ -405,6 +409,7 @@ export default {
       this.cardCouponCfgData.couponType = String(data.sendCouponType + 1)
       this.cardCouponCfgData.couponIdList = data.couponIds ? data.couponIds : []
       this.cardCouponCfgData.couponList = data.couponList ? data.couponList : []
+      this.cardCouponCfgData.couponPack = data.couponPack
 
       // 门店
       this.cardStoreCfgData.storeListType = String(data.storeListType)
@@ -660,6 +665,7 @@ export default {
         'sendCoupon': this.cardCouponCfgData.powerCoupon ? 'on' : '',
         'couponType': Number(this.cardCouponCfgData.couponType) - 1,
         'couponIds': this.cardCouponCfgData.couponIdList,
+        'couponPackage': this.cardCouponCfgData.couponPack ? this.cardCouponCfgData.couponPack.id : null,
         'expiredType': this.cardEffectTime.expiredType,
         'startTime': this.cardEffectTime.fixedDate ? this.cardEffectTime.fixedDate[0] : null,
         'endTime': this.cardEffectTime.fixedDate ? this.cardEffectTime.fixedDate[1] : null,
@@ -771,7 +777,7 @@ export default {
       }
     },
     dealWithCardTag () {
-      this.cardTag.cardTagId = this.cardTag.cardTagId.map(({id}) => id)
+      this.cardTag.cardTagId = this.cardTag.cardTagId.map(({ id }) => id)
     },
     dealWithCustomAction () {
       // true/false 转换1/0
@@ -819,7 +825,7 @@ export default {
     .rightContainerTop,
     .member-rights,
     .rightContainerBottom,
-    .advance-setting  {
+    .advance-setting {
       padding: 10px 1%;
       background: #f8f8f8;
       border: 1px solid #e4e4e4;
