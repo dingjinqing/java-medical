@@ -122,7 +122,7 @@
               :data="form.goodsInfo"
               key="goodsList"
               border
-              style="width:60%"
+              style="width:700px;"
             >
               <el-table-column
                 prop="goodsName"
