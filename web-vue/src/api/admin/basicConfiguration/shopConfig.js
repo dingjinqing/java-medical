@@ -90,3 +90,12 @@ export function getMiniProgramServices (data) {
     method: 'get'
   })
 }
+
+// 版本升级与续费
+export function versionChangeRenew (data) {
+  return service({
+    url: '/api/admin/version/charge/renew',
+    data,
+    method: 'post'
+  })
+}

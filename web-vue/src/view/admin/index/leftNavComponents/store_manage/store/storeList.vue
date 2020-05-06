@@ -564,7 +564,8 @@ export default {
     },
     goMore () {
       this.$router.push({
-        path: '/admin/home/main/versionUpgrade'
+        path: '/admin/home/main/versionUpgrade',
+        query: { mod: '门店列表' }
       })
     }
   },

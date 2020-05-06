@@ -2,13 +2,17 @@
   <el-container class="container">
     <div class="version-upgrade-page">
       <div class="top">
+        <!-- 申请升级 -->
         <el-button
           type="primary"
           size="small"
+          @click="applyChange(0)"
         >{{$t('versionUpgrade.applyUp')}}</el-button>
+        <!-- 申请续费 -->
         <el-button
           type="primary"
           size="small"
+          @click="applyChange(1)"
         >{{$t('versionUpgrade.applyRenewal')}}</el-button>
         <span class="tips">
           {{$t('versionUpgrade.downView')}} <el-link type="primary"> {{$t('versionUpgrade.menu')}}.pdf</el-link>
@@ -119,13 +123,88 @@
         </div>
       </div>
     </div>
+    <!-- 系统通知1 -->
+    <el-dialog
+      :visible.sync="systemNotifyVisible1"
+      :title="$t('versionUpgrade.systemNotify')"
+      class="dialog-wrap"
+      width="360px"
+    >
+      <div style="font-size: 12px;color:#666;">
+        <p>{{$t('versionUpgrade.fedBack')}}</p>
+        <el-divider></el-divider>
+        <p>{{$t('versionUpgrade.contactCustomer')}}：400-010-1039</p>
+      </div>
+      <div
+        slot="footer"
+        style="text-align: center;"
+      >
+        <el-button
+          type="primary"
+          size="small"
+          @click="systemNotifyVisible1 = false"
+        >{{$t('versionUpgrade.ok')}}</el-button>
+      </div>
+    </el-dialog>
+    <!-- 系统通知2 -->
+    <el-dialog
+      :visible.sync="systemNotifyVisible2"
+      :title="$t('versionUpgrade.systemNotify')"
+      class="dialog-wrap"
+      width="360px"
+    >
+      <div style="font-size: 12px;color:#666;">
+        <p>{{$t('versionUpgrade.submitted')}}</p>
+        <el-divider></el-divider>
+        <p>{{$t('versionUpgrade.contactCustomer')}}：400-010-1039</p>
+      </div>
+      <div
+        slot="footer"
+        style="text-align: center;"
+      >
+        <el-button
+          type="primary"
+          size="small"
+          @click="systemNotifyVisible2 = false"
+        >{{$t('versionUpgrade.ok')}}</el-button>
+      </div>
+    </el-dialog>
   </el-container>
 </template>
 
 <script>
+import { versionChangeRenew } from '@/api/admin/basicConfiguration/shopConfig'
 export default {
   data () {
-    return {}
+    return {
+      mod: '商城概览', // 商城概览 页面装修 门店列表 表单统计
+      systemNotifyVisible1: false,
+      systemNotifyVisible2: false
+    }
+  },
+  mounted () {
+    if (this.$route.query.mod) {
+      this.mod = this.$route.query.mod
+    }
+  },
+  methods: {
+    applyChange (type) {
+      let that = this
+      let param = {
+        applyType: Number(type),
+        applyMod: this.mod
+      }
+      versionChangeRenew(param).then(res => {
+        console.log(res.content)
+        if (res.error === 0) {
+          if (res.content === 1) {
+            that.systemNotifyVisible1 = true
+          } else if (res.content === -1) {
+            that.systemNotifyVisible2 = true
+          }
+        }
+      })
+    }
   }
 }
 </script>
