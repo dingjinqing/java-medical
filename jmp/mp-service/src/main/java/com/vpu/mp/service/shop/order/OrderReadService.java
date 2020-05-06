@@ -413,10 +413,11 @@ public class OrderReadService extends ShopBaseService {
      */
     private void showManualReturn(OrderInfoVo vo) {
         //微信支付超一年不可退款
-        if(OrderConstant.PAY_CODE_WX_PAY.equals(vo.getPayCode())) {
+        if(OrderConstant.PAY_CODE_WX_PAY.equals(vo.getPayCode()) && vo.getPayTime() != null) {
             Calendar instance = Calendar.getInstance();
+            instance.setTimeInMillis(vo.getPayTime().getTime());
             instance.add(Calendar.YEAR, 1);
-            if(instance.getTimeInMillis() > System.currentTimeMillis()) {
+            if(instance.getTimeInMillis() >= System.currentTimeMillis()) {
                 vo.setShowManualReturn(false);
                 return;
             }
