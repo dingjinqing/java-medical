@@ -691,9 +691,10 @@ public class CouponPackService extends ShopBaseService {
 	 */ 
 	public List<UserCardCouponPack> getAllValidCouponPack(){
 		return db().select(COUPON_PACK.ID,COUPON_PACK.ACT_NAME,COUPON_PACK.PACK_NAME)
-			.where(COUPON_PACK.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-			.orderBy(COUPON_PACK.CREATE_TIME.desc())
-			.fetchInto(UserCardCouponPack.class);
+				.from(COUPON_PACK)
+				.where(COUPON_PACK.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+				.orderBy(COUPON_PACK.CREATE_TIME.desc())
+				.fetchInto(UserCardCouponPack.class);
 	}
 	
 
