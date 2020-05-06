@@ -43,7 +43,7 @@ public class WxAppFormDecorationController extends WxAppBaseController{
     public JsonResult submitFormData(@RequestBody @Validated FormSubmitDataParam param) throws MpException {
         WxAppSessionUser user = wxAppAuth.user();
         param.setUser(user);
-        return success(shop().formService.submitFormDate(param));
+        return success(shop().formService.submitFormDate(param,getLang()));
     }
 
     /**
