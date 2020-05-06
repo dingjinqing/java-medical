@@ -7,26 +7,26 @@
     <view class='top_search clearfix'>
       <view class="search">
         <icon class='search-img' size='13' type='search' role='img'></icon>
-        <input type="text" placeholder="输入售后编号/订单号/商品名称" bindconfirm="bindSearch" value='{{input_value}}' bindinput="save" />
+        <input type="text" placeholder="{{i18n.$t(localePack,'page1.aftersaleorder.searchPlaceholder')}}" bindconfirm="bindSearch" value='{{input_value}}' bindinput="save" />
         <image src='{{imageUrl}}/image/wxapp/search_clear.png' mode='widthFix' bindtap='clear_value'></image>
       </view>
-      <view class='btn_search' bindtap='bindSearch' data-value='{{input_value}}'>搜索</view>
+      <view class='btn_search' bindtap='bindSearch' data-value='{{input_value}}'>{{i18n.$t(localePack,'page1.aftersaleorder.search')}}</view>
     </view>
   </view>
   <!-- 列表数据 -->
   <view class="order_content" wx:if='{{order_info.length}}'>
     <view class="each_order" wx:for='{{order_info}}' wx:key='key'>
       <view class="eo_top">
-          <view class="order_sn">售后编号：{{item.returnOrderSn}}</view>
+          <view class="order_sn">{{i18n.$t(localePack,'page1.aftersaleorder.returnOrderSn')}}：{{item.returnOrderSn}}</view>
           <view class="order_status" style="color:{{comColor}}">
             <block wx:if='{{item.reasonType == 0}}'>
-              <text class="iconfont icontuikuan" style="color:{{comColor}}" wx:if='{{item.reasonType == 0}}'></text>退款
+              <text class="iconfont icontuikuan" style="color:{{comColor}}" wx:if='{{item.reasonType == 0}}'></text>{{i18n.$t(localePack,'page1.aftersaleorder.refund')}}
             </block>
             <block wx:if='{{item.reasonType == 1}}'>
-              <text class="iconfont icontuikuantuihuo" style="color:{{comColor}}" wx:if='{{item.reasonType == 1}}'></text>退货退款
+              <text class="iconfont icontuikuantuihuo" style="color:{{comColor}}" wx:if='{{item.reasonType == 1}}'></text>{{i18n.$t(localePack,'page1.aftersaleorder.returnRefund')}}
             </block>
             <block wx:if='{{item.reasonType == 4}}'>
-              <text class="iconfont iconhuanhuo" style="color:{{comColor}}" wx:if='{{item.reasonType == 4}}'></text>换货
+              <text class="iconfont iconhuanhuo" style="color:{{comColor}}" wx:if='{{item.reasonType == 4}}'></text>{{i18n.$t(localePack,'page1.aftersaleorder.exchangeGoods')}}
             </block>
           </view>
       </view>
@@ -39,16 +39,16 @@
                   <view class="goods_attr" wx:if='{{item1.goodsAttr != "" && item1.goodsAttr != null}}'>{{item1.goodsAttr}}</view>
               </view>
               <view class="goods_price">
-                  <view class="goods_num">数量：{{item1.goodsNumber}}</view>
+                  <view class="goods_num">{{i18n.$t(localePack,'page1.aftersaleorder.number')}}：{{item1.goodsNumber}}</view>
               </view>
           </view>
       </view>
       <view class="return_info" bindtap="to_detail"  data-order_sn='{{item.returnOrderSn}}' data-ret_id='{{item.retId}}'>
         <view class="return_desc">
-        {{item.refundStatus == 1 || item.refundStatus == 4?i18n.$t(localePack,"page1.afterSale.waitMerchantsProcess"):item.refundStatus == 2?i18n.$t(localePack,"page1.afterSale.merchantAgreeApply"):item.refundStatus == 3?i18n.$t(localePack,"page1.afterSale.sellerRefues"):item.refundStatus == 5?i18n.$t(localePack,"page1.afterSale.afterSalesCompleted"):item.refundStatus == 6?i18n.$t(localePack,"page1.afterSale.rejectedApply"):item.refundStatus == 7?'退款撤销':''}}
+        {{item.refundStatus == 1 || item.refundStatus == 4?i18n.$t(localePack,"page1.afterSale.waitMerchantsProcess"):item.refundStatus == 2?i18n.$t(localePack,"page1.afterSale.merchantAgreeApply"):item.refundStatus == 3?i18n.$t(localePack,"page1.afterSale.sellerRefues"):item.refundStatus == 5?i18n.$t(localePack,"page1.afterSale.afterSalesCompleted"):item.refundStatus == 6?i18n.$t(localePack,"page1.afterSale.rejectedApply"):item.refundStatus == 7?i18n.$t(localePack,'page1.aftersaleorder.refundCancellation'):''}}
         </view>
         <!--{{item.refund_status_name}}-->
-        <view class="btn_look_detail">查看详情</view>
+        <view class="btn_look_detail">{{i18n.$t(localePack,'page1.aftersaleorder.viewDetails')}}</view>
       </view>
     </view>
   </view>
@@ -57,7 +57,7 @@
     <view class="order-no">
       <image class="order-no-img" src="{{imageUrl}}image/wxapp/order-no.png" />
     </view>
-    <view class="no-zi" style="margin: 0;margin-bottom: 13px;margin-top:20rpx;">您还没有相关订单哦</view>
+    <view class="no-zi" style="margin: 0;margin-bottom: 13px;margin-top:20rpx;">{{i18n.$t(localePack,'page1.aftersaleorder.noOrder')}}</view>
   </view>
 </view>
 <include src="/pages/common/footer.wxml" />

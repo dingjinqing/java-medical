@@ -1,3 +1,4 @@
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml" />
 <v-container bindsearch="getSearchText">
 	<view slot="rule" class="rule" wx:if="{{false}}">
@@ -50,18 +51,18 @@
 		</block>
 		<view class="pro_content_no" wx:if='{{!dataList.length}}'>
 			<image class="image" src='{{imageUrl}}/image/wxapp/no_result.png' mode='widthFix' />
-			<view class="view" class='empty_tips'>暂无适用商品！</view>
+			<view class="view" class='empty_tips'>{{i18n.$t(localePack,'page1.usercardgoods.noApplicable')}}！</view>
 		</view>
 	</view>
 	<view class="footer" slot="footer">
 		<view class="left">
 			<view class="selected-price">
-				<text>剩余兑换总数量</text>
-				<text class="text" style="color:{{comColor}};">{{exchangSurplus}}次</text>
+				<text>{{i18n.$t(localePack,'page1.usercardgoods.totalNumber')}}</text>
+				<text class="text" style="color:{{comColor}};">{{exchangSurplus}}{{i18n.$t(localePack,'page1.usercardgoods.second')}}</text>
 			</view>
 		</view>
 		<view class="selected" style="background-color:{{commonColor}}" bindtap="showSelected">
-			<span>已选商品</span>
+			<span>{{i18n.$t(localePack,'page1.usercardgoods.selectedItems')}}</span>
 			<span>({{totalNumber}})</span>
 		</view>
 		<view class="cart" style="background-color:{{comColor}}" bindtap="goCheckOut">立即兑换</view>
@@ -85,7 +86,7 @@
 	/>
 	<view class="spec-footer" slot="footer">
 		<view class="footer_flex_view" bindtap="addCart" style='color:#fff;background:{{comColor}};'>
-			<text>确定</text>
+			<text>{{i18n.$t(localePack,'page1.usercardgoods.sure')}}</text>
 		</view>
 	</view>
 </v-spec-dialog>

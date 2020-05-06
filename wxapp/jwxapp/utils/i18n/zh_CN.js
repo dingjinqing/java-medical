@@ -20,6 +20,7 @@ var virtualCheckout = require('./page1/virtualCheckout.js') //虚拟商品结算
 var actPage = require('./page1/actPage.js') //活动商品页
 var history = require('./page1/history.js') //购买历史，我的足迹
 var goodsComment = require('./page1/goodsComment.js') //商品评价详情
+var aftersaleorder = require('./page1/aftersaleorder') // 售后中心
 var zh_CN = {
   "common": {
     "info": {
@@ -63,7 +64,7 @@ var zh_CN = {
     }, store),
     "order": order,
     "checkout": checkout,
-    "item":item,
+    "item": item,
     "coupon": coupon,
     "bargain": bargain,
     "cart": cart
@@ -81,7 +82,9 @@ var zh_CN = {
     'virtualCheckout': virtualCheckout,
     'actPage': actPage,
     "history": history,
-    "goodsComment": goodsComment
+    "goodsComment": goodsComment,
+    "aftersaleorder": aftersaleorder,
+    "usercardgoods": usercardgoods
   },
   "page2": {
 
