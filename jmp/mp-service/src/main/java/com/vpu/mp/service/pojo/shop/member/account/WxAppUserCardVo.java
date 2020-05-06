@@ -93,7 +93,6 @@ public class WxAppUserCardVo extends UserCardParam {
 	 *  优惠券礼包
 	 */
 	private List<UserCardCouponPack> couponPack;
-	
 	public void calcCardIsExpired(){
 		if(isExpire()) {
 			this.expire = ALREADY_EXPIRED;
