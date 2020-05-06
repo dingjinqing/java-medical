@@ -20,15 +20,21 @@ import com.vpu.mp.db.shop.tables.records.GiveCardRecordRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
+import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackUpdateVo;
 import com.vpu.mp.service.pojo.shop.member.account.NextGradeCardVo;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardCoupon;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardCouponPack;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardVo;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppCardExamineVo;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBgBean;
@@ -47,8 +53,10 @@ import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.card.vo.CardGiveVo;
 import com.vpu.mp.service.shop.card.CardDetailService;
 import com.vpu.mp.service.shop.card.CardFreeShipService;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.market.couponpack.CouponPackService;
 import com.vpu.mp.service.shop.member.CardVerifyService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.ScoreService;
@@ -76,6 +84,8 @@ public class WxCardDetailService extends ShopBaseService{
 	@Autowired private GoodsService goodsService;
 	@Autowired private WxCardGiveAwaySerivce wxCardGiveAwaySvc;
 	@Autowired private UserService userSvc;
+	@Autowired private CouponService couponService;
+	@Autowired private CouponPackService couponPackService;
 	
 	/**
 	 * 	获取自定义的激活项
@@ -145,7 +155,6 @@ public class WxCardDetailService extends ShopBaseService{
 			NextGradeCardVo nextGradeCard = getNextGradeCard(card.getGrade());
 			card.setNextGradeCard(nextGradeCard);
 		}
-
 		//	包邮信息
 		dealWithFreeShipInfo(card,lang);
 		//	自定义权益
@@ -154,6 +163,11 @@ public class WxCardDetailService extends ShopBaseService{
 		if(CardUtil.isLimitCard(card.getCardType())) {
 			card.setCardGive(getCardGiveVo(memberCardRecord, userCardRecord));
 		}
+		//	优惠券
+		UserCardVo voTmp = new UserCardVo();
+		this.dealSendCouponInfo(voTmp, lang);
+		card.setCouponPack(voTmp.getCouponPack());
+		card.setCoupons(voTmp.getCoupons());
 		return card;
 	}
 
@@ -392,5 +406,150 @@ public class WxCardDetailService extends ShopBaseService{
 		return res;
 	}
 	
+	
+	/**
+	 * 	处理会员卡相应的优惠券信息
+	 * @param userCard
+	 * @param lang
+	 */
+	public void dealSendCouponInfo(UserCardVo userCard,String lang) {
+		logger().info("处理会员卡相应的优惠券信息");
+		if(userCard == null) {
+			return;
+		}
+		if (CardUtil.isSendCoupon(userCard.getSendCouponType())) {
+			logger().info("正在生成优惠券信息");
+			List<Integer> couponIds = CardUtil.parseCouponList(userCard.getSendCouponIds());
+			if(couponIds == null || couponIds.size()==0) {
+				return;
+			}
+			// 优惠券信息列表
+			List<CouponView> couponList = couponService.getCouponViewByIds(couponIds);
+			userCard.setCoupons(cardCouponI18N(couponList,lang));
+		} else if (CardUtil.isSendCouponPack(userCard.getSendCouponType())) {
+			logger().info("处理优惠券礼包");
+			List<UserCardCouponPack> packList = new ArrayList<>();
+			if (!StringUtils.isBlank(userCard.getSendCouponIds())) {
+				int id = Integer.parseInt(userCard.getSendCouponIds());
+				CouponPackUpdateVo couponPack = couponPackService.getCouponPackById(id);
+				UserCardCouponPack pack = new UserCardCouponPack();
+				if(couponPack != null) {
+					pack = UserCardCouponPack.builder()
+							.id(couponPack.getId())
+							.actName(couponPack.getActName())
+							.packName(couponPack.getPackName())
+							.build();
+					packList.add(pack);
+				}
+				userCard.setCouponPack(packList);
+			}
+		}
+	}
+	
+	
+
+	/**
+	 * 	处理会员卡优惠券显示信息
+	 */
+	private List<UserCardCoupon> cardCouponI18N(List<CouponView> couponList,String lang) {
+		logger().info("处理会员卡优惠券信息");
+		String i18nfile = "member";
+		List<UserCardCoupon> res = new ArrayList<>();
+		if(couponList == null || couponList.size()==0) {
+			return res;
+		}
+		for (CouponView coupon : couponList) {
+			// 1-优惠券使用范围
+			String couponCon = null;
+			Byte suiteGoodsType;
+			if (NumberUtils.BYTE_ZERO.equals(coupon.getSuitGoods())) {
+				// 全部商品可用
+				couponCon = JsonResultMessage.CARD_COUPON_CON_ALL;
+				suiteGoodsType = NumberUtils.BYTE_ZERO;
+			} else {
+				// 部分商品可用
+				couponCon = JsonResultMessage.CARD_COUPON_CON_PART;
+				suiteGoodsType = NumberUtils.BYTE_ONE;
+			}
+			couponCon = Util.translateMessage(lang, couponCon, i18nfile);
+
+			// 2-优惠券过期时间
+			Integer day = coupon.getValidity();
+			Integer hour = coupon.getValidityHour();
+			Integer minute = coupon.getValidityMinute();
+			String couponExpireTimeDesc = null;
+			String desc="";
+			Byte timeType;
+			if (day > 0 || hour > 0 || minute > 0) {
+				timeType = NumberUtils.BYTE_ZERO;
+				StringBuilder con = new StringBuilder();
+				StringBuilder timedhm = new StringBuilder();
+				// 领券日起
+				String receiveInfo = Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_RECEIVE_DAY_START, i18nfile);
+				con.append(receiveInfo);
+				timedhm.append("{");
+				int comma = 0;
+				if (day> 0) {
+					con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_DAY, i18nfile, day));
+					timedhm.append("day: "+day);
+					comma++;
+				}
+				if (hour > 0) {
+					con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_HOUR, i18nfile,hour));
+					if(comma>0) {
+						timedhm.append(",");
+					}
+					timedhm.append("hour: "+hour);
+					comma++;
+				}
+				if (minute > 0) {
+					con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_MINUTE, i18nfile,minute));
+					if(comma>0) {
+						timedhm.append(",");
+					}
+					timedhm.append("minute: "+minute);
+				}
+				timedhm.append("}");
+				
+				desc = con.toString();
+				couponExpireTimeDesc = timedhm.toString();
+			} else {
+				timeType = NumberUtils.BYTE_ONE;
+				String startTime = coupon.getStartTime().toLocalDateTime().toLocalDate().toString();
+				String endTime = coupon.getEndTime().toLocalDateTime().toLocalDate().toString();
+				couponExpireTimeDesc = startTime + "--" + endTime;
+				desc = startTime + "--" + endTime;
+			}
+
+			// 3-优惠券使用条件限制
+			String restrict = null;
+			Byte restrictType;
+			BigDecimal leastConsume=null;
+			if (NumberUtils.INTEGER_ZERO.equals(coupon.getUseConsumeRestrict())) {
+				//	无门槛
+				restrict = Util.translateMessage(lang,JsonResultMessage.CARD_COUPON_NOLIMIT, i18nfile);
+				restrictType = NumberUtils.BYTE_ZERO;
+			} else {
+				//	满多少使用
+				restrict = Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_SATISFY, i18nfile, coupon.getLeastConsume());
+				restrictType = NumberUtils.BYTE_ONE;
+				leastConsume = coupon.getLeastConsume();
+			}
+			res.add(
+					UserCardCoupon.builder()
+						.Id(coupon.getId())
+						.suiteGoodsType(suiteGoodsType)
+						.couponCondition(couponCon)
+						.timeType(timeType)
+						.desc(desc)
+						.expireTime(couponExpireTimeDesc)
+						.useConsumeRestrictDesc(restrict)
+						.consumeRestrictType(restrictType)
+						.leastConsume(leastConsume)
+						.build()
+					);
+		}
+		return res;
+	}
 	
 }

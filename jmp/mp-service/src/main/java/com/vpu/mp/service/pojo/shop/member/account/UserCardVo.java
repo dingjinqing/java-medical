@@ -127,10 +127,14 @@ public class UserCardVo {
 	private List<Integer> storeIdList;
 	// 门店信息
 	private List<StoreBasicVo> storeInfoList;
-	// 优惠券列表
+	/**
+	 *  优惠券列表
+	 */
 	private List<UserCardCoupon> coupons;
-	// 优惠券礼包
-	private UserCardCouponPack couponPack;
+	/**
+	 *  优惠券礼包
+	 */
+	private List<UserCardCouponPack> couponPack;
 	// 升级进度
 	private NextGradeCardVo next;
 	private Timestamp buyTime;
