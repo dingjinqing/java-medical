@@ -493,7 +493,7 @@ public class WxCardDetailService extends ShopBaseService{
 				int comma = 0;
 				if (day> 0) {
 					con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_DAY, i18nfile, day));
-					timedhm.append("day: "+day);
+					timedhm.append("\"day\": "+day);
 					comma++;
 				}
 				if (hour > 0) {
@@ -501,7 +501,7 @@ public class WxCardDetailService extends ShopBaseService{
 					if(comma>0) {
 						timedhm.append(",");
 					}
-					timedhm.append("hour: "+hour);
+					timedhm.append("\"hour\": "+hour);
 					comma++;
 				}
 				if (minute > 0) {
@@ -509,7 +509,7 @@ public class WxCardDetailService extends ShopBaseService{
 					if(comma>0) {
 						timedhm.append(",");
 					}
-					timedhm.append("minute: "+minute);
+					timedhm.append("\"minute\": "+minute);
 				}
 				timedhm.append("}");
 				
