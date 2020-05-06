@@ -14,7 +14,7 @@ export const cn = {
   alreadydeliver: '发货后',
   autoconfirmgoods: '天，自动确认收货',
 
-  alreadyconfirmgoods: '确认收货后自动订单完成时间设置(订单完成则不可退换货)',
+  alreadyconfirmgoods: '确认收货后自动订单完成时间设置(不可申请退换货)',
   confirmgoodslater: '确认收货后',
   orderautodone: '天，订单完成',
 
