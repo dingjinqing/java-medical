@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.form;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -19,11 +20,10 @@ public class FeedBackStatisticsVo {
     private Timestamp startTime;
     private Timestamp endTime;
     private Byte state;
-    List<FeedBackInnerVo> sexList;
-    private Integer sexTotal;
-    List<FeedBackInnerVo> slideList;
-    private Integer slideTotal;
-    List<FeedBackInnerVo> chooseList;
-    private Integer chooseTotal;
+    @JsonIgnore
+    private String pageContent;
+
+
+    private List<FeedBackOneVo> oneVo;
 
 }
