@@ -9,11 +9,11 @@
       >
         <div class="article_container">
           <div class="article_left">
-            <img :src="item.imgUrl">
+            <img :src="item.headPic">
           </div>
           <div class="article_right">
             <div class="acticle_title">{{item.title}}</div>
-            <div class="acticle_content">{{item.content}}</div>
+            <div class="acticle_content">{{item.desc}}</div>
             <div class="acticle_time">{{item.updateTime}}</div>
           </div>
         </div>
