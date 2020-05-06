@@ -1,0 +1,36 @@
+.selected-content{
+  height: 800rpx;
+  background-color: #fff;
+  position: relative;
+  width:750rpx;
+}
+.goods-content{
+  position: absolute;
+  overflow-y: auto;
+  top: 80rpx;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.title{
+  line-height: 80rpx;
+  text-align: center;
+  box-sizing: border-box;
+  border-bottom: 1rpx solid #eee;
+}
+.package-info{
+  display: flex;
+  height: 100rpx;
+  border-bottom: 2rpx solid #eee;
+  align-items: center;
+  padding: 0 30rpx;
+}
+.item-info{
+  color: #666;
+  flex: 1;
+}
+.item-status image{
+  width: 15rpx;
+  height: 22rpx;
+  margin-left: 10rpx;
+}
