@@ -21,6 +21,8 @@ import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
+import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackUpdateVo;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardCouponPack;
 import com.vpu.mp.service.pojo.shop.member.builder.CardBatchVoBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
@@ -42,6 +44,7 @@ import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew.DateType;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
+import com.vpu.mp.service.shop.market.couponpack.CouponPackService;
 import com.vpu.mp.service.shop.member.CardReceiveCodeService;
 import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
 import com.vpu.mp.service.shop.member.MemberCardService;
@@ -78,6 +81,9 @@ public class CardDetailService extends ShopBaseService{
 	
 	@Autowired
 	private TagService tagSvc;
+	
+	@Autowired 
+	private CouponPackService couponPackService;
 
 	
 	/**
@@ -177,9 +183,18 @@ public class CardDetailService extends ShopBaseService{
 		List<CouponGivePopVo> couponList = couponGiveService.popWindows(new CouponGivePopParam());
 		List<Integer> couponIds = card.getCouponIds();
 		if (isListAvailable(couponList) && isListAvailable(couponIds)) {
-			List<CouponGivePopVo> res = couponList.stream().filter(coupon -> couponIds.contains(coupon.getId()))
-					.collect(Collectors.toList());
-			card.setCouponList(res);
+			if(CardUtil.isSendCoupon(card.getSendCouponType())) {
+				List<CouponGivePopVo> res = couponList.stream().filter(coupon -> couponIds.contains(coupon.getId()))
+						.collect(Collectors.toList());
+				card.setCouponList(res);
+			}else if(CardUtil.isSendCouponPack(card.getSendCouponType())) {
+				CouponPackUpdateVo couponPack = couponPackService.getCouponPackById(couponIds.get(0));
+				UserCardCouponPack pack = new UserCardCouponPack();
+				pack.setId(couponPack.getId());
+				pack.setActName(couponPack.getActName());
+				pack.setPackName(couponPack.getPackName());
+				card.setCouponPack(pack);
+			}
 		}
 	}
 	
