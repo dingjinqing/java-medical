@@ -869,7 +869,16 @@ public class FormStatisticsService extends ShopBaseService {
          */
         Map<String, FormModulesBo> pageContentBo = formInfoBo.getPageContentBo();
         List<FeedBackDetail> detailList = param.getDetailList();
+
         for (FeedBackDetail datail : detailList) {
+            FormModulesBo formModulesBo = pageContentBo.get(datail.getCurIdx());
+            if (Strings.isEmpty(datail.getModuleValue())) {
+                if (BaseConstant.YES.equals(formModulesBo.getConfirm())) {
+                    formSubmitDataVo.setStatus((byte)4);
+                    formSubmitDataVo.setMessage("必填项不可为空");
+                    return true;
+                }
+            }
             switch (datail.getModuleName()) {
                 case "m_dates":
                 case "m_choose":
@@ -880,32 +889,32 @@ public class FormStatisticsService extends ShopBaseService {
                 case "m_sex":
                 case "m_slide":
                     log.info("条件校验");
-                    if (Strings.isEmpty(datail.getModuleValue())) {
-                        FormModulesBo formModulesBo = pageContentBo.get(datail.getCurIdx());
-                        if (BaseConstant.YES.equals(formModulesBo.getConfirm())) {
-                            return true;
-                        }
-                    }
                     break;
                 case "m_input_text":
                     log.info("输入框校验");
-                    FormModulesBo formModulesBo = pageContentBo.get(datail.getCurIdx());
-                    if (Strings.isEmpty(datail.getModuleValue())) {
-                        if (BaseConstant.YES.equals(formModulesBo.getConfirm())) {
-                            return true;
-                        }
-                    }
                     int length = datail.getModuleValue().length();
                     if (length<formModulesBo.getLeast_number()||length>formModulesBo.getMost_number()){
+                        formSubmitDataVo.setStatus((byte)4);
+                        formSubmitDataVo.setMessage("字数在指定范围内");
                         return true;
                     }
                     break;
                 case "m_imgs":
                     log.info("图片限制");
-
+                    String moduleValue = datail.getModuleValue();
+                    if (!Strings.isNullOrEmpty(moduleValue)){
+                        List<String> picList = Util.json2Object(datail.getModuleValue(), new TypeReference<List<String>>() {
+                        }, true);
+                        if (picList!=null&&formModulesBo.getMax_number()<picList.size()){
+                            formSubmitDataVo.setStatus((byte)4);
+                            formSubmitDataVo.setMessage("图片上传数量限制");
+                            return true;
+                        }
+                    }
                     break;
                 case "m_upload_video":
                     log.info("视频限制");
+
                     break;
                 default:
             }
