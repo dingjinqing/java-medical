@@ -107,11 +107,15 @@
                 label="2"
               >{{ $t('memberCard.sendCoupon') }}
               </el-radio>
-              <div>
+              <div class="coupon-pack-container">
+                <span>优惠券礼包：</span>
                 <select-coupon-pack
                   @selectCouponPack="setCouponPack"
                   :myPack="ruleForm.couponPack"
                 />
+                <span>刷新</span>
+                <span>|</span>
+                <span> 券礼包管理</span>
               </div>
             </div>
           </div>
