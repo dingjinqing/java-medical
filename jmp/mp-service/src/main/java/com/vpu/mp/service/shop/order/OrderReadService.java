@@ -199,6 +199,7 @@ public class OrderReadService extends ShopBaseService {
     private GroupDrawService groupDrawService;
     @Autowired
     private ShopCommonConfigService shopCommonConfigService;
+
 	/**
 	 * 订单查询
 	 * @param param
@@ -386,7 +387,7 @@ public class OrderReadService extends ShopBaseService {
             return;
         }
         //订单无可退商品且无可退金额
-        if(!orderGoods.canReturnGoodsNumber(vo.getOrderSn()) && BigDecimalUtil.compareTo(orderInfo.getOrderFinalAmount(vo , Boolean.TRUE), returnOrder.getReturnMoney(vo.getOrderSn())) < 1) {
+        if(!orderGoods.canReturnGoodsNumber(vo.getOrderSn()) && BigDecimalUtil.compareTo(orderInfo.getOrderFinalAmount(vo , Boolean.TRUE), refundAmountRecord.getOrderRefundAmount(vo.getOrderSn())) < 1) {
             vo.setShowManualReturn(false);
             return;
         }
