@@ -140,7 +140,11 @@
           :label="$t('lotteryDraw.groupName')"
           prop="userName"
           align="center"
-        ></el-table-column>
+        >
+         <template slot-scope="scope">
+           <el-link type="primary" :underline="false" @click="viewUserHanlder(scope.row.userId)">{{scope.row.userName}}</el-link>
+         </template>
+        </el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.grouperMobile')"
           prop="mobile"
@@ -217,6 +221,15 @@ export default {
         mobile: '',
         grouped: null
       }
+    },
+    // 查看用户明细
+    viewUserHanlder (tagId) {
+      this.$router.push({
+        path: '/admin/home/main/membershipInformation',
+        query: {
+          userId: tagId
+        }
+      })
     }
   }
 
