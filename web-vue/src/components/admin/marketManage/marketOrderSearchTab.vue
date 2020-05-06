@@ -25,11 +25,10 @@
           v-model="requestParams.selectedOrderStatus"
           :placeholder="$t('marketCommon.selectPlaceholder')"
           size="small"
-          clearable
           class="default_input"
         >
           <el-option
-            v-for="item in $t('order.orderStatus')"
+            v-for="item in $t('order.orderStatusList')"
             :key="item[0]"
             :label="item[1]"
             :value="item[0]"
