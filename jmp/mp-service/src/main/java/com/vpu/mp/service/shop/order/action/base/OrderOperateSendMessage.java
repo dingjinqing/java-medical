@@ -318,7 +318,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
             String[][] mpData = new String[][] { { "等级提升通知" }, { value.getOldLevelName() }, { value.getNewLevelName() }, { DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL)}};
             //参数
             RabbitMessageParam param = RabbitMessageParam.builder()
-                .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_REFUND).data(mpData).build())
+                .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.REBATE_USER_UP_GRADE).data(mpData).build())
                 .page("pages/distribution/distribution")
                 .shopId(getShopId())
                 .userIdList(Collections.singletonList(value.getUserId()))

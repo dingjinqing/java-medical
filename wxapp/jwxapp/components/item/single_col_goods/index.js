@@ -94,7 +94,7 @@ global.wxComponent({
         }
       }
       this.setData({
-        delMarketData: delMarketType[this.data.delMarket]
+        delMarketData: this.data.delMarket === 1 && data.goodsData.linePrice >= data.goodsData.realPrice ? null : delMarketType[this.data.delMarket]
       })
     },
     // 删除购物车

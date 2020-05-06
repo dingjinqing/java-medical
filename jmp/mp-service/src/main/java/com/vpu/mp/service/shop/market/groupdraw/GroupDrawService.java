@@ -991,25 +991,25 @@ public class GroupDrawService extends ShopBaseService {
 			vo.setCode(JsonResultCode.PARTICIPATED_IN_EVENT);
 			return vo;
 		}
-		JoinGroupListRecord userJoinGroupInfo = getUserJoinGroupInfo(userId, groupDrawId, groupId, false);
-		// 不是团长
-		if (userJoinGroupInfo != null && userJoinGroupInfo.getIsGrouper().equals(ZERO)) {
-			int joinGroupNumber = getJoinGroupNumber(userId, groupDrawId);
-			Short joinLimit = groupDraw.getJoinLimit();
-			if (joinGroupNumber >= Integer.valueOf(String.valueOf(joinLimit))) {
-				logger().info("参团已达上限");
-				vo.setCode(JsonResultCode.PARTICIPANTS_IS_MAX);
-				return vo;
-			}
+		if(groupId!=null) {
+			JoinGroupListRecord userJoinGroupInfo = getUserJoinGroupInfo(userId, groupDrawId, groupId, false);
+			// 不是团长
+			if (userJoinGroupInfo != null && userJoinGroupInfo.getIsGrouper().equals(ZERO)) {
+				int joinGroupNumber = getJoinGroupNumber(userId, groupDrawId);
+				Short joinLimit = groupDraw.getJoinLimit();
+				if (joinGroupNumber >= Integer.valueOf(String.valueOf(joinLimit))) {
+					logger().info("参团已达上限");
+					vo.setCode(JsonResultCode.PARTICIPANTS_IS_MAX);
+					return vo;
+				}
+			}			
 		}
-		if (userJoinGroupInfo != null && userJoinGroupInfo.getIsGrouper().equals(ONE)) {
-			int openGroupNumber = getOpenGroupNumber(userId, groupDrawId);
-			Short openLimit = groupDraw.getOpenLimit();
-			if (openGroupNumber >= Integer.valueOf(String.valueOf(openLimit))) {
-				logger().info("开团已达上限");
-				vo.setCode(JsonResultCode.GROUP_UPPER_LIMIT);
-				return vo;
-			}
+		int openGroupNumber = getOpenGroupNumber(userId, groupDrawId);
+		Short openLimit = groupDraw.getOpenLimit();
+		if (openGroupNumber >= Integer.valueOf(String.valueOf(openLimit))) {
+			logger().info("开团已达上限");
+			vo.setCode(JsonResultCode.GROUP_UPPER_LIMIT);
+			return vo;
 		}
 		logger().info("成功");
 		vo.setCode(JsonResultCode.CODE_SUCCESS);
@@ -1083,7 +1083,8 @@ public class GroupDrawService extends ShopBaseService {
 				.eq(groupDrawId).and(JOIN_GROUP_LIST.GROUP_ID.eq(groupId).and(JOIN_GROUP_LIST.USER_ID.eq(userId))))
 				.fetchAny();
 		if (record != null) {
-			record.setInviteUserNum(record.getInviteUserNum() + 1);
+			int num=record.getInviteUserNum() + 1;
+			record.setInviteUserNum(num);
 			int update = record.update();
 			log.info("增加邀请用户数" + update);
 		}
@@ -1153,15 +1154,15 @@ public class GroupDrawService extends ShopBaseService {
 		if (size >= Integer.valueOf(String.valueOf(limitAmount))) {
 			// 修改订单状态
 			List<GroupDrawList> groupUserList = getGroupList(groupDrawId, groupId, ZERO);
-			String[] s = new String[] {};
+			List<String> list=new ArrayList<String>();
 			for (int i = 0; i < groupUserList.size(); i++) {
 				String orderSn = groupUserList.get(i).getOrderSn();
-				s[i] = orderSn;
+				list.add(orderSn);
 			}
 			// order_info
 			int execute = db().update(ORDER_INFO).set(ORDER_INFO.ORDER_STATUS, OrderConstant.ORDER_PIN_SUCCESSS)
-					.set(ORDER_INFO.ORDER_STATUS_NAME, "已成团").where(ORDER_INFO.ORDER_SN.in(s)).execute();
-			log.info("已成团" + s + "结果" + execute);
+					.set(ORDER_INFO.ORDER_STATUS_NAME, "已成团").where(ORDER_INFO.ORDER_SN.in(list)).execute();
+			log.info("已成团" + list.toString() + "结果" + execute);
 			// 修改参团状态
 			int execute2 = db().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.STATUS, ONE)
 					.set(JOIN_GROUP_LIST.END_TIME, DateUtil.getLocalDateTime())

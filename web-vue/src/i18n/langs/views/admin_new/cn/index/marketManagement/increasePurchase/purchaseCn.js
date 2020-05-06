@@ -91,6 +91,15 @@ export const cn = {
   choosepriority: '请选择活动优先级',
   chooseTime: '请选择活动时间',
   chooseMain: '请选择主商品！',
-  chooseRedemp: '请选择换购商品！'
-
+  chooseRedemp: '请选择换购商品！',
+  syncTags: '同步打标签',
+  tagIn: '给参与活动用户打标签',
+  placed: '成功下单并完成支付的算作参与活动用户',
+  sLabel: '选择标签',
+  sL3: '最多可设置3个标签',
+  redemRules: '换购规则',
+  buyFull: '购满',
+  yuan: '元',
+  increase: '加价',
+  followGoods: '元换购以下商品'
 }

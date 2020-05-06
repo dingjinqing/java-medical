@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorSpendVo;
 import com.vpu.mp.service.pojo.shop.distribution.UpdateUserLevel;
 import com.vpu.mp.service.pojo.shop.distribution.UserRebateLevelDetail;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.jooq.Record;
@@ -279,7 +280,7 @@ public class DistributorLevelService extends ShopBaseService{
 			DistributorSpendVo userSpend = this.getTotalSpend(upUser.getUserId());
 			for(DistributorLevelRecord level : autoLevels) {
 				//不用升级
-				if(upUser.getDistributorLevel() >= level.getLevelId()){
+				if(upUser.getDistributorLevel() >= level.getLevelId() || level.getLevelStatus().equals(OrderConstant.NO)){
 					continue;
 				}
 				//累计邀请用户数
@@ -301,7 +302,6 @@ public class DistributorLevelService extends ShopBaseService{
                 }else {
 				    break;
                 }
-
 			}
 		}
 		//更新

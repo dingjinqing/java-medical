@@ -36,7 +36,7 @@ global.wxPage({
           order_info: res.content.dataList
         })
       } else {
-        util.showModal("提示", res.message, function () { });
+        util.showModal(this.$t('page1.aftersaleorder.tips'), res.message, function () { });
         return false;
       }
     }, { search: that.data.search, currentPage: that.data.page })
@@ -111,11 +111,12 @@ global.wxPage({
    */
   onReachBottom: function () {
     console.log('触底')
+    //this.$t('page1.aftersaleorder.tips')
     var that = this;
     if (that.data.page == that.data.last_page) { return false };
     that.data.page = that.data.page + 1;
     wx.showLoading({
-      title: '加载中···',
+      title: this.$t('page1.aftersaleorder.looding'),
     })
     util.api('/api/wxapp/order/refund/list/search', function (res) {
       if (res.error == 0) {
@@ -125,7 +126,7 @@ global.wxPage({
           order_info: that.data.order_info.concat(res.content.dataList)
         })
       } else {
-        util.showModal("提示", res.message, function () { });
+        util.showModal(this.$t('page1.aftersaleorder.tips'), res.message, function () { });
         return false;
       }
     }, { search: that.data.search, page: that.data.page })

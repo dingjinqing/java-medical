@@ -19,7 +19,7 @@ global.wxPage({
   onLoad: function (options) {
     console.log(options)
     this.setData({
-      page_name: '兑换商品'
+      page_name: this.$t('page1.usercardgoods.exchangeGoods')
     })
     let { cardNo, cardId } = options
     this.setData({
@@ -91,10 +91,10 @@ global.wxPage({
     util.api('/api/wxapp/card/change/remove', res => {
       console.log(res)
       if (res.error === 0) {
-        util.toast_success('删除成功')
+        util.toast_success(this.$t('page1.usercardgoods.deleteSucceeded'))
         this.requestCartGoodsList()
       } else {
-        util.toast_fail('删除失败')
+        util.toast_fail(this.$t('page1.usercardgoods.deleteFailed'))
       }
     }, {
       identityId: this.data.cardNo,
@@ -122,7 +122,7 @@ global.wxPage({
   showSpecDialog (e) { // 调起规格弹窗
     console.log(e.currentTarget.dataset.goodsnumber)
     if (!e.currentTarget.dataset.goodsnumber) {
-      util.toast_success(`${e.currentTarget.dataset.goodsName} 库存为0`)
+      util.toast_success(`${e.currentTarget.dataset.goodsName} ${this.$t('page1.usercardgoods.inventoryIs')}`)
       return
     }
     util.api("/api/wxapp/goods/detail", res => {
@@ -205,13 +205,13 @@ global.wxPage({
       console.log(res)
       if (res.error === 0) {
         if (res.id == undefined) {
-          util.toast_success('添加成功')
+          util.toast_success(this.$t('page1.usercardgoods.successfullyAdded'))
         }
         this.requestCartGoodsList()
         this.bindCloseSpec()
       } else {
         if (res.id == undefined) {
-          util.toast_success('添加失败')
+          util.toast_success(this.$t('page1.usercardgoods.addFailed'))
         }
       }
     }, {
@@ -239,15 +239,15 @@ global.wxPage({
           url: `/pages/item/item?gid=${goods_id}&cardNo=${this.data.cardNo}&cardId=${this.data.cardId}&isChange=1`,
         })
       } else {
-        util.showModal('提示', res.message, function () {
+        util.showModal(this.$t('page1.usercardgoods.tips'), res.message, function () {
           util.jumpLink('/pages/item/item?gid=' + goods_id, 'navigateTo')
-        }, true, '取消', '原价购买')
+        }, true, this.$t('page1.usercardgoods.cancel'), this.$t('page1.usercardgoods.originalPricePurchase'))
       }
     }, { cardNo: this.data.cardNo, goodsId: goods_id, isList: 2 })
     if (this.data.exchangSurplus == 0) {
-      util.showModal('提示', '此卡无剩余可兑换次数', function () {
+      util.showModal(this.$t('page1.usercardgoods.tips'), this.$t('page1.usercardgoods.noRedeemableTimes'), function () {
         util.jumpLink('/pages/item/item?gid=' + goods_id, 'navigateTo')
-      }, true, '取消', '原价购买')
+      }, true, this.$t('page1.usercardgoods.cancel'), this.$t('page1.usercardgoods.originalPricePurchase'))
     } else {
       util.navigateTo({
         url: `/pages/item/item?gid=${goods_id}&cardNo=${this.data.cardNo}&cardId=${this.data.cardId}&isChange=1`,
