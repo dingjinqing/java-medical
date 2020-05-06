@@ -89,12 +89,12 @@
         v-if="specInfoSwitch"
       >
         <div class="specInfoWrap">
-          <table>
+          <table class="specInfoWrapTable">
             <tr>
               <th></th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopPrice')}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopCost')}}</th>
-              <th>市场价</th>
+              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecMarketPrice')}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsNum')}}</th>
               <th v-if="goodsWeightCfg === 1">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecPrdWeight')}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsPrdSn')}}</th>
@@ -240,18 +240,19 @@
         v-if="memberCardPrdShow"
       >
         <div class="specInfoWrap">
-          <table v-if="specInfoSwitch">
+          <table class="specInfoWrapTable" v-if="specInfoSwitch">
             <tr>
-              <th></th>
+              <th class="specInfoWrapTableThSkuName"></th>
               <!--规格价格（元）-->
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.prdPrice')}}</th>
               <template v-for="item in memberCards">
                 <th
                   :key="item.id"
                   v-if="item.checked"
+                  class="specInfoWrapTableInputTh"
                 >{{item.cardName}}</th>
               </template>
-              <th v-if="unifyCardsPriceShow"></th>
+              <th class="specInfoWrapTableInputTh" v-if="unifyCardsPriceShow"></th>
             </tr>
             <tr
               v-for="(item,index) in goodsProductInfo.goodsSpecProducts"
@@ -273,6 +274,7 @@
                 </td>
               </template>
               <td v-if="unifyCardsPriceShow">
+                <!--统一会员价-->
                 <el-link
                   size="small"
                   :underline="false"
@@ -281,16 +283,17 @@
               </td>
             </tr>
           </table>
-          <table v-else>
+          <table class="specInfoWrapTable" v-else>
             <tr>
-              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsPrice')}}</th>
+              <th class="specInfoWrapTableInputTh">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsPrice')}}</th>
               <template v-for="item in memberCards">
                 <th
                   :key="item.id"
                   v-if="item.checked"
+                  class="specInfoWrapTableInputTh"
                 >{{item.cardName}}</th>
               </template>
-              <th v-if="unifyCardsPriceShow"></th>
+              <th class="specInfoWrapTableInputTh" v-if="unifyCardsPriceShow"></th>
             </tr>
             <tr>
               <td>{{goodsProductInfo.prdPrice}}</td>
@@ -308,6 +311,7 @@
                 </td>
               </template>
               <td v-if="unifyCardsPriceShow">
+                <!--统一会员价-->
                 <el-link
                   size="small"
                   :underline="false"
@@ -316,6 +320,8 @@
               </td>
             </tr>
           </table>
+          <div style="text-align: center;">
+          </div>
         </div>
       </el-form-item>
     </el-form>
@@ -441,9 +447,6 @@
   </div>
 </template>
 <script>
-// TODO: 1.格笛卡尔积中规格图片样式未实现
-// TODO: 2.格笛卡尔积中规格input框样式未实现
-// TODO: 3.会员价格table表格样式未实现
 
 // 接口函数引入
 import {getLevelCardList, isGoodsColumnValueExist} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
@@ -1588,6 +1591,8 @@ export default {
   border: 1px solid #ccc;
   color: #333;
   padding: 10px;
+  min-width: 1000px;
+  overflow-x: auto;
 }
 
 .specInfoWrap::after {
@@ -1646,17 +1651,26 @@ export default {
   cursor: pointer;
   opacity: 0.8;
 }
+.specInfoWrap .specInfoWrapTable .specInfoWrapTableThSkuName{
+  min-width: 200px;
+}
 
-/* 以下临时使用，可删除 */
-table {
+.specInfoWrap .specInfoWrapTable .specInfoWrapTableInputTh{
+  min-width: 120px;
+}
+.specInfoWrap .specInfoWrapTable input{
+  width: 90%;
+  max-width: 160px;
+}
+.specInfoWrap table {
   border-collapse: collapse;
   margin: 0 auto;
   text-align: center;
   width: 100%;
 }
 
-table td,
-table th {
+.specInfoWrap table td,
+.specInfoWrap table th {
   border: 1px solid #cad9ea;
   color: #666;
   height: 30px;
@@ -1664,9 +1678,8 @@ table th {
   text-align: center;
 }
 
-table thead th {
+.specInfoWrap table thead th {
   background-color: #cce8eb;
-  width: 100px;
 }
 
 table tr:nth-child(odd) {
