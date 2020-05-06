@@ -189,7 +189,19 @@ global.wxComponent({
         if (res.error == 0) {
           util.jumpLink('/pages1/formsuccess/formsuccess?submitId=' + res.content.submitId);
         } else {
-          util.showModal('提示', '表单提交失败');
+          switch(res.error) {
+            case 1:
+              util.showModal('提示', '表单失效')
+              break
+            case 2:
+              util.showModal('提示', '表单不能频繁提交')
+              break
+            case 3:
+              util.showModal('提示', '提交次数达到上限')
+              break
+            default:
+              util.showModal('提示', '表单提交失败');
+          }
         }
       }, {
         detailList: pageDatas,
