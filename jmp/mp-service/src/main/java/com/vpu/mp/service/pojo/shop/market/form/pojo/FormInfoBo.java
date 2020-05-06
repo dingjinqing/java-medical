@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 /**
  * 表单pojo
@@ -30,7 +31,8 @@ public class FormInfoBo {
      * 状态：0未发布，1已发布 2已关闭 3 已删除
      */
     private Byte status;
-
+    private Byte state;
+    private String statusText;
     /**
      * json  页面内容
      */
@@ -46,7 +48,7 @@ public class FormInfoBo {
     /**
      * 页面内容
      */
-    private FormPageContentBo pageContentBo;
+    Map<String,FormModulesBo> pageContentBo;
 
 
 }
