@@ -134,7 +134,7 @@ global.wxComponent({
           prdId: productId,
           activityType: activityType,
           activityId: activityId,
-          type: 2
+          type: 1
       })
     },
     changeCartInput(e){
@@ -154,7 +154,7 @@ global.wxComponent({
             prdId: productId,
             activityType: activityType,
             activityId: activityId,
-            type: 2
+            type: 1
           })
       }
     },
