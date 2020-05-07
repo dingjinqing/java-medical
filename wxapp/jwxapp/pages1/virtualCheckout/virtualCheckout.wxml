@@ -48,7 +48,7 @@
     <view class="card_list_item" style="{{cardBgStyle}}margin-top:{{margin_top_nav + 18}}px;">
       <view class="card_type">{{cardTypeName}}</view>
       <view class="card_item_info">
-        <image mode="widthFix" class="shop_img" src="{{shopAvatar}}"></image>
+        <image mode="widthFix" class="shop_img" src="{{shopAvatar}}" wx:if="{{shopAvatar}}"></image>
         <view class="info_item">
           <view class="item_row card_name">{{cardInfo.cardName}}</view>
           <view class="item_row">{{cardExpireTime}}</view>

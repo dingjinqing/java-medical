@@ -111,7 +111,7 @@ global.wxPage({
     cardInfo.cardStopImg = this.getCardStopImage(cardInfo)
     // 店铺头像处理
     if (!that.data.bottom.logo) {
-      cardInfo.shopAvatar = imageUrl + 'image/wxapp/shop_logo_default.png';
+      cardInfo.shopAvatar = null;
     } else {
       cardInfo.shopAvatar = that.data.bottom.logo;
     }

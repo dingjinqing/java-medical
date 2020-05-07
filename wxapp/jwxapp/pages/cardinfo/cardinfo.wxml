@@ -10,7 +10,7 @@
 			<view class="card_type">{{cardInfo.cardTypeName}}</view>
 			<view class="card_info">
 				<view class="card_surface_top">
-					<image mode="widthFix" class="shop_img" src="{{cardInfo.avatar}}" />
+					<image mode="widthFix" class="shop_img" src="{{cardInfo.avatar}}" wx:if="{{cardInfo.avatar}}"/>
 					<view class="card_name_box">
 						<view class="card_name">{{cardInfo.cardName}}
 							<text class="get_status">{{carStatus}}</text>
