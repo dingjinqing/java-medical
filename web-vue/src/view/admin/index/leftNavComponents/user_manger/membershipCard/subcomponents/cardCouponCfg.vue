@@ -107,15 +107,12 @@
                 label="2"
               >{{ $t('memberCard.sendCoupon') }}
               </el-radio>
-              <div class="coupon-pack-container">
+              <div class="coupon-pack-container" v-if="ruleForm.couponType==='2'">
                 <span>优惠券礼包：</span>
                 <select-coupon-pack
                   @selectCouponPack="setCouponPack"
                   :myPack="ruleForm.couponPack"
                 />
-                <span>刷新</span>
-                <span>|</span>
-                <span> 券礼包管理</span>
               </div>
             </div>
           </div>
@@ -236,6 +233,9 @@ export default {
       flex-direction: column;
       .coupon-div-top {
         width: 385px;
+        /deep/ .el-radio{
+          margin-right: 0px;
+        }
         .coupon-list {
           margin-left: 30px;
           .coupon-list-item {
@@ -321,6 +321,11 @@ export default {
         }
       }
     }
+  }
+
+  .coupon-pack-container{
+    padding-left: 30px;
+    display: flex;
   }
 }
 </style>
