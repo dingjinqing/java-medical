@@ -1,5 +1,5 @@
 <template>
-<div>
+<div id="coupon-pack-id">
   <el-select
     class="rooter"
     v-model="couponPack"
@@ -15,9 +15,9 @@
     >
     </el-option>
   </el-select>
-  <span class="link-tip" @click="initData">刷新</span>
+  <span class="link-tip" @click="refreshData">{{$t('memberCard.refresh')}}</span>
   <span>|</span>
-  <span class="link-tip" @click="jumpToCouponPackPage"> 券礼包管理</span>
+  <span class="link-tip" @click="jumpToCouponPackPage">{{$t('memberCard.couponPackManage')}}</span>
 </div>
 </template>
 
@@ -44,24 +44,46 @@ export default {
           id: 0,
           actName: '请选择'
         }
-      ]
+      ],
+      refresh: false,
+      loading: null
     }
   },
   mounted () {
+    this.langDefault()
     this.initData()
   },
   methods: {
     initData () {
-      console.log('刷新数据')
       getAllValidCouponPack().then(res => {
         this.options.splice(1, this.options.length - 1)
         if (res.error === 0) {
           this.options.push(...res.content)
+          if (this.refresh) {
+            setTimeout(() => {
+              this.loading.close()
+              this.refresh = false
+              this.$message.success(this.$t('memberCard.loadSuccess'))
+            }, 1000)
+          }
         }
       })
     },
     selectCouponPack (val) {
       this.$emit('selectCouponPack', this.options.filter(item => item.id === val)[0])
+    },
+    refreshData () {
+      console.log('刷新数据')
+      this.refresh = true
+      var target = document.getElementById('coupon-pack-id')
+      this.loading = this.$loading({
+        target,
+        lock: true,
+        text: this.$t('memberCard.loading'),
+        spinner: 'el-icon-loading',
+        background: 'rgba(255, 255, 255, 0)'
+      })
+      this.initData()
     },
     jumpToCouponPackPage () {
       this.$router.push({

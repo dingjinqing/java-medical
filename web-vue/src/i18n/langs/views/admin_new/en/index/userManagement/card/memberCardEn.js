@@ -331,5 +331,10 @@ export const en = {
   sendCouponVol: 'Send coupon',
   sendCouponPack: 'Send coupon pack',
   noThreshold: 'No limit',
-  allGoodsCanUse: 'All goods available'
+  allGoodsCanUse: 'All goods available',
+  loadSuccess: 'Loaded success',
+  loading: 'Loading',
+  refresh: 'Refresh',
+  couponPackManage: 'Manage package',
+  couponPack: 'Coupon pack'
 }

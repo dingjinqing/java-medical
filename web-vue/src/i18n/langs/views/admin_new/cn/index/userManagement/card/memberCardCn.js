@@ -369,5 +369,10 @@ export const cn = {
   sendCouponVol: '开卡赠送优惠券',
   sendCouponPack: '开卡赠送优惠券礼包',
   noThreshold: '无门槛',
-  allGoodsCanUse: '全部商品可用'
+  allGoodsCanUse: '全部商品可用',
+  loadSuccess: '刷新成功',
+  loading: '刷新中',
+  refresh: '刷新',
+  couponPackManage: '券礼包管理',
+  couponPack: '优惠券礼包'
 }
