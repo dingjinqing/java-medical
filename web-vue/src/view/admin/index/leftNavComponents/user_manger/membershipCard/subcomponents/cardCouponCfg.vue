@@ -108,7 +108,7 @@
               >{{ $t('memberCard.sendCoupon') }}
               </el-radio>
               <div class="coupon-pack-container" v-if="ruleForm.couponType==='2'">
-                <span>优惠券礼包：</span>
+                <span>{{$t('memberCard.couponPack')}}：</span>
                 <select-coupon-pack
                   @selectCouponPack="setCouponPack"
                   :myPack="ruleForm.couponPack"
