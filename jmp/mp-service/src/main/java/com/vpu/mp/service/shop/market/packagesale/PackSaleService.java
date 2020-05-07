@@ -331,18 +331,18 @@ public class PackSaleService extends ShopBaseService {
 	 * @return 
 	 */
 	private SelectConditionStep<?> buildDetailOptions(SelectConditionStep<?> step, PackSaleDetailParam param) {
-		if(!StringUtils.isBlank(param.getMobile())) {
-			step.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
-		}
-		if(!StringUtils.isBlank(param.getOrderSn())) {
-			step.and(ORDER_INFO.ORDER_SN.like(this.likeValue(param.getOrderSn())));
-		}
-		if(!StringUtils.isBlank(param.getUserName())) {
-			step.and(USER.USERNAME.like(this.likeValue(param.getUserName())));
-		}
-		step.orderBy(ORDER_INFO.CREATE_TIME);
-		return step;
-	}
+        if (!StringUtils.isBlank(param.getMobile())) {
+            step.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
+        }
+        if (!StringUtils.isBlank(param.getOrderSn())) {
+            step.and(ORDER_INFO.ORDER_SN.like(this.likeValue(param.getOrderSn())));
+        }
+        if (!StringUtils.isBlank(param.getUserName())) {
+            step.and(USER.USERNAME.like(this.likeValue(param.getUserName())));
+        }
+        step.orderBy(ORDER_INFO.CREATE_TIME.desc());
+        return step;
+    }
 
 	public List<PackSaleParam.GoodsGroup> getPackageGroups(PackageSaleRecord packageSaleRecord){
 	    List<PackSaleParam.GoodsGroup> res = new ArrayList<>();
