@@ -3,6 +3,7 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.config.SearchConfig;
 import com.vpu.mp.service.pojo.shop.overview.hotwords.*;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,8 @@ public class WxAppSearchController extends WxAppBaseController {
      */
     @PostMapping("/userSearchHot")
     public JsonResult getUserSearchHots(@RequestBody UserIdAndNum param) {
+        WxAppSessionUser user = wxAppAuth.user();
+        param.setUserId(user.getUserId());
         List<HotWords> result = shop().overview.hotWordsService.getUserSearchHots(param);
 
         return success(result);
@@ -33,6 +36,8 @@ public class WxAppSearchController extends WxAppBaseController {
      */
     @PostMapping("/addHotWords")
     public JsonResult addHotWords(@RequestBody UserIdAndWords param) {
+        WxAppSessionUser user = wxAppAuth.user();
+        param.setUserId(user.getUserId());
         shop().overview.hotWordsService.addHotWords(param);
 
         return success();
@@ -56,6 +61,8 @@ public class WxAppSearchController extends WxAppBaseController {
      */
     @PostMapping("/clearWords")
     public JsonResult clearUserHotWords(@RequestBody UserId param) {
+        WxAppSessionUser user = wxAppAuth.user();
+        param.setUserId(user.getUserId());
         shop().overview.hotWordsService.clearUserHotWords(param);
 
         return success();
