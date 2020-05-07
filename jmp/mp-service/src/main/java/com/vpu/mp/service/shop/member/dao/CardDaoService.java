@@ -32,6 +32,7 @@ import org.jooq.InsertValuesStep4;
 import org.jooq.InsertValuesStep5;
 import org.jooq.Record;
 import org.jooq.Record1;
+import org.jooq.Record3;
 import org.jooq.RecordMapper;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
@@ -57,6 +58,7 @@ import com.vpu.mp.service.foundation.util.RemarkUtil;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchDetailVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderExcelVo;
@@ -850,6 +852,24 @@ public class CardDaoService extends ShopBaseService {
 						.memberCard(memberCard)
 						.build();
 		};
+	}
+
+	/**
+	 * 	查询有效等级卡，简单信息
+	 * @return 等级卡List,该等价卡包括Id,name,grade信息
+	 */
+	public List<Map<String,Object>> getAllValidGradeCardList() {
+		 Result<Record3<Integer, String, String>> res = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME,MEMBER_CARD.GRADE)
+		 	 .from(MEMBER_CARD)
+			.where(MEMBER_CARD.CARD_TYPE.eq(CardConstant.MCARD_TP_GRADE))
+			.and(MEMBER_CARD.FLAG.eq(CardConstant.MCARD_FLAG_USING))
+			.fetch().into(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME,MEMBER_CARD.GRADE);
+		 List<Map<String,Object>> list = new ArrayList<>();
+		 for(int i=0;i<res.size();i++) {
+			 Record3<Integer, String, String> record = res.get(i);
+			 list.add(record.intoMap());
+		 }
+		return list;
 	}
 
 }

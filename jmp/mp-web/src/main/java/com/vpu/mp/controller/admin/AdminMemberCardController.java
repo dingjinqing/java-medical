@@ -417,4 +417,13 @@ public class AdminMemberCardController extends AdminBaseController {
 		return success(shop().member.card.getCardById(param));
 	}
 	
+	/**
+	 * 	获取有效的等级卡
+	 */
+	@PostMapping(value="/valid/grade/card/list")
+	public JsonResult getAllValidGradeCardList() {
+		logger().info("获取有效的等级卡");
+		return success(shop().member.card.getAllValidGradeCardList());
+	}
+	
 }
