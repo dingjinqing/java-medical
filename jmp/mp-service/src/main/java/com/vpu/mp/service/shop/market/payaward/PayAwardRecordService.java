@@ -37,6 +37,7 @@ public class PayAwardRecordService  extends ShopBaseService {
                 .leftJoin(USER).on(USER.USER_ID.eq(PAY_AWARD_RECORD.USER_ID))
                 .where(PAY_AWARD_RECORD.AWARD_ID.eq(param.getId()));
         buildOptions(where,param);
+        where.orderBy(PAY_AWARD_RECORD.CREATE_TIME.desc());
         return getPageResult(where,param.getCurrentPage(),param.getPageRows(), PayAwardRecordListVo.class);
     }
 
