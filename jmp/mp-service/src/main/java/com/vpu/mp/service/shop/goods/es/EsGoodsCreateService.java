@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.goods.es;
 
 import com.vpu.mp.service.foundation.es.EsManager;
+import com.vpu.mp.service.foundation.es.EsUtil;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +44,23 @@ public class EsGoodsCreateService extends ShopBaseService {
     }
 
     /**
+     * 给es新加数据
+     * @param esGoodsList {@link EsGoods}集合
+     */
+    public void batchCreateEsGoodsIndex(List<EsGoods> esGoodsList){
+        batchCommitEsGoodsIndex(getIndexRequest(esGoodsList));
+    }
+
+    /**
+     * 给es新加数据
+     * @param esGoodsList {@link EsGoods}集合
+     */
+    public void batchCreateEsGoodsIndex(List<EsGoods> esGoodsList,String indexName){
+        batchCommitEsGoodsIndex(getIndexRequest(esGoodsList,indexName));
+    }
+
+
+    /**
      * 单个更新es数据（修改调用）
      * @param goodsId 商品id
      */
@@ -60,7 +77,7 @@ public class EsGoodsCreateService extends ShopBaseService {
      */
     public void deleteEsGoods(Integer goodsId,Integer shopId){
         try {
-            esManager.deleteIndexById(EsGoodsConstant.GOODS_INDEX_NAME,goodsId.toString()+shopId);
+            esManager.deleteIndexById(EsGoodsConstant.GOODS_ALIA_NAME,goodsId.toString()+shopId);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -73,7 +90,7 @@ public class EsGoodsCreateService extends ShopBaseService {
     public void deleteEsGoods(List<Integer> goodsIds,Integer shopId){
         try {
             List<String> list = goodsIds.stream().map(x->shopId.toString()+x).collect(Collectors.toList());
-            esManager.deleteIndexById(EsGoodsConstant.GOODS_INDEX_NAME,list);
+            esManager.deleteIndexById(EsGoodsConstant.GOODS_ALIA_NAME,list);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -109,7 +126,7 @@ public class EsGoodsCreateService extends ShopBaseService {
      * @return 更新请求
      */
     private IndexRequest getIndexRequest(EsGoods goods){
-        return esManager.assemblyRequest(EsGoodsConstant.GOODS_INDEX_NAME,goods);
+        return EsUtil.assemblyRequest(EsGoodsConstant.GOODS_ALIA_NAME,goods);
     }
     /**
      * 通过要更新的数据封装更新请求
@@ -118,7 +135,17 @@ public class EsGoodsCreateService extends ShopBaseService {
      */
     private List<IndexRequest> getIndexRequest(List<EsGoods> goodsList){
         return goodsList.stream().
-            map(x->esManager.assemblyRequest(EsGoodsConstant.GOODS_INDEX_NAME,x)).
+            map(x->EsUtil.assemblyRequest(EsGoodsConstant.GOODS_ALIA_NAME,x)).
+            collect(Collectors.toList());
+    }
+    /**
+     * 通过要更新的数据封装更新请求
+     * @param goodsList 要更新的数据集合
+     * @return 更新请求
+     */
+    private List<IndexRequest> getIndexRequest(List<EsGoods> goodsList,String indexName){
+        return goodsList.stream().
+            map(x->EsUtil.assemblyRequest(indexName,x)).
             collect(Collectors.toList());
     }
 
