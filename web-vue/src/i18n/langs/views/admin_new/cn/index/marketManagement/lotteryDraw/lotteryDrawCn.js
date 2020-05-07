@@ -2,27 +2,26 @@ export const cn = {
   // tabs
   addLotteryDraw: '添加拼团抽奖活动',
   editLotteryDraw: '编辑拼团抽奖活动',
-  tabInfo: [
-    {
-      title: '全部拼团抽奖活动',
-      name: '0'
-    },
-    {
-      title: '进行中',
-      name: '1'
-    },
-    {
-      title: '未开始',
-      name: '2'
-    },
-    {
-      title: '已过期',
-      name: '3'
-    },
-    {
-      title: '已停用',
-      name: '4'
-    }
+  tabInfo: [{
+    title: '全部拼团抽奖活动',
+    name: '0'
+  },
+  {
+    title: '进行中',
+    name: '1'
+  },
+  {
+    title: '未开始',
+    name: '2'
+  },
+  {
+    title: '已过期',
+    name: '3'
+  },
+  {
+    title: '已停用',
+    name: '4'
+  }
   ],
 
   // 搜索
@@ -141,18 +140,27 @@ export const cn = {
     '成团用户数',
     '拉新用户数'
   ],
-  statusList: [
-    {
-      value: null,
-      label: '请选择'
-    },
-    {
-      value: true,
-      label: '已成团'
-    },
-    {
-      value: false,
-      label: '未成团'
-    }
-  ]
+  statusList: [{
+    value: null,
+    label: '请选择'
+  },
+  {
+    value: true,
+    label: '已成团'
+  },
+  {
+    value: false,
+    label: '未成团'
+  }
+  ],
+  groupList: [{
+    value: '',
+    label: '请选择'
+  }, {
+    value: true,
+    label: '是'
+  }, {
+    value: false,
+    label: '否'
+  }]
 }

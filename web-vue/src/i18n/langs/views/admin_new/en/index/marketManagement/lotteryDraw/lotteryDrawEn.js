@@ -2,27 +2,26 @@ export const en = {
   // tabs
   addLotteryDraw: 'Add LotteryDraw',
   editLotteryDraw: 'Edit LotteryDraw',
-  tabInfo: [
-    {
-      title: 'All',
-      name: '0'
-    },
-    {
-      title: 'In Progress',
-      name: '1'
-    },
-    {
-      title: 'Not Started',
-      name: '2'
-    },
-    {
-      title: 'Overdue',
-      name: '3'
-    },
-    {
-      title: 'Disable',
-      name: '4'
-    }
+  tabInfo: [{
+    title: 'All',
+    name: '0'
+  },
+  {
+    title: 'In Progress',
+    name: '1'
+  },
+  {
+    title: 'Not Started',
+    name: '2'
+  },
+  {
+    title: 'Overdue',
+    name: '3'
+  },
+  {
+    title: 'Disable',
+    name: '4'
+  }
   ],
 
   // 搜索
@@ -141,18 +140,27 @@ export const en = {
     'Group users',
     'Number of new users'
   ],
-  statusList: [
-    {
-      value: null,
-      label: 'Please select'
-    },
-    {
-      value: true,
-      label: 'Has formed a group'
-    },
-    {
-      value: false,
-      label: 'Unformed'
-    }
-  ]
+  statusList: [{
+    value: null,
+    label: 'Please select'
+  },
+  {
+    value: true,
+    label: 'Has formed a group'
+  },
+  {
+    value: false,
+    label: 'Unformed'
+  }
+  ],
+  groupList: [{
+    value: '',
+    label: 'Please select'
+  }, {
+    value: true,
+    label: 'Yes'
+  }, {
+    value: false,
+    label: 'No'
+  }]
 }

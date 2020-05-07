@@ -92,13 +92,12 @@
    <view class='promote_list' wx:if='{{promote_info.promoteDetailList && promote_info.promoteDetailList!=""}}'>
       <view class='list_top'>
           <view class='lt_title'>{{i18n.$t(localePack,"page1.promote.promoteList1")}}</view>
-          <view class='to_list' style='color:{{comColor}}' bindtap='to_list' >
-          <!-- wx:if='{{promote_info.promoteDetailList.length>=10}}' -->
+          <view class='to_list' style='color:{{comColor}}' bindtap='to_list' wx:if='{{promote_info.promoteDetailList.length>=10}}'>
               {{i18n.$t(localePack,"page1.promote.promoteList2")}} <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
           </view>
       </view>
       <view class='frind_list'>
-          <view class='each_col' wx:for='{{promote_info.promoteDetailList}}' wx:key='key'>
+          <view class='each_col' wx:for='{{promote_info.promoteDetailList}}' wx:key='index' wx:if="{{index<10}}">
             <view class='col_left'>
                 <view class='user_img'><image src='{{item.userAvatar}}'></image></view>
                 <view class='user_name'>{{item.username}}</view>

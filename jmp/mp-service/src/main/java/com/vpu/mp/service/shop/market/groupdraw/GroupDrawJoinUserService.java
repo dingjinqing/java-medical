@@ -129,10 +129,13 @@ public class GroupDrawJoinUserService extends ShopBaseService {
 			select.and(JOIN_GROUP_LIST.GROUP_ID.eq(param.getGroupId()));
 		}
 		if (null != param.getMinInviteUserCount()) {
-			select.and(JOIN_GROUP_LIST.INVITE_USER_NUM.ge(Integer.valueOf(param.getMinInviteUserCount())));
+			select.and(JOIN_GROUP_LIST.INVITE_USER_NUM.ge(param.getMinInviteUserCount()));
 		}
 		if (null != param.getMaxInviteUserCount()) {
-			select.and(JOIN_GROUP_LIST.INVITE_USER_NUM.le(Integer.valueOf(param.getMaxInviteUserCount())));
+			select.and(JOIN_GROUP_LIST.INVITE_USER_NUM.le(param.getMaxInviteUserCount()));
+		}
+		if(null!=param.getIsGrouper()) {
+			select.and(JOIN_GROUP_LIST.IS_GROUPER.eq(param.getIsGrouper()?ONE:ZERO));
 		}
 		return select;
 	}
