@@ -347,5 +347,9 @@ export const cn = {
       batchId: 0,
       name: '全部'
     }
-  ]
+  ],
+  sendCouponVol: '开卡赠送优惠券',
+  sendCouponPack: '开卡赠送优惠券礼包',
+  noThreshold: '无门槛',
+  allGoodsCanUse: '全部商品可用'
 }

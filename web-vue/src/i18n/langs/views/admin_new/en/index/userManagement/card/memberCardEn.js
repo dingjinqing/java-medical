@@ -98,7 +98,7 @@ export const en = {
   getScore: 'SCORE-GET',
   openCardSend: 'OPEN-CARD-SEND',
   score: 'SCORE',
-  shopFull: 'FULL',
+  shopFull: 'Full',
   shopEachFull: 'EACH',
   send: 'SEND',
   powerCard: 'CHARGE-CARD',
@@ -110,8 +110,8 @@ export const en = {
   volumeActiveInfo: 'Activating the membership card, after the activation is successful, send the volume to the personal account.',
   offerVolume: 'SEND-VOLUME',
   offerInfo: 'Up to 5 coupons can be added, one for each coupon',
-  enough: 'FULL',
-  usage: 'USAGE',
+  enough: 'full',
+  usage: 'use',
   unlimit: 'UNLIMIT',
   remaining: 'REMAIN',
   unitZhang: 'U',
@@ -309,5 +309,9 @@ export const en = {
       batchId: 0,
       name: 'All'
     }
-  ]
+  ],
+  sendCouponVol: 'Send coupon',
+  sendCouponPack: 'Send coupon pack',
+  noThreshold: 'No limit',
+  allGoodsCanUse: 'All goods available'
 }
