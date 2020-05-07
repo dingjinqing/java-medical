@@ -144,8 +144,8 @@ export const en = {
   pwd2: 'set password',
   pwdTips2: 'Please enter the function permission password',
   tips3: 'The modified new password will replace the original password',
-  tips4: 'Please enter the login password',
-  tips5: 'Please set a password',
+  tips4: 'The login password is set incorrectly',
+  tips5: 'Please set a password for function authority',
   tipTitles6: 'Feature access password',
 
   // 功能权限管理的弹窗
