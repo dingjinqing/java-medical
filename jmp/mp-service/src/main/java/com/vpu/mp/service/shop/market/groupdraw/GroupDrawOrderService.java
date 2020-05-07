@@ -158,5 +158,78 @@ public class GroupDrawOrderService extends ShopBaseService {
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
         excelWriter.writeModelList(orderExport,OrderExport.class);
         return workbook;
+
+    /**
+     * 订单导出
+     * @param param 查询信息
+     * @param lang 语言
+     * @return 表格信息
+     */
+    public Workbook orderExport(OrderListParam param,String lang){
+        List<OrderExport> orderExport = new ArrayList<>();
+        PageResult<OrderListVo> pageResult = getGroupDrawOrderList(param);
+        List<OrderListVo> tempList = pageResult.getDataList();
+        tempList.forEach(item->{
+            OrderExport tempExport = new OrderExport();
+            tempExport.setOrderSn(item.getOrderSn());
+            tempExport.setGoodsName(item.getGoodsName());
+            if (item.getGrouped()){
+                tempExport.setGrouped("是");
+            }else {
+                tempExport.setGrouped("否");
+            }
+            tempExport.setUserInfo(item.getConsigneeRealName()+":"+item.getMobile());
+            if (item.getIsWinDraw()){
+                tempExport.setIsWinDraw("是");
+            }else {
+                tempExport.setIsWinDraw("否");
+            }
+            tempExport.setCreateTime(item.getCreateTime());
+            tempExport.setCodeCount(item.getCodeCount());
+            switch (item.getOrderStatus()){
+                case OrderConstant.ORDER_WAIT_PAY:
+                    tempExport.setOrderStatus("待付款");
+                    break;
+                case OrderConstant.ORDER_CANCELLED:
+                    tempExport.setOrderStatus("客户已取消");
+                    break;
+                case OrderConstant.ORDER_CLOSED:
+                    tempExport.setOrderStatus("卖家关闭");
+                    break;
+                case OrderConstant.ORDER_WAIT_DELIVERY:
+                    tempExport.setOrderStatus("待发货");
+                    break;
+                case OrderConstant.ORDER_SHIPPED:
+                    tempExport.setOrderStatus("已发货");
+                    break;
+                case OrderConstant.ORDER_FINISHED:
+                    tempExport.setOrderStatus("已完成");
+                    break;
+                case OrderConstant.ORDER_RETURN_FINISHED:
+                    tempExport.setOrderStatus("完成退货");
+                    break;
+                case OrderConstant.ORDER_REFUND_FINISHED:
+                    tempExport.setOrderStatus("退款成功");
+                    break;
+                case OrderConstant.ORDER_PIN_PAYED_GROUPING:
+                    tempExport.setOrderStatus("拼团中");
+                    break;
+                case OrderConstant.ORDER_PIN_SUCCESSS:
+                    tempExport.setOrderStatus("已成团");
+                    break;
+                case OrderConstant.ORDER_GIVE_GIFT_FINISHED:
+                    tempExport.setOrderStatus("礼单已完成");
+                    break;
+                default:
+                    tempExport.setOrderStatus("订单完成");
+            }
+            orderExport.add(tempExport);
+        });
+        //表格导出
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(orderExport,OrderExport.class);
+        return workbook;
+    }
     }
 }
