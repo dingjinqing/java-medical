@@ -40,6 +40,7 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import jodd.util.StringUtil;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -378,8 +379,7 @@ public class CouponService extends ShopBaseService {
 
         //根据优惠券使用状态、过期状态条件筛选
         MpBuildOptions(select, param);
-        SelectConditionStep<? extends Record> sql = select.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId()));
-        PageResult<AvailCouponVo> lists = getPageResult(sql, param.getCurrentPage(), param.getPageRows(), AvailCouponVo.class);
+        PageResult<AvailCouponVo> lists = getPageResult(select, param.getCurrentPage(), param.getPageRows(), AvailCouponVo.class);
         for (AvailCouponVo list:lists.dataList){
             list.setCanShare(0); //0不可以分享；1可以分享
             //分裂优惠券属性
@@ -751,7 +751,7 @@ public class CouponService extends ShopBaseService {
         param.setNav((byte)0);
         param.setPageRows(99);
         PageResult<AvailCouponVo> coupons = getCouponByUser(param);
-        if(coupons.dataList == null) {
+        if(CollectionUtils.isEmpty(coupons.dataList)) {
             return null;
         }
         ArrayList<OrderCouponVo> result = new ArrayList<>(coupons.dataList.size());
@@ -774,7 +774,7 @@ public class CouponService extends ShopBaseService {
         param.setPageRows(1);
         param.setCouponSn(couponSn);
         PageResult<AvailCouponVo> coupons = getCouponByUser(param);
-        if(coupons.dataList == null) {
+        if(CollectionUtils.isEmpty(coupons.dataList)) {
             return null;
         }
         return new OrderCouponVo().init(coupons.dataList.get(0));

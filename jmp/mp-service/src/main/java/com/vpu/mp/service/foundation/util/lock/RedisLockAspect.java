@@ -62,8 +62,14 @@ public final class RedisLockAspect extends ShopBaseService {
         try {
             proceed = joinPoint.proceed();
         } catch (Throwable throwable) {
-            logger().error("批量锁执行joinPoint.proceed()异常", throwable);
-            throw new MpException(JsonResultCode.CODE_ORDER_UPDATE_STOCK_FAIL);
+            Throwable cause = throwable.getCause();
+            if (cause instanceof MpException) {
+                throw new MpException(((MpException) cause).getErrorCode(), cause.getMessage(), ((MpException) cause).getCodeParam());
+            } else {
+                logger().error("批量锁执行joinPoint.proceed()异常", throwable);
+                throw new MpException(JsonResultCode.CODE_ORDER_UPDATE_STOCK_FAIL);
+            }
+            
         }
         releaseLocks(joinPoint);
         logger().info("redis环绕批量锁调用代理方法end");
