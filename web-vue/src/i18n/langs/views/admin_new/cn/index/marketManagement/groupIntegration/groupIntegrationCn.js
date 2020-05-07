@@ -108,6 +108,7 @@ export const cn = {
   ruleInfo3: '请选开始时间',
   ruleInfo4: '请选择结束时间',
   ruleInfo5: '请输入必输项',
+  ruleInfo6: '请输入有效期',
   createSuccess: '创建活动成功',
   editSuccess: '修改活动成功',
   warningInfo1: '瓜分积分数需要大于成团人数',
