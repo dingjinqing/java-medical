@@ -90,18 +90,24 @@
       />
     </div>
 
+    <!-- 导出数据确认弹窗 -->
+    <exportForm
+      :show.sync="showExportConfirm"
+      :param="this.requestParams"
+      :totalRows="totalRows"
+      @export="exportHandler"
+    />
+
   </div>
 </template>
 <script>
-// 引入组件
-import marketOrderSearchTab from '@/components/admin/marketManage/marketOrderSearchTab.vue'
-import pagination from '@/components/admin/pagination/pagination.vue'
-import { orderLotteryList } from '@/api/admin/marketManage/lotteryDraw.js'
+import { download } from '@/util/excelUtil.js'
+import { orderLotteryList, lotteryOrderListExport } from '@/api/admin/marketManage/lotteryDraw.js'
 export default {
-
   components: {
-    marketOrderSearchTab,
-    pagination
+    marketOrderSearchTab: () => import('@/components/admin/marketManage/marketOrderSearchTab.vue'),
+    pagination: () => import('@/components/admin/pagination/pagination.vue'),
+    exportForm: () => import('@/components/admin/marketManage/exportConfirmDialog.vue')
   },
   data () {
     return {
@@ -109,6 +115,8 @@ export default {
       pageParams: {},
       requestParams: {},
       tableData: [],
+      showExportConfirm: false, // 导出数据弹窗
+      totalRows: 0, // 筛选个数
       // 订单状态
       orderStatusArr: {
         null: '全部订单',
@@ -142,63 +150,82 @@ export default {
   methods: {
     // 筛选
     initDataList () {
-      this.loading = true
-      var obj = {}
-      obj.groupDrawId = this.$route.query.id
-      obj.currentPage = this.pageParams.currentPage
-      obj.pageRows = this.pageParams.pageRows
-      console.log(this.requestParams)
-      if (this.requestParams.goodsName) {
-        obj.goodsName = this.requestParams.goodsName
-      }
-      if (this.requestParams.orderSn) {
-        obj.orderSn = this.requestParams.orderSn
-      }
-      if (this.requestParams.selectedOrderStatus !== undefined) {
-        obj.orderStatus = this.requestParams.selectedOrderStatus === null ? -1 : this.requestParams.selectedOrderStatus
-      }
-      if (this.requestParams.consignee) {
-        obj.consigneeName = this.requestParams.consignee
-      }
-      if (this.requestParams.mobile) {
-        obj.mobile = this.requestParams.mobile
-      }
-      if (this.requestParams.createTimeStart) {
-        obj.createTime = this.requestParams.createTimeStart
-      }
-      if (this.requestParams.provinceCode) {
-        obj.provinceCode = this.requestParams.provinceCode
-      }
-      if (this.requestParams.cityCode) {
-        obj.cityCode = this.requestParams.cityCode
-      }
-      if (this.requestParams.districtCode) {
-        obj.districtCode = this.requestParams.districtCode
-      }
-      console.log(obj)
-      orderLotteryList(obj).then((res) => {
-        if (res.error === 0) {
-          this.loading = false
-          this.pageParams = res.content.page
-          // 订单状态
-          res.content.dataList.forEach(item => {
-            item.orderStatusName = this.orderStatusArr[item.orderStatus === -1 ? null : item.orderStatus]
-          })
-          this.tableData = res.content.dataList
+      return new Promise((resolve, reject) => {
+        this.loading = true
+        var obj = {}
+        obj.groupDrawId = this.$route.query.id
+        obj.currentPage = this.pageParams.currentPage
+        obj.pageRows = this.pageParams.pageRows
+        if (this.requestParams.goodsName) {
+          obj.goodsName = this.requestParams.goodsName
         }
+        if (this.requestParams.orderSn) {
+          obj.orderSn = this.requestParams.orderSn
+        }
+        if (this.requestParams.selectedOrderStatus !== undefined) {
+          obj.orderStatus = this.requestParams.selectedOrderStatus === null ? -1 : this.requestParams.selectedOrderStatus
+        }
+        if (this.requestParams.consignee) {
+          obj.consigneeName = this.requestParams.consignee
+        }
+        if (this.requestParams.mobile) {
+          obj.mobile = this.requestParams.mobile
+        }
+        if (this.requestParams.createTimeStart) {
+          obj.createTime = this.requestParams.createTimeStart
+        }
+        if (this.requestParams.provinceCode) {
+          obj.provinceCode = this.requestParams.provinceCode
+        }
+        if (this.requestParams.cityCode) {
+          obj.cityCode = this.requestParams.cityCode
+        }
+        if (this.requestParams.districtCode) {
+          obj.districtCode = this.requestParams.districtCode
+        }
+        orderLotteryList(obj).then((res) => {
+          if (res.error === 0) {
+            this.loading = false
+            this.pageParams = res.content.page
+            // 订单状态
+            res.content.dataList.forEach(item => {
+              item.orderStatusName = this.orderStatusArr[item.orderStatus === -1 ? null : item.orderStatus]
+            })
+            this.tableData = res.content.dataList
+
+            resolve(this.pageParams)
+          }
+        }).catch(error => {
+          reject(error)
+        })
       })
     },
 
     // 导出数据
     exportDataList () {
-      this.$confirm('此操作将导出数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message.success({ message: '导出成功' })
-      }).catch(() => {
-        this.$message.info({ message: '已取消导出' })
+      this.initDataList().then(() => {
+        this.totalRows = this.pageParams.totalRows
+        this.showExportConfirm = !this.showExportConfirm
+      })
+    },
+
+    // 导出数据弹窗回调函数
+    exportHandler (data) {
+      var obj = {}
+      obj.groupDrawId = this.$route.query.id
+      obj.goodsName = data.goodsName
+      obj.orderSn = data.orderSn
+      obj.orderStatus = data.selectedOrderStatus === null ? -1 : data.selectedOrderStatus
+      obj.consigneeName = data.consignee
+      obj.mobile = data.mobile
+      obj.createTime = data.createTimeStart
+      obj.provinceCode = data.provinceCode
+      obj.cityCode = data.cityCode
+      obj.districtCode = data.districtCode
+      lotteryOrderListExport(obj).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '拼团抽奖订单导出.xlsx'
+        download(res, decodeURIComponent(fileName))
       })
     },
 

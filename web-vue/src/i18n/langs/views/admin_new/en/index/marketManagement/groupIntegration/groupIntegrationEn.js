@@ -108,6 +108,7 @@ export const en = {
   ruleInfo3: 'Please select the start time',
   ruleInfo4: 'Please select an end time',
   ruleInfo5: 'Please enter a required entry',
+  ruleInfo6: 'Please enter the validity period',
   createSuccess: 'Success in creating activity',
   editSuccess: 'Success in modifying the event',
   warningInfo1: 'The number of points to be divided needs to be greater than the number of members',
