@@ -70,4 +70,11 @@ public class ShareRule {
     @JsonProperty(value = "user_info_list")
     private List<UserInfo> userInfoList;
 
+    /**
+     * 当前用户分享领取状态
+     * 0进行中 1未领取 2已领取 3已过期
+     */
+    @JsonProperty(value = "share_state")
+    private Byte shareState = 0;
+
 }

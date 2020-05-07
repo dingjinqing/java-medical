@@ -103,6 +103,8 @@ import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawList;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawReturn;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawVo;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupJoinDetailVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -1115,7 +1117,7 @@ public class GroupDrawService extends ShopBaseService {
 				goodsId, order.getUserId());
 		Integer inviteUserId = 0;
 		inviteUserId = inviteUserInfo == null ? 0 : inviteUserInfo.getInviteUserId();
-
+		log.info("groupDrawId为：{}，goodsId：{}，userId：{}，邀请人id：{}",groupDrawId,goodsId,order.getUserId(),inviteUserId);
 		Integer userId = order.getUserId();
 
 		JoinGroupListRecord newRecord = db().newRecord(JOIN_GROUP_LIST);
@@ -1127,7 +1129,8 @@ public class GroupDrawService extends ShopBaseService {
 		newRecord.setInviteUserId(inviteUserId);
 		newRecord.setOrderSn(order.getOrderSn());
 		newRecord.setStatus(status);
-
+		newRecord.setOpenTime(DateUtil.getSqlTimestamp());
+//TODO 
 		int insert = newRecord.insert();
 		log.info("插入结果" + insert);
 		if (status.equals(ZERO)) {
@@ -1139,7 +1142,7 @@ public class GroupDrawService extends ShopBaseService {
 					generateDrawRecord(userId, groupDrawId, goodsId, groupId);
 					generateDrawRecord(inviteUserId, groupDrawId, goodsId, groupId);
 				}
-				groupDrawInvite.updateRow(inviteUserInfo.getId(), ONE);
+				groupDrawInvite.updateInviteRow(inviteUserInfo.getId(), ONE);
 				increaseUserNum(userId, groupDrawId, groupId);
 			}
 			successGroupDraw(groupDrawId, groupId);
@@ -1258,7 +1261,7 @@ public class GroupDrawService extends ShopBaseService {
 					generateDrawRecord(userId, groupDrawId, goodsId, groupId);
 					generateDrawRecord(inviteUserId, groupDrawId, goodsId, groupId);
 				}
-				groupDrawInvite.updateRow(inviteUserInfo.getId(), ONE);
+				groupDrawInvite.updateInviteRow(inviteUserInfo.getId(), ONE);
 				increaseUserNum(userId, groupDrawId, groupId);
 			}
 			successGroupDraw(groupDrawId, groupId);
@@ -1342,5 +1345,64 @@ public class GroupDrawService extends ShopBaseService {
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);
 		return pageResult;
+	}
+	
+	/**
+	 * 获取抽奖码数量
+	 * @param groupDrawId
+	 * @param userId
+	 * @param goodsId
+	 * @return
+	 */
+	public int getDrawNum(Integer groupDrawId, Integer userId, Integer goodsId) {
+		Integer num = db().select(DSL.count()).from(JOIN_DRAW_LIST)
+				.where(JOIN_DRAW_LIST.GROUP_DRAW_ID.eq(groupDrawId)
+						.and(JOIN_DRAW_LIST.USER_ID.eq(userId).and(JOIN_DRAW_LIST.GOODS_ID.eq(goodsId))))
+				.fetchAnyInto(Integer.class);
+		log.info("获取抽奖码数量:{}",num);
+		return num == null ? 0 : num;
+	}
+	
+	/**
+	 * 获取邀请人数
+	 * @param groupDrawId
+	 * @param userId
+	 * @param goodsId
+	 * @return
+	 */
+	public int getInviteNum(Integer groupDrawId, Integer userId, Integer goodsId) {
+		Integer num = db().select(DSL.count()).from(JOIN_GROUP_LIST)
+				.where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId)
+						.and(JOIN_GROUP_LIST.INVITE_USER_ID.eq(userId).and(JOIN_GROUP_LIST.GOODS_ID.eq(goodsId))))
+				.fetchAnyInto(Integer.class);
+		log.info("获取邀请人数:{}",num);
+		return num == null ? 0 : num;
+	}
+	
+	/**
+	 * 添加邀请信息
+	 * @param param
+	 */
+	public void createInviteRecord(OrderBeforeParam param) {
+		log.info("插入邀请记录");
+		if(param.getInviteId()!=0) {
+			logger().info("邀请人id：{}",param.getInviteId());
+			Map<String, String> query = toMap(param);
+			groupDrawInvite.createInviteRecord("pages1/pinlotteryinfo/pinlotteryinfo",
+					Integer.valueOf(query.get("group_draw_id")), query, ZERO);			
+		}
+		log.info("插入邀请记录结束");
+	}
+
+	private Map<String, String> toMap(OrderBeforeParam param) {
+		Map<String, String> query = new HashMap<String, String>();
+		List<Goods> goods = param.getGoods();
+		Integer goodsId = goods.get(0).getGoodsId();
+		query.put("group_draw_id", String.valueOf(param.getActivityId()));
+		query.put("goods_id", String.valueOf(goodsId));
+		query.put("group_id", String.valueOf(param.getGroupId()));
+		query.put("invite_id", String.valueOf(param.getInviteId()));
+		query.put("user_id", String.valueOf(param.getWxUserInfo().getUserId()));
+		return query;
 	}
 }

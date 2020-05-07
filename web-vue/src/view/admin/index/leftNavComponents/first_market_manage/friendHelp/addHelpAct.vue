@@ -123,7 +123,7 @@
               :data="form.goodsInfo"
               key="goodsList"
               border
-              style="width:60%"
+              style="width:700px;"
             >
               <el-table-column
                 prop="goodsName"
@@ -131,7 +131,7 @@
                 align="center"
               ></el-table-column>
               <el-table-column
-                prop="shopPrice"
+                prop="prdPrice"
                 :label="$t('promoteList.goodsPrice')"
                 align="center"
               ></el-table-column>
@@ -172,7 +172,7 @@
                     :prop="'goodsInfo.' +  scope.$index+ '.market_price'"
                     :rules="[
                     { required: true, message: '请填写活动价', trigger: 'change' },
-                    { validator: (rule, value, callback)=>{validatePrice(rule, value, callback, scope.row.shopPrice)}, trigger: ['blur', 'change'] }
+                    { validator: (rule, value, callback)=>{validatePrice(rule, value, callback, scope.row.prdPrice)}, trigger: ['blur', 'change'] }
                   ]"
                   >
                     <el-input
@@ -872,7 +872,7 @@ export default {
           // {
           //   goodsIds: '',
           //   goodsName: '',
-          //   shopPrice: '',
+          //   prdPrice: '',
           //   goodsNumber: '',
           //   rewardType: '',
           //   market_price: '',
@@ -1057,7 +1057,7 @@ export default {
             console.log('goodsInfoByPrdId:', res)
             let goodsItem = {
               'goodsName': res.content.goodsName,
-              'shopPrice': res.content.goodsPrice,
+              'prdPrice': res.content.goodsPrice,
               'prdNumber': res.content.goodsStore,
               'market_store': this.form.rewardSet.market_store
             }
@@ -1078,7 +1078,7 @@ export default {
             console.log('goodsInfoByPrdId:', res)
             let goodsItem = {
               'goodsName': res.content.goodsName,
-              'shopPrice': res.content.goodsPrice,
+              'prdPrice': res.content.goodsPrice,
               'prdNumber': res.content.goodsStore,
               'market_store': this.form.rewardSet.market_store,
               'market_price': this.form.rewardSet.market_price
@@ -1115,6 +1115,7 @@ export default {
         if (valid) {
           console.log('this.form.rewardType:', this.form.rewardType)
           if (this.form.rewardType === '0' || this.form.rewardType === '1') {
+            this.form.goodsInfo[0].shopPrice = this.form.goodsInfo[0].prdPrice
             if (this.form.goodsInfo[0].market_price == null) {
               this.form.goodsInfo[0].market_price = ''
             }
@@ -1302,13 +1303,13 @@ export default {
     },
 
     // 校验活动价
-    validatePrice (rule, value, callback, shopPrice) {
+    validatePrice (rule, value, callback, prdPrice) {
       var re = /^\d+(\.\d{1,2})?$/
       if (!value) {
         callback(new Error('请填写活动价'))
       } else if (!re.test(value)) {
         callback(new Error('请正确填写活动价'))
-      } else if (Number(value) > shopPrice) {
+      } else if (Number(value) > prdPrice) {
         callback(new Error('活动价不能大于原价'))
       } else {
         callback()

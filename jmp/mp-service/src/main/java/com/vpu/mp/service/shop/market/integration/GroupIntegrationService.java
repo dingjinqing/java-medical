@@ -771,9 +771,9 @@ public class GroupIntegrationService extends ShopBaseService {
 				vo.setCanPin(canPinInte);
 				return vo;
 			} else {
-				logger().info("用户：{}，参加活动INTE_ACTIVITY_ID：{}，groupId：{}", userId, pinInteId, groupId);
+				logger().info("用户：{}，参加活动INTE_ACTIVITY_ID：{}，groupId：{}，邀请人id：{}", userId, pinInteId, groupId,inviteUser);
 				// 存取新的can_integration
-				GroupIntegrationListRecord inviteInfo = groupIntegrationList.getUserIntegrationInfo(userId, pinInteId,
+				GroupIntegrationListRecord inviteInfo = groupIntegrationList.getUserIntegrationInfo(inviteUser, pinInteId,
 						groupId);
 				Short inviteNum = inviteInfo.getInviteNum();
 				inviteNum++;

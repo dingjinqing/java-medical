@@ -535,7 +535,8 @@ export default {
     handleToClickMore () {
       console.log('了解更多')
       this.$router.push({
-        path: '/admin/home/main/versionUpgrade'
+        path: '/admin/home/main/versionUpgrade',
+        query: { mod: '表单统计' }
       })
     }
   }

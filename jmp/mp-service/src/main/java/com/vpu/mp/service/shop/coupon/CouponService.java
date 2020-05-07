@@ -40,6 +40,7 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import jodd.util.StringUtil;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -378,8 +379,7 @@ public class CouponService extends ShopBaseService {
 
         //根据优惠券使用状态、过期状态条件筛选
         MpBuildOptions(select, param);
-        SelectConditionStep<? extends Record> sql = select.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId()));
-        PageResult<AvailCouponVo> lists = getPageResult(sql, param.getCurrentPage(), param.getPageRows(), AvailCouponVo.class);
+        PageResult<AvailCouponVo> lists = getPageResult(select, param.getCurrentPage(), param.getPageRows(), AvailCouponVo.class);
         for (AvailCouponVo list:lists.dataList){
             list.setCanShare(0); //0不可以分享；1可以分享
             //分裂优惠券属性
@@ -576,7 +576,7 @@ public class CouponService extends ShopBaseService {
         ArrayList getCard = new ArrayList();
         Record record = db().select(MRKING_VOUCHER.ID,MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.ACT_CODE,MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.USE_SCORE,MRKING_VOUCHER.SCORE_NUMBER,MRKING_VOUCHER.VALIDITY_TYPE,MRKING_VOUCHER.VALIDITY,
             MRKING_VOUCHER.VALIDITY_HOUR,MRKING_VOUCHER.VALIDITY_MINUTE,MRKING_VOUCHER.START_TIME,MRKING_VOUCHER.END_TIME,MRKING_VOUCHER.RECOMMEND_GOODS_ID,
-            MRKING_VOUCHER.RECOMMEND_CAT_ID,MRKING_VOUCHER.RECOMMEND_SORT_ID,MRKING_VOUCHER.USE_CONSUME_RESTRICT,MRKING_VOUCHER.LEAST_CONSUME,MRKING_VOUCHER.CARD_ID,MRKING_VOUCHER.USE_EXPLAIN,MRKING_VOUCHER.COUPON_OVERLAY)
+            MRKING_VOUCHER.RECOMMEND_CAT_ID,MRKING_VOUCHER.RECOMMEND_SORT_ID,MRKING_VOUCHER.USE_CONSUME_RESTRICT,MRKING_VOUCHER.LEAST_CONSUME,MRKING_VOUCHER.CARD_ID,MRKING_VOUCHER.USE_EXPLAIN,MRKING_VOUCHER.COUPON_OVERLAY,MRKING_VOUCHER.VALIDATION_CODE)
             .from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(param.getCouponId())).fetchOne();
         if(record != null){
             AvailCouponDetailVo info = record.into(AvailCouponDetailVo.class);
@@ -751,7 +751,7 @@ public class CouponService extends ShopBaseService {
         param.setNav((byte)0);
         param.setPageRows(99);
         PageResult<AvailCouponVo> coupons = getCouponByUser(param);
-        if(coupons.dataList == null) {
+        if(CollectionUtils.isEmpty(coupons.dataList)) {
             return null;
         }
         ArrayList<OrderCouponVo> result = new ArrayList<>(coupons.dataList.size());
@@ -774,7 +774,7 @@ public class CouponService extends ShopBaseService {
         param.setPageRows(1);
         param.setCouponSn(couponSn);
         PageResult<AvailCouponVo> coupons = getCouponByUser(param);
-        if(coupons.dataList == null) {
+        if(CollectionUtils.isEmpty(coupons.dataList)) {
             return null;
         }
         return new OrderCouponVo().init(coupons.dataList.get(0));
@@ -1161,12 +1161,21 @@ public class CouponService extends ShopBaseService {
      * @return
      */
     public ShareQrCodeVo getMpQrCode(Integer couponId){
-        String pathParam=String.format("couponId=%d", couponId);
-        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.DISCOUN_COUPON, pathParam);
-
+        MrkingVoucherRecord mrkingVoucherRecord = getOneCouponById(couponId);
         ShareQrCodeVo vo = new ShareQrCodeVo();
-        vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.DISCOUN_COUPON.getPathUrl(pathParam));
+
+        String imageUrl;
+        String pathParam = String.format("couponId=%d", couponId);
+        if (mrkingVoucherRecord.getUseScore().equals(BaseConstant.YES) && mrkingVoucherRecord.getScoreNumber() != null) {
+            imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.SCORE_COUPON, pathParam);
+            vo.setImageUrl(imageUrl);
+            vo.setPagePath(QrCodeTypeEnum.SCORE_COUPON.getPathUrl(pathParam));
+        } else {
+            imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.DISCOUN_COUPON, pathParam);
+            vo.setImageUrl(imageUrl);
+            vo.setPagePath(QrCodeTypeEnum.DISCOUN_COUPON.getPathUrl(pathParam));
+        }
+
         return vo;
     }
 

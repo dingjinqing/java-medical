@@ -60,6 +60,7 @@ import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRight;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardTag;
+import com.vpu.mp.service.shop.market.couponpack.CouponPackService;
 import com.vpu.mp.service.shop.member.CardReceiveCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
@@ -76,6 +77,7 @@ public class CardCreateService extends ShopBaseService{
 	private MemberCardService memberCardSvc;
 	@Autowired
 	private CardReceiveCodeService cardReceiveCode;
+	
 	
 	/**
 	 * 添加会员卡

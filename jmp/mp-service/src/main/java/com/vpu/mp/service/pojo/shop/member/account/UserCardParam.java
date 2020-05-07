@@ -109,6 +109,14 @@ public class UserCardParam {
     protected Integer renewTime;
     /** 0:日，1:周 2: 月 */
     protected Byte renewDateType;
+    /**
+     * 优惠券开发 1开启，0关闭
+     */
+    protected Byte sendCouponSwitch;
+    /**
+     * 优惠券类型： 0优惠券 1优惠券礼包
+     */
+    protected Byte sendCouponType;
 
 	/**
 	 * 	自定义权益

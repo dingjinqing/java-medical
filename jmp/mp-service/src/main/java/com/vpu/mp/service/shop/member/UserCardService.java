@@ -77,7 +77,6 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -89,12 +88,10 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
-import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorSpendVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
-import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackUpdateVo;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.CardReceiveVo;
@@ -106,8 +103,6 @@ import com.vpu.mp.service.pojo.shop.member.account.GradeCardData;
 import com.vpu.mp.service.pojo.shop.member.account.NextGradeCardVo;
 import com.vpu.mp.service.pojo.shop.member.account.RenewValidCardList;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardCoupon;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardCouponPack;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardJudgeVo;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardVo;
@@ -130,7 +125,6 @@ import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
-import com.vpu.mp.service.pojo.shop.member.card.base.UserCardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.exception.CardReceiveFailException;
@@ -159,11 +153,9 @@ import com.vpu.mp.service.shop.card.CardFreeShipService;
 import com.vpu.mp.service.shop.card.wxapp.WxCardDetailService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
-import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.distribution.DistributorLevelService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
-import com.vpu.mp.service.shop.market.couponpack.CouponPackService;
 import com.vpu.mp.service.shop.member.card.CardUserOpt;
 import com.vpu.mp.service.shop.member.card.GradeCardOpt;
 import com.vpu.mp.service.shop.member.card.LimitCardOpt;
@@ -230,10 +222,7 @@ public class UserCardService extends ShopBaseService {
 	private DomainConfig domainConfig;
 	@Autowired
 	private ShopCommonConfigService shopCommonConfigService;
-	@Autowired
-	private CouponService couponService;
-	@Autowired
-	private CouponPackService couponPackService;
+
 	@Autowired
 	private VirtualOrderService virtualOrderService;
 	@Autowired
@@ -1469,7 +1458,7 @@ public class UserCardService extends ShopBaseService {
 
 
 			logger().info("开卡送券");
-			dealSendCouponInfo(userCard,lang);
+			wxCardDetailSvc.dealSendCouponInfo(userCard,lang);
 			UserCardJudgeVo userCardJudgeVo = new UserCardJudgeVo();
 			userCardJudgeVo.setStatus(1);
 
@@ -1563,7 +1552,7 @@ public class UserCardService extends ShopBaseService {
 			CardCustomRights customRights = memberCardService.cardDetailSvc.getCustomRights(mCard);
 			uCard.setCardCustomRights(customRights);
 
-			dealSendCouponInfo(uCard,lang);
+			wxCardDetailSvc.dealSendCouponInfo(uCard,lang);
 			UserCardJudgeVo userCardJudgeVo = new UserCardJudgeVo();
 			userCardJudgeVo.setStatus(1);
 			setEffectTimeForJudgeCard(uCard);
@@ -1647,108 +1636,7 @@ public class UserCardService extends ShopBaseService {
 
 	}
 
-	/**
-	 * 	处理会员卡相应的优惠券信息
-	 * @param userCard
-	 * @param lang
-	 */
-	public void dealSendCouponInfo(UserCardVo userCard, String lang) {
-		logger().info("处理会员卡相应的优惠券信息");
-		if(userCard == null) {
-			return;
-		}
-		if (CardUtil.isSendCoupon(userCard.getSendCouponType())) {
-			logger().info("正在生成优惠券信息");
-			List<Integer> couponIds = CardUtil.parseCouponList(userCard.getSendCouponIds());
-			if(couponIds == null || couponIds.size()==0) {
-				return;
-			}
-			// 优惠券信息列表
-			List<CouponView> couponList = couponService.getCouponViewByIds(couponIds);
-			userCard.setCoupons(cardCouponI18N(lang, couponList));
-		} else if (CardUtil.isSendCouponPack(userCard.getSendCouponType())) {
-			logger().info("处理优惠券礼包");
-			if (!StringUtils.isBlank(userCard.getSendCouponIds())) {
-				int id = Integer.parseInt(userCard.getSendCouponIds());
-				CouponPackUpdateVo couponPack = couponPackService.getCouponPackById(id);
-				UserCardCouponPack pack = new UserCardCouponPack();
-				if(couponPack != null) {
-					pack = UserCardCouponPack.builder()
-							.id(couponPack.getId())
-							.actName(couponPack.getActName())
-							.packName(couponPack.getPackName())
-							.build();
-				}
-				userCard.setCouponPack(pack);
-			}
-		}
-	}
-	/**
-	 * 	处理会员卡优惠券显示信息
-	 */
-	private List<UserCardCoupon> cardCouponI18N(String lang, List<CouponView> couponList) {
-		logger().info("处理会员卡优惠券信息国际化");
-		String i18nfile = "member";
-		List<UserCardCoupon> res = new ArrayList<>();
-		if(couponList == null || couponList.size()==0) {
-			return res;
-		}
-		for (CouponView coupon : couponList) {
-			// 1-优惠券使用范围
-			String couponCon = null;
-			if (NumberUtils.BYTE_ZERO.equals(coupon.getSuitGoods())) {
-				// 全部商品可用
-				couponCon = JsonResultMessage.CARD_COUPON_CON_ALL;
-			} else {
-				// 部分商品可用
-				couponCon = JsonResultMessage.CARD_COUPON_CON_PART;
-			}
-			couponCon = Util.translateMessage(lang, couponCon, i18nfile);
-
-			// 2-优惠券过期时间
-			Integer day = coupon.getValidity();
-			Integer hour = coupon.getValidityHour();
-			Integer minute = coupon.getValidityMinute();
-			String couponExpireTimeDesc = null;
-			if (day > 0 || hour > 0 || minute > 0) {
-				StringBuilder con = new StringBuilder();
-				// 领券日起
-				String receiveInfo = Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_RECEIVE_DAY_START, i18nfile);
-				con.append(receiveInfo);
-
-				if (day> 0) {
-					con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_DAY, i18nfile, day));
-				}
-				if (hour > 0) {
-					con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_HOUR, i18nfile,hour));
-				}
-				if (minute > 0) {
-					con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_MINUTE, i18nfile,minute));
-				}
-				couponExpireTimeDesc = con.toString();
-			} else {
-				String startTime = coupon.getStartTime().toLocalDateTime().toLocalDate().toString();
-				String endTime = coupon.getEndTime().toLocalDateTime().toLocalDate().toString();
-				couponExpireTimeDesc = startTime + "--" + endTime;
-			}
-
-			// 3-优惠券使用条件限制
-			String restrict = null;
-			if (NumberUtils.INTEGER_ZERO.equals(coupon.getUseConsumeRestrict())) {
-				restrict = Util.translateMessage(lang,JsonResultMessage.CARD_COUPON_NOLIMIT, i18nfile);
-			} else {
-				restrict = Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_SATISFY, i18nfile, coupon.getLeastConsume());
-			}
-			res.add(
-					UserCardCoupon.builder()
-						.couponCondition(couponCon)
-						.expireTime(couponExpireTimeDesc)
-						.useConsumeRestrict(restrict)
-						.build()
-					);
-		}
-		return res;
-	}
+	
 
 	/**
 	 * 	领取会员卡
@@ -1760,7 +1648,6 @@ public class UserCardService extends ShopBaseService {
 		logger().info("领取会员卡");
 		CardReceiveVo vo = new CardReceiveVo();
 		//	第一次领取
-		boolean firstGet = true;
 		if (param.getCardId() != null) {
 			MemberCardRecord mCard = memberCardService.getCardById(param.getCardId());
 			if(mCard == null) {

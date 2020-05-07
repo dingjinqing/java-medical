@@ -9,6 +9,7 @@ import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -23,6 +24,7 @@ import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import jodd.util.StringUtil;
@@ -67,7 +69,8 @@ public class PreSaleService extends ShopBaseService {
     private QrCodeService qrCode;
     @Autowired
     private GoodsService goodsService;
-
+    @Autowired
+    private EsDataUpdateMqService esDataUpdateMqService;
 
 
     public static final Presale TABLE = PRESALE;
@@ -206,9 +209,13 @@ public class PreSaleService extends ShopBaseService {
      */
     public void addPreSale(PreSaleParam param) {
         validateParam(param);
-        transaction(()->{
+        transaction(() -> {
             this.insertPresale(param);
         });
+
+        //刷新goodsType
+        saas.getShopApp(getShopId()).shopTaskService.preSaleTaskService.monitorGoodsType();
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(param.getGoodsId()), getShopId(), DBOperating.UPDATE);
     }
 
     /**
@@ -351,6 +358,11 @@ public class PreSaleService extends ShopBaseService {
      */
     public void deletePreSale(Integer id) {
         db().update(TABLE).set(TABLE.DEL_FLAG, DelFlag.DISABLE_VALUE).where(TABLE.ID.eq(id)).execute();
+
+        PresaleRecord presaleRecord = getPresaleRecord(id);
+        //刷新goodsType
+        saas.getShopApp(getShopId()).shopTaskService.preSaleTaskService.monitorGoodsType();
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(presaleRecord.getGoodsId()), getShopId(), DBOperating.UPDATE);
     }
 
     /**
@@ -358,6 +370,11 @@ public class PreSaleService extends ShopBaseService {
      */
     public void disablePreSale(Integer id) {
         db().update(TABLE).set(TABLE.STATUS, ACTIVITY_STATUS_DISABLE).where(TABLE.ID.eq(id)).execute();
+
+        PresaleRecord presaleRecord = getPresaleRecord(id);
+        //刷新goodsType
+        saas.getShopApp(getShopId()).shopTaskService.preSaleTaskService.monitorGoodsType();
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(presaleRecord.getGoodsId()), getShopId(), DBOperating.UPDATE);
     }
 
     /**
@@ -365,6 +382,11 @@ public class PreSaleService extends ShopBaseService {
      */
     public void enablePreSale(Integer id) {
         db().update(TABLE).set(TABLE.STATUS, ACTIVITY_STATUS_NORMAL).where(TABLE.ID.eq(id)).execute();
+
+        PresaleRecord presaleRecord = getPresaleRecord(id);
+        //刷新goodsType
+        saas.getShopApp(getShopId()).shopTaskService.preSaleTaskService.monitorGoodsType();
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(presaleRecord.getGoodsId()), getShopId(), DBOperating.UPDATE);
     }
 
     /**
@@ -455,15 +477,19 @@ public class PreSaleService extends ShopBaseService {
                 if(product.getPreDiscountMoney2() != null){
                     presaleProductRecord.setPreDiscountMoney_2(product.getPreDiscountMoney2());
                 }
-                if (presaleProductRecord.getId()==null){
+                if (presaleProductRecord.getId() == null) {
                     presaleProductRecord.insert();
-                }else {
+                } else {
                     presaleProductRecord.update();
                 }
                 preProductIdRecordIds.add(presaleProductRecord.getId());
             });
             db().delete(SUB_TABLE).where(SUB_TABLE.PRESALE_ID.eq(presaleId).and(SUB_TABLE.ID.notIn(preProductIdRecordIds))).execute();
         });
+
+        //刷新goodsType
+        saas.getShopApp(getShopId()).shopTaskService.preSaleTaskService.monitorGoodsType();
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(param.getGoodsId()), getShopId(), DBOperating.UPDATE);
     }
 
 

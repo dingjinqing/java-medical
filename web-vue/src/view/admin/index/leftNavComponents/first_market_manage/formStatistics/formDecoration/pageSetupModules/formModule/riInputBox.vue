@@ -68,7 +68,7 @@
         <div class="list lastInput">
           <span></span>
           {{$t('formDecorationModel.atMostInput')}}<el-input
-            v-model="modulesSaveData.least_number"
+            v-model="modulesSaveData.most_number"
             :disabled="isProhibit"
             onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
             size="small"

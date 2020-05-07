@@ -233,7 +233,7 @@ global.wxPage({
   to_goods: function (e) {
     console.log('to_goods', this.data)
     let goods_id = e.currentTarget.dataset.goods_id;
-    util.api('/api/wxapp/card/exchange/judge', function (res) {
+    util.api('/api/wxapp/card/exchange/judge', (res) => {
       if (res.error == 0) {
         util.navigateTo({
           url: `/pages/item/item?gid=${goods_id}&cardNo=${this.data.cardNo}&cardId=${this.data.cardId}&isChange=1`,
@@ -244,15 +244,7 @@ global.wxPage({
         }, true, this.$t('page1.usercardgoods.cancel'), this.$t('page1.usercardgoods.originalPricePurchase'))
       }
     }, { cardNo: this.data.cardNo, goodsId: goods_id, isList: 2 })
-    if (this.data.exchangSurplus == 0) {
-      util.showModal(this.$t('page1.usercardgoods.tips'), this.$t('page1.usercardgoods.noRedeemableTimes'), function () {
-        util.jumpLink('/pages/item/item?gid=' + goods_id, 'navigateTo')
-      }, true, this.$t('page1.usercardgoods.cancel'), this.$t('page1.usercardgoods.originalPricePurchase'))
-    } else {
-      util.navigateTo({
-        url: `/pages/item/item?gid=${goods_id}&cardNo=${this.data.cardNo}&cardId=${this.data.cardId}&isChange=1`,
-      })
-    }
+
   },
   /**
    * 页面上拉触底事件的处理函数

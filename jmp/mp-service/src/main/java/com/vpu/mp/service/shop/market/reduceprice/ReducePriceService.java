@@ -4,6 +4,7 @@ import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -22,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.TagService;
+import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -68,20 +70,24 @@ public class ReducePriceService extends ShopBaseService {
     @Autowired
     private MemberCardProcessorDao memberCardProcessorDao;
     @Autowired
+    private EsDataUpdateMqService esDataUpdateMqService;
+
+    @Autowired
     private TagService tagService;
     /**
      * 新建限时降价活动
      */
     public void addReducePrice(ReducePriceAddParam param) {
+        ReducePriceRecord record = db().newRecord(REDUCE_PRICE);
+        assign(param, record);
+        if (param.getShareConfig() != null) {
+            record.setShareConfig(Util.toJson(param.getShareConfig()));
+        }
+        if(CollectionUtils.isNotEmpty(param.getActivityTagId())){
+            record.setActivityTagId(Util.listToString(param.getActivityTagId()));
+        }
+        List<Integer> goodsIds = new ArrayList<>();
         this.transaction(() -> {
-            ReducePriceRecord record = db().newRecord(REDUCE_PRICE);
-            assign(param, record);
-            if (param.getShareConfig() != null) {
-                record.setShareConfig(Util.toJson(param.getShareConfig()));
-            }
-            if(CollectionUtils.isNotEmpty(param.getActivityTagId())){
-                record.setActivityTagId(Util.listToString(param.getActivityTagId()));
-            }
             record.insert();
             Integer reducePriceId = record.getId();
             for (ReducePriceGoodsAddParam goods : param.getReducePriceGoodsAddParams()) {
@@ -108,8 +114,14 @@ public class ReducePriceService extends ShopBaseService {
                     productRecord.setPrdPrice(goods.getGoodsPrice());
                     productRecord.insert();
                 }
+
+                goodsIds.add(goods.getGoodsId());
             }
         });
+
+        //刷新goodsType
+        saas.getShopApp(getShopId()).shopTaskService.reducePriceTaskService.monitorGoodsType();
+        esDataUpdateMqService.addEsGoodsIndex(goodsIds, getShopId(), DBOperating.UPDATE);
     }
 
     /**
@@ -176,6 +188,10 @@ public class ReducePriceService extends ShopBaseService {
         ReducePriceRecord record = new ReducePriceRecord();
         assign(param, record);
         db().executeUpdate(record);
+
+        //刷新goodsType
+        saas.getShopApp(getShopId()).shopTaskService.reducePriceTaskService.monitorGoodsType();
+        esDataUpdateMqService.addEsGoodsIndex(getActGoodsIds(param.getId()), getShopId(), DBOperating.UPDATE);
     }
 
     /**
@@ -187,6 +203,10 @@ public class ReducePriceService extends ShopBaseService {
             set(REDUCE_PRICE.DEL_TIME, DateUtil.getLocalDateTime()).
             where(REDUCE_PRICE.ID.eq(id)).
             execute();
+
+        //刷新goodsType
+        saas.getShopApp(getShopId()).shopTaskService.reducePriceTaskService.monitorGoodsType();
+        esDataUpdateMqService.addEsGoodsIndex(getActGoodsIds(id), getShopId(), DBOperating.UPDATE);
     }
 
     /**
@@ -622,17 +642,17 @@ public class ReducePriceService extends ShopBaseService {
     public Timestamp[] getCurrentPeriodTime(int reducePriceId){
         ReducePriceRecord reducePriceRecord = getReducePriceRecord(reducePriceId);
         Byte periodAction = reducePriceRecord.getPeriodAction();
-        if(!periodAction.equals(PERIOD_ACTION_NORMAL)){
+        if (!periodAction.equals(PERIOD_ACTION_NORMAL)) {
             Timestamp[] ret = new Timestamp[2];
-            String []periodString = reducePriceRecord.getPointTime().split("@");
+            String[] periodString = reducePriceRecord.getPointTime().split("@");
             ret[0] = DateUtil.convertToTimestamp(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE) + " " + periodString[0] + ":00");
             ret[1] = DateUtil.convertToTimestamp(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE) + " " + periodString[1] + ":00");
             return ret;
         }
         return null;
     }
-    
-    
+
+
     /**
      * 营销日历用id查询活动
      * @param id
@@ -642,7 +662,7 @@ public class ReducePriceService extends ShopBaseService {
 		return db().select(REDUCE_PRICE.ID, REDUCE_PRICE.NAME.as(CalendarAction.ACTNAME), REDUCE_PRICE.START_TIME,
 				REDUCE_PRICE.END_TIME).from(REDUCE_PRICE).where(REDUCE_PRICE.ID.eq(id)).fetchAnyInto(MarketVo.class);
     }
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param
@@ -672,6 +692,10 @@ public class ReducePriceService extends ShopBaseService {
         if(reducePriceRecord.getActivityTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(reducePriceRecord.getActivityTagId())){
             tagService.userTagSvc.addActivityTag(userId,Util.stringToList(reducePriceRecord.getActivityTagId()), TagSrcConstant.REDUCE_PRICE,actId);
         }
+    }
+
+    private List<Integer> getActGoodsIds(Integer actId) {
+        return db().select(REDUCE_PRICE_GOODS.GOODS_ID).from(REDUCE_PRICE_GOODS).where(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID.eq(actId)).fetchInto(Integer.class);
     }
 
 }

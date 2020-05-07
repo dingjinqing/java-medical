@@ -10,6 +10,10 @@
     </view>
   </block>
   <block wx:else>
+    <view class="coupon-package-tips" wx:if="{{couponPackage}}" bindtap="viewCouponPackage">
+      领券最高减价{{couponPackage.maxReduce}}元
+      <view class="get-coupon">领券 <image src="{{imageUrl}}image/wxapp/right_into_color.png"></image></view>
+    </view>
     <!-- 普通商品 -->
     <view class='normal_goods_container putong'>
       <view class='enen' wx:for='{{cartGoodsList}}' wx:key='key'>
@@ -352,4 +356,6 @@
 
 <!-- 推荐商品 -->
 <v-recommend id="recommend" pageName="item" />
+<!-- 优惠券礼包弹窗 -->
+<v-coupon-package-dialog show="{{showCouponPackageDialog}}" coupon-package-list="{{couponPackage.packList}}" />
 <include src="../common/footer.wxml" />

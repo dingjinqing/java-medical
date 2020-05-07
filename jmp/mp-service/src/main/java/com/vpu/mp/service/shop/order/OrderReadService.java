@@ -136,6 +136,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -227,11 +228,12 @@ public class OrderReadService extends ShopBaseService {
     private ShopAccountService shopAccount;
     @Autowired
     private ChildAccountService childAccount;
-    /**
-     * 订单查询
-     * @param param
-     * @return PageResult
-     */
+
+	/**
+	 * 订单查询
+	 * @param param
+	 * @return PageResult
+	 */
 	public OrderQueryVo getPageList(OrderPageListQueryParam param) {
 		logger.info("订单综合查询开始");
 		OrderQueryVo result = new OrderQueryVo();
@@ -375,6 +377,8 @@ public class OrderReadService extends ShopBaseService {
 			vo.setGoods(goods.get(vo.getOrderId()));
 			//设置订单操作
 			OrderOperationJudgment.operationSet(vo,returningCount.get(vo.getOrderId()),ship.canBeShipped(vo.getOrderSn()));
+			//手动退款退货按钮显示
+            showManualReturn(vo);
 		}
 		//设置订单支付方式（无子单）
 		orderInfo.setPayCodeList(mainOrder,prizesSns);
@@ -403,6 +407,35 @@ public class OrderReadService extends ShopBaseService {
         BeanUtils.copyProperties(orderInfoVo, simple);
         return simple;
     }
+    /**
+    /**
+     * admin显示手动退款退货按钮
+     * @param vo
+     */
+    private void showManualReturn(OrderInfoVo vo) {
+        //微信支付超一年不可退款
+        if(OrderConstant.PAY_CODE_WX_PAY.equals(vo.getPayCode()) && vo.getPayTime() != null) {
+            Calendar instance = Calendar.getInstance();
+            instance.setTimeInMillis(vo.getPayTime().getTime());
+            instance.add(Calendar.YEAR, 1);
+            if(instance.getTimeInMillis() < System.currentTimeMillis()) {
+                vo.setShowManualReturn(false);
+                return;
+            }
+        }
+        //订单状态：待付款、取消、关闭时不可退款
+        if(vo.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY || vo.getOrderStatus() == OrderConstant.ORDER_CANCELLED || vo.getOrderStatus() == OrderConstant.ORDER_CLOSED) {
+            vo.setShowManualReturn(false);
+            return;
+        }
+        //订单无可退商品且无可退金额
+        if(!orderGoods.canReturnGoodsNumber(vo.getOrderSn()) && BigDecimalUtil.compareTo(orderInfo.getOrderFinalAmount(vo , Boolean.TRUE), refundAmountRecord.getOrderRefundAmount(vo.getOrderSn())) < 1) {
+            vo.setShowManualReturn(false);
+            return;
+        }
+        vo.setShowManualReturn(true);
+    }
+
     /**
 	 * 退货、款订单
 	 * @return

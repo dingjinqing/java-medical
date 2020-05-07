@@ -30,5 +30,10 @@ export const en = {
   ff1: 'Include all the features of the premium version',
   ff2: 'Full decoration module',
   ff3: 'Mass marketing function',
-  ff4: 'More comprehensive data query function'
+  ff4: 'More comprehensive data query function',
+  systemNotify: 'System notification',
+  fedBack: 'The information has been fed back to your exclusive product consultant, we will contact you as soon as possible! ! ! ',
+  contactCustomer: 'Contact customer service',
+  ok: 'OK',
+  submitted: 'Today you have submitted an upgrade application, and product consultants will contact you within 3 working days! ! ! '
 }

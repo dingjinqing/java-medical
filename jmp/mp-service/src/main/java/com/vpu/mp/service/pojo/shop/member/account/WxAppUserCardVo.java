@@ -84,6 +84,15 @@ public class WxAppUserCardVo extends UserCardParam {
 	 * 	用户卡的转赠数据
 	 */
 	protected CardGiveVo cardGive;
+	
+	/**
+	 *  优惠券列表
+	 */
+	private List<UserCardCoupon> coupons;
+	/**
+	 *  优惠券礼包
+	 */
+	private List<UserCardCouponPack> couponPack;
 	public void calcCardIsExpired(){
 		if(isExpire()) {
 			this.expire = ALREADY_EXPIRED;

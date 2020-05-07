@@ -51,7 +51,8 @@ global.wxPage({
           fullList: res.content.fullReductionGoodsMap,
           purchaseList: res.content.purchasePriceGoodsMap,
           isAllCheck: res.content.isAllCheck,
-          totalPrice: res.content.totalPrice
+          totalPrice: res.content.totalPrice,
+          couponPackage: res.content.couponPackage
         })
 
         this.data.cartGoodsList.forEach((item, index) => {
@@ -824,6 +825,12 @@ global.wxPage({
     console.log(pIds)
     util.navigateTo({
       url: '/pages/maingoodslist/maingoodslist?identity_id=' + activityId + '&store_id=' + storeId + '&pIds=' + JSON.stringify(pIds),
+    })
+  },
+  // 打开优惠券礼包弹窗
+  viewCouponPackage(){
+    this.setData({
+      showCouponPackageDialog:true
     })
   }
 })

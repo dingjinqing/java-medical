@@ -1602,7 +1602,8 @@ export default {
     // 版本升级或续费
     goVersionUpgrade () {
       this.$router.push({
-        path: '/admin/home/main/versionUpgrade'
+        path: '/admin/home/main/versionUpgrade',
+        query: { mod: '商城概览' }
       })
     }
   },

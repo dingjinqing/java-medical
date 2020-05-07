@@ -297,15 +297,6 @@ public class OrderOperateSendMessage extends ShopBaseService {
     }
 
     /**
-     * TODO　返利增加余额消息推送
-     */
-    public void rebate(Integer userId, String orderSn, BigDecimal money, Integer orderUserId) {
-        logger().info("返利增加余额消息推送start");
-
-        logger().info("返利增加余额消息推送end");
-    }
-
-    /**
      * 分销员等级变换消息推送
      * @param values
      */

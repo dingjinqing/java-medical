@@ -21,6 +21,7 @@ var actPage = require('./page1/actPage.js') //活动商品页
 var history = require('./page1/history.js') //购买历史，我的足迹
 var goodsComment = require('./page1/goodsComment.js') //商品评价详情
 var aftersaleorder = require('./page1/aftersaleorder') // 售后中心
+var usercardgoods = require('./page1/usercardgoods') // 兑换商品
 var zh_CN = {
   "common": {
     "info": {

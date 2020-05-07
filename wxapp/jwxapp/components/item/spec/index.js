@@ -35,7 +35,9 @@ global.wxComponent({
       value: null
     },
     roomId:String,
-    canShip:Boolean
+    canShip:Boolean,
+    cardExchange:Object,
+    inviteId:Number
   },
 
   /**

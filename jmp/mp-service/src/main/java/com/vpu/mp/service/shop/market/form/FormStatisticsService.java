@@ -1,14 +1,17 @@
 package com.vpu.mp.service.shop.market.form;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.upyun.UpException;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.FormPageRecord;
 import com.vpu.mp.db.shop.tables.records.FormSubmitDetailsRecord;
 import com.vpu.mp.db.shop.tables.records.FormSubmitListRecord;
 import com.vpu.mp.db.shop.tables.records.PictorialRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.database.DslPlus;
@@ -29,6 +32,10 @@ import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.form.*;
+import com.vpu.mp.service.pojo.shop.market.form.pojo.FormCfgBo;
+import com.vpu.mp.service.pojo.shop.market.form.pojo.FormInfoBo;
+import com.vpu.mp.service.pojo.shop.market.form.pojo.FormModulesBo;
+import com.vpu.mp.service.pojo.shop.market.form.pojo.SendCoupon;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
@@ -49,11 +56,13 @@ import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.elasticsearch.common.Strings;
 import org.jooq.Record6;
 import org.jooq.Record8;
 import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
 import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -445,21 +454,71 @@ public class FormStatisticsService extends ShopBaseService {
 
         vo.setParticipantsNum(getFormFeedUserNum(pageId));
 
-        vo.setSexList(getFeedStatisticData(pageId, M_SEX));
-        vo.setChooseList(getFeedStatisticData(pageId, M_CHOOSE));
-        vo.setSlideList(getFeedStatisticData(pageId, M_SLIDE));
+        vo.setOneVo(getFeedStatisticDataNew(pageId));
+        String pageContent = vo.getPageContent();
+        Map<String, FormModulesBo> stringMapMap = Util.json2Object(pageContent, new TypeReference<Map<String, FormModulesBo>>() {
+        }, true);
+        vo.getOneVo().forEach(c->{
+            c.setConfirm(stringMapMap.get(c.getCurIdx()).getConfirm());
+            Map<String,String> selects;
+            if (stringMapMap.get(c.getCurIdx()).getModule_name().equals(M_CHOOSE)){
+                c.setShowTypes(stringMapMap.get(c.getCurIdx()).getShow_types());
+                selects = stringMapMap.get(c.getCurIdx()).getSelects();
+                Map<String, String> finalSelects = selects;
+                if (c.getShowTypes().equals(NumberUtils.BYTE_ZERO)){
+                    c.getInnerVo().forEach(l->{
+                        l.setModuleValue(finalSelects.get(l.getModuleValue().substring(1,l.getModuleValue().length()-1)));
+                    });
+                }
+                if (c.getShowTypes().equals(NumberUtils.BYTE_ONE)){
+                    c.getInnerVo().forEach(l->{
+                        String arrString = l.getModuleValue().substring(1,l.getModuleValue().length()-1);
+                        String[] arr = arrString.split(",");
+                        String moduleValues = "";
+                        for (int i=0;i<arr.length;i++){
+                            moduleValues = moduleValues + " " + finalSelects.get(arr[i].substring(1,arr[i].length()-1));
+                        }
+                        l.setModuleValue(moduleValues);
+                    });
+                }
+            }
+        });
 
-        vo.setSexTotal(sumVotes(vo.getSexList()));
-        vo.setChooseTotal(sumVotes(vo.getChooseList()));
-        vo.setSlideTotal(sumVotes(vo.getSlideList()));
-
-        calPercentage(vo.getSexTotal(), vo.getSexList());
-        calPercentage(vo.getChooseTotal(), vo.getChooseList());
-        calPercentage(vo.getSlideTotal(), vo.getSlideList());
 
         return vo;
     }
+    public List<FeedBackOneVo> getFeedStatisticDataNew(int pageId) {
+        List<FeedBackOneVo> feedBackOneVoList = new ArrayList<>();
+        List<String> moduleName = new ArrayList<>();
+        moduleName.add(M_SEX);
+        moduleName.add(M_CHOOSE);
+        moduleName.add(M_SLIDE);
+        List<String> curIdx = db().selectDistinct(fsd.CUR_IDX)
+            .from(fsd)
+            .where(fsd.PAGE_ID.eq(pageId))
+            .and(fsd.MODULE_NAME.in(moduleName))
+            .fetchInto(String.class);
 
+        curIdx.forEach(idx->{
+            FeedBackOneVo feedBackOneVo = new FeedBackOneVo();
+            feedBackOneVo.setCurIdx(idx);
+            List<FeedBackInnerVo> innerVo = db().select(fsd.MODULE_NAME
+                , fsd.MODULE_TYPE
+                , fsd.MODULE_VALUE
+                , DSL.count().as("votes"))
+                .from(fsd)
+                .where(fsd.PAGE_ID.eq(pageId))
+                .and(fsd.CUR_IDX.eq(idx))
+                .and(fsd.MODULE_NAME.in(moduleName))
+                .groupBy(fsd.MODULE_VALUE,fsd.MODULE_NAME,fsd.MODULE_TYPE)
+                .fetchInto(FeedBackInnerVo.class);
+            feedBackOneVo.setInnerVo(innerVo);
+            feedBackOneVo.setTotalVotes(sumVotes(innerVo));
+            calPercentage(feedBackOneVo.getTotalVotes(),innerVo);
+            feedBackOneVoList.add(feedBackOneVo);
+        });
+        return feedBackOneVoList;
+    }
     private void calPercentage(int total, List<FeedBackInnerVo> list) {
         list.forEach(e -> e.setPercentage(getIntPercentage(total, e.getVotes())));
     }
@@ -617,95 +676,117 @@ public class FormStatisticsService extends ShopBaseService {
      * @param lang
      * @return  表单详情
      */
-    public FormDetailVo getFormDecorationInfo(Integer pageId, Integer userId, String lang) {
+    public FormInfoBo getFormDecorationInfo(Integer pageId, Integer userId, String lang) {
         Timestamp nowDate = DateUtil.getLocalDateTime();
         FormPageRecord formRecord = getFormRecord(pageId);
         if (formRecord==null){
             log.error("改表单为找到");
-            FormDetailVo formDetailVo =new FormDetailVo();
+            FormInfoBo formDetailVo =new FormInfoBo();
             formDetailVo.setStatus((byte) 1);
             formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_INEXISTENCE,MESSAGE));
             return formDetailVo;
         }
-        FormDetailVo formDetailVo = formRecord.into(FormDetailVo.class);
-        if (formRecord.getState()==0){
+        FormInfoBo formInfoBo = toFormInfoBo(formRecord);
+        if (formInfoBo.getState()==0){
            log.error("该表单未发布");
-           formDetailVo.setStatus((byte) 2);
-           formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_UNPUBLISHED,MESSAGE));
-       }else if (formRecord.getState()==1){
-            if (formRecord.getIsForeverValid()==0&&formRecord.getStartTime().after(nowDate)){
+            formInfoBo.setStatus((byte) 2);
+            formInfoBo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_UNPUBLISHED,MESSAGE));
+       }else if (formInfoBo.getState()==1){
+            if (formInfoBo.getIsForeverValid()==0&&formInfoBo.getStartTime().after(nowDate)){
                 log.error("改表单未开始!");
-                formDetailVo.setStatus(3);
-                formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_NOT_STARTED,MESSAGE));
-            }else if (formRecord.getIsForeverValid()==0&&formRecord.getEndTime().before(nowDate)){
+                formInfoBo.setStatus((byte) 3);
+                formInfoBo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_NOT_STARTED,MESSAGE));
+            }else if (formInfoBo.getIsForeverValid()==0&&formInfoBo.getEndTime().before(nowDate)){
                 log.error("该表单已过期");
-                formDetailVo.setStatus(4);
-                formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_EXPIRED,MESSAGE));
+                formInfoBo.setStatus((byte) 4);
+                formInfoBo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_EXPIRED,MESSAGE));
             }else {
-                    String formCfg = formRecord.getFormCfg();
                     Integer totalTimes = getFromSubmitListCount(pageId);
-                    Integer cfgGetTimes = Integer.valueOf(getValueFromFormCfgByKey(formCfg, GET_TIMES));
+                    Integer cfgGetTimes =formInfoBo.getFormCfgBo().getGet_times();
                     if (cfgGetTimes>0&&totalTimes>cfgGetTimes){
                         log.info("该表单提交次数达到上限");
-                        formDetailVo.setStatus(5);
-                        formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_FAIL_SUBMIT_LIMIT,MESSAGE));
+                        formInfoBo.setStatus((byte) 5);
+                        formInfoBo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_FAIL_SUBMIT_LIMIT,MESSAGE));
                     }else {
-                        Integer totalSubmitTimes = db().selectCount().from(fsl).where(fsl.USER_ID.eq(userId))
-                                .and(fsl.PAGE_ID.eq(pageId)).fetchAny().component1();
-                        int cfgPostTimes = Integer.parseInt(getValueFromFormCfgByKey(formCfg, POST_TIMES));
-                        Integer cfgTotalTimes = Integer.valueOf(getValueFromFormCfgByKey(formCfg, TOTAL_TIMES));
+                        Integer totalSubmitTimes = getSubmitTime(pageId, userId);
+                        int cfgPostTimes = formInfoBo.getFormCfgBo().getPost_times();
+                        Integer cfgTotalTimes = formInfoBo.getFormCfgBo().getTotal_times();
                         if (cfgPostTimes==0&&totalSubmitTimes>cfgTotalTimes){
                             log.info("提交次数达到上限");
-                            formDetailVo.setStatus(6);
-                            formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_FAIL_SUBMIT_LIMIT,MESSAGE));
+                            formInfoBo.setStatus((byte) 6);
+                            formInfoBo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_FAIL_SUBMIT_LIMIT,MESSAGE));
                         }else {
-                            Integer daySubmitTimes = db().selectCount().from(fsl).where(fsl.USER_ID.eq(userId)).and(fsl.PAGE_ID.eq(pageId))
-                                    .and(DslPlus.dateFormatDay(fsl.CREATE_TIME).eq(nowDate.toString().substring(0, 10))).fetchAny().component1();
-                            int cfgDayTimes = Integer.parseInt(getValueFromFormCfgByKey(formCfg, DAY_TIMES));
+                            Integer daySubmitTimes = getDaySubmitTime(pageId, userId, nowDate);
+                            int cfgDayTimes = formInfoBo.getFormCfgBo().getDay_times();
                             if (cfgPostTimes==0&&daySubmitTimes>cfgDayTimes){
                                 log.info("今日提交次数达到上限");
-                                formDetailVo.setStatus(7);
-                                formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_DAY_SUBMIT_LIMIT,MESSAGE));
+                                formInfoBo.setStatus((byte) 7);
+                                formInfoBo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_DAY_SUBMIT_LIMIT,MESSAGE));
                             }else {
                                 log.info("活动校验完成");
-                                formDetailVo.setStatus(0);
+                                formInfoBo.setStatus((byte) 0);
                             }
                         }
                     }
             }
-       }else if(formRecord.getState()==2){
+       }else if(formInfoBo.getState()==2){
            log.info("该表单已关闭");
-            formDetailVo.setStatus(8);
-            formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_CLOSE,MESSAGE));
+            formInfoBo.setStatus((byte) 8);
+            formInfoBo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_CLOSE,MESSAGE));
         }else {
             log.info("该表单已删除");
-            formDetailVo.setStatus(9);
-            formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_DELETE,MESSAGE));
+            formInfoBo.setStatus((byte) 9);
+            formInfoBo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_DELETE,MESSAGE));
         }
         //TODO 增加商品记录
-        return formDetailVo;
+        return formInfoBo;
+    }
+
+    private Integer getSubmitTime(Integer pageId, Integer userId) {
+        return db().selectCount().from(fsl).where(fsl.USER_ID.eq(userId))
+                                    .and(fsl.PAGE_ID.eq(pageId)).fetchAny().component1();
+    }
+
+    private Integer getDaySubmitTime(Integer pageId, Integer userId, Timestamp nowDate) {
+        return db().selectCount().from(fsl).where(fsl.USER_ID.eq(userId)).and(fsl.PAGE_ID.eq(pageId))
+                                        .and(DslPlus.dateFormatDay(fsl.CREATE_TIME).eq(nowDate.toString().substring(0, 10))).fetchAny().component1();
+    }
+
+    /**
+     *  记录转实体类
+     * @param formRecord
+     * @return
+     */
+    private FormInfoBo toFormInfoBo(FormPageRecord formRecord) {
+        FormInfoBo formInfoBo  =formRecord.into(FormInfoBo.class);
+        FormCfgBo formCfgBo = Util.json2Object(formInfoBo.getFormCfg(),FormCfgBo.class,true);
+        Map<String, FormModulesBo> formModulesBoMap = Util.json2Object(formInfoBo.getPageContent(), new TypeReference<Map<String, FormModulesBo>>() {}, true);
+        formInfoBo.setFormCfgBo(formCfgBo);
+        formInfoBo.setPageContentBo(formModulesBoMap);
+        return formInfoBo;
     }
 
     /**
      * 提交填写表单
      * @param param
+     * @param lang
      * @return
      */
-    public FormSubmitDataVo submitFormDate(FormSubmitDataParam param) throws MpException {
+    public FormSubmitDataVo submitFormDate(FormSubmitDataParam param, String lang) throws MpException {
         FormPageRecord formRecord = getFormRecord(param.getPageId());
+        FormSubmitDataVo formSubmitDataVo =new FormSubmitDataVo();
         if (formRecord==null){
             log.error("表单提交错误");
+            formSubmitDataVo.setStatus((byte)1);
+            formSubmitDataVo.setMessage("");
+            return formSubmitDataVo;
         }
-        FormSubmitListRecord formSubmitListRecord = db().selectFrom(fsl).where(fsl.PAGE_ID.eq(param.getPageId())).and(fsl.USER_ID.eq(param.getUser().getUserId()))
-                .orderBy(fsl.CREATE_TIME).fetchAny();
-        if (formSubmitListRecord!=null&&formSubmitListRecord.getCreateTime().before(DateUtil.getTimeStampPlus(60,ChronoUnit.SECONDS))){
-            log.error("每个表单每分钟只能提交一次");
-        }
+        FormInfoBo formInfoBo = toFormInfoBo(formRecord);
+        if (checkData(param, formSubmitDataVo, formInfoBo,lang)) return formSubmitDataVo;
         //送积分
-        String formCfg = formRecord.getFormCfg();
-        int sendScore = Integer.parseInt(getValueFromFormCfgByKey(formCfg, SEND_SCORE));
-        if (sendScore == 1) {
-            int sendScoreNumber = Integer.parseInt(getValueFromFormCfgByKey(formCfg, SEND_SCORE_NUMBER));
+        Byte sendScore =formInfoBo.getFormCfgBo().getSend_score();
+        if (BaseConstant.YES.equals(sendScore)) {
+            int sendScoreNumber =formInfoBo.getFormCfgBo().getSend_score_number();
             if (sendScoreNumber > 0) {
                 log.info("表单--送积分");
                 ScoreParam scoreParam = new ScoreParam();
@@ -714,43 +795,129 @@ public class FormStatisticsService extends ShopBaseService {
                 scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
                 scoreParam.setRemarkCode(RemarkTemplate.MSG_FORM_DECORATION_GIFT.code);
                 scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_FORM_DECORATION_GIFT.val(), TRADE_FLOW_IN.val());
-
             }
         }
         CouponGiveQueueBo sendData =null;
-        try {
-            int sendCoupon = Integer.parseInt(getValueFromFormCfgByKey(formCfg, SEND_COUPON));
-            JsonNode cfg = MAPPER.readTree(formCfg);
-            Iterator<JsonNode> iterator = cfg.get(SEND_COUPON_LIST).elements();
-            if (sendCoupon==1&&iterator.hasNext()){
-                log.info("送优惠券");
-                List<String> couponIds =new ArrayList<>();
-                while (iterator.hasNext()) {
-                    JsonNode node = iterator.next();
-                    couponIds.add(node.get(COUPON_ID).asText());
-                }
-                CouponGiveQueueParam couponGive = new CouponGiveQueueParam();
-                couponGive.setUserIds(Collections.singletonList(param.getUser().getUserId()));
-                couponGive.setCouponArray(couponIds.toArray(new String[]{}));
-                couponGive.setActId(formRecord.getPageId());
-                couponGive.setAccessMode((byte) 0);
-                couponGive.setGetSource(COUPON_GIVE_SOURCE_FORM_STATISTICS);
-                /**
-                 * 发送优惠卷
-                 */
-                 sendData = couponGiveService.handlerCouponGive(couponGive);
+        int sendCoupon =formInfoBo.getFormCfgBo().getSend_coupon();
+        List<SendCoupon> sendCouponList = formInfoBo.getFormCfgBo().getSend_coupon_list();
+        if (sendCoupon==1&&sendCouponList!=null&&sendCouponList.size()>0){
+            log.info("送优惠券");
+            List<String> couponIds =new ArrayList<>();
+            for (SendCoupon coupon :sendCouponList) {
+                couponIds.add(coupon.getCoupon_id().toString());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            CouponGiveQueueParam couponGive = new CouponGiveQueueParam();
+            couponGive.setUserIds(Collections.singletonList(param.getUser().getUserId()));
+            couponGive.setCouponArray(couponIds.toArray(new String[]{}));
+            couponGive.setActId(formInfoBo.getPageId());
+            couponGive.setAccessMode((byte) 0);
+            couponGive.setGetSource(COUPON_GIVE_SOURCE_FORM_STATISTICS);
+            /** 发送优惠卷*/
+             sendData = couponGiveService.handlerCouponGive(couponGive);
         }
         //保存提交表单
         Integer submitFormId = saveSubmitForm(param,formRecord,sendData);
-        //TODO 更新库存 $shop->formDecoration->db($shop_id)->table('form_submit_list')
-        //                ->where('submit_id', $submit_id)->update($send);
-
-        FormSubmitDataVo formSubmitDataVo =new FormSubmitDataVo();
         formSubmitDataVo.setSubmitId(submitFormId);
         return formSubmitDataVo;
+    }
+
+    private boolean checkData(FormSubmitDataParam param, FormSubmitDataVo formSubmitDataVo, FormInfoBo formInfoBo, String lang) {
+        FormSubmitListRecord formSubmitListRecord = db().selectFrom(fsl).where(fsl.PAGE_ID.eq(param.getPageId())).and(fsl.USER_ID.eq(param.getUser().getUserId()))
+                .orderBy(fsl.CREATE_TIME).fetchAny();
+        if (formSubmitListRecord!=null&&formSubmitListRecord.getCreateTime().before(DateUtil.getTimeStampPlus(60, ChronoUnit.SECONDS))){
+            log.error("每个表单每分钟只能提交一次");
+            formSubmitDataVo.setStatus((byte)2);
+            formSubmitDataVo.setMessage("每个表单每分钟只能提交一次");
+            return true;
+        }
+        /**
+         * 提交次数限制
+         */
+        if (formInfoBo.getFormCfgBo().getGet_times()>0){
+            Integer totalTime = getFromSubmitListCount(param.getPageId());
+            log.info("表单一共提交次数{}-{}",totalTime,formInfoBo.getFormCfgBo().getGet_times());
+            if (totalTime>=formInfoBo.getFormCfgBo().getGet_times()){
+                formSubmitDataVo.setStatus((byte)3);
+                formSubmitDataVo.setMessage("提交次数达到上限");
+                return true;
+            }
+        }
+        if (!BaseConstant.YES.equals(formInfoBo.getFormCfgBo().getPost_times())){
+            if (formInfoBo.getFormCfgBo().getDay_times()>0){
+                Integer daySubmitTimes = getDaySubmitTime(param.getPageId(), param.getUser().getUserId(), DateUtil.getLocalDateTime());
+                log.info("每天限制提交{}-{}",daySubmitTimes,formInfoBo.getFormCfgBo().getDay_times());
+                if (daySubmitTimes>=formInfoBo.getFormCfgBo().getDay_times()){
+                    formSubmitDataVo.setStatus((byte)3);
+                    formSubmitDataVo.setMessage("每天提交次数达到上限");
+                    return true;
+                }
+            }
+            if (formInfoBo.getFormCfgBo().getTotal_times()>0){
+                Integer submitTime = getSubmitTime(param.getPageId(), param.getUser().getUserId());
+                log.info("每人限制提交{}-{}",submitTime,formInfoBo.getFormCfgBo().getTotal_times());
+                if (submitTime>=formInfoBo.getFormCfgBo().getTotal_times()){
+                    formSubmitDataVo.setStatus((byte)3);
+                    formSubmitDataVo.setMessage("提交次数达到上限");
+                    return true;
+                }
+            }
+        }
+        /**
+         * 表单校验
+         */
+        Map<String, FormModulesBo> pageContentBo = formInfoBo.getPageContentBo();
+        List<FeedBackDetail> detailList = param.getDetailList();
+
+        for (FeedBackDetail datail : detailList) {
+            FormModulesBo formModulesBo = pageContentBo.get(datail.getCurIdx());
+            if (Strings.isEmpty(datail.getModuleValue())) {
+                if (BaseConstant.YES.equals(formModulesBo.getConfirm())) {
+                    formSubmitDataVo.setStatus((byte)4);
+                    formSubmitDataVo.setMessage("必填项不可为空");
+                    return true;
+                }
+            }
+            switch (datail.getModuleName()) {
+                case "m_dates":
+                case "m_choose":
+                case "m_input_name":
+                case "m_input_mobile":
+                case "m_address":
+                case "m_input_email":
+                case "m_sex":
+                case "m_slide":
+                    log.info("条件校验");
+                    break;
+                case "m_input_text":
+                    log.info("输入框校验");
+                    int length = datail.getModuleValue().length();
+                    if (length<formModulesBo.getLeast_number()||length>formModulesBo.getMost_number()){
+                        formSubmitDataVo.setStatus((byte)4);
+                        formSubmitDataVo.setMessage("字数在指定范围内");
+                        return true;
+                    }
+                    break;
+                case "m_imgs":
+                    log.info("图片限制");
+                    String moduleValue = datail.getModuleValue();
+                    if (!Strings.isNullOrEmpty(moduleValue)){
+                        List<String> picList = Util.json2Object(datail.getModuleValue(), new TypeReference<List<String>>() {
+                        }, true);
+                        if (picList!=null&&formModulesBo.getMax_number()<picList.size()){
+                            formSubmitDataVo.setStatus((byte)4);
+                            formSubmitDataVo.setMessage("图片上传数量限制");
+                            return true;
+                        }
+                    }
+                    break;
+                case "m_upload_video":
+                    log.info("视频限制");
+
+                    break;
+                default:
+            }
+        }
+        return false;
     }
 
     /**
@@ -761,7 +928,7 @@ public class FormStatisticsService extends ShopBaseService {
      * @return 保存记录
      */
     private Integer saveSubmitForm(FormSubmitDataParam param, FormPageRecord formRecord, CouponGiveQueueBo sendData) {
-        final Integer[] submitId = {new Integer(0)};
+        final Integer[] submitId = {0};
         db().transaction(configuration -> {
             FormSubmitListRecord listRecord =db().newRecord(  fsl);
             listRecord.setPageId(param.getPageId());

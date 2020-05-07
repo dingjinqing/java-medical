@@ -80,4 +80,6 @@ public class OrderInfoVo extends OrderListInfoVo {
     private Boolean isReturnBk;
     /**返利信息*/
     private List<OrderRebateVo> rebateList;
+    /**是否展示手动退款退货按钮*/
+    private Boolean showManualReturn;
 }

@@ -234,7 +234,7 @@
                         :content="item.flag===2?'启用':'停用'"
                         placement="top-start"
                       >
-                        <img :src="item.flag===2?item.useIcon.img1:item.noUseIcon.img2">
+                        <img :src="item.flag===2?item.noUseIcon.img2:item.useIcon.img1">
                       </el-tooltip>
                     </div>
 
@@ -361,7 +361,7 @@
                         :content="item.flag===2?'启用':'停用'"
                         placement="top-start"
                       >
-                        <img :src="item.flag===2?item.useIcon.img1:item.noUseIcon.img2">
+                        <img :src="item.flag===2?item.noUseIcon.img2:item.useIcon.img1">
                       </el-tooltip>
                     </div>
                   </div>
