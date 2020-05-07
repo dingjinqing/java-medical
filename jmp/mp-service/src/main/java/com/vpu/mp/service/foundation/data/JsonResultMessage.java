@@ -300,6 +300,15 @@ public class JsonResultMessage {
     public static final String PARTICIPANTS_IS_MAX = "participated.is.max";
     public static final String GROUP_UPPER_LIMIT = "group.upper.limit";
     public static final String GROUP_ONLY_ONE = "group.only.one";
+    public static final String GROUP_ORDER_EXPORT = "group.order.export";
+    public static final String GROUP_ORDER_SN = "group.order.sn";
+    public static final String GROUP_GOODS = "group.goods";
+    public static final String GROUP_IS_GROUPED = "group.is.grouped";
+    public static final String GROUP_USER_INFO = "group.user.info";
+    public static final String GROUP_IS_WIN_DRAW = "group.is.win.draw";
+    public static final String GROUP_ORDER_TIME = "group.order.time";
+    public static final String GROUP_CODE_NUMBER = "group.code.number";
+    public static final String GROUP_ORDER_STATUS = "group.order.status";
 
     /**
      * 幸运大抽奖

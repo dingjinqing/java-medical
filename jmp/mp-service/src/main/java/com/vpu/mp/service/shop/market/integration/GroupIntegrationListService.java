@@ -390,10 +390,10 @@ public class GroupIntegrationListService extends ShopBaseService {
 			select.and(GROUP_INTEGRATION_LIST.STATUS.eq(param.getStatus()));
 		}
 		if(param.getStartTime() != null) {
-			select.and(GROUP_INTEGRATION_LIST.START_TIME.ge(param.getStartTime()));
+			select.and(GROUP_INTEGRATION_LIST.END_TIME.ge(param.getStartTime()));
 		}
 		if(param.getEndTime() != null) {
-			select.and(GROUP_INTEGRATION_LIST.END_TIME.le(param.getEndTime()));
+			select.and(GROUP_INTEGRATION_LIST.START_TIME.le(param.getEndTime()));
 		}
 		return select;
 	}
