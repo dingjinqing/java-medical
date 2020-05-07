@@ -2120,4 +2120,12 @@ public class MemberCardService extends ShopBaseService {
 		return cardDao.getCardDetailByNo(cardNo);
 	}
 	
+	/**
+	 * 	查询有效等级卡，简单信息
+	 * @return 等级卡List,该等价卡包括Id,name,grade信息
+	 */
+	public List<Map<String, Object>> getAllValidGradeCardList() {
+		return cardDao.getAllValidGradeCardList();
+	}
+	
 }
