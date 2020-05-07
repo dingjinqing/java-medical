@@ -305,6 +305,19 @@ global.wxPage({
       }
     });
   },
+  // 分享弹窗
+  to_share: function (e) {
+    var that = this
+    util.showModal('提示', '商品库存不足', function () {
+      that.setData({
+        share_good: false
+      })
+    });
+    setTimeout(function () {
+      clearTimeout(set_time_out);
+      that.onPullDownRefresh();
+    }, 200);
+  },
   
   /**
    * 页面相关事件处理函数--监听用户下拉动作
