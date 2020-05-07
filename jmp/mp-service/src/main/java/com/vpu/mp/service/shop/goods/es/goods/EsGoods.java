@@ -356,4 +356,9 @@ public class EsGoods  {
      */
     @EsFiled(name=EsSearchName.TOTAL_SALE_NUMBER,type = EsFiledTypeConstant.INTEGER)
     private Integer totalSaleNumber;
+
+
+
+    @EsFiled(name="test_time",type = EsFiledTypeConstant.DATE)
+    private String testTime;
 }

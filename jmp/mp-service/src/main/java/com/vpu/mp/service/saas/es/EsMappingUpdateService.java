@@ -1,113 +1,116 @@
 package com.vpu.mp.service.saas.es;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vpu.mp.config.mq.RabbitConfig;
 import com.vpu.mp.service.foundation.es.EsManager;
 import com.vpu.mp.service.foundation.es.EsUtil;
 import com.vpu.mp.service.foundation.es.annotation.EsFiled;
 import com.vpu.mp.service.foundation.es.annotation.EsFiledSerializer;
-import com.vpu.mp.service.foundation.es.annotation.EsFiledTypeConstant;
-import com.vpu.mp.service.foundation.es.pojo.EsMappingInfo;
+import com.vpu.mp.service.foundation.es.thread.EsDynamicAssemblyProcessor;
+import com.vpu.mp.service.foundation.es.thread.EsGoodsThread;
+import com.vpu.mp.service.foundation.mq.RabbitMqUtilService;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
-import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.action.AliasesRequest;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest.AliasActions;
-import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.GetAliasesResponse;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.GetMappingsRequest;
 import org.elasticsearch.client.indices.GetMappingsResponse;
-import org.elasticsearch.cluster.metadata.AliasAction;
 import org.elasticsearch.common.compress.CompressedXContent;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.VersionType;
 import org.elasticsearch.index.reindex.ReindexRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 
 @Service
 @Slf4j
 public class EsMappingUpdateService extends MainBaseService {
 
-    private static final String ES_GOODS_NEW = EsGoodsConstant.GOODS_INDEX_NAME+"_new";
+    @Autowired
+    @Qualifier("vpuThreadPool")
+    private ThreadPoolTaskExecutor taskExecutor;
+
+    @Autowired
+    public EsDynamicAssemblyProcessor processor;
 
     @Autowired
     private EsManager esManager;
 
+    @Autowired
+    private RabbitMqUtilService rabbitMqUtilService;
+
+    //es status
+    private volatile Boolean enabled = Boolean.TRUE;
+
+    public Boolean getEsStatus(){
+        return this.enabled;
+    }
+
 
     public void updateEsGoodsMapping(){
-        switchIndex();
-////        reIndex();
-//        createNewGoodsIndex();
-//        try {
-//            run();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        //创建新索引
+        String indexName = createNewGoodsIndex();
 
-    }
+        String oldIndexName = getIndexNameByAlias(EsGoodsConstant.GOODS_ALIA_NAME);
 
-    private List<EsGoods> test(){
-        List<EsGoods> result = Lists.newArrayList();
-        for (int i = 0; i < 100000; i++) {
-            EsGoods goods = new EsGoods();
-            goods.setGoodsId(i);
-            goods.setShopId(245547);
-            goods.setGoodsName("哈哈"+i);
-            result.add(goods);
+        List<Future<Boolean>> futures = Lists.newArrayList();
+        this.enabled = Boolean.FALSE;
+        //停止ESGoods的mq的消费
+        rabbitMqUtilService.stopQueueConsumption(RabbitConfig.QUEUE_ES_GOODS);
+        rabbitMqUtilService.stopQueueConsumption(RabbitConfig.QUEUE_ES_LABEL);
+
+        //线程池跑每个店铺的商品索引
+        List<Integer> shopIds = saas().shop.getEnabledShopIds();
+        for (Integer shopId :shopIds){
+            EsGoodsThread thread = new EsGoodsThread(saas());
+            thread.init(shopId,indexName);
+            futures.add(taskExecutor.submit(thread));
         }
-        return result;
-
-    }
-
-    private void run() throws IOException {
-        List<EsGoods> list = test();
-        int allSize = list.size();
-        int count = allSize/400 + 1;
-        int nextNumber = 0;
-        log.info("\n当前店铺【{}】,预计分【{}】批执行",245547,count);
-        Stopwatch stopwatch = Stopwatch.createStarted();
-        for (int i = 0; i < count; i++) {
-            int endNumber = nextNumber+400;
-            if( allSize < endNumber){
-                endNumber = allSize;
-                i = count;
+        for (Future<Boolean> future : futures){
+            try {
+                if ( future != null && !future.get() ){
+                    log.error("【ES Thread Pool】--[{}] error",Thread.currentThread().getName());
+                }
+            } catch (InterruptedException  |ExecutionException e ) {
+                e.printStackTrace();
             }
-            log.info("\n开始执行第【{}】批，【{}】-【{}】条",i,nextNumber,endNumber);
-            List<EsGoods> needIds = list.subList(nextNumber,endNumber);
-            if( needIds.isEmpty() ){
-                break;
-            }
-            nextNumber = endNumber;
-            log.info("listSize【{}】",list.size());
-            BulkRequest request = new BulkRequest();
-            for( EsGoods esGoods:needIds ){
-                request.add(esManager.assemblyRequest(ES_GOODS_NEW,esGoods));
-            }
-
-            esManager.batchDocuments(request);
-            log.info("\n第【{}】批建立成功",i);
         }
-        log.info("\n店铺【{}】索引建立完成，共耗时{}ms",245547,stopwatch.elapsed(TimeUnit.MILLISECONDS));
+        List<String> intersectionFields = getEsGoodsIntersectionFields(EsGoodsConstant.GOODS_ALIA_NAME,oldIndexName);
+//        List<String> intersectionFields = Lists.newArrayList("goods_name","goods_ad");
+        //复制已有字段的value
+        reIndex(indexName,EsGoodsConstant.GOODS_ALIA_NAME,intersectionFields.toArray(new String[0]));
+
+        esManager.deleteIndexByName(oldIndexName);
+
+        addAliasToIndex(indexName,EsGoodsConstant.GOODS_ALIA_NAME);
+        //重启mq消费
+        rabbitMqUtilService.startQueueConsumption();
+        this.enabled = Boolean.TRUE;
+
     }
+
+
 
     public IndexRequest assemblyRequest(@NotNull String indexName, Object object){
         IndexRequest request = new IndexRequest(indexName);
@@ -122,28 +125,46 @@ public class EsMappingUpdateService extends MainBaseService {
         return request;
     }
 
-    public List<String> getEsGoodsDifferentFields(){
-        CompressedXContent oldMapping = getOldMapping(EsGoodsConstant.GOODS_INDEX_NAME);
+    /**
+     * 获取新旧索引中的不同字段
+     * @return  Key:fieldName|Value:fieldType
+     */
+    public List<String> getEsGoodsIntersectionFields(String aliasName,String oldIndexName){
+        CompressedXContent oldMapping = getOldMapping(aliasName,oldIndexName);
         Map<String,String> oldMappings = getOldMappingInfos(oldMapping);
         Map<String,String> newMappings = getNewMapping(EsGoods.class);
-        return compared(oldMappings,newMappings);
+        return comparedAndGetIntersection(oldMappings,newMappings);
     }
 
 
-
+    /**
+     * 创建es商品索引(不关联索引别名)
+     * @return 新索引的indexName(索引名称)
+     */
     public String createNewGoodsIndex(){
-        CreateIndexRequest indexRequest = EsUtil.getCreateRequest(ES_GOODS_NEW);
+        CreateIndexRequest indexRequest = EsUtil.getCreateRequest(EsGoodsConstant.GOODS_ALIA_NAME,Boolean.FALSE);
         esManager.createIndexRequest(indexRequest);
-        return "";
+        return indexRequest.index();
     }
 
-    public CompressedXContent getOldMapping(String indexName){
+    /**
+     * 获取es中索引的mapping
+     * @param indexName indexName/alias
+     * @param oldIndexName indexName
+     * @return mapping(字段映射)
+     */
+    public CompressedXContent getOldMapping(String indexName,String oldIndexName){
         GetMappingsRequest request = new GetMappingsRequest();
         request.indices(indexName);
         GetMappingsResponse response = esManager.getMappingsResponse(request);
-        return response.mappings().get(indexName).source();
+        return response.mappings().get(oldIndexName).source();
     }
 
+    /**
+     * 获取项目中es商品索引对应的实体类的映射关系
+     * @param clz 实体类
+     * @return 映射关系（key:字段名，value:类型)
+     */
     private Map<String,String> getNewMapping(Class clz){
         Map<String,String> result = Maps.newHashMap();
         Field[] fieldArray = clz.getDeclaredFields();
@@ -156,9 +177,17 @@ public class EsMappingUpdateService extends MainBaseService {
         return result;
     }
 
+    /**
+     * 把从es中获取的映射关系转化为Map
+     * @param oldMapping es的映射关系
+     * @return 映射关系（key:字段名，value:类型)
+     */
     private Map<String,String> getOldMappingInfos(CompressedXContent oldMapping){
         Map<String,String> result = Maps.newHashMap();
         JsonNode jsonNode = Util.toJsonNode(oldMapping.toString());
+        if( jsonNode == null || jsonNode.get("properties").isNull() ){
+            return result;
+        }
         Iterator<Map.Entry<String,JsonNode>> iterator =  jsonNode.get("properties").fields();
         while (iterator.hasNext()){
             Map.Entry<String,JsonNode> entry = iterator.next();
@@ -167,7 +196,31 @@ public class EsMappingUpdateService extends MainBaseService {
 
         return result;
     }
-    private List<String> compared(Map<String,String> old,Map<String,String> now){
+
+    /**
+     * map对比(取差集)
+     * @param old   oldMap
+     * @param now   newMap
+     * @return different Key
+     */
+    private List<String> comparedAndGetDifferent(Map<String,String> old,Map<String,String> now){
+        List<String> result = Lists.newArrayList();
+        for ( Map.Entry<String,String> entry: now.entrySet()) {
+            String fieldName = entry.getKey();
+            String type = old.getOrDefault(fieldName,"");
+            if( "".equals(type) || !type.equals(entry.getValue()) ){
+                result.add(fieldName);
+            }
+        }
+        return result;
+    }
+    /**
+     * map对比(取交集集)
+     * @param old   oldMap
+     * @param now   newMap
+     * @return Get Intersection
+     */
+    private List<String> comparedAndGetIntersection(Map<String,String> old,Map<String,String> now){
         List<String> result = Lists.newArrayList();
         for ( Map.Entry<String,String> entry: now.entrySet()) {
             String fieldName = entry.getKey();
@@ -179,29 +232,49 @@ public class EsMappingUpdateService extends MainBaseService {
         return result;
     }
 
-    private void reIndex(){
+    private void reIndex(String target,String source,String[] includes){
         ReindexRequest request = new ReindexRequest();
-        request.setSourceIndices(ES_GOODS_NEW);
-        request.setDestIndex(EsGoodsConstant.GOODS_INDEX_NAME);
+        request.setSourceIndices(source);
+        request.getSearchRequest().source().fetchSource(includes,null);
+        request.setDestIndex(target);
+        request.setDestVersionType(VersionType.INTERNAL);
         request.setRefresh(true);
         esManager.reIndex(request);
     }
 
-    private void switchIndex(){
+    private void addAliasToIndex(String indexName,String aliasName){
         IndicesAliasesRequest request = new IndicesAliasesRequest();
-        AliasActions aliasActions = new AliasActions(AliasActions.Type.ADD)
-            .index(EsGoodsConstant.GOODS_INDEX_NAME)
-            .alias("vpu_goods_1587628058991");
-        AliasActions aliasActions1 = new AliasActions(AliasActions.Type.REMOVE)
-            .index(ES_GOODS_NEW)
-            .alias("vpu_goods_1587628058991");
-        AliasActions aliasActions2 = new AliasActions(AliasActions.Type.REMOVE)
-            .index(EsGoodsConstant.GOODS_INDEX_NAME)
-            .alias("vpu_goods_1587093419183");
-        request.addAliasAction(aliasActions);
-        request.addAliasAction(aliasActions1);
-        request.addAliasAction(aliasActions2);
-        esManager.switchIndexAlias(request);
+        AliasActions aliasesAction = new AliasActions(AliasActions.Type.ADD)
+            .index(indexName)
+            .alias(aliasName);
+
+        request.addAliasAction(aliasesAction);
+        esManager.indexAlias(request);
     }
+
+    private String getIndexNameByAlias(String alias){
+        GetAliasesRequest request = new GetAliasesRequest();
+        request.aliases(alias);
+        GetAliasesResponse response = esManager.getIndexByAlias(request);
+        return response.getAliases().keySet().stream().findFirst().orElse("");
+    }
+
+
+//    private void switchIndex(){
+//        IndicesAliasesRequest request = new IndicesAliasesRequest();
+//        AliasActions aliasActions = new AliasActions(AliasActions.Type.ADD)
+//            .index(EsGoodsConstant.GOODS_INDEX_NAME)
+//            .alias("vpu_goods_1587628058991");
+//        AliasActions aliasActions1 = new AliasActions(AliasActions.Type.REMOVE)
+//            .index(ES_GOODS_NEW)
+//            .alias("vpu_goods_1587628058991");
+//        AliasActions aliasActions2 = new AliasActions(AliasActions.Type.REMOVE)
+//            .index(EsGoodsConstant.GOODS_INDEX_NAME)
+//            .alias("vpu_goods_1587093419183");
+//        request.addAliasAction(aliasActions);
+//        request.addAliasAction(aliasActions1);
+//        request.addAliasAction(aliasActions2);
+//        esManager.switchIndexAlias(request);
+//    }
 
 }
