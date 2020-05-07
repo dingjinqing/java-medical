@@ -391,6 +391,8 @@
     </div>
     <!--二维码弹窗-->
     <ShareCodeDialog />
+    <!-- 等级卡停用弹窗 -->
+    <grade-card-setting-dialog :dialogVisiable.sync="gradeCardSettingVisiable"/>
   </div>
 </template>
 <script>
@@ -398,7 +400,8 @@ import { deleteCardRequest, getAllMemberCardRequest, changeCardStatueRequest } f
 export default {
   components: {
     ShareCodeDialog: () => import('@/components/admin/shareCodeDialog'),
-    CardFormPage: () => import('./cardFormPage') // 切换表格页面组件
+    CardFormPage: () => import('./cardFormPage'), // 切换表格页面组件
+    GradeCardSettingDialog: () => import('./subcomponents/dialog/GradeCardSettingDialog')
   },
   data () {
     return {
@@ -410,7 +413,8 @@ export default {
       cardDataSecond: [],
       cardDataThird: [],
       addStatus: true, // 等级会员卡，九张时值为none
-      new_card_img: this.$imageHost + '/image/admin/add_card.png'
+      new_card_img: this.$imageHost + '/image/admin/add_card.png',
+      gradeCardSettingVisiable: false
     }
   },
   created () {
@@ -888,6 +892,8 @@ export default {
           } else if (type === 2) {
             console.log('等级卡')
             if (item.flag === 1) {
+              // TODO
+              this.showGradeSettingDialog(item)
               // 使用中转化成停用
               this.stopCardStatus(item.id)
               this.cardDataThird[index].flag = 2
@@ -960,6 +966,10 @@ export default {
     // 点击切换按钮
     handleToChangePage () {
       this.changePageFlag = !this.changePageFlag
+    },
+    // 弹出等级卡配置
+    showGradeSettingDialog (card) {
+      this.gradeCardSettingVisiable = true
     }
   }
 }
