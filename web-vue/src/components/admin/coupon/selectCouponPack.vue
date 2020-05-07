@@ -1,4 +1,5 @@
 <template>
+<div>
   <el-select
     class="rooter"
     v-model="couponPack"
@@ -14,6 +15,10 @@
     >
     </el-option>
   </el-select>
+  <span class="link-tip" @click="initData">刷新</span>
+  <span>|</span>
+  <span class="link-tip" @click="jumpToCouponPackPage"> 券礼包管理</span>
+</div>
 </template>
 
 <script>
@@ -47,7 +52,9 @@ export default {
   },
   methods: {
     initData () {
+      console.log('刷新数据')
       getAllValidCouponPack().then(res => {
+        this.options.splice(1, this.options.length - 1)
         if (res.error === 0) {
           this.options.push(...res.content)
         }
@@ -55,6 +62,11 @@ export default {
     },
     selectCouponPack (val) {
       this.$emit('selectCouponPack', this.options.filter(item => item.id === val)[0])
+    },
+    jumpToCouponPackPage () {
+      this.$router.push({
+        name: 'coupon_package'
+      })
     }
   }
 }
@@ -63,5 +75,11 @@ export default {
 <style lang="scss" scoped>
 .rooter /deep/ .el-input {
   width: 130px !important;
+}
+
+.link-tip{
+  margin: 0 5px;
+  color: #409EFF;
+  cursor: pointer;
 }
 </style>
