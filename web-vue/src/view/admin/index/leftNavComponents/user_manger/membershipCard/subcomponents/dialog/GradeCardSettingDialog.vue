@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import {getAllValidGradeCard} from '@/api/admin/memberManage/memberCard.js'
 export default {
   props: {
     dialogVisiable: {
@@ -54,7 +55,25 @@ export default {
   },
   data () {
     return {
-      radio: 2
+      radio: 1,
+      cardList: []
+    }
+  },
+  mounted () {
+    this.initValidCard()
+  },
+  methods: {
+    initValidCard () {
+      getAllValidGradeCard().then(res => {
+        if (res.error === 0) {
+          this.cardList = res.content
+          if (res.content.length > 1) {
+            this.cardList = res.content.sort((a, b) => {
+              return a.grade > b.grade ? 1 : b.grade > a.grade ? -1 : 0
+            })
+          }
+        }
+      })
     }
   }
 }
