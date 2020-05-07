@@ -72,6 +72,16 @@ export function orderLotteryList (data) {
   })
 }
 
+// 导出订单数据
+export function lotteryOrderListExport (data) {
+  return service({
+    url: '/api/admin/group_draw/order/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
+
 // 查询用户明细列表
 export function detailLotteryList (data) {
   return service({
