@@ -151,9 +151,9 @@ public class PrizeRecordService extends ShopBaseService {
             }
         });
         logger().info("修改我的奖品记录状态");
+        List<Integer> ids = fetch.stream().map(PrizeRecordRecord::getId).collect(Collectors.toList());
         db().update(PRIZE_RECORD).set(PRIZE_RECORD.PRIZE_STATUS,PRIZE_STATUS_EXPIRE)
-                .where(PRIZE_RECORD.PRIZE_STATUS.eq(PRIZE_STATUS_EXPIRE))
-                .and(PRIZE_RECORD.EXPIRED_TIME.lt(localDateTime)).execute();
+                .where(PRIZE_RECORD.ID.in(ids)).execute();
 
     }
 
