@@ -18,7 +18,6 @@
                   size="mini"
                   style="width:35%"
                   :placeholder="$t('authRoleList.tip2')"
-                  prefix-icon="el-icon-search"
                   v-model="roleName"
                 />
               </el-form-item>

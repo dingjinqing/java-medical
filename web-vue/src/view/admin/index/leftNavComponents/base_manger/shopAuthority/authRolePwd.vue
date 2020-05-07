@@ -327,11 +327,11 @@ export default {
         console.log('大于0')
         console.log(this.privilegePwdList)
         if (this.isEmpty(this.loginPass)) {
-          this.$message.error('请输入登录密码')
+          this.$message.error(this.$t('authRoleList.tips4'))
           return false
         }
         if (this.isEmpty(this.rolePass)) {
-          this.$message.error('请设置密码')
+          this.$message.error(this.$t('authRoleList.tips5'))
           return false
         }
       }
