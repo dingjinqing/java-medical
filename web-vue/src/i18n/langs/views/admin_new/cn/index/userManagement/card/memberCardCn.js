@@ -365,5 +365,9 @@ export const cn = {
   mostPictureNum: '最大图片上传数量',
   customActionOpt: '自定义激活项',
   inputOptionContent: '请输入选项内容',
-  inputTitleContent: '请输入自定义标题'
+  inputTitleContent: '请输入自定义标题',
+  sendCouponVol: '开卡赠送优惠券',
+  sendCouponPack: '开卡赠送优惠券礼包',
+  noThreshold: '无门槛',
+  allGoodsCanUse: '全部商品可用'
 }
