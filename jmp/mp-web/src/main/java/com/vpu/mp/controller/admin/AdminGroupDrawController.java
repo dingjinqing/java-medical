@@ -1,8 +1,13 @@
 package com.vpu.mp.controller.admin;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisParam;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -103,7 +108,16 @@ public class AdminGroupDrawController extends AdminBaseController {
     public JsonResult getGroupDrawOrderList(@RequestBody @Valid OrderListParam param) {
         return success(shop().groupDraw.groupDrawOrders.getGroupDrawOrderList(param));
     }
-
+    private static final String LANGUAGE_TYPE_EXCEL = "excel";
+    /**
+     * 订单详情导出表格
+     */
+    @PostMapping("/order/export")
+    public void orderExport(@RequestBody @Valid OrderListParam param,HttpServletResponse response) {
+        Workbook workbook = shop().groupDraw.groupDrawOrders.orderExport(param,getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GROUP_ORDER_EXPORT, LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtil.getLocalDateTime().toString();
+        export2Excel(workbook, fileName, response);
+    }
     /**
      * 新用户
      */
