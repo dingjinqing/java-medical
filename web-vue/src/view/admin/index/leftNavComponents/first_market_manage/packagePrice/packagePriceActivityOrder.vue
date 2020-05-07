@@ -99,12 +99,16 @@
           align="center"
         >
           <template slot-scope="scope">
-            <div class="goodImge">
+            <div
+              class="goodImge"
+              v-for="item in scope.row.goods"
+              :key="item.recId"
+            >
               <div>
-                <img :src="$imageHost+'/'+scope.row.goods[0].goodsImg">
+                <img :src="$imageHost+'/'+item.goodsImg">
               </div>
               <div class="name">
-                {{scope.row.goods[0].goodsName}}
+                {{item.goodsName}}
               </div>
             </div>
           </template>
@@ -184,7 +188,7 @@
 import { download } from '@/util/excelUtil.js'
 import pagination from '@/components/admin/pagination/pagination.vue'
 import areaLinkage from '@/components/admin/areaLinkage/areaLinkage.vue'
-import { getOrderList, exporOrderExcel } from '@/api/admin/marketManage/preSale'
+import { activityOrder, exporOrderExcel } from '@/api/admin/marketManage/packagePrice'
 
 export default {
   components: {
@@ -244,7 +248,7 @@ export default {
       } else if (this.params.selectedOrderStatus === null) {
         this.params.orderStatus = []
       }
-      getOrderList(this.params).then(res => {
+      activityOrder(this.params).then(res => {
         if (res.error === 0) {
           console.log(res)
           this.tableData = res.content.dataList
