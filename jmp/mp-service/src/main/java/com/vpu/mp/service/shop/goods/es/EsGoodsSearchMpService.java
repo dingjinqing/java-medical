@@ -243,7 +243,7 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
      */
     private SearchRequest assemblySearchRequestForWxGoodsParam(){
         Integer shopId = getShopId();
-        SearchRequest request = new SearchRequest(EsGoodsConstant.GOODS_INDEX_NAME);
+        SearchRequest request = new SearchRequest(EsGoodsConstant.GOODS_ALIA_NAME);
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.fetchSource(false);
         sourceBuilder.query(QueryBuilders.termQuery(EsSearchName.SHOP_ID,shopId));

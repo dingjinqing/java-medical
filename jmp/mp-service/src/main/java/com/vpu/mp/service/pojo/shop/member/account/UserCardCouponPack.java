@@ -1,5 +1,4 @@
 package com.vpu.mp.service.pojo.shop.member.account;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardCoupon.UserCardCouponBuilder;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

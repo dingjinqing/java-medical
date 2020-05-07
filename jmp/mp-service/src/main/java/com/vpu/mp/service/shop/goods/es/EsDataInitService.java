@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.goods.es;
 
 import com.google.common.collect.Lists;
+import com.vpu.mp.service.foundation.es.EsManager;
 import com.vpu.mp.service.foundation.es.EsUtil;
 import com.vpu.mp.service.foundation.es.annotation.EsFiled;
 import com.vpu.mp.service.foundation.es.annotation.EsFiledTypeConstant;
@@ -42,40 +43,37 @@ import java.util.UUID;
 public class EsDataInitService implements InitializingBean {
 
     @Autowired
-    @Qualifier("esConfig")
-    private RestHighLevelClient restHighLevelClient;
+    private EsManager esManager;
 
     @Autowired
     private JedisManager jedisManager;
 
-    private void createIndex(String indexName) throws IOException {
-        CreateIndexRequest createIndexRequest = EsUtil.getCreateRequest(indexName);
-        restHighLevelClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
+    private void createIndex(String indexName){
+
+        CreateIndexRequest createIndexRequest = EsUtil.getCreateRequest(indexName,Boolean.TRUE);
+        esManager.createIndexRequest(createIndexRequest);
     }
 
+    /**
+     * 判断索引是否存在
+     * @param indexName 索引标识
+     * @return true｜false
+     */
     private boolean containIndex(String indexName){
-        boolean result ;
         GetIndexRequest getIndexRequest = new GetIndexRequest(indexName);
         getIndexRequest.humanReadable(true);
-
-        try{
-            result = restHighLevelClient.indices().exists(getIndexRequest, RequestOptions.DEFAULT);
-        }catch (Exception e){
-            log.error("\nElasticSearch index init fail，host/port fail");
-            return false;
-        }
-        return !result;
+        return esManager.checkIndexExists(getIndexRequest);
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         String requestId = UUID.randomUUID().toString();
         if( jedisManager.addLock(JedisKeyConstant.ES_INIT, requestId,1000*600) ){
-            if(containIndex(EsGoodsConstant.GOODS_INDEX_NAME)){
-                createIndex(EsGoodsConstant.GOODS_INDEX_NAME);
+            if(!containIndex(EsGoodsConstant.GOODS_ALIA_NAME)){
+                createIndex(EsGoodsConstant.GOODS_ALIA_NAME);
             }
-            if(containIndex(EsGoodsConstant.LABEL_INDEX_NAME)){
-                createIndex(EsGoodsConstant.LABEL_INDEX_NAME);
+            if(!containIndex(EsGoodsConstant.LABEL_ALIA_NAME)){
+                createIndex(EsGoodsConstant.LABEL_ALIA_NAME);
             }
             jedisManager.releaseLock(JedisKeyConstant.ES_INIT,requestId);
         }
