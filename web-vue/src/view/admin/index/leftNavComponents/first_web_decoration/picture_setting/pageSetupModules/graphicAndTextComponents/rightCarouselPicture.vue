@@ -16,6 +16,17 @@
             <p class="tips">{{$t('carouselPicture.tips')}}</p>
           </div>
         </div>
+        <div class="mainList">
+          <label class="left">轮播速度：</label>
+          <div class="right carousel_speed">
+            <el-input
+              size="small"
+              style="width:50%;"
+              v-model="data.carousel_speed"
+            ></el-input>
+            秒
+          </div>
+        </div>
         <!-- 图片添加组件 -->
         <div class="add_Imgs">
           <div
@@ -146,7 +157,7 @@ export default {
     // 中间模块当前高亮index
     sortIndex: {
       handler (newData) {
-        console.log('newData: ', newData)
+        console.log('newData: ', this.modulesData)
         if (this.modulesData) {
           this.data = this.modulesData
         }
@@ -286,6 +297,11 @@ export default {
           }
           .tips {
             max-width: 335px;
+          }
+        }
+        .carousel_speed {
+          /deep/ .el-input {
+            width: 100px !important;
           }
         }
       }

@@ -4,8 +4,8 @@ var util = require("../../../utils/util.js")
 global.wxComponent({
   mixins: [base],
   methods: {
-    onPropChange(newVal, oldVal, changedPath) {
-      console.log(newVal)
+    onPropChange (newVal, oldVal, changedPath) {
+      console.log(newVal, this.data)
       var max_height_px = 0;
       var windowWidth = wx.getSystemInfoSync().windowWidth;
       for (var i = 0; i < newVal['img_items'].length; i++) {
