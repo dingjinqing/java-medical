@@ -157,7 +157,7 @@ global.wxPage({
   // 好友点击助力
   friend_help: function (e) {
     var that = this;
-    if (util.getCache('mobile') == '' && promote_info.promoteCondition == 1) {
+    if (util.getCache('nickName') == '' && promote_info.promoteCondition == 1) {
       that.setData({
         has_user: 0
       })
