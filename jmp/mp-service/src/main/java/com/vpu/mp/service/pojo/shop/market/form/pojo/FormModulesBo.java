@@ -85,7 +85,7 @@ public class FormModulesBo {
     /**
      * 轮播图 图片地址
      */
-    private List<String> img_items;
+    private List<FormImgItem> img_items;
     /**
      * 预览原图
      */
