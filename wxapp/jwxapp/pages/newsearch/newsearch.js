@@ -96,14 +96,15 @@ global.wxPage({
   // 搜索
   bindSearch: function (e) {
     console.log(search_word);
+    var data = search_word.replace(/\s/g,"");
     // 添加热词
-    util.api('/api/wxapp/search/addHotWords', function (res) {}, {
-      userId: userId,
-      hotWords: search_word
-    })
-
-    util.jumpLink('/pages1/search/search?keyWords=' + search_word, "redirectTo")
-
+    if (data != "") {
+      util.api('/api/wxapp/search/addHotWords', function (res) {}, {
+        userId: userId,
+        hotWords: data
+      })
+    }
+    util.jumpLink('/pages1/search/search?keyWords=' + data, "redirectTo")
   },
   
   to_search: function (e) {
