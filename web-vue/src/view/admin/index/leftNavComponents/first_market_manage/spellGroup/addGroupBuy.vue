@@ -113,7 +113,7 @@
             header-row-class-name="tableHeader"
             :data="form.product"
             border
-            style="width: 100%"
+            style="width: 99%"
             :empty-text="$t('groupBuy.noData')"
           >
             <el-table-column
@@ -1318,13 +1318,14 @@ export default {
   background: #fff;
 }
 
-.tableHeader th {
-  border: none;
+/deep/ .tableHeader th {
   line-height: 0 !important;
   height: 36px !important;
   font-weight: bold;
   padding: 8px 10px;
-  font-weight: bold;
+  background-color: #f5f5f5;
+  color: #000;
+  border: none;
 }
 
 .moreSetUp a {
