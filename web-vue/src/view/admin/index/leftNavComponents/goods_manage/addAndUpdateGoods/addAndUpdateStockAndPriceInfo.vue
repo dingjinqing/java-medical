@@ -91,7 +91,7 @@
         <div class="specInfoWrap">
           <table class="specInfoWrapTable">
             <tr>
-              <th>SKU</th>
+              <th>{{this.goodsProductInfo.goodsSpecsNameGroup}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopPrice')}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopCost')}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecMarketPrice')}}</th>
@@ -242,9 +242,9 @@
         <div class="specInfoWrap">
           <table class="specInfoWrapTable" v-if="specInfoSwitch">
             <tr>
-              <th class="specInfoWrapTableThSkuName">SKU</th>
+              <th class="specInfoWrapTableThSkuName">{{this.goodsProductInfo.goodsSpecsNameGroup}}</th>
               <!--规格价格（元）-->
-              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.prdPrice')}}</th>
+              <th class="specInfoWrapTableInputTh">{{$t('goodsAddEditInfo.stockAndPriceInfo.prdPrice')}}</th>
               <template v-for="item in memberCards">
                 <th
                   :key="item.id"
@@ -483,6 +483,8 @@ export default {
         updateGoodsSpecProduct: null,
         // 存放sku名和值{ specId: null, specName: null, goodsSpecVals: [{ specValId: null, specValName: null }] }，新增时没有各种id值
         goodsSpecs: [],
+        // 商品规格组名称组合 '红色 尺寸 型号'
+        goodsSpecsNameGroup: '',
         limitBuyNum: 0,
         limitMaxNum: 0,
         baseSale: 0,
@@ -968,6 +970,12 @@ export default {
       let goodsSpecProducts = [this._getGoodsSpecProductObj()]
 
       this.goodsProductInfo.goodsSpecProducts = this._calculateCartesian(0, this.goodsProductInfo.goodsSpecs, goodsSpecProducts)
+
+      let specNameGroup = ''
+      this.goodsProductInfo.goodsSpecs.forEach(item => {
+        specNameGroup += item.specName + ' '
+      })
+      this.goodsProductInfo.goodsSpecsNameGroup = specNameGroup
     },
     /* 递归计算笛卡尔积
      * curIndex:当前计算到的规格项
@@ -1209,13 +1217,16 @@ export default {
         return
       }
       this.specInfoSwitch = true
+      let goodsSpecNameGroup = ''
       goodsData.goodsSpecs.forEach(spec => {
         let specTemp = { specId: spec.specId, specName: spec.specName, goodsSpecVals: [] }
         spec.goodsSpecVals.forEach(specVal => {
           specTemp.goodsSpecVals.push({ specValId: specVal.specValId, specValName: specVal.specValName })
         })
         this.goodsProductInfo.goodsSpecs.push(specTemp)
+        goodsSpecNameGroup += spec.specName + ' '
       })
+      this.goodsProductInfo.goodsSpecsNameGroup = goodsSpecNameGroup
     },
     /* 初始化商品规格项（sku） */
     _initGoodsSpecProducts (goodsData, isUseDefaultPrd) {
