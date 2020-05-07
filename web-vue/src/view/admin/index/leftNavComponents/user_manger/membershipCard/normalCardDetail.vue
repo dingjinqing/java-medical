@@ -2,7 +2,7 @@
   <div class="membershipCardDetail">
     <div class="membershipCardDetailMain">
       <div class="leftContainer">
-        <showSampleCard :sampleData="sampleCardData"></showSampleCard>
+        <showSampleCard :sampleData="sampleCardData" :allData="$data"></showSampleCard>
       </div>
       <div class="rightContainer">
         <div class="rightContainerTop">
@@ -811,11 +811,12 @@ export default {
     padding-bottom: 57px;
   }
   .leftContainer {
+    overflow: auto;
     width: 300px;
     margin-right: 20px;
     height: 594px;
     border: 1px solid #ccc;
-    background: #f5f5f5;
+    background: #fff;
   }
   .rightContainer {
     width: 70%;
