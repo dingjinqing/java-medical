@@ -157,7 +157,7 @@ global.wxPage({
   // 好友点击助力
   friend_help: function (e) {
     var that = this;
-    if (util.getCache('nickName') == '' && promote_info.promoteCondition == 1) {
+    if (util.getCache('mobile') == '' && promote_info.promoteCondition == 1) {
       that.setData({
         has_user: 0
       })
@@ -292,45 +292,18 @@ global.wxPage({
   // 授权个人信息
   getUserInfo: function (e) {
     var that = this;
-    var canIUse = wx.canIUse('button.open-type.getUserInfo');
-    if (e.detail.userInfo) {
-      if (canIUse) {
-        var user_avatar = e.detail.userInfo.avatarUrl;
-        var user_name = e.detail.userInfo.nickName;
-        util.setCache("nickName", user_name);
-        util.setCache("avatarUrl", user_avatar);
+    util.getUserInfoCommon(e, function (userInfo) {
+      if (userInfo) {
+        that.setData({
+          nickName: userInfo.nickName
+        });
         if (promote_info.promoteCondition == 1 && promote_info.launchFlag == 2 && promote_info.promoteStatus == 0) {
           that.setData({
             has_user: 1
           })
         }
-        util.api('/api/wxapp/promote/addTimes', function (res) { }, {
-          userId: launch_user_id,
-          launchId: launch_id,
-          type: 1
-        });
-      } else {
-        wx.getUserInfo({
-          success: res => {
-            var user_avatar = e.detail.userInfo.avatarUrl;
-            var user_name = e.detail.userInfo.nickName;
-            util.setCache("nickName", user_name);
-            util.setCache("avatarUrl", user_avatar);
-            util.api('/api/wxapp/promote/addTimes', function (res) { }, {
-              userId: launch_user_id,
-              launchId: launch_id,
-              type: 1
-            });
-            if (promote_info.promoteCondition == 1) {
-              that.setData({
-                has_user: 1
-              })
-            }
-          }
-        })
       }
-
-    }
+    });
   },
   
   /**
