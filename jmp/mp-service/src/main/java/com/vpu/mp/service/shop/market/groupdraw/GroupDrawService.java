@@ -1353,9 +1353,12 @@ public class GroupDrawService extends ShopBaseService {
 	 */
 	public void createInviteRecord(OrderBeforeParam param) {
 		log.info("插入邀请记录");
-		Map<String, String> query = toMap(param);
-		groupDrawInvite.createInviteRecord("pages1/pinlotteryinfo/pinlotteryinfo",
-				Integer.valueOf(query.get("group_draw_id")), query, ZERO);
+		if(param.getInviteId()!=0) {
+			logger().info("邀请人id：{}",param.getInviteId());
+			Map<String, String> query = toMap(param);
+			groupDrawInvite.createInviteRecord("pages1/pinlotteryinfo/pinlotteryinfo",
+					Integer.valueOf(query.get("group_draw_id")), query, ZERO);			
+		}
 		log.info("插入邀请记录结束");
 	}
 
