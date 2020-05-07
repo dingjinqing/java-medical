@@ -94,6 +94,8 @@ public class GroupDrawOrderService extends ShopBaseService {
      * @return 表格信息
      */
     public Workbook orderExport(OrderListParam param,String lang){
+        param.setCurrentPage(1);
+        param.setPageRows(99999);
         List<OrderExport> orderExport = new ArrayList<>();
         PageResult<OrderListVo> pageResult = getGroupDrawOrderList(param);
         List<OrderListVo> tempList = pageResult.getDataList();
