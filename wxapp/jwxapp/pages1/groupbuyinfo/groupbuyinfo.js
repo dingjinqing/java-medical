@@ -500,6 +500,9 @@ global.wxPage({
   onShareAppMessage: function (res) {
     let { groupbuyInfo, shareImg, groupId } = this.data
     let title = groupbuyInfo.groupBuyDefineInfo.limitAmount + this.$t('page1.fight.personToBuy') + groupbuyInfo.goodsInfo.minGroupBuyPrice + this.$t('page1.fight.yuan') + groupbuyInfo.goodsInfo.goodsName
+    if (this.data.shareInfo.shareDoc) {
+      title = this.data.shareInfo.shareDoc
+    }
     let path = '/pages1/groupbuyinfo/groupbuyinfo?group_id=' + groupId + '&pin_group_id=' + groupbuyInfo.groupBuyDefineInfo.id
     return {
       title: title,
