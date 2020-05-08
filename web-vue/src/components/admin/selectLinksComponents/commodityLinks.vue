@@ -36,7 +36,12 @@
 
             <td class="isLeft">
               <img :src="$imageHost+'/'+item.goodsImg">
-              <span>{{item.goodsName}}</span>
+              <div class="speDiv">
+                <!--
+<span class="actLabel">限时降价</span>
+                -->
+                {{item.goodsName}}
+              </div>
 
             </td>
             <td>{{item.goodsSn}}</td>
@@ -246,10 +251,25 @@ img {
   width: 40px;
   height: 40px;
 }
-.isLeft span {
+.speDiv {
+  text-align: left;
+  line-height: 20px;
+  padding-left: 3px;
+}
+.isLeft .actLabel {
+  border: 1px #f66 solid;
+  padding: 0px 3px;
+  color: #f66;
+  font-size: 12px;
+  border-radius: 2px;
+  height: fit-content;
+  white-space: nowrap;
+  line-height: 15px;
+}
+.isLeft .goodsName {
   display: inline-block;
   vertical-align: top;
-  margin-top: 9px;
+  /* margin-top: 9px; */
   margin-left: 5px;
 }
 .tdCenter {
