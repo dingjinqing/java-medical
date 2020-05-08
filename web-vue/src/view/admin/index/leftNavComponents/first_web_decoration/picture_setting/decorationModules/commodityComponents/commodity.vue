@@ -439,7 +439,7 @@ export default {
       console.log(this.data.goods_items)
       // 解决手动推荐排序问题
       this.goodsidArr = []
-      if (!this.initLoad && this.data.recommend_type === '1') {
+      if (this.data.recommend_type === '1') {
         this.data.goodsListData = this.data.goods_items
         this.data.goods_items.forEach((item, index) => {
           this.goodsidArr.push(item.goodsId)
@@ -461,7 +461,7 @@ export default {
           } else {
             this.goodsFlag = false
           }
-          if (!this.initLoad && this.data.recommend_type === '1') {
+          if (this.data.recommend_type === '1') {
             let arr = []
             console.log(this.goodsidArr, res.content)
             this.goodsidArr.forEach((item, index) => {
@@ -563,6 +563,7 @@ export default {
             break
         }
       })
+      console.log(this.goodsFlag)
     }
   }
 }
