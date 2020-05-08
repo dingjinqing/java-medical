@@ -60,6 +60,28 @@ import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 
 import jodd.util.StringUtil;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Record;
+import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.net.URL;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.FirstSpecial.FIRST_SPECIAL;
+import static com.vpu.mp.db.shop.tables.FirstSpecialGoods.FIRST_SPECIAL_GOODS;
+import static com.vpu.mp.db.shop.tables.FirstSpecialProduct.FIRST_SPECIAL_PRODUCT;
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static org.jooq.impl.DSL.countDistinct;
+import static org.jooq.impl.DSL.sum;
 
 /**
  * @author: 王兵兵
@@ -290,15 +312,19 @@ public class FirstSpecialService extends ShopBaseService {
      * @param goodsId
      * @return
      */
-    public FirstSpecialRecord getActInfoByGoodsId(Integer goodsId){
+    public FirstSpecialRecord getActInfoByGoodsId(Integer goodsId) {
         Timestamp now = DateUtil.getLocalDateTime();
-        return db().select(FIRST_SPECIAL_GOODS.fields()).
+        Optional<Record> res = db().select(FIRST_SPECIAL_GOODS.fields()).
             from(FIRST_SPECIAL_GOODS.leftJoin(FIRST_SPECIAL).on(FIRST_SPECIAL_GOODS.FIRST_SPECIAL_ID.eq(FIRST_SPECIAL.ID))).
             where(FIRST_SPECIAL_GOODS.GOODS_ID.eq(goodsId)).
             and(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).
             and(FIRST_SPECIAL.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).
             and(FIRST_SPECIAL.IS_FOREVER.eq(BaseConstant.ACTIVITY_IS_FOREVER).or(FIRST_SPECIAL.IS_FOREVER.eq(BaseConstant.ACTIVITY_NOT_FOREVER).and(FIRST_SPECIAL.START_TIME.lt(now)).and(FIRST_SPECIAL.END_TIME.gt(now)))).
-            orderBy(FIRST_SPECIAL.FIRST.desc(),FIRST_SPECIAL.ID.desc()).fetchAny().into(FirstSpecialRecord.class);
+            orderBy(FIRST_SPECIAL.FIRST.desc(), FIRST_SPECIAL.ID.desc()).fetchOptional();
+        if (res.isPresent()) {
+            return res.get().into(FirstSpecialRecord.class);
+        }
+        return null;
     }
 
     /**
@@ -353,7 +379,7 @@ public class FirstSpecialService extends ShopBaseService {
         excelWriter.writeModelList(res, FirstSpecialOrderExportVo.class);
         return workbook;
     }
-    
+
     /**
      * 营销日历用id查询活动
      * @param id
@@ -363,7 +389,7 @@ public class FirstSpecialService extends ShopBaseService {
 		return db().select(FIRST_SPECIAL.ID, FIRST_SPECIAL.NAME.as(CalendarAction.ACTNAME), FIRST_SPECIAL.START_TIME,
 				FIRST_SPECIAL.END_TIME,FIRST_SPECIAL.IS_FOREVER.as(CalendarAction.ISPERMANENT)).from(FIRST_SPECIAL).where(FIRST_SPECIAL.ID.eq(id)).fetchAnyInto(MarketVo.class);
     }
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param
