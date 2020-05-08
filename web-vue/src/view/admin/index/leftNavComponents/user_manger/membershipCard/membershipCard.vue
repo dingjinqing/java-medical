@@ -899,8 +899,6 @@ export default {
             console.log('等级卡')
             if (item.flag === 1) {
               this.showGradeSettingDialog(item)
-              // 使用中转化成停用
-              this.stopCardStatus(item.id)
               this.cardDataThird[index].flag = 2
             } else {
               // 停止使用转化成使用
