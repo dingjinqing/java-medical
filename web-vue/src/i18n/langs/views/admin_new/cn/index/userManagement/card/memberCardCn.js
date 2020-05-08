@@ -356,5 +356,9 @@ export const cn = {
   loading: '刷新中',
   refresh: '刷新',
   couponPackManage: '券礼包管理',
-  couponPack: '优惠券礼包'
+  couponPack: '优惠券礼包',
+  getCouponStart: '领券日开始',
+  day: '天',
+  hour: '小时',
+  minute: '分'
 }
