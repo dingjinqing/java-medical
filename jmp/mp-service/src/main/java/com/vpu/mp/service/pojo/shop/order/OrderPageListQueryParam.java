@@ -95,4 +95,6 @@ public class OrderPageListQueryParam {
 	
 	/** 营销活动中直播需要的roomId*/
 	private Integer roomId;
+	/**排序规则*/
+	private Byte sortRule;
 }

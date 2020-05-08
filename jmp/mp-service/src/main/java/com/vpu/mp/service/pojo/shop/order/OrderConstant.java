@@ -547,4 +547,11 @@ public class OrderConstant {
         }
         return RETRURN_REASON_TYPE_DESC[index];
     }
+
+    /**
+     * 订单综合查询排序规则ORDER_QUERY_SORT_RULE
+     */
+    /**申请售后时间*/
+    public static final byte OQSR_APPLY_RETURN = 1;
+
 }

@@ -166,12 +166,12 @@ public class OrderInfoService extends ShopBaseService {
 		// 存在子单但是显示不易子单为主所以查询需过滤子单
 		mainOrder.where(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN).or(TABLE.MAIN_ORDER_SN.eq("")));
 		buildOptions(mainOrder, param);
-		mainOrder.orderBy(TABLE.ORDER_ID.desc());
-		// 得到订单号
+        buildOrderBy(mainOrder, param);
+        // 得到订单号
 		return getPageResult(mainOrder, param.getCurrentPage(), param.getPageRows(), String.class);
 	}
 
-	/**
+    /**
 	 * 计算部分订单数量
 	 * @param result
 	 */
@@ -218,6 +218,28 @@ public class OrderInfoService extends ShopBaseService {
      */
     public SelectWhereStep<?> buildOptions(SelectJoinStep<?> select, OrderPageListQueryParam param) {
         return buildOptions(select,param,false);
+    }
+
+    /**
+     * 构造综合查询条件的排序
+     *
+     * @param mainOrder
+     * @param param
+     * @return
+     */
+    private void buildOrderBy(SelectJoinStep<Record1<String>> mainOrder, OrderPageListQueryParam param) {
+        if(param.getSortRule() != null) {
+            switch (param.getSortRule()) {
+                case OrderConstant.OQSR_APPLY_RETURN: {
+                    mainOrder.orderBy(RETURN_ORDER.RET_ID.desc());
+                    break;
+                }
+                default:
+            }
+        } else {
+            mainOrder.orderBy(TABLE.ORDER_ID.desc());
+        }
+
     }
 
 	/**
