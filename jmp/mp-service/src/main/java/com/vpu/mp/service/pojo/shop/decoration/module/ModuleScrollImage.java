@@ -1,13 +1,11 @@
 package com.vpu.mp.service.pojo.shop.decoration.module;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -18,18 +16,24 @@ import lombok.Setter;
 @Setter
 public class ModuleScrollImage extends ModuleBase {
 
-	/**
-	 * 预览原图，0否，1是
-	 */
-	@JsonProperty(value = "is_preview")
-	Byte isPreview = 0;
-	
-	
-	/**
-	 * 轮播图列表
-	 */
-	@JsonProperty(value = "img_items")
-	List<ImageItem> imgItems = new ArrayList<>();
+    /**
+     * 预览原图，0否，1是
+     */
+    @JsonProperty(value = "is_preview")
+    Byte isPreview = 0;
+
+    /**
+     * 轮播速度/秒
+     */
+    @JsonProperty(value = "carousel_speed")
+    Integer carouselSpeed = 5;
+
+
+    /**
+     * 轮播图列表
+     */
+    @JsonProperty(value = "img_items")
+    List<ImageItem> imgItems = new ArrayList<>();
 
     @Getter
     @Setter
