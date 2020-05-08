@@ -108,7 +108,7 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     /**
      * 服务承诺信息
      */
-    private  List<PledgeInfo> pledgeList;
+    private List<PledgeInfo> pledgeList;
 
     /**
      * 销量展示开关
@@ -118,6 +118,11 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
      * 客服按钮展示开关
      */
     private Byte customService;
+
+    /**
+     * 分享有礼活动ID
+     */
+    private Integer shareAwardId;
 
     @Override
     public String toString() {

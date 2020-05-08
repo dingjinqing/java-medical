@@ -9,9 +9,13 @@
                 <ul>
                     <li class="coupon-detail" v-for="(item,index) in couponList" :key="index">
                         <div class="col-left">
-                               <span>
+                               <span v-if="item.actCode==='voucher'">
                                     <span>￥</span>
                                     <span class="denomination">{{item.denomination}}</span>
+                                </span>
+                                <span v-else-if="item.actCode === 'discount'">
+                                    <span class="denomination">{{item.denomination}}</span>
+                                    <span>折</span>
                                 </span>
                                 <div class="restrict">
                                     <p v-if="item.useConsumeRestrict===0">
@@ -73,8 +77,22 @@ export default {
         let startTime = coupon.startTime.split(' ')[0]
         let endTime = coupon.endTime.split(' ')[0]
         return startTime + '--' + endTime
+      } else {
+        //    领取之日
+        let duringTime = ''
+        if (Number(coupon.validity) > 0) {
+          duringTime += coupon.validity + this.$t('memberCard.day')
+        }
+        if (Number(coupon.validityHour) > 0) {
+          duringTime += coupon.validityHour + this.$t('memberCard.hour')
+        }
+
+        if (Number(coupon.validityMinute) > 0) {
+          duringTime += coupon.validityMinute + this.$t('memberCard.minute')
+        }
+
+        return this.$t('memberCard.getCouponStart') + duringTime + ' ' + this.$t('memberCard.inEffective')
       }
-      return '开发中'
     }
   }
 }
