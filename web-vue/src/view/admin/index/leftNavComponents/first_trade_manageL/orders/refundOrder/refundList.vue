@@ -177,6 +177,8 @@
                         </div>
                         <span
                           slot="reference"
+                          class="high-light"
+                          @click="handleViewOrder(orderItem.orderSn)"
                           @mouseenter="requestOrderInfo(orderItem.orderSn,orderIndex)"
                           @mouseleave="leaveOrderBrief(orderItem.orderSn,orderIndex)"
                         >{{$t('order.orderSn') + '：'+orderItem.orderSn}}</span>
@@ -764,5 +766,9 @@ export default {
       left: 10px;
     }
   }
+}
+.high-light{
+  color: #409eff;
+  cursor: pointer;
 }
 </style>
