@@ -211,7 +211,7 @@ public class CardParam {
 	private CardGive cardGive;
 	
 	/**
-	 * 折扣不与营销活动公用
+	 * 	折扣不与营销活动公用
 	 */
 	public List<CardMarketActivity> marketActivities;
 	
