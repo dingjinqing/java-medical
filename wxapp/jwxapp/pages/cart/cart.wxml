@@ -79,7 +79,7 @@
         <view class='ai_left'>
           <!-- <view class='full_member_icon' wx:if='{{item1.is_exclusive == 1 && item1.is_can_buy == 0}}'>会员</view> -->
           <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>满折满减</view>
-          <view class='act_content' style='width:350rpx;'>{{fullList[key][fullList[key].length - 1].currentRule}}</view>
+          <view class='act_content' style='width:350rpx;'>{{fullList[key][fullList[key].length - 1].condition}}</view>
         </view>
         <view class='go_full clearfix'>
           <view style='color:{{comColor}}'>再逛逛</view>
@@ -152,7 +152,7 @@
       <view class='act_info clearfix' style='padding-bottom:20rpx;' bindtap='toPurchase' data-activity_id="{{key}}" data-store_id="{{item3[0].storeId}}">
         <view class='ai_left'>
           <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>加价购</view>
-          <view class='act_content'>{{purchaseList[key][purchaseList[key].length - 1].currentRule}}</view>
+          <view class='act_content'>{{purchaseList[key][purchaseList[key].length - 1].condition}}</view>
         </view>
         <view class='go_full clearfix'>
           <view style='color:{{comColor}}'>去换购</view>

@@ -157,7 +157,15 @@ global.wxPage({
   // 好友点击助力
   friend_help: function (e) {
     var that = this;
-    if (util.getCache('nickName') == '' && promote_info.promoteCondition == 1) {
+    // 商品库存
+    if (promote_info.marketStore == 0) {
+      util.showModal('提示', '商品库存不足,不可再助力');
+      return false;
+    }
+    // 授权
+    var code = 10000 + util.getCache('user_id')
+    var str = '用户' + code
+    if ((str == util.getCache('nickName')) && promote_info.promoteCondition == 1) {
       that.setData({
         has_user: 0
       })
@@ -292,45 +300,36 @@ global.wxPage({
   // 授权个人信息
   getUserInfo: function (e) {
     var that = this;
-    var canIUse = wx.canIUse('button.open-type.getUserInfo');
-    if (e.detail.userInfo) {
-      if (canIUse) {
-        var user_avatar = e.detail.userInfo.avatarUrl;
-        var user_name = e.detail.userInfo.nickName;
-        util.setCache("nickName", user_name);
-        util.setCache("avatarUrl", user_avatar);
+    util.getUserInfoCommon(e, function (userInfo) {
+      if (userInfo) {
+        that.setData({
+          nickName: userInfo.nickName
+        });
         if (promote_info.promoteCondition == 1 && promote_info.launchFlag == 2 && promote_info.promoteStatus == 0) {
           that.setData({
             has_user: 1
           })
         }
-        util.api('/api/wxapp/promote/addTimes', function (res) { }, {
-          userId: launch_user_id,
-          launchId: launch_id,
-          type: 1
-        });
-      } else {
-        wx.getUserInfo({
-          success: res => {
-            var user_avatar = e.detail.userInfo.avatarUrl;
-            var user_name = e.detail.userInfo.nickName;
-            util.setCache("nickName", user_name);
-            util.setCache("avatarUrl", user_avatar);
-            util.api('/api/wxapp/promote/addTimes', function (res) { }, {
-              userId: launch_user_id,
-              launchId: launch_id,
-              type: 1
-            });
-            if (promote_info.promoteCondition == 1) {
-              that.setData({
-                has_user: 1
-              })
-            }
-          }
-        })
       }
-
+    });
+  },
+  // 分享弹窗
+  to_share: function (e) {
+    var that = this
+    util.showModal('提示', '商品库存不足', function () {
+      that.setData({
+        share_good: false
+      })
+    });
+    if (promote_info.promoteStatus == 0 && promote_info.launchFlag == 2 && promote_info.canShare == 1) {
+      that.setData({
+        promote_ok: 0
+      })
     }
+    setTimeout(function () {
+      clearTimeout(set_time_out);
+      that.onPullDownRefresh();
+    }, 200);
   },
   
   /**
