@@ -32,6 +32,7 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.FirstSpecial.FIRST_SPECIAL;
@@ -272,15 +273,19 @@ public class FirstSpecialService extends ShopBaseService {
      * @param goodsId
      * @return
      */
-    public FirstSpecialRecord getActInfoByGoodsId(Integer goodsId){
+    public FirstSpecialRecord getActInfoByGoodsId(Integer goodsId) {
         Timestamp now = DateUtil.getLocalDateTime();
-        return db().select(FIRST_SPECIAL_GOODS.fields()).
+        Optional<Record> res = db().select(FIRST_SPECIAL_GOODS.fields()).
             from(FIRST_SPECIAL_GOODS.leftJoin(FIRST_SPECIAL).on(FIRST_SPECIAL_GOODS.FIRST_SPECIAL_ID.eq(FIRST_SPECIAL.ID))).
             where(FIRST_SPECIAL_GOODS.GOODS_ID.eq(goodsId)).
             and(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).
             and(FIRST_SPECIAL.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).
             and(FIRST_SPECIAL.IS_FOREVER.eq(BaseConstant.ACTIVITY_IS_FOREVER).or(FIRST_SPECIAL.IS_FOREVER.eq(BaseConstant.ACTIVITY_NOT_FOREVER).and(FIRST_SPECIAL.START_TIME.lt(now)).and(FIRST_SPECIAL.END_TIME.gt(now)))).
-            orderBy(FIRST_SPECIAL.FIRST.desc(),FIRST_SPECIAL.ID.desc()).fetchAny().into(FirstSpecialRecord.class);
+            orderBy(FIRST_SPECIAL.FIRST.desc(), FIRST_SPECIAL.ID.desc()).fetchOptional();
+        if (res.isPresent()) {
+            return res.get().into(FirstSpecialRecord.class);
+        }
+        return null;
     }
 
     /**
