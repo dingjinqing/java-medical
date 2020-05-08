@@ -313,6 +313,11 @@ global.wxPage({
         share_good: false
       })
     });
+    if (promote_info.promoteStatus == 0 && promote_info.launchFlag == 2 && promote_info.canShare == 1) {
+      that.setData({
+        promote_ok: 0
+      })
+    }
     setTimeout(function () {
       clearTimeout(set_time_out);
       that.onPullDownRefresh();
