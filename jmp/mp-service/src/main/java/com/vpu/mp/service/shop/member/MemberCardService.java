@@ -459,9 +459,11 @@ public class MemberCardService extends ShopBaseService {
 			
 			if(PowerCardParam.STOP_DIRECT.equals(param.getStopPlan())) {
 				//	直接停用
+				logger().info("直接停用");
 				userCardService.deleteAllUserGradeCard(param.getId());
 			}else if(PowerCardParam.STOP_TO_ANOTHER.equals(param.getStopPlan())) {
 				//	置换为另外一张会员卡
+				logger().info("置换为另外一张卡");
 				if(param.getAnotherNewCardId()!=null) {
 					AddMemberCardParam addMemberCardParam = new AddMemberCardParam();
 					List<Integer> userIds = userCardService.userCardDao.getUserIdsUsingCard(param.getId());
