@@ -36,10 +36,18 @@ export default {
   },
   data () {
     return {
-      msg: '自定义激活项',
+      msg: null,
       showDialog: false,
       currentIndex: -1
     }
+  },
+  watch: {
+    lang () {
+      this.msg = this.$t('memberCard.customActionOpt')
+    }
+  },
+  mounted () {
+    this.langDefault()
   },
   methods: {
     setNewCustomAction (action) {
@@ -51,7 +59,7 @@ export default {
     },
     showActionDialog (index) {
       //  // 处理type2文本
-      if (index >= 0 && this.myData[index].type === 2) {
+      if (index >= 0 && (this.myData[index].type === 2 || this.myData[index].type === 3)) {
         this.myData[index].content = [null, null]
       }
       this.currentIndex = index

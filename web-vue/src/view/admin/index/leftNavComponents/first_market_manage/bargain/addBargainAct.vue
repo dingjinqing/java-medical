@@ -720,7 +720,7 @@
       v-if="!ruleShow"
     >
       <el-button
-        @click="isEditFlag?updateSubmit():addSubmit()"
+        @click="addActFlag?updateSubmit():addSubmit()"
         type="primary"
         size="small"
       >{{$t('marketCommon.save')}}</el-button>
@@ -771,10 +771,15 @@ export default {
   mounted () {
     this.langDefault()
     if (this.$route.query.id > 0) {
+      this.addActFlag = this.$route.query.flag
       // 编辑砍价活动
       this.actId = this.$route.query.id
-      // 编辑时部分信息不可修改
-      this.isEditFlag = true
+      if (this.$route.query.currentState === 1) {
+        // 编辑时部分信息不可修改
+        this.isEditFlag = true
+      } else {
+        this.isEditFlag = false
+      }
       this.addFlag = false
       // 点击编辑按钮进来，初始化页面数据
       let SimpleBargainParam = {
@@ -867,6 +872,7 @@ export default {
       }
     }
     return {
+      addActFlag: false,
       // 向帮忙砍价的用户赠送优惠券
       mrkingVoucherObjs: [],
       // 砍价失败后向买家赠送优惠券
