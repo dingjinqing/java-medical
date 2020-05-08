@@ -434,7 +434,7 @@ global.wxPage({
           var user_info = res.content.data;
           var fi_arr = res.content.fields;
           console.log(fi_arr)
-          let keyArr = ['if_username', 'if_mobile', 'if_cid', 'if_realname', 'if_invitation_code', 'if_work', 'if_citydoce', 'if_sex', 'if_birthdayyear', 'if_mar', 'if_edu']
+          let keyArr = ['if_username', 'if_mobile', 'if_cid', 'if_realname', 'if_invitation_code', 'if_work', 'if_citydoce', 'if_sex', 'if_birthdayyear', 'if_mar', 'if_edu', 'if_upImage']
           let valArr = ['username', 'mobile', 'cid', 'realName', 'invitation_code', 'industryInfo', 'cityCode', 'sex', 'birthdayYear', 'maritalStatus', 'education']
           fi_arr.map((item, index) => {
             var val = keyArr[valArr.indexOf(fi_arr[index])]
@@ -444,6 +444,10 @@ global.wxPage({
               that.setData(obj)
             }
           })
+          // 上传图片模拟数据
+          // that.setData({
+          //   if_upImage: 1
+          // })
           // 会员昵称
           if (user_info.username) {
             user_nick_name = user_info.username
