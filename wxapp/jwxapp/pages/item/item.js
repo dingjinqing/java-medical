@@ -198,6 +198,7 @@ global.wxPage({
       inviteId
     })
     this.requestGoodsInfo()
+    this.shareInviteData()
   },
   // 商品详情请求
   async requestGoodsInfo () {
@@ -623,6 +624,43 @@ global.wxPage({
       shareData,
       showShareDialog: true,
       buttonShareData
+    })
+  },
+  // 分享有礼接口数据请求
+  shareInviteData() {
+    util.api('/api/wxapp/shareaward/goods/sharedetail', res => {
+      console.log(res, 'get res-data')
+      if (res.error === 0) {
+        var shareLimit = res.content.dailyShareLimit
+        var shareContent = res.content.infoVo
+        console.log(shareContent)
+        this.setData({
+          shareContent: shareContent,
+          shareLimit: shareLimit
+        })
+      }
+    }, {
+        // "activityId": Number(this.data.activityId),
+        "activityId": 14,
+        "userId": util.getCache('user_id'),
+        "goodsId": util.getCache('goods_id')
+      })
+  },
+  // 分享有礼-查看奖励跳转
+  getShare(e) {
+    // var that = this
+    // console.log(that)
+    console.log('跳转aaaa')
+    console.log(e)
+    // if (reward_type === 1) {
+    //   util.jumpLink('/pages1/integral/integral')
+    // } else if (reward_type === 2) {
+    //   util.jumpLink('/pages/coupon/coupon')
+    // } else {
+    //   util.jumpLink('pages1/lottery/lottery')
+    // }
+    util.navigateTo({
+      url: '/pages1/integral/integral',
     })
   },
   // 切换收藏
