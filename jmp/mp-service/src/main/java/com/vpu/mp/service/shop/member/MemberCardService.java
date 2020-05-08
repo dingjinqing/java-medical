@@ -462,15 +462,17 @@ public class MemberCardService extends ShopBaseService {
 				userCardService.deleteAllUserGradeCard(param.getId());
 			}else if(PowerCardParam.STOP_TO_ANOTHER.equals(param.getStopPlan())) {
 				//	置换为另外一张会员卡
-				AddMemberCardParam addMemberCardParam = new AddMemberCardParam();
-				List<Integer> userIds = userCardService.userCardDao.getUserIdsUsingCard(param.getId());
-				List<Integer> cardIds = Collections.<Integer>singletonList(param.getAnotherNewCardId());
-				addMemberCardParam.setUserIdList(userIds);
-				addMemberCardParam.setCardIdList(cardIds);
-				addCardForMember(addMemberCardParam);
+				if(param.getAnotherNewCardId()!=null) {
+					AddMemberCardParam addMemberCardParam = new AddMemberCardParam();
+					List<Integer> userIds = userCardService.userCardDao.getUserIdsUsingCard(param.getId());
+					List<Integer> cardIds = Collections.<Integer>singletonList(param.getAnotherNewCardId());
+					addMemberCardParam.setUserIdList(userIds);
+					addMemberCardParam.setCardIdList(cardIds);
+					
+					addCardForMember(addMemberCardParam);
+				}
 			}
 		}
-		
 		int result = db()
 				.update(MEMBER_CARD)
 				.set(MEMBER_CARD.FLAG, param.getFlag())
