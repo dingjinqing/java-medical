@@ -36,6 +36,13 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 public class GroupDrawOrderService extends ShopBaseService {
 
 	public PageResult<OrderListVo> getGroupDrawOrderList(OrderListParam param) {
+		SelectConditionStep<Record13<String, String, String, Integer, Integer, Timestamp, String, String, Byte, String, Integer, Byte, Boolean>> select = getSelect(
+				param);
+		return getPageResult(select, param, OrderListVo.class);
+	}
+
+	private SelectConditionStep<Record13<String, String, String, Integer, Integer, Timestamp, String, String, Byte, String, Integer, Byte, Boolean>> getSelect(
+			OrderListParam param) {
 		SelectConditionStep<Record13<String, String, String, Integer, Integer, Timestamp, String, String, Byte, String, Integer, Byte, Boolean>> select = db()
 				.select(JOIN_GROUP_LIST.ORDER_SN, ORDER_GOODS.GOODS_NAME, ORDER_GOODS.GOODS_IMG,
 						JOIN_GROUP_LIST.USER_ID, ORDER_GOODS.ORDER_ID, ORDER_INFO.CREATE_TIME, ORDER_INFO.MOBILE,
@@ -50,7 +57,11 @@ public class GroupDrawOrderService extends ShopBaseService {
 				.leftJoin(ORDER_GOODS).on(JOIN_GROUP_LIST.ORDER_SN.eq(ORDER_GOODS.ORDER_SN)).where();
 		buildOptions(select, param);
 		select.orderBy(JOIN_GROUP_LIST.CREATE_TIME.desc());
-		return getPageResult(select, param, OrderListVo.class);
+		return select;
+	}
+	
+	public List<OrderListVo> getGroupDrawOrderListNoPage(OrderListParam param) {
+		return  getSelect(param).fetchInto(OrderListVo.class);
 	}
 
 	private void buildOptions(
@@ -85,7 +96,7 @@ public class GroupDrawOrderService extends ShopBaseService {
 		select.groupBy(JOIN_GROUP_LIST.USER_ID, JOIN_GROUP_LIST.ORDER_SN, JOIN_GROUP_LIST.GOODS_ID,
 				ORDER_GOODS.GOODS_IMG, ORDER_GOODS.GOODS_NAME, ORDER_INFO.CREATE_TIME, ORDER_INFO.MOBILE,
 				ORDER_INFO.CONSIGNEE, JOIN_GROUP_LIST.CREATE_TIME, JOIN_GROUP_LIST.IS_WIN_DRAW, ORDER_INFO.ORDER_STATUS,
-				ORDER_GOODS.ORDER_ID, JOIN_GROUP_LIST.STATUS);
+				ORDER_GOODS.ORDER_ID, JOIN_GROUP_LIST.STATUS, ORDER_INFO.COMPLETE_ADDRESS);
 	}
 
 	/**
@@ -96,11 +107,8 @@ public class GroupDrawOrderService extends ShopBaseService {
 	 * @return 表格信息
 	 */
 	public Workbook orderExport(OrderListParam param, String lang) {
-		param.setCurrentPage(1);
-		param.setPageRows(99999);
 		List<OrderExport> orderExport = new ArrayList<>();
-		PageResult<OrderListVo> pageResult = getGroupDrawOrderList(param);
-		List<OrderListVo> tempList = pageResult.getDataList();
+		List<OrderListVo> tempList = getGroupDrawOrderListNoPage(param);
 		tempList.forEach(item -> {
 			OrderExport tempExport = new OrderExport();
 			tempExport.setOrderSn(item.getOrderSn());
