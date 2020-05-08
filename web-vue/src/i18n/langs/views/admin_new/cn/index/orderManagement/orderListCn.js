@@ -294,6 +294,8 @@ export const cn = {
   filterCondition: '筛选条件：',
   orderExportLimitTip: '导出条数（一次最多导出5000条数据）',
   orderExportLimitTip2: '一次最多导出5000条数据',
+  buyer: '下单人',
+  returnWays: '售后方式',
   recordTypeObj: {
     0: '商家',
     1: '买家',
@@ -425,5 +427,17 @@ export const cn = {
     0: '企业发票',
     1: '个人发票'
   },
-  remindTime: '用户提醒发货：'
+  remindTime: '用户提醒发货：',
+  returnSortList: [
+    {value: 1, label: '按下单时间排序'},
+    {value: 2, label: '按申请售后时间排序'}
+  ],
+  returnWaysList: [
+    {value: -1, label: '全部'},
+    {value: 1, label: '商家主动售后'},
+    {value: 2, label: '下单人申请售后'},
+    {value: 3, label: '系统自动售后'},
+    {value: 4, label: '旺店通ERP主动售后'},
+    {value: 5, label: '旺店通POS主动售后'}
+  ]
 }

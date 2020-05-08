@@ -125,7 +125,13 @@
           width="120"
         >
           <template slot-scope="{row,$index}">
-            <span v-if="row.prdId === null">{{row.goodsNumber}}</span>
+            <span v-if="row.prdId === null">
+              {{row.goodsNumber}}
+              <span class="el-icon-edit-outline iconSpan"
+                      style="margin-left: 10px;"
+                      @click="goodsNumEditClick(row)"
+              ></span>
+            </span>
             <template v-else>
               <span v-if="!row.goodsNumberEdit">
                 {{row.goodsNumber}}
@@ -446,12 +452,43 @@
       :checkGoodsData="nowCheckAll"
       :dialogVisible.sync="batchSetupVisible"
     />
+    <!--多规格商品数量修改交互弹窗-->
+    <el-dialog title="商品规格" :visible.sync="goodsNumEditDialogShow" width="40%">
+      <el-table :data="goodsPrdInfos"
+                style="width: 100%"
+                height="300"
+                class="tableClass"
+                border>
+        <!--规格名称-->
+        <el-table-column label="规格名称"  align="center">
+          <template slot-scope="{row}">
+            {{row.prdDesc.replace(';',' ')}}
+          </template>
+        </el-table-column>
+
+        <el-table-column label="库存"  align="center">
+          <template slot-scope="{row}">
+            <el-input-number
+                    v-model="row.prdNumber"
+                    step-strictly
+                    size="small"
+                    controls-position="right"
+                    :min="0"
+                    style="width:170px;"/>
+          </template>
+        </el-table-column>
+      </el-table>
+     <span slot="footer">
+        <el-button @click="goodsNumEditDialogCancel">取 消</el-button>
+        <el-button @click="goodsNumEditDialogConfirm" type="primary">确 定</el-button>
+     </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 import { download } from '@/util/excelUtil.js'
 import { goodsExport, getExportTotalRows } from '@/api/admin/goodsManage/allGoods/allGoods.js'
-import { getGoodsList, deleteGoods, batchOperateSpecPrdPriceNumber, batchOperateGoods, updateLabelByGoodsId, getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
+import { getGoodsList, deleteGoods, batchOperateSpecPrdPriceNumber, batchOperateGoods, updateLabelByGoodsId, getGoodsFilterItem, updateGoodsPrdNumbers, getGoodsPrdInfo } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { getGoodsQrCode } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // 组件导入
 import pagination from '@/components/admin/pagination/pagination'
@@ -497,7 +534,11 @@ export default {
       batchSetupVisible: false, // 批量设置弹窗flag
       exportRowEnd: null, // 导出的商品数量
       screenNum: '', // 筛选得数量
-      checkScreenNum: '' // 根据已勾选查询的筛选数量
+      checkScreenNum: '', // 根据已勾选查询的筛选数量
+      /* 多规格商品数量修改弹窗 */
+      goodsNumEditDialogShow: false,
+      goodsPrdInfos: [{prdId: 1, prdDesc: 'color:red;df:xl', prdNumber: 12}], // 商品规格信息
+      goodsNumCurEditRow: null // 当前修改商品数量的商品
     }
   },
   computed: {
@@ -641,6 +682,41 @@ export default {
         } else {
           row.goodsNumber = originNum
         }
+      })
+    },
+    /* 多规格商品数量修改 */
+    goodsNumEditDialogCancel () {
+      this.goodsNumEditDialogShow = false
+      this.goodsNumCurEditRow = null
+    },
+    goodsNumEditDialogConfirm () {
+      let prdNumInfos = []
+      let goodsNum = 0
+      this.goodsPrdInfos.forEach(item => {
+        prdNumInfos.push({prdId: item.prdId, prdNumber: item.prdNumber})
+        goodsNum += item.prdNumber
+      })
+
+      let numParam = {
+        goodsId: this.goodsNumCurEditRow.goodsId,
+        prdNumInfos: prdNumInfos
+      }
+
+      updateGoodsPrdNumbers(numParam).then(res => {
+        if (res.error === 0) {
+          this.$message.success({ type: 'info', message: this.$t('allGoods.allGoodsData.setSuccess') })
+          this.goodsNumCurEditRow.goodsNumber = goodsNum
+          this.goodsNumEditDialogShow = false
+        } else {
+          this.$message.error({type: 'error', message: res.message})
+        }
+      })
+    },
+    goodsNumEditClick (row) {
+      this.goodsNumCurEditRow = row
+      getGoodsPrdInfo(row.goodsId).then(res => {
+        this.goodsPrdInfos = res.content
+        this.goodsNumEditDialogShow = true
       })
     },
     /** table表单内标签 **/

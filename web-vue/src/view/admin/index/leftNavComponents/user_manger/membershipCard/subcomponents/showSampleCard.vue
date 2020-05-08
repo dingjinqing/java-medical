@@ -46,190 +46,199 @@
         </div>
 
       </div>
-      <div
-        class="member-power"
-        v-for="(item,index) in leftNavData"
-        :key="index"
-      >
-
+      <div class="member-power">
         <div
-          class="s-power-detail"
-          v-if="index===0"
+          v-for="(item,index) in leftNavData"
+          :key="index"
         >
           <div
-            class="s-power-title"
-            v-bind:style="getMiniLog(item)"
+            class="s-power-detail"
+            v-if="index===0"
           >
-            {{item.title}}
-          </div>
-          <div
-            v-if="powerDiscount"
-            class="s-power-detail-unit"
-            style="display: block;"
-          >
-            <p v-if="discountGoodsType==='0'">{{item.children[0]}}
-              <span v-if="discount !== ''">
-                {{discount}}{{$t('memberCard.discount')}}
-              </span>
-            </p>
-            <p v-else-if="discountGoodsType==='1'">{{item.children[1]}}
-              <span v-if="discount !== ''">
-                {{discount}}{{$t('memberCard.discount')}}
-              </span>
-            </p>
-          </div>
-        </div>
-        <div v-if="index===1 && cardScoreCfgData">
-          <div
-            class="s-power-title"
-            v-bind:style="getMiniLog(item)"
-          >
-            {{item.title}}
-          </div>
-          <div
-            v-if="cardScoreCfgData.powerScore"
-            class="s-power-detail-unit"
-          >
-            <div>
-              <p>{{item.children[0]}}{{cardScoreCfgData.score}}{{$t('memberCard.score')}}</p>
-            </div>
-            <div v-if="cardScoreCfgData.offSet==='0'">
-              <p>
-                {{$t('memberCard.shopFull')}}{{cardScoreCfgData.shopingInputLeft}}{{$t('memberCard.send')}}{{cardScoreCfgData.shopingInputRight}}{{$t('memberCard.score')}}
-              </p>
-              <p
-                v-for="(scoreItem,scoreIndex) in cardScoreCfgData.addIntegralArr"
-                :key="scoreIndex"
-              >
-                {{$t('memberCard.shopFull')}}{{scoreItem.leftInput}}{{$t('memberCard.send')}}{{scoreItem.rightInput}}{{$t('memberCard.score')}}
-              </p>
-            </div>
-            <div v-else-if="cardScoreCfgData.offSet==='1'">
-              <p>
-                {{$t('memberCard.shopEachFull')}}
-                {{cardScoreCfgData.shopingInputLeftM}}
-                {{$t('memberCard.send')}}
-                {{cardScoreCfgData.shopingInputRightM}}
-                {{$t('memberCard.score')}}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="index===2 && cardChargeCfgData">
-          <div
-            v-if="cardChargeCfgData.powerCard"
-            class="s-power-title"
-            v-bind:style="getMiniLog(item)"
-          >
-            {{item.title}}
-          </div>
-          <div
-            v-if="cardChargeCfgData.powerCard"
-            class="s-power-detail-unit"
-          >
-            <div>
-              <p>{{$t('memberCard.openCardSend')}}{{cardChargeCfgData.sendMoney}}{{$t('memberCard.yuan')}}</p>
-            </div>
-            <div v-if="cardChargeCfgData.offset==='2'">
-              <p>{{$t('memberCard.justCharge')}}</p>
-            </div>
-            <div v-if="cardChargeCfgData.offset==='0'">
-              <p>
-                {{$t('memberCard.chargeFull')}}
-                {{cardChargeCfgData.chargeInputLeft}}
-                {{$t('memberCard.send')}}
-                {{cardChargeCfgData.chargeInputRight}}
-                {{$t('memberCard.yuan')}}
-              </p>
-              <p
-                v-for="(chargeItem,chargeIndex) in cardChargeCfgData.addChargeArr"
-                :key="chargeIndex"
-              >
-                {{$t('memberCard.chargeFull')}}
-                {{chargeItem.leftInput}}
-                {{$t('memberCard.send')}}
-                {{chargeItem.rightInput}}
-                {{$t('memberCard.yuan')}}
-              </p>
-
-            </div>
-            <div v-if="cardChargeCfgData.offset==='1'">
-              <p>
-                {{$t('memberCard.chargeEachFull')}}
-                {{cardChargeCfgData.chargeInputLeftM}}
-                {{$t('memberCard.send')}}
-                {{cardChargeCfgData.chargeInputRightM}}
-                {{$t('memberCard.yuan')}}
-              </p>
-            </div>
-
-          </div>
-        </div>
-        <div v-if="index===3">
-          <div
-            v-if="cardUsageCfgData.mobile"
-            class="s-power-title"
-            v-bind:style="getMiniLog(item)"
-          >
-            {{item.title}}
-          </div>
-          <div
-            v-if="cardUsageCfgData.mobile"
-            class="s-power-detail-unit"
-          >
-            <p>{{cardUsageCfgData.mobile}}</p>
-          </div>
-        </div>
-        <div v-if="index===4">
-          <div
-            class="s-power-title"
-            v-bind:style="getMiniLog(item)"
-          >
-            {{item.title}}
-          </div>
-          <div class="s-power-detail-unit card-desc">
-            <p>{{cardUsageCfgData.desc}}</p>
-          </div>
-        </div>
-        <div v-if="index===5 && cardStoreCfgData">
-          <div
-            class="s-power-title"
-            v-bind:style="getMiniLog(item)"
-          >
-            {{item.title}}
-          </div>
-          <div class="s-power-detail-unit">
-            <div v-if="cardStoreCfgData.storeListType==='0'">
-              {{$t('memberCard.allStores')}}
+            <div
+              class="s-power-title"
+              v-bind:style="getMiniLog(item)"
+            >
+              {{item.title}}
             </div>
             <div
-              v-if="cardStoreCfgData.storeListType==='1'"
-              class="store-list"
+              v-if="powerDiscount"
+              class="s-power-detail-unit"
+              style="display: block;"
             >
-              <span
-                v-for="(storeItem,storeIndex) in cardStoreCfgData.choosedStore"
-                :key="storeIndex"
-              >
-                {{storeItem.storeName}}
-                <span v-if="storeIndex<cardStoreCfgData.choosedStore.length-1">
-                  ,
+              <p v-if="discountGoodsType==='0'">{{item.children[0]}}
+                <span v-if="discount !== ''">
+                  {{discount}}{{$t('memberCard.discount')}}
                 </span>
-              </span>
+              </p>
+              <p v-else-if="discountGoodsType==='1'">{{item.children[1]}}
+                <span v-if="discount !== ''">
+                  {{discount}}{{$t('memberCard.discount')}}
+                </span>
+              </p>
             </div>
-            <div v-if="cardStoreCfgData.storeListType==='-1'">
-              {{$t('memberCard.banStore')}}
+          </div>
+          <div v-if="index===1 && cardScoreCfgData">
+            <div
+              class="s-power-title"
+              v-bind:style="getMiniLog(item)"
+            >
+              {{item.title}}
+            </div>
+            <div
+              v-if="cardScoreCfgData.powerScore"
+              class="s-power-detail-unit"
+            >
+              <div>
+                <p>{{item.children[0]}}{{cardScoreCfgData.score}}{{$t('memberCard.score')}}</p>
+              </div>
+              <div v-if="cardScoreCfgData.offSet==='0'">
+                <p>
+                  {{$t('memberCard.shopFull')}}{{cardScoreCfgData.shopingInputLeft}}{{$t('memberCard.send')}}{{cardScoreCfgData.shopingInputRight}}{{$t('memberCard.score')}}
+                </p>
+                <p
+                  v-for="(scoreItem,scoreIndex) in cardScoreCfgData.addIntegralArr"
+                  :key="scoreIndex"
+                >
+                  {{$t('memberCard.shopFull')}}{{scoreItem.leftInput}}{{$t('memberCard.send')}}{{scoreItem.rightInput}}{{$t('memberCard.score')}}
+                </p>
+              </div>
+              <div v-else-if="cardScoreCfgData.offSet==='1'">
+                <p>
+                  {{$t('memberCard.shopEachFull')}}
+                  {{cardScoreCfgData.shopingInputLeftM}}
+                  {{$t('memberCard.send')}}
+                  {{cardScoreCfgData.shopingInputRightM}}
+                  {{$t('memberCard.score')}}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="index===2 && cardChargeCfgData">
+            <div
+              v-if="cardChargeCfgData.powerCard"
+              class="s-power-title"
+              v-bind:style="getMiniLog(item)"
+            >
+              {{item.title}}
+            </div>
+            <div
+              v-if="cardChargeCfgData.powerCard"
+              class="s-power-detail-unit"
+            >
+              <div>
+                <p>{{$t('memberCard.openCardSend')}}{{cardChargeCfgData.sendMoney}}{{$t('memberCard.yuan')}}</p>
+              </div>
+              <div v-if="cardChargeCfgData.offset==='2'">
+                <p>{{$t('memberCard.justCharge')}}</p>
+              </div>
+              <div v-if="cardChargeCfgData.offset==='0'">
+                <p>
+                  {{$t('memberCard.chargeFull')}}
+                  {{cardChargeCfgData.chargeInputLeft}}
+                  {{$t('memberCard.send')}}
+                  {{cardChargeCfgData.chargeInputRight}}
+                  {{$t('memberCard.yuan')}}
+                </p>
+                <p
+                  v-for="(chargeItem,chargeIndex) in cardChargeCfgData.addChargeArr"
+                  :key="chargeIndex"
+                >
+                  {{$t('memberCard.chargeFull')}}
+                  {{chargeItem.leftInput}}
+                  {{$t('memberCard.send')}}
+                  {{chargeItem.rightInput}}
+                  {{$t('memberCard.yuan')}}
+                </p>
+
+              </div>
+              <div v-if="cardChargeCfgData.offset==='1'">
+                <p>
+                  {{$t('memberCard.chargeEachFull')}}
+                  {{cardChargeCfgData.chargeInputLeftM}}
+                  {{$t('memberCard.send')}}
+                  {{cardChargeCfgData.chargeInputRightM}}
+                  {{$t('memberCard.yuan')}}
+                </p>
+              </div>
+
+            </div>
+          </div>
+          <div v-if="index===3">
+            <div
+              v-if="cardUsageCfgData.mobile"
+              class="s-power-title"
+              v-bind:style="getMiniLog(item)"
+            >
+              {{item.title}}
+            </div>
+            <div
+              v-if="cardUsageCfgData.mobile"
+              class="s-power-detail-unit"
+            >
+              <p>{{cardUsageCfgData.mobile}}</p>
+            </div>
+          </div>
+          <div v-if="index===4">
+            <div
+              class="s-power-title"
+              v-bind:style="getMiniLog(item)"
+            >
+              {{item.title}}
+            </div>
+            <div class="s-power-detail-unit card-desc">
+              <p>{{cardUsageCfgData.desc}}</p>
+            </div>
+          </div>
+          <div v-if="index===5 && cardStoreCfgData">
+            <div
+              class="s-power-title"
+              v-bind:style="getMiniLog(item)"
+            >
+              {{item.title}}
+            </div>
+            <div class="s-power-detail-unit">
+              <div v-if="cardStoreCfgData.storeListType==='0'">
+                {{$t('memberCard.allStores')}}
+              </div>
+              <div
+                v-if="cardStoreCfgData.storeListType==='1'"
+                class="store-list"
+              >
+                <span
+                  v-for="(storeItem,storeIndex) in cardStoreCfgData.choosedStore"
+                  :key="storeIndex"
+                >
+                  {{storeItem.storeName}}
+                  <span v-if="storeIndex<cardStoreCfgData.choosedStore.length-1">
+                    ,
+                  </span>
+                </span>
+              </div>
+              <div v-if="cardStoreCfgData.storeListType==='-1'">
+                {{$t('memberCard.banStore')}}
+              </div>
             </div>
           </div>
         </div>
+         <show-coupon :coupon="allData.cardCouponCfgData" />
       </div>
+
     </div>
   </div>
 </template>
 <script>
 export default {
+  components: {
+    ShowCoupon: () => import('./side/couponShow.vue')
+  },
   props: {
     sampleData: {
+      type: Object,
+      required: true
+    },
+    allData: {
       type: Object,
       required: true
     }
@@ -300,10 +309,21 @@ export default {
   },
   mounted () {
     this.langDefault()
+    this.initData()
   },
   data () {
     return {
-      leftNavData: [
+      leftNavData: []
+    }
+  },
+  watch: {
+    lang () {
+      this.initData()
+    }
+  },
+  methods: {
+    initData () {
+      this.leftNavData = [
         {
           backGroundImgUrl: this.$imageHost + '/image/admin/discount.png',
           title: this.$t('memberCard.memberAd'),
@@ -335,9 +355,7 @@ export default {
           children: [this.$t('memberCard.allStores')]
         }
       ]
-    }
-  },
-  methods: {
+    },
     getMiniLog (item) {
       return 'backgroundImage: url(' + item.backGroundImgUrl + ')'
     },
@@ -385,6 +403,7 @@ export default {
   }
   .member-power {
     background-color: #fff;
+
     .s-power-title {
       padding: 10px 0;
       background: url(../../../../../../../assets/adminImg/score_mem.png)

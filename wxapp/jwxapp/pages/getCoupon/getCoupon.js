@@ -211,6 +211,13 @@ global.wxPage({
     })
   },
 
+  //优惠券礼包页面
+  toCoupackage:function(){
+    if (this.data.act_info.accessMode == 2) {
+      util.jumpLink('pages1/couponpackage/couponpackage?packId=' + this.data.act_info.accessId)
+    }
+  },
+
   /**
    * 用户点击右上角分享
    */

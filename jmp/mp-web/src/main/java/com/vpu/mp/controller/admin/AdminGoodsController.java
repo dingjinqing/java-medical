@@ -255,6 +255,17 @@ public class AdminGoodsController extends AdminBaseController {
         return success();
     }
 
+    /**
+     * 多规格商品修改数量
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/admin/goodsPrd/updateGoodsPrdNumbers")
+    public JsonResult updateGoodsPrdNumbers(@RequestBody GoodsPrdNumEditParam param) {
+        shop().goods.updateGoodsPrdNumbers(param);
+        return success();
+    }
+
     @PostMapping("/api/admin/goods/delete")
     public JsonResult delete(@RequestBody GoodsBatchOperateParam param) {
         if (param.getGoodsIds() == null || param.getGoodsIds().size() == 0) {

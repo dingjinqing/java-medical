@@ -420,10 +420,24 @@ global.wxPage({
                 }
               } else if (custom_arr[i].customType == 2) {
                 custom_arr[i].text = ''
+              } else if (custom_arr[i].customType == 3) {
+                // custom_arr[j].comm_img = [];
+                // custom_arr[j].can_click = true;
               }
 
             }
             console.log(custom_arr)
+            // 模拟自定义激活项上传图片数据
+            // let obj = {
+            //   custom_image: "5",
+            //   custom_title: "测试1",
+            //   custom_type: "3",
+            //   is_checked: 1,
+            //   option_ver: 1,
+            //   comm_img: []
+            // }
+            // custom_arr.push(obj)
+
             that.setData({
               custom_arr: custom_arr
             })
@@ -444,10 +458,7 @@ global.wxPage({
               that.setData(obj)
             }
           })
-          // 上传图片模拟数据
-          // that.setData({
-          //   if_upImage: 1
-          // })
+
           // 会员昵称
           if (user_info.username) {
             user_nick_name = user_info.username
@@ -1131,6 +1142,58 @@ global.wxPage({
     }, {
       iv: iv,
       encrypted_data: data
+    })
+  },
+  customUpImage: function (e) {
+    var that = this;
+    var custom_op = that.data.custom_arr;
+    var index = e.currentTarget.dataset.idx;
+    var url = util.getUrl('/api/wxapp/image/upload');
+    var num = parseInt(e.currentTarget.dataset.num);
+    let count = num - custom_op[index].comm_img.length;
+    if (custom_op[index].can_click == false) return;
+    that.setData({
+      ['custom_arr[' + index + '].can_click']: false,
+    })
+    wx.chooseImage({
+      count: count,
+      sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有
+      sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+      success: function (res) {
+        // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
+        var tempFilePaths = res.tempFilePaths;
+        if (res) {
+          var can_click = false;
+          for (var i = 0; i < tempFilePaths.length; i++) {
+            util.uploadFile(url, tempFilePaths[i], { img_cat_id: -1 }, function (e) {
+              console.log(e)
+              var data = JSON.parse(e.data);
+              console.log(data)
+              custom_op[index].comm_img.push(data.content[0].img_url);
+              if (i == tempFilePaths.length) can_click = true;
+              that.setData({
+                ['custom_arr[' + index + ']']: custom_op[index],
+                ['custom_arr[' + index + '].can_click']: can_click,
+              })
+            });
+          }
+        }
+      },
+      fail: function () {
+        that.setData({
+          ['custom_arr[' + index + '].can_click']: true,
+        })
+      }
+    })
+  },
+  customDelImage: function (e) {
+    var that = this;
+    var index = e.currentTarget.dataset.idx;
+    var imgindex = e.currentTarget.dataset.imgindex;
+    var custom_op = that.data.custom_arr;
+    custom_op[index].comm_img.splice(imgindex, 1);
+    that.setData({
+      ['custom_arr[' + index + ']']: custom_op[index],
     })
   },
   /**

@@ -207,6 +207,7 @@ export const en = {
   strategyLevel: 'Priority',
   strategyStatus: 'Status',
   strategyOption: 'Option',
+  strategyView: 'view',
 
   // 表格
   strategyTip1: 'Please enter rebate policy name',

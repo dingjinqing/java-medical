@@ -83,5 +83,11 @@ export const cn = {
   shareNote: '注：直接向好友分享商品时，可展示不超过23个汉字，超出部分将省略',
   peShareCopy: '请输入分享文案',
   downloadPoster: '下载海报',
-  downNote: '注：通过海报向商品分享好友时，可展示不超过20个汉字，超出部分将省略'
+  downNote: '注：通过海报向商品分享好友时，可展示不超过20个汉字，超出部分将省略',
+  posterStyle: '海报样式',
+  example: '示例',
+  basicStyle: '基础样式',
+  showSharer: '显示分享人信息',
+  showStore: '显示店铺信息',
+  showss: '显示分享人+店铺信息'
 }

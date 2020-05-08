@@ -211,6 +211,7 @@ export const cn = {
   strategyLevel: '优先级',
   strategyStatus: '状态',
   strategyOption: '操作',
+  strategyView: '查看',
 
   // 表格
   strategyTip1: '请输入返利策略名称',

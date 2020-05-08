@@ -104,5 +104,7 @@ module.exports = {
   evaluateContinue: "评价并继续",
   uploadFailed: "上传失败",
   selectRating: "请选择评分",
-  fillExperience: "请填写心得"
+  fillExperience: "请填写心得",
+  successfulEval: "评价成功",
+  failEval: "评价失败"
 }

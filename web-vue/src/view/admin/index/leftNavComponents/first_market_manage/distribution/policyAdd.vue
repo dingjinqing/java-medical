@@ -19,6 +19,7 @@
             size="small"
             class="inputWidth"
             :placeholder="$t('distribution.strategyTip1')"
+            :disabled="status === false"
           ></el-input>
         </el-form-item>
         <el-form-item
@@ -30,6 +31,7 @@
             size="small"
             class="inputWidth"
             :placeholder="$t('distribution.strategyTip2')"
+            :disabled="status === false"
           ></el-input>
           <div class="text">{{ $t('distribution.strategyTip3') }}</div>
         </el-form-item>
@@ -46,6 +48,7 @@
             :end-placeholder="$t('seckill.endTime')"
             :default-time="['00:00:00','23:59:59']"
             value-format="yyyy-MM-dd HH:mm:ss"
+            :disabled="status === false"
           ></el-date-picker>
         </el-form-item>
         <el-form-item
@@ -55,6 +58,7 @@
           <el-radio-group
             v-model="form.strategyType"
             @change="strategyTypeChange"
+            :disabled="status === false"
           >
             <el-radio :label="0">{{ $t('distribution.strategyTypeTip1') }}</el-radio>
             <el-radio :label="1">{{ $t('distribution.strategyTypeTip2') }}</el-radio>
@@ -65,7 +69,10 @@
           :label="$t('distribution.selfPurchase') + '：'"
           prop="selfPurchase"
         >
-          <el-radio-group v-model="form.selfPurchase">
+          <el-radio-group
+            v-model="form.selfPurchase"
+            :disabled="status === false"
+          >
             <el-radio :label="1">{{ $t('distribution.purchaseOpen') }}</el-radio>
             <el-radio :label="0">{{ $t('distribution.purchaseClose') }}</el-radio>
           </el-radio-group>
@@ -93,7 +100,10 @@
             <span>{{ $t('distribution.costProtection') }}</span>
 
           </template>
-          <el-radio-group v-model="form.costProtection">
+          <el-radio-group
+            v-model="form.costProtection"
+            :disabled="status === false"
+          >
             <el-radio :label="1">{{ $t('distribution.purchaseOpen') }}</el-radio>
             <el-radio :label="0">{{ $t('distribution.purchaseClose') }}</el-radio>
           </el-radio-group>
@@ -102,7 +112,10 @@
           :label="$t('distribution.Invitation')"
           prop=""
         >
-          <el-radio-group v-model="form.firstRebate">
+          <el-radio-group
+            v-model="form.firstRebate"
+            :disabled="status === false"
+          >
             <el-radio :label="1">{{ $t('distribution.purchaseOpen') }}</el-radio>
             <el-radio :label="0">{{ $t('distribution.purchaseClose') }}</el-radio>
           </el-radio-group>
@@ -160,6 +173,7 @@
                         @change="checkPercentage(scope.$index)"
                         size="mini"
                         style="width: 55px;"
+                        :disabled="status === false"
                       ></el-input> %
                     </div>
                     <div style="margin-top: 10px;">{{ $t('distribution.proportionTip4') }}
@@ -168,6 +182,7 @@
                         @change="checkPercentage(scope.$index)"
                         size="mini"
                         style="width: 55px;"
+                        :disabled="status === false"
                       ></el-input> %
                     </div>
                   </div>
@@ -187,6 +202,7 @@
                     @change="checkFirstPercentage(scope.$index)"
                     size="mini"
                     style="width: 55px;"
+                    :disabled="status === false"
                   ></el-input> %
                 </div>
               </template>
@@ -206,6 +222,7 @@
             v-model="form.sendCoupon"
             :true-label='1'
             :false-label="0"
+            :disabled="status === false"
           >{{ $t('distribution.authorityTip1') }}</el-checkbox>
           <span class="tips">{{ $t('distribution.authorityTip2') }}</span>
         </el-form-item>
@@ -217,7 +234,10 @@
           prop="recommendType"
         >
           <div>
-            <el-radio-group v-model="form.recommendType">
+            <el-radio-group
+              v-model="form.recommendType"
+              :disabled="status === false"
+            >
               <el-radio :label="0">{{ $t('distribution.goodsRadio1') }}</el-radio>
               <el-radio :label="1">{{ $t('distribution.goodsRadio2') }}</el-radio>
             </el-radio-group>
@@ -258,7 +278,10 @@
     </div>
 
     <!-- 底部 -->
-    <div class="footer">
+    <div
+      class="footer"
+      v-if="status === true"
+    >
       <el-button
         size="small"
         type="primary"
@@ -292,7 +315,7 @@ export default {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
     AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog')
   },
-  props: ['isEdite', 'editId'],
+  props: ['isEdite', 'editId', 'status'],
   data () {
     // 自定义校验可使用商品
     var validateRecommendType = (rule, value, callback) => {
@@ -730,14 +753,15 @@ export default {
 .container {
   margin-top: 10px;
   padding: 10px;
-  margin-bottom: 100px;
+  /* margin-bottom: 100px; */
   background: #fff;
 }
 .footer {
-  position: absolute;
+  width: 100%;
+  /* position: absolute;
   bottom: 0;
   right: 27px;
-  left: 160px;
+  left: 160px; */
   height: 52px;
   padding: 10px 0;
   background-color: #fff;
@@ -756,5 +780,9 @@ export default {
 }
 .text {
   color: #999;
+}
+/deep/ .el-radio__input.is-disabled + span.el-radio__label,
+/deep/ .el-checkbox__input.is-disabled + span.el-checkbox__label {
+  color: #606266;
 }
 </style>

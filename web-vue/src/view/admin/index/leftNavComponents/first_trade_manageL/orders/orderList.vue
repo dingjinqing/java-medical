@@ -163,8 +163,7 @@
           >
             <span>{{$t('order.paymentType')}}：</span>
             <el-select
-              v-model="searchParams.payWay"
-              :placeholder="$t('order.defaultSelect')"
+              v-model="searchParams.returnSort"
               size="small"
               class="default_input"
               filterable
@@ -317,31 +316,47 @@
         </div>
       </div>
       <div class="table_box">
-        <el-tabs
-          v-model="searchParams.orderStatus2"
-          @tab-click="handleClick"
-        >
-          <template v-for="item in tabsOrderStatus">
-            <el-tab-pane
-              :label="item.label"
-              :name="item.value"
-              :key="item.value"
-              v-if="item.value === '3'"
+        <div class="tab-content">
+          <el-tabs
+            v-model="searchParams.orderStatus2"
+            @tab-click="handleClick"
+          >
+            <template v-for="item in tabsOrderStatus">
+              <el-tab-pane
+                :label="item.label"
+                :name="item.value"
+                :key="item.value"
+                v-if="item.value === '3'"
+              >
+                <span slot="label">
+                  <span>待发货<span class="wait_num">{{count['1']}}</span></span>/<span>待核销<span class="wait_num">{{count['2']}}</span></span>
+                </span>
+              </el-tab-pane>
+              <el-tab-pane
+                :label="item.label"
+                :name="item.value"
+                :key="item.value"
+                v-else
+              >
+              </el-tab-pane>
+            </template>
+          </el-tabs>
+          <div class="return-sort-module" v-show="searchParams.orderStatus2 === '7'">
+            <el-select
+              v-model="searchParams.returnSort"
+              size="small"
+              class="default_input"
+              filterable
             >
-              <span slot="label">
-                <span>待发货<span class="wait_num">{{count['1']}}</span></span>/<span>待核销<span class="wait_num">{{count['2']}}</span></span>
-              </span>
-            </el-tab-pane>
-            <el-tab-pane
-              :label="item.label"
-              :name="item.value"
-              :key="item.value"
-              v-else
-            >
-            </el-tab-pane>
-          </template>
-
-        </el-tabs>
+              <el-option
+                v-for="item in $t('order.returnSortList')"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </div>
+        </div>
         <table>
           <thead>
             <tr>
@@ -888,7 +903,8 @@ export default {
         districtCode: null,
         orderStatus2: '-1',
         shippingNo: '',
-        roomId: null
+        roomId: null,
+        returnSort: null
       },
       orderTime: {
         startTime: null,
@@ -1014,6 +1030,7 @@ export default {
       this.searchParams.pinStatus = this.$route.query.pinStatus ? [this.$route.query.pinStatus] : []
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
+      this.searchParams.returnSort = this.searchParams.orderStatus2 === '7' ? this.searchParams.returnSort ? this.searchParams.returnSort : 1 : null
       this.searchType = 0
       let obj = {
         ...this.searchParams,
@@ -1195,6 +1212,14 @@ export default {
       margin-top: 10px;
       background-color: #fff;
       padding: 10px;
+      .tab-content{
+        position: relative;
+        .return-sort-module {
+          position: absolute;
+          top: 5px;
+          right:0
+        }
+      }
       .wait_num {
         position: relative;
         top: -7px;

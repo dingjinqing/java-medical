@@ -213,6 +213,8 @@
                   </div>
                   <span
                     slot="reference"
+                    class="high-light"
+                    @click="handleViewOrder(returnInfo.orderSn)"
                     @mouseenter="requestOrderInfo(returnInfo.orderSn)"
                     @mouseleave="leaveOrderBrief()"
                   >{{returnInfo.orderSn}}</span>
@@ -246,8 +248,12 @@
               </td>
             </tr>
             <tr>
+              <td>{{$t('order.orderUserInfo')}}</td>
+              <td colspan="3">刘洋 17600236996</td>
+            </tr>
+            <tr>
               <td>{{$t('order.returnType')}}</td>
-              <td colspan="3">{{returnTypeMap.get(returnInfo.returnType)}}</td>
+              <td colspan="3">{{returnTypeMap.get(returnInfo.returnType)}} (商家手动售后)</td>
             </tr>
             <tr>
               <td>{{$t('order.returnStatus')}}</td>
@@ -1202,5 +1208,9 @@ export default {
       left: 10px;
     }
   }
+}
+.high-light{
+  color: #409eff;
+  cursor: pointer;
 }
 </style>

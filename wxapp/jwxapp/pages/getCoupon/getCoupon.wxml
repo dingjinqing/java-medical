@@ -105,13 +105,13 @@
       </view>
       <!-- 使用限制END -->
       <!-- 领取方式 -->
-      <!-- <view class='coupon_get_type' wx:if='{{act_info.access_mode == 2}}' bindtap='to_cou_package'>
-          <view class='cgt_time'>领取时间：{{ act_info.created }}</view>
-          <view class='cgt_word clearfix'>
-              <view class='cw_left'>领取方式：优惠券包</view>
-              <view class='cw_right'>查看 <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image></view>
-          </view>
-      </view> -->
+      <view class='coupon_get_type' wx:if='{{act_info.accessMode == 2}}' bindtap='toCoupackage'>
+        <view class='cgt_time'>领取时间：{{ act_info.createTime }}</view>
+        <view class='cgt_word clearfix'>
+            <view class='cw_left'>领取方式：优惠券包</view>
+            <view class='cw_right'>查看 <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image></view>
+        </view>
+      </view>
       <!-- 领取方式end -->
       <!-- 兑换所需积分 -->
       <view class="coupon-time" wx:if="{{act_info.useScore == 1}}">
