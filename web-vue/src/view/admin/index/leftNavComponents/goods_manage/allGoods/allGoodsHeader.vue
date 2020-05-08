@@ -294,6 +294,7 @@ export default {
           this.goodsBrandOptions.forEach((item, index) => {
             if (this.$route.params.brandTurnId === item.id) {
               this.goodsFilterFormData.brandId = item.id
+              this.$http.$emit('brandTurnEvent')
             }
           })
         }
