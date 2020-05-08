@@ -22,6 +22,15 @@
             ></el-input>
           </div>
           <div class="filters_item">
+            <span>{{$t('order.buyer')}}：</span>
+            <el-input
+              v-model="searchParams.userInfo"
+              :placeholder="$t('order.userNameText')+'/'+$t('order.userMobileText')"
+              size="small"
+              class="default_input"
+            ></el-input>
+          </div>
+          <div class="filters_item">
             <span>{{$t('order.returnStatus')}}：</span>
             <el-select
               v-model="searchParams.refundStatus"
@@ -51,6 +60,22 @@
                 :key="item[0]"
                 :label="item[1]"
                 :value="item[0]"
+              ></el-option>
+            </el-select>
+          </div>
+          <div class="filters_item">
+            <span>{{$t('order.returnWays')}}：</span>
+            <el-select
+              v-model="searchParams.returnWay"
+              size="small"
+              class="default_input"
+              filterable
+            >
+              <el-option
+                v-for="item in $t('order.returnWaysList')"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
               ></el-option>
             </el-select>
           </div>
@@ -107,6 +132,7 @@
               <th>{{$t('order.goodsNum')}}</th>
               <th>{{$t('order.goodsPrice')}}</th>
               <th>{{$t('order.returntype')}}</th>
+              <th>{{$t('order.orderUserInfo')}}</th>
               <th>{{$t('order.returnReasonText')}}</th>
               <th>{{$t('order.returnStatus')}}</th>
               <th width="130px">{{$t('order.operate')}}</th>
@@ -198,6 +224,14 @@
                       :rowspan="orderItem.goods.length"
                     >
                       {{returnTypeMap.get(orderItem.returnType)}}
+                      <br />
+                      (商家手动售后)
+                    </td>
+                    <td
+                      v-if="index === 0"
+                      :rowspan="orderItem.goods.length"
+                    >
+                      17600236996
                     </td>
                     <td
                       v-if="index === 0"
@@ -310,7 +344,9 @@ export default {
         returnEnd: null,
         currentPage: null,
         pageRows: null,
-        stateCollection: null
+        stateCollection: null,
+        userInfo: null,
+        returnWay: -1
       },
       returnTypeMap: null,
       returnStatusMap: null,

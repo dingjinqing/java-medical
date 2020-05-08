@@ -149,7 +149,7 @@ export default {
         this.$message.error('请选择要发货的商品')
         return
       }
-      if (!this.shippingNo) {
+      if (!this.shippingNo && this.shippingId !== '100') {
         this.$message.error('请输入快递单号')
         return
       }
