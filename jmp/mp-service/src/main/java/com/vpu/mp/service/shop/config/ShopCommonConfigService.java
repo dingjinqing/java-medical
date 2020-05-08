@@ -178,16 +178,19 @@ public class ShopCommonConfigService extends BaseShopConfigService{
     /**
      * 商品重量配置项设置
      */
-    final public static String GOODS_WEIGHT_CFG = "goods_weight_cfg";
+    final public static String K_GOODS_WEIGHT_CFG = "goods_weight_cfg";
     /**
      * 商品条码配置项设置
      */
-    final public static String NEED_PRD_CODES = "need_prd_codes";
+    final public static String K_NEED_PRD_CODES = "need_prd_codes";
     /**
      * 商品分享配置
      */
-    final public static String GOODS_SHARE_CFG = "goods_share_cfg";
-
+    final public static String K_GOODS_SHARE_CFG = "goods_share_cfg";
+    /**
+     * 后台商品搜索设置
+     */
+    final public static String K_ACCURATE_SEARCH = "accurate_search";
     /**
 	 * 是否显示Logo配置
 	 * @return
@@ -729,7 +732,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      * @return
      */
     public Byte getGoodsWeightCfg() {
-        return this.get(GOODS_WEIGHT_CFG, Byte.class, (byte)0);
+        return this.get(K_GOODS_WEIGHT_CFG, Byte.class, (byte)0);
     }
 
     /**
@@ -739,7 +742,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      */
     public int setGoodsWeightCfg(Byte value) {
         Assert.isTrue(value ==(byte)0 || value == (byte)1,"setGoodsWeightCfg need value equal zero or one");
-        return this.set(GOODS_WEIGHT_CFG, value,Byte.class);
+        return this.set(K_GOODS_WEIGHT_CFG, value,Byte.class);
     }
 
     /**
@@ -747,7 +750,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      * @return
      */
     public Byte getNeedPrdCodes() {
-        return this.get(NEED_PRD_CODES, Byte.class, (byte)0);
+        return this.get(K_NEED_PRD_CODES, Byte.class, (byte)0);
     }
 
     /**
@@ -757,14 +760,14 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      */
     public int setNeedPrdCodes(Byte value) {
         Assert.isTrue(value ==(byte)0 || value == (byte)1,"setNeedPrdCodes need value equal zero or one");
-        return this.set(NEED_PRD_CODES, value,Byte.class);
+        return this.set(K_NEED_PRD_CODES, value,Byte.class);
     }
     /**
      * 商品分享配置
      * @return
      */
     public GoodsShareConfig getGoodsShareConfig() {
-        return this.getJsonObject(GOODS_SHARE_CFG, GoodsShareConfig.class, defaultGoodsShareConfig);
+        return this.getJsonObject(K_GOODS_SHARE_CFG, GoodsShareConfig.class, defaultGoodsShareConfig);
     }
 
     /**
@@ -774,9 +777,25 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      */
     public int setGoodsShareConfig(GoodsShareConfig value) {
         Assert.isTrue(value != null,"setGoodsShareConfig need value not null");
-        return this.setJsonObject(GOODS_SHARE_CFG, value);
+        return this.setJsonObject(K_GOODS_SHARE_CFG, value);
+    }
+    /**
+     * 获取后台商品搜索设置
+     * @return
+     */
+    public Byte getAccurateSearch() {
+        return this.get(K_ACCURATE_SEARCH, Byte.class, (byte)0);
     }
 
+    /**
+     * 设置后台商品搜索配置项
+     * @param value 0 或者 1
+     * @return
+     */
+    public int setAccurateSearch(Byte value) {
+        Assert.isTrue(value ==(byte)0 || value == (byte)1,"setAccurateSearch need value equal zero or one");
+        return this.set(K_ACCURATE_SEARCH, value,Byte.class);
+    }
     /**
      * 获取商品编辑相关店铺默认配置
      * @return {@link GoodsCommonConfig getGoodsCommonConfig}
@@ -812,6 +831,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
             commonCfg.setGoodsWeightCfg(this.getGoodsWeightCfg());
             commonCfg.setNeedPrdCodes(this.getNeedPrdCodes());
             commonCfg.setGoodsShareCfg(this.getGoodsShareConfig());
+            commonCfg.setAccurateSearch(this.getAccurateSearch());
 		});
 
         return commonCfg;
@@ -844,6 +864,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
             this.setGoodsWeightCfg(commonCfg.getGoodsWeightCfg());
             this.setNeedPrdCodes(commonCfg.getNeedPrdCodes());
             this.setGoodsShareConfig(commonCfg.getGoodsShareCfg());
+            this.setAccurateSearch(commonCfg.getAccurateSearch());
 		});
 		return true;
 	}
