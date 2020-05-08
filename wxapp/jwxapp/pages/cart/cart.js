@@ -44,7 +44,7 @@ global.wxPage({
   // 请求购物车列表
   requestCartList () {
     util.api('/api/wxapp/cart/list', (res) => {
-      if (res.error === 0) {
+      if (res.error == 0) {
         this.setData({
           cartGoodsList: res.content.cartGoodsList.length == 0 ? null : res.content.cartGoodsList,
           invalidCartList: res.content.invalidCartList.length == 0 ? null : res.content.invalidCartList,
@@ -142,7 +142,7 @@ global.wxPage({
           })
         }
         if (this.data.fullList) {
-          for(let key  in this.data.fullList) {
+          for(let key in this.data.fullList) {
             this.data.fullList[key].forEach((item, index) => {
               item.isSeckill = 0 // 秒杀
               item.isExclusive = 0 // 专享
@@ -209,13 +209,11 @@ global.wxPage({
                 item.limitMinStyle = 1
               }
             })
-            this.data.fullList[key].push({
-              currentRule: this.data.fullList[key][0].currentRule.condition
-            })
+            this.data.fullList[key].push(this.data.fullList[key][0].currentRule)
           }
         }
         if (this.data.purchaseList) {
-          for(let key  in this.data.purchaseList) {
+          for(let key in this.data.purchaseList) {
             this.data.purchaseList[key].forEach((item, index) => {
               item.isSeckill = 0 // 秒杀
               item.isExclusive = 0 // 专享
@@ -282,9 +280,7 @@ global.wxPage({
                 item.limitMinStyle = 1
               }
             })
-            this.data.purchaseList[key].push({
-              currentRule: this.data.purchaseList[key][0].currentRule.condition
-            })
+            this.data.purchaseList[key].push(this.data.purchaseList[key][0].currentRule)
           }
         }
         
@@ -297,6 +293,9 @@ global.wxPage({
         console.log(this.data.purchaseList)
         console.log(this.data.cartGoodsList)
         console.log(this.data.invalidCartList)
+      } else {
+        util.showModal('提示', res.message)
+        return false
       }
     })
 
