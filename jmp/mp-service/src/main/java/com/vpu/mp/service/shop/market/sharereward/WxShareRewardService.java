@@ -191,7 +191,7 @@ public class WxShareRewardService extends ShopBaseService {
             return INTEGER_ZERO;
         }
         // 是否参加过当前商品分享有礼活动
-        int count = db().fetchCount(ATTEND, AWARD_RECORD.USER_ID.eq(userId)
+        int count = db().fetchCount(ATTEND.leftJoin(AWARD_RECORD).on(ATTEND.RECORD_ID.eq(AWARD_RECORD.ID)), AWARD_RECORD.USER_ID.eq(userId)
             .and(AWARD_RECORD.GOODS_ID.eq(goodsId))
             .and(AWARD_RECORD.CREATE_TIME.greaterThan(Timestamp.valueOf(LocalDate.now().atStartOfDay()))));
         if (count == 0) {
