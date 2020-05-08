@@ -93,13 +93,15 @@ public class PrizeRecordService extends ShopBaseService {
             List<OrderGoodsMpVo> orderGoodsMpVos = orderGoodsMap.get(prizeRecord.getOrderSn());
             if (!prizeRecord.getPrizeStatus().equals(PRIZE_STATUS_UNCLAIMED)||orderGoodsMpVos==null){
                 ProductSmallInfoVo product= goodsService.getProductVoInfoByProductId(prizeRecord.getPrdId());
-                OrderGoodsMpVo orderGoodsMpVo = new OrderGoodsMpVo();
-                orderGoodsMpVo.setProductId(prizeRecord.getPrdId());
-                orderGoodsMpVo.setGoodsAttr(product.getPrdDesc());
-                orderGoodsMpVo.setGoodsImg(domainConfig.imageUrl(product.getGoodsImg()));
-                orderGoodsMpVo.setGoodsName(product.getGoodsName());
-                orderGoodsMpVo.setGoodsId(product.getGoodsId());
-                prizeRecord.setOrderGoodsMpVo(orderGoodsMpVo);
+                if (product!=null){
+                    OrderGoodsMpVo orderGoodsMpVo = new OrderGoodsMpVo();
+                    orderGoodsMpVo.setProductId(prizeRecord.getPrdId());
+                    orderGoodsMpVo.setGoodsAttr(product.getPrdDesc());
+                    orderGoodsMpVo.setGoodsImg(domainConfig.imageUrl(product.getGoodsImg()));
+                    orderGoodsMpVo.setGoodsName(product.getGoodsName());
+                    orderGoodsMpVo.setGoodsId(product.getGoodsId());
+                    prizeRecord.setOrderGoodsMpVo(orderGoodsMpVo);
+                }
             }else {
                 prizeRecord.setOrderGoodsMpVo(orderGoodsMpVos.get(0));
             }
