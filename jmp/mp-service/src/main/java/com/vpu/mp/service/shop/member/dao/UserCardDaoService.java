@@ -889,4 +889,16 @@ public class UserCardDaoService extends ShopBaseService{
 			.execute();
 		return num;
 	}
+	
+	/**
+	 * 	获取正在使用该卡的用户Id列表
+	 * @return List<Integer> 用户ID列表
+	 */
+	public List<Integer> getUserIdsUsingCard(Integer cardId){
+		return  db().select(USER_CARD.USER_ID)
+					.from(USER_CARD)
+					.where(USER_CARD.CARD_ID.eq(cardId))
+					.and(USER_CARD.FLAG.notEqual(UserCardConstant.FLAG_DEL))
+					.fetchInto(Integer.class);
+	}
 }
