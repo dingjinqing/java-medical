@@ -304,9 +304,9 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 				log.info("发放失败奖励");
 				MrkingVoucherRecord infoById = couponGiveService.getInfoById(item.getFailedSendContent());
 				if(infoById==null) {
-					log.info("会员卡"+item.getFailedSendContent()+"不存在，找管理员");
+					log.info("优惠券"+item.getFailedSendContent()+"不存在，找管理员");
 				}else {
-					CouponGiveQueueParam param=new CouponGiveQueueParam(getShopId(), Arrays.asList(item.getUserId()), item.getId(), new String[] {infoById.getAliasCode()}, ZERO, (byte)17);
+					CouponGiveQueueParam param=new CouponGiveQueueParam(getShopId(), Arrays.asList(item.getUserId()), item.getId(), new String[] {item.getFailedSendContent().toString()}, ZERO, (byte)17);
                     couponGiveService.handlerCouponGive(param);
 				}
 			}
