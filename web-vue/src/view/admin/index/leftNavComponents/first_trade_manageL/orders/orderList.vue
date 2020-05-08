@@ -163,7 +163,8 @@
           >
             <span>{{$t('order.paymentType')}}：</span>
             <el-select
-              v-model="searchParams.returnSort"
+              v-model="searchParams.payWay"
+              :placeholder="$t('order.defaultSelect')"
               size="small"
               class="default_input"
               filterable
@@ -343,9 +344,10 @@
           </el-tabs>
           <div class="return-sort-module" v-show="searchParams.orderStatus2 === '7'">
             <el-select
-              v-model="searchParams.returnSort"
+              v-model="searchParams.sortRule"
               size="small"
               class="default_input"
+              @change="search"
               filterable
             >
               <el-option
@@ -528,6 +530,12 @@
                   >
 
                     {{orderItem.createTime}}
+                    <br />
+                    <div v-if="searchParams.orderStatus2 === '7' && getReturnTime(orderItem)">
+                      申请售后时间
+                      <br />
+                      {{getReturnTime(orderItem)}}
+                    </div>
                   </td>
                   <td
                     v-if="goodsIndex === 0"
@@ -904,7 +912,7 @@ export default {
         orderStatus2: '-1',
         shippingNo: '',
         roomId: null,
-        returnSort: null
+        sortRule: 1
       },
       orderTime: {
         startTime: null,
@@ -1030,13 +1038,13 @@ export default {
       this.searchParams.pinStatus = this.$route.query.pinStatus ? [this.$route.query.pinStatus] : []
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
-      this.searchParams.returnSort = this.searchParams.orderStatus2 === '7' ? this.searchParams.returnSort ? this.searchParams.returnSort : 1 : null
       this.searchType = 0
       let obj = {
         ...this.searchParams,
         orderStatus: this.searchParams.orderStatus !== null ? [this.searchParams.orderStatus] : [],
         goodsType: this.searchParams.goodsType !== null ? [this.searchParams.goodsType] : [],
         payWay: this.searchParams.payWay !== null ? this.searchParams.payWay : null,
+        sortRule: this.searchParams.orderStatus2 === '7' ? this.searchParams.sortRule === 1 ? null : 1 : null,
         ...this.shopHelperParams
       }
       list(obj).then(res => {
@@ -1169,6 +1177,12 @@ export default {
       } else {
         target.endTime = null
       }
+    },
+    getReturnTime ({returnTime, refundTime}) {
+      if (returnTime && refundTime) {
+        return new Date(returnTime).getTime() > new Date(refundTime).getTime() ? refundTime : returnTime
+      }
+      return returnTime || refundTime
     }
   }
 }
