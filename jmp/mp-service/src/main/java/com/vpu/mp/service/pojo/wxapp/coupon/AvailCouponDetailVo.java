@@ -156,5 +156,7 @@ public class AvailCouponDetailVo {
     private Byte accessMode;
     /**领取时间*/
     private Timestamp createTime;
+    /**活动ID*/
+    private Integer accessId;
 }
 
