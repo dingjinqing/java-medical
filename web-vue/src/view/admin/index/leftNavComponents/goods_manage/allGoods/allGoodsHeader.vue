@@ -290,13 +290,13 @@ export default {
         let { content } = res
         this.goodsBrandOptions = content.goodsBrands
         this.goodsLabelOptions = content.goodsLabels
-        // if (this.$route.params.brandTurnId) {
-        //   this.goodsBrandOptions.forEach((item, index) => {
-        //     if (this.$route.params.brandTurnId === item.id) {
-        //       this.goodsFilterFormData.brandId = item.id
-        //     }
-        //   })
-        // }
+        if (this.$route.params.brandTurnId) {
+          this.goodsBrandOptions.forEach((item, index) => {
+            if (this.$route.params.brandTurnId === item.id) {
+              this.goodsFilterFormData.brandId = item.id
+            }
+          })
+        }
       })
     },
     /* 验证输入的时间范围是否合法 */
