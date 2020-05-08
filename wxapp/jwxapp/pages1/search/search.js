@@ -52,7 +52,7 @@ global.wxPage({
       res => {
         console.log(res)
         if (res.error === 0) {
-          if(res.content.pageResult.dataList.length < 20){
+          if(res.content.pageResult.page.currentPage === res.content.pageResult.page.lastPage){
             this.selectComponent('#recommend').resetDataList().resetPage().requestData()
           }
           if(currentPage === 1){
@@ -98,6 +98,7 @@ global.wxPage({
       },
       'pageParams.currentPage': 1
     })
+    this.selectComponent('#recommend').resetDataList().resetPage()
     this.requestList()
   },
   changeInput (e) {
@@ -112,6 +113,7 @@ global.wxPage({
     // 添加热词
     util.api('/api/wxapp/search/addHotWords', function (res) {
     }, { userId: util.getCache("user_id"), hotWords: this.data.keyWords })
+    this.selectComponent('#recommend').resetDataList().resetPage()
     this.requestList()
   },
   loadFilter (options) {
@@ -153,6 +155,7 @@ global.wxPage({
       sortDirection : sortItem === 2 || sortItem === 0 ? 0 : !sortDirection ? 1 : 0,
       'pageParams.currentPage': 1
     })
+    this.selectComponent('#recommend').resetDataList().resetPage()
     this.requestList()
   },
   priceFilter(){
@@ -162,6 +165,7 @@ global.wxPage({
       sortDirection : sortItem === 1 || sortItem === 0 ? 1 : !sortDirection ? 1 : 0,
       'pageParams.currentPage': 1
     })
+    this.selectComponent('#recommend').resetDataList().resetPage()
     this.requestList()
   },
   showSpecDialog(e){
