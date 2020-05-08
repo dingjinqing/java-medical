@@ -152,5 +152,9 @@ public class AvailCouponDetailVo {
      * 是否与限时降价、首单特惠、会员价活动共用 0共用 1不共用
      */
     private Byte couponOverlay;
+    /**获取方式，0：发放，1：领取，2：优惠券礼包自动发放*/
+    private Byte accessMode;
+    /**领取时间*/
+    private Timestamp createTime;
 }
 
