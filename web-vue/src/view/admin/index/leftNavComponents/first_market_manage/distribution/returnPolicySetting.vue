@@ -25,6 +25,7 @@
     <addPolicy
       :isEdite="isEdite"
       :editId="editId"
+      :status="status"
       v-if="tableListView===false"
       @addPolicySubmit="addPolicySubmit"
     />
@@ -132,6 +133,17 @@
                 @click="startHandler(scope.row.id)"
               ></span>
             </el-tooltip>
+            <el-tooltip
+              :content="$t('distribution.strategyView')"
+              placement="top"
+              v-if="scope.row.currentState === 3"
+            >
+              <span
+                style="font-size: 22px;color: #5a8bff;"
+                class="el-icon-view"
+                @click="viewHandler(scope.row.id)"
+              ></span>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -164,7 +176,8 @@ export default {
       pageParams: {}, // 分页
       requestParams: {},
       editId: '', // 编辑的活动id
-      isEdite: true // 编辑状态
+      isEdite: true, // 编辑状态
+      status: true // 状态 (true未过期, false已过期)
     }
   },
   watch: {
@@ -226,6 +239,7 @@ export default {
     // 添加
     addPolicy () {
       this.isEdite = false
+      this.status = true
       this.showTabAddGroup(this.$t('distribution.addRebateStrategy'))
     },
 
@@ -233,6 +247,15 @@ export default {
     editHandler (id) {
       this.editId = id
       this.isEdite = true
+      this.status = true
+      this.showTabAddGroup(this.$t('distribution.editRebateStrategy'))
+    },
+
+    // 查看
+    viewHandler (id) {
+      this.editId = id
+      this.isEdite = true
+      this.status = false
       this.showTabAddGroup(this.$t('distribution.editRebateStrategy'))
     },
 
