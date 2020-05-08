@@ -538,9 +538,9 @@
                 </div>
                 <!-- 海报样式 -->
                 <div style="margin-top:10px;">
-                  <span>海报样式：</span>
+                  <span>{{$t('storeCommonSettings.posterStyle')}}：</span>
                   <el-radio-group v-model="info.goods_share_cfg.custom_pictorial">
-                    <el-radio :label="0">默认样式
+                    <el-radio :label="0">{{$t('storeCommonSettings.defaultStyle')}}
                       <el-popover
                         placement="right"
                         trigger="hover"
@@ -554,10 +554,10 @@
                         <el-button
                           type="text"
                           slot="reference"
-                        >示例</el-button>
+                        >{{$t('storeCommonSettings.example')}}</el-button>
                       </el-popover>
                     </el-radio>
-                    <el-radio :label="1">基础样式
+                    <el-radio :label="1">{{$t('storeCommonSettings.basicStyle')}}
                       <el-popover
                         placement="right"
                         trigger="hover"
@@ -571,10 +571,10 @@
                         <el-button
                           type="text"
                           slot="reference"
-                        >示例</el-button>
+                        >{{$t('storeCommonSettings.example')}}</el-button>
                       </el-popover>
                     </el-radio>
-                    <el-radio :label="2">显示分享人信息
+                    <el-radio :label="2">{{$t('storeCommonSettings.showSharer')}}
                       <el-popover
                         placement="right"
                         trigger="hover"
@@ -588,10 +588,10 @@
                         <el-button
                           type="text"
                           slot="reference"
-                        >示例</el-button>
+                        >{{$t('storeCommonSettings.example')}}</el-button>
                       </el-popover>
                     </el-radio>
-                    <el-radio :label="3">显示店铺信息
+                    <el-radio :label="3">{{$t('storeCommonSettings.showStore')}}
                       <el-popover
                         placement="right"
                         trigger="hover"
@@ -605,10 +605,10 @@
                         <el-button
                           type="text"
                           slot="reference"
-                        >示例</el-button>
+                        >{{$t('storeCommonSettings.example')}}</el-button>
                       </el-popover>
                     </el-radio>
-                    <el-radio :label="4">显示分享人+店铺信息
+                    <el-radio :label="4">{{$t('storeCommonSettings.showss')}}
                       <el-popover
                         placement="right"
                         trigger="hover"
@@ -622,7 +622,7 @@
                         <el-button
                           type="text"
                           slot="reference"
-                        >示例</el-button>
+                        >{{$t('storeCommonSettings.example')}}</el-button>
                       </el-popover>
                     </el-radio>
                   </el-radio-group>
