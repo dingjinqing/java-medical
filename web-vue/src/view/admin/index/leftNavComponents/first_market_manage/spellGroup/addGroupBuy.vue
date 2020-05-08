@@ -162,7 +162,7 @@
                   <el-input
                     v-model="scope.row.groupPrice"
                     size="small"
-                    :disabled="isEdite || disabledFlag"
+                    :disabled="isEdite"
                     @input="changePriceInput(scope.row)"
                   />
                 </el-form-item>
@@ -205,7 +205,7 @@
                   <el-input
                     v-model="scope.row.grouperPrice"
                     size="small"
-                    :disabled="isEdite || disabledFlag"
+                    :disabled="isEdite"
                     @input="changeGrouperPriceInput(scope.row)"
                   />
                 </el-form-item>
@@ -256,7 +256,7 @@
                   <el-input
                     v-model="scope.row.stock"
                     size="small"
-                    :disabled="isEdite || disabledFlag"
+                    :disabled="isEdite"
                     @input="changeStockInput(scope.row)"
                   />
                 </el-form-item>
@@ -796,7 +796,7 @@ export default {
     LabelDialog: () => import('@/components/admin/labelDialog'),
     ActivityRule: () => import('@/components/admin/activityRule')
   },
-  props: ['isEdite', 'editId'],
+  props: ['isEdite', 'editId', 'isGoing'],
   filters: {
     formatLeastConsume (useConsumeRestrict, leastConsume) {
       if (useConsumeRestrict === 0) {
@@ -964,7 +964,7 @@ export default {
       showImageDialog: false,
       showSpecDialog: false,
       productInfo: {},
-      disabledFlag: true, // 是否可编辑
+      // disabledFlag: true, // 是否可编辑
       showGrouperPrice: false,
 
       labelDialogVisible: false, // 标签弹窗
@@ -991,7 +991,7 @@ export default {
   mounted () {
     // 初始化语言
     this.langDefault()
-    if (this.isEdite === true) {
+    if (this.isGoing === true) {
       this.editActivityInit()
       this.arrorFlag = false
     }
@@ -1096,8 +1096,8 @@ export default {
           } else {
             this.activityTagIdList = []
           }
-          this.form.activityTag = Boolean(data.activityTag)
           this.form.activityCopywriting = JSON.parse(data.activityCopywriting)
+          this.form.activityTag = Boolean(data.activityTag)
         }
       })
     },
@@ -1172,7 +1172,7 @@ export default {
           })
           console.log(product)
 
-          if (this.isEdite) {
+          if (this.isGoing) {
             console.log(this.form, 'form--')
             updateGroupBuy(this.form).then(res => {
               console.log('updateGroupBuy', res)
@@ -1218,7 +1218,7 @@ export default {
       console.log(this.form.goodsId, 'goodsId--')
       this.form.product = row
       // 可编辑状态
-      this.disabledFlag = false
+      // this.disabledFlag = false
     },
     changeSwitchState (val) {
       if (val === 1) {

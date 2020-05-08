@@ -28,6 +28,7 @@
     <addGroupBuy
       :editId="editId"
       :isEdite="isEdite"
+      :isGoing="isGoing"
       @addGroupBuySubmit="addGroupBuySubmit"
       v-if="tableListView===false"
     />
@@ -107,7 +108,7 @@
               >
                 <span
                   class="el-icon-edit-outline"
-                  @click="editActivity(scope.row.id)"
+                  @click="editActivity(scope.row.id, scope.row)"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -258,6 +259,7 @@ export default {
       editData: {},
       editId: '', // 编辑的活动id
       isEdite: true,
+      isGoing: false, // 是否是进行中的活动
       loading: false,
       showShareDialog: false, // 分享弹窗
       shareImg: '',
@@ -401,12 +403,19 @@ export default {
     addActivity () {
       console.log('添加拼团活动--------------' + this.tabInfo.length)
       this.isEdite = false
+      this.isGoing = false
 
       this.showTabAddGroup(this.$t('groupBuy.addActivity'))
     },
     // 编辑
-    editActivity (id) {
-      this.isEdite = true
+    editActivity (id, val) {
+      if (val.currentState === 1) {
+        this.isEdite = true
+      }
+      if (val.currentState === 2) {
+        this.isEdite = false
+      }
+      this.isGoing = true
       this.editId = id
       this.showTabAddGroup(this.$t('groupBuy.editActivity'))
     },

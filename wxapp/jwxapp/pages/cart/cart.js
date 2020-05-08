@@ -281,7 +281,9 @@ global.wxPage({
                 item.limitMinStyle = 1
               }
             })
-            this.data.purchaseList[key].push(this.data.purchaseList[key][0].currentRule)
+            // 找到加价购活动
+            var ele = this.data.purchaseList[key].findIndex(item => item.activityType === 7)
+            this.data.purchaseList[key].push(this.data.purchaseList[key][ele].currentRule)
           }
         }
         

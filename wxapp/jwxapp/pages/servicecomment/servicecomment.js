@@ -51,8 +51,11 @@ global.wxPage({
           serviceInfo.serviceImg = JSON.parse(serviceInfo.serviceImg)[0];
         }
         // 开始不展示评价详情
-        serviceInfo.src = src_down; // 展开图标
-        serviceInfo.show = false; // 是否展示评价
+        // serviceInfo.src = src_down; // 展开图标
+        // serviceInfo.show = false; // 是否展示评价
+        // 开始展示评价详情
+        serviceInfo.show = true;
+        serviceInfo.src = src_up;
         // 已评价
         if (serviceInfo.flag === 1||serviceInfo.flag === 0 || serviceInfo.flag === 2) {
           serviceInfo.commstar = parseInt(serviceInfo.commstar);
@@ -224,9 +227,10 @@ global.wxPage({
     util.api('/api/wxapp/store/service/createComment', function (e) {
       console.log(e)
       if (e.error === 0) {
+        util.showModal(that.$t('page1.reserve.prompt'), that.$t('page1.reserve.successfulEval'));
         that.get_comment();
       } else {
-
+        util.showModal(that.$t('page1.reserve.prompt'), that.$t('page1.reserve.failEval'));
       }
     }, params);
   },
