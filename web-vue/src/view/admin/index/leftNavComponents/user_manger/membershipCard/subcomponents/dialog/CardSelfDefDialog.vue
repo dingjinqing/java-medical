@@ -9,6 +9,7 @@
             <el-radio v-model="action.type" :label="0">单选</el-radio>
             <el-radio v-model="action.type" :label="1">多选</el-radio>
             <el-radio v-model="action.type" :label="2">文本</el-radio>
+            <el-radio v-model="action.type" :label="3">图片</el-radio>
         </div>
         <div class="center">
           <el-form :model="action" :inline-message="true" ref="content">
@@ -20,6 +21,19 @@
                   </span>
                 </el-form-item>
                 <div class="tip">最多可填写20个字</div>
+            </div>
+            <div v-if="showPicture">
+              <el-form-item prop="pictureNumber">
+                <span class="left-title">上传图片:</span>
+                <el-select v-model="action.pictureNumber" size="small" style="width: 110px;">
+                    <el-option v-for="item in pictureNumOptions"
+                      :key="item.id"
+                      :label="item.label"
+                      :value="item.id">
+                    </el-option>
+                </el-select>
+                <span class="tip">最大图片上传数量</span>
+               </el-form-item>
             </div>
             <div  v-if="showContent">
               <div v-for="(value,index) in action.content"
@@ -69,7 +83,8 @@ export default {
           type: 0,
           title: null,
           content: [null, null],
-          conditionChecked: true
+          conditionChecked: true,
+          pictureNumber: 1
         }
       }
     }
@@ -84,7 +99,10 @@ export default {
       }
     },
     showContent () {
-      return this.action.type !== 2
+      return this.contentShowItems.includes(this.action.type)
+    },
+    showPicture () {
+      return this.action.type === 3
     }
   },
   watch: {
@@ -106,6 +124,9 @@ export default {
         // 结束清理数据
         this.$refs['content'].resetFields()
       }
+    },
+    lang () {
+      this.initPictureNumOptions()
     }
   },
   data () {
@@ -116,7 +137,9 @@ export default {
       myRules: {
         contentRule: [{required: true, message: '请输入选项内容', trigger: 'blur'}],
         titleRule: [{required: true, message: '请输入自定义标题', trigger: 'blur'}]
-      }
+      },
+      contentShowItems: [0, 1],
+      pictureNumOptions: []
     }
   },
   mounted () {
@@ -137,7 +160,7 @@ export default {
       this.$refs['content'].validate((valid) => {
         if (valid) {
           let res = JSON.parse(JSON.stringify(this.action))
-          if (res.type === 2) {
+          if (res.type === 2 || res.type === 3) {
             delete res.content
           }
           if (this.createFlag) {
@@ -150,6 +173,14 @@ export default {
           this.dialogVisiable = false
         } else {
           this.$message.warning('请填写信息')
+        }
+      })
+    },
+    initPictureNumOptions () {
+      this.pictureNumOptions = Array(6).fill(1).map((val, index) => {
+        return {
+          id: index + 1,
+          label: val + index + this.$t('memberCard.unitZhang')
         }
       })
     }
