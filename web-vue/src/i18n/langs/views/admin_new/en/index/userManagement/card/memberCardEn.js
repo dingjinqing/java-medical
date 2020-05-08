@@ -122,7 +122,7 @@ export const en = {
   fixData: 'FIX-DATE',
   exampleInfo: 'For example: select date 2018-1-2 to 2018-1-5, indicating that the validity period is 2018-1-2 00:00:00 to 2018-1-5 24:00:00',
   pleaseChoose: 'CHOOSING',
-  inEffective: 'EFFECTIVE',
+  inEffective: 'valid',
   usingStore: 'STORE：',
   allStores: 'ALL-STORE',
   partStores: 'PART-STORE',
@@ -336,5 +336,9 @@ export const en = {
   loading: 'Loading',
   refresh: 'Refresh',
   couponPackManage: 'Manage package',
-  couponPack: 'Coupon pack'
+  couponPack: 'Coupon pack',
+  getCouponStart: 'During',
+  day: 'day',
+  hour: 'hour',
+  minute: 'minute'
 }

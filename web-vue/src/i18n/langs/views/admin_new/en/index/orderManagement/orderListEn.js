@@ -183,6 +183,8 @@ export const en = {
   filterCondition: 'Filter Condition：',
   orderExportLimitTip: 'Export number(export up to 5000 data at a time)',
   orderExportLimitTip2: 'export up to 5000 data at a time',
+  buyer: 'Order user',
+  returnWays: 'After sales method',
   orderStatusList: [
     [null, 'all orders'],
     [0, 'Pending payment'],
@@ -315,6 +317,17 @@ export const en = {
     0: 'Enterprise invoice',
     1: 'personal invoice'
   },
-  remindTime: 'User reminded to ship：'
-
+  remindTime: 'User reminded to ship：',
+  returnSortList: [
+    {value: 1, label: 'Sort by time'},
+    {value: 2, label: 'Sort by time after application'}
+  ],
+  returnWaysList: [
+    {value: -1, label: 'All'},
+    {value: 1, label: 'Merchant active after-sales'},
+    {value: 2, label: 'The orderer applies for after-sales'},
+    {value: 3, label: 'Auto after-sales'},
+    {value: 4, label: 'ERP after-sales'},
+    {value: 5, label: 'POS after-sales'}
+  ]
 }
