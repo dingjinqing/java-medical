@@ -141,8 +141,20 @@ public class OrderScheduleTask {
     @Scheduled(cron = "0 01 01 * * ?")
     public void monitorCouponPackOrders() {
         Result<ShopRecord> result = saas.shop.getAll();
-        result.forEach((r)->{
+        result.forEach((r) -> {
             saas.getShopApp(r.getShopId()).shopTaskService.couponPackTaskService.monitorCouponPackOrders();
+        });
+    }
+
+    /**
+     * 自动取消过期未付款的门店服务预约订单
+     * 每分钟执行一次
+     */
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void autoCancelServiceOrder() {
+        Result<ShopRecord> shops = saas.shop.getAll();
+        shops.forEach((shop) -> {
+            saas.getShopApp(shop.getShopId()).shopTaskService.serviceOrderCancelTaskService.cancelExpireOrder();
         });
     }
 }
