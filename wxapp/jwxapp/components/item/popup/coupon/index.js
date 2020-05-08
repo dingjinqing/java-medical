@@ -18,7 +18,7 @@ global.wxComponent({
       } else {
         if (d.vali !== '') {
           // 领取页面
-          util.jumpLink('/pages/getCoupon/getCoupon?id=' + d.coupon_id);
+          util.jumpLink('/pages/getCoupon/getCoupon?couponId=' + d.coupon_id);
         } else {
           // 直接领取
           util.api('api/wxapp/coupon/get', function (res) {
