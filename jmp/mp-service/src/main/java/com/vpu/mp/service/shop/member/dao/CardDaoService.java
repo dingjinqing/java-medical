@@ -805,7 +805,8 @@ public class CardDaoService extends ShopBaseService {
 	 */
 	public PageResult<MemberCardRecord> selectCardList(SearchCardParam param) {
 		SelectSeekStep2<MemberCardRecord, String, Integer> select = db().selectFrom(MEMBER_CARD)
-				.where(MEMBER_CARD.CARD_TYPE.equal(param.getCardType())).and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
+				.where(MEMBER_CARD.CARD_TYPE.equal(param.getCardType()))
+				.and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
 				.orderBy(MEMBER_CARD.GRADE.desc(),MEMBER_CARD.ID.desc());
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MemberCardRecord.class);

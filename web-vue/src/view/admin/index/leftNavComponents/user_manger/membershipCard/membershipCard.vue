@@ -392,7 +392,10 @@
     <!--二维码弹窗-->
     <ShareCodeDialog />
     <!-- 等级卡停用弹窗 -->
-    <grade-card-setting-dialog :dialogVisiable.sync="gradeCardSettingVisiable"/>
+    <grade-card-setting-dialog
+      :dialogVisiable.sync="gradeCardSettingVisiable"
+      :currentCard="currentGradeCard"
+      @getStopCardCfg="stopGrade"/>
   </div>
 </template>
 <script>
@@ -414,7 +417,8 @@ export default {
       cardDataThird: [],
       addStatus: true, // 等级会员卡，九张时值为none
       new_card_img: this.$imageHost + '/image/admin/add_card.png',
-      gradeCardSettingVisiable: false
+      gradeCardSettingVisiable: false,
+      currentGradeCard: {id: null, cardUseStats: {haveNormalNum: 0}}
     }
   },
   created () {
@@ -680,6 +684,9 @@ export default {
         'flag': 2,
         cardType: this.currentCardType
       }
+      this.stopCardStatusRequest(data)
+    },
+    stopCardStatusRequest (data) {
       changeCardStatueRequest(data).then(res => {
         if (res.error === 0) {
           console.log('停止成功')
@@ -692,7 +699,6 @@ export default {
         }
       })
     },
-
     powerCardStatus (id) {
       let data = {
         id,
@@ -892,11 +898,8 @@ export default {
           } else if (type === 2) {
             console.log('等级卡')
             if (item.flag === 1) {
-              // TODO
               this.showGradeSettingDialog(item)
-              // 使用中转化成停用
-              this.stopCardStatus(item.id)
-              this.cardDataThird[index].flag = 2
+              // this.cardDataThird[index].flag = 2
             } else {
               // 停止使用转化成使用
               this.powerCardStatus(item.id)
@@ -970,6 +973,18 @@ export default {
     // 弹出等级卡配置
     showGradeSettingDialog (card) {
       this.gradeCardSettingVisiable = true
+      this.currentGradeCard = card
+    },
+    //  停用等级卡
+    stopGrade (stopCfgData) {
+      let data = {
+        id: stopCfgData.currentCardId,
+        flag: 2,
+        cardType: 2,
+        stopPlan: stopCfgData.stopPlan,
+        anotherNewCardId: stopCfgData.anotherNewCardId
+      }
+      this.stopCardStatusRequest(data)
     }
   }
 }

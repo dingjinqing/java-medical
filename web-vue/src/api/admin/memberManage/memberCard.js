@@ -307,3 +307,10 @@ export function getShareCode (cardId) {
     method: 'post'
   })
 }
+
+export function getAllValidGradeCard () {
+  return service({
+    url: '/api/admin/member/valid/grade/card/list',
+    method: 'post'
+  })
+}

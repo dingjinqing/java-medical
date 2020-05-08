@@ -105,7 +105,7 @@
                       </label>
                     </checkbox-group>
                   </view>
-                  <form report-submit='true' bindsubmit='good_commtag' style='float:right'>
+                  <form bindsubmit='good_commtag' style='float:right'>
                     <button form-type='submit' class='s_left' style='background:{{comColor}};border-color:{{comColor}}'>
                       {{i18n.$t(localePack,'page1.reserve.evaluateContinue')}}
                     </button>

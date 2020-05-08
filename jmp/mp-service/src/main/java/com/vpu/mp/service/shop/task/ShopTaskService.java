@@ -6,6 +6,7 @@ import com.vpu.mp.service.shop.task.market.*;
 import com.vpu.mp.service.shop.task.order.OrderTaskService;
 import com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService;
 import com.vpu.mp.service.shop.task.overview.StatisticalTableInsert;
+import com.vpu.mp.service.shop.task.store.ServiceOrderCancelTaskService;
 import com.vpu.mp.service.shop.task.table.TableTaskService;
 import com.vpu.mp.service.shop.task.wechat.MaMpScheduleTaskService;
 import com.vpu.mp.service.shop.task.wechat.WechatTaskService;
@@ -63,5 +64,8 @@ public class ShopTaskService {
 
     @Autowired
     public GoodsPvUpdateTaskService goodsPvUpdateTaskService;
+
+    @Autowired
+    public ServiceOrderCancelTaskService serviceOrderCancelTaskService;
 }
 

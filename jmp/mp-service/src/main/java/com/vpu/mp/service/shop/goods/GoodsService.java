@@ -1043,6 +1043,38 @@ public class GoodsService extends ShopBaseService {
 
 
     /**
+     * 多规格商品修改数量
+     * @param param
+     */
+    public void updateGoodsPrdNumbers(GoodsPrdNumEditParam param) {
+
+        GoodsRecord goodsRecord = new GoodsRecord();
+        goodsRecord.setGoodsId(param.getGoodsId());
+        int goodsNum = 0;
+        List<GoodsSpecProductRecord> prdList = new ArrayList<>(param.getPrdNumInfos().size());
+        for (PrdPriceNumberParam prdNumInfo : param.getPrdNumInfos()) {
+            GoodsSpecProductRecord record = new GoodsSpecProductRecord();
+            record.setPrdId(prdNumInfo.getPrdId());
+            record.setPrdNumber(prdNumInfo.getPrdNumber());
+            goodsNum+=prdNumInfo.getPrdNumber();
+            prdList.add(record);
+        }
+        goodsRecord.setGoodsNumber(goodsNum);
+
+        transaction(()->{
+            db().batchUpdate(prdList).execute();
+            db().executeUpdate(goodsRecord);
+        });
+        //es更新
+        try {
+            if (esUtilSearchService.esState()) {
+                esGoodsCreateService.updateEsGoodsIndex(param.getGoodsId(), getShopId());
+            }
+        } catch (Exception e) {
+            logger().debug("多商品修改数量-同步es数据异常：" + e.getMessage());
+        }
+    }
+    /**
      * 商品修改
      *
      * @param goods
@@ -1090,7 +1122,6 @@ public class GoodsService extends ShopBaseService {
         } catch (Exception e) {
             logger().debug("商品修改-同步es数据异常：" + e.getMessage());
             codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
-            return codeWrap;
         }
         return codeWrap;
     }

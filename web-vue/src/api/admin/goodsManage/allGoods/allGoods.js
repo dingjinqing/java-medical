@@ -85,3 +85,20 @@ export function goodsExport (data) {
     responseType: 'blob'
   })
 }
+
+// 更新多规格商品数量
+export function updateGoodsPrdNumbers (data) {
+  return service({
+    url: `/api/admin/goodsPrd/updateGoodsPrdNumbers`,
+    method: 'post',
+    data: data
+  })
+}
+
+// 更新多规格商品数量
+export function getGoodsPrdInfo (data) {
+  return service({
+    url: `/api/admin/goods/product/all/${data}`,
+    method: 'get'
+  })
+}
