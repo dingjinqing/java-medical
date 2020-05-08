@@ -2,7 +2,7 @@
   <div class="membershipCardDetail">
     <div class="membershipCardDetailMain">
       <div class="leftContainer">
-        <showSampleCard :sampleData="sampleCardData"></showSampleCard>
+        <showSampleCard :sampleData="sampleCardData" :allData="$data"></showSampleCard>
       </div>
       <div class="rightContainer">
         <div class="rightContainerTop">

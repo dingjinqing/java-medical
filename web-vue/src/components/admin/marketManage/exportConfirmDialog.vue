@@ -8,38 +8,40 @@
     v-loading="loading"
     center
   >
-    <p>{{$t('order.orderExportConfirmTip_1')}}{{totalRows}}{{$t('order.orderExportConfirmTip_2')}}</p>
+    <el-alert
+      type="warning"
+      show-icon
+      :closable='false'
+    >
+      <template slot='title'>
+        <p>{{$t('order.orderExportConfirmTip_1')}}{{totalRows}}{{$t('order.orderExportConfirmTip_2')}}</p>
+      </template>
+    </el-alert>
     <div style="margin-top: 10px;">
       {{$t('order.filterCondition')}}
+      <span v-if="selectFlag">{{$t('allGoods.allGoodsData.no')}}</span>
     </div>
     <div
       v-for="(item,key,index) in param"
       :key="index"
-      style="margin-top: 10px;"
+      class="selectItem"
     >
       <div v-if="ok(key,item)">
-        <div v-if="key === 'orderStatus'">
-          {{$t('orderSearch.'+key)}}:
-          <span
-            v-for="status in item"
-            :key="status"
-          >
-            {{orderStatusMap.get(status)}}
-          </span>
-        </div>
-        <div v-else-if="key==='selectedOrderStatus'"></div>
-        <div v-else-if="key === 'createTimeStart'"></div>
-        <div v-else-if="key === 'createTimeEnd'">{{$t('orderSearch.'+key)}}:{{item.split(' ')[0]}}</div>
         <div
+          class="selectItem"
+          v-if="key === 'selectedOrderStatus'"
+        >
+          订单状态：{{orderStatusArr[param[key]]}}
+        </div>
+        <div
+          class="selectItem"
           v-else
-          style="margin-top: 10px;"
-        >{{$t('orderSearch.'+key)}}:{{item}}</div>
+        >
+          {{$t('orderSearch.'+key)}}：{{item}}
+        </div>
       </div>
     </div>
-    <div
-      v-if="selectFlag === false"
-      style="margin-top:10px"
-    >{{$t('allGoods.allGoodsData.no')}}</div>
+
     <span
       slot="footer"
       class="dialog-footer"
@@ -64,9 +66,26 @@ export default {
       selectFlag: false, // 筛选条件
       showNodes: false,
       loading: false,
-      orderStatusMap: new Map(this.$t('order.orderStatus')),
       exportRowStart: 1,
-      exportRowEnd: 5000
+      exportRowEnd: 5000,
+      // 订单状态
+      orderStatusArr: {
+        null: '全部订单',
+        0: '待付款',
+        1: '订单取消',
+        2: '订单关闭',
+        3: '待发货/待核销',
+        4: '已发货',
+        5: '已收货/已自提',
+        6: '订单完成',
+        7: '退货中',
+        8: '退货完成',
+        9: '退款中',
+        10: '退款完成',
+        11: '拼团中',
+        12: '已成团',
+        13: '送礼完成'
+      }
     }
   },
   props: {
@@ -79,25 +98,20 @@ export default {
       console.log(this.param, 'get params')
       // 判断筛选条件
       this.selectFlag = false
+      var data = []
       for (var key in this.param) {
-        if (this.param[key] !== '') {
-          this.selectFlag = true
-          return false
-        }
+        data.push(this.ok(key, this.param[key]))
       }
-      console.log(this.selectFlag)
+      if (data.indexOf(true) === -1) {
+        this.selectFlag = true
+      }
     },
     closeDialog () {
       this.$emit('update:show', false)
     },
     // 导出数据
     confirm () {
-      this.loading = true
-      console.log(this.param, 'confirm param')
-
       this.$emit('export', this.param)
-
-      this.loading = false
       this.showNodes = false
     },
     ok (key, item) {
@@ -107,7 +121,11 @@ export default {
         if (key === 'currentPage' || key === 'pageRows' || key === 'exportRowStart' || key === 'exportRowEnd' || key === 'orderStatus2' || key === 'activityId') {
           return false
         }
-        if (item) return true
+        if (key === 'selectedOrderStatus') {
+          if (item || item === 0 || item === null) return true
+        } else {
+          if (item) return true
+        }
       }
       return false
     }
@@ -141,5 +159,8 @@ export default {
   .el-checkbox-button.is-disabled .el-checkbox-button__inner {
     background-color: #f5f7fa;
   }
+}
+.selectItem {
+  margin-top: 10px;
 }
 </style>
