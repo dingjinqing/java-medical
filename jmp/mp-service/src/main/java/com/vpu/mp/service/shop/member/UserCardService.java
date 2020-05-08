@@ -150,6 +150,7 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.process.DefaultMarketingProcess;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.card.CardFreeShipService;
+import com.vpu.mp.service.shop.card.msg.CardMsgNoticeService;
 import com.vpu.mp.service.shop.card.wxapp.WxCardDetailService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
@@ -248,6 +249,8 @@ public class UserCardService extends ShopBaseService {
     private AccountService accountService;
     @Autowired
     private WxCardDetailService wxCardDetailSvc;
+    @Autowired
+    private CardMsgNoticeService cardMsgSvc;
     
 	public static final String DESC = "score_open_card";
 
@@ -288,39 +291,14 @@ public class UserCardService extends ShopBaseService {
 		//	保存用户卡等级变动信息
 		cardUpgradeService.recordCardUpdateGrade(userId, oldCard, newCard, option);
 		//	用户卡升级订阅消息通知
-		if(newCard.getGrade().compareTo(oldCard.getGrade())>0) {
-			String cardNo = getCardNoByUserAndCardId(userId,newCard.getId());
-			//	订阅消息
-			String[][] maData = new String[][] {
-				{newCard.getCardName()},
-				{Util.getdate("yyyy-MM-dd HH:mm:ss")},
-				{"升级成功"}
-			};
-			
-			//	公众号消息
-			String[][] mpData = new String[][] {
-				{"等级卡升级通知"},
-				{newCard.getCardName()},
-				{"升级成功"},
-				{option}
-			};
-			List<Integer> arrayList = Collections.<Integer>singletonList(userId);
-			MaSubscribeData data = MaSubscribeData.builder().data307(maData).build();
-			RabbitMessageParam param2 = RabbitMessageParam.builder()
-					.maTemplateData(
-							MaTemplateData.builder().config(SubcribeTemplateCategory.USER_GRADE).data(data).build())
-					.mpTemplateData(
-							MpTemplateData.builder().config(MpTemplateConfig.MEMBER_LEVEL_UP).data(mpData).build())
-					.page("pages/cardinfo/cardinfo?card_no="+cardNo).shopId(getShopId())
-					.userIdList(arrayList)
-					.type(MessageTemplateConfigConstant.MEMBER_LEVEL_UP).build();
-			saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
-		}
+		cardMsgSvc.cardGradeChangeMsg(userId, oldCard, newCard, option);
 		
 		if (newCard.getSorce() != null && newCard.getSorce() > 0) {
 			addUserCardScore(userId, newCard);
 		}
 	}
+
+	
 
 	/**
 	 * 会员卡升降级记录
