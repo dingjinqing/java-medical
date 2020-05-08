@@ -94,30 +94,31 @@ public class GoodsListMpConverter implements EsParamConvertInterface {
                     }
                 }
             }
-        }
-        List<Sort> sorts = Lists.newArrayList();
+            List<Sort> sorts = Lists.newArrayList();
 
-        if( param.getSortType() != null ){
-            switch (param.getSortType()){
-                case 1:
-                    sorts.add(getSort(EsSearchName.SALE_TIME, SortOrder.DESC));
-                    break;
-                case 2:
-                    sorts.add(getSort(EsSearchName.TOTAL_SALE_NUMBER,SortOrder.DESC));
-                    break;
-                case 3:
-                    sorts.add(getSort(EsSearchName.SHOW_PRICE,SortOrder.ASC));
-                default:
-                    break;
+            if( param.getSortType() != null ){
+                switch (param.getSortType()){
+                    case 1:
+                        sorts.add(getSort(EsSearchName.SALE_TIME, SortOrder.DESC));
+                        break;
+                    case 2:
+                        sorts.add(getSort(EsSearchName.TOTAL_SALE_NUMBER,SortOrder.DESC));
+                        break;
+                    case 3:
+                        sorts.add(getSort(EsSearchName.SHOW_PRICE,SortOrder.ASC));
+                    default:
+                        break;
+                }
+            }
+
+            if( sorts.size() == 0 && param.getShopSortItem() != null && param.getShopSortDirection() != null){
+                sorts.add(getSort(param.getShopSortItem(),param.getShopSortDirection()));
+            }
+            if( !CollectionUtils.isEmpty(sorts) ){
+                searchParam.setSorts(sorts);
             }
         }
 
-        if( sorts.size() == 0 && param.getShopSortItem() != null && param.getShopSortDirection() != null){
-            sorts.add(getSort(param.getShopSortItem(),param.getShopSortDirection()));
-        }
-        if( !CollectionUtils.isEmpty(sorts) ){
-            searchParam.setSorts(sorts);
-        }
 
         if( !propertyList.isEmpty() ){
             searchParam.setSearchList(propertyList);
