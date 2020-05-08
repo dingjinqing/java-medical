@@ -1004,15 +1004,12 @@ export default {
     // 点击包含在售商品数量
     handleToTurnGoodsNum (row) {
       console.log(row)
-      // this.$router.push({
-      //   name: 'goodsForSale',
-      //   params: {
-      //     brandTurn: {
-      //       id: row.id,
-      //       brandName: row.brandName
-      //     }
-      //   }
-      // })
+      this.$router.push({
+        name: 'goodsForSale',
+        params: {
+          brandTurnId: row.id
+        }
+      })
     }
   }
 }
