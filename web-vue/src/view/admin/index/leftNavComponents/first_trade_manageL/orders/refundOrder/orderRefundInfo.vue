@@ -213,6 +213,8 @@
                   </div>
                   <span
                     slot="reference"
+                    class="high-light"
+                    @click="handleViewOrder(returnInfo.orderSn)"
                     @mouseenter="requestOrderInfo(returnInfo.orderSn)"
                     @mouseleave="leaveOrderBrief()"
                   >{{returnInfo.orderSn}}</span>
@@ -1202,5 +1204,9 @@ export default {
       left: 10px;
     }
   }
+}
+.high-light{
+  color: #409eff;
+  cursor: pointer;
 }
 </style>
