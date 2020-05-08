@@ -309,5 +309,24 @@ export const en = {
       batchId: 0,
       name: 'All'
     }
-  ]
+  ],
+  single: 'single',
+  multiple: 'multiple',
+  text: 'text',
+  picture: 'picture',
+  choosedType: 'type',
+  titleTwo: 'title',
+  uploadPic: 'upload pic',
+  inputTitle: 'title',
+  mostTwenty: 'at most 20',
+  option: 'option',
+  addOption: 'add option',
+  mostTenOption: 'at most 10 option',
+  conditionChecked: 'condition',
+  mustInput: 'must',
+  mostPictureNum: 'Max number',
+  customActionOpt: 'Custom option',
+  inputOptionContent: 'content must',
+  inputTitleContent: 'title must'
+
 }

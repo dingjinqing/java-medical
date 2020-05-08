@@ -36,10 +36,18 @@ export default {
   },
   data () {
     return {
-      msg: '自定义激活项',
+      msg: null,
       showDialog: false,
       currentIndex: -1
     }
+  },
+  watch: {
+    lang () {
+      this.msg = this.$t('memberCard.customActionOpt')
+    }
+  },
+  mounted () {
+    this.langDefault()
   },
   methods: {
     setNewCustomAction (action) {

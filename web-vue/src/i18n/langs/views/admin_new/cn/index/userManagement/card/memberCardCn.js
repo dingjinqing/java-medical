@@ -347,5 +347,23 @@ export const cn = {
       batchId: 0,
       name: '全部'
     }
-  ]
+  ],
+  single: '单选',
+  multiple: '多选',
+  text: '文本',
+  picture: '图片',
+  choosedType: '选项类型',
+  titleTwo: '标题',
+  uploadPic: '上传图片',
+  inputTitle: '请输入标题',
+  mostTwenty: '最多可填写20个字',
+  option: '选项',
+  addOption: '添加选项',
+  mostTenOption: '最多可添加10个选项',
+  conditionChecked: '条件校验',
+  mustInput: '必填',
+  mostPictureNum: '最大图片上传数量',
+  customActionOpt: '自定义激活项',
+  inputOptionContent: '请输入选项内容',
+  inputTitleContent: '请输入自定义标题'
 }
