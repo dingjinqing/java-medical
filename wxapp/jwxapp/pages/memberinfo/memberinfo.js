@@ -444,10 +444,7 @@ global.wxPage({
               that.setData(obj)
             }
           })
-          // 上传图片模拟数据
-          // that.setData({
-          //   if_upImage: 1
-          // })
+
           // 会员昵称
           if (user_info.username) {
             user_nick_name = user_info.username

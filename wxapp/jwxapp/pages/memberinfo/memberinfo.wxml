@@ -170,8 +170,8 @@
 				 value="{{ user_info.remarks }}"
 				/>
 				</view>
-			<!-- 上传图片 -->
-			<view class="list" wx:if="{{if_upImage}}">
+				<!-- 上传图片 -->
+			<view wx:if="{{if_upImage}}">
 				<text class="main_text">上传图片</text>
 				<block wx:if="{{image}}">
 					<block
@@ -191,6 +191,7 @@
 					</view>
 				</block>
 			</view>
+			
 			<!-- 邀请码 -->
 			<view class="list" wx:if="{{if_invitation}}">
 				<text class='main_txt'>邀请码</text>
@@ -255,12 +256,41 @@
 						<view class='customTitle'><text class="must_choose" wx:if='{{item.optionVer == 1}}'>*</text>{{item.customTitle}}</view>
 						<view class="custom_area">
 							<textarea class="textarea" bindblur='textBlur' value="{{ item.text }}" data-index='{{index}}'>
-							</textarea>
+				</textarea>
+			</view>
+		</view>
+		<!--自定义激活项上传图片-->
+<view class="main_picker" style="padding-bottom:0" >
+			<view class='customTitle'>
+				<text class="must_choose" >*</text>
+				上传图片
+				<i style="color: #ccc;margin-left:10rpx">(最多上传五张图片)</i>
+			</view>
+			<view class="shai_content">
+				<block wx:if="{{image}}">
+					<block
+					 wx:for="{{comm_img}}"
+					 wx:key="index"
+					 wx:for-item="imgitem"
+					 wx:key="key_img"
+					>
+						<view class='shai_view'>
+							<image src='{{imageUrl}}/image/admin/dele_service.png' class="shai_close" bindtap='customDelImage' data-imgindex="{{imgindex}}" data-idx='{{index}}'></image>
+							<image src="{{imgitem}}" data-idx="{{key_img}}" />
 						</view>
-					</view>
-				</view>
-</view>
+					</block>
+				</block>
 
+				<view class="shai_right" bindtap="customUpImage">
+					<image src='{{imageUrl}}/image/wxapp/add.png' mode='widthFix' />
+				</view>
+
+			</view>
+
+		</view>
+		
+</view>
+</view>
 
 <!-- <view class='footer'>
       <form report-submit='true' bindsubmit='toSave'>
