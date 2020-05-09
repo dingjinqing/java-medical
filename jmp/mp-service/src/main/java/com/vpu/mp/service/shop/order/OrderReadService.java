@@ -259,8 +259,6 @@ public class OrderReadService extends ShopBaseService {
 		ArrayList<OrderListInfoVo> mainOrderList = new ArrayList<OrderListInfoVo>(orderSn.getDataList().size());
 		//现子订单数>0的主订单
 		ArrayList<Integer> orderCountMoreZero = new ArrayList<Integer>();
-		//TODO 查询订单是否为活动奖品
-		List<String> prizesSns = Collections.emptyList();
 		for (String moc : orderSn.getDataList()) {
 			List<OrderListInfoVo> list = allOrder.get(moc);
 			int size = list.size();
@@ -271,7 +269,7 @@ public class OrderReadService extends ShopBaseService {
 				goodsList.put(order.getOrderId(),order);
 				if(order.getOrderSn().equals(moc)) {
 					//设置订单支付方式（无子单）
-					orderInfo.setPayCodeList(order,prizesSns);
+					orderInfo.setPayCodeList(order);
 					mOrder = order;
 					if(size ==1) {
 						break;
@@ -307,7 +305,7 @@ public class OrderReadService extends ShopBaseService {
 				OrderOperationJudgment.operationSet(order,returningCount.get(order.getOrderId()),ship.canBeShipped(order.getOrderSn()));
 			}
 		}
-		pageResult.setDataList(mainOrderList);
+        pageResult.setDataList(mainOrderList);
 		logger.info("订单综合查询结束");
 		return result;
 	}
@@ -381,7 +379,7 @@ public class OrderReadService extends ShopBaseService {
             showManualReturn(vo);
 		}
 		//设置订单支付方式（无子单）
-		orderInfo.setPayCodeList(mainOrder,prizesSns);
+		orderInfo.setPayCodeList(mainOrder);
 		//设置核销员
 		if(mainOrder.getVerifierId() > 0) {
 			mainOrder.setVerifierName(user.getUserByUserId(mainOrder.getVerifierId()).getUsername());

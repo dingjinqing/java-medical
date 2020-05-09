@@ -153,6 +153,7 @@ import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.card.CardCreateService;
 import com.vpu.mp.service.shop.card.CardDetailService;
 import com.vpu.mp.service.shop.card.CardFreeShipService;
+import com.vpu.mp.service.shop.card.msg.CardMsgNoticeService;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -217,6 +218,8 @@ public class MemberCardService extends ShopBaseService {
 	public CardCreateService cardCreateSvc;
 	@Autowired
 	public CardDetailService cardDetailSvc;
+	@Autowired
+	public CardMsgNoticeService cardMsgNoticeSvc;
 
 	
 	/**
@@ -1343,39 +1346,14 @@ public class MemberCardService extends ShopBaseService {
 		if(res>0) {
 			logger().info("发送订阅消息");
 			CardExamineRecord re = cardDao.getCardExamineRecordById(record.getId());
-			Integer userId = re.getUserId();
-			String cardNo = re.getCardNo();
-			List<Integer> arrayList = Collections.<Integer>singletonList(userId);
-			// 订阅消息
-			String[][] maData = new String[][] {
-				{Util.getdate("yyyy-MM-dd HH:mm:ss")},
-				{"审核不通过"},
-				{"很遗憾，您提交的会员卡激活申请未通过审核"}
-			};
-			MaSubscribeData data = MaSubscribeData.builder().data307(maData).build();
-			// 公众号消息
-			String[][] mpData = new String[][] {
-				{"审核未通过"},
-				{Util.getdate("yyyy-MM-dd HH:mm:ss")},
-				{re.getRefuseDesc()},
-				{re.getCreateTime().toLocalDateTime().toString()},
-				{"申请会员卡激活"}
-			};
-			RabbitMessageParam param2 = RabbitMessageParam.builder()
-					.maTemplateData(
-							MaTemplateData.builder().config(SubcribeTemplateCategory.AUDIT).data(data).build())
-					.mpTemplateData(
-							MpTemplateData.builder().config(MpTemplateConfig.AUDIT).data(mpData).build())
-					.page("pages/cardinfo/cardinfo?card_no="+cardNo).shopId(getShopId())
-					.userIdList(arrayList)
-					.type(MessageTemplateConfigConstant.FAIL_REVIEW).build();
-			saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());		
-			
+			cardMsgNoticeSvc.sendAuditSuccessMsg(re);		
 		}
 		
 		
 		
 	}
+
+	
 
 	/**
 	 * 会员卡订单分页查询

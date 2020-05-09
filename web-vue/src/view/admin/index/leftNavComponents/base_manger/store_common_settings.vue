@@ -536,6 +536,97 @@
                     :placeholder="$t('storeCommonSettings.peShareCopy')"
                   ></el-input>
                 </div>
+                <!-- 海报样式 -->
+                <div style="margin-top:10px;">
+                  <span>{{$t('storeCommonSettings.posterStyle')}}：</span>
+                  <el-radio-group v-model="info.goods_share_cfg.custom_pictorial">
+                    <el-radio :label="0">{{$t('storeCommonSettings.defaultStyle')}}
+                      <el-popover
+                        placement="right"
+                        trigger="hover"
+                      >
+                        <div class="">
+                          <el-image
+                            style="width:220px;"
+                            :src="$imageHost + '/image/admin/pictorial/pictorial_style1.png'"
+                          ></el-image>
+                        </div>
+                        <el-button
+                          type="text"
+                          slot="reference"
+                        >{{$t('storeCommonSettings.example')}}</el-button>
+                      </el-popover>
+                    </el-radio>
+                    <el-radio :label="1">{{$t('storeCommonSettings.basicStyle')}}
+                      <el-popover
+                        placement="right"
+                        trigger="hover"
+                      >
+                        <div class="">
+                          <el-image
+                            style="width:220px;"
+                            :src="$imageHost + '/image/admin/pictorial/pictorial_style2.png'"
+                          ></el-image>
+                        </div>
+                        <el-button
+                          type="text"
+                          slot="reference"
+                        >{{$t('storeCommonSettings.example')}}</el-button>
+                      </el-popover>
+                    </el-radio>
+                    <el-radio :label="2">{{$t('storeCommonSettings.showSharer')}}
+                      <el-popover
+                        placement="right"
+                        trigger="hover"
+                      >
+                        <div class="">
+                          <el-image
+                            style="width:220px;"
+                            :src="$imageHost + '/image/admin/pictorial/pictorial_style3.png'"
+                          ></el-image>
+                        </div>
+                        <el-button
+                          type="text"
+                          slot="reference"
+                        >{{$t('storeCommonSettings.example')}}</el-button>
+                      </el-popover>
+                    </el-radio>
+                    <el-radio :label="3">{{$t('storeCommonSettings.showStore')}}
+                      <el-popover
+                        placement="right"
+                        trigger="hover"
+                      >
+                        <div class="">
+                          <el-image
+                            style="width:220px;"
+                            :src="$imageHost + '/image/admin/pictorial/pictorial_style4.png'"
+                          ></el-image>
+                        </div>
+                        <el-button
+                          type="text"
+                          slot="reference"
+                        >{{$t('storeCommonSettings.example')}}</el-button>
+                      </el-popover>
+                    </el-radio>
+                    <el-radio :label="4">{{$t('storeCommonSettings.showss')}}
+                      <el-popover
+                        placement="right"
+                        trigger="hover"
+                      >
+                        <div class="">
+                          <el-image
+                            style="width:220px;"
+                            :src="$imageHost + '/image/admin/pictorial/pictorial_style5.png'"
+                          ></el-image>
+                        </div>
+                        <el-button
+                          type="text"
+                          slot="reference"
+                        >{{$t('storeCommonSettings.example')}}</el-button>
+                      </el-popover>
+                    </el-radio>
+                  </el-radio-group>
+                </div>
               </li>
             </ol>
           </div>
@@ -663,7 +754,10 @@ export default {
         },
         bind_mobile: 0, // 是否强制用户在购买、预约以及申请成为分销员时绑定手机号
         geographic_location: 0, // 地理位置授权申请
-        goods_share_cfg: {} // 店铺商品分享配置
+        goods_share_cfg: {
+          goods_share_pictorial: 0,
+          custom_pictorial: 0
+        } // 店铺商品分享配置
       },
       catIds: [],
       tuneUp: false

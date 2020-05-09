@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.validator.ValidList;
 import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
 import com.vpu.mp.service.pojo.shop.config.SearchConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
+import com.vpu.mp.service.pojo.shop.config.SuspendWindowConfig;
 import com.vpu.mp.service.pojo.shop.decoration.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -271,10 +272,49 @@ public class AdminShopDecorateController extends AdminBaseController {
 
     /**
      * 模板
+     *
      * @return
      */
     @GetMapping(value = "/admin/decorate/templates/get")
     public JsonResult getTemplateContent(Integer id) {
         return success(shop().adminDecoration.covertTemplate(id));
+    }
+
+    /**
+     * 保存悬浮窗草稿设置
+     *
+     * @param param
+     * @return
+     */
+    @PostMapping(value = "/admin/decorate/suspend/draft/set")
+    public JsonResult setSuspendWindowConfigDraft(@RequestBody SuspendWindowConfig param) {
+        if (shop().adminDecoration.setSuspendWindowConfigDraft(param)) {
+            return this.success();
+        }
+        return fail();
+    }
+
+    /**
+     * 保存悬浮窗设置
+     *
+     * @param param
+     * @return
+     */
+    @PostMapping(value = "/admin/decorate/suspend/set")
+    public JsonResult setSuspendWindowConfig(@RequestBody SuspendWindowConfig param) {
+        if (shop().adminDecoration.setSuspendWindowConfig(param)) {
+            return this.success();
+        }
+        return fail();
+    }
+
+    /**
+     * 获取悬浮窗草稿设置
+     *
+     * @return
+     */
+    @PostMapping(value = "/admin/decorate/suspend/draft/get")
+    public JsonResult getSuspendWindowConfigDraft() {
+        return this.success(shop().adminDecoration.getSuspendWindowConfigDraft());
     }
 }

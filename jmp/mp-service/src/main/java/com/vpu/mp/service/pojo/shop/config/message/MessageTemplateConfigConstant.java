@@ -62,6 +62,8 @@ public class MessageTemplateConfigConstant {
     public static final Integer LEVEL_UP = 3013;
     /** 拼团抽奖结果通知 */
     public static final Integer LOTTERY_TEAM = 3014;
+    /** 审核通过提醒 */
+    public static final Integer AUDIT_SUCCESS = 3015;
 
     public static final ShopMsgTempConfig MSG_TEMP_CONFIG = new ShopMsgTempConfig() {{
         setA(new String[]{"eZRlu9Y3zSkEi5dSgnVHij2zF-JxwADkXV9Ni_MOB0E",

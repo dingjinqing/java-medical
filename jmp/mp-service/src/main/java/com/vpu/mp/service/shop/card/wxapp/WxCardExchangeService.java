@@ -1,14 +1,5 @@
 package com.vpu.mp.service.shop.card.wxapp;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.CheckedGoodsCartRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
@@ -33,6 +24,15 @@ import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.user.user.UserCheckedGoodsService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import static com.vpu.mp.db.shop.Tables.CHECKED_GOODS_CART;
 /**
  * 	会员卡兑换商品服务
@@ -40,6 +40,7 @@ import static com.vpu.mp.db.shop.Tables.CHECKED_GOODS_CART;
  *
  */
 @Service
+@Primary
 public class WxCardExchangeService extends ShopBaseService {
 	@Autowired private MemberCardService mCardSvc;
 	@Autowired private ShopCommonConfigService shopCommonCfgSvc;

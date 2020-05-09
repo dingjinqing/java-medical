@@ -166,12 +166,12 @@ public class OrderInfoService extends ShopBaseService {
 		// 存在子单但是显示不易子单为主所以查询需过滤子单
 		mainOrder.where(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN).or(TABLE.MAIN_ORDER_SN.eq("")));
 		buildOptions(mainOrder, param);
-		mainOrder.orderBy(TABLE.ORDER_ID.desc());
-		// 得到订单号
+        buildOrderBy(mainOrder, param);
+        // 得到订单号
 		return getPageResult(mainOrder, param.getCurrentPage(), param.getPageRows(), String.class);
 	}
 
-	/**
+    /**
 	 * 计算部分订单数量
 	 * @param result
 	 */
@@ -220,6 +220,28 @@ public class OrderInfoService extends ShopBaseService {
         return buildOptions(select,param,false);
     }
 
+    /**
+     * 构造综合查询条件的排序
+     *
+     * @param mainOrder
+     * @param param
+     * @return
+     */
+    private void buildOrderBy(SelectJoinStep<Record1<String>> mainOrder, OrderPageListQueryParam param) {
+        if(param.getSortRule() != null) {
+            switch (param.getSortRule()) {
+                case OrderConstant.OQSR_APPLY_RETURN: {
+                    mainOrder.orderBy(RETURN_ORDER.RET_ID.desc());
+                    break;
+                }
+                default:
+            }
+        } else {
+            mainOrder.orderBy(TABLE.ORDER_ID.desc());
+        }
+
+    }
+
 	/**
 	 * 构造综合查询条件
 	 * 
@@ -249,13 +271,13 @@ public class OrderInfoService extends ShopBaseService {
             Condition condition = DSL.noCondition();
             if(status.contains(ORDER_RETURNING) || status.contains(ORDER_REFUNDING)) {
                 select.leftJoin(RETURN_ORDER).on(TABLE.ORDER_ID.eq(RETURN_ORDER.ORDER_ID));
-                if(status.contains(ORDER_RETURNING)) {
-                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_ONLY_MONEY).and(RETURN_ORDER.REFUND_STATUS.eq(REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
-                    status.remove(Byte.valueOf(ORDER_RETURNING));
-                }
                 if(status.contains(ORDER_REFUNDING)) {
-                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_GOODS).and(RETURN_ORDER.REFUND_STATUS.in(REFUND_DEFAULT_STATUS, REFUND_STATUS_AUDITING ,REFUND_STATUS_AUDIT_PASS , REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_ONLY_MONEY).and(RETURN_ORDER.REFUND_STATUS.eq(REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
                     status.remove(Byte.valueOf(ORDER_REFUNDING));
+                }
+                if(status.contains(ORDER_RETURNING)) {
+                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_GOODS).and(RETURN_ORDER.REFUND_STATUS.in(REFUND_DEFAULT_STATUS, REFUND_STATUS_AUDITING ,REFUND_STATUS_AUDIT_PASS , REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+                    status.remove(Byte.valueOf(ORDER_RETURNING));
                 }
             }
             if(CollectionUtils.isNotEmpty(status)) {
@@ -350,7 +372,7 @@ public class OrderInfoService extends ShopBaseService {
 				select.where(TABLE.PAY_CODE.eq(OrderConstant.PAY_CODE_COD));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_EVENT_PRIZE:
-				select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT, BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER, BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER, BaseConstant.ACTIVITY_TYPE_PAY_AWARD})));
+				select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_MY_PRIZE})));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_WXPAY:
 				select.where(TABLE.PAY_CODE.eq(OrderConstant.PAY_CODE_WX_PAY));
@@ -777,11 +799,12 @@ public class OrderInfoService extends ShopBaseService {
 	 * 设置订单支付方式数组
 	 * 
 	 * @param order
-	 * @param prizesSns
 	 */
-	public void setPayCodeList(OrderListInfoVo order, List<String> prizesSns) {
+	public void setPayCodeList(OrderListInfoVo order) {
 		ArrayList<Byte> payCodes = new ArrayList<Byte>(OrderConstant.SEARCH_PAY_WAY_WXPAY);
-		if (BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0
+		//订单类型
+        List<Byte> orderType = Arrays.asList(OrderInfoService.orderTypeToByte(order.getGoodsType()));
+        if (BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0
 				|| BigDecimalUtil.compareTo(order.getMemberCardBalance(), null) > 0) {
 			/** 余额 */
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_USE_ACCOUNT);
@@ -790,7 +813,7 @@ public class OrderInfoService extends ShopBaseService {
 			/** 积分支付 */
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_SCORE_DISCOUNT);
 		}
-		if(Arrays.asList(order.getGoodsType().split(",")).contains(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_INTEGRAL).toString())) {
+		if(orderType.contains(BaseConstant.ACTIVITY_TYPE_INTEGRAL)) {
 			/**积分兑换*/
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_SCORE_EXCHANGE);
 		}
@@ -798,7 +821,7 @@ public class OrderInfoService extends ShopBaseService {
 			/** 货到付款 */
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_COD);
 		}
-		if (prizesSns.contains(order.getOrderSn())) {
+		if (orderType.contains(BaseConstant.ACTIVITY_TYPE_MY_PRIZE)) {
 			/** 活动奖品 */
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_EVENT_PRIZE);
 		}

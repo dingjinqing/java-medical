@@ -23,4 +23,5 @@ public class OrderListVo {
 
     private Boolean grouped;
     private Short codeCount;
+    private String completeAddress;
 }

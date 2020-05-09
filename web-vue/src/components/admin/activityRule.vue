@@ -97,7 +97,11 @@ export default {
   methods: {
     setValue () {
       if (!this.isEmpty(this.sendMsg)) {
+        if (this.isEmpty(this.sendMsg.isUseDefault)) {
+          this.sendMsg = JSON.parse(this.sendMsg)
+        }
         this.isUseDefault = Number(this.sendMsg.isUseDefault)
+        console.log(this.isUseDefault)
         this.editMsg = this.sendMsg.document
       }
       this.msg = this.template

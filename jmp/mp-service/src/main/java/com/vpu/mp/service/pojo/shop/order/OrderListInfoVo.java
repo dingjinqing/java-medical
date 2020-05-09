@@ -105,4 +105,8 @@ public class OrderListInfoVo {
     private Timestamp orderRemindTime;
     /**完整收货地址*/
     private String completeAddress;
+    /**订单申请退货时间*/
+    private Timestamp returnTime;
+    /**订单申请退款时间*/
+    private Timestamp refundTime;
 }

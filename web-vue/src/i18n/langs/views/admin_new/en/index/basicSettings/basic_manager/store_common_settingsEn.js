@@ -83,5 +83,11 @@ export const en = {
   shareNote: 'Note: When sharing the product directly with friends, you can display no more than 23 Chinese characters, and the excess will be omitted',
   peShareCopy: 'Please enter a shared copy',
   downloadPoster: 'Download poster',
-  downNote: 'Note: When sharing friends with merchandise through a poster, no more than 20 Chinese characters can be displayed, and the excess will be omitted'
+  downNote: 'Note: When sharing friends with merchandise through a poster, no more than 20 Chinese characters can be displayed, and the excess will be omitted',
+  posterStyle: 'Poster style',
+  example: 'Example',
+  basicStyle: 'Basic style',
+  showSharer: 'Show sharer information',
+  showStore: 'Show store information',
+  showss: 'Show sharers + store information'
 }

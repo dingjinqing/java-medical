@@ -2,7 +2,7 @@
   <div class="membershipCardDetail">
     <div class="membershipCardDetailMain">
       <div class="leftContainer">
-        <showSampleCard :sampleData="sampleCardData"></showSampleCard>
+        <showSampleCard :sampleData="sampleCardData" :allData="$data"></showSampleCard>
       </div>
       <div class="rightContainer">
         <div class="rightContainerTop">
@@ -508,7 +508,8 @@ export default {
           title: item.custom_title,
           content: item.option_arr,
           conditionChecked: Boolean(item.option_ver),
-          checked: Boolean(item.is_checked)
+          checked: Boolean(item.is_checked),
+          pictureNumber: item.pictureNumber
         }
       })
       this.cardActiveCfgData.customAction = action
@@ -811,11 +812,12 @@ export default {
     padding-bottom: 57px;
   }
   .leftContainer {
+    overflow: auto;
     width: 300px;
     margin-right: 20px;
     height: 594px;
     border: 1px solid #ccc;
-    background: #f5f5f5;
+    background: #fff;
   }
   .rightContainer {
     width: 70%;

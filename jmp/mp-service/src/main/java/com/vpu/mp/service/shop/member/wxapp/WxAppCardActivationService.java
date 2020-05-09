@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.member.wxapp;
 
 import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +21,6 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
@@ -35,6 +33,7 @@ import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.card.param.CardCustomActionParam;
 import com.vpu.mp.service.pojo.wxapp.card.vo.CardCustomActionVo;
+import com.vpu.mp.service.shop.card.msg.CardMsgNoticeService;
 import com.vpu.mp.service.shop.card.wxapp.WxCardDetailService;
 import com.vpu.mp.service.shop.member.CardVerifyService;
 import com.vpu.mp.service.shop.member.MemberCardService;
@@ -59,6 +58,8 @@ public class WxAppCardActivationService extends ShopBaseService {
 	private MemberCardService memberCardService;
 	@Autowired
 	private WxCardDetailService wxCardDetailSvc;
+	@Autowired
+	private CardMsgNoticeService cardMsgNoticeSvc;
 	
 	public final static String PROVINCE_CODE = "provinceCode";
 	public final static String CITY_CODE = "cityCode";
@@ -109,6 +110,7 @@ public class WxAppCardActivationService extends ShopBaseService {
 			
 		}
 		//TODO 订阅消息
+
 		return ActivateCardVo
 				.builder()
 				.education(allEducation)
@@ -222,6 +224,10 @@ public class WxAppCardActivationService extends ShopBaseService {
 					userCardService.updateActivationTime(param.getCardNo(), null);
 					// send coupon
 					memberCardService.sendCoupon(uCard.getUserId(), uCard.getCardId());
+					
+					// 发送消息
+					cardMsgNoticeSvc.sendAuditSuccessMsg(param);
+				
 				}
 				// add data into card examine
 				CardExamineRecord cardExamineRecord = db().newRecord(CARD_EXAMINE);
@@ -234,6 +240,8 @@ public class WxAppCardActivationService extends ShopBaseService {
 		}
 		
 	}
+
+	
 	
 	/**
 	 *	 将map的驼峰key转化为下划线形式

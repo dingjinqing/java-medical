@@ -145,4 +145,11 @@ public class ShopCommonCfgInfo {
     @NotNull
     @JsonProperty(value = "goods_share_cfg")
     public GoodsShareConfig goodsShareCfg;
+
+    /**
+     *后台商品搜索设置
+     */
+    @NotNull
+    @JsonProperty(value = "accurate_search")
+    public Byte accurateSearch;
 }

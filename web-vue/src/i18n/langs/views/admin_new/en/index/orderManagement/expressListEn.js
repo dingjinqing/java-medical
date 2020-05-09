@@ -35,6 +35,7 @@ export const en = {
     33: 'DISTRIBUTOR_13494868',
     34: 'jieanda',
     35: 'PJ',
-    36: 'topspeedex'
+    36: 'topspeedex',
+    100: 'no tracking number'
   }
 }

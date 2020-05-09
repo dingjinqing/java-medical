@@ -54,6 +54,8 @@
             class="inputWidth"
           ></el-input>
         </el-form-item>
+      </el-form>
+      <el-form label-width="100px">
         <el-form-item
           :label="$t('lotteryDraw.mobile') + '：'"
           class="item"
@@ -98,6 +100,8 @@
             class="inputWidth"
           ></el-input>
         </el-form-item>
+      </el-form>
+      <el-form label-width="100px">
         <el-form-item
           :label="$t('lotteryDraw.grouped') + '：'"
           class="item"

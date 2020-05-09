@@ -5,10 +5,13 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 /**
  * @author 黄壮壮
  * @Desc 会员卡自定义审核数据
@@ -18,8 +21,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CardCustomAction {
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
+	public static enum  ActionType{
+		SINGLE(0),
+		MULTIPLE(1),
+		TEXT(2),
+		PICTURE(3);
+		private Byte val;
+		ActionType(int i){
+			this.val = (byte)i;
+		}
+	}
 	/**
-	 * 类型：0单选，1多选，2文本
+	 * 类型：0单选，1多选，2文本，3图片
 	 */
 	@JsonAlias({"type"})
 	@JsonProperty("custom_type")
@@ -52,4 +67,9 @@ public class CardCustomAction {
 	@JsonAlias({"checked"})
 	@JsonProperty("is_checked")
 	private Byte checked;
+	
+	/**
+	 * 	上传的图片张数
+	 */
+	private Integer pictureNumber;
 }

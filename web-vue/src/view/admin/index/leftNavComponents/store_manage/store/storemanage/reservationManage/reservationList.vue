@@ -378,12 +378,13 @@
             >
               <span class="span_asterisk">*</span> {{$t('reservationManage.subscriber')}}：
             </el-col>
-            <el-col :span="10">
+            <el-col :span="16">
               <el-input
                 :placeholder="$t('reservationManage.chooseUser')"
                 v-model="userRowData.userName"
                 size="small"
                 class="new-input"
+                style="width:110px;"
               >
               </el-input>
               <el-button
@@ -459,7 +460,7 @@
                   v-model="reservation.serviceId"
                   clearable
                   :placeholder="$t('reservationManage.serviceName')"
-                  @change="changeEvent()"
+                  @change="changeEvent"
                   size="small"
                   class="new-input"
                 >
@@ -475,7 +476,7 @@
             </el-col>
           </el-row>
         </div>
-        <div>
+        <div v-show="technicianVisible">
           <el-row
             :gutter="5"
             class="row_style"
@@ -696,7 +697,8 @@ export default {
       storeId: 0,
       serviceId: 0,
       modifypersonDialogVisible: false,
-      sortParams: {}
+      sortParams: {},
+      technicianVisible: false
     }
   },
   created () {
@@ -739,8 +741,16 @@ export default {
         }
       })
     },
-    changeEvent () {
+    changeEvent (val) {
+      console.log(val)
       this.serviceId = this.reservation.serviceId
+      let serviceInfo = this.reservationService.find(item => item.id === val)
+      if (Number(serviceInfo.serviceType) === 1) {
+        this.technicianVisible = true
+      } else {
+        this.technicianVisible = false
+      }
+      console.log(serviceInfo)
       this.getTechList()
     },
     // 技师下拉

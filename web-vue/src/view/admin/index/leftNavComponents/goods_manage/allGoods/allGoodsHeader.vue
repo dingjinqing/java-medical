@@ -24,10 +24,10 @@
         </el-form-item>
         <!--平台分类树-->
         <!--<sortCatTreeSelect-->
-          <!--ref="catTree"-->
-          <!--:filterGoodsInfo="initSortCatParams"-->
-          <!--treeType="cat"-->
-          <!--:selectedId.sync="goodsFilterFormData.catId"-->
+        <!--ref="catTree"-->
+        <!--:filterGoodsInfo="initSortCatParams"-->
+        <!--treeType="cat"-->
+        <!--:selectedId.sync="goodsFilterFormData.catId"-->
         <!--/>-->
         <!--商家分类树-->
         <sortCatTreeSelect
@@ -290,6 +290,14 @@ export default {
         let { content } = res
         this.goodsBrandOptions = content.goodsBrands
         this.goodsLabelOptions = content.goodsLabels
+        if (this.$route.params.brandTurnId) {
+          this.goodsBrandOptions.forEach((item, index) => {
+            if (this.$route.params.brandTurnId === item.id) {
+              this.goodsFilterFormData.brandId = item.id
+              this.$http.$emit('brandTurnEvent')
+            }
+          })
+        }
       })
     },
     /* 验证输入的时间范围是否合法 */

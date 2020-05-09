@@ -127,7 +127,12 @@ export default {
   },
   mounted () {
     this.langDefault()
-    this.searchGoodsData()
+    if (!this.$route.params.brandTurnId) {
+      this.searchGoodsData()
+    }
+    this.$http.$on('brandTurnEvent', () => {
+      this.searchGoodsData()
+    })
   }
 }
 </script>

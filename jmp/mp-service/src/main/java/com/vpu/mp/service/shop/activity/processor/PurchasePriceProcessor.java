@@ -22,6 +22,7 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.dao.PurchasePriceProcessorDao;
 import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
+import com.vpu.mp.service.shop.user.cart.CartService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Record4;
@@ -53,6 +54,8 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
 
     @Autowired
     IncreasePurchaseService increasePurchase;
+    @Autowired
+    private CartService cartService;
 
     @Override
     public Byte getPriority() {
@@ -94,7 +97,9 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
             } else {
                 //获取商品的活动规则
                 purchaseRulesMap = purchasePriceProcessorDao.getPurchasePriceInfo(goods.getGoodsId(), cartBo.getDate());
-                activityCacheMap.put(goods.getGoodsId(), purchaseRulesMap);
+                if (purchaseRulesMap!=null){
+                    activityCacheMap.put(goods.getGoodsId(), purchaseRulesMap);
+                }
             }
             //配置商品符合的活动信息
             if (purchaseRulesMap != null && purchaseRulesMap.size() != 0) {
@@ -129,6 +134,11 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
                         purchasePriceProcessorDao.purchasePricePutMap(activityMap, goods, cartActivityInfo);
                     }
                 });
+            }else {
+                log.info("购物车-加价购-没有找到合适活动,取消活动选中");
+                cartService.switchActivityGoods(cartBo.getUserId(),goods.getCartId(),null,null);
+                goods.setActivityType(null);
+                goods.setActivityId(null);
             }
         }
         //启用的活动配置
