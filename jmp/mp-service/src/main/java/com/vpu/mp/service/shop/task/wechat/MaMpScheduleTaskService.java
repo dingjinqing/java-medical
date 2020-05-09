@@ -408,82 +408,84 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 		if(type.equals(FOUR)) {
 			logger().info("type为4");
 			sendPromoteDrawMessage(vo, officeAppId);
-		}
-		switch (type) {
-		case ONE:
-			title = "好友助力通知";
-			content = "好友帮您助力啦！快去看看吧！";
-			break;
-		case TWO:
-			title = "助力进度通知";
-			content = "活动即将结束，赶快邀请好友帮忙助力吧！";
-			break;
-		case THREE:
-			title = "助力失败通知";
-			content = "很遗憾，本次活动助力失败，来看看其他活动吧~";
-			break;
-		case FIVE:
-			title = "奖励未领取通知";
-			content = "您有奖励即将失效，快来领取吧！";
-			break;
-		default:
-			break;
-		}
-		if(type.equals(ONE)) {
-			logger().info("type为1");
-			logger().info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"状态是1,发送小程序");
-			MpAuthShopRecord authShop = saas.shop.mp.getAuthShopByShopId(getShopId());
-			if (null == authShop) {
-				logger().info("店铺："+getShopId()+"没有绑定小程序");
-				return null;
+		}else {
+			switch (type) {
+			case ONE:
+				title = "好友助力通知";
+				content = "好友帮您助力啦！快去看看吧！";
+				break;
+			case TWO:
+				title = "助力进度通知";
+				content = "活动即将结束，赶快邀请好友帮忙助力吧！";
+				break;
+			case THREE:
+				title = "助力失败通知";
+				content = "很遗憾，本次活动助力失败，来看看其他活动吧~";
+				break;
+			case FIVE:
+				title = "奖励未领取通知";
+				content = "您有奖励即将失效，快来领取吧！";
+				break;
+			default:
+				break;
 			}
-			Integer tid = SubscribeMessageConfig.getTid(SubcribeTemplateCategory.INVITE_SUCCESS);
-			if(tid==null) {
-				logger().info("SubcribeTemplateCategory中没有定义相关的类型");
-				return null;
-			}
-			boolean canUse = subscribeMessageService.getCanUse(vo.getUserId(), tid);
-			String page = "pages1/promoteinfo/promoteinfo?actCode=" + vo.getActCode() + "&launch_id=" + vo.getId();
-			String name2 = "已有好友帮忙助力";
-			String date = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, vo.getSuccessTime());
-			if(!canUse) {
-				logger().info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"不能发送小程序，转发送公众号");
-				//ACTIVITY_CONFIG
-				List<Integer> userIdList = new ArrayList<Integer>();
-				UserRecord user = userService.getUserByUserId(vo.getUserId());
-				UserRecord wxUserInfo = checkMp(user.getWxUnionId(), officeAppId);
-				if (null == wxUserInfo) {
-					logger().info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"用户没有关注公众号");
+			if(type.equals(ONE)) {
+				logger().info("type为1");
+				logger().info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"状态是1,发送小程序");
+				MpAuthShopRecord authShop = saas.shop.mp.getAuthShopByShopId(getShopId());
+				if (null == authShop) {
+					logger().info("店铺："+getShopId()+"没有绑定小程序");
 					return null;
 				}
-				userIdList.add(user.getUserId());
-				String[][] data = new String[][] { { title, "#173177" }, {name2, "#173177" },
-					{ vo.getActName(), "#173177" }, { content, "#173177" }, { date, "#173177" },{"","#173177"}};
-					//发的公众号
+				Integer tid = SubscribeMessageConfig.getTid(SubcribeTemplateCategory.INVITE_SUCCESS);
+				if(tid==null) {
+					logger().info("SubcribeTemplateCategory中没有定义相关的类型");
+					return null;
+				}
+				boolean canUse = subscribeMessageService.getCanUse(vo.getUserId(), tid);
+				String page = "pages1/promoteinfo/promoteinfo?actCode=" + vo.getActCode() + "&launch_id=" + vo.getId();
+				String name2 = "已有好友帮忙助力";
+				String date = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, vo.getSuccessTime());
+				if(!canUse) {
+					logger().info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"不能发送小程序，转发送公众号");
+					//ACTIVITY_CONFIG
+					List<Integer> userIdList = new ArrayList<Integer>();
+					UserRecord user = userService.getUserByUserId(vo.getUserId());
+					UserRecord wxUserInfo = checkMp(user.getWxUnionId(), officeAppId);
+					if (null == wxUserInfo) {
+						logger().info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"用户没有关注公众号");
+						return null;
+					}
+					userIdList.add(user.getUserId());
+					String[][] data = new String[][] { { title, "#173177" }, {name2, "#173177" },
+						{ vo.getActName(), "#173177" }, { content, "#173177" }, { date, "#173177" },{"","#173177"}};
+						//发的公众号
+						RabbitMessageParam param = RabbitMessageParam.builder()
+								.mpTemplateData(
+										MpTemplateData.builder().config(MpTemplateConfig.ACTIVITY_CONFIG).data(data).build())
+								.page(page).shopId(getShopId()).userIdList(userIdList)
+								.type(RabbitParamConstant.Type.LOTTERY_TEAM).build();
+						saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
+						return null;
+				}
+				logger().info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"发送小程序");
+				String[][] data = new String[][] { { vo.getActName() }, { name2 }, { date } };
+				List<Integer> userIdList = new ArrayList<Integer>();
+				userIdList.add(vo.getUserId());
+				MaSubscribeData buildData = MaSubscribeData.builder().data307(data).build();
+				//发的小程序
 				RabbitMessageParam param = RabbitMessageParam.builder()
-						.mpTemplateData(
-								MpTemplateData.builder().config(MpTemplateConfig.ACTIVITY_CONFIG).data(data).build())
-						.page(page).shopId(getShopId()).userIdList(userIdList)
-						.type(RabbitParamConstant.Type.LOTTERY_TEAM).build();
+						.maTemplateData(
+								MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(buildData).build())
+						.page(page).shopId(getShopId())
+						.userIdList(userIdList)
+						.type(RabbitParamConstant.Type.INVITE_SUCCESS_FRIEND_PROMOTE).build();
 				saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
-				return null;
+			}else {
+				logger().info("type不为1，为"+type);
+				sendPromoteResultMessage(type, vo, officeAppId, title, content);
 			}
-			logger().info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"发送小程序");
-			String[][] data = new String[][] { { vo.getActName() }, { name2 }, { date } };
-			List<Integer> userIdList = new ArrayList<Integer>();
-			userIdList.add(vo.getUserId());
-			MaSubscribeData buildData = MaSubscribeData.builder().data307(data).build();
-			//发的小程序
-			RabbitMessageParam param = RabbitMessageParam.builder()
-					.maTemplateData(
-							MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(buildData).build())
-					.page(page).shopId(getShopId())
-					.userIdList(userIdList)
-					.type(RabbitParamConstant.Type.INVITE_SUCCESS_FRIEND_PROMOTE).build();
-			saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
-		}else {
-			logger().info("type不为1，为"+type);
-			sendPromoteResultMessage(type, vo, officeAppId, title, content);
+			
 		}
 		return content;
 	}
