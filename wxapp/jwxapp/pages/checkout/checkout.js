@@ -103,7 +103,7 @@ global.wxPage({
           console.log(orderEvent)
           this.setData({
             orderInfo,
-            isAward:orderEvent.getIsAward(orderInfo)
+            isAward:res.content.activityType === 24
           })
           console.log(this.data.orderInfo)
           if(orderInfo.activityType === 4){ //积分兑换数据
