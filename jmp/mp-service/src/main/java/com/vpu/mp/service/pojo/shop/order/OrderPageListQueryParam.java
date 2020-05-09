@@ -77,6 +77,8 @@ public class OrderPageListQueryParam {
 	public Byte refundStatus;
 	/**状态集合:null全部；1商家待处理；2买家待处理；3已完成*/
 	public Byte stateCollection;
+	/**售后方式*/
+	public Byte returnSource[];
     /**
      * 退货退款订单特色参数end
      */

@@ -8,14 +8,6 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
@@ -28,6 +20,12 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
+
+import javax.annotation.Generated;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -43,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReturnOrder extends TableImpl<ReturnOrderRecord> {
 
-    private static final long serialVersionUID = 280405188;
+    private static final long serialVersionUID = 714430512;
 
     /**
      * The reference instance of <code>mini_shop_6797286.b2c_return_order</code>
@@ -232,6 +230,16 @@ public class ReturnOrder extends TableImpl<ReturnOrderRecord> {
      * The column <code>mini_shop_6797286.b2c_return_order.is_auto_return</code>. 0否；1是
      */
     public final TableField<ReturnOrderRecord, Byte> IS_AUTO_RETURN = createField("is_auto_return", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0否；1是");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_return_order.return_source</code>. 售后发起来源：0商家手动发起，1用户主动申请，2订单异常系统自动发起
+     */
+    public final TableField<ReturnOrderRecord, Byte> RETURN_SOURCE = createField("return_source", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "售后发起来源：0商家手动发起，1用户主动申请，2订单异常系统自动发起");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_return_order.return_source_type</code>. 售后发起来源类型：0改价失败自动售后，1微信支付失败，2活动自动售后
+     */
+    public final TableField<ReturnOrderRecord, Byte> RETURN_SOURCE_TYPE = createField("return_source_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "售后发起来源类型：0改价失败自动售后，1微信支付失败，2活动自动售后");
 
     /**
      * Create a <code>mini_shop_6797286.b2c_return_order</code> table reference

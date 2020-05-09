@@ -5,14 +5,12 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.ReturnOrder;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-
-import javax.annotation.Generated;
-
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import javax.annotation.Generated;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 
 /**
@@ -28,7 +26,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
 
-    private static final long serialVersionUID = 1810590402;
+    private static final long serialVersionUID = 2122838809;
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_return_order.ret_id</code>.
@@ -520,6 +518,34 @@ public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
         return (Byte) get(34);
     }
 
+    /**
+     * Setter for <code>mini_shop_6797286.b2c_return_order.return_source</code>. 售后发起来源：0商家手动发起，1用户主动申请，2订单异常系统自动发起
+     */
+    public void setReturnSource(Byte value) {
+        set(35, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_6797286.b2c_return_order.return_source</code>. 售后发起来源：0商家手动发起，1用户主动申请，2订单异常系统自动发起
+     */
+    public Byte getReturnSource() {
+        return (Byte) get(35);
+    }
+
+    /**
+     * Setter for <code>mini_shop_6797286.b2c_return_order.return_source_type</code>. 售后发起来源类型：0改价失败自动售后，1微信支付失败，2活动自动售后
+     */
+    public void setReturnSourceType(Byte value) {
+        set(36, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_6797286.b2c_return_order.return_source_type</code>. 售后发起来源类型：0改价失败自动售后，1微信支付失败，2活动自动售后
+     */
+    public Byte getReturnSourceType() {
+        return (Byte) get(36);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -546,7 +572,7 @@ public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
     /**
      * Create a detached, initialised ReturnOrderRecord
      */
-    public ReturnOrderRecord(Integer retId, Integer orderId, String orderSn, String returnOrderSn, Integer shopId, Integer userId, Integer goodsId, Byte refundStatus, BigDecimal money, BigDecimal shippingFee, Byte returnType, Byte reasonType, String reasonDesc, String shippingType, String shippingNo, String goodsImages, String voucherImages, String phone, Timestamp applyTime, Timestamp applyPassTime, Timestamp applyNotPassTime, Timestamp shippingOrRefundTime, Timestamp refundSuccessTime, Timestamp refundRefuseTime, Timestamp refundCancelTime, String applyNotPassReason, String refundRefuseReason, String returnAddress, String merchantTelephone, String consignee, String zipCode, String currency, Timestamp createTime, Timestamp updateTime, Byte isAutoReturn) {
+    public ReturnOrderRecord(Integer retId, Integer orderId, String orderSn, String returnOrderSn, Integer shopId, Integer userId, Integer goodsId, Byte refundStatus, BigDecimal money, BigDecimal shippingFee, Byte returnType, Byte reasonType, String reasonDesc, String shippingType, String shippingNo, String goodsImages, String voucherImages, String phone, Timestamp applyTime, Timestamp applyPassTime, Timestamp applyNotPassTime, Timestamp shippingOrRefundTime, Timestamp refundSuccessTime, Timestamp refundRefuseTime, Timestamp refundCancelTime, String applyNotPassReason, String refundRefuseReason, String returnAddress, String merchantTelephone, String consignee, String zipCode, String currency, Timestamp createTime, Timestamp updateTime, Byte isAutoReturn, Byte returnSource, Byte returnSourceType) {
         super(ReturnOrder.RETURN_ORDER);
 
         set(0, retId);
@@ -584,5 +610,7 @@ public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
         set(32, createTime);
         set(33, updateTime);
         set(34, isAutoReturn);
+        set(35, returnSource);
+        set(36, returnSourceType);
     }
 }

@@ -389,7 +389,7 @@ public class ApiExternalGateService extends MainBaseService {
         executeParam.setOrderSn(order.getOrderSn());
         executeParam.setOrderId(order.getOrderId());
         executeParam.setAction((byte)OrderServiceCode.RETURN.ordinal());
-        executeParam.setIsMp(OrderConstant.IS_MP_ADMIN);
+        executeParam.setIsMp(OrderConstant.IS_MP_POS);
         executeParam.setReturnType(param.getReturnType());
         executeParam.setReturnMoney(param.getMoney());
         executeParam.setShippingFee(param.getShippingFee());
