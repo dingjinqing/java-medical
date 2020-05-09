@@ -7,9 +7,24 @@ package com.vpu.mp.service.shop.goods.es.goods;
  *
 */
 public class EsGoodsConstant {
-    public static final String GOODS_INDEX_NAME = "es_goods";
+    /**
+     * es商品索引名称前缀
+     */
+    public static final String GOODS_INDEX_NAME_PREFIX = "es_goods_";
+    /**
+     * es商品标签索引名称前缀
+     */
+    public static final String LABEL_INDEX_NAME_PREFIX = "es_goods_label_";
 
-    public static final String LABEL_INDEX_NAME = "es_goods_label";
+
+    /**
+     * es商品索引别名
+     */
+    public static final String GOODS_ALIA_NAME = "vpu_goods";
+    /**
+     * es商品标签索引别名
+     */
+    public static final String LABEL_ALIA_NAME = "vpu_label";
 
 
     /**通用页*/

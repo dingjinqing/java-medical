@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
 import com.vpu.mp.service.foundation.es.EsManager;
+import com.vpu.mp.service.foundation.es.EsUtil;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -309,7 +310,7 @@ public class EsGoodsLabelCreateService extends ShopBaseService {
         BulkRequest requests = new BulkRequest();
         requests.setRefreshPolicy(policy);
         for( EsGoodsLabel goodsLabel: goodsLabelList ){
-            requests.add(esManager.assemblyRequest(EsGoodsConstant.LABEL_INDEX_NAME,goodsLabel));
+            requests.add(EsUtil.assemblyRequest(EsGoodsConstant.LABEL_ALIA_NAME,goodsLabel));
         }
         try {
             esManager.batchDocuments(requests);
@@ -336,7 +337,7 @@ public class EsGoodsLabelCreateService extends ShopBaseService {
         }
         bool.must(QueryBuilders.termQuery(EsLabelName.SHOP_ID,shopId));
 
-        DeleteByQueryRequest request = new DeleteByQueryRequest(EsGoodsConstant.LABEL_INDEX_NAME);
+        DeleteByQueryRequest request = new DeleteByQueryRequest(EsGoodsConstant.LABEL_ALIA_NAME);
         request.setRefresh(Boolean.TRUE);
         request.setQuery(bool);
         esManager.deleteIndexByQuery(request);
