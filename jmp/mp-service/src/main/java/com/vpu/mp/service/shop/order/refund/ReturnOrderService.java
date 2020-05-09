@@ -98,8 +98,7 @@ public class ReturnOrderService extends ShopBaseService{
 	public PageResult<OrderReturnListVo> getPageList(OrderPageListQueryParam param) {
 		SelectJoinStep<Record> select = db().select().from(TABLE);
         buildOptionsReturn(select, param);
-		PageResult<OrderReturnListVo> result = getPageResult(select,param.getCurrentPage(),param.getPageRows(),OrderReturnListVo.class);
-		return result;
+        return getPageResult(select,param.getCurrentPage(),param.getPageRows(),OrderReturnListVo.class);
 	}
 
     public PageResult<ReturnOrderListMp> getPageList(OrderListParam param) {
