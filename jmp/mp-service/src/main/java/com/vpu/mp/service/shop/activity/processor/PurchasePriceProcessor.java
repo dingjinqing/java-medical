@@ -136,11 +136,6 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
                         purchasePriceProcessorDao.purchasePricePutMap(activityMap, goods, cartActivityInfo);
                     }
                 });
-            }else {
-                log.info("购物车-加价购-没有找到合适活动,取消活动选中");
-                cartService.switchActivityGoods(cartBo.getUserId(),goods.getCartId(),0,(byte)0);
-                goods.setActivityType(null);
-                goods.setActivityId(null);
             }
         }
         //启用的活动配置
