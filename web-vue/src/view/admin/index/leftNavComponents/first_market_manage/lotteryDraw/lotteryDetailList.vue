@@ -72,7 +72,11 @@
           :label="$t('seckill.name')"
           prop="userName"
           align="center"
-        ></el-table-column>
+        >
+        <template slot-scope="scope">
+           <el-link type="primary" :underline="false" @click="viewUserHanlder(scope.row.userId)">{{scope.row.userName}}</el-link>
+         </template>
+        </el-table-column>
         <el-table-column
           :label="$t('seckill.mobile')"
           prop="mobile"
@@ -87,7 +91,11 @@
           :label="$t('seckill.inviter')"
           prop="inviteUserName"
           align="center"
-        ></el-table-column>
+        >
+      <template slot-scope="scope">
+           <el-link type="primary" :underline="false" @click="viewUserHanlder(scope.row.inviteId)">{{scope.row.inviteUserName}}</el-link>
+         </template>
+        </el-table-column>
       </el-table>
       <pagination
         :page-params.sync="pageParams"
@@ -143,8 +151,16 @@ export default {
         item.name = this.$route.query.name
       })
       this.tableData = data
+    },
+    // 查看用户明细
+    viewUserHanlder (tagId) {
+      this.$router.push({
+        path: '/admin/home/main/membershipInformation',
+        query: {
+          userId: tagId
+        }
+      })
     }
-
   }
 
 }
