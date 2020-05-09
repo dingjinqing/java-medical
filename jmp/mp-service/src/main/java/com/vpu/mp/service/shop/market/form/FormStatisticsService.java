@@ -335,7 +335,13 @@ public class FormStatisticsService extends ShopBaseService {
      * @return 分页反馈列表信息
      */
     public PageResult<FormFeedVo> feedBackList(FormFeedParam param) {
-        return getPageResult(getFeedBackStep(param), param.getCurrentPage(), param.getPageRows(), FormFeedVo.class);
+        PageResult<FormFeedVo> pageResult = getPageResult(getFeedBackStep(param), param.getCurrentPage(), param.getPageRows(), FormFeedVo.class);
+        pageResult.getDataList().forEach(p->{
+            if (StringUtils.isEmpty(p.getNickName())||p.getNickName()==null){
+                p.setNickName("未知用户");
+            }
+        });
+        return pageResult;
     }
 
     private SelectConditionStep<Record6<Integer, Integer, Integer, String, Timestamp, String>> getFeedBackStep(FormFeedParam param) {
