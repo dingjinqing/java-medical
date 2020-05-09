@@ -36,7 +36,7 @@
       </view>
     </view>
     <view class="shipping_info">
-      <navigator wx:if="{{orderInfo.shippingInfo && orderInfo.shippingInfo[0].shippingId !== 100}}">
+      <navigator wx:if="{{orderInfo.shippingInfo && orderInfo.shippingInfo[0].shippingId !== 42}}">
         <view class="logistics" style='background:url({{imageUrl}}image/wxapp/right_into.png) 95% center no-repeat;background-size:16rpx 32rpx;'>
           <image mode="widthFix" src="{{imageUrl}}image/wxapp/icon_get.png"></image>
           <view class="shipping_info_content">
