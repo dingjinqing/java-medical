@@ -523,7 +523,7 @@ public class GoodsMpService extends ShopBaseService {
         PageResult<GoodsListMpBo> pageResult = null;
         // 拼接分页
         if (limit != null && offset != null) {
-            offset = offset == null ? 0 : offset;
+            offset = offset == null ? 1 : offset;
             pageResult = getPageResult(selectSeekStepN,offset,limit,GoodsListMpBo.class);
         } else {
             List<GoodsListMpBo> list = selectSeekStepN.fetchInto(GoodsListMpBo.class);
