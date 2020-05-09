@@ -163,7 +163,6 @@ export default {
     addCustomAction () {
       this.$refs['content'].validate((valid) => {
         if (valid) {
-          debugger
           let res = JSON.parse(JSON.stringify(this.action))
           if (res.type === 2 || res.type === 3) {
             delete res.content
