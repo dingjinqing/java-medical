@@ -390,8 +390,8 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 		userIdList.add(user.getUserId());
 		String title="恭喜您中奖了";
 		String remark="将尽快为您发货";
-		String[][] data = new String[][] { { title, "#173177" }, {goodsName, "#173177" },
-			{ DateUtil.getLocalDateFormat(), "#173177" }, { remark, "#173177" }};
+		String[][] data = new String[][] { { title, "#173177" }, {goodsName, "#173177" },{"恭喜中奖", "#173177" },{ remark, "#173177" },
+			{ DateUtil.getLocalDateFormat(), "#173177" }};
 		RabbitMessageParam param = RabbitMessageParam.builder()
 				.mpTemplateData(
 						MpTemplateData.builder().config(MpTemplateConfig.ACTIVITY_CONFIG).data(data).build())

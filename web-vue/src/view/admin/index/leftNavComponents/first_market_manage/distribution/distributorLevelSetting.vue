@@ -16,6 +16,29 @@
       @click="centerDialogVisible = true"
     >{{ $t('distribution.levelText') }}</el-button>
 
+    <!-- 新客下首单配置 -->
+    <div style="margin-bottom: 10px;">
+      <el-checkbox v-model="config">
+        邀请新用户下首单且订单中参与返利的商品支付金额达到
+        <el-input
+          v-model="configAmount"
+          size="small"
+          style="width: 100px;margin: 0 5px;"
+          @blur="checkMoney(configAmount)"
+        ></el-input>元, 则给分销员返佣
+        <el-tooltip
+          placement="top"
+          effect="light"
+        >
+          <div slot="content">订单支付金额：包括微信支付、账户余额支付及会员卡余额支付部分；返利订单若满足此条件，则不再执行"返利策略"</div>
+          <span
+            class="el-icon-question"
+            style="color: #666;cursor: pointer;"
+          ></span>
+        </el-tooltip>
+      </el-checkbox>
+    </div>
+
     <el-dialog
       :title="$t('distribution.dialogTitle')"
       :visible.sync="centerDialogVisible"
@@ -56,7 +79,11 @@
           align="center"
         >
           <template slot-scope="scope">
-            <el-input v-model="scope.row.levelName"></el-input>
+            <el-input
+              v-model="scope.row.levelName"
+              size="small"
+              style="width: 170px;"
+            ></el-input>
           </template>
         </el-table-column>
         <el-table-column
@@ -148,6 +175,20 @@
             </div>
           </template>
         </el-table-column>
+
+        <el-table-column
+          label="首单获佣金(元)"
+          align="center"
+          v-if="config === true"
+        >
+          <template slot-scope="scope">
+            <el-input
+              v-model="scope.row.amount"
+              size="small"
+              style="width: 100px;"
+            ></el-input>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
 
@@ -193,7 +234,8 @@ export default {
         totalBuyMoney: 0,
         levelUserIds: null,
         users: '',
-        levelStatus: 1
+        levelStatus: 1,
+        amount: ''
       }, {
         levelId: 2,
         levelName: 'v2',
@@ -203,7 +245,8 @@ export default {
         totalBuyMoney: 0,
         levelUserIds: null,
         users: '',
-        levelStatus: 0
+        levelStatus: 0,
+        amount: ''
       }, {
         levelId: 3,
         levelName: '分销员组3',
@@ -213,7 +256,8 @@ export default {
         totalBuyMoney: 0,
         levelUserIds: null,
         users: '',
-        levelStatus: 1
+        levelStatus: 1,
+        amount: ''
       }, {
         levelId: 4,
         levelName: '分销员组4',
@@ -223,7 +267,8 @@ export default {
         totalBuyMoney: 0,
         levelUserIds: null,
         users: '',
-        levelStatus: 1
+        levelStatus: 1,
+        amount: ''
       }, {
         levelId: 5,
         levelName: '分销员组5',
@@ -233,11 +278,15 @@ export default {
         totalBuyMoney: 0,
         levelUserIds: null,
         users: '',
-        levelStatus: 0
+        levelStatus: 0,
+        amount: ''
       }],
       centerDialogVisible: false, // 规则弹框
       turnUpDialog: false, // 等级弹窗
-      userIds: '' // 手动升级分销员数据回显
+      userIds: '', // 手动升级分销员数据回显
+
+      config: false, // 邀请新客下首单返佣配置
+      configAmount: '' // 返佣金额
     }
   },
   mounted () {
@@ -286,6 +335,10 @@ export default {
 
     // 设置分销员等级
     setDistributionLevel () {
+      if (this.config === true && this.configAmount === '') {
+        this.$message.warning('请填写订单支付金额')
+        return false
+      }
       setDistributionLevel(this.tableData).then((res) => {
         if (res.error === 0) {
           this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
