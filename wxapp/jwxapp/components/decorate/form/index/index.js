@@ -42,6 +42,7 @@ global.wxComponent({
    */
   methods: {
     processModuleData(pageContent) {
+      console.log(pageContent)
       if (!pageContent) return;
       var pageData = pageContent.pageInfo || null;
       if (!pageData) return;
@@ -60,6 +61,9 @@ global.wxComponent({
         module['component_name'] = componentName;
         module['idx'] = idx;
         module['main_setting'] = pageContent.main_setting;
+        if (componentName === 'v-carousel') {
+          module.is_regular_customer = !pageContent.isNewUser
+        }
       }
       // 授权用户信息
       if(pageContent.pageCfg.authorized_name && pageContent.pageCfg.authorized_name == 1){
