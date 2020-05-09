@@ -1,10 +1,12 @@
 package com.vpu.mp.service.shop.market.groupdraw;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.order.OrderExport;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.order.OrderListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.order.OrderListVo;
@@ -14,6 +16,7 @@ import org.jooq.Record12;
 import org.jooq.Record13;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -34,7 +37,6 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
  */
 @Service
 public class GroupDrawOrderService extends ShopBaseService {
-
 	public PageResult<OrderListVo> getGroupDrawOrderList(OrderListParam param) {
 		SelectConditionStep<Record13<String, String, String, Integer, Integer, Timestamp, String, String, Byte, String, Integer, Byte, Boolean>> select = getSelect(
 				param);
@@ -107,7 +109,6 @@ public class GroupDrawOrderService extends ShopBaseService {
 				ORDER_INFO.CONSIGNEE, JOIN_GROUP_LIST.CREATE_TIME, JOIN_GROUP_LIST.IS_WIN_DRAW, ORDER_INFO.ORDER_STATUS,
 				ORDER_GOODS.ORDER_ID, JOIN_GROUP_LIST.STATUS, ORDER_INFO.COMPLETE_ADDRESS);
 	}
-
 	/**
 	 * 订单导出
 	 * 
@@ -135,43 +136,8 @@ public class GroupDrawOrderService extends ShopBaseService {
 			}
 			tempExport.setCreateTime(item.getCreateTime());
 			tempExport.setCodeCount(item.getCodeCount());
-			switch (item.getOrderStatus()) {
-			case OrderConstant.ORDER_WAIT_PAY:
-				tempExport.setOrderStatus("待付款");
-				break;
-			case OrderConstant.ORDER_CANCELLED:
-				tempExport.setOrderStatus("客户已取消");
-				break;
-			case OrderConstant.ORDER_CLOSED:
-				tempExport.setOrderStatus("卖家关闭");
-				break;
-			case OrderConstant.ORDER_WAIT_DELIVERY:
-				tempExport.setOrderStatus("待发货");
-				break;
-			case OrderConstant.ORDER_SHIPPED:
-				tempExport.setOrderStatus("已发货");
-				break;
-			case OrderConstant.ORDER_FINISHED:
-				tempExport.setOrderStatus("已完成");
-				break;
-			case OrderConstant.ORDER_RETURN_FINISHED:
-				tempExport.setOrderStatus("完成退货");
-				break;
-			case OrderConstant.ORDER_REFUND_FINISHED:
-				tempExport.setOrderStatus("退款成功");
-				break;
-			case OrderConstant.ORDER_PIN_PAYED_GROUPING:
-				tempExport.setOrderStatus("拼团中");
-				break;
-			case OrderConstant.ORDER_PIN_SUCCESSS:
-				tempExport.setOrderStatus("已成团");
-				break;
-			case OrderConstant.ORDER_GIVE_GIFT_FINISHED:
-				tempExport.setOrderStatus("礼单已完成");
-				break;
-			default:
-				tempExport.setOrderStatus("订单完成");
-			}
+            tempExport.setOrderStatus(OrderConstant.getOrderStatusName(item.getOrderStatus(),lang));
+
 			orderExport.add(tempExport);
 		});
 		// 表格导出
