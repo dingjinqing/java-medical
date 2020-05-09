@@ -263,14 +263,19 @@ export default {
   },
   mounted () {
     if (this.$route.query.id > 0) {
+      this.requestParams.groupDrawId = Number(this.$route.query.id)
       // 初始化数据
+      this.initDataList()
+    }
+    if (this.$route.query.groupId > 0) {
+      this.requestParams.groupId = this.$route.query.groupId
+      this.requestParams.groupDrawId = this.$route.query.groupDrawId
       this.initDataList()
     }
   },
   methods: {
     initDataList () {
       this.loading = true
-      this.requestParams.groupDrawId = Number(this.$route.query.id)
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
 

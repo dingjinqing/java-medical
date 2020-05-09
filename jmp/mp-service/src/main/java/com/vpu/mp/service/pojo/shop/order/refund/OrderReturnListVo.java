@@ -1,12 +1,11 @@
 package com.vpu.mp.service.pojo.shop.order.refund;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 /**
  * 
@@ -23,4 +22,5 @@ public class OrderReturnListVo extends OrderListInfoVo {
 	private Byte reasonType;
 	private String reasonDesc;
 	private Timestamp shippingOrRefundTime;
+    private Byte returnSource;
 }

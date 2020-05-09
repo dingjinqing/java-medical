@@ -66,7 +66,7 @@
           <div class="filters_item">
             <span>{{$t('order.returnWays')}}：</span>
             <el-select
-              v-model="searchParams.returnWay"
+              v-model="returnWay"
               size="small"
               class="default_input"
               filterable
@@ -227,7 +227,7 @@
                     >
                       {{returnTypeMap.get(orderItem.returnType)}}
                       <br />
-                      (商家手动售后)
+                      ({{$t(`order.returnWaysList`).find(item=>item.value === orderItem.returnSource).label}})
                     </td>
                     <td
                       v-if="index === 0"
@@ -348,8 +348,9 @@ export default {
         pageRows: null,
         stateCollection: null,
         userInfo: null,
-        returnWay: -1
+        returnSource: null
       },
+      returnWay: -1,
       returnTypeMap: null,
       returnStatusMap: null,
       returnStatusToShowMapping: null,
@@ -411,6 +412,16 @@ export default {
         this.searchParams.stateCollection = val
       }
       this.initDataList()
+    },
+    returnWay: {
+      handler: function (val) {
+        console.log(val)
+        if (val === -1) {
+          this.searchParams.returnSource = null
+        } else {
+          this.searchParams.returnSource = [val]
+        }
+      }
     }
   },
   methods: {

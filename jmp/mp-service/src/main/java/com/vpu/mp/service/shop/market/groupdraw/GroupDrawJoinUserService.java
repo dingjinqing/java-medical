@@ -52,7 +52,7 @@ public class GroupDrawJoinUserService extends ShopBaseService {
 	 */
 	public PageResult<InvitedUserListVo> getInvitedUserList(InvitedUserListParam param) {
 		SelectOnConditionStep<Record6<Integer, String, String, Timestamp, Integer, String>> select = db()
-				.select(a.USER_ID, a.USERNAME, a.MOBILE, a.CREATE_TIME, a.INVITE_ID, b.USERNAME.as("inviteUserName"))
+				.select(a.USER_ID, a.USERNAME.as("userName"), a.MOBILE, a.CREATE_TIME, a.INVITE_ID, b.USERNAME.as("inviteUserName"))
 				.from(a).leftJoin(b).on(a.INVITE_ID.eq(b.USER_ID));
 		select.where(a.INVITE_SOURCE.eq("group_draw").and(a.INVITE_ACT_ID.eq(param.getGroupDrawId())));
 		inviteOption(select, param);

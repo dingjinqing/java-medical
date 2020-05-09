@@ -324,10 +324,10 @@ export const en = {
   ],
   returnWaysList: [
     {value: -1, label: 'All'},
-    {value: 1, label: 'Merchant active after-sales'},
-    {value: 2, label: 'The orderer applies for after-sales'},
-    {value: 3, label: 'Auto after-sales'},
-    {value: 4, label: 'ERP after-sales'},
-    {value: 5, label: 'POS after-sales'}
+    {value: 0, label: 'Merchant active after-sales'},
+    {value: 1, label: 'The orderer applies for after-sales'},
+    {value: 2, label: 'Auto after-sales'}
+    // {value: 3, label: 'ERP after-sales'},
+    // {value: 4, label: 'POS after-sales'}
   ]
 }
