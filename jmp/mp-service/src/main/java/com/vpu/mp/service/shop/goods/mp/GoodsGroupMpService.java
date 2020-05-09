@@ -2,19 +2,15 @@ package com.vpu.mp.service.shop.goods.mp;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsGroupListMpParam;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsShowStyleConfigBo;
-import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchContentVo;
+import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpOuterParam;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpParam;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Condition;
-import org.jooq.SortField;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,25 +42,14 @@ public class GoodsGroupMpService extends ShopBaseService {
     GoodsSearchMpService goodsSearchMpService;
 
     /**
-     * 商品分组跳转至搜索页时，展示数据使用方法，和原搜索页过滤条件不同
+     * 根据条件返回符合条件的商品id集合
      * @param param GoodsSearchMpParam 搜索条件，由商品分组页跳转时传递的
      * @return GoodsSearchContentVo
      */
-    public GoodsSearchContentVo getGoodsGroupListFromGoodsSearch(GoodsSearchMpParam param) {
-        Condition condition = buildGoodsGroupCondition(param.getGoodsIds(), param.getSortIds(), param.getLabelIds(), param.getBrandIds());
-
-        List<SortField<?>> sortFields =goodsSearchMpService.buildSearchOrderFields(param);
-
-        PageResult<GoodsListMpBo> pageResult = goodsMpService.findActivityGoodsListCapsulesDao(condition, sortFields, param.getCurrentPage(), param.getPageRows(), null);
-
-        goodsMpService.disposeGoodsList(pageResult.dataList, param.getUserId());
-        GoodsShowStyleConfigBo goodsShowStyle = goodsMpService.getGoodsShowStyle();
-
-        GoodsSearchContentVo vo = new GoodsSearchContentVo();
-        vo.setDelMarket(goodsShowStyle.getDelMarket());
-        vo.setShowCart(goodsShowStyle.getShowCart());
-        vo.setPageResult(pageResult);
-        return vo;
+    public List<Integer> getGoodsIdsLimitedForGoodsSearch(GoodsSearchMpParam param) {
+        GoodsSearchMpOuterParam goodsSearchMpOuterParam = param.getOuterPageParam();
+        Condition condition = buildGoodsGroupCondition(goodsSearchMpOuterParam.getGoodsIds(), goodsSearchMpOuterParam.getSortIds(), goodsSearchMpOuterParam.getLabelIds(), goodsSearchMpOuterParam.getBrandIds());
+        return goodsMpService.getGoodsIdsByCondition(condition);
     }
 
     /**
@@ -91,9 +76,6 @@ public class GoodsGroupMpService extends ShopBaseService {
                     needOrderGoodsIds.addAll(ids);
                 }
             } else {
-                GoodsListMpParam goodsListMpParam = new GoodsListMpParam();
-                goodsListMpParam.setRecommendType(GoodsConstant.AUTO_RECOMMEND);
-                goodsListMpParam.setPageRows(GoodsGroupListMpParam.NUM_TO_SHOW);
                 // 标签
                 if (GoodsGroupListMpParam.LABEL_TYPE.equals(sortGroup.getSortType())) {
                     labelIds.add(sortGroup.getSortId());
