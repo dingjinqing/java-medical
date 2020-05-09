@@ -56,7 +56,12 @@ global.wxPage({
   // 券购搜索
   to_cou_search: function (e) {
     var actId = e.currentTarget.dataset.act_id;
-    util.jumpLink('/pages1/search/search?pageFrom=20&actId=' + actId);
+    util.jumpLink(`/pages1/search/search${util.getUrlParams({
+      pageFrom:20,
+      outerPageParam:JSON.stringify({
+        actId
+      })
+    })}`);
   },
   // 好友助力列表
   to_list: function () {
