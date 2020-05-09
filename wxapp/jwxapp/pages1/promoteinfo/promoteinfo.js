@@ -74,7 +74,7 @@ global.wxPage({
   // 发起助力
   shareGoods: function (e) {
     var that = this;
-    if (promote_info.promoteStatus == -1) {
+    if (promote_info.promoteStatus == -1 || (promote_info.launchFlag == 1 && promote_info.promoteStatus == 2 && promote_info.canLaunch == 1)) {
       launchAct(that);
     }
     if (promote_info.promoteStatus == 0) {
@@ -517,6 +517,18 @@ function promote_request(that) {
           util.showModal('提示', '今天的助力次数已用完了');
         }
       } 
+
+      // 活动完成还可再发起
+      if (promote_info.launchFlag == 1 && promote_info.promoteStatus == 2 && promote_info.canLaunch == 1) {
+        // 助力列表置空
+        promote_info.promoteDetailList == null
+        // 助力进度置空
+        launched_width = 0
+        is_promote_value = 0 // 已助力值
+        promote_info.hasPromoteValue = 0
+        promote_info.hasPromoteTimes = 0 // 已助力次数
+      }
+
       that.setData({
         promote_info: promote_info,
         is_promote_value: is_promote_value,
