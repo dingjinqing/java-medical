@@ -4,6 +4,7 @@ import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,9 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardVo;
@@ -32,6 +36,9 @@ import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.exception.CardActivateException;
 import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardVo;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
+import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.card.param.CardCustomActionParam;
 import com.vpu.mp.service.pojo.wxapp.card.vo.CardCustomActionVo;
@@ -40,6 +47,7 @@ import com.vpu.mp.service.shop.member.CardVerifyService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.shop.user.user.UserService;
 /**
  * @author 黄壮壮
@@ -109,6 +117,7 @@ public class WxAppCardActivationService extends ShopBaseService {
 			
 		}
 		//TODO 订阅消息
+
 		return ActivateCardVo
 				.builder()
 				.education(allEducation)
@@ -222,6 +231,24 @@ public class WxAppCardActivationService extends ShopBaseService {
 					userCardService.updateActivationTime(param.getCardNo(), null);
 					// send coupon
 					memberCardService.sendCoupon(uCard.getUserId(), uCard.getCardId());
+					
+					// 发送消息
+					List<Integer> arrayList = Collections.<Integer>singletonList(param.getUserId());
+					// 公众号消息
+					String[][] mpData = new String[][] {
+						{"审核通过"},
+						{Util.getdate("yyyy-MM-dd HH:mm:ss")},
+						{Util.getdate("yyyy-MM-dd HH:mm:ss")},
+						{"申请会员卡激活"}
+					};
+					
+					RabbitMessageParam param2 = RabbitMessageParam.builder()
+							.mpTemplateData(
+									MpTemplateData.builder().config(MpTemplateConfig.AUDIT_SUCCESS).data(mpData).build())
+							.page("pages/cardinfo/cardinfo?cardNo="+param.getCardNo()).shopId(getShopId())
+							.userIdList(arrayList)
+							.type(MessageTemplateConfigConstant.AUDIT_SUCCESS).build();
+					saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
 				}
 				// add data into card examine
 				CardExamineRecord cardExamineRecord = db().newRecord(CARD_EXAMINE);
