@@ -213,7 +213,12 @@ global.wxPage({
   // 立即使用
   to_search: function (e) {
     var actId = e.currentTarget.dataset.act_id;
-    util.jumpLink('/pages1/search/search?pageFrom=20&actId=' + actId);
+    util.jumpLink(`/pages1/search/search${util.getUrlParams({
+      pageFrom:20,
+      outerPageParam:JSON.stringify({
+        actId
+      })
+    })}`);
   },
 
   // 我的优惠券
