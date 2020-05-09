@@ -28,7 +28,7 @@ public class CardCustomAction {
 		MULTIPLE(1),
 		TEXT(2),
 		PICTURE(3);
-		private Byte val;
+		public Byte val;
 		ActionType(int i){
 			this.val = (byte)i;
 		}

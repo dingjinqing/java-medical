@@ -63,4 +63,9 @@ public class CardCustomActionParam {
 	 * 文本内容
 	 */
 	private String text;
+	
+	/**
+	 * 激活上传图片
+	 */
+	private String[] pictureLinks;
 }

@@ -184,18 +184,7 @@ public class WxAppCardActivationService extends ShopBaseService {
 		List<String> fields = cardVerifyService.getActiveRequiredFieldWithHump(uCard.getActivationCfg());
 		Map<String, Object> activeData = this.filterActiveOption(fields, param.getActivateOption());
 		//	自定义激活项
-		List<CardCustomActionParam> customOptions = param.getCustomOptions();
-		
-		if(customOptions!=null) {
-			for(CardCustomActionParam item: customOptions) {
-				//	确保文本OptionArr不被存储
-				if(item.getCustomType()== (byte)2) {
-					item.setOptionArr(null);
-				}
-			}
-			String customOptJson = Util.toJsonNotNull(customOptions);
-			activeData.put(CARD_EXAMINE.CUSTOM_OPTIONS.getName(),customOptJson);
-		}
+		setCustomAction(param, activeData);
 
 		if(activeData != null ) {
 			// prepare card examine data 
@@ -239,6 +228,27 @@ public class WxAppCardActivationService extends ShopBaseService {
 			throw new CardActivateException();
 		}
 		
+	}
+
+	private void setCustomAction(ActivateCardParam param, Map<String, Object> activeData) {
+		List<CardCustomActionParam> customOptions = param.getCustomOptions();
+		
+		if(customOptions!=null) {
+			for(CardCustomActionParam item: customOptions) {
+				//	确保文本OptionArr不被存储
+				if(CardCustomAction.ActionType.TEXT.val.equals(item.getCustomType())) {
+					item.setOptionArr(null);
+				}
+				//	图片的OptionArr不被存储
+				if(CardCustomAction.ActionType.PICTURE.val.equals(item.getCustomType())) {
+					item.setOptionArr(null);
+				}else {
+					item.setPictureLinks(null);
+				}
+			}
+			String customOptJson = Util.toJsonNotNull(customOptions);
+			activeData.put(CARD_EXAMINE.CUSTOM_OPTIONS.getName(),customOptJson);
+		}
 	}
 
 	

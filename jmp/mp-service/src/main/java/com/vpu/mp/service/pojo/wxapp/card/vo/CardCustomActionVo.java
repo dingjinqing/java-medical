@@ -38,4 +38,9 @@ public class CardCustomActionVo {
 	 */
 	@JsonProperty("isChecked")
 	private Byte checked;
+	
+	/**
+	 * 图片张数
+	 */
+	private Integer pictureNumber;
 }
