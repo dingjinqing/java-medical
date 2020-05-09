@@ -313,21 +313,25 @@ public class LotteryRecordService extends ShopBaseService {
             case LOTTERY_TYPE_GOODS:
                 logger().info("赠品");
                 GoodsView goodsView = goodsService.getGoodsViewByProductId(lotteryPrizeRecord.getPrdId());
-                //扣商品库存
-                atomicOperation.updateStockAndSalesByLock(goodsView.getGoodsId(),recordRecord.getPrdId(),1,true);
-                recordRecord.setPrdId(lotteryPrizeRecord.getPrdId());
-                recordRecord.setPresentStatus(LOTTERY_PRIZE_STATUS_UNCLAIMED);
-                recordRecord.setLotteryAward("赠品:"+goodsView.getGoodsName());
-                Timestamp timeStampPlus = DateUtil.getTimeStampPlus(lotteryPrizeRecord.getPrdKeepDays().intValue(), ChronoUnit.DAYS);
-                recordRecord.setLotteryExpiredTime(timeStampPlus);
-                recordRecord.insert();
-                PrizeRecordRecord prizeRecordRecord = prizeRecordService.savePrize(userId, lotteryRecord.getId(), recordRecord.getId(),
-                        PRIZE_SOURCE_LOTTERY, lotteryPrizeRecord.getPrdId(), lotteryPrizeRecord.getPrdKeepDays().intValue(),null);
-                joinValid.setPrizeId(prizeRecordRecord.getId());
-                joinValid.setLotteryAward("赠品:"+goodsView.getGoodsName());
-                joinValid.setGoodsImage(goodsView.getGoodsImg());
-                joinValid.setGoodsId(goodsView.getGoodsId());
-                joinValid.setProductId(lotteryPrizeRecord.getPrdId());
+                if (goodsView!=null){
+                    //扣商品库存
+                    atomicOperation.updateStockAndSalesByLock(goodsView.getGoodsId(),recordRecord.getPrdId(),1,true);
+                    recordRecord.setPrdId(lotteryPrizeRecord.getPrdId());
+                    recordRecord.setPresentStatus(LOTTERY_PRIZE_STATUS_UNCLAIMED);
+                    recordRecord.setLotteryAward("赠品:"+goodsView.getGoodsName());
+                    Timestamp timeStampPlus = DateUtil.getTimeStampPlus(lotteryPrizeRecord.getPrdKeepDays().intValue(), ChronoUnit.DAYS);
+                    recordRecord.setLotteryExpiredTime(timeStampPlus);
+                    recordRecord.insert();
+                    PrizeRecordRecord prizeRecordRecord = prizeRecordService.savePrize(userId, lotteryRecord.getId(), recordRecord.getId(),
+                            PRIZE_SOURCE_LOTTERY, lotteryPrizeRecord.getPrdId(), lotteryPrizeRecord.getPrdKeepDays().intValue(),null);
+                    joinValid.setPrizeId(prizeRecordRecord.getId());
+                    joinValid.setLotteryAward("赠品:"+goodsView.getGoodsName());
+                    joinValid.setGoodsImage(goodsView.getGoodsImg());
+                    joinValid.setGoodsId(goodsView.getGoodsId());
+                    joinValid.setProductId(lotteryPrizeRecord.getPrdId());
+                }else {
+
+                }
                 break;
             case LOTTERY_TYPE_CUSTOM:
                 logger().info("自定义");
