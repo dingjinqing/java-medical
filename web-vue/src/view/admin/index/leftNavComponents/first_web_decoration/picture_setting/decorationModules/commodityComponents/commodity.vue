@@ -326,7 +326,8 @@ export default {
         goodsListData: []
       },
       initLoad: true, //  是否首次加载
-      contentData: []
+      contentData: [],
+      goodsidArr: []
     }
   },
   watch: {
@@ -437,10 +438,14 @@ export default {
       }
       console.log(this.data.goods_items)
       // 解决手动推荐排序问题
-      if (!this.initLoad && this.data.recommend_type === '1') {
+      this.goodsidArr = []
+      if (this.data.recommend_type === '1') {
         this.data.goodsListData = this.data.goods_items
-        this.handleToActivity(newData.goods_items)
-        return
+        this.data.goods_items.forEach((item, index) => {
+          this.goodsidArr.push(item.goodsId)
+        })
+        // this.handleToActivity(newData.goods_items)
+        // return
       }
 
       queryDataList(obj).then((res) => {
@@ -450,15 +455,30 @@ export default {
             this.data.goods_items = res.content
           }
           console.log(res.content)
-          this.data.goodsListData = res.content
+
           if (res.content.length) {
             this.goodsFlag = true
           } else {
             this.goodsFlag = false
           }
-
-          // 处理显示活动
-          this.handleToActivity(res.content)
+          if (this.data.recommend_type === '1') {
+            let arr = []
+            console.log(this.goodsidArr, res.content)
+            this.goodsidArr.forEach((item, index) => {
+              res.content.forEach((itemC, indexC) => {
+                if (item === itemC.goodsId) {
+                  arr.push(itemC)
+                }
+              })
+            })
+            console.log(arr)
+            this.data.goodsListData = arr
+            this.handleToActivity(arr)
+          } else {
+            this.data.goodsListData = res.content
+            // 处理显示活动
+            this.handleToActivity(res.content)
+          }
 
           // this.initLoad = false
         }
@@ -543,6 +563,7 @@ export default {
             break
         }
       })
+      console.log(this.goodsFlag)
     }
   }
 }

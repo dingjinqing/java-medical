@@ -226,7 +226,6 @@
         <image src="{{ imageUrl }}image/wxapp/close_icon.png" mode='widthFix' bindtap='bindClose'></image>
       </view>
       <view class="content_box">
-        {{promote_info.marketStore}}
         <button bindtap='to_share' wx:if='{{!promote_info.marketStore}}'>
           <image src="{{ imageUrl }}image/wxapp/share_friends.png" mode='widthFix'></image>
           <text>{{i18n.$t(localePack,"page1.promote.promoteShare2")}}</text>

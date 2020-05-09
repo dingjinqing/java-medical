@@ -182,6 +182,9 @@ ALTER TABLE `b2c_order_goods` ADD COLUMN `purchase_id` int(11) NOT NULL DEFAULT 
 
 -- 20200427优惠券礼包活动添加购物车展示选项
 ALTER TABLE `b2c_coupon_pack` ADD COLUMN `show_cart` tinyint(1) DEFAULT '1' COMMENT '购物车是否展示，1是';
+
+-- 20200508微信退款记录表增加订单号字段长度（预售订单补款退款时长度超限制）
+ALTER TABLE `b2c_order_refund_record` MODIFY COLUMN `order_sn` varchar(22) NOT NULL DEFAULT '' COMMENT '订单编号';
 /***********************2.10*********************END*/
 
 
