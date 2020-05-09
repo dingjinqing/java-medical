@@ -12,7 +12,7 @@ export const en = {
   },
   allGoodsHeaderData: {
     goodsName: 'Goods Name',
-    searchGoods: 'Search Goods',
+    searchGoods: 'GoodsName/Sn/PrdSn',
     category: 'Category',
     chooseCategory: 'Please Choose Category',
     sort: 'Sort',

@@ -12,7 +12,7 @@ export const cn = {
   },
   allGoodsHeaderData: {
     goodsName: '商品名称',
-    searchGoods: '搜索商品',
+    searchGoods: '商品名称/货号/规格编码',
     category: '平台分类',
     chooseCategory: '请选择平台分类',
     sort: '商家分类',
