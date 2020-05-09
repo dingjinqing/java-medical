@@ -20,11 +20,13 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.decorate.DecorationTemplatePojo;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
+import com.vpu.mp.service.pojo.shop.config.SuspendWindowConfig;
 import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.decoration.module.*;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.decorate.PageCfgVo;
+import com.vpu.mp.service.shop.config.SuspendWindowConfigService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +38,7 @@ import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -58,6 +61,8 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
     private UpYunConfig upYunConfig;
     @Autowired
     private StorageConfig storageConfig;
+    @Autowired
+    private SuspendWindowConfigService suspendWindowConfigService;
 
     /**
      * 静态图API
@@ -835,13 +840,86 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
             Class m = Class.forName(moduleClassName);
             return objectMapper.readValue(node.getValue().toString(), m);
         }
-        if("page_cfg".equals(node.getKey())){
-            PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
-            if(pageCfg.getPictorial() != null && StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())){
+        if ("page_cfg".equals(node.getKey())) {
+            PageCfgVo pageCfg = objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
+            if (pageCfg.getPictorial() != null && StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())) {
                 pageCfg.getPictorial().setShareImgPath(imageUrl(pageCfg.getPictorial().getShareImgPath()));
             }
             return pageCfg;
         }
         return objectMapper.readValue(node.getValue().toString(), Object.class);
+    }
+
+    /**
+     * 保存悬浮窗草稿
+     *
+     * @param param
+     */
+    public boolean setSuspendWindowConfigDraft(SuspendWindowConfig param) {
+        try {
+            if (StringUtil.isNotBlank(param.getMainBefore())) {
+                param.setMainBefore(new URL(param.getMainBefore()).getPath());
+            }
+            if (StringUtil.isNotBlank(param.getMainAfter())) {
+                param.setMainAfter(new URL(param.getMainAfter()).getPath());
+            }
+            for (SuspendWindowConfig.ChildIcon c : param.getChildrenArr()) {
+                if (StringUtil.isNotBlank(c.getImg())) {
+                    c.setImg(new URL(c.getImg()).getPath());
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        suspendWindowConfigService.setSuspendCfgDraft(param);
+        return true;
+    }
+
+    /**
+     * 保存悬浮窗
+     *
+     * @param param
+     */
+    public boolean setSuspendWindowConfig(SuspendWindowConfig param) {
+        try {
+            if (StringUtil.isNotBlank(param.getMainBefore())) {
+                param.setMainBefore(new URL(param.getMainBefore()).getPath());
+            }
+            if (StringUtil.isNotBlank(param.getMainAfter())) {
+                param.setMainAfter(new URL(param.getMainAfter()).getPath());
+            }
+            for (SuspendWindowConfig.ChildIcon c : param.getChildrenArr()) {
+                if (StringUtil.isNotBlank(c.getImg())) {
+                    c.setImg(new URL(c.getImg()).getPath());
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        suspendWindowConfigService.setSuspendCfg(param);
+        return true;
+    }
+
+    /**
+     * 取悬浮窗草稿
+     *
+     * @return
+     */
+    public SuspendWindowConfig getSuspendWindowConfigDraft() {
+        SuspendWindowConfig res = suspendWindowConfigService.getSuspendCfgDraft();
+        if (StringUtil.isNotBlank(res.getMainBefore())) {
+            res.setMainBefore(domainConfig.imageUrl(res.getMainBefore()));
+        }
+        if (StringUtil.isNotBlank(res.getMainAfter())) {
+            res.setMainAfter(domainConfig.imageUrl(res.getMainAfter()));
+        }
+        for (SuspendWindowConfig.ChildIcon c : res.getChildrenArr()) {
+            if (StringUtil.isNotBlank(c.getImg())) {
+                c.setImg(domainConfig.imageUrl(c.getImg()));
+            }
+        }
+        return res;
     }
 }

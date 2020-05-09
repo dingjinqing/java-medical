@@ -66,9 +66,9 @@ public class ConfigService extends ShopBaseService {
 	public InsteadPayConfigService insteadPayConfigService;
 	@Autowired
 	public CollectGiftConfigService collectGiftConfigService;
-	@Autowired
-	public MessageConfigService messageConfigService;
-	@Autowired
+    @Autowired
+    public MessageConfigService messageConfigService;
+    @Autowired
     public GiftConfigService giftConfigService;
     @Autowired
     public OrderExportConfigService orderExportCfg;
@@ -76,16 +76,19 @@ public class ConfigService extends ShopBaseService {
     public DomainConfig domainConfig;
     @Autowired
     public GoodsConfigService goodsCfg;
-	/**
-	 * 得到店铺配置
-	 *
-	 * @return
-	 */
-	public WxAppConfigVo getAppConfig(WxAppSessionUser user) {
-		ShopRecord shop = saas.shop.getShopById(getShopId());
-		Byte showLogo = shopCommonConfigService.getShowLogo();
-		WxAppConfigVo config = new WxAppConfigVo();
-		Setting setting = WxAppConfigVo.Setting.builder().shopFlag(shop.getShopFlag())
+    @Autowired
+    public SuspendWindowConfigService suspendWindowConfigService;
+
+    /**
+     * 得到店铺配置
+     *
+     * @return
+     */
+    public WxAppConfigVo getAppConfig(WxAppSessionUser user) {
+        ShopRecord shop = saas.shop.getShopById(getShopId());
+        Byte showLogo = shopCommonConfigService.getShowLogo();
+        WxAppConfigVo config = new WxAppConfigVo();
+        Setting setting = WxAppConfigVo.Setting.builder().shopFlag(shop.getShopFlag())
 				.shopStyle(convertShopStyle(shopCommonConfigService.getShopStyle()))
 				.hideBottom(shop.getHidBottom()).build();
 		config.setBottomNavigateMenuList(bottomCfg.getBottomNavigatorConfig());
