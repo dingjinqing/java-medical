@@ -143,13 +143,17 @@ public class PrizeRecordService extends ShopBaseService {
         Timestamp localDateTime = DateUtil.getLocalDateTime();
         Result<PrizeRecordRecord> fetch = db().selectFrom(PRIZE_RECORD).where(PRIZE_RECORD.PRIZE_STATUS.eq(PRIZE_STATUS_UNCLAIMED))
                 .and(PRIZE_RECORD.EXPIRED_TIME.lt(localDateTime)).fetch();
+
         fetch.forEach(prizeRecord->{
-            GoodsView goodsView = goodsService.getGoodsViewByProductId(prizeRecord.getPrdId());
-            try {
-                atomicOperation.updateStockAndSalesByLock(goodsView.getGoodsId(),prizeRecord.getPrdId(),-1,true);
-            } catch (MpException e) {
-                e.printStackTrace();
-                logger().error("我的奖品过期--归还商品库存失败");
+            Record goodsRecord = goodsService.getGoodsByProductId(prizeRecord.getPrdId());
+            if (goodsRecord!=null){
+                GoodsView goodsView = goodsRecord.into(GoodsView.class);
+                try {
+                    atomicOperation.updateStockAndSalesByLock(goodsView.getGoodsId(),prizeRecord.getPrdId(),-1,true);
+                } catch (MpException e) {
+                    e.printStackTrace();
+                    logger().error("我的奖品过期--归还商品库存失败");
+                }
             }
         });
         logger().info("修改我的奖品记录状态");
