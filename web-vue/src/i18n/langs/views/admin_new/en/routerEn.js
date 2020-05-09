@@ -51,6 +51,8 @@ export const en = {
   videoSpace: ['Small Program Management', 'Video space'],
   // 小程序管理 店铺风格
   shopStyle: ['Small Program Management', 'shop style'],
+  // 小程序管理 悬浮窗
+  suspendWindow: ['Small Program Management', 'Applet suspension window'],
   // 小程序管理 底部导航
   bottomNavigation: ['Small Program Management', 'Bottom navigation'],
   // 商品管理 出售中商品
