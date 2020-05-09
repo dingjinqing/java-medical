@@ -34,7 +34,7 @@ export const en = {
     goodsName: 'Name',
     shopPrice: 'Price',
     goodsSn: 'Goods Number',
-    prdSn: 'Product Sn',
+    prdSn: 'Goods/ProductSn',
     noPrdSn: 'No Prd',
     cat: 'Category',
     sort: 'Sort',

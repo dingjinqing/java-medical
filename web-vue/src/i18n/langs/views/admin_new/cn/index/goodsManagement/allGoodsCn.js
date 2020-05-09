@@ -43,7 +43,7 @@ export const cn = {
     goodsName: '名称',
     shopPrice: '价格',
     goodsSn: '商品货号',
-    prdSn: '规格编码',
+    prdSn: '货号/规格编码',
     noPrdSn: '无规格',
     cat: '平台分类',
     sort: '商家分类',
