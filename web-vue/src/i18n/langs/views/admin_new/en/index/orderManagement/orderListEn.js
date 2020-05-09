@@ -235,7 +235,9 @@ export const en = {
     [17, 'Gift order'],
     [18, 'First Order Special Order'],
     [99, 'Payment Orders'],
-    [100, 'Scan code purchase order']
+    [100, 'Scan code purchase order'],
+    [19, 'Pay polite orders'],
+    [24, 'Prize Order']
   ],
   deliverTypeList: [
     [null, 'all'],
