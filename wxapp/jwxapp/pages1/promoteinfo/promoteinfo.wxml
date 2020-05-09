@@ -188,7 +188,8 @@
   <view class='modal_bg' wx:if='{{has_user == 0}}'></view>
   <view class='user_modal' wx:if='{{has_user == 0}}'>
       <view class='user_kuang'>
-          <view>{{i18n.$t(localePack,"page1.promote.promoteUser1")}}</view>
+          <view wx:if="{{promote_info.promoteCondition == 1}}">{{i18n.$t(localePack,"page1.promote.promoteUser1")}}</view>
+          <view wx:if="{{promote_info.promoteCondition == 0}}">{{i18n.$t(localePack,"page1.promote.promoteUser3")}}</view>
           <button class='shouquan_btn' open-type='getUserInfo' bindgetuserinfo="getUserInfo" style='background:{{comColor}}'>{{i18n.$t(localePack,"page1.promote.promoteUser2")}}</button>
       </view>
       <image src='{{imageUrl}}image/wxapp/promote_close.png' class='btn_closr'></image>
