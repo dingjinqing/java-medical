@@ -36,7 +36,7 @@ global.wxComponent({
         initData.sort_group_arr.unshift({
           'group_name': '全部',
           "sort_id": null,
-          "sort_type": null,
+          "sort_type": -1,
           "group_goods_id": null,
           "is_all": null
         })
@@ -62,40 +62,66 @@ global.wxComponent({
     },
     bindMenuClick (e) {
       var d = this.eventData(e);
-      console.log(d)
+      console.log(d, d.index)
+
       var _this = this;
       var m = this.data.m;
+      if (!m.group_nav_index) {
+        m.group_nav_index = 0
+      }
       console.log(m)
       let sortIds = []
       let brandIds = []
       let labelIds = []
       let goodsIds = []
-      m.sort_group_arr.forEach((item, index) => {
-        if (item.sort_id !== null) {
-          switch (item.sort_type) {
-            case '':
-              sortIds.push(item.sort_id)
-              break
-            case '1':
-              labelIds.push(item.sort_id)
-              break
-            case '2':
-              brandIds.push(item.sort_id)
-              break
+      console.log(m.sort_group_arr)
+      let obj = m.sort_group_arr[m.group_nav_index]
+      console.log(obj)
+      if (obj.sort_type == -1) {
+        m.sort_group_arr.forEach((item, index) => {
+          console.log(item)
+          if (item.sort_type != -1) {
+            switch (item.sort_type) {
+              case '':
+                sortIds.push(item.sort_id)
+                break
+              case '1':
+                labelIds.push(item.sort_id)
+                break
+              case '2':
+                brandIds.push(item.sort_id)
+                break
+            }
+            if (item.is_all == 2) {
+              if (item.group_goods_id && !isNaN(Number(item.group_goods_id))) {
+                goodsIds.push(Number(item.group_goods_id))
+              }
+            }
           }
-          sortIds.push(item.sort_id)
+        })
+      } else {
+        switch (obj.sort_type) {
+          case '':
+            sortIds.push(obj.sort_id)
+            break
+          case '1':
+            labelIds.push(obj.sort_id)
+            break
+          case '2':
+            brandIds.push(obj.sort_id)
+            break
         }
-        if (item.is_all == 2) {
-          if (item.group_goods_id && !isNaN(Number(item.group_goods_id))) {
-            goodsIds.push(Number(item.group_goods_id))
+        if (obj.is_all == 2) {
+          if (obj.group_goods_id && !isNaN(Number(obj.group_goods_id))) {
+            goodsIds.push(Number(obj.group_goods_id))
           }
         }
-      })
-      console.log(goodsIds)
+      }
+      console.log(sortIds, brandIds, labelIds, goodsIds)
       if (d.click == 1) {
         util.jumpLink(`/pages1/search/search${util.getUrlParams({
-          pageFrom:0,
-          outerPageParam:JSON.stringify({
+          pageFrom: 0,
+          outerPageParam: JSON.stringify({
             sortIds,
             brandIds,
             labelIds,
