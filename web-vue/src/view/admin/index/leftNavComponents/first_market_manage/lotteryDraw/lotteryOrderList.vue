@@ -56,7 +56,7 @@
         >
           <template slot-scope="scope">
             <p>{{scope.row.consigneeRealName}}</p>
-            <p>{{scope.row.mobile}}</p>
+            <p>{{scope.row.mobile}}<i class="el-icon-document-copy" style="color: #5a8bff;margin-left: 10px;" @click="copyAddress(scope.row)"></i></p>
           </template>
         </el-table-column>
         <el-table-column
@@ -103,11 +103,13 @@
 <script>
 import { download } from '@/util/excelUtil.js'
 import { orderLotteryList, lotteryOrderListExport } from '@/api/admin/marketManage/lotteryDraw.js'
+import VueClipboard from 'vue-clipboard2'
 export default {
   components: {
     marketOrderSearchTab: () => import('@/components/admin/marketManage/marketOrderSearchTab.vue'),
     pagination: () => import('@/components/admin/pagination/pagination.vue'),
-    exportForm: () => import('@/components/admin/marketManage/exportConfirmDialog.vue')
+    exportForm: () => import('@/components/admin/marketManage/exportConfirmDialog.vue'),
+    VueClipboard
   },
   data () {
     return {
@@ -236,6 +238,16 @@ export default {
         query: {
           orderSn: orderSn
         }
+      })
+    },
+    copyAddress (mesg) {
+      let messgae = mesg.consigneeRealName + ' ' + mesg.mobile + ' ' + mesg.completeAddress
+      this.$copyText(messgae).then(res => {
+        // this.$message.success('已复制到剪贴板</br>' + messgae)
+        this.$message.success({
+          dangerouslyUseHTMLString: true,
+          message: '<span style="text-align: center;display:block;">已复制到剪贴板<span></br>' + messgae
+        })
       })
     }
   }
