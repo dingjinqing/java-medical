@@ -122,7 +122,7 @@
                   effect="dark"
                   :content="$t('marketCommon.edit')"
                   placement="top"
-                  v-if="scope.row.status === 1"
+                  v-if="scope.row.status === 1 && [1,2].includes(scope.row.currentState)"
                 >
                   <i
                     class="el-icon-edit-outline"
@@ -146,6 +146,7 @@
                   effect="dark"
                   :content="$t('marketCommon.share')"
                   placement="top"
+                  v-if="scope.row.status === 1 && scope.row.currentState === 1"
                 >
                   <i
                     class="el-icon-share"
@@ -153,7 +154,7 @@
                   ></i>
                 </el-tooltip>
                 <el-tooltip
-                  v-if="scope.row.status === 1"
+                  v-if="scope.row.status === 1 && [1,2].includes(scope.row.currentState)"
                   class="item"
                   effect="dark"
                   :content="$t('marketCommon.disable')"
@@ -165,7 +166,7 @@
                   ></i>
                 </el-tooltip>
                 <el-tooltip
-                  v-else
+                  v-if="scope.row.status === 0 && [1,2,4].includes(scope.row.currentState)"
                   class="item"
                   effect="dark"
                   :content="$t('marketCommon.enabled')"
