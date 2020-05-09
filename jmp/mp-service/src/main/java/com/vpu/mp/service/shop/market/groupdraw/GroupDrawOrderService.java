@@ -93,6 +93,15 @@ public class GroupDrawOrderService extends ShopBaseService {
 		if (null != createTime) {
 			select.and(DSL.date(ORDER_INFO.CREATE_TIME).eq(new Date(createTime.getTime())));
 		}
+		if(null!=param.getProvinceCode()) {
+			select.and(ORDER_INFO.PROVINCE_CODE.eq(param.getProvinceCode()));
+		}
+		if(null!=param.getCityCode()) {
+			select.and(ORDER_INFO.CITY_CODE.eq(param.getCityCode()));
+		}
+		if(null!=param.getDistrictCode()) {
+			select.and(ORDER_INFO.DISTRICT_CODE.eq(param.getDistrictCode()));
+		}
 		select.groupBy(JOIN_GROUP_LIST.USER_ID, JOIN_GROUP_LIST.ORDER_SN, JOIN_GROUP_LIST.GOODS_ID,
 				ORDER_GOODS.GOODS_IMG, ORDER_GOODS.GOODS_NAME, ORDER_INFO.CREATE_TIME, ORDER_INFO.MOBILE,
 				ORDER_INFO.CONSIGNEE, JOIN_GROUP_LIST.CREATE_TIME, JOIN_GROUP_LIST.IS_WIN_DRAW, ORDER_INFO.ORDER_STATUS,
