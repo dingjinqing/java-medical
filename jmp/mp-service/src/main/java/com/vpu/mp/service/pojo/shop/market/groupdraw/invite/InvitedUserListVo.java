@@ -11,15 +11,15 @@ import java.sql.Timestamp;
 public class InvitedUserListVo {
 
     /** 新用户id **/
-    private Integer invitedUserId;
+    private Integer userId;
     /** 新用户昵称 **/
-    private String invitedUsername;
+    private String userName;
     /** 新用户手机号 **/
-    private String invitedUserMobile;
+    private String mobile;
     /** 邀请人id **/
-    private Integer inviteUserId;
+    private Integer inviteId;
     /** 邀请人昵称 **/
-    private String inviteUsername;
+    private String inviteUserName;
     /** 注册时间 **/
     private Timestamp createTime;
 }

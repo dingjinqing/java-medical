@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.groupdraw;
 
+import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.invite.InvitedUserListParam;
@@ -11,8 +12,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record10;
+import org.jooq.Record6;
 import org.jooq.Record7;
 import org.jooq.SelectConditionStep;
+import org.jooq.SelectOnConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,52 +41,37 @@ public class GroupDrawJoinUserService extends ShopBaseService {
 	private GroupDrawService groupDrawService;
 
 	/** 查询别名 **/
-	private static final String ALIAS_NEW = "n";
-	private static final String ALIAS_OLD = "o";
 	private static final byte ZERO = 0;
 	private static final byte ONE = 1;
 	private static final byte TWO = 2;
+	User a = USER.as("a");
+	User b = USER.as("b");
 
 	/**
 	 * 新用户列表
 	 */
 	public PageResult<InvitedUserListVo> getInvitedUserList(InvitedUserListParam param) {
-		SelectConditionStep<Record7<Timestamp, Integer, Integer, Integer, String, String, String>> select = db()
-				.select(GROUP_DRAW_INVITE.CREATE_TIME, GROUP_DRAW_INVITE.IDENTITY_ID,
-						GROUP_DRAW_INVITE.INVITE_USER_ID.as("inviteUserId"),
-						GROUP_DRAW_INVITE.USER_ID.as("invitedUserId"),
-						USER.as(ALIAS_NEW).USERNAME.as("invitedUsername"),
-						USER.as(ALIAS_OLD).USERNAME.as("inviteUsername"),
-						USER.as(ALIAS_NEW).MOBILE.as("invitedUserMobile"))
-				.from(GROUP_DRAW_INVITE).leftJoin(USER.as(ALIAS_NEW))
-				.on(USER.as(ALIAS_NEW).USER_ID.eq(GROUP_DRAW_INVITE.USER_ID)).leftJoin(USER.as(ALIAS_OLD))
-				.on(USER.as(ALIAS_OLD).USER_ID.eq(GROUP_DRAW_INVITE.INVITE_USER_ID)).where();
-		buildInvitedUserOptions(select, param);
-		select.orderBy(GROUP_DRAW_INVITE.CREATE_TIME.desc());
+		SelectOnConditionStep<Record6<Integer, String, String, Timestamp, Integer, String>> select = db()
+				.select(a.USER_ID, a.USERNAME, a.MOBILE, a.CREATE_TIME, a.INVITE_ID, b.USERNAME.as("inviteUserName"))
+				.from(a).leftJoin(b).on(a.INVITE_ID.eq(b.USER_ID));
+		select.where(a.INVITE_SOURCE.eq("group_draw").and(a.INVITE_ACT_ID.eq(param.getGroupDrawId())));
+		inviteOption(select, param);
+		select.orderBy(a.CREATE_TIME.desc());
 		return getPageResult(select, param, InvitedUserListVo.class);
 	}
 
-	/**
-	 * 新用户查询条件
-	 */
-	private void buildInvitedUserOptions(
-			SelectConditionStep<Record7<Timestamp, Integer, Integer, Integer, String, String, String>> select,
-			InvitedUserListParam param) {
-		Integer groupDrawId = param.getGroupDrawId();
-		String nickName = param.getNickName();
-		String mobile = param.getMobile();
-		String inviteUserNickname = param.getInviteUserNickname();
-		select.and(GROUP_DRAW_INVITE.IDENTITY_ID.eq(groupDrawId));
-		if (isNotEmpty(nickName)) {
-			select.and(USER.as(ALIAS_NEW).USERNAME.like(likeValue(nickName)));
+	public void inviteOption(SelectOnConditionStep<Record6<Integer, String, String, Timestamp, Integer, String>> select,InvitedUserListParam param) {
+		if(StringUtils.isNotBlank(param.getMobile())) {
+			select.and(a.MOBILE.like(likeValue(param.getMobile())));
 		}
-		if (isNotEmpty(mobile)) {
-			select.and(USER.as(ALIAS_NEW).MOBILE.like(likeValue(mobile)));
+		if(StringUtils.isNotBlank(param.getNickName())) {
+			select.and(a.USERNAME.like(likeValue(param.getNickName())));
 		}
-		if (isNotEmpty(inviteUserNickname)) {
-			select.and(USER.as(ALIAS_OLD).USERNAME.like(likeValue(inviteUserNickname)));
+		if(StringUtils.isNotBlank(param.getInviteUserNickname())) {
+			select.and(b.USERNAME.like(likeValue(param.getInviteUserNickname())));
 		}
 	}
+
 
 	/**
 	 * 参与用户列表
@@ -96,7 +84,8 @@ public class GroupDrawJoinUserService extends ShopBaseService {
 				.where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(param.getGroupDrawId()));
 		select = buildOptions(select, param);
 		select.orderBy(JOIN_GROUP_LIST.OPEN_TIME.desc());
-		PageResult<JoinUserListVo> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), JoinUserListVo.class);
+		PageResult<JoinUserListVo> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				JoinUserListVo.class);
 		List<JoinUserListVo> dataList = pageResult.getDataList();
 		for (JoinUserListVo vo : dataList) {
 			vo.setDrawNum(groupDrawService.getDrawNum(vo.getGroupDrawId(), vo.getUserId(), vo.getGoodsId()));
@@ -134,8 +123,8 @@ public class GroupDrawJoinUserService extends ShopBaseService {
 		if (null != param.getMaxInviteUserCount()) {
 			select.and(JOIN_GROUP_LIST.INVITE_USER_NUM.le(param.getMaxInviteUserCount()));
 		}
-		if(null!=param.getIsGrouper()) {
-			select.and(JOIN_GROUP_LIST.IS_GROUPER.eq(param.getIsGrouper()?ONE:ZERO));
+		if (null != param.getIsGrouper()) {
+			select.and(JOIN_GROUP_LIST.IS_GROUPER.eq(param.getIsGrouper() ? ONE : ZERO));
 		}
 		return select;
 	}

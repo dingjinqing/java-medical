@@ -274,7 +274,7 @@ public class UserService extends ShopBaseService {
 			String path = pathQuery.getPath();
 			Map<String, String> query = pathQuery.getQuery();
 			String groupDrawId = pathQuery.getQuery().get("group_draw_id");
-			if (path.equals("pages/pinlotteryinfo/pinlotteryinfo") && groupDrawId != null
+			if (path.equals("pages1/pinlotteryinfo/pinlotteryinfo") && groupDrawId != null
 					&& pathQuery.getQuery().get("invite_id") != null) {
 				pathQuery.getQuery().put("user_id", userId.toString());
 				saas.getShopApp(this.getShopId()).groupDraw.groupDrawInvite.createInviteRecord(path,  Integer.valueOf(groupDrawId),query, (byte) 1);
@@ -313,7 +313,7 @@ public class UserService extends ShopBaseService {
 			map.put("invite_source", "groupbuy");// 拼团
 			map.put("invite_act_id", pathQuery.getQuery().get("pin_group_id"));
 		}
-		if (path.equals("pages/bargainitem/bargainitem") || path.equals("pages/bargaininfo/bargaininfo")) {
+		if (path.equals("pages/bargainlist/bargainlist") || path.equals("pages/bargaininfo/bargaininfo")) {
 			map.put("invite_source", "bargain");// 砍价
 			map.put("invite_act_id", pathQuery.getQuery().get("bargain_id"));
 		}
@@ -321,19 +321,19 @@ public class UserService extends ShopBaseService {
 			map.put("invite_source", "seckill");// 秒杀
 			map.put("invite_act_id", pathQuery.getQuery().get("sk_id"));
 		}
-		if (path.equals("pages/integralitem/integralitem")) {
+		if (path.equals("pages1/integral/integral")) {
 			map.put("invite_source", "integral");// 积分购买
 			map.put("invite_act_id", pathQuery.getQuery().get("integral_goods_id"));
 		}
-		if (path.equals("pages/lottery/lottery")) {
+		if (path.equals("pages1/lottery/lottery")) {
 			map.put("invite_source", "lottery");// 抽奖
 			map.put("invite_act_id", pathQuery.getQuery().get("lottery_id"));
 		}
-		if (path.equals("pages/form/form")) {
+		if (path.equals("pages1/form/form")) {
 			map.put("invite_source", "form");// 表单
 			map.put("invite_act_id", pathQuery.getQuery().get("page_id"));
 		}
-		if (path.equals("pages/usercardinfo/usercardinfo")) {
+		if (path.equals("pages/cardinfo/cardinfo")) {
 			map.put("invite_source", "membercard");// 会员卡
 			map.put("invite_act_id", pathQuery.getQuery().get("card_id"));
 		}
@@ -380,11 +380,11 @@ public class UserService extends ShopBaseService {
 			map.put("invite_source", "purchase_price");// 满折满减
 			map.put("invite_act_id", pathQuery.getQuery().get("identity_id"));
 		}
-		if (path.equals("pages/pinlotteryinfo/pinlotteryinfo")) {
+		if (path.equals("pages1/pinlotteryinfo/pinlotteryinfo")) {
 			map.put("invite_source", "group_draw");// 拼团抽奖
 			map.put("invite_act_id", pathQuery.getQuery().get("group_draw_id"));
 		}
-		if (path.equals("pages/pinintegration/pinintegration")) {
+		if (path.equals("pages1/pinintegration/pinintegration")) {
 			map.put("invite_source", "pin_integration");// 拼团抽奖
 			map.put("invite_act_id", pathQuery.getQuery().get("pinInte_id"));
 		}

@@ -29,9 +29,10 @@
         label-width="120px"
         style="margin-top: 20px;"
         size="small"
+        label-suffix="："
       >
         <el-form-item
-          :label="$t('addStore.storeName') + '：'"
+          :label="$t('addStore.storeName') "
           prop="storeName"
         >
           <el-input
@@ -40,7 +41,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item
-          :label="$t('addStore.principal') + '：'"
+          :label="$t('addStore.principal') "
           prop="manager"
         >
           <el-input
@@ -49,7 +50,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item
-          :label="$t('addStore.contactNum') + '：'"
+          :label="$t('addStore.contactNum') "
           prop="mobile"
         >
           <el-input
@@ -58,7 +59,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item
-          :label="$t('addStore.businessStatus') + '：'"
+          :label="$t('addStore.businessStatus') "
           prop="businessState"
         >
           <el-radio-group v-model="storeFormInfo.businessState">
@@ -67,7 +68,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item
-          :label="$t('addStore.BusinessHours') + '：'"
+          :label="$t('addStore.BusinessHours') "
           prop="businessType"
         >
           <el-radio-group v-model="storeFormInfo.businessType">
@@ -92,7 +93,7 @@
           <p style="margin-left: 172px; color: #a0a0a0;">{{$t('addStore.timeTip')}} 9:00-21:00</p>
         </el-form-item>
         <el-form-item
-          :label="$t('addStore.ownedGroup') + '：'"
+          :label="$t('addStore.ownedGroup') "
           prop="group"
         >
           <el-select
@@ -121,16 +122,18 @@
           >{{$t('addStore.addNewGroup')}}</el-button>
         </el-form-item>
         <el-form-item
-          :label="$t('addStore.storeNum') + '：'"
+          :label="$t('addStore.storeNum') "
           prop="posShopId"
         >
           <el-input
             v-model.number="storeFormInfo.posShopId"
             :placeholder="$t('addStore.storeNumTip')"
+            maxlength="9"
+            show-word-limit
           ></el-input>
         </el-form-item>
         <el-form-item
-          :label="$t('addStore.location') + '：'"
+          :label="$t('addStore.location') "
           prop="provinceCode"
         >
           <div>
@@ -142,7 +145,7 @@
           </div>
         </el-form-item>
         <el-form-item
-          :label="$t('addStore.mapLocation') + '：'"
+          :label="$t('addStore.mapLocation') "
           prop="address"
         >
           <el-input
@@ -159,7 +162,7 @@
           ></div>
         </el-form-item>
         <el-form-item
-          :label="$t('addStore.specialService') + '：'"
+          :label="$t('addStore.specialService') "
           prop="storeService"
         >
           <el-checkbox-group v-model="storeService">
@@ -180,7 +183,7 @@
           >{{$t('addStore.add')}}</el-button>
         </el-form-item>
         <el-form-item
-          :label="$t('addStore.storePhoto') + '：'"
+          :label="$t('addStore.storePhoto') "
           prop="storeImgs"
         >
           <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
@@ -214,7 +217,7 @@
           </div>
         </el-form-item>
         <el-form-item
-          :label="$t('addStore.storeDetails') + '：'"
+          :label="$t('addStore.storeDetails') "
           prop="storeDetail"
         >
           <div class="edit-wrap">
@@ -285,62 +288,123 @@
             </div>
           </div>
         </div>
-      </div>
-      <!-- 同城配送信息 -->
-      <el-form
-        v-show="this.stepData.currentStep == 1 && this.switchRight == true"
-        ref="deliveryForm"
-        :model="deliveryMessage"
-        :rules="deliveryFormRules"
-        class="deliveryMsg"
-        label-width="120px"
-        size="small"
-      >
-        <el-form-item :label="$t('addStore.receiptAddress') + '：'">
-          <span>{{address + storeFormInfo.address}}</span><br />
-          <span style="color: #999; font-size: 14px; ">{{$t('addStore.pickUpTip')}}</span>
-        </el-form-item>
-        <el-form-item
-          :label="$t('addStore.deliveryArea') + '：'"
-          prop="deliveryArea"
+        <!-- 同城配送信息 -->
+        <el-form
+          ref="deliveryForm"
+          :model="deliveryMessage"
+          :rules="deliveryFormRules"
+          class="deliveryMsg"
+          label-width="140px"
+          size="small"
+          label-suffix="："
         >
-          {{$t('addStore.aroundTheStore')}}&nbsp;&nbsp;<el-input
-            v-model="deliveryMessage.deliveryArea"
-            style="width: 80px;"
-          ></el-input>&nbsp;&nbsp;{{$t('addStore.withinKilo')}}
-        </el-form-item>
-        <el-form-item
-          :label="$t('addStore.distributionPrice') + '：'"
-          prop="deliveryPrice"
-        >
-          <el-input
-            v-model="deliveryMessage.deliveryPrice"
-            style="width: 80px;"
-          ></el-input>&nbsp;&nbsp;{{$t('addStore.yuan')}}
-        </el-form-item>
-        <el-form-item
-          :label="$t('addStore.mailStrategy') + '：'"
-          prop="deliveryPolicy"
-        >
-          {{$t('addStore.fullPayTip')}}&nbsp;&nbsp;<el-input
-            v-model="deliveryMessage.deliveryPolicy"
-            style="width: 80px;"
-          ></el-input>&nbsp;&nbsp;{{$t('addStore.fullPayTip2')}}
-        </el-form-item>
-        <el-form-item
-          :label="$t('addStore.deliveryMethod') + '：'"
-          prop="deliveryType"
-        >
-          <el-checkbox-group v-model="deliveryMessage.deliveryType">
-            <el-checkbox name="deliveryType">{{$t('addStore.businessSelfDelivery')}}&nbsp;&nbsp;<span style="color: #999;">({{$t('addStore.bs_Tip')}})</span></el-checkbox><br />
-            <el-checkbox
-              name="deliveryType"
-              style="margin-left: 7%;"
-            >{{$t('addStore.thridDelivery')}}&nbsp;&nbsp;<span style="color: #999;">({{$t('addStore.thridPremise')}})</span></el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-      </el-form>
+          <el-form-item :label="$t('addStore.receiptAddress')">
+            <span>{{address + storeFormInfo.address}}</span><br />
+            <span style="color: #999; font-size: 14px; ">{{$t('addStore.pickUpTip')}}</span>
+          </el-form-item>
+          <div class="">
+            <el-form-item
+              label="自提取货时间"
+              required
+            >
+              <div class="pick-up-time">
+                <div>
+                  <el-radio></el-radio>
+                  <span>门店营业时间</span>
+                  <el-popover
+                    placement="top"
+                    width="300"
+                    trigger="hover"
+                    content="用户可选择提交订单后任意门店营业时间进行提货"
+                  >
+                    <i
+                      slot="reference"
+                      style="color:#ccc;"
+                      class="el-icon-question"
+                    ></i>
+                  </el-popover>
+                </div>
+                <div>
+                  <el-radio></el-radio>
+                  <span>提交订单</span>
+                  <el-input-number
+                    v-model="num"
+                    controls-position="right"
+                    @change="handleChange"
+                    :min="1"
+                    :max="10"
+                  ></el-input-number>
+                  <el-select v-model="timeUnit">
+                    <el-option
+                      label="小时"
+                      value="0"
+                    ></el-option>
+                    <el-option
+                      label="天"
+                      value="1"
+                    ></el-option>
+                  </el-select>
+                  <span>后可到店提货</span>
+                  <el-popover
+                    placement="top"
+                    width="300"
+                    trigger="hover"
+                    content="用户可在提交订单一段时间后的时间范围内选择提货时间"
+                  >
+                    <i
+                      slot="reference"
+                      style="color:#ccc;"
+                      class="el-icon-question"
+                    ></i>
+                  </el-popover>
+                </div>
 
+              </div>
+            </el-form-item>
+          </div>
+          <div v-if="this.switchRight == true">
+            <el-form-item
+              :label="$t('addStore.deliveryArea') "
+              prop="deliveryArea"
+            >
+              {{$t('addStore.aroundTheStore')}}&nbsp;&nbsp;<el-input
+                v-model="deliveryMessage.deliveryArea"
+                style="width: 80px;"
+              ></el-input>&nbsp;&nbsp;{{$t('addStore.withinKilo')}}
+            </el-form-item>
+            <el-form-item
+              :label="$t('addStore.distributionPrice') "
+              prop="deliveryPrice"
+            >
+              <el-input
+                v-model="deliveryMessage.deliveryPrice"
+                style="width: 80px;"
+              ></el-input>&nbsp;&nbsp;{{$t('addStore.yuan')}}
+            </el-form-item>
+            <el-form-item
+              :label="$t('addStore.mailStrategy') "
+              prop="deliveryPolicy"
+            >
+              {{$t('addStore.fullPayTip')}}&nbsp;&nbsp;<el-input
+                v-model="deliveryMessage.deliveryPolicy"
+                style="width: 80px;"
+              ></el-input>&nbsp;&nbsp;{{$t('addStore.fullPayTip2')}}
+            </el-form-item>
+            <el-form-item
+              :label="$t('addStore.deliveryMethod') "
+              prop="deliveryType"
+            >
+              <el-checkbox-group v-model="deliveryMessage.deliveryType">
+                <el-checkbox name="deliveryType">{{$t('addStore.businessSelfDelivery')}}&nbsp;&nbsp;<span style="color: #999;">({{$t('addStore.bs_Tip')}})</span></el-checkbox><br />
+                <el-checkbox
+                  name="deliveryType"
+                  style="margin-left: 7%;"
+                >{{$t('addStore.thridDelivery')}}&nbsp;&nbsp;<span style="color: #999;">({{$t('addStore.thridPremise')}})</span></el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+          </div>
+        </el-form>
+      </div>
       <!-- 底部按钮组件 -->
       <div class="storeFooter">
         <el-button
@@ -805,7 +869,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .storeWrap {
   padding: 10px 10px;
   overflow-y: auto;
@@ -935,5 +999,10 @@ export default {
 .edit-wrap {
   width: 600px;
   height: 400px;
+}
+.pick-up-time {
+  /deep/ .el-radio {
+    margin-right: 0;
+  }
 }
 </style>

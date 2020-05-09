@@ -315,7 +315,7 @@ public class GroupDrawUserService extends ShopBaseService {
 		Integer goodsId = userJoinGroup.getGoodsId();
 		GoodsRecord good = drawService.getGood(goodsId);
 		String goodsName = good.getGoodsName();
-		String page = "pages/pinlotteryinfo/pinlotteryinfo?group_id=" + userJoinGroup.getGroupId() + "&group_draw_id="
+		String page = "pages1/pinlotteryinfo/pinlotteryinfo?group_id=" + userJoinGroup.getGroupId() + "&group_draw_id="
 				+ userJoinGroup.getGroupDrawId() + "&goods_id=" + goodsId;
 		String msg = Objects.equals(isWinDraw, ONE) ? "恭喜您中奖了" : "很遗憾您未中奖";
 		String marketName = groupDrawInfo.getName();

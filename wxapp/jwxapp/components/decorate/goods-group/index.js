@@ -86,13 +86,22 @@ global.wxComponent({
           sortIds.push(item.sort_id)
         }
         if (item.is_all == 2) {
-          if (item.group_goods_id != '') {
+          if (item.group_goods_id && !isNaN(Number(item.group_goods_id))) {
             goodsIds.push(Number(item.group_goods_id))
           }
         }
       })
+      console.log(goodsIds)
       if (d.click == 1) {
-        util.jumpLink('/pages1/search/search?sortIds=' + JSON.stringify(sortIds) + '&brandIds=' + JSON.stringify(brandIds) + '&labelIds=' + JSON.stringify(labelIds) + '&pageFrom=' + 0 + '&goodsIds=' + JSON.stringify(goodsIds));
+        util.jumpLink(`/pages1/search/search${util.getUrlParams({
+          pageFrom:0,
+          outerPageParam:JSON.stringify({
+            sortIds,
+            brandIds,
+            labelIds,
+            goodsIds
+          })
+        })}`);
       } else {
         m.group_nav_index = d.index;
         m.page_num = 1;

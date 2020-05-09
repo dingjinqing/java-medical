@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
@@ -13,6 +14,7 @@ import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.member.MemberBasicInfoVo;
+import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardParam;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
@@ -110,6 +112,63 @@ public class CardMsgNoticeService extends ShopBaseService {
 				.page("pages/cardinfo/cardinfo?card_no="+cardNo).shopId(getShopId())
 				.userIdList(arrayList)
 				.type(MessageTemplateConfigConstant.SUCCESS_MEMBER_CARD_GET).build();
+		saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
+	}
+	
+	/**
+	 * 会员卡审核成功消息
+	 * @param param
+	 */
+	public void sendAuditSuccessMsg(ActivateCardParam param) {
+		List<Integer> arrayList = Collections.<Integer>singletonList(param.getUserId());
+		// 公众号消息
+		String[][] mpData = new String[][] {
+			{"审核通过"},
+			{Util.getdate("yyyy-MM-dd HH:mm:ss")},
+			{Util.getdate("yyyy-MM-dd HH:mm:ss")},
+			{"申请会员卡激活"}
+		};
+		
+		RabbitMessageParam param2 = RabbitMessageParam.builder()
+				.mpTemplateData(
+						MpTemplateData.builder().config(MpTemplateConfig.AUDIT_SUCCESS).data(mpData).build())
+				.page("pages/cardinfo/cardinfo?cardNo="+param.getCardNo()).shopId(getShopId())
+				.userIdList(arrayList)
+				.type(MessageTemplateConfigConstant.AUDIT_SUCCESS).build();
+		saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
+	}
+	
+	/**
+	 * 会员卡审核失败消息
+	 * @param re
+	 */
+	public void sendAuditSuccessMsg(CardExamineRecord re) {
+		Integer userId = re.getUserId();
+		String cardNo = re.getCardNo();
+		List<Integer> arrayList = Collections.<Integer>singletonList(userId);
+		// 订阅消息
+		String[][] maData = new String[][] {
+			{Util.getdate("yyyy-MM-dd HH:mm:ss")},
+			{"审核不通过"},
+			{"很遗憾，您提交的会员卡激活申请未通过审核"}
+		};
+		MaSubscribeData data = MaSubscribeData.builder().data307(maData).build();
+		// 公众号消息
+		String[][] mpData = new String[][] {
+			{"审核未通过"},
+			{Util.getdate("yyyy-MM-dd HH:mm:ss")},
+			{re.getRefuseDesc()},
+			{re.getCreateTime().toLocalDateTime().toString()},
+			{"申请会员卡激活"}
+		};
+		RabbitMessageParam param2 = RabbitMessageParam.builder()
+				.maTemplateData(
+						MaTemplateData.builder().config(SubcribeTemplateCategory.AUDIT).data(data).build())
+				.mpTemplateData(
+						MpTemplateData.builder().config(MpTemplateConfig.AUDIT_FAIL).data(mpData).build())
+				.page("pages/cardinfo/cardinfo?card_no="+cardNo).shopId(getShopId())
+				.userIdList(arrayList)
+				.type(MessageTemplateConfigConstant.FAIL_REVIEW).build();
 		saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
 	}
 }

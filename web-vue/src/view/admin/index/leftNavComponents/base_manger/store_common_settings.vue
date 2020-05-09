@@ -6,6 +6,32 @@
         <li>
           <div class="text-prompt">
             <span class="blue_border"></span>
+            <span>{{$t('storeCommonSettings.goodsSearchSettings')}}</span>
+          </div>
+          <div class="text-set clearfix">
+            <el-switch
+              v-model="info.accurate_search"
+              active-color="#F7931E"
+              inactive-color="#ccc"
+              :active-value="1"
+              :inactive-value="0"
+            >
+            </el-switch>
+            <span
+              class="con4-hide"
+              v-show="info.accurate_search===0"
+            >{{$t('storeCommonSettings.closed')}}</span>
+            <span
+              class="con4-hide"
+              v-show="info.accurate_search===1"
+            >{{$t('storeCommonSettings.activated')}}</span>
+            <span class="tip">{{$t('storeCommonSettings.goodsSearchTip')}}</span>
+          </div>
+        </li>
+
+        <li>
+          <div class="text-prompt">
+            <span class="blue_border"></span>
             <span>{{$t('storeCommonSettings.salesDisplaySettings')}}</span>
           </div>
           <div class="text-set clearfix">
@@ -729,6 +755,7 @@ export default {
     return {
       value: 1,
       info: {
+        accurate_search: 1,
         sales_number: 1,
         show_cart: {
           show_cart: 0,

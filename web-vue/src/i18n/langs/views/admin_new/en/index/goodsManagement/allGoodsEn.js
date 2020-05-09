@@ -12,7 +12,7 @@ export const en = {
   },
   allGoodsHeaderData: {
     goodsName: 'Goods Name',
-    searchGoods: 'Search Goods',
+    searchGoods: 'GoodsName/Sn/PrdSn',
     category: 'Category',
     chooseCategory: 'Please Choose Category',
     sort: 'Sort',
@@ -34,7 +34,7 @@ export const en = {
     goodsName: 'Name',
     shopPrice: 'Price',
     goodsSn: 'Goods Number',
-    prdSn: 'Product Sn',
+    prdSn: 'Goods/ProductSn',
     noPrdSn: 'No Prd',
     cat: 'Category',
     sort: 'Sort',
