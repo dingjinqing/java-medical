@@ -486,7 +486,7 @@ export default {
           this.$router.push({
             path: '/admin/home/main/feedbackStatistics',
             query: {
-              row: row
+              row: row.pageId
             }
           })
           break
