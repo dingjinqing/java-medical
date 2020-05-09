@@ -1592,6 +1592,34 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/fullDiscountFullCut/fullCutAdd'
       )
   },
+  // 满折满减 查看满折满减订单
+  {
+    path: '/admin/home/main/fullCut/order',
+    name: 'fullCutOrder',
+    meta: {
+      crumbTitle: 'router.fullCutOrder',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/fullDiscountFullCut/fullCutOrder'
+      )
+  },
+  // 满折满减 查看满折满减统计
+  {
+    path: '/admin/home/main/fullCut/statistics',
+    name: 'fullCutStatistics',
+    meta: {
+      crumbTitle: 'router.fullCutStatistics',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/fullDiscountFullCut/fullCutStatistics'
+      )
+  },
   // 直播
   {
     path: '/admin/home/main/live',

@@ -480,6 +480,10 @@ export const en = {
   full_cut: ['Marketing management', 'Full Discount Full Cut'],
   // 营销管理 添加满折满减活动
   fullCutActivity: ['Marketing management', 'Add Full Discount Full Cut Activity'],
+  // 营销管理 满折满减订单
+  fullCutOrder: ['Marketing Management', 'Full Discount and Full Reduction', 'Event Order'],
+  // 营销管理 满折满减统计
+  fullCutStatistics: ['Marketing Management', 'Full Discount Full Reduction', 'Performance Data'],
   // 营销管理 表单统计 formStatistical
   form_decoration: ['Marketing management', 'Form statistics'],
   // 营销管理 表单装修主页

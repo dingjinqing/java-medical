@@ -130,6 +130,25 @@
                   @click="deleteHandle(scope.row.id)"
                 ></span>
               </el-tooltip>
+              <el-tooltip
+                content="查看满折满减订单"
+                placement="top"
+              >
+                <span
+                  class="el-icon-tickets"
+                  @click="goOrderList"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="活动效果数据"
+                placement="top"
+              >
+                <span
+                  class="iconfont iconfankuitongji"
+                  style="font-size:20px;"
+                  @click="goStatistics"
+                ></span>
+              </el-tooltip>
             </div>
           </template>
         </el-table-column>
@@ -276,13 +295,25 @@ export default {
       }).catch(() => {
         this.$message.info({ message: '已取消删除' })
       })
+    },
+    goOrderList () {
+      this.$router.push({
+        name: 'fullCutOrder',
+        query: {}
+      })
+    },
+    goStatistics () {
+      this.$router.push({
+        name: 'fullCutStatistics',
+        query: {}
+      })
     }
   }
-
 }
 
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .fullCut {
   padding: 10px;
   min-width: 100%;
