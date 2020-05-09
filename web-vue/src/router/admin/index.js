@@ -317,6 +317,19 @@ const routes = [{
             '@/view/admin/index/leftNavComponents/first_web_decoration/picture_setting/decorationHome'
           )
       },
+      // 悬浮窗
+      {
+        path: '/admin/home/main/suspendWindow',
+        name: 'suspendWindow',
+        meta: {
+          crumbTitle: 'router.suspendWindow',
+          meta: 'first_web_decoration'
+        },
+        component: () =>
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_decoration/suspendWindow/suspendWindow'
+          )
+      },
       {
         path: '/admin/home/main/bottomNavigation',
         name: 'image_manager',

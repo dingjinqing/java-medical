@@ -266,6 +266,13 @@ export default {
             flag: false
           },
           {
+            imgUrl: this.$imageHost + '/image/admin/icon_left/suspend_window.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/suspend_window_h.png',
+            span: '',
+            name: 'suspendWindow',
+            flag: true
+          },
+          {
             imgUrl: this.$imageHost + '/image/admin/icon_left/mobile_deco.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/mobile_deco_h.png',
             span: '',
