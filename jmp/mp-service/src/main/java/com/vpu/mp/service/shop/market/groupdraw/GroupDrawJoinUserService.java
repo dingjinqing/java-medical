@@ -57,7 +57,7 @@ public class GroupDrawJoinUserService extends ShopBaseService {
 		select.and(a.INVITE_SOURCE.eq("group_draw"));
 		select.and(a.INVITE_ACT_ID.eq(param.getGroupDrawId()));
 		inviteOption(select, param);
-		select.orderBy(GROUP_DRAW_INVITE.CREATE_TIME.desc());
+		select.orderBy(a.CREATE_TIME.desc());
 		return getPageResult(select, param, InvitedUserListVo.class);
 	}
 
