@@ -176,6 +176,7 @@
           class="version-manage-table"
           header-row-class-name="tableClss"
           :data="tableData"
+          @sort-change="changeTableSort"
           border
           style="width: 100%"
         >
@@ -280,10 +281,11 @@
           >
           </el-table-column>
 
-          <el-table-column align="center">
-            <template slot="header">
-              下级用户数 <i class="el-icon-bottom"></i>
-            </template>
+          <el-table-column
+            label="下级用户数"
+            sortable="custom"
+            align="center"
+          >
             <template slot-scope="scope">
               <span
                 class="nameStyle"
@@ -294,6 +296,7 @@
 
           <el-table-column
             label="间接邀请用户数"
+            sortable="custom"
             align="center"
           >
             <template slot-scope="scope">
@@ -307,6 +310,7 @@
           <el-table-column
             prop="totalCanFanliMoney"
             label="累计返利商品总额"
+            sortable="custom"
             align="center"
           >
           </el-table-column>
@@ -314,6 +318,7 @@
           <el-table-column
             prop="totalFanliMoney"
             label="累计获得佣金金额"
+            sortable="custom"
             align="center"
           >
           </el-table-column>
@@ -321,6 +326,7 @@
           <el-table-column
             prop="waitFanliMoney"
             label="待返利佣金金额"
+            sortable="custom"
             align="center"
           >
           </el-table-column>
@@ -857,6 +863,39 @@ export default {
           })
         }
       }
+    },
+
+    // 选择指定列进行排序
+    changeTableSort (column) {
+      console.log(column)
+
+      // 获取字段名称和排序类型
+      var fieldName = column.prop
+      var sortType = column.order
+
+      // 如果字段名称为“注册时间”，将“注册时间”转换为时间戳，才能进行大小比较
+      if (fieldName === 'createTime') {
+        this.tableData.map(item => {
+          item.createTime = this.$moment(item.createTime).valueOf()
+        })
+      }
+
+      if (sortType === 'descending') {
+        // 按照降序排序
+        // this.tableData = this.tableData.sort((a, b) => b[fieldName] - a[fieldName])
+      } else {
+        // 按照升序排序
+        // this.tableData = this.tableData.sort((a, b) => a[fieldName] - b[fieldName])
+      }
+
+      // 如果字段名称为“注册时间”，将时间戳格式的“注册时间”再转换为时间格式
+      if (fieldName === 'createTime') {
+        this.tableData.map(item => {
+          item.createTime = this.$moment(item.createTime).format('YYYY-MM-DD HH:mm:ss')
+        })
+      }
+
+      console.log(this.tableData)
     }
 
   }
