@@ -640,28 +640,8 @@ public class IntegralConvertService extends ShopBaseService {
             tempExport.setScore(item.getScore());
             tempExport.setUser(item.getUsername()+" "+item.getUserMobile());
             tempExport.setReceiveUser(item.getConsignee()+" "+item.getMobile());
-            switch (item.getOrderStatus()){
-                case OrderConstant.ORDER_WAIT_PAY:
-                    tempExport.setOrderStatus("待付款");
-                    break;
-                case OrderConstant.ORDER_CANCELLED:
-                    tempExport.setOrderStatus("客户已取消");
-                    break;
-                case OrderConstant.ORDER_CLOSED:
-                    tempExport.setOrderStatus("卖家关闭");
-                    break;
-                case OrderConstant.ORDER_WAIT_DELIVERY:
-                    tempExport.setOrderStatus("待发货");
-                    break;
-                case OrderConstant.ORDER_SHIPPED:
-                    tempExport.setOrderStatus("已发货");
-                    break;
-                case OrderConstant.ORDER_FINISHED:
-                    tempExport.setOrderStatus("已完成");
-                    break;
-                default:
-                    tempExport.setOrderStatus("订单完成");
-            }
+            tempExport.setOrderStatus(OrderConstant.getOrderStatusName(item.getOrderStatus(),lang));
+
             orderExportList.add(tempExport);
         }
         //表格导出
