@@ -489,6 +489,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 	}
 
     public String sendPromoteResultMessage(Byte type,FriendPromoteSelectVo vo,String officeAppId,String title,String content) {
+    	log.info("传入参数：type：{}，title：{},content:{}",type,title,content);
 		FriendPromoteSelectVo userLaunchInfo = friendPromoteService.getUserLaunchInfo(vo.getId());
 		if(userLaunchInfo!=null) {
 			String page="pages1/promoteinfo/promoteinfo?actCode="+userLaunchInfo.getActCode()+"&launch_id="+String.valueOf(vo.getId());
