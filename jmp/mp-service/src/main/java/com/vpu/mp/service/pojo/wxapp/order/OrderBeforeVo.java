@@ -117,7 +117,7 @@ public class OrderBeforeVo {
     /**???*/
     @Builder.Default
     private BigDecimal promotionReduce = BigDecimalUtil.BIGDECIMAL_ZERO;
-    /**???*/
+    /**打包一口价折扣金额*/
     @Builder.Default
     private BigDecimal packageDiscount = BigDecimalUtil.BIGDECIMAL_ZERO;
     /**团长优惠*/

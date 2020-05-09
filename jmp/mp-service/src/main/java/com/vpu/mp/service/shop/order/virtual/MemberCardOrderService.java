@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.virtual;
 
+import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -102,5 +103,17 @@ public class MemberCardOrderService extends VirtualOrderService {
         /** 操作记录 */
         saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_MEMBER_CARD_ORDER_REFUND.code }), new String[] {param.getOrderSn()});
         return null;
+    }
+    /**
+     *更新prepayId
+     * @param orderSn 订单sn
+     * @param prepayId prepayId
+     */
+    public void updatePrepayId(String orderSn,String prepayId){
+        db().update(VIRTUAL_ORDER).set(VIRTUAL_ORDER.PREPAY_ID,prepayId).where(VIRTUAL_ORDER.ORDER_SN.eq(orderSn)).execute();
+    }
+
+    public VirtualOrderRecord getRecord(String orderSn){
+        return db().fetchAny(VIRTUAL_ORDER,VIRTUAL_ORDER.ORDER_SN.eq(orderSn));
     }
 }

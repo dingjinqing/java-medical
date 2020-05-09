@@ -203,7 +203,7 @@ export default {
     getFormData () {
       let retData = {
         isPageUp: this.goodsDetailInfo.isPageUp,
-        goodsPageId: null,
+        goodsPageId: 0,
         goodsDesc: this.goodsDetailInfo.goodsDesc
       }
 

@@ -7,6 +7,7 @@
         <div class="content">
           <span>{{$t('textModule.blankHeight')}}：</span>
           <el-input
+            :disabled="isProhibit"
             v-model="modulesSaveData.blank_height"
             size="small"
           ></el-input><i>{{$t('textModule.pixel')}}</i>
@@ -25,6 +26,7 @@ export default {
   },
   data () {
     return {
+      isProhibit: false, // 是否全部禁用
       modulesSaveData: {
         'blank_height': ''
       } // 模块保存数据
@@ -49,6 +51,12 @@ export default {
       },
       deep: true
     }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      console.log(localStorage.getItem('isProhibitForm'))
+      this.isProhibit = JSON.parse(localStorage.getItem('isProhibitForm'))
+    })
   },
   methods: {
 

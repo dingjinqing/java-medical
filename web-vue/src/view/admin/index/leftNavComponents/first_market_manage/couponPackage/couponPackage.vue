@@ -324,8 +324,7 @@ export default {
       }).then(() => {
         updateCouponPackage(param).then((res) => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
+            this.$message.success({
               message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()
@@ -347,8 +346,7 @@ export default {
       }).then(() => {
         updateCouponPackage(param).then((res) => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
+            this.$message.success({
               message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()
@@ -369,8 +367,7 @@ export default {
       }).then(() => {
         deleteCouponPackage(param).then((res) => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
+            this.$message.success({
               message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()

@@ -336,6 +336,8 @@ export const en = {
   ],
   // live
   live_broadcast: ['Marketing management', 'live'],
+  // 营销管理 渠道页面分析
+  channel: ['Marketing management', 'Channel page analysis'],
   // 营销管理 限时降价
   reduce: ['Marketing management', 'Limited Time Price Reduction'],
   // 营销管理 限时降价 订单明细
@@ -550,5 +552,7 @@ export const en = {
   // 门店公告
   store_announcement: ['Store Management', 'Store Announcement'],
   // 门店公告 添加公告
-  store_announcement_add: ['Store Management', 'Store Announcement', 'Add announcement']
+  store_announcement_add: ['Store Management', 'Store Announcement', 'Add announcement'],
+  // 门店权限
+  store_permission: ['Store Management', 'Store permissions']
 }

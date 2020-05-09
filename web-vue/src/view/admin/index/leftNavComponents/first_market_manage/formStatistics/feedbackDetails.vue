@@ -16,147 +16,86 @@
           style="border-color:#eee;text-align: center;"
         >
           <tbody>
-            <tr>
-              <td width="40%">姓名</td>
+            <tr
+              v-for="(item,index) in allData"
+              :key="index"
+            >
+              <td width="40%">{{item.moduleType}}</td>
               <td
                 width="60%"
                 class="comm_message"
               >
-                {{name}}
-              </td>
-            </tr>
-            <tr>
-              <td width="40%">手机号</td>
-              <td
-                width="60%"
-                class="comm_message"
-              >
-                {{phoneNum}}
-              </td>
-            </tr>
-            <tr>
-              <td width="40%">省/市/区</td>
-              <td
-                width="60%"
-                class="comm_message"
-              >
-                北京市北京市东城区
-              </td>
-            </tr>
-            <tr>
-              <td width="40%">邮箱</td>
-              <td
-                width="60%"
-                class="comm_message"
-              >
-                {{email}}
-              </td>
-            </tr>
-            <tr>
-              <td width="40%">性别</td>
-              <td
-                width="60%"
-                class="comm_message"
-              >
-                <div class="sex">
-                  <el-radio
-                    disabled
-                    v-model="radio"
-                    label="1"
-                  >男</el-radio>
-                  <el-radio
-                    v-model="radio"
-                    label="2"
-                  >女</el-radio>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td width="40%">下拉</td>
-              <td
-                width="60%"
-                class="comm_message"
-              >
+                <span v-if="item.simple">{{item.moduleValue}}</span>
+                <!--性别-->
                 <div
-                  :style="slideIndex === item?'color:#0E70CA;margin-bottom:5px':'margin-bottom:5px'"
-                  v-for="(item,index) in slideArr"
-                  :key="index"
+                  v-if="item.moduleName === 'm_sex'"
+                  class="sex"
                 >
-                  ·{{item}}
+                  <span style="margin-right:20px">
+                    <el-radio
+                      :disabled="item.moduleValue!=='1'"
+                      v-model="item.moduleValue"
+                      label="1"
+                    >男</el-radio>
+                    <el-radio
+                      :disabled="item.moduleValue!=='2'"
+                      v-model="item.moduleValue"
+                      label="2"
+                    >女</el-radio>
+                  </span>
                 </div>
-                <!-- <span style="font-weight: bolder;display:inline-block;margin-bottom:5px">·</span><span>{{slideArr[0]}}</span>
-                <br>
-                <span style="font-weight: bolder">·</span><span style="color: #0E70CA">{{slideArr[1]}}</span>
-                <br> -->
-              </td>
-            </tr>
-            <tr>
-              <td width="40%">输入框</td>
-              <td
-                width="60%"
-                class="comm_message"
-              >
-                {{inputVal}}
-              </td>
-            </tr>
-            <tr>
-              <td width="40%">选项</td>
-              <td
-                width="60%"
-                class="comm_message"
-              >
+                <!--下拉-->
                 <div
-                  v-for="(item,index) in choiseArr"
-                  :key="index"
-                  :style="chooseIndex === index?'color:#0E70CA;margin-bottom:5px':'margin-bottom:5px'"
+                  class="sex"
+                  v-if="item.moduleName === 'm_slide'"
                 >
-                  ·{{item}}
+                  <span>
+                    <div
+                      :style="item.moduleValue === itemC?'color:#0E70CA;margin-bottom:5px':'margin-bottom:5px'"
+                      v-for="(itemC,indexC) in item.moduleValueList"
+                      :key="indexC"
+                    >
+                      ·{{itemC}}
+                    </div>
+                  </span>
                 </div>
-                <!-- <span :class="choose === '1'?'choose':''" style="font-weight: bolder;display:inline-block;margin-bottom:5px">·</span><span>选项1</span>
-                <br>
-                <span :class="choose === '2'?'choose':''" style="font-weight: bolder">·</span><span style="color: #0E70CA">选项2</span>
-                <br> -->
-              </td>
-            </tr>
-            <tr>
-              <td width="40%">日期</td>
-              <td
-                width="60%"
-                class="comm_message"
-              >
-                {{date}}
-              </td>
-            </tr>
-            <tr>
-              <td width="40%">图片上传</td>
-              <td
-                width="60%"
-                class="comm_message"
-              >
-                <img
-                  v-for="(item,index) in picture"
-                  :key="index"
-                  :src="item"
-                  style="display: inline-block;"
-                  width="65px"
-                  height="65px"
-                  class="click_comm"
+                <!--选项-->
+                <div
+                  class="sex"
+                  v-if="item.moduleName === 'm_choose'"
                 >
-              </td>
-            </tr>
-            <tr>
-              <td width="40%">视频上传</td>
-              <td
-                width="60%"
-                class="comm_message"
-              >
+                  <span>
+                    <div
+                      v-for="(itemC,indexC) in item.moduleValueList"
+                      :key="indexC"
+                      :style="item.moduleValue === indexC?'color:#0E70CA;margin-bottom:5px':'margin-bottom:5px'"
+                    >
+                      ·{{itemC}}
+                    </div>
+                  </span>
+                </div>
+                <!--图片-->
+                <div v-if="item.moduleName === 'm_imgs'">
+                  <img
+                    v-for="(itemC,indexC) in item.moduleValue"
+                    :key="indexC"
+                    :src="itemC"
+                    style="display: inline-block;margin-right:10px"
+                    width="65px"
+                    height="65px"
+                    class="click_comm"
+                  >
+                </div>
+
+                <!--上传视频-->
                 <a
-                  :href="video.video_src"
+                  :href="item.moduleValue.video_src"
                   target="_blank"
                   class="video_src"
+                  v-if="item.moduleName === 'm_upload_video'"
                 >
                   <img
-                    :src="video.video_img_src"
+                    :src="item.moduleValue.video_img_src"
                     style="display: inline-block;"
                     width="140px"
                     height="80px"
@@ -181,19 +120,7 @@ import { feedBackListDetailQuery } from '@/api/admin/marketManage/formDecoration
 export default {
   data () {
     return {
-      radio: '2',
-      name: '', // 姓名
-      phoneNum: '', // 手机号
-      email: '', // 邮箱
-      sexArr: [], // 性别
-      slideArr: [], // 下拉框
-      slideIndex: '', // 下拉选中项
-      inputVal: '', // 输入框
-      choiseArr: [], // 选项
-      chooseIndex: '', // 选中下标
-      date: '', // 日期
-      picture: '', // 图片上传
-      video: '' // 视频模块
+      allData: []
     }
   },
   mounted () {
@@ -208,53 +135,116 @@ export default {
         let { pageId, userId, submitId } = this.$route.query
         feedBackListDetailQuery({ pageId: pageId, userId: userId, submitId: submitId }).then(res => {
           console.log(res)
+          // allData
+          /*
+          moduleName: "m_input_name"
+moduleType: "姓名1"
+moduleValue: ""腾飞1""
+moduleValueList: null
+          */
           if (res.error === 0) {
             res.content.forEach((item, index) => {
               switch (item.moduleName) {
                 case 'm_input_name':
-                  this.name = item.moduleValue
+                  // this.name.push(JSON.parse(item.moduleValue))
+                  item.moduleValue = JSON.parse(item.moduleValue)
+                  item.simple = true
                   break
                 case 'm_input_mobile':
-                  this.phoneNum = item.moduleValue
+                  item.simple = true
+                  item.moduleValue = JSON.parse(item.moduleValue)
+                  // this.phoneNum.push(JSON.parse(item.moduleValue))
                   break
                 case 'm_address':
+                  item.simple = true
+                  console.log(JSON.parse(item.moduleValue))
+                  let text = ''
+                  console.log(item)
+                  if (item.moduleValue !== '{}') {
+                    JSON.parse(item.moduleValue).area.forEach((itemC, index) => {
+                      text = text + itemC
+                    })
+                    if (JSON.parse(item.moduleValue).detail) {
+                      text = text + JSON.parse(item.moduleValue).detail
+                    }
+                  }
+                  console.log(text)
+                  // this.address.push(text)
+                  item.moduleValue = text
                   break
                 case 'm_input_email':
-                  this.email = item.moduleValue
+                  item.simple = true
+                  item.moduleValue = JSON.parse(item.moduleValue)
+                  // this.email.push(JSON.parse(item.moduleValue))
                   break
                 case 'm_sex':
-                  if (item.moduleValue === item.moduleValueList[0]) {
-                    this.radio = '1'
+                  item.simple = false
+                  console.log(item)
+                  // let obj = {
+                  //   radio: null
+                  // }
+                  if (JSON.parse(item.moduleValue) === '男') {
+                    item.moduleValue = '1'
                   } else {
-                    this.radio = '2'
+                    item.moduleValue = '2'
                   }
-                  this.sexArr = item.moduleValueList
+                  // this.sexArr.push(obj)
                   break
                 case 'm_slide':
-                  this.slideIndex = item.moduleValue
-                  this.slideArr = item.moduleValueList
+                  item.simple = false
+                  console.log(item)
+                  // let objMslide = {
+                  //   slideIndex: '',
+                  //   slideArr: ''
+                  // }
+                  let value = JSON.parse(item.moduleValue)
+                  item.moduleValueList.forEach((itemC, indexC) => {
+                    if (value === itemC) {
+                      item.moduleValue = itemC
+                    }
+                  })
+                  // objMslide.slideArr = item.moduleValueList
+                  // console.log(objMslide)
+                  // this.xlData.push(objMslide)
                   break
                 case 'm_input_text':
-                  this.inputVal = item.moduleValue
+                  console.log(item)
+                  item.simple = true
+                  // this.inputVal.push(item.moduleValue)
                   break
                 case 'm_choose':
-                  this.chooseIndex = Number(item.moduleValue) - 1
-                  console.log(this.chooseIndex)
-                  this.choiseArr = item.moduleValueList
+                  item.simple = false
+                  // console.log(item)
+                  // let objMchoose = {
+                  //   chooseIndex: '',
+                  //   choiseArr: ''
+                  // }
+
+                  item.moduleValueList.forEach((itemC, indexC) => {
+                    if (JSON.parse(item.moduleValue) === JSON.stringify(indexC)) {
+                      item.moduleValue = indexC
+                    }
+                  })
+
                   break
                 case 'm_dates':
-                  this.date = item.moduleValue
+                  item.moduleValue = JSON.parse(item.moduleValue)
+                  item.simple = true
                   break
                 case 'm_imgs':
-                  console.log(item.moduleValue)
-                  this.picture = JSON.parse(item.moduleValue)
+                  console.log(item)
+                  item.simple = false
+                  item.moduleValue = JSON.parse(item.moduleValue)
                   break
                 case 'm_upload_video':
-                  this.video = JSON.parse(item.moduleValue)
-
+                  console.log(item)
+                  item.simple = false
+                  item.moduleValue = JSON.parse(item.moduleValue)
                   break
               }
             })
+            console.log(res.content)
+            this.allData = res.content
           }
         })
       }

@@ -346,10 +346,10 @@ public class GroupIntegrationListService extends ShopBaseService {
 			step.and(USER.USERNAME.like(this.likeValue(param.getUsername())));
 		}
 		if(param.getStartTime() != null) {
-			step.and(GROUP_INTEGRATION_LIST.END_TIME.ge(param.getStartTime()));
+			step.and(GROUP_INTEGRATION_LIST.START_TIME.ge(param.getStartTime()));
 		}
 		if(param.getEndTime() != null) {
-			step.and(GROUP_INTEGRATION_LIST.END_TIME.le(param.getEndTime()));
+			step.and(GROUP_INTEGRATION_LIST.START_TIME.le(param.getEndTime()));
 		}
 		if(param.getIsGrouper() != null) {
 			step.and(GROUP_INTEGRATION_LIST.IS_GROUPER.eq(param.getIsGrouper()));

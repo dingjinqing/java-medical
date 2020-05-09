@@ -44,7 +44,7 @@ global.wxPage({
       res => {
         if (res.error === 0) {
           let dataList = this.formatData(res.content.orders.dataList);
-          if(dataList.length < 20){
+          if(res.content.orders.page.currentPage === res.content.orders.page.lastPage){
             this.selectComponent('#recommend').resetDataList().resetPage().requestData()
           }
           this.setData({
@@ -59,7 +59,7 @@ global.wxPage({
         pageRows: 20,
         type: this.data.navType[this.data.scrollIntoId],
         search: this.data.searchInput
-      }
+      },'',true
     );
   },
   formatData(order) {
@@ -101,6 +101,7 @@ global.wxPage({
       scrollIntoId: "ALL",
       searchInput: e.detail.value ? e.detail.value : this.data.searchInput
     });
+    this.selectComponent('#recommend').resetDataList().resetPage()
     this.requestList();
   },
   // 切换导航
@@ -111,6 +112,7 @@ global.wxPage({
       dataList: [],
       searchInput:''
     });
+    this.selectComponent('#recommend').resetDataList().resetPage()
     this.requestList();
   },
   // 订单下按钮事件集合

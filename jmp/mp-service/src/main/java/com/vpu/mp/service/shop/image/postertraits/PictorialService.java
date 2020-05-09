@@ -147,11 +147,13 @@ public class PictorialService extends ShopBaseService {
         ImageUtil.addRect(bgBufferedImage, 0, 0, imgPx.getBgWidth(), imgPx.getBgHeight(), null, Color.WHITE);
         // 设置用户头像
         BufferedImage userAvatarImage = ImageUtil.makeRound(userInfo.getUserAvatarImage(), imgPx.getUserHeaderDiameter());
-        ImageUtil.addTwoImage(bgBufferedImage, userAvatarImage, imgPx.getBgPadding(), imgPx.getBgPadding());
+        ImageUtil.addTwoImage(bgBufferedImage, userAvatarImage, imgPx.getHeaderStartX(), imgPx.getHeaderStartY());
         // 设置用户名
         ImageUtil.addFont(bgBufferedImage, userInfo.getUserName(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getUserNameX(), imgPx.getUserNameY(), imgPx.getDefaultFontColor(), false);
         // 设置宣传语
-        ImageUtil.addFont(bgBufferedImage, shareDoc, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getShareDocX(), imgPx.getShareDocY(), imgPx.getDefaultFontColor(), false);
+        if (shareDoc != null) {
+            ImageUtil.addFont(bgBufferedImage, shareDoc, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getShareDocX(), imgPx.getShareDocY(), imgPx.getDefaultFontColor(), false);
+        }
 
         // 设置商品图片
         goodsImg = ImageUtil.resizeImage(imgPx.getGoodsWidth(), imgPx.getGoodsHeight(), goodsImg);
@@ -159,7 +161,7 @@ public class PictorialService extends ShopBaseService {
 
         // 设置二维码
         qrCodeImg = ImageUtil.resizeImageTransparent(imgPx.getQrCodeWidth(), imgPx.getQrCodeWidth(), qrCodeImg);
-        ImageUtil.addTwoImage(bgBufferedImage, qrCodeImg, imgPx.getQrCodeStartX(), imgPx.getBottomStartY());
+        ImageUtil.addTwoImage(bgBufferedImage, qrCodeImg, imgPx.getQrCodeStartX(), imgPx.getQrCodeStartY());
 
         // 设置商品名称
         int goodsNameHeight = pictorialAddFontName(bgBufferedImage, goodsName, imgPx);
@@ -168,12 +170,12 @@ public class PictorialService extends ShopBaseService {
         if (realPrice != null) {
             String realPriceStr = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")
                 + realPrice.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-            ImageUtil.addFont(bgBufferedImage, realPriceStr, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), imgPx.getBgPadding(), imgPx.getPriceY(), imgPx.getRealPriceColor(), false);
+            ImageUtil.addFont(bgBufferedImage, realPriceStr, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), imgPx.getBottomTextStartX(), imgPx.getPriceY(), imgPx.getRealPriceColor(), false);
 
             Integer realPriceHeight = imgPx.getLargeFontAscent(bgBufferedImage);
             // 设置划线价
             if (linePrice != null) {
-                Integer lineStartX = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceStr) + imgPx.getBgPadding() + 10;
+                Integer lineStartX = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceStr) + imgPx.getBottomTextStartX() + 10;
                 String linePriceStr = linePrice.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
                 ImageUtil.addFontWithLine(bgBufferedImage, lineStartX, imgPx.getPriceY() + realPriceHeight / 4, linePriceStr, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getLinePriceColor());
             }
@@ -196,12 +198,12 @@ public class PictorialService extends ShopBaseService {
         int nameTextLength = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), goodsName);
 
         if (nameTextLength <= imgPx.getGoodsNameCanUseWidth()) {
-            ImageUtil.addFont(bgBufferedImage, goodsName, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBgPadding(), imgPx.getGoodsNameStartY(), imgPx.getGoodsNameColor(), false);
+            ImageUtil.addFont(bgBufferedImage, goodsName, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBottomTextStartX(), imgPx.getGoodsNameStartY(), imgPx.getGoodsNameColor(), false);
             return nameCharHeight;
         } else {
             double oneCharWidth = Math.ceil(nameTextLength * 1.0 / goodsName.length());
             int oneLineCharNum = (int) Math.floor(imgPx.getGoodsNameCanUseWidth() / oneCharWidth);
-            if (goodsName.length() >oneLineCharNum * 3) {
+            if (goodsName.length() > oneLineCharNum * 3) {
                 goodsName = goodsName.substring(0, oneLineCharNum * 2 + oneLineCharNum / 2) + "...";
             }
 
@@ -213,7 +215,7 @@ public class PictorialService extends ShopBaseService {
                 } else {
                     text = goodsName.substring(i, i + oneLineCharNum);
                 }
-                ImageUtil.addFont(bgBufferedImage, text, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBgPadding(), nextTextStartY, imgPx.getGoodsNameColor(), false);
+                ImageUtil.addFont(bgBufferedImage, text, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBottomTextStartX(), nextTextStartY, imgPx.getGoodsNameColor(), false);
                 nextTextStartY += nameCharHeight;
             }
             return nextTextStartY - imgPx.getGoodsNameStartY();

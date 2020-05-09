@@ -16,7 +16,7 @@ global.wxPage({
   onLoad: function(options) {
     console.log(options);
     let action = options.action ? options.action : 1;
-    let page_name = parseInt(action) === 1 ? '历史购买' : '我的足迹'
+    let page_name = parseInt(action) === 1 ? this.$t("page1.history.historyBuy") : this.$t("page1.history.footprint")
       this.setData({
         page_name,
         action
@@ -37,15 +37,25 @@ global.wxPage({
       : 1;
     let keyword = this.data.searchText
     let api = parseInt(this.data.action) === 1 ? '/api/wxapp/order/goods/history' : 'api/wxapp/footprint/list'
+    this.setData({
+      loaded:false
+    })
     util.api(
       api,
       res => {
         if(res.error === 0){
           let dataList = this.setDataList(res.content.day)
+          if(currentPage === 1){
+            this.setData({
+              delMarket:res.content.delMarket,
+              showCart:res.content.showCart
+            })
+          }
           this.setData({
             pageParams: res.content.page,
-            ['dataList[' + (parseInt(currentPage) - 1) + ']']: dataList
-          });
+            ['dataList[' + (parseInt(currentPage) - 1) + ']']: dataList,
+            loaded:true
+          })
         }
       },
       {
@@ -53,7 +63,7 @@ global.wxPage({
         pageRows: 20,
         userId: util.getCache('user_id'),
         keyword
-      }
+      },'',true
     );
   },
   setDataList(dataList){

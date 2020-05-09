@@ -23,7 +23,7 @@ global.wxPage({
     cardId: null,
     give_card: 0,
     rebate_show: false, // 转赠弹窗flag
-
+    ifGetSq: 0
   },
 
   /**
@@ -62,9 +62,9 @@ global.wxPage({
         console.log(res)
         let cardInfo = res.content
         // 模拟转赠数据can_give_away
-        cardInfo.card_give_away = 0
-        cardInfo.give_away_status = 3
-        cardInfo.can_give_away = 1
+        // cardInfo.card_give_away = 0
+        // cardInfo.give_away_status = 3
+        // cardInfo.can_give_away = 1
         // end
         if ((!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) && ((!cardInfo.examine) || (cardInfo.cardVerifyStatus === 2))) {
           that.setData({
@@ -189,6 +189,7 @@ global.wxPage({
         cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
         cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
         cardInfo.storeList = cardInfo.storeList
+        cardInfo.cardPrice = that.getCardPrice(cardInfo)
         if (cardInfo.activation) {
           card_activation = card_info.activation;
         }
@@ -216,6 +217,17 @@ global.wxPage({
     if (cardItem.cardType === 2) return null
     if (cardItem.expireType === 2) return `永久有效`
     return `${cardItem.startDate} 至 ${cardItem.endDate}`
+  },
+  getCardPrice (cardInfo) {
+    console.log('购买++++++++++++++')
+    console.log(cardInfo)
+    if (cardInfo.isPay === 1) {
+      let realPrice = cardInfo.payType === 0 ? `￥${cardInfo.payFee}` : `${cardInfo.payFee}积分`
+      return {
+        realPrice
+      }
+    }
+    return null
   },
   // 获取会员卡停用/删除状态图片
   getCardStopImage (cardItem) {
@@ -564,21 +576,26 @@ global.wxPage({
   to_goods: function (e) {
     let goods_id = e.currentTarget.dataset.goods_id;
     let is_list = e.currentTarget.dataset.is_list;
-    // util.api('/api/card/exchange/judge', function (res) {
-    //   if (res.error == 0) {
-    //     util.navigateTo({
-    //       url: '/pages/item/item?good_id=' + goods_id + '&from_count_card=1&card_no=' + card_no,
-    //     })
-    //   } else {
-    //     util.showModal('提示', res.message, function () {
-    //       util.jumpLink('/pages/item/item?good_id=' + goods_id, 'navigateTo')
-    //     }, true, '取消', '原价购买')
-    //   }
-    // }, {
-    //   card_no: card_no,
-    //   goods_id: goods_id,
-    //   is_list: is_list
-    // })
+    let cardNo = this.data.cardInfo.cardNo
+    let carId = this.data.cardInfo.cardId
+    console.log(goods_id, is_list, this.data.cardInfo)
+    //  跳转商品详情需要传参 util.jumpLink(`/pages/item/item?aid=${d.in_goods_id}&atp=4&gid=${d.goods_id}`);
+    util.api('/api/wxapp/card/exchange/judge', function (res) {
+      console.log(res)
+      if (res.error == 0) {
+        util.navigateTo({
+          url: `/pages/item/item?gid=${goods_id}&cardNo=${cardNo}&cardId=${carId}&isChange=1`,
+        })
+      } else {
+        util.showModal('提示', res.message, function () {
+          util.jumpLink(`/pages/item/item?gid=${goods_id}`, 'navigateTo')
+        }, true, '取消', '原价购买')
+      }
+    }, {
+      cardNo: cardNo,
+      goodsId: goods_id,
+      isList: is_list
+    })
   },
   // 点击优惠卷
   viewCoupon (e) {
@@ -602,10 +619,11 @@ global.wxPage({
     var that = this;
     var status = e.currentTarget.dataset.status;
     let cardInfo = this.data.cardInfo
+    console.log(cardInfo)
     if (status == 0) {
-      if (cardInfo.can_give_away == 1) {
+      if (!cardInfo.cardGive.cardOrderSn) {
         that.setData({
-          rebate_show: true,
+          rebate_show: true
         })
       } else {
         wx.showModal({
@@ -617,8 +635,8 @@ global.wxPage({
           cancelColor: util.getCache('main_colors'),
           success (res) {
             if (res.cancel) {
-              var order_sn = cardInfo.card_order_sn;
-              util.jumpLink("pages/orderinfo/orderinfo?order_sn=" + order_sn)
+              var order_sn = cardInfo.cardGive.cardOrderSn;
+              util.jumpLink("pages/orderinfo/orderinfo?orderSn=" + order_sn)
             }
           }
         })
@@ -626,7 +644,7 @@ global.wxPage({
     } else if (status == 1) {
       wx.showModal({
         title: '会员卡转赠中',
-        content: '会员卡转赠中,如果' + cardInfo.give_deadline + '前好友未领取,则会员卡可以继续使用！',
+        content: '会员卡转赠中,如果' + cardInfo.cardGive.deadline + '前好友未领取,则会员卡可以继续使用！',
         showCancel: false,
         confirmText: '知道了',
         confirmColor: '#000'
@@ -634,7 +652,7 @@ global.wxPage({
     } else {
       wx.showModal({
         title: '会员卡已转赠',
-        content: cardInfo.give_away_time + '转赠\r\n给好友' + cardInfo.give_username,
+        content: cardInfo.cardGive.giveAwayTime + '转赠\r\n给好友' + cardInfo.cardGive.giveUsername,
         showCancel: false,
         confirmText: '关闭',
         confirmColor: '#000'
@@ -653,32 +671,76 @@ global.wxPage({
     console.log(this.data)
     var that = this;
     let cardInfo = that.data.cardInfo
-    // util.api("/api/card/giveAway/record", function (d) {
-    //   util.api('/api/card/detail', function (res) {
-    //     card_info = res.content;
-    //     that.loadData(card_info, 0, that);
-    //     that.setData({
-    //       card_list: card_list
-    //     })
-    //   }, {
-    //     card_no: card_no
-    //   })
-    //   that.setData({
-    //     rebate_show: false,
-    //   })
-    // }, {
-    //   card_no: card_info.card_no,
-    //   card_id: card_info.card_id,
-    //   user_id: card_info.user_id
-    // });
+    util.api("/api/wxapp/card/giveAway/record", function (res) {
+      console.log(res)
+      if (res.error == 0) {
+        that.requestCardInfo(cardInfo.cardNo);
+      } else {
+        util.showModal('提示', '转赠失败');
+      }
+      that.setData({
+        rebate_show: false,
+      })
+    }, {
+      cardNo: cardInfo.cardNo,
+      cardId: cardInfo.cardId
+    });
     return {
       title: util.getCache('nickName') + '赠送给您一张会员卡',
       path: 'pages/cardinfo/cardinfo?cardNo=' + cardInfo.cardNo + "&cardId=" + cardInfo.cardId + "&give_card=1",
-      imageUrl: that.data.imageUrl + that.data.share_img,
+      imageUrl: that.data.imageUrl + cardInfo.cardGive.shareImg,
       complete: function () {
 
       }
     }
 
+  },
+  rebateGetCard: function () {
+    let cardInfo = this.data.cardInfo
+    util.api('/api/wxapp/card/getgiveawaycard', function (res) {
+      console.log(res)
+      if (res.error == 0) {
+        util.toast_success('领取成功', function () {
+          setTimeout(function () {
+            util.redirectTo({
+              url: '/pages/cardlist/cardlist',
+            })
+          }, 2000);
+        });
+      } else {
+        util.toast_fail(res.message);
+      }
+    }, {
+      cardNo: cardInfo.cardNo,
+      cardId: cardInfo.cardId
+    })
+  },
+  bindGetUserInfo: function (e) {
+    console.log('触发')
+    var that = this
+    util.getUserInfoCommon(e, function (userInfo) {
+      console.log(userInfo)
+      if (userInfo) {
+        that.setData({
+          ifGetSq: 1
+        })
+      }
+    });
+  },
+  cancel_rebate: function () {
+    var that = this;
+    let cardInfo = that.data.cardInfo
+    util.showModal('取消转赠', '当前会员卡正在转赠中，取消后好友将无法领取本卡，是否确认取消转赠?', function () {
+      util.api("/api/wxapp/card/giveAway/quit", function (res) {
+        if (res.error == 0) {
+          that.requestCardInfo(cardInfo.cardNo);
+        } else {
+          util.showModal('提示', '转赠失败');
+        }
+      }, {
+        cardNo: cardInfo.cardNo,
+        cardId: cardInfo.userId
+      });
+    }, true, '取消', '确认取消')
   },
 })

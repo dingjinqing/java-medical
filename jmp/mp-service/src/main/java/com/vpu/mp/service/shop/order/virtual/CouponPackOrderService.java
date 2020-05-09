@@ -4,12 +4,13 @@ import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.*;
 import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackConstant;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
@@ -18,6 +19,7 @@ import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderPageParam;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderRefundParam;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderVo;
@@ -26,6 +28,7 @@ import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
 import jodd.util.StringUtil;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
@@ -73,14 +76,15 @@ public class CouponPackOrderService extends VirtualOrderService {
 	 */
 	public PageResult<CouponPackOrderVo> getPageList(CouponPackOrderPageParam param){
 		SelectWhereStep<? extends Record> selectFrom = db()
-			.select(VIRTUAL_ORDER.ORDER_ID,VIRTUAL_ORDER.VIRTUAL_GOODS_ID,COUPON_PACK.PACK_NAME,
-					VIRTUAL_ORDER.ORDER_SN,VIRTUAL_ORDER.USER_ID,USER.USERNAME,USER.MOBILE,VIRTUAL_ORDER.MONEY_PAID,VIRTUAL_ORDER.USE_ACCOUNT,VIRTUAL_ORDER.USE_SCORE,VIRTUAL_ORDER.MEMBER_CARD_BALANCE,VIRTUAL_ORDER.CARD_NO,VIRTUAL_ORDER.PAY_CODE,VIRTUAL_ORDER.PAY_NAME,VIRTUAL_ORDER.PREPAY_ID,VIRTUAL_ORDER.PAY_SN,VIRTUAL_ORDER.ORDER_AMOUNT,
-					VIRTUAL_ORDER.CREATE_TIME,VIRTUAL_ORDER.RETURN_FLAG,VIRTUAL_ORDER.RETURN_SCORE,VIRTUAL_ORDER.RETURN_ACCOUNT,VIRTUAL_ORDER.RETURN_MONEY,VIRTUAL_ORDER.RETURN_CARD_BALANCE,
-					VIRTUAL_ORDER.RETURN_TIME,VIRTUAL_ORDER.CURRENCY)
-			.from(VIRTUAL_ORDER)
-			.leftJoin(COUPON_PACK).on(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(COUPON_PACK.ID))
-			.leftJoin(USER).on(VIRTUAL_ORDER.USER_ID.eq(USER.USER_ID));
+            .select(VIRTUAL_ORDER.ORDER_ID, VIRTUAL_ORDER.VIRTUAL_GOODS_ID, COUPON_PACK.PACK_NAME,
+                VIRTUAL_ORDER.ORDER_SN, VIRTUAL_ORDER.USER_ID, USER.USERNAME, USER.MOBILE, VIRTUAL_ORDER.MONEY_PAID, VIRTUAL_ORDER.USE_ACCOUNT, VIRTUAL_ORDER.USE_SCORE, VIRTUAL_ORDER.MEMBER_CARD_BALANCE, VIRTUAL_ORDER.CARD_NO, VIRTUAL_ORDER.PAY_CODE, VIRTUAL_ORDER.PAY_NAME, VIRTUAL_ORDER.PREPAY_ID, VIRTUAL_ORDER.PAY_SN, VIRTUAL_ORDER.ORDER_AMOUNT,
+                VIRTUAL_ORDER.CREATE_TIME, VIRTUAL_ORDER.RETURN_FLAG, VIRTUAL_ORDER.RETURN_SCORE, VIRTUAL_ORDER.RETURN_ACCOUNT, VIRTUAL_ORDER.RETURN_MONEY, VIRTUAL_ORDER.RETURN_CARD_BALANCE,
+                VIRTUAL_ORDER.RETURN_TIME, VIRTUAL_ORDER.CURRENCY)
+            .from(VIRTUAL_ORDER)
+            .leftJoin(COUPON_PACK).on(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(COUPON_PACK.ID))
+            .leftJoin(USER).on(VIRTUAL_ORDER.USER_ID.eq(USER.USER_ID));
 		SelectConditionStep<? extends Record> select = buildOptions(selectFrom,param);
+        select.orderBy(VIRTUAL_ORDER.CREATE_TIME.desc());
 		PageResult<CouponPackOrderVo> pageResult = getPageResult(select,param.getCurrentPage(),param.getPageRows(), CouponPackOrderVo.class);
 		List<CouponPackOrderVo> dataList = pageResult.dataList;	
 		if(dataList==null) {
@@ -128,7 +132,6 @@ public class CouponPackOrderService extends VirtualOrderService {
                 condition.and(VIRTUAL_ORDER.RETURN_FLAG.eq(REFUND_STATUS_SUCCESS).or(VIRTUAL_ORDER.RETURN_FLAG.eq(REFUND_STATUS_FAILED)));
             }
         }
-		condition.orderBy(VIRTUAL_ORDER.CREATE_TIME.desc());
 		return condition;
 	}
 	
@@ -149,11 +152,10 @@ public class CouponPackOrderService extends VirtualOrderService {
 	 * @return
 	 */
 	public int getVoucherAccessCount(String orderSn) {
-		Record1<Integer> record = db().select(DSL.count()).from(CUSTOMER_AVAIL_COUPONS)
-			.where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.eq(orderSn))
+		return db().selectCount().from(CUSTOMER_AVAIL_COUPONS)
+			.where(CUSTOMER_AVAIL_COUPONS.ACCESS_ORDER_SN.eq(orderSn))
 			.and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-			.and(CUSTOMER_AVAIL_COUPONS.ACCESS_MODE.eq(CUSTOMER_AVAIL_COUPONS_ACCESSMODE_PACK)).fetchOne();
-		return record.value1();
+			.and(CUSTOMER_AVAIL_COUPONS.ACCESS_MODE.eq(CUSTOMER_AVAIL_COUPONS_ACCESSMODE_PACK)).fetchOptionalInto(Integer.class).orElse(0);
 	}
 	/**
 	 * 获取某一个订单 用户还剩余多少优惠劵未发放
@@ -304,6 +306,7 @@ public class CouponPackOrderService extends VirtualOrderService {
             where(VIRTUAL_ORDER.ORDER_SN.eq(orderRecord.getOrderSn())).
             execute();
         orderRecord.refresh();
+        db().update(COUPON_PACK).set(COUPON_PACK.ISSUED_AMOUNT, COUPON_PACK.ISSUED_AMOUNT.add(1)).where(COUPON_PACK.ID.eq(orderRecord.getVirtualGoodsId())).execute();
 
         if(orderRecord.getUseScore() != null && orderRecord.getUseScore() > 0){
             ScoreParam scoreParam = new ScoreParam();
@@ -345,6 +348,7 @@ public class CouponPackOrderService extends VirtualOrderService {
                 .setMoney(orderRecord.getMemberCardBalance().negate())
                 .setCardNo(orderRecord.getCardNo())
                 .setReason(orderRecord.getOrderSn())
+                .setReasonId(RemarkTemplate.COUPON_PACK_ORDER.code)
                 // 消费类型 :只支持普通卡0
                 .setType(MCARD_TP_NORMAL);
             TradeOptParam tradeOpt = TradeOptParam
@@ -376,9 +380,7 @@ public class CouponPackOrderService extends VirtualOrderService {
         db().update(VIRTUAL_ORDER).set(VIRTUAL_ORDER.PREPAY_ID,prepayId).where(VIRTUAL_ORDER.ORDER_SN.eq(orderSn)).execute();
     }
 
-    public VirtualOrderRecord getRecord(String orderSn){
-        return db().fetchAny(VIRTUAL_ORDER,VIRTUAL_ORDER.ORDER_SN.eq(orderSn));
-    }
+
 
     /**
      * 更新stillSendFlag
@@ -399,6 +401,54 @@ public class CouponPackOrderService extends VirtualOrderService {
             and(VIRTUAL_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED)).
             and(VIRTUAL_ORDER.STILL_SEND_FLAG.eq(CouponPackConstant.STILL_SEND_FLAG_CONTINUE)).
             fetch();
+    }
+
+    public Integer getExportRows(CouponPackOrderPageParam param) {
+        SelectWhereStep<? extends Record> selectFrom = db()
+            .selectCount()
+            .from(VIRTUAL_ORDER)
+            .leftJoin(COUPON_PACK).on(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(COUPON_PACK.ID))
+            .leftJoin(USER).on(VIRTUAL_ORDER.USER_ID.eq(USER.USER_ID));
+        SelectConditionStep<? extends Record> select = buildOptions(selectFrom, param);
+        return select.fetchOptionalInto(int.class).orElse(0);
+    }
+
+    public Workbook exportOrderList(CouponPackOrderPageParam param, String lang) {
+        SelectWhereStep<? extends Record> selectFrom = db()
+            .select(VIRTUAL_ORDER.ORDER_ID, VIRTUAL_ORDER.ORDER_STATUS, VIRTUAL_ORDER.VIRTUAL_GOODS_ID, COUPON_PACK.PACK_NAME,
+                VIRTUAL_ORDER.ORDER_SN, VIRTUAL_ORDER.USER_ID, USER.USERNAME, USER.MOBILE, VIRTUAL_ORDER.MONEY_PAID, VIRTUAL_ORDER.USE_ACCOUNT, VIRTUAL_ORDER.USE_SCORE, VIRTUAL_ORDER.MEMBER_CARD_BALANCE, VIRTUAL_ORDER.CARD_NO, VIRTUAL_ORDER.PAY_CODE, VIRTUAL_ORDER.PAY_NAME, VIRTUAL_ORDER.PREPAY_ID, VIRTUAL_ORDER.PAY_SN, VIRTUAL_ORDER.ORDER_AMOUNT,
+                VIRTUAL_ORDER.CREATE_TIME, VIRTUAL_ORDER.RETURN_FLAG, VIRTUAL_ORDER.RETURN_SCORE, VIRTUAL_ORDER.RETURN_ACCOUNT, VIRTUAL_ORDER.RETURN_MONEY, VIRTUAL_ORDER.RETURN_CARD_BALANCE,
+                VIRTUAL_ORDER.RETURN_TIME, VIRTUAL_ORDER.CURRENCY)
+            .from(VIRTUAL_ORDER)
+            .leftJoin(COUPON_PACK).on(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(COUPON_PACK.ID))
+            .leftJoin(USER).on(VIRTUAL_ORDER.USER_ID.eq(USER.USER_ID));
+        SelectConditionStep<? extends Record> select = buildOptions(selectFrom, param);
+        select.orderBy(VIRTUAL_ORDER.CREATE_TIME.desc());
+        List<CouponPackOrderExportVo> list = select.fetchInto(CouponPackOrderExportVo.class);
+
+        list.forEach(o -> {
+            if (o.getUseScore() != null && o.getUseScore() > 0) {
+                o.setPrice(o.getUseScore().toString() + Util.translateMessage(lang, JsonResultMessage.UEXP_SCORE, "excel"));
+            } else {
+                if ("CNY".equals(o.getCurrency())) {
+                    o.setPrice("￥" + o.getOrderAmount().toString());
+                } else {
+                    o.setPrice("$" + o.getOrderAmount().toString());
+                }
+            }
+
+            if (REFUND_STATUS_SUCCESS.equals(o.getReturnFlag())) {
+                o.setOrderStatusName(Util.translateMessage(lang, JsonResultMessage.VIRTUAL_ORDER_COUPON_PACK_REFUNDED, "excel"));
+            } else {
+                o.setOrderStatusName(Util.translateMessage(lang, JsonResultMessage.VIRTUAL_ORDER_COUPON_PACK_PAYMENT_SUCCESSFUL, "excel"));
+            }
+
+        });
+
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+        excelWriter.writeModelList(list, CouponPackOrderExportVo.class);
+        return workbook;
     }
 
 

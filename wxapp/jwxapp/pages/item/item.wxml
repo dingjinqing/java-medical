@@ -14,19 +14,20 @@
 <view class="body">
   <include src="../common/header.wxml" />
   <view class="main-container" wx:if="{{goodsInfo}}">
+    <!-- 分销邀请人信息 -->
+    <v-invite-notice invite-id="{{inviteId}}" />
     <!-- 商品图片 -->
     <view class="goods-image">
-      <view class="live-tips">
+      <view class="live-tips" wx:if="{{specParams.goodsNumber && roomDetailMpInfo && filter.includes([101,102],liveStatus) && showLive}}">
        <view class="live-avatar-content">
-        <image class="live-avatar" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200327/T4N240u3jDGM06osjNAj.jpeg"></image>
+        <image class="live-avatar" src="{{roomDetailMpInfo.anchorImg}}"></image>
        </view>
-       <!-- <text class="live-desc">商品正在参与直播，立即查看 ></text> -->
-       <text class="live-desc">直播将在20:00开始</text>
-       <!-- <view class="subscribe-button" style="color:#fff;background:linear-gradient(90deg,rgba(243,177,62,1),rgba(247,145,61,1));border:none;">立即订阅</view> -->
-        <subscribe room-id="5"></subscribe>
-        <!-- <view class="subscribe-button" bindtap="goLive" style="color:rgba(247,145,61,1);">已订阅</view> -->
-        <image class="live-close" src="{{imageUrl}}image/wxapp/invite_close_live.png"></image>
+       <text class="live-desc" wx:if="{{liveStatus === 101}}" bindtap="goLive">商品正在参与直播，立即查看 ></text>
+       <text class="live-desc" wx:if="{{liveStatus === 102}}">直播将在{{roomDetailMpInfo.startTime}}开始</text>
+        <subscribe room-id="{{roomDetailMpInfo.roomId}}" wx:if="{{liveStatus === 102}}"></subscribe>
+        <image class="live-close" bindtap="closeLive" src="{{imageUrl}}image/wxapp/invite_close_live.png"></image>
       </view>
+      <view class="sell-out" wx:if="{{!specParams.goodsNumber}}">已售罄</view>
       <v-goods-swiper goods-media="{{goodsMediaInfo}}" />
     </view>
     <!-- actBar 活动倒计时价格等 -->
@@ -112,13 +113,13 @@
           {{goodsInfo.activity.preSaleType === 0 ? '活动规则：支付定金-支付尾款-等待发货':'活动规则：支付定金-等待发货'}}
           <image src="{{imageUrl}}/image/wxapp/pre_tice2.png" style="width:30rpx;height:30rpx;vertical-align: sub;"></image>
         </view>
-        <view wx:if="{{goodsInfo.activity.preSaleType === 0}}">退定金规则：逾期未付尾款，定金{{gd.preSale.returnDeposit?'可':'不予'}}退还</view>
+        <view wx:if="{{goodsInfo.activity.preSaleType === 0}}">退定金规则：逾期未付尾款，定金{{goodsInfo.activity.returnDeposit?'可':'不予'}}退还</view>
       </view>
       <view class="flex-wrap">
         <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 5}}">
           剩余可秒杀数量：{{goodsInfo.activity.stock}}个
         </view>
-        <view class="flex-item" wx:if="{{!filter.includes([5,8],goodsInfo.activity.activityType)}}">库存：{{goodsInfo.goodsNumber}}个</view>
+        <view class="flex-item" wx:if="{{!filter.includes([5,8],goodsInfo.activity.activityType)}}">库存：{{goodsShowStock}}个</view>
         <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 1}}">
           已团：{{goodsInfo.activity.groupBuySuccessCount}}
         </view>
@@ -163,7 +164,7 @@
     <!-- 优惠券&促销信息 -->
     <v-coupon-promotion wx:if="{{!filter.includes([1,3,4,8,5,10],specParams.activity.activityType)}}" coupon-list="{{couponList}}" promotion="{{promotionInfo}}" goods-gifts="{{goodsGifts}}" />
     <!-- 选择规格（包含无规格情况） -->
-    <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}" room-id="{{roomId}}">
+    <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" invite-id="{{inviteId}}" trigger-button="{{triggerButton}}" room-id="{{roomId}}">
       <!-- 服务规则 -->
       <view class="flex_box" bindtap="goPledge" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}">
         <view class="item_left">服务</view>
@@ -247,11 +248,69 @@
     <!-- 购买记录  -->
     <v-purchase_record goodsRecords="{{goodsRecords}}"  />
   </view>
-  <v-item-footer wx:if="{{specParams.products}}" product-info="{{productInfo}}" custom-service="{{goodsInfo.customService}}" activity="{{specParams.activity}}" room-id="{{roomId}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog" products="{{specParams.products}}"/>
+  <v-item-footer wx:if="{{specParams.products}}" product-info="{{productInfo}}" custom-service="{{goodsInfo.customService}}" activity="{{specParams.activity}}" goods-number="{{specParams.goodsNumber}}" invite-id="{{inviteId}}" room-id="{{roomId}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog" products="{{specParams.products}}"/>
   <v-pre-sale-rule show="{{preSaleRuleShow}}" />
 
 
   <include src="../common/footer.wxml" />
 </view>
 <!-- 分享|下载海报|多图弹窗 -->
-<v-share show="{{showShareDialog}}" share-data="{{shareData}}"/>
+<!-- <v-share show="{{showShareDialog}}" share-data="{{shareData}}"/> -->
+<v-share show="{{showShareDialog}}" share-data="{{shareData}}">
+  <view slot="shareInvite" class="shareInvite">
+    <view class="invite_text">
+      <view class='invite_friend'>邀好友查看,即可获得活动奖励</view>
+    </view>
+     <view class='invite_content invite_mul' wx:for='{{shareContent.shareRules}}' wx:key='key' data-index='index'>
+      <view class='invite_people'>
+        <view class='share_text'>邀{{item.invite_num}}人</view>
+        <view class='circle_line'>
+          <view class="circle_line_after"></view>
+          <view class="circle_line_after2"></view>
+        </view>
+        <view class="people">
+          <image src='{{imageUrl}}image/wxapp/share_big_people.png' class='user_image'></image>
+        </view>
+        <view>
+          <!-- <view class='share_or' wx:if='{{item.share_state === 0}}'>进行中</view> -->
+          <!-- <view class='share_or' wx:if='{{item.share_state === 1}}'>未邀请</view> -->
+          <view class='share_or get_share' wx:if="{{item.reward_type}}"  bindtap="getShare">查看奖励</view>
+        </view>
+      </view>
+      <view class='invite_people'>
+        <view class='share_text'>邀{{item.invite_num}}人</view>
+        <view class='circle_line'>
+          <view class="circle_line_after2"></view>
+        </view>
+        <view class='people'>
+          <block>
+            <image src='{{imageUrl}}image/wxapp/share_big_people.png' class='user_image'></image>
+          </block>
+        </view>
+        <view>
+          <view class='share_or' wx:if='{{item.share_state === 0}}'>进行中</view>
+          <view class='share_or' wx:elif='{{item.share_state === 1}}'>未邀请</view>
+          <view class='share_or get_share' wx:else >查看奖励</view>
+        </view>
+      </view>
+      <view class='invite_people'>
+        <view class='share_text'>邀{{item.invite_num}}人</view>
+        <view class="circle_line"></view>
+        <view class='people'>
+          <block>
+            <image src='{{imageUrl}}image/wxapp/share_big_people.png' class='user_image'></image>
+          </block>
+        </view>
+        <view>
+          <view class='share_or' wx:if='{{item.share_state === 0}}'>进行中</view>
+          <view class='share_or' wx:elif='{{item.share_state === 1}}'>未邀请</view>
+          <view class='share_or get_share' wx:else>查看奖励</view>
+        </view>
+      </view>
+    </view>
+    <view class='invite_message'>
+      <view>注：
+        <text>仅邀请新用户有效，</text>每天最多可参与{{shareLimit}}个活动</view>
+    </view>
+  </view>
+</v-share>

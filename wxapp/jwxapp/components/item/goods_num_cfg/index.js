@@ -1,3 +1,4 @@
+const util = require("../../../utils/util.js");
 global.wxComponent({
   /**
    * 组件的属性列表
@@ -58,6 +59,26 @@ global.wxComponent({
           goodsNum
         })
         this.triggerEvent("goodsNumData", { goodsNum: this.data.goodsNum });
+    },
+    goodsNumChange(e){
+      let {value:num} = e.detail
+      let {limitBuyNum, limitMaxNum, prdNumber} = this.data.limitInfo
+      limitBuyNum = (limitBuyNum && limitBuyNum > 0) ?  limitBuyNum : 1;
+      limitMaxNum = limitMaxNum && limitMaxNum > 0 && prdNumber > limitMaxNum ? limitMaxNum : prdNumber
+      if(num < limitBuyNum){
+        util.showModal('提示','商品数量低于最小可购买数量')
+        num = limitBuyNum
+      }
+      if(num > limitMaxNum){
+        util.showModal('提示','商品数量高于最高可购买数量')
+        num = limitMaxNum
+      }
+      this.setData({
+        canMinus: num <= limitBuyNum ? false : true,
+        canPlus: num < limitMaxNum ? true : false,
+        goodsNum:num
+      })
+      this.triggerEvent("goodsNumData", { goodsNum: this.data.goodsNum });
     }
   }
 });

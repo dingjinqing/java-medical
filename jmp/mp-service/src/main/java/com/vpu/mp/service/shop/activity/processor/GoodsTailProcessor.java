@@ -3,24 +3,21 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeBo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
-import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
-import com.vpu.mp.service.pojo.shop.distribution.UserDistributionVo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
-import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
-import com.vpu.mp.service.pojo.wxapp.distribution.GoodsDistributionVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.live.RoomDetailMpVo;
 import com.vpu.mp.service.shop.activity.dao.TailProcessorDao;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.distribution.MpDistributionGoodsService;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.market.live.LiveService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,11 +28,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
 
 /**
  * 小程序-商品列表-处理最终价格信息
@@ -59,6 +52,8 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
     MpDistributionGoodsService distributionGoods;
     @Autowired
     private ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    private LiveService liveService;
 
     /*****处理器优先级*****/
     @Override
@@ -149,7 +144,11 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
             BigDecimal deliverPrice = calculate.calculateShippingFee(param.getUserId(),param.getLon(), param.getLat(), param.getGoodsId(), goodsDetailMpBo.getDeliverTemplateId(), defaultNum,goodsDetailMpBo.getProducts().get(0).getPrdRealPrice(),goodsDetailMpBo.getGoodsWeight());
             goodsDetailMpBo.setDeliverPrice(deliverPrice);
         }
-
+        // 处理直播信息
+        if (goodsDetailMpBo.getRoomId() != null) {
+            RoomDetailMpVo roomDetail = liveService.getLiveInfoForGoodsMpDetail(goodsDetailMpBo.getRoomId());
+            goodsDetailMpBo.setRoomDetailMpInfo(roomDetail);
+        }
 
     }
 
@@ -183,17 +182,13 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
             }
             if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
                 totalPrice = totalPrice.add(goods.getPrdPrice().multiply(BigDecimal.valueOf(goods.getCartNumber())));
-            }else {
+            }else if (!BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS.equals(goods.getActivityType())){
                 isAllCheck=0;
             }
         }
-        //图片链接
-        cartBo.getCartGoodsList().forEach(cartGoods->{
-            cartGoods.setGoodsImg(cartService.getImgFullUrlUtil(cartGoods.getGoodsImg()));
-        });
-        cartBo.getInvalidCartList().forEach(cartGoods->{
-            cartGoods.setGoodsImg(cartService.getImgFullUrlUtil(cartGoods.getGoodsImg()));
-        });
+        //减去折扣
+        totalPrice= totalPrice.subtract(cartBo.getFullReductionPrice());
+
         cartBo.setTotalPrice(totalPrice);
         cartBo.setIsAllCheck(isAllCheck);
 

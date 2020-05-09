@@ -271,4 +271,8 @@ public class CardVerifyService extends ShopBaseService {
     		return cardDaoSvc.getCardBasicInfoById(cardIds.toArray(new Integer[cardIds.size()]));
     	}
     }
+    
+    
+    
+    
 }

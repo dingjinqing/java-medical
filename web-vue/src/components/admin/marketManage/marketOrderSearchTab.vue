@@ -2,23 +2,25 @@
 <template>
   <div class="filters">
     <section style="display: flex;margin-bottom: 10px;width:100%">
-      <div class="filters_item"><span>{{$t('marketCommon.goodsName')}}</span>
+      <div class="filters_item"><span>{{$t('marketCommon.goodsName') + '：'}}</span>
         <el-input
           v-model="requestParams.goodsName"
           :placeholder="$t('marketCommon.goodsName')"
           size="small"
+          clearable
           class="default_input"
         ></el-input>
       </div>
-      <div class="filters_item"><span>{{$t('marketCommon.orderSn')}}</span>
+      <div class="filters_item"><span>{{$t('marketCommon.orderSn') + '：'}}</span>
         <el-input
           v-model="requestParams.orderSn"
           :placeholder="$t('marketCommon.orderSn')"
           size="small"
+          clearable
           class="default_input"
         ></el-input>
       </div>
-      <div class="filters_item"><span>{{$t('marketCommon.orderStatus')}}</span>
+      <div class="filters_item"><span>{{$t('marketCommon.orderStatus') + '：'}}</span>
         <el-select
           v-model="requestParams.selectedOrderStatus"
           :placeholder="$t('marketCommon.selectPlaceholder')"
@@ -26,7 +28,7 @@
           class="default_input"
         >
           <el-option
-            v-for="item in $t('order.orderStatus')"
+            v-for="item in $t('order.orderStatusList')"
             :key="item[0]"
             :label="item[1]"
             :value="item[0]"
@@ -35,23 +37,25 @@
       </div>
     </section>
     <section style="display: flex;margin-bottom: 10px;width:100%">
-      <div class="filters_item"><span>{{$t('marketCommon.consigneeName')}}</span>
+      <div class="filters_item"><span>{{$t('marketCommon.consigneeName') + '：'}}</span>
         <el-input
           v-model="requestParams.consignee"
           :placeholder="$t('marketCommon.consigneeNamePlaceholder')"
           size="small"
+          clearable
           class="default_input"
         ></el-input>
       </div>
-      <div class="filters_item"><span>{{$t('marketCommon.consigneeMobile')}}</span>
+      <div class="filters_item"><span>{{$t('marketCommon.consigneeMobile') + '：'}}</span>
         <el-input
           v-model="requestParams.mobile"
           :placeholder="$t('marketCommon.consigneeMobilePlaceholder')"
           size="small"
+          clearable
           class="default_input"
         ></el-input>
       </div>
-      <div class="filters_item"><span>{{$t('marketCommon.orderTime')}}</span>
+      <div class="filters_item"><span>{{$t('marketCommon.orderTime') + '：'}}</span>
         <el-date-picker
           v-model="requestParams.createTimeStart"
           type="date"
@@ -66,7 +70,7 @@
       <div
         class="filters_item"
         style="width: 485px"
-      ><span>{{$t('marketCommon.shippingAddress')}}</span>
+      ><span>{{$t('marketCommon.shippingAddress') + '：'}}</span>
         <areaLinkage
           @areaData="handleAreaData"
           :areaCode="areaLinkage"
@@ -141,9 +145,10 @@ export default {
     margin-bottom: 10px;
     text-align: right;
     > span {
-      width: 90px;
+      width: 100px;
+      // width: 90px;
       font-size: 14px;
-      margin-right: 20px;
+      // margin-right: 20px;
     }
     .export-data {
       margin-left: 15px;

@@ -23,6 +23,13 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
+     * The table <code>mini_shop_471752.b2c_division_receive_record</code>.
+     */
+    public static final DivisionReceiveRecord DIVISION_RECEIVE_RECORD = com.vpu.mp.db.shop.tables.DivisionReceiveRecord.DIVISION_RECEIVE_RECORD;
+
+
+
+    /**
      * The table <code>mini_shop_4748160.b2c_prize_record</code>.
      */
     public static final PrizeRecord PRIZE_RECORD = com.vpu.mp.db.shop.tables.PrizeRecord.PRIZE_RECORD;
@@ -1075,4 +1082,12 @@ public class Tables {
      * The table <code>jmini_shop_489258.b2c_card_renew</code>.
      */
     public static final CardRenew CARD_RENEW = com.vpu.mp.db.shop.tables.CardRenew.CARD_RENEW;
+    /**
+     * The table <code>jmini_shop_489258.b2c_give_card_record</code>.
+     */
+    public static final GiveCardRecord GIVE_CARD_RECORD = com.vpu.mp.db.shop.tables.GiveCardRecord.GIVE_CARD_RECORD;
+    /**
+     * The table <code>jmini_shop_489258.b2c_checked_goods_cart</code>.
+     */
+    public static final CheckedGoodsCart CHECKED_GOODS_CART = com.vpu.mp.db.shop.tables.CheckedGoodsCart.CHECKED_GOODS_CART;
 }

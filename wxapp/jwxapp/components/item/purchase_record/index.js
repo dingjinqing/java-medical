@@ -15,6 +15,7 @@ global.wxComponent({
       value: [],
       observer (val) {
         console.log(val)
+        p_total = 0
         // 计算距离顶部的高度
         this.handleToCalculationTop(val)
       }
@@ -84,7 +85,7 @@ global.wxComponent({
       p_count++;
       if (p_count < 2) return false;
       p_total++;
-      console.log('第一次动画结束！');
+      console.log('第一次动画结束！', p_total, pl);
       p_count = 0;
       if (p_total >= pl) {
         this.setData({

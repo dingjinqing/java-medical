@@ -152,6 +152,10 @@ import {
 import {
   cn as spike
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/spikeCn'
+// 营销管理  积分兑换
+import {
+  cn as mintegralExchange
+} from './views/admin_new/cn/index/marketManagement/integralExchange/mintegralExchangeCn'
 // 积分兑换
 import {
   cn as integralExchange
@@ -533,6 +537,10 @@ import {
 import {
   cn as serviceConfig
 } from './views/admin_new/cn/index/storeManagement/storeService/serviceConfigCn'
+// 门店权限
+import {
+  cn as storePermission
+} from './views/admin_new/cn/index/storeManagement/storePermission/storePermissionCn'
 // 门店公告
 import {
   cn as storeAnnouncement
@@ -1109,6 +1117,7 @@ const cn = {
   returnconfiguration, // 退换货配置
   templateMessage, // 运费模板
   serviceConfig, // 门店服务配置
+  storePermission, // 门店权限
   storeAnnouncement, // 门店公告
   authRoleList, // 店铺权限
   actionRecord, // 操作记录
@@ -1145,7 +1154,8 @@ const cn = {
   goodsStaticties, // 商品统计
   formDecorationHome, //  表单装修主页
   formStatisticsHome, // 表单统计列表主页
-  formDecorationModel // 表单统计装修所有模块
+  formDecorationModel, // 表单统计装修所有模块
+  mintegralExchange // 营销管理积分兑换
 }
 
 export default cn

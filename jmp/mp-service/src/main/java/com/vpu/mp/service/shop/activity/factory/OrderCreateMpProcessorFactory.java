@@ -40,15 +40,16 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
         BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE,
         BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE,
         BaseConstant.ACTIVITY_TYPE_REBATE,
-        BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE
+        BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE,
+        BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION,
+        BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE
     );
     /**
      * 全局的活动  支付有礼
      */
     private final static List<Byte> GLOBAL_ACTIVITY = Arrays.asList(
         BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
-        BaseConstant.ACTIVITY_TYPE_GIFT,
-        BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION
+        BaseConstant.ACTIVITY_TYPE_GIFT
     );
 
     /**
@@ -61,7 +62,8 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
             BaseConstant.ACTIVITY_TYPE_MY_PRIZE,
             BaseConstant.ACTIVITY_TYPE_PRE_SALE,
             BaseConstant.ACTIVITY_TYPE_GROUP_DRAW,
-            BaseConstant.ACTIVITY_TYPE_INTEGRAL
+            BaseConstant.ACTIVITY_TYPE_INTEGRAL,
+            BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE
     );
 
     /**
@@ -150,7 +152,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
             param.setActivityType(null);
             param.setActivityId(null);
         }
-        if (param.getActivityId() != null && param.getActivityType() != null) {
+        if (param.getActivityId() != null && param.getActivityType() != null && param.getActivityId() > 0 && param.getActivityType() > 0) {
             //单一营销
             processorMap.get(param.getActivityType()).processInitCheckedOrderCreate(param);
         } else {
@@ -172,7 +174,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
      * @param order
      */
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        if (param.getActivityId() != null) {
+        if (param.getActivityId() != null && param.getActivityType() != null && param.getActivityId() > 0 && param.getActivityType() > 0) {
             //单一营销
             processorMap.get(param.getActivityType()).processSaveOrderInfo(param, order);
         } else {
@@ -200,7 +202,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
                 return;
             }
         }
-        if (param.getActivityId() != null) {
+        if (param.getActivityId() != null && param.getActivityType() != null && param.getActivityId() > 0 && param.getActivityType() > 0) {
             //单一营销
             processorMap.get(param.getActivityType()).processUpdateStock(param, order);
         } else {
@@ -222,7 +224,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
      * @throws MpException
      */
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        if (param.getActivityId() != null) {
+        if (param.getActivityId() != null && param.getActivityType() != null && param.getActivityId() > 0 && param.getActivityType() > 0) {
             //单一营销
             // 可能有：我要送礼、限次卡兑换、拼团、砍价、积分兑换、秒杀、拼团抽奖、打包一口价、预售、抽奖、支付有礼、测评、好友助力、满折满减购物车下单
             processorMap.get(param.getActivityType()).processOrderEffective(param, order);

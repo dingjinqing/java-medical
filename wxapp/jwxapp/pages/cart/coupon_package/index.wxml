@@ -1,0 +1,18 @@
+<v-popup show="{{show}}" bindtap="bindClose" bind:close="bindClose" horizon="center" vertical="bottom" close_pos="inner">
+  <view class="selected-content">
+    <view class="title">
+      <text>优惠券礼包</text>
+    </view>
+    <view class="goods-content">
+      <view class="package-info" wx:for="{{couponPackageList}}" wx:key="actId" data-pack-id="{{item.actId}}" bindtap="goCouponPackageInfo">
+        <view class="item-info">
+          {{item.packName}}(包含{{item.totalAmount}}张券，总价值{{item.totalValue}}元)
+        </view>
+        <view class="item-status" style="color:{{main_setting.comColor}}">
+          {{item.isReceive ? '已领取' : '未领取'}}
+          <image src="{{imageUrl}}image/wxapp/right_into.png"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+</v-popup>

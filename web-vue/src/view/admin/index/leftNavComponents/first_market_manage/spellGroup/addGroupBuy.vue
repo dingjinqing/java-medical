@@ -113,7 +113,7 @@
             header-row-class-name="tableHeader"
             :data="form.product"
             border
-            style="width: 100%"
+            style="width: 99%"
             :empty-text="$t('groupBuy.noData')"
           >
             <el-table-column
@@ -224,7 +224,7 @@
             >
             </el-table-column>
 
-            <!-- 剩余库存 -->
+            <!-- 拼团库存 -->
             <el-table-column
               align="center"
               prop="stock"
@@ -246,7 +246,6 @@
                     { required: true, message: '拼团库存不能为空', trigger: 'blur' },
                     { validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.goodsNumber)}, trigger: ['blur', 'change'] }
                   ]"
-                  style="height: 56px;line-height: 56px;"
                 >
                   <div
                     class="input-error"
@@ -262,6 +261,7 @@
                 <div
                   class="spec-tips"
                   @click="showSpec(scope.row)"
+                  style="margin-top: 15px;"
                   v-if="scope.row.goodsSpecProducts && scope.row.goodsSpecProducts.length > 0"
                 >包含{{scope.row.goodsSpecProducts.length}}个规格；库存合计：{{scope.row.totalStock ? scope.row.totalStock : 0}}</div>
               </template>
@@ -862,8 +862,6 @@ export default {
       var re = /^([1-9]\d*|[0]{1,1})$/
       if (!re.test(value)) {
         callback(new Error('请填写0和正整数'))
-      } else if (value > prdNumber) {
-        callback(new Error('拼团库存不能大于商品库存'))
       } else {
         callback()
       }
@@ -908,6 +906,8 @@ export default {
           this.getCouponList(this.rewardCouponIds.map(Number))
         }
         if (this.form.isGrouperCheap === 1) {
+          this.showGrouperPrice = true
+        } else {
           this.showGrouperPrice = true
         }
         this.form.share = data.share
@@ -1024,9 +1024,11 @@ export default {
       // 可编辑状态
       this.disabledFlag = false
     },
-    changeSwitchState () {
-      if (this.form.isGrouperCheap === 1) {
+    changeSwitchState (val) {
+      if (val === 1) {
         this.showGrouperPrice = true
+      } else {
+        this.showGrouperPrice = false
       }
     },
     getProductdata ({ goodsId, prdInfo }) {
@@ -1034,11 +1036,11 @@ export default {
       console.log(this.form.product)
       let target = this.form.product.find(item => { return item.goodsId === goodsId })
       let index = this.form.product.findIndex(item => { return item.goodsId === goodsId })
-      this.$set(this.form.product[index], 'groupBuyPrice', prdInfo[0].secKillPrice)
+      this.$set(this.form.product[index], 'groupPrice', prdInfo[0].groupPrice)
       console.log(this.form.product)
       this.$set(this.form.product[index], 'stock', prdInfo[0].stock)
       if (this.form.isGrouperCheap === 1) {
-        this.$set(this.form.product[index], 'commanderDiscounts', prdInfo[0].secKillPrice)
+        this.$set(this.form.product[index], 'grouperPrice', prdInfo[0].grouperPrice)
       }
       target.goodsSpecProducts = prdInfo
       this.changePriceInput(target, true)
@@ -1063,9 +1065,9 @@ export default {
         goodsInfo.priceErrorMsg = null
         goodsInfo.goodsSpecProducts.forEach((item, index) => {
           if (!isDialog) item.groupPrice = goodsInfo.groupPrice
-          if (this.validatePrdPrice(item) && !goodsInfo.priceErrorMsg) {
-            goodsInfo.priceErrorMsg = '有规格拼团价大于原价，请修改'
-          }
+          // if (this.validatePrdPrice(item) && !goodsInfo.priceErrorMsg) {
+          //   goodsInfo.priceErrorMsg = '有规格拼团价大于原价，请修改'
+          // }
         })
       }
     },
@@ -1074,9 +1076,9 @@ export default {
         goodsInfo.grouperPriceErrorMsg = null
         goodsInfo.goodsSpecProducts.forEach((item, index) => {
           if (!isDialog) item.grouperPrice = goodsInfo.grouperPrice
-          if (this.validatePrdPrice(item) && !goodsInfo.grouperPriceErrorMsg) {
-            goodsInfo.grouperPriceErrorMsg = '有规格团长价大于原价，请修改'
-          }
+          // if (this.validatePrdPrice(item) && !goodsInfo.grouperPriceErrorMsg) {
+          //   goodsInfo.grouperPriceErrorMsg = '有规格团长价大于原价，请修改'
+          // }
         })
       }
     },
@@ -1091,6 +1093,18 @@ export default {
             goodsInfo.stockErrorMsg = '有规格拼团库存大于原库存，请修改'
           }
         })
+      } else {
+        var re = /^([1-9]\d*|[0]{1,1})$/
+        goodsInfo.stockErrorMsg = null
+        if ((goodsInfo.stock > goodsInfo.goodsNumber) && !goodsInfo.stockErrorMsg) {
+          goodsInfo.stockErrorMsg = '拼团库存不能大于原库存'
+        } else if (goodsInfo.stock < 0) {
+          goodsInfo.stockErrorMsg = '请输入非负数'
+        } else if (!re.test(goodsInfo.stock)) {
+          goodsInfo.stockErrorMsg = '请输入0和正整数'
+        } else {
+
+        }
       }
     },
     deleteGoods (data, id) {
@@ -1314,13 +1328,14 @@ export default {
   background: #fff;
 }
 
-.tableHeader th {
-  border: none;
+/deep/ .tableHeader th {
   line-height: 0 !important;
   height: 36px !important;
   font-weight: bold;
   padding: 8px 10px;
-  font-weight: bold;
+  background-color: #f5f5f5;
+  color: #000;
+  border: none;
 }
 
 .moreSetUp a {

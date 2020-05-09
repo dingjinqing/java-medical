@@ -14,20 +14,35 @@
           <label for="">{{$t('goodsImport.batchNum')}}：</label>
           <el-input
             size="small"
-            style="width:150px;"
-            :placeholder="$t('goodsImport.operationTime')"
+            style="width:170px;"
+            :placeholder="$t('goodsImport.peBatchNum')"
             v-model="queryParams.batchId"
           ></el-input>
         </li>
         <li>
           <label for="">{{$t('goodsImport.operationTime')}}：</label>
           <el-date-picker
-            v-model="datepicker"
-            type="daterange"
+            type="datetime"
+            v-model="queryParams.beginTime"
+            :placeholder="$t('goodsImport.psTime')"
             size="small"
-            :range-separator="$t('goodsImport.to')"
-            :start-placeholder="$t('goodsImport.psTime')"
-            :end-placeholder="$t('goodsImport.psTime')"
+            style="width:170px;"
+            default-time="00:00:00"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            :picker-options="startTimePicker"
+          ></el-date-picker>
+          <span style="display:inline-block; margin:0 10px;line-height:30px;">{{$t('goodsImport.to')}}</span>
+          <el-date-picker
+            type="datetime"
+            v-model="queryParams.endTime"
+            :placeholder="$t('goodsImport.psTime')"
+            size="small"
+            style="width:170px;"
+            default-time="23:59:59"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            :picker-options="endTimePicker"
           ></el-date-picker>
         </li>
         <li>
@@ -113,10 +128,24 @@
         <div class="card-box">
           <div>
             <span>{{$t('goodsImport.downloadTemp')}}：</span>
-            <el-button
+            <!-- <el-button
               type="text"
               @click="downloadExportModule"
-            >{{$t('goodsImport.fileTemp')}}</el-button>
+            >{{$t('goodsImport.fileTemp')}}</el-button> -->
+            <el-link
+              v-if="lang === 'zh_CN'"
+              class="link-top"
+              type="primary"
+              :href="$imageHost+'/temp/excel/zh_CN/goods/goods.xlsx'"
+              download
+            >{{$t('goodsImport.fileTemp')}}</el-link>
+            <el-link
+              v-else
+              class="link-top"
+              type="primary"
+              :href="$imageHost+'/temp/excel/en_US/goods/goods.xlsx'"
+              download
+            >{{$t('goodsImport.fileTemp')}}</el-link>
           </div>
         </div>
         <p class="import-popup-title">{{$t('goodsImport.setp2')}}</p>
@@ -182,8 +211,8 @@ export default {
     pagination: () => import('@/components/admin/pagination/pagination')
   },
   data () {
+    let that = this
     return {
-      datepicker: '',
       tableData: [],
       queryParams: {},
       pageParams: {
@@ -195,19 +224,20 @@ export default {
       uploadParams: {
         isUpdate: false
       },
-      uploadUrl: ''
+      uploadUrl: '',
+      startTimePicker: {
+        disabledDate: time => {
+          return time.getTime() > new Date(that.queryParams.endTime).getTime()
+        }
+      },
+      endTimePicker: {
+        disabledDate: time => {
+          return time.getTime() < new Date(that.queryParams.beginTime).getTime()
+        }
+      }
     }
   },
   watch: {
-    datepicker: {
-      handler (val) {
-        console.log('datepicker:', val)
-        let startDate = val[0].format('yyyy-MM-dd')
-        let endDate = val[1].format('yyyy-MM-dd')
-        this.$set(this.queryParams, 'beginTime', startDate)
-        this.$set(this.queryParams, 'endTime', endDate)
-      }
-    },
     'uploadFile.name' (val) {
       if (!val) {
         this.$refs.upload.clearFiles()
@@ -217,6 +247,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     this.initDataList()
   },
   methods: {
@@ -289,7 +320,7 @@ export default {
       that.loading = true
       let formdata = new FormData()
       formdata.append('file', this.fileList[0].raw)
-      formdata.append('isUpload', this.uploadParams.isUpdate)
+      formdata.append('isUpdate', this.uploadParams.isUpdate)
       uploadGoodsApi(formdata).then(res => {
         console.log('res:', res)
         if (res.error === 0) {
@@ -393,6 +424,10 @@ export default {
   }
   .dialog-footer {
     text-align: center;
+  }
+  .link-top {
+    position: relative;
+    top: -1px;
   }
 }
 </style>

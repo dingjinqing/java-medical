@@ -28,9 +28,9 @@ public class JoinUserListParam extends BasePageParam {
     /** 是否已成团 **/
     private Boolean grouped;
     /** 最小邀请用户数 **/
-    private Short minInviteUserCount;
+    private Integer minInviteUserCount;
     /** 最大邀请用户数 **/
-    private Short maxInviteUserCount;
+    private Integer maxInviteUserCount;
     /** 是否团长 **/
     private Boolean isGrouper;
     /** 团 ID **/

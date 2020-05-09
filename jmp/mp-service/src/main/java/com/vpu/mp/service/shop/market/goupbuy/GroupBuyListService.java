@@ -82,6 +82,7 @@ public class GroupBuyListService extends ShopBaseService {
         SelectHavingStep<Record2<Integer, Integer>> table = db()
                 .select(GROUP_BUY_LIST.ACTIVITY_ID, DSL.count(GROUP_BUY_LIST.ID).as(GROUP_ORDER_NUM))
                 .from(GROUP_BUY_LIST)
+                .where(GROUP_BUY_LIST.STATUS.in(STATUS_SUCCESS,STATUS_DEFAULT_SUCCESS))
                 .groupBy(GROUP_BUY_LIST.ACTIVITY_ID);
 
         SelectConditionStep<? extends Record> records = db().select(
@@ -227,14 +228,13 @@ public class GroupBuyListService extends ShopBaseService {
 
     /**
      * 根据拼团获取团长
-     *
      * @param groupId
      * @return
      */
     public GroupBuyListRecord getGrouperByGroupId(Integer groupId) {
         return db().selectFrom(GROUP_BUY_LIST)
-                .where(GROUP_BUY_LIST.STATUS.ge(STATUS_ONGOING))
-                .and(GROUP_BUY_LIST.IS_GROUPER.eq(IS_GROUPER_Y))
+                .where(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING,STATUS_SUCCESS,STATUS_DEFAULT_SUCCESS,STATUS_FAILED))
+                .and(GROUP_BUY_LIST.IS_GROUPER.in(IS_GROUPER_Y))
                 .and(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).fetchAny();
 
     }
@@ -308,6 +308,12 @@ public class GroupBuyListService extends ShopBaseService {
                     .and(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING, STATUS_SUCCESS)).fetchOneInto(Integer.class);
             if (joinFlag>0){
                 logger().debug("你已参加过该团[activityId:{}]",activityId);
+                return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOINING).build();
+            }
+            GroupBuyListRecord grouperInfo = getGrouperByGroupId(groupId);
+            if (STATUS_SUCCESS.equals(grouperInfo.getStatus())|| STATUS_DEFAULT_SUCCESS.equals(grouperInfo.getStatus())){
+                return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_SUCCESS).build();
+            }else if (grouperInfo.getStatus().equals(STATUS_FAILED)){
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOINING).build();
             }
         }

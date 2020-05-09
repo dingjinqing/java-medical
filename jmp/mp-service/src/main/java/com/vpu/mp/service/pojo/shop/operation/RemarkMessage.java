@@ -51,7 +51,8 @@ public class RemarkMessage {
 	public static final String FREESHIP_NUM = "member.card.freeship.num";
 	/** 可享受包邮{0}次 */
 	public static final String FREESHIP_TOTAL_NUM = "member.card.freeship.total.num";
-
+    /** 会员卡续费 */
+    public static final String CARD_RENEW = "member.card.renew";
 
 
 	/**
@@ -85,6 +86,8 @@ public class RemarkMessage {
     public static final String MSG_ENTER_HAS_GIFT = "enter.has.gift";
 	/** 门店支付 */
 	public static final String STORE_PAYMEMBT = "member.card.charge.money.payment";
+    /**优惠券礼包下单*/
+    public static final String MSG_COUPON_PACK_ORDER = "coupon.pack.order.payment";
 
 
 	/**

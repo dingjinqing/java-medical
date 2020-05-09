@@ -7,11 +7,14 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsShowStyleConfigBo;
 import com.vpu.mp.service.pojo.wxapp.goods.search.*;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
 import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
+import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record2;
 import org.jooq.Result;
@@ -28,6 +31,7 @@ import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
 
 /**
  * 小程序-商品搜索界面逻辑处理类
+ *
  * @author 李晓冰
  * @date 2020年03月11日
  */
@@ -47,9 +51,15 @@ public class GoodsSearchMpService extends ShopBaseService {
     GoodsMpService goodsMpService;
 
     @Autowired
+    GoodsGroupMpService goodsGroupMpService;
+    @Autowired
     GroupBuyService groupBuyService;
     @Autowired
     SeckillService seckillService;
+    @Autowired
+    CouponService couponService;
+    @Autowired
+    BargainService bargainService;
     @Autowired
     private ShopCommonConfigService shopCommonConfigService;
 
@@ -90,23 +100,31 @@ public class GoodsSearchMpService extends ShopBaseService {
     /**
      * 商品搜索接口统一入口，
      * 判断来自不同的pageFrom的搜索条件，然后调用对应的方法
+     *
      * @param param 搜索条件
      * @return 搜索内容
      */
     public GoodsSearchContentVo searchGoodsGate(GoodsSearchMpParam param) {
-        PageResult<GoodsListMpBo> pageResult = null;
-        if(param.getPageFrom() != null && param.getPageFrom() > 0){
-            if (GoodsSearchMpParam.PAGE_FROM_GROUP_BUY.equals(param.getPageFrom())) {
-                pageResult = searchGoodsForGroupBuyQrCode(param);
-            } else if(GoodsSearchMpParam.PAGE_FROM_SEC_KILL.equals(param.getPageFrom())) {
-                pageResult = searchGoodsForSecKillQrCode(param);
-            }else{
-                pageResult = searchGoods(param);
-            }
-        }else{
-            pageResult = searchGoods(param);
-        }
 
+        if (param.getPageFrom() != null) {
+            List<Integer> goodsIds = null;
+            if (GoodsSearchMpParam.PAGE_FROM_GROUP_LIST.equals(param.getPageFrom())) {
+                goodsIds = goodsGroupMpService.getGoodsIdsLimitedForGoodsSearch(param);
+            } else if (GoodsSearchMpParam.PAGE_FROM_GROUP_BUY.equals(param.getPageFrom())) {
+                goodsIds = getGoodsIdsLimitedForGroupBuyQrCode(param);
+            } else if (GoodsSearchMpParam.PAGE_FROM_SEC_KILL.equals(param.getPageFrom())) {
+                goodsIds = getGoodsIdsLimitedForSecKillQrCode(param);
+            } else if (GoodsSearchMpParam.PAGE_FROM_COUPON.equals(param.getPageFrom())) {
+                goodsIds = getGoodsIdsLimitedForVoucher(param);
+            } else if (GoodsSearchMpParam.PAGE_FROM_BARGAIN.equals(param.getPageFrom())){
+                goodsIds = getGoodsIdsLimitedForBargainQrCode(param);
+            }else {
+                // 空数组将搜索不出来商品
+                goodsIds = new ArrayList<>();
+            }
+            param.setGoodsIds(goodsIds);
+        }
+        PageResult<GoodsListMpBo> pageResult = searchGoods(param);
 
         goodsMpService.disposeGoodsList(pageResult.dataList, param.getUserId());
         GoodsShowStyleConfigBo goodsShowStyle = goodsMpService.getGoodsShowStyle();
@@ -119,36 +137,53 @@ public class GoodsSearchMpService extends ShopBaseService {
 
     /**
      * admin拼团活动扫码进入
+     *
      * @param param GoodsSearchMpParam
      * @return 该活动下的有效商品信息
      */
-    private PageResult<GoodsListMpBo> searchGoodsForGroupBuyQrCode(GoodsSearchMpParam param) {
-        int activityId = param.getActId();
-        Condition goodsBaseCondition = goodsMpService.getGoodsBaseCondition();
-        List<Integer> goodsIds = groupBuyService.getGroupBuyCanUseGoodsIds(activityId, goodsBaseCondition);
-
-        List<SortField<?>> sortFields = buildSearchOrderFields(param);
-
-        return goodsMpService.findActivityGoodsListCapsulesDao(GOODS.GOODS_ID.in(goodsIds), sortFields, param.getCurrentPage(), param.getPageRows(), null);
+    private List<Integer> getGoodsIdsLimitedForGroupBuyQrCode(GoodsSearchMpParam param) {
+        int activityId = param.getOuterPageParam().getActId();
+        return groupBuyService.getGroupBuyCanUseGoodsIds(activityId, goodsMpService.getGoodsBaseCondition());
     }
 
     /**
      * admin秒杀活动扫码进入
+     *
      * @param param GoodsSearchMpParam
      * @return 该活动下的有效商品信息
      */
-    private PageResult<GoodsListMpBo> searchGoodsForSecKillQrCode(GoodsSearchMpParam param) {
-        int activityId = param.getActId();
+    private List<Integer> getGoodsIdsLimitedForSecKillQrCode(GoodsSearchMpParam param) {
+        int activityId = param.getOuterPageParam().getActId();
+        return seckillService.getSecKillCanUseGoodsIds(activityId, goodsMpService.getGoodsBaseCondition());
+    }
+
+    /**
+     * 小程序优惠券进入
+     *
+     * @param param GoodsSearchMpParam
+     * @return 该活动下的有效商品信息
+     */
+    private List<Integer> getGoodsIdsLimitedForVoucher(GoodsSearchMpParam param) {
+        logger().debug("优惠券跳转商品搜索页面");
+        int voucherId = param.getOuterPageParam().getActId();
+        Condition goodsCouponCondition = couponService.buildGoodsSearchCondition(voucherId);
         Condition goodsBaseCondition = goodsMpService.getGoodsBaseCondition();
-        List<Integer> goodsIds = seckillService.getSecKillCanUseGoodsIds(activityId, goodsBaseCondition);
+        return goodsMpService.getGoodsIdsByCondition(goodsCouponCondition.and(goodsBaseCondition));
+    }
 
-        List<SortField<?>> sortFields = buildSearchOrderFields(param);
-
-        return goodsMpService.findActivityGoodsListCapsulesDao(GOODS.GOODS_ID.in(goodsIds), sortFields, param.getCurrentPage(), param.getPageRows(), null);
+    /**
+     * admin砍价活动扫码进入
+     * @param param GoodsSearchMpParam
+     * @return 该活动下的有效商品信息
+     */
+    private List<Integer> getGoodsIdsLimitedForBargainQrCode(GoodsSearchMpParam param) {
+        int activityId =  param.getOuterPageParam().getActId();
+        return bargainService.getBargainCanUseGoodsIds(activityId, goodsMpService.getGoodsBaseCondition());
     }
 
     /**
      * 搜索小程序商品信息
+     *
      * @param param 商品信息过滤条件
      * @return 搜索出来的商品信息
      */
@@ -156,7 +191,7 @@ public class GoodsSearchMpService extends ShopBaseService {
         PageResult<GoodsListMpBo> pageResult = null;
         if (esUtilSearchService.esState()) {
             //店铺的默认商品排序规则
-            if(shopCommonConfigService.getSearchSort().equals((byte) 1)){
+            if (shopCommonConfigService.getSearchSort().equals(Byte.valueOf((byte) 1))) {
                 param.setShopSortItem(goodsMpService.getShopGoodsSortEnum());
                 param.setShopSortDirection(SortDirectionEnum.DESC);
             }
@@ -197,20 +232,24 @@ public class GoodsSearchMpService extends ShopBaseService {
     private Condition buildSearchCondition(GoodsSearchMpParam param) {
         Condition condition = goodsMpService.getGoodsBaseCondition();
 
-        if (param.getKeyWords() != null) {
+        if (StringUtils.isNotBlank(param.getKeyWords())) {
             condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getKeyWords())));
+        }
+
+        // 外部条件限制的商品搜索范围
+        if (param.getGoodsIds() != null) {
+            condition = condition.and(GOODS.GOODS_ID.in(param.getGoodsIds()));
         }
 
         // 当es挂掉的时候，只查询和商家分类直接关联的商品，不进行子项查询。（功能退级）
         if (param.getSortIds() != null && param.getSortIds().size() > 0) {
             condition = condition.and(GOODS.SORT_ID.in(param.getSortIds()));
         }
-
         if (param.getBrandIds() != null && param.getBrandIds().size() > 0) {
             condition = condition.and(GOODS.BRAND_ID.in(param.getBrandIds()));
         }
-
         // 从数据库搜索时仅匹配直接关联商品的标签和关联了全部商品的标签
+        // 标签直接取的是或的关系
         if (param.getLabelIds() != null && param.getLabelIds().size() > 0) {
             Result<Record2<Integer, Byte>> labelCoupleList = goodsLabelMpService.getGoodsLabelsCoupleTypeInfoByIds(param.getLabelIds());
             boolean allType = false;

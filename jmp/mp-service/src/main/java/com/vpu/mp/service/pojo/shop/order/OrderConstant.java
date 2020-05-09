@@ -529,4 +529,21 @@ public class OrderConstant {
         /** *已退款*/
         public static final Byte SUB_ORDER_REFUND_SUCESS = 3;
     }
+
+    /**
+     * 退款原因描述
+     */
+    private static final String[] RETRURN_REASON_TYPE_DESC= new String[]{
+        "协商一致退款",
+        "未按约定时间发货",
+        "缺货",
+        "拍错/多拍/不想要",
+        "其他"
+    };
+    public static String getReturnReasonDesc(Integer index) {
+        if(index == null || index < 0 || index > RETRURN_REASON_TYPE_DESC.length - 1) {
+            index = RETRURN_REASON_TYPE_DESC.length - 1;
+        }
+        return RETRURN_REASON_TYPE_DESC[index];
+    }
 }

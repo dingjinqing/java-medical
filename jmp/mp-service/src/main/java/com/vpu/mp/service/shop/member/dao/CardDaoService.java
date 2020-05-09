@@ -5,51 +5,55 @@ import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
 import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
 import static com.vpu.mp.db.shop.Tables.CARD_RECEIVE_CODE;
 import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_BATCH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_STOP;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_EXPIRED;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUNT_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.EXCHANG_COUNT_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.EXCHANG_COUNT_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NORMAL;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_EXPIRED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_STOP;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.vpu.mp.db.shop.tables.User;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep4;
 import org.jooq.InsertValuesStep5;
+import org.jooq.Record;
 import org.jooq.Record1;
+import org.jooq.RecordMapper;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
-import org.jooq.SelectSeekStep1;
 import org.jooq.SelectSeekStep2;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.MemberCard;
+import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.UserCard;
 import com.vpu.mp.db.shop.tables.records.CardBatchRecord;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RemarkUtil;
-import com.vpu.mp.service.pojo.shop.member.card.BatchGroupVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchDetailVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
@@ -64,8 +68,7 @@ import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
-
-import ch.qos.logback.classic.db.DBAppender;
+import com.vpu.mp.service.pojo.shop.member.card.dao.CardFullDetail;
 
 /**
  * @author 黄壮壮
@@ -80,10 +83,11 @@ public class CardDaoService extends ShopBaseService {
 		User invitedUser = USER.as("a");
 		SelectJoinStep<?> select = db()
 				.select(USER_CARD.USER_ID, USER.USERNAME, USER.MOBILE, invitedUser.USERNAME.as("invitedName"),
-						USER_CARD.CREATE_TIME, USER_CARD.CARD_NO, USER_CARD.FLAG, USER_CARD.EXPIRE_TIME,USER_CARD.UPDATE_TIME)
+						USER_CARD.CREATE_TIME, USER_CARD.CARD_NO, USER_CARD.FLAG, USER_CARD.EXPIRE_TIME,USER_CARD.UPDATE_TIME,MEMBER_CARD.CARD_TYPE)
 				.from(USER_CARD.leftJoin(USER.leftJoin(invitedUser).on(USER.INVITE_ID.eq(invitedUser.USER_ID))
-
-				).on(USER_CARD.USER_ID.eq(USER.USER_ID)));
+										).on(USER_CARD.USER_ID.eq(USER.USER_ID)))
+				.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID));
+				
 
 		buildOptions(param, select);
 		select.where(USER_CARD.CARD_ID.eq(param.getCardId())).orderBy(USER_CARD.USER_ID.desc());
@@ -820,4 +824,32 @@ public class CardDaoService extends ShopBaseService {
 			
 	}
 	
+	public CardFullDetail getCardDetailByNo(String cardNo) {
+		logger().info("根据卡号获取卡的详细信息");
+		MemberCard memberCard = MEMBER_CARD.as("memberCardd");
+		UserCard userCard = USER_CARD.as("userCard");
+		CardFullDetail res = db().select(memberCard.fields()).select(userCard.fields())
+			.from(userCard)
+			.innerJoin(memberCard).on(userCard.CARD_ID.eq(memberCard.ID))
+			.where(userCard.CARD_NO.eq(cardNo))
+			.fetchSingle(recordMapToCardFullDetail(userCard,memberCard));
+		return res;
+	}
+	
+
+	private RecordMapper<? super Record, CardFullDetail> recordMapToCardFullDetail(UserCard uCard,MemberCard mCard) {
+		return record->{
+			Table<MemberCardRecord> mCardTable = MEMBER_CARD.as(mCard.getName());
+			MemberCardRecord memberCard = mCardTable.from(record);
+			Table<UserCardRecord> uCardTable = USER_CARD.as(uCard.getName());
+			UserCardRecord userCard = uCardTable.from(record);
+			return CardFullDetail.builder()
+						.userId(userCard.getUserId())
+						.cardNo(userCard.getCardNo())
+						.userCard(userCard)
+						.memberCard(memberCard)
+						.build();
+		};
+	}
+
 }

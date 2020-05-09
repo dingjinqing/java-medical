@@ -89,16 +89,16 @@
         v-if="specInfoSwitch"
       >
         <div class="specInfoWrap">
-          <table>
+          <table class="specInfoWrapTable">
             <tr>
-              <th></th>
+              <th>SKU</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopPrice')}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopCost')}}</th>
-              <th>市场价</th>
+              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecMarketPrice')}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsNum')}}</th>
-              <th v-if="goodsWeightCfg === 1">规格重量</th>
+              <th v-if="goodsWeightCfg === 1">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecPrdWeight')}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsPrdSn')}}</th>
-              <th v-if="needPrdCodes === 1">商品条码</th>
+              <th v-if="needPrdCodes === 1">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsPrdCodes')}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsImg')}}</th>
             </tr>
             <tr
@@ -164,9 +164,9 @@
             <span class="batchSpan ">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchUpdate')}}</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdPrice')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchPrice')}}</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdCostPrice')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchCost')}}</span>
-            <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdMarketPrice')">市场价</span>
+            <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdMarketPrice')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchMarketPrice')}}</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdNumber')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchNum')}}</span>
-            <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdWeight')">规格重量</span>
+            <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdWeight')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchWeight')}}</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdImg')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchImgSrc')}}</span>
           </div>
         </div>
@@ -236,21 +236,23 @@
       </el-form-item>
       <!--商品会员价格设置table-->
       <el-form-item
-        label="会员价设置："
+        :label="$t('goodsAddEditInfo.stockAndPriceInfo.goodsGradeMemberSetting')"
         v-if="memberCardPrdShow"
       >
         <div class="specInfoWrap">
-          <table v-if="specInfoSwitch">
+          <table class="specInfoWrapTable" v-if="specInfoSwitch">
             <tr>
-              <th>未计算</th>
-              <th>规格价格(元)</th>
+              <th class="specInfoWrapTableThSkuName">SKU</th>
+              <!--规格价格（元）-->
+              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.prdPrice')}}</th>
               <template v-for="item in memberCards">
                 <th
                   :key="item.id"
                   v-if="item.checked"
+                  class="specInfoWrapTableInputTh"
                 >{{item.cardName}}</th>
               </template>
-              <th v-if="unifyCardsPriceShow"></th>
+              <th class="specInfoWrapTableInputTh" v-if="unifyCardsPriceShow"></th>
             </tr>
             <tr
               v-for="(item,index) in goodsProductInfo.goodsSpecProducts"
@@ -272,24 +274,26 @@
                 </td>
               </template>
               <td v-if="unifyCardsPriceShow">
+                <!--统一会员价-->
                 <el-link
                   size="small"
                   :underline="false"
                   @click="unifyMemberCardsPrice(item)"
-                >统一会员价</el-link>
+                >{{$t('goodsAddEditInfo.stockAndPriceInfo.unifyMemberPrice')}}</el-link>
               </td>
             </tr>
           </table>
-          <table v-else>
+          <table class="specInfoWrapTable" v-else>
             <tr>
-              <th>商品价格(元)</th>
+              <th class="specInfoWrapTableInputTh">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsPrice')}}</th>
               <template v-for="item in memberCards">
                 <th
                   :key="item.id"
                   v-if="item.checked"
+                  class="specInfoWrapTableInputTh"
                 >{{item.cardName}}</th>
               </template>
-              <th v-if="unifyCardsPriceShow"></th>
+              <th class="specInfoWrapTableInputTh" v-if="unifyCardsPriceShow"></th>
             </tr>
             <tr>
               <td>{{goodsProductInfo.prdPrice}}</td>
@@ -307,14 +311,17 @@
                 </td>
               </template>
               <td v-if="unifyCardsPriceShow">
+                <!--统一会员价-->
                 <el-link
                   size="small"
                   :underline="false"
                   @click="unifyMemberCardsPrice()"
-                >统一会员价</el-link>
+                >{{$t('goodsAddEditInfo.stockAndPriceInfo.unifyMemberPrice')}}</el-link>
               </td>
             </tr>
           </table>
+          <div style="text-align: center;">
+          </div>
         </div>
       </el-form-item>
     </el-form>
@@ -418,7 +425,7 @@
       </el-form-item>
 
       <el-form-item
-        label="商品条码："
+        :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.goodsPrdSn')"
         v-if="!specInfoSwitch && needPrdCodes === 1"
       >
         <el-input
@@ -440,9 +447,6 @@
   </div>
 </template>
 <script>
-// TODO: 1.格笛卡尔积中规格图片样式未实现
-// TODO: 2.格笛卡尔积中规格input框样式未实现
-// TODO: 3.会员价格table表格样式未实现
 
 // 接口函数引入
 import {getLevelCardList, isGoodsColumnValueExist} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
@@ -640,7 +644,7 @@ export default {
       }
 
       if (this._isSpecPrdCodesRepeated(index, newVal)) {
-        this.$message.warning({ message: '商品条码内部重复', type: 'warning' })
+        this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsPrdCodesInnerRepeated'), type: 'warning' })
         item.prdCodes = item.prdCodesBak
         event.target.focus()
         return
@@ -653,7 +657,7 @@ export default {
       }
       isGoodsColumnValueExist(data).then(res => {
         if (res.error === 0) {
-          this.$message.warning({ message: '商品条码内部重复', type: 'warning' })
+          this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsPrdCodesExist'), type: 'warning' })
           item.prdCodes = item.prdCodesBak
           event.target.focus()
         } else {
@@ -1414,19 +1418,19 @@ export default {
       } else {
         // 商品库存检查
         if (isNumberBlank(this.goodsProductInfo.prdNumber) || this.goodsProductInfo.prdNumber < 0) {
-          this.$message.warning({ message: '商品库存填写错误', type: 'warning' })
+          this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsNumberWrong'), type: 'warning' })
           this.$refs.prdNumberInput.focus()
           return false
         }
         // 商品价格验证
         if (isNumberBlank(this.goodsProductInfo.prdPrice) || this.goodsProductInfo.prdPrice < 0) {
-          this.$message.warning({ message: '商品价格填写错误', type: 'warning' })
+          this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsPriceWrong'), type: 'warning' })
           this.$refs.prdPriceInput.focus()
           return false
         }
         // 成本价格验证
         if (isNumberBlank(this.goodsProductInfo.prdCost) || this.goodsProductInfo.prdCost < 0) {
-          this.$message.warning({ message: '成本价格填写错误', type: 'warning' })
+          this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsPriceWrong'), type: 'warning' })
           this.$refs.prdPriceInput.focus()
           return false
         }
@@ -1437,12 +1441,12 @@ export default {
             continue
           }
           if (isNumberBlank(item.cardPrice) || item.cardPrice < 0) {
-            this.$message.warning({ message: '会员价格不可为空', type: 'warning' })
+            this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.memberPriceIsNull'), type: 'warning' })
             document.getElementById(item.cardName).focus()
             return false
           }
           if (item.cardPrice > this.goodsProductInfo.prdPrice) {
-            this.$message.warning({ message: '会员价格不可高于商品价格', type: 'warning' })
+            this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.memberPriceIsLarger'), type: 'warning' })
             document.getElementById(item.cardName).focus()
             return false
           }
@@ -1453,7 +1457,7 @@ export default {
       if (this.goodsProductInfo.limitBuyNum !== 0 && this.goodsProductInfo.limitMaxNum !== 0) {
         if (!isNumberBlank(this.goodsProductInfo.limitBuyNum) && !isNumberBlank(this.goodsProductInfo.limitMaxNum)) {
           if (this.goodsProductInfo.limitBuyNum > this.goodsProductInfo.limitMaxNum) {
-            this.$message.warning({ message: '最小限购数量不可大于最大限购数量', type: 'warning' })
+            this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.limitPriceIsWrong'), type: 'warning' })
             this.$refs.limitBuyNumInput.focus()
             return false
           }
@@ -1587,6 +1591,7 @@ export default {
   border: 1px solid #ccc;
   color: #333;
   padding: 10px;
+  overflow-x: auto;
 }
 
 .specInfoWrap::after {
@@ -1646,16 +1651,29 @@ export default {
   opacity: 0.8;
 }
 
-/* 以下临时使用，可删除 */
-table {
+.specInfoWrap .specInfoWrapTable{
+  min-width: 1000px;
+}
+.specInfoWrap .specInfoWrapTable .specInfoWrapTableThSkuName{
+  min-width: 200px;
+}
+
+.specInfoWrap .specInfoWrapTable .specInfoWrapTableInputTh{
+  min-width: 120px;
+}
+.specInfoWrap .specInfoWrapTable input{
+  width: 90%;
+  max-width: 160px;
+}
+.specInfoWrap table {
   border-collapse: collapse;
   margin: 0 auto;
   text-align: center;
   width: 100%;
 }
 
-table td,
-table th {
+.specInfoWrap table td,
+.specInfoWrap table th {
   border: 1px solid #cad9ea;
   color: #666;
   height: 30px;
@@ -1663,9 +1681,8 @@ table th {
   text-align: center;
 }
 
-table thead th {
+.specInfoWrap table thead th {
   background-color: #cce8eb;
-  width: 100px;
 }
 
 table tr:nth-child(odd) {

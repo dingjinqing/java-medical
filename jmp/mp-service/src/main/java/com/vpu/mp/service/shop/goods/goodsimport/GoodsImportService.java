@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.goods.goodsimport;
 
-import com.upyun.UpException;
 import com.vpu.mp.db.shop.tables.records.GoodsImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -14,6 +13,7 @@ import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsDataIIllegalEnum;
@@ -84,8 +84,10 @@ public class GoodsImportService extends ShopBaseService {
             workbook = ExcelFactory.createWorkbook(in1, param.getExcelTypeEnum());
             filePath = createFilePath(getShopId(), param.getFile().getOriginalFilename());
             try {
+                logger().debug("微铺宝excel商品导入excel上传upYun开始");
                 imageService.getUpYunClient().writeFile(filePath, in2, true, null);
-            } catch (IOException | UpException e) {
+                logger().debug("微铺宝excel商品导入excel上传upYun结束");
+            } catch (Exception e) {
                 logger().debug("微铺宝excel商品导入excel上传upYun失败：" + e.getMessage());
                 return JsonResultCode.GOODS_EXCEL_UPLOAD_UPYUN_WRONG;
             }
@@ -124,9 +126,9 @@ public class GoodsImportService extends ShopBaseService {
             List<GoodsVpuExcelImportBo> goodsList = goodsVpuExcelImportModels.stream().map(GoodsVpuExcelImportBo::new).collect(Collectors.toList());
             GoodsVpuExcelImportMqParam mqParam = new GoodsVpuExcelImportMqParam(goodsList, param.getLang(), param.getIsUpdate(), batchId, getShopId(), null);
             // 调用消息队列
-//            saas.taskJobMainService.dispatchImmediately(mqParam, UserImportMqParam.class.getName(), getShopId(),
-//                TaskJobsConstant.TaskJobEnum.GOODS_VPU_EXCEL_IMPORT.getExecutionType());
-            goodsVpuExcelImportMqCallback(mqParam);
+            saas.taskJobMainService.dispatchImmediately(mqParam, GoodsVpuExcelImportMqParam.class.getName(), getShopId(),
+                TaskJobsConstant.TaskJobEnum.GOODS_VPU_EXCEL_IMPORT.getExecutionType());
+//            goodsVpuExcelImportMqCallback(mqParam);
         }
         return code;
     }

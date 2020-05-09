@@ -6,12 +6,36 @@
       </div>
       <div class="rightContainer">
         <div class="rightContainerTop">
-          <div class="rightTile">{{ $t('memberCard.basicSetting') }}</div>
+          <div class="rightTitle">{{ $t('memberCard.basicSetting') }}</div>
           <cardNameAndBg
             :val="cardNameAndBg"
             @input="initCardNameAndBg"
             ref="cardNameAndBg"
           ></cardNameAndBg>
+
+          <cardEffectTime
+            :val="cardEffectTime"
+            @input="initCardEffectTimeData"
+            ref="cardEffectTime"
+          ></cardEffectTime>
+          <!-- 续费开发 -->
+          <div v-show="Number(cardEffectTime.expiredType) !== 2">
+            <cardRenewCfg
+              v-bind.sync="cardRenew"
+              ref="cardRenew" />
+          </div>
+
+          <cardStoreCfg
+            :val="cardStoreCfgData"
+            @input="initCardStoreCfgData"
+          ></cardStoreCfg>
+          <cardUsageCfg
+            :val="cardUsageCfgData"
+            @input="initCardUsageCfgData"
+          ></cardUsageCfg>
+        </div>
+        <div class="member-rights">
+          <div class="rightTitle">会员权益</div>
           <scoreDiscount
             :val="disCountData"
             @input="initDiscountData"
@@ -39,32 +63,11 @@
           <!-- 包邮 -->
           <cardFreeshipCfg
             v-bind.sync="freeship"
-            ref="freeship">
+            ref="freeship"
+          >
           </cardFreeshipCfg>
           <!-- 自定义权益 -->
-          <cardCustomRights v-bind.sync="customRights">
-
-          </cardCustomRights>
-          <cardEffectTime
-            :val="cardEffectTime"
-            @input="initCardEffectTimeData"
-            ref="cardEffectTime"
-          ></cardEffectTime>
-          <!-- 续费开发 -->
-          <cardRenewCfg
-            v-bind.sync="cardRenew"
-            ref="cardRenew"
-          >
-
-          </cardRenewCfg>
-          <cardStoreCfg
-            :val="cardStoreCfgData"
-            @input="initCardStoreCfgData"
-          ></cardStoreCfg>
-          <cardUsageCfg
-            :val="cardUsageCfgData"
-            @input="initCardUsageCfgData"
-          ></cardUsageCfg>
+          <cardCustomRights v-bind.sync="customRights" />
         </div>
         <div class="rightContainerBottom">
           <div class="rightTitle">{{ $t('memberCard.getSetting') }}</div>
@@ -78,6 +81,11 @@
             @input="initCardActiveCfgData"
             ref="cardActiveCfgData"
           ></cardActiveCfg>
+        </div>
+        <div class="advance-setting">
+          <div class="rightTitle">高级设置</div>
+          <card-advance-cfg :cardTag="cardTag"
+              :cardType="cardType"/>
         </div>
       </div>
     </div>
@@ -139,6 +147,9 @@ export default {
     ),
     cardCustomRights: () => import(
       './subcomponents/cardCustomRights'
+    ),
+    cardAdvanceCfg: () => import(
+      './subcomponents/cardAdvanceCfg'
     )
   },
   computed: {
@@ -256,6 +267,7 @@ export default {
         activation: '0',
         activationCfgBox: [],
         examine: '0',
+        customAction: [],
         valid: false
       },
       sampleCardData: {
@@ -274,8 +286,8 @@ export default {
       },
       // 包邮信息
       freeship: {
-        num: null,
-        type: null,
+        num: 0,
+        type: -1,
         valid: false
       },
       cardRenew: {
@@ -288,13 +300,11 @@ export default {
       // 自定义权益
       customRights: {
         customRightsFlag: 'off',
-        customRightsAll: [
-          {
-            crightName: 'hhh1',
-            crightImage: null,
-            crightContent: 'Good Night'
-          }
-        ]
+        customRightsAll: []
+      },
+      cardTag: {
+        cardTag: 'off',
+        cardTagId: []
       }
     }
   },
@@ -471,7 +481,8 @@ export default {
                   pwdName: item.name,
                   pwdId: item.batchId,
                   action: item.action,
-                  disabled: true }
+                  disabled: true
+                }
               )
             }
           })
@@ -484,6 +495,26 @@ export default {
       this.cardActiveCfgData.activation = String(data.activation)
       this.cardActiveCfgData.activationCfgBox = data.activationCfgBox ? data.activationCfgBox : []
       this.cardActiveCfgData.examine = String(data.examine)
+
+      // 自定义激活数据
+      let action = data.customAction.map(item => {
+        return {
+          type: item.custom_type,
+          title: item.custom_title,
+          content: item.option_arr,
+          conditionChecked: Boolean(item.option_ver),
+          checked: Boolean(item.is_checked)
+        }
+      })
+      this.cardActiveCfgData.customAction = action
+
+      // 同步用户标签
+      if (data.cardTag) {
+        this.cardTag = {
+          cardTag: data.cardTag.cardTag,
+          cardTagId: data.cardTag.cardTags
+        }
+      }
     },
 
     isValidValue (data) {
@@ -581,7 +612,8 @@ export default {
         // 卡号+密码
         batchIds = this.cardReceiveCfgData.codeAddDivArrBottom.map(({ pwdId }) => pwdId)
       }
-
+      this.dealWithCustomAction()
+      this.dealWithCardTag()
       let obj = {
         'id': this.cardId,
         'cardType': this.cardType,
@@ -641,9 +673,11 @@ export default {
         'activation': this.cardActiveCfgData.activation,
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
         'examine': this.cardActiveCfgData.examine,
+        'customAction': this.cardActiveCfgData.customAction,
         'freeship': this.freeship,
         'cardRenew': this.cardRenew,
-        'customRights': this.customRights
+        'customRights': this.customRights,
+        'cardTag': this.cardTag
       }
       if (this.cardId) {
         // 更新会员卡
@@ -729,6 +763,20 @@ export default {
         default:
           break
       }
+    },
+    dealWithCardTag () {
+      this.cardTag.cardTagId = this.cardTag.cardTagId.map(({id}) => id)
+    },
+    dealWithCustomAction () {
+      // true/false 转换1/0
+      if (this.cardActiveCfgData.customAction) {
+        let tmp = this.cardActiveCfgData.customAction
+        this.cardActiveCfgData.customAction = tmp.map(item => {
+          item.checked = Number(item.checked)
+          item.conditionChecked = Number(item.conditionChecked)
+          return item
+        })
+      }
     }
 
   }
@@ -761,26 +809,24 @@ export default {
     width: 70%;
     font-size: 13px;
     margin-bottom: 10px;
-    .rightContainerTop {
+
+    .rightContainerTop,
+    .member-rights,
+    .rightContainerBottom,
+    .advance-setting  {
       padding: 10px 1%;
       background: #f8f8f8;
       border: 1px solid #e4e4e4;
       margin-bottom: 20px;
-      .rightTile {
-        padding-bottom: 10px;
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 10px;
-      }
-    }
-    .rightContainerBottom {
-      background: #f8f8f8;
-      border: 1px solid #e4e4e4;
-      padding: 10px 1%;
       .rightTitle {
         padding-bottom: 10px;
         border-bottom: 1px solid #ddd;
         margin-bottom: 10px;
       }
+    }
+
+    .advance-setting {
+      margin-bottom: 0px;
     }
   }
   .footer {

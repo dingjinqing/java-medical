@@ -44,7 +44,7 @@ global.wxComponent({
       initData.navlen = initData.sort_group_arr.length;
       initData.group_nav_index = 0;
       console.log(initData.goodsListData)
-      if (initData.goodsListData.length > 5) {
+      if (initData.goodsListData.length > 6) {
         initData.more_flag = 1
       } else {
         initData.more_flag = 0
@@ -86,13 +86,22 @@ global.wxComponent({
           sortIds.push(item.sort_id)
         }
         if (item.is_all == 2) {
-          if (item.group_goods_id != '') {
+          if (item.group_goods_id && !isNaN(Number(item.group_goods_id))) {
             goodsIds.push(Number(item.group_goods_id))
           }
         }
       })
+      console.log(goodsIds)
       if (d.click == 1) {
-        util.jumpLink('/pages1/search/search?sortIds=' + JSON.stringify(sortIds) + '&brandIds=' + JSON.stringify(brandIds) + '&labelIds=' + JSON.stringify(labelIds) + '&pageFrom=' + 0 + '&goodsIds=' + JSON.stringify(goodsIds));
+        util.jumpLink(`/pages1/search/search${util.getUrlParams({
+          pageFrom:0,
+          outerPageParam:JSON.stringify({
+            sortIds,
+            brandIds,
+            labelIds,
+            goodsIds
+          })
+        })}`);
       } else {
         m.group_nav_index = d.index;
         m.page_num = 1;
@@ -124,7 +133,7 @@ global.wxComponent({
             _this.handleToGoodsActivities(data)
             m.goodsListData = data;
             m.more_flag = data.more_flag;
-            if (m.goodsListData.length > 5) {
+            if (m.goodsListData.length > 6) {
               m.more_flag = 1
             } else {
               m.more_flag = 0

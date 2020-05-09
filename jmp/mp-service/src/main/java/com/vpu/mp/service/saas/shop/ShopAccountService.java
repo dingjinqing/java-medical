@@ -222,7 +222,7 @@ public class ShopAccountService extends MainBaseService {
 			return false;
 		}
 		//生成在ShopOfficialAccount.generateThirdPartCode方法
-		logger().debug("eventKey"+eventKey);
+		logger().info("eventKey"+eventKey);
 		String[] split = eventKey.split("&");
 		if(split.length==_3) {
 			Integer shopId=Integer.parseInt(split[0].replace("qrscene_", ""));

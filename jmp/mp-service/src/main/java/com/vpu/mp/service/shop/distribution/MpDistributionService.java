@@ -3,6 +3,8 @@ package com.vpu.mp.service.shop.distribution;
 import com.vpu.mp.db.shop.tables.DistributorLevel;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.DistributorApplyRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -17,13 +19,9 @@ import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
 import com.vpu.mp.service.pojo.shop.member.data.EducationVo;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.data.MarriageData;
-import com.vpu.mp.service.pojo.wxapp.distribution.ActivationInfoVo;
-import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
-import com.vpu.mp.service.pojo.wxapp.distribution.UserBaseInfoVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.*;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
-import org.jooq.Record;
-import org.jooq.Record4;
-import org.jooq.Result;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -355,7 +353,82 @@ public class MpDistributionService extends ShopBaseService{
         return invitedList;
     }
 
-    public void rebateOrder(){
-        //TODO：返利订单查询
+    /**
+     * 邀请用户返利订单
+     * @param param
+     * @return
+     */
+    public PageResult<RebateOrderVo> rebateOrder(RebateOrderParam param){
+        SelectOnConditionStep<? extends Record> select = db().select(ORDER_GOODS_REBATE.ORDER_SN, ORDER_INFO.CREATE_TIME, ORDER_INFO.FINISHED_TIME,
+            ORDER_INFO.ORDER_STATUS, ORDER_INFO.ORDER_STATUS_NAME, USER.USERNAME, sum(ORDER_GOODS_REBATE.REAL_REBATE_MONEY).as("fanliMoney"),
+            ORDER_GOODS_REBATE.REBATE_LEVEL)
+            .from(ORDER_GOODS_REBATE)
+            .leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
+            .leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
+        SelectOnConditionStep<? extends Record> sql = rebateOrderOptions(select, param);
+        PageResult<RebateOrderVo> pageResult = getPageResult(sql, param.getCurrentPage(), param.getRowsPage(), RebateOrderVo.class);
+
+        for(RebateOrderVo list : pageResult.dataList){
+            getCanCalculateMoney(list.getOrderSn(),param.getUserId());
+        }
+        //TODO 计算实际返利信息
+
+        return pageResult;
+    }
+
+    /**
+     * 返利订单条件查询
+     * @param select
+     * @param param
+     * @return
+     */
+    public SelectOnConditionStep<? extends Record> rebateOrderOptions(SelectOnConditionStep<? extends Record> select,RebateOrderParam param){
+        select.where(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(param.getUserId()));
+        if(param.getStartTime() != null && param.getStartTime() != null){
+            select.and(ORDER_INFO.CREATE_TIME.gt(param.getStartTime())).and(ORDER_INFO.CREATE_TIME.lt(param.getEndTime()));
+        }
+        select.groupBy(ORDER_GOODS_REBATE.ORDER_SN, ORDER_INFO.CREATE_TIME, ORDER_INFO.FINISHED_TIME,
+            ORDER_INFO.ORDER_STATUS, ORDER_INFO.ORDER_STATUS_NAME, USER.USERNAME,
+            ORDER_GOODS_REBATE.REBATE_LEVEL);
+        return select;
+    }
+
+    /**
+     * 计算订单返利金额
+     * @param orderSn
+     * @param rebateUserId
+     * @return
+     */
+    public BigDecimal getCanCalculateMoney(String orderSn,Integer rebateUserId) {
+        //查询商品行信息
+        List<OrderGoodsRecord> orderGoodsInfo = db().select(ORDER_GOODS.ORDER_SN, ORDER_GOODS.PRODUCT_ID, ORDER_GOODS.CAN_CALCULATE_MONEY, ORDER_GOODS.GOODS_NUMBER, ORDER_GOODS.RETURN_NUMBER)
+            .from(ORDER_GOODS).where(ORDER_GOODS.ORDER_SN.eq(orderSn)).fetch().into(OrderGoodsRecord.class);
+
+        //得到订单信息 SETTLEMENT_FLAG：结算标记：0未结算；1结算
+        Integer settlementFlag = db().select(ORDER_INFO.SETTLEMENT_FLAG).from(ORDER_INFO).where(ORDER_INFO.ORDER_SN.eq(orderSn)).fetchOne().into(Integer.class);
+        BigDecimal calculateMoney = new BigDecimal(0);
+        for (OrderGoodsRecord item : orderGoodsInfo) {
+            if (rebateUserId > 0 && settlementFlag == 1) {
+                Record2<BigDecimal, BigDecimal> record = db().select(ORDER_GOODS_REBATE.REBATE_MONEY, ORDER_GOODS_REBATE.REAL_REBATE_MONEY).from(ORDER_GOODS_REBATE).where(ORDER_GOODS_REBATE.ORDER_SN.eq(item.getOrderSn())).and(ORDER_GOODS_REBATE.PRODUCT_ID.eq(item.getProductId()))
+                    .and(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(rebateUserId)).fetchOne();
+                if (record != null) {
+                    OrderGoodsRebateRecord goodsRebate = record.into(OrderGoodsRebateRecord.class);
+                    if (goodsRebate.getRebateMoney().compareTo(BigDecimal.ZERO) > 0) {
+                        BigDecimal divide = goodsRebate.getRealRebateMoney().divide(goodsRebate.getRebateMoney(), 2);
+                        calculateMoney = calculateMoney.multiply(divide);
+                    } else {
+                        BigDecimal goodsNumber = BigDecimal.valueOf(item.getGoodsNumber());
+                        BigDecimal returnNumber = BigDecimal.valueOf(item.getReturnNumber());
+                        calculateMoney = calculateMoney.add(item.getCanCalculateMoney().multiply(goodsNumber.subtract(returnNumber)));
+                    }
+                }
+            } else {
+                BigDecimal goodsNumber = BigDecimal.valueOf(item.getGoodsNumber());
+                BigDecimal returnNumber = BigDecimal.valueOf(item.getReturnNumber());
+                calculateMoney = calculateMoney.add(item.getCanCalculateMoney().multiply(goodsNumber.subtract(returnNumber)));
+            }
+
+        }
+        return calculateMoney;
     }
 }

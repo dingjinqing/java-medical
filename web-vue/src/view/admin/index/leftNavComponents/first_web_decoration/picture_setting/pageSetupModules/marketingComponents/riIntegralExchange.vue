@@ -60,7 +60,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="stockSum"
+              prop="stock_sum"
               :label="$t('integralExchange.stock')"
               width="80"
             >
@@ -79,7 +79,7 @@
               width="80"
             >
               <template slot-scope="scope">
-                {{scope.row.isOnSale==='1'?$t('integralExchange.normalOperation'):$t('integralExchange.exceptionOperation')}}
+                {{scope.row.is_on_sale===1?$t('integralExchange.normalOperation'):$t('integralExchange.exceptionOperation')}}
               </template>
             </el-table-column>
             <el-table-column

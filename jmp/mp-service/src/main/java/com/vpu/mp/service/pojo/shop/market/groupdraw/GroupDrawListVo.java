@@ -58,4 +58,8 @@ public class GroupDrawListVo {
     private List<Integer> couponIds;
     @JsonIgnore
     private String rewardCouponId;
+    /** 活动说明 */
+    private GroupDrawActCopywriting actCopywriting;
+    @JsonIgnore
+    private String activityCopywriting;
 }

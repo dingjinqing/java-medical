@@ -62,12 +62,6 @@
         border
         style="width: 100%"
       >
-        <!-- <el-table-column
-          prop="groupId"
-          :label="$t('groupBuy.groupId')"
-          align="center"
-        ></el-table-column> -->
-
         <el-table-column
           prop="commanderName"
           :label="$t('groupBuy.commanderName')"
@@ -93,10 +87,9 @@
         ></el-table-column>
 
         <el-table-column
-          prop="status"
+          prop="statusText"
           :label="$t('groupBuy.grouponState')"
           align="center"
-          :formatter="statusText"
         ></el-table-column>
 
         <el-table-column
@@ -104,7 +97,7 @@
           align="center"
         >
           <template slot-scope="scope">
-            {{scope.row.status === '已成团' || scope.row.status === '拼团中' ? '是':'否'}}
+            {{scope.row.status === 3 ? '是':'否'}}
           </template>
         </el-table-column>
 
@@ -173,26 +166,20 @@ export default {
       }
       this.searchData()
     },
-    statusText (row) {
-      console.log(row, 'get-row')
-      switch (row.status) {
+    // 成团状态文字转化，0成团中，1已成团，2未成团，3已成团，-1未付款
+    getActStatusString (currentState) {
+      switch (currentState) {
         case 0:
-          row.status = '成团中'
-          break
+          return '成团中'
         case 1:
-          row.status = '已成团'
-          break
+          return '已成团'
         case 2:
-          row.status = '未成团'
-          break
+          return '未成团'
         case 3:
-          row.status = '已成团'
-          break
+          return '已成团'
         case -1:
-          row.status = '未付款'
-          break
+          return '未付款'
       }
-      return row.status
     },
     // 查询
     searchData () {
@@ -210,6 +197,9 @@ export default {
         this.pageParams = res.content.page
         this.tableData = res.content.dataList
         this.tableData.loading = true
+        this.tableData.map(item => {
+          item.statusText = this.getActStatusString(item.status)
+        })
       })
     }
   }

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.market.packagesale;
 
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -71,9 +72,15 @@ public class PackageSaleGoodsListVo {
         private Byte isCardExclusive;
         private Integer sortId;
         private Integer catId;
+        /**
+         * 是否单规格商品（默认一个规格）
+         */
+        private Byte isDefaultProduct;
 
         //用户已选择的该商品的数量
         private Integer chooseNumber;
+
+        private List<GoodsProductVo> goodsProducts;
     }
 
     @Setter

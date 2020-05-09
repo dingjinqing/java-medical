@@ -111,17 +111,20 @@
     <exportForm
       :show.sync="showExportConfirm"
       :param="this.requestParams"
+      :totalRows="totalRows"
+      @export="exportHandler"
     />
   </div>
 </template>
 
 <script>
-import { getBargainOrderList } from '@/api/admin/marketManage/bargain.js'
+import { download } from '@/util/excelUtil.js'
+import { getBargainOrderList, getBargainExportTotalRows, bargainOrderListExport } from '@/api/admin/marketManage/bargain.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
     marketOrderSearchTab: () => import('@/components/admin/marketManage/marketOrderSearchTab.vue'),
-    exportForm: () => import('./bargainExportConfirmDialog.vue')
+    exportForm: () => import('@/components/admin/marketManage/exportConfirmDialog.vue')
   },
   mounted () {
     this.langDefault()
@@ -149,7 +152,8 @@ export default {
 
       // 表格原始数据
       originalData: [],
-      showExportConfirm: false // 是否展示导出数据弹窗
+      showExportConfirm: false, // 是否展示导出数据弹窗
+      totalRows: 0 // 筛选个数
     }
   },
   methods: {
@@ -198,8 +202,24 @@ export default {
         return ''
       }
     },
+    // 导出数据弹窗
     exportDataList () {
-      this.showExportConfirm = true
+      getBargainExportTotalRows(this.requestParams).then(res => {
+        if (res.error === 0) {
+          this.totalRows = res.content
+        }
+      })
+      this.$nextTick(() => {
+        this.showExportConfirm = true
+      })
+    },
+    // 导出数据弹窗回调函数
+    exportHandler (data) {
+      bargainOrderListExport(data).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '砍价订单导出.xlsx'
+        download(res, decodeURIComponent(fileName))
+      })
     }
   },
   watch: {

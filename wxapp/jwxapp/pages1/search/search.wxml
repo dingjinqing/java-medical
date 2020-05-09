@@ -11,8 +11,8 @@
       </view>
     </view>
     <view class="condition">
-      <view class="condition-item" bindtap="salesVolumeFilter"><text style="{{sortItem === 1 ? 'color:' + comColor + ';' : ''}}">{{i18n.$t(localePack,"page1.search.condition.salesVolume")}}{{sortItem === 1 ? sortDirection === 0 ? '⬆' : '⬇' : ''}}</text></view>
-      <view class="condition-item" bindtap="priceFilter"><text style="{{sortItem === 2 ? 'color:' + comColor + ';' : ''}}">{{i18n.$t(localePack,"page1.search.condition.price")}}{{sortItem === 2 ? sortDirection === 0 ? '⬆' : '⬇' : ''}}</text></view>
+      <view class="condition-item" bindtap="salesVolumeFilter"><text style="{{sortItem === 1 ? 'color:' + comColor + ';' : ''}}">{{i18n.$t(localePack,"page1.search.condition.salesVolume")}} {{sortItem === 1 ? sortDirection === 0 ? '降序' : '升序' : ''}}</text></view>
+      <view class="condition-item" bindtap="priceFilter"><text style="{{sortItem === 2 ? 'color:' + comColor + ';' : ''}}">{{i18n.$t(localePack,"page1.search.condition.price")}} {{sortItem === 2 ? sortDirection === 0 ? '降序' : '升序' : ''}}</text></view>
       <view class="condition-item" bindtap="showFilter"><text>{{i18n.$t(localePack,"page1.search.condition.filter")}}</text><image src="{{imageUrl}}image/wxapp/filter.png" class="filterImage"></image></view>
     </view>
     <view class="content">
@@ -25,7 +25,7 @@
           </block>
         </view>
       </block>
-      <block wx:else>
+      <block wx:if="{{loaded && !dataList[0].length}}">
         <view class="is-null" >
           <image src="{{imageUrl}}image/wxapp/no_result.png"></image>
           <text>{{i18n.$t(localePack,"page1.search.errorTips")}}</text>
@@ -41,5 +41,5 @@
 
 <v-spec-dialog wx:if="{{showSpec}}" show="{{showSpec}}" bind:close="bindCloseSpec" products-info="{{productsInfo}}" bindproductData="getProductData">
   <v-goods-num-cfg slot="num-cfg"  origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
-  <v-item-footer slot="footer" activity="{{productsInfo.activity}}"  position="spec" product-info="{{productInfo}}" bindclose="bindCloseSpec" />
+  <v-item-footer slot="footer" activity="{{productsInfo.activity}}" goods-number="{{productsInfo.goodsNumber}}"  position="spec" product-info="{{productInfo}}" bindclose="bindCloseSpec" />
 </v-spec-dialog>

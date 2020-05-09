@@ -345,7 +345,7 @@ export default {
     // },
     // 验证规则，验证是否正确
     /* eslint-disable */
-    isYes(area_list, key) {
+    isYes (area_list, key) {
       return (
         area_list.includes(key.toString().slice(0, 4)) ||
         (/\d{2}[0]{4},?/.test(area_list) &&
@@ -353,7 +353,7 @@ export default {
       )
     },
     // 删除一行的功能
-    handleDelete(row) {
+    handleDelete (row) {
       this.$message.success('删除区域成功!')
       // 删掉显示页面的数据
       this.showTableData = this.showTableData.filter(
@@ -381,12 +381,12 @@ export default {
       )
     },
     // 开启关闭省市县三级的模态框
-    showData(flag) {
+    showData (flag) {
       // 取消 还原
       this.outerVisible = flag
     },
     // 获取返回的数据
-    changeRegionList(value) {
+    changeRegionList (value) {
       this.$message.success('添加区域成功!')
       // 当数据没有改变的话，不执行
       const check = value.checkList.filter(
@@ -437,7 +437,7 @@ export default {
       )
     },
     // 数据模板
-    templateData(checkIdArr, showArrStr) {
+    templateData (checkIdArr, showArrStr) {
       let template = {}
       if (this.isRegion) {
         template = {
@@ -463,7 +463,7 @@ export default {
       }
     },
     // 给父组件触发的事件，用于获取子组件的事件
-    getTableData() {
+    getTableData () {
       let val = 0, // 用于验证是否全部通过验证,当val为0则表示全部验证通过，返回数据给父组件
         tableData = [] // 用于存储表格上面的数据，并返回给父组件
       // console.log(this.showTableData);
@@ -514,7 +514,7 @@ export default {
       return arr
     },
 
-    editShowData(flag) {
+    editShowData (flag) {
       // 取消 还原
       this.locationList = this.addState(
         this.locationList,
@@ -522,7 +522,7 @@ export default {
       )
       this.editOuterVisible = flag
     },
-    editOneData({ area_list }) {
+    editOneData ({ area_list }) {
       // console.log(area_list);
       this.area_list = area_list // 保存修改前的数据
       // 点击编辑，弹出弹窗，并且对editLocationList，editInnerObjJ，editCheckList进行赋值
@@ -552,7 +552,7 @@ export default {
       this.editOuterVisible = true
     },
     // 确认后修改的数据
-    editRegionList(val) {
+    editRegionList (val) {
       this.$message.success('修改区域成功!')
       // 修改后，存储状态和数据
       if (this.area_list === val.idList.toString()) return // 两者相等，就是没发生改变，不执行下面操作
@@ -589,8 +589,9 @@ export default {
           this.innerObjJ[key] = val.innerObj[key]
         }
       })
+      this.innerObjJ = val.innerObj
     },
-    updateData(editLocation) {
+    updateData (editLocation) {
       // this.locationList，innerObjJ，checkListT
       // 通过this.locationList 和 editLocation 获取到真正的checkListT,innerObjJ 然后显示
       // 选取出 选中的 id
@@ -603,7 +604,7 @@ export default {
       this.checkListT = checkListT
     },
     // 筛选出checkList
-    selectCheckList(editLocation) {
+    selectCheckList (editLocation) {
 
       const checkList = []
       editLocation.forEach(item => {
@@ -613,7 +614,7 @@ export default {
       return this.getIdList(checkList)
     },
     // 通过this.locationList拉取id , 选中this.locationList,以及...
-    getIdList(checkList) {
+    getIdList (checkList) {
       const idList = [] // 存储id
       const strIdList = checkList.toString() // 获取选中的list
       const innerObj = {} // 存储id对象
@@ -653,7 +654,7 @@ export default {
       return idList
     },
     // 添加选中的各种
-    addCheckData(innerObj, city, idList) {
+    addCheckData (innerObj, city, idList) {
       innerObj[city.cityId] = 0
       city.state = true
       idList.push(city.cityId)

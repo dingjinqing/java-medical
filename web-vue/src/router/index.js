@@ -67,6 +67,11 @@ const baseRoutes = [{
   path: '/wxapp/checkout/services', // 小程序内跳转服务承诺
   name: 'checkoutServices',
   component: () => import('@/view/admin/layout/services')
+},
+{
+  path: '/wxapp/pinlottery/help', // 小程序内跳转拼团抽奖规则
+  name: 'pinLotteryRules',
+  component: () => import('@/view/admin/layout/pinLotteryRules')
 }
 ]
 const routes = baseRoutes.concat(

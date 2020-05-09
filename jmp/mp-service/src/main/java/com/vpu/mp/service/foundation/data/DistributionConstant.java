@@ -27,4 +27,16 @@ public class DistributionConstant {
     public static Byte REBATE_LEVEL_1 = 1;
     public static Byte REBATE_LEVEL_2 = 2;
 
+    /**
+     * 返利商品类型 0：全部商品；1：部分商品
+     */
+    public static Byte ALL_GOODS = 0;
+    public static Byte PART_GOODS = 1;
+
+    /**
+     * 返利类型 0：自购返利；1：直接返利；2：间接返利
+     */
+    public static Byte REBATE_TYPE_SELF = 0;
+    public static Byte REBATE_TYPE_DIRECT = 1;
+    public static Byte REBATE_TYPE_INDIRECT = 2;
 }

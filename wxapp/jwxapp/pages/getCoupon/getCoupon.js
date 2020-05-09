@@ -8,7 +8,6 @@ var app = getApp();
 
 var total_micro_second;
 var set_time_out;
-var scene;
 global.wxPage({
 
   /**
@@ -21,7 +20,7 @@ global.wxPage({
     act_info: {},
     input_vali: '', // 领取码
     detailType: 1, // 详情类型(个人中心详情: 0, 装修详情: 1)
-    couponType: '0', // 优惠券状态(0未使用, 1已使用,2已过期)
+    couponStatus: '0', // 优惠券状态(0未使用, 1已使用,2已过期)
   },
 
   /**
@@ -30,37 +29,27 @@ global.wxPage({
   onLoad: function (options) {
     clearTimeout(set_time_out);
     var that = this;
-    scene = options.scene;
-
-    // 优惠券状态
-    if (options.type) {
-      that.setData({
-        couponType: options.type 
+    that.setData({
+      couponSn: options.couponSn,
+      couponId: Number(options.couponId),
+      couponStatus: options.type
+    })
+    // 查看详情
+    util.api("api/wxapp/coupon/detail", function (res) {
+      if (res.error == 0) {
+        that.initHandler(res, 0)
+      } else {
+        util.toast_fail(res.message);
+        // setTimeout(function () {
+        //   util.reLaunch({
+        //     url: '/pages/index/index',
+        //   })
+        // }, 2000);
+      }
+    }, {
+        couponSn: that.data.couponSn,
+        couponId: that.data.couponId
       })
-    }
-    if (options.couponSn || options.id || options.scene) {
-      that.setData({
-        couponSn: options.couponSn,
-        couponId: Number(options.id)
-      })
-      // 个人中心查看详情
-      util.api("api/wxapp/coupon/detail", function (res) {
-        if (res.error == 0) {
-          that.initHandler(res, 0)
-        } else {
-          util.toast_fail(res.message);
-          setTimeout(function () {
-            util.reLaunch({
-              url: '/pages/index/index',
-            })
-          }, 2000);
-        }
-      }, { 
-        couponSn: that.data.couponSn, 
-        couponId: that.data.couponId,
-        scene: scene
-      })
-    }
   },
 
   // 优化数据
@@ -69,12 +58,12 @@ global.wxPage({
     // 是否过期
     var time_now = util.formatTime(new Date);
     if (time_now > res.content.endTime) {
-      res.content.is_expire = 1;
+      res.content.isExpire = 1;
     } else if (time_now < res.content.endTime) {
       if (res.content.isUsed == 1) {
-        res.content.is_expire = 1;
+        res.content.isExpire = 1;
       } else {
-        res.content.is_expire = 0;
+        res.content.isExpire = 0;
       }
     }
     // 倒计时
@@ -204,8 +193,13 @@ global.wxPage({
 
   // 立即使用
   to_search: function (e) {
-    var couponSn = e.currentTarget.dataset.coupon_sn;
-    util.jumpLink('/pages1/search/search?couponSn=' + couponSn);
+    var actId = e.currentTarget.dataset.act_id;
+    util.jumpLink(`/pages1/search/search${util.getUrlParams({
+      pageFrom:20,
+      outerPageParam:JSON.stringify({
+        actId
+      })
+    })}`);
   },
 
   // 我的优惠券
@@ -226,28 +220,32 @@ global.wxPage({
    * 用户点击右上角分享
    */
   onShareAppMessage: function (res) {
-    var that = this;
+    var couponSn = res.target.dataset.coupon_sn;
+    var actId = res.target.dataset.act_id;
     return {
       title: '分享优惠券',
-      path: '/pages/splitinfo/splitinfo?user=' + user + "&coupon_sn=" + coupon_sn + "&coupon_id=" + coupon_id + "&invite_id=" + util.getCache('user_id'),
-      imageUrl: that.data.imageUrl + '/image/wxapp/share_icon.jpg',
+      path: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + actId + "&inviteId=" + util.getCache('user_id'),
+      imageUrl: this.data.imageUrl + '/image/wxapp/share_icon.jpg',
     }
   },
 
   // 领取已满员
   full_people: function (e) {
-    var that = this;
+    var couponSn = e.target.dataset.coupon_sn;
+    var actId = e.target.dataset.act_id;
     util.showModal("提示", '领取人数已满', function () {
-      that.to_getRecord();
+      util.navigateTo({
+        url: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + actId + "&inviteId=" + util.getCache('user_id'),
+      })
     }, true, '取消', '领取记录');
-
   },
 
   // 领取记录
-  to_getRecord: function () {
+  to_getRecord: function (e) {
+    var couponSn = e.target.dataset.coupon_sn;
+    var actId = e.target.dataset.act_id;
     util.navigateTo({
-      // url: '/pages/splitinfo/splitinfo?user=' + user + "&coupon_sn=" + coupon_sn + "&coupon_id=" + coupon_id,
-      url: '/pages/splitinfo/splitinfo',
+      url: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + actId + "&inviteId=" + util.getCache('user_id'),
     })
   },
 

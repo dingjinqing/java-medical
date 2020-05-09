@@ -18,6 +18,7 @@
       <pageSetupMain
         :pageSet='pageSet'
         @hanelToPageSet='hanelToPageSet'
+        @clickSure="clickSure"
       />
     </div>
     <!--模块配置-->
@@ -222,6 +223,12 @@ export default {
     hanelToPageSet (res) {
       console.log(res)
       this.$emit('hanelToPageSet', res)
+    },
+    // 信息配置页面点击确定
+    clickSure (flag) {
+      if (flag) {
+        this.topIconFlag = false
+      }
     }
   }
 }
@@ -257,7 +264,7 @@ export default {
     border-radius: 4px;
     overflow-y: auto;
     overflow-x: hidden;
-    padding-bottom: 20px;
+    padding-bottom: 50px;
   }
 }
 </style>

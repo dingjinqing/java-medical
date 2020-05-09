@@ -13,11 +13,13 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.image.share.ShareConfig;
 import com.vpu.mp.service.pojo.shop.market.presale.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import jodd.util.StringUtil;
@@ -48,7 +50,6 @@ import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
 import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_ONE_PHASE;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_TWO_PHASE;
-import static java.lang.String.format;
 import static org.springframework.util.StringUtils.isEmpty;
 
 /**
@@ -64,8 +65,8 @@ public class PreSaleService extends ShopBaseService {
     private DomainConfig domainConfig;
     @Autowired
     private QrCodeService qrCode;
-
-
+    @Autowired
+    private GoodsService goodsService;
 
 
 
@@ -111,7 +112,7 @@ public class PreSaleService extends ShopBaseService {
                 .leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_ID.eq(ORDER.ORDER_ID))
                 .where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         buildOptions(query, param);
-        query.groupBy(TABLE.ID, TABLE.PRESALE_TYPE,TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME, TABLE.PRE_PAY_STEP,TABLE.START_TIME,
+        query.groupBy(TABLE.ID,  TABLE.FIRST,TABLE.PRESALE_TYPE,TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME, TABLE.PRE_PAY_STEP,TABLE.START_TIME,
             TABLE.END_TIME, TABLE.STATUS, TABLE.PRE_START_TIME_2, TABLE.PRE_END_TIME_2);
         query.orderBy(TABLE.FIRST.desc(),TABLE.CREATE_TIME.desc());
         return getPageResult(query, param, PreSaleListVo.class);
@@ -128,23 +129,43 @@ public class PreSaleService extends ShopBaseService {
         Timestamp endTime = param.getEndTime();
         Byte status = param.getStatus();
         if (!isEmpty(name)) {
-            query.and(TABLE.PRESALE_NAME.like(format("%s%%", name)));
+            query.and(TABLE.PRESALE_NAME.contains(name));
         }
-        if (null != preStartTime) {
+
+        if (null != preStartTime && null == preEndTime) {
             query.and(
-                (TABLE.PRE_PAY_STEP.eq(PRE_SALE_TWO_PHASE).and(TABLE.PRE_END_TIME_2.gt(preStartTime)))
-                    .or(TABLE.PRE_PAY_STEP.eq(PRE_SALE_ONE_PHASE).and(TABLE.PRE_END_TIME.gt(preStartTime)))
+                TABLE.PRE_END_TIME.ge(preStartTime).or(TABLE.PRE_END_TIME_2.ge(preStartTime))
             );
         }
-        if (null != preEndTime) {
-            query.and(TABLE.PRE_START_TIME.le(preEndTime));
+        if (null == preStartTime && null != preEndTime) {
+            query.and(
+                TABLE.PRE_START_TIME.le(preEndTime).or(TABLE.PRE_START_TIME_2.le(preEndTime))
+            );
         }
-        if (null != startTime) {
-            query.and(TABLE.START_TIME.ge(startTime));
+        if (null != preStartTime && null != preEndTime) {
+            query.and(
+                (TABLE.PRE_START_TIME.le(preEndTime).and(TABLE.PRE_END_TIME.ge(preStartTime)))
+                .or(TABLE.PRE_START_TIME_2.le(preEndTime).and(TABLE.PRE_END_TIME_2.ge(preStartTime)))
+            );
         }
-        if (null != endTime) {
-            query.and(TABLE.END_TIME.le(endTime));
+
+        if (null != startTime && null == endTime) {
+            query.and(
+                TABLE.PRESALE_TYPE.eq(PresaleConstant.PRE_SALE_TYPE_SPLIT).and(TABLE.END_TIME.ge(startTime))
+            );
         }
+        if (null == startTime && null != endTime) {
+            query.and(
+                TABLE.PRESALE_TYPE.eq(PresaleConstant.PRE_SALE_TYPE_SPLIT).and(TABLE.START_TIME.le(endTime))
+            );
+        }
+        if (null != startTime && null != endTime) {
+            query.and(
+                TABLE.PRESALE_TYPE.eq(PresaleConstant.PRE_SALE_TYPE_SPLIT).and(TABLE.START_TIME.le(endTime)).and(TABLE.END_TIME.ge(startTime))
+            );
+        }
+
+
         if (null != status && status > 0) {
             andStatus(query, status);
         }
@@ -355,7 +376,7 @@ public class PreSaleService extends ShopBaseService {
                 TABLE.PRE_END_TIME, TABLE.START_TIME, TABLE.END_TIME, TABLE.PRESALE_NAME, TABLE.BUY_NUMBER,
                 TABLE.BUY_TYPE, TABLE.DELIVER_DAYS, TABLE.DELIVER_TIME, TABLE.DELIVER_TYPE, TABLE.GOODS_ID,
                 TABLE.DISCOUNT_TYPE, TABLE.PRE_PAY_STEP, TABLE.PRESALE_TYPE, TABLE.RETURN_TYPE, TABLE.SHARE_CONFIG,
-                TABLE.SHOW_SALE_NUMBER, TABLE.STATUS, TABLE.DEL_FLAG)
+                TABLE.SHOW_SALE_NUMBER, TABLE.STATUS, TABLE.DEL_FLAG,TABLE.FIRST,TABLE.PRE_TIME)
                 .select(TABLE.PRE_START_TIME_2.as("preStartTime2"))
                 .select(TABLE.PRE_END_TIME_2.as("preEndTime2"))
                 .from(TABLE)
@@ -371,7 +392,24 @@ public class PreSaleService extends ShopBaseService {
             .leftJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(SUB_TABLE.PRODUCT_ID))
             .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(SUB_TABLE.GOODS_ID))
             .where(SUB_TABLE.PRESALE_ID.eq(preSaleId)).fetchInto(ProductVo.class);
+        Map<Integer, List<ProductVo>> goodsProductMap = productVos.stream().collect(Collectors.groupingBy(ProductVo::getGoodsId));
+        List<GoodsView> goodsViews = goodsService.selectGoodsViewList(Util.splitValueToList(preSaleVo.getGoodsId()));
+        Map<Integer, GoodsView> goodsMap = goodsViews.stream().collect(Collectors.toMap(GoodsView::getGoodsId, (a) -> a));
+        List<PreSaleVo.PreSaleGoods> goodsList =new ArrayList<>();
+        goodsProductMap.forEach((k,v)->{
+            GoodsView goodsView = goodsMap.get(k);
+            PreSaleVo.PreSaleGoods groupBuyGoods =new PreSaleVo.PreSaleGoods();
+            groupBuyGoods.setGoodsId(k);
+            groupBuyGoods.setGoodsImg(goodsView.getGoodsImg());
+            groupBuyGoods.setGoodsName(goodsView.getGoodsName());
+            groupBuyGoods.setGoodsNumber(goodsView.getGoodsNumber());
+            groupBuyGoods.setShopPrice(goodsView.getShopPrice());
+            groupBuyGoods.setUnit(goodsView.getUnit());
+            groupBuyGoods.setProductList(v);
+            goodsList.add(groupBuyGoods);
+        });
         preSaleVo.setProducts(productVos);
+        preSaleVo.setGoodsList(goodsList);
         ShareConfig shareConfig = shareConfig(preSaleVo);
         preSaleVo.setShareAction(shareConfig.getShareAction());
         preSaleVo.setShareDoc(shareConfig.getShareDoc());

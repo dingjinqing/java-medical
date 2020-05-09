@@ -46,9 +46,18 @@ export function deleteLotteryDraw (data) {
 }
 
 // 停用
-export function updateStatus (data) {
+export function stopStatus (data) {
   return service({
     url: `/api/admin/group_draw/disable/${data}`,
+    method: 'post',
+    data: data
+  })
+}
+
+// 启用
+export function startStatus (data) {
+  return service({
+    url: `/api/admin/group_draw/enable/${data}`,
     method: 'post',
     data: data
   })
@@ -60,6 +69,16 @@ export function orderLotteryList (data) {
     url: '/api/admin/group_draw/order/list',
     method: 'post',
     data: data
+  })
+}
+
+// 导出订单数据
+export function lotteryOrderListExport (data) {
+  return service({
+    url: '/api/admin/group_draw/order/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
   })
 }
 

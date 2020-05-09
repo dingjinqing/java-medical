@@ -97,6 +97,8 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     private Integer groupId;
     /** 是否是团长*/
     private Byte isGrouper;
+    /** 邀请人id*/
+    private Integer inviteId=0;
 
     /**
      * 砍价下单标记
@@ -161,6 +163,10 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
         /**是否校验过限购，true校验过*/
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         private Boolean isAlreadylimitNum;
+        /**购物车参数：选择活动类型*/
+        private Byte cartType;
+        /**购物车参数：对应type的id*/
+        private Integer cartExtendId;
 	}
 
     /**
@@ -173,7 +179,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
             orderCartProductBo.setStoreId(getStoreId());
             orderCartProductBo.setDate(date);
 			goods.forEach(x->{
-				orderCartProductBo.getAll().add(new OrderCartProductBo.OrderCartProduct(x.getProductId(), x.getGoodsNumber(),x.getProductInfo()));
+				orderCartProductBo.getAll().add(new OrderCartProductBo.OrderCartProduct(x.getProductId(), x.getGoodsNumber(), BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS.equals(x.getCartType()), x.getProductInfo()));
 			});
 		}
         return orderCartProductBo;

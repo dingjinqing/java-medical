@@ -15,13 +15,13 @@
       <view class='btn_search' bindtap='bindSearch' data-value='{{search_word}}'>搜索</view>
     </view>
     <view class='icon_info' wx:if='{{search_config.is_open_history == 1 || search_config.is_open_hot_words == 1}}'>
-        <view class='search_history' wx:if='{{search_config.is_open_history == 1 && history_words != []}}'>
+        <view class='search_history' wx:if='{{search_config.is_open_history == 1 && history_words && history_words.length > 0}}'>
             <view class='have_del'>
               <view class='sh_title'>搜索历史</view>
               <image src='{{imageUrl}}image/wxapp/search_del.png' mode='widthFix' bindtap='to_del'></image>
             </view>
             <view class='some_item clearfix some_item_his'>
-              <view class='each_item' wx:for='{{history_words}}' wx:key='key' data-value='{{item.hotWords}}' bindtap='to_search' wx:if="{{item.hotWords != ''}}">{{item.hotWords}}</view>
+              <view class='each_item' wx:for='{{history_words}}' wx:key='key' data-value='{{item.hotWords}}' bindtap='to_search'>{{item.hotWords}}</view>
             </view>
         </view>
         <view class='search_history' wx:if='{{search_config.is_open_hot_words == 1 && search_config.hot_words != "" }}'>

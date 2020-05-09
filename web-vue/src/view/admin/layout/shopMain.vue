@@ -124,6 +124,7 @@ export default {
 </script>
 <style scoped>
 .s_container {
-  height: 100%;
+  /* height: 100%; */
+  background-color: #e6e9f0;
 }
 </style>

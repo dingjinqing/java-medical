@@ -125,34 +125,37 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
         List<GroupBuyPrdMpVo> groupBuyPrdInfos = groupBuyProcessorDao.getGroupBuyPrdInfo(param.getActivityId(), prdMap.keySet());
         groupBuyInfo.setGroupBuyPrdMpVos(groupBuyPrdInfos);
 
-        List<GoodsPrdMpVo> newPrdList = new ArrayList<>();
-        int goodsNum = 0;
+        List<GroupBuyPrdMpVo> newGroupPrds = new ArrayList<>();
+        int stock = 0;
         for (int i = 0; i < groupBuyPrdInfos.size(); i++) {
             // 商品拼团规格
             GroupBuyPrdMpVo vo = groupBuyPrdInfos.get(i);
             //商品原规格
             GoodsPrdMpVo goodsPrdMpVo = prdMap.get(vo.getProductId());
 
-            if (goodsPrdMpVo != null) {
-                // 设置拼团规格对应的原价，便于前端使用
-                vo.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
-                // 处理商品数量不足情况
-                if (goodsPrdMpVo.getPrdNumber() < vo.getStock()) {
-                    vo.setStock(goodsPrdMpVo.getPrdNumber());
-                }
-                goodsNum += vo.getStock();
-
-                newPrdList.add(goodsPrdMpVo);
+            if (goodsPrdMpVo == null) {
+                continue;
             }
+
+            // 设置拼团规格对应的原价，便于前端使用
+            vo.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
+            // 处理商品数量不足情况
+            if (goodsPrdMpVo.getPrdNumber() < vo.getStock()) {
+                vo.setStock(goodsPrdMpVo.getPrdNumber());
+            }
+            stock += vo.getStock();
+            newGroupPrds.add(vo);
         }
+
         // 重新设置有效规格
-        capsule.setProducts(newPrdList);
-        capsule.setGoodsNumber(goodsNum);
-        if (goodsNum == 0 && BaseConstant.needToConsiderNotHasNum(groupBuyInfo.getActState())) {
+        groupBuyInfo.setGroupBuyPrdMpVos(newGroupPrds);
+        groupBuyInfo.setStock(stock);
+
+        if (stock == 0 && BaseConstant.needToConsiderNotHasNum(groupBuyInfo.getActState())) {
             log.debug("小程序-商品详情-拼团商品数量已用完");
             groupBuyInfo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
         }
-        if (newPrdList.size() == 0) {
+        if (newGroupPrds.size() == 0) {
             log.debug("小程序-商品详情-拼团-商品规格信息和活动规格信息无交集");
             groupBuyInfo.setActState(BaseConstant.ACTIVITY_STATUS_NO_PRD_TO_USE);
         }

@@ -11,15 +11,19 @@
                 type="warning"
                 show-icon
                 center
-                :closable='false'>
-             </el-alert>
-          </div>
+                :closable='false'
+              >
+              </el-alert>
+            </div>
           </el-col>
         </el-row>
         <el-row style="margin-top: 15px;">
           <el-col :span="7">
             <div>
-               <img style="width: 100%;" :src="$imageHost+'/image/admin/shop_beautify/phone_tops.png'">
+              <img
+                style="width: 100%;"
+                :src="$imageHost+'/image/admin/shop_beautify/phone_tops.png'"
+              >
             </div>
             <div
               class="showMsg"
@@ -29,11 +33,17 @@
           </el-col>
           <el-col :span="17">
             <div class="right">
-              <el-form ref="form" label-width="80px">
+              <el-form
+                ref="form"
+                label-width="80px"
+              >
                 <el-form-item :label="$t('groupIntegration.pageInfo')+':'">
-                  <el-radio-group v-model="isUseDefault" @change="changeRadio">
-                      <el-radio :label="1">{{$t('groupIntegration.title1')}}</el-radio>
-                      <el-radio :label="0">{{$t('groupIntegration.title0')}}</el-radio>
+                  <el-radio-group
+                    v-model="isUseDefault"
+                    @change="changeRadio"
+                  >
+                    <el-radio :label="1">{{$t('groupIntegration.title1')}}</el-radio>
+                    <el-radio :label="0">{{$t('groupIntegration.title0')}}</el-radio>
                   </el-radio-group>
                 </el-form-item>
               </el-form>
@@ -49,16 +59,16 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-                <div class="footer">
-                  <div
-                    class="save"
-                    @click="saveMsg"
-                  >{{$t('groupIntegration.save')}}</div>
-                </div>
+            <div class="footer">
+              <div
+                class="save"
+                @click="saveMsg"
+              >{{$t('groupIntegration.save')}}</div>
+            </div>
           </el-col>
         </el-row>
       </el-col>
-     <el-col :span="4"></el-col>
+      <el-col :span="4"></el-col>
     </el-row>
   </div>
 </template>
@@ -138,8 +148,8 @@ export default {
 <style lang="scss" scoped>
 .content {
   .el-col {
-  min-height: 1px
-}
+    min-height: 1px;
+  }
 }
 .showMsg {
   border: 1px solid #ededed;
@@ -176,16 +186,16 @@ export default {
     cursor: pointer;
   }
 }
-.right{
+.right {
   margin-left: 22px;
   height: 595px;
   border: 1px solid #ededed;
   background-color: #f8f8fa;
 }
-.innerRight{
-  margin: 9px
+.innerRight {
+  margin: 9px;
 }
-.warnThing{
+.warnThing {
   border: 1px solid #ffd5a3;
 }
 </style>

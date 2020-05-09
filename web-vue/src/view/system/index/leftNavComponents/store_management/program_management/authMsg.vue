@@ -486,7 +486,8 @@
                   <tr>
                     <td>{{$t('programVersion.PublishCodeStatus')}}</td>
                     <td>
-                      <span>{{this.dataList.auditOkTime}}</span>
+                      <span v-show="this.dataList.publishState===1">已发布</span>
+                      <span v-show="this.dataList.publishState===0">未发布</span>
                       <el-button
                         size="small"
                         type="primary"

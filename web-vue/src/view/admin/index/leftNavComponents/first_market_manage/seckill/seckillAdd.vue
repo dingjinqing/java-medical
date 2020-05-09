@@ -44,7 +44,6 @@
           prop="first"
         >
           <el-input-number
-            :disabled="this.isEdite"
             v-model="form.first"
             controls-position="right"
             :min="1"
@@ -119,8 +118,7 @@
                 <el-form-item
                   :prop="'secKillProduct.'+scope.$index+'.secKillPrice'"
                   :rules="[
-                    { required: true, message: '秒杀价不能为空', trigger: 'blur' },
-                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.shopPrice)}, trigger: ['blur', 'change'] }
+                    { required: true, message: '秒杀价不能为空', trigger: 'blur' }
                   ]"
                 >
                   <div
@@ -160,8 +158,7 @@
                 <el-form-item
                   :prop="'secKillProduct.' + scope.$index+ '.stock'"
                   :rules="[
-                    { required: true, message: '秒杀库存不能为空', trigger: 'blur' },
-                    { validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.goodsNumber)}, trigger: ['blur', 'change'] }
+                    { required: true, message: '秒杀库存不能为空', trigger: 'blur' }
                   ]"
                 >
                   <div
@@ -291,12 +288,12 @@
           </el-form-item>
           <!-- 活动分享 -->
           <el-form-item
-            prop="shareConfig.share_action"
+            prop="shareConfig.shareAction"
             label="活动分享："
           >
             <div class="shareContent">
               <el-radio
-                v-model="form.shareConfig.share_action"
+                v-model="form.shareConfig.shareAction"
                 :label="1"
               >默认样式</el-radio>
               <el-popover
@@ -325,33 +322,33 @@
             </div>
             <div>
               <el-radio
-                v-model="form.shareConfig.share_action"
+                v-model="form.shareConfig.shareAction"
                 :label="2"
               >自定义样式</el-radio>
-              <div v-if="form.shareConfig.share_action === 2">
+              <div v-if="form.shareConfig.shareAction === 2">
                 <span>文案：</span>
                 <el-input
-                  v-model="form.shareConfig.share_doc"
+                  v-model="form.shareConfig.shareDoc"
                   size="small "
                   style="width: 180px;"
                 ></el-input>
               </div>
-              <div v-if="form.shareConfig.share_action === 2">
+              <div v-if="form.shareConfig.shareAction === 2">
                 <span>分享图：</span>
                 <el-radio
-                  v-model="form.shareConfig.share_img_action"
+                  v-model="form.shareConfig.shareImgAction"
                   :label="1"
                 >活动商品信息图</el-radio>
                 <div style="margin-left: 60px;">
                   <el-radio
-                    v-model="form.shareConfig.share_img_action"
+                    v-model="form.shareConfig.shareImgAction"
                     :label="2"
                   >自定义图片</el-radio>
                 </div>
 
                 <div
                   style="display: flex"
-                  v-if="form.shareConfig.share_img_action === 2"
+                  v-if="form.shareConfig.shareImgAction === 2"
                 >
                   <div
                     class="imgContent"
@@ -359,13 +356,13 @@
                   >
                     <div>
                       <img
-                        v-if="form.shareConfig.share_img === ''"
+                        v-if="form.shareConfig.shareImg === ''"
                         src="http://jmpdevimg.weipubao.cn/image/admin/shop_beautify/add_decorete.png"
                         alt=""
                       >
                       <img
-                        v-if="form.shareConfig.share_img !== ''"
-                        :src="form.shareConfig.share_img"
+                        v-if="form.shareConfig.shareImg !== ''"
+                        :src="form.shareConfig.shareImg"
                         alt=""
                         class="shareImg"
                       >
@@ -414,7 +411,6 @@
     <seckillSpecDialog
       :productDialog.sync="showSpecDialog"
       :product-info="productInfo"
-      :isEdit="isEdite"
       @confrim="getProductdata"
     />
 
@@ -447,21 +443,15 @@ export default {
       }
     }
     // 活动专享
-    var validateShare = (rule, value, callback) => {
-      if (value === 2) {
-        if (this.form.shareConfig.share_doc === '') {
-          callback(new Error('请填写活动文案'))
-        } else if (this.form.shareConfig.share_img_action === 2) {
-          if (this.form.shareConfig.share_img === '') {
-            callback(new Error('请选择活动图片'))
-          } else {
-            callback()
-          }
-        }
-      } else {
-        callback()
-      }
-    }
+    // var validateShare = (rule, value, callback) => {
+    //   if (value === 2 && this.form.shareConfig.shareDoc === '') {
+    //     callback(new Error('请填写活动文案'))
+    //   } else if (value === 2 && this.form.shareConfig.shareImgAction === 2 && !this.form.shareConfig.shareImg) {
+    //     callback(new Error('请选择活动图片'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     return {
       activeIndex: 0, // 批量设置
       // 表单
@@ -480,10 +470,10 @@ export default {
         stock: 0, // 活动总库存
         cardId: [], // 会员卡id
         shareConfig: {
-          share_action: 1,
-          share_doc: '',
-          share_img_action: 1,
-          share_img: ''
+          shareAction: 1,
+          shareDoc: '',
+          shareImgAction: 1,
+          shareImg: ''
         }
       },
       // 校验表单
@@ -511,10 +501,10 @@ export default {
         ],
         cardId: [
           { validator: validateCard, trigger: 'change' }
-        ],
-        'shareConfig.share_action': [
-          { validator: validateShare, trigger: 'change' }
         ]
+        // 'shareConfig.shareAction': [
+        //   { validator: validateShare, trigger: 'change' }
+        // ]
       },
       disabledFlag: true, // 是否可编辑
       submitStatus: false, // 提交
@@ -598,10 +588,12 @@ export default {
             this.showMember = false
           }
           // 活动分享
-          this.form.shareConfig.share_action = data.shopShareConfig.share_action
-          this.form.shareConfig.share_doc = data.shopShareConfig.share_doc
-          this.form.shareConfig.share_img_action = data.shopShareConfig.share_img_action
-          this.form.shareConfig.share_img = data.shopShareConfig.share_img
+          if (data.shopShareConfig) {
+            this.form.shareConfig.shareAction = data.shopShareConfig.shareAction
+            this.form.shareConfig.shareDoc = data.shopShareConfig.shareDoc
+            this.form.shareConfig.shareImgAction = data.shopShareConfig.shareImgAction
+            this.form.shareConfig.shareImg = data.shopShareConfig.shareImg
+          }
           // 总库存
           this.form.stock = 0
 
@@ -623,6 +615,11 @@ export default {
             goodsInfo.priceErrorMsg = '有规格秒杀价大于原价，请修改'
           }
         })
+      } else {
+        goodsInfo.priceErrorMsg = null
+        if (goodsInfo.secKillPrice > goodsInfo.shopPrice) {
+          goodsInfo.priceErrorMsg = '有规格秒杀价大于原价，请修改'
+        }
       }
     },
     changeStockInput (goodsInfo, isDialog = null) {
@@ -636,6 +633,11 @@ export default {
             goodsInfo.stockErrorMsg = '有规格秒杀库存大于原库存，请修改'
           }
         })
+      } else {
+        goodsInfo.stockErrorMsg = null
+        if (goodsInfo.stock > goodsInfo.goodsNumber) {
+          goodsInfo.stockErrorMsg = '有规格秒杀库存大于原库存，请修改'
+        }
       }
     },
 
@@ -651,6 +653,15 @@ export default {
 
     // 保存秒杀活动
     saveClickHandler () {
+      // 校验活动分享
+      if (this.form.shareConfig.shareAction === 2 && this.form.shareConfig.shareDoc === '') {
+        this.$message.warning('请填写活动文案')
+        return false
+      } else if (this.form.shareConfig.shareAction === 2 && this.form.shareConfig.shareImgAction === 2 && !this.form.shareConfig.shareImg) {
+        this.$message.warning('请选择活动图片')
+        return false
+      }
+
       this.$refs['form'].validate((valid) => {
         let goodsId = this.form.goodsId.join(',')
         if (valid) {
@@ -665,10 +676,10 @@ export default {
             this.form.cardId = ''
           }
           // 活动分享
-          if (this.form.shareConfig.share_action === 1) {
-            this.form.shareConfig.share_doc = ''
-            this.form.shareConfig.share_img_action = 1
-            this.form.shareConfig.share_img = ''
+          if (this.form.shareConfig.shareAction === 1) {
+            this.form.shareConfig.shareDoc = ''
+            this.form.shareConfig.shareImgAction = 1
+            this.form.shareConfig.shareImg = ''
           }
           // 总库存
           this.form.secKillProduct.forEach((item, index) => {
@@ -688,8 +699,9 @@ export default {
           this.form.secKillProduct.forEach(item => {
             if (item.goodsSpecProducts) {
               item.goodsSpecProducts.forEach(specItem => {
-                let { prdId: productId, secKillPrice, stock } = specItem
+                let { secKillPrice, stock } = specItem
                 let goodsId = item.goodsId
+                let productId = this.isEdite ? specItem.productId : specItem.prdId
                 secKillProduct.push({ goodsId, productId, secKillPrice: Number(secKillPrice), stock: Number(stock) })
                 this.form.stock += Number(stock)
               })
@@ -699,7 +711,7 @@ export default {
               this.form.stock += Number(stock)
             }
           })
-          console.log(secKillProduct)
+
           if (this.isEdite === false) {
             // 添加秒杀
             addSeckillList({ ...this.form, secKillProduct, goodsId }).then((res) => {
@@ -716,7 +728,9 @@ export default {
               skId: this.editId,
               name: this.form.name,
               cardId: this.form.cardId,
-              shareConfig: this.form.shareConfig
+              first: this.form.first,
+              shareConfig: this.form.shareConfig,
+              secKillProduct: secKillProduct
             }).then((res) => {
               if (res.error === 0) {
                 this.$message.success({ message: '修改成功' })
@@ -790,7 +804,7 @@ export default {
     // 图片点击回调函数
     handleSelectImg (res) {
       if (res != null) {
-        this.form.shareConfig.share_img = res.imgUrl
+        this.form.shareConfig.shareImg = res.imgUrl
       }
     },
 

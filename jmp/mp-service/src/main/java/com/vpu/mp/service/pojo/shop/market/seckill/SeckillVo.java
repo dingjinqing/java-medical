@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.seckill;
 
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
 import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import lombok.Data;
 import lombok.Getter;
@@ -52,8 +52,8 @@ public class SeckillVo {
     /** 专属会员卡，卡ID字符串，逗号分隔；为空时代表该活动所有人都可以参与*/
     private List<SimpleMemberCardVo> memberCard;
 
-    /** 分享设置*/
-    private ShopShareConfig shopShareConfig;
+    private String shareConfig;
+    private PictorialShareConfigVo shopShareConfig;
 
     @Setter
     @Getter

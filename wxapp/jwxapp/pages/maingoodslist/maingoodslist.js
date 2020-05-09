@@ -13,7 +13,7 @@ global.wxPage({
     main_goods_info: [], // 主商品全部信息
     add_goods_info: [], // 主商品列表
     change_goods_info: [], // 换购列表
-    pIds: [], // 换购已选择规格id
+    pIds: [], // 修改换购前数据
     is_load: 0,
     searchText: "", // 搜索内容
     page: 1,
@@ -22,7 +22,9 @@ global.wxPage({
     get_doc: "",
     showSpec: false, // 规格弹窗
     // triggerButton: 'left',
-    specParams: {} // 规格信息
+    specParams: {}, // 规格信息
+    basicNumber: 0, // 多规格添加购物车时的基础数量
+    basicLimit: null, // 多规格添加购物车时的限制
   },
 
   /**
@@ -31,11 +33,9 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     var that = this;
-    console.log(options.identity_id)
     that.setData({
       identity_id: Number(options.identity_id),
-      store_id: options.store_id ? Number(options.store_id) : '',
-      pIds: options.pIds ? JSON.parse(options.pIds) : [],
+      store_id: Number(options.store_id)
     })
     main_request(that);
   },
@@ -51,9 +51,9 @@ global.wxPage({
 
   // 去商品详情
   to_items: function (e) {
-    var goods_id = e.currentTarget.dataset.goods_id;
+    var goodsId = e.currentTarget.dataset.goods_id;
     util.navigateTo({
-      url: '/pages/item/item?gid=' + goods_id,
+      url: '/pages/item/item?gid=' + goodsId,
     })
   },
 
@@ -62,9 +62,20 @@ global.wxPage({
     var that = this;
     var goodsId = e.currentTarget.dataset.goods_id
     var prdId = e.currentTarget.dataset.prd_id
+    var cartNumber = e.currentTarget.dataset.cart_number
+    var limitAmount = e.currentTarget.dataset.limit_amount
+    that.setData({
+      basicNumber: e.currentTarget.dataset.cart_number,
+      basicLimit: e.currentTarget.dataset.limit_amount
+    })
     // 添加购物车
     if (prdId) {
       // 单规格
+      // var value = cartNumber + 1
+      // if (limitAmount != null && limitAmount != 0 && (value > limitAmount)) {
+      //   util.showModal('提示', '最大限购量为' + limitAmount + '个');
+      //   return false
+      // }
       util.api('/api/wxapp/cart/add', function (res) {
         if (res.error == 0) {
           util.toast_success('已加入购物车');
@@ -74,11 +85,12 @@ global.wxPage({
           return false;
         }
       }, {
-          goodsNumber: 1,
-          prdId: prdId,
-          activityType: 7,
-          activityId: that.data.identity_id
-        })
+        goodsNumber: 1,
+        prdId: prdId,
+        activityType: 7,
+        activityId: that.data.identity_id,
+        type: 2
+      })
     } else {
       // 选择规格
       that.setData({
@@ -89,7 +101,7 @@ global.wxPage({
     }
   },
   // 获取商品详情
-  requestGoodsInfo(goodsId) {
+  requestGoodsInfo (goodsId) {
     util.api('/api/wxapp/goods/detail', res => {
       if (res.error == 0) {
         let {
@@ -117,16 +129,16 @@ global.wxPage({
         })
       }
     }, {
-        goodsId: goodsId,
-        activityId: this.data.identity_id,
-        activityType: 7,
-        userId: util.getCache('user_id'),
-        lon: null,
-        lat: null
-      })
+      goodsId: goodsId,
+      activityId: this.data.identity_id,
+      activityType: 7,
+      userId: util.getCache('user_id'),
+      lon: null,
+      lat: null
+    })
   },
   // 获取规格信息
-  getProduct({
+  getProduct ({
     detail: { prdNumber, limitBuyNum = null, limitMaxNum = null }
   }) {
     this.setData({
@@ -139,7 +151,7 @@ global.wxPage({
     })
   },
   // 规格回调
-  getProductData(e) {
+  getProductData (e) {
     this.setData({
       product: e.detail,
       limitInfo: {
@@ -151,71 +163,67 @@ global.wxPage({
     })
   },
   // 数量回调
-  getGoodsNum(e) {
+  getGoodsNum (e) {
     this.setData({
       productInfo: { ...this.data.product, goodsNum: e.detail.goodsNum }
     });
     console.log(this.data.productInfo)
   },
   // 关闭规格弹窗
-  bindCloseSpec() {
+  bindCloseSpec () {
     this.setData({
       showSpec: false,
       triggerButton: ''
     })
   },
   // 规格添加购物车
-  addCart() {
-    let { goodsNum: goodsNumber, prdId } = this.data.productInfo
+  addCart () {
+    var that = this
+    let { goodsNum: goodsNumber, prdId } = that.data.productInfo
+    // 限购校验
+    // var value = that.data.basicNumber + goodsNumber
+    // if (that.data.basicLimit != null && that.data.basicLimit != 0 && (value > that.data.basicLimit)) {
+    //   util.showModal('提示', '最大限购量为' + that.data.basicLimit + '个');
+    //   return false
+    // }
     util.api("/api/wxapp/cart/add", res => {
       if (res.error == 0) {
         util.toast_success('已加入购物车');
-        main_request(this)
+        main_request(that)
       } else {
         util.showModal("提示", res.message);
         return false;
       }
-      this.bindCloseSpec()
+      that.bindCloseSpec()
     }, {
-        goodsNumber: goodsNumber,
-        prdId: prdId,
-        activityType: 7,
-        activityId: this.data.identity_id
-      });
+      goodsNumber: goodsNumber,
+      prdId: prdId,
+      activityType: 7,
+      activityId: that.data.identity_id,
+      type: 2
+    });
   },
 
   // 获取换购商品
   showGoods: function (e) {
     var that = this;
-    console.log(that.data.pIds)
     that.setData({
       changeMove: false
     })
     util.api('/api/wxapp/purchase/changegoods', function (res) {
       if (res.error == 0) {
-        var change_goods_info = res.content;
-        // 已选个数
-        change_goods_info.alreadyChangeNum = that.data.pIds.length
-        change_goods_info.list.forEach(item => {
-          // 已选换购商品
-          that.data.pIds.forEach(val => {
-            if (item.prdId == val) {
-              item.isChecked = 1
-            }
-          })
+        var data = []
+        res.content.list.forEach(item => {
           if (item.isChecked == 1) {
-            purchase_change_goods[item.prdId] = item.purchaseRuleId
+            data.push(item.prdId)
           }
         })
         that.setData({
-          change_goods_info: change_goods_info
+          change_goods_info: res.content,
+          pIds: data
         })
       } else {
-        util.showModal("提示", res.message, function () {
-          util.reLaunch({
-            url: '/pages/index/index'
-          })
-        });
+        util.showModal("提示", res.message);
         return false;
       }
     }, { purchasePriceId: that.data.identity_id, storeId: that.data.store_id });
@@ -232,7 +240,7 @@ global.wxPage({
       changeMove: true
     })
   },
-  
+
   // 关闭换购商品弹窗
   close_change: function () {
     var that = this;
@@ -244,9 +252,14 @@ global.wxPage({
   // 切换换购商品
   choose_chenage: function (e) {
     var that = this;
+    var tip = e.currentTarget.dataset.tip;
     var this_is_checked = e.currentTarget.dataset.is_check;
     var ids = e.currentTarget.dataset.keys;
     var change_goods_info = that.data.change_goods_info
+    if (tip == 0) {
+      util.showModal('提示', '不满足换购条件');
+      return false
+    }
     if (this_is_checked == 0) {
       change_goods_info.list[ids].isChecked = 1;
       change_goods_info.alreadyChangeNum = parseInt(change_goods_info.alreadyChangeNum) + 1;
@@ -280,26 +293,27 @@ global.wxPage({
   btn_confirm_change: function () {
     var that = this;
     var prdIds = []
+    var ruleIds = []
     that.data.change_goods_info.list.forEach(item => {
       if (item.isChecked == 1) {
         prdIds.push(item.prdId)
+        ruleIds.push(item.purchaseRuleId)
       }
     })
-    prdIds.forEach(item => {
+    prdIds.forEach((item, index) => {
       if (that.data.pIds.indexOf(item) == -1) {
-        that.add_cart(item)
+        that.add_cart(item, ruleIds[index])
       }
     })
-    that.data.change_goods_info.alreadyChangeNum = prdIds.length
     that.setData({
-      pIds: prdIds,
-      changeMove: true,
+      changeMove: true
     })
   },
 
   // 添加换购商品到购物车
-  add_cart(data) {
-    console.log(data)
+  add_cart (prdId, ruleId) {
+    console.log(prdId)
+    console.log(ruleId)
     var that = this
     util.api('/api/wxapp/cart/add', function (res) {
       if (res.error == 0) {
@@ -315,7 +329,13 @@ global.wxPage({
         util.showModal("提示", res.message);
         return false;
       }
-    }, { goodsNumber: 1, prdId: data, activityType: 97, activityId: that.data.identity_id })
+    }, {
+      goodsNumber: 1,
+      prdId: prdId,
+      activityType: 97,
+      activityId: ruleId,
+      type: 1
+    })
   },
 
   /**
@@ -383,7 +403,7 @@ global.wxPage({
     }, { purchasePriceId: that.data.identity_id, search: that.data.searchText, currentPage: that.data.page, pageRows: 10 });
   },
 })
-function main_request(that) {
+function main_request (that) {
   util.api('/api/wxapp/purchase/goodslist', function (res) {
     if (res.error == 0) {
       var main_goods_info = res.content;
@@ -413,7 +433,7 @@ function main_request(that) {
           main_goods_info.is_show_reduce_doc = 0
         }
       }
-      
+
       that.setData({
         main_goods_info: main_goods_info,
         add_goods_info: add_goods_info,

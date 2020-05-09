@@ -21,9 +21,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -47,6 +49,10 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RemarkUtil;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
@@ -59,11 +65,16 @@ import com.vpu.mp.service.pojo.shop.member.score.SignData;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
+import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.score.ExpireVo;
 import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
+import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 /**
  * 
  * @author 黄壮壮
@@ -147,10 +158,34 @@ public class ScoreService extends ShopBaseService {
 				}
 				
 				userScoreRecord.insert();
-				updateUserScore(param);
+				Integer totalScore = updateUserScore(param);
+				
+				
+				String subscribueRemark = null;
+				if(RemarkTemplate.USER_INPUT_MSG.code.equals(param.getRemarkCode())) {
+					subscribueRemark = param.getRemarkData();
+				}else {
+					String message = RemarkTemplate.getMessageByCode(param.getRemarkCode());
+					subscribueRemark = Util.translateMessage(null, message,"","remark", param.getRemarkData());
+				}
+
+				// 订阅消息
+				String[][] maData = new String[][] {
+					{String.valueOf(Math.abs(score))},
+					{String.valueOf(Math.abs(totalScore))},
+					{subscribueRemark}
+				};
+				List<Integer> arrayList = Collections.<Integer>singletonList(param.getUserId());
+				MaSubscribeData data = MaSubscribeData.builder().data307(maData).build();
+				RabbitMessageParam param2 = RabbitMessageParam.builder()
+						.maTemplateData(
+								MaTemplateData.builder().config(SubcribeTemplateCategory.AUDIT).data(data).build())
+						.page("pages1/integral/integral").shopId(getShopId())
+						.userIdList(arrayList)
+						.type(MessageTemplateConfigConstant.POINTS_CONSUMPTION).build();
+				saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
+				
 			});
-			
-			
 				// TODO CRM
 				
 				insertTradesRecord(param, tradeType, tradeFlow);
@@ -170,8 +205,7 @@ public class ScoreService extends ShopBaseService {
 					saas().getShopApp(getShopId()).record.insertRecord(
 							Arrays.asList(new Integer[] { RecordContentTemplate.MEMBER_INTEGRALT.code }),
 							String.valueOf(dbUser.getUserId()), dbUser.getUsername(), strScore);
-				}
-
+				}	
 		}catch(DataAccessException e) {
 			logger().info("从事务抛出的DataAccessException中获取我们自定义的异常");
 			Throwable cause = e.getCause();
@@ -188,11 +222,14 @@ public class ScoreService extends ShopBaseService {
 	}
 
 	//更新用户积分
-	private void updateUserScore(ScoreParam param) {
+	private Integer updateUserScore(ScoreParam param) {
 		logger().info("更新用户积分");
 		Integer totalScore = getTotalAvailableScoreById(param.getUserId());
 		updateUserScore(param.getUserId(), totalScore);
+		return totalScore;
 	}
+	
+
 
 
 	private UserScoreRecord populateUserScoreRecord(ScoreParam param, Integer adminUser) {

@@ -61,7 +61,7 @@ public final  class  BaseConstant {
     /** 首单特惠 */
     public final static Byte ACTIVITY_TYPE_FIRST_SPECIAL = 18;
     /** 支付有礼 */
-    public final static byte ACTIVITY_TYPE_PAY_AWARD = 19;
+    public final static Byte ACTIVITY_TYPE_PAY_AWARD = 19;
     /** 优惠券活动 */
     public final static Byte ACTIVITY_TYPE_COUPON = 20;
     /** 满折满减*/
@@ -71,9 +71,9 @@ public final  class  BaseConstant {
     /** 会员专享型（不是营销活动）*/
     public final static Byte ACTIVITY_TYPE_MEMBER_EXCLUSIVE = 23;
     /** 我的奖品 */
-    public final static byte ACTIVITY_TYPE_MY_PRIZE = 24;
+    public final static Byte ACTIVITY_TYPE_MY_PRIZE = 24;
     /** 加价购商品*/
-    public final static byte ACTIVITY_TYPE_PURCHASE_GOODS = 97;
+    public final static Byte ACTIVITY_TYPE_PURCHASE_GOODS = 97;
     /** 限时降价和等级会员价共存 */
     public final static Byte ACTIVITY_TYPE_GRADE_REDUCE_PRICE = 98;
     /** 代付订单 */

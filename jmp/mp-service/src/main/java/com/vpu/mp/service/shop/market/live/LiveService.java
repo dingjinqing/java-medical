@@ -1,31 +1,34 @@
 package com.vpu.mp.service.shop.market.live;
 
-import static com.vpu.mp.db.shop.tables.LiveBroadcast.LIVE_BROADCAST;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.shop.tables.records.LiveBroadcastRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.base.BasePageParam;
+import com.vpu.mp.service.pojo.shop.market.live.LiveListParam;
+import com.vpu.mp.service.pojo.shop.market.live.LiveListVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.live.RoomDetailMpVo;
+import com.vpu.mp.service.wechat.api.WxMaLiveService;
+import com.vpu.mp.service.wechat.bean.open.WxMaLiveInfoResult;
+import com.vpu.mp.service.wechat.bean.open.WxMaLiveRoomInfo;
+import com.vpu.mp.service.wechat.bean.open.WxMaLiveRoomInfoGoods;
+import me.chanjar.weixin.common.error.WxErrorException;
 import org.jooq.SelectConditionStep;
+import org.jooq.SelectSeekStep1;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
-import com.vpu.mp.db.shop.tables.records.LiveBroadcastRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.live.LiveListParam;
-import com.vpu.mp.service.pojo.shop.market.live.LiveListVo;
-import com.vpu.mp.service.wechat.api.WxMaLiveService;
-import com.vpu.mp.service.wechat.bean.open.WxMaLiveInfoResult;
-import com.vpu.mp.service.wechat.bean.open.WxMaLiveRoomInfo;
-import com.vpu.mp.service.wechat.bean.open.WxMaLiveRoomInfoGoods;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import me.chanjar.weixin.common.error.WxErrorException;
+import static com.vpu.mp.db.shop.tables.LiveBroadcast.LIVE_BROADCAST;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 
 
 /**
@@ -42,6 +45,20 @@ public class LiveService extends ShopBaseService {
 	public LiveGoodsService liveGoods;
 	
 	private static final Byte ONE = 1;
+
+	/** 直播中 */
+	private static final int LIVING_ON = 101;
+    /** 直播未开始 */
+	private static final int LIVING_NOT_START= 102;
+    /** 直播已结束 */
+	private static final int LIVING_END = 103;
+	/**禁播*/
+	private static final int LIVING_FORBIDDEN = 104;
+    /** 直播暂停中 */
+	private static final int LIVING_PAUSE = 105;
+	/** 直播已过期*/
+    private static final int LIVING_OUT_OF_DATE = 107;
+
 	/**
 	 * 直播列表页
 	 * @param param
@@ -97,7 +114,45 @@ public class LiveService extends ShopBaseService {
 		}
 		return pageList;
 	}
-	
+
+    /**
+     * 商品列表处-获取直播间信息
+     * @param pageParam 分页搜索信息
+     * @return
+     */
+    public PageResult<LiveListVo> getListForGoodsEdit(BasePageParam pageParam) {
+        SelectSeekStep1<LiveBroadcastRecord, Integer> liveBroadcastRecords = db().selectFrom(LIVE_BROADCAST)
+            .where(LIVE_BROADCAST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(LIVE_BROADCAST.LIVE_STATUS.in(Arrays.asList(LIVING_ON, LIVING_NOT_START, LIVING_END, LIVING_PAUSE))))
+            .orderBy(LIVE_BROADCAST.ROOM_ID.desc());
+        return this.getPageResult(liveBroadcastRecords, pageParam.getCurrentPage(), pageParam.getPageRows(), LiveListVo.class);
+    }
+
+    /**
+     * 根据直播间id获取直播信息
+     * @param roomId 直播间id
+     * @return null 表示无效id
+     */
+    public LiveBroadcastRecord getLiveInfoByRoomId(Integer roomId) {
+        return db().selectFrom(LIVE_BROADCAST)
+            .where(LIVE_BROADCAST.ROOM_ID.eq(roomId).and(LIVE_BROADCAST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
+            .fetchAny();
+    }
+
+    /**
+     * 根据roomId获取直播信息(未结束、未禁播、未过期、未删除的)
+     * @param roomId 直播id
+     * @return 直播信息
+     */
+    public RoomDetailMpVo getLiveInfoForGoodsMpDetail(Integer roomId) {
+        LiveBroadcastRecord liveBroadcastRecord = db().selectFrom(LIVE_BROADCAST)
+            .where(LIVE_BROADCAST.ROOM_ID.eq(roomId).and(LIVE_BROADCAST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(LIVE_BROADCAST.LIVE_STATUS.notIn(Arrays.asList(LIVING_END, LIVING_FORBIDDEN,LIVING_OUT_OF_DATE))).and(LIVE_BROADCAST.END_TIME.gt(DateUtil.getLocalDateTime())))
+            .fetchAny();
+        if (liveBroadcastRecord == null) {
+            return null;
+        }
+        return liveBroadcastRecord.into(RoomDetailMpVo.class);
+    }
 	/**
 	 * 获得订单数
 	 * @param roomId
@@ -128,7 +183,7 @@ public class LiveService extends ShopBaseService {
 		return liveInfo;
 	}
 	
-	
+
 	
 	
 	/**

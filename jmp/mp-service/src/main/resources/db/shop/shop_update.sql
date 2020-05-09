@@ -174,6 +174,17 @@ ALTER TABLE `b2c_package_sale` MODIFY COLUMN `goods_number_1` mediumint(11) NULL
 ALTER TABLE `b2c_package_sale` MODIFY COLUMN `goods_number_2` mediumint(11) NULL DEFAULT 0 COMMENT '分组商品数' ;
 ALTER TABLE `b2c_package_sale` MODIFY COLUMN `goods_number_3` mediumint(11) NULL DEFAULT 0 COMMENT '分组商品数' ;
 
+-- 2020-04-17 拼团抽奖表添加活动说明字段
+ALTER TABLE `b2c_group_draw` ADD COLUMN `activity_copywriting` text COMMENT '活动说明';
+
+-- 20200423订单商品表增加加价购id
+ALTER TABLE `b2c_order_goods` ADD COLUMN `purchase_id` int(11) NOT NULL DEFAULT 0 COMMENT '加价购活动id';
+
+-- 20200427优惠券礼包活动添加购物车展示选项
+ALTER TABLE `b2c_coupon_pack` ADD COLUMN `show_cart` tinyint(1) DEFAULT '1' COMMENT '购物车是否展示，1是';
+
+-- 20200508微信退款记录表增加订单号字段长度（预售订单补款退款时长度超限制）
+ALTER TABLE `b2c_order_refund_record` MODIFY COLUMN `order_sn` varchar(22) NOT NULL DEFAULT '' COMMENT '订单编号';
 /***********************2.10*********************END*/
 
 /***********************2.11*********************BEGIN*/
@@ -301,6 +312,107 @@ ALTER TABLE b2c_goods_label MODIFY del_flag TINYINT not NULL default 0 COMMENT '
 ALTER TABLE b2c_goods_label add COLUMN is_none TINYINT(1) DEFAULT 0 COMMENT '是否不选择商品： 1：是  0： 否';
 
 ALTER TABLE `b2c_order_info` ADD COLUMN `room_id` INT(11) NULL DEFAULT '0' COMMENT '直播间ID';
+-- 商品表添加直播间id字段
+ALTER TABLE b2c_goods add COLUMN room_id int(4) COMMENT '直播间id';
+-- 2020年04月10日 添加自定义激活配置
+ALTER TABLE `b2c_member_card` ADD COLUMN `custom_options` text COMMENT '自定义激活信息配置';
+
+
+-- 2020年04月10日 添加自定义激活配置
+ALTER TABLE `b2c_member_card` ADD COLUMN `custom_options` text COMMENT '自定义激活信息配置';
+
+-- 2020-04-10 分裂优惠券分享领取记录
+CREATE TABLE IF NOT EXISTS `b2c_division_receive_record` (
+  `id` mediumint(8) NOT NULL AUTO_INCREMENT,
+  `user` mediumint(8)  NOT NULL DEFAULT '0' COMMENT '分享的user_id',
+  `user_id` mediumint(8)  NOT NULL DEFAULT '0' COMMENT '分享后领取的user_id',
+  `coupon_id` mediumint(8)  NOT NULL DEFAULT '0' COMMENT '分裂优惠券id 对应优惠券表中id',
+  `coupon_sn` varchar(60) NOT NULL DEFAULT '' COMMENT '分裂优惠券的sn唯一标识',
+  `receive_num` int(11) NOT NULL DEFAULT '0' COMMENT '可领取个数',
+  `receive_per_num` smallint(3) NOT NULL DEFAULT '0' COMMENT '分裂优惠券领券人数是否限制 0不限制 1限制',
+  `source` tinyint(2) DEFAULT NULL COMMENT '送券活动来源',
+  `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '打折或减价量',
+  `receive_coupon_sn` varchar(60) NOT NULL DEFAULT '' COMMENT '领取的sn唯一标识',
+  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0主分裂优惠券 1 点击链接领取的',
+  `is_share` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0未分享 1分享',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '领取时间',
+  PRIMARY KEY (`id`),
+  KEY `user` (`user`)
+);
+-- 2020年4月13日 增加分裂优惠券是否可用
+ALTER TABLE `b2c_customer_avail_coupons` ADD COLUMN `division_enabled` tinyint(1) NOT NULL  DEFAULT 0 COMMENT '是否可用,0可用 1不可用(只适用分裂优惠券)';
+
+-- 2020年04月13日 添加自定义激活信息
+ALTER TABLE `b2c_card_examine` ADD COLUMN `custom_options` text COMMENT '自定义激活信息';
+
+-- 2020年04月13日 修改会员卡续费表字段
+ALTER TABLE `b2c_card_renew` MODIFY COLUMN `id` int(20) NOT NULL AUTO_INCREMENT;
+
+-- 2020年04月14日 添加会员卡同步标签
+ALTER TABLE `b2c_member_card` ADD COLUMN `card_tag` tinyint(1) DEFAULT 0 COMMENT '是否开启给领卡用户打标签0否，1是';
+ALTER TABLE `b2c_member_card` ADD COLUMN `card_tag_id` varchar(20) COMMENT '领卡打标签id';
+
+-- 2020年04月14日 添加会员卡转赠字段
+ALTER TABLE `b2c_member_card` ADD COLUMN `card_give_away` tinyint(1) DEFAULT 0 COMMENT '0:不可转赠，1:可以转赠';
+ALTER TABLE `b2c_member_card` ADD COLUMN `card_give_continue` tinyint(1) DEFAULT 0 COMMENT '0:不可继续转赠，1:可以继续转赠';
+ALTER TABLE `b2c_member_card` ADD COLUMN `most_give_away` int(10) DEFAULT 0 COMMENT '最多可转赠多少次 0不限制';
+
+
+-- 2020年04月15日 添加限次卡转赠记录表
+CREATE TABLE IF NOT EXISTS `b2c_give_card_record` (
+  `id`int(20) NOT NULL AUTO_INCREMENT,
+  `user_id` int(8)  not null default 0 comment '转赠人用户ID',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP comment '转赠时间',
+  `card_no` varchar(32) default '' not null comment '转赠会员卡号',
+  `get_user_id` int(8) not null default 0 comment '获赠人用户ID',
+  `get_time` timestamp null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '领取时间',
+  `get_card_no` varchar(32) default '' not null comment '获赠会员卡号',
+  `flag` tinyint(1) default '0' comment '正常 1放弃 2 转赠成功',
+  `deadline` timestamp NULL DEFAULT NULL comment '链接截止时间',
+  PRIMARY KEY (`id`)
+);
+
+-- 2020年04月15日 在用户卡表中添加转赠字段
+ALTER TABLE `b2c_user_card` ADD COLUMN `give_away_status` tinyint(1) DEFAULT 0 COMMENT '0:正常，1:转赠中，2转赠成功';
+ALTER TABLE `b2c_user_card` ADD COLUMN `give_away_surplus` int(11) DEFAULT NULL COMMENT '卡剩余赠送次数';
+ALTER TABLE `b2c_user_card` ADD COLUMN `card_source` tinyint(1) NOT NULL DEFAULT 0 COMMENT '卡来源 0:正常  2 别人转赠 ';
+
+-- 2020年04月16日 修改备注
+ALTER TABLE `b2c_user_card` MODIFY COLUMN `flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0:正常，1:删除 2 转赠中 3 已转赠';
+
+-- 2020年04月16日 用户标签添加字段
+ALTER TABLE `b2c_user_tag` ADD COLUMN `source` smallint(2) NOT NULL DEFAULT 0 COMMENT '标签来源 0 后台设置 1领券 2领卡';
+ALTER TABLE `b2c_user_tag` ADD COLUMN `tool_id` int(11) COMMENT '优惠券或会员卡id';
+ALTER TABLE `b2c_user_tag` ADD COLUMN `times` smallint(5) DEFAULT 1 COMMENT '打标签次数，会员卡或优惠券过期停用时次数减一，为0时删除';
+
+--订单返利商品表添加 商品行ID
+ALTER TABLE `b2c_order_goods_rebate` ADD COLUMN `rec_id` int(11) NOT NULL DEFAULT 0 COMMENT '商品行ID';
+
+
+-- 2020年04月21日 ws
+ALTER TABLE `b2c_order_goods` MODIFY COLUMN `fanli_strategy` VARCHAR ( 2999 ) DEFAULT '' COMMENT '返利配置详情';
+
+
+-- 2020年04月24日 添加 已选活动商品表
+CREATE TABLE IF NOT EXISTS `b2c_checked_goods_cart` (
+	`id` int(20) NOT NULL AUTO_INCREMENT,
+	`action` TINYINT(1) DEFAULT 0 COMMENT '活动类型: 1：限次卡兑换',
+	`identity_id` VARCHAR(50) DEFAULT '0' NULL COMMENT '活动ID',
+	`user_id` INT(8) NOT NULL DEFAULT 0 COMMENT '用户ID',
+	`goods_id` INT(8) NOT NULL DEFAULT 0 COMMENT '商品ID',
+	`product_id` INT(11) NOT NULL DEFAULT 0 COMMENT '商品规格组合的产品ID',
+	`goods_number` INT(8) NOT NULL DEFAULT 1 COMMENT '商品数量',
+	`create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+	`update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+	PRIMARY KEY (`id`),
+	INDEX `user_id` (`user_id`),
+  	INDEX `action` (`action`),
+  	INDEX `identity_id` (`identity_id`),
+  	INDEX `product_id` (`product_id`)
+);
+
+
+
 /*********************2.11*************************END*/
 
 

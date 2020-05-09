@@ -621,6 +621,10 @@ export default {
   padding-left: 40px;
   padding-top: 20px;
   overflow-y: auto;
+  .filters_item{
+    width: 900px;
+    margin: 0 auto;
+  }
 }
 .role_ul {
   list-style: none;

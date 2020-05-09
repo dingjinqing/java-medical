@@ -303,6 +303,22 @@
               </div>
             </div>
             <div class="set_item">
+              <div class="item_title"><em>*</em> {{$t('addCouponPackage.showCartTip')}}：</div>
+              <div class="item_right">
+                <p>
+                  <el-radio
+                    v-model="param.showCart"
+                    :label='1'
+                  >{{$t('addCouponPackage.support')}}</el-radio>
+                  <el-radio
+                    v-model="param.showCart"
+                    :label='0'
+                  >{{$t('addCouponPackage.notSupport')}}</el-radio>
+                </p>
+              </div>
+
+            </div>
+            <div class="set_item">
               <div class="item_title"><em>*</em> {{$t('addCouponPackage.rule')}}：</div>
               <el-form-item
                 class="item_right"
@@ -444,6 +460,7 @@ export default {
         packName: '',
         limitGetTimes: '',
         totalAmount: '',
+        showCart: 1,
         actRule: '',
         accessMode: 0,
         effectiveDate: '',
@@ -549,6 +566,7 @@ export default {
     // 确认设置优惠券
     confrimCouponSet () {
       let temStrategy = JSON.parse(JSON.stringify(this.coupon_set))
+      console.log(temStrategy)
       if (temStrategy.immediatelyGrantAmount > this.coupon_info[this.target].send_num) {
         this.$message.warning(this.$t('addCouponPackage.validStrategy1'))
         return false
@@ -556,6 +574,12 @@ export default {
       if (temStrategy.timingEvery > 0 && (temStrategy.immediatelyGrantAmount + temStrategy.timingAmount > this.coupon_info[this.target].send_num)) {
         this.$message.warning(this.$t('addCouponPackage.validStrategy2'))
         return false
+      }
+      if (temStrategy.immediatelyGrantAmount < this.coupon_info[this.target].send_num) {
+        if (!temStrategy.timingEvery > 0 || !temStrategy.timingAmount > 0) {
+          this.$message.warning(this.$t('addCouponPackage.validStrategy4'))
+          return false
+        }
       }
       this.coupon_info[this.target].strategyAmount = temStrategy.immediatelyGrantAmount + temStrategy.timingAmount
       this.coupon_info[this.target].coupon_set = temStrategy
@@ -683,7 +707,7 @@ export default {
           r += item.denomination * item.send_num
         }
       })
-      return r
+      return parseFloat(r).toFixed(2)
     }
   },
   mounted () {

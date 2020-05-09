@@ -132,6 +132,7 @@ export const cn = {
   pay: '交易配置',
   child_config: '店铺权限',
   store_announcement: '店铺公告',
+  store_permission: '门店权限',
   message_config: '模板消息',
   third_auth: '第三方对接',
   pledge: '服务承诺',
@@ -145,8 +146,8 @@ export const cn = {
   pwd2: '设置密码',
   pwdTips2: '请输入功能权限密码',
   tips3: '修改后的新密码将替换原有密码',
-  tips4: '请输入登录密码',
-  tips5: '请设置密码',
+  tips4: '登录密码设置有误',
+  tips5: '请设置功能权限的密码',
   tipTitles6: '功能权限密码',
 
   // 功能权限管理的弹窗

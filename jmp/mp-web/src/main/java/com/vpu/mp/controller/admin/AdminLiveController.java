@@ -1,21 +1,15 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.live.LiveCheckTwoVo;
+import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import com.vpu.mp.service.pojo.shop.market.live.LiveCheckVo;
 import com.vpu.mp.service.pojo.shop.market.live.LiveListParam;
 import com.vpu.mp.service.pojo.shop.market.live.LiveListVo;
 import com.vpu.mp.service.pojo.shop.market.live.LiveRomeGoodListVo;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 小程序直播
@@ -41,7 +35,22 @@ public class AdminLiveController extends AdminBaseController {
 		checkLive.setPageList(pageList);
 		return success(checkLive);
 	}
-	
+
+    /**
+     *  商品编辑处获取直播间信息
+     * @return
+     */
+	@PostMapping("/api/admin/market/goods/edit/live/list")
+	public JsonResult getLiveListForGoodsEdit(@RequestBody BasePageParam pageParam){
+        LiveCheckVo checkLive = saas.shop.mp.checkLive(shopId());
+        if(checkLive.getIsAuthLive()) {
+            return success(checkLive);
+        }
+        PageResult<LiveListVo> pageList = shop().liveService.getListForGoodsEdit(pageParam);
+        checkLive.setPageList(pageList);
+        return success(checkLive);
+    }
+
 	/**
 	 * 商品列表
 	 * @param id

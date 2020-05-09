@@ -1,4 +1,5 @@
 var util = require('../../utils/util.js')
+const livePlayer = requirePlugin('live-player-plugin')
 const actBaseInfo = {
   1: {
     actName: '拼团',
@@ -178,7 +179,8 @@ global.wxPage({
         title: '拼团抽奖玩法',
         ruleList: [['image/wxapp/pl_icons1.png', '付款开团'], ['image/wxapp/pl_icons2.png', '邀请好友'], ['image/wxapp/pl_icons3.png', '成团抽奖'], ['image/wxapp/pl_icons4.png', '中奖发货']]
       }
-    }
+    },
+    showLive:true
   },
   /**
    * 生命周期函数--监听页面加载
@@ -186,18 +188,23 @@ global.wxPage({
   onLoad: function (options) {
     console.log(options, '++++++++++++++++++++++++')
     if (!options.gid) return
-    let { gid: goodsId, aid: activityId = null, atp: activityType = null,room_id:roomId = null } = options
+    let { gid: goodsId, aid: activityId = null, atp: activityType = null,room_id:roomId = null,rebateConfig=null, inviteId=null} = options
     this.setData({
       goodsId,
-      activityId,
-      activityType,
-      roomId:roomId
+      activityId:activityId === 'null' ? null : activityId,
+      activityType:activityType === 'null' || activityType === '0' ? null : activityType,
+      roomId:roomId,
+      rebateConfig,
+      inviteId
     })
     this.requestGoodsInfo()
+    this.shareInviteData()
   },
   // 商品详情请求
   async requestGoodsInfo () {
     let result = new Promise((resolve, reject) => {
+      let customParams = {}
+      if(this.data.rebateConfig) customParams.rebateConfig = JSON.parse(this.data.rebateConfig)
       util.api(
         '/api/wxapp/goods/detail',
         res => {
@@ -244,7 +251,8 @@ global.wxPage({
               goodsGifts,
               showSalesNumber,
               customService,
-              goodsDistribution
+              goodsDistribution,
+              roomDetailMpInfo
             } = res.content
             let goodsMediaInfo = {
               goodsImgs, //商品图片
@@ -286,7 +294,8 @@ global.wxPage({
               couponList: coupons, //优惠券
               goodsDescInfo,
               goodsGifts, // 赠品,
-              goodsDistribution //分销信息
+              goodsDistribution, //分销信息,
+              roomDetailMpInfo
             })
             this.setData({
               specParams
@@ -295,7 +304,8 @@ global.wxPage({
               goodsInfo: {
                 ...goodsInfo,
                 ...this.getPrice(goodsInfo)
-              }
+              },
+              goodsShowStock:this.getGoodsShowStock(specParams)
             })
             if (activity && activity.activityType === 3 && activity.actState === 6) {
               util.jumpLink(`/pages/bargaininfo/bargaininfo?record_id=${activity.recordId}`, 'redirectTo')
@@ -311,6 +321,7 @@ global.wxPage({
               this.getPreSaleDiscount(res.content.activity.preSalePrdMpVos)
             }
             this.getPromotions(res.content)
+            if (this.data.roomDetailMpInfo) this.getLiveInfo()
             resolve(res.content)
             // 购买记录
             this.setData({
@@ -324,7 +335,8 @@ global.wxPage({
           activityType: this.data.activityType,
           userId: util.getCache('user_id'),
           lon: null,
-          lat: null
+          lat: null,
+          ...customParams
         }
       )
     })
@@ -584,7 +596,7 @@ global.wxPage({
           activityData.linePrice = this.data.actBarInfo.prdLinePrice
           break;
         case 10:
-          activityData.depositPrice = this.getMin(this.data.goodsInfo.activity.preSalePrdMpVos.map(item => { return item.depositPrice }))
+          activityData.depositPrice = this.data.goodsInfo.activity === 0 ? this.getMin(this.data.goodsInfo.activity.preSalePrdMpVos.map(item=>{return item.depositPrice})) : this.getMin(this.data.goodsInfo.activity.preSalePrdMpVos.map(item=>{return item.preSalePrice}))
           break;
       }
     }
@@ -596,14 +608,14 @@ global.wxPage({
     }
     // 提前请求分享内容
     const apiInfo = {
-      1: '/api/wxapp/groupbuy/share/info',//拼团 
-      3: '/api/wxapp/bargain/share/info', //砍价
-      6: '/api/wxapp/reduceprice/share/info', //限时降价
-      8: 'url:/api/wxapp/groupdraw/share/info', //拼团抽奖
-      10: '/api/wxapp/presale/share/info', //定金膨胀
-      18: '/api/wxapp/firstspecial/share/info', //首单特惠
-      98: '/api/wxapp/reduceprice/share/info', //限时降价|会员价
-      default: '/api/wxapp/goods/share/info'//普通商品
+      1:'/api/wxapp/groupbuy/share/info',//拼团 
+      3:'/api/wxapp/bargain/share/info', //砍价
+      6:'/api/wxapp/reduceprice/share/info', //限时降价
+      8:'/api/wxapp/groupdraw/share/info', //拼团抽奖
+      10:'/api/wxapp/presale/share/info', //定金膨胀
+      18:'/api/wxapp/firstspecial/share/info', //首单特惠
+      98:'/api/wxapp/reduceprice/share/info', //限时降价|会员价
+      default:'/api/wxapp/goods/share/info'//普通商品
     }
     let target = [1, 3, 5, 6, 8, 10, 18, 98].includes(shareData.activityType) ? apiInfo[shareData.activityType] : apiInfo['default']
     let buttonShareData = await this.requestShareData(target, shareData)
@@ -612,6 +624,43 @@ global.wxPage({
       shareData,
       showShareDialog: true,
       buttonShareData
+    })
+  },
+  // 分享有礼接口数据请求
+  shareInviteData() {
+    util.api('/api/wxapp/shareaward/goods/sharedetail', res => {
+      console.log(res, 'get res-data')
+      if (res.error === 0) {
+        var shareLimit = res.content.dailyShareLimit
+        var shareContent = res.content.infoVo
+        console.log(shareContent)
+        this.setData({
+          shareContent: shareContent,
+          shareLimit: shareLimit
+        })
+      }
+    }, {
+        // "activityId": Number(this.data.activityId),
+        "activityId": 14,
+        "userId": util.getCache('user_id'),
+        "goodsId": util.getCache('goods_id')
+      })
+  },
+  // 分享有礼-查看奖励跳转
+  getShare(e) {
+    // var that = this
+    // console.log(that)
+    console.log('跳转aaaa')
+    console.log(e)
+    // if (reward_type === 1) {
+    //   util.jumpLink('/pages1/integral/integral')
+    // } else if (reward_type === 2) {
+    //   util.jumpLink('/pages/coupon/coupon')
+    // } else {
+    //   util.jumpLink('pages1/lottery/lottery')
+    // }
+    util.navigateTo({
+      url: '/pages1/integral/integral',
     })
   },
   // 切换收藏
@@ -754,9 +803,9 @@ global.wxPage({
         return data
       case '19':
         if (info.goodsAreaType === 1) {
-          data.desc = `购买“指定商品”`
-        } else {
           data.desc = `购买“全部商品”`
+        } else {
+          data.desc = `购买“指定商品”`
         }
         if (info.minPayMoney > 0) {
           data.desc += `且“订单金额满${info.minPayMoney}元”`
@@ -804,7 +853,7 @@ global.wxPage({
         break
 
       case 8:
-        util.jumpToWeb('/wxapp/pinlottery/help')
+        util.jumpToWeb('/wxapp/pinlottery/help', '&gid=' + this.data.specParams.activity.activityId)
         break
     }
   },
@@ -871,10 +920,36 @@ global.wxPage({
     })
   },
   goLive(){
-    let roomId = [5]
+    let {roomId} = this.data.roomDetailMpInfo
+    roomId = [roomId]
     wx.navigateTo({
       url: `plugin-private://wx2b03c6e691cd7370/pages/live-player-plugin?room_id=${roomId}`
     })
+  },
+  getLiveInfo(){
+    let {roomId} = this.data.roomDetailMpInfo
+    livePlayer.getLiveStatus({room_id:roomId})
+      .then(res=>{
+        let liveStatus = res.liveStatus
+        this.setData({
+          liveStatus
+        })
+        console.log('get live status', liveStatus)
+      })
+      .catch(err=>{
+        console.log('get live status', err)
+      })
+  },
+  closeLive(){
+    this.setData({
+      showLive:false
+    })
+  },
+  getGoodsShowStock({goodsNumber,activity = null}){
+    if(activity && [1,3,4,5,10].includes(activity.activityType)){
+      return activity.stock
+    }
+    return goodsNumber
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

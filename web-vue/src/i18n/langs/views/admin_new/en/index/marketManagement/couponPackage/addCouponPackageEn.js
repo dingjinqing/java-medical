@@ -8,6 +8,9 @@ export const en = {
   forAllGoods: 'for all product',
   receiveNow: 'receive now',
   sheet: '',
+  showCartTip: 'Whether to pick up in the shopping cart',
+  support: 'support',
+  notSupport: 'not support',
   rule: 'activity rules',
   basicSettings: 'basic settings',
   activityName: 'activity name',
@@ -60,6 +63,7 @@ export const en = {
   validaAccessCost: 'Please fill in the collection price!',
   validVoucher: 'Please choose coupons in the package!',
   validStrategy3: 'Please complete the number and strategy of the selected coupons!',
+  validStrategy4: 'Please set up a delayed release strategy',
 
   validName: 'Please fill in the event name',
   validStartTime: 'Please fill in the start time of the validity period',

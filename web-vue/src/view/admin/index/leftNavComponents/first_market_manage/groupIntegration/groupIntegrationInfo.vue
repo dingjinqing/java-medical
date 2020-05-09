@@ -29,6 +29,8 @@
             size="small"
             class="inputWidth"
             :disabled="edit"
+             maxlength="10"
+             type="text"
           ></el-input>
           <el-popover
             placement="right-start"
@@ -47,46 +49,18 @@
 
         <el-form-item
           :label="$t('groupIntegration.actDate')+':' "
-          required
+           prop='timeRange'
         >
-          <section style="display: flex">
-            <div>
-              <el-form-item
-                prop='startTime'
-                style="margin-bottom:0;"
-              >
-                <el-date-picker
-                  v-model="activity.startTime"
-                  type="datetime"
-                  :placeholder="$t('groupIntegration.pleaseSelectStartTime')"
-                  size="small"
-                  style="width: 186px;"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  :disabled="edit"
-                >
-                </el-date-picker>
-              </el-form-item>
-            </div>
-            <span style="margin: 0 3px">{{$t('groupIntegration.to')}}</span>
-            <div>
-              <el-form-item
-                prop="endTime"
-                style="margin-bottom:0"
-              >
-                <el-date-picker
-                  v-model="activity.endTime"
-                  type="datetime"
-                  size="small"
-                  :placeholder="$t('groupIntegration.pleaseSelectEndTime')"
-                  style="width: 186px;"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  default-time="23:59:59"
-                  :disabled="edit"
-                >
-                </el-date-picker>
-              </el-form-item>
-            </div>
-          </section>
+            <el-date-picker
+              :disabled="edit"
+                v-model="activity.timeRange"
+                type="datetimerange"
+                align="right"
+                :start-placeholder="$t('groupIntegration.pleaseSelectStartTime')"
+                :end-placeholder="$t('groupIntegration.pleaseSelectEndTime')"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                :default-time="['00:00:00', '23:59:59']">
+            </el-date-picker>
         </el-form-item>
 
         <el-form-item
@@ -302,6 +276,7 @@ export default {
         joinLimit: 1,
         divideType: 0,
         isDayDivide: 0,
+        timeRange: '',
         activityCopywriting: {
           document: null,
           is_use_default: null
@@ -310,15 +285,16 @@ export default {
       fromRules: {
         name: [{ required: true, message: this.$t('groupIntegration.ruleInfo1'), trigger: 'blur' }],
         advertise: [{ required: true, message: this.$t('groupIntegration.ruleInfo2'), trigger: 'blur' }],
-        startTime: [{ required: true, message: this.$t('groupIntegration.ruleInfo3'), trigger: 'blur' }],
-        endTime: [{ required: true, message: this.$t('groupIntegration.ruleInfo4'), trigger: 'blur' }],
+        // startTime: [{ required: true, message: this.$t('groupIntegration.ruleInfo3'), trigger: 'blur' }],
+        // endTime: [{ required: true, message: this.$t('groupIntegration.ruleInfo4'), trigger: 'blur' }],
         inteTotal: [{ required: true, validator: checkinteTotal, trigger: 'blur' }],
         limitAmount: [{ required: true, validator: checklimitAmount, trigger: 'blur' }],
         inteGroup: [{ required: true, validator: checkInteGroup, trigger: 'blur' }],
         joinLimit: [{ required: true, validator: checkJoinLimit, trigger: 'blur' }],
         divideType: [{ required: true, trigger: 'blur' }],
         isDayDivide: [{ required: true, trigger: 'blur' }],
-        activityInfo: [{ required: true, validator: checkActivityInfo }]
+        activityInfo: [{ required: true, validator: checkActivityInfo }],
+        timeRange: [{ required: true, message: this.$t('groupIntegration.ruleInfo6'), trigger: 'change' }]
       },
       srcList: {
         src1: `${this.$imageHost}/image/admin/new_preview_image/pin_integration.jpg`
@@ -332,6 +308,7 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.activity = res.content
+          this.activity.timeRange = [res.content.startTime, res.content.endTime]
           if (!this.isEmpty(res.content.activityCopywriting.document)) {
             this.canSave = true
           }
@@ -343,6 +320,8 @@ export default {
     saveActivity () {
       this.$refs.activity.validate((valid) => {
         if (valid) {
+          this.activity.startTime = this.activity.timeRange[0]
+          this.activity.endTime = this.activity.timeRange[1]
           if (!this.checkInfo()) {
             return false
           }
@@ -397,7 +376,7 @@ export default {
         this.$message.warning(this.$t('groupIntegration.warningInfo2'))
         return false
       }
-      if (parseInt(this.activity.startTime) > parseInt(this.activity.endTime)) {
+      if (this.activity.startTime > this.activity.endTime) {
         this.$message.warning(this.$t('groupIntegration.warningInfo3'))
         return false
       }

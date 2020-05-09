@@ -1,6 +1,8 @@
 package com.vpu.mp.service.pojo.shop.goods.goods;
 
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -98,7 +100,14 @@ public class GoodsBatchOperateParam {
             deliverTemplateIdOptional.ifPresent(goodsRecord::setDeliverTemplateId);
             limitBuyNumOptional.ifPresent(goodsRecord::setLimitBuyNum);
             limitMaxNumOptional.ifPresent(goodsRecord::setLimitMaxNum);
-            isOnSaleOptional.ifPresent(goodsRecord::setIsOnSale);
+            // 上架的时候将上架时间修改
+            if (isOnSaleOptional.isPresent()) {
+                goodsRecord.setIsOnSale(isOnSaleOptional.get());
+                if (GoodsConstant.ON_SALE.equals(goodsRecord.getIsOnSale())) {
+                    Timestamp localDateTime = DateUtil.getLocalDateTime();
+                    goodsRecord.setSaleTime(localDateTime);
+                }
+            }
             saleTypeOptional.ifPresent(goodsRecord::setSaleType);
             saleTimeOptional.ifPresent(goodsRecord::setSaleTime);
             isPageUpOptional.ifPresent(goodsRecord::setIsPageUp);

@@ -1,7 +1,9 @@
 package com.vpu.mp.service.pojo.shop.market.presale;
 
 import lombok.Data;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
@@ -47,7 +49,7 @@ public class PreSaleParam {
     @NotNull
     private String goodsId;
     @NotNull
-    /** 预告时间*/
+    /** 预告时间 预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数*/
     private Integer preTime;
     /** 发货时间模式 **/
     @NotNull
@@ -82,5 +84,6 @@ public class PreSaleParam {
     private String shareImg;
     /** 活动商品 **/
     @NotEmpty
+    @Valid
     private List<ProductParam> products;
 }

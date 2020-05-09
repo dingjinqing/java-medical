@@ -45,6 +45,7 @@ import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelCreateService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.market.live.LiveService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -101,6 +102,8 @@ public class GoodsService extends ShopBaseService {
     public GoodsLabelCoupleService goodsLabelCouple;
     @Autowired
     public GoodsDeliverTemplateService goodsDeliver;
+    @Autowired
+    LiveService liveService;
     @Autowired
     public ChooseLinkService chooseLink;
     @Autowired
@@ -346,9 +349,9 @@ public class GoodsService extends ShopBaseService {
         // 拼接过滤条件
         Condition condition = this.buildOptions(goodsPageListParam);
 
-        SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
+        SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,
             GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS.GOODS_AD, GOODS.IS_ON_SALE, GOODS.LIMIT_BUY_NUM, GOODS.GOODS_WEIGHT, GOODS.UNIT,
-            GOODS_BRAND.BRAND_NAME,
+            GOODS_BRAND.BRAND_NAME,GOODS.GOODS_NUMBER,
             GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.CREATE_TIME,
             GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_SN, GOODS_SPEC_PRODUCT.PRD_COST_PRICE, GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,
             GOODS_SPEC_PRODUCT.PRD_IMG, GOODS_SPEC_PRODUCT.PRD_CODES)
@@ -1086,6 +1089,9 @@ public class GoodsService extends ShopBaseService {
         GoodsRecord goodsRecord = db().fetchOne(GOODS, GOODS.GOODS_ID.eq(goods.getGoodsId()));
 
         assign(goods, goodsRecord);
+        if (goods.getRoomId() == null) {
+            goodsRecord.setRoomId(null);
+        }
         if (goods.getMarketPrice() == null) {
             goodsRecord.setMarketPrice(null);
         }
@@ -1760,6 +1766,16 @@ public class GoodsService extends ShopBaseService {
         goodsSharePostConfig.setShareImgPath(goodsSharePostConfig.getShareImgUrl());
         goodsSharePostConfig.setShareImgUrl(getImgFullUrlUtil(goodsSharePostConfig.getShareImgUrl()));
         goodsVo.setGoodsSharePostConfig(goodsSharePostConfig);
+
+        // 设置直播间名称
+        if (goodsVo.getRoomId() !=  null) {
+            LiveBroadcastRecord liveBroadcastRecord = liveService.getLiveInfoByRoomId(goodsVo.getRoomId());
+            if (liveBroadcastRecord == null) {
+                goodsVo.setRoomId(null);
+            } else {
+                goodsVo.setRoomName(liveBroadcastRecord.getName());
+            }
+        }
 
         return goodsVo;
     }
@@ -2517,16 +2533,16 @@ public class GoodsService extends ShopBaseService {
         Condition filterCondition = DSL.noCondition();
         //指定平台分类
         if (CollectionUtils.isNotEmpty(catIds)) {
-            filterCondition.or(GOODS.CAT_ID.in(saas.sysCate.getAllChild(catIds)));
+            filterCondition = filterCondition.or(GOODS.CAT_ID.in(saas.sysCate.getAllChild(catIds)));
         }
         //指定商家分类
         if (CollectionUtils.isNotEmpty(sortIds)) {
             //在所有父子节点中查找
-            filterCondition.or(GOODS.SORT_ID.in(goodsSort.getChildrenIdByParentIdsDao(sortIds)));
+            filterCondition = filterCondition.or(GOODS.SORT_ID.in(goodsSort.getChildrenIdByParentIdsDao(sortIds)));
         }
         //指定品牌
         if (CollectionUtils.isNotEmpty(brandIds)) {
-            filterCondition.or(GOODS.BRAND_ID.in(brandIds));
+            filterCondition = filterCondition.or(GOODS.BRAND_ID.in(brandIds));
         }
         selectConditionStep.and(filterCondition);
 
@@ -2555,5 +2571,14 @@ public class GoodsService extends ShopBaseService {
     public void updateGoodsCommentNum(int goodsId) {
         int goodsComm = goodsComment.getGoodsCommentNum(goodsId);
         db().update(GOODS).set(GOODS.COMMENT_NUM, goodsComm).where(GOODS.GOODS_ID.eq(goodsId)).execute();
+
+        //es更新
+        try {
+            if (esUtilSearchService.esState()) {
+                esGoodsCreateService.updateEsGoodsIndex(goodsId, getShopId());
+            }
+        } catch (Exception e) {
+            logger().debug("商品修改-同步es数据异常："+e.getMessage());
+        }
     }
 }

@@ -45,7 +45,6 @@
           ref="param"
           label-position="right"
           label-width="100px"
-          style="margin-top:20px;"
           :rules="fieldValidation"
         >
 
@@ -66,6 +65,8 @@
               ></el-input>
             </el-form-item>
             <br>
+
+            <!-- 时间选择 -->
             <el-form-item
               :label="$t('adSharePolite.validityPeriod')+'：'"
               prop="isForever"
@@ -93,12 +94,15 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     :default-time="['00:00:00', '23:59:59']"
                     size="small"
+                    align="center"
                   >
                   </el-date-picker>
                 </el-form-item>
                 <br>
               </el-radio-group>
             </el-form-item>
+
+            <!-- 优先级 -->
             <el-form-item
               :label="$t('adSharePolite.priority')+'：'"
               prop="priority"
@@ -122,6 +126,8 @@
                 <el-radio :label=3>{{$t('adSharePolite.pvLessGoods')}}</el-radio>
               </el-radio-group>
             </el-form-item>
+
+            <!-- 触发条件 -->
             <el-form-item
               prop="goodsIds"
               ref="goodsIds"
@@ -131,7 +137,9 @@
                 @click="showChoosingGoods"
                 class="add_btn specify_goods"
               >{{$t('adSharePolite.chooseGoods')}}</div>
-              <span @click="onlyShowChoosingGoods" style="color: #e4393c"
+              <span
+                @click="onlyShowChoosingGoods"
+                style="color: #e4393c"
               >{{$t('adSharePolite.alreadyChoose')}}{{selectGoods}}{{$t('adSharePolite.goods')}}</span>
             </el-form-item>
             <el-form-item
@@ -179,6 +187,7 @@
             >
               <div style="margin-top: 10px;">{{ (index+1)+$t('adSharePolite.level') }}</div>
               <div>
+                <!-- 邀请满几人 -->
                 <el-form-item
                   :label="$t('adSharePolite.invite')"
                   label-width="90px"
@@ -200,6 +209,8 @@
                     @click="deleteItem(index)"
                   ></i>
                 </el-form-item>
+
+                <!-- 可获得 -->
                 <el-form-item
                   :label="$t('adSharePolite.reward')+'：'"
                   label-width="110px"
@@ -216,6 +227,8 @@
                     <el-radio :label=3>{{$t('adSharePolite.lottery')}}</el-radio>
                   </el-radio-group>
                 </el-form-item>
+
+                <!-- 积分 -->
                 <el-form-item
                   v-if="item.reward_type == 1"
                   :label="$t('adSharePolite.socre')+'：'"
@@ -235,6 +248,8 @@
                     placeholder="0"
                   ></el-input>
                 </el-form-item>
+
+                <!-- 积分 - 奖品份数 -->
                 <el-form-item
                   :prop="`shareRules[${index}].score_num`"
                   ref="score_num"
@@ -254,6 +269,8 @@
                   ></el-input>
                   {{$t('adSharePolite.number')}}
                 </el-form-item>
+
+                <!-- 优惠券 -->
                 <el-form-item
                   :prop="`shareRules[${index}].coupon_name`"
                   v-if="item.reward_type == '2'"
@@ -261,7 +278,7 @@
                   label-width="110px"
                   style="margin-top:10px"
                   :rules="[
-                    {required: true, validator:(rule, value, callback) =>  { validatedSelectCoupon(rule, value, callback, item.coupon_name)}, trigger:['blur', 'change']}
+                    {required: true, validator:(rule, value, callback) =>  { validatedSelectCoupon(rule, value, callback, item.coupon_name,item.couponStock)}, trigger:['blur', 'change']}
                   ]"
                 >
                   <el-button
@@ -310,6 +327,8 @@
                     </el-col>
                   </el-row>
                 </el-form-item>
+
+                <!-- 优惠券 - 奖品份数 -->
                 <el-form-item
                   :prop="`shareRules[${index}].coupon_num`"
                   ref="coupon_num"
@@ -318,7 +337,7 @@
                   style="margin-top:20px"
                   v-if="item.reward_type === 2"
                   :rules="[
-                    {required: true, validator:(rule, value, callback) =>{ validateCouponNumber(rule, value, callback, item.coupon_num)}, trigger: 'blur'}
+                    {required: true, validator:(rule, value, callback) =>{ validateCouponNumber(rule, value, callback, item.coupon_num, item.couponStock)}, trigger: 'blur'}
                   ]"
                 >
                   <el-input
@@ -329,6 +348,8 @@
                   ></el-input>
                   {{$t('adSharePolite.number')}}
                 </el-form-item>
+
+                <!-- 幸运大抽奖 -->
                 <el-form-item
                   :prop="`shareRules[${index}].lottery`"
                   ref="rewardLottery"
@@ -375,6 +396,8 @@
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.manageLabel')}}</el-link>
                 </el-form-item>
+
+                <!-- 幸运大抽奖 - 奖品份数 -->
                 <el-form-item
                   ref="lottery_num"
                   :prop="`shareRules[${index}].lottery_num`"
@@ -423,6 +446,7 @@
       :singleElection="true"
       :tuneUpCoupon="tuneUpCoupon"
       @handleToCheck="handleToCheck"
+      :couponBack="couponIdList"
       ref="templateRefresh"
     />
   </div>
@@ -570,6 +594,7 @@ export default {
       },
       goodIdList: [],
       isOnlyShowChooseGoods: false,
+      couponIdList: [], // 优惠券
       // 表单字段校验
       fieldValidation: {
         // 活动名称
@@ -630,11 +655,10 @@ export default {
           stock.push(item.surplus)
         }
       })
-      console.log(stock, 'stock')
       this.param.shareRules[this.index].coupon_name = name.toString()
       this.param.shareRules[this.index].coupon = arr.toString()
       this.param.shareRules[this.index].couponStock = stock.toString()
-      console.log('conpon', arr.toString())
+      this.$forceUpdate()
     },
     // 选择商品弹窗
     showChoosingGoods () {
@@ -656,7 +680,6 @@ export default {
     },
     addItem () {
       let obj = {
-        // coupon: ''
         invite_num: '', // 邀请数量
         reward_type: 1, // 奖励类型
         score: '', // 积分
@@ -666,8 +689,7 @@ export default {
         coupon_num: '', // 优惠券数量
         lottery_num: '', // 幸运大抽奖数量
         couponStock: '', // 优惠券可用库存
-        coupon_name: '', // 优惠券名字
-        rewardCoupon: ''
+        coupon_name: '' // 优惠券名字
       }
       if (this.param.shareRules.length < 3) {
         this.param.shareRules.push(obj)
@@ -749,7 +771,7 @@ export default {
             })
           }
         } else {
-          this.$message.error('数据不合法')
+          this.$message.warning('请正确填写表单')
           return false
         }
       })
@@ -760,29 +782,37 @@ export default {
         this.flag = 1
       }
       if (this.param.id != null) {
-        // // this.$route.params.id
-        // console.log(JSON.parse(JSON.stringify('route:' + this.$route.params.id)))
-        // console.log(JSON.parse(JSON.stringify('param:' + this.param.id)))
         getShareRewardInfo(this.param.id).then((res) => {
-          console.log(JSON.parse(JSON.stringify(res)))
+          console.log(res)
           if (res.error === 0) {
-            this.param = res.content
-            this.param.shareRules = res.content.shareRules
-            // 获取优惠券库存
-            this.param.shareRules.map((item, index) => {
-              if (item.reward_type === 2) {
-                coupondetail(item.coupon).then((res) => {
-                  console.log(JSON.parse(JSON.stringify(res)))
-                  item.couponStock = res.content['0'].surplus
-                }).catch(() => {
-                  this.$message.error('优惠券库存查询失败！')
-                })
+            this.$nextTick(() => {
+              let data = res.content.shareRules
+              // 获取优惠券库存
+              data.map((item, index) => {
+                console.log(item)
+                if (item.reward_type === 2) {
+                  coupondetail(item.coupon).then((res) => {
+                    console.log(res)
+                    item.coupon_name = res.content[0].actName
+                    if (res.content[0].surplus === 0) {
+                      item.couponStock = '不限制'
+                    } else {
+                      item.couponStock = res.content[0].surplus
+                    }
+                    this.couponIdList = res.content.map(item => item.id)
+                  }).catch(() => {
+                    this.$message.error('优惠券库存查询失败！')
+                  })
+                }
+              })
+              this.param.shareRules = Object.assign(res.content.shareRules, data)
+
+              this.param = res.content
+              this.param.effectiveDate = [this.param.startTime, this.param.endTime]
+              if (res.content.condition === 2) {
+                this.selectGoods = res.content.goodsIds.split(',').length
               }
             })
-            this.param.effectiveDate = [this.param.startTime, this.param.endTime]
-            if (res.content.condition === 2) {
-              this.selectGoods = res.content.goodsIds.split(',').length
-            }
           }
         }).catch(() => {
           this.$message.error('活动查询失败！')
@@ -837,21 +867,26 @@ export default {
       }
     },
     // 校验是否选择了优惠券
-    validatedSelectCoupon (rule, value, callback, couponName) {
-      console.log(couponName, 'get rewardCoupon')
+    validatedSelectCoupon (rule, value, callback, couponName, couponStock) {
+      console.log(couponName, couponStock, 'get rewardCoupon')
       if (couponName === undefined || couponName === '') {
         callback(new Error('请选择优惠券'))
+      } else if (couponStock === '不限制') {
+        callback()
       } else {
         callback()
       }
     },
     // 验证优惠券奖励份数
-    validateCouponNumber (rule, value, callback, couponNum) {
+    validateCouponNumber (rule, value, callback, couponNum, couponStock) {
+      console.log(couponStock, value)
       var re = /^[1-9]\d*$/
       if (couponNum === '' || !couponNum) {
         callback(new Error('请输入奖品份数'))
       } else if (!re.test(value)) {
         callback(new Error('请输入正整数'))
+      } else if (value > couponStock) {
+        callback(new Error('奖品份数已大于库存'))
       } else {
         callback()
       }

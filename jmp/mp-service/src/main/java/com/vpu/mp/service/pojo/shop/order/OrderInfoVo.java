@@ -76,4 +76,9 @@ public class OrderInfoVo extends OrderListInfoVo {
 	private String verifyCode;
 	/**退定金模式1:自动退定金0:不退定金*/
 	private Byte bkReturnType;
+	/**在退款流程中判断是否补款退款*/
+    @JsonIgnore
+    private Boolean isReturnBk;
+    /**是否展示手动退款退货按钮*/
+    private Boolean showManualReturn;
 }

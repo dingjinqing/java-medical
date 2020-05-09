@@ -392,7 +392,7 @@ li:nth-of-type(5) {
   text-align: center;
   font-size: 14px;
 }
-.el-dialog__body {
+/* .el-dialog__body {
   padding: 0 20px;
-}
+} */
 </style>

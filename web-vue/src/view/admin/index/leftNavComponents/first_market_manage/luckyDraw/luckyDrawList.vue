@@ -255,7 +255,6 @@ export default {
       this.tabInfo = this.$t('luckyDraw.tabInfo')
     },
     '$route.query': function (val) {
-      debugger
       if (val === 0 || val === '0') {
         this.tabSwitch = '0'
       }

@@ -40,7 +40,10 @@
       </div>
     </div>
 
-    <saleOut ref="saleOutCmp"  @sortChange="sortChange"/>
+    <saleOut
+      ref="saleOutCmp"
+      @sortChange="sortChange"
+    />
   </div>
 </template>
 
@@ -88,13 +91,14 @@ export default {
     /* 触发商品分页查询 */
     searchGoodsData () {
       let formFilterData = this.$refs.goodsHeaderFormCmp.getFormData()
+      let formFilterDataString = this.$refs.goodsHeaderFormCmp.getFormDataString()
       let params = {
         ...formFilterData,
         ...this.initFilterData,
         ...this.initFilterData,
         ...this.sortData
       }
-      this.$refs.saleOutCmp.fetchGoodsData(params)
+      this.$refs.saleOutCmp.fetchGoodsData(params, formFilterDataString)
     },
     /* 触发商品导出弹窗 */
     exportGoodsData () {

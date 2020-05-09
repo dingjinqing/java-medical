@@ -91,4 +91,5 @@ public class OrderListMpVo{
     private BigDecimal preSaleDiscount;
     /**预售订单预计发货时间*/
     private Timestamp bkShippingTime;
+    private Integer scoreProportion;
 }

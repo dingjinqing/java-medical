@@ -1,4 +1,3 @@
-
 <template>
   <el-dialog
     :title="$t('orderCommon.tip')"
@@ -49,6 +48,7 @@
         size="small"
       >{{$t('orderCommon.cancel')}}</el-button>
       <el-button
+        v-if="totalRows>0"
         type="primary"
         @click="confirm"
         size="small"
@@ -59,7 +59,7 @@
 
 <script>
 import { download } from '@/util/excelUtil.js'
-import { bargainOrderListExport, getBargainExportTotalRows } from '@/api/admin/marketManage/bargain.js'
+import { orderListExport, getExportTotalRows } from '@/api/admin/marketManage/firstSpecial.js'
 export default {
   data () {
     return {
@@ -78,7 +78,7 @@ export default {
   methods: {
     initData () {
       console.log(this.param, 'get params')
-      getBargainExportTotalRows(this.param).then(res => {
+      getExportTotalRows(this.param).then(res => {
         if (res.error === 0) {
           this.totalRows = res.content
         }
@@ -92,10 +92,10 @@ export default {
     confirm () {
       this.loading = true
       console.log(this.param, 'confirm param')
-      bargainOrderListExport(this.param).then(res => {
+      orderListExport(this.param).then(res => {
         console.log(res, 'excle-data')
         let fileName = localStorage.getItem('V-content-disposition')
-        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '砍价订单导出.xlsx'
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '首单特惠订单导出.xlsx'
         this.loading = false
         this.showNodes = false
         download(res, decodeURIComponent(fileName))

@@ -109,6 +109,16 @@ global.wxPage({
       packId
     })
   },
+
+  goSearch(e){
+    let {couponId:actId} = e.currentTarget.dataset
+    util.jumpLink(`/pages1/search/search${util.getUrlParams({
+      pageFrom:20,
+      outerPageParam:JSON.stringify({
+        actId
+      })
+    })}`)
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

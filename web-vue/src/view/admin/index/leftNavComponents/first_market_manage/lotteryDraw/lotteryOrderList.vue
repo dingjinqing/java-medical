@@ -19,14 +19,28 @@
       >
         <el-table-column
           :label="$t('lotteryDraw.orderSn')"
-          prop="orderSn"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <span
+              class="linkStyle"
+              @click="orderHandler(scope.row.orderSn)"
+            >{{scope.row.orderSn}}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.goodsId')"
-          prop="goodsName"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <div class="goodImge">
+              <div>
+                <img :src="$imageHost+'/'+scope.row.goodsImg">
+              </div>
+              <div class="name">{{scope.row.goodsName}}</div>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.isGroup')"
           align="center"
@@ -38,9 +52,12 @@
         </el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.consignee')"
-          prop="consigneeRealName"
           align="center"
         >
+          <template slot-scope="scope">
+            <p>{{scope.row.consigneeRealName}}</p>
+            <p>{{scope.row.mobile}}</p>
+          </template>
         </el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.isWinDraw')"
@@ -73,18 +90,24 @@
       />
     </div>
 
+    <!-- 导出数据确认弹窗 -->
+    <exportForm
+      :show.sync="showExportConfirm"
+      :param="this.requestParams"
+      :totalRows="totalRows"
+      @export="exportHandler"
+    />
+
   </div>
 </template>
 <script>
-// 引入组件
-import marketOrderSearchTab from '@/components/admin/marketManage/marketOrderSearchTab.vue'
-import pagination from '@/components/admin/pagination/pagination.vue'
-import { orderLotteryList } from '@/api/admin/marketManage/lotteryDraw.js'
+import { download } from '@/util/excelUtil.js'
+import { orderLotteryList, lotteryOrderListExport } from '@/api/admin/marketManage/lotteryDraw.js'
 export default {
-
   components: {
-    marketOrderSearchTab,
-    pagination
+    marketOrderSearchTab: () => import('@/components/admin/marketManage/marketOrderSearchTab.vue'),
+    pagination: () => import('@/components/admin/pagination/pagination.vue'),
+    exportForm: () => import('@/components/admin/marketManage/exportConfirmDialog.vue')
   },
   data () {
     return {
@@ -92,23 +115,26 @@ export default {
       pageParams: {},
       requestParams: {},
       tableData: [],
+      showExportConfirm: false, // 导出数据弹窗
+      totalRows: 0, // 筛选个数
       // 订单状态
       orderStatusArr: {
         null: '全部订单',
-        1: '待付款',
-        2: '订单取消',
-        3: '订单关闭',
-        4: '代发货/待核销',
-        5: '已发货',
-        6: '已收货/已自提',
-        7: '订单完成',
-        8: '退货中',
-        9: '退货完成',
-        10: '退款中',
-        11: '退款完成',
-        12: '送礼完成'
-      },
-      createTime: '' // 创建时间
+        0: '待付款',
+        1: '订单取消',
+        2: '订单关闭',
+        3: '待发货/待核销',
+        4: '已发货',
+        5: '已收货/已自提',
+        6: '订单完成',
+        7: '退货中',
+        8: '退货完成',
+        9: '退款中',
+        10: '退款完成',
+        11: '拼团中',
+        12: '已成团',
+        13: '送礼完成'
+      }
     }
   },
   watch: {
@@ -122,57 +148,96 @@ export default {
     }
   },
   methods: {
+    // 筛选
     initDataList () {
-      this.loading = true
-      this.requestParams.groupDrawId = this.$route.query.id
-      this.requestParams.currentPage = this.pageParams.currentPage
-      this.requestParams.pageRows = this.pageParams.pageRows
-      orderLotteryList(this.requestParams).then((res) => {
-        if (res.error === 0) {
-          this.tableData = res.content.dataList
-          // this.handleData(res.content.dataList)
-          this.pageParams = res.content.page
-          this.loading = false
+      return new Promise((resolve, reject) => {
+        this.loading = true
+        var obj = {}
+        obj.groupDrawId = this.$route.query.id
+        obj.currentPage = this.pageParams.currentPage
+        obj.pageRows = this.pageParams.pageRows
+        if (this.requestParams.goodsName) {
+          obj.goodsName = this.requestParams.goodsName
         }
-      })
-    },
+        if (this.requestParams.orderSn) {
+          obj.orderSn = this.requestParams.orderSn
+        }
+        if (this.requestParams.selectedOrderStatus !== undefined) {
+          obj.orderStatus = this.requestParams.selectedOrderStatus === null ? -1 : this.requestParams.selectedOrderStatus
+        }
+        if (this.requestParams.consignee) {
+          obj.consigneeName = this.requestParams.consignee
+        }
+        if (this.requestParams.mobile) {
+          obj.mobile = this.requestParams.mobile
+        }
+        if (this.requestParams.createTimeStart) {
+          obj.createTime = this.requestParams.createTimeStart
+        }
+        if (this.requestParams.provinceCode) {
+          obj.provinceCode = this.requestParams.provinceCode
+        }
+        if (this.requestParams.cityCode) {
+          obj.cityCode = this.requestParams.cityCode
+        }
+        if (this.requestParams.districtCode) {
+          obj.districtCode = this.requestParams.districtCode
+        }
+        orderLotteryList(obj).then((res) => {
+          if (res.error === 0) {
+            this.loading = false
+            this.pageParams = res.content.page
+            // 订单状态
+            res.content.dataList.forEach(item => {
+              item.orderStatusName = this.orderStatusArr[item.orderStatus === -1 ? null : item.orderStatus]
+            })
+            this.tableData = res.content.dataList
 
-    // 表格数据处理
-    handleData (data) {
-      console.log('订单状态', this.orderStatusArr)
-
-      data.forEach(item => {
-        item.orderStatusText = this.orderStatusArr[item.orderStatus]
-        item.name = this.$route.query.name
-        item.goods.forEach(val => {
-          item.goodsPrice = val.goodsPrice
-          item.goodsName = val.goodsName
+            resolve(this.pageParams)
+          }
+        }).catch(error => {
+          reject(error)
         })
-      })
-      this.tableData = data
-    },
-
-    getOrderStatusText (index) {
-      this.orderStatus.forEach(item => {
-        if (item.value === index) {
-          return item.label
-        }
       })
     },
 
     // 导出数据
     exportDataList () {
-      this.$confirm('此操作将导出数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message.success({ message: '导出成功' })
-      }).catch(() => {
-        this.$message.info({ message: '已取消导出' })
+      this.initDataList().then(() => {
+        this.totalRows = this.pageParams.totalRows
+        this.showExportConfirm = !this.showExportConfirm
+      })
+    },
+
+    // 导出数据弹窗回调函数
+    exportHandler (data) {
+      var obj = {}
+      obj.groupDrawId = this.$route.query.id
+      obj.goodsName = data.goodsName
+      obj.orderSn = data.orderSn
+      obj.orderStatus = data.selectedOrderStatus === null ? -1 : data.selectedOrderStatus
+      obj.consigneeName = data.consignee
+      obj.mobile = data.mobile
+      obj.createTime = data.createTimeStart
+      obj.provinceCode = data.provinceCode
+      obj.cityCode = data.cityCode
+      obj.districtCode = data.districtCode
+      lotteryOrderListExport(obj).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '拼团抽奖订单导出.xlsx'
+        download(res, decodeURIComponent(fileName))
+      })
+    },
+
+    // 跳转订单详情
+    orderHandler (orderSn) {
+      this.$router.push({
+        name: 'orderInfo',
+        query: {
+          orderSn: orderSn
+        }
       })
     }
-
   }
 }
 </script>
@@ -219,5 +284,29 @@ export default {
 }
 .el-main {
   padding: inherit;
+}
+.goodImge {
+  display: flex;
+}
+.goodImge img {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border: 1px solid #ccc;
+}
+.goodImge .name {
+  width: 115px;
+  height: 40px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  margin-left: 12px;
+  text-align: left;
+}
+.linkStyle {
+  color: #5a8bff;
+  cursor: pointer;
 }
 </style>

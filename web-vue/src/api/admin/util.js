@@ -50,3 +50,11 @@ export function feedbackRequest (data) {
     data: data
   })
 }
+
+// 小程序拼团抽奖规则接口
+export function pinLotteryRules (data) {
+  return service({
+    url: `/api/wxapp/groupDraw/help?shopId=${data.shop_id}&groupDrawId=${data.gid}`,
+    method: 'get'
+  })
+}

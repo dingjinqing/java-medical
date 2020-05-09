@@ -114,6 +114,12 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 				if(match(specialExcept, path)) {
 					return true;
 				}
+				if(saas.shop.checkExpire(user.getLoginShopId())) {
+					//店铺过期
+					log.info("店铺：{}过期了，要续费",user.getLoginShopId());
+					errorResponse(request, response, null, (new JsonResult()).fail(language, JsonResultCode.CODE_SHOP_EXPIRE));
+					return false;
+				}
 				if (match(shopLoginExcept, path)) {
 					return true;
 				}

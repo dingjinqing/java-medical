@@ -28,12 +28,13 @@
           <!-- 赠送优惠券 -->
           <view class='goods_area coupon_area' wx:if='{{promote_info.rewardType == 2}}'>
               <view class='ca_top' style='color:{{comColor}}'>
-                <block wx:if='{{promote_info.couponInfo.actCode != "discount" }}'>￥<text>{{promote_info.couponInfo.denomination}}</text></block>
+                <block wx:if='{{promote_info.couponInfo.actCode == "voucher" }}'>￥<text>{{promote_info.couponInfo.denomination}}</text></block>
                 <block wx:if='{{promote_info.coupon_info.actCode == "discount" }}'><text>{{promote_info.couponInfo.denomination}}</text>折</block>
+                <block wx:if='{{promote_info.couponInfo.actCode == "random" }}'>￥<text>{{promote_info.couponInfo.randomMax}}</text><text style="font-size: 22rpx;">最高</text></block>
                {{i18n.$t(localePack,"page1.promote.promoteReward5")}}
               </view>
               <view class='ca_center'>{{i18n.$t(localePack,"page1.promote.promoteReward2")}}{{promote_info.marketStore}}{{i18n.$t(localePack,"page1.promote.promoteReward6")}}，{{i18n.$t(localePack,"page1.promote.promoteReward4")}}</view>
-              <view class='ca_bottom' bindtap='to_cou_search' data-coupon_sn="{{promote_info.couponInfo.couponSn}}" style='color:{{comColor}};background:{{somColor}}'>
+              <view class='ca_bottom' bindtap='to_cou_search' data-act_id="{{promote_info.couponInfo.couponId}}" style='color:{{comColor}};background:{{somColor}}'>
                 {{i18n.$t(localePack,"page1.promote.promoteReward7")}} <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
               </view>
           </view>
@@ -60,7 +61,8 @@
           </view>
           <!-- 倒计时提示 -->
           <view class='time_daojishi'>
-            <block wx:if='{{promote_info.promoteStatus == 0}}'>{{i18n.$t(localePack,"page1.promote.promoteTime1")}} <text style='color:{{comColor}}' >{{clock}}</text></block>
+            <block wx:if='{{promote_info.promoteStatus == 0 && promote_info.surplusSecond > 0}}'>{{i18n.$t(localePack,"page1.promote.promoteTime1")}} <text style='color:{{comColor}}' >{{clock}}</text></block>
+            <block wx:if='{{promote_info.promoteStatus == 0 && (!promote_info.surplusSecond || promote_info.surplusSecond <= 0)}}'>{{i18n.$t(localePack,"page1.promote.promoteTime1")}} <text style='color:{{comColor}}'>{{i18n.$t(localePack,"page1.promote.promoteTime8")}}</text></block>
             <block wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0) && promote_info.rewardSpurTime > 0}}'>{{i18n.$t(localePack,"page1.promote.promoteTime2")}} <text style='color:{{comColor}}' >{{clock}}</text> {{i18n.$t(localePack,"page1.promote.promoteTime3")}}</block>
             <block wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0) && promote_info.rewardSpurTime <= 0}}'>{{i18n.$t(localePack,"page1.promote.promoteTime4")}}</block>
             <block wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0)}}'>{{i18n.$t(localePack,"page1.promote.promoteTime5")}}</block>
@@ -80,23 +82,23 @@
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_index' wx:if='{{(promote_info.promoteStatus == 3 || promote_info.promoteStatus == 4) && promote_info.launchFlag == 1}}'>{{i18n.$t(localePack,"page1.promote.promoteButton4")}}</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='friend_help' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==0&&promote_info.canPromote.code == 1}}'>{{i18n.$t(localePack,"page1.promote.promoteButton6")}}</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus == 0  && promote_info.launchFlag == 2&&is_shares==0&&promote_info.canPromote.code == 0}}'>{{i18n.$t(localePack,"page1.promote.promoteButton7")}}</button>
-          <button class='btn_launch' style='background:{{comColor}}' open-type='share' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==1}}'>{{i18n.$t(localePack,"page1.promote.promoteButton8")}}</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_share' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==1 && !promote_info.marketStore}}'>{{i18n.$t(localePack,"page1.promote.promoteButton8")}}</button>
+          <button class='btn_launch' style='background:{{comColor}}' open-type='share' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==1 && promote_info.marketStore}}'>{{i18n.$t(localePack,"page1.promote.promoteButton8")}}</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 2 &&is_shares==0&&promote_info.canPromote.code == 0}}'>{{i18n.$t(localePack,"page1.promote.promoteButton7")}}</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus ==2 && promote_info.launchFlag == 2}}'>{{i18n.$t(localePack,"page1.promote.promoteButton7")}}</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_cou_search' wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && promote_info.rewardType == 2}}' data-coupon_sn="{{promote_info.couponInfo.couponSn}}">{{i18n.$t(localePack,"page1.promote.promoteButton9")}}</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_cou_search' wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && promote_info.rewardType == 2}}' data-act_id="{{promote_info.couponInfo.couponId}}">{{i18n.$t(localePack,"page1.promote.promoteButton9")}}</button>
       </view>
    </view>
    <!-- 助力列表 -->
    <view class='promote_list' wx:if='{{promote_info.promoteDetailList && promote_info.promoteDetailList!=""}}'>
       <view class='list_top'>
           <view class='lt_title'>{{i18n.$t(localePack,"page1.promote.promoteList1")}}</view>
-          <view class='to_list' style='color:{{comColor}}' bindtap='to_list' >
-          <!-- wx:if='{{promote_info.promoteDetailList.length>=10}}' -->
+          <view class='to_list' style='color:{{comColor}}' bindtap='to_list' wx:if='{{promote_info.promoteDetailList.length>=10}}'>
               {{i18n.$t(localePack,"page1.promote.promoteList2")}} <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
           </view>
       </view>
       <view class='frind_list'>
-          <view class='each_col' wx:for='{{promote_info.promoteDetailList}}' wx:key='key'>
+          <view class='each_col' wx:for='{{promote_info.promoteDetailList}}' wx:key='index' wx:if="{{index<10}}">
             <view class='col_left'>
                 <view class='user_img'><image src='{{item.userAvatar}}'></image></view>
                 <view class='user_name'>{{item.username}}</view>
@@ -200,7 +202,8 @@
           <block wx:if='{{promote_ok == 1}}'> 
             <view class='st1' style='color:{{comColor}}'>{{i18n.$t(localePack,"page1.promote.promoteHelp1")}}</view>
             <view class='st2'>{{i18n.$t(localePack,"page1.promote.promoteHelp2")}}: <text style='color:{{comColor}}'>{{add_promote_value}}</text></view>
-            <button class='st3' style='background:{{comColor}}' wx:if='{{modal_can_share == 1}}' open-type='share'>{{i18n.$t(localePack,"page1.promote.promoteHelp3")}}</button>
+            <button class='st3' style='background:{{comColor}}' wx:if='{{modal_can_share == 1 && !promote_info.marketStore}}' bindtap='to_share'>{{i18n.$t(localePack,"page1.promote.promoteHelp3")}}</button>
+            <button class='st3' style='background:{{comColor}}' wx:if='{{modal_can_share == 1 && promote_info.marketStore}}' open-type='share'>{{i18n.$t(localePack,"page1.promote.promoteHelp3")}}</button>
             <button class='st3' style='background:{{comColor}}' wx:if='{{modal_can_share == 0}}' bindtap='to_own_act'>{{i18n.$t(localePack,"page1.promote.promoteHelp4")}}</button>
             <view class='st4' bindtap='forgive_share' data-ifshare='{{modal_can_share}}' wx:if='{{modal_can_share == 1}}' >{{i18n.$t(localePack,"page1.promote.promoteHelp5")}}</view>
             <view class='st4' bindtap='forgive_share' data-ifshare='{{modal_can_share}}' wx:if='{{modal_can_share == 0}}' >{{i18n.$t(localePack,"page1.promote.promoteHelp6")}}</view>
@@ -224,7 +227,11 @@
         <image src="{{ imageUrl }}image/wxapp/close_icon.png" mode='widthFix' bindtap='bindClose'></image>
       </view>
       <view class="content_box">
-        <button open-type='share'>
+        <button bindtap='to_share' wx:if='{{!promote_info.marketStore}}'>
+          <image src="{{ imageUrl }}image/wxapp/share_friends.png" mode='widthFix'></image>
+          <text>{{i18n.$t(localePack,"page1.promote.promoteShare2")}}</text>
+        </button>
+        <button open-type='share' wx:if='{{promote_info.marketStore}}'>
           <image src="{{ imageUrl }}image/wxapp/share_friends.png" mode='widthFix'></image>
           <text>{{i18n.$t(localePack,"page1.promote.promoteShare2")}}</text>
         </button>

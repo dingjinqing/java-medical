@@ -49,7 +49,10 @@ public class GroupDrawAddParam {
     /** 商品 id **/
     @NotEmpty
     private List<Integer> goodsIds;
-
+    /** 活动说明 */
+    private GroupDrawActCopywriting actCopywriting;
+    @JsonIgnore
+    private String activityCopywriting;
     @JsonIgnore
     private String goodsId;
     @JsonIgnore

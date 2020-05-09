@@ -6,7 +6,7 @@
       </div>
       <div class="rightContainer">
         <div class="rightContainerTop">
-          <div class="rightTile">{{ $t('memberCard.basicSetting') }}</div>
+          <div class="rightTitle">{{ $t('memberCard.basicSetting') }}</div>
           <cardNameAndBg
             :val="cardNameAndBg"
             @input="initCardNameAndBg"
@@ -17,11 +17,6 @@
             @input="initCardEffectTimeData"
             ref="cardEffectTime"
           ></cardEffectTime>
-          <cardSuiteGoodsCfg
-            :val="cardSuiteGoodsCfgData"
-            @input="initCardSuiteGoodsCfgData"
-          >
-          </cardSuiteGoodsCfg>
           <cardStoreCfg
             :val="cardStoreCfgData"
             @input="initCardStoreCfgData"
@@ -31,6 +26,14 @@
             :val="cardUsageCfgData"
             @input="initCardUsageCfgData"
           ></cardUsageCfg>
+        </div>
+        <div class="member-rights">
+          <div class="rightTitle">会员权益</div>
+          <cardSuiteGoodsCfg
+            :val="cardSuiteGoodsCfgData"
+            @input="initCardSuiteGoodsCfgData" />
+          <!-- 自定义权益 -->
+          <cardCustomRights v-bind.sync="customRights" />
         </div>
         <div class="rightContainerBottom">
           <div class="rightTitle">{{ $t('memberCard.getSetting') }}</div>
@@ -44,6 +47,12 @@
             @input="initCardActiveCfgData"
             ref="cardActiveCfgData"
           ></cardActiveCfg>
+        </div>
+        <div class="advance-setting">
+          <div class="rightTitle">高级设置</div>
+          <card-advance-cfg :cardTag="cardTag"
+              :cardGive="cardGive"
+              :cardType="cardType"/>
         </div>
       </div>
     </div>
@@ -99,6 +108,12 @@ export default {
     ),
     cardActiveCfg: () => import(
       './subcomponents/cardActiveCfg'
+    ),
+    cardAdvanceCfg: () => import(
+      './subcomponents/cardAdvanceCfg'
+    ),
+    cardCustomRights: () => import(
+      './subcomponents/cardCustomRights'
     )
   },
   computed: {
@@ -215,6 +230,7 @@ export default {
         activation: '0',
         activationCfgBox: [],
         examine: '0',
+        customAction: [],
         valid: false
       },
       sampleCardData: {
@@ -230,6 +246,20 @@ export default {
         cardEffectTime: cardEffectTimeTmp,
         cardStoreCfgData: cardStoreCfgDataTmp,
         cardUsageCfgData: cardUsageCfgDataTmp
+      },
+      // 自定义权益
+      customRights: {
+        customRightsFlag: 'off',
+        customRightsAll: []
+      },
+      cardTag: {
+        cardTag: 'off',
+        cardTagId: []
+      },
+      cardGive: {
+        cardGiveAway: 'off',
+        cardGiveContinue: 'off',
+        mostGiveAway: null
       }
     }
   },
@@ -292,7 +322,6 @@ export default {
       this.cardUsageCfgData.mobile = data.mobile
 
       // 领取设置
-      debugger
       this.cardReceiveCfgData.isPay = String(data.isPay)
       this.cardReceiveCfgData.payType = String(data.payType)
       this.cardReceiveCfgData.payMoney = data.payMoney
@@ -331,6 +360,31 @@ export default {
       this.cardActiveCfgData.activation = String(data.activation)
       this.cardActiveCfgData.activationCfgBox = data.activationCfgBox ? data.activationCfgBox : []
       this.cardActiveCfgData.examine = String(data.examine)
+
+      // 自定义激活数据
+      let action = data.customAction.map(item => {
+        return {
+          type: item.custom_type,
+          title: item.custom_title,
+          content: item.option_arr,
+          conditionChecked: Boolean(item.option_ver),
+          checked: Boolean(item.is_checked)
+        }
+      })
+      this.cardActiveCfgData.customAction = action
+      // 同步用户标签
+      if (data.cardTag) {
+        this.cardTag = {
+          cardTag: data.cardTag.cardTag,
+          cardTagId: data.cardTag.cardTags
+        }
+      }
+      // 转赠卡
+      this.cardGive = data.cardGive ? data.cardGive : this.cardGive
+      // 自定义权益
+      if (data.customRights) {
+        this.customRights = data.customRights
+      }
     },
     getMiniLog (item) {
       return 'backgroundImage: url(' + item.backGroundImgUrl + ')'
@@ -415,7 +469,8 @@ export default {
         // 卡号+密码
         batchIds = this.cardReceiveCfgData.codeAddDivArrBottom.map(({ pwdId }) => pwdId)
       }
-
+      this.dealWithCustomAction()
+      this.dealWithCardTag()
       let obj = {
         'id': this.cardId,
         'cardType': this.cardType,
@@ -448,9 +503,12 @@ export default {
         'limits': this.cardReceiveCfgData.limits,
         'activation': this.cardActiveCfgData.activation,
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
-        'examine': this.cardActiveCfgData.examine
+        'examine': this.cardActiveCfgData.examine,
+        'customAction': this.cardActiveCfgData.customAction,
+        'cardTag': this.cardTag,
+        'cardGive': this.cardGive,
+        'customRights': this.customRights
       }
-      console.log(obj)
       if (this.cardId) {
         // 更新会员卡
         console.log('更新会员卡')
@@ -505,6 +563,20 @@ export default {
         default:
           break
       }
+    },
+    dealWithCardTag () {
+      this.cardTag.cardTagId = this.cardTag.cardTagId.map(({id}) => id)
+    },
+    dealWithCustomAction () {
+      // true/false 转换1/0
+      if (this.cardActiveCfgData.customAction) {
+        let tmp = this.cardActiveCfgData.customAction
+        this.cardActiveCfgData.customAction = tmp.map(item => {
+          item.checked = Number(item.checked)
+          item.conditionChecked = Number(item.conditionChecked)
+          return item
+        })
+      }
     }
   }
 
@@ -541,26 +613,22 @@ export default {
     width: 70%;
     font-size: 13px;
     margin-bottom: 10px;
-    .rightContainerTop {
+    .rightContainerTop,
+    .member-rights,
+    .rightContainerBottom,
+    .advance-setting {
       padding: 10px 1%;
       background: #f8f8f8;
       border: 1px solid #e4e4e4;
       margin-bottom: 20px;
-      .rightTile {
-        padding-bottom: 10px;
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 10px;
-      }
-    }
-    .rightContainerBottom {
-      background: #f8f8f8;
-      border: 1px solid #e4e4e4;
-      padding: 10px 1%;
       .rightTitle {
         padding-bottom: 10px;
         border-bottom: 1px solid #ddd;
         margin-bottom: 10px;
       }
+    }
+    .advance-setting{
+       margin-bottom: 0px;
     }
   }
   .footer {

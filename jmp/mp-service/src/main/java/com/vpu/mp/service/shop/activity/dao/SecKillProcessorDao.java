@@ -30,8 +30,10 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
@@ -61,6 +63,7 @@ public class SecKillProcessorDao extends ShopBaseService {
             .where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(SEC_KILL_DEFINE.END_TIME.gt(date))
+            .and(SEC_KILL_DEFINE.START_TIME.le(date))
             .and(SEC_KILL_PRODUCT_DEFINE.GOODS_ID.in(goodsIds))
             .orderBy(SEC_KILL_DEFINE.FIRST.desc(),SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE.asc())
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(SEC_KILL_PRODUCT_DEFINE.GOODS_ID)));
@@ -82,12 +85,11 @@ public class SecKillProcessorDao extends ShopBaseService {
         seckillVo.setActivityId(skId);
         seckillVo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
 
-        seckillVo.setActState(this.canApplySecKill(secKill,capsule.getGoodsNumber(),userId));
+        seckillVo.setActState(this.canApplySecKill(secKill,capsule.getGoodsNumber(),userId,capsule.getGoodsId()));
         if (BaseConstant.ACTIVITY_STATUS_NOT_HAS.equals(seckillVo.getActState())) {
             return  seckillVo;
         }
 
-        seckillVo.setStock(secKill.getStock());
         seckillVo.setLimitAmount(secKill.getLimitAmount());
         seckillVo.setLimitPaytime(secKill.getLimitPaytime());
         if (BaseConstant.ACTIVITY_STATUS_NOT_START.equals(seckillVo.getActState())) {
@@ -97,9 +99,21 @@ public class SecKillProcessorDao extends ShopBaseService {
 
         seckillVo.setCardId(secKill.getCardId());
         seckillVo.setShareConfig(Util.parseJson(secKill.getShareConfig(), ShopShareConfig.class));
+        seckillVo.setSaleNum(secKill.getSaleNum() + secKill.getBaseSale());
+
+        int stock = capsule.getGoodsNumber()< secKill.getStock()? capsule.getGoodsNumber():secKill.getStock();
+        seckillVo.setStock(stock);
+        // 设置活动规格，对应的规格是否有效和规格库存已处理
         seckillVo.setActProducts(this.getSecKillPrd(secKill.getSkId(),capsule));
 
-        seckillVo.setSaleNum(secKill.getSaleNum() + secKill.getBaseSale());
+        if (stock == 0 && BaseConstant.needToConsiderNotHasNum(seckillVo.getActState())) {
+            logger().debug("小程序-商品详情-秒杀商品数量已用完");
+            seckillVo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
+        }
+        if (seckillVo.getActProducts().size() == 0) {
+            logger().debug("小程序-商品详情-商品规格信息和秒杀活动规格信息无交集");
+            seckillVo.setActState(BaseConstant.ACTIVITY_STATUS_NO_PRD_TO_USE);
+        }
         return seckillVo;
     }
 
@@ -110,8 +124,8 @@ public class SecKillProcessorDao extends ShopBaseService {
      * @param goodsNumber goods表的库存
      * @return 0正常;1该活动不存在;2该活动已停用;3该活动未开始;4该活动已结束;5商品已抢光;6该用户已达到限购数量上限;7该秒杀为会员专属，该用户没有对应会员卡
      */
-    private Byte canApplySecKill(SecKillDefineRecord secKill,Integer goodsNumber,Integer userId) {
-        return seckillService.canApplySecKill(secKill,goodsNumber,userId);
+    private Byte canApplySecKill(SecKillDefineRecord secKill,Integer goodsNumber,Integer userId,Integer goodsId) {
+        return seckillService.canApplySecKill(secKill,goodsNumber,userId,goodsId);
     }
 
     /**
@@ -159,13 +173,23 @@ public class SecKillProcessorDao extends ShopBaseService {
      */
     private List<SecKillPrdMpVo> getSecKillPrd(Integer skId,GoodsDetailMpBo capsule){
         List<SecKillPrdMpVo> list = db().select(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID,SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,SEC_KILL_PRODUCT_DEFINE.STOCK,SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetchInto(SecKillPrdMpVo.class);
-
         //填入原价，方便计算
-        Map<Integer,BigDecimal> prdPriceMap = capsule.getProducts().stream().collect(Collectors.toMap(GoodsPrdMpVo::getPrdId,GoodsPrdMpVo::getPrdRealPrice));
+        Map<Integer, GoodsPrdMpVo> prdMap = capsule.getProducts().stream().collect(Collectors.toMap(GoodsPrdMpVo::getPrdId, Function.identity()));
+
+        List<SecKillPrdMpVo> retList = new ArrayList<>(list.size());
         list.forEach(vo->{
-            vo.setPrdPrice(prdPriceMap.get(vo.getProductId()));
+            GoodsPrdMpVo prd = prdMap.get(vo.getProductId());
+            // 原规格已删除
+            if (prd == null) {
+                return;
+            }
+            vo.setPrdPrice(prd.getPrdRealPrice());
+            if (prd.getPrdNumber() < vo.getStock()) {
+                vo.setStock(prd.getPrdNumber());
+            }
+            retList.add(vo);
         });
-        return list;
+        return retList;
     }
 
     /**

@@ -9,6 +9,7 @@ import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.service.foundation.util.Util.currentTimeStamp;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,8 +17,10 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +38,6 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
-import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
@@ -205,14 +207,6 @@ public class GroupDrawUserService extends ShopBaseService {
 	}
 
 	/**
-	 * 获取单品
-	 */
-	private GoodsSpecProductRecord getGoodsSpecProduct(Integer productId) {
-		return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId))
-				.fetchOneInto(GOODS_SPEC_PRODUCT);
-	}
-
-	/**
 	 * 获取订单中的商品
 	 */
 	private List<OrderGoodsRecord> getOrderGoods(String orderSn) {
@@ -323,7 +317,6 @@ public class GroupDrawUserService extends ShopBaseService {
 		String goodsName = good.getGoodsName();
 		String page = "pages/pinlotteryinfo/pinlotteryinfo?group_id=" + userJoinGroup.getGroupId() + "&group_draw_id="
 				+ userJoinGroup.getGroupDrawId() + "&goods_id=" + goodsId;
-		goodsName = goodsName.length() > 20 ? goodsName.substring(0, 19) + "等" : goodsName;
 		String msg = Objects.equals(isWinDraw, ONE) ? "恭喜您中奖了" : "很遗憾您未中奖";
 		String marketName = groupDrawInfo.getName();
 		String[][] data = new String[][] { { marketName }, { Util.getdate("yyyy-MM-dd HH:mm:ss") }, { msg } };
@@ -334,7 +327,7 @@ public class GroupDrawUserService extends ShopBaseService {
 				.maTemplateData(
 						MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(buildData).build())
 				.page(page).shopId(getShopId()).userIdList(arrayList)
-				.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+				.type(RabbitParamConstant.Type.INVITE_SUCCESS_GROUPBUY).build();
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
 				TaskJobEnum.SEND_MESSAGE.getExecutionType());
 
@@ -434,7 +427,7 @@ public class GroupDrawUserService extends ShopBaseService {
 		String[] split = coupOnIds.split(",");
 		List<String> list = new ArrayList<String>();
 		for (String string : split) {
-			Byte couponGetStatus = couponMpService.couponGetStatus(new mpGetCouponParam(Integer.valueOf(string), null));
+			Byte couponGetStatus = couponMpService.couponGetStatus(new MpGetCouponParam(Integer.valueOf(string), null));
 			if (Objects.equals(couponGetStatus, ZERO)) {
 				list.add(string);
 			} else {

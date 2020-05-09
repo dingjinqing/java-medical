@@ -7,6 +7,7 @@
         <div class="text">
           <span>{{$t('textModule.text')}}：</span>
           <el-input
+            :disabled="isProhibit"
             size="small"
             v-model="modulesSaveData.title"
             :maxlength='30'
@@ -16,14 +17,17 @@
         <div class="text">
           <span>{{$t('textModule.fontSize')}}：</span>
           <el-radio
+            :disabled="isProhibit"
             v-model="modulesSaveData.fonts_size"
             label="1"
           >{{$t('textModule.large')}}</el-radio>
           <el-radio
+            :disabled="isProhibit"
             v-model="modulesSaveData.fonts_size"
             label="2"
           >{{$t('textModule.middle')}}</el-radio>
           <el-radio
+            :disabled="isProhibit"
             v-model="modulesSaveData.fonts_size"
             label="3"
           >{{$t('textModule.small')}}</el-radio>
@@ -31,6 +35,7 @@
         <div class="text">
           <span>{{$t('textModule.fontColor')}}：</span>
           <el-color-picker
+            :disabled="isProhibit"
             v-model="modulesSaveData.fonts_color"
             show-alpha
             :predefine="predefineColors"
@@ -44,6 +49,7 @@
         <div class="text">
           <span>{{$t('textModule.backgroundColor')}}：</span>
           <el-color-picker
+            :disabled="isProhibit"
             v-model="modulesSaveData.bgs_color"
             show-alpha
             :predefine="predefineColors"
@@ -57,14 +63,17 @@
         <div class="text">
           <span>{{$t('textModule.displayPosition')}}：</span>
           <el-radio
+            :disabled="isProhibit"
             v-model="modulesSaveData.show_pos"
             label="1"
           >{{$t('textModule.beATheLeftSide')}}</el-radio>
           <el-radio
+            :disabled="isProhibit"
             v-model="modulesSaveData.show_pos"
             label="2"
           >{{$t('textModule.centered')}}</el-radio>
           <el-radio
+            :disabled="isProhibit"
             v-model="modulesSaveData.show_pos"
             label="3"
           >{{$t('textModule.beAtTheRight')}}</el-radio>
@@ -73,6 +82,7 @@
           <span>{{$t('textModule.link')}}：</span>
           <el-input
             size="small"
+            :disabled="isProhibit"
             v-model="modulesSaveData.title_link"
           ></el-input>
           <el-button
@@ -102,6 +112,7 @@ export default {
   },
   data () {
     return {
+      isProhibit: false, // 是否全部禁用
       imageTuneUp: false, // 图片选择弹窗调起
       tuneUpSelectLink: false, // 调起选择链接弹窗
       predefineColors: [ // 颜色选择器预定义颜色池
@@ -150,9 +161,16 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    this.$nextTick(() => {
+      console.log(localStorage.getItem('isProhibitForm'))
+      this.isProhibit = JSON.parse(localStorage.getItem('isProhibitForm'))
+    })
+  },
   methods: {
     // 点击重置
     handleToReset (index) {
+      if (this.isProhibit) return
       switch (index) {
         case 0:
           this.modulesSaveData.fonts_color = '#333333'
@@ -163,6 +181,7 @@ export default {
     },
     // 调起选择链接弹窗
     handleToCallLinkDialog () {
+      if (this.isProhibit) return
       this.tuneUpSelectLink = !this.tuneUpSelectLink
     },
     // 选择链接弹窗选中链接后数据回传

@@ -29,27 +29,30 @@
       </div>
       <div class="feedback">
         <div class="info">
-          <table>
+          <table
+            v-for="(item,index) in oneVo"
+            :key="index"
+          >
             <thead>
               <tr>
-                <td>(单选/选填)性别</td>
+                <td>{{`(${item.innerVo[0].showTypes===0?'单选':'多选'}/${item.innerVo[0].confirm===1?'必填':'选填'})${item.innerVo[0].moduleType}`}}</td>
                 <td>票数</td>
                 <td width="30%">占比</td>
               </tr>
             </thead>
             <tbody>
               <tr
-                v-for="(item,index) in sexList"
-                :key="index"
+                v-for="(itemC,indexC) in item.innerVo"
+                :key="indexC"
               >
-                <td>{{item.moduleType}}</td>
-                <td>{{item.votes}}</td>
+                <td>{{itemC.moduleValue}}</td>
+                <td>{{itemC.votes}}</td>
                 <td>
                   <div class="progress">
                     <el-progress
                       :text-inside="true"
                       :stroke-width="26"
-                      :percentage="item.percentage"
+                      :percentage="itemC.percentage"
                     ></el-progress>
                   </div>
                 </td>
@@ -58,73 +61,7 @@
                 <td
                   colspan="3"
                   style="text-align: right;height: 40px;line-height: 40px;padding-right: 20px"
-                ><span>本题有效票数合计：2</span><span style="margin-left: 20px">本题总票数合计：{{sexTotal}}</span></td>
-              </tr>
-            </tbody>
-          </table>
-          <table>
-            <thead>
-              <tr>
-                <td>(单选/选填)下拉</td>
-                <td>票数</td>
-                <td width="30%">占比</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(item,index) in slideList"
-                :key="index"
-              >
-                <td>{{item.moduleType}}</td>
-                <td>{{item.votes}}</td>
-                <td>
-                  <div class="progress">
-                    <el-progress
-                      :text-inside="true"
-                      :stroke-width="26"
-                      :percentage="item.percentage"
-                    ></el-progress>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td
-                  colspan="3"
-                  style="text-align: right;height: 40px;line-height: 40px;padding-right: 20px"
-                ><span>本题有效票数合计：2</span><span style="margin-left: 20px">本题总票数合计：{{slideTotal}}</span></td>
-              </tr>
-            </tbody>
-          </table>
-          <table>
-            <thead>
-              <tr>
-                <td>(单选/选填)选项</td>
-                <td>票数</td>
-                <td width="30%">占比</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(item,index) in chooseList"
-                :key="index"
-              >
-                <td>{{item.moduleType}}</td>
-                <td>{{item.votes}}</td>
-                <td>
-                  <div class="progress">
-                    <el-progress
-                      :text-inside="true"
-                      :stroke-width="26"
-                      :percentage="item.percentage"
-                    ></el-progress>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td
-                  colspan="3"
-                  style="text-align: right;height: 40px;line-height: 40px;padding-right: 20px"
-                ><span>本题有效票数合计：2</span><span style="margin-left: 20px">本题总票数合计：{{chooseTotal}}</span></td>
+                ><span>本题有效票数合计：{{item.totalVotes}}</span><span style="margin-left: 20px">本题总票数合计：{{item.totalVotes}}</span></td>
               </tr>
             </tbody>
           </table>
@@ -142,12 +79,8 @@ export default {
       submitNum: '', // 反馈数量
       isForeverValid: '', // 有效期
       status: '', // 发布状态
-      sexList: [], // 性别表单元素统计结果
-      slideList: [], // 下拉表单元素统计结果
-      chooseList: [], // 选项统计结果
-      sexTotal: '', // 性别表单元素总反馈票数
-      slideTotal: '', // 下拉表单元素总反馈票数
-      chooseTotal: '' // 选项表单元素总反馈票数
+      oneVo: [], // 总模块数据
+      state: -1
     }
   },
   mounted () {
@@ -158,19 +91,21 @@ export default {
   methods: {
     // 初始化请求数据
     handleToInitData () {
-      feedbackStatisticsQuery({ pageId: this.$route.query.row.pageId }).then(res => {
+      feedbackStatisticsQuery({ pageId: this.$route.query.row }).then(res => {
         console.log(res)
         if (res.error === 0) {
           this.participantsNum = res.content.participantsNum
           this.submitNum = res.content.submitNum
           this.isForeverValid = res.content.isForeverValid
-          this.sexList = res.content.sexList
-          this.slideList = res.content.slideList
-          this.chooseList = res.content.chooseList
-          this.sexTotal = res.content.sexTotal
-          this.slideTotal = res.content.slideTotal
-          this.chooseTotal = res.content.chooseTotal
           this.state = res.content.state
+          res.content.oneVo.forEach((item, index) => {
+            if (item.innerVo[0].moduleName === 'm_sex' || item.innerVo[0].moduleName === 'm_slide') {
+              item.innerVo.forEach((itemC, indexC) => {
+                itemC.moduleValue = JSON.parse(itemC.moduleValue)
+              })
+            }
+          })
+          this.oneVo = res.content.oneVo
         }
       })
     }

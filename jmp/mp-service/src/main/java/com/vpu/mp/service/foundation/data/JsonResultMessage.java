@@ -46,9 +46,10 @@ public class JsonResultMessage {
     public static final String MSG_ACCOUNT_SYTEM_LOGIN_EXPIRED = "system.account.login.expired";
     public static final String MSG_CODE_ACCOUNT_ENNAME_ISNULL = "enanme.isnull";
     public static final String MSG_ACCOUNT_MOBILE_LENGTH_LIMIT = "account.mobile.length.limit";
-    public static final String MSG_CODE_ACCOUNT_MOBILE_SAME = "account.mobile.same";
+    public static final String MSG_CODE_ACCOUNT_MOBILE_SAME = "account.or.mobile.same";
     public static final String MSG_ACCOUNT_USERNAME_LENGTH_LIMIT = "account.username.length.limit";
     public static final String MSG_CODE_ACCOUNT_ID_NOT = "account.id.not";
+	public static final String MSG_CODE_SHOP_EXPIRE = "code.shop.expire";
 
     // 图片
 
@@ -266,6 +267,8 @@ public class JsonResultMessage {
     public static final String GROUP_BUY_ACTIVITY_GROUP_JOINING="group.buy.activity.group.joining";
     public static final String GROUP_BUY_ACTIVITY_GROUP_STOCK_LIMIT="group.buy.activity.group.stock.limit";
     public static final String GROUP_BUY_ACTIVITY_GROUP_INVENTORY_FAILED="group.buy.activity.group.inventory.failed";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_SUCCESS="group.buy.activity.group.success";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_CANCEL="group.buy.activity.group.cancel";
     /**
      * 营销-秒杀
      */
@@ -297,6 +300,15 @@ public class JsonResultMessage {
     public static final String PARTICIPANTS_IS_MAX = "participated.is.max";
     public static final String GROUP_UPPER_LIMIT = "group.upper.limit";
     public static final String GROUP_ONLY_ONE = "group.only.one";
+    public static final String GROUP_ORDER_EXPORT = "group.order.export";
+    public static final String GROUP_ORDER_SN = "group.order.sn";
+    public static final String GROUP_GOODS = "group.goods";
+    public static final String GROUP_IS_GROUPED = "group.is.grouped";
+    public static final String GROUP_USER_INFO = "group.user.info";
+    public static final String GROUP_IS_WIN_DRAW = "group.is.win.draw";
+    public static final String GROUP_ORDER_TIME = "group.order.time";
+    public static final String GROUP_CODE_NUMBER = "group.code.number";
+    public static final String GROUP_ORDER_STATUS = "group.order.status";
 
     /**
      * 幸运大抽奖
@@ -312,8 +324,21 @@ public class JsonResultMessage {
 	/**
 	 * 首单特惠
 	 */
-	public static final String FIRST_SPECIAL_NUMBER_LIMIT = "first.sprecial.number.limit";
-	public static final String FIRST_SPECIAL_KIND_LIMIT = "first.sprecial.kind.limit";
+	public static final String FIRST_SPECIAL_NUMBER_LIMIT = "first.special.number.limit";
+	public static final String FIRST_SPECIAL_KIND_LIMIT = "first.special.kind.limit";
+
+    /**
+     *  营销-首单特惠excel导出
+     */
+    public static final String FIRST_SPECIAL_ORDER_LIST_FILENAME = "first.special.order.list.file_name";
+    public static final String FIRST_SPECIAL_ORDER_LIST_ORDER_SN = "first.special.order.list.order_sn";
+    public static final String FIRST_SPECIAL_ORDER_LIST_GOODS_NAME = "first.special.order.list.goods_name";
+    public static final String FIRST_SPECIAL_ORDER_LIST_PRICE = "first.special.order.list.price";
+    public static final String FIRST_SPECIAL_ORDER_LIST_CREATE_TIME = "first.special.order.list.create_time";
+    public static final String FIRST_SPECIAL_ORDER_LIST_ORDER_USER = "first.special.order.list.order_user";
+    public static final String FIRST_SPECIAL_ORDER_LIST_CONSIGNEE = "first.special.order.list.consignee";
+    public static final String FIRST_SPECIAL_ORDER_LIST_MONEY_PAID = "first.special.order.list.money_paid";
+    public static final String FIRST_SPECIAL_ORDER_LIST_ORDER_STATUS = "first.special.order.list.order_status";
 
 
     /**
@@ -362,6 +387,11 @@ public class JsonResultMessage {
      * 营销--消息推送
      */
     public static final String MESSAGE_TEMPLATE_NO_OPEN = "message.template.no.open";
+
+    /**
+     * 营销--打包一口价
+     */
+    public static final String PACKAGE_SALE_RULE_CHANGED = "package.sale.rules.changed";
 
     /**
      * 文章_分类
@@ -586,7 +616,8 @@ public class JsonResultMessage {
     public static final String CODE_EXCEL_NUM_MAX = "code.excel.num.max";
     public static final String CODE_EXCEL_NUM_MIN = "code.excel.num.min";
     public static final String CODE_EXCEL_HAVE_SAME = "code.excel.have.same";
-
+    public static final String CODE_CARD_RECEIVE_VALIDLINK = "code.card.receive.validlink";
+    public static final String CODE_CARD_RECEIVE_BYSELF = "code.card.receive.byself";
     /**
      *  会员列表导出
      */
@@ -991,6 +1022,8 @@ public class JsonResultMessage {
     public static final String WX_MA_GROUP_DRAW_SHARE_DOC = "wx.ma.group.draw.share.doc";
     /**'1.00元大抽奖，快来参与吧'文字*/
     public static final String WX_MA_GROUP_DRAW_PICTORIAL_DOC = "wx.ma.group.draw.pictorial.doc";
+    /**首单特惠*/
+    public static final String WX_MA_FIRST_SPECIAL_INFO="wx.ma.first.special.info";
 
     /** 拼团相关 */
     /** 开团省 */
@@ -1120,4 +1153,27 @@ public class JsonResultMessage {
     public static final String GOODS_EXCEL_IMPORT_NUM_OUT_OF_SIZE = "goods.excel.import.num.out.of.size";
 
 
+
+    /**
+     * 优惠券礼包订单导出
+     */
+    public static final String VIRTUAL_ORDER_COUPON_PACK_FILE_NAME = "virtual.order.coupon_pack.file_name";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_PACK_NAME = "virtual.order.coupon_pack.pack_name";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_ORDER_SN = "virtual.order.coupon_pack.order_sn";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_PRICE = "virtual.order.coupon_pack.price";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_USERNAME = "virtual.order.coupon_pack.username";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_MOBILE = "virtual.order.coupon_pack.mobile";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_CREATE_TIME = "virtual.order.coupon_pack.create_time";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_MONEY_PAID = "virtual.order.coupon_pack.money_paid";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_USE_ACCOUNT = "virtual.order.coupon_pack.use_account";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_MEMBER_CARD_BALANCE = "virtual.order.coupon_pack.member_card_balance";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_USE_SCORE = "virtual.order.coupon_pack.use_score";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_ORDER_STATUS_NAME = "virtual.order.coupon_pack.order_status_name";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_RETURN_TIME = "virtual.order.coupon_pack.return_time";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_RETURN_SCORE = "virtual.order.coupon_pack.return_score";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_RETURN_ACOUNT = "virtual.order.coupon_pack.return_account";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_RETURN_MONEY = "virtual.order.coupon_pack.return_money";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_RETURN_CARD_BALANCE = "virtual.order.coupon_pack.return_card_balance";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_REFUNDED = "virtual.order.coupon_pack.refunded";
+    public static final String VIRTUAL_ORDER_COUPON_PACK_PAYMENT_SUCCESSFUL = "virtual.order.coupon_pack.payment_successful";
 }

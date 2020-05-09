@@ -14,50 +14,48 @@
           <el-button
             type="primary"
             class="barginBtn"
+            size="small"
             @click="addActive"
           >{{$t('promoteList.addAct')}}</el-button>
         </el-tab-pane>
       </el-tabs>
     </div>
     <div class="table_list">
-      <div class="select_info">
-        <div class="leftarea">
-          <span>{{$t('promoteList.actName')}}：&nbsp;</span>
+
+      <el-form
+        :inline="true"
+        :model="searchForm"
+      >
+        <el-form-item :label="$t('promoteList.actName') + '：'">
           <el-input
             :placeholder="$t('promoteList.actNamePlaceholder')"
             size="small"
-            v-model="actName"
+            class="inputWidth"
+            v-model="searchForm.actName"
           ></el-input>
-        </div>
-        <div class="midarea">
-          <span class="demonstration">{{$t('promoteList.actDate')}}：&nbsp;</span>
-          <div>
-            <el-date-picker
-              size="small"
-              v-model="startTime"
-              type="datetime"
-              style="width:200px "
-              value-format="yyyy-MM-dd HH:mm:ss"
-            >
-            </el-date-picker>
-          </div>
-          <span>{{$t('promoteList.to')}}</span>
-          <div>
-            <el-date-picker
-              size="small"
-              v-model="endTime"
-              type="datetime"
-              style="width: 200px"
-              value-format="yyyy-MM-dd HH:mm:ss"
-            >
-            </el-date-picker>
-          </div>
-        </div>
-        <div class="rightarea">
-          <span>{{$t('promoteList.rewardType')}}：&nbsp;</span>
-          <el-select
-            v-model="rewardType"
+        </el-form-item>
+        <el-form-item :label="$t('promoteList.actDate') + '：'">
+          <el-date-picker
             size="small"
+            v-model="searchForm.startTime"
+            type="datetime"
+            class="inputWidth"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          ></el-date-picker>
+          <span>{{$t('promoteList.to')}}</span>
+          <el-date-picker
+            size="small"
+            v-model="searchForm.endTime"
+            type="datetime"
+            class="inputWidth"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item :label="$t('promoteList.rewardType') + '：'">
+          <el-select
+            v-model="searchForm.rewardType"
+            size="small"
+            class="inputWidth"
           >
             <el-option
               :label="$t('promoteList.all')"
@@ -76,13 +74,16 @@
               value="2"
             ></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item>
           <el-button
             type="primary"
             size="small"
             @click="onSubmit"
           >{{$t('promoteList.filter')}}</el-button>
-        </div>
-      </div>
+        </el-form-item>
+      </el-form>
+
       <el-table
         class="version-manage-table"
         header-row-class-name="tableClss"
@@ -100,6 +101,7 @@
         <el-table-column
           :label="$t('promoteList.actValidityPeriod')"
           align="center"
+          width="160"
         >
           <template slot-scope="scope">
             <span v-html="scope.row.validDate"></span>
@@ -144,8 +146,6 @@
           <template slot-scope="scope">
             <div class="opt">
               <el-tooltip
-                class="item"
-                effect="dark"
                 :content="$t('promoteList.edit')"
                 placement="top"
               >
@@ -155,18 +155,15 @@
                 ></i>
               </el-tooltip>
               <el-tooltip
-                class="item"
-                effect="dark"
                 :content="$t('promoteList.share')"
                 placement="top"
               >
                 <i
                   class="el-icon-share"
-                   @click="shareActivity(scope.row.id)"></i>
+                  @click="shareActivity(scope.row.id)"
+                ></i>
               </el-tooltip>
               <el-tooltip
-                class="item"
-                effect="dark"
                 :content="$t('promoteList.receiveDetails')"
                 placement="top"
               >
@@ -176,8 +173,6 @@
                 ></i>
               </el-tooltip>
               <el-tooltip
-                class="item"
-                effect="dark"
                 :content="$t('promoteList.launchDetails')"
                 placement="top"
               >
@@ -187,8 +182,6 @@
                 ></i>
               </el-tooltip>
               <el-tooltip
-                class="item"
-                effect="dark"
                 :content="$t('promoteList.participateDetails')"
                 placement="top"
               >
@@ -199,8 +192,6 @@
               </el-tooltip>
 
               <el-tooltip
-                class="item"
-                effect="dark"
                 :content="$t('promoteList.enabled')"
                 placement="top"
                 v-if="scope.row.isBlock === 1"
@@ -211,8 +202,6 @@
                 ></i>
               </el-tooltip>
               <el-tooltip
-                class="item"
-                effect="dark"
                 :content="$t('promoteList.disable')"
                 placement="top"
                 v-else
@@ -223,8 +212,6 @@
                 ></i>
               </el-tooltip>
               <el-tooltip
-                class="item"
-                effect="dark"
                 :content="$t('promoteList.delete')"
                 placement="top"
               >
@@ -234,8 +221,6 @@
                 ></i>
               </el-tooltip>
               <el-tooltip
-                class="item"
-                effect="dark"
                 content="查看活动效果展示"
                 placement="top"
               >
@@ -258,34 +243,54 @@
 
     <!-- 分享活动弹窗 -->
     <el-dialog
-      title="扫一扫，分享给好友吧~"
+      :title="$t('seckill.shareTitle')"
       :visible.sync="shareDialogVisible"
-      width="400px"
-      custom-class="share-dialog"
+      width="350px"
+      center
+      :close-on-click-modal="false"
     >
-      <el-image
-        :src="shareInfo.imageUrl"
-        style="width:160px;height:160px;margin:0 auto;"
-        fit="fill"
-      ></el-image>
-      <a
-        class="share-dialog-a"
-        :href="shareInfo.imageUrl"
-        download
-      >下载二维码</a>
-      <div class="share-dialog-footer">
-        <el-input
-          size="small"
-          v-model="shareInfo.pagePath"
-        ></el-input>
-        <el-button
-          type="text"
-          style="margin-left:10px;"
-          v-clipboard:copy="shareInfo.pagePath"
-          v-clipboard:success="onCopySuccess"
-          v-clipboard:error="onCopyError"
-        >复制</el-button>
+      <div style="width: 100%; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #ccc;">
+        <div>
+          <img
+            :src="shareInfo.imageUrl"
+            alt=""
+            style="width:160px;height:160px;"
+          >
+        </div>
+        <div style="margin: 20px; 0">
+          <a
+            v-if="shareInfo.imageUrl"
+            :href="shareInfo.imageUrl"
+            download
+            style="color: #999;text-decoration: none;"
+          >{{ $t('seckill.downLoad') }}</a>
+          <a
+            v-if="!shareInfo.imageUrl"
+            href="javaScript:void(0);"
+            style="color: #999;text-decoration: none;"
+          >{{ $t('seckill.downLoadFail') }}</a>
+        </div>
       </div>
+      <div>
+        <el-input v-model="shareInfo.pagePath">
+          <el-button
+            slot="append"
+            v-clipboard:copy="shareInfo.pagePath"
+            v-clipboard:success="onCopySuccess"
+            v-clipboard:error="onCopyError"
+          >{{ $t('seckill.copy') }}</el-button>
+        </el-input>
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="shareDialogVisible = false">{{ $t('seckill.cancel') }}</el-button>
+        <el-button
+          type="primary"
+          @click="shareDialogVisible = false"
+        >{{ $t('seckill.sure') }}</el-button>
+      </span>
     </el-dialog>
 
   </div>
@@ -302,11 +307,6 @@ export default {
   },
   data () {
     return {
-      shareDialogVisible: false,
-      shareInfo: {},
-      startTime: '',
-      endTime: '',
-      actName: '',
       tabSwitch: '1',
       tabInfo: [{
         title: this.$t('promoteList.allActivity'),
@@ -323,13 +323,26 @@ export default {
       }, {
         title: this.$t('promoteList.disabledActivity'),
         name: '4'
-      }, {
-        title: '添加好友助力活动',
-        name: '5'
-      }],
+      }
+        // , {
+        //   title: '添加好友助力活动',
+        //   name: '5'
+        // }
+      ],
+      // 搜索
+      searchForm: {
+        actName: '',
+        startTime: '',
+        endTime: '',
+        rewardType: '-1'
+      },
+      tableData: [], // 表格数据
+      shareDialogVisible: false, // 分享弹窗
+      shareInfo: {
+        imageUrl: '',
+        pagePath: ''
+      },
       currentPage: 1,
-      tableData: [],
-      rewardType: '-1',
       pageParams: {
 
       }
@@ -361,17 +374,17 @@ export default {
       })
     },
     onCopySuccess () {
-      this.$message.success('已复制')
+      this.$message.success('复制成功')
     },
     onCopyError () {
-      this.$message.error('复制失败')
+      this.$message.warning('复制失败')
     },
     handleClick () {
       console.log('this.tabSwitch：', this.tabSwitch)
-      this.pageParams.rewardType = this.rewardType
-      this.pageParams.startTime = this.startTime
-      this.pageParams.endTime = this.endTime
-      this.pageParams.actName = this.actName
+      this.pageParams.rewardType = this.searchForm.rewardType
+      this.pageParams.startTime = this.searchForm.startTime
+      this.pageParams.endTime = this.searchForm.endTime
+      this.pageParams.actName = this.searchForm.actName
       this.pageParams.actState = this.tabSwitch
       friendHelpList(this.pageParams).then(res => {
         console.log('表格数据：', res)
@@ -399,25 +412,55 @@ export default {
     },
     // 删除优惠券
     delAct (id) {
-      let delParam = {
-        'id': id
-      }
-      deleteActive(delParam).then(res => {
-        if (res.error === 0) {
-          alert('删除成功！')
-          this.handleClick()
-        }
+      this.$confirm(this.$t('seckill.deleteTip'), {
+        confirmButtonText: this.$t('seckill.sure'),
+        cancelButtonText: this.$t('seckill.cancel'),
+        type: 'warning'
+      }).then(() => {
+        deleteActive({ id: id }).then(res => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('seckill.deleteSuccess') })
+            this.handleClick()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: this.$t('seckill.deleteFail') })
       })
     },
     // 停用启用优惠券
     startOrBlock (id) {
-      let switchParam = {
-        'id': id
+      var tip = ''
+      if (this.tabSwitch === '4') {
+        // 启用
+        tip = this.$t('seckill.startTip')
+      } else {
+        // 停用
+        tip = this.$t('seckill.stopTip')
       }
-      switchAct(switchParam).then(res => {
-        if (res.error === 0) {
-          alert('修改成功！')
-          this.handleClick()
+      this.$confirm(tip, {
+        confirmButtonText: this.$t('seckill.sure'),
+        cancelButtonText: this.$t('seckill.cancel'),
+        type: 'warning'
+      }).then(() => {
+        switchAct({ id: id }).then(res => {
+          if (res.error === 0) {
+            if (this.tabSwitch === '4') {
+              // 启用
+              this.$message.success({ message: this.$t('seckill.startSuccess') })
+            } else {
+              // 停用
+              this.$message.success({ message: this.$t('seckill.stopSuccess') })
+            }
+            this.handleClick()
+          }
+        })
+      }).catch(() => {
+        if (this.tabSwitch === '4') {
+          // 启用
+          this.$message.info({ message: this.$t('seckill.startFail') })
+        } else {
+          // 停用
+          this.$message.info({ message: this.$t('seckill.stopFail') })
         }
       })
     },
@@ -460,6 +503,7 @@ export default {
         path: `/admin/home/main/addHelpAct/${id}`
       })
     },
+
     // 领取明细
     receiveDetails (id) {
       this.$router.push(`/admin/home/main/friendHelp/receiveDetails/${id}`)
@@ -564,13 +608,14 @@ export default {
   margin-left: 65%;
 }
 .opt {
-  display: flex;
-  justify-content: space-around;
-  > .item {
-    font-size: 22px;
-    color: #66b1ff;
+  text-align: center;
+  color: #5a8bff;
+  i {
     cursor: pointer;
+    font-size: 22px;
   }
-
+}
+.inputWidth {
+  width: 200px;
 }
 </style>

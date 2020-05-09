@@ -34,6 +34,7 @@ global.wxComponent({
       type: Object,
       value: null
     },
+    inviteId:Number,
     roomId:String
   },
 

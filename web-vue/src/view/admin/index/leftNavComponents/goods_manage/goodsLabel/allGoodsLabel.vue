@@ -149,7 +149,7 @@
             <el-radio
               v-model="currentData.listPattern"
               :label="1"
-            >样式1</el-radio>
+            >{{$t('allGoodsLabel.labelStyle1')}}</el-radio>
           </div>
           <div style="flex-grow: 1;text-align: center;">
             <div class="imgWrap" @click="currentData.listPattern=2">
@@ -158,7 +158,7 @@
             <el-radio
               v-model="currentData.listPattern"
               :label="2"
-            >样式2</el-radio>
+            >{{$t('allGoodsLabel.labelStyle2')}}</el-radio>
           </div>
           <div style="flex-grow: 1;text-align: center;">
             <div class="imgWrap" @click="currentData.listPattern=3">
@@ -167,7 +167,7 @@
             <el-radio
               v-model="currentData.listPattern"
               :label="3"
-            >样式3</el-radio>
+            >{{$t('allGoodsLabel.labelStyle3')}}</el-radio>
           </div>
           <div style="flex-grow: 1;text-align: center;">
             <div class="imgWrap" @click="currentData.listPattern=4">
@@ -176,7 +176,7 @@
             <el-radio
               v-model="currentData.listPattern"
               :label="4"
-            >样式4</el-radio>
+            >{{$t('allGoodsLabel.labelStyle4')}}</el-radio>
           </div>
         </div>
       </div>

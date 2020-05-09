@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
@@ -245,7 +246,7 @@ public class GoodsMpService extends ShopBaseService {
         if (esUtilSearchService.esState()) {
             try {
                 // 从es获取
-                log.debug("小程序-es-搜索商品列表");
+                log.debug("小程序-es-搜索商品列表-param:" +  Util.toJson(param));
                 goodsListCapsules = getPageIndexGoodsListFromEs(param);
                 log.debug("小程序-es-搜索商品列表结果:{}", goodsListCapsules);
             } catch (Exception e) {
@@ -420,10 +421,6 @@ public class GoodsMpService extends ShopBaseService {
         //添加足迹
         footPrintService.addFootprint(param.getUserId(), param.getGoodsId());
 
-        //添加分销改价信息
-        mpDisGoods.addRebatePrice(param);
-
-
         GoodsDetailMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsDetailMpProcessorFactory.class);
         GoodsDetailCapsuleParam capsuleParam = new GoodsDetailCapsuleParam();
         capsuleParam.setUserId(param.getUserId());
@@ -432,6 +429,10 @@ public class GoodsMpService extends ShopBaseService {
         capsuleParam.setLat(param.getLat());
         capsuleParam.setLon(param.getLon());
         processorFactory.doProcess(goodsDetailMpBo, capsuleParam);
+        if(param.getRebateConfig() != null){
+            mpDisGoods.addRebatePrice(goodsDetailMpBo,param);
+        }
+
         return goodsDetailMpBo;
     }
 
@@ -522,7 +523,7 @@ public class GoodsMpService extends ShopBaseService {
         PageResult<GoodsListMpBo> pageResult = null;
         // 拼接分页
         if (limit != null && offset != null) {
-            offset = offset == null ? 0 : offset;
+            offset = offset == null ? 1 : offset;
             pageResult = getPageResult(selectSeekStepN,offset,limit,GoodsListMpBo.class);
         } else {
             List<GoodsListMpBo> list = selectSeekStepN.fetchInto(GoodsListMpBo.class);
@@ -562,7 +563,7 @@ public class GoodsMpService extends ShopBaseService {
         Record record1 = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_NUMBER,
             GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID, GOODS_BRAND.BRAND_NAME, GOODS.DELIVER_TEMPLATE_ID, GOODS.DELIVER_PLACE, GOODS.GOODS_WEIGHT, GOODS.DEL_FLAG, GOODS.IS_ON_SALE,
             GOODS.GOODS_IMG, GOODS.GOODS_VIDEO_ID, GOODS.GOODS_VIDEO, GOODS.GOODS_VIDEO_IMG, GOODS.GOODS_VIDEO_SIZE,
-            GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM, GOODS.IS_CARD_EXCLUSIVE, GOODS.IS_PAGE_UP, GOODS.GOODS_PAGE_ID, GOODS.GOODS_AD, GOODS.GOODS_DESC, GOODS.CAN_REBATE)
+            GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM, GOODS.IS_CARD_EXCLUSIVE, GOODS.IS_PAGE_UP, GOODS.GOODS_PAGE_ID, GOODS.GOODS_AD, GOODS.GOODS_DESC, GOODS.CAN_REBATE,GOODS.CAN_REBATE,GOODS.ROOM_ID)
             .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
             .where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny();
         if (record1 == null) {
@@ -623,13 +624,13 @@ public class GoodsMpService extends ShopBaseService {
     }
 
     /**
-     * 根据商家分类获取对应商品的ID集合
-     *
+     * 根据商家分类id和售罄规则获取对应上架商品的ID集合
      * @param sortId 商家分类ID
      * @return 商品ID集合
      */
     public List<Integer> getGoodsIdsBySortIdDao(Integer sortId) {
-        return db().select(GOODS.GOODS_ID).from(GOODS).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.SORT_ID.eq(sortId))).fetch(GOODS.GOODS_ID);
+        Condition goodsBaseCondition = getGoodsBaseCondition();
+        return db().select(GOODS.GOODS_ID).from(GOODS).where(goodsBaseCondition.and(GOODS.SORT_ID.eq(sortId))).fetch(GOODS.GOODS_ID);
     }
 
     /**

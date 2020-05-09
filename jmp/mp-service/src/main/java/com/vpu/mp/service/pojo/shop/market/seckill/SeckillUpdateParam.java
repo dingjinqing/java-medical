@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.seckill;
 
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import lombok.Data;
 
 import javax.validation.constraints.Max;
@@ -34,5 +34,11 @@ public class SeckillUpdateParam {
     private String cardId;
 
     /** 分享设置*/
-    private ShopShareConfig shareConfig;
+    private PictorialShareConfig shareConfig;
+
+    /** 秒杀商品规格价格设置实体*/
+    private SeckillProductAddParam[] secKillProduct;
+
+    /**优先级*/
+    private Byte first;
 }

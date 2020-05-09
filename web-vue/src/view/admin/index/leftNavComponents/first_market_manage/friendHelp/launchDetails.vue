@@ -80,7 +80,7 @@
         >
           <template slot-scope="scope">
             <el-button
-              @click="getUser()"
+              @click="getUser(scope.row.userId)"
               type="text"
             > {{scope.row.username}} </el-button>
           </template>
@@ -212,9 +212,12 @@ export default {
       this.tableData = data
     },
     // 用户
-    getUser () {
+    getUser (id) {
       this.$router.push({
-        path: `/admin/home/main/membershipInformation`
+        path: '/admin/home/main/membershipInformation',
+        query: {
+          userId: id
+        }
       })
     },
     // 参与人

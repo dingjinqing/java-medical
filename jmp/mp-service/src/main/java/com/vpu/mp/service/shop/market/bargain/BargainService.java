@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -30,6 +31,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
 import jodd.util.StringUtil;
@@ -64,26 +66,29 @@ import static com.vpu.mp.db.shop.tables.Goods.GOODS;
  */
 @Service
 public class BargainService extends ShopBaseService  {
-	
-	/**
-	 *  砍价发起记录
-	 */
-	@Autowired public BargainRecordService bargainRecord;
+
+    /**
+     * 砍价发起记录
+     */
+    @Autowired
+    public BargainRecordService bargainRecord;
 
     @Autowired
     private QrCodeService qrCode;
     @Autowired
     private DomainConfig domainConfig;
+    @Autowired
+    private EsDataUpdateMqService esDataUpdateMqService;
 
-	
-	/**
-	 * 活动类型 固定人数
-	 */
-	public static final byte BARGAIN_TYPE_FIXED = 0;
-	/**
-	 * 活动类型 砍到区间内结算 
-	 */
-	public static final byte BARGAIN_TYPE_RANDOM = 1;
+
+    /**
+     * 活动类型 固定人数
+     */
+    public static final byte BARGAIN_TYPE_FIXED = 0;
+    /**
+     * 活动类型 砍到区间内结算
+     */
+    public static final byte BARGAIN_TYPE_RANDOM = 1;
 
     /**
      * 任意金额结算模式的单次帮砍金额模式：0固定金额
@@ -113,11 +118,11 @@ public class BargainService extends ShopBaseService  {
 	public PageResult<BargainPageListQueryVo> getPageList(BargainPageListQueryParam param) {
 		SelectWhereStep<? extends Record> select = db().select(
 				BARGAIN.ID,BARGAIN.BARGAIN_NAME,BARGAIN.BARGAIN_TYPE,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.STATUS,
-				BARGAIN.GOODS_ID,BARGAIN.STOCK
+				BARGAIN.GOODS_ID,BARGAIN.STOCK,BARGAIN.FIRST
 				).
 				from(BARGAIN);
         select = buildOptions(select,param);
-		select.orderBy(BARGAIN.CREATE_TIME.desc());
+		select.orderBy(BARGAIN.FIRST.desc(),BARGAIN.CREATE_TIME.desc());
         PageResult<BargainPageListQueryVo> page = getPageResult(select,param.getCurrentPage(),param.getPageRows(),BargainPageListQueryVo.class);
 		page.dataList.forEach(vo -> {
             vo.setSuccessNumber(bargainRecord.getBargainRecordNumberByStatus(vo.getId(), BargainRecordService.STATUS_SUCCESS));
@@ -213,6 +218,7 @@ public class BargainService extends ShopBaseService  {
         if(param.getStartTime().before(DateUtil.getLocalDateTime()) && param.getEndTime().after(DateUtil.getLocalDateTime())){
             //活动已生效
             saas.getShopApp(getShopId()).shopTaskService.bargainTaskService.monitorGoodsType();
+            esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(record.getGoodsId()), getShopId(), DBOperating.UPDATE);
         }
 	}
 	
@@ -246,8 +252,10 @@ public class BargainService extends ShopBaseService  {
             }
         });
 
-		//刷新goodsType
-		saas.getShopApp(getShopId()).shopTaskService.bargainTaskService.monitorGoodsType();
+        BargainRecord bargainRecord = db().fetchAny(BARGAIN, BARGAIN.ID.eq(param.getId()));
+        //刷新goodsType
+        saas.getShopApp(getShopId()).shopTaskService.bargainTaskService.monitorGoodsType();
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(bargainRecord.getGoodsId()), getShopId(), DBOperating.UPDATE);
 	}
 
     /**
@@ -260,8 +268,10 @@ public class BargainService extends ShopBaseService  {
             set(BARGAIN.DEL_TIME,DateUtil.getLocalDateTime()).
             where(BARGAIN.ID.eq(id)).
             execute();
+        BargainRecord bargainRecord = db().fetchAny(BARGAIN, BARGAIN.ID.eq(id));
         //刷新goodsType
         saas.getShopApp(getShopId()).shopTaskService.bargainTaskService.monitorGoodsType();
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(bargainRecord.getGoodsId()), getShopId(), DBOperating.UPDATE);
     }
 	
 	/**
@@ -391,18 +401,13 @@ public class BargainService extends ShopBaseService  {
     /**
      * 获取小程序码
      */
-    public ShareQrCodeVo getMpQrCode(Integer id) {
-
-        //String pathParam="paramId="+id;
-        //String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.BARGAIN_ITEM, pathParam);
-
-        int goodsId = db().select(BARGAIN.GOODS_ID).from(BARGAIN).where(BARGAIN.ID.eq(id)).fetchAny().into(Integer.class);
-        String pathParam=String.format("gid=%d&aid=%d&atp=%d", goodsId, id, BaseConstant.ACTIVITY_TYPE_BARGAIN);
-        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, pathParam);
+    public ShareQrCodeVo getMpQrCode(Integer bargainId) {
+        String pathParam = "pageFrom=3&actId=" + bargainId;
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GOODS_SEARCH, pathParam);
 
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.GOODS_ITEM.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.GOODS_SEARCH.getPathUrl(pathParam));
         return vo;
     }
 
@@ -516,5 +521,40 @@ public class BargainService extends ShopBaseService  {
 
     public BargainGoodsRecord getBargainGoods(int bargainId,int goodsId){
         return db().fetchAny(BARGAIN_GOODS,BARGAIN_GOODS.BARGAIN_ID.eq(bargainId).and(BARGAIN_GOODS.GOODS_ID.eq(goodsId)));
+    }
+
+    /**
+     * 从admin扫码活动码查看活动下的商品信息
+     * @param activityId 活动id
+     * @param baseCondition 过滤商品id基础条件
+     * @return 可用商品id集合
+     */
+    public List<Integer> getBargainCanUseGoodsIds(Integer activityId, Condition baseCondition) {
+        Timestamp now = DateUtil.getLocalDateTime();
+        BargainRecord record = getBargainActById(activityId);
+        if (record == null || record.getEndTime().compareTo(now) <= 0) {
+            logger().debug("小程序-admin-bargain-扫码进小程序搜索列表页-活动已删除或停止");
+            return null;
+        }
+
+        List<Integer> goodsIds = db().selectDistinct(BARGAIN_GOODS.GOODS_ID)
+            .from(BARGAIN_GOODS).innerJoin(GOODS).on(BARGAIN_GOODS.GOODS_ID.eq(GOODS.GOODS_ID))
+            .where(baseCondition.and(BARGAIN_GOODS.BARGAIN_ID.eq(activityId)))
+            .fetch(BARGAIN_GOODS.GOODS_ID);
+
+        Integer first = record.getFirst();
+        // 未删除，停止，时间有效的活动
+        Condition activityCondition = BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(BARGAIN.END_TIME.gt(now));
+        // 时间上有交集
+        Condition timeCondition = BARGAIN.START_TIME.le(record.getEndTime()).and(BARGAIN.START_TIME.gt(record.getStartTime())).or(BARGAIN.END_TIME.gt(record.getStartTime()).and(BARGAIN.END_TIME.lt(record.getEndTime())));
+        // 级别要高，或者级别相同但是创建的较晚
+        Condition levelCondition = BARGAIN.FIRST.gt(first).or(BARGAIN.FIRST.eq(first).and(BARGAIN.CREATE_TIME.gt(record.getCreateTime())));
+
+        List<Integer> otherGoodsIds = db().selectDistinct(BARGAIN_GOODS.GOODS_ID).from(BARGAIN).innerJoin(BARGAIN_GOODS).on(BARGAIN.ID.eq(BARGAIN_GOODS.BARGAIN_ID))
+            .where(activityCondition.and(timeCondition).and(levelCondition).and(BARGAIN_GOODS.GOODS_ID.in(goodsIds)))
+            .fetch(BARGAIN_GOODS.GOODS_ID);
+
+        goodsIds.removeAll(otherGoodsIds);
+        return goodsIds;
     }
 }

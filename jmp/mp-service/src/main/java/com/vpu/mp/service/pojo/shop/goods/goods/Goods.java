@@ -182,4 +182,7 @@ public class Goods {
 
     /**是否是使用默认规格 0否 1是*/
     private Byte isDefaultProduct;
+
+    /**直播间id*/
+    private Integer roomId;
 }

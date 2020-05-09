@@ -23,13 +23,42 @@
             />
           </el-form-item>
           <el-form-item :label="$t('groupIntegration.joinTime')">
-            <el-date-picker
-              style="width: 320px"
-              size="small"
-              type="datetimerange"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              v-model="timeRange"
-            ></el-date-picker>
+          <section style="display: flex">
+            <div>
+              <el-form-item
+                prop='startTime'
+                style="margin-bottom:0;"
+              >
+                <el-date-picker
+                  v-model="queryForm.startTime"
+                  type="date"
+                  :placeholder="$t('groupIntegration.pleaseSelectStartTime')"
+                  size="small"
+                  style="width: 150px;"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                >
+                </el-date-picker>
+              </el-form-item>
+            </div>
+            <span style="margin: 1px 5px 0px -6px;">{{$t('groupIntegration.to')}}</span>
+            <div>
+              <el-form-item
+                prop="endTime"
+                style="margin-bottom:0"
+              >
+                <el-date-picker
+                  v-model="queryForm.endTime"
+                  type="date"
+                  size="small"
+                  :placeholder="$t('groupIntegration.pleaseSelectEndTime')"
+                  style="width: 150px;"
+                  value-format="yyyy-MM-dd [23]:[59]:[59]"
+                  default-time="23:59:59"
+                >
+                </el-date-picker>
+              </el-form-item>
+            </div>
+          </section>
           </el-form-item>
         </section>
 
@@ -223,13 +252,13 @@ export default {
   },
   methods: {
     loadData () {
-      if (this.timeRange === null) {
-        this.queryForm.startTime = ''
-        this.queryForm.endTime = ''
-      } else {
-        this.queryForm.startTime = this.timeRange[0]
-        this.queryForm.endTime = this.timeRange[1]
-      }
+      // if (this.timeRange === null) {
+      //   this.queryForm.startTime = ''
+      //   this.queryForm.endTime = ''
+      // } else {
+      //   this.queryForm.startTime = this.timeRange[0]
+      //   this.queryForm.endTime = this.timeRange[1]
+      // }
       this.pageParams.actId = this.queryForm.actId
       this.pageParams.mobile = this.queryForm.mobile
       this.pageParams.username = this.queryForm.username
@@ -241,6 +270,8 @@ export default {
       this.pageParams.maxIntegration = this.queryForm.maxIntegration
       this.pageParams.isNew = this.queryForm.isNew
       this.pageParams.groupId = this.queryForm.groupId
+      this.pageParams.startTime = this.queryForm.startTime
+      this.pageParams.endTime = this.queryForm.endTime
       detailGroupIntegration(this.pageParams).then(res => {
         console.log(res)
         this.handData(res.content.dataList)

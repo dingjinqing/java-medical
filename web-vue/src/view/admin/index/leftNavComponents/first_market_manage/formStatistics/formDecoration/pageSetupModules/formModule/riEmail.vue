@@ -9,6 +9,7 @@
             v-model="modulesSaveData.form_title"
             size="small"
             :maxlength="20"
+            :disabled="isProhibit"
           ></el-input>
         </div>
         <div class="list">
@@ -18,10 +19,12 @@
         <div class="list">
           <span>{{$t('formDecorationModel.presentationForm')}}</span>
           <el-radio
+            :disabled="isProhibit"
             v-model="modulesSaveData.image_type"
             :label="1"
           >{{$t('formDecorationModel.icons')}}</el-radio>
           <el-radio
+            :disabled="isProhibit"
             v-model="modulesSaveData.image_type"
             :label="0"
           >{{$t('formDecorationModel.noIcon')}}</el-radio>
@@ -52,7 +55,10 @@
         </div>
         <div class="list">
           <span>{{$t('formDecorationModel.conditionValidation')}}</span>
-          <el-checkbox v-model="modulesSaveData.confirm">{{$t('formDecorationModel.mustFill')}}</el-checkbox>
+          <el-checkbox
+            :disabled="isProhibit"
+            v-model="modulesSaveData.confirm"
+          >{{$t('formDecorationModel.mustFill')}}</el-checkbox>
         </div>
         <!--模块私有end-->
         <div class="sure">
@@ -86,6 +92,7 @@ export default {
   },
   data () {
     return {
+      isProhibit: false, // 是否全部禁用
       imageTuneUp: false, // 图片选择弹窗调起
       modulesSaveData: {
         'form_title': '姓名',
@@ -97,6 +104,10 @@ export default {
     }
   },
   mounted () {
+    this.$nextTick(() => {
+      console.log(localStorage.getItem('isProhibitForm'))
+      this.isProhibit = JSON.parse(localStorage.getItem('isProhibitForm'))
+    })
     // 初始化语言
     this.langDefault()
   },
@@ -106,6 +117,11 @@ export default {
       handler (newData) {
         console.log(newData, this.modulesData)
         if (this.modulesData !== -1) {
+          if (this.modulesData.confirm === 1) {
+            this.modulesData.confirm = true
+          } else {
+            this.modulesData.confirm = false
+          }
           this.modulesSaveData = this.modulesData
         }
       },
@@ -123,6 +139,7 @@ export default {
   methods: {
     // 选择弹窗调起
     handleToImageDialog () {
+      if (this.isProhibit) return
       this.imageTuneUp = !this.imageTuneUp
     },
     // 选择图片弹窗选中数据回传
@@ -132,6 +149,7 @@ export default {
     },
     // 点击确定按钮
     handleToClickSure () {
+      if (this.isProhibit) return
       this.modulesSaveData.ok_ajax = 1
       this.$message.success({
         message: this.$t('formDecorationModel.savedSuccessfully'),

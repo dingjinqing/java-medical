@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
@@ -24,6 +25,7 @@ import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData.MaSubscribeDataBuilder;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
+import com.vpu.mp.service.saas.shop.ThirdPartyMsgServices;
 import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.wechat.OpenPlatform;
@@ -52,6 +54,9 @@ public class AdminTestController extends AdminBaseController {
 
 	@Autowired
     private WechatTaskService wechatTaskService;
+	
+	@Autowired
+	private ThirdPartyMsgServices thirdPartyMsgServices;
 
 	@RequestMapping(value = "/api/admin/test/addtemplate")
 	public JsonResult addtemplate() throws Exception {
@@ -168,7 +173,7 @@ public class AdminTestController extends AdminBaseController {
 						MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(data).build())
 				.page(null).shopId(adminAuth.user().getLoginShopId())
 				.userIdList(arrayList)
-				.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+				.type(RabbitParamConstant.Type.LOTTERY_TEAM).build();
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), adminAuth.user().getLoginShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());		
 		String[][] data3 = new String[][] { { "金色传说测试" }, { "传说" }, { Util.getdate("yyyy-MM-dd HH:mm:ss")}};
 		return success();
@@ -197,7 +202,7 @@ public class AdminTestController extends AdminBaseController {
 						MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(data).build())
 				.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.COUPON_EXPIRE).data(mpData).build())
 				.page(page).shopId(adminAuth.user().getLoginShopId()).userIdList(arrayList)
-				.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+				.type(RabbitParamConstant.Type.LOTTERY_TEAM).build();
 		//想混合发RabbitParamConstant选小程序的
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(),
 				adminAuth.user().getLoginShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
@@ -233,5 +238,12 @@ public class AdminTestController extends AdminBaseController {
         logger().info("直播列表导入测试结束");
         return success();
 
+    }
+    
+    @RequestMapping(value = "/api/admin/test/sendOrderMsg")
+    public JsonResult testSendOrderMsg() {
+    	OrderInfoRecord order = saas.getShopApp(245547).member.order.getOrderByOrderSn("P202004092146259689");
+    	thirdPartyMsgServices.thirdPartService(order);
+		return success();
     }
 }

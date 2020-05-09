@@ -75,22 +75,8 @@
         </el-table-column>
 
         <el-table-column
-          prop="goodsName"
-          :label="$t('bargainList.goodsName')"
-          align="center"
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop="goodsNumber"
-          :label="$t('bargainList.goodsNumber')"
-          align="center"
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop="stock"
-          :label="$t('bargainList.stock')"
+          prop="first"
+          :label="$t('bargainList.level')"
           align="center"
         >
         </el-table-column>

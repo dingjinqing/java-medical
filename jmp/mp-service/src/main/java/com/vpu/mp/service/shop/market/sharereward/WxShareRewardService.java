@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
+import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
@@ -190,7 +191,7 @@ public class WxShareRewardService extends ShopBaseService {
             return INTEGER_ZERO;
         }
         // 是否参加过当前商品分享有礼活动
-        int count = db().fetchCount(ATTEND, AWARD_RECORD.USER_ID.eq(userId)
+        int count = db().fetchCount(ATTEND.leftJoin(AWARD_RECORD).on(ATTEND.RECORD_ID.eq(AWARD_RECORD.ID)), AWARD_RECORD.USER_ID.eq(userId)
             .and(AWARD_RECORD.GOODS_ID.eq(goodsId))
             .and(AWARD_RECORD.CREATE_TIME.greaterThan(Timestamp.valueOf(LocalDate.now().atStartOfDay()))));
         if (count == 0) {
@@ -219,7 +220,24 @@ public class WxShareRewardService extends ShopBaseService {
         // 获取活动信息详情
         ShareRewardInfoVo info = shareReward.getShareInfo(activityId);
         List<ShareRule> rules = info.getShareRules();
-        rules.forEach(rule -> rule.setUserInfoList(getBatchUserList(getAttendUserList(userId, goodsId, activityId, rule.getRuleLevel()))));
+        ShareAwardRecordRecord awardRecord = shareReward.getShareAwardRecord(activityId, userId, goodsId);
+        rules.forEach(rule -> {
+            rule.setUserInfoList(getBatchUserList(getAttendUserList(userId, goodsId, activityId, rule.getRuleLevel())));
+            if (awardRecord != null) {
+                switch (rule.getRuleLevel()) {
+                    case 1:
+                        rule.setShareState(awardRecord.getFirstAward());
+                        break;
+                    case 2:
+                        rule.setShareState(awardRecord.getSecondAward());
+                        break;
+                    case 3:
+                        rule.setShareState(awardRecord.getThirdAward());
+                        break;
+                    default:
+                }
+            }
+        });
         // 获取每日用户可分享次数上限参数
         int limitNum = shareReward.getDailyShareAwardValue();
         return GoodsShareDetail.builder().dailyShareLimit(limitNum).infoVo(info).build();
@@ -491,7 +509,7 @@ public class WxShareRewardService extends ShopBaseService {
             , {remake, "#173177"}};
         RabbitMessageParam param = RabbitMessageParam.builder()
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.WINNING_RESULT).data(data).build())
-            .page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+            .page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.LOTTERY_TEAM)
             .build();
         logger().info("发送分享有礼奖品发放成功模板消息");
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
@@ -502,7 +520,7 @@ public class WxShareRewardService extends ShopBaseService {
             case 1:
                 return "pages/integral/integral";
             case 2:
-                return "pages/couponlist/couponlist";
+                return "pages/coupon/coupon";
             case 3:
                 return "pages/lottery/lottery?lottery_id=" + lotteryId;
             default:
@@ -518,14 +536,14 @@ public class WxShareRewardService extends ShopBaseService {
                 String temp;
                 CouponView view = couponService.getCouponViewById(rule.getCoupon());
                 switch (view.getActCode()) {
-                    case "random":
+                    case CouponConstant.ACT_CODE_RANDOM:
                         // 分裂优惠卷
                         temp = "最高" + view.getRandomMax() + "元优惠券";
                         break;
-                    case "voucher":
+                    case CouponConstant.ACT_CODE_VOUCHER:
                         temp = view.getDenomination() + "元优惠券";
                         break;
-                    case "discount":
+                    case CouponConstant.ACT_CODE_DISCOUNT:
                         temp = view.getDenomination() + "折优惠券";
                         break;
                     default:

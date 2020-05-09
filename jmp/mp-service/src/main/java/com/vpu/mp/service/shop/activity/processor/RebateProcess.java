@@ -52,9 +52,6 @@ public class RebateProcess implements Processor,ActivityGoodsListProcessor,Goods
 
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
-        if(Boolean.TRUE) {
-            return;
-        }
         log.info("下单分销计算start");
         calculate.calculatePrice(param);
         log.info("下单分销计算end");
@@ -67,9 +64,6 @@ public class RebateProcess implements Processor,ActivityGoodsListProcessor,Goods
      */
     @Override
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        if(Boolean.TRUE) {
-            return;
-        }
         log.info("下单分销save start");
         calculate.rebate(param,order );
         log.info("下单分销save end");

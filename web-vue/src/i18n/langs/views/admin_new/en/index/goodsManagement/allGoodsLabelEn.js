@@ -16,8 +16,18 @@ export const en = {
   goodsListPage: 'Goods List Page',
   goodsSelectPage: 'Goods Select Page',
   labelStyle: 'Label Style',
+  labelStyle1: 'Style A',
+  labelStyle2: 'Style A',
+  labelStyle3: 'Style A',
+  labelStyle4: 'Style A',
   confirm: 'OK',
   cancel: 'Cancel',
   confirmDelete: 'Confrim Delete？',
-  confirmTip: 'Tip'
+  confirmTip: 'Tip',
+  notAddGoods: 'Not add goods',
+  alreadySelected: 'Already Selected',
+  selectGoods: 'select goods',
+  selectSorts: 'select sorts',
+  isResetGoodsLabels: 'is select goods labels？',
+  resetGoodsLabels: 'reset goods labels'
 }

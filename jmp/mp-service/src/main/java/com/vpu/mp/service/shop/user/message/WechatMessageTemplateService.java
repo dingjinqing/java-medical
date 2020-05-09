@@ -178,14 +178,16 @@ public class WechatMessageTemplateService extends ShopBaseService {
      * @param userIdList
      * @return 相关信息
      */
-    public List<WxUserInfo> getUserInfoList(List<Integer> userIdList,Integer type,Integer shopId) {
+    public List<WxUserInfo> getUserInfoList(List<Integer> userIdList,Integer type,Integer shopId,RabbitMessageParam param) {
     	List<WxUserInfo> resultList = new ArrayList<>(userIdList.size());
     	MpAuthShopRecord authShopByShopId = mpAuthShopService.getAuthShopByShopId(shopId);
     	if( type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE_NO_USER) ) {
+    		//用户没有关注小程序没有unionId的，进行发公众号
     		for(Integer userId:userIdList) {
     			MpOfficialAccountUserRecord accountUserListByRecord =
     					saas.getShopApp(shopId).officialAccountUser.getAccountUserListByRecid(userId);
     			WxUserInfo info=WxUserInfo.builder()
+    					.userId(userId)
     					.mpAppId(accountUserListByRecord.getAppId())
     					.mpOpenId(accountUserListByRecord.getOpenid())
     					.maAppId(authShopByShopId.getAppId())
@@ -193,50 +195,43 @@ public class WechatMessageTemplateService extends ShopBaseService {
     			resultList.add(info);
     		}
     		return resultList;
-    	}if( type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE) ) {
+    	}if( null!=param.getMpTemplateData() && !type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE_NO_USER)) {
+    		//正常发公众号的
     		for(Integer userId:userIdList) {
 				MpOfficialAccountUserRecord accountUserListByRecord = saas.getShopApp(shopId).officialAccountUser
 						.getAccountUserByUserId(userId);
     			//通过shopId得到小程序信息
     			WxUserInfo info=WxUserInfo.builder()
+    					.userId(userId)
     					.mpAppId(accountUserListByRecord.getAppId())
     					.mpOpenId(accountUserListByRecord.getOpenid())
     					.maAppId(authShopByShopId.getAppId())
                     .build();
     			resultList.add(info);
     		}
-    		return resultList;
-    	}else if( type.equals(RabbitParamConstant.Type.GENERAL_TYPE)||type>2000 ){
-            String appId = mpAuthShopService.getAuthShopByShopId(getShopId()).get(MP_AUTH_SHOP.APP_ID);
+    		//return resultList;
+    	}else if( param.getMaTemplateData()!=null ||type>4000 ){
+    		//发小程序的
+            //String appId = mpAuthShopService.getAuthShopByShopId(getShopId()).get(MP_AUTH_SHOP.APP_ID);
             List<UserRecord> userList = userService.getUserRecordByIds(userIdList);
-            Map<Integer,UserRecord> userMap = userList.stream()
-                .collect(Collectors.toMap(UserRecord::getUserId, x->x));
-            List<MpOfficialAccountUserRecord> accountUserList =
-            		saas.getShopApp(shopId).officialAccountUser.getAccountUserListByUnionIds(
-                    userList.stream()
-                        .map(x->x.get(USER.WX_UNION_ID))
-                        .collect(Collectors.toList())
-                );
-            Map<String,MpOfficialAccountUserRecord> accountUserAccountMap = accountUserList.stream()
-                .collect(Collectors.toMap(MpOfficialAccountUserRecord::getUnionid, x->x));
-            userIdList.stream()
-                .filter(userMap::containsKey)
-                .forEach(x->{
-                    UserRecord user= userMap.get(x);
-                    WxUserInfo.WxUserInfoBuilder builder = WxUserInfo.builder()
-                        .userId(x)
-                        .maAppId(appId)
-                        .maOpenId(user.getWxOpenid());
-                    if( accountUserAccountMap.containsKey(user.getWxUnionId()) ){
-                        MpOfficialAccountUserRecord record = accountUserAccountMap.get(user.getWxUnionId());
-                        builder.isSubscribe(Boolean.TRUE)
-                            .mpAppId(record.getAppId())
-                            .mpOpenId(record.getOpenid());
-                    }
-                    resultList.add(builder.build());
-                });
+            for (UserRecord userRecord : userList) {
+            	if(!haveInfo(userRecord.getUserId(), resultList)) {
+            		WxUserInfo info=WxUserInfo.builder()
+        					.userId(userRecord.getUserId()).build();
+            		resultList.add(info);
+            	}
+			}
             return resultList;
         }
         return resultList;
+    }
+    
+    private boolean haveInfo(Integer userId,List<WxUserInfo> resultList) {
+    	for (WxUserInfo wxUserInfo : resultList) {
+			if(wxUserInfo.getUserId().equals(userId)) {
+				return true;
+			}
+		}
+		return false;
     }
 }

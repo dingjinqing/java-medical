@@ -33,18 +33,8 @@ public class WxAppGroupBuyController extends WxAppBaseController {
     @PostMapping("/api/wxapp/groupbuy/info")
     public JsonResult getGroupBuyInfo(@RequestBody @Valid GroupBuyInfoParam param){
         WxAppSessionUser user = wxAppAuth.user();
-        GroupBuyListRecord grouperInfo = shop().groupBuyList.getGrouperByGroupId(param.getGroupId());
-        if (Objects.isNull(grouperInfo)){
-            logger().debug("拼团不存在或已经删除,[groupId:{}]",param.getGroupId());
-            return fail(JsonResultCode.GROUP_BUY_GROUPID_DOES_NOT_EXIST);
-        }
-        Byte isGroup;
-        if (user.getUserId().equals(grouperInfo.getUserId())){
-            isGroup=IS_GROUPER_Y;
-        }else {
-            isGroup =IS_GROUPER_N;
-        }
-        GroupBuyInfoVo groupBuyInfo = shop().groupBuy.getGroupBuyInfo(user.getUserId(),isGroup,grouperInfo.getCreateTime(), param.getGroupId(),grouperInfo.getActivityId(),getLang());
+        param.setUserId(user.getUserId());
+        GroupBuyInfoVo groupBuyInfo = shop().groupBuy.getGroupBuyInfo(param,getLang());
         return success(groupBuyInfo);
     }
 

@@ -264,7 +264,7 @@ public class StoreReservation extends ShopBaseService {
         // 设置服务起始日期, 不能预约过期的服务, 持续时间最多两个月
         LocalDate now = LocalDate.now();
         LocalDate startDate = service.getStartDate().toLocalDate().compareTo(now) > 0 ? service.getStartDate().toLocalDate() : now;
-        LocalDate twoMonthsLater = service.getStartDate().toLocalDate().plus(2, ChronoUnit.MONTHS);
+        LocalDate twoMonthsLater = startDate.plus(2, ChronoUnit.MONTHS);
         LocalDate endDate = service.getEndDate().toLocalDate().compareTo(twoMonthsLater) <= 0 ? service.getEndDate().toLocalDate() : twoMonthsLater;
         log.debug("服务有效预约日期为:{} - {}", startDate, endDate);
 
@@ -593,7 +593,7 @@ public class StoreReservation extends ShopBaseService {
             , {remake, "#173177"}};
         RabbitMessageParam param = RabbitMessageParam.builder()
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.APPOINTMENT_SUCCESS).data(data).build())
-            .page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+            .page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.BOOKING_SUCCESS)
             .build();
         logger().info("预约成功通知发送模板消息");
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());

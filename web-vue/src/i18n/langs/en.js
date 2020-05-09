@@ -298,6 +298,10 @@ import {
   en as couponReceive
 } from './views/admin_new/en/index/marketManagement/ordinaryCoupon/couponReceiveEn'
 // 好友助力
+// 营销管理  积分兑换
+import {
+  en as mintegralExchange
+} from './views/admin_new/en/index/marketManagement/integralExchange/mintegralExchangeEn'
 import {
   en as promoteList
 } from './views/admin_new/en/index/marketManagement/friendPromote/promoteListEn'
@@ -520,6 +524,10 @@ import {
 import {
   en as serviceConfig
 } from './views/admin_new/en/index/storeManagement/storeService/serviceConfigEn'
+// 门店权限
+import {
+  en as storePermission
+} from './views/admin_new/en/index/storeManagement/storePermission/storePermissionEn'
 // 门店公告
 import {
   en as storeAnnouncement
@@ -1100,6 +1108,7 @@ const en = {
   payConfiguration, // 支付配置
   templateMessage, // 运费模板
   serviceConfig, // 门店服务配置
+  storePermission, // 门店权限
   storeAnnouncement, // 门店公告
   decorationHome, // 小程序页面装修home页
   pageSetUp, // 小程序页面设置
@@ -1136,6 +1145,7 @@ const en = {
   goodsStaticties, // 商品统计
   formDecorationHome, // 表单装修主页
   formStatisticsHome, // 表单列表主页
-  formDecorationModel // 表单装修所有模块
+  formDecorationModel, // 表单装修所有模块
+  mintegralExchange // 营销活动  积分兑换模块
 }
 export default en

@@ -35,7 +35,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record3;
 import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -118,38 +117,37 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
         Map<Integer, GoodsPrdMpVo> prdMap = capsule.getProducts().stream().collect(Collectors.toMap(GoodsPrdMpVo::getPrdId, Function.identity()));
         List<PreSalePrdMpVo> preSalePrdMpVos = goodsPreSaleInfo.getPreSalePrdMpVos();
 
-        int goodsNum = 0;
+        int stock = 0;
         int saleNumber = 0;
         List<PreSalePrdMpVo> newPreSalePrds = new ArrayList<>(prdMap.size());
         for (PreSalePrdMpVo preSalePrd : preSalePrdMpVos) {
             GoodsPrdMpVo goodsPrdMpVo = prdMap.get(preSalePrd.getProductId());
             if (goodsPrdMpVo == null) {
-                prdMap.remove(preSalePrd.getProductId());
                 continue;
             }
             // 库存数量从新设置
             if (preSalePrd.getStock() > goodsPrdMpVo.getPrdNumber()) {
                 preSalePrd.setStock(goodsPrdMpVo.getPrdNumber());
             }
-            goodsNum+=preSalePrd.getStock();
+            stock+=preSalePrd.getStock();
             saleNumber+=preSalePrd.getSaleNumber();
             preSalePrd.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
             newPreSalePrds.add(preSalePrd);
         }
 
-        capsule.setProducts(new ArrayList<>(prdMap.values()));
-        capsule.setGoodsNumber(goodsNum);
-        if (goodsNum == 0 && BaseConstant.needToConsiderNotHasNum(goodsPreSaleInfo.getActState())) {
+        goodsPreSaleInfo.setPreSalePrdMpVos(newPreSalePrds);
+        goodsPreSaleInfo.setStock(stock);
+        goodsPreSaleInfo.setSaleNumber(saleNumber);
+        capsule.setActivity(goodsPreSaleInfo);
+
+        if (stock == 0 && BaseConstant.needToConsiderNotHasNum(goodsPreSaleInfo.getActState())) {
             log.debug("小程序-商品详情-预售商品数量已用完");
             goodsPreSaleInfo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
         }
-        if (prdMap.size() == 0) {
+        if (newPreSalePrds.size() == 0) {
             log.debug("小程序-商品详情-预售活动-商品规格信息和活动规格信息无交集");
             goodsPreSaleInfo.setActState(BaseConstant.ACTIVITY_STATUS_NO_PRD_TO_USE);
         }
-        capsule.setGoodsSaleNum(saleNumber);
-        goodsPreSaleInfo.setPreSalePrdMpVos(newPreSalePrds);
-        capsule.setActivity(goodsPreSaleInfo);
     }
 
     @Override
@@ -257,8 +255,6 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
                     seckillProductInfo.setActivityId(record5s.get(PRESALE.ID));
                     seckillProductInfo.setProductPrice(record5s.get(PRESALE_PRODUCT.PRESALE_PRICE));
                     goods.getCartActivityInfos().add(seckillProductInfo);
-                    goods.setActivityType(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
-                    goods.setActivityId(record5s.get(PRESALE.ID));
                     goods.setIsChecked(CartConstant.CART_NO_CHECKED);
                     goods.setBuyStatus(BaseConstant.NO);
                     if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){

@@ -70,7 +70,8 @@ public enum RemarkTemplate {
 	OPEN_CARD_SEND(3005,RemarkMessage.OPEN_CARD_SEND),
 	/**	系统检测升级 */
 	SYSTEM_UPGRADE(3006,RemarkMessage.SYSTEM_UPGRADE),
-
+    /**	会员卡续费 */
+    CARD_RENEW(3007,RemarkMessage.SYSTEM_UPGRADE),
 
 
 
@@ -105,9 +106,12 @@ public enum RemarkTemplate {
 	STORE_PAYMEMBT(4010,RemarkMessage.STORE_PAYMEMBT),
 	/**表单统计*/
 	MSG_FORM_DECORATION_GIFT(4011,RemarkMessage.MSG_FORM_DECORATION_GIFT),
+    /**优惠券礼包下单 */
+    COUPON_PACK_ORDER(4012,RemarkMessage.MSG_COUPON_PACK_ORDER),
 
 
-	/**
+
+    /**
      * 管理员
      */
 	/**	管理员操作 */

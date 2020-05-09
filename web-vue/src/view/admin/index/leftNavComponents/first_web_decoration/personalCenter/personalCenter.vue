@@ -488,7 +488,7 @@
                   style="display: flex;"
                   v-for="(val, key) in item.content"
                   :key="key"
-                  v-if="key>8 && val.is_show=='1'"
+                  v-if="val.icon_name==='custom_icon' && val.is_show=='1'"
                 >
                   <div class="serve_img">
                     <img
@@ -987,7 +987,7 @@
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
                         class="imgContainter"
-                        @click="changeImgHandler(item.module_name, val.icon_name)"
+                        @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
                         <el-image
                           fit="scale-down"
@@ -1020,7 +1020,7 @@
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
                         class="imgContainter"
-                        @click="changeImgHandler(item.module_name, val.icon_name)"
+                        @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
                         <el-image
                           fit="scale-down"
@@ -1053,7 +1053,7 @@
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
                         class="imgContainter"
-                        @click="changeImgHandler(item.module_name, val.icon_name)"
+                        @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
                         <el-image
                           fit="scale-down"
@@ -1086,7 +1086,7 @@
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
                         class="imgContainter"
-                        @click="changeImgHandler(item.module_name, val.icon_name)"
+                        @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
                         <el-image
                           fit="scale-down"
@@ -1120,7 +1120,7 @@
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
                         class="imgContainter"
-                        @click="changeImgHandler(item.module_name, val.icon_name)"
+                        @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
                         <el-image
                           fit="scale-down"
@@ -1153,7 +1153,7 @@
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
                         class="imgContainter"
-                        @click="changeImgHandler(item.module_name, val.icon_name)"
+                        @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
                         <el-image
                           fit="scale-down"
@@ -1186,7 +1186,7 @@
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
                         class="imgContainter"
-                        @click="changeImgHandler(item.module_name, val.icon_name)"
+                        @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
                         <el-image
                           fit="scale-down"
@@ -1219,7 +1219,7 @@
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
                         class="imgContainter"
-                        @click="changeImgHandler(item.module_name, val.icon_name)"
+                        @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
                         <el-image
                           fit="scale-down"
@@ -1252,7 +1252,7 @@
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
                         class="imgContainter"
-                        @click="changeImgHandler(item.module_name, val.icon_name)"
+                        @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
                         <el-image
                           fit="scale-down"
@@ -1390,8 +1390,7 @@ export default {
       templateTitle: '', // 自定义模板标题
       imageSize: [], // 图片大小
       isDraggable: false, // 是否支持多选
-      orderRadio: '1',
-      imgIndex: 0, // 服务自定义模块图片索引
+      imgIndex: 0, // 服务配置图片索引
 
       leftData: [{
         module_name: 'global',
