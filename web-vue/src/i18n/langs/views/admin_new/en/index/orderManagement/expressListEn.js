@@ -36,6 +36,11 @@ export const en = {
     34: 'jieanda',
     35: 'PJ',
     36: 'topspeedex',
-    100: 'no tracking number'
+    37: 'xdexpress',
+    38: 'ewe global express',
+    39: 'cneulogistics',
+    40: 'aae global express',
+    41: 'exfresh',
+    42: 'no tracking number'
   }
 }
