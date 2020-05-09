@@ -10,6 +10,7 @@ import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
@@ -17,6 +18,7 @@ import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.shop.config.SuspendWindowConfig;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.module.*;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -34,6 +36,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
+import com.vpu.mp.service.shop.config.SuspendWindowConfigService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.member.MemberService;
@@ -42,6 +45,7 @@ import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -61,19 +65,16 @@ public class MpDecorationService extends ShopBaseService {
 
     @Autowired
     protected ConfigService config;
-
     @Autowired
     protected UserService user;
-
     @Autowired
     protected MemberService member;
-
     @Autowired
     protected GoodsMpService goodsMpService;
-
-
     @Autowired
     private DomainConfig domainConfig;
+    @Autowired
+    private SuspendWindowConfigService suspendWindowConfigService;
 
     public int setPageCatId(Integer pageId, Integer catId) {
         return db().update(XCX_CUSTOMER_PAGE)
@@ -1014,5 +1015,35 @@ public class MpDecorationService extends ShopBaseService {
         ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
         moduleIntegral.setNeedRequest(true);
         return moduleIntegral;
+    }
+
+    /**
+     * 获取店铺悬浮窗配置
+     *
+     * @return
+     */
+    public SuspendWindowConfig getSuspendWindowConfig(WxAppPageParam param) {
+        SuspendWindowConfig res = suspendWindowConfigService.getSuspendCfg();
+        if (res == null || res.getPageFlag().equals(BaseConstant.NO) || CollectionUtils.isEmpty(res.getPageIds()) || !res.getPageIds().contains(param.getPageId())) {
+            return null;
+        }
+
+        if (StringUtil.isNotBlank(res.getMainBefore())) {
+            res.setMainBefore(domainConfig.imageUrl(res.getMainBefore()));
+        }
+        if (StringUtil.isNotBlank(res.getMainAfter())) {
+            res.setMainAfter(domainConfig.imageUrl(res.getMainAfter()));
+        }
+        Iterator<SuspendWindowConfig.ChildIcon> it = res.getChildrenArr().iterator();
+        while (it.hasNext()) {
+            SuspendWindowConfig.ChildIcon c = it.next();
+            if (c.getChildFlag().equals(BaseConstant.NO)) {
+                it.remove();
+            }
+            if (StringUtil.isNotBlank(c.getImg())) {
+                c.setImg(domainConfig.imageUrl(c.getImg()));
+            }
+        }
+        return res;
     }
 }
