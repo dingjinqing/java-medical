@@ -195,8 +195,6 @@ public class MemberCardService extends ShopBaseService {
 	@Autowired
 	private CardReceiveCodeService cardReceiveCode;
 	@Autowired
-	private GoodsCardCoupleService goodsCardCoupleService;
-	@Autowired
 	private CouponGiveService couponGiveService;
 
 	@Autowired
@@ -213,8 +211,6 @@ public class MemberCardService extends ShopBaseService {
 	private LimitCardOpt limitCardOpt;
 	@Autowired
 	private GradeCardOpt gradeCardOpt;
-	@Autowired
-	private CardFreeShipService freeShipSvc;
 	@Autowired
 	private WxAppCardActivationService wxCardActSvc;
 	@Autowired
@@ -454,19 +450,38 @@ public class MemberCardService extends ShopBaseService {
 
 	/**
 	 * 	设置会员卡启动或禁止状态
-	 *
-	 * @param param
 	 */
 	public void powerCard(PowerCardParam param) {
 		logger().info("设置会员卡启动或禁止状态");
-		int result = db().update(MEMBER_CARD).set(MEMBER_CARD.FLAG, param.getFlag())
-				.where(MEMBER_CARD.ID.eq(param.getId())).execute();
-		logger().info("设置会员卡状态成功，受影响行： " + result);
 		
 		//	等级卡停止使用
 		if(CardUtil.isGradeCard(param.getCardType()) && CardUtil.isStopUsing(param.getFlag())) {
-			userCardService.deleteAllUserGradeCard(param.getId());
+			
+			if(PowerCardParam.STOP_DIRECT.equals(param.getStopPlan())) {
+				//	直接停用
+				logger().info("直接停用");
+				userCardService.deleteAllUserGradeCard(param.getId());
+			}else if(PowerCardParam.STOP_TO_ANOTHER.equals(param.getStopPlan())) {
+				//	置换为另外一张会员卡
+				logger().info("置换为另外一张卡");
+				if(param.getAnotherNewCardId()!=null) {
+					AddMemberCardParam addMemberCardParam = new AddMemberCardParam();
+					List<Integer> userIds = userCardService.userCardDao.getUserIdsUsingCard(param.getId());
+					List<Integer> cardIds = Collections.<Integer>singletonList(param.getAnotherNewCardId());
+					addMemberCardParam.setUserIdList(userIds);
+					addMemberCardParam.setCardIdList(cardIds);
+					
+					addCardForMember(addMemberCardParam);
+				}
+			}
 		}
+		int result = db()
+				.update(MEMBER_CARD)
+				.set(MEMBER_CARD.FLAG, param.getFlag())
+				.where(MEMBER_CARD.ID.eq(param.getId()))
+				.execute();
+		
+		logger().info("设置会员卡状态成功，受影响行： " + result);
 	}
 
 	/**
@@ -1350,7 +1365,7 @@ public class MemberCardService extends ShopBaseService {
 					.maTemplateData(
 							MaTemplateData.builder().config(SubcribeTemplateCategory.AUDIT).data(data).build())
 					.mpTemplateData(
-							MpTemplateData.builder().config(MpTemplateConfig.AUDIT).data(mpData).build())
+							MpTemplateData.builder().config(MpTemplateConfig.AUDIT_FAIL).data(mpData).build())
 					.page("pages/cardinfo/cardinfo?card_no="+cardNo).shopId(getShopId())
 					.userIdList(arrayList)
 					.type(MessageTemplateConfigConstant.FAIL_REVIEW).build();

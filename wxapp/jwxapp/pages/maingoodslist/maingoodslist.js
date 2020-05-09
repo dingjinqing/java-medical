@@ -13,7 +13,7 @@ global.wxPage({
     main_goods_info: [], // 主商品全部信息
     add_goods_info: [], // 主商品列表
     change_goods_info: [], // 换购列表
-    pIds: [], // 换购已选择规格id
+    pIds: [], // 修改换购前数据
     is_load: 0,
     searchText: "", // 搜索内容
     page: 1,
@@ -33,11 +33,9 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     var that = this;
-    console.log(options.identity_id)
     that.setData({
       identity_id: Number(options.identity_id),
-      store_id: Number(options.store_id),
-      pIds: options.pIds ? JSON.parse(options.pIds) : [],
+      store_id: Number(options.store_id)
     })
     main_request(that);
   },
@@ -53,9 +51,9 @@ global.wxPage({
 
   // 去商品详情
   to_items: function (e) {
-    var goods_id = e.currentTarget.dataset.goods_id;
+    var goodsId = e.currentTarget.dataset.goods_id;
     util.navigateTo({
-      url: '/pages/item/item?gid=' + goods_id,
+      url: '/pages/item/item?gid=' + goodsId,
     })
   },
 
@@ -209,35 +207,23 @@ global.wxPage({
   // 获取换购商品
   showGoods: function (e) {
     var that = this;
-    console.log(that.data.pIds)
     that.setData({
       changeMove: false
     })
     util.api('/api/wxapp/purchase/changegoods', function (res) {
       if (res.error == 0) {
-        var change_goods_info = res.content;
-        // 已选个数
-        change_goods_info.alreadyChangeNum = that.data.pIds.length
-        change_goods_info.list.forEach(item => {
-          // 已选换购商品
-          that.data.pIds.forEach(val => {
-            if (item.prdId == val) {
-              item.isChecked = 1
-            }
-          })
+        var data = []
+        res.content.list.forEach(item => {
           if (item.isChecked == 1) {
-            purchase_change_goods[item.prdId] = item.purchaseRuleId
+            data.push(item.prdId)
           }
         })
         that.setData({
-          change_goods_info: change_goods_info
+          change_goods_info: res.content,
+          pIds: data
         })
       } else {
-        util.showModal("提示", res.message, function () {
-          util.reLaunch({
-            url: '/pages/index/index'
-          })
-        });
+        util.showModal("提示", res.message);
         return false;
       }
     }, { purchasePriceId: that.data.identity_id, storeId: that.data.store_id });
@@ -319,10 +305,8 @@ global.wxPage({
         that.add_cart(item, ruleIds[index])
       }
     })
-    that.data.change_goods_info.alreadyChangeNum = prdIds.length
     that.setData({
-      pIds: prdIds,
-      changeMove: true,
+      changeMove: true
     })
   },
 

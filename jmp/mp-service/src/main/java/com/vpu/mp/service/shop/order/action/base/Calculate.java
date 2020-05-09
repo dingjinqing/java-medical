@@ -838,7 +838,7 @@ public class Calculate extends ShopBaseService {
         DistributionParam cfg = distributionGoods.distributionConf.getDistributionCfg();
         //开关
         if (cfg.getStatus() == OrderConstant.NO) {
-            logger().info("开关关闭，结束");
+            logger().info("开关关闭processInitCheckedOrderCreate，结束");
             return;
         }
         Map<Integer, UserRebatePriceRecord> rebatePriceRecordMap = distributionGoods.userRebatePrice.getUserRebatePrice(param.getWxUserInfo().getUserId(),  param.getProductIds().toArray(new Integer[]{})).intoMap(UserRebatePriceRecord::getProductId);
@@ -861,10 +861,15 @@ public class Calculate extends ShopBaseService {
      * @param order
      */
     public void rebate(OrderBeforeParam param, OrderInfoRecord order) {
-        //获取该订单参与分销计算商品数量（除赠品）
-        BigDecimal[] tolal = getTolalNumberAndPriceByType(param.getBos(), OrderConstant.D_T_REBATE, null);
         //配置
         DistributionParam cfg = distributionGoods.distributionConf.getDistributionCfg();
+        //开关
+        if (cfg.getStatus() == OrderConstant.NO) {
+            logger().info("开关关闭processSaveOrderInfo，结束");
+            return;
+        }
+        //获取该订单参与分销计算商品数量（除赠品）
+        BigDecimal[] tolal = getTolalNumberAndPriceByType(param.getBos(), OrderConstant.D_T_REBATE, null);
         //商品平均积分抵扣
         BigDecimal avgScoreDiscount = BigDecimalUtil.divide(order.getScoreDiscount(), tolal[BY_TYPE_TOLAL_NUMBER], RoundingMode.HALF_UP);
         //进行中的返利策略

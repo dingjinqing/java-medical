@@ -20,6 +20,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberBasicInfoVo;
 import com.vpu.mp.service.pojo.shop.member.card.dao.CardFullDetail;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
+import com.vpu.mp.service.shop.card.msg.CardMsgNoticeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.UserCardService;
@@ -38,6 +39,7 @@ public abstract class CardOpt extends ShopBaseService{
 	@Autowired protected UserCardService userCardService;
 	@Autowired protected UserCardDaoService userCardDao;
 	@Autowired protected MemberService memberSvc;
+	@Autowired protected CardMsgNoticeService cardMsgSvc;
 	/**	卡类型	*/
 	private Byte type;
 	
@@ -130,25 +132,7 @@ public abstract class CardOpt extends ShopBaseService{
 		}else if(CardUtil.isGradeCard(cardType)){
 			cardTypeText = "等级卡";
 		}
-		
-		// 公众号消息
-		String[][] mpData = new String[][] {
-			{""},
-			{memberCard.getCardName()},
-			{cardTypeText},
-			{user.getMobile()==null?"":user.getMobile()},
-			{expireTime},
-			{""}
-		};
-		List<Integer> arrayList = Collections.<Integer>singletonList(user.getUserId());
-		RabbitMessageParam param2 = RabbitMessageParam.builder()
-				.mpTemplateData(
-						MpTemplateData.builder().config(MpTemplateConfig.GET_CARD).data(mpData).build())
-				.page("pages/cardinfo/cardinfo?card_no="+cardNo).shopId(getShopId())
-				.userIdList(arrayList)
-				.type(MessageTemplateConfigConstant.SUCCESS_MEMBER_CARD_GET).build();
-		saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());		
-
+		cardMsgSvc.sendCardMsgNotice(cardNo, memberCard, user, expireTime, cardTypeText);		
 	}
-	
+
 }

@@ -44,7 +44,7 @@ global.wxComponent({
       initData.navlen = initData.sort_group_arr.length;
       initData.group_nav_index = 0;
       console.log(initData.goodsListData)
-      if (initData.goodsListData.length > 5) {
+      if (initData.goodsListData.length > 6) {
         initData.more_flag = 1
       } else {
         initData.more_flag = 0
@@ -124,7 +124,7 @@ global.wxComponent({
             _this.handleToGoodsActivities(data)
             m.goodsListData = data;
             m.more_flag = data.more_flag;
-            if (m.goodsListData.length > 5) {
+            if (m.goodsListData.length > 6) {
               m.more_flag = 1
             } else {
               m.more_flag = 0

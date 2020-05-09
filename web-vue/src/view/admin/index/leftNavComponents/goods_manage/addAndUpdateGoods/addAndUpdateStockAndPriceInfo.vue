@@ -877,6 +877,8 @@ export default {
         // replacement 匹配到的字符串，用返回值替换该字符串
         item.prdDesc = item.prdDesc.replace(prdDescReg, replacement => replacement.replace(oldVal, newVal))
       }
+      let groupNameReg = new RegExp(`${oldVal}\\s`)
+      this.goodsProductInfo.goodsSpecsNameGroup = this.goodsProductInfo.goodsSpecsNameGroup.replace(groupNameReg, newVal + ' ')
     },
     /*
      * 当添加新的规格值的时候或者当规格值由空变为有值的时候都需要手动触发此方法

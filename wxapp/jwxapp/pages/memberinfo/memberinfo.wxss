@@ -31,6 +31,9 @@ height: 46rpx;
   padding: 0 0 20rpx 0rpx;
   border-bottom: 1px solid #eee;
 }
+.main>.list{
+  padding: 20rpx 30rpx 20rpx 0rpx;
+}
 .main>view:last-child{
   border: none;
 }
