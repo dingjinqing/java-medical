@@ -823,8 +823,8 @@ public class FormStatisticsService extends ShopBaseService {
 
     private boolean checkData(FormSubmitDataParam param, FormSubmitDataVo formSubmitDataVo, FormInfoBo formInfoBo, String lang) {
         FormSubmitListRecord formSubmitListRecord = db().selectFrom(fsl).where(fsl.PAGE_ID.eq(param.getPageId())).and(fsl.USER_ID.eq(param.getUser().getUserId()))
-                .orderBy(fsl.CREATE_TIME).fetchAny();
-        if (formSubmitListRecord!=null&&formSubmitListRecord.getCreateTime().before(DateUtil.getTimeStampPlus(60, ChronoUnit.SECONDS))){
+                .orderBy(fsl.CREATE_TIME.desc()).fetchAny();
+        if (formSubmitListRecord!=null&&formSubmitListRecord.getCreateTime().after(DateUtil.getTimeStampPlus(-60, ChronoUnit.SECONDS))){
             log.error("每个表单每分钟只能提交一次");
             formSubmitDataVo.setStatus((byte)2);
             formSubmitDataVo.setMessage("每个表单每分钟只能提交一次");
