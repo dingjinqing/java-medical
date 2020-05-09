@@ -221,7 +221,7 @@ moduleValueList: null
                   // }
 
                   item.moduleValueList.forEach((itemC, indexC) => {
-                    if (JSON.parse(item.moduleValue) === JSON.stringify(indexC)) {
+                    if (Number((JSON.parse(item.moduleValue)) - 1) === indexC) {
                       item.moduleValue = indexC
                     }
                   })
