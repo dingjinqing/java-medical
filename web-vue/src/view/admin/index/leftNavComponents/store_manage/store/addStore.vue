@@ -218,7 +218,10 @@
           prop="storeDetail"
         >
           <div class="edit-wrap">
-            <TinymceEditor ref="tinymceEditor" />
+            <TinymceEditor
+              v-model="storeFormInfo.content"
+              ref="tinymceEditor"
+            />
           </div>
         </el-form-item>
       </el-form>
@@ -438,7 +441,8 @@ export default {
         districtCode: '',
         latitude: '',
         longitude: '',
-        autoPick: 0 // 设定自提
+        autoPick: 0, // 设定自提
+        content: ''
       },
       storeFormRules: {
         storeName: [{ required: true, message: this.$t('addStore.enterStoreName'), trigger: 'blur' }],
