@@ -44,7 +44,7 @@ import java.util.List;
 @Slf4j
 public class EsManager {
 
-    @Autowired
+    @Autowired(required = false)
     @Qualifier("esConfig")
     private RestHighLevelClient restHighLevelClient;
 
