@@ -2081,7 +2081,7 @@ public class MemberCardService extends ShopBaseService {
 					.maTemplateData(
 							MaTemplateData.builder().config(SubcribeTemplateCategory.AUDIT).data(data).build())
 					.mpTemplateData(
-							MpTemplateData.builder().config(MpTemplateConfig.AUDIT).data(mpData).build())
+							MpTemplateData.builder().config(MpTemplateConfig.AUDIT_FAIL).data(mpData).build())
 					.page("pages/cardinfo/cardinfo?card_no="+cardNo).shopId(getShopId())
 					.userIdList(arrayList)
 					.type(MessageTemplateConfigConstant.FAIL_REVIEW).build();

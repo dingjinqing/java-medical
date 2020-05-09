@@ -24,7 +24,7 @@ public class GoodsGroupListMpParam {
     /**分组是品牌*/
     public static final String BRAND_TYPE = "2";
     /**商品可以显示的最大数量*/
-    public static final Integer NUM_TO_SHOW = 6;
+    public static final Integer NUM_TO_SHOW = 7;
 
 
     /**菜单位置radio，0 顶部固定，1左侧固定*/
