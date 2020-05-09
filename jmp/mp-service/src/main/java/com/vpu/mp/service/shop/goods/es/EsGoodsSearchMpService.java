@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -123,7 +124,10 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
     public PageResult<GoodsListMpBo> queryGoodsByParam(GoodsSearchMpParam mpParam) throws IOException {
         Integer shopId = getShopId();
         if(!CollectionUtils.isEmpty(mpParam.getLabelIds())){
-            mpParam.setGoodsIds(esGoodsLabelSearchService.getGoodsIdsByLabelIds(mpParam.getLabelIds(),EsGoodsConstant.GOODS_SEARCH_PAGE));
+            List<Integer> labelGoodsIds = esGoodsLabelSearchService.getGoodsIdsByLabelIds(mpParam.getLabelIds(),
+                EsGoodsConstant.GOODS_SEARCH_PAGE);
+            Collection<Integer> goodsIds = CollectionUtils.intersection(mpParam.getGoodsIds(),labelGoodsIds);
+            mpParam.setGoodsIds(Lists.newArrayList(goodsIds));
         }
         EsSearchParam param = assemblyEsSearchParam(mpParam,shopId);
         try {
