@@ -41,14 +41,6 @@ public class GoodsSearchMpParam extends BasePageParam {
     /**标签id集合*/
     private List<Integer> labelIds;
 
-    /**是否展示售罄商品,service层获取并设置
-     * {@link com.vpu.mp.service.pojo.shop.goods.GoodsConstant#SOLD_OUT_GOODS_SHOW} 展示售罄
-     */
-    private Boolean soldOutGoodsShow;
-
-    /**商品优惠券码*/
-    private String couponSn;
-
     /**用户指定的排序字段*/
     private SortItemEnum sortItem;
     /**用户指定的排序方向*/
@@ -59,7 +51,7 @@ public class GoodsSearchMpParam extends BasePageParam {
     /**店铺默认的排序方向-es使用字段*/
     private SortDirectionEnum shopSortDirection;
 
-    /**当页面从商品分组跳转至搜索页面时此字段可能会被赋予指定值*/
+    /**外面搜索条件限制的商品范围，null表示不限制，长度为0的数组表示没有合法商品*/
     private List<Integer> goodsIds;
 
     /**从商品分组页面跳转至此*/
@@ -70,8 +62,8 @@ public class GoodsSearchMpParam extends BasePageParam {
     public static final Byte PAGE_FROM_SEC_KILL = BaseConstant.ACTIVITY_TYPE_SEC_KILL;
     /**从优惠券跳转至商品搜索页面，展示其关联的商品信息 pageFrom=20*/
     public static final Byte PAGE_FROM_COUPON=BaseConstant.ACTIVITY_TYPE_COUPON;
-    /**从哪个页面跳转至搜索页面，目前用于区分从商品分组模块跳转至此，目前从分组跳转时未从es查数据*/
+    /**从哪个页面跳转至搜索页面，null表示直接进入搜索页进行搜索*/
     private Byte pageFrom;
-    /**用于多商品活动从admin端扫码进入搜索页展示该活动下的商品时使用 activityId*/
-    private Integer actId;
+
+    private GoodsSearchMpOuterParam outerPageParam;
 }
