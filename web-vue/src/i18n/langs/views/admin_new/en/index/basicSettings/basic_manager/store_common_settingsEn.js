@@ -1,4 +1,6 @@
 export const en = {
+  goodsSearchSettings: 'Background commodity search Settings',
+  goodsSearchTip: 'With the switch on, the background commodity search only matches the commodity that fully includes the search term',
   salesDisplaySettings: 'Sales display settings',
   closed: 'closed',
   activated: 'activated',
