@@ -16,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam.ShipGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipVo;
+import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
@@ -23,6 +24,7 @@ import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +80,10 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 			logger.error("发货时无可发货商品");
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER, null);
 		}
+		if(ExpressService.NO_2_EXPRESS.equals(param.getShippingId())) {
+            //无单号物流发货时置单号为空
+            param.setShippingNo(StringUtils.EMPTY);
+        }
 		Map<Integer, OrderGoodsVo> cbsMap = canBeShipped.stream().collect(Collectors.toMap(OrderGoodsVo::getRecId, Function.identity()));
 		ShipGoods[] shipGoods = param.getShipGoods();
 		//构建商品行查询条件
