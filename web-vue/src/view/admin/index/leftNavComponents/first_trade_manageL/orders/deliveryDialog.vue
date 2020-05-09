@@ -33,7 +33,7 @@
             ></el-option>
           </el-select>
         </div>
-        <div>
+        <div v-if="shippingId !== '100'">
           快递单号：
           <el-input
             v-model="shippingNo"
@@ -153,7 +153,7 @@ export default {
         this.$message.error('请输入快递单号')
         return
       }
-
+      if (this.shippingId === '100') this.shippingNo = 1
       let obj = {
         orderId: this.orderData.orderId,
         orderSn: this.orderData.orderSn,
