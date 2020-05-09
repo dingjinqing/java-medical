@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsulePara
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.card.wxapp.WxCardExchangeService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
  * @author 王帅
  * 限次卡兑换
  */
-
+@Service
 public class CardExchangeProcess extends WxCardExchangeService implements Processor,GoodsDetailProcessor,CreateOrderProcessor {
 
     @Override
