@@ -270,6 +270,8 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
                     }else {
                         log.info("购物车满折满减-没有找到合适活动,取消活动选中");
                         cartService.switchActivityGoods(cartBo.getUserId(),goods.getCartId(),null,null);
+                        goods.setActivityType(null);
+                        goods.setActivityId(null);
                     }
                 }
             }
