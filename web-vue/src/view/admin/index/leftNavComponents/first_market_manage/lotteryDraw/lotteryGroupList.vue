@@ -125,12 +125,25 @@
           :label="$t('lotteryDraw.joinUserCount')"
           prop="userCount"
           align="center"
-        ></el-table-column>
+        >
+        <template slot-scope="scope">
+           <el-link type="primary" :underline="false" @click="viewGroupHanlder(scope.row.groupId)">{{scope.row.userCount}}</el-link>
+         </template>
+        </el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.goodsId')"
           prop="goodsName"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <div class="goodImge">
+              <div>
+                <img :src="scope.row.goodsImg">
+              </div>
+              <div class="name">{{scope.row.goodsName}}</div>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           :label="$t('lotteryDraw.openGroupTime')"
           prop="openTime"
@@ -230,6 +243,15 @@ export default {
           userId: tagId
         }
       })
+    },
+    viewGroupHanlder (tagId) {
+      this.$router.push({
+        path: '/admin/home/main/lotteryDraw/userList',
+        query: {
+          groupId: tagId,
+          groupDrawId: this.requestParams.groupDrawId
+        }
+      })
     }
   }
 
@@ -280,5 +302,25 @@ export default {
 }
 .el-row {
   margin-bottom: 2px !important;
+}
+.goodImge {
+  display: flex;
+}
+.goodImge img {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border: 1px solid #ccc;
+}
+.goodImge .name {
+  width: 115px;
+  height: 50px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  margin-left: 12px;
+  text-align: left;
 }
 </style>
