@@ -66,12 +66,10 @@ import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.PartOrderGoodsShip.PART_ORDER_GOODS_SHIP;
 import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
-import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
-import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.BYTE_THREE;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELETE_NO;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_CLOSED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_PIN_SUCCESSS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUNDING;
@@ -79,19 +77,14 @@ import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINI
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURNING;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURN_FINISHED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_CLOSED;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_PAY;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_AUDITING;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_AUDIT_PASS;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.RT_GOODS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.RT_ONLY_MONEY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.SHOP_HELPER_OVERDUE_DELIVERY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.SHOP_HELPER_REMIND_DELIVERY;
-import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.sum;
@@ -357,7 +350,7 @@ public class OrderInfoService extends ShopBaseService {
 				select.where(TABLE.PAY_CODE.eq(OrderConstant.PAY_CODE_COD));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_EVENT_PRIZE:
-				select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT, BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER, BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER, BaseConstant.ACTIVITY_TYPE_PAY_AWARD})));
+				select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_MY_PRIZE})));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_WXPAY:
 				select.where(TABLE.PAY_CODE.eq(OrderConstant.PAY_CODE_WX_PAY));
@@ -784,11 +777,12 @@ public class OrderInfoService extends ShopBaseService {
 	 * 设置订单支付方式数组
 	 * 
 	 * @param order
-	 * @param prizesSns
 	 */
-	public void setPayCodeList(OrderListInfoVo order, List<String> prizesSns) {
+	public void setPayCodeList(OrderListInfoVo order) {
 		ArrayList<Byte> payCodes = new ArrayList<Byte>(OrderConstant.SEARCH_PAY_WAY_WXPAY);
-		if (BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0
+		//订单类型
+        List<Byte> orderType = Arrays.asList(OrderInfoService.orderTypeToByte(order.getGoodsType()));
+        if (BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0
 				|| BigDecimalUtil.compareTo(order.getMemberCardBalance(), null) > 0) {
 			/** 余额 */
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_USE_ACCOUNT);
@@ -797,7 +791,7 @@ public class OrderInfoService extends ShopBaseService {
 			/** 积分支付 */
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_SCORE_DISCOUNT);
 		}
-		if(Arrays.asList(order.getGoodsType().split(",")).contains(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_INTEGRAL).toString())) {
+		if(orderType.contains(BaseConstant.ACTIVITY_TYPE_INTEGRAL)) {
 			/**积分兑换*/
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_SCORE_EXCHANGE);
 		}
@@ -805,7 +799,7 @@ public class OrderInfoService extends ShopBaseService {
 			/** 货到付款 */
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_COD);
 		}
-		if (prizesSns.contains(order.getOrderSn())) {
+		if (orderType.contains(BaseConstant.ACTIVITY_TYPE_MY_PRIZE)) {
 			/** 活动奖品 */
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_EVENT_PRIZE);
 		}
