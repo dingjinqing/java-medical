@@ -21,7 +21,7 @@ import static com.vpu.mp.db.shop.tables.Shipping.SHIPPING;
 public class ExpressService extends ShopBaseService {
 
     /**无单号物流发货时置单号为空*/
-    public static final Byte NO_2_EXPRESS = 100;
+    public static final Byte NO_2_EXPRESS = 42;
 
     public final Shipping TABLE = SHIPPING;
 
