@@ -749,12 +749,16 @@ public class GoodsService extends ShopBaseService {
      * 取单个GoodsView
      */
     public GoodsView getGoodsViewByProductId(Integer productId) {
-        GoodsView goodsView = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).
-            from(GOODS).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
-            .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).
-                fetchOne().into(GoodsView.class);
-        goodsView.setGoodsImg(getImgFullUrlUtil(goodsView.getGoodsImg()));
-        return goodsView;
+        Record6<Integer, String, String, Integer, BigDecimal, String> record = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).
+                from(GOODS).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
+                .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).
+                        fetchOne();
+        if (record!=null){
+            GoodsView goodsView = record.into(GoodsView.class);
+            goodsView.setGoodsImg(getImgFullUrlUtil(goodsView.getGoodsImg()));
+            return goodsView;
+        }
+        return null;
     }
 
     /**

@@ -269,7 +269,7 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
                         fullReductionProcessorDao.getFullReductionGoodsBo(ruleGoodsMap, goods,any.get());
                     }else {
                         log.info("购物车满折满减-没有找到合适活动,取消活动选中");
-                        cartService.switchActivityGoods(cartBo.getUserId(),goods.getCartId(),null,null);
+                        cartService.switchActivityGoods(cartBo.getUserId(),goods.getCartId(),0,(byte)0);
                         goods.setActivityType(null);
                         goods.setActivityId(null);
                     }
