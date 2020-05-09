@@ -54,8 +54,7 @@ public class GroupDrawJoinUserService extends ShopBaseService {
 		SelectOnConditionStep<Record6<Integer, String, String, Timestamp, Integer, String>> select = db()
 				.select(a.USER_ID, a.USERNAME, a.MOBILE, a.CREATE_TIME, a.INVITE_ID, b.USERNAME.as("inviteUserName"))
 				.from(a).leftJoin(b).on(a.INVITE_ID.eq(b.USER_ID));
-		select.and(a.INVITE_SOURCE.eq("group_draw"));
-		select.and(a.INVITE_ACT_ID.eq(param.getGroupDrawId()));
+		select.where(a.INVITE_SOURCE.eq("group_draw").and(a.INVITE_ACT_ID.eq(param.getGroupDrawId())));
 		inviteOption(select, param);
 		select.orderBy(a.CREATE_TIME.desc());
 		return getPageResult(select, param, InvitedUserListVo.class);
