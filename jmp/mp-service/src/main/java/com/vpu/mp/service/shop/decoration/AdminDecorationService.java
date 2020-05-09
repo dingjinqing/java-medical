@@ -898,6 +898,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
             e.printStackTrace();
             return false;
         }
+        suspendWindowConfigService.setSuspendCfgDraft(param);
         suspendWindowConfigService.setSuspendCfg(param);
         return true;
     }
