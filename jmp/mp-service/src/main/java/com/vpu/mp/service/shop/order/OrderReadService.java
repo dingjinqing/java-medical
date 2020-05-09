@@ -305,7 +305,7 @@ public class OrderReadService extends ShopBaseService {
 				OrderOperationJudgment.operationSet(order,returningCount.get(order.getOrderId()),ship.canBeShipped(order.getOrderSn()));
 			}
 		}
-		pageResult.setDataList(mainOrderList);
+        pageResult.setDataList(mainOrderList);
 		logger.info("订单综合查询结束");
 		return result;
 	}
