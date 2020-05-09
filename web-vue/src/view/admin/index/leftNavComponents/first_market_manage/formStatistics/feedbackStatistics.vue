@@ -79,7 +79,8 @@ export default {
       submitNum: '', // 反馈数量
       isForeverValid: '', // 有效期
       status: '', // 发布状态
-      oneVo: [] // 总模块数据
+      oneVo: [], // 总模块数据
+      state: -1
     }
   },
   mounted () {
@@ -90,7 +91,7 @@ export default {
   methods: {
     // 初始化请求数据
     handleToInitData () {
-      feedbackStatisticsQuery({ pageId: this.$route.query.row.pageId }).then(res => {
+      feedbackStatisticsQuery({ pageId: this.$route.query.row }).then(res => {
         console.log(res)
         if (res.error === 0) {
           this.participantsNum = res.content.participantsNum

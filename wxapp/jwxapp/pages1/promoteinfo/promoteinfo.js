@@ -157,7 +157,15 @@ global.wxPage({
   // 好友点击助力
   friend_help: function (e) {
     var that = this;
-    if (util.getCache('nickName') == '' && promote_info.promoteCondition == 1) {
+    // 商品库存
+    if (promote_info.marketStore == 0) {
+      util.showModal('提示', '商品库存不足,不可再助力');
+      return false;
+    }
+    // 授权
+    var code = 10000 + util.getCache('user_id')
+    var str = '用户' + code
+    if ((str == util.getCache('nickName')) && promote_info.promoteCondition == 1) {
       that.setData({
         has_user: 0
       })
@@ -313,6 +321,11 @@ global.wxPage({
         share_good: false
       })
     });
+    if (promote_info.promoteStatus == 0 && promote_info.launchFlag == 2 && promote_info.canShare == 1) {
+      that.setData({
+        promote_ok: 0
+      })
+    }
     setTimeout(function () {
       clearTimeout(set_time_out);
       that.onPullDownRefresh();

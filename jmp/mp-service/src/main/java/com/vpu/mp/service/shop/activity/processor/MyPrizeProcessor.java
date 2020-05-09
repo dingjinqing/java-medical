@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.FpRewardContent;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectParam;
@@ -76,7 +77,7 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
             logger().info("奖品已经领取过了");
             throw new MpException(JsonResultCode.MY_PRIZE_ACTIVITY_RECEIVED, null);
         }
-        if (prizeRecord.getPrizeStatus().equals(PRIZE_STATUS_EXPIRE)) {
+        if (prizeRecord.getPrizeStatus().equals(PRIZE_STATUS_EXPIRE)||prizeRecord.getExpiredTime().compareTo(DateUtil.getLocalDateTime())<=0) {
             logger().info("奖品过期了");
             throw new MpException(JsonResultCode.MY_PRIZE_ACTIVITY_EXPIRED, null);
         }
@@ -106,6 +107,25 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
                 if (rewardContent!=null){
                     goods.setProductPrice(rewardContent.getMarketPrice());
                 }
+            }
+            switch (prizeRecord.getActivityType()){
+                case PRIZE_SOURCE_PAY_AWARD:
+                    logger().info("支付有礼");
+//                collect.add(ACTIVITY_TYPE_PAY_AWARD);
+                    break;
+                case PRIZE_SOURCE_FRIEND_POWER:
+                    logger().info("好友助力");
+//                collect.add(ACTIVITY_TYPE_PROMOTE_ORDER);
+                    break;
+                case PRIZE_SOURCE_LOTTERY:
+                    logger().info("大抽奖");
+//                collect.add(ACTIVITY_TYPE_LOTTERY_PRESENT);
+                    break;
+                case PRIZE_SOURCE_EVALUATION:
+                    logger().info("测评");
+//                collect.add(ACTIVITY_TYPE_GIFT);
+                    break;
+                default:
             }
         }
     }
