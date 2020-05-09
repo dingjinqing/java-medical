@@ -76,4 +76,9 @@ public final class RefundParam extends OrderOperateQueryParam {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Byte isAutoReturn;
+
+    /**
+     * 售后发起来源类型：0改价失败自动售后，1微信支付失败，2活动自动售后
+     */
+    private Byte returnSourceType;
 }
