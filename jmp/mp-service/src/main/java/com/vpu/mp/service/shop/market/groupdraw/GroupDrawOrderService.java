@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.market.groupdraw.order.OrderExport;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.order.OrderListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.order.OrderListVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record12;
 import org.jooq.Record13;
@@ -124,15 +125,15 @@ public class GroupDrawOrderService extends ShopBaseService {
 			tempExport.setOrderSn(item.getOrderSn());
 			tempExport.setGoodsName(item.getGoodsName());
 			if (item.getGrouped()) {
-				tempExport.setGrouped("是");
+				tempExport.setGrouped(Util.translateMessage(lang, JsonResultMessage.YES , OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
 			} else {
-				tempExport.setGrouped("否");
+				tempExport.setGrouped(Util.translateMessage(lang, JsonResultMessage.NO ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
 			}
 			tempExport.setUserInfo(item.getConsigneeRealName() + ":" + item.getMobile());
 			if (item.getIsWinDraw()) {
-				tempExport.setIsWinDraw("是");
+				tempExport.setIsWinDraw(Util.translateMessage(lang, JsonResultMessage.YES ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
 			} else {
-				tempExport.setIsWinDraw("否");
+				tempExport.setIsWinDraw(Util.translateMessage(lang, JsonResultMessage.NO ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
 			}
 			tempExport.setCreateTime(item.getCreateTime());
 			tempExport.setCodeCount(item.getCodeCount());
