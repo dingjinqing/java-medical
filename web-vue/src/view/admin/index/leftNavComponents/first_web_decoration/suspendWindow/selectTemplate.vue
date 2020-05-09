@@ -114,7 +114,9 @@ export default {
     tuneUpSelectTemplate: { // 调起选择模板弹窗
       type: Boolean,
       default: () => false
-    }
+    },
+    backSelectData: Array // 数据回显
+
   },
   data () {
     return {
@@ -132,14 +134,10 @@ export default {
   watch: {
     tuneUpSelectTemplate () {
       this.templateDialog = true
-      let arr = [374, 375, 354, 353]
-      setTimeout(() => {
-        console.log(this)
-      }, 2000)
-      console.log(this.$refs)
+      console.log(this.templateData)
       this.$nextTick(() => {
         this.templateData.forEach((item, index) => {
-          arr.forEach((itemC, indexC) => {
+          this.backSelectData.forEach((itemC, indexC) => {
             if (item.pageId === itemC) {
               console.log(this.$refs)
               this.$refs.selectPageTable.toggleRowSelection(item, true)
@@ -147,6 +145,7 @@ export default {
           })
         })
       })
+
       console.log(this.$refs)
     }
   },

@@ -120,6 +120,7 @@
     <selectTemplate
       @handleSelectTemplate="handleSelectTemplate"
       :tuneUpSelectTemplate="tuneUpSelectTemplate"
+      :backSelectData="backSelectDataSus"
     />
   </div>
 </template>
@@ -153,7 +154,8 @@ export default {
       goodsDetail: true, // 商品详情页checkbox
       peasonCenter: true, // 个人中心checkbox
       customPage: true, // 自定义页面 checkbox
-      customPageSelect: [] // 选择的自定义页面数据
+      customPageSelect: [], // 选择的自定义页面数据
+      backSelectDataSus: [374, 375, 354, 353] // 选择页面弹窗回显数据
     }
   },
   methods: {
