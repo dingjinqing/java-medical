@@ -308,7 +308,7 @@ export default {
 }
 .goodImge .name {
   width: 115px;
-  height: 40px;
+  height: 50px;
   text-overflow: ellipsis;
   overflow: hidden;
   -webkit-box-orient: vertical;

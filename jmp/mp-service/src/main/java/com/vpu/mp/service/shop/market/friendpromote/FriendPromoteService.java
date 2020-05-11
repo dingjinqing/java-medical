@@ -867,6 +867,7 @@ public class FriendPromoteService extends ShopBaseService {
                 .where(FRIEND_PROMOTE_LAUNCH.USER_ID.eq(userId))
                 .and(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(promoteId))
                 .orderBy(FRIEND_PROMOTE_LAUNCH.ID.desc())
+                .limit(1)
                 .fetchOneInto(FriendPromoteLaunchRecord.class);
         }
         return record;

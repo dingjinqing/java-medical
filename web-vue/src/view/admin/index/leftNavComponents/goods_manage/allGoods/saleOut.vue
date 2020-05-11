@@ -69,10 +69,15 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="prdSn"
           :label="$t('allGoods.allGoodsData.prdSn')"
-          width="100"
-        />
+          width="150">
+          <template slot-scope="{row}">
+            {{row.goodsSn}}
+            <span v-if="row.prdSn!==null && row.prdSn.length > 0">
+              ;{{row.prdSn}}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="sortName"
@@ -83,7 +88,7 @@
           align="center"
           prop="brandName"
           :label="$t('allGoods.allGoodsData.goodsBrand')"
-          width="100"
+          width="150"
         >
         </el-table-column>
         <el-table-column
@@ -91,7 +96,7 @@
           sortable="custom"
           align="center"
           :label="$t('allGoods.allGoodsData.goodsNumber')"
-          width="130"
+          width="150"
         >
           <template slot-scope="{row}">
             <span v-if="!row.prdNumberEdit">

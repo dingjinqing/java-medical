@@ -63,13 +63,37 @@
             <div class="listTitle">
               <span>应用页面</span>
               <div class="rightRadio">
-                <div style="#999999">开启后，以下页面将显示悬浮窗</div>
+                <div style="color:#999999;margin-right:5px">开启后，以下页面将显示悬浮窗</div>
                 <el-switch
-                  v-model="value"
+                  v-model="isShowSuspension"
                   active-color="#f7931e"
                   inactive-color="#ddd"
                 >
                 </el-switch>
+              </div>
+            </div>
+            <div class="pageContent">
+              <div class="pageLi">
+                <div class="top">
+                  <div class="li">
+                    <el-checkbox v-model="goodsDetail">商品详情页</el-checkbox>
+                  </div>
+                  <div>
+                    <el-checkbox v-model="peasonCenter">商品详情页</el-checkbox>
+                  </div>
+                </div>
+                <div class="bottom">
+                  <div>
+                    <el-checkbox v-model="customPage">自定义页面</el-checkbox>
+                  </div>
+                  <div
+                    class="addPage"
+                    @click="handleToClickAddPage()"
+                  >
+                    选择页面
+                  </div>
+                  <span>已选择{{customPageSelect.length}}个页面</span>
+                </div>
               </div>
             </div>
           </div>
@@ -92,12 +116,22 @@
         </div>
       </div>
     </div>
+    <!--选择页面弹窗-->
+    <selectTemplate
+      @handleSelectTemplate="handleSelectTemplate"
+      :tuneUpSelectTemplate="tuneUpSelectTemplate"
+      :backSelectData="backSelectDataSus"
+    />
   </div>
 </template>
 <script>
 export default {
+  components: {
+    selectTemplate: () => import('./selectTemplate.vue') // 选择页面弹窗
+  },
   data () {
     return {
+      tuneUpSelectTemplate: false, // 选择页面弹窗flag
       holdMainIcon: false, // 控制左侧主icon切换
       mainImgUrl: [
         {
@@ -115,7 +149,13 @@ export default {
           name: '客服',
           imgUrl: 'http://mpimg2.weipubao.cn/image/admin/suspend_icon/origin_kf_2.png'
         }
-      ]
+      ], //  左侧icon子项数据
+      isShowSuspension: false, // 是否显示悬浮窗switch
+      goodsDetail: true, // 商品详情页checkbox
+      peasonCenter: true, // 个人中心checkbox
+      customPage: true, // 自定义页面 checkbox
+      customPageSelect: [], // 选择的自定义页面数据
+      backSelectDataSus: [374, 375, 354, 353] // 选择页面弹窗回显数据
     }
   },
   methods: {
@@ -132,6 +172,16 @@ export default {
         this.holdMainIcon = false
       }
       console.log(this.holdMainIcon)
+    },
+    // 点击选择页面
+    handleToClickAddPage () {
+      this.tuneUpSelectTemplate = !this.tuneUpSelectTemplate
+    },
+    // 选择页面弹窗选中回传数据
+    handleSelectTemplate (res) {
+      console.log(res)
+      // 374 375 354 353
+      this.customPageSelect = res
     }
   }
 }
@@ -292,6 +342,31 @@ export default {
               display: flex;
               align-items: center;
               justify-content: center;
+            }
+          }
+          .pageLi {
+            padding: 10px;
+            .top {
+              display: flex;
+              .li {
+                margin-right: 70px;
+              }
+            }
+            .bottom {
+              display: flex;
+              margin-top: 10px;
+              align-items: center;
+              .addPage {
+                width: 80px;
+                height: 30px;
+                border-radius: 2px;
+                border: solid 1px #5a8bff;
+                line-height: 30px;
+                text-align: center;
+                color: #5a8bff;
+                cursor: pointer;
+                margin: 0 10px;
+              }
             }
           }
         }

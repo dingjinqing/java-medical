@@ -95,6 +95,8 @@ export default {
         return this.visiable
       },
       set (val) {
+        this.action.title = null
+        this.$refs['content'].resetFields()
         this.$emit('update:visiable', val)
       }
     },
@@ -164,6 +166,9 @@ export default {
           let res = JSON.parse(JSON.stringify(this.action))
           if (res.type === 2 || res.type === 3) {
             delete res.content
+          }
+          if (res.type !== 3) {
+            delete res.pictureNumber
           }
           if (this.createFlag) {
             // 新建

@@ -98,8 +98,7 @@ public class ReturnOrderService extends ShopBaseService{
 	public PageResult<OrderReturnListVo> getPageList(OrderPageListQueryParam param) {
 		SelectJoinStep<Record> select = db().select().from(TABLE);
         buildOptionsReturn(select, param);
-		PageResult<OrderReturnListVo> result = getPageResult(select,param.getCurrentPage(),param.getPageRows(),OrderReturnListVo.class);
-		return result;
+        return getPageResult(select,param.getCurrentPage(),param.getPageRows(),OrderReturnListVo.class);
 	}
 
     public PageResult<ReturnOrderListMp> getPageList(OrderListParam param) {
@@ -171,6 +170,9 @@ public class ReturnOrderService extends ShopBaseService{
             select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING, OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)
                 .and(TABLE.CREATE_TIME.add(param.getShopHelperActionDays()).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
         }
+        if (param.getReturnSource() != null && param.getReturnSource().length != 0) {
+            select.where(TABLE.RETURN_SOURCE.in(param.getReturnSource()));
+        }
 		return select;
 	}
 
@@ -229,6 +231,19 @@ public class ReturnOrderService extends ShopBaseService{
 			//非退货->申请时间
 			returnOrder.setShippingOrRefundTime(DateUtil.getSqlTimestamp());
 		}
+		//售后方式
+        if(Byte.valueOf(OrderConstant.IS_MP_Y).equals(param.getIsMp())) {
+            returnOrder.setReturnSource(OrderConstant.RS_MP);
+        }else if(Byte.valueOf(OrderConstant.IS_MP_ADMIN).equals(param.getIsMp())) {
+            returnOrder.setReturnSource(OrderConstant.RS_ADMIN);
+        }else if(Byte.valueOf(OrderConstant.IS_MP_POS).equals(param.getIsMp())) {
+            returnOrder.setReturnSource(OrderConstant.RS_POS);
+        }else if(Byte.valueOf(OrderConstant.IS_MP_ERP).equals(param.getIsMp())) {
+            returnOrder.setReturnSource(OrderConstant.RS_ERP);
+        }else if(Byte.valueOf(OrderConstant.IS_MP_AUTO).equals(param.getIsMp()) && param.getReturnSourceType() != null) {
+            returnOrder.setReturnSource(OrderConstant.RS_AUTO);
+            returnOrder.setReturnSourceType(param.getReturnSourceType());
+        }
 		//TODO 同步退款单到CRM
 		returnOrder.insert();
 		logger().info("新增退款/退货订单:"+returnOrder.toString());

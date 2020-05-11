@@ -163,7 +163,7 @@ ALTER TABLE `b2c_goods` ADD COLUMN `pv` int(11) DEFAULT '0' COMMENT '7天访问�
 ALTER TABLE `b2c_goods` ADD COLUMN `comment_num` int(11) DEFAULT '0' COMMENT '评论数';
 
 -- 2020-03-20 商品导入信息结果详情表修改字段
--- ALTER TABLE b2c_goods_import_detail CHANGE error_msg error_code TINYINT(3) NOT NULL DEFAULT 0 COMMENT '导入数据错误码，0表示正确 非0对应错误码';
+ALTER TABLE b2c_goods_import_detail CHANGE COLUMN error_msg error_code TINYINT(3) NOT NULL DEFAULT 0 COMMENT '导入数据错误码，0表示正确 非0对应错误码';
 
 -- 2020-03-24 评价表添加置顶字段
 ALTER TABLE `b2c_comment_goods` ADD COLUMN `is_top` TINYINT ( 2 ) DEFAULT '0' COMMENT '是否置顶';
@@ -529,5 +529,9 @@ create table IF NOT EXISTS `b2c_bulkshipment_record_detail` (
 -- 评论表添加买家秀相关字段
 ALTER TABLE `b2c_comment_goods` ADD COLUMN `is_show` tinyint(2) DEFAULT '0' COMMENT '是否买家秀';
 ALTER TABLE `b2c_comment_goods` ADD COLUMN `show_time` timestamp NULL DEFAULT NULL COMMENT '买家秀时间';
+
+-- 退款订单表增加售后方式
+ALTER TABLE `b2c_return_order` ADD COLUMN `return_source` tinyint(1) DEFAULT '1' COMMENT '售后发起来源：0商家手动发起，1用户主动申请，2订单异常系统自动发起';
+ALTER TABLE `b2c_return_order` ADD COLUMN `return_source_type` tinyint(1) DEFAULT '0' COMMENT '售后发起来源类型：0改价失败自动售后，1微信支付失败，2活动自动售后';
 /*********************2.12*************************END*/
 

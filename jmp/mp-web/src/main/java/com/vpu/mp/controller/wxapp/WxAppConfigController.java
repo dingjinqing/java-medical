@@ -35,15 +35,18 @@ public class WxAppConfigController extends WxAppBaseController {
 		return success(this.shop().mpDecoration.getPageInfo(param));
 	}
 
-	@PostMapping("/api/wxapp/page/module")
+    @PostMapping("/api/wxapp/page/module")
     public JsonResult module(@RequestBody WxAppPageModuleParam param) {
-	    return success(this.shop().mpDecoration.getPageModuleInfo(param));
+        return success(this.shop().mpDecoration.getPageModuleInfo(param));
     }
 
-	@PostMapping("/api/wxapp/locale/get")
-	public JsonResult getLocalePack(@RequestBody WxAppCommonParam param) {
-		return success(this.shop().config.getLocalePack(getLang()));
-	}
-	
-	
+    @PostMapping("/api/wxapp/locale/get")
+    public JsonResult getLocalePack(@RequestBody WxAppCommonParam param) {
+        return success(this.shop().config.getLocalePack(getLang()));
+    }
+
+    @PostMapping("/api/wxapp/suspend")
+    public JsonResult getSuspendWindowConfig(@RequestBody WxAppPageParam param) {
+        return success(this.shop().mpDecoration.getSuspendWindowConfig(param));
+    }
 }

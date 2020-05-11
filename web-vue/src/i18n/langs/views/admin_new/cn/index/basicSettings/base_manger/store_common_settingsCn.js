@@ -1,4 +1,6 @@
 export const cn = {
+  goodsSearchSettings: '后台商品搜索设置',
+  goodsSearchTip: '开关开启，后台商品搜索只匹配完全包含搜索词的商品',
   salesDisplaySettings: '销量展示设置',
   closed: '已关闭',
   activated: '已开启',

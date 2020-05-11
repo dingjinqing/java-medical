@@ -11,7 +11,11 @@ import java.util.stream.Collectors;
 import cn.hutool.core.exceptions.UtilException;
 import cn.hutool.core.io.FastByteArrayOutputStream;
 import cn.hutool.core.io.IoUtil;
+import lombok.extern.slf4j.Slf4j;
+
 import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
+import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawList;
+
 import org.junit.Test;
 
 /**
@@ -19,18 +23,22 @@ import org.junit.Test;
 * @Date: 2019年10月14日
 * @Description:
 */
+@Slf4j
 public class test {
 	public static void main(String[] args) {
-		List<MemberCard> list = new ArrayList<>();
-		list.add(new MemberCard(1));
-		System.out.println("大小"+list.size());
-		for(MemberCard car:list) {
-			System.out.println(car.toString());
+		String value="-11.00";
+		int indexOf = value.indexOf("-");
+		String subLimit = subLimit("name", value, indexOf);
+		System.out.println(subLimit);
+	}
+	
+	private static String subLimit(String name,String value,int num) {
+		if (value.length() > num) {
+			log.info("类型：{}，原来值：{}；长度要求:{}",name,value,num);
+			value = value.substring(0, num);
+			log.info("类型：{}，长度要求:{}，新值：{}；",name,num,value);
 		}
-		List<Integer> cardNos = list.stream().map(MemberCard::getId).collect(Collectors.toList());
-		for(Integer cardNo:cardNos) {
-			System.out.println(cardNo);
-		}
+		return value;
 	}
 
 	@Test

@@ -32,11 +32,6 @@ public class WxAppGoodsSearchController extends WxAppBaseController {
     public JsonResult searchGoods(@RequestBody GoodsSearchMpParam param) {
         Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
-
-        if (GoodsSearchMpParam.PAGE_FROM_GROUP_LIST.equals(param.getPageFrom())) {
-            return success(shop().goodsMp.goodsGroupMpService.getGoodsGroupListFromGoodsSearch(param));
-        } else {
-            return success(shop().goodsMp.goodsSearchMpService.searchGoodsGate(param));
-        }
+        return success(shop().goodsMp.goodsSearchMpService.searchGoodsGate(param));
     }
 }

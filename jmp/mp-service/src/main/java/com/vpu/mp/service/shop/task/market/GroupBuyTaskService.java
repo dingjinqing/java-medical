@@ -36,7 +36,11 @@ import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GroupBuyDefine.GROUP_BUY_DEFINE;
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.GroupBuyProductDefine.GROUP_BUY_PRODUCT_DEFINE;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.*;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_DEFAULT_SUCCESS;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_FAILED;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_SUCCESS;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -284,6 +288,7 @@ public class GroupBuyTaskService  extends ShopBaseService {
             RefundParam param = new RefundParam();
             param.setAction((byte)OrderServiceCode.RETURN.ordinal());//1是退款
             param.setIsMp(OrderConstant.IS_MP_AUTO);
+            param.setReturnSourceType(OrderConstant.RS_AUTO_GROUP_BUY);
             param.setOrderSn(orderSn);
             param.setOrderId(orderInfo.getOrderId());
             param.setReturnType(OrderConstant.RT_ONLY_MONEY);

@@ -247,7 +247,7 @@
               @change="datePickerChange(true,orderTime)"
               size="small"
             />
-             至
+            至
             <el-date-picker
               v-model="orderTime.endTime"
               type="datetime"
@@ -285,7 +285,7 @@
               class="default_input"
               size="small"
             />
-             至
+            至
             <el-date-picker
               v-model="completeTime.endTime"
               type="datetime"
@@ -342,7 +342,10 @@
               </el-tab-pane>
             </template>
           </el-tabs>
-          <div class="return-sort-module" v-show="searchParams.orderStatus2 === '7'">
+          <div
+            class="return-sort-module"
+            v-show="searchParams.orderStatus2 === '7'"
+          >
             <el-select
               v-model="searchParams.sortRule"
               size="small"
@@ -968,8 +971,7 @@ export default {
   inject: ['adminReload'],
   mounted () {
     let userId = this.$route.query.userId
-    let userName = this.$route.query.userName
-    this.searchParams.userName = userName || null
+    this.searchParams.userId = userId || null
     let roomId = this.$route.query.roomId
     this.searchParams.roomId = roomId || null
     console.log(userId)
@@ -1178,7 +1180,7 @@ export default {
         target.endTime = null
       }
     },
-    getReturnTime ({returnTime, refundTime}) {
+    getReturnTime ({ returnTime, refundTime }) {
       if (returnTime && refundTime) {
         return new Date(returnTime).getTime() > new Date(refundTime).getTime() ? refundTime : returnTime
       }
@@ -1226,12 +1228,12 @@ export default {
       margin-top: 10px;
       background-color: #fff;
       padding: 10px;
-      .tab-content{
+      .tab-content {
         position: relative;
         .return-sort-module {
           position: absolute;
           top: 5px;
-          right:0
+          right: 0;
         }
       }
       .wait_num {

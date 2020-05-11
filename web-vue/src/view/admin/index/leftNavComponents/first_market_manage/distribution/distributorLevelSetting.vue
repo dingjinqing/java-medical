@@ -16,29 +16,217 @@
       @click="centerDialogVisible = true"
     >{{ $t('distribution.levelText') }}</el-button>
 
-    <!-- 新客下首单配置 -->
-    <div style="margin-bottom: 10px;">
-      <el-checkbox v-model="config">
-        邀请新用户下首单且订单中参与返利的商品支付金额达到
-        <el-input
-          v-model="configAmount"
-          size="small"
-          style="width: 100px;margin: 0 5px;"
-          @blur="checkMoney(configAmount)"
-        ></el-input>元, 则给分销员返佣
-        <el-tooltip
-          placement="top"
-          effect="light"
+    <el-form
+      ref="form"
+      :model="form"
+      :rules="fromRules"
+    >
+      <el-form-item>
+        <el-checkbox
+          v-model="form.config"
+          @change="configChange"
         >
-          <div slot="content">订单支付金额：包括微信支付、账户余额支付及会员卡余额支付部分；返利订单若满足此条件，则不再执行"返利策略"</div>
-          <span
-            class="el-icon-question"
-            style="color: #666;cursor: pointer;"
-          ></span>
-        </el-tooltip>
-      </el-checkbox>
+          邀请新用户下首单且订单中参与返利的商品支付金额达到
+          <el-form-item
+            prop="configMoney"
+            style="display: inline-block;"
+          >
+            <el-input
+              v-model="form.configMoney"
+              size="small"
+              style="width: 100px;margin: 0 5px;"
+            ></el-input>
+          </el-form-item>
+          元, 则给分销员返佣
+          <el-tooltip
+            placement="top"
+            effect="light"
+          >
+            <div slot="content">订单支付金额：包括微信支付、账户余额支付及会员卡余额支付部分；返利订单若满足此条件，则不再执行"返利策略"</div>
+            <span
+              class="el-icon-question"
+              style="color: #666;cursor: pointer;"
+            ></span>
+          </el-tooltip>
+        </el-checkbox>
+      </el-form-item>
+
+      <el-form-item prop="tableData">
+        <el-table
+          class="version-manage-table"
+          header-row-class-name="tableClss"
+          :data="form.tableData"
+          border
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="levelText"
+            :label="$t('distribution.level')"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            :label="$t('distribution.levelName')"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-input
+                v-model="scope.row.levelName"
+                size="small"
+                style="width: 170px;"
+              ></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column
+            :label="$t('distribution.levelText')"
+            align="center"
+            width="300px"
+          >
+            <template slot-scope="scope">
+              <el-form-item
+                :prop="'tableData.' + scope.$index+ '.levelUpRoute'"
+                :rules="[
+                  { validator: (rule, value, callback)=>{validateLevel(rule, value, callback, scope.row.inviteNumber, scope.row.totalDistributionMoney, scope.row.totalBuyMoney)}, trigger: 'change' },
+                ]"
+              >
+                <div v-if="scope.row.levelId === 1">{{ $t('distribution.level1') }}</div>
+                <el-radio-group
+                  v-model="scope.row.levelUpRoute"
+                  v-if="scope.row.levelId !== 1"
+                >
+                  <el-radio :label="0">{{ $t('distribution.levelRadio1') }}</el-radio>
+                  <el-radio :label="1">{{ $t('distribution.levelRadio2') }}</el-radio>
+                </el-radio-group>
+                <div
+                  v-if="scope.row.levelUpRoute === 0 && scope.row.levelId !== 1"
+                  style="margin: 15px 0;"
+                >
+                  <el-form-item
+                    :prop="'tableData.' + scope.$index+ '.inviteNumber'"
+                    :rules="[{ validator: (rule, value, callback)=>{validateLevelNum(rule, value, callback)}, trigger: ['blur', 'change'] }]"
+                    style="display: inline-block;"
+                  >
+                    <div>{{ $t('distribution.levelTip1') }}
+                      <el-input
+                        v-model="scope.row.inviteNumber"
+                        size="mini"
+                        style="width: 70px;"
+                        @change="levelChange(scope.row.inviteNumber, scope.row.totalDistributionMoney, scope.row.totalBuyMoney)"
+                      ></el-input> {{ $t('distribution.levelTip2') }} {{ $t('distribution.levelTip3') }}</div>
+                  </el-form-item>
+                  <el-form-item
+                    :prop="'tableData.' + scope.$index+ '.totalDistributionMoney'"
+                    :rules="[{ validator: (rule, value, callback)=>{validateLevelMoney(rule, value, callback)}, trigger: ['blur', 'change'] }]"
+                    style="display: inline-block;"
+                  >
+                    <div>{{ $t('distribution.levelTip4') }}
+                      <el-input
+                        v-model="scope.row.totalDistributionMoney"
+                        size="mini"
+                        style="width: 70px;"
+                        @change="levelChange(scope.row.inviteNumber, scope.row.totalDistributionMoney, scope.row.totalBuyMoney)"
+                      ></el-input> {{ $t('distribution.levelTip5') }} {{ $t('distribution.levelTip3') }}</div>
+                  </el-form-item>
+                  <el-form-item
+                    :prop="'tableData.' + scope.$index+ '.totalBuyMoney'"
+                    :rules="[{ validator: (rule, value, callback)=>{validateLevelMoney(rule, value, callback)}, trigger: ['blur', 'change'] }]"
+                    style="display: inline-block;"
+                  >
+                    <div>{{ $t('distribution.levelTip6') }}
+                      <el-input
+                        v-model="scope.row.totalBuyMoney"
+                        size="mini"
+                        style="width: 70px;"
+                        @change="levelChange(scope.row.inviteNumber, scope.row.totalDistributionMoney, scope.row.totalBuyMoney)"
+                      ></el-input> {{ $t('distribution.levelTip5') }}</div>
+                  </el-form-item>
+                </div>
+                <div
+                  v-if="scope.row.levelUpRoute === 1 && scope.row.levelStatus == 1"
+                  style="margin: 15px 0;"
+                >
+                  <el-button
+                    size="mini"
+                    @click="addDistributor(scope.row.levelId, scope.row.levelUserIds)"
+                  ><i class="el-icon-plus"></i> {{ $t('distribution.addDistributor') }}</el-button>
+                </div>
+              </el-form-item>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            :label="$t('distribution.distributorsNum')"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <span
+                @click="numClickHandler"
+                style="color: #5a8bff;cursor: pointer;"
+              >{{ scope.row.users }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            :label="$t('distribution.option')"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <p v-if="scope.row.levelId === 1">{{ $t('distribution.levelAlready') }}</p>
+              <div v-if="scope.row.levelId !== 1">
+                <p v-if="scope.row.levelStatus === 1">{{ $t('distribution.levelStart2') }}</p>
+                <p v-if="scope.row.levelStatus === 0">{{ $t('distribution.levelStop2') }}</p>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="startHandler(scope.row.id)"
+                  v-if="scope.row.levelStatus === 0"
+                >{{ $t('distribution.levelStart1') }}</el-button>
+                <el-button
+                  size="mini"
+                  @click="stopHandler(scope.row.id)"
+                  v-if="scope.row.levelStatus === 1"
+                >{{ $t('distribution.levelStop1') }}</el-button>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="首单获佣金(元)"
+            align="center"
+            v-if="form.config === true"
+          >
+            <template slot-scope="scope">
+              <el-form-item
+                :prop="'tableData.' + scope.$index+ '.amount'"
+                :rules="[ { validator: (rule, value, callback)=>{validateMoney(rule, value, callback)}, trigger: ['blur', 'change'] }]"
+              >
+                <el-input
+                  v-model="scope.row.amount"
+                  size="small"
+                  style="width: 100px;"
+                ></el-input>
+              </el-form-item>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-form-item>
+    </el-form>
+
+    <div class="listFooter">
+      <el-button
+        type="primary"
+        size="small"
+        @click="setDistributionLevel"
+      >{{ $t('distribution.rebateSave') }}</el-button>
     </div>
 
+    <!-- 添加分销员弹窗 -->
+    <DistributorDialog
+      :turnUp="turnUpDialog"
+      @handleSelect="handleSelectRow"
+      :level="levelId"
+      :userIds="userIds"
+    />
+
+    <!-- 升级规则弹窗 -->
     <el-dialog
       :title="$t('distribution.dialogTitle')"
       :visible.sync="centerDialogVisible"
@@ -60,154 +248,6 @@
       </span>
     </el-dialog>
 
-    <!-- 表格 -->
-    <div class="table_list">
-      <el-table
-        header-row-class-name="tableClss"
-        :data="tableData"
-        border
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="levelText"
-          :label="$t('distribution.level')"
-          align="center"
-        >
-        </el-table-column>
-        <el-table-column
-          :label="$t('distribution.levelName')"
-          align="center"
-        >
-          <template slot-scope="scope">
-            <el-input
-              v-model="scope.row.levelName"
-              size="small"
-              style="width: 170px;"
-            ></el-input>
-          </template>
-        </el-table-column>
-        <el-table-column
-          :label="$t('distribution.levelText')"
-          align="center"
-          width="300px"
-        >
-          <template slot-scope="scope">
-            <div v-if="scope.row.levelId === 1">{{ $t('distribution.level1') }}</div>
-            <el-radio-group
-              v-model="scope.row.levelUpRoute"
-              v-if="scope.row.levelId !== 1"
-            >
-              <el-radio :label="0">{{ $t('distribution.levelRadio1') }}</el-radio>
-              <el-radio :label="1">{{ $t('distribution.levelRadio2') }}</el-radio>
-            </el-radio-group>
-            <div
-              v-if="scope.row.levelUpRoute === 0 && scope.row.levelId !== 1"
-              style="margin: 15px 0;"
-            >
-              <div>{{ $t('distribution.levelTip1') }}
-                <el-input
-                  v-model="scope.row.inviteNumber"
-                  @blur="checkNum(scope.row.inviteNumber)"
-                  size="mini"
-                  style="width: 70px;"
-                ></el-input> {{ $t('distribution.levelTip2') }}</div>
-              <div>{{ $t('distribution.levelTip3') }}</div>
-              <div>{{ $t('distribution.levelTip4') }}
-                <el-input
-                  v-model="scope.row.totalDistributionMoney"
-                  @blur="checkMoney(scope.row.totalDistributionMoney)"
-                  size="mini"
-                  style="width: 70px;"
-                ></el-input> {{ $t('distribution.levelTip5') }}</div>
-              <div>{{ $t('distribution.levelTip3') }}</div>
-              <div>{{ $t('distribution.levelTip6') }}
-                <el-input
-                  v-model="scope.row.totalBuyMoney"
-                  @blur="checkMoney(scope.row.totalBuyMoney)"
-                  size="mini"
-                  style="width: 70px;"
-                ></el-input> {{ $t('distribution.levelTip5') }}</div>
-            </div>
-            <div
-              v-if="scope.row.levelUpRoute === 1 && scope.row.levelStatus == 1"
-              style="margin: 15px 0;"
-            >
-              <el-button
-                size="mini"
-                @click="addDistributor(scope.row.levelId, scope.row.levelUserIds)"
-              ><i class="el-icon-plus"></i> {{ $t('distribution.addDistributor') }}</el-button>
-            </div>
-          </template>
-        </el-table-column>
-
-        <el-table-column
-          :label="$t('distribution.distributorsNum')"
-          align="center"
-        >
-          <template slot-scope="scope">
-            <a
-              href="javascript:void(0);"
-              @click="numClickHandler"
-            >{{ scope.row.users }}</a>
-          </template>
-        </el-table-column>
-
-        <el-table-column
-          :label="$t('distribution.option')"
-          align="center"
-        >
-          <template slot-scope="scope">
-            <p v-if="scope.row.levelId === 1">{{ $t('distribution.levelAlready') }}</p>
-            <div v-if="scope.row.levelId !== 1">
-              <p v-if="scope.row.levelStatus === 1">{{ $t('distribution.levelStart2') }}</p>
-              <p v-if="scope.row.levelStatus === 0">{{ $t('distribution.levelStop2') }}</p>
-              <el-button
-                type="primary"
-                size="mini"
-                @click="startHandler(scope.row.id)"
-                v-if="scope.row.levelStatus === 0"
-              >{{ $t('distribution.levelStart1') }}</el-button>
-              <el-button
-                size="mini"
-                @click="stopHandler(scope.row.id)"
-                v-if="scope.row.levelStatus === 1"
-              >{{ $t('distribution.levelStop1') }}</el-button>
-            </div>
-          </template>
-        </el-table-column>
-
-        <el-table-column
-          label="首单获佣金(元)"
-          align="center"
-          v-if="config === true"
-        >
-          <template slot-scope="scope">
-            <el-input
-              v-model="scope.row.amount"
-              size="small"
-              style="width: 100px;"
-            ></el-input>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-
-    <div class="listFooter">
-      <el-button
-        type="primary"
-        size="small"
-        @click="setDistributionLevel"
-      >{{ $t('distribution.rebateSave') }}</el-button>
-    </div>
-
-    <!-- 添加分销员弹窗 -->
-    <DistributorDialog
-      :turnUp="turnUpDialog"
-      @handleSelect="handleSelectRow"
-      :level="levelId"
-      :userIds="userIds"
-    />
-
   </div>
 </template>
 
@@ -222,71 +262,89 @@ export default {
 
   },
   data () {
+    // 自定义订单金额
+    var validateMoney = (rule, value, callback) => {
+      var re = /^\d+(\.\d{1,2})?$/
+      if (this.form.config === true && !value) {
+        callback(new Error('请填写订单金额'))
+      } else if (this.form.config === true && !re.test(value)) {
+        callback(new Error('请填写非负数, 可以保留两位小数'))
+      } else {
+        callback()
+      }
+    }
     return {
       levelId: null,
-      // 表格数据
-      tableData: [{
-        levelId: 1,
-        levelName: '分销员测试',
-        levelUpRoute: 0,
-        inviteNumber: 0,
-        totalDistributionMoney: 0,
-        totalBuyMoney: 0,
-        levelUserIds: null,
-        users: '',
-        levelStatus: 1,
-        amount: ''
-      }, {
-        levelId: 2,
-        levelName: 'v2',
-        levelUpRoute: 0,
-        inviteNumber: 0,
-        totalDistributionMoney: 0,
-        totalBuyMoney: 0,
-        levelUserIds: null,
-        users: '',
-        levelStatus: 0,
-        amount: ''
-      }, {
-        levelId: 3,
-        levelName: '分销员组3',
-        levelUpRoute: 1,
-        inviteNumber: 0,
-        totalDistributionMoney: 0,
-        totalBuyMoney: 0,
-        levelUserIds: null,
-        users: '',
-        levelStatus: 1,
-        amount: ''
-      }, {
-        levelId: 4,
-        levelName: '分销员组4',
-        levelUpRoute: 1,
-        inviteNumber: 0,
-        totalDistributionMoney: 0,
-        totalBuyMoney: 0,
-        levelUserIds: null,
-        users: '',
-        levelStatus: 1,
-        amount: ''
-      }, {
-        levelId: 5,
-        levelName: '分销员组5',
-        levelUpRoute: 1,
-        inviteNumber: 0,
-        totalDistributionMoney: 0,
-        totalBuyMoney: 0,
-        levelUserIds: null,
-        users: '',
-        levelStatus: 0,
-        amount: ''
-      }],
       centerDialogVisible: false, // 规则弹框
       turnUpDialog: false, // 等级弹窗
       userIds: '', // 手动升级分销员数据回显
 
-      config: false, // 邀请新客下首单返佣配置
-      configAmount: '' // 返佣金额
+      // 表单
+      form: {
+        config: false, // 邀请新客下首单返佣配置
+        configMoney: '', // 返佣金额
+        // 表格数据
+        tableData: [{
+          levelId: 1,
+          levelName: '分销员测试',
+          levelUpRoute: 0,
+          inviteNumber: 0,
+          totalDistributionMoney: 0,
+          totalBuyMoney: 0,
+          levelUserIds: null,
+          users: '',
+          levelStatus: 1,
+          amount: ''
+        }, {
+          levelId: 2,
+          levelName: 'v2',
+          levelUpRoute: 0,
+          inviteNumber: 0,
+          totalDistributionMoney: 0,
+          totalBuyMoney: 0,
+          levelUserIds: null,
+          users: '',
+          levelStatus: 0,
+          amount: ''
+        }, {
+          levelId: 3,
+          levelName: '分销员组3',
+          levelUpRoute: 1,
+          inviteNumber: 0,
+          totalDistributionMoney: 0,
+          totalBuyMoney: 0,
+          levelUserIds: null,
+          users: '',
+          levelStatus: 1,
+          amount: ''
+        }, {
+          levelId: 4,
+          levelName: '分销员组4',
+          levelUpRoute: 1,
+          inviteNumber: 0,
+          totalDistributionMoney: 0,
+          totalBuyMoney: 0,
+          levelUserIds: null,
+          users: '',
+          levelStatus: 1,
+          amount: ''
+        }, {
+          levelId: 5,
+          levelName: '分销员组5',
+          levelUpRoute: 1,
+          inviteNumber: 0,
+          totalDistributionMoney: 0,
+          totalBuyMoney: 0,
+          levelUserIds: null,
+          users: '',
+          levelStatus: 0,
+          amount: ''
+        }]
+      },
+      // 校验表单
+      fromRules: {
+        configMoney: [{ validator: validateMoney, trigger: 'change' }]
+      }
     }
   },
   mounted () {
@@ -330,18 +388,18 @@ export default {
             break
         }
       })
-      this.tableData = data
+      this.form.tableData = data
     },
 
     // 设置分销员等级
     setDistributionLevel () {
-      if (this.config === true && this.configAmount === '') {
-        this.$message.warning('请填写订单支付金额')
-        return false
-      }
-      setDistributionLevel(this.tableData).then((res) => {
-        if (res.error === 0) {
-          this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          setDistributionLevel(this.form.tableData).then((res) => {
+            if (res.error === 0) {
+              this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
+            }
+          })
         }
       })
     },
@@ -403,25 +461,64 @@ export default {
       })
     },
 
-    // 校验累计数
-    checkNum (value) {
-      var re = /^(0|\+?[1-9][0-9]*)$/
-      if (!re.test(value)) {
-        this.$message.warning({ message: '请填写0或者正整数' })
-      }
-    },
-
-    // 校验金额
-    checkMoney (value) {
-      var re = /^\d+(\.\d{1,2})?$/
-      if (!re.test(value)) {
-        this.$message.warning({ message: '请填写非负数, 可以保留两位小数' })
-      }
-    },
-
     // 跳转分销员列表
     numClickHandler () {
       this.$emit('tabChange')
+    },
+
+    // 校验升级规则
+    validateLevel (rule, value, callback, inviteNumber, totalDistributionMoney, totalBuyMoney) {
+      // console.log(inviteNumber)
+      // console.log(totalDistributionMoney)
+      // console.log(totalBuyMoney)
+      if (value === 0 && !inviteNumber && !totalDistributionMoney && !totalBuyMoney) {
+        callback(new Error('请填写自动升级规则'))
+      } else {
+        callback()
+      }
+    },
+
+    // 校验规则个数
+    validateLevelNum (rule, value, callback) {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (value && !re.test(value)) {
+        callback(new Error('请填写0或者正整数'))
+      } else {
+        callback()
+      }
+    },
+
+    // 校验规则金额
+    validateLevelMoney (rule, value, callback) {
+      var re = /^\d+(\.\d{1,2})?$/
+      if (value && !re.test(value)) {
+        callback(new Error('请填写非负数, 可以保留两位小数'))
+      } else {
+        callback()
+      }
+    },
+
+    // 校验首单佣金
+    validateMoney (rule, value, callback) {
+      var re = /^\d+(\.\d{1,2})?$/
+      if (this.form.config === true) {
+        if (!value) {
+          callback(new Error('请填写佣金'))
+        } else if (!re.test(value)) {
+          callback(new Error('请填写非负数, 可以保留两位小数'))
+        }
+      } else {
+        callback()
+      }
+    },
+
+    levelChange (inviteNumber, totalDistributionMoney, totalBuyMoney) {
+
+    },
+
+    // 首单返佣金配置
+    configChange () {
+      this.$refs['form'].validateField('configMoney')
     }
   }
 }
@@ -461,6 +558,10 @@ a {
   font-weight: bold;
   color: #000;
   padding: 8px 10px;
+}
+.version-manage-table /deep/ .el-form-item__error {
+  position: relative;
+  text-align: center;
 }
 .table_list {
   position: relative;
