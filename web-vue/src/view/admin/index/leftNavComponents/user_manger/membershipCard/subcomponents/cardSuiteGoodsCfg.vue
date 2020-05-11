@@ -134,7 +134,7 @@
                 </el-radio>
                 <el-select size="small" style="width: 110px;"></el-select>
                 <span>兑换</span>
-                <el-input v-model.number="ruleForm.everyGoodsMaxNum" size="small" style="width: 110px;"></el-input>
+                <el-input v-model.number="ruleForm.exchangeTimeNum" size="small" style="width: 110px;"></el-input>
                 <span>次</span>
             </li>
           </ul>
@@ -166,7 +166,8 @@ export default {
           everyGoodsMaxNum: '',
           exchangFreight: '0',
           exchangGoods: [{goodsIds: [], maxNum: null}],
-          exchangTimeType: '0'
+          exchangTimeType: '0',
+          exchangeTimeNum: null
         }
       }
     }

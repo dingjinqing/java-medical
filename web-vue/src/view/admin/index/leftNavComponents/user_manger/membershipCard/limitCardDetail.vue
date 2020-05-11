@@ -212,7 +212,8 @@ export default {
         everyGoodsMaxNum: '',
         exchangFreight: '0',
         exchangGoods: [{goodsIds: [], maxNum: null}],
-        exchangTimeType: '0'
+        exchangTimeType: '0',
+        exchangeTimeNum: null
       },
       cardReceiveCfgData: {
         cardType: 1,
