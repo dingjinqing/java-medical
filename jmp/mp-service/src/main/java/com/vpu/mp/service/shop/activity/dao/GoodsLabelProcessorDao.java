@@ -89,7 +89,7 @@ public class GoodsLabelProcessorDao extends ShopBaseService {
         return db().select(GOODS_LABEL.NAME).from(GOODS_LABEL).innerJoin(GOODS_LABEL_COUPLE).on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
             .where(GOODS_LABEL.GOODS_DETAIL.eq(GoodsConstant.SHOW_LABEL).and(GOODS_LABEL.DEL_FLAG.eq(DelFlag.NORMAL.getCode())))
             .and(goodsIdsCondition.or(catIdsCondition).or(sortIdsCondition).or(allGoodsCondition))
-            .orderBy(GOODS_LABEL.LEVEL.asc(), GOODS_LABEL.CREATE_TIME)
+            .orderBy(GOODS_LABEL.LEVEL.desc(), GOODS_LABEL.CREATE_TIME)
             .fetch(GOODS_LABEL.NAME);
     }
 }
