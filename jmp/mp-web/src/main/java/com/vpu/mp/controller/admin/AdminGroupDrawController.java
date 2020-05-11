@@ -146,6 +146,6 @@ public class AdminGroupDrawController extends AdminBaseController {
      */
     @PostMapping("/effect")
     public JsonResult getGroupDrawEffect(@RequestBody GroupDrawAnalysisParam param)  {
-        return success(shop().groupDraw.groupDrawAnalysis(param));
+        return success(shop().groupDraw.getAnalysis(param));
     }
 }

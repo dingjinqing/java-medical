@@ -652,7 +652,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		int joinNum = 0;
 		int successUserNum = 0;
 		int newUser = 0;
-		List<String> betweenTime = getBetweenTime(startTime, endTime);
+		List<String> betweenTime = DateUtil.getBetweenTime(startTime, endTime);
 		List<GroupIntegrationAnalysisListVo> returnVo = new ArrayList<GroupIntegrationAnalysisListVo>();
 		for (String date : betweenTime) {
 			GroupIntegrationAnalysisListVo vo = new GroupIntegrationAnalysisListVo();
@@ -686,25 +686,6 @@ public class GroupIntegrationService extends ShopBaseService {
 		gbaVo.setSuccessUserNum(successUserNum);
 		gbaVo.setNewUser(newUser);
 		return gbaVo;
-	}
-
-	private List<String> getBetweenTime(Timestamp startTime, Timestamp endTime) {
-		String format = DateUtil.DATE_FORMAT_SIMPLE;
-		String startDate = DateUtil.dateFormat(format, startTime);
-		String endDate = DateUtil.dateFormat(format, endTime);
-		logger().info("开始时间：" + startDate + "  结束时间：" + endDate);
-		List<String> list = new ArrayList<String>();
-		long add = 24 * 60 * 60 * 1000L;
-		list.add(startDate);
-		while (!startDate.equals(endDate)) {
-			// System.out.println("插入："+startDate);
-			long time = startTime.getTime();
-			time = time + add;
-			startTime = new Timestamp(time);
-			startDate = DateUtil.dateFormat(format, startTime);
-			list.add(startDate);
-		}
-		return list;
 	}
 
 	public GroupStartVo startPinIntegrationGroup(GroupStartParam param, Integer userId,String lang) {

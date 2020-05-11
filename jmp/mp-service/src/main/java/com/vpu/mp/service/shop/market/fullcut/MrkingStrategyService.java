@@ -650,11 +650,10 @@ public class MrkingStrategyService extends ShopBaseService {
             logger().error("excel error", e);
         }
 
-        excelWriter.writeModelList(res, MrkingStrategyOrderExportVo.class);
         return workbook;
     }
 //    /**
-//     * 秒杀效果分析的echarts图表数据
+//     * 满折满减效果分析的echarts图表数据
 //     *
 //     *
 //     */

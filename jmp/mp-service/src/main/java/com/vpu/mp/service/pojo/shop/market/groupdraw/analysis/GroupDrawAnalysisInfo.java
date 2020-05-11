@@ -17,4 +17,5 @@ public class GroupDrawAnalysisInfo {
     /** 创建时间 */
     private Timestamp createTime;
 
+    private String startDate;
 }
