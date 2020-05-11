@@ -307,20 +307,23 @@ global.wxPage({
     var that = this;
     util.getUserInfoCommon(e, function (userInfo) {
       if (userInfo) {
-        if (promote_info.launchFlag == 2 && promote_info.promoteStatus == 0) {
+        if (promote_info.promoteCondition == 1 && promote_info.launchFlag == 2 && promote_info.promoteStatus == 0) {
           that.setData({
             has_user: 1
           })
         }
       }
-      // 未配置授权 (授权可增加助力机会)
-      if (promote_info.promoteCondition == 0) {
-        shareAdd(that, 1)
-        setTimeout(function () {
-          clearTimeout(set_time_out);
-          that.onPullDownRefresh();
-        }, 200);
+      if (promote_info.promoteCondition == 0 && promote_info.launchFlag == 2 && promote_info.promoteStatus == 0) {
+        that.setData({
+          has_user: 1
+        })
       }
+      // 授权可增加助力机会
+      shareAdd(that, 1);
+      setTimeout(function () {
+        clearTimeout(set_time_out);
+        that.onPullDownRefresh();
+      }, 200);
     });
   },
   // 分享弹窗
@@ -340,6 +343,12 @@ global.wxPage({
       clearTimeout(set_time_out);
       that.onPullDownRefresh();
     }, 200);
+  },
+  // 关闭授权弹窗
+  to_close: function (e) {
+    this.setData({
+      has_user: 0
+    })
   },
   
   /**
@@ -516,7 +525,7 @@ function promote_request(that) {
       }
       // 助力次数提示
       if (promote_info.canPromote && promote_info.canPromote.code == 0) {
-        if (promote_info.promoteStatus == 2) {
+        if (promote_info.promoteStatus == 1) {
           util.showModal('提示', '助力已完成');
         } else {
           util.showModal('提示', '今天的助力次数已用完了');
@@ -526,7 +535,7 @@ function promote_request(that) {
       // 活动完成还可再发起
       if (promote_info.launchFlag == 1 && promote_info.promoteStatus == 2 && promote_info.canLaunch == 1) {
         // 助力列表置空
-        promote_info.promoteDetailList == null
+        promote_info.promoteDetailList = null
         // 助力进度置空
         launched_width = 0
         is_promote_value = 0 // 已助力值

@@ -205,7 +205,7 @@ public class GoodsBrandService extends ShopBaseService {
                     .execute();
             }
         });
-        esDataUpdateMqService.updateEsGoodsIndexByBrandId(goodsBrand.getId(),getShopId());
+        esDataUpdateMqService.addEsGoodsIndex(goodsBrand.getOldGoodsIds(),getShopId(),DBOperating.UPDATE);
     }
 
     /**
