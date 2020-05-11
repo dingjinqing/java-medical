@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCard extends TableImpl<MemberCardRecord> {
 
-    private static final long serialVersionUID = 271173264;
+    private static final long serialVersionUID = -1115544260;
 
     /**
      * The reference instance of <code>jmini_shop_489258.b2c_member_card</code>
@@ -400,6 +400,16 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
     public final TableField<MemberCardRecord, String> CANNOT_USE_ACTION = createField("cannot_use_action", org.jooq.impl.SQLDataType.VARCHAR(10), this, "不能与哪些营销活动共用 1会员价 2限时降价 3首单特惠");
 
     /**
+     * The column <code>jmini_shop_489258.b2c_member_card.period_limit</code>. 0:不限制，1：日，2：周，3：月，4：季度，5：年
+     */
+    public final TableField<MemberCardRecord, Byte> PERIOD_LIMIT = createField("period_limit", org.jooq.impl.SQLDataType.TINYINT, this, "0:不限制，1：日，2：周，3：月，4：季度，5：年");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_member_card.period_num</code>. 周期内允许兑换次数
+     */
+    public final TableField<MemberCardRecord, Integer> PERIOD_NUM = createField("period_num", org.jooq.impl.SQLDataType.INTEGER, this, "周期内允许兑换次数");
+
+    /**
      * Create a <code>jmini_shop_489258.b2c_member_card</code> table reference
      */
     public MemberCard() {
@@ -437,7 +447,7 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
      */
     @Override
     public Schema getSchema() {
-    	return MiniShop_471752.MINI_SHOP_471752;
+        return MiniShop_471752.MINI_SHOP_471752;
     }
 
     /**
