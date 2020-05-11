@@ -37,7 +37,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.tools.StringUtils;
@@ -55,6 +57,8 @@ import com.vpu.mp.service.pojo.shop.member.card.base.CardMarketActivity;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights.RightSwitch;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods.GoodsCfg;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
@@ -666,29 +670,45 @@ public class CardCreateService extends ShopBaseService{
 	 */
 	private void initCardApplicableGoodsCfg(CardParam card, MemberCardRecordBuilder cardBuilder) {
 		logger().info("初始化适用商品配置");
-		Byte isExchange = card.getIsExchange();
-		assert (isExchangNonGoods(isExchange) || CardUtil.isExchangPartGoods(isExchange)
-				|| CardUtil.isExchangAllGoods(isExchange)) : "适用商品类型参数";
+		CardExchangGoods cardExGoods = card.getCardExchangGoods();
+		
+		Byte isExchange = cardExGoods.getIsExchange();
+
 
 		if (isExchangNonGoods(isExchange)) {
 			cardBuilder.isExchang(isExchange);
-		} else if (CardUtil.isExchangPartGoods(isExchange) && isNotNull(card.getExchangGoods())) {
+		} else if (CardUtil.isExchangPartGoods(isExchange) && isNotNull(cardExGoods.getExchangGoods())) {
 
-			if (card.getExchangGoods().size() > 0) {
-				// 1.兑换次数2.运费策略 3. 商品id
+			if (cardExGoods.getExchangGoods().size() > 0) {
+				
+				Map<String,Integer> map = new HashMap<>();
+				for(GoodsCfg goods: cardExGoods.getExchangGoods()) {
+					String key = Util.listToString(goods.getGoodsId());
+					Integer maxNum = goods.getMaxNum();
+					if(map.get(key)==null) {
+						map.put(key, maxNum);
+					}else {
+						Integer num = map.get(key);
+						if(num<maxNum) {
+							map.put(key, maxNum);
+						}
+					}
+				}
 				cardBuilder
 				.isExchang(isExchange)
-				.exchangGoods(Util.listToString(card.getExchangGoods()));
+				.exchangGoods(Util.toJson(map));
 			} else {
 				cardBuilder.isExchang(MCARD_ISE_NON).exchangGoods(null);
 			}
 		} else if (CardUtil.isExchangAllGoods(isExchange)) {
-			cardBuilder.isExchang(isExchange).exchangGoods(null);
+			cardBuilder
+				.isExchang(isExchange)
+				.exchangGoods(String.valueOf(cardExGoods.getEveryGoodsMaxNum()));
 		}
 		
 		if(CardUtil.isLimitCard(card.getCardType())) {
-			cardBuilder.exchangCount(card.getExchangCount())
-			.exchangFreight(card.getExchangFreight());
+			cardBuilder.exchangCount(cardExGoods.getExchangCount())
+			.exchangFreight(cardExGoods.getExchangFreight());
 		}
 	}
 	
