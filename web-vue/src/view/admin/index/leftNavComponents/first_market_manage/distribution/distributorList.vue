@@ -340,7 +340,7 @@
             <template slot-scope="scope">
               <div class="opt">
                 <p @click="inviteUserList(scope.row.userId)">查看已邀请用户</p>
-                <p @clcik="commissionDetail(scope.row.userId)">查看返利佣金明细</p>
+                <p @click="commissionDetail(scope.row.userId)">查看返利佣金明细</p>
                 <p @click="remarksHandler(scope.row.userId)">备注</p>
                 <p @click="del(scope.row.userId)">清除</p>
               </div>
@@ -671,12 +671,7 @@ export default {
     },
     // 跳转佣金返利明细
     commissionDetail (userId) {
-      this.$router.push({
-        path: '/admin/home/main/distribution/moneyStatistics',
-        query: {
-          userId: userId
-        }
-      })
+      this.$emit('commissionHandler', userId)
     },
     // 清除分销员身份
     del (userId) {
