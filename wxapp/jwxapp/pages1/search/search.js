@@ -110,8 +110,11 @@ global.wxPage({
       'pageParams.currentPage': 1
     })
     // 添加热词
-    util.api('/api/wxapp/search/addHotWords', function (res) {
-    }, { userId: util.getCache("user_id"), hotWords: this.data.keyWords })
+    var data = this.data.keyWords.replace(/\s/g,"");
+    if (data != "") {
+      util.api('/api/wxapp/search/addHotWords', function (res) {
+      }, { userId: util.getCache("user_id"), hotWords: this.data.keyWords })
+    }
     this.selectComponent('#recommend').resetDataList().resetPage()
     this.requestList()
   },
