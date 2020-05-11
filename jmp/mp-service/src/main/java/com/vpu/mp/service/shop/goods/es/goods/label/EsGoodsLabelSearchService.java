@@ -207,7 +207,8 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
         SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.LABEL_ALIA_NAME);
         SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource();
         searchSourceBuilder.query(assemblyQueryBuilder(shopId,labelIds,null,type));
-        searchSourceBuilder.aggregation(AggregationBuilders.terms(EsLabelName.GOODS_ID).field(EsLabelName.GOODS_ID));
+        //TODO 分页不分页待优化
+        searchSourceBuilder.aggregation(AggregationBuilders.terms(EsLabelName.GOODS_ID).field(EsLabelName.GOODS_ID).size(400));
         //not need to return query data
         searchSourceBuilder.size(0);
         searchRequest.source(searchSourceBuilder);
