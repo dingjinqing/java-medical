@@ -997,8 +997,12 @@ export default {
     this.form.rewardDurationUnitSelect = this.form.rewardDurationUnit[0].value
     this.form.launchLimitUnitSelect = this.form.launchLimitUnit[0].value
     this.promoteId = this.$route.params.id
-    if (this.promoteId !== 'null') {
-      this.isEditFlag = true
+    if (this.promoteId !== null) {
+      if (this.$route.query.currentStatue === '进行中') {
+        this.isEditFlag = true
+      } else {
+        this.isEditFlag = false
+      }
       console.log('id:', this.promoteId)
       this.loadData(this.promoteId)
     }
