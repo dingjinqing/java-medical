@@ -117,7 +117,7 @@
             <li class="time-cell">
                 <el-radio
                   v-model="ruleForm.exchangTimeType"
-                  :label='0'
+                  label="0"
                 >
                     不限制
                 </el-radio>
@@ -128,7 +128,7 @@
             <li class="time-cell">
                 <el-radio
                   v-model="ruleForm.exchangTimeType"
-                  :label='1'
+                  label="1"
                 >
                     有效期内每
                 </el-radio>
@@ -166,7 +166,7 @@ export default {
           everyGoodsMaxNum: '',
           exchangFreight: '0',
           exchangGoods: [{goodsIds: [], maxNum: null}],
-          exchangTimeType: 0
+          exchangTimeType: '0'
         }
       }
     }
