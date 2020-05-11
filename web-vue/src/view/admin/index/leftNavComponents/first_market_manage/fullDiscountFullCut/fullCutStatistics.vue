@@ -143,22 +143,132 @@
             </li>
           </ul>
         </div>
-        <div class="echarts"></div>
+      </div>
+      <div class="echarts">
+        <div
+          id="fullCutcharts"
+          style="width:100%; max-width:100%; height:400px;"
+        ></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import echarts from 'echarts'
+import '@/util/date.js'
 export default {
   data () {
     return {
-      tableData: []
+      tableData: [],
+      fullCutcharts: null,
+      colors: ['#5A8BFF', '#fc6181', '#fdb64a', '#ff9f7f', '#32c5e9', '#3dcf9a', '#8379f7']
     }
   },
-  mounted () { },
+  mounted () {
+    this.initEcharts()
+    this.initData()
+  },
   methods: {
-    initDataList () { }
+    initEcharts () {
+      this.fullCutcharts = echarts.init(document.getElementById('fullCutcharts'))
+    },
+    initData () {
+      let that = this
+      let xAxisData = []
+      let amount = []
+      let discount = []
+      let ratio = []
+      let orderNumber = []
+      let orderGoodsNumber = []
+      let newUser = []
+      let oldUser = []
+      let fullCutchartsOptions = {
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          data: ['活动实付总金额', '活动优惠总金额', '费效比', '付款订单数', '付款商品件数', '新成交用户数', '老成交用户数']
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: xAxisData
+        },
+        yAxis: [
+          {
+            name: '数量',
+            type: 'value'
+          },
+          {
+            name: '费效比',
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: '活动实付总金额',
+            type: 'line',
+            color: that.colors[0],
+            yAxisIndex: 0,
+            data: amount
+          },
+          {
+            name: '活动优惠总金额',
+            type: 'line',
+            yAxisIndex: 0,
+            data: discount || []
+          },
+          {
+            name: '费效比',
+            type: 'line',
+            color: that.colors[2],
+            yAxisIndex: 1,
+            data: ratio || []
+          },
+          {
+            name: '付款订单数',
+            type: 'line',
+            color: that.colors[3],
+            yAxisIndex: 0,
+            data: orderNumber || []
+          },
+          {
+            name: '付款商品件数',
+            type: 'line',
+            color: that.colors[4],
+            yAxisIndex: 0,
+            data: orderGoodsNumber || []
+          },
+          {
+            name: '新成交用户数',
+            type: 'line',
+            color: that.colors[5],
+            yAxisIndex: 0,
+            data: newUser || []
+          },
+          {
+            name: '老成交用户数',
+            type: 'line',
+            color: that.colors[6],
+            yAxisIndex: 0,
+            data: oldUser || []
+          }
+        ]
+      }
+      setTimeout(() => {
+        that.fullCutcharts.resize()
+      }, 0)
+      that.fullCutcharts.setOption(fullCutchartsOptions)
+      window.addEventListener('resize', function () {
+        that.fullCutcharts.resize()
+      })
+    }
   }
 }
 </script>
@@ -172,17 +282,18 @@ export default {
   color: #333;
   font: 14px Helvetica Neue, Helvetica, PingFang SC, \5fae\8f6f\96c5\9ed1,
     Tahoma, Arial, sans-serif;
-  .main {
-    padding: 30px 25px;
-    background: #fff;
-  }
-  .content {
-    width: 85%;
-    margin: 0 auto;
-  }
-  .header {
-    margin-bottom: 30px;
-  }
+}
+.main {
+  width: 100%;
+  padding: 30px 25px;
+  background: #fff;
+}
+.content {
+  width: 85%;
+  margin: 0 auto;
+}
+.header {
+  margin-bottom: 30px;
 }
 .fc-statics-list {
   width: 100%;
@@ -210,5 +321,11 @@ export default {
   position: relative;
   top: 3px;
   cursor: pointer;
+}
+.echarts {
+  width: 100%;
+  max-width: 100%;
+  margin-top: 50px;
+  padding: 0 20px;
 }
 </style>
