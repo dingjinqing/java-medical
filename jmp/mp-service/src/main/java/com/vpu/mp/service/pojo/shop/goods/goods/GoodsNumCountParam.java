@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.goods.goods;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 统计商品数量
  * @author 李晓冰
@@ -9,8 +11,9 @@ import lombok.Data;
  */
 @Data
 public class GoodsNumCountParam {
-    private Integer catId;
     private Integer sortId;
     private Integer labelId;
     private Integer brandId;
+    /**商品id范围限制*/
+    private List<Integer> goodsIds;
 }
