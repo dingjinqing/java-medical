@@ -30,6 +30,7 @@ import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
+import com.vpu.mp.service.saas.es.EsMappingUpdateService;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainGoodsPriceBo;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
@@ -38,10 +39,7 @@ import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.MpDecorationService;
-import com.vpu.mp.service.shop.goods.es.EsFactSearchService;
-import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
-import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
-import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
+import com.vpu.mp.service.shop.goods.es.*;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelCreateService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -140,6 +138,10 @@ public class GoodsService extends ShopBaseService {
     private BargainProcessorDao bargainProcessorDao;
     @Autowired
     private GroupBuyProcessorDao groupBuyProcessorDao;
+    @Autowired
+    private EsMappingUpdateService esMappingUpdateService;
+    @Autowired
+    private EsDataUpdateMqService esDataUpdateMqService;
 
     /**
      * 获取全品牌，标签，商家分类数据,平台分类数据
@@ -747,12 +749,16 @@ public class GoodsService extends ShopBaseService {
      * 取单个GoodsView
      */
     public GoodsView getGoodsViewByProductId(Integer productId) {
-        GoodsView goodsView = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).
-            from(GOODS).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
-            .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).
-                fetchOne().into(GoodsView.class);
-        goodsView.setGoodsImg(getImgFullUrlUtil(goodsView.getGoodsImg()));
-        return goodsView;
+        Record6<Integer, String, String, Integer, BigDecimal, String> record = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).
+                from(GOODS).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
+                .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).
+                        fetchOne();
+        if (record!=null){
+            GoodsView goodsView = record.into(GoodsView.class);
+            goodsView.setGoodsImg(getImgFullUrlUtil(goodsView.getGoodsImg()));
+            return goodsView;
+        }
+        return null;
     }
 
     /**
@@ -1062,7 +1068,7 @@ public class GoodsService extends ShopBaseService {
         }
         //es更新
         try {
-            if (esUtilSearchService.esState()) {
+            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus() ) {
                 esGoodsCreateService.updateEsGoodsIndex(goods.getGoodsId(), getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goods.getGoodsId());
             }
@@ -1216,9 +1222,12 @@ public class GoodsService extends ShopBaseService {
      */
     public void updateEs(List<Integer> goodsIds) {
         try {
-            if (esUtilSearchService.esState()) {
+            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
                 esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
+            }else{
+                esDataUpdateMqService.addEsGoodsIndex(goodsIds,getShopId(),DBOperating.UPDATE);
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,goodsIds,null);
             }
         } catch (Exception e) {
             logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
@@ -1541,9 +1550,12 @@ public class GoodsService extends ShopBaseService {
         }
         //更新es
         try {
-            if (esUtilSearchService.esState()) {
+            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
                 esGoodsCreateService.batchUpdateEsGoodsIndex(operateParam.getGoodsIds(), getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(operateParam.getGoodsIds(), DBOperating.UPDATE);
+            }else {
+                esDataUpdateMqService.addEsGoodsIndex(operateParam.getGoodsIds(),getShopId(),DBOperating.UPDATE);
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,operateParam.getGoodsIds(),null);
             }
         } catch (Exception e) {
             logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
@@ -1559,9 +1571,12 @@ public class GoodsService extends ShopBaseService {
         List<GoodsRecord> goodsRecords = operateParam.toUpdateGoodsRecord();
         db().batchUpdate(goodsRecords).execute();
         try {
-            if (esUtilSearchService.esState()) {
+            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
                 esGoodsCreateService.batchUpdateEsGoodsIndex(operateParam.getGoodsIds(), getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(operateParam.getGoodsIds(), DBOperating.UPDATE);
+            }else{
+                esDataUpdateMqService.addEsGoodsIndex(operateParam.getGoodsIds(),getShopId(),DBOperating.UPDATE);
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,operateParam.getGoodsIds(),null);
             }
         } catch (Exception e) {
             logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
@@ -1654,9 +1669,12 @@ public class GoodsService extends ShopBaseService {
 
         try {
             //更新es
-            if (esUtilSearchService.esState()) {
+            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
                 esGoodsCreateService.deleteEsGoods(goodsIds, getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.DELETE);
+            }else{
+                esDataUpdateMqService.addEsGoodsIndex(goodsIds,getShopId(),DBOperating.UPDATE);
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,goodsIds,null);
             }
         } catch (Exception e) {
             logger().debug("商品删除-es同步数据异常：" + e.getMessage());
@@ -2333,6 +2351,9 @@ public class GoodsService extends ShopBaseService {
             if (!goodsIds.isEmpty() && esUtilSearchService.esState()) {
                 esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
+            }else{
+                esDataUpdateMqService.addEsGoodsIndex(goodsIds,getShopId(),DBOperating.UPDATE);
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,goodsIds,null);
             }
         } catch (Exception e) {
             logger().debug("手动上架所有待上架商品-同步es数据异常：" + e.getMessage());

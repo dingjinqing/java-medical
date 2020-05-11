@@ -1,5 +1,6 @@
 package com.vpu.mp.service.saas.shop;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.db.main.tables.records.AppAuthRecord;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopOperationRecord;
@@ -36,6 +37,7 @@ import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,6 +45,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
@@ -642,5 +645,20 @@ public class ShopService extends MainBaseService {
             return "CNY";
         }
         return currency;
+    }
+
+    /**
+     * 获取所有可用店铺id
+     * @return 可用店铺id集合
+     */
+    public List<Integer> getEnabledShopIds(){
+	    Result<ShopRecord> records = getAll();
+	    if( !CollectionUtils.isEmpty(records) ){
+	        return records.stream()
+//                .filter(x-> x.getIsEnabled() == 1)
+                .map(ShopRecord::getShopId)
+                .collect(Collectors.toList());
+        }
+	    return Lists.newArrayList();
     }
 }

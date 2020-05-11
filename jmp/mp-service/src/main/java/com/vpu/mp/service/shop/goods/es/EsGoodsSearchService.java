@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelSelectListVo;
 import com.vpu.mp.service.shop.goods.es.convert.goods.EsGoodsConvertInterface;
 import com.vpu.mp.service.shop.goods.es.convert.goods.GoodsPageListVoConverter;
@@ -17,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -34,14 +37,25 @@ public class EsGoodsSearchService extends EsBaseSearchService{
 
     private static final EsGoodsConvertInterface<GoodsPageListVo> CONVERT =new GoodsPageListVoConverter();
 
+    /**
+     * admin-商品列表
+     * @param goodsPageListParam
+     * @return
+     * @throws IOException
+     */
     public PageResult<GoodsPageListVo> searchGoodsPageByParam(GoodsPageListParam goodsPageListParam) throws IOException {
 
         Integer shopId = getShopId();
+        if(goodsPageListParam.getLabelId() != null){
+            goodsPageListParam.setGoodsIds(esGoodsLabelSearchService.getGoodsIdsByLabelIds(Lists.newArrayList(goodsPageListParam.getLabelId()),EsGoodsConstant.GOODS_SEARCH_PAGE));
+            goodsPageListParam.setLabelId(null);
+        }
         EsSearchParam param = goodsParamConvertEsGoodsParam(goodsPageListParam,shopId);
         param.setQueryByPage(Boolean.TRUE);
         PageResult<EsGoods> pageResult = searchGoodsPageByParam(param);
         return esPageConvertVoPage(pageResult);
     }
+
 
     private PageResult<GoodsPageListVo> esPageConvertVoPage(PageResult<EsGoods> esPage){
 
@@ -56,9 +70,19 @@ public class EsGoodsSearchService extends EsBaseSearchService{
             esGoodsList.forEach(x-> {
                 GoodsPageListVo vo = CONVERT.convert(x);
                 if( !labelMap.isEmpty() && labelMap.containsKey(vo.getGoodsId()) ){
-                    List<GoodsLabelSelectListVo> labelVos = Lists.newLinkedList();
-                    labelMap.get(vo.getGoodsId()).forEach(y->labelVos.add(new GoodsLabelSelectListVo(y.getId(),y.getName())));
-                    vo.setGoodsPointLabels(labelVos);
+                    //指定标签
+                    List<GoodsLabelSelectListVo> specifiedLabelVos = Lists.newLinkedList();
+                    //普通标签
+                    List<GoodsLabelSelectListVo> ordinaryLabelVos = Lists.newLinkedList();
+                    labelMap.get(vo.getGoodsId()).forEach(y->{
+                        if(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode().equals(y.getType()) ){
+                            specifiedLabelVos.add(new GoodsLabelSelectListVo(y.getId(),y.getName()));
+                        }else{
+                            ordinaryLabelVos.add(new GoodsLabelSelectListVo(y.getId(),y.getName()));
+                        }
+                    });
+                    vo.setGoodsPointLabels(specifiedLabelVos);
+                    vo.setGoodsNormalLabels(ordinaryLabelVos);
                 }
                 voList.add(vo);
             });

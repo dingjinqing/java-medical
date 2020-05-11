@@ -309,7 +309,12 @@ global.wxPage({
    */
   to_search: function (opt) {
     var actId = opt.currentTarget.dataset.act_id;
-    util.jumpLink('/pages1/search/search?pageFrom=20&actId=' + actId);
+    util.jumpLink(`/pages1/search/search${util.getUrlParams({
+      pageFrom:20,
+      outerPageParam:JSON.stringify({
+        actId
+      })
+    })}`);
   },
 
   /**

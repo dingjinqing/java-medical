@@ -53,7 +53,7 @@ public class EsFactSearchService extends EsBaseSearchService{
         //es查询
         SearchRequest searchRequest = assemblySearchRequest(
             assemblySearchSourceBuilder(searchParam)
-            ,EsGoodsConstant.GOODS_INDEX_NAME
+            ,EsGoodsConstant.GOODS_ALIA_NAME
         );
 
        return assemblyGoodsInitialVo(initParam,search(searchRequest));

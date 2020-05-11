@@ -89,21 +89,13 @@ public class GoodsPriceService extends ShopBaseService {
             List<Integer> goodsIds = entry.getValue();
             Timestamp now = DateUtil.getLocalDateTime();
             if( goodsType.equals(BaseConstant.ACTIVITY_TYPE_GROUP_BUY) ){
-                Map<Integer,List<Record2<Integer,BigDecimal>>> resultMap =
+                Map<Integer,BigDecimal> resultMap =
                     groupBuyService.getGroupBuyProductByGoodsIds(goodsIds,now);
-                for( Map.Entry<Integer,List<Record2<Integer,BigDecimal>>> recordEntry:resultMap.entrySet() ){
-                    List<Record2<Integer,BigDecimal>> resultList = recordEntry.getValue();
-                    Integer goodsId = recordEntry.getKey();
-                    if( !resultList.isEmpty() ){
-                        List<BigDecimal> showPriceList = resultList.stream()
-                            .map(x->x.get(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE))
-                            .sorted(BigDecimal::compareTo)
-                            .collect(Collectors.toList());
-                        price.put(goodsId,showPriceList.get(0));
-                    }else{
-                        outPutLog(now,goodsId,goodsType);
-                    }
+                if( resultMap.isEmpty() ) {
+                    break;
                 }
+                price.putAll(resultMap);
+
             }
             if ( goodsType.equals(BaseConstant.ACTIVITY_TYPE_BARGAIN) ){
                 Map<Integer,BargainGoodsPriceBo> resultMap = bargainProcessorDao.getGoodsBargainListInfo(goodsIds,now);

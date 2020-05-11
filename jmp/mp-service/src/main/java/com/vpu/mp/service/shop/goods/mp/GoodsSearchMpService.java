@@ -31,6 +31,7 @@ import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
 
 /**
  * 小程序-商品搜索界面逻辑处理类
+ *
  * @author 李晓冰
  * @date 2020年03月11日
  */
@@ -49,6 +50,8 @@ public class GoodsSearchMpService extends ShopBaseService {
     @Autowired
     GoodsMpService goodsMpService;
 
+    @Autowired
+    GoodsGroupMpService goodsGroupMpService;
     @Autowired
     GroupBuyService groupBuyService;
     @Autowired
@@ -97,29 +100,31 @@ public class GoodsSearchMpService extends ShopBaseService {
     /**
      * 商品搜索接口统一入口，
      * 判断来自不同的pageFrom的搜索条件，然后调用对应的方法
+     *
      * @param param 搜索条件
      * @return 搜索内容
      */
     public GoodsSearchContentVo searchGoodsGate(GoodsSearchMpParam param) {
-        PageResult<GoodsListMpBo> pageResult = null;
-        if(param.getPageFrom() != null && param.getPageFrom() > 0){
-            if (GoodsSearchMpParam.PAGE_FROM_GROUP_BUY.equals(param.getPageFrom())) {
-                pageResult = searchGoodsForGroupBuyQrCode(param);
-            } else if(GoodsSearchMpParam.PAGE_FROM_SEC_KILL.equals(param.getPageFrom())) {
-                pageResult = searchGoodsForSecKillQrCode(param);
-            } else if (GoodsSearchMpParam.PAGE_FROM_COUPON.equals(param.getPageFrom())){
-                pageResult = searchGoodsForVoucher(param);
-            }else if (GoodsSearchMpParam.PAGE_FROM_BARGAIN.equals(param.getPageFrom())){
-                pageResult = searchGoodsForBargainQrCode(param);
-            }else if(GoodsSearchMpParam.PAGE_FROM_LIMIT_COUNT_CARD_EXCHANGE_GOODS.equals(param.getPageFrom())){
-                pageResult = searchGoodsForLimitMemberCard(param);
-            } else{
-                pageResult = searchGoods(param);
-            }
-        }else{
-            pageResult = searchGoods(param);
-        }
 
+        if (param.getPageFrom() != null) {
+            List<Integer> goodsIds = null;
+            if (GoodsSearchMpParam.PAGE_FROM_GROUP_LIST.equals(param.getPageFrom())) {
+                goodsIds = goodsGroupMpService.getGoodsIdsLimitedForGoodsSearch(param);
+            } else if (GoodsSearchMpParam.PAGE_FROM_GROUP_BUY.equals(param.getPageFrom())) {
+                goodsIds = getGoodsIdsLimitedForGroupBuyQrCode(param);
+            } else if (GoodsSearchMpParam.PAGE_FROM_SEC_KILL.equals(param.getPageFrom())) {
+                goodsIds = getGoodsIdsLimitedForSecKillQrCode(param);
+            } else if (GoodsSearchMpParam.PAGE_FROM_COUPON.equals(param.getPageFrom())) {
+                goodsIds = getGoodsIdsLimitedForVoucher(param);
+            } else if (GoodsSearchMpParam.PAGE_FROM_BARGAIN.equals(param.getPageFrom())){
+                goodsIds = getGoodsIdsLimitedForBargainQrCode(param);
+            }else {
+                // 空数组将搜索不出来商品
+                goodsIds = new ArrayList<>();
+            }
+            param.setGoodsIds(goodsIds);
+        }
+        PageResult<GoodsListMpBo> pageResult = searchGoods(param);
 
         goodsMpService.disposeGoodsList(pageResult.dataList, param.getUserId());
         GoodsShowStyleConfigBo goodsShowStyle = goodsMpService.getGoodsShowStyle();
@@ -132,48 +137,38 @@ public class GoodsSearchMpService extends ShopBaseService {
 
     /**
      * admin拼团活动扫码进入
+     *
      * @param param GoodsSearchMpParam
      * @return 该活动下的有效商品信息
      */
-    private PageResult<GoodsListMpBo> searchGoodsForGroupBuyQrCode(GoodsSearchMpParam param) {
-        int activityId = param.getActId();
-        List<Integer> goodsIds = groupBuyService.getGroupBuyCanUseGoodsIds(activityId, goodsMpService.getGoodsBaseCondition());
-        param.setGoodsIds(goodsIds);
-        Condition condition = buildSearchCondition(param);
-        List<SortField<?>> sortFields = buildSearchOrderFields(param);
-
-        return goodsMpService.findActivityGoodsListCapsulesDao(condition, sortFields, param.getCurrentPage(), param.getPageRows(), null);
+    private List<Integer> getGoodsIdsLimitedForGroupBuyQrCode(GoodsSearchMpParam param) {
+        int activityId = param.getOuterPageParam().getActId();
+        return groupBuyService.getGroupBuyCanUseGoodsIds(activityId, goodsMpService.getGoodsBaseCondition());
     }
 
     /**
      * admin秒杀活动扫码进入
+     *
      * @param param GoodsSearchMpParam
      * @return 该活动下的有效商品信息
      */
-    private PageResult<GoodsListMpBo> searchGoodsForSecKillQrCode(GoodsSearchMpParam param) {
-        int activityId = param.getActId();
-        List<Integer> goodsIds = seckillService.getSecKillCanUseGoodsIds(activityId, goodsMpService.getGoodsBaseCondition());
-        param.setGoodsIds(goodsIds);
-        Condition condition = buildSearchCondition(param);
-        List<SortField<?>> sortFields = buildSearchOrderFields(param);
-
-        return goodsMpService.findActivityGoodsListCapsulesDao(condition, sortFields, param.getCurrentPage(), param.getPageRows(), null);
+    private List<Integer> getGoodsIdsLimitedForSecKillQrCode(GoodsSearchMpParam param) {
+        int activityId = param.getOuterPageParam().getActId();
+        return seckillService.getSecKillCanUseGoodsIds(activityId, goodsMpService.getGoodsBaseCondition());
     }
 
     /**
      * 小程序优惠券进入
+     *
      * @param param GoodsSearchMpParam
      * @return 该活动下的有效商品信息
      */
-    private PageResult<GoodsListMpBo> searchGoodsForVoucher(GoodsSearchMpParam param){
+    private List<Integer> getGoodsIdsLimitedForVoucher(GoodsSearchMpParam param) {
         logger().debug("优惠券跳转商品搜索页面");
-        int voucherId = param.getActId();
+        int voucherId = param.getOuterPageParam().getActId();
         Condition goodsCouponCondition = couponService.buildGoodsSearchCondition(voucherId);
-        Condition condition = buildSearchCondition(param);
-        condition =  condition.and(goodsCouponCondition);
-        List<SortField<?>> sortFields = buildSearchOrderFields(param);
-
-        return goodsMpService.findActivityGoodsListCapsulesDao(condition, sortFields, param.getCurrentPage(), param.getPageRows(), null);
+        Condition goodsBaseCondition = goodsMpService.getGoodsBaseCondition();
+        return goodsMpService.getGoodsIdsByCondition(goodsCouponCondition.and(goodsBaseCondition));
     }
 
     /**
@@ -181,33 +176,14 @@ public class GoodsSearchMpService extends ShopBaseService {
      * @param param GoodsSearchMpParam
      * @return 该活动下的有效商品信息
      */
-    private PageResult<GoodsListMpBo> searchGoodsForBargainQrCode(GoodsSearchMpParam param) {
-        int activityId = param.getActId();
-        List<Integer> goodsIds = bargainService.getBargainCanUseGoodsIds(activityId, goodsMpService.getGoodsBaseCondition());
-        param.setGoodsIds(goodsIds);
-        Condition condition = buildSearchCondition(param);
-        List<SortField<?>> sortFields = buildSearchOrderFields(param);
-
-        return goodsMpService.findActivityGoodsListCapsulesDao(condition, sortFields, param.getCurrentPage(), param.getPageRows(), null);
+    private List<Integer> getGoodsIdsLimitedForBargainQrCode(GoodsSearchMpParam param) {
+        int activityId =  param.getOuterPageParam().getActId();
+        return bargainService.getBargainCanUseGoodsIds(activityId, goodsMpService.getGoodsBaseCondition());
     }
-
-    /**
-     * 	限次卡兑换商品搜索商品接口
-     * @param param GoodsSearchMpParam
-     * @return 该活动下的有效商品信息
-     */
-    private PageResult<GoodsListMpBo> searchGoodsForLimitMemberCard(GoodsSearchMpParam param) {
-        List<Integer> goodsIdsLimit = param.getGoodsIds();
-        Condition goodsBaseCondition = goodsMpService.getGoodsBaseCondition();
-
-        List<SortField<?>> sortFields = buildSearchOrderFields(param);
-        Condition condition = GOODS.GOODS_ID.in(goodsIdsLimit).and(GOODS.GOODS_NAME.like(likeValue(param.getKeyWords())));
-        return goodsMpService.findActivityGoodsListCapsulesDao(condition.and(goodsBaseCondition), sortFields, param.getCurrentPage(), param.getPageRows(), null);
-    }
-
 
     /**
      * 搜索小程序商品信息
+     *
      * @param param 商品信息过滤条件
      * @return 搜索出来的商品信息
      */
@@ -215,7 +191,7 @@ public class GoodsSearchMpService extends ShopBaseService {
         PageResult<GoodsListMpBo> pageResult = null;
         if (esUtilSearchService.esState()) {
             //店铺的默认商品排序规则
-            if(shopCommonConfigService.getSearchSort().equals((byte) 1)){
+            if (shopCommonConfigService.getSearchSort().equals(Byte.valueOf((byte) 1))) {
                 param.setShopSortItem(goodsMpService.getShopGoodsSortEnum());
                 param.setShopSortDirection(SortDirectionEnum.DESC);
             }
@@ -260,8 +236,8 @@ public class GoodsSearchMpService extends ShopBaseService {
             condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getKeyWords())));
         }
 
-        // 页面从拼团、秒杀、优惠券跳转至搜索页面，在对应商品范围内进行进一步条件搜索
-        if (param.getGoodsIds() != null && param.getGoodsIds().size()>0) {
+        // 外部条件限制的商品搜索范围
+        if (param.getGoodsIds() != null) {
             condition = condition.and(GOODS.GOODS_ID.in(param.getGoodsIds()));
         }
 

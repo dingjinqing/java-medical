@@ -11,6 +11,7 @@
 						 wx:key="key"
 						 wx:for-item="item"
 						 wx:for-index='index'
+						 
 						>
 							<view class='group_nav_single {{m.navlen > 4 ? "group_double_flex" : "group_single_flex"}}'>
 								<view
@@ -37,6 +38,7 @@
 				 wx:key='key'
 				 wx:for-item="item"
 				 wx:for-index='index'
+				 wx:if="{{index!==6}}"
 				>
 					<view
 					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
@@ -113,6 +115,7 @@
 				 wx:key='key'
 				 wx:for-item="item"
 				 wx:for-index='index'
+				 wx:if="{{index!==6}}"
 				>
 					<view
 					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
@@ -189,6 +192,7 @@
 				 wx:key='key'
 				 wx:for-item="item"
 				 wx:for-index='index'
+				 wx:if="{{index!==6}}"
 				>
 					<view
 					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
@@ -255,6 +259,7 @@
 				 wx:key='key'
 				 wx:for-item="item"
 				 wx:for-index='index'
+				  wx:if="{{index!==6}}"
 				>
 					<view
 					 class='group_container {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
@@ -338,6 +343,7 @@
 				 wx:key='key'
 				 wx:for-item="item"
 				 wx:for-index='index'
+				  wx:if="{{index!==6}}"
 				>
 					<!-- 普通商品 -->
 					<view
@@ -456,6 +462,7 @@
 				 wx:key='key'
 				 wx:for-item="item"
 				 wx:for-index='index'
+				  wx:if="{{index!==6}}"
 				>
 					<view
 					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
