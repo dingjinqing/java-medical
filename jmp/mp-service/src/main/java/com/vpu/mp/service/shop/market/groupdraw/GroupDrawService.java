@@ -28,6 +28,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -68,6 +69,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupDraw;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsNumCountParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -105,6 +107,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawVo;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupJoinDetailVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
+import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -142,6 +145,9 @@ public class GroupDrawService extends ShopBaseService {
 	private ImageService imageService;
 	@Autowired
 	private OrderInfoService orderInfoService;
+	
+	@Autowired
+	private GoodsService goodsService;
 
 	public GroupDrawService(QrCodeService qrCode) {
 		this.qrCode = qrCode;
@@ -208,9 +214,7 @@ public class GroupDrawService extends ShopBaseService {
 	public GroupDrawListVo getGroupDrawById(Integer id) {
 		GroupDrawListParam param = new GroupDrawListParam();
 		param.setId(id);
-		SelectConditionStep<Record19<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer,String>> select = createSelect(
-				param);
-		GroupDrawListVo vo = select.fetchOneInto(GroupDrawListVo.class);
+		GroupDrawListVo vo = db().selectFrom(GROUP_DRAW).where(GROUP_DRAW.ID.eq(id)).fetchAnyInto(GroupDrawListVo.class);
 		transformStatus(vo);
 		return vo;
 	}
@@ -219,50 +223,79 @@ public class GroupDrawService extends ShopBaseService {
 	 * 列表查询
 	 */
 	public PageResult<GroupDrawListVo> getGroupDrawList(GroupDrawListParam param) {
-		SelectConditionStep<Record19<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer,String>> select = createSelect(
-				param);
-		PageResult<GroupDrawListVo> result = getPageResult(select, param, GroupDrawListVo.class);
+		SelectConditionStep<GroupDrawRecord> select = db().selectFrom(GROUP_DRAW).where(GROUP_DRAW.DEL_FLAG.eq(ZERO));
+		buildOptions(select, param);
+		PageResult<GroupDrawListVo> result = getPageResult(select, param.getCurrentPage(),param.getPageRows(), GroupDrawListVo.class);
 		List<GroupDrawListVo> dataList = result.getDataList();
-		transformStatus(dataList);
+		for (GroupDrawListVo vo : dataList) {
+			Integer id = vo.getId();
+			vo.setJoinUserCount(groupDrawUsers.getJoinGroupNumByGroupDraw(id));
+			vo.setGroupUserCount(groupDrawUser.getSuccessGroupUserNum(id));
+			vo.setGroupCount(groupDrawUser.getOpenGroupNumberById(id));
+			vo.setDrawUserCount(groupDrawUser.getDrawUserNumById(id));
+			//TODO 商品数量换个方法
+			GoodsNumCountParam param2=new GoodsNumCountParam();
+			List<Integer> goodsIds = stringToList(vo.getGoodsId());
+			param2.setGoodsIds(goodsIds);
+			Integer goodsNum = goodsService.getGoodsNum(param2);
+			vo.setGoodsCount(goodsNum);
+			Byte status = vo.getStatus();
+			Timestamp timestamp = DateUtil.getSqlTimestamp();
+			vo.setIsEnable(ZERO);
+			if (status.equals(ACTIVITY_STATUS_NORMAL)) {
+				//1
+				if (vo.getStartTime().after(timestamp)) {
+					vo.setStatus(NAVBAR_TYPE_NOT_STARTED);
+				} else if (vo.getStartTime().before(timestamp) && vo.getEndTime().after(timestamp)) {
+					vo.setStatus(NAVBAR_TYPE_ONGOING);
+				} else {
+					vo.setStatus(NAVBAR_TYPE_FINISHED);
+				}
+			} else if (status.equals(ACTIVITY_STATUS_DISABLE)) {
+				//0
+				vo.setStatus(NAVBAR_TYPE_DISABLED);
+				if(vo.getEndTime().after(timestamp)) {
+					vo.setIsEnable(ONE);
+				}
+			}
+		}
 		return result;
 	}
 
 	/**
 	 * 通用查询
 	 */
-	private SelectConditionStep<Record19<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer,String>> createSelect(
-			GroupDrawListParam param) {
-		SelectConditionStep<Record19<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer,String>> select = db()
-				.select(GROUP_DRAW.ID, GROUP_DRAW.NAME, GROUP_DRAW.END_TIME, GROUP_DRAW.START_TIME, GROUP_DRAW.IS_DRAW,
-						GROUP_DRAW.JOIN_LIMIT, GROUP_DRAW.PAY_MONEY, GROUP_DRAW.LIMIT_AMOUNT, GROUP_DRAW.MIN_JOIN_NUM,
-						GROUP_DRAW.OPEN_LIMIT, GROUP_DRAW.STATUS, GROUP_DRAW.TO_NUM_SHOW,
-						DSL.count(JOIN_DRAW_LIST.USER_ID).as("joinUserCount"),
-						DSL.count(JOIN_GROUP_LIST.USER_ID).filterWhere(JOIN_GROUP_LIST.STATUS.eq((byte) 1))
-								.as("groupUserCount"),
-						DSL.countDistinct(JOIN_GROUP_LIST.GROUP_ID).as("groupCount"), GROUP_DRAW.GOODS_ID,
-						GROUP_DRAW.REWARD_COUPON_ID,
-						DSL.countDistinct(JOIN_DRAW_LIST.USER_ID).filterWhere(JOIN_DRAW_LIST.IS_WIN_DRAW.eq((byte) 1))
-								.as("drawUserCount"),
-                    GROUP_DRAW.ACTIVITY_COPYWRITING)
-				.from(GROUP_DRAW).leftJoin(JOIN_GROUP_LIST).on(GROUP_DRAW.ID.eq(JOIN_GROUP_LIST.GROUP_DRAW_ID))
-				.leftJoin(JOIN_DRAW_LIST).on(GROUP_DRAW.ID.eq(JOIN_DRAW_LIST.GROUP_DRAW_ID)).where();
-		buildOptions(select, param);
-		select.groupBy(GROUP_DRAW.ID, GROUP_DRAW.NAME, GROUP_DRAW.END_TIME, GROUP_DRAW.START_TIME, GROUP_DRAW.IS_DRAW,
-				GROUP_DRAW.JOIN_LIMIT, GROUP_DRAW.PAY_MONEY, GROUP_DRAW.LIMIT_AMOUNT, GROUP_DRAW.MIN_JOIN_NUM,
-				GROUP_DRAW.OPEN_LIMIT, GROUP_DRAW.STATUS, GROUP_DRAW.TO_NUM_SHOW, GROUP_DRAW.GOODS_ID,
-				GROUP_DRAW.REWARD_COUPON_ID,GROUP_DRAW.ACTIVITY_COPYWRITING);
-		return select;
-	}
+//	private SelectConditionStep<Record19<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer,String>> createSelect(
+//			GroupDrawListParam param) {
+//		SelectConditionStep<Record19<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer,String>> select = db()
+//				.select(GROUP_DRAW.ID, GROUP_DRAW.NAME, GROUP_DRAW.END_TIME, GROUP_DRAW.START_TIME, GROUP_DRAW.IS_DRAW,
+//						GROUP_DRAW.JOIN_LIMIT, GROUP_DRAW.PAY_MONEY, GROUP_DRAW.LIMIT_AMOUNT, GROUP_DRAW.MIN_JOIN_NUM,
+//						GROUP_DRAW.OPEN_LIMIT, GROUP_DRAW.STATUS, GROUP_DRAW.TO_NUM_SHOW,
+//						DSL.count(JOIN_DRAW_LIST.USER_ID).as("joinUserCount"),
+//						DSL.count(JOIN_GROUP_LIST.USER_ID).filterWhere(JOIN_GROUP_LIST.STATUS.eq((byte) 1))
+//								.as("groupUserCount"),
+//						DSL.countDistinct(JOIN_GROUP_LIST.GROUP_ID).as("groupCount"), GROUP_DRAW.GOODS_ID,
+//						GROUP_DRAW.REWARD_COUPON_ID,
+//						DSL.countDistinct(JOIN_DRAW_LIST.USER_ID).filterWhere(JOIN_DRAW_LIST.IS_WIN_DRAW.eq((byte) 1))
+//								.as("drawUserCount"),
+//                    GROUP_DRAW.ACTIVITY_COPYWRITING)
+//				.from(GROUP_DRAW).leftJoin(JOIN_GROUP_LIST).on(GROUP_DRAW.ID.eq(JOIN_GROUP_LIST.GROUP_DRAW_ID))
+//				.leftJoin(JOIN_DRAW_LIST).on(GROUP_DRAW.ID.eq(JOIN_DRAW_LIST.GROUP_DRAW_ID)).where();
+//		buildOptions(select, param);
+//		select.groupBy(GROUP_DRAW.ID, GROUP_DRAW.NAME, GROUP_DRAW.END_TIME, GROUP_DRAW.START_TIME, GROUP_DRAW.IS_DRAW,
+//				GROUP_DRAW.JOIN_LIMIT, GROUP_DRAW.PAY_MONEY, GROUP_DRAW.LIMIT_AMOUNT, GROUP_DRAW.MIN_JOIN_NUM,
+//				GROUP_DRAW.OPEN_LIMIT, GROUP_DRAW.STATUS, GROUP_DRAW.TO_NUM_SHOW, GROUP_DRAW.GOODS_ID,
+//				GROUP_DRAW.REWARD_COUPON_ID,GROUP_DRAW.ACTIVITY_COPYWRITING);
+//		return select;
+//	}
 
 	/**
 	 * 查询条件
 	 */
-	private void buildOptions(
-			SelectConditionStep<Record19<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer,String>> select,
-			GroupDrawListParam param) {
+	private void buildOptions(SelectConditionStep<GroupDrawRecord> select, GroupDrawListParam param) {
 		String name = param.getActivityName();
-		LocalDate startTime = param.getStartTime();
-		LocalDate endTime = param.getEndTime();
+		Timestamp startTime = param.getStartTime();
+		Timestamp endTime = param.getEndTime();
 		Byte status = param.getStatus();
 		Integer id = param.getId();
 		if (null != id) {
@@ -272,10 +305,10 @@ public class GroupDrawService extends ShopBaseService {
 			select.and(GROUP_DRAW.NAME.like(this.likeValue(name)));
 		}
 		if (null != startTime) {
-			select.and(DSL.date(GROUP_DRAW.START_TIME).eq(Date.valueOf(startTime)));
+			select.and(GROUP_DRAW.START_TIME.ge(startTime));
 		}
 		if (null != endTime) {
-			select.and(DSL.date(GROUP_DRAW.END_TIME).eq(Date.valueOf(endTime)));
+			select.and(GROUP_DRAW.END_TIME.le(endTime));
 		}
 		if (null != status) {
 			switch (status) {
@@ -284,10 +317,10 @@ public class GroupDrawService extends ShopBaseService {
 						.and(GROUP_DRAW.END_TIME.ge(currentTimeStamp()));
 				break;
 			case NAVBAR_TYPE_NOT_STARTED:
-				select.and(GROUP_DRAW.START_TIME.greaterThan(currentTimeStamp()));
+				select.and(GROUP_DRAW.START_TIME.ge(currentTimeStamp()));
 				break;
 			case NAVBAR_TYPE_FINISHED:
-				select.and(GROUP_DRAW.END_TIME.lessThan(currentTimeStamp()));
+				select.and(GROUP_DRAW.END_TIME.le(currentTimeStamp()));
 				break;
 			case NAVBAR_TYPE_DISABLED:
 				select.and(GROUP_DRAW.STATUS.eq(ACTIVITY_STATUS_DISABLE));
@@ -297,16 +330,10 @@ public class GroupDrawService extends ShopBaseService {
 			if (NAVBAR_TYPE_DISABLED != status) {
 				select.and(GROUP_DRAW.STATUS.eq(ACTIVITY_STATUS_NORMAL));
 			}
+		}else {
+			select.and(GROUP_DRAW.STATUS.eq(ACTIVITY_STATUS_NORMAL).or(GROUP_DRAW.STATUS.eq(ACTIVITY_STATUS_DISABLE)));
 		}
-		select.and(GROUP_DRAW.DEL_FLAG.eq(ZERO));
 		select.orderBy(GROUP_DRAW.CREATE_TIME.desc());
-	}
-
-	/**
-	 * 状态转换
-	 */
-	private void transformStatus(List<GroupDrawListVo> dataList) {
-		dataList.parallelStream().forEach(this::transformStatus);
 	}
 
 	/**
@@ -330,10 +357,12 @@ public class GroupDrawService extends ShopBaseService {
 		} else if (status.equals(ACTIVITY_STATUS_DISABLE)) {
 			vo.setStatus(NAVBAR_TYPE_DISABLED);
 		}
-		// 商品数量
-		int goodsCount = goodsId.split(",").length;
-		vo.setGoodsCount(goodsCount);
-		vo.setGoodsIds(stringToList(goodsId));
+		GoodsNumCountParam param=new GoodsNumCountParam();
+		List<Integer> goodsIds = stringToList(goodsId);
+		param.setGoodsIds(goodsIds);
+		Integer goodsNum = goodsService.getGoodsNum(param);
+		vo.setGoodsCount(goodsNum);
+		vo.setGoodsIds(goodsIds);
 		if (null != couponId) {
 			vo.setCouponIds(stringToList(couponId));
 		}
