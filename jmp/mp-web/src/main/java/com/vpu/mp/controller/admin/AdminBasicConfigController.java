@@ -166,8 +166,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 	 */
 	@PostMapping(value = "/role/group/add")
 	public JsonResult addRole(@RequestBody ShopRoleParam param) {
-		if (!isAllEmpty(param.getPrivilegePass())) {
-
+		if ((!isAllEmpty(param.getPrivilegePass()))&&(!StringUtils.isEmpty(param.getPrivilegePass().get(1)))) {
 			if (StringUtils.isEmpty(param.getLoginPass()) || StringUtils.isEmpty(param.getRolePass())) {
 				// 请输入密码
 				return fail(JsonResultCode.CODE_MSG_ACCOUNT_PASSWD_NOT_NULL);
@@ -254,7 +253,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 	 */
 	@PostMapping(value = "/role/group/editUpdate")
 	public JsonResult updateRole(@RequestBody ShopRoleGroupUpdateParam upParam) {
-		if (!isAllEmpty(upParam.getPrivilegePass())) {
+		if ((!isAllEmpty(upParam.getPrivilegePass()))&&(!StringUtils.isEmpty(upParam.getPrivilegePass().get(1)))) {
 			if (StringUtils.isEmpty(upParam.getLoginPass()) || StringUtils.isEmpty(upParam.getRolePass())) {
 				// 请输入密码
 				return fail(JsonResultCode.CODE_MSG_ACCOUNT_PASSWD_NOT_NULL);
