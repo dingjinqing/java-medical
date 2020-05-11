@@ -89,8 +89,8 @@
 
                 <!--上传视频-->
                 <a
-                  :href="item.moduleValue.video_src"
-                  target="_blank"
+                  :href="item.moduleValue.delFlag?'javascripe:void':item.moduleValue.video_src"
+                  :target="item.moduleValue.delFlag?'':'_blank'"
                   class="video_src"
                   v-if="item.moduleName === 'm_upload_video'"
                 >
@@ -100,11 +100,21 @@
                     width="140px"
                     height="80px"
                   >
-                  <p class="video_time">00:00:02</p>
+                  <p
+                    v-if="!item.moduleValue.delFlag"
+                    class="video_time"
+                  >{{item.moduleValue.videoDuration}}</p>
                   <div
+                    v-if="!item.moduleValue.delFlag"
                     :style="`background:url(${$imageHost}/image/admin/play_button.png) no-repeat center`"
                     class="play_bg"
                   >
+                  </div>
+                  <div
+                    class="del_status"
+                    v-if="item.moduleValue.delFlag"
+                  >
+                    已删除
                   </div>
                 </a>
               </td>
@@ -116,7 +126,7 @@
   </div>
 </template>
 <script>
-import { feedBackListDetailQuery } from '@/api/admin/marketManage/formDecoration'
+import { feedBackListDetailQuery, videoQuery } from '@/api/admin/marketManage/formDecoration'
 export default {
   data () {
     return {
@@ -240,6 +250,7 @@ moduleValueList: null
                   break
                 case 'm_upload_video':
                   console.log(item)
+                  this.handleToSearchVideo(JSON.parse(item.moduleValue).video_id)
                   item.simple = false
                   item.moduleValue = JSON.parse(item.moduleValue)
                   break
@@ -250,6 +261,46 @@ moduleValueList: null
           }
         })
       }
+    },
+    // 查询视频详细信息
+    handleToSearchVideo (id) {
+      videoQuery({ videoId: id }).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$nextTick(() => {
+            this.allData.forEach((item, index) => {
+              if (item.moduleName === 'm_upload_video') {
+                item.moduleValue.videoDuration = this.formatSeconds(res.content.videoDuration)
+                item.moduleValue.delFlag = res.content.delFlag
+              }
+            })
+            console.log(this.allData)
+            this.$forceUpdate()
+          })
+        }
+      })
+    },
+    // 将秒转化为时分秒
+    formatSeconds (value) {
+      let result = parseInt(value)
+      let h = Math.floor(result / 3600) < 10 ? '0' + Math.floor(result / 3600) : Math.floor(result / 3600)
+      let m = Math.floor((result / 60 % 60)) < 10 ? '0' + Math.floor((result / 60 % 60)) : Math.floor((result / 60 % 60))
+      let s = Math.floor((result % 60)) < 10 ? '0' + Math.floor((result % 60)) : Math.floor((result % 60))
+
+      let res = ''
+      if (h !== '00') {
+        res += `${h}:`
+      } else {
+        res += '00:'
+      }
+      if (m !== '00') {
+        res += `${m}:`
+      } else {
+        res += '00:'
+      }
+      res += `${s}`
+      console.log(res)
+      return res
     }
   }
 }
@@ -343,6 +394,17 @@ moduleValueList: null
         }
       }
     }
+  }
+  .del_status {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    text-align: center;
+    top: 0;
+    left: 0;
+    line-height: 80px;
+    color: #fff;
+    z-index: 100;
   }
 }
 </style>
