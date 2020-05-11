@@ -190,24 +190,41 @@
               </div>
             </div>
             <div class="pageContent">
-              <div class="pageLi iconBottom">
+              <div
+                class="pageLi iconBottom"
+                v-for="(item,index) in childrenIconData"
+                :key="index"
+              >
                 <div class="childIconLeft">
-                  <el-checkbox v-model="checked">客服</el-checkbox>
+                  <el-checkbox v-model="item.titleChecked">{{item.title}}</el-checkbox>
                 </div>
-                <div class="top">
+                <div class="top childTop">
+                  <div
+                    v-if="index===1"
+                    style="margin-bottom:10px"
+                  >
+                    <el-input
+                      v-model="item.phInput"
+                      size="small"
+                      placeholder="请输入电话号码"
+                    ></el-input>
+                  </div>
+
                   <div class="navIconLeft">
                     <div
                       class="nav_icon"
                       style="margin-left:0"
+                      v-if="index<5"
                     >
                       <div class="icon_box">
-                        <img src="http://mpimg2.weipubao.cn/image/admin/suspend_icon/origin_kf_2.png">
-                        <span @click="handleChangeIcon(index,0)">{{$t('bottomNavigation.changeIcons')}}</span>
+                        <img :src="item.iconImgUrl">
+                        <span @click="handleChangeChldrenIcon(index)">{{$t('bottomNavigation.changeIcons')}}</span>
                       </div>
                     </div>
                     <div
                       class="tips"
                       style="padding:5px 0 0 10px"
+                      v-if="index<5"
                     >
                       <div style="font-size:12px;color:#999">
                         建议尺寸：50 * 50
@@ -215,14 +232,25 @@
                       <div class="resetDiv">
                         <div
                           class="reset"
-                          @click="handleToClickSysDialog()"
+                          @click="handleToClickSysDialog(index)"
                         >
-                          <i class="el-icon-s-tools"></i>系统图标
+                          <i :class="index>1&&index<5?'el-icon-refresh-right':'el-icon-s-tools' "></i>
+                          {{index>1?'重置图标':'系统图标'}}
                         </div>
-                        <el-checkbox v-model="checked1">独立主图标展示</el-checkbox>
+                        <el-checkbox v-model="item.isIndependentShow">独立主图标展示</el-checkbox>
                       </div>
 
                     </div>
+                  </div>
+                  <div
+                    v-if="index>4"
+                    style="margin-bottom:10px"
+                  >
+                    <el-input
+                      v-model="item.phInput"
+                      size="small"
+                      placeholder="请输入图标名称"
+                    ></el-input>
                   </div>
                 </div>
 
@@ -268,7 +296,7 @@
     >
       <div class="systemIconMain">
         <div
-          v-for="(item,index) in systemIconData"
+          v-for="(item,index) in systemIconDataNowShow"
           :key="index"
           class="sysList"
         >
@@ -336,38 +364,113 @@ export default {
       changeMainIconIndex: null, // 切换的主图icon下标
       checked: true,
       checked1: true,
-      checked3: '1',
+      checked2: 1, // 选择系统图标选中项radio值
       systemIconVisible: false, // 选择系统图标弹窗flag
-      systemIconData: [
+      systemIconDataNowShow: [],
+      systemIconData: [ // 选择系统图标客服数据
         {
           imgUrl: this.$imageHost + '/image/admin/origin_kf_1.png',
-          checked: '1'
+          checked: 0
         },
         {
           imgUrl: this.$imageHost + '/image/admin/origin_kf_2.png',
-          checked: '2'
+          checked: 1
         },
         {
           imgUrl: this.$imageHost + '/image/admin/origin_kf_3.png',
-          checked: '3'
+          checked: 2
         },
         {
           imgUrl: this.$imageHost + '/image/admin/origin_kf_4.png',
-          checked: '4'
+          checked: 3
         },
         {
           imgUrl: this.$imageHost + '/image/admin/origin_kf_5.png',
-          checked: '5'
+          checked: 4
         },
         {
           imgUrl: this.$imageHost + '/image/admin/origin_kf_6.png',
-          checked: '6'
+          checked: 5
         },
         {
           imgUrl: this.$imageHost + '/image/admin/origin_kf_7.png',
-          checked: '7'
+          checked: 6
         }
-      ]
+      ],
+      systemIconPhoneData: [ // 选择系统图标手机数据
+        {
+          imgUrl: this.$imageHost + '/image/admin/origin_ph_1.png',
+          checked: 0
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/origin_ph_2.png',
+          checked: 1
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/origin_ph_3.png',
+          checked: 2
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/origin_ph_4.png',
+          checked: 3
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/origin_ph_5.png',
+          checked: 4
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/origin_ph_6.png',
+          checked: 5
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/origin_ph_7.png',
+          checked: 6
+        }
+      ],
+      childrenIconData: [
+        {
+          title: '客服',
+          titleChecked: true,
+          iconImgUrl: this.$imageHost + '/image/admin/origin_kf_2.png',
+          isIndependentShow: true
+        },
+        {
+          title: '电话',
+          titleChecked: true,
+          iconImgUrl: this.$imageHost + '/image/admin/origin_ph_1.png',
+          isIndependentShow: true,
+          phInput: ''
+        },
+        {
+          title: '分享',
+          titleChecked: false,
+          iconImgUrl: this.$imageHost + '/image/admin/origin_share.png',
+          isIndependentShow: false,
+          resetIcon: this.$imageHost + '/image/admin/origin_share.png'
+        },
+        {
+          title: '购物车',
+          titleChecked: false,
+          iconImgUrl: this.$imageHost + '/image/admin/origin_cart.png',
+          isIndependentShow: false,
+          resetIcon: this.$imageHost + '/image/admin/origin_cart.png'
+        },
+        {
+          title: '返回顶部',
+          titleChecked: false,
+          iconImgUrl: this.$imageHost + '/image/admin/origin_go_top.png',
+          isIndependentShow: false,
+          resetIcon: this.$imageHost + '/image/admin/origin_go_top.png'
+        },
+        {
+          title: '自定义',
+          titleChecked: false,
+          iconImgUrl: this.$imageHost + '/image/admin/origin_question.png',
+          isIndependentShow: false,
+          resetIcon: this.$imageHost + '/image/admin/origin_question.png'
+        }
+      ], // 子图标数组
+      changeChldernIconIndex: null // 子图标项中点击更换图标下标
     }
   },
   methods: {
@@ -421,16 +524,48 @@ export default {
         } else {
           this.beforeExpansionUrl = res.imgUrl
         }
+      } else {
+        this.childrenIconData[this.changeChldernIconIndex].iconImgUrl = res.imgUrl
+        if (this.changeChldernIconIndex === 0) {
+          this.checked2 = 0
+        } else if (this.changeChldernIconIndex === 1) {
+          this.checked2 = 0
+        }
       }
       this.isChangeMainIcon = false
     },
     // 调用系统弹窗
-    handleToClickSysDialog () {
+    handleToClickSysDialog (index) {
+      if (index > 1 && index < 5) {
+        this.childrenIconData[index].iconImgUrl = this.childrenIconData[index].resetIcon
+        return
+      }
+      this.changeChldernIconIndex = index
+      if (index) {
+        this.systemIconDataNowShow = this.systemIconPhoneData
+      } else {
+        this.systemIconDataNowShow = this.systemIconData
+      }
+      this.systemIconDataNowShow.forEach((item, index) => {
+        console.log(item.imgUrl, this.childrenIconData[this.changeChldernIconIndex].iconImgUrl)
+        if (item.imgUrl === this.childrenIconData[this.changeChldernIconIndex].iconImgUrl) {
+          this.checked2 = index
+        }
+      })
       this.systemIconVisible = true
     },
     // 选择系统弹窗确定事件
     handleToSureSysIcon () {
       this.systemIconVisible = false
+      this.childrenIconData[this.changeChldernIconIndex].iconImgUrl = this.systemIconDataNowShow[this.checked2].imgUrl
+      console.log(this.changeChldernIconIndex)
+    },
+    // 子图标中的点击更换图标
+    handleChangeChldrenIcon (index) {
+      console.log(index)
+      this.isChangeMainIcon = false
+      this.changeChldernIconIndex = index
+      this.tuneUp = !this.tuneUp
     }
   }
 }
@@ -594,8 +729,11 @@ export default {
               justify-content: center;
             }
           }
+          .pageContent {
+            padding: 0 10px;
+          }
           .pageLi {
-            padding: 10px;
+            padding: 10px 0;
             .top {
               display: flex;
               .li {
@@ -654,6 +792,13 @@ export default {
                 }
               }
             }
+            .childTop {
+              display: flex;
+              flex-direction: column;
+              /deep/ .el-input {
+                width: 175px;
+              }
+            }
             .bottom {
               display: flex;
               margin-top: 10px;
@@ -672,10 +817,14 @@ export default {
             }
             .childIconLeft {
               width: 80px;
+              /deep/ .el-checkbox__label {
+                padding-left: 5px;
+              }
             }
           }
           .iconBottom {
             display: flex;
+            border-bottom: 1px dashed #ddd;
           }
           .resetDiv {
             width: 270px;
@@ -712,6 +861,9 @@ export default {
       /deep/ .el-checkbox {
         display: flex;
         justify-content: center;
+      }
+      /deep/ .el-radio__label {
+        display: none;
       }
     }
   }
