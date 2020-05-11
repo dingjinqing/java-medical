@@ -468,7 +468,7 @@ public class FormStatisticsService extends ShopBaseService {
         vo.setOneVo(getFeedStatisticDataNew(pageId));
         String pageContent = vo.getPageContent();
         Map<String, FormModulesBo> stringMapMap = Util.json2Object(pageContent, new TypeReference<Map<String, FormModulesBo>>() {
-        }, true);
+        }, false);
         vo.getOneVo().forEach(c->{
             c.setConfirm(stringMapMap.get(c.getCurIdx()).getConfirm());
             Map<String,String> selects;
@@ -773,8 +773,8 @@ public class FormStatisticsService extends ShopBaseService {
      */
     private FormInfoBo toFormInfoBo(FormPageRecord formRecord) {
         FormInfoBo formInfoBo  =formRecord.into(FormInfoBo.class);
-        FormCfgBo formCfgBo = Util.json2Object(formInfoBo.getFormCfg(),FormCfgBo.class,true);
-        Map<String, FormModulesBo> formModulesBoMap = Util.json2Object(formInfoBo.getPageContent(), new TypeReference<Map<String, FormModulesBo>>() {}, true);
+        FormCfgBo formCfgBo = Util.json2Object(formInfoBo.getFormCfg(),FormCfgBo.class,false);
+        Map<String, FormModulesBo> formModulesBoMap = Util.json2Object(formInfoBo.getPageContent(), new TypeReference<Map<String, FormModulesBo>>() {}, false);
         formInfoBo.setFormCfgBo(formCfgBo);
         formInfoBo.setPageContentBo(formModulesBoMap);
         return formInfoBo;
@@ -916,7 +916,7 @@ public class FormStatisticsService extends ShopBaseService {
                     String moduleValue = datail.getModuleValue();
                     if (!Strings.isNullOrEmpty(moduleValue)){
                         List<String> picList = Util.json2Object(datail.getModuleValue(), new TypeReference<List<String>>() {
-                        }, true);
+                        }, false);
                         if (picList!=null&&formModulesBo.getMax_number()<picList.size()){
                             formSubmitDataVo.setStatus((byte)4);
                             formSubmitDataVo.setMessage("图片上传数量限制");
