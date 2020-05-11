@@ -263,6 +263,7 @@ export default {
     },
     handleToClickCrumb (name, flag, index) {
       console.log(name, flag, this.$route, this.nameArr.length, this.turnArr.length)
+      let routeName = this.$route.name
       if (this.titleList.length < 3) return
       if (index === (this.titleList.length - 1)) return
       if (flag) {
@@ -298,6 +299,10 @@ export default {
               name: 'form_decoration'
             })
           }
+        } else if (routeName === 'add_increase_purchase' || routeName === 'edit_increase_purchase' || routeName === 'purchase_redemption_order' || routeName === 'purchase_redemption_detail') {
+          this.$router.push({
+            name: 'purchase_price'
+          })
         } else {
           console.log(this.$route)
           if (name === '表单统计') {
