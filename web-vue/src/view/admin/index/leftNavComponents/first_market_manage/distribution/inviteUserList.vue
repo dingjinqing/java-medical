@@ -25,7 +25,7 @@
         </el-form-item>
         <el-form-item label="真实姓名：">
           <el-input
-            v-model="searchParam.name"
+            v-model="searchParam.realName"
             size="small"
             class="inputWidth"
             placeholder="请输入内容"
@@ -37,7 +37,7 @@
             type="datetime"
             size="small"
             align="right"
-            class="inputWidth"
+            class="selectWidth"
             placeholder="选择日期时间"
           ></el-date-picker>
           至
@@ -46,7 +46,7 @@
             type="datetime"
             size="small"
             align="right"
-            class="inputWidth"
+            class="selectWidth"
             default-time="23:59:59"
             placeholder="选择日期时间"
           ></el-date-picker>
@@ -57,7 +57,7 @@
             type="datetime"
             size="small"
             align="right"
-            class="inputWidth"
+            class="selectWidth"
             placeholder="选择日期时间"
           ></el-date-picker>
           至
@@ -66,7 +66,7 @@
             type="datetime"
             size="small"
             align="right"
-            class="inputWidth"
+            class="selectWidth"
             default-time="23:59:59"
             placeholder="选择日期时间"
           ></el-date-picker>
@@ -176,7 +176,7 @@ export default {
       searchParam: {
         mobile: '',
         username: '',
-        name: '',
+        realName: '',
         startCreateTime: '',
         endCreateTime: '',
         startInviteTime: '',
@@ -221,15 +221,6 @@ export default {
     position: relative;
     background-color: #fff;
     padding: 10px 20px 10px 20px;
-    .liNav {
-      margin-top: 5px;
-      margin-bottom: 15px;
-    }
-
-    .ipt {
-      width: 200px;
-      margin-right: 30px;
-    }
   }
 }
 .title_content {
@@ -247,5 +238,11 @@ export default {
   font-weight: bold;
   color: #000;
   padding: 8px 10px;
+}
+.inputWidth {
+  width: 170px;
+}
+.selectWidth {
+  width: 200px;
 }
 </style>
