@@ -97,6 +97,61 @@
               </div>
             </div>
           </div>
+          <div class="list">
+            <div class="listTitle">
+              <span>悬浮方式</span>
+            </div>
+            <div class="pageContent">
+              <div class="pageLi">
+                <div class="top">
+                  <div class="li">
+                    <el-radio
+                      v-model="fixedShow"
+                      label="1"
+                    >固定位置显示</el-radio>
+                  </div>
+                  <div>
+                    <el-radio
+                      v-model="fixedShow"
+                      label="2"
+                    >上滑消失下滑显示</el-radio>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="list">
+            <div class="listTitle">
+              <span>主图标</span>
+              <div class="rightRadio">
+                <div style="color:#999999;margin-right:5px">开启后，点击主图标展开显示子图标</div>
+                <el-switch
+                  v-model="isShowIcon"
+                  active-color="#f7931e"
+                  inactive-color="#ddd"
+                >
+                </el-switch>
+              </div>
+            </div>
+            <div class="pageContent">
+              <div class="pageLi">
+                <div class="top">
+                  <div class="li">
+                    <el-radio
+                      v-model="fixedShow"
+                      label="1"
+                    >固定位置显示</el-radio>
+                  </div>
+                  <div>
+                    <el-radio
+                      v-model="fixedShow"
+                      label="2"
+                    >上滑消失下滑显示</el-radio>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -155,7 +210,9 @@ export default {
       peasonCenter: true, // 个人中心checkbox
       customPage: true, // 自定义页面 checkbox
       customPageSelect: [], // 选择的自定义页面数据
-      backSelectDataSus: [374, 375, 354, 353] // 选择页面弹窗回显数据
+      backSelectDataSus: [], // 选择页面弹窗回显数据
+      fixedShow: '1', // 悬浮方式raido
+      isShowIcon: true // 主图标switch
     }
   },
   methods: {
@@ -180,6 +237,17 @@ export default {
     // 选择页面弹窗选中回传数据
     handleSelectTemplate (res) {
       console.log(res)
+      let arr = []
+      res.forEach((item, index) => {
+        console.log(typeof item)
+        if (typeof item === 'number') {
+          arr.push(item)
+        } else {
+          arr.push(item.pageId)
+        }
+      })
+      console.log(arr)
+      this.backSelectDataSus = arr
       // 374 375 354 353
       this.customPageSelect = res
     }
