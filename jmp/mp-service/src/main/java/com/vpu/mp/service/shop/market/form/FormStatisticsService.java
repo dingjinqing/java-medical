@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.upyun.UpException;
+import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.FormPageRecord;
 import com.vpu.mp.db.shop.tables.records.FormSubmitDetailsRecord;
@@ -109,6 +110,8 @@ public class FormStatisticsService extends ShopBaseService {
     private CouponService couponService;
     @Autowired
     private OrderInfoService orderInfoService;
+    @Autowired
+    protected UpYunConfig upYunConfig;
     /**
      * FORM_PAGE表单删除状态值，删除状态页面不展示
      */
@@ -413,7 +416,7 @@ public class FormStatisticsService extends ShopBaseService {
         try {
             moduleUploadVideo = objectMapper.readValue(video, ModuleUploadVideo.class);
             moduleUploadVideo.setVideoSrc(imageService.imageUrl(moduleUploadVideo.getVideoSrc()));
-            moduleUploadVideo.setVideoImgSrc(imageService.imageUrl(moduleUploadVideo.getVideoImgSrc()));
+            moduleUploadVideo.setVideoImgSrc(upYunConfig.videoUrl(moduleUploadVideo.getVideoImgSrc()));
             return objectMapper.writeValueAsString(moduleUploadVideo);
         } catch (IOException e) {
             e.printStackTrace();
