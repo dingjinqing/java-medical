@@ -192,7 +192,7 @@
           <view wx:if="{{promote_info.promoteCondition == 0}}">{{i18n.$t(localePack,"page1.promote.promoteUser3")}}</view>
           <button class='shouquan_btn' open-type='getUserInfo' bindgetuserinfo="getUserInfo" style='background:{{comColor}}'>{{i18n.$t(localePack,"page1.promote.promoteUser2")}}</button>
       </view>
-      <image src='{{imageUrl}}image/wxapp/promote_close.png' class='btn_closr'></image>
+      <image src='{{imageUrl}}image/wxapp/promote_close.png' class='btn_closr' wx:if="{{promote_info.promoteCondition == 0}}" bindtap='to_close'></image>
   </view>
 
   <!-- 助力成功和失败 -->
