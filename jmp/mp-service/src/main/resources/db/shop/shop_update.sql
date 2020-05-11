@@ -535,3 +535,9 @@ ALTER TABLE `b2c_return_order` ADD COLUMN `return_source` tinyint(1) DEFAULT '1'
 ALTER TABLE `b2c_return_order` ADD COLUMN `return_source_type` tinyint(1) DEFAULT '0' COMMENT '售后发起来源类型：0改价失败自动售后，1微信支付失败，2活动自动售后';
 /*********************2.12*************************END*/
 
+
+/***********************2.13*********************BEGIN*/
+-- 会员卡添加兑换商品限制时间类型和次数
+ALTER TABLE `b2c_member_card` ADD COLUMN `period_limit` tinyint(1) DEFAULT NULL COMMENT '0:不限制，1：日，2：周，3：月，4：季度，5：年';
+ALTER TABLE `b2c_member_card` ADD COLUMN `period_num` int(11) DEFAULT NULL COMMENT '周期内允许兑换次数';
+/***********************2.13*********************END*/
