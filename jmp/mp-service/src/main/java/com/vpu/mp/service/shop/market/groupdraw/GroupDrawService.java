@@ -460,8 +460,8 @@ public class GroupDrawService extends ShopBaseService {
 				}
 				orderNumber = orderNumber + vo.getOrderNumber();
 				newUser = newUser + vo.getNewUser();
-				returnVo.add(vo);
 			}
+			returnVo.add(vo);
 		}
 		for (GroupDrawAnalysisListVo vo : returnVo) {
 			for (GroupDrawAnalysisStatus item : analysisStatus) {
