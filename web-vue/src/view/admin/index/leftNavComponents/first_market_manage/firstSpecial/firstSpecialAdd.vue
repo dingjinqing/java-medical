@@ -69,10 +69,12 @@
               <el-radio-group v-model="form.isForever">
                 <el-radio
                   :label="0"
+                  :disabled="isEditFlag"
                   style="line-height:32px;"
                 >{{$t('firstSpecialAdd.fixedTime')}}</el-radio>
                 <el-radio
                   :label="1"
+                  :disabled="isEditFlag"
                   style="line-height:32px;"
                 >{{$t('firstSpecialAdd.permanent')}}</el-radio>
               </el-radio-group>
@@ -105,7 +107,7 @@
                 range-separator="至"
                 :start-placeholder="$t('firstSpecialAdd.chooseTime')"
                 :end-placeholder="$t('firstSpecialAdd.chooseTime')"
-                :disabled="!!form.isForever"
+                :disabled="!!form.isForever || isEditFlag"
                 format="yyyy-MM-dd HH:mm:ss"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 :default-time="['00:00:00','23:59:59']"
@@ -548,7 +550,11 @@ export default {
   },
   created () {
     if (this.$route.query.id) {
-      this.isEditFlag = true
+      if (this.$route.query.currentState === 1) {
+        this.isEditFlag = true
+      } else {
+        this.isEditFlag = false
+      }
       this.initEditData()
     }
   },
