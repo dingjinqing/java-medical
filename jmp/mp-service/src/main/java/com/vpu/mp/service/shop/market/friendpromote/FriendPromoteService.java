@@ -6,6 +6,7 @@ import com.vpu.mp.db.shop.tables.FriendPromoteDetail;
 import com.vpu.mp.db.shop.tables.FriendPromoteLaunch;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
@@ -823,7 +824,7 @@ public class FriendPromoteService extends ShopBaseService {
                 .from(FRIEND_PROMOTE_LAUNCH)
                 .where(FRIEND_PROMOTE_LAUNCH.USER_ID.eq(userId))
                 .and(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(promoteId))
-                .orderBy(FRIEND_PROMOTE_LAUNCH.ID.desc())
+                .orderBy(FRIEND_PROMOTE_LAUNCH.ID.asc())
                 .limit(1)
                 .fetchOneInto(FriendPromoteLaunchRecord.class);
         }
@@ -918,9 +919,12 @@ public class FriendPromoteService extends ShopBaseService {
                 if (promoteInfo.getLaunchLimitTimes()==0){
                     canLaunch.setCode(NumberUtils.BYTE_ONE);
                 }else {
+                    launchInfo = getLaunchInfo(null,userId,promoteInfo.getId());
                     //已发起助力次数
                     Integer launchTimes = promoteLaunchTimes(promoteInfo.getId(),userId,promoteInfo.getLaunchLimitDuration(),promoteInfo.getLaunchLimitUnit(),launchInfo.getLaunchTime());
-                    if (launchTimes<promoteInfo.getLaunchLimitTimes()){
+                    logger().info("当前发起ID为{}，ID为{}的用户已经发起了{}次",launchInfo.getId(),userId,launchTimes);
+                    logger().info("当前活动发起限制次数为{}次",promoteInfo.getLaunchLimitTimes());
+                    if (launchTimes<promoteInfo.getLaunchLimitTimes().intValue()){
                         canLaunch.setCode(NumberUtils.BYTE_ONE);
                     }
                 }
@@ -942,19 +946,19 @@ public class FriendPromoteService extends ShopBaseService {
         Duration timeDuration;
         switch (unit){
             //天
-            case 1:
+            case 0:
                 timeDuration = getDurationDay(launchTime,duration);
                 break;
             //周
-            case 2:
+            case 1:
                 timeDuration = getDurationDay(launchTime,duration*7);
                 break;
             //月
-            case 3:
+            case 2:
                 timeDuration = getDurationDay(launchTime,duration*30);
                 break;
             //年
-            case 4:
+            case 3:
                 timeDuration = getDurationDay(launchTime,duration*365);
                 break;
             default:
@@ -965,6 +969,7 @@ public class FriendPromoteService extends ShopBaseService {
             .where(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(promoteId))
             .and(FRIEND_PROMOTE_LAUNCH.USER_ID.eq(userId))
             .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.between(timeDuration.getStartTime(),timeDuration.getEndTime()))
+            .and(FRIEND_PROMOTE_LAUNCH.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .fetchOptionalInto(Integer.class)
             .orElse(0);
         return launchTimes;
