@@ -471,6 +471,7 @@ export default {
         if (moduleData) {
           this.linkageData = moduleData
           this.$forceUpdate()
+          this.handleToRequestGoodsData()
         }
       },
       immediate: true
