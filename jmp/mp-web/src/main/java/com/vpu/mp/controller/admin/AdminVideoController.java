@@ -136,4 +136,15 @@ public class AdminVideoController extends AdminBaseController {
     shop().video.removeRows(param.getVideoIds().toArray(new Integer[0]));
     return success();
   }
+    /**
+     * 查询单个视频
+     *
+     * @param param
+     * @return
+     */
+    @PostMapping("/admin/video/select")
+    public JsonResult selectOneVideo(@RequestBody VideoSelectParam param) {
+        UploadedVideoVo record = shop().video.selectOneVideo(param);
+        return success(record);
+    }
 }
