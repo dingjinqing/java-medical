@@ -28,7 +28,7 @@
           style="margin-left: 10px;"
           type="primary"
           size="mini"
-          @click="initEcharts"
+          @click="getAnalys"
         >{{ $t('seckill.screen') }}</el-button>
       </div>
 
@@ -48,8 +48,29 @@
           </div>
           <div
             class="num"
-            style="color: #5A8BFF"
-          >{{ totalOrderNumber }}</div>
+            style="color: #3dcf9a"
+          >{{ orderNumber }}</div>
+         <el-image
+            class="left_image"
+            :src="urls.url4"
+          ></el-image>
+        </div>
+        <div class="fromInfo">
+          <div style="display:flex">
+            <div class="titless">{{$t('groupIntegration.numberUsers')}}</div>
+            <el-tooltip
+              class="item"
+              effect="light"
+              :content="$t('groupIntegration.numberUsersInfo')"
+              placement="top"
+            >
+              <i class="el-icon-warning-outline icons"></i>
+            </el-tooltip>
+          </div>
+          <div
+            class="num"
+            style="color: #5a8bff"
+          >{{ joinNum }}</div>
           <el-image
             class="left_image"
             :src="urls.url1"
@@ -57,11 +78,11 @@
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="titless">参与用户数</div>
+            <div class="titless">{{$t('groupIntegration.groupUsers')}}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="参与活动的用户数（包括开团及参团用户）"
+              :content="$t('groupIntegration.groupUsersInfo')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -69,8 +90,8 @@
           </div>
           <div
             class="num"
-            style="color: #5A8BFF"
-          >{{ totalJoinNum }}</div>
+            style="color: #fc6181"
+          >{{ successUserNum }}</div>
           <el-image
             class="left_image"
             :src="urls.url2"
@@ -78,11 +99,11 @@
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="titless">成团用户数</div>
+            <div class="titless">{{$t('groupIntegration.pullNewUsers')}}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="活动已成团用户数"
+              :content="$t('groupIntegration.pullNewUsersInfo')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -90,37 +111,18 @@
           </div>
           <div
             class="num"
-            style="color: #5A8BFF"
-          >{{ totalSuccessUserNum }}</div>
+            style="color: #fdb64a"
+          >{{ newUser }}</div>
           <el-image
             class="left_image"
             :src="urls.url3"
           ></el-image>
         </div>
-        <div class="fromInfo">
-          <div style="display:flex">
-            <div class="titless">拉新用户数</div>
-            <el-tooltip
-              class="item"
-              effect="light"
-              content="在店铺没有过访问记录，通过活动首次访问店铺的用户数"
-              placement="top"
-            >
-              <i class="el-icon-warning-outline icons"></i>
-            </el-tooltip>
-          </div>
-          <div
-            class="num"
-            style="color: #5A8BFF"
-          >{{ totalNewUser }}</div>
-          <el-image
-            class="left_image"
-            :src="urls.url4"
-          ></el-image>
-        </div>
       </section>
 
-      <div id="charts"></div>
+      <div id="charts">
+        <ve-line :data="chartData" :settings="chartSettings" :data-empty="dataEmpty"></ve-line>
+      </div>
 
     </wrapper>
   </div>
@@ -129,203 +131,90 @@
 <script>
 import { effactLotteryList } from '@/api/admin/marketManage/lotteryDraw.js'
 import wrapper from '@/components/admin/wrapper/wrapper'
-import echarts from 'echarts'
-
+import VCharts from 'v-charts'
+import 'v-charts/lib/style.css'
 export default {
-  components: { wrapper },
+  components: { wrapper, VCharts },
   data () {
+    this.chartSettings = {
+      labelMap: {
+        'dateTime': this.$t('groupIntegration.date'),
+        'orderNumber': '付款订单数',
+        'joinNum': this.$t('groupIntegration.numberUsers'),
+        'successUserNum': this.$t('groupIntegration.groupUsers'),
+        'newUser': this.$t('groupIntegration.pullNewUsers')
+      },
+      legendName: {
+        'dateTime': this.$t('groupIntegration.date'),
+        'orderNumber': '付款订单数',
+        'joinNum': this.$t('groupIntegration.numberUsers'),
+        'successUserNum': this.$t('groupIntegration.groupUsers'),
+        'newUser': this.$t('groupIntegration.pullNewUsers')
+      }
+    }
     return {
-      starDate: this.moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
-      endDate: this.moment().format('YYYY-MM-DD HH:mm:ss'),
-      totalOrderNumber: 0, // 付款订单数
-      totalJoinNum: 0, // 参与用户数
-      totalSuccessUserNum: 0, // 成团用户数
-      totalNewUser: 0, // 拉新用户数
-      echartInit: {
-        colors: ['#5A8BFF', '#fc6181', '#fdb64a', '#3dcf9a'],
-        legendData: this.$t('lotteryDraw.legendData')
+      starDate: null,
+      endDate: null,
+      orderNumber: 0, // 付款订单数
+      joinNum: 0, // 参与用户数
+      successUserNum: 0, // 成团用户数
+      newUser: 0, // 拉新用户数
+      chartData: {
+        columns: ['dateTime', 'orderNumber', 'joinNum', 'successUserNum', 'newUser'],
+        rows: [
+        ]
       },
-      echartData: {
-        dataList: [] // 日期时间
-      },
-      option: {},
-      myChart: {},
+      actId: null,
+      dataEmpty: true,
       urls: {
         url1: `${this.$imageHost}/image/admin/any_coner/any_coner_blue.png`,
         url2: `${this.$imageHost}/image/admin/any_coner/any_coner_pink.png`,
         url3: `${this.$imageHost}/image/admin/any_coner/any_coner_orange.png`,
-        url4: `${this.$imageHost}/image/admin/any_coner/any_coner_yellow.png`
+        url4: `${this.$imageHost}/image/admin/any_coner/any_coner_green.png`
       }
     }
   },
   watch: {
     lang () {
-      this.updateEcharts()
+      this.changeDivInnerHtml()
     }
   },
   mounted () {
     // 初始化语言
     this.langDefault()
-    this.initEcharts()
+    this.actId = this.$route.query.id
+    this.starDate = this.$route.query.startTime
+    this.endDate = this.$route.query.endTime
+    this.getAnalys()
   },
   methods: {
-    initEcharts () {
-      this.myChart = echarts.init(document.getElementById('charts'))
-
-      var startTime = new Date(this.$route.query.startTime).getTime()
-      var endTime = new Date(this.$route.query.endTime).getTime()
-      var nowTime = new Date(this.endDate).getTime()
-      if (nowTime >= startTime && nowTime <= endTime) {
-        // 进行中
-        this.starDate = this.$route.query.startTime
-      }
-      if (startTime > nowTime || endTime < nowTime) {
-        // 未开始或已结束
-        this.starDate = this.$route.query.startTime
-        this.endDate = this.$route.query.endTime
-      }
-
+    getAnalys () {
       let params = {
-        groupDrawId: this.$route.query.id,
-        startTime: this.starDate,
-        endTime: this.endDate
+        'groupDrawId': this.actId,
+        'startTime': this.starDate,
+        'endTime': this.endDate
       }
-      this.handleEcharts()
       effactLotteryList(params).then((res) => {
+        console.log(res)
         if (res.error === 0) {
-          this.totalOrderNumber = res.content.totalOrderNumber
-          this.totalJoinNum = res.content.totalJoinNum
-          this.totalSuccessUserNum = res.content.totalSuccessUserNum
-          this.totalNewUser = res.content.totalNewUser
-          // this.echartData = res.content
-          this.echartData.dataList = []
-          for (var key in res.content.orderNumber) {
-            this.echartData.dataList.push(key)
-          }
-          var orderObj = res.content.orderNumber
-          var newObj = res.content.newUser
-          var joinObj = res.content.joinNum
-          var successObj = res.content.successUserNum
-          var orderNumber = []
-          var newUser = []
-          var joinNum = []
-          var successUserNum = []
-          Object.keys(orderObj).forEach(function (key) {
-            orderNumber.push(orderObj[key])
-          })
-          Object.keys(newObj).forEach(function (key) {
-            newUser.push(newObj[key])
-          })
-          Object.keys(joinObj).forEach(function (key) {
-            joinNum.push(joinObj[key])
-          })
-          Object.keys(successObj).forEach(function (key) {
-            successUserNum.push(successObj[key])
-          })
-          this.echartData.orderNumber = orderNumber
-          this.echartData.newUser = newUser
-          this.echartData.joinNum = joinNum
-          this.echartData.successUserNum = successUserNum
-          this.handleEcharts()
-          this.myChart.hideLoading()
-          this.myChart.dispatchAction({
-            type: 'restore'
-          })
+          this.starDate = res.content.startTime
+          this.endDate = res.content.endTime
+          this.chartData.rows = res.content.list
+          this.dataEmpty = res.content.list === null
+          this.orderNumber = res.content.orderNumber
+          this.joinNum = res.content.joinNum
+          this.successUserNum = res.content.successUserNum
+          this.newUser = res.content.newUser
+        } else {
+          this.$message.error(res.message)
         }
       })
     },
-    handleEcharts () {
-      this.option = {
-        tooltip: {
-          trigger: 'axis'
-        },
-        legend: {
-          data: this.echartInit.legendData
-        },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
-        },
-        xAxis: [
-          {
-            type: 'category',
-            data: this.echartData.dataList,
-            boundaryGap: false
-          }
-        ],
-        yAxis: [
-          {
-            name: this.$t('seckill.effactNum'),
-            type: 'value'
-          },
-          {
-            name: this.$t('seckill.costEffect'),
-            type: 'value'
-          }
-        ],
-        series: [
-          {
-            name: this.echartInit.legendData[0],
-            type: 'line',
-            color: this.echartInit.colors[0],
-            yAxisIndex: 0,
-            stack: '总量',
-            data: this.echartData.orderNumber
-          },
-          {
-            name: this.echartInit.legendData[1],
-            type: 'line',
-            color: this.echartInit.colors[1],
-            yAxisIndex: 0,
-            stack: '总量',
-            data: this.echartData.newUser
-          },
-          {
-            name: this.echartInit.legendData[2],
-            type: 'line',
-            color: this.echartInit.colors[2],
-            yAxisIndex: 0,
-            stack: '总量',
-            data: this.echartData.joinNum
-          },
-          {
-            name: this.echartInit.legendData[3],
-            type: 'line',
-            color: this.echartInit.colors[3],
-            yAxisIndex: 0,
-            stack: '总量',
-            data: this.echartData.successUserNum
-          }
-        ]
+    changeDivInnerHtml () {
+      var charts = document.getElementsByClassName('v-charts-data-empty')
+      for (let i = 0; i < charts.length; i++) {
+        charts[i].innerHTML = this.$t('userportrait.noData')
       }
-      this.myChart.setOption(this.option)
-      this.myChart.showLoading({
-        text: 'loading',
-        color: '#4cbbff',
-        textColor: '#4cbbff'
-        // maskColor: 'rgba(0, 0, 0, 0.9)'
-      })
-    },
-    updateEcharts () {
-      this.echartInit.legendData = this.$t('lotteryDraw.legendData')
-      this.initEcharts()
-      this.myChart.setOption({
-        legend: {
-          data: this.$t('lotteryDraw.legendData')
-        },
-        yAxis: [
-          {
-            name: this.$t('groupBuy.number'),
-            type: 'value'
-          },
-          {
-            name: this.$t('groupBuy.costBenefitRatio'),
-            type: 'value'
-          }
-        ]
-      })
     }
   }
 }
@@ -370,12 +259,12 @@ export default {
     height: 500px;
     left: -30px;
   }
-  .left_image {
+ .left_image {
     position: absolute;
     bottom: 1px;
     left: 0;
-    width: 44px;
-    height: 40px;
+    width:44px;
+    height:40px;
   }
 }
 </style>
