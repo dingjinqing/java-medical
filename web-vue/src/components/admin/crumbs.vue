@@ -185,6 +185,9 @@ export default {
       if (data[1] === '会员列表' && data[2]) {
         data[2] = this.$route.query.name + '-' + data[2]
       }
+      if (data[0] === '订单管理' && data[1] === '全部订单' && this.$route.query.userName) {
+        data[1] = this.$route.query.userName + '-' + data[1]
+      }
       if (this.$route.name === 'Cardholder' || this.$route.name === 'receivingDetails' || this.$route.name === 'activateAudit' || this.$route.name === 'viewOrders') {
         let localData = JSON.parse(localStorage.getItem('V-UserCardCrumb'))
         if (localData) {
