@@ -282,6 +282,7 @@
           </el-table-column>
 
           <el-table-column
+            prop="nextNumber"
             label="下级用户数"
             sortable="custom"
             align="center"
@@ -295,6 +296,7 @@
           </el-table-column>
 
           <el-table-column
+            prop="sublayerNumber"
             label="间接邀请用户数"
             sortable="custom"
             align="center"
@@ -338,7 +340,7 @@
             <template slot-scope="scope">
               <div class="opt">
                 <p @click="inviteUserList(scope.row.userId)">查看已邀请用户</p>
-                <p>查看返利佣金明细</p>
+                <p @clcik="commissionDetail(scope.row.userId)">查看返利佣金明细</p>
                 <p @click="remarksHandler(scope.row.userId)">备注</p>
                 <p @click="del(scope.row.userId)">清除</p>
               </div>
@@ -658,10 +660,19 @@ export default {
         this.groupNameList = res.content
       })
     },
-    // 分销员邀请用户列表
+    // 跳转分销员邀请用户列表
     inviteUserList (userId) {
       this.$router.push({
         path: '/admin/home/main/distribution/inviteUserList',
+        query: {
+          userId: userId
+        }
+      })
+    },
+    // 跳转佣金返利明细
+    commissionDetail (userId) {
+      this.$router.push({
+        path: '/admin/home/main/distribution/moneyStatistics',
         query: {
           userId: userId
         }
@@ -873,26 +884,13 @@ export default {
       var fieldName = column.prop
       var sortType = column.order
 
-      // 如果字段名称为“注册时间”，将“注册时间”转换为时间戳，才能进行大小比较
-      if (fieldName === 'createTime') {
-        this.tableData.map(item => {
-          item.createTime = this.$moment(item.createTime).valueOf()
-        })
-      }
+      console.log(fieldName)
+      console.log(sortType)
 
       if (sortType === 'descending') {
         // 按照降序排序
-        // this.tableData = this.tableData.sort((a, b) => b[fieldName] - a[fieldName])
       } else {
         // 按照升序排序
-        // this.tableData = this.tableData.sort((a, b) => a[fieldName] - b[fieldName])
-      }
-
-      // 如果字段名称为“注册时间”，将时间戳格式的“注册时间”再转换为时间格式
-      if (fieldName === 'createTime') {
-        this.tableData.map(item => {
-          item.createTime = this.$moment(item.createTime).format('YYYY-MM-DD HH:mm:ss')
-        })
       }
 
       console.log(this.tableData)
