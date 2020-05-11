@@ -189,7 +189,7 @@
               :data="form.coupon_info"
               key="couponList"
               border
-              style="width: 300px;"
+              style="width: 400px;"
             >
               <el-table-column
                 :label="$t('promoteList.couponInfo')"
@@ -202,7 +202,14 @@
                       v-if="scope.row.actCode == 'voucher'"
                       style="color:red"
                     >￥<span>{{scope.row.denomination}}</span></div>
-                    <div v-else><span>{{scope.row.denomination}}</span>折</div>
+                    <div
+                      v-if="scope.row.actCode == 'discount'"
+                      style="color:red"
+                    ><span>{{scope.row.denomination}}</span>折</div>
+                    <div
+                      v-if="scope.row.actCode == 'random'"
+                      style="color:red"
+                    ><span>{{scope.row.randomMax}}</span>最高</div>
                     <div class="coupon_rule">{{scope.row.useConsumeRestrict > 0? `满${scope.row.leastConsume}元可用`  : `不限制`}}</div>
                   </div>
                 </template>
