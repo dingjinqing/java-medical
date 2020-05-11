@@ -1191,4 +1191,18 @@ public class JsonResultMessage {
     public static final String VIRTUAL_ORDER_COUPON_PACK_RETURN_CARD_BALANCE = "virtual.order.coupon_pack.return_card_balance";
     public static final String VIRTUAL_ORDER_COUPON_PACK_REFUNDED = "virtual.order.coupon_pack.refunded";
     public static final String VIRTUAL_ORDER_COUPON_PACK_PAYMENT_SUCCESSFUL = "virtual.order.coupon_pack.payment_successful";
+
+    /**
+     * 营销-满折满减订单excel导出
+     */
+    public static final String MRKING_STRATEGY_ORDER_LIST_FILENAME = "mrking.strategy.order.list.file_name";
+    public static final String MRKING_STRATEGY_ORDER_LIST_ORDER_SN = "mrking.strategy.order.list.order_sn";
+    public static final String MRKING_STRATEGY_ORDER_LIST_GOODS_NAME = "mrking.strategy.order.list.goods_name";
+    public static final String MRKING_STRATEGY_ORDER_LIST_GOODS_PRICE = "mrking.strategy.order.list.goods_price";
+    public static final String MRKING_STRATEGY_ORDER_LIST_PER_DISCOUNT = "mrking.strategy.order.list.per_discount";
+    public static final String MRKING_STRATEGY_ORDER_LIST_DISCOUNTED_GOODS_PRICE = "mrking.strategy.order.list.discounted_goods_price";
+    public static final String MRKING_STRATEGY_ORDER_LIST_GOODS_NUMBER = "mrking.strategy.order.list.goods_number";
+    public static final String MRKING_STRATEGY_ORDER_LIST_USERNAME = "mrking.strategy.order.list.username";
+    public static final String MRKING_STRATEGY_ORDER_LIST_ORDER_STATUS = "mrking.strategy.order.list.order_status";
+
 }

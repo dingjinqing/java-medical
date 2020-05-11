@@ -1,25 +1,5 @@
 package com.vpu.mp.service.foundation.excel;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.RegionUtil;
-
 import com.vpu.mp.service.foundation.excel.annotation.ExcelDynamicColumn;
 import com.vpu.mp.service.foundation.excel.bean.ClassList;
 import com.vpu.mp.service.foundation.excel.bean.ExcelColumnBean;
@@ -27,9 +7,13 @@ import com.vpu.mp.service.foundation.excel.bean.ExcelSheetBean;
 import com.vpu.mp.service.foundation.excel.exception.IllegalExcelDataException;
 import com.vpu.mp.service.foundation.excel.exception.IllegalExcelHeaderException;
 import com.vpu.mp.service.foundation.excel.exception.IllegalSheetPositionException;
-import com.vpu.mp.service.foundation.excel.util.IDymicColNameI18n;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
+
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * @author 李晓冰
@@ -388,15 +372,16 @@ public class ExcelWriter extends AbstractExcelDisposer {
                                 cell1.setCellStyle(styleMap.get(innerColumnBean.columnIndex));
                                 cNo.add(innerColumnBean.columnIndex);
                                 innerRow.add(tempRowIndex);
+                                System.out.println(innerColumnBean);
                                 System.out.println(
-                                    "行：" + tempRowIndex + " 列：" + innerColumnBean.columnIndex + "   " + value1);
+                                    fieldName + "-行：" + tempRowIndex + " 列：" + innerColumnBean.columnIndex + "   " + value1);
                                 ExcelUtil.setCellValue(cell1, value1);
                                 tempRowIndex = tempRowIndex + 1;
                             }
                         }
                         rowList.add(tempRowIndex - 1);
                     } else {
-                        System.out.println("行：" + rowIndex + " 列：" + columnBean.columnIndex + "   " + value);
+                        System.out.println(fieldName + "---行：" + rowIndex + " 列：" + columnBean.columnIndex + "   " + value);
                         columnList.add(columnBean.columnIndex);
                         ExcelUtil.setCellValue(cell, value);
                     }
