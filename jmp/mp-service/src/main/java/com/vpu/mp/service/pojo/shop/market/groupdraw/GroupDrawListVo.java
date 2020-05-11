@@ -62,4 +62,6 @@ public class GroupDrawListVo {
     private GroupDrawActCopywriting actCopywriting;
     @JsonIgnore
     private String activityCopywriting;
+    /** 能否启用 1：显示启用图标；0：不显示*/
+    private Byte isEnable;
 }

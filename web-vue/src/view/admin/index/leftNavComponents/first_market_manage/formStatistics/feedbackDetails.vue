@@ -68,7 +68,7 @@
                     <div
                       v-for="(itemC,indexC) in item.moduleValueList"
                       :key="indexC"
-                      :style="item.moduleValue === indexC?'color:#0E70CA;margin-bottom:5px':'margin-bottom:5px'"
+                      :style="item.isCheckedData.includes(indexC)?'color:#0E70CA;margin-bottom:5px':'margin-bottom:5px'"
                     >
                       ·{{itemC}}
                     </div>
@@ -214,18 +214,20 @@ moduleValueList: null
                   break
                 case 'm_choose':
                   item.simple = false
-                  // console.log(item)
+                  console.log(item)
                   // let objMchoose = {
                   //   chooseIndex: '',
                   //   choiseArr: ''
                   // }
-
+                  let arr = []
                   item.moduleValueList.forEach((itemC, indexC) => {
-                    if (Number((JSON.parse(item.moduleValue)) - 1) === indexC) {
-                      item.moduleValue = indexC
-                    }
+                    JSON.parse(item.moduleValue).forEach((v, i) => {
+                      if (Number((JSON.parse(v)) - 1) === indexC) {
+                        arr.push(indexC)
+                      }
+                    })
                   })
-
+                  item.isCheckedData = arr
                   break
                 case 'm_dates':
                   item.moduleValue = JSON.parse(item.moduleValue)

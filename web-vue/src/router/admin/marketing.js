@@ -352,6 +352,19 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/distribution/inviteUserList'
       )
   },
+  // 分销-佣金统计
+  {
+    path: '/admin/home/main/distribution/moneyStatistics',
+    name: 'distribution_info_moneyStatistics',
+    meta: {
+      crumbTitle: 'router.distribution_info',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/distribution/moneyStatistics'
+      )
+  },
   // 分销-返利提现详情
   {
     path: '/admin/home/main/distribution/withdraw/detail',

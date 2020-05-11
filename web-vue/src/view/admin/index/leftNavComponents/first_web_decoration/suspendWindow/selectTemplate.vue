@@ -4,8 +4,7 @@
     <el-dialog
       title="选择页面"
       :visible.sync="templateDialog"
-      width="50%"
-      :close-on-click-modal="false"
+      width="60%"
       center
     >
       <div style="width: 100%; text-align: center;">
@@ -114,55 +113,78 @@ export default {
     tuneUpSelectTemplate: { // 调起选择模板弹窗
       type: Boolean,
       default: () => false
-    }
+    },
+    backSelectData: Array // 数据回显
+
   },
   data () {
     return {
       templateDialog: false, // 模板弹窗
       pageParams: {}, // 分页
       templateData: [], // 模板表格
-      templateRow: {}, // 模板弹窗回调函数
+      templateRow: [], // 模板弹窗回调函数
       requestParams: {},
       formDialog: {
         pageName: null,
         catId: null
-      }
+      },
+      initBackData: [],
+      newBackData: []
     }
   },
   watch: {
     tuneUpSelectTemplate () {
       this.templateDialog = true
-      let arr = [374, 375, 354, 353]
-      setTimeout(() => {
-        console.log(this)
-      }, 2000)
-      console.log(this.$refs)
+      console.log(this.templateData)
+      this.newBackData = JSON.parse(JSON.stringify(this.backSelectData))
       this.$nextTick(() => {
-        this.templateData.forEach((item, index) => {
-          arr.forEach((itemC, indexC) => {
-            if (item.pageId === itemC) {
-              console.log(this.$refs)
-              this.$refs.selectPageTable.toggleRowSelection(item, true)
-            }
-          })
-        })
+        this.initBackData = this.backSelectData
+        console.log('触发')
+        this.$refs.selectPageTable.clearSelection()
+        this.handleToBackData()
       })
       console.log(this.$refs)
     }
   },
   mounted () {
+    this.isFirst = true
     this.getTemplateData()
   },
   methods: {
     getRowKeys (row) {
       return row.pageId
     },
+    // 回显数据
+    handleToBackData () {
+      console.log(this.initBackData)
+      this.templateData.forEach((item, index) => {
+        this.initBackData.forEach((itemC, indexC) => {
+          if (item.pageId === itemC) {
+            let flag = false
+            console.log(this.templateRow)
+            this.templateRow.forEach((itemD, indexD) => {
+              if (itemD.pageId === item.pageId) {
+                flag = true
+              }
+            })
+            if (!flag) {
+              this.newBackData.forEach((v, i) => {
+                if (v === item.pageId) {
+                  this.newBackData.splice(i, 1)
+                }
+              })
+              console.log(this.newBackData, indexC)
+              this.$refs.selectPageTable.toggleRowSelection(item, true)
+            }
+            console.log(this.$refs)
+          }
+        })
+      })
+    },
     // 选中表格数据
     handleCurrentChange (val) {
-      console.log(val)
+      console.log(val, this.newBackData)
       this.templateRow = val
-      // this.form.rebate_page_id = val.pageId
-      // this.formDialog.pageName = val.pageName
       console.log(this.templateRow)
     },
 
@@ -170,7 +192,9 @@ export default {
     sureClickHandler () {
       this.templateDialog = false
       this.tamplateFlag = true
-      this.$emit('handleSelectTemplate', this.templateRow)
+      let arr = this.templateRow.concat(this.newBackData)
+      console.log(arr)
+      this.$emit('handleSelectTemplate', arr)
     },
 
     // 获取模板弹窗表格数据
@@ -191,6 +215,9 @@ export default {
               item.typeText = '否'
             }
           })
+          // this.$refs.selectPageTable.clearSelection()
+
+          this.handleToBackData()
         }
       })
     }

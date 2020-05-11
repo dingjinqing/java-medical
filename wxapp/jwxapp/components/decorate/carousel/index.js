@@ -3,6 +3,9 @@ var util = require("../../../utils/util.js")
 
 global.wxComponent({
   mixins: [base],
+  ready: function () {
+    console.log(this.data.m)
+  },
   methods: {
     onPropChange (newVal, oldVal, changedPath) {
       console.log(newVal, this.data)

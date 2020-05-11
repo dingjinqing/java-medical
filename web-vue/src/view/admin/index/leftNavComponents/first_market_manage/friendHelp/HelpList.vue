@@ -151,7 +151,7 @@
               >
                 <i
                   class="el-icon-edit-outline"
-                  @click="updateActive(scope.row.id)"
+                  @click="updateActive(scope.row.id, scope.row)"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -501,9 +501,12 @@ export default {
       })
     },
     // 编辑好友助力活动
-    updateActive (id) {
+    updateActive (id, val) {
       this.$router.push({
-        path: `/admin/home/main/addHelpAct/${id}`
+        path: `/admin/home/main/addHelpAct/${id}`,
+        query: {
+          currentStatue: val.actState
+        }
       })
     },
 

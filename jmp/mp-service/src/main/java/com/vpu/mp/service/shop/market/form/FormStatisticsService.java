@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.upyun.UpException;
+import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.FormPageRecord;
 import com.vpu.mp.db.shop.tables.records.FormSubmitDetailsRecord;
@@ -51,6 +52,7 @@ import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.image.postertraits.PictorialService;
 import com.vpu.mp.service.shop.member.ScoreService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -106,6 +108,10 @@ public class FormStatisticsService extends ShopBaseService {
     private ScoreService scoreService;
     @Autowired
     private CouponService couponService;
+    @Autowired
+    private OrderInfoService orderInfoService;
+    @Autowired
+    protected UpYunConfig upYunConfig;
     /**
      * FORM_PAGE表单删除状态值，删除状态页面不展示
      */
@@ -410,7 +416,7 @@ public class FormStatisticsService extends ShopBaseService {
         try {
             moduleUploadVideo = objectMapper.readValue(video, ModuleUploadVideo.class);
             moduleUploadVideo.setVideoSrc(imageService.imageUrl(moduleUploadVideo.getVideoSrc()));
-            moduleUploadVideo.setVideoImgSrc("http://video-jmpdev.test.upcdn.net"+moduleUploadVideo.getVideoImgSrc());
+            moduleUploadVideo.setVideoImgSrc(upYunConfig.videoUrl(moduleUploadVideo.getVideoImgSrc()));
             return objectMapper.writeValueAsString(moduleUploadVideo);
         } catch (IOException e) {
             e.printStackTrace();
@@ -462,7 +468,7 @@ public class FormStatisticsService extends ShopBaseService {
         vo.setOneVo(getFeedStatisticDataNew(pageId));
         String pageContent = vo.getPageContent();
         Map<String, FormModulesBo> stringMapMap = Util.json2Object(pageContent, new TypeReference<Map<String, FormModulesBo>>() {
-        }, true);
+        }, false);
         vo.getOneVo().forEach(c->{
             c.setConfirm(stringMapMap.get(c.getCurIdx()).getConfirm());
             Map<String,String> selects;
@@ -692,11 +698,14 @@ public class FormStatisticsService extends ShopBaseService {
             return formDetailVo;
         }
         FormInfoBo formInfoBo = toFormInfoBo(formRecord);
+        //是否是新用户
+        Boolean newUser = orderInfoService.isNewUser(userId, true);
+        formInfoBo.setIsNewUser(newUser);
         if (formInfoBo.getState()==0){
-           log.error("该表单未发布");
+            log.error("该表单未发布");
             formInfoBo.setStatus((byte) 2);
             formInfoBo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_UNPUBLISHED,MESSAGE));
-       }else if (formInfoBo.getState()==1){
+        }else if (formInfoBo.getState()==1){
             if (formInfoBo.getIsForeverValid()==0&&formInfoBo.getStartTime().after(nowDate)){
                 log.error("改表单未开始!");
                 formInfoBo.setStatus((byte) 3);
@@ -706,9 +715,9 @@ public class FormStatisticsService extends ShopBaseService {
                 formInfoBo.setStatus((byte) 4);
                 formInfoBo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_EXPIRED,MESSAGE));
             }else {
-                    Integer totalTimes = getFromSubmitListCount(pageId);
-                    Integer cfgGetTimes =formInfoBo.getFormCfgBo().getGet_times();
-                    if (cfgGetTimes>0&&totalTimes>cfgGetTimes){
+                Integer totalTimes = getFromSubmitListCount(pageId);
+                Integer cfgGetTimes =formInfoBo.getFormCfgBo().getGet_times();
+                if (cfgGetTimes>0&&totalTimes>cfgGetTimes){
                         log.info("该表单提交次数达到上限");
                         formInfoBo.setStatus((byte) 5);
                         formInfoBo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_FAIL_SUBMIT_LIMIT,MESSAGE));
@@ -734,8 +743,8 @@ public class FormStatisticsService extends ShopBaseService {
                         }
                     }
             }
-       }else if(formInfoBo.getState()==2){
-           log.info("该表单已关闭");
+        }else if(formInfoBo.getState()==2){
+            log.info("该表单已关闭");
             formInfoBo.setStatus((byte) 8);
             formInfoBo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_CLOSE,MESSAGE));
         }else {
@@ -764,8 +773,8 @@ public class FormStatisticsService extends ShopBaseService {
      */
     private FormInfoBo toFormInfoBo(FormPageRecord formRecord) {
         FormInfoBo formInfoBo  =formRecord.into(FormInfoBo.class);
-        FormCfgBo formCfgBo = Util.json2Object(formInfoBo.getFormCfg(),FormCfgBo.class,true);
-        Map<String, FormModulesBo> formModulesBoMap = Util.json2Object(formInfoBo.getPageContent(), new TypeReference<Map<String, FormModulesBo>>() {}, true);
+        FormCfgBo formCfgBo = Util.json2Object(formInfoBo.getFormCfg(),FormCfgBo.class,false);
+        Map<String, FormModulesBo> formModulesBoMap = Util.json2Object(formInfoBo.getPageContent(), new TypeReference<Map<String, FormModulesBo>>() {}, false);
         formInfoBo.setFormCfgBo(formCfgBo);
         formInfoBo.setPageContentBo(formModulesBoMap);
         return formInfoBo;
@@ -907,7 +916,7 @@ public class FormStatisticsService extends ShopBaseService {
                     String moduleValue = datail.getModuleValue();
                     if (!Strings.isNullOrEmpty(moduleValue)){
                         List<String> picList = Util.json2Object(datail.getModuleValue(), new TypeReference<List<String>>() {
-                        }, true);
+                        }, false);
                         if (picList!=null&&formModulesBo.getMax_number()<picList.size()){
                             formSubmitDataVo.setStatus((byte)4);
                             formSubmitDataVo.setMessage("图片上传数量限制");

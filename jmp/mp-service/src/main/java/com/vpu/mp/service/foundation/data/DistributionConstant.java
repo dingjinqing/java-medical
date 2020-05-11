@@ -51,4 +51,13 @@ public class DistributionConstant {
      */
     public static Byte STRATEGY_TYPE_PAYMENT = 0;
     public static Byte STRATEGY_TYPE_PROFIT = 1;
+
+    /**
+     * 分销员列表表头排序 1；下级用户数；2：间接邀请用户数；3：累计返利商品总额；4：累计获得佣金总额；5：待返利佣金总额：
+     */
+    public static Byte SORT_BY_NEXT_NUM = 1;
+    public static Byte SORT_BY_SUBLAYER_NUM = 2;
+    public static Byte SORT_BY_TOTAL_CAN_FANLI = 3;
+    public static Byte SORT_BY_TOTAL_FANLI = 4;
+    public static Byte SORT_BY_WAIT_FANLI = 5;
 }

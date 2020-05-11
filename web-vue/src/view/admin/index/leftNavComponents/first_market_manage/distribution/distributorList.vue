@@ -176,6 +176,7 @@
           class="version-manage-table"
           header-row-class-name="tableClss"
           :data="tableData"
+          @sort-change="changeTableSort"
           border
           style="width: 100%"
         >
@@ -280,10 +281,12 @@
           >
           </el-table-column>
 
-          <el-table-column align="center">
-            <template slot="header">
-              下级用户数 <i class="el-icon-bottom"></i>
-            </template>
+          <el-table-column
+            prop="nextNumber"
+            label="下级用户数"
+            sortable="custom"
+            align="center"
+          >
             <template slot-scope="scope">
               <span
                 class="nameStyle"
@@ -293,7 +296,9 @@
           </el-table-column>
 
           <el-table-column
+            prop="sublayerNumber"
             label="间接邀请用户数"
+            sortable="custom"
             align="center"
           >
             <template slot-scope="scope">
@@ -307,6 +312,7 @@
           <el-table-column
             prop="totalCanFanliMoney"
             label="累计返利商品总额"
+            sortable="custom"
             align="center"
           >
           </el-table-column>
@@ -314,6 +320,7 @@
           <el-table-column
             prop="totalFanliMoney"
             label="累计获得佣金金额"
+            sortable="custom"
             align="center"
           >
           </el-table-column>
@@ -321,6 +328,7 @@
           <el-table-column
             prop="waitFanliMoney"
             label="待返利佣金金额"
+            sortable="custom"
             align="center"
           >
           </el-table-column>
@@ -332,7 +340,7 @@
             <template slot-scope="scope">
               <div class="opt">
                 <p @click="inviteUserList(scope.row.userId)">查看已邀请用户</p>
-                <p>查看返利佣金明细</p>
+                <p @click="commissionDetail(scope.row.userId)">查看返利佣金明细</p>
                 <p @click="remarksHandler(scope.row.userId)">备注</p>
                 <p @click="del(scope.row.userId)">清除</p>
               </div>
@@ -652,7 +660,7 @@ export default {
         this.groupNameList = res.content
       })
     },
-    // 分销员邀请用户列表
+    // 跳转分销员邀请用户列表
     inviteUserList (userId) {
       this.$router.push({
         path: '/admin/home/main/distribution/inviteUserList',
@@ -660,6 +668,10 @@ export default {
           userId: userId
         }
       })
+    },
+    // 跳转佣金返利明细
+    commissionDetail (userId) {
+      this.$emit('commissionHandler', userId)
     },
     // 清除分销员身份
     del (userId) {
@@ -857,6 +869,26 @@ export default {
           })
         }
       }
+    },
+
+    // 选择指定列进行排序
+    changeTableSort (column) {
+      console.log(column)
+
+      // 获取字段名称和排序类型
+      var fieldName = column.prop
+      var sortType = column.order
+
+      console.log(fieldName)
+      console.log(sortType)
+
+      if (sortType === 'descending') {
+        // 按照降序排序
+      } else {
+        // 按照升序排序
+      }
+
+      console.log(this.tableData)
     }
 
   }

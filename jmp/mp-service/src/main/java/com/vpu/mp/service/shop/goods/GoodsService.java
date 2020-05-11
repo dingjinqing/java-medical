@@ -770,12 +770,16 @@ public class GoodsService extends ShopBaseService {
      * 取单个GoodsView
      */
     public GoodsView getGoodsViewByProductId(Integer productId) {
-        GoodsView goodsView = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).
-            from(GOODS).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
-            .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).
-                fetchOne().into(GoodsView.class);
-        goodsView.setGoodsImg(getImgFullUrlUtil(goodsView.getGoodsImg()));
-        return goodsView;
+        Record6<Integer, String, String, Integer, BigDecimal, String> record = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).
+                from(GOODS).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
+                .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).
+                        fetchOne();
+        if (record!=null){
+            GoodsView goodsView = record.into(GoodsView.class);
+            goodsView.setGoodsImg(getImgFullUrlUtil(goodsView.getGoodsImg()));
+            return goodsView;
+        }
+        return null;
     }
 
     /**
@@ -2466,7 +2470,6 @@ public class GoodsService extends ShopBaseService {
                 if (allIds.size() == 0) {
                     List<Integer> sortIds = goodsLabelCouple.getGoodsLabelCouple(Collections.singletonList(param.getLabelId()), GoodsLabelCoupleTypeEnum.SORTTYPE.getCode());
                     List<Integer> goodsIds = goodsLabelCouple.getGoodsLabelCouple(Collections.singletonList(param.getLabelId()), GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode());
-                    List<Integer> catIds = goodsLabelCouple.getGoodsLabelCouple(Collections.singletonList(param.getLabelId()), GoodsLabelCoupleTypeEnum.CATTYPE.getCode());
                     Condition idCondition = DSL.noCondition();
                     if (sortIds.size() > 0) {
                         List<Integer> targetIds = goodsSort.getChildrenIdByParentIdsDao(sortIds);
@@ -2474,9 +2477,6 @@ public class GoodsService extends ShopBaseService {
                     }
                     if (goodsIds.size() > 0) {
                         idCondition = idCondition.or(GOODS.GOODS_ID.in(goodsIds));
-                    }
-                    if (catIds.size() > 0) {
-                        idCondition = idCondition.or(GOODS.CAT_ID.in(catIds));
                     }
                     condition = condition.and(idCondition);
                 } else {
@@ -2495,8 +2495,8 @@ public class GoodsService extends ShopBaseService {
                 condition = condition.and(GOODS.BRAND_ID.eq(param.getBrandId()));
             }
 
-            if (param.getCatId() != null) {
-                condition = condition.and(GOODS.CAT_ID.eq(param.getCatId()));
+            if (param.getGoodsIds() != null) {
+                condition = condition.and(GOODS.GOODS_ID.in(param.getGoodsIds()));
             }
             goodsNums.add(getGoodsNumDao(condition));
         }

@@ -531,7 +531,7 @@ export default {
     seckillSpecDialog: () => import('./seckillSpecDialog'),
     LabelDialog: () => import('@/components/admin/labelDialog')
   },
-  props: ['isEdite', 'editId'],
+  props: ['isEdite', 'editId', 'isGoing'],
   data () {
     // 会员专享
     var validateCard = (rule, value, callback) => {
@@ -659,8 +659,13 @@ export default {
   },
   mounted () {
     // 编辑初始化
-    if (this.isEdite === true) {
+    if (this.isGoing === true) {
       this.editSeckillInit()
+    }
+    if (this.isEdite === true) {
+      this.disabledFlag = true
+    } else {
+      this.disabledFlag = false
     }
     // 获取会员卡数据
     allCardApi().then((res) => {
@@ -864,7 +869,7 @@ export default {
             }
           })
 
-          if (this.isEdite === false) {
+          if (this.isGoing === false) {
             // 添加秒杀
             addSeckillList({ ...this.form, secKillProduct, goodsId }).then((res) => {
               if (res.error === 0) {

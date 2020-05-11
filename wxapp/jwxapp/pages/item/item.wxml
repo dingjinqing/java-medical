@@ -65,9 +65,13 @@
           </view>
         </view>
         <view class="goods_operate">
-          <view class="goods_share" bindtap="share">
+          <view class="goods_share" bindtap="share"  wx:if="{{shareAwardId === 0}}">
             <text class="iconfont iconfenxiang" style="color:{{comColor}}"></text>
           </view>
+          <view class="goods_share" bindtap="share" wx:else>
+            <image class="share_new_img" src="http://mpdevimg2.weipubao.cn/image/wxapp/new_share_img.png" role="img"></image>
+          </view>
+          <view ></view>
           <view class="goods_collect" bindtap="toogleCollect">
             <text class="iconfont {{goodsInfo.isCollected ? 'iconshoucang' : 'iconshoucang1'}}" style="color:{{comColor}}"></text>
           </view>
@@ -287,9 +291,10 @@
     <view class="invite_text">
       <view class='invite_friend'>邀好友查看,即可获得活动奖励</view>
     </view>
-     <view class='invite_content invite_mul' wx:for='{{shareContent.shareRules}}' wx:key='key' data-index='index'>
+    <!-- 第一级奖励 -->
+     <view class='invite_content invite_mul'>
       <view class='invite_people'>
-        <view class='share_text'>邀{{item.invite_num}}人</view>
+        <view class='share_text'>邀{{shareContent1.invite_num}}人</view>
         <view class='circle_line'>
           <view class="circle_line_after"></view>
           <view class="circle_line_after2"></view>
@@ -298,13 +303,15 @@
           <image src='{{imageUrl}}image/wxapp/share_big_people.png' class='user_image'></image>
         </view>
         <view>
-          <!-- <view class='share_or' wx:if='{{item.share_state === 0}}'>进行中</view> -->
-          <!-- <view class='share_or' wx:if='{{item.share_state === 1}}'>未邀请</view> -->
-          <view class='share_or get_share' wx:if="{{item.reward_type}}"  bindtap="getShare">查看奖励</view>
+          <view class='share_or' wx:if='{{shareContent1.share_state === 3}}'>进行中</view>
+          <view class='share_or' wx:if='{{shareContent1.share_state === 1 || shareContent1.share_state === 2 }}'>未邀请</view>
+          <view class='share_or get_share' wx:if="{{shareContent1.share_state === 0}}" data-type="{{shareContent1.reward_type}}" bindtap="getShare">查看奖励</view>
         </view>
       </view>
+      
+      <!-- 第二级奖励 -->
       <view class='invite_people'>
-        <view class='share_text'>邀{{item.invite_num}}人</view>
+        <view class='share_text'>邀{{shareContent2.invite_num}}人</view>
         <view class='circle_line'>
           <view class="circle_line_after2"></view>
         </view>
@@ -314,13 +321,15 @@
           </block>
         </view>
         <view>
-          <view class='share_or' wx:if='{{item.share_state === 0}}'>进行中</view>
-          <view class='share_or' wx:elif='{{item.share_state === 1}}'>未邀请</view>
+          <view class='share_or' wx:if='{{shareContent2.share_state === 0}}'>进行中</view>
+          <view class='share_or' wx:elif='{{shareContent2.share_state === 1}}'>未邀请</view>
           <view class='share_or get_share' wx:else >查看奖励</view>
         </view>
       </view>
+
+      <!-- 第三级奖励 -->
       <view class='invite_people'>
-        <view class='share_text'>邀{{item.invite_num}}人</view>
+        <view class='share_text'>邀{{shareContent3.invite_num}}人</view>
         <view class="circle_line"></view>
         <view class='people'>
           <block>
@@ -328,15 +337,15 @@
           </block>
         </view>
         <view>
-          <view class='share_or' wx:if='{{item.share_state === 0}}'>进行中</view>
-          <view class='share_or' wx:elif='{{item.share_state === 1}}'>未邀请</view>
+          <view class='share_or' wx:if='{{shareContent3.share_state === 0}}'>进行中</view>
+          <view class='share_or' wx:elif='{{shareContent3.share_state === 1}}'>未邀请</view>
           <view class='share_or get_share' wx:else>查看奖励</view>
         </view>
       </view>
     </view>
     <view class='invite_message'>
       <view>注：
-        <text>仅邀请新用户有效，</text>每天最多可参与{{shareLimit}}个活动</view>
+        <text wx:if='{{returnData.visitFirst == 0}}'>仅邀请新用户有效，</text>每天最多可参与{{shareLimit}}个活动</view>
     </view>
   </view>
 </v-share>

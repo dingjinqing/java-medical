@@ -139,6 +139,33 @@
       </el-form-item>
 
       <el-form-item
+        label="分销员排名及返佣记录展示："
+        v-show="form.status === 1"
+      >
+        <el-switch
+          v-model="form.rank_status"
+          :active-value='1'
+          :inactive-value='0'
+        ></el-switch>
+        <span v-if="form.rank_status === 1">已开启</span>
+        <span v-if="form.rank_status === 0">已关闭</span>
+        <el-popover
+          placement="right-start"
+          width="220"
+          trigger="hover"
+          style="margin-left: 30px;"
+        >
+          <el-image :src="$imageHost + '/image/admin/share/pay_config_share.jpg'"></el-image>
+          <el-button
+            slot="reference"
+            type="text"
+          >查看示例</el-button>
+        </el-popover>
+        <div class="text">开关开启，且拥有返利数据的分销员数量不小于3位时,分销员中心页显示分销员佣金排名，关闭则不显示。</div>
+        <div class="text">开关开启，会在分销员中心页滚动展示最近的5条返佣记录，关闭则不展示。</div>
+      </el-form-item>
+
+      <!-- <el-form-item
         :label="$t('distribution.ranking')"
         v-show="form.status === 1"
       >
@@ -152,7 +179,7 @@
         <div class="text">
           {{ $t('distribution.rankingTip') }}
         </div>
-      </el-form-item>
+      </el-form-item> -->
 
       <el-form-item
         :label="$t('distribution.validity')"
@@ -597,7 +624,7 @@ export default {
         custom_options: [],
         // invitationCode: 1, // 邀请码
         activation_cfg: [], // 个人信息内容
-        rank_status: 0, // 分销员排名开关
+        rank_status: 1, // 分销员排名及返佣记录展示
         vaild: 0, // 返利有效期
         protect_date: 0, // 分销员保护期
         desc: '分销中心', // 分销中心页面名称
