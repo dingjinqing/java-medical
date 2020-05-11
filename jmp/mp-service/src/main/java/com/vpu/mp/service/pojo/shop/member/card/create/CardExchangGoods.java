@@ -59,7 +59,7 @@ public class CardExchangGoods {
 		 * 年
 		 */
 		YEAR((byte)5);
-		private Byte val;
+		public Byte val;
 		TimeType(byte val){
 			this.val = val;
 		}

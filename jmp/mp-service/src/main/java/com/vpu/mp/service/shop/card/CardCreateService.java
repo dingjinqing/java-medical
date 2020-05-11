@@ -707,8 +707,18 @@ public class CardCreateService extends ShopBaseService{
 		}
 		
 		if(CardUtil.isLimitCard(card.getCardType())) {
-			cardBuilder.exchangCount(cardExGoods.getExchangCount())
-			.exchangFreight(cardExGoods.getExchangFreight());
+			//	运费策略
+			cardBuilder
+				.exchangCount(cardExGoods.getExchangCount())
+				.exchangFreight(cardExGoods.getExchangFreight());
+			
+			if(CardUtil.canExchangGoods(isExchange)) {
+				//	兑换时间处理
+				cardBuilder.periodLimit(cardExGoods.getExchangeTimeType().val);
+				if(!CardExchangGoods.TimeType.NO_LIMIT.equals(cardExGoods.getExchangeTimeType())) {
+					cardBuilder.periodNum(cardExGoods.getExchangeTimeNum());
+				}
+			}
 		}
 	}
 	
