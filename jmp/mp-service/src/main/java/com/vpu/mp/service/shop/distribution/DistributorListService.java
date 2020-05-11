@@ -9,6 +9,7 @@ import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_FANLI_STATISTICS;
 import static com.vpu.mp.db.shop.Tables.USER_TOTAL_FANLI;
 import static com.vpu.mp.db.shop.Tables.USER_REMARK;
+import static com.vpu.mp.service.foundation.data.DistributionConstant.*;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.sum;
 
@@ -42,11 +43,14 @@ public class DistributorListService extends ShopBaseService{
 	public PageResult<DistributorListVo> getPageList(DistributorListParam param) {
         com.vpu.mp.db.shop.tables.User d = USER.as("d");
         com.vpu.mp.db.shop.tables.User a = USER.as("a");
+        Field nextNumber = count(a.USER_ID).as("nextNumber");
         Field sublayerNumber = sum(USER_TOTAL_FANLI.SUBLAYER_NUMBER).as("sublayerNumber");
         Field totalCanFanliMoney = sum(USER_FANLI_STATISTICS.TOTAL_CAN_FANLI_MONEY).as("totalCanFanliMoney");
         Field totalFanliMoney = sum(USER_FANLI_STATISTICS.TOTAL_FANLI_MONEY).as("totalFanliMoney");
         Field waitFanliMoney = sum(ORDER_GOODS_REBATE.REAL_REBATE_MONEY).as("waitFanliMoney");
 
+        //下级用户数
+        Table<Record1<Integer>> recordTable = db().select(d.USER_ID,nextNumber.as("nextNumber")).from(d).leftJoin(a).on(a.INVITE_ID.eq(d.USER_ID)).where(d.IS_DISTRIBUTOR.eq((byte) 1)).groupBy(d.USER_ID).asTable();
         //间接邀请人数
         Table<Record2<Integer, BigDecimal>> record2Table = db().select(d.USER_ID, sublayerNumber.as("sublayerNumber")).from(d).leftJoin(a).on(d.USER_ID.eq(a.INVITE_ID)).leftJoin(USER_TOTAL_FANLI).on(USER_TOTAL_FANLI.USER_ID.eq(a.USER_ID))
             .where(d.IS_DISTRIBUTOR.eq((byte) 1)).groupBy(d.USER_ID).asTable();
@@ -60,21 +64,26 @@ public class DistributorListService extends ShopBaseService{
             .eq(ORDER_INFO.ORDER_SN)).where(ORDER_INFO.SETTLEMENT_FLAG.eq((byte) 0)).and(ORDER_INFO.ORDER_STATUS.eq((byte) 3)).groupBy(d.USER_ID,ORDER_GOODS_REBATE.REBATE_USER_ID).asTable();
 
         SelectOnConditionStep<? extends Record> select = db().select(
-            d.USER_ID, count(a.USER_ID).as("nextNumber"),d.USERNAME,d.INVITE_ID,
+            d.USER_ID, d.USERNAME,d.INVITE_ID,
             d.MOBILE,d.INVITATION_CODE,d.CREATE_TIME,USER_DETAIL.REAL_NAME,DISTRIBUTOR_LEVEL.LEVEL_NAME,DISTRIBUTOR_GROUP.GROUP_NAME,
+            recordTable.field("nextNumber"),
             record2Table.field("sublayerNumber"),
             record3Table.field("totalCanFanliMoney"),
             record3Table.field("totalFanliMoney"),
             record2Table2.field("waitFanliMoney"))
-            .from(d).leftJoin(a).on(d.USER_ID.eq(a.INVITE_ID)).leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(a.USER_ID))
-            .leftJoin(DISTRIBUTOR_LEVEL).on(a.DISTRIBUTOR_LEVEL.eq(DISTRIBUTOR_LEVEL.LEVEL_ID))
-            .leftJoin(DISTRIBUTOR_GROUP).on(a.INVITE_GROUP.eq(DISTRIBUTOR_GROUP.ID));
+            .from(d).leftJoin(a).on(d.USER_ID.eq(a.INVITE_ID))
+            .leftJoin(USER_DETAIL).on(d.USER_ID.eq(USER_DETAIL.USER_ID))
+            .leftJoin(DISTRIBUTOR_LEVEL).on(d.DISTRIBUTOR_LEVEL.eq(DISTRIBUTOR_LEVEL.LEVEL_ID))
+            .leftJoin(DISTRIBUTOR_GROUP).on(d.INVITE_GROUP.eq(DISTRIBUTOR_GROUP.ID));
         //临时表拼接
-        SelectConditionStep<? extends Record> where = select.leftJoin(record2Table).on(record2Table.field(USER.USER_ID).eq(d.USER_ID))
+        SelectConditionStep<? extends Record> where = select
+            .leftJoin(recordTable).on(recordTable.field(USER.USER_ID).eq(d.USER_ID))
+            .leftJoin(record2Table).on(record2Table.field(USER.USER_ID).eq(d.USER_ID))
             .leftJoin(record3Table).on(record3Table.field(USER_FANLI_STATISTICS.FANLI_USER_ID).eq(d.USER_ID))
             .leftJoin(record2Table2).on(record2Table2.field(ORDER_GOODS_REBATE.REBATE_USER_ID).eq(d.USER_ID)).where(d.IS_DISTRIBUTOR.eq((byte) 1));
 
-        SelectConditionStep<? extends Record> sql = buildOptions(where, param,record2Table,record3Table,record2Table2);
+        SelectConditionStep<? extends Record> sql = buildOptions(where, param,record2Table,record3Table,record2Table2,recordTable);
+
         PageResult<DistributorListVo> distributorList = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), DistributorListVo.class);
         for(DistributorListVo dis:distributorList.dataList){
             Record record = db().select(a.USERNAME).from(a).where(a.USER_ID.eq(dis.getInviteId())).fetchOne();
@@ -94,7 +103,7 @@ public class DistributorListService extends ShopBaseService{
 	 * @param param
 	 * @return
 	 */
-	public  SelectConditionStep<? extends Record> buildOptions(SelectConditionStep<? extends Record> where,DistributorListParam param,Table<Record2<Integer, BigDecimal>> record2Table,Table<Record3<Integer, BigDecimal, BigDecimal>> record3Table,Table<Record2<Integer, BigDecimal>> record2Table2) {
+	public  SelectConditionStep<? extends Record> buildOptions(SelectConditionStep<? extends Record> where,DistributorListParam param,Table<Record2<Integer, BigDecimal>> record2Table,Table<Record3<Integer, BigDecimal, BigDecimal>> record3Table,Table<Record2<Integer, BigDecimal>> record2Table2,Table<Record1<Integer>> recordTable) {
         com.vpu.mp.db.shop.tables.User d = USER.as("d");
         com.vpu.mp.db.shop.tables.User a = USER.as("a");
 		//微信昵称
@@ -153,9 +162,51 @@ public class DistributorListService extends ShopBaseService{
         if(param.getOptGroupId() != null){
             where.and(a.INVITE_GROUP.ne(param.getOptGroupId()));
         }
-        where.groupBy(d.USER_ID, record2Table.field("sublayerNumber"), record3Table.field("totalCanFanliMoney"),
+        where.groupBy(d.USER_ID,recordTable.field("nextNumber"),record2Table.field("sublayerNumber"), record3Table.field("totalCanFanliMoney"),
             record3Table.field("totalFanliMoney"), record2Table2.field("waitFanliMoney"),d.USERNAME,d.MOBILE,d.INVITATION_CODE,
             d.CREATE_TIME,USER_DETAIL.REAL_NAME,DISTRIBUTOR_LEVEL.LEVEL_NAME,DISTRIBUTOR_GROUP.GROUP_NAME,d.INVITE_ID);
+
+        //表头排序
+        if(param.getSortField().equals(SORT_BY_NEXT_NUM)){
+            if(param.getSortWay().equals("asc")){
+                where.orderBy(recordTable.field("nextNumber").asc());
+            }else{
+                where.orderBy(recordTable.field("nextNumber").desc());
+            }
+        }
+
+        if(param.getSortField().equals(SORT_BY_SUBLAYER_NUM)){
+           if(param.getSortWay().equals("asc")){
+               where.orderBy(record2Table.field("sublayerNumber").asc());
+           }else{
+               where.orderBy(record2Table.field("sublayerNumber").desc());
+            }
+        }
+
+        if(param.getSortField().equals(SORT_BY_TOTAL_CAN_FANLI)){
+            if(param.getSortWay().equals("asc")){
+                where.orderBy(record3Table.field("totalCanFanliMoney").asc());
+            }else{
+                where.orderBy(record3Table.field("totalCanFanliMoney").desc());
+            }
+        }
+
+        if(param.getSortField().equals(SORT_BY_TOTAL_FANLI)){
+            if(param.getSortWay().equals("asc")){
+                where.orderBy(record3Table.field("totalFanliMoney").asc());
+            }else{
+                where.orderBy(record3Table.field("totalFanliMoney").desc());
+            }
+        }
+
+        if(param.getSortField().equals(SORT_BY_WAIT_FANLI)){
+            if(param.getSortWay().equals("asc")){
+                where.orderBy(record2Table2.field("waitFanliMoney").asc());
+            }else{
+                where.orderBy(record2Table2.field("waitFanliMoney").desc());
+            }
+        }
+
 		return where;
 	}
 

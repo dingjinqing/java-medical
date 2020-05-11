@@ -66,7 +66,15 @@ public class DistributorListParam {
      * 当前操作分组ID
      */
 	private Integer optGroupId;
-	
+    /**
+     * 根据表头排序字段：1；下级用户数；2：间接邀请用户数；3：累计返利商品总额；4：累计获得佣金总额；5：待返利佣金总额：
+     */
+	private Byte sortField = 1;
+    /**
+     * 排序方式：asc:升序；desc：降序
+     */
+	private String sortWay = "desc";
+
 	private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
 	private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
 }
