@@ -29,32 +29,31 @@
           class="suite-goods-middle"
         >
           <div class="goods-exchange-times">
-            <p class="tip">
-              注：以下"次"数均为兑换商品次数,例：兑换一瓶水计为一次
-            </p>
-            <span>商品兑换总次数：</span>
-            <el-input-number
-              v-model="ruleForm.exchangCount"
-              :controls="false"
-              :min="0"
-              :max="999999999"
-              size="small"
-            ></el-input-number>
-            <span>次</span>
-          </div>
-          <div class="goods-exchange-freight">
-            <span>运费策略：</span>
-            <el-radio
-              v-model="ruleForm.exchangFreight"
-              label='0'
-            >
-              免运费
-            </el-radio>
-            <el-radio
-              v-model="ruleForm.exchangFreight"
-              label="1"
-            >使用商品运费策略
-            </el-radio>
+              <p class="tip">
+                注：以下"次"数均为兑换商品次数,例：兑换一瓶水计为一次
+              </p>
+              <div>
+                <span>商品兑换总次数：</span>
+                <el-input-number
+                  v-model="ruleForm.exchangCount"
+                  :controls="false"
+                  :min="0"
+                  :max="999999999"
+                  size="small"
+                ></el-input-number>
+                <span>次</span>
+              </div>
+              <div v-if="ruleForm.isExchange === '2'">
+                <span>每件商品可兑换：</span>
+                 <el-input-number
+                  v-model="ruleForm.everyGoodsMaxNum"
+                  :controls="false"
+                  :min="0"
+                  :max="999999999"
+                  size="small"
+                ></el-input-number>
+                <span>次</span>
+              </div>
           </div>
         </div>
 
@@ -97,6 +96,50 @@
             <span class="tip">最多可添加5个配置</span>
           </div>
         </div>
+
+        <div class="goods-exchange-freight" v-if="ruleForm.isExchange !== '0'">
+            <span>运费策略：</span>
+            <el-radio
+              v-model="ruleForm.exchangFreight"
+              label='0'
+            >
+              免运费
+            </el-radio>
+            <el-radio
+              v-model="ruleForm.exchangFreight"
+              label="1"
+            >使用商品运费策略
+            </el-radio>
+        </div>
+        <div class="exchang-time" v-if="ruleForm.isExchange !== '0'">
+          <ul class="time-row">
+            <li class="time-cell">兑换时间限制：</li>
+            <li class="time-cell">
+                <el-radio
+                  v-model="ruleForm.exchangTimeType"
+                  :label='0'
+                >
+                    不限制
+                </el-radio>
+            </li>
+          </ul>
+          <ul class="time-row">
+            <li class="time-cell"></li>
+            <li class="time-cell">
+                <el-radio
+                  v-model="ruleForm.exchangTimeType"
+                  :label='1'
+                >
+                    有效期内每
+                </el-radio>
+                <el-select size="small" style="width: 110px;"></el-select>
+                <span>兑换</span>
+                <el-input v-model.number="ruleForm.everyGoodsMaxNum" size="small" style="width: 110px;"></el-input>
+                <span>次</span>
+            </li>
+          </ul>
+
+        </div>
       </el-form-item>
     </el-form>
     <!--选择商品弹窗-->
@@ -120,8 +163,10 @@ export default {
         return {
           isExchange: '1',
           exchangCount: '',
+          everyGoodsMaxNum: '',
           exchangFreight: '0',
-          exchangGoods: [{goodsIds: [], maxNum: null}]
+          exchangGoods: [{goodsIds: [], maxNum: null}],
+          exchangTimeType: 0
         }
       }
     }
@@ -187,8 +232,6 @@ export default {
         color: #999;
         height: 30px;
         line-height: 30px;
-      }
-      .goods-exchange-freight {
       }
     }
     div.row-container{
@@ -264,6 +307,17 @@ export default {
     .add-goods .tip{
       color: #999;
       margin-left: 10px;
+    }
+
+    div.exchang-time{
+      display: table;
+      empty-cells: hide;
+      .time-row{
+        display: table-row;
+      }
+      .time-cell{
+        display: table-cell;
+      }
     }
 }
 </style>
