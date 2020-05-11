@@ -516,7 +516,7 @@ function promote_request(that) {
       }
       // 助力次数提示
       if (promote_info.canPromote && promote_info.canPromote.code == 0) {
-        if (promote_info.promoteStatus == 2) {
+        if (promote_info.promoteStatus == 1) {
           util.showModal('提示', '助力已完成');
         } else {
           util.showModal('提示', '今天的助力次数已用完了');
@@ -526,7 +526,7 @@ function promote_request(that) {
       // 活动完成还可再发起
       if (promote_info.launchFlag == 1 && promote_info.promoteStatus == 2 && promote_info.canLaunch == 1) {
         // 助力列表置空
-        promote_info.promoteDetailList == null
+        promote_info.promoteDetailList = null
         // 助力进度置空
         launched_width = 0
         is_promote_value = 0 // 已助力值
