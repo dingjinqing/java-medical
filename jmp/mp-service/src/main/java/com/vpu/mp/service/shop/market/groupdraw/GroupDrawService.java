@@ -458,9 +458,9 @@ public class GroupDrawService extends ShopBaseService {
 					}
 					vo.setOrderNumber(vo.getOrderNumber() == 0 ? 1 : vo.getOrderNumber() + 1);
 				}
-				orderNumber = orderNumber + vo.getOrderNumber();
-				newUser = newUser + vo.getNewUser();
 			}
+			orderNumber = orderNumber + vo.getOrderNumber();
+			newUser = newUser + vo.getNewUser();
 			returnVo.add(vo);
 		}
 		for (GroupDrawAnalysisListVo vo : returnVo) {
@@ -471,9 +471,9 @@ public class GroupDrawService extends ShopBaseService {
 						vo.setSuccessUserNum(vo.getSuccessUserNum() == 0 ? 1 : vo.getSuccessUserNum() + 1);
 					}
 				}
-				joinNum = joinNum + vo.getJoinNum();
-				successUserNum = successUserNum + vo.getSuccessUserNum();
 			}
+			joinNum = joinNum + vo.getJoinNum();
+			successUserNum = successUserNum + vo.getSuccessUserNum();
 		}
 		gbaVo.setList(returnVo);
 		gbaVo.setOrderNumber(orderNumber);
