@@ -2,12 +2,10 @@ package com.vpu.mp.service.foundation.es;
 
 import com.vpu.mp.service.foundation.email.EmailMsgTemplate;
 import com.vpu.mp.service.foundation.email.EmailService;
-import com.vpu.mp.service.foundation.es.annotation.EsFiledSerializer;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
-import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.ActionListener;
+import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
+import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
@@ -17,13 +15,16 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
+import org.elasticsearch.client.GetAliasesResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.CountRequest;
 import org.elasticsearch.client.core.CountResponse;
-import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.client.indices.*;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
+import org.elasticsearch.index.reindex.ReindexRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,6 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * ES对外服务
@@ -51,7 +51,7 @@ public class EsManager {
     @Autowired
     private EmailService emailService;
 
-    public static final EsFiledSerializer ES_FILED_SERIALIZER = new EsFiledSerializer();
+
 
     private final static String EMAIL_TO_USER = "luguangyao@huice.com";
 
@@ -86,45 +86,22 @@ public class EsManager {
      * @param object 对应的索引对象
      */
     public void createIndexAsync(@NotNull String indexName,Object object)  {
-        IndexRequest request = assemblyRequest(indexName,object);
-        log.error("ES_INDEX:{}", Util.toJson(object,ES_FILED_SERIALIZER));
+        IndexRequest request = EsUtil.assemblyRequest(indexName,object);
         ActionListener<IndexResponse> listener = new ActionListener<IndexResponse>() {
             @Override
             public void onResponse(IndexResponse createIndexResponse) {
-                log.info("索引建立成功");
+                log.info("【ES建立索引】--索引建立成功");
             }
             @Override
             public void onFailure(Exception e) {
                 e.printStackTrace();
-                log.info("索引建立失败");
+                log.info("【ES建立索引】--索引建立失败");
             }
         };
         restHighLevelClient.indexAsync(request, RequestOptions.DEFAULT,listener);
     }
 
-    /**
-     * 封装es的commit的request
-     * @param indexName 索引名称
-     * @param object 对应的索引对象
-     * @return IndexRequest
-     */
-    public IndexRequest assemblyRequest(@NotNull String indexName,Object object){
-        IndexRequest request = new IndexRequest(indexName);
-        //商品索引ID设为shopId+goodsId
-        if( object instanceof EsGoods ){
-            EsGoods goods = (EsGoods)object;
-            request.id(goods.getShopId().toString()+goods.getGoodsId().toString());
-        }
-        //商品索引标签ID设为shopId+goodsId+labelId
-        if( object instanceof EsGoodsLabel){
-            EsGoodsLabel goodsLabel = (EsGoodsLabel)object;
-            request.id(goodsLabel.getShopId().toString()+goodsLabel.getGoodsId().toString()+goodsLabel.getId().toString());
-        }
-        String objectJsonStr = Util.toJson(object, ES_FILED_SERIALIZER);
-        Objects.requireNonNull(objectJsonStr);
-        request.source(objectJsonStr, XContentType.JSON);
-        return request;
-    }
+
 
     /**
      * 批量处理索引（同步）
@@ -232,5 +209,72 @@ public class EsManager {
     public CountResponse getDocumentCount(@NotNull CountRequest countRequest) throws IOException {
         log.info("\n本次统计数量的搜索条件【{}】",countRequest.source().toString());
         return restHighLevelClient.count(countRequest,RequestOptions.DEFAULT);
+    }
+
+    /**
+     * 创建索引请求
+     * @param request createRequest
+     * @return response
+     */
+    public CreateIndexResponse createIndexRequest(CreateIndexRequest request){
+        try {
+            return restHighLevelClient.indices().create(request,RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            log.info("【ElasticSearch】------ send create index request fail");
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获取索引的映射
+     * @param request getMapping
+     * @return response
+     */
+    public GetMappingsResponse getMappingsResponse(GetMappingsRequest request){
+        try {
+            return restHighLevelClient.indices().getMapping(request, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            log.info("【ElasticSearch】------ send get Mapping request fail");
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public BulkByScrollResponse reIndex(ReindexRequest reindexRequest){
+        try {
+            log.info(reindexRequest.toString());
+            return restHighLevelClient.reindex(reindexRequest,RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public AcknowledgedResponse indexAlias(IndicesAliasesRequest request){
+        try {
+            return restHighLevelClient.indices().updateAliases(request,RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Boolean checkIndexExists(GetIndexRequest getIndexRequest){
+        try {
+            return restHighLevelClient.indices().exists(getIndexRequest,RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            log.error("\nElasticSearch index init fail，host/port fail");
+            return false;
+        }
+    }
+
+    public GetAliasesResponse getIndexByAlias(GetAliasesRequest request){
+        try {
+            return restHighLevelClient.indices().getAlias(request,RequestOptions.DEFAULT) ;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

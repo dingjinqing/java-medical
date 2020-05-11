@@ -56,6 +56,7 @@ module.exports = {
 
   "promoteUser1": "您需要授权个人信息才可助力好友",
   "promoteUser2": "授权",
+  "promoteUser3": "授权头像和昵称将增加一次助力机会",
 
   "promoteHelp1": "助力成功",
   "promoteHelp2": "帮助好友增加助力值",

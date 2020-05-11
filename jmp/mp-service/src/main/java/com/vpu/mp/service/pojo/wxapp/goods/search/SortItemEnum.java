@@ -13,7 +13,7 @@ public enum SortItemEnum {
     NULL(EsSearchName.NULL),
 
     /** 商品销量1*/
-    SALE_NUM(EsSearchName.GOODS_SALE_NUM),
+    SALE_NUM(EsSearchName.TOTAL_SALE_NUMBER),
 
     /** 商品价格2*/
     PRICE(EsSearchName.SHOW_PRICE),

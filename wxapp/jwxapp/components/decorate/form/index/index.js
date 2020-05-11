@@ -42,6 +42,7 @@ global.wxComponent({
    */
   methods: {
     processModuleData(pageContent) {
+      console.log(pageContent)
       if (!pageContent) return;
       var pageData = pageContent.pageInfo || null;
       if (!pageData) return;
@@ -60,6 +61,9 @@ global.wxComponent({
         module['component_name'] = componentName;
         module['idx'] = idx;
         module['main_setting'] = pageContent.main_setting;
+        if (componentName === 'v-carousel') {
+          module.is_regular_customer = !pageContent.isNewUser
+        }
       }
       // 授权用户信息
       if(pageContent.pageCfg.authorized_name && pageContent.pageCfg.authorized_name == 1){
@@ -187,9 +191,11 @@ global.wxComponent({
       }
       util.api('/api/wxapp/form/submit', function(res) {
         if (res.error == 0) {
-          util.jumpLink('/pages1/formsuccess/formsuccess?submitId=' + res.content.submitId);
-        } else {
-          switch(res.error) {
+          let status = res.content.status
+          switch (status) {
+            case 0:
+              util.jumpLink('/pages1/formsuccess/formsuccess?submitId=' + res.content.submitId);
+              break
             case 1:
               util.showModal('提示', '表单失效')
               break
@@ -202,6 +208,8 @@ global.wxComponent({
             default:
               util.showModal('提示', '表单提交失败');
           }
+        } else {
+          util.showModal('提示', res.message);
         }
       }, {
         detailList: pageDatas,

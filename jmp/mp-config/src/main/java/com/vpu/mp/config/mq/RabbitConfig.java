@@ -6,6 +6,7 @@ import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFacto
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -83,7 +84,7 @@ public class RabbitConfig {
     public static final String QUEUE_POS_SYNC_PRODUCT = "pos.sync.product";
 
     /*************pos对接相关接口使用队列结束*************/
-    
+
     /**
      * 路由和队列的对应关系是1:n不是1:1(路由按照模块区分)
      */
@@ -465,7 +466,7 @@ public class RabbitConfig {
     public Binding bindingGroupIntegrationQueue() {
     	   return BindingBuilder.bind(groupIntegrationQueue()).to(marketingExchange()).with(BINDING_EXCHANGE_GROUP_INTEGRATION_MQ_KEY);
     }
-    
+
     @Bean
     public Binding bindingSysCalendar() {
     	   return BindingBuilder.bind(calendarQueue()).to(marketingExchange()).with(BINDING_EXCHANGE_SYS_CALENDAR_MQ_KEY);
@@ -480,5 +481,13 @@ public class RabbitConfig {
     @Bean
     public Binding bindingPosSyncProductQueue(){
         return BindingBuilder.bind(posSyncProductQueue()).to(posSyncExchange()).with(BINDING_EXCHANGE_POS_SYNC_PRODUCT_KEY);
+    }
+
+
+
+    @Bean
+    public RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry(){
+        RabbitListenerEndpointRegistry registry = new RabbitListenerEndpointRegistry();
+        return registry;
     }
 }
