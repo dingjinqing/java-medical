@@ -86,7 +86,7 @@ public class GroupDrawUserService extends ShopBaseService {
 	private OrderGoodsService orderGoodsService;
 
 	private static final byte ZERO = 0;
-	private static final byte ONE = 0;
+	private static final byte ONE = 1;
 
 	/**
 	 * 获取拼团抽奖活动
@@ -439,5 +439,35 @@ public class GroupDrawUserService extends ShopBaseService {
 				BaseConstant.GET_SOURCE_ACT);
 		saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(),
 				TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
+	}
+	
+	/**
+	 * 获得该活动的成团人数
+	 * @param groupDrawId
+	 * @return
+	 */
+	public Integer getSuccessGroupUserNum(Integer groupDrawId) {
+		return db().selectCount().from(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId))
+				.and(JOIN_GROUP_LIST.STATUS.ge(ONE)).fetchOptionalInto(Integer.class).orElse(0);
+	}
+	
+	/**
+	 * 获得该活动的开团数
+	 * @param groupDrawId
+	 * @return
+	 */
+	public Integer getOpenGroupNumberById(Integer groupDrawId) {
+		return db().selectCount().from(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId))
+				.and(JOIN_GROUP_LIST.STATUS.ge(ZERO)).and(JOIN_GROUP_LIST.IS_GROUPER.eq(ONE)).fetchOptionalInto(Integer.class).orElse(0);
+	}
+	
+	/**
+	 * 获得中奖用户数
+	 * @param groupDrawId
+	 * @return
+	 */
+	public Integer getDrawUserNumById(Integer groupDrawId) {
+		return db().selectCount().from(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId))
+				.and(JOIN_GROUP_LIST.STATUS.ge(ZERO)).and(JOIN_GROUP_LIST.IS_GROUPER.eq(ONE)).fetchOptionalInto(Integer.class).orElse(0);
 	}
 }
