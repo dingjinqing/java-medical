@@ -123,10 +123,14 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
      */
     public PageResult<GoodsListMpBo> queryGoodsByParam(GoodsSearchMpParam mpParam) throws IOException {
         Integer shopId = getShopId();
-        if(!CollectionUtils.isEmpty(mpParam.getLabelIds())){
+        if(!CollectionUtils.isEmpty(mpParam.getLabelIds())  ){
+            Collection<Integer> goodsIds ;
             List<Integer> labelGoodsIds = esGoodsLabelSearchService.getGoodsIdsByLabelIds(mpParam.getLabelIds(),
                 EsGoodsConstant.GOODS_SEARCH_PAGE);
-            Collection<Integer> goodsIds = CollectionUtils.intersection(mpParam.getGoodsIds(),labelGoodsIds);
+            goodsIds = labelGoodsIds;
+            if(  !CollectionUtils.isEmpty(mpParam.getGoodsIds()) ){
+                goodsIds = CollectionUtils.intersection(mpParam.getGoodsIds(),labelGoodsIds);
+            }
             mpParam.setGoodsIds(Lists.newArrayList(goodsIds));
         }
         EsSearchParam param = assemblyEsSearchParam(mpParam,shopId);
