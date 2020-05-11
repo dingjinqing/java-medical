@@ -350,7 +350,7 @@ export default {
     choosingGoods,
     ActivityRule: () => import('@/components/admin/activityRule')
   },
-  props: ['isEdite', 'editId'],
+  props: ['isEdite', 'editId', 'isGoing'],
   filters: {
     formatLeastConsume (useConsumeRestrict, leastConsume) {
       if (useConsumeRestrict === 0) {
@@ -442,7 +442,7 @@ export default {
   },
   mounted () {
     // 编辑初始化
-    if (this.isEdite === true) {
+    if (this.isGoing === true) {
       this.editLotteryInit()
     }
   },
@@ -517,7 +517,7 @@ export default {
           this.form.endTime = this.form.validity[1]
           console.log(this.form)
 
-          if (this.isEdite === false) {
+          if (this.isGoing === false) {
             // 添加拼团抽奖
             addLotteryDraw(this.form).then((res) => {
               if (res.error === 0) {
