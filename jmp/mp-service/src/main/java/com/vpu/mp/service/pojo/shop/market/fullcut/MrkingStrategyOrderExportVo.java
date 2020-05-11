@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -23,6 +24,30 @@ public class MrkingStrategyOrderExportVo {
      */
     @ExcelColumn(columnName = JsonResultMessage.MRKING_STRATEGY_ORDER_LIST_GOODS_NAME, columnIndex = 1)
     private List<MrkingStrategyOrderGoodsExportVo> goods;
+
+    /**
+     *
+     */
+    @ExcelColumn(columnName = JsonResultMessage.MRKING_STRATEGY_ORDER_LIST_GOODS_PRICE, columnIndex = 2)
+    private BigDecimal goodsPrice;
+
+    /**
+     *
+     */
+    @ExcelColumn(columnName = JsonResultMessage.MRKING_STRATEGY_ORDER_LIST_PER_DISCOUNT, columnIndex = 3)
+    private BigDecimal perDiscount;
+
+    /**
+     *
+     */
+    @ExcelColumn(columnName = JsonResultMessage.MRKING_STRATEGY_ORDER_LIST_DISCOUNTED_GOODS_PRICE, columnIndex = 4)
+    private BigDecimal discountedGoodsPrice;
+
+    /**
+     *
+     */
+    @ExcelColumn(columnName = JsonResultMessage.MRKING_STRATEGY_ORDER_LIST_GOODS_NUMBER, columnIndex = 5)
+    private Integer goodsNumber;
 
     @ExcelColumn(columnName = JsonResultMessage.MRKING_STRATEGY_ORDER_LIST_USERNAME, columnIndex = 6)
     private String username;
