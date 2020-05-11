@@ -108,7 +108,7 @@ export default {
       isSurvey: true, // 若是概况里的商城概览则隐藏面包屑
       isLink: false, // 瓜分积分显示的一个跳转链接
       nameArr: ['addRecommend', 'addGoodsLabel', 'updateGoodsLabel', 'store_storemanage_reservation', 'addBrand', 'ordinary_coupon_receive_details', 'feedbackList', 'formDecorationHome', ' pin_group_activityEffectData', 'bargain_effect_data', 'bargain_bargain_user', ' bargain_get_newuser_detail', 'bargain_order_list', 'bargain_activity', ' pin_group_refundFailureOrder', ' pin_group_newUserDetail', 'pin_group_orderList', 'pin_group_detailList', 'group_draw_effect', 'group_draw_group', 'group_draw_user', 'group_draw_order', 'promote_activity', 'promote_receive_details', 'promote_launch_details', 'promote_participate_details', 'promote_effect_data', 'lottery_activity_detail', 'lottery_activity_newUserList', 'open_screen_detail', 'store_storemanage_reservation_detail', 'store_storemanage_reservation_record', 'store_verification_list', 'sec_kill_order', 'sec_kill_detail', 'sec_kill_user', 'sec_kill_effect', 'group_draw_detail', 'gift_detail_view', 'gift_add_view', 'newUserDetails', 'pointsUserList', 'pointsExchangeOrder', 'template_detail', 'add_message', 'send_record', 'gift_edit_view', 'first_special_order', 'couponGive_receive_details', 'couponGive_grant_coupons', 'presale_order_detail_view', 'presale_detail_view', 'package_price_order', 'package_price_detail', 'feedbackStatistics', 'group_integration_detail', 'group_integration_success', 'group_integration_analysis', 'coupon_Package_add', 'coupon_Package_receive_details', 'coupon_Package_order_details'], // name池,
-      turnArr: ['recommend', 'label', 'label', 'store_list', 'brand', 'ordinary_coupon', 'form_decoration', 'form_decoration', 'pin_group', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'pin_group', 'pin_group', 'pin_group', 'pin_group', 'group_draw', 'group_draw', 'group_draw', 'group_draw', 'promote', 'promote', 'promote', 'promote', 'lottery_activity', 'lottery_activity', 'market_gifted', 'store_list', 'store_list', 'store_list', 'sec_kill', 'sec_kill', 'sec_kill', 'sec_kill', 'group_draw', 'gift', 'gift', 'integral_convert', 'integral_convert', 'integral_convert', 'integral_convert', 'all_message_push', 'all_message_push', 'all_message_push', 'gift', 'first_special', 'market_act_give', 'market_act_give', 'presale', 'presale', 'package', 'package', 'form_decoration', 'pin_integration', 'pin_integration', 'pin_integration', 'coupon_package', 'coupon_package', 'coupon_package']// 跳转池
+      turnArr: ['recommend', 'label', 'label', 'store_list', 'brand', 'ordinary_coupon', 'form_decoration', 'form_decoration', 'pin_group', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'pin_group', 'pin_group', 'pin_group', 'pin_group', 'group_draw', 'group_draw', 'group_draw', 'group_draw', 'promote', 'promote', 'promote', 'promote', 'lottery_activity', 'lottery_activity', 'market_gifted', 'market_gifted', 'store_list', 'store_list', 'sec_kill', 'sec_kill', 'sec_kill', 'sec_kill', 'group_draw', 'gift', 'gift', 'integral_convert', 'integral_convert', 'integral_convert', 'integral_convert', 'all_message_push', 'all_message_push', 'all_message_push', 'gift', 'first_special', 'market_act_give', 'market_act_give', 'presale', 'presale', 'package', 'package', 'form_decoration', 'pin_integration', 'pin_integration', 'pin_integration', 'coupon_package', 'coupon_package', 'coupon_package']// 跳转池
     }
   },
   watch: {
@@ -145,6 +145,7 @@ export default {
         } else {
           this.isSurvey = true
         }
+        console.log(this.isSurvey)
         // if (routeName === 'pin_integration' || routeName === 'friend_pay') {
         //   this.isLink = true
         // } else {
@@ -173,6 +174,7 @@ export default {
         this.titleLeft = data[0]
         this.titleList = data
       } else {
+        console.log(data)
         this.titleLeft = data[0]
         this.titleList = data
       }
@@ -368,7 +370,7 @@ export default {
   padding-left: 25px;
   color: #333;
   background: #fff;
-  overflow: hidden;
+  // overflow: hidden;
 }
 .canClick {
   span {
