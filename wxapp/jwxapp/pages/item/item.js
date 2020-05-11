@@ -166,6 +166,7 @@ global.wxPage({
   data: {
     goodsRecords: [],
     actBarInfo: {},
+    shareAwardId: '',
     actRuleText: {
       1: {
         title: '拼团规则',
@@ -198,7 +199,6 @@ global.wxPage({
       inviteId
     })
     this.requestGoodsInfo()
-    this.shareInviteData()
   },
   // 商品详情请求
   async requestGoodsInfo () {
@@ -209,6 +209,7 @@ global.wxPage({
         '/api/wxapp/goods/detail',
         res => {
           if (res.error === 0) {
+            util.setCache('goods_id', res.content.goodsId )
             if (res.content.delFlag === 1 || res.content.isOnSale === 0) {
               let tips = res.content.delFlag === 1 ? '抱歉，该商品已删除' : '抱歉，该商品已下架';
               let pageFlag = getCurrentPages().length > 1
@@ -252,7 +253,8 @@ global.wxPage({
               showSalesNumber,
               customService,
               goodsDistribution,
-              roomDetailMpInfo
+              roomDetailMpInfo,
+              shareAwardId
             } = res.content
             let goodsMediaInfo = {
               goodsImgs, //商品图片
@@ -298,7 +300,8 @@ global.wxPage({
               roomDetailMpInfo
             })
             this.setData({
-              specParams
+              specParams,
+              shareAwardId
             })
             this.setData({
               goodsInfo: {
@@ -341,6 +344,7 @@ global.wxPage({
       )
     })
     this.requestPledge(await result)
+    this.shareInviteData()
   },
   // 服务承诺请求
   requestPledge ({ brandId = null, goodsId, catId = null }) {
@@ -632,36 +636,34 @@ global.wxPage({
       console.log(res, 'get res-data')
       if (res.error === 0) {
         var shareLimit = res.content.dailyShareLimit
-        var shareContent = res.content.infoVo
-        console.log(shareContent)
+          var returnData = res.content.infoVo
+          var shareContent1 = res.content.infoVo.shareRules[0]
+          var shareContent2 = res.content.infoVo.shareRules[1]
+          var shareContent3 = res.content.infoVo.shareRules[2]
         this.setData({
-          shareContent: shareContent,
+          returnData,
+          shareContent1,
+          shareContent2,
+          shareContent3,
           shareLimit: shareLimit
         })
       }
     }, {
-        // "activityId": Number(this.data.activityId),
-        "activityId": 14,
+        "activityId": this.data.shareAwardId,
         "userId": util.getCache('user_id'),
         "goodsId": util.getCache('goods_id')
       })
   },
   // 分享有礼-查看奖励跳转
   getShare(e) {
-    // var that = this
-    // console.log(that)
-    console.log('跳转aaaa')
-    console.log(e)
-    // if (reward_type === 1) {
-    //   util.jumpLink('/pages1/integral/integral')
-    // } else if (reward_type === 2) {
-    //   util.jumpLink('/pages/coupon/coupon')
-    // } else {
-    //   util.jumpLink('pages1/lottery/lottery')
-    // }
-    util.navigateTo({
-      url: '/pages1/integral/integral',
-    })
+    let reward_type  = e.currentTarget.dataset.type
+    if (reward_type === 1) {
+      util.jumpLink('/pages1/integral/integral')
+    } else if (reward_type === 2) {
+      util.jumpLink('/pages/coupon/coupon')
+    } else {
+      util.jumpLink('pages1/lottery/lottery')
+    }
   },
   // 切换收藏
   toogleCollect () {

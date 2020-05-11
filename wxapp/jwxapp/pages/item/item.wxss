@@ -147,6 +147,12 @@
 .goods_operate text {
   font-size: 36rpx;
 }
+.share_new_img {
+  width: 39rpx !important;
+  height: 31rpx;
+  position: relative;
+  top: 8rpx;
+}
 .goods_ad {
   color: #888;
   font-size: 24rpx;
