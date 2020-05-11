@@ -191,9 +191,11 @@ global.wxComponent({
       }
       util.api('/api/wxapp/form/submit', function(res) {
         if (res.error == 0) {
-          util.jumpLink('/pages1/formsuccess/formsuccess?submitId=' + res.content.submitId);
-        } else {
-          switch(res.error) {
+          let status = res.content.status
+          switch (status) {
+            case 0:
+              util.jumpLink('/pages1/formsuccess/formsuccess?submitId=' + res.content.submitId);
+              break
             case 1:
               util.showModal('提示', '表单失效')
               break
@@ -206,6 +208,8 @@ global.wxComponent({
             default:
               util.showModal('提示', '表单提交失败');
           }
+        } else {
+          util.showModal('提示', res.message);
         }
       }, {
         detailList: pageDatas,
