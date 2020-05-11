@@ -15,4 +15,6 @@ public class GroupDrawAnalysisStatus {
     private Byte status;
     /** 开团时间 */
     private Timestamp openTime;
+    
+    private String startDate;
 }

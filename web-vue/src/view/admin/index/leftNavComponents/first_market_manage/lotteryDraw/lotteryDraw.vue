@@ -529,7 +529,7 @@ export default {
   margin-right: 10px;
 }
 .opt {
-  text-align: center;
+  text-align: left;
   color: #5a8bff;
   span {
     cursor: pointer;

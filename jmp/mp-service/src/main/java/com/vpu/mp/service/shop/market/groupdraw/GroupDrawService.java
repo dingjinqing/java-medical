@@ -39,6 +39,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record19;
 import org.jooq.Record4;
@@ -80,10 +81,13 @@ import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListVo;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawShareParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawUpdateParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisInfo;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisListVo;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisMap;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisStatus;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListPojo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationPojo;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
@@ -262,32 +266,6 @@ public class GroupDrawService extends ShopBaseService {
 		return result;
 	}
 
-	/**
-	 * 通用查询
-	 */
-//	private SelectConditionStep<Record19<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer,String>> createSelect(
-//			GroupDrawListParam param) {
-//		SelectConditionStep<Record19<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer,String>> select = db()
-//				.select(GROUP_DRAW.ID, GROUP_DRAW.NAME, GROUP_DRAW.END_TIME, GROUP_DRAW.START_TIME, GROUP_DRAW.IS_DRAW,
-//						GROUP_DRAW.JOIN_LIMIT, GROUP_DRAW.PAY_MONEY, GROUP_DRAW.LIMIT_AMOUNT, GROUP_DRAW.MIN_JOIN_NUM,
-//						GROUP_DRAW.OPEN_LIMIT, GROUP_DRAW.STATUS, GROUP_DRAW.TO_NUM_SHOW,
-//						DSL.count(JOIN_DRAW_LIST.USER_ID).as("joinUserCount"),
-//						DSL.count(JOIN_GROUP_LIST.USER_ID).filterWhere(JOIN_GROUP_LIST.STATUS.eq((byte) 1))
-//								.as("groupUserCount"),
-//						DSL.countDistinct(JOIN_GROUP_LIST.GROUP_ID).as("groupCount"), GROUP_DRAW.GOODS_ID,
-//						GROUP_DRAW.REWARD_COUPON_ID,
-//						DSL.countDistinct(JOIN_DRAW_LIST.USER_ID).filterWhere(JOIN_DRAW_LIST.IS_WIN_DRAW.eq((byte) 1))
-//								.as("drawUserCount"),
-//                    GROUP_DRAW.ACTIVITY_COPYWRITING)
-//				.from(GROUP_DRAW).leftJoin(JOIN_GROUP_LIST).on(GROUP_DRAW.ID.eq(JOIN_GROUP_LIST.GROUP_DRAW_ID))
-//				.leftJoin(JOIN_DRAW_LIST).on(GROUP_DRAW.ID.eq(JOIN_DRAW_LIST.GROUP_DRAW_ID)).where();
-//		buildOptions(select, param);
-//		select.groupBy(GROUP_DRAW.ID, GROUP_DRAW.NAME, GROUP_DRAW.END_TIME, GROUP_DRAW.START_TIME, GROUP_DRAW.IS_DRAW,
-//				GROUP_DRAW.JOIN_LIMIT, GROUP_DRAW.PAY_MONEY, GROUP_DRAW.LIMIT_AMOUNT, GROUP_DRAW.MIN_JOIN_NUM,
-//				GROUP_DRAW.OPEN_LIMIT, GROUP_DRAW.STATUS, GROUP_DRAW.TO_NUM_SHOW, GROUP_DRAW.GOODS_ID,
-//				GROUP_DRAW.REWARD_COUPON_ID,GROUP_DRAW.ACTIVITY_COPYWRITING);
-//		return select;
-//	}
 
 	/**
 	 * 查询条件
@@ -406,137 +384,103 @@ public class GroupDrawService extends ShopBaseService {
 	}
 
 	/**
-	 * 拼团抽奖数据效果展示
-	 * 
-	 * @param param 拼团抽奖id 起止时间
-	 * @return 单天数据与总数 {@link GroupDrawAnalysisVo}
+	 * 营销活动效果数据
+	 * @param param
+	 * @return
 	 */
-	public GroupDrawAnalysisVo groupDrawAnalysis(GroupDrawAnalysisParam param) {
-		// 设置时间段
-		Timestamp startTime = db().select(GROUP_DRAW.START_TIME).from(GROUP_DRAW)
-				.where(GROUP_DRAW.ID.eq(param.getGroupDrawId())).fetchOptionalInto(Timestamp.class).orElse(null);
-		Timestamp endTime = db().select(GROUP_DRAW.END_TIME).from(GROUP_DRAW)
-				.where(GROUP_DRAW.ID.eq(param.getGroupDrawId())).fetchOptionalInto(Timestamp.class).orElse(null);
-		GroupDrawAnalysisVo vo = new GroupDrawAnalysisVo();
-		vo.setStartTime(param.getStartTime());
-		vo.setEndTime(param.getEndTime());
-		if (null == param.getStartTime()) {
-			vo.setStartTime(startTime);
+	public GroupDrawAnalysisVo getAnalysis(GroupDrawAnalysisParam param) {
+		Integer actId = param.getGroupDrawId();
+		Timestamp startTime = param.getStartTime();
+		Timestamp endTime = param.getEndTime();
+		GroupDrawListVo fetch = getGroupDrawById(actId);
+		if (fetch == null) {
+			return null;
 		}
-		if (null == param.getEndTime()) {
-			if (Util.currentTimeStamp().before(endTime)) {
-				vo.setEndTime(Util.currentTimeStamp());
-			} else {
-				vo.setEndTime(endTime);
+		if (null == startTime) {
+			startTime = fetch.getStartTime();
+		}
+		if (null == endTime) {
+			endTime = fetch.getEndTime();
+			if (endTime.after(DateUtil.getLocalDateTime())) {
+				// 结束日期晚于今天
+				endTime = DateUtil.getLocalDateTime();
 			}
 		}
-		// 获取展示数据
-		GroupDrawAnalysisMap dataAnalysis = getGroupDrawInfo(param.getGroupDrawId(), vo.getStartTime(),
-				vo.getEndTime());
-		String tempTime = substring(vo.getStartTime().toString(), 0, 10);
-		Map<String, Integer> tempOrderMap = new HashMap<>();
-		Map<String, Integer> tempJoinMap = new HashMap<>();
-		Map<String, Integer> tempSuccessMap = new HashMap<>();
-		Map<String, Integer> tempNewMap = new HashMap<>();
-		while (tempTime.compareTo(substring(vo.getEndTime().toString(), 0, 10)) < 0) {
-			// 单天数据
-			tempOrderMap.put(tempTime,
-					dataAnalysis.getOrderNumber().get(tempTime) != null ? dataAnalysis.getOrderNumber().get(tempTime)
-							: 0);
-			tempJoinMap.put(tempTime,
-					dataAnalysis.getJoinNum().get(tempTime) != null ? dataAnalysis.getJoinNum().get(tempTime) : 0);
-			tempSuccessMap.put(tempTime,
-					dataAnalysis.getSuccessUserNum().get(tempTime) != null
-							? dataAnalysis.getSuccessUserNum().get(tempTime)
-							: 0);
-			tempNewMap.put(tempTime,
-					dataAnalysis.getNewUser().get(tempTime) != null ? dataAnalysis.getNewUser().get(tempTime) : 0);
-			// 总数据
-			vo.setTotalOrderNumber(vo.getTotalOrderNumber() + tempOrderMap.get(tempTime));
-			vo.setTotalJoinNum(vo.getTotalJoinNum() + tempJoinMap.get(tempTime));
-			vo.setTotalSuccessUserNum(vo.getTotalSuccessUserNum() + tempSuccessMap.get(tempTime));
-			vo.setTotalNewUser(vo.getTotalNewUser() + tempNewMap.get(tempTime));
-			// 日期加一天
-			try {
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-				java.util.Date tempTimeDate = sdf.parse(tempTime);
-				Calendar c = Calendar.getInstance();
-				c.setTime(tempTimeDate);
-				c.add(Calendar.DAY_OF_MONTH, 1);
-				java.util.Date tomorrow = c.getTime();
-				tempTime = sdf.format(tomorrow);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-		}
-		vo.setOrderNumber(sortMap(tempOrderMap));
-		vo.setJoinNum(sortMap(tempJoinMap));
-		vo.setSuccessUserNum(sortMap(tempSuccessMap));
-		vo.setNewUser(sortMap(tempNewMap));
-		return vo;
+		return getGroupDrawInfo(actId, startTime, endTime);
 	}
-
-	/**
-	 * 获取拼团活动效果展示数据
-	 * 
-	 * @param id        拼团抽奖活动id
-	 * @param startTime 统计开始时间
-	 * @param endTime   统计结束时间
-	 * @return 付款订单数 拉新用户数 参与用户数 成团用户数 {@link GroupDrawAnalysisMap}
-	 */
-	public GroupDrawAnalysisMap getGroupDrawInfo(Integer id, Timestamp startTime, Timestamp endTime) {
+		
+	public GroupDrawAnalysisVo getGroupDrawInfo(Integer actId, Timestamp startTime, Timestamp endTime) {
+		GroupDrawAnalysisVo gbaVo = new GroupDrawAnalysisVo();
+		gbaVo.setStartTime(startTime);
+		gbaVo.setEndTime(endTime);
 		SelectConditionStep<?> builder = db().select(ORDER_INFO.CREATE_TIME, ORDER_INFO.USER_ID).from(ORDER_INFO)
-				.where(ORDER_INFO.ACTIVITY_ID.eq(id))
+				.where(ORDER_INFO.ACTIVITY_ID.eq(actId))
 				.and(ORDER_INFO.GOODS_TYPE.likeRegex(
 						OrderInfoService.getGoodsTypeToSearch(new Byte[] { BaseConstant.ACTIVITY_TYPE_GROUP_DRAW })))
 				.and(ORDER_INFO.ORDER_STATUS.notIn(new Byte[] { 0, 2 }));
 		if (null != startTime && null != endTime) {
 			builder.and(ORDER_INFO.CREATE_TIME.between(startTime, endTime));
 		}
-		List<GroupDrawAnalysisInfo> analysisInfos = builder.fetchInto(GroupDrawAnalysisInfo.class);
-		// 付款订单数
-		Map<String, Integer> orderNumber = new HashMap<String, Integer>();
-		// 拉新用户数
-		Map<String, Integer> newUser = new HashMap<String, Integer>();
-		// 控制跳出当前遍历
-		List<Integer> userIds = new ArrayList<>();
-		for (GroupDrawAnalysisInfo item : analysisInfos) {
-			String date = substring(item.getCreateTime().toString(), 0, 10);
-			orderNumber.put(date, (orderNumber.get(date) != null ? orderNumber.get(date) : 0) + 1);
-			if (userIds.contains(item.getUserId())) {
-				continue;
-			}
-			userIds.add(item.getUserId());
-			Integer oldOrderNumber = db().select(DSL.count(ORDER_INFO.ORDER_ID).as("old_order_number")).from(ORDER_INFO)
-					.where(ORDER_INFO.USER_ID.eq(item.getUserId())).and(ORDER_INFO.ORDER_STATUS.greaterThan(TWO))
-					.and(ORDER_INFO.CREATE_TIME.lessThan(item.getCreateTime())).fetchOneInto(Integer.class);
-			if (oldOrderNumber == 0) {
-				newUser.put(date, (newUser.get(date) != null ? newUser.get(date) : 0) + 1);
-			}
+		List<GroupDrawAnalysisInfo> list = builder.fetchInto(GroupDrawAnalysisInfo.class);
+		if (list.size() == 0) {
+			logger().info("没有数据");
+			return gbaVo;
+		}
+		String format = DateUtil.DATE_FORMAT_SIMPLE;
+		for (GroupDrawAnalysisInfo pojo : list) {
+			pojo.setStartDate(DateUtil.dateFormat(format, pojo.getCreateTime()));
 		}
 		List<GroupDrawAnalysisStatus> analysisStatus = db().select(JOIN_GROUP_LIST.STATUS, JOIN_GROUP_LIST.OPEN_TIME)
-				.from(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(id))
+				.from(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(actId))
 				.and(JOIN_GROUP_LIST.STATUS.greaterOrEqual(NumberUtils.BYTE_ZERO))
 				.fetchInto(GroupDrawAnalysisStatus.class);
-		// 参与用户数
-		Map<String, Integer> joinNum = new HashMap<String, Integer>();
-		// 成团用户数
-		Map<String, Integer> successUserNum = new HashMap<String, Integer>();
 		for (GroupDrawAnalysisStatus item : analysisStatus) {
-			String date = substring(item.getOpenTime().toString(), 0, 10);
-			if (item.getStatus() == 1) {
-				joinNum.put(date, (joinNum.get(date) != null ? joinNum.get(date) : 0) + 1);
-				successUserNum.put(date, (successUserNum.get(date) != null ? successUserNum.get(date) : 0) + 1);
-			} else {
-				joinNum.put(date, (joinNum.get(date) != null ? joinNum.get(date) : 0) + 1);
+			item.setStartDate(DateUtil.dateFormat(format, item.getOpenTime()));
+		}
+		byte one = 1;
+		int orderNumber = 0;
+		int joinNum = 0;
+		int successUserNum = 0;
+		int newUser = 0;
+		List<String> betweenTime = DateUtil.getBetweenTime(startTime, endTime);
+		List<GroupDrawAnalysisListVo> returnVo = new ArrayList<GroupDrawAnalysisListVo>();
+		
+		for (String date : betweenTime) {
+			GroupDrawAnalysisListVo vo = new GroupDrawAnalysisListVo();
+			vo.setDateTime(date);
+			for (GroupDrawAnalysisInfo pojo : list) {
+				if (pojo.getStartDate().equals(date)) {
+					Integer oldOrderNumber = db().select(DSL.count(ORDER_INFO.ORDER_ID)).from(ORDER_INFO)
+							.where(ORDER_INFO.USER_ID.eq(pojo.getUserId())).and(ORDER_INFO.ORDER_STATUS.gt(TWO))
+							.and(ORDER_INFO.CREATE_TIME.lt(pojo.getCreateTime())).fetchOneInto(Integer.class);
+					if(oldOrderNumber==0) {
+						vo.setNewUser(vo.getNewUser() == 0 ? 1 : vo.getNewUser() + 1);
+					}
+					vo.setOrderNumber(vo.getOrderNumber() == 0 ? 1 : vo.getOrderNumber() + 1);
+				}
+				orderNumber = orderNumber + vo.getOrderNumber();
+				newUser = newUser + vo.getNewUser();
+				returnVo.add(vo);
 			}
 		}
-		GroupDrawAnalysisMap result = new GroupDrawAnalysisMap();
-		result.setJoinNum(joinNum);
-		result.setNewUser(newUser);
-		result.setOrderNumber(orderNumber);
-		result.setSuccessUserNum(successUserNum);
-		return result;
+		for (GroupDrawAnalysisListVo vo : returnVo) {
+			for (GroupDrawAnalysisStatus item : analysisStatus) {
+				if (item.getStartDate().equals(vo.getDateTime())) {
+					vo.setJoinNum(vo.getJoinNum() == 0 ? 1 : vo.getJoinNum() + 1);
+					if(item.getStatus().equals(one)) {
+						vo.setSuccessUserNum(vo.getSuccessUserNum() == 0 ? 1 : vo.getSuccessUserNum() + 1);
+					}
+				}
+				joinNum = joinNum + vo.getJoinNum();
+				successUserNum = successUserNum + vo.getSuccessUserNum();
+			}
+		}
+		gbaVo.setList(returnVo);
+		gbaVo.setOrderNumber(orderNumber);
+		gbaVo.setJoinNum(joinNum);
+		gbaVo.setSuccessUserNum(successUserNum);
+		gbaVo.setNewUser(newUser);
+		return gbaVo;
 	}
 
 	/**
