@@ -164,9 +164,7 @@
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'secKillProduct.'+scope.$index+'.secKillPrice'"
-                  :rules="[
-                    { required: true, message: '秒杀价不能为空', trigger: 'blur' }
-                  ]"
+                  :rules="[{ validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.shopPrice, scope.row)}, trigger: ['blur', 'change'] }]"
                 >
                   <div
                     class="input-error"
@@ -176,8 +174,8 @@
                     v-model="scope.row.secKillPrice"
                     size="small"
                     :disabled="isEdite || disabledFlag"
-                    @input="changePriceInput(scope.row)"
                   />
+                  <!-- @input="changePriceInput(scope.row)" -->
                 </el-form-item>
                 <div
                   class="spec-tips"
@@ -204,9 +202,7 @@
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'secKillProduct.' + scope.$index+ '.stock'"
-                  :rules="[
-                    { required: true, message: '秒杀库存不能为空', trigger: 'blur' }
-                  ]"
+                  :rules="[{ validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.goodsNumber, scope.row)}, trigger: ['blur', 'change'] }]"
                 >
                   <div
                     class="input-error"
@@ -216,8 +212,8 @@
                     v-model="scope.row.stock"
                     size="small"
                     :disabled="isEdite || disabledFlag"
-                    @input="changeStockInput(scope.row)"
                   />
+                  <!-- @input="changeStockInput(scope.row)" -->
                 </el-form-item>
                 <div
                   class="spec-tips"
@@ -755,9 +751,9 @@ export default {
         goodsInfo.priceErrorMsg = null
         goodsInfo.goodsSpecProducts.forEach((item, index) => {
           if (!isDialog) item.secKillPrice = goodsInfo.secKillPrice
-          if (this.validatePrdPrice(item) && !goodsInfo.priceErrorMsg) {
-            goodsInfo.priceErrorMsg = '有规格秒杀价大于原价，请修改'
-          }
+          // if (this.validatePrdPrice(item) && !goodsInfo.priceErrorMsg) {
+          //   goodsInfo.priceErrorMsg = '有规格秒杀价大于原价，请修改'
+          // }
         })
       } else {
         goodsInfo.priceErrorMsg = null
@@ -773,9 +769,9 @@ export default {
         goodsInfo.goodsSpecProducts.forEach((item, index) => {
           if (!isDialog) item.stock = goodsInfo.stock
           goodsInfo.totalStock += parseInt(item.stock)
-          if (this.validatePrdStock(item) && !goodsInfo.stockErrorMsg) {
-            goodsInfo.stockErrorMsg = '有规格秒杀库存大于原库存，请修改'
-          }
+          // if (this.validatePrdStock(item) && !goodsInfo.stockErrorMsg) {
+          //   goodsInfo.stockErrorMsg = '有规格秒杀库存大于原库存，请修改'
+          // }
         })
       } else {
         goodsInfo.stockErrorMsg = null
@@ -979,26 +975,44 @@ export default {
     },
 
     // 校验秒杀价格
-    validateMoney (rule, value, callback, prdPrice) {
-      console.log(value)
+    validateMoney (rule, value, callback, prdPrice, row) {
+      if (row.goodsSpecProducts && row.goodsSpecProducts.length > 0) {
+        row.goodsSpecProducts.forEach(item => {
+          if (prdPrice > item.secKillPrice) {
+            prdPrice = item.secKillPrice
+          }
+        })
+      }
+
       var re = /^\d+(\.\d{1,2})?$/
-      if (!re.test(value)) {
+      if (!value) {
+        callback(new Error('秒杀价不能为空'))
+      } else if (!re.test(value)) {
         callback(new Error('请填写非负数, 可以保留两位小数'))
-      } else if (value > prdPrice) {
-        callback(new Error('秒杀价不能大于商品原价'))
+      } else if (Number(value) > Number(prdPrice)) {
+        callback(new Error('秒杀价不能大于商品规格原价'))
       } else {
         callback()
       }
     },
 
     // 校验秒杀库存
-    validateNum (rule, value, callback, prdNumber) {
-      console.log(value)
+    validateNum (rule, value, callback, prdNumber, row) {
+      if (row.goodsSpecProducts && row.goodsSpecProducts.length > 0) {
+        row.goodsSpecProducts.forEach(item => {
+          if (prdNumber > item.prdNumber) {
+            prdNumber = item.prdNumber
+          }
+        })
+      }
+
       var re = /^(0|\+?[1-9][0-9]*)$/
-      if (!re.test(value)) {
+      if (!value) {
+        callback(new Error('秒杀库存不能为空'))
+      } else if (!re.test(value)) {
         callback(new Error('请填写0或正整数'))
-      } else if (value > prdNumber) {
-        callback(new Error('秒杀库存不能大于商品库存'))
+      } else if (Number(value) > Number(prdNumber)) {
+        callback(new Error('秒杀库存不能大于商品规格库存'))
       } else {
         callback()
       }
