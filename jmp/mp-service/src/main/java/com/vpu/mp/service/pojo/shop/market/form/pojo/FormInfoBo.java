@@ -23,6 +23,7 @@ public class FormInfoBo {
     private Timestamp endTime;
     private Byte validityPeriod;
     private Byte isForeverValid;
+    private Boolean isNewUser;
     /**
      * 提交数量
      */
