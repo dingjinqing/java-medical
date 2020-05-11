@@ -20,4 +20,5 @@ public class UploadedVideoVo {
 	private String videoSnapPath;
 	private String snapshotUrl;
 	private String formatDuration;
+	private Byte delFlag;
 }
