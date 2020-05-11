@@ -29,7 +29,10 @@
           class="suite-goods-middle"
         >
           <div class="goods-exchange-times">
-            <span>允许兑换：</span>
+            <p class="tip">
+              注：以下"次"数均为兑换商品次数,例：兑换一瓶水计为一次
+            </p>
+            <span>商品兑换总次数：</span>
             <el-input-number
               v-model="ruleForm.exchangCount"
               :controls="false"
@@ -54,25 +57,44 @@
             </el-radio>
           </div>
         </div>
-        <div
-          v-if="ruleForm.isExchange === '1'"
-          class="suite-goods-bottom"
-        >
-          <div
-            class="choose-goods"
-            @click="callGoodsDialog(false)"
-          >
-            <img :src="$imageHost+'/image/admin/icon_jia.png'">
-            <span>选择商品</span>
-          </div>
-          <div
-            class="already-choosed-goods"
-            @click="callGoodsDialog(true)"
-          >
-            <span v-if="ruleForm.exchangGoods.length">已选择商品：{{ruleForm.exchangGoods.length}}件</span>
-            <span class="choose-tip">
-              最多可选择20件
-            </span>
+
+        <div class="goods-container"
+            v-if="ruleForm.isExchange === '1'"
+           >
+           <div class="row-container"
+            v-for="(item,index) in ruleForm.exchangGoods"
+            :key=index>
+              <div class="suite-goods-bottom">
+                <p class="left-title">选择商品: </p>
+                <div
+                  class="choose-goods"
+                  @click="callGoodsDialog(false,index)"
+                >
+                  <img :src="$imageHost+'/image/admin/icon_jia.png'">
+                  <span>添加商品</span>
+                </div>
+                <div
+                  class="already-choosed-goods"
+                  @click="callGoodsDialog(true,index)"
+                >
+                  <span v-if="item.goodsIds.length">已选择商品：{{item.goodsIds.length}}件</span>
+                  <span class="choose-tip">
+                    最多可选择20件
+                  </span>
+                </div>
+              </div>
+              <div class="goods-num">
+                <p class="left-title">每件商品可兑换： </p>
+                <div class="num"><el-input v-model="ruleForm.exchangGoods[index].maxNum" size="small"></el-input></div>
+                <span style="margin-left: 10px;">次</span>
+              </div>
+              <el-tooltip content="删除" placement="top" effect="light" class="del-icon">
+                  <i class="el-icon-delete icon-style" @click="deleteGoodsItem(index)"></i>
+              </el-tooltip>
+           </div>
+          <div class="add-goods">
+            <span class="btn" @click="addNewGoodsCfg">添加商品限购配置</span>
+            <span class="tip">最多可添加5个配置</span>
           </div>
         </div>
       </el-form-item>
@@ -81,7 +103,7 @@
     <ChoosingGoods
       @resultGoodsIds='getGoodsIdFromChoosingGoods'
       :tuneUpChooseGoods='chooseGoodsVisable'
-      :chooseGoodsBack='ruleForm.exchangGoods'
+      :chooseGoodsBack='ruleForm.exchangGoods[currentIndex].goodsIds'
       :onlyShowChooseGoods="isOnlyShowChooseGoods"
     />
   </div>
@@ -99,7 +121,7 @@ export default {
           isExchange: '1',
           exchangCount: '',
           exchangFreight: '0',
-          exchangGoods: []
+          exchangGoods: [{goodsIds: [], maxNum: null}]
         }
       }
     }
@@ -117,17 +139,31 @@ export default {
   data () {
     return {
       chooseGoodsVisable: false,
-      isOnlyShowChooseGoods: false
+      isOnlyShowChooseGoods: false,
+      currentGoodsId: null,
+      currentIndex: 0,
+      suiteGoodsCfg: {goodsIds: [], maxNum: null}
     }
   },
   methods: {
-    callGoodsDialog (only) {
+    callGoodsDialog (only, index) {
       this.chooseGoodsVisable = !this.chooseGoodsVisable
       this.isOnlyShowChooseGoods = only
+      this.currentIndex = index
     },
     getGoodsIdFromChoosingGoods (val) {
-      console.log('选择适用商品id', val)
-      this.ruleForm.exchangGoods = val
+      this.ruleForm.exchangGoods[this.currentIndex].goodsIds = val
+    },
+    addNewGoodsCfg () {
+      if (this.ruleForm.exchangGoods.length > 5) {
+        this.$message.warning('最多添加5个配置')
+      } else {
+        this.ruleForm.exchangGoods.push({goodsIds: [], maxNum: null})
+      }
+    },
+    deleteGoodsItem (index) {
+      console.log(index)
+      this.ruleForm.exchangGoods.splice(index, 1)
     }
   }
 }
@@ -147,11 +183,30 @@ export default {
           width: 90%;
         }
       }
+      p.tip{
+        color: #999;
+        height: 30px;
+        line-height: 30px;
+      }
       .goods-exchange-freight {
       }
     }
+    div.row-container{
+      border: 1px solid #ddd;
+      width: 75%;
+      padding: 20px 10px;
+      background-color: #ffffff;
+      margin-bottom: 10px;
+      position: relative;
+    }
+    .row-container .del-icon{
+      position: absolute;
+      top: 15px;
+      right: 15px;
+    }
     .suite-goods-bottom {
       display: flex;
+      vertical-align: middle;
       .choose-goods {
         color: #5a8bff;
         border: 1px solid #ccc;
@@ -176,6 +231,39 @@ export default {
         }
       }
     }
+    p.left-title{
+        height: 30px;
+        line-height: 30px;
+        margin-right: 10px;
+      }
+    .goods-num{
+      display: flex;
+      margin-top: 20px;
+      vertical-align: middle;
+      height: 30px;
+      line-height: 30px;
+      div.num{
+        width: 110px;
+      }
+    }
   }
+  span.btn{
+    color: #5a8bff;
+    border: 1px solid #5a8bff;
+    border-radius: 4px;
+    padding: 5px 6px;
+    line-height: 30px;
+    cursor: pointer;
+  }
+
+  .icon-style{
+        font-size: 22px;
+        color: #5a8bff;
+        cursor: pointer;
+    }
+    .add-goods .tip{
+      color: #999;
+      margin-left: 10px;
+    }
 }
 </style>

@@ -210,7 +210,7 @@ export default {
         isExchange: '0',
         exchangCount: '',
         exchangFreight: '0',
-        exchangGoods: []
+        exchangGoods: [{goodsIds: [], maxNum: null}]
       },
       cardReceiveCfgData: {
         cardType: 1,
@@ -302,7 +302,7 @@ export default {
       this.cardSuiteGoodsCfgData.exchangCount = data.exchangCount
       this.cardSuiteGoodsCfgData.isExchange = String(data.isExchange)
       this.cardSuiteGoodsCfgData.exchangFreight = String(data.exchangFreight)
-      this.cardSuiteGoodsCfgData.exchangGoods = data.exchangGoods ? data.exchangGoods : []
+      this.cardSuiteGoodsCfgData.exchangGoods = data.exchangGoods ? data.exchangGoods : [{goodsIds: [], maxNum: null}]
 
       // 门店
       this.cardStoreCfgData.storeListType = String(data.storeListType)
