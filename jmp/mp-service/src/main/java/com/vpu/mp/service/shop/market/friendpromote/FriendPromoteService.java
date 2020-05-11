@@ -985,19 +985,19 @@ public class FriendPromoteService extends ShopBaseService {
         Duration timeDuration;
         switch (unit){
             //天
-            case 1:
+            case 0:
                 timeDuration = getDurationDay(launchTime,duration);
                 break;
             //周
-            case 2:
+            case 1:
                 timeDuration = getDurationDay(launchTime,duration*7);
                 break;
             //月
-            case 3:
+            case 2:
                 timeDuration = getDurationDay(launchTime,duration*30);
                 break;
             //年
-            case 4:
+            case 3:
                 timeDuration = getDurationDay(launchTime,duration*365);
                 break;
             default:
