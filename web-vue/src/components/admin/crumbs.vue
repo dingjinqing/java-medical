@@ -343,6 +343,10 @@ export default {
           this.$router.push({
             name: 'purchase_price'
           })
+        } else if (routeName === 'activityDetails') {
+          this.$router.push({
+            name: 'payreward'
+          })
         } else {
           console.log(this.$route)
           if (name === '表单统计') {
