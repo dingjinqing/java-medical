@@ -39,7 +39,7 @@ public class ChooseLinkService extends ShopBaseService {
 	 */
 	public PageResult<GoodsLinkVo> getGoodsLink(GoodsLinkVo param) {
 		SelectJoinStep<? extends Record> select = db()
-				.select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_SN,GOODS.GOODS_IMG)
+				.select(GOODS.GOODS_ID,GOODS.GOODS_TYPE,GOODS.IS_CARD_EXCLUSIVE,GOODS.GOODS_NAME,GOODS.GOODS_SN,GOODS.GOODS_IMG)
 				.from(GOODS);
 		select = buildOptions(select, param);
 		select.orderBy(GOODS.GOODS_ID.desc());

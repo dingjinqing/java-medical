@@ -31,6 +31,7 @@ public class  GoodsPageListVo {
     private String brandName;
     private Integer goodsNumber;
     private Integer goodsSaleNum;
+    private Byte isCardExclusive;
     /** 指定标签集合（在商品列表只展示可修改的标签）*/
     private List<GoodsLabelSelectListVo> goodsPointLabels = new ArrayList<>(3);
     /** 普通标签集合（在商品列表只展示不可修改的标签）使用set避免商家分类上的标签和全部商品类型标签存在重复*/
