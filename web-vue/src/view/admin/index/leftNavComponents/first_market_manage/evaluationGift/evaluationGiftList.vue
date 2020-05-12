@@ -82,7 +82,7 @@
                   v-if="row.currentStatus == 1|| row.currentStatus == 2"
                 >
                   <i
-                    class="el-icon-circle-close iconSpan"
+                    class="iconfont icontingyong iconSpan"
                     @click="edit('stop', row)"
                   ></i>
                 </el-tooltip>
@@ -92,7 +92,7 @@
                   v-if="row.currentStatus == 4"
                 >
                   <i
-                    class="el-icon-circle-check iconSpan"
+                    class="iconfont iconqiyong iconSpan"
                     @click="edit('action', row)"
                   ></i>
                 </el-tooltip>
@@ -102,7 +102,7 @@
                   v-if="row.currentStatus == 1 || row.currentStatus == 2"
                 >
                   <i
-                    class="el-icon-edit-outline iconSpan"
+                    class="iconfont iconbianji iconSpan"
                     @click="edit('edit', row)"
                   ></i>
                 </el-tooltip>
@@ -112,7 +112,7 @@
                   v-if="row.currentStatus == 3 || row.currentStatus == 4"
                 >
                   <i
-                    class="el-icon-delete iconSpan"
+                    class="iconfont iconshanchu2 iconSpan"
                     @click="edit('delete', row, index)"
                   ></i>
                 </el-tooltip>
