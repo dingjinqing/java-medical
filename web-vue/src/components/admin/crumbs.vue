@@ -136,7 +136,7 @@ export default {
       isSurvey: true, // 若是概况里的商城概览则隐藏面包屑
       isLink: false, // 瓜分积分显示的一个跳转链接
       nameArr: ['addRecommend', 'addGoodsLabel', 'updateGoodsLabel', 'store_storemanage_reservation', 'addBrand', 'ordinary_coupon_receive_details', 'feedbackList', 'formDecorationHome', ' pin_group_activityEffectData', 'bargain_effect_data', 'bargain_bargain_user', ' bargain_get_newuser_detail', 'bargain_order_list', 'bargain_activity', ' pin_group_refundFailureOrder', ' pin_group_newUserDetail', 'pin_group_orderList', 'pin_group_detailList', 'group_draw_effect', 'group_draw_group', 'group_draw_user', 'group_draw_order', 'promote_activity', 'promote_receive_details', 'promote_launch_details', 'promote_participate_details', 'promote_effect_data', 'lottery_activity_detail', 'lottery_activity_newUserList', 'open_screen_detail', 'store_storemanage_reservation_detail', 'store_storemanage_reservation_record', 'store_verification_list', 'sec_kill_order', 'sec_kill_detail', 'sec_kill_user', 'sec_kill_effect', 'group_draw_detail', 'gift_detail_view', 'gift_add_view', 'newUserDetails', 'pointsUserList', 'pointsExchangeOrder', 'template_detail', 'add_message', 'send_record', 'gift_edit_view', 'first_special_order', 'couponGive_receive_details', 'couponGive_grant_coupons', 'presale_order_detail_view', 'presale_detail_view', 'package_price_order', 'package_price_detail', 'addCalendarMain', 'feedbackStatistics', 'group_integration_detail', 'group_integration_success', 'group_integration_analysis', 'coupon_Package_add', 'coupon_Package_receive_details', 'coupon_Package_order_details'], // name池,
-      turnArr: ['recommend', 'label', 'label', 'store_list', 'brand', 'ordinary_coupon', 'form_decoration', 'form_decoration', 'pin_group', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'pin_group', 'pin_group', 'pin_group', 'pin_group', 'group_draw', 'group_draw', 'group_draw', 'group_draw', 'promote', 'promote', 'promote', 'promote', 'lottery_activity', 'lottery_activity', 'market_gifted', 'store_list', 'store_list', 'store_list', 'sec_kill', 'sec_kill', 'sec_kill', 'sec_kill', 'group_draw', 'gift', 'gift', 'integral_convert', 'integral_convert', 'integral_convert', 'integral_convert', 'all_message_push', 'all_message_push', 'all_message_push', 'gift', 'first_special', 'market_act_give', 'market_act_give', 'presale', 'presale', 'package', 'package', 'calendar', 'form_decoration', 'pin_integration', 'pin_integration', 'pin_integration', 'coupon_package', 'coupon_package', 'coupon_package']// 跳转池
+      turnArr: ['recommend', 'label', 'label', 'store_list', 'brand', 'ordinary_coupon', 'form_decoration', 'form_decoration', 'pin_group', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'pin_group', 'pin_group', 'pin_group', 'pin_group', 'group_draw', 'group_draw', 'group_draw', 'group_draw', 'promote', 'promote', 'promote', 'promote', 'lottery_activity', 'lottery_activity', 'market_gifted', 'market_gifted', 'store_list', 'store_list', 'sec_kill', 'sec_kill', 'sec_kill', 'sec_kill', 'group_draw', 'gift', 'gift', 'integral_convert', 'integral_convert', 'integral_convert', 'integral_convert', 'all_message_push', 'all_message_push', 'all_message_push', 'gift', 'first_special', 'market_act_give', 'market_act_give', 'presale', 'presale', 'package', 'package', 'calendar', 'form_decoration', 'pin_integration', 'pin_integration', 'pin_integration', 'coupon_package', 'coupon_package', 'coupon_package']// 跳转池
     }
   },
   watch: {
@@ -173,6 +173,7 @@ export default {
         } else {
           this.isSurvey = true
         }
+        console.log(this.isSurvey)
         // if (routeName === 'pin_integration' || routeName === 'friend_pay') {
         //   this.isLink = true
         // } else {
@@ -184,6 +185,9 @@ export default {
       console.log(data, this.$route)
       if (data[1] === '会员列表' && data[2]) {
         data[2] = this.$route.query.name + '-' + data[2]
+      }
+      if (data[0] === '订单管理' && data[1] === '全部订单' && this.$route.query.userName) {
+        data[1] = this.$route.query.userName + '-' + data[1]
       }
       if (this.$route.name === 'Cardholder' || this.$route.name === 'receivingDetails' || this.$route.name === 'activateAudit' || this.$route.name === 'viewOrders') {
         let localData = JSON.parse(localStorage.getItem('V-UserCardCrumb'))
@@ -201,6 +205,7 @@ export default {
         this.titleLeft = data[0]
         this.titleList = data
       } else {
+        console.log(data)
         this.titleLeft = data[0]
         this.titleList = data
       }
@@ -298,6 +303,7 @@ export default {
     },
     handleToClickCrumb (name, flag, index) {
       console.log(name, flag, this.$route, this.nameArr.length, this.turnArr.length)
+      let routeName = this.$route.name
       if (this.titleList.length < 3) return
       if (index === (this.titleList.length - 1)) return
       if (flag) {
@@ -333,6 +339,10 @@ export default {
               name: 'form_decoration'
             })
           }
+        } else if (routeName === 'add_increase_purchase' || routeName === 'edit_increase_purchase' || routeName === 'purchase_redemption_order' || routeName === 'purchase_redemption_detail') {
+          this.$router.push({
+            name: 'purchase_price'
+          })
         } else {
           console.log(this.$route)
           if (name === '表单统计') {
@@ -401,7 +411,7 @@ export default {
   padding-left: 25px;
   color: #333;
   background: #fff;
-  overflow: hidden;
+  // overflow: hidden;
 }
 .canClick {
   span {

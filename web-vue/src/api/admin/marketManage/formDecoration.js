@@ -103,3 +103,12 @@ export function feedbackStatisticsQuery (data) {
     data: data
   })
 }
+
+// 查询单个视频信息
+export function videoQuery (data) {
+  return service({
+    url: '/api/admin/video/select',
+    method: 'post',
+    data: data
+  })
+}
