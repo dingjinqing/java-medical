@@ -84,7 +84,7 @@
 
     <div class="main list_content">
       <div class="title_content">
-        累计获得佣金数：<span style="color: red;">0</span>
+        累计获得佣金数：<span style="color: red;">{{totalGetFanliMoney}}</span>
       </div>
     </div>
 
@@ -182,6 +182,7 @@ export default {
         startInviteTime: '',
         endInviteTime: ''
       },
+      totalGetFanliMoney: 0, // 累计获得佣金数
       requestParam: {},
       tableData: [], // 表格
       pageParams: {}, // 分页
@@ -202,8 +203,9 @@ export default {
       this.requestParams.pageRows = this.pageParams.pageRows
       inviteUserList(this.requestParam).then(res => {
         if (res.error === 0) {
-          this.tableData = res.content.dataList
-          this.pageParams = res.content.page
+          this.totalGetFanliMoney = res.content.totalGetFanliMoney
+          this.tableData = res.content.inviteUserInfo.dataList
+          this.pageParams = res.content.inviteUserInfo.page
         }
       })
     }
