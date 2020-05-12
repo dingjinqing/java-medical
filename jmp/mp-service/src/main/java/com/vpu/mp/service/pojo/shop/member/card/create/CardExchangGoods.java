@@ -93,12 +93,12 @@ public class CardExchangGoods {
 	/**
 	 * 兑换时间类型
 	 */
-	private Byte exchangeTimeType;
+	private Byte exchangTimeType;
 	
 	/**
 	 * 有效时间内的兑换次数
 	 */
-	private Integer exchangeTimeNum;
+	private Integer exchangTimeNum;
 	
 	/**
 	 *  运费策略 0: 免运费 ; 1: 使用商品运费策略

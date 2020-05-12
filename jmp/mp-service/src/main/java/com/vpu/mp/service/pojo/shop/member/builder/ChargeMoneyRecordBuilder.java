@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.shop.member.builder;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import com.vpu.mp.db.shop.tables.records.CardUpgradeRecord;
 import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
 
 /**

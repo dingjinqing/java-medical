@@ -714,9 +714,9 @@ public class CardCreateService extends ShopBaseService{
 			
 			if(CardUtil.canExchangGoods(isExchange)) {
 				//	兑换时间处理
-				cardBuilder.periodLimit(cardExGoods.getExchangeTimeType());
-				if(!CardExchangGoods.TimeType.NO_LIMIT.equals(cardExGoods.getExchangeTimeType())) {
-					cardBuilder.periodNum(cardExGoods.getExchangeTimeNum());
+				cardBuilder.periodLimit(cardExGoods.getExchangTimeType());
+				if(!CardExchangGoods.TimeType.NO_LIMIT.val.equals(cardExGoods.getExchangTimeType())) {
+					cardBuilder.periodNum(cardExGoods.getExchangTimeNum());
 				}
 			}
 		}

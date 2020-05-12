@@ -40,9 +40,9 @@ public class CardExchangService extends ShopBaseService {
 		//	商品兑换总次数
 		cardExGoods.setExchangCount(card.getExchangCount());
 		//	兑换时间类型
-		cardExGoods.setExchangeTimeType(card.getPeriodLimit());
+		cardExGoods.setExchangTimeType(card.getPeriodLimit());
 		//	兑换商品周期内次数
-		cardExGoods.setExchangeTimeNum(card.getPeriodNum());
+		cardExGoods.setExchangTimeNum(card.getPeriodNum());
 		//	运费策略
 		cardExGoods.setExchangFreight(card.getExchangFreight());
 		
