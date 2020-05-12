@@ -66,6 +66,8 @@ public class PictorialImgPx {
      * 底部商品价格颜色
      */
     private Color realPriceColor;
+
+    private Color shopStyleColor;
 /***********************随店铺风格改变的色值结束***************************/
     /**
      * 可用的三种字体size
@@ -82,12 +84,14 @@ public class PictorialImgPx {
      * 背景图内边距
      */
     private Integer bgPadding = 30;
+    private Integer borderStroke = 15;
     /**
      * 图片底部padding
      */
     private Integer bottomPadding = 10;
 
-    public PictorialImgPx(){}
+    public PictorialImgPx() {
+    }
 
     public PictorialImgPx(Color shopStyleColor) {
         this(DEFAULT_STYLE, shopStyleColor);
@@ -95,10 +99,11 @@ public class PictorialImgPx {
 
     public PictorialImgPx(Byte picStyleConfig, Color shopStyleColor) {
         customerRectFillColor = new Color(shopStyleColor.getRed(), shopStyleColor.getGreen(), shopStyleColor.getBlue(), 140);
-        shareImgRectInnerColor =new Color(shopStyleColor.getRed(), shopStyleColor.getGreen(), shopStyleColor.getBlue(), 30);
+        shareImgRectInnerColor = new Color(shopStyleColor.getRed(), shopStyleColor.getGreen(), shopStyleColor.getBlue(), 30);
         realPriceColor = shopStyleColor;
+        this.shopStyleColor = shopStyleColor;
         if (BASIC_STYLE.equals(picStyleConfig)) {
-
+            initForBasicStyle();
         } else if (SHARE_PERSON_STYLE.equals(picStyleConfig)) {
 
         } else if (SHOP_STYLE.equals(picStyleConfig)) {
@@ -108,6 +113,9 @@ public class PictorialImgPx {
         } else {
             initForDefault();
         }
+        goodsNameFont = ImageUtil.SourceHanSansCN(Font.PLAIN, MEDIUM_FONT_SIZE);
+        priceFont = ImageUtil.SourceHanSansCN(Font.PLAIN, PictorialImgPx.LARGE_FONT_SIZE);
+        linePriceFont = ImageUtil.SourceHanSansCN(Font.PLAIN, PictorialImgPx.MEDIUM_FONT_SIZE);
     }
 
     private void initForDefault() {
@@ -147,17 +155,37 @@ public class PictorialImgPx {
         // 商品名称可用宽度，开始位置
         goodsNameCanUseWidth = bgWidth - 2 * bgPadding - qrCodeWidth - 20;
         goodsNameStartY = bottomStartY + 10;
-        goodsNameFont = ImageUtil.SourceHanSansCN(Font.PLAIN, MEDIUM_FONT_SIZE);
+
         bottomTextStartX = bgPadding;
         priceY = goodsNameStartY + priceNamePadding;
-        priceFont =  ImageUtil.SourceHanSansCN(Font.PLAIN, PictorialImgPx.LARGE_FONT_SIZE);
-        linePriceFont =  ImageUtil.SourceHanSansCN(Font.PLAIN, PictorialImgPx.MEDIUM_FONT_SIZE);
+
+    }
+
+    private void initForBasicStyle() {
+        headerHeight = 0;
+        bgPadding = bgPadding + borderStroke;
+        // 商品
+        goodsWidth = bgWidth - 2 * bgPadding;
+        goodsStartX = bgPadding;
+        goodsStartY = bgPadding + headerHeight;
+        goodsHeight = bgWidth - 2 * bgPadding;
+
+        bottomHeight = 400;
+        bgHeight = headerHeight + bottomHeight + goodsHeight + bgPadding + bottomPadding;
+        bottomStartY = headerHeight + goodsHeight + bgPadding + 5;
+        bottomTextStartX = bgPadding;
+
+        priceY = bottomStartY + 10;
+        priceX = bottomTextStartX;
+
+        goodsNameCanUseWidth = bgWidth - 2 * bgPadding;
+        qrCodeStartX =(bgWidth - qrCodeWidth)/2;
     }
 
     /**
      * 图片头部
      */
-    private final Integer headerHeight = 160;
+    private Integer headerHeight = 160;
     /**
      * 用户头像直径
      */
@@ -182,7 +210,7 @@ public class PictorialImgPx {
      * 商品宽高,位置x,y
      */
     private Integer goodsWidth;
-    private Integer  goodsHeight = bgWidth - 2 * bgPadding - 80;
+    private Integer goodsHeight = bgWidth - 2 * bgPadding;
     private Integer goodsStartX;
     private Integer goodsStartY;
 

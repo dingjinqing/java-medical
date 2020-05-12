@@ -15,7 +15,6 @@ import java.io.InputStream;
 
 /**
  * 图片的处理
- *
  * @author zhaojianqiang
  * <p>
  * 2019年10月18日 上午9:42:04
@@ -24,7 +23,6 @@ import java.io.InputStream;
 public final class ImageUtil {
     /**
      * 重新设置图片大小
-     *
      * @param width
      * @param height
      * @param bufferedImage
@@ -37,10 +35,9 @@ public final class ImageUtil {
         return newBufferedImage;
     }
 
-    
+
     /**
      * 重新设置图片大小，图带Alpha，存在透明像素时调用
-     *
      * @param width
      * @param height
      * @param bufferedImage
@@ -55,7 +52,6 @@ public final class ImageUtil {
 
     /**
      * 给图片添加文字
-     *
      * @param backgroundImage 背景图片
      * @param message         文字
      * @param font            字体
@@ -77,22 +73,21 @@ public final class ImageUtil {
 
     /**
      * 给图片添加文字
-     *
      * @param backgroundImage 背景图片
      * @param message         文字
      * @param font            字体
      * @param x               x轴数值
      * @param y               y轴数值
      * @param color           颜色,默认黑色
-     * @param onBaseLine true表示y值是文本底边位置
+     * @param onBaseLine      true表示y值是文本底边位置
      * @returns
      */
     public static BufferedImage addFont(BufferedImage backgroundImage, String message, Font font, int x, int y, Color color, boolean onBaseLine) {
         if (!onBaseLine) {
-            int textHeight = getTextAscent(backgroundImage,font);
+            int textHeight = getTextAscent(backgroundImage, font);
             y += textHeight;
         }
-        return addFont(backgroundImage,message,font,x,y,color);
+        return addFont(backgroundImage, message, font, x, y, color);
     }
 
     /**
@@ -105,7 +100,7 @@ public final class ImageUtil {
      * @param lineColor     矩形边框线颜色，如果为null则表示不画边框色，直接进行填充
      * @param fillColor     矩形填充颜色，如果为null表示不填充颜色
      */
-    public static void addRect(BufferedImage bufferedImage, int x, int y, int width, int height, Color lineColor, Color fillColor) {
+    public static void addRect(BufferedImage bufferedImage, int x, int y, int width, int height, Color lineColor, Float strokeVal, Color fillColor) {
         if (lineColor == null && fillColor == null) {
             return;
         }
@@ -117,37 +112,48 @@ public final class ImageUtil {
         }
         if (lineColor != null) {
             graphics.setColor(lineColor);
+            Stroke stroke = null;
+            if (strokeVal != null) {
+                stroke = graphics.getStroke();
+                graphics.setStroke(new BasicStroke(strokeVal));
+            }
             graphics.drawRect(x, y, width, height);
+            if (stroke != null) {
+                graphics.setStroke(stroke);
+            }
         }
         graphics.dispose();
     }
 
-    /**
-     *  添加文字附带边框
-     * @param bufferedImage 背景图
-     * @param x 开始x
-     * @param y 开始y
-     * @param message 文字内容
-     * @param font 文本字体
-     * @param lineColor 边框线颜色
-     * @param fillColor 边框内部填充颜色
-     * @param fontColor 文本颜色
-     */
-    public static int addFontWithRect(BufferedImage bufferedImage, int x, int y, String message, Font font, Color lineColor,Color fillColor,Color fontColor){
-        int paddingLeft = 5;
-        int paddingBottom = font.getSize()/4;
-        int fontHeight = getTextAscent(bufferedImage,font)+paddingBottom;
-        int textWidth = getTextWidth(bufferedImage,font,message);
-        addRect(bufferedImage,x,y,textWidth+2*paddingLeft,fontHeight,lineColor,fillColor);
-        // 添加文本时的y值表示的是文本的底边位置
-        addFont(bufferedImage,message,font,x+paddingLeft,y+fontHeight-paddingBottom,fontColor);
+    public static void addRect(BufferedImage bufferedImage, int x, int y, int width, int height, Color lineColor, Color fillColor) {
+        addRect(bufferedImage, x, y, width, height, lineColor, null, fillColor);
+    }
 
-        return textWidth+2*paddingLeft;
+    /**
+     * 添加文字附带边框
+     * @param bufferedImage 背景图
+     * @param x             开始x
+     * @param y             开始y
+     * @param message       文字内容
+     * @param font          文本字体
+     * @param lineColor     边框线颜色
+     * @param fillColor     边框内部填充颜色
+     * @param fontColor     文本颜色
+     */
+    public static int addFontWithRect(BufferedImage bufferedImage, int x, int y, String message, Font font, Color lineColor, Color fillColor, Color fontColor) {
+        int paddingLeft = 5;
+        int paddingBottom = font.getSize() / 4;
+        int fontHeight = getTextAscent(bufferedImage, font) + paddingBottom;
+        int textWidth = getTextWidth(bufferedImage, font, message);
+        addRect(bufferedImage, x, y, textWidth + 2 * paddingLeft, fontHeight, lineColor, fillColor);
+        // 添加文本时的y值表示的是文本的底边位置
+        addFont(bufferedImage, message, font, x + paddingLeft, y + fontHeight - paddingBottom, fontColor);
+
+        return textWidth + 2 * paddingLeft;
     }
 
     /**
      * 添加线段
-     *
      * @param bufferedImage 目标背景图对象
      * @param x1            开始x
      * @param y1            开始y
@@ -166,25 +172,24 @@ public final class ImageUtil {
     /**
      * 添加文字附带中划线
      * @param bufferedImage 背景图片
-     * @param x 文本左上角开始x坐标
-     * @param y 文本左上角开始y坐标
-     * @param message 文本内容
-     * @param font 字体
-     * @param fontColor 字体颜色
+     * @param x             文本左上角开始x坐标
+     * @param y             文本左上角开始y坐标
+     * @param message       文本内容
+     * @param font          字体
+     * @param fontColor     字体颜色
      * @return rectWidth
      */
-    public static int addFontWithLine(BufferedImage bufferedImage, int x, int y, String message,Font font, Color fontColor) {
+    public static int addFontWithLine(BufferedImage bufferedImage, int x, int y, String message, Font font, Color fontColor) {
         int linePad = 5;
         int textWidth = getTextWidth(bufferedImage, font, message);
-        int textHeight = getTextAscent(bufferedImage,font);
-        addFont(bufferedImage,message,font,x+linePad,y+textHeight,fontColor);
-        addLine(bufferedImage,x,y+textHeight/4*3,x+textWidth+2*linePad,y+textHeight/4*3,fontColor);
-        return textWidth + 2*linePad;
+        int textHeight = getTextAscent(bufferedImage, font);
+        addFont(bufferedImage, message, font, x + linePad, y + textHeight, fontColor);
+        addLine(bufferedImage, x, y + textHeight / 4 * 3, x + textWidth + 2 * linePad, y + textHeight / 4 * 3, fontColor);
+        return textWidth + 2 * linePad;
     }
 
     /**
      * 背景图上添加前景图
-     *
      * @param backgroundImage 背景图
      * @param foregroundImage 前景图
      * @param x               x轴数值
@@ -203,7 +208,6 @@ public final class ImageUtil {
 
     /**
      * 图片裁成圆形
-     *
      * @param image    图片
      * @param diameter 直径
      * @return
@@ -225,7 +229,6 @@ public final class ImageUtil {
 
     /**
      * 通过读取文件并获取其width及height的方式，来判断判断当前文件是否图片，这是一种非常简单的方式。
-     *
      * @param imageFile
      * @return
      */
@@ -249,7 +252,6 @@ public final class ImageUtil {
 
     /**
      * image转base64
-     *
      * @param image
      * @return
      */
@@ -277,7 +279,6 @@ public final class ImageUtil {
 
     /**
      * 生成字体，思源黑体
-     *
      * @param style Font.BOLD
      * @param size  大小
      * @return
@@ -329,19 +330,19 @@ public final class ImageUtil {
         FontMetrics metrics = graphics.getFontMetrics(font);
         return metrics.getAscent();
     }
-    
+
     /**
-     * 	将图片转换为字节数组
+     * 将图片转换为字节数组
      * @param image
      * @return byte[]
      */
     public static byte[] changeImageToByteArr(BufferedImage image) {
-    	ByteArrayOutputStream os = new ByteArrayOutputStream();
-    	try {
-			ImageIO.write(image, "png", os);
-		} catch (IOException e) {
-			log.error(e.getMessage(),e);
-		}
-    	return os.toByteArray();
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(image, "png", os);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
+        return os.toByteArray();
     }
 }
