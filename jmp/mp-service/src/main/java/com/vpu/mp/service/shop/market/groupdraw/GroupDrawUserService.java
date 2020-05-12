@@ -249,6 +249,7 @@ public class GroupDrawUserService extends ShopBaseService {
 	 * 获取某个商品的参与用户数
 	 */
 	private Integer getJoinUserNumByGoodsId(Integer groupDrawId, Integer goodsId, Byte status) {
+		logger().info("入参：groupDrawId：{}，goodsId：{}，status：{}",groupDrawId,goodsId,status);
 		SelectConditionStep<Record1<Integer>> select = db().selectCount().from(JOIN_GROUP_LIST)
 				.where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId).and(JOIN_GROUP_LIST.GOODS_ID.eq(goodsId)));
 		if (null != status) {
@@ -263,8 +264,8 @@ public class GroupDrawUserService extends ShopBaseService {
 	 * 更新开奖状态
 	 */
 	private void updateGroupDrawStatus(Integer id) {
-		int execute = db().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.IS_WIN_DRAW, (byte) 1)
-				.where(JOIN_GROUP_LIST.ID.eq(id)).execute();
+		int execute = db().update(GROUP_DRAW).set(GROUP_DRAW.IS_DRAW, (byte) 1)
+				.where(GROUP_DRAW.ID.eq(id)).execute();
 		logger().info("更新：{}，结果：{}", id, execute);
 	}
 
