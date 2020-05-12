@@ -245,12 +245,27 @@
                   <div
                     v-if="index>4"
                     style="margin-bottom:10px"
+                    class="custom"
                   >
                     <el-input
-                      v-model="item.phInput"
+                      v-model="item.customIconName"
                       size="small"
                       placeholder="请输入图标名称"
                     ></el-input>
+                    <i class="el-icon-delete"></i>
+                  </div>
+                  <div
+                    v-if="index>4"
+                    class="customLink"
+                  >
+                    <el-input
+                      v-model="item.customLink"
+                      size="small"
+                    ></el-input>
+                    <div
+                      @click="handleToClickPath(index)"
+                      class="choiseLink"
+                    >选择链接</div>
                   </div>
                 </div>
 
@@ -318,16 +333,23 @@
         >确 定</el-button>
       </span>
     </el-dialog>
+    <!--选择链接弹窗-->
+    <SelectLinks
+      :tuneUpSelectLink="tuneUpSelectLink"
+      @selectLinkPath="selectLinkPath"
+    />
   </div>
 </template>
 <script>
 export default {
   components: {
     selectTemplate: () => import('./selectTemplate.vue'), // 选择页面弹窗
-    ImageDalog: () => import('@/components/admin/imageDalog')
+    ImageDalog: () => import('@/components/admin/imageDalog'), // 选择图片弹窗
+    SelectLinks: () => import('@/components/admin/selectLinks') // 选择链接弹窗
   },
   data () {
     return {
+      tuneUpSelectLink: false, // 选择链接弹窗flag
       tuneUp: false, // 选择图片弹窗flag
       tuneUpSelectTemplate: false, // 选择页面弹窗flag
       holdMainIcon: false, // 控制左侧主icon切换
@@ -467,7 +489,9 @@ export default {
           titleChecked: false,
           iconImgUrl: this.$imageHost + '/image/admin/origin_question.png',
           isIndependentShow: false,
-          resetIcon: this.$imageHost + '/image/admin/origin_question.png'
+          resetIcon: this.$imageHost + '/image/admin/origin_question.png',
+          customIconName: '',
+          customLink: ''
         }
       ], // 子图标数组
       changeChldernIconIndex: null // 子图标项中点击更换图标下标
@@ -566,6 +590,19 @@ export default {
       this.isChangeMainIcon = false
       this.changeChldernIconIndex = index
       this.tuneUp = !this.tuneUp
+    },
+    // 点击选择链接按钮
+    handleToClickPath (index) {
+      this.changeChldernIconIndex = index
+      this.tuneUpSelectLink = !this.tuneUpSelectLink
+    },
+    // 选择链接弹窗选中数据回传
+    selectLinkPath (path) {
+      console.log(path)
+      if (path) {
+        console.log(path, this.childrenIconData, this.changeChldernIconIndex)
+        this.childrenIconData[this.changeChldernIconIndex].customLink = path
+      }
     }
   }
 }
@@ -596,7 +633,7 @@ export default {
       justify-content: space-between;
       .configLeft {
         width: 375px;
-        min-height: 600px;
+        height: 600px;
         border: 1px solid #ccc;
         background: #f5f5f5;
         .title {
@@ -865,6 +902,30 @@ export default {
       /deep/ .el-radio__label {
         display: none;
       }
+    }
+  }
+  .custom {
+    display: flex;
+    justify-content: space-between;
+    width: 348px;
+    i {
+      color: #5a8bff;
+      cursor: pointer;
+    }
+  }
+  .customLink {
+    display: flex;
+    .choiseLink {
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      color: #333;
+      background-color: #fff;
+      border: 1px solid #eee;
+      padding: 0 5px;
+      margin-left: 5px;
+      font-size: 13px;
+      cursor: pointer;
     }
   }
 }
