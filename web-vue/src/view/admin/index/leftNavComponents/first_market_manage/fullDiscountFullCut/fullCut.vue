@@ -136,7 +136,7 @@
               >
                 <span
                   class="el-icon-tickets"
-                  @click="goOrderList"
+                  @click="goOrderList(scope.row)"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -146,7 +146,7 @@
                 <span
                   class="iconfont iconfankuitongji"
                   style="font-size:20px;"
-                  @click="goStatistics"
+                  @click="goStatistics(scope.row)"
                 ></span>
               </el-tooltip>
             </div>
@@ -296,16 +296,26 @@ export default {
         this.$message.info({ message: '已取消删除' })
       })
     },
-    goOrderList () {
+    goOrderList (row) {
       this.$router.push({
         name: 'fullCutOrder',
-        query: {}
+        query: {
+          id: row.id
+        }
       })
     },
-    goStatistics () {
+    goStatistics (row) {
+      console.log(row)
+      let startTime = row.startTime || ''
+      let endTime = row.endTime || ''
+      let id = row.id
       this.$router.push({
         name: 'fullCutStatistics',
-        query: {}
+        query: {
+          startTime,
+          endTime,
+          id
+        }
       })
     }
   }

@@ -5,19 +5,26 @@
         <div class="header">
           <span>筛选日期：</span>
           <el-date-picker
+            v-model="startTime"
             type="datetime"
-            format="yyyy-MM-dd hh:mm:ss"
+            format="yyyy-MM-dd HH:mm:ss"
+            value-format="yyyy-MM-dd HH:mm:ss"
             size="small"
+            default-time="00:00:00"
           ></el-date-picker>
           <span>至</span>
           <el-date-picker
+            v-model="endTime"
             type="datetime"
-            format="yyyy-MM-dd hh:mm:ss"
+            format="yyyy-MM-dd HH:mm:ss"
+            value-format="yyyy-MM-dd HH:mm:ss"
             size="small"
+            default-time="23:59:59"
           ></el-date-picker>
           <el-button
             type="primary"
             size="small"
+            @click="initData"
           >筛选</el-button>
         </div>
         <div class="num-list">
@@ -31,13 +38,12 @@
                 <img
                   class="fc-statics-search-icon"
                   :src="$imageHost+'/image/admin/analysis_tishi.png'"
-                  alt=""
                 >
               </div>
               <div
                 class="fc-statics-num"
                 style="color: #5A8BFF;"
-              >316.00</div>
+              >{{(performanceData.totalPayment||0).toFixed(2)}}</div>
             </li>
             <li
               class="fc-statics-item"
@@ -54,7 +60,7 @@
               <div
                 class="fc-statics-num"
                 style="color: #fc6181;"
-              >20.00</div>
+              >{{(performanceData.totalDiscount||0).toFixed(2)}}</div>
             </li>
             <li
               class="fc-statics-item"
@@ -71,7 +77,7 @@
               <div
                 class="fc-statics-num"
                 style="color: #fdb64a;"
-              >6.33%</div>
+              >{{(performanceData.totalCostEffectivenessRatio||0).toFixed(2)}}%</div>
             </li>
             <li
               class="fc-statics-item"
@@ -88,7 +94,7 @@
               <div
                 class="fc-statics-num"
                 style="color: #ff9f7f;"
-              >2</div>
+              >{{(performanceData.totalPaidOrderNumber||0)}}</div>
             </li>
             <li
               class="fc-statics-item"
@@ -105,7 +111,7 @@
               <div
                 class="fc-statics-num"
                 style="color: #32c5e9;"
-              >2</div>
+              >{{(performanceData.totalPaidGoodsNumber||0)}}</div>
             </li>
             <li
               class="fc-statics-item"
@@ -122,7 +128,7 @@
               <div
                 class="fc-statics-num"
                 style="color: #3dcf9a;"
-              >0</div>
+              >{{(performanceData.totalNewUserNumber||0)}}</div>
             </li>
             <li
               class="fc-statics-item"
@@ -139,7 +145,7 @@
               <div
                 class="fc-statics-num"
                 style="color: #8379f7;"
-              >2</div>
+              >{{(performanceData.totalOldUserNumber||0)}}</div>
             </li>
           </ul>
         </div>
@@ -155,26 +161,36 @@
 </template>
 
 <script>
+import { fullcutAnalysisApi } from '@/api/admin/marketManage/fullDiscountFullCut.js'
 import echarts from 'echarts'
 import '@/util/date.js'
 export default {
   data () {
     return {
+      activityId: '',
+      startTime: '',
+      endTime: '',
       tableData: [],
       fullCutcharts: null,
-      colors: ['#5A8BFF', '#fc6181', '#fdb64a', '#ff9f7f', '#32c5e9', '#3dcf9a', '#8379f7']
+      colors: ['#5A8BFF', '#fc6181', '#fdb64a', '#ff9f7f', '#32c5e9', '#3dcf9a', '#8379f7'],
+      performanceData: {} // 汇总数据
     }
   },
   mounted () {
+    let query = this.$route.query
+    this.startTime = query.startTime || ''
+    this.endTime = query.endTime || ''
+    if (new Date(this.endTime) > new Date()) {
+      this.endTime = new Date().format('yyyy-MM-dd hh:mm:ss')
+    }
+    this.activityId = query.id
     this.initEcharts()
     this.initData()
   },
   methods: {
     initEcharts () {
-      this.fullCutcharts = echarts.init(document.getElementById('fullCutcharts'))
-    },
-    initData () {
       let that = this
+      this.fullCutcharts = echarts.init(document.getElementById('fullCutcharts'))
       let xAxisData = []
       let amount = []
       let discount = []
@@ -216,7 +232,7 @@ export default {
             type: 'line',
             color: that.colors[0],
             yAxisIndex: 0,
-            data: amount
+            data: amount || []
           },
           {
             name: '活动优惠总金额',
@@ -261,12 +277,102 @@ export default {
           }
         ]
       }
+      that.fullCutcharts.setOption(fullCutchartsOptions)
       setTimeout(() => {
         that.fullCutcharts.resize()
       }, 0)
-      that.fullCutcharts.setOption(fullCutchartsOptions)
       window.addEventListener('resize', function () {
         that.fullCutcharts.resize()
+      })
+    },
+    initData () {
+      let that = this
+      let params = {
+        id: this.activityId,
+        startTime: this.startTime,
+        endTime: this.endTime
+      }
+      if (!params.startTime || !params.endTime) {
+        this.$message.warning('请选择筛选日期！')
+        return false
+      }
+      if (new Date(params.startTime) > new Date(params.endTime)) {
+        this.$message.warning('开始时间不能大于结束时间')
+        return false
+      }
+      fullcutAnalysisApi(params).then(res => {
+        if (res.error === 0) {
+          let content = res.content
+          that.performanceData = content.total
+          let xAxisData = content.dateList
+          let amount = content.paymentAmount // 活动实付总金额数组
+          let discount = content.discountAmount // 活动优惠总金额 数组
+          let ratio = content.costEffectivenessRatio // 费效比数组
+          let orderNumber = content.paidOrderNumber // 付款订单数数组
+          let orderGoodsNumber = content.paidGoodsNumber // 付款商品件数
+          let oldUser = content.oldUserNumber
+          let newUser = content.newUserNumber
+          let fullCutchartsOptions = {
+            xAxis: {
+              type: 'category',
+              boundaryGap: false,
+              data: xAxisData
+            },
+            series: [
+              {
+                name: '活动实付总金额',
+                type: 'line',
+                color: that.colors[0],
+                yAxisIndex: 0,
+                data: amount || []
+              },
+              {
+                name: '活动优惠总金额',
+                type: 'line',
+                yAxisIndex: 0,
+                data: discount || []
+              },
+              {
+                name: '费效比',
+                type: 'line',
+                color: that.colors[2],
+                yAxisIndex: 1,
+                data: ratio || []
+              },
+              {
+                name: '付款订单数',
+                type: 'line',
+                color: that.colors[3],
+                yAxisIndex: 0,
+                data: orderNumber || []
+              },
+              {
+                name: '付款商品件数',
+                type: 'line',
+                color: that.colors[4],
+                yAxisIndex: 0,
+                data: orderGoodsNumber || []
+              },
+              {
+                name: '新成交用户数',
+                type: 'line',
+                color: that.colors[5],
+                yAxisIndex: 0,
+                data: newUser || []
+              },
+              {
+                name: '老成交用户数',
+                type: 'line',
+                color: that.colors[6],
+                yAxisIndex: 0,
+                data: oldUser || []
+              }
+            ]
+          }
+          that.fullCutcharts.setOption(fullCutchartsOptions)
+        } else {
+          that.$message.error(res.message)
+        }
       })
     }
   }
