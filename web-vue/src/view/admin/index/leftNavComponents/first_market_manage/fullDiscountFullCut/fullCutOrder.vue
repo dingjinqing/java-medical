@@ -9,12 +9,14 @@
       >
         <el-form-item label="订单号">
           <el-input
+            v-model="queryParams.orderSn"
             class="form-input"
             placeholder="请输入订单号"
           ></el-input>
         </el-form-item>
         <el-form-item label="商品信息">
           <el-input
+            v-model="queryParams.goodsName"
             class="form-input"
             placeholder="请输入商品名称"
           >
@@ -22,24 +24,31 @@
         </el-form-item>
         <el-form-item label="下单人">
           <el-input
+            v-model="queryParams.userInfo"
             class="form-input"
             placeholder="请输入下单人昵称/手机号"
           ></el-input>
         </el-form-item>
         <el-form-item label="订单状态">
           <el-select
-            v-model="queryParams.state"
+            v-model="queryParams.orderStatus"
             class="form-input"
+            :multiple="true"
           >
             <el-option
-              label="全部"
-              value=""
+              v-for="(item, index) in $t('order.orderStatusList')"
+              :key="index"
+              :label="item[1]"
+              :value="item[0]"
             ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">查询</el-button>
-          <el-button>数据导出</el-button>
+          <el-button
+            type="primary"
+            @click="initDataList"
+          >查询</el-button>
+          <el-button @click="exportData">数据导出</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -47,39 +56,115 @@
       <el-table
         :data="tableData"
         header-row-class-name="tableClss"
+        :cell-class-name="cellClass"
         border
       >
         <el-table-column
           align="center"
           label="订单号"
+          prop="orderSn"
+          width="180"
         ></el-table-column>
         <el-table-column
           align="center"
           label="商品"
-        ></el-table-column>
+          width="220"
+          class="goods-wrap"
+        >
+          <template slot-scope="{row}">
+            <div
+              v-for="(item,index) in row.goods"
+              :key="index"
+              class="goods-info"
+            >
+              <el-image
+                :src="item.goodsImg"
+                fit="fill"
+              ></el-image>
+              <div class="goods-item">
+                <p class="goods-name">{{item.goodsName}}</p>
+                <p class="goods-desc">{{item.goodsAttr}}</p>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="单价"
-        ></el-table-column>
+        >
+          <template slot-scope="{row}">
+            <div
+              v-for="(item,index) in row.goods"
+              :key="index"
+              class="goods-info"
+            >
+              <div class="goods-price">{{(item.goodsPrice||0).toFixed(2)}}</div>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="活动优惠金额"
-        ></el-table-column>
+        >
+          <template slot-scope="{row}">
+            <div
+              v-for="(item,index) in row.goods"
+              :key="index"
+              class="goods-info"
+            >
+              <div class="goods-price">{{(item.perDiscount||0).toFixed(2)}}</div>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="实付金额"
-        ></el-table-column>
+        >
+          <template slot-scope="{row}">
+            <div
+              v-for="(item,index) in row.goods"
+              :key="index"
+              class="goods-info"
+            >
+              <div class="goods-price">{{(item.discountedGoodsPrice||0).toFixed(2)}}</div>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="数量"
-        ></el-table-column>
+        >
+          <template slot-scope="{row}">
+            <div
+              v-for="(item,index) in row.goods"
+              :key="index"
+              class="goods-info"
+            >
+              <div class="goods-price">{{(item.goodsNumber||0)}}</div>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="下单人"
-        ></el-table-column>
+        >
+          <template slot-scope="{row}">
+            <div>
+              <el-link
+                href="javascript:void(0);"
+                style="color: #5a8bff;"
+                @click="goUserDetail(row, $event)"
+              >
+                <div>{{row.username}}</div>
+                <div>{{row.mobile}}</div>
+              </el-link>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="订单状态"
+          prop="orderStatusName"
         ></el-table-column>
       </el-table>
       <!-- 翻页 -->
@@ -92,22 +177,66 @@
 </template>
 
 <script>
+import { fullcutOrderApi, fullcutOrderExportApi } from '@/api/admin/marketManage/fullDiscountFullCut.js'
+import { download } from '@/util/excelUtil.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
   },
   data () {
     return {
+      id: '',
       tableData: [],
       pageParams: {},
-      queryParams: {}
+      queryParams: {
+        goodsName: '',
+        orderSn: '',
+        orderStatus: null,
+        userInfo: ''
+      }
     }
   },
-  mounted () { },
+  mounted () {
+    if (this.$route.query.id) {
+      this.id = this.$route.query.id
+      this.initDataList()
+    }
+  },
   methods: {
     initDataList () {
-      let params = Object.assign({}, this.queryParams, this.pageParams)
-      console.log(params)
+      let that = this
+      let params = Object.assign({ activityId: this.id }, this.queryParams, this.pageParams)
+      fullcutOrderApi(params).then(res => {
+        if (res.error === 0) {
+          let content = res.content
+          console.log(content)
+          that.pageParams = content.page
+          that.tableData = content.dataList
+        }
+      })
+    },
+    cellClass ({ column, columnIndex, row, rowIndex }) {
+      if (columnIndex === 1 || columnIndex === 2 || columnIndex === 3 || columnIndex === 4) {
+        return 'cell-noborder'
+      }
+    },
+    goUserDetail (row, e) {
+      e.preventDefault()
+      this.$router.push({
+        name: 'membershipInformation',
+        query: {
+          userId: row.userId
+        }
+      })
+    },
+    // 数据导出
+    exportData () {
+      let params = Object.assign({ activityId: this.id }, this.queryParams)
+      fullcutOrderExportApi(params).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '批量发货失败列表.xlsx'
+        download(res, decodeURIComponent(fileName))
+      })
     }
   }
 }
@@ -133,11 +262,63 @@ export default {
   }
   /deep/ .tableClss th {
     background-color: #f5f5f5;
-    border: none;
+    border: 0;
     height: 36px;
     font-weight: bold;
     color: #000;
     padding: 8px 10px;
+  }
+  /deep/ .cell-noborder {
+    padding: 0;
+    .cell {
+      padding: 0;
+    }
+  }
+  .goods-info {
+    display: flex;
+    height: 90px;
+    padding: 10px;
+    &:not(:last-child) {
+      border-bottom: 1px solid #ebeef5;
+    }
+    .el-image {
+      flex: 0 0 70px;
+      width: 70px;
+      height: 70px;
+    }
+    .goods-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: flex-start;
+      margin-left: 10px;
+      .goods-name {
+        width: 100%;
+        text-align: left;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+      }
+      .goods-desc {
+        color: #666;
+        font-size: 12px;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: left;
+      }
+    }
+    .goods-price {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      text-align: center;
+    }
   }
 }
 </style>
