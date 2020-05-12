@@ -879,7 +879,7 @@ export default {
       console.log(lastData, this.pageSetData)
 
       // 特殊校验post_times
-      if ((Number(this.pageSetData.total_times) < Number(this.pageSetData.day_times)) && this.pageSetData.post_times === '0') {
+      if ((Number(this.pageSetData.total_times) < Number(this.pageSetData.day_times)) && Number(this.pageSetData.total_times) !== 0) {
         this.$message.error({
           message: '累计次数必须大于每天次数',
           showClose: true

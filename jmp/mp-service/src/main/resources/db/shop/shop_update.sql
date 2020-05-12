@@ -535,3 +535,8 @@ ALTER TABLE `b2c_return_order` ADD COLUMN `return_source` tinyint(1) DEFAULT '1'
 ALTER TABLE `b2c_return_order` ADD COLUMN `return_source_type` tinyint(1) DEFAULT '0' COMMENT '售后发起来源类型：0改价失败自动售后，1微信支付失败，2活动自动售后';
 /*********************2.12*************************END*/
 
+/*********************2.13*************************START*/
+-- 门店新增自提相关字段
+ALTER TABLE `b2c_store` ADD COLUMN `pick_time_action` tinyint(1) DEFAULT '1' COMMENT '自提取货时间类型';
+ALTER TABLE `b2c_store` ADD COLUMN `pick_time_detail` varchar(50) DEFAULT NULL COMMENT '自提时间明细';
+/*********************2.13*************************END*/

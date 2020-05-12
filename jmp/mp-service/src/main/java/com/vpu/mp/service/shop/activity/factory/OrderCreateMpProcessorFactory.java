@@ -63,7 +63,8 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
             BaseConstant.ACTIVITY_TYPE_PRE_SALE,
             BaseConstant.ACTIVITY_TYPE_GROUP_DRAW,
             BaseConstant.ACTIVITY_TYPE_INTEGRAL,
-            BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE
+            BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE,
+            BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER
     );
 
     /**

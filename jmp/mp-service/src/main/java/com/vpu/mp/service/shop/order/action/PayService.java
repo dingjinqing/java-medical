@@ -25,6 +25,7 @@ import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import com.vpu.mp.service.saas.shop.ThirdPartyMsgServices;
 import com.vpu.mp.service.shop.activity.dao.GiftProcessorDao;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
@@ -104,6 +105,9 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
 
     @Autowired
     private OrderOperateSendMessage sendMessage;
+
+    @Autowired
+    private ThirdPartyMsgServices thirdPartyMsgServices;
 
     /**
      * 营销活动processorFactory
@@ -292,7 +296,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         processOrderEffective(orderInfo);
         //模板消息
         sendMessage.send(orderInfo, goods);
-
+        thirdPartyMsgServices.thirdPartService(orderInfo);
     }
 
     /**

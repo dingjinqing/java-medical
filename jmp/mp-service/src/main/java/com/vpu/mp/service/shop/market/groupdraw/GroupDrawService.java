@@ -237,7 +237,6 @@ public class GroupDrawService extends ShopBaseService {
 			vo.setGroupUserCount(groupDrawUser.getSuccessGroupUserNum(id));
 			vo.setGroupCount(groupDrawUser.getOpenGroupNumberById(id));
 			vo.setDrawUserCount(groupDrawUser.getDrawUserNumById(id));
-			//TODO 商品数量换个方法
 			GoodsNumCountParam param2=new GoodsNumCountParam();
 			List<Integer> goodsIds = stringToList(vo.getGoodsId());
 			param2.setGoodsIds(goodsIds);

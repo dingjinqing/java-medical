@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.distribution;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.vpu.mp.service.foundation.util.Page;
@@ -13,12 +14,23 @@ import lombok.Data;
  */
 @Data
 public class DistributorInvitedListParam {
+    /**用户ID*/
 	private Integer userId;
+	/**手机号*/
 	private String mobile;
+	/**微信昵称*/
 	private String username;
+	/**真实姓名*/
+	private String realName;
+	/**注册开始时间*/
 	private Timestamp startCreateTime;
+	/**注册结束时间*/
 	private Timestamp endCreateTime;
-	
+	/**邀请开始时间*/
+	private Timestamp startInviteTime;
+	/**邀请结束时间*/
+	private Timestamp endInviteTime;
+
 	private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
 	private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
 }

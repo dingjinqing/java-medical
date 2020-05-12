@@ -468,6 +468,6 @@ public class GroupDrawUserService extends ShopBaseService {
 	 */
 	public Integer getDrawUserNumById(Integer groupDrawId) {
 		return db().selectCount().from(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId))
-				.and(JOIN_GROUP_LIST.STATUS.ge(ZERO)).and(JOIN_GROUP_LIST.IS_GROUPER.eq(ONE)).fetchOptionalInto(Integer.class).orElse(0);
+				.and(JOIN_GROUP_LIST.IS_WIN_DRAW.ge(ONE)).fetchOptionalInto(Integer.class).orElse(0);
 	}
 }

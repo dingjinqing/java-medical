@@ -79,7 +79,7 @@
                     <el-checkbox v-model="goodsDetail">商品详情页</el-checkbox>
                   </div>
                   <div>
-                    <el-checkbox v-model="peasonCenter">商品详情页</el-checkbox>
+                    <el-checkbox v-model="peasonCenter">个人中心</el-checkbox>
                   </div>
                 </div>
                 <div class="bottom">
@@ -107,13 +107,13 @@
                   <div class="li">
                     <el-radio
                       v-model="fixedShow"
-                      label="1"
+                      :label="1"
                     >固定位置显示</el-radio>
                   </div>
                   <div>
                     <el-radio
                       v-model="fixedShow"
-                      label="2"
+                      :label="2"
                     >上滑消失下滑显示</el-radio>
                   </div>
                 </div>
@@ -196,7 +196,10 @@
                 :key="index"
               >
                 <div class="childIconLeft">
-                  <el-checkbox v-model="item.titleChecked">{{item.title}}</el-checkbox>
+                  <el-checkbox
+                    @change="chilrenRadionChange(index)"
+                    v-model="item.titleChecked"
+                  >{{item.title}}</el-checkbox>
                 </div>
                 <div class="top childTop">
                   <div
@@ -252,7 +255,10 @@
                       size="small"
                       placeholder="请输入图标名称"
                     ></el-input>
-                    <i class="el-icon-delete"></i>
+                    <i
+                      @click="handleToDel(index)"
+                      class="el-icon-delete"
+                    ></i>
                   </div>
                   <div
                     v-if="index>4"
@@ -267,8 +273,38 @@
                       class="choiseLink"
                     >选择链接</div>
                   </div>
+                  <div
+                    v-if="index>4"
+                    class="navIconLeft customBottom"
+                  >
+                    <div
+                      class="nav_icon"
+                      style="margin-left:0"
+                    >
+                      <div class="icon_box">
+                        <img :src="item.iconImgUrl">
+                        <span @click="handleChangeChldrenIcon(index)">{{$t('bottomNavigation.changeIcons')}}</span>
+                      </div>
+                    </div>
+                    <div
+                      class="tips customTips"
+                      style="padding:5px 0 0 10px"
+                    >
+                      <div class="resetDiv">
+                        <div style="font-size:12px;color:#999">
+                          建议尺寸：50 * 50
+                        </div>
+                        <el-checkbox v-model="item.isIndependentShow">独立主图标展示</el-checkbox>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
+              </div>
+              <div class="addChildrenIcon">
+                <span @click="handleToAddIcon()">
+                  添加子图标
+                </span>
               </div>
             </div>
           </div>
@@ -341,6 +377,7 @@
   </div>
 </template>
 <script>
+import { saveDraftData, saveReleaseData, getSuspensionData } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting.js'
 export default {
   components: {
     selectTemplate: () => import('./selectTemplate.vue'), // 选择页面弹窗
@@ -376,7 +413,7 @@ export default {
       customPage: true, // 自定义页面 checkbox
       customPageSelect: [], // 选择的自定义页面数据
       backSelectDataSus: [], // 选择页面弹窗回显数据
-      fixedShow: '1', // 悬浮方式raido
+      fixedShow: 1, // 悬浮方式raido
       isShowIcon: true, // 主图标switch
       beforeExpansionUrlB: this.$imageHost + '/image/admin/origin_add.png',
       afterExpansionB: this.$imageHost + '/image/admin/origin_close.png',
@@ -497,10 +534,178 @@ export default {
       changeChldernIconIndex: null // 子图标项中点击更换图标下标
     }
   },
+  mounted () {
+    // 初始化获取数据
+    this.handleToGetData()
+  },
   methods: {
+    // 初始化获取数据
+    handleToGetData () {
+      getSuspensionData().then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          let content = res.content
+          if (content.page_flag) {
+            this.isShowSuspension = true
+          } else {
+            this.isShowSuspension = false
+          }
+          this.fixedShow = content.suspend_pattern
+          let pageIds = []
+          this.peasonCenter = false
+          this.goodsDetail = false
+          content.page_ids.forEach((item, index) => {
+            if (item === -2) {
+              this.peasonCenter = true
+            }
+            if (item === -3) {
+              this.goodsDetail = true
+            }
+            if (item !== -2 && item !== -3) {
+              pageIds.push(item)
+            }
+          })
+          this.customPageSelect = pageIds
+          this.backSelectDataSus = pageIds
+          if (content.main_flag) {
+            this.isShowIcon = true
+          } else {
+            this.isShowIcon = false
+          }
+          this.beforeExpansionUrl = content.main_before
+          this.afterExpansion = content.main_after
+          // 处理子图标所有项
+          content.children_arr.forEach((item, index) => {
+            if (index > 5) {
+              let obj = {
+                title: '自定义',
+                titleChecked: false,
+                iconImgUrl: this.$imageHost + '/image/admin/origin_question.png',
+                isIndependentShow: false,
+                resetIcon: this.$imageHost + '/image/admin/origin_question.png',
+                customIconName: '',
+                customLink: ''
+              }
+              this.childrenIconData.push(obj)
+            }
+            if (item.child_flag) {
+              this.childrenIconData[index].titleChecked = true
+            } else {
+              this.childrenIconData[index].titleChecked = false
+            }
+            this.childrenIconData[index].iconImgUrl = item.img
+            if (item.own_flag) {
+              this.childrenIconData[index].isIndependentShow = true
+            } else {
+              this.childrenIconData[index].isIndependentShow = false
+            }
+            switch (item.type) {
+              case 2:
+                this.childrenIconData[index].phInput = item.phone
+                break
+              case 0:
+                this.childrenIconData[index].customIconName = item.name
+                this.childrenIconData[index].customLink = item.custom_link
+            }
+            // if (index === 5) {
+            //   this.childrenIconData[index].customIconName = item.name
+            //   this.childrenIconData[index].customLink = item.custom_link
+            // }
+          })
+
+          this.handleToSertChecked()
+        }
+      })
+    },
     // 底部保存综合处理
     handleToFooter (flag) {
       console.log(flag)
+      let pageIds = []
+      if (this.goodsDetail) {
+        pageIds.push(-3)
+      }
+      if (this.peasonCenter) {
+        pageIds.push(-2)
+      }
+      if (this.customPage) {
+        this.customPageSelect.forEach((item, index) => {
+          if (typeof item === 'number') {
+            pageIds.push(item)
+          } else {
+            pageIds.push(item.pageId)
+          }
+        })
+      }
+      let childrenArr = []
+      this.childrenIconData.forEach((item, index) => {
+        let obj = {
+          type: 0,
+          child_flag: item.titleChecked ? 1 : 0,
+          img: item.iconImgUrl,
+          own_flag: item.isIndependentShow ? 1 : 0,
+          name: item.title,
+          phone: null,
+          custom_link: null
+        }
+        switch (index) {
+          case 0:
+            obj.type = 1
+            break
+          case 1:
+            obj.type = 2
+            obj.phone = item.phInput
+            break
+          case 2:
+            obj.type = 3
+            break
+          case 3:
+            obj.type = 4
+            break
+          case 4:
+            obj.type = 5
+            break
+        }
+        if (index > 4) {
+          obj.custom_link = item.customLink
+          obj.name = item.customIconName
+        }
+        childrenArr.push(obj)
+      })
+      let params = {
+        page_flag: this.isShowSuspension ? 1 : 0,
+        suspend_pattern: this.fixedShow,
+        page_ids: pageIds,
+        main_flag: this.isShowIcon ? 1 : 0,
+        main_before: this.beforeExpansionUrl,
+        main_after: this.afterExpansion,
+        children_arr: childrenArr
+      }
+      console.log(params)
+      if (flag) {
+        saveDraftData(params).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success({
+              message: '保存成功',
+              showClose: true
+            })
+            this.childrenIconData = this.childrenIconData.slice(0, 6)
+            this.handleToGetData()
+          }
+        })
+      } else {
+        saveReleaseData(params).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success({
+              message: '保存成功',
+              showClose: true
+            })
+            this.childrenIconData = this.childrenIconData.slice(0, 6)
+            this.handleToGetData()
+          }
+        })
+      }
     },
     // 点击左边部分主icon
     handleToClickMainIcon (flag) {
@@ -603,6 +808,56 @@ export default {
         console.log(path, this.childrenIconData, this.changeChldernIconIndex)
         this.childrenIconData[this.changeChldernIconIndex].customLink = path
       }
+    },
+    // 点击删除icon
+    handleToDel (index) {
+      this.childrenIconData.splice(index, 1)
+    },
+    // 点击添加子图标
+    handleToAddIcon () {
+      let obj = {
+        title: '自定义',
+        titleChecked: false,
+        iconImgUrl: this.$imageHost + '/image/admin/origin_question.png',
+        isIndependentShow: false,
+        resetIcon: this.$imageHost + '/image/admin/origin_question.png',
+        customIconName: '',
+        customLink: ''
+      }
+      this.childrenIconData.push(obj)
+    },
+    // 子图标项radio点击
+    chilrenRadionChange (res) {
+      console.log(res)
+      // 校验勾选数量
+      let checkedNum = 0
+      this.childrenIconData.forEach((item, index) => {
+        if (item.titleChecked) checkedNum++
+      })
+      console.log(checkedNum)
+      if (checkedNum > 6) {
+        this.$message.error({
+          message: '最多可选6个子图标'
+        })
+        console.log(res)
+        this.childrenIconData[res].titleChecked = false
+        return
+      }
+      this.handleToSertChecked()
+    },
+    // 将右侧子项选中的模块填入左部份
+    handleToSertChecked () {
+      let arr = []
+      this.childrenIconData.forEach((item, index) => {
+        if (item.titleChecked) {
+          let obj = {
+            name: item.title,
+            imgUrl: item.iconImgUrl
+          }
+          arr.push(obj)
+        }
+      })
+      this.mainImgUrl = arr
     }
   }
 }
@@ -925,6 +1180,24 @@ export default {
       padding: 0 5px;
       margin-left: 5px;
       font-size: 13px;
+      cursor: pointer;
+    }
+  }
+  .customBottom {
+    margin-top: 10px;
+  }
+  .customTips {
+    display: flex;
+    justify-content: center !important;
+  }
+  .addChildrenIcon {
+    text-align: center;
+    color: #5a8bff;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    span {
       cursor: pointer;
     }
   }

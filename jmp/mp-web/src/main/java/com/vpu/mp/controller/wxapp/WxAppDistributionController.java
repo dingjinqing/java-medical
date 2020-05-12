@@ -100,7 +100,7 @@ public class WxAppDistributionController extends WxAppBaseController{
     public JsonResult myInviteUser(@RequestBody DistributorInvitedListParam param){
         Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
-        PageResult<DistributorInvitedListVo> inviteList = shop().mpDistribution.myInviteUser(param);
+        DistributorInvitedListVo inviteList = shop().mpDistribution.myInviteUser(param);
         return this.success(inviteList);
     }
 

@@ -367,8 +367,8 @@ public class MpDistributionService extends ShopBaseService{
      * @param param
      * @return
      */
-    public PageResult<DistributorInvitedListVo> myInviteUser(DistributorInvitedListParam param){
-        PageResult<DistributorInvitedListVo> invitedList = disList.getInvitedList(param);
+    public DistributorInvitedListVo myInviteUser(DistributorInvitedListParam param){
+        DistributorInvitedListVo invitedList = disList.getInvitedList(param);
         return invitedList;
     }
 

@@ -1,8 +1,9 @@
 package com.vpu.mp.service.pojo.shop.distribution;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.util.List;
 
+import com.vpu.mp.service.foundation.util.PageResult;
 import lombok.Data;
 
 /**
@@ -12,31 +13,11 @@ import lombok.Data;
  */
 @Data
 public class DistributorInvitedListVo {
-	private String username;
-	private String mobile;
-	private Timestamp createTime;
-	/**
-	 * 累积返利订单数
-	 */
-	private Integer orderNumber;
-	/**
-	 * 累积订单返利商品总金额
-	 */
-	private BigDecimal totalCanFanliMoney;
-	/**
-	 * 累积返利佣金
-	 */
-	private BigDecimal totalFanliMoney;
-	/**
-	 * 返利有效日期
-	 */
-	private Timestamp inviteExpiryDate;
-	/**
-	 * 邀请保护日期
-	 */
-	private Timestamp inviteProtectDate;
-    /**
-     * 邀请时间
-     */
-	private Timestamp inviteTime;
+
+	/**累计获得佣金数*/
+	private BigDecimal totalGetFanliMoney;
+    /**邀请用户信息*/
+	private PageResult<InviteUserInfoVo> InviteUserInfo;
+
+
 }

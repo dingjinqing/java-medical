@@ -127,3 +127,30 @@ export function updateGoodsData (data) {
     data: data
   })
 }
+
+// 悬浮窗--保存草稿
+export function saveDraftData (data) {
+  return service({
+    url: '/api/admin/decorate/suspend/draft/set',
+    method: 'post',
+    data: data
+  })
+}
+
+// 悬浮窗--保存并发布
+export function saveReleaseData (data) {
+  return service({
+    url: '/api/admin/decorate/suspend/set',
+    method: 'post',
+    data: data
+  })
+}
+
+// 悬浮窗--获取悬浮窗草稿数据
+export function getSuspensionData (data) {
+  return service({
+    url: '/api/admin/decorate/suspend/draft/get',
+    method: 'post',
+    data: data
+  })
+}
