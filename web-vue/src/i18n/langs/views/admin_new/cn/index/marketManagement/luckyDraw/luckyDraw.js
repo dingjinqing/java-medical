@@ -91,7 +91,7 @@ export const cn = {
   joinNumber: '参与人次',
   awardNumber: '中奖人次',
   option: '操作',
-  edit: '设置',
+  edit: '编辑',
   share: '分享',
   disable: '停用',
   enabled: '启用',

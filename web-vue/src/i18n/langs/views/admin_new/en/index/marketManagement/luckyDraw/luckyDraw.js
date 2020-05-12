@@ -90,7 +90,7 @@ export const en = {
   joinNumber: 'Participants',
   awardNumber: 'Winners',
   option: 'Operation',
-  edit: 'Set',
+  edit: 'Edit',
   share: 'Share',
   disable: 'Deactivate',
   enabled: 'Enable',

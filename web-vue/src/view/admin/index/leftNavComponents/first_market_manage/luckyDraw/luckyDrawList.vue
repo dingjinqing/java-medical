@@ -91,14 +91,14 @@
         >
           <template slot-scope="scope">
             <div class="opt">
-              <!-- 设置 -->
+              <!-- 编辑 -->
               <el-tooltip
                 v-if="scope.row.currentState == 1 || scope.row.currentState == 2"
                 :content="$t('luckyDraw.edit')"
                 placement="top"
               >
                 <span
-                  class="el-icon-edit-outline"
+                  class="iconfont iconbianji"
                   @click="editActivity(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -109,7 +109,7 @@
                 placement="top"
               >
                 <span
-                  class="el-icon-share"
+                  class="iconfont iconfenxiang1"
                   @click="shareActivity(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -120,7 +120,7 @@
                 placement="top"
               >
                 <span
-                  class="el-icon-circle-close"
+                  class="iconfont icontingyong"
                   @click="changeStatus(scope.row.id, 'stop')"
                   v-if="scope.row.status==1"
                 ></span>
@@ -132,7 +132,7 @@
                 placement="top"
               >
                 <span
-                  class="el-icon-circle-check"
+                  class="iconfont iconqiyong"
                   @click="changeStatus(scope.row.id, 'start')"
                   v-if="scope.row.status==0"
                 ></span>
@@ -144,7 +144,7 @@
                 placement="top"
               >
                 <span
-                  class="el-icon-delete"
+                  class="iconfont iconshanchu2"
                   @click="deleteluckyDraw(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -155,7 +155,7 @@
                 placement="top"
               >
                 <span
-                  class="el-icon-tickets"
+                  class="iconfont iconmingxi1"
                   @click="luckyDrawDetailList(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -166,7 +166,7 @@
                 placement="top"
               >
                 <span
-                  class="el-icon-user-solid"
+                  class="iconfont iconxinyonghumingxi"
                   @click="newUserDetail(scope.row.id,scope.row.lotteryName)"
                 ></span>
               </el-tooltip>
@@ -452,6 +452,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .content {
   padding: 10px;
   min-width: 100%;

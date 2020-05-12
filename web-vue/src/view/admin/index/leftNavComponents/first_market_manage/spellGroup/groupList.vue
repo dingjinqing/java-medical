@@ -107,7 +107,7 @@
                 v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
                 <span
-                  class="el-icon-edit-outline"
+                  class="iconfont iconbianji"
                   @click="editActivity(scope.row.id, scope.row)"
                 ></span>
               </el-tooltip>
@@ -117,7 +117,7 @@
                 v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
                 <span
-                  class="el-icon-share"
+                  class="iconfont iconfenxiang1"
                   @click="shareActivity(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -127,7 +127,7 @@
                 v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
                 <span
-                  class="el-icon-circle-close"
+                  class="iconfont icontingyong"
                   @click="closeStatus(scope.row.id,0)"
                   v-if="scope.row.status==1"
                 > </span>
@@ -138,7 +138,7 @@
                 v-if="scope.row.currentState === 4"
               >
                 <span
-                  class="el-icon-circle-check"
+                  class="iconfont iconqiyong"
                   @click="openStatus(scope.row.id,1)"
                   v-if="scope.row.status==0"
                 > </span>
@@ -149,7 +149,7 @@
                 v-if="scope.row.currentState !== 2"
               >
                 <span
-                  class="el-icon-tickets"
+                  class="iconfont iconmingxi1"
                   @click="groupBuyDetailList(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -159,7 +159,7 @@
                 v-if="scope.row.currentState !== 2"
               >
                 <span
-                  class="el-icon-s-unfold"
+                  class="iconfont icondingdan"
                   @click="groupBuyOrderList(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -169,7 +169,7 @@
                 v-if="scope.row.currentState !== 2"
               >
                 <span
-                  class="el-icon-user-solid"
+                  class="iconfont iconxinyonghumingxi"
                   @click="newUserDetail(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -179,7 +179,7 @@
                 v-if="scope.row.currentState !== 2"
               >
                 <span
-                  class="el-icon-warning"
+                  class="iconfont iconshibaidingdan"
                   @click="refundFailureOrder(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -189,7 +189,7 @@
                 v-if="scope.row.currentState === 3 || scope.row.currentState === 4"
               >
                 <span
-                  class="el-icon-delete"
+                  class="iconfont iconshanchu2"
                   @click="deleteGroupBuy(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -198,7 +198,7 @@
                 placement="top"
               >
                 <span
-                  class="el-icon-s-data"
+                  class="iconfont iconfankuitongji"
                   @click="activityEffectData(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -492,6 +492,7 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .content {
   padding: 10px;
   min-width: 100%;

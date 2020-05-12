@@ -109,7 +109,7 @@
                 v-if="scope.row.status === 1"
               >
                 <i
-                  class="el-icon-edit-outline"
+                  class="iconfont iconbianji"
                   @click="edit(scope.row.id, scope.row)"
                 ></i>
               </el-tooltip>
@@ -122,7 +122,7 @@
               >
                 <i
                   @click="delBargain(scope.row.id)"
-                  class="el-icon-delete"
+                  class="iconfont iconshanchu2"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -134,7 +134,7 @@
               >
                 <i
                   @click="puaseBargain(scope.row.id)"
-                  class="el-icon-circle-close"
+                  class="iconfont iconshanchu2"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -146,7 +146,7 @@
               >
                 <i
                   @click="enableBargain(scope.row.id)"
-                  class="el-icon-circle-check"
+                  class="iconfont iconqiyong"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -157,7 +157,7 @@
               >
                 <i
                   @click="shareBargain(scope.row.id)"
-                  class="el-icon-share"
+                  class="iconfont iconfenxiang1"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -167,7 +167,7 @@
                 placement="top"
               >
                 <i
-                  class="el-icon-tickets"
+                  class="iconfont icondingdan"
                   @click="checkOrderList(scope.row.id)"
                 ></i>
               </el-tooltip>
@@ -178,7 +178,7 @@
                 placement="top"
               >
                 <i
-                  class="el-icon-user-solid"
+                  class="iconfont iconxinyonghumingxi"
                   @click="getNewUserDetail(scope.row.id)"
                 ></i>
               </el-tooltip>
@@ -189,7 +189,7 @@
                 placement="top"
               >
                 <i
-                  class="el-icon-s-unfold"
+                  class="iconfont iconmingxi1"
                   @click="bargainingUser(scope.row.id)"
                 ></i>
               </el-tooltip>
@@ -200,7 +200,7 @@
                 placement="top"
               >
                 <i
-                  class="el-icon-s-data"
+                  class="iconfont iconfankuitongji"
                   @click="effectData(scope.row.id,scope.row.startTime,scope.row.endTime)"
                 ></i>
               </el-tooltip>
@@ -461,6 +461,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .content {
   padding: 10px;
   min-width: 100%;
@@ -494,7 +495,7 @@ export default {
   margin-left: -5px;
   > .item {
     font-size: 22px;
-    color: #66b1ff;
+    color: #5a8bff;
     cursor: pointer;
     margin-left: 5px;
   }
