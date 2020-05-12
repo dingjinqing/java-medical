@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.shop.member.card.base.CardMarketActivity;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
@@ -133,16 +134,6 @@ public class CardParam {
 	private String mobile;
 
 	/**
-	 * 限次会员卡适用商品 0： 不可兑换商品 ；1 ：部分商品；2：全部商品
-	 */
-	private Byte isExchange;
-	/** 限次会员卡允许兑换次数 */
-	private Integer exchangCount;
-	/** 运费策略 0: 免运费 ; 1: 使用商品运费策略 */
-	private Byte exchangFreight;
-	/** 可兑换商品id */
-	private List<Integer> exchangGoods;
-	/**
 	 * 限次会员卡允许使用时间 1：工作日； 2：双休 0：不限制
 	 */
 	private Integer useTime;
@@ -213,6 +204,10 @@ public class CardParam {
 	/**
 	 * 	折扣不与营销活动公用
 	 */
-	public List<CardMarketActivity> marketActivities;
+	private List<CardMarketActivity> marketActivities;
+	/**
+	 * 兑换商品
+	 */
+	private CardExchangGoods cardExchangGoods;
 	
 }

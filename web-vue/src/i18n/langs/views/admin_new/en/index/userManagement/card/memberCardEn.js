@@ -268,6 +268,7 @@ export const en = {
   workDay: 'workDay',
   breakDay: 'breakDay',
   shipTime: ['during', 'year', 'season', 'month', 'week', 'day'],
+  exchangTime: ['day', 'week', 'month', 'season', 'year'],
   sendTotalTip: 'valid value',
   receiveLimitTip: 'valid value',
   leastCodeTip: 'at least code',

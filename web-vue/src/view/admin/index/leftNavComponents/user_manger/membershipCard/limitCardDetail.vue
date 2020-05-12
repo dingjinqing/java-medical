@@ -207,10 +207,14 @@ export default {
       cardStoreCfgData: cardStoreCfgDataTmp,
       cardUsageCfgData: cardUsageCfgDataTmp,
       cardSuiteGoodsCfgData: {
-        isExchange: '0',
+        isExchange: 0,
         exchangCount: '',
-        exchangFreight: '0',
-        exchangGoods: []
+        everyGoodsMaxNum: '',
+        exchangFreight: 0,
+        exchangGoods: [{goodsIds: [], maxNum: null}],
+        exchangTimeType: null,
+        exchangTimeRadio: '0',
+        exchangTimeNum: null
       },
       cardReceiveCfgData: {
         cardType: 1,
@@ -298,11 +302,24 @@ export default {
       console.log(this.cardEffectTime.fixedDate)
       this.cardEffectTime.receiveDay = data.receiveDay
       this.cardEffectTime.dateType = data.dateType ? String(data.dateType) : '0'
+      debugger
       // 适用商品
-      this.cardSuiteGoodsCfgData.exchangCount = data.exchangCount
-      this.cardSuiteGoodsCfgData.isExchange = String(data.isExchange)
-      this.cardSuiteGoodsCfgData.exchangFreight = String(data.exchangFreight)
-      this.cardSuiteGoodsCfgData.exchangGoods = data.exchangGoods ? data.exchangGoods : []
+      this.cardSuiteGoodsCfgData.isExchange = data.cardExchangGoods.isExchange
+      this.cardSuiteGoodsCfgData.exchangCount = data.cardExchangGoods.exchangCount
+      this.cardSuiteGoodsCfgData.everyGoodsMaxNum = data.cardExchangGoods.everyGoodsMaxNum
+      this.cardSuiteGoodsCfgData.exchangFreight = data.cardExchangGoods.exchangFreight
+      this.cardSuiteGoodsCfgData.exchangGoods = data.cardExchangGoods.exchangGoods
+      this.cardSuiteGoodsCfgData.exchangTimeType = data.cardExchangGoods.exchangTimeType
+
+      if (!data.cardExchangGoods.exchangGoods) {
+        this.cardSuiteGoodsCfgData.exchangGoods = [{goodsIds: [], maxNum: null}]
+      }
+      if (data.cardExchangGoods.exchangTimeType) {
+        this.cardSuiteGoodsCfgData.exchangTimeRadio = '1'
+      } else {
+        this.cardSuiteGoodsCfgData.exchangTimeRadio = '0'
+      }
+      this.cardSuiteGoodsCfgData.exchangTimeNum = data.cardExchangGoods.exchangTimeNum
 
       // 门店
       this.cardStoreCfgData.storeListType = String(data.storeListType)
@@ -483,10 +500,6 @@ export default {
         'endTime': this.cardEffectTime.fixedDate ? this.cardEffectTime.fixedDate[1] : null,
         'receiveDay': this.cardEffectTime.receiveDay,
         'dateType': this.cardEffectTime.dateType,
-        'isExchange': this.cardSuiteGoodsCfgData.isExchange,
-        'exchangCount': this.cardSuiteGoodsCfgData.exchangCount,
-        'exchangFreight': this.cardSuiteGoodsCfgData.exchangFreight,
-        'exchangGoods': this.cardSuiteGoodsCfgData.exchangGoods,
         'storeListType': this.cardStoreCfgData.storeListType,
         'storeList': this.cardStoreCfgData.choosedStore.map(({ storeId }) => storeId),
         'useTime': this.cardStoreCfgData.useTime,
@@ -507,7 +520,8 @@ export default {
         'customAction': this.cardActiveCfgData.customAction,
         'cardTag': this.cardTag,
         'cardGive': this.cardGive,
-        'customRights': this.customRights
+        'customRights': this.customRights,
+        'cardExchangGoods': this.getCardExchangGoods()
       }
       if (this.cardId) {
         // 更新会员卡
@@ -577,6 +591,15 @@ export default {
           return item
         })
       }
+    },
+    getCardExchangGoods () {
+      let obj = {...this.cardSuiteGoodsCfgData}
+      console.log(obj)
+      if (obj.exchangTimeRadio === '0') {
+        obj.exchangTimeType = 0
+      }
+      delete obj.exchangTimeRadio
+      return obj
     }
   }
 

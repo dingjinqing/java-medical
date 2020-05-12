@@ -11,8 +11,6 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
  * @Date: 2019年11月1日
  * @Description: 
  */
-
-
 public class MemberCardRecordBuilder {
 	private MemberCardRecord record;
 	
@@ -373,7 +371,18 @@ public class MemberCardRecordBuilder {
 		return this;
 	}
 
+	public MemberCardRecordBuilder periodLimit (Byte periodLimit) {
+		record.setPeriodLimit(periodLimit);
+		return this;
+	}
+
+	public MemberCardRecordBuilder periodNum (Integer periodNum) {
+		record.setPeriodNum(periodNum);
+		return this;
+	}
+
 	public MemberCardRecord build() {
 		return record;
 	}
 }
+

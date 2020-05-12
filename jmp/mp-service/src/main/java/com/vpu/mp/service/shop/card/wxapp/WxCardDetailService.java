@@ -527,7 +527,7 @@ public class WxCardDetailService extends ShopBaseService{
 			String restrict = null;
 			Byte restrictType;
 			BigDecimal leastConsume=null;
-			if (NumberUtils.INTEGER_ZERO.equals(coupon.getUseConsumeRestrict())) {
+			if (NumberUtils.BYTE_ZERO.equals(coupon.getUseConsumeRestrict())) {
 				//	无门槛
 				restrict = Util.translateMessage(lang,JsonResultMessage.CARD_COUPON_NOLIMIT, i18nfile);
 				restrictType = NumberUtils.BYTE_ZERO;

@@ -33,6 +33,7 @@ import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.base.CardMarketActivity;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardGive.CardGiveSwitch;
@@ -85,6 +86,8 @@ public class CardDetailService extends ShopBaseService{
 	@Autowired 
 	private CouponPackService couponPackService;
 
+	@Autowired
+	private CardExchangService cardExchangSvc;
 	
 	/**
 	 * 根据ID获取该会员卡的详细信息
@@ -135,19 +138,19 @@ public class CardDetailService extends ShopBaseService{
 		int numOfSendCard = memberCardSvc.getNumSendCardById(limitCard.getId());
 		limitCard.setHasSend(numOfSendCard);
 		changeCardJsonCfgToDetailType(limitCard);
-		// 自定义权益信息
+		//	自定义权益信息
 		limitCard.setCardCustomRights(getCustomRights(card));
-		// 自定义激活项
+		//	自定义激活项
 		limitCard.setCustomAction(getCustomAction(card));
-		// 同步打标签
+		//	同步打标签
 		limitCard.setMyCardTag(getCardTag(card));
-		// 转赠数据
+		//	转赠数据
 		limitCard.setCardGive(getCardGive(card));
+		//	兑换商品相关数据
+		limitCard.setCardExchangGoods(cardExchangSvc.getCardExchangGoodsService(card));
 		return limitCard;
 	}
 	
-	
-
 
 	public RankCardToVo changeToGradeCardDetail(MemberCardRecord card) {
 		logger().info("获取等级会员卡");
@@ -307,7 +310,6 @@ public class CardDetailService extends ShopBaseService{
 					.mostGiveAway(card.getMostGiveAway())
 					.build();
 	}
-
 	
 	
 	/**

@@ -326,6 +326,11 @@ export default {
     upperlowershelves: {
       type: Boolean,
       default: false
+    },
+    //  是否隐藏回显的数据
+    hiddenChoosedGoods: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -481,6 +486,8 @@ export default {
       this.requestParam.pageRows = this.pageParams.pageRows
       if (this.onlyShowChooseGoods) {
         this.requestParam.goodsIds = this.checkedIdList
+      } else if (this.hiddenChoosedGoods) {
+        this.requestParam.notIncludeGoodsIds = this.chooseGoodsBack
       } else {
         this.requestParam.goodsIds = []
       }
@@ -518,6 +525,7 @@ export default {
           }
         })
       })
+
       let flag = this.tableData.filter((item, index) => {
         return item.ischecked === false
       })

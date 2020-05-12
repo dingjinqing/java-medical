@@ -539,4 +539,8 @@ ALTER TABLE `b2c_return_order` ADD COLUMN `return_source_type` tinyint(1) DEFAUL
 -- 门店新增自提相关字段
 ALTER TABLE `b2c_store` ADD COLUMN `pick_time_action` tinyint(1) DEFAULT '1' COMMENT '自提取货时间类型';
 ALTER TABLE `b2c_store` ADD COLUMN `pick_time_detail` varchar(50) DEFAULT NULL COMMENT '自提时间明细';
-/*********************2.13*************************END*/
+
+-- 会员卡添加兑换商品限制时间类型和次数
+ALTER TABLE `b2c_member_card` ADD COLUMN `period_limit` tinyint(1) DEFAULT NULL COMMENT '0:不限制，1：日，2：周，3：月，4：季度，5：年';
+ALTER TABLE `b2c_member_card` ADD COLUMN `period_num` int(11) DEFAULT NULL COMMENT '周期内允许兑换次数';
+/***********************2.13*********************END*/

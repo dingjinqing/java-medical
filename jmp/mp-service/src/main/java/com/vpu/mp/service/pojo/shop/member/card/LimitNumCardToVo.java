@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardTag;
 
@@ -94,6 +95,10 @@ public class LimitNumCardToVo extends LimitNumCardVo {
 	@JsonProperty(value="customRights", access = JsonProperty.Access.READ_ONLY)
 	protected CardCustomRights cardCustomRights;
 	
+	/**
+	 * 	兑换商品数据信息
+	 */
+	private CardExchangGoods cardExchangGoods;
 	
 	
 	/**
@@ -140,7 +145,6 @@ public class LimitNumCardToVo extends LimitNumCardVo {
 		}else if(BUY_BY_SCORE.equals(payType)) {
 			payScore = payFee;
 		}
-		
 		
 	}
 	
