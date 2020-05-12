@@ -125,7 +125,7 @@
                   v-if="scope.row.status === 1 && [1,2].includes(scope.row.currentState)"
                 >
                   <i
-                    class="el-icon-edit-outline"
+                    class="iconfont iconbianji"
                     @click="edit(scope.row.id)"
                   ></i>
                 </el-tooltip>
@@ -138,7 +138,7 @@
                 >
                   <i
                     @click="delCouponPackage(scope.row.id)"
-                    class="el-icon-delete"
+                    class="iconfont iconshanchu2"
                   ></i>
                 </el-tooltip>
                 <el-tooltip
@@ -149,7 +149,7 @@
                   v-if="scope.row.status === 1 && scope.row.currentState === 1"
                 >
                   <i
-                    class="el-icon-share"
+                    class="iconfont iconfenxiang1"
                     @click="shareCouponPackage(scope.row.id)"
                   ></i>
                 </el-tooltip>
@@ -162,7 +162,7 @@
                 >
                   <i
                     @click="puaseCouponPackage(scope.row.id)"
-                    class="el-icon-remove-outline"
+                    class="iconfont icontingyong"
                   ></i>
                 </el-tooltip>
                 <el-tooltip
@@ -174,7 +174,7 @@
                 >
                   <i
                     @click="enableCouponPackage(scope.row.id)"
-                    class="el-icon-check"
+                    class="iconfont iconqiyong"
                   ></i>
                 </el-tooltip>
 
@@ -185,7 +185,7 @@
                   placement="top"
                 >
                   <i
-                    class="el-icon-s-order"
+                    class="iconfont icondingdan"
                     @click="orderDetails(scope.row.id)"
                   ></i>
                 </el-tooltip>
@@ -196,7 +196,7 @@
                   placement="top"
                 >
                   <i
-                    class="el-icon-document"
+                    class="iconfont iconmingxi1"
                     @click="receiveDetails(scope.row.id)"
                   ></i>
                 </el-tooltip>
@@ -462,6 +462,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .main {
   padding: 10px;
   .navBox {
@@ -493,7 +494,7 @@ export default {
       margin-left: -5px;
       > .item {
         font-size: 22px;
-        color: #66b1ff;
+        color: #5a8bff;
         cursor: pointer;
         margin-left: 5px;
       }

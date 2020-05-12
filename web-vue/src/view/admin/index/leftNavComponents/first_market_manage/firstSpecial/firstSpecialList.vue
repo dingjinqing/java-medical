@@ -132,7 +132,7 @@
                 v-if="scope.row.status === 1"
               >
                 <i
-                  class="el-icon-edit-outline"
+                  class="iconfont iconbianji"
                   @click="edit(scope.row.id, scope.row)"
                 ></i>
               </el-tooltip>
@@ -145,7 +145,7 @@
               >
                 <i
                   @click="deleteFirstSpecial(scope.row.id)"
-                  class="el-icon-delete"
+                  class="iconfont iconshanchu2"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -157,7 +157,7 @@
               >
                 <i
                   @click="disabledFirstSpecial(scope.row.id)"
-                  class="el-icon-circle-close"
+                  class="iconfont icontingyong"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -169,7 +169,7 @@
               >
                 <i
                   @click="enableFirstSpecial(scope.row.id)"
-                  class="el-icon-circle-check"
+                  class="iconfont iconqiyong"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -179,7 +179,7 @@
                 placement="top"
               >
                 <i
-                  class="el-icon-s-order"
+                  class="iconfont iconmingxi1"
                   @click="checkOrderList(scope.row.id)"
                 ></i>
               </el-tooltip>
@@ -379,6 +379,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .content {
   padding: 10px;
   min-width: 100%;
@@ -413,7 +414,7 @@ export default {
   margin-left: -5px;
   > .item {
     font-size: 22px;
-    color: #66b1ff;
+    color: #5a8bff;
     cursor: pointer;
     margin-left: 5px;
   }

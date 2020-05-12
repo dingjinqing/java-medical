@@ -133,7 +133,7 @@
               >
                 <i
                   @click="editGift(scope.row.id)"
-                  class="el-icon-edit-outline"
+                  class="iconfont iconbianji"
                   style="font-size: 22px;color: #5a8bff;"
                 ></i>
               </el-tooltip>
@@ -144,7 +144,7 @@
               >
                 <i
                   @click="disableGift(scope.row.id)"
-                  class="el-icon-circle-close"
+                  class="iconfont icontingyong"
                   style="font-size: 22px;color: #5a8bff;"
                 ></i>
               </el-tooltip>
@@ -155,7 +155,7 @@
               >
                 <i
                   @click="enableGift(scope.row.id)"
-                  class="el-icon-circle-check"
+                  class="iconfont iconqiyong"
                   style="font-size: 22px;color: #5a8bff;"
                 ></i>
               </el-tooltip>
@@ -165,7 +165,7 @@
               >
                 <i
                   @click="gotoGiftDetail(scope.row.id)"
-                  class="el-icon-tickets"
+                  class="iconfont iconmingxi1"
                   style="font-size: 22px;color: #5a8bff;"
                 ></i>
               </el-tooltip>
@@ -177,7 +177,7 @@
               >
                 <i
                   @click="deleteGift(scope.row.id)"
-                  class="el-icon-delete"
+                  class="iconfont iconshanchu2"
                   style="font-size: 22px;color: #5a8bff;"
                 ></i>
               </el-tooltip>
@@ -347,6 +347,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .content {
   padding: 10px;
   min-width: 100%;

@@ -362,17 +362,9 @@ public class GroupDrawService extends ShopBaseService {
 		String actCopywriting = Util.toJsonNotNull(param.getActCopywriting());
 		param.setActivityCopywriting(actCopywriting);
 		param.setGoodsId(listToString(goodsIds));
-		db().insertInto(GROUP_DRAW).set(createGroupDrawRecord(param)).execute();
-	}
-
-	/**
-	 * 获取活动record
-	 */
-	private GroupDrawRecord createGroupDrawRecord(GroupDrawAddParam param) {
-		return new GroupDrawRecord(null, param.getName(), param.getStartTime(), param.getEndTime(), param.getGoodsId(),
-				param.getMinJoinNum(), param.getPayMoney(), param.getJoinLimit(), param.getOpenLimit(),
-				param.getLimitAmount(), param.getToNumShow(), ACTIVITY_STATUS_NORMAL, (byte) 1, null, null, ZERO, null,
-				param.getRewardCouponId(),param.getActivityCopywriting());
+		GroupDrawRecord newRecord = db().newRecord(GROUP_DRAW,param);
+		newRecord.insert();
+		//db().insertInto(GROUP_DRAW).set(createGroupDrawRecord(param)).execute();
 	}
 
 	/**

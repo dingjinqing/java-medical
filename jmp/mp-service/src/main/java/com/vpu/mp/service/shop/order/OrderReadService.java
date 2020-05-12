@@ -513,7 +513,9 @@ public class OrderReadService extends ShopBaseService {
         vo.setOrderType(OrderInfoService.orderTypeToArray(order.getGoodsType()));
         //客服按钮展示开关
         vo.setReturnService(shopCommonConfigService.getReturnService());
-
+        UserInfo userInfo = user.getUserInfo(rOrder.getUserId());
+        vo.setUsername(userInfo.getUsername());
+        vo.setMobile(userInfo.getMobile());
 		return vo;
 	}
 

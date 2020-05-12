@@ -175,7 +175,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-edit-outline"
+                  class="iconfont iconbianji"
                   @click="updateCoupon(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -186,7 +186,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-share"
+                  class="iconfont iconfenxiang1"
                   @click="shareCoupon(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -197,7 +197,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-circle-close"
+                  class="iconfont icontingyong"
                   @click="puaseCoupon(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -208,7 +208,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-circle-check"
+                  class="iconfont iconqiyong"
                   @click="startCoupon(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -218,7 +218,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-tickets"
+                  class="iconfont iconmingxi1"
                   @click="receiveDetails(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -229,7 +229,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-delete"
+                  class="iconfont iconshanchu2"
                   @click="delCoupon(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -484,6 +484,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .content {
   padding: 10px;
   min-width: 100%;

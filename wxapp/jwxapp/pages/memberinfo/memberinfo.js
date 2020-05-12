@@ -421,8 +421,9 @@ global.wxPage({
               } else if (custom_arr[i].customType == 2) {
                 custom_arr[i].text = ''
               } else if (custom_arr[i].customType == 3) {
-                // custom_arr[j].comm_img = [];
-                // custom_arr[j].can_click = true;
+                console.log(custom_arr[i])
+                custom_arr[i].comm_img = [];
+                custom_arr[i].can_click = true;
               }
 
             }
@@ -705,6 +706,11 @@ global.wxPage({
           } else if (custom_arr[i].customType == 2 && custom_arr[i].text == '') {
             util.showModal("提示", "请填写" + custom_arr[i].customTitle);
             return;
+          } else if (custom_arr[i].customType == 3 && !custom_arr[i].comm_img.length) {
+            util.showModal("提示", "请上传图片");
+            return;
+          } else if (custom_arr[i].customType == 3) {
+            custom_arr[i].pictureLinks = custom_arr[i].comm_img
           }
         }
         if (custom_arr[i].customType == 0 || custom_arr[i].customType == 1) {
@@ -774,7 +780,7 @@ global.wxPage({
     }
 
     if (!distribution) user_info.card_no = card_no;
-
+    console.log('sss')
     if (that.data.save_flag == 1) {
       that.setData({
         save_flag: 0
@@ -1164,18 +1170,39 @@ global.wxPage({
         var tempFilePaths = res.tempFilePaths;
         if (res) {
           var can_click = false;
+          console.log(res)
+
           for (var i = 0; i < tempFilePaths.length; i++) {
-            util.uploadFile(url, tempFilePaths[i], { img_cat_id: -1 }, function (e) {
-              console.log(e)
-              var data = JSON.parse(e.data);
-              console.log(data)
-              custom_op[index].comm_img.push(data.content[0].img_url);
-              if (i == tempFilePaths.length) can_click = true;
-              that.setData({
-                ['custom_arr[' + index + ']']: custom_op[index],
-                ['custom_arr[' + index + '].can_click']: can_click,
-              })
-            });
+            let img = tempFilePaths[i]
+            wx.getImageInfo({
+              src: img,
+              success: function (obj) {
+                let params = {
+                  needImgWidth: obj.width,
+                  needImgHeight: obj.height,
+                  imgCatId: -1,
+                  userId: util.getCache('user_id')
+                }
+                util.uploadFile(url, img, params, function (e) {
+                  let data = JSON.parse(e.data)
+                  console.log(data)
+                  if (data.error === 0) {
+                    custom_op[index].comm_img.push(data.content.imgUrl);
+                    if (i == tempFilePaths.length) can_click = true;
+                    console.log(index, custom_op)
+                    that.setData({
+                      ['custom_arr[' + index + ']']: custom_op[index],
+                      ['custom_arr[' + index + '].can_click']: can_click,
+                    })
+
+                  }
+                }, function (err) {
+                  util.toast_fail(that.$t('page1.reserve.uploadFailed'))
+                  console.log(err)
+                });
+              }
+            })
+
           }
         }
       },
@@ -1191,6 +1218,8 @@ global.wxPage({
     var index = e.currentTarget.dataset.idx;
     var imgindex = e.currentTarget.dataset.imgindex;
     var custom_op = that.data.custom_arr;
+    console.log(e)
+    console.log(custom_op, index, imgindex)
     custom_op[index].comm_img.splice(imgindex, 1);
     that.setData({
       ['custom_arr[' + index + ']']: custom_op[index],

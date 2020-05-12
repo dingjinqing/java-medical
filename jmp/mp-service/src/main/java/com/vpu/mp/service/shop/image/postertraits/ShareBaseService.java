@@ -4,19 +4,27 @@ import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.config.GoodsShareConfig;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
+import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 import com.vpu.mp.service.pojo.wxapp.share.*;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
+import com.vpu.mp.service.shop.config.ShopStyleConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 海报下载分享基类
@@ -33,6 +41,10 @@ public abstract class ShareBaseService extends ShopBaseService {
     protected GoodsService goodsService;
     @Autowired
     protected QrCodeService qrCodeService;
+    @Autowired
+    private ShopStyleConfigService shopStyleConfigService;
+    @Autowired
+    private ShopCommonConfigService commonConfigService;
 
     /**
      * 获取活动record信息
@@ -220,6 +232,7 @@ public abstract class ShareBaseService extends ShopBaseService {
         BufferedImage qrCodeImage;
         try {
             qrCodeImage = ImageIO.read(new URL(mpQrCode));
+//            qrCodeImage = ImageIO.read(new File("E:/qrcode.jpg"));
         } catch (IOException e) {
             pictorialLog(getActivityName(), "获取二维码失败");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
@@ -227,7 +240,20 @@ public abstract class ShareBaseService extends ShopBaseService {
         }
 
         pictorialLog(getActivityName(), "处理海报背景图片");
+
+
         createPictorialImg(qrCodeImage, goodsImage, userInfo, shareDoc, activityRecord, goodsRecord, shop, baseParam, goodsPictorialInfo);
+
+//        BufferedImage bgImg = goodsPictorialInfo.getBgImg();
+//        try {
+//            FileOutputStream outputStream = new FileOutputStream(new File("E:/a.jpg"));
+//            ImageIO.write(bgImg, "jpg", outputStream);
+//            outputStream.close();
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         return goodsPictorialInfo;
     }
@@ -249,6 +275,42 @@ public abstract class ShareBaseService extends ShopBaseService {
      * @return 名称字符串
      */
     abstract String getActivityName();
+
+    /**
+     * 返回店铺配置样式颜色
+     * @return
+     */
+    protected Color getShopStyleColor(){
+        ShopStyleConfig shopStyleConfig = shopStyleConfigService.getShopStyleConfig();
+        String shopStyleValue = shopStyleConfig.getShopStyleValue();
+        // 店铺配置颜色
+        Color shopStyleColor = PictorialImgPx.SHOP_DEFAULT_STYLE_COLOR;
+        try {
+            if (StringUtils.isNotBlank(shopStyleValue)) {
+                String[] splits = shopStyleValue.split("\\)");
+                Pattern compile = Pattern.compile("\\d+");
+                Matcher matcher = compile.matcher(splits[1]);
+                matcher.find();
+                int red = Integer.parseInt(matcher.group());
+                matcher.find();
+                int green = Integer.parseInt(matcher.group());
+                matcher.find();
+                int blue = Integer.parseInt(matcher.group());
+                shopStyleColor = new Color(red,green,blue);
+            }
+        } catch (Exception e) {
+        }
+        return shopStyleColor;
+    }
+
+    /**
+     * 获取店铺海报分享配置
+     * @return
+     */
+    protected Byte getPictorialShareStyle(){
+        GoodsShareConfig shareConfig = commonConfigService.getGoodsShareConfig();
+        return shareConfig.getCustomPictorial();
+    }
 
     /**
      * 分享打印日志

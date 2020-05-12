@@ -140,7 +140,7 @@
                 >
                   <span
                     @click="handletoClickOperation(scope.row,1)"
-                    class="el-icon-edit-outline iconSpn"
+                    class="iconfont iconbianji iconSpn"
                   ></span>
                 </el-tooltip>
                 <el-tooltip
@@ -150,7 +150,7 @@
                 >
                   <span
                     @click="handletoClickOperation(scope.row,2)"
-                    class="el-icon-s-promotion iconSpn"
+                    class="iconfont iconfabu iconSpn"
                   ></span>
                 </el-tooltip>
 
@@ -160,7 +160,7 @@
                 >
                   <span
                     @click="handletoClickOperation(scope.row,3)"
-                    class="el-icon-delete iconSpn"
+                    class="iconfont iconshanchu2 iconSpn"
                   ></span>
                 </el-tooltip>
                 <el-tooltip
@@ -170,7 +170,7 @@
                 >
                   <span
                     @click="handletoClickOperation(scope.row,4)"
-                    class="fa fa-copy iconSpn"
+                    class="iconfont iconfuzhi iconSpn"
                   ></span>
                 </el-tooltip>
                 <el-tooltip
@@ -210,7 +210,7 @@
                 >
                   <span
                     @click="handletoClickOperation(scope.row,4)"
-                    class="fa fa-copy iconSpn"
+                    class="iconfont iconfuzhi iconSpn"
                   ></span>
                 </el-tooltip>
                 <el-tooltip
@@ -219,7 +219,7 @@
                 >
                   <span
                     @click="handletoClickOperation(scope.row,5)"
-                    class="el-icon-share iconSpn"
+                    class="iconfont iconfenxiang1 iconSpn"
                   ></span>
                 </el-tooltip>
 

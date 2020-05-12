@@ -36,11 +36,11 @@
       <section>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="titless">付款订单数</div>
+            <div class="titless">{{$t('lotteryDraw.tipes1')}}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="活动带来的付款订单数（包括退款部分）"
+              :content="$t('lotteryDraw.tipesContent1')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -139,14 +139,14 @@ export default {
     this.chartSettings = {
       labelMap: {
         'dateTime': this.$t('groupIntegration.date'),
-        'orderNumber': '付款订单数',
+        'orderNumber': this.$t('lotteryDraw.tipes1'),
         'joinNum': this.$t('groupIntegration.numberUsers'),
         'successUserNum': this.$t('groupIntegration.groupUsers'),
         'newUser': this.$t('groupIntegration.pullNewUsers')
       },
       legendName: {
         'dateTime': this.$t('groupIntegration.date'),
-        'orderNumber': '付款订单数',
+        'orderNumber': this.$t('lotteryDraw.tipes1'),
         'joinNum': this.$t('groupIntegration.numberUsers'),
         'successUserNum': this.$t('groupIntegration.groupUsers'),
         'newUser': this.$t('groupIntegration.pullNewUsers')

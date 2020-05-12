@@ -162,5 +162,83 @@ export const en = {
   }, {
     value: false,
     label: 'No'
-  }]
+  }],
+  moneyTitle: '￥',
+  max: 'Highest',
+  rules: 'Activity rules description',
+  noLimit: 'No limit',
+  man: 'full',
+  canDo: 'Yuan is available',
+  please1: 'Please fill in the product amount',
+  please2: 'Please fill in a non-negative number, you can keep two decimal places',
+  please3: 'Please fill in the event name',
+  please4: 'Please fill in the validity period',
+  please5: 'Please fill in the minimum number of prize pool',
+  please6: 'Please fill in the maximum number of participants',
+  please7: 'Please fill in the maximum number of groups opened',
+  please8: 'Please fill in the minimum group number',
+  please9: 'Please fill in the minimum number of impressions',
+  please10: 'Please select event product',
+  limitTip: 'No more than five coupons',
+  tipes1: 'Number of payment orders',
+  tipesContent1: 'Number of payment orders (including refund part) brought by the event',
+  orderStatusArr: [{
+    value: null,
+    label: 'All orders'
+  }, {
+    value: 0,
+    label: 'Pending payment'
+  }, {
+    value: 1,
+    label: 'Order cancelled'
+  }, {
+    value: 2,
+    label: 'Order closed'
+  }, {
+    value: 3,
+    label: 'Pending delivery / Pending verification'
+  }, {
+    value: 4,
+    label: 'Delivered'
+  }, {
+    value: 5,
+    label: 'Delivered / Has been mentioned'
+  }, {
+    value: 6,
+    label: 'Order completed'
+  }, {
+    value: 7,
+    label: 'Returning'
+  }, {
+    value: 6,
+    label: 'After sale completed'
+  }, {
+    value: 8,
+    label: 'Gift delivery completed'
+  }, {
+    value: 9,
+    label: 'Refunding'
+  }, {
+    value: 10,
+    label: 'Refund completed'
+  }, {
+    value: 11,
+    label: 'Fighting in group'
+  }, {
+    value: 12,
+    label: 'Has formed a group'
+  }, {
+    value: 13,
+    label: 'Gift delivery completed'
+  }, {
+    value: 14,
+    label: 'Pending Order'
+  }, {
+    value: 15,
+    label: 'Order received-picking up'
+  }, {
+    value: 16,
+    label: 'Picked up-shipping in progress'
+  }],
+  isCopy: 'Copy to clipboard'
 }

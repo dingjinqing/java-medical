@@ -260,23 +260,23 @@
 			</view>
 		</view>
 		<!--自定义激活项上传图片-->
-<view class="main_picker" wx:if='{{item.custom_type == 3}}' style="padding-bottom:0" >
+<view class="main_picker" wx:if='{{item.customType == 3}}' style="padding-bottom:0" >
 			<view class='customTitle'>
-				<text class="must_choose" >*</text>上传图片<i style="color: #ccc;margin-left:10rpx">(最多上传五张图片)</i>
+				<text class="must_choose" >*</text>上传图片<i style="color: #ccc;margin-left:10rpx">(最多上传{{item.pictureNumber}}张图片)</i>
 			</view>
 			<view class="shai_content">
 					<block
 					 wx:for="{{item.comm_img}}"
-					 wx:key="index"
 					 wx:for-item="imgitem"
+					 wx:for-index="imgindex"
 					 wx:key="imgindex"
 					>
 						<view class='shai_view'>
 							<image src='{{imageUrl}}/image/admin/dele_service.png' class="shai_close" bindtap='customDelImage' data-imgindex="{{imgindex}}" data-idx='{{index}}'></image>
-							<image src="{{imgitem}}" data-idx="{{key_img}}" />
+							<image  src="{{imgitem}}" data-idx="{{key_img}}" />
 						</view>
 					</block>
-				<view class="shai_right" bindtap="customUpImage" wx:if="{{item.comm_img.length < item.custom_image}}" data-idx='{{index}}' data-num='{{item.custom_image}}'>
+				<view class="shai_right" bindtap="customUpImage" wx:if="{{item.comm_img.length < item.pictureNumber}}" data-idx='{{index}}' data-num='{{item.pictureNumber}}'>
 					<image src='{{imageUrl}}/image/wxapp/add.png' mode='widthFix' />
 				</view>
 

@@ -14,6 +14,11 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 public class OrderReturnListVo extends OrderListInfoVo {
+
+    public static final String ORDER_USERNAME="orderUserName";
+    public static final String ORDER_MOBILE="orderMobile";
+
+
 	private Integer retId;
 	private String returnOrderSn;
 	private Timestamp applyTime;
@@ -23,4 +28,6 @@ public class OrderReturnListVo extends OrderListInfoVo {
 	private String reasonDesc;
 	private Timestamp shippingOrRefundTime;
     private Byte returnSource;
+    private String orderUserName;
+    private String orderMobile;
 }

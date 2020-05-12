@@ -57,7 +57,8 @@ public class ReturnOrderInfoVo {
 	private String consignee;
 	private String zipCode;
 	private String currency;
-
+    private String username;
+    private String mobile;
     /**
      * 客服按钮展示开关
      */
