@@ -116,7 +116,7 @@
             <li class="time-cell">兑换时间限制：</li>
             <li class="time-cell">
                 <el-radio
-                  v-model="ruleForm.exchangTimeType"
+                  v-model="ruleForm.exchangTimeRadio"
                   label="0"
                 >
                     不限制
@@ -127,12 +127,18 @@
             <li class="time-cell"></li>
             <li class="time-cell">
                 <el-radio
-                  v-model="ruleForm.exchangTimeType"
+                  v-model="ruleForm.exchangTimeRadio"
                   label="1"
                 >
                     有效期内每
                 </el-radio>
-                <el-select size="small" style="width: 110px;"></el-select>
+                <el-select v-model="ruleForm.exchangTimeType" size="small" style="width: 110px;">
+                  <el-option v-for="item in exchangTimeOpt"
+                    :key="item.id"
+                    :label="item.label"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
                 <span>兑换</span>
                 <el-input v-model.number="ruleForm.exchangeTimeNum" size="small" style="width: 110px;"></el-input>
                 <span>次</span>
@@ -172,6 +178,14 @@ export default {
       }
     }
   },
+  watch: {
+    lang (newValue, oldValue) {
+      this.initExchangTimeOpt()
+    }
+  },
+  mounted () {
+    this.langDefault()
+  },
   computed: {
     ruleForm: {
       get () {
@@ -188,7 +202,8 @@ export default {
       isOnlyShowChooseGoods: false,
       currentGoodsId: null,
       currentIndex: 0,
-      suiteGoodsCfg: {goodsIds: [], maxNum: null}
+      suiteGoodsCfg: {goodsIds: [], maxNum: null},
+      exchangTimeOpt: []
     }
   },
   methods: {
@@ -210,6 +225,16 @@ export default {
     deleteGoodsItem (index) {
       console.log(index)
       this.ruleForm.exchangGoods.splice(index, 1)
+    },
+    initExchangTimeOpt () {
+      this.exchangTimeOpt = []
+      const options = this.$t('memberCard.exchangTime')
+      for (let id = 1; id < 6; id++) {
+        this.exchangTimeOpt.push({
+          id,
+          label: options[id - 1]
+        })
+      }
     }
   }
 }

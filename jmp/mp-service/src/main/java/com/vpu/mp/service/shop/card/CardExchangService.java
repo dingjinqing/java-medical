@@ -55,7 +55,7 @@ public class CardExchangService extends ShopBaseService {
 					Map<String,Integer> map = Util.json2Object(exchangGoods, new TypeReference<Map<String,Integer>>() {}, false);
 					List<GoodsCfg> goodsCfgList = new ArrayList<GoodsCfg>();
 					for(Map.Entry<String, Integer> entry: map.entrySet()) {
-						GoodsCfg goodsCfg = cardExGoods.new GoodsCfg();
+						GoodsCfg goodsCfg = new GoodsCfg();
 						String key = entry.getKey();
 						List<Integer> goodsId = Util.stringToList(key);
 						goodsCfg.setGoodsId(goodsId);
@@ -65,7 +65,7 @@ public class CardExchangService extends ShopBaseService {
 					cardExGoods.setExchangGoods(goodsCfgList);
 				}else {
 					//	逗号分隔的数据，直接解析
-					GoodsCfg goodsCfg = cardExGoods.new GoodsCfg();
+					GoodsCfg goodsCfg = new GoodsCfg();
 					goodsCfg.setGoodsId(Util.stringToList(exchangGoods));
 					goodsCfg.setMaxNum(NUM_INFINITE);
 					

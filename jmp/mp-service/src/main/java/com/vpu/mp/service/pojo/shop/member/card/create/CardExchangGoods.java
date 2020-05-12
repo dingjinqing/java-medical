@@ -18,7 +18,7 @@ public class CardExchangGoods {
 	 * 兑换的商品配置
 	 */
 	@Data
-	public class GoodsCfg{
+	public static class GoodsCfg{
 		/**
 		 * 商品Id
 		 */
@@ -27,6 +27,11 @@ public class CardExchangGoods {
 		 * 每件商品可兑换的最大次数
 		 */
 		private Integer maxNum;
+		public GoodsCfg() {}
+		public GoodsCfg(List<Integer> goodsId,Integer maxNum) {
+			this.goodsId = goodsId;
+			this.maxNum = maxNum;
+		}
 	}
 	
 	/**

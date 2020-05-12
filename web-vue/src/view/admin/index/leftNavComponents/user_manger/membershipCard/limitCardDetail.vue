@@ -212,7 +212,8 @@ export default {
         everyGoodsMaxNum: '',
         exchangFreight: '0',
         exchangGoods: [{goodsIds: [], maxNum: null}],
-        exchangTimeType: '0',
+        exchangTimeType: null,
+        exchangTimeRadio: '0',
         exchangeTimeNum: null
       },
       cardReceiveCfgData: {
@@ -486,10 +487,6 @@ export default {
         'endTime': this.cardEffectTime.fixedDate ? this.cardEffectTime.fixedDate[1] : null,
         'receiveDay': this.cardEffectTime.receiveDay,
         'dateType': this.cardEffectTime.dateType,
-        'isExchange': this.cardSuiteGoodsCfgData.isExchange,
-        'exchangCount': this.cardSuiteGoodsCfgData.exchangCount,
-        'exchangFreight': this.cardSuiteGoodsCfgData.exchangFreight,
-        'exchangGoods': this.cardSuiteGoodsCfgData.exchangGoods,
         'storeListType': this.cardStoreCfgData.storeListType,
         'storeList': this.cardStoreCfgData.choosedStore.map(({ storeId }) => storeId),
         'useTime': this.cardStoreCfgData.useTime,
@@ -510,7 +507,8 @@ export default {
         'customAction': this.cardActiveCfgData.customAction,
         'cardTag': this.cardTag,
         'cardGive': this.cardGive,
-        'customRights': this.customRights
+        'customRights': this.customRights,
+        'cardExchangGoods': this.getCardExchangGoods()
       }
       if (this.cardId) {
         // 更新会员卡
@@ -580,6 +578,15 @@ export default {
           return item
         })
       }
+    },
+    getCardExchangGoods () {
+      let obj = {...this.cardSuiteGoodsCfgData}
+      console.log(obj)
+      if (obj.exchangTimeRadio === '0') {
+        obj.exchangTimeType = 0
+      }
+      delete obj.exchangTimeRadio
+      return obj
     }
   }
 

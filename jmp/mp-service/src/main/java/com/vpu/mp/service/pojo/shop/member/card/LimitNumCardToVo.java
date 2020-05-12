@@ -146,7 +146,6 @@ public class LimitNumCardToVo extends LimitNumCardVo {
 			payScore = payFee;
 		}
 		
-		
 	}
 	
 	
