@@ -5,6 +5,8 @@ import com.vpu.mp.db.shop.tables.records.CheckedGoodsCartRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -18,17 +20,21 @@ import com.vpu.mp.service.pojo.wxapp.card.param.CardExchaneGoodsJudgeParam;
 import com.vpu.mp.service.pojo.wxapp.card.param.CardExchangeGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.card.vo.CardCheckedGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.card.vo.CardExchangeGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.user.UserCheckedGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.user.UserCheckedGoodsVo;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.MemberCardService;
+import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.user.user.UserCheckedGoodsService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,7 +53,8 @@ public class WxCardExchangeService extends ShopBaseService {
 	@Autowired private GoodsService goodsSvc;
 	@Autowired private UserCheckedGoodsService userCheckedGoodsSvc;
 	@Autowired private DomainConfig domainConfig;
-	
+    @Autowired public UserCardService userCard;
+
 	/**
 	 * 兑换商品列表
 	 * @param param
@@ -189,6 +196,27 @@ public class WxCardExchangeService extends ShopBaseService {
 		vo.setTotalNumber(totalNumber);
 		return vo;
 	}
+
+    /**
+     * 下单时获取已选限次卡兑换商品
+     * @param userId
+     * @param cardNo
+     * @return
+     */
+    public List<OrderBeforeParam.Goods> getCheckedData(Integer userId, String cardNo) throws MpException {
+        UserCheckedGoodsParam param = new UserCheckedGoodsParam();
+        param.setUserId(userId);
+        param.setIdentityId(cardNo);
+        CardCheckedGoodsVo changeCheckedGoods = changeCheckedGoodsList(param);
+        if(CollectionUtils.isEmpty(changeCheckedGoods.getGoodsList().dataList)) {
+            throw new MpException(JsonResultCode.CODE_ORDER_CARD_EXCHGE_NO_CHOOSE_GOODS);
+        }
+        ArrayList<OrderBeforeParam.Goods> goodsList = new ArrayList<>(changeCheckedGoods.getGoodsList().dataList.size());
+        changeCheckedGoods.getGoodsList().dataList.forEach(
+            x-> goodsList.add(OrderBeforeParam.Goods.init(x.getGoodsId(), x.getGoodsNumber(), x.getProductId()))
+        );
+        return goodsList;
+    }
 
 
 	/**

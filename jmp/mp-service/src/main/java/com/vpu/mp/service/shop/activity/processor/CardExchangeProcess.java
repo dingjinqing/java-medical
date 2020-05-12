@@ -1,9 +1,14 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.beust.jcommander.internal.Lists;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.util.CardUtil;
+import com.vpu.mp.service.pojo.shop.member.card.dao.CardFullDetail;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
@@ -32,7 +37,37 @@ public class CardExchangeProcess extends WxCardExchangeService implements Proces
 
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
+        CardFullDetail cardDetail = userCard.memberCardService.getCardDetailByNo(param.getMemberCardNo());
+        orderCheck(param,cardDetail);
+        orderInit(param,cardDetail);
+    }
 
+    private void orderCheck(OrderBeforeParam param, CardFullDetail cardDetail) throws MpException {
+        //校验是否可以兑换
+        if(!CardUtil.canExchangGoods(cardDetail.getMemberCard().getIsExchang())) {
+            throw new MpException(JsonResultCode.CODE_ORDER_CARD_EXCHGE_NO_EXCHGE_GOODS);
+        }
+        //校验是否可以兑换此商品
+        if(CardUtil.isExchangPartGoods(cardDetail.getMemberCard().getIsExchang())) {
+            List<String> exchangGoodsIds = Lists.newArrayList(cardDetail.getMemberCard().getExchangGoods());
+            for (Integer goodsId: param.getGoodsIds()) {
+                if(!exchangGoodsIds.contains(goodsId.toString())) {
+                    throw new MpException(JsonResultCode.CODE_ORDER_CARD_EXCHGE_NO_EXCHGE_GOODS);
+                }
+            }
+        }
+        //剩余兑换商品次数校验/周期次数限制
+        Integer numLimit = cardDetail.getUserCard().getExchangSurplus();
+        if(numLimit < param.getGoods().stream().map(OrderBeforeParam.Goods::getGoodsNumber).reduce(0, Integer::sum)) {
+            throw new MpException(JsonResultCode.CODE_ORDER_CARD_EXCHGE_NUMBER_LIMIT);
+        }
+    }
+
+    private void orderInit(OrderBeforeParam param, CardFullDetail cardDetail) {
+        //免运费
+        if(CardUtil.isFreeShipping(cardDetail.getMemberCard().getExchangFreight())) {
+            param.setIsFreeShippingAct(OrderConstant.YES);
+        }
     }
 
     @Override

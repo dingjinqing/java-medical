@@ -1,17 +1,4 @@
 package com.vpu.mp.service.foundation.util;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_ALL;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_PART;
-
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
@@ -20,6 +7,18 @@ import com.vpu.mp.service.pojo.shop.member.card.EffectTimeParam;
 import com.vpu.mp.service.pojo.shop.member.card.base.UserCardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardGive.CardGiveSwitch;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_ALL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_PART;
 /**
 * @author 黄壮壮
 * @Date: 2019年11月28日
@@ -417,5 +416,14 @@ public class CardUtil {
 	public static boolean isCardSourceGiveWay(Byte cardSource) {
 		return UserCardConstant.SOURCE_GIVE_WAY.equals(cardSource);
 	}
-	
+
+    /**
+     * 限次卡是否免运费
+     * @param exchangFreight 运费策略 0免运费 1使用商品运费策略
+     * @return true 免 | false 使用商品运费策略
+     */
+    public static boolean isFreeShipping(Byte exchangFreight) {
+        return CardConstant.FREE_SHIPPING.equals(exchangFreight);
+    }
+
 }
