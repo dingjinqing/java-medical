@@ -10,19 +10,28 @@
           </div>
           <div class="leftInfo">
             <div class="floatNav">
-              <div
-                class="navList"
-                v-if="mainImgUrl.length<4"
-              >
+              <div class="navList">
                 <div
                   class="nav_item navLi"
-                  v-for="(item,index) in mainImgUrl"
+                  v-for="(item,index) in topArr"
                   :key="index"
                   :class="holdMainIcon?'navListAct':''"
-                  :style="holdMainIcon?`transform: translateY(-${(index+1)*58}px)`:''"
+                  :style="holdMainIcon&&(topArr.length+bottomArr.length)<4?`transform: translateY(-${(index+1+bottomArr.length)*58}px)`:item.isIndependentShow?`transform: translateY(-${(index+1)*58}px);opacity: 1;visibility: visible`:''"
                 >
                   <img :src="item.imgUrl">
                 </div>
+                <div v-if="(topArr.length+bottomArr.length)<4">
+                  <div
+                    class="nav_item navLi"
+                    v-for="(item,index) in bottomArr"
+                    :key="index"
+                    :class="holdMainIcon?'navListAct':''"
+                    :style="holdMainIcon?`transform: translateY(-${(index+1)*58}px)`:''"
+                  >
+                    <img :src="item.imgUrl">
+                  </div>
+                </div>
+
               </div>
               <div class="nav_item nav_item_main">
                 <img
@@ -40,12 +49,12 @@
               </div>
               <div
                 class="surpass_content"
-                v-if="mainImgUrl.length>3"
+                v-if="(topArr.length+bottomArr.length)>3"
                 :style="holdMainIcon?'transform: none;opacity: 1':''"
               >
                 <div
                   class="surpass_every"
-                  v-for="(item,index) in mainImgUrl"
+                  v-for="(item,index) in bottomArr"
                   :key="index"
                 >
                   <div class="surpass_div">
@@ -240,7 +249,11 @@
                           <i :class="index>1&&index<5?'el-icon-refresh-right':'el-icon-s-tools' "></i>
                           {{index>1?'重置图标':'系统图标'}}
                         </div>
-                        <el-checkbox v-model="item.isIndependentShow">独立主图标展示</el-checkbox>
+                        <el-checkbox
+                          :disabled="!item.titleChecked"
+                          v-model="item.isIndependentShow"
+                          @change="chilrenRadioRightChange(index)"
+                        >独立主图标展示</el-checkbox>
                       </div>
 
                     </div>
@@ -294,7 +307,11 @@
                         <div style="font-size:12px;color:#999">
                           建议尺寸：50 * 50
                         </div>
-                        <el-checkbox v-model="item.isIndependentShow">独立主图标展示</el-checkbox>
+                        <el-checkbox
+                          :disabled="!item.titleChecked"
+                          v-model="item.isIndependentShow"
+                          @change="chilrenRadioRightChange(index)"
+                        >独立主图标展示</el-checkbox>
                       </div>
                     </div>
                   </div>
@@ -390,23 +407,9 @@ export default {
       tuneUp: false, // 选择图片弹窗flag
       tuneUpSelectTemplate: false, // 选择页面弹窗flag
       holdMainIcon: false, // 控制左侧主icon切换
-      mainImgUrl: [
-        {
-          name: '电话',
-          imgUrl: 'http://mpimg2.weipubao.cn/image/admin/suspend_icon/origin_ph_2.png'
-        },
-        {
-          name: '客服',
-          imgUrl: 'http://mpimg2.weipubao.cn/image/admin/suspend_icon/origin_kf_2.png'
-        },
-        {
-          name: '客服',
-          imgUrl: 'http://mpimg2.weipubao.cn/image/admin/suspend_icon/origin_kf_2.png'
-        }, {
-          name: '客服',
-          imgUrl: 'http://mpimg2.weipubao.cn/image/admin/suspend_icon/origin_kf_2.png'
-        }
-      ], //  左侧icon子项数据
+      mainImgUrl: [], //  左侧icon子项数据
+      topArr: [],
+      bottomArr: [],
       isShowSuspension: false, // 是否显示悬浮窗switch
       goodsDetail: true, // 商品详情页checkbox
       peasonCenter: true, // 个人中心checkbox
@@ -843,21 +846,56 @@ export default {
         this.childrenIconData[res].titleChecked = false
         return
       }
+      this.childrenIconData.forEach((item, index) => {
+        if (!item.titleChecked) item.isIndependentShow = false
+      })
+      this.handleToSertChecked()
+    },
+    chilrenRadioRightChange (res) {
+      // 校验勾选数量
+      let checkedNum = 0
+      this.childrenIconData.forEach((item, index) => {
+        if (item.isIndependentShow) checkedNum++
+      })
+      console.log(checkedNum, this.childrenIconData)
+      if (checkedNum > 3) {
+        this.$message.error({
+          message: '最多可选3个独立子图标'
+        })
+        console.log(res)
+        this.childrenIconData[res].isIndependentShow = false
+        return
+      }
       this.handleToSertChecked()
     },
     // 将右侧子项选中的模块填入左部份
     handleToSertChecked () {
+      console.log(this.childrenIconData)
       let arr = []
       this.childrenIconData.forEach((item, index) => {
         if (item.titleChecked) {
           let obj = {
             name: item.title,
-            imgUrl: item.iconImgUrl
+            imgUrl: item.iconImgUrl,
+            isIndependentShow: item.isIndependentShow
           }
           arr.push(obj)
         }
       })
-      this.mainImgUrl = arr
+      console.log(arr)
+      let topArr = []
+      let bottomArr = []
+      arr.forEach((item, index) => {
+        if (item.isIndependentShow) {
+          topArr.push(item)
+        } else {
+          bottomArr.push(item)
+        }
+      })
+      this.topArr = topArr
+      this.bottomArr = bottomArr
+      console.log(topArr, bottomArr)
+      // this.mainImgUrl = lastArr
     }
   }
 }

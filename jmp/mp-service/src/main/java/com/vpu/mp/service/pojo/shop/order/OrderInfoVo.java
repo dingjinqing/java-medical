@@ -32,6 +32,8 @@ public class OrderInfoVo extends OrderListInfoVo {
 	private Timestamp cancelledTime;
     /**拼团中时间*/
     private Timestamp pinStartTime;
+    /**拼团抽奖已成团时间*/
+    private Timestamp pinEndTime;
 	/**下单人昵称*/
 	private String username;
     /**下单人手机号*/
