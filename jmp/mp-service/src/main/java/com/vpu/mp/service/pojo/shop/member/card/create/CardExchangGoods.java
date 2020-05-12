@@ -88,7 +88,7 @@ public class CardExchangGoods {
 	/**
 	 * 兑换时间类型
 	 */
-	private TimeType exchangeTimeType;
+	private Byte exchangeTimeType;
 	
 	/**
 	 * 有效时间内的兑换次数
