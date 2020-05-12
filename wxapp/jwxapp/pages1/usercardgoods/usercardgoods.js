@@ -227,8 +227,18 @@ global.wxPage({
   },
   goCheckOut () {
     console.log('点击立即兑换跳转结算页面')
-    //  this.data.cartData   
-    // util.jumpLink('pages/checkout/checkout', 'navigateTo')
+    console.log(this.data.cartData)
+    let goodsList = this.data.cartData.map(item=>{
+      let {goodsId,prdPrice:prdRealPrice,cartNumber:goodsNum,productId:prdId} = item
+      return {goodsId,prdRealPrice,goodsNum,prdId}
+    })
+    let params = {
+      goodsList:JSON.stringify(goodsList),
+      activityType: 13,
+      activityId: this.data.cardId,
+      memberCardNo: this.data.cardNo
+    }
+    util.jumpLink(`pages/checkout/checkout${util.getUrlParams({ ...params })}`, "navigateTo")
   },
   to_goods: function (e) {
     console.log('to_goods', this.data)
