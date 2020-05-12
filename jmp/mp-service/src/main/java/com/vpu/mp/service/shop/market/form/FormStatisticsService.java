@@ -470,30 +470,36 @@ public class FormStatisticsService extends ShopBaseService {
         Map<String, FormModulesBo> stringMapMap = Util.json2Object(pageContent, new TypeReference<Map<String, FormModulesBo>>() {
         }, false);
         vo.getOneVo().forEach(c->{
-            c.setConfirm(stringMapMap.get(c.getCurIdx()).getConfirm());
-            Map<String,String> selects;
-            if (stringMapMap.get(c.getCurIdx()).getModule_name().equals(M_CHOOSE)){
-                c.setShowTypes(stringMapMap.get(c.getCurIdx()).getShow_types());
-                selects = stringMapMap.get(c.getCurIdx()).getSelects();
-                Map<String, String> finalSelects = selects;
-                if (c.getShowTypes().equals(NumberUtils.BYTE_ZERO)){
-                    c.getInnerVo().forEach(l->{
-                        l.setModuleValue(finalSelects.get(l.getModuleValue().substring(1,l.getModuleValue().length()-1)));
-                    });
-                }
-                if (c.getShowTypes().equals(NumberUtils.BYTE_ONE)){
-                    c.getInnerVo().forEach(l->{
-                        String arrString = l.getModuleValue().substring(1,l.getModuleValue().length()-1);
+            if(stringMapMap.get(c.getCurIdx())!=null){
+                c.setConfirm(stringMapMap.get(c.getCurIdx()).getConfirm());
+                Map<String,String> selects;
+                if (stringMapMap.get(c.getCurIdx()).getModule_name().equals(M_CHOOSE)){
+                    c.setShowTypes(stringMapMap.get(c.getCurIdx()).getShow_types());
+                    selects = stringMapMap.get(c.getCurIdx()).getSelects();
+                    Map<String, String> finalSelects = selects;
+                    if (c.getShowTypes().equals(NumberUtils.BYTE_ZERO)){
+                        c.getInnerVo().forEach(l->{
+                            l.setModuleValue(finalSelects.get(l.getModuleValue().substring(1,l.getModuleValue().length()-1)));
+                        });
+                    }
+                    if (c.getShowTypes().equals(NumberUtils.BYTE_ONE)){
+                        c.getInnerVo().forEach(l->{
+                            String arrString = l.getModuleValue().substring(1,l.getModuleValue().length()-1);
 //                        String[] arr = arrString.split(",");
-                        String moduleValues = "";
+                            String moduleValues = "";
 //                        for (int i=0;i<arr.length;i++){
 //                            moduleValues = moduleValues + " " + finalSelects.get(arr[i].substring(1,arr[i].length()-1));
 //                        }
-                        moduleValues = moduleValues + " " + finalSelects.get(arrString);
-                        l.setModuleValue(moduleValues);
-                    });
+                            moduleValues = moduleValues + " " + finalSelects.get(arrString);
+                            l.setModuleValue(moduleValues);
+                        });
+                    }
                 }
+            }else {
+                c.setConfirm((byte)0);
+                c.setShowTypes((byte)0);
             }
+
         });
 
 
