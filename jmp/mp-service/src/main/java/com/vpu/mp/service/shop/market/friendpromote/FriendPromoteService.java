@@ -886,7 +886,7 @@ public class FriendPromoteService extends ShopBaseService {
                 .from(FRIEND_PROMOTE_LAUNCH)
                 .where(FRIEND_PROMOTE_LAUNCH.USER_ID.eq(userId))
                 .and(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(promoteId))
-                .orderBy(FRIEND_PROMOTE_LAUNCH.ID.asc())
+                .orderBy(FRIEND_PROMOTE_LAUNCH.ID.desc())
                 .limit(1)
                 .fetchOneInto(FriendPromoteLaunchRecord.class);
         }
@@ -981,7 +981,13 @@ public class FriendPromoteService extends ShopBaseService {
                 if (promoteInfo.getLaunchLimitTimes()==0){
                     canLaunch.setCode(NumberUtils.BYTE_ONE);
                 }else {
-                    launchInfo = getLaunchInfo(null,userId,promoteInfo.getId());
+                    launchInfo = db().select()
+                        .from(FRIEND_PROMOTE_LAUNCH)
+                        .where(FRIEND_PROMOTE_LAUNCH.USER_ID.eq(userId))
+                        .and(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(promoteInfo.getId()))
+                        .orderBy(FRIEND_PROMOTE_LAUNCH.ID.asc())
+                        .limit(1)
+                        .fetchOneInto(FriendPromoteLaunchRecord.class);
                     //已发起助力次数
                     Integer launchTimes = promoteLaunchTimes(promoteInfo.getId(),userId,promoteInfo.getLaunchLimitDuration(),promoteInfo.getLaunchLimitUnit(),launchInfo.getLaunchTime());
                     logger().info("当前发起ID为{}，ID为{}的用户已经发起了{}次",launchInfo.getId(),userId,launchTimes);
