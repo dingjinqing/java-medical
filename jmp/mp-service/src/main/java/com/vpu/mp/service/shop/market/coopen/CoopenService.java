@@ -122,6 +122,11 @@ public class CoopenService extends ShopBaseService {
         validateParam(param);
         validateTimeRange(param);
         CoopenActivityRecord coopenRecord =db().newRecord(TABLE,param);
+        if (param.getStartDate()==null){
+            Timestamp localDateTime = DateUtil.getLocalDateTime();
+            coopenRecord.setStartDate(localDateTime);
+            coopenRecord.setEndDate(localDateTime);
+        }
         coopenRecord.setId(null);
         coopenRecord.insert();
     }
