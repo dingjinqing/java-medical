@@ -15,6 +15,7 @@ import java.util.List;
 public class MrkingStrategyOrderVo {
     private String orderSn;
     private Byte orderStatus;
+    private String orderStatusName;
     private Integer userId;
     private String username;
     private String mobile;

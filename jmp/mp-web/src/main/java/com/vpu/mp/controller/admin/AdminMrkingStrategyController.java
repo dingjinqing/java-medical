@@ -79,7 +79,7 @@ public class AdminMrkingStrategyController extends AdminBaseController {
      */
     @PostMapping(value = "/api/admin/market/fullcut/order")
     public JsonResult mrkingStrategyOrder(@RequestBody @Validated MrkingStrategyOrderParam param) {
-        return success(shop().mrkingStrategy.getMrkingStrategyOrderList(param));
+        return success(shop().mrkingStrategy.getMrkingStrategyOrderList(param, getLang()));
     }
 
     /**

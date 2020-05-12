@@ -568,7 +568,7 @@ public class MrkingStrategyService extends ShopBaseService {
     /**
      * 活动订单
      */
-    public PageResult<MrkingStrategyOrderVo> getMrkingStrategyOrderList(MrkingStrategyOrderParam param) {
+    public PageResult<MrkingStrategyOrderVo> getMrkingStrategyOrderList(MrkingStrategyOrderParam param, String lang) {
         //默认排序方式---下单时间
         PageResult<MrkingStrategyOrderVo> vo = this.getPageResult(buildRedemptionListOption(param), param.getCurrentPage(), param.getPageRows(), MrkingStrategyOrderVo.class);
         /** 填充商品行 */
@@ -578,8 +578,11 @@ public class MrkingStrategyService extends ShopBaseService {
                 if (StringUtil.isNotBlank(g.getGoodsImg())) {
                     g.setGoodsImg(domainConfig.imageUrl(g.getGoodsImg()));
                 }
+                g.setPerDiscount(BigDecimalUtil.multiply(g.getPerDiscount(), new BigDecimal(g.getGoodsNumber())));
+                g.setDiscountedGoodsPrice(BigDecimalUtil.multiply(g.getDiscountedGoodsPrice(), new BigDecimal(g.getGoodsNumber())));
             });
             order.setGoods(goods);
+            order.setOrderStatusName(OrderConstant.getOrderStatusName(order.getOrderStatus(), lang));
         }
 
         return vo;
@@ -621,6 +624,13 @@ public class MrkingStrategyService extends ShopBaseService {
         /** 填充商品行 */
         for (MrkingStrategyOrderVo order : list) {
             List<MarketOrderGoodsListVo> goods = orderGoods.getMarketOrderGoodsByOrderSn(order.getOrderSn());
+            goods.forEach(g -> {
+                if (StringUtil.isNotBlank(g.getGoodsImg())) {
+                    g.setGoodsImg(domainConfig.imageUrl(g.getGoodsImg()));
+                }
+                g.setPerDiscount(BigDecimalUtil.multiply(g.getPerDiscount(), new BigDecimal(g.getGoodsNumber())));
+                g.setDiscountedGoodsPrice(BigDecimalUtil.multiply(g.getDiscountedGoodsPrice(), new BigDecimal(g.getGoodsNumber())));
+            });
             order.setGoods(goods);
         }
 
