@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Store extends TableImpl<StoreRecord> {
 
-    private static final long serialVersionUID = -775416694;
+    private static final long serialVersionUID = -455790356;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_store</code>
@@ -176,6 +176,16 @@ public class Store extends TableImpl<StoreRecord> {
      * The column <code>mini_shop_471752.b2c_store.city_service</code>. 支持同城配送 1:支持
      */
     public final TableField<StoreRecord, Byte> CITY_SERVICE = createField("city_service", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "支持同城配送 1:支持");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_store.pick_time_action</code>. 自提取货时间类型
+     */
+    public final TableField<StoreRecord, Byte> PICK_TIME_ACTION = createField("pick_time_action", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "自提取货时间类型");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_store.pick_time_detail</code>. 自提时间明细
+     */
+    public final TableField<StoreRecord, String> PICK_TIME_DETAIL = createField("pick_time_detail", org.jooq.impl.SQLDataType.VARCHAR(50), this, "自提时间明细");
 
     /**
      * Create a <code>mini_shop_471752.b2c_store</code> table reference
