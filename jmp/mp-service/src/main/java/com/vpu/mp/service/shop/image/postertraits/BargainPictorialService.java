@@ -74,10 +74,11 @@ public class BargainPictorialService extends ShareBaseService {
     String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         BargainRecord bargainRecord = (BargainRecord) aRecord;
         BargainShareInfoParam param = (BargainShareInfoParam) baseParam;
+        Color shopStyleColor = getShopStyleColor();
 
         PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), param.getActivityId(), PictorialConstant.BARGAIN_ACTION_SHARE, null);
         // 已存在生成的图片
-        if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), bargainRecord.getUpdateTime())) {
+        if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), bargainRecord.getUpdateTime(),shopStyleColor)) {
             return pictorialRecord.getPath();
         }
 
@@ -95,7 +96,7 @@ public class BargainPictorialService extends ShareBaseService {
 
             // 添加原价
             String realPriceStr = param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP) + Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY, "messages");
-            ImageUtil.addFont(bgBufferImg, realPriceStr, ImageUtil.SourceHanSansCN(Font.PLAIN, 23), 200, 180, PictorialImgPx.REAL_PRICE_COLOR, false);
+            ImageUtil.addFont(bgBufferImg, realPriceStr, ImageUtil.SourceHanSansCN(Font.PLAIN, 23), 200, 180, shopStyleColor, false);
             Integer realPriceLength = ImageUtil.getTextWidth(bgBufferImg, ImageUtil.SourceHanSansCN(Font.PLAIN, 23), realPriceStr);
             // 添加划线价
             String linePriceStr = param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
@@ -103,7 +104,7 @@ public class BargainPictorialService extends ShareBaseService {
 
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(bargainRecord.getId());
-            PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), bargainRecord.getUpdateTime());
+            PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), bargainRecord.getUpdateTime(),shopStyleColor.getRed(),shopStyleColor.getGreen(),shopStyleColor.getBlue());
             pictorialService.uploadToUpanYun(bgBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(), param.getActivityId(), PictorialConstant.BARGAIN_ACTION_SHARE, pictorialRecord, param.getUserId());
 
             return relativePath;
@@ -141,7 +142,7 @@ public class BargainPictorialService extends ShareBaseService {
     @Override
     void createPictorialImg(BufferedImage qrCodeBufferImg, BufferedImage goodsImage, PictorialUserInfo userInfo, String shareDoc, Record aRecord, GoodsRecord goodsRecord, ShopRecord shop, GoodsShareBaseParam baseParam, GoodsPictorialInfo goodsPictorialInfo) {
         // 拼装背景图
-        PictorialImgPx imgPx = new PictorialImgPx();
+        PictorialImgPx imgPx = new PictorialImgPx(getShopStyleColor());
         BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImage, shareDoc, goodsRecord.getGoodsName(), baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
 
         BufferedImage moneyIconImg;

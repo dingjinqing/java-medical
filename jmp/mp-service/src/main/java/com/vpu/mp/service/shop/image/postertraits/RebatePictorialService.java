@@ -52,8 +52,9 @@ public class RebatePictorialService extends ShareBaseService {
     @Override
     String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), null, PictorialConstant.REBATE_ACTION_SHARE, null);
+        Color shopStyleColor = getShopStyleColor();
         // 已存在生成的图片
-        if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), null)) {
+        if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), null,shopStyleColor)) {
             return pictorialRecord.getPath();
         }
         try (InputStream bgInputStream = Util.loadFile(REBATE_SHARE_BG_IMG)) {
@@ -78,14 +79,14 @@ public class RebatePictorialService extends ShareBaseService {
             // 添加商品名称
             pictorialService.addTextWithBreak(rebateBufferImg,goodsRecord.getGoodsName(),textStartX,toTop + 10,220,3,ImageUtil.SourceHanSansCN(Font.PLAIN, 18));
             // 添加‘专享价格’文字
-            ImageUtil.addFont(rebateBufferImg, specialText, ImageUtil.SourceHanSansCN(Font.PLAIN, 22), textStartX, toTop + goodsBufferImg.getHeight()-30, PictorialImgPx.REAL_PRICE_COLOR,false);
+            ImageUtil.addFont(rebateBufferImg, specialText, ImageUtil.SourceHanSansCN(Font.PLAIN, 22), textStartX, toTop + goodsBufferImg.getHeight()-30, getShopStyleColor(),false);
             Integer textWidth = ImageUtil.getTextWidth(rebateBufferImg, ImageUtil.SourceHanSansCN(Font.PLAIN, 22), specialText);
             // 添加划线价￥
             ImageUtil.addFontWithLine(rebateBufferImg, textStartX + textWidth + 20, toTop + goodsBufferImg.getHeight()-25, linePrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 18), PictorialImgPx.LINE_PRICE_COLOR);
 
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(goodsRecord.getGoodsId());
-            PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), null);
+            PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), null,shopStyleColor.getRed(),shopStyleColor.getGreen(),shopStyleColor.getBlue());
             pictorialService.uploadToUpanYun(rebateBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(), null, PictorialConstant.REBATE_ACTION_SHARE, pictorialRecord, baseParam.getUserId());
 
             return relativePath;

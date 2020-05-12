@@ -52,7 +52,7 @@ public class NormalGoodsPictorialService extends ShareBaseService {
 
     @Override
     void createPictorialImg(BufferedImage qrCodeBufferImg, BufferedImage goodsImg, PictorialUserInfo userInfo, String shareDoc, Record aRecord, GoodsRecord goodsRecord, ShopRecord shop, GoodsShareBaseParam baseParam, GoodsPictorialInfo goodsPictorialInfo) {
-        PictorialImgPx imgPx = new PictorialImgPx();
+        PictorialImgPx imgPx = new PictorialImgPx(getPictorialShareStyle(),getShopStyleColor());
         if (BigDecimal.valueOf(0).equals(baseParam.getLinePrice())) {
             baseParam.setLinePrice(null);
         }

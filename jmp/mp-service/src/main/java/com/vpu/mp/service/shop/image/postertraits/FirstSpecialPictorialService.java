@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,10 +54,11 @@ public class FirstSpecialPictorialService extends ShareBaseService {
     String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         FirstSpecialRecord firstSpecialRecord = (FirstSpecialRecord) aRecord;
         FirstSpecialShareInfoParam param = (FirstSpecialShareInfoParam) baseParam;
+        Color shopStyleColor = getShopStyleColor();
 
         PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), param.getActivityId(), PictorialConstant.FIRST_SPECIAL_ACTION_SHARE, null);
         // 已存在生成的图片
-        if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), firstSpecialRecord.getUpdateTime())) {
+        if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), firstSpecialRecord.getUpdateTime(),shopStyleColor)) {
             return pictorialRecord.getPath();
         }
 
@@ -74,7 +76,7 @@ public class FirstSpecialPictorialService extends ShareBaseService {
 
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(firstSpecialRecord.getId());
-            PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), firstSpecialRecord.getUpdateTime());
+            PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), firstSpecialRecord.getUpdateTime(),shopStyleColor.getRed(),shopStyleColor.getGreen(),shopStyleColor.getBlue());
             pictorialService.uploadToUpanYun(goodsBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(), param.getActivityId(), PictorialConstant.FIRST_SPECIAL_ACTION_SHARE, pictorialRecord, param.getUserId());
 
             return relativePath;
@@ -99,7 +101,7 @@ public class FirstSpecialPictorialService extends ShareBaseService {
 
     @Override
     void createPictorialImg(BufferedImage qrCodeBufferImg, BufferedImage goodsImg, PictorialUserInfo userInfo, String shareDoc, Record aRecord, GoodsRecord goodsRecord, ShopRecord shop, GoodsShareBaseParam baseParam, GoodsPictorialInfo goodsPictorialInfo) {
-        PictorialImgPx imgPx = new PictorialImgPx();
+        PictorialImgPx imgPx = new PictorialImgPx(getShopStyleColor());
         // 拼装背景图
         pictorialLog(getActivityName(), "拼装背景图");
         String firstSpecialTip = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_FIRST_SPECIAL_INFO, "messages");

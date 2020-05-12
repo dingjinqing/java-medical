@@ -13,15 +13,13 @@ import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.reduce.ReducePriceShareInfoParam;
-import com.vpu.mp.service.shop.goods.GoodsService;
-import com.vpu.mp.service.shop.image.ImageService;
-import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,10 +55,11 @@ public class ReducePricePictorialService extends ShareBaseService {
     String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         ReducePriceRecord reducePriceRecord = (ReducePriceRecord) aRecord;
         ReducePriceShareInfoParam param = (ReducePriceShareInfoParam) baseParam;
+        Color shopStyleColor  = getShopStyleColor();
 
         PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), param.getActivityId(), PictorialConstant.REDUCE_PRICE_ACTION_SHARE, null);
         // 已存在生成的图片
-        if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), reducePriceRecord.getUpdateTime())) {
+        if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), reducePriceRecord.getUpdateTime(),shopStyleColor)) {
             return pictorialRecord.getPath();
         }
         try (InputStream bgInputStream = Util.loadFile(REDUCE_PRICE_SHARE_BG_IMG)) {
@@ -77,7 +76,7 @@ public class ReducePricePictorialService extends ShareBaseService {
 
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(reducePriceRecord.getId());
-            PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), reducePriceRecord.getUpdateTime());
+            PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), reducePriceRecord.getUpdateTime(),shopStyleColor.getRed(),shopStyleColor.getGreen(),shopStyleColor.getBlue());
             pictorialService.uploadToUpanYun(goodsBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(), param.getActivityId(), PictorialConstant.REDUCE_PRICE_ACTION_SHARE, pictorialRecord, param.getUserId());
             return relativePath;
         } catch (IOException e) {
@@ -98,7 +97,7 @@ public class ReducePricePictorialService extends ShareBaseService {
 
     @Override
     void createPictorialImg(BufferedImage qrCodeBufferImg, BufferedImage goodsImg, PictorialUserInfo userInfo, String shareDoc, Record aRecord, GoodsRecord goodsRecord, ShopRecord shop, GoodsShareBaseParam baseParam, GoodsPictorialInfo goodsPictorialInfo) {
-        PictorialImgPx imgPx = new PictorialImgPx();
+        PictorialImgPx imgPx = new PictorialImgPx(getShopStyleColor());
 
         BufferedImage reduceIconBufferImg = null;
         // 拼装价值限时降价图片和商品价格
