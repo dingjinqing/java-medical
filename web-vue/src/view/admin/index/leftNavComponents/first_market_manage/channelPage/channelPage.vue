@@ -197,7 +197,7 @@
                   placement="top"
                 >
                   <span
-                    class="el-icon-share"
+                    class="iconfont iconfenxiang1"
                     @click="shareActivity(scope.row.id)"
                   ></span>
                 </el-tooltip>
@@ -209,7 +209,7 @@
                   v-if="scope.row.delFlag === 0"
                 >
                   <span
-                    class="el-icon-circle-close"
+                    class="iconfont icontingyong"
                     @click="closeStatus(scope.row.id)"
                   > </span>
                 </el-tooltip>
@@ -221,7 +221,7 @@
                   v-if="scope.row.delFlag === 1"
                 >
                   <span
-                    class="el-icon-circle-check"
+                    class="iconfont iconqiyong"
                     @click="openStatus(scope.row.id)"
                   > </span>
                 </el-tooltip>
@@ -396,6 +396,7 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 * {
   font-size: 14px;
 }
@@ -422,7 +423,7 @@ export default {
   }
 
   .opt {
-    text-align: left;
+    text-align: center;
     span {
       font-size: 22px;
       color: #5a8bff;
