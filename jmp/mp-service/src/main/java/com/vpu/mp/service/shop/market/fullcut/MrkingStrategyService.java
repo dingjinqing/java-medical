@@ -21,6 +21,8 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderGoodsListVo;
 import com.vpu.mp.service.pojo.shop.market.fullcut.*;
+import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisDataVo;
+import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisTotalVo;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
@@ -41,22 +43,24 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.MrkingStrategy.MRKING_STRATEGY;
 import static com.vpu.mp.db.shop.tables.MrkingStrategyCondition.MRKING_STRATEGY_CONDITION;
 import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 
 /**
  * @author: 王兵兵
@@ -652,71 +656,117 @@ public class MrkingStrategyService extends ShopBaseService {
 
         return workbook;
     }
-//    /**
-//     * 满折满减效果分析的echarts图表数据
-//     *
-//     *
-//     */
-//    public SeckillAnalysisDataVo getSeckillAnalysisData(SeckillAnalysisParam param){
-//        SeckillAnalysisDataVo analysisVo = new SeckillAnalysisDataVo();
-//        Timestamp startDate = param.getStartTime();
-//        Timestamp endDate = param.getEndTime();
-//        if (startDate == null || endDate == null) {
-//            startDate = DateUtil.currentMonthFirstDay();
-//            endDate = DateUtil.getLocalDateTime();
-//        }
-//        //获取销售额等金额
-//        List<ActiveDiscountMoney> discountMoneyList = saas.getShopApp(getShopId()).readOrder.getActiveDiscountMoney(BaseConstant.ACTIVITY_TYPE_SEC_KILL, param.getSkId(), startDate, endDate);
-//        //获取参与用户信息
-//        ActiveOrderList activeOrderUserList = saas.getShopApp(getShopId()).readOrder.getActiveOrderList(BaseConstant.ACTIVITY_TYPE_SEC_KILL, param.getSkId(), startDate, endDate);
-//
-//        while (Objects.requireNonNull(startDate).compareTo(endDate) <= 0) {
-//            //活动实付金额、付款订单数、付款商品件数
-//            ActiveDiscountMoney discountMoney = getDiscountMoneyByDate(discountMoneyList, startDate);
-//            if (discountMoney == null) {
-//                analysisVo.getPaymentAmount().add(BigDecimal.ZERO);
-//                analysisVo.getDiscountAmount().add(BigDecimal.ZERO);
-//                analysisVo.getCostEffectivenessRatio().add(BigDecimal.ZERO);
-//                analysisVo.getPaidOrderNumber().add(0);
-//                analysisVo.getPaidGoodsNumber().add(0);
-//            } else {
-//                BigDecimal goodsPrice = Optional.ofNullable(discountMoney.getPaymentAmount()).orElse(BigDecimal.ZERO);
-//                BigDecimal marketPric = Optional.ofNullable(discountMoney.getDiscountAmount()).orElse(BigDecimal.ZERO);
-//                analysisVo.getPaymentAmount().add(Optional.ofNullable(discountMoney.getPaymentAmount()).orElse(BigDecimal.ZERO));
-//                analysisVo.getDiscountAmount().add(Optional.ofNullable(discountMoney.getDiscountAmount()).orElse(BigDecimal.ZERO));
-//                analysisVo.getCostEffectivenessRatio().add(goodsPrice.compareTo(BigDecimal.ZERO) > 0 ?
-//                    marketPric.divide(goodsPrice, BigDecimal.ROUND_FLOOR) : BigDecimal.ZERO);
-//                analysisVo.getPaidOrderNumber().add(discountMoney.getPaidOrderNumber());
-//                analysisVo.getPaidGoodsNumber().add(discountMoney.getPaidGoodsNumber());
-//            }
-//
-//            //新用户数
-//            OrderActivityUserNum newUser = getUserNum(activeOrderUserList.getNewUserNum(), startDate);
-//            if (newUser == null) {
-//                analysisVo.getNewUserNumber().add(0);
-//            } else {
-//                analysisVo.getNewUserNumber().add(newUser.getNum());
-//            }
-//            //老用户数
-//            OrderActivityUserNum oldUser = getUserNum(activeOrderUserList.getOldUserNum(), startDate);
-//            if (oldUser == null) {
-//                analysisVo.getOldUserNumber().add(0);
-//            } else {
-//                analysisVo.getOldUserNumber().add(oldUser.getNum());
-//            }
-//            analysisVo.getDateList().add(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate));
-//            startDate = Util.getEarlyTimeStamp(startDate, 1);
-//        }
-//        SeckillAnalysisTotalVo total = new SeckillAnalysisTotalVo();
-//        total.setTotalPayment(analysisVo.getPaymentAmount().stream().reduce(BigDecimal.ZERO,BigDecimal::add));
-//        total.setTotalDiscount(analysisVo.getDiscountAmount().stream().reduce(BigDecimal.ZERO,BigDecimal::add));
-//        total.setTotalCostEffectivenessRatio(total.getTotalPayment().compareTo(BigDecimal.ZERO) > 0 ? total.getTotalDiscount().divide(total.getTotalPayment(),3, BigDecimal.ROUND_HALF_UP) : BigDecimal.ZERO);
-//        total.setTotalPaidOrderNumber(analysisVo.getPaidOrderNumber().stream().mapToInt(Integer::intValue).sum());
-//        total.setTotalPaidGoodsNumber(analysisVo.getPaidGoodsNumber().stream().mapToInt(Integer::intValue).sum());
-//        total.setTotalOldUserNumber(analysisVo.getOldUserNumber().stream().mapToInt(Integer::intValue).sum());
-//        total.setTotalNewUserNumber(analysisVo.getNewUserNumber().stream().mapToInt(Integer::intValue).sum());
-//        analysisVo.setTotal(total);
-//        return analysisVo;
-//    }
+
+    /**
+     * 满折满减效果分析的图表数据
+     */
+    public SeckillAnalysisDataVo getAnalysisData(MrkingStrategyAnalysisParam param) {
+        SeckillAnalysisDataVo analysisVo = new SeckillAnalysisDataVo();
+        Timestamp startDate = param.getStartTime();
+        Timestamp endDate = param.getEndTime();
+        if (startDate == null || endDate == null) {
+            startDate = DateUtil.currentMonthFirstDay();
+            param.setStartTime(startDate);
+            endDate = DateUtil.getLocalDateTime();
+            param.setEndTime(endDate);
+        }
+
+        Map<Date, List<MrkingStrategyOrderAnalysisBo>> orderGoodsMap = getFullCutOrderDiscountMoney(param);
+
+        //老用户的ID，为了给老用户总数去重
+        Set<Integer> oldUserIds = new HashSet<>();
+
+        //填充
+        while (Objects.requireNonNull(startDate).compareTo(endDate) <= 0) {
+            Date k = new Date(startDate.getTime());
+            List<MrkingStrategyOrderAnalysisBo> v = orderGoodsMap.get(k);
+            if (v != null) {
+                /**活动实付金额 */
+                BigDecimal totalPayment = BigDecimal.ZERO;
+                /**活动优惠金额 */
+                BigDecimal totalDiscount = BigDecimal.ZERO;
+                /**费效比  */
+                BigDecimal totalCostEffectivenessRatio = BigDecimal.ZERO;
+                /**付款订单数 */
+                Integer totalPaidOrderNumber = 0;
+                /**付款商品件数 */
+                Integer totalPaidGoodsNumber = 0;
+                /**老成交用户数 */
+                Integer totalOldUserNumber = 0;
+                /**新成交用户数 */
+                Integer totalNewUserNumber = 0;
+                for (MrkingStrategyOrderAnalysisBo o : v) {
+                    totalPayment = BigDecimalUtil.add(totalPayment, o.getDiscountedTotalPrice());
+                    totalDiscount = BigDecimalUtil.add(totalDiscount, o.getPerDiscount());
+                    totalPaidGoodsNumber += o.getGoodsNumber();
+                }
+                Map<Integer, List<MrkingStrategyOrderAnalysisBo>> orderListMap = v.stream().collect(Collectors.groupingBy(MrkingStrategyOrderAnalysisBo::getUserId));
+                for (Map.Entry<Integer, List<MrkingStrategyOrderAnalysisBo>> entry : orderListMap.entrySet()) {
+                    if (isNewUser(entry.getKey(), entry.getValue().get(0).getOrderSn())) {
+                        totalNewUserNumber++;
+                    } else {
+                        totalOldUserNumber++;
+                        oldUserIds.add(entry.getKey());
+                    }
+                }
+
+                totalPaidOrderNumber = v.stream().collect(Collectors.groupingBy(MrkingStrategyOrderAnalysisBo::getOrderSn)).size();
+                totalCostEffectivenessRatio = BigDecimalUtil.divide(totalDiscount, totalPayment);
+
+                analysisVo.getDateList().add(k.toString());
+                analysisVo.getPaymentAmount().add(totalPayment);
+                analysisVo.getDiscountAmount().add(totalDiscount);
+                analysisVo.getCostEffectivenessRatio().add(totalCostEffectivenessRatio);
+                analysisVo.getPaidOrderNumber().add(totalPaidOrderNumber);
+                analysisVo.getPaidGoodsNumber().add(totalPaidGoodsNumber);
+                analysisVo.getNewUserNumber().add(totalNewUserNumber);
+                analysisVo.getOldUserNumber().add(totalOldUserNumber);
+            } else {
+                analysisVo.getDateList().add(k.toString());
+                analysisVo.getPaymentAmount().add(BigDecimal.ZERO);
+                analysisVo.getDiscountAmount().add(BigDecimal.ZERO);
+                analysisVo.getCostEffectivenessRatio().add(BigDecimal.ZERO);
+                analysisVo.getPaidOrderNumber().add(0);
+                analysisVo.getPaidGoodsNumber().add(0);
+                analysisVo.getNewUserNumber().add(0);
+                analysisVo.getOldUserNumber().add(0);
+            }
+            startDate = Util.getEarlyTimeStamp(startDate, 1);
+        }
+
+
+        SeckillAnalysisTotalVo total = new SeckillAnalysisTotalVo();
+        total.setTotalPayment(analysisVo.getPaymentAmount().stream().reduce(BigDecimal.ZERO, BigDecimal::add));
+        total.setTotalDiscount(analysisVo.getDiscountAmount().stream().reduce(BigDecimal.ZERO, BigDecimal::add));
+        total.setTotalCostEffectivenessRatio(total.getTotalPayment().compareTo(BigDecimal.ZERO) > 0 ? total.getTotalDiscount().divide(total.getTotalPayment(), 3, BigDecimal.ROUND_HALF_UP) : BigDecimal.ZERO);
+        total.setTotalPaidOrderNumber(analysisVo.getPaidOrderNumber().stream().mapToInt(Integer::intValue).sum());
+        total.setTotalPaidGoodsNumber(analysisVo.getPaidGoodsNumber().stream().mapToInt(Integer::intValue).sum());
+        total.setTotalOldUserNumber(oldUserIds.size());
+        total.setTotalNewUserNumber(analysisVo.getNewUserNumber().stream().mapToInt(Integer::intValue).sum());
+        analysisVo.setTotal(total);
+        return analysisVo;
+    }
+
+    /**
+     * 活动效果要分析的订单数据
+     *
+     * @param param
+     * @return
+     */
+    private Map<Date, List<MrkingStrategyOrderAnalysisBo>> getFullCutOrderDiscountMoney(MrkingStrategyAnalysisParam param) {
+        List<MrkingStrategyOrderAnalysisBo> list = db().select(DSL.date(ORDER_INFO.CREATE_TIME).as("createTime"), ORDER_INFO.ORDER_SN, ORDER_INFO.USER_ID, ORDER_GOODS.PER_DISCOUNT, ORDER_GOODS.DISCOUNTED_TOTAL_PRICE, ORDER_GOODS.GOODS_NUMBER)
+            .from(ORDER_INFO).leftJoin(ORDER_GOODS).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.ORDER_ID))
+            .where(ORDER_GOODS.STRA_ID.eq(param.getId()))
+            .and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
+            .and(ORDER_INFO.CREATE_TIME.between(param.getStartTime(), param.getEndTime()))
+            .fetchInto(MrkingStrategyOrderAnalysisBo.class);
+        Map<Date, List<MrkingStrategyOrderAnalysisBo>> map = list.stream().collect(Collectors.groupingBy(MrkingStrategyOrderAnalysisBo::getCreateTime));
+        return map;
+    }
+
+    private boolean isNewUser(Integer userId, String orderSn) {
+        return !db().fetchExists(ORDER_INFO, ORDER_INFO.USER_ID.eq(userId).and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED)).and(ORDER_INFO.ORDER_SN.ne(orderSn)));
+    }
+
 
 }
