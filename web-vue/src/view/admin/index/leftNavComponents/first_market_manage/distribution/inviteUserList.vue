@@ -1,47 +1,93 @@
 <template>
   <div class="content">
     <div class="main">
-      <div class="liNav">
-        <span>手机号：</span>
-        <el-input
-          v-model="mobile"
-          size="small"
-          class="ipt"
-          placeholder="请输入内容"
-        ></el-input>
-        <span>微信号：</span>
-        <el-input
-          v-model="username"
-          size="small"
-          class="ipt"
-          placeholder="请输入内容"
-        ></el-input>
-      </div>
-      <div class="liNav">
-        <span>注册时间：</span>
-        <el-date-picker
-          v-model="startCreateTime"
-          type="datetime"
-          size="small"
-          placeholder="选择日期时间"
-        >
-        </el-date-picker>
-        至
-        <el-date-picker
-          v-model="endCreateTime"
-          type="datetime"
-          size="small"
-          placeholder="选择日期时间"
-        >
-        </el-date-picker>
-        <el-button
-          @click="inviteList"
-          type="primary"
-          size="small"
-        >筛选</el-button>
-        <el-button size="small">导出</el-button>
+      <el-form
+        :model="searchParam"
+        label-width="100px"
+        :label-position="right"
+        :inline="true"
+      >
+        <el-form-item label="手机号：">
+          <el-input
+            v-model="searchParam.mobile"
+            size="small"
+            class="inputWidth"
+            placeholder="请输入内容"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="微信昵称：">
+          <el-input
+            v-model="searchParam.username"
+            size="small"
+            class="inputWidth"
+            placeholder="请输入内容"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="真实姓名：">
+          <el-input
+            v-model="searchParam.realName"
+            size="small"
+            class="inputWidth"
+            placeholder="请输入内容"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="注册时间：">
+          <el-date-picker
+            v-model="searchParam.startCreateTime"
+            type="datetime"
+            size="small"
+            align="right"
+            class="selectWidth"
+            placeholder="选择日期时间"
+          ></el-date-picker>
+          至
+          <el-date-picker
+            v-model="searchParam.endCreateTime"
+            type="datetime"
+            size="small"
+            align="right"
+            class="selectWidth"
+            default-time="23:59:59"
+            placeholder="选择日期时间"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="邀请时间：">
+          <el-date-picker
+            v-model="searchParam.startInviteTime"
+            type="datetime"
+            size="small"
+            align="right"
+            class="selectWidth"
+            placeholder="选择日期时间"
+          ></el-date-picker>
+          至
+          <el-date-picker
+            v-model="searchParam.endInviteTime"
+            type="datetime"
+            size="small"
+            align="right"
+            class="selectWidth"
+            default-time="23:59:59"
+            placeholder="选择日期时间"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            @click="inviteList"
+            type="primary"
+            size="small"
+          >筛选</el-button>
+          <el-button size="small">导出</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+
+    <div class="main list_content">
+      <div class="title_content">
+        累计获得佣金数：<span style="color: red;">0</span>
       </div>
     </div>
+
     <div class="main list_content">
       <el-table
         class="version-manage-table"
@@ -56,21 +102,24 @@
           align="center"
         >
         </el-table-column>
-
         <el-table-column
           prop="mobile"
           label="用户手机号"
           align="center"
         >
         </el-table-column>
-
+        <el-table-column
+          prop=""
+          label="真实姓名"
+          align="center"
+        >
+        </el-table-column>
         <el-table-column
           prop="createTime"
           label="注册时间"
           align="center"
         >
         </el-table-column>
-
         <el-table-column
           prop="orderNumber"
           label="累计返利订单数"
@@ -86,6 +135,12 @@
         <el-table-column
           prop="totalFanliMoney"
           label="累计返利佣金金额"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop=""
+          label="邀请时间"
           align="center"
         >
         </el-table-column>
@@ -111,19 +166,26 @@
 </template>
 <script>
 import { inviteUserList } from '@/api/admin/marketManage/distribution.js'
-// 引入分页
-import pagination from '@/components/admin/pagination/pagination'
 export default {
-  components: { pagination },
+  components: {
+    pagination: () => import('@/components/admin/pagination/pagination')
+  },
   data () {
     return {
-      tableData: [],
-      pageParams: {},
-      userId: '',
-      mobile: null,
-      username: null,
-      startCreateTime: null,
-      endCreateTime: null
+      // 搜索
+      searchParam: {
+        mobile: '',
+        username: '',
+        realName: '',
+        startCreateTime: '',
+        endCreateTime: '',
+        startInviteTime: '',
+        endInviteTime: ''
+      },
+      requestParam: {},
+      tableData: [], // 表格
+      pageParams: {}, // 分页
+      userId: '' // 用户id
     }
   },
   mounted () {
@@ -134,12 +196,11 @@ export default {
   },
   methods: {
     inviteList () {
-      this.pageParams.userId = this.userId
-      this.pageParams.mobile = this.mobile
-      this.pageParams.username = this.username
-      this.pageParams.startCreateTime = this.startCreateTime
-      this.pageParams.endCreateTime = this.endCreateTime
-      inviteUserList(this.pageParams).then(res => {
+      this.requestParam = this.searchParam
+      this.requestParam.userId = this.userId
+      this.requestParams.currentPage = this.pageParams.currentPage
+      this.requestParams.pageRows = this.pageParams.pageRows
+      inviteUserList(this.requestParam).then(res => {
         if (res.error === 0) {
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
@@ -160,16 +221,12 @@ export default {
     position: relative;
     background-color: #fff;
     padding: 10px 20px 10px 20px;
-    .liNav {
-      margin-top: 5px;
-      margin-bottom: 15px;
-    }
-
-    .ipt {
-      width: 200px;
-      margin-right: 30px;
-    }
   }
+}
+.title_content {
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
 }
 .list_content {
   margin-top: 10px;
@@ -181,5 +238,11 @@ export default {
   font-weight: bold;
   color: #000;
   padding: 8px 10px;
+}
+.inputWidth {
+  width: 170px;
+}
+.selectWidth {
+  width: 200px;
 }
 </style>

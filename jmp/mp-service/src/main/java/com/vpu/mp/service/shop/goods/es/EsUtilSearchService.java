@@ -99,6 +99,7 @@ public class EsUtilSearchService extends EsBaseSearchService{
             .build();
         SearchSourceBuilder sourceBuilder = assemblySearchSourceBuilder(sourceBuilderParam);
         sourceBuilder.fetchSource(GOODS_LABEL_SOURCE,null);
+        sourceBuilder.size(400);
         SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.GOODS_ALIA_NAME);
         searchRequest.source(sourceBuilder);
         SearchResponse searchResponse = esManager.searchResponse(searchRequest);

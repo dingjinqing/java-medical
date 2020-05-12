@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.upyun.UpException;
+import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.FormPageRecord;
 import com.vpu.mp.db.shop.tables.records.FormSubmitDetailsRecord;
@@ -109,6 +110,8 @@ public class FormStatisticsService extends ShopBaseService {
     private CouponService couponService;
     @Autowired
     private OrderInfoService orderInfoService;
+    @Autowired
+    protected UpYunConfig upYunConfig;
     /**
      * FORM_PAGE表单删除状态值，删除状态页面不展示
      */
@@ -413,7 +416,7 @@ public class FormStatisticsService extends ShopBaseService {
         try {
             moduleUploadVideo = objectMapper.readValue(video, ModuleUploadVideo.class);
             moduleUploadVideo.setVideoSrc(imageService.imageUrl(moduleUploadVideo.getVideoSrc()));
-            moduleUploadVideo.setVideoImgSrc("http://video-jmpdev.test.upcdn.net"+moduleUploadVideo.getVideoImgSrc());
+            moduleUploadVideo.setVideoImgSrc(upYunConfig.videoUrl(moduleUploadVideo.getVideoImgSrc()));
             return objectMapper.writeValueAsString(moduleUploadVideo);
         } catch (IOException e) {
             e.printStackTrace();
@@ -465,7 +468,7 @@ public class FormStatisticsService extends ShopBaseService {
         vo.setOneVo(getFeedStatisticDataNew(pageId));
         String pageContent = vo.getPageContent();
         Map<String, FormModulesBo> stringMapMap = Util.json2Object(pageContent, new TypeReference<Map<String, FormModulesBo>>() {
-        }, true);
+        }, false);
         vo.getOneVo().forEach(c->{
             c.setConfirm(stringMapMap.get(c.getCurIdx()).getConfirm());
             Map<String,String> selects;
@@ -481,11 +484,12 @@ public class FormStatisticsService extends ShopBaseService {
                 if (c.getShowTypes().equals(NumberUtils.BYTE_ONE)){
                     c.getInnerVo().forEach(l->{
                         String arrString = l.getModuleValue().substring(1,l.getModuleValue().length()-1);
-                        String[] arr = arrString.split(",");
+//                        String[] arr = arrString.split(",");
                         String moduleValues = "";
-                        for (int i=0;i<arr.length;i++){
-                            moduleValues = moduleValues + " " + finalSelects.get(arr[i].substring(1,arr[i].length()-1));
-                        }
+//                        for (int i=0;i<arr.length;i++){
+//                            moduleValues = moduleValues + " " + finalSelects.get(arr[i].substring(1,arr[i].length()-1));
+//                        }
+                        moduleValues = moduleValues + " " + finalSelects.get(arrString);
                         l.setModuleValue(moduleValues);
                     });
                 }
@@ -520,9 +524,33 @@ public class FormStatisticsService extends ShopBaseService {
                 .and(fsd.MODULE_NAME.in(moduleName))
                 .groupBy(fsd.MODULE_VALUE,fsd.MODULE_NAME,fsd.MODULE_TYPE)
                 .fetchInto(FeedBackInnerVo.class);
-            feedBackOneVo.setInnerVo(innerVo);
-            feedBackOneVo.setTotalVotes(sumVotes(innerVo));
-            calPercentage(feedBackOneVo.getTotalVotes(),innerVo);
+            //处理多选
+            Map<String,Integer> arrMap = new HashMap<>();
+            innerVo.forEach(i->{
+                String arrString = i.getModuleValue().substring(1,i.getModuleValue().length()-1);
+                String[] arr = arrString.split(",");
+                for (String s : arr) {
+                    Integer num = arrMap.get(s);
+                    if (num==null){
+                        arrMap.put(s,1);
+                    }else {
+                        arrMap.put(s,num+1);
+                    }
+                }
+            });
+            //重新定义innerVo的长度
+            List<FeedBackInnerVo> newInnerVo = new ArrayList<>();
+            arrMap.forEach((k,v)->{
+                FeedBackInnerVo item = new FeedBackInnerVo();
+                item.setModuleName(M_CHOOSE);
+                item.setModuleType("选项");
+                item.setModuleValue(k);
+                item.setVotes(v);
+                newInnerVo.add(item);
+            });
+            feedBackOneVo.setInnerVo(newInnerVo);
+            feedBackOneVo.setTotalVotes(sumVotes(newInnerVo));
+            calPercentage(feedBackOneVo.getTotalVotes(),newInnerVo);
             feedBackOneVoList.add(feedBackOneVo);
         });
         return feedBackOneVoList;
@@ -722,14 +750,14 @@ public class FormStatisticsService extends ShopBaseService {
                         Integer totalSubmitTimes = getSubmitTime(pageId, userId);
                         int cfgPostTimes = formInfoBo.getFormCfgBo().getPost_times();
                         Integer cfgTotalTimes = formInfoBo.getFormCfgBo().getTotal_times();
-                        if (cfgPostTimes==0&&totalSubmitTimes>cfgTotalTimes){
+                        if (cfgPostTimes==0&&cfgTotalTimes>0&&totalSubmitTimes>=cfgTotalTimes){
                             log.info("提交次数达到上限");
                             formInfoBo.setStatus((byte) 6);
                             formInfoBo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_FAIL_SUBMIT_LIMIT,MESSAGE));
                         }else {
                             Integer daySubmitTimes = getDaySubmitTime(pageId, userId, nowDate);
                             int cfgDayTimes = formInfoBo.getFormCfgBo().getDay_times();
-                            if (cfgPostTimes==0&&daySubmitTimes>cfgDayTimes){
+                            if (cfgPostTimes==0&&cfgDayTimes>0&&daySubmitTimes>=cfgDayTimes){
                                 log.info("今日提交次数达到上限");
                                 formInfoBo.setStatus((byte) 7);
                                 formInfoBo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_DAY_SUBMIT_LIMIT,MESSAGE));
@@ -770,8 +798,8 @@ public class FormStatisticsService extends ShopBaseService {
      */
     private FormInfoBo toFormInfoBo(FormPageRecord formRecord) {
         FormInfoBo formInfoBo  =formRecord.into(FormInfoBo.class);
-        FormCfgBo formCfgBo = Util.json2Object(formInfoBo.getFormCfg(),FormCfgBo.class,true);
-        Map<String, FormModulesBo> formModulesBoMap = Util.json2Object(formInfoBo.getPageContent(), new TypeReference<Map<String, FormModulesBo>>() {}, true);
+        FormCfgBo formCfgBo = Util.json2Object(formInfoBo.getFormCfg(),FormCfgBo.class,false);
+        Map<String, FormModulesBo> formModulesBoMap = Util.json2Object(formInfoBo.getPageContent(), new TypeReference<Map<String, FormModulesBo>>() {}, false);
         formInfoBo.setFormCfgBo(formCfgBo);
         formInfoBo.setPageContentBo(formModulesBoMap);
         return formInfoBo;
@@ -793,7 +821,7 @@ public class FormStatisticsService extends ShopBaseService {
             return formSubmitDataVo;
         }
         FormInfoBo formInfoBo = toFormInfoBo(formRecord);
-        if (checkData(param, formSubmitDataVo, formInfoBo,lang)) return formSubmitDataVo;
+        if (checkData(param, formSubmitDataVo, formInfoBo,lang)) {return formSubmitDataVo;}
         //送积分
         Byte sendScore =formInfoBo.getFormCfgBo().getSend_score();
         if (BaseConstant.YES.equals(sendScore)) {
@@ -913,7 +941,7 @@ public class FormStatisticsService extends ShopBaseService {
                     String moduleValue = datail.getModuleValue();
                     if (!Strings.isNullOrEmpty(moduleValue)){
                         List<String> picList = Util.json2Object(datail.getModuleValue(), new TypeReference<List<String>>() {
-                        }, true);
+                        }, false);
                         if (picList!=null&&formModulesBo.getMax_number()<picList.size()){
                             formSubmitDataVo.setStatus((byte)4);
                             formSubmitDataVo.setMessage("图片上传数量限制");

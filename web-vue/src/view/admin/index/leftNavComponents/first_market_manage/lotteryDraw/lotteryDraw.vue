@@ -72,6 +72,7 @@
     <addLotteryDraw
       :isEdite="isEdite"
       :editId="editId"
+      :isGoing="isGoing"
       @addLotterySubmit="addLotterySubmit"
       v-if="tableListView===false"
     />
@@ -157,7 +158,7 @@
                 <span
                   style="font-size: 22px;"
                   class="el-icon-edit-outline"
-                  @click="editHandler(scope.row.id)"
+                  @click="editHandler(scope.row.id, scope.row)"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -308,6 +309,7 @@ export default {
       },
       editId: '', // 编辑的活动id
       isEdite: true, // 编辑状态,
+      isGoing: false, // 是否是进行中活动
 
       shareDialog: false, // 分享弹窗
       shareImg: '',
@@ -356,13 +358,20 @@ export default {
     // 添加
     addLotteryDraw () {
       this.isEdite = false
+      this.isGoing = false
       this.showTabAddGroup(this.$t('lotteryDraw.addLotteryDraw'))
     },
 
     // 编辑
-    editHandler (id) {
+    editHandler (id, val) {
+      if (val.status === 1) {
+        this.isEdite = true
+      }
+      if (val.status === 2) {
+        this.isEdite = false
+      }
       this.editId = id
-      this.isEdite = true
+      this.isGoing = true
       this.showTabAddGroup(this.$t('lotteryDraw.editLotteryDraw'))
     },
 
@@ -529,7 +538,7 @@ export default {
   margin-right: 10px;
 }
 .opt {
-  text-align: center;
+  text-align: left;
   color: #5a8bff;
   span {
     cursor: pointer;

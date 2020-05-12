@@ -33,6 +33,7 @@
           <distributorList
             :inviteFlag="inviteCode"
             :optGroupId="optGroupId"
+            @commissionHandler="commissionHandler"
           />
         </el-tab-pane>
         <el-tab-pane
@@ -48,7 +49,7 @@
           :label="$t('distribution.commissionStatistics')"
           name="sixth"
         >
-          <moneyStatistics />
+          <moneyStatistics :userId="userId" />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.rebateGoodsStatistics')"
@@ -107,7 +108,8 @@ export default {
     return {
       activeName: 'first',
       inviteCode: '',
-      optGroupId: 0
+      optGroupId: 0,
+      userId: ''
     }
   },
   mounted () {
@@ -140,6 +142,11 @@ export default {
     },
     inviteCodeHandler (val) {
       this.inviteCode = val
+    },
+    // 跳转佣金统计
+    commissionHandler (data) {
+      this.userId = data
+      this.activeName = 'sixth'
     }
     // advertisementList()
   }

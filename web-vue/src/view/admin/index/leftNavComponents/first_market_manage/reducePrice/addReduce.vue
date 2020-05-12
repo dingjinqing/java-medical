@@ -337,7 +337,7 @@
               <template slot-scope="scope">
                 <span
                   class="del_item"
-                  @click="isEditFlag ? clickHandler() : delReduceData(scope.row.goodsId)"
+                  @click="isGoing ? clickHandler() : delReduceData(scope.row.goodsId)"
                 >{{$t('marketCommon.delete')}}</span>
               </template>
             </el-table-column>
@@ -574,7 +574,7 @@ export default {
     actShare: () => import('@/components/admin/marketManage/marketActivityShareSetting'),
     LabelDialog: () => import('@/components/admin/labelDialog')
   },
-  props: ['isEdite', 'editId'],
+  props: ['isEdite', 'editId', 'isGoing'],
   data () {
     // 自定义活动商品
     var validateGoods = (rule, value, callback) => {
@@ -612,7 +612,7 @@ export default {
         src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`
       },
 
-      isEditFlag: false, // 编辑时部分信息不可修改
+      isEditFlag: this.isEdite, // 编辑时部分信息不可修改
       batchFlag: null,
       // 周期弹窗
       cycleDialogShow: false,
@@ -708,7 +708,7 @@ export default {
     this.changeFlag = true
 
     // 编辑初始化
-    if (this.isEdite === true) {
+    if (this.isGoing === true) {
       this.editReduceInit()
     }
   },
@@ -969,7 +969,7 @@ export default {
       // 展开更多配置
       this.arrorFlag = false
       // 编辑时部分信息不可修改
-      this.isEditFlag = true
+      // this.isEditFlag = true
       getReducePriceById({ id: this.editId }).then((res) => {
         if (res.error === 0) {
           this.reduceData = res.content
@@ -1057,7 +1057,7 @@ export default {
           // }
 
           console.log(this.reduceData)
-          if (this.isEdite === false) {
+          if (this.isGoing === false) {
             // 添加限时降价
             addReducePrice(this.reduceData).then((res) => {
               if (res.error === 0) {

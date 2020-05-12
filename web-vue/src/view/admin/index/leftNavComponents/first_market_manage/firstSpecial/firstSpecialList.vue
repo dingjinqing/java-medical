@@ -133,7 +133,7 @@
               >
                 <i
                   class="el-icon-edit-outline"
-                  @click="edit(scope.row.id)"
+                  @click="edit(scope.row.id, scope.row)"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -348,11 +348,12 @@ export default {
     },
 
     // 编辑点击事件
-    edit (id) {
+    edit (id, val) {
       this.$router.push({
         path: '/admin/home/main/firstSpecial/add',
         query: {
-          id: id
+          id: id,
+          currentState: val.currentState
         }
       })
     },

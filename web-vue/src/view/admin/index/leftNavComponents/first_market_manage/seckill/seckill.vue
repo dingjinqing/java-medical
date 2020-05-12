@@ -28,6 +28,7 @@
     <addSeckill
       :isEdite="isEdite"
       :editId="editId"
+      :isGoing="isGoing"
       @addSeckillSubmit="addSeckillSubmit"
       v-if="tableListView===false"
     />
@@ -244,7 +245,8 @@ export default {
       shareImg: '',
       sharePath: '',
       editId: '', // 编辑的活动id
-      isEdite: true // 编辑状态
+      isEdite: true, // 编辑状态
+      isGoing: false // 是否是进行中的活动
     }
   },
   watch: {
@@ -286,13 +288,20 @@ export default {
     // 添加
     addSeckill () {
       this.isEdite = false
+      this.isGoing = false
       this.showTabAddGroup(this.$t('seckill.addSeckill'))
     },
 
     // 编辑
     editHandler (id, row) {
+      if (row.currentState === 1) {
+        this.isEdite = true
+      }
+      if (row.currentState === 2) {
+        this.isEdite = false
+      }
       this.editId = id
-      this.isEdite = true
+      this.isGoing = true
       this.showTabAddGroup(this.$t('seckill.editSeckill'))
     },
 

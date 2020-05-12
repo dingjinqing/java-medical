@@ -1,45 +1,28 @@
 package com.vpu.mp.service.shop.market.fullcut;
 
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.MrkingStrategy.MRKING_STRATEGY;
-import static com.vpu.mp.db.shop.tables.MrkingStrategyCondition.MRKING_STRATEGY_CONDITION;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Record;
-import org.jooq.Record4;
-import org.jooq.SelectSeekStep1;
-import org.jooq.SelectWhereStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.db.shop.tables.Goods;
+import com.vpu.mp.db.shop.tables.OrderGoods;
+import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.MrkingStrategyConditionRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingStrategyRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.excel.bean.ClassList;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
-import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyAddParam;
-import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyCondition;
-import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyUpdateParam;
-import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyVo;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderGoodsListVo;
+import com.vpu.mp.service.pojo.shop.market.fullcut.*;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
@@ -50,9 +33,30 @@ import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
 import com.vpu.mp.service.shop.member.MemberCardService;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.user.cart.CartService;
-
 import jodd.util.StringUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.MrkingStrategy.MRKING_STRATEGY;
+import static com.vpu.mp.db.shop.tables.MrkingStrategyCondition.MRKING_STRATEGY_CONDITION;
+import static com.vpu.mp.db.shop.tables.User.USER;
 
 /**
  * @author: 王兵兵
@@ -61,6 +65,9 @@ import jodd.util.StringUtil;
 @Primary
 @Service
 public class MrkingStrategyService extends ShopBaseService {
+    private static OrderGoods og = OrderGoods.ORDER_GOODS.as("og");
+    private static OrderInfo oi = OrderInfo.ORDER_INFO.as("oi");
+    private static Goods g = Goods.GOODS.as("g");
 
     /**
      * 启用状态
@@ -93,15 +100,16 @@ public class MrkingStrategyService extends ShopBaseService {
     private CartService cartService;
     @Autowired
     private MemberCardService memberCardService;
+    @Autowired
+    private OrderGoodsService orderGoods;
 
     /**
      * 新建满折满减活动
-     *
      */
-    public void addMrkingStrategy(MrkingStrategyAddParam param){
-        this.transaction(()->{
+    public void addMrkingStrategy(MrkingStrategyAddParam param) {
+        this.transaction(() -> {
             MrkingStrategyRecord record = db().newRecord(MRKING_STRATEGY);
-            assign(param,record);
+            assign(param, record);
             record.insert();
             Integer id = record.getId();
             for(MrkingStrategyCondition condition : param.getConditionAddParams()){
@@ -504,14 +512,14 @@ public class MrkingStrategyService extends ShopBaseService {
                         reduceMoney = reduceMoney.add(g.getGoodsPrice().multiply(BigDecimal.ONE.subtract(c.getDiscount().divide(BigDecimal.valueOf(10))))).setScale(2,BigDecimal.ROUND_HALF_UP);
                     }
                 }
-               if(reduceMoney.compareTo(BigDecimal.ZERO) <= 0){
-                   doc.setDocType((byte)0);
-                   return doc;
-               }else {
-                   doc.setDocType((byte)1);
-                   doc.setReduceMoney(reduceMoney);
-                   return doc;
-               }
+                if(reduceMoney.compareTo(BigDecimal.ZERO) <= 0){
+                    doc.setDocType((byte)0);
+                    return doc;
+                }else {
+                    doc.setDocType((byte)1);
+                    doc.setReduceMoney(reduceMoney);
+                    return doc;
+                }
             default:
 
         }
@@ -531,25 +539,184 @@ public class MrkingStrategyService extends ShopBaseService {
      * @return
      */
     public MarketVo getActInfo(Integer id) {
-		return db().select(MRKING_STRATEGY.ID, MRKING_STRATEGY.ACT_NAME, MRKING_STRATEGY.START_TIME,
-				MRKING_STRATEGY.END_TIME).from(MRKING_STRATEGY).where(MRKING_STRATEGY.ID.eq(id)).fetchAnyInto(MarketVo.class);
+        return db().select(MRKING_STRATEGY.ID, MRKING_STRATEGY.ACT_NAME, MRKING_STRATEGY.START_TIME,
+            MRKING_STRATEGY.END_TIME).from(MRKING_STRATEGY).where(MRKING_STRATEGY.ID.eq(id)).fetchAnyInto(MarketVo.class);
     }
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param
      * @return
      */
-	public PageResult<MarketVo> getListNoEnd(MarketParam param) {
-		SelectSeekStep1<Record4<Integer, String, Timestamp, Timestamp>, Integer> select = db()
-				.select(MRKING_STRATEGY.ID, MRKING_STRATEGY.ACT_NAME, MRKING_STRATEGY.START_TIME,
-						MRKING_STRATEGY.END_TIME)
-				.from(MRKING_STRATEGY)
-				.where(MRKING_STRATEGY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(MRKING_STRATEGY.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(MRKING_STRATEGY.END_TIME.gt(DateUtil.getSqlTimestamp()))))
-				.orderBy(MRKING_STRATEGY.ID.desc());
-		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
-				MarketVo.class);
-		return pageResult;
-	}
+    public PageResult<MarketVo> getListNoEnd(MarketParam param) {
+        SelectSeekStep1<Record4<Integer, String, Timestamp, Timestamp>, Integer> select = db()
+            .select(MRKING_STRATEGY.ID, MRKING_STRATEGY.ACT_NAME, MRKING_STRATEGY.START_TIME,
+                MRKING_STRATEGY.END_TIME)
+            .from(MRKING_STRATEGY)
+            .where(MRKING_STRATEGY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(MRKING_STRATEGY.STATUS
+                .eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(MRKING_STRATEGY.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+            .orderBy(MRKING_STRATEGY.ID.desc());
+        PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+            MarketVo.class);
+        return pageResult;
+    }
+
+    /**
+     * 活动订单
+     */
+    public PageResult<MrkingStrategyOrderVo> getMrkingStrategyOrderList(MrkingStrategyOrderParam param) {
+        //默认排序方式---下单时间
+        PageResult<MrkingStrategyOrderVo> vo = this.getPageResult(buildRedemptionListOption(param), param.getCurrentPage(), param.getPageRows(), MrkingStrategyOrderVo.class);
+        /** 填充商品行 */
+        for (MrkingStrategyOrderVo order : vo.dataList) {
+            List<MarketOrderGoodsListVo> goods = orderGoods.getMarketOrderGoodsByOrderSn(order.getOrderSn());
+            goods.forEach(g -> {
+                if (StringUtil.isNotBlank(g.getGoodsImg())) {
+                    g.setGoodsImg(domainConfig.imageUrl(g.getGoodsImg()));
+                }
+            });
+            order.setGoods(goods);
+        }
+
+        return vo;
+    }
+
+    /**
+     * Build redemption list option select condition step.
+     * 构建满折满减订单列表查询条件
+     * activity_type:营销活动类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品 6限时降价 7加价购'
+     *
+     * @param param the param
+     * @return the select condition step
+     */
+    private SelectConditionStep<? extends Record> buildRedemptionListOption(MrkingStrategyOrderParam param) {
+        SelectConditionStep<Record5<String, Byte, Integer, String, String>> conditionStep = db().select(oi.ORDER_SN, oi.ORDER_STATUS, oi.USER_ID, USER.USERNAME, USER.MOBILE).from(oi).leftJoin(USER).on(oi.USER_ID.eq(USER.USER_ID)).leftJoin(og).on(og.ORDER_SN.eq(oi.ORDER_SN)).where(og.STRA_ID.eq(param.getActivityId()));
+
+
+        if (StringUtils.isNotBlank(param.getGoodsName())) {
+            conditionStep = conditionStep.and(og.GOODS_NAME.like(likeValue(param.getGoodsName())));
+        }
+        if (StringUtils.isNotBlank(param.getOrderSn())) {
+            conditionStep = conditionStep.and(og.ORDER_SN.like(likeValue(param.getOrderSn())));
+        }
+
+        if (StringUtils.isNotBlank(param.getUserInfo())) {
+            conditionStep = conditionStep.and(USER.MOBILE.contains(param.getUserInfo()).or(USER.USERNAME.contains(param.getUserInfo())));
+        }
+        if (param.getOrderStatus() != null && param.getOrderStatus().length != 0) {
+            conditionStep = conditionStep.and(oi.ORDER_STATUS.in(param.getOrderStatus()));
+        }
+        conditionStep.groupBy(oi.ORDER_SN, oi.ORDER_STATUS, oi.USER_ID, USER.USERNAME, USER.MOBILE);
+
+        return conditionStep;
+    }
+
+    public Workbook exportOrderList(MrkingStrategyOrderParam param, String lang) {
+        SelectConditionStep<? extends Record> select = buildRedemptionListOption(param);
+        List<MrkingStrategyOrderVo> list = select.fetchInto(MrkingStrategyOrderVo.class);
+        /** 填充商品行 */
+        for (MrkingStrategyOrderVo order : list) {
+            List<MarketOrderGoodsListVo> goods = orderGoods.getMarketOrderGoodsByOrderSn(order.getOrderSn());
+            order.setGoods(goods);
+        }
+
+        List<MrkingStrategyOrderExportVo> res = new ArrayList<>();
+        list.forEach(order -> {
+            MrkingStrategyOrderExportVo vo = new MrkingStrategyOrderExportVo();
+            vo.setOrderSn(order.getOrderSn());
+            vo.setGoods(order.getGoods().stream().map((g) -> {
+                MrkingStrategyOrderGoodsExportVo goods = new MrkingStrategyOrderGoodsExportVo();
+                goods.setGoodsName(g.getGoodsName() + (StringUtil.isNotBlank(g.getGoodsAttr()) ? (":" + g.getGoodsAttr()) : ""));
+                goods.setGoodsPrice(g.getGoodsPrice());
+                goods.setPerDiscount(BigDecimalUtil.multiply(g.getPerDiscount(), BigDecimal.valueOf(g.getGoodsNumber())));
+                goods.setDiscountedGoodsPrice(BigDecimalUtil.multiply(g.getDiscountedGoodsPrice(), BigDecimal.valueOf(g.getGoodsNumber())));
+                goods.setGoodsNumber(g.getGoodsNumber());
+                return goods;
+            }).collect(Collectors.toList()));
+            vo.setUsername(order.getUsername() + ";" + (StringUtil.isNotBlank(order.getMobile()) ? order.getMobile() : ""));
+            vo.setOrderStatus(OrderConstant.getOrderStatusName(order.getOrderStatus(), lang));
+
+            res.add(vo);
+        });
+
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+        ClassList cList = new ClassList();
+        cList.setUpClazz(MrkingStrategyOrderExportVo.class);
+        cList.setInnerClazz(MrkingStrategyOrderGoodsExportVo.class);
+        try {
+            excelWriter.writeModelListByRegion(res, cList);
+        } catch (Exception e) {
+            logger().error("excel error", e);
+        }
+
+        return workbook;
+    }
+//    /**
+//     * 满折满减效果分析的echarts图表数据
+//     *
+//     *
+//     */
+//    public SeckillAnalysisDataVo getSeckillAnalysisData(SeckillAnalysisParam param){
+//        SeckillAnalysisDataVo analysisVo = new SeckillAnalysisDataVo();
+//        Timestamp startDate = param.getStartTime();
+//        Timestamp endDate = param.getEndTime();
+//        if (startDate == null || endDate == null) {
+//            startDate = DateUtil.currentMonthFirstDay();
+//            endDate = DateUtil.getLocalDateTime();
+//        }
+//        //获取销售额等金额
+//        List<ActiveDiscountMoney> discountMoneyList = saas.getShopApp(getShopId()).readOrder.getActiveDiscountMoney(BaseConstant.ACTIVITY_TYPE_SEC_KILL, param.getSkId(), startDate, endDate);
+//        //获取参与用户信息
+//        ActiveOrderList activeOrderUserList = saas.getShopApp(getShopId()).readOrder.getActiveOrderList(BaseConstant.ACTIVITY_TYPE_SEC_KILL, param.getSkId(), startDate, endDate);
+//
+//        while (Objects.requireNonNull(startDate).compareTo(endDate) <= 0) {
+//            //活动实付金额、付款订单数、付款商品件数
+//            ActiveDiscountMoney discountMoney = getDiscountMoneyByDate(discountMoneyList, startDate);
+//            if (discountMoney == null) {
+//                analysisVo.getPaymentAmount().add(BigDecimal.ZERO);
+//                analysisVo.getDiscountAmount().add(BigDecimal.ZERO);
+//                analysisVo.getCostEffectivenessRatio().add(BigDecimal.ZERO);
+//                analysisVo.getPaidOrderNumber().add(0);
+//                analysisVo.getPaidGoodsNumber().add(0);
+//            } else {
+//                BigDecimal goodsPrice = Optional.ofNullable(discountMoney.getPaymentAmount()).orElse(BigDecimal.ZERO);
+//                BigDecimal marketPric = Optional.ofNullable(discountMoney.getDiscountAmount()).orElse(BigDecimal.ZERO);
+//                analysisVo.getPaymentAmount().add(Optional.ofNullable(discountMoney.getPaymentAmount()).orElse(BigDecimal.ZERO));
+//                analysisVo.getDiscountAmount().add(Optional.ofNullable(discountMoney.getDiscountAmount()).orElse(BigDecimal.ZERO));
+//                analysisVo.getCostEffectivenessRatio().add(goodsPrice.compareTo(BigDecimal.ZERO) > 0 ?
+//                    marketPric.divide(goodsPrice, BigDecimal.ROUND_FLOOR) : BigDecimal.ZERO);
+//                analysisVo.getPaidOrderNumber().add(discountMoney.getPaidOrderNumber());
+//                analysisVo.getPaidGoodsNumber().add(discountMoney.getPaidGoodsNumber());
+//            }
+//
+//            //新用户数
+//            OrderActivityUserNum newUser = getUserNum(activeOrderUserList.getNewUserNum(), startDate);
+//            if (newUser == null) {
+//                analysisVo.getNewUserNumber().add(0);
+//            } else {
+//                analysisVo.getNewUserNumber().add(newUser.getNum());
+//            }
+//            //老用户数
+//            OrderActivityUserNum oldUser = getUserNum(activeOrderUserList.getOldUserNum(), startDate);
+//            if (oldUser == null) {
+//                analysisVo.getOldUserNumber().add(0);
+//            } else {
+//                analysisVo.getOldUserNumber().add(oldUser.getNum());
+//            }
+//            analysisVo.getDateList().add(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate));
+//            startDate = Util.getEarlyTimeStamp(startDate, 1);
+//        }
+//        SeckillAnalysisTotalVo total = new SeckillAnalysisTotalVo();
+//        total.setTotalPayment(analysisVo.getPaymentAmount().stream().reduce(BigDecimal.ZERO,BigDecimal::add));
+//        total.setTotalDiscount(analysisVo.getDiscountAmount().stream().reduce(BigDecimal.ZERO,BigDecimal::add));
+//        total.setTotalCostEffectivenessRatio(total.getTotalPayment().compareTo(BigDecimal.ZERO) > 0 ? total.getTotalDiscount().divide(total.getTotalPayment(),3, BigDecimal.ROUND_HALF_UP) : BigDecimal.ZERO);
+//        total.setTotalPaidOrderNumber(analysisVo.getPaidOrderNumber().stream().mapToInt(Integer::intValue).sum());
+//        total.setTotalPaidGoodsNumber(analysisVo.getPaidGoodsNumber().stream().mapToInt(Integer::intValue).sum());
+//        total.setTotalOldUserNumber(analysisVo.getOldUserNumber().stream().mapToInt(Integer::intValue).sum());
+//        total.setTotalNewUserNumber(analysisVo.getNewUserNumber().stream().mapToInt(Integer::intValue).sum());
+//        analysisVo.setTotal(total);
+//        return analysisVo;
+//    }
+
 }

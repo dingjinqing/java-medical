@@ -340,7 +340,7 @@
             <template slot-scope="scope">
               <div class="opt">
                 <p @click="inviteUserList(scope.row.userId)">查看已邀请用户</p>
-                <p @clcik="commissionDetail(scope.row.userId)">查看返利佣金明细</p>
+                <p @click="commissionDetail(scope.row.userId)">查看返利佣金明细</p>
                 <p @click="remarksHandler(scope.row.userId)">备注</p>
                 <p @click="del(scope.row.userId)">清除</p>
               </div>
@@ -573,6 +573,8 @@ export default {
         haveMobile: 0,
         haveRealName: 0
       },
+      sortField: 1, // 表头排序
+      sortWay: '', // 排序方式
       requestParams: {},
       // 表格
       tableData: [],
@@ -625,17 +627,20 @@ export default {
   methods: {
     // 分销员列表
     initDataList () {
+      this.requestParams = {}
       // 搜索条件
-      var obj = {}
       for (var i in this.param) {
         if (this.param[i]) {
-          obj[i] = this.param[i]
+          this.requestParams[i] = this.param[i]
         }
       }
-      this.requestParams = obj
-      // this.requestParams = this.param
       if (this.optGroupId) {
         this.requestParams.optGroupId = this.optGroupId
+      }
+      // 排序
+      if (this.sortField && this.sortWay) {
+        this.requestParams.sortField = this.sortField
+        this.requestParams.sortWay = this.sortWay
       }
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
@@ -671,12 +676,7 @@ export default {
     },
     // 跳转佣金返利明细
     commissionDetail (userId) {
-      this.$router.push({
-        path: '/admin/home/main/distribution/moneyStatistics',
-        query: {
-          userId: userId
-        }
-      })
+      this.$emit('commissionHandler', userId)
     },
     // 清除分销员身份
     del (userId) {
@@ -879,21 +879,24 @@ export default {
     // 选择指定列进行排序
     changeTableSort (column) {
       console.log(column)
-
       // 获取字段名称和排序类型
-      var fieldName = column.prop
-      var sortType = column.order
-
-      console.log(fieldName)
-      console.log(sortType)
-
-      if (sortType === 'descending') {
-        // 按照降序排序
+      if (column.order) {
+        this.sortWay = column.order === 'descending' ? 'desc' : 'asc'
       } else {
-        // 按照升序排序
+        this.sortWay = null
       }
-
-      console.log(this.tableData)
+      if (column.prop === 'nextNumber') {
+        this.sortField = 1
+      } else if (column.prop === 'sublayerNumber') {
+        this.sortField = 2
+      } else if (column.prop === 'totalCanFanliMoney') {
+        this.sortField = 3
+      } else if (column.prop === 'totalFanliMoney') {
+        this.sortField = 4
+      } else if (column.prop === 'waitFanliMoney') {
+        this.sortField = 5
+      }
+      this.initDataList()
     }
 
   }

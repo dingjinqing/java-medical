@@ -190,7 +190,7 @@
               :data="form.coupon_info"
               key="couponList"
               border
-              style="width: 300px;"
+              style="width: 400px;"
             >
               <el-table-column
                 :label="$t('promoteList.couponInfo')"
@@ -203,7 +203,14 @@
                       v-if="scope.row.actCode == 'voucher'"
                       style="color:red"
                     >￥<span>{{scope.row.denomination}}</span></div>
-                    <div v-else><span>{{scope.row.denomination}}</span>折</div>
+                    <div
+                      v-if="scope.row.actCode == 'discount'"
+                      style="color:red"
+                    ><span>{{scope.row.denomination}}</span>折</div>
+                    <div
+                      v-if="scope.row.actCode == 'random'"
+                      style="color:red"
+                    ><span>{{scope.row.randomMax}}</span>最高</div>
                     <div class="coupon_rule">{{scope.row.useConsumeRestrict > 0? `满${scope.row.leastConsume}元可用`  : `不限制`}}</div>
                   </div>
                 </template>
@@ -441,9 +448,7 @@
               v-model="form.failedSendType"
               label="0"
               @change="failedSendTypeChange"
-            >
-              {{$t('promoteList.giftNothing')}}
-            </el-radio>
+            >{{$t('promoteList.giftNothing')}}</el-radio>
             <el-radio
               v-model="form.failedSendType"
               label="1"
@@ -454,15 +459,11 @@
               label="2"
               @change="failedSendTypeChange"
             >{{$t('promoteList.point')}}</el-radio>
-            <div
-              v-if="form.failedSendType==1"
-              @click="isEditFlag?'':handleToCallDialog(2)"
-            >
-
-              <!--占位-->
+            <div v-if="form.failedSendType==1">
               <div
                 v-if="!coupon_duplicate.length"
                 class="addInfo"
+                @click="isEditFlag?'':handleToCallDialog(2)"
               >
                 <el-image
                   fit="scale-down"
@@ -474,23 +475,40 @@
               <div
                 class="addInfo"
                 v-else
+                @click="isEditFlag?'':handleToCallDialog(2)"
               >
                 <div class="couponImgWrapper">
                   <div class="coupon_list_top">
-                    <span>￥</span>
-                    <span class="number">{{coupon_duplicate[0].denomination}}</span>
+                    <span v-if="coupon_duplicate[0].actCode === 'voucher'">
+                      ￥<span class="number">{{coupon_duplicate[0].denomination}}</span>
+                    </span>
+                    <span v-if="coupon_duplicate[0].actCode === 'discount'">
+                      <span class="number">{{coupon_duplicate[0].denomination}}</span>折
+                    </span>
+                    <span v-if="coupon_duplicate[0].actCode === 'random'">
+                      <span class="number">{{coupon_duplicate[0].randomMax}}</span>最高
+                    </span>
                   </div>
                   <div class="coupon_center_limit">{{coupon_duplicate[0].useConsumeRestrict | formatLeastConsume(coupon_duplicate[0].leastConsume)}}</div>
-                  <div class="coupon_center_number">剩余{{coupon_duplicate[0].surplus}}张</div>
+                  <div
+                    class="coupon_center_number"
+                    v-if="coupon_duplicate[0].surplus === 0"
+                  >库存不限制</div>
+                  <div
+                    class="coupon_center_number"
+                    v-if="coupon_duplicate[0].surplus > 0"
+                  >剩余{{coupon_duplicate[0].surplus}}张</div>
                   <div
                     class="coupon_list_bottom"
-                    style="font-size:12px"
+                    v-if="coupon_duplicate[0].scoreNumber === 0"
                   >领取</div>
+                  <div
+                    class="coupon_list_bottom"
+                    v-if="coupon_duplicate[0].scoreNumber > 0"
+                  >{{coupon_duplicate[0].scoreNumber}}积分 兑换</div>
                 </div>
               </div>
-
             </div>
-
             <div v-if="form.failedSendType==2">
               {{$t('promoteList.giftPoint')}}
               <el-input
@@ -792,7 +810,7 @@ export default {
       }
     }
     return {
-      couponFlag: null,
+      couponFlag: null, // 优惠券弹窗类型
       promoteId: '',
       show: false,
       radio: 'one',
@@ -887,29 +905,6 @@ export default {
           isUseDefault: 0
         }
       },
-      // 优惠券
-      coupon_msg: [],
-      coupon_info: [],
-      coupon_duplicate: [],
-      couponDialogFlag: false,
-      couponDialogFlag1: false,
-      couponSetDialogFlag: false,
-      coupon_set: {
-        immediatelyGrantAmount: 0,
-        timingEvery: 0,
-        timingAmount: 0,
-        timingTime: '1',
-        timingUnit: '0'
-      },
-      // coupon_set: {
-      //   immediatelyGrantAmount: 0,
-      //   timingEvery: 0,
-      //   timingAmount: 0,
-      //   timingTime: '1',
-      //   timingUnit: '0'
-      // },
-      target: null,
-
       // 表单约束
       formRules: {
         actName: [
@@ -964,8 +959,9 @@ export default {
         src2: `${this.$imageHost}/image/admin/share/promote_pictorial_goods.jpg`,
         imageUrl: ``
       },
-      showCouponDialog: false,
-      couponIdList: [],
+      showCouponDialog: false, // 优惠券弹窗
+      coupon_duplicate: [], // 失败送优惠券数据
+      couponIdList: [], // 优惠券回显数据id
       showImageDialog: false,
       imgHost: `${this.$imageHost}`,
 
@@ -1235,33 +1231,18 @@ export default {
     },
     // 选择优惠券弹窗
     handleToCallDialog (val) {
-      switch (val) {
-        case 1: {
-          console.log(this.couponDialogFlag)
-          console.log(this.form.coupon_info)
-          this.couponFlag = 1
-          let obj = {
-            couponDialogFlag: !this.couponDialogFlag,
-            couponList: this.form.coupon_info
-          }
-          this.$http.$emit('V-AddCoupon', obj)
-          this.showCouponDialog = !this.showCouponDialog
-        }
-          break
-        case 2: {
-          this.couponFlag = 2
-          let obj = {
-            couponDialogFlag: !this.couponDialogFlag1,
-            couponList: this.coupon_duplicate
-          }
-          this.$http.$emit('V-AddCoupon', obj)
-          this.showCouponDialog = !this.showCouponDialog
-        }
+      this.showCouponDialog = !this.showCouponDialog
+      this.couponIdList = []
+      if (val === 1) {
+        this.couponFlag = 1
+        this.couponIdList.push(this.form.coupon_info[0].id)
+      } else {
+        this.couponFlag = 2
+        this.couponIdList.push(this.coupon_duplicate[0].id)
       }
     },
     // 确认选择优惠券-新增-删除
     handleToCheck (data) {
-      console.log(data)
       console.log('couponInfo:', data)
       if (this.couponFlag === 1) {
         this.form.rewardSet.reward_ids = data[0].id
@@ -1271,6 +1252,8 @@ export default {
         this.form.failedSendContent = data[0].id
         this.coupon_duplicate = data
         console.log(this.coupon_duplicate)
+
+        this.$refs['form'].validateField('failedSendType')
       }
     },
 
@@ -1496,6 +1479,10 @@ export default {
         font-size: 20px;
         font-weight: bold;
       }
+      .number {
+        font-size: 20px;
+        font-weight: bold;
+      }
     }
     .coupon_center_limit {
       height: 20px;
@@ -1507,6 +1494,7 @@ export default {
       color: #fbb;
     }
     .coupon_list_bottom {
+      font-size: 12px;
       height: 24px;
       line-height: 30px;
       border-bottom-left-radius: 8px;

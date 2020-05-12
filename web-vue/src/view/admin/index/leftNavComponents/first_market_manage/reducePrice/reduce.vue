@@ -28,6 +28,7 @@
     <addReduce
       :isEdite="isEdite"
       :editId="editId"
+      :isGoing="isGoing"
       @addReduceSubmit="addReduceSubmit"
       v-if="tabSwitch > '6'"
     />
@@ -210,7 +211,8 @@ export default {
       pageParams: {}, // 分页
       requestParams: {},
       editId: '', // 编辑的活动id
-      isEdite: true // 编辑状态
+      isEdite: true, // 编辑状态
+      isGoing: false // 是否是进行中
     }
   },
   watch: {
@@ -257,13 +259,20 @@ export default {
     // 添加
     addReduce () {
       this.isEdite = false
+      this.isGoing = false
       this.showTabAddGroup('添加限时降价活动')
     },
 
     // 编辑
     editHandler (id, row) {
+      if (row.currentState === 1) {
+        this.isEdite = true
+      }
+      if (row.currentState === 2) {
+        this.isEdite = false
+      }
       this.editId = id
-      this.isEdite = true
+      this.isGoing = true
       this.showTabAddGroup('编辑限时降价活动')
     },
 
