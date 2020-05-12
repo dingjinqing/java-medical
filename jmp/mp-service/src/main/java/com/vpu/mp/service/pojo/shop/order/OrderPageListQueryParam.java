@@ -30,6 +30,8 @@ public class OrderPageListQueryParam {
 	public Byte deliverType;
 	/** 买家昵称,会员表的username */
 	public String userName;
+    /**下单人的手机或者昵称*/
+	public String orderUserNameOrMobile;
 	/** 买家来源 */
 	public String source;
 	/** 标签,买家会员标签 */

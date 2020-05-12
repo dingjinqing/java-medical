@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.order.refund;
 
 import com.vpu.mp.db.shop.tables.ReturnOrder;
 import com.vpu.mp.db.shop.tables.ReturnOrderGoods;
+import static com.vpu.mp.db.shop.tables.User.USER;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -23,6 +24,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.refund.ReturnOrderListMp;
+import org.elasticsearch.common.Strings;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -96,7 +98,9 @@ public class ReturnOrderService extends ShopBaseService{
 	 * @return
 	 */
 	public PageResult<OrderReturnListVo> getPageList(OrderPageListQueryParam param) {
-		SelectJoinStep<Record> select = db().select().from(TABLE);
+		SelectJoinStep<Record> select = db().select(TABLE.asterisk(),USER.USERNAME.as(OrderReturnListVo.ORDER_USERNAME),USER.MOBILE.as(OrderReturnListVo.ORDER_MOBILE))
+            .from(TABLE)
+            .innerJoin(USER).on(TABLE.USER_ID.eq(USER.USER_ID));
         buildOptionsReturn(select, param);
         return getPageResult(select,param.getCurrentPage(),param.getPageRows(),OrderReturnListVo.class);
 	}
@@ -172,6 +176,9 @@ public class ReturnOrderService extends ShopBaseService{
         }
         if (param.getReturnSource() != null && param.getReturnSource().length != 0) {
             select.where(TABLE.RETURN_SOURCE.in(param.getReturnSource()));
+        }
+        if (!Strings.isNullOrEmpty(param.getOrderUserNameOrMobile())){
+            select.where(USER.USERNAME.like(likeValue(param.getOrderUserNameOrMobile())).or(USER.MOBILE.like(likeValue(param.getOrderUserNameOrMobile()))));
         }
 		return select;
 	}
