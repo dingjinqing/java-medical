@@ -17,4 +17,8 @@ import java.sql.Timestamp;
 public class PictorialRule implements Rule {
     private Timestamp goodsUpdateTime;
     private Timestamp activityUpdateTime;
+    /**店铺配置颜色*/
+    Integer red;
+    Integer green;
+    Integer blue;
 }

@@ -176,7 +176,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-edit-outline"
+                  class="iconfont iconbianji"
                   @click="gotoEdit(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -187,7 +187,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-share"
+                  class="iconfont iconfenxiang1"
                   @click="share(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -198,7 +198,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-circle-close"
+                  class="iconfont icontingyong"
                   @click="disable(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -209,7 +209,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-circle-check"
+                  class="iconfont iconqiyong"
                   @click="enable(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -221,7 +221,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-s-unfold"
+                  class="iconfont icondingdan"
                   @click="receiveDetails(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -232,7 +232,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-tickets"
+                  class="iconfont iconmingxi1"
                   @click="activityDetails(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -243,7 +243,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-delete"
+                  class="iconfont iconshanchu2"
                   @click="deleteActivity(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -428,6 +428,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .container {
   .tab_switch {
     margin: 10px;

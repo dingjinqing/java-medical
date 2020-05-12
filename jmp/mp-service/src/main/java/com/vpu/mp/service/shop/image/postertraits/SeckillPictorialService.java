@@ -55,10 +55,11 @@ public class SeckillPictorialService extends ShareBaseService {
      String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         SecKillDefineRecord secKillDefineRecord = (SecKillDefineRecord) aRecord;
         SeckillShareInfoParam param = (SeckillShareInfoParam) baseParam;
+        Color shopStyleColor = getShopStyleColor();
 
         PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), param.getActivityId(), PictorialConstant.SECKILL_ACTION_SHARE, param.getUserId());
         // 已存在生成的图片
-        if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), secKillDefineRecord.getUpdateTime())) {
+        if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), secKillDefineRecord.getUpdateTime(),shopStyleColor)) {
             return pictorialRecord.getPath();
         }
         try (InputStream bgInputStream = Util.loadFile(SECKILL_BG_IMG)) {
@@ -79,18 +80,19 @@ public class SeckillPictorialService extends ShareBaseService {
 
             int textStartX = toLeft + goodsWidth + 20;
 
+            PictorialImgPx imgPx = new PictorialImgPx(shopStyleColor);
             // "秒杀" 文字
             String seckillText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_SECKILL, null, "messages");
-            ImageUtil.addFontWithRect(bgBufferImg,  textStartX, toTop + 20, seckillText, ImageUtil.SourceHanSansCN(Font.PLAIN, 16), PictorialImgPx.REAL_PRICE_COLOR, PictorialImgPx.SHARE_IMG_RECT_INNER_COLOR, PictorialImgPx.REAL_PRICE_COLOR);
+            ImageUtil.addFontWithRect(bgBufferImg,  textStartX, toTop + 20, seckillText, ImageUtil.SourceHanSansCN(Font.PLAIN, 16), imgPx.getRealPriceColor(), imgPx.getShareImgRectInnerColor(), imgPx.getRealPriceColor());
 
             // 添加秒杀价￥
-            ImageUtil.addFont(bgBufferImg, realPrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 20), textStartX, toTop + 80, PictorialImgPx.REAL_PRICE_COLOR);
+            ImageUtil.addFont(bgBufferImg, realPrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 20), textStartX, toTop + 80, imgPx.getRealPriceColor() );
             // 添加划线价￥
             ImageUtil.addFontWithLine(bgBufferImg, textStartX, toTop + 100, linePrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 18),PictorialImgPx.LINE_PRICE_COLOR);
 
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(secKillDefineRecord.getSkId());
-            PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), secKillDefineRecord.getUpdateTime());
+            PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), secKillDefineRecord.getUpdateTime(),shopStyleColor.getRed(),shopStyleColor.getGreen(),shopStyleColor.getBlue());
             pictorialService.uploadToUpanYun(bgBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(), param.getActivityId(),PictorialConstant.SECKILL_ACTION_SHARE,pictorialRecord, param.getUserId());
             return relativePath;
         } catch (IOException e) {
@@ -109,7 +111,7 @@ public class SeckillPictorialService extends ShareBaseService {
 
     @Override
     void createPictorialImg(BufferedImage qrCodeBufferImg, BufferedImage goodsImg, PictorialUserInfo userInfo, String shareDoc, Record aRecord, GoodsRecord goodsRecord, ShopRecord shop, GoodsShareBaseParam baseParam, GoodsPictorialInfo goodsPictorialInfo) {
-        PictorialImgPx imgPx = new PictorialImgPx();
+        PictorialImgPx imgPx = new PictorialImgPx(getShopStyleColor() );
 
         // 拼装背景图
         BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(), baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);

@@ -15,7 +15,6 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSharePostConfig;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
-import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,10 +59,11 @@ public class GroupDrawPictorialService extends ShareBaseService {
      String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         GroupDrawRecord groupDrawRecord= (GroupDrawRecord) aRecord;
         GroupDrawShareInfoParam param = (GroupDrawShareInfoParam) baseParam;
+        Color shopStyleColor = getShopStyleColor();
 
         PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), param.getActivityId(), PictorialConstant.GROUP_DRAW_ACTION_SHARE, null);
         // 已存在生成的图片
-        if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), groupDrawRecord.getUpdateTime())) {
+        if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), groupDrawRecord.getUpdateTime(),shopStyleColor)) {
             return pictorialRecord.getPath();
         }
 
@@ -82,21 +82,22 @@ public class GroupDrawPictorialService extends ShareBaseService {
             ShopRecord shop = saas.shop.getShopById(getShopId());
 
             int textStartX = toLeft + goodsWidth + 20;
+            PictorialImgPx imgPx = new PictorialImgPx(shopStyleColor);
             //添加拼团抽奖文字
             String msg = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_DRAW_SHARE_INFO, "messages");
-            ImageUtil.addFontWithRect(bgBufferImg, textStartX, toTop + 20, msg, ImageUtil.SourceHanSansCN(Font.PLAIN, 16), PictorialImgPx.REAL_PRICE_COLOR,PictorialImgPx.SHARE_IMG_RECT_INNER_COLOR,  PictorialImgPx.REAL_PRICE_COLOR);
+            ImageUtil.addFontWithRect(bgBufferImg, textStartX, toTop + 20, msg, ImageUtil.SourceHanSansCN(Font.PLAIN, 16), imgPx.getRealPriceColor(),imgPx.getShareImgRectInnerColor(), imgPx.getRealPriceColor());
 
             //添加真实价格
             String moneyFlag = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages");
             String realPrice = param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-            ImageUtil.addFont(bgBufferImg, moneyFlag + realPrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 20), textStartX, toTop + 80,  PictorialImgPx.REAL_PRICE_COLOR);
+            ImageUtil.addFont(bgBufferImg, moneyFlag + realPrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 20), textStartX, toTop + 80,imgPx.getRealPriceColor());
             //添加划线价格
             String linePrice = param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
             ImageUtil.addFontWithLine(bgBufferImg, textStartX, toTop + 100, moneyFlag+linePrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 18),PictorialImgPx.LINE_PRICE_COLOR);
 
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(groupDrawRecord.getId());
-            PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), groupDrawRecord.getUpdateTime());
+            PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), groupDrawRecord.getUpdateTime(),shopStyleColor.getRed(),shopStyleColor.getGreen(),shopStyleColor.getBlue());
             pictorialService.uploadToUpanYun(bgBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(),param.getActivityId(),PictorialConstant.GROUP_DRAW_ACTION_SHARE, pictorialRecord, param.getUserId());
 
             return relativePath;
@@ -122,7 +123,7 @@ public class GroupDrawPictorialService extends ShareBaseService {
 
     @Override
     void createPictorialImg(BufferedImage qrCodeBufferImg, BufferedImage goodsImg, PictorialUserInfo userInfo, String shareDoc, Record aRecord, GoodsRecord goodsRecord, ShopRecord shop, GoodsShareBaseParam baseParam, GoodsPictorialInfo goodsPictorialInfo) {
-        PictorialImgPx imgPx = new PictorialImgPx();
+        PictorialImgPx imgPx = new PictorialImgPx(getShopStyleColor());
         // 拼装背景图
         BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(),baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
 
