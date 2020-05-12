@@ -191,11 +191,11 @@
               <td>
                 <el-popover
                   placement="right"
-                  trigger="manual"
-                  v-model="showOrderBrief"
+                  trigger="hover"
                 >
                   <div
                     class="order-brief"
+                    v-loading="orderBriefLoading"
                     @click="handleViewOrder(returnInfo.orderSn)"
                   >
                     <div class="title">订单信息</div>
@@ -216,7 +216,6 @@
                     class="high-light"
                     @click="handleViewOrder(returnInfo.orderSn)"
                     @mouseenter="requestOrderInfo(returnInfo.orderSn)"
-                    @mouseleave="leaveOrderBrief()"
                   >{{returnInfo.orderSn}}</span>
                 </el-popover>
               </td>
@@ -694,7 +693,7 @@ export default {
       refund_score_money: 0.00,
       refund_pay_money: 0.00,
       bk_order_money: 0.00,
-      showOrderBrief: false,
+      orderBriefLoading: false,
       orderBriefData: {}
     }
   },
@@ -877,20 +876,17 @@ export default {
       }
     },
     requestOrderInfo (orderSn, targetIndex) {
+      this.orderBriefLoading = true
       getOrderBrief({orderSn}).then(res => {
-        console.log(res)
         if (res.error === 0 && res.content) {
-          this.showOrderBrief = true
           this.orderBriefData = res.content
           this.$set(this.orderBriefData, 'orderStatusName', this.getOrderStatus(res.content))
           this.$set(this.orderBriefData, 'payName', this.getOrderPayName(res.content))
           this.$set(this.orderBriefData, 'goodsTypeName', this.getGoodsTypeName(res.content))
+          this.orderBriefLoading = false
         }
       }).catch(() => {
       })
-    },
-    leaveOrderBrief (orderSn, targetIndex) {
-      this.showOrderBrief = false
     },
     getOrderPayName ({payCodeList}) {
       let nameArray = []
