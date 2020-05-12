@@ -82,6 +82,7 @@
           :label="$t('lotteryDraw.orderStatusName')"
           prop="orderStatusName"
           align="center"
+          :formatter="formatter"
         ></el-table-column>
       </el-table>
       <pagination
@@ -120,28 +121,13 @@ export default {
       showExportConfirm: false, // 导出数据弹窗
       totalRows: 0, // 筛选个数
       // 订单状态
-      orderStatusArr: {
-        null: '全部订单',
-        0: '待付款',
-        1: '订单取消',
-        2: '订单关闭',
-        3: '待发货/待核销',
-        4: '已发货',
-        5: '已收货/已自提',
-        6: '订单完成',
-        7: '退货中',
-        8: '退货完成',
-        9: '退款中',
-        10: '退款完成',
-        11: '拼团中',
-        12: '已成团',
-        13: '送礼完成'
-      }
+      orderStatusArr: this.$t('lotteryDraw.orderStatusArr')
     }
   },
   watch: {
     lang () {
       this.initDataList()
+      this.orderStatusArr = this.$t('lotteryDraw.orderStatusArr')
     }
   },
   mounted () {
@@ -190,9 +176,9 @@ export default {
             this.loading = false
             this.pageParams = res.content.page
             // 订单状态
-            res.content.dataList.forEach(item => {
-              item.orderStatusName = this.orderStatusArr[item.orderStatus === -1 ? null : item.orderStatus]
-            })
+            // res.content.dataList.forEach(item => {
+            //   item.orderStatusName = this.orderStatusArr[item.orderStatus === -1 ? null : item.orderStatus]
+            // })
             this.tableData = res.content.dataList
 
             resolve(this.pageParams)
@@ -246,9 +232,18 @@ export default {
         // this.$message.success('已复制到剪贴板</br>' + messgae)
         this.$message.success({
           dangerouslyUseHTMLString: true,
-          message: '<span style="text-align: center;display:block;">已复制到剪贴板<span></br>' + messgae
+          message: '<span style="text-align: center;display:block;">' + this.$t('lotteryDraw.isCopy') + '<span></br>' + messgae
         })
       })
+    },
+    formatter (row, column) {
+      let status = row.orderStatus
+      var arr = this.orderStatusArr
+      for (let index = 0; index < arr.length; index++) {
+        if (arr[index].value === status) {
+          return arr[index].label
+        }
+      }
     }
   }
 }

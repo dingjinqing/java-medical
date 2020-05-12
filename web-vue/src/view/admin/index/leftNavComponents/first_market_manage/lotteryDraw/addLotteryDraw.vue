@@ -126,7 +126,7 @@
             width="220"
             trigger="hover"
           >
-            <el-image src="http://jmpdevimg.weipubao.cn/image/admin/new_preview_image/pin_lottery.jpg"></el-image>
+            <el-image :src="$imageHost+'/image/admin/new_preview_image/pin_lottery.jpg'"></el-image>
             <el-button
               slot="reference"
               type="text"
@@ -169,8 +169,8 @@
                     class="coupon_list_top"
                     v-if="item.actCode==='random'"
                   >
-                    <span>￥</span>
-                    <span class="number">{{item.randomMax}}最高</span>
+                    <span>{{$t('lotteryDraw.moneyTitle')}}</span>
+                    <span class="number">{{item.randomMax}}{{$t('lotteryDraw.max')}}</span>
                   </div>
                   <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
                   <div
@@ -223,14 +223,14 @@
           </el-card>
         </el-form-item>
         <el-form-item
-          label="活动规则说明："
+          :label="$t('lotteryDraw.rules') +'：'"
           prop=""
         >
           <el-button
             type="primary"
             size="small"
             @click="lotteryDrawRule"
-          >设置规则说明</el-button>
+          >{{$t('lotteryDraw.rules')}}</el-button>
         </el-form-item>
         <el-form-item
           :label="$t('lotteryDraw.goodsId') + '：'"
@@ -354,9 +354,9 @@ export default {
   filters: {
     formatLeastConsume (useConsumeRestrict, leastConsume) {
       if (useConsumeRestrict === 0) {
-        return `不限制`
+        return this.$t('lotteryDraw.noLimit')
       } else {
-        return `满${leastConsume}元可用`
+        return this.$t('lotteryDraw.man') + `${leastConsume}` + this.$t('lotteryDraw.canDo')
       }
     }
   },
@@ -365,9 +365,9 @@ export default {
     var validatePayMoney = (rule, value, callback) => {
       var re = /^\d+(\.\d{1,2})?$/
       if (!value) {
-        callback(new Error('请填写商品金额'))
+        callback(new Error(this.$t('lotteryDraw.please1')))
       } else if (!re.test(value)) {
-        callback(new Error('请填写非负数, 可以保留两位小数'))
+        callback(new Error(this.$t('lotteryDraw.please2')))
       } else {
         callback()
       }
@@ -396,31 +396,31 @@ export default {
       // 校验表单
       fromRules: {
         name: [
-          { required: true, message: '请填写活动名称', trigger: 'blur' }
+          { required: true, message: this.$t('lotteryDraw.please3'), trigger: 'blur' }
         ],
         validity: [
-          { required: true, message: '请填写有效期', trigger: 'change' }
+          { required: true, message: this.$t('lotteryDraw.please4'), trigger: 'change' }
         ],
         minJoinNum: [
-          { required: true, message: '请填写奖池最少人数', trigger: 'blur' }
+          { required: true, message: this.$t('lotteryDraw.please5'), trigger: 'blur' }
         ],
         payMoney: [
           { validator: validatePayMoney, trigger: 'blur' }
         ],
         joinLimit: [
-          { required: true, message: '请填写最大参团数量', trigger: 'blur' }
+          { required: true, message: this.$t('lotteryDraw.please6'), trigger: 'blur' }
         ],
         openLimit: [
-          { required: true, message: '请填写最大开团数量', trigger: 'blur' }
+          { required: true, message: this.$t('lotteryDraw.please7'), trigger: 'blur' }
         ],
         limitAmount: [
-          { required: true, message: '请填写最小成团人数', trigger: 'blur' }
+          { required: true, message: this.$t('lotteryDraw.please8'), trigger: 'blur' }
         ],
         toNumShow: [
-          { required: true, message: '请填写最小展示人数', trigger: 'blur' }
+          { required: true, message: this.$t('lotteryDraw.please9'), trigger: 'blur' }
         ],
         goodsIds: [
-          { required: true, message: '请选择活动商品', trigger: 'change' }
+          { required: true, message: this.$t('lotteryDraw.please10'), trigger: 'change' }
         ]
       },
       submitStatus: false, // 提交
@@ -559,7 +559,7 @@ export default {
           this.form.rewardCouponIds.push(item.id)
         })
       } else {
-        this.$message.warning('优惠券不能超过五张')
+        this.$message.warning(this.$t('lotteryDraw.limitTip'))
         return false
       }
     },

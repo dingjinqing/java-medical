@@ -49,6 +49,7 @@
               size="small"
               v-model="requestParams.endTime"
               value-format="yyyy-MM-dd HH:mm:ss"
+              default-time="23:59:59"
               class="date_picker inputWidth"
             ></el-date-picker>
           </el-form-item>
