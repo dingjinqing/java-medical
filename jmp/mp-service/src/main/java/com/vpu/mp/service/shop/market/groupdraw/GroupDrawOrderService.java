@@ -147,4 +147,13 @@ public class GroupDrawOrderService extends ShopBaseService {
 		excelWriter.writeModelList(orderExport, OrderExport.class);
 		return workbook;
 	}
+	
+	/**
+	 * 查询结束时间
+	 * @param orderSn
+	 * @return
+	 */
+	public Timestamp getEndTime(String orderSn) {
+		return db().select(JOIN_GROUP_LIST.END_TIME).from(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.ORDER_SN.eq(orderSn)).fetchAnyInto(Timestamp.class);
+	}
 }

@@ -393,6 +393,7 @@ public class OrderReadService extends ShopBaseService {
 		//拼团订单设置拼团中时间
         mainOrder.setPinStartTime(mainOrder.getPayTime());
         mainOrder.setRebateList(getOrderRebateInfo(mainOrder));
+        mainOrder.setPinEndTime(groupDrawService.groupDrawOrders.getEndTime(mainOrder.getOrderSn()));
 		return mainOrder;
 	}
 
