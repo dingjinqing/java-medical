@@ -149,7 +149,7 @@
                 v-if="scope.row.expire===1||scope.row.expire===2"
               >
                 <span
-                  class="el-icon-edit-outline iconSpan"
+                  class="iconfont iconbianji iconSpan"
                   @click="gotoEdit(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -158,7 +158,7 @@
                 placement="top"
               >
                 <span
-                  class="el-icon-share iconSpan"
+                  class="iconfont iconfenxiang1 iconSpan"
                   @click="shareHandle(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -169,7 +169,7 @@
               >
                 <span
                   @click="puaseGroupIntegration(scope.row.id)"
-                  class="el-icon-circle-close iconSpan"
+                  class="iconfont icontingyong  iconSpan"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -179,7 +179,7 @@
               >
                 <span
                   @click="upGroupIntegration(scope.row.id)"
-                  class="el-icon-circle-check iconSpan"
+                  class="iconfont iconqiyong iconSpan"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -188,7 +188,7 @@
               >
                 <span
                   @click="gotoDetail(scope.row.id)"
-                  class="el-icon-present iconSpan"
+                  class="iconfont iconmingxi1 iconSpan"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -197,7 +197,7 @@
               >
                 <span
                   @click="gotoSuccess(scope.row.id)"
-                  class="el-icon-user iconSpan"
+                  class="iconfont iconchengtuanmingxi iconSpan"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -207,7 +207,7 @@
               >
                 <span
                   @click="delGroupIntegration(scope.row.id)"
-                  class="el-icon-delete iconSpan"
+                  class="iconfont iconshanchu2 iconSpan"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -216,7 +216,7 @@
               >
                 <span
                   @click="gotoAnalysis(scope.row.id)"
-                  class="el-icon-data-line iconSpan"
+                  class="iconfont iconfankuitongji iconSpan"
                 ></span>
               </el-tooltip>
             </div>
@@ -434,6 +434,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .content {
   padding: 10px;
   min-width: 100%;
