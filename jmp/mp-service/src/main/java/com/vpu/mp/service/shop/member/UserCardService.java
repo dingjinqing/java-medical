@@ -1175,7 +1175,9 @@ public class UserCardService extends ShopBaseService {
 			defaultCards = userCardDao.getOrderMembers(userId,
 					new Byte[] { CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE },
 					OrderConstant.MEMBER_CARD_ONLINE);
-		}else {
+		}else if(CardConstant.MCARD_TP_LIMIT.equals(defaultCards.get(0).getInfo().getCardType())) {
+		    //限次卡不需要做处理且只有一张
+        }else {
             List<OrderMemberVo> temp = userCardDao.getOrderMembers(userId,
                 new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE},
                 OrderConstant.MEMBER_CARD_ONLINE);

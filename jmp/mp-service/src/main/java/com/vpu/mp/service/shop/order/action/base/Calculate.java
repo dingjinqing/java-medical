@@ -346,9 +346,9 @@ public class Calculate extends ShopBaseService {
             OrderMemberVo card = userCard.userCardDao.getValidByCardNo(param.getMemberCardNo());
             if (card != null && CardConstant.MCARD_TP_LIMIT.equals(card.getInfo().getCardType())) {
                 //限次卡
-                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), Lists.newArrayList(card));
+                //List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), Lists.newArrayList(card));
                 vo.setDefaultMemberCard(card);
-                vo.setMemberCards(validCardList);
+                //vo.setMemberCards(validCardList);
             } else {
                 //普通卡、等级卡（或者没有传入cardNo）
                 OrderMemberVo defaultCard = card;
