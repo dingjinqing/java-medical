@@ -127,6 +127,8 @@ public class PictorialService extends ShopBaseService {
         }
     }
 
+
+
     /**
      * 生成海报通用背景图,带活动提示文字
      *
@@ -234,7 +236,59 @@ public class PictorialService extends ShopBaseService {
             int tipWidth = ImageUtil.addFontWithRect(bgBufferedImage, imgPx.getBottomTextStartX(), imgPx.getActivityTipTextY(), activityTipText, ImageUtil.SourceHanSansCN(Font.PLAIN, PictorialImgPx.SMALL_FONT_SIZE), imgPx.getRealPriceColor(), null, imgPx.getRealPriceColor());
             priceX = imgPx.getBottomTextStartX() + tipWidth + imgPx.getPriceMargin();
         }
-        // 设置原价
+        // 设置原价和划线价
+        pictorialAddRealLinePrice(shop, realPrice, linePrice, imgPx, bgBufferedImage, priceX);
+        return bgBufferedImage;
+    }
+
+    /**
+     * 生成海报基础版背景图
+     * @param shop      店铺配置
+     * @param qrCodeImg 二维码
+     * @param goodsImg  商品图片
+     * @param goodsName 商品名称
+     * @param realPrice 商品原件
+     * @param linePrice 商品划线价
+     * @param imgPx     图片规格信息
+     * @return 图片
+     */
+    public BufferedImage createBasicStylePictorialBgImage(ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String goodsName, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx) {
+        //设置背景图
+        BufferedImage bgBufferedImage = new BufferedImage(imgPx.getBgWidth(), imgPx.getBgHeight(), BufferedImage.TYPE_USHORT_555_RGB);
+        ImageUtil.addRect(bgBufferedImage, 0, 0, imgPx.getBgWidth(), imgPx.getBgHeight(), imgPx.getShopStyleColor(),imgPx.getBorderStroke().floatValue(), Color.WHITE);
+        // 设置商品图片
+        goodsImg = ImageUtil.resizeImage(imgPx.getGoodsWidth(), imgPx.getGoodsHeight(), goodsImg);
+        ImageUtil.addTwoImage(bgBufferedImage, goodsImg, imgPx.getGoodsStartX(), imgPx.getGoodsStartY());
+
+        Integer priceX = imgPx.getBottomTextStartX();
+        // 设置原价和划线价
+        pictorialAddRealLinePrice(shop, realPrice, linePrice, imgPx, bgBufferedImage, priceX);
+        Integer textAscent = ImageUtil.getTextAscent(bgBufferedImage, imgPx.getPriceFont());
+        imgPx.setGoodsNameStartY(imgPx.getPriceY()+textAscent+imgPx.getPriceNamePadding());
+
+        // 设置商品名称
+        int goodsNameHeight = pictorialAddFontName(bgBufferedImage, goodsName,2, imgPx);
+        // 画分割线
+        int lineStartY = imgPx.getGoodsNameStartY()+goodsNameHeight+imgPx.getPriceNamePadding();
+        ImageUtil.addLine(bgBufferedImage,imgPx.getBgPadding(),lineStartY,imgPx.getBgPadding()+imgPx.getGoodsWidth(),lineStartY,PictorialImgPx.LINE_PRICE_COLOR);
+
+        imgPx.setQrCodeStartY(lineStartY+imgPx.getPriceNamePadding()/2);
+        // 设置二维码
+        qrCodeImg = ImageUtil.resizeImageTransparent(imgPx.getQrCodeWidth(), imgPx.getQrCodeWidth(), qrCodeImg);
+        ImageUtil.addTwoImage(bgBufferedImage, qrCodeImg, imgPx.getQrCodeStartX(), imgPx.getQrCodeStartY());
+        return bgBufferedImage;
+    }
+
+    /**
+     * 添加底部划线价
+     * @param shop
+     * @param realPrice
+     * @param linePrice
+     * @param imgPx
+     * @param bgBufferedImage
+     * @param priceX
+     */
+    private void pictorialAddRealLinePrice(ShopRecord shop, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx, BufferedImage bgBufferedImage, Integer priceX) {
         if (realPrice != null) {
             String moneyFlag = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages");
             String realPriceStr = moneyFlag + realPrice.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
@@ -247,9 +301,7 @@ public class PictorialService extends ShopBaseService {
                 ImageUtil.addFontWithLine(bgBufferedImage, lineStartX, imgPx.getPriceLineY(), linePriceStr, imgPx.getLinePriceFont(), PictorialImgPx.LINE_PRICE_COLOR);
             }
         }
-        return bgBufferedImage;
     }
-
 
     /**
      * 添加文字，可以自动换行
@@ -275,7 +327,7 @@ public class PictorialService extends ShopBaseService {
             double oneCharWidth = Math.ceil(nameTextLength * 1.0 / text.length());
             int oneLineCharNum = (int) Math.floor(maxWidth / oneCharWidth);
             if (text.length() > oneLineCharNum * maxRows) {
-                text = text.substring(0, oneLineCharNum * (maxRows-1) + oneLineCharNum / (maxRows-1)) + "...";
+                text = text.substring(0, oneLineCharNum * (maxRows-1) + oneLineCharNum / 2) + "...";
             }
 
             int nextTextStartY =startY;
@@ -304,6 +356,9 @@ public class PictorialService extends ShopBaseService {
         return addTextWithBreak(bgBufferedImage,goodsName, imgPx.getBottomTextStartX(), imgPx.getGoodsNameStartY(),imgPx.getGoodsNameCanUseWidth(),3,imgPx.getGoodsNameFont());
     }
 
+    private int pictorialAddFontName(BufferedImage bgBufferedImage, String goodsName,Integer maxRows, PictorialImgPx imgPx) {
+        return addTextWithBreak(bgBufferedImage,goodsName, imgPx.getBottomTextStartX(), imgPx.getGoodsNameStartY(),imgPx.getGoodsNameCanUseWidth(),maxRows,imgPx.getGoodsNameFont());
+    }
     /**
      * 给海报添加自定义内容区域内容
      *

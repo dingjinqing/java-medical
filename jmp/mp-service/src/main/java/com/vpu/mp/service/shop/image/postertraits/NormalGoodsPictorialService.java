@@ -52,12 +52,19 @@ public class NormalGoodsPictorialService extends ShareBaseService {
 
     @Override
     void createPictorialImg(BufferedImage qrCodeBufferImg, BufferedImage goodsImg, PictorialUserInfo userInfo, String shareDoc, Record aRecord, GoodsRecord goodsRecord, ShopRecord shop, GoodsShareBaseParam baseParam, GoodsPictorialInfo goodsPictorialInfo) {
-        PictorialImgPx imgPx = new PictorialImgPx(getPictorialShareStyle(),getShopStyleColor());
+        Byte shareStyle = getPictorialShareStyle();
+
+        PictorialImgPx imgPx = new PictorialImgPx(shareStyle,getShopStyleColor());
         if (BigDecimal.valueOf(0).equals(baseParam.getLinePrice())) {
             baseParam.setLinePrice(null);
         }
         // 拼装背景图
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(),baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
+        BufferedImage bgBufferedImage = null;
+        if (PictorialImgPx.BASIC_STYLE.equals(shareStyle)) {
+            bgBufferedImage = pictorialService.createBasicStylePictorialBgImage(shop,qrCodeBufferImg,goodsImg,goodsRecord.getGoodsName(),baseParam.getRealPrice(),baseParam.getLinePrice(),imgPx);
+        } else {
+            bgBufferedImage= pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(), baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
+        }
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);
