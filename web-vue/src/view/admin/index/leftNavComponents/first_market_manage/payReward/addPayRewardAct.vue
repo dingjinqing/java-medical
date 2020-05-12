@@ -1261,6 +1261,22 @@ export default {
 
     // 添加支付有礼活动接口调用
     activitySave () {
+      if (this.params.awardList.length === 1 && this.params.awardList[0].giftType === 0) {
+        this.$message.warning('最后一次奖励不能为无奖品')
+        return false
+      }
+      if (this.params.awardList.length === 2 && this.params.awardList[1].giftType === 0) {
+        this.$message.warning('最后一次奖励不能为无奖品')
+        return false
+      }
+      if (this.params.awardList.length === 3 && this.params.awardList[2].giftType === 0) {
+        this.$message.warning('最后一次奖励不能为无奖品')
+        return false
+      }
+      if (this.params.awardList.length === 4 && this.params.awardList[3].giftType === 0) {
+        this.$message.warning('最后一次奖励不能为无奖品')
+        return false
+      }
       if (this.params.awardList.length === 5 && this.params.awardList[4].giftType === 0) {
         this.$message.warning('最后一次奖励不能为无奖品')
         return false
