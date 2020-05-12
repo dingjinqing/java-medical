@@ -186,7 +186,7 @@
                 v-if="scope.row.actStatus===1 || scope.row.actStatus===2"
               >
                 <span
-                  class="el-icon-edit-outline iconSpan"
+                  class="iconfont iconbianji iconSpan"
                   @click="handleToOption(scope.row,2)"
                 ></span>
               </el-tooltip>
@@ -196,7 +196,7 @@
                 v-if="scope.row.actStatus!==3&&scope.row.actStatus!==4"
               >
                 <span
-                  class="el-icon-share iconSpan"
+                  class="iconfont iconfenxiang1 iconSpan"
                   @click="handleToOption(scope.row,3)"
                 ></span>
               </el-tooltip>
@@ -207,7 +207,7 @@
               >
                 <span
                   @click="handleToOption(scope.row,4)"
-                  class="el-icon-circle-close iconSpan"
+                  class="iconfont icontingyong iconSpan"
                 ></span>
               </el-tooltip>
 
