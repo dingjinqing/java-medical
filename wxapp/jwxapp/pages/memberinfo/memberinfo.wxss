@@ -157,3 +157,11 @@ border-bottom: 1px solid #eee;
   width: 640rpx;
   padding: 10rpx;
 }
+.shai_close{
+  position: absolute;
+top: -10rpx;
+right: -10rpx;
+width: 26rpx!important;
+height: 26rpx!important;
+
+}

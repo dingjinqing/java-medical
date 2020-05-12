@@ -26,7 +26,7 @@
 					-->
 					
 				</view>
-				<view class='goods_right' bindtap='to_goods' data-goodsId="{{item.goodsId}}">
+				<view class='goods_right' bindtap='to_goods' data-goods_id="{{item.goodsId}}">
 					<view class='goods_name'>{{item.goodsName}}</view>
 					<!--
 					<view class="amount_num" style='color:{{comColor}}' wx:if='{{item.limit_amount > 0}}'>限购1件</view>
@@ -42,7 +42,7 @@
 							</view>
 							<view class='original_price' wx:if='{{item.marketPrice!=null && item.marketPrice != "" && item.marketPrice != 0&item.showLinePrice}}'>￥{{item.marketPrice}}</view>
 						</view>
-						<view class='btn_add_cart' data-goodsName="{{item.goodsName}}" data-goodsId='{{item.goodsId}}' data-goodsNumber="{{item.goodsNumber}}" bindtap="showSpecDialog">
+						<view class='btn_add_cart' data-goodsName="{{item.goodsName}}" data-goodsId='{{item.goodsId}}' data-goodsNumber="{{item.goodsNumber}}" catchtap="showSpecDialog">
 							<text class='iconfont icontianjia' style='color:{{comColor}};font-size:50rpx;'/>
 						</view>
 					</view>
