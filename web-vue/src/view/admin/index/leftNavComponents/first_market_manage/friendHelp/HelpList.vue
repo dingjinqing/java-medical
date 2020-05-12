@@ -150,7 +150,7 @@
                 placement="top"
               >
                 <i
-                  class="el-icon-edit-outline"
+                  class="iconfont iconbianji"
                   @click="updateActive(scope.row.id, scope.row)"
                 ></i>
               </el-tooltip>
@@ -159,7 +159,7 @@
                 placement="top"
               >
                 <i
-                  class="el-icon-share"
+                  class="iconfont iconfenxiang1"
                   @click="shareActivity(scope.row.id)"
                 ></i>
               </el-tooltip>
@@ -168,7 +168,7 @@
                 placement="top"
               >
                 <i
-                  class="el-icon-present"
+                  class="iconfont iconlingqumingxi"
                   @click="receiveDetails(scope.row.id)"
                 ></i>
               </el-tooltip>
@@ -177,7 +177,7 @@
                 placement="top"
               >
                 <i
-                  class="el-icon-news"
+                  class="iconfont iconkaituanmingxi"
                   @click="launchDetails(scope.row.id)"
                 ></i>
               </el-tooltip>
@@ -186,7 +186,7 @@
                 placement="top"
               >
                 <i
-                  class="el-icon-set-up"
+                  class="iconfont iconmingxi1"
                   @click="participateDetails(scope.row.id)"
                 ></i>
               </el-tooltip>
@@ -197,7 +197,7 @@
                 v-if="scope.row.isBlock === 1"
               >
                 <i
-                  class="el-icon-circle-check"
+                  class="iconfont iconqiyong"
                   @click="startOrBlock(scope.row.id)"
                 ></i>
               </el-tooltip>
@@ -207,7 +207,7 @@
                 v-else
               >
                 <i
-                  class="el-icon-circle-close"
+                  class="iconfont icontingyong"
                   @click="startOrBlock(scope.row.id)"
                 ></i>
               </el-tooltip>
@@ -216,7 +216,7 @@
                 placement="top"
               >
                 <i
-                  class="el-icon-delete"
+                  class="iconfont iconshanchu2"
                   @click="delAct(scope.row.id)"
                 ></i>
               </el-tooltip>
@@ -225,7 +225,7 @@
                 placement="top"
               >
                 <i
-                  class="el-icon-picture-outline"
+                  class="iconfont iconfankuitongji"
                   @click="effectData(scope.row.id)"
                 ></i>
               </el-tooltip>
@@ -532,6 +532,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .content {
   padding: 10px;
   min-width: 100%;
@@ -614,7 +615,7 @@ export default {
   margin-left: 65%;
 }
 .opt {
-  text-align: center;
+  text-align: left;
   color: #5a8bff;
   i {
     cursor: pointer;
