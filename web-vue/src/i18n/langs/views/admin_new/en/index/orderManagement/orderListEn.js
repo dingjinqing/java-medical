@@ -200,7 +200,10 @@ export const en = {
     [10, 'Refund completed'],
     [11, 'Picture in the group'],
     [12, 'has become a group'],
-    [13, 'Gift completion']
+    [13, 'Gift completion'],
+    [14, 'Pending Order'],
+    [15, 'Order received-picking up'],
+    [16, 'Pickup-in delivery']
   ],
   orderStatus: [
     [null, 'All orders'],

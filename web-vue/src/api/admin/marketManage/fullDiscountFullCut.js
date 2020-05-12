@@ -53,3 +53,32 @@ export function deleteActivity (data) {
     data: data
   })
 }
+
+// 满折满减活动效果数据
+export function fullcutAnalysisApi (data) {
+  return service({
+    url: '/api/admin/market/fullcut/analysis',
+    data,
+    method: 'post'
+  })
+}
+
+// 满折满减订单列表
+export function fullcutOrderApi (data) {
+  return service({
+    url: '/api/admin/market/fullcut/order',
+    data,
+    method: 'post'
+  })
+}
+
+// 满折满减列表数据导出
+// /api/admin/market/fullcut/order/export
+export function fullcutOrderExportApi (data) {
+  return service({
+    url: '/api/admin/market/fullcut/order/export',
+    data,
+    method: 'post',
+    responseType: 'blob'
+  })
+}

@@ -24,7 +24,7 @@
           <div class="filters_item">
             <span>{{$t('order.buyer')}}：</span>
             <el-input
-              v-model="searchParams.userInfo"
+              v-model="searchParams.orderUserNameOrMobile"
               :placeholder="$t('order.userNameText')+'/'+$t('order.userMobileText')"
               size="small"
               class="default_input"
@@ -233,7 +233,9 @@
                       v-if="index === 0"
                       :rowspan="orderItem.goods.length"
                     >
-                      17600236996
+                      {{orderItem.orderUserName}}
+                      <br />
+                      {{orderItem.orderMobile}}
                     </td>
                     <td
                       v-if="index === 0"
@@ -347,7 +349,7 @@ export default {
         currentPage: null,
         pageRows: null,
         stateCollection: null,
-        userInfo: null,
+        orderUserNameOrMobile: null,
         returnSource: null
       },
       returnWay: -1,

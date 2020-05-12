@@ -249,7 +249,7 @@
             </tr>
             <tr>
               <td>{{$t('order.orderUserInfo')}}</td>
-              <td colspan="3">刘洋 17600236996</td>
+              <td colspan="3">{{returnInfo.username}} {{returnInfo.mobile}}</td>
             </tr>
             <tr>
               <td>{{$t('order.returnType')}}</td>

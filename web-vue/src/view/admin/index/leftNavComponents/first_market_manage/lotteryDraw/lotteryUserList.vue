@@ -113,7 +113,7 @@
             :placeholder="$t('lotteryDraw.groupedTip')"
           >
             <el-option
-              v-for="item in statusList"
+              v-for="item in $t('lotteryDraw.statusList')"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -131,7 +131,7 @@
             :placeholder="$t('lotteryDraw.groupedTip')"
           >
             <el-option
-              v-for="item in groupList"
+              v-for="item in $t('lotteryDraw.groupList')"
               :key="item.value"
               :label="item.label"
               :value="item.value"

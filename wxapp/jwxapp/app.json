@@ -37,7 +37,8 @@
     "pages/maingoodslist/maingoodslist",
     "pages/usercardup/usercardup",
     "pages/splitinfo/splitinfo",
-    "pages/usercardrenew/usercardrenew"
+    "pages/usercardrenew/usercardrenew",
+    "components/suspend-window/index"
   ],
   "window": {
     "backgroundTextStyle": "dark",

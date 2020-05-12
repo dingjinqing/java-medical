@@ -162,5 +162,83 @@ export const cn = {
   }, {
     value: false,
     label: '否'
-  }]
+  }],
+  moneyTitle: '￥',
+  max: '最高',
+  rules: '活动规则说明',
+  noLimit: '不限制',
+  man: '满',
+  canDo: '元可用',
+  please1: '请填写商品金额',
+  please2: '请填写非负数, 可以保留两位小数',
+  please3: '请填写活动名称',
+  please4: '请填写有效期',
+  please5: '请填写奖池最少人数',
+  please6: '请填写最大参团数量',
+  please7: '请填写最大开团数量',
+  please8: '请填写最小成团人数',
+  please9: '请填写最小展示人数',
+  please10: '请选择活动商品',
+  limitTip: '优惠券不能超过五张',
+  tipes1: '付款订单数',
+  tipesContent1: '活动带来的付款订单数（包括退款部分）',
+  orderStatusArr: [{
+    value: null,
+    label: '全部订单'
+  }, {
+    value: 0,
+    label: '待付款'
+  }, {
+    value: 1,
+    label: '订单取消'
+  }, {
+    value: 2,
+    label: '订单关闭'
+  }, {
+    value: 3,
+    label: '待发货/待核销'
+  }, {
+    value: 4,
+    label: '已发货'
+  }, {
+    value: 5,
+    label: '已发货/已自提'
+  }, {
+    value: 6,
+    label: '订单完成'
+  }, {
+    value: 7,
+    label: '退货中'
+  }, {
+    value: 6,
+    label: '售后完成'
+  }, {
+    value: 8,
+    label: '送礼完成'
+  }, {
+    value: 9,
+    label: '退款中'
+  }, {
+    value: 10,
+    label: '退款完成'
+  }, {
+    value: 11,
+    label: '拼团中'
+  }, {
+    value: 12,
+    label: '已成团'
+  }, {
+    value: 13,
+    label: '送礼完成'
+  }, {
+    value: 14,
+    label: '待接单'
+  }, {
+    value: 15,
+    label: '已接单-取件中'
+  }, {
+    value: 16,
+    label: '已取件-配送中'
+  }],
+  isCopy: '已复制到剪贴板'
 }
