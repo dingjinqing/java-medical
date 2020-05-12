@@ -443,6 +443,10 @@ public class GoodsService extends ShopBaseService {
         if (goodsPageListParam.getGoodsIds() != null && goodsPageListParam.getGoodsIds().size() > 0) {
             condition = condition.and(GOODS.GOODS_ID.in(goodsPageListParam.getGoodsIds()));
         }
+        
+        if(goodsPageListParam.getNotIncludeGoodsIds() != null && goodsPageListParam.getNotIncludeGoodsIds().size()>0) {
+        	condition = condition.and(GOODS.GOODS_ID.notIn(goodsPageListParam.getNotIncludeGoodsIds()));
+        }
         if (!StringUtils.isBlank(goodsPageListParam.getGoodsSn())) {
             condition = condition.and(GOODS.GOODS_SN.like(likeValue(goodsPageListParam.getGoodsSn())));
         }

@@ -34,6 +34,7 @@ public class GoodsPageListParam {
 
     private Integer goodsId;
     private List<Integer> goodsIds;
+    private List<Integer> notIncludeGoodsIds;
     private String goodsName;
     private String goodsSn;
     private Integer brandId;
