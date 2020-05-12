@@ -115,7 +115,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-edit-outline"
+                  class="iconfont iconbianji"
                   @click="editHandler(scope.row.id, scope.row)"
                 ></span>
               </el-tooltip>
@@ -126,7 +126,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-circle-close"
+                  class="iconfont icontingyong"
                   @click="stopHandler(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -137,7 +137,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-circle-check"
+                  class="iconfont iconqiyong"
                   @click="startHandler(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -148,7 +148,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-tickets"
+                  class="iconfont icondingdan"
                   @click="seckillOrderHanlder(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -159,7 +159,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-delete"
+                  class="iconfont iconshanchu2"
                   @click="deleteHandler(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -170,7 +170,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-s-data"
+                  class="iconfont iconfankuitongji"
                   @click="reduceEffectHandler(scope.row.id, scope.row.startTime, scope.row.endTime)"
                 ></span>
               </el-tooltip>
@@ -385,6 +385,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .content {
   padding: 10px;
   min-width: 100%;
@@ -416,7 +417,7 @@ export default {
   padding: 15px;
 }
 .opt {
-  text-align: center;
+  text-align: left;
   color: #5a8bff;
   span {
     cursor: pointer;
