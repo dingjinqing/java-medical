@@ -354,9 +354,9 @@ export default {
   filters: {
     formatLeastConsume (useConsumeRestrict, leastConsume) {
       if (useConsumeRestrict === 0) {
-        return this.$t('lotteryDraw.noLimit')
+        return '不限制'
       } else {
-        return this.$t('lotteryDraw.man') + `${leastConsume}` + this.$t('lotteryDraw.canDo')
+        return '满' + `${leastConsume}` + '元可用'
       }
     }
   },
