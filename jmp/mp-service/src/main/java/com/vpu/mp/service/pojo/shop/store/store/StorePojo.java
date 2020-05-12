@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.store.store;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.store.validated.StoreAddValidatedGroup;
 import com.vpu.mp.service.pojo.shop.store.validated.StoreCodingCheckValidatedGroup;
@@ -66,7 +67,12 @@ public class StorePojo implements Comparable<StorePojo> {
      * The Distance.门店距离 单位KM
      */
     public Double distance;
-
+    /** 自提取货时间类型 1门店营业时间 2自定义时间 */
+    private Byte pickTimeAction;
+    /** 自提时间明细 */
+    @JsonIgnore
+    private String pickTimeDetail;
+    private StorePickDetailPojo pickDetail;
     @Override
     public int compareTo(StorePojo storePojo) {
         if (this.distance >= storePojo.distance) {
