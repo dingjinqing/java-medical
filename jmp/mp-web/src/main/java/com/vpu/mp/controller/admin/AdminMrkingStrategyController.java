@@ -79,7 +79,7 @@ public class AdminMrkingStrategyController extends AdminBaseController {
      */
     @PostMapping(value = "/api/admin/market/fullcut/order")
     public JsonResult mrkingStrategyOrder(@RequestBody @Validated MrkingStrategyOrderParam param) {
-        return success(shop().mrkingStrategy.getMrkingStrategyOrderList(param));
+        return success(shop().mrkingStrategy.getMrkingStrategyOrderList(param, getLang()));
     }
 
     /**
@@ -91,5 +91,13 @@ public class AdminMrkingStrategyController extends AdminBaseController {
         Workbook workbook = shop().mrkingStrategy.exportOrderList(param, getLang());
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.MRKING_STRATEGY_ORDER_LIST_FILENAME, OrderConstant.LANGUAGE_TYPE_EXCEL, OrderConstant.LANGUAGE_TYPE_EXCEL) + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
         export2Excel(workbook, fileName, response);
+    }
+
+    /**
+     * 活动效果分析
+     */
+    @PostMapping("/api/admin/market/fullcut/analysis")
+    public JsonResult getAnalysisData(@RequestBody @Validated MrkingStrategyAnalysisParam param) {
+        return success(shop().mrkingStrategy.getAnalysisData(param));
     }
 }
