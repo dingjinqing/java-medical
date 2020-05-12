@@ -525,7 +525,7 @@ public class AdminDistributionController extends AdminBaseController{
 	 */
 	@PostMapping("/admin/distribution/invited/list")
 	public JsonResult invitedList(@RequestBody DistributorInvitedListParam param) {
-		PageResult<DistributorInvitedListVo> invitedlist = shop().distributorList.getInvitedList(param);
+		DistributorInvitedListVo invitedlist = shop().distributorList.getInvitedList(param);
 		return this.success(invitedlist);
 	}
 

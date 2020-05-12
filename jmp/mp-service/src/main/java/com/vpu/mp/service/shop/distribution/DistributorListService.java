@@ -215,12 +215,20 @@ public class DistributorListService extends ShopBaseService{
 	 * @param param
 	 * @return
 	 */
-	public PageResult<DistributorInvitedListVo> getInvitedList(DistributorInvitedListParam param) {
-		SelectJoinStep<? extends Record> select = db().select(USER.USER_ID,USER.USERNAME,USER.MOBILE,USER.CREATE_TIME,USER.INVITE_EXPIRY_DATE,USER.INVITE_TIME,USER.INVITE_PROTECT_DATE,sum(USER_FANLI_STATISTICS.ORDER_NUMBER).as("ORDER_NUMBER"),sum(USER_FANLI_STATISTICS.TOTAL_CAN_FANLI_MONEY).as("TOTAL_CAN_FANLI_MONEY"),sum(USER_FANLI_STATISTICS.TOTAL_FANLI_MONEY).as("TOTAL_FANLI_MONEY"))
-				.from(USER.leftJoin(USER_FANLI_STATISTICS).on(USER.USER_ID.eq(USER_FANLI_STATISTICS.USER_ID)));
+	public DistributorInvitedListVo getInvitedList(DistributorInvitedListParam param) {
+		SelectJoinStep<? extends Record> select = db().select(USER.USER_ID,USER.USERNAME,USER_DETAIL.REAL_NAME,USER.MOBILE,USER.CREATE_TIME,USER.INVITE_EXPIRY_DATE,USER.INVITE_TIME,USER.INVITE_PROTECT_DATE,sum(USER_FANLI_STATISTICS.ORDER_NUMBER).as("ORDER_NUMBER"),sum(USER_FANLI_STATISTICS.TOTAL_CAN_FANLI_MONEY).as("TOTAL_CAN_FANLI_MONEY"),sum(USER_FANLI_STATISTICS.TOTAL_FANLI_MONEY).as("TOTAL_FANLI_MONEY"))
+				.from(USER.leftJoin(USER_FANLI_STATISTICS).on(USER.USER_ID.eq(USER_FANLI_STATISTICS.USER_ID)))
+                .leftJoin(USER_DETAIL).on(USER.USER_ID.eq(USER_DETAIL.USER_ID));
 		SelectConditionStep<? extends Record> sql = getInvitedListOptions(select,param);
-		PageResult<DistributorInvitedListVo> invitedlist = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), DistributorInvitedListVo.class);
-		return invitedlist;
+		PageResult<InviteUserInfoVo> invitedList = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), InviteUserInfoVo.class);
+		BigDecimal totalGetFanliMoney = new BigDecimal(0);
+        DistributorInvitedListVo InviteInfo = new DistributorInvitedListVo();
+		for(InviteUserInfoVo info:invitedList.dataList){
+		    totalGetFanliMoney = totalGetFanliMoney.add(info.getTotalFanliMoney());
+        }
+        InviteInfo.setTotalGetFanliMoney(totalGetFanliMoney);
+		InviteInfo.setInviteUserInfo(invitedList);
+		return InviteInfo;
 	}
 
 	/**
@@ -242,16 +250,22 @@ public class DistributorListService extends ShopBaseService{
 	public SelectConditionStep<? extends Record> getInvitedListOptions(SelectJoinStep<? extends Record> select,DistributorInvitedListParam param) {
 		SelectConditionStep<? extends Record> sql = select.where(USER.INVITE_ID.eq(param.getUserId()).and(USER_FANLI_STATISTICS.REBATE_LEVEL.eq((byte)1)));
 
-		if(param.getMobile() != null) {
+		if(StringUtil.isNotEmpty(param.getMobile())) {
 			sql = sql.and(USER.MOBILE.eq(param.getMobile()));
 		}
-		if(param.getUsername() != null) {
+		if(StringUtil.isNotEmpty(param.getUsername())) {
 			sql = sql.and(USER.USERNAME.eq(param.getUsername()));
 		}
+        if(StringUtil.isNotEmpty(param.getRealName())) {
+            sql = sql.and(USER_DETAIL.REAL_NAME.eq(param.getRealName()));
+        }
 		if(param.getStartCreateTime() != null && param.getEndCreateTime() != null) {
 			sql = sql.and(USER.CREATE_TIME.ge(param.getStartCreateTime()).and(USER.CREATE_TIME.le(param.getEndCreateTime())));
 		}
-		sql.groupBy(USER_FANLI_STATISTICS.USER_ID,USER.USERNAME,USER.MOBILE,USER.CREATE_TIME,USER.INVITE_EXPIRY_DATE,USER.INVITE_PROTECT_DATE,USER.INVITE_TIME,USER.USER_ID);
+        if(param.getStartInviteTime() != null && param.getEndInviteTime() != null) {
+            sql = sql.and(USER.INVITE_TIME.ge(param.getStartInviteTime()).and(USER.INVITE_TIME.le(param.getEndInviteTime())));
+        }
+		sql.groupBy(USER_FANLI_STATISTICS.USER_ID,USER.USERNAME,USER.MOBILE,USER.CREATE_TIME,USER.INVITE_EXPIRY_DATE,USER.INVITE_PROTECT_DATE,USER.INVITE_TIME,USER.USER_ID,USER_DETAIL.REAL_NAME);
 		return sql;
 	}
 
