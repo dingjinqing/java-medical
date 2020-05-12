@@ -155,11 +155,11 @@
                       <span>{{$t('order.returnSn') + '：'+ orderItem.returnOrderSn}}</span>
                       <el-popover
                         placement="right"
-                        trigger="manual"
-                        v-model="orderItem.showOrderBrief"
+                        trigger="hover"
                       >
                         <div
                           class="order-brief"
+                          v-loading="orderBriefLoading"
                           @click="handleViewOrder(orderItem.orderSn)"
                         >
                           <div class="title">订单信息</div>
@@ -177,11 +177,9 @@
                         </div>
                         <span
                           slot="reference"
-                          class="high-light"
-                          @click="handleViewOrder(orderItem.orderSn)"
+                        >{{$t('order.orderSn')}}：<span class="high-light" @click="handleViewOrder(orderItem.orderSn)"
                           @mouseenter="requestOrderInfo(orderItem.orderSn,orderIndex)"
-                          @mouseleave="leaveOrderBrief(orderItem.orderSn,orderIndex)"
-                        >{{$t('order.orderSn') + '：'+orderItem.orderSn}}</span>
+                        >{{orderItem.orderSn}}</span></span>
                       </el-popover>
                       <span>
                         {{
@@ -390,7 +388,8 @@ export default {
         disabledDate: time => {
           return time.getTime() < new Date(this.applyTime.startTime).getTime()
         }
-      }
+      },
+      orderBriefLoading: false
     }
   },
   mounted () {
@@ -472,25 +471,18 @@ export default {
       }
     },
     requestOrderInfo (orderSn, targetIndex) {
+      this.orderBriefLoading = true
       getOrderBrief({orderSn}).then(res => {
         console.log(res)
         if (res.error === 0 && res.content) {
-          this.refundOrderList.forEach(element => {
-            this.$set(element, 'showOrderBrief', false)
-          })
-          this.$nextTick(() => {
-            this.$set(this.refundOrderList[targetIndex], 'showOrderBrief', true)
-            this.orderBriefData = res.content
-            this.$set(this.orderBriefData, 'orderStatusName', this.getOrderStatus(res.content))
-            this.$set(this.orderBriefData, 'payName', this.getOrderPayName(res.content))
-            this.$set(this.orderBriefData, 'goodsTypeName', this.getGoodsTypeName(res.content))
-          })
+          this.orderBriefData = res.content
+          this.$set(this.orderBriefData, 'orderStatusName', this.getOrderStatus(res.content))
+          this.$set(this.orderBriefData, 'payName', this.getOrderPayName(res.content))
+          this.$set(this.orderBriefData, 'goodsTypeName', this.getGoodsTypeName(res.content))
+          this.orderBriefLoading = false
         }
       }).catch(() => {
       })
-    },
-    leaveOrderBrief (orderSn, targetIndex) {
-      this.$set(this.refundOrderList[targetIndex], 'showOrderBrief', false)
     },
     getOrderPayName ({payCodeList}) {
       let nameArray = []
