@@ -133,7 +133,7 @@
                 v-if="scope.row.pageStatus === 1 || scope.row.pageStatus === 2"
               >
                 <span
-                  class="el-icon-edit-outline iconSpn"
+                  class="iconfont iconbianji iconSpn"
                   @click="updateActivity(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -144,7 +144,7 @@
                 v-if="scope.row.pageStatus === 1 || scope.row.pageStatus === 2"
               >
                 <span
-                  class="el-icon-circle-close iconSpn"
+                  class="iconfont icontingyong iconSpn"
                   @click="shutdown(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -155,7 +155,7 @@
                 v-if="scope.row.pageStatus === 4"
               >
                 <span
-                  class="el-icon-circle-check iconSpn"
+                  class="iconfont iconqiyong iconSpn"
                   @click="open(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -166,7 +166,7 @@
               >
                 <span
                   @click="del(scope.row.id)"
-                  class="el-icon-delete iconSpn"
+                  class="iconfont iconshanchu2 iconSpn"
                 ></span>
               </el-tooltip>
               <!-- 领取明细按钮 -->
@@ -176,7 +176,7 @@
               >
                 <span
                   @click="jumptoReceiveDetail(scope.row.id)"
-                  class="el-icon-s-cooperation iconSpn"
+                  class="iconfont iconlingqumingxi iconSpn"
                 ></span>
               </el-tooltip>
             </div>
@@ -403,6 +403,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .content {
   padding: 10px;
   min-width: 100%;
@@ -463,7 +464,7 @@ export default {
   justify-content: space-around;
   .iconSpn {
     display: block;
-    font-size: 20px;
+    font-size: 22px;
     color: #5a8bff;
     cursor: pointer;
   }
