@@ -390,6 +390,8 @@ public class OrderReadService extends ShopBaseService {
 			//过滤主订单下被拆出的goods
 			orderInfo.filterMainOrderGoods(mainOrder, goods.get(mainOrder.getOrderId()));
 		}
+		//拼团订单设置拼团中时间
+        mainOrder.setPinStartTime(mainOrder.getPayTime());
         mainOrder.setRebateList(getOrderRebateInfo(mainOrder));
 		return mainOrder;
 	}
