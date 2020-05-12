@@ -46,6 +46,8 @@ import com.vpu.mp.db.shop.tables.FriendPromoteActivity;
 import com.vpu.mp.db.shop.tables.FriendPromoteDetail;
 import com.vpu.mp.db.shop.tables.FriendPromoteLaunch;
 import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteLaunchRecord;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteTimesRecord;
@@ -78,6 +80,24 @@ import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.task.wechat.MaMpScheduleTaskService;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Random;
+
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 好友助力
@@ -866,7 +886,8 @@ public class FriendPromoteService extends ShopBaseService {
                 .from(FRIEND_PROMOTE_LAUNCH)
                 .where(FRIEND_PROMOTE_LAUNCH.USER_ID.eq(userId))
                 .and(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(promoteId))
-                .orderBy(FRIEND_PROMOTE_LAUNCH.ID.desc())
+                .orderBy(FRIEND_PROMOTE_LAUNCH.ID.asc())
+                .limit(1)
                 .fetchOneInto(FriendPromoteLaunchRecord.class);
         }
         return record;
@@ -960,9 +981,12 @@ public class FriendPromoteService extends ShopBaseService {
                 if (promoteInfo.getLaunchLimitTimes()==0){
                     canLaunch.setCode(NumberUtils.BYTE_ONE);
                 }else {
+                    launchInfo = getLaunchInfo(null,userId,promoteInfo.getId());
                     //已发起助力次数
                     Integer launchTimes = promoteLaunchTimes(promoteInfo.getId(),userId,promoteInfo.getLaunchLimitDuration(),promoteInfo.getLaunchLimitUnit(),launchInfo.getLaunchTime());
-                    if (launchTimes<promoteInfo.getLaunchLimitTimes()){
+                    logger().info("当前发起ID为{}，ID为{}的用户已经发起了{}次",launchInfo.getId(),userId,launchTimes);
+                    logger().info("当前活动发起限制次数为{}次",promoteInfo.getLaunchLimitTimes());
+                    if (launchTimes<promoteInfo.getLaunchLimitTimes().intValue()){
                         canLaunch.setCode(NumberUtils.BYTE_ONE);
                     }
                 }
@@ -984,19 +1008,19 @@ public class FriendPromoteService extends ShopBaseService {
         Duration timeDuration;
         switch (unit){
             //天
-            case 1:
+            case 0:
                 timeDuration = getDurationDay(launchTime,duration);
                 break;
             //周
-            case 2:
+            case 1:
                 timeDuration = getDurationDay(launchTime,duration*7);
                 break;
             //月
-            case 3:
+            case 2:
                 timeDuration = getDurationDay(launchTime,duration*30);
                 break;
             //年
-            case 4:
+            case 3:
                 timeDuration = getDurationDay(launchTime,duration*365);
                 break;
             default:
@@ -1007,6 +1031,7 @@ public class FriendPromoteService extends ShopBaseService {
             .where(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(promoteId))
             .and(FRIEND_PROMOTE_LAUNCH.USER_ID.eq(userId))
             .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.between(timeDuration.getStartTime(),timeDuration.getEndTime()))
+            .and(FRIEND_PROMOTE_LAUNCH.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .fetchOptionalInto(Integer.class)
             .orElse(0);
         return launchTimes;
@@ -1949,7 +1974,7 @@ public class FriendPromoteService extends ShopBaseService {
 		return db().select(FRIEND_PROMOTE_ACTIVITY.ID, FRIEND_PROMOTE_ACTIVITY.ACT_NAME.as(CalendarAction.ACTNAME), FRIEND_PROMOTE_ACTIVITY.START_TIME,
 				FRIEND_PROMOTE_ACTIVITY.END_TIME).from(FRIEND_PROMOTE_ACTIVITY).where(FRIEND_PROMOTE_ACTIVITY.ID.eq(id)).fetchAnyInto(MarketVo.class);
     }
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param

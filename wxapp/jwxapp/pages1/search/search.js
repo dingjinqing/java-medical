@@ -19,8 +19,8 @@ global.wxPage({
       activityTypes: [],
       labelIds: [],
       pageFrom:null,
-      actId:null,
-      goodsIds:[]
+      goodsIds:[],
+      outerPageParam:{}
     }
   },
 
@@ -28,6 +28,7 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    if(options.pageFrom === '20') this.setData({page_name:this.$t("page1.search.couponTitle")})
     this.loadFilter(options).then(() => {
       this.requestList()
     })
@@ -82,15 +83,13 @@ global.wxPage({
     console.log(data)
     this.setData({
       filterData: {
+        ...this.data.filterData,
         minPrice,
         maxPrice,
         sortIds,
         brandIds,
         labelIds,
-        activityTypes,
-        pageFrom:null,
-        actId:null,
-        goodsIds:[]
+        activityTypes
       },
       'pageParams.currentPage': 1
     })
@@ -107,8 +106,11 @@ global.wxPage({
       'pageParams.currentPage': 1
     })
     // 添加热词
-    util.api('/api/wxapp/search/addHotWords', function (res) {
-    }, { userId: util.getCache("user_id"), hotWords: this.data.keyWords })
+    var data = this.data.keyWords.replace(/\s/g,"");
+    if (data != "") {
+      util.api('/api/wxapp/search/addHotWords', function (res) {
+      }, { userId: util.getCache("user_id"), hotWords: this.data.keyWords })
+    }
     this.selectComponent('#recommend').resetDataList().resetPage()
     this.requestList()
   },
@@ -117,6 +119,12 @@ global.wxPage({
       let target = {
         filterData: {},
         data: {}
+      }
+      if(Object.keys(options).includes('actId') || Object.keys(options).includes('outerPageParam')){
+        let outerPageParam = {}
+        if(Object.keys(options).includes('outerPageParam')) outerPageParam = JSON.parse(options.outerPageParam); delete options.outerPageParam
+        if(Object.keys(options).includes('actId')) {outerPageParam.actId = options.actId; delete options.actId}
+        options.outerPageParam = outerPageParam
       }
       Object.keys(options).forEach(item => {
         if (Object.keys(this.data.filterData).includes(item)) {

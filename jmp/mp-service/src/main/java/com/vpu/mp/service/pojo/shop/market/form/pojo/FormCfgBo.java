@@ -1,8 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.form.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -20,7 +22,13 @@ public class FormCfgBo {
     private String page_name;
     /**有效期*/
     private Byte is_forever_valid;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp start_time;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp end_time;
     /**底部导航*/
     private Byte has_bottom;

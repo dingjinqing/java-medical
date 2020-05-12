@@ -26,5 +26,6 @@ module.exports = {
   "confirm":"确认",
   "moreSort":"更多分类",
   "all":"全部",
-  "moreBrands":"更多品牌"
+  "moreBrands":"更多品牌",
+  "couponTitle":"券购搜索"
 }

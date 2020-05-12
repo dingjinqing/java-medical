@@ -514,6 +514,9 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.goodsData = res.content
+          if (res.content.length === 7) {
+            res.content.splice((res.content.length - 1), 1)
+          }
           // 处理活动
           res.content.forEach((item, index) => {
             console.log(item)

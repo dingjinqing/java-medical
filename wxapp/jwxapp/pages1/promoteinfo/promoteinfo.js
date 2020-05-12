@@ -56,7 +56,12 @@ global.wxPage({
   // 券购搜索
   to_cou_search: function (e) {
     var actId = e.currentTarget.dataset.act_id;
-    util.jumpLink('/pages1/search/search?pageFrom=20&actId=' + actId);
+    util.jumpLink(`/pages1/search/search${util.getUrlParams({
+      pageFrom:20,
+      outerPageParam:JSON.stringify({
+        actId
+      })
+    })}`);
   },
   // 好友助力列表
   to_list: function () {
@@ -69,7 +74,7 @@ global.wxPage({
   // 发起助力
   shareGoods: function (e) {
     var that = this;
-    if (promote_info.promoteStatus == -1) {
+    if (promote_info.promoteStatus == -1 || (promote_info.launchFlag == 1 && promote_info.promoteStatus == 2 && promote_info.canLaunch == 1)) {
       launchAct(that);
     }
     if (promote_info.promoteStatus == 0) {
@@ -96,7 +101,7 @@ global.wxPage({
     wx.showLoading({
       title: '生成中',
     })
-    // util.api('/api/wxapp/bargain/pictorial/info', function (res) {
+    // util.api('/api/wxapp/promoteinfo/pictorial/info', function (res) {
     //   wx.hideLoading();
     //   if (res.error == 0) {
     //     that.setData({
@@ -165,7 +170,7 @@ global.wxPage({
     // 授权
     var code = 10000 + util.getCache('user_id')
     var str = '用户' + code
-    if ((str == util.getCache('nickName')) && promote_info.promoteCondition == 1) {
+    if ((str == util.getCache('nickName')) || util.getCache('nickName') == '') {
       that.setData({
         has_user: 0
       })
@@ -302,15 +307,23 @@ global.wxPage({
     var that = this;
     util.getUserInfoCommon(e, function (userInfo) {
       if (userInfo) {
-        that.setData({
-          nickName: userInfo.nickName
-        });
         if (promote_info.promoteCondition == 1 && promote_info.launchFlag == 2 && promote_info.promoteStatus == 0) {
           that.setData({
             has_user: 1
           })
         }
       }
+      if (promote_info.promoteCondition == 0 && promote_info.launchFlag == 2 && promote_info.promoteStatus == 0) {
+        that.setData({
+          has_user: 1
+        })
+      }
+      // 授权可增加助力机会
+      shareAdd(that, 1);
+      setTimeout(function () {
+        clearTimeout(set_time_out);
+        that.onPullDownRefresh();
+      }, 200);
     });
   },
   // 分享弹窗
@@ -330,6 +343,12 @@ global.wxPage({
       clearTimeout(set_time_out);
       that.onPullDownRefresh();
     }, 200);
+  },
+  // 关闭授权弹窗
+  to_close: function (e) {
+    this.setData({
+      has_user: 0
+    })
   },
   
   /**
@@ -353,7 +372,7 @@ global.wxPage({
     var that = this;
 
     if (promote_info.promoteStatus == 0 && promote_info.launchFlag == 2 && promote_info.canShare == 1) {
-      shareAdd(that);
+      shareAdd(that, 0);
       that.setData({
         is_shares: 0,
         promote_ok: 0,
@@ -394,8 +413,8 @@ global.wxPage({
     }
   }
 })
-// 分享加机会
-function shareAdd(that) {
+// 分享/授权加机会
+function shareAdd(that, type) {
   util.api("/api/wxapp/promote/addTimes", function (res) {
     if (res.error == 0) {
       if (res.content.flag == 0) {
@@ -405,7 +424,7 @@ function shareAdd(that) {
         })
         if (res.content.msgCode == 0) {
           that.setData({
-            cant_promote: '分享获取助力次数已用完'
+            cant_promote: '获取助力次数已用完'
           })
         }
       }
@@ -413,7 +432,7 @@ function shareAdd(that) {
       util.showModal('提示', res.message);
       return false
     }
-  }, { userId: launch_user_id, launchId: launch_id, type: 0 });
+  }, { userId: launch_user_id, launchId: launch_id, type: type });
 };
 // 发起助力
 function launchAct(that) {
@@ -506,8 +525,24 @@ function promote_request(that) {
       }
       // 助力次数提示
       if (promote_info.canPromote && promote_info.canPromote.code == 0) {
-        util.showModal('提示', '今天的助力次数已用完了');
+        if (promote_info.promoteStatus == 1) {
+          util.showModal('提示', '助力已完成');
+        } else {
+          util.showModal('提示', '今天的助力次数已用完了');
+        }
+      } 
+
+      // 活动完成还可再发起
+      if (promote_info.launchFlag == 1 && promote_info.promoteStatus == 2 && promote_info.canLaunch == 1) {
+        // 助力列表置空
+        promote_info.promoteDetailList = null
+        // 助力进度置空
+        launched_width = 0
+        is_promote_value = 0 // 已助力值
+        promote_info.hasPromoteValue = 0
+        promote_info.hasPromoteTimes = 0 // 已助力次数
       }
+
       that.setData({
         promote_info: promote_info,
         is_promote_value: is_promote_value,

@@ -88,7 +88,9 @@ public class EsBaseSearchService extends ShopBaseService {
         LIMIT_BUY_NUM,
         LIMIT_MAX_NUM,
         MARKET_PRICE,
-        GOODS_PAGE_ID
+        GOODS_PAGE_ID,
+        GOODS_WEIGHT,
+        GOODS_DESC
     };
 
 
@@ -212,6 +214,7 @@ public class EsBaseSearchService extends ShopBaseService {
         SearchSourceBuilder sourceBuilder;
 
         PageResult<EsGoods> result = new PageResult<>();
+
         //isQueryByPage == false代表ES搜索不需要进行分页
         if( !param.isQueryByPage() ){
             Page esPage = Page.getPage(1,1,1);
@@ -219,9 +222,16 @@ public class EsBaseSearchService extends ShopBaseService {
             sourceBuilder = assemblySearchSourceBuilder(searchParam);
             result.setPage(esPage);
         }else{
-            sourceBuilder =  getSearchSourceBuilderAndPage(result,EsGoodsConstant.GOODS_INDEX_NAME,param,GOODS_SEARCH_STR,null);
+            sourceBuilder =  getSearchSourceBuilderAndPage(result,EsGoodsConstant.GOODS_ALIA_NAME,param,GOODS_SEARCH_STR,null);
         }
-        result.setDataList(searchEsGoods(assemblySearchRequest(sourceBuilder,EsGoodsConstant.GOODS_INDEX_NAME)));
+        if( !CollectionUtils.isEmpty(param.getSorts()) ){
+            for (int i = 0; i < param.getSorts().size(); i++) {
+                Sort sort = param.getSorts().get(i);
+
+                sourceBuilder.sort(sort.getSortName(),sort.getSortOrder());
+            }
+        }
+        result.setDataList(searchEsGoods(assemblySearchRequest(sourceBuilder,EsGoodsConstant.GOODS_ALIA_NAME)));
         return result;
     }
     private SearchSourceBuilder getSearchSourceBuilderAndPage(PageResult<EsGoods> result, String indexName, EsSearchParam param,
@@ -244,13 +254,7 @@ public class EsBaseSearchService extends ShopBaseService {
             }
             sourceBuilder.from( from ).size( size );
         }
-        if( !CollectionUtils.isEmpty(param.getSorts()) ){
-            for (int i = 0; i < param.getSorts().size(); i++) {
-                Sort sort = param.getSorts().get(i);
 
-                sourceBuilder.sort(sort.getSortName(),sort.getSortOrder());
-            }
-        }
         if( param.getFactList() != null ){
             assemblyAggregationBuilder(param.getFactList()).forEach(sourceBuilder::aggregation);
         }
@@ -272,7 +276,7 @@ public class EsBaseSearchService extends ShopBaseService {
         SearchHit[] hits = searchResponse.getHits().getHits();
         List<EsGoods> data = new LinkedList<>();
         for( SearchHit hit:hits){
-            data.add(Util.parseJson(hit.getSourceAsString(),EsGoods.class, EsManager.ES_FILED_SERIALIZER));
+            data.add(Util.parseJson(hit.getSourceAsString(),EsGoods.class, EsUtil.ES_FILED_SERIALIZER));
         }
         return data;
     }
@@ -325,7 +329,7 @@ public class EsBaseSearchService extends ShopBaseService {
         SearchSourceBuilder sourceBuilder = SearchSourceBuilder.searchSource()
             .query(queryBuilder)
             .fetchSource(GOODS_SEARCH_STR,null);
-        List<EsGoods> list = searchEsGoods(assemblySearchRequest(sourceBuilder,EsGoodsConstant.GOODS_INDEX_NAME));
+        List<EsGoods> list = searchEsGoods(assemblySearchRequest(sourceBuilder,EsGoodsConstant.GOODS_ALIA_NAME));
         return list.size()>0?list.get(0):null;
     }
 

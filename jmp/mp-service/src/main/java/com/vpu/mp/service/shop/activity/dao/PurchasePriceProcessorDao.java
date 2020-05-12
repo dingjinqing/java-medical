@@ -121,7 +121,6 @@ public class PurchasePriceProcessorDao extends ShopBaseService {
         for (Map.Entry<Integer, PurchasePriceCartBo> entry : activityMap.entrySet()) {
             Integer k = entry.getKey();
             PurchasePriceCartBo v = entry.getValue();
-            CartActivityInfo.PurchasePriceRule currentRule = v.getPurchasePrice().getRule();
             BigDecimal moneySums = v.getMoney().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
             //规则id
             Map<Integer, CartActivityInfo.PurchasePriceRule> ruleMap = v.getPurchasePrice().getPurchasePriceRule().stream().collect(Collectors.toMap(CartActivityInfo.PurchasePriceRule::getRuleId, Function.identity()));

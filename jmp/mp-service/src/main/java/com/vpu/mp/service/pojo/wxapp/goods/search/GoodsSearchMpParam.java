@@ -10,7 +10,6 @@ import java.util.List;
 
 /**
  * 小程序商品搜索界面-用户搜索条件
- *
  * @author 李晓冰
  * @date 2019年12月09日
  */
@@ -18,60 +17,31 @@ import java.util.List;
 @Setter
 public class GoodsSearchMpParam extends BasePageParam {
 
-    /**
-     * 用户id，controller 层获取
-     */
+    /**用户id，controller 层获取*/
     private Integer userId;
 
-    /**
-     * 搜索输入的关键字
-     */
+    /**搜索输入的关键字*/
     private String keyWords;
 
-    /**
-     * 商品最低价
-     */
+    /**商品最低价*/
     private BigDecimal minPrice;
 
-    /**
-     * 商品最高价格
-     */
+    /**商品最高价格*/
     private BigDecimal maxPrice;
 
-    /**
-     * 商家分类id集合，为了满足从商品分组处跳转时使用
-     */
+    /**商家分类id集合，为了满足从商品分组处跳转时使用*/
     private List<Integer> sortIds;
 
-    /**
-     * 品牌id集合
-     */
+    /**品牌id集合*/
     private List<Integer> brandIds;
 
-    /**
-     * 活动类型集合
-     */
+    /**活动类型集合*/
     private List<Integer> activityTypes;
 
-    /**
-     * 标签id集合
-     */
+    /**标签id集合*/
     private List<Integer> labelIds;
 
-    /**
-     * 是否展示售罄商品,service层获取并设置
-     * {@link com.vpu.mp.service.pojo.shop.goods.GoodsConstant#SOLD_OUT_GOODS_SHOW} 展示售罄
-     */
-    private Boolean soldOutGoodsShow;
-
-    /**
-     * 商品优惠券码
-     */
-    private String couponSn;
-
-    /**
-     * 用户指定的排序字段
-     */
+    /**用户指定的排序字段*/
     private SortItemEnum sortItem;
     /**
      * 用户指定的排序方向
@@ -87,10 +57,7 @@ public class GoodsSearchMpParam extends BasePageParam {
      */
     private SortDirectionEnum shopSortDirection;
 
-    /**
-     * 1.页面从商品分组跳转至搜索页面时此字段可能会被赋予指定值
-     * 2.限次卡兑换商品搜素列表赋予商品id范围
-     */
+    /**外面搜索条件限制的商品范围，null表示不限制，长度为0的数组表示没有合法商品*/
     private List<Integer> goodsIds;
 
     /**
@@ -105,22 +72,13 @@ public class GoodsSearchMpParam extends BasePageParam {
      * admin秒杀活动分享码跳转 pageFrom =5
      */
     public static final Byte PAGE_FROM_SEC_KILL = BaseConstant.ACTIVITY_TYPE_SEC_KILL;
+    /**从优惠券跳转至商品搜索页面，展示其关联的商品信息 pageFrom=20*/
+    public static final Byte PAGE_FROM_COUPON=BaseConstant.ACTIVITY_TYPE_COUPON;
+    /**从砍价活动跳转至商品搜索页面，展示其关联的商品信息 pageFrom=3*/
+    public static final Byte PAGE_FROM_BARGAIN=BaseConstant.ACTIVITY_TYPE_BARGAIN;
 
-    /**
-     * 从优惠券跳转至商品搜索页面，展示其关联的商品信息 pageFrom=20
-     */
-    public static final Byte PAGE_FROM_COUPON = BaseConstant.ACTIVITY_TYPE_COUPON;
-    /**
-     * 从砍价活动跳转至商品搜索页面，展示其关联的商品信息 pageFrom=3
-     */
-    public static final Byte PAGE_FROM_BARGAIN = BaseConstant.ACTIVITY_TYPE_BARGAIN;
-    /**
-     * 从哪个页面跳转至搜索页面，目前用于区分从商品分组模块跳转至此，目前从分组跳转时未从es查数据
-     */
-
+    /**从哪个页面跳转至搜索页面，目前用于区分从商品分组模块跳转至此，目前从分组跳转时未从es查数据*/
     private Byte pageFrom;
-    /**
-     * 用于多商品活动从admin端扫码进入搜索页展示该活动下的商品时使用 activityId
-     */
-    private Integer actId;
+
+    private GoodsSearchMpOuterParam outerPageParam;
 }

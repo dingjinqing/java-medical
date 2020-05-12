@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.vpu.mp.service.foundation.es.EsAggregationName;
 import com.vpu.mp.service.foundation.es.EsManager;
+import com.vpu.mp.service.foundation.es.EsUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.es.EsLabelName;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
@@ -121,7 +122,7 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
         if( topHits != null ){
             for( SearchHit hit:topHits.getHits().getHits() ){
                 String labelStr = hit.getSourceAsString();
-                EsGoodsLabel esGoodsLabel = Util.parseJson(labelStr,EsGoodsLabel.class, EsManager.ES_FILED_SERIALIZER);
+                EsGoodsLabel esGoodsLabel = Util.parseJson(labelStr,EsGoodsLabel.class, EsUtil.ES_FILED_SERIALIZER);
                 list.add(esGoodsLabel);
             }
         }
@@ -185,7 +186,7 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
      * @return {@link SearchRequest}
      */
     private SearchRequest assemblySearchRequestByGoodsId(Integer shopId,List<Integer> goodsIds,Byte type){
-        SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.LABEL_INDEX_NAME);
+        SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.LABEL_ALIA_NAME);
         SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource();
         searchSourceBuilder.query(assemblyQueryBuilder(shopId,null,goodsIds,type));
         searchSourceBuilder.aggregation(assemblyLabelAggregationBuilderByGoodsId());
@@ -203,10 +204,11 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
      * @return {@link SearchRequest}
      */
     private SearchRequest assemblySearchRequestByLabelId(Integer shopId,List<Integer> labelIds,Byte type){
-        SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.LABEL_INDEX_NAME);
+        SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.LABEL_ALIA_NAME);
         SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource();
         searchSourceBuilder.query(assemblyQueryBuilder(shopId,labelIds,null,type));
-        searchSourceBuilder.aggregation(AggregationBuilders.terms(EsLabelName.GOODS_ID).field(EsLabelName.GOODS_ID));
+        //TODO 分页不分页待优化
+        searchSourceBuilder.aggregation(AggregationBuilders.terms(EsLabelName.GOODS_ID).field(EsLabelName.GOODS_ID).size(400));
         //not need to return query data
         searchSourceBuilder.size(0);
         searchRequest.source(searchSourceBuilder);
@@ -220,7 +222,7 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
      * @return {@link SearchRequest}
      */
     private SearchRequest assemblySearchRequestByLabelId(Integer shopId,List<Integer> labelIds){
-        SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.LABEL_INDEX_NAME);
+        SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.LABEL_ALIA_NAME);
         SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource();
         searchSourceBuilder.query(assemblyQueryBuilder(shopId,labelIds,null,null));
         searchSourceBuilder.aggregation(assemblyAggregationBuilderByLabelId());
@@ -235,7 +237,7 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
      * @return {@link SearchRequest}
      */
     private SearchRequest assemblySearchRequestForCount(){
-        SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.LABEL_INDEX_NAME);
+        SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.LABEL_ALIA_NAME);
         SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().
             query(QueryBuilders.termQuery(EsLabelName.SHOP_ID,getShopId())).
             aggregation(assemblyLabelAggregationBuilderByCount());
