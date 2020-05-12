@@ -96,7 +96,7 @@
                 v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
                 <span
-                  class="el-icon-edit-outline"
+                  class="iconfont iconbianji"
                   @click="editHandle(scope.row)"
                 ></span>
               </el-tooltip>
@@ -106,7 +106,7 @@
                 v-if="scope.row.currentState === 4"
               >
                 <span
-                  class="el-icon-circle-check"
+                  class="iconfont iconqiyong"
                   @click="openHandle(scope.row)"
                 ></span>
               </el-tooltip>
@@ -116,7 +116,7 @@
                 v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
                 <span
-                  class="el-icon-circle-close"
+                  class="iconfont icontingyong"
                   @click="closeHandle(scope.row)"
                 ></span>
               </el-tooltip>
@@ -126,7 +126,7 @@
                 v-if="scope.row.currentState === 3 || scope.row.currentState === 4"
               >
                 <span
-                  class="el-icon-delete"
+                  class="iconfont iconshanchu2"
                   @click="deleteHandle(scope.row.id)"
                 ></span>
               </el-tooltip>

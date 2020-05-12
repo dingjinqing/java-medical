@@ -164,7 +164,7 @@
                 v-if="scope.row.category === 1 || scope.row.category === 2"
               >
                 <span
-                  class="el-icon-edit-outline iconSpn"
+                  class="iconfont iconbianji iconSpn"
                   @click="jump2editPurchase(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -175,7 +175,7 @@
                 v-if="scope.row.category === 1 || scope.row.category === 2"
               >
                 <span
-                  class="el-icon-share iconSpn"
+                  class="iconfont iconfenxiang1 iconSpn"
                   @click="shareActity(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -186,7 +186,7 @@
                 v-if="scope.row.category === 1 || scope.row.category === 2"
               >
                 <span
-                  class="el-icon-circle-close iconSpn"
+                  class="iconfont icontingyong iconSpn"
                   @click="disableShare(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -197,7 +197,7 @@
                 v-if="scope.row.category === 4 && notExpired(scope.row)"
               >
                 <span
-                  class="el-icon-circle-check iconSpn"
+                  class="iconfont iconqiyong iconSpn"
                   @click="enableShare(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -208,7 +208,7 @@
               >
                 <span
                   @click="jumptoRedemptionList(scope.row.id)"
-                  class="el-icon-s-cooperation iconSpn"
+                  class="iconfont icondingdan iconSpn"
                 ></span>
               </el-tooltip>
               <!-- 换购明细 -->
@@ -218,7 +218,7 @@
               >
                 <span
                   @click="jumptoRedemptionDetail(scope.row.id)"
-                  class="el-icon-s-order iconSpn"
+                  class="iconfont iconmingxi iconSpn"
                 ></span>
               </el-tooltip>
               <!-- 删除 -->
@@ -229,7 +229,7 @@
               >
                 <span
                   @click="deleteShare(scope.row.id)"
-                  class="el-icon-delete iconSpn"
+                  class="iconfont iconshanchu2 iconSpn"
                 ></span>
               </el-tooltip>
             </div>
@@ -481,6 +481,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .container {
   padding: 10px;
   font-size: 14px;
