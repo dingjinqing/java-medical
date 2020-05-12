@@ -483,9 +483,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if(OrderConstant.CART_Y.equals(param.getIsCart())) {
             //购物车结算初始化商品
             param.setGoods(cart.getCartCheckedData(param.getWxUserInfo().getUserId(), param.getStoreId() == null ? NumberUtils.INTEGER_ZERO : param.getStoreId()));
-        }else if(BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER.equals(param.getActivityType())) {
-            //限次卡兑换初始化商品
-            param.setGoods(cardExchange.getCheckedData(param.getWxUserInfo().getUserId(), param.getMemberCardNo()));
         }
     }
 

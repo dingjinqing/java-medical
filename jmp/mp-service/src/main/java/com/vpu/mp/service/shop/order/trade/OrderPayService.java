@@ -20,6 +20,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
+import com.vpu.mp.service.saas.shop.ThirdPartyMsgServices;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
@@ -64,6 +65,10 @@ public class OrderPayService extends ShopBaseService{
 
     @Autowired
     private OrderGoodsService orderGoods;
+
+    @Autowired
+    private ThirdPartyMsgServices thirdPartyMsgServices;
+
     /**
      * 订单系统内金额支付方法
      * @param order 订单
@@ -92,6 +97,7 @@ public class OrderPayService extends ShopBaseService{
     public WebPayVo isContinuePay(OrderInfoRecord orderInfo, String orderSn, BigDecimal money, String goodsNameForPay,String ClientIp, String openId, Byte activityType) throws MpException {
         logger().info("继续支付接口start");
         if(orderInfo.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY || orderInfo.getOrderStatus() == OrderConstant.ORDER_PIN_PAYED_GROUPING){
+            thirdPartyMsgServices.thirdPartService(orderInfo);
             return null;
         }else if(OrderConstant.PAY_WAY_FRIEND_PAYMENT == orderInfo.getOrderPayWay()) {
             //TODO好友代付
