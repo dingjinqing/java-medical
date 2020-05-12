@@ -111,6 +111,7 @@ public class GroupDrawUserService extends ShopBaseService {
 			List<Integer> goodsIds = Util.stringToList(goodsGroupDraw.getGoodsId());
 			goodsIds.forEach(goodsId -> {
 				int joinUserNum = getJoinUserNumByGoodsId(goodsGroupDrawId, goodsId, null);
+				logger().info("joinUserNum:{}",joinUserNum);
 				if (joinUserNum > 0) {
 					// 已成团该商品参与用户数
 					logger().info("已成团该商品参与用户数");
@@ -262,7 +263,9 @@ public class GroupDrawUserService extends ShopBaseService {
 	 * 更新开奖状态
 	 */
 	private void updateGroupDrawStatus(Integer id) {
-		db().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.IS_WIN_DRAW, (byte) 1).where(JOIN_GROUP_LIST.ID.eq(id));
+		int execute = db().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.IS_WIN_DRAW, (byte) 1)
+				.where(JOIN_GROUP_LIST.ID.eq(id)).execute();
+		logger().info("更新：{}，结果：{}", id, execute);
 	}
 
 	/**
