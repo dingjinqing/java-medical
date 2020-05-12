@@ -306,6 +306,7 @@ export const cn = {
   workDay: '工作日',
   breakDay: '双休日',
   shipTime: ['会员卡有效期内', '每年', '每季', '每月', '每周', '每日'],
+  exchangTime: ['日', '周', '月', '季度', '年'],
   sendTotalTip: '请填写发送总量',
   receiveLimitTip: '请填写领取限制',
   leastCodeTip: '至少生成一项领取码',
