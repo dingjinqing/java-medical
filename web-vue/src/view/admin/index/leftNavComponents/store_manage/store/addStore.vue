@@ -237,6 +237,7 @@
         :imageSize="[750, 520]"
       />
 
+      <!-- 门店配送信息 -->
       <div
         v-show="this.stepData.currentStep == 1"
         class="create_content"
@@ -302,14 +303,18 @@
             <span>{{address + storeFormInfo.address}}</span><br />
             <span style="color: #999; font-size: 14px; ">{{$t('addStore.pickUpTip')}}</span>
           </el-form-item>
-          <div class="">
+          <div v-if="storeFormInfo.autoPick == 1">
             <el-form-item
               label="自提取货时间"
+              prop="pickDetail"
               required
             >
               <div class="pick-up-time">
                 <div>
-                  <el-radio></el-radio>
+                  <el-radio
+                    v-model="storeFormInfo.pickTimeAction"
+                    :label="1"
+                  ></el-radio>
                   <span>门店营业时间</span>
                   <el-popover
                     placement="top"
@@ -325,23 +330,27 @@
                   </el-popover>
                 </div>
                 <div>
-                  <el-radio></el-radio>
+                  <el-radio
+                    v-model="storeFormInfo.pickTimeAction"
+                    :label="2"
+                  ></el-radio>
                   <span>提交订单</span>
-                  <el-input-number
-                    v-model="num"
+                  <el-input
+                    v-model.number="storeFormInfo.pickDetail.duration"
                     controls-position="right"
-                    @change="handleChange"
-                    :min="1"
-                    :max="10"
-                  ></el-input-number>
-                  <el-select v-model="timeUnit">
+                    style="width:100px;"
+                  ></el-input>
+                  <el-select
+                    v-model="storeFormInfo.pickDetail.type"
+                    style="width:80px;"
+                  >
                     <el-option
                       label="小时"
-                      value="0"
+                      :value="1"
                     ></el-option>
                     <el-option
                       label="天"
-                      value="1"
+                      :value="2"
                     ></el-option>
                   </el-select>
                   <span>后可到店提货</span>
@@ -474,6 +483,14 @@ export default {
       }
       callback()
     }
+    function validPickDetail (rule, value, callback) {
+      if (that.storeFormInfo.pickTimeAction === 2) {
+        if (!that.storeFormInfo.pickDetail.duration) {
+          callback(new Error('请填写自提取货时间'))
+        }
+      }
+      callback()
+    }
     return {
       reload: true,
       stepData: {
@@ -506,7 +523,12 @@ export default {
         latitude: '',
         longitude: '',
         autoPick: 0, // 设定自提
-        content: ''
+        content: '',
+        pickTimeAction: 1, // 自提
+        pickDetail: {
+          duration: '',
+          type: 1
+        }
       },
       storeFormRules: {
         storeName: [{ required: true, message: this.$t('addStore.enterStoreName'), trigger: 'blur' }],
@@ -516,7 +538,8 @@ export default {
         posShopId: [{ required: true, message: this.$t('addStore.enterStoreNum'), trigger: 'blur' }, { type: 'number', message: '门店编码必须为数字值' }],
         provinceCode: [{ required: true, message: this.$t('addStore.selectArea') }, { validator: validateArea, trigger: 'blur' }],
         address: [{ required: true, message: this.$t('addStore.enterArea'), trigger: 'blur' }, { validator: validateAddress, trigger: 'change' }],
-        storeImgs: [{ required: true, message: this.$t('addStore.selectPhoto'), trigger: ['blur', 'change'] }]
+        storeImgs: [{ required: true, message: this.$t('addStore.selectPhoto'), trigger: ['blur', 'change'] }],
+
       },
       selfImgDialogShow: false,
       storeGroups: [],
@@ -553,7 +576,8 @@ export default {
       deliveryFormRules: {
         deliveryArea: [{ required: true, message: this.$t('addStore.enterDeliveryArea'), trigger: 'blur' }],
         deliveryPrice: [{ required: true, message: this.$t('addStore.enterDeliveryPrice'), trigger: 'blur' }],
-        deliveryType: [{ required: true, message: this.$t('addStore.selectDeliveryMethod'), trigger: 'change' }]
+        deliveryType: [{ required: true, message: this.$t('addStore.selectDeliveryMethod'), trigger: 'change' }],
+        pickDetail: [{ required: true, validator: validPickDetail, trigger: 'blur' }]
       },
       map: null,
       geocoder: null,
@@ -622,7 +646,13 @@ export default {
         districtCode: '',
         latitude: '',
         longitude: '',
-        autoPick: 0 // 设定自提
+        autoPick: 0, // 设定自提
+        content: '',
+        durationType: 1,
+        pickDetail: {
+          duration: '',
+          type: 1
+        }
       }
     },
     initStore (id) {
@@ -653,7 +683,14 @@ export default {
           if (res.content.latitude && res.content.longitude) {
             that.initMap(res.content.latitude, res.content.longitude)
           }
-          that.storeFormInfo = Object.assign({}, that.storeFormInfo, res.content)
+          let storeFormInfo = Object.assign({}, that.storeFormInfo, res.content)
+          if (!storeFormInfo.pickDetail) {
+            storeFormInfo.pickDetail = {
+              duration: '',
+              type: 1
+            }
+          }
+          that.storeFormInfo = storeFormInfo
         }
       })
     },
@@ -832,39 +869,44 @@ export default {
     },
     // 保存
     saveClickHandler () {
-      let params = Object.assign({}, this.storeFormInfo, this.deliveryMessage)
-      params.storeImgs = params.storeImgs.map(item => {
-        if (item.indexOf('//') > -1) {
-          item = item.replace(/^http:\/\/[^/]+\//, "")
-        } else if (item[0] === '/') {
-          item = item.slice(1)
+      let that = this
+      that.$refs.deliveryForm.validate((valid) => {
+        if (valid) {
+          let params = Object.assign({}, this.storeFormInfo, this.deliveryMessage)
+          params.storeImgs = params.storeImgs.map(item => {
+            if (item.indexOf('//') > -1) {
+              item = item.replace(/^http:\/\/[^/]+\//, "")
+            } else if (item[0] === '/') {
+              item = item.slice(1)
+            }
+            return item
+          })
+          params.storeImgs = JSON.stringify(params.storeImgs)
+          if (!this.id) {
+            addStore(params).then((res) => {
+              if (res.error === 0) {
+                this.$message.success({
+                  message: res.message
+                })
+                this.$router.push({ name: 'store_list' })
+              } else {
+                this.$message.error(this.$t('addStore.addFaild'))
+              }
+            })
+          } else {
+            updateStore(params).then((res) => {
+              if (res.error === 0) {
+                this.$message.success({
+                  message: res.message
+                })
+                this.$router.push({ name: 'store_list' })
+              } else {
+                this.$message.error(this.$t('addStore.addFaild'))
+              }
+            })
+          }
         }
-        return item
       })
-      params.storeImgs = JSON.stringify(params.storeImgs)
-      if (!this.id) {
-        addStore(params).then((res) => {
-          if (res.error === 0) {
-            this.$message.success({
-              message: res.message
-            })
-            this.$router.push({ name: 'store_list' })
-          } else {
-            this.$message.error(this.$t('addStore.addFaild'))
-          }
-        })
-      } else {
-        updateStore(params).then((res) => {
-          if (res.error === 0) {
-            this.$message.success({
-              message: res.message
-            })
-            this.$router.push({ name: 'store_list' })
-          } else {
-            this.$message.error(this.$t('addStore.addFaild'))
-          }
-        })
-      }
     }
   }
 }
