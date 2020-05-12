@@ -193,7 +193,7 @@
                   :prop="'product.' +  scope.$index+ '.grouperPrice'"
                   :rules="[
                     { required: true, message: '团长价不能为空', trigger: 'blur' },
-                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.shopPrice)}, trigger: ['blur', 'change'] }
+                    { validator: (rule, value, callback)=>{validateGrouperMoney(rule, value, callback, scope.row.shopPrice)}, trigger: ['blur', 'change'] }
                   ]"
                   style="height: 56px;line-height: 56px;"
                 >
@@ -849,10 +849,24 @@ export default {
     // 校验表格
     validateMoney (rule, value, callback, shopPrice) {
       var re = /^\d+(\.\d{1,2})?$/
-      if (!re.test(value)) {
-        callback(new Error('请填写非负数, 可以保留两位小数'))
+      if (value < 0) {
+        callback(new Error('请填写非负数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请保留两位小数'))
       } else if (value > shopPrice) {
-        callback(new Error('拼团价或团长价不能大于商品原价'))
+        callback(new Error('拼团价不能大于原价'))
+      } else {
+        callback()
+      }
+    },
+    validateGrouperMoney (rule, value, callback, shopPrice) {
+      var re = /^\d+(\.\d{1,2})?$/
+      if (value < 0) {
+        callback(new Error('请填写非负数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请保留两位小数'))
+      } else if (value > shopPrice) {
+        callback(new Error('团长价不能大于原价'))
       } else {
         callback()
       }
