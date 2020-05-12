@@ -4,11 +4,9 @@ import com.vpu.mp.service.foundation.util.ImageUtil;
 import lombok.Data;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 /**
  * 海报背景图片内容相关像素
- *
  * @author 李晓冰
  * @date 2019年12月31日
  */
@@ -16,33 +14,65 @@ import java.awt.image.BufferedImage;
 public class PictorialImgPx {
 
     /**
+     * 海报样式
+     */
+    public static final Byte DEFAULT_STYLE = 0;
+    /**
+     * 基础样式
+     */
+    public static final Byte BASIC_STYLE = 1;
+    /**
+     * 显示分享人信息
+     */
+    public static final Byte SHARE_PERSON_STYLE = 2;
+    /**
+     * 显示店铺信息
+     */
+    public static final Byte SHOP_STYLE = 3;
+    /**
+     * 分享人+店铺信息
+     */
+    public static final Byte SHARE_PERSON_SHOP_STYLE = 4;
+
+    public static final Color SHOP_DEFAULT_STYLE_COLOR = new Color(255, 102, 102);
+
+    /***********************不随店铺风格改变的色值***************************/
+    /**
      * 头部文字颜色
      */
     public static final Color HEAD_FONT_COLOR = new Color(85, 85, 85);
-    /**
-     * 自定义区域内部填充颜色
-     */
-    public static final Color CUSTOMER_RECT_FILL_COLOR = new Color(255, 115, 76, 140);
-    /**
-     * 自定义区域内部字体颜色
-     */
-    public static final Color CUSTOMER_TEXT_FONT_COLOR = new Color(255, 255, 255);
     /**
      * 商品名称颜色
      */
     public static final Color GOODS_NAME_COLOR = new Color(52, 52, 52);
 
     /**
-     * 底部商品价格颜色
-     */
-    public static final Color REAL_PRICE_COLOR = new Color(255, 102, 102);
-    /**
      * 底部划线价颜色
      */
     public static final Color LINE_PRICE_COLOR = new Color(146, 146, 146);
 
-    public static final Color SHARE_IMG_RECT_INNER_COLOR = new Color(255, 238, 238);
+    /**
+     * 活动-自定义区域内部字体颜色
+     */
+    public static final Color CUSTOMER_TEXT_FONT_COLOR = new Color(255, 255, 255);
 
+    /***********************随店铺风格改变的色值***************************/
+    private Color shareImgRectInnerColor;
+    /**
+     * 活动-自定义区域内部填充颜色
+     */
+    private Color customerRectFillColor;
+    /**
+     * 底部商品价格颜色
+     */
+    private Color realPriceColor;
+/***********************随店铺风格改变的色值结束***************************/
+    /**
+     * 可用的三种字体size
+     */
+    public static final Integer SMALL_FONT_SIZE = 24;
+    public static final Integer MEDIUM_FONT_SIZE = 28;
+    public static final Integer LARGE_FONT_SIZE = 33;
 
     /**
      * 背景图宽
@@ -56,103 +86,163 @@ public class PictorialImgPx {
      * 图片底部padding
      */
     private Integer bottomPadding = 10;
-    /**
-     * 头像，宣传语，商品名，价格，二维码边距
-     */
-    private Integer smallFontSize = 24;
-    private Integer mediumFontSize = 30;
-    private Integer largeFontSize = 35;
+
+    public PictorialImgPx(){}
+
+    public PictorialImgPx(Color shopStyleColor) {
+        this(DEFAULT_STYLE, shopStyleColor);
+    }
+
+    public PictorialImgPx(Byte picStyleConfig, Color shopStyleColor) {
+        customerRectFillColor = new Color(shopStyleColor.getRed(), shopStyleColor.getGreen(), shopStyleColor.getBlue(), 140);
+        shareImgRectInnerColor =new Color(shopStyleColor.getRed(), shopStyleColor.getGreen(), shopStyleColor.getBlue(), 30);
+        realPriceColor = shopStyleColor;
+        if (BASIC_STYLE.equals(picStyleConfig)) {
+
+        } else if (SHARE_PERSON_STYLE.equals(picStyleConfig)) {
+
+        } else if (SHOP_STYLE.equals(picStyleConfig)) {
+
+        } else if (SHARE_PERSON_SHOP_STYLE.equals(picStyleConfig)) {
+
+        } else {
+            initForDefault();
+        }
+    }
+
+    private void initForDefault() {
+        // 用户名
+        userNameX = headerStartX + userHeaderDiameter + 15;
+        userNameY = headerStartY + userHeaderDiameter / 5 + 5;
+        userNameFont = ImageUtil.SourceHanSansCN(Font.PLAIN, SMALL_FONT_SIZE);
+
+        // 宣传语
+        shareDocX = bgPadding;
+        shareDocY = headerStartY + userHeaderDiameter + 7;
+        shareDocFont = ImageUtil.SourceHanSansCN(Font.PLAIN, MEDIUM_FONT_SIZE);
+
+        // 商品
+        goodsWidth = bgWidth - 2 * bgPadding;
+        goodsStartX = bgPadding;
+        goodsStartY = bgPadding + headerHeight;
+
+        //自定义区域
+        customerRectHeight = 60;
+        customerRectWidth = goodsWidth;
+        customerRectStartX = bgPadding;
+        customerRectStartY = bgPadding + headerHeight + goodsHeight - customerRectHeight;
+        // 自定义区域图标、文字位置设置
+        customerIconWidth = 40;
+        customerIconHeight = 30;
+        customerIconStartX = customerRectStartX + 20;
+        customerIconStartY = customerRectStartY + 17;
+
+        customerTextStartX = customerRectStartX + 20;
+        customerTextStartY = customerRectStartY + 10;
+        customerSecondTextStartY = customerTextStartY + 10;
+
+        // 底部二维码
+        qrCodeStartX = bgWidth - (bgPadding + qrCodeWidth);
+        qrCodeStartY = bottomStartY + 15;
+        // 商品名称可用宽度，开始位置
+        goodsNameCanUseWidth = bgWidth - 2 * bgPadding - qrCodeWidth - 20;
+        goodsNameStartY = bottomStartY + 10;
+        goodsNameFont = ImageUtil.SourceHanSansCN(Font.PLAIN, MEDIUM_FONT_SIZE);
+        bottomTextStartX = bgPadding;
+        priceY = goodsNameStartY + priceNamePadding;
+        priceFont =  ImageUtil.SourceHanSansCN(Font.PLAIN, PictorialImgPx.LARGE_FONT_SIZE);
+        linePriceFont =  ImageUtil.SourceHanSansCN(Font.PLAIN, PictorialImgPx.MEDIUM_FONT_SIZE);
+    }
+
     /**
      * 图片头部
      */
-    private Integer headerHeight = 160;
+    private final Integer headerHeight = 160;
     /**
      * 用户头像直径
      */
-    private Integer userHeaderDiameter = 96;
-
-    private Integer headerStartX = bgPadding;
-    private Integer headerStartY = bgPadding;
+    private final Integer userHeaderDiameter = 96;
+    private final Integer headerStartX = bgPadding;
+    private final Integer headerStartY = bgPadding;
 
     /**
      * 用户名开始x,y坐标
      */
-    private Integer userNameX = headerStartX + userHeaderDiameter + 15;
-    private Integer userNameY = headerStartY + userHeaderDiameter / 5+5;
-
+    private Integer userNameX;
+    private Integer userNameY;
+    private Font userNameFont;
     /**
      * 商品shareDoc内容
      */
-    private Integer shareDocX = bgPadding;
-    private Integer shareDocY = headerStartY + userHeaderDiameter+7;
+    private Integer shareDocX;
+    private Integer shareDocY;
+    private Font shareDocFont;
+
     /**
      * 商品宽高,位置x,y
      */
-    private Integer goodsWidth = bgWidth - 2 * bgPadding;
-    private Integer goodsHeight = bgWidth - 2 * bgPadding-80;
-    private Integer goodsStartX = bgPadding;
-    private Integer goodsStartY = bgPadding + headerHeight;
-
-    /** 图片上方，各个活动自定义内容区域 */
+    private Integer goodsWidth;
+    private Integer  goodsHeight = bgWidth - 2 * bgPadding - 80;
+    private Integer goodsStartX;
+    private Integer goodsStartY;
 
     /**
+     * 图片上方，各个活动自定义内容区域
      * 自定义内容区域,背景边框位置和大小
      */
-    private Integer customerRectHeight = 60;
-    private Integer customerRectWidth = goodsWidth;
-    private Integer customerRectStartX = bgPadding;
-    private Integer customerRectStartY = bgPadding + headerHeight + goodsHeight - customerRectHeight;
+    private Integer customerRectHeight;
+    private Integer customerRectWidth;
+    private Integer customerRectStartX;
+    private Integer customerRectStartY;
     /**
      * 自定内容图标宽高和位置
      */
-    private Integer customerIconWidth =40;
-    private Integer customerIconHeight = 30;
-    private Integer customerIconStartX = customerRectStartX+20;
-    private Integer customerIconStartY = customerRectStartY +17;
+    private Integer customerIconWidth;
+    private Integer customerIconHeight;
+    private Integer customerIconStartX;
+    private Integer customerIconStartY;
 
-    private Integer customerTextPadding = 8;
-    private Integer customerTextStartY = customerRectStartY + 10;
-    private Integer customerTextStartX = customerRectStartX+20;
-
-    private Integer customerSecondTextStartY = customerTextStartY +10;
+    private Integer customerTextStartY;
+    private Integer customerTextStartX;
+    private Integer customerSecondTextStartY;
 
 
     /*****************海报底部图片配置参数******************/
     /**
      * 底部高度
      */
-    private Integer bottomHeight = 200;
+    private Integer bottomHeight = 230;
     /**
      * 图片总高度,底部padding设置为10
      */
-    private Integer bgHeight = headerHeight + bottomHeight + goodsHeight + bgPadding+bottomPadding ;
+    private Integer bgHeight = headerHeight + bottomHeight + goodsHeight + bgPadding + bottomPadding;
 
     /**
      * 底部开始Y
      */
-    private Integer bottomStartY = headerHeight + goodsHeight + bgPadding+5;
+    private Integer bottomStartY = headerHeight + goodsHeight + bgPadding + 5;
 
     /**
      * 二维码直径
      */
-    private Integer qrCodeWidth = 150;
+    private Integer qrCodeWidth = 180;
     /**
      * 二维码X
      */
-    private Integer qrCodeStartX = bgWidth - (bgPadding + qrCodeWidth);
-    private Integer qrCodeStartY =bottomStartY+15;
+    private Integer qrCodeStartX;
+    private Integer qrCodeStartY;
+
+    private Integer bottomTextStartX = bgPadding;
 
     /**
      * 商品名称可使用的最大宽度
      */
-    private Integer goodsNameCanUseWidth = bgWidth - 2*bgPadding-qrCodeWidth-20;
-
+    private Integer goodsNameCanUseWidth;
     /**
      * 商品名称开始Y
      */
     private Integer goodsNameStartY = bottomStartY + 10;
-
-    private Integer bottomTextStartX = bgPadding;
+    private Font goodsNameFont;
 
     /**
      * 商品价格和名字的距离
@@ -161,36 +251,24 @@ public class PictorialImgPx {
     /**
      * 底部商品价格开始y,需要根据商品名称行数计算得到
      */
-    private Integer priceY = goodsNameStartY + priceNamePadding;
-
+    private Integer priceY;
+    private Integer priceX;
+    private Font priceFont;
+    private Font linePriceFont;
     /**
-     *价格之间的距离
+     * 价格之间的距离
      */
     private Integer priceMargin = 10;
 
-    public Integer getActivityTipTextY(){
-        return priceY+11;
+    public Integer getActivityTipTextY() {
+        return priceY + 11;
     }
+
     /**
      * 底部划线价，线的Y
      */
-    public Integer getPriceLineY(){
-        return priceY+6;
+    public Integer getPriceLineY() {
+        return priceY + 4;
     }
 
-
-    public PictorialImgPx() {
-    }
-
-    public Integer getSmallFontAscent(BufferedImage bufferedImage) {
-        return ImageUtil.getTextAscent(bufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, smallFontSize));
-    }
-
-    public Integer getMediumFontAscent(BufferedImage bufferedImage) {
-        return ImageUtil.getTextAscent(bufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, mediumFontSize));
-    }
-
-    public Integer getLargeFontAscent(BufferedImage bufferedImage) {
-        return ImageUtil.getTextAscent(bufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, largeFontSize));
-    }
 }
