@@ -183,10 +183,11 @@ export default {
       }
       .query-ul {
         display: flex;
+        flex-wrap: wrap;
         float: left;
         margin-right: 10px;
         li:not(:first-child) {
-          margin-left: 50px;
+          margin-left: 25px;
         }
         span {
           display: inline-block;
