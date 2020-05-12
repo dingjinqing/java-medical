@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.distribution;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 import lombok.Data;
@@ -12,6 +13,7 @@ import lombok.Data;
  */
 @Data
 public class DistributorInvitedListVo {
+    private Integer userId;
 	private String username;
 	private String mobile;
 	private Timestamp createTime;
@@ -30,11 +32,11 @@ public class DistributorInvitedListVo {
 	/**
 	 * 返利有效日期
 	 */
-	private Timestamp inviteExpiryDate;
+	private Date inviteExpiryDate;
 	/**
 	 * 邀请保护日期
 	 */
-	private Timestamp inviteProtectDate;
+	private Date inviteProtectDate;
     /**
      * 邀请时间
      */
