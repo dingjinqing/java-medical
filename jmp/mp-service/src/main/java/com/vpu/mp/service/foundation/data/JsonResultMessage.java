@@ -806,6 +806,9 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_ACTIVITY_GOODS_OUT_OF_STOCK = "order.activity.goods.out.of.stock";
     /**商品不支持预售*/
     public static final String MSG_ORDER_GOODS_NOT_SUPORT_PRESALE = "order.goods.not.suport.presale";
+    public static final String MSG_ORDER_CARD_EXCHGE_NO_CHOOSE_GOODS = "order.card.exchge.no.choose.goods";
+    public static final String  MSG_ORDER_CARD_EXCHGE_NO_EXCHGE_GOODS = "order.card.exchge.no.exchge.goods";
+    public static final String  MSG_ORDER_CARD_EXCHGE_NUMBER_LIMIT = "order.card.exchge.number.limit";
     /**订单发货*/
     public static final String MSG_ORDER_SHIPPING_SHIPPINGNO_NOT_NULL = "order.shipping.shippingno.not.null";
     public static final String MSG_ORDER_SHIPPING_SHIPPINGID_NOT_NULL = "order.shipping.shippingid.not.null";

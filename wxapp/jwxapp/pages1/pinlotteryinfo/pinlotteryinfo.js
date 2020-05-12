@@ -326,7 +326,7 @@ global.wxPage({
   onShareAppMessage: function () {
     var that = this;
     return {
-      title: "快来参与" + that.data.group_info.group_draw.pay_money + "元拼团大抽奖吧",
+      title: "快来参与" + that.data.group_info.groupDraw.payMoney + "元拼团大抽奖吧",
       // imageUrl: that.data.imageUrl + that.data.share_img,
       path: '/pages/pinlotteryinfo/pinlotteryinfo?group_draw_id=' + group_draw_id + "&goods_id=" + goods_id + "&group_id=" + group_id + '&inviteId=' + util.getCache('user_id'),
     }

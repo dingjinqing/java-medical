@@ -43,6 +43,7 @@ import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
+import com.vpu.mp.service.shop.card.wxapp.WxCardExchangeService;
 import com.vpu.mp.service.shop.config.InsteadPayConfigService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
@@ -173,6 +174,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     @Autowired
     private OrderGoodsRebateService orderGoodsRebate;
+
+    @Autowired
+    private WxCardExchangeService  cardExchange;
+
     /**
      * 营销活动processorFactory
      */
@@ -310,7 +315,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
     }
 
-    private OrderBeforeVo init(OrderBeforeParam param) {
+    private OrderBeforeVo init(OrderBeforeParam param) throws MpException {
         OrderBeforeVo result = OrderBeforeVo.builder().build();
         // 地址
         result.setAddress(getDefaultAddress(param.getWxUserInfo().getUserId(), param.getAddressId()));
@@ -474,13 +479,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * init param goods
      * @param param
      */
-    public void initParamGoods(OrderBeforeParam param){
+    public void initParamGoods(OrderBeforeParam param) throws MpException {
         if(OrderConstant.CART_Y.equals(param.getIsCart())) {
             //购物车结算初始化商品
             param.setGoods(cart.getCartCheckedData(param.getWxUserInfo().getUserId(), param.getStoreId() == null ? NumberUtils.INTEGER_ZERO : param.getStoreId()));
+        }else if(BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER.equals(param.getActivityType())) {
+            //限次卡兑换初始化商品
+            param.setGoods(cardExchange.getCheckedData(param.getWxUserInfo().getUserId(), param.getMemberCardNo()));
         }
-
-
     }
 
     /**

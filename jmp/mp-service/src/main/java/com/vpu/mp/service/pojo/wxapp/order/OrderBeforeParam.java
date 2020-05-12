@@ -166,6 +166,14 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
         private Byte cartType;
         /**购物车参数：对应type的id*/
         private Integer cartExtendId;
+
+        public static Goods init(Integer goodsId, Integer goodsNumber, Integer productId) {
+            OrderBeforeParam.Goods goods = new OrderBeforeParam.Goods();
+            goods.setGoodsId(goodsId);
+            goods.setGoodsNumber(goodsNumber);
+            goods.setProductId(productId);
+            return goods;
+        }
 	}
 
     /**
