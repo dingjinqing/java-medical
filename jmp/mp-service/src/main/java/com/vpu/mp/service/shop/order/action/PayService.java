@@ -41,6 +41,7 @@ import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.trade.OrderPayService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record2;
 import org.jooq.Result;
@@ -51,7 +52,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -289,7 +289,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         }
         //TODO 异常订单处理等等
         // 订单生效时营销活动后续处理
-        processOrderEffective(orderInfo, orderInfo);
+        processOrderEffective(orderInfo);
         //模板消息
         sendMessage.send(orderInfo, goods);
 
@@ -309,11 +309,10 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
 
     /**
      *  支付活动
-     * @param param
      * @param orderInfo
      * @throws MpException
      */
-    private void processOrderEffective(OrderInfoRecord param, OrderInfoRecord orderInfo) throws MpException {
+    public void processOrderEffective(OrderInfoRecord orderInfo) throws MpException {
         if (!orderInfo.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)&&!orderInfo.getOrderStatus().equals(OrderConstant.ORDER_PIN_PAYED_GROUPING)){
             return;
         }
@@ -325,9 +324,10 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
     }
 
     public OrderBeforeParam createOrderBeforeParam(OrderInfoRecord orderInfo) {
-        String[] strings = OrderInfoService.orderTypeToArray(orderInfo.getGoodsType());
-        List<Byte> activityTypeList = Arrays.stream(strings).map(Byte::valueOf).collect(Collectors.toList());
-        Byte activityType =  activityTypeList.stream().filter(OrderCreateMpProcessorFactory.SINGLENESS_ACTIVITY::contains).findFirst().get();
+        Byte[] orderType = OrderInfoService.orderTypeToByte(orderInfo.getGoodsType());
+        List<Byte> activityTypeList = Lists.newArrayList(orderType);
+        List<Byte> singlenessActivity = activityTypeList.stream().filter(OrderCreateMpProcessorFactory.SINGLENESS_ACTIVITY::contains).collect(Collectors.toList());
+        Byte activityType = CollectionUtils.isEmpty(singlenessActivity) ? null : singlenessActivity.get(0);
         OrderBeforeParam orderBeforeParam =new OrderBeforeParam();
         orderBeforeParam.setActivityType(activityType);
         orderBeforeParam.setActivityId(orderInfo.getActivityId());

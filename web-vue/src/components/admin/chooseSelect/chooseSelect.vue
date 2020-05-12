@@ -153,6 +153,10 @@ export default {
      */
     handleOnClickCardChange (val) {
       // this.onClickCard = !this.onClickCard
+      if (val === false) {
+        this.cardIdsLists = []
+        this.cardIdsList = []
+      }
       this.$emit('chooseSelectVal', { tagIdList: this.tagIdLists, onClickTag: this.onClickTag, onClickCard: this.onClickCard, cardIdsList: this.cardIdsLists })
     },
     /**
@@ -160,6 +164,10 @@ export default {
      */
     handleOnClickTagChange (val) {
       // this.onClickTag = !this.onClickTag
+      if (val === false) {
+        this.tagIdLists = []
+        this.tagIdsList = []
+      }
       this.$emit('chooseSelectVal', { tagIdList: this.tagIdLists, onClickTag: this.onClickTag, onClickCard: this.onClickCard, cardIdsList: this.cardIdsLists })
     },
     // 初始化获取数据

@@ -62,6 +62,9 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
     @Autowired
     private CouponService coupon;
 
+    @Autowired
+    private CancelService cancelService;
+
 	@Override
 	public OrderServiceCode getServiceCode() {
 		return OrderServiceCode.CLOSE;
@@ -81,20 +84,19 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 		if(order == null) {
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
 		}
-		if(!OrderOperationJudgment.mpIsClose(order)) {
+		if(!OrderOperationJudgment.mpIsClose(order, param.getIsMp())) {
             logger().error("该订单不能关闭");
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CLOSE_NOT_CLOSE, null);
 		}
 		try {
 			transaction(()->{
 				returnOrder(order);
-				//TODO 好友代付退
 				orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_CLOSED);
                 //退优惠券
                 if(BigDecimalUtil.compareTo(order.getDiscount() , null) > 0) {
                     coupon.releaserCoupon(order.getOrderSn());
                 }
-
+                cancelService.updateStockAndStatus(order);
 			});
 		} catch (Exception e) {
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CLOSE_FAIL, null);
@@ -107,6 +109,9 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 	}
 
 	public void returnOrder(OrderInfoVo order) throws MpException {
+	    if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
+            returnMethod.returnSubOrder(order.getOrderSn(), order.getMoneyPaid(), 0);
+        }
 	    if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_DEPOSIT)){
 	        //预售订单特殊处理
             if(order.getBkReturnType() != null && order.getBkReturnType().equals(OrderConstant.BK_RETURN_TYPE_Y)){
@@ -114,20 +119,34 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
                 if(BigDecimalUtil.compareTo(order.getMoneyPaid(), null) > 0) {
                     returnMethod.refundMoneyPaid(order,0,order.getMoneyPaid());
                 }
+                if(BigDecimalUtil.compareTo(order.getScoreDiscount(), null) > 0) {
+                    //积分
+                    refundScoreDiscount(order, order.getScoreDiscount());
+                }
+                if(BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0) {
+                    refundUseAccount(order, order.getUseAccount());
+                    //余额
+                }
+                if(BigDecimalUtil.compareTo(order.getMemberCardBalance(), null) > 0) {
+                    //卡余额
+                    refundMemberCardBalance(order, order.getMemberCardBalance());
+                }
+            }
+        }else{
+            if(BigDecimalUtil.compareTo(order.getScoreDiscount(), null) > 0) {
+                //积分
+                refundScoreDiscount(order, order.getScoreDiscount());
+            }
+            if(BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0) {
+                refundUseAccount(order, order.getUseAccount());
+                //余额
+            }
+            if(BigDecimalUtil.compareTo(order.getMemberCardBalance(), null) > 0) {
+                //卡余额
+                refundMemberCardBalance(order, order.getMemberCardBalance());
             }
         }
-        if(BigDecimalUtil.compareTo(order.getScoreDiscount(), null) > 0) {
-            //积分
-            refundScoreDiscount(order, order.getScoreDiscount());
-        }
-        if(BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0) {
-            refundUseAccount(order, order.getUseAccount());
-            //余额
-        }
-        if(BigDecimalUtil.compareTo(order.getMemberCardBalance(), null) > 0) {
-            //卡余额
-            refundMemberCardBalance(order, order.getMemberCardBalance());
-        }
+
 	}
 	/**
 	 * 	退会员卡余额

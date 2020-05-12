@@ -70,3 +70,12 @@ export function successGroupIntegration (data) {
     data: data
   })
 }
+
+// 查询组团瓜分积分 效果数据
+export function getAnalysisRequest (data) {
+  return service({
+    url: '/api/admin/market/integration/getAnalysis',
+    method: 'post',
+    data: data
+  })
+}

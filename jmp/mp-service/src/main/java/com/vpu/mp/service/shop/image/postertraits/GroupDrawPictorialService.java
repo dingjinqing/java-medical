@@ -64,7 +64,7 @@ public class GroupDrawPictorialService extends ShopBaseService {
         // 拼团活动信息不可用
         if (groupDrawRecord == null) {
             groupDrawLog("分享", "拼团抽奖活动信息不可用");
-            goodsShareInfo.setShareCode(GoodsShareInfo.ACTIVITY_DELETED);
+            goodsShareInfo.setShareCode(PictorialConstant.ACTIVITY_DELETED);
             return goodsShareInfo;
         }
 
@@ -72,11 +72,10 @@ public class GroupDrawPictorialService extends ShopBaseService {
         // 拼团商品信息不可用
         if (goodsRecord == null) {
             groupDrawLog("分享", "拼团抽奖商品信息不可用");
-            goodsShareInfo.setShareCode(GoodsShareInfo.GOODS_DELETED);
+            goodsShareInfo.setShareCode(PictorialConstant.GOODS_DELETED);
             return goodsShareInfo;
         }
         GoodsSharePostConfig shareConfig = Util.parseJson(goodsRecord.getShareConfig(), GoodsSharePostConfig.class);
-        goodsShareInfo.setShareAction(shareConfig.getShareAction());
 
 
         // 用户自定义分享样式
@@ -90,10 +89,14 @@ public class GroupDrawPictorialService extends ShopBaseService {
             goodsShareInfo.setShareDoc(shareConfig.getShareDoc());
         } else {
             // 使用默认分享图片样式
-            ShopRecord shop = saas.shop.getShopById(getShopId());
             String imgPath = createGroupDrawShareImg(groupDrawRecord, goodsRecord, param);
-            String doc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_DRAW_SHARE_DOC, "messages",param.getRealPrice());
+            if (imgPath == null) {
+                goodsShareInfo.setShareCode(PictorialConstant.GOODS_PIC_ERROR);
+                return goodsShareInfo;
+            }
             goodsShareInfo.setImgUrl(imgPath);
+            ShopRecord shop = saas.shop.getShopById(getShopId());
+            String doc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_DRAW_SHARE_DOC, "messages",param.getRealPrice());
             goodsShareInfo.setShareDoc(doc);
         }
         goodsShareInfo.setImgUrl(imageService.getImgFullUrl(goodsShareInfo.getImgUrl()));
@@ -169,14 +172,21 @@ public class GroupDrawPictorialService extends ShopBaseService {
      * @param param 拼团抽奖海报参数
      * @return 拼团抽奖海报图片base64
      */
-    public String getGroupDrawPictorialInfo(GroupDrawShareInfoParam param){
+    public GoodsPictorialInfo getGroupDrawPictorialInfo(GroupDrawShareInfoParam param){
+        GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
         ShopRecord shop = saas.shop.getShopById(getShopId());
         GroupDrawRecord groupDrawRecord = groupDrawService.getById(param.getActivityId());
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
+        if (groupDrawRecord == null) {
+            groupDrawLog("pictorial", "拼团抽奖信息已删除或失效");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);
+            return goodsPictorialInfo;
+        }
 
-        if (groupDrawRecord == null || goodsRecord == null) {
-            groupDrawLog("pictorial", "商品或拼团信息已删除或失效");
-            return null;
+        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
+        if (goodsRecord == null) {
+            groupDrawLog("pictorial", "商品信息已删除或失效");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_DELETED);
+            return goodsPictorialInfo;
         }
 
 
@@ -194,19 +204,22 @@ public class GroupDrawPictorialService extends ShopBaseService {
             pictorialUserInfo = pictorialService.getPictorialUserInfo(param.getUserId(),shop);
         } catch (IOException e) {
             groupDrawLog("pictorial", "获取用户信息失败：" + e.getMessage());
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
+            return goodsPictorialInfo;
         }
-        return getGroupDrawPictorialImg(pictorialUserInfo,shareConfig,groupDrawRecord,goodsRecord,shop,param);
+        getGroupDrawPictorialImg(pictorialUserInfo,shareConfig,groupDrawRecord,goodsRecord,shop,param,goodsPictorialInfo);
+        return goodsPictorialInfo;
     }
 
-    private String getGroupDrawPictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, GroupDrawRecord groupDrawRecord, GoodsRecord goodsRecord, ShopRecord shop, GroupDrawShareInfoParam param){
+    private void getGroupDrawPictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, GroupDrawRecord groupDrawRecord, GoodsRecord goodsRecord, ShopRecord shop, GroupDrawShareInfoParam param,GoodsPictorialInfo goodsPictorialInfo){
         BufferedImage goodsImage;
         try {
             groupDrawLog("pictorial", "获取商品图片信息");
             goodsImage = pictorialService.getGoodsPictorialImage(shareConfig, goodsRecord);
         } catch (IOException e) {
             groupDrawLog("pictorial", "获取商品图片信息失败：" + e.getMessage());
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
+            return;
         }
 
         groupDrawLog("pictorial", "获取商品分享语");
@@ -228,28 +241,24 @@ public class GroupDrawPictorialService extends ShopBaseService {
             qrCodeImage = ImageIO.read(new URL(mpQrcode));
         } catch (IOException e) {
             groupDrawLog("pictorial", "获取二维码失败");
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
+            return;
         }
         PictorialImgPx imgPx = new PictorialImgPx();
         // 拼装背景图
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx,true);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx);
 
         // 拼团抽奖文字
         String groupDrawText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_DRAW_SHARE_INFO, "messages");
-        int rectWidth = ImageUtil.addFontWithRect(bgBufferedImage, imgPx.getCustomerTextStartX(), imgPx.getCustomerSecondTextStartY(), groupDrawText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getCustomerTextFontColor(), null, imgPx.getCustomerTextFontColor());
-
         // 活动价格
         String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-        int realPriceTextStartX = imgPx.getCustomerTextStartX()+rectWidth+10;
-        ImageUtil.addFont(bgBufferedImage,realPriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),realPriceTextStartX,imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor(),false);
-        Integer realPriceTextWidth = ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),realPriceText);
-
         // 划线价格
         String linePriceText =  Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getLinePrice().setScale(2,BigDecimal.ROUND_HALF_UP);
-        int linePriceTextStartX = realPriceTextStartX+realPriceTextWidth+5;
-        ImageUtil.addFontWithLine(bgBufferedImage,linePriceTextStartX,imgPx.getCustomerSecondTextStartY(),linePriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),imgPx.getCustomerTextFontColor());
 
-        return ImageUtil.toBase64(bgBufferedImage);
+        pictorialService.addPictorialSelfCustomerContent(bgBufferedImage,groupDrawText,realPriceText,linePriceText,true,imgPx);
+
+        String base64 = ImageUtil.toBase64(bgBufferedImage);
+        goodsPictorialInfo.setBase64(base64);
     }
 
     /**

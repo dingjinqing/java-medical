@@ -37,6 +37,7 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             :start-placeholder="$t('orderCommon.startTime')"
             :end-placeholder="$t('orderCommon.endTime')"
+            :default-time="['00:00:00','23:59:59']"
             size="small"
           >
           </el-date-picker>
@@ -48,6 +49,7 @@
             size="small"
           >{{$t('orderCommon.filter')}}</el-button>
           <el-button
+            @click="exportDataList"
             type="default"
             size="small"
           >{{$t('orderCommon.exportTable')}}</el-button>
@@ -136,6 +138,11 @@
       :dataInfo="refundInfo"
       :show.sync="showRefund"
     />
+    <!-- 导出数据确认弹窗 -->
+    <exportForm
+      :show.sync="showExportConfirm"
+      :param="this.searchParams"
+    />
   </div>
 </template>
 
@@ -144,7 +151,8 @@ import { getCouponPackageOrderList } from '@/api/admin/orderManage/virtualGoodsO
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
-    ManualRefund: () => import('./refundDialog')
+    ManualRefund: () => import('./refundDialog'),
+    exportForm: () => import('./couponPackageOrderExportDialog.vue')
   },
   data () {
     return {
@@ -155,6 +163,7 @@ export default {
       showRefund: false,
       refundInfo: null,
       applicationTime: '',
+      showExportConfirm: false, // 是否展示导出数据弹窗
 
       // 原始表格数据
       originalData: []
@@ -215,22 +224,21 @@ export default {
       let orderInfo = this.couponPackageOrderList.find(item => {
         return item.orderSn === orderSn
       })
-      if (orderInfo.returnFlag === 0 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > 0)) {
+      if (orderInfo.returnFlag === 0 || orderInfo.returnFlag === 1) {
         return `<div>${this.$t('orderCommon.orderFinished')}<br/><a class="refund" >${this.$t('orderCommon.manualRefund')}</a></div>`
-      } else if (orderInfo.returnFlag === 0) {
-        return `<div>${this.$t('orderCommon.orderFinished')}<div/>`
-      } else if (orderInfo.returnFlag === 1 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > orderInfo.returnScore + orderInfo.returnAccount + orderInfo.returnMoney)) {
-        return `<div><a class="refund">${this.$t('orderCommon.manualRefund')}</a><br/><a class="view">${this.$t('orderCommon.checkRefund')}</a></div>`
-      } else if (orderInfo.returnFlag === 1) {
-        return `<div>${this.$t('orderCommon.refundFailed')}</div>`
-      } else {
+      } else if (orderInfo.returnFlag === 3) {
+        return `
+        <div>${this.$t('couponPackageOrder.partialRefund')}<br/> <a class="view">${this.$t('orderCommon.checkRefund')}</a></div>
+        <a class="refund" >${this.$t('orderCommon.manualRefund')}</a></div>`
+      } else if (orderInfo.returnFlag === 2) {
         return `<div>${this.$t('orderCommon.refundCompleted')}<br/> <a class="view">${this.$t('orderCommon.checkRefund')}</a></div>`
       }
     },
     processRefunds (orderSn, event) {
-      this.refundInfo = this.couponPackageOrderList.find(item => {
+      this.refundInfo = this.originalData.find(item => {
         return item.orderSn === orderSn
       })
+      console.log(this.refundInfo)
       this.$set(this.refundInfo, 'viewOrderType', 'couponPackage')
       if (event.target.className === 'view') {
         this.$set(this.refundInfo, 'action', 'view')
@@ -239,6 +247,11 @@ export default {
         this.$set(this.refundInfo, 'action', 'refund')
         this.showRefund = true
       }
+    },
+    exportDataList () {
+      this.searchParams.startTime = this.applicationTime[0]
+      this.searchParams.endTime = this.applicationTime[1]
+      this.showExportConfirm = true
     }
   },
   filters: {

@@ -1,6 +1,8 @@
 var util = require("../../../utils/util.js")
+var componentMixins = require("../../common/basic.js")
 
 var base = {
+  mixins: [componentMixins],
   data: {
     m: {}
   },

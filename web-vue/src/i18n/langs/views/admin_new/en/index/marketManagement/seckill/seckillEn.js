@@ -26,7 +26,8 @@ export const en = {
   ],
   // 表格
   activityName: 'ActivityName',
-  goodsName: 'GoodsName',
+  goodsName: 'Goods',
+  first: 'priority',
   validDate: 'ValidDate',
   activityStatus: 'ActivityStatus',
   saleNum: 'SaleNum',

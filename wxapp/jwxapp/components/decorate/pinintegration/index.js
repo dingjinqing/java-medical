@@ -12,20 +12,7 @@ global.wxComponent({
     bindToPinIntegration (e) {
       var act_id = e.currentTarget.dataset.act_id;
       console.log(act_id)
-      // util.api('/api/wxapp/pin/integration/start', function (res) {
-      //   console.log(res)
-      //   var group_id = '';
-      //   if (res.content.can_pin.status == 0) {
-      //     group_id = res.content.group_id;
-      //   }
-      //   if (res.content.can_pin.status > 0) {
-      //     util.showModal('提示', res.content.can_pin.msg);
-      //     return;
-      //   }
-      //   util.jumpLink('/pages/pinintegration/pinintegration?pinInte_id=' + act_id + '&group_id=' + group_id);
-      // }, {
-      //   pinInte_id: act_id
-      // });
+      util.jumpLink('/pages1/pinintegration/pinintegration?pid=' + act_id);
     }
   }
 });

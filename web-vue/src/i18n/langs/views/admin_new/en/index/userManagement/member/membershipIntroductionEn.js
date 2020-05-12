@@ -1,6 +1,7 @@
 export const en = {
   noData: 'No relevant data available',
   ExchangeFrequency: 'Frequency of Commodity Exchange (Frequency)',
+  freeshiptimes: 'Freeship times',
   servicestimes: 'Number of store services (times)',
   Balanceyuan: 'Balance (yuan)',
   state: 'state',

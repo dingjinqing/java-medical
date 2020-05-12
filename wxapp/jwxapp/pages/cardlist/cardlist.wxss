@@ -80,7 +80,7 @@
   font-size: 24rpx;
   text-align: center;
 }
-.card_item_containe {
+.card_item_container {
   transition: left 0.3s ease-in;
 }
 .no_card{
@@ -115,6 +115,23 @@
   margin-bottom: 5rpx;
   font-size: 26rpx;
 }
+
+.card_offset {
+  width: 500rpx;
+  font-size: 26rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.out_time {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.out_time .image {
+  width: 130rpx;
+}
 .right_renew {
   margin-top: 5rpx;
   width: 130rpx;
@@ -125,18 +142,4 @@
   font-size: 24rpx;
   color: #fff;
   border-radius: 10rpx;
-}
-.del_btn {
-  width: 120rpx;
-  height: 270rpx;
-  color: #fff;
-  background: #f66;
-  font-size: 26rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 0;
-  border-radius: 10rpx;
-  right: -146rpx;
 }

@@ -873,7 +873,7 @@ export default {
       return this.currencyPool[this.returnInfo.currency][this.lang][1]
     },
     getReturnImageArray () {
-      return JSON.parse(this.returnInfo.goodsImages || '[]')
+      return JSON.parse(this.returnInfo.goodsImages)
     },
     getVoucherImages () {
       return JSON.parse(this.returnInfo.voucherImages || '[]')

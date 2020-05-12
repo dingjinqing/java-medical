@@ -8,6 +8,7 @@
           :standard="true"
         />
         <el-button
+          size="small"
           type="primary"
           @click="addCouponPackage()"
         >{{$t('couponPackage.addCouponPackage')}}</el-button>
@@ -121,7 +122,7 @@
                   effect="dark"
                   :content="$t('marketCommon.edit')"
                   placement="top"
-                  v-if="scope.row.status === 1"
+                  v-if="scope.row.status === 1 && [1,2].includes(scope.row.currentState)"
                 >
                   <i
                     class="el-icon-edit-outline"
@@ -145,6 +146,7 @@
                   effect="dark"
                   :content="$t('marketCommon.share')"
                   placement="top"
+                  v-if="scope.row.status === 1 && scope.row.currentState === 1"
                 >
                   <i
                     class="el-icon-share"
@@ -152,7 +154,7 @@
                   ></i>
                 </el-tooltip>
                 <el-tooltip
-                  v-if="scope.row.status === 1"
+                  v-if="scope.row.status === 1 && [1,2].includes(scope.row.currentState)"
                   class="item"
                   effect="dark"
                   :content="$t('marketCommon.disable')"
@@ -164,7 +166,7 @@
                   ></i>
                 </el-tooltip>
                 <el-tooltip
-                  v-else
+                  v-if="scope.row.status === 0 && [1,2,4].includes(scope.row.currentState)"
                   class="item"
                   effect="dark"
                   :content="$t('marketCommon.enabled')"
@@ -208,6 +210,37 @@
         />
       </div>
     </div>
+    <!-- 分享活动弹窗 -->
+    <el-dialog
+      title="扫一扫，分享给好友吧~"
+      :visible.sync="shareDialogVisible"
+      width="320px"
+      custom-class="share-dialog"
+    >
+      <el-image
+        :src="shareInfo.imageUrl"
+        style="width:160px;height:160px;margin:0 auto;"
+        fit="fill"
+      ></el-image>
+      <a
+        class="share-dialog-a"
+        :href="shareInfo.imageUrl"
+        download
+      >下载二维码</a>
+      <div class="share-dialog-footer">
+        <el-input
+          size="small"
+          v-model="shareInfo.pagePath"
+        ></el-input>
+        <el-button
+          type="text"
+          style="margin-left:10px;"
+          v-clipboard:copy="shareInfo.pagePath"
+          v-clipboard:success="onCopySuccess"
+          v-clipboard:error="onCopyError"
+        >复制</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -235,7 +268,9 @@ export default {
       totalRows: null,
 
       // 表格原始数据
-      originalData: []
+      originalData: [],
+      shareInfo: {},
+      shareDialogVisible: false // 分享弹窗
     }
   },
   methods: {
@@ -290,8 +325,7 @@ export default {
       }).then(() => {
         updateCouponPackage(param).then((res) => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
+            this.$message.success({
               message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()
@@ -313,8 +347,7 @@ export default {
       }).then(() => {
         updateCouponPackage(param).then((res) => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
+            this.$message.success({
               message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()
@@ -335,8 +368,7 @@ export default {
       }).then(() => {
         deleteCouponPackage(param).then((res) => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
+            this.$message.success({
               message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()
@@ -364,8 +396,15 @@ export default {
     },
     // 取活动分享二维码
     shareCouponPackage (id) {
+      this.loading = true
+      let that = this
       getCouponPackShareCode(id).then((res) => {
+        this.loading = false
         console.log(res)
+        if (res.error === 0) {
+          that.shareInfo = res.content
+          that.shareDialogVisible = true
+        }
       })
     },
 
@@ -381,6 +420,13 @@ export default {
       this.$router.push({
         name: 'coupon_Package_add'
       })
+    },
+
+    onCopySuccess () {
+      this.$message.success('已复制')
+    },
+    onCopyError () {
+      this.$message.error('复制失败')
     }
   },
   watch: {
@@ -457,6 +503,32 @@ export default {
         line-height: 32px;
       }
     }
+  }
+}
+.share-dialog {
+  .el-dialog__header {
+    background: #fff;
+  }
+  .el-dialog__body {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .el-image {
+    display: block;
+    width: 100%;
+  }
+  .share-dialog-a {
+    display: inline-block;
+    width: 100%;
+    text-decoration: none;
+    margin: 10px auto;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .share-dialog-footer {
+    display: flex;
   }
 }
 </style>

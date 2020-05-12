@@ -213,6 +213,12 @@ export const en = {
     'Friend promote',
     'Participate details'
   ],
+  // 营销管理 好友助力效果数据
+  promote_effect_data: [
+    'Marketing management',
+    'Friend promote',
+    'Effect data'
+  ],
   // 营销管理 普通优惠券
   ordinary_coupon: ['Marketing management', 'ordinary coupon'],
   // 营销管理 普通优惠券 领取明细
@@ -267,6 +273,12 @@ export const en = {
     'Marketing management',
     'Group partition integral',
     'Group partition integral success'
+  ],
+  // 营销管理 瓜分积分 成团明细
+  pin_integration_analysis: [
+    'Marketing management',
+    'Group partition integral',
+    'Performance data'
   ],
   // 营销管理 赠品
   gift: ['Marketing Management', 'Gift'],
@@ -338,6 +350,12 @@ export const en = {
     'Package Price',
     'Participation details'
   ],
+  // 营销管理 打包一口价 查看活动订单
+  package_price_order: [
+    'Marketing management',
+    'Package Price',
+    'Active order'
+  ],
   // 营销管理 开屏有礼
   open_screen: ['Marketing management', 'Open screen courtesy'],
   // 营销管理 开屏有礼 活动明细
@@ -381,6 +399,11 @@ export const en = {
   // 营销管理 满包邮
   shipping: ['Marketing Management', 'Shipping'],
   // 营销管理 加价购
+  purchase_price: ['Marketing management', 'Increase Purchase'],
+  // 营销管理 加价购 添加加价购活动
+  add_increase_purchase: ['Marketing management', 'Increase Purchase', 'Add Increase Purchase'],
+  // 营销管理 加价购 编辑加价购活动
+  edit_increase_purchase: ['Marketing management', 'Increase Purchase', 'Edit Increase Purchase'],
   // 营销管理 加价购 换购订单
   purchase_redemption_order: [
     'Marketing management',
@@ -432,7 +455,10 @@ export const en = {
   collectGift: ['Marketing management', 'Collect Gift'],
   // 营销管理 微信好物圈
   wechateGoodsCicle: ['Marketing management', 'WeChat good circle'],
-
+  // 营销管理 积分兑换
+  integral_convert: ['Marketing management', 'Integral exchange'],
+  // 营销管理 积分兑换用户列表
+  pointsUserList: ['Marketing management', 'Integral exchange', 'Points conversation user list'],
   // 营销管理 支付有礼
   payreward: ['Marketing management', 'Pay Reward'],
   // 营销管理 添加支付有礼活动
@@ -443,6 +469,16 @@ export const en = {
   full_cut: ['Marketing management', 'Full Discount Full Cut'],
   // 营销管理 添加满折满减活动
   fullCutActivity: ['Marketing management', 'Add Full Discount Full Cut Activity'],
+  // 营销管理 表单统计 formStatistical
+  form_decoration: ['Marketing management', 'Form statistics'],
+  // 营销管理 表单装修主页
+  formDecorationHome: ['Marketing management', 'Form statistics', 'Form decoration'],
+  // 营销管理 表单统计  查看反馈页
+  feedbackList: ['Marketing management', 'Form statistics', 'Feedback list'],
+  // 营销管理 表单统计  反馈统计页面
+  feedbackStatistics: ['Marketing management', 'Form statistics', 'Feedback statistics'],
+  // 营销管理 表单统计  查看详情页
+  feedbackDetails: ['Marketing management', 'Form statistics', 'Feedback list', 'Feedback details'],
   // 订单管理 全部订单
   order: ['Order management', 'All orders'],
   // 订单管理 查看详情

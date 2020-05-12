@@ -1,33 +1,36 @@
 <template>
   <div class="groupwrapper">
-    <div class="integralAct">
+    <div class="integralAct" v-show="isMain">
       <el-form
         ref="activity"
         :model="activity"
         :rules="fromRules"
         labelPosition="left"
-        label-width="120px"
+        label-width="130px"
         style="padding-left:50px;"
       >
         <el-form-item
-          label="活动名称："
+          :label="$t('groupIntegration.name')+'：'"
           prop="name"
         >
           <el-input
             v-model="activity.name"
-            placeholder="请填写活动名称"
+            :placeholder="$t('groupIntegration.ruleInfo1')"
             size="small"
             class="inputWidth"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="宣传语："
+          :label="$t('groupIntegration.advertise')+'：'"
           prop="advertise"
         >
           <el-input
             v-model="activity.advertise"
             size="small"
             class="inputWidth"
+            :disabled="edit"
+             maxlength="10"
+             type="text"
           ></el-input>
           <el-popover
             placement="right-start"
@@ -39,66 +42,42 @@
               slot="reference"
               type="text"
               style="margin: 0 20px"
-            >查看示例</el-button>
+            >{{$t('groupIntegration.viewExample')}}</el-button>
           </el-popover>
-          <span class="uniteStyle">限制十个字以内</span>
+          <span class="uniteStyle">{{$t('groupIntegration.limit')}}</span>
         </el-form-item>
 
         <el-form-item
-          label="有效期: "
-          required
+          :label="$t('groupIntegration.actDate')+':' "
+           prop='timeRange'
         >
-          <section style="display: flex">
-            <div>
-              <el-form-item
-                prop='startTime'
-                style="margin-bottom:0"
-              >
-                <el-date-picker
-                  v-model="activity.startTime"
-                  type="datetime"
-                  placeholder="选择开始时间"
-                  size="small"
-                  style="width: 160px;"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                >
-                </el-date-picker>
-              </el-form-item>
-            </div>
-            <span style="margin: 0 3px">至</span>
-            <div>
-              <el-form-item
-                prop="endTime"
-                style="margin-bottom:0"
-              >
-                <el-date-picker
-                  v-model="activity.endTime"
-                  type="datetime"
-                  size="small"
-                  placeholder="选择结束时间"
-                  style="width: 160px;"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                >
-                </el-date-picker>
-              </el-form-item>
-            </div>
-          </section>
+            <el-date-picker
+              :disabled="edit"
+                v-model="activity.timeRange"
+                type="datetimerange"
+                align="right"
+                :start-placeholder="$t('groupIntegration.pleaseSelectStartTime')"
+                :end-placeholder="$t('groupIntegration.pleaseSelectEndTime')"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                :default-time="['00:00:00', '23:59:59']">
+            </el-date-picker>
         </el-form-item>
 
         <el-form-item
-          label="瓜分积分总数："
+          :label="$t('groupIntegration.inteTotal')+':' "
           prop="inteTotal"
         >
           <el-input
             v-model="activity.inteTotal"
             size="small"
             class="inputWidth"
+            :disabled="edit"
           ></el-input>
-          <span>积分</span>
-          <span class="uniteStyle">0表示不限制数量,修改总量时只能增加,不能减少,请谨慎设置</span>
+          <span>{{$t('groupIntegration.tip2')}}</span>
+          <span class="uniteStyle">{{$t('groupIntegration.showTipe')}}<!--,修改总量时只能增加,不能减少,请谨慎设置--></span>
         </el-form-item>
         <el-form-item
-          label="单团瓜分内容: "
+         :label="$t('groupIntegration.limitAmountShow')+':' "
           required
         >
           <section style="display: flex">
@@ -110,9 +89,10 @@
                 v-model="activity.limitAmount"
                 size="small"
                 style="width: 90px"
+                :disabled="edit"
               />
             </el-form-item>
-            <span>&nbsp;人，瓜分&nbsp;</span>
+            <span>&nbsp;{{$t('groupIntegration.showTipe2')}}&nbsp;</span>
             <el-form-item
               prop="inteGroup"
               style="margin-bottom:0"
@@ -121,18 +101,19 @@
                 v-model="activity.inteGroup"
                 size="small"
                 class="inputWidth"
+                :disabled="edit"
               />
             </el-form-item>
-            <span>&nbsp;积分</span>
-            <span class="uniteStyle">成团人数需≥2人且≤20人,瓜分积分数量需大于成团人数</span>
+            <span>&nbsp;{{$t('groupIntegration.tip2')}}</span>
+            <span class="uniteStyle">{{$t('groupIntegration.showTipe3')}}</span>
           </section>
         </el-form-item>
         <el-form-item
-          label="参团限制："
+          :label="$t('groupIntegration.joinLimit')+':' "
           prop="joinLimit"
         >
           <section style="display: flex">
-            <span>每人最多参加&nbsp;</span>
+            <span>{{$t('groupIntegration.showTipe4')}}&nbsp;</span>
             <el-form-item
               prop="joinLimit"
               style="margin-bottom:0"
@@ -141,92 +122,184 @@
                 v-model="activity.joinLimit"
                 size="small"
                 style="width:90px"
+                :disabled="edit"
               />
             </el-form-item>
-            <span>&nbsp;次新团</span>
-            <span class="uniteStyle">默认为1,0表示不限制数量。仅限制参与其他用户所开的团的数量</span>
+            <span>&nbsp;{{$t('groupIntegration.showTipe5')}}</span>
+            <span class="uniteStyle">{{$t('groupIntegration.showTipe6')}}</span>
           </section>
         </el-form-item>
         <el-form-item
-          label="瓜分方式："
+          :label="$t('groupIntegration.divideType')+':' "
           prop="divideType"
         >
           <el-radio-group
             v-model="activity.divideType"
             style="line-height:40px"
+            :disabled="edit"
           >
-            <el-radio :label="0">按邀请好友数量瓜分
-              <span style="color: #999">&nbsp;&nbsp;(邀请好友数量越多获得积分越多)</span>
+            <el-radio :label="0">{{$t('groupIntegration.divideTypeTipe0')}}
+              <span style="color: #999">&nbsp;&nbsp;{{$t('groupIntegration.divideTypeTipe01')}}</span>
             </el-radio>
             <br>
-            <el-radio :label="1">好友均分
-              <span style="color:#999">&nbsp;&nbsp;(每个人获得积分数量相同)</span>
+            <el-radio :label="1">{{$t('groupIntegration.divideTypeTipe1')}}
+              <span style="color:#999">&nbsp;&nbsp;{{$t('groupIntegration.divideTypeTipe11')}}</span>
             </el-radio>
             <br>
-            <el-radio :label="2">随机瓜分
-              <span style="color:#999">&nbsp;&nbsp;(每个人获得随机数量积分)</span>
+            <el-radio :label="2">{{$t('groupIntegration.divideTypeTipe2')}}
+              <span style="color:#999">&nbsp;&nbsp;{{$t('groupIntegration.divideTypeTipe21')}}</span>
             </el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
-          label="瓜分限制："
+          :label="$t('groupIntegration.isDayDivide')+':' "
           prop="isDayDivide"
         >
-          <span>用户开团24小时后,拼团未满员是否可以瓜分积分</span>
+          <span>{{$t('groupIntegration.isDayDivideInfo')}}</span>
           <br>
-          <el-radio-group v-model="activity.isDayDivide">
-            <el-radio :label="1">是</el-radio>
-            <el-radio :label="0">否</el-radio>
+          <el-radio-group v-model="activity.isDayDivide" :disabled="edit">
+            <el-radio :label="1">{{$t('groupIntegration.yes')}}</el-radio>
+            <el-radio :label="0">{{$t('groupIntegration.no')}}</el-radio>
           </el-radio-group>
+        </el-form-item>
+        <el-form-item
+          :label="$t('groupIntegration.activityInfo')+':' "
+           prop="activityInfo"
+        >
+        <el-button type="primary" @click="showAct" size="small">{{$t('groupIntegration.setActivityInfo')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
 
-    <div class="btn">
+    <div class="btn" v-show="isMain">
       <el-button
         type="primary"
         size="small"
         @click="saveActivity()"
-      >保存</el-button>
+      >{{$t('groupIntegration.save')}}</el-button>
     </div>
+    <groupIntegrationActivityWrtie v-if="!isMain" @ActivityMsg="activityMsg" :sendMsg="sendMsg"/>
   </div>
-
 </template>
 <script>
 import { createGroupIntegration, editGroupIntegration, selectGroupIntegration } from '@/api/admin/marketManage/groupIntegrationList.js'
+import groupIntegrationActivityWrtie from './groupIntegrationActivityWrtie'
 export default {
+  props: {
+    isEditId: {
+      type: Number,
+      default: 0
+    }
+  },
+  components: {
+    groupIntegrationActivityWrtie
+  },
   data () {
+    var checklimitAmount = (rule, value, callback) => {
+      if (this.isEmpty(value)) {
+        callback(new Error(this.$t('groupIntegration.info1')))
+      } else {
+        if (value < 2) {
+          callback(new Error(this.$t('groupIntegration.info2')))
+        }
+        if (value > 20) {
+          callback(new Error(this.$t('groupIntegration.info3')))
+        }
+        let flag = new RegExp(this.rgexp).test(value)
+        if (!flag) {
+          callback(new Error(this.$t('groupIntegration.info4')))
+        }
+        callback()
+      }
+    }
+    var checkInteGroup = (rule, value, callback) => {
+      if (this.isEmpty(value)) {
+        callback(new Error(this.$t('groupIntegration.info5')))
+      } else {
+        if (value < 0) {
+          callback(new Error(this.$t('groupIntegration.info51')))
+        }
+        let flag = new RegExp(this.rgexp).test(value)
+        if (!flag) {
+          callback(new Error(this.$t('groupIntegration.info4')))
+        }
+        callback()
+      }
+    }
+    var checkJoinLimit = (rule, value, callback) => {
+      if (this.isEmpty(value)) {
+        callback(new Error(this.$t('groupIntegration.info7')))
+      } else {
+        if (value < 0) {
+          callback(new Error(this.$t('groupIntegration.info8')))
+        }
+        let flag = new RegExp('^[0-9]([0-9])*$').test(value)
+        if (!flag) {
+          callback(new Error(this.$t('groupIntegration.info4')))
+        }
+        callback()
+      }
+    }
+    var checkinteTotal = (rule, value, callback) => {
+      console.log('瓜分积分数' + value)
+      if (this.isEmpty(value)) {
+        callback(new Error(this.$t('groupIntegration.info9')))
+      } else {
+        if (value < 0) {
+          callback(new Error(this.$t('groupIntegration.info10')))
+        }
+        let flag = new RegExp('^[0-9]([0-9])*$').test(value)
+        if (!flag) {
+          callback(new Error(this.$t('groupIntegration.info4')))
+        }
+        callback()
+      }
+    }
+    var checkActivityInfo = (rule, value, callback) => {
+      callback()
+    }
     return {
+      isMain: true,
       edit: false,
       paramId: null,
+      sendMsg: null,
+      canSave: false,
       activity: {
         id: null,
         name: '',
-        advertise: '',
+        advertise: this.$t('groupIntegration.info11'),
         startTime: '',
         endTime: '',
-        inteTotal: '',
-        inteGroup: '',
-        limitAmount: '',
-        joinLimit: '',
+        inteTotal: null,
+        inteGroup: null,
+        limitAmount: null,
+        joinLimit: 1,
         divideType: 0,
-        isDayDivide: 0
+        isDayDivide: 0,
+        timeRange: '',
+        activityCopywriting: {
+          document: null,
+          is_use_default: null
+        }
       },
       fromRules: {
-        name: [{ required: true, message: '请填写活动名称', trigger: 'blur' }],
-        advertise: [{ required: true, message: '请填写宣传语', trigger: 'blur' }],
-        startTime: [{ type: 'date', required: true, message: '请选开始时间', trigger: 'blur' }],
-        endTime: [{ type: 'date', required: true, message: '请选择结束时间', trigger: 'blur' }],
-        inteTotal: [{ required: true, message: '请填写瓜分积分数', trigger: 'blur' }],
-        limitAmount: [{ required: true, message: '请填写瓜分人数', trigger: 'blur' }],
-        inteGroup: [{ required: true, message: '请输入瓜分积分总数', trigger: 'blur' }],
-        joinLimit: [{ required: true, message: '请填写参团限制', trigger: 'blur' }],
+        name: [{ required: true, message: this.$t('groupIntegration.ruleInfo1'), trigger: 'blur' }],
+        advertise: [{ required: true, message: this.$t('groupIntegration.ruleInfo2'), trigger: 'blur' }],
+        // startTime: [{ required: true, message: this.$t('groupIntegration.ruleInfo3'), trigger: 'blur' }],
+        // endTime: [{ required: true, message: this.$t('groupIntegration.ruleInfo4'), trigger: 'blur' }],
+        inteTotal: [{ required: true, validator: checkinteTotal, trigger: 'blur' }],
+        limitAmount: [{ required: true, validator: checklimitAmount, trigger: 'blur' }],
+        inteGroup: [{ required: true, validator: checkInteGroup, trigger: 'blur' }],
+        joinLimit: [{ required: true, validator: checkJoinLimit, trigger: 'blur' }],
         divideType: [{ required: true, trigger: 'blur' }],
-        isDayDivide: [{ required: true, trigger: 'blur' }]
+        isDayDivide: [{ required: true, trigger: 'blur' }],
+        activityInfo: [{ required: true, validator: checkActivityInfo }],
+        timeRange: [{ required: true, message: this.$t('groupIntegration.ruleInfo6'), trigger: 'change' }]
       },
       srcList: {
         src1: `${this.$imageHost}/image/admin/new_preview_image/pin_integration.jpg`
-      }
+      },
+      rgexp: '^[1-9]([0-9])*$'
     }
   },
   methods: {
@@ -235,24 +308,42 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.activity = res.content
+          this.activity.timeRange = [res.content.startTime, res.content.endTime]
+          if (!this.isEmpty(res.content.activityCopywriting.document)) {
+            this.canSave = true
+          }
+          console.log('编辑返回')
+          console.log(this.activity)
         }
       })
     },
     saveActivity () {
-      if (!this.edit) {
-        this.addActivity()
-      } else {
-        this.editActivity()
-      }
+      this.$refs.activity.validate((valid) => {
+        if (valid) {
+          this.activity.startTime = this.activity.timeRange[0]
+          this.activity.endTime = this.activity.timeRange[1]
+          if (!this.checkInfo()) {
+            return false
+          }
+          if (!this.edit) {
+            this.addActivity()
+          } else {
+            this.editActivity()
+          }
+        } else {
+          this.$message.warning(this.$t('groupIntegration.ruleInfo5'))
+          return false
+        }
+      })
     },
     addActivity () {
       createGroupIntegration(this.activity).then((res) => {
         console.log(res)
         if (res.error === 0) {
-          this.$message({
-            message: '创建活动成功',
-            type: 'success'
-          })
+          this.$message.success(this.$t('groupIntegration.createSuccess'))
+          this.backHome()
+        } else {
+          this.$message.error(res.message)
         }
       })
     },
@@ -260,23 +351,75 @@ export default {
       editGroupIntegration(this.activity).then((res) => {
         console.log(res)
         if (res.error === 0) {
-          this.$message({
-            message: '保存活动成功',
-            type: 'success'
-          })
+          if (res.error === 0) {
+            this.$message.success(this.$t('groupIntegration.editSuccess'))
+            this.backHome()
+          } else {
+            this.$message.error(res.message)
+          }
         }
       })
+    },
+    backHome () {
+      console.log('点了')
+      let params = {
+        'flag': 6
+      }
+      this.$emit('backHome', params)
+    },
+    checkInfo () {
+      if (parseInt(this.activity.inteGroup) < parseInt(this.activity.limitAmount)) {
+        this.$message.warning(this.$t('groupIntegration.warningInfo1'))
+        return false
+      }
+      if (parseInt(this.activity.inteTotal) > 0 && parseInt(this.activity.inteGroup) > parseInt(this.activity.inteTotal)) {
+        this.$message.warning(this.$t('groupIntegration.warningInfo2'))
+        return false
+      }
+      if (this.activity.startTime > this.activity.endTime) {
+        this.$message.warning(this.$t('groupIntegration.warningInfo3'))
+        return false
+      }
+      if (!this.canSave) {
+        this.$message.warning(this.$t('groupIntegration.warningInfo4'))
+        return false
+      }
+      return true
+    },
+    isEmpty (obj) {
+      if (typeof obj === 'undefined' || obj == null || obj === '') {
+        return true
+      } else {
+        return false
+      }
+    },
+    // 显示活动规则说明
+    showAct () {
+      this.isMain = false
+      console.log(this.activity.activityCopywriting)
+      this.sendMsg = this.activity.activityCopywriting
+    },
+    activityMsg (data) {
+      console.log('回来的值')
+      console.log(data)
+      this.canSave = true
+      this.activity.activityCopywriting = data
+      this.isMain = true
     }
-
   },
   mounted () {
-    const id = this.$route.params.id
-    this.edit = !!id
-    if (!this.edit) {
+    // const id = this.$route.params.id
+    // this.edit = !!id
+    this.langDefault()
+    console.log('编辑的值' + this.isEditId)
+    if (this.isEditId === 0) {
+      this.edit = false
       return
     }
-    this.paramId = id
-    this.loadInfo(id)
+    this.edit = true
+    console.log('是不是编辑' + this.edit)
+    this.paramId = this.isEditId
+    this.loadInfo(this.isEditId)
   }
 
 }

@@ -2,8 +2,13 @@
   substring = function (str,start,end) {
     return str.substring(start,end)
   }
+  includes = function (arr, target) {
+    if (arr.length === 0) return false
+    return arr.indexOf(target) === -1 ? false : true
+  }
   module.exports = {
-    substring:substring
+    substring:substring,
+    includes:includes
   }
 </wxs>
 <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
@@ -70,7 +75,7 @@
                 <view class="goods_price_num">
                   <view class="goods_price" style="color:{{comColor}}">
                     ￥
-                    <text>{{goodsItem.discountedGoodsPrice}}</text>
+                    <text>{{filter.includes(item.orderType,"10") ? goodsItem.goodsPrice : goodsItem.discountedGoodsPrice}}</text>
                   </view>
                   <view class="goods_num">x{{goodsItem.goodsNumber}}</view>
                 </view>

@@ -26,32 +26,6 @@
           <div class="money_paytime">
             <span class="info_title">定金支付时间：</span>
             <el-date-picker
-              v-model="param.startTime"
-              type="datetime"
-              placeholder="选择开始日期"
-              size="small"
-              style="width:185px"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              clearable
-            >
-            </el-date-picker>
-            <span style="margin: 0 5px">至</span>
-            <el-date-picker
-              v-model="param.endTime"
-              type="datetime"
-              placeholder="选择结束日期"
-              size="small"
-              style="width:185px"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              clearable
-            >
-            </el-date-picker>
-          </div>
-        </div>
-        <div class="tab_info2">
-          <div>
-            <span class="info_title">尾款支付时间：</span>
-            <el-date-picker
               v-model="param.preStartTime"
               type="datetime"
               placeholder="选择开始日期"
@@ -59,6 +33,7 @@
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
               clearable
+              default-time="00:00:00"
             >
             </el-date-picker>
             <span style="margin: 0 5px">至</span>
@@ -70,6 +45,35 @@
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
               clearable
+              default-time="23:59:59"
+            >
+            </el-date-picker>
+          </div>
+        </div>
+        <div class="tab_info2">
+          <div>
+            <span class="info_title">尾款支付时间：</span>
+            <el-date-picker
+              v-model="param.startTime"
+              type="datetime"
+              placeholder="选择开始日期"
+              size="small"
+              style="width:185px"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              clearable
+              default-time="00:00:00"
+            >
+            </el-date-picker>
+            <span style="margin: 0 5px">至</span>
+            <el-date-picker
+              v-model="param.endTime"
+              type="datetime"
+              placeholder="选择结束日期"
+              size="small"
+              style="width:185px"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              clearable
+              default-time="23:59:59"
             >
             </el-date-picker>
           </div>
@@ -248,7 +252,7 @@
         </el-table-column>
       </el-table>
       <pagination
-        :page-params.sync="pageParams"
+        :page-params.sync="param"
         @pagination="initDataList"
       />
     </div>
@@ -296,7 +300,9 @@ export default {
         startTime: null,
         endTime: null,
         preStartTime: null,
-        preEndTime: null
+        preEndTime: null,
+        currentPage: 1,
+        pageRows: 20
       },
       pageParams: {},
       tableData: [],
@@ -312,8 +318,8 @@ export default {
       getPageList(param).then(res => {
         if (res.error === 0) {
           console.log(res, 'res')
+          this.param = Object.assign(this.param, res.content.page)
           this.tableData = res.content.dataList
-          this.pageParams = res.content.page
           this.tableData.map((item, index) => {
             item.statusText = this.getActStatusString(item.status)
           })
@@ -430,7 +436,7 @@ export default {
       display: flex;
       margin: 10px 0;
       .money_paytime {
-        margin-left: 70px;
+        margin-left: 30px;
       }
       .choose {
         margin-left: 15px;

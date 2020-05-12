@@ -8,26 +8,15 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.SecKillProductDefineRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -43,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SecKillProductDefine extends TableImpl<SecKillProductDefineRecord> {
 
-    private static final long serialVersionUID = 935951080;
+    private static final long serialVersionUID = 1082435463;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_sec_kill_product_define</code>
@@ -76,32 +65,37 @@ public class SecKillProductDefine extends TableImpl<SecKillProductDefineRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_product_define.sec_kill_price</code>. 秒杀价
      */
-    public final TableField<SecKillProductDefineRecord, BigDecimal> SEC_KILL_PRICE = createField("sec_kill_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "秒杀价");
+    public final TableField<SecKillProductDefineRecord, BigDecimal> SEC_KILL_PRICE = createField("sec_kill_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "秒杀价");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_product_define.stock</code>. 总库存
      */
-    public final TableField<SecKillProductDefineRecord, Integer> STOCK = createField("stock", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "总库存");
+    public final TableField<SecKillProductDefineRecord, Integer> STOCK = createField("stock", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "总库存");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_product_define.sale_num</code>. 销量
      */
-    public final TableField<SecKillProductDefineRecord, Integer> SALE_NUM = createField("sale_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "销量");
+    public final TableField<SecKillProductDefineRecord, Integer> SALE_NUM = createField("sale_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "销量");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_product_define.total_stock</code>. 总库存
      */
-    public final TableField<SecKillProductDefineRecord, Integer> TOTAL_STOCK = createField("total_stock", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "总库存");
+    public final TableField<SecKillProductDefineRecord, Integer> TOTAL_STOCK = createField("total_stock", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "总库存");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_product_define.create_time</code>.
      */
-    public final TableField<SecKillProductDefineRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<SecKillProductDefineRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_product_define.update_time</code>. 最后修改时间
      */
-    public final TableField<SecKillProductDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<SecKillProductDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_sec_kill_product_define.goods_id</code>. 商品id
+     */
+    public final TableField<SecKillProductDefineRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "商品id");
 
     /**
      * Create a <code>mini_shop_471752.b2c_sec_kill_product_define</code> table reference

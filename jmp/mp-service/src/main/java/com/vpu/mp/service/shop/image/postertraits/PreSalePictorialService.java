@@ -60,7 +60,7 @@ public class PreSalePictorialService extends ShopBaseService {
         // 预售活动信息不可用
         if (presaleRecord == null) {
             preSaleLog("分享", "定金膨胀活动信息不可用");
-            shareInfoVo.setShareCode(GoodsShareInfo.ACTIVITY_DELETED);
+            shareInfoVo.setShareCode(PictorialConstant.ACTIVITY_DELETED);
             return shareInfoVo;
         }
 
@@ -68,12 +68,11 @@ public class PreSalePictorialService extends ShopBaseService {
         // 商品信息不可用
         if (goodsRecord == null) {
             preSaleLog("分享", "定金膨胀商品信息不可用");
-            shareInfoVo.setShareCode(GoodsShareInfo.GOODS_DELETED);
+            shareInfoVo.setShareCode(PictorialConstant.GOODS_DELETED);
             return shareInfoVo;
         }
 
         PictorialShareConfig shareConfig = Util.parseJson(presaleRecord.getShareConfig(), PictorialShareConfig.class);
-        shareInfoVo.setShareAction(shareConfig.getShareAction());
 
         // 用户自定义分享样式
         if (PictorialShareConfig.CUSTOMER_STYLE.equals(shareConfig.getShareAction())) {
@@ -85,11 +84,15 @@ public class PreSalePictorialService extends ShopBaseService {
             shareInfoVo.setShareDoc(shareConfig.getShareDoc());
         } else{
             // 使用默认分享图片样式
+            String imgPath = createPreSaleShareImg(presaleRecord, goodsRecord, param);
+            if (imgPath == null) {
+                shareInfoVo.setShareCode(PictorialConstant.GOODS_PIC_ERROR);
+                return shareInfoVo;
+            }
+            shareInfoVo.setImgUrl(imgPath);
             ShopRecord shop = saas.shop.getShopById(getShopId());
             String doc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PRESALE_SHARE_DOC, null,"messages",param.getDepositPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
             shareInfoVo.setShareDoc(doc);
-            String imgPath = createPreSaleShareImg(presaleRecord, goodsRecord, param);
-            shareInfoVo.setImgUrl(imgPath);
         }
         shareInfoVo.setImgUrl(imageService.getImgFullUrl(shareInfoVo.getImgUrl()));
 
@@ -165,14 +168,21 @@ public class PreSalePictorialService extends ShopBaseService {
      * @param param 定金膨胀参数
      * @return base64海报信息
      */
-    public String getPreSalePictorialInfo(PreSaleShareInfoParam param){
+    public GoodsPictorialInfo getPreSalePictorialInfo(PreSaleShareInfoParam param){
+        GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
         ShopRecord shop = saas.shop.getShopById(getShopId());
         PresaleRecord presaleRecord = preSaleService.getPresaleRecord(param.getActivityId());
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
+        if (presaleRecord == null) {
+            preSaleLog("pictorial", "预售信息已删除或失效");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);
+            return goodsPictorialInfo;
+        }
 
-        if (presaleRecord == null || goodsRecord == null) {
-            preSaleLog("pictorial", "商品或拼团信息已删除或失效");
-            return null;
+        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
+        if ( goodsRecord == null) {
+            preSaleLog("pictorial", "商品信息已删除或失效");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_DELETED);
+            return goodsPictorialInfo;
         }
         PictorialShareConfig shareConfig = Util.parseJson(presaleRecord.getShareConfig(), PictorialShareConfig.class);
 
@@ -182,19 +192,22 @@ public class PreSalePictorialService extends ShopBaseService {
             pictorialUserInfo = pictorialService.getPictorialUserInfo(param.getUserId(),shop);
         } catch (IOException e) {
             preSaleLog("pictorial", "获取用户信息失败：" + e.getMessage());
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
+            return goodsPictorialInfo;
         }
-        return getPreSalePictorialImg(pictorialUserInfo,shareConfig,presaleRecord,goodsRecord,shop,param);
+        getPreSalePictorialImg(pictorialUserInfo,shareConfig,presaleRecord,goodsRecord,shop,param,goodsPictorialInfo);
+        return goodsPictorialInfo;
     }
 
-    private String getPreSalePictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, PresaleRecord presaleRecord, GoodsRecord goodsRecord, ShopRecord shop, PreSaleShareInfoParam param){
+    private void getPreSalePictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, PresaleRecord presaleRecord, GoodsRecord goodsRecord, ShopRecord shop, PreSaleShareInfoParam param,GoodsPictorialInfo goodsPictorialInfo){
         BufferedImage goodsImage;
         try {
             preSaleLog("pictorial", "获取商品图片信息");
             goodsImage = pictorialService.getGoodsPictorialImage(shareConfig, goodsRecord);
         } catch (IOException e) {
             preSaleLog("pictorial", "获取商品图片信息失败：" + e.getMessage());
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
+            return;
         }
         preSaleLog("pictorial", "获取商品分享语");
         String shareDoc;
@@ -210,23 +223,23 @@ public class PreSalePictorialService extends ShopBaseService {
             qrCodeImage = ImageIO.read(new URL(mpQrcode));
         } catch (IOException e) {
             preSaleLog("pictorial", "获取二维码失败");
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
+            return;
         }
         PictorialImgPx imgPx = new PictorialImgPx();
 
         // 拼装背景图
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx,true);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx);
 
         //定金膨胀文字
-        String groupDrawText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PRESALE_SHARE_INFO, "messages");
-        int rectWidth = ImageUtil.addFontWithRect(bgBufferedImage, imgPx.getCustomerTextStartX(), imgPx.getCustomerSecondTextStartY(), groupDrawText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getCustomerTextFontColor(), null, imgPx.getCustomerTextFontColor());
-
+        String preSaleText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PRESALE_SHARE_INFO, "messages");
         // 定金：33.55
-        String depositPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PRESALE_DEPOSIT, "messages")+param.getDepositPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-        int depositPriceTextStartX = imgPx.getCustomerTextStartX()+rectWidth+10;
-        ImageUtil.addFont(bgBufferedImage,depositPriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),depositPriceTextStartX,imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor(),false);
+        String depositPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PRESALE_DEPOSIT, null,"messages",param.getDepositPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+        pictorialService.addPictorialSelfCustomerContent(bgBufferedImage,preSaleText,depositPriceText,null,true,imgPx);
 
-        return ImageUtil.toBase64(bgBufferedImage);
+        String base64 = ImageUtil.toBase64(bgBufferedImage);
+        goodsPictorialInfo.setBase64(base64);
+        return;
     }
 
     /**

@@ -1,9 +1,11 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
-import java.sql.Timestamp;
-
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author 孔德成
@@ -26,9 +28,13 @@ public class GroupBuyListVo {
     private Byte activityType;
 
     /**
-     * 商品名称
+     * 商品ids "1,2,3,4"
      */
-    private String goodsName;
+    private String goodsId;
+    /**
+     * 商品信息
+     */
+    private List<GoodsView> goodsViews;
     /**
      * 优先级
      */

@@ -22,6 +22,7 @@ public class CouponGiveListVo {
 	private Timestamp 	createTime;
 	/** 发送人群 */
 	private String 	  	sendCondition;
+	private CouponGiveGrantInfoParam condition;
 	/** 发放类型 */
 	private Integer 	sendAction;
 	/** 发放状态 */

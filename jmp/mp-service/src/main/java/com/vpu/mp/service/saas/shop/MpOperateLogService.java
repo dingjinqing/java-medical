@@ -242,7 +242,7 @@ public class MpOperateLogService extends MainBaseService {
 				.from(MP_OPERATE_LOG, MP_VERSION)
 				.where(MP_OPERATE_LOG.TEMPLATE_ID.eq(MP_VERSION.TEMPLATE_ID)
 						.and(MP_OPERATE_LOG.APP_ID.eq(appId).and(MP_OPERATE_LOG.MEMO_ID.eq(String.valueOf(code)))))
-				.orderBy(MP_OPERATE_LOG.CREATE_TIME.desc()).fetch();
+				.orderBy(MP_OPERATE_LOG.CREATE_TIME.asc()).fetch();
 		if(null==fetch) {
 			return null;
 		}else {

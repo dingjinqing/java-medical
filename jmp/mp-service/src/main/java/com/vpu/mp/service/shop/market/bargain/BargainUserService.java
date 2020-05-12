@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.market.bargain;
 
-import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.db.shop.tables.records.BargainRecordRecord;
@@ -23,11 +22,12 @@ import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
-import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainInfoVo;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainUsersListParam;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainUsersListVo;
+import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -60,7 +60,7 @@ import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
 public class BargainUserService extends ShopBaseService{
 
     @Autowired
-    private DomainConfig domainConfig;
+    private AtomicOperation atomicOperation;
 
 	public PageResult<BargainUserListQueryVo> getPageList(BargainUserListQueryParam param){
 		SelectWhereStep<? extends Record> select = db().select(
@@ -197,15 +197,14 @@ public class BargainUserService extends ShopBaseService{
                 //砍价成功了
                 //库存更新
                 saas.getShopApp(getShopId()).bargain.updateBargainStock(bargain.getId(),1);
-                saas.getShopApp(getShopId()).goods.updateGoodsNumberAndSale(bargainRecord.getGoodsId(),bargainRecord.getPrdId(),1);
+                atomicOperation.updateStockAndSalesByLock(bargainRecord.getGoodsId(),bargainRecord.getPrdId(),1,false);
 
                 //砍价record的状态更新
                 db().update(BARGAIN_RECORD).set(BARGAIN_RECORD.STATUS,BargainRecordService.STATUS_SUCCESS).set(BARGAIN_RECORD.BARGAIN_MONEY,BARGAIN_RECORD.BARGAIN_MONEY.add(bargainMoney)).set(BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.USER_NUMBER.add(1)).where(BARGAIN_RECORD.ID.eq(recordId)).execute();
 
                 //推送砍价成功消息
                 String goodsName = saas.getShopApp(getShopId()).goods.getGoodsRecordById(bargainRecord.getGoodsId()).getGoodsName();
-                bargainSuccessSubscribeNotify(bargainRecord.getUserId(),bargain.getBargainName(),goodsName);
-                bargainSuccessTemplateNotify(bargainRecord.getUserId(),bargain.getExpectationPrice(),goodsName,bargainRecord.getId());
+                bargainSuccessNotify(bargainRecord.getUserId(), bargain.getExpectationPrice(), bargain.getBargainName(), goodsName, bargainRecord.getId());
             }else {
                 //砍价record的状态更新
                 db().update(BARGAIN_RECORD).set(BARGAIN_RECORD.BARGAIN_MONEY,BARGAIN_RECORD.BARGAIN_MONEY.add(bargainMoney)).set(BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.USER_NUMBER.add(1)).where(BARGAIN_RECORD.ID.eq(recordId)).execute();
@@ -216,7 +215,7 @@ public class BargainUserService extends ShopBaseService{
         if(StringUtil.isNotEmpty(bargain.getMrkingVoucherId()) && userId != bargainRecord.getUserId()){
             //向帮忙砍价的用户赠送优惠券
             CouponGiveQueueParam newParam = new CouponGiveQueueParam(
-                getShopId(), Arrays.asList(userId), bargain.getId(), bargain.getMrkingVoucherId().split(","), BaseConstant.ACCESS_MODE_ISSUE, BaseConstant.GET_SOURCE_ACT);
+                getShopId(), Arrays.asList(userId), bargain.getId(), bargain.getMrkingVoucherId().split(","), BaseConstant.ACCESS_MODE_ISSUE, BaseConstant.GET_SOURCE_BARGAIN_CUT);
             saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
         }
 
@@ -383,61 +382,34 @@ public class BargainUserService extends ShopBaseService{
     }
 
     /**
-     * 取消砍价订单库存处理
-     * @param order
+     * 砍价完成消息通知
      */
-    public void cancelBargainOrderStock(OrderInfoVo order){
-        saas.getShopApp(getShopId()).bargain.updateBargainStock(order.getActivityId(),-1);
-        BargainRecordRecord bargainRecord = db().selectFrom(BARGAIN_RECORD).where(BARGAIN_RECORD.ORDER_SN.eq(order.getOrderSn())).fetchAny();
-        saas.getShopApp(getShopId()).goods.updateGoodsNumberAndSale(bargainRecord.getGoodsId(),bargainRecord.getPrdId(),-1);
+    private void bargainSuccessNotify(int userId, BigDecimal bargainPrice, String bargainName, String goodsName, int recordId) {
+        //订阅消息
+        String[][] maData = new String[][]{{bargainName}, {goodsName + "砍价已完成"}, {Util.getdate("yyyy-MM-dd HH:mm:ss")}};
+        MaSubscribeData buildData = MaSubscribeData.builder().data307(maData).build();
 
-    }
-
-    /**
-     * 砍价完成小程序订阅消息通知
-     */
-    private void bargainSuccessSubscribeNotify(int userId,String bargainName,String goodsName){
-        String[][] data = new String[][] { { bargainName }, { goodsName + "砍价已完成" }, { Util.getdate("yyyy-MM-dd HH:mm:ss") } };
-        ArrayList<Integer> arrayList = new ArrayList<>();
-        arrayList.add(userId);
-        RabbitMessageParam param = RabbitMessageParam.builder()
-            .maTemplateData(
-                MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(data).build())
-            .page(null).shopId(getShopId())
-            .userIdList(arrayList)
-            .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
-        saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
-    }
-
-    /**
-     *  砍价完成公众号模板消息通知
-     * @param userId
-     * @param bargainPrice
-     * @param goodsName
-     * @param recordId
-     */
-    private void bargainSuccessTemplateNotify(int userId,BigDecimal bargainPrice,String goodsName,int recordId){
+        //模板消息
+        String[][] mpData = new String[][]{{"您有新的砍价进度", "#173177"}, {goodsName, "#173177"},
+            {bargainPrice.toString(), "#173177"},
+            {"已砍价成功，您可以告知您的好友砍价成功哦！", "#173177"}};
         String wxUnionId = db().select(Tables.USER.WX_UNION_ID).from(USER).where(USER.USER_ID.eq(userId)).fetchOptionalInto(String.class).orElse(null);
         String officeAppId = saas.shop.mp.findOffcialByShopId(getShopId());
-
         UserRecord wxUserInfo = saas.getShopApp(getShopId()).user.getUserByUnionId(wxUnionId);
-
         if(wxUnionId == null || officeAppId == null || wxUserInfo == null){
             return;
         }
-        String page = "pages/bargaininfo/bargaininfo?record_id=" + recordId;
+
         List<Integer> userIdList = new ArrayList<>();
         userIdList.add(wxUserInfo.getUserId());
+        String page = "pages/bargaininfo/bargaininfo?record_id=" + recordId;
 
-        String[][] data = new String[][] { { "您有新的砍价进度", "#173177" }, { goodsName, "#173177" },
-            { bargainPrice.toString(), "#173177" },
-            { "已砍价成功，您可以告知您的好友砍价成功哦！", "#173177" } };
         RabbitMessageParam param = RabbitMessageParam.builder()
-            .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.BARGAIN_SUCCESS).data(data).build())
-            .page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+            .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.BARGAIN_SUCCESS).data(mpData).build())
+            .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(buildData).build())
+            .page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.SUCCESS_BRING_DOWN)
             .build();
-        saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
-            TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
+        saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
     }
 
 }

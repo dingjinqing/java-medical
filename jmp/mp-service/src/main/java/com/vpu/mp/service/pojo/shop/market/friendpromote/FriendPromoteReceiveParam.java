@@ -24,7 +24,7 @@ public class FriendPromoteReceiveParam {
 	private Integer id;
 
 	/** 是否已领取 */
-	public static final Integer PROMOTE_STATUS_DEFAULT = -1;
+	public static final Byte PROMOTE_STATUS_DEFAULT = -1;
 	public static final Byte RECEIVED = 2;
 	private int promoteStatus = PROMOTE_STATUS_DEFAULT;
 	

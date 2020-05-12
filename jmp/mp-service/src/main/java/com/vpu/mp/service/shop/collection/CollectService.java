@@ -47,9 +47,10 @@ public class CollectService extends ShopBaseService{
         for(CollectListVo goodsInfo:lists.dataList){
             if(goodsInfo.getGoodsType() == 1){
                 //查询拼团信息
-                List<CollectGroupVo> infos = db().select(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE).from(GROUP_BUY_DEFINE.leftJoin(GROUP_BUY_PRODUCT_DEFINE)
+                List<CollectGroupVo> infos = db().select(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
+                        .from(GROUP_BUY_DEFINE.leftJoin(GROUP_BUY_PRODUCT_DEFINE)
                     .on(GROUP_BUY_DEFINE.ID.eq(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID)))
-                    .where(GROUP_BUY_DEFINE.GOODS_ID.eq(goodsInfo.getGoodsId())).fetch().into(CollectGroupVo.class);
+                    .where(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID.eq(goodsInfo.getGoodsId())).fetch().into(CollectGroupVo.class);
 
                 BigDecimal groupPrice = goodsInfo.getCollectPrice() ;
                 System.out.println(groupPrice);

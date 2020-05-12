@@ -98,3 +98,100 @@ ALTER TABLE `b2c_customer_avail_coupons` MODIFY COLUMN `used_time` timestamp NUL
 --2020-03-30 退款订单生成时保存是否自动退款的快照
 ALTER TABLE `b2c_return_order` ADD COLUMN `is_auto_return` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0否；1是';
 /***********************2.9*********************END*/
+
+/***********************2.10*********************BEGIN*/
+-- 2020年2月26日10:46:57  拼团活动商品信息记录表添加商品id字段
+ALTER TABLE `b2c_group_buy_product_define` ADD COLUMN `goods_id` int(8) NOT NULL DEFAULT 0 COMMENT '商品id';
+-- 2020年2月26日10:46:57  秒杀活动商品信息记录表添加商品id字段
+ALTER TABLE `b2c_sec_kill_product_define` ADD COLUMN `goods_id` int(8) NOT NULL DEFAULT 0 COMMENT '商品id';
+-- 2020年2月26日10:46:57  秒杀活动表添加优先级字段
+ALTER TABLE `b2c_sec_kill_define` ADD COLUMN `first` tinyint(3) NOT NULL DEFAULT 0 COMMENT '优先级';
+-- 2020年2月26日10:46:57  秒杀活动表修改goods_id类型为字符串
+ALTER TABLE `b2c_sec_kill_define` DROP  INDEX IF exists `goods_id`;
+ALTER TABLE `b2c_sec_kill_define` MODIFY COLUMN `goods_id` text  COMMENT '商品ID';
+-- 2020年2月26日20:13:50 拼团活动表goods_id 字段有int转换为string
+ALTER TABLE `b2c_group_buy_define` MODIFY COLUMN `goods_id` text NOT NULL COMMENT '商品id';
+-- 2020年2月27日16:35:50 好友助力新增单天助力限制字段
+ALTER TABLE `b2c_friend_promote_activity` ADD COLUMN `promote_times_per_day` int(8) null default 0 comment '单个用户每天最多可帮忙助力次数';
+
+-- 2020年2月28日 加价购活动添加换购商品运费策略字段
+ALTER TABLE `b2c_purchase_price_define` ADD COLUMN `redemption_freight` tinyint(1)  NOT NULL DEFAULT '0' COMMENT '换购商品运费策略，0免运费，1使用原商品运费模板';
+
+-- 2020年03月03日 添加包邮,自定义权益字段
+ALTER TABLE `b2c_member_card` ADD COLUMN `custom_rights` text COMMENT '自定义权益';
+ALTER TABLE `b2c_member_card` ADD COLUMN `freeship_limit` tinyint(3) DEFAULT -1 COMMENT '-1：不包邮，0:不限制，1：持卡有效期内，2：年，3：季，4：月，5：周，6：日';
+ALTER TABLE `b2c_member_card` ADD COLUMN `freeship_num` int(11) DEFAULT 0 COMMENT '周期内包邮次数';
+
+-- 2020年03月04日优惠券礼包活动修改用户优惠券表
+ALTER TABLE `b2c_customer_avail_coupons` ADD COLUMN `access_order_sn` varchar(20) NOT NULL DEFAULT '' COMMENT '发放活动的订单的订单编号';
+ALTER TABLE `b2c_customer_avail_coupons` MODIFY COLUMN `access_mode` tinyint(1) NOT NULL DEFAULT '0' COMMENT '获取方式，0：发放，1：领取，2：优惠券礼包自动发放';
+
+-- 2020年03月05日 积分兑换记录表增加删除标识
+ALTER TABLE `b2c_integral_mall_record` ADD COLUMN `del_flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '1删除';
+
+-- 2020年03月11日 会员卡表添加续费相关字段
+ALTER TABLE `b2c_member_card` ADD COLUMN `renew_member_card` tinyint(1) DEFAULT 0 COMMENT '0:不可续费，1:可续费';
+ALTER TABLE `b2c_member_card` ADD COLUMN `renew_type` tinyint(1) DEFAULT 0 COMMENT '0:现金 1：积分';
+ALTER TABLE `b2c_member_card` ADD COLUMN `renew_num` decimal(10, 2) DEFAULT 0.00 COMMENT '现金或积分数量';
+ALTER TABLE `b2c_member_card` ADD COLUMN `renew_time` int(11) DEFAULT NULL COMMENT '续费时间' ;
+ALTER TABLE `b2c_member_card` ADD COLUMN `renew_date_type` tinyint(1) DEFAULT NULL COMMENT '0:日，1:周 2: 月';
+
+
+
+-- 商品表和规格表设置市场价字段可以为null
+ALTER TABLE b2c_goods MODIFY market_price DECIMAL(10,2) COMMENT '市场价格，多规格时取最高';
+ALTER TABLE b2c_goods_spec_product MODIFY prd_market_price DECIMAL(10,2) COMMENT '市场价格';
+ALTER TABLE b2c_goods_spec_product_bak MODIFY prd_market_price DECIMAL(10,2) COMMENT '市场价格';
+-- 恢复之前被他人误删的商品主键
+ALTER TABLE `b2c_goods` ADD PRIMARY KEY ( `goods_id` );
+-- 2020年03月12日 会员卡表添加不可与优惠券共用字段
+ALTER TABLE `b2c_member_card` ADD COLUMN `cannot_use_coupon` tinyint(1) DEFAULT 0 COMMENT '是否和会员卡一起使用0:可以1：不可以' ;
+-- 2020年03月12日 会员卡表添加自定义权益开关字段
+ALTER TABLE `b2c_member_card` ADD COLUMN `custom_rights_flag` tinyint(1) DEFAULT 0 COMMENT '自定义权益开关';
+--2020-03-17 订单增加会员卡包邮标识
+ALTER TABLE `b2c_order_info` ADD  COLUMN `is_freeship_card` tinyint(1) DEFAULT '0' COMMENT '0否，1是';
+
+-- 瓜分积分 添加活动规则说明
+ALTER TABLE `b2c_group_integration_define` ADD COLUMN `activity_copywriting` TEXT COMMENT '活动规则说明';
+
+-- 2020-03-17 用户卡表添加包邮快照信息字段
+ALTER TABLE `b2c_user_card` ADD COLUMN `free_limit` tinyint(3) DEFAULT -1 COMMENT '-1：不包邮，0:不限制，1：持卡有效期内，2：年，3：季，4：月，5：周，6：日';
+ALTER TABLE `b2c_user_card` ADD COLUMN `free_num` int(11) DEFAULT 0 COMMENT '周期内包邮次数';
+
+-- 2020-03-19 商品表添加统计字段
+ALTER TABLE `b2c_goods` ADD COLUMN `pv` int(11) DEFAULT '0' COMMENT '7天访问量';
+ALTER TABLE `b2c_goods` ADD COLUMN `comment_num` int(11) DEFAULT '0' COMMENT '评论数';
+
+-- 2020-03-20 商品导入信息结果详情表修改字段
+ALTER TABLE b2c_goods_import_detail CHANGE COLUMN error_msg error_code TINYINT(3) NOT NULL DEFAULT 0 COMMENT '导入数据错误码，0表示正确 非0对应错误码';
+
+-- 2020-03-24 评价表添加置顶字段
+ALTER TABLE `b2c_comment_goods` ADD COLUMN `is_top` TINYINT ( 2 ) DEFAULT '0' COMMENT '是否置顶';
+ALTER TABLE `b2c_comment_goods` ADD COLUMN `top_time` TIMESTAMP NULL DEFAULT NULL COMMENT '置顶时间';
+
+--2020年3月26日 打包一口价 商品数可以为空
+ALTER TABLE `b2c_package_sale` MODIFY COLUMN `goods_number_1` mediumint(11) NULL DEFAULT 0 COMMENT '分组商品数' ;
+ALTER TABLE `b2c_package_sale` MODIFY COLUMN `goods_number_2` mediumint(11) NULL DEFAULT 0 COMMENT '分组商品数' ;
+ALTER TABLE `b2c_package_sale` MODIFY COLUMN `goods_number_3` mediumint(11) NULL DEFAULT 0 COMMENT '分组商品数' ;
+
+-- 2020-04-17 拼团抽奖表添加活动说明字段
+ALTER TABLE `b2c_group_draw` ADD COLUMN `activity_copywriting` text COMMENT '活动说明';
+
+-- 20200423订单商品表增加加价购id
+ALTER TABLE `b2c_order_goods` ADD COLUMN `purchase_id` int(11) NOT NULL DEFAULT 0 COMMENT '加价购活动id';
+
+-- 20200427优惠券礼包活动添加购物车展示选项
+ALTER TABLE `b2c_coupon_pack` ADD COLUMN `show_cart` tinyint(1) DEFAULT '1' COMMENT '购物车是否展示，1是';
+
+-- 20200508微信退款记录表增加订单号字段长度（预售订单补款退款时长度超限制）
+ALTER TABLE `b2c_order_refund_record` MODIFY COLUMN `order_sn` varchar(22) NOT NULL DEFAULT '' COMMENT '订单编号';
+/***********************2.10*********************END*/
+
+
+
+
+
+
+
+
+

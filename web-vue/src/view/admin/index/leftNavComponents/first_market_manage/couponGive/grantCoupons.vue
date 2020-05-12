@@ -28,31 +28,35 @@
               :label="$t('couponGive.participants') + '：'"
               prop="crowd"
             >
-              <div>
-                <span style="color:#999;fontSize:12px">{{$t('couponGive.peopleTip')}}</span>
-              </div>
+              <div style="color:#999;fontSize:12px">{{$t('couponGive.peopleTip')}}</div>
+              <!-- 加购人群 -->
               <div>
                 <el-checkbox
                   :label="$t('couponGive.addCartPeople')"
-                  @change="handleOnClickNoPayChange"
-                  v-model="params.onClickNoPay"
+                  @change="cartBoxHandler"
+                  v-model="params.couponGiveGrantInfoParams.cart_box"
+                  :true-label="1"
+                  :false-label="0"
                 ></el-checkbox>
                 <span style="color:#999;fontSize:12px;">{{$t('couponGive.addCartTip')}}</span>
               </div>
+              <!-- 购买指定商品人群 -->
               <div>
                 <el-checkbox
                   :label="$t('couponGive.buyGoodsPeople')"
-                  @change="handleOnClickGoodsChange"
-                  v-model="params.onClickGoods"
+                  @change="goodsBoxHandler"
+                  v-model="params.couponGiveGrantInfoParams.goods_box"
+                  :true-label="1"
+                  :false-label="0"
                 ></el-checkbox>
                 <span
                   style="color:#999;fontSize:12px"
-                  v-if="params.onClickGoods"
+                  v-if="params.couponGiveGrantInfoParams.goods_box === 1"
                 >{{$t('couponGive.buyGoodsTip')}}</span>
               </div>
               <div
                 class="chooseGoods"
-                v-if="params.onClickGoods"
+                v-if="params.couponGiveGrantInfoParams.goods_box === 1"
               >
                 <div class="chooseGoodsLeft">{{$t('couponGive.chooseGoods')}}</div>
                 <ul class="imgList">
@@ -90,27 +94,30 @@
               <div style="margin:10px 0">
                 <el-checkbox
                   :label="$t('couponGive.chooseMember')"
-                  @change="handleOnClickUserChange"
-                  v-model="params.onClickUser"
+                  @change="memberBoxHandler"
+                  v-model="params.couponGiveGrantInfoParams.member_box"
+                  :true-label="1"
+                  :false-label="0"
                 ></el-checkbox>
-                <span v-if="params.onClickUser">
-                  <el-button
-                    @click="handleAddMember"
-                    type="text"
-                  >+ {{$t('couponGive.addMember')}}</el-button>
-                </span>
-                <span v-if="params.onClickUser">{{$t('couponGive.selected')}} {{memberNum}} {{$t('couponGive.people')}}</span>
+                <el-button
+                  @click="handleAddMember"
+                  v-if="params.couponGiveGrantInfoParams.member_box === 1"
+                  type="text"
+                >+ {{$t('couponGive.addMember')}}</el-button>
+                <span v-if="params.couponGiveGrantInfoParams.member_box === 1">{{$t('couponGive.selected')}} {{memberNum}} {{$t('couponGive.people')}}</span>
               </div>
               <!-- 自定义 -->
               <div>
                 <el-checkbox
                   :label="$t('couponGive.custom')"
-                  @change="handleOnClickCustomRuleChange"
-                  v-model="params.onClickCustomRule"
+                  @change="customBoxHandler"
+                  v-model="params.couponGiveGrantInfoParams.custom_box"
+                  :true-label="1"
+                  :false-label="0"
                 ></el-checkbox>
                 <el-select
                   v-model="customRuleInfoVal"
-                  :disabled="!params.onClickCustomRule"
+                  :disabled="params.couponGiveGrantInfoParams.custom_box === 0"
                   :placeholder="$t('couponGive.choose')"
                   size="small"
                   style="width: 170px;"
@@ -129,48 +136,41 @@
                   </el-option>
                 </el-select>
                 <!-- 自定义集合 -->
-                <div style="margin:10px 0;">
+                <div>
                   <ul class="ulList">
                     <li
                       v-for="(item) in optionsList"
                       :key="item.key"
                     >
                       <span>{{item.label}}：</span>
-                      <span>
-                        <el-input
-                          @blur="handleIpt(item)"
-                          @focus="handleIpt(item)"
-                          :disabled="!params.onClickCustomRule"
-                          style="width:170px"
-                          size="small"
-                          v-model="item.ipt"
-                        > </el-input>
-                        <div>{{ item.label | filterA  }}</div>
-                      </span>
-                      <div class="img_span">
-                        <el-image
-                          :src="urls.url4"
-                          class="img"
-                          @click="handleDelCustomize(item)"
-                        ></el-image>
-                      </div>
+                      <el-input
+                        @change="handleIpt(item)"
+                        :disabled="params.couponGiveGrantInfoParams.custom_box === 0"
+                        style="width:170px"
+                        size="small"
+                        v-model="item.ipt"
+                      ></el-input>
+                      <img
+                        :src="urls.url4"
+                        @click="handleDelCustomize(item)"
+                      >
                     </li>
                     <li v-show="showTime">
-                      <span>{{$t('couponGive.timeLoginRecord')}}</span>
-                      <div class="img_span">
-                        <el-image
-                          :src="urls.url4"
-                          class="img"
-                          @click="handleDelCustomize(6)"
-                        ></el-image>
-                      </div>
-                      <span>
-                        <dateTimePicker
-                          :showPicker=1
-                          @time="loginStartAndLoginEnd"
-                        />
-                      </span>
-
+                      <span>{{$t('couponGive.timeLoginRecord') + '：'}}</span>
+                      <el-date-picker
+                        v-model="params.couponGiveGrantInfoParams.validity"
+                        type="datetimerange"
+                        :range-separator="$t('seckill.to')"
+                        :start-placeholder="$t('seckill.startTime')"
+                        :end-placeholder="$t('seckill.endTime')"
+                        :default-time="['00:00:00','23:59:59']"
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                        size="small"
+                      ></el-date-picker>
+                      <img
+                        :src="urls.url4"
+                        @click="handleDelCustomize(6)"
+                      >
                     </li>
                   </ul>
                 </div>
@@ -182,7 +182,6 @@
               prop="coupon"
             >
               <div class="gray">{{$t('couponGive.couponTip')}}</div>
-
               <div class="middleContainer">
                 <div>
                   <div
@@ -196,11 +195,19 @@
                       style="line-height:normal"
                     >
                       <div class="coupon_list_top">
-                        <span>￥</span>
-                        <span class="number">{{item.denomination}}</span>
+                        <span v-if="item.actCode==='voucher'">￥ {{item.denomination}}</span>
+                        <span v-if="item.actCode==='discount'">{{item.denomination}} 折</span>
+                        <span v-if="item.actCode==='random'"></span>
                       </div>
                       <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
-                      <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                      <div
+                        class="coupon_center_number"
+                        v-if="item.surplus ===0"
+                      >库存不限制</div>
+                      <div
+                        class="coupon_center_number"
+                        v-if="item.surplus !==0"
+                      >剩余{{item.surplus}}张</div>
                       <div
                         class="coupon_list_bottom"
                         style="font-size:12px"
@@ -209,12 +216,17 @@
                     <span
                       @click="deleteCouponImg(index)"
                       class="deleteIcon"
-                    >×</span>
+                    >
+                      <img
+                        :src="imgHost+'/image/admin/sign_del.png'"
+                        alt=""
+                      >
+                    </span>
                   </div>
                 </div>
                 <div
                   class="addInfo"
-                  @click="handleToCallDialog1()"
+                  @click="handleToCallDialog"
                   v-if="couponData.length < 5"
                 >
                   <el-image
@@ -222,6 +234,7 @@
                     :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
                     style="width: 78px;height:78px;cursor:pointer"
                   ></el-image>
+                  <p>添加优惠券</p>
                 </div>
               </div>
             </el-form-item>
@@ -232,13 +245,13 @@
               prop="startTime"
             >
               <el-radio
-                label="0"
+                :label="0"
                 v-model="params.sendAction"
                 @change="sendActionChange"
               >{{$t('couponGive.immediatelyGrant')}}</el-radio>
               <br>
               <el-radio
-                label="1"
+                :label="1"
                 v-model="params.sendAction"
                 @change="sendActionChange"
               >{{$t('couponGive.regularlyGrant')}}</el-radio>
@@ -251,16 +264,7 @@
               >
               </el-date-picker>
             </el-form-item>
-            <div style="width: 90%;
-                    height: 45px;
-                    line-height: 45px;
-                    background-color: #fff7eb;
-                    border: 1px solid #ffd5a3;
-                    border-radius: 4px;
-                    color: #666;
-                    margin: 0 auto;
-                    padding-left: 10px;
-                    font-size: 14px;">预计发放用户数：{{this.userNumber}}人</div>
+            <div class="grantNum">预计发放用户数：{{this.userNumber}}人</div>
           </el-form>
         </div>
       </div>
@@ -272,32 +276,23 @@
         @click="addAct"
       >{{$t('couponGive.confirmGrant')}}</el-button>
     </div>
-    <!-- 添加会员的弹窗 -->
-    <memberListDialog
-      v-if="dialogOff"
-      @userIdList="getUserIdList"
-      :memberListDialog="dialogOff"
-      @dialog-cancel="closeDialog"
-    />
-    <!-- 选择商品弹窗 -->
-
+    <!-- 选择指定商品弹窗 -->
     <choosingGoods
       @resultGoodsDatas="choosingGoodsResult"
       :tuneUpChooseGoods='isShowChoosingGoodsDialog'
       :checkedNumMax=3
-      :chooseGoodsBack='this.params.goodsIdList'
+      :chooseGoodsBack='this.params.couponGiveGrantInfoParams.goods_ids'
     />
-    <choosingGoods
-      @res="getRes"
-      :tuneUpChooseGoods="tuneUpChooseGoods"
-      :checkedNumMax=3
-      :chooseGoodsBack='this.params.goodsIdList'
-    />
-    <!-- 获取人群弹窗 -->
-    <getUserDialog
+
+    <!-- 选择指定会员弹窗 -->
+    <memberListDialog
+      v-if="dialogOff"
+      @userIdList="getUserIdList"
       @dialog-cancel="closeDialog"
-      :dialogVisible="dialogVisible"
+      :memberListDialog="dialogOff"
+      :chooseMemberBack='this.params.user'
     />
+
     <!--添加优惠券弹窗-->
     <addCouponDialog
       @checkReturnFormat="handleToCheck"
@@ -308,45 +303,31 @@
 </template>>
 
 <script>
-import { mapActions } from 'vuex'
+
+import { addActivity, getUserNum } from '@/api/admin/marketManage/couponGive.js'
+
 // 选择商品弹窗
 import choosingGoods from '@/components/admin/choosingGoods'
-
 import memberListDialog from '../messagePush/memberListDialog'
 import getUserDialog from '../messagePush/getUserDialog'
 import chooseSelect from '@/components/admin/chooseSelect/chooseSelect'
 import wrapper from '@/components/admin/wrapper/wrapper'
-// import choosingGoods from '@/components/admin/choosingGoods'
-import { addActivity } from '@/api/admin/marketManage/couponGive.js'
-// // import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
-// // import { selectGoodsApi } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods.js'
-import { delObj } from '@/util/formatData'
-import dateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
-import { getUserNumberApi } from '@/api/admin/marketManage/messagePush.js'
 import addCouponDialog from '@/components/admin/addCouponDialog'
 
 export default {
   components: {
     wrapper,
-    dateTimePicker,
     chooseSelect,
     memberListDialog,
     choosingGoods,
     getUserDialog,
     addCouponDialog
-
-    // choosingGoods,
-    // AddCouponDialog: () => import('@/components/admin/addCouponDialog')
   },
   data () {
     // 发放时间
     var validateTime = (rule, value, callback) => {
-      if (this.params.sendAction === '1') {
-        if (!value) {
-          callback(new Error('请填写发送时间'))
-        } else {
-          callback()
-        }
+      if (this.params.sendAction === 1 && !value) {
+        callback(new Error('请填写发送时间'))
       } else {
         callback()
       }
@@ -361,35 +342,27 @@ export default {
     }
     // 参与活动人群
     var validateCrowd = (rule, value, callback) => {
-      if (this.params.onClickNoPay === false &&
-        this.params.onClickGoods === false &&
-        this.params.onClickCard === false &&
-        this.params.onClickTag === false &&
-        this.params.onClickUser === false &&
-        this.params.onClickCustomRule === false) {
+      if (this.params.couponGiveGrantInfoParams.cart_box === 0 &&
+        this.params.couponGiveGrantInfoParams.goods_box === 0 &&
+        this.params.couponGiveGrantInfoParams.card_box === 0 &&
+        this.params.couponGiveGrantInfoParams.tag_box === 0 &&
+        this.params.couponGiveGrantInfoParams.member_box === 0 &&
+        this.params.couponGiveGrantInfoParams.custom_box === 0) {
         callback(new Error('请至少选择一种类型发送人群'))
-      } else if (this.params.onClickGoods === true && (this.imgsList === undefined || this.imgsList.length <= 0)) {
+      } else if (this.params.couponGiveGrantInfoParams.goods_box === 1 && (this.imgsList === undefined || this.imgsList.length <= 0)) {
         callback(new Error('请选择商品'))
-      } else if (this.params.onClickCard === true && (this.params.cardIdsList === undefined || this.params.cardIdsList.length <= 0)) {
+      } else if (this.params.couponGiveGrantInfoParams.card_box === 1 && (this.params.cardId === undefined || this.params.cardId.length <= 0)) {
         callback(new Error('请选择会员卡'))
-      } else if (this.params.onClickTag === true && (this.params.tagIdList === undefined || this.params.tagIdList.length <= 0)) {
+      } else if (this.params.couponGiveGrantInfoParams.tag_box === 1 && (this.params.tagId === undefined || this.params.tagId.length <= 0)) {
         callback(new Error('请选择标签'))
-      } else if (this.params.onClickUser === true && (this.params.userIdList === undefined || this.params.userIdList.length <= 0)) {
+      } else if (this.params.couponGiveGrantInfoParams.member_box === 1 && (this.params.user === undefined || this.params.user.length <= 0)) {
         callback(new Error('请选择会员'))
       } else {
         callback()
       }
     }
     return {
-      goodsNum: '',
-      // 优惠券弹窗
-      couponDialogFlag: false,
-      couponData: [],
-      couponId: '',
-      showCouponDialog: false,
-      couponIdList: [],
       imgHost: `${this.$imageHost}`,
-      checkedData: [],
       // 初始化弹窗选中的行
       urls: {
         url1: `${this.$imageHost}/image/admin/notice_img.png`,
@@ -397,61 +370,38 @@ export default {
         url3: `${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`,
         url4: `${this.$imageHost}/image/admin/icon_delete.png`
       },
-      /**
-       * form表单的数据
-       */
-      // form: {
-      //   actName: ``,
-      //   sendAction: `0`,
-      //   startTime: ``
-      // },
-
-      templateId: null,
-      labels: {
-        label6: `${this.$t('couponGive.participants')}`
-      },
-      cardList: [
-
-      ],
-      cardValue: `${this.$t('couponGive.chooseCard')}`,
-      /**
-      * 动态获取人数的参数集合
-      */
+      // 参数
       params: {
-        userKey: null,
-        onClickNoPay: false,
-        onClickGoods: false,
-        goodsIdList: [],
-        onClickCard: false,
-        cardIdsList: [],
-        onClickTag: false,
-        tagIdList: [],
-        onClickUser: false,
-        userIdList: [],
-        onClickCustomRule: false,
-        customRuleInfo: {
-          payedDay: ``,
-          noPayDay: ``,
-          buyTimesMore: ``,
-          buyTimesLess: ``,
-          moneyAvgMore: ``,
-          moneyAvgLess: ``,
-          loginStart: ``,
-          loginEnd: ``
+        actName: '', // 活动名称
+        sendAction: 0, // 发送状态
+        startTime: '', // 定时发送时间
+        couponGiveGrantInfoParams: {
+          cart_box: 0, // 加购会员
+          goods_box: 0, // 加购指定商品
+          goods_ids: [], // 指定商品id
+          card_box: 0, // 会员卡
+          tag_box: 0, // 会员标签
+          member_box: 0, // 指定会员
+          custom_box: 0, // 自定义
+          validity: '',
+          point_start_time: '',
+          point_end_time: '',
+          coupon_ids: [] // 选择优惠券
         },
-
-        actName: ``,
-        coupon: ``,
-        sendAction: `0`,
-        startTime: ``
+        cardId: [],
+        tagId: [],
+        user: [],
+        havePay: '',
+        noPay: '',
+        maxCount: '',
+        minCount: '',
+        maxAvePrice: '',
+        minAvePrice: ''
       },
-
-      /**
-       * 表单检验
-       */
+      // 表单检验
       rules: {
         actName: [
-          { required: true, message: `${this.$t('couponGive.actNameTip')}`, trigger: 'blur' }
+          { required: true, message: `${this.$t('couponGive.actNameTip')}`, trigger: 'change' }
         ],
         startTime: [
           { required: true, validator: validateTime, trigger: 'change' }
@@ -463,82 +413,54 @@ export default {
           { required: true, validator: validateCrowd, trigger: 'change' }
         ]
       },
-      isShowChoosingGoodsDialog: false,
-      pageLink: ``,
-      time: {},
-
-      /**
-       * 传给组件chooseSelect的数据
-       */
-
-      dialogOff: false,
-      whetherShowDialog: false,
-      dialogVisible: false,
+      userNumber: 0, // 预计发放人数
+      isShowChoosingGoodsDialog: false, // 指定商品弹窗
+      imgsList: [], // 指定商品列表数据
+      dialogOff: false, // 指定会员弹窗
       memberNum: 0, // 已选择的会员人数
-      /**
-       * 自定义实体
-       */
-      customRuleInfoVal: `${this.$t('couponGive.choose')}`,
-      loginStart: ``,
-      loginEnd: ``,
-      customRuleInfoOptions: [
-        {
-          label: `N ${this.$t('couponGive.haveRecord')}`,
-          value: `N ${this.$t('couponGive.haveRecord')}`,
-          key: `payedDay`,
-          ipt: ``
-        },
-        {
-          label: `N ${this.$t('couponGive.noRecord')}`,
-          value: `N ${this.$t('couponGive.noRecord')}`,
-          key: `noPayDay`,
-          ipt: ``
+      showCouponDialog: false, // 优惠券弹窗
+      couponData: [], // 优惠券列表
+      couponIdList: [], // 优惠券回显数据
 
-        },
-        {
-          label: `${this.$t('couponGive.buyLess')} N`,
-          value: `${this.$t('couponGive.buyLess')} N`,
-          key: `buyTimesLess`,
-          ipt: ``
-
-        },
-        {
-          label: `${this.$t('couponGive.buyMore')} N`,
-          value: `${this.$t('couponGive.buyMore')} N`,
-          key: `buyTimesMore`,
-          ipt: ``
-
-        },
-        {
-          label: `${this.$t('couponGive.priceHigher')} N`,
-          value: `${this.$t('couponGive.priceHigher')} N`,
-          key: `moneyAvgMore`,
-          ipt: ``
-
-        },
-        {
-          label: `${this.$t('couponGive.priceLess')} N`,
-          value: `${this.$t('couponGive.priceLess')} N`,
-          key: `moneyAvgLess`,
-          ipt: ``
-
-        },
-        {
-          label: `${this.$t('couponGive.timeLoginRecord')}`,
-          value: `${this.$t('couponGive.timeLoginRecord')}`,
-          key: `time`
-
-        }
-      ],
-      optionsList: [],
-      showTime: false,
-      isShowBtn: false,
-      arrList: [],
-      imgsList: [],
-      userNumber: 0,
-      tuneUpChooseGoods: false,
-      tuneUpSelectLink: false
-
+      customRuleInfoVal: `${this.$t('couponGive.choose')}`, // 自定义选值
+      // 自定义选项
+      customRuleInfoOptions: [{
+        label: `N ${this.$t('couponGive.haveRecord')}`,
+        value: `N ${this.$t('couponGive.haveRecord')}`,
+        key: `payedDay`,
+        ipt: ``
+      }, {
+        label: `N ${this.$t('couponGive.noRecord')}`,
+        value: `N ${this.$t('couponGive.noRecord')}`,
+        key: `noPayDay`,
+        ipt: ``
+      }, {
+        label: `${this.$t('couponGive.buyLess')} N`,
+        value: `${this.$t('couponGive.buyLess')} N`,
+        key: `buyTimesLess`,
+        ipt: ``
+      }, {
+        label: `${this.$t('couponGive.buyMore')} N`,
+        value: `${this.$t('couponGive.buyMore')} N`,
+        key: `buyTimesMore`,
+        ipt: ``
+      }, {
+        label: `${this.$t('couponGive.priceHigher')} N`,
+        value: `${this.$t('couponGive.priceHigher')} N`,
+        key: `moneyAvgMore`,
+        ipt: ``
+      }, {
+        label: `${this.$t('couponGive.priceLess')} N`,
+        value: `${this.$t('couponGive.priceLess')} N`,
+        key: `moneyAvgLess`,
+        ipt: ``
+      }, {
+        label: `${this.$t('couponGive.timeLoginRecord')}`,
+        value: `${this.$t('couponGive.timeLoginRecord')}`,
+        key: `time`
+      }],
+      optionsList: [], // 自定义填写
+      showTime: false // 自定义-登录记录
     }
   },
   mounted () {
@@ -546,92 +468,180 @@ export default {
     this.langDefault()
   },
   methods: {
-    ...mapActions(['transmitEditGoodsId']),
+    // 指定商品弹窗
+    showChoosingGoods () {
+      this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
+    },
+    // 指定商品弹窗的回调函数
+    choosingGoodsResult (row) {
+      this.imgsList = row
+      this.params.couponGiveGrantInfoParams.goods_ids = []
+      row.forEach((item, index) => {
+        this.params.couponGiveGrantInfoParams.goods_ids.push(item.goodsId)
+      })
+      // 发送获取人数
+      this.fetchUserList(this.params)
+      this.$refs['params'].validateField('crowd')
+    },
+    // 删除指定商品
+    handleDelImg (id) {
+      this.imgsList = this.imgsList.filter((item) => item.goodsId !== id)
+      this.params.couponGiveGrantInfoParams.goods_ids = []
+      this.imgsList.forEach((item, index) => {
+        this.params.couponGiveGrantInfoParams.goods_ids.push(item.goodsId)
+      })
+      // 发送获取人数接口
+      this.fetchUserList(this.params)
+      this.$refs['params'].validateField('crowd')
+    },
+
+    // 属于 / 持有的回调函数
+    getChooseSelectVal (val) {
+      this.params.cardId = val.cardIdsList
+      this.params.tagId = val.tagIdList
+      this.params.couponGiveGrantInfoParams.card_box = val.onClickCard === true ? 1 : 0
+      this.params.couponGiveGrantInfoParams.tag_box = val.onClickTag === true ? 1 : 0
+      // 发送获取人数接口
+      this.fetchUserList(this.params)
+      this.$refs['params'].validateField('crowd')
+    },
+
+    // 指定会员弹窗
+    handleAddMember () {
+      this.dialogOff = !this.dialogOff
+    },
+    // 指定会员弹窗回调函数
+    getUserIdList (row) {
+      this.memberNum = row.length // 把选中的数组长度赋值给已选会员数
+      this.params.user = []
+      row.forEach(item => {
+        this.params.user.push(item.userId)
+      })
+      // 发送获取人数接口
+      this.fetchUserList(this.params)
+      this.$refs['params'].validateField('crowd')
+    },
+    // 关闭指定会员弹窗
+    closeDialog () {
+      this.dialogOff = false
+    },
+
+    // 自定义选值切换
+    customRuleInfoValChange (val) {
+      if (val === `${this.$t('couponGive.timeLoginRecord')}`) {
+        this.showTime = true
+      } else {
+        if (val !== `${this.$t('couponGive.choose')}` && val !== `${this.$t('couponGive.timeLoginRecord')}`) {
+          // 已选择自定义选项
+          var data = this.customRuleInfoOptions.find(item => item.value === val)
+          this.optionsList.push(data)
+        }
+      }
+      this.customRuleInfoOptions = this.customRuleInfoOptions.filter((item) => item.value !== val)
+      this.customRuleInfoVal = `${this.$t('couponGive.choose')}`
+    },
+    // 自定义值输入框变化
+    handleIpt (item) {
+      if (item.key === 'payedDay') {
+        this.params.havePay = item.ipt
+      } else if (item.key === 'noPayDay') {
+        this.params.noPay = item.ipt
+      } else if (item.key === 'buyTimesLess') {
+        this.params.maxCount = item.ipt
+      } else if (item.key === 'buyTimesMore') {
+        this.params.minCount = item.ipt
+      } else if (item.key === 'moneyAvgLess') {
+        this.params.maxAvePrice = item.ipt
+      } else if (item.key === 'moneyAvgMore') {
+        this.params.minAvePrice = item.ipt
+      }
+      // 发送获取人数
+      this.fetchUserList(this.params)
+      this.$refs['params'].validateField('crowd')
+    },
+    // 删除自定义选择
+    handleDelCustomize (val) {
+      if (this.params.couponGiveGrantInfoParams.custom_box === 0) {
+        return
+      }
+      if (val === 6) {
+        this.showTime = false
+        this.customRuleInfoOptions.push({
+          label: `${this.$t('couponGive.timeLoginRecord')}`,
+          value: `${this.$t('couponGive.timeLoginRecord')}`
+        })
+        this.params.couponGiveGrantInfoParams.validity = ''
+      } else {
+        if (val.key === 'payedDay') {
+          this.params.havePay = ''
+        } else if (val.key === 'noPayDay') {
+          this.params.noPay = ''
+        } else if (val.key === 'buyTimesLess') {
+          this.params.maxCount = ''
+        } else if (val.key === 'buyTimesMore') {
+          this.params.minCount = ''
+        } else if (val.key === 'moneyAvgLess') {
+          this.params.maxAvePrice = ''
+        } else if (val.key === 'moneyAvgMore') {
+          this.params.minAvePrice = ''
+        }
+        this.optionsList = this.optionsList.filter((item) => item.key !== val.key)
+        this.customRuleInfoOptions.unshift(val)
+      }
+      // 发送获取人数
+      this.fetchUserList(this.params)
+      this.$refs['params'].validateField('crowd')
+    },
+
     // 选择优惠券弹窗
     handleToCallDialog () {
-      let obj = {
-        couponDialogFlag: !this.couponDialogFlag,
-        couponList: this.couponList
-      }
-      this.$http.$emit('V-AddCoupon', obj)
       this.showCouponDialog = !this.showCouponDialog
     },
-    // 优惠券回调
+    // 优惠券弹窗的回调函数
     handleToCheck (data) {
-      console.log('coupon', data)
-      let couponKey = []
-      data.map((item) => {
-        couponKey.push(item.id)
-      })
       this.couponData = data
-      // 实时校验
-      this.$refs['params'].validateField('coupon')
-
-      this.couponId = couponKey.toString()
-      console.log('conponId', couponKey.toString())
-      console.log('conponData', this.couponData)
-    },
-    // 删除优惠券图片
-    deleteCouponImg (index) {
-      this.couponIdTemp = this.couponId.split(',')
-      this.couponIdTemp.splice(index, 1)
-      this.couponId = this.couponIdTemp.toString()
-      this.couponData.splice(index, 1)
-    },
-    // 选择优惠券弹窗-
-    handleToCallDialog1 () {
-      this.dialogFlag = 0
-      this.couponIdList = this.getCouponIdsArray(this.couponData)
-      this.showCouponDialog = !this.showCouponDialog
-    },
-    getCouponIdsArray (data) {
-      let res = []
-      data.forEach((item, index) => {
-        res.push(item.id)
+      this.params.couponGiveGrantInfoParams.coupon_ids = []
+      this.couponData.forEach(item => {
+        this.params.couponGiveGrantInfoParams.coupon_ids.push(item.id)
       })
-      return res
+      this.$refs['params'].validateField('coupon')
     },
-    // 发放优惠券
-    addAct () {
-      console.log('params:', this.params)
-      console.log('couponId:', this.couponId)
-      console.log('onClickNoPay:', Number(this.params.onClickNoPay))
-      console.log('onClickGoods:', Number(this.params.onClickGoods))
-      console.log('onClickCard:', Number(this.params.onClickCard))
-      console.log('onClickTag:', Number(this.params.onClickTag))
-      console.log('onClickUser:', Number(this.params.onClickUser))
-      console.log('onClickCustomRule:', Number(this.params.onClickCustomRule))
-      let param = {
-        'actName': this.params.actName,
-        'couponGiveGrantInfoParams': {
-          'custom_box': Number(this.params.onClickCustomRule),
-          'point_start_time': this.params.customRuleInfo.loginStart,
-          'point_end_time': this.params.customRuleInfo.loginEnd,
-          'cart_box': Number(this.params.onClickNoPay),
-          'card_box': Number(this.params.onClickCard),
-          'tag_box': Number(this.params.onClickTag),
-          'goods_box': Number(this.params.onClickGoods),
-          'goods_ids': this.params.goodsIdList.toString(),
-          'member_box': Number(this.params.onClickUser),
-          'coupon_ids': this.couponId
-        },
-        'cardId': this.params.cardIdsList.toString(),
-        'tagId': this.params.tagIdList.toString(),
-        'user': this.params.userIdList.toString(),
-        'havePay': this.params.customRuleInfo.payedDay,
-        'noPay': this.params.customRuleInfo.noPayDay,
-        'maxCount': this.params.customRuleInfo.buyTimesLess,
-        'minCount': this.params.customRuleInfo.buyTimesMore,
-        'maxAvePrice': this.params.customRuleInfo.moneyAvgLess,
-        'minAvePrice': this.params.customRuleInfo.moneyAvgMore,
-        'sendAction': this.params.sendAction,
-        'startTime': this.params.startTime
-      }
-      console.log('param:', param)
+    // 删除优惠券
+    deleteCouponImg (index) {
+      this.couponData.splice(index, 1)
+      this.params.couponGiveGrantInfoParams.coupon_ids = []
+      this.couponData.forEach(item => {
+        this.params.couponGiveGrantInfoParams.coupon_ids.push(item.id)
+      })
+      this.$refs['params'].validateField('coupon')
+    },
 
+    // 发放时间切换
+    sendActionChange (e) {
+      this.$refs['params'].validateField('startTime')
+    },
+
+    // 保存活动
+    addAct () {
       this.$refs['params'].validate((valid) => {
         if (valid) {
-          addActivity(param).then(res => {
+          var data = this.params
+          // 会员卡
+          data.cardId = data.cardId.join(',')
+          // 会员标签
+          data.tagId = data.tagId.join(',')
+          // 指定会员
+          data.user = data.user.join(',')
+          // 优惠券
+          data.couponGiveGrantInfoParams.coupon_ids = data.couponGiveGrantInfoParams.coupon_ids.join(',')
+          // 指定商品id
+          data.couponGiveGrantInfoParams.goods_ids = data.couponGiveGrantInfoParams.goods_ids.join(',')
+          // 指定登陆时间
+          if (data.couponGiveGrantInfoParams.validity) {
+            data.couponGiveGrantInfoParams.point_start_time = data.couponGiveGrantInfoParams.validity[0]
+            data.couponGiveGrantInfoParams.point_end_time = data.couponGiveGrantInfoParams.validity[1]
+          }
+          addActivity(data).then(res => {
             if (res.error === 0) {
               this.$message.success('添加成功!')
               this.$router.push({
@@ -646,299 +656,72 @@ export default {
         }
       })
     },
-    handleChooseData (data) {
-      this.$message.success({
-        message: `${this.$t('couponGive.hasBeenChosen')}${data.length}${this.$t('couponGive.data')}`
-      })
-      this.checkedData = data
-    },
-    // 关闭会员弹窗
-    closeDialog () {
-      this.dialogOff = false
-      this.whetherShowDialog = false
-      this.dialogVisible = false
-    },
-    // 添加会员
-    handleAddMember () {
-      if (this.params.onClickUser === false) {
-        return
-      }
-      this.dialogOff = true
-    },
-    // getUserIdList
-    getUserIdList (val) {
-      console.log(val)
-      this.params.userIdList = this.formatUserIdList(val)
-      this.memberNum = val.length // 把选中的数组长度赋值给已选会员数
-      // 当添加会员后 发送获取人数接口
-      this.fetchUserList(this.params)
-    },
-    formatUserIdList (userIdList) {
-      let arr = []
-      userIdList.forEach(item => {
-        arr.push(item.userId
-        )
-      })
-      return arr
-    },
-    // getContent
-    getContent (res) {
-      this.formData.content = res.content
-      this.templateId = res.id
-    },
-    // 初始化商品弹窗
-    showChoosingGoods () {
-      if (this.params.onClickGoods === false) {
-        return
-      }
-      console.log('初始化商品弹窗', this.params.goodsIdList.toString())
-      let goodsIdArr = []
-      if (this.params.goodsIdList.toString() !== null) {
-        goodsIdArr = this.params.goodsIdList
-      }
-      this.transmitEditGoodsId(goodsIdArr)
-      this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
-    },
-    // 接收商品弹窗放回数据
-    choosingGoodsResult (row) {
-      console.log('接收商品弹窗返回数据', row)
-      this.imgsList = []
-      row.forEach((item, index) => {
-        console.log('接收商品弹窗返回id', item)
-        console.log('这轮之前', this.imgsList)
-        console.log('*********************')
-        this.imgsList.push(item)
-        console.log('数组中加入', item.goodsId)
-        console.log('这轮过后', this.imgsList)
-      })
-      this.params.goodsIdList = []
-      this.imgsList.forEach((item, index) => {
-        this.params.goodsIdList.push(item.goodsId)
-      })
-      console.log('点击确定后的数据：', this.imgsList)
-      console.log('点击确定后的id：', this.params.goodsIdList)
-      this.goodsNum = row.length
-      // 发送获取人数
-      this.fetchUserList(this.params)
-    },
-    // 选择商品
-    handleChooseGoods () {
-      if (this.params.onClickGoods === false) {
-        return
-      }
-      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
-    },
-    getRes (ids, urls) {
-      if (ids.length > 3) {
-        this.$message.warning('最多选择3个商品')
-      } else {
-        this.params.goodsIdList = ids
-        this.imgsList = urls
-        console.log('数据库存储：', this.params.goodsIdList.toString())
-        // 发送获取人数
-        this.fetchUserList(this.params)
-      }
-    },
-    // 删除图片
-    handleDelImg (id) {
-      if (this.params.onClickGoods === false) {
-        return
-      }
-      this.imgsList = this.imgsList.filter((item) => item.goodsId !== id)
-      console.log('现在的数据：', this.imgsList)
-      this.params.goodsIdList = []
-      this.imgsList.forEach((item, index) => {
-        this.params.goodsIdList.push(item.goodsId)
-      })
-      console.log('现在的id：', this.params.goodsIdList)
-      // this.params.goodsIdList = this.goodsIdList.filter((item) => item !== id)
-      this.fetchUserList(this.params)
-    },
-    // 获取选中的path
-    getPath (res) {
-      console.log(res)
-      this.pageLink = res
-    },
-    // 获取持有属于的值
-    getChooseSelectVal (val) {
-      const { onClickCard, cardIdsList, onClickTag, tagIdList } = val
-      this.params.onClickCard = onClickCard
-      this.params.cardIdsList = cardIdsList
-      this.params.onClickTag = onClickTag
-      this.params.tagIdList = tagIdList
-      // 请选择会员卡
-      switch (onClickCard) {
-        case true:
-          console.log(this.params)
-          this.fetchUserList(this.params)
-          break
-        case false:
-          this.fetchUserList(this.params)
-          break
-        default:
-          break
-      }
-      // 请选择会员标签
-      switch (onClickTag) {
-        case true:
-          this.fetchUserList(this.params)
-          break
-        case false:
-          this.fetchUserList(this.params)
-          break
-        default:
-          break
-      }
-    },
-    handleGetUser () {
-      this.dialogVisible = true
-    },
+
     // 获取发送人群数量
     fetchUserList (params) {
-      getUserNumberApi(params).then(res => {
-        const { error, content } = res
-        if (error === 0) {
-          console.log(res) // 返回发送人群的数量
-          const { userKey, userNumber } = content
-          console.log(`key+num${userKey}, ${userNumber}`)
-          this.userNumber = userNumber
-          this.params.userKey = userKey
+      let data = {
+        couponGiveGrantInfoParams: {
+          cart_box: params.couponGiveGrantInfoParams.cart_box, // 加购会员
+          goods_box: params.couponGiveGrantInfoParams.goods_box, // 加购指定商品
+          goods_ids: params.couponGiveGrantInfoParams.goods_ids, // 指定商品id
+          card_box: params.couponGiveGrantInfoParams.card_box, // 会员卡
+          tag_box: params.couponGiveGrantInfoParams.tag_box, // 会员标签
+          member_box: params.couponGiveGrantInfoParams.member_box, // 指定会员
+          custom_box: params.couponGiveGrantInfoParams.custom_box, // 自定义
+          validity: params.couponGiveGrantInfoParams.validity,
+          point_start_time: '',
+          point_end_time: ''
+        },
+        cardId: params.cardId,
+        tagId: params.tagId,
+        user: params.user,
+        havePay: params.havePay,
+        noPay: params.noPay,
+        maxCount: params.maxCount,
+        minCount: params.minCount,
+        maxAvePrice: params.maxAvePrice,
+        minAvePrice: params.minAvePrice
+      }
+      // 会员卡
+      data.cardId = data.cardId.join(',')
+      // 会员标签
+      data.tagId = data.tagId.join(',')
+      // 指定会员
+      data.user = data.user.join(',')
+      // 指定商品id
+      data.couponGiveGrantInfoParams.goods_ids = data.couponGiveGrantInfoParams.goods_ids.join(',')
+      // 指定登陆时间
+      data.couponGiveGrantInfoParams.point_start_time = data.couponGiveGrantInfoParams.validity[0]
+      data.couponGiveGrantInfoParams.point_end_time = data.couponGiveGrantInfoParams.validity[1]
+      getUserNum(data).then((res) => {
+        if (res.error === 0) {
+          this.userNumber = res.content.userNum
         }
-      }).catch(err => console.log(err))
+      })
     },
     // 加购人群发生变化的时候
-    handleOnClickNoPayChange (val) {
-      // this.params.onClickNoPay = !this.params.onClickNoPay
-      // 获取发送人群的数量
-      console.log(this.params)
+    cartBoxHandler (val) {
       this.fetchUserList(this.params)
     },
     // 指定购买商品人群发生变化的时候
-    handleOnClickGoodsChange (val) {
-      // this.params.onClickGoods = !this.params.onClickGoods
-      console.log(this.params)
+    goodsBoxHandler (val) {
+      this.imgsList = []
+      this.params.couponGiveGrantInfoParams.goods_ids = []
       this.fetchUserList(this.params)
     },
     // 选择指定的会员状态发生变化的时候
-    handleOnClickUserChange (val) {
-      // this.params.onClickUser = !this.params.onClickUser
-      console.log(this.params)
+    memberBoxHandler (val) {
+      this.params.user = []
+      this.memberNum = 0
       this.fetchUserList(this.params)
     },
     // 当自定义发生变化的时候
-    handleOnClickCustomRuleChange (val) {
-      // this.params.onClickCustomRule = !this.params.onClickCustomRule
+    customBoxHandler (val) {
       this.fetchUserList(this.params)
-    },
-    loginStartAndLoginEnd (val) {
-      const { startTime, endTime } = val
-      this.loginStart = startTime
-      this.loginEnd = endTime
-      this.params.customRuleInfo.loginStart = this.loginStart
-      this.params.customRuleInfo.loginEnd = this.loginEnd
-      this.fetchUserList(this.params)
-    },
-    //
-    customRuleInfoValChange (val) {
-      console.log(val)
-      if (val === `${this.$t('couponGive.timeLoginRecord')}`) {
-        this.showTime = true
-        this.customRuleInfoOptions = delObj({ arr: this.customRuleInfoOptions, val })
-        this.customRuleInfoVal = `${this.$t('couponGive.choose')}`
-      } else {
-        if (val !== `${this.$t('couponGive.choose')}` && val !== `${this.$t('couponGive.timeLoginRecord')}`) {
-          const res = this.customRuleInfoOptions.find(item => item.value === val)
-          this.optionsList.push(res)
-          this.customRuleInfoOptions = this.customRuleInfoOptions.filter((item) => item.value !== res.value)
-          this.customRuleInfoVal = `${this.$t('couponGive.choose')}`
-        }
-      }
-    },
-    // 输入框发生变化的时候
-    handleIpt (item) {
-      console.log(item)
-      const { key, ipt } = item
-      for (let a in this.params.customRuleInfo) {
-        if (a === key) {
-          switch (a) {
-            case `payedDay`: this.params.customRuleInfo.payedDay = ipt
-              break
-            case `noPayDay`: this.params.customRuleInfo.noPayDay = ipt
-              break
-            case `buyTimesMore`: this.params.customRuleInfo.buyTimesMore = ipt
-              break
-            case `buyTimesLess`: this.params.customRuleInfo.buyTimesLess = ipt
-              break
-            case `moneyAvgMore`: this.params.customRuleInfo.moneyAvgMore = ipt
-              break
-            case `moneyAvgLess`: this.params.customRuleInfo.moneyAvgLess = ipt
-              break
-            default:
-              break
-          }
-        }
-      }
-      console.log(this.params.customRuleInfo)
-      this.fetchUserList(this.params)
-    },
-    // 删除自定义
-    handleDelCustomize (val) {
-      // 自定义勾选状态为false 删除不可点
-      if (this.params.onClickCustomRule === false) {
-        return
-      }
-      if (val === 6) {
-        this.showTime = false
-        this.customRuleInfoOptions.push({
-          label: `${this.$t('couponGive.timeLoginRecord')}`,
-          value: `${this.$t('couponGive.timeLoginRecord')}`
-        })
-        this.params.customRuleInfo.loginEnd = ``
-        this.params.loginStart.loginStart = ``
-        this.fetchUserList(this.params)
-      } else {
-        console.log(val)
-        for (let a in this.params.customRuleInfo) {
-          if (a === val.key) {
-            switch (a) {
-              case `payedDay`: this.params.customRuleInfo.payedDay = ``
-                break
-              case `noPayDay`: this.params.customRuleInfo.noPayDay = ``
-                break
-              case `buyTimesMore`: this.params.customRuleInfo.buyTimesMore = ``
-                break
-              case `buyTimesLess`: this.params.customRuleInfo.buyTimesLess = ``
-                break
-              case `moneyAvgMore`: this.params.customRuleInfo.moneyAvgMore = ``
-                break
-              case `moneyAvgLess`: this.params.customRuleInfo.moneyAvgLess = ``
-                break
-              default:
-                break
-            }
-          }
-        }
-        console.log(this.params.customRuleInfo)
-        this.optionsList = this.optionsList.filter((item) => item.key !== val.key)
-        this.customRuleInfoOptions.unshift(val)
-        this.fetchUserList(this.params)
-      }
-    },
-    // handleShowBtn
-    handleShowBtn () {
-      if (this.formData.content !== ``) {
-        this.isShowBtn = true
-      } else {
-        this.isShowBtn = false
-      }
-    },
-    sendActionChange (e) {
-      this.$refs['params'].validateField('startTime')
     }
   },
   filters: {
     filterA: function (val) {
-      // console.log(val.search('N'))
       if (val.search('N') !== -1) {
         return val.substr(val.search('N') + 1, 1)
       }
@@ -952,7 +735,6 @@ export default {
     }
   }
 }
-
 </script>
 <style lang="scss" scoped>
 .inputTip {
@@ -1080,21 +862,6 @@ export default {
   margin: 5px 5px;
   position: relative;
 }
-.deleteIcon {
-  width: 17px;
-  height: 17px;
-  color: #fff;
-  background: #ccc;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  line-height: 17px;
-  text-align: center;
-  position: relative;
-  top: -41px;
-  right: -95px;
-  cursor: pointer;
-  opacity: 0.8;
-}
 .ImgWrap .moveIcon {
   width: 17px;
   height: 17px;
@@ -1220,19 +987,14 @@ export default {
       }
       .ulList {
         width: 100%;
+        li:first-child {
+          margin-top: 10px;
+        }
         li {
-          margin: 5px 0;
+          height: 50px;
+          position: relative;
           span {
             margin: 0 5px;
-          }
-          .img_span {
-            position: relative;
-            .img {
-              position: absolute;
-              left: 400px;
-              top: -50px;
-              cursor: pointer;
-            }
           }
         }
       }
@@ -1246,27 +1008,23 @@ export default {
     width: 17px !important;
     height: 17px;
     line-height: 17px;
-    top: -118px;
+    top: -112px;
     left: 45px;
-    cursor: pointer;
-    opacity: 0.8;
-    color: #fff;
-    background: #ccc;
-    border: 1px solid #ccc;
-    border-radius: 50%;
     text-align: center;
+    cursor: pointer;
   }
 }
 .addInfo {
   display: inline-block;
   position: relative;
   width: 100px;
-  height: 101px;
+  height: 96px;
   margin-bottom: 10px;
   background: #fff;
   border: 1px solid #e4e4e4;
   cursor: pointer;
   text-align: center;
+  border-radius: 10px;
   img {
     margin-top: 10px;
   }
@@ -1308,5 +1066,17 @@ export default {
       background-repeat: repeat-x;
     }
   }
+}
+.grantNum {
+  width: 90%;
+  height: 45px;
+  line-height: 45px;
+  background-color: #fff7eb;
+  border: 1px solid #ffd5a3;
+  border-radius: 4px;
+  color: #666;
+  margin: 0 auto;
+  padding-left: 10px;
+  font-size: 14px;
 }
 </style>

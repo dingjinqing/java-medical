@@ -304,15 +304,17 @@ global.wxPage({
   },
 
   // 立即抽奖
-  async drawNow () {
+   drawNow () {
     let that = this
-    this.setData({
-      hasClick: true
+    util.getNeedTemplateId('group_draw',async function() {
+      that.setData({
+        hasClick: true
+      })
+      let join = await that.lotteryJoinRequest()
+      that.lotteryRequest()
+      let { startStep, endStep, content } = join
+      that.rolling(startStep, endStep, content)
     })
-    let join = await that.lotteryJoinRequest()
-    that.lotteryRequest()
-    let { startStep, endStep, content } = join
-    that.rolling(startStep, endStep, content)
   },
 
   /**
@@ -442,7 +444,7 @@ global.wxPage({
       }
     }, { lotteryId: that.data.lotteryId })
     return {
-      path: '/pages1/lottery/lottery?lotteryId=' + that.data.lotteryId,
+      path: '/pages1/lottery/lottery?lotteryId=' + that.data.lotteryId +'&lotterySource=3',
       title: username + '邀你免费拿大奖，限时免费立即参加吧！！！',
       imageUrl: imageUrl + '/image/wxapp/share_lott1.jpg'
     }

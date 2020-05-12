@@ -120,7 +120,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
-                this.path = 'pages/pinlotterylist/pinlotterylist?group_draw_id='
+                this.path = 'pages1/pinintegration/pinintegration?pid='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
@@ -134,8 +134,11 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
-                this.path = 'pages/pinlotterylist/pinlotterylist?group_draw_id='
+                this.path = 'pages1/promoteinfo/promoteinfo?actCode='
                 this.trList = res.content
+                this.trList.forEach((item, index) => {
+                  item.id = item.actCode
+                })
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
             })
@@ -162,7 +165,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
-                this.path = 'pages1/lottery/lottery?lotteryId='
+                this.path = 'pages1/lottery/lottery?lotterySource=0&lotteryId='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
@@ -176,7 +179,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
-                this.path = 'pages1/lottery/lottery?lotteryId='
+                this.path = 'pages1/lottery/lottery?lotterySource=0&lotteryId='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
@@ -246,7 +249,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
-                this.path = 'pages1/couponpackage/couponpackage?pack_id='
+                this.path = 'pages1/couponpackage/couponpackage?packId='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)

@@ -19,7 +19,7 @@ public class WxAppGoodsSearchController extends WxAppBaseController {
      */
     @PostMapping("/api/wxapp/goods/search/init")
     public JsonResult getGoodsSearchFilterCondition() {
-        return success(shop().goodsMp.getGoodsSearchFilterCondition());
+        return success(shop().goodsMp.goodsSearchMpService.getGoodsSearchFilterCondition());
     }
 
 
@@ -32,11 +32,6 @@ public class WxAppGoodsSearchController extends WxAppBaseController {
     public JsonResult searchGoods(@RequestBody GoodsSearchMpParam param) {
         Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
-
-        if (GoodsSearchMpParam.PAGE_FROM_GROUP_LIST.equals(param.getPageFrom())) {
-            return success(shop().goodsMp.getGoodsGroupListFromGoodsSearch(param));
-        } else {
-            return success(shop().goodsMp.searchGoods(param));
-        }
+        return success(shop().goodsMp.goodsSearchMpService.searchGoodsGate(param));
     }
 }

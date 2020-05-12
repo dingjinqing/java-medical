@@ -35,7 +35,7 @@ public class WxAppCardReceiveSerive extends ShopBaseService {
 	@Autowired
 	private JedisManager jedis;
 	/**
-	 * 领取会员卡通过码
+	 * 	领取会员卡通过码
 	 * @throws MpException 
 	 */
 	public void receiveCard(ReceiveCardParam param) throws MpException {

@@ -3,17 +3,21 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeBo;
+import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
+import com.vpu.mp.service.pojo.shop.distribution.UserDistributionVo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
-import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
+import com.vpu.mp.service.pojo.wxapp.distribution.GoodsDistributionVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.shop.activity.dao.TailProcessorDao;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
+import com.vpu.mp.service.shop.distribution.MpDistributionGoodsService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
 import com.vpu.mp.service.shop.user.cart.CartService;
@@ -25,11 +29,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
 
 /**
  * 小程序-商品列表-处理最终价格信息
@@ -49,6 +49,10 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
     private Calculate calculate;
     @Autowired
     private CartService cartService;
+    @Autowired
+    MpDistributionGoodsService distributionGoods;
+    @Autowired
+    private ShopCommonConfigService shopCommonConfigService;
 
     /*****处理器优先级*****/
     @Override
@@ -116,19 +120,44 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
         goodsDetailMpBo.setGoodsVideo(getVideoFullUrlUtil(goodsDetailMpBo.getGoodsVideo(),true));
         goodsDetailMpBo.setGoodsVideoImg(getVideoFullUrlUtil(goodsDetailMpBo.getGoodsVideoImg(),false));
 
-        // 处理运费信息
-        Integer defaultNum  = Integer.valueOf(0).equals(goodsDetailMpBo.getLimitBuyNum())? 1:goodsDetailMpBo.getLimitBuyNum();
-        BigDecimal deliverPrice = calculate.calculateShippingFee(param.getUserId(),param.getLon(), param.getLat(), param.getGoodsId(), goodsDetailMpBo.getDeliverTemplateId(), defaultNum,goodsDetailMpBo.getProducts().get(0).getPrdRealPrice(),goodsDetailMpBo.getGoodsWeight());
-        goodsDetailMpBo.setDeliverPrice(deliverPrice);
-
         // 判断是否已收藏商品
+        log.debug("小程序-商品详情-判断是否已收藏商品");
         boolean collectedGoods = tailProcessorDao.isCollectedGoods(param.getUserId(), param.getGoodsId());
         goodsDetailMpBo.setIsCollected(collectedGoods);
         //服务承诺
+        log.debug("小程序-商品详情-服务承诺");
         PledgeBo pledgeList = tailProcessorDao.getPledgeList();
         goodsDetailMpBo.setPledgeSwitch(Integer.parseInt(pledgeList.getPledgeSwitch()));
         goodsDetailMpBo.setPledgeList(pledgeList.getPledgeList());
 
+        //销量展示开关
+        goodsDetailMpBo.setShowSalesNumber(shopCommonConfigService.getSalesNumber());
+        //客服按钮展示开关
+        goodsDetailMpBo.setCustomService(shopCommonConfigService.getCustomService());
+
+        // 商品信息在活动创建后又进行了修改，导致两者的规格交集为空
+        if (goodsDetailMpBo.getProducts().size() != 0) {
+            // 处理运费信息
+            log.debug("小程序-商品详情-处理运费信息");
+            Integer defaultNum  = Integer.valueOf(0).equals(goodsDetailMpBo.getLimitBuyNum())? 1:goodsDetailMpBo.getLimitBuyNum();
+            BigDecimal deliverPrice = calculate.calculateShippingFee(param.getUserId(),param.getLon(), param.getLat(), param.getGoodsId(), goodsDetailMpBo.getDeliverTemplateId(), defaultNum,goodsDetailMpBo.getProducts().get(0).getPrdRealPrice(),goodsDetailMpBo.getGoodsWeight());
+            goodsDetailMpBo.setDeliverPrice(deliverPrice);
+            log.debug("小程序-商品详情-处理运费信息结束");
+        }
+
+        //商品分销
+//        if(GoodsConstant.REBATE.equals(goodsDetailMpBo.getCanRebate())){
+//            log.debug("小程序-商品详情-处理分销信息");
+//            GoodsDistributionVo goodsDistributionVo = new GoodsDistributionVo();
+//            //获取用户分销等级
+//            UserDistributionVo distributionLevel = distributionGoods.userDistributionLevel(param.getUserId());
+//            RebateRatioVo rebateRatioVo = distributionGoods.goodsRebateInfo(param.getGoodsId(), param.getCatId(), param.getSortId(), param.getUserId());
+//            goodsDistributionVo.setIsDistributor(distributionLevel.getIsDistributor());
+//            goodsDistributionVo.setCanRebate((byte)1);
+//            goodsDistributionVo.setRebateRatio(rebateRatioVo);
+//            goodsDetailMpBo.setGoodsDistribution(goodsDistributionVo);
+//            log.debug("小程序-商品详情-处理分销信息结束");
+//        }
     }
 
     /**
@@ -161,17 +190,13 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
             }
             if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
                 totalPrice = totalPrice.add(goods.getPrdPrice().multiply(BigDecimal.valueOf(goods.getCartNumber())));
-            }else {
+            }else if (!BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS.equals(goods.getActivityType())){
                 isAllCheck=0;
             }
         }
-        //图片链接
-        cartBo.getCartGoodsList().forEach(cartGoods->{
-            cartGoods.setGoodsImg(cartService.getImgFullUrlUtil(cartGoods.getGoodsImg()));
-        });
-        cartBo.getInvalidCartList().forEach(cartGoods->{
-            cartGoods.setGoodsImg(cartService.getImgFullUrlUtil(cartGoods.getGoodsImg()));
-        });
+        //减去折扣
+        totalPrice= totalPrice.subtract(cartBo.getFullReductionPrice());
+
         cartBo.setTotalPrice(totalPrice);
         cartBo.setIsAllCheck(isAllCheck);
 

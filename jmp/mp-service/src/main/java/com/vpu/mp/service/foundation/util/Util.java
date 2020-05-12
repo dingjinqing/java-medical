@@ -229,6 +229,7 @@ public class Util {
             return t;
         } catch (IOException e) {
 			log.error("数据 ->{}<- 反序列化失败", e);
+			e.printStackTrace();
             throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
         }
     }
@@ -248,6 +249,7 @@ public class Util {
             return t;
         } catch (IOException e) {
             log.error("数据 ->{}<- 反序列化失败", json);
+            e.printStackTrace();
             throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
         }
     }
@@ -667,6 +669,15 @@ public class Util {
             return Collections.emptyList();
         }
         return Arrays.stream(idString.split(",")).map(Integer::valueOf).collect(Collectors.toList());
+    }
+    /**
+     * String 转 List
+     */
+    public static List<String> stringToStringList(String idString) {
+        if (StringUtils.isBlank(idString)) {
+            return Collections.emptyList();
+        }
+        return Arrays.stream(idString.split(",")).map(String::valueOf).collect(Collectors.toList());
     }
 
     /**

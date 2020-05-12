@@ -149,10 +149,10 @@ public class AdminCouponController extends AdminBaseController{
     }
 
     /**
-     * 取活动分享二维码
+     * 	取活动分享二维码
      */
     @GetMapping("/admin/coupon/share")
-    public JsonResult getCouponShareCode(Integer id) {
-        return success(shop().coupon.getMpQrCode(id));
+    public JsonResult getCouponShareCode(Integer couponId) {
+        return this.success(shop().coupon.getMpQrCode(couponId));
     }
 }

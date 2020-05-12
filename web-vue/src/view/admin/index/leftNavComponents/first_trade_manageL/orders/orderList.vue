@@ -442,10 +442,7 @@
                         alt=""
                       >
                       <div class="right_info">
-                        <div class="goods_name"><span><i
-                              class="goods-tag"
-                              v-if="goodsItem.isGift === 1"
-                            >赠品</i>{{goodsItem.goodsName}}</span></div>
+                        <div class="goods_name"><span>{{goodsItem.goodsName}}</span></div>
                         <div class="goods_spec">{{goodsItem.goodsAttr}}</div>
                       </div>
                     </div>
@@ -602,7 +599,7 @@
                       </template>
                       <template v-else>
                         <span>
-                          {{currencyPool[orderItem.currency][lang][1] + orderItem.moneyPaid.toFixed(2) + ' + ' + (orderItem.scoreDiscount * 100) + $t('order.score')}}
+                          {{currencyPool[orderItem.currency][lang][1] + orderItem.moneyPaid.toFixed(2) + ' + ' + (orderItem.scoreDiscount * orderItem.scoreProportion) + $t('order.score')}}
                         </span>
                         <br />
                         <span>
@@ -632,10 +629,7 @@
                           alt=""
                         >
                         <div class="right_info">
-                          <div class="goods_name"><span><i
-                                class="goods-tag"
-                                v-if="goodsItem.isGift === 1"
-                              >赠品</i>{{childGoods.goodsName}}</span></div>
+                          <div class="goods_name"><span>{{childGoods.goodsName}}</span></div>
                           <div class="goods_spec">{{childGoods.goodsAttr}}</div>
                         </div>
                       </div>
@@ -944,7 +938,7 @@ export default {
       this.paymentTypeMap = new Map(this.$t('order.paymentTypeList'))
     },
     search () {
-      this.searchParams.pinStatus = this.$route.query.pinStatus ? this.$route.query.pinStatus : []
+      this.searchParams.pinStatus = this.$route.query.pinStatus ? [this.$route.query.pinStatus] : []
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
       this.searchType = 0
@@ -1234,13 +1228,6 @@ export default {
                 text-align: left;
                 justify-content: space-between;
                 .goods_name {
-                  .goods-tag {
-                    border: 1px solid;
-                    vertical-align: middle;
-                    margin-right: 5px;
-                    padding: 0 4px;
-                    color: red;
-                  }
                   > span {
                     text-overflow: ellipsis;
                     display: -webkit-box;
@@ -1248,7 +1235,7 @@ export default {
                     overflow: hidden;
                     -webkit-box-orient: vertical;
                     text-align: left;
-                    line-height: 25px;
+                    line-height: 1;
                   }
                 }
               }

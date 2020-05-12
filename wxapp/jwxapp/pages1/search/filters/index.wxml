@@ -1,19 +1,20 @@
 <wxs src="./filter.wxs" module="filter"></wxs>
+<wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="right" vertical="fill" bindtap='bindClose'>
   <view class="filter-content" animation="{{animation}}" style="height:calc(100% - {{navHeight}}px);">
     <view class="filter-item">
       <view class="item-title-content">
-        <text class="title">价格区间</text>
+        <text class="title">{{i18n.$t(localePack,"page1.search.priceRange")}}</text>
       </view>
       <view class="item-content price">
-        <input type="number" class="item price" placeholder="最低价" data-target="min" bindinput="changeInput" value="{{minPrice}}"></input>
+        <input type="number" class="item price" placeholder='{{i18n.$t(localePack,"page1.search.minPrice")}}' data-target="min" bindinput="changeInput" value="{{minPrice}}"></input>
         <view class="small-line"></view>
-        <input type="number" class="item price" placeholder="最高价" data-target="max" bindinput="changeInput" value="{{maxPrice}}"></input>
+        <input type="number" class="item price" placeholder='{{i18n.$t(localePack,"page1.search.maxPrice")}}' data-target="max" bindinput="changeInput" value="{{maxPrice}}"></input>
       </view>
     </view>
     <view class="filter-item" wx:if="{{sorts}}">
       <view class="item-title-content">
-        <text class="title">商品分类</text>
+        <text class="title">{{i18n.$t(localePack,"page1.search.goodsSort")}}</text>
       </view>
       <view class="item-content">
         <!-- 一级分类三个及以下 -->
@@ -27,13 +28,13 @@
           <block wx:for="{{sort}}" wx:for-item="sortItem" wx:for-item="sortIndex" wx:key="sortId">
             <view class="item" wx:if="{{sortIndex < 2}}" data-sort-id="{{sortItem.sortId}}" bindtap="chooseSort" style="{{sortItem.sortId === selectedSort && 'background:'+main_setting.somColor+';color:'+main_setting.comColor+';border-color:'+main_setting.comColor+';'}}">{{sortItem.sortName}}</view>
           </block>
-          <view class="item more" bindtap="showSort">更多...</view>
+          <view class="item more" bindtap="showSort">{{i18n.$t(localePack,"page1.search.more")}}...</view>
         </block>
       </view>
     </view>
     <view class="filter-item" wx:if="{{formatGoodsBrands}}">
       <view class="item-title-content">
-        <text class="title">品牌</text>
+        <text class="title">{{i18n.$t(localePack,"page1.search.brand")}}</text>
         <text class="right-info" style="color:{{main_setting.comColor}};">{{filter.getBrandsName(selectedBrands,formatGoodsBrands)}}</text>
       </view>
       <view class="item-content">
@@ -47,22 +48,22 @@
             <view class="item brand" data-brand-id="{{brandItem.id}}" bindtap="chooseBrands" style="{{filter.includes(selectedBrands,brandItem.id) && 'background:'+main_setting.somColor+';color:'+main_setting.comColor+';border-color:'+main_setting.comColor+';'}}" wx:if="{{brandIndex < 5}}">{{brandItem.brandName}}</view>
           </block>
         </block>
-        <view class="item brand more" bindtap="showBrand">更多...</view>
+        <view class="item brand more" bindtap="showBrand">{{i18n.$t(localePack,"page1.search.more")}}...</view>
       </view>
     </view>
     <view class="filter-item" wx:if="{{activityTypes.length > 0}}">
       <view class="item-title-content">
-        <text class="title">活动商品</text>
+        <text class="title">{{i18n.$t(localePack,"page1.search.actGoods")}}</text>
       </view>
       <view class="item-content">
        <block wx:for="{{activityTypes}}" wx:key="*this">
-        <view bindtap="chooseActivity" style="{{filter.includes(selectedActTypes,item) && 'background:'+main_setting.somColor+';color:'+main_setting.comColor+';border-color:'+main_setting.comColor+';'}}" data-activity-type="{{item}}" class="item" wx:if="{{item !== 0}}">{{activityName[item]}}</view>
+        <view bindtap="chooseActivity" style="{{filter.includes(selectedActTypes,item) && 'background:'+main_setting.somColor+';color:'+main_setting.comColor+';border-color:'+main_setting.comColor+';'}}" data-activity-type="{{item}}" class="item" wx:if="{{item !== 0}}">{{i18n.$t(localePack,"page1.search.activityName."+item)}}</view>
        </block>
       </view>
     </view>
     <view class="filter-item" wx:if="{{goodsLabels}}">
       <view class="item-title-content">
-        <text class="title">商品标签</text>
+        <text class="title">{{i18n.$t(localePack,"page1.search.goodsLabel")}}</text>
       </view>
       <view class="item-content">
         <block wx:for="{{goodsLabels}}" wx:for-item="labelItem" wx:key="id">
@@ -71,8 +72,8 @@
       </view>
     </view>
     <view class="filter-footer">
-      <view class="reset" bindtap="reset">重置</view>
-      <view class="confirm" bindtap="confirm" style="background-color:{{main_setting.comColor}};">确认</view>
+      <view class="reset" bindtap="reset">{{i18n.$t(localePack,"page1.search.reset")}}</view>
+      <view class="confirm" bindtap="confirm" style="background-color:{{main_setting.comColor}};">{{i18n.$t(localePack,"page1.search.confirm")}}</view>
     </view>
   </view>
 </v-popup>

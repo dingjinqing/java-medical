@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.shop.order.virtual;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import lombok.Data;
 
 /**
  * @author huangronggang
@@ -34,7 +34,7 @@ public class CouponPackOrderVo {
 	/**用户余额消费金额 */
 	private BigDecimal useAccount;
 	/** 用户消费的积分 */
-	private BigDecimal useScore;
+	private Integer useScore;
 	/** 用户消费的会员卡 金额*/
 	private BigDecimal  memberCardBalance;
 	
@@ -59,12 +59,12 @@ public class CouponPackOrderVo {
 	
 	/** 下单时间 */
 	private Timestamp createTime;
-	/**退款标志位 0:未申请退款，1：退款失败，2：退款成功 */
+	/**退款标志位 0:未申请退款，1：退款失败，2：退款成功，3是自定义临时状态，代表订单已经部分退款 */
 	private Byte returnFlag;
 	/**未发放优惠劵数量 */
 	private Integer surplusAmount;
 	/** 已退积分*/
-	private BigDecimal returnScore;
+	private Integer returnScore;
 	/** 已退余额 */
 	private BigDecimal returnAccount;
 	/** 已退现金 */

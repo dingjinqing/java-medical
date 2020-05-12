@@ -17,10 +17,11 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let {orderSn,useInfo} = options
+    let {orderSn = null,useInfo,isNotGoods=null} = options
     this.setData({
       orderSn,
-      useInfo:JSON.parse(useInfo)
+      useInfo:JSON.parse(useInfo),
+      isNotGoods
     })
     this.selectComponent('#recommend').requestData()
     this.payGiftRequest()
@@ -32,9 +33,9 @@ global.wxPage({
     util.jumpLink(`/pages/index/index`,'redirectTo')
   },
   payGiftRequest(){
+    if(!this.data.orderSn) return
     util.api('/api/wxapp/payaward/prize/info',res=>{
       if(res.error === 0 && res.content){
-        let {show} = res.content
         let awardInfo = this.getAwardInfo(res.content)
         this.setData({
           payAwardDialog:true,

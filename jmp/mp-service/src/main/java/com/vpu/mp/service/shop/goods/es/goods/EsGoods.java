@@ -334,4 +334,31 @@ public class EsGoods  {
      */
     @EsFiled(name=EsSearchName.DEFAULT_PRD,type = EsFiledTypeConstant.BOOL,doc_values = false)
     private Boolean defPrd;
+
+    /**
+     * 是否分销改价
+     */
+    @EsFiled(name=EsSearchName.CAN_REBATE,type = EsFiledTypeConstant.BYTE,doc_values = false)
+    private Byte canRebate;
+    /**
+     * 商品创建的时间
+     */
+    @EsFiled(name=EsSearchName.CREATE_TIME,type = EsFiledTypeConstant.DATE)
+    private String createTime;
+    /**
+     * 商品上架的时间
+     */
+    @EsFiled(name=EsSearchName.SALE_TIME,type = EsFiledTypeConstant.DATE)
+    private String saleTime;
+
+    /**
+     * 商品总销售数量（base_sale+goods_sale）
+     */
+    @EsFiled(name=EsSearchName.TOTAL_SALE_NUMBER,type = EsFiledTypeConstant.INTEGER)
+    private Integer totalSaleNumber;
+
+
+
+    @EsFiled(name="test_time",type = EsFiledTypeConstant.DATE)
+    private String testTime;
 }

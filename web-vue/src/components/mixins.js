@@ -259,9 +259,6 @@ const myMixin = {
         if (enNameArr.indexOf(name) !== -1 || second) {
           console.log('触发', vsNameArr[index])
           let vsName = second || vsNameArr[index]
-          // 会员卡左边权限校验
-          if (!second && name === 'user_card') resolve(true)
-
           judgeJurisdictionRequest({
             'V-EnName': name,
             'V-VsName': vsName

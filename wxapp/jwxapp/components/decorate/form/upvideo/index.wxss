@@ -1,0 +1,25 @@
+@import "../upimg/index.wxss";
+.upimg-container .img_box{
+  box-sizing: border-box;
+  padding: 20rpx 25rpx;
+}
+.upimg-container .img_box{
+  width: 100%;
+}
+.upimg-container .img_box>view{
+  margin: 0;
+}
+.img_box > video{
+  width: 100%;
+}
+.img_box{
+  position: relative;
+}
+.upimg-container > .img_box > .up_close{
+  position: absolute;
+  right: 6rpx;
+  top: 2rpx;
+  border: none;
+  width:32rpx;
+  z-index: 2
+}

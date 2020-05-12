@@ -13,7 +13,10 @@ import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
 import com.vpu.mp.service.pojo.shop.member.card.*;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
+import com.vpu.mp.service.shop.card.CardFreeShipService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -47,7 +50,7 @@ public class UserCardDaoService extends ShopBaseService{
 	public final static Byte CARD_ONLINE = 0;
     public final static Byte CARD_OFFLINE = 1;
 	@Autowired private  UserCardService userCardService;
-
+	@Autowired private CardFreeShipService freeshipSvc;
 
     /**
 	 * 获取用户持有的等级卡
@@ -249,10 +252,10 @@ public class UserCardDaoService extends ShopBaseService{
 	private SelectConditionStep<Record> selectValidCardCondition(Integer userId, Byte[] cardType) {
 		return selectValidCardSQL().where(USER_CARD.USER_ID.eq(userId))
 							.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
-							.and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
 							.and(MEMBER_CARD.CARD_TYPE.in(cardType))
 							.and(
 									(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()).or(USER_CARD.EXPIRE_TIME.isNull()))
+									.or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER))
 								)
 							.and(
 									(MEMBER_CARD.USE_TIME.in(userCardService.useInDate()))
@@ -277,7 +280,6 @@ public class UserCardDaoService extends ShopBaseService{
         return selectValidCardSQL()
 			.where(USER_CARD.USER_ID.eq(userId))
 			.and(USER_CARD.FLAG.eq(MCARD_DF_NO))
-			.and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
 			.and(
 					(USER_CARD.EXPIRE_TIME.isNull())
 					.or(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
@@ -310,7 +312,7 @@ public class UserCardDaoService extends ShopBaseService{
 			.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
 			.fetchAnyInto(String.class);
 	}
-
+	
 	/**
 	 *	 获取用户等级
 	 *	@return 等级 || null
@@ -455,7 +457,8 @@ public class UserCardDaoService extends ShopBaseService{
 		return db().select(
 			 	USER_CARD.USER_ID,USER_CARD.CARD_ID,USER_CARD.FLAG.as("userCardFlag"),USER_CARD.CARD_NO,USER_CARD.EXPIRE_TIME,
 			 	USER_CARD.IS_DEFAULT,USER_CARD.MONEY,USER_CARD.SURPLUS,USER_CARD.ACTIVATION_TIME,USER_CARD.EXCHANG_SURPLUS,
-			 	USER_CARD.CREATE_TIME.as("userCardCreateTime"),USER_CARD.UPDATE_TIME.as("userCardUpdateTime"),
+			 	USER_CARD.CREATE_TIME.as("userCardCreateTime"),USER_CARD.UPDATE_TIME.as("userCardUpdateTime"),USER_CARD.FREE_LIMIT,
+			 	USER_CARD.FREE_NUM,
 			 MEMBER_CARD.asterisk());
 	}
 
@@ -523,7 +526,8 @@ public class UserCardDaoService extends ShopBaseService{
         ValidUserCardBean card = selectValidCardSQL().where(USER_CARD.CARD_NO.eq(cardNo))
             .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
             .and(
-                (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime())).or(USER_CARD.EXPIRE_TIME.isNull())
+                (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
+                    .or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER))
             )
             .and(
                 (MEMBER_CARD.USE_TIME.in(userCardService.useInDate()))
@@ -538,63 +542,60 @@ public class UserCardDaoService extends ShopBaseService{
                     .or(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_NO))
                     .or(MEMBER_CARD.ACTIVATION_CFG.isNull())
             ).fetchAnyInto(ValidUserCardBean.class);
+
         if(card != null) {
-            card.setAvatar(userCardService.getCardAvatar());
-            // 快照时间
-            EffectTimeParam etParam = new EffectTimeParam();
-            BeanUtils.copyProperties(card, etParam);
-            EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
-            BeanUtils.copyProperties(etBean, card);
-            // 背景处理
-            CardBgBean bg = saas.getShopApp(getShopId()).member.card.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
-            BeanUtils.copyProperties(bg, card);
+        	// 处理卡的有效时间
+            dealWithValidUserCardEffectimeAndBgImg(card);
+            // 处理包邮信息
+            dealWithValidUserCardFreeship(card);
             return new OrderMemberVo().init(card);
         }
-        return null;
+        return null; 
     }
 
-    /**
+    private void dealWithValidUserCardFreeship(ValidUserCardBean card) {
+		logger().info("处理有效卡的包邮信息");
+		// TODO 小程序端语言国际化处理
+		String lang = null;
+		UserCardParam param = new UserCardParam();
+		BeanUtils.copyProperties(card,param);
+		CardFreeship freeshipData = freeshipSvc.getFreeshipData(param, lang);
+		card.setCardFreeShip(freeshipData);		
+	}
+
+	private void dealWithValidUserCardEffectimeAndBgImg(ValidUserCardBean card) {
+		logger().info("计算卡的有效时间和背景");
+		card.setAvatar(userCardService.getCardAvatar());
+        // 快照时间
+        EffectTimeParam etParam = new EffectTimeParam();
+        BeanUtils.copyProperties(card, etParam);
+        EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
+        BeanUtils.copyProperties(etBean, card);
+        // 背景处理
+        CardBgBean bg = saas.getShopApp(getShopId()).member.card.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
+        BeanUtils.copyProperties(bg, card);
+	}
+
+	/**
      * 王帅
      * 获取等级卡
      * @param userId id
      * @return result
      */
     public OrderMemberVo getOrderGradeCard(Integer userId){
-        OrderMemberVo card = selectValidCardSQL().where(USER_CARD.USER_ID.eq(userId))
-            .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
-            .and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
-            .and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
-            .and(
-                (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
-                    .or(USER_CARD.EXPIRE_TIME.isNull())
-            )
-            .and(
-                (MEMBER_CARD.USE_TIME.in(userCardService.useInDate()))
-                    .or(MEMBER_CARD.USE_TIME.isNull())
-            )
-            .and(
-                ((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX)).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
-                    .or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER))
-            )
-            .and(
-                (MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull()))
-                    .or(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_NO))
-                    .or(MEMBER_CARD.ACTIVATION_CFG.isNull())
-            ).fetchAnyInto(OrderMemberVo.class);
-
-        if(card == null) {
-            return card;
+        List<ValidUserCardBean> validCardList = getValidCardList(userId,
+            new Byte[] {CardConstant.MCARD_TP_GRADE },
+            OrderConstant.MEMBER_CARD_ONLINE);
+        if(CollectionUtils.isEmpty(validCardList)) {
+            return null;
         }else {
-            card.setAvatar(userCardService.getCardAvatar());
-            // 快照时间
-            EffectTimeParam etParam = new EffectTimeParam();
-            BeanUtils.copyProperties(card, etParam);
-            EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
-            BeanUtils.copyProperties(etBean, card);
-            // 背景处理
-            CardBgBean bg = saas.getShopApp(getShopId()).member.card.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
-            BeanUtils.copyProperties(bg, card);
-            return card.init();
+            //等级卡只有一个
+            ValidUserCardBean card = validCardList.get(0);
+            //处理卡的有效时间
+            dealWithValidUserCardEffectimeAndBgImg(card);
+            // 处理卡的包邮信息
+            dealWithValidUserCardFreeship(card);
+            return new OrderMemberVo().init(card);
         }
     }
 
@@ -608,30 +609,18 @@ public class UserCardDaoService extends ShopBaseService{
     public List<OrderMemberVo> getOrderMembers(Integer userId,Byte[] cardType,Byte type) {
         List<ValidUserCardBean> validCardList = getValidCardList(userId, cardType, type);
         // 会员卡头像处理
-        String cardAvatar = userCardService.getCardAvatar();
+        
         for(ValidUserCardBean card: validCardList) {
-        	card.setAvatar(cardAvatar);
-        	// 快照时间
-        	EffectTimeParam etParam = new EffectTimeParam();
-        	BeanUtils.copyProperties(card, etParam);
-        	EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
-        	BeanUtils.copyProperties(etBean, card);
-        	// 背景处理
-        	CardBgBean bg = saas.getShopApp(getShopId()).member.card.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
-        	BeanUtils.copyProperties(bg, card);
+        	// 处理卡的有效时间
+        	dealWithValidUserCardEffectimeAndBgImg(card);
+        	// 处理卡的包邮信息
+            dealWithValidUserCardFreeship(card);
         }
         if(CollectionUtils.isEmpty(validCardList)){
             return Lists.newArrayList();
         }
         List<OrderMemberVo> result = new ArrayList<>(validCardList.size());
         for (ValidUserCardBean card : validCardList) {
-        	if(CardUtil.isGradeCard(card.getCardType())) {
-        		MemberCardRecord tmpCard = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(card.getCardId())).fetchOne();
-        		if(CardConstant.MCARD_FLAG_STOP.equals(card.getFlag())) {
-        			// 等级卡已经停止使用
-        			continue;
-        		}
-        	}
             result.add(new OrderMemberVo().init(card));
         }
         return result;
@@ -707,7 +696,8 @@ public class UserCardDaoService extends ShopBaseService{
     public UserCardVo getUserCard(Condition condition) {
 		
 		return db().select(USER_CARD.USER_ID,USER_CARD.CARD_ID,USER_CARD.FLAG.as("uFlag"),USER_CARD.CARD_NO,USER_CARD.EXPIRE_TIME,USER_CARD.IS_DEFAULT,
-				USER_CARD.MONEY,USER_CARD.SURPLUS,USER_CARD.EXCHANG_SURPLUS,USER_CARD.ACTIVATION_TIME,USER_CARD.CREATE_TIME.as("uCreateTime"),MEMBER_CARD.asterisk())
+				USER_CARD.MONEY,USER_CARD.SURPLUS,USER_CARD.EXCHANG_SURPLUS,USER_CARD.ACTIVATION_TIME,USER_CARD.CREATE_TIME.as("uCreateTime"),
+				USER_CARD.FREE_LIMIT,USER_CARD.FREE_NUM,MEMBER_CARD.asterisk())
 			.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 			.where(condition)
 			.and(USER_CARD.FLAG.eq(CardConstant.UCARD_FG_USING))

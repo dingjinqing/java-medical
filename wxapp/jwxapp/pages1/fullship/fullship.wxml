@@ -1,8 +1,9 @@
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml" />
 <v-container bindsearch="getSearchText">
   <view slot="rule" class="rule">
-    <text>以下商品：{{ruleInfo.ruleCondition}}</text>
-    <text bindtap="goRuleInfo">活动规则</text>
+    <text>{{i18n.$t(localePack,"page1.actPage.followingProducts")}}：{{ruleInfo.ruleCondition}}</text>
+    <text bindtap="goRuleInfo">{{i18n.$t(localePack,"page1.actPage.actRule")}}</text>
   </view>
   <view slot="goods-content" class="goods-content">
     <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
@@ -12,9 +13,9 @@
     </block>
   </view>
   <view class="footer" slot="footer">
-    <view class="selected-price">已选<text style="color:{{comColor}};">￥{{cartData.totalPrice || 0.00}}</text></view>
-    <view class="selected" style="background-color:{{commonColor}}" bindtap="showSelected">查看已选商品</view>
-    <view class="cart" style="background-color:{{comColor}}" bindtap="goCart">去购物车</view>	
+    <view class="selected-price">{{i18n.$t(localePack,"page1.actPage.selected")}}<text style="color:{{comColor}};">￥{{cartData.totalPrice || 0.00}}</text></view>
+    <view class="selected" style="background-color:{{commonColor}}" bindtap="showSelected">{{i18n.$t(localePack,"page1.actPage.viewSelectedGoods")}}</view>
+    <view class="cart" style="background-color:{{comColor}}" bindtap="goCart">{{i18n.$t(localePack,"page1.actPage.goCart")}}</view>	
   </view>
 </v-container>
 
@@ -25,7 +26,7 @@
   <v-goods-num-cfg slot="num-cfg"  origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
   <view class="spec-footer" slot="footer">
     <view class="footer_flex_view"  bindtap="addCart" style='color:#fff;background:{{comColor}};'>
-    <text>加入购物车</text>
+    <text>{{i18n.$t(localePack,"page1.actPage.addCart")}}</text>
   </view>
   </view>
 </v-spec-dialog>

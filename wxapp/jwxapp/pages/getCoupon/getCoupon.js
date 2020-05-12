@@ -41,9 +41,9 @@ global.wxPage({
         type: options.type 
       })
     }
-    if (options.couponSn || options.id || options.scene) {
+    if (options.couponSn || options.couponId || options.scene) {
       couponSn = options.couponSn
-      couponId = Number(options.id)
+      couponId = Number(options.couponId)
       // 个人中心查看详情
       util.api("api/wxapp/coupon/detail", function (res) {
         if (res.error == 0) {
@@ -212,8 +212,13 @@ global.wxPage({
 
   // 立即使用
   to_search: function (e) {
-    var coupon_sn = e.currentTarget.dataset.coupon_sn;
-    util.jumpLink('/pages1/search/search?couponSn=' + coupon_sn);
+    var actId = e.currentTarget.dataset.act_id;
+    util.jumpLink(`/pages1/search/search${util.getUrlParams({
+      pageFrom:20,
+      outerPageParam:JSON.stringify({
+        actId
+      })
+    })}`);
   },
 
   // 我的优惠券

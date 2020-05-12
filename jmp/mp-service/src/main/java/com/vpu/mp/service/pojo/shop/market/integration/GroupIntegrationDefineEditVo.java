@@ -40,5 +40,7 @@ public class GroupIntegrationDefineEditVo {
 	
 	/** 用户开团24小时后,拼团未满员是否可以瓜分积分 */
 	private Byte isDayDivide ; 
+	/** 瓜分积分的说明*/
+	private String activityCopywriting;
 }
 

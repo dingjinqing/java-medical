@@ -1,22 +1,11 @@
 package com.vpu.mp.controller.admin;
 
-import javax.validation.Valid;
-
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyStatusVaild;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyAnalysisParam;
@@ -24,11 +13,18 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyDetailParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyEditParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyIdParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyListParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyStatusVaild;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailListVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyParam;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.sql.Timestamp;
 
 /**
@@ -63,13 +59,8 @@ public class AdminGroupBuyController extends AdminBaseController {
     @PostMapping("/admin/market/groupbuy/add")
     public JsonResult addGroupBuy(@RequestBody @Valid GroupBuyParam param) {
         Timestamp date = DateUtil.getLocalDateTime();
-        //校验活动商品是否叠加 (并发不安全)
-        Boolean flag = shop().groupBuy.validGroupGoods(null,param.getGoodsId(),param.getStartTime(),param.getEndTime(),date);
-        if (!flag){
-            return fail(JsonResultMessage.GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING);
-        }
-        shop().groupBuy.addGroupBuy(param,flag);
-//        return success(Util.translateMessage(getLang(), JsonResultMessage.GROUP_BUY_ADD_ACTIVITY_STOP_STATUS,I18N_RESOURCE));
+
+        shop().groupBuy.addGroupBuy(param);
         return success();
     }
 

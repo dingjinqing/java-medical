@@ -113,12 +113,14 @@ export const en = {
     goodsSpecPrice: 'SKU Price：',
     goodsSpecShopPrice: 'Price(dollars)',
     goodsSpecShopCost: 'Cost price(dollars)',
+    goodsSpecMarketPrice: 'Market price(dollars)',
     goodsSpecGoodsNum: 'Stock',
     goodsSpecGoodsPrdSn: 'SKU SN',
     goodsSpecGoodsImg: 'SKU Picture',
     batchUpdate: 'Batch Setting',
     batchPrice: 'Price',
     batchCost: 'Cost price',
+    batchMarketPrice: 'Market price',
     batchNum: 'Stock',
     batchImgSrc: 'SKU Picture',
     goodsNumber: 'Goods Stock：',
@@ -131,7 +133,10 @@ export const en = {
     goodsGradeMember: 'Membership price：',
     goodsGradeMemberTip:
       'Membership price is only set for grade membership card, non-grade membership card can not set membership price.If the grade membership card also contains member discount, then member price and member discount can be enjoyed at the same time',
-    goodsGradeMemberSetting: 'Membership price setting：'
+    goodsGradeMemberSetting: 'Membership price setting：',
+    goodsSpecPrdPrice: 'Goods sku price',
+    goodsPrice: 'Goods price',
+    unifyMemberCardsPrice: 'Unify member card price'
   },
   stockAndPriceInfoOther: {
     limitBuyNum: 'Minimum purchase quantity：',
@@ -243,6 +248,7 @@ export const en = {
     promotionLanguage: 'PromotionLanguage：',
     promotionLanguageTooLong: 'Promotion language too long',
     promotionDocTooLong: 'Promotion doc too long',
+    promotionDocIsNull: 'promotion doc is null',
     shareGoodsAction: 'Goods share poster：',
     shareGoodsActionRadio1: 'Default style',
     shareGoodsActionRadio2: 'Customer style',

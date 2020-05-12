@@ -25,13 +25,15 @@ public class GoodsDetailMpBo extends GoodsDetailMpVo{
     @JsonIgnore
     private Integer baseSale;
 
-    /**上下架状态*/
+    /**是否分销改价*/
     @JsonIgnore
-    private Byte isOnSale;
+    private Byte canRebate;
+
     @JsonIgnore
     private Integer goodsVideoId;
     @JsonIgnore
     private List<GradePrd> gradeCardPrice = new ArrayList<>();
+
     //************ElasticSearch中的数据**************end
 
     @Data
@@ -53,7 +55,7 @@ public class GoodsDetailMpBo extends GoodsDetailMpVo{
     public String toString() {
         return "GoodsDetailMpBo{" +
             ", baseSale=" + baseSale +
-            ", isOnSale=" + isOnSale +
+            ", canRebate=" + canRebate +
             ", goodsVideoId=" + goodsVideoId +
             ", gradeCardPrice=" + gradeCardPrice +
             ", processedTypes=" + processedTypes +

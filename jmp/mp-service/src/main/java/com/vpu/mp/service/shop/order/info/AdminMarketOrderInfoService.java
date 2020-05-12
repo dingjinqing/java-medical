@@ -275,6 +275,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
     }
 
     private void buildMarketOrderOptionsParam(SelectJoinStep<? extends Record> select,MarketOrderListParam param, byte goodsType){
+        param.initOrderStatus();
         OrderPageListQueryParam orderParam = new OrderPageListQueryParam();
         orderParam.setCurrentPage(param.getCurrentPage());
         orderParam.setPageRows(param.getPageRows());

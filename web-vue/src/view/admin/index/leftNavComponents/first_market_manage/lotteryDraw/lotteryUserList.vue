@@ -4,70 +4,70 @@
     <div class="main">
       <el-form label-width="100px">
         <el-form-item
-          label="用户昵称："
+          :label="$t('lotteryDraw.nickName') + '：'"
           class="item"
         >
           <el-input
             size="small"
             v-model="requestParams.nickName"
-            placeholder="请输入用户昵称"
+            :placeholder="$t('lotteryDraw.nickNameTip')"
             clearable
             class="inputWidth"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="参与时间："
+          :label="$t('lotteryDraw.startTime') + '：'"
           class="item"
         >
           <el-date-picker
             size="small"
             v-model="requestParams.startTime"
-            type="datetime"
+            type="date"
             clearable
             class="inputWidth"
-            value-format="yyyy-MM-dd 00:00:00"
+             value-format="yyyy-MM-dd HH:mm:ss"
             :placeholder="$t('actionRecord.startTime')"
           >
           </el-date-picker>
-          <span>至</span>
+          <span>{{ $t('lotteryDraw.to') }}</span>
           <el-date-picker
             size="small"
             v-model="requestParams.endTime"
-            type="datetime"
+            type="date"
             clearable
             class="inputWidth"
-            value-format="yyyy-MM-dd 00:00:00"
+            value-format="yyyy-MM-dd [23]:[59]:[59]"
             default-time="23:59:59"
             :placeholder="$t('actionRecord.endTime')"
           >
           </el-date-picker>
         </el-form-item>
         <el-form-item
-          label="订单号："
+          :label="$t('lotteryDraw.orderSn') + '：'"
           class="item"
         >
           <el-input
             size="small"
             v-model="requestParams.orderSn"
-            placeholder="请输入订单号"
+            :placeholder="$t('lotteryDraw.orderSnTip')"
             clearable
             class="inputWidth"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="手机号："
+          :label="$t('lotteryDraw.mobile') + '：'"
           class="item"
         >
           <el-input
             size="small"
             v-model="requestParams.mobile"
-            placeholder="请输入手机号"
+            :placeholder="$t('lotteryDraw.mobileTip')"
             clearable
             class="inputWidth"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="邀请用户数："
+          :label="$t('lotteryDraw.minInviteUserCount') + '：'"
           class="item"
         >
           <el-input
@@ -75,36 +75,38 @@
             v-model="requestParams.minInviteUserCount"
             clearable
             class="inputWidth"
+             type="number"
           ></el-input>
-          至
+          {{ $t('lotteryDraw.to') }}
           <el-input
             size="small"
             v-model="requestParams.maxInviteUserCount"
             clearable
             class="inputWidth"
+            type="number"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="团ID："
+          :label="$t('lotteryDraw.groupId') + '：'"
           class="item"
         >
           <el-input
             size="small"
             v-model="requestParams.groupId"
-            placeholder="请输入团ID"
+            :placeholder="$t('lotteryDraw.groupIdTip')"
             clearable
             class="inputWidth"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="成团状态："
+          :label="$t('lotteryDraw.grouped') + '：'"
           class="item"
         >
           <el-select
             size="small"
             v-model="requestParams.grouped"
             class="inputWidth"
-            placeholder="请选择"
+            :placeholder="$t('lotteryDraw.groupedTip')"
           >
             <el-option
               v-for="item in statusList"
@@ -115,14 +117,14 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          label="是否团长："
+          :label="$t('lotteryDraw.isGrouper') + '：'"
           class="item"
         >
           <el-select
             size="small"
             v-model="requestParams.isGrouper"
             class="inputWidth"
-            placeholder="请选择"
+            :placeholder="$t('lotteryDraw.groupedTip')"
           >
             <el-option
               v-for="item in groupList"
@@ -138,13 +140,14 @@
           class="item"
           style="margin-left: 10px;"
           @click="initDataList"
-        >筛选</el-button>
+        >{{ $t('lotteryDraw.select') }}</el-button>
         <el-button
           size="small"
           type="primary"
           class="item"
           style="margin-left: 10px;"
-        >重置筛选</el-button>
+          @click="resetDataList"
+        >{{ $t('lotteryDraw.resetSelect') }}</el-button>
       </el-form>
     </div>
 
@@ -157,52 +160,60 @@
         style="width: 100%"
       >
         <el-table-column
-          label="昵称"
-          prop="username"
+          :label="$t('lotteryDraw.username')"
+          prop="userName"
           align="center"
-        ></el-table-column>
+        >
+        <template slot-scope="scope">
+           <el-link type="primary" :underline="false" @click="viewUserHanlder(scope.row.userId)">{{scope.row.userName}}</el-link>
+         </template>
+        </el-table-column>
         <el-table-column
-          label="手机号"
+          :label="$t('lotteryDraw.mobile')"
           prop="mobile"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="参与时间"
-          prop="createTime"
+          :label="$t('lotteryDraw.startTime')"
+          prop="openTime"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="订单号"
+          :label="$t('lotteryDraw.orderSn')"
           prop="orderSn"
           align="center"
-        ></el-table-column>
+        >
+        <template slot-scope="scope">
+           <el-link type="primary" :underline="false" @click="getOrder(scope.row.orderSn)">{{scope.row.orderSn}}</el-link>
+         </template>
+        </el-table-column>
         <el-table-column
-          label="是否团长"
+          :label="$t('lotteryDraw.isGrouper')"
           align="center"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.isGrouper === true">是</span>
-            <span v-if="scope.row.isGrouper === false">否</span>
+            <span v-if="scope.row.isGrouper === true">{{ $t('lotteryDraw.isYes') }}</span>
+            <span v-if="scope.row.isGrouper === false">{{ $t('lotteryDraw.isNo') }}</span>
           </template>
         </el-table-column>
         <el-table-column
-          label="团ID"
+          :label="$t('lotteryDraw.groupId')"
           prop="groupId"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="成团时间"
-          prop=""
+          :label="$t('lotteryDraw.groupTime')"
+          prop="endTime"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="抽奖码数量"
-          prop="codeCount"
+          :label="$t('lotteryDraw.codeCount')"
+          prop="drawNum"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="邀请用户数"
-          prop="inviteUserNum"
+          :label="$t('lotteryDraw.minInviteUserCount')"
+          prop="inviteNum"
           align="center"
         ></el-table-column>
       </el-table>
@@ -226,21 +237,9 @@ export default {
   data () {
     return {
       // 成团状态
-      statusList: [{
-        value: true,
-        label: '已成团'
-      }, {
-        value: false,
-        label: '未成团'
-      }],
+      statusList: this.$t('lotteryDraw.statusList'),
       // 是否团长
-      groupList: [{
-        value: true,
-        label: '是'
-      }, {
-        value: false,
-        label: '否'
-      }],
+      groupList: this.$t('lotteryDraw.groupList'),
       loading: false,
       pageParams: {}, // 分页
       requestParams: {
@@ -270,8 +269,6 @@ export default {
       this.requestParams.groupDrawId = Number(this.$route.query.id)
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
-      this.requestParams.minInviteUserCount = Number(this.requestParams.minInviteUserCount)
-      this.requestParams.maxInviteUserCount = Number(this.requestParams.maxInviteUserCount)
 
       userLotteryList(this.requestParams).then((res) => {
         if (res.error === 0) {
@@ -280,6 +277,38 @@ export default {
           this.loading = false
         }
       })
+    },
+    // 查看用户明细
+    viewUserHanlder (tagId) {
+      this.$router.push({
+        path: '/admin/home/main/membershipInformation',
+        query: {
+          userId: tagId
+        }
+      })
+    },
+    getOrder (orderSn) {
+      // 跳转订单详情页面
+      this.$router.push({
+        path: '/admin/home/main/orders/info',
+        query: {
+          orderSn: orderSn
+        }
+      })
+    },
+    resetDataList () {
+      this.requestParams = {
+        nickName: '', // 昵称
+        startTime: '',
+        endTime: '',
+        orderSn: '', // 订单号
+        mobile: '', // 手机号
+        minInviteUserCount: null, // 最小邀请人数
+        maxInviteUserCount: null, // 最大邀请人数
+        groupId: '', // 团ID
+        grouped: '', // 成团状态
+        isGrouper: '' // 团长id
+      }
     }
   }
 

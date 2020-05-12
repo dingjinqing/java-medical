@@ -312,7 +312,6 @@ export default {
               if (!Number(item.total_stock) || !Number(item.sale_num)) {
                 item.salePercent = 0
               } else {
-                console.log(item)
                 if (!item.base_sale) {
                   item.salePercent = Number((Number(item.sale_num)) / (Number(item.total_stock))).toFixed(4) || 0
                 } else {

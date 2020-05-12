@@ -10,7 +10,6 @@ import java.util.List;
 /**
  * @author liufei
  * @date 2019/8/14
- * @description
  */
 @Data
 public class UpdatePurchaseParam {
@@ -49,4 +48,8 @@ public class UpdatePurchaseParam {
      * 加价购规则定义
      */
     private List<PurchaseRule> rules;
+    /**
+     * 换购商品运费策略，0免运费，1使用原商品运费模板
+     */
+    private Byte redemptionFreight;
 }

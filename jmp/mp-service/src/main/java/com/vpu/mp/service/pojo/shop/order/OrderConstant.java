@@ -32,6 +32,9 @@ public class OrderConstant {
     /**定金 sn 后缀*/
     public final static String BK_SN_SUFFIX = "_BK";
 
+    /**代付的支付订单 T 前缀*/
+    public final static String INSTEAD_PAY_SN_PREFIX = "T";
+
 	/** 订单状态order_status */
 	/** 待付款 可进行操作：关闭订单 */
 	public final static byte ORDER_WAIT_PAY = 0;
@@ -108,7 +111,7 @@ public class OrderConstant {
     public final static Byte MP_PAY_CODE_COD = 1;
 
     /**小程序支付方式编码->string*/
-    public final static String[] MP_PAY_CODE_TO_STRING ={PAY_CODE_WX_PAY , PAY_CODE_COD};
+    public final static String[] MP_PAY_CODE_TO_STRING ={PAY_CODE_WX_PAY , PAY_CODE_COD, PAY_CODE_SCORE_PAY};
 
 	/**
 	 *	 配送方式
@@ -202,6 +205,7 @@ public class OrderConstant {
 	public final static byte IS_MP_Y = 1;
 	public final static byte IS_MP_ADMIN = 0;
 	public final static byte IS_MP_AUTO = 2;
+    public final static byte IS_MP_MQ = 3;
 
 	/**
 	 * 订单退款退货流程操作
@@ -381,7 +385,7 @@ public class OrderConstant {
 	public static final byte WAIT_DELIVERY = 2;
 	public static final byte SHIPPED = 3;
 	public static final byte FINISHED = 4;
-	public static final byte RETURNING = 5;
+	public static final byte REFUND = 5;
 
 	/**
 	 * 是否货到付款订单
@@ -508,4 +512,35 @@ public class OrderConstant {
     public static final Byte SHOP_HELPER_REMIND_DELIVERY = 1;
     /**退款申请逾期*/
     public static final Byte SHOP_HELPER_OVERDUE_RETURN_APPLY = 2;
+
+    /**
+     * 代付订单子单
+     */
+    public static class SubOrderConstant{
+        /** 待支付*/
+        public static final Byte SUB_ORDER_WAIT_PAY = 0;
+        /** 已支付*/
+        public static final Byte SUB_ORDER_PAY_OK = 1;
+        /** 已关闭*/
+        public static final Byte SUB_ORDER_CANCELLED = 2;
+        /** *已退款*/
+        public static final Byte SUB_ORDER_REFUND_SUCESS = 3;
+    }
+
+    /**
+     * 退款原因描述
+     */
+    private static final String[] RETRURN_REASON_TYPE_DESC= new String[]{
+        "协商一致退款",
+        "未按约定时间发货",
+        "缺货",
+        "拍错/多拍/不想要",
+        "其他"
+    };
+    public static String getReturnReasonDesc(Integer index) {
+        if(index == null || index < 0 || index > RETRURN_REASON_TYPE_DESC.length - 1) {
+            index = RETRURN_REASON_TYPE_DESC.length - 1;
+        }
+        return RETRURN_REASON_TYPE_DESC[index];
+    }
 }

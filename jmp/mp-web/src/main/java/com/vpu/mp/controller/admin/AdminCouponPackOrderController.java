@@ -1,17 +1,20 @@
 package com.vpu.mp.controller.admin;
 
-import javax.validation.Valid;
-
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderPageParam;
+import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderRefundParam;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderPageParam;
-import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderRefundParam;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /**
  * @author huangronggang
@@ -43,6 +46,21 @@ public class AdminCouponPackOrderController extends AdminBaseController {
 	        return fail(JsonResultMessage.REFUND_REQUEST_PARAMETER_ERROR);
         }
 	}
+
+    /**
+     * 取将要导出的列数
+     */
+    @PostMapping("/export/rows")
+    public JsonResult getExportTotalRows(@RequestBody @Valid CouponPackOrderPageParam param) {
+        return success(shop().couponPackOrder.getExportRows(param));
+    }
+
+    @PostMapping("/export")
+    public void export(@RequestBody @Valid CouponPackOrderPageParam param, HttpServletResponse response) {
+        Workbook workbook = shop().couponPackOrder.exportOrderList(param, getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.VIRTUAL_ORDER_COUPON_PACK_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        export2Excel(workbook, fileName, response);
+    }
 	
 }
 

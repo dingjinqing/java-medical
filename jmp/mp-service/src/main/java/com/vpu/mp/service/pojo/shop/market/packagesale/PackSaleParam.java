@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
@@ -22,7 +21,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class PackSaleParam {
-	
+
 	/** 活动ID */
 	private Integer id;
 	/** 活动名称 */
@@ -34,9 +33,12 @@ public class PackSaleParam {
 	/** 结束时间 */
 	@NotNull
 	private Timestamp endTime;
+	/**活动类型**/
+	private Byte packageType;
 	/** 结算总价格 */
-	@Positive
 	private BigDecimal totalMoney;
+	/**折扣比例**/
+	private BigDecimal totalRatio;
 	/** 商品组1 */
 	@NotNull
 	private GoodsGroup group1;
@@ -72,7 +74,9 @@ public class PackSaleParam {
 		record.setPackageName(this.getPackageName());
 		record.setStartTime(this.getStartTime());
 		record.setEndTime(this.getEndTime());
+		record.setPackageType(getPackageType());
 		record.setTotalMoney(getTotalMoney());
+		record.setTotalRatio(getTotalRatio());
 		
 		record.setGoodsGroup_1(Status.NORMAL);
 		record.setGroupName_1(group1.getGroupName());

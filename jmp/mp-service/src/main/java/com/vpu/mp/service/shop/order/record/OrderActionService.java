@@ -39,6 +39,9 @@ public class OrderActionService extends ShopBaseService{
         if(param.getIsMp() != null && OrderConstant.IS_MP_AUTO == param.getIsMp()){
             record.setActionUser("cron");
             record.setActionNote("自动任务," + record.getActionNote());
+        }else if (param.getIsMp() != null && OrderConstant.IS_MP_MQ == param.getIsMp()){
+            record.setActionUser("mq");
+            record.setActionNote("mq," + record.getActionNote());
         }
 		record.insert();
 	}
@@ -60,6 +63,9 @@ public class OrderActionService extends ShopBaseService{
         if(param.getIsMp() != null && OrderConstant.IS_MP_AUTO == param.getIsMp()){
             record.setActionUser("cron");
             record.setActionNote("自动任务," + record.getActionNote());
+        }else if (param.getIsMp() != null && OrderConstant.IS_MP_MQ == param.getIsMp()){
+            record.setActionUser("mq");
+            record.setActionNote("mq," + record.getActionNote());
         }
 		record.insert();
 	}

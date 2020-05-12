@@ -1,304 +1,305 @@
 <template>
-  <div>
-    <wrapper>
+  <div class="container">
+    <div class="top">
       <statusTab
         v-model="param.status"
         :activityName="activityName"
         :standard="true"
       />
-      <el-row>
-        <el-col :span="5">
-          <el-form label-width="100px">
-            <el-form-item :label="$t('purchase.activityName')">
-              <el-input
-                v-model="param.name"
-                :placeholder="$t('purchase.inputactivityName')"
-              ></el-input>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col
-          :span="4"
-          :offset=1
+      <div>
+        <el-button
+          type="primary"
+          @click="jump2addPurchase"
+          size="small"
         >
-          <el-form label-width="100px">
-            <el-form-item :label="$t('purchase.activityTime')">
-              <el-date-picker
-                v-model="param.dateRange"
-                type="datetimerange"
-                :range-separator="$t('purchase.to')"
-                :start-placeholder="$t('purchase.startdate')"
-                :end-placeholder="$t('purchase.enddate')"
-                value-format="yyyy-MM-dd HH:mm:ss"
-              >
-              </el-date-picker>
-            </el-form-item>
-          </el-form>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="4">
-          <el-form label-width="100px">
-            <el-form-item :label="$t('purchase.Priceincreaseconditions')">
-              <el-input
-                v-model.number="param.fullPriceDown"
-                placeholder="0"
-              ></el-input>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="3">
-          <el-form label-width="50px">
-            <el-form-item :label="$t('purchase.rmbto')">
-              <el-input
-                v-model.number="param.fullPriceUp"
-                placeholder="0"
-              ></el-input>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="1">
-          <el-form label-width="30px">
-            <el-form-item :label="$t('purchase.rmb')">
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col
-          :span="4"
-          :offset=1
-        >
-          <el-form label-width="100px">
-            <el-form-item :label="$t('purchase.redemptioncondition')">
-              <el-input
-                v-model.number="param.purchasePriceDown"
-                placeholder="0"
-              ></el-input>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="3">
-          <el-form label-width="50px">
-            <el-form-item :label="$t('purchase.rmbto')">
-              <el-input
-                v-model.number="param.purchasePriceUp"
-                placeholder="0"
-              ></el-input>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="1">
-          <el-form label-width="30px">
-            <el-form-item :label="$t('purchase.rmb')">
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="2">
+          {{$t('purchase.addactivity')}}
+        </el-button>
+      </div>
+    </div>
+    <div class="content">
+      <!-- 查询条件 -->
+      <el-form
+        :inline="true"
+        size="small"
+      >
+        <el-form-item :label="$t('purchase.activityName')+'：'">
+          <el-input
+            v-model="param.name"
+            :placeholder="$t('purchase.inputactivityName')"
+          ></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('purchase.activityTime')+'：'">
+          <el-date-picker
+            type="datetime"
+            v-model="param.startTime"
+            :placeholder="$t('purchase.startdate')"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            style="width: 190px;"
+            align="center"
+          ></el-date-picker>
+          {{$t('purchase.to')}}
+          <el-date-picker
+            type="datetime"
+            v-model="param.endTime"
+            :placeholder="$t('purchase.enddate')"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            style="width: 190px;"
+            align="center"
+            default-time="23:59:59"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item :label="$t('purchase.Priceincreaseconditions')+'：'">
+          {{$t('purchase.full')}}
+          <el-input
+            v-model.number="param.fullPriceDown"
+            style="width:100px"
+          ></el-input>
+          {{$t('purchase.rmbto')}}
+          <el-input
+            v-model.number="param.fullPriceUp"
+            style="width:100px"
+          ></el-input>
+          {{$t('purchase.rmb')}}
+        </el-form-item>
+        <el-form-item :label="$t('purchase.redemptioncondition')+'：'">
+          {{$t('purchase.full')}}
+          <el-input
+            v-model.number="param.purchasePriceDown"
+            style="width:100px"
+          ></el-input>
+          {{$t('purchase.rmbto')}}
+          <el-input
+            v-model.number="param.purchasePriceUp"
+            style="width:100px"
+          ></el-input>
+          {{$t('purchase.rmb')}}
           <el-button
             type="primary"
-            @click="initDateList"
+            @click="initDataList"
+            style="margin-left:10px;"
           >{{$t('purchase.serach')}}</el-button>
-        </el-col>
-        <el-col :span="4">
-          <el-button
-            type="primary"
-            style="float:right;"
-          >
-            {{$t('purchase.addactivity')}}
-          </el-button>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-table
-          class="version-manage-table"
-          header-row-class-name="tableHeader"
-          :data="tableData"
-          border
-          style="width: 100%"
+        </el-form-item>
+      </el-form>
+      <!-- 表格数据 -->
+      <el-table
+        class="version-manage-table"
+        header-row-class-name="tableHeader"
+        :data="tableData"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="name"
+          :label="$t('purchase.activityName')"
+          align="center"
         >
-          <el-table-column
-            prop="name"
-            :label="$t('purchase.activityName')"
-            align="center"
-          >
+        </el-table-column>
+        <el-table-column
+          :label="$t('purchase.activityTime')"
+          align="center"
+        >
+          <template slot-scope="scope">
+            {{scope.row.startTime}}<br>{{$t('purchase.to')}}<br>{{scope.row.endTime}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="level"
+          :label="$t('purchase.activityprioty')"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <inputEdit
+              v-model="scope.row.level"
+              @update="updatePriority(scope.row.id, scope.row.level)"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column
+          :label="$t('purchase.activityinfo')"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <ul>
+              <li
+                v-for="(item,index) in scope.row.purchaseInfo"
+                :key="index"
+              >
+                {{$t('purchase.full')}}{{item.split('---')[0]}} {{$t('purchase.addPrice')}} {{item.split('---')[1]}}{{$t('purchase.redemption')}}<br>
+              </li>
+            </ul>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="maxChangePurchase"
+          :label="$t('purchase.singlemax')"
+          align="center"
+        >
+          <template slot-scope="{row}">
+            <div v-if="row.maxChangePurchase === 0">
+              不限制
+            </div>
+            <div
+              v-else
+              v-text="row.maxChangePurchase"
+            ></div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="resaleQuantity"
+          :label="$t('purchase.alreadyredemption')"
+          align="center"
+        >
 
-          </el-table-column>
-          <el-table-column
-            :label="$t('purchase.activityTime')"
-            align="center"
-          >
-            <template slot-scope="scope">
-              {{scope.row.startTime}}<br>{{$t('purchase.to')}}<br>{{scope.row.endTime}}
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="level"
-            :label="$t('purchase.activityprioty')"
-            align="center"
-          >
-            <template slot-scope="scope">
-              <inputEdit
-                v-model="scope.row.level"
-                @update="updatePriority(scope.row.id, scope.row.level)"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column
-            :label="$t('purchase.activityinfo')"
-            align="center"
-          >
-            <template slot-scope="scope">
-              <ul>
-                <li
-                  v-for="(item,index) in scope.row.purchaseInfo"
-                  :key="index"
-                >
-                  <el-form :inline="true">
-                    <el-form-item>
-                      {{$t('purchase.full')}}{{item.replace('---','加价')}}{{$t('purchase.redemption')}}<br>
-                    </el-form-item>
-                  </el-form>
-                </li>
-              </ul>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="maxChangePurchase"
-            :label="$t('purchase.singlemax')"
-            align="center"
-          >
-
-          </el-table-column>
-          <el-table-column
-            prop="resaleQuantity"
-            :label="$t('purchase.alreadyredemption')"
-            align="center"
-          >
-
-          </el-table-column>
-          <el-table-column
-            :label="$t('purchase.opration')"
-            align="center"
-          >
-            <template slot-scope="scope">
-              <div class="operation">
-                <el-tooltip
-                  :content="$t('purchase.edit')"
-                  placement="top"
-                  v-if="scope.row.status === 0"
-                >
-                  <span class="el-icon-edit-outline iconSpn"></span>
-                </el-tooltip>
-                <el-tooltip
-                  :content="$t('purchase.Disable')"
-                  placement="top"
-                  v-if="scope.row.status === 0"
-                >
-                  <span
-                    class="el-icon-circle-close iconSpn"
-                    @click="disableShare(scope.row.id)"
-                  ></span>
-                </el-tooltip>
-                <el-tooltip
-                  :content="$t('purchase.Enable')"
-                  placement="top"
-                  v-if="scope.row.status === 1"
-                >
-                  <span
-                    class="el-icon-circle-check iconSpn"
-                    @click="enableShare(scope.row.id)"
-                  ></span>
-                </el-tooltip>
-                <el-tooltip
-                  :content="$t('purchase.delete')"
-                  placement="top"
-                >
-                  <span
-                    @click="deleteShare(scope.row.id)"
-                    class="el-icon-delete iconSpn"
-                  ></span>
-                </el-tooltip>
-                <el-tooltip
-                  :content="$t('purchase.searchredemptionorder')"
-                  placement="top"
-                >
-                  <span
-                    @click="jumptoRedemptionList(scope.row.id)"
-                    class="el-icon-s-cooperation iconSpn"
-                  ></span>
-                </el-tooltip>
-                <el-tooltip
-                  :content="$t('purchase.redemptiondetail')"
-                  placement="top"
-                >
-                  <span
-                    @click="jumptoRedemptionDetail(scope.row.id)"
-                    class="el-icon-s-cooperation iconSpn"
-                  ></span>
-                </el-tooltip>
-                <el-tooltip
-                  :content="$t('purchase.share')"
-                  placement="top"
-                >
-                  <span class="el-icon-share iconSpn"></span>
-                </el-tooltip>
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-row>
+        </el-table-column>
+        <el-table-column
+          :label="$t('purchase.opration')"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <div class="operation">
+              <!-- 编辑 -->
+              <el-tooltip
+                :content="$t('purchase.edit')"
+                placement="top"
+                v-if="scope.row.category === 1 || scope.row.category === 2"
+              >
+                <span
+                  class="el-icon-edit-outline iconSpn"
+                  @click="jump2editPurchase(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <!-- 分享 -->
+              <el-tooltip
+                :content="$t('purchase.share')"
+                placement="top"
+                v-if="scope.row.category === 1 || scope.row.category === 2"
+              >
+                <span
+                  class="el-icon-share iconSpn"
+                  @click="shareActity(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <!-- 停用 -->
+              <el-tooltip
+                :content="$t('purchase.Disable')"
+                placement="top"
+                v-if="scope.row.category === 1 || scope.row.category === 2"
+              >
+                <span
+                  class="el-icon-circle-close iconSpn"
+                  @click="disableShare(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <!-- 启用 -->
+              <el-tooltip
+                :content="$t('purchase.Enable')"
+                placement="top"
+                v-if="scope.row.category === 4 && notExpired(scope.row)"
+              >
+                <span
+                  class="el-icon-circle-check iconSpn"
+                  @click="enableShare(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <!-- 查看换购订单 -->
+              <el-tooltip
+                :content="$t('purchase.searchredemptionorder')"
+                placement="top"
+              >
+                <span
+                  @click="jumptoRedemptionList(scope.row.id)"
+                  class="el-icon-s-cooperation iconSpn"
+                ></span>
+              </el-tooltip>
+              <!-- 换购明细 -->
+              <el-tooltip
+                :content="$t('purchase.redemptiondetail')"
+                placement="top"
+              >
+                <span
+                  @click="jumptoRedemptionDetail(scope.row.id)"
+                  class="el-icon-s-order iconSpn"
+                ></span>
+              </el-tooltip>
+              <!-- 删除 -->
+              <el-tooltip
+                :content="$t('purchase.delete')"
+                placement="top"
+                v-if="scope.row.category === 3 || scope.row.category === 4"
+              >
+                <span
+                  @click="deleteShare(scope.row.id)"
+                  class="el-icon-delete iconSpn"
+                ></span>
+              </el-tooltip>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
       <div>
         <pagination
           :page-params.sync="pageParams"
-          @pagination="initDateList"
+          @pagination="initDataList"
         />
       </div>
-    </wrapper>
+    </div>
+    <!-- 分享弹窗组件 -->
+    <shareDialog
+      :show="showShareDialog"
+      :imgPath="shareImg"
+      :pagePath="sharePath"
+      @close="showShareDialog=false"
+      style="width:400px;margin:0 auto;"
+    />
   </div>
 </template>
 <script>
-import { getList, changeActivity, updatePriority } from '@/api/admin/marketManage/increasePurchase.js'
-import wrapper from '@/components/admin/wrapper/wrapper'
+import { getList, changeActivity, updatePriority, share } from '@/api/admin/marketManage/increasePurchase.js'
 import pagination from '@/components/admin/pagination/pagination.vue'
 import statusTab from '@/components/admin/marketManage/status/statusTab'
 import inputEdit from '@/components/admin/inputEdit'
+import shareDialog from '@/components/admin/shareDialog'
 export default {
   components: {
     pagination,
     statusTab,
-    wrapper,
-    inputEdit
+    inputEdit,
+    shareDialog
   },
   mounted () {
     this.langDefault()
   },
-  watch: {
-    'param.status' (n, o) {
-      this.initDateList()
-    }
-  },
   created () {
-    this.initDateList()
+    this.initDataList()
   },
   data () {
     return {
-      activityName: '加价购',
+      activityName: this.$t('purchase.addPriceBuy'),
       tableData: [],
       pageParams: {},
       param: {
         status: 1,
         category: 0,
         name: '',
-        dateRange: [],
+        // dateRange: [],
         startTime: '',
         endTime: '',
-        fullPriceUp: 0,
-        fullPriceDown: 0,
-        purchasePriceUp: 0,
-        purchasePriceDown: 0,
+        fullPriceUp: '',
+        fullPriceDown: '',
+        purchasePriceUp: '',
+        purchasePriceDown: '',
         // 分页
         currentPage: 0,
         pageRows: 20
-      }
+      },
+      showShareDialog: false,
+      shareImg: '',
+      sharePath: ''
+    }
+  },
+  watch: {
+    'param.status': function (val) {
+      this.initDataList()
     }
   },
   methods: {
@@ -320,11 +321,30 @@ export default {
         updatePriority(obj).then(res => {
           if (res.error === 0) {
             this.$message.success('修改成功！')
-            this.initDateList()
+            this.initDataList()
           }
         })
       }).catch(() => {
         this.$message.info('已取消修改！')
+      })
+    },
+    // 添加活动跳转
+    jump2addPurchase () {
+      this.$router.push({
+        name: 'add_increase_purchase',
+        params: {
+          flag: true
+        }
+      })
+    },
+    // 编辑活动页面跳转
+    jump2editPurchase (id) {
+      this.$router.push({
+        name: 'edit_increase_purchase',
+        params: {
+          flag: true,
+          id: id
+        }
       })
     },
     // 换购订单跳转
@@ -348,15 +368,11 @@ export default {
       })
     },
     // 查询数据列表
-    initDateList () {
+    initDataList () {
       this.param.category = this.param.status
       this.param.currentPage = this.pageParams.currentPage
       this.param.pageRows = this.pageParams.pageRows
-      this.param.startTime = this.param.dateRange[0]
-      this.param.endTime = this.param.dateRange[1]
-      console.log(this.param)
       getList(this.param).then((res) => {
-        console.log(res)
         if (res.error === 0) {
           this.handleData(res.content)
           this.pageParams = res.content.page
@@ -386,7 +402,7 @@ export default {
         changeActivity(obj).then(res => {
           if (res.error === 0) {
             this.$message.success('停用成功！')
-            this.initDateList()
+            this.initDataList()
           }
         })
       }).catch(() => {
@@ -407,7 +423,7 @@ export default {
         changeActivity(obj).then(res => {
           if (res.error === 0) {
             this.$message.success('启用成功！')
-            this.initDateList()
+            this.initDataList()
           }
         })
       }).catch(() => {
@@ -428,15 +444,60 @@ export default {
         changeActivity(obj).then(res => {
           if (res.error === 0) {
             this.$message.success('删除成功！')
-            this.initDateList()
+            this.initDataList()
           }
         })
       }).catch(() => {
         this.$message.info('已取消删除！')
       })
+    },
+    // 分享
+    shareActity (shareId) {
+      let obj = {
+        'id': shareId,
+        'status': 0
+      }
+      share(obj).then(res => {
+        if (res.error === 0) {
+          this.shareImg = res.content.imageUrl
+          this.sharePath = res.content.pagePath
+          this.showShareDialog = !this.showShareDialog
+        }
+      })
+    },
+    notExpired (row) {
+      let time = new Date(row.timestamp)
+      let endTime = new Date(row.endTime)
+      if (time < endTime) {
+        return true
+      } else {
+        return false
+      }
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+.container {
+  padding: 10px;
+  font-size: 14px;
+}
+.top {
+  padding: 15px;
+  background: #fff;
+}
+.content {
+  margin-top: 10px;
+  padding: 15px;
+  background: #fff;
+  .el-form-item {
+    width: 500px;
+  }
+  .iconSpn {
+    font-size: 22px;
+    color: #5a8bff;
+    text-decoration: none;
+    cursor: pointer;
+  }
+}
 </style>

@@ -2,6 +2,11 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,19 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteAddParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteLaunchParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteLaunchVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteListParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteListVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteOptionParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteParticipateParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteParticipateVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteReceiveParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteReceiveVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteUpdateParam;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /**
   *   好友助力活动控制器
@@ -124,7 +119,7 @@ public class AdminFriendPromoteController extends AdminBaseController{
 	 */
 	@PostMapping("/select")
 	public JsonResult selectOne(@RequestBody FriendPromoteSelectParam param) {
-		List<FriendPromoteSelectVo> vo	= shop().friendPromoteService.selectOne(param);
+		FriendPromoteSelectVo vo	= shop().friendPromoteService.selectOne(param);
 		return success(vo);
 	}
 	
@@ -139,4 +134,72 @@ public class AdminFriendPromoteController extends AdminBaseController{
 		shop().friendPromoteService.updateActivity(param);
 		return success();
 	}
+    /**
+     * 根据prdId查询商品信息
+     *
+     * @param param prdId
+     * @return goodsInfo
+     */
+    @PostMapping("/goodsInfo")
+    public JsonResult getGoodsInfoByPrdId(@RequestBody FriendPromoteUpdateParam param) {
+        GoodsInfo goodsInfo = shop().friendPromoteService.getGoodsInfo(param.getId());
+        return success(goodsInfo);
+    }
+
+    /**
+     * 活动效果展示
+     *
+     * @param param 发起id
+     * @return 活动效果
+     */
+    @PostMapping("/analysis")
+    public JsonResult getEffectData(@RequestBody FriendPromoteSelectParam param) {
+
+        ActEffectDataVo vo = shop().friendPromoteService.getEffectData(param);
+
+        return success(vo);
+    }
+    /**
+     * 分享
+     * @param param 活动id
+     * @return 二维码信息
+     */
+    @PostMapping("/share")
+    public JsonResult share(@RequestBody @Valid FriendPromoteSelectParam param){
+        return success(shop().friendPromoteService.getQrCode(param));
+    }
+    private static final String LANGUAGE_TYPE_EXCEL = "excel";
+    /**
+     * 发起明细导出表格
+     * @param param
+     * @return
+     */
+    @PostMapping("/launch/export")
+    public void launchExport(@RequestBody @Valid FriendPromoteLaunchParam param, HttpServletResponse response){
+        Workbook workbook = shop().friendPromoteService.launchExport(param,getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.FRIEND_PROMOTE_LAUNCH_DETAIL,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtil.getLocalDateTime().toString();
+        export2Excel(workbook,fileName,response);
+    }
+    /**
+     * 参与明细导出表格
+     * @param param
+     * @return
+     */
+    @PostMapping("/participate/export")
+    public void joinExport(@RequestBody @Valid FriendPromoteParticipateParam param, HttpServletResponse response){
+        Workbook workbook = shop().friendPromoteService.joinExport(param,getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.FRIEND_PROMOTE_JOIN_DETAIL,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtil.getLocalDateTime().toString();
+        export2Excel(workbook,fileName,response);
+    }
+    /**
+     * 领取明细导出表格
+     * @param param
+     * @return
+     */
+    @PostMapping("/receive/export")
+    public void receiveExport(@RequestBody @Valid FriendPromoteReceiveParam param, HttpServletResponse response){
+        Workbook workbook = shop().friendPromoteService.receiveExport(param,getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.FRIEND_PROMOTE_RECEIVE_DETAIL,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtil.getLocalDateTime().toString();
+        export2Excel(workbook,fileName,response);
+    }
 }

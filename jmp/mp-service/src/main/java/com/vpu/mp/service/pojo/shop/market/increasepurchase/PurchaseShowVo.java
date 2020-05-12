@@ -43,9 +43,17 @@ public class PurchaseShowVo {
     /**
      * 已换购数量
      */
-    private Short resaleQuantity;
+    private Integer resaleQuantity;
     /**
      * 状态
      */
     private Byte status;
+
+    /** 加价购页面分页展示分模块，进行中8 ，未开始4，已过期2，已停用1，所有0*/
+    private Byte category;
+
+    /**
+     * 当前时间
+     */
+    private Timestamp timestamp;
 }

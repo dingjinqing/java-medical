@@ -1,16 +1,18 @@
 package com.vpu.mp.service.pojo.shop.market.form;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.Data;
 
 /**
  * @author liufei
  * @date 2019/8/9
- * @description 表单元素常量
+ * 表单元素常量
  */
 @Data
 public class FormConstant {
@@ -54,10 +56,27 @@ public class FormConstant {
      * 图片
      */
     public static final String M_IMGS = "m_imgs";
+    /**
+     * 视频
+     */
+    public static final String M_UPLOAD_VIDEO = "m_upload_video";
+
+    /**
+     * 以下模块为表单展示模块，不会含有用户反馈信息
+     * m_scroll_image轮播图
+     * m_rich_text富文本
+     * m_image_small图片广告
+     * m_dashed_line辅助线
+     * m_text文本模块
+     * m_blank辅助空白
+     * m_phone电话模块
+     * m_official_accounts公众号
+     */
 
     public static Map<String, String> ALL = new HashMap<String, String>(){
-		private static final long serialVersionUID = 7311691185434226748L;
-		{
+        private static final long serialVersionUID = 7311691185434226748L;
+
+        {
             put(M_INPUT_NAME, M_INPUT_NAME);
             put(M_INPUT_MOBILE, M_INPUT_MOBILE);
             put(M_ADDRESS, M_ADDRESS);
@@ -68,6 +87,7 @@ public class FormConstant {
             put(M_SLIDE, M_SLIDE);
             put(M_DATES, M_DATES);
             put(M_IMGS, M_IMGS);
+            put(M_UPLOAD_VIDEO, M_UPLOAD_VIDEO);
         }
     };
     public static Map<String, String> SPECIAL = new HashMap<String, String>(){
@@ -99,11 +119,39 @@ public class FormConstant {
     /**
      * 新建表单配置的参与送积分值
      */
-    public static final String SEND_SCORE_NUM = "send_score_num";
+//    public static final String SEND_SCORE_NUM = "send_score_num";
     /**
      * 优惠券活动id
      */
     public static final String COUPON_ID = "coupon_id";
+
+    public static final String FORM_CHAR = "Form";
+    public static final String FORM_TEXT = "表单";
+
+    /**
+     * 表单配置项元素
+     */
+    public static final String BG_IMG = "bg_img";
+    public static final String GET_TIMES ="get_times";
+    public static final String POST_TIMES ="post_times";
+    public static final String DAY_TIMES ="day_times";
+    public static final String SEND_SCORE ="send_score";
+    public static final String SEND_SCORE_NUMBER ="send_score_number";
+    public static final String SEND_COUPON ="send_coupon";
+    public static final String TOTAL_TIMES ="total_times";
+    public static final String PAGE_NAME = "page_name";
+    public static final String FORM_DEFAULT_BG_IMG = "image/admin/pictorial/form_bg.png";
+
+    @Getter
+    @Setter
+    public static class  ModuleUploadVideo{
+        @JsonProperty("video_src")
+        private String videoSrc;
+        @JsonProperty("video_img_src")
+        private String videoImgSrc;
+        @JsonProperty("video_id")
+        private Integer videoId;
+    }
 
 }
 

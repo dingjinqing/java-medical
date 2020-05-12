@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * 积分兑换活动弹窗
@@ -19,4 +20,5 @@ public class PopListParam {
     /** 分页信息 */
     private Integer currentPage = 1;
     private Integer pageRows = 20;
+    private List<Integer> actIds;
 }

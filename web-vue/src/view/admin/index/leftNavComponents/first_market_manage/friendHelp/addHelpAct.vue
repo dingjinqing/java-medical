@@ -11,7 +11,7 @@
           ref="form"
         >
           <el-form-item
-            :label="$t('promoteList.actName')"
+            :label="$t('promoteList.actName') + '：'"
             prop="actName"
           >
             <el-input
@@ -20,22 +20,38 @@
               class="morelength"
               v-model="form.actName"
             ></el-input>
-            <span style="margin-left: 10px">{{$t('promoteList.actRules')}}</span>
+            <span
+              style="margin-left: 10px;color: #5a8bff; cursor: pointer;"
+              @click="ruleHandler"
+            >{{$t('promoteList.actRules')}}</span>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.actValidityPeriod')"
-            prop=""
-            required
+            :label="$t('promoteList.actValidityPeriod') + '：'"
+            prop="validity"
           >
-            <section style="display: flex">
+            <el-date-picker
+              :disabled="isEditFlag"
+              v-model="form.validity"
+              type="datetimerange"
+              :range-separator="$t('promoteList.to')"
+              :start-placeholder="$t('promoteList.startTime')"
+              :end-placeholder="$t('promoteList.endTime')"
+              :default-time="['00:00:00','23:59:59']"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              size="small"
+            >
+            </el-date-picker>
+
+            <!-- <section style="display: flex">
               <el-form-item prop="startTime">
                 <el-date-picker
                   v-model="form.startTime"
-                  type="datetime"
+                  type="date"
                   :placeholder="$t('promoteList.startTime')"
                   class="morelength"
                   size="small"
                   value-format="yyyy-MM-dd HH:mm:ss"
+                  :disabled="isEditFlag"
                 >
                 </el-date-picker>
               </el-form-item>
@@ -43,33 +59,38 @@
               <el-form-item prop="endTime">
                 <el-date-picker
                   v-model="form.endTime"
-                  type="datetime"
+                  type="date"
                   :placeholder="$t('promoteList.endTime')"
                   class="morelength"
                   size="small"
                   value-format="yyyy-MM-dd HH:mm:ss"
+                  :disabled="isEditFlag"
                 >
                 </el-date-picker>
               </el-form-item>
-            </section>
+            </section> -->
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.rewardType')"
-            prop=""
+            :label="$t('promoteList.rewardType') + '：'"
+            prop="rewardType"
           >
             <el-radio
               v-model="form.rewardType"
               label=0
-            >
-              {{$t('promoteList.giftGoods')}}
-            </el-radio>
+              :disabled="isEditFlag"
+              @change="rewardTypeChange"
+            >{{$t('promoteList.giftGoods')}}</el-radio>
             <el-radio
               v-model="form.rewardType"
               label=1
+              :disabled="isEditFlag"
+              @change="rewardTypeChange"
             >{{$t('promoteList.discountGoods')}}</el-radio>
             <el-radio
               v-model="form.rewardType"
               label=2
+              :disabled="isEditFlag"
+              @change="rewardTypeChange"
             >{{$t('promoteList.giftCoupons')}}</el-radio>
             <el-col v-if="form.rewardType==0 || form.rewardType==1">
               <el-button
@@ -92,64 +113,83 @@
             </el-col>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.rewardSet')"
+            :label="$t('promoteList.rewardSet') + '：'"
             prop=""
+            :required="true"
           >
             <el-table
               v-if="form.rewardType==0 || form.rewardType==1"
               :data="form.goodsInfo"
+              key="goodsList"
               border
-              style="width:50%"
+              style="width:700px;"
             >
               <el-table-column
                 prop="goodsName"
                 :label="$t('promoteList.goodsInfo')"
                 align="center"
-              ><template></template>
-              </el-table-column>
+              ></el-table-column>
               <el-table-column
-                prop="shopPrice"
+                prop="prdPrice"
                 :label="$t('promoteList.goodsPrice')"
                 align="center"
-              ><template></template>
-              </el-table-column>
-
+              ></el-table-column>
               <el-table-column
-                prop="goodsNumber"
+                prop="prdNumber"
                 :label="$t('promoteList.goodsStore')"
                 align="center"
-              ><template></template>
-              </el-table-column>
-
+              ></el-table-column>
               <el-table-column
                 :label="$t('promoteList.actStore')"
                 align="center"
+                width="180px"
               >
-                <template slot-scope="data">
-                  <el-input
-                    v-model="data.row.market_store"
-                    size="small"
-                  ></el-input>
+                <template slot-scope="scope">
+                  <el-form-item
+                    :prop="'goodsInfo.' +  scope.$index+ '.market_store'"
+                    :rules="[
+                    { required: true, message: '请填写活动库存', trigger: 'change' },
+                    { validator: (rule, value, callback)=>{validateStore(rule, value, callback, scope.row.prdNumber)}, trigger: ['blur', 'change'] }
+                  ]"
+                  >
+                    <el-input
+                      v-model="scope.row.market_store"
+                      size="small"
+                      :disabled="isEditFlag"
+                    ></el-input>
+                  </el-form-item>
                 </template>
               </el-table-column>
-
               <el-table-column
                 v-if="form.rewardType==1"
-                prop="market_price"
                 :label="$t('promoteList.actPrice')"
                 align="center"
+                width="180px"
               >
-                <template slot-scope="data">
-                  <el-input v-model="data.row.market_price"></el-input>
+                <template slot-scope="scope">
+                  <el-form-item
+                    :prop="'goodsInfo.' +  scope.$index+ '.market_price'"
+                    :rules="[
+                    { required: true, message: '请填写活动价', trigger: 'change' },
+                    { validator: (rule, value, callback)=>{validatePrice(rule, value, callback, scope.row.prdPrice)}, trigger: ['blur', 'change'] }
+                  ]"
+                  >
+                    <el-input
+                      v-model="scope.row.market_price"
+                      size="small"
+                      :disabled="isEditFlag"
+                    ></el-input>
+                  </el-form-item>
                 </template>
               </el-table-column>
             </el-table>
 
             <el-table
               v-if="form.rewardType==2"
-              :data="coupon_info"
+              :data="form.coupon_info"
+              key="couponList"
               border
-              style="width: 300px;"
+              style="width: 400px;"
             >
               <el-table-column
                 :label="$t('promoteList.couponInfo')"
@@ -162,32 +202,46 @@
                       v-if="scope.row.actCode == 'voucher'"
                       style="color:red"
                     >￥<span>{{scope.row.denomination}}</span></div>
-                    <div v-else><span>{{scope.row.denomination}}</span>折</div>
+                    <div
+                      v-if="scope.row.actCode == 'discount'"
+                      style="color:red"
+                    ><span>{{scope.row.denomination}}</span>折</div>
+                    <div
+                      v-if="scope.row.actCode == 'random'"
+                      style="color:red"
+                    ><span>{{scope.row.randomMax}}</span>最高</div>
                     <div class="coupon_rule">{{scope.row.useConsumeRestrict > 0? `满${scope.row.leastConsume}元可用`  : `不限制`}}</div>
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 :label="$t('promoteList.couponNum')"
-                width="130"
                 align="center"
+                width="180px"
               >
                 <template slot-scope="scope">
-                  <div>
+                  <el-form-item
+                    :prop="'coupon_info.' +  scope.$index+ '.send_num'"
+                    :rules="[
+                    { required: true, message: '请填写发券数量', trigger: 'change' },
+                    { validator: (rule, value, callback)=>{validateSendNum(rule, value, callback, scope.row.surplus)}, trigger: ['blur', 'change'] }
+                  ]"
+                  >
                     <el-input
                       v-model="scope.row.send_num"
                       size="small"
                       style="width:100px;"
                     ></el-input>
-                  </div>
+                  </el-form-item>
                 </template>
               </el-table-column>
             </el-table>
           </el-form-item>
 
           <el-form-item
-            :label="$t('promoteList.rewardValidityPeriod')"
+            :label="$t('promoteList.rewardValidityPeriod') + '：'"
             prop=""
+            :required="true"
           >
             <div style="display:flex">
               <el-form-item prop="rewardDuration">
@@ -213,8 +267,8 @@
             </div>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.currentPromoteValue')"
-            prop=""
+            :label="$t('promoteList.currentPromoteValue') + '：'"
+            prop="promoteType"
           >
             <el-radio
               v-model="form.promoteType"
@@ -224,10 +278,13 @@
               v-model="form.promoteType"
               label="1"
             >{{$t('promoteList.randomValue')}}</el-radio>
-            <span>{{$t('promoteList.actRules')}}</span>
+            <span
+              style="margin-left: 10px;color: #5a8bff; cursor: pointer;"
+              @click="ruleHandler"
+            >{{$t('promoteList.actRules')}}</span>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.requiredPromoteValue')"
+            :label="$t('promoteList.requiredPromoteValue') + '：'"
             prop="promoteAmount"
           >
             <div style="display:flex">
@@ -235,12 +292,13 @@
                 size="small"
                 style="margin-right: 10px"
                 v-model="form.promoteAmount"
+                :disabled="isEditFlag"
               ></el-input>
               <div class="gray">{{$t('promoteList.requiredPromoteValueText')}}</div>
             </div>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.requiredPromoteTimes')"
+            :label="$t('promoteList.requiredPromoteTimes') + '：'"
             prop="promoteTimes"
           >
             <div style="display:flex">
@@ -248,13 +306,15 @@
                 size="small"
                 style="margin-right: 10px"
                 v-model="form.promoteTimes"
+                :disabled="isEditFlag"
               ></el-input>
-              <div class="gray">{{$t('promoteList.requiredPromoteValueText')}}</div>
+              <div class="gray">{{$t('promoteList.requiredPromoteTimes')}}</div>
             </div>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.launchTimesLimit')"
+            :label="$t('promoteList.launchTimesLimit') + '：'"
             prop=""
+            :required="true"
           >
             <div style="display:flex">
               <span>{{$t('promoteList.userIn')}}</span>
@@ -285,7 +345,8 @@
                   style="margin:0 5px"
                   v-model="form.launchLimitTimes"
                 ></el-input>
-              </el-form-item>{{$t('promoteList.time')}}
+              </el-form-item>
+              {{$t('promoteList.time')}}
               <div
                 style="margin-left:10px"
                 class="gray"
@@ -293,16 +354,19 @@
             </div>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.sharePromote')"
-            prop="shareCreateTimes"
+            :label="$t('promoteList.sharePromote') + '：'"
+            prop=""
+            :required="true"
           >
             <div style="display:flex">
               <span>{{$t('promoteList.friendShare')}}</span>
-              <el-input
-                style="margin:0 5px"
-                size="small"
-                v-model="form.shareCreateTimes"
-              ></el-input>
+              <el-form-item prop="shareCreateTimes">
+                <el-input
+                  style="margin:0 5px"
+                  size="small"
+                  v-model="form.shareCreateTimes"
+                ></el-input>
+              </el-form-item>
               <span>{{$t('promoteList.promoteOpportunity')}}</span>
               <div
                 style="margin-left: 10px"
@@ -311,8 +375,8 @@
             </div>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.promoteCondition')"
-            prop=""
+            :label="$t('promoteList.promoteCondition') + '：'"
+            prop="promoteCondition"
           >
             <el-radio
               v-model="form.promoteCondition"
@@ -324,11 +388,31 @@
             >{{$t('promoteList.authorizeYes')}}</el-radio>
             <span class="gray">{{$t('promoteList.promoteConditionText')}}</span>
           </el-form-item>
-
+          <el-form-item
+            label="助力次数限制："
+            prop=""
+            :required="true"
+          >
+            <div style="display:flex">
+              <div>单个用户每天最多可帮忙助力</div>
+              <el-form-item prop="promoteTimesPerDay">
+                <el-input
+                  style="margin:0 5px"
+                  size="small"
+                  v-model="form.promoteTimesPerDay"
+                ></el-input>
+              </el-form-item>
+              <div>{{$t('promoteList.time')}}</div>
+              <div
+                style="margin-left:12px"
+                class="gray"
+              >默认为0，表示不限制</div>
+            </div>
+          </el-form-item>
           <el-form-item
             v-if="form.rewardType == 1"
-            :label="$t('promoteList.couponStrategy')"
-            prop=""
+            :label="$t('promoteList.couponStrategy') + '：'"
+            prop="useDiscount"
           >
             <el-radio
               v-model="form.useDiscount"
@@ -342,8 +426,8 @@
           </el-form-item>
           <el-form-item
             v-if="form.rewardType == 1"
-            :label="$t('promoteList.scoreStrategy')"
-            prop=""
+            :label="$t('promoteList.scoreStrategy') + '：'"
+            prop="useScore"
           >
             <el-radio
               v-model="form.useScore"
@@ -356,32 +440,29 @@
             <span class="gray">{{$t('promoteList.scoreStrategyText')}}</span>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.promoteFail')"
-            prop=""
+            :label="$t('promoteList.promoteFail') + '：'"
+            prop="failedSendType"
           >
             <el-radio
               v-model="form.failedSendType"
               label="0"
-            >
-              {{$t('promoteList.giftNothing')}}
-            </el-radio>
+              @change="failedSendTypeChange"
+            >{{$t('promoteList.giftNothing')}}</el-radio>
             <el-radio
               v-model="form.failedSendType"
               label="1"
+              @change="failedSendTypeChange"
             >{{$t('promoteList.coupon')}}</el-radio>
             <el-radio
               v-model="form.failedSendType"
               label="2"
+              @change="failedSendTypeChange"
             >{{$t('promoteList.point')}}</el-radio>
-            <div
-              v-if="form.failedSendType==1"
-              @click="isEditFlag?'':handleToCallDialog(2)"
-            >
-
-              <!--占位-->
+            <div v-if="form.failedSendType==1">
               <div
                 v-if="!coupon_duplicate.length"
                 class="addInfo"
+                @click="isEditFlag?'':handleToCallDialog(2)"
               >
                 <el-image
                   fit="scale-down"
@@ -393,25 +474,41 @@
               <div
                 class="addInfo"
                 v-else
+                @click="isEditFlag?'':handleToCallDialog(2)"
               >
                 <div class="couponImgWrapper">
                   <div class="coupon_list_top">
-                    <span>￥</span>
-                    <span class="number">{{coupon_duplicate[0].denomination}}</span>
+                    <span v-if="coupon_duplicate[0].actCode === 'voucher'">
+                      ￥<span class="number">{{coupon_duplicate[0].denomination}}</span>
+                    </span>
+                    <span v-if="coupon_duplicate[0].actCode === 'discount'">
+                      <span class="number">{{coupon_duplicate[0].denomination}}</span>折
+                    </span>
+                    <span v-if="coupon_duplicate[0].actCode === 'random'">
+                      <span class="number">{{coupon_duplicate[0].randomMax}}</span>最高
+                    </span>
                   </div>
                   <div class="coupon_center_limit">{{coupon_duplicate[0].useConsumeRestrict | formatLeastConsume(coupon_duplicate[0].leastConsume)}}</div>
-                  <div class="coupon_center_number">剩余{{coupon_duplicate[0].surplus}}张</div>
+                  <div
+                    class="coupon_center_number"
+                    v-if="coupon_duplicate[0].surplus === 0"
+                  >库存不限制</div>
+                  <div
+                    class="coupon_center_number"
+                    v-if="coupon_duplicate[0].surplus > 0"
+                  >剩余{{coupon_duplicate[0].surplus}}张</div>
                   <div
                     class="coupon_list_bottom"
-                    style="font-size:12px"
+                    v-if="coupon_duplicate[0].scoreNumber === 0"
                   >领取</div>
+                  <div
+                    class="coupon_list_bottom"
+                    v-if="coupon_duplicate[0].scoreNumber > 0"
+                  >{{coupon_duplicate[0].scoreNumber}}积分 兑换</div>
                 </div>
               </div>
-
             </div>
-
-            <div v-if="
-              form.failedSendType==2">
+            <div v-if="form.failedSendType==2">
               {{$t('promoteList.giftPoint')}}
               <el-input
                 size="small"
@@ -421,114 +518,126 @@
             </div>
           </el-form-item>
 
-          <div></div>
           <!-- 收起、展开更多配置 -->
-          <el-collapse>
-            <el-collapse-item>
-              <template slot="title">
-                {{$t('promoteList.moreSettings')}}
-              </template>
-              <el-form-item
-                :label="$t('promoteList.actShare')"
-                prop=""
-              >
-                <div>
-                  <el-radio
-                    v-model="form.activityShareType"
-                    label="0"
-                  >
-                    {{$t('promoteList.defaultStyle')}}
-                  </el-radio>
-                  <!-- <span>{{$t('promoteList.sharePreview')}}</span>
+          <div
+            @click="handleToChangeArror"
+            style="padding: 0 0 30px 30px; width: 20%;"
+          >
+            <div
+              v-if="arrorFlag"
+              style="color:rgb(90, 139, 255);cursor:pointer"
+            >
+              {{ $t('promoteList.openConfigure') }}&nbsp;<img :src="ArrowArr[0].img_1">
+            </div>
+            <div
+              v-if="!arrorFlag"
+              style="color:rgb(90, 139, 255);cursor:pointer"
+            >
+              {{ $t('promoteList.closeConfigure') }}&nbsp;<img :src="ArrowArr[1].img_2">
+            </div>
+          </div>
+          <div v-if="!arrorFlag">
+            <el-form-item
+              :label="$t('promoteList.actShare') + '：'"
+              prop=""
+              :required="true"
+            >
+              <div>
+                <el-radio
+                  v-model="form.activityShareType"
+                  label="0"
+                >
+                  {{$t('promoteList.defaultStyle')}}
+                </el-radio>
+                <!-- <span>{{$t('promoteList.sharePreview')}}</span>
                   <span>{{$t('promoteList.posterPreview')}}</span> -->
-                  <el-popover
-                    placement="right-start"
-                    width="220"
-                    trigger="hover"
+                <el-popover
+                  placement="right-start"
+                  width="220"
+                  trigger="hover"
+                >
+                  <el-image :src="srcList.src1"></el-image>
+                  <el-button
+                    slot="reference"
+                    type="text"
+                    style="margin: 0px 20px 0px 0px"
+                  >{{$t('marketCommon.viewExample')}}</el-button>
+                </el-popover>
+                <el-popover
+                  placement="right-start"
+                  width="220"
+                  trigger="hover"
+                >
+                  <el-image :src="srcList.src2"></el-image>
+                  <el-button
+                    slot="reference"
+                    type="text"
+                  >{{$t('marketCommon.downloadPoster')}}</el-button>
+                </el-popover>
+              </div>
+              <div>
+                <el-radio
+                  v-model="form.activityShareType"
+                  label="1"
+                >
+                  {{$t('promoteList.customStyle')}}
+                  <div
+                    v-if="form.activityShareType == 1"
+                    style="margin-left: 29px"
                   >
-                    <el-image :src="srcList.src1"></el-image>
-                    <el-button
-                      slot="reference"
-                      type="text"
-                      style="margin: 0 20 0 0px"
-                    >{{$t('marketCommon.viewExample')}}</el-button>
-                  </el-popover>
-                  <el-popover
-                    placement="right-start"
-                    width="220"
-                    trigger="hover"
-                  >
-                    <el-image :src="srcList.src2"></el-image>
-                    <el-button
-                      slot="reference"
-                      type="text"
-                    >{{$t('marketCommon.downloadPoster')}}</el-button>
-                  </el-popover>
-                </div>
-                <div>
-                  <el-radio
-                    v-model="form.activityShareType"
-                    label="1"
-                  >
-                    {{$t('promoteList.customStyle')}}
-                    <div
-                      v-if="form.activityShareType == 1"
-                      style="margin-left: 29px"
-                    >
-                      <div style="margin: 15px 0">
-                        <span style="margin-right: 25px">{{$t('promoteList.words')}}</span>
-                        <el-input
-                          size="small"
-                          style="width:200px"
-                          v-model="form.customShareWord"
-                        ></el-input>
-                      </div>
-                      <div>
-                        <span>{{$t('promoteList.sharePicture')}}</span>
+                    <div style="margin: 15px 0">
+                      <span style="margin-right: 25px">{{$t('promoteList.words')}}</span>
+                      <el-input
+                        size="small"
+                        style="width:200px"
+                        v-model="form.customShareWord"
+                      ></el-input>
+                    </div>
+                    <div>
+                      <span>{{$t('promoteList.sharePicture')}}</span>
+                      <el-radio
+                        v-model="form.shareImgType"
+                        label="0"
+                        style="margin-left:10px"
+                      >{{$t('promoteList.goodsPicture')}}</el-radio>
+
+                      <div style="margin: 10px 0 0 57px">
                         <el-radio
                           v-model="form.shareImgType"
-                          label="0"
-                          style="margin-left:10px"
-                        >{{$t('promoteList.goodsPicture')}}</el-radio>
+                          label="1"
+                        >{{$t('promoteList.customPicture')}}</el-radio>
 
-                        <div style="margin: 10px 0 0 57px">
-                          <el-radio
-                            v-model="form.shareImgType"
-                            label="1"
-                          >{{$t('promoteList.customPicture')}}</el-radio>
-
+                        <div
+                          style="display: flex;align-items: center;flex-wrap: wrap;"
+                          v-if="form.shareImgType == 1"
+                        >
+                          <span
+                            @click="deleteGoodsImg()"
+                            v-if="this.srcList.src !==`${this.$imageHost}/image/admin/add_img.png`"
+                            class="deleteIcon"
+                          >×</span>
                           <div
-                            style="display: flex;align-items: center;flex-wrap: wrap;"
-                            v-if="form.shareImgType == 1"
+                            @click="addGoodsImg"
+                            class="ImgWrap"
                           >
-                            <span
-                              @click="deleteGoodsImg()"
-                              v-if="this.srcList.src !==`${this.$imageHost}/image/admin/add_img.png`"
-                              class="deleteIcon"
-                            >×</span>
-                            <div
-                              @click="addGoodsImg"
-                              class="ImgWrap"
-                            >
-                              <el-image
-                                style="width: 80px; height: 80px"
-                                :src="srcList.src"
-                                fit="scale-down"
-                              ></el-image>
-                            </div>
-                            <span class="inputTip">
-                              {{$t('promoteList.pictureTip')}}
-                            </span>
+                            <el-image
+                              style="width: 80px; height: 80px"
+                              :src="srcList.src"
+                              fit="scale-down"
+                            ></el-image>
                           </div>
+                          <span class="inputTip">
+                            {{$t('promoteList.pictureTip')}}
+                          </span>
                         </div>
                       </div>
                     </div>
+                  </div>
 
-                  </el-radio>
-                </div>
-              </el-form-item>
-            </el-collapse-item>
-          </el-collapse>
+                </el-radio>
+              </div>
+            </el-form-item>
+          </div>
         </el-form>
       </div>
 
@@ -542,6 +651,7 @@
     </div>
     <choosingGoods
       @resultGoodsRow="choosingGoodsResult"
+      :loadProduct="true"
       :tuneUpChooseGoods="tuneUpChooseGoods"
       :chooseGoodsBack="goodsIdList"
       :singleElection="true"
@@ -566,9 +676,8 @@
 <script>
 import { mapActions } from 'vuex'
 import choosingGoods from '@/components/admin/choosingGoods'
-import { addActive, selectOneInfo, updateInfo } from '@/api/admin/marketManage/friendHelp.js'
+import { addActive, selectOneInfo, updateInfo, getGoodsInfo } from '@/api/admin/marketManage/friendHelp.js'
 import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
-import { selectGoodsApi } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods.js'
 import ImageDalog from '@/components/admin/imageDalog'
 export default {
   components: {
@@ -586,8 +695,98 @@ export default {
     }
   },
   data () {
+    // 自定义奖励有效期
+    var validateRewardDuration = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/ // 正整数
+      if (!value) {
+        callback(new Error('请填写有效期'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写正整数'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验所需助力值
+    var validatePromoteAmount = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/ // 正整数
+      if (!value) {
+        callback(new Error('请填写助力值'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写正整数'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验所需助力次数
+    var validatePromoteTimes = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/ // 正整数
+      if (!value) {
+        callback(new Error('请填写助力次数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写正整数'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验所需助力次数
+    var validateLaunchLimit = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/ // 正整数
+      if (!value) {
+        callback(new Error('请填写时间'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写正整数'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验所需助力次数限制
+    var validateLaunchLimitTimes = (rule, value, callback) => {
+      var re = /^(0|\+?[1-9][0-9]*)$/ // 0或正整数
+      if (value === '') {
+        callback(new Error('请填写次数限制'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写0或正整数'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验助力机会
+    var validateShareCreateTimes = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/ // 正整数
+      if (!value) {
+        callback(new Error('请填写助力机会'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写正整数'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验助力次数限制
+    var validatePromoteTimesPerDay = (rule, value, callback) => {
+      var re = /^(0|\+?[1-9][0-9]*)$/ // 0或正整数
+      if (value === '') {
+        callback(new Error('请填写次数限制'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写0或正整数'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验助力失败赠送
+    var validateFailedSendType = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/ // 正整数
+      if (!value) {
+        callback(new Error('请选择助力失败赠送条件'))
+      } else if (value === '1' && (this.coupon_duplicate.length === 0 || this.coupon_duplicate === [])) {
+        callback(new Error('请选择赠送优惠券'))
+      } else if (value === '2' && (!this.form.failedSendContent || !re.test(this.form.failedSendContent))) {
+        callback(new Error('请正确填写赠送积分'))
+      } else {
+        callback()
+      }
+    }
     return {
-      couponFlag: null,
+      couponFlag: null, // 优惠券弹窗类型
       promoteId: '',
       show: false,
       radio: 'one',
@@ -605,6 +804,7 @@ export default {
       },
       // 表单
       form: {
+        timeInterval: [],
         test: '',
         actName: '',
         rewardType: '0',
@@ -618,6 +818,7 @@ export default {
         },
         useDiscount: '0',
         useScore: '1',
+        validity: '',
         startTime: '',
         endTime: '',
         ruleForm: {},
@@ -651,8 +852,8 @@ export default {
           label: this.$t('promoteList.year')
         }],
         launchLimitUnitSelect: '',
-        launchLimitTimes: '',
-        shareCreateTimes: '',
+        launchLimitTimes: '0',
+        shareCreateTimes: '1',
         promoteCondition: '0',
         failedSendType: '0',
         failedSendContent: '',
@@ -661,80 +862,87 @@ export default {
         shareImgType: '0',
         // customImgPath: '',
         // 选中商品id
-        goodsInfo: [{
-          goodsIds: '',
-          goodsName: '',
-          shopPrice: '',
-          goodsNumber: '',
-          rewardType: '',
-          market_price: '',
-          market_store: ''
-        }]
-
+        goodsInfo: [
+          // {
+          //   goodsIds: '',
+          //   goodsName: '',
+          //   prdPrice: '',
+          //   goodsNumber: '',
+          //   rewardType: '',
+          //   market_price: '',
+          //   market_store: ''
+          // }
+        ],
+        coupon_info: [],
+        promoteTimesPerDay: '0'
       },
-      // 优惠券
-      coupon_msg: [],
-      coupon_info: [],
-      coupon_duplicate: [],
-      couponDialogFlag: false,
-      couponDialogFlag1: false,
-      couponSetDialogFlag: false,
-      coupon_set: {
-        immediatelyGrantAmount: 0,
-        timingEvery: 0,
-        timingAmount: 0,
-        timingTime: '1',
-        timingUnit: '0'
-      },
-      // coupon_set: {
-      //   immediatelyGrantAmount: 0,
-      //   timingEvery: 0,
-      //   timingAmount: 0,
-      //   timingTime: '1',
-      //   timingUnit: '0'
-      // },
-      target: null,
-
       // 表单约束
       formRules: {
         actName: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, message: '请填写活动名称', trigger: 'change' }
         ],
-        startTime: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'change' }
+        validity: [
+          { required: true, message: '请填写活动有效期', trigger: 'change' }
         ],
-        endTime: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'change' }
+        rewardType: [
+          { required: true, message: '请选择奖励类型', trigger: 'change' }
         ],
         rewardDuration: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, validator: validateRewardDuration, trigger: 'change' }
+        ],
+        promoteType: [
+          { required: true, message: '请选择单次助力值', trigger: 'change' }
         ],
         promoteAmount: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, validator: validatePromoteAmount, trigger: 'change' }
         ],
         promoteTimes: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, validator: validatePromoteTimes, trigger: 'change' }
         ],
         launchLimitDuration: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, validator: validateLaunchLimit, message: '请填写时间', trigger: 'change' }
         ],
         launchLimitTimes: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, validator: validateLaunchLimitTimes, trigger: 'change' }
         ],
         shareCreateTimes: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, validator: validateShareCreateTimes, trigger: 'change' }
+        ],
+        promoteCondition: [
+          { required: true, message: '请选择好友助力条件', trigger: 'change' }
+        ],
+        promoteTimesPerDay: [
+          { required: true, validator: validatePromoteTimesPerDay, trigger: 'change' }
+        ],
+        useDiscount: [
+          { required: true, message: '请选择优惠叠加策略', trigger: 'change' }
+        ],
+        useScore: [
+          { required: true, message: '请选择积分抵扣策略', trigger: 'change' }
+        ],
+        failedSendType: [
+          { required: true, validator: validateFailedSendType, trigger: 'change' }
         ]
       },
       srcList: {
         src: `${this.$imageHost}/image/admin/add_img.png`,
-        src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
-        src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`,
+        src1: `${this.$imageHost}/image/admin/share/promote_share_goods.jpg`,
+        src2: `${this.$imageHost}/image/admin/share/promote_pictorial_goods.jpg`,
         imageUrl: ``
       },
-      showCouponDialog: false,
-      couponIdList: [],
+      showCouponDialog: false, // 优惠券弹窗
+      coupon_duplicate: [], // 失败送优惠券数据
+      couponIdList: [], // 优惠券回显数据id
       showImageDialog: false,
-      imgHost: `${this.$imageHost}`
+      imgHost: `${this.$imageHost}`,
+
+      // 展开设置箭头
+      ArrowArr: [{
+        img_1: this.$imageHost + '/image/admin/show_more.png'
+      }, {
+        img_2: this.$imageHost + '/image/admin/hid_some.png'
+      }],
+      arrorFlag: true // 展开更多配置
     }
   },
   created () {
@@ -742,6 +950,7 @@ export default {
     this.form.launchLimitUnitSelect = this.form.launchLimitUnit[0].value
     this.promoteId = this.$route.params.id
     if (this.promoteId !== 'null') {
+      this.isEditFlag = true
       console.log('id:', this.promoteId)
       this.loadData(this.promoteId)
     }
@@ -756,65 +965,84 @@ export default {
       }
       selectOneInfo(selectParam).then(res => {
         console.log('message', res)
-        console.log('pageInfo:', res.content[0])
-        this.form.actName = res.content[0].actName
-        this.form.startTime = res.content[0].startTime
-        this.form.endTime = res.content[0].endTime
-        this.form.rewardType = res.content[0].rewardType.toString()
-        this.form.rewardDuration = res.content[0].rewardDuration
-        this.form.rewardDurationUnitSelect = res.content[0].rewardDurationUnit
-        this.form.promoteType = res.content[0].promoteType.toString()
-        this.form.promoteAmount = res.content[0].promoteAmount
-        this.form.promoteTimes = res.content[0].promoteTimes
-        this.form.launchLimitDuration = res.content[0].launchLimitDuration
-        this.form.launchLimitUnitSelect = res.content[0].launchLimitUnit
-        this.form.launchLimitTimes = res.content[0].launchLimitTimes
-        this.form.shareCreateTimes = res.content[0].shareCreateTimes
-        this.form.promoteCondition = res.content[0].promoteCondition.toString()
-        this.form.useDiscount = res.content[0].useDiscount.toString()
-        this.form.useScore = res.content[0].useScore.toString()
-        this.form.failedSendType = res.content[0].failedSendType.toString()
-        this.form.failedSendContent = res.content[0].failedSendContent
-        this.form.activityShareType = res.content[0].activityShareType.toString()
-        this.form.customShareWord = res.content[0].customShareWord
-        this.form.shareImgType = res.content[0].shareImgType.toString()
-        this.srcList.src = res.content[0].customImgPath
+        console.log('pageInfo:', res.content)
+        // 展开设置
+        this.arrorFlag = false
+        this.form.actName = res.content.actName
+        this.form.startTime = res.content.startTime
+        this.form.endTime = res.content.endTime
+        this.form.validity = [res.content.startTime, res.content.endTime]
+        this.form.rewardType = res.content.rewardType.toString()
+        this.form.rewardSet = JSON.parse(res.content.rewardContent)
+        this.form.rewardDuration = res.content.rewardDuration
+        this.form.rewardDurationUnitSelect = res.content.rewardDurationUnit
+        this.form.promoteType = res.content.promoteType.toString()
+        this.form.promoteAmount = res.content.promoteAmount
+        this.form.promoteTimes = res.content.promoteTimes
+        this.form.launchLimitDuration = res.content.launchLimitDuration
+        this.form.launchLimitUnitSelect = res.content.launchLimitUnit
+        this.form.launchLimitTimes = res.content.launchLimitTimes
+        this.form.shareCreateTimes = res.content.shareCreateTimes
+        this.form.promoteCondition = res.content.promoteCondition.toString()
+        this.form.useDiscount = res.content.useDiscount.toString()
+        this.form.useScore = res.content.useScore.toString()
+        this.form.failedSendType = res.content.failedSendType.toString()
+        this.form.failedSendContent = res.content.failedSendContent
+        this.form.activityShareType = res.content.activityShareType.toString()
+        this.form.customShareWord = res.content.customShareWord
+        this.form.shareImgType = res.content.shareImgType.toString()
+        this.srcList.src = res.content.customImgPath
+        this.form.promoteTimesPerDay = res.content.promoteTimesPerDay
         if (this.form.rewardType === '0') {
-          this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
-          console.log(this.form.rewardSet.market_store)
-          this.form.rewardSet.goods_ids = JSON.parse(res.content[0].rewardContent.slice(1, -1)).goods_ids
-          console.log(this.form.rewardSet.goods_ids)
-          let goodsIdParam = {
-            'goodsId': this.form.rewardSet.goods_ids
+          // this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
+          console.log('market_store???', this.form.rewardSet.market_store)
+          // this.form.rewardSet.goods_ids = JSON.parse(res.content[0].rewardContent.slice(1, -1)).goods_ids
+          console.log('goods_ids???', this.form.rewardSet.goods_ids)
+          // let goodsIdParam = {
+          //   'goodsId': this.form.rewardSet.goods_ids
+          // }
+          let idParam = {
+            'id': this.form.rewardSet.goods_ids
           }
-          selectGoodsApi(goodsIdParam).then(res => {
-            this.form.goodsInfo = [res.content]
-            this.form.goodsInfo.market_store = this.form.rewardSet.market_store
-            console.log('goodsInfo:', res.content)
+          getGoodsInfo(idParam).then(res => {
+            console.log('goodsInfoByPrdId:', res)
+            let goodsItem = {
+              'goodsName': res.content.goodsName,
+              'prdPrice': res.content.goodsPrice,
+              'prdNumber': res.content.goodsStore,
+              'market_store': this.form.rewardSet.market_store
+            }
+            this.form.goodsInfo = []
+            this.form.goodsInfo.push(goodsItem)
           })
+          // selectGoodsApi(goodsIdParam).then(res => {
+          //   this.form.goodsInfo = [res.content]
+          //   this.form.goodsInfo.market_store = this.form.rewardSet.market_store
+          //   console.log('goodsInfo:', res.content)
+          // })
         }
         if (this.form.rewardType === '1') {
-          this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
-          this.form.rewardSet.market_price = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_price
-          this.form.rewardSet.goods_ids = JSON.parse(res.content[0].rewardContent.slice(1, -1)).goods_ids
-          console.log(this.form.rewardSet.goods_ids)
-          let goodsIdParam = {
-            'goodsId': this.form.rewardSet.goods_ids
+          let idParam = {
+            'id': this.form.rewardSet.goods_ids
           }
-          selectGoodsApi(goodsIdParam).then(res => {
-            this.form.goodsInfo = [res.content]
-            this.form.goodsInfo[0].market_store = this.form.rewardSet.market_store
-            this.form.goodsInfo[0].market_price = this.form.rewardSet.market_price
-            console.log('goodsInfo:', res.content)
+          getGoodsInfo(idParam).then(res => {
+            console.log('goodsInfoByPrdId:', res)
+            let goodsItem = {
+              'goodsName': res.content.goodsName,
+              'prdPrice': res.content.goodsPrice,
+              'prdNumber': res.content.goodsStore,
+              'market_store': this.form.rewardSet.market_store,
+              'market_price': this.form.rewardSet.market_price
+            }
+            this.form.goodsInfo = []
+            this.form.goodsInfo.push(goodsItem)
           })
         }
         if (this.form.rewardType === '2') {
-          this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
-          this.form.rewardSet.reward_ids = JSON.parse(res.content[0].rewardContent.slice(1, -1)).reward_ids
           updateCoupon(this.form.rewardSet.reward_ids).then(res => {
-            this.coupon_info = res.content
-            this.coupon_info[0].send_num = this.form.rewardSet.market_store
-            console.log('couponInfo:', this.coupon_info)
+            this.form.coupon_info = res.content
+            this.form.coupon_info[0].send_num = this.form.rewardSet.market_store
+            console.log('couponInfo:', this.form.coupon_info)
           })
         }
         if (this.form.failedSendType === '1') {
@@ -826,60 +1054,70 @@ export default {
       })
     },
     addAct () {
-      console.log('this.form.rewardType:', this.form.rewardType)
-      if (this.form.rewardType === '0' || this.form.rewardType === '1') {
-        if (this.form.goodsInfo[0].market_price == null) {
-          this.form.goodsInfo[0].market_price = ''
-        }
-        this.form.rewardSet.market_price = this.form.goodsInfo[0].market_price
-        this.form.rewardSet.market_store = this.form.goodsInfo[0].market_store
-        console.log(this.form.goodsInfo[0].market_store)
-        this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
-        console.log('this.form.rewardSet.goods_ids:', this.form.rewardSet.goods_ids)
-        console.log('rewardSet:', this.form.rewardSet)
-        console.log('rewardContent:', this.form.rewardContent)
-      }
-      if (this.form.rewardType === '2') {
-        this.form.rewardSet.market_store = this.coupon_info[0].send_num
-        this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
-        console.log('rewardSet:', this.form.rewardSet)
-        console.log('rewardContent:', this.form.rewardContent)
-      }
-      let addParam = {
-        'id': this.promoteId,
-        'actName': this.form.actName,
-        'startTime': this.form.startTime,
-        'endTime': this.form.endTime,
-        'rewardType': this.form.rewardType,
-        'rewardContent': this.form.rewardContent,
-        'rewardDuration': this.form.rewardDuration,
-        'rewardDurationUnit': this.form.rewardDurationUnitSelect,
-        'promoteType': this.form.promoteType,
-        'promoteAmount': this.form.promoteAmount,
-        'promoteTimes': this.form.promoteTimes,
-        'launchLimitDuration': this.form.launchLimitDuration,
-        'launchLimitUnit': this.form.launchLimitUnitSelect,
-        'launchLimitTimes': this.form.launchLimitTimes,
-        'shareCreateTimes': this.form.shareCreateTimes,
-        'promoteCondition': this.form.promoteCondition,
-        'useDiscount': this.form.useDiscount,
-        'useScore': this.form.useScore,
-        'failedSendType': this.form.failedSendType,
-        'failedSendContent': this.form.failedSendContent,
-        'activityShareType': this.form.activityShareType,
-        'customShareWord': this.form.customShareWord,
-        'shareImgType': this.form.shareImgType,
-        'customImgPath': this.srcList.src
+      if ((this.form.rewardType === '0' || this.form.rewardType === '1') && this.form.goodsInfo.length === 0) {
+        this.$message.warning('请选择商品奖励设置')
+        return false
+      } else if (this.form.rewardType === '2' && this.form.coupon_info.length === 0) {
+        this.$message.warning('请选择优惠券奖励设置')
+        return false
       }
       this.$refs['form'].validate((valid) => {
         console.log('submit', this.form)
         if (valid) {
+          console.log('this.form.rewardType:', this.form.rewardType)
+          if (this.form.rewardType === '0' || this.form.rewardType === '1') {
+            this.form.goodsInfo[0].shopPrice = this.form.goodsInfo[0].prdPrice
+            if (this.form.goodsInfo[0].market_price == null) {
+              this.form.goodsInfo[0].market_price = ''
+            }
+            this.form.rewardSet.market_price = this.form.goodsInfo[0].market_price
+            this.form.rewardSet.market_store = this.form.goodsInfo[0].market_store
+            console.log(this.form.goodsInfo[0].market_store)
+            this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
+            console.log('this.form.rewardSet.goods_ids:', this.form.rewardSet.goods_ids)
+            console.log('rewardSet:', this.form.rewardSet)
+            console.log('rewardContent:', this.form.rewardContent)
+          }
+          if (this.form.rewardType === '2') {
+            this.form.rewardSet.market_store = this.form.coupon_info[0].send_num
+            // this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
+            console.log('rewardSet:', this.form.rewardSet)
+            console.log('rewardContent:', this.form.rewardContent)
+          }
+          let addParam = {
+            'id': this.promoteId,
+            'actName': this.form.actName,
+            'startTime': this.form.validity[0],
+            'endTime': this.form.validity[1],
+            'rewardType': this.form.rewardType,
+            'fpRewardContent': this.form.rewardSet,
+            'rewardDuration': this.form.rewardDuration,
+            'rewardDurationUnit': this.form.rewardDurationUnitSelect,
+            'promoteType': this.form.promoteType,
+            'promoteAmount': this.form.promoteAmount,
+            'promoteTimes': this.form.promoteTimes,
+            'launchLimitDuration': this.form.launchLimitDuration,
+            'launchLimitUnit': this.form.launchLimitUnitSelect,
+            'launchLimitTimes': this.form.launchLimitTimes,
+            'shareCreateTimes': this.form.shareCreateTimes,
+            'promoteCondition': this.form.promoteCondition,
+            'useDiscount': this.form.useDiscount,
+            'useScore': this.form.useScore,
+            'failedSendType': this.form.failedSendType,
+            'failedSendContent': this.form.failedSendContent,
+            'activityShareType': this.form.activityShareType,
+            'customShareWord': this.form.customShareWord,
+            'shareImgType': this.form.shareImgType,
+            'customImgPath': this.srcList.src,
+            'promoteTimesPerDay': this.form.promoteTimesPerDay
+          }
+          console.log('submit', this.form)
           if (this.promoteId !== 'null') {
             console.log('I am updating!')
             updateInfo(addParam).then(res => {
               console.log(res)
               if (res.error === 0) {
-                alert(this.$t('promoteList.successUpdate'))
+                this.$message.success(this.$t('promoteList.successUpdate'))
                 this.$router.push({
                   name: 'promote'
                 })
@@ -892,7 +1130,7 @@ export default {
             addActive(addParam).then(res => {
               console.log(res)
               if (res.error === 0) {
-                alert(this.$t('promoteList.successAdd'))
+                this.$message.success(this.$t('promoteList.successAdd'))
                 this.$router.push({
                   name: 'promote'
                 })
@@ -902,7 +1140,7 @@ export default {
             })
           }
         } else {
-          this.$message.error(this.$t('promoteList.validCheck'))
+          // this.$message.error(this.$t('promoteList.validCheck'))
           return false
         }
       })
@@ -923,7 +1161,7 @@ export default {
     // 选择商品弹窗
     showChoosingGoods () {
       this.transmitEditGoodsId(this.form.goodsInfo.goodsIds)
-      // console.log('初始化商品弹窗', this.form.rewardContent.goodsIds)
+      console.log('初始化商品弹窗', this.form.rewardContent.goodsIds)
       this.$http.$emit('choosingGoodsFlag', true, 'choiseOne')
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
@@ -936,49 +1174,104 @@ export default {
       this.goodsIdList = []
       this.goodsIdList.push(row.goodsId)
       console.log('goodsInfo:', this.form.goodsInfo[0])
-      this.form.rewardSet.goods_ids = row.goodsId
+      // this.form.rewardSet.goods_ids = row.goodsId
+      this.form.rewardSet.goods_ids = row.prdId
 
       // })
     },
     // 选择优惠券弹窗
     handleToCallDialog (val) {
-      switch (val) {
-        case 1: {
-          console.log(this.couponDialogFlag)
-          console.log(this.coupon_info)
-          this.couponFlag = 1
-          let obj = {
-            couponDialogFlag: !this.couponDialogFlag,
-            couponList: this.coupon_info
-          }
-          this.$http.$emit('V-AddCoupon', obj)
-          this.showCouponDialog = !this.showCouponDialog
-        }
-          break
-        case 2: {
-          this.couponFlag = 2
-          let obj = {
-            couponDialogFlag: !this.couponDialogFlag1,
-            couponList: this.coupon_duplicate
-          }
-          this.$http.$emit('V-AddCoupon', obj)
-          this.showCouponDialog = !this.showCouponDialog
-        }
+      this.showCouponDialog = !this.showCouponDialog
+      this.couponIdList = []
+      if (val === 1) {
+        this.couponFlag = 1
+        this.couponIdList.push(this.form.coupon_info[0].id)
+      } else {
+        this.couponFlag = 2
+        this.couponIdList.push(this.coupon_duplicate[0].id)
       }
     },
     // 确认选择优惠券-新增-删除
     handleToCheck (data) {
-      console.log(data)
       console.log('couponInfo:', data)
       if (this.couponFlag === 1) {
         this.form.rewardSet.reward_ids = data[0].id
-        this.coupon_info = data
-        console.log(this.coupon_info)
+        this.form.coupon_info = data
+        console.log(this.form.coupon_info)
       } else {
         this.form.failedSendContent = data[0].id
         this.coupon_duplicate = data
         console.log(this.coupon_duplicate)
+
+        this.$refs['form'].validateField('failedSendType')
       }
+    },
+
+    // 查看活动规则
+    ruleHandler () {
+      window.open('http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=736&fromuid=1')
+    },
+
+    // 展开更多配置
+    handleToChangeArror () {
+      this.arrorFlag = !this.arrorFlag
+    },
+
+    // 切换奖励类型
+    rewardTypeChange () {
+      this.form.goodsInfo = []
+      this.form.coupon_info = []
+      this.goodsIdList = []
+      this.couponIdList = []
+    },
+
+    // 校验活动库存
+    validateStore (rule, value, callback, prdNumber) {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!value) {
+        callback(new Error('请填写活动库存'))
+      } else if (!re.test(value)) {
+        callback(new Error('请正确填写活动库存'))
+      } else if (Number(value) > prdNumber) {
+        callback(new Error('活动库存不能大于商品库存'))
+      } else {
+        callback()
+      }
+    },
+
+    // 校验活动价
+    validatePrice (rule, value, callback, prdPrice) {
+      var re = /^\d+(\.\d{1,2})?$/
+      if (!value) {
+        callback(new Error('请填写活动价'))
+      } else if (!re.test(value)) {
+        callback(new Error('请正确填写活动价'))
+      } else if (Number(value) > prdPrice) {
+        callback(new Error('活动价不能大于原价'))
+      } else {
+        callback()
+      }
+    },
+
+    // 校验发券数量
+    validateSendNum (rule, value, callback, surplus) {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!value) {
+        callback(new Error('请填写数量'))
+      } else if (!re.test(value)) {
+        callback(new Error('请正确填写数量'))
+      } else if (surplus !== 0 && Number(value) > surplus) {
+        callback(new Error('数量不能大于剩余量'))
+      } else {
+        callback()
+      }
+    },
+
+    // 切换助力失败赠送条件
+    failedSendTypeChange () {
+      this.coupon_duplicate = []
+      this.form.failedSendContent = ''
+      this.$refs['form'].validateField('failedSendType')
     }
   }
 }
@@ -1050,6 +1343,7 @@ export default {
       padding: 10px 0;
       background: #fff;
       text-align: center;
+      z-index: 1;
     }
   }
 }
@@ -1124,6 +1418,10 @@ export default {
         font-size: 20px;
         font-weight: bold;
       }
+      .number {
+        font-size: 20px;
+        font-weight: bold;
+      }
     }
     .coupon_center_limit {
       height: 20px;
@@ -1135,6 +1433,7 @@ export default {
       color: #fbb;
     }
     .coupon_list_bottom {
+      font-size: 12px;
       height: 24px;
       line-height: 30px;
       border-bottom-left-radius: 8px;

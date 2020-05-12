@@ -1,11 +1,12 @@
 <wxs src="../filter.wxs" module="filter"></wxs>
+<wxs src="../../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="right" vertical="fill" bindtap='bindClose'>
   <view class="filter-content" animation="{{animation}}" style="height:calc(100% - {{navHeight}}px);">
     <view class="sort-item">
       <view class="back" bindtap="bindClose">
         <image class="back-image" src="{{imageUrl}}/image/wxapp/category_back.png"></image>
       </view>
-      <view class="center-title">更多品牌</view>
+      <view class="center-title">{{i18n.$t(localePack,"page1.search.moreBrands")}}</view>
     </view>
     <scroll-view class="no_width" scroll-y scroll-with-animation scroll-into-view="{{item_id}}" style="height:calc(100% - 104rpx);overflow-y:auto;overflow-x:hidden">
       <view class="brand_list" wx:for="{{goodsBrands}}" wx:key="index" id="{{item.character}}">

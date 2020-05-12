@@ -38,6 +38,7 @@ public class OrderScheduleTask {
         result.forEach((r)->{
             String uuid = Util.randomId();
             String key = JedisKeyConstant.TASK_JOB_LOCK_ORDER_GROUP_BUY + r.getShopId();
+            saas.getShopApp(r.getShopId()).groupIntegration.updateState();
             //订单处理时间可能较长，加锁防止重入
             if( jedisManager.addLock(key,uuid,1000*90) ){
                 saas.getShopApp(r.getShopId()).shopTaskService.groupBuyTaskService.monitorOrder();
@@ -130,6 +131,18 @@ public class OrderScheduleTask {
         Result<ShopRecord> shops = saas.shop.getAll();
         shops.forEach((shop)->{
             saas.getShopApp(shop.getShopId()).shopTaskService.prizeTaskService.closePrizeGoods();
+        });
+    }
+
+    /**
+     * 优惠券礼包订单自动发券
+     * 每一天执行一次
+     */
+    @Scheduled(cron = "0 01 01 * * ?")
+    public void monitorCouponPackOrders() {
+        Result<ShopRecord> result = saas.shop.getAll();
+        result.forEach((r)->{
+            saas.getShopApp(r.getShopId()).shopTaskService.couponPackTaskService.monitorCouponPackOrders();
         });
     }
 }

@@ -62,7 +62,7 @@ public class EsUtilSearchService extends EsBaseSearchService{
             .queryBuilder(searchBuilder)
             .build();
         SearchSourceBuilder sourceBuilder = assemblySearchSourceBuilder(param);
-        SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.GOODS_INDEX_NAME);
+        SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.GOODS_ALIA_NAME);
         searchRequest.source(sourceBuilder);
         SearchResponse searchResponse = esManager.searchResponse(searchRequest);
         List<Integer> ids = Arrays.stream(searchResponse.getHits().getHits())
@@ -99,7 +99,8 @@ public class EsUtilSearchService extends EsBaseSearchService{
             .build();
         SearchSourceBuilder sourceBuilder = assemblySearchSourceBuilder(sourceBuilderParam);
         sourceBuilder.fetchSource(GOODS_LABEL_SOURCE,null);
-        SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.GOODS_INDEX_NAME);
+        sourceBuilder.size(400);
+        SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.GOODS_ALIA_NAME);
         searchRequest.source(sourceBuilder);
         SearchResponse searchResponse = esManager.searchResponse(searchRequest);
         SearchHit[] hits =searchResponse.getHits().getHits();

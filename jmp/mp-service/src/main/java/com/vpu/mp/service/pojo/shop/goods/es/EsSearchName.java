@@ -82,6 +82,10 @@ public interface EsSearchName {
     String VIDEO_INFO_JSON = "video_info_json";
     String DEFAULT_PRD = "default_prd";
     String SECONDARY_GOODS_IMAGES = "secondary_goods_images";
+    String CAN_REBATE = "can_rebate";
+    String CREATE_TIME = "create_time";
+    String SALE_TIME = "sale_time";
+    String TOTAL_SALE_NUMBER = "total_sale_number";
 
     /**单纯搜索使用，es中无此字段*/
     String KEY_WORDS = "key_words";

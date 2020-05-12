@@ -23,6 +23,10 @@ public class PrizeConstant {
      * 支付有礼
      */
     public final static byte PRIZE_SOURCE_PAY_AWARD=3;
+    /**
+     * 奖品类型 todo
+     */
+    public final static byte PRIZE_SOURCE=9;
 
 
     //**************状态

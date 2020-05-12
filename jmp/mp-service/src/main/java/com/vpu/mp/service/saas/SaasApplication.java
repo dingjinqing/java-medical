@@ -7,7 +7,9 @@ import com.vpu.mp.service.saas.article.ArticleService;
 import com.vpu.mp.service.saas.categroy.SysCateService;
 import com.vpu.mp.service.saas.db.DataExportService;
 import com.vpu.mp.service.saas.db.RepairDatabaseService;
+import com.vpu.mp.service.saas.es.EsMappingUpdateService;
 import com.vpu.mp.service.saas.image.SystemImageService;
+import com.vpu.mp.service.saas.index.ShopViewService;
 import com.vpu.mp.service.saas.official.OfficialService;
 import com.vpu.mp.service.saas.overview.ShopOverviewService;
 import com.vpu.mp.service.saas.privilege.ChildAccountService;
@@ -92,6 +94,12 @@ public class SaasApplication {
 
     @Autowired
     public MpCronRegistration mpCronRegistration;
+
+    @Autowired
+    public ShopViewService shopViewService;
+
+    @Autowired
+    public EsMappingUpdateService esMappingUpdateService;
 
 	public ShopApplication getShopApp(Integer shopId) {
 		databaseManager.switchShopDb(shopId);

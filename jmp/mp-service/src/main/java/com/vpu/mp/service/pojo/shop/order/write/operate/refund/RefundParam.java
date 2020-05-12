@@ -36,6 +36,7 @@ public final class RefundParam extends OrderOperateQueryParam {
 	private String voucherImages;
 	@Getter
 	@Setter
+    @ToString
 	public static class ReturnGoods {
 		/** order_goods主键 */
 		private Integer recId;

@@ -241,6 +241,7 @@ public class ChannelService extends ShopBaseService {
 		}else {
 			record.setGoodsId(param.getContentId());
 		}
+		record.setChannelName(param.getChannelName());
 		record.setSourceType(param.getSourceType());
 		record.setShare(createShare());
 		return db().executeInsert(record);

@@ -68,6 +68,7 @@ public class GoodsScheduleTask {
         result.forEach((r)->{
             saas.getShopApp(r.getShopId()).shopTaskService.bargainTaskService.monitorGoodsType();
             saas.getShopApp(r.getShopId()).shopTaskService.bargainTaskService.closeBargainRecord();
+            saas.getShopApp(r.getShopId()).shopTaskService.bargainTaskService.sendBargainProgress();
         });
     }
 
@@ -101,6 +102,17 @@ public class GoodsScheduleTask {
     public void autoOnSaleGoods(){
         Result<ShopRecord> result = saas.shop.getAll();
         result.forEach((r)-> saas.getShopApp(r.getShopId()).goods.onSaleGoods());
+    }
+
+    /**
+     * 更新商品PV字段
+     * 每天执行一次
+     */
+    @Scheduled(cron = "0 15 2 * * ? ")
+    public void updateGoodsPv(){
+        Result<ShopRecord> result = saas.shop.getAll();
+        result.forEach((r)-> saas.getShopApp(r.getShopId()).
+            shopTaskService.goodsPvUpdateTaskService.updateGoodsPv());
     }
 
 }

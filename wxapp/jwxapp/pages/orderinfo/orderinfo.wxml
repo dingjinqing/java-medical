@@ -5,8 +5,13 @@
   isEmptyObj = function(obj){
     return JSON.stringify(obj) === '{}'
   }
+  includes = function (arr, target) {
+    if (arr.length === 0) return false
+    return arr.indexOf(target) === -1 ? false : true
+  }
   module.exports = {
     substring:substring,
+    includes:includes,
     isEmptyObj:isEmptyObj
   }
 </wxs>
@@ -95,11 +100,31 @@
       </view>
     </view>
 
+    <view class="group-draw-content" bindtap="toGroupDrawInfo" wx:if="{{groupDrawInfo}}">
+      <view class="group-draw-title">
+        <view>
+          <image src="{{imageUrl}}image/wxapp/icon_group3.png"></image>
+          {{groupDrawInfo.groupDrawStatus}}
+        </view>
+        <view>
+          拼团详情
+          <image src="{{imageUrl}}/image/wxapp/backward_right.png"></image>
+        </view>
+      </view>
+      <view class="group-user-content">
+       <block wx:for="{{groupDrawInfo.userList}}" wx:key="index">
+        <view>
+          <image src="{{item.userAvatar}}"></image>
+        </view>
+       </block>
+      </view>
+    </view>
+    
     <view class="pre-sale-info" wx:if="{{isPreSaleOrder}}">
       <view class="info-top">
         <view class="status-item">
-          <view style="{{orderInfo.bkOrderPaid === 1 ? 'background-color:'+comColor+';border-color:rgba(255,255,255,0.8);':''}}"></view>
-          <text style="{{orderInfo.bkOrderPaid === 1 ? 'color:'+comColor+';' : ''}}">付定金</text>
+          <view style="{{(orderInfo.orderPayWay === 1 && orderInfo.bkOrderPaid === 1) || (orderInfo.orderPayWay === 0 && filter.includes(orderInfo.orderType,'10') && orderInfo.orderStatus === 3) ? 'background-color:'+comColor+';border-color:rgba(255,255,255,0.8);':''}}"></view>
+          <text style="{{(orderInfo.orderPayWay === 1 && orderInfo.bkOrderPaid === 1) || (orderInfo.orderPayWay === 0 && filter.includes(orderInfo.orderType,'10') && orderInfo.orderStatus === 3) ? 'color:'+comColor+';' : ''}}">付定金</text>
         </view>
         <view class="line" wx:if="{{orderInfo.orderPayWay === 1}}" style="{{orderInfo.bkOrderPaid === 2 ? 'background-color:'+comColor+';' : ''}}"></view>
         <view class="status-item" wx:if="{{orderInfo.orderPayWay === 1}}">
@@ -117,7 +142,9 @@
           <text style="{{orderInfo.orderStatusName === '订单完成' ? 'color:'+comColor+';' : ''}}">交易完成</text>
         </view>
       </view>
-      <view class="info-bottom"></view>
+      <view class="info-bottom" wx:if="{{orderInfo.bkReturnType === 0 && orderInfo.orderPayWay === 1}}">
+        注：未在指定时间内支付尾款，则定金不予退还!
+      </view>
     </view>
     <view class="order_top">
       <text selectable>{{i18n.$t(localePack,"pages.order.deliveryMethod")}}：{{i18n.$t(localePack,"pages.checkout.deliverType["+orderInfo.deliverType+"]")}}</text>
@@ -128,7 +155,7 @@
         <view class="goods_name"><text class="goods-tag" wx:if="{{goodsItem.isGift}}" style="color:{{comColor}};border-color:{{comColor}}">赠品</text>{{goodsItem.goodsName}}</view>
         <view class="goods_spec">{{goodsItem.goodsAttr}}</view>
         <view class="goods_price_num">
-          <view class="goods_price" style="color:{{comColor}}">￥{{goodsItem.discountedGoodsPrice}}</view>
+          <view class="goods_price" style="color:{{comColor}}">￥{{isPreSaleOrder ? goodsItem.goodsPrice : goodsItem.discountedGoodsPrice}}</view>
           <view class="goods_num">x{{goodsItem.goodsNumber}}</view>
         </view>
       </view>
@@ -196,13 +223,17 @@
         <text>{{i18n.$t(localePack,"pages.order.cardReduce")}}</text>
         <text>-￥{{orderInfo.memberCardReduce}}</text>
       </view>
+      <view class="pay_item" wx:if="{{isPreSaleOrder&&orderInfo.preSaleDiscount > 0}}">
+        <text>定金抵扣</text>
+        <text>-￥{{orderInfo.preSaleDiscount}}</text>
+      </view>
       <view class="pay_item" wx:if="{{orderInfo.memberCardBalance > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.useCardBalance")}}</text>
         <text>-￥{{orderInfo.memberCardBalance}}</text>
       </view>
       <view class="pay_item" wx:if="{{orderInfo.scoreDiscount > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.useScore")}}</text>
-        <text>-￥{{orderInfo.scoreDiscount}}</text>
+        <text>-{{isScore ? '' : '￥'}}{{isScore ? orderInfo.scoreDiscount * orderInfo.scoreProportion : orderInfo.scoreDiscount}}{{isScore ? '积分' : ''}}</text>
       </view>
       <view class="pay_item" wx:if="{{orderInfo.useAccount > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.useBalance")}}</text>
@@ -222,18 +253,18 @@
     <view class="checkout_detail presale-info" wx:if="{{isPreSaleOrder}}">
         <view class="detail_item">
           <text class="dotted" style="background-color:{{comColor}}"></text>
-          <text class="detail_title">定金（{{orderInfo.bkOrderPaid === 1 ? '已付' : '待付款'}}）</text>
-          <text class="detail_content" style="color:{{comColor}};">￥{{preSaleInfo.preSalePrdInfo.depositPrice}}(可抵￥{{preSaleInfo.preSalePrdInfo.discountPrice}})</text>
+          <text class="detail_title">定金 <text wx:if="{{orderInfo.orderPayWay === 1}}">（{{orderInfo.bkOrderPaid === 1 ? '已付' : '待付款'}}）</text></text>
+          <text class="detail_content" style="color:{{comColor}};">￥{{orderInfo.moneyPaid+orderInfo.scoreDiscount+orderInfo.useAccount+orderInfo.memberCardBalance}} <text wx:if="{{orderInfo.orderPayWay === 1}}">(可抵￥{{orderInfo.moneyPaid+orderInfo.scoreDiscount+orderInfo.useAccount+orderInfo.memberCardBalance+orderInfo.preSaleDiscount}})</text></text>
         </view>
         <view class="detail_item" wx:if="{{orderInfo.orderPayWay === 1}}">
           <text class="dotted"></text>
           <text class="detail_title">尾款（{{orderInfo.bkOrderPaid === 2 ? '已付' : '待付款'}}）</text>
           <text class="detail_content" style="color:{{comColor}};">￥{{orderInfo.bkOrderMoney}}</text>
         </view>
-        <!-- <view class="detail_item rule">
-          <text class="detail_title" bindtap="viewPreSaleRule">{{preSaleInfo.deliverType === 0 ? '发货时间：' + filter.substring(preSaleInfo.deliverTime,0,10)  : '发货时间：尾款支付完成'+preSaleInfo.deliverDays+'天后发货'}} </text>
+        <view class="detail_item rule" wx:if="{{orderInfo.bkShippingTime}}" bindtap="viewPreSaleRule">
+          <text class="detail_title">发货时间：{{orderInfo.bkShippingTime}}</text>
           <image src="{{imageUrl}}/image/wxapp/pre_tice2.png" style="width:30rpx;height:30rpx;vertical-align: bottom;margin-left: 15rpx;"></image>
-        </view> -->
+        </view>
       </view>
 
 
@@ -245,6 +276,11 @@
       </view>
       <text class="order_item" selectable>{{i18n.$t(localePack,"pages.order.orderTime")}}：{{orderInfo.createTime}}</text>
     </view>
+    <!-- 联系客服 -->
+    <view class="kefu_btn" v-if="{{orderInfo.orderDetailService === 1||orderInfo.orderDetailService === '1'}}">
+      <button open-type="contact" class="con_button" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,"page1.afterSale.contactCustomer")}}</button>
+    </view>
+      
     <view class="fixed_footer" wx:if="{{!filter.isEmptyObj(orderInfo.operate) || orderInfo.orderStatusName === '已发货' || orderInfo.isReturnMoney || orderInfo.isReturnGoods}}">
       <view bindtap="handleOperate" class="footer_item" wx:if="{{orderInfo.orderStatusName === '已发货'}}" data-operate_info="confirmation" data-order_sn="{{orderInfo.orderSn}}" data-order_id="{{orderInfo.orderId}}">
         确认收货
@@ -261,3 +297,5 @@
   </view>
   <include src="../common/footer.wxml" />
 </view>
+
+<v-pre-sale-rule show="{{preSaleRuleShow}}" />

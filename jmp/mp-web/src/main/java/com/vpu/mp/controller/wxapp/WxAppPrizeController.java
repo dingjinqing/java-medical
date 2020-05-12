@@ -22,7 +22,7 @@ public class WxAppPrizeController  extends WxAppBaseController {
 
 
     @PostMapping("/api/wxapp/prize/list")
-    private JsonResult getList(@RequestBody @Valid PrizeRecordParam param){
+    public JsonResult getList(@RequestBody  PrizeRecordParam param){
         WxAppSessionUser userInfo = this.wxAppAuth.user();
         PageResult<PrizeRecordVo> list = shop().prizeRecord.getList(userInfo.getUserId(), param);
         return success(list);

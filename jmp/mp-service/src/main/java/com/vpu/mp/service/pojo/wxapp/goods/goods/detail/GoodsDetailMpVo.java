@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.detail;
 
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeInfo;
+import com.vpu.mp.service.pojo.wxapp.distribution.GoodsDistributionVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.gift.GoodsGiftMpVo;
@@ -66,12 +67,18 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     List<String> labels;
     /**商品购买时需要的运费，详情展示时的默认运费*/
     private BigDecimal deliverPrice;
-    /**是否已删除*/
+    /**是否已删除，当搜索的商品已删除时，需要前端判断并进行处理*/
     private Byte delFlag;
+    /**是否在售，0否1是*/
+    private Byte isOnSale;
+    /**是否收藏*/
     private Boolean isCollected;
+    /**商品评价信息*/
     private CommentDetailVo comment;
     /**商品赠品*/
     private List<GoodsGiftMpVo> goodsGifts;
+    /**分销商品信息*/
+    private GoodsDistributionVo goodsDistribution;
     /**相关优惠券*/
     List<CouponDetailMpVo> coupons;
     /**商品专享会员卡*/
@@ -90,6 +97,15 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
      * 服务承诺信息
      */
     private  List<PledgeInfo> pledgeList;
+
+    /**
+     * 销量展示开关
+     */
+    private Byte showSalesNumber;
+    /**
+     * 客服按钮展示开关
+     */
+    private Byte customService;
 
     @Override
     public String toString() {

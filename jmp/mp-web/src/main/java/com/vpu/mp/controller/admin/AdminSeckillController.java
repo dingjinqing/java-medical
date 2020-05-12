@@ -1,10 +1,13 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
+import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
+import com.vpu.mp.service.pojo.shop.market.seckill.*;
 import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -13,16 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
-import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillAddParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillDetailPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillUpdateParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillVo;
-import com.vpu.mp.service.pojo.shop.market.seckill.SimpleSeckillParam;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -60,9 +53,6 @@ public class AdminSeckillController extends AdminBaseController {
      */
     @PostMapping(value = "/api/admin/market/seckill/add")
     public JsonResult addSeckill(@RequestBody @Validated SeckillAddParam param) {
-        if(shop().seckill.isOnGoingSecKill(param.getGoodsId(),param.getStartTime(),param.getEndTime())){
-            return fail(JsonResultCode.SECKILL_CONFLICTING_ACT_TIME);
-        }
         shop().seckill.addSeckill(param);
         return success();
     }
@@ -73,10 +63,6 @@ public class AdminSeckillController extends AdminBaseController {
      */
     @PostMapping(value = "/api/admin/market/seckill/update")
     public JsonResult updateSeckill(@RequestBody @Validated SeckillUpdateParam param) {
-        if(param.getStatus() != null && param.getStatus().equals(BaseConstant.ACTIVITY_STATUS_NORMAL) && shop().seckill.isOnGoingSecKill(param.getSkId())){
-            /** 启用时判断是否有时间冲突的秒杀活动 */
-            return fail(JsonResultCode.SECKILL_CONFLICTING_ACT_TIME);
-        }
         shop().seckill.updateSeckill(param);
         return success();
     }
@@ -136,7 +122,7 @@ public class AdminSeckillController extends AdminBaseController {
      * 取活动分享二维码
      */
     @GetMapping("/api/admin/market/seckill/share")
-    public JsonResult getSeckillShareCode(Integer id) throws Exception {
+    public JsonResult getSeckillShareCode(Integer id) {
         return success(shop().seckill.getMpQrCode(id));
     }
 

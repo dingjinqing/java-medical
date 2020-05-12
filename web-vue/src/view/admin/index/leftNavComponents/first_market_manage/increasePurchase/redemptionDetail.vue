@@ -1,59 +1,50 @@
 <template>
   <div>
     <wrapper>
-      <el-row :gutter="20">
-        <el-col :span="4">
-          <el-form label-width="100px">
-            <el-form-item :label="$t('purchase.nickName')">
-              <el-input
-                v-model="param.nickName"
-                :placeholder="$t('purchase.inputnickName')"
-              ></el-input>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="4">
-          <el-form label-width="100px">
-            <el-form-item :label="$t('purchase.phone')">
-              <el-input
-                v-model="param.phoneNumber"
-                :placeholder="$t('purchase.inputphone')"
-              ></el-input>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="4">
-          <el-form label-width="100px">
-            <el-form-item :label="$t('purchase.redemptionNum')">
-              <el-input
-                v-model="param.redemptionNum"
-                :placeholder="$t('purchase.inputredemptionNum')"
-              ></el-input>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col
-          :span="2"
-          :offset=1
+      <div class="top">
+        <el-form
+          label-width="100px"
+          :inline="true"
         >
-          <el-button
-            type="primary"
-            @click="initDateList"
-          >{{$t('purchase.serach')}}</el-button>
-        </el-col>
-        <el-col
-          :span="2"
-          :offset="1"
-        >
-          <el-button
-            type="info"
-            style="float:right;"
-          >
-            {{$t('purchase.export')}}
-          </el-button>
-        </el-col>
-      </el-row>
-      <el-row>
+          <el-form-item :label="$t('purchase.nickName')+'：'">
+            <el-input
+              v-model="param.nickName"
+              :placeholder="$t('purchase.inputnickName')"
+              size="small"
+            ></el-input>
+          </el-form-item>
+
+          <el-form-item :label="$t('purchase.phone')+'：'">
+            <el-input
+              v-model="param.phoneNumber"
+              :placeholder="$t('purchase.inputphone')"
+              size="small"
+            ></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('purchase.redemptionNum')+'：'">
+            <el-input
+              v-model="param.redemptionNum"
+              :placeholder="$t('purchase.inputredemptionNum')"
+              size="small"
+            ></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              @click="initDateList"
+              size="small"
+            >{{$t('purchase.serach')}}</el-button>
+            <el-button
+              type="info"
+              size="small"
+              @click="dataExport"
+            >
+              {{$t('purchase.export')}}
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="content">
         <el-table
           class="version-manage-table"
           header-row-class-name="tableHeader"
@@ -112,7 +103,7 @@
           >
           </el-table-column>
         </el-table>
-      </el-row>
+      </div>
       <div>
         <pagination
           :page-params.sync="pageParams"
@@ -123,14 +114,15 @@
   </div>
 </template>
 <script>
-import { detailList } from '@/api/admin/marketManage/increasePurchase.js'
-// import { getList, changeActivity, add, update, getDetail, share, orderList, detailList, orderExport, detailExport } from '@/api/admin/marketManage/increasePurchase.js'
+import { detailList, detailExport } from '@/api/admin/marketManage/increasePurchase.js'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import pagination from '@/components/admin/pagination/pagination.vue'
+import { download } from '@/util/excelUtil.js'
 export default {
   components: {
     pagination,
-    wrapper
+    wrapper,
+    download
   },
   mounted () {
     this.langDefault()
@@ -158,9 +150,7 @@ export default {
     initDateList () {
       this.param.currentPage = this.pageParams.currentPage
       this.param.pageRows = this.pageParams.pageRows
-      console.log(this.param)
       detailList(this.param).then((res) => {
-        console.log(res)
         if (res.error === 0) {
           this.handleData(res.content)
           this.pageParams = res.content.page
@@ -172,6 +162,15 @@ export default {
     // 表格数据处理
     handleData (data) {
       this.tableData = data.dataList
+    },
+    // 换购明细导出
+    dataExport () {
+      let params = Object.assign({}, this.param)
+      detailExport(params).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName.split(';')[1].split('=')[1]
+        download(res, decodeURIComponent(fileName))
+      })
     }
   }
 }

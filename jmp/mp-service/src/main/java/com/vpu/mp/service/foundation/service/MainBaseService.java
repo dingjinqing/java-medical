@@ -1,12 +1,15 @@
 package com.vpu.mp.service.foundation.service;
 
+import java.sql.Timestamp;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
 import org.jooq.Configuration;
 import org.jooq.ContextTransactionalRunnable;
+import org.jooq.Field;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
+import org.jooq.impl.SQLDataType;
 
 /**
  * 
@@ -47,6 +50,9 @@ public class MainBaseService extends AbstractCommonBaseService {
 			}
 		});
 	}
-	
 
+    public Field<String> dateFormat(Field<Timestamp> field, String format) {
+        return DSL.field("date_format({0}, {1})", SQLDataType.VARCHAR,
+            field, DSL.inline(format));
+    }
 }

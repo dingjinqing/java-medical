@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author 孔德成
  * @date 2019/11/7 18:32
@@ -15,6 +18,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class CartProcessorContext {
 
+
+
+    @Autowired(required = false)
+    private List<ActivityCartListStrategy> sortProcessors;
 
     @Autowired
     private GoodsBeginProcessor goodsBegin;
@@ -36,6 +43,20 @@ public class CartProcessorContext {
     private FullReductionProcessor fullReduction;
     @Autowired
     private PurchasePriceProcessor purchasePrice;
+    @Autowired
+    private CouponPackageProcessor couponPackage;
+    /**
+     * 购物车一般活动
+     */
+    public final static List<Byte> GENERAL_ACTIVITY = Arrays.asList(
+            BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE,
+            BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE,
+            BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
+            BaseConstant.ACTIVITY_TYPE_SEC_KILL,
+            BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE,
+            BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION,
+            BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE
+    );
 
 
     /**
@@ -60,9 +81,12 @@ public class CartProcessorContext {
         executeStrategy(gradeCard,cartBo);
 
         //满折满减
-//        executeStrategy(fullReduction,cartBo);2.9屏蔽
+        executeStrategy(fullReduction,cartBo);
         //加价购
-//        executeStrategy(purchasePrice,cartBo);2.9屏蔽
+        executeStrategy(purchasePrice,cartBo);
+        //优惠券礼包
+        executeStrategy(couponPackage, cartBo);
+
         //活动冲突处理
         executeStrategy(goodsTail,cartBo);
     }

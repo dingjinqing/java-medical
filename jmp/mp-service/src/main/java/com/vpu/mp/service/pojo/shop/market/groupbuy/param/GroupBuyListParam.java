@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
 
+import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Setter
 @Getter
-public class GroupBuyListParam  extends BasePageGroupBuyParam{
+public class GroupBuyListParam  extends BasePageParam {
 
     /**
      *  0全部拼团活动 1进行中 2未开始 3已过期 4已停用

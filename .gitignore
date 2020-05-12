@@ -14,9 +14,3 @@ package-lock.json
 #java
 /jmp/**/target/
 /gen/target/
-
-#eclipse
-.project
-.factorypath
-.classpath
-/**/.settings/

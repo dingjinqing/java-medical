@@ -710,7 +710,7 @@ export default {
           this.form.signInRules = String(data.signInRules)
           this.form.scoreProportion = data.scoreProportion
           this.form.discountHasShipping = String(data.discountHasShipping)
-          if (!data.scorePayLimit === null) {
+          if (data.scorePayLimit === null) {
             this.form.scorePayLimit = '0'
           } else {
             this.form.scorePayLimit = data.scorePayLimit

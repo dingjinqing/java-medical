@@ -1,5 +1,7 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.pojo.shop.market.message.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -7,10 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.market.message.MessageTemplateParam;
-import com.vpu.mp.service.pojo.shop.market.message.MessageTemplateQuery;
-import com.vpu.mp.service.pojo.shop.market.message.MessageUserQuery;
-import com.vpu.mp.service.pojo.shop.market.message.UserInfoQuery;
 import com.vpu.mp.service.pojo.shop.market.message.content.ContentMessageParam;
 
 /**
@@ -45,6 +43,9 @@ public class AdminTemplateMessageController extends AdminBaseController {
     }
     @PostMapping("/addMessage")
     public JsonResult addMessage(@RequestBody MessageTemplateParam param){
+        if( !shop().config.messageConfigService.checkConfig(RabbitParamConstant.Type.DIY_MESSAGE_TEMPLATE) ){
+            return fail(JsonResultCode.MESSAGE_TEMPLATE_NO_OPEN);
+        }
         shop().messageTemplateService.insertMessageTemplate(param);
         return success();
     }

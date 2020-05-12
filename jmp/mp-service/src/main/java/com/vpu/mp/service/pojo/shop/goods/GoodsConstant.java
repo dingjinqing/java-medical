@@ -54,7 +54,13 @@ public class GoodsConstant {
      * 满包邮
      */
     public final static Byte ACTIVITY_FREE_SHIP_PRIORITY = 47;
+
+    /**
+     * 积分兑换
+     */
+    public final static Byte ACTIVITY_INTEGER_MALL_PRIORITY = 50;
     /**************** 结束 *****************/
+
 
     /** 小程序海报分享码跳转地址，商品详情页或对应活动页 */
     /**商品详情页*/
@@ -78,6 +84,16 @@ public class GoodsConstant {
      * 下架
      */
     public static final Byte OFF_SALE = 0;
+
+    /**
+     * 商品进行分销
+     */
+    public static final Byte REBATE = 1;
+
+    /**
+     * 加入仓库 设置saleType使用
+     */
+    public static final Byte IN_STOCK = 2;
 
     /**
      * 砍价活动，指定人数砍价
@@ -142,6 +158,9 @@ public class GoodsConstant {
      */
     public static final Byte IS_DEFAULT_PRODUCT_Y = 1;
     public static final Byte IS_DEFAULT_PRODUCT_N = 0;
+
+    /**团长*/
+    public static final Byte GROUP_CAPTAIN = 1;
 
     /**
      * 小程序-商品分类页面-目录项类型码

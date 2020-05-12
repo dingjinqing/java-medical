@@ -6,9 +6,12 @@ import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
+import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 
+import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortSelectListVo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,8 +33,12 @@ public class PackSaleDefineVo {
 	private Timestamp startTime;
 	/** 结束时间 */
 	private Timestamp endTime;
+	/**活动类型**/
+	private Byte packageType;
 	/** 结算总价格 */
 	private BigDecimal totalMoney;
+	/**折扣比例**/
+	private BigDecimal totalRatio;
 	/** 商品组1 */
 	private GoodsGroupVo group1;
 	/** 商品组2 */
@@ -57,8 +64,12 @@ public class PackSaleDefineVo {
 		private List<GoodsView> goodsList;
 		/** 平台分类ID列表 */
 		private List<Integer> catIdList;
+		/**平台分类vo列表*/
+		private List<SysCatevo> cateVoList;
 		/** 商家分类ID列表 */
 		private List<Integer> sortIdList;
+		/** 商家分类vo列表 */
+		private List<GoodsSortSelectListVo> sortVoList;
 	}
 }
 

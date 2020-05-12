@@ -100,6 +100,8 @@ public enum RecordTradeEnum {
 	TYPE_SCORE_LOTTERY(11),
 	/** 支付有礼 */
 	TYPE_SCORE_PAY_AWARD(12),
+	/**表单统计*/
+	TYPE_FORM_DECORATION_GIFT(13),
 
 	/**--------------------*/
 	

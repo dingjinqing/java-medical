@@ -9,7 +9,8 @@ import lombok.Data;
  */
 @Data
 public class IntegralConvertGoodsVo {
-	
+    /** 规格id */
+    private Integer prdId;
 	/** 规格描述 */
 	private String prdDesc;
 	

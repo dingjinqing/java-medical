@@ -12,6 +12,7 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.order.UserCenterNumBean;
 import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -46,7 +47,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -63,12 +66,10 @@ import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.PartOrderGoodsShip.PART_ORDER_GOODS_SHIP;
 import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
-import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
-import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.BYTE_THREE;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELETE_NO;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_CLOSED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_PIN_SUCCESSS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUNDING;
@@ -76,19 +77,14 @@ import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINI
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURNING;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURN_FINISHED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_CLOSED;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_PAY;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_AUDITING;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_AUDIT_PASS;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.RT_GOODS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.RT_ONLY_MONEY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.SHOP_HELPER_OVERDUE_DELIVERY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.SHOP_HELPER_REMIND_DELIVERY;
-import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.sum;
@@ -253,13 +249,13 @@ public class OrderInfoService extends ShopBaseService {
             Condition condition = DSL.noCondition();
             if(status.contains(ORDER_RETURNING) || status.contains(ORDER_REFUNDING)) {
                 select.leftJoin(RETURN_ORDER).on(TABLE.ORDER_ID.eq(RETURN_ORDER.ORDER_ID));
-                if(status.contains(ORDER_RETURNING)) {
-                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_ONLY_MONEY).and(RETURN_ORDER.REFUND_STATUS.eq(REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
-                    status.remove(Byte.valueOf(ORDER_RETURNING));
-                }
                 if(status.contains(ORDER_REFUNDING)) {
-                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_GOODS).and(RETURN_ORDER.REFUND_STATUS.in(REFUND_DEFAULT_STATUS, REFUND_STATUS_AUDITING ,REFUND_STATUS_AUDIT_PASS , REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_ONLY_MONEY).and(RETURN_ORDER.REFUND_STATUS.eq(REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
                     status.remove(Byte.valueOf(ORDER_REFUNDING));
+                }
+                if(status.contains(ORDER_RETURNING)) {
+                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_GOODS).and(RETURN_ORDER.REFUND_STATUS.in(REFUND_DEFAULT_STATUS, REFUND_STATUS_AUDITING ,REFUND_STATUS_AUDIT_PASS , REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+                    status.remove(Byte.valueOf(ORDER_RETURNING));
                 }
             }
             if(CollectionUtils.isNotEmpty(status)) {
@@ -354,7 +350,7 @@ public class OrderInfoService extends ShopBaseService {
 				select.where(TABLE.PAY_CODE.eq(OrderConstant.PAY_CODE_COD));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_EVENT_PRIZE:
-				select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT, BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER, BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER, BaseConstant.ACTIVITY_TYPE_PAY_AWARD})));
+				select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_MY_PRIZE})));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_WXPAY:
 				select.where(TABLE.PAY_CODE.eq(OrderConstant.PAY_CODE_WX_PAY));
@@ -671,7 +667,7 @@ public class OrderInfoService extends ShopBaseService {
 				entry.setValue(BigDecimal.ZERO);
 				continue;
 			}
-			// TODO 这里逻辑有问题，但不会有问题，稍后修改
+			// TODO 这里逻辑有问题，但不会出现这种情况，稍后修改
 			// 设置当前key的可退金额（增加双重校验，实际上实际退款时已经判断，不会出现amount<currentKeyCanReturn）
 			entry.setValue(BigDecimalUtil.compareTo(amount, currentKeyCanReturn) > 0 ? currentKeyCanReturn : amount);
 			// 设置下次循环的amount
@@ -765,8 +761,11 @@ public class OrderInfoService extends ShopBaseService {
 			order.setOrderStatus(OrderConstant.ORDER_FINISHED);
 			order.setFinishedTime(DateUtil.getSqlTimestamp());
 			break;
+        case OrderConstant.ORDER_WAIT_DELIVERY:
+            order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
+            break;
 		default:
-			break;
+			return;
 		}
 		order.update();
 	}
@@ -775,11 +774,12 @@ public class OrderInfoService extends ShopBaseService {
 	 * 设置订单支付方式数组
 	 * 
 	 * @param order
-	 * @param prizesSns
 	 */
-	public void setPayCodeList(OrderListInfoVo order, List<String> prizesSns) {
+	public void setPayCodeList(OrderListInfoVo order) {
 		ArrayList<Byte> payCodes = new ArrayList<Byte>(OrderConstant.SEARCH_PAY_WAY_WXPAY);
-		if (BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0
+		//订单类型
+        List<Byte> orderType = Arrays.asList(OrderInfoService.orderTypeToByte(order.getGoodsType()));
+        if (BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0
 				|| BigDecimalUtil.compareTo(order.getMemberCardBalance(), null) > 0) {
 			/** 余额 */
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_USE_ACCOUNT);
@@ -788,7 +788,7 @@ public class OrderInfoService extends ShopBaseService {
 			/** 积分支付 */
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_SCORE_DISCOUNT);
 		}
-		if(Arrays.asList(order.getGoodsType().split(",")).contains(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_INTEGRAL).toString())) {
+		if(orderType.contains(BaseConstant.ACTIVITY_TYPE_INTEGRAL)) {
 			/**积分兑换*/
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_SCORE_EXCHANGE);
 		}
@@ -796,7 +796,7 @@ public class OrderInfoService extends ShopBaseService {
 			/** 货到付款 */
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_COD);
 		}
-		if (prizesSns.contains(order.getOrderSn())) {
+		if (orderType.contains(BaseConstant.ACTIVITY_TYPE_MY_PRIZE)) {
 			/** 活动奖品 */
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_EVENT_PRIZE);
 		}
@@ -872,13 +872,15 @@ public class OrderInfoService extends ShopBaseService {
         //订单类型
         order.setGoodsType(getGoodsTypeToInsert(orderBo.getOrderType()));
         //补款状态
-        order.setBkOrderPaid(
-            beforeVo.getMoneyPaid().compareTo(BigDecimal.ZERO) > 0 ?
-                OrderConstant.BK_PAY_NO :
-                (BigDecimalUtil.compareTo(beforeVo.getBkOrderMoney(), null) > 0 ?
-                    OrderConstant.BK_PAY_FRONT : OrderConstant.BK_PAY_FINISH));
-        //TODO 代付人数
-        order.setInsteadPayNum((short)0);
+        if(BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType())) {
+            order.setBkOrderPaid(
+                beforeVo.getMoneyPaid().compareTo(BigDecimal.ZERO) > 0 ?
+                    OrderConstant.BK_PAY_NO :
+                    (BigDecimalUtil.compareTo(beforeVo.getBkOrderMoney(), null) > 0 ?
+                        OrderConstant.BK_PAY_FRONT : OrderConstant.BK_PAY_FINISH));
+        }else {
+            order.setBkOrderPaid(OrderConstant.BK_PAY_NO);
+        }
         //TODO 推广信息
         order.setIsPromote((byte)0);
         //主订单号
@@ -887,8 +889,8 @@ public class OrderInfoService extends ShopBaseService {
         }
         //会员卡
         if(beforeVo.getDefaultMemberCard() != null){
-            order.setMemberCardId(beforeVo.getDefaultMemberCard().getCardId());
-            order.setCardNo(beforeVo.getDefaultMemberCard().getCardNo());
+            order.setMemberCardId(beforeVo.getDefaultMemberCard().getInfo().getCardId());
+            order.setCardNo(beforeVo.getDefaultMemberCard().getInfo().getCardNo());
         }
         //门店
         if (orderBo.getStore() != null) {
@@ -1017,9 +1019,86 @@ public class OrderInfoService extends ShopBaseService {
         return db().select(TABLE.IS_REFUND_COUPON).where(TABLE.ORDER_ID.eq(orderId)).fetchOneInto(Byte.class);
     }
 
+    public void insteadPayOrderSetMoney(OrderInfoRecord order, BigDecimal money){
+        order.setMoneyPaid(money);
+        order.update();
+    }
+
     public void updateStockLock(OrderInfoRecord order, Byte isLock) {
         order.setIsLock(isLock);
         order.update();
+    }
+
+    /**
+     * 计算改会员卡在当前周期使用次数
+     * @param userId userId
+     * @param cardId cardId
+     * @param freeLimit -1：不包邮，0:不限制，1：持卡有效期内，2：年，3：季，4：月，5：周，6：日
+     * @return freeLimit = -1 / 0 / 1 -> 0
+     */
+    public int getCardFreeShipSum(Integer userId, Integer cardId, Byte freeLimit) {
+        logger().info("计算改会员卡在当前周期使用次数");
+    	if(freeLimit <= CardFreeship.shipType.SHIP_IN_EFFECTTIME.getType()) {
+            return 0;
+        }
+        Timestamp[] cardFreeShipInterval = getCardFreeShipInterval(freeLimit);
+        
+        if(cardFreeShipInterval == null) {
+        	logger().info("cardFreeShipInterval为null");
+        	return 0; 
+        }
+        int result = db().
+	            selectCount().
+	            from(TABLE).
+	            where(TABLE.USER_ID.eq(userId).
+	                and(TABLE.IS_FREESHIP_CARD.eq(OrderConstant.YES)).
+	                and(TABLE.MEMBER_CARD_ID.eq(cardId)).
+	                and(TABLE.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED)).
+	                and(TABLE.CREATE_TIME.ge(cardFreeShipInterval[0])).
+	                and(TABLE.CREATE_TIME.le(cardFreeShipInterval[1]))).
+	            fetchOne(0,int.class);
+        return  result;
+    }
+
+    /**
+     * 获取指定条件时间周期
+     * @param freeLimit 2：年，3：季，4：月，5：周，6：日的
+     * @return Timestamp[2] = {start, end}
+     */
+    private Timestamp[] getCardFreeShipInterval(Byte freeLimit) {
+        LocalDate startDate = null, endDate = null;
+        LocalDate currentDate = LocalDate.now();
+        //初始化当前年月日
+        int year = currentDate.getYear(), month = currentDate.getMonthValue(), day = currentDate.getDayOfMonth();
+        if(CardFreeship.shipType.SHIP_YEAR.getType() == freeLimit) {
+            //年
+            startDate = LocalDate.of(year, 1 ,1);
+            endDate = LocalDate.of(year, 12, 1).with(TemporalAdjusters.lastDayOfMonth());
+        }else if(CardFreeship.shipType.SHIP_SEASON.getType() == freeLimit) {
+            //季
+            startDate = LocalDate.of(year, (((month -1) / 3 + 1)* 3 -2),1);
+            endDate = LocalDate.of(year, (((month -1) / 3 + 1)* 3) ,1).with(TemporalAdjusters.lastDayOfMonth());
+        }else if(CardFreeship.shipType.SHIP_MONTH.getType() == freeLimit) {
+            //月
+            startDate = LocalDate.of(year, month, 1);
+            endDate = LocalDate.of(year, month ,1).with(TemporalAdjusters.lastDayOfMonth());
+        }else if(CardFreeship.shipType.SHIP_WEEK.getType() == freeLimit) {
+            //周(周一开始)
+            //the day-of-week, from 1 (Monday) to 7 (Sunday)
+            int dayOfWeek = currentDate.getDayOfWeek().getValue();
+            startDate = currentDate.plusDays(-dayOfWeek + 1);
+            endDate = currentDate.plusDays(7 -dayOfWeek);
+        }else if(CardFreeship.shipType.SHIP_DAY.getType() == freeLimit) {
+            //天
+            startDate = currentDate;
+            endDate = currentDate;
+        }else {
+            return null;
+        }
+        Timestamp[] startAndEnd =  new Timestamp[2];
+        startAndEnd[0] = Timestamp.valueOf(LocalDateTime.of(startDate, DateUtil.minTime));
+        startAndEnd[1] = Timestamp.valueOf(LocalDateTime.of(endDate, DateUtil.maxTime));
+        return startAndEnd;
     }
 
     /******************************************分割线以下与订单模块没有*直接*联系*********************************************/

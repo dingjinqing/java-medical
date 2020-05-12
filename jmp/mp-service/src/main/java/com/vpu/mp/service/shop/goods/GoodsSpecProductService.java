@@ -3,11 +3,13 @@ package com.vpu.mp.service.shop.goods;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
+import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 import com.vpu.mp.service.pojo.shop.recommend.SkuAttrList;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryVo;
 import com.vpu.mp.service.shop.store.store.StoreGoodsService;
@@ -20,6 +22,7 @@ import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,13 +34,10 @@ import static com.vpu.mp.db.shop.Tables.*;
  * @date 2019年07月05日
  */
 @Service
-
 public class GoodsSpecProductService extends ShopBaseService {
 
     @Autowired
     private GoodsSpecService goodsSpecService;
-    @Autowired
-    private GoodsService goodsService;
     /**
      * 规格名值描述分割符
      */
@@ -81,12 +81,14 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 根据 =规格id获取规格信息
+     *
      * @param prdIds
      * @return
      */
-    public Map<Integer, GoodsSpecProductRecord> goodsSpecProductByIds(List<Integer> prdIds){
+    public Map<Integer, GoodsSpecProductRecord> goodsSpecProductByIds(List<Integer> prdIds) {
         return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.in(prdIds)).fetchMap(GOODS_SPEC_PRODUCT.PRD_ID);
     }
+
     /**
      * 根据处理后的商品规格名值数据插入规格项（sku）,在插入前动态计算其prdSpec
      *
@@ -173,6 +175,19 @@ public class GoodsSpecProductService extends ShopBaseService {
     }
 
     /**
+     * 根据商品GoodsSn查询对应的sku
+     * @param goodsSn
+     * @return
+     */
+    public List<GoodsSpecProduct> selectByGoodsSn(String goodsSn) {
+        return db().select(GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,GOODS_SPEC_PRODUCT.PRD_COST_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER,
+            GOODS_SPEC_PRODUCT.PRD_SN,GOODS_SPEC_PRODUCT.PRD_SPECS,GOODS_SPEC_PRODUCT.PRD_DESC)
+            .from(GOODS_SPEC_PRODUCT.innerJoin(GOODS).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID)))
+            .where(GOODS.GOODS_SN.eq(goodsSn).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
+            .fetchInto(GoodsSpecProduct.class);
+    }
+
+    /**
      * 根据商品id查找对应sku
      *
      * @param goodsIds
@@ -244,7 +259,7 @@ public class GoodsSpecProductService extends ShopBaseService {
             item = goodsSpecProducts.get(i);
             addedCount++;
             batchStep = batchStep.bind(item.getPrdPrice(), item.getPrdMarketPrice(), item.getPrdCostPrice(), item.getPrdNumber(), item.getPrdSn(),
-                item.getPrdSpecs(), item.getPrdDesc(),item.getPrdImg(), item.getPrdId());
+                item.getPrdSpecs(), item.getPrdDesc(), item.getPrdImg(), item.getPrdId());
 
             if (addedCount == batchCount) {
                 batchStep.execute();
@@ -319,6 +334,21 @@ public class GoodsSpecProductService extends ShopBaseService {
     }
 
     /**
+     * 商品excel导入-更新-更新对应规格信息
+     * @param goodsSpecProducts
+     */
+    public void updateSpecPrdForGoodsImport(List<GoodsSpecProduct> goodsSpecProducts) {
+        List<GoodsSpecProductRecord> records = new ArrayList<>();
+        for (GoodsSpecProduct goodsSpecProduct : goodsSpecProducts) {
+            GoodsSpecProductRecord record = new GoodsSpecProductRecord();
+            record.setPrdId(goodsSpecProduct.getPrdId());
+            record.setPrdPrice(goodsSpecProduct.getPrdPrice());
+            record.setPrdMarketPrice(goodsSpecProduct.getPrdMarketPrice());
+            records.add(record);
+        }
+        db().batchUpdate(records).execute();
+    }
+    /**
      * 根据商品id集合查询出商品id和规格项的对应分组映射
      *
      * @param goodsIds 商品id集合
@@ -350,6 +380,7 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 根据规格id查询规格明细 一跳规格
+     *
      * @return
      */
     public GoodsSpecProductRecord selectSpecByProId(Integer proId) {
@@ -443,7 +474,7 @@ public class GoodsSpecProductService extends ShopBaseService {
             .fetchInto(GoodsPageListVo.class);
         GoodsPageListParam pageListParam = new GoodsPageListParam();
         pageListParam.setSelectType(GoodsPageListParam.GOODS_PRD_LIST);
-        goodsService.disposeGoodsPageListVo(goodsPageListVos, pageListParam);
+        saas().getShopApp(getShopId()).goods.disposeGoodsPageListVo(goodsPageListVos, pageListParam);
         return goodsPageListVos;
     }
 
@@ -532,4 +563,129 @@ public class GoodsSpecProductService extends ShopBaseService {
     public int getDefaultPrdId(int goodsId) {
         return db().select(GOODS_SPEC_PRODUCT.PRD_ID).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).fetchOptionalInto(Integer.class).orElse(0);
     }
+
+
+    /**
+     * 查询传入的prdSn集合中哪些是数据库中已经存在的
+     *
+     * @param prdSn
+     * @return
+     */
+    public List<String> findSkuPrdSnExist(List<String> prdSn) {
+        return db().select(GOODS_SPEC_PRODUCT.PRD_SN).from(GOODS_SPEC_PRODUCT)
+            .where(GOODS_SPEC_PRODUCT.PRD_SN.in(prdSn))
+            .fetch(GOODS_SPEC_PRODUCT.PRD_SN);
+    }
+
+    /**
+     * 判断商品规格名和规格值是否内部自重复
+     *
+     * @param specs 商品规格
+     * @return {@link JsonResult#getError()}!=0表示存在重复
+     */
+    public boolean isSpecNameOrValueRepeat(List<GoodsSpec> specs) {
+        //在选择默认规格的情况下该字段可以是空
+        if (specs == null || specs.size() == 0) {
+            return true;
+        }
+
+        Map<String, Object> specNameRepeatMap = new HashMap<>(specs.size());
+
+        for (GoodsSpec goodsSpec : specs) {
+
+            specNameRepeatMap.put(goodsSpec.getSpecName(), null);
+            //检查同一规格下规格值是否重复
+            List<GoodsSpecVal> goodsSpecVals = goodsSpec.getGoodsSpecVals();
+            if (goodsSpecVals == null || goodsSpecVals.size() == 0) {
+                continue;
+            }
+            Map<String, Object> specValRepeatMap = new HashMap<>(goodsSpecVals.size());
+            for (GoodsSpecVal goodsSpecVal : goodsSpecVals) {
+                specValRepeatMap.put(goodsSpecVal.getSpecValName(), null);
+            }
+            if (specValRepeatMap.size() != goodsSpecVals.size()) {
+                return false;
+            }
+        }
+        if (specs.size() != specNameRepeatMap.size()) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /**
+     * 验证输入的商品规格属性和商品规格键值的正确性，
+     * 验证方式是动态计算{@link GoodsSpecProduct#}的值是否和{@link GoodsSpec}计算出来的值一致
+     *
+     * @param goodsSpecProducts 商品规格属性
+     * @param goodsSpecs        商品规格键值
+     * @return JsonResultCode
+     */
+    public boolean isGoodsSpecProductDescRight(List<GoodsSpecProduct> goodsSpecProducts, List<GoodsSpec> goodsSpecs) {
+
+        //判断是否是默认sku
+        boolean isDefaultSku = goodsSpecProducts.size() == 1 &&
+            org.apache.commons.lang3.StringUtils.isBlank(goodsSpecProducts.get(0).getPrdDesc()) &&
+            (goodsSpecs == null || goodsSpecs.size() == 0);
+
+        //是默认sku直接返回
+        if (isDefaultSku) {
+            return true;
+        }
+
+        //根据商品规格值计算出应该有多少规格数据，计算笛卡尔积
+        int cartesianNum = 1;
+        for (GoodsSpec goodsSpec : goodsSpecs) {
+            //商品写了规格名称但是未设置规格值
+            if (goodsSpec.getGoodsSpecVals() == null || goodsSpec.getGoodsSpecVals().size() == 0) {
+                return false;
+            }
+            //笛卡尔积计算
+            cartesianNum *= goodsSpec.getGoodsSpecVals().size();
+        }
+
+        //传入的规格属性条目和根据规格名值计算出来的数据不对应
+        if (cartesianNum != goodsSpecProducts.size()) {
+            return false;
+        }
+
+        //验证传入的prdDesc的正确性，拆解prdDesc，检查对应的名和值是否咋goodsSpec中都存在
+        List<String> specDescs = goodsSpecProducts.stream().map(GoodsSpecProduct::getPrdDesc).collect(Collectors.toList());
+        Map<String, List<GoodsSpecVal>> specs = goodsSpecs.stream().collect(Collectors.toMap(GoodsSpec::getSpecName, GoodsSpec::getGoodsSpecVals));
+
+        for (String prdDesc : specDescs) {
+            if (prdDesc == null) {
+                return false;
+            }
+            String[] splits = prdDesc.split(GoodsSpecProductService.PRD_DESC_DELIMITER);
+
+            for (String split : splits) {
+                String[] s = split.split(GoodsSpecProductService.PRD_VAL_DELIMITER);
+
+                if (s.length < 2 || org.apache.commons.lang3.StringUtils.isBlank(s[0]) || org.apache.commons.lang3.StringUtils.isBlank(s[1])) {
+                    return false;
+                }
+
+                String speck = s[0], specv = s[1];
+
+                //检查规格名称是否存在
+                List<GoodsSpecVal> goodsSpecVals = specs.get(speck);
+                //规格名称不存在
+                if (goodsSpecVals == null) {
+                    return false;
+                }
+
+                boolean b = goodsSpecVals.stream().anyMatch(goodsSpecVal -> org.apache.commons.lang3.StringUtils.equals(specv, goodsSpecVal.getSpecValName()));
+
+                if (!b) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
 }

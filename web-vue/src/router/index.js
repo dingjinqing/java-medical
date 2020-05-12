@@ -47,6 +47,21 @@ const baseRoutes = [{
   path: '/wxapp/bargain/help', // 小程序内跳转砍价规则
   name: 'bargainRules',
   component: () => import('@/view/admin/layout/bargainRules')
+},
+{
+  path: '/wxapp/pinintegration/help', // 小程序内跳转瓜分积分规则
+  name: 'pinintegrationRules',
+  component: () => import('@/view/admin/layout/pinintegrationRules')
+},
+{
+  path: '/wxapp/promote/help', // 小程序内跳转好友助力规则
+  name: 'promoteRules',
+  component: () => import('@/view/admin/layout/promoteRules')
+},
+{
+  path: '/wxapp/pinlottery/help', // 小程序内跳转拼团抽奖规则
+  name: 'pinLotteryRules',
+  component: () => import('@/view/admin/layout/pinLotteryRules')
 }
 ]
 const routes = baseRoutes.concat(

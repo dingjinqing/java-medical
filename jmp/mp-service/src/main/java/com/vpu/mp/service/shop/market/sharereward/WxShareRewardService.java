@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
+import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
@@ -491,7 +492,7 @@ public class WxShareRewardService extends ShopBaseService {
             , {remake, "#173177"}};
         RabbitMessageParam param = RabbitMessageParam.builder()
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.WINNING_RESULT).data(data).build())
-            .page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+            .page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.LOTTERY_TEAM)
             .build();
         logger().info("发送分享有礼奖品发放成功模板消息");
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
@@ -502,7 +503,7 @@ public class WxShareRewardService extends ShopBaseService {
             case 1:
                 return "pages/integral/integral";
             case 2:
-                return "pages/couponlist/couponlist";
+                return "pages/coupon/coupon";
             case 3:
                 return "pages/lottery/lottery?lottery_id=" + lotteryId;
             default:
@@ -518,14 +519,14 @@ public class WxShareRewardService extends ShopBaseService {
                 String temp;
                 CouponView view = couponService.getCouponViewById(rule.getCoupon());
                 switch (view.getActCode()) {
-                    case "random":
+                    case CouponConstant.ACT_CODE_RANDOM:
                         // 分裂优惠卷
                         temp = "最高" + view.getRandomMax() + "元优惠券";
                         break;
-                    case "voucher":
+                    case CouponConstant.ACT_CODE_VOUCHER:
                         temp = view.getDenomination() + "元优惠券";
                         break;
-                    case "discount":
+                    case CouponConstant.ACT_CODE_DISCOUNT:
                         temp = view.getDenomination() + "折优惠券";
                         break;
                     default:

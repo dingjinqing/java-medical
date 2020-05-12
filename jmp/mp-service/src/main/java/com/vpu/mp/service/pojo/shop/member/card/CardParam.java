@@ -5,6 +5,9 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,6 +39,10 @@ public class CardParam {
 	private BigDecimal disCount;
 	/** 会员折扣: 全部商品；1代表全部商品，0代表指定商品 */
 	private Byte discountIsAll;
+	/**
+	 * 	是否和会员卡一起使用0:可以1：不可以
+	 */
+	private Byte cannotUseCoupon;
 
 
 	/** 折扣商品Id */
@@ -175,4 +182,19 @@ public class CardParam {
 	private List<Integer> couponIds;
 	// 赠送优惠礼包id
 	private Integer couponPackage;
+	
+	/**
+	 * 	包邮信息
+	 */
+	private CardFreeship freeship;
+	
+	/**
+	 * 	卡的自定义权益信息
+	 */
+	private CardCustomRights customRights;
+	/**
+	 * 续费功能
+	 */
+	private CardRenew cardRenew;
+	
 }

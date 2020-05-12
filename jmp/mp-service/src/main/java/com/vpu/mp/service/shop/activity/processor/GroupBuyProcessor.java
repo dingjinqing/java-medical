@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -40,14 +41,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
 import static com.vpu.mp.db.shop.Tables.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_CHEAP_Y;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.*;
 
 /**
  * 商品列表,下单
@@ -94,7 +90,7 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
             bo.setRealPrice(record3.get(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE));
             GroupBuyListMpVo activity = new GroupBuyListMpVo();
 
-            activity.setActivityId(record3.get(GROUP_BUY_DEFINE.ID));
+            activity.setActivityId(record3.get(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID));
             activity.setActivityType(BaseConstant.ACTIVITY_TYPE_GROUP_BUY);
             activity.setDiscountPrice(bo.getShopPrice().subtract(bo.getRealPrice()));
             bo.getGoodsActivities().add(activity);
@@ -137,7 +133,6 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
             //商品原规格
             GoodsPrdMpVo goodsPrdMpVo = prdMap.get(vo.getProductId());
 
-            // 商家新增的规格，在拼团规格中并未有
             if (goodsPrdMpVo != null) {
                 // 设置拼团规格对应的原价，便于前端使用
                 vo.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
@@ -156,6 +151,10 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
         if (goodsNum == 0 && BaseConstant.needToConsiderNotHasNum(groupBuyInfo.getActState())) {
             log.debug("小程序-商品详情-拼团商品数量已用完");
             groupBuyInfo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
+        }
+        if (newPrdList.size() == 0) {
+            log.debug("小程序-商品详情-拼团-商品规格信息和活动规格信息无交集");
+            groupBuyInfo.setActState(BaseConstant.ACTIVITY_STATUS_NO_PRD_TO_USE);
         }
 
         capsule.setActivity(groupBuyInfo);
@@ -302,11 +301,12 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
     /**
      * 退款
      *
+     * @param returnOrderRecord
      * @param activityId  活动id
      * @param returnGoods 退款商品
      */
     @Override
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
         log.info("拼团退款-退库存");
         for (OrderReturnGoodsVo returnGoodsVo : returnGoods) {
             boolean b = groupBuyProcessorDao.updateGroupBuyStock(activityId, returnGoodsVo.getProductId(), -returnGoodsVo.getGoodsNumber());

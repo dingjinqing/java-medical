@@ -132,10 +132,8 @@
                   </div>
                 </el-form-item>
                 <el-form-item
+                  :rules="[{required: true }]"
                   :label="labels.label5"
-                  :rules="[
-                {required: true}
-                ]"
                 >
                   <div>
                     <el-button
@@ -157,16 +155,22 @@
                       v-model="params.onClickNoPay"
                       @change="handleOnClickNoPayChange"
                     >加购人群</el-checkbox>
-                    <span style="color:#999;fontSize:12px;margin-left:-15px">30天内在本店内有加入购物车行为，但没有支付的用户</span>
+                    <span style="color:#999;fontSize:12px;">30天内在本店内有加入购物车行为，但没有支付的用户</span>
                   </div>
                   <div>
                     <el-checkbox
                       v-model="params.onClickGoods"
                       @change="handleOnClickGoodsChange"
                     >指定购买商品人群 </el-checkbox>
-                    <span style="color:#999;fontSize:12px">最多可选择3件商品</span>
+                    <span
+                      v-if="params.onClickGoods"
+                      style="color:#999;fontSize:12px"
+                    >最多可选择3件商品</span>
                   </div>
-                  <div class="chooseGoods">
+                  <div
+                    class="chooseGoods"
+                    v-if="params.onClickGoods"
+                  >
                     <div class="chooseGoodsLeft">选择商品</div>
                     <ul class="imgList">
                       <li
@@ -205,13 +209,15 @@
                       v-model="params.onClickUser"
                       @change="handleOnClickUserChange"
                     >选择指定的会员 </el-checkbox>
-                    <span style="margin-left:-15px">
-                      <el-button
-                        @click="handleAddMember"
-                        type="text"
-                      >+ 添加会员</el-button>
+                    <span v-if="params.onClickUser">
+                      <span style="margin-left:-15px">
+                        <el-button
+                          @click="handleAddMember"
+                          type="text"
+                        >+ 添加会员</el-button>
+                      </span>
+                      <span>已选择会员{{memberNum}}人</span>
                     </span>
-                    <span>已选择会员{{memberNum}}人</span>
                   </div>
                   <div>
                     <el-checkbox
@@ -314,6 +320,10 @@
                       :showPicker=1
                       @time="getTime"
                     />
+                    <div
+                      class="mask"
+                      :style="senAction===2?'display:none':''"
+                    ></div>
                   </div>
                   <div style="color:#999;fontSize:12px;margin:5px 0">
                     所有可送达的用户均会第一时间收到一次此消息
@@ -324,11 +334,15 @@
                       v-model="senAction"
                     >定时发送</el-radio>
                   </div>
-                  <div>
+                  <div class="timePicker">
                     <dateTimePicker
                       :showPicker=2
                       @startTime="getTime2"
                     />
+                    <div
+                      class="mask"
+                      :style="senAction===4?'display:none':''"
+                    ></div>
                   </div>
                 </el-form-item>
               </el-form>
@@ -375,6 +389,28 @@
         :dialogVisible="dialogVisible"
       />
     </el-card>
+    <!--保存时页面勾选提示弹窗-->
+    <el-dialog
+      title="提示"
+      :visible.sync="checklistVisible"
+      width="30%"
+    >
+      <div class="checklistMain">为确保消息正常发送，请在"基础配置-公众号消息"页面勾选【自定义消息模板推送】后保存当前活动信息</div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          size="small"
+          @click="handleToSetCheck()"
+        >去设置</el-button>
+        <el-button
+          size="small"
+          @click="checklistVisible = false"
+        >已完成设置</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -406,7 +442,7 @@ export default {
   },
   data () {
     return {
-
+      checklistVisible: false, // 是否页面勾选弹窗flag
       checkedData: [], // 初始化弹窗选中的行
       urls: {
         url1: `${this.$imageHost}/image/admin/notice_img.png`,
@@ -440,7 +476,6 @@ export default {
       * 动态获取人数的参数集合
       */
       params: {
-        userKey: null,
         onClickNoPay: false,
         onClickGoods: false,
         // 商品列表idList
@@ -480,7 +515,7 @@ export default {
       userIdList: [],
       onClickCustomRule: false,
       disabledOnClickCustomRule: false,
-      pageLink: ``,
+      pageLink: '',
       time: {},
       /**
        * 表单检验
@@ -602,8 +637,10 @@ export default {
       imgsList: [],
       userNumber: 0,
       tuneUpChooseGoods: false,
-      tuneUpSelectLink: false
-
+      tuneUpSelectLink: false,
+      isJudgeStartTimeOne: '',
+      isJudgeStartTimeTwo: '',
+      userKey: null
     }
   },
   watch: {
@@ -659,48 +696,65 @@ export default {
     },
     // 保存并发送
     handleSaveAndSend () {
+      let link = ''
+      if (!this.pageLink) {
+        link = 'pages/index/index'
+      } else {
+        link = this.pageLink
+      }
       const params = {
         name: this.formData.name,
         title: this.formData.title,
         action: 7,
         templateId: this.templateId,
         content: this.formData.content,
-        pageLink: this.pageLink,
+        pageLink: link,
         userInfo: this.params,
-        senAction: this.senAction,
-        userKey: this.params.userKey,
+        sendAction: this.senAction,
+        userKey: this.userKey,
         startTime: this.startTime,
         endTime: this.endTime
       }
       console.log(params)
       console.log(this.$refs.form)
-      // 验证输入框是否为空
-      if (this.formData.name === `` || this.formData.title === `` || this.formData.content === ``) {
-        return
-      }
-      addMessageApi(params).then(res => {
-        const { error } = res
-        if (error === 0) {
-          this.$message.success({
-            type: 'success',
-            message: `保存成功`
-          })
 
-          this.$router.push({
-            name: `all_message_push`
-          })
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          console.log(this.handleToJudge())
+          if (this.handleToJudge()) {
+            addMessageApi(params).then(res => {
+              console.log(res)
+              const { error } = res
+              if (error === 0) {
+                this.$message.success({
+                  type: 'success',
+                  message: `保存成功`
+                })
+
+                this.$router.push({
+                  name: `all_message_push`
+                })
+              } else if (error === 140201) {
+                this.checklistVisible = true
+              }
+            }).catch(err => console.log(err))
+          }
+        } else {
+          return false
         }
-      }).catch(err => console.log(err))
+      })
     },
     // 获取时间
     getTime (val) {
       this.time = val
       this.startTime = val.startTime
       this.endTime = val.endTime
+      this.isJudgeStartTimeOne = val.startTime
     },
     getTime2 (val) {
       this.time = val
       this.startTime = val.startTime
+      this.isJudgeStartTimeTwo = val.startTime
     },
     // 关闭会员弹窗
     closeDialog () {
@@ -890,6 +944,7 @@ export default {
       this.params.cardIdsList = cardIdsList
       this.params.onClickTag = onClickTag
       this.params.tagIdList = tagIdList
+      console.log(onClickCard, onClickTag)
       // 请选择会员卡
       switch (onClickCard) {
         case true:
@@ -926,7 +981,7 @@ export default {
           const { userKey, userNumber } = content
           console.log(`key+num${userKey}, ${userNumber}`)
           this.userNumber = userNumber
-          this.params.userKey = userKey
+          this.userKey = userKey
         }
       }).catch(err => console.log(err))
     },
@@ -957,6 +1012,79 @@ export default {
       this.params.customRuleInfo.loginStart = this.loginStart
       this.params.customRuleInfo.loginEnd = this.loginEnd
       this.fetchUserList(this.params)
+    },
+    // 参与活动人群以及发送时间校验
+    handleToJudge () {
+      let isNone = true
+      console.log(this.params)
+      if (this.params.onClickNoPay) {
+        isNone = false
+      } else if (this.params.onClickGoods) {
+        if (!this.imgsList.length) {
+          this.$message.error({
+            message: '请选择指定商品',
+            showClose: true
+          })
+        }
+        isNone = false
+      } else if (this.params.onClickCard) {
+        if (!this.params.cardIdsList.length) {
+          this.$message.error({
+            message: '请选择会员卡',
+            showClose: true
+          })
+        }
+        isNone = false
+      } else if (this.params.onClickTag) {
+        if (!this.params.tagIdList.length) {
+          this.$message.error({
+            message: '请选择会员标签',
+            showClose: true
+          })
+        }
+        isNone = false
+      } else if (this.params.onClickUser) {
+        if (!this.memberNum) {
+          this.$message.error({
+            message: '请选择指定会员',
+            showClose: true
+          })
+        }
+        isNone = false
+      } else if (this.senAction === 2) {
+        if (!this.isJudgeStartTimeOne) {
+          this.$message.error({
+            message: '持续发送请选择日期区间',
+            showClose: true
+          })
+        }
+        isNone = false
+      } else if (this.senAction === 4) {
+        if (!this.isJudgeStartTimeTwo) {
+          this.$message.error({
+            message: '定时发送请选择发送日期',
+            showClose: true
+          })
+        }
+        isNone = false
+      }
+      // 判空
+      if (isNone) {
+        this.$message.error({
+          message: '请至少选择一种类型活动人群',
+          showClose: true
+        })
+        return false
+      } else {
+        console.log('sssss')
+        return true
+      }
+    },
+    // 点击去设置
+    handleToSetCheck () {
+      this.$router.push({
+        name: 'message_config'
+      })
     }
   }
 }
@@ -1188,5 +1316,24 @@ export default {
       }
     }
   }
+}
+.timePicker {
+  position: relative;
+  .mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #f5f7fa;
+    z-index: 10;
+    top: 0;
+    opacity: 0.6;
+    &:hover {
+      cursor: not-allowed;
+    }
+  }
+}
+.checklistMain {
+  height: 100px;
+  line-height: 20px;
 }
 </style>

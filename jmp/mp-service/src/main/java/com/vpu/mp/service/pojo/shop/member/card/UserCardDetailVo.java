@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.shop.member.card;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
+
 import lombok.Data;
 
 /**
@@ -36,5 +38,9 @@ public class UserCardDetailVo {
 	private Integer surplus;
 	/** - 兑换商品次数（次） */
 	private Integer exchang_surplus;
+	/**
+	 * 	包邮信息
+	 */
+	private CardFreeship freeShip;
 	
 }

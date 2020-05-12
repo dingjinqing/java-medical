@@ -2,80 +2,81 @@
   <div class="content">
 
     <div class="main">
-      <el-form label-width="100px">
+      <el-form label-width="100px" :inline="true">
         <el-form-item
-          label="团长昵称："
+          :label="$t('lotteryDraw.groupName') + '：'"
           class="item"
         >
           <el-input
             size="small"
             v-model="requestParams.username"
-            placeholder="请输入团长昵称"
+            :placeholder="$t('lotteryDraw.groupNameTip')"
             maxlength="11"
             clearable
             class="inputWidth"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="开团时间："
+          :label="$t('lotteryDraw.openGroupTime') + '：'"
           class="item"
         >
           <el-date-picker
             size="small"
             v-model="requestParams.startTime"
-            type="datetime"
+            type="date"
             clearable
             class="inputWidth"
-            value-format="yyyy-MM-dd 00:00:00"
+            value-format="yyyy-MM-dd HH:mm:ss"
             :placeholder="$t('actionRecord.startTime')"
           >
           </el-date-picker>
-          <span>至</span>
+          <span>{{ $t('lotteryDraw.to') }}</span>
           <el-date-picker
             size="small"
             v-model="requestParams.endTime"
-            type="datetime"
+            type="date"
             clearable
             class="inputWidth"
-            value-format="yyyy-MM-dd 00:00:00"
-            default-time="23:59:59"
+            value-format="yyyy-MM-dd [23]:[59]:[59]"
             :placeholder="$t('actionRecord.endTime')"
           >
           </el-date-picker>
         </el-form-item>
         <el-form-item
-          label="团ID："
+          :label="$t('lotteryDraw.groupId') + '：'"
           class="item"
         >
           <el-input
             size="small"
             v-model="requestParams.groupId"
-            placeholder="请输入团ID"
+            :placeholder="$t('lotteryDraw.groupIdTip')"
             clearable
             class="inputWidth"
           ></el-input>
         </el-form-item>
+      </el-form>
+      <el-form label-width="100px" :inline="true">
         <el-form-item
-          label="手机号："
+          :label="$t('lotteryDraw.mobile') + '：'"
           class="item"
         >
           <el-input
             size="small"
             v-model="requestParams.mobile"
-            placeholder="请输入手机号"
+            :placeholder="$t('lotteryDraw.mobileTip')"
             clearable
             class="inputWidth"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="成团状态："
+          :label="$t('lotteryDraw.grouped') + '：'"
           class="item"
         >
           <el-select
             size="small"
             v-model="requestParams.grouped"
             class="inputWidth"
-            placeholder="请选择"
+            :placeholder="$t('lotteryDraw.groupedTip')"
           >
             <el-option
               v-for="item in statusList"
@@ -85,20 +86,25 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-button
-          size="small"
-          type="primary"
+        <el-form-item
+        label=""
           class="item"
-          style="margin-left: 10px;"
-          @click="initDataList"
-        >筛选</el-button>
-        <el-button
-          size="small"
-          type="primary"
-          class="item"
-          style="margin-left: 10px;"
-          @click="resetDataList"
-        >重置筛选</el-button>
+        >
+          <el-button
+            size="small"
+            type="primary"
+            class="item"
+            style="margin-left: 10px;"
+            @click="initDataList"
+          >{{ $t('lotteryDraw.select') }}</el-button>
+          <el-button
+            size="small"
+            type="primary"
+            class="item"
+            style="margin-left: 10px;"
+            @click="resetDataList"
+          >{{ $t('lotteryDraw.resetSelect') }}</el-button>
+        </el-form-item>
       </el-form>
     </div>
 
@@ -111,37 +117,41 @@
         style="width: 100%"
       >
         <el-table-column
-          label="团ID"
+          :label="$t('lotteryDraw.groupId')"
           prop="groupId"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="参团人数"
+          :label="$t('lotteryDraw.joinUserCount')"
           prop="userCount"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="活动商品"
+          :label="$t('lotteryDraw.goodsId')"
           prop="goodsName"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="开团时间"
+          :label="$t('lotteryDraw.openGroupTime')"
           prop="openTime"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="团长昵称"
-          prop="grouperName"
+          :label="$t('lotteryDraw.groupName')"
+          prop="userName"
           align="center"
-        ></el-table-column>
+        >
+         <template slot-scope="scope">
+           <el-link type="primary" :underline="false" @click="viewUserHanlder(scope.row.userId)">{{scope.row.userName}}</el-link>
+         </template>
+        </el-table-column>
         <el-table-column
-          label="团长手机号"
+          :label="$t('lotteryDraw.grouperMobile')"
           prop="mobile"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="成团时间"
+          :label="$t('lotteryDraw.groupTime')"
           prop="endTime"
           align="center"
         ></el-table-column>
@@ -166,13 +176,7 @@ export default {
   data () {
     return {
       // 成团状态
-      statusList: [{
-        value: true,
-        label: '已成团'
-      }, {
-        value: false,
-        label: '未成团'
-      }],
+      statusList: this.$t('lotteryDraw.statusList'),
       loading: false,
       pageParams: {}, // 分页
       requestParams: {
@@ -217,6 +221,15 @@ export default {
         mobile: '',
         grouped: null
       }
+    },
+    // 查看用户明细
+    viewUserHanlder (tagId) {
+      this.$router.push({
+        path: '/admin/home/main/membershipInformation',
+        query: {
+          userId: tagId
+        }
+      })
     }
   }
 

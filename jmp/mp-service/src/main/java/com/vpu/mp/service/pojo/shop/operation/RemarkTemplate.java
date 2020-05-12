@@ -101,8 +101,14 @@ public enum RemarkTemplate {
 	MSG_LOTTERY_GIFT(4009,RemarkMessage.MSG_LOTTERY_GIFT),
 	/** 门店支付 */
 	STORE_PAYMEMBT(4010,RemarkMessage.STORE_PAYMEMBT),
+	/**表单统计*/
+	MSG_FORM_DECORATION_GIFT(4011,RemarkMessage.MSG_FORM_DECORATION_GIFT),
+    /**优惠券礼包下单 */
+    COUPON_PACK_ORDER(4012,RemarkMessage.MSG_COUPON_PACK_ORDER),
 
-	/**
+
+
+    /**
      * 管理员
      */
 	/**	管理员操作 */

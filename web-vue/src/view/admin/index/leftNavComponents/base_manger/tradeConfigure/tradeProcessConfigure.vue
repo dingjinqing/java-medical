@@ -32,11 +32,11 @@
       <div class="settingContent">
         <el-radio-group v-model="tradeProcessConfig.is_lock">
           <div class="topandbottom">
-            <el-radio :label=1> {{$t('tradeConfiguration.paythensub')}}<label class="onText">{{$t('tradeConfiguration.paythensubnote')}}</label>
+            <el-radio :label=0> {{$t('tradeConfiguration.paythensub')}}<label class="onText">{{$t('tradeConfiguration.paythensubnote')}}</label>
             </el-radio>
           </div>
           <div class="topandbottom">
-            <el-radio :label=0>{{$t('tradeConfiguration.orderthensub')}} <label class="onText">{{$t('tradeConfiguration.orderthensubnote')}}</label>
+            <el-radio :label=1>{{$t('tradeConfiguration.orderthensub')}} <label class="onText">{{$t('tradeConfiguration.orderthensubnote')}}</label>
             </el-radio>
           </div>
         </el-radio-group>

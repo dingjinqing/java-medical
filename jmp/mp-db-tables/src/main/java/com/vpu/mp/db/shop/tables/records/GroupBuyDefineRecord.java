@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GroupBuyDefineRecord extends UpdatableRecordImpl<GroupBuyDefineRecord> {
 
-    private static final long serialVersionUID = 753260767;
+    private static final long serialVersionUID = -889258493;
 
     /**
      * Setter for <code>mini_shop_4748160.b2c_group_buy_define.id</code>.
@@ -46,15 +46,15 @@ public class GroupBuyDefineRecord extends UpdatableRecordImpl<GroupBuyDefineReco
     /**
      * Setter for <code>mini_shop_4748160.b2c_group_buy_define.goods_id</code>. 商品id
      */
-    public void setGoodsId(Integer value) {
+    public void setGoodsId(String value) {
         set(1, value);
     }
 
     /**
      * Getter for <code>mini_shop_4748160.b2c_group_buy_define.goods_id</code>. 商品id
      */
-    public Integer getGoodsId() {
-        return (Integer) get(1);
+    public String getGoodsId() {
+        return (String) get(1);
     }
 
     /**
@@ -405,7 +405,7 @@ public class GroupBuyDefineRecord extends UpdatableRecordImpl<GroupBuyDefineReco
     /**
      * Create a detached, initialised GroupBuyDefineRecord
      */
-    public GroupBuyDefineRecord(Integer id, Integer goodsId, String name, Short limitAmount, Short joinLimit, Short openLimit, Short limitBuyNum, Short limitMaxNum, Timestamp startTime, Timestamp endTime, Short stock, Short saleNum, Byte isDefault, Byte activityType, Byte isGrouperCheap, Byte shippingType, String rewardCouponId, String shareConfig, Byte status, Byte delFlag, Integer delTime, Timestamp createTime, Timestamp updateTime, Integer level, Integer beginNum) {
+    public GroupBuyDefineRecord(Integer id, String goodsId, String name, Short limitAmount, Short joinLimit, Short openLimit, Short limitBuyNum, Short limitMaxNum, Timestamp startTime, Timestamp endTime, Short stock, Short saleNum, Byte isDefault, Byte activityType, Byte isGrouperCheap, Byte shippingType, String rewardCouponId, String shareConfig, Byte status, Byte delFlag, Integer delTime, Timestamp createTime, Timestamp updateTime, Integer level, Integer beginNum) {
         super(GroupBuyDefine.GROUP_BUY_DEFINE);
 
         set(0, id);

@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.shop.user.user.WxUserInfo;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
@@ -19,6 +20,7 @@ import com.vpu.mp.service.shop.market.message.MessageTemplateService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -80,14 +82,21 @@ public class WechatMessageTemplateService extends ShopBaseService {
     	//type大于2000为小程序
         //String formId = getFormId(info.getUserId());
     	logger().info("小程序和公众号发送其中一个");
-        Boolean success = Boolean.TRUE;
-        if( param.getMaTemplateData() != null && (type>2000)){
+        Boolean success = Boolean.FALSE;
+        if( param.getMaTemplateData() != null && !param.getType().equals(RabbitParamConstant.Type.DIY_MESSAGE_TEMPLATE)){
         	logger().info("发小程序");
             success = sendMaMessage(param,info);
             logger().info("发小程序结果："+success);
         }
 
-		if ((param.getMpTemplateData() != null && type < 2000)|| (!success && param.getMpTemplateData() != null)) {
+        if( param.getMpTemplateData() != null && !success ){
+            if( !saas().getShopApp(param.getShopId()).config.messageConfigService.checkConfig(param.getType()) ){
+                logger().debug("【消息模板监听】---商家{}未开通{}类型的公众号消息推送",param.getShopId(),param.getType());
+                return false;
+            }
+            if(StringUtils.isBlank(info.getMpOpenId()) ){
+                return false;
+            }
 			logger().info("发公众号");
             success = sendMpMessage(param,info);
             logger().info("发公众号结果："+success);
@@ -119,12 +128,11 @@ public class WechatMessageTemplateService extends ShopBaseService {
      * 发送小程序模版消息
      * @param param MQ传参
      * @param info  所需信息（openID，appID）
-     * @param formId 发消息必须
      * @return 是否发送成功
      */
     public Boolean sendMaMessage(RabbitMessageParam param,WxUserInfo info) {
     	MaTemplateData maTemplateData = param.getMaTemplateData();
-    	String[][] data = maTemplateData.getData();
+    	MaSubscribeData data = maTemplateData.getData();
     	Boolean sendMessage=Boolean.FALSE;
     	try {
 			sendMessage = subscribeMessageService.sendMessage(info.getUserId(), maTemplateData.getConfig(), data, param.getPage());
@@ -156,7 +164,8 @@ public class WechatMessageTemplateService extends ShopBaseService {
         }
         try{
             accountMessageService.sendMpTemplateMessage(info.getMpAppId(),info.getMpOpenId(),
-                wxDatalist,config,info.getMaAppId(),param.getPage(),param.getPage(),param.getShopId(),param.getType(),param.getUserIdList());
+                wxDatalist,config,info.getMaAppId(),param.getPage(),param.getPage(),param.getShopId(),param.getType(),
+                info.getUserId(),param.getMessageTemplateId());
         } catch (WxErrorException e) {
             e.printStackTrace();
             return Boolean.FALSE;
@@ -169,14 +178,16 @@ public class WechatMessageTemplateService extends ShopBaseService {
      * @param userIdList
      * @return 相关信息
      */
-    public List<WxUserInfo> getUserInfoList(List<Integer> userIdList,Integer type,Integer shopId) {
+    public List<WxUserInfo> getUserInfoList(List<Integer> userIdList,Integer type,Integer shopId,RabbitMessageParam param) {
     	List<WxUserInfo> resultList = new ArrayList<>(userIdList.size());
     	MpAuthShopRecord authShopByShopId = mpAuthShopService.getAuthShopByShopId(shopId);
     	if( type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE_NO_USER) ) {
+    		//用户没有关注小程序没有unionId的，进行发公众号
     		for(Integer userId:userIdList) {
     			MpOfficialAccountUserRecord accountUserListByRecord =
     					saas.getShopApp(shopId).officialAccountUser.getAccountUserListByRecid(userId);
     			WxUserInfo info=WxUserInfo.builder()
+    					.userId(userId)
     					.mpAppId(accountUserListByRecord.getAppId())
     					.mpOpenId(accountUserListByRecord.getOpenid())
     					.maAppId(authShopByShopId.getAppId())
@@ -184,50 +195,44 @@ public class WechatMessageTemplateService extends ShopBaseService {
     			resultList.add(info);
     		}
     		return resultList;
-    	}if( type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE) ) {
+    	}if( null!=param.getMpTemplateData() && !type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE_NO_USER)) {
+    		//正常发公众号的
     		for(Integer userId:userIdList) {
 				MpOfficialAccountUserRecord accountUserListByRecord = saas.getShopApp(shopId).officialAccountUser
 						.getAccountUserByUserId(userId);
     			//通过shopId得到小程序信息
     			WxUserInfo info=WxUserInfo.builder()
+    					.userId(userId)
     					.mpAppId(accountUserListByRecord.getAppId())
     					.mpOpenId(accountUserListByRecord.getOpenid())
     					.maAppId(authShopByShopId.getAppId())
                     .build();
     			resultList.add(info);
     		}
-    		return resultList;
-    	}else if( type.equals(RabbitParamConstant.Type.GENERAL_TYPE)||type>2000 ){
-            String appId = mpAuthShopService.getAuthShopByShopId(getShopId()).get(MP_AUTH_SHOP.APP_ID);
+    		//return resultList;
+    	}else if( param.getMaTemplateData()!=null ||type>4000 ){
+    		//发小程序的
+            //String appId = mpAuthShopService.getAuthShopByShopId(getShopId()).get(MP_AUTH_SHOP.APP_ID);
             List<UserRecord> userList = userService.getUserRecordByIds(userIdList);
-            Map<Integer,UserRecord> userMap = userList.stream()
-                .collect(Collectors.toMap(UserRecord::getUserId, x->x));
-            List<MpOfficialAccountUserRecord> accountUserList =
-            		saas.getShopApp(shopId).officialAccountUser.getAccountUserListByUnionIds(
-                    userList.stream()
-                        .map(x->x.get(USER.WX_UNION_ID))
-                        .collect(Collectors.toList())
-                );
-            Map<String,MpOfficialAccountUserRecord> accountUserAccountMap = accountUserList.stream()
-                .collect(Collectors.toMap(MpOfficialAccountUserRecord::getUnionid, x->x));
-            userIdList.stream()
-                .filter(userMap::containsKey)
-                .forEach(x->{
-                    UserRecord user= userMap.get(x);
-                    WxUserInfo.WxUserInfoBuilder builder = WxUserInfo.builder()
-                        .userId(x)
-                        .maAppId(appId)
-                        .maOpenId(user.getWxOpenid());
-                    if( accountUserAccountMap.containsKey(user.getWxUnionId()) ){
-                        MpOfficialAccountUserRecord record = accountUserAccountMap.get(user.getWxUnionId());
-                        builder.isSubscribe(Boolean.TRUE)
-                            .mpAppId(record.getAppId())
-                            .mpOpenId(record.getOpenid());
-                    }
-                    resultList.add(builder.build());
-                });
+            for (UserRecord userRecord : userList) {
+            	if(!haveInfo(userRecord.getUserId(), resultList)) {
+            		WxUserInfo info=WxUserInfo.builder()
+        					.userId(userRecord.getUserId()).build();
+            		resultList.add(info);
+            	}
+			}
             return resultList;
         }
         return resultList;
     }
+    
+    private boolean haveInfo(Integer userId,List<WxUserInfo> resultList) {
+    	for (WxUserInfo wxUserInfo : resultList) {
+			if(wxUserInfo.getUserId().equals(userId)) {
+				return true;
+			}
+		}
+		return false;
+    }
 }
+

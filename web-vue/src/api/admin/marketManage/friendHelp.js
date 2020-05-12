@@ -72,3 +72,54 @@ export function updateInfo (data) {
     data: data
   })
 }
+// 根据prdId得到商品详情
+export function getGoodsInfo (data) {
+  return service({
+    url: '/api/admin/market/promote/goodsInfo',
+    method: 'post',
+    data: data
+  })
+}
+// 活动效果
+export function effectData (data) {
+  return service({
+    url: '/api/admin/market/promote/analysis',
+    method: 'post',
+    data: data
+  })
+}
+// 分享
+export function shareAct (data) {
+  return service({
+    url: '/api/admin/market/promote/share',
+    method: 'post',
+    data: data
+  })
+}
+// 发起明细导出
+export function launchExport (data) {
+  return service({
+    url: '/api/admin/market/promote/launch/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
+// 参与明细导出
+export function joinExport (data) {
+  return service({
+    url: '/api/admin/market/promote/participate/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
+// 领取明细导出
+export function receiveExport (data) {
+  return service({
+    url: '/api/admin/market/promote/receive/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}

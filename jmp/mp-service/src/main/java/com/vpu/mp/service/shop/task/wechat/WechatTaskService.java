@@ -407,4 +407,10 @@ public class WechatTaskService extends ShopBaseService {
 		Date from = Date.from(instant);
 		return from;
 	}
+	public void test(){
+        Date date = java.sql.Date.valueOf(LocalDate.now().minusDays(1));
+        WxMaAnalysisService service = getServiceByShopId(getShopId());
+        WxGetWeAnalysService maService=open().getMaExtService();
+        this.getDailyVisitTrend(service,date);
+    }
 }

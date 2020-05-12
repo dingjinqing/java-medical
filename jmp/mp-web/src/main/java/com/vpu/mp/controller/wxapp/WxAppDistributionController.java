@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
+import com.vpu.mp.service.pojo.shop.distribution.RebateCenterVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.ActivationInfoVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -79,5 +80,16 @@ public class WxAppDistributionController extends WxAppBaseController{
         //获取分销推广文案信息
         DistributionDocumentParam distributorDoc = shop().mpDistribution.getDistributorDoc();
         return this.success(distributorDoc);
+    }
+
+    /**
+     * 分销中心
+     * @return
+     */
+    @PostMapping("rebateCenter")
+    public JsonResult rebateCenter(){
+        Integer userId = wxAppAuth.user().getUserId();
+        RebateCenterVo rebateCenter = shop().mpDistribution.rebateCenter(userId);
+        return this.success(rebateCenter);
     }
 }

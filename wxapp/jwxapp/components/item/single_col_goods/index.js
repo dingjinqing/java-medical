@@ -118,7 +118,8 @@ global.wxComponent({
           goodsNumber: type === 'plus' ? cartNumber + 1 : cartNumber - 1,
           prdId: productId,
           activityType: activityType,
-          activityId: activityId
+          activityId: activityId,
+          type: 1
       })
     },
     changeCartInput(e){
@@ -137,7 +138,8 @@ global.wxComponent({
             goodsNumber: cartNumber,
             prdId: productId,
             activityType: activityType,
-            activityId: activityId
+            activityId: activityId,
+            type: 1
           })
       }
     },

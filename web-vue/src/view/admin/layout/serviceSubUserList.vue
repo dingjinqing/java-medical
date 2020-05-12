@@ -11,6 +11,7 @@
               <el-button
                 @click="open()"
                 type="primary"
+                size="small"
               >{{$t('authRoleList.addUser')}}</el-button>
             </a>
           </div>
@@ -167,9 +168,13 @@
           slot="footer"
           class="dialog-footer changeMa"
         >
-          <el-button @click="dialogFormVisible = false">{{$t('authRoleList.cancel')}}</el-button>
+          <el-button
+            size="small"
+            @click="dialogFormVisible = false"
+          >{{$t('authRoleList.cancel')}}</el-button>
           <el-button
             type="primary"
+            size="small"
             @click="addRoleBefore('ruleForm')"
           >{{$t('authRoleList.sure')}}</el-button>
         </div>
@@ -218,9 +223,13 @@
           slot="footer"
           class="dialog-footer changeMa"
         >
-          <el-button @click="editFormVisible = false">{{$t('authRoleList.cancel')}}</el-button>
+          <el-button
+            size="small"
+            @click="editFormVisible = false"
+          >{{$t('authRoleList.cancel')}}</el-button>
           <el-button
             type="primary"
+            size="small"
             @click="editRoleBefore('ruleForm2')"
           >{{$t('authRoleList.sure')}}</el-button>
         </div>
@@ -498,9 +507,9 @@ export default {
 }
 .p_top_left {
   display: flex;
-  /deep/ .el-button {
-    padding: 6px 20px;
-  }
+  // /deep/ .el-button {
+  //   padding: 6px 20px;
+  // }
   .abutton {
     display: inline-block;
     text-align: center;
@@ -600,22 +609,22 @@ export default {
   height: 100px;
   margin-left: -160px;
 }
-.pageDialogMy {
-  text-align: center;
-  /deep/ .el-form-item {
-    margin-bottom: 15px;
-  }
-  /deep/ .el-form--label-left .el-form-item__label {
-    text-align: center;
-  }
-  /deep/ .el-dialog__header {
-    background-color: #f1f1f1;
-    margin-bottom: -18px;
-  }
-}
-.changeMa {
-  margin-top: -36px;
-}
+// .pageDialogMy {
+//   text-align: center;
+//   /deep/ .el-form-item {
+//     margin-bottom: 15px;
+//   }
+//   /deep/ .el-form--label-left .el-form-item__label {
+//     text-align: center;
+//   }
+//   /deep/ .el-dialog__header {
+//     background-color: #f1f1f1;
+//     margin-bottom: -18px;
+//   }
+// }
+// .changeMa {
+//   margin-top: -36px;
+// }
 </style>
 <style>
 </style>

@@ -463,7 +463,7 @@ export default {
     // 分享优惠券
     shareCoupon (id) {
       this.shareDialog = true
-      shareCoupon(id).then((res) => {
+      shareCoupon(id).then(res => {
         if (res.error === 0) {
           this.shareImg = res.content.imageUrl
           this.sharePath = res.content.pagePath

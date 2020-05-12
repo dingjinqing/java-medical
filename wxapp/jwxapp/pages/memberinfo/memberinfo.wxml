@@ -168,7 +168,7 @@
       </view>
 
     </view>
-    <view class='footer'>
+    <!-- <view class='footer'>
       <form report-submit='true' bindsubmit='toSave'>
         <block wx:if="{{distribution == 1}}">
           <button formType="submit" style='background:{{comColor}};' wx:if="{{examine == 0}}">提交审核申请</button>
@@ -178,6 +178,15 @@
           <button formType="submit" style='background:{{comColor}};' wx:if="{{examine == 1}}">提交激活申请</button>
         </block>
       </form>
+    </view> -->
+    <view class='footer'>
+      <block wx:if="{{distribution == 1}}">
+        <button style='background:{{comColor}};' wx:if="{{examine == 0}}" bindtap="toSave">提交审核申请</button>
+      </block>
+      <block wx:else>
+        <button style='background:{{comColor}};' wx:if="{{examine == 0}}" bindtap="toSave">激活会员卡</button>
+        <button style='background:{{comColor}};' wx:if="{{examine == 1}}" bindtap="toSave">提交激活申请</button>
+      </block>
     </view>
   </block>
 </view>

@@ -18,8 +18,10 @@ public class SeckillPageListQueryVo {
     /** 活动名称 */
     private String name;
 
-    private Integer goodsId;
-    private String goodsName;
+    private String goodsId;
+    /** 商品种类数 */
+    private Integer goods;
+    private Byte first;
     /**
      * 商品库存
      */
@@ -42,13 +44,9 @@ public class SeckillPageListQueryVo {
      */
     private BigDecimal secPrice;
     /**
-     * 当前活动库存
+     * 活动库存
      */
     private Integer stock;
-    /**
-     * 活动总库存
-     */
-    private Integer totalStock;
     /**
      * 停用启用的状态：1可用，0停用
      */

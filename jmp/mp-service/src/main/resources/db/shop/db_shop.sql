@@ -1030,6 +1030,7 @@ CREATE TABLE `b2c_friend_promote_activity` (
   `use_score` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否可使用积分抵扣部分金额：0不可抵扣，1可抵扣',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `promote_times_per_day` int(8) null default 0 comment '单个用户每天最多可帮忙助力次数',
   PRIMARY KEY (`id`),
   UNIQUE KEY `act_code` (`act_code`),
   KEY `act_name` (`act_name`),
@@ -1255,6 +1256,7 @@ CREATE TABLE `b2c_goods` (
   `deliver_place` varchar(191) DEFAULT NULL COMMENT '发货地址',
   `share_config` varchar(500) DEFAULT NULL COMMENT '分享配置',
   `is_default_product` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1默认规格，0自定义规格（多规格）',
+  PRIMARY KEY (`goods_id`),
   UNIQUE KEY `goods_id` (`goods_id`,`shop_id`),
   UNIQUE KEY `goods_sn` (`goods_sn`,`shop_id`),
   KEY `goods_id_2` (`goods_id`),
@@ -1677,6 +1679,7 @@ CREATE TABLE `b2c_group_integration_define` (
   `param_n` float NOT NULL DEFAULT '0' COMMENT '常数n',
   `is_continue` tinyint(1) NOT NULL DEFAULT '1' COMMENT '继续： 1：继续  0： 结束',
   `advertise` varchar(100) NOT NULL COMMENT '活动宣传语',
+  `activity_copywriting` text COMMENT '活动规则说明',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`)
@@ -2947,32 +2950,6 @@ CREATE TABLE `b2c_pin_group_product_define` (
   `stock` smallint(6) NOT NULL DEFAULT '0' COMMENT '库存',
   `sale_num` smallint(6) NOT NULL DEFAULT '0' COMMENT '销量',
   `grouper_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '团长优惠价',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
-  PRIMARY KEY (`id`)
-);
-
-
-
-CREATE TABLE `b2c_pin_integration_define` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `shop_id` int(11) NOT NULL COMMENT '店铺id',
-  `name` varchar(100) NOT NULL COMMENT '活动名称',
-  `inte_total` int(11) NOT NULL DEFAULT '0' COMMENT '总抽奖积分',
-  `inte_group` int(11) NOT NULL DEFAULT '0' COMMENT '每个团总积分',
-  `limit_amount` smallint(6) NOT NULL COMMENT '成团人数',
-  `join_limit` smallint(6) NOT NULL COMMENT '参团限制',
-  `divide_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '瓜分方式：0：按邀请好友数量瓜分，1：好友均分，2：随机瓜分',
-  `start_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '开始时间',
-  `end_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '结束时间',
-  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态： 1：启用  0： 禁用',
-  `del_flag` tinyint(1) NOT NULL DEFAULT '0',
-  `del_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '删除时间',
-  `inte_remain` int(11) NOT NULL DEFAULT '0' COMMENT '剩余积分',
-  `is_day_divide` tinyint(1) NOT NULL COMMENT '是否开团24小时自动开奖',
-  `param_n` float NOT NULL DEFAULT '0' COMMENT '常数n',
-  `is_continue` tinyint(1) NOT NULL DEFAULT '1' COMMENT '继续： 1：继续  0： 结束',
-  `advertise` varchar(100) NOT NULL COMMENT '活动宣传语',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`)

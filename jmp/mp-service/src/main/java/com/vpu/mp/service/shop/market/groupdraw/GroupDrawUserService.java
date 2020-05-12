@@ -9,6 +9,7 @@ import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.service.foundation.util.Util.currentTimeStamp;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +44,7 @@ import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
@@ -204,14 +207,6 @@ public class GroupDrawUserService extends ShopBaseService {
 	}
 
 	/**
-	 * 获取单品
-	 */
-	private GoodsSpecProductRecord getGoodsSpecProduct(Integer productId) {
-		return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId))
-				.fetchOneInto(GOODS_SPEC_PRODUCT);
-	}
-
-	/**
 	 * 获取订单中的商品
 	 */
 	private List<OrderGoodsRecord> getOrderGoods(String orderSn) {
@@ -322,17 +317,17 @@ public class GroupDrawUserService extends ShopBaseService {
 		String goodsName = good.getGoodsName();
 		String page = "pages/pinlotteryinfo/pinlotteryinfo?group_id=" + userJoinGroup.getGroupId() + "&group_draw_id="
 				+ userJoinGroup.getGroupDrawId() + "&goods_id=" + goodsId;
-		goodsName = goodsName.length() > 20 ? goodsName.substring(0, 19) + "等" : goodsName;
 		String msg = Objects.equals(isWinDraw, ONE) ? "恭喜您中奖了" : "很遗憾您未中奖";
 		String marketName = groupDrawInfo.getName();
 		String[][] data = new String[][] { { marketName }, { Util.getdate("yyyy-MM-dd HH:mm:ss") }, { msg } };
 		ArrayList<Integer> arrayList = new ArrayList<Integer>();
 		arrayList.add(userId);
+		MaSubscribeData buildData = MaSubscribeData.builder().data307(data).build();
 		RabbitMessageParam param = RabbitMessageParam.builder()
 				.maTemplateData(
-						MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(data).build())
+						MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(buildData).build())
 				.page(page).shopId(getShopId()).userIdList(arrayList)
-				.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+				.type(RabbitParamConstant.Type.INVITE_SUCCESS_GROUPBUY).build();
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
 				TaskJobEnum.SEND_MESSAGE.getExecutionType());
 

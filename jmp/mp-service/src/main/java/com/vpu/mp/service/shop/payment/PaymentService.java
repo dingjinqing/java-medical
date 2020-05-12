@@ -7,6 +7,8 @@ import com.vpu.mp.db.shop.tables.records.PaymentRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
+import com.vpu.mp.db.shop.tables.records.SubOrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -18,15 +20,21 @@ import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
+import com.vpu.mp.service.shop.order.action.InsteadPayService;
 import com.vpu.mp.service.shop.order.action.PayService;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.store.StoreOrderService;
+import com.vpu.mp.service.shop.order.sub.SubOrderService;
+import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
+import com.vpu.mp.service.shop.order.virtual.MemberCardOrderService;
+import com.vpu.mp.service.shop.order.virtual.VirtualOrderService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -63,6 +71,12 @@ public class PaymentService extends ShopBaseService {
     private OrderGoodsService orderGoodsService;
 
     @Autowired
+    private SubOrderService subOrderService;
+
+    @Autowired
+    private InsteadPayService insteadPayService;
+
+    @Autowired
     private AtomicOperation atomicOperation;
 
 	/**
@@ -78,9 +92,13 @@ public class PaymentService extends ShopBaseService {
     public ServiceOrderService serviceOrderService;
 
     @Autowired
+    @Lazy
     private StoreOrderService storeOrder;
 
-    public PaymentVo getPaymentInfo(String payCode) {
+    @Autowired
+    private CouponPackOrderService couponPackOrderService;
+
+	public PaymentVo getPaymentInfo(String payCode) {
 		return db().select(PAYMENT.asterisk()).from(PAYMENT).where(PAYMENT.PAY_CODE.eq(payCode)).fetchOneInto(PaymentVo.class);
 	}
 
@@ -133,24 +151,29 @@ public class PaymentService extends ShopBaseService {
                 break;
             case "C":
                 //会员卡充值订单统一支付回调
+                //todo
                 break;
-            case "M":
+            case MemberCardOrderService.MEMBER_CARD_ORDER_SN_PREFIX:
                 //购买会员卡虚拟订单统一支付回调
                 break;
-            case "T":
-                //代付/子订单统一支付回调
+            case CouponPackOrderService.COUPON_PACK_ORDER_SN_PREFIX:
+                //购买优惠券礼包虚拟订单统一支付回调
+                onPayNotifyCouponPack(param);
+                break;
+            case OrderConstant.INSTEAD_PAY_SN_PREFIX:
+                //代付子订单统一支付回调
+                onPayNotifySubOrder(param);
                 break;
             case OrderConstant.ORDER_SN_PREFIX:
                 //订单统一支付回调
                 onPayNotify(param);
                 break;
             default:
-                return;
         }
 
 	}
 
-	/**
+    /**
      * 订单统一支付回调业务处理
 	 * @param param
 	 * @throws WxPayException
@@ -292,6 +315,8 @@ public class PaymentService extends ShopBaseService {
         // 完成支付
         storeOrder.finishPayCallback(orderInfo, paymentRecord);
         logger().info("门店买单订单统一支付回调SUCCESS完成！");
+        // 支付完送积分
+        storeOrder.storePay2SendScore(orderInfo);
     }
 
     /**
@@ -320,5 +345,59 @@ public class PaymentService extends ShopBaseService {
         // 完成支付
         serviceOrderService.finishPayCallback(orderInfo, paymentRecord);
         logger().info("服务订单统一支付回调SUCCESS完成！");
+    }
+
+    /**
+     * On pay notify service.
+     *
+     * @param param the param
+     * @throws WxPayException the wx pay exception
+     */
+    public void onPayNotifyCouponPack(PaymentRecordParam param) throws WxPayException {
+        String orderSn = param.getOrderSn();
+        VirtualOrderRecord orderInfo = couponPackOrderService.getRecord(orderSn);
+        if (Objects.isNull(orderInfo)) {
+            logger().error("优惠券礼包订单统一支付回调（onPayNotifyCouponPack）：订单【订单号：{}】不存在！", orderSn);
+            throw new WxPayException("onPayNotifyCouponPack：orderSn 【" + orderSn + "】not found ！");
+        }
+        if (NumberUtils.createBigDecimal(param.getTotalFee()).compareTo(orderInfo.getMoneyPaid()) != INTEGER_ZERO) {
+            logger().error("优惠券礼包订单统一支付回调（onPayNotifyCouponPack）：订单【订单号：{}】实付金额不符【系统计算金额：{} != 微信支付金额：{}】！", orderSn, orderInfo.getMoneyPaid(), param.getTotalFee());
+            throw new WxPayException("onPayNotifyStore：orderSn 【 " + orderSn + "】 pay amount  did not match ！");
+        }
+        if (!VirtualOrderService.ORDER_STATUS_WAIT_PAY.equals(orderInfo.getOrderStatus())) {
+            logger().info("优惠券礼包订单统一支付回调（onPayNotifyCouponPack）：订单【订单号：{}】已支付！", orderSn);
+            return;
+        }
+        // 添加支付记录（wx）
+        PaymentRecordRecord paymentRecord = record.addPaymentRecord(param);
+        // 完成支付
+        couponPackOrderService.finishPayCallback(orderInfo, paymentRecord);
+        logger().info("优惠券礼包订单统一支付回调SUCCESS完成！");
+    }
+
+    /**
+     * 代付子单支付回调
+     * @param param
+     */
+    private void onPayNotifySubOrder(PaymentRecordParam param) throws MpException {
+        logger().info("代付子单支付回调start");
+        SubOrderInfoRecord order = subOrderService.get(param.getOrderSn());
+        if (order == null) {
+            logger().error("代付子单统一支付回调,未找到订单sn:{}", param.getOrderSn());
+            throw new MpException(null, "orderSn " + param.getOrderSn() + "not found");
+        }
+        //参数金额
+        BigDecimal totalFee = new BigDecimal(param.getTotalFee());
+        if (!order.getMoneyPaid().equals(totalFee)) {
+            logger().error("代付子统一支付回调,金额不相同,订单sn:{},参数金额:{},订单金额:{}",
+                param.getOrderSn(), totalFee, order.getMoneyPaid());
+            throw new MpException(null, "onPayNotify orderSn " + param.getOrderSn() + " pay amount  did not match");
+        }
+        if (OrderConstant.SubOrderConstant.SUB_ORDER_PAY_OK.equals(order.getOrderStatus())) {
+            logger().info("代付子统一支付回调：{},已支付！", param.getOrderSn());
+            return;
+        }
+        insteadPayService.businessLogic(param, order);
+        logger().info("代付子单支付回调end");
     }
 }

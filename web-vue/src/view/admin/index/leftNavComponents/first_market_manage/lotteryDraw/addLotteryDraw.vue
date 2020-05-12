@@ -9,9 +9,10 @@
         :rules="fromRules"
         label-width="130px"
         :label-position="'right'"
+        v-if="!ruleShow"
       >
         <el-form-item
-          label="活动名称："
+          :label="$t('lotteryDraw.activityName') + '：'"
           prop="name"
         >
           <el-input
@@ -21,7 +22,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="活动有效期："
+          :label="$t('lotteryDraw.validDate') + '：'"
           prop="validity"
         >
           <el-date-picker
@@ -36,10 +37,10 @@
             size="small"
           >
           </el-date-picker>
-          <span class="tips">活动结束即开奖</span>
+          <span class="tips">{{ $t('lotteryDraw.validDateTip') }}</span>
         </el-form-item>
         <el-form-item
-          label="奖池最少人数："
+          :label="$t('lotteryDraw.joinNum') + '：'"
           prop="minJoinNum"
         >
           <el-input-number
@@ -50,10 +51,10 @@
             class="inputWidth"
             controls-position="right"
           ></el-input-number>
-          <span class="tips">每个奖池开奖所需的最少成团人数,少于这个人数,则所有参与用户都不中奖,每个商品对应一个奖池</span>
+          <span class="tips">{{ $t('lotteryDraw.joinNumTip') }}</span>
         </el-form-item>
         <el-form-item
-          label="商品金额："
+          :label="$t('lotteryDraw.payMoney') + '：'"
           prop="payMoney"
         >
           <el-input
@@ -62,11 +63,11 @@
             v-model="form.payMoney"
             class="inputWidth"
           ></el-input>
-          <span>元</span>
-          <span class="tips">下单参与拼团抽奖,商品需要支付的金额</span>
+          <span>{{ $t('lotteryDraw.money') }}</span>
+          <span class="tips">{{ $t('lotteryDraw.payMoneyTip') }}</span>
         </el-form-item>
         <el-form-item
-          label="最大参团数量："
+          :label="$t('lotteryDraw.maxJinNum') + '：'"
           prop="joinLimit"
         >
           <el-input-number
@@ -77,10 +78,10 @@
             class="inputWidth"
             controls-position="right"
           ></el-input-number>
-          <span class="tips">活动时间内,每个用户可以参与抽奖团的最大数量</span>
+          <span class="tips">{{ $t('lotteryDraw.maxJinNumTip') }}</span>
         </el-form-item>
         <el-form-item
-          label="最大开团数量："
+          :label="$t('lotteryDraw.openLimit') + '：'"
           prop="openLimit"
         >
           <el-input-number
@@ -91,10 +92,10 @@
             class="inputWidth"
             controls-position="right"
           ></el-input-number>
-          <span class="tips">活动时间内,每个用户可以开启抽奖团的最大数量</span>
+          <span class="tips">{{ $t('lotteryDraw.openLimitTip') }}</span>
         </el-form-item>
         <el-form-item
-          label="最少成团人数："
+          :label="$t('lotteryDraw.limitAmount') + '：'"
           prop="limitAmount"
         >
           <el-input-number
@@ -105,10 +106,10 @@
             class="inputWidth"
             controls-position="right"
           ></el-input-number>
-          <span class="tips">每个抽奖团的最少成团人数,成团后,该团内所有参与用户可参与抽奖</span>
+          <span class="tips">{{ $t('lotteryDraw.limitAmountTip') }}</span>
         </el-form-item>
         <el-form-item
-          label="最小展示人数："
+          :label="$t('lotteryDraw.toNumShow') + '：'"
           prop="toNumShow"
         >
           <el-input-number
@@ -119,7 +120,7 @@
             class="inputWidth"
             controls-position="right"
           ></el-input-number>
-          <span class="tips">活动时间内,参与用户数达到设置的数量时,小程序前端展示活动参与人数</span>
+          <span class="tips">{{ $t('lotteryDraw.toNumShowTip') }}</span>
           <el-popover
             placement="right-start"
             width="220"
@@ -130,11 +131,11 @@
               slot="reference"
               type="text"
               style="margin: 0 20 0 0px"
-            >查看示例</el-button>
+            >{{ $t('lotteryDraw.example') }}</el-button>
           </el-popover>
         </el-form-item>
         <el-form-item
-          label="鼓励奖："
+          :label="$t('lotteryDraw.reward') + '：'"
           prop=""
         >
           <el-card class="box-card">
@@ -164,22 +165,29 @@
                     <span>{{item.denomination}}</span>
                     <span>{{$t('payReward.discount')}}</span>
                   </div>
+                  <div
+                    class="coupon_list_top"
+                    v-if="item.actCode==='random'"
+                  >
+                    <span>￥</span>
+                    <span class="number">{{item.randomMax}}最高</span>
+                  </div>
                   <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
                   <div
                     class="coupon_center_number"
                     v-if="item.surplus !==0"
-                  >剩余{{item.surplus}}张</div>
+                  >{{ $t('lotteryDraw.rewardTip1') }}{{item.surplus}}{{ $t('lotteryDraw.rewardTip2') }}</div>
                   <div
                     class="coupon_center_number"
                     v-if="item.surplus ===0"
-                  >库存不限制</div>
+                  >{{ $t('lotteryDraw.rewardTip3') }}</div>
                   <div
                     class="coupon_list_bottom"
                     :style="`background-image: url(${$imageHost}/image/admin/coupon_border.png)`"
                   >
-                    <span v-if="item.scoreNumber === 0">领取</span>
+                    <span v-if="item.scoreNumber === 0">{{ $t('lotteryDraw.rewardTip4') }}</span>
                     <div v-if="item.scoreNumber !== 0">
-                      <span>{{item.scoreNumber}}</span>积分 兑换
+                      <span>{{item.scoreNumber}}</span>{{ $t('lotteryDraw.rewardTip5') }}
                     </div>
                   </div>
                 </section>
@@ -215,7 +223,17 @@
           </el-card>
         </el-form-item>
         <el-form-item
-          label="活动商品："
+          label="活动规则说明："
+          prop=""
+        >
+          <el-button
+            type="primary"
+            size="small"
+            @click="lotteryDrawRule"
+          >设置规则说明</el-button>
+        </el-form-item>
+        <el-form-item
+          :label="$t('lotteryDraw.goodsId') + '：'"
           prop="goodsIds"
         >
           <div>
@@ -224,8 +242,12 @@
               class="el-icon-plus"
               size="small"
               @click="showChoosingGoods"
-            >选择商品</el-button>
-            <span class="tips " style="color: #5a8bff" @click="onlyShowChoosingGoods">最多添加20个商品,已选{{this.goodsRow.length}}商品</span>
+            >{{ $t('lotteryDraw.selectGood') }}</el-button>
+            <span
+              class="tips "
+              style="color: #5a8bff"
+              @click="onlyShowChoosingGoods"
+            >{{ $t('lotteryDraw.goodsTip1') }}{{this.goodsRow.length}}{{ $t('lotteryDraw.goodsTip2') }}</span>
           </div>
 
           <div v-if="form.goodsIds.length > 0">
@@ -237,23 +259,28 @@
               style="width: 100%; margin-top: 10px;"
             >
               <el-table-column
-                label="商品名称"
+                :label="$t('lotteryDraw.goodsName')"
                 prop="goodsName"
                 align="center"
               ></el-table-column>
               <el-table-column
-                label="商品原价"
+                :label="$t('lotteryDraw.goodsPrice')"
                 prop="shopPrice"
                 align="center"
-              ></el-table-column>
+              >
+                <!-- <template slot-scope="scope">
+                  <span v-if="scope.row.isDefaultPrd === true">{{ scope.row.shopPrice }}</span>
+                  <span v-if="scope.row.isDefaultPrd === false">{{ scope.row.prdMaxShopPrice }}</span>
+                </template> -->
+              </el-table-column>
 
               <el-table-column
-                label="商品库存"
+                :label="$t('lotteryDraw.goodsNumber')"
                 prop="goodsNumber"
                 align="center"
               ></el-table-column>
               <el-table-column
-                label="操作"
+                :label="$t('lotteryDraw.option')"
                 align="center"
                 v-if="!this.isEdite"
               >
@@ -261,7 +288,7 @@
                   <span
                     @click="deleteGoods(scope.$index)"
                     style="color: #5a8bff;cursor: pointer;"
-                  >删除</span>
+                  >{{ $t('lotteryDraw.delete') }}</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -269,10 +296,20 @@
         </el-form-item>
       </el-form>
 
+      <!-- 规则说明 -->
+      <ActivityRule
+        v-if="ruleShow"
+        @ActivityMsg="activityMsg"
+        :sendMsg="sendMsg"
+        :template="template"
+      />
     </div>
 
     <!-- 底部 -->
-    <div class="footer">
+    <div
+      class="footer"
+      v-if="!ruleShow"
+    >
       <el-button
         size="small"
         type="primary"
@@ -310,7 +347,8 @@ import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
 export default {
   components: {
     addCouponDialog,
-    choosingGoods
+    choosingGoods,
+    ActivityRule: () => import('@/components/admin/activityRule')
   },
   props: ['isEdite', 'editId'],
   filters: {
@@ -348,7 +386,12 @@ export default {
         limitAmount: 5, // 最小成团人数
         toNumShow: 100, // 最小展示人数
         rewardCouponIds: [], // 拼团失败送优惠券id
-        goodsIds: [] // 参与活动的商品id
+        goodsIds: [], // 参与活动的商品id
+        // 规则说明
+        actCopywriting: {
+          document: '',
+          isUseDefault: 0
+        }
       },
       // 校验表单
       fromRules: {
@@ -389,8 +432,23 @@ export default {
 
       isShowChoosingGoodsDialog: false, // 商品弹窗
       isOnlyShowChooseGoods: false,
-      goodsRow: [] // 活动商品
+      goodsRow: [], // 活动商品
 
+      ruleShow: false, // 规则组件
+      sendMsg: null, // 规则内容
+      // 默认模板内容
+      template: `
+        <div style="line-height: 1.5;">
+          <p>参与步骤</p>
+          <p>1.在低价抽奖商品列表页，点击商品进入商品详情页，通过下单开团入口进入订单结算页，付款成功后，按页面提示分享给微信好友；</p>
+          <p>2.好友通过小程序落地页查看活动现状，完成支付，参与拼团；</p>
+          <p>3.支付人数在有效期内达到门槛值，则团内所有用户都获得抽奖资格，等待公布中奖结果；</p>
+          <p>4.中奖结果在活动结束时公布，所有中奖订单进入发货流程，未中奖用户及未成团用户将全额退款至原支付账户。</p>
+          <p>参与规则</p>
+          <p>1.活动期间，同一账户每个拼团商品仅可购买一单；</p>
+          <p>2.拼团抽奖商品库存有限，如因库存不足导致抢购失败或发货失败，订单将全额退款至原支付账户。</p>
+        </div>
+      `
     }
   },
   mounted () {
@@ -431,7 +489,20 @@ export default {
     // 获取商品信息
     getGoodsInfo (id) {
       getSelectGoods({ goodsId: id }).then((res) => {
-        if (res.error === 0) {
+        if (res.error === 0 && res.content !== null) {
+          // if (res.content.isDefaultProduct === 0) {
+          //   // 多规格
+          //   res.content.isDefaultPrd = false
+          //   res.content.prdMaxShopPrice = 0
+          //   res.content.goodsSpecProducts.forEach(item => {
+          //     if (item.prdPrice > res.content.prdMaxShopPrice) {
+          //       res.content.prdMaxShopPrice = item.prdPrice
+          //     }
+          //   })
+          // } else if (res.content.isDefaultProduct === 1) {
+          //   // 单规格
+          //   res.content.isDefaultPrd = true
+          // }
           this.goodsRow.push(res.content)
         }
       })
@@ -446,7 +517,7 @@ export default {
       })
     },
 
-    // 保存秒杀活动
+    // 保存拼团抽奖活动
     saveClickHandler () {
       this.$refs['form'].validate((valid) => {
         if (valid) {
@@ -461,7 +532,7 @@ export default {
             // 添加拼团抽奖
             addLotteryDraw(this.form).then((res) => {
               if (res.error === 0) {
-                this.$message.success({ message: '添加成功' })
+                this.$message.success({ message: this.$t('lotteryDraw.addSuccess') })
                 this.$emit('addLotterySubmit')
               } else {
                 this.$message.warning({ message: res.message })
@@ -471,7 +542,7 @@ export default {
             // 编辑拼团抽奖
             updateLotteryDraw(this.form).then((res) => {
               if (res.error === 0) {
-                this.$message.success({ message: '修改成功' })
+                this.$message.success({ message: this.$t('lotteryDraw.editSuccess') })
                 this.$emit('addLotterySubmit')
               } else {
                 this.$message.warning({ message: res.message })
@@ -538,6 +609,17 @@ export default {
     deleteGoods (index) {
       this.goodsRow.splice(index, 1)
       this.form.goodsIds.splice(index, 1)
+    },
+
+    // 设置规则说明
+    lotteryDrawRule () {
+      this.ruleShow = true
+      this.sendMsg = this.form.actCopywriting
+    },
+    // 规则说明回调函数
+    activityMsg (data) {
+      this.ruleShow = false
+      this.form.actCopywriting = data
     }
 
   }

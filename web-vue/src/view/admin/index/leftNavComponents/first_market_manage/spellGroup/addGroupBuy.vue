@@ -91,6 +91,7 @@
               <el-switch
                 :disabled="isEdite"
                 v-model="form.isGrouperCheap"
+                @change="changeSwitchState"
                 :active-value=1
                 :inactive-value=0
                 active-color="#f7931e"
@@ -112,26 +113,30 @@
             header-row-class-name="tableHeader"
             :data="form.product"
             border
-            style="width: 100%"
+            style="width: 99%"
             :empty-text="$t('groupBuy.noData')"
           >
             <el-table-column
               align="center"
-              prop="prdDesc"
-              :label="$t('groupBuy.goodsNmaeProduct')"
+              prop="goodsName"
+              label="商品名称"
             >
             </el-table-column>
+
+            <!-- 原价 -->
             <el-table-column
               align="center"
-              prop="prdPrice"
+              prop="shopPrice"
               :label="$t('groupBuy.originalPrice')"
             >
             </el-table-column>
+
+            <!-- 拼团价 -->
             <el-table-column
               align="center"
               :label="$t('groupBuy.groupBuyPrice')"
             >
-              <template slot="append">
+              <!-- <template slot="append">
                 <span>{{$t('groupBuy.groupBuyPrice')}}</span>
                 <el-button
                   @click="setCurrent(1)"
@@ -139,30 +144,42 @@
                   icon="el-icon-edit"
                 >{{$t('groupBuy.batchOption')}}
                 </el-button>
-              </template>
+              </template> -->
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'product.' +  scope.$index+ '.groupPrice'"
                   :rules="[
                     { required: true, message: '拼团价不能为空', trigger: 'blur' },
-                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.prdPrice)}, trigger: ['blur', 'change'] }
+                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.shopPrice)}, trigger: ['blur', 'change'] }
                   ]"
                   style="height: 56px;line-height: 56px;"
                 >
+                  <div
+                    class="input-error"
+                    v-if="scope.row.priceErrorMsg"
+                  >{{scope.row.priceErrorMsg}}</div>
                   <el-input
                     v-model="scope.row.groupPrice"
                     size="small"
+                    :disabled="isEdite || disabledFlag"
+                    @input="changePriceInput(scope.row)"
                   />
                 </el-form-item>
+                <div
+                  class="spec-tips"
+                  @click="showSpec(scope.row)"
+                  v-if="scope.row.goodsSpecProducts && scope.row.goodsSpecProducts.length > 0"
+                >包含{{scope.row.goodsSpecProducts.length}}个规格</div>
               </template>
             </el-table-column>
+
+            <!-- 团长价 -->
             <el-table-column
               align="center"
-              prop="grouperPrice"
               :label="$t('groupBuy.commanderPrice')"
               v-if="form.isGrouperCheap === 1"
             >
-              <template slot="append">
+              <!-- <template slot="append">
                 <span>{{$t('groupBuy.commanderPrice')}}</span>
                 <el-button
                   @click="setCurrent(2)"
@@ -170,35 +187,50 @@
                   icon="el-icon-edit"
                 >{{$t('groupBuy.batchOption')}}
                 </el-button>
-              </template>
+              </template> -->
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'product.' +  scope.$index+ '.grouperPrice'"
                   :rules="[
                     { required: true, message: '团长价不能为空', trigger: 'blur' },
-                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.prdPrice)}, trigger: ['blur', 'change'] }
+                    { validator: (rule, value, callback)=>{validateGrouperMoney(rule, value, callback, scope.row.shopPrice)}, trigger: ['blur', 'change'] }
                   ]"
                   style="height: 56px;line-height: 56px;"
                 >
+                  <div
+                    class="input-error"
+                    v-if="scope.row.grouperPriceErrorMsg"
+                  >{{scope.row.grouperPriceErrorMsg}}</div>
                   <el-input
                     v-model="scope.row.grouperPrice"
                     size="small"
+                    :disabled="isEdite || disabledFlag"
+                    @input="changeGrouperPriceInput(scope.row)"
                   />
                 </el-form-item>
+                <div
+                  class="spec-tips"
+                  @click="showSpec(scope.row)"
+                  v-if="scope.row.goodsSpecProducts && scope.row.goodsSpecProducts.length > 0"
+                >包含{{scope.row.goodsSpecProducts.length}}个规格</div>
               </template>
             </el-table-column>
+
+            <!-- 原库存 -->
             <el-table-column
               align="center"
-              prop="prdNumber"
+              prop="goodsNumber"
               :label="$t('groupBuy.originalStock')"
             >
             </el-table-column>
+
+            <!-- 拼团库存 -->
             <el-table-column
               align="center"
               prop="stock"
               :label="$t('groupBuy.groupBuyStock')"
             >
-              <template slot="append">
+              <!-- <template slot="append">
                 <span>{{$t('groupBuy.groupBuyStock')}}</span>
                 <el-button
                   @click="setCurrent(3)"
@@ -206,21 +238,46 @@
                   icon="el-icon-edit"
                 >{{$t('groupBuy.batchOption')}}
                 </el-button>
-              </template>
+              </template> -->
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'product.' +  scope.$index+ '.stock'"
                   :rules="[
                     { required: true, message: '拼团库存不能为空', trigger: 'blur' },
-                    { validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.prdNumber)}, trigger: ['blur', 'change'] }
+                    { validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.goodsNumber)}, trigger: ['blur', 'change'] }
                   ]"
-                  style="height: 56px;line-height: 56px;"
                 >
+                  <div
+                    class="input-error"
+                    v-if="scope.row.stockErrorMsg"
+                  >{{scope.row.stockErrorMsg}}</div>
                   <el-input
                     v-model="scope.row.stock"
                     size="small"
+                    :disabled="isEdite || disabledFlag"
+                    @input="changeStockInput(scope.row)"
                   />
                 </el-form-item>
+                <div
+                  class="spec-tips"
+                  @click="showSpec(scope.row)"
+                  style="margin-top: 15px;"
+                  v-if="scope.row.goodsSpecProducts && scope.row.goodsSpecProducts.length > 0"
+                >包含{{scope.row.goodsSpecProducts.length}}个规格；库存合计：{{scope.row.totalStock ? scope.row.totalStock : 0}}</div>
+              </template>
+            </el-table-column>
+
+            <!-- 操作 -->
+            <el-table-column
+              label="操作"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <div
+                  v-if="scope.row.goodsId"
+                  @click="deleteGoods(scope.row, scope.row.id)"
+                  style="cursor:pointer;color:#409eff"
+                >删除</div>
               </template>
             </el-table-column>
             <template
@@ -558,10 +615,10 @@
 
       <!--添加商品弹窗-->
       <choosingGoods
-        @resultGoodsRow="choosingGoodsResult"
+        @resultGoodsDatas="choosingGoodsResult"
         :chooseGoodsBack="goodsIdList"
         :tuneUpChooseGoods="isShowChoosingGoodsDialog"
-        :singleElection="true"
+        :singleElection="false"
         :showTips="true"
       />
 
@@ -591,6 +648,15 @@
       </div>
     </div>
 
+    <!-- 规格信息弹框 -->
+    <spellGroupDialog
+      :productDialog.sync="showSpecDialog"
+      :product-info="productInfo"
+      :isEdit="isEdite"
+      :isShowGrouperPrice="showGrouperPrice"
+      @confrim="getProductdata"
+    />
+
   </div>
 </template>
 <script>
@@ -600,7 +666,8 @@ import choosingGoods from '@/components/admin/choosingGoods'
 import addCouponDialog from '@/components/admin/addCouponDialog'
 import ImageDalog from '@/components/admin/imageDalog'
 import actShare from '@/components/admin/marketManage/marketActivityShareSetting'
-import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
+// import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
+// import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { addGroupBuyActivity, updateGroupBuy } from '@/api/admin/marketManage/spellGroup.js'
 import { getSelectGoods } from '@/api/admin/marketManage/distribution.js'
 import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
@@ -610,7 +677,8 @@ export default {
     choosingGoods,
     addCouponDialog,
     actShare,
-    ImageDalog
+    ImageDalog,
+    spellGroupDialog: () => import('./spellGroupDialog')
   },
   props: ['isEdite', 'editData'],
   filters: {
@@ -686,7 +754,8 @@ export default {
           shareImg: ''
         },
         product: [],
-        shareInfo: ''
+        shareInfo: '',
+        stock: 0 // 活动总库存
       },
       goodsIdList: [],
       // 校验表单
@@ -750,7 +819,11 @@ export default {
         src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`,
         src3: `${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`
       },
-      showImageDialog: false
+      showImageDialog: false,
+      showSpecDialog: false,
+      productInfo: {},
+      disabledFlag: true, // 是否可编辑
+      showGrouperPrice: false
     }
   },
   mounted () {
@@ -774,12 +847,26 @@ export default {
   methods: {
     ...mapActions(['transmitEditGoodsId']),
     // 校验表格
-    validateMoney (rule, value, callback, prdPrice) {
+    validateMoney (rule, value, callback, shopPrice) {
       var re = /^\d+(\.\d{1,2})?$/
-      if (!re.test(value)) {
-        callback(new Error('请填写非负数, 可以保留两位小数'))
-      } else if (value > prdPrice) {
-        callback(new Error('拼团价或团长价不能大于商品原价'))
+      if (value < 0) {
+        callback(new Error('请填写非负数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请保留两位小数'))
+      } else if (value > shopPrice) {
+        callback(new Error('拼团价不能大于原价'))
+      } else {
+        callback()
+      }
+    },
+    validateGrouperMoney (rule, value, callback, shopPrice) {
+      var re = /^\d+(\.\d{1,2})?$/
+      if (value < 0) {
+        callback(new Error('请填写非负数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请保留两位小数'))
+      } else if (value > shopPrice) {
+        callback(new Error('团长价不能大于原价'))
       } else {
         callback()
       }
@@ -789,11 +876,17 @@ export default {
       var re = /^([1-9]\d*|[0]{1,1})$/
       if (!re.test(value)) {
         callback(new Error('请填写0和正整数'))
-      } else if (value > prdNumber) {
-        callback(new Error('拼团库存不能大于商品库存'))
       } else {
         callback()
       }
+    },
+    validatePrdPrice (item) {
+      if (item.prdPrice < item.groupPrice) return true
+      return false
+    },
+    validatePrdStock (item) {
+      if (item.prdNumber < item.stock) return true
+      return false
     },
 
     // 编辑活动初始化
@@ -807,9 +900,9 @@ export default {
         this.form.name = data.name
         this.form.goodsId = data.goodsId
         this.form.level = data.level
-        this.getGoodsInfo(data.goodsId)
+        // this.getGoodsInfo(data.goodsId)
+        this.form.product = this.initEditProduct(data.goodsList)
         this.form.isGrouperCheap = data.isGrouperCheap
-        this.form.product = data.productList
         this.form.startTime = data.startTime
         this.form.endTime = data.endTime
         this.form.validityDate = [data.startTime, data.endTime]
@@ -825,6 +918,11 @@ export default {
           this.form.rewardCouponId = data.rewardCouponId.split(',')
           this.rewardCouponIds = data.rewardCouponId.split(',')
           this.getCouponList(this.rewardCouponIds.map(Number))
+        }
+        if (this.form.isGrouperCheap === 1) {
+          this.showGrouperPrice = true
+        } else {
+          this.showGrouperPrice = true
         }
         this.form.share = data.share
       }
@@ -856,7 +954,7 @@ export default {
       })
     },
 
-    // 提交表单
+    // 提交表单 保存
     submitForm (formName) {
       this.submitStatus = true
       if (this.rewardCouponIds) {
@@ -866,7 +964,34 @@ export default {
         console.log('提交表单', formName)
         console.log('this.form', this.form)
         if (valid) {
+          // let goodsId = this.form.goodsId.join(',')
+          this.form.product.forEach((item, index) => {
+            item.productId = item.prdId
+            item.groupPrice = Number(item.groupPrice)
+            item.grouperPrice = Number(item.grouperPrice)
+          })
+
+          // 提交的时候，把product里面的字段拼接上去
+          let product = []
+          this.form.stock = 0
+          this.form.product.forEach(item => {
+            if (item.goodsSpecProducts) {
+              item.goodsSpecProducts.forEach(specItem => {
+                let { prdId, groupPrice, grouperPrice, stock } = specItem
+                let goodsId = item.goodsId
+                product.push({ goodsId, prdId, groupPrice: Number(groupPrice), grouperPrice: Number(grouperPrice), stock: Number(stock) })
+                this.form.stock += Number(stock)
+              })
+            } else {
+              let { goodsId, prdId, groupPrice, grouperPrice, stock } = item
+              product.push({ goodsId, prdId, groupPrice, grouperPrice, stock: Number(stock) })
+              this.form.stock += Number(stock)
+            }
+          })
+          console.log(product)
+
           if (this.isEdite) {
+            console.log(this.form, 'form--')
             updateGroupBuy(this.form).then(res => {
               console.log('updateGroupBuy', res)
               if (res.error === 0) {
@@ -880,7 +1005,9 @@ export default {
               this.$message.warning(e.message)
             })
           } else {
-            addGroupBuyActivity(this.form).then(res => {
+            // this.form.product = groupProduct
+            console.log({ ...this.form, product })
+            addGroupBuyActivity({ ...this.form, product }).then(res => {
               console.log('addGroupBuyActivity', res)
               if (res.error === 0) {
                 this.$message.success(res.message)
@@ -898,40 +1025,116 @@ export default {
     },
     // 选择商品弹窗
     showChoosingGoods () {
-      console.log('初始化商品弹窗', this.form.goodsId)
       this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
     },
     // 获取商品ids
     choosingGoodsResult (row) {
       console.log(row, 'get row')
-      if (row.goodsId) {
-        this.goodsRow = []
-        this.goodsRow = row
-        this.form.goodsId = row.goodsId
-        this.goodsIdList = []
-        this.goodsIdList.push(row.goodsId)
-        if (Object.keys(row).length === 0) {
-          return
-        }
-        // 初始化规格表格
-        getAllGoodsProductList(this.form.goodsId).then(res => {
-          console.log('product', res.content)
-          this.form.product = []
-          res.content.forEach((item, index) => {
-            item.index = index
-            item.productId = item.prdId
-          })
-          let list = res.content
-          list.map((item, index) => {
-            this.form.product.push(
-              Object.assign({}, item, { goodsId: row.goodsId })
-            )
-          })
+      this.goodsIdList = row.map(item => { return item.goodsId })
+      this.goodsRow = row
+      this.form.goodsId = this.goodsIdList.join(',')
+      console.log(this.form.goodsId, 'goodsId--')
+      this.form.product = row
+      // 可编辑状态
+      this.disabledFlag = false
+    },
+    changeSwitchState (val) {
+      if (val === 1) {
+        this.showGrouperPrice = true
+      } else {
+        this.showGrouperPrice = false
+      }
+    },
+    getProductdata ({ goodsId, prdInfo }) {
+      console.log(goodsId, prdInfo)
+      console.log(this.form.product)
+      let target = this.form.product.find(item => { return item.goodsId === goodsId })
+      let index = this.form.product.findIndex(item => { return item.goodsId === goodsId })
+      this.$set(this.form.product[index], 'groupPrice', prdInfo[0].groupPrice)
+      console.log(this.form.product)
+      this.$set(this.form.product[index], 'stock', prdInfo[0].stock)
+      if (this.form.isGrouperCheap === 1) {
+        this.$set(this.form.product[index], 'grouperPrice', prdInfo[0].grouperPrice)
+      }
+      target.goodsSpecProducts = prdInfo
+      this.changePriceInput(target, true)
+      this.changeStockInput(target, true)
+      this.changeGrouperPriceInput(target, true)
+    },
+    initEditProduct (goods) {
+      let newdata = []
+      goods.forEach(item => {
+        let expand = item.productList.length < 2 ? { ...item.productList[0], goodsName: item.goodsName } : { ...item.productList[0], goodsSpecProducts: item.productList, goodsName: item.goodsName }
+        newdata.push({ ...item, ...expand })
+      })
+      return newdata
+    },
+    showSpec (goodsInfo) {
+      this.productInfo = goodsInfo
+      this.showSpecDialog = true
+      console.log(this.showSpecDialog)
+    },
+    changePriceInput (goodsInfo, isDialog = null) {
+      if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
+        goodsInfo.priceErrorMsg = null
+        goodsInfo.goodsSpecProducts.forEach((item, index) => {
+          if (!isDialog) item.groupPrice = goodsInfo.groupPrice
+          // if (this.validatePrdPrice(item) && !goodsInfo.priceErrorMsg) {
+          //   goodsInfo.priceErrorMsg = '有规格拼团价大于原价，请修改'
+          // }
+        })
+      }
+    },
+    changeGrouperPriceInput (goodsInfo, isDialog = null) {
+      if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
+        goodsInfo.grouperPriceErrorMsg = null
+        goodsInfo.goodsSpecProducts.forEach((item, index) => {
+          if (!isDialog) item.grouperPrice = goodsInfo.grouperPrice
+          // if (this.validatePrdPrice(item) && !goodsInfo.grouperPriceErrorMsg) {
+          //   goodsInfo.grouperPriceErrorMsg = '有规格团长价大于原价，请修改'
+          // }
+        })
+      }
+    },
+    changeStockInput (goodsInfo, isDialog = null) {
+      if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
+        goodsInfo.stockErrorMsg = null
+        goodsInfo.totalStock = 0
+        goodsInfo.goodsSpecProducts.forEach((item, index) => {
+          if (!isDialog) item.stock = goodsInfo.stock
+          goodsInfo.totalStock += parseInt(item.stock)
+          if (this.validatePrdStock(item) && !goodsInfo.stockErrorMsg) {
+            goodsInfo.stockErrorMsg = '有规格拼团库存大于原库存，请修改'
+          }
         })
       } else {
-        this.form.product = []
-        this.goodsRow.ischecked = false
+        var re = /^([1-9]\d*|[0]{1,1})$/
+        goodsInfo.stockErrorMsg = null
+        if ((goodsInfo.stock > goodsInfo.goodsNumber) && !goodsInfo.stockErrorMsg) {
+          goodsInfo.stockErrorMsg = '拼团库存不能大于原库存'
+        } else if (goodsInfo.stock < 0) {
+          goodsInfo.stockErrorMsg = '请输入非负数'
+        } else if (!re.test(goodsInfo.stock)) {
+          goodsInfo.stockErrorMsg = '请输入0和正整数'
+        } else {
+
+        }
       }
+    },
+    deleteGoods (data, id) {
+      let idList = []
+      this.form.product.map(item => {
+        idList.push(item.goodsId)
+      })
+      this.goodsIdList = idList
+      let index = this.goodsIdList.findIndex(item => {
+        return item === id
+      })
+      this.goodsIdList.splice(index, 1)
+      let goodsTarget = this.form.product.findIndex(item => {
+        return id === item.id
+      })
+      this.form.product.splice(goodsTarget, 1)
     },
     // 确认选择优惠券-新增
     handleToCheck (data, index) {
@@ -972,18 +1175,22 @@ export default {
         case 1:
           price.forEach(row => {
             row.groupPrice = price[0].groupPrice
+            console.log(row)
+            this.changePriceInput(row)
           })
           this.activeIndex = 1
           break
         case 2:
           price.forEach(row => {
             row.grouperPrice = price[0].grouperPrice
+            this.changeGrouperPriceInput(row)
           })
           this.activeIndex = 2
           break
         case 3:
           price.forEach(row => {
             row.stock = price[0].stock
+            this.changeStockInput(row)
           })
           this.activeIndex = 3
           break
@@ -1114,7 +1321,6 @@ export default {
   color: #fff;
   background: #f66;
   font-size: 12px;
-  /* background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png"); */
   background-repeat: repeat-x;
 }
 
@@ -1136,13 +1342,14 @@ export default {
   background: #fff;
 }
 
-.tableHeader th {
-  border: none;
+/deep/ .tableHeader th {
   line-height: 0 !important;
   height: 36px !important;
   font-weight: bold;
   padding: 8px 10px;
-  font-weight: bold;
+  background-color: #f5f5f5;
+  color: #000;
+  border: none;
 }
 
 .moreSetUp a {
@@ -1180,6 +1387,16 @@ export default {
   line-height: 80px;
   margin-left: 20px;
   color: rgb(153, 153, 153);
+}
+.spec-tips {
+  text-align: center;
+  color: #409eff;
+  cursor: pointer;
+}
+.input-error {
+  text-align: center;
+  color: red;
+  line-height: 1;
 }
 .number {
   font-size: 20px;

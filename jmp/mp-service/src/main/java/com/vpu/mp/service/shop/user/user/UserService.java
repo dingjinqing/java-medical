@@ -568,7 +568,7 @@ public class UserService extends ShopBaseService {
 				iconItem.put("num", orderStatusNum.get(OrderConstant.FINISHED));
 			}
 			if (iconItem.get("icon_name").equals("refund")) {
-				iconItem.put("num", orderStatusNum.get(OrderConstant.RETURNING));
+				iconItem.put("num", orderStatusNum.get(OrderConstant.REFUND));
 			}
 		}
 		return data;
@@ -623,8 +623,9 @@ public class UserService extends ShopBaseService {
 		if (userGrade.equals(CardConstant.LOWEST_GRADE)) {
 			logger().info("进入用户等级为0");
 			try {
-				data.put("get_grade", 0);
-				userCard.updateGrade(userId, null, (byte) 1);
+				Integer cardId = userCard.updateGrade(userId, null, (byte) 0);
+				data.put("get_grade", cardId);
+				logger().info("cardId的值为"+cardId);
 			} catch (Exception e) {
 				logger().error("userGrade为0时报错");
 				e.printStackTrace();
@@ -644,8 +645,6 @@ public class UserService extends ShopBaseService {
 				logger().error("userGrade不为0时报错");
 				e.printStackTrace();
 			}
-
-
 		}
 		logger().info("用户等级判断返回"+data);
 		return data;

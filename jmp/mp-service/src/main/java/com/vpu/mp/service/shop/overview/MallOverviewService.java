@@ -257,7 +257,7 @@ public class MallOverviewService extends ShopBaseService {
             .goodsStoreConf(Metadata.builder()
                 .value(goodsService.smallCommodityInventory(param.getStoreSizeNum())).build())
             //  滞销商品
-            .goodsUnsalableConf(Metadata.builder().value(goodsService.unsalableGoodsSet().size()).build())
+            .goodsUnsalableConf(Metadata.builder().value(goodsService.unsalableGoods()).build())
             //  商品评价审核逾期
             .goodsComment(Metadata.builder().value(goodsCommentService.reviewOverdue(param.getCommentOver())).build())
             //  推荐商品

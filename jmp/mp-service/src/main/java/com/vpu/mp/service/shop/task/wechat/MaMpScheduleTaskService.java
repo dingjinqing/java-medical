@@ -1,15 +1,5 @@
 package com.vpu.mp.service.shop.task.wechat;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import org.jooq.Result;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
@@ -20,6 +10,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
 import com.vpu.mp.service.pojo.shop.coupon.CouponWxVo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.FpRewardContent;
@@ -28,13 +19,13 @@ import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
-import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.store.service.order.StoreAppointmentRemindVo;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -50,8 +41,18 @@ import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
 import com.vpu.mp.service.shop.user.user.UserService;
-
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.Result;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 
 /**
  * 小程序公众号相关的定时任务
@@ -96,7 +97,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 
 	/**
 	 * 卡券到期提醒
-	 * @param shopId
+	 * @param
 	 * @return
 	 */
 	public String expiringCouponNotify() {
@@ -107,7 +108,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 			return null;
 		}
 		List<CouponWxVo> list = coupon.getExpiringCouponList();
-		String page = "pages/couponlist/couponlist";
+		String page = "pages/coupon/coupon";
 		String keyword1 = "尊敬的用户，您的优惠券";
 		String keyword11 = "即将到期";
 		for (CouponWxVo couponWxVo : list) {
@@ -125,7 +126,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 					{ "", "#173177" } };
 			RabbitMessageParam param = RabbitMessageParam.builder()
 					.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.COUPON_EXPIRE).data(data).build())
-					.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+					.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.EXPIRED_MEMBER)
 					.build();
 			logger().info("准备发");
 			saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
@@ -183,7 +184,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 			RabbitMessageParam param = RabbitMessageParam.builder()
 					.mpTemplateData(
 							MpTemplateData.builder().config(MpTemplateConfig.APPOINTMENT_REMINDER).data(data).build())
-					.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+					.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.BOOKING_EXPIRED)
 					.build();
 			logger().info("预约服务提前一小时提醒准备发");
 			saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
@@ -201,19 +202,19 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 			return null;
 		}
 		// 尾款未支付前24小时提醒
-		log.info(getShopId()+"开始：尾款未支付前24小时提醒");
+		logger().info(getShopId()+"开始：尾款未支付前24小时提醒");
 		toSendPreSaleMessage(24, officeAppId, ZERO);
-		log.info(getShopId()+"结束：尾款未支付前24小时提醒");
+		logger().info(getShopId()+"结束：尾款未支付前24小时提醒");
 
         // 尾款未支付前2小时提醒
-		log.info(getShopId()+"开始：尾款未支付前2小时提醒");
+		logger().info(getShopId()+"开始：尾款未支付前2小时提醒");
 		toSendPreSaleMessage(2, officeAppId, ZERO);
-		log.info(getShopId()+"结束：尾款未支付前2小时提醒");
+		logger().info(getShopId()+"结束：尾款未支付前2小时提醒");
 
         // 尾款支付时间开始发送通知
-		log.info(getShopId()+"开始：尾款未支付前0小时提醒");
+		logger().info(getShopId()+"开始：尾款未支付前0小时提醒");
 		toSendPreSaleMessage(0, officeAppId, ONE);
-		log.info(getShopId()+"结束：尾款未支付前0小时提醒");
+		logger().info(getShopId()+"结束：尾款未支付前0小时提醒");
 
         return officeAppId;
 
@@ -256,7 +257,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 						.mpTemplateData(
 								MpTemplateData.builder().config(MpTemplateConfig.PAYMENT_REMINDER).data(data).build())
 						.page(page).shopId(getShopId()).userIdList(userIdList)
-						.type(RabbitParamConstant.Type.MP_TEMPLE_TYPE).build();
+						.type(RabbitParamConstant.Type.ORDER_NO_PAY).build();
 				logger().info("尾款未支付前" + hours + "小时提醒");
 				saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
 						TaskJobEnum.SEND_MESSAGE.getExecutionType());
@@ -283,14 +284,14 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 	//发送模板消息和助力失败改变状态
 	private void promoteSendMessage(String officeAppId) {
 		//活动结束前一小时
-		log.info("开始活动结束前一小时");
+		logger().info("开始活动结束前一小时");
 		List<FriendPromoteSelectVo> hoursList = friendPromoteService.getLaunchListByHour(1);
 		for (FriendPromoteSelectVo item : hoursList) {
 			sendMessage(TWO, item, officeAppId);
 		}
-		log.info("结束活动结束前一小时");
+		logger().info("结束活动结束前一小时");
 		//助力失败
-		log.info("开始助力失败");
+		logger().info("开始助力失败");
 		List<FriendPromoteSelectVo> promoteFailedList = friendPromoteService.getPromoteFailedList(-24);
 		for (FriendPromoteSelectVo item : promoteFailedList) {
 			int upPromoteInfo = friendPromoteService.upPromoteInfo(FOUR, item.getId());
@@ -300,12 +301,12 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 
             //发放失败奖励
 			if (item.getFailedSendType().equals(ONE)) {
-				log.info("发放失败奖励");
+				logger().info("发放失败奖励");
 				MrkingVoucherRecord infoById = couponGiveService.getInfoById(item.getFailedSendContent());
 				if(infoById==null) {
-					log.info("会员卡"+item.getFailedSendContent()+"不存在，找管理员");
+					logger().info("优惠券"+item.getFailedSendContent()+"不存在，找管理员");
 				}else {
-					CouponGiveQueueParam param=new CouponGiveQueueParam(getShopId(), Arrays.asList(item.getUserId()), item.getId(), new String[] {infoById.getAliasCode()}, ZERO, (byte)17);
+					CouponGiveQueueParam param=new CouponGiveQueueParam(getShopId(), Arrays.asList(item.getUserId()), item.getId(), new String[] {item.getFailedSendContent().toString()}, ZERO, (byte)17);
                     couponGiveService.handlerCouponGive(param);
 				}
 			}
@@ -338,38 +339,41 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 			}
 
         }
-		log.info("结束助力失败");
-		log.info("开始助力失效前一小时");
+		logger().info("结束助力失败");
+		logger().info("开始助力失效前一小时");
 		//助力失效前一小时
 		List<FriendPromoteSelectVo> promoteWaitReceiveList = friendPromoteService.getPromoteWaitReceiveList(1);
 		for (FriendPromoteSelectVo item : promoteWaitReceiveList) {
 			sendMessage(FIVE, item, officeAppId);
 		}
-		log.info("结束助力失效前一小时");
+		logger().info("结束助力失效前一小时");
 
-        log.info("开始助力失效修改状态");
+        logger().info("开始助力失效修改状态");
 		List<FriendPromoteSelectVo> promoteWaitReceiveList2 = friendPromoteService.getPromoteWaitReceiveList(0);
 		for (FriendPromoteSelectVo item : promoteWaitReceiveList2) {
 			friendPromoteService.upPromoteInfo(THREE, item.getId());
 		}
-		log.info("结束助力失效修改状态");
+		logger().info("结束助力失效修改状态");
 	}
 
     //发送好友助力中奖结果
 	private String sendPromoteDrawMessage(FriendPromoteSelectVo vo,String officeAppId) {
 		String json = vo.getRewardContent();
-		FpRewardContent rewardContent = Util.parseJson(json, FpRewardContent.class);
+		FpRewardContent rewardContent = Util.json2Object(json,FpRewardContent.class, false);
 		String goodsName=null;
 		if(vo.getRewardType().equals(TWO)) {
-			String rewardIds = rewardContent.getRewardIds();
-			if(!StringUtils.isEmpty(rewardIds)) {
-				MrkingVoucherRecord coupon = couponGiveService.getInfoById(Integer.parseInt(rewardIds));
+			Integer rewardIds = rewardContent.getRewardIds();
+			if(rewardIds!=null) {
+				MrkingVoucherRecord coupon = couponGiveService.getInfoById(rewardIds);
 				//TODO sendPromoteDrawMessage
-				String value=coupon.getActCode().equals("voucher")?"元":"折";
+                String value = coupon.getActCode().equals(CouponConstant.ACT_CODE_VOUCHER) ? "元" : "折";
 				goodsName=String.valueOf(coupon.getDenomination())+value+"优惠券";
 			}
 		}else {
-			Optional<GoodsRecord> goodsById = goodsService.getGoodsById(rewardContent.getGoodsIds());
+		    Integer goodsId = db().select(GOODS_SPEC_PRODUCT.GOODS_ID).from(GOODS_SPEC_PRODUCT)
+                .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(rewardContent.getGoodsIds()))
+                .fetchOne().into(Integer.class);
+			Optional<GoodsRecord> goodsById = goodsService.getGoodsById(goodsId);
 			if(goodsById.get()!=null) {
 				goodsName=goodsById.get().getGoodsName();
 			}
@@ -380,7 +384,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 		UserRecord user = userService.getUserByUserId(vo.getUserId());
 		UserRecord userRecord = checkMp(user.getWxUnionId(), officeAppId);
 		if (null == userRecord) {
-			log.info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"用户没有关注公众号");
+			logger().info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"用户没有关注公众号");
 			return null;
 		}
 		userIdList.add(user.getUserId());
@@ -392,98 +396,102 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 				.mpTemplateData(
 						MpTemplateData.builder().config(MpTemplateConfig.ACTIVITY_CONFIG).data(data).build())
 				.page(page).shopId(getShopId()).userIdList(userIdList)
-				.type(RabbitParamConstant.Type.MP_TEMPLE_TYPE).build();
+				.type(RabbitParamConstant.Type.LOTTERY_TEAM).build();
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
 		return remark;
 	}
 
-    private String sendMessage(Byte type,FriendPromoteSelectVo vo,String officeAppId) {
-		log.info("sendMessage");
+    public String sendMessage(Byte type,FriendPromoteSelectVo vo,String officeAppId) {
+		logger().info("sendMessage");
 		String title = "";
 		String content = "";
 		if(type.equals(FOUR)) {
-			log.info("type为4");
+			logger().info("type为4");
 			sendPromoteDrawMessage(vo, officeAppId);
-		}
-		switch (type) {
-		case ONE:
-			title = "好友助力通知";
-			content = "好友帮您助力啦！快去看看吧！";
-			break;
-		case TWO:
-			title = "助力进度通知";
-			content = "活动即将结束，赶快邀请好友帮忙助力吧！";
-			break;
-		case THREE:
-			title = "助力失败通知";
-			content = "很遗憾，本次活动助力失败，来看看其他活动吧~";
-			break;
-		case FIVE:
-			title = "奖励未领取通知";
-			content = "您有奖励即将失效，快来领取吧！";
-			break;
-		default:
-			break;
-		}
-		if(type.equals(ONE)) {
-			log.info("type为1");
-			log.info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"状态是1,发送小程序");
-			MpAuthShopRecord authShop = saas.shop.mp.getAuthShopByShopId(getShopId());
-			if (null == authShop) {
-				log.info("店铺："+getShopId()+"没有绑定小程序");
-				return null;
+		}else {
+			switch (type) {
+			case ONE:
+				title = "好友助力通知";
+				content = "好友帮您助力啦！快去看看吧！";
+				break;
+			case TWO:
+				title = "助力进度通知";
+				content = "活动即将结束，赶快邀请好友帮忙助力吧！";
+				break;
+			case THREE:
+				title = "助力失败通知";
+				content = "很遗憾，本次活动助力失败，来看看其他活动吧~";
+				break;
+			case FIVE:
+				title = "奖励未领取通知";
+				content = "您有奖励即将失效，快来领取吧！";
+				break;
+			default:
+				break;
 			}
-			Integer tid = SubscribeMessageConfig.getTid(SubcribeTemplateCategory.INVITE_SUCCESS);
-			if(tid==null) {
-				log.info("SubcribeTemplateCategory中没有定义相关的类型");
-				return null;
-			}
-			boolean canUse = subscribeMessageService.getCanUse(vo.getUserId(), tid);
-			String page = "pages1/promoteinfo/promoteinfo?actCode=" + vo.getActCode() + "&launch_id=" + vo.getId();
-			String name2 = "已有好友帮忙助力";
-			String date = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, vo.getSuccessTime());
-			if(!canUse) {
-				log.info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"不能发送小程序，转发送公众号");
-				//ACTIVITY_CONFIG
-				List<Integer> userIdList = new ArrayList<Integer>();
-				UserRecord user = userService.getUserByUserId(vo.getUserId());
-				UserRecord wxUserInfo = checkMp(user.getWxUnionId(), officeAppId);
-				if (null == wxUserInfo) {
-					log.info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"用户没有关注公众号");
+			if(type.equals(ONE)) {
+				logger().info("type为1");
+				logger().info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"状态是1,发送小程序");
+				MpAuthShopRecord authShop = saas.shop.mp.getAuthShopByShopId(getShopId());
+				if (null == authShop) {
+					logger().info("店铺："+getShopId()+"没有绑定小程序");
 					return null;
 				}
-				userIdList.add(user.getUserId());
-				String[][] data = new String[][] { { title, "#173177" }, {name2, "#173177" },
-					{ vo.getActName(), "#173177" }, { content, "#173177" }, { date, "#173177" },{"","#173177"}};
-					//发的公众号
+				Integer tid = SubscribeMessageConfig.getTid(SubcribeTemplateCategory.INVITE_SUCCESS);
+				if(tid==null) {
+					logger().info("SubcribeTemplateCategory中没有定义相关的类型");
+					return null;
+				}
+				boolean canUse = subscribeMessageService.getCanUse(vo.getUserId(), tid);
+				String page = "pages1/promoteinfo/promoteinfo?actCode=" + vo.getActCode() + "&launch_id=" + vo.getId();
+				String name2 = "已有好友帮忙助力";
+				String date = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, vo.getSuccessTime());
+				if(!canUse) {
+					logger().info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"不能发送小程序，转发送公众号");
+					//ACTIVITY_CONFIG
+					List<Integer> userIdList = new ArrayList<Integer>();
+					UserRecord user = userService.getUserByUserId(vo.getUserId());
+					UserRecord wxUserInfo = checkMp(user.getWxUnionId(), officeAppId);
+					if (null == wxUserInfo) {
+						logger().info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"用户没有关注公众号");
+						return null;
+					}
+					userIdList.add(user.getUserId());
+					String[][] data = new String[][] { { title, "#173177" }, {name2, "#173177" },
+						{ vo.getActName(), "#173177" }, { content, "#173177" }, { date, "#173177" },{"","#173177"}};
+						//发的公众号
+						RabbitMessageParam param = RabbitMessageParam.builder()
+								.mpTemplateData(
+										MpTemplateData.builder().config(MpTemplateConfig.ACTIVITY_CONFIG).data(data).build())
+								.page(page).shopId(getShopId()).userIdList(userIdList)
+								.type(RabbitParamConstant.Type.LOTTERY_TEAM).build();
+						saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
+						return null;
+				}
+				logger().info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"发送小程序");
+				String[][] data = new String[][] { { vo.getActName() }, { name2 }, { date } };
+				List<Integer> userIdList = new ArrayList<Integer>();
+				userIdList.add(vo.getUserId());
+				MaSubscribeData buildData = MaSubscribeData.builder().data307(data).build();
+				//发的小程序
 				RabbitMessageParam param = RabbitMessageParam.builder()
-						.mpTemplateData(
-								MpTemplateData.builder().config(MpTemplateConfig.ACTIVITY_CONFIG).data(data).build())
-						.page(page).shopId(getShopId()).userIdList(userIdList)
-						.type(RabbitParamConstant.Type.MP_TEMPLE_TYPE).build();
+						.maTemplateData(
+								MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(buildData).build())
+						.page(page).shopId(getShopId())
+						.userIdList(userIdList)
+						.type(RabbitParamConstant.Type.INVITE_SUCCESS_FRIEND_PROMOTE).build();
 				saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
-				return null;
+			}else {
+				logger().info("type不为1，为"+type);
+				sendPromoteResultMessage(type, vo, officeAppId, title, content);
 			}
-			log.info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"发送小程序");
-			String[][] data = new String[][] { { vo.getActName() }, { name2 }, { date } };
-			List<Integer> userIdList = new ArrayList<Integer>();
-			userIdList.add(vo.getUserId());
-			//发的小程序
-			RabbitMessageParam param = RabbitMessageParam.builder()
-					.maTemplateData(
-							MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(data).build())
-					.page(page).shopId(getShopId())
-					.userIdList(userIdList)
-					.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
-			saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
-		}else {
-			log.info("type不为1，为"+type);
-			sendPromoteResultMessage(type, vo, officeAppId, title, content);
+			
 		}
 		return content;
 	}
 
     public String sendPromoteResultMessage(Byte type,FriendPromoteSelectVo vo,String officeAppId,String title,String content) {
+    	logger().info("传入参数：type：{}，title：{},content:{}",type,title,content);
 		FriendPromoteSelectVo userLaunchInfo = friendPromoteService.getUserLaunchInfo(vo.getId());
 		if(userLaunchInfo!=null) {
 			String page="pages1/promoteinfo/promoteinfo?actCode="+userLaunchInfo.getActCode()+"&launch_id="+String.valueOf(vo.getId());
@@ -491,7 +499,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 			UserRecord user = userService.getUserByUserId(vo.getUserId());
 			UserRecord wxUserInfo = checkMp(user.getWxUnionId(), officeAppId);
 			if (null == wxUserInfo) {
-				log.info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"用户没有关注公众号");
+				logger().info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"用户没有关注公众号");
 				return null;
 			}
 			userIdList.add(vo.getUserId());
@@ -503,7 +511,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 					.mpTemplateData(
 							MpTemplateData.builder().config(MpTemplateConfig.ACTIVITY_CONFIG).data(data).build())
 					.page(page).shopId(getShopId()).userIdList(userIdList)
-					.type(RabbitParamConstant.Type.MP_TEMPLE_TYPE).build();
+					.type(RabbitParamConstant.Type.LOTTERY_TEAM).build();
 			saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
 		}
 		return content;

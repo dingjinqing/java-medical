@@ -13,12 +13,9 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record3;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,6 +130,7 @@ public class MessageTemplateService extends ShopBaseService {
             .map(UserInfoByRedis::getUserId)
             .map(Objects::toString)
             .collect(Collectors.joining(","));
+
         Integer shopId = getShopId();
 //        String userIdStr = "12,";
         String sendConditionStr = Util.toJson(param.getUserInfo());
@@ -143,8 +141,7 @@ public class MessageTemplateService extends ShopBaseService {
             .set(record)
             .returning(TEMPLATE_CONFIG.ID,TEMPLATE_CONFIG.PAGE_LINK,TEMPLATE_CONFIG.TITLE,TEMPLATE_CONFIG.CONTENT)
             .fetchOne();
-        //TODO 需要改
-       // createTaskJob(shopId, assemblyRabbitMessageParam(templateConfigRecord,userIdStr,shopId),param);
+        createTaskJob(shopId, assemblyRabbitMessageParam(templateConfigRecord,userIdStr,shopId),param);
     }
 
     /**
@@ -154,32 +151,25 @@ public class MessageTemplateService extends ShopBaseService {
      * @param shopId 门店ID
      * @return {@link RabbitMessageParam}
      */
-//    private RabbitMessageParam assemblyRabbitMessageParam(TemplateConfigRecord templateConfigRecord,String userIdStr,Integer shopId ){
-//        return RabbitMessageParam.builder()
-//            .shopId(shopId)
-//            .type(RabbitParamConstant.Type.GENERAL_TYPE)
-//            .page(templateConfigRecord.getPageLink())
-//            .messageTemplateId(templateConfigRecord.getId())
-//            .userIdList(Arrays.stream(userIdStr.split(",")).map(Integer::parseInt).collect(Collectors.toList()))
-//            .maTemplateData(MaTemplateData.builder()
-//                .config(MaTemplateConfig.ACTIVITY_CONFIG)
-//                .data(new String[][]{
-//                    {templateConfigRecord.getTitle()},
-//                    {templateConfigRecord.getContent()}
-//                })
-//                .build())
-//            .mpTemplateData(MpTemplateData.builder()
-//                .config(MpTemplateConfig.ACTIVITY_CONFIG)
-//                .data(new String[][]{
-//                    {""},
-//                    {templateConfigRecord.getTitle()},
-//                    {templateConfigRecord.getContent()},
-//                    {DateUtil.getLocalDateTime().toString()},
-//                    {"点击查看详情"}
-//                })
-//                .build())
-//            .build();
-//    }
+    private RabbitMessageParam assemblyRabbitMessageParam(TemplateConfigRecord templateConfigRecord,String userIdStr,Integer shopId ){
+        return RabbitMessageParam.builder()
+            .shopId(shopId)
+            .type(RabbitParamConstant.Type.DIY_MESSAGE_TEMPLATE)
+            .page(templateConfigRecord.getPageLink())
+            .messageTemplateId(templateConfigRecord.getId())
+            .userIdList(Arrays.stream(userIdStr.split(",")).map(Integer::parseInt).collect(Collectors.toList()))
+            .mpTemplateData(MpTemplateData.builder()
+                .config(MpTemplateConfig.ACTIVITY_CONFIG)
+                .data(new String[][]{
+                    {""},
+                    {templateConfigRecord.getTitle()},
+                    {templateConfigRecord.getContent()},
+                    {DateUtil.getLocalDateTime().toString()},
+                    {"点击查看详情"}
+                })
+                .build())
+            .build();
+    }
 
     /**
      * 创建TaskJob
@@ -189,7 +179,7 @@ public class MessageTemplateService extends ShopBaseService {
      */
     private void createTaskJob(Integer shopId,RabbitMessageParam messageTemplateParam,MessageTemplateParam param){
         TaskJobInfo  info = TaskJobInfo.builder(shopId)
-            .type(param.getSenAction())
+            .type(param.getSendAction())
             .content(messageTemplateParam)
             .className(messageTemplateParam.getClass().getName())
             .startTime(param.getStartTime())
@@ -201,10 +191,11 @@ public class MessageTemplateService extends ShopBaseService {
 
     public PageResult<MessageTemplateVo> getPageByParam(MessageTemplateQuery param) {
         PageResult<MessageTemplateVo> resultPage = new PageResult<>();
-        SelectConditionStep<Record> select  = db().select()
+        SelectLimitStep<Record> select  = db().select()
             .from(TEMPLATE_CONFIG)
             .where(buildParams(param))
-            .and(TEMPLATE_CONFIG.DEL_FLAG.eq((byte)0));
+            .and(TEMPLATE_CONFIG.DEL_FLAG.eq((byte)0))
+            .orderBy(TEMPLATE_CONFIG.CREATE_TIME.desc());
         PageResult<TemplateConfigRecord> templatePage = getPageResult(select,param.getCurrentPage(),param.getPageRows(),TemplateConfigRecord.class);
         BeanUtils.copyProperties(templatePage,resultPage);
         return buildPageVo(resultPage,templatePage);
@@ -224,12 +215,13 @@ public class MessageTemplateService extends ShopBaseService {
         List<MessageTemplateVo> resultVoList = new ArrayList<>();
         for(TemplateConfigRecord record : templateList  ){
             MessageTemplateVo vo = new MessageTemplateVo();
-            int sentNumber = sendMap.getOrDefault(record.getId(), 0);
-            int visitNumber = visitMap.getOrDefault(record.getId(), 0);
+            String idStr = record.getId().toString();
+            int sentNumber = sendMap.getOrDefault(idStr, 0);
+            int visitNumber = visitMap.getOrDefault(idStr, 0);
             BeanUtils.copyProperties(record,vo);
             vo.setSentNumber(sentNumber);
             vo.setClickedNumber(visitNumber);
-            if( sendMap.containsKey(record.getId()) ){
+            if( sendMap.containsKey(idStr) ){
                 vo.setPercentage(MathUtil.deciMal(visitNumber,sentNumber)*100);
             }else{
                 vo.setPercentage(0D);
@@ -248,10 +240,10 @@ public class MessageTemplateService extends ShopBaseService {
      */
     private Map<String,Integer> getSentPersonByTemplateId(List<Integer> templateIdList){
         return db()
-            .select(SERVICE_MESSAGE_RECORD.LINK_IDENTITY, DSL.count(SERVICE_MESSAGE_RECORD.LINK_IDENTITY).as("number"),SERVICE_MESSAGE_RECORD.CREATE_TIME)
+            .select(SERVICE_MESSAGE_RECORD.LINK_IDENTITY, DSL.count(SERVICE_MESSAGE_RECORD.LINK_IDENTITY).as("number"))
             .from(SERVICE_MESSAGE_RECORD)
             .where(SERVICE_MESSAGE_RECORD.LINK_IDENTITY.in(templateIdList))
-            .groupBy(SERVICE_MESSAGE_RECORD.LINK_IDENTITY,SERVICE_MESSAGE_RECORD.CREATE_TIME)
+            .groupBy(SERVICE_MESSAGE_RECORD.LINK_IDENTITY)
             .orderBy(SERVICE_MESSAGE_RECORD.CREATE_TIME.desc())
             .fetch()
             .stream()
@@ -294,6 +286,17 @@ public class MessageTemplateService extends ShopBaseService {
         if( StringUtils.isNotBlank(param.getUserName()) ){
             result.add(USER.USERNAME.contains(param.getUserName()));
         }
+        if(  null != param.getSendType() && param.getSendType() != 0 ){
+            result.add(SERVICE_MESSAGE_RECORD.TEMPLATE_PLATFORM.eq(param.getSendType().byteValue()));
+        }
+        if(  null != param.getIsOnClick() && param.getIsOnClick() != 0 ){
+            if(param.getIsOnClick() == 1){
+                result.add(SERVICE_MESSAGE_RECORD.IS_VISIT.eq(param.getIsOnClick() .byteValue()));
+            }else{
+                result.add(SERVICE_MESSAGE_RECORD.IS_VISIT.eq((byte)0));
+            }
+
+        }
         return result;
     }
 
@@ -319,7 +322,13 @@ public class MessageTemplateService extends ShopBaseService {
             .fetchAny();
     }
     public PageResult<MessageOutputVo> getSendRecord(MessageTemplateQuery query){
-        SelectConditionStep<Record> select  = db().select(SERVICE_MESSAGE_RECORD.fields()).from(SERVICE_MESSAGE_RECORD)
+        SelectConditionStep<Record6<String, Byte, Byte, Byte, Timestamp, Timestamp>> select  = db().select(
+            USER.USERNAME,
+            SERVICE_MESSAGE_RECORD.TEMPLATE_PLATFORM,
+            SERVICE_MESSAGE_RECORD.IS_VISIT,
+            SERVICE_MESSAGE_RECORD.SEND_STATUS,
+            SERVICE_MESSAGE_RECORD.VISIT_TIME,
+            SERVICE_MESSAGE_RECORD.CREATE_TIME).from(SERVICE_MESSAGE_RECORD)
             .leftJoin(USER).on(USER.USER_ID.eq(SERVICE_MESSAGE_RECORD.USER_ID))
             .where(buildParams(query));
         return getPageResult(select,query.getCurrentPage(),MessageOutputVo.class);
@@ -349,18 +358,22 @@ public class MessageTemplateService extends ShopBaseService {
             .where(SERVICE_MESSAGE_RECORD.CREATE_TIME.lessThan(query.getEndTime()))
             .and(SERVICE_MESSAGE_RECORD.CREATE_TIME.greaterThan(query.getStartTime()))
             .fetch();
-        Map<String,Integer> sentMap = serviceMessageResult.stream()
-            .filter(x->x.get(SERVICE_MESSAGE_RECORD.SEND_STATUS).equals((byte)1))
-            .collect(Collectors.toMap(x->x.get("everyDate").toString(),x->{
-                int i = 0;
-                return i++;
-            }));
-        Map<String,Integer> visitMap = serviceMessageResult.stream()
-            .filter(x->x.get(SERVICE_MESSAGE_RECORD.IS_VISIT).equals((byte)1))
-            .collect(Collectors.toMap(x->x.get("everyDate").toString(),x->{
-                int i = 0;
-                return i++;
-            }));
+
+
+        Map<String,Integer> sentMap = Maps.newHashMap();
+        for( Record3<String,Byte,Byte> record3:  serviceMessageResult){
+            if( record3.get(SERVICE_MESSAGE_RECORD.SEND_STATUS).equals((byte)1) ){
+                int i = sentMap.getOrDefault(record3.get("everyDate").toString(),0);
+                sentMap.put(record3.get("everyDate").toString(),i+1);
+            }
+        }
+        Map<String,Integer> visitMap = Maps.newHashMap();
+        for( Record3<String,Byte,Byte> record3:  serviceMessageResult){
+            if( record3.get(SERVICE_MESSAGE_RECORD.IS_VISIT).equals((byte)1) ){
+                int i = visitMap.getOrDefault(record3.get("everyDate").toString(),0);
+                visitMap.put(record3.get("everyDate").toString(),i+1);
+            }
+        }
 
         for(LocalDate date: allDate  ){
             String localDate = date.toString();
@@ -408,14 +421,27 @@ public class MessageTemplateService extends ShopBaseService {
             .where(MESSAGE_TEMPLATE.ACTION.eq(param.getAction()))
             .fetchInto(ContentMessageVo.class);
     }
+
+
+    public void updateTemplateSendStatus(Integer userId,Integer templateId){
+        db().update(SERVICE_MESSAGE_RECORD).
+            set(SERVICE_MESSAGE_RECORD.SEND_STATUS,(byte)1).
+            where(SERVICE_MESSAGE_RECORD.USER_ID.eq(userId)).
+            and(SERVICE_MESSAGE_RECORD.LINK_IDENTITY.eq(templateId.toString())).execute();
+
+    }
+
+    public void updateTemplateStatus(Integer templateId){
+        db().update(TEMPLATE_CONFIG).set(TEMPLATE_CONFIG.SEND_STATUS,(byte)1).
+            where(TEMPLATE_CONFIG.ID.eq(templateId)).execute();
+    }
+
     public void addContentTemplate(ContentMessageParam param) {
         db().newRecord(MESSAGE_TEMPLATE,param).insert();
     }
     /**
      * 创建定向发券TaskJob
      * @param shopId 门店ID
-     * @param messageTemplateParam 消息内容
-     * @param param 消息的一些配置参数
      */
     public void createCouponTaskJob(Integer shopId,CouponGiveQueueParam couponGiveQueueParam,Timestamp startTime){
         TaskJobInfo  info = TaskJobInfo.builder(shopId)

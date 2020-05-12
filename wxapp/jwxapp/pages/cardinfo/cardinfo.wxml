@@ -50,7 +50,6 @@
 				</view>
 			</view>
 		</view>
-
 		<view class="card_item_title" wx:if="{{cardInfo.userCardCreateTime}}">
 			<view class="item_title_left">
 				<image mode="widthFix" src="{{imageUrl}}image/wxapp/card_get_time.png" />
@@ -157,7 +156,41 @@
 				</view>
 			</block>
 		</view>
-
+		<!-- 包邮权益（普通卡和等级卡）wx:if="{{cardInfo.freeship_limit>-1}}" -->
+		<view class="card_item_title" wx:if='{{(cardInfo.cardType== 0 || cardInfo.cardType==2) && cardInfo.freeLimit>=0}}'>
+			<view class="item_title_left">
+				<image mode="widthFix" src="{{imageUrl}}image/wxapp/card_free_ship.png" />
+			</view>
+			<view class="item_title_content">
+				会员权益（包邮）
+			</view>
+			<view class="item_title_right" />
+		</view>
+		<view class="card_item_content" wx:if='{{(cardInfo.cardType== 0 || cardInfo.cardType==2) && cardInfo.freeLimit>=0}}'>
+			<view class="content_item">
+				{{cardInfo.freeshipDesc}}
+			</view>
+		</view>
+		<!-- 自定义策略 -->
+		<view
+		 wx:if="{{cardInfo.customRights.customRightsFlag=='on'}}"
+		 wx:for="{{cardInfo.customRights.customRightsAll}}"
+		 wx:key="indexC"
+		 wx:for-index="indexC"
+		 wx:for-item="itemC"
+		>
+			<view class="card_item_title"  data-index="{{indexC}}">
+				<view class="item_title_left">
+					<image src="{{itemC.crightImage}}" mode='widthFix' />
+				</view>
+				<view class="item_title_content">
+					{{itemC.crightName}}
+				</view>
+			</view>
+			<view class="card_item_content">
+				<view class="content_item">{{itemC.crightContent}}</view>
+			</view>
+		</view>
 		<!-- 会员专享商品 -->
 		<view class="card_item_title" wx:if="{{cardInfo.powerPayOwnGood === 'on'}}">
 			<view class="item_title_left">

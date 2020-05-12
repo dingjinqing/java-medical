@@ -1,0 +1,24 @@
+{
+  "component": true,
+  "usingComponents": {
+    "v-carousel": "../../carousel/index",
+    "v-rich-text": "../../rich-text/index",
+    "v-text": "../../text/index",
+    "v-line": "../../line/index",
+    "v-space": "../../space/index",
+    "v-phone": "../phone/index",
+    "v-official-accounts": "../../official-accounts/index",
+    "v-address": "../address/index",
+    "v-choose": "../choose/index",
+    "v-date": "../date/index",
+    "v-input-email": "../input-email/index",
+    "v-input-mobile": "../input-mobile/index",
+    "v-input-name": "../input-name/index",
+    "v-input-text": "../input-text/index",
+    "v-slide": "../slide/index",
+    "v-upimg": "../upimg/index",
+    "v-sex": "../sex/index",
+    "v-upvideo":"../upvideo/index",
+    "v-advertise": "../../advertise/index"
+  }
+}

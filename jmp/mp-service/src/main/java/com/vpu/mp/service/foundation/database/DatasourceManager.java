@@ -62,8 +62,7 @@ public class DatasourceManager {
 	protected HikariDataSource getDatasource(DbConfig dbConfig) {
 		String key = dbConfig.getDatasourceKey();
 		if (!datasources.containsKey(key)) {
-			datasources.put(key,
-					dataSource(getJdbcUrl(dbConfig.host, dbConfig.port, ""), dbConfig.username, dbConfig.password));
+			datasources.put(key,dataSource(getJdbcUrl(dbConfig.host, dbConfig.port, ""), dbConfig.username, dbConfig.password));
 		}
 		return datasources.get(key);
 	}

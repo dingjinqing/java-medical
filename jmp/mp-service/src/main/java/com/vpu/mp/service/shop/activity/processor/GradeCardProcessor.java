@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -175,9 +176,10 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
                 GradeReducePrdMpVo prdMpVo = new GradeReducePrdMpVo();
                 prdMpVo.setProductId(gradePrd.getProductId());
                 prdMpVo.setPrdPrice(gradePrd.getPrdPrice());
+                // reducePricePrdMpVo可能为null,创建限时降价后商品的规格信息可能又被修改
+                // 如果为null，则价格按照会员价设置
                 ReducePricePrdMpVo reducePricePrdMpVo = reducePrdMap.get(gradePrd.getProductId());
-
-                if (reducePricePrdMpVo.getReducePrice().compareTo(gradePrd.getGradePrice()) < 0) {
+                if (reducePricePrdMpVo!=null&&reducePricePrdMpVo.getReducePrice().compareTo(gradePrd.getGradePrice()) < 0) {
                     prdMpVo.setIsGradePrice(false);
                     prdMpVo.setActivityPrice(reducePricePrdMpVo.getReducePrice());
                 } else {
@@ -281,7 +283,7 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
     }
 
     @Override
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
 
     }
 }

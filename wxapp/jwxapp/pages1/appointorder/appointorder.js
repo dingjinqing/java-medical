@@ -304,6 +304,16 @@ global.wxPage({
       couponId: 0, // 优惠券预留字段 ，优惠券id
       discount: 0 // 优惠券减价
     }
+    if (Number(params.useAccount) > 0) {
+      util.getNeedTemplateId('balance_change', () => {
+        that.submitReservation(params)
+      })
+    } else {
+      that.submitReservation(params)
+    }
+  },
+
+  submitReservation (params) {
     util.api('/api/wxapp/store/service/submitReservation', function (res) {
       if (res.error === 0) {
         if (typeof (res.content.timeStamp) != 'undefined') {
@@ -342,6 +352,7 @@ global.wxPage({
       }
     }, params)
   },
+
   // 会员卡组件回调
   getSelectCard (e) {
     let no = e.detail;

@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -63,7 +63,7 @@ public class ConfigService extends ShopBaseService {
 	@Autowired
 	public FirstSpecialConfigService firstSpecialConfigService;
 	@Autowired
-	public InsteadPayConfig insteadPayConfig;
+	public InsteadPayConfigService insteadPayConfigService;
 	@Autowired
 	public CollectGiftConfigService collectGiftConfigService;
 	@Autowired
@@ -76,7 +76,7 @@ public class ConfigService extends ShopBaseService {
     public DomainConfig domainConfig;
 	/**
 	 * 得到店铺配置
-	 * 
+	 *
 	 * @return
 	 */
 	public WxAppConfigVo getAppConfig(WxAppSessionUser user) {
@@ -102,7 +102,7 @@ public class ConfigService extends ShopBaseService {
 
 	/**
 	 * 获取店铺风格 rgb/rgba转16进制
-	 * 
+	 *
 	 * @return
 	 */
 	public String[] convertShopStyle(ShopStyleConfig config) {
@@ -163,14 +163,14 @@ public class ConfigService extends ShopBaseService {
 
 	/**
 	 * 得到语言包
-	 * 
+	 *
 	 * @return
 	 */
 	public String getLocalePack(String language) {
 		return Util.loadResource("static/i18n/wxapp/" + language + ".json");
 	}
-	
-	
+
+
 	private byte getStatus(Integer userId) {
 		byte status=0;
 		ShopSelectInnerResp shopInfo = saas.shop.getShopInfo(getShopId());
@@ -198,6 +198,6 @@ public class ConfigService extends ShopBaseService {
 			}
 		}
 		return status;
-		
+
 	}
 }

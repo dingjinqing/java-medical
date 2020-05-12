@@ -7,12 +7,13 @@ import javax.validation.constraints.NotNull;
 /**
  * @author liufei
  * @date 2019/8/9
- * @description
  */
 @Data
 public class FeedBackDetailParam {
     @NotNull
     private Integer pageId;
+    @NotNull
+    private Integer submitId;
     @NotNull
     private Integer userId;
 }

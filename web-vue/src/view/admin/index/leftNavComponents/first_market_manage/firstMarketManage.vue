@@ -363,7 +363,10 @@
 
       <div class="box3">
         <!-- 积分兑换 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="to('integral_convert')"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/jfdh.png'"
               alt=""
@@ -418,7 +421,10 @@
           </div>
         </div>
         <!-- 表单统计 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="to('form_decoration')"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/bdtj.png'"
               alt=""

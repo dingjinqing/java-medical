@@ -51,8 +51,14 @@
         >
         </el-table-column>
         <el-table-column
-          prop="goodsName"
+          prop="goods"
           :label="$t('seckill.goodsName')"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="first"
+          :label="$t('seckill.first')"
           align="center"
         >
         </el-table-column>

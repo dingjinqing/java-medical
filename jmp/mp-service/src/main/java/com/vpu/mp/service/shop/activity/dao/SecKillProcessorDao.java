@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.dao;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
+import static com.vpu.mp.db.shop.tables.SecKillList.SEC_KILL_LIST;
 import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 
 /**
@@ -51,18 +53,18 @@ public class SecKillProcessorDao extends ShopBaseService {
      * 获取商品集合内的秒杀信息
      * @param goodsIds 商品id集合
      * @param date 日期
-     * @return key:商品id，value:List<Record3<Integer, Integer, BigDecimal>> SEC_KILL_DEFINE.SK_ID, SEC_KILL_DEFINE.GOODS_ID, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE
+     * @return key:商品id，value:List<Record3<Integer, Integer, BigDecimal>> SEC_KILL_PRODUCT_DEFINE.SK_ID, SEC_KILL_PRODUCT_DEFINE.GOODS_ID, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE
      */
     public  Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> getGoodsSecKillListInfo(List<Integer> goodsIds, Timestamp date){
-        return db().select(SEC_KILL_DEFINE.SK_ID, SEC_KILL_DEFINE.GOODS_ID, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE)
+        return db().select(SEC_KILL_PRODUCT_DEFINE.SK_ID, SEC_KILL_PRODUCT_DEFINE.GOODS_ID, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE)
             .from(SEC_KILL_DEFINE).innerJoin(SEC_KILL_PRODUCT_DEFINE).on(SEC_KILL_DEFINE.SK_ID.eq(SEC_KILL_PRODUCT_DEFINE.SK_ID))
             .where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(SEC_KILL_DEFINE.END_TIME.gt(date))
             .and(SEC_KILL_DEFINE.START_TIME.le(date))
-            .and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds))
-            .orderBy(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE.asc())
-            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(SEC_KILL_DEFINE.GOODS_ID)));
+            .and(SEC_KILL_PRODUCT_DEFINE.GOODS_ID.in(goodsIds))
+            .orderBy(SEC_KILL_DEFINE.FIRST.desc(),SEC_KILL_DEFINE.CREATE_TIME.desc(),SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE.asc())
+            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(SEC_KILL_PRODUCT_DEFINE.GOODS_ID)));
     }
 
     /**
@@ -81,7 +83,7 @@ public class SecKillProcessorDao extends ShopBaseService {
         seckillVo.setActivityId(skId);
         seckillVo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
 
-        seckillVo.setActState(this.canApplySecKill(secKill,capsule.getGoodsNumber(),userId));
+        seckillVo.setActState(this.canApplySecKill(secKill,capsule.getGoodsNumber(),userId,capsule.getGoodsId()));
         if (BaseConstant.ACTIVITY_STATUS_NOT_HAS.equals(seckillVo.getActState())) {
             return  seckillVo;
         }
@@ -109,8 +111,8 @@ public class SecKillProcessorDao extends ShopBaseService {
      * @param goodsNumber goods表的库存
      * @return 0正常;1该活动不存在;2该活动已停用;3该活动未开始;4该活动已结束;5商品已抢光;6该用户已达到限购数量上限;7该秒杀为会员专属，该用户没有对应会员卡
      */
-    private Byte canApplySecKill(SecKillDefineRecord secKill,Integer goodsNumber,Integer userId) {
-        return seckillService.canApplySecKill(secKill,goodsNumber,userId);
+    private Byte canApplySecKill(SecKillDefineRecord secKill,Integer goodsNumber,Integer userId,Integer goodsId) {
+        return seckillService.canApplySecKill(secKill,goodsNumber,userId,goodsId);
     }
 
     /**
@@ -223,13 +225,20 @@ public class SecKillProcessorDao extends ShopBaseService {
 
     }
 
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods){
-        returnGoods.forEach(g->{
+    public void processReturn(ReturnOrderRecord returnOrderRecord,Integer activityId, List<OrderReturnGoodsVo> returnGoods){
+        String orderSn = null;
+        for (OrderReturnGoodsVo g : returnGoods){
             //不是赠品行，返还活动库存
             if(g.getIsGift().equals(OrderConstant.IS_GIFT_N)){
+                orderSn = g.getOrderSn();
                 seckillService.updateSeckillStock(activityId,g.getProductId(),- g.getGoodsNumber());
             }
-        });
+        }
+        if(returnOrderRecord == null && orderSn != null){
+            //取消或关闭订单时
+            //删除秒杀记录
+            db().update(SEC_KILL_LIST).set(SEC_KILL_LIST.DEL_FLAG,DelFlag.DISABLE_VALUE).where(SEC_KILL_LIST.ORDER_SN.eq(orderSn)).execute();
+        }
     }
 
     /**

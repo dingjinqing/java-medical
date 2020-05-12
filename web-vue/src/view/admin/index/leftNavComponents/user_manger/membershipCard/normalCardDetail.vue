@@ -36,11 +36,28 @@
             @input="initCardCouponCfgData"
             ref="cardCouponCfgData"
           ></cardCouponCfg>
+          <!-- 包邮 -->
+          <cardFreeshipCfg
+            v-bind.sync="freeship"
+            ref="freeship"
+          >
+          </cardFreeshipCfg>
+          <!-- 自定义权益 -->
+          <cardCustomRights v-bind.sync="customRights">
+
+          </cardCustomRights>
           <cardEffectTime
             :val="cardEffectTime"
             @input="initCardEffectTimeData"
             ref="cardEffectTime"
           ></cardEffectTime>
+          <!-- 续费开发 -->
+          <cardRenewCfg
+            v-bind.sync="cardRenew"
+            ref="cardRenew"
+          >
+
+          </cardRenewCfg>
           <cardStoreCfg
             :val="cardStoreCfgData"
             @input="initCardStoreCfgData"
@@ -114,6 +131,15 @@ export default {
     ),
     cardActiveCfg: () => import(
       './subcomponents/cardActiveCfg'
+    ),
+    cardFreeshipCfg: () => import(
+      './subcomponents/cardFreeshipCfg'
+    ),
+    cardRenewCfg: () => import(
+      './subcomponents/cardRenewCfg'
+    ),
+    cardCustomRights: () => import(
+      './subcomponents/cardCustomRights'
     )
   },
   computed: {
@@ -175,6 +201,8 @@ export default {
         powerDiscount: true,
         discount: undefined,
         discountGoodsType: '1',
+        // 不可与优惠券公用
+        cannotUseCoupon: false,
         choosedGoodsId: [],
         choosedStoreId: [],
         choosedPlatformId: [],
@@ -244,6 +272,24 @@ export default {
         cardEffectTime: cardEffectTimeTmp,
         cardStoreCfgData: cardStoreCfgDataTmp,
         cardUsageCfgData: cardUsageCfgDataTmp
+      },
+      // 包邮信息
+      freeship: {
+        num: 0,
+        type: -1,
+        valid: false
+      },
+      cardRenew: {
+        renewMemberCard: 0,
+        renewType: 0,
+        renewNum: null,
+        renewTime: null,
+        renewDateType: null
+      },
+      // 自定义权益
+      customRights: {
+        customRightsFlag: 'off',
+        customRightsAll: []
       }
     }
   },
@@ -288,6 +334,7 @@ export default {
       this.disCountData.choosedStoreId = data.shopCategoryIds
       this.disCountData.choosedPlatformId = data.platformCategoryIds
       this.disCountData.choosedBrandId = data.brandId.map(item => Number(item))
+      this.disCountData.cannotUseCoupon = data.cannotUseCoupon === 1
 
       // 专享
       this.ownGoodsData.powerOwnGoods = data.powerPayOwnGood === 'on'
@@ -364,6 +411,21 @@ export default {
       console.log(this.cardEffectTime.fixedDate)
       this.cardEffectTime.receiveDay = data.receiveDay
       this.cardEffectTime.dateType = data.dateType ? String(data.dateType) : '0'
+      // 包邮信息
+      if (data.freeship) {
+        this.freeship = data.freeship
+      }
+
+      this.freeship.valid = false
+
+      // 续费信息
+      if (data.cardRenew) {
+        this.cardRenew = data.cardRenew
+      }
+      // 自定义权益
+      if (data.customRights) {
+        this.customRights = data.customRights
+      }
 
       // 使用须知
       this.cardUsageCfgData.desc = data.desc
@@ -404,7 +466,8 @@ export default {
                   pwdName: item.name,
                   pwdId: item.batchId,
                   action: item.action,
-                  disabled: true }
+                  disabled: true
+                }
               )
             }
           })
@@ -474,14 +537,14 @@ export default {
     },
     handleToSave () {
       // 检验通过
-      this.$refs.cardNameAndBg.$emit('checkRule')
-      this.$refs.disCountData.$emit('checkRule')
-      this.$refs.cardScoreCfgData.$emit('checkRule')
-      this.$refs.cardChargeCfgData.$emit('checkRule')
-      this.$refs.cardCouponCfgData.$emit('checkRule')
-      this.$refs.cardEffectTime.$emit('checkRule')
-      this.$refs.cardReceiveCfgData.$emit('checkRule')
-      this.$refs.cardActiveCfgData.$emit('checkRule')
+      let checkComponents = ['cardNameAndBg', 'disCountData', 'cardScoreCfgData', 'cardChargeCfgData',
+        'cardCouponCfgData', 'cardEffectTime', 'cardReceiveCfgData', 'cardActiveCfgData',
+        'freeship']
+
+      for (let i = 0; i < checkComponents.length; i++) {
+        this.$refs[checkComponents[i]].$emit('checkRule')
+      }
+
       // 至少选择一项会员权益
       if (this.disCountData.powerDiscount || this.ownGoodsData.powerOwnGoods ||
         this.cardScoreCfgData.powerScore || this.cardChargeCfgData.powerCard || this.cardCouponCfgData.powerCoupon) {
@@ -489,7 +552,7 @@ export default {
         console.log(this.cardChargeCfgData.valid)
         if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardScoreCfgData.valid &&
           this.cardChargeCfgData.valid && this.cardCouponCfgData.valid && this.cardEffectTime.valid &&
-          this.cardReceiveCfgData.valid && this.cardActiveCfgData.valid) {
+          this.cardReceiveCfgData.valid && this.cardActiveCfgData.valid && this.freeship.valid) {
           // 保存数据
           this.prepareCardData()
         } else {
@@ -524,6 +587,7 @@ export default {
         'bgImg': this.cardNameAndBg.bgImg,
         'powerCount': this.disCountData.powerDiscount ? 1 : 0,
         'disCount': this.disCountData.discount,
+        'cannotUseCoupon': this.disCountData.cannotUseCoupon ? 1 : 0,
         'discountIsAll': this.disCountData.discountGoodsType,
         'goodsId': this.disCountData.choosedGoodsId,
         'shopCategoryIds': this.disCountData.choosedStoreId,
@@ -572,7 +636,10 @@ export default {
         'batchIdList': batchIds,
         'activation': this.cardActiveCfgData.activation,
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
-        'examine': this.cardActiveCfgData.examine
+        'examine': this.cardActiveCfgData.examine,
+        'freeship': this.freeship,
+        'cardRenew': this.cardRenew,
+        'customRights': this.customRights
       }
       if (this.cardId) {
         // 更新会员卡

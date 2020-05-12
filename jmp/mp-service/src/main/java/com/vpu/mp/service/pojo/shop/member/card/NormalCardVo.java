@@ -9,6 +9,9 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -46,6 +49,10 @@ public class NormalCardVo extends BaseCardVo {
 	/** 会员折扣 值为 0-10之间 */
 	@JsonProperty("disCount")
 	protected BigDecimal discount;
+	/**
+	 * 	是否和会员卡一起使用0:可以1：不可以
+	 */
+	private Byte cannotUseCoupon;
 
 	/** 会员专享商品 on表示打开 */
 	/** 是否专属购买商品 0不是 1是 */
@@ -69,6 +76,20 @@ public class NormalCardVo extends BaseCardVo {
 
 	/** 1:使用中，2:停止使用 3：过期 */
 	protected Byte flag;
+	
+	/**
+	 * 	包邮信息
+	 */
+	protected CardFreeship freeship;
+	/**
+	 * 续费信息
+	 */
+	protected CardRenew cardRenew;
+	/**
+	 * 	自定义权益信息
+	 */
+	@JsonProperty(value="customRights", access = JsonProperty.Access.READ_ONLY)
+	protected CardCustomRights cardCustomRights;
 
 	/**
 	 * 设置开关及是否过期

@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Goods extends TableImpl<GoodsRecord> {
 
-    private static final long serialVersionUID = 1492278567;
+    private static final long serialVersionUID = -2080875319;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods</code>
@@ -292,6 +292,16 @@ public class Goods extends TableImpl<GoodsRecord> {
      * The column <code>mini_shop_471752.b2c_goods.is_default_product</code>. 1默认规格，0自定义规格（多规格）
      */
     public final TableField<GoodsRecord, Byte> IS_DEFAULT_PRODUCT = createField("is_default_product", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "1默认规格，0自定义规格（多规格）");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods.pv</code>. 7天访问量
+     */
+    public final TableField<GoodsRecord, Integer> PV = createField("pv", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "7天访问量");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods.comment_num</code>. 评论数
+     */
+    public final TableField<GoodsRecord, Integer> COMMENT_NUM = createField("comment_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "评论数");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods</code> table reference

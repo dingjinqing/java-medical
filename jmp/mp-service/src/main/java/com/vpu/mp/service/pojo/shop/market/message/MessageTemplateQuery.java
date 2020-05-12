@@ -40,5 +40,5 @@ public class MessageTemplateQuery extends BasePageParam {
     /** 发送类型 */
     private Integer sendType;
     /** 用户是否已点击 */
-    private Boolean isOnClick;
+    private Integer isOnClick;
 }

@@ -201,5 +201,16 @@ public class TagService extends ShopBaseService {
 				.fetchGroups(USER_TAG.USER_ID, TagVo.class);
 		return res;
 	}
+	
+	/**
+	 * 根据标签Id获取标签信息
+	 * @param param
+	 * @return 
+	 */
+	public List<TagVo> getTagsById(List<Integer> param) {
+		return db().selectFrom(TAG).where(TAG.TAG_ID.in(param))
+			.fetchInto(TagVo.class);
+		
+	}
 
 }

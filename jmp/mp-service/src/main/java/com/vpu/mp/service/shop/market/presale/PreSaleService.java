@@ -191,23 +191,43 @@ public class PreSaleService extends ShopBaseService {
         Timestamp endTime = param.getEndTime();
         Byte status = param.getStatus();
         if (!isEmpty(name)) {
-            query.and(TABLE.PRESALE_NAME.like(format("%s%%", name)));
+            query.and(TABLE.PRESALE_NAME.contains(name));
         }
-        if (null != preStartTime) {
+
+        if (null != preStartTime && null == preEndTime) {
             query.and(
-                (TABLE.PRE_PAY_STEP.eq(PRE_SALE_TWO_PHASE).and(TABLE.PRE_END_TIME_2.gt(preStartTime)))
-                    .or(TABLE.PRE_PAY_STEP.eq(PRE_SALE_ONE_PHASE).and(TABLE.PRE_END_TIME.gt(preStartTime)))
+                TABLE.PRE_END_TIME.ge(preStartTime).or(TABLE.PRE_END_TIME_2.ge(preStartTime))
             );
         }
-        if (null != preEndTime) {
-            query.and(TABLE.PRE_START_TIME.le(preEndTime));
+        if (null == preStartTime && null != preEndTime) {
+            query.and(
+                TABLE.PRE_START_TIME.le(preEndTime).or(TABLE.PRE_START_TIME_2.le(preEndTime))
+            );
         }
-        if (null != startTime) {
-            query.and(TABLE.START_TIME.ge(startTime));
+        if (null != preStartTime && null != preEndTime) {
+            query.and(
+                (TABLE.PRE_START_TIME.le(preEndTime).and(TABLE.PRE_END_TIME.ge(preStartTime)))
+                .or(TABLE.PRE_START_TIME_2.le(preEndTime).and(TABLE.PRE_END_TIME_2.ge(preStartTime)))
+            );
         }
-        if (null != endTime) {
-            query.and(TABLE.END_TIME.le(endTime));
+
+        if (null != startTime && null == endTime) {
+            query.and(
+                TABLE.PRESALE_TYPE.eq(PRE_SALE_TYPE_SPLIT).and(TABLE.END_TIME.ge(startTime))
+            );
         }
+        if (null == startTime && null != endTime) {
+            query.and(
+                TABLE.PRESALE_TYPE.eq(PRE_SALE_TYPE_SPLIT).and(TABLE.START_TIME.le(endTime))
+            );
+        }
+        if (null != startTime && null != endTime) {
+            query.and(
+                TABLE.PRESALE_TYPE.eq(PRE_SALE_TYPE_SPLIT).and(TABLE.START_TIME.le(endTime)).and(TABLE.END_TIME.ge(startTime))
+            );
+        }
+
+
         if (null != status && status > 0) {
             andStatus(query, status);
         }

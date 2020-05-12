@@ -160,6 +160,8 @@ export const cn = {
   promote_launch_details: ['营销管理', '好友助力', '好友助力活动发起明细'],
   // 营销管理 好友助力参与明细
   promote_participate_details: ['营销管理', '好友助力', '好友助力活动参与明细'],
+  // 营销管理 好友助力活动效果
+  promote_effect_data: ['营销管理', '好友助力', '好友助力活动效果数据'],
   // 营销管理 分享有礼
   share_award: ['营销管理', '分享有礼'],
   // 营销管理 分享有礼 领取明细
@@ -195,6 +197,8 @@ export const cn = {
   pin_integration_edit: ['营销管理', '组团瓜分积分', '编辑瓜分积分活动'],
   // 营销管理 瓜分积分 参与用户明细
   pin_integration_detail: ['营销管理', '组团瓜分积分', '参与用户明细'],
+  // 营销管理 瓜分积分 效果数据
+  pin_integration_analysis: ['营销管理', '组团瓜分积分', '效果数据'],
   // 营销管理 瓜分积分 成团明细
   pin_integration_success: ['营销管理', '组团瓜分积分', '成团明细'],
   // 营销管理 赠品
@@ -231,6 +235,8 @@ export const cn = {
   package: ['营销管理', '打包一口价'],
   // 营销管理 打包一口价 参与明细
   package_price_detail: ['营销管理', '打包一口价', '参与明细'],
+  // 营销管理 打包一口价 查看活动订单
+  package_price_order: ['营销管理', '打包一口价', '活动订单'],
   // 营销管理 开屏有礼
   open_screen: ['营销管理', '开屏有礼'],
   // 营销管理 开屏有礼 活动明细
@@ -270,6 +276,11 @@ export const cn = {
   // 营销管理 秒杀
   shipping: ['营销管理', '满包邮'],
   // 营销管理 加价购
+  purchase_price: ['营销管理', '加价购'],
+  // 营销管理 加价购 添加加价购活动
+  add_increase_purchase: ['营销管理', '加价购', '添加加价购活动'],
+  // 营销管理 加价购 编辑加价购活动
+  edit_increase_purchase: ['营销管理', '加价购', '编辑加价购活动'],
   // 营销管理 加价购 换购订单
   purchase_redemption_order: ['营销管理', '加价购', '换购订单'],
   // 营销管理 加价购 换购明细
@@ -298,6 +309,10 @@ export const cn = {
   collectGift: ['营销管理', '收藏有礼'],
   // 营销管理 微信好物圈
   wechateGoodsCicle: ['营销管理', '微信好物圈'],
+  // 营销管理 积分兑换
+  integral_convert: ['营销管理', '积分兑换'],
+  // 营销管理 积分兑换用户列表
+  pointsUserList: ['营销管理', '积分兑换', '积分兑换用户列表'],
   // 营销管理 支付有礼
   payreward: ['营销管理', '支付有礼'],
   // 营销管理 添加支付有礼活动
@@ -308,6 +323,16 @@ export const cn = {
   full_cut: ['营销管理', '满折满减'],
   // 营销管理 添加满折满减活动
   fullCutActivity: ['营销管理', '满折满减活动'],
+  // 营销管理 表单统计
+  form_decoration: ['营销管理', '表单统计'],
+  // 营销管理 表单装修主页
+  formDecorationHome: ['营销管理', '表单统计', '表单装修'],
+  // 营销管理 表单统计  查看反馈页
+  feedbackList: ['营销管理', '表单统计', '反馈列表'],
+  // 营销管理 表单统计  反馈统计页面
+  feedbackStatistics: ['营销管理', '表单统计', '反馈统计'],
+  // 营销管理 表单统计  查看详情页
+  feedbackDetails: ['营销管理', '表单统计', '反馈列表', '反馈详情'],
   // 订单管理 全部订单
   order: ['订单管理', '全部订单'],
   // 订单管理 查看详情

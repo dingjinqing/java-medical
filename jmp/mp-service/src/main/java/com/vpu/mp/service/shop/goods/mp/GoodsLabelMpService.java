@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.label.GoodsLabelMpVo;
 import org.jooq.Record2;
 import org.jooq.Result;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,12 +38,12 @@ public class GoodsLabelMpService extends ShopBaseService {
      * @return 标签信息{@link GoodsLabelMpVo}
      */
     public List<GoodsLabelMpVo> getGoodsSearchFilterCondition(){
-        return db().selectDistinct(GOODS_LABEL.ID, GOODS_LABEL.NAME)
+        return db().selectFrom(db().selectDistinct(GOODS_LABEL.ID, GOODS_LABEL.NAME,GOODS_LABEL.LEVEL,GOODS_LABEL.CREATE_TIME)
             .from(GOODS_LABEL).join(GOODS_LABEL_COUPLE).on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
             .where(GOODS_LABEL.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()).or(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode())))
-            .orderBy(GOODS_LABEL.LEVEL.desc(),GOODS_LABEL.CREATE_TIME.desc())
-            .fetchInto(GoodsLabelMpVo.class);
+            .asTable("self_table")
+        ).orderBy(DSL.field("self_table.level").desc(), DSL.field("self_table.create_time").desc()).fetchInto(GoodsLabelMpVo.class);
     }
 
     /**

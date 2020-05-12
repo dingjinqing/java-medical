@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 @Data
 public class SeckillProductAddParam {
     @NotNull
+    private Integer    goodsId;
+    @NotNull
     private Integer    productId;
     @NotNull
     private BigDecimal secKillPrice;

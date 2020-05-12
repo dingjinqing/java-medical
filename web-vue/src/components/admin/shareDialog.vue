@@ -16,57 +16,41 @@
   <el-dialog
     :title="$t('seckill.shareTitle')"
     :visible="show"
-    width="350px"
+    width="480px"
     center
     :close-on-click-modal="false"
     @close="close"
   >
-    <div class="shareBox">
-      <div>
+    <div style="text-align: center;">
         <img
           :src="imgPath"
           alt=""
-          style="width:160px;height:160px;"
-        >
-      </div>
-      <div style="margin: 20px; 0">
+          style="width: 180px;height: 180px;border: none;"
+          />
         <a
           v-if="imgPath !== null"
           :href="imgPath"
           download
-          style="color: #999;text-decoration: none;"
+         class="downLoadQrImg"
         >{{ $t('seckill.downLoad') }}</a>
         <a
           v-if="imgPath === null"
           href="javaScript:void(0);"
-          style="color: #999;text-decoration: none;"
+          class="downLoadQrImg"
         >{{ $t('seckill.downLoadFail') }}</a>
+          <div style="text-align: left;padding: 5px 5px 5px 50px;">
+            <el-input
+              ref="qrCodePageUrlInput"
+              v-model="pagePath"
+              size="small"
+              style="width:230px;"
+            />
+            <span
+              @click="copyPageUrlClick"
+              class="copyQrCodeUrl"
+            >{{this.$t('allGoods.allGoodsData.copy')}}</span>
+          </div>
       </div>
-    </div>
-    <div>
-      <el-input v-model="pagePath">
-        <el-button
-          slot="append"
-          v-clipboard:copy="pagePath"
-          v-clipboard:success="copyHandler"
-        >{{ $t('seckill.copy') }}</el-button>
-      </el-input>
-    </div>
-    <span
-      slot="footer"
-      class="dialog-footer"
-    >
-      <el-button
-        @click="close"
-        size="small"
-        style="margin-right: 10px"
-      >{{ $t('seckill.cancel') }}</el-button>
-      <el-button
-        type="primary"
-        size="small"
-        @click="close"
-      >{{ $t('seckill.sure') }}</el-button>
-    </span>
   </el-dialog>
 </template>
 <script>
@@ -95,6 +79,10 @@ export default {
     // 关闭弹窗
     close () {
       this.$emit('close')
+    },
+    copyPageUrlClick () {
+      this.$refs.qrCodePageUrlInput.select()
+      document.execCommand('Copy')
     }
   }
 }
@@ -105,5 +93,28 @@ export default {
   text-align: center;
   margin-bottom: 15px;
   border-bottom: 1px solid #ccc;
+}
+.downLoadQrImg {
+  color: #999;
+  font-size: 16px;
+  display: inline-block;
+  height: 40px;
+  line-height: 40px;
+  width: 100%;
+  text-align: center;
+  margin-left: 0;
+  border-bottom: 1px solid #eee;
+  text-decoration: none;
+}
+.copyQrCodeUrl {
+  display: inline-block;
+  margin-left: 5px;
+  color: #5a8bff;
+  background: #fff;
+  border: none;
+  height: 35px;
+  line-height: 35px;
+  font-size: 16px;
+  cursor: pointer;
 }
 </style>

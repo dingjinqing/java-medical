@@ -5,6 +5,8 @@ import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.overView.LoginRecordVo;
@@ -148,13 +150,9 @@ public class ShopOverviewService extends MainBaseService {
      * @return the timestamp
      */
     public Timestamp shopExpireTime(Integer shopId) {
-        return db().select(ShopRenew.SHOP_RENEW.EXPIRE_TIME)
-            .from(ShopRenew.SHOP_RENEW)
-            .where(ShopRenew.SHOP_RENEW.SHOP_ID.eq(shopId))
-            .fetchOneInto(Timestamp.class);
-//            .fetchOptionalInto(Timestamp.class).orElseThrow(() -> {
-//                throw new BusinessException(JsonResultCode.CODE_ACCOUNT_SHOP_EXPRIRE);
-//            });
+        return  db().select(SHOP.EXPIRE_TIME).from(SHOP).where(SHOP.SHOP_ID.eq(shopId))
+            .fetchOptionalInto(Timestamp.class)
+            .orElseThrow(() -> new BusinessException(JsonResultCode.CODE_ACCOUNT_SHOP_EXPRIRE));
     }
 
     /**

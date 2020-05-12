@@ -9,9 +9,8 @@ global.wxPage({
     pageParams: null,
     showFilterDialog: false,
     keyWords: null,
-    sortItem: 0,
-    sortDirection: 1,
-    couponSn: null,
+    sortItem:0,
+    sortDirection:0,
     filterData: {
       minPrice: null,
       maxPrice: null,
@@ -20,7 +19,8 @@ global.wxPage({
       activityTypes: [],
       labelIds: [],
       pageFrom:null,
-      goodsIds:[]
+      goodsIds:[],
+      outerPageParam:{}
     }
   },
 
@@ -28,6 +28,7 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    if(options.pageFrom === '20') this.setData({page_name:this.$t("page1.search.couponTitle")})
     this.loadFilter(options).then(() => {
       this.requestList()
     })
@@ -41,20 +42,33 @@ global.wxPage({
     let currentPage = this.data.pageParams
       ? this.data.pageParams.currentPage
       : 1;
+    this.setData({
+      loaded:false
+    })
+    wx.showLoading({
+      title: '加载中',
+    })
     util.api(
       '/api/wxapp/goods/search',
       res => {
         console.log(res)
         if (res.error === 0) {
-          if(res.content.pageResult.dataList.length < 20){
+          if(res.content.pageResult.page.currentPage === res.content.pageResult.page.lastPage){
             this.selectComponent('#recommend').resetDataList().resetPage().requestData()
+          }
+          if(currentPage === 1){
+            this.setData({
+              dataList:[]
+            })
           }
           this.setData({
             pageParams: res.content.pageResult.page,
+            loaded:true,
             delMarket:res.content.delMarket,
             showCart:res.content.showCart,
             ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.pageResult.dataList
           });
+          wx.hideLoading()
         }
       },
       {
@@ -63,7 +77,6 @@ global.wxPage({
         keyWords: this.data.keyWords,
         sortItem: this.data.sortItem,
         sortDirection: this.data.sortDirection,
-        couponSn: this.data.couponSn,
         ...this.data.filterData
       }
     );
@@ -74,6 +87,7 @@ global.wxPage({
     console.log(data)
     this.setData({
       filterData: {
+        ...this.data.filterData,
         minPrice,
         maxPrice,
         sortIds,
@@ -81,9 +95,9 @@ global.wxPage({
         labelIds,
         activityTypes
       },
-      'pageParams.currentPage': 1,
-      dataList: []
+      'pageParams.currentPage': 1
     })
+    this.selectComponent('#recommend').resetDataList().resetPage()
     this.requestList()
   },
   changeInput (e) {
@@ -93,19 +107,29 @@ global.wxPage({
   },
   inputSearch () {
     this.setData({
-      'pageParams.currentPage': 1,
-      dataList: []
+      'pageParams.currentPage': 1
     })
     // 添加热词
-    util.api('/api/wxapp/search/addHotWords', function (res) {
-    }, { userId: util.getCache("user_id"), hotWords: this.data.keyWords })
+    var data = this.data.keyWords.replace(/\s/g,"");
+    if (data != "") {
+      util.api('/api/wxapp/search/addHotWords', function (res) {
+      }, { userId: util.getCache("user_id"), hotWords: this.data.keyWords })
+    }
+    this.selectComponent('#recommend').resetDataList().resetPage()
     this.requestList()
   },
   loadFilter (options) {
     return new Promise((resolve, reject) => {
+      if(options.scene) options = this.resetScene(options.scene)
       let target = {
         filterData: {},
         data: {}
+      }
+      if(Object.keys(options).includes('actId') || Object.keys(options).includes('outerPageParam')){
+        let outerPageParam = {}
+        if(Object.keys(options).includes('outerPageParam')) outerPageParam = JSON.parse(options.outerPageParam); delete options.outerPageParam
+        if(Object.keys(options).includes('actId')) {outerPageParam.actId = options.actId; delete options.actId}
+        options.outerPageParam = outerPageParam
       }
       Object.keys(options).forEach(item => {
         if (Object.keys(this.data.filterData).includes(item)) {
@@ -132,7 +156,26 @@ global.wxPage({
       resolve()
     })
   },
-  
+  salesVolumeFilter(){
+    let sortDirection = this.data.sortDirection,sortItem = this.data.sortItem
+    this.setData({
+      sortItem:1,
+      sortDirection : sortItem === 2 || sortItem === 0 ? 0 : !sortDirection ? 1 : 0,
+      'pageParams.currentPage': 1
+    })
+    this.selectComponent('#recommend').resetDataList().resetPage()
+    this.requestList()
+  },
+  priceFilter(){
+    let sortDirection = this.data.sortDirection,sortItem = this.data.sortItem
+    this.setData({
+      sortItem:2,
+      sortDirection : sortItem === 1 || sortItem === 0 ? 1 : !sortDirection ? 1 : 0,
+      'pageParams.currentPage': 1
+    })
+    this.selectComponent('#recommend').resetDataList().resetPage()
+    this.requestList()
+  },
   showSpecDialog(e){
     console.log(e)
     util.api("/api/wxapp/goods/detail",res=>{
@@ -182,6 +225,13 @@ global.wxPage({
       productInfo: { ...this.data.product, goodsNum:e.detail.goodsNum }
     });
     console.log(this.data.productInfo)
+  },
+  resetScene(scene){
+    return decodeURIComponent(scene).split('&').reduce((defaultData,item)=>{
+      let params = item.split('=')
+      defaultData[params[0]] = params[1]
+      return defaultData
+    },{})
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

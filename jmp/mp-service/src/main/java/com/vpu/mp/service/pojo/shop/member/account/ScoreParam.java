@@ -26,7 +26,7 @@ public class ScoreParam {
 	/** -需要更新的用户id */
 	private Integer userId;
 	
-	/** -积分变动数额 */
+	/** -积分变动数额  区分正负数 */
 	private Integer score;
 	
 	/** -当前积分 -当批量操作时，为所选用户中的最低积分*/

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -124,21 +125,29 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
         for (PreSalePrdMpVo preSalePrd : preSalePrdMpVos) {
             GoodsPrdMpVo goodsPrdMpVo = prdMap.get(preSalePrd.getProductId());
             if (goodsPrdMpVo == null) {
+                prdMap.remove(preSalePrd.getProductId());
                 continue;
             }
             // 库存数量从新设置
-            int stock = preSalePrd.getStock()>goodsPrdMpVo.getPrdNumber()? goodsPrdMpVo.getPrdNumber():preSalePrd.getStock();
-            preSalePrd.setStock(stock);
-            goodsNum+=stock;
+            if (preSalePrd.getStock() > goodsPrdMpVo.getPrdNumber()) {
+                preSalePrd.setStock(goodsPrdMpVo.getPrdNumber());
+            }
+            goodsNum+=preSalePrd.getStock();
             saleNumber+=preSalePrd.getSaleNumber();
             preSalePrd.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
             newPreSalePrds.add(preSalePrd);
         }
+
+        capsule.setProducts(new ArrayList<>(prdMap.values()));
+        capsule.setGoodsNumber(goodsNum);
         if (goodsNum == 0 && BaseConstant.needToConsiderNotHasNum(goodsPreSaleInfo.getActState())) {
             log.debug("小程序-商品详情-预售商品数量已用完");
             goodsPreSaleInfo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
         }
-        capsule.setGoodsNumber(goodsNum);
+        if (prdMap.size() == 0) {
+            log.debug("小程序-商品详情-预售活动-商品规格信息和活动规格信息无交集");
+            goodsPreSaleInfo.setActState(BaseConstant.ACTIVITY_STATUS_NO_PRD_TO_USE);
+        }
         capsule.setGoodsSaleNum(saleNumber);
         goodsPreSaleInfo.setPreSalePrdMpVos(newPreSalePrds);
         capsule.setActivity(goodsPreSaleInfo);
@@ -176,7 +185,7 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
     }
 
     @Override
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
         Map<Integer, Integer> updateParam = returnGoods.stream().collect(Collectors.toMap(OrderReturnGoodsVo::getProductId, OrderReturnGoodsVo::getGoodsNumber));
         updateParam.forEach((k, v)->updateParam.put(k, -v));
         if(updateParam.size() != 0){
@@ -238,7 +247,7 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
         List<Integer> productList = cartBo.getCartGoodsList().stream()
                 .filter(goods -> BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(goods.getGoodsRecord().getGoodsType()))
                 .map(WxAppCartGoods::getProductId).collect(Collectors.toList());
-        Map<Integer, List<Record5<Integer, Integer, Integer, Integer, BigDecimal>>> goodsPreSaleList = preSaleProcessorDao.getGoodsPreSaleList(productList, cartBo.getDate());
+        Map<Integer, List<Record5<Integer, Integer,Integer, Integer, BigDecimal>>> goodsPreSaleList = preSaleProcessorDao.getGoodsPreSaleList(productList, cartBo.getDate());
         if (goodsPreSaleList!=null&&goodsPreSaleList.size()>0){
             cartBo.getCartGoodsList().forEach(goods->{
                 if (goodsPreSaleList.get(goods.getProductId())!=null){

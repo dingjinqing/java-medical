@@ -32,6 +32,7 @@ import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsDeliverTemplateService;
+import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import com.vpu.mp.service.shop.member.AddressService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -82,6 +83,8 @@ public class Calculate extends ShopBaseService {
     private FullReductionProcessor fullReductionProcessor;
     @Autowired
     private PreSaleProcessor preSaleProcessor;
+    @Autowired
+    private IncreasePurchaseService increasePurchase;
 
     /**
      * 计算订单商品折扣金额
@@ -150,12 +153,12 @@ public class Calculate extends ShopBaseService {
                 if (OrderConstant.D_T_MEMBER_CARD.equals(discountType) &&
                     defaultMarketing != null &&
                     OrderConstant.D_T_MEMBER_CARD.equals(defaultMarketing.getType()) &&
-                    !CardConstant.MCARD_TP_LIMIT.equals(defaultMarketing.getCard().getCardType())) {
+                    !CardConstant.MCARD_TP_LIMIT.equals(defaultMarketing.getCard().getInfo().getCardType())) {
                     //会员卡 and
                     // 临时存储默认营销信息!=null and
                     // 临时存储默认营销信息==card and
                     // 非限次卡
-                    if (!userCard.isContainsProduct(defaultMarketing.getCard().getCardId(), bo)) {
+                    if (!userCard.isContainsProduct(defaultMarketing.getCard().getInfo().getCardId(), bo)) {
                         //校验该卡是否可用该商品
                         continue;
                     }
@@ -191,7 +194,7 @@ public class Calculate extends ShopBaseService {
             logger().info("不可使用优惠券，end");
             return;
         }
-        if (vo.getDefaultMemberCard() == null || !CardConstant.MCARD_TP_LIMIT.equals(vo.getDefaultMemberCard().getCardType())) {
+        if (vo.getDefaultMemberCard() == null || !CardConstant.MCARD_TP_LIMIT.equals(vo.getDefaultMemberCard().getInfo().getCardType())) {
             logger().info("该次下单可以用优惠卷，准备获取优惠卷");
             //可用优惠卷
             List<OrderCouponVo> coupons = coupon.getValidCoupons(param.getWxUserInfo().getUserId());
@@ -275,7 +278,6 @@ public class Calculate extends ShopBaseService {
 
     /**
      * 获取会员卡列表
-     *
      * @param param
      * @param vo
      */
@@ -289,9 +291,9 @@ public class Calculate extends ShopBaseService {
         if (param.getMemberCardNo() != null) {
             /**使用会员卡，其中cardNo==0为使用默认会员卡*/
             OrderMemberVo card = userCard.userCardDao.getValidByCardNo(param.getMemberCardNo());
-            if (card != null && CardConstant.MCARD_TP_LIMIT.equals(card.getCardType())) {
+            if (card != null && CardConstant.MCARD_TP_LIMIT.equals(card.getInfo().getCardType())) {
                 //限次卡
-                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), card == null ? null : Lists.newArrayList(card));
+                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), Lists.newArrayList(card));
                 vo.setDefaultMemberCard(card);
                 vo.setMemberCards(validCardList);
             } else {
@@ -389,7 +391,11 @@ public class Calculate extends ShopBaseService {
                 bo.setIsShipping(OrderConstant.YES);
                 continue;
             }
-            //TODO 检查加价购换购商品是否走运费计算
+            //检查加价购换购商品是否走运费计算
+            if(bo.getPurchasePriceRuleId() != null && bo.getPurchasePriceRuleId() > 0 && increasePurchase.isFreeShip(bo.getPurchasePriceId())) {
+                bo.setIsShipping(OrderConstant.YES);
+                continue;
+            }
             if (totalMaps.get(bo.getDeliverTemplateId()) == null) {
                 totalMaps.put(bo.getDeliverTemplateId(), new Total());
             }

@@ -74,7 +74,7 @@
               :rules="[{required: true, message:'请填写定金支付时间', trigger: ['blur','change']}]"
               :inline-message="true"
               prop="preTime2Range"
-              v-show="twoSteps"
+              v-if="twoSteps&&!isFullPay"
             >
               <el-date-picker
                 v-model="param.preTime2Range"
@@ -90,6 +90,7 @@
               >
               </el-date-picker>
               <el-button
+                v-if="!isEditeFlag"
                 size="small"
                 @click="handleDelete"
               >删除</el-button>
@@ -101,6 +102,7 @@
               prop="tailPayTimeRange"
               :rules="[{required: true, message:'请填写尾款支付时间', trigger: ['blur','change']}]"
               :inline-message="true"
+              v-if="!isFullPay"
             >
               <el-date-picker
                 v-model="param.tailPayTimeRange"
@@ -176,15 +178,8 @@
               v-model="param.deliverType"
               :label="1"
               style="line-height: 40px"
+              @change="changTime"
             >&nbsp;指定发货开始时间</el-radio>
-            <!-- <el-form-item
-              prop="deliverTime"
-              :rules="[
-                {required: true, message:'请填写发货开始时间', trigger: ['blur','change']},
-                {validator: (rule, value, callback) => { validateSendTime(rule,value, callback)}}
-              ]"
-              :inline-message="true"
-            > -->
             <el-date-picker
               :disabled="param.deliverType==2 || isEditeFlag"
               v-model="param.deliverTime"
@@ -194,7 +189,6 @@
               value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
-            <!-- </el-form-item> -->
           </div>
           <div style="display:flex">
             <el-radio
@@ -202,18 +196,11 @@
               v-model="param.deliverType"
               :label="2"
               style="line-height:40px"
+              @change="changTime"
             >
               <span v-if="this.param.presaleType === 0">&nbsp;尾款支付完成</span>
               <span v-if="this.param.presaleType === 1">&nbsp;支付完成后</span>
             </el-radio>
-            <!-- <el-form-item
-              prop="deliverDays"
-              :rules="[
-                { required: true,trigger: 'blur' },
-                { validator: (rule, value, callback)=>{validatePayment(rule, value, callback)}, trigger: ['blur', 'change'] }
-              ]"
-              :inline-message="true"
-            > -->
             <el-input
               :disabled="param.deliverType==1 || isEditeFlag"
               v-model="param.deliverDays"
@@ -222,7 +209,6 @@
               :min=0
             />
             <span style="margin-left:10px">天后发货</span>
-            <!-- </el-form-item> -->
           </div>
         </el-form-item>
         <el-form-item
@@ -314,7 +300,6 @@
               align="center"
               label="活动价格"
               prop="presalePrice"
-              :show-overflow-tooltip="true"
             >
               <template slot="append">
                 <span>活动价格</span>
@@ -335,6 +320,7 @@
                   style="height: 56px;line-height: 56px;"
                 >
                   <el-input
+                    :disabled="isEditeFlag"
                     v-model="scope.row.presalePrice"
                     size="small"
                   />
@@ -345,7 +331,6 @@
               align="center"
               prop="presaleNumber"
               label="活动库存"
-              :show-overflow-tooltip="true"
             >
               <template slot="append">
                 <span>活动库存</span>
@@ -366,6 +351,7 @@
                   style="height: 56px;line-height: 56px;"
                 >
                   <el-input
+                    :disabled="isEditeFlag"
                     v-model="scope.row.presaleNumber"
                     size="small"
                   />
@@ -377,7 +363,6 @@
               prop="presaleMoney"
               label="定金"
               v-if="param.presaleType===0"
-              :show-overflow-tooltip="true"
             >
               <template slot="append">
                 <span>定金</span>
@@ -398,6 +383,7 @@
                   style="height: 56px;line-height: 56px;"
                 >
                   <el-input
+                    :disabled="isEditeFlag"
                     v-model="scope.row.presaleMoney"
                     size="small"
                   />
@@ -409,17 +395,7 @@
               prop="preDiscountMoney1"
               label="1阶段定金可抵扣金额"
               v-if="!isFullPay"
-              :show-overflow-tooltip="true"
             >
-              <template slot="append">
-                <span>1阶段定金可抵扣金额</span>
-                <el-button
-                  @click="setCurrent(4)"
-                  size="mini"
-                  icon="el-icon-edit"
-                >1阶段
-                </el-button>
-              </template>
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'products.' +  scope.$index+ '.preDiscountMoney1'"
@@ -430,6 +406,7 @@
                   style="height: 56px;line-height: 56px;"
                 >
                   <el-input
+                    :disabled="isEditeFlag"
                     v-model="scope.row.preDiscountMoney1"
                     size="small"
                   />
@@ -441,7 +418,6 @@
               prop="preDiscountMoney2"
               label="2阶段定金可抵扣金额"
               v-if="twoSteps&&!isFullPay"
-              :show-overflow-tooltip="true"
             >
               <template slot="append">
                 <span>2阶段定金可抵扣金额</span>
@@ -462,6 +438,7 @@
                   style="height: 56px;line-height: 56px;"
                 >
                   <el-input
+                    :disabled="isEditeFlag"
                     v-model="scope.row.preDiscountMoney2"
                     size="small"
                   />
@@ -530,8 +507,16 @@
         <el-form
           label-width="120px"
           v-show="showMore"
+          ref="param-share"
+          :model="param"
         >
-          <el-form-item label="购买数量限制：">
+          <el-form-item
+            label="购买数量限制："
+            prop="buyNumber"
+            :rules="[
+                { validator: (rule, value, callback)=>{validateBuyNumber(rule, value, callback)}, trigger: ['blur', 'change'] }
+              ]"
+          >
             <div style="display:flex">
               <span>单用户最多可以购买</span>
               <el-input
@@ -698,10 +683,13 @@ export default {
     // 发货时间校验
     var checkDeliverType = (rule, value, callback) => {
       console.log(value)
+      var re = /^[1-9]\d*$/
       if (value === 1 && this.param.deliverTime === null) {
         callback(new Error('请选择发货开始时间'))
       } else if (value === 2 && (!this.param.deliverDays || this.param.deliverDays === null)) {
         callback(new Error('请填写尾款发货时间'))
+      } else if (value === 2 && !re.test(this.param.deliverDays)) {
+        callback(new Error('支付完成后发货日期必须大于0'))
       } else {
         callback()
       }
@@ -758,12 +746,12 @@ export default {
         goodsId: '',
         deliverType: 1, // 发货时间类型 1：指定，2：尾款支付
         deliverTime: null, // 发货时间
-        deliverDays: null, // 几天后发货
+        deliverDays: '', // 几天后发货
         discountType: 0, // 优惠叠加策略
         returnType: 0, // 定金退款策略
         showSaleNumber: 0, // 预售数量展示
         buyType: 0, // 商品购买方式
-        buyNumber: null, // 购买数量限制
+        buyNumber: '', // 购买数量限制
         shareAction: 1,
         shareDoc: '',
         shareImgAction: 1,
@@ -799,10 +787,12 @@ export default {
     // 验证是否选择了商品
     validateMoney (rule, value, callback, prdPrice) {
       var re = /^\d+(\.\d{1,2})?$/
-      if (!re.test(value)) {
-        callback(new Error('请填写非负数, 可以保留两位小数'))
+      if (value < 0) {
+        callback(new Error('价格不能为负数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请保留两位小数'))
       } else if (value > prdPrice) {
-        callback(new Error('活动价格不能大于商品原价'))
+        callback(new Error('价格已大于商品原价'))
       } else {
         callback()
       }
@@ -812,63 +802,67 @@ export default {
       if (!re.test(value)) {
         callback(new Error('请填写正整数'))
       } else if (value > prdNumber) {
-        callback(new Error('活动库存不能大于商品库存'))
+        callback(new Error('库存已大于商品库存'))
       } else {
         callback()
       }
     },
     validateReadyMoney (rule, value, callback, presalePrice) {
       var re = /^\d+(\.\d{1,2})?$/
-      if (!re.test(value)) {
-        callback(new Error('请填写非负数, 可以保留两位小数'))
+      if (value < 0) {
+        callback(new Error('定金不能为负数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请保留两位小数'))
       } else if (value > Number(presalePrice)) {
-        callback(new Error('定金不能大于活动价格'))
+        callback(new Error('定金已大于活动价格'))
       } else {
         callback()
       }
     },
     validateFirstStage (rule, value, callback, presalePrice, presaleMoney) {
       var re = /^\d+(\.\d{1,2})?$/
-      if (!re.test(value)) {
-        callback(new Error('请填写非负数, 可以保留两位小数'))
+      if (value < 0) {
+        callback(new Error('定金不能为负数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请保留两位小数'))
       } else if (value > Number(presalePrice)) {
-        callback(new Error('1阶段定金不能大于活动价格'))
+        callback(new Error('定金已大于活动价格'))
       } else if (value < Number(presaleMoney)) {
-        callback(new Error('1阶段定金不能小于定金'))
+        callback(new Error('数值不能小于定金'))
       } else {
         callback()
       }
     },
     validateSecondStage (rule, value, callback, presalePrice, presaleMoney) {
       var re = /^\d+(\.\d{1,2})?$/
-      if (!re.test(value)) {
-        callback(new Error('请填写非负数, 可以保留两位小数'))
+      if (value < 0) {
+        callback(new Error('定金不能为负数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请保留两位小数'))
       } else if (value > Number(presalePrice)) {
-        callback(new Error('2阶段定金不能大于活动价格'))
+        callback(new Error('定金已大于活动价格'))
       } else if (value < Number(presaleMoney)) {
-        callback(new Error('2阶段定金不能小于定金'))
+        callback(new Error('数值不能小于定金'))
       } else {
         callback()
       }
     },
-    // // 验证发货时间
-    // validateSendTime (rule, value, callback) {
-    //   console.log(value)
-    //   if (!value && this.param.deliverTime === 1) {
-    //     callback(new Error('请指定发货时间'))
-    //   } else {
-    //     callback()
-    //   }
-    // },
-    // // 验证尾款支付完成
-    // validatePayment (rule, value, callback) {
-    //   console.log(value)
-    //   if (!value && this.param.deliverType === 2) {
-    //     callback(new Error('请填写尾款发货时间'))
-    //   } else {
-    //     callback()
-    //   }
-    // },
+    // 验证数量
+    validateBuyNumber (rule, value, callback) {
+      console.log(value)
+      var re = /^([0]|[1-9][0-9]*)$/
+      if (!value) {
+        callback()
+      }
+      if (!re.test(value)) {
+        callback(new Error('请输入正确的数字'))
+      } else {
+        callback()
+      }
+    },
+    changTime (e) {
+      this.$refs.param.validateField('deliverType')
+    },
     // 一阶段定金支付时间
     dateChange (date) {
       this.param.preStartTime = date[0]
@@ -885,42 +879,59 @@ export default {
     },
     // 保存
     add () {
-      this.param.buyNumber = Number(this.param.buyNumber)
-      const { param } = this
-
-      console.log(param, 'get param')
-      this.formatParam()
-      if (!this.validateParam()) {
-        return
-      }
-      if (this.update) {
-        updatePreSale(param).then(res => {
-          if (res.error === 0) {
-            console.log(res)
-            this.$message.success('更新成功')
-            // this.gotoHome()
-          } else {
-            this.$message.error('更新失败')
-          }
-        })
-      } else {
-        createPreSale(param).then(res => {
-          if (res.error === 0) {
-            console.log(res)
-            this.$message.success('添加成功')
-            // this.gotoHome()
-          }
-        })
-      }
+      this.$refs['param'].validate((valid) => {
+        if (valid) {
+          this.$refs['param-s'].validate((valid) => {
+            console.log(valid, 'valid')
+            if (valid) {
+              const { param } = this
+              this.param.buyNumber = Number(this.param.buyNumber)
+              console.log(param, 'get param')
+              this.formatParam()
+              if (!this.validateParam()) {
+                return false
+              } else {
+                if (this.update) {
+                  updatePreSale(param).then(res => {
+                    if (res.error === 0) {
+                      console.log(res)
+                      this.$message.success('更新成功')
+                      this.gotoHome()
+                    } else {
+                      this.$message.error('更新失败')
+                    }
+                  })
+                } else {
+                  createPreSale(param).then(res => {
+                    if (res.error === 0) {
+                      console.log(res)
+                      this.$message.success('添加成功')
+                      this.gotoHome()
+                    } else {
+                      this.$message.error('创建失败')
+                    }
+                  })
+                }
+              }
+            } else {
+              this.$message.error('请正确填写表单')
+              return false
+            }
+          })
+        } else {
+          this.$message.error('请正确填写表单')
+          return false
+        }
+      })
     },
     formatParam () {
       this.formatTimes()
     },
     formatTimes () {
-      const { isFullPay, payTimeRange, twoSteps } = this
+      const { isFullPay, twoSteps } = this
       if (isFullPay) {
-        this.param.startTime = format(payTimeRange[0])
-        this.param.endTime = format(payTimeRange[1])
+        // this.param.startTime = format(payTimeRange[0])
+        // this.param.endTime = format(payTimeRange[1])
         this.param.preStartTime = format(this.param.preTime1Range[0])
         this.param.preEndTime = format(this.param.preTime1Range[1])
       } else {
@@ -939,7 +950,6 @@ export default {
       const { id } = this.$route.params
       getDetail(id).then(({ content }) => {
         this.param = content
-        // this.param.shareImg = content.shareImg.split('.cn/')[1]
         console.log(this.param.shareImg)
         this.getImgeUrl(content.shareImg)
 
@@ -966,50 +976,50 @@ export default {
     // 参数校验
     validateParam () {
       this.formatParam()
-      // todo ......
-      this.$refs['param'].validate((valid) => {
-        console.log(valid, 'valid')
-        if (valid) {
-          if (this.param.preStartTime2) {
-            if (this.param.preEndTime > this.param.preStartTime2) {
-              this.$message.warning('一期结束时间应小于二期开始时间')
-              return false
-            }
-            if (this.param.startTime < this.param.preStartTime) {
-              this.$message.warning('尾款支付开始时间应大于一期开始时间')
-              return false
-            }
-            if (this.param.endTime < this.param.preEndTime2) {
-              this.$message.warning('尾款支付结束时间应大于二期结束时间')
-              return false
-            }
-          } else if (!this.param.preStartTime2 || this.param.preStartTime2 === '') {
-            if (this.param.startTime < this.param.prrStartTime) {
-              this.$message.warning('尾款支付开始时间应大于定金支付的开始时间')
-              return false
-            }
-          } else {
-            return false
-          }
-          if (this.param.deliverType === 1) {
-            if (this.param.deliverTime < this.param.endTime) {
-              this.$message.warning('指定发货时间应大于尾款支付时间')
-            }
-          }
-        } else {
-          console.log('error submit')
+      // 校验时间
+      if (this.param.preStartTime2) {
+        if (this.param.preEndTime > this.param.preStartTime2) {
+          this.$message.warning('一期结束时间应小于二期开始时间')
           return false
         }
-      })
-
-      this.$refs['param-s'].validate((valid) => {
-        console.log(valid, 'valid')
-        if (valid) {
-          // alert('111')
-        } else {
-          // alert('222')
+        if (this.param.startTime < this.param.preStartTime) {
+          this.$message.warning('尾款支付开始时间应大于一期开始时间')
+          return false
         }
-      })
+        if (this.param.endTime < this.param.preEndTime2) {
+          this.$message.warning('尾款支付结束时间应大于二期结束时间')
+          return false
+        }
+      } else if (!this.param.preStartTime2 || this.param.preStartTime2 === '') {
+        if (this.param.startTime < this.param.preStartTime) {
+          this.$message.warning('尾款支付开始时间应大于定金支付的开始时间')
+          return false
+        }
+      } else {
+        return false
+      }
+      if (this.param.presaleType === 0 && this.param.deliverType === 1) {
+        if (this.param.deliverTime < this.param.endTime) {
+          this.$message.warning('指定发货时间应大于尾款支付时间')
+          return false
+        }
+      }
+      if (this.param.presaleType === 1 && this.param.deliverType === 1) {
+        if (this.param.deliverTime < this.param.preEndTime) {
+          this.$message.warning('指定发货时间应大于尾款支付时间')
+          return false
+        }
+      }
+
+      if (this.param.shareAction === 2 && !this.param.shareDoc) {
+        this.$message.warning('请填写对应的分享文案')
+        return false
+      }
+
+      if (this.param.shareImgAction === 2 && (this.param.shareImg === null || this.param.shareImg === '')) {
+        this.$message.warning('请选择自定义图片')
+        return false
+      }
       return true
     },
     // 删除二阶段时间
@@ -1106,6 +1116,11 @@ export default {
     'param.goodsId': function (value) {
       if (value) {
         this.$refs.param.validateField('goodsId')
+      }
+    },
+    'param.presaleType': function (value) {
+      if (value) {
+        this.$refs.param.validateField('presaleType')
       }
     },
     'param.deliverType': function (value) {

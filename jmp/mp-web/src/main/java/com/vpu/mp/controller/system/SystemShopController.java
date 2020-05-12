@@ -86,7 +86,7 @@ public class SystemShopController extends SystemBaseController {
 	 * @return
 	 */
 	@PostMapping("/system/shop/renew")
-	public JsonResult shopRenew(@RequestBody ShopRenewReq sReq) {
+	public JsonResult shopRenew(@RequestBody @Valid ShopRenewReq sReq) {
 		ShopRecord checkShop = saas.shop.checkShop(sReq.getShopId(), sReq.getSysId());
 		if(checkShop==null) {
 			//店铺id或sysid错误

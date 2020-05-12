@@ -12,7 +12,76 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/firstMarketManage'
       )
   },
-
+  // 表单统计home页
+  {
+    path: '/admin/home/main/formStatisticsHome',
+    name: 'form_decoration',
+    meta: {
+      crumbTitle: 'router.form_decoration',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/formStatistics/formStatisticsHome'
+      )
+  },
+  // 表单统计 反馈统计页面
+  {
+    path: '/admin/home/main/feedbackStatistics',
+    name: 'feedbackStatistics',
+    meta: {
+      crumbTitle: 'router.feedbackStatistics',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/formStatistics/feedbackStatistics'
+      )
+  },
+  // 表单统计 反馈列表页面
+  {
+    path: '/admin/home/main/feedbackList',
+    name: 'feedbackList',
+    meta: {
+      crumbTitle: 'router.feedbackList',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/formStatistics/feedbackList'
+      )
+  },
+  // 表单统计 反馈详细页面
+  {
+    path: '/admin/home/main/feedbackDetails',
+    name: 'feedbackDetails',
+    meta: {
+      crumbTitle: 'router.feedbackDetails',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/formStatistics/feedbackDetails'
+      )
+  },
+  // 表单装修主页
+  {
+    path: '/admin/home/main/formDecorationHome',
+    name: 'formDecorationHome',
+    meta: {
+      crumbTitle: 'router.formDecorationHome',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/formStatistics/formDecoration/formDecorationHome'
+      )
+  },
   // 分享有礼活动
   {
     path: '/admin/home/main/sharePoliteList',
@@ -311,7 +380,7 @@ const routes = [
   },
   // 组团瓜分积分
   {
-    path: '/admin/home/main/divideIntegral',
+    path: '/admin/home/main/groupIntegration',
     name: 'pin_integration',
     meta: {
       crumbTitle: 'router.pin_integration',
@@ -319,7 +388,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/divideIntegral/divideIntegral'
+        '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationList'
       )
   },
   // 普通优惠券
@@ -513,6 +582,19 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/friendHelp/participateDetails'
       )
   },
+  // 好友助力活动效果
+  {
+    path: '/admin/home/main/friendHelp/effectData/:id',
+    name: 'promote_effect_data',
+    meta: {
+      crumbTitle: 'router.promote_effect_data',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/friendHelp/effectData'
+      )
+  },
   // 添加优惠券活动
   {
     path: '/admin/home/main/addyCoupon',
@@ -659,7 +741,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.lottery_activity_detail',
       meta: 'first_market_manage',
-      category: 'lottery_activity'
+      category: 'first_market_manage'
     },
     component: () =>
       import(
@@ -673,7 +755,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.lottery_activity_newUserList',
       meta: 'first_market_manage',
-      category: 'lottery_activity'
+      category: 'first_market_manage'
     },
     component: () =>
       import(
@@ -777,20 +859,7 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationAdd'
       )
   },
-  // 编辑瓜分积分活动
-  {
-    path: '/admin/home/main/integration/edit/:id',
-    name: 'group_integration_edit',
-    meta: {
-      crumbTitle: 'router.pin_integration_edit',
-      meta: 'first_market_manage',
-      category: 'first_market_manage'
-    },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationAdd'
-      )
-  },
+
   // 瓜分积分活动--参与用户明细
   {
     path: '/admin/home/main/integration/detail/:id',
@@ -803,6 +872,20 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationDetail'
+      )
+  },
+  // 瓜分积分活动--活动效果数据
+  {
+    path: '/admin/home/main/integration/analysis/:id',
+    name: 'group_integration_analysis',
+    meta: {
+      crumbTitle: 'router.pin_integration_analysis',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationAnalysis'
       )
   },
   // 瓜分积分活动--成团明细
@@ -833,7 +916,7 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/packagePrice/packagePriceList'
       )
   },
-  // 打包一口价活动参与明细
+  // 打包一口价活动-参与明细
   {
     path: '/admin/home/main/packsale/detail/:id',
     name: 'package_price_detail',
@@ -845,6 +928,20 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/packagePrice/packagePriceDetail'
+      )
+  },
+  // 打包一口价活动-查看活动订单
+  {
+    path: '/admin/home/main/packsale/order/:id',
+    name: 'package_price_order',
+    meta: {
+      crumbTitle: 'router.package_price_order',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/packagePrice/packagePriceActivityOrder'
       )
   },
   // 开屏有礼
@@ -1115,6 +1212,34 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/increasePurchase/purchaseList'
       )
   },
+  // 添加加价购活动
+  {
+    path: '/api/admin/market/addPriceBuy/add',
+    name: 'add_increase_purchase',
+    meta: {
+      crumbTitle: 'router.add_increase_purchase',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/increasePurchase/addPurchase'
+      )
+  },
+  // 编辑加价购活动
+  {
+    path: '/api/admin/market/addPriceBuy/edit/:id',
+    name: 'edit_increase_purchase',
+    meta: {
+      crumbTitle: 'router.edit_increase_purchase',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/increasePurchase/editPurchase'
+      )
+  },
 
   // 加价购活动 换购订单
   {
@@ -1335,7 +1460,58 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/wechateGoodsCicle/wechateGoodsCicle'
       )
   },
-
+  // 积分兑换
+  {
+    path: '/admin/home/main/integralExchangeHome',
+    name: 'integral_convert',
+    meta: {
+      crumbTitle: 'router.integral_convert',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/integralExchange/integralExchangeHome'
+      )
+  },
+  // 积分兑换子页面--- 查看积分兑换订单
+  {
+    path: '/admin/home/main/pointsExchangeOrder',
+    name: 'pointsExchangeOrder',
+    meta: {
+      crumbTitle: 'router.integral_convert',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/integralExchange/subPages/pointsExchangeOrder'
+      )
+  },
+  // 积分兑换子页面--- 积分兑换用户列表
+  {
+    path: '/admin/home/main/pointsUserList',
+    name: 'pointsUserList',
+    meta: {
+      crumbTitle: 'router.pointsUserList',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/integralExchange/subPages/pointsUserList'
+      )
+  },
+  // 积分兑换子页面--- 获取新用户明细
+  {
+    path: '/admin/home/main/newUserDetails',
+    name: 'newUserDetails',
+    meta: {
+      crumbTitle: 'router.integral_convert',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/integralExchange/subPages/newUserDetails'
+      )
+  },
   // 支付有礼
   {
     path: '/admin/home/main/payReward',

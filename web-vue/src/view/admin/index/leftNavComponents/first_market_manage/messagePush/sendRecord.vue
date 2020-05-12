@@ -15,40 +15,19 @@
             <el-input
               style="width:120px"
               size="small"
-              v-model="formData.userName"
+              v-model="queryParams.userName"
             ></el-input>
-          </el-form-item>
-          <el-form-item :label="labels.templatePlatfrom">
-            <el-select
-              style="width:120px"
-              placeholder="请选择"
-              @change="sendTypeValueChange"
-              v-model="sendTypeValue"
-            >
-              <el-option
-                label="全部"
-                value="全部"
-              >
-              </el-option>
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
           </el-form-item>
           <el-form-item :label="labels.isVisit">
             <el-select
               style="width:120px"
               placeholder="请选择"
-              v-model="isOnClickValue"
+              v-model="queryParams.isOnClick"
               @change="isOnClickValueChange"
             >
               <el-option
                 label="全部"
-                value="全部"
+                :value="0"
               >
               </el-option>
 
@@ -73,38 +52,55 @@
       </div>
       <div>
         <el-table
-          :data="tableDataFake"
+          :data="tableData"
           style="width: 100%"
           center
+          border
+          header-row-class-name="tableClass"
         >
           <el-table-column
-            prop="name"
+            prop="username"
             :label="tableLabels.name"
+            align="center"
           >
           </el-table-column>
           <el-table-column
             prop="templatePlatfrom"
             :label="tableLabels.templatePlatfrom"
+            align="center"
           >
+            <template>
+              公众号
+            </template>
           </el-table-column>
           <el-table-column
             prop="sendStatus"
             :label="tableLabels.sendStatus"
+            align="center"
           >
+            <template slot-scope="scope">
+              {{scope.row.sendStatus === 1?'是':'否'}}
+            </template>
           </el-table-column>
           <el-table-column
             prop="isVisit"
             :label="tableLabels.isVisit"
+            align="center"
           >
+            <template slot-scope="scope">
+              {{scope.row.isVisit === 1?'是':'否'}}
+            </template>
           </el-table-column>
           <el-table-column
             prop="visitTime"
             :label="tableLabels.visitTime"
+            align="center"
           >
           </el-table-column>
           <el-table-column
             prop="createTime"
             :label="tableLabels.createTime"
+            align="center"
           >
           </el-table-column>
         </el-table>
@@ -128,8 +124,15 @@ export default {
   components: { pagination },
   data () {
     return {
+      queryParams: {
+        templateId: Number(this.$route.query.id),
+        userName: '',
+        sendType: 0,
+        isOnClick: 0
+      },
       pageParams: {
-        templateId: Number(this.$route.query.id)
+        currentPage: 1
+
       },
       labels: {
         name: `用户昵称`,
@@ -209,11 +212,11 @@ export default {
       options1: [
         {
           label: `是`,
-          value: true
+          value: 1
         },
         {
           label: `否`,
-          value: false
+          value: 2
         }
       ]
     }
@@ -223,8 +226,9 @@ export default {
   },
   methods: {
     fetchData () {
-      console.log(this.pageParams)
-      recordListApi(this.pageParams).then(res => {
+      console.log(this.queryParams)
+      recordListApi(this.queryParams).then(res => {
+        console.log(res)
         const { content, content: { page }, error } = res
         if (error === 0) {
           this.tableData = content.dataList
@@ -239,6 +243,7 @@ export default {
       // const params = {
       //   templateId: Number(this.)
       // }
+      this.fetchData()
     },
     //
     sendTypeValueChange (val) {
@@ -260,5 +265,13 @@ export default {
 <style lang="scss" scoped>
 .sendRecord {
   padding: 10px;
+  /deep/ .tableClass th {
+    background-color: #f5f5f5;
+    border: none;
+    height: 36px;
+    font-weight: bold;
+    color: #000;
+    padding: 8px 10px;
+  }
 }
 </style>

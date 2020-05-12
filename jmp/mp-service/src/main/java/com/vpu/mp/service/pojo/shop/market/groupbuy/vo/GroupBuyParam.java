@@ -30,7 +30,7 @@ public class GroupBuyParam {
      * 商品id
      */
     @NotNull
-    private Integer goodsId;
+    private String goodsId;
     /**
      * 成团人数 不可小于2人,保存后不可编辑
      */

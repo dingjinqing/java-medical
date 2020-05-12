@@ -110,14 +110,16 @@ export const cn = {
     goodsSpecValAdd: '添加规格值',
     goodsSpecAdd: '添加规格选项',
     goodsSpecPrice: '规格价格：',
-    goodsSpecShopPrice: '价格(元)',
+    goodsSpecShopPrice: '店铺价格(元)',
     goodsSpecShopCost: '成本价格(元)',
+    goodsSpecMarketPrice: '市场价格(元)',
     goodsSpecGoodsNum: '库存',
     goodsSpecGoodsPrdSn: '规格编码',
     goodsSpecGoodsImg: '规格图片',
     batchUpdate: '批量设置',
-    batchPrice: '价格',
+    batchPrice: '店铺价格',
     batchCost: '成本价格',
+    batchMarketPrice: '市场价格',
     batchNum: '库存',
     batchImgSrc: '规格图片',
     goodsNumber: '商品库存：',
@@ -128,7 +130,10 @@ export const cn = {
     goodsGradeMember: '会员价：',
     goodsGradeMemberTip:
       '会员价仅针对等级会员卡设定，非等级会员卡不可设置会员价。若等级会员卡也包含会员折扣，则会员价和会员折扣可同时享受，优先计算会员价',
-    goodsGradeMemberSetting: '会员价设置：'
+    goodsGradeMemberSetting: '会员价设置：',
+    goodsSpecPrdPrice: '规格价格(元)',
+    goodsPrice: '商品价格(元)',
+    unifyMemberCardsPrice: '统一会员价'
   },
   stockAndPriceInfoOther: {
     limitBuyNum: '最小限购数量：',
@@ -235,6 +240,7 @@ export const cn = {
     promotionLanguage: '推广语内容：',
     promotionLanguageTooLong: '推广语超长',
     promotionDocTooLong: '文档内容过长',
+    promotionDocIsNull: '文档内容不可为空',
     shareGoodsAction: '商品分享海报：',
     shareGoodsActionRadio1: '默认样式',
     shareGoodsActionRadio2: '自定义样式',

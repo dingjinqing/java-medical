@@ -105,7 +105,7 @@
         </el-table-column>
         <el-table-column
           label="昵称"
-          width="120"
+          width="115"
           align="center"
         >
           <template slot-scope="scope">
@@ -120,7 +120,7 @@
         <el-table-column
           prop="mobile"
           label="手机号"
-          width="120"
+          width="115"
           align="center"
         >
         </el-table-column>
@@ -164,7 +164,26 @@
                 :key="index"
                 @click="handleToOperation(scope.row,index)"
               >
-              <span v-if="item.flag !== 1 && index !== 2">{{item}}</span>
+                <span v-if="Number(scope.row.cardType)!==2 && index<2">
+                  <span
+                    class="opt-item"
+                    :class="[Number(scope.row.cardType)!==2?'content-left':'']"
+                  >{{item}}</span>
+                </span>
+                <span v-else>
+                  <span
+                    v-if="scope.row.flag !== 1 && index===2"
+                    class="opt-item"
+                    :class="[Number(scope.row.cardType)!==2?'content-left':'']"
+                  > {{item}}</span>
+                  <span v-else>
+                    <span
+                      v-if="Number(scope.row.cardType)!==2"
+                      class="opt-item"
+                      :class="[Number(scope.row.cardType)!==2?'content-left':'']"
+                    ></span>
+                  </span>
+                </span>
               </span>
             </div>
           </template>
@@ -179,7 +198,7 @@
   </div>
 </template>
 <script>
-import { getAllCardHolders, exportExcel } from '@/api/admin/memberManage/memberCard.js'
+import { getAllCardHolders, exportExcel, deleteUserCardRequest } from '@/api/admin/memberManage/memberCard.js'
 import { download } from '@/util/excelUtil.js'
 export default {
   components: { Pagination: () => import('@/components/admin/pagination/pagination') },
@@ -278,6 +297,27 @@ export default {
     // 操作部分点击
     handleToOperation (row, index) {
       console.log(row, index)
+      if (index < 2) {
+        //  充值明细  消费明细
+        this.$router.push({
+          name: 'refillDetailsItem',
+          query: {
+            cardNo: row.cardNo,
+            cardType: row.cardType,
+            username: row.username,
+            userId: row.userId,
+            activeName: index + 1
+          }
+        })
+      } else if (index === 2) {
+        //  废除
+        deleteUserCardRequest({ cardNo: row.cardNo }).then(res => {
+          if (res.error === 0) {
+            this.$message.success(this.$t('membershipIntroduction.deleteCardSuccess'))
+            this.defaultData()
+          }
+        })
+      }
     },
 
     // 跳转到会员详情页
@@ -375,10 +415,20 @@ export default {
     }
     .operation {
       display: flex;
-      justify-content: space-around;
+      justify-content: center;
+      margin-left: 30px;
       span {
         cursor: pointer;
         color: #5a8bff;
+      }
+      .opt-item {
+        width: 58px;
+        display: block;
+      }
+
+      .content-left {
+        text-align: left;
+        margin-left: 3px;
       }
     }
   }

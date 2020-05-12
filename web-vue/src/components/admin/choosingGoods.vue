@@ -21,11 +21,11 @@
             class="chooseCondiction"
           >
             <!--<sortCatTreeSelect-->
-              <!--ref="catTree"-->
-              <!--:filterGoodsInfo="initSortCatParams"-->
-              <!--treeType="cat"-->
-              <!--:treeStyle="initPlateformWidth"-->
-              <!--:selectedId.sync="requestParam.catId"-->
+            <!--ref="catTree"-->
+            <!--:filterGoodsInfo="initSortCatParams"-->
+            <!--treeType="cat"-->
+            <!--:treeStyle="initPlateformWidth"-->
+            <!--:selectedId.sync="requestParam.catId"-->
             <!--/>-->
             <div style="margin-right: 30px;">
               <sortCatTreeSelect
@@ -180,7 +180,7 @@
                   <span v-if="loadProduct">{{item.prdNumber}}</span>
                 </td>
                 <!--<td class="tb_decorate_a">-->
-                  <!--{{item.catName}}-->
+                <!--{{item.catName}}-->
                 <!--</td>-->
                 <td class="tb_decorate_a">
                   {{item.sortName}}
@@ -307,7 +307,7 @@ export default {
       return {
         needGoodsNum: true,
         isOnSale: 1,
-        isSaleOut: false,
+        isSaleOut: 0,
         // 查询商品时值为1，规格查询值为2
         selectType: this.loadProduct ? 2 : 1
       }
@@ -333,7 +333,7 @@ export default {
         pageRows: 3,
         // 在售商品
         isOnSale: 1,
-        isSaleOut: false,
+        isSaleOut: 0,
         catId: null,
         sortId: null,
         labelId: null,
@@ -368,12 +368,16 @@ export default {
     }
   },
   watch: {
-    chooseGoodsBack: function (newData) {
-      console.log(newData)
-      console.log('chooseGoodsBack')
-      let uniqGoodsIds = Array.from(new Set(this.chooseGoodsBack))
-      // this.chooseGoodsBack = uniqGoodsIds
-      this.checkedIdList = uniqGoodsIds
+    chooseGoodsBack: {
+      handler (newData) {
+        console.log(newData)
+        console.log('chooseGoodsBack')
+        let uniqGoodsIds = Array.from(new Set(this.chooseGoodsBack))
+        // this.chooseGoodsBack = uniqGoodsIds
+        this.checkedIdList = uniqGoodsIds
+      },
+      deep: true,
+      immediate: true
     },
     tuneUpChooseGoods () {
       console.log('tuneUpChooseGoods', this.checkedIdList, this.initialConditionRender)
@@ -383,7 +387,7 @@ export default {
           currentPage: 1,
           pageRows: 3,
           isOnSale: 1,
-          isSaleOut: false,
+          isSaleOut: 0,
           catId: null,
           sortId: null,
           labelId: null,
@@ -503,7 +507,7 @@ export default {
       this.requestParam = {
         // 在售商品
         isOnSale: 1,
-        isSaleOut: false
+        isSaleOut: 0
       }
       // this.$refs['catTree'].clearData()
       this.$refs['sortTree'].clearData()
@@ -517,7 +521,7 @@ export default {
         pageRows: 3,
         // 在售商品
         isOnSale: 1,
-        isSaleOut: false,
+        isSaleOut: 0,
         catId: null,
         sortId: null,
         labelId: null,
@@ -859,9 +863,9 @@ img {
   width: 100%;
   height: 100%;
   text-align: center;
-  display:-webkit-box;
-  -webkit-box-pack:center;
-  -webkit-box-align:center;
+  display: -webkit-box;
+  -webkit-box-pack: center;
+  -webkit-box-align: center;
   justify-content: center;
 }
 .level_1 {

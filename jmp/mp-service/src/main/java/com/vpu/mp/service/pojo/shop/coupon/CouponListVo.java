@@ -32,6 +32,7 @@ public class CouponListVo {
 	    private Byte       useScore;
 	    private Integer    scoreNumber;
 	    private Integer    used;
+	    private String aliasCode;
 	    private Byte enabled;
 		/**
 		 * 优惠券有效期类型

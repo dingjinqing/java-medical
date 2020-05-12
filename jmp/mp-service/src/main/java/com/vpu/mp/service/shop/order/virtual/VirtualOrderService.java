@@ -6,6 +6,7 @@ import static com.vpu.mp.db.shop.tables.VirtualOrderRefundRecord.VIRTUAL_ORDER_R
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import com.vpu.mp.service.foundation.util.DateUtil;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
@@ -72,7 +73,7 @@ public class VirtualOrderService extends ShopBaseService {
     	VirtualOrderPayInfo payInfo = getOrderPayInfo(param.getOrderId());
     	
         /** 是否退款成功 */
-        boolean successFlag = false;
+        boolean successFlag = true;
         try {
         	transaction(() -> {
     			if (param.getAccount().compareTo(BigDecimal.ZERO) > 0) {
@@ -174,8 +175,14 @@ public class VirtualOrderService extends ShopBaseService {
 
         if(successFlag){
             // 更新订单状态
-            db().update(VIRTUAL_ORDER).set(VIRTUAL_ORDER.RETURN_FLAG, REFUND_STATUS_SUCCESS).set(VIRTUAL_ORDER.RETURN_MONEY,
-                finalReturnMoney).set(VIRTUAL_ORDER.RETURN_ACCOUNT, finalReturnAccount).set(VIRTUAL_ORDER.RETURN_CARD_BALANCE, finalReturnMemberCardBalance).set(VIRTUAL_ORDER.RETURN_SCORE, finalReturnScore).execute();
+            db().update(VIRTUAL_ORDER)
+                .set(VIRTUAL_ORDER.RETURN_FLAG, REFUND_STATUS_SUCCESS)
+                .set(VIRTUAL_ORDER.RETURN_MONEY, finalReturnMoney)
+                .set(VIRTUAL_ORDER.RETURN_ACCOUNT, finalReturnAccount)
+                .set(VIRTUAL_ORDER.RETURN_CARD_BALANCE, finalReturnMemberCardBalance)
+                .set(VIRTUAL_ORDER.RETURN_SCORE, finalReturnScore)
+                .set(VIRTUAL_ORDER.RETURN_TIME, DateUtil.getLocalDateTime())
+                .where(VIRTUAL_ORDER.ORDER_SN.eq(param.getOrderSn())).execute();
         }
     }
 

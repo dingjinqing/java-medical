@@ -48,6 +48,6 @@ public class WxAppGoodsController extends WxAppBaseController {
         }
         Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
-        return success(shop().goodsMp.getGoodsGroupList(param));
+        return success(shop().goodsMp.goodsGroupMpService.getGoodsGroupList(param));
     }
 }

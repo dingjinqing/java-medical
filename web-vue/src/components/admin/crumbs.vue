@@ -19,12 +19,68 @@
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2136&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
       >瓜分积分使用教程</el-link>
       <el-link
+        v-if="$route.name == 'distribution_info'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=50&extra=page=1&filter=sortid&sortid=15"
+      >分销使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'gift'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2118&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
+      >赠品使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'promote'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=736&extra=page=1&filter=sortid&sortid=15"
+      >好友助力使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'sec_kill'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=69"
+      >秒杀活动使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'ordinary_coupon'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=52&extra=page=1&filter=sortid&sortid=15"
+      >普通优惠券使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'free_ship'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2120&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
+      >满包邮使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'group_draw'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2135&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
+      >拼团抽奖使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'reduce_price'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2112&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
+      >限时降价使用教程</el-link>
+      <el-link
         v-if="$route.name == 'insteadpay'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2116&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
         type="primary"
         :underline="false"
         target="_blank"
-      >好用代付使用教程</el-link>
+      >好友代付使用教程</el-link>
       <el-link
         v-if="$route.name == 'form_decoration'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=65&extra=page=1&filter=sortid&sortid=15"
@@ -44,8 +100,8 @@ export default {
       lang: '',
       isSurvey: true, // 若是概况里的商城概览则隐藏面包屑
       isLink: false, // 瓜分积分显示的一个跳转链接
-      nameArr: ['addRecommend', 'addGoodsLabel', 'updateGoodsLabel', 'store_storemanage_reservation', 'addBrand', 'ordinary_coupon_receive_details', 'feedbackList', 'formDecorationHome', ' pin_group_activityEffectData', 'bargain_effect_data', 'bargain_bargain_user', ' bargain_get_newuser_detail', 'bargain_order_list', 'bargain_activity', ' pin_group_refundFailureOrder', ' pin_group_newUserDetail', 'pin_group_orderList', 'pin_group_detailList', 'group_draw_effect', 'group_draw_group', 'group_draw_user', 'group_draw_order', 'promote_activity', 'promote_receive_details', 'promote_launch_details', 'promote_participate_details', 'promote_effect_data', 'lottery_activity_detail', 'lottery_activity_newUserList', 'open_screen_detail', 'store_storemanage_reservation_detail', 'store_storemanage_reservation_record', 'store_verification_list', 'sec_kill_order', 'sec_kill_detail', 'sec_kill_user', 'sec_kill_effect', 'group_draw_detail', 'gift_detail_view', 'gift_add_view', 'newUserDetails', 'pointsUserList', 'pointsExchangeOrder', 'template_detail', 'add_message', 'send_record', 'gift_edit_view', 'first_special_order'], // name池,
-      turnArr: ['recommend', 'label', 'label', 'store_list', 'brand', 'ordinary_coupon', 'form_decoration', 'form_decoration', 'pin_group', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'pin_group', 'pin_group', 'pin_group', 'pin_group', 'group_draw', 'group_draw', 'group_draw', 'group_draw', 'promote', 'promote', 'promote', 'promote', 'lottery_activity', 'lottery_activity', 'market_gifted', 'store_list', 'store_list', 'store_list', 'sec_kill', 'sec_kill', 'sec_kill', 'sec_kill', 'group_draw', 'gift', 'gift', 'integral_convert', 'integral_convert', 'integral_convert', 'integral_convert', 'all_message_push', 'all_message_push', 'all_message_push', 'gift', 'first_special']// 跳转池
+      nameArr: ['addRecommend', 'addGoodsLabel', 'updateGoodsLabel', 'store_storemanage_reservation', 'addBrand', 'ordinary_coupon_receive_details', 'feedbackList', 'formDecorationHome', ' pin_group_activityEffectData', 'bargain_effect_data', 'bargain_bargain_user', ' bargain_get_newuser_detail', 'bargain_order_list', 'bargain_activity', ' pin_group_refundFailureOrder', ' pin_group_newUserDetail', 'pin_group_orderList', 'pin_group_detailList', 'group_draw_effect', 'group_draw_group', 'group_draw_user', 'group_draw_order', 'promote_activity', 'promote_receive_details', 'promote_launch_details', 'promote_participate_details', 'promote_effect_data', 'lottery_activity_detail', 'lottery_activity_newUserList', 'open_screen_detail', 'store_storemanage_reservation_detail', 'store_storemanage_reservation_record', 'store_verification_list', 'sec_kill_order', 'sec_kill_detail', 'sec_kill_user', 'sec_kill_effect', 'group_draw_detail', 'gift_detail_view', 'gift_add_view', 'newUserDetails', 'pointsUserList', 'pointsExchangeOrder', 'template_detail', 'add_message', 'send_record', 'gift_edit_view', 'first_special_order', 'couponGive_receive_details', 'couponGive_grant_coupons', 'presale_order_detail_view', 'presale_detail_view', 'package_price_order', 'package_price_detail', 'feedbackStatistics', 'group_integration_detail', 'group_integration_success', 'group_integration_analysis', 'coupon_Package_add', 'coupon_Package_receive_details', 'coupon_Package_order_details'], // name池,
+      turnArr: ['recommend', 'label', 'label', 'store_list', 'brand', 'ordinary_coupon', 'form_decoration', 'form_decoration', 'pin_group', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'pin_group', 'pin_group', 'pin_group', 'pin_group', 'group_draw', 'group_draw', 'group_draw', 'group_draw', 'promote', 'promote', 'promote', 'promote', 'lottery_activity', 'lottery_activity', 'market_gifted', 'market_gifted', 'store_list', 'store_list', 'sec_kill', 'sec_kill', 'sec_kill', 'sec_kill', 'group_draw', 'gift', 'gift', 'integral_convert', 'integral_convert', 'integral_convert', 'integral_convert', 'all_message_push', 'all_message_push', 'all_message_push', 'gift', 'first_special', 'market_act_give', 'market_act_give', 'presale', 'presale', 'package', 'package', 'form_decoration', 'pin_integration', 'pin_integration', 'pin_integration', 'coupon_package', 'coupon_package', 'coupon_package']// 跳转池
     }
   },
   watch: {
@@ -82,6 +138,7 @@ export default {
         } else {
           this.isSurvey = true
         }
+        console.log(this.isSurvey)
         // if (routeName === 'pin_integration' || routeName === 'friend_pay') {
         //   this.isLink = true
         // } else {
@@ -110,11 +167,11 @@ export default {
         this.titleLeft = data[0]
         this.titleList = data
       } else {
+        console.log(data)
         this.titleLeft = data[0]
         this.titleList = data
       }
       // 分销员
-
       this.$http.$on('distributionTap', (index) => {
         console.log(index)
         switch (index) {
@@ -153,6 +210,8 @@ export default {
         }
         this.titleList = data
       })
+      // 处理积分兑换子页面面包屑
+      this.handleToOointExchange(data)
     },
     // 处理数据
     handleToData (newData) {
@@ -205,7 +264,8 @@ export default {
       console.log(data, this.titleList)
     },
     handleToClickCrumb (name, flag, index) {
-      console.log(name, flag, this.$route)
+      console.log(name, flag, this.$route, this.nameArr.length, this.turnArr.length)
+      let routeName = this.$route.name
       if (this.titleList.length < 3) return
       if (index === (this.titleList.length - 1)) return
       if (flag) {
@@ -241,6 +301,14 @@ export default {
               name: 'form_decoration'
             })
           }
+        } else if (routeName === 'add_increase_purchase' || routeName === 'edit_increase_purchase' || routeName === 'purchase_redemption_order' || routeName === 'purchase_redemption_detail') {
+          this.$router.push({
+            name: 'purchase_price'
+          })
+        } else if (routeName === 'activityDetails') {
+          this.$router.push({
+            name: 'payreward'
+          })
         } else {
           console.log(this.$route)
           if (name === '表单统计') {
@@ -262,6 +330,7 @@ export default {
                 name: 'bargain_bargain_user'
               })
             } else {
+              console.log(this.$route.name, this.nameArr.indexOf(this.$route.name), this.turnArr[this.nameArr.indexOf(this.$route.name)])
               this.$router.push({
                 name: this.turnArr[this.nameArr.indexOf(this.$route.name)]
               })
@@ -271,6 +340,21 @@ export default {
       }
       console.log(name, this.$route)
       //
+    },
+    // 处理积分兑换子页面面包屑
+    handleToOointExchange (data) {
+      console.log(data)
+      if (this.$route.name === 'pointsExchangeOrder') {
+        let str = this.$route.query.activityName + ' - ' + '积分兑换订单'
+        data.push(str)
+        this.titleLeft = data[0]
+        this.titleList = data
+      } else if (this.$route.name === 'newUserDetails') {
+        let str = this.$route.query.activityName + ' - ' + '获取新用户明细'
+        data.push(str)
+        this.titleLeft = data[0]
+        this.titleList = data
+      }
     }
   }
 
@@ -283,7 +367,7 @@ export default {
   padding-left: 25px;
   color: #333;
   background: #fff;
-  overflow: hidden;
+  // overflow: hidden;
 }
 .canClick {
   span {

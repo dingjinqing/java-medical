@@ -19,10 +19,10 @@ public class IntegralConvertConstant {
 	public static final int STOP = 4;
 
 	/** 禁用信息 0：停用  1：启用 */
-	public static final int BLOCK = 0;
-	public static final int NOT_BLOCK = 1;
+	public static final Byte BLOCK = 0;
+	public static final Byte NOT_BLOCK = 1;
 	
 	/** 0：未删除 1：删除 */
-	public static final int NOT_DELETE = 0; 
-	public static final int DELETE = 1; 
+	public static final Byte NOT_DELETE = 0;
+	public static final Byte DELETE = 1;
 }

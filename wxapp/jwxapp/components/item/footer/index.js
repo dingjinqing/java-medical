@@ -60,6 +60,25 @@ const actType = {
       }
     }
   },
+  4:{
+    footerButtonName:{
+      right:{name:'立即兑换',event:'checkScoreRedeem',}
+    },
+    dialogButtonName:{
+      right:{
+        right:{
+          name:'立即兑换',
+          event:'actCheckOut'
+        }
+      },
+      default:{
+        right:{
+          name:'立即兑换',
+          event:'actCheckOut'
+        }
+      }
+    }
+  },
   5:{
     footerButtonName:{
       right:{
@@ -78,6 +97,38 @@ const actType = {
         right:{
           name:'立即购买',
           event:'actCheckOut'
+        }
+      }
+    }
+  },
+  8:{
+    footerButtonName:{
+      left:{name:'原价购买',event:'checkBuy',style:"flex:0.5;"},
+      right:{name:'',event:'checkGroupDraw',style:"flex:1.5;",bottom:'(如未中奖，将全额退款至原支付账户)'}
+    },
+    dialogButtonName:{
+      left:{
+        left:{
+          name:'加入购物车',
+          event:'addCart'
+        },
+        right:{
+          name:'立即购买',
+          event:'toCheckOut'
+        }
+      },
+      right:{
+        right:{
+          name:'',
+          event:'actCheckOut',
+          bottom:'(如未中奖，将全额退款至原支付账户)'
+        }
+      },
+      default:{
+        right:{
+          name:'发起拼团抽奖',
+          event:'actCheckOut',
+          bottom:'(如未中奖，将全额退款至原支付账户)'
         }
       }
     }
@@ -184,6 +235,10 @@ global.wxComponent({
       observer(val){
         this.initFooter()
       }
+    },
+    customService:{ //展示客服按钮
+      type:Number,
+      value:0
     }
   },
   /**
@@ -241,6 +296,10 @@ global.wxComponent({
       if(this.checkPosition('right')) return
       this.actCheckOut()
     },
+    checkGroupDraw(){
+      if(this.checkPosition('right')) return
+      this.actCheckOut()
+    },
     checkSkill(){
       if(!this.checkActStatus()) return
       if(this.checkPosition('right')) return
@@ -248,6 +307,10 @@ global.wxComponent({
     },
     checkPreSale(){
       if(!this.checkActStatus()) return
+      if(this.checkPosition('right')) return
+      this.actCheckOut()
+    },
+    checkScoreRedeem(){
       if(this.checkPosition('right')) return
       this.actCheckOut()
     },
@@ -282,7 +345,7 @@ global.wxComponent({
     getButtonData(){
       let buttonData = {}
       if(this.data.position === 'footer'){
-        buttonData['buttonInfo'] = this.data.activity && [1,3,5,10].includes(this.data.activity.activityType) ? actType[this.data.activity.activityType]['footerButtonName'] : actType['default']['footerButtonName']
+        buttonData['buttonInfo'] = this.data.activity && [1,3,4,5,8,10].includes(this.data.activity.activityType) ? actType[this.data.activity.activityType]['footerButtonName'] : actType['default']['footerButtonName']
         if(this.data.activity && this.data.activity.activityType === 1){
           buttonData['buttonInfo']['left'].top = `${this.data.isDefaultPrd ? `￥${this.data.products[0].prdRealPrice}` : this.getProducesMinPrice()}`
           buttonData['buttonInfo']['right'].name = buttonData['buttonInfo']['right'][`name-${this.data.activity.isGrouperCheap}`]
@@ -292,6 +355,10 @@ global.wxComponent({
           buttonData['buttonInfo']['left'].top = `${this.data.isDefaultPrd ? `￥${this.data.products[0].prdRealPrice}` : this.getProducesMinPrice()}`
           buttonData['buttonInfo']['right'].top = `￥${this.data.activity.bargainPrice}`
         }
+        if(this.data.activity && this.data.activity.activityType === 8){
+          buttonData['buttonInfo']['right'].name = `￥${this.data.activity.payMoney}发起拼团抽奖`
+          buttonData['buttonInfo']['left'].top = `${this.data.isDefaultPrd ? `￥${this.data.products[0].prdRealPrice}` : this.getProducesMinPrice()}`
+        }
         if(this.data.activity && this.data.activity.activityType === 10){
           console.log(this.data.productInfo)
             buttonData['buttonInfo']['right'].right = this.data.activity.preSaleType !== 1 ? `￥${this.data.productInfo.actProduct.depositPrice}` : ''
@@ -300,14 +367,13 @@ global.wxComponent({
           }
         }
       } else if (this.data.position === 'spec'){
-        let position = this.data.activity && [1,3,5,10].includes(this.data.activity.activityType) ? actType[this.data.activity.activityType]['dialogButtonName'] : actType['default']['dialogButtonName']
-        console.log(actType['default'])
-        console.log(actType['default']['dialogButtonName'])
-        console.log(this.data.activity && [1,3,5,10].includes(this.data.activity.activityType))
-        console.log(position)
+        let position = this.data.activity && [1,3,4,5,8,10].includes(this.data.activity.activityType) ? actType[this.data.activity.activityType]['dialogButtonName'] : actType['default']['dialogButtonName']
         buttonData['buttonInfo'] = this.data.triggerButton ? position[this.data.triggerButton] : position['default']
         if(this.data.activity && this.data.activity.activityType === 3 && this.data.triggerButton === 'right'){
           buttonData['buttonInfo']['right'].left = `￥${this.data.activity.bargainPrice}`
+        }
+        if(this.data.activity && this.data.activity.activityType === 8 && (!this.data.triggerButton || this.data.triggerButton === 'right')){
+          buttonData['buttonInfo']['right'].name = `￥${this.data.activity.payMoney}发起拼团抽奖`
         }
         if(this.data.activity && this.data.activity.activityType === 10 && (!this.data.triggerButton || this.data.triggerButton === 'right')){
           buttonData['buttonInfo']['right'].right = this.data.activity.preSaleType !== 1 ? `￥${this.data.productInfo.actProduct.depositPrice}` : ''
@@ -348,7 +414,8 @@ global.wxComponent({
         },
         {
           goodsNumber: goodsNumber,
-          prdId: prdId
+          prdId: prdId,
+          type: 2
         }
       );
     },
@@ -371,7 +438,13 @@ global.wxComponent({
         delete params.preSaleInfo.preSalePrdMpVos
         params.preSaleInfo = JSON.stringify(params.preSaleInfo)
       }
-      util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ ...params })}`, "navigateTo")
+      if(this.data.activity && this.data.activity.activityType === 1){
+        util.getNeedTemplateId('invite',()=>{
+          util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ ...params })}`, "navigateTo")
+        })
+      } else {
+        util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ ...params })}`, "navigateTo")
+      }
       this.triggerEvent('close')
     },
     //整合参数
@@ -450,6 +523,7 @@ global.wxComponent({
           }
         },{
           skId,
+          goodsId,
           productId,
           goodsNumber
         })

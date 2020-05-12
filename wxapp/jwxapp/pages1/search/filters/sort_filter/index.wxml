@@ -1,11 +1,12 @@
 <wxs src="../filter.wxs" module="filter"></wxs>
+<wxs src="../../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="right" vertical="fill" bindtap='bindClose'>
   <view class="filter-content" animation="{{animation}}" style="height:calc(100% - {{navHeight}}px);">
     <view class="sort-item">
       <view class="back" bindtap="bindClose">
         <image class="back-image" src="{{imageUrl}}/image/wxapp/category_back.png"></image>
       </view>
-      <view class="center-title">更多分类</view>
+      <view class="center-title">{{i18n.$t(localePack,"page1.search.moreSort")}}</view>
     </view>
     <block wx:for="{{sorts}}" wx:for-item="parentItem" wx:for-index="parentIndex" wx:key="sortId">
       <view class="sort-item" bindtap="toogleChange" data-sort-id="{{parentItem.sortId}}">
@@ -15,7 +16,7 @@
         </view>
       </view>
       <view class="sort-item" data-sort-id="{{parentItem.sortId}}" bindtap="chooseSort" wx:if="{{parentItem.sortId === showParentId}}">
-        <view class="sort-name second" style="{{filter.includes(selectedSort,parentItem.sortId) && 'color:'+main_setting.comColor+';'}}">全部</view>
+        <view class="sort-name second" style="{{filter.includes(selectedSort,parentItem.sortId) && 'color:'+main_setting.comColor+';'}}">{{i18n.$t(localePack,"page1.search.all")}}</view>
       </view>
       <block wx:for="{{parentItem.children}}" wx:for-item="childItem" wx:for-index="childIndex" wx:key="sortId">
         <view class="sort-item" bindtap="chooseSort" data-sort-id="{{childItem.sortId}}" wx:if="{{parentItem.sortId === showParentId}}">

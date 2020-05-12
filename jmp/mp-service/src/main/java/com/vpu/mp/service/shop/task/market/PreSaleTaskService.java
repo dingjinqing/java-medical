@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.task.market;
 
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.PresaleRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
@@ -11,8 +12,10 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
+import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -20,6 +23,7 @@ import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -79,17 +83,16 @@ public class PreSaleTaskService extends ShopBaseService {
         List<OrderInfoRecord> orderList = getExpiredPreSaleOrders();
         if(orderList.size() > 0){
             orderList.forEach(order->{
-                //在订单关闭操作中对预售订单特殊处理
+                //在订单关闭操作中对预售订单特殊处理，根据活动设置对订单退款
                 OrderOperateQueryParam param = new OrderOperateQueryParam();
                 param.setAction((byte) OrderServiceCode.CLOSE.ordinal());
                 param.setIsMp(OrderConstant.IS_MP_AUTO);
                 param.setOrderSn(order.getOrderSn());
                 param.setOrderId(order.getOrderId());
+
+                logger().info("预售定时任务-订单关闭-" + order.getOrderSn());
                 //关闭订单
                 ExecuteResult executeResult = saas.getShopApp(getShopId()).orderActionFactory.orderOperate(param);
-
-                //将预售库存和销量字段改回去
-                updatePreSaleProductNumber(order);
             });
         }
     }
@@ -101,8 +104,8 @@ public class PreSaleTaskService extends ShopBaseService {
     private List<Integer> getCurrentPreSaleGoodsIdList(){
         return db().select(PRESALE.GOODS_ID).from(PRESALE).where(
             PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
-                .and(PRESALE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
-                .and((PRESALE.PRE_START_TIME.lt(DateUtil.getLocalDateTime()).and(PRESALE.PRE_END_TIME.gt(DateUtil.getLocalDateTime()))).or(PRESALE.PRE_START_TIME_2.lt(DateUtil.getLocalDateTime()).and(PRESALE.PRE_END_TIME_2.gt(DateUtil.getLocalDateTime()))))
+            .and(PRESALE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+            .and((PRESALE.PRE_START_TIME.lt(DateUtil.getLocalDateTime()).and(PRESALE.PRE_END_TIME.gt(DateUtil.getLocalDateTime()))).or(PRESALE.PRE_START_TIME_2.lt(DateUtil.getLocalDateTime()).and(PRESALE.PRE_END_TIME_2.gt(DateUtil.getLocalDateTime()))))
         ).fetchInto(Integer.class);
     }
 
@@ -121,7 +124,7 @@ public class PreSaleTaskService extends ShopBaseService {
      * @return
      */
     private List<OrderInfoRecord> getExpiredPreSaleOrders(){
-        return db().select(ORDER_INFO.asterisk()).from(ORDER_INFO.leftJoin(PRESALE).on(ORDER_INFO.ACTIVITY_ID.eq(PRESALE.ID))).where(
+        return db().select(ORDER_INFO.fields()).from(ORDER_INFO.leftJoin(PRESALE).on(ORDER_INFO.ACTIVITY_ID.eq(PRESALE.ID))).where(
             ORDER_INFO.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_PRE_SALE}))
             .and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY))
             .and(ORDER_INFO.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT))

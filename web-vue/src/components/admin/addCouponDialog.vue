@@ -47,26 +47,32 @@
             :key="index"
             @click="handleToClick(index)"
           >
-            <img
-              v-if="item.ischeck"
-              :src="$imageHost +'/image/admin/shop_beautify/checked_card.png'"
+            <div
+              style="width:108px;margin-right:10px"
+              v-if="!item.isHidden"
             >
-            <div class="coupon_list_top">
-              <p v-if="item.actCode !== 'random'">{{item.actCode==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.actCode==='discount'?'折':''}}</i></span></p>
-              <p v-else>￥<span>{{item.randomMax}}</span><span style="font-size:12px;">最高</span></p>
-            </div>
-            <div class="coupon_list_center">
-              <div class="coupon_center_limit">{{item.useConsumeRestrict > 0 ?`满${item.leastConsume}使用`:'不限制'}}</div>
-              <div class="coupon_center_number">
-                <span v-if="item.limitSurplusFlag === 0">剩余<span>{{item.surplus}}</span>张</span>
-                <span v-else>库存不限制</span>
+              <img
+                v-if="item.ischeck"
+                :src="$imageHost +'/image/admin/shop_beautify/checked_card.png'"
+              >
+              <div class="coupon_list_top">
+                <p v-if="item.actCode !== 'random'">{{item.actCode==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.actCode==='discount'?'折':''}}</i></span></p>
+                <p v-else>￥<span>{{item.randomMax}}</span><span style="font-size:12px;">最高</span></p>
               </div>
-              <div
-                class="coupon_list_bottom"
-                :style="`backgroundImage:url('${$imageHost}/image/admin/coupon_border.png')`"
-              >{{item.useScore===0?'领取':item.scoreNumber+'积分 兑换'}} </div>
-              <div class="coupon_name">{{item.actName}}</div>
+              <div class="coupon_list_center">
+                <div class="coupon_center_limit">{{item.useConsumeRestrict > 0 ?`满${item.leastConsume}使用`:'不限制'}}</div>
+                <div class="coupon_center_number">
+                  <span v-if="item.limitSurplusFlag === 0">剩余<span>{{item.surplus}}</span>张</span>
+                  <span v-else>库存不限制</span>
+                </div>
+                <div
+                  class="coupon_list_bottom"
+                  :style="`backgroundImage:url('${$imageHost}/image/admin/coupon_border.png')`"
+                >{{item.useScore===0?'领取':item.scoreNumber+'积分 兑换'}} </div>
+                <div class="coupon_name">{{item.actName}}</div>
+              </div>
             </div>
+
           </div>
           <div
             class="couponLi coupon-add"
@@ -118,7 +124,7 @@ export default {
       couonType: ''
     }
   },
-  props: ['origin', 'singleElection', 'tuneUpCoupon', 'couponBack', 'type'],
+  props: ['origin', 'singleElection', 'tuneUpCoupon', 'couponBack', 'type', 'formDecType'],
   mounted () {
     // 初始化
     this.defaultData()
@@ -134,7 +140,9 @@ export default {
         if (this.type || this.type === 0) {
           this.couponType = this.type
         }
-        this.initCouponList(newData)
+        if (newData) {
+          this.initCouponList(newData)
+        }
       },
       immediate: true
     }
@@ -161,14 +169,20 @@ export default {
         if (res.error === 0) {
           console.log('dialogData: ', res.content)
           this.dialogData = res.content
+
           this.dialogData.map((item, index) => {
             this.$set(item, 'ischeck', false)
           })
+          console.log(data, this.formDecType)
           this.dialogData.forEach((item, index) => {
             item.ischeck = false
+            item.isHidden = false
             data.forEach((itemC, indexC) => {
               if (item.id === itemC) {
                 item.ischeck = true
+                if (this.formDecType) { // 表单装修需要
+                  item.isHidden = true
+                }
               }
             })
           })
@@ -193,6 +207,15 @@ export default {
       this.dialogData.forEach((item, index) => {
         if (item.ischeck) arr.push(item)
       })
+      console.log(arr, this.couponBack)
+      // if (this.formDecType) {
+      //   let length = arr.length + this.couponBack.length
+      //   console.log(length)
+      //   if (length > 5) {
+      //     this.$message.error('最多只能选择5张优惠券哦~')
+      //     return
+      //   }
+      // }
       if (arr.length > 5 && !this.origin) {
         this.$message.error('最多只能选择5张优惠券哦~')
         return
@@ -279,16 +302,16 @@ export default {
       padding-top: 10px;
       .couponLi {
         float: left;
-        width: 108px;
+        // width: 108px;
         text-align: center;
-        margin-right: 10px;
+        // margin-right: 10px;
         margin-bottom: 53px;
         cursor: pointer;
         position: relative;
         img {
           position: absolute;
           top: -5px;
-          right: -5px;
+          right: 4px;
         }
         img.coupon-add-icon {
           position: absolute;

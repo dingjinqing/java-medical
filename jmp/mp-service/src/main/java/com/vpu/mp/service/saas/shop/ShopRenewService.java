@@ -1,5 +1,6 @@
 package com.vpu.mp.service.saas.shop;
 
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 import static com.vpu.mp.db.main.tables.SystemChildAccount.SYSTEM_CHILD_ACCOUNT;
@@ -88,13 +89,18 @@ public class ShopRenewService extends MainBaseService {
 	}
 
 	public Timestamp getShopRenewExpireTime(Integer shopId) {
-		return db().select().from(SHOP_RENEW).where(SHOP_RENEW.SHOP_ID.eq(shopId))
-				.orderBy(SHOP_RENEW.EXPIRE_TIME.desc()).fetchAny(SHOP_RENEW.EXPIRE_TIME);
+		return  db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny(SHOP.EXPIRE_TIME);
+//		return db().select().from(SHOP_RENEW).where(SHOP_RENEW.SHOP_ID.eq(shopId))
+//				.orderBy(SHOP_RENEW.EXPIRE_TIME.desc()).fetchAny(SHOP_RENEW.EXPIRE_TIME);
 	}
 
 	public int insertShopRenew(ShopRenewReq sReq,SystemTokenAuthInfo info) {
-		ShopRenewRecord sRecord=new ShopRenewRecord();
-		FieldsUtil.assignNotNull(sReq, sRecord);
+		ShopRenewRecord sRecord=db().newRecord(SHOP_RENEW,sReq);
+		if(sReq.getRenewType().equals((byte)4)){
+			logger().info("退款{}",sReq.getRenewMoney());
+			//改为负数
+			sRecord.setRenewMoney(sReq.getRenewMoney().negate());
+		}
 		sRecord.setRenewDuration(sReq.getYear()+","+sReq.getMonth());
 		sRecord.setSendContent(sReq.getSendYear()+","+sReq.getSendMonth());
 		sRecord.setRenewDate(DateUtil.getSqlTimestamp());
@@ -104,6 +110,13 @@ public class ShopRenewService extends MainBaseService {
 		}else {
 			sRecord.setOperator(0);
 		}
-		return db().executeInsert(sRecord);
+		Integer shopId = sReq.getShopId();
+		 this.transaction(()->{
+			 int execute = db().update(SHOP).set(SHOP.EXPIRE_TIME,sReq.getExpireTime()).where(SHOP.SHOP_ID.eq(shopId)).execute();
+			 logger().info("店铺{}续费插入主库：{}",shopId,execute);
+			 int executeInsert = db().executeInsert(sRecord);
+			 logger().info("店铺{}续费插入从库：{}",shopId,executeInsert);
+		 });
+		return 1;
 	}
 }

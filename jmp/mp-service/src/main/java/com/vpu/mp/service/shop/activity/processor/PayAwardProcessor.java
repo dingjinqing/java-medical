@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
 import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
@@ -43,8 +44,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.PAY_AWARD_RECORD;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_PAY_AWARD;
-import static com.vpu.mp.service.foundation.data.BaseConstant.GOODS_AREA_TYPE_SECTION;
+import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_PAY_AWARD;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_BALANCE;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_CUSTOM;
@@ -63,6 +63,7 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_CRASH_PAY_AWARD;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_PAY_AWARD;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.UACCOUNT_RECHARGE;
+import static com.vpu.mp.service.pojo.shop.operation.RemarkTemplate.PAY_HAS_GIFT;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_COD;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
@@ -204,7 +205,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                         setOrderSn(order.getOrderSn());
                         setPayment(PAY_CODE_BALANCE_PAY);
                         setIsPaid(UACCOUNT_RECHARGE.val());
-                        setRemarkId(RemarkTemplate.PAY_HAS_GIFT.code);
+                        setRemarkId(PAY_HAS_GIFT.code);
                     }};
                     TradeOptParam tradeOptParam = TradeOptParam.builder()
                             .tradeType(TYPE_CRASH_PAY_AWARD.val())
@@ -232,7 +233,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 payAwardRecordRecord.insert();
                 //扣商品库存
                 atomicOperation.updateStockAndSalesByLock(payAwardContentBo.getProduct().getGoodsId(),payAwardContentBo.getProductId(),1,true);
-                PrizeRecordRecord prizeRecordRecord = prizeRecordService.savePrize(order.getUserId(), payAward.getId(), payAwardContentBo.getId(), PRIZE_SOURCE_PAY_AWARD, payAwardContentBo.getProductId(), payAwardContentBo.getKeepDays());
+                PrizeRecordRecord prizeRecordRecord = prizeRecordService.savePrize(order.getUserId(), payAward.getId(), payAwardContentBo.getId(), PRIZE_SOURCE_PAY_AWARD, payAwardContentBo.getProductId(), payAwardContentBo.getKeepDays(),null);
                 payAwardRecordRecord.setSendData(prizeRecordRecord.getId().toString());
                 break;
             case GIVE_TYPE_SCORE:
@@ -243,6 +244,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                     scoreParam.setUserId(order.getUserId());
                     scoreParam.setOrderSn(order.getOrderSn());
                     scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
+                    scoreParam.setRemarkCode(PAY_HAS_GIFT.code);
                     scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_PAY_AWARD.val(), TRADE_FLOW_IN.val());
                     payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_RECEIVED);
                     payAwardRecordRecord.setSendData(payAwardContentBo.getScoreNumber().toString());
@@ -290,9 +292,18 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             if (payAward.getGoodsAreaType().equals(GOODS_AREA_TYPE_SECTION.intValue())) {
                 boolean payAwardFlag = false;
                 for (OrderBeforeParam.Goods goods : param.getGoods()) {
-                    boolean hasGoodsId = Arrays.asList(payAward.getGoodsIds().split(",")).contains(goods.getGoodsInfo().getGoodsId().toString());
-                    boolean hasCatId = Arrays.asList(payAward.getGoodsCatIds().split(",")).contains(goods.getGoodsInfo().getCatId().toString());
-                    boolean hasSortId = Arrays.stream(payAward.getGoodsSortIds().split(",")).anyMatch(goods.getGoodsInfo().getSortId().toString()::equals);
+                    boolean hasGoodsId = false;
+                    boolean hasCatId = false;
+                    boolean hasSortId = false;
+                    if (payAward.getGoodsIds()!=null){
+                        hasGoodsId = Arrays.asList(payAward.getGoodsIds().split(",")).contains(goods.getGoodsInfo().getGoodsId().toString());
+                    }
+                    if (payAward.getGoodsCatIds()!=null){
+                        hasCatId = Arrays.asList(payAward.getGoodsCatIds().split(",")).contains(goods.getGoodsInfo().getCatId().toString());
+                    }
+                    if (payAward.getGoodsSortIds()!=null){
+                        hasSortId = Arrays.stream(payAward.getGoodsSortIds().split(",")).anyMatch(goods.getGoodsInfo().getSortId().toString()::equals);
+                    }
                     if (hasGoodsId || hasCatId || hasSortId) {
                         GoodsActivityInfo activityInfo = new GoodsActivityInfo();
                         activityInfo.setActivityType(ACTIVITY_TYPE_PAY_AWARD);
@@ -311,15 +322,15 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 logger().info("支付有礼没有配置奖品");
                 return;
             }
-            Integer joinAwardCount = jedisManager.getIncrValueAndSave(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +":"+order.getUserId(), 60000,
-                    () -> payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId()).toString()).intValue();
+            float joinAwardCount = jedisManager.getIncrValueAndSave(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +":"+order.getUserId(), 60000,
+                    () -> payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId()).toString()).intValue()+1;
             logger().info("用户:{},参与次数:{}", order.getUserId(), joinAwardCount);
-
-            int circleTimes = (joinAwardCount - 1) / payAwardSize + 1;
-            int currentAward = (joinAwardCount - 1) % payAwardSize + 1;
+            double circleTimes = (int)Math.ceil(joinAwardCount / payAwardSize);
+            int currentAward =  (int)joinAwardCount % payAwardSize;
+            currentAward=currentAward==0?payAwardSize:currentAward;
             logger().info("当前第:{}轮,第:{}次", circleTimes,currentAward);
             if (payAward.getLimitTimes() > 0 && payAward.getLimitTimes()*payAwardSize < joinAwardCount) {
-                jedisManager.delete(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +","+order.getUserId());
+                jedisManager.delete(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +":"+order.getUserId());
                 logger().info("参与次数到达上限:{}", payAward.getLimitTimes());
                 return;
             }
@@ -332,10 +343,11 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             logger().info("礼物数量校验");
             PayAwardPrizeRecord awardInfo = payAwardRecordService.getAwardInfo(payAward.getId(), payAwardContentBo.getId());
             boolean canSendAwardFlag =true;
-            if (awardInfo!=null&&awardInfo.getSendNum()<awardInfo.getAwardNumber()){
+            if (awardInfo!=null&&(awardInfo.getAwardNumber().equals(0)||awardInfo.getSendNum()<awardInfo.getAwardNumber())){
                 int i = payAwardRecordService.updateAwardStock(payAward.getId(), payAwardContentBo.getId());
                 if (i<1){
                     canSendAwardFlag =false;
+                    logger().info("礼物已发完");
                 }
             }else {
                 canSendAwardFlag =false;
@@ -358,6 +370,13 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             }
         } catch (Exception e) {
             logger().error("支付有礼活动异常");
+            //获取进行中的活动
+            PayAwardVo payAward = payAwardService.getGoingPayAward(param.getDate());
+            if (payAward == null) {
+                logger().info("支付有礼活动为空!");
+                return;
+            }
+            jedisManager.delete(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +":"+order.getUserId());
             e.printStackTrace();
 
         }
@@ -369,7 +388,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
     }
 
     @Override
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
 
     }
 }

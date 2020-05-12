@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.wxapp.goods.goods.list;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.shop.base.BasePageParam;
+import com.vpu.mp.service.pojo.wxapp.goods.search.SortDirectionEnum;
+import com.vpu.mp.service.pojo.wxapp.goods.search.SortItemEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -84,6 +86,11 @@ public class GoodsListMpParam extends BasePageParam{
      */
     @JsonProperty("sort_type")
     private Byte sortType;
+
+    /**店铺默认的排序字段*/
+    private SortItemEnum shopSortItem;
+    /**店铺默认的排序方向*/
+    private SortDirectionEnum shopSortDirection;
 
     /**
      * 需要取的商品最大数量

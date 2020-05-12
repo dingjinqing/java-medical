@@ -5,7 +5,7 @@
 -->
 <template>
   <div>
-    <div class="filter-conditions">
+    <wrapper>
       <section class="newuserDetailContent">
         <div>
           <span>{{$t('marketCommon.mobile')+"："}}</span>
@@ -41,9 +41,9 @@
           size="small"
         >{{$t('marketCommon.filter')}}</el-button>
       </section>
-    </div>
+    </wrapper>
 
-    <div class="table">
+    <wrapper>
       <div class="table_list">
         <el-table
           v-loading="loading"
@@ -92,16 +92,17 @@
           @pagination="initDataList"
         />
       </div>
-    </div>
+    </wrapper>
   </div>
 </template>
 
 <script>
+import wrapper from '@/components/admin/wrapper/wrapper'
 import pagination from '@/components/admin/pagination/pagination'
 import { getBargainSourceUserList } from '@/api/admin/marketManage/bargain.js'
 
 export default {
-  components: { pagination },
+  components: { wrapper, pagination },
   mounted () {
     if (this.$route.query.id > 0) {
       this.actId = this.$route.query.id
@@ -146,16 +147,6 @@ export default {
 <style lang="scss" scoped>
 * {
   font-size: 14px;
-}
-.filter-conditions {
-  margin: 10px;
-  padding: 20px 30px;
-  background: #fff;
-}
-.table {
-  margin: 0 10px 10px;
-  padding: 15px;
-  background: #fff;
 }
 .newuserDetailContent {
   display: flex;

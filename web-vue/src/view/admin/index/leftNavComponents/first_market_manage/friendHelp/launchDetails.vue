@@ -26,7 +26,7 @@
           :label="$t('promoteList.actId')"
         >
           <el-input
-            :placeholder="$t('promoteList.actIdPlaceHolder')"
+            :placeholder="$t('promoteList.actIdPlaceholder')"
             v-model="id"
           ></el-input>
         </el-form-item>
@@ -56,7 +56,10 @@
           type="primary"
           @click="onSubmit"
         >{{$t('promoteList.filter')}}</el-button>
-        <el-button size="small">{{$t('promoteList.export')}}</el-button>
+        <el-button
+          size="small"
+          @click="handleToExport"
+        >{{$t('promoteList.export')}}</el-button>
       </el-form>
     </div>
 
@@ -77,7 +80,7 @@
         >
           <template slot-scope="scope">
             <el-button
-              @click="getUser()"
+              @click="getUser(scope.row.userId)"
               type="text"
             > {{scope.row.username}} </el-button>
           </template>
@@ -127,10 +130,37 @@
       />
 
     </div>
+    <!--导出弹窗-->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+    >
+      <div class="export_title ">
+        <p><img :src="`${$imageHost}/image/admin/notice_img.png`"><span>&nbsp;&nbsp;根据以下条件筛选出{{screenLength}}条数据,是否确认导出？</span></p>
+      </div>
+      <div class="export_title ">
+        <p>筛选条件：无</p>
+      </div>
+      <div class="export_title ">
+        <p style="font-weight: bold;">导出数据</p>
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="handleToClickSure()"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { launchDetails } from '@/api/admin/marketManage/friendHelp.js'
+import { launchDetails, launchExport } from '@/api/admin/marketManage/friendHelp.js'
+import { download } from '@/util/excelUtil.js'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: {
@@ -138,13 +168,15 @@ export default {
   },
   data: function () {
     return {
+      dialogVisible: false, // 筛选导出弹窗
       username: '',
       mobile: '',
       id: '',
       promoteStatus: '-1',
       tableData: [],
       pageParams: {
-      }
+      },
+      screenLength: 0
     }
   },
   methods: {
@@ -159,6 +191,9 @@ export default {
         console.log('pageInfo:', res)
         this.handData(res.content.dataList)
         this.pageParams = res.content.page
+        if (res.content.dataList.length) {
+          this.screenLength = res.content.dataList.length
+        }
       })
     },
 
@@ -177,15 +212,37 @@ export default {
       this.tableData = data
     },
     // 用户
-    getUser () {
+    getUser (id) {
       this.$router.push({
-        path: `/admin/home/main/membershipInformation`
+        path: '/admin/home/main/membershipInformation',
+        query: {
+          userId: id
+        }
       })
     },
     // 参与人
     getJoinDetails (launchId) {
       this.$router.push({
         path: `/admin/home/main/friendHelp/participateDetails/${this.promoteId}/${launchId}`
+      })
+    },
+    // 导出
+    handleToExport () {
+      this.loadData()
+      this.dialogVisible = true
+    },
+    // 导出弹窗确定事件
+    handleToClickSure () {
+      this.pageParams.promoteId = this.promoteId
+      this.pageParams.id = this.id
+      this.pageParams.mobile = this.mobile
+      this.pageParams.username = this.username
+      this.pageParams.promoteStatus = this.promoteStatus
+      console.log('this.pageParams???', this.pageParams)
+      launchExport(this.pageParams).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName.split(';')[1].split('=')[1]
+        download(res, decodeURIComponent(fileName))
       })
     }
   },
@@ -205,6 +262,9 @@ export default {
     position: relative;
     background-color: #fff;
     padding: 10px 20px 10px 20px;
+  }
+  .export_title {
+    margin-bottom: 10px;
   }
 }
 /deep/ .tableClss th {

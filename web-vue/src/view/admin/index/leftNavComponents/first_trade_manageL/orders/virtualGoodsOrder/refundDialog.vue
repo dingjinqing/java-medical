@@ -35,21 +35,33 @@
             v-model="refundData.account"
             size="small"
             controls-position="right"
+            :max="refundInfo.useAccount - refundInfo.returnAccount"
+            :min="0"
+            :precision="2"
           ></el-input-number> {{$t('refundDialog.yuan')}}</p>
         <p v-if="refundInfo.memberCardBalance > 0">{{$t('refundDialog.refund')}}{{$t('refundDialog.memberCardBalance')}}:<el-input-number
             v-model="refundData.memberCardBalance"
             size="small"
             controls-position="right"
+            :max="refundInfo.memberCardBalance - refundInfo.returnCardBalance"
+            :min="0"
+            :precision="2"
           ></el-input-number> {{$t('refundDialog.yuan')}}</p>
         <p v-if="refundInfo.moneyPaid > 0">{{$t('refundDialog.refund')}}{{$t('refundDialog.cash')}}:<el-input-number
             v-model="refundData.money"
             size="small"
             controls-position="right"
+            :max="refundInfo.moneyPaid - refundInfo.returnMoney"
+            :min="0"
+            :precision="2"
           ></el-input-number> {{$t('refundDialog.yuan')}}</p>
         <p v-if="refundInfo.useScore > 0">{{$t('refundDialog.refund')}}{{$t('refundDialog.integral')}}:<el-input-number
             v-model="refundData.score"
             size="small"
             controls-position="right"
+            :max="refundInfo.useScore - refundInfo.returnScore"
+            :min="0"
+            :precision="0"
           ></el-input-number> {{$t('refundDialog.integral')}}</p>
       </div>
       <div class="coupon_refund_bottom">
@@ -127,15 +139,15 @@ export default {
         postData.virtualOrderRefundParam = this.refundData
         refundCouponPackageOrder(postData).then((res) => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: this.$t('marketCommon.successfulOperation')
+            this.$message.success({
+              message: this.$t('marketCommon.successfulOperation'),
+              showClose: true
             })
             this.dialogShow = false
           } else {
-            this.$message({
-              type: 'error',
-              message: res.message
+            this.$message.error({
+              message: res.message,
+              showClose: true
             })
           }
         })
@@ -155,6 +167,8 @@ export default {
             })
           }
         })
+      } else {
+        this.dialogShow = false
       }
     }
   },
@@ -168,6 +182,7 @@ export default {
       if (newVal === true) {
         this.dialogShow = true
         this.refundInfo = this.dataInfo
+
         this.refundData.money = this.refundInfo.moneyPaid
         this.refundData.score = this.refundInfo.useScore
         this.refundData.account = this.refundInfo.useAccount

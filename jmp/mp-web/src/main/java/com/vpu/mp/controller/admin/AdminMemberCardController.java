@@ -74,15 +74,6 @@ public class AdminMemberCardController extends AdminBaseController {
 		shop().member.card.updateMemberCard(param);
 		return success();
 	}
-	/**
-	 * 会员卡 - 更新-测试
-     */
-	@PostMapping("/card/test/update")
-	public JsonResult updateCardTest(@RequestBody CardParam param) {
-		logger().info("更新会员卡测试");
-		return success();
-	}
-	
 
 	/**
 	 *  返回相应的会员卡列表
@@ -428,4 +419,11 @@ public class AdminMemberCardController extends AdminBaseController {
 		logger().info("获取卡ID: "+cardId+"的分享码");
 		return success(shop().member.card.getShareCode(cardId));
 	}
+	
+	@PostMapping(value="/cards/list/get")
+	public JsonResult getCardByIds(@RequestBody List<Integer> param) {
+		logger().info("根据id数组获取会员卡");
+		return success(shop().member.card.getCardById(param));
+	}
+	
 }

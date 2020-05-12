@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.market.enterpolitely.EnterPolitelyParam;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,8 @@ public class WxappEnterPolitelyController extends WxAppBaseController {
      */
     @PostMapping("/index")
     public JsonResult getTheGift(@RequestBody @Validated EnterPolitelyParam param) {
+        WxAppSessionUser user = wxAppAuth.user();
+        param.setUserId(user.getUserId());
         return this.success(shop().enterPolitelyService.enterPolitely(param.getUserId()));
     }
 }

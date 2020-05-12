@@ -123,7 +123,8 @@ export default {
       tableData: [],
       pageParams: {},
       oldCatName: '',
-      showAddCategory: false
+      showAddCategory: false,
+      editRow: {}
     }
   },
   created () {
@@ -143,18 +144,41 @@ export default {
   methods: {
     addCatHandle () {
       // 验证是否填写类别名
+      let that = this
       if (!this.catName) return false
-      let params = {
-        storeId: this.storeId,
-        catName: this.catName
-      }
-      addServiceCat(params).then(res => {
-        if (res.error === 0) {
-          this.$message.success(this.$t('serviceClassify.successAddToast'))
-          this.initDataList()
-          this.showAddCategory = false
+      if (this.editRow.catId) {
+        let params = {
+          catId: this.editRow.catId,
+          catName: this.catName
         }
-      })
+        updateServiceCat(params).then(res => {
+          if (res.error === 0) {
+            that.$message.success(this.$t('serviceClassify.updateCompleted'))
+            that.initDataList()
+            that.catName = ''
+          } else {
+            that.$message.error(this.$t('serviceClassify.updateFaild'))
+          }
+          that.showAddCategory = false
+          that.catName = ''
+        }).catch(err => {
+          that.showAddCategory = false
+          that.catName = ''
+          throw err
+        })
+      } else {
+        let params = {
+          storeId: this.storeId,
+          catName: this.catName
+        }
+        addServiceCat(params).then(res => {
+          if (res.error === 0) {
+            this.$message.success(this.$t('serviceClassify.successAddToast'))
+            this.initDataList()
+            this.showAddCategory = false
+          }
+        })
+      }
     },
     initDataList () {
       let params = Object.assign({}, this.queryParams, this.pageParams)
@@ -169,11 +193,14 @@ export default {
       switch (prop) {
         case 'edit':
           // this.tableData[index].edit = true
-          this.$set(this.tableData[index], 'edit', true)
-          this.$nextTick(function () {
-            this.oldCatName = row.catName
-            this.$refs.editInput.focus()
-          })
+          // this.$set(this.tableData[index], 'edit', true)
+          // this.$nextTick(function () {
+          //   this.oldCatName = row.catName
+          //   this.$refs.editInput.focus()
+          // })
+          this.editRow = row
+          this.catName = row.catName
+          this.showAddCategory = true
           break
         case 'delete':
           let params = {
@@ -189,23 +216,23 @@ export default {
       }
     },
     editHandle (name, index) {
-      let _this = this
-      _this.$set(this.tableData[index], 'edit', false)
-      if (name === _this.oldCatName) return false
+      let that = this
+      that.$set(this.tableData[index], 'edit', false)
+      if (name === that.oldCatName) return false
       let params = {
-        catId: _this.tableData[index].catId,
+        catId: that.tableData[index].catId,
         catName: name
       }
       updateServiceCat(params).then(res => {
         if (res.error === 0) {
-          _this.$message.success(this.$t('serviceClassify.updateCompleted'))
-          _this.initDataList()
+          that.$message.success(this.$t('serviceClassify.updateCompleted'))
+          that.initDataList()
         } else {
-          _this.$message.error(this.$t('serviceClassify.updateFaild'))
-          _this.$set(_this.tableData[index], 'catName', _this.oldCatName)
+          that.$message.error(this.$t('serviceClassify.updateFaild'))
+          that.$set(that.tableData[index], 'catName', that.oldCatName)
         }
       }).catch(err => {
-        _this.$set(_this.tableData[index], 'catName', _this.oldCatName)
+        that.$set(that.tableData[index], 'catName', that.oldCatName)
         throw err
       })
     }

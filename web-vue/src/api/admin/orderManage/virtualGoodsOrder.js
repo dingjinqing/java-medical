@@ -35,3 +35,22 @@ export function refundCouponPackageOrder (data) {
     data: data
   })
 }
+
+// 优惠券礼包订单导出行数
+export function getCouponPackageOrderExportTotalRows (data) {
+  return service({
+    url: '/api/admin/order/couponpack/export/rows',
+    method: 'post',
+    data: data
+  })
+}
+
+// 优惠券礼包订单导出
+export function exportCouponPackageOrder (data) {
+  return service({
+    url: '/api/admin/order/couponpack/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}

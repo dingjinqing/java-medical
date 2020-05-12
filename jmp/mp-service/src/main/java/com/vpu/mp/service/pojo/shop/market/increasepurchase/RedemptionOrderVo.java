@@ -13,7 +13,6 @@ import java.util.List;
 /**
  * @author liufei
  * @date 8/26/2019
- * @description
  */
 @Data
 @ExcelSheet
@@ -82,6 +81,10 @@ public class RedemptionOrderVo {
     @JsonIgnore
     @ExcelColumn(columnIndex = 4, columnName = JsonResultMessage.REDEMPTION_RECEIVER_INFO)
     private String receiverInfo;
+
+    @ExcelIgnore
+    private Byte orderStatus;
+
     /**
      * 订单状态
      */

@@ -90,3 +90,18 @@ export const getDetailApi = data =>
     method: 'post',
     data
   })
+
+// id组查询会员卡
+export const getUserIdsData = data =>
+  service({
+    url: `/api/admin/member/cards/list/get`,
+    method: 'post',
+    data
+  })
+// id组查询标签
+export const getIdsLabelData = data =>
+  service({
+    url: `/api/admin/tags/get`,
+    method: 'post',
+    data
+  })

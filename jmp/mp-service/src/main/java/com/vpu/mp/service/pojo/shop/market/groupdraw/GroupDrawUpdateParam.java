@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.groupdraw;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -45,4 +46,8 @@ public class GroupDrawUpdateParam {
     /** 最小展示人数 **/
     @NonNull
     private Short toNumShow;
+    /** 活动说明 */
+    private GroupDrawActCopywriting actCopywriting;
+    @JsonIgnore
+    private String activityCopywriting;
 }

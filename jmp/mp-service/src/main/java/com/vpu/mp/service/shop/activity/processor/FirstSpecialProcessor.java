@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -34,10 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -126,16 +124,27 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
         Map<Integer, GoodsPrdMpVo> prdMap = capsule.getProducts().stream().collect(Collectors.toMap(GoodsPrdMpVo::getPrdId, Function.identity()));
 
         // 设置规格价格，并且设置有效规格
-        List<FirstSpecialPrdMpVo> newPrdMp = vo.getFirstSpecialPrdMpVos().stream().filter(prd -> {
-            GoodsPrdMpVo goodsPrdMpVo = prdMap.get(prd.getProductId());
+        int goodsNum = 0;
+        List<FirstSpecialPrdMpVo> newPrdMp = new ArrayList<>(vo.getFirstSpecialPrdMpVos().size());
+        for (FirstSpecialPrdMpVo fsPrd : vo.getFirstSpecialPrdMpVos()) {
+            GoodsPrdMpVo goodsPrdMpVo = prdMap.get(fsPrd.getProductId());
             // 商品修改了规格，此特惠规格已不存在
             if (goodsPrdMpVo == null) {
-                return false;
+                prdMap.remove(fsPrd.getProductId());
             } else {
-                prd.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
-                return true;
+                fsPrd.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
+                goodsNum+=goodsPrdMpVo.getPrdNumber();
+                newPrdMp.add(fsPrd);
             }
-        }).collect(Collectors.toList());
+        }
+        // 设置有效商品数量和对应的规格信息
+        capsule.setGoodsNumber(goodsNum);
+        capsule.setProducts(new ArrayList<>(prdMap.values()));
+        // 商品规格信息修改
+        if (prdMap.values().size() == 0) {
+            log.debug("小程序-商品详情-首单特惠-商品规格信息和活动规格信息无交集");
+            vo.setActState(BaseConstant.ACTIVITY_STATUS_NO_PRD_TO_USE);
+        }
         // 设置新的首单特惠活动规格信息
         vo.setFirstSpecialPrdMpVos(newPrdMp);
         capsule.setActivity(vo);
@@ -359,7 +368,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
     }
 
     @Override
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
 
     }
 }

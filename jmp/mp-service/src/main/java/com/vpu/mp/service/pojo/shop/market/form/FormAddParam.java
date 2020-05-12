@@ -8,13 +8,10 @@ import java.sql.Timestamp;
 /**
  * @author liufei
  * @date 2019/8/7
- * @description 表单添加实体类
  */
 @Data
 public class FormAddParam {
     private Integer pageId;
-    @NotNull
-    private Integer shopId;
     @NotNull
     private String pageName;
     @NotNull

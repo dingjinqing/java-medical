@@ -281,20 +281,20 @@ public class OrderGoodsService extends ShopBaseService{
             productSn(goods.getProductInfo().getPrdSn()).
             goodsNumber(goods.getGoodsNumber()).
             marketPrice(goods.getProductInfo().getPrdMarketPrice()).
-            goodsPrice(goods.getProductInfo().getPrdPrice()).
+            goodsPrice(goods.getGoodsPrice() == null ? goods.getProductInfo().getPrdPrice() : goods.getGoodsPrice()).
             goodsAttr(goods.getProductInfo().getPrdDesc()).
             //TODO 需要考虑
             goodsAttrId(StringUtils.EMPTY).
             goodsImg(goods.getGoodsInfo().getGoodsImg()).
-            //限时降价
+            //满折满减
             straId(goods.getStraId()).
             perDiscount(goods.getPerDiscount()).
-            //TODO 需要考虑 是否赠品
+            //当前非赠品（赠品后续初始化）
             isGift(OrderConstant.IS_GIFT_N).
             //TODO 需要考虑 赠品的关联商品
-            rGoods("").
-            //TODO 需要考虑 商品积分
-            goodsScore(0).
+            rGoods(StringUtils.EMPTY).
+            //商品积分(积分兑换当前商品需要的积分)
+            goodsScore(goods.getGoodsScore()).
             //TODO 需要考虑 商品成长值
             goodsGrowth(0).
             goodsType(goods.getGoodsInfo().getGoodsType()).
@@ -304,7 +304,7 @@ public class OrderGoodsService extends ShopBaseService{
             //TODO 逐级计算折扣
             discountDetail(StringUtils.EMPTY).
             deliverTemplateId(goods.getGoodsInfo().getDeliverTemplateId()).
-            //TODO 规格质量
+            //商品质量
             goodsWeight(goods.getGoodsInfo().getGoodsWeight()).
             //TODO 后续处理
             userCoupon(null).
@@ -312,8 +312,8 @@ public class OrderGoodsService extends ShopBaseService{
             sortId(goods.getGoodsInfo().getSortId()).
             brandId(goods.getGoodsInfo().getBrandId()).
             goodsPriceAction(goods.getGoodsPriceAction()).
-            purchasePriceId(null).
-            purchasePriceRuleId(null).
+            purchasePriceId(goods.getPurchasePriceId()).
+            purchasePriceRuleId(goods.getPurchasePriceRuleId()).
             reducePriceId(null).
             firstSpecialId(goods.getFirstSpecialId() == null ? NumberUtils.INTEGER_ZERO : goods.getFirstSpecialId()).
             isCardExclusive(goods.getGoodsInfo().getIsCardExclusive()).
@@ -338,6 +338,14 @@ public class OrderGoodsService extends ShopBaseService{
                 //设置首单特惠在等等商品表记录，目前orderGoods中actId.type只记录首单特惠，后期考虑记录全部非叠加型活动
                 record.setActivityType(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
                 record.setActivityId(bo.getFirstSpecialId());
+            }else if (bo.getPurchasePriceRuleId() != null && bo.getPurchasePriceRuleId() > 0) {
+                //加价购
+                record.setActivityType(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE);
+                record.setActivityId(bo.getPurchasePriceId());
+                record.setActivityRule(bo.getPurchasePriceRuleId());
+            }
+            if(bo.getPurchasePriceId() != null) {
+                record.setPurchaseId(bo.getPurchasePriceId());
             }
             records.add(record);
         }
@@ -347,9 +355,10 @@ public class OrderGoodsService extends ShopBaseService{
     /**
      * 获取订单商品的活动类型
      * @param bos
+     * @param insteadPayMoney
      * @return
      */
-    public Set<Byte> getGoodsType(List<OrderGoodsBo> bos){
+    public Set<Byte> getGoodsType(List<OrderGoodsBo> bos, BigDecimal insteadPayMoney){
         HashSet<Byte> type = new HashSet<>();
         for(OrderGoodsBo bo : bos){
             if(bo.getPurchasePriceRuleId() != null && bo.getPurchasePriceRuleId() > 0){
@@ -372,6 +381,9 @@ public class OrderGoodsService extends ShopBaseService{
                 //满包邮
                 type.add(BaseConstant.ACTIVITY_TYPE_FREESHIP_ORDER);
             }
+        }
+        if(BigDecimalUtil.compareTo(insteadPayMoney, null) == 1) {
+            type.add(BaseConstant.ACTIVITY_TYPE_PAY_FOR_ANOTHER);
         }
         return type;
     }

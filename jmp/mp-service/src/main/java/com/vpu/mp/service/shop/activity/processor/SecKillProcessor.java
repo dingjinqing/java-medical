@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -27,9 +28,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
 import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 
 /**
@@ -69,7 +70,7 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
 
             capsule.setRealPrice(record3.get(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE));
             GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
-            activity.setActivityId(record3.get(SEC_KILL_DEFINE.SK_ID));
+            activity.setActivityId(record3.get(SEC_KILL_PRODUCT_DEFINE.SK_ID));
             activity.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
             capsule.getGoodsActivities().add(activity);
             capsule.getProcessedTypes().add(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
@@ -102,15 +103,19 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
         //查询商品的秒杀活动,获取活动id
         Result<? extends Record> secKillInfoList = secKillProcessorDao.getSecKillInfoList(secProductList, cartBo.getDate());
         if (secKillInfoList!=null&&secKillInfoList.size()>0){
-            Map<Integer, SeckillProductBo> seckillProductBoMap = secKillInfoList.intoMap(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID,SeckillProductBo.class);
+            List<SeckillProductBo> seckillProductBoList = secKillInfoList.into(SeckillProductBo.class);
+            Map<Integer, List<SeckillProductBo>> seckillProductBoMap = seckillProductBoList.stream().collect(Collectors.groupingBy(SeckillProductBo::getProductId));
             cartBo.getCartGoodsList().forEach(goods->{
-                SeckillProductBo seckillPrd = seckillProductBoMap.get(goods.getProductId());
-                if (seckillPrd!=null){
-                    CartActivityInfo seckillProductInfo =new CartActivityInfo();
-                    seckillProductInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
-                    seckillProductInfo.setActivityId(seckillPrd.getSkId());
-                    seckillProductInfo.setProductPrice(seckillPrd.getSecKillPrice());
-                    goods.getCartActivityInfos().add(seckillProductInfo);
+                List<SeckillProductBo> seckillProductBos = seckillProductBoMap.get(goods.getProductId());
+                if (seckillProductBos!=null&&seckillProductBos.size()>0){
+                    SeckillProductBo seckillPrd = seckillProductBos.get(0);
+                    if (seckillPrd!=null){
+                        CartActivityInfo seckillProductInfo =new CartActivityInfo();
+                        seckillProductInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
+                        seckillProductInfo.setActivityId(seckillPrd.getSkId());
+                        seckillProductInfo.setProductPrice(seckillPrd.getSecKillPrice());
+                        goods.getCartActivityInfos().add(seckillProductInfo);
+                    }
                 }
             });
         }
@@ -156,8 +161,8 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
     }
 
     @Override
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
-        secKillProcessorDao.processReturn(activityId,returnGoods);
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
+        secKillProcessorDao.processReturn(returnOrderRecord,activityId,returnGoods);
     }
 
 }

@@ -32,21 +32,14 @@ global.wxPage({
     search_word = '';
     input_value = '';
 
-    // 获取历史搜索
-    util.api('/api/wxapp/search/userSearchHot', function (res) {
-      if (res.error == 0) {
-        that.setData({
-          history_words: res.content
-        })
-      } else {
-        util.showModal("提示", res.message);
-      }
-    }, {
-      userId: userId,
-      num: 10
-    })
+    that.getConfig()
+    that.getHistory()
 
-    // 获取搜索配置, 热词搜索
+    this.selectComponent('#recommend').resetDataList().resetPage().requestData() //推荐商品
+  },
+  // 获取搜索配置, 热词搜索
+  getConfig () {
+    var that = this
     util.api('/api/wxapp/search/config', function (res) {
       if (res.error == 0) {
         that.setData({
@@ -60,10 +53,27 @@ global.wxPage({
             auto_set_word: search_word
           })
         }
+      } else {
+        util.showModal("提示", res.message);
       }
     })
-
-    this.selectComponent('#recommend').resetDataList().resetPage().requestData() //推荐商品
+  },
+  // 获取历史搜索
+  getHistory () {
+    var that = this
+    util.api('/api/wxapp/search/userSearchHot', function (res) {
+      if (res.error == 0) {
+        that.setData({
+          history_words: res.content == [] ? [] : res.content
+        })
+        console.log(that.data.history_words)
+      } else {
+        util.showModal("提示", res.message);
+      }
+    }, {
+      userId: userId,
+      num: 10
+    })
   },
   save_zhi: function (e) {
     search_word = e.detail.value;
@@ -86,17 +96,17 @@ global.wxPage({
   // 搜索
   bindSearch: function (e) {
     console.log(search_word);
+    var data = search_word.replace(/\s/g,"");
     // 添加热词
-    util.api('/api/wxapp/search/addHotWords', function (res) {
-      if (res.error == 0) {
-        util.jumpLink('/pages1/search/search?keyWords=' + search_word, "redirectTo")
-      }
-    }, {
-      userId: userId,
-      hotWords: search_word
-    })
-
+    if (data != "") {
+      util.api('/api/wxapp/search/addHotWords', function (res) {}, {
+        userId: userId,
+        hotWords: data
+      })
+    }
+    util.jumpLink('/pages1/search/search?keyWords=' + data, "redirectTo")
   },
+  
   to_search: function (e) {
     search_word = e.currentTarget.dataset.value
     this.setData({
@@ -105,12 +115,8 @@ global.wxPage({
     this.bindSearch()
   },
 
+  // 清空搜索框
   clear_value: function (e) {
-    console.log(1);
-    search_word = "";
-    this.data.search_word = "";
-    input_value = "";
-    console.log(search_word);
     this.setData({
       input_value: '',
       search_word: '',
@@ -123,47 +129,11 @@ global.wxPage({
     var that = this;
     util.api('/api/wxapp/search/clearWords', function (res) {
       if (res.error == 0) {
-        that.setData({
-          history_words: ""
-        })
+        that.getHistory()
+      } else {
+        util.showModal("提示", res.message);
       }
-    }, {
-      userId: userId
-    });
-  },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
+    }, { userId: userId });
   },
 
   /**
@@ -171,12 +141,5 @@ global.wxPage({
    */
   onReachBottom: function () {
     this.selectComponent('#recommend').requestData()
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
   }
 })

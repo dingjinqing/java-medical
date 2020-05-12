@@ -10,8 +10,14 @@ var reserve = require('./page1/reserve.js') // 预约
 var usercenter = require('./page1/usercenter.js') // 个人中心
 var pinlottery = require('./page1/pinlottery.js') // 拼团抽奖
 var coupon = require('./pages/coupon.js') // 优惠券
+var cart = require('./pages/cart.js') // 购物车
+var promote = require('./page1/promote.js') // 好友助力
+var pinintegration = require('./page1/pinintegration.js') // 瓜分积分
 var decorate = require('./components/decorate/decorate.js')
 var item = require('./pages/item.js')
+var search = require('./page1/search.js') //搜索页
+var virtualCheckout = require('./page1/virtualCheckout.js') //虚拟商品结算
+var actPage = require('./page1/actPage.js') //活动商品页
 var zh_CN = {
   "common": {
     "info": {
@@ -57,7 +63,8 @@ var zh_CN = {
     "checkout": checkout,
     "item":item,
     "coupon": coupon,
-    "bargain": bargain
+    "bargain": bargain,
+    "cart": cart
   },
   "page1": {
     "comment": comment,
@@ -65,7 +72,12 @@ var zh_CN = {
     "fight": fight,
     "reserve": reserve,
     "usercenter": usercenter,
-    'pinlottery': pinlottery
+    'pinlottery': pinlottery,
+    'promote': promote,
+    'pinintegration': pinintegration,
+    'search': search,
+    'virtualCheckout': virtualCheckout,
+    'actPage': actPage
   },
   "page2": {
 

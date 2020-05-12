@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * reward_content字段的类
  * 
@@ -16,9 +18,9 @@ public class FpRewardContent {
 	@JsonProperty(value = "goods_ids")
 	private Integer goodsIds;
 	@JsonProperty(value = "reward_ids")
-	private String rewardIds;
+	private Integer rewardIds;
 	@JsonProperty(value = "market_price")
-	private String marketPrice;
+	private BigDecimal marketPrice;
 	@JsonProperty(value = "market_store")
-	private String marketStore;
+	private Integer marketStore;
 }

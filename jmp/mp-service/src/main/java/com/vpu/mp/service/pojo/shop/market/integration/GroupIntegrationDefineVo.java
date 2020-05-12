@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums.QueryType;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums.Status;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class GroupIntegrationDefineVo {
 
 	/** 活动ID*/

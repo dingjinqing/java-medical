@@ -87,7 +87,17 @@
         "pinlotteryinfo/pinlotteryinfo",
         "pledgeannounce/pledgeannounce",
         "fullshiprule/fullshiprule",
-        "appointcomment/appointcomment"
+        "couponpackage/couponpackage",
+        "promoteinfo/promoteinfo",
+        "promotelist/promotelist",
+        "virtualCheckout/virtualCheckout",
+        "pinintegration/pinintegration",
+        "pinintegrationdetail/pinintegrationdetail",
+        "insteadinfo/insteadinfo",
+        "insteadcheckout/insteadcheckout",
+        "appointcomment/appointcomment",
+        "form/form",
+        "formsuccess/formsuccess"
       ]
     }
   ],

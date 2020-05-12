@@ -26,10 +26,10 @@
           </el-form-item>
           <el-form-item
             :label="labels.label2"
-            prop="userName"
+            prop="username"
           >
             <el-input
-              v-model="pageParams.userName"
+              v-model="pageParams.username"
               size="small"
               style="width:150px"
             ></el-input>
@@ -95,10 +95,10 @@
       >
         <el-button
           @click="handleSave"
+          type="primary"
           size="small"
         >确定</el-button>
         <el-button
-          type="primary"
           @click="handleCancel"
           size="small"
         >取消</el-button>
@@ -121,6 +121,10 @@ export default {
     memberListDialog: {
       type: Boolean,
       default: false
+    },
+    chooseMemberBack: {
+      type: Array,
+      default: () => []
     }
   },
   data () {
@@ -137,9 +141,9 @@ export default {
       pageParams: {
         'currentPage': null,
         'pageRows': null,
-        'mobile': null,
-        'userId': null,
-        'userName': null
+        'mobile': '',
+        'userId': '',
+        'username': ''
       },
       /**
        * 翻页的时候将questions的数据在allSelecteds判断是否存在,存在就设置为选中
@@ -172,6 +176,16 @@ export default {
           console.log(res)
           this.questions = dataList
           this.pageParams = page
+
+          // 已选回显
+          console.log(this.chooseMemberBack)
+          this.questions.forEach(item => {
+            this.chooseMemberBack.forEach(val => {
+              if (item.userId === val) {
+                this.$refs.table.toggleRowSelection(item)
+              }
+            })
+          })
           console.log(this.pageParams)
         }
       }).catch(err => console.log(err))

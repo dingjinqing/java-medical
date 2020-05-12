@@ -570,7 +570,6 @@ export default {
           item.legal = ''
           item.exchangCountLegal = `开卡赠送${item.exchangCountLegal}兑换商品机会`
       }
-      console.log(item)
     },
     // 调起弹窗
     handlCallCardDialog () {

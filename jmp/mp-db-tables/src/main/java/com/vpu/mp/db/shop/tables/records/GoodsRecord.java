@@ -5,14 +5,12 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.Goods;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-
-import javax.annotation.Generated;
-
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import javax.annotation.Generated;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 
 /**
@@ -28,7 +26,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
 
-    private static final long serialVersionUID = -1284347129;
+    private static final long serialVersionUID = 106801726;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods.goods_id</code>.
@@ -688,6 +686,34 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
         return (Byte) get(46);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods.pv</code>. 7天访问量
+     */
+    public void setPv(Integer value) {
+        set(47, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods.pv</code>. 7天访问量
+     */
+    public Integer getPv() {
+        return (Integer) get(47);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods.comment_num</code>. 评论数
+     */
+    public void setCommentNum(Integer value) {
+        set(48, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods.comment_num</code>. 评论数
+     */
+    public Integer getCommentNum() {
+        return (Integer) get(48);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -714,7 +740,7 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
     /**
      * Create a detached, initialised GoodsRecord
      */
-    public GoodsRecord(Integer goodsId, Integer shopId, Integer catId, String goodsSn, String goodsName, Integer brandId, String goodsAd, Integer goodsNumber, BigDecimal goodsWeight, BigDecimal marketPrice, BigDecimal shopPrice, BigDecimal costPrice, String goodsDesc, String goodsImg, Byte isOnSale, Byte delFlag, Byte goodsType, Integer deliverTemplateId, Integer goodsSaleNum, Integer goodsCollectNum, Timestamp createTime, Timestamp updateTime, Byte state, String reason, Integer subAccountId, Timestamp saleTime, Integer limitBuyNum, String unit, Integer limitMaxNum, Byte saleType, Integer sortId, String goodsVideo, String goodsVideoImg, Integer goodsVideoSize, Integer goodsVideoId, Integer goodsPageId, Byte isPageUp, Byte isCardExclusive, Integer baseSale, Byte source, Byte isControlPrice, Byte canRebate, Byte promotionLanguageSwitch, String promotionLanguage, String deliverPlace, String shareConfig, Byte isDefaultProduct) {
+    public GoodsRecord(Integer goodsId, Integer shopId, Integer catId, String goodsSn, String goodsName, Integer brandId, String goodsAd, Integer goodsNumber, BigDecimal goodsWeight, BigDecimal marketPrice, BigDecimal shopPrice, BigDecimal costPrice, String goodsDesc, String goodsImg, Byte isOnSale, Byte delFlag, Byte goodsType, Integer deliverTemplateId, Integer goodsSaleNum, Integer goodsCollectNum, Timestamp createTime, Timestamp updateTime, Byte state, String reason, Integer subAccountId, Timestamp saleTime, Integer limitBuyNum, String unit, Integer limitMaxNum, Byte saleType, Integer sortId, String goodsVideo, String goodsVideoImg, Integer goodsVideoSize, Integer goodsVideoId, Integer goodsPageId, Byte isPageUp, Byte isCardExclusive, Integer baseSale, Byte source, Byte isControlPrice, Byte canRebate, Byte promotionLanguageSwitch, String promotionLanguage, String deliverPlace, String shareConfig, Byte isDefaultProduct, Integer pv, Integer commentNum) {
         super(Goods.GOODS);
 
         set(0, goodsId);
@@ -764,5 +790,7 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
         set(44, deliverPlace);
         set(45, shareConfig);
         set(46, isDefaultProduct);
+        set(47, pv);
+        set(48, commentNum);
     }
 }

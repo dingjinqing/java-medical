@@ -1,0 +1,64 @@
+/* pages1/promotelist/promotelist.wxss */
+@import "../../css/iconfont.wxss";
+page{
+  overflow-x: hidden;
+  font-family: "Microsoft YaHei", 微软雅黑, "Microsoft JhengHei";
+  padding-top: 20rpx;
+}
+.clearfix::after{
+  contain: "";
+  display: block;
+  clear: both;
+}
+.main-container{
+  width: 700rpx;
+  background: #fff;
+  margin: 0 auto;
+  border-radius: 10rpx;
+}
+.list_top{
+  height: 80rpx;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.hr{
+  width: 80rpx;
+  height: 2rpx;
+  background: #eee;
+}
+.list_top view:nth-of-type(2){
+  margin: 0 20rpx;
+  font-size: 30rpx;
+}
+.each_one{
+  display: flex;
+  align-items: center;
+  width: 650rpx;
+  height: 110rpx;
+  margin-left: 25rpx;
+  padding-right: 25rpx;
+  border-bottom: 2rpx solid #eee;
+}
+.each_one:last-of-type{
+  border: none
+}
+.eo_left{
+  flex: 1.6;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 80rpx;
+}
+.eo_left image{
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 100rpx;
+  margin-right: 20rpx;
+}
+.eo_right{
+  flex: 0.4;
+  color: #f66;
+  text-align: right
+}

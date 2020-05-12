@@ -29,6 +29,8 @@ public class OrderInfoVo extends OrderListInfoVo {
 	private Timestamp closedTime;
 	/**订单取消时间*/
 	private Timestamp cancelledTime;
+    /**拼团中时间*/
+    private Timestamp pinStartTime;
 	/**下单人昵称*/
 	private String username;
     /**下单人手机号*/
@@ -76,4 +78,9 @@ public class OrderInfoVo extends OrderListInfoVo {
 	private String verifyCode;
 	/**退定金模式1:自动退定金0:不退定金*/
 	private Byte bkReturnType;
+	/**在退款流程中判断是否补款退款*/
+    @JsonIgnore
+    private Boolean isReturnBk;
+    /**是否展示手动退款退货按钮*/
+    private Boolean showManualReturn;
 }

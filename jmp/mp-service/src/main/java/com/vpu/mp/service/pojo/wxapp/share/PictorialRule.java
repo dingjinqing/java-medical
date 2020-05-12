@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PictorialRule {
+public class PictorialRule implements Rule {
     private Timestamp goodsUpdateTime;
     private Timestamp activityUpdateTime;
 }

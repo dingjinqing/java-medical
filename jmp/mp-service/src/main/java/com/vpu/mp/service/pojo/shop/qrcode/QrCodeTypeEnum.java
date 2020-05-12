@@ -23,9 +23,9 @@ public enum QrCodeTypeEnum {
     /*小程序页面*/
     INDEX((byte) 7, "pages/index/index"),
     /*拼团*/
-    GROUP_BOOKING((byte) 8, "pages/item/item"),
+    GROUP_BOOKING((byte) 8, "pages/groupbuyitem/groupbuyitem"),
     /*表单*/
-    FORM((byte) 9, "pages/form/form"),
+    FORM((byte) 9, "pages1/form/form"),
     /*砍价商品*/
     BARGAIN_ITEM((byte) 10, "pages/bargainitem/bargainitem"),
     /*海报-商品*/
@@ -35,7 +35,7 @@ public enum QrCodeTypeEnum {
     /*海报-砍价详情页*/
     POSTER_BARGAIN_ITEM((byte) 13, "pages/bargainitem/bargainitem"),
     /*海报-砍价页*/
-    POSTER_BARGAIN_INFO((byte) 14, "/pages/bargaininfo/bargaininfo"),
+    POSTER_BARGAIN_INFO((byte) 14, "pages/bargaininfo/bargaininfo"),
     /*海报-拼团中*/
     POSTER_GROUP_BOOKING_INFO((byte) 15, "pages1/groupbuyinfo/groupbuyinfo"),
     /*积分商品详情*/
@@ -51,7 +51,7 @@ public enum QrCodeTypeEnum {
     /*加价购主商品*/
     RAISE_PRICE_BUY_MAIN_GOODS((byte) 21, "pages/maingoodslist/maingoodslist"),
     /*瓜分积分活动*/
-    PARTATION_INTEGRAL((byte) 22, "pages/pinintegration/pinintegration"),
+    PARTATION_INTEGRAL((byte) 22, "pages1/pinintegration/pinintegration"),
     /*拼团抽奖详情*/
     GROUP_BOOKING_LOTTERY((byte) 23, "pages/pinlotteryitem/pinlotteryitem"),
     /*定金膨胀详情*/
@@ -76,7 +76,10 @@ public enum QrCodeTypeEnum {
     PIN_LOTTERY((byte) 33, "pages1/pinlotterylist/pinlotterylist"),
     /*我要送礼*/
     PRESENT_GIFT((byte) 34, "pages1/presentinfo/presentinfo"),
-
+    /*商品搜索页*/
+    GOODS_SEARCH((byte) 35, "pages1/search/search"),
+    /*积分兑换优惠券页*/
+    SCORE_COUPON((byte) 36, "pages/receiveCoupon/receiveCoupon"),
     /*砍价详情页分享*/
     BARGAIN_INFO_SHARE((byte) 98, "");
 

@@ -1,6 +1,11 @@
 package com.vpu.mp.service.shop.order;
 
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnStatusChangeRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -9,6 +14,7 @@ import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -18,27 +24,44 @@ import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
+import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
-import com.vpu.mp.service.pojo.shop.order.*;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.OrderParam;
+import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.must.OrderMustVo;
-import com.vpu.mp.service.pojo.shop.order.refund.*;
+import com.vpu.mp.service.pojo.shop.order.refund.OperatorRecord;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnListVo;
+import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayOrderDetails;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoByOrderVo;
+import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoByOsVo;
+import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoVo;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderCenter;
 import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
@@ -48,6 +71,7 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.refund.AfterSaleServiceVo;
 import com.vpu.mp.service.pojo.wxapp.order.refund.ReturnOrderListMp;
 import com.vpu.mp.service.shop.config.ConfigService;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.express.ExpressService;
@@ -56,6 +80,7 @@ import com.vpu.mp.service.shop.goods.GoodsCommentService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
+import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.order.action.ReturnService;
 import com.vpu.mp.service.shop.order.action.ShipService;
@@ -72,6 +97,7 @@ import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
 import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
 import com.vpu.mp.service.shop.order.store.StoreOrderService;
+import com.vpu.mp.service.shop.order.sub.SubOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -91,8 +117,17 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
@@ -158,6 +193,13 @@ public class OrderReadService extends ShopBaseService {
     private ExpressService expressService;
     @Autowired
     private ConfigService configService;
+    @Autowired
+    public SubOrderService subOrderService;
+    @Autowired
+    private GroupDrawService groupDrawService;
+    @Autowired
+    private ShopCommonConfigService shopCommonConfigService;
+
 	/**
 	 * 订单查询
 	 * @param param
@@ -188,8 +230,6 @@ public class OrderReadService extends ShopBaseService {
 		ArrayList<OrderListInfoVo> mainOrderList = new ArrayList<OrderListInfoVo>(orderSn.getDataList().size());
 		//现子订单数>0的主订单
 		ArrayList<Integer> orderCountMoreZero = new ArrayList<Integer>();
-		//TODO 查询订单是否为活动奖品
-		List<String> prizesSns = Collections.emptyList();
 		for (String moc : orderSn.getDataList()) {
 			List<OrderListInfoVo> list = allOrder.get(moc);
 			int size = list.size();
@@ -200,7 +240,7 @@ public class OrderReadService extends ShopBaseService {
 				goodsList.put(order.getOrderId(),order);
 				if(order.getOrderSn().equals(moc)) {
 					//设置订单支付方式（无子单）
-					orderInfo.setPayCodeList(order,prizesSns);
+					orderInfo.setPayCodeList(order);
 					mOrder = order;
 					if(size ==1) {
 						break;
@@ -306,9 +346,11 @@ public class OrderReadService extends ShopBaseService {
 			vo.setGoods(goods.get(vo.getOrderId()));
 			//设置订单操作
 			OrderOperationJudgment.operationSet(vo,returningCount.get(vo.getOrderId()),ship.canBeShipped(vo.getOrderSn()));
+			//手动退款退货按钮显示
+            showManualReturn(vo);
 		}
 		//设置订单支付方式（无子单）
-		orderInfo.setPayCodeList(mainOrder,prizesSns);
+		orderInfo.setPayCodeList(mainOrder);
 		//设置核销员
 		if(mainOrder.getVerifierId() > 0) {
 			mainOrder.setVerifierName(user.getUserByUserId(mainOrder.getVerifierId()).getUsername());
@@ -319,10 +361,40 @@ public class OrderReadService extends ShopBaseService {
 			//过滤主订单下被拆出的goods
 			orderInfo.filterMainOrderGoods(mainOrder, goods.get(mainOrder.getOrderId()));
 		}
+		//拼团订单设置拼团中时间
+        mainOrder.setPinStartTime(mainOrder.getPayTime());
 		return mainOrder;
 	}
 
-	/**
+    /**
+     * admin显示手动退款退货按钮
+     * @param vo
+     */
+    private void showManualReturn(OrderInfoVo vo) {
+        //微信支付超一年不可退款
+        if(OrderConstant.PAY_CODE_WX_PAY.equals(vo.getPayCode()) && vo.getPayTime() != null) {
+            Calendar instance = Calendar.getInstance();
+            instance.setTimeInMillis(vo.getPayTime().getTime());
+            instance.add(Calendar.YEAR, 1);
+            if(instance.getTimeInMillis() < System.currentTimeMillis()) {
+                vo.setShowManualReturn(false);
+                return;
+            }
+        }
+        //订单状态：待付款、取消、关闭时不可退款
+        if(vo.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY || vo.getOrderStatus() == OrderConstant.ORDER_CANCELLED || vo.getOrderStatus() == OrderConstant.ORDER_CLOSED) {
+            vo.setShowManualReturn(false);
+            return;
+        }
+        //订单无可退商品且无可退金额
+        if(!orderGoods.canReturnGoodsNumber(vo.getOrderSn()) && BigDecimalUtil.compareTo(orderInfo.getOrderFinalAmount(vo , Boolean.TRUE), refundAmountRecord.getOrderRefundAmount(vo.getOrderSn())) < 1) {
+            vo.setShowManualReturn(false);
+            return;
+        }
+        vo.setShowManualReturn(true);
+    }
+
+    /**
 	 * 退货、款订单
 	 * @return
 	 */
@@ -397,6 +469,9 @@ public class OrderReadService extends ShopBaseService {
 		setReturnCfg(vo, rOrder);
 		//设置订单类型
         vo.setOrderType(OrderInfoService.orderTypeToArray(order.getGoodsType()));
+        //客服按钮展示开关
+        vo.setReturnService(shopCommonConfigService.getReturnService());
+
 		return vo;
 	}
 
@@ -512,10 +587,6 @@ public class OrderReadService extends ShopBaseService {
 			if(order.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GROUP_BUY.toString())) {
 				order.setGroupBuyInfo(groupBuyList.getByOrder(order.getOrderSn()));
 			}
-			//补款设置时间
-			if(order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT) {
-				setBkPayOperation(order);
-			}
 			//是否退过款
 			order.setIsReturn(order.getRefundStatus() != OrderConstant.REFUND_DEFAULT_STATUS ? YES : NO);
 		}
@@ -529,8 +600,10 @@ public class OrderReadService extends ShopBaseService {
 		order.setPreSaleTimeInterval(new Timestamp[] {timeInterval.value1(),timeInterval.value2()});
 		long currenTmilliseconds  = Instant.now().toEpochMilli();
 		if(timeInterval.value1().getTime() < currenTmilliseconds && currenTmilliseconds < timeInterval.value2().getTime() ) {
+            order.setPayOperationTime(timeInterval.value2().getTime() - currenTmilliseconds);
 			order.setIsPayEndPayment(NumberUtils.BYTE_ONE);
 		}else {
+            order.setPayOperationTime(0L);
 			order.setIsPayEndPayment(NumberUtils.BYTE_ZERO);
 		}
 	}
@@ -574,14 +647,14 @@ public class OrderReadService extends ShopBaseService {
 			order.setVerifierInfo(userInfo.getUsername(), userInfo.getMobile());
 		}
 		//子单
-		if(orderType.indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT).toString()) != -1 && order.getOrderSn().equals(order.getMainOrderSn()) && orders.size() > 1) {
+		if(orderType.indexOf(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT.toString()) != -1 && order.getOrderSn().equals(order.getMainOrderSn()) && orders.size() > 1) {
 			//只显示生成订单的子订单
 			order.setSubOrder(getSubOrder(orders.subList(1, orders.size())));
 		}
 		//好物圈
 
 		// 拼团
-		if(orderType.indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_BUY).toString()) != -1){
+		if(orderType.indexOf(BaseConstant.ACTIVITY_TYPE_GROUP_BUY.toString()) != -1){
 			GroupOrderVo groupOrder = groupBuyList.getByOrder(order.getOrderSn());
 			Integer groupBuyLimitAmout = groupBuyService.getGroupBuyLimitAmout(groupOrder.getActivityId());
 			List<GroupBuyUserInfo> pinUserList = groupBuyList.getGroupUserList(groupOrder.getGroupId());
@@ -591,13 +664,21 @@ public class OrderReadService extends ShopBaseService {
 			groupOrderVo.setStatus(groupOrder.getStatus());
 			groupOrderVo.setGroupBuyLimitAmout(groupBuyLimitAmout);
 			order.setGroupBuyInfo(groupOrderVo);
-		}else if(orderType.indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW).toString()) != -1) {
-
+		}else if(orderType.indexOf(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW.toString()) != -1) {
+			//拼团抽奖
+			GroupDrawInfoByOrderVo groupDraw=new GroupDrawInfoByOrderVo();
+			GroupDrawInfoByOsVo groupByOrderSn = groupDrawService.getGroupByOrderSn(order.getOrderSn(), false);
+			groupDraw.setPinGroup(groupByOrderSn);
+			GroupDrawInfoVo into = groupDrawService.getById(groupByOrderSn.getActivityId()).into(GroupDrawInfoVo.class);
+			groupDraw.setPinGroupInfo(into);
+			groupDraw.setPinUserGroup(groupDrawService.getGroupList(groupByOrderSn.getActivityId(), groupByOrderSn.getGroupId(), null));
+			order.setGroupDraw(groupDraw);
 		}
-		//拼团抽奖
 
 		//优惠卷
 
+        //客服按钮展示开关
+        order.setOrderDetailService(shopCommonConfigService.getOrderDetailService());
 
 		return order;
 
@@ -611,7 +692,7 @@ public class OrderReadService extends ShopBaseService {
 		//1.延长收货
 		order.setIsExtendReceive(OrderOperationJudgment.isExtendReceive(order, getExtendReceiveDays()) ? YES : NO);
 		//2.确认收货(order_status==4可以判断)
-		//3.好友代付（order_pay_way == 2）
+		//3.好友代付（order_pay_way == 2）;好友代付与立即支付关联加入到4处理
 		//4.待支付状态处理order_status==0 => 去付尾款(bk_order_paid == 1) 、 去付款
 		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY) {
 			setPayOperation(order);
@@ -624,6 +705,11 @@ public class OrderReadService extends ShopBaseService {
 		order.setIsRemindShip(OrderOperationJudgment.isShowRemindShip(order) ? YES : NO);
 		//10.评价（查看评价、评价有礼/商品评价）
 		order.setIsShowCommentType(getCommentType(order));
+		//好友代付
+        if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
+            order.setPayOperationTime(order.getExpireTime().getTime() - Instant.now().toEpochMilli());
+            order.setIsShowFriendPay(order.getPayOperationTime() > 0 ? YES : NO);
+        }
 		//TODO 幸运大抽奖 分享优惠卷。。。。
 		/**按钮-end*/
 	}
@@ -648,19 +734,15 @@ public class OrderReadService extends ShopBaseService {
 	private void setPayOperation(OrderListMpVo order) {
 		long currenTmilliseconds  = Instant.now().toEpochMilli();
 		if(order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT) {
-			//预售、定金订单
-			Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
-			if(timeInterval.value1().getTime() < currenTmilliseconds && currenTmilliseconds < timeInterval.value2().getTime() ) {
-				order.setPayOperationTime(timeInterval.value2().getTime() - currenTmilliseconds);
-			}else {
-				order.setPayOperationTime(Long.valueOf(0));
-				order.setPreSaleTimeInterval(new Timestamp[] {timeInterval.value1() , timeInterval.value2()});
-			}
-		}else {
+            //补款设置时间与补款是否可支付
+            setBkPayOperation(order);
+		} else if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
+		    //好友代付在外层处理
+        } else {
 			//普通订单待支付取消时间
 			order.setPayOperationTime(order.getExpireTime().getTime() - currenTmilliseconds);
+            order.setIsShowPay(order.getPayOperationTime() > 0 ? YES : NO);
 		}
-		order.setIsShowPay(order.getPayOperationTime() > 0 ? YES : NO);
 	}
 
 	/**
@@ -823,6 +905,31 @@ public class OrderReadService extends ShopBaseService {
         }else {
             return null;
         }
+    }
+
+    public InsteadPayOrderDetails insteadPayInfo(InsteadPayDetailsParam param) throws MpException {
+        InsteadPayOrderDetails result = new InsteadPayOrderDetails();
+        //订单
+        OrderInfoMpVo order = mpGet(param);
+        result.setOrder(order);
+        //代付信息
+        PageResult<InsteadPayDetailsVo> insteadPayDetailsVoPageResult = subOrderService.paymentDetails(param.getOrderSn(), param.getCurrentPage(), param.getPageRows());
+        result.setInsteadPayDetails(insteadPayDetailsVoPageResult);
+        //订单
+        OrderInfoRecord orderRecord = orderInfo.getOrderByOrderSn(param.getOrderSn());
+        //获取已付金额
+        result.setAmountPaid(orderInfo.getOrderFinalAmount(orderRecord.into(OrderListInfoVo.class), true));
+        //待支付金额
+        result.setWaitPayMoney(BigDecimalUtil.subtrac(orderRecord.getInsteadPayMoney(), orderRecord.getMoneyPaid()));
+        //代付配置
+        result.setInsteadPayCfg(Util.parseJson(orderRecord.getInsteadPay(), InsteadPay.class));
+        //是否本人
+        result.setIsSelf(param.getWxUserInfo().getUserId().equals(orderRecord.getUserId()) ? OrderConstant.YES : OrderConstant.NO);
+        //默认消息
+        result.setMessage(orderRecord.getInsteadPayNum() == 0 ? result.getInsteadPayCfg().getOrderUserMessageMultiple() : result.getInsteadPayCfg().getOrderUserMessageSingle());
+        //订单拥有者
+        result.setUserInfo(user.getUserInfo(orderRecord.getUserId()));
+        return result;
     }
 
     /*********************************************************************************************************/
@@ -1027,6 +1134,7 @@ public class OrderReadService extends ShopBaseService {
                 }
                 order.setUserTag(tags.toString());
             }
+
             if(columns.contains(OrderExportVo.RETURN_TIME)){
                 ReturnOrderGoodsRecord returnOrderGoodsRecord = returnOrderGoods.getByRecId(order.getRecId());
                 if(returnOrderGoodsRecord != null){
@@ -1039,7 +1147,6 @@ public class OrderReadService extends ShopBaseService {
                     order.setShippingName(expressService.get(order.getShippingId()).getShippingName());
                 }
             }
-
         }
 
         Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
@@ -1066,7 +1173,7 @@ public class OrderReadService extends ShopBaseService {
 		List<FootprintDayVo> orderGoodsHistoryVos =records.into(FootprintDayVo.class);
 		Page page = Page.getPage(totalRows, currentPages, pageRows);
 		footprintListVo.setPage(page);
-		List<? extends GoodsListMpVo> goodsListMpVos = goodsMpService.getGoodsListNormal(goodsIdList, userId);
+		List<? extends GoodsListMpVo> goodsListMpVos = goodsMpService.getGoodsListNormal(goodsIdList, userId,null,null);
 		Map<Integer, GoodsListMpVo> goodsListMpVoMap = goodsListMpVos.stream().collect(Collectors.toMap(GoodsListMpVo::getGoodsId, goods->goods));
 		orderGoodsHistoryVos.forEach(orderGoods->{
 			GoodsListMpVo goodsListMpVo = goodsListMpVoMap.get(orderGoods.getGoodsId());

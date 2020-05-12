@@ -26,7 +26,8 @@ export const cn = {
   ],
   // 表格
   activityName: '活动名称',
-  goodsName: '商品名称',
+  goodsName: '商品',
+  first: '优先级',
   validDate: '有效期',
   activityStatus: '活动状态',
   saleNum: '商品交易数量',

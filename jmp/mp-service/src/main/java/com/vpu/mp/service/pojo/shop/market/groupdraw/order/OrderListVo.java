@@ -19,7 +19,7 @@ public class OrderListVo {
     private String consigneeRealName;
     private Boolean isWinDraw;
     private Timestamp createTime;
-    private String orderStatusName;
+    private Byte orderStatus;
 
     private Boolean grouped;
     private Short codeCount;

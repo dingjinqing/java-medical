@@ -1,14 +1,22 @@
 // en.js
 import enLocale from 'element-ui/lib/locale/lang/en'
 // 全局消息国际化配置
-import { en as messageHint } from './views/admin_new/en/messageHintEn'
+import {
+  en as messageHint
+} from './views/admin_new/en/messageHintEn'
 // 选择链接弹窗国际化
-import { en as selectLinks } from './views/admin_new/en/components/selectLinks/selectLinksEn'
+import {
+  en as selectLinks
+} from './views/admin_new/en/components/selectLinks/selectLinksEn'
 // 官网
 // 申请试用国际化
-import { en as indexApply } from './views/index/en/applyEn'
+import {
+  en as indexApply
+} from './views/index/en/applyEn'
 // 官网首页移动端国际化
-import { en as indexMobile } from './views/index/en/indexMobileEn'
+import {
+  en as indexMobile
+} from './views/index/en/indexMobileEn'
 // system 店铺管理系列国际化
 // 小程序版本
 import {
@@ -61,6 +69,9 @@ import {
   en as allGoodsLabel
 } from './views/admin_new/en/index/goodsManagement/allGoodsLabelEn'
 import {
+  en as goodsImport
+} from './views/admin_new/en/index/goodsManagement/goodsImportEn'
+import {
   en as addAndUpdateGoodsLabel
 } from './views/admin_new/en/index/goodsManagement/addAndUpdateGoodsLabelEn'
 import {
@@ -75,7 +86,9 @@ import {
 import {
   en as recommend
 } from './views/admin_new/en/index/goodsManagement/recommendEn'
-import { en as brandManagement } from './views/admin_new/en/index/goodsManagement/brandManagementEn'
+import {
+  en as brandManagement
+} from './views/admin_new/en/index/goodsManagement/brandManagementEn'
 // 概览系列国际化
 // 商城概览
 import {
@@ -224,7 +237,9 @@ import {
   en as titleModule
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/titleModuleEn'
 // 小程序页面装修店铺公告系列国际化
-import { en as shopNotices } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/shopNoticesEn'
+import {
+  en as shopNotices
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/shopNoticesEn'
 
 // 营销管理系列模块化
 // 营销管理通用词汇
@@ -283,6 +298,10 @@ import {
   en as couponReceive
 } from './views/admin_new/en/index/marketManagement/ordinaryCoupon/couponReceiveEn'
 // 好友助力
+// 营销管理  积分兑换
+import {
+  en as mintegralExchange
+} from './views/admin_new/en/index/marketManagement/integralExchange/mintegralExchangeEn'
 import {
   en as promoteList
 } from './views/admin_new/en/index/marketManagement/friendPromote/promoteListEn'
@@ -361,6 +380,18 @@ import {
 import {
   en as evaluationGiftAdd
 } from './views/admin_new/en/index/marketManagement/evaluationGift/evaluationGiftAddEn'
+// 表单统计home页
+import {
+  en as formStatisticsHome
+} from './views/admin_new/en/index/marketManagement/formStatistics/formStatisticsHomeEn'
+// 表单装修主页
+import {
+  en as formDecorationHome
+} from './views/admin_new/en/index/marketManagement/formStatistics/formDecoration/formDecorationHomeEn'
+// 表单装修所有模块
+import {
+  en as formDecorationModel
+} from './views/admin_new/en/index/marketManagement/formStatistics/formDecoration/formDecorationModelEn'
 // 订单管理系列模块化
 import {
   en as order
@@ -385,6 +416,14 @@ import {
 import {
   en as refundDialog
 } from './views/admin_new/en/index/orderManagement/virtualGoodsOrder/refundDialogEn'
+// 打包一口价
+import {
+  en as packagePrice
+} from './views/admin_new/en/index/marketManagement/packagePrice/packagePriceList'
+// 组团瓜分积分
+import {
+  en as groupIntegration
+} from './views/admin_new/en/index/marketManagement/groupIntegration/groupIntegrationEn'
 
 // 会员管理系列模块化
 // 会员列表
@@ -969,6 +1008,7 @@ const en = {
   allGoods, // 商品管理/全部商品
   goodsAddEditInfo,
   allGoodsLabel, // 全部标签
+  goodsImport, // 商品导入
   addAndUpdateGoodsLabel, // 修改标签
   goodsSorts, // 商家分类全部，修改，新增
   goodsRecommendSorts, // 商家推荐分类全部，修改，新增,
@@ -1019,8 +1059,9 @@ const en = {
   openScreenDetail, // 开屏有礼活动详情
   evaluationGiftList, // 评价有礼列表
   evaluationGiftAdd, // 评价有礼新增编辑
-
+  packagePrice, // 打包一口价
   dateTimePicker, // 选择时间
+  groupIntegration, // 组团瓜分积分
 
   // 会员管理
   memberCard, // 会员管理-会员卡
@@ -1086,6 +1127,10 @@ const en = {
   divideScorePoints, // 瓜分积分
   pictureHotSpot, // 图片热区
   carouselPicture, // 轮播图模块
-  goodsStaticties // 商品统计
+  goodsStaticties, // 商品统计
+  formDecorationHome, // 表单装修主页
+  formStatisticsHome, // 表单列表主页
+  formDecorationModel, // 表单装修所有模块
+  mintegralExchange // 营销活动  积分兑换模块
 }
 export default en

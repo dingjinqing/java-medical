@@ -1,11 +1,54 @@
 package com.vpu.mp.service.saas.shop;
 
-import cn.binarywang.wx.miniapp.util.json.WxMaGsonBuilder;
+import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
+import static com.vpu.mp.db.main.tables.MpOfficialAccount.MP_OFFICIAL_ACCOUNT;
+import static com.vpu.mp.db.main.tables.MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER;
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record11;
+import org.jooq.Record13;
+import org.jooq.Record2;
+import org.jooq.Record3;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
+import org.jooq.Table;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.MpAuthShop;
-import com.vpu.mp.db.main.tables.records.*;
+import com.vpu.mp.db.main.tables.records.BackProcessRecord;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
+import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
+import com.vpu.mp.db.main.tables.records.MpVersionRecord;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -16,7 +59,12 @@ import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.saas.shop.ShopMpListParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopMpListVo;
-import com.vpu.mp.service.pojo.saas.shop.mp.*;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpAuditStateVo;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListParam;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListVo;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MaMpBindParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
@@ -34,6 +82,8 @@ import com.vpu.mp.service.wechat.bean.ma.WxContentTemplate;
 import com.vpu.mp.service.wechat.bean.open.MaWxPlusInListInner;
 import com.vpu.mp.service.wechat.bean.open.MaWxPlusInResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenGetResult;
+
+import cn.binarywang.wx.miniapp.util.json.WxMaGsonBuilder;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
@@ -46,27 +96,17 @@ import me.chanjar.weixin.open.bean.WxOpenCreateResult;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizerInfo;
 import me.chanjar.weixin.open.bean.ma.WxOpenMaCategory;
+import me.chanjar.weixin.open.bean.ma.WxOpenMaMember;
 import me.chanjar.weixin.open.bean.ma.WxOpenMaSubmitAudit;
 import me.chanjar.weixin.open.bean.message.WxOpenMaSubmitAuditMessage;
-import me.chanjar.weixin.open.bean.result.*;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import java.io.File;
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.*;
-
-import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
-import static com.vpu.mp.db.main.tables.MpOfficialAccount.MP_OFFICIAL_ACCOUNT;
-import static com.vpu.mp.db.main.tables.MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER;
-import static com.vpu.mp.db.main.tables.Shop.SHOP;
-import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
+import me.chanjar.weixin.open.bean.result.WxOpenAuthorizerInfoResult;
+import me.chanjar.weixin.open.bean.result.WxOpenMaCategoryListResult;
+import me.chanjar.weixin.open.bean.result.WxOpenMaDomainResult;
+import me.chanjar.weixin.open.bean.result.WxOpenMaPageListResult;
+import me.chanjar.weixin.open.bean.result.WxOpenMaQueryAuditResult;
+import me.chanjar.weixin.open.bean.result.WxOpenMaSubmitAuditResult;
+import me.chanjar.weixin.open.bean.result.WxOpenMaTesterListResult;
+import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
  *
@@ -174,7 +214,7 @@ public class MpAuthShopService extends MainBaseService {
         record.setAuthorizerInfo(Util.toJson(authorizerInfo));
         record.setPrincipalName(authorizerInfo.getPrincipalName());
         record.setQrcodeUrl(getMpQrCode(appId, authorizerInfo));
-
+        //setTestRecord(record, appId);
         record.update();
 
         wxOpenResult.setErrcode("0");
@@ -368,9 +408,9 @@ public class MpAuthShopService extends MainBaseService {
 			result = maService.modifyDomain(action, Arrays.asList(httpsDomains),
 					Arrays.asList(wssDomains), Arrays.asList(httpsDomains), Arrays.asList(httpsDomains));
 		} catch (WxErrorException e) {
-			logger().debug(e.getMessage(),e);
+			logger().info(e.getMessage(),e);
 			//没有新增域名，请确认小程序已经添加了域名或该域名是否没有在第三方平台添加
-			logger().debug("appId:"+appId+"修改域名modifyDomain失败："+e.getError().getErrorCode()+"  "+e.getError().getErrorMsg());
+			logger().info("appId:"+appId+"修改域名modifyDomain失败："+e.getError().getErrorCode()+"  "+e.getError().getErrorMsg());
 			WxOpenResult fromJson =null;
 			if(noNewDomainCode.equals(String.valueOf(e.getError().getErrorCode()))) {
 				String setWebViewDomain = maService.setWebViewDomain(action, Arrays.asList(httpsDomains));
@@ -379,7 +419,7 @@ public class MpAuthShopService extends MainBaseService {
 					mp.setIsModifyDomain((byte) 1);
 					mp.update();
 				}else {
-					logger().debug("appId:"+appId+"修改域名setWebViewDomain失败"+fromJson.getErrcode()+"  "+fromJson.getErrmsg());
+					logger().info("appId:"+appId+"修改域名setWebViewDomain失败"+fromJson.getErrcode()+"  "+fromJson.getErrmsg());
 				}
 			}
 			result.setErrcode(fromJson.getErrcode());
@@ -391,7 +431,7 @@ public class MpAuthShopService extends MainBaseService {
 			mp.setIsModifyDomain((byte) 1);
 			mp.update();
 		}else {
-			logger().debug("appId:"+appId+"修改域名modifyDomain失败"+result.getErrcode()+"  "+result.getErrmsg());
+			logger().info("appId:"+appId+"修改域名modifyDomain失败"+result.getErrcode()+"  "+result.getErrmsg());
 		}
 		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_MODIFY_DOMAIN, result, WxContentTemplate.WX_MODIFY_DOMAIN_SUCCESS.code, new String[] {});
 		return result;
@@ -492,15 +532,15 @@ public class MpAuthShopService extends MainBaseService {
 	 * @throws WxErrorException
 	 */
 	public WxOpenResult bindTester(String appId, String wechatId) throws WxErrorException {
-		logger().debug("绑定体验者开始···································");
+		logger().info("绑定体验者开始···································");
 		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
 		List<String> testers = StringUtils.isBlank(mp.getTester()) ? new ArrayList<>()
 				: Util.parseJson(mp.getTester(), new TypeReference<List<String>>() {
 				});
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		WxOpenResult result = maService.bindTester(wechatId);
-		logger().debug("绑定体验者"+result);
-		logger().debug(result.getErrcode()+result.getErrmsg());
+		logger().info("绑定体验者"+result);
+		logger().info(result.getErrcode()+result.getErrmsg());
 		if (result.isSuccess()) {
 			testers.add(wechatId);
 			mp.setTester(Util.toJson(testers));
@@ -526,7 +566,7 @@ public class MpAuthShopService extends MainBaseService {
 			logger().error("appId" + appId + "头像上传又拍云失败");
 			e.printStackTrace();
 		}
-		logger().debug("appId" + appId + "头像上传又拍云" + addImgeToUp);
+		logger().info("appId" + appId + "头像上传又拍云" + addImgeToUp);
 		return relativePath;
 	}
 
@@ -796,7 +836,7 @@ public class MpAuthShopService extends MainBaseService {
 			param1.setTemplateId(currentUseTemplateId);
 			param1.setPackageVersion(row.getPackageVersion());
 			Integer mainId = saas.taskJobMainService.dispatchImmediately(param1,BatchUploadCodeParam.class.getName(),0,TaskJobEnum.BATCH_UPLOAD.getExecutionType());
-			logger().debug("获取的任务id为"+mainId);
+			logger().info("获取的任务id为"+mainId);
 			saas.shop.backProcessService.updateProcessId(recId, mainId);
 			return JsonResultCode.CODE_SUCCESS;
 		}
@@ -984,13 +1024,13 @@ public class MpAuthShopService extends MainBaseService {
 
 
     public SelectConditionStep<Record13<String, Integer, String, String, Byte, String, Byte, Timestamp, Integer, Byte, Byte, Integer, Timestamp>> getCanSubmitAuditMps(MpAuthShopListParam param, Condition condition) {
-    	  String shopFieldName=SHOP_RENEW.SHOP_ID.getName();
-          String expireFieldName=SHOP_RENEW.EXPIRE_TIME.getName();
+    	  String shopFieldName=SHOP.SHOP_ID.getName();
+          String expireFieldName=SHOP.EXPIRE_TIME.getName();
 
           Table<Record2<Integer, Timestamp>> nested =
-              db().select(SHOP_RENEW.SHOP_ID.as(shopFieldName),
-                  DSL.max(SHOP_RENEW.EXPIRE_TIME).as(expireFieldName))
-                  .from(SHOP_RENEW).groupBy(SHOP_RENEW.SHOP_ID).asTable("nested");
+              db().select(SHOP.SHOP_ID.as(shopFieldName),
+                  (SHOP.EXPIRE_TIME).as(expireFieldName))
+                  .from(SHOP).asTable("nested");
 
           Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
 
@@ -1300,7 +1340,7 @@ public class MpAuthShopService extends MainBaseService {
 		WxMpXmlOutTextMessage wxMessage = OfficialAccountMessage(inMessage, appId);
 		WxMpXmlOutMessage messageTrans = MessageTrans(inMessage);
 		if(wxMessage==null) {
-			logger().debug("准备返回客服消息");
+			logger().info("准备返回客服消息");
 			return messageTrans;
 		}
 		return wxMessage;
@@ -1319,7 +1359,7 @@ public class MpAuthShopService extends MainBaseService {
 	public void processAuditEvent(WxMpXmlMessage inMessage, String appId) {
 		// processAuditEvent($appId, $message['Event'], $message['Reason']);
 		if (inMessage.getMsgType().equals("event") && (inMessage.getEvent().equals("weapp_audit_success")||inMessage.getEvent().equals("weapp_audit_fail"))) {
-			logger().debug("小程序有审核结果通知"+inMessage.getEvent());
+			logger().info("小程序有审核结果通知"+inMessage.getEvent());
 			MpAuthShopRecord mpRecord = getAuthShopByAppId(appId);
 			WxOpenResult wxOpenResult=new WxOpenResult();
 			if(mpRecord!=null) {
@@ -1371,13 +1411,13 @@ public class MpAuthShopService extends MainBaseService {
 			try {
 				process = processSubscribeEvent(inMessage, appId, officeAccountByAppId);
 			} catch (WxErrorException e) {
-				logger().debug(e.getMessage(),e);
+				logger().info(e.getMessage(),e);
 			}
 			if(StringUtils.isEmpty(process.getToUserName())) {
 				process=null;
 			}
 		}else {
-			logger().debug("processMessage方法接收的appid "+appId+"在数据库中不存在");
+			logger().info("processMessage方法接收的appid "+appId+"在数据库中不存在");
 		}
 		return process;
 	}
@@ -1386,10 +1426,10 @@ public class MpAuthShopService extends MainBaseService {
 		//subscribe（订阅）
 		WxMpXmlOutTextMessage message = WxMpXmlOutMessage.TEXT().build();
 		if(StringUtils.isNotEmpty(inMessage.getEvent())&&inMessage.getEvent().equals("subscribe")) {
-			logger().debug("开始绑定公众号");
+			logger().info("开始绑定公众号");
 			//公众号获取用户信息
 			WxMpUser userInfo = open().getWxOpenComponentService().getWxMpServiceByAppid(appId).getUserService().userInfo(inMessage.getFromUser());
-			logger().debug("用户Openid："+userInfo.getOpenId()+"开始绑定公众号："+appId);
+			logger().info("用户Openid："+userInfo.getOpenId()+"开始绑定公众号："+appId);
 			if(userInfo!=null) {
 				MpOfficialAccountUserRecord record=MP_OFFICIAL_ACCOUNT_USER.newRecord();
 				record.setOpenid(userInfo.getOpenId());
@@ -1411,7 +1451,7 @@ public class MpAuthShopService extends MainBaseService {
 				boolean parseAccountInfo = saas.shop.account.parseAccountInfo(appId, inMessage.getEventKey(), record.getOpenid());
 				logger().info("parseAccountInfo result "+parseAccountInfo);
 				if(parseAccountInfo) {
-					logger().debug("用户Openid"+userInfo.getOpenId()+"组装响应消息 欢迎关注， 您可在这里及时接收新订单提醒");
+					logger().info("用户Openid"+userInfo.getOpenId()+"组装响应消息 欢迎关注， 您可在这里及时接收新订单提醒");
 					//packageResponseMsg 组装响应消息 欢迎关注， 您可在这里及时接收新订单提醒'
 				    message.setToUserName(userInfo.getOpenId());
 				    message.setFromUserName(inMessage.getToUser());
@@ -1419,7 +1459,7 @@ public class MpAuthShopService extends MainBaseService {
 				    message.setCreateTime(System.currentTimeMillis() / 1000L);
 				    return message;
 				}else {
-					logger().debug("用户Openid"+userInfo.getOpenId()+"为你精心准备了关注礼品，快来点击查看吧!");
+					logger().info("用户Openid"+userInfo.getOpenId()+"为你精心准备了关注礼品，快来点击查看吧!");
 					for(MpAuthShopRecord authShopRecord:officialAccountMps) {
 						Record shop = saas.shop.getShop(authShopRecord.getShopId());
 						String shopName = shop.get(SHOP.SHOP_NAME);
@@ -1429,9 +1469,9 @@ public class MpAuthShopService extends MainBaseService {
 						//MpOfficialAccountUserRecord user = saas.shop.mpOfficialAccountUserService.getUser(appId, userInfo.getOpenId());
 						List<Integer> userIdList = new ArrayList<Integer>();
 						String[][] data = new String[][] { {firest,"#173177"},{shopName,"#173177"},{Util.getdate("yyyy-MM-dd HH:mm:ss"),"#173177"},{content,"#173177"},{"","#173177"}};
-						Integer mpTempleType = RabbitParamConstant.Type.MP_TEMPLE_TYPE;
+						Integer mpTempleType = RabbitParamConstant.Type.MP_TEMPLE_TYP_NO;
 						//unioId在登录过小程序后才会传
-						if(!StringUtils.isEmpty(userInfo.getUnionId())) {
+						if(StringUtils.isEmpty(userInfo.getUnionId())) {
 							logger().info("用户没有登录过小程序");
 							com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord user = saas
 									.getShopApp(authShopRecord.getShopId()).officialAccountUser.getUser(appId,
@@ -1452,16 +1492,16 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		//取消订阅
 		if(StringUtils.isNotEmpty(inMessage.getEvent())&&inMessage.getEvent().equals("unsubscribe")) {
-			logger().debug("开始解绑");
+			logger().info("开始解绑");
 			WxMpUser userInfo = open().getWxOpenComponentService().getWxMpServiceByAppid(appId).getUserService().userInfo(inMessage.getFromUser());
-			logger().debug("用户Openid"+userInfo.getOpenId()+"解绑公众号"+appId);
+			logger().info("用户Openid"+userInfo.getOpenId()+"解绑公众号"+appId);
 			if(userInfo!=null) {
 				MpOfficialAccountUserRecord record=MP_OFFICIAL_ACCOUNT_USER.newRecord();
 				record.setAppId(appId);
 				record.setOpenid(userInfo.getOpenId());
 				record.setSubscribe((byte)0);
 				saas.shop.officeAccount.addOrUpdateUser(appId, record, userInfo.getUnionId(), userInfo.getOpenId());
-				logger().debug("用户Openid"+userInfo.getOpenId()+"解绑公众号完成");
+				logger().info("用户Openid"+userInfo.getOpenId()+"解绑公众号完成");
 				return message;
 			}
 		}
@@ -1530,7 +1570,7 @@ public class MpAuthShopService extends MainBaseService {
 		build.setFromUserName(inMessage.getToUser());
 		build.setCreateTime((System.currentTimeMillis() / 1000L));
 		build.setMsgType(WxConsts.XmlMsgType.TRANSFER_CUSTOMER_SERVICE);
-		logger().debug("\n 发给客服的报文：\n{}",build.toXml().toString());
+		logger().info("\n 发给客服的报文：\n{}",build.toXml().toString());
 		return build;
 	}
 
@@ -1591,7 +1631,6 @@ public class MpAuthShopService extends MainBaseService {
 			}
 			vo.setShopExpireStatus(expireStatus);
 			List<MpOperateVo> operateLog = saas.shop.mpOperateLog.getOperateLog(vo.getAppId());
-			System.out.println(operateLog);
 			if(operateLog.size()>0) {
 				MpOperateVo mpOperateVo = operateLog.get(0);
 				vo.setStartTime(mpOperateVo.getCreateTime());
@@ -1651,5 +1690,32 @@ public class MpAuthShopService extends MainBaseService {
 		MpAuthShopRecord mp = getAuthShopByShopId(shopId);
 		Assert.isTrue(mp != null && mp.getIsAuthOk().equals(AUTH_OK),"mp is null ");
 		return mp.getAppId();
+	}
+	
+	public List<String> getAllTester(String appId) throws WxErrorException{
+		WxOpenMaService maService = this.getMaServiceByAppId(appId);
+		WxOpenMaTesterListResult testerList = maService.getTesterList();
+		List<String> list = new ArrayList<String>();
+		if (!testerList.isSuccess()) {
+			return null;
+		}
+		List<WxOpenMaMember> membersList = testerList.getMembersList();
+		for (WxOpenMaMember wxOpenMaMember : membersList) {
+			list.add(wxOpenMaMember.getUserstr());
+		}
+		return list;
+	}
+	
+	private void setTestRecord(MpAuthShopRecord record,String appId) {
+		logger().info("appid：{}更新体验者",appId);
+		List<String> allTester=null;
+		try {
+			allTester = getAllTester(appId);
+		} catch (WxErrorException e) {
+			e.printStackTrace();
+		}
+		if(allTester!=null) {
+			record.setTester(Util.toJson(allTester));
+		}
 	}
 }

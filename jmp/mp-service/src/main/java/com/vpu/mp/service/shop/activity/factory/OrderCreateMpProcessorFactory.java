@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.factory;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
@@ -37,15 +38,16 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     private final static List<Byte> GENERAL_ACTIVITY = Arrays.asList(
         BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
         BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE,
-        BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE
+        BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE,
+        BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION,
+        BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE
     );
     /**
      * 全局的活动  支付有礼
      */
     private final static List<Byte> GLOBAL_ACTIVITY = Arrays.asList(
         BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
-        BaseConstant.ACTIVITY_TYPE_GIFT,
-        BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION
+        BaseConstant.ACTIVITY_TYPE_GIFT
     );
 
     /**
@@ -57,7 +59,8 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
             BaseConstant.ACTIVITY_TYPE_BARGAIN,
             BaseConstant.ACTIVITY_TYPE_MY_PRIZE,
             BaseConstant.ACTIVITY_TYPE_PRE_SALE,
-            BaseConstant.ACTIVITY_TYPE_GROUP_DRAW
+            BaseConstant.ACTIVITY_TYPE_GROUP_DRAW,
+            BaseConstant.ACTIVITY_TYPE_INTEGRAL
     );
 
     /**
@@ -73,7 +76,21 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
         BaseConstant.ACTIVITY_TYPE_INTEGRAL,
         BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER,
         BaseConstant.ACTIVITY_TYPE_PRE_SALE
+    );
 
+    /**
+     * 取消
+     */
+    public final static List<Byte> CANCEL_ACTIVITY = Arrays.asList(
+        BaseConstant.ACTIVITY_TYPE_GIFT,
+        BaseConstant.ACTIVITY_TYPE_GROUP_BUY,
+        BaseConstant.ACTIVITY_TYPE_SEC_KILL,
+        BaseConstant.ACTIVITY_TYPE_BARGAIN,
+        BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT,
+        BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER,
+        BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER,
+        BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
+        BaseConstant.ACTIVITY_TYPE_PRE_SALE
     );
 
     /**
@@ -132,7 +149,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
             param.setActivityType(null);
             param.setActivityId(null);
         }
-        if (param.getActivityId() != null && param.getActivityType() != null) {
+        if (param.getActivityId() != null && param.getActivityType() != null && param.getActivityId() > 0 && param.getActivityType() > 0) {
             //单一营销
             processorMap.get(param.getActivityType()).processInitCheckedOrderCreate(param);
         } else {
@@ -154,7 +171,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
      * @param order
      */
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        if (param.getActivityId() != null) {
+        if (param.getActivityId() != null && param.getActivityType() != null && param.getActivityId() > 0 && param.getActivityType() > 0) {
             //单一营销
             processorMap.get(param.getActivityType()).processSaveOrderInfo(param, order);
         } else {
@@ -169,7 +186,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     }
 
     /**
-     * 保存数据（该方法不要在并发情况下出现临界资源）
+     * 更新活动库存（存在特例）
      *
      * @param param
      * @param order
@@ -182,7 +199,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
                 return;
             }
         }
-        if (param.getActivityId() != null) {
+        if (param.getActivityId() != null && param.getActivityType() != null && param.getActivityId() > 0 && param.getActivityType() > 0) {
             //单一营销
             processorMap.get(param.getActivityType()).processUpdateStock(param, order);
         } else {
@@ -197,14 +214,14 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     }
 
     /**
-     * 订单生效后（微信支付、其他支付、货到付款等）的营销后续处理（库存、活动状态相关）
+     * 订单生效后（微信支付、其他支付、货到付款等）的营销后续处理（活动状态相关）
      *
      * @param param
      * @param order
      * @throws MpException
      */
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        if (param.getActivityId() != null) {
+        if (param.getActivityId() != null && param.getActivityType() != null && param.getActivityId() > 0 && param.getActivityType() > 0) {
             //单一营销
             // 可能有：我要送礼、限次卡兑换、拼团、砍价、积分兑换、秒杀、拼团抽奖、打包一口价、预售、抽奖、支付有礼、测评、好友助力、满折满减购物车下单
             processorMap.get(param.getActivityType()).processOrderEffective(param, order);
@@ -220,18 +237,19 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     }
 
     /**
-     * 退款成功调用活动库存销量修改方法
+     * 退款\取消、关闭成功调用活动库存销量修改、活动记录修改方法
+     *
+     * @param returnOrderRecord
      * @param activityType 活动类型
      * @param activityId 活动id（赠品活动id在）
      * @param returnOrderGoods 退款商品
      * @throws MpException
      */
-    public void processReturnOrder(Byte activityType, Integer activityId, List<OrderReturnGoodsVo> returnOrderGoods) throws MpException {
+    public void processReturnOrder(ReturnOrderRecord returnOrderRecord, Byte activityType, Integer activityId, List<OrderReturnGoodsVo> returnOrderGoods) throws MpException {
         CreateOrderProcessor process = processorReturnMap.get(activityType);
         if(process != null){
-            process.processReturn(activityId, returnOrderGoods);
+            process.processReturn(returnOrderRecord, activityId, returnOrderGoods);
         }
-
     }
 }
 

@@ -28,9 +28,9 @@ public class GoodsListMpVo extends GoodsBaseMp {
     private Integer commentNum;
     //************ElasticSearch中的数据**************end
 
-    /**商品装修列表前端展示划线价,初始为goods表内shop_price*/
-    protected BigDecimal linePrice;
     /**商品装修列表前端最终显示价格,初始为goods表内market_price*/
+    protected BigDecimal linePrice;
+    /**商品装修列表前端展示划线价,初始为goods表内shop_price*/
     protected BigDecimal realPrice;
     /**商品关联最紧密标签*/
     protected GoodsLabelMpVo label;

@@ -2,10 +2,13 @@ package com.vpu.mp.service.foundation.exception;
 
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * The type Assert.
@@ -26,6 +29,12 @@ public class Assert {
         }
     }
 
+    public static void isNull(Object o, JsonResultCode code, Object... args) {
+        if (Objects.nonNull(o)) {
+            commonFunc(code, args);
+        }
+    }
+
     /**
      * Not null.
      *
@@ -35,6 +44,12 @@ public class Assert {
     public static void notNull(Object o, JsonResultCode code, Object... args) {
         if (Objects.isNull(o)) {
             commonFunc(code, args);
+        }
+    }
+
+    public static void notNull(Object o, JsonResultCode code) {
+        if (Objects.isNull(o)) {
+            throw new BusinessException(code);
         }
     }
 
@@ -112,5 +127,9 @@ public class Assert {
             throw new BusinessException(code, args);
         }
         throw new BusinessException(code);
+    }
+
+    public static String join(Object... args) {
+        return Arrays.stream(args).map(Object::toString).collect(Collectors.joining(StringUtils.SPACE));
     }
 }

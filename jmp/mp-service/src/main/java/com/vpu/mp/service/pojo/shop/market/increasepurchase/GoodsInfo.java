@@ -11,10 +11,17 @@ import java.math.BigDecimal;
  */
 @Data
 public class GoodsInfo {
+    private Integer goodsId;
     /** 商品名称 */
     private String goodsName;
+    /**
+     * 商品图片
+     */
+    private String goodsImg;
     /** 商品原价 */
     private BigDecimal shopPrice;
     /** 商品库存 */
     private Integer goodsNumber;
+
+    private String prdDesc;
 }

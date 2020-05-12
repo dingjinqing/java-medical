@@ -2,8 +2,11 @@ package com.vpu.mp.service.pojo.shop.coupon.give;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.checkerframework.checker.units.qual.A;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -22,4 +25,8 @@ public class CouponGiveQueueBo {
      * 发送成功的优惠卷set
      */
     private Set<Integer> couponSet =new HashSet<>();
+    /**
+     * 发送优惠券的编号
+     */
+    private List<String> couponSn =new ArrayList<>();
 }

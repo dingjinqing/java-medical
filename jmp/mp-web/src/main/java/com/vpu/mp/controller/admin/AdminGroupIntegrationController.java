@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.integration.ChangeStatusParam;
-import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEditVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePageParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListDetailParam;
@@ -20,10 +22,11 @@ import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListParti
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationSuccessParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationSuccessVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationVo;
 
 /**
- * @author huangronggang
- * @date 2019年8月5日
+ * @author huangronggang  zhaojianqiang
+ * @date 2019年8月5日  2020年2月24日
  */
 @RestController
 @RequestMapping("/api/admin/market/integration")
@@ -52,8 +55,11 @@ public class AdminGroupIntegrationController extends AdminBaseController {
 	 */
 	@PostMapping("/add")
 	public JsonResult insert(@RequestBody @Valid GroupIntegrationDefineParam param) {
-		shop().groupIntegration.insertDefine(param);
-		return success();
+		JsonResultCode insertDefine = shop().groupIntegration.insertDefine(param);
+		if(insertDefine==JsonResultCode.CODE_SUCCESS) {
+			return success();			
+		}
+		return fail(insertDefine);
 	}
 	/**
 	 * 查指定ID的瓜分积分活动
@@ -62,7 +68,7 @@ public class AdminGroupIntegrationController extends AdminBaseController {
 	 */
 	@GetMapping("/select/{id}")
 	public JsonResult select(@PathVariable Integer id) {
-		GroupIntegrationDefineEditVo defineVo = shop().groupIntegration.selectGroupIntegrationDefineById(id);
+		GroupIntegrationVo defineVo = shop().groupIntegration.selectGroupIntegrationDefineById(id);
 		return success(defineVo);
 	}
 	/**
@@ -135,11 +141,22 @@ public class AdminGroupIntegrationController extends AdminBaseController {
 	 */
 	@PostMapping("/getqrcode/{actId}")
 	public JsonResult getQrcode(@PathVariable Integer actId) {
-		GroupIntegrationShareQrCodeVo maQrCode = shop().groupIntegration.getMaQrCode(actId);
+		GroupIntegrationShareQrCodeVo maQrCode = shop().groupIntegration.getMaQrCode(actId,null,null);
 		if(maQrCode != null) {
 			return success(maQrCode);
 		}
 		return fail();
+	}
+	
+	/**
+	 * 获得活动效果数据
+	 * @param actId
+	 * @return
+	 */
+	@PostMapping("/getAnalysis")
+	public JsonResult getAnalysis(@RequestBody @Valid  GroupIntegrationAnalysisParam param) {
+		GroupIntegrationAnalysisVo analysis = shop().groupIntegration.getAnalysis(param);
+		return success(analysis);
 	}
 	
 }

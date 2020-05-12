@@ -71,8 +71,11 @@ public class SendUserService extends ShopBaseService {
      * @return 从redis获取的数据
      */
     public List<UserInfoByRedis> getAndDeleteSendUserIdByRedisKey(String key){
+        List<UserInfoByRedis> results = Util.readValue(jedisManager.get(key),List.class,UserInfoByRedis.class);
         jedisManager.delete(key);
-        return Util.readValue(jedisManager.get(key),List.class,UserInfoByRedis.class);
+        return results;
+
+
     }
 
     /**
@@ -151,11 +154,12 @@ public class SendUserService extends ShopBaseService {
                     info.setIsVisitMp(Boolean.TRUE);
                     info.setCanSend(Boolean.TRUE);
                 }
-                if(maMap.containsKey(id)  ){
-                    info.setIsChecked(Boolean.TRUE);
-                    info.setNumbers(maMap.get(id));
-                    info.setCanSend(Boolean.TRUE);
-                }
+                //先注释小程序的判断
+//                if(maMap.containsKey(id)  ){
+//                    info.setIsChecked(Boolean.TRUE);
+//                    info.setNumbers(maMap.get(id));
+//                    info.setCanSend(Boolean.TRUE);
+//                }
                 if( info.getCanSend() ){
                     result += 1;
                 }

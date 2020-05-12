@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 
 import lombok.Getter;
@@ -37,7 +38,15 @@ public class WxAppUserCardVo extends UserCardParam {
 	protected String qrCode;
 	protected NextGradeCardVo nextGradeCard;
 	protected WxAppCardExamineVo isExamine;
-	
+	/**
+	 * freeshipDesc 包邮信息描述
+	 */
+	protected String freeshipDesc;
+	/**
+	 * 	自定义权益
+	 */
+	@JsonProperty("customRights")
+	protected CardCustomRights cardCustomRights;
 	
 	// 使用商品列表
 	protected List<GoodsSmallVo> goodsList;

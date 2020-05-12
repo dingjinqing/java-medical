@@ -471,6 +471,7 @@ export default {
         if (moduleData) {
           this.linkageData = moduleData
           this.$forceUpdate()
+          this.handleToRequestGoodsData()
         }
       },
       immediate: true
@@ -632,8 +633,10 @@ export default {
     // 商家分类弹窗选中回传数据
     busClassTrueDetailData (data) {
       console.log(data)
+      let getData = data[0].children.length ? data[0].children : data
+      console.log(getData)
       let arr = []
-      data.forEach((item, index) => {
+      getData.forEach((item, index) => {
         //  obj
         let obj = { sort_type: 0 }
         console.log(item.goodsSumNum)
@@ -717,6 +720,7 @@ export default {
       this.editIndex = index
       let flag = this.linkageData.sort_group_arr[index].sort_type
       console.log(this.linkageData.sort_group_arr[index])
+      this.backDataArr = []
       this.backDataArr.push(this.linkageData.sort_group_arr[index].sort_id)
       this.handleToCallDialog(flag, true)
     },

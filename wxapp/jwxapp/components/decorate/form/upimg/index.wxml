@@ -1,0 +1,19 @@
+<view class="upimg-container">
+  <view class='upimg_title'>
+    <text style='color:red' wx:if="{{m.confirm == 1}}">*</text>{{m.form_title}}
+    <text wx:if="{{m.size_types == 1}}">最大尺寸：{{m.width_size}}*{{m.height_size}}</text>
+  </view>
+  <view class='img_box clearfix'>
+    <block wx:if='{{m.image}}'>
+      <block wx:for='{{m.img_arr}}' wx:key="key" wx:for-item="item" wx:key="index">
+        <view class='shangchuan' style='overflow:hidden'>
+          <image src='{{m.imgUrl}}/image/admin/dele_service.png' data-idx='{{m.idx}}' class="up_close" bindtap='bindDelImage' data-img_index='{{index}}' />
+          <image src='{{item}}' data-img_index='{{index}}'></image>
+        </view>
+      </block>
+    </block>
+    <view class='up_img' bindtap="bindUpImage" data-idx='{{m.idx}}' wx:if='{{m.img_len<m.max_number}}'>
+      <image src='{{m.imgUrl}}image/wxapp/addimg.png'></image>
+    </view>
+  </view>
+</view>

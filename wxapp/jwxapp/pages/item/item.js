@@ -42,6 +42,20 @@ const actBaseInfo = {
       0: 'endTime'
     }
   },
+  4: {
+    actName: '积分',
+    multiSkuAct: true,
+    prdListName: 'integralMallPrdMpVos',
+    actStatus: {
+      0: '距结束仅剩',
+      1: '活动不存在',
+      2: '活动已停用',
+      3: '据开始仅剩',
+      4: '活动已结束',
+      5: '商品已抢光',
+      6: '超购买上限'
+    }
+  },
   5: {
     actName: '秒杀',
     multiSkuAct: true,
@@ -59,6 +73,25 @@ const actBaseInfo = {
       prdRealPrice: 'secKillPrice',
       prdLinePrice: 'prdPrice'
     },
+    countDownInfo: {
+      canCountDown: [0, 3],
+      3: 'startTime',
+      0: 'endTime'
+    }
+  },
+  8: {
+    actName: '拼团抽奖',
+    multiSkuAct: false,
+    actStatus: {
+      0: '距结束仅剩',
+      1: '活动不存在',
+      2: '活动已停用',
+      3: '据开始仅剩',
+      4: '活动已结束',
+      5: '商品已抢光',
+      6: '超购买上限'
+    },
+    prdRealPrice: 'payMoney',
     countDownInfo: {
       canCountDown: [0, 3],
       3: 'startTime',
@@ -139,6 +172,10 @@ global.wxPage({
       3: {
         title: '砍价规则',
         ruleList: ['点击下方“砍价拿”按钮开始', '邀请好友来砍价', '砍价成功，商品低价拿']
+      },
+      8: {
+        title: '拼团抽奖玩法',
+        ruleList: [['image/wxapp/pl_icons1.png','付款开团'], ['image/wxapp/pl_icons2.png','邀请好友'], ['image/wxapp/pl_icons3.png','成团抽奖'],['image/wxapp/pl_icons4.png','中奖发货']]
       }
     }
   },
@@ -164,10 +201,18 @@ global.wxPage({
         '/api/wxapp/goods/detail',
         res => {
           if (res.error === 0) {
-            if (res.content.activity && [1, 3, 5, 10].includes(res.content.activity.activityType)){
+            if(res.content.delFlag === 1 || res.content.isOnSale === 0){
+              let tips = res.content.delFlag === 1 ? '抱歉，该商品已删除':'抱歉，该商品已下架';
+              let pageFlag = getCurrentPages().length > 1
+              util.showModal('提示',tips,()=>{
+               if(pageFlag) {wx.navigateBack();return}
+               util.jumpLink(`pages/index/index`,'redirectTo')
+              },false,'',pageFlag ? '返回上一页':'回到首页')
+            }
+            if (res.content.activity && [1, 3, 5, 8, 10].includes(res.content.activity.activityType)){
               this.getActivity(res.content) //需要状态栏价格并且倒计时的活动
             }
-            if (res.content.activity && [1,3,5,10].includes(res.content.activity.activityType)){
+            if (res.content.activity && [1, 3, 4, 5, 8, 10,].includes(res.content.activity.activityType)){
               this.setData({
                 page_name:actBaseInfo[res.content.activity.activityType]['actName'] + this.$t("components.navigation.title.item")
               })
@@ -195,7 +240,9 @@ global.wxPage({
               limitBuyNum,
               limitMaxNum,
               goodsId,
-              goodsGifts
+              goodsGifts,
+              showSalesNumber,
+              customService
             } = res.content
             let goodsMediaInfo = {
               goodsImgs, //商品图片
@@ -225,6 +272,8 @@ global.wxPage({
               isCollected,
               goodsName,
               deliverPrice,
+              showSalesNumber,
+              customService,
               ...specParams
             }
             this.setData({
@@ -361,6 +410,7 @@ global.wxPage({
   },
   // 获取actBar活动状态
   getActStatusName({ actState, activityType }) {
+    console.log(actBaseInfo[activityType])
     return actBaseInfo[activityType]['actStatus'][actState] || null
   },
   // 获取actBar价格
@@ -501,29 +551,60 @@ global.wxPage({
     )
   },
   // 分享弹窗
-  share() {
+  async share() {
     let activityData = {}
     let {
-      goodsId,
+      goodsId:targetId,
       singleRealPrice: realPrice,
-      singleLinePrice: linePrice,
-      goodsImgs
+      singleLinePrice: linePrice
     } = this.data.goodsInfo
+    console.log(this.data.goodsInfo)
     if (this.data.goodsInfo.activity != null) {
       activityData.activityId = this.data.goodsInfo.activity.activityId
       activityData.activityType = this.data.goodsInfo.activity.activityType
+      switch (activityData.activityType) {
+        case 1:
+          activityData.pageType = 1
+          break;
+        case 3:
+          activityData.pageType = 1
+          activityData.realPrice = this.data.actBarInfo.prdRealPrice
+          activityData.linePrice = this.data.actBarInfo.prdLinePrice
+          break;
+        case 8:
+          activityData.pageType = 1
+          activityData.realPrice = this.data.actBarInfo.prdRealPrice
+          activityData.linePrice = this.data.actBarInfo.prdLinePrice
+          break;
+        case 10:
+          activityData.depositPrice = this.data.goodsInfo.activity === 0 ? this.getMin(this.data.goodsInfo.activity.preSalePrdMpVos.map(item=>{return item.depositPrice})) : this.getMin(this.data.goodsInfo.activity.preSalePrdMpVos.map(item=>{return item.preSalePrice}))
+          break;
+      }
     }
     let shareData = {
-      goodsId,
+      targetId,
       realPrice,
       linePrice,
-      goodsImgs,
       ...activityData
     }
-
+    // 提前请求分享内容
+    const apiInfo = {
+      1:'/api/wxapp/groupbuy/share/info',//拼团 
+      3:'/api/wxapp/bargain/share/info', //砍价
+      6:'/api/wxapp/reduceprice/share/info', //限时降价
+      8:'/api/wxapp/groupdraw/share/info', //拼团抽奖
+      10:'/api/wxapp/presale/share/info', //定金膨胀
+      18:'/api/wxapp/firstspecial/share/info', //首单特惠
+      98:'/api/wxapp/reduceprice/share/info', //限时降价|会员价
+      default:'/api/wxapp/goods/share/info'//普通商品
+    }
+    let target = [1,3,5,6,8,10,18,98].includes(shareData.activityType) ? apiInfo[shareData.activityType] : apiInfo['default']
+    let buttonShareData = await this.requestShareData(target,shareData)
+    console.log(buttonShareData)
     this.setData({
       shareData,
-      showShareDialog: true
+      showShareDialog: true,
+      buttonShareData
     })
   },
   // 切换收藏
@@ -559,48 +640,59 @@ global.wxPage({
   // 获取价格
   getPrice(data) {
     let { products, activity } = data
-    if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
-      products = activity[actBaseInfo[activity.activityType]['prdListName']]
-      if (activity.activityType === 6 && activity.actState != 0) {
-        products = data.products
+    if(activity && activity.activityType === 4){
+      let actProductList = JSON.parse(JSON.stringify(activity[actBaseInfo[activity.activityType]['prdListName']]))
+      actProductList.sort((a,b)=>{
+        return a.score - b.score
+      })
+      return {
+        prdRealPrice:actProductList[0],
+        prdLinePrice:products.find(item=>{return item.prdId === actProductList[0].productId}).prdRealPrice,
       }
-    }
-    let { realPrice, linePrice } = products.reduce(
-      (defaultData, val) => {
-        if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
-          var {
-            [actBaseInfo[activity.activityType]['prdPriceName']['prdRealPrice']]: prdRealPrice,
-            [actBaseInfo[activity.activityType]['prdPriceName']['prdLinePrice']]: prdLinePrice
-          } = val
-          if (activity.activityType === 6 && activity.actState != 0) {
+    } else {
+      if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
+        products = activity[actBaseInfo[activity.activityType]['prdListName']]
+        if (activity.activityType === 6 && activity.actState != 0) {
+          products = data.products
+        }
+      }
+      let { realPrice, linePrice } = products.reduce(
+        (defaultData, val) => {
+          if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
+            var {
+              [actBaseInfo[activity.activityType]['prdPriceName']['prdRealPrice']]: prdRealPrice,
+              [actBaseInfo[activity.activityType]['prdPriceName']['prdLinePrice']]: prdLinePrice
+            } = val
+            if (activity.activityType === 6 && activity.actState != 0) {
+              var { prdRealPrice, prdLinePrice } = val
+            }
+          } else {
             var { prdRealPrice, prdLinePrice } = val
           }
-        } else {
-          var { prdRealPrice, prdLinePrice } = val
-        }
-        defaultData.realPrice.push(prdRealPrice)
-        defaultData.linePrice.push(prdLinePrice)
-        return defaultData
-      },
-      { realPrice: [], linePrice: [] }
-    )
-    let realMinPrice = this.getMin(realPrice),
-      realMaxPrice = this.getMax(realPrice),
-      lineMinPrice = this.getMin(linePrice),
-      lineMaxPrice = this.getMax(linePrice)
-    return {
-      prdRealPrice: data.defaultPrd
-        ? realPrice[0]
-        : realMinPrice === realMaxPrice
-        ? realMinPrice
-        : `${realMinPrice}~${realMaxPrice}`,
-      prdLinePrice: data.defaultPrd
-        ? linePrice[0]
-        : lineMinPrice === lineMaxPrice
-        ? lineMaxPrice
-        : `${lineMinPrice}~${lineMaxPrice}`,
-      singleRealPrice: realMinPrice,
-      singleLinePrice: lineMaxPrice
+          defaultData.realPrice.push(prdRealPrice)
+          defaultData.linePrice.push(prdLinePrice)
+          return defaultData
+        },
+        { realPrice: [], linePrice: [] }
+      )
+      let realMinPrice = this.getMin(realPrice),
+          realMaxPrice = this.getMax(realPrice),
+          lineMinPrice = this.getMin(linePrice),
+          lineMaxPrice = this.getMax(linePrice)
+      return {
+        prdRealPrice: data.defaultPrd
+          ? realPrice[0]
+          : realMinPrice === realMaxPrice
+          ? realMinPrice
+          : `${realMinPrice}~${realMaxPrice}`,
+        prdLinePrice: data.defaultPrd
+          ? linePrice[0]
+          : lineMinPrice === lineMaxPrice
+          ? lineMaxPrice
+          : `${lineMinPrice}~${lineMaxPrice}`,
+        singleRealPrice: realMinPrice,
+        singleLinePrice: lineMaxPrice
+      }
     }
   },
   // 获取促销信息
@@ -654,9 +746,9 @@ global.wxPage({
         return data
       case '19':
         if (info.goodsAreaType === 1) {
-          data.desc = `购买“指定商品”`
-        } else {
           data.desc = `购买“全部商品”`
+        } else {
+          data.desc = `购买“指定商品”`
         }
         if (info.minPayMoney > 0) {
           data.desc += `且“订单金额满${info.minPayMoney}元”`
@@ -704,7 +796,7 @@ global.wxPage({
         break
 
       case 8:
-        util.jumpToWeb('/wxapp/pinlottery/help')
+        util.jumpToWeb('/wxapp/pinlottery/help', '&gid=' + this.data.specParams.activity.activityId)
         break
     }
   },
@@ -816,16 +908,30 @@ global.wxPage({
    * 用户点击右上角分享
    */
   onShareAppMessage: function() {
-    util.api(
-      '/api/wxapp/groupbuy/share/info',
-      res => {
-        console.log(res)
-      },
-      {
-        activityId: 38,
-        realPrice: 12,
-        linePrice: 30
-      }
-    )
+    console.log(this.data.buttonShareData)
+    return {
+      ...this.data.buttonShareData
+    }
+  },
+  requestShareData(target,shareData){
+    return new Promise(resolve=>{
+      util.api(target,res=>{
+        if(res.error === 0){
+          let path = `/pages/item/item?gid=${this.data.goodsId}`
+          if(this.data.goodsInfo.activity){
+            path +=`&atp=${this.data.goodsInfo.activity.activityType}&aid=${this.data.goodsInfo.activity.activityId}`
+          }
+          console.log(res)
+          resolve({
+            title:res.content.shareDoc,
+            path:path,
+            imageUrl:res.content.imgUrl,
+          })
+        }
+      },{
+        ...shareData,
+        userName:util.getCache('nickName')
+      })
+    })
   }
 })

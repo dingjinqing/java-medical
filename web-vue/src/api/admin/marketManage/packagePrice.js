@@ -43,3 +43,34 @@ export function activityDetail (data) {
     data: data
   })
 }
+// 打包一口价 - 活动订单查询
+export function activityOrder (data) {
+  return service({
+    url: `/api/admin/market/packsale/order`,
+    method: 'post',
+    data: data
+  })
+}
+// 打包一口价 - 新增活动
+export function addActivity (data) {
+  return service({
+    url: '/api/admin/market/packsale/add',
+    method: 'post',
+    data: data
+  })
+}
+// 打包一口价 - 编辑活动数据回显
+export function getActivityInfo (id) {
+  return service({
+    url: `/api/admin/market/packsale/select/${id}`,
+    method: 'get'
+  })
+}
+// 打包一口价 - 更新活动
+export function updateActivity (data) {
+  return service({
+    url: `/api/admin/market/packsale/update`,
+    method: 'post',
+    data: data
+  })
+}

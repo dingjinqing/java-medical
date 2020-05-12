@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
@@ -34,7 +36,7 @@ import java.util.stream.Collectors;
 @ToString
 public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 
-    /** 指定本次结算所参加的唯一营销活动类型 {@link com.vpu.mp.service.foundation.data.BaseConstant} 下的ACTIVITY_TYPE**/
+    /** 指定本次结算所参加的唯一营销活动类型 {@link BaseConstant} 下的ACTIVITY_TYPE**/
     private Byte activityType;
     /** 指定本次结算所参加的唯一营销活动类型 ID */
     private Integer activityId;
@@ -80,6 +82,9 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     /**活动免运费*/
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Byte isFreeShippingAct;
+    /**好友代付：0多人；1单人*/
+    private Byte insteadPayNum;
+
     /**
      * 指定可用的支付方式
      */
@@ -92,6 +97,8 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     private Integer groupId;
     /** 是否是团长*/
     private Byte isGrouper;
+    /** 邀请人id*/
+    private Integer inviteId=0;
 
     /**
      * 砍价下单标记
@@ -100,7 +107,10 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     private Integer recordId;
     private BargainRecordInfo bargainRecordInfo;
 
-	/**
+    private InsteadPay insteadPayCfg;
+
+
+    /**
 	 * 商品参数
 	 * @author 王帅
 	 *
@@ -111,6 +121,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	public static class Goods{
 		@NotNull
 		private Integer goodsId;
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
 		private BigDecimal goodsPrice;
 		/**购买数量*/
 		@NotNull(message = JsonResultMessage.MSG_ORDER_GOODS_NO_ZERO)
@@ -144,9 +155,15 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 		private GoodsSpecProductRecord productInfo;
         @JsonIgnore
         private GoodsRecord goodsInfo;
+        /**积分兑换需要的积分*/
+        private Integer goodsScore;
         /**是否校验过限购，true校验过*/
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         private Boolean isAlreadylimitNum;
+        /**购物车参数：选择活动类型*/
+        private Byte cartType;
+        /**购物车参数：对应type的id*/
+        private Integer cartExtendId;
 	}
 
     /**
@@ -159,7 +176,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
             orderCartProductBo.setStoreId(getStoreId());
             orderCartProductBo.setDate(date);
 			goods.forEach(x->{
-				orderCartProductBo.getAll().add(new OrderCartProductBo.OrderCartProduct(x.getProductId(), x.getGoodsNumber(),x.getProductInfo()));
+				orderCartProductBo.getAll().add(new OrderCartProductBo.OrderCartProduct(x.getProductId(), x.getGoodsNumber(), BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS.equals(x.getCartType()), x.getProductInfo()));
 			});
 		}
         return orderCartProductBo;

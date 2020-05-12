@@ -12,9 +12,10 @@ import java.sql.Timestamp;
 @Data
 public class MessageOutputVo {
 
-    private String userName;
 
-    private Byte templatePlatfrom;
+    private String username;
+
+    private Byte templatePlatform;
 
     private Byte sendStatus;
 

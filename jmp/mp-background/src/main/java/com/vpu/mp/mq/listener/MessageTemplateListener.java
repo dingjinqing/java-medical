@@ -4,6 +4,8 @@ package com.vpu.mp.mq.listener;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
+import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -40,20 +42,34 @@ public class MessageTemplateListener implements BaseRabbitHandler {
 
     @RabbitHandler
     public void handler(@Payload RabbitMessageParam param, Message message, Channel channel){
-    	log.info("消息模板监听");
-        List<Integer> failList = new ArrayList<>();
-        List<WxUserInfo> userInfoList = saas.getShopApp(param.getShopId())
-            .wechatMessageTemplateService.getUserInfoList(param.getUserIdList(),param.getType(),param.getShopId());
-        int allSize = userInfoList.size();
-        userInfoList.stream().forEach(info->{
-            if( saas.getShopApp(param.getShopId()).wechatMessageTemplateService.sendMessage(param,info)){
+    	log.debug("【消息模板监听】----收到消息");
+        ShopApplication shopApplication = saas.getShopApp(param.getShopId());
 
-            }else{
+        List<Integer> failList = new ArrayList<>();
+        List<WxUserInfo> userInfoList = shopApplication.wechatMessageTemplateService.
+            getUserInfoList(param.getUserIdList(),param.getType(),param.getShopId(),param);
+        int allSize = userInfoList.size();
+        if( allSize  != param.getUserIdList().size() ){
+            log.debug("【消息模板监听】---推送消息接收人数不对");
+            log.debug("【消息模板监听】---UserIdSize-->{},UserId--->{}",param.getUserIdList().size(),param.getUserIdList().get(0));
+            log.debug("【消息模板监听】---WxUserSize-->{}",allSize);
+        }
+        for (WxUserInfo info : userInfoList) {
+            if (saas.getShopApp(param.getShopId()).wechatMessageTemplateService.sendMessage(param, info)) {
+                //自定义模版消息更新发送记录状态
+                if (param.getType().equals(RabbitParamConstant.Type.DIY_MESSAGE_TEMPLATE)) {
+                    saas.getShopApp(param.getShopId()).messageTemplateService.updateTemplateSendStatus(info.getUserId(), param.getMessageTemplateId());
+                }
+
+            } else {
                 failList.add(info.getUserId());
             }
 
-        });
-
+        }
+        //自定义模版消息需要更新发送状态
+        if( RabbitParamConstant.Type.DIY_MESSAGE_TEMPLATE.equals(param.getType()) ){
+            saas.getShopApp(param.getShopId()).messageTemplateService.updateTemplateStatus(param.getMessageTemplateId());
+        }
         param.setUserIdList(failList);
 
         //更新taskJob进度和状态

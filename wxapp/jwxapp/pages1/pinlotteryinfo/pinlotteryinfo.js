@@ -54,6 +54,13 @@ global.wxPage({
     }
     clearTimeout(set_time_out);
     // 获取活动详情
+    util.getNeedTemplateId('group_draw', () => {
+      this.request_group()
+    })
+  },
+
+  request_group () {
+    var that = this;
     util.api('/api/wxapp/groupdraw/info', function (res) {
       if (res.error == 0) {
         var group_info = res.content;
@@ -93,17 +100,18 @@ global.wxPage({
         });
         return false;
       }
-    }, { 
-      group_draw_id: group_draw_id, 
-      goods_id: goods_id, 
-      group_id: group_id, 
-      options: {
+    }, {
         group_draw_id: group_draw_id,
         goods_id: goods_id,
-        group_id: group_id
-      } 
-    })
+        group_id: group_id,
+        options: {
+          group_draw_id: group_draw_id,
+          goods_id: goods_id,
+          group_id: group_id
+        }
+      })
   },
+
   // 查看活动列表
   to_lists: function () {
     if (this.data.group_info.groupDraw.status == 2) {
@@ -310,7 +318,7 @@ global.wxPage({
   },
   // 查看活动规则
   to_rule: function () {
-    util.jumpToWeb('/wxapp/pinlottery/help');
+    util.jumpToWeb('/wxapp/pinlottery/help', '&gid=' + group_draw_id);
   },
   /**
    * 用户点击右上角分享

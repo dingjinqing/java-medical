@@ -7,6 +7,7 @@ import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
@@ -28,6 +29,7 @@ import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
+import com.vpu.mp.service.saas.es.EsMappingUpdateService;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
@@ -35,10 +37,7 @@ import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.MpDecorationService;
-import com.vpu.mp.service.shop.goods.es.EsFactSearchService;
-import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
-import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
-import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
+import com.vpu.mp.service.shop.goods.es.*;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelCreateService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -65,6 +64,7 @@ import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 import static com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam.ASC;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
@@ -133,6 +133,10 @@ public class GoodsService extends ShopBaseService {
     private BargainProcessorDao bargainProcessorDao;
     @Autowired
     private GroupBuyProcessorDao groupBuyProcessorDao;
+    @Autowired
+    private EsMappingUpdateService esMappingUpdateService;
+    @Autowired
+    private EsDataUpdateMqService esDataUpdateMqService;
 
     /**
      * 获取全品牌，标签，商家分类数据,平台分类数据
@@ -159,6 +163,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 根据条件查询过滤商品所有需要的标签，品牌，商家分类信息项（统计对应的商品数量）
+     *
      * @param param {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitParam}
      * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitVo}
      */
@@ -191,6 +196,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取符合条件的商品的平台分类，商家分类信息
+     *
      * @param param {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitParam}
      * @return 商品信息集合
      */
@@ -266,7 +272,7 @@ public class GoodsService extends ShopBaseService {
         SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
             GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER, GOODS.GOODS_SALE_NUM)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
-            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID).and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).where(condition);
+            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(condition);
 
         // 拼接排序
         selectFrom = this.buildOrderFields(selectFrom, goodsPageListParam);
@@ -302,7 +308,7 @@ public class GoodsService extends ShopBaseService {
 
         List<Integer> goodsIds = db().select(GOODS.GOODS_ID)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
-            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID).and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).where(condition).fetch(GOODS.GOODS_ID);
+            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(condition).fetch(GOODS.GOODS_ID);
 
         return goodsIds;
     }
@@ -316,7 +322,7 @@ public class GoodsService extends ShopBaseService {
         List<GoodsPageListVo> goodsPageListVos = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
             GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER, GOODS.GOODS_SALE_NUM)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
-            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID).and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS.GOODS_ID.in(goodsIds))
+            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS.GOODS_ID.in(goodsIds))
             .fetchInto(GoodsPageListVo.class);
 
         GoodsPageListParam pageListParam = new GoodsPageListParam();
@@ -342,7 +348,7 @@ public class GoodsService extends ShopBaseService {
             GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_SN, GOODS_SPEC_PRODUCT.PRD_COST_PRICE, GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,
             GOODS_SPEC_PRODUCT.PRD_IMG)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
-            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID).and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
             .where(condition);
 
         // 拼接排序
@@ -378,7 +384,7 @@ public class GoodsService extends ShopBaseService {
 
         List<Integer> prdIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
-            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID).and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
             .where(condition).fetch(GOODS_SPEC_PRODUCT.PRD_ID);
 
         return prdIds;
@@ -435,7 +441,8 @@ public class GoodsService extends ShopBaseService {
      * 出售中和已售罄都可以为上架状态（isOnSale = 1），而仓库中表示下架（isOnSale = 0）
      * 出售中：isOnSale=1&&goodsNumber!=0,已售罄：isOnSale=1&&goodsNumber==0
      * 仓库中：isOnSale=0
-     * @param condition   已有过滤条件
+     *
+     * @param condition          已有过滤条件
      * @param goodsPageListParam goodsPageListParam 过滤条件
      * @return condition 拼装后的过滤条件
      */
@@ -711,12 +718,16 @@ public class GoodsService extends ShopBaseService {
      * 取单个GoodsView
      */
     public GoodsView getGoodsViewByProductId(Integer productId) {
-        GoodsView goodsView = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).
-            from(GOODS).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
+        Record6<Integer, String, String, Integer, BigDecimal, String> record = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).
+                from(GOODS).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
                 .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).
-            fetchOne().into(GoodsView.class);
-        goodsView.setGoodsImg(getImgFullUrlUtil(goodsView.getGoodsImg()));
-        return goodsView;
+                        fetchOne();
+        if (record!=null){
+            GoodsView goodsView = record.into(GoodsView.class);
+            goodsView.setGoodsImg(getImgFullUrlUtil(goodsView.getGoodsImg()));
+            return goodsView;
+        }
+        return null;
     }
 
     /**
@@ -746,15 +757,27 @@ public class GoodsService extends ShopBaseService {
         return db().select(GOODS.BRAND_ID).from(GOODS).where(condition).fetch(GOODS.BRAND_ID);
     }
 
+
     /**
+     * 添加商品无锁函数
      * 先插入商品，从而得到商品的id， 然后插入商品规格的属性和规格值，
      * 从而得到规格属性和规格值的id, 最后拼凑出prdSpecs再插入具体的商品规格
      *
      * @param goods 商品信息
      */
-    public void insert(Goods goods) {
+    public GoodsDataIllegalEnumWrap insert(Goods goods) {
+        GoodsDataIllegalEnumWrap codeWrap = new GoodsDataIllegalEnumWrap();
+        codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_OK);
+
         transaction(() -> {
             try {
+                //存在重复值则直接返回
+                GoodsDataIIllegalEnum goodsDataIIllegalEnum = columnValueExistCheckForInsert(goods);
+                codeWrap.setIllegalEnum(goodsDataIIllegalEnum);
+                if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
+                    return;
+                }
+
                 insertGoods(goods);
 
                 // 商品图片增加
@@ -777,19 +800,18 @@ public class GoodsService extends ShopBaseService {
 
                 //插入商品分销改价信息
                 insertGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
+                codeWrap.setGoodsId(goods.getGoodsId());
             } catch (Exception e) {
                 e.printStackTrace();
+                codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
+                return;
             }
         });
-        //更新es
-        try {
-            if (esUtilSearchService.esState()) {
-                esGoodsCreateService.updateEsGoodsIndex(goods.getGoodsId(), getShopId());
-                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goods.getGoodsId());
-            }
-        } catch (Exception e) {
-            logger().debug("商品新增-同步es数据异常：" + e.getMessage());
+
+        if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
+            return  codeWrap;
         }
+        return  codeWrap;
     }
 
     /**
@@ -934,7 +956,7 @@ public class GoodsService extends ShopBaseService {
     private void calculateGoodsPriceAndNumber(Goods goods) {
         // 当存在商品规格时，统计商品总数和最低商品价格
         BigDecimal smallestGoodsPrice = BigDecimal.valueOf(Double.MAX_VALUE);
-        BigDecimal smallestMarketPrice = BigDecimal.valueOf(Double.MAX_VALUE);
+        BigDecimal largestMarketPrice = BigDecimal.valueOf(Double.MIN_VALUE);
         BigDecimal smallestCostPrice = BigDecimal.valueOf(Double.MAX_VALUE);
 
         Integer goodsSumNumber = 0;
@@ -943,336 +965,71 @@ public class GoodsService extends ShopBaseService {
             if (smallestGoodsPrice.compareTo(specProduct.getPrdPrice()) > 0) {
                 smallestGoodsPrice = specProduct.getPrdPrice();
             }
-            if (smallestMarketPrice.compareTo(specProduct.getPrdMarketPrice()) > 0) {
-                smallestMarketPrice = specProduct.getPrdMarketPrice();
+            if (specProduct.getPrdMarketPrice() != null && largestMarketPrice.compareTo(specProduct.getPrdMarketPrice()) < 0) {
+                largestMarketPrice = specProduct.getPrdMarketPrice();
             }
-            if (smallestCostPrice.compareTo(specProduct.getPrdCostPrice()) > 0) {
+            if (specProduct.getPrdCostPrice() != null && smallestCostPrice.compareTo(specProduct.getPrdCostPrice()) > 0) {
                 smallestCostPrice = specProduct.getPrdCostPrice();
             }
         }
         goods.setGoodsNumber(goodsSumNumber);
         goods.setShopPrice(smallestGoodsPrice);
-        goods.setMarketPrice(smallestMarketPrice);
-        goods.setCostPrice(smallestCostPrice);
+        goods.setMarketPrice(BigDecimal.valueOf(Double.MIN_VALUE).compareTo(largestMarketPrice) == 0 ? null : largestMarketPrice);
+        goods.setCostPrice(BigDecimal.valueOf(Double.MAX_VALUE).compareTo(smallestCostPrice) == 0 ? null : smallestCostPrice);
     }
 
-    /**
-     * 判断字段值是否重复
-     *
-     * @param goodsColumnExistParam
-     * @return
-     */
-    public boolean isColumnValueExist(GoodsColumnCheckExistParam goodsColumnExistParam) {
-        SelectSelectStep<Record1<Integer>> selectFrom = db().selectCount();
-
-        SelectConditionStep<?> scs;
-
-        switch (goodsColumnExistParam.getColumnCheckFor()) {
-            case E_GOODS_SPEC_PRODUCTION:
-                scs = buildGoodsSpecPrdColumnExistOption(selectFrom.from(GOODS_SPEC_PRODUCT), goodsColumnExistParam);
-                break;
-            default:
-                scs = buildGoodsColumnExistOption(selectFrom.from(GOODS), goodsColumnExistParam);
-        }
-
-        Record record = scs.fetchOne();
-        Integer count = record.getValue(0, Integer.class);
-
-        if (count > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * 商品名和商品码查重
-     *
-     * @param select
-     * @param goodsColumnExistParam
-     * @return
-     */
-    private SelectConditionStep<?> buildGoodsColumnExistOption(SelectJoinStep<?> select,
-                                                               GoodsColumnCheckExistParam goodsColumnExistParam) {
-        SelectConditionStep<?> scs = select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
-
-        if (goodsColumnExistParam.getGoodsName() != null) {
-            scs = scs.and(GOODS.GOODS_NAME.eq(goodsColumnExistParam.getGoodsName()));
-        }
-
-        if (goodsColumnExistParam.getGoodsSn() != null) {
-            scs = scs.and(GOODS.GOODS_SN.eq(goodsColumnExistParam.getGoodsSn()));
-        }
-
-        // update 修改条目时排除自身
-        if (goodsColumnExistParam.getGoodsId() != null) {
-            scs = scs.and(GOODS.GOODS_ID.ne(goodsColumnExistParam.getGoodsId()));
-        }
-        return scs;
-    }
-
-    /**
-     * 商品规格字段重复检查
-     *
-     * @param select
-     * @param goodsColumnExistParam
-     * @return
-     */
-    private SelectConditionStep<?> buildGoodsSpecPrdColumnExistOption(SelectJoinStep<?> select,
-                                                                      GoodsColumnCheckExistParam goodsColumnExistParam) {
-        //判断del_flag应该可以去掉，目前删除商品的时候会把sku备份到bak里面，prd表内是真删除
-        SelectConditionStep<?> scs = select.where(DSL.noCondition());
-
-        if (goodsColumnExistParam.getPrdSn() != null) {
-            scs = scs.and(GOODS_SPEC_PRODUCT.PRD_SN.eq(goodsColumnExistParam.getPrdSn()));
-        }
-        // 修改去重
-        if (goodsColumnExistParam.getPrdId() != null) {
-            scs = scs.and(GOODS_SPEC_PRODUCT.PRD_ID.ne(goodsColumnExistParam.getPrdId()));
-        }
-        return scs;
-    }
-
-    /**
-     * 商品批量修改方法
-     * 批量处理中会同时修改同一商品的全部规格数据，单独修改某一规格库存和价格时不可使用本方法
-     *
-     * @param operateParam
-     */
-    public void batchOperate(GoodsBatchOperateParam operateParam) {
-        List<Integer> goodsLabels = operateParam.getGoodsLabels();
-        if (goodsLabels != null && goodsLabels.size() > 0) {
-            goodsLabelCouple.batchUpdateLabelCouple(operateParam.getGoodsIds(), goodsLabels, GoodsLabelCoupleTypeEnum.GOODSTYPE);
-        } else if (operateParam.getIsCardExclusive() != null) {
-            transaction(()->{
-                db().batchUpdate(operateParam.toUpdateGoodsRecord()).execute();
-                memberCardService.deleteOwnEnjoyGoodsByGcta(operateParam.getGoodsIds(), CardConstant.COUPLE_TP_GOODS);
-                if (GoodsConstant.CARD_EXCLUSIVE.equals(operateParam.getIsCardExclusive())) {
-                    memberCardService.batchUpdateGoods(operateParam.getGoodsIds(),operateParam.getCardIds(), CardConstant.COUPLE_TP_GOODS);
-                }
-            });
-        } else {
-            List<GoodsRecord> goodsRecords = operateParam.toUpdateGoodsRecord();
-            Map<Integer, List<PrdPriceNumberParam>> goodsPriceNumbers = operateParam.getGoodsPriceNumbers();
-            List<GoodsSpecProductRecord> goodsSpecProductRecords = new ArrayList<>(0);
-            // 单独处理规格价格和规格数量,
-            if (goodsPriceNumbers != null && goodsPriceNumbers.size() > 0) {
-                goodsRecords.forEach(goodsRecord -> {
-                    Integer goodsId = goodsRecord.getGoodsId();
-                    List<PrdPriceNumberParam> prdPriceNumberParams = goodsPriceNumbers.get(goodsId);
-                    if (prdPriceNumberParams == null || prdPriceNumberParams.size() == 0) {
-                        return;
-                    }
-                    BigDecimal smallestShopPrice = BigDecimal.valueOf(Double.MAX_VALUE);
-                    for (PrdPriceNumberParam prdPriceNumberParam : prdPriceNumberParams) {
-                        GoodsSpecProductRecord record = new GoodsSpecProductRecord();
-                        record.setPrdId(prdPriceNumberParam.getPrdId());
-                        if (prdPriceNumberParam.getShopPrice() != null) {
-                            record.setPrdPrice(prdPriceNumberParam.getShopPrice());
-                            if (smallestShopPrice.compareTo(prdPriceNumberParam.getShopPrice()) > 0) {
-                                smallestShopPrice = prdPriceNumberParam.getShopPrice();
-                            }
-                        }
-                        goodsSpecProductRecords.add(record);
-                    }
-                    goodsRecord.setShopPrice(smallestShopPrice);
-                });
-            }
-            transaction(() -> {
-                db().batchUpdate(goodsSpecProductRecords).execute();
-                db().batchUpdate(goodsRecords).execute();
-            });
-
-        }
-        //更新es
-        try {
-            if (esUtilSearchService.esState()) {
-                esGoodsCreateService.batchUpdateEsGoodsIndex(operateParam.getGoodsIds(), getShopId());
-                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(operateParam.getGoodsIds(), DBOperating.UPDATE);
-            }
-        } catch (Exception e) {
-            logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
-        }
-    }
-
-    /**
-     * 商品批量上下架处理
-     *
-     * @param operateParam {@link GoodsBatchOperateParam#getIsOnSale()}==1上架，==0 下架
-     */
-    public void batchIsOnSaleOperate(GoodsBatchOperateParam operateParam) {
-        List<GoodsRecord> goodsRecords = operateParam.toUpdateGoodsRecord();
-        db().batchUpdate(goodsRecords).execute();
-        try {
-            if (esUtilSearchService.esState()) {
-                esGoodsCreateService.batchUpdateEsGoodsIndex(operateParam.getGoodsIds(), getShopId());
-                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(operateParam.getGoodsIds(), DBOperating.UPDATE);
-            }
-        } catch (Exception e) {
-            logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
-        }
-    }
-
-    /**
-     * 单独修改某一个商品规格的数量或价格,用于admin商品列表界面修改
-     *
-     * @param param
-     */
-    public void updateGoodsPrdPriceNumbers(PrdPriceNumberParam param) {
-        GoodsSpecProductRecord targetRecord = db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(param.getPrdId())).fetchAny();
-
-        if (targetRecord == null) {
-            return;
-        }
-        // 下面两个if其实是或的关系，这样写可以预防接口参数调用错误
-        if (param.getGoodsNumber() != null) {
-            targetRecord.setPrdNumber(param.getGoodsNumber());
-        }
-        if (param.getShopPrice() != null) {
-            targetRecord.setPrdPrice(param.getShopPrice());
-        }
-
-
-        GoodsRecord goodsRecord = db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(targetRecord.getGoodsId())).fetchAny();
-
-        Result<GoodsSpecProductRecord> prds = db().selectFrom(GOODS_SPEC_PRODUCT)
-            .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsRecord.getGoodsId()).and(GOODS_SPEC_PRODUCT.PRD_ID.ne(param.getPrdId()))).fetch();
-        prds.add(targetRecord);
-
-        // 从新计算商品总数量和最低价
-        BigDecimal minPrice = prds.get(0).getPrdPrice();
-        int goodsNum = 0;
-        for (GoodsSpecProductRecord prd : prds) {
-            if (minPrice.compareTo(prd.getPrdPrice()) > 0) {
-                minPrice = prd.getPrdPrice();
-            }
-            goodsNum += prd.getPrdNumber();
-        }
-        goodsRecord.setShopPrice(minPrice);
-        goodsRecord.setGoodsNumber(goodsNum);
-
-        transaction(() -> {
-            // 更新目标规格的数据和对应的商品的数据
-            targetRecord.update();
-            goodsRecord.update();
-        });
-        //更新es
-        try {
-            if (esUtilSearchService.esState()) {
-                esGoodsCreateService.updateEsGoodsIndex(goodsRecord.getGoodsId(), getShopId());
-            }
-        } catch (Exception e) {
-            logger().debug("更新商品规格库存价格-同步es数据异常:" + e.getMessage());
-        }
-    }
-
-    /**
-     * 商品批量删除及单个删除
-     *
-     * @param operateParam
-     */
-    public void delete(GoodsBatchOperateParam operateParam) {
-        List<Integer> goodsIds = operateParam.getGoodsIds();
-        transaction(() -> {
-            DSLContext db = db();
-            db.update(GOODS).set(GOODS.DEL_FLAG, DelFlag.DISABLE.getCode())
-                .set(GOODS.GOODS_SN,
-                    DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS.GOODS_ID).concat(DelFlag.DEL_ITEM_SPLITER)
-                        .concat(GOODS.GOODS_SN))
-                .set(GOODS.GOODS_NAME, DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS.GOODS_ID)
-                    .concat(DelFlag.DEL_ITEM_SPLITER).concat(GOODS.GOODS_NAME))
-                .where(GOODS.GOODS_ID.in(goodsIds)).execute();
-
-            // 删除关联图片
-            deleteImg(goodsIds);
-            // 删除关联规格
-            goodsSpecProductService.deleteByGoodsIds(goodsIds);
-            //删除关联标签
-            goodsLabelCouple.deleteByGoodsIds(goodsIds);
-            //删除商品规格会员价信息
-            deleteGradePrd(goodsIds);
-            //删除关联会员专属信息
-            memberCardService.deleteOwnEnjoyGoodsByGcta(goodsIds, CardConstant.COUPLE_TP_GOODS);
-            //删除商品规格分销信息
-            deleteGoodsRebatePrices(goodsIds);
-        });
-
-        try {
-            //更新es
-            if (esUtilSearchService.esState()) {
-                esGoodsCreateService.deleteEsGoods(goodsIds, getShopId());
-                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.DELETE);
-            }
-        } catch (Exception e) {
-            logger().debug("商品删除-es同步数据异常：" + e.getMessage());
-        }
-    }
-
-    /**
-     * 删除关联图片
-     *
-     * @param goodsIds
-     */
-    private void deleteImg(List<Integer> goodsIds) {
-        db().delete(GOODS_IMG).where(GOODS_IMG.GOODS_ID.in(goodsIds)).execute();
-    }
-
-    /**
-     * 删除商品规格会员价信息
-     *
-     * @param goodsIds
-     */
-    private void deleteGradePrd(List<Integer> goodsIds) {
-        db().update(GRADE_PRD).set(GRADE_PRD.DEL_FLAG, DelFlag.DISABLE.getCode()).where(GRADE_PRD.GOODS_ID.in(goodsIds)).execute();
-    }
-
-    /**
-     * 删除商品规格分销价信息
-     *
-     * @param goodsIds
-     */
-    private void deleteGoodsRebatePrices(List<Integer> goodsIds) {
-        db().update(GOODS_REBATE_PRICE).set(GOODS_REBATE_PRICE.DEL_FLAG, DelFlag.DISABLE.getCode())
-            .where(GOODS_REBATE_PRICE.GOODS_ID.in(goodsIds)).execute();
-    }
 
     /**
      * 商品修改
      *
      * @param goods
      */
-    public void update(Goods goods) {
+    public GoodsDataIllegalEnumWrap update(Goods goods) {
+        GoodsDataIllegalEnumWrap codeWrap = new GoodsDataIllegalEnumWrap();
+
         transaction(() -> {
+            try {
+                //存在重复值则直接返回
+                GoodsDataIIllegalEnum goodsDataIIllegalEnum = columnValueExistCheckForUpdate(goods);
+                codeWrap.setIllegalEnum(goodsDataIIllegalEnum);
+                if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
+                    return;
+                }
 
-            updateGoods(goods);
-
-            // 商品图片修改
-            updateImgs(goods);
-
-            // 商品关联标签添加
-            updateLabels(goods);
-
-            // 修改商品规格
-            updateSpecPrd(goods);
-
-            // 修改商品规格会员价
-            updateGradePrd(goods.getGoodsGradePrds(), goods.getGoodsSpecProducts(), goods.getGoodsId());
-
-            // 修改专属会员卡
-            updateMemberCards(goods);
-
-            //修改分销改价
-            updateGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
+                updateGoods(goods);
+                // 商品图片修改
+                updateImgs(goods);
+                // 商品关联标签添加
+                updateLabels(goods);
+                // 修改商品规格
+                updateSpecPrd(goods);
+                // 修改商品规格会员价
+                updateGradePrd(goods.getGoodsGradePrds(), goods.getGoodsSpecProducts(), goods.getGoodsId());
+                // 修改专属会员卡
+                updateMemberCards(goods);
+                //修改分销改价
+                updateGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
+            } catch (Exception e) {
+                e.printStackTrace();
+                codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
+                return;
+            }
         });
+        if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
+            return  codeWrap;
+        }
         //es更新
         try {
-            if (esUtilSearchService.esState()) {
+            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus() ) {
                 esGoodsCreateService.updateEsGoodsIndex(goods.getGoodsId(), getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goods.getGoodsId());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger().debug("商品修改-同步es数据异常："+e.getMessage());
+            codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
+            return  codeWrap;
         }
+        return codeWrap;
     }
 
     /**
@@ -1290,7 +1047,9 @@ public class GoodsService extends ShopBaseService {
         GoodsRecord goodsRecord = db().fetchOne(GOODS, GOODS.GOODS_ID.eq(goods.getGoodsId()));
 
         assign(goods, goodsRecord);
-
+        if (goods.getMarketPrice() == null) {
+            goodsRecord.setMarketPrice(null);
+        }
         goodsRecord.store();
     }
 
@@ -1403,6 +1162,24 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
+     * 更新商品Es
+     * @param goodsIds
+     */
+    public void updateEs(List<Integer> goodsIds) {
+        try {
+            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
+                esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
+                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
+            }else{
+                esDataUpdateMqService.addEsGoodsIndex(goodsIds,getShopId(),DBOperating.UPDATE);
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,goodsIds,null);
+            }
+        } catch (Exception e) {
+            logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
+        }
+    }
+
+    /**
      * 清除指定的sortId
      * @param sortIds
      */
@@ -1418,6 +1195,437 @@ public class GoodsService extends ShopBaseService {
     public void clearBrandId(List<Integer> brandIds) {
         db().update(GOODS).set(GOODS.BRAND_ID,0)
             .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.BRAND_ID.in(brandIds))).execute();
+    }
+
+
+    public void updateGoodsForImport(GoodsRecord goodsRecord) {
+        db().executeUpdate(goodsRecord);
+    }
+
+    public void updateGoodsChildImgsForImport(Integer goodsId, List<String> imgs) {
+        List<Integer> goodsIds = Arrays.asList(goodsId);
+
+        deleteImg(goodsIds);
+
+        if (imgs!= null && imgs.size() != 0) {
+            insertGoodsImgs(imgs,goodsId);
+        }
+    }
+    /*************商品相关信息验证代码*************/
+    /**
+     * 判断商品会员卡价格是否正确
+     *
+     * @param goods {@link com.vpu.mp.service.pojo.shop.goods.goods}
+     * @return
+     */
+    public boolean isGradePrdPriceOk(Goods goods) {
+        //判断商品特定等级会员卡的价格是否存在大于对应规格价钱的情况
+        if (goods.getGoodsGradePrds() != null && goods.getGoodsGradePrds().size() > 0) {
+            Map<String, BigDecimal> collect =
+                goods.getGoodsSpecProducts()
+                    .stream()
+                    .collect(Collectors.toMap(GoodsSpecProduct::getPrdDesc, GoodsSpecProduct::getPrdPrice));
+
+            boolean r = goods.getGoodsGradePrds().stream().anyMatch(goodsGradePrd -> {
+                if (goodsGradePrd.getGradePrice() == null || goodsGradePrd.getGrade() == null) {
+                    return true;
+                }
+                return goodsGradePrd.getGradePrice().compareTo(collect.get(goodsGradePrd.getPrdDesc())) > 0;
+            });
+
+            if (r) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * 商品新增接口数据重复检查（非原子操作）
+     *
+     * @param goods 商品
+     * @return {@link com.vpu.mp.service.foundation.data.JsonResult}
+     */
+    private GoodsDataIIllegalEnum columnValueExistCheckForInsert(Goods goods) {
+        GoodsColumnCheckExistParam gcep = new GoodsColumnCheckExistParam();
+        gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS);
+
+        //检查商品名称是否重复
+        gcep.setGoodsName(goods.getGoodsName());
+        if (isColumnValueExist(gcep)) {
+            return GoodsDataIIllegalEnum.GOODS_NAME_EXIST;
+        }
+        gcep.setGoodsName(null);
+
+        //用户输入了商品货号则进行检查是否重复
+        if (goods.getGoodsSn() != null) {
+            gcep.setGoodsSn(goods.getGoodsSn());
+            if (isColumnValueExist(gcep)) {
+                return GoodsDataIIllegalEnum.GOODS_SN_EXIST;
+            }
+            gcep.setGoodsSn(null);
+        }
+
+        List<String> prdSns = goods.getGoodsSpecProducts().stream().filter(x -> !StringUtils.isBlank(x.getPrdSn())).map(GoodsSpecProduct::getPrdSn).collect(Collectors.toList());
+        List<String> skuPrdSnExist = goodsSpecProductService.findSkuPrdSnExist(prdSns);
+        if (skuPrdSnExist.size() > 0) {
+            return GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST;
+        }
+
+        return GoodsDataIIllegalEnum.GOODS_OK;
+    }
+
+    /**
+     * 更新数据时判断传入的商品名称、货号，sku码和规格名值是否重复。
+     *
+     * @param goods 商品
+     * @return {@link JsonResult#getError()}!=0表示存在重复
+     */
+    private GoodsDataIIllegalEnum columnValueExistCheckForUpdate(Goods goods) {
+        GoodsColumnCheckExistParam gcep = new GoodsColumnCheckExistParam();
+        gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS);
+
+        //检查商品名称是否重复
+        gcep.setGoodsName(goods.getGoodsName());
+        gcep.setGoodsId(goods.getGoodsId());
+        if (isColumnValueExist(gcep)) {
+            return GoodsDataIIllegalEnum.GOODS_NAME_EXIST;
+        }
+        gcep.setGoodsName(null);
+        gcep.setGoodsId(null);
+
+        //用户输入了商品货号则进行检查是否重复
+        if (goods.getGoodsSn() != null) {
+            gcep.setGoodsSn(goods.getGoodsSn());
+            gcep.setGoodsId(goods.getGoodsId());
+            if (isColumnValueExist(gcep)) {
+                return GoodsDataIIllegalEnum.GOODS_SN_EXIST;
+            }
+            gcep.setGoodsSn(null);
+            gcep.setGoodsId(null);
+        }
+
+        gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS_SPEC_PRODUCTION);
+        //检查sku sn是否重复
+        for (GoodsSpecProduct goodsSpecProduct : goods.getGoodsSpecProducts()) {
+            if (!StringUtils.isBlank(goodsSpecProduct.getPrdSn())) {
+                gcep.setPrdSn(goodsSpecProduct.getPrdSn());
+                gcep.setPrdId(goodsSpecProduct.getPrdId());
+                if (isColumnValueExist(gcep)) {
+                    return GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST;
+                }
+            }
+        }
+        return GoodsDataIIllegalEnum.GOODS_OK;
+    }
+
+    /*************结束*************/
+
+    /**
+     * 判断字段值是否重复
+     *
+     * @param goodsColumnExistParam
+     * @return
+     */
+    public boolean isColumnValueExist(GoodsColumnCheckExistParam goodsColumnExistParam) {
+        SelectSelectStep<Record1<Integer>> selectFrom = db().selectCount();
+
+        SelectConditionStep<?> scs;
+
+        switch (goodsColumnExistParam.getColumnCheckFor()) {
+            case E_GOODS_SPEC_PRODUCTION:
+                scs = buildGoodsSpecPrdColumnExistOption(selectFrom.from(GOODS_SPEC_PRODUCT), goodsColumnExistParam);
+                break;
+            default:
+                scs = buildGoodsColumnExistOption(selectFrom.from(GOODS), goodsColumnExistParam);
+        }
+
+        Record record = scs.fetchOne();
+        Integer count = record.getValue(0, Integer.class);
+
+        if (count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isGoodsNameExist(Integer goodsId,String goodsName){
+        GoodsColumnCheckExistParam param = new GoodsColumnCheckExistParam();
+        param.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS);
+        param.setGoodsId(goodsId);
+        param.setGoodsName(goodsName);
+        return isColumnValueExist(param);
+    }
+
+    /**
+     * 根据货品编号获取商品
+     * @param goodsSn
+     * @return
+     */
+    public GoodsRecord getGoodsRecordByGoodsSn(String goodsSn) {
+         return db().selectFrom(GOODS).where(GOODS.GOODS_SN.eq(goodsSn).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
+                .fetchAny();
+    }
+    /**
+     * 商品名和商品码查重
+     *
+     * @param select
+     * @param goodsColumnExistParam
+     * @return
+     */
+    private SelectConditionStep<?> buildGoodsColumnExistOption(SelectJoinStep<?> select,
+                                                               GoodsColumnCheckExistParam goodsColumnExistParam) {
+        SelectConditionStep<?> scs = select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+
+        if (goodsColumnExistParam.getGoodsName() != null) {
+            scs = scs.and(GOODS.GOODS_NAME.eq(goodsColumnExistParam.getGoodsName()));
+        }
+
+        if (goodsColumnExistParam.getGoodsSn() != null) {
+            scs = scs.and(GOODS.GOODS_SN.eq(goodsColumnExistParam.getGoodsSn()));
+        }
+
+        // update 修改条目时排除自身
+        if (goodsColumnExistParam.getGoodsId() != null) {
+            scs = scs.and(GOODS.GOODS_ID.ne(goodsColumnExistParam.getGoodsId()));
+        }
+        return scs;
+    }
+
+    /**
+     * 商品规格字段重复检查
+     *
+     * @param select
+     * @param goodsColumnExistParam
+     * @return
+     */
+    private SelectConditionStep<?> buildGoodsSpecPrdColumnExistOption(SelectJoinStep<?> select,
+                                                                      GoodsColumnCheckExistParam goodsColumnExistParam) {
+        //判断del_flag应该可以去掉，目前删除商品的时候会把sku备份到bak里面，prd表内是真删除
+        SelectConditionStep<?> scs = select.where(DSL.noCondition());
+
+        if (goodsColumnExistParam.getPrdSn() != null) {
+            scs = scs.and(GOODS_SPEC_PRODUCT.PRD_SN.eq(goodsColumnExistParam.getPrdSn()));
+        }
+        // 修改去重
+        if (goodsColumnExistParam.getPrdId() != null) {
+            scs = scs.and(GOODS_SPEC_PRODUCT.PRD_ID.ne(goodsColumnExistParam.getPrdId()));
+        }
+        return scs;
+    }
+
+    /**
+     * 商品批量修改方法
+     * 批量处理中会同时修改同一商品的全部规格数据，单独修改某一规格库存和价格时不可使用本方法
+     *
+     * @param operateParam
+     */
+    public void batchOperate(GoodsBatchOperateParam operateParam) {
+        List<Integer> goodsLabels = operateParam.getGoodsLabels();
+        if (goodsLabels != null && goodsLabels.size() > 0) {
+            goodsLabelCouple.batchUpdateLabelCouple(operateParam.getGoodsIds(), goodsLabels, GoodsLabelCoupleTypeEnum.GOODSTYPE);
+        } else if (operateParam.getIsCardExclusive() != null) {
+            transaction(() -> {
+                db().batchUpdate(operateParam.toUpdateGoodsRecord()).execute();
+                memberCardService.deleteOwnEnjoyGoodsByGcta(operateParam.getGoodsIds(), CardConstant.COUPLE_TP_GOODS);
+                if (GoodsConstant.CARD_EXCLUSIVE.equals(operateParam.getIsCardExclusive())) {
+                    memberCardService.batchUpdateGoods(operateParam.getGoodsIds(), operateParam.getCardIds(), CardConstant.COUPLE_TP_GOODS);
+                }
+            });
+        } else {
+            List<GoodsRecord> goodsRecords = operateParam.toUpdateGoodsRecord();
+            Map<Integer, List<PrdPriceNumberParam>> goodsPriceNumbers = operateParam.getGoodsPriceNumbers();
+            List<GoodsSpecProductRecord> goodsSpecProductRecords = new ArrayList<>(0);
+            // 单独处理规格价格和规格数量,
+            if (goodsPriceNumbers != null && goodsPriceNumbers.size() > 0) {
+                goodsRecords.forEach(goodsRecord -> {
+                    Integer goodsId = goodsRecord.getGoodsId();
+                    List<PrdPriceNumberParam> prdPriceNumberParams = goodsPriceNumbers.get(goodsId);
+                    if (prdPriceNumberParams == null || prdPriceNumberParams.size() == 0) {
+                        return;
+                    }
+                    BigDecimal smallestShopPrice = BigDecimal.valueOf(Double.MAX_VALUE);
+                    for (PrdPriceNumberParam prdPriceNumberParam : prdPriceNumberParams) {
+                        GoodsSpecProductRecord record = new GoodsSpecProductRecord();
+                        record.setPrdId(prdPriceNumberParam.getPrdId());
+                        if (prdPriceNumberParam.getShopPrice() != null) {
+                            record.setPrdPrice(prdPriceNumberParam.getShopPrice());
+                            if (smallestShopPrice.compareTo(prdPriceNumberParam.getShopPrice()) > 0) {
+                                smallestShopPrice = prdPriceNumberParam.getShopPrice();
+                            }
+                        }
+                        goodsSpecProductRecords.add(record);
+                    }
+                    goodsRecord.setShopPrice(smallestShopPrice);
+                });
+            }
+            transaction(() -> {
+                db().batchUpdate(goodsSpecProductRecords).execute();
+                db().batchUpdate(goodsRecords).execute();
+            });
+
+        }
+        //更新es
+        try {
+            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
+                esGoodsCreateService.batchUpdateEsGoodsIndex(operateParam.getGoodsIds(), getShopId());
+                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(operateParam.getGoodsIds(), DBOperating.UPDATE);
+            }else {
+                esDataUpdateMqService.addEsGoodsIndex(operateParam.getGoodsIds(),getShopId(),DBOperating.UPDATE);
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,operateParam.getGoodsIds(),null);
+            }
+        } catch (Exception e) {
+            logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
+        }
+    }
+
+    /**
+     * 商品批量上下架处理
+     *
+     * @param operateParam {@link GoodsBatchOperateParam#getIsOnSale()}==1上架，==0 下架
+     */
+    public void batchIsOnSaleOperate(GoodsBatchOperateParam operateParam) {
+        List<GoodsRecord> goodsRecords = operateParam.toUpdateGoodsRecord();
+        db().batchUpdate(goodsRecords).execute();
+        try {
+            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
+                esGoodsCreateService.batchUpdateEsGoodsIndex(operateParam.getGoodsIds(), getShopId());
+                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(operateParam.getGoodsIds(), DBOperating.UPDATE);
+            }else{
+                esDataUpdateMqService.addEsGoodsIndex(operateParam.getGoodsIds(),getShopId(),DBOperating.UPDATE);
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,operateParam.getGoodsIds(),null);
+            }
+        } catch (Exception e) {
+            logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
+        }
+    }
+
+    /**
+     * 单独修改某一个商品规格的数量或价格,用于admin商品列表界面修改
+     *
+     * @param param
+     */
+    public void updateGoodsPrdPriceNumbers(PrdPriceNumberParam param) {
+        GoodsSpecProductRecord targetRecord = db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(param.getPrdId())).fetchAny();
+
+        if (targetRecord == null) {
+            return;
+        }
+        // 下面两个if其实是或的关系，这样写可以预防接口参数调用错误
+        if (param.getGoodsNumber() != null) {
+            targetRecord.setPrdNumber(param.getGoodsNumber());
+        }
+        if (param.getShopPrice() != null) {
+            targetRecord.setPrdPrice(param.getShopPrice());
+        }
+
+
+        GoodsRecord goodsRecord = db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(targetRecord.getGoodsId())).fetchAny();
+
+        Result<GoodsSpecProductRecord> prds = db().selectFrom(GOODS_SPEC_PRODUCT)
+            .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsRecord.getGoodsId()).and(GOODS_SPEC_PRODUCT.PRD_ID.ne(param.getPrdId()))).fetch();
+        prds.add(targetRecord);
+
+        // 从新计算商品总数量和最低价
+        BigDecimal minPrice = prds.get(0).getPrdPrice();
+        int goodsNum = 0;
+        for (GoodsSpecProductRecord prd : prds) {
+            if (minPrice.compareTo(prd.getPrdPrice()) > 0) {
+                minPrice = prd.getPrdPrice();
+            }
+            goodsNum += prd.getPrdNumber();
+        }
+        goodsRecord.setShopPrice(minPrice);
+        goodsRecord.setGoodsNumber(goodsNum);
+
+        transaction(() -> {
+            // 更新目标规格的数据和对应的商品的数据
+            targetRecord.update();
+            goodsRecord.update();
+        });
+        //更新es
+        try {
+            if (esUtilSearchService.esState()) {
+                esGoodsCreateService.updateEsGoodsIndex(goodsRecord.getGoodsId(), getShopId());
+            }
+        } catch (Exception e) {
+            logger().debug("更新商品规格库存价格-同步es数据异常:" + e.getMessage());
+        }
+    }
+
+    /**
+     * 商品批量删除及单个删除
+     *
+     * @param operateParam
+     */
+    public void delete(GoodsBatchOperateParam operateParam) {
+        List<Integer> goodsIds = operateParam.getGoodsIds();
+        transaction(() -> {
+            DSLContext db = db();
+            db.update(GOODS).set(GOODS.DEL_FLAG, DelFlag.DISABLE.getCode())
+                .set(GOODS.GOODS_SN,
+                    DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS.GOODS_ID).concat(DelFlag.DEL_ITEM_SPLITER)
+                        .concat(GOODS.GOODS_SN))
+                .set(GOODS.GOODS_NAME, DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS.GOODS_ID)
+                    .concat(DelFlag.DEL_ITEM_SPLITER).concat(GOODS.GOODS_NAME))
+                .where(GOODS.GOODS_ID.in(goodsIds)).execute();
+
+            // 删除关联图片
+            deleteImg(goodsIds);
+            // 删除关联规格
+            goodsSpecProductService.deleteByGoodsIds(goodsIds);
+            //删除关联标签
+            goodsLabelCouple.deleteByGoodsIds(goodsIds);
+            //删除商品规格会员价信息
+            deleteGradePrd(goodsIds);
+            //删除关联会员专属信息
+            memberCardService.deleteOwnEnjoyGoodsByGcta(goodsIds, CardConstant.COUPLE_TP_GOODS);
+            //删除商品规格分销信息
+            deleteGoodsRebatePrices(goodsIds);
+        });
+
+        try {
+            //更新es
+            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
+                esGoodsCreateService.deleteEsGoods(goodsIds, getShopId());
+                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.DELETE);
+            }else{
+                esDataUpdateMqService.addEsGoodsIndex(goodsIds,getShopId(),DBOperating.UPDATE);
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,goodsIds,null);
+            }
+        } catch (Exception e) {
+            logger().debug("商品删除-es同步数据异常：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 删除关联图片
+     *
+     * @param goodsIds
+     */
+    private void deleteImg(List<Integer> goodsIds) {
+        db().delete(GOODS_IMG).where(GOODS_IMG.GOODS_ID.in(goodsIds)).execute();
+    }
+
+    /**
+     * 删除商品规格会员价信息
+     *
+     * @param goodsIds
+     */
+    private void deleteGradePrd(List<Integer> goodsIds) {
+        db().update(GRADE_PRD).set(GRADE_PRD.DEL_FLAG, DelFlag.DISABLE.getCode()).where(GRADE_PRD.GOODS_ID.in(goodsIds)).execute();
+    }
+
+    /**
+     * 删除商品规格分销价信息
+     *
+     * @param goodsIds
+     */
+    private void deleteGoodsRebatePrices(List<Integer> goodsIds) {
+        db().update(GOODS_REBATE_PRICE).set(GOODS_REBATE_PRICE.DEL_FLAG, DelFlag.DISABLE.getCode())
+            .where(GOODS_REBATE_PRICE.GOODS_ID.in(goodsIds)).execute();
     }
 
     /**
@@ -1808,25 +2016,33 @@ public class GoodsService extends ShopBaseService {
         transaction(() -> {
             db().batchUpdate(goodsRecords.values()).execute();
             db().batchUpdate(prdRecordsMap.values()).execute();
-
-            try {
-                if (esUtilSearchService.esState()) {
-                    esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         });
-
+        try {
+            if (esUtilSearchService.esState()) {
+                esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Unsalable goods integer.滞销商品数量
      * 商品一个月内未进行过更新, 并且一个月内没参与任何订单(也就是没人买过)
+     *
      * @return the integer
      */
     public Integer unsalableGoods() {
-        return unsalableGoodsSet().size();
+        try {
+            return esUtilSearchService.getZhiXiaoGoodsNumbers().size();
+        } catch (Exception e) {
+            log.error("ES查询滞销商品数量失败, 原因如下: {}", e.getMessage());
+            Timestamp fixedTime = Timestamp.valueOf(LocalDateTime.now().minus(30, ChronoUnit.DAYS));
+            Select<? extends Record1<Integer>> select = db().select(ORDER_GOODS.GOODS_ID).from(ORDER_GOODS).leftJoin(ORDER_INFO)
+                .on(ORDER_GOODS.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
+                .where(ORDER_INFO.CREATE_TIME.greaterOrEqual(fixedTime));
+            return db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(BYTE_ZERO).and(GOODS.GOODS_ID.notIn(select)).and(GOODS.UPDATE_TIME.lessOrEqual(fixedTime)));
+        }
     }
 
     /**
@@ -1836,17 +2052,12 @@ public class GoodsService extends ShopBaseService {
      * @return the integer
      */
     public Set<Integer> unsalableGoodsSet() {
-        try {
-            return esUtilSearchService.getZhiXiaoGoodsNumbers();
-        } catch (Exception e) {
-            log.error("ES查询滞销商品数量失败, 原因如下: {}", e.getMessage());
-            Timestamp fixedTime = Timestamp.valueOf(LocalDateTime.now().minus(30, ChronoUnit.DAYS));
-            Select<? extends Record1<Integer>> select = db().select(ORDER_GOODS.GOODS_ID).from(ORDER_GOODS).leftJoin(ORDER_INFO)
-                .on(ORDER_GOODS.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
-                .where(ORDER_INFO.CREATE_TIME.greaterOrEqual(fixedTime));
-            Condition condition = GOODS.DEL_FLAG.eq(BYTE_ZERO).and(GOODS.GOODS_ID.notIn(select)).and(GOODS.UPDATE_TIME.lessOrEqual(fixedTime));
-            return db().select(GOODS.GOODS_ID).from(GOODS).where(condition).fetchSet(GOODS.GOODS_ID);
-        }
+        Timestamp fixedTime = Timestamp.valueOf(LocalDateTime.now().minus(30, ChronoUnit.DAYS));
+        Select<? extends Record1<Integer>> select = db().select(ORDER_GOODS.GOODS_ID).from(ORDER_GOODS).leftJoin(ORDER_INFO)
+            .on(ORDER_GOODS.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
+            .where(ORDER_INFO.CREATE_TIME.greaterOrEqual(fixedTime));
+        Condition condition = GOODS.DEL_FLAG.eq(BYTE_ZERO).and(GOODS.GOODS_ID.notIn(select)).and(GOODS.UPDATE_TIME.lessOrEqual(fixedTime));
+        return db().select(GOODS.GOODS_ID).from(GOODS).where(condition).fetchSet(GOODS.GOODS_ID);
     }
 
     /**
@@ -2002,6 +2213,9 @@ public class GoodsService extends ShopBaseService {
             if (!goodsIds.isEmpty() && esUtilSearchService.esState()) {
                 esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
+            }else{
+                esDataUpdateMqService.addEsGoodsIndex(goodsIds,getShopId(),DBOperating.UPDATE);
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,goodsIds,null);
             }
         } catch (Exception e) {
             logger().debug("手动上架所有待上架商品-同步es数据异常：" + e.getMessage());
@@ -2024,29 +2238,8 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
-     * 更新商品和规格的库存和销量，减少number个库存，增加number个销量，number可以是负数
-     * @param goodsId
-     * @param prdId
-     * @param number
-     */
-    public void updateGoodsNumberAndSale(int goodsId, int prdId, int number) {
-        transaction(() -> {
-            db().update(GOODS).set(GOODS.GOODS_NUMBER, GOODS.GOODS_NUMBER.sub(number)).set(GOODS.GOODS_SALE_NUM, GOODS.GOODS_SALE_NUM.add(number)).where(GOODS.GOODS_ID.eq(goodsId)).execute();
-            db().update(GOODS_SPEC_PRODUCT).set(GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_NUMBER.sub(number)).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId)).execute();
-        });
-
-        try {
-            //es
-            if (esUtilSearchService.esState()) {
-                esGoodsCreateService.updateEsGoodsIndex(goodsId, getShopId());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * 获取满足条件的商品数量
+     *
      * @param param 条件
      * @return 商品数量
      */
@@ -2116,7 +2309,7 @@ public class GoodsService extends ShopBaseService {
      * @return 商品分享信息
      */
     public GoodsVo selectGoodsShareInfo(Integer goodsId) {
-        Record3<String, String, String> record = db().select(GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.SHARE_CONFIG)
+        Record4<Integer, String, String, String> record = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.SHARE_CONFIG)
             .from(GOODS).where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
             .fetchAny();
 
@@ -2162,7 +2355,7 @@ public class GoodsService extends ShopBaseService {
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsSecKillListInfo = secKillProcessorDao.getGoodsSecKillListInfo(Collections.singletonList(goodsId), now);
         if (goodsSecKillListInfo.containsKey(goodsId)) {
             Record3<Integer, Integer, BigDecimal> record3 = goodsSecKillListInfo.get(goodsId).get(0);
-            type.setActivityId(record3.get(SEC_KILL_DEFINE.SK_ID));
+            type.setActivityId(record3.get(SEC_KILL_PRODUCT_DEFINE.SK_ID));
             type.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
             return type;
         }
@@ -2188,7 +2381,7 @@ public class GoodsService extends ShopBaseService {
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsGroupBuyListInfo = groupBuyProcessorDao.getGoodsGroupBuyListInfo(Collections.singletonList(goodsId), now);
         if (goodsGroupBuyListInfo.containsKey(goodsId)) {
             Record3<Integer, Integer, BigDecimal> record3 = goodsGroupBuyListInfo.get(goodsId).get(0);
-            type.setActivityId(record3.get(GROUP_BUY_DEFINE.ID));
+            type.setActivityId(record3.get(GROUP_BUY_PRODUCT_DEFINE.ID));
             type.setActivityType(BaseConstant.ACTIVITY_TYPE_GROUP_BUY);
             return type;
         }
@@ -2201,11 +2394,11 @@ public class GoodsService extends ShopBaseService {
      *
      * @param catIds   指定平台分类id,逗号分隔的字符串
      * @param sortIds  指定商家分类id,逗号分隔的字符串
-     * @param brandIds  指定品牌id,逗号分隔的字符串
-     *                  多种条件取并集
+     * @param brandIds 指定品牌id,逗号分隔的字符串
+     *                 多种条件取并集
      * @return 商品id
      */
-    public List<Integer> getOnShelfGoodsIdList(List<Integer> catIds, List<Integer> sortIds,List<Integer> brandIds) {
+    public List<Integer> getOnShelfGoodsIdList(List<Integer> catIds, List<Integer> sortIds, List<Integer> brandIds) {
         SelectConditionStep<Record1<Integer>> selectConditionStep = db().select(GOODS.GOODS_ID)
             .from(GOODS)
             .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
@@ -2214,16 +2407,16 @@ public class GoodsService extends ShopBaseService {
         Condition filterCondition = DSL.noCondition();
         //指定平台分类
         if (CollectionUtils.isNotEmpty(catIds)) {
-            filterCondition.or(GOODS.CAT_ID.in(saas.sysCate.getAllChild(catIds)));
+            filterCondition = filterCondition.or(GOODS.CAT_ID.in(saas.sysCate.getAllChild(catIds)));
         }
         //指定商家分类
         if (CollectionUtils.isNotEmpty(sortIds)) {
             //在所有父子节点中查找
-            filterCondition.or(GOODS.SORT_ID.in(goodsSort.getChildrenIdByParentIdsDao(sortIds)));
+            filterCondition = filterCondition.or(GOODS.SORT_ID.in(goodsSort.getChildrenIdByParentIdsDao(sortIds)));
         }
         //指定品牌
         if (CollectionUtils.isNotEmpty(brandIds)) {
-            filterCondition.or(GOODS.BRAND_ID.in(brandIds));
+            filterCondition = filterCondition.or(GOODS.BRAND_ID.in(brandIds));
         }
         selectConditionStep.and(filterCondition);
 
@@ -2237,9 +2430,29 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 所有设置了专享商品标志的商品ID
+     *
      * @return
      */
-    public List<Integer> getAllExclusiveGoodsIds(){
+    public List<Integer> getAllExclusiveGoodsIds() {
         return db().select(GOODS.GOODS_ID).from(GOODS).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(GOODS.IS_CARD_EXCLUSIVE.eq(GoodsConstant.CARD_EXCLUSIVE)).fetchInto(Integer.class);
+    }
+
+    /**
+     * 刷新goods表里的comment_num
+     *
+     * @param goodsId
+     */
+    public void updateGoodsCommentNum(int goodsId) {
+        int goodsComm = goodsComment.getGoodsCommentNum(goodsId);
+        db().update(GOODS).set(GOODS.COMMENT_NUM, goodsComm).where(GOODS.GOODS_ID.eq(goodsId)).execute();
+
+        //es更新
+        try {
+            if (esUtilSearchService.esState()) {
+                esGoodsCreateService.updateEsGoodsIndex(goodsId, getShopId());
+            }
+        } catch (Exception e) {
+            logger().debug("商品修改-同步es数据异常："+e.getMessage());
+        }
     }
 }

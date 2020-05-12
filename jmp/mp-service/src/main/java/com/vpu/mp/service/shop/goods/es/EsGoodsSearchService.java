@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -37,6 +39,10 @@ public class EsGoodsSearchService extends EsBaseSearchService{
     public PageResult<GoodsPageListVo> searchGoodsPageByParam(GoodsPageListParam goodsPageListParam) throws IOException {
 
         Integer shopId = getShopId();
+        if(goodsPageListParam.getLabelId() != null){
+            goodsPageListParam.setGoodsIds(esGoodsLabelSearchService.getGoodsIdsByLabelIds(Lists.newArrayList(goodsPageListParam.getLabelId()),EsGoodsConstant.GOODS_SEARCH_PAGE));
+            goodsPageListParam.setLabelId(null);
+        }
         EsSearchParam param = goodsParamConvertEsGoodsParam(goodsPageListParam,shopId);
         param.setQueryByPage(Boolean.TRUE);
         PageResult<EsGoods> pageResult = searchGoodsPageByParam(param);

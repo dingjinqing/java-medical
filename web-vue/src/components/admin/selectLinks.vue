@@ -165,6 +165,7 @@ export default {
       this.suerPath = newData
     },
     tuneUpSelectLink () {
+      console.log(this.dialogVisible)
       this.dialogVisible = true
     },
     lang () {

@@ -1,13 +1,21 @@
 package com.vpu.mp.service.pojo.shop.market.integralconvert;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 查询指定积分活动
  * @author liangchen
  * @date 2019年8月16日
  */
-@Data
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class IntegralConvertSelectParam {
 	
 	/** 活动id */

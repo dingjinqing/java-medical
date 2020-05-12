@@ -7,12 +7,17 @@ const actPrdType = {
     multiSkuAct: true
   },
   3: { prdRealPrice: 'bargainPrice', multiSkuAct: false },
+  4: {
+    prdListName: 'integralMallPrdMpVos',
+    multiSkuAct: true
+  },
   5: {
     prdListName: 'actProducts',
     prdRealPrice: 'secKillPrice',
     prdLinePrice: 'prdPrice',
     multiSkuAct: true
   },
+  8: { prdRealPrice: 'payMoney', multiSkuAct: false },
   6: {
     prdListName: 'reducePricePrdMpVos',
     prdRealPrice: 'reducePrice',
@@ -88,7 +93,7 @@ global.wxComponent({
       if(productsInfo.defaultPrd === true){
         let actProduct = {}
         let {limitBuyNum,limitMaxNum,activity} = productsInfo
-        if(activity && [1,5,10].includes(activity.activityType)){
+        if(activity && [1,4,5,10].includes(activity.activityType)){
           this.data.productsInfo.products[0].prdNumber = activity[actPrdType[activity.activityType]['prdListName']][0].stock
           if(activity.activityType === 1){
             this.data.productsInfo.products[0].prdRealPrice = activity.groupBuyPrdMpVos[0].groupPrice
@@ -238,7 +243,7 @@ global.wxComponent({
     getPrdInfo() {
       let select_prd = JSON.parse(JSON.stringify(this.select_prd))
       let { limitBuyNum, limitMaxNum,activity} = this.data.productsInfo
-      if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && activity.activityType !== 3 || (activity && [6,18,22,98].includes(activity.activityType))){
+      if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && activity.activityType !== 3 && activity.activityType !== 8 && activity.activityType !== 4 || (activity && [6,18,22,98].includes(activity.activityType))){
         select_prd.prdRealPrice = select_prd['actProduct'][actPrdType[activity.activityType]['prdRealPrice']]
         select_prd.prdLinePrice = select_prd['actProduct'][actPrdType[activity.activityType]['prdLinePrice']]
         if(activity.activityType === 1){
@@ -256,11 +261,15 @@ global.wxComponent({
             limitMaxNum = 0
           }
         }
-      } else if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && activity.activityType === 3){
-        select_prd.prdRealPrice = activity.bargainPrice
+      } else if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && (activity.activityType === 3 || activity.activityType === 8)){
+        select_prd.prdRealPrice = activity[actPrdType[activity.activityType]['prdRealPrice']]
         limitBuyNum = 1
+      } else if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && activity.activityType === 4 ) {
+        select_prd.prdRealPrice = `${select_prd['actProduct'].money > 0 ? select_prd['actProduct'].money + '元' : ''}${select_prd['actProduct'].money > 0 && select_prd['actProduct'].score > 0 ? ' + ' : ''}${select_prd['actProduct'].score > 0 ? select_prd['actProduct'].score + '积分' : ''}`
+        limitMaxNum = activity.maxExchangeNum
       }
-      if(activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && [1,5,10].includes(activity.activityType)){
+      // 商品数量
+      if(activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && [1,4,5,10].includes(activity.activityType)){
         select_prd.prdNumber = select_prd['actProduct']['stock']
       } else if (activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && activity.activityType === 3){
         select_prd.prdNumber = activity.stock

@@ -15,11 +15,10 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.video.UpyunSynVideo;
 import com.vpu.mp.service.foundation.video.UpyunSynVideo.AvMeta;
 import com.vpu.mp.service.foundation.video.UpyunSynVideo.Stream;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionNumConfig;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
-import com.vpu.mp.service.pojo.shop.video.UploadVideoCatNameVo;
-import com.vpu.mp.service.pojo.shop.video.UploadVideoParam;
-import com.vpu.mp.service.pojo.shop.video.UploadedVideoVo;
-import com.vpu.mp.service.pojo.shop.video.VideoListQueryParam;
+import com.vpu.mp.service.pojo.shop.video.*;
+import com.vpu.mp.service.shop.version.VersionService;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -48,6 +47,8 @@ public class VideoService extends ShopBaseService {
 
     @Autowired
     protected DomainConfig domainConfig;
+    @Autowired
+    private VersionService versionService;
 
     /**
      * 又拍云实例
@@ -421,6 +422,8 @@ public class VideoService extends ShopBaseService {
                 .jsonResultCode(JsonResultCode.CODE_VIDEO_FORMAT_INVALID)
                 .build();
         }
+        Integer limitNum = versionService.getLimitNum(VersionNumConfig.VIDEONUM);
+        //todo 视频大小 图片大小 表单数量 质询产品
         return ResultMessage.builder().flag(true).build();
     }
 
@@ -446,5 +449,11 @@ public class VideoService extends ShopBaseService {
         double space = summary.getSum();
         space = space / 1024 / 1024;
         return BigDecimalUtil.setDoubleScale(space, 2, true);
+    }
+    public UploadedVideoVo selectOneVideo(VideoSelectParam param){
+        UploadedVideoVo vo = db().select().from(UPLOADED_VIDEO)
+            .where(UPLOADED_VIDEO.VIDEO_ID.eq(param.getVideoId()))
+            .fetchOne().into(UploadedVideoVo.class);
+        return vo;
     }
 }

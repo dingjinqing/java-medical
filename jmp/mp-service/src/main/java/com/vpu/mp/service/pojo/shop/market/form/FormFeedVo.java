@@ -7,7 +7,6 @@ import java.sql.Timestamp;
 /**
  * @author liufei
  * @date 2019/8/8
- * @description
  */
 @Data
 public class FormFeedVo {

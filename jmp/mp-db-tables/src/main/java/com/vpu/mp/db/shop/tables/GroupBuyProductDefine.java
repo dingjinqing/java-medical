@@ -32,10 +32,10 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GroupBuyProductDefine extends TableImpl<GroupBuyProductDefineRecord> {
 
-    private static final long serialVersionUID = 1489108437;
+    private static final long serialVersionUID = -1467007858;
 
     /**
-     * The reference instance of <code>mini_shop_4748160.b2c_group_buy_product_define</code>
+     * The reference instance of <code>mini_shop_471752.b2c_group_buy_product_define</code>
      */
     public static final GroupBuyProductDefine GROUP_BUY_PRODUCT_DEFINE = new GroupBuyProductDefine();
 
@@ -48,66 +48,71 @@ public class GroupBuyProductDefine extends TableImpl<GroupBuyProductDefineRecord
     }
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_product_define.id</code>.
+     * The column <code>mini_shop_471752.b2c_group_buy_product_define.id</code>.
      */
     public final TableField<GroupBuyProductDefineRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_product_define.activity_id</code>. 拼团定义id
+     * The column <code>mini_shop_471752.b2c_group_buy_product_define.activity_id</code>. 拼团定义id
      */
     public final TableField<GroupBuyProductDefineRecord, Integer> ACTIVITY_ID = createField("activity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "拼团定义id");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_product_define.product_id</code>. 商品规格id
+     * The column <code>mini_shop_471752.b2c_group_buy_product_define.product_id</code>. 商品规格id
      */
     public final TableField<GroupBuyProductDefineRecord, Integer> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品规格id");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_product_define.group_price</code>. 拼团价
+     * The column <code>mini_shop_471752.b2c_group_buy_product_define.group_price</code>. 拼团价
      */
     public final TableField<GroupBuyProductDefineRecord, BigDecimal> GROUP_PRICE = createField("group_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "拼团价");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_product_define.stock</code>. 库存
+     * The column <code>mini_shop_471752.b2c_group_buy_product_define.stock</code>. 库存
      */
     public final TableField<GroupBuyProductDefineRecord, Short> STOCK = createField("stock", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "库存");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_product_define.sale_num</code>. 销量
+     * The column <code>mini_shop_471752.b2c_group_buy_product_define.sale_num</code>. 销量
      */
     public final TableField<GroupBuyProductDefineRecord, Short> SALE_NUM = createField("sale_num", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "销量");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_product_define.grouper_price</code>. 团长优惠价
+     * The column <code>mini_shop_471752.b2c_group_buy_product_define.grouper_price</code>. 团长优惠价
      */
     public final TableField<GroupBuyProductDefineRecord, BigDecimal> GROUPER_PRICE = createField("grouper_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "团长优惠价");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_product_define.create_time</code>.
+     * The column <code>mini_shop_471752.b2c_group_buy_product_define.create_time</code>.
      */
-    public final TableField<GroupBuyProductDefineRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<GroupBuyProductDefineRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_product_define.update_time</code>. 最后修改时间
+     * The column <code>mini_shop_471752.b2c_group_buy_product_define.update_time</code>. 最后修改时间
      */
-    public final TableField<GroupBuyProductDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<GroupBuyProductDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>mini_shop_4748160.b2c_group_buy_product_define</code> table reference
+     * The column <code>mini_shop_471752.b2c_group_buy_product_define.goods_id</code>. 商品id
+     */
+    public final TableField<GroupBuyProductDefineRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "商品id");
+
+    /**
+     * Create a <code>mini_shop_471752.b2c_group_buy_product_define</code> table reference
      */
     public GroupBuyProductDefine() {
         this(DSL.name("b2c_group_buy_product_define"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_4748160.b2c_group_buy_product_define</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_group_buy_product_define</code> table reference
      */
     public GroupBuyProductDefine(String alias) {
         this(DSL.name(alias), GROUP_BUY_PRODUCT_DEFINE);
     }
 
     /**
-     * Create an aliased <code>mini_shop_4748160.b2c_group_buy_product_define</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_group_buy_product_define</code> table reference
      */
     public GroupBuyProductDefine(Name alias) {
         this(alias, GROUP_BUY_PRODUCT_DEFINE);

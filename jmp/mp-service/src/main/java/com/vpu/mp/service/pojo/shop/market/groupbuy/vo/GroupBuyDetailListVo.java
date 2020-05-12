@@ -15,6 +15,7 @@ public class GroupBuyDetailListVo {
     public final static String COMMANDER_NAME="commanderName";
     public final static String COMMANDER_GROUP_ID="groupId";
 
+    private Integer groupId;
     /**
      * 活动名称
      */
@@ -31,9 +32,7 @@ public class GroupBuyDetailListVo {
     //团长信息
     private String commanderMobile;
     private String commanderName;
-    private Integer groupId;
 
-    private Short count;
 
     private Byte status;
 

@@ -46,9 +46,10 @@ public class EsAggregationHandler {
             .field(EsLabelName.GOODS_ID);
         TopHitsAggregationBuilder topHitsAggregationBuilder = AggregationBuilders
             .topHits(EsAggregationName.LABEL_NAME)
+            .size(5)
             .fetchSource(EsAggregationName.LABEL_AGGREGATION_SOURCE,null)
+            .sort(EsLabelName.LEVEL,SortOrder.DESC)
             .sort(EsLabelName.TYPE, SortOrder.ASC)
-            .sort(EsLabelName.LEVEL,SortOrder.ASC)
             .sort(EsLabelName.CREATE_TIME,SortOrder.DESC);
         return aggregationBuilder.subAggregation(topHitsAggregationBuilder);
     }

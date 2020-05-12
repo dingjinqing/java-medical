@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.prize;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -44,6 +45,8 @@ public class PrizeRecordService extends ShopBaseService {
     private GoodsService  goodsService;
     @Autowired
     private AtomicOperation atomicOperation;
+    @Autowired
+    private DomainConfig domainConfig;
 
 
     /**
@@ -55,7 +58,7 @@ public class PrizeRecordService extends ShopBaseService {
      * @param prdId
      * @param day
      */
-    public PrizeRecordRecord savePrize(Integer userId,Integer actId,Integer recordId,Byte type,Integer prdId,Integer day){
+    public PrizeRecordRecord savePrize(Integer userId,Integer actId,Integer recordId,Byte type,Integer prdId,Integer day,Timestamp expiredTime){
         PrizeRecordRecord prizeRecord =db().newRecord(PRIZE_RECORD);
         prizeRecord.setUserId(userId);
         prizeRecord.setActivityId(actId);
@@ -63,7 +66,12 @@ public class PrizeRecordService extends ShopBaseService {
         prizeRecord.setActivityType(type);
         prizeRecord.setPrdId(prdId);
         prizeRecord.setExpiredDay(day);
-        prizeRecord.setExpiredTime(DateUtil.getTimeStampPlus(day, ChronoUnit.DAYS));
+        if (expiredTime==null){
+            prizeRecord.setExpiredTime(DateUtil.getTimeStampPlus(day, ChronoUnit.DAYS));
+        }
+        else {
+            prizeRecord.setExpiredTime(expiredTime);
+        }
         prizeRecord.setPrizeStatus(PRIZE_STATUS_UNCLAIMED);
         prizeRecord.insert();
         return prizeRecord;
@@ -85,13 +93,15 @@ public class PrizeRecordService extends ShopBaseService {
             List<OrderGoodsMpVo> orderGoodsMpVos = orderGoodsMap.get(prizeRecord.getOrderSn());
             if (!prizeRecord.getPrizeStatus().equals(PRIZE_STATUS_UNCLAIMED)||orderGoodsMpVos==null){
                 ProductSmallInfoVo product= goodsService.getProductVoInfoByProductId(prizeRecord.getPrdId());
-                OrderGoodsMpVo orderGoodsMpVo = new OrderGoodsMpVo();
-                orderGoodsMpVo.setProductId(prizeRecord.getPrdId());
-                orderGoodsMpVo.setGoodsAttr(product.getPrdDesc());
-                orderGoodsMpVo.setGoodsImg(product.getGoodsImg());
-                orderGoodsMpVo.setGoodsName(product.getGoodsName());
-                orderGoodsMpVo.setGoodsId(product.getGoodsId());
-                prizeRecord.setOrderGoodsMpVo(orderGoodsMpVo);
+                if (product!=null){
+                    OrderGoodsMpVo orderGoodsMpVo = new OrderGoodsMpVo();
+                    orderGoodsMpVo.setProductId(prizeRecord.getPrdId());
+                    orderGoodsMpVo.setGoodsAttr(product.getPrdDesc());
+                    orderGoodsMpVo.setGoodsImg(domainConfig.imageUrl(product.getGoodsImg()));
+                    orderGoodsMpVo.setGoodsName(product.getGoodsName());
+                    orderGoodsMpVo.setGoodsId(product.getGoodsId());
+                    prizeRecord.setOrderGoodsMpVo(orderGoodsMpVo);
+                }
             }else {
                 prizeRecord.setOrderGoodsMpVo(orderGoodsMpVos.get(0));
             }
@@ -133,19 +143,23 @@ public class PrizeRecordService extends ShopBaseService {
         Timestamp localDateTime = DateUtil.getLocalDateTime();
         Result<PrizeRecordRecord> fetch = db().selectFrom(PRIZE_RECORD).where(PRIZE_RECORD.PRIZE_STATUS.eq(PRIZE_STATUS_UNCLAIMED))
                 .and(PRIZE_RECORD.EXPIRED_TIME.lt(localDateTime)).fetch();
+
         fetch.forEach(prizeRecord->{
-            GoodsView goodsView = goodsService.getGoodsViewByProductId(prizeRecord.getPrdId());
-            try {
-                atomicOperation.updateStockAndSalesByLock(goodsView.getGoodsId(),prizeRecord.getPrdId(),-1,true);
-            } catch (MpException e) {
-                e.printStackTrace();
-                logger().error("我的奖品过期--归还商品库存失败");
+            Record goodsRecord = goodsService.getGoodsByProductId(prizeRecord.getPrdId());
+            if (goodsRecord!=null){
+                GoodsView goodsView = goodsRecord.into(GoodsView.class);
+                try {
+                    atomicOperation.updateStockAndSalesByLock(goodsView.getGoodsId(),prizeRecord.getPrdId(),-1,true);
+                } catch (MpException e) {
+                    e.printStackTrace();
+                    logger().error("我的奖品过期--归还商品库存失败");
+                }
             }
         });
         logger().info("修改我的奖品记录状态");
+        List<Integer> ids = fetch.stream().map(PrizeRecordRecord::getId).collect(Collectors.toList());
         db().update(PRIZE_RECORD).set(PRIZE_RECORD.PRIZE_STATUS,PRIZE_STATUS_EXPIRE)
-                .where(PRIZE_RECORD.PRIZE_STATUS.eq(PRIZE_STATUS_UNCLAIMED))
-                .and(PRIZE_RECORD.EXPIRED_TIME.lt(localDateTime)).execute();
+                .where(PRIZE_RECORD.ID.in(ids)).execute();
 
     }
 

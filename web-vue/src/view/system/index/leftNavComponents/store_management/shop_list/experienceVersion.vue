@@ -975,6 +975,7 @@ export default {
       } else {
         this.renew_money_show = true
       }
+      this.changeExpireTime()
     },
     changeSend (data) {
       console.log(data)
@@ -990,8 +991,17 @@ export default {
       }
     },
     changeExpireTime () {
-      let now = this.moment().format('YYYY-MM-DD')
-      let newTime = this.moment().add(this.year, 'y').add(this.month, 'M').add(this.send_year, 'y').add(this.send_month, 'M')
+      var now = this.moment().format('YYYY-MM-DD')
+      if (this.renData.expireTime !== null) {
+        now = this.renData.expireTime
+      }
+      console.log('类型' + this.renewTypeValue)
+      if (this.renewTypeValue === 4) {
+        console.log('退款')
+        var newTime = this.moment(now).subtract(this.year, 'y').subtract(this.month, 'M').add(this.send_year, 'y').add(this.send_month, 'M')
+      } else {
+        newTime = this.moment(now).add(this.year, 'y').add(this.month, 'M').add(this.send_year, 'y').add(this.send_month, 'M')
+      }
       this.newExpire_time = this.moment(newTime).format('YYYY-MM-DD 00:00:00')
       console.log(now)
       console.log(this.newExpire_time)

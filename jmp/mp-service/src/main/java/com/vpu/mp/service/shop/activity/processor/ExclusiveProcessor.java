@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -113,16 +115,37 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
 
     }
     /*****************商品详情处理******************/
+
+    /**
+     * 商品是否是会员专享
+     * @param capsule 商品
+     * @return true是 false否
+     */
+    private boolean isExclusive(GoodsDetailMpBo capsule){
+        Map<Byte, List<Integer>> exclusiveInfo =
+            memberCardProcessorDao.getExclusiveInfo(Collections.singletonList(capsule.getGoodsId()),Collections.singletonList(capsule.getSortId()),
+            Collections.singletonList(capsule.getCatId()),Collections.singletonList(capsule.getBrandId()));
+
+        Set<Integer> goodsIds = new HashSet<>(exclusiveInfo.get(CardConstant.COUPLE_TP_GOODS));
+        Set<Integer> catIds = new HashSet<>(exclusiveInfo.get(CardConstant.COUPLE_TP_PLAT));
+        Set<Integer> sortIds = new HashSet<>(exclusiveInfo.get(CardConstant.COUPLE_TP_STORE));
+        Set<Integer> brandIds = new HashSet<>(exclusiveInfo.get(CardConstant.COUPLE_TP_BRAND));
+        if (goodsIds.contains(capsule.getGoodsId()) || catIds.contains(capsule.getCatId()) || sortIds.contains(capsule.getSortId()) || brandIds.contains(capsule.getBrandId())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
-
-        if (!GoodsConstant.CARD_EXCLUSIVE.equals(capsule.getIsExclusive())) {
+        //不是会员专享
+        if (!isExclusive(capsule)) {
             capsule.setUserCanBuy(true);
             capsule.setMemberCards(new ArrayList<>());
             capsule.setIsExclusive(GoodsConstant.NOT_CARD_EXCLUSIVE);
             return;
         }
-
         capsule.setUserCanBuy(false);
         // 获取商品所有专享卡（包含普通卡和等级卡）
         log.debug("商品详情-会员专享卡查询");
@@ -148,7 +171,6 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
         // 判断用户和专享普通卡的状态关系
         normalCards.forEach(normalCard->{
             MemberCardDetailMpVo card =new MemberCardDetailMpVo(normalCard);
-
             Record record = userAllCardMap.get(normalCard.getId());
             if (record == null) {
                 // 用户待领取
@@ -182,7 +204,6 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
 
         capsule.setMemberCards(cardsLis);
         capsule.setIsExclusive(GoodsConstant.CARD_EXCLUSIVE);
-
         if (gradeCards.size() == 0) {
             log.debug("商品详情-会员专享商品不存在等级卡");
             return;
@@ -192,7 +213,6 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
             capsule.setUserCanBuy(false);
             return;
         }
-
         MemberCardRecord minGradeCard = gradeCards.get(0);
         if (userGrade.get(MEMBER_CARD.GRADE).compareTo(minGradeCard.getGrade()) > 0) {
             capsule.setUserCanBuy(true);
@@ -246,7 +266,7 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
                     boolean flag = false;
                     for (MemberCardRecord exclusiveCard: exclusiveCards) {
                         for(OrderMemberVo userCard : userCards) {
-                            if(exclusiveCard.getId().equals(userCard.getCardId())) {
+                            if(exclusiveCard.getId().equals(userCard.getInfo().getCardId())) {
                                 flag = true;
                                 break;
                             }
@@ -281,7 +301,7 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
     }
 
     @Override
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
-        //无
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
+
     }
 }

@@ -57,24 +57,21 @@ public class ReducePricePictorialService extends ShopBaseService {
     public GoodsShareInfo getReducePriceShareInfo(ReducePriceShareInfoParam param) {
         GoodsShareInfo shareInfoVo = new GoodsShareInfo();
         ReducePriceRecord reducePriceRecord = reducePriceService.getReducePriceRecord(param.getActivityId());
-
         // 活动信息不可用
         if (reducePriceRecord == null) {
             pictorialLog("分享", "限时降价活动信息不可用");
-            shareInfoVo.setShareCode(GoodsShareInfo.ACTIVITY_DELETED);
+            shareInfoVo.setShareCode(PictorialConstant.ACTIVITY_DELETED);
             return shareInfoVo;
         }
-
         GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
         // 商品信息不可用
         if (goodsRecord == null) {
             pictorialLog("分享", "限时降价商品信息不可用");
-            shareInfoVo.setShareCode(GoodsShareInfo.GOODS_DELETED);
+            shareInfoVo.setShareCode(PictorialConstant.GOODS_DELETED);
             return shareInfoVo;
         }
 
         PictorialShareConfig shareConfig = Util.parseJson(reducePriceRecord.getShareConfig(), PictorialShareConfig.class);
-        shareInfoVo.setShareAction(shareConfig.getShareAction());
         // 用户自定义分享样式
         if (PictorialShareConfig.CUSTOMER_STYLE.equals(shareConfig.getShareAction())) {
             if (PictorialShareConfig.DEFAULT_IMG.equals(shareConfig.getShareImgAction())) {
@@ -85,11 +82,15 @@ public class ReducePricePictorialService extends ShopBaseService {
             shareInfoVo.setShareDoc(shareConfig.getShareDoc());
         } else {
             // 使用默认分享图片样式
+            String imgPath = createReducePriceShareImg(reducePriceRecord, goodsRecord, param);
+            if (imgPath == null) {
+                shareInfoVo.setShareCode(PictorialConstant.GOODS_PIC_ERROR);
+                return shareInfoVo;
+            }
+            shareInfoVo.setImgUrl(imgPath);
             ShopRecord shop = saas.shop.getShopById(getShopId());
             String doc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, null, "messages", param.getUserName(), goodsRecord.getGoodsName());
             shareInfoVo.setShareDoc(doc);
-            String imgPath = createReducePriceShareImg(reducePriceRecord, goodsRecord, param);
-            shareInfoVo.setImgUrl(imgPath);
         }
         shareInfoVo.setImgUrl(imageService.getImgFullUrl(shareInfoVo.getImgUrl()));
 
@@ -110,7 +111,7 @@ public class ReducePricePictorialService extends ShopBaseService {
      * @return
      */
     private String createReducePriceShareImg(ReducePriceRecord reducePriceRecord, GoodsRecord goodsRecord, ReducePriceShareInfoParam param) {
-        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(),param.getActivityId(), PictorialConstant.REDUCE_PRICE_ACTION_SHARE, null);
+        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), param.getActivityId(), PictorialConstant.REDUCE_PRICE_ACTION_SHARE, null);
         // 已存在生成的图片
         if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), reducePriceRecord.getUpdateTime())) {
             return pictorialRecord.getPath();
@@ -150,14 +151,20 @@ public class ReducePricePictorialService extends ShopBaseService {
      * @param param 限时降价售参数
      * @return base64海报信息
      */
-    public String getReducePricePictorialInfo(ReducePriceShareInfoParam param) {
+    public GoodsPictorialInfo getReducePricePictorialInfo(ReducePriceShareInfoParam param) {
+        GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
         ShopRecord shop = saas.shop.getShopById(getShopId());
         ReducePriceRecord reducePriceRecord = reducePriceService.getReducePriceRecord(param.getActivityId());
+        if (reducePriceRecord == null) {
+            pictorialLog("pictorial", "限时降价信息已删除或失效");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);
+            return goodsPictorialInfo;
+        }
         GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
-
-        if (reducePriceRecord == null || goodsRecord == null) {
-            pictorialLog("pictorial", "商品或限时降价信息已删除或失效");
-            return null;
+        if (goodsRecord == null) {
+            pictorialLog("pictorial", "商品信息已删除或失效");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_DELETED);
+            return goodsPictorialInfo;
         }
         PictorialShareConfig shareConfig = Util.parseJson(reducePriceRecord.getShareConfig(), PictorialShareConfig.class);
 
@@ -167,22 +174,25 @@ public class ReducePricePictorialService extends ShopBaseService {
             pictorialUserInfo = pictorialService.getPictorialUserInfo(param.getUserId(), shop);
         } catch (IOException e) {
             pictorialLog("pictorial", "获取用户信息失败：" + e.getMessage());
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
+            return goodsPictorialInfo;
         }
 
-        return getReducePricePictorialImg(pictorialUserInfo, shareConfig, reducePriceRecord, goodsRecord, shop, param);
+        getReducePricePictorialImg(pictorialUserInfo, shareConfig, reducePriceRecord, goodsRecord, shop, param, goodsPictorialInfo);
+        return goodsPictorialInfo;
     }
 
     private static final String REDUCE_PRICE_BG_IMG = "image/wxapp/reduce_price.png";
 
-    private String getReducePricePictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, ReducePriceRecord reducePriceRecord, GoodsRecord goodsRecord, ShopRecord shop, ReducePriceShareInfoParam param) {
+    private void getReducePricePictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, ReducePriceRecord reducePriceRecord, GoodsRecord goodsRecord, ShopRecord shop, ReducePriceShareInfoParam param, GoodsPictorialInfo goodsPictorialInfo) {
         BufferedImage goodsImage;
         try {
             pictorialLog("pictorial", "获取商品图片信息");
             goodsImage = pictorialService.getGoodsPictorialImage(shareConfig, goodsRecord);
         } catch (IOException e) {
             pictorialLog("pictorial", "获取商品图片信息失败：" + e.getMessage());
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
+            return;
         }
         pictorialLog("pictorial", "获取商品分享语");
 
@@ -199,28 +209,33 @@ public class ReducePricePictorialService extends ShopBaseService {
             qrCodeImage = ImageIO.read(new URL(mpQrcode));
         } catch (IOException e) {
             pictorialLog("pictorial", "获取二维码失败");
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
+            return;
         }
 
         PictorialImgPx imgPx = new PictorialImgPx();
 
         // 拼装背景图
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(), null, null, imgPx, false);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(), null, null, imgPx);
 
         // 拼装价值限时降价图片和商品价格
         try (InputStream reduceIconStream = Util.loadFile(REDUCE_PRICE_BG_IMG)) {
             BufferedImage reduceIconBufferImg = ImageIO.read(reduceIconStream);
             ImageUtil.addTwoImage(bgBufferedImage, reduceIconBufferImg, imgPx.getBgPadding(), imgPx.getPriceY());
-            int realPriceStartX = imgPx.getBgPadding() + reduceIconBufferImg.getWidth() + 20;
-            int realPriceHeight = imgPx.getLargeFontAscent(bgBufferedImage);
-            ImageUtil.addFont(bgBufferedImage, param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceStartX, imgPx.getPriceY() - realPriceHeight / 4, imgPx.getRealPriceColor(), false);
+            int realPriceStartX = imgPx.getBgPadding() + reduceIconBufferImg.getWidth() + imgPx.getBgPadding() + 10;
+            String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+            ImageUtil.addFont(bgBufferedImage, realPriceText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceStartX, imgPx.getPriceY() - 10, imgPx.getRealPriceColor(), false);
+            Integer textWidth = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceText);
+            int linePriceStartX = realPriceStartX + textWidth + imgPx.getBgPadding() + 10;
+            ImageUtil.addFontWithLine(bgBufferedImage, linePriceStartX, imgPx.getPriceY()- 4, param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getLinePriceColor());
 
         } catch (IOException e) {
             pictorialLog("pictorial", "装载限时降价图标失败");
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
+            return;
         }
-
-        return ImageUtil.toBase64(bgBufferedImage);
+        String base64 = ImageUtil.toBase64(bgBufferedImage);
+        goodsPictorialInfo.setBase64(base64);
     }
 
     /**

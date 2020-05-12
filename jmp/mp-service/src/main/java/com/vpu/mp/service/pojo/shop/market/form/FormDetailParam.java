@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 /**
  * @author liufei
  * @date 2019/8/8
- * @description
  */
 @Data
 public class FormDetailParam {

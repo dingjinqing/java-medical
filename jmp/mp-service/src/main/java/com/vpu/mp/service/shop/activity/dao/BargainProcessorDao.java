@@ -220,9 +220,7 @@ public class BargainProcessorDao extends ShopBaseService {
         db().update(BARGAIN_RECORD).set(BARGAIN_RECORD.IS_ORDERED,BargainRecordService.IS_ORDERED_Y).set(BARGAIN_RECORD.ORDER_SN,newOrder.getOrderSn()).where(BARGAIN_RECORD.ID.eq(orderParam.getBargainRecordInfo().getId())).execute();
     }
 
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods){
-        returnGoods.forEach(g->{
-            bargainService.updateBargainStock(activityId,- g.getGoodsNumber());
-        });
+    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
+        bargainService.updateBargainStock(activityId,- 1);
     }
 }

@@ -2,12 +2,16 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.util.RequestUtil;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
 import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.PayParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
@@ -53,6 +57,7 @@ public class WxAppOrderController extends WxAppBaseController{
      * 	结算页面提交
      */
     @PostMapping("/submit")
+    @RedisLock(prefix = JedisKeyConstant.NotResubmit.ORDER_SUBMIT, noResubmit = true)
     public JsonResult submit(@RequestBody @Validated(CreateOrderValidatedGroup.class) CreateParam param) {
         param.setIsMp(OrderConstant.IS_MP_Y);
         param.setWxUserInfo(wxAppAuth.user());
@@ -198,6 +203,68 @@ public class WxAppOrderController extends WxAppBaseController{
 	public JsonResult getExpress(){
 	    return success(shop().express.getEnabledList());
     }
+
+    /**************好友代付start*******************/
+
+    /**
+     * 代付详情
+     */
+    @PostMapping("/pay/instead/detail")
+    public JsonResult insteadDetail(@RequestBody @Valid InsteadPayDetailsParam param){
+        param.setWxUserInfo(wxAppAuth.user());
+        try {
+            return success(shop().readOrder.insteadPayInfo(param));
+        } catch (MpException e) {
+            return fail(e.getErrorCode(), e.getCodeParam());
+        }
+    }
+
+    /**
+     * 代付支付页
+     */
+    @PostMapping("/pay/instead")
+    public JsonResult insteadPay(@RequestBody @Valid OrderOperateQueryParam param){
+        param.setIsMp(OrderConstant.IS_MP_Y);
+        param.setWxUserInfo(wxAppAuth.user());
+        try {
+            return success(shop().orderActionFactory.orderQuery(param));
+        } catch (MpException e) {
+            return fail(e.getErrorCode(), e.getCodeParam());
+        }
+    }
+
+    /**
+     * 代付支付
+     */
+    @PostMapping("/pay/instead/submit")
+    public JsonResult insteadPaySubmit(@RequestBody @Valid InsteadPayParam param){
+        param.setIsMp(OrderConstant.IS_MP_Y);
+        param.setWxUserInfo(wxAppAuth.user());
+        param.setClientIp(RequestUtil.getIp(request));
+        ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
+        if(executeResult == null || executeResult.isSuccess()) {
+            return success(executeResult == null ? null : executeResult.getResult());
+        }else {
+            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
+        }
+    }
+
+    /**
+     * 代付用户明细
+     */
+    @PostMapping("/pay/instead/userList")
+    public JsonResult insteadPayUserList(@RequestBody @Valid InsteadPayDetailsParam param) {
+        return success(shop().readOrder.subOrderService.paymentDetails(param.getOrderSn(), param.getCurrentPage(), param.getPageRows()));
+    }
+
+    /**
+     * 好友代付分享图
+     */
+    @PostMapping("/pay/instead/share")
+    public JsonResult insteadShareImage(@RequestBody @Valid OrderGoodsHistoryListParam param){
+        return success();
+    }
+    /**************好友代付end*********************/
 
 	@PostMapping("/addtest")
 	public JsonResult test(){

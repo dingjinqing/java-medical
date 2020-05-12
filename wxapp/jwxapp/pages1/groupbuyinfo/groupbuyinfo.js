@@ -288,8 +288,11 @@ global.wxPage({
         productId: specInfo.prdId
       }]
       console.log(goodsList)
-      util.navigateTo({
-        url: "/pages/checkout/checkout?activityType=1&activityId=" + Number(this.data.groupbuyInfo.groupBuyDefineInfo.id) + "&groupid=" + Number(this.data.groupId) + "&goodsList=" + JSON.stringify(goodsList)
+      // 请求拼团消息通知权限
+      util.getNeedTemplateId('invite', () => {
+        util.navigateTo({
+          url: "/pages/checkout/checkout?activityType=1&activityId=" + Number(this.data.groupbuyInfo.groupBuyDefineInfo.id) + "&groupid=" + Number(this.data.groupId) + "&goodsList=" + JSON.stringify(goodsList)
+        })
       })
     }
   },
@@ -370,7 +373,8 @@ global.wxPage({
       activityId: that.data.groupbuyInfo.groupBuyDefineInfo.id,
       realPrice: that.data.groupbuyInfo.goodsInfo.minGroupBuyPrice,
       linePrice: that.data.groupbuyInfo.goodsInfo.shopPrice,
-      targetId: that.data.groupbuyInfo.goodsInfo.goodsId
+      targetId: that.data.groupbuyInfo.goodsInfo.goodsId,
+      groupId: that.data.groupId
     })
   },
 
@@ -496,6 +500,9 @@ global.wxPage({
   onShareAppMessage: function (res) {
     let { groupbuyInfo, shareImg, groupId } = this.data
     let title = groupbuyInfo.groupBuyDefineInfo.limitAmount + this.$t('page1.fight.personToBuy') + groupbuyInfo.goodsInfo.minGroupBuyPrice + this.$t('page1.fight.yuan') + groupbuyInfo.goodsInfo.goodsName
+    if (this.data.shareInfo.shareDoc) {
+      title = this.data.shareInfo.shareDoc
+    }
     let path = '/pages1/groupbuyinfo/groupbuyinfo?group_id=' + groupId + '&pin_group_id=' + groupbuyInfo.groupBuyDefineInfo.id
     return {
       title: title,

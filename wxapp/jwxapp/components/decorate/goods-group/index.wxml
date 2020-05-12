@@ -11,6 +11,7 @@
 						 wx:key="key"
 						 wx:for-item="item"
 						 wx:for-index='index'
+						 
 						>
 							<view class='group_nav_single {{m.navlen > 4 ? "group_double_flex" : "group_single_flex"}}'>
 								<view
@@ -37,6 +38,7 @@
 				 wx:key='key'
 				 wx:for-item="item"
 				 wx:for-index='index'
+				 wx:if="{{index!==6}}"
 				>
 					<view
 					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
@@ -73,8 +75,7 @@
 							</view>
 							<view class='module_goods_price'>
 								<block wx:if="{{m.show_price != 1}}">
-									<view class='sale_price' wx:if='{{item.activityType != 10}}' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
-									<view class='sale_price' wx:if='{{item.activityType == 10}}' style='color:{{comColor}};'>￥{{item.linePrice}}</view>
+									<view class='sale_price'  style='color:{{comColor}};'>￥{{item.realPrice}}</view>
 								</block>
 								<block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
 									<block wx:if="{{m.show_market == 1}}">
@@ -114,6 +115,7 @@
 				 wx:key='key'
 				 wx:for-item="item"
 				 wx:for-index='index'
+				 wx:if="{{index!==6}}"
 				>
 					<view
 					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
@@ -149,8 +151,7 @@
 							</view>
 							<view class='module_goods_price'>
 								<block wx:if="{{m.show_price != 1}}">
-									<view class='sale_price' wx:if='{{item.activityType != 10}}' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
-									<view class='sale_price' wx:if='{{item.activityType == 10}}' style='color:{{comColor}};'>￥{{item.linePrice}}</view>
+									<view class='sale_price' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
 								</block>
 								<block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
 									<block wx:if="{{m.show_market == 1}}">
@@ -191,6 +192,7 @@
 				 wx:key='key'
 				 wx:for-item="item"
 				 wx:for-index='index'
+				 wx:if="{{index!==6}}"
 				>
 					<view
 					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
@@ -227,8 +229,7 @@
 							</view>
 							<view  class='module_goods_price'>
 								<block wx:if="{{m.show_price != 1}}">
-									<view class='sale_price' wx:if='{{item.activityType != 10}}' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
-									<view class='sale_price' wx:if='{{item.activityType == 10}}' style='color:{{comColor}};'>￥{{item.linePrice}}</view>
+									<view class='sale_price'  style='color:{{comColor}};'>￥{{item.realPrice}}</view>
 								</block>
 								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&& item.activityType != 1&& item.activityType != 3&& item.activityType != 5}}">
 									<text class='cart_btn iconfont icontianjia' style='font-size:32rpx;color:{{comColor}};margin-top:4rpx;' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
@@ -258,6 +259,7 @@
 				 wx:key='key'
 				 wx:for-item="item"
 				 wx:for-index='index'
+				  wx:if="{{index!==6}}"
 				>
 					<view
 					 class='group_container {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
@@ -306,8 +308,7 @@
 							</view>
 							<view class='module_goods_price'>
 								<block wx:if="{{m.show_price != 1&&item.activityType!=1&&item.activityType!=3&&item.activityType!=5}}">
-									<view class='sale_price' wx:if='{{item.activityType != 10}}' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
-									<view class='sale_price' wx:if='{{item.activityType == 10}}' style='color:{{comColor}};'>￥{{item.linePrice}}</view>
+									<view class='sale_price'  style='color:{{comColor}};'>￥{{item.realPrice}}</view>
 								</block>
 								
 								<block wx:else="{{item.activityType==1||item.activityType==3||item.activityType==5}}">
@@ -342,6 +343,7 @@
 				 wx:key='key'
 				 wx:for-item="item"
 				 wx:for-index='index'
+				  wx:if="{{index!==6}}"
 				>
 					<!-- 普通商品 -->
 					<view
@@ -375,8 +377,7 @@
 							<view class='module_goods_name' wx:if='{{m.show_name == 1}}' />
 							<view class='module_goods_price' style="{{m.cart_btn==0?'flex-direction:row;justify-content: space-between;':''}}">
 								<block wx:if="{{m.show_price != 1&&item.activityType!=1&&item.activityType!=3&&item.activityType!=5}}">
-									<view class='sale_price' wx:if='{{item.activityType != 10}}' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
-									<view class='sale_price' wx:if='{{item.activityType == 10}}' style='color:{{comColor}};'>￥{{item.linePrice}}</view>
+									<view class='sale_price'  style='color:{{comColor}};'>￥{{item.realPrice}}</view>
 								</block>
 								<block wx:else="{{item.activityType==1||item.activityType==3||item.activityType==5}}">
 								<view class='sale_price' style='color:{{comColor}};'>￥{{item.activityType==1?item.groupDiscount:item.realPrice}}</view>
@@ -461,6 +462,7 @@
 				 wx:key='key'
 				 wx:for-item="item"
 				 wx:for-index='index'
+				  wx:if="{{index!==6}}"
 				>
 					<view
 					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
@@ -494,8 +496,7 @@
 							<view class='module_goods_name' wx:if="{{m.show_name == 1}}" />
 							<view class='module_goods_price'>
 								<block wx:if="{{m.show_price != 1&&item.activityType!=1&&item.activityType!=3&&item.activityType!=5}}">
-									<view class='sale_price' wx:if='{{item.activityType != 10}}' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
-									<view class='sale_price' wx:if='{{item.activityType == 10}}' style='color:{{comColor}};'>￥{{item.linePrice}}</view>
+									<view class='sale_price' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
 								</block>
 								<block wx:else="{{item.activityType==1||item.activityType==3||item.activityType==5}}">
 								<view class='sale_price' style='color:{{comColor}};'>￥{{item.activityType==1?item.groupDiscount:item.realPrice}}</view>

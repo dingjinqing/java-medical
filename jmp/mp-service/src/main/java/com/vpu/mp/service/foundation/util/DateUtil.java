@@ -36,6 +36,11 @@ public final class DateUtil {
 	public static final String DATE_FORMAT_FULL_BEGIN="yyyy-MM-dd 00:00:00";
 	public static final String DATE_FORMAT_FULL_END="yyyy-MM-dd 23:59:59";
 
+    //时分秒最小
+    public static final LocalTime minTime = LocalTime.of(0, 0, 0);
+    //时分秒最大
+    public static final LocalTime maxTime = LocalTime.of(23, 59, 59);
+
 	/**
 	 * 转换日期格式输出
 	 * @param format
@@ -94,7 +99,7 @@ public final class DateUtil {
      * @return
      */
     public static String getLocalDateFormat() {
-        return LocalDate.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT_FULL));
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT_FULL));
     }
 
 	/**
@@ -126,7 +131,7 @@ public final class DateUtil {
 
 
     /**
-     * 获取延后（秒）的时间
+     * 获取当前延后（秒）的时间
      */
     public static Timestamp getDalyedDateTime(Integer second) {
         return new Timestamp(getLocalDateTime().getTime()+second*MILLI_SECOND);
@@ -217,6 +222,9 @@ public final class DateUtil {
 	 * @return
 	 */
 	public static Boolean TimestampIsNowDay(Timestamp timestamp) {
+	    if(timestamp == null){
+	        return false;
+        }
 		DateTimeFormatter df = DateTimeFormatter.ofPattern(DATE_FORMAT_SIMPLE);
 		LocalDateTime localDateTime=timestamp.toLocalDateTime();
 		String formate1 = df.format(localDateTime);
@@ -224,6 +232,21 @@ public final class DateUtil {
 		String formate2 = df.format(localDateTime2);
 		return formate1.equals(formate2);
 	}
+
+    /**
+     * 两个时间戳是否为同一天
+     * @param timestamp1
+     * @param timestamp2
+     * @return
+     */
+    public static Boolean TimestampIsSameDay(Timestamp timestamp1,Timestamp timestamp2) {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern(DATE_FORMAT_SIMPLE);
+        LocalDateTime localDateTime=timestamp1.toLocalDateTime();
+        String formate1 = df.format(localDateTime);
+        LocalDateTime localDateTime2=timestamp2.toLocalDateTime();
+        String formate2 = df.format(localDateTime2);
+        return formate1.equals(formate2);
+    }
 
 	/**
 	 * 获取addNum(unit)后的时间时间
@@ -234,6 +257,17 @@ public final class DateUtil {
 	public static Timestamp getTimeStampPlus(int addNum, ChronoUnit unit) {
 		return  Timestamp.valueOf(LocalDateTime.now().plus(addNum,unit));
 	}
+
+    /**
+     * 获取addNum(unit)后的时间时间
+     * @param time 指定时间
+     * @param addNum 该单位添加到结果的数量，可能是负数
+     * @param unit  使用ChronoUnit类 单位  SECONDS秒 ,MINUTES分钟, HOURS小时, DAYS天, WEEKS星期, MONTHS月, YEARS年
+     * @return
+     */
+    public static Timestamp getTimeStampPlus(Timestamp time,int addNum, ChronoUnit unit) {
+        return  Timestamp.valueOf(time.toLocalDateTime().plus(addNum,unit));
+    }
 
 	public static LocalDate getBeforeLocalFor(int day){
 	    return LocalDate.now().minusDays(day);

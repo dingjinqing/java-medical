@@ -47,6 +47,10 @@ public class RemarkMessage {
 	public static final String OPEN_CARD_SEND = "member.card.open.send";
 	/** 系统检测升级 */
 	public static final String SYSTEM_UPGRADE = "member.card.system.upgrade";
+	/**	剩余可享包邮{0}次 */
+	public static final String FREESHIP_NUM = "member.card.freeship.num";
+	/** 可享受包邮{0}次 */
+	public static final String FREESHIP_TOTAL_NUM = "member.card.freeship.total.num";
 
 
 
@@ -60,11 +64,14 @@ public class RemarkMessage {
 	 */
 	/** 支付有礼 */
 	public static final String MSG_PAY_HAS_GIFT = "pay.has.gift";
+	/**幸运大抽奖*/
 	public static final String MSG_LOTTERY_GIFT = "lottery.has.gift";
 	/** 评价有礼送积分 */
 	public static final String MSG_COMMENT_HAS_GIFT = "comment.has.gift";
 	/** 收藏有礼 */
 	public static final String MSG_COLLECT_HAS_GIFT = "collect.has.gift";
+	/**表单统计*/
+	public static final String MSG_FORM_DECORATION_GIFT = "form.Decoration.gift";
 	/** 瓜分积分 */
 	public static final String MSG_DIVIDE_SCORE = "divide.score";
 	/** 领取优惠券 */
@@ -78,6 +85,8 @@ public class RemarkMessage {
     public static final String MSG_ENTER_HAS_GIFT = "enter.has.gift";
 	/** 门店支付 */
 	public static final String STORE_PAYMEMBT = "member.card.charge.money.payment";
+    /**优惠券礼包下单*/
+    public static final String MSG_COUPON_PACK_ORDER = "coupon.pack.order.payment";
 
 
 	/**

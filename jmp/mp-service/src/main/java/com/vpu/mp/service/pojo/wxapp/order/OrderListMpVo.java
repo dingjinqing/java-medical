@@ -52,6 +52,8 @@ public class OrderListMpVo{
 	private Timestamp[] preSaleTimeInterval;
 	/**支付按钮是否显示*/
 	private Byte isShowPay;
+    /**好友代付支付按钮是否显示*/
+    private Byte isShowFriendPay;
 	/**是否奖品订单*/
 	private Byte isLotteryGift;
 	/**是否退过*/
@@ -79,4 +81,15 @@ public class OrderListMpVo{
 	private List<OrderGoodsMpVo> goods;
 	private GroupOrderVo groupBuyInfo;
 	private List<String> orderType;
+    @JsonIgnore
+	private Byte orderPayWay;
+    /**补款*/
+    private BigDecimal bkOrderMoney;
+    /**定金是否退款*/
+    private Byte bkReturnType;
+    /**定金抵扣金额*/
+    private BigDecimal preSaleDiscount;
+    /**预售订单预计发货时间*/
+    private Timestamp bkShippingTime;
+    private Integer scoreProportion;
 }

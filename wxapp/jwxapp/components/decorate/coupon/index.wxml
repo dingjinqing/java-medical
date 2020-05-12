@@ -9,7 +9,7 @@
             <view class="coupon_list_top" wx:if="{{item.act_code=='discount'}}" style="color:{{ item.status == 1  || item.status == -1 ? comColor : '#ccc'}}">
               <text class="text">{{item.denomination}}</text>{{i18n.$t(localePack,"pages.coupon.amount")}}
             </view>
-            <view class="coupon_list_top" wx:if="{{item.act_code=='voucher'}}" style="color:{{ item.status == 1  || item.status == -1 ? comColor : '#ccc'}}">
+            <view class="coupon_list_top" wx:if="{{item.act_code=='voucher' || item.act_code=='random'}}" style="color:{{ item.status == 1  || item.status == -1 ? comColor : '#ccc'}}">
               ￥
               <text class="text">{{item.denomination}}</text>
             </view>
