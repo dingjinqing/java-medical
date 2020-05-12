@@ -189,7 +189,7 @@ export default {
           detailData = this.$refs.sortTree.getCheckedNodes()
         }
       }
-      console.log(this.getSimpleCheckedNodes(this.$refs.sortTree.store), this.showFatherNode, this.flag)
+      console.log(this.showFatherNode, this.flag)
       console.log(arr, detailData)
       this.$emit('BusClassTrueDetailData', detailData) // 返回选中节点详细数据
       this.$emit('BusClassTrueArr', arr) // 返回选中节点id数据
@@ -211,6 +211,7 @@ export default {
         })
       }
       traverse(store)
+      console.log(store, checkedNodes)
       return checkedNodes
     },
 
