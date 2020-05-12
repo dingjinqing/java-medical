@@ -32,6 +32,9 @@ global.wxPage({
     group_draw_id = options.group_draw_id;
     goods_id = options.goods_id;
     group_id = options.group_id;
+    this.setData({
+      inviteId:options.inviteId || null
+    })
     var that = this;
     // 判断用户是否登录
     var user_name = util.getCache('nickName');
@@ -144,7 +147,7 @@ global.wxPage({
     }]
     console.log(goodsList)
     util.navigateTo({
-      url: "/pages/checkout/checkout?activityType=8&activityId=" + Number(group_draw_id) + "&groupid=" + Number(group_id) + "&goodsList=" + JSON.stringify(goodsList)
+      url: "/pages/checkout/checkout?activityType=8&activityId=" + Number(group_draw_id) + "&groupid=" + Number(group_id) + "&goodsList=" + JSON.stringify(goodsList) + '&inviteId=' + this.data.inviteId
     })
   },
   // 去开团
@@ -326,7 +329,7 @@ global.wxPage({
   onShareAppMessage: function () {
     var that = this;
     return {
-      title: "快来参与" + that.data.group_info.group_draw.pay_money + "元拼团大抽奖吧",
+      title: "快来参与" + that.data.group_info.groupDraw.payMoney + "元拼团大抽奖吧",
       // imageUrl: that.data.imageUrl + that.data.share_img,
       path: '/pages/pinlotteryinfo/pinlotteryinfo?group_draw_id=' + group_draw_id + "&goods_id=" + goods_id + "&group_id=" + group_id + '&inviteId=' + util.getCache('user_id'),
     }

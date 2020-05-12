@@ -267,6 +267,31 @@
                       class="choiseLink"
                     >选择链接</div>
                   </div>
+                  <div
+                    v-if="index>4"
+                    class="navIconLeft customBottom"
+                  >
+                    <div
+                      class="nav_icon"
+                      style="margin-left:0"
+                    >
+                      <div class="icon_box">
+                        <img :src="item.iconImgUrl">
+                        <span @click="handleChangeChldrenIcon(index)">{{$t('bottomNavigation.changeIcons')}}</span>
+                      </div>
+                    </div>
+                    <div
+                      class="tips customTips"
+                      style="padding:5px 0 0 10px"
+                    >
+                      <div class="resetDiv">
+                        <div style="font-size:12px;color:#999">
+                          建议尺寸：50 * 50
+                        </div>
+                        <el-checkbox v-model="item.isIndependentShow">独立主图标展示</el-checkbox>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
               </div>
@@ -927,6 +952,13 @@ export default {
       font-size: 13px;
       cursor: pointer;
     }
+  }
+  .customBottom {
+    margin-top: 10px;
+  }
+  .customTips {
+    display: flex;
+    justify-content: center !important;
   }
 }
 </style>
