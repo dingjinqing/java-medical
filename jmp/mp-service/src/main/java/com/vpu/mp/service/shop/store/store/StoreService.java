@@ -6,6 +6,7 @@ import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.ShopConst;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
@@ -200,6 +201,9 @@ public class StoreService extends ShopBaseService {
      * @return
      */
     public Boolean addStore(StorePojo store) {
+        if (store.getPickDetail()!=null){
+            store.setPickTimeDetail(Util.toJson(store.getPickDetail()));
+        }
         StoreRecord record = new StoreRecord();
         this.assign(store, record);
         return db().executeInsert(record) > 0 ? true : false;
@@ -212,6 +216,9 @@ public class StoreService extends ShopBaseService {
      * @return
      */
     public Boolean updateStore(StorePojo store) {
+        if (store.getPickDetail()!=null){
+            store.setPickTimeDetail(Util.toJson(store.getPickDetail()));
+        }
         StoreRecord record = new StoreRecord();
         this.assign(store, record);
         return db().executeUpdate(record) > 0 ? true : false;
@@ -226,6 +233,9 @@ public class StoreService extends ShopBaseService {
 
             {
                 storeList.forEach(store -> {
+                    if (store.getPickDetail()!=null){
+                        store.setPickTimeDetail(Util.toJson(store.getPickDetail()));
+                    }
                     StoreRecord record = new StoreRecord();
                     assign(store, record);
                     add(record);
@@ -256,7 +266,11 @@ public class StoreService extends ShopBaseService {
         if(r == null){
             return null;
         }
-        return r.into(StorePojo.class);
+        StorePojo storePojo = r.into(StorePojo.class);
+        if (!StringUtils.isEmpty(storePojo.getPickTimeDetail())){
+            storePojo.setPickDetail(Util.json2Object(storePojo.getPickTimeDetail(),StorePickDetailPojo.class,false));
+        }
+        return storePojo;
     }
 
     /**

@@ -290,7 +290,8 @@ public class GoodsService extends ShopBaseService {
         Condition condition = this.buildOptions(goodsPageListParam);
 
         SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
-            GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER, GOODS.GOODS_SALE_NUM)
+            GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER,
+            GOODS.GOODS_SALE_NUM,GOODS.IS_CARD_EXCLUSIVE)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
             .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(condition);
 

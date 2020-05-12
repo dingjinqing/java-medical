@@ -11,6 +11,8 @@ public class GoodsLinkVo {
 	public String goodsImg;
 	public String goodsSn;
 	public String keyWords;
+	private Byte goodsType;
+	private Byte isCardExclusive;
 	public static Integer page;
 	
 	/**
