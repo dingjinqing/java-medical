@@ -13,15 +13,15 @@
         <div class="suite-goods-top">
           <el-radio
             v-model="ruleForm.isExchange"
-            label="0"
+            :label="0"
           >不可兑换商品</el-radio>
           <el-radio
             v-model="ruleForm.isExchange"
-            label="1"
+            :label="1"
           >部分商品</el-radio>
           <el-radio
             v-model="ruleForm.isExchange"
-            label="2"
+            :label="2"
           >全部商品</el-radio>
         </div>
         <div
@@ -43,7 +43,7 @@
                 ></el-input-number>
                 <span>次</span>
               </div>
-              <div v-if="ruleForm.isExchange === '2'">
+              <div v-if="ruleForm.isExchange === 2">
                 <span>每件商品可兑换：</span>
                  <el-input-number
                   v-model="ruleForm.everyGoodsMaxNum"
@@ -58,7 +58,7 @@
         </div>
 
         <div class="goods-container"
-            v-if="ruleForm.isExchange === '1'"
+            v-if="ruleForm.isExchange === 1"
            >
            <div class="row-container"
             v-for="(item,index) in ruleForm.exchangGoods"
@@ -101,13 +101,13 @@
             <span>运费策略：</span>
             <el-radio
               v-model="ruleForm.exchangFreight"
-              label='0'
+              :label='0'
             >
               免运费
             </el-radio>
             <el-radio
               v-model="ruleForm.exchangFreight"
-              label="1"
+              :label="1"
             >使用商品运费策略
             </el-radio>
         </div>
@@ -140,7 +140,7 @@
                   </el-option>
                 </el-select>
                 <span>兑换</span>
-                <el-input v-model.number="ruleForm.exchangeTimeNum" size="small" style="width: 110px;"></el-input>
+                <el-input v-model.number="ruleForm.exchangTimeNum" size="small" style="width: 110px;"></el-input>
                 <span>次</span>
             </li>
           </ul>
@@ -167,13 +167,14 @@ export default {
       type: Object,
       default: () => {
         return {
-          isExchange: '1',
+          isExchange: 1,
           exchangCount: '',
           everyGoodsMaxNum: '',
-          exchangFreight: '0',
+          exchangFreight: 0,
           exchangGoods: [{goodsIds: [], maxNum: null}],
           exchangTimeType: '0',
-          exchangeTimeNum: null
+          exchangTimeNum: null,
+          exchangTimeRadio: '0'
         }
       }
     }

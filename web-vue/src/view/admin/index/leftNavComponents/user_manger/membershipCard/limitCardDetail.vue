@@ -207,14 +207,14 @@ export default {
       cardStoreCfgData: cardStoreCfgDataTmp,
       cardUsageCfgData: cardUsageCfgDataTmp,
       cardSuiteGoodsCfgData: {
-        isExchange: '0',
+        isExchange: 0,
         exchangCount: '',
         everyGoodsMaxNum: '',
-        exchangFreight: '0',
+        exchangFreight: 0,
         exchangGoods: [{goodsIds: [], maxNum: null}],
         exchangTimeType: null,
         exchangTimeRadio: '0',
-        exchangeTimeNum: null
+        exchangTimeNum: null
       },
       cardReceiveCfgData: {
         cardType: 1,
@@ -302,11 +302,24 @@ export default {
       console.log(this.cardEffectTime.fixedDate)
       this.cardEffectTime.receiveDay = data.receiveDay
       this.cardEffectTime.dateType = data.dateType ? String(data.dateType) : '0'
+      debugger
       // 适用商品
-      this.cardSuiteGoodsCfgData.exchangCount = data.exchangCount
-      this.cardSuiteGoodsCfgData.isExchange = String(data.isExchange)
-      this.cardSuiteGoodsCfgData.exchangFreight = String(data.exchangFreight)
-      this.cardSuiteGoodsCfgData.exchangGoods = data.exchangGoods ? data.exchangGoods : [{goodsIds: [], maxNum: null}]
+      this.cardSuiteGoodsCfgData.isExchange = data.cardExchangGoods.isExchange
+      this.cardSuiteGoodsCfgData.exchangCount = data.cardExchangGoods.exchangCount
+      this.cardSuiteGoodsCfgData.everyGoodsMaxNum = data.cardExchangGoods.everyGoodsMaxNum
+      this.cardSuiteGoodsCfgData.exchangFreight = data.cardExchangGoods.exchangFreight
+      this.cardSuiteGoodsCfgData.exchangGoods = data.cardExchangGoods.exchangGoods
+      this.cardSuiteGoodsCfgData.exchangTimeType = data.cardExchangGoods.exchangTimeType
+
+      if (!data.cardExchangGoods.exchangGoods) {
+        this.cardSuiteGoodsCfgData.exchangGoods = [{goodsIds: [], maxNum: null}]
+      }
+      if (data.cardExchangGoods.exchangTimeType) {
+        this.cardSuiteGoodsCfgData.exchangTimeRadio = '1'
+      } else {
+        this.cardSuiteGoodsCfgData.exchangTimeRadio = '0'
+      }
+      this.cardSuiteGoodsCfgData.exchangTimeNum = data.cardExchangGoods.exchangTimeNum
 
       // 门店
       this.cardStoreCfgData.storeListType = String(data.storeListType)

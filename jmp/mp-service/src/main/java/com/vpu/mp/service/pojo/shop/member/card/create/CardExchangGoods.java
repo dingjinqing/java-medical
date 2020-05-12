@@ -22,14 +22,14 @@ public class CardExchangGoods {
 		/**
 		 * 商品Id
 		 */
-		private List<Integer> goodsId;
+		private List<Integer> goodsIds;
 		/**
 		 * 每件商品可兑换的最大次数
 		 */
 		private Integer maxNum;
 		public GoodsCfg() {}
-		public GoodsCfg(List<Integer> goodsId,Integer maxNum) {
-			this.goodsId = goodsId;
+		public GoodsCfg(List<Integer> goodsIds,Integer maxNum) {
+			this.goodsIds = goodsIds;
 			this.maxNum = maxNum;
 		}
 	}

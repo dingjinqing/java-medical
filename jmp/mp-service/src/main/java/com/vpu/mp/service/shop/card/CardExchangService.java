@@ -58,7 +58,7 @@ public class CardExchangService extends ShopBaseService {
 						GoodsCfg goodsCfg = new GoodsCfg();
 						String key = entry.getKey();
 						List<Integer> goodsId = Util.stringToList(key);
-						goodsCfg.setGoodsId(goodsId);
+						goodsCfg.setGoodsIds(goodsId);
 						goodsCfg.setMaxNum(entry.getValue());
 						goodsCfgList.add(goodsCfg);
 					}
@@ -66,7 +66,7 @@ public class CardExchangService extends ShopBaseService {
 				}else {
 					//	逗号分隔的数据，直接解析
 					GoodsCfg goodsCfg = new GoodsCfg();
-					goodsCfg.setGoodsId(Util.stringToList(exchangGoods));
+					goodsCfg.setGoodsIds(Util.stringToList(exchangGoods));
 					goodsCfg.setMaxNum(NUM_INFINITE);
 					
 					List<GoodsCfg> goodsCfgList = new ArrayList<GoodsCfg>() {{

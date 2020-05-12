@@ -16,9 +16,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DUR
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_ALL;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_NON;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_PART;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_BUY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_CODE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_DEFAULT;
@@ -64,7 +62,6 @@ import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRight;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardTag;
-import com.vpu.mp.service.shop.market.couponpack.CouponPackService;
 import com.vpu.mp.service.shop.member.CardReceiveCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
@@ -683,7 +680,7 @@ public class CardCreateService extends ShopBaseService{
 				
 				Map<String,Integer> map = new HashMap<>();
 				for(GoodsCfg goods: cardExGoods.getExchangGoods()) {
-					String key = Util.listToString(goods.getGoodsId());
+					String key = Util.listToString(goods.getGoodsIds());
 					Integer maxNum = goods.getMaxNum();
 					if(map.get(key)==null) {
 						map.put(key, maxNum);
