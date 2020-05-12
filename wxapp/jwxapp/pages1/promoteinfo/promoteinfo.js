@@ -217,7 +217,7 @@ global.wxPage({
   },
   // 助力成功后放弃分享
   forgive_share: function (e) {
-    if (e.currentTarget.dataset.ifshare == 1) {
+    if (e.currentTarget.dataset.canShare == 1) {
       this.setData({
         promote_ok: 0,
         is_shares: 1
