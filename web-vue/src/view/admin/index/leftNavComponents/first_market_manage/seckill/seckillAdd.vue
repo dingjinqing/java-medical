@@ -105,7 +105,7 @@
             >
               <template slot-scope="scope">
                 <div class="goodImge">
-                  <div><img :src="scope.row.goodsImg"></div>
+                  <div class="img"><img :src="scope.row.goodsImg"></div>
                   <div class="name">{{scope.row.goodsName}}</div>
                 </div>
               </template>
@@ -967,7 +967,12 @@ export default {
   line-height: 1;
 }
 .goodImge {
+  width: 100%;
+  height: 100%;
   display: flex;
+}
+.goodImge .img {
+  flex: 0.2;
 }
 .goodImge img {
   width: 50px;
@@ -976,8 +981,9 @@ export default {
   border: 1px solid #ccc;
 }
 .goodImge .name {
+  flex: 0.8;
   width: 115px;
-  height: 40px;
+  height: 50px;
   text-overflow: ellipsis;
   overflow: hidden;
   -webkit-box-orient: vertical;
