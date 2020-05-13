@@ -6,6 +6,10 @@ import com.vpu.mp.db.shop.tables.records.PackageSaleRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.excel.bean.ClassList;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -14,10 +18,13 @@ import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortSelectListVo;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.packagesale.*;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant.ActivityStatus;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant.Status;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDefineVo.GoodsGroupVo;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
@@ -35,6 +42,7 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.*;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
@@ -715,15 +724,57 @@ public class PackSaleService extends ShopBaseService {
      */
 	public PageResult<MarketVo> getListNoEnd(MarketParam param) {
 		SelectSeekStep1<Record4<Integer, String, Timestamp, Timestamp>, Integer> select = db()
-				.select(PACKAGE_SALE.ID, PACKAGE_SALE.PACKAGE_NAME.as(CalendarAction.ACTNAME), PACKAGE_SALE.START_TIME,
-						PACKAGE_SALE.END_TIME)
-				.from(PACKAGE_SALE)
-				.where(PACKAGE_SALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(PACKAGE_SALE.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(PACKAGE_SALE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
-				.orderBy(PACKAGE_SALE.ID.desc());
-		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
-				MarketVo.class);
-		return pageResult;
-	}
+            .select(PACKAGE_SALE.ID, PACKAGE_SALE.PACKAGE_NAME.as(CalendarAction.ACTNAME), PACKAGE_SALE.START_TIME,
+                PACKAGE_SALE.END_TIME)
+            .from(PACKAGE_SALE)
+            .where(PACKAGE_SALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(PACKAGE_SALE.STATUS
+                .eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(PACKAGE_SALE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+            .orderBy(PACKAGE_SALE.ID.desc());
+        PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+            MarketVo.class);
+        return pageResult;
+    }
+
+    /**
+     * 导出订单
+     *
+     * @param param
+     * @param lang
+     * @return
+     */
+    public Workbook exportPackSaleOrderList(MarketOrderListParam param, String lang) {
+        List<MarketOrderListVo> list = saas.getShopApp(getShopId()).readOrder.marketOrderInfo.getMarketOrderList(param, BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE);
+
+        List<PackageSaleOrderExportVo> res = new ArrayList<>();
+        list.forEach(order -> {
+            PackageSaleOrderExportVo vo = new PackageSaleOrderExportVo();
+            vo.setOrderSn(order.getOrderSn());
+            vo.setGoods(order.getGoods().stream().map((g) -> {
+                PackageSaleOrderGoodsExportVo goods = new PackageSaleOrderGoodsExportVo();
+                goods.setGoodsName(g.getGoodsName());
+                goods.setGoodsPrice(g.getGoodsPrice());
+                return goods;
+            }).collect(Collectors.toList()));
+            vo.setCreateTime(order.getCreateTime());
+            vo.setUsername(order.getUsername() + ";" + (StringUtil.isNotBlank(order.getUserMobile()) ? order.getUserMobile() : ""));
+            vo.setMoneyPaid(order.getMoneyPaid());
+            vo.setConsignee(order.getConsignee() + ";" + order.getMobile());
+            vo.setOrderStatus(OrderConstant.getOrderStatusName(order.getOrderStatus(), lang));
+
+            res.add(vo);
+        });
+
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+        ClassList cList = new ClassList();
+        cList.setUpClazz(PackageSaleOrderExportVo.class);
+        cList.setInnerClazz(PackageSaleOrderGoodsExportVo.class);
+        try {
+            excelWriter.writeModelListByRegion(res, cList);
+        } catch (Exception e) {
+            logger().error("excel error", e);
+        }
+        return workbook;
+    }
 }
 

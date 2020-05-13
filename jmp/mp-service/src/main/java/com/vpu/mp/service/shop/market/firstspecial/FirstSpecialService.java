@@ -1,30 +1,5 @@
 package com.vpu.mp.service.shop.market.firstspecial;
 
-import static com.vpu.mp.db.shop.tables.FirstSpecial.FIRST_SPECIAL;
-import static com.vpu.mp.db.shop.tables.FirstSpecialGoods.FIRST_SPECIAL_GOODS;
-import static com.vpu.mp.db.shop.tables.FirstSpecialProduct.FIRST_SPECIAL_PRODUCT;
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static org.jooq.impl.DSL.countDistinct;
-import static org.jooq.impl.DSL.sum;
-
-import java.math.BigDecimal;
-import java.net.URL;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Record;
-import org.jooq.Record4;
-import org.jooq.Record5;
-import org.jooq.SelectSeekStep1;
-import org.jooq.SelectWhereStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.FirstSpecialGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.FirstSpecialProductRecord;
@@ -43,25 +18,16 @@ import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
-import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialAddParam;
-import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialGoodsParam;
-import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialGoodsProductParam;
-import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialGoodsVo;
-import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialOrderExportVo;
-import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialOrderGoodsExportVo;
-import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialProductVo;
-import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialUpdateParam;
-import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialVo;
+import com.vpu.mp.service.pojo.shop.market.firstspecial.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
-
 import jodd.util.StringUtil;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
+import org.jooq.Record5;
+import org.jooq.SelectSeekStep1;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -376,7 +342,6 @@ public class FirstSpecialService extends ShopBaseService {
             logger().error("excel error",e);
         }
 
-        excelWriter.writeModelList(res, FirstSpecialOrderExportVo.class);
         return workbook;
     }
 

@@ -1,24 +1,19 @@
 package com.vpu.mp.controller.admin;
 
-import javax.validation.Valid;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDefineVo;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDetailParam;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDetailVo;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleOrderPageParam;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSalePageParam;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleParam;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleShareVo;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
+import com.vpu.mp.service.pojo.shop.market.packagesale.*;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /**
  * @author huangronggang
@@ -139,15 +134,27 @@ public class AdminPackSaleController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping("/detail")
-	public JsonResult detail(@RequestBody @Valid PackSaleDetailParam param) {
-		 PageResult<PackSaleDetailVo> detail = shop().packSale.getPackSaleDetail(param);
-		return success(detail);
-	}
-	private JsonResult result(int result) {
-		if (result != 0) {
-			return success(JsonResultCode.CODE_SUCCESS);
-		}
-		return fail(JsonResultCode.CODE_FAIL);
-	}
+    public JsonResult detail(@RequestBody @Valid PackSaleDetailParam param) {
+        PageResult<PackSaleDetailVo> detail = shop().packSale.getPackSaleDetail(param);
+        return success(detail);
+    }
+
+    private JsonResult result(int result) {
+        if (result != 0) {
+            return success(JsonResultCode.CODE_SUCCESS);
+        }
+        return fail(JsonResultCode.CODE_FAIL);
+    }
+
+    /**
+     * 活动订单
+     * 订单导出
+     */
+    @PostMapping("/order/export")
+    public void activityOrderExport(@RequestBody @Valid MarketOrderListParam param, HttpServletResponse response) {
+        Workbook workbook = shop().packSale.exportPackSaleOrderList(param, getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.PACKAGE_SALE_ORDER_LIST_FILENAME, OrderConstant.LANGUAGE_TYPE_EXCEL, OrderConstant.LANGUAGE_TYPE_EXCEL) + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        export2Excel(workbook, fileName, response);
+    }
 
 }

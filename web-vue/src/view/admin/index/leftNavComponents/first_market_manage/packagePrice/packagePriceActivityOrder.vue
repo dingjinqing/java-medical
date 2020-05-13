@@ -76,7 +76,7 @@
         >筛选</el-button>
         <el-button
           size="small"
-          @click="handleToExport()"
+          @click="handleToClickSure()"
         >导出表格</el-button>
       </div>
     </section>

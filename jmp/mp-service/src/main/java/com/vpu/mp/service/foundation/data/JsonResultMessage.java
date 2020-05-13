@@ -214,12 +214,14 @@ public class JsonResultMessage {
     public static final String SECKILL_ORDER_LIST_ORDER_STATUS = "seckill.order.list.order_status";
 
     /**
-     *  营销-预售excel导出-秒杀订单
+     * 营销-预售excel导出-秒杀订单
      */
     public static final String PRESALE_ORDER_LIST_FILENAME = "presale.order.list.file_name";
 
-
-
+    /**
+     * 营销-打包一口价订单excel导出
+     */
+    public static final String PACKAGE_SALE_ORDER_LIST_FILENAME = "packsale.order.list.file_name";
 
 
     /**
