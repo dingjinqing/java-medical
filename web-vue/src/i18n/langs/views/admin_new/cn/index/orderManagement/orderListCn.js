@@ -390,7 +390,8 @@ export const cn = {
     returnFinishTime: '退货完成',
     giftGiving: '送礼进行',
     giveCompletion: '送礼完成',
-    finishedTime: '订单完成'
+    finishedTime: '订单完成',
+    affirmTime: '买家确认收货'
   },
   returnStatusList: [
     [null, '全部'],
