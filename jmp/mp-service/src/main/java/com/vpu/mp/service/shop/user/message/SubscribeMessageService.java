@@ -20,6 +20,7 @@ import com.google.common.base.Objects;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.SubscribeMessageRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.RegexUtil;
@@ -62,6 +63,9 @@ public class SubscribeMessageService extends ShopBaseService {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	protected JedisManager jedis;
 
 	// 获取小程序的AppId
 	private String getMaAppId() {
@@ -168,6 +172,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		logger().info("获取当前帐号下的个人模板列表");
 		// 获取当前帐号下的个人模板列表
 		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
+		jedis.getIncrSequence("subScribe", Integer.MAX_VALUE, 0);
 		if (!templateList.isSuccess()) {
 			logger().info("获取AppId：" + getMaAppId() + " 的账号下的个人模板失败，准备发送公众号");
 			// TODO发送到公众号
@@ -302,6 +307,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		logger().info(titleList.toString());
 		TemplateVo[] results=new TemplateVo[data.length];
 		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
+		jedis.getIncrSequence("subScribe", Integer.MAX_VALUE, 0);
 		List<WxOpenSubscribeTemplate> data2 = templateList.getData();
 		if (data2.size() != 0) {
 			for (int i = 0; i < titleList.length; i++) {
@@ -451,6 +457,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	public boolean checkTemplate(String templateId,WxOpenMaSubScribeGetTemplateListResult templateList) throws WxErrorException {
 		if(templateList==null) {
 			templateList = open.getMaExtService().getTemplateList(getMaAppId());
+			jedis.getIncrSequence("subScribe", Integer.MAX_VALUE, 0);
 		}
 		logger().info("传入的templateId："+templateId);
 		if (templateList.isSuccess()) {
