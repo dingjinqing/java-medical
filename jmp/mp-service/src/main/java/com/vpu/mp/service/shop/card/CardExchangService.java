@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.card;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.DateUtil.IntervalType;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods.GoodsCfg;
@@ -105,5 +108,19 @@ public class CardExchangService extends ShopBaseService {
 			}
 		}
 		return goodsIds;
+	}
+	
+	/**
+	 * 兑换商品时间限制范围
+	 * @param periodLimit
+	 * @return Timestamp[2] 包含开始时间，截止时间 | null 表示没有时间限制范围
+	 */
+	public Timestamp[] getIntervalTime(Byte periodLimit) {
+		if(CardExchangGoods.TimeType.NO_LIMIT.val.equals(periodLimit)) {
+			//	不限制
+			return null;
+		}
+		IntervalType[] values = DateUtil.IntervalType.values();
+		return DateUtil.getInterval(values[periodLimit-1]);
 	}
 }

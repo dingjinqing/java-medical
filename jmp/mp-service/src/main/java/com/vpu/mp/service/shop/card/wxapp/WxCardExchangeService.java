@@ -16,8 +16,10 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods.TimeType;
 import com.vpu.mp.service.pojo.shop.member.card.dao.CardFullDetail;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.card.param.CardAddExchangeGoodsParam;
@@ -36,16 +38,21 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.user.UserCheckedGoodsService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.CHECKED_GOODS_CART;
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 /**
  * 	会员卡兑换商品服务
  * @author 黄壮壮
@@ -235,10 +242,43 @@ public class WxCardExchangeService extends ShopBaseService {
 	}
 
 	/**
-	 * 删除兑换商品
+	 * 	删除兑换商品
 	 * @param param
 	 */
 	public void removeChoosedGoods(UserCheckedGoodsParam param) {
 		userCheckedGoodsSvc.removeChoosedGoods(param);
+	}
+	
+	
+	
+	/**
+	 * 获取指定时间范围兑换某个商品的次数
+	 * @param goodsId 商品Id
+	 * @param cardNo 卡号Id
+	 * @param timeType 时间范围类型
+	 * @return Integer 次数
+	 */
+	public Integer getExchangGoodsTimeDuringPeriod(Integer goodsId,String cardNo,TimeType timeType) {
+		logger().info("获取指定时间范围兑换某个商品的次数");
+		Timestamp[] times = cardExchangSvc.getIntervalTime(timeType.val);
+		Condition condition = DSL.noCondition();
+		
+		condition = condition
+				.and(ORDER_GOODS.IS_GIFT.eq(OrderConstant.IS_GIFT_N))
+				.and(ORDER_GOODS.GOODS_ID.eq(goodsId));	
+		
+		if(null != times) {
+			//	有效期范围内
+			condition = condition
+					.and(ORDER_INFO.CREATE_TIME.ge(times[0]))
+					.and(ORDER_INFO.CREATE_TIME.le(times[1]));
+		}
+		
+		 return db()
+			.select(DSL.sum(ORDER_GOODS.GOODS_NUMBER))
+			.from(ORDER_GOODS)
+			.leftJoin(ORDER_INFO).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
+			.and(condition)
+			.fetchOne(0, int.class);
 	}
 }
