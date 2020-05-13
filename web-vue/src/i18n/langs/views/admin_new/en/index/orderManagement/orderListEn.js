@@ -274,7 +274,8 @@ export const en = {
     returnFinishTime: 'Return completed',
     giftGiving: 'Gifts are going on',
     giveCompletion: 'Gift completion',
-    finishedTime: 'Order completed'
+    finishedTime: 'Order completed',
+    affirmTime: 'Buyer confirms receipt'
   },
   returnStatusList: [
     [null, 'all'],

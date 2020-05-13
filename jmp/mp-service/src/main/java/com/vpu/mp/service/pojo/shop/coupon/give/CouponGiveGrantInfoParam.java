@@ -42,4 +42,13 @@ public class CouponGiveGrantInfoParam {
 
   @JsonProperty(value = "coupon_ids")
   private String couponIds;
+  /** 省代码 */
+  @JsonProperty(value = "province_code")
+  private Integer provinceCode;
+  /** 市代码 */
+  @JsonProperty(value = "city_code")
+  private Integer cityCode;
+  /** 区/县代码 */
+  @JsonProperty(value = "district_code")
+  private Integer districtCode;
 }

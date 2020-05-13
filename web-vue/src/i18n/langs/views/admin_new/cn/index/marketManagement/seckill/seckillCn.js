@@ -26,7 +26,7 @@ export const cn = {
   ],
   // 表格
   activityName: '活动名称',
-  goodsName: '商品',
+  goodsName: '活动商品',
   first: '优先级',
   validDate: '有效期',
   activityStatus: '活动状态',
@@ -44,6 +44,8 @@ export const cn = {
   delete: '删除',
   effect: '活动效果数据',
   // 添加页面
+  level: '优先级',
+  commodityName: '商品名称',
   select: '选择商品',
   startTime: '开始日期',
   to: '至',
@@ -77,6 +79,8 @@ export const cn = {
   prdStock: '秒杀库存',
   goodsSaleNum: '已售秒杀数量',
   prdTypeNum: '剩余秒杀库存',
+  goodsStock: '商品库存',
+  goodsSold: '已售数量',
   save: '保存',
   // 分享
   shareTitle: '扫一扫，分享给好友吧~',

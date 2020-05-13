@@ -74,11 +74,12 @@ export function updateActivity (data) {
     data: data
   })
 }
-// 打包一口价 - 活动订导出
+// 打包一口价 - 活动订单导出
 export function exporOrderExcel (data) {
   return service({
-    url: `/api/admin/market/packsale/order`,
+    url: `/api/admin/market/packsale/order/export`,
     method: 'post',
-    data: data
+    data: data,
+    responseType: 'blob'
   })
 }

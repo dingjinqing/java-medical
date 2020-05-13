@@ -214,12 +214,14 @@ public class JsonResultMessage {
     public static final String SECKILL_ORDER_LIST_ORDER_STATUS = "seckill.order.list.order_status";
 
     /**
-     *  营销-预售excel导出-秒杀订单
+     * 营销-预售excel导出-秒杀订单
      */
     public static final String PRESALE_ORDER_LIST_FILENAME = "presale.order.list.file_name";
 
-
-
+    /**
+     * 营销-打包一口价订单excel导出
+     */
+    public static final String PACKAGE_SALE_ORDER_LIST_FILENAME = "packsale.order.list.file_name";
 
 
     /**
@@ -826,6 +828,7 @@ public class JsonResultMessage {
     public static final String REFUND_ACCOUNT_LARGER_THAN_ACCOUNT_PAID = "order.refund.account_larger_than_paid";
     public static final String REFUND_SCORE_LARGER_THAN_SCORE_PAID = "order.refund.score_larger_than_paid";
     public static final String REFUND_REQUEST_PARAMETER_ERROR = "order.virtual.order.refund.param.error";
+    public static final String REFUND_REQUEST_PARAMETER_TIME_ONE_YEAR = "order.virtual.order.refund.time.one.year";
 
     /**
      * 订单状态

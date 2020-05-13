@@ -11,9 +11,7 @@
             <td v-if="couponFlag">{{$t('selectLinks.type')}}</td>
             <td>{{$t('selectLinks.termOfValidity')}}</td>
             <td>{{$t('selectLinks.link')}}</td>
-            <!--
-<td>状态</td>
-            -->
+            <td>状态</td>
           </tr>
         </thead>
         <tbody v-if="tbodyFlag">
@@ -36,9 +34,7 @@
             <td class="tb_decorate_a">
               {{path}}{{item.id}}
             </td>
-            <!--
-<td class="status">未开始</td>
-            -->
+            <td class="status">{{item.status?'进行中':'未开始'}}</td>
           </tr>
         </tbody>
 

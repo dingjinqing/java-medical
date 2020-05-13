@@ -22,8 +22,10 @@ public class OrderInfoVo extends OrderListInfoVo {
 	private Timestamp payTime;
 	/**发货时间*/
 	private Timestamp shippingTime;
-	/**确认收货时间*/
+	/**自提时间*/
 	private Timestamp confirmTime;
+	/**确认收货时间 (同上)*/
+	private Timestamp affirmTime;
 	/**完成时间*/
 	private Timestamp finishedTim;
 	/**订单关闭时间*/

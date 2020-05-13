@@ -1,10 +1,14 @@
 package com.vpu.mp.service.shop.decoration;
 
 import com.vpu.mp.db.shop.tables.records.DecorateLinkRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.decoration.*;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import org.jooq.*;
@@ -75,28 +79,45 @@ public class ChooseLinkService extends ShopBaseService {
 		return list;
 	}
 
+    private void getActivityStatus(List<ActivityVo> list) {
+        Timestamp dateTime = DateUtil.getLocalDateTime();
+        list.forEach(activityVo -> {
+            Byte actStatus = Util.getActStatus(BaseConstant.ACTIVITY_STATUS_NORMAL, activityVo.getStartTime(), activityVo.getEndTime());
+            activityVo.setStatus(actStatus);
+        });
+    }
+
 	/**
 	 * 拼团抽奖链接
 	 * @return
 	 */
 	public List<ActivityVo> getGroupDrawList() {
-		List<ActivityVo> list = db().select(GROUP_DRAW.ID,GROUP_DRAW.NAME.as("actName"),GROUP_DRAW.START_TIME,GROUP_DRAW.END_TIME)
+		List<ActivityVo> list = db().select(GROUP_DRAW.ID,GROUP_DRAW.NAME.as("actName"),
+            GROUP_DRAW.START_TIME,GROUP_DRAW.END_TIME)
 				.from(GROUP_DRAW)
 				.where(GROUP_DRAW.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
 				.and(GROUP_DRAW.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-				.fetch().into(ActivityVo.class);
-		return list;
+                .and(GROUP_DRAW.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+				.fetchInto(ActivityVo.class);
+        getActivityStatus(list);
+        return list;
 	}
 
-	/**
+
+
+    /**
 	 * 瓜分积分链接
 	 * @return
 	 */
 	public List<ActivityVo> getIntegrationList() {
-		List<ActivityVo> list = db().select(GROUP_INTEGRATION_DEFINE.ID,GROUP_INTEGRATION_DEFINE.NAME.as("actName"),GROUP_INTEGRATION_DEFINE.START_TIME,GROUP_INTEGRATION_DEFINE.END_TIME)
+		List<ActivityVo> list = db().select(GROUP_INTEGRATION_DEFINE.ID,GROUP_INTEGRATION_DEFINE.NAME.as("actName"),
+            GROUP_INTEGRATION_DEFINE.START_TIME,GROUP_INTEGRATION_DEFINE.END_TIME)
 				.from(GROUP_INTEGRATION_DEFINE)
-				.where(GROUP_INTEGRATION_DEFINE.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
-				.fetch().into(ActivityVo.class);
+                .where(GROUP_INTEGRATION_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(GROUP_INTEGRATION_DEFINE.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
+                .and(GROUP_INTEGRATION_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+				.fetchInto(ActivityVo.class);
+        getActivityStatus(list);
 		return list;
 	}
 
@@ -105,13 +126,14 @@ public class ChooseLinkService extends ShopBaseService {
 	 * @return
 	 */
 	public List<ActivityVo> getPromoteList() {
-		List<ActivityVo> list = db().select(FRIEND_PROMOTE_ACTIVITY.ID,FRIEND_PROMOTE_ACTIVITY.ACT_CODE,FRIEND_PROMOTE_ACTIVITY.ACT_NAME,FRIEND_PROMOTE_ACTIVITY.START_TIME,FRIEND_PROMOTE_ACTIVITY.END_TIME)
+		List<ActivityVo> list = db().select(FRIEND_PROMOTE_ACTIVITY.ID,FRIEND_PROMOTE_ACTIVITY.ACT_CODE,FRIEND_PROMOTE_ACTIVITY.ACT_NAME,
+            FRIEND_PROMOTE_ACTIVITY.START_TIME,FRIEND_PROMOTE_ACTIVITY.END_TIME)
 				.from(FRIEND_PROMOTE_ACTIVITY)
-                .where(FRIEND_PROMOTE_ACTIVITY.END_TIME.gt(new Timestamp(System.currentTimeMillis())))
-                .and(FRIEND_PROMOTE_ACTIVITY.START_TIME.lt(new Timestamp(System.currentTimeMillis())))
+                .where(FRIEND_PROMOTE_ACTIVITY.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
                 .and(FRIEND_PROMOTE_ACTIVITY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
                 .and(FRIEND_PROMOTE_ACTIVITY.IS_BLOCK.eq((byte)0))
-                .fetch().into(ActivityVo.class);
+                .fetchInto(ActivityVo.class);
+        getActivityStatus(list);
 		return list;
 	}
 
@@ -124,8 +146,9 @@ public class ChooseLinkService extends ShopBaseService {
 				.from(PURCHASE_PRICE_DEFINE)
 				.where(PURCHASE_PRICE_DEFINE.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
 				.and(PURCHASE_PRICE_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-				.and(PURCHASE_PRICE_DEFINE.STATUS.eq((byte) 1))
-				.fetch().into(ActivityVo.class);
+				.and(PURCHASE_PRICE_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+				.fetchInto(ActivityVo.class);
+        getActivityStatus(list);
 		return list;
 	}
 
@@ -138,40 +161,41 @@ public class ChooseLinkService extends ShopBaseService {
 				 .from(LOTTERY)
 				.where(LOTTERY.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
 				.and(LOTTERY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-				.and(LOTTERY.STATUS.eq((byte) 1))
-				.fetch().into(ActivityVo.class);
+				.and(LOTTERY.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+				.fetchInto(ActivityVo.class);
+        getActivityStatus(list);
 		return list;
 	}
 
 	/**
 	 * 优惠券链接
+     *  启用,开始和未开始,库存大于0或者不限制库存的
 	 * @return
 	 */
 	public List<ActivityVo> getVoucherList() {
-        Result<? extends Record> record = db().select().from(MRKING_VOUCHER)
-            .where(MRKING_VOUCHER.END_TIME.ge(new Timestamp(System.currentTimeMillis())).or((MRKING_VOUCHER.VALIDITY_TYPE.eq((byte)1))))
-            .and(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0))
+        List<ActivityVo> list = db().select().from(MRKING_VOUCHER)
+            .where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_NORMAL))
+            .and(MRKING_VOUCHER.END_TIME.ge(new Timestamp(System.currentTimeMillis())).or((MRKING_VOUCHER.VALIDITY_TYPE.eq((byte)1))))
             .and(MRKING_VOUCHER.SURPLUS.gt(0).and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte)0)).or(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte)1)))
-            .and(MRKING_VOUCHER.ENABLED.eq((byte)1))
-            .fetch();
-        if(record != null){
-            return record.into(ActivityVo.class);
-        }else{
-            return null;
-        }
+            .fetchInto(ActivityVo.class);
+        getActivityStatus(list);
+       return list;
 	}
 
 	/**
 	 * 会员卡链接
 	 * @return
 	 */
-	public List<CardLinkVo> getCardList() {
-		 List<CardLinkVo> list = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME,MEMBER_CARD.EXPIRE_TYPE,MEMBER_CARD.START_TIME,
+	public List<ActivityVo> getCardList() {
+		 List<ActivityVo> list = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME,MEMBER_CARD.EXPIRE_TYPE,MEMBER_CARD.START_TIME,
              MEMBER_CARD.END_TIME,MEMBER_CARD.RECEIVE_DAY,MEMBER_CARD.DATE_TYPE)
 				.from(MEMBER_CARD)
-                .where(MEMBER_CARD.END_TIME.ge(new Timestamp(System.currentTimeMillis())).or(MEMBER_CARD.EXPIRE_TYPE.in((byte)1,(byte)2)))
-				.and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-				.fetch().into(CardLinkVo.class);
+                .where(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+                .and(MEMBER_CARD.FLAG.eq(CardConstant.MCARD_FLAG_USING))
+                .and(MEMBER_CARD.END_TIME.ge(new Timestamp(System.currentTimeMillis())).or(MEMBER_CARD.EXPIRE_TYPE.in((byte)1,(byte)2)))
+				.fetchInto(ActivityVo.class);
+        getActivityStatus(list);
 		return list;
 	}
 
@@ -180,11 +204,13 @@ public class ChooseLinkService extends ShopBaseService {
 	 * @return
 	 */
 	public List<ActivityVo> getPackageList() {
-		 List<ActivityVo> list = db().select(PACKAGE_SALE.ID,PACKAGE_SALE.PACKAGE_NAME,PACKAGE_SALE.START_TIME,PACKAGE_SALE.END_TIME)
+		 List<ActivityVo> list = db().select(PACKAGE_SALE.ID,PACKAGE_SALE.PACKAGE_NAME.as("actName"),PACKAGE_SALE.START_TIME,PACKAGE_SALE.END_TIME)
 				.from(PACKAGE_SALE)
 				.where(PACKAGE_SALE.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
 				.and(PACKAGE_SALE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-				.fetch().into(ActivityVo.class);
+                .and(PACKAGE_SALE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+				.fetchInto(ActivityVo.class);
+        getActivityStatus(list);
 		return list;
 	}
 
@@ -195,9 +221,11 @@ public class ChooseLinkService extends ShopBaseService {
 	public List<ActivityVo> getMrkingList() {
 		List<ActivityVo>list = db().select(MRKING_STRATEGY.ID,MRKING_STRATEGY.ACT_NAME,MRKING_STRATEGY.START_TIME,MRKING_STRATEGY.END_TIME)
 				.from(MRKING_STRATEGY)
-				.where(MRKING_STRATEGY.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
-				.and(MRKING_STRATEGY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-				.fetch().into(ActivityVo.class);
+                .where(MRKING_STRATEGY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+                .and(MRKING_STRATEGY.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+                .and(MRKING_STRATEGY.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
+				.fetchInto(ActivityVo.class);
+        getActivityStatus(list);
 		return list;
 	}
 
@@ -206,12 +234,14 @@ public class ChooseLinkService extends ShopBaseService {
 	 * @return
 	 */
 	public List<ActivityVo> getAssessList() {
-		 List<ActivityVo> assessList = db().select(ASSESS_ACTIVITY.ACT_NAME,ASSESS_ACTIVITY.ID,ASSESS_ACTIVITY.START_TIME,ASSESS_ACTIVITY.END_TIME)
+		 List<ActivityVo> list = db().select(ASSESS_ACTIVITY.ACT_NAME,ASSESS_ACTIVITY.ID,ASSESS_ACTIVITY.START_TIME,ASSESS_ACTIVITY.END_TIME)
 				.from(ASSESS_ACTIVITY)
-				.where(ASSESS_ACTIVITY.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
-				.and(ASSESS_ACTIVITY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-				.fetch().into(ActivityVo.class);
-		return assessList;
+                .where(ASSESS_ACTIVITY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+                .and(ASSESS_ACTIVITY.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
+                .and(ASSESS_ACTIVITY.IS_BLOCK.eq((byte)1))
+				.fetchInto(ActivityVo.class);
+        getActivityStatus(list);
+		return list;
 	}
 
 	/**
@@ -219,12 +249,14 @@ public class ChooseLinkService extends ShopBaseService {
 	 * @return
 	 */
 	public List<ActivityVo> getPackList() {
-		List<ActivityVo>packList = db().select(COUPON_PACK.ID,COUPON_PACK.ACT_NAME,COUPON_PACK.START_TIME,COUPON_PACK.END_TIME)
+		List<ActivityVo>list = db().select(COUPON_PACK.ID,COUPON_PACK.ACT_NAME,COUPON_PACK.START_TIME,COUPON_PACK.END_TIME)
 				.from(COUPON_PACK)
 				.where(COUPON_PACK.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
 				.and(COUPON_PACK.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
-				.fetch().into(ActivityVo.class);
-		return packList;
+                .and(COUPON_PACK.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+				.fetchInto(ActivityVo.class);
+        getActivityStatus(list);
+		return list;
 	}
 
 	/**

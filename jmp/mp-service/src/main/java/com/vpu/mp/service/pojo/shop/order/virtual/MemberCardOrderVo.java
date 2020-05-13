@@ -30,6 +30,8 @@ public class MemberCardOrderVo {
     private Integer useScore;
     /** 支付时间 **/
     private Timestamp payTime;
+    /**是否能退款 1能退 0不能退*/
+    private Byte canReturn;
     /** 购买方式：0：积分，1：现金 **/
     private Byte payType;
     /** 用户名 **/

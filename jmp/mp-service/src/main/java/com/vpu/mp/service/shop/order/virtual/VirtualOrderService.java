@@ -5,6 +5,7 @@ import static com.vpu.mp.db.shop.tables.VirtualOrderRefundRecord.VIRTUAL_ORDER_R
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
 
 import com.vpu.mp.service.foundation.util.DateUtil;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -71,6 +72,10 @@ public class VirtualOrderService extends ShopBaseService {
     public void virtualOrderRefund(VirtualOrderRefundParam param) throws MpException {
     	//订单
     	VirtualOrderPayInfo payInfo = getOrderPayInfo(param.getOrderId());
+    	//虚拟订单退款限制为1年
+        if (payInfo.getPayTime()!=null&&DateUtil.getLocalDateTime().after(DateUtil.getTimeStampPlus(payInfo.getPayTime(),1, ChronoUnit.YEARS))){
+            throw new MpException(JsonResultCode.REFUND_REQUEST_PARAMETER_TIME_ONE_YEAR);
+        }
     	
         /** 是否退款成功 */
         boolean successFlag = true;
