@@ -87,7 +87,7 @@
           </div>
         </el-form-item>
         <el-form-item
-          :label="'优先级' + '：'"
+          :label="$t('seckill.level') + '：'"
           prop="first"
         >
           <el-input-number
@@ -147,10 +147,15 @@
             style="width: 100%"
           >
             <el-table-column
-              :label="$t('seckill.goodsName')"
-              prop="goodsName"
+              :label="$t('seckill.commodityName')"
               align="center"
             >
+              <template slot-scope="scope">
+                <div class="goodImge">
+                  <div class="img"><img :src="scope.row.goodsImg"></div>
+                  <div class="name">{{scope.row.goodsName}}</div>
+                </div>
+              </template>
             </el-table-column>
             <el-table-column
               :label="$t('seckill.shopPrice')"
@@ -166,16 +171,12 @@
                   :prop="'secKillProduct.'+scope.$index+'.secKillPrice'"
                   :rules="[{ validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.shopPrice, scope.row)}, trigger: ['blur', 'change'] }]"
                 >
-                  <div
-                    class="input-error"
-                    v-if="scope.row.priceErrorMsg"
-                  >{{scope.row.priceErrorMsg}}</div>
                   <el-input
                     v-model="scope.row.secKillPrice"
                     size="small"
-                    :disabled="isEdite || disabledFlag"
+                    @input="priceChange(scope.row)"
                   />
-                  <!-- @input="changePriceInput(scope.row)" -->
+                  <!-- :disabled="isEdite || disabledFlag" -->
                 </el-form-item>
                 <div
                   class="spec-tips"
@@ -185,35 +186,40 @@
               </template>
             </el-table-column>
             <el-table-column
-              :label="$t('seckill.goodsNumber')"
+              :label="$t('seckill.goodsStock')"
               prop="goodsNumber"
               align="center"
             ></el-table-column>
             <el-table-column
               v-if="isEdite"
               :label="$t('seckill.prdStock')"
-              prop="totalStock"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <span>{{Number(scope.row.totalStock) + Number(scope.row.saleNum)}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              v-if="isEdite"
+              :label="$t('seckill.goodsSold')"
+              prop="saleNum"
               align="center"
             ></el-table-column>
             <el-table-column
-              :label="$t('seckill.prdNumber')"
+              :label="isEdite ? $t('seckill.prdNumber') : $t('seckill.prdStock')"
               align="center"
             >
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'secKillProduct.' + scope.$index+ '.stock'"
-                  :rules="[{ validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.goodsNumber, scope.row)}, trigger: ['blur', 'change'] }]"
+                  :rules="[{ validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.goodsNumber, scope.row, scope.$index)}, trigger: ['blur', 'change'] }]"
                 >
-                  <div
-                    class="input-error"
-                    v-if="scope.row.stockErrorMsg"
-                  >{{scope.row.stockErrorMsg}}</div>
                   <el-input
                     v-model="scope.row.stock"
                     size="small"
-                    :disabled="isEdite || disabledFlag"
+                    @input="numChange(scope.row)"
                   />
-                  <!-- @input="changeStockInput(scope.row)" -->
+                  <!-- :disabled="isEdite || disabledFlag" -->
                 </el-form-item>
                 <div
                   class="spec-tips"
@@ -496,6 +502,7 @@
     <seckillSpecDialog
       :productDialog.sync="showSpecDialog"
       :product-info="productInfo"
+      :isEdit="isEdite"
       @confrim="getProductdata"
     />
 
@@ -510,25 +517,19 @@
   </div>
 </template>
 <script>
-// 引入组件
-import choosingGoods from '@/components/admin/choosingGoods'
-import actShare from '@/components/admin/marketManage/marketActivityShareSetting'
-import ImageDalog from '@/components/admin/imageDalog'
 import { getSeckillList, addSeckillList, updateSeckillList } from '@/api/admin/marketManage/seckill.js'
 import { allCardApi, allTagApi } from '@/api/admin/marketManage/messagePush'
-
-// import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
-// import { getSelectGoods } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
-    choosingGoods,
-    actShare,
-    ImageDalog,
+    choosingGoods: () => import('@/components/admin/choosingGoods'),
+    actShare: () => import('@/components/admin/marketManage/marketActivityShareSetting'),
+    ImageDalog: () => import('@/components/admin/imageDalog'),
     seckillSpecDialog: () => import('./seckillSpecDialog'),
     LabelDialog: () => import('@/components/admin/labelDialog')
   },
+
   props: ['isEdite', 'editId', 'isGoing'],
-  data () {
+  data() {
     // 会员专享
     var validateCard = (rule, value, callback) => {
       if (this.showMember && value.length === 0) {
@@ -645,24 +646,25 @@ export default {
       isShowChoosingGoodsDialog: false, // 商品弹窗
       // 选中商品id
       goodsIds: [],
-      showSpecDialog: false,
-      productInfo: {},
-
       labelDialogVisible: false, // 标签弹窗
       labelList: [], // 标签列表数据
-      pickLabel: [] // 选中标签列表
+      pickLabel: [], // 选中标签列表
+      showSpecDialog: false, // 规格弹窗
+      productInfo: {} // 规格回显数据
     }
   },
-  mounted () {
+  mounted() {
     // 编辑初始化
     if (this.isGoing === true) {
       this.editSeckillInit()
     }
+
     if (this.isEdite === true) {
       this.disabledFlag = true
     } else {
       this.disabledFlag = false
     }
+
     // 获取会员卡数据
     allCardApi().then((res) => {
       if (res.error === 0) {
@@ -675,9 +677,10 @@ export default {
         this.labelList = res.content
       }
     })
+    this.getAllCard()
   },
   watch: {
-    lang () {
+    lang() {
 
     },
     'form.goodsId': function (value) {
@@ -687,8 +690,17 @@ export default {
     }
   },
   methods: {
+    // 获取会员卡数据
+    getAllCard() {
+      allCardApi().then((res) => {
+        if (res.error === 0) {
+          this.cardList = res.content
+        }
+      })
+    },
+
     // 编辑初始化
-    editSeckillInit () {
+    editSeckillInit() {
       getSeckillList({ skId: this.editId }).then((res) => {
         console.log(res)
         if (res.error === 0) {
@@ -696,6 +708,7 @@ export default {
           this.form.name = data.name
           this.form.goodsId = data.goods.map(item => { return item.goodsId })
           this.form.secKillProduct = this.initEditProduct(data.goods)
+          console.log(this.form.secKillProduct)
           this.form.startTime = data.startTime
           this.form.endTime = data.endTime
           this.form.validity = [data.startTime, data.endTime]
@@ -746,58 +759,29 @@ export default {
         }
       })
     },
-    showSpec (goodsInfo) {
-      this.productInfo = goodsInfo
-      this.showSpecDialog = true
-      console.log(this.showSpecDialog)
-    },
-    changePriceInput (goodsInfo, isDialog = null) {
-      if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
-        goodsInfo.priceErrorMsg = null
-        goodsInfo.goodsSpecProducts.forEach((item, index) => {
-          if (!isDialog) item.secKillPrice = goodsInfo.secKillPrice
-          // if (this.validatePrdPrice(item) && !goodsInfo.priceErrorMsg) {
-          //   goodsInfo.priceErrorMsg = '有规格秒杀价大于原价，请修改'
-          // }
-        })
-      } else {
-        goodsInfo.priceErrorMsg = null
-        if (goodsInfo.secKillPrice > goodsInfo.shopPrice) {
-          goodsInfo.priceErrorMsg = '有规格秒杀价大于原价，请修改'
-        }
-      }
-    },
-    changeStockInput (goodsInfo, isDialog = null) {
-      if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
-        goodsInfo.stockErrorMsg = null
-        goodsInfo.totalStock = 0
-        goodsInfo.goodsSpecProducts.forEach((item, index) => {
-          if (!isDialog) item.stock = goodsInfo.stock
-          goodsInfo.totalStock += parseInt(item.stock)
-          // if (this.validatePrdStock(item) && !goodsInfo.stockErrorMsg) {
-          //   goodsInfo.stockErrorMsg = '有规格秒杀库存大于原库存，请修改'
-          // }
-        })
-      } else {
-        goodsInfo.stockErrorMsg = null
-        if (goodsInfo.stock > goodsInfo.goodsNumber) {
-          goodsInfo.stockErrorMsg = '有规格秒杀库存大于原库存，请修改'
-        }
-      }
-    },
 
-    // // 获取商品信息
-    // getGoodsInfo (id) {
-    //   getSelectGoods({ goodsId: id }).then((res) => {
-    //     if (res.error === 0) {
-    //       this.goodsRow = res.content
-    //       this.goodsRow.ischecked = true
-    //     }
-    //   })
-    // },
+    // 编辑回显规格
+    initEditProduct(goods) {
+      let newdata = []
+      goods.forEach(item => {
+        let expand = item.secKillProduct.length < 2 ? { ...item.secKillProduct[0] } : { ...item.secKillProduct[0], goodsSpecProducts: item.secKillProduct }
+        newdata.push({ ...item, ...expand })
+      })
+      newdata.forEach(item => {
+        if (item.goodsSpecProducts && item.goodsSpecProducts.length > 0) {
+          item.flag1 = true
+          item.flag2 = true
+          item.totalStock = 0
+          item.goodsSpecProducts.forEach(val => {
+            item.totalStock += parseInt(val.stock)
+          })
+        }
+      })
+      return newdata
+    },
 
     // 保存秒杀活动
-    saveClickHandler () {
+    saveClickHandler() {
       // 校验活动分享
       if (this.form.shareConfig.shareAction === 2 && this.form.shareConfig.shareDoc === '') {
         this.$message.warning('请填写活动文案')
@@ -898,93 +882,100 @@ export default {
       this.submitStatus = false
     },
 
-    // 选择商品弹窗
-    showChoosingGoods () {
+    // 显示商品弹窗
+    showChoosingGoods() {
       this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
     },
 
     // 商品弹窗的回调函数
-    choosingGoodsResult (row) {
+    choosingGoodsResult(row) {
       if (row.length === 0) {
         return
       }
-      console.log(row)
       this.form.goodsId = row.map(item => { return item.goodsId })
-      // this.initTableData()
       this.form.secKillProduct = row
       // 可编辑状态
       this.disabledFlag = false
     },
-    getProductdata ({ goodsId, prdInfo }) {
+
+    // 批量设置数据
+    setCurrent(index) {
+      this.activeIndex = index
+    },
+
+    // 显示规格弹窗
+    showSpec(goodsInfo) {
+      console.log(goodsInfo)
+      this.productInfo = goodsInfo
+      // 数据回显 secKillPrice stock
+      this.productInfo.goodsSpecProducts.forEach(item => {
+        item.secKillPrice = this.productInfo.flag1 ? item.secKillPrice : ''
+        item.stock = this.productInfo.flag2 ? item.stock : ''
+      })
+      this.showSpecDialog = !this.showSpecDialog
+    },
+
+    // 规格弹窗回调函数
+    getProductdata({ goodsId, prdInfo }) {
       console.log(goodsId, prdInfo)
       let target = this.form.secKillProduct.find(item => { return item.goodsId === goodsId })
       let index = this.form.secKillProduct.findIndex(item => { return item.goodsId === goodsId })
       this.$set(this.form.secKillProduct[index], 'secKillPrice', prdInfo[0].secKillPrice)
       this.$set(this.form.secKillProduct[index], 'stock', prdInfo[0].stock)
+      this.$set(this.form.secKillProduct[index], 'flag1', true)
+      this.$set(this.form.secKillProduct[index], 'flag2', true)
       target.goodsSpecProducts = prdInfo
-      this.changePriceInput(target, true)
-      this.changeStockInput(target, true)
+      if (target.goodsSpecProducts && target.goodsSpecProducts.length > 0) {
+        target.totalStock = 0
+        target.goodsSpecProducts.forEach(item => {
+          target.totalStock += parseInt(item.stock)
+        })
+      }
     },
-    initEditProduct (goods) {
-      let newdata = []
-      goods.forEach(item => {
-        let expand = item.secKillProduct.length < 2 ? { ...item.secKillProduct[0] } : { ...item.secKillProduct[0], goodsSpecProducts: item.secKillProduct }
-        newdata.push({ ...item, ...expand })
-      })
-      return newdata
-    },
-    // // 初始化规格表格
-    // initTableData () {
-    //   // getAllGoodsProductList(this.form.goodsId).then(res => {
-    //   //   res.content.forEach((item, index) => {
-    //   //     item.index = index
-    //   //     // 单规格名称回显
-    //   //     if (item.prdDesc === '') {
-    //   //       item.prdDesc = this.goodsRow.goodsName
-    //   //     }
-    //   //   })
-    //   //   this.form.secKillProduct = res.content
-    //   //   console.log(' this.form.secKillProduct ', this.form.secKillProduct)
-    //   // })
-
-    // },
 
     // 图片弹窗
-    addGoodsImg () {
+    addGoodsImg() {
       this.showImageDialog = !this.showImageDialog
     },
 
     // 图片点击回调函数
-    handleSelectImg (res) {
+    handleSelectImg(res) {
       if (res != null) {
         this.form.shareConfig.shareImg = res.imgUrl
       }
     },
 
     // 展开更多配置
-    handleToChangeArror () {
+    handleToChangeArror() {
       this.arrorFlag = !this.arrorFlag
     },
 
     // 刷新
-    refresh () {
-      console.log(111)
+    refresh() {
+      this.getAllCard()
+      this.$nextTick(() => {
+        this.$message.success('刷新成功')
+      })
     },
 
-    addMemberCard () {
+    // 跳转新建会员卡
+    addMemberCard() {
       window.open('/admin/home/main/normalCardDetail')
     },
 
-    manageMemberCard () {
+    // 跳转管理会员卡
+    manageMemberCard() {
       window.open('/admin/home/main/user_card')
     },
 
     // 校验秒杀价格
-    validateMoney (rule, value, callback, prdPrice, row) {
+    validateMoney(rule, value, callback, prdPrice, row) {
+      row.flag1 = false
+      // 找到最低规格价
       if (row.goodsSpecProducts && row.goodsSpecProducts.length > 0) {
         row.goodsSpecProducts.forEach(item => {
-          if (prdPrice > item.secKillPrice) {
-            prdPrice = item.secKillPrice
+          if (prdPrice > item.shopPrice) {
+            prdPrice = item.shopPrice
           }
         })
       }
@@ -998,11 +989,14 @@ export default {
         callback(new Error('秒杀价不能大于商品规格原价'))
       } else {
         callback()
+        row.flag1 = true
       }
     },
 
     // 校验秒杀库存
-    validateNum (rule, value, callback, prdNumber, row) {
+    validateNum(rule, value, callback, prdNumber, row, index) {
+      row.flag2 = false
+      // 找到最低规格库存
       if (row.goodsSpecProducts && row.goodsSpecProducts.length > 0) {
         row.goodsSpecProducts.forEach(item => {
           if (prdNumber > item.prdNumber) {
@@ -1020,46 +1014,44 @@ export default {
         callback(new Error('秒杀库存不能大于商品规格库存'))
       } else {
         callback()
+        row.flag2 = true
       }
-    },
-    validatePrdPrice (item) {
-      if (item.prdPrice < item.secKillPrice) return true
-      return false
-    },
-    validatePrdStock (item) {
-      if (item.prdNumber < item.stock) return true
-      return false
-    },
-    // 批量设置数据
-    setCurrent (index) {
-      // 拷贝一份数据
-      let price = JSON.parse(JSON.stringify(this.form.secKillProduct))
-      switch (index) {
-        case 1:
-          price.forEach(row => {
-            row.secKillPrice = price[0].secKillPrice
-            console.log(row)
-            this.changePriceInput(row)
-          })
-          this.activeIndex = 1
-          break
-        case 2:
-          price.forEach(row => {
-            row.stock = price[0].stock
-            this.changeStockInput(row)
-          })
-          this.activeIndex = 2
-          break
-      }
-      this.form.secKillProduct = price
     },
 
-    cardIdBlur (e) {
+    // 价格切换
+    priceChange(data) {
+      if (data.goodsSpecProducts && data.goodsSpecProducts.length > 0) {
+        var result = data.goodsSpecProducts.find(item => { return data.secKillPrice > item.prdPrice })
+        var re = /^\d+(\.\d{1,2})?$/
+        if (result === undefined && re.test(data.secKillPrice)) {
+          data.goodsSpecProducts.forEach((item, index) => {
+            item.secKillPrice = data.secKillPrice
+          })
+        }
+      }
+    },
+
+    // 库存切换
+    numChange(data) {
+      if (data.goodsSpecProducts && data.goodsSpecProducts.length > 0) {
+        data.totalStock = 0
+        var result = data.goodsSpecProducts.find(item => { return data.stock > item.prdNumber })
+        var re = /^(0|\+?[1-9][0-9]*)$/
+        if (result === undefined && re.test(data.stock)) {
+          data.goodsSpecProducts.forEach((item, index) => {
+            item.stock = data.stock
+            data.totalStock += parseInt(item.stock)
+          })
+        }
+      }
+    },
+
+    cardIdBlur(e) {
       this.$refs['form'].validateField('cardId')
     },
 
     // 标签弹窗
-    selectLabel () {
+    selectLabel() {
       if (this.isEdite === true) {
         return false
       }
@@ -1067,7 +1059,7 @@ export default {
     },
 
     // 删除标签
-    deleteLabel (index) {
+    deleteLabel(index) {
       if (this.isEdite === true) {
         this.$message.warning('编辑状态不可操作')
         return false
@@ -1080,7 +1072,7 @@ export default {
     },
 
     // 标签弹窗回调函数
-    resultLabelDatas (row) {
+    resultLabelDatas(row) {
       this.pickLabel = row
       this.form.activityTagId = []
       this.pickLabel.forEach(item => {
@@ -1089,7 +1081,7 @@ export default {
     },
 
     // 活动预告类型切换
-    preTimeChange (e) {
+    preTimeChange(e) {
       this.$refs['form'].validateField('preTime')
     }
 
@@ -1176,6 +1168,7 @@ export default {
   color: red;
   line-height: 1;
 }
+
 .labelStyle {
   color: #5a8bff;
   cursor: pointer;
@@ -1191,5 +1184,31 @@ export default {
   padding: 0 10px;
   margin-right: 10px;
   color: #666;
+}
+.goodImge {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+.goodImge .img {
+  flex: 0.2;
+}
+.goodImge img {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border: 1px solid #ccc;
+}
+.goodImge .name {
+  flex: 0.8;
+  width: 115px;
+  height: 50px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  margin-left: 12px;
+  text-align: left;
 }
 </style>
