@@ -402,7 +402,7 @@ public final class DateUtil {
 	 * 	获取当前时间周期（日，周，月，季，年）的起止时间
 	 * 	@return Timestamp[2] = {start, end}
 	 */
-	private Timestamp[] getInterval(IntervalType type) {
+	public static Timestamp[] getInterval(IntervalType type) {
         LocalDate startDate = null, endDate = null;
         LocalDate currentDate = LocalDate.now();
         //	初始化当前年月日
