@@ -26,7 +26,7 @@ export const en = {
   ],
   // 表格
   activityName: 'ActivityName',
-  goodsName: 'Goods',
+  goodsName: 'ActiveGoods',
   first: 'priority',
   validDate: 'ValidDate',
   activityStatus: 'ActivityStatus',
@@ -44,6 +44,8 @@ export const en = {
   delete: 'delete',
   effect: 'effectInfo',
   // 添加
+  level: 'Priority',
+  commodityName: 'Commodity Name',
   select: 'selectGood',
   startTime: 'startTime',
   to: 'to',
@@ -79,6 +81,8 @@ export const en = {
   prdStock: 'stock',
   goodsSaleNum: 'Seconds Sold',
   prdTypeNum: 'Surplus Stock',
+  goodsStock: 'Goods Stock',
+  goodsSold: 'Quantity Sold',
   save: 'Save',
   // 分享
   shareTitle: 'Share With Friends~',
