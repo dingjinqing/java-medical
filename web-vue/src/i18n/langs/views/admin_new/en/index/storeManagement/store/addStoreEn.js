@@ -81,5 +81,14 @@ export const en = {
   enterValidCharacter: 'Please enter a valid character! ',
   selectRegion: 'Please select a region',
   Max5: 'Select up to 5 sheets',
-  addFaild: 'Add failed'
+  addFaild: 'Add failed',
+  selfCollectingTime: 'Self-collecting time',
+  storeOpeningTime: 'Store opening hours',
+  pickupCondition: 'Users can choose to pick up at any store business hours after submitting the order',
+  submitOrder: 'Submit order',
+  hour: 'hour',
+  day: 'Day',
+  afterPickup: 'You can go to the store to pick up the goods',
+  choosePickupTime: 'Users can choose the pick-up time within a time frame after submitting an order',
+  fillPickupTime: 'Please fill in the self-collection time'
 }
