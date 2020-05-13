@@ -1,68 +1,5 @@
 package com.vpu.mp.service.shop.member;
 
-import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
-import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
-import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
-import static com.vpu.mp.db.shop.Tables.GOODS_CARD_COUPLE;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_BRAND;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_GOODS;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_PLAT;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_STORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_RA_CODE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_RA_PWD;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NORMAL;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NUM_LETTERS;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PAY_OWN_GOOD_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.REFUSED;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_EXPIRED;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.VERIFIED;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_CASH;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_TO_BE_CONFIRMED;
-import static org.jooq.impl.DSL.count;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import javax.validation.Valid;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Condition;
-import org.jooq.InsertValuesStep3;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.CardBatchRecord;
@@ -136,7 +73,6 @@ import com.vpu.mp.service.pojo.shop.member.card.RankCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.dao.CardFullDetail;
 import com.vpu.mp.service.pojo.shop.member.card.show.CardUseStats;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
@@ -152,7 +88,6 @@ import com.vpu.mp.service.pojo.wxapp.card.param.CardCustomActionParam;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.card.CardCreateService;
 import com.vpu.mp.service.shop.card.CardDetailService;
-import com.vpu.mp.service.shop.card.CardFreeShipService;
 import com.vpu.mp.service.shop.card.msg.CardMsgNoticeService;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.ImageService;
@@ -169,8 +104,68 @@ import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
-
 import jodd.util.StringUtil;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Condition;
+import org.jooq.InsertValuesStep3;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
+import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
+import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
+import static com.vpu.mp.db.shop.Tables.GOODS_CARD_COUPLE;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_BRAND;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_GOODS;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_PLAT;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_STORE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_RA_CODE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_RA_PWD;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NORMAL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NUM_LETTERS;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PAY_OWN_GOOD_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.REFUSED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_EXPIRED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.VERIFIED;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_CASH;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_TO_BE_CONFIRMED;
+import static org.jooq.impl.DSL.count;
 
 
 /**
@@ -881,7 +876,7 @@ public class MemberCardService extends ShopBaseService {
 	 * @param data 用户卡相关数据
 	 * @throws MpException
 	 */
-	public void updateMemberCardExchangeSurplus(CardConsumpData data, TradeOptParam tradeOpt, String language)
+	public void updateMemberCardExchangeSurplus(CardConsumpData data)
 			throws MpException {
 		/** 1-判断是不是限次会员卡则结束 */
 		if (!MCARD_TP_LIMIT.equals(data.getType())) {
@@ -907,11 +902,8 @@ public class MemberCardService extends ShopBaseService {
 
 		/** 4-更新user_card用户会员卡的卡剩余兑换次数 */
 		updateUserCard(data, userCard, RemarkTemplate.ADMIN_EXCHANGE_GOODS.code);
-		// TODO模板消息
-		/**
-		 * 5-记录交易明细
-		 */
-		insertCardAccountTradesRecord(data, tradeOpt);
+		// TODO 模板消息
+
 	}
 
 	/**

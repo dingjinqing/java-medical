@@ -349,3 +349,5 @@
     </view>
   </view>
 </v-share>
+<!-- 悬浮窗 -->
+<v-suspend-window page_id='-3'/>

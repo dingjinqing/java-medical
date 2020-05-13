@@ -1,1 +1,138 @@
-/* components/suspend-window/index.wxss */
+page{
+    height: 100%;
+  }
+  
+  
+  .suspend_float_nav{
+      position: fixed; 
+      bottom: 180rpx;
+      right: 20rpx;
+      width: 100rpx;
+      height: 100rpx;
+      z-index: 10;
+      transition: transform .3s;
+  }
+  .suspend_float_nav .nav_item {
+      width: 100rpx;
+      height: 100rpx;
+      border-radius: 50%;
+      box-shadow: 0rpx 4rpx 20rpx 0rpx rgba(204, 204, 204, 0.66);
+      overflow: hidden;
+      cursor: pointer;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+  }
+  .suspend_float_nav .nav_item image {
+      height: 100rpx;
+      width: 100rpx;
+      background: #fff;
+      border-radius: 200rpx;
+  }
+  /* 主图标 */
+  .suspend_float_nav .nav_item_main view {
+      z-index: 1;
+      transition: transform .3s;
+      width: 100rpx;
+      height: 100rpx;
+      border-radius: 200rpx;
+  }
+  .suspend_float_nav .nav_item_main, .suspend_float_nav .nav_item_main_1 {
+      position: absolute;
+      top: 0;
+      left: 0;
+  }
+  .suspend_float_nav .nav_item_main .nav_item_main_2 {
+      opacity: 0;
+      visibility: hidden;
+      transform: rotate(-90deg);
+  }
+  .suspend_float_nav_active  .nav_item_main .nav_item_main_1 {
+      opacity: 0;
+      visibility: hidden;
+      transform: rotate(90deg);
+  }
+  .suspend_float_nav_active .nav_item_main .nav_item_main_2 {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+  }
+  
+  /* 子图标 */
+  .suspend_float_nav .nav_item_sub {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: all .3s;
+  }
+  
+  .suspend_float_nav_active .nav_item_sub {
+      opacity: 1;
+      visibility: visible;
+  }
+   .nav_item_sub_independent {
+      opacity: 1 !important;
+      visibility: visible !important;
+  }
+  
+  .surpass_content {
+      height: 300rpx;
+      position: absolute;
+      bottom: 0px;
+      left: 50%;
+      width: 400rpx;
+      margin-left: -500rpx;
+      border-radius: 20rpx;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      padding: 20rpx 8rpx 10rpx 12rpx;
+      transform: translate3d(calc(50vw - 80rpx), 50%, 0) scale3d(0, 0, 1);
+      opacity: 0;
+      transition: transform .3s, opacity .2s;
+      background: rgba(0, 0, 0, 0.5);
+  }
+  .suspend_float_nav_active .surpass_content {
+      transform: none;
+      opacity: 1;
+  }
+  .surpass_every {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      margin-bottom: 10rpx;
+      width: 130rpx;
+  }
+  .surpass_view {
+      width: 90rpx;
+      height: 90rpx;
+      border-radius: 50%;
+      background: #fff;
+      margin-bottom: 4rpx;
+      overflow: hidden;
+  }
+  .surpass_view>image{
+    width: 90rpx;
+    height: 90rpx;
+  }
+  .surpass_every>text {
+      color: #fff;
+      font-size: 12px;
+  }
+  
+  /* 蒙层 */
+  .cover_click{
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0);
+    position: fixed;
+    top: 0;
+    z-index: 9;
+  }
+  button::after{
+  border:none;
+  }
+  button{
+    padding: 0;
+  }

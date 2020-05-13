@@ -32,6 +32,7 @@ public class RemarkMessage {
 	public static final String MSG_ORDER_VIRTUAL_RETURN_DEFAULT = "order.virtual.return.default";
     public static final String MSG_ORDER_FINISH_SEND_SCORE = "order.finish.send.score";
     public static final String MSG_ORDER_REBATE = "order.rebate";
+    public static final String MSG_ORDER_LIMIT_EXCHGE_GOODS = "order.limit.exchge.goods";
 	/**
 	 * 会员卡
 	 */

@@ -26,6 +26,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.Retur
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
+import com.vpu.mp.service.shop.card.wxapp.WxCardExchangeService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
@@ -115,6 +116,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     private ShopReturnConfigService returnCfg;
     @Autowired
     private AtomicOperation atomicOperation;
+    @Autowired
+    private WxCardExchangeService wxCardExchange;
     @Override
 	public OrderServiceCode getServiceCode() {
 		return OrderServiceCode.RETURN;
@@ -576,11 +579,11 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 				orderInfo.setOrderstatus(order.getOrderSn(),OrderConstant.ORDER_SHIPPED);
 			}
 		}
-		//TODO 做到了这里
+		//限次卡退次数
+        wxCardExchange.limitCardRefundTimes(order, returnGoods);
 		//返利金额重新计算
 		// 发送退款成功模板消息
 		// 自动同步订单微信购物单
-		//TODO
         returnStatusChange.addRecord(returnOrderRecord, param.getIsMp(), "当前退款订单正常结束："+OrderConstant.RETURN_TYPE_CN[returnOrderRecord.getReturnType()]);
         logger.info("退款完成变更相关信息end");
 	}
