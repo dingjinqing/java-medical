@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.DateUtil.IntervalType;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
@@ -1086,44 +1087,13 @@ public class OrderInfoService extends ShopBaseService {
     }
 
     /**
-     * 获取指定条件时间周期
+     * 	获取指定条件时间周期
      * @param freeLimit 2：年，3：季，4：月，5：周，6：日的
      * @return Timestamp[2] = {start, end}
      */
     private Timestamp[] getCardFreeShipInterval(Byte freeLimit) {
-        LocalDate startDate = null, endDate = null;
-        LocalDate currentDate = LocalDate.now();
-        //初始化当前年月日
-        int year = currentDate.getYear(), month = currentDate.getMonthValue(), day = currentDate.getDayOfMonth();
-        if(CardFreeship.shipType.SHIP_YEAR.getType() == freeLimit) {
-            //年
-            startDate = LocalDate.of(year, 1 ,1);
-            endDate = LocalDate.of(year, 12, 1).with(TemporalAdjusters.lastDayOfMonth());
-        }else if(CardFreeship.shipType.SHIP_SEASON.getType() == freeLimit) {
-            //季
-            startDate = LocalDate.of(year, (((month -1) / 3 + 1)* 3 -2),1);
-            endDate = LocalDate.of(year, (((month -1) / 3 + 1)* 3) ,1).with(TemporalAdjusters.lastDayOfMonth());
-        }else if(CardFreeship.shipType.SHIP_MONTH.getType() == freeLimit) {
-            //月
-            startDate = LocalDate.of(year, month, 1);
-            endDate = LocalDate.of(year, month ,1).with(TemporalAdjusters.lastDayOfMonth());
-        }else if(CardFreeship.shipType.SHIP_WEEK.getType() == freeLimit) {
-            //周(周一开始)
-            //the day-of-week, from 1 (Monday) to 7 (Sunday)
-            int dayOfWeek = currentDate.getDayOfWeek().getValue();
-            startDate = currentDate.plusDays(-dayOfWeek + 1);
-            endDate = currentDate.plusDays(7 -dayOfWeek);
-        }else if(CardFreeship.shipType.SHIP_DAY.getType() == freeLimit) {
-            //天
-            startDate = currentDate;
-            endDate = currentDate;
-        }else {
-            return null;
-        }
-        Timestamp[] startAndEnd =  new Timestamp[2];
-        startAndEnd[0] = Timestamp.valueOf(LocalDateTime.of(startDate, DateUtil.minTime));
-        startAndEnd[1] = Timestamp.valueOf(LocalDateTime.of(endDate, DateUtil.maxTime));
-        return startAndEnd;
+    	IntervalType[] values = DateUtil.IntervalType.values();
+    	return DateUtil.getInterval(values[values.length-freeLimit]);
     }
 
     /******************************************分割线以下与订单模块没有*直接*联系*********************************************/

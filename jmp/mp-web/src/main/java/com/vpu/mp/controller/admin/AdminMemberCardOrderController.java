@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.service.foundation.exception.MpException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ public class AdminMemberCardOrderController extends AdminBaseController {
     }
 
     @PostMapping("/refund")
-    public JsonResult orderRefund(@RequestBody VirtualOrderRefundParam param) {
+    public JsonResult orderRefund(@RequestBody VirtualOrderRefundParam param) throws MpException {
         if(shop().couponPackOrder.checkVirtualOrderRefundParam(param)){
             JsonResultCode result = shop().memberCardOrder.memberCardOrderRefund(param);
             return result == null ? success() : fail(result);

@@ -103,7 +103,7 @@ public class CouponPackOrderService extends VirtualOrderService {
                 couponPackOrderVo.setReturnFlag((byte)3);
             }
 			//超过一年不能退款
-            if (couponPackOrderVo.getPayTime()!=null&&DateUtil.getLocalDateTime().before(DateUtil.getTimeStampPlus(couponPackOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
+            if (couponPackOrderVo.getPayTime()!=null&&DateUtil.getLocalDateTime().after(DateUtil.getTimeStampPlus(couponPackOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
                 couponPackOrderVo.setCanReturn(BaseConstant.NO);
             }else {
                 couponPackOrderVo.setCanReturn(BaseConstant.YES);
@@ -183,12 +183,8 @@ public class CouponPackOrderService extends VirtualOrderService {
 	 * @param
 	 * @return
 	 */
-	public JsonResultCode refundCouponPackOrder(CouponPackOrderRefundParam param) {
-        try {
-			this.virtualOrderRefund(param.getVirtualOrderRefundParam());
-		} catch (MpException e) {
-			return e.getErrorCode();
-		}
+	public JsonResultCode refundCouponPackOrder(CouponPackOrderRefundParam param) throws MpException {
+	    this.virtualOrderRefund(param.getVirtualOrderRefundParam());
         this.updateSendFlag(param.getStillSendFlag(), param.getOrderId());
 
         /** 操作记录 */

@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderPageParam;
@@ -38,7 +39,7 @@ public class AdminCouponPackOrderController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping("/refund")
-	public JsonResult refundPackOrder(@RequestBody @Valid CouponPackOrderRefundParam param) {
+	public JsonResult refundPackOrder(@RequestBody @Valid CouponPackOrderRefundParam param) throws MpException {
 	    if(shop().couponPackOrder.checkVirtualOrderRefundParam(param.getVirtualOrderRefundParam())){
             JsonResultCode result = shop().couponPackOrder.refundCouponPackOrder(param);
             return result == null ? success() : fail(result);

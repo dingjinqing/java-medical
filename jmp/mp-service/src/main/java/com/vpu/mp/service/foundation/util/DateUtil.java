@@ -5,9 +5,12 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 
 /**
  * Date工具
@@ -17,7 +20,9 @@ import java.util.stream.IntStream;
  *
  */
 public final class DateUtil {
-
+	public static enum IntervalType{
+		DAY,WEEK,MONTH,SEASON,YEAR
+	}
 	protected static ThreadLocal<Map<String, SimpleDateFormat>> threadLocal = ThreadLocal
 			.withInitial(() -> new HashMap<String, SimpleDateFormat>());
 
@@ -41,6 +46,7 @@ public final class DateUtil {
     public static final LocalTime minTime = LocalTime.of(0, 0, 0);
     //时分秒最大
     public static final LocalTime maxTime = LocalTime.of(23, 59, 59);
+
 
 
     private static final  ZoneId defaultZoneId = ZoneId.systemDefault();
@@ -389,4 +395,44 @@ public final class DateUtil {
 		}
 		return list;
 	}
+	
+	/**
+	 * 	获取当前时间周期（日，周，月，季，年）的起止时间
+	 * 	@return Timestamp[2] = {start, end}
+	 */
+	public static Timestamp[] getInterval(IntervalType type) {
+        LocalDate startDate = null, endDate = null;
+        LocalDate currentDate = LocalDate.now();
+        //	初始化当前年月日
+        int year = currentDate.getYear(), month = currentDate.getMonthValue(), day = currentDate.getDayOfMonth();
+        if(IntervalType.YEAR.equals(type)) {
+            //	年
+            startDate = LocalDate.of(year, 1 ,1);
+            endDate = LocalDate.of(year, 12, 1).with(TemporalAdjusters.lastDayOfMonth());
+        }else if(IntervalType.SEASON.equals(type)) {
+            //	季
+            startDate = LocalDate.of(year, (((month -1) / 3 + 1)* 3 -2),1);
+            endDate = LocalDate.of(year, (((month -1) / 3 + 1)* 3) ,1).with(TemporalAdjusters.lastDayOfMonth());
+        }else if(IntervalType.MONTH.equals(type)) {
+            //	月
+            startDate = LocalDate.of(year, month, 1);
+            endDate = LocalDate.of(year, month ,1).with(TemporalAdjusters.lastDayOfMonth());
+        }else if(IntervalType.WEEK.equals(type)) {
+            //	周(周一开始)
+            //	the day-of-week, from 1 (Monday) to 7 (Sunday)
+            int dayOfWeek = currentDate.getDayOfWeek().getValue();
+            startDate = currentDate.plusDays(-dayOfWeek + 1);
+            endDate = currentDate.plusDays(7 -dayOfWeek);
+        }else if(IntervalType.DAY.equals(type)) {
+            //	天
+            startDate = currentDate;
+            endDate = currentDate;
+        }else {
+            return null;
+        }
+        Timestamp[] startAndEnd =  new Timestamp[2];
+        startAndEnd[0] = Timestamp.valueOf(LocalDateTime.of(startDate, DateUtil.minTime));
+        startAndEnd[1] = Timestamp.valueOf(LocalDateTime.of(endDate, DateUtil.maxTime));
+        return startAndEnd;
+    }
 }

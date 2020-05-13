@@ -73,7 +73,7 @@ public class VirtualOrderService extends ShopBaseService {
     	//订单
     	VirtualOrderPayInfo payInfo = getOrderPayInfo(param.getOrderId());
     	//虚拟订单退款限制为1年
-        if (payInfo.getPayTime()!=null&&DateUtil.getLocalDateTime().before(DateUtil.getTimeStampPlus(payInfo.getPayTime(),1, ChronoUnit.YEARS))){
+        if (payInfo.getPayTime()!=null&&DateUtil.getLocalDateTime().after(DateUtil.getTimeStampPlus(payInfo.getPayTime(),1, ChronoUnit.YEARS))){
             throw new MpException(JsonResultCode.REFUND_REQUEST_PARAMETER_TIME_ONE_YEAR);
         }
     	

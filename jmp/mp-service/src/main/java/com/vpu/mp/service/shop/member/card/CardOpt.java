@@ -148,7 +148,7 @@ public abstract class CardOpt extends ShopBaseService{
 	}
 	
 	/**
-	 * 	判断目前会员卡是否可以使用
+	 * 	获取目前会员卡是否可以使用
 	 */
 	public CardUseCondition judegeCardUsable(UserCardRecord userCard,MemberCardRecord memberCard) {
 		logger().info("获取当前会员卡是否可以使用");

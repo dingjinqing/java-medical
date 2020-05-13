@@ -53,7 +53,7 @@ public class MemberCardOrderService extends VirtualOrderService {
         PageResult<MemberCardOrderVo> pageResult = getPageResult(select, param, MemberCardOrderVo.class);
         pageResult.getDataList().forEach(cardOrderVo->{
             //超过一年不能退款
-            if (cardOrderVo.getPayTime()!=null&&DateUtil.getLocalDateTime().before(DateUtil.getTimeStampPlus(cardOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
+            if (cardOrderVo.getPayTime()!=null&&DateUtil.getLocalDateTime().after(DateUtil.getTimeStampPlus(cardOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
                 cardOrderVo.setCanReturn(BaseConstant.NO);
             }else {
                 cardOrderVo.setCanReturn(BaseConstant.YES);
@@ -105,12 +105,8 @@ public class MemberCardOrderService extends VirtualOrderService {
     /**
      * 手动退款
      */
-    public JsonResultCode memberCardOrderRefund(VirtualOrderRefundParam param) {
-        try {
-			this.virtualOrderRefund(param);
-		} catch (MpException e) {
-			return e.getErrorCode();
-		}
+    public JsonResultCode memberCardOrderRefund(VirtualOrderRefundParam param) throws MpException {
+        this.virtualOrderRefund(param);
 
         /** 操作记录 */
         saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_MEMBER_CARD_ORDER_REFUND.code }), new String[] {param.getOrderSn()});
