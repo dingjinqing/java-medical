@@ -113,7 +113,7 @@
                         placement="top"
                       >
                         <i
-                          class="el-icon-edit-outline"
+                          class="iconfont iconbianji"
                           @click="editAct(scope.row)"
                         ></i>
                       </el-tooltip>
@@ -126,7 +126,7 @@
                         placement="top"
                       >
                         <i
-                          class="el-icon-delete"
+                          class="iconfont iconshanchu2"
                           @click="deleteAct(scope.row.id)"
                         ></i>
                       </el-tooltip>
@@ -657,6 +657,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "@/assets/aliIcon/iconfont.scss";
 .servicePledge {
   padding: 10px;
   height: 100%;
@@ -727,7 +728,7 @@ export default {
 .opt {
   .item {
     font-size: 22px;
-    color: #66b1ff;
+    color: #5a8bff;
     cursor: pointer;
   }
   .edit-item {
