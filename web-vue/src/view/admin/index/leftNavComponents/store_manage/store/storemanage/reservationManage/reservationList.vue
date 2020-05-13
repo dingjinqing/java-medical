@@ -522,7 +522,7 @@
             <el-col :span="10">
               <el-input
                 :placeholder="$t('reservationManage.messageLimit')"
-                v-model="reservation.adminMessage"
+                v-model="reservation.addMessage"
                 size="small"
                 class="new-input"
               >
@@ -670,7 +670,7 @@ export default {
         technicianName: '',
         serviceDate: '',
         servicePeriod: '',
-        adminMessage: ''
+        addMessage: ''
       },
       tableData: [],
       pageParams: {
@@ -864,7 +864,7 @@ export default {
         this.$message.warning('预约服务不能为空！')
       } else {
         console.log('技师列表：' + this.reservationTech)
-        if (!this.reservationTech) {
+        if (Array.isArray(this.reservationTech) && this.reservationTech.length > 0) {
           this.reservation.technicianName = this.reservationTech.find((item) => {
             return item.id === this.reservation.technicianId
           }).technicianName

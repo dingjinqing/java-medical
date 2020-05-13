@@ -694,6 +694,29 @@ public class ServiceOrderService extends ShopBaseService {
     }
 
     /**
+     * Gets order list info.获取门店服务订单列表
+     *
+     * @param serviceId    the service id
+     * @param technicianId the technician id
+     * @param startDate    the date
+     * @param endDate      the date
+     * @param orderStatus  the order status
+     * @return the order list info
+     */
+    public List<ServiceOrderListQueryVo> getOrderListInfo(Integer serviceId, Integer technicianId, LocalDate startDate, LocalDate endDate, Byte orderStatus) {
+        SelectConditionStep<ServiceOrderRecord> condition = db().selectFrom(SERVICE_ORDER)
+            .where(SERVICE_ORDER.SERVICE_ID.eq(serviceId))
+            .and(SERVICE_ORDER.SERVICE_DATE.ge(startDate.format(DATE_TIME_FORMATTER)))
+            .and(SERVICE_ORDER.SERVICE_DATE.le(endDate.format(DATE_TIME_FORMATTER)))
+            .and(SERVICE_ORDER.ORDER_STATUS.eq(orderStatus))
+            .and(SERVICE_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+        if (Objects.nonNull(technicianId)) {
+            condition.and(SERVICE_ORDER.TECHNICIAN_ID.eq(technicianId));
+        }
+        return condition.fetchInto(ServiceOrderListQueryVo.class);
+    }
+
+    /**
      * Check max num of reservations long.
      * 判定预约数量是否超过同一时间段内可预约的最多人数(针对不需要技师的预约服务而言),不用传technicianId
      * 判定预约数量是否超过同一时间段内技师单时段服务数量(针对需要技师的预约服务而言), 需要传technicianId
@@ -715,6 +738,27 @@ public class ServiceOrderService extends ShopBaseService {
             return LocalTime.parse(periodTime[0], HH_MM_FORMATTER).isBefore(endPeriod) && LocalTime.parse(periodTime[1], HH_MM_FORMATTER).isAfter(startPeriod);
         }).count();
         log.debug("日期【{}】时间段[{}-{}]内已预约人数为：{}", date, startPeriod, endPeriod, num);
+        return num;
+    }
+
+    /**
+     * Check max num of reservations long.
+     * 判定预约数量是否超过同一时间段内可预约的最多人数(针对不需要技师的预约服务而言),不用传technicianId
+     * 判定预约数量是否超过同一时间段内技师单时段服务数量(针对需要技师的预约服务而言), 需要传technicianId
+     *
+     * @param orderListQueryVos orderListQueryVos
+     * @param startPeriod       the start period
+     * @param endPeriod         the end period
+     * @return the long
+     */
+    public long checkMaxNumOfReservations(List<ServiceOrderListQueryVo> orderListQueryVos, LocalTime startPeriod, LocalTime endPeriod) {
+        if (CollectionUtils.isEmpty(orderListQueryVos)) {
+            return LONG_ZERO;
+        }
+        long num = orderListQueryVos.stream().filter(Objects::nonNull).filter((e) -> {
+            String[] periodTime = e.getServicePeriod().split(REGEX);
+            return LocalTime.parse(periodTime[0], HH_MM_FORMATTER).isBefore(endPeriod) && LocalTime.parse(periodTime[1], HH_MM_FORMATTER).isAfter(startPeriod);
+        }).count();
         return num;
     }
 
