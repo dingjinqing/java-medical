@@ -214,6 +214,10 @@
                   :prop="'secKillProduct.' + scope.$index+ '.stock'"
                   :rules="[{ validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.goodsNumber, scope.row, scope.$index)}, trigger: ['blur', 'change'] }]"
                 >
+                  <div
+                    class="input-error"
+                    v-if="scope.row.stockErrorMsg"
+                  >{{scope.row.stockErrorMsg}}</div>
                   <el-input
                     v-model="scope.row.stock"
                     size="small"
@@ -658,7 +662,6 @@ export default {
     if (this.isGoing === true) {
       this.editSeckillInit()
     }
-
     if (this.isEdite === true) {
       this.disabledFlag = true
     } else {

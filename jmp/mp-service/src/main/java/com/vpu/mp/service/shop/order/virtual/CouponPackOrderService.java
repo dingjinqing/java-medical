@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.order.virtual;
 
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -39,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -79,7 +81,7 @@ public class CouponPackOrderService extends VirtualOrderService {
             .select(VIRTUAL_ORDER.ORDER_ID, VIRTUAL_ORDER.VIRTUAL_GOODS_ID, COUPON_PACK.PACK_NAME,
                 VIRTUAL_ORDER.ORDER_SN, VIRTUAL_ORDER.USER_ID, USER.USERNAME, USER.MOBILE, VIRTUAL_ORDER.MONEY_PAID, VIRTUAL_ORDER.USE_ACCOUNT, VIRTUAL_ORDER.USE_SCORE, VIRTUAL_ORDER.MEMBER_CARD_BALANCE, VIRTUAL_ORDER.CARD_NO, VIRTUAL_ORDER.PAY_CODE, VIRTUAL_ORDER.PAY_NAME, VIRTUAL_ORDER.PREPAY_ID, VIRTUAL_ORDER.PAY_SN, VIRTUAL_ORDER.ORDER_AMOUNT,
                 VIRTUAL_ORDER.CREATE_TIME, VIRTUAL_ORDER.RETURN_FLAG, VIRTUAL_ORDER.RETURN_SCORE, VIRTUAL_ORDER.RETURN_ACCOUNT, VIRTUAL_ORDER.RETURN_MONEY, VIRTUAL_ORDER.RETURN_CARD_BALANCE,
-                VIRTUAL_ORDER.RETURN_TIME, VIRTUAL_ORDER.CURRENCY)
+                VIRTUAL_ORDER.RETURN_TIME, VIRTUAL_ORDER.CURRENCY,VIRTUAL_ORDER.PAY_TIME)
             .from(VIRTUAL_ORDER)
             .leftJoin(COUPON_PACK).on(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(COUPON_PACK.ID))
             .leftJoin(USER).on(VIRTUAL_ORDER.USER_ID.eq(USER.USER_ID));
@@ -99,6 +101,12 @@ public class CouponPackOrderService extends VirtualOrderService {
 			if(couponPackOrderVo.getReturnFlag().equals(REFUND_STATUS_SUCCESS) && couponPackOrderVo.getOrderAmount().compareTo(couponPackOrderVo.getReturnAccount().add(couponPackOrderVo.getReturnCardBalance()).add(couponPackOrderVo.getReturnMoney())) > 0){
                 //现金支付的礼包，现金没有全退完时，标记成部分退款
                 couponPackOrderVo.setReturnFlag((byte)3);
+            }
+			//超过一年不能退款
+            if (couponPackOrderVo.getPayTime()!=null&&DateUtil.getLocalDateTime().before(DateUtil.getTimeStampPlus(couponPackOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
+                couponPackOrderVo.setCanReturn(BaseConstant.NO);
+            }else {
+                couponPackOrderVo.setCanReturn(BaseConstant.YES);
             }
 		}
 		return pageResult;
