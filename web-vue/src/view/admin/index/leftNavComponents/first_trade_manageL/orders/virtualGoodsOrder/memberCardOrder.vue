@@ -247,7 +247,10 @@ export default {
         return item.orderSn === orderSn
       })
       if (orderInfo.returnFlag === 0 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > 0)) {
-        return `<div>${this.$t('orderCommon.orderFinished')}<br/><a class="refund" >${this.$t('orderCommon.manualRefund')}</a></div>`
+        let statusStr = `<div>${this.$t('orderCommon.orderFinished')}`
+        if (orderInfo.canReturn === 1) statusStr += `<br/><a class="refund" >${this.$t('orderCommon.manualRefund')}</a>`
+        statusStr += '</div>'
+        return statusStr
       } else if (orderInfo.returnFlag === 0) {
         return `<div>${this.$t('orderCommon.orderFinished')}<div/>`
       } else if (orderInfo.returnFlag === 1 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > orderInfo.returnScore + orderInfo.returnAccount + orderInfo.returnMoney)) {

@@ -184,7 +184,7 @@ export default {
         this.refundInfo = this.dataInfo
 
         this.refundData.money = this.refundInfo.moneyPaid
-        this.refundData.score = this.refundInfo.useScore
+        this.refundData.score = this.refundInfo.useScore ? this.refundInfo.useScore : 0
         this.refundData.account = this.refundInfo.useAccount
         this.refundData.memberCardBalance = this.refundInfo.memberCardBalance ? this.refundInfo.memberCardBalance : 0
         this.refundData.orderId = this.refundInfo.orderId

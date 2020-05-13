@@ -225,11 +225,14 @@ export default {
         return item.orderSn === orderSn
       })
       if (orderInfo.returnFlag === 0 || orderInfo.returnFlag === 1) {
-        return `<div>${this.$t('orderCommon.orderFinished')}<br/><a class="refund" >${this.$t('orderCommon.manualRefund')}</a></div>`
+        let statusStr = `<div>${this.$t('orderCommon.orderFinished')}<br/>`
+        if (orderInfo.canReturn === 1) statusStr += `<a class="refund">${this.$t('orderCommon.manualRefund')}</a>`
+        statusStr += `</div>`
+        return statusStr
       } else if (orderInfo.returnFlag === 3) {
-        return `
-        <div>${this.$t('couponPackageOrder.partialRefund')}<br/> <a class="view">${this.$t('orderCommon.checkRefund')}</a></div>
-        <a class="refund" >${this.$t('orderCommon.manualRefund')}</a></div>`
+        let statusStr = `<div>${this.$t('couponPackageOrder.partialRefund')}<br/> <a class="view">${this.$t('orderCommon.checkRefund')}</a></div>`
+        if (orderInfo.canReturn === 1) statusStr += `<div><a class="refund">${this.$t('orderCommon.manualRefund')}</a></div>`
+        return statusStr
       } else if (orderInfo.returnFlag === 2) {
         return `<div>${this.$t('orderCommon.refundCompleted')}<br/> <a class="view">${this.$t('orderCommon.checkRefund')}</a></div>`
       }
