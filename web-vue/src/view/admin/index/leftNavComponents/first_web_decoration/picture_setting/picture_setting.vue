@@ -129,7 +129,7 @@
                   placement="top"
                 >
                   <span
-                    class="el-icon-edit-outline iconSpn"
+                    class="iconfont iconbianji iconSpn"
                     @click="edit(scope.row.pageId)"
                   ></span>
                 </el-tooltip>
@@ -139,7 +139,7 @@
                 >
                   <span
                     @click="del(scope.row.pageId)"
-                    class="el-icon-delete iconSpn"
+                    class="iconfont iconshanchu2 iconSpn"
                     v-if="!scope.row.isFirstPage"
                   ></span>
                 </el-tooltip>
@@ -148,7 +148,7 @@
                   placement="top"
                 >
                   <span
-                    class="fa fa-copy iconSpn"
+                    class="iconfont iconfuzhi iconSpn"
                     @click="copy(scope.row.pageId)"
                   ></span>
                 </el-tooltip>
@@ -157,7 +157,7 @@
                   placement="top"
                 >
                   <span
-                    class="el-icon-share iconSpn"
+                    class="iconfont iconfenxiang1 iconSpn"
                     @click="handleOperation(scope.row)"
                   ></span>
                 </el-tooltip>
@@ -639,6 +639,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .picture_setting {
   padding: 10px;
   min-width: 100%;
