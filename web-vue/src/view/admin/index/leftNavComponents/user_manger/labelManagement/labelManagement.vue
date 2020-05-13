@@ -56,7 +56,7 @@
                 placement="top"
               >
                 <span
-                  class="el-icon-edit-outline iconStyle"
+                  class="iconfont iconbianji iconStyle"
                   @click="getTagDetail(scope.row.tagId)"
                 ></span>
 
@@ -66,7 +66,7 @@
                 placement="top"
               >
                 <span
-                  class="el-icon-delete iconStyle"
+                  class="iconfont iconshanchu2 iconStyle"
                   @click="deleteHandler(scope.row.tagId)"
                 ></span>
               </el-tooltip>
@@ -76,7 +76,7 @@
                 placement="top"
               >
                 <span
-                  class="el-icon-user-solid iconStyle"
+                  class="iconfont iconxinyonghumingxi iconStyle"
                   @click="viewUserHanlder(scope.row.tagId)"
                 ></span>
               </el-tooltip>
@@ -259,6 +259,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .labelManagement {
   padding: 10px;
   padding-bottom: 68px;
