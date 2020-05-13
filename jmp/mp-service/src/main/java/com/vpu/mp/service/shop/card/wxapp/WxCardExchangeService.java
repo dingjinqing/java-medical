@@ -1,10 +1,13 @@
 package com.vpu.mp.service.shop.card.wxapp;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.CheckedGoodsCartRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -12,7 +15,11 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.dao.CardFullDetail;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
+import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.card.param.CardAddExchangeGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.card.param.CardExchaneGoodsJudgeParam;
 import com.vpu.mp.service.pojo.wxapp.card.param.CardExchangeGoodsParam;
@@ -24,7 +31,9 @@ import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.user.UserCheckedGoodsService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -33,6 +42,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.CHECKED_GOODS_CART;
 /**
@@ -43,13 +53,33 @@ import static com.vpu.mp.db.shop.Tables.CHECKED_GOODS_CART;
 @Service
 @Primary
 public class WxCardExchangeService extends ShopBaseService {
-	@Autowired private MemberCardService mCardSvc;
+	@Autowired public MemberCardService mCardSvc;
 	@Autowired private ShopCommonConfigService shopCommonCfgSvc;
 	@Autowired private GoodsService goodsSvc;
-	@Autowired private UserCheckedGoodsService userCheckedGoodsSvc;
+	@Autowired public UserCheckedGoodsService userCheckedGoodsSvc;
 	@Autowired private DomainConfig domainConfig;
     @Autowired public UserCardService userCard;
 
+    /**
+     * 退限次卡次数
+     * @param order
+     * @param returnGoods
+     */
+    public void limitCardRefundTimes(OrderInfoVo order, List<OrderReturnGoodsVo> returnGoods) throws MpException {
+        returnGoods = returnGoods.stream().filter(x->x.getIsGift() != null && x.getIsGift() == 0).collect(Collectors.toList());
+        if(Lists.newArrayList(OrderInfoService.orderTypeToByte(order.getGoodsType())).contains(BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER) && CollectionUtils.isNotEmpty(returnGoods)) {
+            CardConsumpData cardConsumpData = new CardConsumpData();
+            cardConsumpData.setUserId(order.getUserId());
+            cardConsumpData.setCardId(order.getActivityId());
+            cardConsumpData.setCardNo(order.getCardNo());
+            cardConsumpData.setReasonId(RemarkTemplate.ORDER_LIMIT_EXCHGE_GOODS.code);
+            cardConsumpData.setType(CardConstant.MCARD_TP_LIMIT);
+            cardConsumpData.setOrderSn(order.getOrderSn());
+            cardConsumpData.setExchangeCount(returnGoods.stream().map(OrderReturnGoodsVo::getGoodsNumber).reduce(0, Integer::sum).shortValue());
+            cardConsumpData.setPayment("");
+            mCardSvc.updateMemberCardExchangeSurplus(cardConsumpData);
+        }
+    }
 	/**
 	 * 兑换商品列表
 	 * @param param

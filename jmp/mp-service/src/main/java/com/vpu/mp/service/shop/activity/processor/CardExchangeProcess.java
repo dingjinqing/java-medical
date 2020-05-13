@@ -7,12 +7,16 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.CardUtil;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.dao.CardFullDetail;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.card.wxapp.WxCardExchangeService;
 import org.springframework.stereotype.Service;
 
@@ -72,12 +76,22 @@ public class CardExchangeProcess extends WxCardExchangeService implements Proces
 
     @Override
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-
+        //限次卡兑换不会存在待付款状态直接可以扣次数
+        CardConsumpData cardConsumpData = new CardConsumpData();
+        cardConsumpData.setUserId(order.getUserId());
+        cardConsumpData.setCardId(param.getActivityId());
+        cardConsumpData.setCardNo(order.getCardNo());
+        cardConsumpData.setReasonId(RemarkTemplate.ORDER_LIMIT_EXCHGE_GOODS.code);
+        cardConsumpData.setType(CardConstant.MCARD_TP_LIMIT);
+        cardConsumpData.setOrderSn(order.getOrderSn());
+        cardConsumpData.setExchangeCount((short)(-param.getBos().stream().filter(x-> x.getIsGift() != null && x.getIsGift() == OrderConstant.NO).map(OrderGoodsBo::getGoodsNumber).reduce(0, Integer::sum)));
+        cardConsumpData.setPayment("");
+        mCardSvc.updateMemberCardExchangeSurplus(cardConsumpData);
     }
 
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-
+        userCheckedGoodsSvc.removeGoodsAfterOrder(order.getCardNo());
     }
 
     @Override

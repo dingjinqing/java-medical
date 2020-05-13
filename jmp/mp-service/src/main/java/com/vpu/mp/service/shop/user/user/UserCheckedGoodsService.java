@@ -1,27 +1,21 @@
 package com.vpu.mp.service.shop.user.user;
 
-import static com.vpu.mp.db.shop.Tables.CHECKED_GOODS_CART;
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-
-import java.math.BigDecimal;
-
 import com.vpu.mp.db.shop.tables.CheckedGoodsCart;
 import com.vpu.mp.db.shop.tables.records.CheckedGoodsCartRecord;
-
-import org.jooq.impl.DSL;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.SelectConditionStep;
-import org.springframework.stereotype.Service;
-
-
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.wxapp.user.UserCheckedGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.user.UserCheckedGoodsVo;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
+
+import static com.vpu.mp.db.shop.Tables.CHECKED_GOODS_CART;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 /**
  * 用户已选商品服务
  * @author 黄壮壮
@@ -93,4 +87,12 @@ public class UserCheckedGoodsService extends ShopBaseService {
 			.execute();
 	}
 
+
+    /**
+     * 下单结束后删除记录
+     * @param cardNo 卡号
+     */
+    public void removeGoodsAfterOrder(String cardNo) {
+        db().deleteFrom(TABLE).where(TABLE.IDENTITY_ID.eq(cardNo)).execute();
+    }
 }
