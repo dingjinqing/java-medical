@@ -103,7 +103,7 @@ public class CouponPackOrderService extends VirtualOrderService {
                 couponPackOrderVo.setReturnFlag((byte)3);
             }
 			//超过一年不能退款
-            if (couponPackOrderVo.getPayTime()!=null&&DateUtil.getLocalDateTime().before(DateUtil.getTimeStampPlus(couponPackOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
+            if (couponPackOrderVo.getPayTime()!=null&&DateUtil.getLocalDateTime().after(DateUtil.getTimeStampPlus(couponPackOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
                 couponPackOrderVo.setCanReturn(BaseConstant.NO);
             }else {
                 couponPackOrderVo.setCanReturn(BaseConstant.YES);
