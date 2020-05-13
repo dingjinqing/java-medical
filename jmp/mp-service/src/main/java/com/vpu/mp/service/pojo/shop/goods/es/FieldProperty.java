@@ -18,10 +18,13 @@ public class FieldProperty {
 
     private Operator operator;
 
+
+
     /**
-     * 此参数是否是必须匹配,默认是必须
+     * 当前查询类型{@link QueryType}
      */
-    private boolean isMust = Boolean.TRUE;
+    private QueryType queryType;
+
 
     private Object value;
 
@@ -32,12 +35,20 @@ public class FieldProperty {
         this.searchName = searchName;
         this.value = value;
         this.useFullQuery = value instanceof List;
+        this.queryType = QueryType.MUST;
     }
     public FieldProperty(String searchName,Object value,Operator operator){
         this.operator = operator;
         this.searchName = searchName;
         this.value = value;
         this.useFullQuery = value instanceof List;
+    }
+    public FieldProperty(String searchName,Object value,Operator operator,QueryType queryType){
+        this.operator = operator;
+        this.searchName = searchName;
+        this.value = value;
+        this.useFullQuery = value instanceof List;
+        this.queryType = queryType;
     }
 
     public String getSearchName() {
@@ -64,18 +75,17 @@ public class FieldProperty {
         return useFullQuery;
     }
 
-    public boolean isMust() {
-        return isMust;
-    }
-
-    public void setMust(boolean must) {
-        isMust = must;
-    }
 
     public void setValue(Object value) {
         this.value = value;
         this.useFullQuery = value instanceof List;
     }
+    public QueryType getQueryType() {
+        return queryType;
+    }
 
+    public void setQueryType(QueryType queryType) {
+        this.queryType = queryType;
+    }
 
 }

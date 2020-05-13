@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
 import com.vpu.mp.service.pojo.shop.goods.es.Operator;
+import com.vpu.mp.service.pojo.shop.goods.es.QueryType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.elasticsearch.index.query.*;
 import org.springframework.stereotype.Component;
@@ -46,7 +47,7 @@ public class EsQueryBuilderHandler {
 
                 continue;
             }
-            queryBuilderArrays.addToQueryBuilders(x.isMust(),getQueryBuilderByProperty(x));
+            queryBuilderArrays.addToQueryBuilders(x.getQueryType(),getQueryBuilderByProperty(x));
 
         }
         queryBuilderArrays.queryShouldBuilders.getAll().forEach(x-> {
@@ -54,6 +55,9 @@ public class EsQueryBuilderHandler {
         });
         queryBuilderArrays.queryMustBuilders.getAll().forEach(x-> {
             x.forEach(resultQueryBuilder::must);
+        });
+        queryBuilderArrays.queryMustNotBuilders.getAll().forEach(x-> {
+            x.forEach(resultQueryBuilder::mustNot);
         });
         if( !CollectionUtils.isEmpty(resultQueryBuilder.should()) ){
             resultQueryBuilder.minimumShouldMatch(1);
@@ -95,19 +99,27 @@ public class EsQueryBuilderHandler {
     private static class QueryShouldBuilders extends QueryBuilderArrays{
 
     }
+    private static class QueryMustNotBuilders extends QueryBuilderArrays{
+
+    }
     public static class AllQueryBuilders{
         private QueryMustBuilders queryMustBuilders;
 
         private QueryShouldBuilders queryShouldBuilders;
 
+        private QueryMustNotBuilders queryMustNotBuilders;
+
         AllQueryBuilders(){
             queryMustBuilders = new QueryMustBuilders();
             queryShouldBuilders = new QueryShouldBuilders();
+            queryMustNotBuilders = new QueryMustNotBuilders();
         }
-        void addToQueryBuilders(Boolean isMust, QueryBuilder queryBuilder){
+        void addToQueryBuilders(QueryType type, QueryBuilder queryBuilder){
             QueryBuilderArrays arrays;
-            if( isMust ){
+            if( QueryType.MUST.equals(type) ){
                 arrays = queryMustBuilders;
+            }else if ( QueryType.MUST_NOT.equals(type) ){
+                arrays = queryMustNotBuilders;
             }else{
                 arrays = queryShouldBuilders;
             }
