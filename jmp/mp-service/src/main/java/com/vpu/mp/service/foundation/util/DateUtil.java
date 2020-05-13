@@ -134,8 +134,6 @@ public final class DateUtil {
 
 	/**
 	 * 转为LocalDateTime类型
-	 * @param format 日期时间格式
-	 * @param dateTime 时间
 	 * @return
 	 */
 	public static LocalDateTime localDateTime(String format,String dateTime) {

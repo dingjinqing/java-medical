@@ -28,4 +28,22 @@ public class ActivityVo {
     private Integer validityMinute;
 	public Timestamp startTime;
 	public Timestamp endTime;
+	private Byte status;
+
+    /**
+     * 会员卡名称
+     */
+    private String cardName;
+    /**
+     * 过期类型 0:固定日期 1：自领取之日起 2:不过期
+     */
+    private Byte expireType;
+    /**
+     * 领取**内
+     */
+    private Integer receiveDay;
+    /**
+     * 有效期单位 0:日，1:周 2: 月
+     */
+    private Byte dateType;
 }
