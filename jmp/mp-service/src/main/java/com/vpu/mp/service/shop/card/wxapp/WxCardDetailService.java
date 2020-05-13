@@ -52,6 +52,7 @@ import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.card.vo.CardGiveVo;
 import com.vpu.mp.service.shop.card.CardDetailService;
+import com.vpu.mp.service.shop.card.CardExchangService;
 import com.vpu.mp.service.shop.card.CardFreeShipService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
@@ -86,6 +87,7 @@ public class WxCardDetailService extends ShopBaseService{
 	@Autowired private UserService userSvc;
 	@Autowired private CouponService couponService;
 	@Autowired private CouponPackService couponPackService;
+	@Autowired private CardExchangService cardExchangSvc;
 	
 	/**
 	 * 	获取自定义的激活项
@@ -376,15 +378,14 @@ public class WxCardDetailService extends ShopBaseService{
 		List<GoodsSmallVo> res = Collections.<GoodsSmallVo>emptyList();
 		if(CardUtil.isLimitCard(userCard.getCardType()) && CardUtil.canExchangGoods(userCard.getIsExchang())) {
 			logger().info("处理限次卡兑换的商品");
-			boolean partGoodsFlag = CardConstant.MCARD_ISE_PART.equals(userCard.getIsExchang());
-			if(partGoodsFlag) {
-				// 部分商品
+			if(CardUtil.isExchangPartGoods(userCard.getIsExchang())) {
+				//	部分商品
 				if(!StringUtils.isBlank(userCard.getExchangGoods())) {
-					List<Integer> goodsIdList = Util.splitValueToList(userCard.getExchangGoods());
+					List<Integer> goodsIdList = cardExchangSvc.getExchangPartGoodsAllIds(userCard.getExchangGoods());
 					res = goodsService.getGoodsList(goodsIdList, false);
 				}
 			}else {
-				// 全部商品，只取两个进行展示
+				//	全部商品，只取两个进行展示
 				GoodsPageListParam goodsParam = new GoodsPageListParam();
 				goodsParam.setPageRows(2);
 				goodsParam.setCurrentPage(1);
