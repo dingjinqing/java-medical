@@ -23,7 +23,7 @@
       ></el-table-column>
       <el-table-column
         prop="prdPrice"
-        label="原价"
+        label="规格原价"
       ></el-table-column>
       <el-table-column label="秒杀价">
         <template slot-scope="scope">
@@ -39,24 +39,21 @@
         label="规格库存"
       >
       </el-table-column>
-      <el-table-column label="秒杀库存">
+      <el-table-column
+        label="秒杀库存"
+        v-if="isEdit"
+      >
         <template slot-scope="scope">
-          <el-input
-            v-model="scope.row.stock"
-            :disabled="isEdit"
-            size="small"
-            class="small_input"
-          ></el-input>
+          {{Number(scope.row.stock) + Number(scope.row.saleNum)}}
         </template>
       </el-table-column>
-      <!-- <el-table-column
-          label="已售数量"
-          v-if="isEdit"
-        ></el-table-column> -->
       <el-table-column
+        prop="saleNum"
+        label="已售库存"
         v-if="isEdit"
-        label="剩余秒杀库存"
       >
+      </el-table-column>
+      <el-table-column :label="isEdit ? '剩余秒杀库存' : '秒杀库存'">
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.stock"
