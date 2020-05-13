@@ -90,6 +90,12 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
         if( null != param.getIsOnSale() ){
             propertyList.add(new FieldProperty(EsSearchName.IS_ON_SALE,param.getIsOnSale()));
         }
+        if( CollectionUtils.isNotEmpty(param.getNotIncludeGoodsIds()) ){
+            propertyList.add(
+                new FieldProperty(EsSearchName.GOODS_ID,param.getNotIncludeGoodsIds(),Operator.EQ,QueryType.MUST_NOT)
+            );
+        }
+
         if( null != param.getPageRows() ){
             searchParam.setPageRows(param.getPageRows());
         }

@@ -1,10 +1,7 @@
 package com.vpu.mp.service.shop.goods.es.convert.param;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
-import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
-import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
-import com.vpu.mp.service.pojo.shop.goods.es.Operator;
+import com.vpu.mp.service.pojo.shop.goods.es.*;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchParam;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -44,17 +41,17 @@ public class GoodsSearchParamConverter implements EsParamConvertInterface {
         if( goodAreaType.equals(BaseConstant.GOODS_AREA_TYPE_SECTION)  ){
             if( !CollectionUtils.isEmpty(param.getCatIds()) ){
                 FieldProperty property = new FieldProperty(EsSearchName.FULL_CAT_ID,param.getCatIds());
-                property.setMust(false);
+                property.setQueryType(QueryType.SHOULD);
                 propertyList.add(property);
             }
             if( !CollectionUtils.isEmpty(param.getGoodsIds()) ){
                 FieldProperty property = new FieldProperty(EsSearchName.GOODS_ID,param.getGoodsIds());
-                property.setMust(false);
+                property.setQueryType(QueryType.SHOULD);
                 propertyList.add(property);
             }
             if( !CollectionUtils.isEmpty(param.getSortIds()) ){
                 FieldProperty property = new FieldProperty(EsSearchName.FULL_SORT_ID,param.getSortIds());
-                property.setMust(false);
+                property.setQueryType(QueryType.SHOULD);
                 propertyList.add(property);
             }
         }
