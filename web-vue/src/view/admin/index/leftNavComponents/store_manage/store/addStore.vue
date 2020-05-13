@@ -305,9 +305,8 @@
           </el-form-item>
           <div v-if="storeFormInfo.autoPick == 1">
             <el-form-item
-              label="自提取货时间"
+              :label="$t('addStore.selfCollectingTime')"
               prop="pickDetail"
-              required
             >
               <div class="pick-up-time">
                 <div>
@@ -315,12 +314,12 @@
                     v-model="storeFormInfo.pickTimeAction"
                     :label="1"
                   ></el-radio>
-                  <span>门店营业时间</span>
+                  <span>{{$t('addStore.storeOpeningTime')}}</span>
                   <el-popover
                     placement="top"
                     width="300"
                     trigger="hover"
-                    content="用户可选择提交订单后任意门店营业时间进行提货"
+                    :content="$t('addStore.pickupCondition')"
                   >
                     <i
                       slot="reference"
@@ -334,7 +333,7 @@
                     v-model="storeFormInfo.pickTimeAction"
                     :label="2"
                   ></el-radio>
-                  <span>提交订单</span>
+                  <span>{{$t('addStore.submitOrder')}}</span>
                   <el-input
                     v-model.number="storeFormInfo.pickDetail.duration"
                     controls-position="right"
@@ -345,20 +344,20 @@
                     style="width:80px;"
                   >
                     <el-option
-                      label="小时"
+                      :label="$t('addStore.hour')"
                       :value="1"
                     ></el-option>
                     <el-option
-                      label="天"
+                      :label="$t('addStore.day')"
                       :value="2"
                     ></el-option>
                   </el-select>
-                  <span>后可到店提货</span>
+                  <span>{{$t('addStore.afterPickup')}}</span>
                   <el-popover
                     placement="top"
                     width="300"
                     trigger="hover"
-                    content="用户可在提交订单一段时间后的时间范围内选择提货时间"
+                    :content="$t('addStore.choosePickupTime')"
                   >
                     <i
                       slot="reference"
@@ -486,7 +485,7 @@ export default {
     function validPickDetail (rule, value, callback) {
       if (that.storeFormInfo.pickTimeAction === 2) {
         if (!that.storeFormInfo.pickDetail.duration) {
-          callback(new Error('请填写自提取货时间'))
+          callback(new Error(that.$t('addStore.fillPickupTime')))
         }
       }
       callback()
