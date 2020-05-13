@@ -13,7 +13,8 @@ global.wxPage({
     collect_gift: 0, // 是否显示收藏小程序按钮
     collect_coupon_display: 0, // 显示收藏送优惠券积分的弹窗
     collect_score: null,
-    collect_coupons: null
+    collect_coupons: null,
+    page_id: null
   },
 
   /**
@@ -21,7 +22,23 @@ global.wxPage({
    */
   onLoad (options) {
     console.log(options, this.data);
+    this.setData({}, () => {
+      var pageCfg = this.data.pageContent.page_info.page_cfg;
+      var color = "#f5f5f5";
+      if (pageCfg) {
+        if (pageCfg.bg_types == 0) {
+          color = "background:" + pageCfg.page_bg_color;
+        } else if (pageCfg.bg_types == 1) {
+          color = "background:url(" + pageCfg.page_bg_image + ") repeat;background-size:100% auto";
+        }
+      }
+      console.log(pageCfg, color, this.data.pageContent.page_id, '主页')
+      this.setData({
+        color: color,
+        page_id: this.data.pageContent.page_id
+      })
 
+    })
     this._options = options;
     this._options.first_onload = 1;
     this.requestDecoratePageData(
@@ -34,27 +51,6 @@ global.wxPage({
     this.renderCollectData()
     // 初始化开屏有礼clearInterval
     this.openGiftRequest()
-    let flag = false
-    let timer = setInterval(() => {
-      console.log(this.data.pageContent, flag)
-      if (flag) clearInterval(timer)
-      if (this.data.pageContent && !flag) {
-        flag = true
-        var pageCfg = this.data.pageContent.page_info.page_cfg;
-        var color = "#f5f5f5";
-        if (pageCfg) {
-          if (pageCfg.bg_types == 0) {
-            color = "background:" + pageCfg.page_bg_color;
-          } else if (pageCfg.bg_types == 1) {
-            color = "background:url(" + pageCfg.page_bg_image + ") repeat;background-size:100% auto";
-          }
-        }
-        console.log(color)
-        this.setData({
-          color: color
-        })
-      }
-    }, 200)
 
   },
 

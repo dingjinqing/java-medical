@@ -9,7 +9,10 @@
           >
           </div>
           <div class="leftInfo">
-            <div class="floatNav">
+            <div
+              class="floatNav"
+              v-if="topArr.length||bottomArr.length"
+            >
               <div class="navList">
                 <div
                   class="nav_item navLi"
@@ -887,9 +890,9 @@ export default {
       let bottomArr = []
       arr.forEach((item, index) => {
         if (item.isIndependentShow) {
-          topArr.push(item)
+          topArr.unshift(item)
         } else {
-          bottomArr.push(item)
+          bottomArr.unshift(item)
         }
       })
       this.topArr = topArr
@@ -1174,6 +1177,7 @@ export default {
       padding: 10px 0;
       left: 0;
       right: 0;
+      z-index: 3;
     }
   }
   .systemIconMain {

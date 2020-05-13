@@ -74,12 +74,11 @@ global.wxComponent({
       animation.translateY(0).step();
       animation.translateY(-120).step();
       params = animation.export();
-      setTimeout(function () {
+      that.setData({}, () => {
         that.setData({
           animation: params
         })
-      }, 500)
-
+      })
     },
     backStart () {
       p_count++;

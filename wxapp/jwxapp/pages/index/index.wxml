@@ -19,3 +19,6 @@
 
 <!-- 开屏有礼弹窗 -->
 <v-pay-award show="{{openGiftDialog}}" popup-name="开屏有礼" award-info="{{awardInfo}}"/>
+
+<!-- 悬浮窗 -->
+<v-suspend-window page_id='{{page_id}}'/>
