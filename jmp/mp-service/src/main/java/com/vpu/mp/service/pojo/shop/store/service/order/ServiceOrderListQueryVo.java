@@ -44,9 +44,10 @@ public class ServiceOrderListQueryVo {
 	private String servicePeriod;
 
     /**
-     *技师名称
-	 */
-	private String technicianName;
+     * 技师名称
+     */
+    private String technicianName;
+    private Integer technicianId;
 
     /**
 	 * 预约支付金额
