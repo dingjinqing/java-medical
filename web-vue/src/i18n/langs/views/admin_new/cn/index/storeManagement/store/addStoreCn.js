@@ -81,5 +81,14 @@ export const cn = {
   enterValidCharacter: '请输入有效的字符！',
   selectRegion: '请选择地区',
   max5: '最多选5张',
-  addFaild: '添加失败'
+  addFaild: '添加失败',
+  selfCollectingTime: '自提取货时间',
+  storeOpeningTime: '门店营业时间',
+  pickupCondition: '用户可选择提交订单后任意门店营业时间进行提货',
+  submitOrder: '提交订单',
+  hour: '小时',
+  day: '天',
+  afterPickup: '后可到店提货',
+  choosePickupTime: '用户可在提交订单一段时间后的时间范围内选择提货时间',
+  fillPickupTime: '请填写自提取货时间'
 }
