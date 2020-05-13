@@ -205,13 +205,26 @@ export default {
     // 中间模块当前高亮index
     sortIndex: { // 模块公共
       handler (newData) {
-        console.log(newData, this.modulesData)
+        console.log(newData)
         if (this.modulesData) {
           // 处理隐藏内容字段
           this.hide_active = this.handleToData(this.modulesData.hide_active)
           this.hide_time = this.handleToData(this.modulesData.hide_time)
-          this.ruleForm.act_id = this.modulesData.act_id
           this.data = this.modulesData
+          // 初始化下拉框数据
+          getDropDownBox().then((res) => {
+            console.log(res)
+            if (res.error === 0) {
+              this.options = [...this.options, ...res.content]
+              console.log(this.modulesData, this.options)
+              this.options.forEach((item, index) => {
+                if (this.modulesData.act_id === item.id) {
+                  this.ruleForm.act_id = this.modulesData.act_id
+                }
+              })
+              this.$forceUpdate()
+            }
+          })
         }
       },
       immediate: true
@@ -254,15 +267,7 @@ export default {
         }
       })
     })
-    // 初始化下拉框数据
-    getDropDownBox().then((res) => {
-      console.log(res)
-      if (res.error === 0) {
-        this.options = [...this.options, ...res.content]
-        console.log(this.options)
-        this.$forceUpdate()
-      }
-    })
+
     this.langDefault()
   },
   methods: {
