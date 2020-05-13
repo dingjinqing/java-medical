@@ -90,7 +90,7 @@ public class WxCardExchangeService extends ShopBaseService {
 			goodsPageListParam.setCurrentPage(param.getCurrentPage());
 			goodsPageListParam.setPageRows(param.getPageRows());
 			
-			PageResult<GoodsPageListVo> goodsPageResult = goodsSvc.getProductPageList(goodsPageListParam);
+			PageResult<GoodsPageListVo> goodsPageResult = goodsSvc.getPageList(goodsPageListParam);
 			vo.setGoodsPageResult(goodsPageResult);
 			
 			//	Integer count = userCard.getExchangSurplus();
@@ -131,7 +131,7 @@ public class WxCardExchangeService extends ShopBaseService {
 
 
 	/**
-	 * 添加活动商品
+	 * 	添加活动商品
 	 */
 	public void addExchangeGoods(CardAddExchangeGoodsParam param) {
 		logger().info("兑换商品加购");
@@ -146,6 +146,14 @@ public class WxCardExchangeService extends ShopBaseService {
 		checkedParam.setProductId(param.getProductId());
 		checkedParam.setIdentityId(param.getCardNo());
 		checkedParam.setGoodsId(param.getGoodsId());
+		
+		
+		//	TODO 条件检查
+		
+		//	1）该商品有效期内可兑换的次数 , 2）该会员卡可使用的兑换次数
+		
+		
+		
 		
 		CheckedGoodsCartRecord userCheckedGoods = userCheckedGoodsSvc.getUserCheckedGoods(checkedParam);
 		if(userCheckedGoods == null) {

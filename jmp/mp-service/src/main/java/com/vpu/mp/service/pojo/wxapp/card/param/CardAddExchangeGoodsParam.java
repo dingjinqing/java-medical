@@ -3,7 +3,7 @@ package com.vpu.mp.service.pojo.wxapp.card.param;
 import lombok.Data;
 
 /**
- * 兑换商品加购入参
+ * 	兑换商品加购入参
  * @author 黄壮壮
  *
  */
