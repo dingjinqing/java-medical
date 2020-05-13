@@ -69,7 +69,6 @@ import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
 import static com.vpu.mp.db.shop.tables.SecKillList.SEC_KILL_LIST;
 import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
-import static org.jooq.impl.DSL.select;
 
 /**
  * @author 王兵兵
@@ -324,20 +323,21 @@ public class SeckillService extends ShopBaseService{
     }
 
     public List<SeckillVo.SeckillGoods> getSecKillGoods(Integer skId){
-        List<SecKillProductVo> prdList =  db().select(SEC_KILL_PRODUCT_DEFINE.SKPRO_ID,SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID,SEC_KILL_PRODUCT_DEFINE.GOODS_ID,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER,SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK,SEC_KILL_PRODUCT_DEFINE.STOCK).
+        List<SecKillProductVo> prdList = db().select(SEC_KILL_PRODUCT_DEFINE.SKPRO_ID, SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID, SEC_KILL_PRODUCT_DEFINE.GOODS_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_NUMBER, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE, SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK, SEC_KILL_PRODUCT_DEFINE.STOCK, SEC_KILL_PRODUCT_DEFINE.SALE_NUM).
             from(SEC_KILL_PRODUCT_DEFINE).innerJoin(GOODS_SPEC_PRODUCT).on(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID)).
             where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetch().into(SecKillProductVo.class);
-        Map<Integer,List<SecKillProductVo>> goodsMap = prdList.stream().collect(Collectors.groupingBy(SecKillProductVo::getGoodsId));
+        Map<Integer, List<SecKillProductVo>> goodsMap = prdList.stream().collect(Collectors.groupingBy(SecKillProductVo::getGoodsId));
         List<SeckillVo.SeckillGoods> res = new ArrayList<>();
         goodsMap.forEach((k,v)->{
             SeckillVo.SeckillGoods seckillGoods = new SeckillVo.SeckillGoods();
             GoodsView goodsView = goodsService.getGoodsView(k);
             seckillGoods.setGoodsId(k);
-            seckillGoods.setGoodsImg(domainConfig.imageUrl(goodsView.getGoodsImg()));
+            seckillGoods.setGoodsImg(goodsView.getGoodsImg());
             seckillGoods.setGoodsName(goodsView.getGoodsName());
             seckillGoods.setGoodsNumber(goodsView.getGoodsNumber());
             seckillGoods.setShopPrice(goodsView.getShopPrice());
             seckillGoods.setUnit(goodsView.getUnit());
+            seckillGoods.setSaleNum(v.stream().mapToInt(SecKillProductVo::getSaleNum).sum());
             seckillGoods.setSecKillProduct(v);
             res.add(seckillGoods);
         });

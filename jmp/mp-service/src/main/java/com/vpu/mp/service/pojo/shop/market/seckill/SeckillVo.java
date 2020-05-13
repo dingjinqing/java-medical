@@ -74,16 +74,30 @@ public class SeckillVo {
     public static class SeckillGoods{
         private Integer goodsId;
         private String goodsName;
-        /** 商品主图 */
+        /**
+         * 商品主图
+         */
         private String goodsImg;
-        /** 商品库存 */
+        /**
+         * 商品库存
+         */
         private Integer goodsNumber;
 
-        /** 商品价格 */
+        /**
+         * 商品价格
+         */
         private BigDecimal shopPrice;
-        /** 单位 */
+        /**
+         * 单位
+         */
         private String unit;
-        /** 秒杀商品规格价格设置实体*/
+        /**
+         * 销量
+         */
+        private Integer saleNum;
+        /**
+         * 秒杀商品规格价格设置实体
+         */
         private List<SecKillProductVo> secKillProduct;
     }
 }
