@@ -155,7 +155,7 @@
           trigger="hover"
           style="margin-left: 30px;"
         >
-          <el-image :src="$imageHost + '/image/admin/share/pay_config_share.jpg'"></el-image>
+          <el-image :src="$imageHost + '/image/admin/share/dis_rank_example_img.jpg'"></el-image>
           <el-button
             slot="reference"
             type="text"
