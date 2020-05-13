@@ -8,6 +8,7 @@ import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.service.foundation.util.Util.currentTimeStamp;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,8 +39,10 @@ import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.ReturnGoods;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
@@ -48,6 +51,7 @@ import com.vpu.mp.service.shop.order.action.ReturnService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 
 /**
@@ -80,6 +84,8 @@ public class GroupDrawUserService extends ShopBaseService {
 	private AtomicOperation optOperation;
 	@Autowired
 	private OrderGoodsService orderGoodsService;
+	@Autowired
+	private OrderInfoService orderInfoService;
 
 	private static final byte ZERO = 0;
 	private static final byte ONE = 1;
@@ -170,11 +176,11 @@ public class GroupDrawUserService extends ShopBaseService {
 		}
 		param.setOrderId(orderInfo.getOrderId());
 		param.setIsMp(OrderConstant.IS_MP_AUTO);
-		param.setReturnMoney(orderInfo.getMoneyPaid().add(orderInfo.getScoreDiscount()).add(orderInfo.getUseAccount())
-				.add(orderInfo.getMemberCardBalance()));
+		param.setReturnMoney(orderInfoService.getOrderFinalAmount(orderInfo.into(OrderListInfoVo.class), false));
+        param.setShippingFee(orderInfo.getShippingFee() == null ? BigDecimal.ZERO : orderInfo.getShippingFee());
 		ExecuteResult execute = returnService.execute(param);
 		if (null == execute || !execute.isSuccess()) {
-			logger().info("订单号" + orderSn + "退款失败");
+			logger().info("订单号：{}。退款失败，原因：{}", orderSn, execute.toString());
 		}
 	}
 
