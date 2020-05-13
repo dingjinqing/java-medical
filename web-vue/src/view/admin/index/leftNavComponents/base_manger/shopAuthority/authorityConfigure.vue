@@ -52,7 +52,7 @@
                   placement="top"
                 >
                   <span
-                    class="el-icon-edit-outline iconSpan"
+                    class="iconfont iconbianji iconSpan"
                     @click="editOption(scope.row)"
                   ></span>
                 </el-tooltip>
@@ -65,7 +65,7 @@
                   placement="top"
                 >
                   <span
-                    class="el-icon-delete iconSpan"
+                    class="iconfont iconshanchu2 iconSpan"
                     @click="delOption(scope.row)"
                   ></span>
                 </el-tooltip>
@@ -220,6 +220,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .iconSpan {
   font-size: 22px;
   color: #5a8bff;
