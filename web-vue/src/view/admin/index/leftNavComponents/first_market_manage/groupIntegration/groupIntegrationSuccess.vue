@@ -25,7 +25,7 @@
             >
             </el-option>
             <el-option
-              value="0"
+              value="2"
              :label="$t('groupIntegration.no')"
             >
             </el-option>
