@@ -528,7 +528,7 @@ export default {
     LabelDialog: () => import('@/components/admin/labelDialog')
   },
   props: ['isEdite', 'editId'],
-  data() {
+  data () {
     // 会员专享
     var validateCard = (rule, value, callback) => {
       if (this.showMember && value.length === 0) {
@@ -643,37 +643,31 @@ export default {
       },
 
       isShowChoosingGoodsDialog: false, // 商品弹窗
-      // 选中商品id
-      goodsIds: [],
+      showSpecDialog: false, // 规格弹窗
+      productInfo: {}, // 规格回显数据
+
       labelDialogVisible: false, // 标签弹窗
       labelList: [], // 标签列表数据
-      pickLabel: [], // 选中标签列表
-      showSpecDialog: false, // 规格弹窗
-      productInfo: {} // 规格回显数据
+      pickLabel: [] // 选中标签列表
     }
   },
-  mounted() {
+  mounted () {
     // 编辑初始化
     if (this.isEdite === true) {
       this.editSeckillInit()
     }
 
     // 获取会员卡数据
-    allCardApi().then((res) => {
-      if (res.error === 0) {
-        this.cardList = res.content
-      }
-    })
+    this.getAllCard()
     // 获取标签列表
     allTagApi().then(res => {
       if (res.error === 0) {
         this.labelList = res.content
       }
     })
-    this.getAllCard()
   },
   watch: {
-    lang() {
+    lang () {
 
     },
     'form.goodsId': function (value) {
@@ -684,7 +678,7 @@ export default {
   },
   methods: {
     // 获取会员卡数据
-    getAllCard() {
+    getAllCard () {
       allCardApi().then((res) => {
         if (res.error === 0) {
           this.cardList = res.content
@@ -693,7 +687,7 @@ export default {
     },
 
     // 编辑初始化
-    editSeckillInit() {
+    editSeckillInit () {
       getSeckillList({ skId: this.editId }).then((res) => {
         console.log(res)
         if (res.error === 0) {
@@ -754,7 +748,7 @@ export default {
     },
 
     // 编辑回显规格
-    initEditProduct(goods) {
+    initEditProduct (goods) {
       let newdata = []
       goods.forEach(item => {
         let expand = item.secKillProduct.length < 2 ? { ...item.secKillProduct[0] } : { ...item.secKillProduct[0], goodsSpecProducts: item.secKillProduct }
@@ -774,7 +768,7 @@ export default {
     },
 
     // 保存秒杀活动
-    saveClickHandler() {
+    saveClickHandler () {
       // 校验活动分享
       if (this.form.shareConfig.shareAction === 2 && this.form.shareConfig.shareDoc === '') {
         this.$message.warning('请填写活动文案')
@@ -876,12 +870,12 @@ export default {
     },
 
     // 显示商品弹窗
-    showChoosingGoods() {
+    showChoosingGoods () {
       this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
     },
 
     // 商品弹窗的回调函数
-    choosingGoodsResult(row) {
+    choosingGoodsResult (row) {
       if (row.length === 0) {
         return
       }
@@ -892,12 +886,12 @@ export default {
     },
 
     // 批量设置数据
-    setCurrent(index) {
+    setCurrent (index) {
       this.activeIndex = index
     },
 
     // 显示规格弹窗
-    showSpec(goodsInfo) {
+    showSpec (goodsInfo) {
       console.log(goodsInfo)
       this.productInfo = goodsInfo
       // 数据回显 secKillPrice stock
@@ -909,7 +903,7 @@ export default {
     },
 
     // 规格弹窗回调函数
-    getProductdata({ goodsId, prdInfo }) {
+    getProductdata ({ goodsId, prdInfo }) {
       console.log(goodsId, prdInfo)
       let target = this.form.secKillProduct.find(item => { return item.goodsId === goodsId })
       let index = this.form.secKillProduct.findIndex(item => { return item.goodsId === goodsId })
@@ -927,24 +921,24 @@ export default {
     },
 
     // 图片弹窗
-    addGoodsImg() {
+    addGoodsImg () {
       this.showImageDialog = !this.showImageDialog
     },
 
     // 图片点击回调函数
-    handleSelectImg(res) {
+    handleSelectImg (res) {
       if (res != null) {
         this.form.shareConfig.shareImg = res.imgUrl
       }
     },
 
     // 展开更多配置
-    handleToChangeArror() {
+    handleToChangeArror () {
       this.arrorFlag = !this.arrorFlag
     },
 
     // 刷新
-    refresh() {
+    refresh () {
       this.getAllCard()
       this.$nextTick(() => {
         this.$message.success('刷新成功')
@@ -952,17 +946,17 @@ export default {
     },
 
     // 跳转新建会员卡
-    addMemberCard() {
+    addMemberCard () {
       window.open('/admin/home/main/normalCardDetail')
     },
 
     // 跳转管理会员卡
-    manageMemberCard() {
+    manageMemberCard () {
       window.open('/admin/home/main/user_card')
     },
 
     // 校验秒杀价格
-    validateMoney(rule, value, callback, prdPrice, row) {
+    validateMoney (rule, value, callback, prdPrice, row) {
       row.flag1 = false
       // 找到最低规格价
       if (row.goodsSpecProducts && row.goodsSpecProducts.length > 0) {
@@ -987,7 +981,7 @@ export default {
     },
 
     // 校验秒杀库存
-    validateNum(rule, value, callback, prdNumber, row, index) {
+    validateNum (rule, value, callback, prdNumber, row, index) {
       row.flag2 = false
       // 找到最低规格库存
       if (row.goodsSpecProducts && row.goodsSpecProducts.length > 0) {
@@ -1012,7 +1006,7 @@ export default {
     },
 
     // 价格切换
-    priceChange(data) {
+    priceChange (data) {
       if (data.goodsSpecProducts && data.goodsSpecProducts.length > 0) {
         var result = data.goodsSpecProducts.find(item => { return data.secKillPrice > item.prdPrice })
         var re = /^\d+(\.\d{1,2})?$/
@@ -1025,7 +1019,7 @@ export default {
     },
 
     // 库存切换
-    numChange(data) {
+    numChange (data) {
       if (data.goodsSpecProducts && data.goodsSpecProducts.length > 0) {
         data.totalStock = 0
         var result = data.goodsSpecProducts.find(item => { return data.stock > item.prdNumber })
@@ -1039,12 +1033,12 @@ export default {
       }
     },
 
-    cardIdBlur(e) {
+    cardIdBlur (e) {
       this.$refs['form'].validateField('cardId')
     },
 
     // 标签弹窗
-    selectLabel() {
+    selectLabel () {
       if (this.isEdite === true) {
         return false
       }
@@ -1052,7 +1046,7 @@ export default {
     },
 
     // 删除标签
-    deleteLabel(index) {
+    deleteLabel (index) {
       if (this.isEdite === true) {
         this.$message.warning('编辑状态不可操作')
         return false
@@ -1065,7 +1059,7 @@ export default {
     },
 
     // 标签弹窗回调函数
-    resultLabelDatas(row) {
+    resultLabelDatas (row) {
       this.pickLabel = row
       this.form.activityTagId = []
       this.pickLabel.forEach(item => {
@@ -1074,7 +1068,7 @@ export default {
     },
 
     // 活动预告类型切换
-    preTimeChange(e) {
+    preTimeChange (e) {
       this.$refs['form'].validateField('preTime')
     }
 
