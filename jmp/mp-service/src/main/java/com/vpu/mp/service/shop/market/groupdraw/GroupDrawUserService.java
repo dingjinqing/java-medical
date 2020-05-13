@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.market.groupdraw;
 
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.GroupDraw.GROUP_DRAW;
 import static com.vpu.mp.db.shop.tables.JoinDrawList.JOIN_DRAW_LIST;
 import static com.vpu.mp.db.shop.tables.JoinGroupList.JOIN_GROUP_LIST;
@@ -9,7 +8,6 @@ import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.service.foundation.util.Util.currentTimeStamp;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,15 +15,12 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
 import com.vpu.mp.db.shop.tables.records.JoinDrawListRecord;
 import com.vpu.mp.db.shop.tables.records.JoinGroupListRecord;
@@ -38,6 +33,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
@@ -136,7 +132,7 @@ public class GroupDrawUserService extends ShopBaseService {
 					List<String> orderSns = groupUserList.stream().map(JoinGroupListRecord::getOrderSn)
 							.collect(Collectors.toList());
 					// 更新订单状态为 "待发货"
-					logger().info("更新订单状态为 \"待发货\"");
+					logger().info("更新订单状态为 待发货");
 					updateOrderWaitDelivery(orderSns);
 					// TODO 同步订单状态到 CRM
 					List<Integer> couponUserIds = new LinkedList<>();
@@ -416,7 +412,7 @@ public class GroupDrawUserService extends ShopBaseService {
 	 */
 	public List<JoinGroupListRecord> getGroupUserListByGoodsId(Integer groupDrawId, Integer goodsId, Byte isWinDraw) {
 		SelectConditionStep<JoinGroupListRecord> select = db().selectFrom(JOIN_GROUP_LIST)
-				.where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId).and(JOIN_GROUP_LIST.GOODS_ID.eq(goodsId)));
+				.where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId).and(JOIN_GROUP_LIST.GOODS_ID.eq(goodsId)).and(JOIN_GROUP_LIST.STATUS.ge(ZERO)));
 		if (null != isWinDraw) {
 			select.and(JOIN_GROUP_LIST.IS_WIN_DRAW.eq(isWinDraw));
 		}

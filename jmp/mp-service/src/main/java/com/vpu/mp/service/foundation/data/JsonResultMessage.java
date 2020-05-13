@@ -580,6 +580,11 @@ public class JsonResultMessage {
     public static final String MSG_CARD_RECEIVE_VALIDPWD  = "member.card.receive.validpwd";
     public static final String MSG_CARD_RECEIVE_VALIDCODE  = "member.card.receive.validcode";
     public static final String CODE_CARD_NO = "code.card.no";
+    public static final String MSG_CARD_BEFORE_START_TIME = "member.card.before.start.time";
+    public static final String MSG_CARD_ALREADY_EXPIRED = "member.card.already.expired";
+    public static final String MSG_CARD_NOT_ACTIVE = "member.card.not.active";
+    
+    
     /**
      * 	用户卡包邮信息
      */

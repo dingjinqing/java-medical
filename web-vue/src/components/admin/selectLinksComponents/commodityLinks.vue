@@ -37,9 +37,12 @@
             <td class="isLeft">
               <img :src="$imageHost+'/'+item.goodsImg">
               <div class="speDiv">
-                <!--
-<span class="actLabel">限时降价</span>
-                -->
+
+                <span
+                  v-if="item.goodsType"
+                  class="actLabel"
+                >{{item.goodsType===1?$t('commodity.assemble'):item.goodsType===3?$t('commodity.bargain'):item.goodsType===5?$t('commodity.seckill'):item.goodsType===6?$t('commodity.limitedPriceReduction'):item.goodsType===10?$t('commodity.advanceSale'):item.goodsType===18?$t('commodity.firstSpecialOffer'):item.goodsType===19?'支付有礼':(item.goodsType===20)&&(item.actCode==='voucher')&&(item.useConsumeRestrict===1)?`${$t('commodity.full')}${item.leastConsume}${$t('commodity.reduce')}￥${item.denomination}`:(item.goodsType===20)&&(item.actCode==='voucher')&&(item.useConsumeRestrict===0)?`${$t('commodity.volumeReduction')}￥${item.denomination}`:(item.goodsType===20)&&(item.actCode==='discount')&&(item.useConsumeRestrict===1)?`${$t('commodity.full')}${item.leastConsume}${$t('commodity.hit')}${item.denomination}${$t('commodity.fracture')}`:(item.goodsType===20)&&(item.actCode==='discount')&&(item.useConsumeRestrict===0)?`${$t('commodity.discountRoll')}${item.denomination}${$t('commodity.fracture')}`:item.goodsType===21?`${$t('commodity.full')}${$t('commodity.reduce')}`:itemC.goodsType===22?$t('commodity.membershipPrice'):itemC.goodsType===23?$t('commodity.membershipExclusive'):''}}</span>
+
                 {{item.goodsName}}
               </div>
 
@@ -255,6 +258,7 @@ img {
   text-align: left;
   line-height: 20px;
   padding-left: 3px;
+  flex: 1;
 }
 .isLeft .actLabel {
   border: 1px #f66 solid;

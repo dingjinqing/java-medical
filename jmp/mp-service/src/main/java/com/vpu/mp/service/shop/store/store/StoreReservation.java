@@ -26,6 +26,7 @@ import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.OrderCloseQueenParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderListQueryVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.shop.store.technician.TechnicianInfo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
@@ -275,8 +276,15 @@ public class StoreReservation extends ShopBaseService {
         log.debug("服务可预约时段为:{} - {}; 单次服务时长为: {}", startPeriod, endPeriod, serviceDuration);
 
         List<ReservationInfo> reservationList = new ArrayList<>();
+        List<ServiceOrderListQueryVo> allOrders = serviceOrderService.getOrderListInfo(service.getId(), null, startDate, endDate, ORDER_STATUS_WAIT_SERVICE);
+        List<TechnicianInfo> allTechnicianInfoList = technicianService.getTechnicianList(service.getStoreId(), startDate, endDate);
+        //
+
         for (LocalDate i = startDate; i.isBefore(endDate) || i.equals(endDate); i = i.plusDays(1)) {
-            ReservationInfo reservationInfo = createReservationInfo(i, startPeriod, endPeriod, serviceDuration, service);
+            LocalDate tem = i;
+            List<ServiceOrderListQueryVo> orders = allOrders.stream().filter(o -> o.getServiceDate().equals(tem.format(DATE_TIME_FORMATTER))).collect(toList());
+            List<TechnicianInfo> technicianInfoList = allTechnicianInfoList.stream().filter(t -> t.getWorkDate().equals(tem.format(DATE_TIME_FORMATTER))).collect(toList());
+            ReservationInfo reservationInfo = createReservationInfo(i, startPeriod, endPeriod, serviceDuration, service, orders, technicianInfoList);
             if (Objects.nonNull(reservationInfo)) {
                 reservationList.add(reservationInfo);
             }
@@ -304,7 +312,7 @@ public class StoreReservation extends ShopBaseService {
      * @param serviceInfo     the service info
      * @return the reservation info
      */
-    private ReservationInfo createReservationInfo(LocalDate date, LocalTime startPeriod, LocalTime endPeriod, int serviceDuration, StoreServiceParam serviceInfo) {
+    private ReservationInfo createReservationInfo(LocalDate date, LocalTime startPeriod, LocalTime endPeriod, int serviceDuration, StoreServiceParam serviceInfo, List<ServiceOrderListQueryVo> orders, List<TechnicianInfo> technicianInfoList) {
         LocalTime localTime = LocalTime.now();
         if (date.isEqual(LocalDate.now()) && localTime.isAfter(startPeriod)) {
             // 如果可服务日期是当天, 获取当天距离当前时间最近的一次可服务时间段
@@ -314,7 +322,7 @@ public class StoreReservation extends ShopBaseService {
         for (LocalTime i = startPeriod;
              i.isBefore(endPeriod) && (i.plusMinutes(serviceDuration).isBefore(endPeriod) || i.plusMinutes(serviceDuration).equals(endPeriod)) && i.plusMinutes(serviceDuration).isAfter(i);
              i = i.plus(serviceDuration, ChronoUnit.MINUTES)) {
-            ReservationTime reservationTime = createReservationTime(date, i, i.plusMinutes(serviceDuration), serviceInfo);
+            ReservationTime reservationTime = createReservationTime(i, i.plusMinutes(serviceDuration), serviceInfo, orders, technicianInfoList);
             if (reservationTime != null) {
                 reservationTimeList.add(reservationTime);
             }
@@ -328,13 +336,12 @@ public class StoreReservation extends ShopBaseService {
     /**
      * Create reservation time reservation info . reservation time.
      *
-     * @param date        the date
      * @param startPeriod the start period
      * @param endPeriod   the end period
      * @param serviceInfo the service info
      * @return the reservation time
      */
-    private ReservationTime createReservationTime(LocalDate date, LocalTime startPeriod, LocalTime endPeriod, StoreServiceParam serviceInfo) {
+    private ReservationTime createReservationTime(LocalTime startPeriod, LocalTime endPeriod, StoreServiceParam serviceInfo, List<ServiceOrderListQueryVo> orderListQueryVos, List<TechnicianInfo> technicianInfoList) {
         Integer serviceId = serviceInfo.getId();
         int serviceNum = Objects.nonNull(serviceInfo.getServicesNumber()) ? serviceInfo.getServicesNumber() : 0;
         int tecServiceNum = Objects.nonNull(serviceInfo.getTechServicesNumber()) ? serviceInfo.getTechServicesNumber() : 0;
@@ -344,13 +351,11 @@ public class StoreReservation extends ShopBaseService {
         if (technicianFlag.equals(BYTE_ZERO)) {
             // 服务数量为0表示无上限,可以无限接受服务预约
             if (serviceNum != 0) {
-                if (serviceOrderService.checkMaxNumOfReservations(serviceId, null, date, startPeriod, endPeriod) >= serviceNum) {
+                if (serviceOrderService.checkMaxNumOfReservations(orderListQueryVos, startPeriod, endPeriod) >= serviceNum) {
                     return null;
                 }
             }
         } else {
-            //
-            List<TechnicianInfo> technicianInfoList = technicianService.getTechnicianList(serviceInfo.getStoreId(), date);
             result = technicianInfoList.stream().filter((e) -> {
                 // 过滤不支持给定服务的技师
                 Byte serviceType = e.getServiceType();
@@ -372,7 +377,7 @@ public class StoreReservation extends ShopBaseService {
                 if (tecServiceNum == 0) {
                     return true;
                 }
-                return serviceOrderService.checkMaxNumOfReservations(serviceId, e.getId(), date, startPeriod, endPeriod) < tecServiceNum;
+                return serviceOrderService.checkMaxNumOfReservations(orderListQueryVos.stream().filter(o -> o.getTechnicianId().equals(e.getId())).collect(toList()), startPeriod, endPeriod) < tecServiceNum;
             }).collect(toList());
             if (CollectionUtils.isEmpty(result)) {
                 return null;

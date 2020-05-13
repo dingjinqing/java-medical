@@ -522,7 +522,7 @@
             <el-col :span="10">
               <el-input
                 :placeholder="$t('reservationManage.messageLimit')"
-                v-model="reservation.adminMessage"
+                v-model="reservation.addMessage"
                 size="small"
                 class="new-input"
               >
@@ -670,7 +670,7 @@ export default {
         technicianName: '',
         serviceDate: '',
         servicePeriod: '',
-        adminMessage: ''
+        addMessage: ''
       },
       tableData: [],
       pageParams: {

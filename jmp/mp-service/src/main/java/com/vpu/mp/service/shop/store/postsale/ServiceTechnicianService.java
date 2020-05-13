@@ -241,11 +241,11 @@ public class ServiceTechnicianService extends ShopBaseService {
     /**
      * Gets technician list.获取给定日期可服务技师信息列表
      *
-     * @param storeId the store id
-     * @param date    the date
+     * @param storeId   the store id
+     * @param startDate the date
      * @return the technician list
      */
-    public List<TechnicianInfo> getTechnicianList(Integer storeId, LocalDate date) {
+    public List<TechnicianInfo> getTechnicianList(Integer storeId, LocalDate startDate, LocalDate endDate) {
         return db().select(
             SERVICE_TECHNICIAN.ID,
             SERVICE_TECHNICIAN.STORE_ID,
@@ -266,7 +266,8 @@ public class ServiceTechnicianService extends ShopBaseService {
             .leftJoin(SERVICE_TECHNICIAN_SCHEDULE).on(SERVICE_TECHNICIAN.ID.eq(SERVICE_TECHNICIAN_SCHEDULE.TECHNICIAN_ID))
             .leftJoin(SERVICE_SCHEDULE).on(SERVICE_TECHNICIAN_SCHEDULE.SCHEDULE_ID.eq(SERVICE_SCHEDULE.SCHEDULE_ID))
             .where(SERVICE_TECHNICIAN.STORE_ID.eq(storeId))
-            .and(SERVICE_TECHNICIAN_SCHEDULE.WORK_DATE.eq(date.format(DATE_TIME_FORMATTER)))
+            .and(SERVICE_TECHNICIAN_SCHEDULE.WORK_DATE.ge(startDate.format(DATE_TIME_FORMATTER)))
+            .and(SERVICE_TECHNICIAN_SCHEDULE.WORK_DATE.le(endDate.format(DATE_TIME_FORMATTER)))
             .and(SERVICE_TECHNICIAN.DEL_FLAG.eq(BYTE_ZERO))
             .fetchInto(TechnicianInfo.class);
     }

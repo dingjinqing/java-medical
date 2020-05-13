@@ -425,5 +425,6 @@ public class CardUtil {
     public static boolean isFreeShipping(Byte exchangFreight) {
         return CardConstant.FREE_SHIPPING.equals(exchangFreight);
     }
+    
 
 }

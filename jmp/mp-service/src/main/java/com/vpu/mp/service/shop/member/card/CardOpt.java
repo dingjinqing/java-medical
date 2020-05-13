@@ -11,13 +11,16 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.member.MemberBasicInfoVo;
 import com.vpu.mp.service.pojo.shop.member.card.dao.CardFullDetail;
+import com.vpu.mp.service.pojo.shop.member.card.show.CardUseCondition;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.shop.card.msg.CardMsgNoticeService;
@@ -133,6 +136,52 @@ public abstract class CardOpt extends ShopBaseService{
 			cardTypeText = "等级卡";
 		}
 		cardMsgSvc.sendCardMsgNotice(cardNo, memberCard, user, expireTime, cardTypeText);		
+	}
+	
+	
+	/**
+	 * 	获取当前会员卡是否可以使用
+	 */
+	public CardUseCondition judegeCardUsable(String cardNo) {
+		CardFullDetail cardDetail = cardService.getCardDetailByNo(cardNo);
+		return judegeCardUsable(cardDetail.getUserCard(),cardDetail.getMemberCard());
+	}
+	
+	/**
+	 * 	判断目前会员卡是否可以使用
+	 */
+	public CardUseCondition judegeCardUsable(UserCardRecord userCard,MemberCardRecord memberCard) {
+		logger().info("获取当前会员卡是否可以使用");
+		CardUseCondition res = new CardUseCondition();
+		if(CardUtil.isCardFixTime(memberCard.getExpireType())) {
+			if(memberCard.getStartTime().after(DateUtil.getLocalDateTime())) {
+				//	本卡还未到开始使用时间
+				res.setUsable(Boolean.FALSE);
+				res.setReason(JsonResultMessage.MSG_CARD_BEFORE_START_TIME);
+				return res;
+			}
+		}
+		
+		if(CardUtil.isNeedActive(memberCard.getActivation())) {
+			if(null == userCard.getActivationTime()) {
+				//	本卡尚未激活
+				res.setUsable(Boolean.FALSE);
+				res.setReason(JsonResultMessage.MSG_CARD_NOT_ACTIVE);
+				return res;
+			}
+		}
+		
+		if(null != userCard.getExpireTime()) {
+			if(userCard.getExpireTime().before(DateUtil.getLocalDateTime())) {
+				//	本卡已过期
+				res.setUsable(Boolean.FALSE);
+				res.setReason(JsonResultMessage.MSG_CARD_ALREADY_EXPIRED);
+			}
+		}
+		
+		res.setReason(JsonResultMessage.MSG_SUCCESS);
+		res.setUsable(Boolean.TRUE);
+		return res;
 	}
 
 }
