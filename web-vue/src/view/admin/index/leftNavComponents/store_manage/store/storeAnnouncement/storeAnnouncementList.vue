@@ -80,7 +80,7 @@
                 effect="light"
               >
                 <i
-                  class="el-icon-edit-outline iconSpan"
+                  class="iconfont iconbianji iconSpan"
                   @click="edit('edit', row)"
                 ></i>
               </el-tooltip>
@@ -90,7 +90,7 @@
                 effect="light"
               >
                 <i
-                  class="el-icon-delete iconSpan"
+                  class="iconfont iconshanchu2 iconSpan"
                   @click="edit('delete', row)"
                 ></i>
               </el-tooltip>
@@ -191,6 +191,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .container {
   padding: 10px;
   font-size: 14px;
