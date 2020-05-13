@@ -183,12 +183,8 @@ public class CouponPackOrderService extends VirtualOrderService {
 	 * @param
 	 * @return
 	 */
-	public JsonResultCode refundCouponPackOrder(CouponPackOrderRefundParam param) {
-        try {
-			this.virtualOrderRefund(param.getVirtualOrderRefundParam());
-		} catch (MpException e) {
-			return e.getErrorCode();
-		}
+	public JsonResultCode refundCouponPackOrder(CouponPackOrderRefundParam param) throws MpException {
+	    this.virtualOrderRefund(param.getVirtualOrderRefundParam());
         this.updateSendFlag(param.getStillSendFlag(), param.getOrderId());
 
         /** 操作记录 */
