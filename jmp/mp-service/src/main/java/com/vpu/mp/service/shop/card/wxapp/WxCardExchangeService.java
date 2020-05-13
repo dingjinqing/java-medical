@@ -20,6 +20,7 @@ import com.vpu.mp.service.pojo.wxapp.card.vo.CardCheckedGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.card.vo.CardExchangeGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.user.UserCheckedGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.user.UserCheckedGoodsVo;
+import com.vpu.mp.service.shop.card.CardExchangService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.MemberCardService;
@@ -49,9 +50,10 @@ public class WxCardExchangeService extends ShopBaseService {
 	@Autowired private UserCheckedGoodsService userCheckedGoodsSvc;
 	@Autowired private DomainConfig domainConfig;
     @Autowired public UserCardService userCard;
+    @Autowired private CardExchangService cardExchangSvc;
 
 	/**
-	 * 兑换商品列表
+	 * 	分页查询兑换商品列表
 	 * @param param
 	 */
 	public CardExchangeGoodsVo changeGoodsList(CardExchangeGoodsParam param) {
@@ -78,9 +80,11 @@ public class WxCardExchangeService extends ShopBaseService {
 			}
 			
 			Byte soldOutGoods = shopCommonCfgSvc.getSoldOutGoods();
-			List<Integer> goodsIds = Util.splitValueToList(memberCard.getExchangGoods());
 			GoodsPageListParam goodsPageListParam = new GoodsPageListParam();
-			goodsPageListParam.setGoodsIds(goodsIds);
+			if(CardUtil.isExchangPartGoods(memberCard.getIsExchang())) {
+				List<Integer> goodsIds = cardExchangSvc.getExchangPartGoodsAllIds(memberCard.getExchangGoods());
+				goodsPageListParam.setGoodsIds(goodsIds);
+			}
 			goodsPageListParam.setIsSaleOut(soldOutGoods);
 			goodsPageListParam.setGoodsName(param.getSearch());
 			goodsPageListParam.setCurrentPage(param.getCurrentPage());
