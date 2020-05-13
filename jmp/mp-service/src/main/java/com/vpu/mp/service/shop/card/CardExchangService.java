@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class CardExchangService extends ShopBaseService {
 	 */
 	public final static Integer NUM_INFINITE = NumberUtils.INTEGER_ZERO;
 	/**
-	 * 获取会员卡兑换商品的配置信息
+	 * 	获取会员卡兑换商品的配置信息
 	 * @return CardExchangGoods 兑换商品配置数据信息
 	 */
 	public CardExchangGoods getCardExchangGoodsService(MemberCardRecord card){
@@ -50,35 +51,59 @@ public class CardExchangService extends ShopBaseService {
 		if(CardUtil.canExchangGoods(isExchang) && !StringUtils.isBlank(exchangGoods)) {
 			if(CardUtil.isExchangPartGoods(isExchang)) {
 				//	兑换部分商品
-				if(exchangGoods.startsWith("{")) { 
-					//	目前存储的数据格式为map
-					Map<String,Integer> map = Util.json2Object(exchangGoods, new TypeReference<Map<String,Integer>>() {}, false);
-					List<GoodsCfg> goodsCfgList = new ArrayList<GoodsCfg>();
-					for(Map.Entry<String, Integer> entry: map.entrySet()) {
-						GoodsCfg goodsCfg = new GoodsCfg();
-						String key = entry.getKey();
-						List<Integer> goodsId = Util.stringToList(key);
-						goodsCfg.setGoodsIds(goodsId);
-						goodsCfg.setMaxNum(entry.getValue());
-						goodsCfgList.add(goodsCfg);
-					}
-					cardExGoods.setExchangGoods(goodsCfgList);
-				}else {
-					//	逗号分隔的数据，直接解析
-					GoodsCfg goodsCfg = new GoodsCfg();
-					goodsCfg.setGoodsIds(Util.stringToList(exchangGoods));
-					goodsCfg.setMaxNum(NUM_INFINITE);
-					
-					List<GoodsCfg> goodsCfgList = new ArrayList<GoodsCfg>() {{
-						add(goodsCfg);
-					}};
-					cardExGoods.setExchangGoods(goodsCfgList);
-				}				
+				List<GoodsCfg> goodsCfgList = parseExchangGoods(exchangGoods);				
+				cardExGoods.setExchangGoods(goodsCfgList);
 			}else if(CardUtil.isExchangAllGoods(isExchang)) {
 				//	兑换全部商品
 				cardExGoods.setEveryGoodsMaxNum(Integer.parseInt(exchangGoods));
 			}
 		}
 		return cardExGoods;
+	}
+	
+	/**
+	 * 	解析兑换商品数据
+	 * @param exchangGoods 兑换商品存储的json数据
+	 * @return GoodsCfg商品的配置信息列表
+	 */
+	private List<GoodsCfg> parseExchangGoods(String exchangGoods) {
+		List<GoodsCfg> goodsCfgList = new ArrayList<GoodsCfg>();
+		if(exchangGoods.startsWith("{")) { 
+			//	目前存储的数据格式为map
+			Map<String,Integer> map = Util.json2Object(exchangGoods, new TypeReference<Map<String,Integer>>() {}, false);
+			for(Map.Entry<String, Integer> entry: map.entrySet()) {
+				GoodsCfg goodsCfg = new GoodsCfg();
+				String key = entry.getKey();
+				List<Integer> goodsId = Util.stringToList(key);
+				goodsCfg.setGoodsIds(goodsId);
+				goodsCfg.setMaxNum(entry.getValue());
+				
+				goodsCfgList.add(goodsCfg);
+			}
+		}else {
+			//	逗号分隔的数据，直接解析
+			GoodsCfg goodsCfg = new GoodsCfg();
+			goodsCfg.setGoodsIds(Util.stringToList(exchangGoods));
+			goodsCfg.setMaxNum(NUM_INFINITE);
+			
+			goodsCfgList.add(goodsCfg);
+		}
+		return goodsCfgList;
+	}
+
+	/**
+	 * 	获取可兑换部分商品的所有Ids
+	 * @param exchangGoods 兑换商品存储的json数据
+	 * @return 兑换部分商品的所有Id
+	 */
+	public List<Integer> getExchangPartGoodsAllIds(String exchangGoods){
+		List<Integer> goodsIds = new ArrayList<>();
+		List<GoodsCfg> goodsCfgList = parseExchangGoods(exchangGoods);
+		if(CollectionUtils.isNotEmpty(goodsCfgList)) {
+			for(GoodsCfg item: goodsCfgList) {
+				goodsIds.addAll(item.getGoodsIds());
+			}
+		}
+		return goodsIds;
 	}
 }
