@@ -59,8 +59,11 @@ public class CouponPackOrderVo {
 	
 	/** 下单时间 */
 	private Timestamp createTime;
+	private Timestamp payTime;
 	/**退款标志位 0:未申请退款，1：退款失败，2：退款成功，3是自定义临时状态，代表订单已经部分退款 */
 	private Byte returnFlag;
+	/**是否能退款 1能退 0不能退*/
+	private Byte canReturn;
 	/**未发放优惠劵数量 */
 	private Integer surplusAmount;
 	/** 已退积分*/

@@ -1,8 +1,10 @@
 package com.vpu.mp.service.shop.order.virtual;
 
 import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardOrderParam;
@@ -13,6 +15,7 @@ import org.jooq.SelectOnConditionStep;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
 import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
@@ -47,7 +50,16 @@ public class MemberCardOrderService extends VirtualOrderService {
                 .leftJoin(USER).on(VIRTUAL_ORDER.USER_ID.eq(USER.USER_ID))
                 .leftJoin(USER_CARD).on(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(USER_CARD.CARD_ID));
         buildOptions(select, param);
-        return getPageResult(select, param, MemberCardOrderVo.class);
+        PageResult<MemberCardOrderVo> pageResult = getPageResult(select, param, MemberCardOrderVo.class);
+        pageResult.getDataList().forEach(cardOrderVo->{
+            //超过一年不能退款
+            if (cardOrderVo.getPayTime()!=null&&DateUtil.getLocalDateTime().before(DateUtil.getTimeStampPlus(cardOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
+                cardOrderVo.setCanReturn(BaseConstant.NO);
+            }else {
+                cardOrderVo.setCanReturn(BaseConstant.YES);
+            }
+        });
+        return pageResult;
     }
 
     /**

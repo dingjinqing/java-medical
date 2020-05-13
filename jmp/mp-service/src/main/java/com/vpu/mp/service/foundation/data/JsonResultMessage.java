@@ -826,6 +826,7 @@ public class JsonResultMessage {
     public static final String REFUND_ACCOUNT_LARGER_THAN_ACCOUNT_PAID = "order.refund.account_larger_than_paid";
     public static final String REFUND_SCORE_LARGER_THAN_SCORE_PAID = "order.refund.score_larger_than_paid";
     public static final String REFUND_REQUEST_PARAMETER_ERROR = "order.virtual.order.refund.param.error";
+    public static final String REFUND_REQUEST_PARAMETER_TIME_ONE_YEAR = "order.virtual.order.refund.time.one.year";
 
     /**
      * 订单状态
