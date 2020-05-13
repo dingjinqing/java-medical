@@ -1,26 +1,5 @@
 package com.vpu.mp.service.shop.market.groupdraw;
 
-import static com.vpu.mp.db.shop.tables.GroupDraw.GROUP_DRAW;
-import static com.vpu.mp.db.shop.tables.JoinDrawList.JOIN_DRAW_LIST;
-import static com.vpu.mp.db.shop.tables.JoinGroupList.JOIN_GROUP_LIST;
-import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.service.foundation.util.Util.currentTimeStamp;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.stream.Collectors;
-
-import org.jooq.Record1;
-import org.jooq.SelectConditionStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
 import com.vpu.mp.db.shop.tables.records.JoinDrawListRecord;
@@ -47,12 +26,34 @@ import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
+import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.action.ReturnService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.GroupDraw.GROUP_DRAW;
+import static com.vpu.mp.db.shop.tables.JoinDrawList.JOIN_DRAW_LIST;
+import static com.vpu.mp.db.shop.tables.JoinGroupList.JOIN_GROUP_LIST;
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.service.foundation.util.Util.currentTimeStamp;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
 
 /**
  * 拼团抽奖
@@ -86,7 +87,8 @@ public class GroupDrawUserService extends ShopBaseService {
 	private OrderGoodsService orderGoodsService;
 	@Autowired
 	private OrderInfoService orderInfoService;
-
+    @Autowired
+    private OrderReadService orderRead;
 	private static final byte ZERO = 0;
 	private static final byte ONE = 1;
 
@@ -164,25 +166,34 @@ public class GroupDrawUserService extends ShopBaseService {
 		});
 	}
 
-	private void refundMoney(String orderSn) {
-		logger().info("订单号" + orderSn + "未中奖退款");
-		RefundParam param = new RefundParam();
-		param.setReturnType(OrderConstant.RT_ONLY_MONEY);
-		param.setAction((byte) OrderServiceCode.RETURN.ordinal());// 1是退款
-		param.setOrderSn(orderSn);
-		OrderInfoRecord orderInfo = db().selectFrom(ORDER_INFO).where(ORDER_INFO.ORDER_SN.eq(orderSn)).fetchAny();
-		if (null == orderInfo) {
-			return;
-		}
-		param.setOrderId(orderInfo.getOrderId());
-		param.setIsMp(OrderConstant.IS_MP_AUTO);
-		param.setReturnMoney(orderInfoService.getOrderFinalAmount(orderInfo.into(OrderListInfoVo.class), false));
+    private void refundMoney(String orderSn) {
+        logger().info("订单号" + orderSn + "未中奖退款");
+        RefundParam param = new RefundParam();
+        param.setReturnType(OrderConstant.RT_ONLY_MONEY);
+        param.setAction((byte) OrderServiceCode.RETURN.ordinal());
+        param.setOrderSn(orderSn);
+        OrderInfoRecord orderInfo = orderInfoService.getOrderByOrderSn(orderSn);
+        if (null == orderInfo) {
+            return;
+        }
+        param.setOrderId(orderInfo.getOrderId());
+        param.setIsMp(OrderConstant.IS_MP_AUTO);
+        param.setReturnMoney(orderInfoService.getOrderFinalAmount(orderInfo.into(OrderListInfoVo.class), false));
         param.setShippingFee(orderInfo.getShippingFee() == null ? BigDecimal.ZERO : orderInfo.getShippingFee());
-		ExecuteResult execute = returnService.execute(param);
-		if (null == execute || !execute.isSuccess()) {
-			logger().info("订单号：{}。退款失败，原因：{}", orderSn, execute.toString());
-		}
-	}
+        Result<OrderGoodsRecord> orderGoods = orderRead.orderGoods.getByOrderId(orderInfo.getOrderId());
+        ArrayList<ReturnGoods> returnGoods = new ArrayList<>(orderGoods.size());
+        for (OrderGoodsRecord orderGoodsRecord: orderGoods) {
+            RefundParam.ReturnGoods oneReturnGoods = new RefundParam.ReturnGoods();
+            oneReturnGoods.setRecId(orderGoodsRecord.getRecId());
+            oneReturnGoods.setReturnNumber(orderGoodsRecord.getGoodsNumber());
+            returnGoods.add(oneReturnGoods);
+        }
+        param.setReturnGoods(returnGoods);
+        ExecuteResult execute = returnService.execute(param);
+        if(execute != null && !execute.isSuccess()) {
+            logger().error("订单号:{},errorCode:{},errorParam:{},退款失败", orderSn, execute.getErrorCode(), execute.getErrorParam());
+        }
+    }
 
 	/**
 	 * 更新库存
