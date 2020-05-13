@@ -207,9 +207,9 @@ public class Calculate extends ShopBaseService {
                 continue;
             }
             //数量
-            tolalNumberAndPrice[BY_TYPE_TOLAL_NUMBER] = BigDecimalUtil.add(tolalNumberAndPrice[0], BigDecimal.valueOf(bo.getGoodsNumber()));
+            tolalNumberAndPrice[BY_TYPE_TOLAL_NUMBER] = BigDecimalUtil.add(tolalNumberAndPrice[BY_TYPE_TOLAL_NUMBER], BigDecimal.valueOf(bo.getGoodsNumber()));
             //价格
-            tolalNumberAndPrice[BY_TYPE_TOLAL_PRICE] = BigDecimalUtil.add(tolalNumberAndPrice[1], bo.getDiscountedTotalPrice());
+            tolalNumberAndPrice[BY_TYPE_TOLAL_PRICE] = BigDecimalUtil.add(tolalNumberAndPrice[BY_TYPE_TOLAL_PRICE], bo.getDiscountedTotalPrice());
         }
         return tolalNumberAndPrice;
     }
@@ -378,9 +378,9 @@ public class Calculate extends ShopBaseService {
         //新折后单价
         BigDecimal newDiscountedGoodsPrice = BigDecimalUtil.subtrac(bo.getDiscountedGoodsPrice(), perDiscount);
         //折后单价小于0（eg:商品10.00,优惠卷减20）时,折扣金额为商品折后单价
-        if (newDiscountedGoodsPrice.compareTo(BigDecimal.ZERO) == -1) {
+        if (newDiscountedGoodsPrice.compareTo(BigDecimal.ZERO) < 0) {
             perDiscount = bo.getDiscountedGoodsPrice();
-            newDiscountedGoodsPrice = BigDecimal.ZERO.setScale(2);
+            newDiscountedGoodsPrice = BigDecimalUtil.BIGDECIMAL_ZERO;
             totalDiscountPrica = BigDecimalUtil.multiply(perDiscount, BigDecimal.valueOf(bo.getGoodsNumber()));
         }
         //商品最后一个Sku单价折扣金额(退款使用，有时退不完)
