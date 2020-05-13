@@ -13,7 +13,6 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
-import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.FullReductionGoodsCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
@@ -37,9 +36,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -226,6 +232,13 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
                 orderFullReduce.setBos(entry.getValue());
                 orderFullReduce.initRatio();
                 result.add(orderFullReduce);
+                //记录满折满减活动折扣到每件商品的价格
+                orderFullReduce.getBos().forEach(
+                    x-> x.setPerDiscount(BigDecimalUtil.multiplyOrDivide(
+                            BigDecimalUtil.BigDecimalPlus.create(x.getDiscountedTotalPrice(), BigDecimalUtil.Operator.divide),
+                            BigDecimalUtil.BigDecimalPlus.create(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE], BigDecimalUtil.Operator.multiply),
+                            BigDecimalUtil.BigDecimalPlus.create(discount)
+                        )));
                 log.info("满折满减计算成功，详情：{}", orderFullReduce);
             }
         }
