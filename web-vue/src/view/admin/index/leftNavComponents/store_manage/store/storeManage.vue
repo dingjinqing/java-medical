@@ -128,7 +128,6 @@ export default {
           })
           break
         case 'fourth':
-          debugger
           this.$router.push({
             name: 'store_storemanage_comment',
             query: {
