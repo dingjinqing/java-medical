@@ -864,7 +864,7 @@ export default {
         this.$message.warning('预约服务不能为空！')
       } else {
         console.log('技师列表：' + this.reservationTech)
-        if (!this.reservationTech) {
+        if (Array.isArray(this.reservationTech) && this.reservationTech.length > 0) {
           this.reservation.technicianName = this.reservationTech.find((item) => {
             return item.id === this.reservation.technicianId
           }).technicianName
