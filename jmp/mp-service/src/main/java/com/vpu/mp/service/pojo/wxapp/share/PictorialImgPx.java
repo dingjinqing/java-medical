@@ -107,9 +107,9 @@ public class PictorialImgPx {
         } else {
             if (!DEFAULT_STYLE.equals(picStyleConfig)) {
                 headerHeight = 130;
-                majorAxis = bgWidth+bgWidth/2;
+                majorAxis = bgWidth + bgWidth / 2;
                 minorAxis = 500;
-                bgCircleStartX = (bgWidth-majorAxis)/2;
+                bgCircleStartX = (bgWidth - majorAxis) / 2;
                 bgCircleStartY = -100;
             }
             // 默认样式值初始化
@@ -120,9 +120,9 @@ public class PictorialImgPx {
             if (SHARE_PERSON_STYLE.equals(picStyleConfig)) {
                 initForSharePersonInfoStyle();
             } else if (SHOP_STYLE.equals(picStyleConfig)) {
-
+                initForShareShopInfoStyle();
             } else if (SHARE_PERSON_SHOP_STYLE.equals(picStyleConfig)) {
-
+                initForSharePersonShopInfoStyle();
             } else {
 
             }
@@ -214,6 +214,24 @@ public class PictorialImgPx {
     }
 
     /**
+     * 样式4，分享带店铺信息
+     */
+    private void initForShareShopInfoStyle() {
+        userNameY = headerStartY + userHeaderDiameter / 4;
+        userNameFont = ImageUtil.SourceHanSansCN(Font.PLAIN, LARGE_FONT_SIZE);
+    }
+
+    /**
+     * 样式5，分享带店铺和人员信息
+     */
+    private void initForSharePersonShopInfoStyle() {
+        initForSharePersonInfoStyle();
+
+        // 店铺头像信息
+        shopInfoStartY = goodsStartY + goodsHeight - 150;
+    }
+
+    /**
      * 图片头部
      */
     private Integer headerHeight = 160;
@@ -254,6 +272,42 @@ public class PictorialImgPx {
     private Integer goodsStartX;
     private Integer goodsStartY;
 
+    /**
+     * 同时显示用户和店铺信息时店铺的位置信息
+     */
+    private Integer shopInfoHeight = 70;
+    private Integer shopIconWrapHeight = shopInfoHeight;
+    private Integer shopIconDiameter = 50;
+    private Integer shopIconStartX;
+    private Integer shopInfoTextStartX;
+    private Color shopInfoBgColor = new Color(200, 200, 200, 200);
+
+    public Integer getShopIconWrapStartX(Integer textWidth) {
+        return goodsStartX + goodsWidth - textWidth - shopIconWrapHeight;
+    }
+
+    public Integer getShopInfoRectStartX(Integer textWidth) {
+        return goodsStartX + goodsWidth - textWidth - shopIconWrapHeight / 2;
+    }
+
+    public Integer getShopIconStartX(Integer wrapIconStartX) {
+        return wrapIconStartX + (shopIconWrapHeight - shopIconDiameter) / 2;
+    }
+
+    public Integer getShopIconStartY(Integer wrapIconStartY) {
+        return wrapIconStartY + (shopIconWrapHeight - shopIconDiameter) / 2;
+    }
+
+    public Integer getShopInfoTextStartX(Integer wrapIconStartX) {
+        return wrapIconStartX + shopIconWrapHeight;
+    }
+
+    public Integer getShopInfoTextStartY(Integer wrapIconStartY) {
+        return wrapIconStartY + shopInfoHeight / 2+7;
+    }
+
+    private Integer shopInfoStartY;
+    private Font shopInfoNameFont = ImageUtil.SourceHanSansCN(Font.PLAIN, SMALL_FONT_SIZE);
     /**
      * 图片上方，各个活动自定义内容区域
      * 自定义内容区域,背景边框位置和大小

@@ -259,12 +259,68 @@ public class PictorialService extends ShopBaseService {
 
         BufferedImage bgBufferedImage = createBgImage(imgPx);
         ImageUtil.addCircle(bgBufferedImage,imgPx.getBgCircleStartX(),imgPx.getBgCircleStartY(),imgPx.getMajorAxis(),imgPx.getMinorAxis(),imgPx.getShopStyleColor());
-        // 设置用户名
-
+        // 设置title名
         String userNameText = userInfo.getUserName()+" "+Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_RECOMMEND_INFO, null, "messages");;
         addHeaderItemInfo(bgBufferedImage,userInfo.getUserAvatarImage(),userNameText,shareDoc,imgPx);
         addGoodsPicInfo(bgBufferedImage,goodsImg,imgPx);
         addBottomItemInfo(bgBufferedImage,shop,goodsName,null,null,realPrice,linePrice,qrCodeImg,imgPx);
+        return bgBufferedImage;
+    }
+
+    /**
+     * 生成海报带店铺信息
+     * @param shop      店铺配置
+     * @param qrCodeImg 二维码
+     * @param goodsImg  商品图片
+     * @param goodsName 商品名称
+     * @param realPrice 商品原件
+     * @param linePrice 商品划线价
+     * @param imgPx     图片规格信息
+     * @return
+     */
+    public BufferedImage createShareShopInfoPictorialBgImage(BufferedImage shopImg, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String goodsName, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx){
+
+        BufferedImage bgBufferedImage = createBgImage(imgPx);
+        ImageUtil.addCircle(bgBufferedImage,imgPx.getBgCircleStartX(),imgPx.getBgCircleStartY(),imgPx.getMajorAxis(),imgPx.getMinorAxis(),imgPx.getShopStyleColor());
+        // 设置title名
+        addHeaderItemInfo(bgBufferedImage,shopImg, shop.getShopName(),null,imgPx);
+        addGoodsPicInfo(bgBufferedImage,goodsImg,imgPx);
+        addBottomItemInfo(bgBufferedImage,shop,goodsName,null,null,realPrice,linePrice,qrCodeImg,imgPx);
+        return bgBufferedImage;
+    }
+
+    /**
+     * 生成海报带店铺信息
+     * @param userInfo  用户信息
+     * @param shop      店铺配置
+     * @param qrCodeImg 二维码
+     * @param goodsImg  商品图片
+     * @param shareDoc  海报分享文案
+     * @param goodsName 商品名称
+     * @param realPrice 商品原件
+     * @param linePrice 商品划线价
+     * @param imgPx     图片规格信息
+     * @return
+     */
+    public BufferedImage createSharePersonShopInfoPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg,BufferedImage shopIconImg, BufferedImage goodsImg, String shareDoc, String goodsName, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx){
+
+        BufferedImage bgBufferedImage = createBgImage(imgPx);
+        ImageUtil.addCircle(bgBufferedImage,imgPx.getBgCircleStartX(),imgPx.getBgCircleStartY(),imgPx.getMajorAxis(),imgPx.getMinorAxis(),imgPx.getShopStyleColor());
+        // 设置title名
+        String userNameText = userInfo.getUserName()+" "+Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_RECOMMEND_INFO, null, "messages");;
+        addHeaderItemInfo(bgBufferedImage,userInfo.getUserAvatarImage(),userNameText,shareDoc,imgPx);
+        addGoodsPicInfo(bgBufferedImage,goodsImg,imgPx);
+        addBottomItemInfo(bgBufferedImage,shop,goodsName,null,null,realPrice,linePrice,qrCodeImg,imgPx);
+        // 添加店铺icon和名字信息,先话外部圆（最左侧），再画矩形，矩形长度是文字长度加上外圆的半径。再画店铺头像，再画文字
+        String shopName =shop.getShopName();
+        Integer shopNameWidth = ImageUtil.getTextWidth(bgBufferedImage,imgPx.getShopInfoNameFont(),shopName);
+        Integer getShopInfoStartY = imgPx.getShopInfoStartY();
+        Integer shopIconWrapStartX = imgPx.getShopIconWrapStartX(shopNameWidth);;
+        ImageUtil.addCircle(bgBufferedImage,shopIconWrapStartX,getShopInfoStartY,imgPx.getShopIconWrapHeight(),imgPx.getShopIconWrapHeight(),imgPx.getShopInfoBgColor());
+        ImageUtil.addRect(bgBufferedImage,imgPx.getShopInfoRectStartX(shopNameWidth),getShopInfoStartY,shopNameWidth+imgPx.getShopIconWrapHeight()/2,imgPx.getShopInfoHeight(),imgPx.getShopInfoBgColor(),imgPx.getShopInfoBgColor());
+        shopIconImg = ImageUtil.makeRound(shopIconImg,imgPx.getShopIconDiameter());
+        ImageUtil.addTwoImage(bgBufferedImage,shopIconImg,imgPx.getShopIconStartX(shopIconWrapStartX),imgPx.getShopIconStartY(getShopInfoStartY));
+        ImageUtil.addFont(bgBufferedImage,shopName,imgPx.getShopInfoNameFont(),imgPx.getShopInfoTextStartX(shopIconWrapStartX),imgPx.getShopInfoTextStartY(getShopInfoStartY),Color.BLACK,true);
         return bgBufferedImage;
     }
 
