@@ -14,21 +14,21 @@
       <section>
         <div class="tab_info1">
           <div>
-            <span class="info_title">活动名称：</span>
+            <span class="info_title">{{$t('preSale.activityName')+'：'}}</span>
             <el-input
               v-model="param.name"
-              placeholder="活动名称"
+              :placeholder="$t('preSale.activityName')"
               style="width:180px"
               size="small"
               clearable
             ></el-input>
           </div>
           <div class="money_paytime">
-            <span class="info_title">定金支付时间：</span>
+            <span class="info_title">{{$t('preSale.prePayTime')+'：'}}</span>
             <el-date-picker
               v-model="param.preStartTime"
               type="datetime"
-              placeholder="选择开始日期"
+              :placeholder="$t('preSale.selectStartTime')"
               size="small"
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
@@ -36,11 +36,11 @@
               default-time="00:00:00"
             >
             </el-date-picker>
-            <span style="margin: 0 5px">至</span>
+            <span style="margin: 0 5px">{{$t('preSale.to')}}</span>
             <el-date-picker
               v-model="param.preEndTime"
               type="datetime"
-              placeholder="选择结束日期"
+              :placeholder="$t('preSale.selectEndTime')"
               size="small"
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
@@ -52,11 +52,11 @@
         </div>
         <div class="tab_info2">
           <div>
-            <span class="info_title">尾款支付时间：</span>
+            <span class="info_title">{{$t('preSale.payEndTime')+'：'}}</span>
             <el-date-picker
               v-model="param.startTime"
               type="datetime"
-              placeholder="选择开始日期"
+              :placeholder="$t('preSale.selectStartTime')"
               size="small"
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
@@ -64,11 +64,11 @@
               default-time="00:00:00"
             >
             </el-date-picker>
-            <span style="margin: 0 5px">至</span>
+            <span style="margin: 0 5px">{{$t('preSale.to')}}</span>
             <el-date-picker
               v-model="param.endTime"
               type="datetime"
-              placeholder="选择结束日期"
+              :placeholder="$t('preSale.selectEndTime')"
               size="small"
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
@@ -84,7 +84,7 @@
             class="choose"
             @click="initDataList"
           >
-            筛选
+            {{$t('preSale.filtrate')}}
           </el-button>
         </div>
         <el-button
@@ -92,7 +92,7 @@
           type="primary"
           @click="gotoAdd"
           class="add_activity"
-        >添加定金膨胀活动</el-button>
+        >{{$t('preSale.addActivity')}}</el-button>
       </section>
     </section>
 
@@ -105,72 +105,72 @@
       >
         <el-table-column
           prop="presaleName"
-          label="活动名称"
+          :label="$t('preSale.activityName')"
           align="center"
         > </el-table-column>
         <el-table-column
           prop=""
-          label="定金支付时间"
+          :label="$t('preSale.prePayTime')"
           align="center"
           width="160"
         >
           <template slot-scope="scope">
-            {{scope.row.preStartTime}}<br>至<br>{{scope.row.preEndTime}}
+            {{scope.row.preStartTime}}<br>{{$t('preSale.to')}}<br>{{scope.row.preEndTime}}
             <div v-if="scope.row.preStartTime2 && scope.row.preEndTime2">
-              {{scope.row.preStartTime2}}<br>至<br>{{scope.row.preEndTime2}}
+              {{scope.row.preStartTime2}}<br>{{$t('preSale.to')}}<br>{{scope.row.preEndTime2}}
             </div>
           </template>
         </el-table-column>
         <el-table-column
           prop=""
-          label="尾款支付时间"
+          :label="$t('preSale.payEndTime')"
           align="center"
           width="160"
         >
           <template slot-scope="scope">
             <div v-if="scope.row.presaleType === 0">
-              {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+              {{scope.row.startTime}}<br>{{$t('preSale.to')}}<br>{{scope.row.endTime}}
             </div>
           </template>
         </el-table-column>
         <el-table-column
           prop="boughtGoodsQuantity"
-          label="已购商品数量"
+          :label="$t('preSale.purchasedGoodsNumber')"
           align="center"
         > </el-table-column>
         <el-table-column
           prop="orderQuantity"
-          label="订单数量"
+          :label="$t('preSale.orderNumber')"
           align="center"
         > </el-table-column>
         <el-table-column
           prop="bargainPaidOrderQuantity"
-          label="已付定金订单数"
+          :label="$t('preSale.paidStartMoneyOrder')"
           align="center"
         > </el-table-column>
         <el-table-column
           prop="tailPaidOrderQuantity"
-          label="已付尾款订单数"
+          :label="$t('preSale.paidEndMoneyOrder')"
           align="center"
         > </el-table-column>
         <el-table-column
           prop="orderUserQuantity"
-          label="下单用户数"
+          :label="$t('preSale.orderUserNumber')"
           align="center"
         > </el-table-column>
         <el-table-column
           prop="statusText"
-          label="活动状态"
+          :label="$t('preSale.activityStatus')"
           align="center"
         > </el-table-column>
         <el-table-column
-          label="操作"
+          :label="$t('preSale.operate')"
           align="center"
         >
           <template slot-scope="scope">
             <div class="opt">
               <el-tooltip
-                content="编辑"
+                :content="$t('preSale.edit')"
                 placement="top"
                 v-if="scope.row.status === 1 || scope.row.status === 2"
               >
@@ -215,7 +215,7 @@
               </el-tooltip>
               <!-- hello world  -->
               <el-tooltip
-                content="查看活动订单"
+                :content="$t('preSale.viewActivityOrder')"
                 placement="top"
                 v-if="scope.row.status !== 2"
               >
@@ -226,7 +226,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="活动明细"
+                :content="$t('preSale.activityDetail')"
                 placement="top"
                 v-if="scope.row.status !== 2"
               >

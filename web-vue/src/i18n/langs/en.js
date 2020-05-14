@@ -433,6 +433,9 @@ import {
 import {
   en as live
 } from './views/admin_new/en/index/marketManagement/live/liveEn'
+import {
+  en as preSale
+} from './views/admin_new/en/index/marketManagement/preSale/preSaleEn'
 
 // 会员管理系列模块化
 // 会员列表
@@ -1086,6 +1089,7 @@ const en = {
   dateTimePicker, // 选择时间
   groupIntegration, // 组团瓜分积分
   live, // 直播
+  preSale, // 定金膨胀
 
   // 会员管理
   memberCard, // 会员管理-会员卡

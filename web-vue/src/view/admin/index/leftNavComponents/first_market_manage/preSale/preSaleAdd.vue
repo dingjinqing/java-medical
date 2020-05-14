@@ -12,7 +12,7 @@
         :rules="formRules"
       >
         <el-form-item
-          label="活动类型："
+          :label="$t('preSale.activityType')+ '：'"
           prop="presaleType"
         >
           <el-radio
@@ -25,41 +25,41 @@
           >{{item}}</el-radio>
         </el-form-item>
         <el-form-item
-          label="活动名称："
+          :label="$t('preSale.activityName')+ '：'"
           prop="presaleName"
         >
           <el-input
             v-model="param.presaleName"
-            placeholder="请输入活动名称"
+            :placeholder="$t('preSale.inputActivityName')"
             size="small"
             style="width:180px"
           ></el-input>
-          <span style="color:#999;margin-left:10px;">只作为商家记录使用，用户不会看到这个名称</span>
+          <span style="color:#999;margin-left:10px;">{{$t('preSale.activityNameRemark')}}</span>
         </el-form-item>
 
         <el-form-item
-          label="优先级："
+          :label="$t('preSale.level')+ '：'"
           prop="first"
         >
           <el-input
             v-model="param.first"
             size="small"
-            placeholder="请输入优先级"
+            :placeholder="$t('preSale.inputLevel')"
             style="width: 180px"
           ></el-input>
-          <span style="color:#999;margin-left:10px;">用于区分不同定金膨胀活动的优先级，请填写正整数，数值越大优先级越高</span>
+          <span style="color:#999;margin-left:10px;">{{$t('preSale.levelRemark')}}</span>
         </el-form-item>
 
         <!-- 定金膨胀 -->
         <el-form-item
           v-show="!isFullPay"
-          label="活动时间："
+          :label="$t('preSale.activityTime')"
           :rules="[{required: true}]"
         >
           <template>
-            <div style="color:#999">请设置定金支付时间以及尾款支付时间，最多可配置两个支付定金时段，定金支付的截止时间不能大于尾款支付的截止时间</div>
+            <div style="color:#999">{{$t('preSale.activityTimeRemark')}}</div>
             <el-form-item
-              label="定金支付时间："
+              :label="$t('preSale.prePayTime')+'：'"
               :rules="[{required: true, message:'请填写定金支付时间', trigger: ['blur','change']}]"
               :inline-message="true"
               prop="preTime1Range"
@@ -81,12 +81,12 @@
                 size="small"
                 v-show="!twoSteps&&!isEditeFlag"
                 @click="handleTwoState"
-              >添加定金支付时段</el-button>
+              >{{$t('preSale.addPayTime')}}</el-button>
             </el-form-item>
 
             <!-- 定金支付时间 -->
             <el-form-item
-              label="定金支付时间："
+              :label="$t('preSale.prePayTime')+ '：'"
               :rules="[{required: true, message:'请填写定金支付时间', trigger: ['blur','change']}]"
               :inline-message="true"
               prop="preTime2Range"
@@ -109,12 +109,12 @@
                 v-if="!isEditeFlag"
                 size="small"
                 @click="handleDelete"
-              >删除</el-button>
+              >{{$t('preSale.delete')}}</el-button>
             </el-form-item>
 
             <!-- 尾款支付时间 -->
             <el-form-item
-              label="尾款支付时间："
+              :label="$t('preSale.payEndTime')+ '：'"
               prop="tailPayTimeRange"
               :rules="[{required: true, message:'请填写尾款支付时间', trigger: ['blur','change']}]"
               :inline-message="true"
@@ -140,7 +140,7 @@
         <!-- 全款预售 -->
         <el-form-item
           v-show="isFullPay"
-          label="定金支付时间："
+          :label="$t('preSale.prePayTime')"
           :rules="[{required: true, message:'请填写定金支付时间', trigger: ['blur','change']}]"
           prop="preTime1Range"
         >
@@ -158,9 +158,9 @@
         </el-form-item>
 
         <!-- 活动预告 -->
-        <el-form-item label="活动预告：">
+        <el-form-item :label="$t('preSale.activityForecast')+ '：'">
           <div>
-            <span style="color:#999">活动开始前会在商品详情中展示活动预告信息</span>
+            <span style="color:#999">{{$t('preSale.activityForecastRemark')}}</span>
             <el-popover
               placement="right-start"
               width="220"
@@ -170,7 +170,7 @@
               <el-button
                 slot="reference"
                 type="text"
-              >查看示例</el-button>
+              >{{$t('preSale.viewExample')}}</el-button>
             </el-popover>
           </div>
           <div>
@@ -179,30 +179,30 @@
                 :label="1"
                 :disabled="isEditeFlag"
               >
-                活动开始前
+                {{$t('preSale.beforeForecast')}}
                 <el-input
                   v-model="param.preTime"
                   :disabled="isEditeFlag"
                   style="width:80px"
                   size="small"
                 ></el-input>
-                小时进行预告
+                {{$t('preSale.forcast')}}
               </el-radio>
               <el-radio
                 :label="-1"
                 :disabled="isEditeFlag"
-              >活动创建完成后即进行公告</el-radio>
+              >{{$t('preSale.afterForecast')}}</el-radio>
               <el-radio
                 :label="0"
                 :disabled="isEditeFlag"
-              >不进行活动预告</el-radio>
+              >{{$t('preSale.NotForeacast')}}</el-radio>
             </el-radio-group>
           </div>
         </el-form-item>
 
         <!-- 活动商品 -->
         <el-form-item
-          label="活动商品："
+          :label="$t('preSale.activityGoods')+ '：'"
           prop="goodsId"
         >
           <el-input
@@ -223,11 +223,11 @@
             :disabled="isEditeFlag"
             size="small"
             @click="showChoosingGoods"
-          >选择商品
+          >{{$t('preSale.selectGoods')}}
           </el-button>
         </el-form-item>
         <el-form-item
-          label="发货时间："
+          :label="$t('preSale.deleveryTime')"
           prop="deliverType"
         >
           <div style="display: flex">
@@ -237,7 +237,7 @@
               :label="1"
               style="line-height: 40px"
               @change="changTime"
-            >&nbsp;指定发货开始时间</el-radio>
+            >&nbsp;{{$t('preSale.specifiedDeleveryTime')}}</el-radio>
             <el-date-picker
               :disabled="param.deliverType==2 || isEditeFlag"
               v-model="param.deliverTime"
@@ -256,8 +256,8 @@
               style="line-height:40px"
               @change="changTime"
             >
-              <span v-if="this.param.presaleType === 0">&nbsp;尾款支付完成</span>
-              <span v-if="this.param.presaleType === 1">&nbsp;支付完成后</span>
+              <span v-if="this.param.presaleType === 0">&nbsp;{{$t('preSale.endMoneyComplete')}}</span>
+              <span v-if="this.param.presaleType === 1">&nbsp;{{$t('preSale.payEnd')}}</span>
             </el-radio>
             <el-input
               :disabled="param.deliverType==1 || isEditeFlag"
@@ -266,11 +266,11 @@
               style="width:180px"
               :min=0
             />
-            <span style="margin-left:10px">天后发货</span>
+            <span style="margin-left:10px">{{$t('preSale.startDeleveryGodos')}}</span>
           </div>
         </el-form-item>
         <el-form-item
-          label="优惠叠加策略："
+          :label="$t('preSale.discountStrategy')"
           prop="discountType"
         >
           <el-radio
@@ -280,10 +280,10 @@
             :key="index"
             :label="index"
           >{{item}}</el-radio>
-          <span class="textColor">预售商品结算时是否可与会员卡折扣、优惠券叠加使用</span>
+          <span class="textColor">{{$t('preSale.discountRemark')}}</span>
         </el-form-item>
         <el-form-item
-          label="定金退款策略："
+          :label="$t('preSale.preMoneyStrategy')"
           prop="returnType"
           v-show="param.presaleType === 0"
         >
@@ -294,10 +294,10 @@
             :key="index"
             :label="index"
           >{{item}}</el-radio>
-          <span class="textColor">选择自动退回定金，则在指定时间内未支付尾款的订单，将退回定金到原支付账户</span>
+          <span class="textColor">{{$t('preSale.preMoneyRemark')}}</span>
         </el-form-item>
         <el-form-item
-          label="预售数量展示："
+          :label="$t('preSale.preSaleNumber')"
           prop="showSaleNumber"
         >
           <el-radio
@@ -307,10 +307,10 @@
             :key="index"
             :label="index"
           >{{item}}</el-radio>
-          <span class="textColor">当前活动商品的预售数量是否展示在商品详情页</span>
+          <span class="textColor">{{$t('preSale.preSaleNumberRemark')}}</span>
         </el-form-item>
         <el-form-item
-          label="商品购买方式："
+          :label="$t('preSale.goodsBuyType')"
           prop="buyType"
         >
           <el-radio
@@ -320,7 +320,7 @@
             :key="index"
             :label="index"
           >{{item}}</el-radio>
-          <span class="textColor">活动进行中是否可直接以原价购买此商品</span>
+          <span class="textColor">{{$t('preSale.goodsBuyTypeRemark')}}</span>
         </el-form-item>
       </el-form>
       <el-form
@@ -337,26 +337,26 @@
           >
             <el-table-column
               prop="goodsName"
-              label="商品名称"
+              :label="$t('preSale.goodsName')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="shopPrice"
-              label="商品原价(元)"
+              :label="$t('preSale.goodsPrice')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="goodsNumber"
-              label="商品库存"
+              :label="$t('preSale.goodsNumber')"
               align="center"
             >
             </el-table-column>
 
             <el-table-column
               align="center"
-              label="活动价格"
+              :label="$t('preSale.activityPrice')"
               :show-overflow-tooltip="true"
             >
               <template slot-scope="scope">
@@ -386,7 +386,7 @@
             <el-table-column
               align="center"
               prop="presaleNumber"
-              label="活动库存"
+              :label="$t('preSale.activityNumber')"
               :show-overflow-tooltip="true"
             >
               <template slot-scope="scope">
@@ -416,7 +416,7 @@
             <el-table-column
               align="center"
               prop="presaleMoney"
-              label="定金"
+              :label="$t('preSale.preMoney')"
               v-if="param.presaleType===0"
               :show-overflow-tooltip="true"
             >
@@ -447,7 +447,7 @@
             <el-table-column
               align="center"
               prop="preDiscountMoney1"
-              label="1阶段定金可抵扣金额"
+              :label="$t('preSale.state1')"
               v-if="!isFullPay"
               :show-overflow-tooltip="true"
             >
@@ -478,7 +478,7 @@
             <el-table-column
               align="center"
               prop="preDiscountMoney2"
-              label="2阶段定金可抵扣金额"
+              :label="$t('preSale.state2')"
               v-if="twoSteps&&!isFullPay"
               :show-overflow-tooltip="true"
             >
@@ -507,7 +507,7 @@
 
             <!-- 操作 -->
             <el-table-column
-              label="操作"
+              :label="$t('preSale.operate')"
               align="center"
               v-if="!isEditeFlag"
             >
@@ -516,7 +516,7 @@
                   v-if="scope.row.goodsId"
                   @click="deleteGoods(scope.row, scope.row.goodsId)"
                   style="cursor:pointer;color:#409eff"
-                >删除</div>
+                >{{$t('preSale.delete')}}</div>
               </template>
             </el-table-column>
 
@@ -529,34 +529,34 @@
               slot="append"
               class="moreSetUp"
             >
-              <span style="display: inline-block">更多设置：</span>
+              <span style="display: inline-block">{{$t('preSale.moreSetting')+'：'}}</span>
               <a
                 :class="activeIndex === 1 ? '' : 'settings'"
                 @click="setCurrent(1)"
-              >活动价格
+              >{{$t('preSale.activityPrice')}}
               </a>
               <a
                 :class="activeIndex === 2 ? '' : 'settings'"
                 @click="setCurrent(2)"
-              >活动库存
+              >{{$t('preSale.activityNumber')}}
               </a>
               <a
                 :class="activeIndex === 3 ? '' : 'settings'"
                 @click="setCurrent(3)"
                 v-if="param.presaleType===0"
-              >定金
+              >{{$t('preSale.preMoney')}}
               </a>
               <a
                 :class="activeIndex === 4 ? '' : 'settings'"
                 @click="setCurrent(4)"
                 v-show="!isFullPay"
-              >1阶段定金可抵扣金额
+              >{{$t('preSale.state1')}}
               </a>
               <a
                 :class="activeIndex === 5 ? '' : 'settings'"
                 @click="setCurrent(5)"
                 v-show="twoSteps&&!isFullPay"
-              >2阶段定金可抵扣金额
+              >{{$t('preSale.state2')}}
               </a>
             </div>
 
@@ -586,33 +586,33 @@
           :model="param"
         >
           <el-form-item
-            label="购买数量限制："
+            :label="$t('preSale.numberLimut')"
             prop="buyNumber"
             :rules="[
                 { validator: (rule, value, callback)=>{validateBuyNumber(rule, value, callback)}, trigger: ['blur', 'change'] }
               ]"
           >
             <div style="display:flex">
-              <span>单用户最多可以购买</span>
+              <span>{{$t('preSale.singleUser')}}</span>
               <el-input
                 :disabled="isEditeFlag"
                 v-model="param.buyNumber"
                 size="small"
                 style="width:180px;margin:0 10px;"
               ></el-input>
-              <span>件该商品</span>
+              <span>{{$t('preSale.singleUserNumber')}}</span>
               <span
                 class="textColor"
                 style="margin-left:20px;"
-              >单用户可购买活动商品的数量，不填或填写0表示不限制</span>
+              >{{$t('preSale.singleUserRemark')}}</span>
             </div>
           </el-form-item>
-          <el-form-item label="活动分享：">
+          <el-form-item :label="$t('preSale.actShare')">
             <div>
               <el-radio
                 v-model="param.shareAction"
                 :label=1
-              >默认样式</el-radio>
+              >{{$t('preSale.defaultStyle')}}</el-radio>
               <el-popover
                 placement="right-start"
                 width="220"
@@ -623,7 +623,7 @@
                   slot="reference"
                   type="text"
                   style="margin: 0 20px"
-                >查看示例</el-button>
+                >{{$t('preSale.viewExample')}}</el-button>
               </el-popover>
               <el-popover
                 placement="right-start"
@@ -634,19 +634,19 @@
                 <el-button
                   slot="reference"
                   type="text"
-                >下载海报</el-button>
+                >{{$t('preSale.downloadPoster')}}</el-button>
               </el-popover>
             </div>
             <div>
               <el-radio
                 v-model="param.shareAction"
                 :label=2
-              >自定义样式</el-radio>
+              >{{$t('preSale.customStyle')}}</el-radio>
               <div
                 v-if="param.shareAction === 2"
                 style="margin-left: 25px"
               >
-                <span>文案：</span>
+                <span>{{$t('preSale.document')+'：'}}</span>
                 <el-input
                   v-model="param.shareDoc"
                   size="small"
@@ -658,16 +658,16 @@
                 style="margin-left: 25px"
               >
                 <!-- <span>分享图：</span> -->
-                <span>分享图：</span>
+                <span>{{$t('preSale.sharePicture')+'：'}}</span>
                 <el-radio
                   v-model="param.shareImgAction"
                   :label=1
-                >活动商品信息图</el-radio>
+                >{{$t('preSale.actGoodsPic')}}</el-radio>
                 <div style="margin-left: 60px;">
                   <el-radio
                     v-model="param.shareImgAction"
                     :label=2
-                  >自定义图片</el-radio>
+                  >{{$t('preSale.customPic')}}</el-radio>
                 </div>
 
                 <div
@@ -692,7 +692,7 @@
                       >
                     </div>
                   </div>
-                  <span class="picSizeTips">建议尺寸：800*800像素</span>
+                  <span class="picSizeTips">{{$t('preSale.pictureSize')}}</span>
                 </div>
 
               </div>
@@ -706,7 +706,7 @@
           size="small"
           type="primary"
           @click="add"
-        >保存
+        >{{$t('preSale.save')}}
         </el-button>
       </div>
 
