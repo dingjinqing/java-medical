@@ -178,7 +178,7 @@
           :data="tableData"
           @sort-change="changeTableSort"
           border
-          style="width: 100%"
+          style="width: 100%;font-size: 12px;"
         >
           <el-table-column
             type="selection"
@@ -291,7 +291,7 @@
               <span
                 class="nameStyle"
                 @click="nextNumberHandler(scope.row.userId)"
-              >{{ scope.row.nextNumber }}</span>
+              >{{scope.row.nextNumber ? scope.row.nextNumber : 0}}</span>
             </template>
           </el-table-column>
 
@@ -305,7 +305,7 @@
               <span
                 class="nameStyle"
                 @click="sublayerNumberHandler(scope.row.userId)"
-              >{{ scope.row.sublayerNumber }}</span>
+              >{{scope.row.sublayerNumber ? scope.row.sublayerNumber : 0}}</span>
             </template>
           </el-table-column>
 
@@ -315,6 +315,9 @@
             sortable="custom"
             align="center"
           >
+            <template slot-scope="scope">
+              <span>{{scope.row.totalCanFanliMoney ? scope.row.totalCanFanliMoney : '0.00'}}</span>
+            </template>
           </el-table-column>
 
           <el-table-column
@@ -323,6 +326,9 @@
             sortable="custom"
             align="center"
           >
+            <template slot-scope="scope">
+              <span>{{scope.row.totalFanliMoney ? scope.row.totalFanliMoney : '0.00'}}</span>
+            </template>
           </el-table-column>
 
           <el-table-column
@@ -331,6 +337,9 @@
             sortable="custom"
             align="center"
           >
+            <template slot-scope="scope">
+              <span>{{scope.row.waitFanliMoney ? scope.row.waitFanliMoney : '0.00'}}</span>
+            </template>
           </el-table-column>
 
           <el-table-column
