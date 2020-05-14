@@ -106,7 +106,7 @@ public class CouponService extends ShopBaseService {
     private String aliasCode;
 
 	@Autowired
-	private CouponMpService couponMpService;
+	public CouponMpService couponMpService;
 	
     /**可用会员卡*/
     public static final byte COUPON_IS_USED_STATUS_AVAIL = 0;
