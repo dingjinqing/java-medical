@@ -6,6 +6,7 @@ import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.DistributionConstant;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -720,12 +721,11 @@ public class OrderInfoService extends ShopBaseService {
 				set.set(TABLE.ORDER_STATUS, OrderConstant.ORDER_RETURN_FINISHED);
 				set.set(TABLE.RETURN_FINISH_TIME, DateUtil.getSqlTimestamp());
 			}
-			// TODO 返利更新逻辑未知
-			// 优惠卷
-			if (OrderConstant.FANLI_TYPE_DISTRIBUTION_ORDER == order.getFanliType()) {
-				set.set(TABLE.SETTLEMENT_FLAG, OrderConstant.SETTLEMENT_NOT);
-				set.set(TABLE.FANLI_MONEY, BigDecimal.ZERO);
-			}
+			// 返利更新
+            if(order.getFanliType() != null && OrderConstant.FANLI_TYPE_DISTRIBUTION_ORDER == order.getFanliType() && order.getSettlementFlag() != null && !order.getSettlementFlag().equals(OrderConstant.SETTLEMENT_FINISH)) {
+                set.set(TABLE.SETTLEMENT_FLAG, OrderConstant.SETTLEMENT_NOT);
+                set.set(TABLE.FANLI_MONEY, BigDecimal.ZERO);
+            }
 			break;
 		default:
 			break;
@@ -747,7 +747,7 @@ public class OrderInfoService extends ShopBaseService {
 			order.setOrderStatus(OrderConstant.ORDER_CANCELLED);
 			order.setCancelledTime(DateUtil.getSqlTimestamp());
 			// 返利订单特殊处理
-			if (order.getFanliType() == OrderConstant.FANLI_TYPE_DISTRIBUTION_ORDER) {
+			if (order.getFanliType() != null && order.getFanliType() == OrderConstant.FANLI_TYPE_DISTRIBUTION_ORDER) {
 				order.setSettlementFlag(OrderConstant.SETTLEMENT_NOT);
 				order.setFanliMoney(BigDecimal.ZERO);
 			}
@@ -756,6 +756,11 @@ public class OrderInfoService extends ShopBaseService {
 		case OrderConstant.ORDER_CLOSED:
 			order.setOrderStatus(OrderConstant.ORDER_CLOSED);
 			order.setClosedTime(DateUtil.getSqlTimestamp());
+            // 返利订单特殊处理
+            if (order.getFanliType() != null && order.getFanliType() == OrderConstant.FANLI_TYPE_DISTRIBUTION_ORDER) {
+                order.setSettlementFlag(OrderConstant.SETTLEMENT_NOT);
+                order.setFanliMoney(BigDecimal.ZERO);
+            }
 			break;
 		// 核销 收货
 		case OrderConstant.ORDER_RECEIVED:
@@ -766,6 +771,11 @@ public class OrderInfoService extends ShopBaseService {
 		case OrderConstant.ORDER_FINISHED:
 			order.setOrderStatus(OrderConstant.ORDER_FINISHED);
 			order.setFinishedTime(DateUtil.getSqlTimestamp());
+            // 返利订单特殊处理
+            if (order.getFanliType() != null && order.getFanliType() == OrderConstant.FANLI_TYPE_DISTRIBUTION_ORDER) {
+                order.setSettlementFlag(OrderConstant.SETTLEMENT_FINISH);
+                order.setFanliMoney(BigDecimal.ZERO);
+            }
 			break;
         case OrderConstant.ORDER_WAIT_DELIVERY:
             order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
@@ -1007,7 +1017,7 @@ public class OrderInfoService extends ShopBaseService {
      * 获取预售活动已购买数量
      * @param userId
      * @param preSaleId
-     * @return
+     * @returnmarket/pre_sale/add
      */
     public Integer getPreSaletUserBuyNumber(Integer userId, Integer preSaleId){
         return db().select(DSL.count(ORDER_GOODS.GOODS_NUMBER)).from(ORDER_GOODS)
@@ -1105,6 +1115,21 @@ public class OrderInfoService extends ShopBaseService {
         startAndEnd[0] = Timestamp.valueOf(LocalDateTime.of(startDate, DateUtil.minTime));
         startAndEnd[1] = Timestamp.valueOf(LocalDateTime.of(endDate, DateUtil.maxTime));
         return startAndEnd;
+    }
+
+    public void setOrderRebateInfo(OrderInfoRecord orderRecord, BigDecimal total) {
+        if(!orderRecord.getFanliType().equals(DistributionConstant.REBATE_ORDER) ||
+            orderRecord.getSettlementFlag().equals(OrderConstant.YES) ||
+            !orderRecord.getTkOrderType().equals(OrderConstant.TK_NORMAL)) {
+            return;
+        }
+        if(BigDecimalUtil.compareTo(total, null) > 0) {
+            orderRecord.setFanliMoney(total);
+            orderRecord.setSettlementFlag(OrderConstant.SETTLEMENT_NOT);
+        }else {
+            orderRecord.setSettlementFlag(OrderConstant.SETTLEMENT_FINISH);
+        }
+        orderRecord.update();
     }
 
     /******************************************分割线以下与订单模块没有*直接*联系*********************************************/

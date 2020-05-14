@@ -1006,7 +1006,15 @@ public class OrderReadService extends ShopBaseService {
         if(order.getFanliType() != null && order.getFanliType() > OrderConstant.FANLI_TYPE_DEFAULT) {
             List<OrderRebateVo> rebateVos = orderGoodsRebate.getByOrderSn(order.getOrderSn());
             for (OrderRebateVo vo: rebateVos) {
-                vo.setCanRebateTotalMoney(BigDecimalUtil.multiply(vo.getCanCalculateMoney(), new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())));
+                if(order.getSettlementFlag() != null && order.getSettlementFlag().equals(OrderConstant.SETTLEMENT_NOT)) {
+                    vo.setRebateTotalMoney(BigDecimalUtil.BIGDECIMAL_ZERO);
+                    vo.setRealRebateMoney(BigDecimalUtil.BIGDECIMAL_ZERO);
+                    vo.setCanRebateTotalMoney(BigDecimalUtil.BIGDECIMAL_ZERO);
+                }else {
+                    vo.setRebateTotalMoney(BigDecimalUtil.multiply(vo.getGoodsPrice(), new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())));
+                    vo.setRealRebateMoney(BigDecimalUtil.multiply(vo.getRebateMoney(), new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())));
+                    vo.setCanRebateTotalMoney(BigDecimalUtil.multiply(vo.getCanCalculateMoney(), new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())));
+                }
                 vo.setCanRebateMoney(vo.getCanRebateTotalMoney());
                 vo.setCostPrice(vo.getCostPrice() == null ? BigDecimalUtil.BIGDECIMAL_ZERO : vo.getCostPrice());
                 DistributionStrategyParam strategy = Util.parseJson(vo.getFanliStrategy(), DistributionStrategyParam.class);
