@@ -1040,14 +1040,10 @@ global.wxPage({
       url: `plugin-private://wx2b03c6e691cd7370/pages/live-player-plugin?room_id=${roomId}`
     })
   },
-  getLiveInfo () {
-    let {
-      roomId
-    } = this.data.roomDetailMpInfo
-    livePlayer.getLiveStatus({
-      room_id: roomId
-    })
-      .then(res => {
+  getLiveInfo(){
+    let {roomId,liveStatus} = this.data.roomDetailMpInfo
+    livePlayer.getLiveStatus({room_id:roomId})
+      .then(res=>{
         let liveStatus = res.liveStatus
         this.setData({
           liveStatus
