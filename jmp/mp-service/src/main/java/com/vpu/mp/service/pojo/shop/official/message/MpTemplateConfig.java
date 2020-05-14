@@ -53,12 +53,7 @@ public enum MpTemplateConfig {
             "OPENTM412181311",
             "抽奖结果通知",
             "{{first.DATA}}奖品名称：{{keyword1.DATA}}中奖时间：{{keyword2.DATA}}{{remark.DATA}}"),
-
-    WINNING_RESULT(
-        "OPENTM412181311",
-        "抽奖结果通知",
-        "{{first.DATA}}奖品名称：{{keyword1.DATA}}中奖时间：{{keyword2.DATA}}{{remark.DATA}}"),
-
+    
     SERVICE_ORDER_CANCEL(
             "OPENTM207847150",
                 "预约取消通知",

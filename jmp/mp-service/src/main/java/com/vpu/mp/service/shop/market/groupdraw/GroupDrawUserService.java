@@ -17,6 +17,8 @@ import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
@@ -339,10 +341,13 @@ public class GroupDrawUserService extends ShopBaseService {
 		String[][] data = new String[][] { { marketName }, { Util.getdate("yyyy-MM-dd HH:mm:ss") }, { msg } };
 		ArrayList<Integer> arrayList = new ArrayList<Integer>();
 		arrayList.add(userId);
+		String[][] mpData = new String[][] { { marketName, "#173177" }, { "系统通知", "#173177" },
+				{ Util.getdate("yyyy-MM-dd HH:mm:ss"), "#173177" }, { msg, "#173177" }, { "", "#173177" } };
 		MaSubscribeData buildData = MaSubscribeData.builder().data307(data).build();
 		RabbitMessageParam param = RabbitMessageParam.builder()
 				.maTemplateData(
 						MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(buildData).build())
+				.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.PUSHMSG).data(mpData).build())
 				.page(page).shopId(getShopId()).userIdList(arrayList)
 				.type(RabbitParamConstant.Type.INVITE_SUCCESS_GROUPBUY).build();
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
