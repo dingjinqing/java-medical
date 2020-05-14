@@ -16,7 +16,7 @@
           type="primary"
           size="small"
           @click="addActivity()"
-        >添加满折满减活动</el-button>
+        >{{$t('fullCuti18n.addActivity')}}</el-button>
       </div>
     </div>
 
@@ -30,26 +30,26 @@
       >
         <el-table-column
           prop="actName"
-          label="活动名称"
+          :label="$t('fullCuti18n.eventName')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="type"
-          label="活动类型"
+          :label="$t('fullCuti18n.actType')"
           align="center"
           :formatter="formatStatus"
         >
         </el-table-column>
         <el-table-column
           prop="strategyPriority"
-          label="优先级"
+          :label="$t('fullCuti18n.priority')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop=""
-          label="优惠规则"
+          :label="$t('fullCuti18n.prules')"
           align="center"
         >
           <template slot-scope="{ row }">
@@ -57,41 +57,41 @@
               v-for="(item, index) in row.condition"
               :key="index"
             >
-              <span v-if="row.type == 2 && item.fullMoney && item.reduceMoney">满{{item.fullMoney}}元减{{item.reduceMoney}}</span>
-              <span v-else-if="row.type == 2 && item.amount && item.reduceMoney">满{{item.amount}}件减{{item.reduceMoney}}</span>
-              <span v-else-if="row.type == 1 && item.fullMoney && item.reduceMoney">每满{{item.fullMoney}}元减{{item.reduceMoney}}</span>
-              <span v-else-if="row.type == 1 && item.amount && item.reduceMoney">每满{{item.amount}}件减{{item.reduceMoney}}</span>
-              <span v-else-if="row.type == 3 && item.fullMoney && item.discount">满{{item.fullMoney}}元打{{item.discount}}折</span>
-              <span v-else-if="row.type == 3 && item.amount && item.discount">满{{item.amount}}件打{{item.discount}}折</span>
-              <span v-else-if="row.type == 4">第{{item.amount}}件,打{{item.discount}}折</span>
+              <span v-if="row.type == 2 && item.fullMoney && item.reduceMoney">{{$t('fullCuti18n.full')}}{{item.fullMoney}}{{$t('fullCuti18n.yuan')}}{{$t('fullCuti18n.less')}}{{item.reduceMoney}}</span>
+              <span v-else-if="row.type == 2 && item.amount && item.reduceMoney">{{$t('fullCuti18n.full')}}{{item.amount}}{{$t('fullCuti18n.piece')}}{{$t('fullCuti18n.less')}}{{item.reduceMoney}}</span>
+              <span v-else-if="row.type == 1 && item.fullMoney && item.reduceMoney">{{$t('fullCuti18n.perFull')}}{{item.fullMoney}}{{$t('fullCuti18n.yuan')}}{{$t('fullCuti18n.less')}}{{item.reduceMoney}}</span>
+              <span v-else-if="row.type == 1 && item.amount && item.reduceMoney">{{$t('fullCuti18n.perFull')}}{{item.amount}}{{$t('fullCuti18n.piece')}}{{$t('fullCuti18n.less')}}{{item.reduceMoney}}</span>
+              <span v-else-if="row.type == 3 && item.fullMoney && item.discount">{{$t('fullCuti18n.full')}}{{item.fullMoney}}{{$t('fullCuti18n.yuan')}}{{$t('fullCuti18n.hit')}}{{item.discount}}折</span>
+              <span v-else-if="row.type == 3 && item.amount && item.discount">{{$t('fullCuti18n.full')}}{{item.amount}}{{$t('fullCuti18n.piece')}}{{$t('fullCuti18n.hit')}}{{item.discount}}折</span>
+              <span v-else-if="row.type == 4">{{$t('fullCuti18n.no')}}{{item.amount}}{{$t('fullCuti18n.piece')}},{{$t('fullCuti18n.hit')}}{{item.discount}}{{$t('fullCuti18n.fold')}}</span>
               <span v-else>{{row.type}}</span>
             </div>
           </template>
         </el-table-column>
         <el-table-column
           prop=""
-          label="有效期"
+          :label="$t('fullCuti18n.validity')"
           align="center"
         >
           <template slot-scope="scope">
-            {{scope.row.startTime}}<br />至<br />{{scope.row.endTime}}
+            {{scope.row.startTime}}<br />{{$t('fullCuti18n.to')}}<br />{{scope.row.endTime}}
           </template>
         </el-table-column>
         <el-table-column
           prop="statusText"
-          label="状态"
+          :label="$t('fullCuti18n.status')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="operate"
-          label="操作"
+          :label="$t('fullCuti18n.operate')"
           align="center"
         >
           <template slot-scope="scope">
             <div class="opt">
               <el-tooltip
-                content="编辑"
+                :content="$t('fullCuti18n.edit')"
                 placement="top"
                 v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
@@ -101,7 +101,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="启用"
+                :content="$t('fullCuti18n.enable')"
                 placement="top"
                 v-if="scope.row.currentState === 4"
               >
@@ -111,7 +111,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="停用"
+                :content="$t('fullCuti18n.disable')"
                 placement="top"
                 v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
@@ -121,7 +121,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="删除"
+                :content="$t('fullCuti18n.delete')"
                 placement="top"
                 v-if="scope.row.currentState === 3 || scope.row.currentState === 4"
               >
@@ -131,7 +131,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="查看满折满减订单"
+                :content="$t('fullCuti18n.viewOrder')"
                 placement="top"
               >
                 <span
@@ -140,7 +140,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="活动效果数据"
+                :content="$t('fullCuti18n.actEffect')"
                 placement="top"
               >
                 <span
@@ -173,7 +173,7 @@ export default {
   components: { statusTab, pagination },
   data () {
     return {
-      activityName: '满折满减',
+      activityName: this.$t('fullCuti18n.fdfr'),
       params: {
         'state': 1,
         'currentPage': 1,
@@ -212,16 +212,16 @@ export default {
       let type = ''
       switch (row.type) {
         case 1:
-          type = '每满减'
+          type = this.$t('fullCuti18n.efr')
           break
         case 2:
-          type = '满减'
+          type = this.$t('fullCuti18n.fullMinus')
           break
         case 3:
-          type = '满折'
+          type = this.$t('fullCuti18n.fullFold')
           break
         case 4:
-          type = '仅第X件打折'
+          type = this.$t('fullCuti18n.xth')
           break
       }
       return type
@@ -245,19 +245,19 @@ export default {
         'id': row.id,
         'status': 1
       }
-      this.$confirm('确定要启用吗？', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('fullCuti18n.ayEnable'), {
+        confirmButtonText: this.$t('fullCuti18n.confirm'),
+        cancelButtonText: this.$t('fullCuti18n.cancel'),
         type: 'warning'
       }).then(() => {
         updateFullCut(openParams).then(res => {
           if (res.error === 0) {
-            this.$message.success({ message: '启用成功' })
+            this.$message.success({ message: this.$t('fullCuti18n.activated') })
             this.tableDataSearch()
           }
         })
       }).catch(() => {
-        this.$message.info({ message: '已取消启用' })
+        this.$message.info({ message: this.$t('fullCuti18n.deactivated') })
       })
     },
     closeHandle (row) {
@@ -265,35 +265,35 @@ export default {
         'id': row.id,
         'status': 0
       }
-      this.$confirm('确定要停用吗？', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('fullCuti18n.ayStop'), {
+        confirmButtonText: this.$t('fullCuti18n.confirm'),
+        cancelButtonText: this.$t('fullCuti18n.cancel'),
         type: 'warning'
       }).then(() => {
         updateFullCut(stopParams).then(res => {
           if (res.error === 0) {
-            this.$message.success({ message: '停用成功' })
+            this.$message.success({ message: this.$t('fullCuti18n.disabled') })
             this.tableDataSearch()
           }
         })
       }).catch(() => {
-        this.$message.info({ message: '已取消停用' })
+        this.$message.info({ message: this.$t('fullCuti18n.ccDeactivated') })
       })
     },
     deleteHandle (id) {
-      this.$confirm('确认要删除吗？', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('fullCuti18n.ayDelete'), {
+        confirmButtonText: this.$t('fullCuti18n.confirm'),
+        cancelButtonText: this.$t('fullCuti18n.cancel'),
         type: 'warning'
       }).then(() => {
         deleteActivity({ id: id }).then(res => {
           if (res.error === 0) {
-            this.$message.success({ message: '删除成功 ' })
+            this.$message.success({ message: this.$t('fullCuti18n.deleted') })
             this.tableDataSearch()
           }
         })
       }).catch(() => {
-        this.$message.info({ message: '已取消删除' })
+        this.$message.info({ message: this.$t('fullCuti18n.ccDeleted') })
       })
     },
     goOrderList (row) {

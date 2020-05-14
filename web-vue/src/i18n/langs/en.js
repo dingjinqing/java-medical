@@ -309,6 +309,10 @@ import {
 import {
   en as luckyDraw
 } from './views/admin_new/en/index/marketManagement/luckyDraw/luckyDraw'
+// 满折满减
+import {
+  en as fullCuti18n
+} from './views/admin_new/en/index/marketManagement/fullCut/fullCutEn'
 // 限时降价列表
 import {
   en as reducePriceList
@@ -1063,6 +1067,7 @@ const en = {
   promoteList, // 好友助力
   adSharePolite, // 添加分享有礼
   luckyDraw, // 幸运大抽奖
+  fullCuti18n, // 满折满减
   reducePriceList, // 限时降价活动列表
   distribution, // 分销
   messagePush, // 营销管理/消息推送
