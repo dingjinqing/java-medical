@@ -1,5 +1,6 @@
 {
   "usingComponents": {
-    "v-poster": "/components/item/popup/poster/index"
+    "v-poster": "/components/item/popup/poster/index",
+    "v-view-benefits": "/components/popup/view_benefits/index"
   }
 }

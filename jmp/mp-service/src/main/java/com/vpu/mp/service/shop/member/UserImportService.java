@@ -38,6 +38,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberSexEnum;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.CardInfoVo;
+import com.vpu.mp.service.pojo.shop.member.userImp.CouponViewVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJson;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJsonDetailVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJsonVo;
@@ -60,18 +61,22 @@ import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.excel.UserImExcelWrongHandler;
 import com.vpu.mp.service.shop.user.user.UserService;
+
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.poifs.filesystem.FileMagic;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -185,10 +190,11 @@ public class UserImportService extends ShopBaseService {
 		String mrkingVoucherId = json.getMrkingVoucherId();
 		List<CouponView> couponViewByIds=new ArrayList<CouponView>();
 		if(StringUtils.isNotEmpty(mrkingVoucherId)) {
-			couponViewByIds = couponService.getCouponViewByIds(Util.splitValueToList(mrkingVoucherId));			
+			couponViewByIds = couponService.getCouponViewByIds(Util.splitValueToList(mrkingVoucherId));
 		}
 		return new SetNoticeJsonVo(json.getExplain(), json.getScore(), mrkingVoucherId, couponViewByIds);
 	}
+	
 	public SetNoticeJsonDetailVo getInfo(String lang) {
 		SetNoticeJson activationNotice = getActivationNotice();
 		String mrkingVoucherId = activationNotice.getMrkingVoucherId();

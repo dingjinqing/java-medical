@@ -99,6 +99,12 @@
 						<text class="condition-info">{{JSON.parse(cardInfo.gradeCondition).gradeScore}}累积积分达到{{cardInfo.nextGradeCard.gradeConditionJson.gradeScore}}分</text>
 						<text class="condition-info">累积消费金额达到{{cardInfo.nextGradeCard.gradeConditionJson.gradeMoney}}元（仅包含微信、余额支付）</text>
 					</view>
+					<view class="upgrade-condition upgrade">
+						<text>升级等级：等级{{cardInfo.nextGradeCard.grade}}</text>
+						<view bindtap='handleToCheckBenefit' class="toCheckGradeEquity">
+							查看等级{{cardInfo.nextGradeCard.grade}}权益
+						</view>
+					</view>
 				</view>
 			</view>
 			<!-- 会员权益折扣 -->
@@ -511,4 +517,5 @@
 			</view>
 		</view>
 	</view>
-
+<!--查看权益弹窗-->
+<v-view-benefits bindcloseBeneFit="bindCloseBeneFit" show="{{benefitShow}}" benefitData="{{benefitData}}" />

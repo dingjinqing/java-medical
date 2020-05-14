@@ -38,7 +38,8 @@
     "pages/usercardup/usercardup",
     "pages/splitinfo/splitinfo",
     "pages/usercardrenew/usercardrenew",
-    "components/suspend-window/index"
+    "components/suspend-window/index",
+    "components/popup/view_benefits/index"
   ],
   "window": {
     "backgroundTextStyle": "dark",

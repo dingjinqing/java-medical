@@ -80,11 +80,16 @@ public class UserImportActivePojo {
 	/** 是否是分销员 */
 	@ExcelColumn(columnIndex = 15, columnName = "user.import.is_distributor")
 	private String isDistributor;
+	
+	/** 备注 */
+	@ExcelColumn(columnIndex = 16, columnName = "user.import.remark")
+	private String remark;
+	
 	/** 错误信息 */
-	@ExcelColumn(columnIndex = 16, columnName = "user.import.errorMsg")
+	@ExcelColumn(columnIndex = 17, columnName = "user.import.errorMsg")
 	private String errorMsg;
 	
 	/** 错误信息 */
-	@ExcelColumn(columnIndex = 16, columnName = "user.import.isactive")
+	@ExcelColumn(columnIndex = 17, columnName = "user.import.isactive")
 	private String isActivate;
 }

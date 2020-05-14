@@ -212,6 +212,20 @@
   flex-direction: column;
   line-height: 40rpx;
 }
+.upgrade{
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  margin-top: 15rpx;
+}
+.upgrade .toCheckGradeEquity{
+  padding: 5rpx 15rpx;
+background: rgba(222, 189, 138, 0.2);
+color: rgba(222, 189, 138, 1);
+font-size: 20rpx;
+border-radius: 20rpx;
+
+}
 .condition-info{
   padding-left: 40rpx;
 }

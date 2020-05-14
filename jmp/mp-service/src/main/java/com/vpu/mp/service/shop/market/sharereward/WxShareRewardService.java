@@ -508,7 +508,7 @@ public class WxShareRewardService extends ShopBaseService {
             , {time, "#173177"}
             , {remake, "#173177"}};
         RabbitMessageParam param = RabbitMessageParam.builder()
-            .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.WINNING_RESULT).data(data).build())
+            .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.LOTTERY_RESULTS).data(data).build())
             .page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.LOTTERY_TEAM)
             .build();
         logger().info("发送分享有礼奖品发放成功模板消息");

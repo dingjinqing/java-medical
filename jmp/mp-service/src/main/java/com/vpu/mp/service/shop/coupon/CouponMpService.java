@@ -203,7 +203,7 @@ public class CouponMpService extends ShopBaseService {
 
     /**
      * 优惠券是否可领取状态
-     * @param param 0：可正常领取；1：优惠券不存在；2：优惠券过期；3：优惠券体用；4：库存为0
+     * @param param 0：可正常领取；1：优惠券不存在；2：优惠券过期；3：优惠券停用；4：库存为0
      * @return
      */
     public Byte couponGetStatus(MpGetCouponParam param){

@@ -169,6 +169,13 @@ public final class ImageUtil {
         graphics.dispose();
     }
 
+
+    public static void addCircle(BufferedImage bufferedImage, int x, int y, int majorAxis,int minorAxis, Color color) {
+        Graphics2D graphics = bufferedImage.createGraphics();
+        graphics.setColor(color);
+        graphics.fillArc(x, y, majorAxis, minorAxis, 0, 360);
+    }
+
     /**
      * 添加文字附带中划线
      * @param bufferedImage 背景图片

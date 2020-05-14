@@ -313,6 +313,10 @@ import {
 import {
   cn as luckyDraw
 } from './views/admin_new/cn/index/marketManagement/luckyDraw/luckyDraw'
+// 满折满减
+import {
+  cn as fullCuti18n
+} from './views/admin_new/cn/index/marketManagement/fullCut/fullCutCn'
 // 小程序装修
 import {
   cn as pageDecoration
@@ -1070,6 +1074,7 @@ const cn = {
   promoteList, // 好友助力
   adSharePolite, // 添加分享有礼
   luckyDraw, // 幸运大抽奖
+  fullCuti18n, // 满折满减
   reducePriceList, // 限时降价活动列表
   distribution, // 分销
   messagePush, // 营销管理/消息推送

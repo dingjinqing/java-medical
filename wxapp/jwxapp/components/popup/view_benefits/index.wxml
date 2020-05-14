@@ -1,0 +1,20 @@
+<v-popup  show="{{handleToCansel}}" hide_close="{{true}}"  >
+  <view class='view_benefits'>
+    <image bindtap="bindClose" src="{{imageUrl}}image/wxapp/delete_xian.png" class="delIcon" />
+    <view class="gradeMain">
+        <view class="grade_modal_title">v3权益</view>
+        <view class="grade_modal_content">
+            <view class="list" wx:for="{{benefitData}}" wx:for-item="item" wx:for-index="index" wx:key="{{index}}">
+                <view class="modal_content_head">
+                    <image mode="widthFix" class="img" src="{{item.img}}" role="img"  />
+                    {{item.title}}
+                </view>
+                <view class="modal_content_con">
+                    {{item.content}}
+                </view>
+            </view>
+        </view>
+    </view>
+    
+  </view>
+</v-popup>
