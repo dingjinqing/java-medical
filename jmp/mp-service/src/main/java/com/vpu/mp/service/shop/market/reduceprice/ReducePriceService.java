@@ -4,6 +4,10 @@ import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.excel.bean.ClassList;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -14,6 +18,8 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
+import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialOrderExportVo;
+import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialOrderGoodsExportVo;
 import com.vpu.mp.service.pojo.shop.market.reduceprice.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
@@ -22,6 +28,7 @@ import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -634,6 +641,42 @@ public class ReducePriceService extends ShopBaseService {
 
     private List<Integer> getActGoodsIds(Integer actId) {
         return db().select(REDUCE_PRICE_GOODS.GOODS_ID).from(REDUCE_PRICE_GOODS).where(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID.eq(actId)).fetchInto(Integer.class);
+    }
+
+    public Workbook exportReducePriceOrderList(MarketOrderListParam param, String lang) {
+        List<MarketOrderListVo> list = saas.getShopApp(getShopId()).readOrder.marketOrderInfo.getMarketOrderList(param, BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
+
+        List<FirstSpecialOrderExportVo> res = new ArrayList<>();
+        list.forEach(order -> {
+            FirstSpecialOrderExportVo vo = new FirstSpecialOrderExportVo();
+            vo.setOrderSn(order.getOrderSn());
+            vo.setGoods(order.getGoods().stream().map((g) -> {
+                FirstSpecialOrderGoodsExportVo goods = new FirstSpecialOrderGoodsExportVo();
+                goods.setGoodsName(g.getGoodsName());
+                goods.setPrice(g.getGoodsPrice());
+                return goods;
+            }).collect(Collectors.toList()));
+            vo.setCreateTime(order.getCreateTime());
+            vo.setOrderUser(order.getUsername() + ";" + (StringUtil.isNotBlank(order.getUserMobile()) ? order.getUserMobile() : ""));
+            vo.setMoneyPaid(order.getMoneyPaid());
+            vo.setConsignee(order.getConsignee() + ";" + order.getMobile());
+            vo.setOrderStatus(OrderConstant.getOrderStatusName(order.getOrderStatus(), lang));
+
+            res.add(vo);
+        });
+
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+        ClassList cList = new ClassList();
+        cList.setUpClazz(FirstSpecialOrderExportVo.class);
+        cList.setInnerClazz(FirstSpecialOrderGoodsExportVo.class);
+        try {
+            excelWriter.writeModelListByRegion(res, cList);
+        } catch (Exception e) {
+            logger().error("excel error", e);
+        }
+
+        return workbook;
     }
 
 }

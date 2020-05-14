@@ -185,8 +185,8 @@ global.wxPage({
     util.api('api/wxapp/distribution/myInvite', function (rest) {
       if (res.error == 0) {
         var server_list = [];
-        if (res.content.dataList.length > 0) {
-          server_list = res.content.dataList
+        if (res.content.inviteUserInfo.dataList.length > 0) {
+          server_list = res.content.inviteUserInfo.dataList
         }
         server_list.forEach(item => {
           if (item.username.length > 8) {
@@ -204,8 +204,8 @@ global.wxPage({
         })
         that.setData({
           server_list: that.data.server_list.concat(server_list),
-          page: res.content.page.currentPage,
-          last_page: res.content.page.lastPage,
+          page: res.content.inviteUserInfo.page.currentPage,
+          last_page: res.content.inviteUserInfo.page.lastPage,
           is_load: 0,
           if_fliter: 0
         });
@@ -237,8 +237,8 @@ function invite_request(that) {
   util.api('api/wxapp/distribution/myInvite', function (res) {
     if (res.error == 0) {
       var server_list = [];
-      if (res.content.dataList.length > 0) {
-        server_list = res.content.dataList
+      if (res.content.inviteUserInfo.dataList.length > 0) {
+        server_list = res.content.inviteUserInfo.dataList
       }
       server_list.forEach(item => {
         if (item.username.length > 8) {
@@ -256,8 +256,8 @@ function invite_request(that) {
       })
       that.setData({
         server_list: server_list,
-        page: res.content.page.currentPage,
-        last_page: res.content.page.lastPage,
+        page: res.content.inviteUserInfo.page.currentPage,
+        last_page: res.content.inviteUserInfo.page.lastPage,
         if_fliter: 0
       });
     }

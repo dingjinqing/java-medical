@@ -62,3 +62,13 @@ export function getReducePriceOrderList (data) {
     data: data
   })
 }
+
+// 订单导出
+export function reducePriceOrderListExport (data) {
+  return service({
+    url: '/api/admin/market/reduceprice/order/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
