@@ -7,23 +7,23 @@
           @tab-click="handleClick"
         >
           <el-tab-pane
-            label="全部满折满减活动"
+            :label="$t('fullCuti18n.allAct')"
             name="0"
           ></el-tab-pane>
           <el-tab-pane
-            label="进行中"
+            :label="$t('fullCuti18n.process')"
             name="1"
           ></el-tab-pane>
           <el-tab-pane
-            label="未开始"
+            :label="$t('fullCuti18n.notStart')"
             name="2"
           ></el-tab-pane>
           <el-tab-pane
-            label="已过期"
+            :label="$t('fullCuti18n.expired')"
             name="3"
           ></el-tab-pane>
           <el-tab-pane
-            label="已停用"
+            :label="$t('fullCuti18n.terminated')"
             name="4"
           ></el-tab-pane>
           <el-tab-pane
@@ -39,15 +39,16 @@
           :rules="rules"
           :model="params"
           ref="fullCutAddForm"
+          label-suffix="："
         >
           <!-- 活动名称 -->
           <el-form-item
-            label="活动名称："
+            :label="$t('fullCuti18n.actName')"
             prop="actName"
           >
             <el-input
               v-model="params.actName"
-              placeholder="请输入活动名称"
+              :placeholder="$t('fullCuti18n.peActName')"
               size="small"
               class="form_input"
             ></el-input>
@@ -55,40 +56,40 @@
 
           <!-- 活动优先级 -->
           <el-form-item
-            label="活动优先级："
+            :label="$t('fullCuti18n.actPriority')"
             prop="strategyPriority"
           >
             <el-input-number
               v-model="params.strategyPriority"
-              placeholder="请输入活动优先级"
+              :placeholder="$t('fullCuti18n.peActPri')"
               class="form_input"
               size="small"
               :min="1"
               :precision="0"
             ></el-input-number>
-            <p class="form_tip">用于区分不同满折满减活动的优先级，请填写正整数，数值越大优先级越高</p>
+            <p class="form_tip">{{$t('fullCuti18n.priorityReason')}}</p>
           </el-form-item>
 
           <!-- 活动类型 -->
           <el-form-item
-            label="活动类型："
+            :label="$t('fullCuti18n.actType')"
             prop="type"
           >
             <el-radio-group
               v-model="params.type"
               :disabled="!!params.id"
             >
-              <el-radio label="2">满减</el-radio>
-              <el-radio label="1">每满减</el-radio>
-              <el-radio label="3">满折</el-radio>
-              <el-radio label="4">仅第X件打折</el-radio>
+              <el-radio label="2">{{$t('fullCuti18n.fullMinus')}}</el-radio>
+              <el-radio label="1">{{$t('fullCuti18n.efr')}}</el-radio>
+              <el-radio label="3">{{$t('fullCuti18n.fullFold')}}</el-radio>
+              <el-radio label="4">{{$t('fullCuti18n.xth')}}</el-radio>
             </el-radio-group>
-            <p class="form_tip actTypeSaveTips">保存后不可编辑</p>
+            <p class="form_tip actTypeSaveTips">{{$t('fullCuti18n.unedit')}}</p>
           </el-form-item>
 
           <!-- 满减金额 -->
           <el-form-item
-            label="满减金额："
+            :label="$t('fullCuti18n.fullReduceAmount')"
             prop="conditionAddParams"
           >
             <div v-if="params.type == 2">
@@ -96,7 +97,7 @@
                 label="1"
                 v-model="fullDeduction"
                 :disabled="!!params.id"
-              >满金额</el-radio>
+              >{{$t('fullCuti18n.fullAmount')}}</el-radio>
               <div
                 v-show="fullDeduction == '1'"
                 v-for="(item, index) in conditionAddParams2"
@@ -106,21 +107,21 @@
                   class="flex-block"
                   v-if="item.fullMoney !== null && item.fullMoney !== undefined"
                 >
-                  <span>满</span>
+                  <span>{{$t('fullCuti18n.full')}}</span>
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
                     v-model="conditionAddParams2[index].fullMoney"
                     :disabled="fullDeduction == 2 || !!params.id"
-                  ></el-input>&nbsp;元，
-                  <span>减</span>
+                  ></el-input>&nbsp;{{$t('fullCuti18n.yuan')}}，
+                  <span>{{$t('fullCuti18n.yuan')}}</span>
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
                     v-model="conditionAddParams2[index].reduceMoney"
                     :disabled="fullDeduction == 2  || !!params.id"
                   ></el-input>&nbsp;
-                  <span>元</span>
+                  <span>{{$t('fullCuti18n.yuan')}}</span>
                   <div
                     class="iconAdd"
                     v-if="!params.id"
@@ -142,19 +143,19 @@
               </div>
               <div v-show="fullDeduction == '2'">
                 <div class="flex-block">
-                  <span>满</span>
+                  <span>{{$t('fullCuti18n.full')}}</span>
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
                     :disabled="fullDeduction == 2  || !!params.id"
-                  ></el-input>&nbsp;元，
-                  <span>减</span>
+                  ></el-input>&nbsp;{{$t('fullCuti18n.yuan')}}，
+                  <span>{{$t('fullCuti18n.less')}}</span>
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
                     :disabled="fullDeduction == 2  || !!params.id"
                   ></el-input>&nbsp;
-                  <span>元</span>
+                  <span>{{$t('fullCuti18n.yuan')}}</span>
                   <div
                     class="iconAdd"
                     v-if="!params.id"
@@ -167,7 +168,7 @@
                 label="2"
                 v-model="fullDeduction"
                 :disabled="!!params.id"
-              >满件数</el-radio>
+              >{{$t('fullCuti18n.fullNum')}}</el-radio>
               <div
                 v-show="fullDeduction == '2'"
                 v-for="(item, index) in conditionAddParams2"
@@ -177,14 +178,14 @@
                   class="flex-block"
                   v-if="item.amount !== null && item.amount !== undefined"
                 >
-                  <span>满</span>
+                  <span>{{$t('fullCuti18n.full')}}</span>
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
                     v-model="conditionAddParams2[index].amount"
                     :disabled="fullDeduction == 1  || !!params.id"
-                  ></el-input>&nbsp;件，
-                  <span>减</span>
+                  ></el-input>&nbsp;{{$t('fullCuti18n.piece')}}，
+                  <span>{{$t('fullCuti18n.less')}}</span>
                   &nbsp;<el-input
                     v-if="fullDeduction == 1"
                     class="form_input"
@@ -198,7 +199,7 @@
                     v-model="conditionAddParams2[index].reduceMoney"
                     :disabled="fullDeduction == 1  || !!params.id"
                   ></el-input>&nbsp;
-                  <span>元</span>
+                  <span>{{$t('fullCuti18n.yuan')}}</span>
                   <div
                     class="iconAdd"
                     v-if="!params.id"
@@ -220,20 +221,20 @@
               </div>
               <div v-show="fullDeduction != '2'">
                 <div class="flex-block">
-                  <span>满</span>
+                  <span>{{$t('fullCuti18n.full')}}</span>
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
                     :disabled="fullDeduction == 1  || !!params.id"
-                  ></el-input>&nbsp;件，
-                  <span>减</span>
+                  ></el-input>&nbsp;{{$t('fullCuti18n.piece')}}，
+                  <span>{{$t('fullCuti18n.less')}}</span>
                   &nbsp;
                   <el-input
                     class="form_input"
                     size="small "
                     :disabled="fullDeduction == 1  || !!params.id"
                   ></el-input>&nbsp;
-                  <span>元</span>
+                  <span>{{$t('fullCuti18n.yuan')}}</span>
                   <div
                     class="iconAdd"
                     v-if="!params.id"
@@ -248,16 +249,16 @@
                 label="1"
                 v-model="fullDeduction"
                 :disabled="!!params.id"
-              >满金额</el-radio>
+              >{{$t('fullCuti18n.fullAmount')}}</el-radio>
               <div class="flex-block">
-                <span>每满</span>
+                <span>{{$t('fullCuti18n.perFull')}}</span>
                 &nbsp;<el-input
                   class="form_input"
                   size="small"
                   v-model="conditionAddParams1[0].fullMoney"
                   :disabled="fullDeduction == 2  || !!params.id"
-                ></el-input>&nbsp;元，
-                <span>减</span>
+                ></el-input>&nbsp;{{$t('fullCuti18n.yuan')}}，
+                <span>{{$t('fullCuti18n.less')}}</span>
                 &nbsp;<el-input
                   v-if="fullDeduction == 2"
                   class="form_input"
@@ -271,22 +272,22 @@
                   v-model="conditionAddParams1[0].reduceMoney"
                   :disabled="fullDeduction == 2  || !!params.id"
                 ></el-input>&nbsp;
-                <span>元</span>
+                <span>{{$t('fullCuti18n.yuan')}}</span>
               </div>
               <el-radio
                 label="2"
                 v-model="fullDeduction"
                 :disabled="!!params.id"
-              >满件数</el-radio>
+              >{{$t('fullCuti18n.fullNum')}}</el-radio>
               <div class="flex-block">
-                <span>每满</span>
+                <span>{{$t('fullCuti18n.perFull')}}</span>
                 &nbsp;<el-input
                   class="form_input"
                   size="small"
                   v-model="conditionAddParams1[0].amount"
                   :disabled="fullDeduction == 1  || !!params.id"
-                ></el-input>&nbsp;件，
-                <span>减</span>
+                ></el-input>&nbsp;{{$t('fullCuti18n.piece')}}，
+                <span>{{$t('fullCuti18n.less')}}</span>
                 &nbsp;<el-input
                   v-if="fullDeduction == 1"
                   class="form_input"
@@ -300,27 +301,27 @@
                   v-model="conditionAddParams1[0].reduceMoney"
                   :disabled="fullDeduction == 1  || !!params.id"
                 ></el-input>&nbsp;
-                <span>元</span>
+                <span>{{$t('fullCuti18n.yuan')}}</span>
               </div>
-              <!-- <span>每满</span>
+              <!-- <span>{{$t('fullCuti18n.perFull')}}</span>
               &nbsp;<el-input
                 class="form_input"
                 size="small"
                 v-model="conditionAddParams1.fullMoney"
-              ></el-input>&nbsp;元，
-              <span>减</span>
+              ></el-input>&nbsp;{{$t('fullCuti18n.yuan')}}，
+              <span>{{$t('fullCuti18n.less')}}</span>
               &nbsp;<el-input
                 class="form_input"
                 size="small"
                 v-model="conditionAddParams1.reduceMoney"
-              ></el-input>&nbsp;元 -->
+              ></el-input>&nbsp;{{$t('fullCuti18n.yuan')}} -->
             </div>
             <div v-else-if="params.type == 3">
               <el-radio
                 label="1"
                 v-model="fullDeduction"
                 :disabled="!!params.id"
-              >满金额</el-radio>
+              >{{$t('fullCuti18n.fullAmount')}}</el-radio>
               <div
                 v-show="fullDeduction == '1'"
                 v-for="(item, index) in conditionAddParams3"
@@ -330,14 +331,14 @@
                   class="flex-block"
                   v-if="item.fullMoney !== null && item.fullMoney !== undefined"
                 >
-                  <span>满</span>
+                  <span>{{$t('fullCuti18n.full')}}</span>
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
                     v-model="conditionAddParams3[index].fullMoney"
                     :disabled="fullDeduction == 2  || !!params.id"
-                  ></el-input>&nbsp;元，
-                  <span>打</span>
+                  ></el-input>&nbsp;{{$t('fullCuti18n.yuan')}}，
+                  <span>{{$t('fullCuti18n.hit')}}</span>
                   &nbsp;
                   <el-input
                     v-if="fullDeduction == 2"
@@ -352,7 +353,7 @@
                     v-model="conditionAddParams3[index].discount"
                     :disabled="fullDeduction == 2  || !!params.id"
                   ></el-input>&nbsp;
-                  <span>折</span>
+                  <span>{{$t('fullCuti18n.fold')}}</span>
                   <div
                     class="iconAdd"
                     v-if="!params.id"
@@ -374,20 +375,20 @@
               </div>
               <div v-show="fullDeduction != '1'">
                 <div class="flex-block">
-                  <span>满</span>
+                  <span>{{$t('fullCuti18n.full')}}</span>
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
                     :disabled="fullDeduction == 2  || !!params.id"
-                  ></el-input>&nbsp;元，
-                  <span>打</span>
+                  ></el-input>&nbsp;{{$t('fullCuti18n.yuan')}}，
+                  <span>{{$t('fullCuti18n.hit')}}</span>
                   &nbsp;
                   <el-input
                     class="form_input"
                     size="small "
                     :disabled="fullDeduction == 2  || !!params.id"
                   ></el-input>&nbsp;
-                  <span>折</span>
+                  <span>{{$t('fullCuti18n.fold')}}</span>
                   <div
                     class="iconAdd"
                     v-if="!params.id"
@@ -400,7 +401,7 @@
                 label="2"
                 v-model="fullDeduction"
                 :disabled="!!params.id"
-              >满件数</el-radio>
+              >{{$t('fullCuti18n.fullNum')}}</el-radio>
               <div
                 v-show="fullDeduction == '2'"
                 v-for="(item, index) in conditionAddParams3"
@@ -410,14 +411,14 @@
                   class="flex-block"
                   v-if="item.amount !== null && item.amount !== undefined"
                 >
-                  <span>满</span>
+                  <span>{{$t('fullCuti18n.full')}}</span>
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
                     v-model="conditionAddParams3[index].amount"
                     :disabled="fullDeduction == 1  || !!params.id"
-                  ></el-input>&nbsp;件，
-                  <span>打</span>
+                  ></el-input>&nbsp;{{$t('fullCuti18n.piece')}}，
+                  <span>{{$t('fullCuti18n.hit')}}</span>
                   &nbsp;
                   <el-input
                     v-if="fullDeduction == 1"
@@ -432,7 +433,7 @@
                     v-model="conditionAddParams3[index].discount"
                     :disabled="fullDeduction == 1  || !!params.id"
                   ></el-input>&nbsp;
-                  <span>折</span>
+                  <span>{{$t('fullCuti18n.fold')}}</span>
                   <div
                     class="iconAdd"
                     v-if="!params.id"
@@ -454,20 +455,20 @@
               </div>
               <div v-show="fullDeduction != '2'">
                 <div class="flex-block">
-                  <span>满</span>
+                  <span>{{$t('fullCuti18n.full')}}</span>
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
                     :disabled="fullDeduction == 1  || !!params.id"
-                  ></el-input>&nbsp;件，
-                  <span>打</span>
+                  ></el-input>&nbsp;{{$t('fullCuti18n.piece')}}，
+                  <span>{{$t('fullCuti18n.hit')}}</span>
                   &nbsp;
                   <el-input
                     class="form_input"
                     size="small "
                     :disabled="fullDeduction == 1  || !!params.id"
                   ></el-input>&nbsp;
-                  <span>折</span>
+                  <span>{{$t('fullCuti18n.fold')}}</span>
                   <div
                     class="iconAdd"
                     v-if="!params.id"
@@ -479,34 +480,34 @@
             </div>
             <div v-else-if="params.type == 4">
               <div>
-                第&nbsp;<el-input
+                {{$t('fullCuti18n.no')}}&nbsp;<el-input
                   class="form_input"
                   size="small"
                   v-model="conditionAddParams4[0].amount"
                   :disabled="!!params.id"
-                ></el-input>&nbsp;件，
-                打&nbsp;<el-input
+                ></el-input>&nbsp;{{$t('fullCuti18n.piece')}}，
+                {{$t('fullCuti18n.hit')}}&nbsp;<el-input
                   class="form_input"
                   size="small"
                   v-model="conditionAddParams4[0].discount"
                   :disabled="!!params.id"
-                ></el-input>&nbsp;折
+                ></el-input>&nbsp;{{$t('fullCuti18n.fold')}}
               </div>
             </div>
           </el-form-item>
 
           <!-- 有效期 -->
           <el-form-item
-            label="有效期："
+            :label="$t('fullCuti18n.validity')"
             prop="timeInterval"
           >
             <el-date-picker
               v-model="params.timeInterval"
               type="datetimerange"
               size="small"
-              range-separator="至"
-              start-placeholder="开始时间"
-              end-placeholder="结束时间"
+              :range-separator="$t('fullCuti18n.to')"
+              :start-placeholder="$t('fullCuti18n.startTime')"
+              :end-placeholder="$t('fullCuti18n.endTime')"
               format="yyyy-MM-dd HH:mm:ss"
               value-format="yyyy-MM-dd HH:mm:ss"
               :default-time="['00:00:00', '23:59:59']"
@@ -516,27 +517,27 @@
 
           <!-- 活动商品 -->
           <el-form-item
-            label="活动商品："
+            :label="$t('fullCuti18n.eventGoods')"
             prop="actType"
           >
             <el-radio
               v-model="params.actType"
               label="0"
               :disabled="!!params.id"
-            >全部商品</el-radio>
+            >{{$t('fullCuti18n.allProducts')}}</el-radio>
             <br>
             <el-radio
               v-model="params.actType"
               label="1"
               :disabled="!!params.id"
-            >指定商品</el-radio>
+            >{{$t('fullCuti18n.designGoods')}}</el-radio>
 
             <div v-if="params.actType === '1'">
               <div
                 class="add_goods_btn"
                 @click="chooseGoodsHandler"
                 v-if="!params.id"
-              > + 选择商品</div>
+              > + {{$t('fullCuti18n.selectGoods')}}</div>
               <span
                 @click="onlyChooseGoodsHandler"
                 style="color: #e4393c"
@@ -551,10 +552,10 @@
                 >
                   <thead>
                     <tr>
-                      <th width="45%">商品名称</th>
-                      <th width="15%">价格</th>
-                      <th width="15%">库存</th>
-                      <th width="15%">操作</th>
+                      <th width="45%">{{$t('fullCuti18n.goodsName')}}</th>
+                      <th width="15%">{{$t('fullCuti18n.price')}}</th>
+                      <th width="15%">{{$t('fullCuti18n.inStock')}}</th>
+                      <th width="15%">{{$t('fullCuti18n.operate')}}</th>
                     </tr>
                   </thead>
                   <tbody class="tbody">
@@ -579,7 +580,7 @@
                         <span
                           v-if="!params.id"
                           class="edit-icon"
-                        >删除</span>
+                        >{{$t('fullCuti18n.delete')}}</span>
                       </td>
                     </tr>
                   </tbody>
@@ -590,7 +591,7 @@
                 class="add_goods_btn"
                 @click="selectPlatform"
                 v-if="!params.id"
-              > + 选择平台分类</div>
+              > + {{$t('fullCuti18n.slClassify')}}</div>
               <table
                 class="brand_table"
                 v-if="platformList && platformList.length"
@@ -601,27 +602,27 @@
                       style="border-bottom: 1px solid #ddd"
                       width="100%"
                     >
-                      平台分类
+                      {{$t('fullCuti18n.platformClassify')}}
                       <div class="operate">
                         <span
                           class="edit-icon edit"
                           @click="editPlateformClassification"
                           v-if="!params.id"
-                        >编辑</span>
+                        >{{$t('fullCuti18n.edit')}}</span>
                         <span
                           class="delete"
                           @click="deletePlateformClassfication"
                           v-if="!params.id"
-                        >删除</span>
+                        >{{$t('fullCuti18n.delete')}}</span>
                       </div>
                     </th>
                   </tr>
                   <tr>
                     <div class="exampleWrapper">
-                      <span class="example">示例：</span>
-                      <span class="first_cat">一级分类</span>
-                      <span class="second_cat">二级分类</span>
-                      <span class="third_cat">三级分类</span>
+                      <span class="example">{{$t('fullCuti18n.example')}}：</span>
+                      <span class="first_cat">{{$t('fullCuti18n.firstC')}}</span>
+                      <span class="second_cat">{{$t('fullCuti18n.secondC')}}</span>
+                      <span class="third_cat">{{$t('fullCuti18n.thirdC')}}</span>
                     </div>
                     <div
                       class="bussinessGoodsName"
@@ -638,7 +639,7 @@
                 class="add_goods_btn"
                 @click="selectBussiness"
                 v-if="!params.id"
-              > + 选择商家分类</div>
+              > + {{$t('fullCuti18n.selectC')}}</div>
               <table
                 class="brand_table"
                 v-if="bussinessList && bussinessList.length > 0"
@@ -649,27 +650,27 @@
                       style="border-bottom: 1px solid #ddd"
                       width="100%"
                     >
-                      商家分类
+                      {{$t('fullCuti18n.businessC')}}
                       <div class="operate">
                         <span
                           class="edit"
                           @click="editBussinessClassification"
                           v-if="!params.id"
-                        >编辑</span>
+                        >{{$t('fullCuti18n.edit')}}</span>
                         <span
                           class="delete"
                           @click="deleteBussinessClassfication"
                           v-if="!params.id"
-                        >删除</span>
+                        >{{$t('fullCuti18n.delete')}}</span>
                       </div>
                     </th>
                   </tr>
                   <tr>
                     <div class="exampleWrapper">
-                      <span class="example">示例：</span>
-                      <span class="first_cat">一级分类</span>
-                      <span class="second_cat">二级分类</span>
-                      <span class="third_cat">三级分类</span>
+                      <span class="example">{{$t('fullCuti18n.example')}}：</span>
+                      <span class="first_cat">{{$t('fullCuti18n.firstC')}}</span>
+                      <span class="second_cat">{{$t('fullCuti18n.secondC')}}</span>
+                      <span class="third_cat">{{$t('fullCuti18n.thirdC')}}</span>
                     </div>
                     <div
                       class="bussinessGoodsName"
@@ -697,18 +698,18 @@
                       style="border-bottom: 1px solid #ddd"
                       width="100%"
                     >
-                      已选标签
+                      {{$t('fullCuti18n.sdLabel')}}
                       <div class="operate">
                         <span
                           class="edit"
                           @click="editSelectedLabel"
                           v-if="!params.id"
-                        >编辑</span>
+                        >{{$t('fullCuti18n.edit')}}</span>
                         <span
                           class="delete"
                           @click="deleteSelectedLabel"
                           v-if="!params.id"
-                        >删除</span>
+                        >{{$t('fullCuti18n.delete')}}</span>
                       </div>
                     </th>
                   </tr>
@@ -728,7 +729,7 @@
                 class="add_goods_btn"
                 @click="seclectGoodsBrand"
                 v-if="!params.id"
-              > + 选择商品品牌</div>
+              > + {{$t('fullCuti18n.choBrand')}}</div>
               <table
                 class="brand_table"
                 v-if="goodsNameList && goodsNameList.length > 0"
@@ -739,18 +740,18 @@
                       style="border-bottom: 1px solid #ddd"
                       width="100%"
                     >
-                      已选品牌
+                      {{$t('fullCuti18n.selectedBrand')}}
                       <div class="operate">
                         <span
                           class="edit"
                           @click="editSelectedBrand"
                           v-if="!params.id"
-                        >编辑</span>
+                        >{{$t('fullCuti18n.edit')}}</span>
                         <span
                           class="delete"
                           @click="deleteSelectedBrand"
                           v-if="!params.id"
-                        >删除</span>
+                        >{{$t('fullCuti18n.delete')}}</span>
                       </div>
                     </th>
                   </tr>
@@ -769,11 +770,11 @@
           </el-form-item>
 
           <!-- 会员专享活动 -->
-          <el-form-item label="会员专享活动：">
+          <el-form-item :label="$t('fullCuti18n.mea')">
             <el-checkbox
               v-model="checkCard"
               :disabled="!!params.id"
-            >用户持会员卡可以参与活动</el-checkbox>
+            >{{$t('fullCuti18n.memberPrivilege')}}</el-checkbox>
             <br>
             <el-form-item
               v-if="checkCard"
@@ -781,7 +782,7 @@
             >
               <el-select
                 v-model="memberCardInfo"
-                placeholder="请选择"
+                :placeholder="$t('fullCuti18n.pls')"
                 size="small"
                 :multiple='true'
                 @change="getMemberCardName"
@@ -799,19 +800,19 @@
                 <el-button
                   type="text"
                   @click="memberCardActivityName"
-                >刷新</el-button>
+                >{{$t('fullCuti18n.refresh')}}</el-button>
                 <el-divider direction="vertical"></el-divider>
                 <!-- <el-button>新建会员卡</el-button> -->
                 <router-link
                   class="link"
                   to="/admin/home/main/normalCardDetail?cardType=0"
-                >新建会员卡</router-link>
+                >{{$t('fullCuti18n.newMC')}}</router-link>
                 <el-divider direction="vertical"></el-divider>
                 <!-- <el-button>管理会员卡</el-button> -->
                 <router-link
                   class="link"
                   to="/admin/home/main/user_card"
-                >管理会员卡</router-link>
+                >{{$t('fullCuti18n.mMC')}}</router-link>
               </div>
             </el-form-item>
           </el-form-item>
@@ -862,7 +863,7 @@
         type="primary"
         size="small"
         @click="submit"
-      >保存</el-button>
+      >{{$t('fullCuti18n.save')}}</el-button>
     </div>
   </div>
 </template>
@@ -882,15 +883,15 @@ export default {
     var validateLevel = (rule, value, callback) => {
       var re = /^[1-9]\d*$/
       if (!value) {
-        callback(new Error('请输入活动优先级'))
+        callback(new Error(that.$t('fullCuti18n.fdfr')))
       } else if (!re.test(value)) {
-        callback(new Error('活动等级为正整数'))
+        callback(new Error(that.$t('fullCuti18n.actLevInteger')))
       }
       callback()
     }
     var validateActType = (rule, value, callback) => {
       if (value === '1' && (that.goodsList.length === 0 && that.goodsNameList.length === 0 && that.labelNameList.length === 0 && that.bussinessList.length === 0 && that.platformList.length === 0)) {
-        callback(new Error('请选择商品信息'))
+        callback(new Error(that.$t('fullCuti18n.pslProductInfo')))
       } else {
         callback()
       }
@@ -898,7 +899,7 @@ export default {
     function validateCheckCard (rule, value, callback) {
       if (that.checkCard) {
         if (that.memberCardInfo === '' || (that.memberCardInfo && that.memberCardInfo.length === 0)) {
-          callback(new Error('请选择专享会员卡'))
+          callback(new Error(that.$t('fullCuti18n.pslexcMC')))
         }
         callback()
       }
@@ -906,11 +907,11 @@ export default {
     function validateConditionAdd (rule, value, callback) {
       let conditionAddParams = that['conditionAddParams' + that.params.type]
       if (!conditionAddParams || conditionAddParams.length <= 0) {
-        callback(new Error('请设置满减规则'))
+        callback(new Error(that.$t('fullCuti18n.psetRule')))
       }
       conditionAddParams.forEach(item => {
         if (!((item.reduceMoney && item.fullMoney) || (item.amount && item.reduceMoney) || (item.fullMoney && item.discount) || (item.amount && item.discount))) {
-          callback(new Error('请完善满减规则'))
+          callback(new Error(that.$t('fullCuti18n.ppRule')))
         }
       })
       callback()
@@ -1000,10 +1001,10 @@ export default {
       checkCard: false, // 是否选择会员卡
 
       rules: {
-        actName: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
+        actName: [{ required: true, message: that.$t('fullCuti18n.peActName'), trigger: 'blur' }],
         strategyPriority: { required: true, validator: validateLevel, trigger: 'blur' },
-        type: [{ required: true, message: '请选择活动类型', trigger: 'change' }],
-        timeInterval: [{ required: true, message: '请选择时间', trigger: 'blur' }],
+        type: [{ required: true, message: that.$t('fullCuti18n.pslActType'), trigger: 'change' }],
+        timeInterval: [{ required: true, message: that.$t('fullCuti18n.pslTime'), trigger: 'blur' }],
         actType: { required: true, validator: validateActType, trigger: 'change' },
         conditionAddParams: [{ required: true, validator: validateConditionAdd, trigger: 'blur' }],
         memberCards: [{ validator: validateCheckCard, trigger: 'change' }]
@@ -1063,9 +1064,9 @@ export default {
     },
     getTabName () {
       if (this.$route.query.id) {
-        return '修改满折满减活动'
+        return this.$t('fullCuti18n.mAct')
       } else {
-        return '添加满折满减活动'
+        return this.$t('fullCuti18n.addfrAct')
       }
     },
     // 同步满折满减规则
@@ -1089,10 +1090,10 @@ export default {
         updateFullCut(obj).then(res => {
           console.log(res)
           if (res.error === 0) {
-            that.$message.success('更新成功')
+            that.$message.success(that.$t('fullCuti18n.updateS'))
             that.$router.replace('/admin/home/main/fullDiscountFullCut')
           } else {
-            that.$message.warning('更新失败')
+            that.$message.warning(that.$t('fullCuti18n.updateF'))
           }
         })
       } else {
@@ -1101,7 +1102,7 @@ export default {
           if (valid) {
             that.syncConditionAddParams()
             if (this.conditionAddParams.length === 0) {
-              this.$message.warning('请设置满减规则')
+              this.$message.warning(that.$t('fullCuti18n.psetRule'))
               return false
             }
             let obj = {
@@ -1123,10 +1124,10 @@ export default {
             addFullCutActivityApi(obj).then(res => {
               console.log(res)
               if (res.error === 0) {
-                that.$message.success('保存成功')
+                that.$message.success(that.$t('fullCuti18n.saveS'))
                 that.$router.replace('/admin/home/main/fullDiscountFullCut')
               } else {
-                that.$message.warning('保存失败')
+                that.$message.warning(that.$t('fullCuti18n.saveF'))
               }
             })
           }

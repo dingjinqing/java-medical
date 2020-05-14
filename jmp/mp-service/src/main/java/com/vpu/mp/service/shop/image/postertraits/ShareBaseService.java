@@ -20,8 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -231,8 +233,8 @@ public abstract class ShareBaseService extends ShopBaseService {
         String mpQrCode = createMpQrCode(activityRecord, goodsRecord, baseParam);
         BufferedImage qrCodeImage;
         try {
-            qrCodeImage = ImageIO.read(new URL(mpQrCode));
-//            qrCodeImage = ImageIO.read(new File("E:/qrcode.jpg"));
+//            qrCodeImage = ImageIO.read(new URL(mpQrCode));
+            qrCodeImage = ImageIO.read(new File("E:/qrcode.jpg"));
         } catch (IOException e) {
             pictorialLog(getActivityName(), "获取二维码失败");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
@@ -244,16 +246,16 @@ public abstract class ShareBaseService extends ShopBaseService {
 
         createPictorialImg(qrCodeImage, goodsImage, userInfo, shareDoc, activityRecord, goodsRecord, shop, baseParam, goodsPictorialInfo);
 
-//        BufferedImage bgImg = goodsPictorialInfo.getBgImg();
-//        try {
-//            FileOutputStream outputStream = new FileOutputStream(new File("E:/a.jpg"));
-//            ImageIO.write(bgImg, "jpg", outputStream);
-//            outputStream.close();
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        BufferedImage bgImg = goodsPictorialInfo.getBgImg();
+        try {
+            FileOutputStream outputStream = new FileOutputStream(new File("E:/a.jpg"));
+            ImageIO.write(bgImg, "jpg", outputStream);
+            outputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return goodsPictorialInfo;
     }

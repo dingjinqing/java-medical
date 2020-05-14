@@ -38,6 +38,9 @@ public class WxMaLiveRoomInfo implements Serializable {
 	@SerializedName("anchor_img")
 	private String anchorImg;
 
+	@SerializedName("share_img")
+	private String shareImg;
+	
 	private List<WxMaLiveRoomInfoGoods> goods;
 
 }

@@ -244,4 +244,7 @@ public class CardConstant {
      */
     public static final Integer INFINITE_EXCHANGE = 0;
 
+    public static final Byte ZERO = 0;
+    public static final Byte ONE = 1;
+    public static final Byte TWO = 2;
 }

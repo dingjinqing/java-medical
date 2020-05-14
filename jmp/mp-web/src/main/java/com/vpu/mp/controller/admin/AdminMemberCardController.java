@@ -426,4 +426,22 @@ public class AdminMemberCardController extends AdminBaseController {
 		return success(shop().member.card.getAllValidGradeCardList());
 	}
 	
+	
+	/**
+	 * 下载失败数据
+	 * 
+	 * @param param
+	 * @param response
+	 */
+	@PostMapping(value = "/code/receivelist/export")
+	public void getErrorExcel(@RequestBody CodeReceiveParam param, HttpServletResponse response) {
+		logger().info("开始下载领取详情");
+		Workbook workbook = shop().member.card.getReceiveExcel(param, getLang());
+		String fileName = Util.translateMessage(getLang(), JsonResultMessage.USER_CARD_RECEIVE_NAME, LANGUAGE_TYPE_EXCEL,
+				"messages");
+		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
+		export2Excel(workbook, fileName + dateFormat, response);
+		logger().info("结束下载领取详情");
+	}
+	
 }

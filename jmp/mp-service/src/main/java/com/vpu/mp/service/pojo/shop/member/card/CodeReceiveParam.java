@@ -25,4 +25,9 @@ public class CodeReceiveParam {
 	 * 领取码/卡号
 	 */
 	private String search;
+	/** 领取状态  1：已领取  2：未领取*/
+	private Byte reveiveStatus;
+	
+	/** 领取状态 1：正常  2：已废除*/
+	private Byte delStatus;
 }

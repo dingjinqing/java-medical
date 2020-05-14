@@ -360,7 +360,7 @@ public class CardDetailService extends ShopBaseService{
 	/**
 	 * 获取专享商品id
 	 */
-	private List<Integer> getOwnGoodsId(Integer cardId) {
+    public List<Integer> getOwnGoodsId(Integer cardId) {
 		List<GoodsCardCoupleRecord> list = goodsCardCoupleService.getOwnGoods(cardId);
 		return list.stream().map(GoodsCardCoupleRecord::getGctaId).collect(Collectors.toList());
 	}

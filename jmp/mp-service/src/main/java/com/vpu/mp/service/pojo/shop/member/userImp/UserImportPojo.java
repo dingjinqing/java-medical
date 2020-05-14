@@ -77,6 +77,10 @@ public class UserImportPojo {
 	/** 是否是分销员 */
 	@ExcelColumn(columnIndex = 15, columnName = "user.import.is_distributor")
 	private String isDistributor;
+	
+	/** 备注 */
+	@ExcelColumn(columnIndex = 16, columnName = "user.import.remark")
+	private String remark;
 
 	@ExcelIgnore
 	private String errorMsg;

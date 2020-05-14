@@ -234,6 +234,7 @@ public class LiveService extends ShopBaseService {
 			record.setRoomId(live.getRoomid());
 			record.setStartTime(new Timestamp(live.getStartTime()*1000));
 			record.setEndTime(new Timestamp(live.getEndTime()*1000));
+			record.setAnchorImg(StringUtils.isEmpty(live.getAnchorImg()) ? live.getShareImg() : live.getAnchorImg());
 			LiveBroadcastRecord roomInfo = db().selectFrom(LIVE_BROADCAST).where(LIVE_BROADCAST.ROOM_ID.eq(live.getRoomid())).fetchAny();
 			if(roomInfo!=null) {
 				record.setId(roomInfo.getId());

@@ -4,7 +4,7 @@
       <el-form
         :model="param"
         label-width="140px"
-        :label-position="'right'"
+        label-position="right"
       >
         <div>
           <el-form-item
@@ -178,12 +178,9 @@
           :data="tableData"
           @sort-change="changeTableSort"
           border
-          style="width: 100%"
+          style="width: 100%;font-size: 12px;"
         >
-          <el-table-column
-            type="selection"
-            width="55"
-          >
+          <el-table-column type="selection">
           </el-table-column>
           <el-table-column
             prop="userId"
@@ -208,6 +205,7 @@
             prop="mobile"
             label="分销员手机号"
             align="center"
+            width="100"
           >
           </el-table-column>
 
@@ -228,6 +226,7 @@
             prop="createTime"
             label="注册时间"
             align="center"
+            width="90"
           >
           </el-table-column>
 
@@ -263,6 +262,7 @@
           <el-table-column
             label="分销员分组"
             align="center"
+            width="100"
           >
             <template slot-scope="scope">
               <p v-if="scope.row.groupName">{{ scope.row.groupName }}</p>
@@ -278,6 +278,7 @@
             prop="levelName"
             label="分销员等级"
             align="center"
+            width="100"
           >
           </el-table-column>
 
@@ -291,7 +292,7 @@
               <span
                 class="nameStyle"
                 @click="nextNumberHandler(scope.row.userId)"
-              >{{ scope.row.nextNumber }}</span>
+              >{{scope.row.nextNumber ? scope.row.nextNumber : 0}}</span>
             </template>
           </el-table-column>
 
@@ -305,7 +306,7 @@
               <span
                 class="nameStyle"
                 @click="sublayerNumberHandler(scope.row.userId)"
-              >{{ scope.row.sublayerNumber }}</span>
+              >{{scope.row.sublayerNumber ? scope.row.sublayerNumber : 0}}</span>
             </template>
           </el-table-column>
 
@@ -315,6 +316,9 @@
             sortable="custom"
             align="center"
           >
+            <template slot-scope="scope">
+              <span>{{scope.row.totalCanFanliMoney ? scope.row.totalCanFanliMoney : '0.00'}}</span>
+            </template>
           </el-table-column>
 
           <el-table-column
@@ -323,6 +327,9 @@
             sortable="custom"
             align="center"
           >
+            <template slot-scope="scope">
+              <span>{{scope.row.totalFanliMoney ? scope.row.totalFanliMoney : '0.00'}}</span>
+            </template>
           </el-table-column>
 
           <el-table-column
@@ -331,11 +338,15 @@
             sortable="custom"
             align="center"
           >
+            <template slot-scope="scope">
+              <span>{{scope.row.waitFanliMoney ? scope.row.waitFanliMoney : '0.00'}}</span>
+            </template>
           </el-table-column>
 
           <el-table-column
             label="操作"
             align="center"
+            width="120"
           >
             <template slot-scope="scope">
               <div class="opt">
@@ -1004,11 +1015,12 @@ export default {
   height: 36px;
   font-weight: bold;
   color: #000;
-  padding: 8px 10px;
+  padding: 8px 0px;
 }
 .table_list {
   position: relative;
   background-color: #fff;
+  overflow: auto;
 }
 .footer {
   padding: 20px 0 20px 20px;

@@ -543,4 +543,7 @@ ALTER TABLE `b2c_store` ADD COLUMN `pick_time_detail` varchar(50) DEFAULT NULL C
 -- 会员卡添加兑换商品限制时间类型和次数
 ALTER TABLE `b2c_member_card` ADD COLUMN `period_limit` tinyint(1) DEFAULT NULL COMMENT '0:不限制，1：日，2：周，3：月，4：季度，5：年';
 ALTER TABLE `b2c_member_card` ADD COLUMN `period_num` int(11) DEFAULT NULL COMMENT '周期内允许兑换次数';
+
+-- 用户导入添加备注
+ALTER TABLE `b2c_user_import_detail` ADD COLUMN `remark` text COMMENT '会员备注';
 /***********************2.13*********************END*/

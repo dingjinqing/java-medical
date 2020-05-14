@@ -71,6 +71,7 @@ public class GoodsDetailBoConverter implements EsGoodsConvertInterface<GoodsDeta
         bo.setGoodsNumber(esGoods.getGoodsNumber());
         bo.setCanRebate(esGoods.getCanRebate());
         bo.setGoodsPageId(esGoods.getGoodsPageId());
+        bo.setRoomId(esGoods.getRoomId());
 //        o.getAsString()
 
         return bo;

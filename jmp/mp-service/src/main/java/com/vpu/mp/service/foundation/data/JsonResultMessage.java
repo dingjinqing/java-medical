@@ -1024,6 +1024,7 @@ public class JsonResultMessage {
     /**
      * 商品、活动分享图片文字内容
      */
+    public static final String WX_MA_PICTORIAL_RECOMMEND_INFO = "wx.ma.pictorial.recommend.info";
     /** ￥ */
     public static final String WX_MA_PICTORIAL_MONEY_FLAG = "wx.ma.pictorial.money.flag";
     /** 神秘人 */
@@ -1077,7 +1078,7 @@ public class JsonResultMessage {
     public static final String USER_CARD_ONOK = "user.card.onok";
     public static final String USER_CARD_TEMPLATE_NAME = "user.card.template.name";
     public static final String USER_CARD_ABOLITION = "user.card.abolition";
-
+    public static final String USER_CARD_RECEIVE_NAME = "user.card.receive.name";
     public static final String CARD_NO_TEMPLATE_NAME = "card.no.template.name";
     public static final String CARD_NO_IMPORT_NAME = "card.no.import.name";
     public static final String CARD_PWD_TEMPLATE_NAME = "card.pwd.template.name";

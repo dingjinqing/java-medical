@@ -52,6 +52,10 @@ public class RankCardVo extends BaseCardVo {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	protected Byte payOwnGood;
 	protected String powerPayOwnGood;
+    /**
+     * 专属商品数量
+     */
+	protected Integer payOwnGoodNum;
 	
 	/**
 	 * 积分获取开关， 0表示关闭，1表示开启

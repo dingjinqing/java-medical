@@ -878,10 +878,8 @@ public class GoodsService extends ShopBaseService {
                 insertGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
                 codeWrap.setGoodsId(goods.getGoodsId());
             } catch (Exception e) {
-                e.printStackTrace();
-                codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
-                return;
-
+               logger().debug("商品新增error:"+e.getMessage());
+               throw e;
             }
         });
 
@@ -1125,9 +1123,8 @@ public class GoodsService extends ShopBaseService {
                 //修改分销改价
                 updateGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
             } catch (Exception e) {
-                e.printStackTrace();
-                codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
-                return;
+                logger().debug("商品修改error:"+e.getMessage());
+                throw e;
             }
         });
         if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {

@@ -313,6 +313,10 @@ import {
 import {
   cn as luckyDraw
 } from './views/admin_new/cn/index/marketManagement/luckyDraw/luckyDraw'
+// 满折满减
+import {
+  cn as fullCuti18n
+} from './views/admin_new/cn/index/marketManagement/fullCut/fullCutCn'
 // 小程序装修
 import {
   cn as pageDecoration
@@ -412,6 +416,9 @@ import {
 import {
   cn as live
 } from './views/admin_new/cn/index/marketManagement/live/liveCn'
+import {
+  cn as preSale
+} from './views/admin_new/cn/index/marketManagement/preSale/preSaleCn'
 
 // 订单管理系列模块化
 // 订单通用
@@ -1070,6 +1077,7 @@ const cn = {
   promoteList, // 好友助力
   adSharePolite, // 添加分享有礼
   luckyDraw, // 幸运大抽奖
+  fullCuti18n, // 满折满减
   reducePriceList, // 限时降价活动列表
   distribution, // 分销
   messagePush, // 营销管理/消息推送
@@ -1093,6 +1101,7 @@ const cn = {
   packagePrice, // 打包一口价
   groupIntegration, // 组团瓜分积分
   live, // 直播
+  preSale, // 定金膨胀
 
   // 会员管理
   memberCard, // 会员管理-会员卡
