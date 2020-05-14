@@ -148,6 +148,9 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
             log.debug("小程序-商品详情-预售活动-商品规格信息和活动规格信息无交集");
             goodsPreSaleInfo.setActState(BaseConstant.ACTIVITY_STATUS_NO_PRD_TO_USE);
         }
+        goodsPreSaleInfo.setSaleNumber(saleNumber);
+        goodsPreSaleInfo.setPreSalePrdMpVos(newPreSalePrds);
+        capsule.setActivity(goodsPreSaleInfo);
     }
 
     @Override

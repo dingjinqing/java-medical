@@ -38,6 +38,7 @@ public class GoodsListMpConverter implements EsParamConvertInterface {
 
     private EsSearchParam assemblyEsSearchParam(GoodsListMpParam param,@NotNull Integer shopId){
         List<FieldProperty> propertyList = new ArrayList<>();
+        List<Sort> sorts = Lists.newArrayList();
         EsSearchParam searchParam = new EsSearchParam();
         if( null != param.getPageRows() ){
             searchParam.setPageRows(param.getPageRows());
@@ -94,7 +95,7 @@ public class GoodsListMpConverter implements EsParamConvertInterface {
                     }
                 }
             }
-            List<Sort> sorts = Lists.newArrayList();
+
 
             if( param.getSortType() != null ){
                 switch (param.getSortType()){
@@ -111,14 +112,14 @@ public class GoodsListMpConverter implements EsParamConvertInterface {
                 }
             }
 
-            if( sorts.size() == 0 && param.getShopSortItem() != null && param.getShopSortDirection() != null){
-                sorts.add(getSort(param.getShopSortItem(),param.getShopSortDirection()));
-            }
-            if( !CollectionUtils.isEmpty(sorts) ){
-                searchParam.setSorts(sorts);
-            }
-        }
 
+        }
+        if( sorts.size() == 0 && param.getShopSortItem() != null && param.getShopSortDirection() != null){
+            sorts.add(getSort(param.getShopSortItem(),param.getShopSortDirection()));
+        }
+        if( !CollectionUtils.isEmpty(sorts) ){
+            searchParam.setSorts(sorts);
+        }
 
         if( !propertyList.isEmpty() ){
             searchParam.setSearchList(propertyList);

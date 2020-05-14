@@ -271,9 +271,11 @@ public class SeckillService extends ShopBaseService{
             db().executeUpdate(record);
         });
 
-        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(record.getGoodsId()), getShopId(), DBOperating.UPDATE);
+
         //刷新goodsType
         saas.getShopApp(getShopId()).shopTaskService.seckillTaskService.monitorGoodsType();
+        esDataUpdateMqService.addEsGoodsIndex(
+            Util.splitValueToList(getSeckillActById(record.getSkId()).getGoodsId()), getShopId(), DBOperating.UPDATE);
     }
 
     /**
