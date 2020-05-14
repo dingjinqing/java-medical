@@ -1,5 +1,10 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +17,9 @@ import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePricePageListQueryP
 import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceUpdateParam;
 import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceVo;
 import com.vpu.mp.service.pojo.shop.market.reduceprice.SimpleReducePriceParam;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /**
  * @author: 王兵兵
@@ -38,6 +46,7 @@ public class AdminReducePriceController extends AdminBaseController {
         shop().reducePrice.addReducePrice(param);
         return success();
     }
+
     /**
      *取单个限时降价活动信息
      *
@@ -51,6 +60,7 @@ public class AdminReducePriceController extends AdminBaseController {
             return fail();
         }
     }
+
     /**
      *更新 限时降价活动
      *
@@ -73,10 +83,20 @@ public class AdminReducePriceController extends AdminBaseController {
 
     /**
      * 限时降价订单列表
-     *
      */
     @PostMapping(value = "/api/admin/market/reduceprice/order")
     public JsonResult getReducePriceOrderList(@RequestBody @Validated MarketOrderListParam param) {
         return success(shop().reducePrice.getReducePriceOrderList(param));
+    }
+
+    /**
+     * 活动订单
+     * 订单导出
+     */
+    @PostMapping("/api/admin/market/reduceprice/order/export")
+    public void activityOrderExport(@RequestBody @Valid MarketOrderListParam param, HttpServletResponse response) {
+        Workbook workbook = shop().reducePrice.exportReducePriceOrderList(param, getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.SECKILL_ORDER_LIST_FILENAME, OrderConstant.LANGUAGE_TYPE_EXCEL, OrderConstant.LANGUAGE_TYPE_EXCEL) + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        export2Excel(workbook, fileName, response);
     }
 }
