@@ -265,7 +265,8 @@ public class WxCardExchangeService extends ShopBaseService {
 		
 		condition = condition
 				.and(ORDER_GOODS.IS_GIFT.eq(OrderConstant.IS_GIFT_N))
-				.and(ORDER_GOODS.GOODS_ID.eq(goodsId));	
+				.and(ORDER_GOODS.GOODS_ID.eq(goodsId))
+				.and(ORDER_INFO.EXCHANG.eq(CardConstant.MCARD_TP_LIMIT));	
 		
 		if(null != times) {
 			//	有效期范围内
@@ -273,6 +274,7 @@ public class WxCardExchangeService extends ShopBaseService {
 					.and(ORDER_INFO.CREATE_TIME.ge(times[0]))
 					.and(ORDER_INFO.CREATE_TIME.le(times[1]));
 		}
+		
 		
 		 return db()
 			.select(DSL.sum(ORDER_GOODS.GOODS_NUMBER))
