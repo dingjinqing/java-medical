@@ -195,7 +195,7 @@ public class UserImportService extends ShopBaseService {
 			for (CouponView couponView : couponViewByIds) {
 				CouponViewVo vo=new CouponViewVo();
 				try {
-					BeanUtils.copyProperties(couponView, vo);
+					BeanUtils.copyProperties(vo, couponView);
 				} catch (Exception e) {
 					e.printStackTrace();
 				} 
