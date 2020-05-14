@@ -18,5 +18,5 @@ public class SetNoticeJsonVo {
 	private String score;
 	/** 优惠券Id */
 	private String mrkingVoucherId;
-	private List<CouponView> mrkingVoucherList;
+	private List<CouponViewVo> mrkingVoucherList;
 }
