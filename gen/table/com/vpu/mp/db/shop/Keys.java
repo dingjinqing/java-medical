@@ -4,8 +4,8 @@
 package com.vpu.mp.db.shop;
 
 
-import com.vpu.mp.db.shop.tables.Presale;
-import com.vpu.mp.db.shop.tables.records.PresaleRecord;
+import com.vpu.mp.db.shop.tables.VirtualOrder;
+import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
 
 import javax.annotation.Generated;
 
@@ -32,13 +32,13 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
-    public static final Identity<PresaleRecord, Integer> IDENTITY_PRESALE = Identities0.IDENTITY_PRESALE;
+    public static final Identity<VirtualOrderRecord, Integer> IDENTITY_VIRTUAL_ORDER = Identities0.IDENTITY_VIRTUAL_ORDER;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<PresaleRecord> KEY_B2C_PRESALE_PRIMARY = UniqueKeys0.KEY_B2C_PRESALE_PRIMARY;
+    public static final UniqueKey<VirtualOrderRecord> KEY_B2C_VIRTUAL_ORDER_PRIMARY = UniqueKeys0.KEY_B2C_VIRTUAL_ORDER_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -50,10 +50,10 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
-        public static Identity<PresaleRecord, Integer> IDENTITY_PRESALE = Internal.createIdentity(Presale.PRESALE, Presale.PRESALE.ID);
+        public static Identity<VirtualOrderRecord, Integer> IDENTITY_VIRTUAL_ORDER = Internal.createIdentity(VirtualOrder.VIRTUAL_ORDER, VirtualOrder.VIRTUAL_ORDER.ORDER_ID);
     }
 
     private static class UniqueKeys0 {
-        public static final UniqueKey<PresaleRecord> KEY_B2C_PRESALE_PRIMARY = Internal.createUniqueKey(Presale.PRESALE, "KEY_b2c_presale_PRIMARY", Presale.PRESALE.ID);
+        public static final UniqueKey<VirtualOrderRecord> KEY_B2C_VIRTUAL_ORDER_PRIMARY = Internal.createUniqueKey(VirtualOrder.VIRTUAL_ORDER, "KEY_b2c_virtual_order_PRIMARY", VirtualOrder.VIRTUAL_ORDER.ORDER_ID);
     }
 }
