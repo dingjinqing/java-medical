@@ -111,6 +111,19 @@ public class CardExchangService extends ShopBaseService {
 	}
 	
 	/**
+	 * 获取兑换卡可兑换的商品Id
+	 * @param card
+	 * @return null 表示全部商品 | List<Integer> 可兑换商品的Id
+	 */
+	public List<Integer> getExchangGoodsAllIds(MemberCardRecord card){
+		if(CardUtil.isExchangPartGoods(card.getIsExchang())) {
+			return getExchangPartGoodsAllIds(card.getExchangGoods());
+		}else {
+			return null;
+		}
+	}
+	
+	/**
 	 * 兑换商品时间限制范围
 	 * @param periodLimit
 	 * @return Timestamp[2] 包含开始时间，截止时间 | null 表示没有时间限制范围
