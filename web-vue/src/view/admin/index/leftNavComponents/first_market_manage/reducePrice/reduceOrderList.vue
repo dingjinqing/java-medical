@@ -213,7 +213,8 @@
 </template>
 
 <script>
-import { getReducePriceOrderList } from '@/api/admin/marketManage/reducePrice.js'
+import { download } from '@/util/excelUtil.js'
+import { getReducePriceOrderList, reducePriceOrderListExport } from '@/api/admin/marketManage/reducePrice.js'
 import marketOrderSearchTab from '@/components/admin/marketManage/marketOrderSearchTab.vue'
 export default {
   components: {
@@ -290,7 +291,13 @@ export default {
       this.districtCode = data.district
     },
     exportDataList () {
-      alert(11)
+      reducePriceOrderListExport(this.requestParams).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '限时降价订单导出.xlsx'
+        download(res, decodeURIComponent(fileName))
+      }).catch(() => {
+
+      })
     },
 
     // 下单人信息
