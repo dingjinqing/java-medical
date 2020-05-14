@@ -36,11 +36,6 @@ export default {
         isDefaultPrd: true,
         needPrdCodes: 0,
         goodsWeightCfg: 0
-      },
-      childCmpData: {
-        basicInfoData: null,
-        stockAndPriceInfoData: null,
-        deliverAndOtherInfoData: null
       }
     }
   },
@@ -87,10 +82,10 @@ export default {
       if (!validateVal) {
         return false
       }
-      this.childCmpData.stockAndPriceInfoData = this.$refs.stockAndPriceInfo.getFormData()
-      this.childCmpData.deliverAndOtherInfoData = this.$refs.deliverAndOtherInfo.getFormData()
+      let stockAndPriceInfoData = this.$refs.stockAndPriceInfo.getFormData()
+      let deliverAndOtherInfoData = this.$refs.deliverAndOtherInfo.getFormData()
 
-      let deliverType = this.childCmpData.deliverAndOtherInfoData.deliverTemplateType
+      let deliverType = deliverAndOtherInfoData.deliverTemplateType
 
       // 选择重量模板
       if (deliverType === 1) {
@@ -102,12 +97,12 @@ export default {
           // 校验是否重量都写了
           // 默认规格
           if (this.transferData.isDefaultPrd) {
-            if (isNumberBlank(this.childCmpData.deliverAndOtherInfoData.goodsWeight)) {
+            if (isNumberBlank(deliverAndOtherInfoData.goodsWeight)) {
               this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsWeightIsNull'))
               return false
             }
           } else {
-            let specPrds = this.childCmpData.stockAndPriceInfoData.goodsSpecProducts
+            let specPrds = stockAndPriceInfoData.goodsSpecProducts
             for (let i = 0; i < specPrds.length; i++) {
               if (isNumberBlank(specPrds[i].prdWeight)) {
                 this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsPrdWeightIsNull'))
@@ -123,9 +118,8 @@ export default {
     /* 获取数据 */
     getFormData () {
       let basicInfoData = this.$refs.basicInfo.getFormData()
-      // 校验重量时已经拿到数据
-      let stockAndPriceInfoData = this.childCmpData.stockAndPriceInfoData
-      let deliverAndOtherInfoData = this.childCmpData.deliverAndOtherInfoData
+      let stockAndPriceInfoData = this.$refs.stockAndPriceInfo.getFormData()
+      let deliverAndOtherInfoData = this.$refs.deliverAndOtherInfo.getFormData()
       // 默认规格
       if (this.transferData.isDefaultPrd) {
         stockAndPriceInfoData.goodsSpecProducts[0].prdImg = basicInfoData.goodsImg

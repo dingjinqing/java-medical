@@ -1,6 +1,8 @@
 package com.vpu.mp.service.pojo.shop.market.groupdraw;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
+
 import lombok.Data;
 
 import java.math.BigDecimal;
