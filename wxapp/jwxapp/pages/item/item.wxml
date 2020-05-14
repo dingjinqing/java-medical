@@ -23,7 +23,7 @@
         <image class="live-avatar" src="{{roomDetailMpInfo.anchorImg}}"></image>
        </view>
        <text class="live-desc" wx:if="{{liveStatus === 101}}" bindtap="goLive">商品正在参与直播，立即查看 ></text>
-       <text class="live-desc" wx:if="{{liveStatus === 102}}">直播将在{{roomDetailMpInfo.startTime}}开始</text>
+       <text class="live-desc" wx:if="{{liveStatus === 102}}">直播将在{{filter.substring(roomDetailMpInfo.startTime,5,16)}}开始</text>
         <subscribe room-id="{{roomDetailMpInfo.roomId}}" wx:if="{{liveStatus === 102}}"></subscribe>
         <image class="live-close" bindtap="closeLive" src="{{imageUrl}}image/wxapp/invite_close_live.png"></image>
       </view>
