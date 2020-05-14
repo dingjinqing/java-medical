@@ -161,7 +161,7 @@ public class CardDaoService extends ShopBaseService {
 						CARD_RECEIVE_CODE.CARD_PWD, CARD_RECEIVE_CODE.DEL_FLAG)
 				.from(CARD_RECEIVE_CODE.leftJoin(USER).on(CARD_RECEIVE_CODE.USER_ID.eq(USER.USER_ID))
 						.leftJoin(CARD_BATCH).on(CARD_RECEIVE_CODE.BATCH_ID.eq(CARD_BATCH.ID)))
-				.where(CARD_RECEIVE_CODE.CARD_ID.eq(param.getCardId()));
+				.where(CARD_RECEIVE_CODE.CARD_ID.eq(param.getCardId()).and(CARD_RECEIVE_CODE.STATUS.eq(CardConstant.ONE)));
 
 		buildOptionForReceiveCode(param, select);
 		return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), CodeReceiveVo.class);
@@ -187,6 +187,24 @@ public class CardDaoService extends ShopBaseService {
 		/** -批次号 */
 		if (param.getBatchId() != null && !param.getBatchId().equals(ALL_BATCH)) {
 			select.and(CARD_RECEIVE_CODE.BATCH_ID.eq(param.getBatchId()));
+		}
+		Byte reveiveStatus = param.getReveiveStatus();
+		if(null!=reveiveStatus) {
+			if(reveiveStatus.equals(CardConstant.ONE)) {
+				select.and(CARD_RECEIVE_CODE.RECEIVE_TIME.isNotNull());
+			}
+			if(reveiveStatus.equals(CardConstant.TWO)) {
+				select.and(CARD_RECEIVE_CODE.RECEIVE_TIME.isNull());
+			}
+		}
+		Byte delStatus = param.getDelStatus();
+		if (null != delStatus) {
+			if (delStatus.equals(CardConstant.ONE)) {
+				select.and(CARD_RECEIVE_CODE.DEL_FLAG.eq(CardConstant.ZERO));
+			}
+			if (delStatus.equals(CardConstant.TWO)) {
+				select.and(CARD_RECEIVE_CODE.DEL_FLAG.eq(CardConstant.ONE));
+			}
 		}
 		/**
 		 * 领取码或卡号

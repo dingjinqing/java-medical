@@ -240,4 +240,7 @@ public class CardConstant {
 	/**限次卡免运得*/
     public static final Byte FREE_SHIPPING = 0;
 
+    public static final Byte ZERO = 0;
+    public static final Byte ONE = 1;
+    public static final Byte TWO = 2;
 }

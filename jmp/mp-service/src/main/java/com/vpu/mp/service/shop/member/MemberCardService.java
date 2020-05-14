@@ -1132,6 +1132,8 @@ public class MemberCardService extends ShopBaseService {
 					vo.setCardPwd(cardPwd.substring(0, 2).concat(tmp).concat(cardPwd.substring(lengthOfCardPwd + 2)));
 				}
 			}
+			vo.setReveiveStatus(vo.getReceiveTime() != null ? CardConstant.ONE : CardConstant.TWO);
+			vo.setDelStatus(vo.getDelFlag().equals(CardConstant.ZERO) ? CardConstant.ZERO : CardConstant.TWO);
 		}
 		return result;
 

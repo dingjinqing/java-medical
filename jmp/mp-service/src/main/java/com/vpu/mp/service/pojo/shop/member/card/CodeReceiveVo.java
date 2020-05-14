@@ -32,4 +32,8 @@ public class CodeReceiveVo {
 	/** - 是否废除 0： 没有，1： 已废除 */
 	private Byte delFlag;
 	private String errorMsg;
+	/** 1：已领取  2：未领取*/
+	private Byte reveiveStatus;
+	/** 1：正常  2：已废除 */
+	private Byte delStatus;
 }
