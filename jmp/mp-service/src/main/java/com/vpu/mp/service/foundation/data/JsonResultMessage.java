@@ -585,7 +585,10 @@ public class JsonResultMessage {
     public static final String MSG_CARD_BEFORE_START_TIME = "member.card.before.start.time";
     public static final String MSG_CARD_ALREADY_EXPIRED = "member.card.already.expired";
     public static final String MSG_CARD_NOT_ACTIVE = "member.card.not.active";
-
+    public static final String MSG_CARD_NOT_SUPPORT_GOODS = "member.card.not.support.goods";
+    public static final String MSG_CARD_ALLOW_TIME_OVER = "member.card.allow.time.over";
+    public static final String MSG_CARD_ADD_TIMES_OVER = "member.card.add.times.over";
+    public static final String MSG_CARD_PERIOD_ADD_TIMES_OVER = "member.card.period.add.times.over";
 
     /**
      * 	用户卡包邮信息

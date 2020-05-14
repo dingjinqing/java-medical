@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
@@ -157,7 +158,7 @@ public abstract class CardOpt extends ShopBaseService{
 			if(memberCard.getStartTime().after(DateUtil.getLocalDateTime())) {
 				//	本卡还未到开始使用时间
 				res.setUsable(Boolean.FALSE);
-				res.setReason(JsonResultMessage.MSG_CARD_BEFORE_START_TIME);
+				res.setErrorCode(JsonResultCode.MSG_CARD_BEFORE_START_TIME);
 				return res;
 			}
 		}
@@ -166,7 +167,7 @@ public abstract class CardOpt extends ShopBaseService{
 			if(null == userCard.getActivationTime()) {
 				//	本卡尚未激活
 				res.setUsable(Boolean.FALSE);
-				res.setReason(JsonResultMessage.MSG_CARD_NOT_ACTIVE);
+				res.setErrorCode(JsonResultCode.MSG_CARD_NOT_ACTIVE);
 				return res;
 			}
 		}
@@ -175,11 +176,11 @@ public abstract class CardOpt extends ShopBaseService{
 			if(userCard.getExpireTime().before(DateUtil.getLocalDateTime())) {
 				//	本卡已过期
 				res.setUsable(Boolean.FALSE);
-				res.setReason(JsonResultMessage.MSG_CARD_ALREADY_EXPIRED);
+				res.setErrorCode(JsonResultCode.MSG_CARD_ALREADY_EXPIRED);
 			}
 		}
 		
-		res.setReason(JsonResultMessage.MSG_SUCCESS);
+		res.setErrorCode(JsonResultCode.CODE_SUCCESS);
 		res.setUsable(Boolean.TRUE);
 		return res;
 	}

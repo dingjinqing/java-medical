@@ -239,5 +239,9 @@ public class CardConstant {
 	public static final Byte USER_CARD_STATUS_OUT_OF_EXPIRE = 4;
 	/**限次卡免运得*/
     public static final Byte FREE_SHIPPING = 0;
+    /**
+     * 无限兑换商品数量
+     */
+    public static final Integer INFINITE_EXCHANGE = 0;
 
 }

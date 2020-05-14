@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.member.card.show;
 
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+
 import lombok.Data;
 
 /**
@@ -13,8 +15,8 @@ public class CardUseCondition {
 	 */
 	private boolean usable;
 	
-	/**
-	 * 	不能使用使用的原因
-	 */
-	 private String reason;
+	 /**
+	  * 不能使用使用的原因
+	  */
+	 private JsonResultCode errorCode;
 }	

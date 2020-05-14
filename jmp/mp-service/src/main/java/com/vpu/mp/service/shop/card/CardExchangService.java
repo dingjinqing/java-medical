@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.card;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.DateUtil.IntervalType;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods.GoodsCfg;
 /**
  * 	会员卡兑换商品服务
@@ -135,5 +137,16 @@ public class CardExchangService extends ShopBaseService {
 		}
 		IntervalType[] values = DateUtil.IntervalType.values();
 		return DateUtil.getInterval(values[periodLimit-1]);
+	}
+
+
+	/**
+	 * 获取兑换商品期间信息
+	 */
+	public static String getPeriodLimitDesc(Byte periodLimit,String lang) {
+		List<String> descArr = CardFreeship.getFreeShipDesc(lang);
+		Collections.reverse(descArr);
+		ArrayList<String> tmpList = new ArrayList<>(descArr.subList(0, CardExchangGoods.TimeType.values().length));
+		return tmpList.get(periodLimit);
 	}
 }

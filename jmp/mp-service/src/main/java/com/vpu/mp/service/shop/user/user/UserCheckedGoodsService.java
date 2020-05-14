@@ -26,7 +26,7 @@ public class UserCheckedGoodsService extends ShopBaseService {
 	
 	/**
 	 * 获得用户已经选择的商品数量
-	 * @return 商品数量 没有则为0
+	 * @return 商品数量 | 没有则为0
 	 */
 	public Integer getUserCheckedCount(UserCheckedGoodsParam param) {
 		logger().info("获得已选商品数");
@@ -37,7 +37,20 @@ public class UserCheckedGoodsService extends ShopBaseService {
 			.where(condition)
 			.fetchOne(0,int.class);
 	}
-
+	
+	/**
+	 * 获得用户已经选择的商品数量
+	 * @return 商品数量 | 没有则为0
+	 */
+	public Integer getUserCheckedCount(Integer userId,String cardNo) {
+		UserCheckedGoodsParam checkedGoodsParam = new UserCheckedGoodsParam();
+		checkedGoodsParam.setAction(CardConstant.MCARD_TP_LIMIT);
+		checkedGoodsParam.setIdentityId(cardNo);
+		checkedGoodsParam.setUserId(userId);
+		return getUserCheckedCount(checkedGoodsParam);
+	}
+	
+	
 	private Condition getSearchCheckedGoodsCondition(UserCheckedGoodsParam param) {
 		Condition condition = DSL.noCondition()
 			.and(TABLE.USER_ID.eq(param.getUserId()))
