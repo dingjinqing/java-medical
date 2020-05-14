@@ -4,7 +4,7 @@
       <el-form
         :model="param"
         label-width="140px"
-        :label-position="'right'"
+        label-position="right"
       >
         <div>
           <el-form-item
@@ -290,7 +290,7 @@
             <template slot-scope="scope">
               <span
                 class="nameStyle"
-                @click="nextNumberHandler"
+                @click="nextNumberHandler(scope.row.userId)"
               >{{ scope.row.nextNumber }}</span>
             </template>
           </el-table-column>
@@ -304,7 +304,7 @@
             <template slot-scope="scope">
               <span
                 class="nameStyle"
-                @click="sublayerNumberHandler"
+                @click="sublayerNumberHandler(scope.row.userId)"
               >{{ scope.row.sublayerNumber }}</span>
             </template>
           </el-table-column>
@@ -829,13 +829,23 @@ export default {
     },
 
     // 下级用户数跳转
-    nextNumberHandler () {
-
+    nextNumberHandler (userId) {
+      this.$router.push({
+        path: '/admin/home/main/distribution/inviteUserList',
+        query: {
+          userId: userId
+        }
+      })
     },
 
     // 间接邀请用户数跳转
-    sublayerNumberHandler () {
-
+    sublayerNumberHandler (userId) {
+      this.$router.push({
+        path: '/admin/home/main/distribution/inviteUserList',
+        query: {
+          userId: userId
+        }
+      })
     },
 
     // 全选切换

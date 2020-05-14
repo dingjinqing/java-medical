@@ -14,6 +14,7 @@ import org.jooq.Record;
 import org.jooq.SelectOnConditionStep;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -42,18 +43,18 @@ public class MemberCardOrderService extends VirtualOrderService {
         SelectOnConditionStep<? extends Record> select =
             db().select(VIRTUAL_ORDER.ORDER_ID, VIRTUAL_ORDER.ORDER_SN,
                 VIRTUAL_ORDER.VIRTUAL_GOODS_ID, VIRTUAL_ORDER.RETURN_FLAG, VIRTUAL_ORDER.PAY_TIME, VIRTUAL_ORDER.MONEY_PAID,
-                VIRTUAL_ORDER.USE_ACCOUNT, VIRTUAL_ORDER.USE_SCORE, VIRTUAL_ORDER.RETURN_TIME,VIRTUAL_ORDER.CURRENCY,VIRTUAL_ORDER.ORDER_AMOUNT,USER.USERNAME, USER.MOBILE,
+                VIRTUAL_ORDER.USE_ACCOUNT, VIRTUAL_ORDER.USE_SCORE, VIRTUAL_ORDER.RETURN_TIME, VIRTUAL_ORDER.CURRENCY, VIRTUAL_ORDER.ORDER_AMOUNT, USER.USERNAME, USER.MOBILE,
                 MEMBER_CARD.CARD_NAME, MEMBER_CARD.CARD_TYPE, MEMBER_CARD.PAY_FEE, MEMBER_CARD.PAY_TYPE,
                 USER_CARD.CARD_NO)
                 .from(VIRTUAL_ORDER)
                 .leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(VIRTUAL_ORDER.VIRTUAL_GOODS_ID))
                 .leftJoin(USER).on(VIRTUAL_ORDER.USER_ID.eq(USER.USER_ID))
-                .leftJoin(USER_CARD).on(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(USER_CARD.CARD_ID));
+                .leftJoin(USER_CARD).on(VIRTUAL_ORDER.SEND_CARD_NO.eq(USER_CARD.CARD_NO));
         buildOptions(select, param);
         PageResult<MemberCardOrderVo> pageResult = getPageResult(select, param, MemberCardOrderVo.class);
         pageResult.getDataList().forEach(cardOrderVo->{
             //超过一年不能退款
-            if (cardOrderVo.getPayTime()!=null&&DateUtil.getLocalDateTime().after(DateUtil.getTimeStampPlus(cardOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
+            if (cardOrderVo.getMoneyPaid().compareTo(BigDecimal.ZERO)>0&&cardOrderVo.getPayTime()!=null&&DateUtil.getLocalDateTime().after(DateUtil.getTimeStampPlus(cardOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
                 cardOrderVo.setCanReturn(BaseConstant.NO);
             }else {
                 cardOrderVo.setCanReturn(BaseConstant.YES);

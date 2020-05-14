@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsShowStyleConfigBo;
 import com.vpu.mp.service.pojo.wxapp.goods.search.*;
+import com.vpu.mp.service.shop.card.wxapp.WxCardExchangeService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
@@ -61,6 +62,8 @@ public class GoodsSearchMpService extends ShopBaseService {
     BargainService bargainService;
     @Autowired
     private ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    WxCardExchangeService wxCardExchangeSvc;
 
     /**
      * 小程序端-商品搜索界面-可使用搜索条件数据初始化
@@ -116,6 +119,8 @@ public class GoodsSearchMpService extends ShopBaseService {
                 goodsIds = getGoodsIdsLimitedForVoucher(param);
             } else if (GoodsSearchMpParam.PAGE_FROM_BARGAIN.equals(param.getPageFrom())){
                 goodsIds = getGoodsIdsLimitedForBargainQrCode(param);
+            } else if(GoodsSearchMpParam.PAGE_FROM_CARD_EXCHANGE_GOODS.equals(param.getPageFrom())) {
+            	goodsIds = getGoodsIdsLimitedForCardExchangeGoods(param);
             }else {
                 // 空数组将搜索不出来商品
                 goodsIds = new ArrayList<>();
@@ -128,7 +133,9 @@ public class GoodsSearchMpService extends ShopBaseService {
        return createSearchContentVo(pageResult);
     }
 
-    private GoodsSearchContentVo createSearchContentVo(PageResult<GoodsListMpBo> pageResult){
+
+
+	private GoodsSearchContentVo createSearchContentVo(PageResult<GoodsListMpBo> pageResult){
         GoodsShowStyleConfigBo goodsShowStyle = goodsMpService.getGoodsShowStyle();
         GoodsSearchContentVo vo = new GoodsSearchContentVo();
         vo.setDelMarket(goodsShowStyle.getDelMarket());
@@ -181,6 +188,16 @@ public class GoodsSearchMpService extends ShopBaseService {
     private List<Integer> getGoodsIdsLimitedForBargainQrCode(GoodsSearchMpParam param) {
         int activityId =  param.getOuterPageParam().getActId();
         return bargainService.getBargainCanUseGoodsIds(activityId, goodsMpService.getGoodsBaseCondition());
+    }
+    
+    
+    /**
+     * 会员卡兑换商品进入
+     * @return null 表示全部商品 | List 可兑换商品的Id
+     */
+    private List<Integer> getGoodsIdsLimitedForCardExchangeGoods(GoodsSearchMpParam param){
+    	String cardNo = param.getOuterPageParam().getCardNo();
+    	return wxCardExchangeSvc.getCardExchangGoodsIds(cardNo);
     }
 
     /**

@@ -3,7 +3,7 @@
     <div class="main">
       <div class="content">
         <div class="header">
-          <span>筛选日期：</span>
+          <span>{{$t('fullCuti18n.filterDate')}}：</span>
           <el-date-picker
             v-model="startTime"
             type="datetime"
@@ -12,7 +12,7 @@
             size="small"
             default-time="00:00:00"
           ></el-date-picker>
-          <span>至</span>
+          <span>{{$t('fullCuti18n.to')}}</span>
           <el-date-picker
             v-model="endTime"
             type="datetime"
@@ -25,7 +25,7 @@
             type="primary"
             size="small"
             @click="initData"
-          >筛选</el-button>
+          >{{$t('fullCuti18n.filter')}}</el-button>
         </div>
         <div class="num-list">
           <ul class="fc-statics-list">
@@ -34,7 +34,7 @@
               :style="'background-image: url('+$imageHost+'/image/admin/any_coner/any_coner_blue.png);'"
             >
               <div class="fc-statics-title">
-                <span>活动实付总金额（元）</span>
+                <span>{{$t('fullCuti18n.totalPaid')}}（元）</span>
                 <img
                   class="fc-statics-search-icon"
                   :src="$imageHost+'/image/admin/analysis_tishi.png'"
@@ -50,7 +50,7 @@
               :style="'background-image: url('+$imageHost+'/image/admin/any_coner/any_coner_pink.png);'"
             >
               <div class="fc-statics-title">
-                <span>活动优惠总金额(元)</span>
+                <span>{{$t('fullCuti18n.totalDiscount')}}（元）</span>
                 <img
                   class="fc-statics-search-icon"
                   :src="$imageHost+'/image/admin/analysis_tishi.png'"
@@ -67,7 +67,7 @@
               :style="'background-image: url('+$imageHost+'/image/admin/any_coner/any_coner_orange.png);'"
             >
               <div class="fc-statics-title">
-                <span>费效比</span>
+                <span>{{$t('fullCuti18n.costEffect')}}</span>
                 <img
                   class="fc-statics-search-icon"
                   :src="$imageHost+'/image/admin/analysis_tishi.png'"
@@ -84,7 +84,7 @@
               :style="'background-image: url('+$imageHost+'/image/admin/any_coner/any_coner_yellow.png);'"
             >
               <div class="fc-statics-title">
-                <span>付款订单数</span>
+                <span>{{$t('fullCuti18n.payOrderNum')}}</span>
                 <img
                   class="fc-statics-search-icon"
                   :src="$imageHost+'/image/admin/analysis_tishi.png'"
@@ -101,7 +101,7 @@
               :style="'background-image: url('+$imageHost+'/image/admin/any_coner/any_coner_aqua.png);'"
             >
               <div class="fc-statics-title">
-                <span>付款商品件数</span>
+                <span>{{$t('fullCuti18n.payGoodsNum')}}</span>
                 <img
                   class="fc-statics-search-icon"
                   :src="$imageHost+'/image/admin/analysis_tishi.png'"
@@ -118,7 +118,7 @@
               :style="'background-image: url('+$imageHost+'/image/admin/any_coner/any_coner_green.png);'"
             >
               <div class="fc-statics-title">
-                <span>新成交用户数</span>
+                <span>{{$t('fullCuti18n.newDealsUsers')}}</span>
                 <img
                   class="fc-statics-search-icon"
                   :src="$imageHost+'/image/admin/analysis_tishi.png'"
@@ -135,7 +135,7 @@
               :style="'background-image: url('+$imageHost+'/image/admin/any_coner/any_coner_purple.png);'"
             >
               <div class="fc-statics-title">
-                <span>老成交用户数</span>
+                <span>{{$t('fullCuti18n.oldDealsUsers')}}</span>
                 <img
                   class="fc-statics-search-icon"
                   :src="$imageHost+'/image/admin/analysis_tishi.png'"
@@ -204,7 +204,7 @@ export default {
           trigger: 'axis'
         },
         legend: {
-          data: ['活动实付总金额', '活动优惠总金额', '费效比', '付款订单数', '付款商品件数', '新成交用户数', '老成交用户数']
+          data: [that.$t('fullCuti18n.totalPaid'), that.$t('fullCuti18n.totalDiscount'), that.$t('fullCuti18n.totalDiscount'), that.$t('fullCuti18n.payOrderNum'), that.$t('fullCuti18n.payGoodsNum'), that.$t('fullCuti18n.newDealsUsers'), that.$t('fullCuti18n.oldDealsUsers')]
         },
         grid: {
           left: '3%',
@@ -222,54 +222,54 @@ export default {
             type: 'value'
           },
           {
-            name: '费效比',
+            name: that.$t('fullCuti18n.totalDiscount'),
             type: 'value'
           }
         ],
         series: [
           {
-            name: '活动实付总金额',
+            name: that.$t('fullCuti18n.totalPaid'),
             type: 'line',
             color: that.colors[0],
             yAxisIndex: 0,
             data: amount || []
           },
           {
-            name: '活动优惠总金额',
+            name: that.$t('fullCuti18n.totalDiscount'),
             type: 'line',
             yAxisIndex: 0,
             data: discount || []
           },
           {
-            name: '费效比',
+            name: that.$t('fullCuti18n.totalDiscount'),
             type: 'line',
             color: that.colors[2],
             yAxisIndex: 1,
             data: ratio || []
           },
           {
-            name: '付款订单数',
+            name: that.$t('fullCuti18n.payOrderNum'),
             type: 'line',
             color: that.colors[3],
             yAxisIndex: 0,
             data: orderNumber || []
           },
           {
-            name: '付款商品件数',
+            name: that.$t('fullCuti18n.payGoodsNum'),
             type: 'line',
             color: that.colors[4],
             yAxisIndex: 0,
             data: orderGoodsNumber || []
           },
           {
-            name: '新成交用户数',
+            name: that.$t('fullCuti18n.newDealsUsers'),
             type: 'line',
             color: that.colors[5],
             yAxisIndex: 0,
             data: newUser || []
           },
           {
-            name: '老成交用户数',
+            name: that.$t('fullCuti18n.oldDealsUsers'),
             type: 'line',
             color: that.colors[6],
             yAxisIndex: 0,
@@ -293,11 +293,11 @@ export default {
         endTime: this.endTime
       }
       if (!params.startTime || !params.endTime) {
-        this.$message.warning('请选择筛选日期！')
+        this.$message.warning(that.$t('fullCuti18n.psFDate'))
         return false
       }
       if (new Date(params.startTime) > new Date(params.endTime)) {
-        this.$message.warning('开始时间不能大于结束时间')
+        this.$message.warning(that.$t('fullCuti18n.cnotGreaterEnd'))
         return false
       }
       fullcutAnalysisApi(params).then(res => {
@@ -320,48 +320,48 @@ export default {
             },
             series: [
               {
-                name: '活动实付总金额',
+                name: that.$t('fullCuti18n.totalPaid'),
                 type: 'line',
                 color: that.colors[0],
                 yAxisIndex: 0,
                 data: amount || []
               },
               {
-                name: '活动优惠总金额',
+                name: that.$t('fullCuti18n.totalDiscount'),
                 type: 'line',
                 yAxisIndex: 0,
                 data: discount || []
               },
               {
-                name: '费效比',
+                name: that.$t('fullCuti18n.totalDiscount'),
                 type: 'line',
                 color: that.colors[2],
                 yAxisIndex: 1,
                 data: ratio || []
               },
               {
-                name: '付款订单数',
+                name: that.$t('fullCuti18n.payOrderNum'),
                 type: 'line',
                 color: that.colors[3],
                 yAxisIndex: 0,
                 data: orderNumber || []
               },
               {
-                name: '付款商品件数',
+                name: that.$t('fullCuti18n.payGoodsNum'),
                 type: 'line',
                 color: that.colors[4],
                 yAxisIndex: 0,
                 data: orderGoodsNumber || []
               },
               {
-                name: '新成交用户数',
+                name: that.$t('fullCuti18n.newDealsUsers'),
                 type: 'line',
                 color: that.colors[5],
                 yAxisIndex: 0,
                 data: newUser || []
               },
               {
-                name: '老成交用户数',
+                name: that.$t('fullCuti18n.oldDealsUsers'),
                 type: 'line',
                 color: that.colors[6],
                 yAxisIndex: 0,

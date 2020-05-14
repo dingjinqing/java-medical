@@ -14,6 +14,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
+import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
@@ -22,9 +23,7 @@ import com.vpu.mp.service.shop.member.tag.UserTagService;
 import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Record;
-import org.jooq.SelectLimitStep;
-import org.jooq.SelectWhereStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,7 +62,10 @@ public class CouponGiveService extends ShopBaseService {
      * 活动类型 定向发券 值为9
      */
     private static final Byte GET_SOURCE = 9;
-
+    //省市区编码
+    public static final String PROVINCE_CODE = "province_code";
+    public static final String CITY_CODE = "city_code";
+    public static final String DISTRICT_CODE = "district_code";
     /**
      * 优惠券发放情况分页列表
      *
@@ -219,6 +221,7 @@ public class CouponGiveService extends ShopBaseService {
         // 得到当前发券活动id
         BigInteger bigIntegerActId = db().lastID();
         Integer actId = Integer.valueOf(bigIntegerActId.toString());
+        //得到去重后的用户id
         Set<Integer> userIds = getGrantUser(param);
         // 队列
         List<Integer> userIdList = new ArrayList<>(userIds);
@@ -333,6 +336,16 @@ public class CouponGiveService extends ShopBaseService {
                 userIds,
                 param.getCouponGiveGrantInfoParams().getPointStartTime(),
                 param.getCouponGiveGrantInfoParams().getPointEndTme());
+        }
+        //指定区域内的用户
+        if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(NumberUtils.INTEGER_ONE)
+            &&param.getCouponGiveGrantInfoParams().getProvinceCode()!=null){
+                Map<String,Integer> region = new HashMap<String,Integer>(4){{
+                    put(PROVINCE_CODE,param.getCouponGiveGrantInfoParams().getProvinceCode());
+                    put(CITY_CODE,param.getCouponGiveGrantInfoParams().getCityCode());
+                    put(DISTRICT_CODE,param.getCouponGiveGrantInfoParams().getDistrictCode());
+                }};
+            getUserIdByRegion(userIds,region);
         }
         return userIds;
     }
@@ -578,6 +591,29 @@ public class CouponGiveService extends ShopBaseService {
     }
 
     /**
+     * 获取指定区域内的用户
+     * @param userIds   用户id集合
+     * @param region    区域代码
+     */
+    private void getUserIdByRegion(Set<Integer> userIds,Map<String,Integer> region){
+        SelectConditionStep<Record1<Integer>> regionUserIds =
+            db().select(USER.USER_ID)
+                .from(USER)
+                .leftJoin(USER_DETAIL).on(USER.USER_ID.eq(USER_DETAIL.USER_ID))
+                .where(USER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        if (region.get(PROVINCE_CODE)!=null){
+            regionUserIds.and(USER_DETAIL.PROVINCE_CODE.eq(region.get(PROVINCE_CODE)));
+            if (region.get(CITY_CODE)!=null){
+                regionUserIds.and(USER_DETAIL.CITY_CODE.eq(region.get(CITY_CODE)));
+                if (region.get(DISTRICT_CODE)!=null){
+                    regionUserIds.and(USER_DETAIL.DISTRICT_CODE.eq(region.get(DISTRICT_CODE)));
+                }
+            }
+        }
+        List<Integer> result = regionUserIds.fetchInto(Integer.class);
+        userIds.addAll(result);
+    }
+    /**
      * 定向发券，后台异步执行
      *
      * @param param 用户和优惠券信息
@@ -822,7 +858,11 @@ public class CouponGiveService extends ShopBaseService {
                 .from(MRKING_VOUCHER);
         popWindowsBuildOptions(select, param);
         select.orderBy(MRKING_VOUCHER.CREATE_TIME.desc());
-        return select.fetchInto(CouponGivePopVo.class);
+        List<CouponGivePopVo> list = select.fetchInto(CouponGivePopVo.class);
+        for (CouponGivePopVo vo : list) {
+        	vo.setStatus(couponService.couponMpService.couponGetStatus(new MpGetCouponParam(vo.getId(), null)));
+		}
+        return list;
     }
 
     /**

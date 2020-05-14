@@ -38,9 +38,9 @@
 							<view class='member_icon' wx:if='{{item.goods_price_action == 1}}'>会员价</view>
 						-->
 							<view class='sale_price' style='color:{{comColor}}'>￥
-								<text>{{item.shopPrice}}</text>
+								<text>{{item.realPrice}}</text>
 							</view>
-							<view class='original_price' wx:if='{{item.marketPrice!=null && item.marketPrice != "" && item.marketPrice != 0&item.showLinePrice}}'>￥{{item.marketPrice}}</view>
+							<view class='original_price' wx:if='{{item.linePrice!=null && item.linePrice != "" && item.linePrice != 0}}'>￥{{item.linePrice}}</view>
 						</view>
 						<view class='btn_add_cart' data-goodsName="{{item.goodsName}}" data-goodsId='{{item.goodsId}}' data-goodsNumber="{{item.goodsNumber}}" catchtap="showSpecDialog">
 							<text class='iconfont icontianjia' style='color:{{comColor}};font-size:50rpx;'/>

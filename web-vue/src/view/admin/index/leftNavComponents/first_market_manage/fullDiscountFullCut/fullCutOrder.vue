@@ -7,29 +7,29 @@
         label-suffix="："
         label-width="110px"
       >
-        <el-form-item label="订单号">
+        <el-form-item :label="$t('fullCuti18n.orderNum')">
           <el-input
             v-model="queryParams.orderSn"
             class="form-input"
-            placeholder="请输入订单号"
+            :placeholder="$t('fullCuti18n.peOrN')"
           ></el-input>
         </el-form-item>
-        <el-form-item label="商品信息">
+        <el-form-item :label="$t('fullCuti18n.productInfor')">
           <el-input
             v-model="queryParams.goodsName"
             class="form-input"
-            placeholder="请输入商品名称"
+            :placeholder="$t('fullCuti18n.peProductName')"
           >
           </el-input>
         </el-form-item>
-        <el-form-item label="下单人">
+        <el-form-item :label="$t('fullCuti18n.order')">
           <el-input
             v-model="queryParams.userInfo"
             class="form-input"
-            placeholder="请输入下单人昵称/手机号"
+            :placeholder="$t('fullCuti18n.peNickname')"
           ></el-input>
         </el-form-item>
-        <el-form-item label="订单状态">
+        <el-form-item :label="$t('fullCuti18n.orderStatus')">
           <el-select
             v-model="queryParams.orderStatus"
             class="form-input"
@@ -47,8 +47,8 @@
           <el-button
             type="primary"
             @click="initDataList"
-          >查询</el-button>
-          <el-button @click="exportData">数据导出</el-button>
+          >{{$t('fullCuti18n.inquire')}}</el-button>
+          <el-button @click="exportData">{{$t('fullCuti18n.dataOutput')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -61,13 +61,13 @@
       >
         <el-table-column
           align="center"
-          label="订单号"
+          :label="$t('fullCuti18n.orderNum')"
           prop="orderSn"
           width="180"
         ></el-table-column>
         <el-table-column
           align="center"
-          label="商品"
+          :label="$t('fullCuti18n.commodity')"
           width="220"
           class="goods-wrap"
         >
@@ -90,7 +90,7 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="单价"
+          :label="$t('fullCuti18n.unitPrice')"
         >
           <template slot-scope="{row}">
             <div
@@ -104,7 +104,7 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="活动优惠金额"
+          :label="$t('fullCuti18n.eventDiscountAmount')"
         >
           <template slot-scope="{row}">
             <div
@@ -118,7 +118,7 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="实付金额"
+          :label="$t('fullCuti18n.aactualPaid')"
         >
           <template slot-scope="{row}">
             <div
@@ -132,7 +132,7 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="数量"
+          :label="$t('fullCuti18n.quantity')"
         >
           <template slot-scope="{row}">
             <div
@@ -146,7 +146,7 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="下单人"
+          :label="$t('fullCuti18n.order')"
         >
           <template slot-scope="{row}">
             <div>
@@ -163,7 +163,7 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="订单状态"
+          :label="$t('fullCuti18n.orderStatus')"
           prop="orderStatusName"
         ></el-table-column>
       </el-table>

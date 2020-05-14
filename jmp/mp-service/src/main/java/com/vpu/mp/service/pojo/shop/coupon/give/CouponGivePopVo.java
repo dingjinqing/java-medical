@@ -62,5 +62,8 @@ public class CouponGivePopVo {
 	 * 分裂优惠卷随机金额最高
 	 */
 	private BigDecimal randomMax;
+	
+	/** 优惠券状态 0：可正常领取；1：优惠券不存在；2：优惠券过期；3：优惠券停用；4：库存为0;5：没赋值 */
+	private Byte status = 5;
 
 }

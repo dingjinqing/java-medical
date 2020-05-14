@@ -65,8 +65,7 @@ public class AdminCouponController extends AdminBaseController{
 	 */
 	@GetMapping("/admin/coupon/update/info")
 	public JsonResult oneCouponInfo(Integer couponId) {
-		List<CouponParam> couponInfo = shop().coupon.getOneCouponInfo(couponId);
-		return this.success(couponInfo);
+		return this.success(shop().coupon.getOneCouponInfo(couponId));
 	}
 
 	/**
