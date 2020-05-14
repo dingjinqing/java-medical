@@ -21,4 +21,6 @@ public class GoodsSearchMpOuterParam {
 
     /**用于多商品活动从admin端扫码进入搜索页展示该活动下的商品时使用 activityId*/
     private Integer actId;
+    /**会员卡卡号*/
+    private String cardNo;
 }
