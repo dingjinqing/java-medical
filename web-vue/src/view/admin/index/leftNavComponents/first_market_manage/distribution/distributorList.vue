@@ -180,10 +180,7 @@
           border
           style="width: 100%;font-size: 12px;"
         >
-          <el-table-column
-            type="selection"
-            width="55"
-          >
+          <el-table-column type="selection">
           </el-table-column>
           <el-table-column
             prop="userId"
@@ -208,6 +205,7 @@
             prop="mobile"
             label="分销员手机号"
             align="center"
+            width="100"
           >
           </el-table-column>
 
@@ -228,6 +226,7 @@
             prop="createTime"
             label="注册时间"
             align="center"
+            width="90"
           >
           </el-table-column>
 
@@ -263,6 +262,7 @@
           <el-table-column
             label="分销员分组"
             align="center"
+            width="100"
           >
             <template slot-scope="scope">
               <p v-if="scope.row.groupName">{{ scope.row.groupName }}</p>
@@ -278,6 +278,7 @@
             prop="levelName"
             label="分销员等级"
             align="center"
+            width="100"
           >
           </el-table-column>
 
@@ -345,6 +346,7 @@
           <el-table-column
             label="操作"
             align="center"
+            width="120"
           >
             <template slot-scope="scope">
               <div class="opt">
@@ -1013,11 +1015,12 @@ export default {
   height: 36px;
   font-weight: bold;
   color: #000;
-  padding: 8px 10px;
+  padding: 8px 0px;
 }
 .table_list {
   position: relative;
   background-color: #fff;
+  overflow: auto;
 }
 .footer {
   padding: 20px 0 20px 20px;
