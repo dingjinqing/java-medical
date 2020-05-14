@@ -83,12 +83,7 @@
             width="300px"
           >
             <template slot-scope="scope">
-              <el-form-item
-                :prop="'tableData.' + scope.$index+ '.levelUpRoute'"
-                :rules="[
-                  { validator: (rule, value, callback)=>{validateLevel(rule, value, callback, scope.row.inviteNumber, scope.row.totalDistributionMoney, scope.row.totalBuyMoney)}, trigger: 'change' },
-                ]"
-              >
+              <el-form-item :prop="'tableData.' + scope.$index+ '.levelUpRoute'">
                 <div v-if="scope.row.levelId === 1">{{ $t('distribution.level1') }}</div>
                 <el-radio-group
                   v-model="scope.row.levelUpRoute"
@@ -111,7 +106,6 @@
                         v-model="scope.row.inviteNumber"
                         size="mini"
                         style="width: 70px;"
-                        @change="levelChange(scope.row.inviteNumber, scope.row.totalDistributionMoney, scope.row.totalBuyMoney)"
                       ></el-input> {{ $t('distribution.levelTip2') }} {{ $t('distribution.levelTip3') }}</div>
                   </el-form-item>
                   <el-form-item
@@ -124,7 +118,6 @@
                         v-model="scope.row.totalDistributionMoney"
                         size="mini"
                         style="width: 70px;"
-                        @change="levelChange(scope.row.inviteNumber, scope.row.totalDistributionMoney, scope.row.totalBuyMoney)"
                       ></el-input> {{ $t('distribution.levelTip5') }} {{ $t('distribution.levelTip3') }}</div>
                   </el-form-item>
                   <el-form-item
@@ -137,7 +130,6 @@
                         v-model="scope.row.totalBuyMoney"
                         size="mini"
                         style="width: 70px;"
-                        @change="levelChange(scope.row.inviteNumber, scope.row.totalDistributionMoney, scope.row.totalBuyMoney)"
                       ></el-input> {{ $t('distribution.levelTip5') }}</div>
                   </el-form-item>
                 </div>
@@ -393,13 +385,21 @@ export default {
 
     // 设置分销员等级
     setDistributionLevel () {
+      console.log(this.form.tableData)
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          setDistributionLevel(this.form.tableData).then((res) => {
-            if (res.error === 0) {
-              this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
-            }
-          })
+          var result = this.form.tableData.find(item => { return item.levelStatus === 1 && item.levelUpRoute === 0 && !item.inviteNumber && !item.totalDistributionMoney && !item.totalBuyMoney })
+          if (result === undefined) {
+            setDistributionLevel(this.form.tableData).then((res) => {
+              if (res.error === 0) {
+                this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
+              } else {
+                this.$message.warning(res.message)
+              }
+            })
+          } else {
+            this.$message.warning('已启用等级设置不能为空')
+          }
         }
       })
     },
@@ -466,23 +466,11 @@ export default {
       this.$emit('tabChange')
     },
 
-    // 校验升级规则
-    validateLevel (rule, value, callback, inviteNumber, totalDistributionMoney, totalBuyMoney) {
-      // console.log(inviteNumber)
-      // console.log(totalDistributionMoney)
-      // console.log(totalBuyMoney)
-      if (value === 0 && !inviteNumber && !totalDistributionMoney && !totalBuyMoney) {
-        callback(new Error('请填写自动升级规则'))
-      } else {
-        callback()
-      }
-    },
-
     // 校验规则个数
     validateLevelNum (rule, value, callback) {
-      var re = /^(0|\+?[1-9][0-9]*)$/
-      if (value && !re.test(value)) {
-        callback(new Error('请填写0或者正整数'))
+      var re = /^[1-9]\d*$/
+      if ((value && !re.test(value)) || value === 0 || value === '0') {
+        callback(new Error('请填写正整数'))
       } else {
         callback()
       }
@@ -490,9 +478,10 @@ export default {
 
     // 校验规则金额
     validateLevelMoney (rule, value, callback) {
-      var re = /^\d+(\.\d{1,2})?$/
-      if (value && !re.test(value)) {
-        callback(new Error('请填写非负数, 可以保留两位小数'))
+      var re = /^[1-9]\d*(\.\d{1,2})?$/
+      var re1 = /^0\.\d{1,2}$/
+      if ((value && !re.test(value) && !re1.test(value)) || value === 0 || value === '0') {
+        callback(new Error('请填写可以保留两位小数的有效数字'))
       } else {
         callback()
       }
@@ -510,10 +499,6 @@ export default {
       } else {
         callback()
       }
-    },
-
-    levelChange (inviteNumber, totalDistributionMoney, totalBuyMoney) {
-
     },
 
     // 首单返佣金配置
