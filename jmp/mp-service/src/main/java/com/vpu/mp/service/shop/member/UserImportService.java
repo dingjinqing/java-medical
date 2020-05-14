@@ -189,24 +189,12 @@ public class UserImportService extends ShopBaseService {
 		SetNoticeJson json = getActivationNotice();
 		String mrkingVoucherId = json.getMrkingVoucherId();
 		List<CouponView> couponViewByIds=new ArrayList<CouponView>();
-		List<CouponViewVo> list=new ArrayList<CouponViewVo>();
 		if(StringUtils.isNotEmpty(mrkingVoucherId)) {
-			couponViewByIds = couponService.getCouponViewByIds(Util.splitValueToList(mrkingVoucherId));
-			for (CouponView couponView : couponViewByIds) {
-				CouponViewVo vo=new CouponViewVo();
-				try {
-					BeanUtils.copyProperties(vo, couponView);
-				} catch (Exception e) {
-					e.printStackTrace();
-				} 
-				Byte status = couponMpService.couponGetStatus(new MpGetCouponParam(couponView.getId(), null));
-				vo.setStatus(status);
-				list.add(vo);
-			}
-			
+			couponViewByIds = couponService.getCouponViewByIds(Util.splitValueToList(mrkingVoucherId));			
 		}
-		return new SetNoticeJsonVo(json.getExplain(), json.getScore(), mrkingVoucherId, list);
+		return new SetNoticeJsonVo(json.getExplain(), json.getScore(), mrkingVoucherId, couponViewByIds);
 	}
+	
 	public SetNoticeJsonDetailVo getInfo(String lang) {
 		SetNoticeJson activationNotice = getActivationNotice();
 		String mrkingVoucherId = activationNotice.getMrkingVoucherId();
