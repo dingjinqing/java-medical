@@ -97,10 +97,15 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="username"
           label="用户昵称"
           align="center"
         >
+          <template slot-scope="scope">
+            <span
+              class="nameStyle"
+              @click="userNameHandler(scope.row.userId)"
+            >{{scope.row.username}}</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="mobile"
@@ -139,16 +144,18 @@
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="inviteTime"
           label="邀请时间"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop="inviteExpiryDate"
           label="返利有效日期"
           align="center"
         >
+          <template slot-scope="scope">
+            <span>{{ scope.row.inviteExpiryDate ? scope.row.inviteExpiryDate : '永久'}}</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="inviteProtectDate"
@@ -196,11 +203,12 @@ export default {
     }
   },
   methods: {
+    // 邀请用户列表
     inviteList () {
       this.requestParam = this.searchParam
       this.requestParam.userId = this.userId
-      this.requestParams.currentPage = this.pageParams.currentPage
-      this.requestParams.pageRows = this.pageParams.pageRows
+      // this.requestParams.currentPage = this.pageParams.currentPage
+      // this.requestParams.pageRows = this.pageParams.pageRows
       inviteUserList(this.requestParam).then(res => {
         if (res.error === 0) {
           this.totalGetFanliMoney = res.content.totalGetFanliMoney
@@ -208,8 +216,17 @@ export default {
           this.pageParams = res.content.inviteUserInfo.page
         }
       })
-    }
+    },
 
+    // 用户昵称跳转
+    userNameHandler (id) {
+      this.$router.push({
+        path: '/admin/home/main/membershipInformation',
+        query: {
+          userId: id
+        }
+      })
+    }
   }
 }
 </script>
@@ -246,5 +263,9 @@ export default {
 }
 .selectWidth {
   width: 200px;
+}
+.nameStyle {
+  color: #5a8bff;
+  cursor: pointer;
 }
 </style>
