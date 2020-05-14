@@ -32,10 +32,8 @@ public class ProductParam {
     @NotNull
     private Integer presaleNumber;
     /** 定金 **/
-    @NotNull
     private BigDecimal presaleMoney;
     /** 1段定金可抵扣金额 **/
-    @NotNull
     private BigDecimal preDiscountMoney1;
     /** 2段定金可抵扣金额 **/
     private BigDecimal preDiscountMoney2;
