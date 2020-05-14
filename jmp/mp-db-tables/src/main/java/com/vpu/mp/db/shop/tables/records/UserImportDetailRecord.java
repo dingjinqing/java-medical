@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserImportDetailRecord extends UpdatableRecordImpl<UserImportDetailRecord> {
 
-    private static final long serialVersionUID = 1080113759;
+    private static final long serialVersionUID = 893350727;
 
     /**
      * Setter for <code>mini_shop_8984736.b2c_user_import_detail.id</code>.
@@ -436,6 +436,20 @@ public class UserImportDetailRecord extends UpdatableRecordImpl<UserImportDetail
         return (Byte) get(28);
     }
 
+    /**
+     * Setter for <code>mini_shop_8984736.b2c_user_import_detail.remark</code>. 会员备注
+     */
+    public void setRemark(String value) {
+        set(29, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_8984736.b2c_user_import_detail.remark</code>. 会员备注
+     */
+    public String getRemark() {
+        return (String) get(29);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -462,7 +476,7 @@ public class UserImportDetailRecord extends UpdatableRecordImpl<UserImportDetail
     /**
      * Create a detached, initialised UserImportDetailRecord
      */
-    public UserImportDetailRecord(Integer id, Integer batchId, String mobile, Byte userAction, String wxUnionId, String nickName, String userAvatar, String userGrade, String name, String inviteUserMobile, Integer score, String sex, String birthday, String province, String city, String district, String address, String idNumber, String education, String industry, String marriage, BigDecimal income, String errorMsg, String cardId, Integer tagId, Integer groupId, Byte isActivate, Timestamp createTime, Byte isDistributor) {
+    public UserImportDetailRecord(Integer id, Integer batchId, String mobile, Byte userAction, String wxUnionId, String nickName, String userAvatar, String userGrade, String name, String inviteUserMobile, Integer score, String sex, String birthday, String province, String city, String district, String address, String idNumber, String education, String industry, String marriage, BigDecimal income, String errorMsg, String cardId, Integer tagId, Integer groupId, Byte isActivate, Timestamp createTime, Byte isDistributor, String remark) {
         super(UserImportDetail.USER_IMPORT_DETAIL);
 
         set(0, id);
@@ -494,5 +508,6 @@ public class UserImportDetailRecord extends UpdatableRecordImpl<UserImportDetail
         set(26, isActivate);
         set(27, createTime);
         set(28, isDistributor);
+        set(29, remark);
     }
 }
