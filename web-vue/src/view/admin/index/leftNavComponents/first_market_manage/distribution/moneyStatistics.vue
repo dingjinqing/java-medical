@@ -250,10 +250,16 @@
 </template>
 
 <script>
-import { brokerageList } from '@/api/admin/marketManage/distribution.js'
+// import { brokerageList } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
+  },
+  props: {
+    userId: {
+      type: Number,
+      default: () => 0
+    }
   },
   data () {
     return {
@@ -289,36 +295,40 @@ export default {
       }] // 返利关系列表
     }
   },
-  mounted () {
-    if (this.$route.query.userId > 0) {
-      this.userId = this.$route.query.userId
+  watch: {
+    userId () {
+      console.log(this.userId)
+      this.initData()
     }
+  },
+  mounted () {
     this.initData()
   },
   methods: {
+    // 佣金统计列表
     initData () {
       this.requestParam = this.searchParam
       this.requestParam.userId = this.userId
-      this.requestParams.currentPage = this.pageParams.currentPage
-      this.requestParams.pageRows = this.pageParams.pageRows
-      brokerageList(this.requestParam).then(res => {
-        console.log(res)
-        if (res.error === 0) {
-          this.tableData = res.content.dataList
-          this.pageParams = res.content.page
-          this.tableData.map(item => {
-            if (item.rebateLevel === 0) {
-              item.rebateLevel = '自购返利'
-            }
-            if (item.rebateLevel === 1) {
-              item.rebateLevel = '一级返利'
-            }
-            if (item.rebateLevel === 2) {
-              item.rebateLevel = '二级返利'
-            }
-          })
-        }
-      })
+      // this.requestParams.currentPage = this.pageParams.currentPage
+      // this.requestParams.pageRows = this.pageParams.pageRows
+      console.log(this.requestParam)
+      // brokerageList(this.requestParam).then(res => {
+      //   if (res.error === 0) {
+      //     this.tableData = res.content.dataList
+      //     this.pageParams = res.content.page
+      //     this.tableData.map(item => {
+      //       if (item.rebateLevel === 0) {
+      //         item.rebateLevel = '自购返利'
+      //       }
+      //       if (item.rebateLevel === 1) {
+      //         item.rebateLevel = '一级返利'
+      //       }
+      //       if (item.rebateLevel === 2) {
+      //         item.rebateLevel = '二级返利'
+      //       }
+      //     })
+      //   }
+      // })
     }
   }
 }
