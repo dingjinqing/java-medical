@@ -518,4 +518,4 @@
 		</view>
 	</view>
 <!--查看权益弹窗-->
-<v-view-benefits bindcloseBeneFit="bindCloseBeneFit" show="{{benefitShow}}" benefitData="{{benefitData}}" />
+<v-view-benefits bindcloseBeneFit="bindCloseBeneFit" show="{{benefitShow}}" grade="{{grade}}" />

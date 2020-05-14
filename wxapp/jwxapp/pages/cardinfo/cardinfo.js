@@ -797,21 +797,9 @@ global.wxPage({
   // 点击查看下一个等级卡权益
   handleToCheckBenefit () {
     console.log('触发')
-    let arr = [
-      {
-        title: '会员权益',
-        content: '购物打6.00折',
-        img: 'http://mpdevimg2.weipubao.cn/image/wxapp/grade_circle.png'
-      },
-      {
-        title: '会员权益',
-        content: '购物打6.00折',
-        img: 'http://mpdevimg2.weipubao.cn/image/wxapp/grade_circle.png'
-      }
-    ]
     this.setData({
       benefitShow: true,
-      benefitData: arr
+      grade: this.data.cardInfo.nextGradeCard.grade
     })
   },
   bindCloseBeneFit (res) {
