@@ -1004,7 +1004,7 @@ public class OrderInfoService extends ShopBaseService {
      * @return
      */
     public Integer getPreSaletUserBuyNumber(Integer userId, Integer preSaleId){
-        return db().select(DSL.count(ORDER_GOODS.GOODS_NUMBER)).from(ORDER_GOODS)
+        return db().select(DSL.sum(ORDER_GOODS.GOODS_NUMBER)).from(ORDER_GOODS)
             .leftJoin(TABLE).on(TABLE.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
             .where(TABLE.USER_ID.eq(userId)
                 .and(TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_CANCELLED, OrderConstant.ORDER_CLOSED))
@@ -1012,7 +1012,7 @@ public class OrderInfoService extends ShopBaseService {
                 .and(TABLE.ACTIVITY_ID.eq(preSaleId))
                 .and(ORDER_GOODS.IS_GIFT.eq(OrderConstant.IS_GIFT_N))
                 .and(TABLE.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[]{BaseConstant.ACTIVITY_TYPE_PRE_SALE}))))
-            .fetchAnyInto(Integer.class);
+            .fetchOneInto(Integer.class);
     }
 
     public Byte getOrderIsReturnCoupon(Integer orderId) {
