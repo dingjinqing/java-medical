@@ -14,6 +14,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
+import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
@@ -822,7 +823,11 @@ public class CouponGiveService extends ShopBaseService {
                 .from(MRKING_VOUCHER);
         popWindowsBuildOptions(select, param);
         select.orderBy(MRKING_VOUCHER.CREATE_TIME.desc());
-        return select.fetchInto(CouponGivePopVo.class);
+        List<CouponGivePopVo> list = select.fetchInto(CouponGivePopVo.class);
+        for (CouponGivePopVo vo : list) {
+        	vo.setStatus(couponService.couponMpService.couponGetStatus(new MpGetCouponParam(vo.getId(), null)));
+		}
+        return list;
     }
 
     /**
