@@ -253,7 +253,9 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_PAY_WAY_INSTEAD_PAY_FINISH, "支付金额不能大于{$waitPayMoney}元");
         }
         //单人付校验(非自己)
-        if(NumberUtils.SHORT_ONE.equals(order.getInsteadPayNum()) && param.getWxUserInfo().getUserId().equals(order.getUserId()) && BigDecimalUtil.compareTo(param.getMoneyPaid(), waitPayMoney) != 0) {
+        if(NumberUtils.SHORT_ONE.equals(order.getInsteadPayNum())
+            && !param.getWxUserInfo().getUserId().equals(order.getUserId())
+            && BigDecimalUtil.compareTo(param.getMoneyPaid(), waitPayMoney) != 0) {
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_PAY_WAY_INSTEAD_PAY_FINISH, "支付金额应为{$waitPayMoney}元");
         }
         return null;
