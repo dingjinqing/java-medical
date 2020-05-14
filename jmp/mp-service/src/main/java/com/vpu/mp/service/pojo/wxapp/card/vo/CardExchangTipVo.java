@@ -17,10 +17,10 @@ public class CardExchangTipVo {
 	/**
 	 * 周期内可兑换商品数量
 	 */
-	private Byte periodNumber;
+	private Integer periodNumber;
 	
 	/**
 	 * 周期内已经兑换的数量
 	 */
-	private Byte periodExchangGoodsNum;
+	private Integer periodExchangGoodsNum;
 }

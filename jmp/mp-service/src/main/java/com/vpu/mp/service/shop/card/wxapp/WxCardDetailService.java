@@ -50,6 +50,7 @@ import com.vpu.mp.service.pojo.shop.member.card.dao.CardFullDetail;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
+import com.vpu.mp.service.pojo.wxapp.card.vo.CardExchangTipVo;
 import com.vpu.mp.service.pojo.wxapp.card.vo.CardGiveVo;
 import com.vpu.mp.service.shop.card.CardDetailService;
 import com.vpu.mp.service.shop.card.CardExchangService;
@@ -88,6 +89,7 @@ public class WxCardDetailService extends ShopBaseService{
 	@Autowired private CouponService couponService;
 	@Autowired private CouponPackService couponPackService;
 	@Autowired private CardExchangService cardExchangSvc;
+    @Autowired private WxCardExchangeService wxCardExchangSvc;
 	
 	/**
 	 * 	获取自定义的激活项
@@ -172,6 +174,12 @@ public class WxCardDetailService extends ShopBaseService{
 		this.dealSendCouponInfo(voTmp, lang);
 		card.setCouponPack(voTmp.getCouponPack());
 		card.setCoupons(voTmp.getCoupons());
+		
+		if(CardUtil.isLimitCard(memberCardRecord.getCardType())) {
+			CardExchangTipVo cardExchangTip = wxCardExchangSvc.getCardExchangTip(userCardRecord.getCardNo(), memberCardRecord);
+			card.setCardExchangTip(cardExchangTip);
+		}
+		
 		return card;
 	}
 

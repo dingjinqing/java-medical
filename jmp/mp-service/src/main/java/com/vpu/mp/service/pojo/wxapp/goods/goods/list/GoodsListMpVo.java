@@ -39,6 +39,8 @@ public class GoodsListMpVo extends GoodsBaseMp {
     protected List<GoodsActivityBaseMp> goodsActivities = new ArrayList<>(2);
     /**指定该商品的详情页营销活动id*/
     protected Integer activityId;
+    /**	商品限制兑换数量 */
+    private Integer exchangLimitNum;
 
     @Override
     public String toString() {

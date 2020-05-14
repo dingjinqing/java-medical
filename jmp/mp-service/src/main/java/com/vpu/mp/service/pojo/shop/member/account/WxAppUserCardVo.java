@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
+import com.vpu.mp.service.pojo.wxapp.card.vo.CardExchangTipVo;
 import com.vpu.mp.service.pojo.wxapp.card.vo.CardGiveVo;
 
 import lombok.Getter;
@@ -93,6 +94,10 @@ public class WxAppUserCardVo extends UserCardParam {
 	 *  优惠券礼包
 	 */
 	private List<UserCardCouponPack> couponPack;
+	/**
+	 * 兑换商品提示
+	 */
+	private CardExchangTipVo cardExchangTip;
 	public void calcCardIsExpired(){
 		if(isExpire()) {
 			this.expire = ALREADY_EXPIRED;

@@ -28,4 +28,9 @@ public class CardExchangeGoodsVo {
 	 * 已选择兑换商品的数量
 	 */
 	private Integer totalNumber;
+	
+	/**
+	 * 会员卡兑换商品提示
+	 */
+	private CardExchangTipVo cardExchangeTip;
 }
