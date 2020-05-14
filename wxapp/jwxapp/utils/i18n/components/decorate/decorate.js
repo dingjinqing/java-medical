@@ -91,5 +91,6 @@ module.exports = {
     to: '至',
     more: '更多',
     personalPayment: '人付款', // 商品分组
-    humanEvaluation: '人评价'
+    humanEvaluation: '人评价',
+    justBuy: '刚刚购买了此商品'
 }
