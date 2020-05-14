@@ -642,12 +642,18 @@ public class FriendPromoteService extends ShopBaseService {
         if (promoteInfo.getRewardRecordId()!=null&&promoteInfo.getRewardRecordId()!=0){
 
             String orderSn = getRewardOrderSn(promoteInfo.getRewardRecordId());
-            if (orderSn!=null&&!orderSn.equals("")&&orderSn.length()>0){
-                //更新状态
-                upPromoteInfo(TWO,launchInfo.getId());
-                //更新订单号
-                upOrderSn(orderSn,launchInfo.getId());
-                promoteInfo.setPromoteStatus((byte)2);
+            if (orderSn!=null&&!"".equals(orderSn)&&orderSn.length()>0){
+                logger().info("奖品已领取，开始同步活动状态和订单编号:{}",orderSn);
+                if (launchInfo.getId()!=null){
+                    //更新状态
+                    upPromoteInfo(TWO,launchInfo.getId());
+                    //更新订单号
+                    upOrderSn(orderSn,launchInfo.getId());
+                    promoteInfo.setPromoteStatus((byte)2);
+                    //重新设置订单
+                    promoteInfo.setOrderSn(orderSn);
+                }
+                logger().info("同步完成活动状态和订单编号:{}",orderSn);
             }
         }
         return promoteInfo;

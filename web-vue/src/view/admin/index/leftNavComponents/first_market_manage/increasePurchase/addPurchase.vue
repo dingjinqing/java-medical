@@ -4,265 +4,266 @@
 ****
 -->
 <template>
-  <div class="content">
-    <div class="setpTitle">
-      <el-steps
-        :active="step"
-        finish-status="finish"
-        simple
-        align-center
+  <div class="container">
+    <div class="content">
+      <div class="setpTitle">
+        <el-steps
+          :active="step"
+          finish-status="finish"
+          simple
+          align-center
+        >
+          <el-step
+            icon="el-icon-edit"
+            :title="$t('purchase.setActivityRule')"
+          ></el-step>
+          <el-step
+            icon="el-icon-edit"
+            :title="$t('purchase.setMainGoods')"
+          ></el-step>
+          <el-step
+            icon="el-icon-edit"
+            :title="$t('purchase.setRedemptionGoods')"
+          ></el-step>
+        </el-steps>
+      </div>
+      <!-- 活动规则 -->
+      <div
+        class="form1"
+        v-if="step === 0"
       >
-        <el-step
-          icon="el-icon-edit"
-          :title="$t('purchase.setActivityRule')"
-        ></el-step>
-        <el-step
-          icon="el-icon-edit"
-          :title="$t('purchase.setMainGoods')"
-        ></el-step>
-        <el-step
-          icon="el-icon-edit"
-          :title="$t('purchase.setRedemptionGoods')"
-        ></el-step>
-      </el-steps>
-    </div>
-    <!-- 活动规则 -->
-    <div
-      class="form1"
-      v-if="step === 0"
-    >
-      <el-form
-        class="form"
-        ref="form1"
-        :rules="rules"
-        :model="form1"
-        label-width="180px"
-        size="small"
-      >
-        <el-form-item
-          :label="$t('purchase.activityName')+'：'"
-          prop="name"
+        <el-form
+          class="form"
+          ref="form1"
+          :rules="rules"
+          :model="form1"
+          label-width="180px"
+          size="small"
         >
-          <el-input
-            v-model="form1.name"
-            class="input"
-          ></el-input>
-          <span class="span">{{$t('purchase.content')}}</span>
-        </el-form-item>
-        <el-form-item
-          :label="$t('purchase.activityprioty')+'：'"
-          prop="level"
-        >
-          <el-input
-            v-model.number="form1.level"
-            class="input"
-          ></el-input>
-          <span class="span">{{$t('purchase.content1')}}</span>
-        </el-form-item>
-        <el-form-item
-          :label="$t('purchase.activityTime')+'：'"
-          prop="activityDate"
-        >
-          <el-date-picker
-            v-model="form1.activityDate"
-            type="datetimerange"
-            format="yyyy-MM-dd HH:mm:ss"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            :range-separator="$t('purchase.to')"
-            :start-placeholder="$t('purchase.startdate')"
-            :end-placeholder="$t('purchase.enddate')"
-            :default-time="['00:00:00', '23:59:59']"
-          >
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item
-          :label="$t('purchase.syncTags')+'：'"
-          class="label-con"
-        >
-          <el-checkbox
-            v-model="form1.activityTag"
-            :true-label="1"
-            :false-label="0"
-          >{{$t('purchase.tagIn')}}</el-checkbox>
-          <el-tooltip
-            effect="light"
-            placement="top"
-            :content="$t('purchase.placed')"
-          >
-            <i class="el-icon-question"></i>
-          </el-tooltip>
-          <el-button
-            type="text"
-            @click="selectLabel"
-          >{{$t('purchase.sLabel')}}</el-button>
-          <div
-            class="label-model"
-            v-if="pickLabel.length > 0"
-          >
-            <p>{{$t('purchase.sL3')}}</p>
-            <ul class="label-wrap">
-              <li
-                class="user-label"
-                v-for="(item,index) in pickLabel"
-                :key="item.id"
-              >{{item.value}}<i
-                  :data-id="item.id"
-                  class="el-icon-close"
-                  @click="deleteLabel(index, $event)"
-                ></i></li>
-            </ul>
-          </div>
-        </el-form-item>
-        <el-form-item :label="$t('purchase.singlemax')+'：'">
-          <el-input
-            v-model.number="form1.maxChangePurchase"
-            class="input"
-          ></el-input>
-          <span class="span">{{$t('purchase.content2')}}</span>
-        </el-form-item>
-        <el-form-item :label="$t('purchase.redemptionGoodsFeright')+'：'">
-          <el-radio-group v-model.number="form1.redemptionFreight">
-            <el-radio :label=0>{{$t('purchase.free')}}</el-radio>
-            <el-radio :label=1>{{$t('purchase.noFree')}}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item
-          :label="$t('purchase.activityRule')+'：'"
-          prop="rule_setting"
-          class="rule-setting"
-        >
-          <span class="span">{{$t('purchase.content3')}}</span>
           <el-form-item
-            :label="$t('purchase.rule1')+'：'"
-            label-width="110px"
-            style="margin-top:10px;"
+            :label="$t('purchase.activityName')+'：'"
+            prop="name"
           >
-            {{$t('purchase.mainFull')}}<el-input
-              class="input1"
-              v-model.number="purcahse_rule1.fullPrice"
-            ></el-input>{{$t('purchase.add')}}<el-input
-              class="input1"
-              v-model.number="purcahse_rule1.purchasePrice"
-            ></el-input>{{$t('purchase.redemp')}}
+            <el-input
+              v-model="form1.name"
+              class="input"
+            ></el-input>
+            <span class="span">{{$t('purchase.content')}}</span>
+          </el-form-item>
+          <el-form-item
+            :label="$t('purchase.activityprioty')+'：'"
+            prop="level"
+          >
+            <el-input
+              v-model.number="form1.level"
+              class="input"
+            ></el-input>
+            <span class="span">{{$t('purchase.content1')}}</span>
+          </el-form-item>
+          <el-form-item
+            :label="$t('purchase.activityTime')+'：'"
+            prop="activityDate"
+          >
+            <el-date-picker
+              v-model="form1.activityDate"
+              type="datetimerange"
+              format="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :range-separator="$t('purchase.to')"
+              :start-placeholder="$t('purchase.startdate')"
+              :end-placeholder="$t('purchase.enddate')"
+              :default-time="['00:00:00', '23:59:59']"
+            >
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item
+            :label="$t('purchase.syncTags')+'：'"
+            class="label-con"
+          >
+            <el-checkbox
+              v-model="form1.activityTag"
+              :true-label="1"
+              :false-label="0"
+            >{{$t('purchase.tagIn')}}</el-checkbox>
+            <el-tooltip
+              effect="light"
+              placement="top"
+              :content="$t('purchase.placed')"
+            >
+              <i class="el-icon-question"></i>
+            </el-tooltip>
             <el-button
-              type="primary"
-              size="small"
-              style="margin-left:5px"
-              v-if="rule_button1"
-              @click="ruleButton1"
-            >+{{$t('purchase.addRule')}}</el-button>
+              type="text"
+              @click="selectLabel"
+            >{{$t('purchase.sLabel')}}</el-button>
+            <div
+              class="label-model"
+              v-if="pickLabel.length > 0"
+            >
+              <p>{{$t('purchase.sL3')}}</p>
+              <ul class="label-wrap">
+                <li
+                  class="user-label"
+                  v-for="(item,index) in pickLabel"
+                  :key="item.id"
+                >{{item.value}}<i
+                    :data-id="item.id"
+                    class="el-icon-close"
+                    @click="deleteLabel(index, $event)"
+                  ></i></li>
+              </ul>
+            </div>
+          </el-form-item>
+          <el-form-item :label="$t('purchase.singlemax')+'：'">
+            <el-input
+              v-model.number="form1.maxChangePurchase"
+              class="input"
+            ></el-input>
+            <span class="span">{{$t('purchase.content2')}}</span>
+          </el-form-item>
+          <el-form-item :label="$t('purchase.redemptionGoodsFeright')+'：'">
+            <el-radio-group v-model.number="form1.redemptionFreight">
+              <el-radio :label=0>{{$t('purchase.free')}}</el-radio>
+              <el-radio :label=1>{{$t('purchase.noFree')}}</el-radio>
+            </el-radio-group>
           </el-form-item>
           <el-form-item
-            :label="$t('purchase.rule2')+'：'"
-            v-if="rule_line2"
-            label-width="110px"
+            :label="$t('purchase.activityRule')+'：'"
+            prop="rule_setting"
+            class="rule-setting"
           >
-            {{$t('purchase.mainFull')}}<el-input
-              class="input1"
-              v-model.number="purcahse_rule2.fullPrice"
-            ></el-input>{{$t('purchase.add')}}<el-input
-              class="input1"
-              v-model.number="purcahse_rule2.purchasePrice"
-            ></el-input>{{$t('purchase.redemp')}}
-            <el-button
-              type="primary"
-              size="small"
-              style="margin-left:5px"
-              v-if="rule_button2"
-              @click="ruleButton2"
-            >+{{$t('purchase.addRule')}}</el-button>
-            <el-link
-              type="primary"
-              style="margin-left:5px"
-              @click="ruleDelete2"
-            >{{$t('purchase.deleteRule')}}</el-link>
+            <span class="span">{{$t('purchase.content3')}}</span>
+            <el-form-item
+              :label="$t('purchase.rule1')+'：'"
+              label-width="110px"
+              style="margin-top:10px;"
+            >
+              {{$t('purchase.mainFull')}}<el-input
+                class="input1"
+                v-model.number="purcahse_rule1.fullPrice"
+              ></el-input>{{$t('purchase.add')}}<el-input
+                class="input1"
+                v-model.number="purcahse_rule1.purchasePrice"
+              ></el-input>{{$t('purchase.redemp')}}
+              <el-button
+                type="primary"
+                size="small"
+                style="margin-left:5px"
+                v-if="rule_button1"
+                @click="ruleButton1"
+              >+{{$t('purchase.addRule')}}</el-button>
+            </el-form-item>
+            <el-form-item
+              :label="$t('purchase.rule2')+'：'"
+              v-if="rule_line2"
+              label-width="110px"
+            >
+              {{$t('purchase.mainFull')}}<el-input
+                class="input1"
+                v-model.number="purcahse_rule2.fullPrice"
+              ></el-input>{{$t('purchase.add')}}<el-input
+                class="input1"
+                v-model.number="purcahse_rule2.purchasePrice"
+              ></el-input>{{$t('purchase.redemp')}}
+              <el-button
+                type="primary"
+                size="small"
+                style="margin-left:5px"
+                v-if="rule_button2"
+                @click="ruleButton2"
+              >+{{$t('purchase.addRule')}}</el-button>
+              <el-link
+                type="primary"
+                style="margin-left:5px"
+                @click="ruleDelete2"
+              >{{$t('purchase.deleteRule')}}</el-link>
+            </el-form-item>
+            <el-form-item
+              :label="$t('purchase.rule3')+'：'"
+              v-if="rule_line3"
+              label-width="110px"
+            >
+              {{$t('purchase.mainFull')}}<el-input
+                class="input1"
+                v-model.number="purcahse_rule3.fullPrice"
+              ></el-input>{{$t('purchase.add')}}<el-input
+                class="input1"
+                v-model.number="purcahse_rule3.purchasePrice"
+              ></el-input>{{$t('purchase.redemp')}}
+              <el-link
+                type="primary"
+                style="margin-left:5px"
+                @click="ruleDelete3"
+              >{{$t('purchase.deleteRule')}}</el-link>
+            </el-form-item>
           </el-form-item>
-          <el-form-item
-            :label="$t('purchase.rule3')+'：'"
-            v-if="rule_line3"
-            label-width="110px"
-          >
-            {{$t('purchase.mainFull')}}<el-input
-              class="input1"
-              v-model.number="purcahse_rule3.fullPrice"
-            ></el-input>{{$t('purchase.add')}}<el-input
-              class="input1"
-              v-model.number="purcahse_rule3.purchasePrice"
-            ></el-input>{{$t('purchase.redemp')}}
-            <el-link
-              type="primary"
-              style="margin-left:5px"
-              @click="ruleDelete3"
-            >{{$t('purchase.deleteRule')}}</el-link>
-          </el-form-item>
-        </el-form-item>
-        <!-- <el-form-item>
+          <!-- <el-form-item>
           <el-button
             type="primary"
             @click="nextStep(1)"
           >{{$t('purchase.nextStep')}}</el-button>
         </el-form-item> -->
-      </el-form>
-    </div>
-    <!-- 主商品 -->
-    <div
-      class="main_table"
-      v-if="step === 1"
-    >
-      <div>
-        <el-button
-          type="primary"
-          @click="showChoosingGoods"
-          size="small"
-        >{{$t('purchase.chooseGoods')}}</el-button>
-        <!--选择商品弹窗-->
-        <ChoosingGoods
-          :tuneUpChooseGoods="tuneUpChooseGoods"
-          @resultGoodsDatas="choosingGoodsResult"
-          :chooseGoodsBack="goodsId"
-          :checkedNumMax="100"
-        />
+        </el-form>
       </div>
-      <div class="table">
-        <el-table
-          :data="mainTableData"
-          style="width: 100%"
-          border
-        >
-          <el-table-column :label="$t('purchase.goodsName')">
-            <template slot-scope="{ row }">
-              <img
-                :src="row.goodsImg"
-                style="width: 45px; height: 45px"
-              >
-              <label>{{row.goodsName}}</label>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="shopPrice"
-            :label="$t('purchase.goodsPrice')"
+      <!-- 主商品 -->
+      <div
+        class="main_table"
+        v-if="step === 1"
+      >
+        <div>
+          <el-button
+            type="primary"
+            @click="showChoosingGoods"
+            size="small"
+          >{{$t('purchase.chooseGoods')}}</el-button>
+          <!--选择商品弹窗-->
+          <ChoosingGoods
+            :tuneUpChooseGoods="tuneUpChooseGoods"
+            @resultGoodsDatas="choosingGoodsResult"
+            :chooseGoodsBack="goodsId"
+            :checkedNumMax="100"
+          />
+        </div>
+        <div class="table">
+          <el-table
+            :data="mainTableData"
+            style="width: 100%"
+            border
           >
-          </el-table-column>
-          <el-table-column
-            prop="goodsNumber"
-            :label="$t('purchase.goodsSupply')"
-          >
-          </el-table-column>
-          <el-table-column :label="$t('purchase.opration')">
-            <template slot-scope="{ row }">
-              <el-link
-                type="primary"
-                @click="deleteGoods(row.goodsId)"
-              >{{$t('purchase.delete')}}</el-link>
-            </template>
-          </el-table-column>
-        </el-table>
-        <pagination
-          :page-params.sync="pageParams"
-          @pagination="pageChange"
-        ></pagination>
-      </div>
-      <!-- <div class="bottom">
+            <el-table-column :label="$t('purchase.goodsName')">
+              <template slot-scope="{ row }">
+                <img
+                  :src="row.goodsImg"
+                  style="width: 45px; height: 45px"
+                >
+                <label>{{row.goodsName}}</label>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="shopPrice"
+              :label="$t('purchase.goodsPrice')"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="goodsNumber"
+              :label="$t('purchase.goodsSupply')"
+            >
+            </el-table-column>
+            <el-table-column :label="$t('purchase.opration')">
+              <template slot-scope="{ row }">
+                <el-link
+                  type="primary"
+                  @click="deleteGoods(row.goodsId)"
+                >{{$t('purchase.delete')}}</el-link>
+              </template>
+            </el-table-column>
+          </el-table>
+          <pagination
+            :page-params.sync="pageParams"
+            @pagination="pageChange"
+          ></pagination>
+        </div>
+        <!-- <div class="bottom">
         <el-button
           type="primary"
           @click="preStep"
@@ -272,209 +273,209 @@
           @click="nextStep(2)"
         >{{$t('purchase.nextStep')}}</el-button>
       </div> -->
-    </div>
-    <!-- 换购商品 -->
-    <div
-      class="purchase_tab"
-      v-if="step === 2"
-    >
-      <el-tabs
-        v-model="purchase_tab"
-        @tab-click="handleClick"
+      </div>
+      <!-- 换购商品 -->
+      <div
+        class="purchase_tab"
+        v-if="step === 2"
       >
-        <el-tab-pane
-          :label="$t('purchase.rule1')"
-          name="first"
+        <el-tabs
+          v-model="purchase_tab"
+          @tab-click="handleClick"
         >
-          <div style="margin_top:10px">
-            <div style="margin-bottom: 10px;">
-              <el-alert
-                type="warning"
-                show-icon
-                :title="$t('purchase.redemRules')+'1：'+$t('purchase.buyFull')+ purcahse_rule1.fullPrice +$t('purchase.yuan')+'，'+$t('purchase.increase')+purcahse_rule1.purchasePrice+$t('purchase.followGoods')"
-                :closable="false"
-              ></el-alert>
+          <el-tab-pane
+            :label="$t('purchase.rule1')"
+            name="first"
+          >
+            <div style="margin_top:10px">
+              <div style="margin-bottom: 10px;">
+                <el-alert
+                  type="warning"
+                  show-icon
+                  :title="$t('purchase.redemRules')+'1：'+$t('purchase.buyFull')+ purcahse_rule1.fullPrice +$t('purchase.yuan')+'，'+$t('purchase.increase')+purcahse_rule1.purchasePrice+$t('purchase.followGoods')"
+                  :closable="false"
+                ></el-alert>
+              </div>
+              <el-button
+                type="primary"
+                @click="showChoosingGoods1"
+                size="small"
+              >{{$t('purchase.chooseRedempGoods')}}</el-button>
+              <!--选择规格弹窗-->
+              <ChoosingGoods
+                :loadProduct="true"
+                :tuneUpChooseGoods="tuneUpChooseGoods1"
+                @resultGoodsDatas="choosingGoodsResult1"
+                :chooseGoodsBack="purcahse_rule1.productId"
+                :checkedNumMax="20"
+              />
             </div>
-            <el-button
-              type="primary"
-              @click="showChoosingGoods1"
-              size="small"
-            >{{$t('purchase.chooseRedempGoods')}}</el-button>
-            <!--选择规格弹窗-->
-            <ChoosingGoods
-              :loadProduct="true"
-              :tuneUpChooseGoods="tuneUpChooseGoods1"
-              @resultGoodsDatas="choosingGoodsResult1"
-              :chooseGoodsBack="purcahse_rule1.productId"
-              :checkedNumMax="20"
-            />
-          </div>
-          <div class="table">
-            <el-table
-              :data="purchase_table1"
-              style="width: 100%"
-              border
-            >
-              <el-table-column :label="$t('purchase.goodsName')">
-                <template slot-scope="{ row }">
-                  <img
-                    :src="row.goodsImg"
-                    style="width: 45px; height: 45px"
-                  >
-                  <label>{{row.goodsName}}</label>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="prdPrice"
-                :label="$t('purchase.goodsPrice')"
+            <div class="table">
+              <el-table
+                :data="purchase_table1"
+                style="width: 100%"
+                border
               >
-              </el-table-column>
-              <el-table-column
-                prop="prdNumber"
-                :label="$t('purchase.goodsSupply')"
-              >
-              </el-table-column>
-              <el-table-column :label="$t('purchase.opration')">
-                <template slot-scope="{ row }">
-                  <el-link
-                    type="primary"
-                    @click="deleteGoods1(row.goodsId)"
-                  >{{$t('purchase.delete')}}</el-link>
-                </template>
-              </el-table-column>
-            </el-table>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane
-          :label="$t('purchase.rule2')"
-          name="second"
-          v-if="rule_num >= 2"
-        >
-          <div style="margin_top:10px">
-            <div style="margin-bottom: 10px;">
-              <el-alert
-                type="warning"
-                show-icon
-                :title="$t('purchase.redemRules')+'2：'+$t('purchase.buyFull')+ purcahse_rule2.fullPrice +$t('purchase.yuan')+'，'+$t('purchase.increase')+purcahse_rule2.purchasePrice+$t('purchase.followGoods')"
-                :closable="false"
-              ></el-alert>
+                <el-table-column :label="$t('purchase.goodsName')">
+                  <template slot-scope="{ row }">
+                    <img
+                      :src="row.goodsImg"
+                      style="width: 45px; height: 45px"
+                    >
+                    <label>{{row.goodsName}}</label>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="prdPrice"
+                  :label="$t('purchase.goodsPrice')"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="prdNumber"
+                  :label="$t('purchase.goodsSupply')"
+                >
+                </el-table-column>
+                <el-table-column :label="$t('purchase.opration')">
+                  <template slot-scope="{ row }">
+                    <el-link
+                      type="primary"
+                      @click="deleteGoods1(row.goodsId)"
+                    >{{$t('purchase.delete')}}</el-link>
+                  </template>
+                </el-table-column>
+              </el-table>
             </div>
-            <el-button
-              type="primary"
-              size="small"
-              @click="showChoosingGoods2"
-            >{{$t('purchase.chooseRedempGoods')}}</el-button>
-            <!--选择规格弹窗-->
-            <ChoosingGoods
-              :loadProduct="true"
-              :tuneUpChooseGoods="tuneUpChooseGoods2"
-              @resultGoodsDatas="choosingGoodsResult2"
-              :chooseGoodsBack="purcahse_rule2.productId"
-              :checkedNumMax="20"
-            />
-          </div>
-          <div class="table">
-            <el-table
-              :data="purchase_table2"
-              style="width: 100%"
-              border
-            >
-              <el-table-column :label="$t('purchase.goodsName')">
-                <template slot-scope="{ row }">
-                  <img
-                    :src="row.goodsImg"
-                    style="width: 45px; height: 45px"
-                  >
-                  <label>{{row.goodsName}}</label>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="prdPrice"
-                :label="$t('purchase.goodsPrice')"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="prdNumber"
-                :label="$t('purchase.goodsSupply')"
-              >
-              </el-table-column>
-              <el-table-column :label="$t('purchase.opration')">
-                <template slot-scope="{ row }">
-                  <el-link
-                    type="primary"
-                    @click="deleteGoods2(row.goodsId)"
-                  >{{$t('purchase.delete')}}</el-link>
-                </template>
-              </el-table-column>
-            </el-table>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane
-          :label="$t('purchase.rule3')"
-          name="third"
-          v-if="rule_num === 3"
-        >
-          <div style="margin_top:10px">
-            <div style="margin-bottom:10px;">
-              <el-alert
-                type="warning"
-                show-icon
-                :title="$t('purchase.redemRules')+'3：'+$t('purchase.buyFull')+ purcahse_rule3.fullPrice +$t('purchase.yuan')+'，'+$t('purchase.increase')+purcahse_rule3.purchasePrice+$t('purchase.followGoods')"
-                :closable="false"
-              ></el-alert>
+          </el-tab-pane>
+          <el-tab-pane
+            :label="$t('purchase.rule2')"
+            name="second"
+            v-if="rule_num >= 2"
+          >
+            <div style="margin_top:10px">
+              <div style="margin-bottom: 10px;">
+                <el-alert
+                  type="warning"
+                  show-icon
+                  :title="$t('purchase.redemRules')+'2：'+$t('purchase.buyFull')+ purcahse_rule2.fullPrice +$t('purchase.yuan')+'，'+$t('purchase.increase')+purcahse_rule2.purchasePrice+$t('purchase.followGoods')"
+                  :closable="false"
+                ></el-alert>
+              </div>
+              <el-button
+                type="primary"
+                size="small"
+                @click="showChoosingGoods2"
+              >{{$t('purchase.chooseRedempGoods')}}</el-button>
+              <!--选择规格弹窗-->
+              <ChoosingGoods
+                :loadProduct="true"
+                :tuneUpChooseGoods="tuneUpChooseGoods2"
+                @resultGoodsDatas="choosingGoodsResult2"
+                :chooseGoodsBack="purcahse_rule2.productId"
+                :checkedNumMax="20"
+              />
             </div>
-            <el-button
-              type="primary"
-              size="small"
-              @click="showChoosingGoods3"
-            >{{$t('purchase.chooseRedempGoods')}}</el-button>
-            <!--选择规格弹窗-->
-            <ChoosingGoods
-              :loadProduct="true"
-              :tuneUpChooseGoods="tuneUpChooseGoods3"
-              @resultGoodsDatas="choosingGoodsResult3"
-              :chooseGoodsBack="purcahse_rule3.productId"
-              :checkedNumMax="20"
-            />
-          </div>
-          <div class="table">
-            <el-table
-              :data="purchase_table3"
-              style="width: 100%"
-              border
-            >
-              <el-table-column :label="$t('purchase.goodsName')">
-                <template slot-scope="{ row }">
-                  <img
-                    :src="row.goodsImg"
-                    style="width: 45px; height: 45px"
-                  >
-                  <label>{{row.goodsName}}</label>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="prdPrice"
-                :label="$t('purchase.goodsPrice')"
+            <div class="table">
+              <el-table
+                :data="purchase_table2"
+                style="width: 100%"
+                border
               >
-              </el-table-column>
-              <el-table-column
-                prop="prdNumber"
-                :label="$t('purchase.goodsSupply')"
+                <el-table-column :label="$t('purchase.goodsName')">
+                  <template slot-scope="{ row }">
+                    <img
+                      :src="row.goodsImg"
+                      style="width: 45px; height: 45px"
+                    >
+                    <label>{{row.goodsName}}</label>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="prdPrice"
+                  :label="$t('purchase.goodsPrice')"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="prdNumber"
+                  :label="$t('purchase.goodsSupply')"
+                >
+                </el-table-column>
+                <el-table-column :label="$t('purchase.opration')">
+                  <template slot-scope="{ row }">
+                    <el-link
+                      type="primary"
+                      @click="deleteGoods2(row.goodsId)"
+                    >{{$t('purchase.delete')}}</el-link>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane
+            :label="$t('purchase.rule3')"
+            name="third"
+            v-if="rule_num === 3"
+          >
+            <div style="margin_top:10px">
+              <div style="margin-bottom:10px;">
+                <el-alert
+                  type="warning"
+                  show-icon
+                  :title="$t('purchase.redemRules')+'3：'+$t('purchase.buyFull')+ purcahse_rule3.fullPrice +$t('purchase.yuan')+'，'+$t('purchase.increase')+purcahse_rule3.purchasePrice+$t('purchase.followGoods')"
+                  :closable="false"
+                ></el-alert>
+              </div>
+              <el-button
+                type="primary"
+                size="small"
+                @click="showChoosingGoods3"
+              >{{$t('purchase.chooseRedempGoods')}}</el-button>
+              <!--选择规格弹窗-->
+              <ChoosingGoods
+                :loadProduct="true"
+                :tuneUpChooseGoods="tuneUpChooseGoods3"
+                @resultGoodsDatas="choosingGoodsResult3"
+                :chooseGoodsBack="purcahse_rule3.productId"
+                :checkedNumMax="20"
+              />
+            </div>
+            <div class="table">
+              <el-table
+                :data="purchase_table3"
+                style="width: 100%"
+                border
               >
-              </el-table-column>
-              <el-table-column :label="$t('purchase.opration')">
-                <template slot-scope="{ row }">
-                  <el-link
-                    type="primary"
-                    @click="deleteGoods3(row.goodsId)"
-                  >{{$t('purchase.delete')}}</el-link>
-                </template>
-              </el-table-column>
-            </el-table>
-          </div>
-        </el-tab-pane>
-      </el-tabs>
-      <!-- <div class="bottom">
+                <el-table-column :label="$t('purchase.goodsName')">
+                  <template slot-scope="{ row }">
+                    <img
+                      :src="row.goodsImg"
+                      style="width: 45px; height: 45px"
+                    >
+                    <label>{{row.goodsName}}</label>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="prdPrice"
+                  :label="$t('purchase.goodsPrice')"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="prdNumber"
+                  :label="$t('purchase.goodsSupply')"
+                >
+                </el-table-column>
+                <el-table-column :label="$t('purchase.opration')">
+                  <template slot-scope="{ row }">
+                    <el-link
+                      type="primary"
+                      @click="deleteGoods3(row.goodsId)"
+                    >{{$t('purchase.delete')}}</el-link>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
+        <!-- <div class="bottom">
         <el-button
           type="primary"
           @click="preStep"
@@ -484,26 +485,27 @@
           @click="addPurchase"
         >{{$t('purchase.save')}}</el-button>
       </div> -->
-    </div>
-    <div class="footer">
-      <el-button
-        v-if="step === 1 || step === 2"
-        type="primary"
-        size="small"
-        @click="preStep"
-      >{{$t('purchase.preStep')}}</el-button>
-      <el-button
-        v-if="step === 0 || step === 1"
-        type="primary"
-        size="small"
-        @click="nextStep(step+1)"
-      >{{$t('purchase.nextStep')}}</el-button>
-      <el-button
-        v-if="step === 2"
-        type="primary"
-        size="small"
-        @click="addPurchase"
-      >{{$t('purchase.save')}}</el-button>
+      </div>
+      <div class="footer">
+        <el-button
+          v-if="step === 1 || step === 2"
+          type="primary"
+          size="small"
+          @click="preStep"
+        >{{$t('purchase.preStep')}}</el-button>
+        <el-button
+          v-if="step === 0 || step === 1"
+          type="primary"
+          size="small"
+          @click="nextStep(step+1)"
+        >{{$t('purchase.nextStep')}}</el-button>
+        <el-button
+          v-if="step === 2"
+          type="primary"
+          size="small"
+          @click="addPurchase"
+        >{{$t('purchase.save')}}</el-button>
+      </div>
     </div>
 
     <!-- 标签弹窗 -->
@@ -945,7 +947,6 @@ export default {
   padding: 10px;
   background: #fff;
   margin-top: 10px;
-  margin: 10px, 10px, 10px, 10px;
   .setpTitle {
     margin-top: 10px;
   }
