@@ -56,7 +56,9 @@ public class PictorialImgPx {
      */
     public static final Color CUSTOMER_TEXT_FONT_COLOR = new Color(255, 255, 255);
 
-    /***********************随店铺风格改变的色值***************************/
+    /***********************随店铺风格或海报样式改变的色值***************************/
+    private Color headFontColor;
+
     private Color shareImgRectInnerColor;
     /**
      * 活动-自定义区域内部填充颜色
@@ -68,7 +70,8 @@ public class PictorialImgPx {
     private Color realPriceColor;
 
     private Color shopStyleColor;
-/***********************随店铺风格改变的色值结束***************************/
+
+    /***********************随店铺风格改变的色值结束***************************/
     /**
      * 可用的三种字体size
      */
@@ -102,16 +105,28 @@ public class PictorialImgPx {
         shareImgRectInnerColor = new Color(shopStyleColor.getRed(), shopStyleColor.getGreen(), shopStyleColor.getBlue(), 30);
         realPriceColor = shopStyleColor;
         this.shopStyleColor = shopStyleColor;
+
         if (BASIC_STYLE.equals(picStyleConfig)) {
             initForBasicStyle();
-        } else if (SHARE_PERSON_STYLE.equals(picStyleConfig)) {
-
-        } else if (SHOP_STYLE.equals(picStyleConfig)) {
-
-        } else if (SHARE_PERSON_SHOP_STYLE.equals(picStyleConfig)) {
-
         } else {
+            if (!DEFAULT_STYLE.equals(picStyleConfig)) {
+                headerHeight = 130;
+                radius = bgWidth/2;
+                pointX = bgWidth/2-radius;
+                pointY = 0;
+            }
+            // 默认样式值初始化
             initForDefault();
+
+            if (SHARE_PERSON_STYLE.equals(picStyleConfig)) {
+                initForSharePersonInfoStyle();
+            } else if (SHOP_STYLE.equals(picStyleConfig)) {
+
+            } else if (SHARE_PERSON_SHOP_STYLE.equals(picStyleConfig)) {
+
+            } else {
+
+            }
         }
         goodsNameFont = ImageUtil.SourceHanSansCN(Font.PLAIN, MEDIUM_FONT_SIZE);
         priceFont = ImageUtil.SourceHanSansCN(Font.PLAIN, PictorialImgPx.LARGE_FONT_SIZE);
@@ -119,6 +134,7 @@ public class PictorialImgPx {
     }
 
     private void initForDefault() {
+        headFontColor = new Color(85, 85, 85);
         // 用户名
         userNameX = headerStartX + userHeaderDiameter + 15;
         userNameY = headerStartY + userHeaderDiameter / 5 + 5;
@@ -128,6 +144,7 @@ public class PictorialImgPx {
         shareDocX = bgPadding;
         shareDocY = headerStartY + userHeaderDiameter + 7;
         shareDocFont = ImageUtil.SourceHanSansCN(Font.PLAIN, MEDIUM_FONT_SIZE);
+        shareDocCanUseWidth = bgWidth - 2 * bgPadding;
 
         // 商品
         goodsWidth = bgWidth - 2 * bgPadding;
@@ -149,6 +166,7 @@ public class PictorialImgPx {
         customerTextStartY = customerRectStartY + 10;
         customerSecondTextStartY = customerTextStartY + 10;
 
+        bottomStartY = headerHeight + goodsHeight + bgPadding + 5;
         // 底部二维码
         qrCodeStartX = bgWidth - (bgPadding + qrCodeWidth);
         qrCodeStartY = bottomStartY + 15;
@@ -162,6 +180,7 @@ public class PictorialImgPx {
     }
 
     private void initForBasicStyle() {
+        headFontColor = new Color(85, 85, 85);
         headerHeight = 0;
         bgPadding = bgPadding + borderStroke;
         // 商品
@@ -179,7 +198,20 @@ public class PictorialImgPx {
         priceX = bottomTextStartX;
 
         goodsNameCanUseWidth = bgWidth - 2 * bgPadding;
-        qrCodeStartX =(bgWidth - qrCodeWidth)/2;
+        qrCodeStartX = (bgWidth - qrCodeWidth) / 2;
+    }
+
+    /**
+     * 样式3，带分享人信息
+     */
+    private void initForSharePersonInfoStyle() {
+        userNameY = headerStartY + userHeaderDiameter / 8;
+        userNameFont = ImageUtil.SourceHanSansCN(Font.PLAIN, MEDIUM_FONT_SIZE);
+        // 宣传语
+        shareDocX = userNameX;
+        shareDocY = headerStartY + userHeaderDiameter - 40;
+        shareDocFont = ImageUtil.SourceHanSansCN(Font.PLAIN, SMALL_FONT_SIZE);
+        shareDocCanUseWidth = bgWidth - shareDocX - bgPadding;
     }
 
     /**
@@ -205,6 +237,14 @@ public class PictorialImgPx {
     private Integer shareDocX;
     private Integer shareDocY;
     private Font shareDocFont;
+    private Integer shareDocCanUseWidth;
+
+    /**
+     * 样式3,4,5中的背景圆心和半径
+     */
+    private Integer pointX;
+    private Integer pointY;
+    private Integer radius;
 
     /**
      * 商品宽高,位置x,y
@@ -248,7 +288,7 @@ public class PictorialImgPx {
     /**
      * 底部开始Y
      */
-    private Integer bottomStartY = headerHeight + goodsHeight + bgPadding + 5;
+    private Integer bottomStartY;
 
     /**
      * 二维码直径
@@ -269,7 +309,7 @@ public class PictorialImgPx {
     /**
      * 商品名称开始Y
      */
-    private Integer goodsNameStartY = bottomStartY + 10;
+    private Integer goodsNameStartY;
     private Font goodsNameFont;
 
     /**
