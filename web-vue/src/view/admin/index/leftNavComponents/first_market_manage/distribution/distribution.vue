@@ -109,7 +109,7 @@ export default {
       activeName: 'first',
       inviteCode: '',
       optGroupId: 0,
-      userId: ''
+      userId: null
     }
   },
   mounted () {
