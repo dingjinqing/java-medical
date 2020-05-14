@@ -1021,6 +1021,7 @@ public class JsonResultMessage {
     /**
      * 商品、活动分享图片文字内容
      */
+    public static final String WX_MA_PICTORIAL_RECOMMEND_INFO = "wx.ma.pictorial.recommend.info";
     /** ￥ */
     public static final String WX_MA_PICTORIAL_MONEY_FLAG = "wx.ma.pictorial.money.flag";
     /** 神秘人 */

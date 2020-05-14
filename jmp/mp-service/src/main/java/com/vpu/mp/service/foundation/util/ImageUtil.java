@@ -170,10 +170,10 @@ public final class ImageUtil {
     }
 
 
-    public static void addCircle(BufferedImage bufferedImage, int x, int y, int radius, Color color) {
+    public static void addCircle(BufferedImage bufferedImage, int x, int y, int majorAxis,int minorAxis, Color color) {
         Graphics2D graphics = bufferedImage.createGraphics();
         graphics.setColor(color);
-        graphics.fillArc(x, y, radius * 2, radius * 2, 0, 360);
+        graphics.fillArc(x, y, majorAxis, minorAxis, 0, 360);
     }
 
     /**
