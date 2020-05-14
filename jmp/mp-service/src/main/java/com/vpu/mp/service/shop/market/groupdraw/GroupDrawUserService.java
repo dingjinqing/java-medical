@@ -441,6 +441,7 @@ public class GroupDrawUserService extends ShopBaseService {
 	 */
 	private void giveVoucher(String coupOnIds, List<Integer> userIds) {
 		logger().info("未中奖送券");
+		logger().info("优惠券id：{}，用户数量：{},列表：{}",coupOnIds,userIds.size(),userIds.toArray());
 		String[] split = coupOnIds.split(",");
 		List<String> list = new ArrayList<String>();
 		for (String string : split) {
