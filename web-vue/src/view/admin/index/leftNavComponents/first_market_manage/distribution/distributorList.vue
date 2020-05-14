@@ -4,7 +4,7 @@
       <el-form
         :model="param"
         label-width="140px"
-        :label-position="'right'"
+        label-position="right"
       >
         <div>
           <el-form-item

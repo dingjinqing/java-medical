@@ -4,7 +4,7 @@
       <el-form
         :model="searchParam"
         label-width="100px"
-        :label-position="right"
+        label-position="right"
         :inline="true"
       >
         <el-form-item label="手机号：">
