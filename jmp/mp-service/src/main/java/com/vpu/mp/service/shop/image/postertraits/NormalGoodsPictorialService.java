@@ -62,6 +62,8 @@ public class NormalGoodsPictorialService extends ShareBaseService {
         BufferedImage bgBufferedImage = null;
         if (PictorialImgPx.BASIC_STYLE.equals(shareStyle)) {
             bgBufferedImage = pictorialService.createBasicStylePictorialBgImage(shop,qrCodeBufferImg,goodsImg,goodsRecord.getGoodsName(),baseParam.getRealPrice(),baseParam.getLinePrice(),imgPx);
+        } else if (PictorialImgPx.SHARE_PERSON_STYLE.equals(shareStyle)){
+            bgBufferedImage= pictorialService.createSharePersonInfoPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(), baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
         } else {
             bgBufferedImage= pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(), baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
         }
