@@ -91,7 +91,8 @@
         <!-- 拼团结果 -->
         <view class='btn_invites' wx:if='{{(group_info.groupJoinDetail.groupStatus == 0 && group_info.groupJoinDetail.button.isToInvite == 1) || (group_info.groupJoinDetail.group_status == 10 && group_info.groupJoinDetail.button.isToInvite == 1)}}'>
           <block wx:if="{{getsq == true || click_num == true}}">
-            <button open-type='share' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,"page1.pinlottery.btnInvites1")}}</button>
+            <button open-type='share' wx:if="{{shareFlag == 1}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,"page1.pinlottery.btnInvites1")}}</button>
+            <button bindtap='to_share' wx:if="{{shareFlag == 0}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,"page1.pinlottery.btnInvites1")}}</button>
           </block>
           <block wx:else>
             <button open-type="getUserInfo" bindgetuserinfo="getUserInfo" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,"page1.pinlottery.btnInvites1")}}</button>

@@ -22,6 +22,7 @@ global.wxPage({
     is_show_modal: 0, // 分享弹窗
     order_sn: '', // 订单号
     share_img: '', // 分享图片
+    shareFlag: 0
   },
 
   /**
@@ -57,9 +58,7 @@ global.wxPage({
     }
     clearTimeout(set_time_out);
     // 获取活动详情
-    util.getNeedTemplateId('group_draw', () => {
-      this.request_group()
-    })
+    this.request_group()
   },
 
   request_group () {
@@ -322,6 +321,13 @@ global.wxPage({
   // 查看活动规则
   to_rule: function () {
     util.jumpToWeb('/wxapp/pinlottery/help', '&gid=' + group_draw_id);
+  },
+  // 去分享
+  to_share: function () {
+    // 订阅消息
+    util.getNeedTemplateId('draw_result', ()=>{
+      this.setData({ shareFlag: 1 })
+    })
   },
   /**
    * 用户点击右上角分享
