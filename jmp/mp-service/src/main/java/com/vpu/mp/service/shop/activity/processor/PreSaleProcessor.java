@@ -33,10 +33,8 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record3;
-import org.jooq.Record4;
 import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -148,7 +146,7 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
             log.debug("小程序-商品详情-预售活动-商品规格信息和活动规格信息无交集");
             goodsPreSaleInfo.setActState(BaseConstant.ACTIVITY_STATUS_NO_PRD_TO_USE);
         }
-        capsule.setGoodsSaleNum(saleNumber);
+        goodsPreSaleInfo.setSaleNumber(saleNumber);
         goodsPreSaleInfo.setPreSalePrdMpVos(newPreSalePrds);
         capsule.setActivity(goodsPreSaleInfo);
     }
