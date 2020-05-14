@@ -1133,10 +1133,20 @@ public class MemberCardService extends ShopBaseService {
 				}
 			}
 			vo.setReveiveStatus(vo.getReceiveTime() != null ? CardConstant.ONE : CardConstant.TWO);
-			vo.setDelStatus(vo.getDelFlag().equals(CardConstant.ZERO) ? CardConstant.ZERO : CardConstant.TWO);
+			vo.setDelStatus(vo.getDelFlag().equals(CardConstant.ZERO) ? CardConstant.ONE : CardConstant.TWO);
 		}
 		return result;
 
+	}
+	
+	/**
+	 * 下载领取详情的Excel
+	 * @param param
+	 * @param lang
+	 * @return
+	 */
+	public Workbook getReceiveExcel(CodeReceiveParam param,String lang) {
+		return cardDao.getCardReceiveExcel(param, lang);
 	}
 
 	/**

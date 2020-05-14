@@ -24,8 +24,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep4;
@@ -50,6 +53,9 @@ import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -70,7 +76,9 @@ import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.cardReceiveExport.CardReceiveDownVo;
 import com.vpu.mp.service.pojo.shop.member.card.dao.CardFullDetail;
+import com.vpu.mp.service.pojo.shop.member.userImp.UserImportErroPojo;
 
 /**
  * @author 黄壮壮
@@ -155,6 +163,12 @@ public class CardDaoService extends ShopBaseService {
 	 */
 	public PageResult<CodeReceiveVo> getReceiveListSql(CodeReceiveParam param) {
 		// CARD_RECEIVE_CODE
+		SelectConditionStep<?> select = buildSelect(param);
+		return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), CodeReceiveVo.class);
+
+	}
+
+	private SelectConditionStep<?> buildSelect(CodeReceiveParam param) {
 		SelectConditionStep<?> select = db()
 				.select(CARD_BATCH.NAME, CARD_RECEIVE_CODE.ID, USER.USER_ID, USER.USERNAME, USER.MOBILE,
 						CARD_RECEIVE_CODE.RECEIVE_TIME, CARD_RECEIVE_CODE.CARD_NO, CARD_RECEIVE_CODE.CODE,
@@ -164,9 +178,48 @@ public class CardDaoService extends ShopBaseService {
 				.where(CARD_RECEIVE_CODE.CARD_ID.eq(param.getCardId()).and(CARD_RECEIVE_CODE.STATUS.eq(CardConstant.ONE)));
 
 		buildOptionForReceiveCode(param, select);
-		return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), CodeReceiveVo.class);
-
+		return select;
 	}
+	
+	public List<CardReceiveDownVo> toMakeDownList(CodeReceiveParam param) {
+		SelectConditionStep<?> select = buildSelect(param);
+		List<CardReceiveDownVo> list = select.fetchInto(CardReceiveDownVo.class);
+		for (CardReceiveDownVo vo : list) {
+			String code = vo.getCode();
+			if(!StringUtils.isBlank(code)) {
+				int lengthOfCode = code.length() - 4;
+				if (lengthOfCode > 0) {
+					String tmp = IntStream.range(0, lengthOfCode).mapToObj(i -> "*").collect(Collectors.joining());
+					vo.setCardMsg(code.substring(0, 2).concat(tmp).concat(code.substring(lengthOfCode + 2)));
+				}
+			}
+			String cardPwd = vo.getCardPwd();
+			if(!StringUtils.isBlank(cardPwd)) {
+				int lengthOfCardPwd = cardPwd.length() - 4;
+				if (lengthOfCardPwd > 0) {
+					String tmp = IntStream.range(0, lengthOfCardPwd).mapToObj(i -> "*").collect(Collectors.joining());
+					vo.setCardMsg(cardPwd.substring(0, 2).concat(tmp).concat(cardPwd.substring(lengthOfCardPwd + 2)));
+				}
+			}
+			vo.setSReveiveStatus(vo.getReceiveTime() != null ? "已领取" :"未领取");
+			vo.setSDelStatus(vo.getDelFlag().equals(CardConstant.ZERO) ? "正常" : "已废除");
+		}
+		return list;
+	}
+	/**
+	 * 下载Excel
+	 * @param param
+	 * @param lang
+	 * @return
+	 */
+	public Workbook getCardReceiveExcel(CodeReceiveParam param, String lang) {
+		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+		excelWriter.writeModelList(toMakeDownList(param), CardReceiveDownVo.class);
+		return workbook;
+		
+	}
+	
 
 	/**
 	 * 会员卡领取详情构建多条件查询参数
