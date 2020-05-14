@@ -38,7 +38,7 @@ public class OrderRebateVo {
     /**单品可计算返利金额*/
     @JsonIgnore
     private BigDecimal canCalculateMoney;
-    /**返利商品总金额*/
+    /**可返利商品总金额*/
     private BigDecimal canRebateTotalMoney;
     /**商品可返利金额*/
     private BigDecimal canRebateMoney;
@@ -57,4 +57,8 @@ public class OrderRebateVo {
     private String fanliStrategy;
     private String mobile;
     private String realName;
+    /**商品金额*/
+    private BigDecimal goodsPrice;
+    /**返利商品总金额*/
+    private BigDecimal rebateTotalMoney;
 }

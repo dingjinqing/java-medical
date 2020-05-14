@@ -8,6 +8,7 @@ import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.DistributionConstant;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -51,7 +52,10 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
 /**
@@ -386,11 +390,13 @@ public class OrderGoodsService extends ShopBaseService{
 
     /**
      * 获取订单商品的活动类型
+     *
+     * @param order
      * @param bos
      * @param insteadPayMoney
      * @return
      */
-    public Set<Byte> getGoodsType(List<OrderGoodsBo> bos, BigDecimal insteadPayMoney){
+    public Set<Byte> getGoodsType(OrderInfoRecord order, List<OrderGoodsBo> bos, BigDecimal insteadPayMoney){
         HashSet<Byte> type = new HashSet<>();
         for(OrderGoodsBo bo : bos){
             if(bo.getPurchasePriceRuleId() != null && bo.getPurchasePriceRuleId() > 0){
@@ -413,12 +419,12 @@ public class OrderGoodsService extends ShopBaseService{
                 //满包邮
                 type.add(BaseConstant.ACTIVITY_TYPE_FREESHIP_ORDER);
             }
-            if(bo.getGoodsPriceAction() != null && bo.getGoodsPriceAction().equals(BaseConstant.ACTIVITY_TYPE_REBATE)) {
-                type.add(BaseConstant.ACTIVITY_TYPE_REBATE);
-            }
         }
         if(BigDecimalUtil.compareTo(insteadPayMoney, null) == 1) {
             type.add(BaseConstant.ACTIVITY_TYPE_PAY_FOR_ANOTHER);
+        }
+        if(order.getFanliType() != null && order.getFanliType().equals(DistributionConstant.REBATE_ORDER)) {
+            type.add(BaseConstant.ACTIVITY_TYPE_REBATE);
         }
         return type;
     }

@@ -88,4 +88,5 @@ public class OrderInfoVo extends OrderListInfoVo {
     private List<OrderRebateVo> rebateList;
     /**是否展示手动退款退货按钮*/
     private Boolean showManualReturn;
+    private Byte settlementFlag;
 }

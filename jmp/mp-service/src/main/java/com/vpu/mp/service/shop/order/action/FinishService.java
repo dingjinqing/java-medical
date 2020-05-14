@@ -144,11 +144,13 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
 
         transaction(() -> {
             //分销返利
-            finishRebate(orderRecord, param.getIsMp());
+            BigDecimal total = finishRebate(orderRecord, param.getIsMp());
             //update order
             orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_FINISHED);
             //订单完成赠送积分
             orderSendScore(order);
+            //完成返利设置
+            orderInfo.setOrderRebateInfo(orderRecord, total);
             //新增收支
         });
         //分销升级
@@ -165,12 +167,12 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
      * @param isMp
      * @throws MpException
      */
-    private void finishRebate(OrderInfoRecord order, Byte isMp) throws MpException {
+    private BigDecimal finishRebate(OrderInfoRecord order, Byte isMp) throws MpException {
         if(!order.getFanliType().equals(DistributionConstant.REBATE_ORDER) ||
             order.getSettlementFlag().equals(OrderConstant.YES) ||
             !order.getTkOrderType().equals(OrderConstant.TK_NORMAL)) {
             logger().info("完成订单时不满足返利条件");
-            return;
+            return BIGDECIMAL_ZERO;
         }
         //goods
         Result<OrderGoodsRecord> goods = orderGoods.getByOrderId(order.getOrderId());
@@ -241,6 +243,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
         db().batchUpdate(statisticsRecords).execute();
         //更新分销员等级
         updateUserLevel(updateLevel);
+        return total;
     }
 
     private void updateUserLevel(Collection<Integer> updateLevel) {

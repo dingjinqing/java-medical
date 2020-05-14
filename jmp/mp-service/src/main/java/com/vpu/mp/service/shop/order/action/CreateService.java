@@ -1024,7 +1024,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private void setOtherValue(OrderInfoRecord order, CreateOrderBo orderBo, OrderBeforeVo beforeVo){
         Timestamp currentTime = DateUtil.getSqlTimestamp();
         //TODO 订单类型拼接(支付有礼)
-        orderBo.getOrderType().addAll(orderGoods.getGoodsType(orderBo.getOrderGoodsBo(), order.getInsteadPayMoney()));//支付信息
+        orderBo.getOrderType().addAll(orderGoods.getGoodsType(order, orderBo.getOrderGoodsBo(), order.getInsteadPayMoney()));//支付信息
         if(BigDecimalUtil.addOrSubtrac(
             BigDecimalUtil.BigDecimalPlus.create(beforeVo.getMoneyPaid(), BigDecimalUtil.Operator.add),
             BigDecimalUtil.BigDecimalPlus.create(beforeVo.getBkOrderMoney(), BigDecimalUtil.Operator.add),
