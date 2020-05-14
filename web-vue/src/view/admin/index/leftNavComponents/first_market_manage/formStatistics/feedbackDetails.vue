@@ -231,11 +231,17 @@ moduleValueList: null
                   // }
                   let arr = []
                   item.moduleValueList.forEach((itemC, indexC) => {
-                    JSON.parse(item.moduleValue).forEach((v, i) => {
-                      if (Number((JSON.parse(v)) - 1) === indexC) {
+                    if (Array.isArray(JSON.parse(item.moduleValue))) {
+                      JSON.parse(item.moduleValue).forEach((v, i) => {
+                        if (Number((JSON.parse(v)) - 1) === indexC) {
+                          arr.push(indexC)
+                        }
+                      })
+                    } else {
+                      if (Number((JSON.parse(item.moduleValue)) - 1) === indexC) {
                         arr.push(indexC)
                       }
-                    })
+                    }
                   })
                   item.isCheckedData = arr
                   break
