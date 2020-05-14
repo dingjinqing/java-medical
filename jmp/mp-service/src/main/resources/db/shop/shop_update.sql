@@ -410,8 +410,8 @@ CREATE TABLE IF NOT EXISTS `b2c_checked_goods_cart` (
   	INDEX `identity_id` (`identity_id`),
   	INDEX `product_id` (`product_id`)
 );
-
-
+-- 2020年5月14日 虚拟商品会员卡下单增加会员卡卡号字段
+ALTER TABLE `b2c_virtual_order` ADD COLUMN `send_card_no` varchar(32) NOT NULL COMMENT '订单发送的会员卡no' ;
 
 /*********************2.11*************************END*/
 

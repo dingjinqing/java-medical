@@ -143,6 +143,7 @@ public class WxCardExchangeService extends ShopBaseService {
 			
 			GoodsSearchMpParam searchParam = new GoodsSearchMpParam();
 			searchParam.setKeyWords(param.getSearch());
+			searchParam.setPageFrom(GoodsSearchMpParam.PAGE_FROM_CARD_EXCHANGE_GOODS);
 			GoodsSearchMpOuterParam outerPageParam = new GoodsSearchMpOuterParam();
 			outerPageParam.setCardNo(param.getCardNo());
 			searchParam.setOuterPageParam(outerPageParam);
@@ -336,6 +337,8 @@ public class WxCardExchangeService extends ShopBaseService {
 	 */
 	public List<Integer> getCardExchangGoodsIds(String cardNo) {
 		CardFullDetail cardDetail = mCardSvc.getCardDetailByNo(cardNo);
-		return cardExchangSvc.getExchangGoodsAllIds(cardDetail.getMemberCard());
+		 List<Integer> res = cardExchangSvc.getExchangGoodsAllIds(cardDetail.getMemberCard());
+		 logger().info("兑换商品IDs: "+res);
+		 return res;
 	}
 }

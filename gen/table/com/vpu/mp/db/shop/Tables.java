@@ -4,7 +4,7 @@
 package com.vpu.mp.db.shop;
 
 
-import com.vpu.mp.db.shop.tables.Presale;
+import com.vpu.mp.db.shop.tables.VirtualOrder;
 
 import javax.annotation.Generated;
 
@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
-     * The table <code>mini_shop_471752.b2c_presale</code>.
+     * The table <code>mini_shop_471752.b2c_virtual_order</code>.
      */
-    public static final Presale PRESALE = com.vpu.mp.db.shop.tables.Presale.PRESALE;
+    public static final VirtualOrder VIRTUAL_ORDER = com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 }

@@ -100,9 +100,9 @@
 						<text class="condition-info">累积消费金额达到{{cardInfo.nextGradeCard.gradeConditionJson.gradeMoney}}元（仅包含微信、余额支付）</text>
 					</view>
 					<view class="upgrade-condition upgrade">
-						<text>升级等级：等级v3</text>
+						<text>升级等级：等级{{cardInfo.nextGradeCard.grade}}</text>
 						<view bindtap='handleToCheckBenefit' class="toCheckGradeEquity">
-							查看等级v3权益
+							查看等级{{cardInfo.nextGradeCard.grade}}权益
 						</view>
 					</view>
 				</view>
