@@ -143,7 +143,7 @@
         </el-form-item>
         <el-form-item>
           <el-button
-            @click="inviteList"
+            @click="initData"
             type="primary"
             size="small"
           >筛选</el-button>
