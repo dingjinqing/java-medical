@@ -282,31 +282,34 @@ public class WxAppCardController extends WxAppBaseController {
 
 	/**
 	 * 限次卡是否兑换商品
+	 * @throws MpException 
 	 */
 	@PostMapping("/api/wxapp/card/exchange/judge")
-	public JsonResult changeGoodsList(@RequestBody @Validated CardExchaneGoodsJudgeParam param) {
+	public JsonResult changeGoodsList(@RequestBody @Validated CardExchaneGoodsJudgeParam param) throws MpException {
 		logger().info("限次卡是否兑换商品判断");
 		param.setUserId(wxAppAuth.user().getUserId());
-		shop().user.wxUserCardService.exchangeSvc.judgeCardGoods(param);
-		return success();
+		boolean res = shop().user.wxUserCardService.exchangeSvc.judgeCardGoods(param);
+		return res?success():fail();
 	}
 	
 	/**
 	 * 限次卡是否能够兑换单个商品校验
+	 * @throws MpException 
 	 */
 	@PostMapping("/api/card/exchange/tobuy/judge")
-	public JsonResult judgeCardExchangeTobuy(@RequestBody @Validated CardExchaneGoodsJudgeParam param) {
+	public JsonResult judgeCardExchangeTobuy(@RequestBody @Validated CardExchaneGoodsJudgeParam param) throws MpException {
 		logger().info("限次卡是否兑换商品判断");
 		param.setUserId(wxAppAuth.user().getUserId());
-		shop().user.wxUserCardService.exchangeSvc.judgeCardGoods(param);
-		return success();
+		boolean res = shop().user.wxUserCardService.exchangeSvc.judgeCardGoods(param);
+		return res?success():fail();
 	}
 	
 	/**
 	 * 兑换商品加购
+	 * @throws MpException 
 	 */
 	@PostMapping("/api/wxapp/card/change/add")
-	public JsonResult addExchangeGoods(@RequestBody CardAddExchangeGoodsParam param) {
+	public JsonResult addExchangeGoods(@RequestBody CardAddExchangeGoodsParam param) throws MpException {
 		logger().info("限次卡是否兑换商品判断");
 		param.setUserId(wxAppAuth.user().getUserId());
 		shop().user.wxUserCardService.exchangeSvc.addExchangeGoods(param);

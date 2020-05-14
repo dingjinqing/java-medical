@@ -127,22 +127,6 @@ public class WxCardExchangeService extends ShopBaseService {
 				return vo;
 			}
 			
-//			Byte soldOutGoods = shopCommonCfgSvc.getSoldOutGoods();
-//			
-//			GoodsPageListParam goodsPageListParam = new GoodsPageListParam();
-//			if(CardUtil.isExchangPartGoods(memberCard.getIsExchang())) {
-//				List<Integer> goodsIds = cardExchangSvc.getExchangPartGoodsAllIds(memberCard.getExchangGoods());
-//				goodsPageListParam.setGoodsIds(goodsIds);
-//			}
-//			goodsPageListParam.setIsSaleOut(soldOutGoods);
-//			goodsPageListParam.setGoodsName(param.getSearch());
-//			goodsPageListParam.setCurrentPage(param.getCurrentPage());
-//			goodsPageListParam.setPageRows(param.getPageRows());
-//			
-//			PageResult<GoodsPageListVo> goodsPageResult = goodsSvc.getPageList(goodsPageListParam);
-//			vo.setGoodsPageResult(goodsPageResult);
-			
-			
 			GoodsSearchMpParam searchParam = new GoodsSearchMpParam();
 			searchParam.setKeyWords(param.getSearch());
 			searchParam.setPageFrom(GoodsSearchMpParam.PAGE_FROM_CARD_EXCHANGE_GOODS);
@@ -173,26 +157,17 @@ public class WxCardExchangeService extends ShopBaseService {
 	
 	/**
 	 * 判断是否可以兑换或加入兑换列表
+	 * @throws MpException 
 	 */
-	public void judgeCardGoods(CardExchaneGoodsJudgeParam param) {
-		//	todo 兑换商品数量配置与使用时间
-		
-		return;
+	public boolean judgeCardGoods(CardExchaneGoodsJudgeParam param) throws MpException {
+		return judgeExchangGoodsAvailable(param.getUserId(),param.getCardNo());
 	}
 	
 	/**
-	 * 是否满足兑换购买兑换条件
-	 */
-	public void canExchangeToBuy(CardExchaneGoodsJudgeParam param) {
-		//	todo 兑换商品数量配置与使用时间
-		return;
-	}
-
-
-	/**
 	 * 	添加活动商品
+	 * @throws MpException 
 	 */
-	public void addExchangeGoods(CardAddExchangeGoodsParam param) {
+	public void addExchangeGoods(CardAddExchangeGoodsParam param) throws MpException {
 		logger().info("兑换商品加购");
 		Optional<GoodsRecord> record = goodsSvc.getGoodsById(param.getGoodsId());
 		GoodsRecord goodsRecord = record.get();
@@ -206,29 +181,24 @@ public class WxCardExchangeService extends ShopBaseService {
 		checkedParam.setIdentityId(param.getCardNo());
 		checkedParam.setGoodsId(param.getGoodsId());
 		
-		
-		//	TODO 条件检查
-		
-		//	1）该商品有效期内可兑换的次数 , 2）该会员卡可使用的兑换次数
-		
-		
-		
-		
-		CheckedGoodsCartRecord userCheckedGoods = userCheckedGoodsSvc.getUserCheckedGoods(checkedParam);
-		if(userCheckedGoods == null) {
-			// 添加
-			CheckedGoodsCartRecord newRecord = db().newRecord(CHECKED_GOODS_CART);
-			newRecord.setUserId(param.getUserId());
-			newRecord.setGoodsId(param.getGoodsId());
-			newRecord.setProductId(param.getProductId());
-			newRecord.setGoodsNumber(param.getPrdNumber());
-			newRecord.setAction(CardConstant.MCARD_TP_LIMIT);
-			newRecord.setIdentityId(param.getCardNo());
-			newRecord.insert();
-		}else {
-			// 更新
-			userCheckedGoods.setGoodsNumber(param.getPrdNumber());
-			db().executeUpdate(userCheckedGoods);
+		boolean judegeRes = judgeExchangGoodsAvailable(param.getGoodsId(), param.getCardNo());
+		if(judegeRes) {
+			CheckedGoodsCartRecord userCheckedGoods = userCheckedGoodsSvc.getUserCheckedGoods(checkedParam);
+			if(userCheckedGoods == null) {
+				// 添加
+				CheckedGoodsCartRecord newRecord = db().newRecord(CHECKED_GOODS_CART);
+				newRecord.setUserId(param.getUserId());
+				newRecord.setGoodsId(param.getGoodsId());
+				newRecord.setProductId(param.getProductId());
+				newRecord.setGoodsNumber(param.getPrdNumber());
+				newRecord.setAction(CardConstant.MCARD_TP_LIMIT);
+				newRecord.setIdentityId(param.getCardNo());
+				newRecord.insert();
+			}else {
+				// 更新
+				userCheckedGoods.setGoodsNumber(param.getPrdNumber());
+				db().executeUpdate(userCheckedGoods);
+			}
 		}
 	}
 
