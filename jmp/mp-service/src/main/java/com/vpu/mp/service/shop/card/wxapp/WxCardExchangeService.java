@@ -11,13 +11,14 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods.TimeType;
 import com.vpu.mp.service.pojo.shop.member.card.dao.CardFullDetail;
+import com.vpu.mp.service.pojo.shop.member.card.show.CardUseCondition;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
@@ -27,13 +28,19 @@ import com.vpu.mp.service.pojo.wxapp.card.param.CardExchaneGoodsJudgeParam;
 import com.vpu.mp.service.pojo.wxapp.card.param.CardExchangeGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.card.vo.CardCheckedGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.card.vo.CardExchangeGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchContentVo;
+import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpOuterParam;
+import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpParam;
 import com.vpu.mp.service.pojo.wxapp.user.UserCheckedGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.user.UserCheckedGoodsVo;
 import com.vpu.mp.service.shop.card.CardExchangService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.mp.GoodsSearchMpService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.member.card.LimitCardOpt;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.user.UserCheckedGoodsService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -68,6 +75,8 @@ public class WxCardExchangeService extends ShopBaseService {
 	@Autowired private DomainConfig domainConfig;
     @Autowired public UserCardService userCard;
     @Autowired private CardExchangService cardExchangSvc;
+    @Autowired private LimitCardOpt limitCardOpt;
+    @Autowired private GoodsSearchMpService goodsSearchMpSvc;
 
     /**
      * 退限次卡次数
@@ -116,20 +125,30 @@ public class WxCardExchangeService extends ShopBaseService {
 				return vo;
 			}
 			
-			Byte soldOutGoods = shopCommonCfgSvc.getSoldOutGoods();
-			GoodsPageListParam goodsPageListParam = new GoodsPageListParam();
-			if(CardUtil.isExchangPartGoods(memberCard.getIsExchang())) {
-				List<Integer> goodsIds = cardExchangSvc.getExchangPartGoodsAllIds(memberCard.getExchangGoods());
-				goodsPageListParam.setGoodsIds(goodsIds);
-			}
-			goodsPageListParam.setIsSaleOut(soldOutGoods);
-			goodsPageListParam.setGoodsName(param.getSearch());
-			goodsPageListParam.setCurrentPage(param.getCurrentPage());
-			goodsPageListParam.setPageRows(param.getPageRows());
+//			Byte soldOutGoods = shopCommonCfgSvc.getSoldOutGoods();
+//			
+//			GoodsPageListParam goodsPageListParam = new GoodsPageListParam();
+//			if(CardUtil.isExchangPartGoods(memberCard.getIsExchang())) {
+//				List<Integer> goodsIds = cardExchangSvc.getExchangPartGoodsAllIds(memberCard.getExchangGoods());
+//				goodsPageListParam.setGoodsIds(goodsIds);
+//			}
+//			goodsPageListParam.setIsSaleOut(soldOutGoods);
+//			goodsPageListParam.setGoodsName(param.getSearch());
+//			goodsPageListParam.setCurrentPage(param.getCurrentPage());
+//			goodsPageListParam.setPageRows(param.getPageRows());
+//			
+//			PageResult<GoodsPageListVo> goodsPageResult = goodsSvc.getPageList(goodsPageListParam);
+//			vo.setGoodsPageResult(goodsPageResult);
 			
-			PageResult<GoodsPageListVo> goodsPageResult = goodsSvc.getPageList(goodsPageListParam);
-			vo.setGoodsPageResult(goodsPageResult);
 			
+			GoodsSearchMpParam searchParam = new GoodsSearchMpParam();
+			searchParam.setKeyWords(param.getSearch());
+			GoodsSearchMpOuterParam outerPageParam = new GoodsSearchMpOuterParam();
+			outerPageParam.setCardNo(param.getCardNo());
+			searchParam.setOuterPageParam(outerPageParam);
+			GoodsSearchContentVo searchGoodsGate = goodsSearchMpSvc.searchGoodsGate(searchParam);
+			PageResult<? extends GoodsListMpVo> pageResult = searchGoodsGate.getPageResult();
+			vo.setGoodsPageResult(pageResult);
 			//	Integer count = userCard.getExchangSurplus();
 			// TODO 兑换商品数量配置，时间限制
 			
@@ -249,16 +268,14 @@ public class WxCardExchangeService extends ShopBaseService {
 		userCheckedGoodsSvc.removeChoosedGoods(param);
 	}
 	
-	
-	
 	/**
-	 * 获取指定时间范围兑换某个商品的次数
+	 * 获取该卡指定时间范围兑换某个商品的次数
 	 * @param goodsId 商品Id
 	 * @param cardNo 卡号Id
 	 * @param timeType 时间范围类型
 	 * @return Integer 次数
 	 */
-	public Integer getExchangGoodsTimeDuringPeriod(Integer goodsId,String cardNo,TimeType timeType) {
+	private Integer getExchangGoodsTimesDuringPeriod(Integer goodsId,String cardNo,TimeType timeType) {
 		logger().info("获取指定时间范围兑换某个商品的次数");
 		Timestamp[] times = cardExchangSvc.getIntervalTime(timeType.val);
 		Condition condition = DSL.noCondition();
@@ -274,13 +291,51 @@ public class WxCardExchangeService extends ShopBaseService {
 					.and(ORDER_INFO.CREATE_TIME.ge(times[0]))
 					.and(ORDER_INFO.CREATE_TIME.le(times[1]));
 		}
-		
-		
 		 return db()
 			.select(DSL.sum(ORDER_GOODS.GOODS_NUMBER))
 			.from(ORDER_GOODS)
 			.leftJoin(ORDER_INFO).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
 			.and(condition)
 			.fetchOne(0, int.class);
+	}
+
+
+	/**
+	 * 获取该卡兑换某个商品的次数
+	 * @param goodsId 商品Id
+	 * @param cardNo 卡号Id
+	 * @return Integer 次数
+	 */
+	private Integer getExchangGoodsAllTimes(Integer goodsId,String cardNo) {
+		return getExchangGoodsTimesDuringPeriod(goodsId,cardNo,CardExchangGoods.TimeType.NO_LIMIT);
+	}
+
+	/**
+	 * 判断该卡能够兑换该商品
+	 */
+	public void judgeExchangGoodsAvailable(Integer goodsId,String cardNo) {
+		CardFullDetail cardDetail = mCardSvc.getCardDetailByNo(cardNo);
+		CardUseCondition judegeCardUsable = limitCardOpt.judegeCardUsable(cardDetail.getUserCard(),cardDetail.getMemberCard());
+		//	检测该该限次卡是否用
+		if(!judegeCardUsable.isUsable()) {
+			
+		}
+		
+		
+		//	检测该兑换商品是否满足该限次卡的设定的配置
+		
+		//	会员卡配置的兑换商品兑换总次数次数
+		
+		//	会员卡配置的指定时间范围内兑换的次数检验
+	}
+	
+	/**
+	 * 获取兑换卡可兑换的商品Id
+	 * @param cardNo 会员卡卡号
+	 * @return null 表示全部商品 | List 可兑换商品的Id
+	 */
+	public List<Integer> getCardExchangGoodsIds(String cardNo) {
+		CardFullDetail cardDetail = mCardSvc.getCardDetailByNo(cardNo);
+		return cardExchangSvc.getExchangGoodsAllIds(cardDetail.getMemberCard());
 	}
 }

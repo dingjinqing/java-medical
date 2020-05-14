@@ -190,7 +190,7 @@ public class UserImportService extends ShopBaseService {
 		String mrkingVoucherId = json.getMrkingVoucherId();
 		List<CouponView> couponViewByIds=new ArrayList<CouponView>();
 		if(StringUtils.isNotEmpty(mrkingVoucherId)) {
-			couponViewByIds = couponService.getCouponViewByIds(Util.splitValueToList(mrkingVoucherId));			
+			couponViewByIds = couponService.getCouponViewByIds(Util.splitValueToList(mrkingVoucherId));
 		}
 		return new SetNoticeJsonVo(json.getExplain(), json.getScore(), mrkingVoucherId, couponViewByIds);
 	}

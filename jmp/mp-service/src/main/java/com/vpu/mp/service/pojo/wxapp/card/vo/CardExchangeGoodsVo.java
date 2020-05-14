@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 
 import lombok.Data;
 
@@ -16,7 +17,7 @@ public class CardExchangeGoodsVo {
 	/**
 	 * 兑换商品列表
 	 */
-	private PageResult<GoodsPageListVo> goodsPageResult;
+	private PageResult<? extends GoodsListMpVo> goodsPageResult;
 	
 	/**
 	 * 会员卡相关字段
