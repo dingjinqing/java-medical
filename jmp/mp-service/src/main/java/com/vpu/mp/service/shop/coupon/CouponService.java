@@ -229,15 +229,15 @@ public class CouponService extends ShopBaseService {
      * @param couponId
      * @return
      */
-    public List<CouponParamVo> getOneCouponInfo(Integer couponId) {
-        List<CouponParamVo> couponInfo = db().select().from(MRKING_VOUCHER)
-            .where(MRKING_VOUCHER.ID.eq(couponId))
-            .fetch().into(CouponParamVo.class);
-        for (CouponParamVo couponParamVo : couponInfo) {
-        	couponParamVo.setStatus(couponMpService.couponGetStatus(new MpGetCouponParam(couponId, null)));
+	public List<CouponParamVo> getOneCouponInfo(Integer couponId) {
+		/** 单条返回列表，之前写的人写的有问题，前端调用太多，有缘人改吧*/
+		List<CouponParamVo> list = db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(couponId))
+				.fetchInto(CouponParamVo.class);
+		for (CouponParamVo item : list) {
+			item.setStatus(couponMpService.couponGetStatus(new MpGetCouponParam(couponId, null)));
 		}
-        return couponInfo;
-    }
+		return list;
+	}
 
     /**
      * 获取单个优惠券信息

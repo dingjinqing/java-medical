@@ -336,6 +336,8 @@ public class WxCardExchangeService extends ShopBaseService {
 	 */
 	public List<Integer> getCardExchangGoodsIds(String cardNo) {
 		CardFullDetail cardDetail = mCardSvc.getCardDetailByNo(cardNo);
-		return cardExchangSvc.getExchangGoodsAllIds(cardDetail.getMemberCard());
+		 List<Integer> res = cardExchangSvc.getExchangGoodsAllIds(cardDetail.getMemberCard());
+		 logger().info("兑换商品IDs: "+res);
+		 return res;
 	}
 }
