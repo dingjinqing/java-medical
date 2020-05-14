@@ -585,8 +585,8 @@ public class JsonResultMessage {
     public static final String MSG_CARD_BEFORE_START_TIME = "member.card.before.start.time";
     public static final String MSG_CARD_ALREADY_EXPIRED = "member.card.already.expired";
     public static final String MSG_CARD_NOT_ACTIVE = "member.card.not.active";
-    
-    
+
+
     /**
      * 	用户卡包邮信息
      */
@@ -1216,4 +1216,9 @@ public class JsonResultMessage {
     public static final String MRKING_STRATEGY_ORDER_LIST_USERNAME = "mrking.strategy.order.list.username";
     public static final String MRKING_STRATEGY_ORDER_LIST_ORDER_STATUS = "mrking.strategy.order.list.order_status";
 
+
+    /**
+     * 营销-限时降价订单excel导出
+     */
+    public static final String REDUCE_PRICE_ORDER_LIST_FILENAME = "reduceprice.order.list.file_name";
 }
