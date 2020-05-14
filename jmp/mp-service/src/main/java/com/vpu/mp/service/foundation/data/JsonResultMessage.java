@@ -589,6 +589,10 @@ public class JsonResultMessage {
     public static final String MSG_CARD_ALLOW_TIME_OVER = "member.card.allow.time.over";
     public static final String MSG_CARD_ADD_TIMES_OVER = "member.card.add.times.over";
     public static final String MSG_CARD_PERIOD_ADD_TIMES_OVER = "member.card.period.add.times.over";
+	public static final String MSG_CARD_HAVE_RECEIVED = "card.have.received";
+	public static final String MSG_CARD_NO_RECEIVED = "card.no.received";
+	public static final String MSG_CARD_NORMAL = "card.normal";
+	public static final String MSG_CARD_NO_ABOLISHED = "card.no.abolished";
 
     /**
      * 	用户卡包邮信息
@@ -1225,4 +1229,5 @@ public class JsonResultMessage {
      * 营销-限时降价订单excel导出
      */
     public static final String REDUCE_PRICE_ORDER_LIST_FILENAME = "reduceprice.order.list.file_name";
+
 }

@@ -53,6 +53,7 @@ import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
@@ -61,6 +62,7 @@ import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RemarkUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchDetailVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
@@ -181,9 +183,18 @@ public class CardDaoService extends ShopBaseService {
 		return select;
 	}
 	
-	public List<CardReceiveDownVo> toMakeDownList(CodeReceiveParam param) {
+	public List<CardReceiveDownVo> toMakeDownList(CodeReceiveParam param,String lang) {
 		SelectConditionStep<?> select = buildSelect(param);
 		List<CardReceiveDownVo> list = select.fetchInto(CardReceiveDownVo.class);
+		/** 已领取*/
+		String haveReceived = Util.translateMessage(lang, JsonResultCode.MSG_CARD_HAVE_RECEIVED.getMessage(), "excel",null);
+		/** 未领取*/
+		String noReceived = Util.translateMessage(lang, JsonResultCode.MSG_CARD_NO_RECEIVED.getMessage(), "excel",null);
+		/** 正常*/
+		String normal = Util.translateMessage(lang, JsonResultCode.MSG_CARD_NORMAL.getMessage(), "excel",null);
+		/** 已废除*/
+		String abolished = Util.translateMessage(lang, JsonResultCode.MSG_CARD_NO_ABOLISHED.getMessage(), "excel",null);
+		
 		for (CardReceiveDownVo vo : list) {
 			String code = vo.getCode();
 			if(!StringUtils.isBlank(code)) {
@@ -201,8 +212,8 @@ public class CardDaoService extends ShopBaseService {
 					vo.setCardMsg(cardPwd.substring(0, 2).concat(tmp).concat(cardPwd.substring(lengthOfCardPwd + 2)));
 				}
 			}
-			vo.setSReveiveStatus(vo.getReceiveTime() != null ? "已领取" :"未领取");
-			vo.setSDelStatus(vo.getDelFlag().equals(CardConstant.ZERO) ? "正常" : "已废除");
+			vo.setSReveiveStatus(vo.getReceiveTime() != null ? haveReceived : noReceived);
+			vo.setSDelStatus(vo.getDelFlag().equals(CardConstant.ZERO) ? normal : abolished);
 		}
 		return list;
 	}
@@ -215,7 +226,7 @@ public class CardDaoService extends ShopBaseService {
 	public Workbook getCardReceiveExcel(CodeReceiveParam param, String lang) {
 		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
 		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
-		excelWriter.writeModelList(toMakeDownList(param), CardReceiveDownVo.class);
+		excelWriter.writeModelList(toMakeDownList(param,lang), CardReceiveDownVo.class);
 		return workbook;
 		
 	}
