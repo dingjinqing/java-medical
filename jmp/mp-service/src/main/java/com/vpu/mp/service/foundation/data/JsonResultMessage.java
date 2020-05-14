@@ -1193,4 +1193,9 @@ public class JsonResultMessage {
     public static final String VIRTUAL_ORDER_COUPON_PACK_RETURN_CARD_BALANCE = "virtual.order.coupon_pack.return_card_balance";
     public static final String VIRTUAL_ORDER_COUPON_PACK_REFUNDED = "virtual.order.coupon_pack.refunded";
     public static final String VIRTUAL_ORDER_COUPON_PACK_PAYMENT_SUCCESSFUL = "virtual.order.coupon_pack.payment_successful";
+
+    /**
+     * 营销-限时降价订单excel导出
+     */
+    public static final String REDUCE_PRICE_ORDER_LIST_FILENAME = "reduceprice.order.list.file_name";
 }
