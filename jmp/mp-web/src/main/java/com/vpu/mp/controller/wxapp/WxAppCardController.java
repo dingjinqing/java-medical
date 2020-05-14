@@ -1,4 +1,6 @@
 package com.vpu.mp.controller.wxapp;
+import com.vpu.mp.service.pojo.shop.member.account.*;
+import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.validation.annotation.Validated;
@@ -11,16 +13,6 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RequestUtil;
-import com.vpu.mp.service.pojo.shop.member.account.CardReceiveVo;
-import com.vpu.mp.service.pojo.shop.member.account.CardRenewCheckoutParam;
-import com.vpu.mp.service.pojo.shop.member.account.CardRenewCheckoutVo;
-import com.vpu.mp.service.pojo.shop.member.account.CardRenewParam;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardGetParam;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardJudgeVo;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardMaParam;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
-import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
-import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingParam;
 import com.vpu.mp.service.pojo.shop.member.buy.CardToPayParam;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
@@ -73,6 +65,15 @@ public class WxAppCardController extends WxAppBaseController {
 		}
 		return success(userCardDetail);
 	}
+
+    /**
+     * 获取登记卡的权益
+     */
+    @PostMapping(value="/api/card/interests/info")
+    public JsonResult getInterests(@RequestBody CardInterestsParam param){
+        param.setUserId(wxAppAuth.user().getUserId());
+        return success(shop().userCard.getInterestsByGrade(param));
+    }
 	
 	/**
 	 * 领取会员卡判断

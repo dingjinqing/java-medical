@@ -38,10 +38,6 @@ public class PictorialImgPx {
 
     /***********************不随店铺风格改变的色值***************************/
     /**
-     * 头部文字颜色
-     */
-    public static final Color HEAD_FONT_COLOR = new Color(85, 85, 85);
-    /**
      * 商品名称颜色
      */
     public static final Color GOODS_NAME_COLOR = new Color(52, 52, 52);
@@ -111,12 +107,15 @@ public class PictorialImgPx {
         } else {
             if (!DEFAULT_STYLE.equals(picStyleConfig)) {
                 headerHeight = 130;
-                radius = bgWidth/2;
-                pointX = bgWidth/2-radius;
-                pointY = 0;
+                majorAxis = bgWidth+bgWidth/2;
+                minorAxis = 500;
+                bgCircleStartX = (bgWidth-majorAxis)/2;
+                bgCircleStartY = -100;
             }
             // 默认样式值初始化
             initForDefault();
+
+            headFontColor = Color.WHITE;
 
             if (SHARE_PERSON_STYLE.equals(picStyleConfig)) {
                 initForSharePersonInfoStyle();
@@ -240,11 +239,12 @@ public class PictorialImgPx {
     private Integer shareDocCanUseWidth;
 
     /**
-     * 样式3,4,5中的背景圆心和半径
+     * 样式3,4,5中的背景椭圆
      */
-    private Integer pointX;
-    private Integer pointY;
-    private Integer radius;
+    private Integer bgCircleStartX;
+    private Integer bgCircleStartY;
+    private Integer majorAxis;
+    private Integer minorAxis;
 
     /**
      * 商品宽高,位置x,y

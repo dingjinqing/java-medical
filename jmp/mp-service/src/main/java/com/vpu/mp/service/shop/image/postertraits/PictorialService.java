@@ -258,9 +258,10 @@ public class PictorialService extends ShopBaseService {
     public BufferedImage createSharePersonInfoPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx){
 
         BufferedImage bgBufferedImage = createBgImage(imgPx);
-        ImageUtil.addCircle(bgBufferedImage,imgPx.getPointX(),imgPx.getPointY(),imgPx.getRadius(),imgPx.getShopStyleColor());
+        ImageUtil.addCircle(bgBufferedImage,imgPx.getBgCircleStartX(),imgPx.getBgCircleStartY(),imgPx.getMajorAxis(),imgPx.getMinorAxis(),imgPx.getShopStyleColor());
         // 设置用户名
-        String userNameText = userInfo.getUserName()+"  向您推荐";
+
+        String userNameText = userInfo.getUserName()+" "+Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_RECOMMEND_INFO, null, "messages");;
         addHeaderItemInfo(bgBufferedImage,userInfo.getUserAvatarImage(),userNameText,shareDoc,imgPx);
         addGoodsPicInfo(bgBufferedImage,goodsImg,imgPx);
         addBottomItemInfo(bgBufferedImage,shop,goodsName,null,null,realPrice,linePrice,qrCodeImg,imgPx);
