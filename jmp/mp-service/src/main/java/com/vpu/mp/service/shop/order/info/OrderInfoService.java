@@ -157,7 +157,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 订单综合查询:通过条件获得订单号
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -246,7 +246,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 构造综合查询条件
-	 * 
+	 *
 	 * @param select
 	 * @param param
      * @param joined select 已经连接过order_goods和user
@@ -402,7 +402,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 订单goodsType查询构造
-	 * 
+	 *
 	 * @param goodsType
 	 */
 	public static String getGoodsTypeToSearch(Byte[] goodsType) {
@@ -510,7 +510,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 按照主订单分组，正常订单的key为orderSn
-	 * 
+	 *
 	 * @param orderSn
 	 * @return
 	 */
@@ -540,7 +540,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 过滤子订单数量>0时,过滤主订单下已被拆除的商品行（通过减小数量为0则不展示）
-	 * 
+	 *
 	 * @param order 主订单（已经在主订单下添加了子订单及其商品）, goods主订单商品行
 	 * @param goods 商品
 	 * @return
@@ -581,7 +581,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 得到实际支付金额（判读是否包含运费）
-	 * 
+	 *
 	 * @param order
 	 * @param isIncludeShipingFee 是否包含运费
 	 * @return
@@ -601,7 +601,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 当前订单为子订单需要替换支付信息与用户信息(子订单无补款信息,不需复制)
-	 * 
+	 *
 	 * @param currentOrder
 	 */
 	public void replaceOrderInfo(OrderListInfoVo currentOrder) {
@@ -620,7 +620,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 是否为拆单逻辑下的主订单
-	 * 
+	 *
 	 * @param currentOrder
 	 * @return
 	 */
@@ -634,7 +634,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 是否为拆单逻辑下的子订单
-	 * 
+	 *
 	 * @param currentOrder
 	 * @return
 	 */
@@ -648,7 +648,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 通过主订单号获取orders
-	 * 
+	 *
 	 * @param currentOrder
 	 * @param isMain
 	 * @return List<OrderListInfoVo>
@@ -664,7 +664,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 将order支付信息构造成map方便计算
-	 * 
+	 *
 	 * @param currentOrder
 	 * @return Map<String, BigDecimal>
 	 */
@@ -709,7 +709,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 退*时更新订单信息（完成状态输入时必须order与canReturnGoodsNumber）
-	 * 
+	 *
 	 * @param returnOrder
 	 * @param order                ==null时不参与returnOrder==REFUND_STATUS_FINISH分支
 	 * @param canReturnGoodsNumber 是否存在可退商品数量；==null时不参与returnOrder==REFUND_STATUS_FINISH分支
@@ -811,7 +811,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 设置订单支付方式数组
-	 * 
+	 *
 	 * @param order
 	 */
 	public void setPayCodeList(OrderListInfoVo order) {
@@ -848,7 +848,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 提醒发货
-	 * 
+	 *
 	 * @param order
 	 */
 	public void remind(OrderInfoMpVo order) {
@@ -859,7 +859,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 延长发货
-	 * 
+	 *
 	 * @param order
 	 */
 	public void extendReceive(OrderInfoMpVo order) {
@@ -870,7 +870,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 删除
-	 * 
+	 *
 	 * @param order
 	 */
 	public void delete(OrderListMpVo order) {
@@ -880,7 +880,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 获取上次订单地址
-	 * 
+	 *
 	 * @param userId
 	 * @return UserAddressVo
 	 */
@@ -1043,15 +1043,16 @@ public class OrderInfoService extends ShopBaseService {
      * @returnmarket/pre_sale/add
      */
     public Integer getPreSaletUserBuyNumber(Integer userId, Integer preSaleId){
-        return db().select(DSL.count(ORDER_GOODS.GOODS_NUMBER)).from(ORDER_GOODS)
+        Integer sum = db().select(sum(ORDER_GOODS.GOODS_NUMBER)).from(ORDER_GOODS)
             .leftJoin(TABLE).on(TABLE.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
             .where(TABLE.USER_ID.eq(userId)
-                .and(TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_CANCELLED, OrderConstant.ORDER_CLOSED))
+                .and(TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_CANCELLED, ORDER_CLOSED))
                 .and(TABLE.BK_ORDER_PAID.gt(OrderConstant.BK_PAY_NO))
                 .and(TABLE.ACTIVITY_ID.eq(preSaleId))
                 .and(ORDER_GOODS.IS_GIFT.eq(OrderConstant.IS_GIFT_N))
                 .and(TABLE.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[]{BaseConstant.ACTIVITY_TYPE_PRE_SALE}))))
             .fetchAnyInto(Integer.class);
+        return sum == null ? 0 : sum;
     }
 
     public Byte getOrderIsReturnCoupon(Integer orderId) {
@@ -1081,10 +1082,10 @@ public class OrderInfoService extends ShopBaseService {
             return 0;
         }
         Timestamp[] cardFreeShipInterval = getCardFreeShipInterval(freeLimit);
-        
+
         if(cardFreeShipInterval == null) {
         	logger().info("cardFreeShipInterval为null");
-        	return 0; 
+        	return 0;
         }
         int result = db().
 	            selectCount().
@@ -1132,7 +1133,7 @@ public class OrderInfoService extends ShopBaseService {
 		return getConsumeOrder(userId).getTotalMoneyPaid();
 	}
 
-	
+
 	/**
 	 * 获取用户消费 订单
 	 * @param userId
@@ -1151,16 +1152,16 @@ public class OrderInfoService extends ShopBaseService {
 				)
 			.and(TABLE.USER_ID.eq(userId))
 			.fetchAnyInto(UserOrderBean.class);
-		 
+
 		 // 门店买单订单
 		 UserOrderBean storeOrder = saas().getShopApp(getShopId()).store.reservation.storeOrderService.getConsumerOrder(userId);
-		 
+
 		 // 门店服务订单
 		 UserOrderBean serviceOrder = saas().getShopApp(getShopId()).store.serviceOrder.getConsumerOrder(userId);
-		 
+
 		 // 会员卡续费订单
 		 UserOrderBean cardRenew = saas().getShopApp(getShopId()).userCard.getConsumerOrder(userId);
-		 
+
 		 Integer orderNum = order.getOrderNum()+storeOrder.getOrderNum()+serviceOrder.getOrderNum()+cardRenew.getOrderNum();
 		 BigDecimal totalMoneyPaid = BigDecimal.ZERO;
 		 List<BigDecimal> tmp = Arrays.<BigDecimal>asList(order.getTotalMoneyPaid(),storeOrder.getTotalMoneyPaid(),serviceOrder.getTotalMoneyPaid(),cardRenew.getTotalMoneyPaid());
@@ -1169,7 +1170,7 @@ public class OrderInfoService extends ShopBaseService {
 		 }
 		 return UserOrderBean.builder().orderNum(orderNum).totalMoneyPaid(totalMoneyPaid).build();
 	}
-	
+
 	/**
 	 * 获取用户所有消费订单
 	 */
@@ -1177,7 +1178,7 @@ public class OrderInfoService extends ShopBaseService {
 		logger().info("获取用户所有消费订单");
 		UserOrderBean order = getConsumeOrder(userId);
 		UserOrderBean cardOrder = saas().getShopApp(getShopId()).memberCardOrder.getConsumeOrder(userId);
-		
+
 		Integer orderNum = order.getOrderNum()+cardOrder.getOrderNum();
 		BigDecimal orderMoney = BigDecimalUtil.add(order.getTotalMoneyPaid(),cardOrder.getTotalMoneyPaid());
 		BigDecimal unitPrice = BigDecimal.ZERO;
@@ -1190,14 +1191,14 @@ public class OrderInfoService extends ShopBaseService {
 					.unitPrice(unitPrice)
 					.build();
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * 会员卡消费余额
-	 * 
+	 *
 	 * @param userId
 	 * @return
 	 */
@@ -1229,7 +1230,7 @@ public class OrderInfoService extends ShopBaseService {
 		 Timestamp storeStoreTime = saas().getShopApp(getShopId()).store.reservation.storeOrderService.lastOrderTime(userId);
 		// 服务订单
 		 Timestamp serviceTime = saas().getShopApp(getShopId()).store.serviceOrder.lastOrderTime(userId);
-		 
+
 		 List<Timestamp> times = Arrays.<Timestamp>asList(orderTime,cardOrderTime,storeStoreTime,serviceTime);
 		 LocalDateTime res = null;
 		 for(Timestamp t: times) {
@@ -1247,7 +1248,7 @@ public class OrderInfoService extends ShopBaseService {
 		 logger().info("最近下单时间： "+res);
 		 return res;
 	}
-	
+
 	/**
 	 * 普通订单最近下单时间
 	 */
@@ -1259,11 +1260,11 @@ public class OrderInfoService extends ShopBaseService {
 			.orderBy(TABLE.CREATE_TIME.desc())
 			.fetchAnyInto(Timestamp.class);
 	}
-	
+
 
 	/**
 	 * 获取一个组订单的退款数量
-	 * 
+	 *
 	 * @param mainOrderSn
 	 * @return
 	 */
@@ -1301,7 +1302,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 获得用户购买商品数
-	 * 
+	 *
 	 * @param userId
 	 * @return
 	 */
@@ -1316,7 +1317,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 订单导出数据的条数
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -1331,7 +1332,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 订单导出的原始数据
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -1358,7 +1359,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 是否是新下单用户
-	 * 
+	 *
 	 * @param userId  用户id
 	 * @param waitPay 是否统计代付款 (默认true)
 	 * @return true (没有订单)新用户 false (有订单)不是新用户
@@ -1382,7 +1383,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 某用户指定时间段内订单数(开区间)
-	 * 
+	 *
 	 * @return
 	 */
 	public int getUserOrderNumber(Integer userId, Timestamp startTime, Timestamp endTime) {
@@ -1451,7 +1452,7 @@ public class OrderInfoService extends ShopBaseService {
 				.where(TABLE.ORDER_STATUS.greaterThan(ORDER_CLOSED))
 				.groupBy(TABLE.USER_ID)
 				.having(DSL.count(TABLE.USER_ID).le(cnt)).fetchInto(Integer.class);
-		
+
 	}
 
 	/**
@@ -1547,7 +1548,7 @@ public class OrderInfoService extends ShopBaseService {
     public Integer getOrderIdBySn(String orderSn){
         return db().select(TABLE.ORDER_ID).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchOptionalInto(Integer.class).orElse(null);
     }
-    
+
     /**
      * 获得待付款活动订单
      * @param userId
@@ -1566,7 +1567,7 @@ public class OrderInfoService extends ShopBaseService {
 														.and(DslPlus.findInSet(goodsType, TABLE.GOODS_TYPE)))))))
 				.fetchAnyInto(TABLE);
     }
-    
+
     /**
      * 	获得用户兑换卡未完成订单
      * @return OrderInfoRecord || null 如果没有数据
@@ -1577,7 +1578,7 @@ public class OrderInfoService extends ShopBaseService {
     			.and(TABLE.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY))
     			.and(TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_FINISHED,OrderConstant.ORDER_RETURN_FINISHED,OrderConstant.ORDER_REFUND_FINISHED))
     			.and(TABLE.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[]{BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER})));
-		
+
     	return db().fetchOne(TABLE, condition);
     }
 }
