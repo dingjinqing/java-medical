@@ -90,7 +90,8 @@ public class EsBaseSearchService extends ShopBaseService {
         MARKET_PRICE,
         GOODS_PAGE_ID,
         GOODS_WEIGHT,
-        GOODS_DESC
+        GOODS_DESC,
+        ROOM_ID
     };
 
 
