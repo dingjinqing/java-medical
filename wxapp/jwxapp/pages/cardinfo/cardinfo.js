@@ -23,7 +23,9 @@ global.wxPage({
     cardId: null,
     give_card: 0,
     rebate_show: false, // 转赠弹窗flag
-    ifGetSq: 0
+    ifGetSq: 0,
+    benefitShow: false,
+    benefitData: []
   },
 
   /**
@@ -792,4 +794,30 @@ global.wxPage({
       });
     }, true, '取消', '确认取消')
   },
+  // 点击查看下一个等级卡权益
+  handleToCheckBenefit () {
+    console.log('触发')
+    let arr = [
+      {
+        title: '会员权益',
+        content: '购物打6.00折',
+        img: 'http://mpdevimg2.weipubao.cn/image/wxapp/grade_circle.png'
+      },
+      {
+        title: '会员权益',
+        content: '购物打6.00折',
+        img: 'http://mpdevimg2.weipubao.cn/image/wxapp/grade_circle.png'
+      }
+    ]
+    this.setData({
+      benefitShow: true,
+      benefitData: arr
+    })
+  },
+  bindCloseBeneFit (res) {
+    console.log(res)
+    this.setData({
+      benefitShow: res.detail
+    })
+  }
 })
