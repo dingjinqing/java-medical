@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.member.card.cardReceiveExport;
 import java.sql.Timestamp;
 
 import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
+import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
 
 import lombok.Data;
@@ -33,26 +34,29 @@ public class CardReceiveDownVo {
 	@ExcelColumn(columnIndex = 4, columnName = "card.export.receiveTime")
 	private Timestamp receiveTime;
 	/** - 卡号 */
+	@ExcelIgnore
 	private String cardNo;
 	/** -领取码 */
+	@ExcelIgnore
 	private String code;
 	/** -卡密码 */
+	@ExcelIgnore
 	private String cardPwd;
 	/** 领取码 / 卡号+密码 */
 	@ExcelColumn(columnIndex = 5, columnName = "card.export.cardMsg")
 	private String cardMsg;
-
+	@ExcelIgnore
 	private Byte delFlag;
 
 	/** 领取状态 1：已领取 2：未领取 */
 	@ExcelColumn(columnIndex = 6, columnName = "card.export.reveiveStatus")
 	private String sReveiveStatus;
-
+	@ExcelIgnore
 	private Byte reveiveStatus;
 	/** 使用状态 1：正常 2：已废除 */
 	@ExcelColumn(columnIndex = 7, columnName = "card.export.delStatus")
 	private String sDelStatus;
-
+	@ExcelIgnore
 	private Byte delStatus;
 
 }
