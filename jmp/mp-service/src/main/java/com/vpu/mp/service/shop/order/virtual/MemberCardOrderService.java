@@ -43,13 +43,13 @@ public class MemberCardOrderService extends VirtualOrderService {
         SelectOnConditionStep<? extends Record> select =
             db().select(VIRTUAL_ORDER.ORDER_ID, VIRTUAL_ORDER.ORDER_SN,
                 VIRTUAL_ORDER.VIRTUAL_GOODS_ID, VIRTUAL_ORDER.RETURN_FLAG, VIRTUAL_ORDER.PAY_TIME, VIRTUAL_ORDER.MONEY_PAID,
-                VIRTUAL_ORDER.USE_ACCOUNT, VIRTUAL_ORDER.USE_SCORE, VIRTUAL_ORDER.RETURN_TIME,VIRTUAL_ORDER.CURRENCY,VIRTUAL_ORDER.ORDER_AMOUNT,USER.USERNAME, USER.MOBILE,
+                VIRTUAL_ORDER.USE_ACCOUNT, VIRTUAL_ORDER.USE_SCORE, VIRTUAL_ORDER.RETURN_TIME, VIRTUAL_ORDER.CURRENCY, VIRTUAL_ORDER.ORDER_AMOUNT, USER.USERNAME, USER.MOBILE,
                 MEMBER_CARD.CARD_NAME, MEMBER_CARD.CARD_TYPE, MEMBER_CARD.PAY_FEE, MEMBER_CARD.PAY_TYPE,
                 USER_CARD.CARD_NO)
                 .from(VIRTUAL_ORDER)
                 .leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(VIRTUAL_ORDER.VIRTUAL_GOODS_ID))
                 .leftJoin(USER).on(VIRTUAL_ORDER.USER_ID.eq(USER.USER_ID))
-                .leftJoin(USER_CARD).on(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(USER_CARD.CARD_ID));
+                .leftJoin(USER_CARD).on(VIRTUAL_ORDER.SEND_CARD_NO.eq(USER_CARD.CARD_NO));
         buildOptions(select, param);
         PageResult<MemberCardOrderVo> pageResult = getPageResult(select, param, MemberCardOrderVo.class);
         pageResult.getDataList().forEach(cardOrderVo->{

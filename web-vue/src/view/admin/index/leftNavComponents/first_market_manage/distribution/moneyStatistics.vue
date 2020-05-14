@@ -3,7 +3,7 @@
     <el-form
       :model="searchParam"
       label-width="130px"
-      :label-position="right"
+      label-position="right"
       :inline="true"
     >
       <div>
