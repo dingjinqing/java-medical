@@ -337,7 +337,6 @@ public class FirstSpecialService extends ShopBaseService {
             logger().error("excel error",e);
         }
 
-        excelWriter.writeModelList(res, FirstSpecialOrderExportVo.class);
         return workbook;
     }
 }
