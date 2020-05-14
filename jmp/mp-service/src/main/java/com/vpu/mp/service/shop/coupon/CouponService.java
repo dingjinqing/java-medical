@@ -25,6 +25,7 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.coupon.CouponWxUserImportVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponWxVo;
+import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -101,7 +102,9 @@ public class CouponService extends ShopBaseService {
 
     private String aliasCode;
 
-
+	@Autowired
+	private CouponMpService couponMpService;
+	
     /**可用会员卡*/
     public static final byte COUPON_IS_USED_STATUS_AVAIL = 0;
     /**优惠券状态：使用*/
@@ -343,9 +346,14 @@ public class CouponService extends ShopBaseService {
      * @param id
      * @return
      */
-    public CouponView getCouponViewById(int id) {
-        return db().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.USE_CONSUME_RESTRICT, MRKING_VOUCHER.SURPLUS, MRKING_VOUCHER.VALIDITY_TYPE, MRKING_VOUCHER.VALIDITY, MRKING_VOUCHER.VALIDITY_HOUR, MRKING_VOUCHER.VALIDITY_MINUTE, MRKING_VOUCHER.START_TIME, MRKING_VOUCHER.END_TIME, MRKING_VOUCHER.RECOMMEND_GOODS_ID, MRKING_VOUCHER.RECOMMEND_CAT_ID, MRKING_VOUCHER.RECOMMEND_SORT_ID).from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(id)).and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchOne().into(CouponView.class);
-    }
+	public CouponView getCouponViewById(int id) {
+		CouponView into = db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(id))
+				.and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchOneInto(CouponView.class);
+		if(null!=into) {
+			into.setStatus(couponMpService.couponGetStatus(new MpGetCouponParam(id, null)));
+		}
+		return into;
+	}
 
     /**
      * 根据id批量获取优惠卷信息
@@ -354,13 +362,17 @@ public class CouponService extends ShopBaseService {
      * @return
      */
     public List<CouponView> getCouponViewByIds(List<Integer> ids) {
-        return db().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION,
+    	List<CouponView> list = db().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION,
                 MRKING_VOUCHER.USE_CONSUME_RESTRICT, MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.SURPLUS,
                 MRKING_VOUCHER.VALIDITY_TYPE, MRKING_VOUCHER.START_TIME, MRKING_VOUCHER.END_TIME, MRKING_VOUCHER.VALIDITY,
                 MRKING_VOUCHER.VALIDITY_HOUR, MRKING_VOUCHER.VALIDITY_MINUTE,MRKING_VOUCHER.RANDOM_MAX,MRKING_VOUCHER.RANDOM_MIN,MRKING_VOUCHER.SUIT_GOODS)
             .from(MRKING_VOUCHER)
             .where(MRKING_VOUCHER.ID.in(ids)).and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .fetchInto(CouponView.class);
+    	for (CouponView couponView : list) {
+    		couponView.setStatus(couponMpService.couponGetStatus(new MpGetCouponParam(couponView.getId(), null)));
+		}
+        return list;
     }
 
     /**

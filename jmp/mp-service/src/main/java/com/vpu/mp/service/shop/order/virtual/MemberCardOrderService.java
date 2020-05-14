@@ -14,6 +14,7 @@ import org.jooq.Record;
 import org.jooq.SelectOnConditionStep;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -53,7 +54,7 @@ public class MemberCardOrderService extends VirtualOrderService {
         PageResult<MemberCardOrderVo> pageResult = getPageResult(select, param, MemberCardOrderVo.class);
         pageResult.getDataList().forEach(cardOrderVo->{
             //超过一年不能退款
-            if (cardOrderVo.getPayTime()!=null&&DateUtil.getLocalDateTime().after(DateUtil.getTimeStampPlus(cardOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
+            if (cardOrderVo.getMoneyPaid().compareTo(BigDecimal.ZERO)>0&&cardOrderVo.getPayTime()!=null&&DateUtil.getLocalDateTime().after(DateUtil.getTimeStampPlus(cardOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
                 cardOrderVo.setCanReturn(BaseConstant.NO);
             }else {
                 cardOrderVo.setCanReturn(BaseConstant.YES);

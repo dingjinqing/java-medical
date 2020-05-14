@@ -57,4 +57,6 @@ public class CouponView {
      * 0:全店通用,1:指定店铺
      */
     private Byte suitGoods;
+	/** 优惠券状态 0：可正常领取；1：优惠券不存在；2：优惠券过期；3：优惠券停用；4：库存为0;5：没赋值 */
+	private Byte status = 5;
 }
