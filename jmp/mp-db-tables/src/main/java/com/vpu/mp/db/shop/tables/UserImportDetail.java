@@ -43,7 +43,7 @@ import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserImportDetail extends TableImpl<UserImportDetailRecord> {
 
-    private static final long serialVersionUID = -2117368311;
+    private static final long serialVersionUID = 225214930;
 
     /**
      * The reference instance of <code>mini_shop_8984736.b2c_user_import_detail</code>
@@ -204,6 +204,11 @@ public class UserImportDetail extends TableImpl<UserImportDetailRecord> {
     public final TableField<UserImportDetailRecord, Byte> IS_DISTRIBUTOR = createField("is_distributor", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是分销员");
 
     /**
+     * The column <code>mini_shop_8984736.b2c_user_import_detail.remark</code>. 会员备注
+     */
+    public final TableField<UserImportDetailRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.CLOB, this, "会员备注");
+
+    /**
      * Create a <code>mini_shop_8984736.b2c_user_import_detail</code> table reference
      */
     public UserImportDetail() {
@@ -241,7 +246,7 @@ public class UserImportDetail extends TableImpl<UserImportDetailRecord> {
      */
     @Override
     public Schema getSchema() {
-    	 return MiniShop_471752.MINI_SHOP_471752;
+    	return MiniShop_471752.MINI_SHOP_471752;
     }
 
     /**
