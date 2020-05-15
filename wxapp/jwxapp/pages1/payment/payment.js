@@ -24,10 +24,12 @@ global.wxPage({
       },
       orderSn,
       useInfo: JSON.parse(useInfo),
-      buttonName: this.getButtonData(+goodsType),
       goodsType: +goodsType,
       hasUseInfo: this.getUseInfo(JSON.parse(useInfo)),
       cardNo
+    })
+    this.setData({
+      buttonName: this.getButtonData(+goodsType)
     })
     this.selectComponent('#recommend').requestData()
     this.payGiftRequest()
@@ -115,6 +117,7 @@ global.wxPage({
     return result;
   },
   getButtonData(goodsType) {
+    if(goodsType === 3 && !this.data.cardNo) return null
     switch (goodsType) {
       case 1:
         return this.$t("pages.order.viewOrder")
