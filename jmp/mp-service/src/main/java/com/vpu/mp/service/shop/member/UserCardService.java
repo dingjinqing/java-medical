@@ -82,6 +82,7 @@ import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.elasticsearch.common.Strings;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record;
@@ -2560,15 +2561,15 @@ public class UserCardService extends ShopBaseService {
      * @return
      */
     public CardOrdeerSnVo getCardNoByOrderSn(CardOrdeerSnParam param) {
-        Record1<String> record = db().select(VIRTUAL_ORDER.CARD_NO).where(VIRTUAL_ORDER.ORDER_SN.eq(param.getOrderSn()))
+        Record1<String> record = db().select(VIRTUAL_ORDER.SEND_CARD_NO).where(VIRTUAL_ORDER.ORDER_SN.eq(param.getOrderSn()))
             .and(VIRTUAL_ORDER.USER_ID.eq(param.getUserId()))
             .fetchOne();
-        if (record!=null){
-            CardOrdeerSnVo vo =new  CardOrdeerSnVo();
+        CardOrdeerSnVo vo =new  CardOrdeerSnVo();
+        if (record!=null&&!Strings.isNullOrEmpty(record.component1())){
              vo.setCardNo(record.component1());
              return vo;
         }
-        return null ;
+        return vo ;
     }
 }
 
