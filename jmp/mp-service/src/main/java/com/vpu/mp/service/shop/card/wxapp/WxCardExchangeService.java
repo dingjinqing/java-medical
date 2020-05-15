@@ -211,7 +211,18 @@ public class WxCardExchangeService extends ShopBaseService {
 			}else {
 				// 更新
 				userCheckedGoods.setGoodsNumber(param.getPrdNumber()+userCheckedGoods.getGoodsNumber());
-				db().executeUpdate(userCheckedGoods);
+				if(userCheckedGoods.getGoodsNumber()<=0) {
+					//	直接删除改加购商品
+					UserCheckedGoodsParam param2 = new UserCheckedGoodsParam();
+					param2.setIdentityId(param.getCardNo());
+					param2.setGoodsId(param.getGoodsId());
+					param2.setProductId(param.getProductId());
+					param2.setUserId(param.getUserId());
+					userCheckedGoodsSvc.removeChoosedGoods(param2);
+				}else {
+					db().executeUpdate(userCheckedGoods);
+				}
+				
 			}
 		}
 	}
