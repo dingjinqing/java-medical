@@ -7,50 +7,50 @@
       :inline="true"
     >
       <div>
-        <el-form-item label="手机号：">
+        <el-form-item :label="$t('distribution.mobile') + '：'">
           <el-input
             v-model="searchParam.mobile"
             size="small"
             class="inputWidth"
-            placeholder="请输入内容"
+            :placeholder="$t('distribution.contentTip')"
           ></el-input>
         </el-form-item>
-        <el-form-item label="微信昵称：">
+        <el-form-item :label="$t('distribution.wxName') + '：'">
           <el-input
             v-model="searchParam.username"
             size="small"
             class="inputWidth"
-            placeholder="请输入内容"
+            :placeholder="$t('distribution.contentTip')"
           ></el-input>
         </el-form-item>
-        <el-form-item label="下单用户手机号：">
+        <el-form-item :label="$t('distribution.orderMobile') + '：'">
           <el-input
             v-model="searchParam.orderMobile"
             size="small"
             class="inputWidth"
-            placeholder="请输入内容"
+            :placeholder="$t('distribution.contentTip')"
           ></el-input>
         </el-form-item>
       </div>
       <div>
-        <el-form-item label="下单用户昵称：">
+        <el-form-item :label="$t('distribution.orderName') + '：'">
           <el-input
             v-model="searchParam.orderName"
             size="small"
             class="inputWidth"
-            placeholder="请输入内容"
+            :placeholder="$t('distribution.contentTip')"
           ></el-input>
         </el-form-item>
-        <el-form-item label="下单时间：">
+        <el-form-item :label="$t('distribution.startOrderTime') + '：'">
           <el-date-picker
             v-model="searchParam.startOrderTime"
             type="datetime"
             size="small"
             align="right"
             class="selectWidth"
-            placeholder="选择日期时间"
+            :placeholder="$t('distribution.startOrderTimeTip1')"
           ></el-date-picker>
-          至
+          {{$t('distribution.startOrderTimeTip2')}}
           <el-date-picker
             v-model="searchParam.endOrderTime"
             type="datetime"
@@ -58,29 +58,29 @@
             align="right"
             class="selectWidth"
             default-time="23:59:59"
-            placeholder="选择日期时间"
+            :placeholder="$t('distribution.startOrderTimeTip1')"
           ></el-date-picker>
         </el-form-item>
       </div>
       <div>
-        <el-form-item label="返利订单号：">
+        <el-form-item :label="$t('distribution.rebateOrderSn') + '：'">
           <el-input
             v-model="searchParam.orderSn"
             size="small"
             class="inputWidth"
-            placeholder="请输入内容"
+            :placeholder="$t('distribution.contentTip')"
           ></el-input>
         </el-form-item>
-        <el-form-item label="返利日期：">
+        <el-form-item :label="$t('distribution.startReturnTime') + '：'">
           <el-date-picker
             v-model="searchParam.startReturnTime"
             type="datetime"
             size="small"
             align="right"
             class="selectWidth"
-            placeholder="选择日期时间"
+            :placeholder="$t('distribution.startOrderTimeTip1')"
           ></el-date-picker>
-          至
+          {{$t('distribution.startOrderTimeTip2')}}
           <el-date-picker
             v-model="searchParam.endReturnTime"
             type="datetime"
@@ -88,17 +88,17 @@
             align="right"
             class="selectWidth"
             default-time="23:59:59"
-            placeholder="选择日期时间"
+            :placeholder="$t('distribution.startOrderTimeTip1')"
           ></el-date-picker>
         </el-form-item>
       </div>
       <div>
-        <el-form-item label="返利状态：">
+        <el-form-item :label="$t('distribution.returnStatus') + '：'">
           <el-select
             v-model="searchParam.status"
             size="small"
             class="inputWidth"
-            placeholder="请选择"
+            :placeholder="$t('distribution.selectTip')"
           >
             <el-option
               v-for="item in statusList"
@@ -109,12 +109,12 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="分销员分组：">
+        <el-form-item :label="$t('distribution.distributorGroup') + '：'">
           <el-select
             v-model="searchParam.group"
             size="small"
             class="inputWidth"
-            placeholder="请选择"
+            :placeholder="$t('distribution.selectTip')"
           >
             <el-option
               v-for="item in groupList"
@@ -125,12 +125,12 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="返利关系：">
+        <el-form-item :label="$t('distribution.relationship') + '：'">
           <el-select
             v-model="searchParam.relationship"
             size="small"
             class="inputWidth"
-            placeholder="请选择"
+            :placeholder="$t('distribution.selectTip')"
           >
             <el-option
               v-for="item in relationshipList"
@@ -146,8 +146,8 @@
             @click="initData"
             type="primary"
             size="small"
-          >筛选</el-button>
-          <el-button size="small">导出</el-button>
+          >{{$t('distribution.screen')}}</el-button>
+          <el-button size="small">{{$t('distribution.export')}}</el-button>
         </el-form-item>
       </div>
     </el-form>
@@ -161,83 +161,85 @@
     >
       <el-table-column
         prop="distributorName"
-        label="分销员昵称"
+        :label="$t('distribution.distributorName')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="distributorMobile"
-        label="手机号"
+        :label="$t('distribution.mobile')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="realName"
-        label="真实姓名"
+        :label="$t('distribution.realName')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="groupName"
-        label="分销员分组"
+        :label="$t('distribution.distributorGroup')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="orderSn"
-        label="返利订单号"
+        :label="$t('distribution.rebateOrderSn')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="orderAmount"
-        label="订单总金额"
+        :label="$t('distribution.orderAmount')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="userMobile"
-        label="下单用户手机号"
+        :label="$t('distribution.orderMobile')"
         align="enter"
       >
       </el-table-column>
       <el-table-column
         prop=""
-        label="下单用户昵称"
+        :label="$t('distribution.orderName')"
         align="enter"
       >
       </el-table-column>
       <el-table-column
         prop="rebateLevel"
-        label="返利关系"
+        :label="$t('distribution.relationship')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="totalRebateMoney"
-        label="订单商品参与返利总金额"
+        :label="$t('distribution.totalRebateMoney')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="realRebateMoney"
-        label="返利佣金"
+        :label="$t('distribution.realRebateMoney')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="createTime"
-        label="下单时间"
+        :label="$t('distribution.startOrderTime')"
         align="center"
       >
       </el-table-column>
       <el-table-column
-        label="返利状态"
+        prop=""
+        :label="$t('distribution.rebateStatus')"
         align="center"
       >
       </el-table-column>
       <el-table-column
-        label="返利日期"
+        prop=""
+        :label="$t('distribution.startReturnTime')"
         align="center"
       >
       </el-table-column>

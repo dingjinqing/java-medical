@@ -37,6 +37,8 @@ export const cn = {
   username: '用户昵称',
   rebateVailDate: '返利有效期',
   distributorMobile: '分销员手机号',
+  contentTip: '请输入内容',
+  selectTip: '请选择',
 
   // -----------------------分销配置-----------------
   switch: '分销开关：',
@@ -103,7 +105,6 @@ export const cn = {
   imgTip: '图片尺寸640px*640px',
   rebateSave: '保存',
   rebateSaveSuccess: '保存成功!',
-
   // 分销推广文案
   contentTip1: `
     <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; color: #e53333; font-size: 18px; font-weight: bold;">以下说明模版，请根据情况自行修改，仅供参考。</p>
@@ -172,6 +173,7 @@ export const cn = {
   levelTip4: '累计推广金达',
   levelTip5: '元',
   levelTip6: '累积推广金与消费金总和达',
+  addDistributor: '添加分销员',
   distributorsNum: '分销员数量',
   option: '操作',
   levelAlready: '已启动',
@@ -212,7 +214,6 @@ export const cn = {
   strategyStatus: '状态',
   strategyOption: '操作',
   strategyView: '查看',
-
   // 表格
   strategyTip1: '请输入返利策略名称',
   ratioLevel: '返利策略优先级',
@@ -250,7 +251,6 @@ export const cn = {
   goodsTip4: '个平台',
   goodsTip5: '商家分类',
   goodsTip6: '未选',
-
   storeArr: [
     {
       name: '添加商品',
@@ -265,7 +265,6 @@ export const cn = {
     //   value: '3'
     // }
   ],
-
   addSuccess: '添加成功!',
   addFail: '添加失败!',
   editSuccess: '编辑成功!',
@@ -276,21 +275,40 @@ export const cn = {
   invitedUserMobile: '被邀请用户手机号',
   invitedUserName: '被邀请用户昵称',
   distributorLevel: '分销员等级',
+  haveNextUset: '有下级用户',
+  haveMobile: '有手机号',
+  haveRealName: '有真实姓名',
   distributorListfont: '注：',
   distributorListDesc: '未开启分销员审核时，列表只展示有下级用户的分销员',
-  id: 'ID',
+  // 表格
+  distributorName: '分销员昵称',
+  inviteName: '邀请人',
+  inviteTip: '用户在申请成为分销员时，填写其邀请人的邀请码，则成为分销员后将成为该邀请人的下级',
+  inviteCode: '邀请码',
+  inviteSet: '设置',
+  groupTip: '未分组',
+  groupSet: '设置',
   nextUserNum: '下级用户数',
   indirectInviteUserNum: '间接邀请用户数',
   rebateGoodsAmount: '累积返利商品总额',
   rebateFanliAmount: '累积获得佣金金额',
   waitFanliAmount: '待返利佣金金额',
-  showHasInviteUsers: '产看已邀请用户',
+  showHasInviteUsers: '查看已邀请用户',
   showFanliDetail: '查看返利佣金明细',
-  clear: '清除',
-  userMobile: '用户手机号',
-  rebateOrderNum: '累计返利订单数',
-  orderGoodsRebateAmount: '累积订单商品返利总金额',
-  inviteProtectDate: '邀请保护日期',
+  listTip: '备注',
+  listDelete: '清除',
+  allCheckTip: '全选当前页',
+  inviteSure: '确 定',
+  inviteCancel: '取 消',
+  groupDialogTitle: '设置分销员分组',
+  groupDialogLabel: '选择分组',
+  remarkDialogTitle: '会员备注信息',
+  remarkDialogLabel: '备注信息',
+  remarkDialogAdd: '添加',
+  remarkNumber: '序号',
+  remarkAddTime: '添加时间',
+  remarkContent: '内容',
+  remarkOption: '操作',
 
   // -------------------分销员分组-----------------
   distributionGroup: '',
@@ -302,7 +320,6 @@ export const cn = {
   groupName: '分组名称',
   includeDistributorNum: '包含分销员数量',
   isDefaultGroup: '是否为默认分组',
-  addDistributor: '添加分销员',
   distributorUsername: '分销员昵称',
   distributorId: '分销员ID',
   currentLevel: '当前分组',
@@ -312,8 +329,18 @@ export const cn = {
 
   // --------------------佣金统计------------------
 
-  orderTime: '下单时间',
+  orderMobile: '下单用户手机号',
+  orderName: '下单用户昵称',
+  startOrderTime: '下单时间',
+  startOrderTimeTip1: '选择日期时间',
+  startOrderTimeTip2: '至',
   rebateOrderSn: '返利订单号',
+  startReturnTime: '返利日期',
+  returnStatus: '返利状态',
+  relationship: '返利关系',
+  orderAmount: '订单总金额',
+  totalRebateMoney: '订单商品参与返利总金额',
+  realRebateMoney: '返利佣金',
 
   // -------------------商品返利统计---------------
   goodsName: '商品名称',
@@ -327,7 +354,7 @@ export const cn = {
   rebateSn: '返利订单号',
   orderUsername: '下单用户昵称',
   orderUsermobile: '下单用户手机号',
-  distributorName: '分销员昵称',
+
   distributorRealName: '分销员真实姓名',
   rebateTime: '返利时间',
   rebateRelation: '返利关系',

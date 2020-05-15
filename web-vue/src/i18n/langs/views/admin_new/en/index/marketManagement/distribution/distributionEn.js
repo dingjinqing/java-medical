@@ -1,4 +1,17 @@
 export const en = {
+
+  // ------------------------tab-------------------
+  distributionCfg: 'Distribution Config',
+  distributorLevelCfg: 'Distribution Level Config',
+  rebateStrategyCfg: 'Rebate Strategy Config',
+  distributorList: 'Distributor List',
+  distributorGroup: 'Distributor Group',
+  commissionStatistics: 'commission Statistics',
+  rebateGoodsStatistics: 'rebate Goods Statistics',
+  withdrawAudit: 'withdraw Audit',
+  distributorAudit: 'distributor Audit',
+  advertisement: 'advertisement',
+
   // --------------------通用--------------------
   createTime: 'create time',
   advertisementContent: 'advertisement',
@@ -20,18 +33,12 @@ export const en = {
   chooseDate: 'choose date',
   to: 'to',
   search: 'Search',
-
-  // ------------------------tab-------------------
-  distributionCfg: 'Distribution Config',
-  distributorLevelCfg: 'Distribution Level Config',
-  rebateStrategyCfg: 'Rebate Strategy Config',
-  distributorList: 'Distributor List',
-  distributorGroup: 'Distributor Group',
-  commissionStatistics: 'commission Statistics',
-  rebateGoodsStatistics: 'rebate Goods Statistics',
-  withdrawAudit: 'withdraw Audit',
-  distributorAudit: 'distributor Audit',
-  advertisement: 'advertisement',
+  registTime: 'Registration time',
+  username: 'User nickname',
+  rebateVailDate: 'Validity of rebate',
+  distributorMobile: 'distributorMobile',
+  contentTip: 'Please enter content',
+  selectTip: 'Please select',
 
   // ---------------------分销配置----------------
   switch: 'Distribution Switch：',
@@ -98,7 +105,6 @@ export const en = {
   imgTip: 'Picture size640px*640px',
   rebateSave: 'Save',
   rebateSaveSuccess: 'Save Success!',
-
   // 分销推广文案
   contentTip1: `
     <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; color: #e53333; font-size: 18px; font-weight: bold;">The following description template, please modify it according to the situation, for reference only.</p>
@@ -208,7 +214,6 @@ export const en = {
   strategyStatus: 'Status',
   strategyOption: 'Option',
   strategyView: 'view',
-
   // 表格
   strategyTip1: 'Please enter rebate policy name',
   ratioLevel: 'Rebate policy priority',
@@ -246,7 +251,6 @@ export const en = {
   goodsTip4: 'Several platforms',
   goodsTip5: 'Merchant classification',
   goodsTip6: 'Unselected',
-
   storeArr: [
     {
       name: 'Add merchandise',
@@ -261,11 +265,65 @@ export const en = {
     //   value: '3'
     // }
   ],
-
   addSuccess: 'Add Success!',
   addFail: 'Add Fail!',
   editSuccess: 'Edit Success!',
   editFail: 'Edit Fail!',
+
+  // ---------------------分销员列表----------------
+  wxName: 'Wechat nickname',
+  invitedUserMobile: 'invited Mobile',
+  invitedUserName: 'invited Nickname ',
+  distributorLevel: 'Distributor level',
+  haveNextUset: 'subordinate users',
+  haveMobile: 'With mobile number',
+  haveRealName: 'Have a real name',
+  distributorListfont: 'notes：',
+  distributorListDesc: 'When the approval of distributor is not enabled, only the distributors with subordinate users will be displayed in the list',
+  // 表格
+  distributorName: 'Distributor nickname',
+  inviteName: 'Inviter',
+  inviteTip: 'When a user applies to become a distributor, he / she fills in the invitation code of his / her invitee, and after becoming a distributor, he / she will become a subordinate of the invitee',
+  inviteCode: 'inviteCode',
+  inviteSet: 'set up',
+  groupTip: 'Ungrouped',
+  groupSet: 'set up',
+  nextUserNum: 'subordinate number',
+  indirectInviteUserNum: 'indirectly invited number',
+  rebateGoodsAmount: 'Total accumulated rebate products',
+  rebateFanliAmount: 'Accumulated commission amount',
+  waitFanliAmount: 'Amount of commission to be returned',
+  showHasInviteUsers: 'View invited users',
+  showFanliDetail: 'View rebate Commission details',
+  listTip: 'remarks',
+  listDelete: 'eliminate',
+  allCheckTip: 'Select all current pages',
+  inviteSure: 'determine',
+  inviteCancel: 'Cancel',
+  groupDialogTitle: 'Set up distributor group',
+  groupDialogLabel: 'Select group',
+  remarkDialogTitle: 'Member notes',
+  remarkDialogLabel: 'Notes',
+  remarkDialogAdd: 'Add',
+  remarkNumber: 'Number',
+  remarkAddTime: 'Add Time',
+  remarkContent: 'Content',
+  remarkOption: 'Option',
+
+  // --------------------佣金统计------------------
+
+  orderMobile: 'Mobile number of order user',
+  orderName: 'Order user nickname',
+  startOrderTime: 'Order time',
+  startOrderTimeTip1: 'Select date time',
+  startOrderTimeTip2: 'to',
+  rebateOrderSn: 'Rebate Order No',
+  startReturnTime: 'Rebate date',
+  returnStatus: 'Rebate status',
+  relationship: 'Rebate relationship',
+  orderAmount: 'Total order amount',
+  totalRebateMoney: 'Total rebate amount of order goods',
+  realRebateMoney: 'Rebate Commission',
 
   // ---------------------分销推广语----------------
   // 列表搜索框

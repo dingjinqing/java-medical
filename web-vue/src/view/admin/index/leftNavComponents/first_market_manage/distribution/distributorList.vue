@@ -8,34 +8,34 @@
       >
         <div>
           <el-form-item
-            label="手机号："
+            :label="$t('distribution.mobile') + '：'"
             class="item"
           >
             <el-input
               v-model="param.mobile"
-              placeholder="请填写手机号"
+              :placeholder="$t('distribution.contentTip')"
               size="small"
               class="inputWidth"
             ></el-input>
           </el-form-item>
           <el-form-item
-            label="微信昵称："
+            :label="$t('distribution.wxName') + '：'"
             class="item"
           >
             <el-input
               v-model="param.username"
-              placeholder="请填写微信昵称"
+              :placeholder="$t('distribution.contentTip')"
               size="small"
               class="inputWidth"
             ></el-input>
           </el-form-item>
           <el-form-item
-            label="真实姓名："
+            :label="$t('distribution.realName') + '：'"
             class="item"
           >
             <el-input
               v-model="param.realName"
-              placeholder="请填写真实姓名"
+              :placeholder="$t('distribution.contentTip')"
               size="small"
               class="inputWidth"
             ></el-input>
@@ -43,34 +43,34 @@
         </div>
         <div>
           <el-form-item
-            label="被邀请用户手机号："
+            :label="$t('distribution.invitedUserMobile') + '：'"
             class="item"
           >
             <el-input
               v-model="param.invitedMobile"
-              placeholder="请填写被邀请用户手机号"
+              :placeholder="$t('distribution.contentTip')"
               size="small"
               class="inputWidth"
             ></el-input>
           </el-form-item>
           <el-form-item
-            label="注册时间："
+            :label="$t('distribution.registTime') + '：'"
             class="item"
           >
             <el-date-picker
               v-model="param.startCreateTime"
               type="date"
-              placeholder="选择日期"
+              :placeholder="$t('distribution.chooseDate')"
               value-format="yyyy-MM-dd 00:00:00"
               size="small"
               class="inputWidth"
             >
             </el-date-picker>
-            <span>至</span>
+            <span>{{$t('distribution.to')}}</span>
             <el-date-picker
               v-model="param.endCreateTime"
               type="date"
-              placeholder="选择日期"
+              :placeholder="$t('distribution.chooseDate')"
               value-format="yyyy-MM-dd 23:59:59"
               size="small"
               class="inputWidth"
@@ -80,23 +80,23 @@
         </div>
         <div>
           <el-form-item
-            label="被邀请用户昵称："
+            :label="$t('distribution.invitedUserName') + '：'"
             class="item"
           >
             <el-input
               v-model="param.invitedUserName"
-              placeholder="请填写被邀请用户昵称"
+              :placeholder="$t('distribution.contentTip')"
               size="small"
               class="inputWidth"
             ></el-input>
           </el-form-item>
           <el-form-item
-            label="分销员等级："
+            :label="$t('distribution.distributorLevel') + '：'"
             class="item"
           >
             <el-select
               v-model="param.distributorLevel"
-              placeholder="请选择等级"
+              :placeholder="$t('distribution.selectTip')"
               size="small"
               class="inputWidth"
             >
@@ -110,12 +110,12 @@
             </el-select>
           </el-form-item>
           <el-form-item
-            label="分销员分组："
+            :label="$t('distribution.reviewGroup') + '：'"
             class="item"
           >
             <el-select
               v-model="param.distributorGroup"
-              placeholder="请选择分组"
+              :placeholder="$t('distribution.selectTip')"
               size="small"
               class="inputWidth"
             >
@@ -138,17 +138,17 @@
               v-model="param.haveNextUset"
               :true-label="1"
               :false-label="0"
-            >有下级用户</el-checkbox>
+            >{{$t('distribution.haveNextUset')}}</el-checkbox>
             <el-checkbox
               v-model="param.haveMobile"
               :true-label="1"
               :false-label="0"
-            >有手机号</el-checkbox>
+            >{{$t('distribution.haveMobile')}}</el-checkbox>
             <el-checkbox
               v-model="param.haveRealName"
               :true-label="1"
               :false-label="0"
-            >有真实姓名</el-checkbox>
+            >{{$t('distribution.haveRealName')}}</el-checkbox>
           </div>
           <div
             class="item"
@@ -158,8 +158,8 @@
               @click="initDataList"
               type="primary"
               size="small"
-            >筛选</el-button>
-            <el-button size="small">导出</el-button>
+            >{{$t('distribution.screen')}}</el-button>
+            <el-button size="small">{{$t('distribution.export')}}</el-button>
           </div>
         </div>
       </el-form>
@@ -167,8 +167,8 @@
     </div>
     <div class="tableInfo">
       <div class="notice">
-        <span>注：</span>
-        <span>未开启分销员审核时，列表只展示有下级用户的分销员</span>
+        <span>{{$t('distribution.distributorListfont')}}</span>
+        <span>{{$t('distribution.distributorListDesc')}}</span>
       </div>
       <div class="table_list">
         <el-table
@@ -190,7 +190,7 @@
           </el-table-column>
 
           <el-table-column
-            label="分销员昵称"
+            :label="$t('distribution.distributorName')"
             align="center"
           >
             <template slot-scope="scope">
@@ -203,14 +203,14 @@
 
           <el-table-column
             prop="mobile"
-            label="分销员手机号"
+            :label="$t('distribution.distributorMobile')"
             align="center"
             width="100"
           >
           </el-table-column>
 
           <el-table-column
-            label="邀请人"
+            :label="$t('distribution.inviteName')"
             align="center"
           >
             <template slot-scope="scope">
@@ -224,7 +224,7 @@
 
           <el-table-column
             prop="createTime"
-            label="注册时间"
+            :label="$t('distribution.registTime')"
             align="center"
             width="90"
           >
@@ -232,7 +232,7 @@
 
           <el-table-column
             prop="realName"
-            label="真实姓名"
+            :label="$t('distribution.reviewRealName')"
             align="center"
           >
           </el-table-column>
@@ -244,10 +244,10 @@
             <template slot="header">
               <el-tooltip
                 effect="dark"
-                content="用户在申请成为分销员时，填写其邀请人的邀请码，则成为分销员后将成为该邀请人的下级"
+                :content="$t('distribution.inviteTip')"
                 placement="top"
               >
-                <span>邀请码 <i class="el-icon-question"></i></span>
+                <span>{{$t('distribution.inviteCode')}} <i class="el-icon-question"></i></span>
               </el-tooltip>
             </template>
             <template slot-scope="scope">
@@ -255,28 +255,28 @@
               <p
                 class="nameStyle"
                 @click="invitationCodeHandler(scope.row.userId, scope.row.invitationCode)"
-              >设置</p>
+              >{{$t('distribution.inviteSet')}}</p>
             </template>
           </el-table-column>
 
           <el-table-column
-            label="分销员分组"
+            :label="$t('distribution.distributorGroup')"
             align="center"
             width="100"
           >
             <template slot-scope="scope">
               <p v-if="scope.row.groupName">{{ scope.row.groupName }}</p>
-              <p v-if="!scope.row.groupName">未分组</p>
+              <p v-if="!scope.row.groupName">{{$t('distribution.groupTip')}}</p>
               <p
                 class="nameStyle"
                 @click="groupNameHandler(scope.row.userId, scope.row.groupName)"
-              >编辑</p>
+              >{{$t('distribution.groupSet')}}</p>
             </template>
           </el-table-column>
 
           <el-table-column
             prop="levelName"
-            label="分销员等级"
+            :label="$t('distribution.distributorLevel')"
             align="center"
             width="100"
           >
@@ -284,7 +284,7 @@
 
           <el-table-column
             prop="nextNumber"
-            label="下级用户数"
+            :label="$t('distribution.nextUserNum')"
             sortable="custom"
             align="center"
           >
@@ -298,7 +298,7 @@
 
           <el-table-column
             prop="sublayerNumber"
-            label="间接邀请用户数"
+            :label="$t('distribution.indirectInviteUserNum')"
             sortable="custom"
             align="center"
           >
@@ -312,7 +312,7 @@
 
           <el-table-column
             prop="totalCanFanliMoney"
-            label="累计返利商品总额"
+            :label="$t('distribution.rebateGoodsAmount')"
             sortable="custom"
             align="center"
           >
@@ -323,7 +323,7 @@
 
           <el-table-column
             prop="totalFanliMoney"
-            label="累计获得佣金金额"
+            :label="$t('distribution.rebateFanliAmount')"
             sortable="custom"
             align="center"
           >
@@ -334,7 +334,7 @@
 
           <el-table-column
             prop="waitFanliMoney"
-            label="待返利佣金金额"
+            :label="$t('distribution.waitFanliAmount')"
             sortable="custom"
             align="center"
           >
@@ -344,16 +344,16 @@
           </el-table-column>
 
           <el-table-column
-            label="操作"
+            :label="$t('distribution.opt')"
             align="center"
             width="120"
           >
             <template slot-scope="scope">
               <div class="opt">
-                <p @click="inviteUserList(scope.row.userId)">查看已邀请用户</p>
-                <p @click="commissionDetail(scope.row.userId)">查看返利佣金明细</p>
-                <p @click="remarksHandler(scope.row.userId)">备注</p>
-                <p @click="del(scope.row.userId)">清除</p>
+                <p @click="inviteUserList(scope.row.userId)">{{$t('distribution.showHasInviteUsers')}}</p>
+                <p @click="commissionDetail(scope.row.userId)">{{$t('distribution.showFanliDetail')}}</p>
+                <p @click="remarksHandler(scope.row.userId)">{{$t('distribution.listTip')}}</p>
+                <p @click="del(scope.row.userId)">{{$t('distribution.listDelete')}}</p>
               </div>
             </template>
           </el-table-column>
@@ -365,10 +365,10 @@
             v-model="allChecked"
             @change="checkChange"
           ></el-checkbox>
-          全选当前页
+          {{$t('distribution.allCheckTip')}}
           <el-select
             v-model="checkedValue"
-            placeholder="请选择等级"
+            :placeholder="$t('distribution.selectTip')"
             size="small"
             class="checkboxWidth"
             @change="selectChange"
@@ -392,13 +392,13 @@
 
     <!-- 邀请码弹窗 -->
     <el-dialog
-      title="邀请码"
+      :title="$t('distribution.inviteCode')"
       :visible.sync="invitationDialog"
       :close-on-click-modal="false"
       width="30%"
       center
     >
-      邀请码：
+      {{$t('distribution.inviteCode')}}：
       <el-input
         v-model="inviteCode"
         class="inputWidth"
@@ -412,27 +412,27 @@
         <el-button
           @click="cancelInvitation"
           size="small"
-        >取 消</el-button>
+        >{{$t('distribution.inviteCancel')}}</el-button>
         <el-button
           type="primary"
           size="small"
           @click="sureInvitation"
-        >确 定</el-button>
+        >{{$t('distribution.inviteSure')}}</el-button>
       </span>
     </el-dialog>
 
     <!-- 分销员分组 -->
     <el-dialog
-      title="设置分销员分组"
+      :title="$t('distribution.groupDialogTitle')"
       :visible.sync="groupDialog"
       :close-on-click-modal="false"
       width="30%"
       center
     >
-      选择分组：
+      {{$t('distribution.groupDialogLabel')}}：
       <el-select
         v-model="groupValue"
-        placeholder="请选择分组"
+        :placeholder="$t('distribution.selectTip')"
         size="small"
         class="inputWidth"
       >
@@ -452,29 +452,29 @@
         <el-button
           @click="cancelGroup"
           size="small"
-        >取 消</el-button>
+        >{{$t('distribution.inviteCancel')}}</el-button>
         <el-button
           type="primary"
           size="small"
           @click="sureGroup"
-        >确 定</el-button>
+        >{{$t('distribution.inviteSure')}}</el-button>
       </span>
     </el-dialog>
 
     <!-- 备注弹窗 -->
     <el-dialog
-      title="会员备注信息"
+      :title="$t('distribution.remarkDialogTitle')"
       :visible.sync="remarksDialog"
       :close-on-click-modal="false"
       width="50%"
       center
     >
       <el-form>
-        <el-form-item label="备注信息：">
+        <el-form-item :label="$t('distribution.remarkDialogLabel') + '：'">
           <el-input
             v-model="remarksText"
             type="textarea"
-            placeholder="请输入备注内容"
+            :placeholder="$t('distribution.contentTip')"
             :rows="2"
             maxlength="200"
             show-word-limit
@@ -485,7 +485,7 @@
             type="primary"
             size="small"
             @click="addRemarksHandler"
-          >添加</el-button>
+          >{{$t('distribution.remarkDialogAdd')}}</el-button>
         </el-form-item>
         <el-form-item>
           <el-table
@@ -496,25 +496,25 @@
             style="width: 100%"
           >
             <el-table-column
-              label="序号"
+              :label="$t('distribution.remarkNumber')"
               align="center"
             >
               <template slot-scope="scope">{{ scope.$index + 1 }}</template>
             </el-table-column>
             <el-table-column
               prop="addTime"
-              label="添加时间"
+              :label="$t('distribution.remarkAddTime')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="remark"
-              label="内容"
+              :label="$t('distribution.remarkContent')"
               align="center"
             >
             </el-table-column>
             <el-table-column
-              label="操作"
+              :label="$t('distribution.remarkOption')"
               align="center"
             >
               <template slot-scope="scope">
@@ -536,12 +536,12 @@
         <el-button
           @click="closeremarks"
           size="small"
-        >取 消</el-button>
+        >{{$t('distribution.inviteCancel')}}</el-button>
         <el-button
           type="primary"
           size="small"
           @click="closeremarks"
-        >确 定</el-button>
+        >{{$t('distribution.inviteSure')}}</el-button>
       </span>
     </el-dialog>
 
@@ -550,11 +550,11 @@
 
 <script>
 import { distributorList, distributorLevelList, distributorGroupList, delDistributor, setInviteCode, setBatchGroup, addRemarks, getRemarksList, delRemarks } from '@/api/admin/marketManage/distribution.js'
-// 引入分页
-import pagination from '@/components/admin/pagination/pagination'
 
 export default {
-  components: { pagination },
+  components: {
+    pagination: () => import('@/components/admin/pagination/pagination')
+  },
   props: {
     inviteFlag: {
       type: Boolean,
