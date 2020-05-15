@@ -74,11 +74,11 @@
               <image src='{{item.userAvatar}}'></image>
               <view class='user_name'>{{item.username}}</view>
             </view>
-            <view class='other_avater' wx:if="{{group_info.groupJoinDetail.surplusGroupNum < 14}}" wx:for="{{group_info.groupJoinDetail.surplusGroupNum}}">
+            <view class='other_avater' wx:if="{{group_info.groupJoinDetail.surplusGroupNum < 14}}" wx:for="{{group_info.groupJoinDetail.surplusGroupNum}}" wx:key='key'>
               <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
               <view class='user_name'>{{i18n.$t(localePack,"page1.pinlottery.waitInvitation")}}</view>
             </view>
-            <view class='other_avater' wx:if="{{group_info.groupJoinDetail.surplusGroupNum >= 14}}" wx:for="{{group_info.groupJoinDetail.surplusGroupNum - 1}}" >
+            <view class='other_avater' wx:if="{{group_info.groupJoinDetail.surplusGroupNum >= 14}}" wx:for="{{group_info.groupJoinDetail.surplusGroupNum - 1}}" wx:key='key'>
               <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
               <view class='user_name'>{{i18n.$t(localePack,"page1.pinlottery.waitInvitation")}}</view>
             </view>
