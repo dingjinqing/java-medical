@@ -9,6 +9,8 @@ import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -50,6 +52,7 @@ import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
 import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_ONE_PHASE;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_TWO_PHASE;
+import static org.jooq.impl.DSL.select;
 import static org.springframework.util.StringUtils.isEmpty;
 
 /**

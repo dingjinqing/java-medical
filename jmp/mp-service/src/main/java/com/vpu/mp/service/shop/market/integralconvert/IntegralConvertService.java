@@ -604,7 +604,13 @@ public class IntegralConvertService extends ShopBaseService {
             tempExport.setNumber(item.getNumber());
             tempExport.setMoney(item.getMoney());
             tempExport.setScore(item.getScore());
-            tempExport.setUser(item.getUsername()+" "+item.getUserMobile());
+            if (!StringUtils.isNullOrEmpty(item.getUserMobile())){
+                tempExport.setUser(item.getUsername()+" "+item.getUserMobile());
+            }
+            else {
+                tempExport.setUser(item.getUsername());
+            }
+
             if (!StringUtils.isNullOrEmpty(item.getMobile())){
                 tempExport.setReceiveUser(item.getConsignee()+" "+item.getMobile());
             }

@@ -218,15 +218,9 @@ public class Util {
         if (StringUtils.isBlank(json)) {
             return null;
         }
-        if (failOnUnknownProperties) {
-            MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        }
+        MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         try {
-            T t = MAPPER.readValue(json, reference);
-            if (failOnUnknownProperties) {
-                MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-            }
-            return t;
+            return  MAPPER.readValue(json, reference);
         } catch (IOException e) {
 			log.error("数据 ->{}<- 反序列化失败", e);
 			e.printStackTrace();
@@ -238,14 +232,9 @@ public class Util {
         if (StringUtils.isBlank(json)) {
             return null;
         }
-        if (failOnUnknownProperties) {
-            MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        }
+        MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         try {
             T t = MAPPER.readValue(json, clazz);
-            if (failOnUnknownProperties) {
-                MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-            }
             return t;
         } catch (IOException e) {
             log.error("数据 ->{}<- 反序列化失败", json);
