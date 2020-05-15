@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.image.postertraits;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.GoodsShareConfig;
@@ -21,6 +22,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
@@ -249,8 +251,6 @@ public abstract class ShareBaseService extends ShopBaseService {
 //            FileOutputStream outputStream = new FileOutputStream(new File("E:/a.jpg"));
 //            ImageIO.write(bgImg, "jpg", outputStream);
 //            outputStream.close();
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
@@ -343,4 +343,17 @@ public abstract class ShareBaseService extends ShopBaseService {
         logger().debug("小程序-{}-{}-{}", type, tag, msg);
     }
 
+    /**
+     * 价格取两位小数，加上价格符号
+     * @param lang 国际化
+     * @param price 价格
+     * @return 字符串价格
+     */
+    String convertPriceWithFlag(String lang, BigDecimal price) {
+        if (price == null) {
+            return null;
+        }
+        String moneyFlag = Util.translateMessage(lang, JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages");
+        return moneyFlag+price.setScale(2,BigDecimal.ROUND_HALF_UP).toString();
+    }
 }

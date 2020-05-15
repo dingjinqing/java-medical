@@ -124,16 +124,15 @@ public class GroupDrawPictorialService extends ShareBaseService {
     @Override
     void createPictorialImg(BufferedImage qrCodeBufferImg, BufferedImage goodsImg, PictorialUserInfo userInfo, String shareDoc, Record aRecord, GoodsRecord goodsRecord, ShopRecord shop, GoodsShareBaseParam baseParam, GoodsPictorialInfo goodsPictorialInfo) {
         PictorialImgPx imgPx = new PictorialImgPx(getShopStyleColor());
+        // 活动价
+        String realPriceText = convertPriceWithFlag(shop.getShopLanguage(), baseParam.getRealPrice());
+        // 划线价格
+        String linePriceText = convertPriceWithFlag(shop.getShopLanguage(), baseParam.getLinePrice());
         // 拼装背景图
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(),baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(),null,null,realPriceText,linePriceText, imgPx);
 
         // 拼团抽奖文字
         String groupDrawText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_DRAW_SHARE_INFO, "messages");
-        // 活动价格
-        String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + baseParam.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-        // 划线价格
-        String linePriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + baseParam.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP);
-
         pictorialService.addPictorialSelfCustomerContent(bgBufferedImage, groupDrawText, realPriceText, linePriceText, true, imgPx);
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);

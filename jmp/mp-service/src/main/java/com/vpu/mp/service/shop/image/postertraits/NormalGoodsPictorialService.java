@@ -60,23 +60,28 @@ public class NormalGoodsPictorialService extends ShareBaseService {
         if (BigDecimal.valueOf(0).equals(baseParam.getLinePrice())) {
             baseParam.setLinePrice(null);
         }
+        // 活动价
+        String realPriceText = convertPriceWithFlag(shop.getShopLanguage(), baseParam.getRealPrice());
+        // 划线价格
+        String linePriceText = convertPriceWithFlag(shop.getShopLanguage(), baseParam.getLinePrice());
+
         // 拼装背景图
         BufferedImage bgBufferedImage = null;
         if (PictorialImgPx.BASIC_STYLE.equals(shareStyle)) {
-            bgBufferedImage = pictorialService.createBasicStylePictorialBgImage(shop, qrCodeBufferImg, goodsImg, goodsRecord.getGoodsName(), baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
+            bgBufferedImage = pictorialService.createBasicStylePictorialBgImage(shop, qrCodeBufferImg, goodsImg, goodsRecord.getGoodsName(), realPriceText, linePriceText, imgPx);
         } else if (PictorialImgPx.SHARE_PERSON_STYLE.equals(shareStyle)) {
-            bgBufferedImage = pictorialService.createSharePersonInfoPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(), baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
+            bgBufferedImage = pictorialService.createSharePersonInfoPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(), realPriceText, linePriceText, imgPx);
         } else if (PictorialImgPx.SHOP_STYLE.equals(shareStyle)) {
             BufferedImage shopIconImg = getShopIconImg(shop);
             if (shopIconImg == null) {
                 shopIconImg = userInfo.getUserAvatarImage();
             }
-            bgBufferedImage = pictorialService.createShareShopInfoPictorialBgImage(shopIconImg, shop, qrCodeBufferImg, goodsImg, goodsRecord.getGoodsName(), baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
+            bgBufferedImage = pictorialService.createShareShopInfoPictorialBgImage(shopIconImg, shop, qrCodeBufferImg, goodsImg, goodsRecord.getGoodsName(), realPriceText, linePriceText, imgPx);
         } else if (PictorialImgPx.SHARE_PERSON_SHOP_STYLE.equals(shareStyle)) {
             BufferedImage shopIconImg = getShopIconImg(shop);
-            bgBufferedImage = pictorialService.createSharePersonShopInfoPictorialBgImage(userInfo, shop, qrCodeBufferImg,shopIconImg, goodsImg,shareDoc, goodsRecord.getGoodsName(), baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
+            bgBufferedImage = pictorialService.createSharePersonShopInfoPictorialBgImage(userInfo, shop, qrCodeBufferImg,shopIconImg, goodsImg,shareDoc, goodsRecord.getGoodsName(), realPriceText, linePriceText, imgPx);
         } else {
-            bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(), baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
+            bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(),null,null, realPriceText, linePriceText, imgPx);
         }
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);

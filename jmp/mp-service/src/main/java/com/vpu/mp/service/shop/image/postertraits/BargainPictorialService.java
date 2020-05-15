@@ -143,7 +143,7 @@ public class BargainPictorialService extends ShareBaseService {
     void createPictorialImg(BufferedImage qrCodeBufferImg, BufferedImage goodsImage, PictorialUserInfo userInfo, String shareDoc, Record aRecord, GoodsRecord goodsRecord, ShopRecord shop, GoodsShareBaseParam baseParam, GoodsPictorialInfo goodsPictorialInfo) {
         // 拼装背景图
         PictorialImgPx imgPx = new PictorialImgPx(getShopStyleColor());
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImage, shareDoc, goodsRecord.getGoodsName(), baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImage, shareDoc, goodsRecord.getGoodsName(),null,null, convertPriceWithFlag(shop.getShopLanguage(),baseParam.getRealPrice()),  convertPriceWithFlag(shop.getShopLanguage(),baseParam.getLinePrice()), imgPx);
 
         BufferedImage moneyIconImg;
         try (InputStream moneyIconIo = Util.loadFile(BARGAIN_MONEY_ICON_IMG)) {
@@ -156,7 +156,7 @@ public class BargainPictorialService extends ShareBaseService {
         // 原价
         String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_BARGAIN_TAKE, null, "messages", baseParam.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
         // 划线价
-        String linePriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + baseParam.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP);
+        String linePriceText = convertPriceWithFlag(shop.getShopLanguage(), baseParam.getLinePrice());
         // 自定义区域添加内容
         pictorialService.addPictorialSelfCustomerContent(bgBufferedImage, moneyIconImg, realPriceText, linePriceText, true, imgPx);
 

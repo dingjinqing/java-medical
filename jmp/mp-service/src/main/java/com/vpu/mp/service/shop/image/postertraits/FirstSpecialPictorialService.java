@@ -104,8 +104,8 @@ public class FirstSpecialPictorialService extends ShareBaseService {
         PictorialImgPx imgPx = new PictorialImgPx(getShopStyleColor());
         // 拼装背景图
         pictorialLog(getActivityName(), "拼装背景图");
-        String firstSpecialTip = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_FIRST_SPECIAL_INFO, "messages");
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(), firstSpecialTip, baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
+        String firstSpecialText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_FIRST_SPECIAL_INFO, "messages");
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(), null,firstSpecialText,convertPriceWithFlag(shop.getShopLanguage(),baseParam.getRealPrice()),convertPriceWithFlag(shop.getShopLanguage(),baseParam.getLinePrice()), imgPx);
         pictorialLog(getActivityName(), "拼装背景图完成");
 
         pictorialLog(getActivityName(), "转换base64");

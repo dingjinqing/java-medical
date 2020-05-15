@@ -1084,6 +1084,15 @@ public class JsonResultMessage {
     public static final String WX_MA_PRESALE_SHARE_DOC = "wx.ma.presale.share.doc";
     /**"200.00元,限时预售" 分享图片*/
     public static final String WX_MA_PRESALE_PICTORIAL_DOC = "wx.ma.presale.pictorial.doc";
+    /**积分兑换相关*/
+    // ￥5.00+10050积分兑换商品
+    public static final String WX_MA_INTEGRAL_MALL_SHARE_DOC="wx.ma.integral.mall.share.doc";
+    // ￥5.00+10050积分
+    public static final String WX_MA_INTEGRAL_MALL_PRICE_SCORE = "wx.ma.integral.mall.price.score";
+    // 积分兑换
+    public static final String WX_MA_INTEGRAL_MALL_EXCHANGE= "wx.ma.integral.mall.exchange";
+
+
     //持卡会员导出
     public static final String USER_CARD_OK = "user.card.ok";
     public static final String USER_CARD_ONOK = "user.card.onok";
