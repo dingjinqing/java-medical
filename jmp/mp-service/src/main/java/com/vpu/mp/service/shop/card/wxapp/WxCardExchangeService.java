@@ -180,24 +180,23 @@ public class WxCardExchangeService extends ShopBaseService {
 		if(goodsRecord == null) {
 			return;
 		}
-
+		UserCheckedGoodsParam checkedParam = new UserCheckedGoodsParam();
+		checkedParam.setAction(CardConstant.MCARD_TP_LIMIT);
+		checkedParam.setUserId(param.getUserId());
+		checkedParam.setProductId(param.getProductId());
+		checkedParam.setIdentityId(param.getCardNo());
+		checkedParam.setGoodsId(param.getGoodsId());
+		CheckedGoodsCartRecord userCheckedGoods = userCheckedGoodsSvc.getUserCheckedGoods(checkedParam);
+		
 		if(NumberUtils.BYTE_ONE.equals(param.getSource())) {
 			//	加购更新商品数量转化为添加商品数量
-			Integer userCheckedCount = userCheckedGoodsSvc.getUserCheckedCount(param.getUserId(),param.getCardNo());
-			param.setPrdNumber(param.getPrdNumber()-userCheckedCount);
+			param.setPrdNumber(param.getPrdNumber()-userCheckedGoods.getGoodsNumber());
 		}
 		
 		boolean judegeRes = judgeExchangGoodsAvailable(param.getGoodsId(), param.getCardNo(),param.getPrdNumber(),Boolean.TRUE);
 		if(judegeRes) {
 			logger().info("可以加购");
-			UserCheckedGoodsParam checkedParam = new UserCheckedGoodsParam();
-			checkedParam.setAction(CardConstant.MCARD_TP_LIMIT);
-			checkedParam.setUserId(param.getUserId());
-			checkedParam.setProductId(param.getProductId());
-			checkedParam.setIdentityId(param.getCardNo());
-			checkedParam.setGoodsId(param.getGoodsId());
 			
-			CheckedGoodsCartRecord userCheckedGoods = userCheckedGoodsSvc.getUserCheckedGoods(checkedParam);
 			if(userCheckedGoods == null) {
 				// 添加
 				logger().info("添加新商品");
