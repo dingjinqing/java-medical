@@ -6,7 +6,6 @@ import com.google.common.collect.Lists;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.*;
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -31,7 +30,6 @@ import com.vpu.mp.service.pojo.shop.member.builder.UserCardParamBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.buy.*;
 import com.vpu.mp.service.pojo.shop.member.card.*;
-import com.vpu.mp.service.pojo.shop.member.card.*;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.exception.CardReceiveFailException;
@@ -43,7 +41,6 @@ import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
-import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -85,11 +82,11 @@ import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.aspectj.bridge.MessageWriter;
 import org.elasticsearch.common.Strings;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.impl.DSL;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -2468,6 +2465,7 @@ public class UserCardService extends ShopBaseService {
 		insertVirtualOrderRecord.setGoodsType(GOODS_TYPE_MEMBER_CARD);
 		insertVirtualOrderRecord.setAccessMode(cardInfo.getIsPay());
 		insertVirtualOrderRecord.setCurrency(saas().shop.getCurrency(getShopId()));
+        insertVirtualOrderRecord.setSendCardNo("");
 		insertVirtualOrderRecord.insert();
 		return orderSn;
 	}
@@ -2554,9 +2552,26 @@ public class UserCardService extends ShopBaseService {
 		list.add(orderRecord);
 		saas.getShopApp(getShopId()).couponPack.sendCouponPack(list);
         orderRecord.setSendCardNo(strings.get(0));
+        orderRecord.update();
 		logger().info("会员卡订单-支付完成(回调)-结束");
 		return strings.get(0);
 	}
 
+    /**
+     *
+     * @param param
+     * @return
+     */
+    public CardOrdeerSnVo getCardNoByOrderSn(CardOrdeerSnParam param) {
+        Record1<String> record = db().select(VIRTUAL_ORDER.SEND_CARD_NO).from(VIRTUAL_ORDER).where(VIRTUAL_ORDER.ORDER_SN.eq(param.getOrderSn()))
+            .and(VIRTUAL_ORDER.USER_ID.eq(param.getUserId()))
+            .fetchOne();
+        CardOrdeerSnVo vo =new  CardOrdeerSnVo();
+        if (record!=null&&!Strings.isNullOrEmpty(record.component1())){
+             vo.setCardNo(record.component1());
+             return vo;
+        }
+        return vo ;
+    }
 }
 
