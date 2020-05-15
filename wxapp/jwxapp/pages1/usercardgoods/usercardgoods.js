@@ -213,7 +213,8 @@ global.wxPage({
         this.requestCartGoodsList()
         this.bindCloseSpec()
       } else {
-        util.toast_fail(res.message)
+        util.showModal('提示', res.message, function () { }, false, '确定')
+        // util.toast_fail(res.message)
       }
     }, {
       goodsId: paramsGoodsId,
