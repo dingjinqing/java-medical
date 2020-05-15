@@ -165,7 +165,7 @@ public class WxCardExchangeService extends ShopBaseService {
 	 * @throws MpException 
 	 */
 	public boolean judgeCardGoods(CardExchaneGoodsJudgeParam param) throws MpException {
-		return judgeExchangGoodsAvailable(param.getUserId(),param.getCardNo(),param.getGoodsNumber(),Boolean.FALSE);
+		return judgeExchangGoodsAvailable(param.getGoodsId(),param.getCardNo(),param.getGoodsNumber(),Boolean.TRUE);
 	}
 	
 	/**
@@ -322,7 +322,7 @@ public class WxCardExchangeService extends ShopBaseService {
 		Integer allowExchangTimes = getCardAllowExchangGoodsTimes(goodsId, memberCard);
 		if(allowExchangTimes==null) {
 			// 该会员卡不支持兑换该商品
-			logger().info("该会员卡不支持兑换该商品");
+			logger().info("该会员卡不支持兑换该商品:"+goodsId);
 			throw new MpException(JsonResultCode.MSG_CARD_NOT_SUPPORT_GOODS);
 		}
 		
@@ -407,6 +407,7 @@ public class WxCardExchangeService extends ShopBaseService {
 		Integer allowExchangTime = null;
 		CardExchangGoods cardExchangGoodsCfg = cardExchangSvc.getCardExchangGoodsService(memberCard);
 		if(CardUtil.isExchangPartGoods(cardExchangGoodsCfg.getIsExchange())) {
+			logger().info("在部分兑换商品中查找");
 			//	部分兑换商品
 			List<GoodsCfg> exchangGoods = cardExchangGoodsCfg.getExchangGoods();
 			for(GoodsCfg goodsCfg: exchangGoods) {
@@ -416,9 +417,11 @@ public class WxCardExchangeService extends ShopBaseService {
 				}
 			}
 		}else if(CardUtil.isExchangAllGoods(cardExchangGoodsCfg.getIsExchange())){
+			logger().info("在全部兑换商品中查找");
 			//	全部兑换商品
 			allowExchangTime = cardExchangGoodsCfg.getEveryGoodsMaxNum();
 		}else {
+			logger().info("不在查询范围");
 			allowExchangTime = null;
 		}
 		return allowExchangTime;
