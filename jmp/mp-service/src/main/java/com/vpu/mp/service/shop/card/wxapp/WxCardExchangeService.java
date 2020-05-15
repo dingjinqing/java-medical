@@ -355,7 +355,7 @@ public class WxCardExchangeService extends ShopBaseService {
 	 * @param memberCard 会员卡Record
 	 * @return 该会员卡配置的该商品允许兑换次数 | null 表示该会员卡未配置该商品
 	 */
-	private Integer getCardAllowExchangGoodsTimes(Integer goodsId, MemberCardRecord memberCard) {
+	public Integer getCardAllowExchangGoodsTimes(Integer goodsId, MemberCardRecord memberCard) {
 		Integer allowExchangTime = null;
 		CardExchangGoods cardExchangGoodsCfg = cardExchangSvc.getCardExchangGoodsService(memberCard);
 		if(CardUtil.isExchangPartGoods(cardExchangGoodsCfg.getIsExchange())) {

@@ -54,5 +54,8 @@ public class GoodsSmallVo {
      * 1默认规格，0自定义规格（多规格）
      */
     private Byte isDefaultProduct;
-	
+    /**
+     * 限制兑换次数
+     */
+	private Integer limitExhangNum;
 }

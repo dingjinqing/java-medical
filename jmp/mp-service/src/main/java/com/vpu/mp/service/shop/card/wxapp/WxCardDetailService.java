@@ -138,7 +138,7 @@ public class WxCardDetailService extends ShopBaseService{
 		UserCardRecord userCardRecord = cardFullDetail.getUserCard();
 
 		dealWithUserCardDetailInfo(card);
-
+		
 		card.setCumulativeConsumptionAmounts(orderInfoService.getAllConsumpAmount(param.getUserId()));
 		card.setCumulativeScore(scoreService.getAccumulationScore(param.getUserId()));
 		logger().info("卡的校验状态");
@@ -178,6 +178,7 @@ public class WxCardDetailService extends ShopBaseService{
 		if(CardUtil.isLimitCard(memberCardRecord.getCardType())) {
 			CardExchangTipVo cardExchangTip = wxCardExchangSvc.getCardExchangTip(userCardRecord.getCardNo(), memberCardRecord);
 			card.setCardExchangTip(cardExchangTip);
+			card.setGoodsList(getExchangGoodsDetail(memberCardRecord));
 		}
 		
 		return card;
@@ -246,7 +247,7 @@ public class WxCardDetailService extends ShopBaseService{
 		logger().info("处理wx 用户会员卡数据详情");
 		dealWithUserCardBasicInfo(card);
 		dealWithUserCardAvailableStore(card);
-		card.setGoodsList(getExchangGoodsDetail(card));
+		
 	}
 	
 	
@@ -382,14 +383,14 @@ public class WxCardDetailService extends ShopBaseService{
 	/**
 	 * 	处理可兑换的商品
 	 */
-	public List<GoodsSmallVo> getExchangGoodsDetail(WxAppUserCardVo userCard) {
+	public List<GoodsSmallVo> getExchangGoodsDetail(MemberCardRecord card) {
 		List<GoodsSmallVo> res = Collections.<GoodsSmallVo>emptyList();
-		if(CardUtil.isLimitCard(userCard.getCardType()) && CardUtil.canExchangGoods(userCard.getIsExchang())) {
+		if(CardUtil.isLimitCard(card.getCardType()) && CardUtil.canExchangGoods(card.getIsExchang())) {
 			logger().info("处理限次卡兑换的商品");
-			if(CardUtil.isExchangPartGoods(userCard.getIsExchang())) {
+			if(CardUtil.isExchangPartGoods(card.getIsExchang())) {
 				//	部分商品
-				if(!StringUtils.isBlank(userCard.getExchangGoods())) {
-					List<Integer> goodsIdList = cardExchangSvc.getExchangPartGoodsAllIds(userCard.getExchangGoods());
+				if(!StringUtils.isBlank(card.getExchangGoods())) {
+					List<Integer> goodsIdList = cardExchangSvc.getExchangPartGoodsAllIds(card.getExchangGoods());
 					res = goodsService.getGoodsList(goodsIdList, false);
 				}
 			}else {
@@ -410,6 +411,7 @@ public class WxCardDetailService extends ShopBaseService{
 				for(GoodsSmallVo goodsVo: res) {
 					BigDecimal shopPrice = goodsVo.getShopPrice();
 					goodsVo.setShopPrice(shopPrice.setScale(2, BigDecimal.ROUND_HALF_EVEN));
+					goodsVo.setLimitExhangNum(wxCardExchangSvc.getCardAllowExchangGoodsTimes(goodsVo.getGoodsId(),card));
 				}
 			}
 		}
