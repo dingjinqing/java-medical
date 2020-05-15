@@ -231,10 +231,12 @@
 				</view>
 			</view>
 			<view class="card_item_content exchang_goods" wx:if="{{cardInfo.cardType === 1 && cardInfo.isExchang != 0}}">
-				<view class='pro_tips' wx:if='{{cardInfo.periodLimit > 0}}'>
-					<image class="image" src="{{imageUrl}}image/wxapp/icon_warning.png" />
-					<text class="text">提示：{{cardInfo.period_msg1}}</text>
-					<text  class="text" style="float:right">{{cardInfo.period_msg2}}</text>
+				<view class='pro_tips' style="{{cardInfo.cardExchangTip.periodLimit==0?'justify-content: flex-start;':''}}" wx:if='{{cardInfo.cardExchangTip}}'>
+					<view>
+						<image class="image" src="{{imageUrl}}image/wxapp/icon_warning.png" />
+						<text wx:if="{{cardInfo.cardExchangTip.periodLimit!=0}}" class="text">提示：以下商品每{{cardInfo.cardExchangTip.periodLimit==1?'日':cardInfo.cardExchangTip.periodLimit==2?'周':cardInfo.cardExchangTip.periodLimit==3?'月':cardInfo.cardExchangTip.periodLimit==4?'季度':cardInfo.cardExchangTip.periodLimit==5?'年':''}}可兑换{{cardInfo.cardExchangTip.periodNumber}}件</text>
+					</view>
+					<text  class="text" >{{cardInfo.cardExchangTip.periodLimit==1?'今日':cardInfo.cardExchangTip.periodLimit==2?'本周':cardInfo.cardExchangTip.periodLimit==3?'本月':cardInfo.cardExchangTip.periodLimit==4?'本季度':cardInfo.cardExchangTip.periodLimit==5?'本年':''}}已兑换{{cardInfo.cardExchangTip.periodExchangGoodsNum}}件</text>
 				</view>
 				<view
 				 class="content_item goods_item"
@@ -251,7 +253,7 @@
 					<view class="goods_right">
 						<view class="goods_name">{{goodsListItem.goodsName}}</view>
 						<view class="goods_price" style="color:{{comColor}}">￥{{goodsListItem.shopPrice}}</view>
-						<text style="color:{{comColor}}" class="dh_limit" wx:if='{{item.limitNum}}'>限制兑换{{item.limitNum}}次</text>
+						<text style="color:{{comColor}}" class="dh_limit" wx:if='{{goodsListItem.limitExhangNum}}'>限制兑换{{goodsListItem.limitExhangNum}}次</text>
 						<text style="background:{{comColor}}" class="dh_right" wx:if="{{cardInfo.goodsList.length < 2}}">去兑换</text>
 					</view>
 				</view>

@@ -1,12 +1,14 @@
 <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml" />
 <v-container bindsearch="getSearchText">
-	<view slot="rule" class="rule" wx:if="{{false}}">
-		<image class="image" src="{{imageUrl}}image/wxapp/icon_warning.png" />
-		<view class="content">
-			<text>腾飞测试</text>
-			<text>提示内容占位</text>
-		</view>
+	<view slot="rule" wx:if="{{cardExchangeTip}}">
+		<view class='pro_tips' style="{{cardExchangeTip.periodLimit==0?'justify-content: flex-start;':''}}">
+					<view>
+						<image class="image" src="{{imageUrl}}image/wxapp/icon_warning.png" />
+						<text wx:if="{{cardExchangeTip.periodLimit!=0}}" class="text">提示：以下商品每{{cardExchangeTip.periodLimit==1?'日':cardExchangeTip.periodLimit==2?'周':cardExchangeTip.periodLimit==3?'月':cardExchangeTip.periodLimit==4?'季度':cardExchangeTip.periodLimit==5?'年':''}}可兑换{{cardExchangeTip.periodNumber}}件</text>
+					</view>
+					<text  class="text" >{{cardExchangeTip.periodLimit==1?'今日':cardExchangeTip.periodLimit==2?'本周':cardExchangeTip.periodLimit==3?'本月':cardExchangeTip.periodLimit==4?'本季度':cardExchangeTip.periodLimit==5?'本年':''}}已兑换{{cardExchangeTip.periodExchangGoodsNum}}件</text>
+				</view>
 	</view>
 	<view slot="goods-content" class="goods-content">
 		<block
@@ -32,6 +34,7 @@
 					<view class="amount_num" style='color:{{comColor}}' wx:if='{{item.limit_amount > 0}}'>限购1件</view>
 					<view class='amount_num' style='color:{{comColor}}' wx:if='{{item.limit_num > 0}}'>限制兑换{{item.limit_num}}件</view>
 					-->
+					<view class='amount_num' style='color:{{comColor}}' wx:if='{{item.limitExchangNum}}'>限制兑换{{item.limitExchangNum}}件</view>
 					<view class='price_info clearfix'>
 						<view class='jiaqian'>
 						<!--

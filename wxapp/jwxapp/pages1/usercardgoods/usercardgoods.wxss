@@ -201,4 +201,35 @@ page{
     float: none;
     z-index: 3;
     }
+    .pro_tips {
+      font-size: 24rpx;
+      color: #f60;
+      background: #fcf9dd;
+      font-family: "Microsoft YaHei", 微软雅黑, "Microsoft JhengHei";
+      overflow: hidden;
+      height: 70rpx;
+      line-height: 70rpx;
+      padding: 0 20rpx;
+      margin-bottom: 20rpx;
+    display: flex;
+    justify-content: space-between;
+    }
+    .pro_tips .text {
+      font-size: 24rpx;
+    }
+    
+    .pro_tips .image {
+      width: 28rpx;
+      height: 28rpx;
+      position: relative;
+      top: 6rpx;
+      margin-right: 10rpx;
+    
+    }
+    .amount_num{
+      color: #492e37;
+  position: absolute;
+  bottom: 70rpx;
+  font-size: 24rpx;
+    }
     
