@@ -305,6 +305,19 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/user_manger/integralManagement/integralDescription'
       )
+  },
+  // 会员增值
+  {
+    path: '/admin/home/main/memberValueAdded',
+    name: 'member_value_added',
+    meta: {
+      crumbTitle: 'router.memberValueAdded',
+      meta: 'user_manger'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/memberValueAdded/memberValueAddedHome'
+      )
   }
 ]
 

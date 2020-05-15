@@ -109,7 +109,7 @@ public class ReducePricePictorialService extends ShareBaseService {
             return;
         }
         // 拼装背景图
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(), reduceIconBufferImg, baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(), reduceIconBufferImg,null,convertPriceWithFlag(shop.getShopLanguage(), baseParam.getRealPrice()), convertPriceWithFlag(shop.getShopLanguage(),baseParam.getLinePrice()), imgPx);
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);

@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.firstspecial.FirstSpecialShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
+import com.vpu.mp.service.pojo.wxapp.share.integral.IntegralMallShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.presale.PreSaleShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.rebate.RebateShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.reduce.ReducePriceShareInfoParam;
@@ -129,6 +130,16 @@ public class WxAppPictorialController extends WxAppBaseController  {
         return getActivityShareInfo(param);
     }
 
+    /**
+     * 获取积分兑换活动分享图片
+     * @param param 参数信息
+     * @return  JsonResult
+     */
+    @PostMapping("/api/wxapp/integral_mall/share/info")
+    public JsonResult getIntegralMallShareInfo(@RequestBody IntegralMallShareInfoParam param){
+        return getActivityShareInfo(param);
+    }
+
     private JsonResult getActivityShareInfo(GoodsShareBaseParam param) {
         WxAppSessionUser user = wxAppAuth.user();
         param.setUserId(user.getUserId());
@@ -228,6 +239,18 @@ public class WxAppPictorialController extends WxAppBaseController  {
     public JsonResult getSeckillPictorial(@RequestBody SeckillShareInfoParam param){
         return getActivityPictorialInfo(param);
     }
+
+    /**
+     * 获取积分兑换活动海报
+     * @param param 参数信息
+     * @return  JsonResult
+     */
+    @PostMapping("/api/wxapp/integral_mall/pictorial/info")
+    public JsonResult getIntegralMallPictorial(@RequestBody IntegralMallShareInfoParam param){
+        return getActivityPictorialInfo(param);
+    }
+
+
     /**
      * 获取活动海报信息
      * @param param GoodsShareBaseParam

@@ -99,6 +99,7 @@ export const en = {
     'Membership List',
     'Membership Card Receiving Details'
   ],
+
   // 会员管理 会员列表 余额
   balanceDetail: [
     'Membership management',
@@ -119,6 +120,8 @@ export const en = {
   integralManagement: ['Member ', 'Score MGR'],
   // 会员管理 标签管理
   labelManagement: ['Member', 'Tag MGR'],
+  // 会员管理 会员增值
+  memberValueAdded: ['Membership management', 'Member value added'],
   // 积分管理 积分说明
   integralDescription: ['Score management', 'Description'],
   // 基础配置 小程序授权

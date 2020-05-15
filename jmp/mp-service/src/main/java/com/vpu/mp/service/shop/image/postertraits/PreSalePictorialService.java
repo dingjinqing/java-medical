@@ -114,7 +114,7 @@ public class PreSalePictorialService extends ShareBaseService {
         PictorialImgPx imgPx = new PictorialImgPx(getShopStyleColor());
 
         // 拼装背景图
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(), baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(),null,null,convertPriceWithFlag(shop.getShopLanguage(), baseParam.getRealPrice()),convertPriceWithFlag(shop.getShopLanguage(),baseParam.getLinePrice()), imgPx);
 
         //定金膨胀文字
         String preSaleText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PRESALE_SHARE_INFO, "messages");

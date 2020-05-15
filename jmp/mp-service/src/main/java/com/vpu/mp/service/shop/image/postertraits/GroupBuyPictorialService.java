@@ -120,17 +120,18 @@ public class GroupBuyPictorialService extends ShareBaseService {
     @Override
     void createPictorialImg(BufferedImage qrCodeBufferImg, BufferedImage goodsImg, PictorialUserInfo userInfo, String shareDoc, Record aRecord, GoodsRecord goodsRecord, ShopRecord shop, GoodsShareBaseParam baseParam, GoodsPictorialInfo goodsPictorialInfo) {
         PictorialImgPx imgPx = new PictorialImgPx(getShopStyleColor());
+        // 活动价
+        String realPriceText = convertPriceWithFlag(shop.getShopLanguage(), baseParam.getRealPrice());
+        // 划线价格
+        String linePriceText = convertPriceWithFlag(shop.getShopLanguage(), baseParam.getLinePrice());
+
         // 拼装背景图
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(), baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(),null,null, realPriceText, linePriceText, imgPx);
 
         // 拼装自定义内容
         BigDecimal saveMoney = baseParam.getLinePrice().subtract(baseParam.getRealPrice()).setScale(2, BigDecimal.ROUND_HALF_UP);
         // "开团省2元" 文字
         String saveText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_SAVE, null, "messages", saveMoney);
-        // 活动价
-        String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + baseParam.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP);
-        // 划线价格
-        String linePriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + baseParam.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP);
         pictorialService.addPictorialSelfCustomerContent(bgBufferedImage, saveText, realPriceText, linePriceText, true, imgPx);
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);

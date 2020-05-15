@@ -479,7 +479,7 @@ public class FormStatisticsService extends ShopBaseService {
                     Map<String, String> finalSelects = selects;
                     if (c.getShowTypes().equals(NumberUtils.BYTE_ZERO)){
                         c.getInnerVo().forEach(l->{
-                            l.setModuleValue(finalSelects.get(l.getModuleValue().substring(1,l.getModuleValue().length()-1)));
+                            l.setModuleValue(finalSelects.get(l.getModuleValue()));
                         });
                     }
                     if (c.getShowTypes().equals(NumberUtils.BYTE_ONE)){

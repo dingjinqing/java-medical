@@ -266,24 +266,29 @@ public class JsonResultMessage {
     public static final String GROUP_BUY_ACTIVITY_GROUP_OPEN_LIMIT_MAX="group.buy.activity.group.open.limit.max";
     public static final String GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX="group.buy.activity.group.join.limit.max";
     public static final String GROUP_BUY_ACTIVITY_GROUP_EMPLOEES_MAX="group.buy.activity.group.emploees.max";
-    public static final String GROUP_BUY_ACTIVITY_GROUP_JOINING="group.buy.activity.group.joining";
-    public static final String GROUP_BUY_ACTIVITY_GROUP_STOCK_LIMIT="group.buy.activity.group.stock.limit";
-    public static final String GROUP_BUY_ACTIVITY_GROUP_INVENTORY_FAILED="group.buy.activity.group.inventory.failed";
-    public static final String GROUP_BUY_ACTIVITY_GROUP_SUCCESS="group.buy.activity.group.success";
-    public static final String GROUP_BUY_ACTIVITY_GROUP_CANCEL="group.buy.activity.group.cancel";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_JOINING = "group.buy.activity.group.joining";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_STOCK_LIMIT = "group.buy.activity.group.stock.limit";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_INVENTORY_FAILED = "group.buy.activity.group.inventory.failed";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_SUCCESS = "group.buy.activity.group.success";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_CANCEL = "group.buy.activity.group.cancel";
     /**
      * 营销-秒杀
      */
-    public static final String SECKILL_CONFLICTING_ACT_TIME="seckill.conflicting.act.time";
+    public static final String SECKILL_CONFLICTING_ACT_TIME = "seckill.conflicting.act.time";
+
+    /**
+     * 营销-预售
+     */
+    public static final String PRESALE_CONFLICTING_ACT_TIME = "presale.conflicting.act.time";
 
     public static final String SHARE_REWARD_COUPON_NUM_LIMIT = "share.reward.coupon.num.limit";
 
     /**
      * 营销-砍价
      */
-    public static final String BARGAIN_CONFLICTING_ACT_TIME="bargain.conflicting.act.time";
-    public static final String BARGAIN_NOT_YET_SUCCESSFUL="bargain.not.yet.successful";
-    public static final String BARGAIN_RECORD_ORDERED="bargain.record.ordered";
+    public static final String BARGAIN_CONFLICTING_ACT_TIME = "bargain.conflicting.act.time";
+    public static final String BARGAIN_NOT_YET_SUCCESSFUL = "bargain.not.yet.successful";
+    public static final String BARGAIN_RECORD_ORDERED = "bargain.record.ordered";
 
     /**
      *营销-我的奖品
@@ -593,7 +598,9 @@ public class JsonResultMessage {
 	public static final String MSG_CARD_NO_RECEIVED = "card.no.received";
 	public static final String MSG_CARD_NORMAL = "card.normal";
 	public static final String MSG_CARD_NO_ABOLISHED = "card.no.abolished";
-	public static final String MSG_CARD_ALLOW_TIME_OVER_ALIAS = "card.allow.times.over.alias";
+	public static final String MSG_CARD_ALLOW_TIME_OVER_ALIAS = "member.card.allow.times.over.alias";
+	public static final String MSG_CARD_ADD_TIMES_OVER_ALIAS = "member.card.add.times.over.alias";
+	public static final String MSG_CARD_PERIOD_ADD_TIMES_OVER_ALIAS = "member.card.period.add.times.over.alias";
     /**
      * 	用户卡包邮信息
      */
@@ -1077,6 +1084,15 @@ public class JsonResultMessage {
     public static final String WX_MA_PRESALE_SHARE_DOC = "wx.ma.presale.share.doc";
     /**"200.00元,限时预售" 分享图片*/
     public static final String WX_MA_PRESALE_PICTORIAL_DOC = "wx.ma.presale.pictorial.doc";
+    /**积分兑换相关*/
+    // ￥5.00+10050积分兑换商品
+    public static final String WX_MA_INTEGRAL_MALL_SHARE_DOC="wx.ma.integral.mall.share.doc";
+    // ￥5.00+10050积分
+    public static final String WX_MA_INTEGRAL_MALL_PRICE_SCORE = "wx.ma.integral.mall.price.score";
+    // 积分兑换
+    public static final String WX_MA_INTEGRAL_MALL_EXCHANGE= "wx.ma.integral.mall.exchange";
+
+
     //持卡会员导出
     public static final String USER_CARD_OK = "user.card.ok";
     public static final String USER_CARD_ONOK = "user.card.onok";

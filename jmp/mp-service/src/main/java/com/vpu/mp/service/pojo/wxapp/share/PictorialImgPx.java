@@ -107,15 +107,17 @@ public class PictorialImgPx {
         } else {
             if (!DEFAULT_STYLE.equals(picStyleConfig)) {
                 headerHeight = 130;
+            }
+            // 默认样式值初始化
+            initForDefault();
+
+            if (!DEFAULT_STYLE.equals(picStyleConfig)) {
+                headFontColor = Color.WHITE;
                 majorAxis = bgWidth + bgWidth / 2;
                 minorAxis = 500;
                 bgCircleStartX = (bgWidth - majorAxis) / 2;
                 bgCircleStartY = -100;
             }
-            // 默认样式值初始化
-            initForDefault();
-
-            headFontColor = Color.WHITE;
 
             if (SHARE_PERSON_STYLE.equals(picStyleConfig)) {
                 initForSharePersonInfoStyle();

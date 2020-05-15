@@ -147,6 +147,6 @@ public class CardExchangService extends ShopBaseService {
 		List<String> descArr = CardFreeship.getFreeShipDesc(lang);
 		Collections.reverse(descArr);
 		ArrayList<String> tmpList = new ArrayList<>(descArr.subList(0, CardExchangGoods.TimeType.values().length));
-		return tmpList.get(periodLimit);
+		return tmpList.get(periodLimit-1);
 	}
 }

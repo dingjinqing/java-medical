@@ -128,62 +128,6 @@ public class PictorialService extends ShopBaseService {
     }
 
     /**
-     * 生成默认海报背景图,带活动提示文字
-     *
-     * @param userInfo        用户信息
-     * @param shop            店铺配置
-     * @param qrCodeImg       二维码
-     * @param goodsImg        商品图片
-     * @param shareDoc        海报分享文案
-     * @param goodsName       商品名称
-     * @param activityTipText 提示文字
-     * @param realPrice       商品原件
-     * @param linePrice       商品划线价
-     * @param imgPx           图片规格信息
-     * @return 通过图片
-     */
-    public BufferedImage createPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName, String activityTipText, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx) {
-        return createPictorialBgImage(userInfo, shop, qrCodeImg, goodsImg, shareDoc, goodsName, null, activityTipText, realPrice, linePrice, imgPx);
-    }
-
-    /**
-     * 生成默认海报背景图,带活动提示图标
-     *
-     * @param userInfo        用户信息
-     * @param shop            店铺配置
-     * @param qrCodeImg       二维码
-     * @param goodsImg        商品图片
-     * @param shareDoc        海报分享文案
-     * @param goodsName       商品名称
-     * @param activityTipIcon 提示图标
-     * @param realPrice       商品原件
-     * @param linePrice       商品划线价
-     * @param imgPx           图片规格信息
-     * @return 通过图片
-     */
-    public BufferedImage createPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName, BufferedImage activityTipIcon, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx) {
-        return createPictorialBgImage(userInfo, shop, qrCodeImg, goodsImg, shareDoc, goodsName, activityTipIcon, null, realPrice, linePrice, imgPx);
-    }
-
-    /**
-     * 生成默认海报背景图,不带活动提示图标和文字
-     *
-     * @param userInfo  用户信息
-     * @param shop      店铺配置
-     * @param qrCodeImg 二维码
-     * @param goodsImg  商品图片
-     * @param shareDoc  海报分享文案
-     * @param goodsName 商品名称
-     * @param realPrice 商品原件
-     * @param linePrice 商品划线价
-     * @param imgPx     图片规格信息
-     * @return 通过图片
-     */
-    public BufferedImage createPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx) {
-        return createPictorialBgImage(userInfo, shop, qrCodeImg, goodsImg, shareDoc, goodsName, null, null, realPrice, linePrice, imgPx);
-    }
-
-    /**
      * 生成默认海报背景图
      *
      * @param userInfo  用户信息
@@ -192,16 +136,18 @@ public class PictorialService extends ShopBaseService {
      * @param goodsImg  商品图片
      * @param shareDoc  海报分享文案
      * @param goodsName 商品名称
-     * @param realPrice 商品原件
-     * @param linePrice 商品划线价
+     * @param activityTipIcon 活动提示icon
+     * @param activityTipText 活动提示文字
+     * @param bottomFirstText 底部第一个文字信息（一般是商品真实价格）
+     * @param bottomSecondText 底部第一个文字信息（一般是商品真实价格）
      * @param imgPx     图片规格信息
      * @return 通过图片
      */
-    private BufferedImage createPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName, BufferedImage activityTipIcon, String activityTipText, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx) {
+    public BufferedImage createPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName, BufferedImage activityTipIcon, String activityTipText,String bottomFirstText, String bottomSecondText, PictorialImgPx imgPx) {
         BufferedImage bgBufferedImage = createBgImage(imgPx);
         addHeaderItemInfo(bgBufferedImage,userInfo.getUserAvatarImage(),userInfo.getUserName(),shareDoc,imgPx);
         addGoodsPicInfo(bgBufferedImage,goodsImg,imgPx);
-        addBottomItemInfo(bgBufferedImage,shop,goodsName,activityTipIcon,activityTipText,realPrice,linePrice,qrCodeImg,imgPx);
+        addBottomItemInfo(bgBufferedImage,shop,goodsName,activityTipIcon,activityTipText,bottomFirstText,bottomSecondText,qrCodeImg,imgPx);
         return bgBufferedImage;
     }
 
@@ -211,12 +157,12 @@ public class PictorialService extends ShopBaseService {
      * @param qrCodeImg 二维码
      * @param goodsImg  商品图片
      * @param goodsName 商品名称
-     * @param realPrice 商品原件
-     * @param linePrice 商品划线价
+     * @param realPriceStr 商品原件
+     * @param linePriceStr 商品划线价
      * @param imgPx     图片规格信息
      * @return 图片
      */
-    public BufferedImage createBasicStylePictorialBgImage(ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String goodsName, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx) {
+    public BufferedImage createBasicStylePictorialBgImage(ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String goodsName, String realPriceStr, String linePriceStr, PictorialImgPx imgPx) {
         //设置背景图
         BufferedImage bgBufferedImage = createBgImage(imgPx);
        // 设置商品图片
@@ -224,8 +170,9 @@ public class PictorialService extends ShopBaseService {
         ImageUtil.addTwoImage(bgBufferedImage, goodsImg, imgPx.getGoodsStartX(), imgPx.getGoodsStartY());
 
         Integer priceX = imgPx.getBottomTextStartX();
+
         // 设置原价和划线价
-        pictorialAddRealLinePrice(shop, realPrice, linePrice, imgPx, bgBufferedImage, priceX);
+        pictorialAddRealLinePrice(shop, realPriceStr, linePriceStr, imgPx, bgBufferedImage, priceX);
         Integer textAscent = ImageUtil.getTextAscent(bgBufferedImage, imgPx.getPriceFont());
         imgPx.setGoodsNameStartY(imgPx.getPriceY()+textAscent+imgPx.getPriceNamePadding());
 
@@ -250,12 +197,12 @@ public class PictorialService extends ShopBaseService {
      * @param goodsImg  商品图片
      * @param shareDoc  海报分享文案
      * @param goodsName 商品名称
-     * @param realPrice 商品原件
-     * @param linePrice 商品划线价
+     * @param realPriceStr 商品原件
+     * @param linePriceStr 商品划线价
      * @param imgPx     图片规格信息
      * @return
      */
-    public BufferedImage createSharePersonInfoPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx){
+    public BufferedImage createSharePersonInfoPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName, String  realPriceStr, String linePriceStr, PictorialImgPx imgPx){
 
         BufferedImage bgBufferedImage = createBgImage(imgPx);
         ImageUtil.addCircle(bgBufferedImage,imgPx.getBgCircleStartX(),imgPx.getBgCircleStartY(),imgPx.getMajorAxis(),imgPx.getMinorAxis(),imgPx.getShopStyleColor());
@@ -263,7 +210,7 @@ public class PictorialService extends ShopBaseService {
         String userNameText = userInfo.getUserName()+" "+Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_RECOMMEND_INFO, null, "messages");;
         addHeaderItemInfo(bgBufferedImage,userInfo.getUserAvatarImage(),userNameText,shareDoc,imgPx);
         addGoodsPicInfo(bgBufferedImage,goodsImg,imgPx);
-        addBottomItemInfo(bgBufferedImage,shop,goodsName,null,null,realPrice,linePrice,qrCodeImg,imgPx);
+        addBottomItemInfo(bgBufferedImage,shop,goodsName,null,null,realPriceStr,linePriceStr,qrCodeImg,imgPx);
         return bgBufferedImage;
     }
 
@@ -273,19 +220,19 @@ public class PictorialService extends ShopBaseService {
      * @param qrCodeImg 二维码
      * @param goodsImg  商品图片
      * @param goodsName 商品名称
-     * @param realPrice 商品原件
-     * @param linePrice 商品划线价
+     * @param realPriceStr 商品原件
+     * @param linePriceStr 商品划线价
      * @param imgPx     图片规格信息
      * @return
      */
-    public BufferedImage createShareShopInfoPictorialBgImage(BufferedImage shopImg, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String goodsName, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx){
+    public BufferedImage createShareShopInfoPictorialBgImage(BufferedImage shopImg, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String goodsName, String realPriceStr, String linePriceStr, PictorialImgPx imgPx){
 
         BufferedImage bgBufferedImage = createBgImage(imgPx);
         ImageUtil.addCircle(bgBufferedImage,imgPx.getBgCircleStartX(),imgPx.getBgCircleStartY(),imgPx.getMajorAxis(),imgPx.getMinorAxis(),imgPx.getShopStyleColor());
         // 设置title名
         addHeaderItemInfo(bgBufferedImage,shopImg, shop.getShopName(),null,imgPx);
         addGoodsPicInfo(bgBufferedImage,goodsImg,imgPx);
-        addBottomItemInfo(bgBufferedImage,shop,goodsName,null,null,realPrice,linePrice,qrCodeImg,imgPx);
+        addBottomItemInfo(bgBufferedImage,shop,goodsName,null,null,realPriceStr,linePriceStr,qrCodeImg,imgPx);
         return bgBufferedImage;
     }
 
@@ -297,12 +244,12 @@ public class PictorialService extends ShopBaseService {
      * @param goodsImg  商品图片
      * @param shareDoc  海报分享文案
      * @param goodsName 商品名称
-     * @param realPrice 商品原件
-     * @param linePrice 商品划线价
+     * @param realPriceStr 商品原件
+     * @param linePriceStr 商品划线价
      * @param imgPx     图片规格信息
      * @return
      */
-    public BufferedImage createSharePersonShopInfoPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg,BufferedImage shopIconImg, BufferedImage goodsImg, String shareDoc, String goodsName, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx){
+    public BufferedImage createSharePersonShopInfoPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg,BufferedImage shopIconImg, BufferedImage goodsImg, String shareDoc, String goodsName, String realPriceStr, String linePriceStr, PictorialImgPx imgPx){
 
         BufferedImage bgBufferedImage = createBgImage(imgPx);
         ImageUtil.addCircle(bgBufferedImage,imgPx.getBgCircleStartX(),imgPx.getBgCircleStartY(),imgPx.getMajorAxis(),imgPx.getMinorAxis(),imgPx.getShopStyleColor());
@@ -310,7 +257,7 @@ public class PictorialService extends ShopBaseService {
         String userNameText = userInfo.getUserName()+" "+Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_RECOMMEND_INFO, null, "messages");;
         addHeaderItemInfo(bgBufferedImage,userInfo.getUserAvatarImage(),userNameText,shareDoc,imgPx);
         addGoodsPicInfo(bgBufferedImage,goodsImg,imgPx);
-        addBottomItemInfo(bgBufferedImage,shop,goodsName,null,null,realPrice,linePrice,qrCodeImg,imgPx);
+        addBottomItemInfo(bgBufferedImage,shop,goodsName,null,null,realPriceStr,linePriceStr,qrCodeImg,imgPx);
         // 添加店铺icon和名字信息,先话外部圆（最左侧），再画矩形，矩形长度是文字长度加上外圆的半径。再画店铺头像，再画文字
         String shopName =shop.getShopName();
         Integer shopNameWidth = ImageUtil.getTextWidth(bgBufferedImage,imgPx.getShopInfoNameFont(),shopName);
@@ -373,12 +320,12 @@ public class PictorialService extends ShopBaseService {
      * @param goodsName
      * @param activityTipIcon
      * @param activityTipText
-     * @param realPrice
-     * @param linePrice
+     * @param bottomFirstText 底部第一个文字信息（一般是商品真实价格）
+     * @param bottomSecondText 底部第一个文字信息（一般是商品真实价格）
      * @param qrCodeImg
      * @param imgPx
      */
-    private void addBottomItemInfo(BufferedImage bgBufferedImage,ShopRecord shop,String goodsName, BufferedImage activityTipIcon, String activityTipText, BigDecimal realPrice, BigDecimal linePrice,BufferedImage qrCodeImg,PictorialImgPx imgPx){
+    private void addBottomItemInfo(BufferedImage bgBufferedImage,ShopRecord shop,String goodsName, BufferedImage activityTipIcon, String activityTipText, String bottomFirstText, String bottomSecondText,BufferedImage qrCodeImg,PictorialImgPx imgPx){
 
         // 设置二维码
         qrCodeImg = ImageUtil.resizeImageTransparent(imgPx.getQrCodeWidth(), imgPx.getQrCodeWidth(), qrCodeImg);
@@ -400,29 +347,25 @@ public class PictorialService extends ShopBaseService {
             priceX = imgPx.getBottomTextStartX() + tipWidth + imgPx.getPriceMargin();
         }
         // 设置原价和划线价
-        pictorialAddRealLinePrice(shop, realPrice, linePrice, imgPx, bgBufferedImage, priceX);
+        pictorialAddRealLinePrice(shop, bottomFirstText, bottomSecondText, imgPx, bgBufferedImage, priceX);
     }
 
     /**
      * 添加底部划线价
      * @param shop
-     * @param realPrice
-     * @param linePrice
+     * @param bottomFirstText 底部第一个文字信息（一般是商品真实价格）
+     * @param bottomSecondText 底部第一个文字信息（一般是商品真实价格）
      * @param imgPx
      * @param bgBufferedImage
      * @param priceX
      */
-    private void pictorialAddRealLinePrice(ShopRecord shop, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx, BufferedImage bgBufferedImage, Integer priceX) {
-        if (realPrice != null) {
-            String moneyFlag = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages");
-            String realPriceStr = moneyFlag + realPrice.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-            ImageUtil.addFont(bgBufferedImage, realPriceStr, imgPx.getPriceFont(), priceX, imgPx.getPriceY(), imgPx.getRealPriceColor(), false);
-
+    private void pictorialAddRealLinePrice(ShopRecord shop, String bottomFirstText, String bottomSecondText, PictorialImgPx imgPx, BufferedImage bgBufferedImage, Integer priceX) {
+        if (bottomFirstText != null) {
+            ImageUtil.addFont(bgBufferedImage, bottomFirstText, imgPx.getPriceFont(), priceX, imgPx.getPriceY(), imgPx.getRealPriceColor(), false);
             // 设置划线价
-            if (linePrice != null) {
-                Integer lineStartX = ImageUtil.getTextWidth(bgBufferedImage, imgPx.getPriceFont(), realPriceStr) + priceX + imgPx.getPriceMargin();
-                String linePriceStr = moneyFlag + linePrice.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-                ImageUtil.addFontWithLine(bgBufferedImage, lineStartX, imgPx.getPriceLineY(), linePriceStr, imgPx.getLinePriceFont(), PictorialImgPx.LINE_PRICE_COLOR);
+            if (bottomSecondText != null) {
+                Integer lineStartX = ImageUtil.getTextWidth(bgBufferedImage, imgPx.getPriceFont(), bottomFirstText) + priceX + imgPx.getPriceMargin();
+                ImageUtil.addFontWithLine(bgBufferedImage, lineStartX, imgPx.getPriceLineY(), bottomSecondText, imgPx.getLinePriceFont(), PictorialImgPx.LINE_PRICE_COLOR);
             }
         }
     }

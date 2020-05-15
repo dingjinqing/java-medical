@@ -17,7 +17,7 @@ export const en = {
     nav3: ['All commodities', 'All Sale out goods', 'Adding goods', 'Freight template', 'Business Classification Management', 'Brand Management', 'Evaluation management', 'Merchandise Recommendation', 'Commodity label', 'Commodity import'],
     nav4: ['Full order', 'Standby order', 'Return and refund orders', 'Self-ordering', 'Collaboration refund failure list', 'Purchase order', 'Virtual Commodity Order', 'Bulk shipment'],
     nav5: ['', 'Bargain', 'Multi-person group', 'distribution', 'Group Drawing', 'Cut-up integral', 'Friends Help', 'Lucky Draw', 'Courtesy in activities', 'Payment courtesy'],
-    nav6: ['Membership List', 'Membership introduction', 'Membership card', 'Label management', 'Integral management'],
+    nav6: ['Membership List', 'Membership introduction', 'Membership card', 'Label management', 'Integral management', 'Member value added'],
     nav7: ['List of stores', 'New stores', 'Group management', 'Store Service Configuration', 'Store permissions', 'Store announcement'],
     nav8: ['Shop Foundation Configuration', 'Transaction configuration', 'Shop Authority', 'Template message', 'Third party docking', 'Operational Records', 'Service Commitment']
   }
