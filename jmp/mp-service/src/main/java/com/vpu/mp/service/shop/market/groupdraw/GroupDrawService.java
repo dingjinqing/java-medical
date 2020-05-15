@@ -955,6 +955,9 @@ public class GroupDrawService extends ShopBaseService {
 		if (joinGroupInfo != null) {
 			logger().info("已参与该活动");
 			vo.setCode(JsonResultCode.PARTICIPATED_IN_EVENT);
+			String url = "pages1/pinlotteryinfo/pinlotteryinfo?group_id=" + joinGroupInfo.getGroupId()
+					+ "&group_draw_id=" + groupDrawId + "&goods_id=" + goodsId;
+			vo.setUrl(url);
 			return vo;
 		}
 		if(groupId!=null) {

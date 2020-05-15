@@ -108,7 +108,8 @@ public class GroupDrawProcessor implements CreateOrderProcessor,GoodsDetailProce
 		JsonResultCode code = result.getCode();
 		log.info("拼团抽奖的判断的code" + code);
 		if (!code.equals(JsonResultCode.CODE_SUCCESS)) {
-			throw new MpException(code, null);
+			//throw new MpException(code, null);
+			throw MpException.initErrorResult(code, result.getUrl(), null);
 		}
 		return goods;
 	}

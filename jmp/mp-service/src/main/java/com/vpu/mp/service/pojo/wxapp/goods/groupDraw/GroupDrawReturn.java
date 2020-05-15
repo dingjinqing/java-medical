@@ -18,4 +18,6 @@ import lombok.NoArgsConstructor;
 public class GroupDrawReturn {
 	private JsonResultCode code;
 	private GroupDrawInfoReturnVo vo;
+	/** 一些情况下跳转的地址 比如已经参加活动，让跳到详细信息*/
+	private String url;
 }
