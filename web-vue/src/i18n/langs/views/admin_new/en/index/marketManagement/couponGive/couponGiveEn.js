@@ -73,6 +73,7 @@ export const en = {
   custom: 'custom',
   choose: 'please choose',
   timeLoginRecord: 'There are login records within the specified time:',
+  designatedArea: 'Users in the designated area',
   chooseCoupons: 'choose coupons',
   couponTip: 'Add up to 5 coupons, expired and disabled coupons can not be added',
   grantTime: 'granting date',
