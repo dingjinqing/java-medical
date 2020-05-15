@@ -517,6 +517,13 @@ export default {
             span: '',
             name: 'score',
             flag: false
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/icon_left/member_value_add.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/member_value_add_h.png',
+            span: '',
+            name: 'member_value_added',
+            flag: true
           }
         ],
         store_manage: [
@@ -685,7 +692,7 @@ export default {
         console.log(this.dataList)
       })
     },
-    async defaultNav (meta) {
+    defaultNav (meta) {
       console.log(meta)
       console.log(this.dataList)
       switch (meta) {
@@ -756,6 +763,7 @@ export default {
       } else {
         this.judgeMenuAll(true)
       }
+
 
 
       console.log(this.saveIndex)

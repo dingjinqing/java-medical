@@ -97,6 +97,8 @@ export const cn = {
   refillDetailsItem: ['会员管理', '会员卡消费明细'],
   // 会员管理 标签管理
   labelManagement: ['会员管理', '标签管理'],
+  // 会员管理 会员增值
+  memberValueAdded: ['会员管理', '会员增值'],
   // 会员管理 积分管理
   integralManagement: ['会员管理', '积分管理'],
   // 积分管理 查看签到会员
