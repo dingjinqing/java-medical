@@ -142,7 +142,7 @@ public class WxCardExchangeService extends ShopBaseService {
 				GoodsListMpVo goods = pageResult.dataList.get(i);
 				goods.getGoodsId();
 				Integer limitTimes = getCardAllowExchangGoodsTimes(goods.getGoodsId(),memberCard);
-				goods.setExchangLimitNum(limitTimes);
+				goods.setLimitExchangNum(limitTimes);
 			}
 			
 			vo.setGoodsPageResult(pageResult);
