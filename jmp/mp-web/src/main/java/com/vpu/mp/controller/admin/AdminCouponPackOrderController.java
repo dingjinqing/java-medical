@@ -6,8 +6,10 @@ import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.order.virtual.AnalysisParam;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderPageParam;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderRefundParam;
+import com.vpu.mp.service.shop.order.virtual.VirtualOrderService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,6 +64,14 @@ public class AdminCouponPackOrderController extends AdminBaseController {
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.VIRTUAL_ORDER_COUPON_PACK_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
         export2Excel(workbook, fileName, response);
     }
-	
+
+    /**
+     * 优惠券礼包订单数据分析
+     */
+    @PostMapping("/analysis")
+    public JsonResult orderAnalysis(@RequestBody AnalysisParam param) {
+        return success(shop().couponPackOrder.getAnalysisData(param, VirtualOrderService.GOODS_TYPE_COUPON_PACK));
+    }
+
 }
 
