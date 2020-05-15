@@ -593,7 +593,7 @@ public class JsonResultMessage {
 	public static final String MSG_CARD_NO_RECEIVED = "card.no.received";
 	public static final String MSG_CARD_NORMAL = "card.normal";
 	public static final String MSG_CARD_NO_ABOLISHED = "card.no.abolished";
-	public static final String MSG_CARD_ALLOW_TIME_OVER_ALIAS = "card.allow.times.over.alias";
+	public static final String MSG_CARD_ALLOW_TIME_OVER_ALIAS = "member.card.allow.times.over.alias";
     /**
      * 	用户卡包邮信息
      */
