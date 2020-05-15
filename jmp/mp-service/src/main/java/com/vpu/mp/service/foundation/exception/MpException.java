@@ -13,6 +13,16 @@ public class MpException extends Exception {
 	private static final long serialVersionUID = 6088595731089992032L;
 	private JsonResultCode errorCode;
 	private String[] codeParam;
+
+    public Object getErrorResult() {
+        return errorResult;
+    }
+
+    public void setErrorResult(Object errorResult) {
+        this.errorResult = errorResult;
+    }
+
+    private Object errorResult;
 	
 	public MpException(JsonResultCode errorCode, String message) {
 		super(message);
@@ -47,4 +57,10 @@ public class MpException extends Exception {
 	public void setCodeParam(String[] codeParam) {
 		this.codeParam = codeParam;
 	}
+
+    public static MpException initErrorResult(JsonResultCode errorCode, Object errorResult, String... codeParam) {
+        MpException mpException = new MpException(errorCode, null , codeParam);
+        mpException.setErrorResult(errorResult);
+        return mpException;
+    }
 }

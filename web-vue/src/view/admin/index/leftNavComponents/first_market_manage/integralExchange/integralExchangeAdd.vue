@@ -585,13 +585,13 @@ export default {
               this.ruleForm.tableData = arr
               this.chooseGoodsBack.push(res.content.goodsId)
               // 处理底部展开的内容
-              this.formBottom.style = JSON.stringify(objectShareConfig.share_action)
+              this.formBottom.style = JSON.stringify(objectShareConfig.shareAction)
               if (this.formBottom.style === '2') {
                 this.showMoreFlag = true
               }
-              this.formBottom.copywriting = objectShareConfig.share_doc
-              this.sharedGraph = JSON.stringify(objectShareConfig.share_img_action)
-              this.formBottom.checkImgData = { imgUrl: objectShareConfig.share_img }
+              this.formBottom.copywriting = objectShareConfig.shareDoc
+              this.sharedGraph = JSON.stringify(objectShareConfig.shareImgAction)
+              this.formBottom.checkImgData = { imgUrl: objectShareConfig.shareImg }
               console.log(objectShareConfig)
             }
           })
@@ -655,10 +655,10 @@ export default {
           url = this.formBottom.checkImgData.imgUrl
         }
         let configParamObj = {
-          share_action: Number(this.formBottom.style),
-          share_doc: this.formBottom.copywriting,
-          share_img_action: Number(this.sharedGraph),
-          share_img: url
+          shareAction: Number(this.formBottom.style),
+          shareDoc: this.formBottom.copywriting,
+          shareImgAction: Number(this.sharedGraph),
+          shareImg: url
         }
         let params = {
           name: this.ruleForm.name,

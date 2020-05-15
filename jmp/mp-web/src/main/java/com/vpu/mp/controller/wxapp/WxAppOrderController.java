@@ -52,7 +52,7 @@ public class WxAppOrderController extends WxAppBaseController{
         try {
             return success(shop().orderActionFactory.orderQuery(param));
         } catch (MpException e) {
-            return fail(e.getErrorCode(), e.getCodeParam());
+            return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParam());
         }
     }
 
@@ -69,7 +69,7 @@ public class WxAppOrderController extends WxAppBaseController{
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
         }else {
-            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
+            return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
     }
 
