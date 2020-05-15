@@ -51,12 +51,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.pojo.shop.member.buy.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.impl.DSL;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,9 +115,6 @@ import com.vpu.mp.service.pojo.shop.member.builder.ChargeMoneyRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardParamBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
-import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingParam;
-import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingVo;
-import com.vpu.mp.service.pojo.shop.member.buy.CardToPayParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardBgBean;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.EffectTimeBean;
@@ -245,7 +244,7 @@ public class UserCardService extends ShopBaseService {
     private WxCardDetailService wxCardDetailSvc;
     @Autowired
     private CardMsgNoticeService cardMsgSvc;
-    
+
 	public static final String DESC = "score_open_card";
 
 	/**
@@ -292,7 +291,7 @@ public class UserCardService extends ShopBaseService {
 		}
 	}
 
-	
+
 
 	/**
 	 * 会员卡升降级记录
@@ -1610,7 +1609,7 @@ public class UserCardService extends ShopBaseService {
 
 	}
 
-	
+
 
 	/**
 	 * 	领取会员卡
@@ -2488,7 +2487,24 @@ public class UserCardService extends ShopBaseService {
 		logger().info("会员卡订单-支付完成(回调)-结束");
 		return strings.get(0);
 	}
-	
+
+    /**
+     *
+     * @param param
+     * @return
+     */
+    public CardOrdeerSnVo getCardNoByOrderSn(CardOrdeerSnParam param) {
+        Record1<String> record = db().select(VIRTUAL_ORDER.CARD_NO).where(VIRTUAL_ORDER.ORDER_SN.eq(param.getOrderSn()))
+            .and(VIRTUAL_ORDER.USER_ID.eq(param.getUserId()))
+            .fetchOne();
+        if (record!=null){
+            CardOrdeerSnVo vo =new  CardOrdeerSnVo();
+             vo.setCardNo(record.component1());
+             return vo;
+        }
+        return null ;
+    }
+
 	/**
 	 * 	删除所有的用户领取的该等级卡
 	 */

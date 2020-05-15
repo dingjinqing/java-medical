@@ -1,4 +1,5 @@
 package com.vpu.mp.controller.wxapp;
+import com.vpu.mp.service.pojo.shop.member.buy.CardOrdeerSnParam;
 import com.vpu.mp.service.pojo.shop.member.account.*;
 import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +14,16 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RequestUtil;
+import com.vpu.mp.service.pojo.shop.member.account.CardReceiveVo;
+import com.vpu.mp.service.pojo.shop.member.account.CardRenewCheckoutParam;
+import com.vpu.mp.service.pojo.shop.member.account.CardRenewCheckoutVo;
+import com.vpu.mp.service.pojo.shop.member.account.CardRenewParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardGetParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardJudgeVo;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardMaParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
+import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingParam;
 import com.vpu.mp.service.pojo.shop.member.buy.CardToPayParam;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
@@ -74,7 +85,7 @@ public class WxAppCardController extends WxAppBaseController {
         param.setUserId(wxAppAuth.user().getUserId());
         return success(shop().userCard.getInterestsByGrade(param));
     }
-	
+
 	/**
 	 * 领取会员卡判断
 	 */
@@ -229,7 +240,19 @@ public class WxAppCardController extends WxAppBaseController {
 		payParam.setClientIp(RequestUtil.getIp(request));
     	return success(shop().userCard.buyCardCreateOrder(payParam));
 	}
-	
+
+    /**
+     * 通过订单查找卡号
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/wxapp/card/order/getcardno")
+	public JsonResult getCardNo(@RequestBody @Validated CardOrdeerSnParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        param.setUserId(user.getUserId());
+        return success(shop().userCard.getCardNoByOrderSn(param));
+    }
+
 	/**
 	 * 	领取赠送的会员卡
 	 */
@@ -282,7 +305,7 @@ public class WxAppCardController extends WxAppBaseController {
 
 	/**
 	 * 限次卡是否兑换商品
-	 * @throws MpException 
+	 * @throws MpException
 	 */
 	@PostMapping("/api/wxapp/card/exchange/judge")
 	public JsonResult changeGoodsList(@RequestBody @Validated CardExchaneGoodsJudgeParam param) throws MpException {
@@ -294,7 +317,7 @@ public class WxAppCardController extends WxAppBaseController {
 	
 	/**
 	 * 限次卡是否能够兑换单个商品校验
-	 * @throws MpException 
+	 * @throws MpException
 	 */
 	@PostMapping("/api/card/exchange/tobuy/judge")
 	public JsonResult judgeCardExchangeTobuy(@RequestBody @Validated CardExchaneGoodsJudgeParam param) throws MpException {
@@ -306,7 +329,7 @@ public class WxAppCardController extends WxAppBaseController {
 	
 	/**
 	 * 兑换商品加购
-	 * @throws MpException 
+	 * @throws MpException
 	 */
 	@PostMapping("/api/wxapp/card/change/add")
 	public JsonResult addExchangeGoods(@RequestBody CardAddExchangeGoodsParam param) throws MpException {
