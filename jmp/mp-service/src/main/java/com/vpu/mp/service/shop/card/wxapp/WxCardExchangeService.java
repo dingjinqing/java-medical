@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -180,6 +181,11 @@ public class WxCardExchangeService extends ShopBaseService {
 			return;
 		}
 
+		if(NumberUtils.BYTE_ONE.equals(param.getSource())) {
+			//	加购更新商品数量转化为添加商品数量
+			Integer userCheckedCount = userCheckedGoodsSvc.getUserCheckedCount(param.getUserId(),param.getCardNo());
+			param.setPrdNumber(param.getPrdNumber()-userCheckedCount);
+		}
 		
 		boolean judegeRes = judgeExchangGoodsAvailable(param.getGoodsId(), param.getCardNo(),param.getPrdNumber(),Boolean.TRUE);
 		if(judegeRes) {

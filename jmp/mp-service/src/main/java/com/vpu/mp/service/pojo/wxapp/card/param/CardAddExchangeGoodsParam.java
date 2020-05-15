@@ -39,4 +39,9 @@ public class CardAddExchangeGoodsParam {
 	 */
 	private String cardNo;
 	
+	/**
+	 * 0: 添加商品数量,1: 更新商品数量 
+	 */
+	private Byte source;
+	
 }

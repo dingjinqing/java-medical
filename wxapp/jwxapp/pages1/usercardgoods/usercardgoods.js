@@ -107,7 +107,7 @@ global.wxPage({
   },
   cartNumChange (res) {
     console.log(res)
-    this.addCart(res.detail)
+    this.addCart(res.detail,1)
   },
   getSearchText (data) { // 点击搜索
     this.setData({
@@ -179,7 +179,11 @@ global.wxPage({
     });
     console.log(this.data.productInfo)
   },
-  addCart (res) {
+  addCart (res,flag) {
+    let source = 0
+    if(flag){
+      source = flag
+    }
     console.log(res.id)
     let paramsPrdNumber = ''
     let paramsPrdId = ''
@@ -221,6 +225,7 @@ global.wxPage({
       productId: paramsPrdId,
       prdNumber: paramsPrdNumber,
       cardNo: this.data.cardNo,
+      source
     })
   },
   cartChange () {
