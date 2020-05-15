@@ -166,7 +166,7 @@ public class WxCardExchangeService extends ShopBaseService {
 	 * @throws MpException 
 	 */
 	public boolean judgeCardGoods(CardExchaneGoodsJudgeParam param) throws MpException {
-		return judgeExchangGoodsAvailable(param.getUserId(),param.getCardNo());
+		return judgeExchangGoodsAvailable(param.getUserId(),param.getCardNo(),param.getGoodsNumber());
 	}
 	
 	/**
@@ -180,18 +180,22 @@ public class WxCardExchangeService extends ShopBaseService {
 		if(goodsRecord == null) {
 			return;
 		}
-		UserCheckedGoodsParam checkedParam = new UserCheckedGoodsParam();
-		checkedParam.setAction(CardConstant.MCARD_TP_LIMIT);
-		checkedParam.setUserId(param.getUserId());
-		checkedParam.setProductId(param.getProductId());
-		checkedParam.setIdentityId(param.getCardNo());
-		checkedParam.setGoodsId(param.getGoodsId());
+
 		
-		boolean judegeRes = judgeExchangGoodsAvailable(param.getGoodsId(), param.getCardNo());
+		boolean judegeRes = judgeExchangGoodsAvailable(param.getGoodsId(), param.getCardNo(),param.getPrdNumber());
 		if(judegeRes) {
+			logger().info("可以加购");
+			UserCheckedGoodsParam checkedParam = new UserCheckedGoodsParam();
+			checkedParam.setAction(CardConstant.MCARD_TP_LIMIT);
+			checkedParam.setUserId(param.getUserId());
+			checkedParam.setProductId(param.getProductId());
+			checkedParam.setIdentityId(param.getCardNo());
+			checkedParam.setGoodsId(param.getGoodsId());
+			
 			CheckedGoodsCartRecord userCheckedGoods = userCheckedGoodsSvc.getUserCheckedGoods(checkedParam);
 			if(userCheckedGoods == null) {
 				// 添加
+				logger().info("添加新商品");
 				CheckedGoodsCartRecord newRecord = db().newRecord(CHECKED_GOODS_CART);
 				newRecord.setUserId(param.getUserId());
 				newRecord.setGoodsId(param.getGoodsId());
@@ -202,7 +206,7 @@ public class WxCardExchangeService extends ShopBaseService {
 				newRecord.insert();
 			}else {
 				// 更新
-				userCheckedGoods.setGoodsNumber(param.getPrdNumber());
+				userCheckedGoods.setGoodsNumber(param.getPrdNumber()+userCheckedGoods.getGoodsNumber());
 				db().executeUpdate(userCheckedGoods);
 			}
 		}
@@ -290,10 +294,17 @@ public class WxCardExchangeService extends ShopBaseService {
 
 	/**
 	 * 判断该卡能够兑换该商品
+	 * @param goodsNum 兑换商品的数量
 	 * @throws MpException 兑换商品异常 表示
 	 * @return true 表示可兑换
 	 */
-	public boolean judgeExchangGoodsAvailable(Integer goodsId,String cardNo) throws MpException {
+	public boolean judgeExchangGoodsAvailable(Integer goodsId,String cardNo,Integer goodsNum) throws MpException {
+		logger().info("判断该卡能够兑换该商品: "+goodsId+" "+goodsNum);
+		if(goodsNum==null) {
+			//	默认兑换商品数量为1
+			goodsNum = 1;
+		}
+		
 		CardFullDetail cardDetail = mCardSvc.getCardDetailByNo(cardNo);
 		MemberCardRecord memberCard = cardDetail.getMemberCard();
 		UserCardRecord userCard = cardDetail.getUserCard();
@@ -311,12 +322,14 @@ public class WxCardExchangeService extends ShopBaseService {
 		Integer allowExchangTimes = getCardAllowExchangGoodsTimes(goodsId, memberCard);
 		if(allowExchangTimes==null) {
 			// 该会员卡不支持兑换该商品
+			logger().info("该会员卡不支持兑换该商品");
 			throw new MpException(JsonResultCode.MSG_CARD_NOT_SUPPORT_GOODS);
 		}
 		//	是否为不限制次数
 		if(!CardConstant.INFINITE_EXCHANGE.equals(allowExchangTimes)) {
-			if(exchangGoodsAllTimes>=allowExchangTimes) {
+			if((exchangGoodsAllTimes+goodsNum)>allowExchangTimes) {
 				//	本卡允许兑换该商品的次数{allowExchangTimes},您已经兑换了{exchangGoodsAllTimes}次
+				logger().info("本卡允许兑换该商品的次数"+allowExchangTimes+", 您已经兑换了"+exchangGoodsAllTimes);
 				throw new MpException(JsonResultCode.MSG_CARD_ALLOW_TIME_OVER,"",String.valueOf(allowExchangTimes),String.valueOf(exchangGoodsAllTimes));
 			}
 		}
@@ -325,8 +338,9 @@ public class WxCardExchangeService extends ShopBaseService {
 		//	已经加购的商品
 		Integer userCheckedCount = userCheckedGoodsSvc.getUserCheckedCount(userCard.getUserId(),cardNo);
 		Integer exchangSurplus = userCard.getExchangSurplus();
-		if(exchangSurplus<=0 || userCheckedCount>=exchangSurplus) {
+		if(exchangSurplus<=0 || (userCheckedCount+goodsNum)>exchangSurplus) {
 			//	本卡剩余可兑换{exchangSurplus}件，已加购{userCheckedCount}件
+			logger().info("本卡剩余可兑换"+exchangSurplus+"件,已加购"+userCheckedCount);
 			throw new MpException(JsonResultCode.MSG_CARD_ADD_TIMES_OVER,"",String.valueOf(exchangSurplus),String.valueOf(userCheckedCount));
 		}
 		
@@ -339,10 +353,11 @@ public class WxCardExchangeService extends ShopBaseService {
 			Integer periodNum = memberCard.getPeriodNum();
 			//	期间内剩余兑换次数
 			Integer remainExchangTimes = periodNum-periodExchangGoodsTimes;
-			if(remainExchangTimes<=0 || userCheckedCount>=remainExchangTimes) {
+			if(remainExchangTimes<=0 || (userCheckedCount+goodsNum)>remainExchangTimes) {
 				//	期间描述
 				String periodLimitDesc = CardExchangService.getPeriodLimitDesc(periodLimit, null);
 				// 该卡{periodLimitDesc}剩余兑换次数{remainExchangTimes},已加购{userCheckedCount}件
+				logger().info("该卡"+periodLimitDesc+"剩余兑换次数"+remainExchangTimes+",已加购"+userCheckedCount+"件");
 				throw new MpException(JsonResultCode.MSG_CARD_PERIOD_ADD_TIMES_OVER,"",periodLimitDesc,String.valueOf(remainExchangTimes),String.valueOf(userCheckedCount));
 			}
 		}
