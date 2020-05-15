@@ -256,10 +256,10 @@ public class CardDaoService extends ShopBaseService {
 		Byte reveiveStatus = param.getReveiveStatus();
 		if(null!=reveiveStatus) {
 			if(reveiveStatus.equals(CardConstant.ONE)) {
-				select.and(CARD_RECEIVE_CODE.RECEIVE_TIME.ne(DSL.defaultValue(CARD_RECEIVE_CODE.RECEIVE_TIME)));
+				select.and(CARD_RECEIVE_CODE.RECEIVE_TIME.cast(String.class).ne("0000-00-00 00:00:00"));
 			}
 			if(reveiveStatus.equals(CardConstant.TWO)) {
-				select.and(CARD_RECEIVE_CODE.RECEIVE_TIME.eq(DSL.defaultValue(CARD_RECEIVE_CODE.RECEIVE_TIME)));
+				select.and(CARD_RECEIVE_CODE.RECEIVE_TIME.cast(String.class).eq("0000-00-00 00:00:00"));
 			}
 		}
 		Byte delStatus = param.getDelStatus();
