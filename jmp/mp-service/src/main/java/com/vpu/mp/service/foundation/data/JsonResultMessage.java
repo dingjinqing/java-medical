@@ -266,24 +266,29 @@ public class JsonResultMessage {
     public static final String GROUP_BUY_ACTIVITY_GROUP_OPEN_LIMIT_MAX="group.buy.activity.group.open.limit.max";
     public static final String GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX="group.buy.activity.group.join.limit.max";
     public static final String GROUP_BUY_ACTIVITY_GROUP_EMPLOEES_MAX="group.buy.activity.group.emploees.max";
-    public static final String GROUP_BUY_ACTIVITY_GROUP_JOINING="group.buy.activity.group.joining";
-    public static final String GROUP_BUY_ACTIVITY_GROUP_STOCK_LIMIT="group.buy.activity.group.stock.limit";
-    public static final String GROUP_BUY_ACTIVITY_GROUP_INVENTORY_FAILED="group.buy.activity.group.inventory.failed";
-    public static final String GROUP_BUY_ACTIVITY_GROUP_SUCCESS="group.buy.activity.group.success";
-    public static final String GROUP_BUY_ACTIVITY_GROUP_CANCEL="group.buy.activity.group.cancel";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_JOINING = "group.buy.activity.group.joining";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_STOCK_LIMIT = "group.buy.activity.group.stock.limit";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_INVENTORY_FAILED = "group.buy.activity.group.inventory.failed";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_SUCCESS = "group.buy.activity.group.success";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_CANCEL = "group.buy.activity.group.cancel";
     /**
      * 营销-秒杀
      */
-    public static final String SECKILL_CONFLICTING_ACT_TIME="seckill.conflicting.act.time";
+    public static final String SECKILL_CONFLICTING_ACT_TIME = "seckill.conflicting.act.time";
+
+    /**
+     * 营销-预售
+     */
+    public static final String PRESALE_CONFLICTING_ACT_TIME = "presale.conflicting.act.time";
 
     public static final String SHARE_REWARD_COUPON_NUM_LIMIT = "share.reward.coupon.num.limit";
 
     /**
      * 营销-砍价
      */
-    public static final String BARGAIN_CONFLICTING_ACT_TIME="bargain.conflicting.act.time";
-    public static final String BARGAIN_NOT_YET_SUCCESSFUL="bargain.not.yet.successful";
-    public static final String BARGAIN_RECORD_ORDERED="bargain.record.ordered";
+    public static final String BARGAIN_CONFLICTING_ACT_TIME = "bargain.conflicting.act.time";
+    public static final String BARGAIN_NOT_YET_SUCCESSFUL = "bargain.not.yet.successful";
+    public static final String BARGAIN_RECORD_ORDERED = "bargain.record.ordered";
 
     /**
      *营销-我的奖品

@@ -52,6 +52,7 @@ import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
 import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_ONE_PHASE;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_TWO_PHASE;
+import static org.jooq.impl.DSL.select;
 import static org.springframework.util.StringUtils.isEmpty;
 
 /**
@@ -574,7 +575,7 @@ public class PreSaleService extends ShopBaseService {
         vo.setPagePath(QrCodeTypeEnum.GOODS_ITEM.getPathUrl(pathParam));
         return vo;
     }
-    
+
     /**
      * 营销日历用id查询活动
      * @param id
@@ -584,7 +585,7 @@ public class PreSaleService extends ShopBaseService {
 		return db().select(TABLE.ID, TABLE.PRESALE_NAME.as(CalendarAction.ACTNAME), TABLE.START_TIME,
 				TABLE.END_TIME).from(TABLE).where(TABLE.ID.eq(id)).fetchAnyInto(MarketVo.class);
     }
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param

@@ -15,7 +15,12 @@
           @click="applyChange(1)"
         >{{$t('versionUpgrade.applyRenewal')}}</el-button>
         <span class="tips">
-          {{$t('versionUpgrade.downView')}} <el-link type="primary"> {{$t('versionUpgrade.menu')}}.pdf</el-link>
+          {{$t('versionUpgrade.downView')}} <el-link
+            type="primary"
+            target="_blank"
+            :href="$imageHost+'/temp/pdf/mini_version.pdf'"
+            download
+          > {{$t('versionUpgrade.menu')}}.pdf</el-link>
         </span>
       </div>
       <div class="content">
@@ -186,6 +191,7 @@ export default {
     if (this.$route.query.mod) {
       this.mod = this.$route.query.mod
     }
+    this.langDefault()
   },
   methods: {
     applyChange (type) {
