@@ -1,5 +1,69 @@
 package com.vpu.mp.service.shop.member;
+import static com.vpu.mp.db.shop.Tables.CARD_RENEW;
+import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.STORE;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.DEFAULT_ADMIN;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_OUT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_CRASH_ACCOUNT_PAY;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_CREATE_CARD;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_PAY;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.UACCOUNT_CONSUMPTION;
+import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
+import static com.vpu.mp.service.shop.order.virtual.MemberCardOrderService.MEMBER_CARD_ORDER_SN_PREFIX;
+import static com.vpu.mp.service.shop.order.virtual.VirtualOrderService.GOODS_TYPE_MEMBER_CARD;
+import static com.vpu.mp.service.shop.order.virtual.VirtualOrderService.ORDER_STATUS_FINISHED;
+import static com.vpu.mp.service.shop.order.virtual.VirtualOrderService.ORDER_STATUS_WAIT_PAY;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.vpu.mp.service.pojo.shop.member.buy.*;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Condition;
+import org.jooq.Field;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.impl.DSL;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.google.common.collect.Lists;
@@ -13,7 +77,6 @@ import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
-import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
@@ -53,9 +116,6 @@ import com.vpu.mp.service.pojo.shop.member.builder.ChargeMoneyRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardParamBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
-import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingParam;
-import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingVo;
-import com.vpu.mp.service.pojo.shop.member.buy.CardToPayParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardBgBean;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.EffectTimeBean;
@@ -64,8 +124,6 @@ import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
-import com.vpu.mp.service.pojo.shop.member.buy.*;
-import com.vpu.mp.service.pojo.shop.member.card.*;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.exception.CardReceiveFailException;
@@ -115,37 +173,6 @@ import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.shop.user.user.UserService;
 
 import jodd.util.StringUtil;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Condition;
-import org.jooq.Field;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.impl.DSL;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Timestamp;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
-import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
-import static com.vpu.mp.service.shop.order.virtual.MemberCardOrderService.MEMBER_CARD_ORDER_SN_PREFIX;
-import static com.vpu.mp.service.shop.order.virtual.VirtualOrderService.*;
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 /**
  * @author 黄壮壮
@@ -1586,108 +1613,7 @@ public class UserCardService extends ShopBaseService {
 
 	}
 
-	/**
-	 * 	处理会员卡相应的优惠券信息
-	 * @param userCard
-	 * @param lang
-	 */
-	public void dealSendCouponInfo(UserCardVo userCard, String lang) {
-		logger().info("处理会员卡相应的优惠券信息");
-		if(userCard == null) {
-			return;
-		}
-		if (CardUtil.isSendCoupon(userCard.getSendCouponType())) {
-			logger().info("正在生成优惠券信息");
-			List<Integer> couponIds = CardUtil.parseCouponList(userCard.getSendCouponIds());
-			if(couponIds == null || couponIds.size()==0) {
-				return;
-			}
-			// 优惠券信息列表
-			List<CouponView> couponList = couponService.getCouponViewByIds(couponIds);
-			userCard.setCoupons(cardCouponI18N(lang, couponList));
-		} else if (CardUtil.isSendCouponPack(userCard.getSendCouponType())) {
-			logger().info("处理优惠券礼包");
-			if (!StringUtils.isBlank(userCard.getSendCouponIds())) {
-				int id = Integer.parseInt(userCard.getSendCouponIds());
-				CouponPackUpdateVo couponPack = couponPackService.getCouponPackById(id);
-				UserCardCouponPack pack = new UserCardCouponPack();
-				if(couponPack != null) {
-					pack = UserCardCouponPack.builder()
-							.id(couponPack.getId())
-							.actName(couponPack.getActName())
-							.packName(couponPack.getPackName())
-							.build();
-				}
-				userCard.setCouponPack(pack);
-			}
-		}
-	}
-	/**
-	 * 	处理会员卡优惠券显示信息
-	 */
-	private List<UserCardCoupon> cardCouponI18N(String lang, List<CouponView> couponList) {
-		logger().info("处理会员卡优惠券信息国际化");
-		String i18nfile = "member";
-		List<UserCardCoupon> res = new ArrayList<>();
-		if(couponList == null || couponList.size()==0) {
-			return res;
-		}
-		for (CouponView coupon : couponList) {
-			// 1-优惠券使用范围
-			String couponCon = null;
-			if (NumberUtils.BYTE_ZERO.equals(coupon.getSuitGoods())) {
-				// 全部商品可用
-				couponCon = JsonResultMessage.CARD_COUPON_CON_ALL;
-			} else {
-				// 部分商品可用
-				couponCon = JsonResultMessage.CARD_COUPON_CON_PART;
-			}
-			couponCon = Util.translateMessage(lang, couponCon, i18nfile);
 
-			// 2-优惠券过期时间
-			Integer day = coupon.getValidity();
-			Integer hour = coupon.getValidityHour();
-			Integer minute = coupon.getValidityMinute();
-			String couponExpireTimeDesc = null;
-			if (day > 0 || hour > 0 || minute > 0) {
-				StringBuilder con = new StringBuilder();
-				// 领券日起
-				String receiveInfo = Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_RECEIVE_DAY_START, i18nfile);
-				con.append(receiveInfo);
-
-				if (day> 0) {
-					con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_DAY, i18nfile, day));
-				}
-				if (hour > 0) {
-					con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_HOUR, i18nfile,hour));
-				}
-				if (minute > 0) {
-					con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_MINUTE, i18nfile,minute));
-				}
-				couponExpireTimeDesc = con.toString();
-			} else {
-				String startTime = coupon.getStartTime().toLocalDateTime().toLocalDate().toString();
-				String endTime = coupon.getEndTime().toLocalDateTime().toLocalDate().toString();
-				couponExpireTimeDesc = startTime + "--" + endTime;
-			}
-
-			// 3-优惠券使用条件限制
-			String restrict = null;
-			if (NumberUtils.INTEGER_ZERO.equals(coupon.getUseConsumeRestrict())) {
-				restrict = Util.translateMessage(lang,JsonResultMessage.CARD_COUPON_NOLIMIT, i18nfile);
-			} else {
-				restrict = Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_SATISFY, i18nfile, coupon.getLeastConsume());
-			}
-			res.add(
-					UserCardCoupon.builder()
-						.couponCondition(couponCon)
-						.expireTime(couponExpireTimeDesc)
-						.useConsumeRestrict(restrict)
-						.build()
-					);
-		}
-		return res;
-	}
 
 	/**
 	 * 	领取会员卡
