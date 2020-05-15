@@ -11,7 +11,7 @@
       </view>
     </view>
     <view class="button-info">
-      <view style="background-color:{{comColor}};color:#fff" bindtap="checkOrder">{{buttonName}}</view>
+      <view style="background-color:{{comColor}};color:#fff" bindtap="checkOrder" wx:if="{{buttonName}}">{{buttonName}}</view>
       <view bindtap="goHome">{{i18n.$t(localePack,"pages.order.returnIndex")}}</view>
     </view>
     <v-recommend id="recommend" pageName="payment" />
