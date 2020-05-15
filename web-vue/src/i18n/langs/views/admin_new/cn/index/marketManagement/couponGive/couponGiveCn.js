@@ -73,6 +73,7 @@ export const cn = {
   custom: '自定义',
   choose: '请选择',
   timeLoginRecord: '指定时间内有登陆记录',
+  designatedArea: '指定区域内用户',
   chooseCoupons: '选择优惠券',
   couponTip: '最多添加5张优惠券，已过期和已停用的优惠券不能添加',
   grantTime: '发放时间',

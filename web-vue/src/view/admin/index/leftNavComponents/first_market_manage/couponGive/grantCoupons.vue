@@ -155,7 +155,7 @@
                         @click="handleDelCustomize(item)"
                       >
                     </li>
-                    <li v-show="showTime">
+                    <li v-if="showTime">
                       <span>{{$t('couponGive.timeLoginRecord') + '：'}}</span>
                       <el-date-picker
                         v-model="params.couponGiveGrantInfoParams.validity"
@@ -170,6 +170,19 @@
                       <img
                         :src="urls.url4"
                         @click="handleDelCustomize(6)"
+                      >
+                    </li>
+                    <li v-if="showArea">
+                      <span>指定区域内用户：</span>
+                      <areaLinkage
+                        style="display: inline-block;"
+                        ref="areaLink"
+                        :areaCode="areaLinkage"
+                        @areaData="handleAreaData"
+                      />
+                      <img
+                        :src="urls.url4"
+                        @click="handleDelCustomize(7)"
                       >
                     </li>
                   </ul>
@@ -197,7 +210,7 @@
                       <div class="coupon_list_top">
                         <span v-if="item.actCode==='voucher'">￥ {{item.denomination}}</span>
                         <span v-if="item.actCode==='discount'">{{item.denomination}} 折</span>
-                        <span v-if="item.actCode==='random'"></span>
+                        <span v-if="item.actCode==='random'">{{item.randomMax}}最高</span>
                       </div>
                       <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
                       <div
@@ -321,7 +334,8 @@ export default {
     memberListDialog,
     choosingGoods,
     getUserDialog,
-    addCouponDialog
+    addCouponDialog,
+    areaLinkage: () => import('@/components/admin/areaLinkage/areaLinkage.vue')
   },
   data () {
     // 发放时间
@@ -386,7 +400,10 @@ export default {
           validity: '',
           point_start_time: '',
           point_end_time: '',
-          coupon_ids: [] // 选择优惠券
+          coupon_ids: [], // 选择优惠券
+          province_code: '', // 省编码
+          city_code: '', // 市编码
+          district_code: '' // 区编码
         },
         cardId: [],
         tagId: [],
@@ -458,9 +475,20 @@ export default {
         label: `${this.$t('couponGive.timeLoginRecord')}`,
         value: `${this.$t('couponGive.timeLoginRecord')}`,
         key: `time`
+      }, {
+        label: `${this.$t('couponGive.designatedArea')}`,
+        value: `${this.$t('couponGive.designatedArea')}`,
+        key: `area`
       }],
       optionsList: [], // 自定义填写
-      showTime: false // 自定义-登录记录
+      showTime: false, // 自定义-登录记录
+      showArea: false, // 自定义-指定区域
+      // 回显数据
+      areaLinkage: {
+        provinceCode: '',
+        cityCode: '',
+        districtCode: ''
+      }
     }
   },
   mounted () {
@@ -530,8 +558,10 @@ export default {
     customRuleInfoValChange (val) {
       if (val === `${this.$t('couponGive.timeLoginRecord')}`) {
         this.showTime = true
+      } else if (val === `${this.$t('couponGive.designatedArea')}`) {
+        this.showArea = true
       } else {
-        if (val !== `${this.$t('couponGive.choose')}` && val !== `${this.$t('couponGive.timeLoginRecord')}`) {
+        if (val !== `${this.$t('couponGive.choose')}` && val !== `${this.$t('couponGive.timeLoginRecord')}` && val !== `${this.$t('couponGive.designatedArea')}`) {
           // 已选择自定义选项
           var data = this.customRuleInfoOptions.find(item => item.value === val)
           this.optionsList.push(data)
@@ -571,6 +601,15 @@ export default {
           value: `${this.$t('couponGive.timeLoginRecord')}`
         })
         this.params.couponGiveGrantInfoParams.validity = ''
+      } else if (val === 7) {
+        this.showArea = false
+        this.customRuleInfoOptions.push({
+          label: `${this.$t('couponGive.designatedArea')}`,
+          value: `${this.$t('couponGive.designatedArea')}`
+        })
+        this.params.couponGiveGrantInfoParams.province_code = ''
+        this.params.couponGiveGrantInfoParams.city_code = ''
+        this.params.couponGiveGrantInfoParams.district_code = ''
       } else {
         if (val.key === 'payedDay') {
           this.params.havePay = ''
@@ -613,7 +652,16 @@ export default {
       this.couponData.forEach(item => {
         this.params.couponGiveGrantInfoParams.coupon_ids.push(item.id)
       })
+      this.couponIdList = this.params.couponGiveGrantInfoParams.coupon_ids
       this.$refs['params'].validateField('coupon')
+    },
+
+    // 省市区弹窗的回调函数
+    handleAreaData (val) {
+      this.params.couponGiveGrantInfoParams.province_code = val.province
+      this.params.couponGiveGrantInfoParams.city_code = val.city
+      this.params.couponGiveGrantInfoParams.district_code = val.district
+      this.fetchUserList(this.params)
     },
 
     // 发放时间切换
@@ -641,6 +689,7 @@ export default {
             data.couponGiveGrantInfoParams.point_start_time = data.couponGiveGrantInfoParams.validity[0]
             data.couponGiveGrantInfoParams.point_end_time = data.couponGiveGrantInfoParams.validity[1]
           }
+          console.log(data)
           addActivity(data).then(res => {
             if (res.error === 0) {
               this.$message.success('添加成功!')
@@ -670,7 +719,10 @@ export default {
           custom_box: params.couponGiveGrantInfoParams.custom_box, // 自定义
           validity: params.couponGiveGrantInfoParams.validity,
           point_start_time: '',
-          point_end_time: ''
+          point_end_time: '',
+          province_code: params.couponGiveGrantInfoParams.province_code,
+          city_code: params.couponGiveGrantInfoParams.city_code,
+          district_code: params.couponGiveGrantInfoParams.district_code
         },
         cardId: params.cardId,
         tagId: params.tagId,
