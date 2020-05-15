@@ -213,9 +213,7 @@ global.wxPage({
         this.requestCartGoodsList()
         this.bindCloseSpec()
       } else {
-        if (res.id == undefined) {
-          util.toast_success(this.$t('page1.usercardgoods.addFailed'))
-        }
+        util.toast_fail(res.message)
       }
     }, {
       goodsId: paramsGoodsId,
