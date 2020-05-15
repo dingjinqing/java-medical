@@ -379,5 +379,33 @@ export const cn = {
   getCouponStart: '领券日开始',
   day: '天',
   hour: '小时',
-  minute: '分'
+  minute: '分',
+  reveiveStatusOption: [
+    {
+      value: null,
+      name: '全部'
+    },
+    {
+      value: 1,
+      name: '已领取'
+    },
+    {
+      value: 2,
+      name: '未领取'
+    }
+  ],
+  delStatusOption: [
+    {
+      value: null,
+      name: '全部'
+    },
+    {
+      value: 1,
+      name: '正常'
+    },
+    {
+      value: 2,
+      name: '已废除'
+    }
+  ]
 }
