@@ -369,5 +369,6 @@ export const en = {
   }
   ],
   reveiveStatus: 'Receive status',
-  delStatus: 'Use status'
+  delStatus: 'Use status',
+  out: 'Export'
 }

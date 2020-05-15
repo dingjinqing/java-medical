@@ -400,5 +400,6 @@ export const cn = {
   }
   ],
   reveiveStatus: '领取状态',
-  delStatus: '使用状态'
+  delStatus: '使用状态',
+  out: '导出'
 }

@@ -68,7 +68,7 @@
             size="small"
           >
             <el-option
-              v-for="(item,index) in $t('memberCard.reveiveStatusOption')"
+              v-for="(item,index) in $t('memberCard.delStatusOption')"
               :key="index"
               :label="item.name"
               :value="item.value"
@@ -87,7 +87,7 @@
             type="primary"
             size="small"
             @click="exportFile"
-          >导出</el-button>
+          >{{$t('memberCard.out')}}</el-button>
         </div>
       </div>
       <div class="tableMain">
