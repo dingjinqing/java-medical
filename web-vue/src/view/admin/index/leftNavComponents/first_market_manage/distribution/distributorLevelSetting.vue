@@ -21,7 +21,7 @@
       :model="form"
       :rules="fromRules"
     >
-      <el-form-item>
+      <!-- <el-form-item>
         <el-checkbox
           v-model="form.config"
           @change="configChange"
@@ -49,7 +49,7 @@
             ></span>
           </el-tooltip>
         </el-checkbox>
-      </el-form-item>
+      </el-form-item> -->
 
       <el-form-item prop="tableData">
         <el-table
