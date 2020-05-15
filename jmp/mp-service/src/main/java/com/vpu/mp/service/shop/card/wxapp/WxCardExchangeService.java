@@ -332,8 +332,11 @@ public class WxCardExchangeService extends ShopBaseService {
 			logger().info("start: 检测该兑换商品是否满足该限次卡的设定的配置");
 			if((exchangGoodsAllTimes+goodsNum)>allowExchangTimes) {
 				//	本卡允许兑换该商品的次数{allowExchangTimes},您已经兑换了{exchangGoodsAllTimes}次
-				logger().info("本卡允许兑换该商品的次数"+allowExchangTimes+", 您已经兑换了"+exchangGoodsAllTimes);
-				throw new MpException(JsonResultCode.MSG_CARD_ALLOW_TIME_OVER,"",String.valueOf(allowExchangTimes),String.valueOf(exchangGoodsAllTimes));
+				//	logger().info("本卡允许兑换该商品的次数"+allowExchangTimes+", 您已经兑换了"+exchangGoodsAllTimes);
+				//	throw new MpException(JsonResultCode.MSG_CARD_ALLOW_TIME_OVER,"",String.valueOf(allowExchangTimes),String.valueOf(exchangGoodsAllTimes));
+				Integer num = allowExchangTimes-exchangGoodsAllTimes;
+				logger().info("兑换该商品数量"+goodsNum+"超出本卡允许兑换该商品剩余可用次数("+num+")");
+				throw new MpException(JsonResultCode.MSG_CARD_ALLOW_TIME_OVER_ALIAS,"",String.valueOf(goodsNum),String.valueOf(num));
 			}
 			logger().info("end: 检测该兑换商品是否满足该限次卡的设定的配置");
 		}
