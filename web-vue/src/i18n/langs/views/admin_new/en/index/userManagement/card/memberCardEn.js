@@ -341,5 +341,33 @@ export const en = {
   getCouponStart: 'During',
   day: 'day',
   hour: 'hour',
-  minute: 'minute'
+  minute: 'minute',
+  reveiveStatusOption: [{
+    value: null,
+    name: 'All'
+  },
+  {
+    value: 1,
+    name: 'Received'
+  },
+  {
+    value: 2,
+    name: 'Not received'
+  }
+  ],
+  delStatusOption: [{
+    value: null,
+    name: 'All'
+  },
+  {
+    value: 1,
+    name: 'Normal'
+  },
+  {
+    value: 2,
+    name: 'Abolished'
+  }
+  ],
+  reveiveStatus: 'Receive status',
+  delStatus: 'Use status'
 }

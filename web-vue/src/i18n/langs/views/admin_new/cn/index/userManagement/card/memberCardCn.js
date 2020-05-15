@@ -56,19 +56,18 @@ export const cn = {
   pass: '通过',
   unpass: '不通过',
   failedAuditT: '审核未通过',
-  selectOptions: [
-    {
-      value: 0,
-      label: '请选择'
-    },
-    {
-      value: 1,
-      label: '兑换商品'
-    },
-    {
-      value: 2,
-      label: '门店服务'
-    }
+  selectOptions: [{
+    value: 0,
+    label: '请选择'
+  },
+  {
+    value: 1,
+    label: '兑换商品'
+  },
+  {
+    value: 2,
+    label: '门店服务'
+  }
   ],
   pleaseInputOrderSn: '请输入订单号',
   useTimesType: '次数使用类型',
@@ -121,16 +120,14 @@ export const cn = {
   sendCoupon: '送优惠券礼包',
   memberEffectiveTime: '会员有效期',
   fixData: '固定日期',
-  exampleInfo:
-    '例如：选择日期2018-1-2到2018-1-5，表示有效期为2018-1-2 00:00:00到2018-1-5 23:59:59',
+  exampleInfo: '例如：选择日期2018-1-2到2018-1-5，表示有效期为2018-1-2 00:00:00到2018-1-5 23:59:59',
   pleaseChoose: '请选择',
   inEffective: '内有效',
   usingStore: '使用门店：',
   allStores: '全部门店',
   partStores: '部分门店',
   banStore: '不可在门店使用',
-  storeConfig:
-    '配置仅限限制门店买单、门店自提、核销门店预约服务时的会员卡使用，线上购买发货默认所有会员卡均可以使用',
+  storeConfig: '配置仅限限制门店买单、门店自提、核销门店预约服务时的会员卡使用，线上购买发货默认所有会员卡均可以使用',
   storeName: '门店名称',
   delete: '删除',
   addStore: '添加门店',
@@ -167,57 +164,55 @@ export const cn = {
   codeArrTwo: ['卡号+密码', '增加批次', '废除批次', '生成/导入记录'],
   scoreSaveSuccess: '积分配置成功',
   saveSuccess: '保存成功',
-  noneBlockDiscArr: [
-    {
-      name: '添加商品',
-      num: '',
-      info: '已选择商品',
-      unit: '件'
-    },
-    {
-      name: '添加商品分类',
-      num: '',
-      info: '已选择分类',
-      unit: '个分类'
-    },
-    {
-      name: '添加平台分类',
-      num: '',
-      info: '已选择分类',
-      unit: '个分类'
-    },
-    {
-      name: '添加品牌',
-      num: '',
-      info: '已选择品牌',
-      unit: '个品牌'
-    }
+  noneBlockDiscArr: [{
+    name: '添加商品',
+    num: '',
+    info: '已选择商品',
+    unit: '件'
+  },
+  {
+    name: '添加商品分类',
+    num: '',
+    info: '已选择分类',
+    unit: '个分类'
+  },
+  {
+    name: '添加平台分类',
+    num: '',
+    info: '已选择分类',
+    unit: '个分类'
+  },
+  {
+    name: '添加品牌',
+    num: '',
+    info: '已选择品牌',
+    unit: '个品牌'
+  }
   ],
-  noneBlockVipArr: [
-    {
-      name: '添加商品',
-      num: '',
-      info: '已选择商品',
-      unit: '件'
-    },
-    {
-      name: '添加商品分类',
-      num: '',
-      info: '已选择分类',
-      unit: '个分类'
-    },
-    {
-      name: '添加平台分类',
-      num: '',
-      info: '已选择分类',
-      unit: '个分类'
-    },
-    {
-      name: '添加品牌',
-      num: '',
-      info: '已选择品牌',
-      unit: '个品牌'
-    }
+  noneBlockVipArr: [{
+    name: '添加商品',
+    num: '',
+    info: '已选择商品',
+    unit: '件'
+  },
+  {
+    name: '添加商品分类',
+    num: '',
+    info: '已选择分类',
+    unit: '个分类'
+  },
+  {
+    name: '添加平台分类',
+    num: '',
+    info: '已选择分类',
+    unit: '个分类'
+  },
+  {
+    name: '添加品牌',
+    num: '',
+    info: '已选择品牌',
+    unit: '个品牌'
+  }
   ],
   dateSelectOptions: [{
     value: '0',
@@ -343,12 +338,10 @@ export const cn = {
   toDelete: '废除',
   tipInfo: '提醒',
   tipAgain: '确认要废除',
-  selectSortOptions: [
-    {
-      batchId: 0,
-      name: '全部'
-    }
-  ],
+  selectSortOptions: [{
+    batchId: 0,
+    name: '全部'
+  }],
   single: '单选',
   multiple: '多选',
   text: '文本',
@@ -380,32 +373,32 @@ export const cn = {
   day: '天',
   hour: '小时',
   minute: '分',
-  reveiveStatusOption: [
-    {
-      value: null,
-      name: '全部'
-    },
-    {
-      value: 1,
-      name: '已领取'
-    },
-    {
-      value: 2,
-      name: '未领取'
-    }
+  reveiveStatusOption: [{
+    value: null,
+    name: '全部'
+  },
+  {
+    value: 1,
+    name: '已领取'
+  },
+  {
+    value: 2,
+    name: '未领取'
+  }
   ],
-  delStatusOption: [
-    {
-      value: null,
-      name: '全部'
-    },
-    {
-      value: 1,
-      name: '正常'
-    },
-    {
-      value: 2,
-      name: '已废除'
-    }
-  ]
+  delStatusOption: [{
+    value: null,
+    name: '全部'
+  },
+  {
+    value: 1,
+    name: '正常'
+  },
+  {
+    value: 2,
+    name: '已废除'
+  }
+  ],
+  reveiveStatus: '领取状态',
+  delStatus: '使用状态'
 }
