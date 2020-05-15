@@ -11,8 +11,9 @@ import java.awt.image.BufferedImage;
  */
 @Data
 public class GoodsPictorialInfo {
+    public static final Byte OK = 0;
     /** 分享操作返回码：0正常，1活动已删除无,2活动商品已删除,3指定的宣传图片读取异常，4二维码读取异常*/
-    private Byte pictorialCode = 0;
+    private Byte pictorialCode = OK;
     /**图片base64*/
     private String base64;
 

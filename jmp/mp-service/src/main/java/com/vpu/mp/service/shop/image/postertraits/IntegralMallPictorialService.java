@@ -58,8 +58,7 @@ public class IntegralMallPictorialService extends ShareBaseService{
 
     @Override
     String createMpQrCode(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
-        IntegralMallDefineRecord record = (IntegralMallDefineRecord) aRecord;
-        return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&aid=%d&atp=%d", baseParam.getUserId(), goodsRecord.getGoodsId(), record.getId(), BaseConstant.ACTIVITY_TYPE_INTEGRAL));
+        return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&aid=%d&atp=%d", baseParam.getUserId(), goodsRecord.getGoodsId(), baseParam.getActivityId(), BaseConstant.ACTIVITY_TYPE_INTEGRAL));
     }
 
     @Override

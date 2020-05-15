@@ -1091,6 +1091,11 @@ public class JsonResultMessage {
     public static final String WX_MA_INTEGRAL_MALL_PRICE_SCORE = "wx.ma.integral.mall.price.score";
     // 积分兑换
     public static final String WX_MA_INTEGRAL_MALL_EXCHANGE= "wx.ma.integral.mall.exchange";
+    /**瓜分积分*/
+    // 2人瓜分10积分
+    public static final String WX_MA_GROUP_INTEGRAL_SHARE_DOC= "wx.ma.group.integral.share.doc";
+    // 瓜分积分
+    public static final String WX_MA_GROUP_INTEGRAL_SHARE_SCORE= "wx.ma.group.integral.share.score";
 
 
     //持卡会员导出
