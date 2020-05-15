@@ -1,4 +1,5 @@
 package com.vpu.mp.controller.wxapp;
+import com.vpu.mp.service.pojo.shop.member.buy.CardOrdeerSnParam;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.validation.annotation.Validated;
@@ -228,6 +229,18 @@ public class WxAppCardController extends WxAppBaseController {
 		payParam.setClientIp(RequestUtil.getIp(request));
     	return success(shop().userCard.buyCardCreateOrder(payParam));
 	}
+
+    /**
+     * 通过订单查找卡号
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/wxapp/card/order/getcardno")
+	public JsonResult getCardNo(@RequestBody @Validated CardOrdeerSnParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        param.setUserId(user.getUserId());
+        return success(shop().userCard.getCardNoByOrderSn(param));
+    }
 	
 	/**
 	 * 	领取赠送的会员卡
