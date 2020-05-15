@@ -13,13 +13,13 @@ import lombok.Data;
 public class IntegralConvertShareConfig {
 	
 	/** 样式  1：默认样式   2：自定义样式 */
-	private Byte shareAction;
+	private Byte shareAction = 1;
 	
 	/** 自定义样式文案 */
 	private String shareDoc;
 	
 	/** 是否默认活动商品信息图  1:默认图片  2：自定义图片 */
-	private Byte shareImgAction;
+	private Byte shareImgAction = 1;
 	
 	/** 自定义图片地址 */
 	private String shareImg;

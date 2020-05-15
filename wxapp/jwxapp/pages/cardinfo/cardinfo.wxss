@@ -303,7 +303,8 @@ border-radius: 20rpx;
   line-height: 70rpx;
   padding: 0 20rpx;
   margin-bottom: 20rpx;
-
+display: flex;
+justify-content: space-between;
 }
 .pro_tips .text {
   font-size: 24rpx;
@@ -325,7 +326,7 @@ border-radius: 20rpx;
   position: absolute;
 }
 .dh_limit {
-  left: 22rpx;
+  /* left: 22rpx; */
   bottom: 52rpx;
   font-size: 22rpx;
 }

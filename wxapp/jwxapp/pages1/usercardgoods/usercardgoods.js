@@ -52,13 +52,16 @@ global.wxPage({
           pageParams: res.content.goodsPageResult.page,
           ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.goodsPageResult.dataList,
           totalNumber: res.content.totalNumber,
-          exchangSurplus: res.content.cardInfo.exchang_surplus
+          exchangSurplus: res.content.cardInfo.exchang_surplus,
+          cardExchangeTip: res.content.cardExchangeTip
           // delMarket: res.content.delMarket,
           // showCart: {
           //   ...res.content.showCart,
           //   show_cart: 1
           // },
           // ruleInfo: res.content.freeShippingRule
+        }, () => {
+          console.log(this.data.cardExchangeTip)
         });
       }
     }, {
@@ -228,12 +231,12 @@ global.wxPage({
   goCheckOut () {
     console.log('点击立即兑换跳转结算页面')
     console.log(this.data.cartData)
-    let goodsList = this.data.cartData.map(item=>{
-      let {goodsId,prdPrice:prdRealPrice,cartNumber:goodsNum,productId:prdId} = item
-      return {goodsId,prdRealPrice,goodsNum,prdId}
+    let goodsList = this.data.cartData.map(item => {
+      let { goodsId, prdPrice: prdRealPrice, cartNumber: goodsNum, productId: prdId } = item
+      return { goodsId, prdRealPrice, goodsNum, prdId }
     })
     let params = {
-      goodsList:JSON.stringify(goodsList),
+      goodsList: JSON.stringify(goodsList),
       activityType: 13,
       activityId: this.data.cardId,
       memberCardNo: this.data.cardNo
