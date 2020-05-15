@@ -30,6 +30,7 @@ import java.util.stream.IntStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Condition;
+import org.jooq.Field;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep4;
 import org.jooq.InsertValuesStep5;
@@ -255,10 +256,10 @@ public class CardDaoService extends ShopBaseService {
 		Byte reveiveStatus = param.getReveiveStatus();
 		if(null!=reveiveStatus) {
 			if(reveiveStatus.equals(CardConstant.ONE)) {
-				select.and(CARD_RECEIVE_CODE.RECEIVE_TIME.isNotNull());
+				select.and(CARD_RECEIVE_CODE.RECEIVE_TIME.ne(DSL.defaultValue(CARD_RECEIVE_CODE.RECEIVE_TIME)));
 			}
 			if(reveiveStatus.equals(CardConstant.TWO)) {
-				select.and(CARD_RECEIVE_CODE.RECEIVE_TIME.isNull());
+				select.and(CARD_RECEIVE_CODE.RECEIVE_TIME.eq(DSL.defaultValue(CARD_RECEIVE_CODE.RECEIVE_TIME)));
 			}
 		}
 		Byte delStatus = param.getDelStatus();
