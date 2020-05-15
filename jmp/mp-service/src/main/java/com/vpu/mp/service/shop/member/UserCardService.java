@@ -2388,6 +2388,7 @@ public class UserCardService extends ShopBaseService {
 		insertVirtualOrderRecord.setGoodsType(GOODS_TYPE_MEMBER_CARD);
 		insertVirtualOrderRecord.setAccessMode(cardInfo.getIsPay());
 		insertVirtualOrderRecord.setCurrency(saas().shop.getCurrency(getShopId()));
+        insertVirtualOrderRecord.setSendCardNo("");
 		insertVirtualOrderRecord.insert();
 		return orderSn;
 	}
