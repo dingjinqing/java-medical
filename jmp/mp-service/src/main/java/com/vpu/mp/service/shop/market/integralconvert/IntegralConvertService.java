@@ -84,7 +84,7 @@ import jodd.util.StringUtil;
 
 /**
  * 积分兑换
- * 
+ *
  * @author liangchen
  * @date 2019年8月14日
  */
@@ -403,7 +403,7 @@ public class IntegralConvertService extends ShopBaseService {
             if (listVo.getSaleNum()==null){
                 listVo.setSaleNum((short)0);
             }
-            listVo.setRemainStock(listVo.getStock()-listVo.getSaleNum());
+            listVo.setRemainStock(listVo.getStock().intValue());
             productList.add(listVo);
         }
 		selectVo.setProductVo(productList);
@@ -639,9 +639,35 @@ public class IntegralConvertService extends ShopBaseService {
             tempExport.setMoney(item.getMoney());
             tempExport.setScore(item.getScore());
             tempExport.setUser(item.getUsername()+" "+item.getUserMobile());
-            tempExport.setReceiveUser(item.getConsignee()+" "+item.getMobile());
-            tempExport.setOrderStatus(OrderConstant.getOrderStatusName(item.getOrderStatus(),lang));
 
+            if (!StringUtils.isNullOrEmpty(item.getMobile())){
+                tempExport.setReceiveUser(item.getConsignee()+" "+item.getMobile());
+            }
+            else {
+                tempExport.setReceiveUser(item.getConsignee());
+            }
+            switch (item.getOrderStatus()){
+                case OrderConstant.ORDER_WAIT_PAY:
+                    tempExport.setOrderStatus("待付款");
+                    break;
+                case OrderConstant.ORDER_CANCELLED:
+                    tempExport.setOrderStatus("客户已取消");
+                    break;
+                case OrderConstant.ORDER_CLOSED:
+                    tempExport.setOrderStatus("卖家关闭");
+                    break;
+                case OrderConstant.ORDER_WAIT_DELIVERY:
+                    tempExport.setOrderStatus("待发货");
+                    break;
+                case OrderConstant.ORDER_SHIPPED:
+                    tempExport.setOrderStatus("已发货");
+                    break;
+                case OrderConstant.ORDER_FINISHED:
+                    tempExport.setOrderStatus("已完成");
+                    break;
+                default:
+                    tempExport.setOrderStatus("订单完成");
+            }
             orderExportList.add(tempExport);
         }
         //表格导出
@@ -689,8 +715,8 @@ public class IntegralConvertService extends ShopBaseService {
         share.setPagePath(QrCodeTypeEnum.POSTER_GOODS_ITEM.getPathUrl(pathParam));
         return share;
     }
-    
-    
+
+
     /**
      * 获得在积分活动中的商品信息
      * @param goodsId
@@ -714,7 +740,7 @@ public class IntegralConvertService extends ShopBaseService {
 		}
 		return fetchInto;
     }
-    
+
     /**
      * 获得活动总库存
      * @param defineId
@@ -724,8 +750,8 @@ public class IntegralConvertService extends ShopBaseService {
 		return db().select(DSL.sum(imp.STOCK)).from(imp).where(imp.INTEGRAL_MALL_DEFINE_ID.eq(defineId))
 				.fetchAnyInto(Integer.class);
 	}
-	
-	
+
+
 	/**
 	 * 获得活动下的积分商品规格
 	 * @param defineId
@@ -736,9 +762,9 @@ public class IntegralConvertService extends ShopBaseService {
 				.leftJoin(GOODS_SPEC_PRODUCT).on(imp.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
 				.where(imp.INTEGRAL_MALL_DEFINE_ID.eq(defineId)).fetchInto(IntegralMallProductMaVo.class);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param defineId
 	 * @return
 	 */
@@ -748,7 +774,7 @@ public class IntegralConvertService extends ShopBaseService {
 		BigDecimal minMoney = list.stream().filter(x->x.getScore().equals(minScore)).map(IntegralMallProductMaVo::getMoney).distinct().min((e1, e2) -> e1.compareTo(e2)).get();
 		return new MinScoreMoney(minScore,minMoney);
 	}
-	
+
     /**
      * 营销日历用id查询活动
      * @param id
@@ -758,7 +784,7 @@ public class IntegralConvertService extends ShopBaseService {
 		return db().select(INTEGRAL_MALL_DEFINE.ID, INTEGRAL_MALL_DEFINE.NAME.as(CalendarAction.ACTNAME), INTEGRAL_MALL_DEFINE.START_TIME,
 				INTEGRAL_MALL_DEFINE.END_TIME).from(INTEGRAL_MALL_DEFINE).where(INTEGRAL_MALL_DEFINE.ID.eq(id)).fetchAnyInto(MarketVo.class);
     }
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param

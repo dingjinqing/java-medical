@@ -144,7 +144,7 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 			returnGoods.setGoodsName(goods.getGoodsName());
 			returnGoods.setProductId(goods.getProductId());
 			//TODO 拆单主订单没有特殊处理，如需去除子单取goods.getTotal()
-			returnGoods.setGoodsNumber(goods.getGoodsNumber().shortValue());
+			returnGoods.setGoodsNumber(paramGoods.getReturnNumber().shortValue());
 			returnGoods.setMarketPrice(goods.getMarketPrice());
 			returnGoods.setGoodsPrice(goods.getGoodsPrice());
 			returnGoods.setGoodsAttr(goods.getGoodsAttr());
