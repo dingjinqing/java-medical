@@ -272,7 +272,7 @@ public class WxCardExchangeService extends ShopBaseService {
 		 return db()
 			.select(DSL.sum(ORDER_GOODS.GOODS_NUMBER))
 			.from(ORDER_GOODS)
-			.leftJoin(ORDER_INFO).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
+			.innerJoin(ORDER_INFO).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
 			.and(condition)
 			.fetchOne(0, int.class);
 	}
