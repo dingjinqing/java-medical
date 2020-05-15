@@ -26,6 +26,8 @@
             size="small"
           ></el-input>
         </div>
+      </div>
+      <div class="topDiv">
         <div>
           <span>{{$t('memberCard.batchName')}}</span>
           <el-select
@@ -42,12 +44,50 @@
             </el-option>
           </el-select>
         </div>
+        <div>
+          <span>领取状态</span>
+          <el-select
+            v-model="reveiveStatus"
+            :placeholder="$t('memberCard.pleaseChoose')"
+            size="small"
+          >
+            <el-option
+              v-for="(item,index) in $t('memberCard.reveiveStatusOption')"
+              :key="index"
+              :label="item.name"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </div>
+        <div style="margin-left: 20px;">
+          <span>使用状态</span>
+          <el-select
+            v-model="delStatus"
+            :placeholder="$t('memberCard.pleaseChoose')"
+            size="small"
+          >
+            <el-option
+              v-for="(item,index) in $t('memberCard.reveiveStatusOption')"
+              :key="index"
+              :label="item.name"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </div>
         <div style="margin-left:20px">
           <el-button
             type="primary"
             size="small"
             @click="filterData"
           >{{$t('memberCard.filter')}}</el-button>
+
+          <el-button
+            type="primary"
+            size="small"
+            @click="exportFile"
+          >导出</el-button>
         </div>
       </div>
       <div class="tableMain">
@@ -162,7 +202,8 @@
   </div>
 </template>
 <script>
-import { getReceiveListRequest, getgetCardBatchListRequest, deleteCardBatchRequest } from '@/api/admin/memberManage/memberCard.js'
+import { getReceiveListRequest, getgetCardBatchListRequest, deleteCardBatchRequest, exportInfo } from '@/api/admin/memberManage/memberCard.js'
+import { download } from '@/util/excelUtil.js'
 export default {
   components: { Pagination: () => import('@/components/admin/pagination/pagination') },
   data () {
@@ -186,7 +227,9 @@ export default {
         }
       ],
       tableData: [],
-      discardId: null
+      discardId: null,
+      reveiveStatus: null,
+      delStatus: null
     }
   },
   created () {
@@ -279,6 +322,25 @@ export default {
         }
       })
       this.dialogVisible = false
+    },
+    exportFile () {
+      let params = {
+        'cardId': this.cardId,
+        'mobile': this.phoneNumInput,
+        'username': this.carNameInput,
+        'batchId': this.selectSortvalue,
+        'search': this.cardCodeOrNo
+      }
+      this.loading = true
+      exportInfo(params).then(res => {
+        this.loading = false
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : 'template.xlsx'
+        download(res, decodeURIComponent(fileName))
+      }).catch((err, data) => {
+        console.error('err:', err)
+        this.loading = false
+      })
     }
   }
 }

@@ -314,3 +314,13 @@ export function getAllValidGradeCard () {
     method: 'post'
   })
 }
+
+// 下载激活数据
+export function exportInfo (data) {
+  return service({
+    url: '/api/admin/member/code/receivelist/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
