@@ -45,7 +45,7 @@
           </el-select>
         </div>
         <div>
-          <span>领取状态</span>
+          <span>{{$t('memberCard.reveiveStatus')}}</span>
           <el-select
             v-model="reveiveStatus"
             :placeholder="$t('memberCard.pleaseChoose')"
@@ -61,7 +61,7 @@
           </el-select>
         </div>
         <div style="margin-left: 20px;">
-          <span>使用状态</span>
+          <span>{{$t('memberCard.delStatus')}}</span>
           <el-select
             v-model="delStatus"
             :placeholder="$t('memberCard.pleaseChoose')"
@@ -260,7 +260,9 @@ export default {
         'mobile': this.phoneNumInput,
         'username': this.carNameInput,
         'batchId': this.selectSortvalue,
-        'search': this.cardCodeOrNo
+        'search': this.cardCodeOrNo,
+        'reveiveStatus': this.reveiveStatus,
+        'delStatus': this.delStatus
       }
       console.log(obj)
       // 会卡领取详情-查询
@@ -329,17 +331,17 @@ export default {
         'mobile': this.phoneNumInput,
         'username': this.carNameInput,
         'batchId': this.selectSortvalue,
-        'search': this.cardCodeOrNo
+        'search': this.cardCodeOrNo,
+        'reveiveStatus': this.reveiveStatus,
+        'delStatus': this.delStatus
       }
       this.loading = true
       exportInfo(params).then(res => {
-        this.loading = false
         let fileName = localStorage.getItem('V-content-disposition')
         fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : 'template.xlsx'
         download(res, decodeURIComponent(fileName))
       }).catch((err, data) => {
         console.error('err:', err)
-        this.loading = false
       })
     }
   }

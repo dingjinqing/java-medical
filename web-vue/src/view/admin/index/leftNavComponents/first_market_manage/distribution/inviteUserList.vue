@@ -7,40 +7,40 @@
         label-position="right"
         :inline="true"
       >
-        <el-form-item label="手机号：">
+        <el-form-item :label="$t('distribution.mobile') + '：'">
           <el-input
             v-model="searchParam.mobile"
             size="small"
             class="inputWidth"
-            placeholder="请输入内容"
+            :placeholder="$t('distribution.contentTip')"
           ></el-input>
         </el-form-item>
-        <el-form-item label="微信昵称：">
+        <el-form-item :label="$t('distribution.wxName') + '：'">
           <el-input
             v-model="searchParam.username"
             size="small"
             class="inputWidth"
-            placeholder="请输入内容"
+            :placeholder="$t('distribution.contentTip')"
           ></el-input>
         </el-form-item>
-        <el-form-item label="真实姓名：">
+        <el-form-item :label="$t('distribution.realName') + '：'">
           <el-input
             v-model="searchParam.realName"
             size="small"
             class="inputWidth"
-            placeholder="请输入内容"
+            :placeholder="$t('distribution.contentTip')"
           ></el-input>
         </el-form-item>
-        <el-form-item label="注册时间：">
+        <el-form-item :label="$t('distribution.registTime') + '：'">
           <el-date-picker
             v-model="searchParam.startCreateTime"
             type="datetime"
             size="small"
             align="right"
             class="selectWidth"
-            placeholder="选择日期时间"
+            :placeholder="$t('distribution.chooseDate')"
           ></el-date-picker>
-          至
+          {{$t('distribution.to')}}
           <el-date-picker
             v-model="searchParam.endCreateTime"
             type="datetime"
@@ -48,19 +48,22 @@
             align="right"
             class="selectWidth"
             default-time="23:59:59"
-            placeholder="选择日期时间"
+            :placeholder="$t('distribution.chooseDate')"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="邀请时间：">
+        <el-form-item
+          :label="$t('distribution.inviteTime') + '：'"
+          v-if="type === 'invite'"
+        >
           <el-date-picker
             v-model="searchParam.startInviteTime"
             type="datetime"
             size="small"
             align="right"
             class="selectWidth"
-            placeholder="选择日期时间"
+            :placeholder="$t('distribution.chooseDate')"
           ></el-date-picker>
-          至
+          {{$t('distribution.to')}}
           <el-date-picker
             v-model="searchParam.endInviteTime"
             type="datetime"
@@ -68,23 +71,25 @@
             align="right"
             class="selectWidth"
             default-time="23:59:59"
-            placeholder="选择日期时间"
+            :placeholder="$t('distribution.chooseDate')"
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button
-            @click="inviteList"
+            @click="initData"
             type="primary"
             size="small"
-          >筛选</el-button>
-          <el-button size="small">导出</el-button>
+          >{{$t('distribution.screen')}}</el-button>
+          <el-button size="small">{{$t('distribution.export')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
 
     <div class="main list_content">
       <div class="title_content">
-        累计获得佣金数：<span style="color: red;">{{totalGetFanliMoney}}</span>
+        <span v-if="type === 'invite'">{{$t('distribution.inviteMoneyTip') + '：'}}</span>
+        <span v-if="type === 'indirect'">{{$t('distribution.indirectMoneyTip') + '：'}}</span>
+        <span style="color: red;">{{totalGetFanliMoney}}</span>
       </div>
     </div>
 
@@ -97,7 +102,7 @@
         style="width: 100%"
       >
         <el-table-column
-          label="用户昵称"
+          :label="$t('distribution.username')"
           align="center"
         >
           <template slot-scope="scope">
@@ -109,49 +114,65 @@
         </el-table-column>
         <el-table-column
           prop="mobile"
-          label="用户手机号"
+          :label="$t('distribution.userMobile')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop=""
-          label="真实姓名"
+          :label="$t('distribution.realName')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="createTime"
-          label="注册时间"
+          :label="$t('distribution.registTime')"
           align="center"
         >
         </el-table-column>
         <el-table-column
+          prop=""
+          :label="$t('distribution.higherName')"
+          align="center"
+          v-if="type !== 'invite'"
+        >
+        </el-table-column>
+        <el-table-column
+          prop=""
+          :label="$t('distribution.higherMobile')"
+          align="center"
+          v-if="type !== 'invite'"
+        >
+        </el-table-column>
+        <el-table-column
           prop="orderNumber"
-          label="累计返利订单数"
+          :label="$t('distribution.orderNumber')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="totalCanFanliMoney"
-          label="累计订单返利商品总金额"
+          :label="$t('distribution.totalCanFanliMoney')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="totalFanliMoney"
-          label="累计返利佣金金额"
+          :label="$t('distribution.totalFanliMoney')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="inviteTime"
-          label="邀请时间"
+          :label="$t('distribution.inviteTime')"
           align="center"
+          v-if="type === 'invite'"
         >
         </el-table-column>
         <el-table-column
-          label="返利有效日期"
+          :label="$t('distribution.inviteExpiryDate')"
           align="center"
+          v-if="type === 'invite'"
         >
           <template slot-scope="scope">
             <span>{{ scope.row.inviteExpiryDate ? scope.row.inviteExpiryDate : '永久'}}</span>
@@ -159,15 +180,16 @@
         </el-table-column>
         <el-table-column
           prop="inviteProtectDate"
-          label="邀请保护日期"
+          :label="$t('distribution.inviteProtectDate')"
           align="center"
+          v-if="type === 'invite'"
         >
         </el-table-column>
       </el-table>
     </div>
     <pagination
       :page-params.sync="pageParams"
-      @pagination="inviteList"
+      @pagination="initData"
     />
   </div>
 </template>
@@ -193,18 +215,18 @@ export default {
       requestParam: {},
       tableData: [], // 表格
       pageParams: {}, // 分页
-      userId: '' // 用户id
+      userId: '', // 用户id
+      type: 'invite' // 页面类型(invite已邀请用户, indirect间接邀请)
     }
   },
   mounted () {
-    if (this.$route.query.userId > 0) {
-      this.userId = this.$route.query.userId
-      this.inviteList()
-    }
+    this.type = this.$route.query.type
+    this.userId = this.$route.query.userId
+    this.initData()
   },
   methods: {
     // 邀请用户列表
-    inviteList () {
+    initData () {
       this.requestParam = this.searchParam
       this.requestParam.userId = this.userId
       // this.requestParams.currentPage = this.pageParams.currentPage

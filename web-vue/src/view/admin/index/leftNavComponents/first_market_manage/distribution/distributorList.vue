@@ -681,7 +681,8 @@ export default {
       this.$router.push({
         path: '/admin/home/main/distribution/inviteUserList',
         query: {
-          userId: userId
+          userId: userId,
+          type: 'invite'
         }
       })
     },
@@ -844,7 +845,8 @@ export default {
       this.$router.push({
         path: '/admin/home/main/distribution/inviteUserList',
         query: {
-          userId: userId
+          userId: userId,
+          type: 'invite'
         }
       })
     },
@@ -854,7 +856,8 @@ export default {
       this.$router.push({
         path: '/admin/home/main/distribution/inviteUserList',
         query: {
-          userId: userId
+          userId: userId,
+          type: 'indirect'
         }
       })
     },
