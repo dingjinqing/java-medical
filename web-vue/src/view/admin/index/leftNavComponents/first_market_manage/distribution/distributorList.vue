@@ -681,7 +681,8 @@ export default {
       this.$router.push({
         path: '/admin/home/main/distribution/inviteUserList',
         query: {
-          userId: userId
+          userId: userId,
+          type: 'invite'
         }
       })
     },
@@ -844,19 +845,21 @@ export default {
       this.$router.push({
         path: '/admin/home/main/distribution/inviteUserList',
         query: {
-          userId: userId
+          userId: userId,
+          type: 'invite'
         }
       })
     },
 
     // 间接邀请用户数跳转
     sublayerNumberHandler (userId) {
-      // this.$router.push({
-      //   path: '/admin/home/main/distribution/inviteUserList',
-      //   query: {
-      //     userId: userId
-      //   }
-      // })
+      this.$router.push({
+        path: '/admin/home/main/distribution/inviteUserList',
+        query: {
+          userId: userId,
+          type: 'indirect'
+        }
+      })
     },
 
     // 全选切换

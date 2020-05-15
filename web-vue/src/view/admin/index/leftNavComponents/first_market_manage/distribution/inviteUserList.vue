@@ -51,7 +51,10 @@
             :placeholder="$t('distribution.chooseDate')"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item :label="$t('distribution.inviteTime') + '：'">
+        <el-form-item
+          :label="$t('distribution.inviteTime') + '：'"
+          v-if="type === 'invite'"
+        >
           <el-date-picker
             v-model="searchParam.startInviteTime"
             type="datetime"
@@ -73,7 +76,7 @@
         </el-form-item>
         <el-form-item>
           <el-button
-            @click="inviteList"
+            @click="initData"
             type="primary"
             size="small"
           >{{$t('distribution.screen')}}</el-button>
@@ -84,7 +87,9 @@
 
     <div class="main list_content">
       <div class="title_content">
-        {{$t('distribution.inviteMoneyTip')}}：<span style="color: red;">{{totalGetFanliMoney}}</span>
+        <span v-if="type === 'invite'">{{$t('distribution.inviteMoneyTip') + '：'}}</span>
+        <span v-if="type === 'indirect'">{{$t('distribution.indirectMoneyTip') + '：'}}</span>
+        <span style="color: red;">{{totalGetFanliMoney}}</span>
       </div>
     </div>
 
@@ -126,6 +131,20 @@
         >
         </el-table-column>
         <el-table-column
+          prop=""
+          :label="$t('distribution.higherName')"
+          align="center"
+          v-if="type !== 'invite'"
+        >
+        </el-table-column>
+        <el-table-column
+          prop=""
+          :label="$t('distribution.higherMobile')"
+          align="center"
+          v-if="type !== 'invite'"
+        >
+        </el-table-column>
+        <el-table-column
           prop="orderNumber"
           :label="$t('distribution.orderNumber')"
           align="center"
@@ -147,11 +166,13 @@
           prop="inviteTime"
           :label="$t('distribution.inviteTime')"
           align="center"
+          v-if="type === 'invite'"
         >
         </el-table-column>
         <el-table-column
           :label="$t('distribution.inviteExpiryDate')"
           align="center"
+          v-if="type === 'invite'"
         >
           <template slot-scope="scope">
             <span>{{ scope.row.inviteExpiryDate ? scope.row.inviteExpiryDate : '永久'}}</span>
@@ -161,13 +182,14 @@
           prop="inviteProtectDate"
           :label="$t('distribution.inviteProtectDate')"
           align="center"
+          v-if="type === 'invite'"
         >
         </el-table-column>
       </el-table>
     </div>
     <pagination
       :page-params.sync="pageParams"
-      @pagination="inviteList"
+      @pagination="initData"
     />
   </div>
 </template>
@@ -193,18 +215,18 @@ export default {
       requestParam: {},
       tableData: [], // 表格
       pageParams: {}, // 分页
-      userId: '' // 用户id
+      userId: '', // 用户id
+      type: 'invite' // 页面类型(invite已邀请用户, indirect间接邀请)
     }
   },
   mounted () {
-    if (this.$route.query.userId > 0) {
-      this.userId = this.$route.query.userId
-      this.inviteList()
-    }
+    this.type = this.$route.query.type
+    this.userId = this.$route.query.userId
+    this.initData()
   },
   methods: {
     // 邀请用户列表
-    inviteList () {
+    initData () {
       this.requestParam = this.searchParam
       this.requestParam.userId = this.userId
       // this.requestParams.currentPage = this.pageParams.currentPage
