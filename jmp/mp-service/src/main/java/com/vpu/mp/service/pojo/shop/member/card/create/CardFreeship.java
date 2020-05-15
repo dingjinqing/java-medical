@@ -1,19 +1,22 @@
 package com.vpu.mp.service.pojo.shop.member.card.create;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.Util;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.Setter;
 /**
  * 	卡的包邮策略信息
  * @author 黄壮壮
@@ -109,7 +112,8 @@ public class CardFreeship {
 	 * 	包邮使用类型
 	 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private static final List<String> CONS = new ArrayList<String>();;
+	private static final Map<String,List<String>> LANG_MAP = new HashMap<>();
+	private static String currentLang = null;
 
 	/**
 	 * 
@@ -117,20 +121,17 @@ public class CardFreeship {
 	 * @return 返回包邮可使用的类型，[无限包邮, 有效期内, 今年, 本季度, 本月, 本周, 今日]
 	 */
 	public static List<String> getFreeShipDesc(String lang) {
-		if(CONS.size()==0) {
+		if(LANG_MAP.get(lang)==null || LANG_MAP.get(lang).size()==0) {
+			List<String> list = new ArrayList<>();
 			for(shipType e: shipType.values()) {
 				if(e.type>-1) {
 					String res = Util.translateMessage(lang, e.getDesc(),"","messages");
-					CONS.add(res);
+					list.add(res);
 				}
 			}
+			LANG_MAP.put(lang, list);
 		}
-		return CONS;
-	}
-	
-	public static void main(String[] args) {
-		System.out.println(CONS);
-		getFreeShipDesc(null);
-		System.out.println(CONS);
+		
+		return LANG_MAP.get(lang).stream().collect(Collectors.toList());
 	}
 }
