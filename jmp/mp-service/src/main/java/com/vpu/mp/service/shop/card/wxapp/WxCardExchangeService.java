@@ -165,7 +165,7 @@ public class WxCardExchangeService extends ShopBaseService {
 	 * @throws MpException 
 	 */
 	public boolean judgeCardGoods(CardExchaneGoodsJudgeParam param) throws MpException {
-		return judgeExchangGoodsAvailable(param.getUserId(),param.getCardNo(),param.getGoodsNumber(),Boolean.TRUE);
+		return judgeExchangGoodsAvailable(param.getGoodsId(),param.getCardNo(),param.getGoodsNumber(),Boolean.TRUE);
 	}
 	
 	/**
