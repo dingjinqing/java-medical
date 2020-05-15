@@ -2414,6 +2414,7 @@ public class UserCardService extends ShopBaseService {
 		list.add(orderRecord);
 		saas.getShopApp(getShopId()).couponPack.sendCouponPack(list);
         orderRecord.setSendCardNo(strings.get(0));
+        orderRecord.update();
 		logger().info("会员卡订单-支付完成(回调)-结束");
 		return strings.get(0);
 	}
