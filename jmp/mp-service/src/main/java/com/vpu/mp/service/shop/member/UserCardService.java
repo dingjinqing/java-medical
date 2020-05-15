@@ -66,6 +66,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.github.binarywang.wxpay.exception.WxPayException;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
@@ -80,6 +81,7 @@ import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -115,21 +117,11 @@ import com.vpu.mp.service.pojo.shop.member.builder.ChargeMoneyRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardParamBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
-import com.vpu.mp.service.pojo.shop.member.card.CardBgBean;
-import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
-import com.vpu.mp.service.pojo.shop.member.card.EffectTimeBean;
-import com.vpu.mp.service.pojo.shop.member.card.EffectTimeParam;
-import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
-import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
-import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
-import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
+import com.vpu.mp.service.pojo.shop.member.buy.*;
+import com.vpu.mp.service.pojo.shop.member.card.*;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
-import com.vpu.mp.service.pojo.shop.member.exception.CardReceiveFailException;
-import com.vpu.mp.service.pojo.shop.member.exception.CardSendRepeatException;
-import com.vpu.mp.service.pojo.shop.member.exception.LimitCardAvailSendNoneException;
-import com.vpu.mp.service.pojo.shop.member.exception.MemberCardNullException;
-import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
+import com.vpu.mp.service.pojo.shop.member.exception.*;
 import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
@@ -1168,9 +1160,7 @@ public class UserCardService extends ShopBaseService {
 			defaultCards = userCardDao.getOrderMembers(userId,
 					new Byte[] { CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE },
 					OrderConstant.MEMBER_CARD_ONLINE);
-		}else if(CardConstant.MCARD_TP_LIMIT.equals(defaultCards.get(0).getInfo().getCardType())) {
-		    //限次卡不需要做处理且只有一张
-        }else {
+		}else {
             List<OrderMemberVo> temp = userCardDao.getOrderMembers(userId,
                 new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE},
                 OrderConstant.MEMBER_CARD_ONLINE);
@@ -2398,6 +2388,7 @@ public class UserCardService extends ShopBaseService {
 		insertVirtualOrderRecord.setGoodsType(GOODS_TYPE_MEMBER_CARD);
 		insertVirtualOrderRecord.setAccessMode(cardInfo.getIsPay());
 		insertVirtualOrderRecord.setCurrency(saas().shop.getCurrency(getShopId()));
+        insertVirtualOrderRecord.setSendCardNo("");
 		insertVirtualOrderRecord.insert();
 		return orderSn;
 	}
@@ -2494,15 +2485,15 @@ public class UserCardService extends ShopBaseService {
      * @return
      */
     public CardOrdeerSnVo getCardNoByOrderSn(CardOrdeerSnParam param) {
-        Record1<String> record = db().select(VIRTUAL_ORDER.CARD_NO).where(VIRTUAL_ORDER.ORDER_SN.eq(param.getOrderSn()))
+        Record1<String> record = db().select(VIRTUAL_ORDER.SEND_CARD_NO).where(VIRTUAL_ORDER.ORDER_SN.eq(param.getOrderSn()))
             .and(VIRTUAL_ORDER.USER_ID.eq(param.getUserId()))
             .fetchOne();
-        if (record!=null){
-            CardOrdeerSnVo vo =new  CardOrdeerSnVo();
+        CardOrdeerSnVo vo =new  CardOrdeerSnVo();
+        if (record!=null&&!Strings.isNullOrEmpty(record.component1())){
              vo.setCardNo(record.component1());
              return vo;
         }
-        return null ;
+        return vo ;
     }
 
 	/**
