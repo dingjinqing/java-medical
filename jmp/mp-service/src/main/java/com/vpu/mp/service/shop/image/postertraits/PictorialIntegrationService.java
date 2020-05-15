@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.firstspecial.FirstSpecialShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
+import com.vpu.mp.service.pojo.wxapp.share.integral.GroupIntegralShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.integral.IntegralMallShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.presale.PreSaleShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.rebate.RebateShareInfoParam;
@@ -67,6 +68,9 @@ public class PictorialIntegrationService extends ShopBaseService {
     @Autowired
     private IntegralMallPictorialService integralMallPictorialService;
 
+    @Autowired
+    private GroupIntegrationPictorialService groupIntegrationPictorialService;
+
     /**
      * 获取商品所有图片base64格式集合
      *
@@ -109,6 +113,8 @@ public class PictorialIntegrationService extends ShopBaseService {
             shareBaseService = rebatePictorialService;
         } else if (param instanceof IntegralMallShareInfoParam) {
             shareBaseService = integralMallPictorialService;
+        } else if (param instanceof GroupIntegralShareInfoParam) {
+            shareBaseService = groupIntegrationPictorialService;
         } else {
             shareBaseService = normalGoodsPictorialService;
         }

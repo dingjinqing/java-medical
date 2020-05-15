@@ -7,9 +7,8 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
-import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardOrderParam;
-import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardOrderVo;
-import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderRefundParam;
+import com.vpu.mp.service.pojo.shop.order.virtual.*;
+import jodd.util.StringUtil;
 import org.jooq.Record;
 import org.jooq.SelectOnConditionStep;
 import org.springframework.stereotype.Service;
@@ -93,6 +92,9 @@ public class MemberCardOrderService extends VirtualOrderService {
         }
         if (null != endTime) {
             select.and(VIRTUAL_ORDER.PAY_TIME.le(endTime));
+        }
+        if (StringUtil.isNotBlank(param.getPayCode())) {
+            select.and(VIRTUAL_ORDER.PAY_CODE.eq(param.getPayCode()));
         }
         if (null != isRefund) {
             if (isRefund) {

@@ -1,25 +1,14 @@
 package com.vpu.mp.service.shop.order.virtual;
 
-import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
-import static com.vpu.mp.db.shop.tables.VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.temporal.ChronoUnit;
-
-import com.vpu.mp.service.foundation.util.DateUtil;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.exception.DataAccessException;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.VirtualOrderRefundRecord;
 import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.data.AccountData;
 import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
@@ -29,10 +18,24 @@ import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
-import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderRefundParam;
+import com.vpu.mp.service.pojo.shop.order.virtual.*;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.exception.DataAccessException;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
+import static com.vpu.mp.db.shop.tables.VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD;
 
 /**
  * @author: 王兵兵
@@ -250,12 +253,94 @@ public class VirtualOrderService extends ShopBaseService {
     /**
      * 获取虚拟订单最近下单时间
      */
-	public Timestamp lastOrderTime(Integer userId) {
-		logger().info("获取虚拟订单最近下单时间");
-		return db().select(VIRTUAL_ORDER.CREATE_TIME)
-					.from(VIRTUAL_ORDER)
-					.where(VIRTUAL_ORDER.USER_ID.eq(userId))
-					.orderBy(VIRTUAL_ORDER.CREATE_TIME.desc())
-					.fetchAnyInto(Timestamp.class);
-	}
+    public Timestamp lastOrderTime(Integer userId) {
+        logger().info("获取虚拟订单最近下单时间");
+        return db().select(VIRTUAL_ORDER.CREATE_TIME)
+            .from(VIRTUAL_ORDER)
+            .where(VIRTUAL_ORDER.USER_ID.eq(userId))
+            .orderBy(VIRTUAL_ORDER.CREATE_TIME.desc())
+            .fetchAnyInto(Timestamp.class);
+    }
+
+    /**
+     * 图表分析的数据
+     *
+     * @param param
+     * @return
+     */
+    public AnalysisVo getAnalysisData(AnalysisParam param, Byte goodsType) {
+        AnalysisVo analysisVo = new AnalysisVo();
+        Timestamp startDate = param.getStartTime();
+        Timestamp endDate = param.getEndTime();
+        if (startDate == null || endDate == null) {
+            startDate = Timestamp.valueOf(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_BEGIN, DateUtil.getLocalDateTime()));
+            param.setStartTime(startDate);
+            endDate = DateUtil.getLocalDateTime();
+            param.setEndTime(endDate);
+        }
+        Map<Date, List<VirtualOrderAnalysisBo>> orderGoodsMap = getAnalysisOrderMap(param, goodsType);
+
+        Set<Integer> allUserIds = new HashSet<>();
+        //填充
+        while (Objects.requireNonNull(startDate).compareTo(endDate) <= 0) {
+            Date k = new Date(startDate.getTime());
+            List<VirtualOrderAnalysisBo> v = orderGoodsMap.get(k);
+            Set<Integer> userIds = new HashSet<>();
+
+            if (v != null) {
+                /**支付金额 */
+                BigDecimal paymentAmount = BigDecimal.ZERO;
+                /**退款金额 */
+                BigDecimal returnAmount = BigDecimal.ZERO;
+                for (VirtualOrderAnalysisBo o : v) {
+                    paymentAmount = BigDecimalUtil.add(paymentAmount, o.getOrderAmount());
+                    userIds.add(o.getUserId());
+                    returnAmount = BigDecimalUtil.addOrSubtrac(
+                        BigDecimalUtil.BigDecimalPlus.create(returnAmount, BigDecimalUtil.Operator.add),
+                        BigDecimalUtil.BigDecimalPlus.create(o.getReturnMoney(), BigDecimalUtil.Operator.add),
+                        BigDecimalUtil.BigDecimalPlus.create(o.getReturnAccount(), BigDecimalUtil.Operator.add),
+                        BigDecimalUtil.BigDecimalPlus.create(o.getReturnCardBalance(), BigDecimalUtil.Operator.add));
+                }
+
+                analysisVo.getDateList().add(k.toString());
+                analysisVo.getPaidOrderNumber().add(v.size());
+                analysisVo.getPaidUserNumber().add(userIds.size());
+                analysisVo.getPaymentAmount().add(paymentAmount);
+                analysisVo.getReturnAmount().add(returnAmount);
+            } else {
+                analysisVo.getDateList().add(k.toString());
+                analysisVo.getPaidOrderNumber().add(0);
+                analysisVo.getPaidUserNumber().add(0);
+                analysisVo.getPaymentAmount().add(BigDecimal.ZERO);
+                analysisVo.getReturnAmount().add(BigDecimal.ZERO);
+            }
+            allUserIds.addAll(userIds);
+            startDate = Util.getEarlyTimeStamp(startDate, 1);
+        }
+
+
+        AnalysisVo.AnalysisTotalVo totalVo = new AnalysisVo.AnalysisTotalVo();
+        totalVo.setTotalPaidOrderNumber(analysisVo.getPaidOrderNumber().stream().mapToInt(Integer::intValue).sum());
+        totalVo.setTotalPaidUserNumber(allUserIds.size());
+        totalVo.setTotalPaymentAmount(analysisVo.getPaymentAmount().stream().reduce(BigDecimal.ZERO, BigDecimal::add));
+        totalVo.setTotalReturnAmount(analysisVo.getReturnAmount().stream().reduce(BigDecimal.ZERO, BigDecimal::add));
+        analysisVo.setTotal(totalVo);
+        return analysisVo;
+    }
+
+    /**
+     * 效果要分析的订单数据
+     *
+     * @param param
+     * @return
+     */
+    protected Map<Date, List<VirtualOrderAnalysisBo>> getAnalysisOrderMap(AnalysisParam param, Byte goodsType) {
+        List<VirtualOrderAnalysisBo> list = db().select(DSL.date(VIRTUAL_ORDER.CREATE_TIME).as("createTime"), VIRTUAL_ORDER.ORDER_SN, VIRTUAL_ORDER.USER_ID, VIRTUAL_ORDER.ORDER_AMOUNT, VIRTUAL_ORDER.RETURN_MONEY, VIRTUAL_ORDER.RETURN_ACCOUNT, VIRTUAL_ORDER.RETURN_CARD_BALANCE)
+            .from(VIRTUAL_ORDER)
+            .where(VIRTUAL_ORDER.CREATE_TIME.between(param.getStartTime(), param.getEndTime()))
+            .and(VIRTUAL_ORDER.GOODS_TYPE.eq(goodsType))
+            .and(VIRTUAL_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED))
+            .fetchInto(VirtualOrderAnalysisBo.class);
+        return list.stream().collect(Collectors.groupingBy(VirtualOrderAnalysisBo::getCreateTime));
+    }
 }

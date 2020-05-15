@@ -179,16 +179,12 @@ public abstract class ShareBaseService extends ShopBaseService {
     public GoodsPictorialInfo getPictorialInfo(GoodsShareBaseParam baseParam) {
         ShopRecord shop = saas.shop.getShopById(getShopId());
         GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
-        Record activityRecord = null;
-        if (baseParam.getActivityId() != null) {
-            activityRecord = getActivityRecord(baseParam.getActivityId());
-            // 活动信息不可用
-            if (activityRecord == null) {
-                pictorialLog(getActivityName(), "活动信息已删除或失效");
-                goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);
-                return goodsPictorialInfo;
-            }
+
+        Record activityRecord = getActivityInfo(baseParam,goodsPictorialInfo);
+        if (!GoodsPictorialInfo.OK.equals(goodsPictorialInfo.getPictorialCode())) {
+            return goodsPictorialInfo;
         }
+
         GoodsRecord goodsRecord = goodsService.getGoodsRecordById(baseParam.getTargetId());
         if (goodsRecord == null) {
             pictorialLog(getActivityName(), "商品信息已删除或失效");
@@ -199,13 +195,8 @@ public abstract class ShareBaseService extends ShopBaseService {
         PictorialShareConfig shareConfig = getPictorialConfig(activityRecord, goodsRecord);
         shareLog(getActivityName(), "分享配置信息:" + Util.toJson(shareConfig));
 
-        PictorialUserInfo userInfo = null;
-        try {
-            pictorialLog(getActivityName(), "获取用户信息");
-            userInfo = pictorialService.getPictorialUserInfo(baseParam.getUserId(), shop);
-        } catch (IOException e) {
-            pictorialLog(getActivityName(), "获取用户信息失败：" + e.getMessage());
-            goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
+        PictorialUserInfo userInfo = getUserInfo(baseParam,shop,goodsPictorialInfo);
+        if (!GoodsPictorialInfo.OK.equals(goodsPictorialInfo.getPictorialCode())) {
             return goodsPictorialInfo;
         }
 
@@ -230,20 +221,12 @@ public abstract class ShareBaseService extends ShopBaseService {
             shareDoc = shareConfig.getShareDoc();
         }
 
-        String mpQrCode = createMpQrCode(activityRecord, goodsRecord, baseParam);
-        BufferedImage qrCodeImage;
-        try {
-            qrCodeImage = ImageIO.read(new URL(mpQrCode));
-//            qrCodeImage = ImageIO.read(new File("E:/qrcode.jpg"));
-        } catch (IOException e) {
-            pictorialLog(getActivityName(), "获取二维码失败");
-            goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
+        BufferedImage qrCodeImage =getQrcodInfo(activityRecord,goodsRecord,baseParam,goodsPictorialInfo);
+        if (!GoodsPictorialInfo.OK.equals(goodsPictorialInfo.getPictorialCode())) {
             return goodsPictorialInfo;
         }
 
         pictorialLog(getActivityName(), "处理海报背景图片");
-
-
         createPictorialImg(qrCodeImage, goodsImage, userInfo, shareDoc, activityRecord, goodsRecord, shop, baseParam, goodsPictorialInfo);
 
 //        BufferedImage bgImg = goodsPictorialInfo.getBgImg();
@@ -258,6 +241,64 @@ public abstract class ShareBaseService extends ShopBaseService {
         return goodsPictorialInfo;
     }
 
+    /**
+     * 获取二维码内容带日志
+     * @param aRecord
+     * @param goodsRecord
+     * @param baseParam
+     * @param goodsPictorialInfo
+     * @return
+     */
+    BufferedImage getQrcodInfo(Record aRecord,GoodsRecord goodsRecord,GoodsShareBaseParam baseParam,GoodsPictorialInfo goodsPictorialInfo){
+        String mpQrCode = createMpQrCode(aRecord, goodsRecord, baseParam);
+        BufferedImage qrCodeImage = null;
+        try {
+            qrCodeImage = ImageIO.read(new URL(mpQrCode));
+//            qrCodeImage = ImageIO.read(new File("E:/qrcode.jpg"));
+        } catch (IOException e) {
+            pictorialLog(getActivityName(), "获取二维码失败");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
+        }
+        return qrCodeImage;
+    }
+
+    /**
+     * 获取活动信息带日志
+     * @param baseParam
+     * @param goodsPictorialInfo
+     * @return
+     */
+    Record getActivityInfo(GoodsShareBaseParam baseParam,GoodsPictorialInfo goodsPictorialInfo){
+        Record activityRecord=null;
+        if (baseParam.getActivityId() != null) {
+            activityRecord = getActivityRecord(baseParam.getActivityId());
+            // 活动信息不可用
+            if (activityRecord == null) {
+                pictorialLog(getActivityName(), "活动信息已删除或失效");
+                goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);
+            }
+        }
+        return activityRecord;
+    }
+
+    /**
+     * 获取用户信息带日志
+     * @param baseParam
+     * @param shop
+     * @param goodsPictorialInfo
+     * @return
+     */
+    PictorialUserInfo getUserInfo(GoodsShareBaseParam baseParam,ShopRecord shop,GoodsPictorialInfo goodsPictorialInfo){
+        PictorialUserInfo userInfo = null;
+        try {
+            pictorialLog(getActivityName(), "获取用户信息");
+            userInfo = pictorialService.getPictorialUserInfo(baseParam.getUserId(), shop);
+        } catch (IOException e) {
+            pictorialLog(getActivityName(), "获取用户信息失败：" + e.getMessage());
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
+        }
+        return userInfo;
+    }
 
     /**
      * 创建云盘上的相对路径

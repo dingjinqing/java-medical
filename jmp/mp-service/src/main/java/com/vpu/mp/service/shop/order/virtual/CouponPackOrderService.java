@@ -125,23 +125,26 @@ public class CouponPackOrderService extends VirtualOrderService {
 		}
 		if(!StringUtils.isBlank(param.getOrderSn())) {
 			condition.and(VIRTUAL_ORDER.ORDER_SN.like(this.likeValue(param.getOrderSn())));
-		}
-		if(!StringUtils.isBlank(param.getUserInfo())) {
-			condition.and(USER.USERNAME.like(likeValue(param.getUserInfo())).or(USER.MOBILE.like(likeValue(param.getUserInfo()))));
-		}
-		if(param.getStartTime() != null) {
-			condition.and(VIRTUAL_ORDER.CREATE_TIME.gt(param.getStartTime()));
-		}
-		if(param.getEndTime() != null) {
-			condition.and(VIRTUAL_ORDER.CREATE_TIME.le(param.getEndTime()));
-		}
+        }
+        if (!StringUtils.isBlank(param.getUserInfo())) {
+            condition.and(USER.USERNAME.like(likeValue(param.getUserInfo())).or(USER.MOBILE.like(likeValue(param.getUserInfo()))));
+        }
+        if (param.getStartTime() != null) {
+            condition.and(VIRTUAL_ORDER.CREATE_TIME.gt(param.getStartTime()));
+        }
+        if (param.getEndTime() != null) {
+            condition.and(VIRTUAL_ORDER.CREATE_TIME.le(param.getEndTime()));
+        }
+        if (StringUtil.isNotBlank(param.getPayCode())) {
+            condition.and(VIRTUAL_ORDER.PAY_CODE.eq(param.getPayCode()));
+        }
         if (null != param.getRefund()) {
             if (param.getRefund()) {
                 condition.and(VIRTUAL_ORDER.RETURN_FLAG.eq(REFUND_STATUS_SUCCESS).or(VIRTUAL_ORDER.RETURN_FLAG.eq(REFUND_STATUS_FAILED)));
             }
         }
-		return condition;
-	}
+        return condition;
+    }
 	
 	/**
 	 * 返回一个优惠劵包里有多少个优惠劵
