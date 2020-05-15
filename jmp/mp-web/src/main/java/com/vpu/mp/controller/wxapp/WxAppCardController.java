@@ -310,7 +310,7 @@ public class WxAppCardController extends WxAppBaseController {
 	 */
 	@PostMapping("/api/wxapp/card/change/add")
 	public JsonResult addExchangeGoods(@RequestBody CardAddExchangeGoodsParam param) throws MpException {
-		logger().info("限次卡是否兑换商品判断");
+		logger().info("限次卡兑换商品加购");
 		param.setUserId(wxAppAuth.user().getUserId());
 		shop().user.wxUserCardService.exchangeSvc.addExchangeGoods(param);
 		return success();
