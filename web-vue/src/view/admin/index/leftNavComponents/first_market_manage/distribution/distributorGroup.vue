@@ -1,43 +1,43 @@
 <template>
   <div class="content">
     <div class='main_content'>
-      <span>分销员分组：</span>
+      <span>{{$t('distribution.distributorGroup')}}：</span>
       <el-input
         v-model="groupName"
         class="inputWidth"
         size="small"
-        placeholder="请输入内容"
+        :placeholder="$t('distribution.contentTip')"
       ></el-input>
       <el-button
         size="small"
         type="primary"
         @click="initGroupList"
         style="margin-right: 10px;"
-      >筛选</el-button>
-      <span class="showCfg">分组是否展示在小程序端：</span>
+      >{{$t('distribution.screen')}}</el-button>
+      <span class="showCfg">{{$t('distribution.switchDesc')}}：</span>
       <el-radio
         class="radio"
         v-model="v"
         :label="0"
-      >展示</el-radio>
+      >{{$t('distribution.show')}}</el-radio>
       <el-radio
         class="radio"
         v-model="v"
         :label="1"
-      >不展示</el-radio>
+      >{{$t('distribution.notShow')}}</el-radio>
       <el-button
         size="small"
         type="primary"
         plain
         @click="saveShowHandler"
-      >保存</el-button>
+      >{{$t('distribution.save')}}</el-button>
     </div>
     <div>
       <el-button
         type="primary"
         size="small"
         @click="addGroupHandler"
-      >添加分销员分组</el-button>
+      >{{$t('distribution.addDistributorGroup')}}</el-button>
     </div>
     <div class="table_list">
       <el-table
@@ -49,12 +49,12 @@
       >
         <el-table-column
           prop="groupName"
-          label="分组名称"
+          :label="$t('distribution.groupName')"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          label="包含分销员数量"
+          :label="$t('distribution.includeDistributorNum')"
           align="center"
         >
           <template slot-scope="scope">
@@ -66,7 +66,7 @@
         </el-table-column>
         <el-table-column
           prop="createTime"
-          label="创建时间"
+          :label="$t('distribution.createTime')"
           align="center"
         >
         </el-table-column>
@@ -74,10 +74,10 @@
           <template slot="header">
             <el-tooltip
               effect="dark"
-              content="用户成为分销员时，若未主动修改，将被默认添加到的分组"
+              :content="$t('distribution.isDefaultTip')"
               placement="top"
             >
-              <span>是否为默认分组 <i class="el-icon-warning-outline"></i></span>
+              <span>{{$t('distribution.isDefaultGroup')}} <i class="el-icon-warning-outline"></i></span>
             </el-tooltip>
           </template>
 
@@ -95,10 +95,10 @@
           <template slot="header">
             <el-tooltip
               effect="dark"
-              content="用户在提交成为分销员申请时，是否可选择加入该分组"
+              :content="$t('distribution.canSelectTip')"
               placement="top"
             >
-              <span>可否选择 <i class="el-icon-warning-outline"></i></span>
+              <span>{{$t('distribution.canSelect')}} <i class="el-icon-warning-outline"></i></span>
             </el-tooltip>
           </template>
 
@@ -113,14 +113,14 @@
         </el-table-column>
         <el-table-column
           prop=""
-          label="操作"
+          :label="$t('distribution.opt')"
           align="center"
         >
           <template slot-scope="scope">
             <div class="opt">
-              <span @click="editHandler(scope.row.id)">编辑</span>
-              <span @click="delHandler(scope.row.id)">删除</span>
-              <span @click="addDistributor(scope.row.id)">添加分销员</span>
+              <span @click="editHandler(scope.row.id)">{{$t('distribution.groupEdit')}}</span>
+              <span @click="delHandler(scope.row.id)">{{$t('distribution.groupDelete')}}</span>
+              <span @click="addDistributor(scope.row.id)">{{$t('distribution.addGrouper')}}</span>
             </div>
           </template>
         </el-table-column>
@@ -140,7 +140,7 @@
 
     <!-- 添加分组弹窗 -->
     <el-dialog
-      title="添加分销员分组"
+      :title="$t('distribution.addGroupTitle')"
       :visible.sync="addGroupDialog"
       :close-on-click-modal="false"
       width="40%"
@@ -154,26 +154,26 @@
         labelPosition="right"
       >
         <el-form-item
-          label="分销员分组名称："
+          :label="$t('distribution.distributorGroupName') + '：'"
           prop="groupName"
         >
           <el-input
             v-model="param.groupName"
             size="small"
             class="inputWidth"
-            placeholder="请输入分组名称"
+            :placeholder="$t('distribution.contentTip')"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="是否支持用户选择："
+          :label="$t('distribution.supportSelect') + '：'"
           prop="canSelect"
         >
           <el-radio-group v-model="param.canSelect">
-            <el-radio :label="1">支持</el-radio>
-            <el-radio :label="0">不支持</el-radio>
+            <el-radio :label="1">{{$t('distribution.selectTip1')}}</el-radio>
+            <el-radio :label="0">{{$t('distribution.selectTip2')}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <p class="groupTip">用户在申请成为分销员时，是否可以选择加入此分组</p>
+        <p class="groupTip">{{$t('distribution.selectTip3')}}</p>
       </el-form>
       <span
         slot="footer"
@@ -182,12 +182,12 @@
         <el-button
           size="small"
           @click="addGroupDialog = false"
-        >取 消</el-button>
+        >{{$t('distribution.inviteCancel')}}</el-button>
         <el-button
           type="primary"
           size="small"
           @click="saveGroupHandler"
-        >确 定</el-button>
+        >{{$t('distribution.inviteSure')}}</el-button>
       </span>
     </el-dialog>
   </div>

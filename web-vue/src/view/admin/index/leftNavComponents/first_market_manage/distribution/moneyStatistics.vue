@@ -48,9 +48,9 @@
             size="small"
             align="right"
             class="selectWidth"
-            :placeholder="$t('distribution.startOrderTimeTip1')"
+            :placeholder="$t('distribution.chooseDate')"
           ></el-date-picker>
-          {{$t('distribution.startOrderTimeTip2')}}
+          {{$t('distribution.to')}}
           <el-date-picker
             v-model="searchParam.endOrderTime"
             type="datetime"
@@ -58,7 +58,7 @@
             align="right"
             class="selectWidth"
             default-time="23:59:59"
-            :placeholder="$t('distribution.startOrderTimeTip1')"
+            :placeholder="$t('distribution.chooseDate')"
           ></el-date-picker>
         </el-form-item>
       </div>
@@ -78,9 +78,9 @@
             size="small"
             align="right"
             class="selectWidth"
-            :placeholder="$t('distribution.startOrderTimeTip1')"
+            :placeholder="$t('distribution.chooseDate')"
           ></el-date-picker>
-          {{$t('distribution.startOrderTimeTip2')}}
+          {{$t('distribution.to')}}
           <el-date-picker
             v-model="searchParam.endReturnTime"
             type="datetime"
@@ -88,7 +88,7 @@
             align="right"
             class="selectWidth"
             default-time="23:59:59"
-            :placeholder="$t('distribution.startOrderTimeTip1')"
+            :placeholder="$t('distribution.chooseDate')"
           ></el-date-picker>
         </el-form-item>
       </div>

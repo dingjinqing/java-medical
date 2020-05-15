@@ -851,12 +851,12 @@ export default {
 
     // 间接邀请用户数跳转
     sublayerNumberHandler (userId) {
-      this.$router.push({
-        path: '/admin/home/main/distribution/inviteUserList',
-        query: {
-          userId: userId
-        }
-      })
+      // this.$router.push({
+      //   path: '/admin/home/main/distribution/inviteUserList',
+      //   query: {
+      //     userId: userId
+      //   }
+      // })
     },
 
     // 全选切换
