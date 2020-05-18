@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.upyun.UpException;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.*;
@@ -87,6 +86,7 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_FORM_D
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.jooq.impl.DSL.*;
+import static com.vpu.mp.db.shop.tables.FormSubmitDetails.FORM_SUBMIT_DETAILS;
 
 /**
  * @author liufei
@@ -195,6 +195,64 @@ public class FormStatisticsService extends ShopBaseService {
         FormPageRecord fpRecord = new FormPageRecord();
         FieldsUtil.assignNotNull(param, fpRecord);
         if (db().fetchExists(fp, fp.PAGE_ID.eq(param.getPageId()))) {
+            Map<String,FormModulesBo> newPageContent = Util.json2Object(param.getPageContent(), new TypeReference<Map<String, FormModulesBo>>() {
+            }, false);
+            FormDetailVo formDetailVo = getFormDetailInfo(new FormDetailParam(){{setPageId(param.getPageId());}});
+            String oldPageContentString = formDetailVo.getPageContent();
+            Map<String,FormModulesBo> oldPageContent = Util.json2Object(oldPageContentString, new TypeReference<Map<String, FormModulesBo>>() {
+            }, false);
+            List<String> selectOne = new ArrayList<>();
+            List<String> selectMore = new ArrayList<>();
+            oldPageContent.forEach((k,v)->{
+                if (v.getShow_types()!=null&&v.getShow_types()==(byte)0){
+                    selectOne.add(k);
+                }
+                if (v.getShow_types()!=null&&v.getShow_types()==(byte)1){
+                    selectMore.add(k);
+                }
+            });
+            newPageContent.forEach((k,v)->{
+                if (selectOne.contains(k)){
+                    if (v.getShow_types()!=null&&v.getShow_types()==(1)){
+                        List<FormDetail> record = db().select(fsd.REC_ID,fsd.MODULE_VALUE)
+                            .from(fsd)
+                            .where(fsd.PAGE_ID.eq(param.getPageId()))
+                            .and(fsd.CUR_IDX.eq(k))
+                            .fetchInto(FormDetail.class);
+                        record.forEach(r->{
+                            String moduleValue = "["+r.getModuleValue()+"]";
+                            db().update(fsd)
+                                .set(fsd.MODULE_VALUE,moduleValue)
+                                .where(fsd.REC_ID.eq(r.getRecId()))
+                                .execute();
+                        });
+                    }
+                }
+                if (selectMore.contains(k)){
+                    if (v.getShow_types()!=null&&v.getShow_types()==(0)){
+                        List<FormSubmitDetailsRecord> record = db().select()
+                            .from(fsd)
+                            .where(fsd.PAGE_ID.eq(param.getPageId()))
+                            .and(fsd.CUR_IDX.eq(k))
+                            .fetchInto(FormSubmitDetailsRecord.class);
+                        record.forEach(r->{
+                            String moduleValue = r.getModuleValue().substring(1,r.getModuleValue().length()-1);
+                            logger().info("截取之后的长度为{}",moduleValue.length());
+                            String[] strArr = moduleValue.split(",");
+                            Integer recId= r.getRecId();
+                            logger().info("多选变单选-开始重置结构");
+                            for (String s : strArr){
+                                db().deleteFrom(FORM_SUBMIT_DETAILS)
+                                    .where(FORM_SUBMIT_DETAILS.REC_ID.eq(recId))
+                                    .execute();
+                                r.setModuleValue(s);
+                                r.setRecId(null);
+                                db().executeInsert(r);
+                            }
+                        });
+                    }
+                }
+            });
             db().executeUpdate(fpRecord);
         } else {
             throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST
@@ -269,7 +327,7 @@ public class FormStatisticsService extends ShopBaseService {
             // 背景图
             BufferedImage bgImgBuf = ImageIO.read(new URL(imageService.getImgFullUrl(bgImg)));
             // 创建海报图片
-            BufferedImage pictorialImg = pictorialService.createFormPictorialBgImage(userAvator, qrCodImg, bgImgBuf, new PictorialFormImgPx());
+            BufferedImage pictorialImg = pictorialService.createFormPictorialBgImage(userAvator, qrCodImg, bgImgBuf, new PictorialFormImgPx(), "我有一份" + record.getPageName() + "邀请你来填写奥，查看有礼，尽享好物", saas.shop.account.getAccountInfoForId(getSysId()).getAccountName());
             // 获取海报图片路径
             Tuple2<String, String> path = pictorialService.getImgDir(4, pictorialService.getImgFileName(String.valueOf(pageId), String.valueOf(0), String.valueOf(4)));
             // 将待分享图片上传到U盘云，并在数据库缓存记录
@@ -482,7 +540,7 @@ public class FormStatisticsService extends ShopBaseService {
                     Map<String, String> finalSelects = selects;
                     if (c.getShowTypes().equals(NumberUtils.BYTE_ZERO)){
                         c.getInnerVo().forEach(l->{
-                            l.setModuleValue(finalSelects.get(l.getModuleValue().substring(1,l.getModuleValue().length()-1)));
+                            l.setModuleValue(finalSelects.get(l.getModuleValue()));
                         });
                     }
                     if (c.getShowTypes().equals(NumberUtils.BYTE_ONE)){

@@ -525,7 +525,7 @@ function promote_request(that) {
       }
       // 助力次数提示
       if (promote_info.canPromote && promote_info.canPromote.code == 0) {
-        if (promote_info.promoteStatus == 1) {
+        if ((promote_info.rewardType == 2 && promote_info.promoteStatus == 2) || (promote_info.rewardType != 2 && promote_info.promoteStatus == 1)) {
           util.showModal('提示', '助力已完成');
         } else {
           util.showModal('提示', '今天的助力次数已用完了');

@@ -112,7 +112,9 @@ global.wxPage({
         } else {
           util.showModal('提示', res.message, function () {
             let pages = getCurrentPages()
-            if (pages.length > 1) {
+            if (res.error == 147012 && res.content) {
+              util.jumpLink(res.content)
+            } else if (pages.length > 1) {
               wx.navigateBack()
             } else {
               util.jumpLink('/pages/index/index', 'reLaunch')

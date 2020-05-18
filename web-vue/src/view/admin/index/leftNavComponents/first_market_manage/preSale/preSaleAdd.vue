@@ -1038,7 +1038,7 @@ export default {
                       this.$message.success('添加成功')
                       this.gotoHome()
                     } else {
-                      this.$message.error('创建失败')
+                      this.$message.error(res.message)
                     }
                   })
                 }

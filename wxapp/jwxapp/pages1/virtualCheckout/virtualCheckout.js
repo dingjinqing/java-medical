@@ -363,6 +363,7 @@ global.wxPage({
   },
   cardAfter(res){
     if(res.error === 0 && res.content && res.content.package){
+      let orderSn = res.content.orderSn
       wx.requestPayment({
         timeStamp: res.content.timeStamp,
         nonceStr: res.content.nonceStr,
@@ -371,13 +372,17 @@ global.wxPage({
         paySign: res.content.paySign,
         success: res => {
           util.toast_success('支付成功',()=>{
-            util.jumpLink(
+            util.api('/api/wxapp/card/order/getcardno',info=>{
+              util.jumpLink(
               `pages1/payment/payment${this.getUrlParams({
                 goodsType:3,
+                cardNo:info.content.cardNo || null,
                 useInfo: JSON.stringify({ ...this.data.usePayInfo })
-              })}`,
-              'redirectTo'
-            )
+                })}`,
+                'redirectTo'
+              )
+            },{orderSn})
+            
           })
         },
         fail: res => {

@@ -6,7 +6,6 @@ import com.google.common.collect.Lists;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.*;
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -31,7 +30,6 @@ import com.vpu.mp.service.pojo.shop.member.builder.UserCardParamBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.buy.*;
 import com.vpu.mp.service.pojo.shop.member.card.*;
-import com.vpu.mp.service.pojo.shop.member.card.*;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.exception.CardReceiveFailException;
@@ -43,7 +41,6 @@ import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
-import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -85,11 +82,11 @@ import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.aspectj.bridge.MessageWriter;
 import org.elasticsearch.common.Strings;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.impl.DSL;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1514,6 +1511,7 @@ public class UserCardService extends ShopBaseService {
 			MemberCardRecord mCardRec = new MemberCardRecord();
 			mCardRec.setFreeshipLimit(userCard.getFreeshipLimit());
 			mCardRec.setFreeshipNum(userCard.getFreeshipNum());
+			
 			CardFreeship freeshipData = cardFreeShipSvc.getFreeshipData(mCardRec, lang);
 			userCard.setFreeshipDesc(freeshipData.getDesc());
 		}else {
@@ -2072,7 +2070,7 @@ public class UserCardService extends ShopBaseService {
             .leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
             .where(USER_CARD.USER_ID.eq(userId))
             .and(USER_CARD.FLAG.eq((byte)0))
-            .and(USER_CARD.EXPIRE_TIME.eq((Timestamp) null).or(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getSqlTimestamp())))
+            .and(USER_CARD.EXPIRE_TIME.isNull().or(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getSqlTimestamp())))
             .and(USER_CARD.MONEY.greaterThan(BigDecimal.ZERO))
             .orderBy(USER_CARD.IS_DEFAULT.desc(),USER_CARD.MONEY.desc())
             .fetchInto(RenewValidCardList.class);
@@ -2145,7 +2143,7 @@ public class UserCardService extends ShopBaseService {
                     logger().error("微信预支付调用接口失败Exception，订单号：{},异常：{}", order.getRenewOrderSn(), e.getMessage());
                     throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
                 }
-                logger().debug("优惠券礼包-微信支付接口调用结果：{}", webPayVo);
+                logger().debug("会员卡续费-微信支付接口调用结果：{}", webPayVo);
                 // 更新记录微信预支付id：prepayid
                 cardOrderService.updatePrepayId(order.getRenewOrderSn(),webPayVo.getResult().getPrepayId());
             }
@@ -2273,6 +2271,7 @@ public class UserCardService extends ShopBaseService {
         record.setRenewTime(memberCard.getRenewTime());
         record.setRenewDateType(memberCard.getRenewDateType());
         record.setRenewType(memberCard.getRenewType());
+        record.setAddTime(DateUtil.getSqlTimestamp());
         db().executeInsert(record);
         Integer id =  db().lastID().intValue();
         CardRenewRecord cardRenewRecord = db().select()
@@ -2314,6 +2313,14 @@ public class UserCardService extends ShopBaseService {
     }
 
     /**
+     * 获取会员卡续费信息
+     * @param orderSn 订单号
+     * @return 会员卡续费信息
+     */
+    public CardRenewRecord get(String orderSn){
+        return db().selectFrom(CARD_RENEW).where(CARD_RENEW.RENEW_ORDER_SN.eq(orderSn)).fetchAny();
+    }
+    /**
      * 更新用户会员卡过期时间
      * @param memberCard 会员卡信息
      * @return 新的过期时间
@@ -2343,9 +2350,15 @@ public class UserCardService extends ShopBaseService {
             }
         }
         logger().info("开始更新用户会员卡过期时间");
+        //更新用户-会员卡表
         db().update(USER_CARD)
             .set(USER_CARD.EXPIRE_TIME,expireTime)
             .where(USER_CARD.CARD_NO.eq(memberCard.getCardNo()))
+            .execute();
+        //更新会员卡续费表
+        db().update(CARD_RENEW)
+            .set(CARD_RENEW.RENEW_EXPIRE_TIME,expireTime)
+            .where(CARD_RENEW.CARD_NO.eq(memberCard.getCardNo()))
             .execute();
         return expireTime;
     }
@@ -2468,6 +2481,7 @@ public class UserCardService extends ShopBaseService {
 		insertVirtualOrderRecord.setGoodsType(GOODS_TYPE_MEMBER_CARD);
 		insertVirtualOrderRecord.setAccessMode(cardInfo.getIsPay());
 		insertVirtualOrderRecord.setCurrency(saas().shop.getCurrency(getShopId()));
+        insertVirtualOrderRecord.setSendCardNo("");
 		insertVirtualOrderRecord.insert();
 		return orderSn;
 	}
@@ -2554,9 +2568,80 @@ public class UserCardService extends ShopBaseService {
 		list.add(orderRecord);
 		saas.getShopApp(getShopId()).couponPack.sendCouponPack(list);
         orderRecord.setSendCardNo(strings.get(0));
+        orderRecord.update();
 		logger().info("会员卡订单-支付完成(回调)-结束");
 		return strings.get(0);
 	}
 
+    /**
+     *
+     * @param param
+     * @return
+     */
+    public CardOrdeerSnVo getCardNoByOrderSn(CardOrdeerSnParam param) {
+        Record1<String> record = db().select(VIRTUAL_ORDER.SEND_CARD_NO).from(VIRTUAL_ORDER).where(VIRTUAL_ORDER.ORDER_SN.eq(param.getOrderSn()))
+            .and(VIRTUAL_ORDER.USER_ID.eq(param.getUserId()))
+            .fetchOne();
+        CardOrdeerSnVo vo =new  CardOrdeerSnVo();
+        if (record!=null&&!Strings.isNullOrEmpty(record.component1())){
+             vo.setCardNo(record.component1());
+             return vo;
+        }
+        return vo ;
+    }
+
+    /**
+     * 会员卡续费回调完成
+     * @param order
+     * @param paymentRecord
+     * @throws MpException
+     */
+     public void cardRenewFinish(CardRenewRecord order,PaymentRecordRecord paymentRecord) throws MpException {
+        UserRecord userInfo = db().selectFrom(USER).where(USER.WX_OPENID.eq(paymentRecord.getBuyerId())).limit(1).fetchAny();
+        if (order.getUseAccount().compareTo(BigDecimal.ZERO)>0){
+            logger().info("开始扣减余额");
+            AccountParam accountParam = new AccountParam();
+            accountParam.setUserId(userInfo.getUserId());
+            accountParam.setAccount(userInfo.getAccount());
+            accountParam.setOrderSn(order.getRenewOrderSn());
+            accountParam.setAmount(new BigDecimal("-"+order.getUseAccount().toString()));
+            accountParam.setPayment("balance");
+            accountParam.setIsPaid((byte)1);
+            accountParam.setRemarkId(RemarkTemplate.CARD_RENEW.code);
+            accountParam.setRemarkData("会员卡续费"+order.getRenewOrderSn());
+            //扣减余额
+            accountService.updateUserAccount(accountParam,
+                TradeOptParam.builder().tradeType((byte)2).tradeFlow((byte) 0).build());
+        }
+        if (order.getMemberCardRedunce().compareTo(BigDecimal.ZERO)>0){
+             logger().info("开始增加会员卡消费记录");
+             UserCardParam cardInfo = userCardDao.getUserCardInfo(order.getMemberCardNo());
+             //增加会员卡消费记录
+             CardConsumerRecord record = new CardConsumerRecord();
+             record.setUserId(userInfo.getUserId());
+             record.setMoney(new BigDecimal("-"+order.getMemberCardRedunce().toString()));
+             record.setCardNo(order.getCardNo());
+             record.setCardId(cardInfo.getCardId());
+             record.setReason(order.getRenewOrderSn());
+             record.setType((byte)0);
+             db().executeInsert(record);
+         }
+         //更新订单信息
+         updateOrderInfo(order.getRenewOrderSn());
+         //修改会员卡过期时间
+         UserCardParam memberCard = userCardDao.getUserCardInfo(order.getRenewOrderSn());
+         updateExpireTime(memberCard);
+         TradesRecordRecord tradesRecord = new TradesRecordRecord();
+         tradesRecord.setTradeNum(paymentRecord.getTotalFee());
+         tradesRecord.setTradeSn(paymentRecord.getOrderSn());
+         tradesRecord.setUserId(userInfo.getUserId());
+         tradesRecord.setTradeContent((byte)0);
+         tradesRecord.setTradeType((byte)1);
+         tradesRecord.setTradeFlow((byte)0);
+         tradesRecord.setTradeStatus((byte)0);
+         tradesRecord.setTradeTime(DateUtil.getSqlTimestamp());
+         db().executeInsert(tradesRecord);
+         logger().info("会员卡续费-支付完成(回调)-结束");
+     }
 }
 

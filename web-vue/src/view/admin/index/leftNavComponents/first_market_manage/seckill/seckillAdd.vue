@@ -734,6 +734,17 @@ export default {
     // 批量设置数据
     setCurrent (index) {
       this.activeIndex = index
+      if (index === 1) {
+        this.form.secKillProduct.forEach((item, index) => {
+          this.$set(item, 'secKillPrice', this.form.secKillProduct[0].secKillPrice)
+          this.priceChange(item)
+        })
+      } else if (index === 2) {
+        this.form.secKillProduct.forEach((item, index) => {
+          this.$set(item, 'stock', this.form.secKillProduct[0].stock)
+          this.numChange(item)
+        })
+      }
     },
 
     // 显示规格弹窗

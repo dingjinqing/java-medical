@@ -762,11 +762,9 @@ export default {
   .coupon_settings {
     max-width: 960px;
     margin: 0 auto;
-    display: flex;
     .left_preview {
       width: 310px;
-      flex: 0 0 310px;
-      margin-right: 15px;
+      float: left;
       // max-height: 600px;
       overflow-y: auto;
       &::-webkit-scrollbar {
@@ -984,8 +982,7 @@ export default {
       }
     }
     .right_settings {
-      flex: 1;
-      margin-left: 15px;
+      margin-left: 325px;
       .set_box {
         border: 1px solid #e5e5e5;
         background: #f8f8f8;

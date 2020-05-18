@@ -369,7 +369,7 @@ public class IntegralConvertService extends ShopBaseService {
             if (listVo.getSaleNum()==null){
                 listVo.setSaleNum((short)0);
             }
-            listVo.setRemainStock(listVo.getStock()-listVo.getSaleNum());
+            listVo.setRemainStock(listVo.getStock().intValue());
             productList.add(listVo);
         }
 		selectVo.setProductVo(productList);
@@ -604,8 +604,19 @@ public class IntegralConvertService extends ShopBaseService {
             tempExport.setNumber(item.getNumber());
             tempExport.setMoney(item.getMoney());
             tempExport.setScore(item.getScore());
-            tempExport.setUser(item.getUsername()+" "+item.getUserMobile());
-            tempExport.setReceiveUser(item.getConsignee()+" "+item.getMobile());
+            if (!StringUtils.isNullOrEmpty(item.getUserMobile())){
+                tempExport.setUser(item.getUsername()+" "+item.getUserMobile());
+            }
+            else {
+                tempExport.setUser(item.getUsername());
+            }
+
+            if (!StringUtils.isNullOrEmpty(item.getMobile())){
+                tempExport.setReceiveUser(item.getConsignee()+" "+item.getMobile());
+            }
+            else {
+                tempExport.setReceiveUser(item.getConsignee());
+            }
             switch (item.getOrderStatus()){
                 case OrderConstant.ORDER_WAIT_PAY:
                     tempExport.setOrderStatus("待付款");

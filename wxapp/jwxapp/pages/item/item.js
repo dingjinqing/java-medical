@@ -929,7 +929,7 @@ global.wxPage({
     })
   },
   getLiveInfo(){
-    let {roomId} = this.data.roomDetailMpInfo
+    let {roomId,liveStatus} = this.data.roomDetailMpInfo
     livePlayer.getLiveStatus({room_id:roomId})
       .then(res=>{
         let liveStatus = res.liveStatus
