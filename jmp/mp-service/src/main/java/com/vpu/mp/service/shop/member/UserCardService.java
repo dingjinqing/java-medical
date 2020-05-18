@@ -1931,6 +1931,17 @@ public class UserCardService extends ShopBaseService {
             .and(USER_CARD.MONEY.greaterThan(BigDecimal.ZERO))
             .orderBy(USER_CARD.IS_DEFAULT.desc(),USER_CARD.MONEY.desc())
             .fetchInto(RenewValidCardList.class);
+        cardList.forEach(c->{
+            if (c.getExpireTime()!=null&&c.getExpireTime().before(DateUtil.getLocalDateTime())){
+                c.setExpire(NumberUtils.BYTE_ONE);
+            }else {
+                c.setExpire(NumberUtils.BYTE_ZERO);
+            }
+            c.setStartDate(c.getCreateTime());
+            if (c.getExpireTime()!=null){
+                c.setEndDate(c.getExpireTime());
+            }
+        });
         return cardList;
     }
 
