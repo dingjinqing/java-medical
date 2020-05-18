@@ -28,6 +28,16 @@ public class Indexes {
     // -------------------------------------------------------------------------
     // INDEX definitions
     // -------------------------------------------------------------------------
+    public static final Index ORDER_INFO_NEW_MAIN_ORDER_SN = Indexes0.ORDER_INFO_NEW_MAIN_ORDER_SN;
+    public static final Index ORDER_INFO_NEW_ORDER_SN = Indexes0.ORDER_INFO_NEW_ORDER_SN;
+    public static final Index ORDER_INFO_NEW_ORDER_STATUS = Indexes0.ORDER_INFO_NEW_ORDER_STATUS;
+    public static final Index ORDER_INFO_NEW_PRIMARY = Indexes0.ORDER_INFO_NEW_PRIMARY;
+    public static final Index ORDER_INFO_NEW_SHIPPING_ID = Indexes0.ORDER_INFO_NEW_SHIPPING_ID;
+    public static final Index ORDER_INFO_NEW_SHOP_ID = Indexes0.ORDER_INFO_NEW_SHOP_ID;
+    public static final Index ORDER_INFO_NEW_USER_ID = Indexes0.ORDER_INFO_NEW_USER_ID;
+    public static final Index ORDER_INFO_NEW_USER_OPENID = Indexes0.ORDER_INFO_NEW_USER_OPENID;
+
+
     public static final Index CRON_DEFINE_CRON_KEY = Indexes0.CRON_DEFINE_CRON_KEY;
     public static final Index CRON_DEFINE_PRIMARY = Indexes0.CRON_DEFINE_PRIMARY;
     public static final Index CRON_RECORD_PRIMARY = Indexes0.CRON_RECORD_PRIMARY;
@@ -222,6 +232,15 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
+        public static Index ORDER_INFO_NEW_MAIN_ORDER_SN = Internal.createIndex("main_order_sn", OrderInfoNew.ORDER_INFO_NEW, new OrderField[] { OrderInfoNew.ORDER_INFO_NEW.MAIN_ORDER_SN }, false);
+        public static Index ORDER_INFO_NEW_ORDER_SN = Internal.createIndex("order_sn", OrderInfoNew.ORDER_INFO_NEW, new OrderField[] { OrderInfoNew.ORDER_INFO_NEW.ORDER_SN }, true);
+        public static Index ORDER_INFO_NEW_ORDER_STATUS = Internal.createIndex("order_status", OrderInfoNew.ORDER_INFO_NEW, new OrderField[] { OrderInfoNew.ORDER_INFO_NEW.ORDER_STATUS }, false);
+        public static Index ORDER_INFO_NEW_PRIMARY = Internal.createIndex("PRIMARY", OrderInfoNew.ORDER_INFO_NEW, new OrderField[] { OrderInfoNew.ORDER_INFO_NEW.ORDER_ID }, true);
+        public static Index ORDER_INFO_NEW_SHIPPING_ID = Internal.createIndex("shipping_id", OrderInfoNew.ORDER_INFO_NEW, new OrderField[] { OrderInfoNew.ORDER_INFO_NEW.SHIPPING_ID }, false);
+        public static Index ORDER_INFO_NEW_SHOP_ID = Internal.createIndex("shop_id", OrderInfoNew.ORDER_INFO_NEW, new OrderField[] { OrderInfoNew.ORDER_INFO_NEW.SHOP_ID }, false);
+        public static Index ORDER_INFO_NEW_USER_ID = Internal.createIndex("user_id", OrderInfoNew.ORDER_INFO_NEW, new OrderField[] { OrderInfoNew.ORDER_INFO_NEW.USER_ID }, false);
+        public static Index ORDER_INFO_NEW_USER_OPENID = Internal.createIndex("user_openid", OrderInfoNew.ORDER_INFO_NEW, new OrderField[] { OrderInfoNew.ORDER_INFO_NEW.USER_OPENID }, false);
+
         public static Index CRON_DEFINE_CRON_KEY = Internal.createIndex("cron_key", CronDefine.CRON_DEFINE, new OrderField[]{CronDefine.CRON_DEFINE.CLASS_NAME}, true);
         public static Index CRON_DEFINE_PRIMARY = Internal.createIndex("PRIMARY", CronDefine.CRON_DEFINE, new OrderField[]{CronDefine.CRON_DEFINE.ID}, true);
         public static Index CRON_RECORD_PRIMARY = Internal.createIndex("PRIMARY", CronRecord.CRON_RECORD, new OrderField[]{CronRecord.CRON_RECORD.ID}, true);

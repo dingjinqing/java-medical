@@ -1589,4 +1589,18 @@ public class OrderInfoService extends ShopBaseService {
 
     	return db().fetchOne(TABLE, condition);
     }
+
+    /**
+     * 统计前一天被退货/退款的订单id集合
+     * @return 被退货/退款的订单id集合
+     */
+    public List<String> getReturnedOnTheDay(){
+        return  db().select(TABLE.ORDER_SN)
+                    .from(TABLE)
+                    .where(
+                        TABLE.FINISHED_TIME.between(DateUtil.getTimestampForStartTime(-1),DateUtil.getTimestampForEndTime(-1))
+                        .and(TABLE.ORDER_STATUS.in(ORDER_RETURN_FINISHED, ORDER_REFUND_FINISHED))
+                    )
+            .fetch(x->x.into(String.class));
+    }
 }

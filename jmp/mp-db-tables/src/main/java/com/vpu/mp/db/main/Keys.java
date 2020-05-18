@@ -31,6 +31,7 @@ public class Keys {
     // -------------------------------------------------------------------------
     // IDENTITY definitions
     // -------------------------------------------------------------------------
+    public static final Identity<OrderInfoNewRecord, Integer> IDENTITY_ORDER_INFO_NEW = Identities0.IDENTITY_ORDER_INFO_NEW;
     public static final Identity<CronDefineRecord, Integer> IDENTITY_CRON_DEFINE = Identities0.IDENTITY_CRON_DEFINE;
     public static final Identity<CronRecordRecord, Integer> IDENTITY_CRON_RECORD = Identities0.IDENTITY_CRON_RECORD;
 
@@ -104,6 +105,8 @@ public class Keys {
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
+    public static final UniqueKey<OrderInfoNewRecord> KEY_B2C_ORDER_INFO_NEW_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_INFO_NEW_PRIMARY;
+    public static final UniqueKey<OrderInfoNewRecord> KEY_B2C_ORDER_INFO_NEW_ORDER_SN = UniqueKeys0.KEY_B2C_ORDER_INFO_NEW_ORDER_SN;
     public static final UniqueKey<CronDefineRecord> KEY_B2C_CRON_DEFINE_PRIMARY = UniqueKeys0.KEY_B2C_CRON_DEFINE_PRIMARY;
     public static final UniqueKey<CronDefineRecord> KEY_B2C_CRON_DEFINE_CRON_KEY = UniqueKeys0.KEY_B2C_CRON_DEFINE_CRON_KEY;
     public static final UniqueKey<CronRecordRecord> KEY_B2C_CRON_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_CRON_RECORD_PRIMARY;
@@ -218,6 +221,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<OrderInfoNewRecord, Integer> IDENTITY_ORDER_INFO_NEW = Internal.createIdentity(OrderInfoNew.ORDER_INFO_NEW, OrderInfoNew.ORDER_INFO_NEW.ORDER_ID);
         public static Identity<CronDefineRecord, Integer> IDENTITY_CRON_DEFINE = Internal.createIdentity(CronDefine.CRON_DEFINE, CronDefine.CRON_DEFINE.ID);
         public static Identity<CronRecordRecord, Integer> IDENTITY_CRON_RECORD = Internal.createIdentity(CronRecord.CRON_RECORD, CronRecord.CRON_RECORD.ID);
 
@@ -290,6 +294,8 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<OrderInfoNewRecord> KEY_B2C_ORDER_INFO_NEW_PRIMARY = Internal.createUniqueKey(OrderInfoNew.ORDER_INFO_NEW, "KEY_b2c_order_info_new_PRIMARY", OrderInfoNew.ORDER_INFO_NEW.ORDER_ID);
+        public static final UniqueKey<OrderInfoNewRecord> KEY_B2C_ORDER_INFO_NEW_ORDER_SN = Internal.createUniqueKey(OrderInfoNew.ORDER_INFO_NEW, "KEY_b2c_order_info_new_order_sn", OrderInfoNew.ORDER_INFO_NEW.ORDER_SN);
         public static final UniqueKey<CronDefineRecord> KEY_B2C_CRON_DEFINE_PRIMARY = Internal.createUniqueKey(CronDefine.CRON_DEFINE, "KEY_b2c_cron_define_PRIMARY", CronDefine.CRON_DEFINE.ID);
         public static final UniqueKey<CronDefineRecord> KEY_B2C_CRON_DEFINE_CRON_KEY = Internal.createUniqueKey(CronDefine.CRON_DEFINE, "KEY_b2c_cron_define_cron_key", CronDefine.CRON_DEFINE.CLASS_NAME);
         public static final UniqueKey<CronRecordRecord> KEY_B2C_CRON_RECORD_PRIMARY = Internal.createUniqueKey(CronRecord.CRON_RECORD, "KEY_b2c_cron_record_PRIMARY", CronRecord.CRON_RECORD.ID);
