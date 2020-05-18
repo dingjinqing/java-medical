@@ -1581,6 +1581,7 @@ public class UserCardService extends ShopBaseService {
 			MemberCardRecord mCardRec = new MemberCardRecord();
 			mCardRec.setFreeshipLimit(userCard.getFreeshipLimit());
 			mCardRec.setFreeshipNum(userCard.getFreeshipNum());
+			
 			CardFreeship freeshipData = cardFreeShipSvc.getFreeshipData(mCardRec, lang);
 			userCard.setFreeshipDesc(freeshipData.getDesc());
 		}else {
