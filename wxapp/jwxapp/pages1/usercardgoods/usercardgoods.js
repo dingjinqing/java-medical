@@ -211,7 +211,9 @@ global.wxPage({
     util.api('/api/wxapp/card/change/add', res => {
       console.log(res)
       if (res.error === 0) {
-        if (res.id == undefined) {
+        if (source === 1 && paramsPrdNumber===0){
+          util.toast_success(this.$t('page1.usercardgoods.deleteSucceeded'))
+        }else if (res.id == undefined) {
           util.toast_success(this.$t('page1.usercardgoods.successfullyAdded'))
         }
         this.requestCartGoodsList()

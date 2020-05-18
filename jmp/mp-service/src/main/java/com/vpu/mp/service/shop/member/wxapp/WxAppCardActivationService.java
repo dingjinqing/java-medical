@@ -2,6 +2,8 @@ package com.vpu.mp.service.shop.member.wxapp;
 
 import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -242,16 +244,36 @@ public class WxAppCardActivationService extends ShopBaseService {
 				//	图片的OptionArr不被存储
 				if(CardCustomAction.ActionType.PICTURE.val.equals(item.getCustomType())) {
 					item.setOptionArr(null);
+					dealWithPictureLinksToRelativePath(item);
 				}else {
 					item.setPictureLinks(null);
 				}
+				
+				//	图片的路径处理
+				
+				
 			}
 			String customOptJson = Util.toJsonNotNull(customOptions);
 			activeData.put(CARD_EXAMINE.CUSTOM_OPTIONS.getName(),customOptJson);
 		}
 	}
 
-	
+	private void dealWithPictureLinksToRelativePath(CardCustomActionParam item) {
+		//	将图片路径处理成相对路径进行存储
+		String[] pictureLinks = item.getPictureLinks();
+		if(pictureLinks!=null && pictureLinks.length>0) {
+			for(int i=0;i<pictureLinks.length;i++) {
+				String url = pictureLinks[i];
+				try {
+					String url2 = (new URL(url)).getPath();
+					pictureLinks[i] = url2;
+				} catch (MalformedURLException e) {
+					pictureLinks[i] = url;
+				}
+			}
+		}
+		item.setPictureLinks(pictureLinks);
+	}
 	
 	/**
 	 *	 将map的驼峰key转化为下划线形式
