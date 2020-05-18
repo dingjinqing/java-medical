@@ -659,6 +659,12 @@ global.wxPage({
           activityData.realPrice = this.data.actBarInfo.prdRealPrice
           activityData.linePrice = this.data.actBarInfo.prdLinePrice
           break;
+        case 4:
+          activityData.pageType = 1
+          activityData.realPrice = this.data.goodsInfo.prdRealPrice.money
+          activityData.linePrice = this.data.goodsInfo.prdLinePrice
+          activityData.score = this.data.goodsInfo.prdRealPrice.score
+          break;
         case 8:
           activityData.pageType = 1
           activityData.realPrice = this.data.actBarInfo.prdRealPrice
@@ -683,6 +689,7 @@ global.wxPage({
     const apiInfo = {
       1: '/api/wxapp/groupbuy/share/info', //拼团 
       3: '/api/wxapp/bargain/share/info', //砍价
+      4: '/api/wxapp/integral_mall/share/info', //积分兑换
       5: '/api/wxapp/seckill/share/info', //秒杀
       6: '/api/wxapp/reduceprice/share/info', //限时降价
       8: '/api/wxapp/groupdraw/share/info', //拼团抽奖
@@ -691,7 +698,7 @@ global.wxPage({
       98: '/api/wxapp/reduceprice/share/info', //限时降价|会员价
       default: '/api/wxapp/goods/share/info' //普通商品
     }
-    let target = [1, 3, 5, 6, 8, 10, 18, 98].includes(shareData.activityType) ? apiInfo[shareData.activityType] : apiInfo['default']
+    let target = [1, 3, 4, 5, 6, 8, 10, 18, 98].includes(shareData.activityType) ? apiInfo[shareData.activityType] : apiInfo['default']
     let buttonShareData = await this.requestShareData(target, shareData)
     console.log(buttonShareData)
     this.setData({

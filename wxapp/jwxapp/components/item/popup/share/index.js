@@ -34,6 +34,10 @@ global.wxComponent({
           api:'/api/wxapp/bargain/pictorial/info',
           params: ['realPrice','linePrice','activityId','targetId','pageType']
         },
+        4:{ //积分兑换
+          api:'/api/wxapp/integral_mall/pictorial/info',
+          params: ['realPrice','linePrice','activityId','targetId','score'],
+        },
         5:{ //秒杀
           api:'/api/wxapp/seckill/pictorial/info',
           params: ['realPrice','linePrice','activityId','targetId']
@@ -59,7 +63,7 @@ global.wxComponent({
           params:['realPrice','linePrice','activityId','targetId']
         } 
       }
-      let target = [1,3,5,6,8,10,18].includes(this.data.shareData.activityType) ? apiInfo[this.data.shareData.activityType] : apiInfo['default']
+      let target = [1,3,4,5,6,8,10,18].includes(this.data.shareData.activityType) ? apiInfo[this.data.shareData.activityType] : apiInfo['default']
       let params = this.filterObj(this.data.shareData,target.params)
       wx.showLoading({
         title: '生成中',
