@@ -39,10 +39,15 @@ public class CardFreeShipService extends ShopBaseService{
 		
 		Byte type = card.getFreeshipLimit();
 		Integer num = 0;
+		String desc = "";
 		if(type != null && type>=CardFreeship.shipType.SHIP_IN_EFFECTTIME.getType()) {
+			//	周期内包邮次数
 			num = card.getFreeshipNum();
+			desc = Util.translateMessage(lang, RemarkMessage.FREESHIP_TOTAL_NUM, REMARK_I18N, card.getFreeshipNum());
+		}else if(type != null && type.equals(CardFreeship.shipType.SHIP_VIP.getType())){
+			//	无限制包邮
+			desc = CardFreeship.getFreeShipDesc(lang).get(0);
 		}
-		String desc = Util.translateMessage(lang, RemarkMessage.FREESHIP_TOTAL_NUM, REMARK_I18N, card.getFreeshipNum());
 		return CardFreeship.builder()
 					.type(type)
 					.num(num)
@@ -96,6 +101,5 @@ public class CardFreeShipService extends ShopBaseService{
 		UserCardParam card = uCardSvc.getCard(cardNo);
 		return getFreeshipData(card,lang);
 	}
-
 
 }
