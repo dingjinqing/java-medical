@@ -86,6 +86,7 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_FORM_D
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.jooq.impl.DSL.*;
+import static com.vpu.mp.db.shop.tables.FormSubmitDetails.FORM_SUBMIT_DETAILS;
 
 /**
  * @author liufei
@@ -194,6 +195,64 @@ public class FormStatisticsService extends ShopBaseService {
         FormPageRecord fpRecord = new FormPageRecord();
         FieldsUtil.assignNotNull(param, fpRecord);
         if (db().fetchExists(fp, fp.PAGE_ID.eq(param.getPageId()))) {
+            Map<String,FormModulesBo> newPageContent = Util.json2Object(param.getPageContent(), new TypeReference<Map<String, FormModulesBo>>() {
+            }, false);
+            FormDetailVo formDetailVo = getFormDetailInfo(new FormDetailParam(){{setPageId(param.getPageId());}});
+            String oldPageContentString = formDetailVo.getPageContent();
+            Map<String,FormModulesBo> oldPageContent = Util.json2Object(oldPageContentString, new TypeReference<Map<String, FormModulesBo>>() {
+            }, false);
+            List<String> selectOne = new ArrayList<>();
+            List<String> selectMore = new ArrayList<>();
+            oldPageContent.forEach((k,v)->{
+                if (v.getShow_types()!=null&&v.getShow_types()==(byte)0){
+                    selectOne.add(k);
+                }
+                if (v.getShow_types()!=null&&v.getShow_types()==(byte)1){
+                    selectMore.add(k);
+                }
+            });
+            newPageContent.forEach((k,v)->{
+                if (selectOne.contains(k)){
+                    if (v.getShow_types()!=null&&v.getShow_types()==(1)){
+                        List<FormDetail> record = db().select(fsd.REC_ID,fsd.MODULE_VALUE)
+                            .from(fsd)
+                            .where(fsd.PAGE_ID.eq(param.getPageId()))
+                            .and(fsd.CUR_IDX.eq(k))
+                            .fetchInto(FormDetail.class);
+                        record.forEach(r->{
+                            String moduleValue = "["+r.getModuleValue()+"]";
+                            db().update(fsd)
+                                .set(fsd.MODULE_VALUE,moduleValue)
+                                .where(fsd.REC_ID.eq(r.getRecId()))
+                                .execute();
+                        });
+                    }
+                }
+                if (selectMore.contains(k)){
+                    if (v.getShow_types()!=null&&v.getShow_types()==(0)){
+                        List<FormSubmitDetailsRecord> record = db().select()
+                            .from(fsd)
+                            .where(fsd.PAGE_ID.eq(param.getPageId()))
+                            .and(fsd.CUR_IDX.eq(k))
+                            .fetchInto(FormSubmitDetailsRecord.class);
+                        record.forEach(r->{
+                            String moduleValue = r.getModuleValue().substring(1,r.getModuleValue().length()-1);
+                            logger().info("截取之后的长度为{}",moduleValue.length());
+                            String[] strArr = moduleValue.split(",");
+                            Integer recId= r.getRecId();
+                            logger().info("多选变单选-开始重置结构");
+                            for (String s : strArr){
+                                db().deleteFrom(FORM_SUBMIT_DETAILS)
+                                    .where(FORM_SUBMIT_DETAILS.REC_ID.eq(recId))
+                                    .execute();
+                                r.setModuleValue(s);
+                                r.setRecId(null);
+                                db().executeInsert(r);
+                            }
+                        });
+                    }
+                }
+            });
             db().executeUpdate(fpRecord);
         } else {
             throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST
