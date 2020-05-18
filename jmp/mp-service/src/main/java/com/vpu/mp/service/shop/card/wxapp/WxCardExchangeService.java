@@ -125,11 +125,6 @@ public class WxCardExchangeService extends ShopBaseService {
 				logger().info("该会员卡不可兑换");
 				return vo;
 			}
-			
-			if(userCard.getExchangSurplus()<=0) {
-				logger().info("该会员卡已无兑换次数");
-				return vo;
-			}
 			//	商品查询
 			GoodsSearchMpParam searchParam = new GoodsSearchMpParam();
 			searchParam.setKeyWords(param.getSearch());
