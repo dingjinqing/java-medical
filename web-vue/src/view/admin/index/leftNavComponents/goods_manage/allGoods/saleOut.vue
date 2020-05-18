@@ -19,10 +19,10 @@
         </el-table-column>
         <!-- 商品名称图片 -->
         <el-table-column
-          align="left"
+          align="center"
           prop="goodsName"
           :label="$t('allGoods.allGoodsData.goodsName')"
-          width="230"
+          width="350"
         >
           <template slot-scope="{row}">
             <div class="nameImgWrap">
@@ -41,12 +41,13 @@
             </div>
           </template>
         </el-table-column>
+        <!--店铺价格-->
         <el-table-column
           prop="shopPrice"
           sortable="custom"
           align="center"
           :label="$t('allGoods.allGoodsData.shopPrice')"
-          width="100"
+          width="150"
         >
           <template slot-scope="{row}">
             <span v-if="!row.prdPriceEdit">
@@ -67,6 +68,7 @@
             />
           </template>
         </el-table-column>
+        <!--规格编码-->
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.prdSn')"
@@ -78,12 +80,14 @@
             </span>
           </template>
         </el-table-column>
+          <!--商家分类-->
         <el-table-column
           align="center"
           prop="sortName"
           :label="$t('allGoods.allGoodsData.sort')"
           width="100"
         />
+        <!--商品品牌-->
         <el-table-column
           align="center"
           prop="brandName"
@@ -91,6 +95,7 @@
           width="150"
         >
         </el-table-column>
+        <!--商品库存-->
         <el-table-column
           prop="goodsNumber"
           sortable="custom"
@@ -117,6 +122,7 @@
             />
           </template>
         </el-table-column>
+        <!--标签-->
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.goodsLabel')"
@@ -134,7 +140,7 @@
                 共{{row.goodsNormalLabels.length + row.goodsPointLabels.length }}个
               </div>
             </div>
-            <div style="cursor: pointer;text-align: center;margin-top: 2px;font-size: large;color: #5a8bff;"
+            <div style="cursor: pointer;text-align: center;margin-top: 2px;color: #5a8bff;"
                  @click="tdLabelSetClick(row)">
               {{$t('allGoods.allGoodsData.setting')}}
             </div>
@@ -537,6 +543,7 @@ export default {
 }
 .nameImgWrap{
   display: flex;
+  text-align: left;
 }
 .nameImgWrap::after{
   content: '';

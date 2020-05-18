@@ -23,10 +23,10 @@
         </el-table-column>
         <!-- 商品名称图片 -->
         <el-table-column
-          align="left"
+          align="center"
           prop="goodsName"
           :label="$t('allGoods.allGoodsData.goodsName')"
-          width="200"
+          width="350"
         >
           <template slot-scope="scope">
             <div class="nameImgWrap">
@@ -51,12 +51,13 @@
             </div>
           </template>
         </el-table-column>
+        <!--店铺价格-->
         <el-table-column
           prop="shopPrice"
           sortable="custom"
           align="center"
           :label="$t('allGoods.allGoodsData.shopPrice')"
-          width="100"
+          width="150"
         >
           <template slot-scope="{row}">
             <!--非默认规格-->
@@ -88,32 +89,26 @@
             </template>
           </template>
         </el-table-column>
+        <!--商品货号-->
         <el-table-column
           align="center"
           prop="goodsSn"
-          width="100"
+          width="150"
           :label="$t('allGoods.allGoodsData.goodsSn')"
         />
-        <!--平台分类-->
-        <!--<el-table-column-->
-        <!--align="center"-->
-        <!--prop="catName"-->
-        <!--:label="$t('allGoods.allGoodsData.cat')"-->
-        <!--width="100"-->
-        <!--/>-->
         <!--商家分类-->
         <el-table-column
           align="center"
           prop="sortName"
           :label="$t('allGoods.allGoodsData.sort')"
-          width="100"
+          width="150"
         />
         <!--商品品牌-->
         <el-table-column
           align="center"
           prop="brandName"
           :label="$t('allGoods.allGoodsData.goodsBrand')"
-          width="90"
+          width="150"
         >
         </el-table-column>
         <!--商品库存-->
@@ -152,6 +147,7 @@
             </template>
           </template>
         </el-table-column>
+        <!--销售数量-->
         <el-table-column
           prop="goodsSaleNum"
           sortable="custom"
@@ -159,6 +155,7 @@
           width="100"
           :label="$t('allGoods.allGoodsData.saleNumber')"
         />
+        <!--标签-->
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.goodsLabel')"
@@ -180,7 +177,7 @@
               </div>
             </div>
             <div
-              style="cursor: pointer;text-align: center;margin-top: 2px;font-size: large;color: #5a8bff;"
+              style="cursor: pointer;text-align: center;margin-top: 2px;color: #5a8bff;"
               @click="tdLabelSetClick(row)"
             >
               {{$t('allGoods.allGoodsData.setting')}}
@@ -1052,6 +1049,7 @@ export default {
 }
 .nameImgWrap {
   display: flex;
+  text-align: left;
 }
 .nameImgWrap::after {
   content: "";
