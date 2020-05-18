@@ -477,8 +477,14 @@
                 v-else
                 @click="isEditFlag?'':handleToCallDialog(2)"
               >
-                <div class="couponImgWrapper">
-                  <div class="coupon_list_top">
+                <div
+                  class="couponImgWrapper"
+                  :class="coupon_duplicate[0].status === 0 ? 'couponImgWrapper' : 'couponImgWrapperGray'"
+                >
+                  <div
+                    class="coupon_list_top"
+                    :class="coupon_duplicate[0].status === 0 ? 'coupon_list_top' : 'couponListTop'"
+                  >
                     <span v-if="coupon_duplicate[0].actCode === 'voucher'">
                       ￥<span class="number">{{coupon_duplicate[0].denomination}}</span>
                     </span>
@@ -489,21 +495,30 @@
                       <span class="number">{{coupon_duplicate[0].randomMax}}</span>最高
                     </span>
                   </div>
-                  <div class="coupon_center_limit">{{coupon_duplicate[0].useConsumeRestrict | formatLeastConsume(coupon_duplicate[0].leastConsume)}}</div>
+                  <div
+                    class="coupon_center_limit"
+                    :class="coupon_duplicate[0].status === 0 ? 'coupon_center_limit' : 'couponCenterLimit'"
+                  >{{coupon_duplicate[0].useConsumeRestrict | formatLeastConsume(coupon_duplicate[0].leastConsume)}}</div>
                   <div
                     class="coupon_center_number"
+                    :class="coupon_duplicate[0].status === 0 ? 'coupon_center_number' : 'couponCenterNumber'"
                     v-if="coupon_duplicate[0].surplus === 0"
                   >库存不限制</div>
                   <div
                     class="coupon_center_number"
+                    :class="coupon_duplicate[0].status === 0 ? 'coupon_center_number' : 'couponCenterNumber'"
                     v-if="coupon_duplicate[0].surplus > 0"
                   >剩余{{coupon_duplicate[0].surplus}}张</div>
                   <div
                     class="coupon_list_bottom"
+                    :class="coupon_duplicate[0].status === 0 ? 'coupon_list_bottom' : 'couponListBottom'"
+                    :style="`backgroundImage:url('${$imageHost}/image/admin/coupon_border.png')`"
                     v-if="coupon_duplicate[0].scoreNumber === 0"
                   >领取</div>
                   <div
                     class="coupon_list_bottom"
+                    :class="coupon_duplicate[0].status === 0 ? 'coupon_list_bottom' : 'couponListBottom'"
+                    :style="`backgroundImage:url('${$imageHost}/image/admin/coupon_border.png')`"
                     v-if="coupon_duplicate[0].scoreNumber > 0"
                   >{{coupon_duplicate[0].scoreNumber}}积分 兑换</div>
                 </div>
@@ -1470,6 +1485,7 @@ export default {
   .couponImgWrapper {
     width: 100%;
     height: 100%;
+    margin-top: -1px;
     border: 1px solid #fbb;
     border-radius: 10px;
     .coupon_list_top {
@@ -1501,7 +1517,44 @@ export default {
       border-bottom-right-radius: 8px;
       color: #fff;
       background: #f66;
-      background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
+      background-repeat: repeat-x;
+    }
+  }
+  .couponImgWrapperGray {
+    width: 100%;
+    height: 100%;
+    margin-top: -1px;
+    border: 1px solid #d5d7d9;
+    border-radius: 10px;
+    .couponListTop {
+      margin-top: 10px;
+      color: #d5d7d9;
+      :nth-of-type(2) {
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .number {
+        font-size: 20px;
+        font-weight: bold;
+      }
+    }
+    .couponCenterLimit {
+      height: 20px;
+      color: #d5d7d9;
+      font-size: 12px !important;
+    }
+    .couponCenterNumber {
+      height: 20px;
+      color: #d5d7d9;
+    }
+    .couponListBottom {
+      font-size: 12px;
+      height: 24px;
+      line-height: 30px;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      color: #fff;
+      background: #d5d7d9;
       background-repeat: repeat-x;
     }
   }
