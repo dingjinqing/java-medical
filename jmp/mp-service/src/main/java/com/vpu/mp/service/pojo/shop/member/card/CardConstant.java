@@ -244,6 +244,10 @@ public class CardConstant {
      */
     public static final Integer INFINITE_EXCHANGE = 0;
 
+	/** 会员卡续费回调订单标识 */
+    public static final String USER_CARD_RENEW_ORDER = "x";
+    /** 会员卡续费订单已完成 */
+    public static final Byte CARD_RENEW_ORDER_STATUS_OK = 1;
     public static final Byte ZERO = 0;
     public static final Byte ONE = 1;
     public static final Byte TWO = 2;

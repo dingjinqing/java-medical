@@ -132,7 +132,129 @@
     </div>
     <!--会员卡充值表头-->
     <div v-if="showHeader === 'third'">
-      会员卡充值表头
+      <div class="list">
+        <div class="li">
+          <div class="phoneClass">充值单号</div>
+          <el-input
+            v-model="headerDataThird.rechargeNo"
+            placeholder="请输入充值单号"
+            size="small"
+          ></el-input>
+        </div>
+        <div class="li">
+          <div class="phoneClass">会员卡</div>
+          <el-input
+            v-model="headerDataThird.cardName"
+            placeholder="请输入会员卡名称"
+            size="small"
+          ></el-input>
+        </div>
+        <div class="li">
+          <div class="phoneClass">卡ID</div>
+          <el-input
+            v-model="headerDataThird.cardId"
+            placeholder="请输入会员卡ID"
+            size="small"
+          ></el-input>
+        </div>
+        <div class="li">
+          <div class="phoneClass">充值方式</div>
+          <el-select
+            v-model="headerDataThird.rechargeMethod"
+            placeholder="请选择"
+            size="small"
+          >
+            <el-option
+              v-for="item in rechargeMethodOption"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </div>
+      </div>
+      <div class="list">
+        <div class="li">
+          <div class="phoneClass">会员信息</div>
+          <el-input
+            v-model="headerDataThird.memberInfo"
+            placeholder="会员昵称/手机号"
+            size="small"
+          ></el-input>
+        </div>
+        <div
+          class="li"
+          style="width:auto"
+        >
+          <div class="phoneClass">充值时间</div>
+          <el-date-picker
+            v-model="headerDataThird.rechargeStartTime"
+            type="date"
+            value-format="yyyy-MM-dd 00:00:00"
+            size="small"
+          >
+          </el-date-picker>
+          &nbsp;至&nbsp;
+          <el-date-picker
+            v-model="headerDataThird.rechargeEndTime"
+            type="date"
+            value-format="yyyy-MM-dd 23:59:59"
+            size="small"
+          >
+          </el-date-picker>
+        </div>
+      </div>
+      <div class="list">
+        <div
+          class="li"
+          style="width:auto"
+        >
+          <div class="phoneClass">充值金额</div>
+          <el-input
+            v-model="headerDataThird.rechargeAmountmin"
+            size="small"
+          ></el-input>
+          &nbsp;至&nbsp;
+          <el-input
+            v-model="headerDataThird.rechargeAmountmax"
+            size="small"
+          ></el-input>
+
+        </div>
+        <div
+          class="li"
+          style="width:auto;margin-left:20px"
+        >
+          <div class="phoneClass">充值后卡余额</div>
+          <el-date-picker
+            v-model="headerDataThird.afterRechargeStartTime"
+            type="date"
+            value-format="yyyy-MM-dd 00:00:00"
+            size="small"
+          >
+          </el-date-picker>
+          &nbsp;至&nbsp;
+          <el-date-picker
+            v-model="headerDataThird.afterRechargeEndTime"
+            type="date"
+            value-format="yyyy-MM-dd 23:59:59"
+            size="small"
+          >
+          </el-date-picker>
+        </div>
+      </div>
+      <div class="list button">
+        <el-button
+          size="small"
+          type="primary"
+          @click="handleToScreen()"
+        >筛选</el-button>
+        <el-button
+          @click="handleToExport()"
+          size="small"
+        >数据导出</el-button>
+      </div>
     </div>
     <!--优惠卷礼包购买表头-->
     <div v-if="showHeader === 'fourth'">
@@ -141,6 +263,7 @@
   </div>
 </template>
 <script>
+// import { download } from '@/util/excelUtil.js'
 export default {
   props: {
     showHeader: {
@@ -166,6 +289,17 @@ export default {
         company: 0 // 钱单位
       },
       headerDataThird: {
+        rechargeNo: '', // 充值单号
+        cardName: '', // 会员卡名称
+        cardId: '', // 卡ID
+        rechargeMethod: '', // 充值方式
+        memberInfo: '', // 会员信息
+        rechargeStartTime: '', // 充值开始时间
+        rechargeEndTime: '', // 充值结束时间
+        rechargeAmountmin: '', // 充值金额最小
+        rechargeAmountmax: '', // 充值金额最大
+        afterRechargeStartTime: '', // 充值后卡余额开始时间
+        afterRechargeEndTime: '' // 充值后卡余额结束时间
       },
       headerDataFourth: {
       },
@@ -177,6 +311,24 @@ export default {
         {
           value: 1,
           label: '积分'
+        }
+      ],
+      rechargeMethodOption: [
+        {
+          value: 0,
+          label: '全部'
+        },
+        {
+          value: 1,
+          label: '开卡'
+        },
+        {
+          value: 2,
+          label: '用户充值'
+        },
+        {
+          value: 3,
+          label: '管理员操作'
         }
       ]
     }
@@ -191,12 +343,21 @@ export default {
           this.$emit('getRenewalHeaderData', this.headerDataSecond)
           break
         case 'third':
+          this.$emit('getRenewalHeaderData', this.headerDataThird)
           break
       }
     },
     // 点击导出
     handleToExport () {
-
+      // let fileName = localStorage.getItem('V-content-disposition')
+      //       fileName = fileName.split(';')[1].split('=')[1]
+      //       download(res, decodeURIComponent(fileName))
+      switch (this.showHeader) {
+        case 'second':
+          break
+        case 'third':
+          break
+      }
     }
   }
 }

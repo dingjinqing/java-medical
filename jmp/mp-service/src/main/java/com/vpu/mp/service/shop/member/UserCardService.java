@@ -1,9 +1,5 @@
 package com.vpu.mp.service.shop.member;
-import static com.vpu.mp.db.shop.Tables.CARD_RENEW;
-import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.STORE;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
@@ -51,6 +47,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.pojo.shop.member.buy.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -70,14 +67,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
-import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
-import com.vpu.mp.db.shop.tables.records.CardRenewRecord;
-import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
-import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
-import com.vpu.mp.db.shop.tables.records.UserCardRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -2065,7 +2054,7 @@ public class UserCardService extends ShopBaseService {
                     logger().error("微信预支付调用接口失败Exception，订单号：{},异常：{}", order.getRenewOrderSn(), e.getMessage());
                     throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
                 }
-                logger().debug("优惠券礼包-微信支付接口调用结果：{}", webPayVo);
+                logger().debug("会员卡续费-微信支付接口调用结果：{}", webPayVo);
                 // 更新记录微信预支付id：prepayid
                 cardOrderService.updatePrepayId(order.getRenewOrderSn(),webPayVo.getResult().getPrepayId());
             }
@@ -2193,6 +2182,7 @@ public class UserCardService extends ShopBaseService {
         record.setRenewTime(memberCard.getRenewTime());
         record.setRenewDateType(memberCard.getRenewDateType());
         record.setRenewType(memberCard.getRenewType());
+        record.setAddTime(DateUtil.getSqlTimestamp());
         db().executeInsert(record);
         Integer id =  db().lastID().intValue();
         CardRenewRecord cardRenewRecord = db().select()
@@ -2234,6 +2224,14 @@ public class UserCardService extends ShopBaseService {
     }
 
     /**
+     * 获取会员卡续费信息
+     * @param orderSn 订单号
+     * @return 会员卡续费信息
+     */
+    public CardRenewRecord get(String orderSn){
+        return db().selectFrom(CARD_RENEW).where(CARD_RENEW.RENEW_ORDER_SN.eq(orderSn)).fetchAny();
+    }
+    /**
      * 更新用户会员卡过期时间
      * @param memberCard 会员卡信息
      * @return 新的过期时间
@@ -2263,6 +2261,7 @@ public class UserCardService extends ShopBaseService {
             }
         }
         logger().info("开始更新用户会员卡过期时间");
+        //更新用户-会员卡表
         db().update(USER_CARD)
             .set(USER_CARD.EXPIRE_TIME,expireTime)
             .where(USER_CARD.CARD_NO.eq(memberCard.getCardNo()))
@@ -2504,6 +2503,60 @@ public class UserCardService extends ShopBaseService {
 		int num = userCardDao.setAllUserGradeCardDelete(cardId);
 		logger().info(num+"个用户的等级卡被废除");
 	}
+
+    /**
+     * 会员卡续费回调完成
+     * @param order
+     * @param paymentRecord
+     * @throws MpException
+     */
+     public void cardRenewFinish(CardRenewRecord order,PaymentRecordRecord paymentRecord) throws MpException {
+        UserRecord userInfo = db().selectFrom(USER).where(USER.WX_OPENID.eq(paymentRecord.getBuyerId())).limit(1).fetchAny();
+        if (order.getUseAccount().compareTo(BigDecimal.ZERO)>0){
+            logger().info("开始扣减余额");
+            AccountParam accountParam = new AccountParam();
+            accountParam.setUserId(userInfo.getUserId());
+            accountParam.setAccount(userInfo.getAccount());
+            accountParam.setOrderSn(order.getRenewOrderSn());
+            accountParam.setAmount(new BigDecimal("-"+order.getUseAccount().toString()));
+            accountParam.setPayment("balance");
+            accountParam.setIsPaid((byte)1);
+            accountParam.setRemarkId(RemarkTemplate.CARD_RENEW.code);
+            accountParam.setRemarkData("会员卡续费"+order.getRenewOrderSn());
+            //扣减余额
+            accountService.updateUserAccount(accountParam,
+                TradeOptParam.builder().tradeType((byte)2).tradeFlow((byte) 0).build());
+        }
+        if (order.getMemberCardRedunce().compareTo(BigDecimal.ZERO)>0){
+             logger().info("开始增加会员卡消费记录");
+             UserCardParam cardInfo = userCardDao.getUserCardInfo(order.getMemberCardNo());
+             //增加会员卡消费记录
+             CardConsumerRecord record = new CardConsumerRecord();
+             record.setUserId(userInfo.getUserId());
+             record.setMoney(new BigDecimal("-"+order.getMemberCardRedunce().toString()));
+             record.setCardNo(order.getCardNo());
+             record.setCardId(cardInfo.getCardId());
+             record.setReason(order.getRenewOrderSn());
+             record.setType((byte)0);
+             db().executeInsert(record);
+         }
+         //更新订单信息
+         updateOrderInfo(order.getRenewOrderSn());
+         //修改会员卡过期时间
+         UserCardParam memberCard = userCardDao.getUserCardInfo(order.getRenewOrderSn());
+         updateExpireTime(memberCard);
+         TradesRecordRecord tradesRecord = db().newRecord(TRADES_RECORD);
+         tradesRecord.setTradeNum(paymentRecord.getTotalFee());
+         tradesRecord.setTradeSn(paymentRecord.getOrderSn());
+         tradesRecord.setUserId(userInfo.getUserId());
+         tradesRecord.setTradeContent((byte)0);
+         tradesRecord.setTradeType((byte)1);
+         tradesRecord.setTradeFlow((byte)0);
+         tradesRecord.setTradeStatus((byte)0);
+         tradesRecord.setTradeTime(DateUtil.getSqlTimestamp());
+         db().executeInsert(tradesRecord);
+         logger().info("会员卡续费-支付完成(回调)-结束");
+     }
 
     /**
      * 获取会员卡权益

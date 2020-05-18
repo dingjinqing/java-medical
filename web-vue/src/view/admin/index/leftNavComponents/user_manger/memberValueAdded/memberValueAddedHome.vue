@@ -27,7 +27,10 @@
           label="会员卡充值"
           name="third"
         >
-          <renewalCard :showHeader="activeName" />
+          <renewalCard
+            :showHeader="activeName"
+            @getRenewalHeaderData="handleToGetHeader"
+          />
         </el-tab-pane>
         <el-tab-pane
           label="优惠卷礼包购买"
@@ -42,16 +45,24 @@
         type="primary"
       >查看交易数据</el-button>
     </div>
+    <!--会员卡续费和会员卡充值底部表格-->
+    <memberForm
+      :activeName="activeName"
+      :bottomFormData="bottomFormData"
+      v-if="activeName==='second' || activeName==='third'"
+    />
   </div>
 </template>
 <script>
 export default {
   components: {
-    renewalCard: () => import('./renewalCard') // 会员卡续费和会员卡充值表头
+    renewalCard: () => import('./renewalCard'), // 会员卡续费和会员卡充值表头
+    memberForm: () => import('./memberForm') // 会员卡续费和会员卡充值表格
   },
   data () {
     return {
-      activeName: 'first'
+      activeName: 'first',
+      bottomFormData: {}
     }
   },
   methods: {
@@ -61,7 +72,8 @@ export default {
     },
     // 表头点击筛选回传表头信息数据
     handleToGetHeader (res) {
-      console.log(res)
+      this.bottomFormData = res
+      console.log(res, this.activeName)
     }
   }
 }
