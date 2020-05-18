@@ -34,7 +34,7 @@ global.wxPage({
     goods_id = options.goods_id;
     group_id = options.group_id;
     this.setData({
-      inviteId:options.inviteId || null
+      inviteId: options.inviteId || null
     })
     var that = this;
     // 判断用户是否登录
