@@ -208,8 +208,12 @@
           <text class="detail_content" style="color:{{comColor}};">+{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.shippingFee || '0'})}}</text>
         </view>
         <view class="detail_item" wx:if="{{orderInfo.memberCardReduce}}">
-          <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>
+          <text class="detail_title">{{isCardExchange ? i18n.$t(localePack,"pages.checkout.limitedCard")+i18n.$t(localePack,"pages.checkout.deduction")+i18n.$t(localePack,"pages.checkout.amount") : i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>
           <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.memberCardReduce || '0'})}}</text>
+        </view>
+        <view class="detail_item" wx:if="{{isCardExchange}}">
+          <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.limitedCard")+i18n.$t(localePack,"pages.checkout.deduction")+i18n.$t(localePack,"pages.checkout.frequency")}}</text>
+          <text class="detail_content" style="color:{{comColor}};">-{{orderInfo.defaultMemberCard.totalGoodsNumber}}次</text>
         </view>
         <view class="detail_item" wx:if="{{orderInfo.discount}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.coupon")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>

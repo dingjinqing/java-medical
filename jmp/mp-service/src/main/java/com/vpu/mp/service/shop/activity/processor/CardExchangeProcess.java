@@ -61,6 +61,7 @@ public class CardExchangeProcess extends WxCardExchangeService implements Proces
     private void orderInit(OrderBeforeParam param, CardFullDetail cardDetail) {
         //免运费
         if(CardUtil.isFreeShipping(cardDetail.getMemberCard().getExchangFreight())) {
+            logger().info("限次卡兑换免运费设置");
             param.setIsFreeShippingAct(OrderConstant.YES);
         }
     }

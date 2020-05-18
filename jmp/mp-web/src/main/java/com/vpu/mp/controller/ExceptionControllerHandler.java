@@ -139,6 +139,6 @@ public class ExceptionControllerHandler extends BaseController {
 
     @ExceptionHandler({MpException.class})
     public JsonResult procesMpException(MpException e){
-        return fail(e.getErrorCode(), e.getCodeParam());
+        return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
     }
 }

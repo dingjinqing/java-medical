@@ -49,9 +49,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -843,6 +841,9 @@ public class OrderInfoService extends ShopBaseService {
 			/** 微信支付 */
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_WXPAY);
 		}
+		if(CollectionUtils.isEmpty(payCodes)) {
+            payCodes.add(OrderConstant.SEARCH_PAY_WAY_USE_ACCOUNT);
+        }
 		order.setPayCodeList(payCodes);
 	}
 
