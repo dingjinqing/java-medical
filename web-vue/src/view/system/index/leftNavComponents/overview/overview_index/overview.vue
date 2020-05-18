@@ -387,7 +387,11 @@ export default {
         let scoreMoney = []
         orderStatisticsInfo.orderMoneyInfos.forEach(item => {
           payXdata.push(item.date.split('-').slice(1).join('-'))
-          payYdata.push(item.money)
+          let money = item.money
+          payYdata.push(money.wxPayed || 0)
+          accountMoney.push(money.balancePayed || 0)
+          cardMoney.push(money.cardBalancePayed || 0)
+          scoreMoney.push(money.integralPayed || 0)
         })
         this.orderPaymentEcharts.setOption({
           title: {
@@ -470,12 +474,13 @@ export default {
       }
       this.queryTime = new Date().format('yyyy-MM-dd hh:mm:ss')
       shopViewApi(param).then(res => {
-        if (res) {
-          console.log(res)
+        if (res && res.content) {
           this.accountStatisticsInfo = res.content.accountStatisticsInfo // 账户统计
           this.userStatisticsInfo = res.content.userStatisticsInfo // 用户统计
           this.orderStatisticsInfo = res.content.orderStatisticsInfo // 订单支付统计
           this.echartsLoadData(res.content)
+        } else {
+          this.$message.error(res.message)
         }
       })
     },
@@ -502,7 +507,7 @@ export default {
       let orderMoneyInfos = this.orderStatisticsInfo.orderMoneyInfos || []
       let info = orderMoneyInfos.find(item => item.date === day)
       if (info) {
-        return info.money
+        return info.money.all
       }
       return ''
     }
