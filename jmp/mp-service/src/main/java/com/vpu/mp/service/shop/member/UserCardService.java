@@ -1,9 +1,5 @@
 package com.vpu.mp.service.shop.member;
-import static com.vpu.mp.db.shop.Tables.CARD_RENEW;
-import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.STORE;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
@@ -51,6 +47,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.pojo.shop.member.buy.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -70,14 +67,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
-import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
-import com.vpu.mp.db.shop.tables.records.CardRenewRecord;
-import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
-import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
-import com.vpu.mp.db.shop.tables.records.UserCardRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -2272,6 +2261,7 @@ public class UserCardService extends ShopBaseService {
             }
         }
         logger().info("开始更新用户会员卡过期时间");
+        //更新用户-会员卡表
         db().update(USER_CARD)
             .set(USER_CARD.EXPIRE_TIME,expireTime)
             .where(USER_CARD.CARD_NO.eq(memberCard.getCardNo()))
@@ -2555,7 +2545,7 @@ public class UserCardService extends ShopBaseService {
          //修改会员卡过期时间
          UserCardParam memberCard = userCardDao.getUserCardInfo(order.getRenewOrderSn());
          updateExpireTime(memberCard);
-         TradesRecordRecord tradesRecord = new TradesRecordRecord();
+         TradesRecordRecord tradesRecord = db().newRecord(TRADES_RECORD);
          tradesRecord.setTradeNum(paymentRecord.getTotalFee());
          tradesRecord.setTradeSn(paymentRecord.getOrderSn());
          tradesRecord.setUserId(userInfo.getUserId());
