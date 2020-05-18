@@ -2070,7 +2070,7 @@ public class UserCardService extends ShopBaseService {
             .leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
             .where(USER_CARD.USER_ID.eq(userId))
             .and(USER_CARD.FLAG.eq((byte)0))
-            .and(USER_CARD.EXPIRE_TIME.eq((Timestamp) null).or(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getSqlTimestamp())))
+            .and(USER_CARD.EXPIRE_TIME.isNull().or(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getSqlTimestamp())))
             .and(USER_CARD.MONEY.greaterThan(BigDecimal.ZERO))
             .orderBy(USER_CARD.IS_DEFAULT.desc(),USER_CARD.MONEY.desc())
             .fetchInto(RenewValidCardList.class);
@@ -2350,9 +2350,15 @@ public class UserCardService extends ShopBaseService {
             }
         }
         logger().info("开始更新用户会员卡过期时间");
+        //更新用户-会员卡表
         db().update(USER_CARD)
             .set(USER_CARD.EXPIRE_TIME,expireTime)
             .where(USER_CARD.CARD_NO.eq(memberCard.getCardNo()))
+            .execute();
+        //更新会员卡续费表
+        db().update(CARD_RENEW)
+            .set(CARD_RENEW.RENEW_EXPIRE_TIME,expireTime)
+            .where(CARD_RENEW.CARD_NO.eq(memberCard.getCardNo()))
             .execute();
         return expireTime;
     }
