@@ -32,7 +32,7 @@ global.wxPage({
       },
       {
         currentPage: currentPage,
-        pageRows: 4
+        pageRows: 20
       }
     );
   },

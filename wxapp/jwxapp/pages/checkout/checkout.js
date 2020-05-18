@@ -104,9 +104,9 @@ global.wxPage({
           console.log(orderEvent)
           this.setData({
             orderInfo,
-            isAward:res.content.activityType === 24
+            isAward:res.content.activityType === 24, //是否奖品订单
+            isCardExchange:res.content.activityType === 13 //是否限次卡兑换
           })
-          console.log(this.data.orderInfo)
           if(orderInfo.activityType === 4){ //积分兑换数据
             this.setScoreRedeemData(orderInfo)
           }

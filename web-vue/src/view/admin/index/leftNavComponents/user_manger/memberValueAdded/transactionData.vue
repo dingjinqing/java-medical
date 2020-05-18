@@ -47,7 +47,7 @@
           :style="index === 0?'color:#5A8BFF':index === 1?'color:#fc6181':index === 2?'color:#fdb64a':'color:#ff9f7f'"
         >{{item.num}}</div>
         <img
-          src="http://mpdevimg2.weipubao.cn/image/admin/any_coner/any_coner_blue.png"
+          :src="$imageHost+'/image/admin/any_coner/any_coner_blue.png'"
           class="each_area_bg"
         >
       </div>

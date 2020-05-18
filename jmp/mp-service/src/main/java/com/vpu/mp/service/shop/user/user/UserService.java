@@ -242,7 +242,9 @@ public class UserService extends ShopBaseService {
 			if (!source.isEmpty()) {
 				logger().info("邀请来源不空" + source.toString());
 				user.setInviteSource(source.get("invite_source"));
-				user.setInviteActId(Integer.parseInt(source.get("invite_act_id")));
+				String string = source.get("invite_act_id");
+				logger().info("活动id：{}",string);
+				user.setInviteActId(Integer.parseInt(string == null ? "0" : string));
 			} else {
 				logger().info("邀请来源为空");
 			}
@@ -387,7 +389,7 @@ public class UserService extends ShopBaseService {
 		}
 		if (path.equals("pages1/pinintegration/pinintegration")) {
 			map.put("invite_source", "pin_integration");// 拼团抽奖
-			map.put("invite_act_id", pathQuery.getQuery().get("pinInte_id"));
+			map.put("invite_act_id", pathQuery.getQuery().get("pid"));
 		}
 		if (path.equals("pages1/promoteinfo/promoteinfo")) {
 			map.put("invite_source", "friend_promote");// 好友助力

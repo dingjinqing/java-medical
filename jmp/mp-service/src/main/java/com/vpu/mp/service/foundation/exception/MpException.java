@@ -1,5 +1,6 @@
 package com.vpu.mp.service.foundation.exception;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 
 /**
@@ -53,6 +54,10 @@ public class MpException extends Exception {
 	public String[] getCodeParam() {
 		return codeParam;
 	}
+
+    public Object[] getCodeParamWrapper () {
+        return codeParam == null ? null : Lists.newArrayList(codeParam).toArray();
+    }
 
 	public void setCodeParam(String[] codeParam) {
 		this.codeParam = codeParam;
