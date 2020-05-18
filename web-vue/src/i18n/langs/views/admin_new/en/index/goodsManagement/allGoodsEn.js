@@ -12,7 +12,8 @@ export const en = {
   },
   allGoodsHeaderData: {
     goodsName: 'Goods Name',
-    searchGoods: 'GoodsName/Sn/PrdSn',
+    searchGoods: 'Search goods',
+    searchGoodsSaleOut: 'GoodsName/Sn/PrdSn',
     category: 'Category',
     chooseCategory: 'Please Choose Category',
     sort: 'Sort',

@@ -84,6 +84,7 @@ module.exports = {
     groupDraw: '拼团抽奖',  // 拼团抽奖部分
     leftBeforeTheEnd: '距结束仅剩',
     startTime: '开始时间',
+    infinite: '无限',
     waitinForYou: '积分等你拿',   // 瓜分积分部分
     cashForShopping: '购物可抵现金',
     humanCarveUp: '人瓜分',
