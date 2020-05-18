@@ -21,8 +21,9 @@ global.wxPage({
     click_num: false,
     is_show_modal: 0, // 分享弹窗
     order_sn: '', // 订单号
-    share_img: '', // 分享图片
-    shareFlag: 0
+    shareFlag: 0,
+    shareImg: '', // 分享图片
+    shareDoc: '' // 分享文案
   },
 
   /**
@@ -34,7 +35,7 @@ global.wxPage({
     goods_id = options.goods_id;
     group_id = options.group_id;
     this.setData({
-      inviteId:options.inviteId || null
+      inviteId: options.inviteId || null
     })
     var that = this;
     // 判断用户是否登录
@@ -94,6 +95,16 @@ global.wxPage({
           group_info: group_info,
           user_arr: user_arr
         })
+
+        // 获取分享图片
+        util.api('/api/wxapp/groupdraw/share/info', function (res) {
+          if (res.error == 0) {
+            that.setData({
+              shareImg: res.content.imgUrl,
+              shareDoc: res.content.shareDoc
+            })
+          }
+        }, { activityId: group_draw_id, realPrice: group_info.groupDraw.payMoney, linePrice: group_info.goods.shopPrice, targetId: goods_id });
       } else {
         util.showModal("提示", res.message, function () {
           util.reLaunch({
@@ -103,15 +114,15 @@ global.wxPage({
         return false;
       }
     }, {
+      group_draw_id: group_draw_id,
+      goods_id: goods_id,
+      group_id: group_id,
+      options: {
         group_draw_id: group_draw_id,
         goods_id: goods_id,
-        group_id: group_id,
-        options: {
-          group_draw_id: group_draw_id,
-          goods_id: goods_id,
-          group_id: group_id
-        }
-      })
+        group_id: group_id
+      }
+    })
   },
 
   // 查看活动列表
@@ -325,7 +336,7 @@ global.wxPage({
   // 去分享
   to_share: function () {
     // 订阅消息
-    util.getNeedTemplateId('draw_result', ()=>{
+    util.getNeedTemplateId('draw_result', () => {
       this.setData({ shareFlag: 1 })
     })
   },
@@ -335,10 +346,10 @@ global.wxPage({
   onShareAppMessage: function () {
     var that = this;
     return {
-      title: "快来参与" + that.data.group_info.groupDraw.payMoney + "元拼团大抽奖吧",
-      // imageUrl: that.data.imageUrl + that.data.share_img,
-      path: '/pages/pinlotteryinfo/pinlotteryinfo?group_draw_id=' + group_draw_id + "&goods_id=" + goods_id + "&group_id=" + group_id + '&inviteId=' + util.getCache('user_id'),
+      title: that.data.shareDoc,
+      imageUrl: that.data.shareImg,
+      path: '/pages1/pinlotteryinfo/pinlotteryinfo?group_draw_id=' + group_draw_id + "&goods_id=" + goods_id + "&group_id=" + group_id + '&invite_id=' + util.getCache('user_id'),
     }
   },
-  
+
 })
