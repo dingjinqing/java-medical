@@ -400,7 +400,7 @@
               >
                 <td colspan="8">
                   <div class="tb-head_box">
-                    <div class="left">
+                    <div class="left pre-sale-info">
                       <el-tooltip
                         class="item"
                         effect="light"
@@ -1175,6 +1175,12 @@ export default {
                           margin-left: 5px;
                         }
                       }
+                    }
+                  }
+                  &.pre-sale-info {
+                    justify-content: flex-start;
+                    > span {
+                      width: 210px;
                     }
                   }
                 }
