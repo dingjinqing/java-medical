@@ -325,6 +325,7 @@ global.wxPage({
             }
             this.getPromotions(res.content)
             if (this.data.roomDetailMpInfo) this.getLiveInfo()
+            this.getShareData() //获取分享内容
             resolve(res.content)
             // 购买记录
             this.setData({
@@ -574,7 +575,13 @@ global.wxPage({
     )
   },
   // 分享弹窗
-  async share () {
+  share () {
+   this.setData({
+    showShareDialog: true
+   })
+  },
+  //请求分享数据
+  async getShareData(){
     let activityData = {}
     let {
       goodsId: targetId,
@@ -626,7 +633,6 @@ global.wxPage({
     console.log(buttonShareData)
     this.setData({
       shareData,
-      showShareDialog: true,
       buttonShareData
     })
   },
