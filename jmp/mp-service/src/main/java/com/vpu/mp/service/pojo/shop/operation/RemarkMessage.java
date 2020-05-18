@@ -33,6 +33,7 @@ public class RemarkMessage {
     public static final String MSG_ORDER_FINISH_SEND_SCORE = "order.finish.send.score";
     public static final String MSG_ORDER_REBATE = "order.rebate";
     public static final String MSG_ORDER_LIMIT_EXCHGE_GOODS = "order.limit.exchge.goods";
+    public static final String MSG_ORDER_RETURN_LIMIT_CARD = "order.return.limit.card";
 	/**
 	 * 会员卡
 	 */

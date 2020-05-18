@@ -96,7 +96,8 @@ public class CardExchangeProcess extends WxCardExchangeService implements Proces
         CardConsumpData cardConsumpData = new CardConsumpData();
         cardConsumpData.setUserId(returnOrderRecord.getUserId());
         cardConsumpData.setCardNo(order.getCardNo());
-        cardConsumpData.setReasonId(RemarkTemplate.ORDER_LIMIT_EXCHGE_GOODS.code);
+        cardConsumpData.setReasonId(RemarkTemplate.ORDER_RETURN_LIMIT_CARD.code);
+        cardConsumpData.setReason(returnOrderRecord.getOrderSn());
         cardConsumpData.setType(CardConstant.MCARD_TP_LIMIT);
         cardConsumpData.setOrderSn(returnOrderRecord.getOrderSn());
         cardConsumpData.setExchangeCount(returnGoods.stream().map(OrderReturnGoodsVo::getGoodsNumber).reduce(0, Integer::sum).shortValue());
