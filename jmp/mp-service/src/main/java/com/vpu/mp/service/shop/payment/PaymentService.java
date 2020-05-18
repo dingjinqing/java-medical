@@ -1,18 +1,12 @@
 package com.vpu.mp.service.shop.payment;
 
 import com.github.binarywang.wxpay.exception.WxPayException;
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.db.shop.tables.records.PaymentRecord;
-import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
-import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
-import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
-import com.vpu.mp.db.shop.tables.records.SubOrderInfoRecord;
-import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.payment.PayCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentRecordParam;
@@ -103,6 +97,7 @@ public class PaymentService extends ShopBaseService {
     @Autowired
     private UserCardService userCardService;
 
+
 	public PaymentVo getPaymentInfo(String payCode) {
 		return db().select(PAYMENT.asterisk()).from(PAYMENT).where(PAYMENT.PAY_CODE.eq(payCode)).fetchOneInto(PaymentVo.class);
 	}
@@ -173,6 +168,10 @@ public class PaymentService extends ShopBaseService {
             case OrderConstant.ORDER_SN_PREFIX:
                 //订单统一支付回调
                 onPayNotify(param);
+                break;
+            case CardConstant.USER_CARD_RENEW_ORDER:
+                //会员卡续费支付回调
+                onPayNotifyCardRenew(param);
                 break;
             default:
         }
@@ -433,5 +432,33 @@ public class PaymentService extends ShopBaseService {
         }
         insteadPayService.businessLogic(param, order);
         logger().info("代付子单支付回调end");
+    }
+
+    /**
+     * 会员卡续费支付回调
+     * @param param
+     */
+    private void onPayNotifyCardRenew(PaymentRecordParam param) throws MpException {
+        logger().info("会员卡续费支付回调start");
+        CardRenewRecord order = userCardService.get(param.getOrderSn());
+        if (order == null) {
+            logger().error("会员卡续费支付回调,未找到订单sn:{}", param.getOrderSn());
+            throw new MpException(null, "orderSn " + param.getOrderSn() + "not found");
+        }
+        //参数金额
+        BigDecimal totalFee = new BigDecimal(param.getTotalFee());
+        if (!order.getMoneyPaid().equals(totalFee)) {
+            logger().error("会员卡续费支付回调,金额不相同,订单sn:{},参数金额:{},订单金额:{}",
+                param.getOrderSn(), totalFee, order.getMoneyPaid());
+            throw new MpException(null, "onPayNotify orderSn " + param.getOrderSn() + " pay amount  did not match");
+        }
+        if (CardConstant.CARD_RENEW_ORDER_STATUS_OK.equals(order.getOrderStatus())) {
+            logger().info("会员卡续费支付回调：{},已支付！", param.getOrderSn());
+            return;
+        }
+        // 添加支付记录（wx）
+        PaymentRecordRecord paymentRecord = record.addPaymentRecord(param);
+        userCardService.cardRenewFinish(order,paymentRecord);
+        logger().info("会员卡续费支付回调end");
     }
 }
