@@ -38,7 +38,7 @@ global.wxPage({
     that.setData({
       pinInte_id: Number(options.pid),
       group_id: options.gid ? Number(options.gid) : null,
-      invite_user: options.invite_user ? Number(options.invite_user) : null
+      invite_user: options.invid ? Number(options.invid) : null
     })
     clearTimeout(set_time_out);
     request_pinIntegration(that);
@@ -208,7 +208,7 @@ global.wxPage({
     return {
       title: "【" + usernames + "@你】与我一起瓜分积分！",
       imageUrl: that.data.imageUrl + '/image/admin/poster_image/pin_inte_bg1.png',
-      path: '/pages1/pinintegration/pinintegration?pid=' + that.data.pinInte_id + '&invite_user=' + util.getCache('user_id') + '&gid=' + that.data.group_id,
+      path: '/pages1/pinintegration/pinintegration?pid=' + that.data.pinInte_id + '&invid=' + util.getCache('user_id') + '&gid=' + that.data.group_id,
     }
   },
   // 获取用户昵称 头像
