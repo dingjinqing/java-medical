@@ -340,8 +340,8 @@ public class EsBaseSearchService extends ShopBaseService {
      *
      * @return AggregationBuilder
      */
-    protected AggregationBuilder assemblyLabelAggregationBuilderByGoodsId(){
-        return esAggregationHandler.assemblyLabelAggregationBuilderByGoodsId();
+    protected AggregationBuilder assemblyLabelAggregationBuilderByGoodsId(Integer groupSize,Integer querySize ){
+        return esAggregationHandler.assemblyLabelAggregationBuilderByGoodsId(groupSize,querySize);
     }
     /**
      * 获取agg条件（针对商品，根据商家分类）
