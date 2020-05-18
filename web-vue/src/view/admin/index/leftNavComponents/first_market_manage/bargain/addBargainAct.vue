@@ -7,6 +7,19 @@
 <template>
   <div class="bargainAct">
     <div class="bargainContent">
+      <div class="tab-wrapper">
+        <el-tabs
+          v-model="tabStatus"
+          :before-leave="beforeLeave"
+        >
+          <el-tab-pane
+            v-for="(item, index) in labels"
+            :key="index"
+            :label="item.name"
+            :name="item.status"
+          ></el-tab-pane>
+        </el-tabs>
+      </div>
       <div class="bargainActMain">
         <!-- 公共部分 -->
         <el-form
@@ -985,10 +998,72 @@ export default {
         first: [
           { required: true, validator: validLevel, trigger: ['blur', 'change'] }
         ]
-      }
+      },
+      labels: [
+        {
+          status: '0',
+          name: this.$t('promoteList.allBargainAct')
+        },
+        {
+          status: '1',
+          name: this.$t('firstSpecial.processing')
+        },
+        {
+          status: '2',
+          name: this.$t('firstSpecial.notStart')
+        }, {
+          status: '3',
+          name: this.$t('firstSpecial.expired')
+        }, {
+          status: '4',
+          name: this.$t('firstSpecial.terminated')
+        },
+        {
+          status: '5',
+          name: this.$route.query.id ? this.$t('promoteList.editEvent') : this.$t('promoteList.addEvent')
+        }
+      ],
+      tabStatus: '5'
+    }
+  },
+  watch: {
+    'lang': function (val) {
+      this.labels = [{
+        status: '0',
+        name: this.$t('promoteList.allBargainAct')
+      },
+      {
+        status: '1',
+        name: this.$t('firstSpecial.processing')
+      },
+      {
+        status: '2',
+        name: this.$t('firstSpecial.notStart')
+      }, {
+        status: '3',
+        name: this.$t('firstSpecial.expired')
+      }, {
+        status: '4',
+        name: this.$t('firstSpecial.terminated')
+      },
+      {
+        status: '5',
+        name: this.$route.query.id ? this.$t('promoteList.editEvent') : this.$t('promoteList.addEvent')
+      }]
     }
   },
   methods: {
+    beforeLeave (activeName, oldActiveName) {
+      if (activeName !== '5') {
+        this.$router.push({
+          name: 'kanjia',
+          query: {
+            tab: activeName
+          }
+        })
+        return false
+      }
+    },
     // 选择优惠券弹窗-帮忙砍价的用户
     handleToCallDialog1 () {
       this.dialogFlag = 0
@@ -1481,5 +1556,11 @@ export default {
   padding: 0 10px;
   margin-right: 10px;
   color: #666;
+}
+.tab-wrapper {
+  position: relative;
+  background-color: #fff;
+  padding: 10px 20px 10px 20px;
+  margin-bottom: 10px;
 }
 </style>

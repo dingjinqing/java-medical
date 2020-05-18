@@ -120,11 +120,10 @@ public class Calculate extends ShopBaseService {
      * 计算订单商品折扣金额
      *
      * @param mbv   营销活动
-     * @param bos   商品
      * @param mType 活动类型
      * @return 折扣总额
      */
-    public BigDecimal calculateOrderGoodsDiscount(BaseMarketingBaseVo mbv, List<OrderGoodsBo> bos, Byte mType) {
+    public BigDecimal calculateOrderGoodsDiscount(BaseMarketingBaseVo mbv, Byte mType) {
         logger().info("计算订单商品折扣金额start,营销活动:{},活动类型（0会员卡，1优惠卷，2满折满减，3预售）：{}", mbv, mType);
         if (mbv == null || CollectionUtils.isEmpty(mbv.getBos()) || !mbv.checkRatio()) {
             return BigDecimal.ZERO;
@@ -346,9 +345,8 @@ public class Calculate extends ShopBaseService {
             OrderMemberVo card = userCard.userCardDao.getValidByCardNo(param.getMemberCardNo());
             if (card != null && CardConstant.MCARD_TP_LIMIT.equals(card.getInfo().getCardType())) {
                 //限次卡
-                //List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), Lists.newArrayList(card));
+                userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), Lists.newArrayList(card));
                 vo.setDefaultMemberCard(card);
-                //vo.setMemberCards(validCardList);
             } else {
                 //普通卡、等级卡（或者没有传入cardNo）
                 OrderMemberVo defaultCard = card;

@@ -12,6 +12,8 @@ import lombok.Data;
  */
 @Data
 public class BrokerageListVo {
+    private Integer partnerId;
+    private Integer userId;
 	private String distributorName;
 	private String distributorMobile;
 	private String realName;
@@ -40,6 +42,8 @@ public class BrokerageListVo {
 	 * 返利时间
 	 */
 	private Timestamp rebateTime;
-	
-	
+	/**返利状态*/
+	private Integer settlementFlag;
+
+
 }

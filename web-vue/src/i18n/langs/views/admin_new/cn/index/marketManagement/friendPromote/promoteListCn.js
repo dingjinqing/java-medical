@@ -126,5 +126,8 @@ export const cn = {
   mostLaunch: '内最多可以发起',
   time: '次',
   friendShare: '好友可通过分享获得最多',
-  promoteOpportunity: '次助力机会'
+  promoteOpportunity: '次助力机会',
+  allBargainAct: '全部砍价活动',
+  addEvent: '添加活动',
+  editEvent: '编辑活动'
 }

@@ -271,6 +271,11 @@ export default {
     if (this.$route.params.calenderEdit) {
       this.edit(this.$route.params.id)
     }
+    if (this.$route.query.tab) {
+      this.$nextTick(() => {
+        this.tabIndex = Number(this.$route.query.tab)
+      })
+    }
     this.langDefault()
     // 初始列表化数据
     this.initDataList()

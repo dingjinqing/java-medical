@@ -881,7 +881,7 @@ public class GroupDrawService extends ShopBaseService {
 	 */
 	public List<GroupDrawList> getGroupList(Integer groupDrawId, Integer groupId, Byte status) {
 		SelectConditionStep<Record> selectConditionStep = db()
-				.select(JOIN_GROUP_LIST.asterisk(), USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR).from(JOIN_GROUP_LIST)
+				.select(JOIN_GROUP_LIST.asterisk(), USER_DETAIL.USERNAME.as("userName"), USER_DETAIL.USER_AVATAR).from(JOIN_GROUP_LIST)
 				.leftJoin(USER_DETAIL).on(JOIN_GROUP_LIST.USER_ID.eq(USER_DETAIL.USER_ID))
 				.where((JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId).and(JOIN_GROUP_LIST.GROUP_ID.eq(groupId))));
 		if (status != null) {
@@ -897,7 +897,7 @@ public class GroupDrawService extends ShopBaseService {
 				groupDrawList.setUserName("神秘小伙伴");
 			}
 			String userAvatar = groupDrawList.getUserAvatar();
-			if (StringUtils.isEmpty(userAvatar)) {
+			if (StringUtils.isNotEmpty(userAvatar) && userAvatar.substring(0, 1).equals("/")) {
 				groupDrawList.setUserAvatar(imageService.imageUrl("/image/admin/head_icon.png"));
 			}
 		}
