@@ -1,19 +1,19 @@
 package com.vpu.mp.controller.admin;
 
-import org.apache.commons.lang3.math.NumberUtils;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.pojo.shop.member.account.CardConsumeParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean.UserCardConsumeBeanBuilder;
+import com.vpu.mp.service.pojo.shop.member.card.UserCardRenewListParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreParam;
 import com.vpu.mp.service.pojo.wxapp.store.ValidCon;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
 * @author 黄壮壮
@@ -73,19 +73,25 @@ public class AdminUserCardController extends AdminBaseController {
     		consumer.money(param.getReduce())
     				.moneyDis(param.getMoneyDis());
     	}
-    	
-    	UserCardConsumeBean bean = consumer.type(cardType)
-	    			.userId(param.getUserId())
-	    			.cardId(param.getCardId())
-	    			.message(param.getMessage())
-	    			.payment("")
-	    			.cardNo(param.getCardNo())
-	    			.build();
-    	shop().userCard.cardConsumer(bean, 0, (byte)10, (byte)2, param.getType(), isContinue);
-    	return success();
+
+        UserCardConsumeBean bean = consumer.type(cardType)
+            .userId(param.getUserId())
+            .cardId(param.getCardId())
+            .message(param.getMessage())
+            .payment("")
+            .cardNo(param.getCardNo())
+            .build();
+        shop().userCard.cardConsumer(bean, 0, (byte) 10, (byte) 2, param.getType(), isContinue);
+        return success();
+    }
+
+    /**
+     * 会员卡续费记录
+     */
+    @PostMapping("/api/admin/user/card/renew/order")
+    public JsonResult chargeConsume(@RequestBody UserCardRenewListParam param) {
+        return success(shop().userCard.getCardRenewList(param));
     }
     
-    
-    
-    
+
 }
