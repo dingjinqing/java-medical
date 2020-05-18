@@ -9,25 +9,28 @@
       <div>
         <el-form-item :label="$t('distribution.mobile') + '：'">
           <el-input
-            v-model="searchParam.mobile"
+            v-model="searchParam.distributorMobile"
             size="small"
             class="inputWidth"
+            clearable
             :placeholder="$t('distribution.contentTip')"
           ></el-input>
         </el-form-item>
         <el-form-item :label="$t('distribution.wxName') + '：'">
           <el-input
-            v-model="searchParam.username"
+            v-model="searchParam.distributorName"
             size="small"
             class="inputWidth"
+            clearable
             :placeholder="$t('distribution.contentTip')"
           ></el-input>
         </el-form-item>
         <el-form-item :label="$t('distribution.orderMobile') + '：'">
           <el-input
-            v-model="searchParam.orderMobile"
+            v-model="searchParam.mobile"
             size="small"
             class="inputWidth"
+            clearable
             :placeholder="$t('distribution.contentTip')"
           ></el-input>
         </el-form-item>
@@ -35,15 +38,16 @@
       <div>
         <el-form-item :label="$t('distribution.orderName') + '：'">
           <el-input
-            v-model="searchParam.orderName"
+            v-model="searchParam.username"
             size="small"
             class="inputWidth"
+            clearable
             :placeholder="$t('distribution.contentTip')"
           ></el-input>
         </el-form-item>
         <el-form-item :label="$t('distribution.startOrderTime') + '：'">
           <el-date-picker
-            v-model="searchParam.startOrderTime"
+            v-model="searchParam.startCreateTime"
             type="datetime"
             size="small"
             align="right"
@@ -52,7 +56,7 @@
           ></el-date-picker>
           {{$t('distribution.to')}}
           <el-date-picker
-            v-model="searchParam.endOrderTime"
+            v-model="searchParam.endCreateTime"
             type="datetime"
             size="small"
             align="right"
@@ -68,12 +72,13 @@
             v-model="searchParam.orderSn"
             size="small"
             class="inputWidth"
+            clearable
             :placeholder="$t('distribution.contentTip')"
           ></el-input>
         </el-form-item>
         <el-form-item :label="$t('distribution.startReturnTime') + '：'">
           <el-date-picker
-            v-model="searchParam.startReturnTime"
+            v-model="searchParam.startRebateTime"
             type="datetime"
             size="small"
             align="right"
@@ -82,7 +87,7 @@
           ></el-date-picker>
           {{$t('distribution.to')}}
           <el-date-picker
-            v-model="searchParam.endReturnTime"
+            v-model="searchParam.endRebateTime"
             type="datetime"
             size="small"
             align="right"
@@ -95,9 +100,10 @@
       <div>
         <el-form-item :label="$t('distribution.returnStatus') + '：'">
           <el-select
-            v-model="searchParam.status"
+            v-model="searchParam.settlementFlag"
             size="small"
             class="inputWidth"
+            clearable
             :placeholder="$t('distribution.selectTip')"
           >
             <el-option
@@ -111,9 +117,10 @@
         </el-form-item>
         <el-form-item :label="$t('distribution.distributorGroup') + '：'">
           <el-select
-            v-model="searchParam.group"
+            v-model="searchParam.distributorGroup"
             size="small"
             class="inputWidth"
+            clearable
             :placeholder="$t('distribution.selectTip')"
           >
             <el-option
@@ -127,9 +134,10 @@
         </el-form-item>
         <el-form-item :label="$t('distribution.relationship') + '：'">
           <el-select
-            v-model="searchParam.relationship"
+            v-model="searchParam.rebateLevel"
             size="small"
             class="inputWidth"
+            clearable
             :placeholder="$t('distribution.selectTip')"
           >
             <el-option
@@ -160,10 +168,15 @@
       style="width: 100%; margin-top: 10px;"
     >
       <el-table-column
-        prop="distributorName"
         :label="$t('distribution.distributorName')"
         align="center"
       >
+        <template slot-scope="scope">
+          <span
+            class="linkStyle"
+            @click="userNameHandler(scope.row.userId)"
+          >{{scope.row.distributorName}}</span>
+        </template>
       </el-table-column>
       <el-table-column
         prop="distributorMobile"
@@ -184,10 +197,15 @@
       >
       </el-table-column>
       <el-table-column
-        prop="orderSn"
         :label="$t('distribution.rebateOrderSn')"
         align="center"
       >
+        <template slot-scope="scope">
+          <span
+            class="linkStyle"
+            @click="orderHandler(scope.row.orderSn)"
+          >{{scope.row.orderSn}}</span>
+        </template>
       </el-table-column>
       <el-table-column
         prop="orderAmount"
@@ -202,7 +220,7 @@
       >
       </el-table-column>
       <el-table-column
-        prop=""
+        prop="orderUserName"
         :label="$t('distribution.orderName')"
         align="enter"
       >
@@ -232,13 +250,13 @@
       >
       </el-table-column>
       <el-table-column
-        prop=""
+        prop="settlementFlag"
         :label="$t('distribution.rebateStatus')"
         align="center"
       >
       </el-table-column>
       <el-table-column
-        prop=""
+        prop="rebateTime"
         :label="$t('distribution.startReturnTime')"
         align="center"
       >
@@ -252,8 +270,7 @@
 </template>
 
 <script>
-// import { brokerageList } from '@/api/admin/marketManage/distribution.js'
-import { distributorGroupList } from '@/api/admin/marketManage/distribution.js'
+import { brokerageList, distributorGroupList } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -268,57 +285,53 @@ export default {
     return {
       // 搜索
       searchParam: {
+        distributorMobile: '',
+        distributorName: '',
         mobile: '',
         username: '',
-        orderMobile: '',
-        orderName: '',
-        startOrderTime: '',
-        endOrderTime: '',
+        startCreateTime: '',
+        endCreateTime: '',
         orderSn: '',
-        startReturnTime: '',
-        endReturnTime: '',
-        status: '',
-        group: '',
-        relationship: ''
+        startRebateTime: '',
+        endRebateTime: '',
+        settlementFlag: '',
+        distributorGroup: '',
+        rebateLevel: ''
       },
       tableData: [], // 表格
-      pageParams: {}, // 分页
-      requestParam: {},
+      // 分页
+      pageParams: {
+        currentPage: 1,
+        pageRows: 10
+      },
       // 返利状态列表
       statusList: [{
-        label: '全部',
+        label: '待返利',
         value: 0
       }, {
-        label: '已返利',
+        label: '不返利',
         value: 1
       }, {
-        label: '待返利',
+        label: '已返利',
         value: 2
-      }, {
-        label: '不返利',
-        value: 3
       }],
       // 分销员分组列表
       groupList: [],
       // 返利关系列表
       relationshipList: [{
-        label: '全部',
+        label: '自购返利',
         value: 0
       }, {
-        label: '自购返利',
+        label: '直接返利',
         value: 1
       }, {
-        label: '直接返利',
-        value: 2
-      }, {
         label: '间接返利',
-        value: 3
+        value: 2
       }]
     }
   },
   watch: {
     userId () {
-      console.log(this.userId)
       this.initData()
     }
   },
@@ -329,33 +342,66 @@ export default {
   methods: {
     // 佣金统计列表
     initData () {
-      this.requestParam = this.searchParam
-      this.requestParam.userId = this.userId
-      // this.requestParams.currentPage = this.pageParams.currentPage
-      // this.requestParams.pageRows = this.pageParams.pageRows
-      console.log(this.requestParam)
-      // brokerageList(this.requestParam).then(res => {
-      //   if (res.error === 0) {
-      //     this.tableData = res.content.dataList
-      //     this.pageParams = res.content.page
-      //     this.tableData.map(item => {
-      //       if (item.rebateLevel === 0) {
-      //         item.rebateLevel = '自购返利'
-      //       }
-      //       if (item.rebateLevel === 1) {
-      //         item.rebateLevel = '一级返利'
-      //       }
-      //       if (item.rebateLevel === 2) {
-      //         item.rebateLevel = '二级返利'
-      //       }
-      //     })
-      //   }
-      // })
+      var paramsData = {}
+      paramsData = this.searchParam
+      paramsData.userId = this.userId
+      paramsData.currentPage = this.pageParams.currentPage
+      paramsData.pageRows = this.pageParams.pageRows
+      brokerageList(paramsData).then(res => {
+        if (res.error === 0) {
+          this.handleData(res.content.dataList)
+          this.pageParams = res.content.page
+        }
+      })
     },
 
+    // 表格数据处理
+    handleData (data) {
+      data.map((item, index) => {
+        if (item.settlementFlag === 0) {
+          item.settlementFlag = '待返利'
+        } else if (item.settlementFlag === 1) {
+          item.settlementFlag = '不返利'
+        } else if (item.settlementFlag === 2) {
+          item.settlementFlag = '已返利'
+        }
+        if (item.rebateLevel === 0) {
+          item.rebateLevel = '自购返利'
+        } else if (item.rebateLevel === 1) {
+          item.rebateLevel = '直接返利'
+        } else if (item.rebateLevel === 2) {
+          item.rebateLevel = '间接返利'
+        }
+      })
+      this.tableData = data
+    },
+
+    // 获取分销员分组
     getGroupList () {
       distributorGroupList().then(res => {
-        this.groupList = res.content
+        if (res.error === 0) {
+          this.groupList = res.content
+        }
+      })
+    },
+
+    // 用户昵称跳转
+    userNameHandler (id) {
+      this.$router.push({
+        path: '/admin/home/main/membershipInformation',
+        query: {
+          userId: id
+        }
+      })
+    },
+
+    // 跳转订单详情
+    orderHandler (orderSn) {
+      this.$router.push({
+        path: '/admin/home/main/orders/info',
+        query: {
+          orderSn: orderSn
+        }
       })
     }
   }
@@ -385,5 +431,9 @@ export default {
 }
 .selectWidth {
   width: 200px;
+}
+.linkStyle {
+  color: #5a8bff;
+  cursor: pointer;
 }
 </style>

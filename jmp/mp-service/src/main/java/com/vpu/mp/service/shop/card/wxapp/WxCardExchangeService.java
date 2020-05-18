@@ -3,6 +3,8 @@ package com.vpu.mp.service.shop.card.wxapp;
 import static com.vpu.mp.db.shop.Tables.CHECKED_GOODS_CART;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
+import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -121,11 +123,6 @@ public class WxCardExchangeService extends ShopBaseService {
 						|| !CardUtil.isLimitCard(memberCard.getCardType()) 
 						|| !CardUtil.canExchangGoods(memberCard.getIsExchang())) {
 				logger().info("该会员卡不可兑换");
-				return vo;
-			}
-			
-			if(userCard.getExchangSurplus()<=0) {
-				logger().info("该会员卡已无兑换次数");
 				return vo;
 			}
 			//	商品查询
@@ -279,27 +276,57 @@ public class WxCardExchangeService extends ShopBaseService {
 		
 		condition = condition
 				.and(ORDER_GOODS.IS_GIFT.eq(OrderConstant.IS_GIFT_N))
-				.and(ORDER_INFO.EXCHANG.eq(CardConstant.MCARD_TP_LIMIT));	
+				.and(ORDER_INFO.EXCHANG.eq(CardConstant.MCARD_TP_LIMIT))
+				.and(ORDER_INFO.CARD_NO.eq(cardNo));
 		
 		if(goodsId != null) {
 			condition = condition.and(ORDER_GOODS.GOODS_ID.eq(goodsId));
 		}
-		
+		//	周期内退货的兑换商品
+		Integer returnGoodsNum = 0;
 		if(null != times) {
 			//	有效期范围内
 			condition = condition
 					.and(ORDER_INFO.CREATE_TIME.ge(times[0]))
 					.and(ORDER_INFO.CREATE_TIME.le(times[1]));
+			
+			returnGoodsNum = getReturnExchangGoodsTimesDuringPeriod(goodsId,cardNo,times);
 		}
-		 return db()
-			.select(DSL.sum(ORDER_GOODS.GOODS_NUMBER))
+		Integer exhangGoodsNum = db().select(DSL.sum(ORDER_GOODS.GOODS_NUMBER))
 			.from(ORDER_GOODS)
 			.innerJoin(ORDER_INFO).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
 			.where(condition)
 			.fetchOne(0, int.class);
+		
+		return exhangGoodsNum - returnGoodsNum;
 	}
 
-
+	
+	/**
+	 * 获取有效期间内，兑换商品的退货数量
+	 * @param goodsId
+	 * @param cardNo
+	 * @param timeType
+	 * @return 退兑换商品数量
+	 */
+	private Integer getReturnExchangGoodsTimesDuringPeriod(Integer goodsId,String cardNo,Timestamp[] times) {
+		Condition condition = DSL.noCondition()
+				.and(ORDER_INFO.EXCHANG.eq(CardConstant.MCARD_TP_LIMIT))
+				.and(ORDER_INFO.CARD_NO.eq(cardNo))
+				.and(ORDER_GOODS.IS_GIFT.eq(OrderConstant.IS_GIFT_N));
+		if(times!=null) {
+			condition = condition.and(RETURN_ORDER.REFUND_SUCCESS_TIME.gt(times[0]))
+					.and(RETURN_ORDER.REFUND_SUCCESS_TIME.lt(times[1]));
+		}
+		
+		return db().select(DSL.sum(RETURN_ORDER_GOODS.GOODS_NUMBER))
+				.from(RETURN_ORDER_GOODS)
+				.innerJoin(ORDER_INFO).on(RETURN_ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
+				.innerJoin(RETURN_ORDER).on(RETURN_ORDER_GOODS.RET_ID.eq(RETURN_ORDER.RET_ID))
+				.innerJoin(ORDER_GOODS).on(RETURN_ORDER_GOODS.REC_ID.eq(ORDER_GOODS.REC_ID))
+				.where(condition)
+				.fetchOne(0,int.class);
+	}
 	/**
 	 * 获取该卡兑换某个商品的次数
 	 * @param goodsId 商品Id
