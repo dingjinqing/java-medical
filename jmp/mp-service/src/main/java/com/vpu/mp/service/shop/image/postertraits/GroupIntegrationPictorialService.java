@@ -7,7 +7,6 @@ import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
-import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.integral.GroupIntegralShareInfoParam;
@@ -57,11 +56,7 @@ public class GroupIntegrationPictorialService extends ShareBaseService{
     @Override
     String createMpQrCode(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         GroupIntegralShareInfoParam param = (GroupIntegralShareInfoParam) baseParam;
-        if (GoodsConstant.GOODS_ITEM.equals(param.getPageType())) {
-            return qrCodeService.getMpQrCode(QrCodeTypeEnum.PARTATION_INTEGRAL, String.format("pid=%d",baseParam.getActivityId()));
-        } else {
-            return qrCodeService.getMpQrCode(QrCodeTypeEnum.PARTATION_INTEGRAL,String.format("pid=%d&gid=%d&invid=%d",param.getActivityId(),param.getTargetId(),param.getInviteId()));
-        }
+        return qrCodeService.getMpQrCode(QrCodeTypeEnum.PARTATION_INTEGRAL,String.format("pid=%d&gid=%d&invid=%d",param.getActivityId(),param.getGroupId(),param.getUserId()));
     }
 
     @Override
