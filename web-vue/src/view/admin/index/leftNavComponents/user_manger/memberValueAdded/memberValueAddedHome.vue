@@ -9,7 +9,7 @@
           label="会员卡购买"
           name="first"
         >
-
+          <memberCardOrder v-if="activeName ==='first'" />
         </el-tab-pane>
         <el-tab-pane
           label="会员卡续费"
@@ -35,7 +35,7 @@
           label="优惠卷礼包购买"
           name="fourth"
         >
-          <renewalCard :showHeader="activeName" />
+          <couponPackageOrder v-if="activeName ==='fourth'" />
         </el-tab-pane>
       </el-tabs>
       <el-button
@@ -60,7 +60,9 @@ export default {
   components: {
     renewalCard: () => import('./renewalCard'), // 会员卡续费和会员卡充值表头
     memberForm: () => import('./memberForm'), // 会员卡续费和会员卡充值表格
-    transactionData: () => import('./transactionData') // 查看交易数据
+    transactionData: () => import('./transactionData'), // 查看交易数据
+    memberCardOrder: () => import('./memberCardOrder'), // 会员卡购买
+    couponPackageOrder: () => import('./couponPackageOrder') // 优惠卷礼包购买
   },
   data () {
     return {
