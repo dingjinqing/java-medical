@@ -80,8 +80,6 @@ public final  class  BaseConstant {
     public final static Byte ACTIVITY_TYPE_PAY_FOR_ANOTHER = 99;
     /** 扫码购订单 */
     public final static Byte ACTIVITY_TYPE_SWEEP_CODE_BUY = 100;
-    /**	会员卡兑换商品  */
-    public final static Byte ACTIVITY_TYPE_CARD_EXCHANGE_GOODS = 101;
 
 
     //*************************首单特惠 超出限购数量后，买家不可继续添加购买该商品 1禁止超限购买，0超限全部恢复原价

@@ -25,11 +25,11 @@ public class UserCheckedGoodsService extends ShopBaseService {
 	private final CheckedGoodsCart TABLE = CHECKED_GOODS_CART;
 	
 	/**
-	 * 获得用户已经选择的商品数量
+	 * 根据商品的Id和规格，获得用户已经选择的商品数量
 	 * @return 商品数量 | 没有则为0
 	 */
 	public Integer getUserCheckedCount(UserCheckedGoodsParam param) {
-		logger().info("获得已选商品数");
+		logger().info("获得所有已选商品数");
 		Condition condition = getSearchCheckedGoodsCondition(param);
 		
 		return db().select(DSL.sum(TABLE.GOODS_NUMBER))
@@ -37,6 +37,21 @@ public class UserCheckedGoodsService extends ShopBaseService {
 			.where(condition)
 			.fetchOne(0,int.class);
 	}
+	
+	/**
+	 * 根据商品Id,获得用户已选商品数量
+	 * @return 已选商品的数量
+	 */
+	public Integer getUserCheckedGoodsByGoodsId(Integer userId,Integer goodsId,String cardNo) {
+		logger().info("根据商品ID,获得已选该商品数");
+		Condition condition = DSL.noCondition()
+				.and(TABLE.USER_ID.eq(userId))
+				.and(TABLE.ACTION.eq(CardConstant.MCARD_TP_LIMIT))
+				.and(TABLE.IDENTITY_ID.eq(cardNo))
+				.and(TABLE.GOODS_ID.eq(goodsId));
+		return db().select(DSL.sum(TABLE.GOODS_NUMBER)).from(TABLE).where(condition).fetchOne(0,int.class);
+	}
+	
 	
 	/**
 	 * 获得用户已经选择的商品数量
@@ -60,7 +75,7 @@ public class UserCheckedGoodsService extends ShopBaseService {
 	}
 	
 	/**
-	 * 获得用户已选商品
+	 * 根据商品的规格Id和商品Id,获得用户已选该商品记录
 	 * @return 
 	 */
 	public CheckedGoodsCartRecord getUserCheckedGoods(UserCheckedGoodsParam param) {
@@ -69,6 +84,9 @@ public class UserCheckedGoodsService extends ShopBaseService {
 				 			 .and(TABLE.GOODS_ID.eq(param.getGoodsId()));
 		return db().selectFrom(TABLE).where(condition).fetchAny();
 	}
+	
+	
+	
 	
 	/**
 	 * 获得已选商品列表

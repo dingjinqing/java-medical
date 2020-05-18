@@ -77,7 +77,7 @@ public class GoodsSearchMpParam extends BasePageParam {
     /**从砍价活动跳转至商品搜索页面，展示其关联的商品信息 pageFrom=3*/
     public static final Byte PAGE_FROM_BARGAIN=BaseConstant.ACTIVITY_TYPE_BARGAIN;
     /**从兑换商品页面的搜索 */
-    public static final Byte PAGE_FROM_CARD_EXCHANGE_GOODS=BaseConstant.ACTIVITY_TYPE_CARD_EXCHANGE_GOODS;
+    public static final Byte PAGE_FROM_CARD_EXCHANGE_GOODS=BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER;
 
     /**从哪个页面跳转至搜索页面，目前用于区分从商品分组模块跳转至此，目前从分组跳转时未从es查数据*/
     private Byte pageFrom;

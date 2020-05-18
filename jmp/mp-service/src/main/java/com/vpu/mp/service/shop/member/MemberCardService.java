@@ -890,7 +890,7 @@ public class MemberCardService extends ShopBaseService {
 		UserCardRecord userCard = getUserCardInfoByCardNo(data.getCardNo());
 
 		/** 3-判断是使用还是增加用户卡的卡剩余兑换次数 */
-		if (data.getCount() < 0) {
+		if (data.getExchangeCount() < 0) {
 			/** 3.1-减少（使用）卡剩余兑换次数 */
 			/** -检查卡卡剩余兑换次数是否够用 */
 			if ((data.getExchangeCount() + userCard.getExchangSurplus()) < 0) {
