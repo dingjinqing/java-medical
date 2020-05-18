@@ -457,6 +457,7 @@ public class PictorialService extends ShopBaseService {
         }
         return shareDoc;
     }
+
     /**
      * 生成表单海报背景图
      *
@@ -467,7 +468,7 @@ public class PictorialService extends ShopBaseService {
      * @return 通过图片 buffered image
      */
     public BufferedImage createFormPictorialBgImage(BufferedImage userAvatarImg, BufferedImage qrCodeImg, BufferedImage bgImg
-        , PictorialFormImgPx imgPx) {
+        , PictorialFormImgPx imgPx, String shareDpc, String accountName) {
         //设置白画布
         BufferedImage bgBufferedImage = new BufferedImage(imgPx.getBgWidth(), imgPx.getBgHeight(), BufferedImage.TYPE_USHORT_555_RGB);
         ImageUtil.addRect(bgBufferedImage, 0, 0, imgPx.getBgWidth(), imgPx.getBgHeight(), null, Color.WHITE);
@@ -475,6 +476,10 @@ public class PictorialService extends ShopBaseService {
         // 设置用户头像
         BufferedImage userAvatarImage = ImageUtil.makeRound(userAvatarImg, imgPx.getUserHeaderDiameter());
         ImageUtil.addTwoImage(bgBufferedImage, userAvatarImage, imgPx.getBgPadding(), imgPx.getBgPadding());
+
+        ImageUtil.addFont(bgBufferedImage, accountName, ImageUtil.SourceHanSansCN(Font.PLAIN, 18), 140, 85, new Color(102, 102, 102));
+
+        ImageUtil.addFont(bgBufferedImage, shareDpc, ImageUtil.SourceHanSansCN(Font.PLAIN, 22), imgPx.getBgPadding(), imgPx.getQrCodeWidth(), new Color(51, 51, 51));
 
         // 设置背景图
         bgImg = ImageUtil.resizeImage(imgPx.getBgImgWidth(), imgPx.getBgImgWidth(), bgImg);
