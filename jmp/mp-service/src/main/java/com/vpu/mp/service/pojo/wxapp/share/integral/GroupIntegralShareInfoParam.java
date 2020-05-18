@@ -11,5 +11,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GroupIntegralShareInfoParam extends GoodsShareBaseParam {
+    /**需要跳转的页面类型*/
+    private Byte pageType;
+    /**邀请人id*/
     private Integer inviteId;
 }

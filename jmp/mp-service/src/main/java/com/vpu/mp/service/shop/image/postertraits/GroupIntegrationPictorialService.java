@@ -7,8 +7,10 @@ import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.*;
+import com.vpu.mp.service.pojo.wxapp.share.integral.GroupIntegralShareInfoParam;
 import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
 import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 
 /**
+ * 瓜分积分海报生成
  * @author 李晓冰
  * @date 2020年05月15日
  */
@@ -53,8 +56,12 @@ public class GroupIntegrationPictorialService extends ShareBaseService{
 
     @Override
     String createMpQrCode(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
-        return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&aid=%d", baseParam.getUserId(), baseParam.getActivityId()));
-
+        GroupIntegralShareInfoParam param = (GroupIntegralShareInfoParam) baseParam;
+        if (GoodsConstant.GOODS_ITEM.equals(param.getPageType())) {
+            return qrCodeService.getMpQrCode(QrCodeTypeEnum.PARTATION_INTEGRAL, String.format("pid=%d",baseParam.getActivityId()));
+        } else {
+            return qrCodeService.getMpQrCode(QrCodeTypeEnum.PARTATION_INTEGRAL,String.format("pid=%d&gid=%d&invid=%d",param.getActivityId(),param.getTargetId(),param.getInviteId()));
+        }
     }
 
     @Override
@@ -110,13 +117,13 @@ public class GroupIntegrationPictorialService extends ShareBaseService{
 
         // 添加
         Integer bgMiddleX = imgPx.getBgWidth()/2;
-        Integer goldIconStartY = (int)(imgPx.getGoodsStartY()+imgPx.getGoodsWidth()*(3.0/4)-70);
-        Integer goldTextGap = 10;
+        int goldIconStartY = (int)(imgPx.getGoodsStartY()+imgPx.getGoodsWidth()*(3.0/4)-70);
+        int goldTextGap = 10;
         String scoreText = scoreNum.toString();
         Font scoreFont = ImageUtil.SourceHanSansCN(Font.BOLD,50);
         Integer scoreTextWidth = groupGoldImg.getWidth()+goldTextGap+ImageUtil.getTextWidth(bgBufferedImage,scoreFont,scoreText);
 
-        Integer goldIconStartX=  bgMiddleX-scoreTextWidth/2;
+        int goldIconStartX=  bgMiddleX-scoreTextWidth/2;
         ImageUtil.addTwoImage(bgBufferedImage,groupGoldImg,goldIconStartX,goldIconStartY);
         ImageUtil.addFont(bgBufferedImage,scoreText,scoreFont,goldIconStartX+groupGoldImg.getWidth()+goldTextGap,goldIconStartY+groupGoldImg.getHeight(),Color.WHITE,true);
 

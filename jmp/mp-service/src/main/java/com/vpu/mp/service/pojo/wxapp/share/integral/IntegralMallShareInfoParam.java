@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * 积分兑换活动入参
  * @author 李晓冰
  * @date 2020年05月15日
  */

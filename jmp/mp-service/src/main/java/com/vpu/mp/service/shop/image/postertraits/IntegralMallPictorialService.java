@@ -23,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 
 /**
+ * 积分兑换活动海报生成器
  * @author 李晓冰
  * @date 2020年05月15日
  */
