@@ -60,4 +60,14 @@ public class RenewValidCardList {
     private String storeList;
     /** 0：不用激活，1：需要激活 */
     private Byte activation;
+    /** 0:固定日期 1：自领取之日起 2:不过期 */
+    private Byte expireType;
+    /** 0:未过期 1：已过期 */
+    private Byte expire;
+    /** 开始日期 */
+    private Timestamp startDate;
+    /** 结束日期 */
+    private Timestamp endDate;
+    /** 开始日期 */
+    private Timestamp createTime;
 }
