@@ -9,13 +9,19 @@
           label="会员卡购买"
           name="first"
         >
-          <renewalCard :showHeader="activeName" />
+          <renewalCard
+            :showHeader="activeName"
+            @getRenewalHeaderData="handleToGetHeader"
+          />
         </el-tab-pane>
         <el-tab-pane
           label="会员卡续费"
           name="second"
         >
-          <renewalCard :showHeader="activeName" />
+          <renewalCard
+            :showHeader="activeName"
+            @getRenewalHeaderData="handleToGetHeader"
+          />
         </el-tab-pane>
         <el-tab-pane
           label="会员卡充值"
@@ -41,7 +47,7 @@
 <script>
 export default {
   components: {
-    renewalCard: () => import('./renewalCard') // 会员卡续费
+    renewalCard: () => import('./renewalCard') // 会员卡续费和会员卡充值表头
   },
   data () {
     return {
@@ -52,6 +58,10 @@ export default {
     // tap切换
     handleClick (tab, event) {
       console.log(tab, event)
+    },
+    // 表头点击筛选回传表头信息数据
+    handleToGetHeader (res) {
+      console.log(res)
     }
   }
 }
