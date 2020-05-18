@@ -302,7 +302,7 @@ public class UserService extends ShopBaseService {
 			userSource = -2;// 被动进入
 		}
 		if (IntStream.of(scanqrode).anyMatch(x -> x == scene)) {
-			userSource = -1; // 扫码进入
+			userSource = -3; // 扫码进入
 		}
 		return userSource;
 	}
@@ -313,7 +313,7 @@ public class UserService extends ShopBaseService {
 		logger().info("pathQuery的内容：{}",pathQuery.toString());
 		Map<String, String> map = new HashMap<String, String>();
 		if (path.equals("pages/groupbuyitem/groupbuyitem") || path.equals("pages/groupbuyinfo/groupbuyinfo")) {
-			map.put("invite_source", "groupbuy");// 拼团
+			map.put("invite_source", "groupbuy");// 多人拼团
 			map.put("invite_act_id", pathQuery.getQuery().get("pin_group_id"));
 		}
 		if (path.equals("pages/bargainlist/bargainlist") || path.equals("pages/bargaininfo/bargaininfo")) {
@@ -321,7 +321,7 @@ public class UserService extends ShopBaseService {
 			map.put("invite_act_id", pathQuery.getQuery().get("bargain_id"));
 		}
 		if (path.equals("pages/seckillitem/seckillitem")) {
-			map.put("invite_source", "seckill");// 秒杀
+			map.put("invite_source", "seckill");// 秒杀 跟item合并了，没用
 			map.put("invite_act_id", pathQuery.getQuery().get("sk_id"));
 		}
 		if (path.equals("pages1/integral/integral")) {
@@ -330,7 +330,7 @@ public class UserService extends ShopBaseService {
 		}
 		if (path.equals("pages1/lottery/lottery")) {
 			map.put("invite_source", "lottery");// 抽奖
-			map.put("invite_act_id", pathQuery.getQuery().get("lottery_id"));
+			map.put("invite_act_id", pathQuery.getQuery().get("lotteryId"));
 		}
 		if (path.equals("pages1/form/form")) {
 			map.put("invite_source", "form");// 表单
@@ -338,7 +338,7 @@ public class UserService extends ShopBaseService {
 		}
 		if (path.equals("pages/cardinfo/cardinfo")) {
 			map.put("invite_source", "membercard");// 会员卡
-			map.put("invite_act_id", pathQuery.getQuery().get("card_id"));
+			map.put("invite_act_id", pathQuery.getQuery().get("cardNo"));
 		}
 		if (path.equals("pages/item/item")) {
 			if (!StringUtils.isEmpty(pathQuery.getQuery().get("channel"))) {
