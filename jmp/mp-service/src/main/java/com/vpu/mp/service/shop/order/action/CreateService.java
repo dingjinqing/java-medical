@@ -770,12 +770,12 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         BigDecimal[] tolalNumberAndPrice = calculate.getTolalNumberAndPriceByType(bos, null, null);
         //预售处理
         OrderPreSale orderPreSale = calculate.calculatePreSale(param, bos, tolalNumberAndPrice, vo);
-        BigDecimal preSaleDiscount = calculate.calculateOrderGoodsDiscount(orderPreSale, bos, OrderConstant.D_T_FULL_PRE_SALE);
+        BigDecimal preSaleDiscount = calculate.calculateOrderGoodsDiscount(orderPreSale, OrderConstant.D_T_FULL_PRE_SALE);
         //满折满减特殊处理
         List<OrderFullReduce> orderFullReduces = calculate.calculateFullReduce(param, bos);
         BigDecimal fullReduceDiscount = BigDecimal.ZERO;
         for (OrderFullReduce orderFullReduce: orderFullReduces) {
-            fullReduceDiscount = fullReduceDiscount.add(calculate.calculateOrderGoodsDiscount(orderFullReduce, bos, OrderConstant.D_T_FULL_REDUCE));
+            fullReduceDiscount = fullReduceDiscount.add(calculate.calculateOrderGoodsDiscount(orderFullReduce, OrderConstant.D_T_FULL_REDUCE));
         }
         //打包一口价处理
         OrderPackageSale orderPackageSale  = calculate.calculatePackageSale(param, bos, tolalNumberAndPrice, vo);
@@ -788,13 +788,13 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //打包一口价禁用会员卡折扣
             memberDiscount = null;
         } else {
-            memberDiscount = calculate.calculateOrderGoodsDiscount(vo.getDefaultMemberCard(), bos, OrderConstant.D_T_MEMBER_CARD);
+            memberDiscount = calculate.calculateOrderGoodsDiscount(vo.getDefaultMemberCard(), OrderConstant.D_T_MEMBER_CARD);
         }
 
         //处理优惠卷
         calculate.calculateCoupon(param, vo);
         //处理当前优惠卷
-        BigDecimal couponDiscount = calculate.calculateOrderGoodsDiscount(vo.getDefaultCoupon(), bos, OrderConstant.D_T_COUPON);
+        BigDecimal couponDiscount = calculate.calculateOrderGoodsDiscount(vo.getDefaultCoupon(), OrderConstant.D_T_COUPON);
         //运费计算、包邮处理逻辑
         shippingFeeLogic(param, vo, bos, tolalNumberAndPrice);
         //折扣商品金额
