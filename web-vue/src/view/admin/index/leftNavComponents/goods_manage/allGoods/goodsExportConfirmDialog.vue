@@ -87,10 +87,10 @@
                       <el-checkbox label="catName">{{ $t('allGoods.exportDialog.platformClass') }}</el-checkbox>
                     </li> -->
                     <li>
-                      <el-checkbox label="sortNameChild">{{ $t('allGoods.exportDialog.sortNameFirst') }}</el-checkbox>
+                      <el-checkbox label="sortNameParent">{{ $t('allGoods.exportDialog.sortNameFirst') }}</el-checkbox>
                     </li>
                     <li>
-                      <el-checkbox label="sortNameParent">{{ $t('allGoods.exportDialog.sortNameSecond') }}</el-checkbox>
+                      <el-checkbox label="sortNameChild">{{ $t('allGoods.exportDialog.sortNameSecond') }}</el-checkbox>
                     </li>
                     <li>
                       <el-checkbox label="brandName">{{ $t('allGoods.exportDialog.brand') }}</el-checkbox>
