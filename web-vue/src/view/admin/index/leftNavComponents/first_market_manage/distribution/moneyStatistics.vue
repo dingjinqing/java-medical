@@ -118,9 +118,9 @@
           >
             <el-option
               v-for="item in groupList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              :key="item.id"
+              :label="item.groupName"
+              :value="item.id"
             >
             </el-option>
           </el-select>
@@ -253,6 +253,7 @@
 
 <script>
 // import { brokerageList } from '@/api/admin/marketManage/distribution.js'
+import { distributorGroupList } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -283,18 +284,33 @@ export default {
       tableData: [], // 表格
       pageParams: {}, // 分页
       requestParam: {},
+      // 返利状态列表
       statusList: [{
-        label: '',
+        label: '全部',
         value: 0
-      }], // 返利状态列表
-      groupList: [{
-        label: '',
-        value: 0
-      }], // 分销员分组列表
+      }, {
+        label: '已返利',
+        value: 1
+      }, {
+        label: '待返利',
+        value: 2
+      }, {
+        label: '不返利',
+        value: 3
+      }],
+      // 分销员分组列表
+      groupList: [],
+      // 返利关系列表
       relationshipList: [{
-        label: '',
+        label: '自购返利',
         value: 0
-      }] // 返利关系列表
+      }, {
+        label: '直接返利',
+        value: 1
+      }, {
+        label: '间接返利',
+        value: 2
+      }]
     }
   },
   watch: {
@@ -305,6 +321,7 @@ export default {
   },
   mounted () {
     this.initData()
+    this.getGroupList() // 分销员分组
   },
   methods: {
     // 佣金统计列表
@@ -331,6 +348,12 @@ export default {
       //     })
       //   }
       // })
+    },
+
+    getGroupList () {
+      distributorGroupList().then(res => {
+        this.groupList = res.content
+      })
     }
   }
 }

@@ -184,7 +184,15 @@ export default {
   methods: {
     // 点击筛选
     handleToScreen () {
-
+      console.log(this.showHeader)
+      switch (this.showHeader) {
+        case 'second':
+          console.log(this.headerDataSecond)
+          this.$emit('getRenewalHeaderData', this.headerDataSecond)
+          break
+        case 'third':
+          break
+      }
     },
     // 点击导出
     handleToExport () {
