@@ -237,22 +237,22 @@ global.wxPage({
     wx.showLoading({
       title: '生成中',
     })
-    // util.api('/api/wxapp/bargain/pictorial/info', function (res) {
-    //   wx.hideLoading();
-    //   if (res.error == 0) {
-    //     that.setData({
-    //       posterBase64: res.content,
-    //       pictorial: res.content,
-    //       is_share: 1
-    //     })
-    //   } else {
-    //     util.toast_fail(res.message);
-    //     return false;
-    //   }
-    // }, { 
-    //   activityId: that.data.pinInte_id,
-    //   pageType: 2
-    // })
+    util.api('/api/wxapp/group_integral/pictorial/info', function (res) {
+      wx.hideLoading();
+      if (res.error == 0) {
+        that.setData({
+          posterBase64: res.content,
+          pictorial: res.content,
+          is_share: 1
+        })
+      } else {
+        util.toast_fail(res.message);
+        return false;
+      }
+    }, { 
+      activityId: that.data.pinInte_id,
+      targetId: that.data.group_id
+    })
   },
   // 关闭海报
   not_show_share: function () {
@@ -264,8 +264,8 @@ global.wxPage({
   // 保存图片
   saveImgToPhotosAlbumTap: function () {
     var that = this;
-    if (posterBase64) {
-      util.base64ImageHandle(posterBase64, function (res) {
+    if (that.data.posterBase64) {
+      util.base64ImageHandle(that.data.posterBase64, function (res) {
         wx.getSystemInfo({
           success: function (res) {
             that.setData({
