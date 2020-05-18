@@ -331,7 +331,7 @@ public class CouponPackService extends ShopBaseService {
      */
     public ShareQrCodeVo getMpQrCode(Integer id) {
 
-        String pathParam="paramId="+id;
+        String pathParam = "packId=" + id;
         String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.DISCOUNT_COUPON_PAGCKAGE, pathParam);
 
         ShareQrCodeVo vo = new ShareQrCodeVo();
