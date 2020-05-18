@@ -186,10 +186,15 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
      * @return {@link SearchRequest}
      */
     private SearchRequest assemblySearchRequestByGoodsId(Integer shopId,List<Integer> goodsIds,Byte type){
+        int querySize = 5;
+        if( !type.equals(EsGoodsConstant.GOODS_DETAIL_PAGE) ){
+            //设置商品标签返回数量最大值（暂定为100）
+            querySize = 100;
+        }
         SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.LABEL_ALIA_NAME);
         SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource();
         searchSourceBuilder.query(assemblyQueryBuilder(shopId,null,goodsIds,type));
-        searchSourceBuilder.aggregation(assemblyLabelAggregationBuilderByGoodsId());
+        searchSourceBuilder.aggregation(assemblyLabelAggregationBuilderByGoodsId(goodsIds.size(),querySize));
         //not need to return query data
         searchSourceBuilder.size(0);
         searchRequest.source(searchSourceBuilder);
@@ -277,7 +282,8 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
         }else if( EsGoodsConstant.GOODS_SEARCH_PAGE.equals(type) ){
             bool.must(QueryBuilders.termQuery(EsLabelName.SEARCH_SHOW,Boolean.TRUE));
         }else if( EsGoodsConstant.ADMIN_GOODS_LIST_PAGE.equals(type) ){
-            bool.must(QueryBuilders.termQuery(EsLabelName.TYPE, GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()));
+            //2.11版本修改逻辑（展示全部标签，不过新加区分指定标签和通用标签）
+//            bool.must(QueryBuilders.termQuery(EsLabelName.TYPE, GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()));
         }
         return bool;
     }
