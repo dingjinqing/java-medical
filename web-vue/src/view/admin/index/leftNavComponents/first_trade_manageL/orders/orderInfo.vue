@@ -497,6 +497,7 @@
                     }}
                   </span>
                 </p>
+
                 <p v-if="order.deliverType == 0">
                   {{$t('order.shipping')}}：
                   <span>
@@ -512,11 +513,11 @@
                 <p v-if="order.memberCardReduce > 0">
                   <span>
                     {{
-                       (order.exchang == 1 && goodsTypeArray.indexOf($t('goodsTypeList')[14][0]) !== -1) ?
+                       (order.exchang == 1 && goodsTypeArray.indexOf(String($t('order.goodsTypeList')[14][0])) !== -1) ?
                          $t('order.limitedCard',{
                            cardName:order.cardName,
                            cardNo:order.cardNo,
-                           currency:'-' + currencyPool[order.currency][lang][1],
+                           currency:currencyPool[order.currency][lang][1],
                            reduceMoney:(order.memberCardReduce / order.goodsAmount).toFixed(2),
                            goodsAmount:order.goodsAmount}) :
                        ($t('order.memberCard')+'：'+ '-' + currencyPool[order.currency][lang][1] + order.memberCardReduce)

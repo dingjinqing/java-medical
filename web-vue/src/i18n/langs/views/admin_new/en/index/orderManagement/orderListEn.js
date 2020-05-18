@@ -75,7 +75,7 @@ export const en = {
   Shipping: 'freight',
   packageDiscount: 'Buy price discount',
   limitedCard:
-    'Limited card-{cardName}-{cardNo} Deductible amount: -{currency}{reduceMoney} *{goodsAmount} times',
+    'Limited card-{cardName}-{cardNo} Deductible amount: -{currency}{reduceMoney} * {goodsAmount} times',
   memberCard: 'Member card discount',
   promotionReduce: 'Full Discounts',
   couponDiscount: 'coupon discount',
