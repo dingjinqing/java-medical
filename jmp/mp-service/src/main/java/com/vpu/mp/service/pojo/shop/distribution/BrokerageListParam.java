@@ -11,6 +11,10 @@ import lombok.Data;
  */
 @Data
 public class BrokerageListParam {
+    /**
+     * 分销员ID
+     */
+    private Integer userId;
 	/**
 	 * 分销员名称
 	 */
@@ -48,19 +52,19 @@ public class BrokerageListParam {
 	 */
 	private Timestamp endRebateTime;
 	/**
-	 * 返利状态
+	 * 返利状态 0：待返利；1：不返利；2：已返利
 	 */
-	private Byte rebateStatus;
+	private Byte settlementFlag;
 	/**
 	 * 分销员分组
 	 */
 	private Integer distributorGroup;
 	/**
-	 * 返利关系
+	 * 返利关系 0：自购返利；1：直接返利；2：间接返利；
 	 */
 	private Byte rebateLevel;
-	
+
 	private Integer currentPage;
 	private Integer pageRows;
-	
+
 }
