@@ -410,6 +410,7 @@ public class StoreService extends ShopBaseService {
         logger().info("获取所有门店id和名称");
         return db().select(STORE.STORE_ID, STORE.STORE_NAME)
             .from(STORE)
+            .where(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .fetchInto(StoreBasicVo.class);
     }
 
