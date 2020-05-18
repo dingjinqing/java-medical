@@ -64,7 +64,7 @@ public final class RedisLockAspect extends ShopBaseService {
         } catch (Throwable throwable) {
             Throwable cause = throwable.getCause();
             if (cause instanceof MpException) {
-                throw new MpException(((MpException) cause).getErrorCode(), cause.getMessage(), ((MpException) cause).getCodeParam());
+                throw (MpException)cause;
             } else {
                 logger().error("批量锁执行joinPoint.proceed()异常", throwable);
                 throw new MpException(JsonResultCode.CODE_ORDER_UPDATE_STOCK_FAIL);

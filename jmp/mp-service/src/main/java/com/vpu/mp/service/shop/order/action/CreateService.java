@@ -249,7 +249,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //校验
             checkOrder(orderBeforeVo, orderBo, param);
         } catch (MpException e) {
-            return ExecuteResult.create(e.getErrorCode(), null,  e.getCodeParam());
+            return ExecuteResult.create(e.getErrorCode(), e.getErrorResult(),  e.getCodeParam());
         }
         //生成orderSn
         String orderSn = IncrSequenceUtil.generateOrderSn(OrderConstant.ORDER_SN_PREFIX);
@@ -288,7 +288,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             logger().error("下单捕获mp异常", e);
             Throwable cause = e.getCause();
             if (cause instanceof MpException) {
-                return ExecuteResult.create(((MpException) cause).getErrorCode(), ((MpException) cause).getCodeParam());
+                return ExecuteResult.create(((MpException) cause).getErrorCode(), ((MpException) cause).getErrorResult(), ((MpException) cause).getCodeParam());
             } else {
                 return ExecuteResult.create(JsonResultCode.CODE_ORDER_DATABASE_ERROR, e.getMessage());
             }
