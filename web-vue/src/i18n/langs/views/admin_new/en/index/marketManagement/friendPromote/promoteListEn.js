@@ -127,5 +127,8 @@ export const en = {
   mostLaunch: 'can launch at most',
   time: 'times',
   friendShare: 'Friends can get up to ',
-  promoteOpportunity: 'help opportunities through sharing'
+  promoteOpportunity: 'help opportunities through sharing',
+  allBargainAct: 'All bargaining activities',
+  addEvent: 'Add event',
+  editEvent: 'Edit activity'
 }
