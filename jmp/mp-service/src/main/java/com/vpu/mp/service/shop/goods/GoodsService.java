@@ -657,14 +657,13 @@ public class GoodsService extends ShopBaseService {
         Map<Integer, List<GoodsSpecProduct>> goodsIdPrdGroups = goodsSpecProductService.selectGoodsSpecPrdGroup(goodsIds);
 
         dataList.forEach(item -> {
-            Integer goodsId = item.getGoodsId();
             // 设置指定标签
-            if (goodsPointLabels.get(goodsId) != null && goodsPointLabels.get(goodsId).size() > 0) {
-                item.getGoodsPointLabels().addAll(goodsPointLabels.get(goodsId));
+            if (goodsPointLabels.get(item.getGoodsId()) != null && goodsPointLabels.get(item.getGoodsId()).size() > 0) {
+                item.getGoodsPointLabels().addAll(goodsPointLabels.get(item.getGoodsId()));
             }
             // 设置普通标签
-            if (goodsSortLabels.get(goodsId)!=null && goodsSortLabels.get(goodsId).size() > 0){
-                item.getGoodsNormalLabels().addAll(goodsSortLabels.get(goodsId));
+            if (goodsSortLabels.get(item.getSortId())!=null && goodsSortLabels.get(item.getSortId()).size() > 0){
+                item.getGoodsNormalLabels().addAll(goodsSortLabels.get(item.getSortId()));
             }
             if (allGoodsLabels.size() > 0) {
                 item.getGoodsNormalLabels().addAll(allGoodsLabels);
