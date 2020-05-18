@@ -121,7 +121,8 @@ export default {
         { id: 0, label: '普通优惠券' },
         { id: 1, label: '分裂优惠券' }
       ],
-      couonType: ''
+      couonType: '',
+      invalidCoupon: [] // 失效的优惠券的id
     }
   },
   props: ['origin', 'singleElection', 'tuneUpCoupon', 'couponBack', 'type', 'formDecType'],
@@ -186,6 +187,18 @@ export default {
               }
             })
           })
+          this.invalidCoupon = []
+          data.forEach((id, i) => {
+            let n = 0
+            this.dialogData.forEach((item, j) => {
+              if (item.id !== id) {
+                n++
+                if (n >= this.dialogData.length) {
+                  this.invalidCoupon.push(id)
+                }
+              }
+            })
+          })
         }
       })
       this.loading = false
@@ -204,6 +217,8 @@ export default {
     // 弹窗确定事件
     handleToSure () {
       let arr = []
+      console.log(this.data)
+      let invalidLen = this.invalidCoupon.length
       this.dialogData.forEach((item, index) => {
         if (item.ischeck) arr.push(item)
       })
@@ -216,16 +231,16 @@ export default {
       //     return
       //   }
       // }
-      if (arr.length > 5 && !this.origin) {
-        this.$message.error('最多只能选择5张优惠券哦~')
+      if (arr.length > (5 - invalidLen) && !this.origin) {
+        this.$message.error('最多只能选择' + (5 - invalidLen) + '张优惠券哦~')
         return
       }
-      if (arr.length > 10 && this.origin === 'couponPackage') {
-        this.$message.error('最多只能选择10种优惠券哦~')
+      if (arr.length > (10 - invalidLen) && this.origin === 'couponPackage') {
+        this.$message.error('最多只能选择' + (10 - invalidLen) + '种优惠券哦~')
         return
       }
-      if (arr.length > 6 && this.origin === 'decCouponPackage') {
-        this.$message.error('最多只能选择6种优惠券哦~')
+      if (arr.length > (6 - invalidLen) && this.origin === 'decCouponPackage') {
+        this.$message.error('最多只能选择' + (6 - invalidLen) + '种优惠券哦~')
         return
       }
       this.$emit('handleToCheck', arr)
