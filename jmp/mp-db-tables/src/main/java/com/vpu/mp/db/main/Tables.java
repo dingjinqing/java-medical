@@ -444,4 +444,6 @@ public class Tables {
     public static final TaskJobContent TASK_JOB_CONTENT = com.vpu.mp.db.main.tables.TaskJobContent.TASK_JOB_CONTENT;
 
     public static final TaskJobMain TASK_JOB_MAIN = com.vpu.mp.db.main.tables.TaskJobMain.TASK_JOB_MAIN;
+
+    public static final OrderInfoNew ORDER_INFO_NEW = com.vpu.mp.db.main.tables.OrderInfoNew.ORDER_INFO_NEW;
 }

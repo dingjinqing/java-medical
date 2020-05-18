@@ -35,6 +35,8 @@ public class MiniMain extends SchemaImpl {
      */
     public static final MiniMain MINI_MAIN = new MiniMain();
 
+    public final OrderInfoNew ORDER_INFO_NEW = com.vpu.mp.db.main.tables.OrderInfoNew.ORDER_INFO_NEW;
+
     /**
      * 定时任务定义表
      */
@@ -567,6 +569,7 @@ public class MiniMain extends SchemaImpl {
             TaskJobContent.TASK_JOB_CONTENT,
             TaskJobMain.TASK_JOB_MAIN,
             CronDefine.CRON_DEFINE,
-            CronRecord.CRON_RECORD);
+            CronRecord.CRON_RECORD,
+            OrderInfoNew.ORDER_INFO_NEW);
     }
 }
