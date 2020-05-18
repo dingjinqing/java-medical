@@ -665,7 +665,8 @@ color: transparent;
 }
 .share_content_share{
   position: absolute;
-  top: 80rpx;
+  /* top: 80rpx; */
+  top: 210rpx;
   left: 85rpx;
   z-index: 999999;
 }

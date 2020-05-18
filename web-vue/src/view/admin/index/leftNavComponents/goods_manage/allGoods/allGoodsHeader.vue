@@ -16,7 +16,7 @@
           <el-input
             v-model="goodsFilterFormData.goodsName"
             suffix-icon="el-icon-search"
-            :placeholder="$t('allGoods.allGoodsHeaderData.searchGoods')"
+            :placeholder="initSortCatParams.isSaleOut === 1? $t('allGoods.allGoodsHeaderData.searchGoodsSaleOut'):$t('allGoods.allGoodsHeaderData.searchGoods')"
             :style="goodsFilterInputStyle"
             size="small"
             clearable

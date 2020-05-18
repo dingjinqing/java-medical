@@ -23,11 +23,12 @@ import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 
 /**
+ * 积分兑换活动海报生成器
  * @author 李晓冰
  * @date 2020年05月15日
  */
 @Service
-public class IntegralMallPictorialService extends ShareBaseService{
+public class IntegralMallPictorialService extends ShareBaseService {
 
     @Autowired
     IntegralConvertService integralConvertService;
@@ -46,9 +47,13 @@ public class IntegralMallPictorialService extends ShareBaseService{
     @Override
     String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         IntegralMallShareInfoParam param = (IntegralMallShareInfoParam) baseParam;
-        String priceStr= param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-        String score =param.getScore().toString();
-        return Util.translateMessage(lang, JsonResultMessage.WX_MA_INTEGRAL_MALL_SHARE_DOC, "", "messages", priceStr,score);
+        String score = param.getScore().toString();
+        if (param.getRealPrice() == null || param.getRealPrice().equals(BigDecimal.ZERO)) {
+            String priceStr = param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+            return Util.translateMessage(lang, JsonResultMessage.WX_MA_INTEGRAL_MALL_SHARE_DOC, "", "messages", priceStr, score);
+        } else {
+            return Util.translateMessage(lang, JsonResultMessage.WX_MA_INTEGRAL_MALL_SHARE_NO_MONEY_DOC, "", "messages", score);
+        }
     }
 
     @Override
@@ -68,12 +73,17 @@ public class IntegralMallPictorialService extends ShareBaseService{
         IntegralMallShareInfoParam param = (IntegralMallShareInfoParam) baseParam;
 
         // 积分兑换
-        String exchangeStr =  Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_INTEGRAL_MALL_EXCHANGE,"","messages");
+        String exchangeStr = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_INTEGRAL_MALL_EXCHANGE, "", "messages");
         // ￥5.00+10积分
-        String priceStrTranslate = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_INTEGRAL_MALL_PRICE_SCORE, "", "messages", baseParam.getRealPrice().setScale(2,BigDecimal.ROUND_HALF_UP).toString(),param.getScore().toString());
-        String linePriceStr = convertPriceWithFlag(shop.getShopLanguage(),baseParam.getLinePrice());
+        String priceStrTranslate = null;
+        if (param.getRealPrice() == null || param.getRealPrice().equals(BigDecimal.ZERO)) {
+            priceStrTranslate = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_INTEGRAL_MALL_PRICE_SCORE, "", "messages", baseParam.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString(), param.getScore().toString());
+        } else {
+            priceStrTranslate =Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_INTEGRAL_MALL_SCORE, "", "messages",param.getScore().toString());
+        }
+        String linePriceStr = convertPriceWithFlag(shop.getShopLanguage(), baseParam.getLinePrice());
 
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(),null , null,priceStrTranslate, linePriceStr, imgPx);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(), null, null, priceStrTranslate, linePriceStr, imgPx);
         pictorialService.addPictorialSelfCustomerContent(bgBufferedImage, exchangeStr, priceStrTranslate, null, false, imgPx);
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);

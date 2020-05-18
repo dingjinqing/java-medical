@@ -38,7 +38,7 @@ global.wxPage({
     that.setData({
       pinInte_id: Number(options.pid),
       group_id: options.gid ? Number(options.gid) : null,
-      invite_user: options.invite_user ? Number(options.invite_user) : null
+      invite_user: options.invid ? Number(options.invid) : null
     })
     clearTimeout(set_time_out);
     request_pinIntegration(that);
@@ -208,7 +208,7 @@ global.wxPage({
     return {
       title: "【" + usernames + "@你】与我一起瓜分积分！",
       imageUrl: that.data.imageUrl + '/image/admin/poster_image/pin_inte_bg1.png',
-      path: '/pages1/pinintegration/pinintegration?pid=' + that.data.pinInte_id + '&invite_user=' + util.getCache('user_id') + '&gid=' + that.data.group_id,
+      path: '/pages1/pinintegration/pinintegration?pid=' + that.data.pinInte_id + '&invid=' + util.getCache('user_id') + '&gid=' + that.data.group_id,
     }
   },
   // 获取用户昵称 头像
@@ -237,22 +237,22 @@ global.wxPage({
     wx.showLoading({
       title: '生成中',
     })
-    // util.api('/api/wxapp/bargain/pictorial/info', function (res) {
-    //   wx.hideLoading();
-    //   if (res.error == 0) {
-    //     that.setData({
-    //       posterBase64: res.content,
-    //       pictorial: res.content,
-    //       is_share: 1
-    //     })
-    //   } else {
-    //     util.toast_fail(res.message);
-    //     return false;
-    //   }
-    // }, { 
-    //   activityId: that.data.pinInte_id,
-    //   pageType: 2
-    // })
+    util.api('/api/wxapp/group_integral/pictorial/info', function (res) {
+      wx.hideLoading();
+      if (res.error == 0) {
+        that.setData({
+          posterBase64: res.content,
+          pictorial: res.content,
+          is_share: 1
+        })
+      } else {
+        util.toast_fail(res.message);
+        return false;
+      }
+    }, { 
+      activityId: that.data.pinInte_id,
+      targetId: that.data.group_id
+    })
   },
   // 关闭海报
   not_show_share: function () {
@@ -264,8 +264,8 @@ global.wxPage({
   // 保存图片
   saveImgToPhotosAlbumTap: function () {
     var that = this;
-    if (posterBase64) {
-      util.base64ImageHandle(posterBase64, function (res) {
+    if (that.data.posterBase64) {
+      util.base64ImageHandle(that.data.posterBase64, function (res) {
         wx.getSystemInfo({
           success: function (res) {
             that.setData({

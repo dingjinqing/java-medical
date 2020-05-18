@@ -43,7 +43,7 @@
         header-row-class-name="tableClss"
         :data="tableData"
         border
-        style="width: 100%"
+        style="width: 99.9% !important;"
       >
         <el-table-column
           prop="name"

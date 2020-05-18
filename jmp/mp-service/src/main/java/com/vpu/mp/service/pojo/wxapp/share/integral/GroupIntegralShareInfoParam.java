@@ -5,11 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * 瓜分积分海报参数
  * @author 李晓冰
  * @date 2020年05月15日
  */
 @Getter
 @Setter
 public class GroupIntegralShareInfoParam extends GoodsShareBaseParam {
-    private Integer inviteId;
+    /**团id*/
+    private Integer groupId;
 }
