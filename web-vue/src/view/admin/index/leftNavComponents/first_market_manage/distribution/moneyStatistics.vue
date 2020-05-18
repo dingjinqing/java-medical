@@ -302,14 +302,17 @@ export default {
       groupList: [],
       // 返利关系列表
       relationshipList: [{
-        label: '自购返利',
+        label: '全部',
         value: 0
       }, {
-        label: '直接返利',
+        label: '自购返利',
         value: 1
       }, {
-        label: '间接返利',
+        label: '直接返利',
         value: 2
+      }, {
+        label: '间接返利',
+        value: 3
       }]
     }
   },

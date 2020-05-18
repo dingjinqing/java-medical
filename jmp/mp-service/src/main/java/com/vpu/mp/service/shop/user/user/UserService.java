@@ -381,7 +381,7 @@ public class UserService extends ShopBaseService {
 			map.put("invite_source", "purchase_price");// 满折满减
 			map.put("invite_act_id", pathQuery.getQuery().get("identity_id"));
 		}
-		if (path.equals("pages1/pinlotteryinfo/pinlotteryinfo")) {
+		if (path.equals("pages1/pinlotteryinfo/pinlotteryinfo")||path.equals("pages/pinlotteryinfo/pinlotteryinfo")) {
 			map.put("invite_source", "group_draw");// 拼团抽奖
 			map.put("invite_act_id", pathQuery.getQuery().get("group_draw_id"));
 		}
