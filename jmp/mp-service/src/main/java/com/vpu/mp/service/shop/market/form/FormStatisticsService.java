@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.upyun.UpException;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.*;
@@ -269,7 +268,7 @@ public class FormStatisticsService extends ShopBaseService {
             // 背景图
             BufferedImage bgImgBuf = ImageIO.read(new URL(imageService.getImgFullUrl(bgImg)));
             // 创建海报图片
-            BufferedImage pictorialImg = pictorialService.createFormPictorialBgImage(userAvator, qrCodImg, bgImgBuf, new PictorialFormImgPx());
+            BufferedImage pictorialImg = pictorialService.createFormPictorialBgImage(userAvator, qrCodImg, bgImgBuf, new PictorialFormImgPx(), "我有一份" + record.getPageName() + "邀请你来填写奥，查看有礼，尽享好物", saas.shop.account.getAccountInfoForId(getSysId()).getAccountName());
             // 获取海报图片路径
             Tuple2<String, String> path = pictorialService.getImgDir(4, pictorialService.getImgFileName(String.valueOf(pageId), String.valueOf(0), String.valueOf(4)));
             // 将待分享图片上传到U盘云，并在数据库缓存记录
