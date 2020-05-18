@@ -967,7 +967,7 @@ public class GroupIntegrationService extends ShopBaseService {
 			}
 			execute = groupIntegrationList.setIntegrationListResult(pinInteId, groupId, STATUS_ONE);
 			logger().info("更新拼团活动{}；组{}；状态为{}", pinInteId, groupId, STATUS_ONE);
-			if (pinInteInfo.getDivideType().equals(IS_DAY_DIVIDE_N) && pinInteInfo.getInteTotal() > 0) {
+			if (pinInteInfo.getIsDayDivide().equals(IS_DAY_DIVIDE_N) && pinInteInfo.getInteTotal() > 0) {
 				int num = pinInteInfo.getInteRemain() - pinInteInfo.getInteGroup();
 				execute = db().update(GROUP_INTEGRATION_DEFINE).set(GROUP_INTEGRATION_DEFINE.INTE_REMAIN, num)
 						.where(GROUP_INTEGRATION_DEFINE.ID.eq(pinInteId)).execute();
