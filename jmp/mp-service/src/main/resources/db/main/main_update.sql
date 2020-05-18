@@ -219,12 +219,12 @@ CREATE TABLE IF NOT EXISTS `b2c_order_info_new` (
   `room_id` int(11) DEFAULT '0' COMMENT '直播间ID',
   PRIMARY KEY (`order_id`),
   UNIQUE KEY `order_sn` (`order_sn`),
-  KEY `main_order_sn` (`main_order_sn`),
-  KEY `user_id` (`user_id`),
-  KEY `user_openid` (`user_openid`),
-  KEY `order_status` (`order_status`),
-  KEY `shipping_id` (`shipping_id`),
-  KEY `shop_id` (`shop_id`)
+  KEY `boin_main_order_sn` (`main_order_sn`),
+  KEY `boin_user_id` (`user_id`),
+  KEY `boin_user_openid` (`user_openid`),
+  KEY `boin_order_status` (`order_status`),
+  KEY `boin_shipping_id` (`shipping_id`),
+  KEY `boin_shop_id` (`shop_id`)
 );
 
 
