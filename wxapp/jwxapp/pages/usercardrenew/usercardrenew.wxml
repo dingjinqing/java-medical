@@ -66,7 +66,7 @@
 				续费后，会员卡有效期将从失效时间开始向后延长{{cardInfo.shouldRenewDate==null?'':cardInfo.shouldRenewDate}}</view>
 		</view>
 		<!--会员卡-->
-		<view wx:if='{{cardInfo.renewType == 0}}' class="card_pay card_item_title">
+		<view wx:if='{{cardInfo.renewType == 0&&memberCardsList.length!=0}}' class="card_pay card_item_title">
 			<block>
 				<view class='choose_coupon' bindtap='cardClick' style='padding:24rpx 0;'>
 					<view>会员卡</view>
