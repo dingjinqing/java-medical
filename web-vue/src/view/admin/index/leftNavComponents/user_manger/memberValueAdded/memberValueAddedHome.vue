@@ -9,10 +9,7 @@
           label="会员卡购买"
           name="first"
         >
-          <renewalCard
-            :showHeader="activeName"
-            @getRenewalHeaderData="handleToGetHeader"
-          />
+
         </el-tab-pane>
         <el-tab-pane
           label="会员卡续费"
@@ -21,6 +18,7 @@
           <renewalCard
             :showHeader="activeName"
             @getRenewalHeaderData="handleToGetHeader"
+            v-if="!isShowTransactionData"
           />
         </el-tab-pane>
         <el-tab-pane
@@ -30,6 +28,7 @@
           <renewalCard
             :showHeader="activeName"
             @getRenewalHeaderData="handleToGetHeader"
+            v-if="!isShowTransactionData"
           />
         </el-tab-pane>
         <el-tab-pane
@@ -43,37 +42,48 @@
         class="toCheck"
         size="small"
         type="primary"
-      >查看交易数据</el-button>
+        @click="handleToShowTransactionData()"
+      >{{isShowTransactionData?'查看明细':'查看交易数据'}}</el-button>
     </div>
     <!--会员卡续费和会员卡充值底部表格-->
     <memberForm
       :activeName="activeName"
       :bottomFormData="bottomFormData"
-      v-if="activeName==='second' || activeName==='third'"
+      v-if="(activeName==='second' || activeName==='third')&!isShowTransactionData"
     />
+    <!--查看交易数据组件-->
+    <transactionData v-if="isShowTransactionData" />
   </div>
 </template>
 <script>
 export default {
   components: {
     renewalCard: () => import('./renewalCard'), // 会员卡续费和会员卡充值表头
-    memberForm: () => import('./memberForm') // 会员卡续费和会员卡充值表格
+    memberForm: () => import('./memberForm'), // 会员卡续费和会员卡充值表格
+    transactionData: () => import('./transactionData') // 查看交易数据
   },
   data () {
     return {
       activeName: 'first',
-      bottomFormData: {}
+      bottomFormData: {},
+      isShowTransactionData: false, // 是否显示交易数据页面
+      rightText: '查看交数据' // 右上角动态文案
     }
   },
   methods: {
     // tap切换
     handleClick (tab, event) {
       console.log(tab, event)
+      this.isShowTransactionData = false
     },
     // 表头点击筛选回传表头信息数据
     handleToGetHeader (res) {
       this.bottomFormData = res
       console.log(res, this.activeName)
+    },
+    // 点击查看交易数据
+    handleToShowTransactionData () {
+      this.isShowTransactionData = !this.isShowTransactionData
     }
   }
 }
