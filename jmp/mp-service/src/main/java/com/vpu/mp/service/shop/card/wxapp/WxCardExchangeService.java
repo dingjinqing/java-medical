@@ -322,22 +322,24 @@ public class WxCardExchangeService extends ShopBaseService {
 		CardFullDetail cardDetail = mCardSvc.getCardDetailByNo(cardNo);
 		MemberCardRecord memberCard = cardDetail.getMemberCard();
 		UserCardRecord userCard = cardDetail.getUserCard();
-		Integer userCheckedCount = userCheckedGoodsSvc.getUserCheckedCount(userCard.getUserId(),cardNo);
+		
 		//	1-检测该限次卡是否用
 		CardUseCondition judegeCardUsable = limitCardOpt.judegeCardUsable(userCard,memberCard);
 		
 		if(!judegeCardUsable.isUsable()) {
 			throw new MpException(judegeCardUsable.getErrorCode());
 		}
-		
 		for(Map.Entry<Integer, Integer> entry: goodsMap.entrySet()) {
 			Integer goodsId = entry.getKey();
 			Integer goodsNum = entry.getValue();
 			logger().info("判断该卡能够兑换该商品: "+goodsId+" "+goodsNum);
+			
 			if(goodsNum==null) {
 				//	默认兑换商品数量为1
 				goodsNum = 1;
 			}
+			//	获取已经加购的商品数量
+			Integer userCheckedCount = userCheckedGoodsSvc.getUserCheckedGoodsByGoodsId(userCard.getUserId(),goodsId,cardNo);
 			//	2-检测该兑换商品是否满足该限次卡的设定的配置
 			//	已经兑换商品的总次数
 			Integer exchangGoodsAllTimes = getExchangGoodsAllTimes(goodsId,cardNo);
