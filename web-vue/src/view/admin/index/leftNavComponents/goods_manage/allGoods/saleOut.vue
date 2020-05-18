@@ -22,7 +22,7 @@
           align="center"
           prop="goodsName"
           :label="$t('allGoods.allGoodsData.goodsName')"
-          width="350"
+          width="230"
         >
           <template slot-scope="{row}">
             <div class="nameImgWrap">
@@ -47,7 +47,7 @@
           sortable="custom"
           align="center"
           :label="$t('allGoods.allGoodsData.shopPrice')"
-          width="150"
+          width="130"
         >
           <template slot-scope="{row}">
             <span v-if="!row.prdPriceEdit">
@@ -85,14 +85,14 @@
           align="center"
           prop="sortName"
           :label="$t('allGoods.allGoodsData.sort')"
-          width="100"
+          width="130"
         />
         <!--商品品牌-->
         <el-table-column
           align="center"
           prop="brandName"
           :label="$t('allGoods.allGoodsData.goodsBrand')"
-          width="150"
+          width="130"
         >
         </el-table-column>
         <!--商品库存-->
@@ -101,7 +101,7 @@
           sortable="custom"
           align="center"
           :label="$t('allGoods.allGoodsData.goodsNumber')"
-          width="150"
+          width="100"
         >
           <template slot-scope="{row}">
             <span v-if="!row.prdNumberEdit">
@@ -126,7 +126,7 @@
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.goodsLabel')"
-          width="150"
+          width="130"
         >
           <template slot-scope="{row}">
             <div v-if="row.goodsNormalLabels.length + row.goodsPointLabels.length > 0"  class="goodsLabelSpanWrap">
