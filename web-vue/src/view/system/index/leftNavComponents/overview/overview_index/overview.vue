@@ -18,53 +18,53 @@
               <div
                 class="account"
                 style="color:#2eb8e6;"
-              >{{accountStatisticsInfo.allAccountNum}}</div>
+              >{{accountStatisticsInfo.allAccountNum || 0}}</div>
               <div class="account-title">账户总数</div>
             </li>
             <li>
               <div
                 class="account"
                 style="color: #f3bd51;"
-              >{{accountStatisticsInfo.allShopNum}}</div>
+              >{{accountStatisticsInfo.allShopNum || 0}}</div>
               <div class="account-title">店铺总数</div>
             </li>
             <li>
               <div
                 class="account"
                 style="color: #fe6c6c;"
-              >{{accountStatisticsInfo.effectiveShopNum}}</div>
+              >{{accountStatisticsInfo.effectiveShopNum || 0}}</div>
               <div class="account-title">有效店铺</div>
             </li>
             <li>
-              <div class="account">{{accountStatisticsInfo.usedShopNum}}</div>
+              <div class="account">{{accountStatisticsInfo.usedShopNum || 0}}</div>
               <div class="account-title">使用中</div>
             </li>
             <li>
-              <div class="account">{{accountStatisticsInfo.toExpireShopNum}}</div>
+              <div class="account">{{accountStatisticsInfo.toExpireShopNum || 0}}</div>
               <div class="account-title">将过期</div>
             </li>
             <li>
-              <div class="account">{{accountStatisticsInfo.expiredShopNum}}</div>
+              <div class="account">{{accountStatisticsInfo.expiredShopNum || 0}}</div>
               <div class="account-title">已过期</div>
             </li>
             <li>
-              <div class="account">{{accountStatisticsInfo.disabledShopNum}}</div>
+              <div class="account">{{accountStatisticsInfo.disabledShopNum || 0}}</div>
               <div class="account-title">已禁用</div>
             </li>
             <li>
-              <div class="account">{{accountStatisticsInfo.authorizedShopNum}}</div>
+              <div class="account">{{accountStatisticsInfo.authorizedShopNum || 0}}</div>
               <div class="account-title">授权成功</div>
             </li>
             <li>
-              <div class="account">{{accountStatisticsInfo.unauthorizedShopNum}}</div>
+              <div class="account">{{accountStatisticsInfo.unauthorizedShopNum || 0}}</div>
               <div class="account-title">未授权成功</div>
             </li>
             <li>
-              <div class="account">{{accountStatisticsInfo.openedPaymentShopNum}}</div>
+              <div class="account">{{accountStatisticsInfo.openedPaymentShopNum || 0}}</div>
               <div class="account-title">开通支付</div>
             </li>
             <li>
-              <div class="account">{{accountStatisticsInfo.notOpenPaymentShopNum}}</div>
+              <div class="account">{{accountStatisticsInfo.notOpenPaymentShopNum || 0}}</div>
               <div class="account-title">未开通支付</div>
             </li>
           </ul>
@@ -99,7 +99,7 @@
       </div>
       <div class="module">
         <div class="module-header">
-          <h2>用户统计 <span>用户总数：</span><span v-text="userStatisticsInfo.allNum"></span></h2>
+          <h2>用户统计 <span>用户总数：</span><span v-text="userStatisticsInfo.allNum || 0"></span></h2>
         </div>
         <div class="module-con clearfix">
           <div class="module-con-left">
@@ -127,7 +127,7 @@
       </div>
       <div class="module">
         <div class="module-header">
-          <h2>订单统计 <span>订单总数：</span><span v-text="orderStatisticsInfo.allOrderNum"></span></h2>
+          <h2>订单统计 <span>订单总数：</span><span v-text="orderStatisticsInfo.allOrderNum || 0"></span></h2>
         </div>
         <div class="module-con clearfix">
           <div class="module-con-left">
@@ -157,10 +157,10 @@
         <div class="module-header clearfix">
           <h2>订单支付统计</h2>
           <ul class="pay-ul clearfix">
-            <li>微信：<span>{{orderStatisticsInfo.wxPayed||0}},</span></li>
-            <li>余额：<span>{{orderStatisticsInfo.balancePayed||0}},</span></li>
-            <li>卡余额：<span>{{orderStatisticsInfo.cardBalancePayed||0}},</span></li>
-            <li>积分：<span>{{orderStatisticsInfo.integralPayed||0}}</span></li>
+            <li>微信：<span>{{orderStatisticsInfo.wxPayed||'0.00'}},</span></li>
+            <li>余额：<span>{{orderStatisticsInfo.balancePayed||'0.00'}},</span></li>
+            <li>卡余额：<span>{{orderStatisticsInfo.cardBalancePayed||'0.00'}},</span></li>
+            <li>积分：<span>{{orderStatisticsInfo.integralPayed|| 0}}</span></li>
           </ul>
         </div>
         <div class="module-con clearfix">
@@ -572,6 +572,7 @@ export default {
       font-weight: bold;
       li {
         float: left;
+        margin-right: 10px;
       }
     }
     .account-list {
