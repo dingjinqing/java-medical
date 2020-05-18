@@ -355,6 +355,7 @@ global.wxPage({
 
             // [1,5,6,10] 会展示活动预告的活动
             if (res.content.activityAnnounceMpVo) this.getAnnounce(res.content.activityAnnounceMpVo, res.content.defaultPrd)
+            this.getShareData() //获取分享内容
             resolve(res.content)
             // 购买记录
             this.setData({
@@ -639,7 +640,13 @@ global.wxPage({
     )
   },
   // 分享弹窗
-  async share () {
+  share () {
+   this.setData({
+    showShareDialog: true
+   })
+  },
+  //请求分享数据
+  async getShareData(){
     let activityData = {}
     let {
       goodsId: targetId,
@@ -703,7 +710,6 @@ global.wxPage({
     console.log(buttonShareData)
     this.setData({
       shareData,
-      showShareDialog: true,
       buttonShareData
     })
   },
