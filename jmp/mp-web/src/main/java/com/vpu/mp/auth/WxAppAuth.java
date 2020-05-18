@@ -126,17 +126,6 @@ public class WxAppAuth {
 			log.info("设置登录送积分");
 			ShopCfgRecord scoreNum = shopApp.score.getScoreNum("score_login");
 			if (scoreNum.getV() != "0") {
-				UserScoreVo data = new UserScoreVo();
-				data.setUserId(user.getUserId());
-				// php注释掉后面addUserScore中对ScoreDis的处理
-				// data.setScoreDis(shopApp.user.getUserByUserId(user.getUserId()).getScore());
-//				data.setScore(Integer.parseInt(scoreNum.getV()));
-//				data.setDesc("score_login");
-//				data.setRemarkCode(RemarkTemplate.LOGIN_EVERY_DAY_SEND.code);
-//				//data.setRemark("每日登录送积分");
-//				data.setShopId(shopId);
-//				data.setExpireTime(shopApp.member.score.getScoreExpireTime());
-//				shopApp.member.score.addUserScore(data, "0", (byte) 5, (byte) 1);
 				ScoreParam param2=new ScoreParam();
 				param2.setDesc("score_login");
 				param2.setScore(Integer.parseInt(scoreNum.getV()));

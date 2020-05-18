@@ -1087,8 +1087,10 @@ public class JsonResultMessage {
     /**积分兑换相关*/
     // ￥5.00+10050积分兑换商品
     public static final String WX_MA_INTEGRAL_MALL_SHARE_DOC="wx.ma.integral.mall.share.doc";
+    public static final String WX_MA_INTEGRAL_MALL_SHARE_NO_MONEY_DOC="wx.ma.integral.mall.share.no.money.doc";
     // ￥5.00+10050积分
     public static final String WX_MA_INTEGRAL_MALL_PRICE_SCORE = "wx.ma.integral.mall.price.score";
+    public static final String WX_MA_INTEGRAL_MALL_SCORE = "wx.ma.integral.mall.score";
     // 积分兑换
     public static final String WX_MA_INTEGRAL_MALL_EXCHANGE= "wx.ma.integral.mall.exchange";
     /**瓜分积分*/

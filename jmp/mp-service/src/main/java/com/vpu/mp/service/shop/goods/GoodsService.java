@@ -429,17 +429,16 @@ public class GoodsService extends ShopBaseService {
         // 处理在售状态
         condition = this.buildIsOnSaleOptions(condition, goodsPageListParam);
 
-        // goodsName内容需要匹配：商品名称，货号，规格编码(查询规格列表时才进行匹配)
-        if (!StringUtils.isBlank(goodsPageListParam.getGoodsName())) {
-            String likeStr = likeValue(goodsPageListParam.getGoodsName());
-            Condition nameCondition = GOODS.GOODS_NAME.like(likeStr);
-            nameCondition = nameCondition.or(GOODS.GOODS_SN.like(likeStr));
-            if (GoodsPageListParam.GOODS_PRD_LIST.equals(goodsPageListParam.getSelectType())) {
-                nameCondition = nameCondition.or(GOODS_SPEC_PRODUCT.PRD_SN.like(likeStr));
+        // 售罄goodsName内容需要匹配：商品名称，货号，规格编码(查询规格列表时才进行匹配)
+        if (!StringUtils.isBlank(goodsPageListParam.getGoodsName())){
+            if (GoodsConstant.SALE_OUT.equals(goodsPageListParam.getIsSaleOut())) {
+                String likeStr = likeValue(goodsPageListParam.getGoodsName());
+                Condition nameCondition = GOODS.GOODS_NAME.like(likeStr).or(GOODS.GOODS_SN.like(likeStr)).or(GOODS_SPEC_PRODUCT.PRD_SN.like(likeStr));
+                condition = condition.and(nameCondition);
+            } else {
+                condition = condition.and(GOODS.GOODS_NAME.like(likeValue(goodsPageListParam.getGoodsName())));
             }
-            condition = condition.and(nameCondition);
         }
-
 
         if (goodsPageListParam.getGoodsIds() != null && goodsPageListParam.getGoodsIds().size() > 0) {
             condition = condition.and(GOODS.GOODS_ID.in(goodsPageListParam.getGoodsIds()));
