@@ -300,8 +300,10 @@ export default {
       },
       tableData: [], // 表格
       // 分页
-      pageParams: {},
-      requestParam: {},
+      pageParams: {
+        currentPage: 1,
+        pageRows: 10
+      },
       // 返利状态列表
       statusList: [{
         label: '待返利',
@@ -340,12 +342,12 @@ export default {
   methods: {
     // 佣金统计列表
     initData () {
-      this.requestParam = {}
-      this.requestParam = this.searchParam
-      this.requestParam.userId = this.userId
-      this.requestParams.currentPage = this.pageParams.currentPage
-      this.requestParams.pageRows = this.pageParams.pageRows
-      brokerageList(this.requestParam).then(res => {
+      var paramsData = {}
+      paramsData = this.searchParam
+      paramsData.userId = this.userId
+      paramsData.currentPage = this.pageParams.currentPage
+      paramsData.pageRows = this.pageParams.pageRows
+      brokerageList(paramsData).then(res => {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
           this.pageParams = res.content.page
