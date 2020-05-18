@@ -1,10 +1,8 @@
 package com.vpu.mp.service.shop.activity.processor;
 
-import com.beust.jcommander.internal.Lists;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
@@ -18,9 +16,13 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.card.wxapp.WxCardExchangeService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author 王帅
@@ -28,7 +30,8 @@ import java.util.List;
  */
 @Service
 public class CardExchangeProcess extends WxCardExchangeService implements Processor,GoodsDetailProcessor,CreateOrderProcessor {
-
+    @Autowired
+    private OrderInfoService orderInfo;
     @Override
     public Byte getPriority() {
         return 1;
@@ -47,24 +50,12 @@ public class CardExchangeProcess extends WxCardExchangeService implements Proces
     }
 
     private void orderCheck(OrderBeforeParam param, CardFullDetail cardDetail) throws MpException {
-        //校验是否可以兑换
-        if(!CardUtil.canExchangGoods(cardDetail.getMemberCard().getIsExchang())) {
-            throw new MpException(JsonResultCode.CODE_ORDER_CARD_EXCHGE_NO_EXCHGE_GOODS);
-        }
-        //校验是否可以兑换此商品
-        if(CardUtil.isExchangPartGoods(cardDetail.getMemberCard().getIsExchang())) {
-            List<String> exchangGoodsIds = Lists.newArrayList(cardDetail.getMemberCard().getExchangGoods());
-            for (Integer goodsId: param.getGoodsIds()) {
-                if(!exchangGoodsIds.contains(goodsId.toString())) {
-                    throw new MpException(JsonResultCode.CODE_ORDER_CARD_EXCHGE_NO_EXCHGE_GOODS);
-                }
-            }
-        }
-        //剩余兑换商品次数校验/周期次数限制
-        Integer numLimit = cardDetail.getUserCard().getExchangSurplus();
-        if(numLimit < param.getGoods().stream().map(OrderBeforeParam.Goods::getGoodsNumber).reduce(0, Integer::sum)) {
-            throw new MpException(JsonResultCode.CODE_ORDER_CARD_EXCHGE_NUMBER_LIMIT);
-        }
+        //构造校验参数
+        Map<Integer, Integer> checkParam = param.getGoods().stream()
+            .collect(Collectors.groupingBy(OrderBeforeParam.Goods::getGoodsId))
+            .entrySet().stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, x -> x.getValue().stream().mapToInt(OrderBeforeParam.Goods::getGoodsNumber).sum()));
+        judgeExchangGoodsAvailable(checkParam, param.getMemberCardNo(), false);
     }
 
     private void orderInit(OrderBeforeParam param, CardFullDetail cardDetail) {
@@ -79,7 +70,6 @@ public class CardExchangeProcess extends WxCardExchangeService implements Proces
         //限次卡兑换不会存在待付款状态直接可以扣次数
         CardConsumpData cardConsumpData = new CardConsumpData();
         cardConsumpData.setUserId(order.getUserId());
-        cardConsumpData.setCardId(param.getActivityId());
         cardConsumpData.setCardNo(order.getCardNo());
         cardConsumpData.setReasonId(RemarkTemplate.ORDER_LIMIT_EXCHGE_GOODS.code);
         cardConsumpData.setType(CardConstant.MCARD_TP_LIMIT);
@@ -101,6 +91,17 @@ public class CardExchangeProcess extends WxCardExchangeService implements Proces
 
     @Override
     public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
+        OrderInfoRecord order = orderInfo.getOrderByOrderSn(returnOrderRecord.getOrderSn());
+        //限次卡兑换不会存在待付款状态直接可以扣次数
+        CardConsumpData cardConsumpData = new CardConsumpData();
+        cardConsumpData.setUserId(returnOrderRecord.getUserId());
+        cardConsumpData.setCardNo(order.getCardNo());
+        cardConsumpData.setReasonId(RemarkTemplate.ORDER_LIMIT_EXCHGE_GOODS.code);
+        cardConsumpData.setType(CardConstant.MCARD_TP_LIMIT);
+        cardConsumpData.setOrderSn(returnOrderRecord.getOrderSn());
+        cardConsumpData.setExchangeCount(returnGoods.stream().map(OrderReturnGoodsVo::getGoodsNumber).reduce(0, Integer::sum).shortValue());
+        cardConsumpData.setPayment("");
+        mCardSvc.updateMemberCardExchangeSurplus(cardConsumpData);
 
     }
 
