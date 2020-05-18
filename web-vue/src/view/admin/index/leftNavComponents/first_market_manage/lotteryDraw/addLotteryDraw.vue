@@ -149,10 +149,12 @@
               >
                 <section
                   class="couponImgWrapper"
+                  :class="item.status === 0 ? 'couponImgWrapper' : 'couponImgWrapperGray'"
                   style="line-height: normal"
                 >
                   <div
                     class="coupon_list_top"
+                    :class="item.status === 0 ? 'coupon_list_top' : 'couponListTop'"
                     v-if="item.actCode==='voucher'"
                   >
                     <span>￥</span>
@@ -160,6 +162,7 @@
                   </div>
                   <div
                     class="coupon_list_top"
+                    :class="item.status === 0 ? 'coupon_list_top' : 'couponListTop'"
                     v-if="item.actCode==='discount'"
                   >
                     <span>{{item.denomination}}</span>
@@ -167,22 +170,29 @@
                   </div>
                   <div
                     class="coupon_list_top"
+                    :class="item.status === 0 ? 'coupon_list_top' : 'couponListTop'"
                     v-if="item.actCode==='random'"
                   >
                     <span>{{$t('lotteryDraw.moneyTitle')}}</span>
                     <span class="number">{{item.randomMax}}{{$t('lotteryDraw.max')}}</span>
                   </div>
-                  <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
+                  <div
+                    class="coupon_center_limit"
+                    :class="item.status === 0 ? 'coupon_center_limit' : 'couponCenterLimit'"
+                  >{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
                   <div
                     class="coupon_center_number"
+                    :class="item.status === 0 ? 'coupon_center_number' : 'couponCenterNumber'"
                     v-if="item.surplus !==0"
                   >{{ $t('lotteryDraw.rewardTip1') }}{{item.surplus}}{{ $t('lotteryDraw.rewardTip2') }}</div>
                   <div
                     class="coupon_center_number"
+                    :class="item.status === 0 ? 'coupon_center_number' : 'couponCenterNumber'"
                     v-if="item.surplus ===0"
                   >{{ $t('lotteryDraw.rewardTip3') }}</div>
                   <div
                     class="coupon_list_bottom"
+                    :class="item.status === 0 ? 'coupon_list_bottom' : 'couponListBottom'"
                     :style="`background-image: url(${$imageHost}/image/admin/coupon_border.png)`"
                   >
                     <span v-if="item.scoreNumber === 0">{{ $t('lotteryDraw.rewardTip4') }}</span>
@@ -196,6 +206,7 @@
                   @click="deleteCouponImg(index)"
                 >
                   <img
+                    v-if="!isEdite"
                     :src="imgHost+'/image/admin/sign_del.png'"
                     alt=""
                   >
@@ -669,18 +680,36 @@ export default {
   border: 1px solid #fbb;
   border-radius: 10px;
 }
+.couponImgWrapperGray {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #d5d7d9;
+  border-radius: 10px;
+}
 .coupon_list_top {
   margin-top: 10px;
   color: #f60;
+}
+.couponListTop {
+  margin-top: 10px;
+  color: #d5d7d9;
 }
 .coupon_center_limit {
   height: 20px;
   color: #f60;
   font-size: 12px !important;
 }
+.couponCenterLimit {
+  height: 20px;
+  color: #d5d7d9;
+}
 .coupon_center_number {
   height: 20px;
   color: #fbb;
+}
+.couponCenterNumber {
+  height: 20px;
+  color: #d5d7d9;
 }
 .coupon_list_bottom {
   height: 24px;
@@ -689,6 +718,17 @@ export default {
   border-bottom-right-radius: 8px;
   color: #fff;
   background: #f66;
+  font-size: 12px;
+  /* background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png"); */
+  background-repeat: repeat-x;
+}
+.couponListBottom {
+  height: 24px;
+  line-height: 30px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  color: #fff;
+  background: #d5d7d9;
   font-size: 12px;
   /* background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png"); */
   background-repeat: repeat-x;
