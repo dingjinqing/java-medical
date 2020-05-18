@@ -12,6 +12,9 @@ import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.saas.SaasApplication;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
 /**
  * 表同步
  * @author zhaojianqiang
@@ -36,5 +39,24 @@ public class TableSynchronizeTask {
 			saas.getShopApp(r.getShopId()).shopTaskService.tableTaskService.userSys();
 		});
 	}
+    /**
+     * order表同步到主库，半夜三点执行
+     */
+//    @Scheduled(cron = "0 0 0,3 * * ?")
+    public void orderSynchronize() {
+        log.info("【同步任务】---订单数据同步到主库");
+        Result<ShopRecord> result = saas.shop.getAll();
+        //把前一天新增的订单导入到main库中
+        for (ShopRecord r : result) {
+            List<String> orderSns = saas.orderService.getNotClosedOrderIds(r.getShopId());
+            if ( !orderSns.isEmpty() ){
+                saas.getShopApp(r.getShopId()).shopTaskService.tableTaskService.oldOrderSynchronize(orderSns);
+            }
+            saas.getShopApp(r.getShopId()).shopTaskService.tableTaskService.orderSynchronize();
+        }
+        //更新订单状态不是已结束状态（order_status=1、2、8、10）订单的信息（其中已完成order_status=6的订单单独更新）
+
+
+    }
 
 }

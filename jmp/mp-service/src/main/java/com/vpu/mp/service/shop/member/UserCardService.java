@@ -2475,6 +2475,7 @@ public class UserCardService extends ShopBaseService {
 		list.add(orderRecord);
 		saas.getShopApp(getShopId()).couponPack.sendCouponPack(list);
         orderRecord.setSendCardNo(strings.get(0));
+        orderRecord.update();
 		logger().info("会员卡订单-支付完成(回调)-结束");
 		return strings.get(0);
 	}
@@ -2485,7 +2486,7 @@ public class UserCardService extends ShopBaseService {
      * @return
      */
     public CardOrdeerSnVo getCardNoByOrderSn(CardOrdeerSnParam param) {
-        Record1<String> record = db().select(VIRTUAL_ORDER.SEND_CARD_NO).where(VIRTUAL_ORDER.ORDER_SN.eq(param.getOrderSn()))
+        Record1<String> record = db().select(VIRTUAL_ORDER.SEND_CARD_NO).from(VIRTUAL_ORDER).where(VIRTUAL_ORDER.ORDER_SN.eq(param.getOrderSn()))
             .and(VIRTUAL_ORDER.USER_ID.eq(param.getUserId()))
             .fetchOne();
         CardOrdeerSnVo vo =new  CardOrdeerSnVo();

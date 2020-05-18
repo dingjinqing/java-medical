@@ -140,6 +140,8 @@ public final class DateUtil {
 
 	/**
 	 * 转为LocalDateTime类型
+	 * @param format 日期时间格式
+	 * @param dateTime 时间
 	 * @return
 	 */
 	public static LocalDateTime localDateTime(String format,String dateTime) {
@@ -372,7 +374,80 @@ public final class DateUtil {
         long t2 = formatTime2.getTime();
         return (int) (t1 - t2)/(1000*60*60);
     }
-	
+
+    /**
+     *  获取当天日期的开始时间
+     * @return {@link Date}
+     */
+    public static Date getDateForStartTime() {
+
+        return getStartCalendar(0).getTime();
+    }
+    private static Calendar getStartCalendar(Integer day){
+        return getCalendar(day,0,0,0,0);
+    }
+    private static Calendar getEndCalendar(Integer day){
+        return getCalendar(day,23,59,59,999);
+    }
+    private static Calendar getCalendar(Integer dayOfMonth,Integer hourOfDay,Integer minute,Integer second,Integer milliSecond){
+        Calendar todayStart = Calendar.getInstance();
+
+        if( hourOfDay != null){
+            todayStart.set(Calendar.HOUR_OF_DAY, 0);
+        }
+        if( minute != null){
+            todayStart.set(Calendar.MINUTE, 0);
+        }
+        if( second != null){
+            todayStart.set(Calendar.SECOND, 0);
+        }
+        if( milliSecond != null){
+            todayStart.set(Calendar.MILLISECOND, 0);
+        }
+        if( dayOfMonth != null ){
+            todayStart.add(Calendar.DAY_OF_MONTH,dayOfMonth);
+        }
+        return todayStart;
+    }
+    /**
+     *  获取当天日期的截止时间
+     * @return {@link Date}
+     */
+    public static Date getEndTime() {
+        return getEndCalendar(0).getTime();
+    }
+    /**
+     *  获取当天日期的开始时间
+     * @return {@link Timestamp}
+     */
+    public static Timestamp getTimestampForTodayStartTime(){
+        return Timestamp.from(getStartCalendar(0).toInstant());
+    }
+    /**
+     *  获取当天日期的截止时间
+     * @return {@link Timestamp}
+     */
+    public static Timestamp getTimestampForTodayEndTime(){
+        return Timestamp.from(getEndCalendar(0).toInstant());
+    }
+    /**
+     *  获取距离今天n天的开始时间
+     * @return {@link Timestamp}
+     */
+    public static Timestamp getTimestampForStartTime(Integer day){
+        return Timestamp.from(getStartCalendar(day).toInstant());
+    }
+    /**
+     *  获取距离今天n天的截止时间
+     * @return {@link Timestamp}
+     */
+    public static Timestamp getTimestampForEndTime(Integer day){
+        return Timestamp.from(getEndCalendar(day).toInstant());
+    }
+
+
+
+
 	/**
 	 * 获取两个时间点中的日期的列表
 	 * @param startTime
@@ -395,7 +470,7 @@ public final class DateUtil {
 		}
 		return list;
 	}
-	
+
 	/**
 	 * 	获取当前时间周期（日，周，月，季，年）的起止时间
 	 * 	@return Timestamp[2] = {start, end}

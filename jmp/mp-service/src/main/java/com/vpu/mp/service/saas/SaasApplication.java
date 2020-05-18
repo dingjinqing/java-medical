@@ -12,6 +12,7 @@ import com.vpu.mp.service.saas.image.SystemImageService;
 import com.vpu.mp.service.saas.index.ShopViewOrderService;
 import com.vpu.mp.service.saas.index.ShopViewService;
 import com.vpu.mp.service.saas.official.OfficialService;
+import com.vpu.mp.service.saas.order.OrderService;
 import com.vpu.mp.service.saas.overview.ShopOverviewService;
 import com.vpu.mp.service.saas.privilege.ChildAccountService;
 import com.vpu.mp.service.saas.privilege.MenuService;
@@ -106,6 +107,9 @@ public class SaasApplication {
 
     @Autowired
     public QuestionService questionService;
+
+    @Autowired
+    public OrderService orderService;
 
     @Autowired
     public EsMappingUpdateService esMappingUpdateService;

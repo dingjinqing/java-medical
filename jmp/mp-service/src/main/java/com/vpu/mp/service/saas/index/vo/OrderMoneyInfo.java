@@ -6,22 +6,22 @@ public class OrderMoneyInfo {
 
     private String time;
 
-    private BigDecimal wxPayed;
+    private BigDecimal wxPayed = new BigDecimal(0);
 
     /**
      * 余额支付
      */
-    private BigDecimal balancePayed;
+    private BigDecimal balancePayed= new BigDecimal(0);;
 
     /**
      * 卡余额支付
      */
-    private BigDecimal cardBalancePayed;
+    private BigDecimal cardBalancePayed= new BigDecimal(0);;
 
     /**
      * 积分支付
      */
-    private BigDecimal integralPayed;
+    private BigDecimal integralPayed= new BigDecimal(0);;
 
 
     public String getTime() {

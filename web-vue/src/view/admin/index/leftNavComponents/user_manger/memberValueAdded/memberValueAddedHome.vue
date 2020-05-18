@@ -30,6 +30,11 @@
           <renewalCard :showHeader="activeName" />
         </el-tab-pane>
       </el-tabs>
+      <el-button
+        class="toCheck"
+        size="small"
+        type="primary"
+      >查看交易数据</el-button>
     </div>
   </div>
 </template>
@@ -65,6 +70,11 @@ export default {
     overflow: hidden;
     overflow-y: auto;
     padding: 15px 25px;
+    .toCheck {
+      position: absolute;
+      top: 12px;
+      right: 26px;
+    }
   }
 }
 </style>

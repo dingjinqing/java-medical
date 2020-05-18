@@ -24,7 +24,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
-import static com.vpu.mp.db.main.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.main.tables.OrderInfoNew.ORDER_INFO_NEW;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 import static com.vpu.mp.db.main.tables.User.USER;
@@ -107,12 +107,12 @@ public class ShopViewService extends MainBaseService {
      * @return 支付代号，微信支付金额，账户支付金额，会员卡支付，积分支付金额
      */
     private OrderMoneyInfo  getOrderMoneyStatistics(){
-        return db().select(ORDER_INFO.PAY_CODE,DSL.sum(ORDER_INFO.MONEY_PAID).as("wxPayed"),
-                DSL.sum(ORDER_INFO.USE_ACCOUNT).as("balancePayed"),
-                DSL.sum(ORDER_INFO.MEMBER_CARD_REDUCE).as("cardBalancePayed"),
-                DSL.sum(ORDER_INFO.SCORE_DISCOUNT).as("integralPayed")).
-            from(ORDER_INFO).where(ORDER_INFO.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).
-            groupBy(ORDER_INFO.PAY_CODE).
+        return db().select(ORDER_INFO_NEW.PAY_CODE,DSL.sum(ORDER_INFO_NEW.MONEY_PAID).as("wxPayed"),
+                DSL.sum(ORDER_INFO_NEW.USE_ACCOUNT).as("balancePayed"),
+                DSL.sum(ORDER_INFO_NEW.MEMBER_CARD_REDUCE).as("cardBalancePayed"),
+                DSL.sum(ORDER_INFO_NEW.SCORE_DISCOUNT).as("integralPayed")).
+            from(ORDER_INFO_NEW).where(ORDER_INFO_NEW.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).
+            groupBy(ORDER_INFO_NEW.PAY_CODE).
             fetchAnyInto(OrderMoneyInfo.class);
 
     }
@@ -122,8 +122,8 @@ public class ShopViewService extends MainBaseService {
      * @return 统计数量
      */
     private Integer getAllOrderNum(){
-        return db().selectCount().from(ORDER_INFO).
-            where(ORDER_INFO.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).
+        return db().selectCount().from(ORDER_INFO_NEW).
+            where(ORDER_INFO_NEW.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).
             fetchOne(0,Integer.class);
     }
 
@@ -239,19 +239,19 @@ public class ShopViewService extends MainBaseService {
     private List<BaseMoneyInfo> getOrderMoneyByDay(ShopViewParam param){
         List<LocalDate> localDates = DateUtil.getAllDatesBetweenTwoDates(
             param.getStartTime().toLocalDateTime().toLocalDate(),param.getEndTime().toLocalDateTime().toLocalDate());
-        Map<String,String> dateMap = localDates.stream().
+        Map<String,OrderMoneyInfo> dateMap = localDates.stream().
             map(x->DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,Timestamp.valueOf(x.atStartOfDay()))).
-            collect(Collectors.toMap(x->x,y->"0",(oldValue,newValue)->oldValue,LinkedHashMap::new));
-        Field<String> time = dateFormat(ORDER_INFO.PAY_TIME,DateUtil.DATE_FORMAT_SIMPLE).as("time");
-        List<OrderMoneyInfo> moneyInfos = db().select(time,ORDER_INFO.PAY_CODE,DSL.sum(ORDER_INFO.MONEY_PAID).as("wxPayed"),
-            DSL.sum(ORDER_INFO.USE_ACCOUNT).as("balancePayed"),
-            DSL.sum(ORDER_INFO.MEMBER_CARD_REDUCE).as("cardBalancePayed"),
-            DSL.sum(ORDER_INFO.SCORE_DISCOUNT).as("integralPayed")).
-            from(ORDER_INFO).
-            where(ORDER_INFO.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).
-                and(ORDER_INFO.IS_COD.eq((byte)0)).and(ORDER_INFO.PAY_TIME.greaterOrEqual(param.getStartTime())).
-            and(ORDER_INFO.PAY_TIME.lessOrEqual(param.getEndTime())).
-            groupBy(time,ORDER_INFO.PAY_CODE).fetchInto(OrderMoneyInfo.class);
+            collect(Collectors.toMap(x->x,y->new OrderMoneyInfo(),(oldValue,newValue)->oldValue,LinkedHashMap::new));
+        Field<String> time = dateFormat(ORDER_INFO_NEW.PAY_TIME,DateUtil.DATE_FORMAT_SIMPLE).as("time");
+        List<OrderMoneyInfo> moneyInfos = db().select(time,ORDER_INFO_NEW.PAY_CODE,DSL.sum(ORDER_INFO_NEW.MONEY_PAID).as("wxPayed"),
+            DSL.sum(ORDER_INFO_NEW.USE_ACCOUNT).as("balancePayed"),
+            DSL.sum(ORDER_INFO_NEW.MEMBER_CARD_REDUCE).as("cardBalancePayed"),
+            DSL.sum(ORDER_INFO_NEW.SCORE_DISCOUNT).as("integralPayed")).
+            from(ORDER_INFO_NEW).
+            where(ORDER_INFO_NEW.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).
+                and(ORDER_INFO_NEW.IS_COD.eq((byte)0)).and(ORDER_INFO_NEW.PAY_TIME.greaterOrEqual(param.getStartTime())).
+            and(ORDER_INFO_NEW.PAY_TIME.lessOrEqual(param.getEndTime())).
+            groupBy(time,ORDER_INFO_NEW.PAY_CODE).fetchInto(OrderMoneyInfo.class);
 
 
         return getBaseInfoList(moneyInfos,dateMap);
@@ -267,13 +267,13 @@ public class ShopViewService extends MainBaseService {
         Map<String,Integer> dateMap = localDates.stream().
             map(x->DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,Timestamp.valueOf(x.atStartOfDay()))).
             collect(Collectors.toMap(x->x,y->0,(oldValue,newValue)->oldValue,LinkedHashMap::new));
-        Field<String> time = dateFormat(ORDER_INFO.PAY_TIME,DateUtil.DATE_FORMAT_SIMPLE).as("time");
+        Field<String> time = dateFormat(ORDER_INFO_NEW.PAY_TIME,DateUtil.DATE_FORMAT_SIMPLE).as("time");
         Result<Record2<String,Integer>> result =db().
-            select(time,DSL.count(ORDER_INFO.ID)).
-            from(ORDER_INFO).
+            select(time,DSL.count(ORDER_INFO_NEW.ORDER_ID)).
+            from(ORDER_INFO_NEW).
             where(
-                ORDER_INFO.PAY_TIME.greaterOrEqual(param.getStartTime())).
-            and(ORDER_INFO.PAY_TIME.lessOrEqual(param.getEndTime())
+                ORDER_INFO_NEW.PAY_TIME.greaterOrEqual(param.getStartTime())).
+            and(ORDER_INFO_NEW.PAY_TIME.lessOrEqual(param.getEndTime())
             ).groupBy(time).fetch();
         return getBaseInfoList(result,dateMap);
     }
@@ -309,9 +309,9 @@ public class ShopViewService extends MainBaseService {
         }
         return list;
     }
-    private List<BaseMoneyInfo> buildMoneyInit(Map<String,String> dateMap){
+    private List<BaseMoneyInfo> buildMoneyInit(Map<String,OrderMoneyInfo> dateMap){
         List<BaseMoneyInfo> list = Lists.newArrayList();
-        for( Map.Entry<String,String> entry:dateMap.entrySet() ){
+        for( Map.Entry<String,OrderMoneyInfo> entry:dateMap.entrySet() ){
             BaseMoneyInfo info =  new BaseMoneyInfo();
             info.setDate(entry.getKey());
             info.setMoney(entry.getValue());
@@ -326,9 +326,9 @@ public class ShopViewService extends MainBaseService {
         }
         return buildNumInit(dateMap);
     }
-    private List<BaseMoneyInfo> getBaseInfoList(List<OrderMoneyInfo> result,Map<String,String> dateMap){
+    private List<BaseMoneyInfo> getBaseInfoList(List<OrderMoneyInfo> result,Map<String,OrderMoneyInfo> dateMap){
         for( OrderMoneyInfo info: result ){
-            dateMap.put(info.getTime(),info.getAll().toString());
+            dateMap.put(info.getTime(),info);
         }
         return buildMoneyInit(dateMap);
     }

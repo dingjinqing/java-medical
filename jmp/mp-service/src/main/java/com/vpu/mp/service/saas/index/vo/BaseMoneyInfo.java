@@ -4,7 +4,7 @@ public class BaseMoneyInfo {
 
     private String date;
 
-    private String money;
+    private OrderMoneyInfo money;
 
     public String getDate() {
         return date;
@@ -14,11 +14,11 @@ public class BaseMoneyInfo {
         this.date = date;
     }
 
-    public String getMoney() {
+    public OrderMoneyInfo getMoney() {
         return money;
     }
 
-    public void setMoney(String money) {
+    public void setMoney(OrderMoneyInfo money) {
         this.money = money;
     }
 }

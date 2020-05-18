@@ -1,13 +1,19 @@
 package com.vpu.mp.service.shop.task.table;
 
+import com.google.common.collect.Sets;
+import com.vpu.mp.db.main.Tables;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.wxapp.account.UserSysVo;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.user.user.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.wxapp.account.UserSysVo;
-import com.vpu.mp.service.shop.user.user.UserService;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 同步表的操作
@@ -20,6 +26,11 @@ import lombok.extern.slf4j.Slf4j;
 public class TableTaskService extends ShopBaseService {
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+    private OrderInfoService orderInfoService;
+
+	private static com.vpu.mp.db.shop.Tables SHOP_TABLES;
 
 	public void userSys() {
 		log.info("#####################开始同步店：" + getShopId() + "的user#####################");
@@ -36,4 +47,27 @@ public class TableTaskService extends ShopBaseService {
 				vo2.getUpdateFail(), vo2.getInsertSuccess(), vo2.getInsertFail());
 		log.info("#####################结束同步店：" + getShopId() + "的userDetail#####################");
 	}
+
+
+	public  void orderSynchronize(){
+	    db().insertInto(Tables.ORDER_INFO_NEW)
+            .select(
+                db().selectFrom(com.vpu.mp.db.shop.Tables.ORDER_INFO).
+                    where(
+                        com.vpu.mp.db.shop.Tables.ORDER_INFO.CREATE_TIME.greaterOrEqual(DateUtil.getTimestampForStartTime(-1))
+                        .and(com.vpu.mp.db.shop.Tables.ORDER_INFO.CREATE_TIME.le(DateUtil.getTimestampForEndTime(-1)))
+                    )
+            );
+    }
+    public void oldOrderSynchronize(List<String> orderSns){
+	    List<String> returnedOrderIds = orderInfoService.getReturnedOnTheDay();
+        Set<String> result = Sets.newHashSet();
+        result.addAll(orderSns);
+        result.addAll(returnedOrderIds);
+        List<OrderInfoRecord> newRecords =  db().selectFrom(com.vpu.mp.db.shop.Tables.ORDER_INFO)
+            .where(com.vpu.mp.db.shop.Tables.ORDER_INFO.ORDER_SN.in(result))
+            .fetch(x->x.into(OrderInfoRecord.class));
+        saas().orderService.updateOldData(newRecords);
+    }
+
 }
