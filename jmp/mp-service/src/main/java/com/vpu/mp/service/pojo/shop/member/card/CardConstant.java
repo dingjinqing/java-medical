@@ -238,4 +238,8 @@ public class CardConstant {
     /**用户会员卡已过期*/
 	public static final Byte USER_CARD_STATUS_OUT_OF_EXPIRE = 4;
 
+	/** 会员卡续费回调订单标识 */
+    public static final String USER_CARD_RENEW_ORDER = "x";
+    /** 会员卡续费订单已完成 */
+    public static final Byte CARD_RENEW_ORDER_STATUS_OK = 1;
 }
