@@ -75,7 +75,7 @@ export const cn = {
   shipping: '运费',
   packageDiscount: '一口价优惠',
   limitedCard:
-    '限次卡-{cardName}-{cardNo} 抵扣金额：-{currency}{reduceMoney} *{goodsAmount} 次',
+    '限次卡-{cardName}-{cardNo} 抵扣金额：-{currency}{reduceMoney} * {goodsAmount} 次',
   memberCard: '会员卡优惠',
   promotionReduce: '满折满减优惠',
   couponDiscount: '优惠券优惠',

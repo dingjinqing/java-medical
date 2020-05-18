@@ -212,9 +212,12 @@ export default {
         endInviteTime: ''
       },
       totalGetFanliMoney: 0, // 累计获得佣金数
-      requestParam: {},
       tableData: [], // 表格
-      pageParams: {}, // 分页
+      // 分页
+      pageParams: {
+        currentPage: 1,
+        pageRows: 10
+      },
       userId: '', // 用户id
       type: 'invite' // 页面类型(invite已邀请用户, indirect间接邀请)
     }
@@ -227,11 +230,12 @@ export default {
   methods: {
     // 邀请用户列表
     initData () {
-      this.requestParam = this.searchParam
-      this.requestParam.userId = this.userId
-      // this.requestParams.currentPage = this.pageParams.currentPage
-      // this.requestParams.pageRows = this.pageParams.pageRows
-      inviteUserList(this.requestParam).then(res => {
+      var paramsData = {}
+      paramsData = this.searchParam
+      paramsData.userId = this.userId
+      paramsData.currentPage = this.pageParams.currentPage
+      paramsData.pageRows = this.pageParams.pageRows
+      inviteUserList(paramsData).then(res => {
         if (res.error === 0) {
           this.totalGetFanliMoney = res.content.totalGetFanliMoney
           this.tableData = res.content.inviteUserInfo.dataList
