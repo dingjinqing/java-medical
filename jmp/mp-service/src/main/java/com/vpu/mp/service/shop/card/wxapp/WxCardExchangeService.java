@@ -3,6 +3,8 @@ package com.vpu.mp.service.shop.card.wxapp;
 import static com.vpu.mp.db.shop.Tables.CHECKED_GOODS_CART;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
+import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -279,27 +281,57 @@ public class WxCardExchangeService extends ShopBaseService {
 		
 		condition = condition
 				.and(ORDER_GOODS.IS_GIFT.eq(OrderConstant.IS_GIFT_N))
-				.and(ORDER_INFO.EXCHANG.eq(CardConstant.MCARD_TP_LIMIT));	
+				.and(ORDER_INFO.EXCHANG.eq(CardConstant.MCARD_TP_LIMIT))
+				.and(ORDER_INFO.CARD_NO.eq(cardNo));
 		
 		if(goodsId != null) {
 			condition = condition.and(ORDER_GOODS.GOODS_ID.eq(goodsId));
 		}
-		
+		//	周期内退货的兑换商品
+		Integer returnGoodsNum = 0;
 		if(null != times) {
 			//	有效期范围内
 			condition = condition
 					.and(ORDER_INFO.CREATE_TIME.ge(times[0]))
 					.and(ORDER_INFO.CREATE_TIME.le(times[1]));
+			
+			returnGoodsNum = getReturnExchangGoodsTimesDuringPeriod(goodsId,cardNo,times);
 		}
-		 return db()
-			.select(DSL.sum(ORDER_GOODS.GOODS_NUMBER))
+		Integer exhangGoodsNum = db().select(DSL.sum(ORDER_GOODS.GOODS_NUMBER))
 			.from(ORDER_GOODS)
 			.innerJoin(ORDER_INFO).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
 			.where(condition)
 			.fetchOne(0, int.class);
+		
+		return exhangGoodsNum - returnGoodsNum;
 	}
 
-
+	
+	/**
+	 * 获取有效期间内，兑换商品的退货数量
+	 * @param goodsId
+	 * @param cardNo
+	 * @param timeType
+	 * @return 退兑换商品数量
+	 */
+	private Integer getReturnExchangGoodsTimesDuringPeriod(Integer goodsId,String cardNo,Timestamp[] times) {
+		Condition condition = DSL.noCondition()
+				.and(ORDER_INFO.EXCHANG.eq(CardConstant.MCARD_TP_LIMIT))
+				.and(ORDER_INFO.CARD_NO.eq(cardNo))
+				.and(ORDER_GOODS.IS_GIFT.eq(OrderConstant.IS_GIFT_N));
+		if(times!=null) {
+			condition = condition.and(RETURN_ORDER.REFUND_SUCCESS_TIME.gt(times[0]))
+					.and(RETURN_ORDER.REFUND_SUCCESS_TIME.lt(times[1]));
+		}
+		
+		return db().select(DSL.sum(RETURN_ORDER_GOODS.GOODS_NUMBER))
+				.from(RETURN_ORDER_GOODS)
+				.innerJoin(ORDER_INFO).on(RETURN_ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
+				.innerJoin(RETURN_ORDER).on(RETURN_ORDER_GOODS.RET_ID.eq(RETURN_ORDER.RET_ID))
+				.innerJoin(ORDER_GOODS).on(RETURN_ORDER_GOODS.REC_ID.eq(ORDER_GOODS.REC_ID))
+				.where(condition)
+				.fetchOne(0,int.class);
+	}
 	/**
 	 * 获取该卡兑换某个商品的次数
 	 * @param goodsId 商品Id
@@ -322,22 +354,25 @@ public class WxCardExchangeService extends ShopBaseService {
 		CardFullDetail cardDetail = mCardSvc.getCardDetailByNo(cardNo);
 		MemberCardRecord memberCard = cardDetail.getMemberCard();
 		UserCardRecord userCard = cardDetail.getUserCard();
-		Integer userCheckedCount = userCheckedGoodsSvc.getUserCheckedCount(userCard.getUserId(),cardNo);
+		//	用户已经加购的所有商品数量
+		Integer userCheckedTotalNum = userCheckedGoodsSvc.getUserCheckedCount(userCard.getUserId(),cardNo);
+		
 		//	1-检测该限次卡是否用
 		CardUseCondition judegeCardUsable = limitCardOpt.judegeCardUsable(userCard,memberCard);
 		
 		if(!judegeCardUsable.isUsable()) {
 			throw new MpException(judegeCardUsable.getErrorCode());
 		}
-		
 		for(Map.Entry<Integer, Integer> entry: goodsMap.entrySet()) {
 			Integer goodsId = entry.getKey();
 			Integer goodsNum = entry.getValue();
 			logger().info("判断该卡能够兑换该商品: "+goodsId+" "+goodsNum);
+			
 			if(goodsNum==null) {
 				//	默认兑换商品数量为1
 				goodsNum = 1;
 			}
+			
 			//	2-检测该兑换商品是否满足该限次卡的设定的配置
 			//	已经兑换商品的总次数
 			Integer exchangGoodsAllTimes = getExchangGoodsAllTimes(goodsId,cardNo);
@@ -353,12 +388,14 @@ public class WxCardExchangeService extends ShopBaseService {
 				logger().info("该商品能够兑换不限制次数");
 			}else {
 				logger().info("start: 检测该兑换商品是否满足该限次卡的设定的配置");
+				//	获取已经加购的该商品数量
+				Integer goodsCheckedCount = userCheckedGoodsSvc.getUserCheckedGoodsByGoodsId(userCard.getUserId(),goodsId,cardNo);
 				if(considerUserCheckedGoods) {
 					Integer remain = allowExchangTimes-exchangGoodsAllTimes;
 					//	该卡本商品剩余可兑换{remain}件，已加购{userCheckedCount}件
-					if(goodsNum+userCheckedCount>remain) {
-						logger().info("该卡本商品剩余可兑换"+remain+"件，已加购"+userCheckedCount+"件");
-						throw new MpException(JsonResultCode.MSG_CARD_ALLOW_TIME_OVER_ALIAS,"",String.valueOf(remain),String.valueOf(userCheckedCount));
+					if(goodsNum+goodsCheckedCount>remain) {
+						logger().info("该卡本商品剩余可兑换"+remain+"件，已加购"+goodsCheckedCount+"件");
+						throw new MpException(JsonResultCode.MSG_CARD_ALLOW_TIME_OVER_ALIAS,"",String.valueOf(remain),String.valueOf(goodsCheckedCount));
 					}
 				}else {
 					if((exchangGoodsAllTimes+goodsNum)>allowExchangTimes) {
@@ -373,11 +410,13 @@ public class WxCardExchangeService extends ShopBaseService {
 			//	已经加购的商品
 			logger().info("start: 会员卡配置的兑换商品兑换总次数次数是否可用");
 			Integer exchangSurplus = userCard.getExchangSurplus();
+			
+			
 			if(considerUserCheckedGoods) {
-				if(exchangSurplus<=0 || (userCheckedCount+goodsNum)>exchangSurplus) {
+				if(exchangSurplus<=0 || (userCheckedTotalNum+goodsNum)>exchangSurplus) {
 					//	本卡剩余可兑换{exchangSurplus}件，已加购{userCheckedCount}件
-					logger().info("本卡剩余可兑换"+exchangSurplus+"件,已加购"+userCheckedCount);
-					throw new MpException(JsonResultCode.MSG_CARD_ADD_TIMES_OVER,"",String.valueOf(exchangSurplus),String.valueOf(userCheckedCount));
+					logger().info("本卡剩余可兑换"+exchangSurplus+"件,已加购"+userCheckedTotalNum);
+					throw new MpException(JsonResultCode.MSG_CARD_ADD_TIMES_OVER,"",String.valueOf(exchangSurplus),String.valueOf(userCheckedTotalNum));
 				}
 			}else {
 				if(exchangSurplus<=0 || goodsNum>exchangSurplus) {
@@ -403,11 +442,11 @@ public class WxCardExchangeService extends ShopBaseService {
 					//	期间描述
 					String periodLimitDesc = CardExchangService.getPeriodLimitDesc(periodLimit, null);
 					if(considerUserCheckedGoods) {
-						if(remainExchangTimes<=0 || (userCheckedCount+goodsNum)>remainExchangTimes) {
+						if(remainExchangTimes<=0 || (userCheckedTotalNum+goodsNum)>remainExchangTimes) {
 							
 							// 该卡{periodLimitDesc}剩余兑换次数{remainExchangTimes},已加购{userCheckedCount}件
-							logger().info("该卡"+periodLimitDesc+"剩余兑换次数"+remainExchangTimes+",已加购"+userCheckedCount+"件");
-							throw new MpException(JsonResultCode.MSG_CARD_PERIOD_ADD_TIMES_OVER,"",periodLimitDesc,String.valueOf(remainExchangTimes),String.valueOf(userCheckedCount));
+							logger().info("该卡"+periodLimitDesc+"剩余兑换次数"+remainExchangTimes+",已加购"+userCheckedTotalNum+"件");
+							throw new MpException(JsonResultCode.MSG_CARD_PERIOD_ADD_TIMES_OVER,"",periodLimitDesc,String.valueOf(remainExchangTimes),String.valueOf(userCheckedTotalNum));
 						}
 					}else {
 						if(remainExchangTimes<=0 || goodsNum>remainExchangTimes) {

@@ -104,7 +104,7 @@ public class AdminOrderController extends AdminBaseController {
 		try {
 			return success(shop().readOrder.getReturnOrder(order));
 		} catch (MpException e) {
-			return fail(e.getErrorCode());
+            return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
 		}
 	}
 	
@@ -134,7 +134,7 @@ public class AdminOrderController extends AdminBaseController {
 		try {
 			return success(shop().orderActionFactory.orderQuery(param));
 		} catch (MpException e) {
-			return fail(e.getErrorCode());
+            return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
 		}
 	}
 	
@@ -149,7 +149,7 @@ public class AdminOrderController extends AdminBaseController {
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
         }else {
-            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
+            return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
 	}
 	
@@ -162,7 +162,7 @@ public class AdminOrderController extends AdminBaseController {
 		try {
 			return success(shop().orderActionFactory.orderQuery(param));
 		} catch (MpException e) {
-			return fail(e.getErrorCode());
+            return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
 		}
 	}
 	
@@ -177,7 +177,7 @@ public class AdminOrderController extends AdminBaseController {
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
         }else {
-            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
+            return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
 	}
 	
@@ -192,7 +192,7 @@ public class AdminOrderController extends AdminBaseController {
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
         }else {
-            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
+            return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
 	}
 	
@@ -207,7 +207,7 @@ public class AdminOrderController extends AdminBaseController {
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
         }else {
-            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
+            return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
 	}
 	
@@ -222,7 +222,7 @@ public class AdminOrderController extends AdminBaseController {
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
         }else {
-            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
+            return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
 	}
 
@@ -274,7 +274,7 @@ public class AdminOrderController extends AdminBaseController {
             shop().writeOrder.batchShip(param);
             return success();
         } catch (MpException e) {
-            return fail(e.getErrorCode(), e.getCodeParam());
+            return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
         }
     }
 

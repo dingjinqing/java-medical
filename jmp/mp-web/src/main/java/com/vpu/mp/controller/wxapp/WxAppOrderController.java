@@ -52,7 +52,7 @@ public class WxAppOrderController extends WxAppBaseController{
         try {
             return success(shop().orderActionFactory.orderQuery(param));
         } catch (MpException e) {
-            return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParam());
+            return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
         }
     }
 
@@ -85,7 +85,7 @@ public class WxAppOrderController extends WxAppBaseController{
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
         }else {
-            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
+            return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
     }
 
@@ -98,7 +98,7 @@ public class WxAppOrderController extends WxAppBaseController{
 		try {
 			return success(shop().orderActionFactory.orderQuery(param));
 		} catch (MpException e) {
-            return fail(e.getErrorCode(), e.getCodeParam());
+            return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
 		}
 	}
 
@@ -113,7 +113,7 @@ public class WxAppOrderController extends WxAppBaseController{
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
         }else {
-            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
+            return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
 	}
 
@@ -128,7 +128,7 @@ public class WxAppOrderController extends WxAppBaseController{
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
         }else {
-            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
+            return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
 	}
 
@@ -158,7 +158,7 @@ public class WxAppOrderController extends WxAppBaseController{
 		try {
 			return success(shop().readOrder.mpGet(param));
 		} catch (MpException e) {
-			return fail(e.getErrorCode(), e.getCodeParam());
+            return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
 		}
 	}
 
@@ -195,7 +195,7 @@ public class WxAppOrderController extends WxAppBaseController{
         try {
             return success(shop().readOrder.mpOrderReturnList(param));
         } catch (MpException e) {
-            return fail(e.getErrorCode(), e.getCodeParam());
+            return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
         }
     }
 
@@ -208,7 +208,7 @@ public class WxAppOrderController extends WxAppBaseController{
         try {
             return success(shop().readOrder.getReturnOrder(param));
         } catch (MpException e) {
-            return fail(e.getErrorCode(), e.getCodeParam());
+            return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
         }
     }
 
@@ -242,7 +242,7 @@ public class WxAppOrderController extends WxAppBaseController{
         try {
             return success(shop().readOrder.insteadPayInfo(param));
         } catch (MpException e) {
-            return fail(e.getErrorCode(), e.getCodeParam());
+            return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
         }
     }
 
@@ -256,7 +256,7 @@ public class WxAppOrderController extends WxAppBaseController{
         try {
             return success(shop().orderActionFactory.orderQuery(param));
         } catch (MpException e) {
-            return fail(e.getErrorCode(), e.getCodeParam());
+            return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
         }
     }
 
@@ -272,7 +272,7 @@ public class WxAppOrderController extends WxAppBaseController{
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
         }else {
-            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
+            return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
     }
 

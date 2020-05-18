@@ -249,7 +249,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //校验
             checkOrder(orderBeforeVo, orderBo, param);
         } catch (MpException e) {
-            return ExecuteResult.create(e.getErrorCode(), null,  e.getCodeParam());
+            return ExecuteResult.create(e.getErrorCode(), e.getErrorResult(),  e.getCodeParam());
         }
         //生成orderSn
         String orderSn = IncrSequenceUtil.generateOrderSn(OrderConstant.ORDER_SN_PREFIX);
@@ -288,7 +288,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             logger().error("下单捕获mp异常", e);
             Throwable cause = e.getCause();
             if (cause instanceof MpException) {
-                return ExecuteResult.create(((MpException) cause).getErrorCode(), ((MpException) cause).getCodeParam());
+                return ExecuteResult.create(((MpException) cause).getErrorCode(), ((MpException) cause).getErrorResult(), ((MpException) cause).getCodeParam());
             } else {
                 return ExecuteResult.create(JsonResultCode.CODE_ORDER_DATABASE_ERROR, e.getMessage());
             }
@@ -590,6 +590,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //下单页面显示积分兑换金额时去除积分,结算不做此逻辑（只是为了展示方便）
         if(BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType())) {
             vo.getOrderGoods().forEach(x-> x.setDiscountedGoodsPrice(x.getGoodsScore() != null && x.getGoodsScore() > 0 ? BigDecimalUtil.subtrac(x.getDiscountedGoodsPrice(), BigDecimalUtil.divide(new BigDecimal(x.getGoodsScore()), new BigDecimal(vo.getScoreProportion()))) : x.getDiscountedGoodsPrice()));
+        }else if(BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER.equals(param.getActivityType())) {
+            vo.getOrderGoods().forEach(x-> {if(x.getIsGift() != null && OrderConstant.NO == x.getIsGift()) {x.setDiscountedGoodsPrice(x.getGoodsPrice());}});
         }
         // 积分使用规则
         setScorePayRule(vo);
