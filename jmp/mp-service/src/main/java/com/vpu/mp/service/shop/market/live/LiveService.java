@@ -104,6 +104,7 @@ public class LiveService extends ShopBaseService {
 	 * @return
 	 */
 	public PageResult<LiveListVo> getList(LiveListParam param) {
+		getLiveList();
 		PageResult<LiveListVo> pageList = getPageList(param);
 		List<LiveListVo> dataList = pageList.getDataList();
 		for (LiveListVo liveListVo : dataList) {
