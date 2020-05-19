@@ -6,5 +6,6 @@ export const cn = {
   orderSn: '订单号',
   packName: '优惠券礼包',
   startTime: '下单起始时间',
-  endTime: '下单结束时间'
+  endTime: '下单结束时间',
+  payCode: '支付方式'
 }

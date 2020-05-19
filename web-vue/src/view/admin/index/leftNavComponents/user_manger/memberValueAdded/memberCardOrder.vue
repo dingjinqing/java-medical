@@ -29,21 +29,28 @@
           ></el-input>
         </div>
         <div class="filters_item">
-          <span>{{$t('memberCardOrder.memberCardType')}}：</span>
+          <span>支付方式：</span>
           <el-select
-            v-model="searchParams.cardType"
+            v-model="searchParams.payCode"
             :placeholder="$t('orderCommon.selectPlaceholder')"
             size="small"
             class="default_input"
-            filterable
           >
             <el-option
-              :label="$t('memberCardOrder.normalMemberCard')"
-              :value="0"
+              label="全部"
+              :value="null"
             ></el-option>
             <el-option
-              :label="$t('memberCardOrder.limitNumMemberCard')"
-              :value="1"
+              label="微信支付"
+              value="wxpay"
+            ></el-option>
+            <el-option
+              label="余额支付"
+              value="balance"
+            ></el-option>
+            <el-option
+              label="积分支付支付"
+              value="score"
             ></el-option>
           </el-select>
         </div>
@@ -61,6 +68,29 @@
           </el-date-picker>
         </div>
         <div class="filters_item">
+          <span>{{$t('memberCardOrder.memberCardType')}}：</span>
+          <el-select
+            v-model="searchParams.cardType"
+            :placeholder="$t('orderCommon.selectPlaceholder')"
+            size="small"
+            class="default_input"
+            filterable
+          >
+            <el-option
+              label="请选择会员卡类型"
+              :value="null"
+            ></el-option>
+            <el-option
+              :label="$t('memberCardOrder.normalMemberCard')"
+              :value="0"
+            ></el-option>
+            <el-option
+              :label="$t('memberCardOrder.limitNumMemberCard')"
+              :value="1"
+            ></el-option>
+          </el-select>
+        </div>
+        <div class="filters_item">
           <el-button
             @click="initDataList"
             type="primary"
@@ -69,6 +99,7 @@
           <el-button
             type="default"
             size="small"
+            @click="exportDataList"
           >{{$t('orderCommon.exportTable')}}</el-button>
         </div>
       </div>
@@ -115,6 +146,45 @@
                 <div class="tb-head_box">
                   <div class="left">
                     <span>{{$t('orderCommon.orderCoding')}}:{{orderItem.orderSn}}</span>
+                    <div class="payType">支付方式：
+                      <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="微信支付"
+                        placement="top"
+                      >
+                        <img
+                          :src="$imageHost+'/image/admin/wxpay.png'"
+                          alt=""
+                          v-if="orderItem.moneyPaid"
+                        >
+                      </el-tooltip>
+                      <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="余额支付"
+                        placement="top"
+                      >
+                        <img
+                          :src="$imageHost+'/image/admin/account.png'"
+                          alt=""
+                          v-if="orderItem.useAccount"
+                        >
+                      </el-tooltip>
+                      <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="积分支付"
+                        placement="top"
+                      >
+                        <img
+                          :src="$imageHost+'/image/admin/rewards_points.png'"
+                          alt=""
+                          v-if="orderItem.useScore"
+                        >
+                      </el-tooltip>
+
+                    </div>
                   </div>
                 </div>
               </td>
@@ -161,6 +231,11 @@
       :dataInfo="refundInfo"
       :show.sync="showRefund"
     />
+    <!--导出数据弹窗-->
+    <memberOrderExportDialog
+      :show.sync="showExportConfirm"
+      :param="this.searchParams"
+    />
   </div>
 </template>
 
@@ -169,7 +244,8 @@ import { getMemberCardOrderList } from '@/api/admin/orderManage/virtualGoodsOrde
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination'),
-    ManualRefund: () => import('./refundDialog')
+    ManualRefund: () => import('./refundDialog'),
+    MemberOrderExportDialog: () => import('./memberOrderExportDialog') // 会员卡购买页面数据导出弹窗
   },
   data () {
     return {
@@ -180,7 +256,7 @@ export default {
       searchParams: {},
       memberCardOrderList: [],
       applicationTime: '',
-
+      showExportConfirm: false, // 是否展示导出数据弹窗
       // 原始表格数据
       originalData: []
     }
@@ -242,19 +318,20 @@ export default {
       })
     },
     returnFlagType (orderSn) {
+      // else if (orderInfo.returnFlag === 1 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > orderInfo.returnScore + orderInfo.returnAccount + orderInfo.returnMoney)) {
+      //   return `<div><a class="refund">${this.$t('orderCommon.manualRefund')}</a><br/><a class="view">${this.$t('orderCommon.checkRefund')}</a></div>`
+      // }
       let orderInfo = this.memberCardOrderList.find(item => {
         return item.orderSn === orderSn
       })
       console.log(orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore)
       if (orderInfo.returnFlag === 0 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > 0)) {
         let statusStr = `<div>${this.$t('orderCommon.orderFinished')}`
-        if (orderInfo.canReturn === 1) statusStr += `<br/><a class="refund" >${this.$t('orderCommon.manualRefund')}</a>`
+        // if (orderInfo.canReturn === 1) statusStr += `<br/><a class="refund" >${this.$t('orderCommon.manualRefund')}</a>`
         statusStr += '</div>'
         return statusStr
       } else if (orderInfo.returnFlag === 0) {
         return `<div>${this.$t('orderCommon.orderFinished')}<div/>`
-      } else if (orderInfo.returnFlag === 1 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > orderInfo.returnScore + orderInfo.returnAccount + orderInfo.returnMoney)) {
-        return `<div><a class="refund">${this.$t('orderCommon.manualRefund')}</a><br/><a class="view">${this.$t('orderCommon.checkRefund')}</a></div>`
       } else if (orderInfo.returnFlag === 1) {
         return `<div>${this.$t('orderCommon.refundFailed')}</div>`
       } else {
@@ -273,6 +350,11 @@ export default {
         this.$set(this.refundInfo, 'action', 'refund')
         this.showRefund = true
       }
+    },
+    exportDataList () {
+      this.searchParams.startTime = this.applicationTime[0]
+      this.searchParams.endTime = this.applicationTime[1]
+      this.showExportConfirm = true
     }
   },
   filters: {
@@ -356,7 +438,15 @@ export default {
               display: flex;
               font-size: 14px;
               color: #666;
-              justify-content: space-between;
+              // justify-content: space-between;
+              .payType {
+                margin-left: 40px;
+                display: flex;
+                align-items: center;
+                img {
+                  margin-right: 5px;
+                }
+              }
             }
             .right {
               width: 265px;
