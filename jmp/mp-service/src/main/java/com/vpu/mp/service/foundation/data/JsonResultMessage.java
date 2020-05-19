@@ -1253,4 +1253,15 @@ public class JsonResultMessage {
      */
     public static final String REDUCE_PRICE_ORDER_LIST_FILENAME = "reduceprice.order.list.file_name";
 
+    /**
+     * 会员卡订单导出
+     */
+    public static final String VIRTUAL_ORDER_MEMBER_CARD_FILE_NAME = "virtual.order.member_card.file_name";
+    public static final String VIRTUAL_ORDER_MEMBER_CARD_CARD_NAME = "virtual.order.member_card.card_name";
+    public static final String VIRTUAL_ORDER_MEMBER_CARD_CARD_TYPE = "virtual.order.member_card.card_type";
+    public static final String VIRTUAL_ORDER_MEMBER_CARD_CARD_NO = "virtual.order.member_card.card_no";
+    public static final String VIRTUAL_ORDER_MEMBER_CARD_CARD_TYPE_NORMAL = "virtual.order.member_card.card_type.normal";
+    public static final String VIRTUAL_ORDER_MEMBER_CARD_CARD_TYPE_LIMIT = "virtual.order.member_card.card_type.limit";
+    public static final String VIRTUAL_ORDER_MEMBER_CARD_CARD_TYPE_GRADE = "virtual.order.member_card.card_type.grade";
+
 }

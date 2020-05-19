@@ -3,12 +3,20 @@ package com.vpu.mp.service.shop.order.virtual;
 import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.virtual.*;
 import jodd.util.StringUtil;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.SelectOnConditionStep;
 import org.springframework.stereotype.Service;
@@ -17,6 +25,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.db.shop.tables.User.USER;
@@ -50,6 +59,7 @@ public class MemberCardOrderService extends VirtualOrderService {
                 .leftJoin(USER).on(VIRTUAL_ORDER.USER_ID.eq(USER.USER_ID))
                 .leftJoin(USER_CARD).on(VIRTUAL_ORDER.SEND_CARD_NO.eq(USER_CARD.CARD_NO));
         buildOptions(select, param);
+        select.orderBy(VIRTUAL_ORDER.ORDER_ID.desc());
         PageResult<MemberCardOrderVo> pageResult = getPageResult(select, param, MemberCardOrderVo.class);
         pageResult.getDataList().forEach(cardOrderVo->{
             //超过一年不能退款
@@ -102,7 +112,6 @@ public class MemberCardOrderService extends VirtualOrderService {
             }
         }
         select.and(VIRTUAL_ORDER.DEL_FLAG.eq((byte) 0));
-        select.orderBy(VIRTUAL_ORDER.ORDER_ID.desc());
     }
 
     /**
@@ -120,11 +129,70 @@ public class MemberCardOrderService extends VirtualOrderService {
      * @param orderSn 订单sn
      * @param prepayId prepayId
      */
-    public void updatePrepayId(String orderSn,String prepayId){
-        db().update(VIRTUAL_ORDER).set(VIRTUAL_ORDER.PREPAY_ID,prepayId).where(VIRTUAL_ORDER.ORDER_SN.eq(orderSn)).execute();
+    public void updatePrepayId(String orderSn, String prepayId) {
+        db().update(VIRTUAL_ORDER).set(VIRTUAL_ORDER.PREPAY_ID, prepayId).where(VIRTUAL_ORDER.ORDER_SN.eq(orderSn)).execute();
     }
 
-    public VirtualOrderRecord getRecord(String orderSn){
-        return db().fetchAny(VIRTUAL_ORDER,VIRTUAL_ORDER.ORDER_SN.eq(orderSn));
+    public VirtualOrderRecord getRecord(String orderSn) {
+        return db().fetchAny(VIRTUAL_ORDER, VIRTUAL_ORDER.ORDER_SN.eq(orderSn));
+    }
+
+    public Integer getExportRows(MemberCardOrderParam param) {
+        SelectOnConditionStep<? extends Record> selectFrom = db()
+            .selectCount()
+            .from(VIRTUAL_ORDER)
+            .leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(VIRTUAL_ORDER.VIRTUAL_GOODS_ID))
+            .leftJoin(USER).on(VIRTUAL_ORDER.USER_ID.eq(USER.USER_ID))
+            .leftJoin(USER_CARD).on(VIRTUAL_ORDER.SEND_CARD_NO.eq(USER_CARD.CARD_NO));
+        buildOptions(selectFrom, param);
+        return selectFrom.fetchOptionalInto(int.class).orElse(0);
+    }
+
+    public Workbook exportOrderList(MemberCardOrderParam param, String lang) {
+        SelectOnConditionStep<? extends Record> selectFrom = db()
+            .select(VIRTUAL_ORDER.ORDER_ID, VIRTUAL_ORDER.ORDER_SN,
+                VIRTUAL_ORDER.VIRTUAL_GOODS_ID, VIRTUAL_ORDER.RETURN_FLAG, VIRTUAL_ORDER.PAY_TIME, VIRTUAL_ORDER.MONEY_PAID, VIRTUAL_ORDER.CREATE_TIME, VIRTUAL_ORDER.MEMBER_CARD_BALANCE, VIRTUAL_ORDER.RETURN_CARD_BALANCE, VIRTUAL_ORDER.RETURN_MONEY, VIRTUAL_ORDER.RETURN_ACCOUNT, VIRTUAL_ORDER.RETURN_SCORE,
+                VIRTUAL_ORDER.USE_ACCOUNT, VIRTUAL_ORDER.USE_SCORE, VIRTUAL_ORDER.RETURN_TIME, VIRTUAL_ORDER.CURRENCY, VIRTUAL_ORDER.ORDER_AMOUNT, USER.USERNAME, USER.MOBILE,
+                MEMBER_CARD.CARD_NAME, MEMBER_CARD.CARD_TYPE,
+                USER_CARD.CARD_NO, VIRTUAL_ORDER.CURRENCY)
+            .from(VIRTUAL_ORDER)
+            .leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(VIRTUAL_ORDER.VIRTUAL_GOODS_ID))
+            .leftJoin(USER).on(VIRTUAL_ORDER.USER_ID.eq(USER.USER_ID))
+            .leftJoin(USER_CARD).on(VIRTUAL_ORDER.SEND_CARD_NO.eq(USER_CARD.CARD_NO));
+        buildOptions(selectFrom, param);
+        selectFrom.orderBy(VIRTUAL_ORDER.CREATE_TIME.desc());
+        List<MemberCardOrderExportVo> list = selectFrom.fetchInto(MemberCardOrderExportVo.class);
+
+        list.forEach(o -> {
+            if (o.getUseScore() != null && o.getUseScore() > 0) {
+                o.setPrice(o.getUseScore().toString() + Util.translateMessage(lang, JsonResultMessage.UEXP_SCORE, OrderConstant.LANGUAGE_TYPE_EXCEL));
+            } else {
+                if ("CNY".equals(o.getCurrency())) {
+                    o.setPrice("￥" + o.getOrderAmount().toString());
+                } else {
+                    o.setPrice("$" + o.getOrderAmount().toString());
+                }
+            }
+
+            if (REFUND_STATUS_SUCCESS.equals(o.getReturnFlag())) {
+                o.setOrderStatusName(Util.translateMessage(lang, JsonResultMessage.VIRTUAL_ORDER_COUPON_PACK_REFUNDED, OrderConstant.LANGUAGE_TYPE_EXCEL));
+            } else {
+                o.setOrderStatusName(Util.translateMessage(lang, JsonResultMessage.VIRTUAL_ORDER_COUPON_PACK_PAYMENT_SUCCESSFUL, OrderConstant.LANGUAGE_TYPE_EXCEL));
+            }
+
+            if (CardConstant.MCARD_TP_NORMAL.equals(o.getCardType())) {
+                o.setCardTypeString(Util.translateMessage(lang, JsonResultMessage.VIRTUAL_ORDER_MEMBER_CARD_CARD_TYPE_NORMAL, OrderConstant.LANGUAGE_TYPE_EXCEL));
+            } else if (CardConstant.MCARD_TP_LIMIT.equals(o.getCardType())) {
+                o.setCardTypeString(Util.translateMessage(lang, JsonResultMessage.VIRTUAL_ORDER_MEMBER_CARD_CARD_TYPE_LIMIT, OrderConstant.LANGUAGE_TYPE_EXCEL));
+            } else if (CardConstant.MCARD_TP_GRADE.equals(o.getCardType())) {
+                o.setCardTypeString(Util.translateMessage(lang, JsonResultMessage.VIRTUAL_ORDER_MEMBER_CARD_CARD_TYPE_GRADE, OrderConstant.LANGUAGE_TYPE_EXCEL));
+            }
+
+        });
+
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+        excelWriter.writeModelList(list, MemberCardOrderExportVo.class);
+        return workbook;
     }
 }
