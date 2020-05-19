@@ -13,6 +13,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
@@ -35,6 +36,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -81,6 +84,13 @@ public class ReducePriceService extends ShopBaseService {
         ReducePriceRecord record = db().newRecord(REDUCE_PRICE);
         assign(param, record);
         if (param.getShareConfig() != null) {
+            if (param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())) {
+                try {
+                    param.getShareConfig().setShareImg(new URL(param.getShareConfig().getShareImg()).getPath());
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
             record.setShareConfig(Util.toJson(param.getShareConfig()));
         }
         List<Integer> goodsIds = new ArrayList<>();
@@ -170,8 +180,12 @@ public class ReducePriceService extends ShopBaseService {
             from(REDUCE_PRICE).where(REDUCE_PRICE.ID.eq(id)).fetchOneInto(ReducePriceRecord.class);
         ReducePriceVo res = record.into(ReducePriceVo.class);
         res.setShopShareConfig(Util.parseJson(record.getShareConfig(), PictorialShareConfigVo.class));
-        if (res.getShopShareConfig() != null && StringUtil.isNotEmpty(res.getShopShareConfig().getShareImg())) {
-            res.getShopShareConfig().setShareImgFullUrl(domainConfig.imageUrl(res.getShopShareConfig().getShareImg()));
+        if (StringUtil.isNotBlank(res.getShareConfig())) {
+            res.setShopShareConfig(Util.parseJson(res.getShareConfig(), PictorialShareConfigVo.class));
+            if (res.getShopShareConfig() != null && StringUtil.isNotEmpty(res.getShopShareConfig().getShareImg())) {
+                res.getShopShareConfig().setShareImgFullUrl(domainConfig.imageUrl(res.getShopShareConfig().getShareImg()));
+                res.getShopShareConfig().setShareImg(domainConfig.imageUrl(res.getShopShareConfig().getShareImg()));
+            }
         }
         res.setReducePriceGoods(getReducePriceGoodsVoList(id));
 
@@ -184,6 +198,16 @@ public class ReducePriceService extends ShopBaseService {
     public void updateReducePrice(ReducePriceUpdateParam param) {
         ReducePriceRecord record = new ReducePriceRecord();
         assign(param, record);
+        if (param.getShareConfig() != null) {
+            if (param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())) {
+                try {
+                    param.getShareConfig().setShareImg(new URL(param.getShareConfig().getShareImg()).getPath());
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+            record.setShareConfig(Util.toJson(param.getShareConfig()));
+        }
         db().executeUpdate(record);
 
         //刷新goodsType
