@@ -94,7 +94,7 @@ public class GoodsMallService extends ShopBaseService {
 				imageList.add(imageService.imageUrl(goods.getGoodsImg()));
 			}
 			productVo.setImageList(imageList);
-			productVo.setSrcMiniProgramPath("/pages/item/item?goods_id=" + goods.getGoodsId());
+			productVo.setSrcMiniProgramPath("/pages/item/item?gid=" + goods.getGoodsId());
 			productVo.setSkuList(liSkuLists);
 			String logo = shop.getLogo();
 			productVo.setBrandInfo(new BrandInfo(shop.getShopName(), StringUtils.isEmpty(logo)?"":imageService.imageUrl(shop.getLogo())));
