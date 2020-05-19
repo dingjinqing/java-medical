@@ -19,7 +19,6 @@ global.wxPage({
       activityTypes: [],
       labelIds: [],
       pageFrom:null,
-      goodsIds:[],
       outerPageParam:{}
     }
   },
