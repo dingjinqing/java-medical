@@ -120,11 +120,16 @@ public class GoodsMallService extends ShopBaseService {
 
 	/**
 	 * 是否包含对应的数据 true：可以；false：不可以
-	 * @param value
+	 * @param value "1"订单详情页显示，"2"商品详情页显示
 	 * @return
 	 */
-	private boolean check(String value) {
+	public boolean check(String value) {
 		WxShoppingListConfig config = shoppingListConfig.getShoppingListConfig();
+		String enabeld = config.getEnabeldWxShoppingList();
+		if(enabeld.equals("0")) {
+			//0"未开启 "1"开启
+			return false;
+		}
 		String recommend = config.getWxShoppingRecommend();
 		String[] split = recommend.split(",");
 		for (String string : split) {

@@ -37,6 +37,8 @@ import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.recommend.RecommendService;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
@@ -96,6 +98,8 @@ public class GoodsMpService extends ShopBaseService {
     private MpDistributionGoodsService mpDisGoods;
     @Autowired
     private UserGoodsRecordService userLoginRecordService;
+    @Autowired
+    private RecommendService recommendService;
 
     /**
      * 从es或者数据库内获取数据，并交给处理器进行处理
@@ -435,7 +439,7 @@ public class GoodsMpService extends ShopBaseService {
             List<CouponListVo> mrkingVoucherRecords = mpDisGoods.sendCoupon(param);
             goodsDetailMpBo.getGoodsDistribution().setSendCoupon(mrkingVoucherRecords);
         }
-
+        goodsDetailMpBo.setShowMall(recommendService.goodsMallService.check("2"));
         return goodsDetailMpBo;
     }
 

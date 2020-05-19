@@ -23,5 +23,7 @@ public class WxAppRecMallController extends WxAppBaseController {
 		List<ListProduct> list = shop().recommendService.goodsMallService.checkShippingRecommendGoods(param.getGoodsId());
 		return success(list);
 	}
+	
+
 
 }
