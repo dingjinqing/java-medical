@@ -9,29 +9,44 @@
         size="small"
       >
         <el-form-item label="服务名称">
-          <p class="label-con">POS服务</p>
+          <p class="label-con">{{formData.appBo.appName}}</p>
         </el-form-item>
         <el-form-item label="SessionKey">
-          <span class="label-con">w20190604140528M49sbDZFCs4748160</span>
+          <span class="label-con">{{formData.appAuthBo.sessionKey}}</span>
           <span>(<el-button type="text">重置</el-button>)</span>
         </el-form-item>
         <el-form-item label="卖家账号">
-          <el-input class="form-input"></el-input>
-          <el-button type="primary">提交</el-button>
+          <el-input
+            class="form-input"
+            v-model="formData.appAuthBo.appKey"
+          ></el-input>
+          <el-button
+            type="primary"
+            @click="saveAppKeyHandle"
+          >提交</el-button>
         </el-form-item>
         <el-form-item label="是否已授权">
-          <p class="label-con">已授权</p>
+          <p class="label-con">{{formData.appAuthBo.status|fmtStatus}}</p>
         </el-form-item>
         <el-form-item label="操作">
-          <template>
-            <el-button type="text">授权</el-button>
+          <template v-if="formData.appAuthBo.status === 0">
+            <el-button
+              type="text"
+              @click="authorizeHandle"
+            >授权</el-button>
           </template>
-          <template>
+          <template v-if="formData.appAuthBo.status === 1">
             <el-button type="text">删除授权</el-button>
-            <el-button type="text">同步POS门店</el-button>
-            <span class="label-con">注：仅同步未对接门店</span>
-            <el-button type="text">同步POS商品到系统商品</el-button>
           </template>
+          <el-button
+            type="text"
+            @click="syncPosHandle('sync_store')"
+          >同步POS门店</el-button>
+          <span class="label-con">注：仅同步未对接门店</span>
+          <el-button
+            type="text"
+            @click="syncPosHandle('sync_goods')"
+          >同步POS商品到系统商品</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -39,10 +54,44 @@
 </template>
 
 <script>
+import { syncPosApi } from '@/api/admin/basicConfiguration/thirdConfig'
+import thirdConfigMixins from '@/mixins/basicManagementMixins/thirdConfigMixins.js'
 export default {
+  mixins: [thirdConfigMixins],
   data () {
     return {
-      formData: {}
+      action: 2,
+      formData: {
+        appBo: {},
+        appAuthBo: {}
+      }
+    }
+  },
+  mounted () {
+    this.initData()
+  },
+  filters: {
+    fmtStatus (val) {
+      if (val === 0) {
+        return '未授权'
+      } else {
+        return '已授权'
+      }
+    }
+  },
+  methods: {
+    syncPosHandle (opera) {
+      syncPosApi({
+        action: opera || '',
+        is: this.formData.appAuthBo.id
+      }).then(res => {
+        if (res.error === 0) {
+          this.$message.success('同步成功')
+          this.initData()
+        } else {
+          this.$message.error(res.message)
+        }
+      })
     }
   }
 }

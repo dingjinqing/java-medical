@@ -9,11 +9,14 @@
         size="small"
       >
         <el-form-item label="服务名称">
-          <p class="label-con">ERP服务</p>
+          <p
+            class="label-con"
+            v-text="formData.appBo.appName"
+          ></p>
         </el-form-item>
         <el-form-item label="ERP产品版本">
           <el-select
-            v-model="formData.version"
+            v-model="formData.appAuthBo.product"
             @change="versionChange"
           >
             <el-option
@@ -31,17 +34,29 @@
           </el-select>
         </el-form-item>
         <el-form-item label="SessionKey">
-          <span class="label-con">w20190604140528M49sbDZFCs4748160</span>
+          <span class="label-con">{{formData.appAuthBo.sessionKey}}</span>
           <span>(<el-button type="text">重置</el-button>)</span>
         </el-form-item>
         <el-form-item label="卖家账号">
-          <el-input class="form-input"></el-input>
+          <el-input class="form-input">{{formData.appAuthBo.appKey}}</el-input>
+          <el-button
+            type="primary"
+            @click="saveAppKeyHandle"
+          >提交</el-button>
         </el-form-item>
         <el-form-item label="是否已授权">
-          <p class="label-con">已授权</p>
+          <p class="label-con">{{formData.appAuthBo.status|fmtStatus}}</p>
         </el-form-item>
         <el-form-item label="操作">
-          <el-button type="text">删除授权</el-button>
+          <el-button
+            v-if="formData.appAuthBo.status === 1"
+            type="text"
+          >删除授权</el-button>
+          <el-button
+            v-if="formData.appAuthBo.status === 0"
+            type="text"
+            @click="authorizeHandle"
+          >授权</el-button>
         </el-form-item>
         <el-form-item label="自提订单核销后推送">
           <el-switch
@@ -61,7 +76,7 @@
             :inactive-value="0"
           ></el-switch>
         </el-form-item>
-        <div class="module-name">
+        <!-- <div class="module-name">
           商家收货地址
         </div>
         <el-form-item label="收件人">
@@ -75,15 +90,15 @@
         </el-form-item>
         <el-form-item label="邮编">
           <el-input class="form-input"></el-input>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
     </div>
-    <div class="footer">
+    <!-- <div class="footer">
       <el-button
         type="primary"
         size="small"
       >保存</el-button>
-    </div>
+    </div> -->
     <!-- 确认提交 -->
     <el-dialog
       title="提醒"
@@ -109,12 +124,18 @@
 </template>
 
 <script>
-import { getThirdAuth } from '@/api/admin/basicConfiguration/thirdConfig'
+import { switchVersionApi } from '@/api/admin/basicConfiguration/thirdConfig'
+import thirdConfigMixins from '@/mixins/basicManagementMixins/thirdConfigMixins.js'
 export default {
+  mixins: [thirdConfigMixins],
   data () {
     return {
+      action: 1,
       formData: {
-        version: 1
+        appBo: {},
+        appAuthBo: {
+          product: 1
+        }
       },
       oldVersion: '',
       newVersion: '',
@@ -122,33 +143,44 @@ export default {
     }
   },
   mounted () {
-    this.oldVersion = this.formData.version
+    this.oldVersion = this.formData.appAuthBo.product
     this.initData()
   },
+  filters: {
+    fmtStatus (val) {
+      if (val === 0) {
+        return '未授权'
+      } else {
+        return '已授权'
+      }
+    }
+  },
   methods: {
-    initData () {
-      getThirdAuth({
-        action: 1
-      }).then(res => {
-        if (res.error === 0) {
-
-        }
-      })
-    },
+    // ERP 产品版本更改
     versionChange (val) {
-      console.log('change:', val, this.oldVersion)
       if (this.oldVersion) {
         this.newVersion = val
-        this.$set(this.formData, 'version', this.oldVersion)
+        this.$set(this.formData.appAuthBo, 'product', this.oldVersion)
       }
       this.switchErpVersionVisible = !this.switchErpVersionVisible
     },
+    // 确认更改版本
     confirmSwitchVersion () {
-      console.log('newVersion...', this.newVersion)
-      this.$set(this.formData, 'version', this.newVersion)
-      this.oldVersion = this.newVersion
-      this.switchErpVersionVisible = false
+      switchVersionApi({
+        id: this.formData.appAuthBo.id,
+        product: this.newVersion
+      }).then(res => {
+        if (res.error === 0) {
+          this.$message.success('切换版本成功')
+          this.$set(this.formData.appAuthBo, 'product', this.newVersion)
+          this.oldVersion = this.newVersion
+          this.switchErpVersionVisible = false
+        } else {
+          this.$message.error(res.message)
+        }
+      })
     },
+    // 取消更改版本
     cancelSwitchVersion () {
       this.switchErpVersionVisible = false
     }
