@@ -80,6 +80,9 @@ export default {
           this.technicianManagement = this.$t('storeManage.technicianManagement')
         }
       })
+    },
+    '$route.name' (val) {
+      this.initStatus()
     }
   },
   methods: {

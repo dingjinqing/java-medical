@@ -3,10 +3,9 @@
     <div class="search_box">
       <div class="filters">
         <div class="filters_item">
-          <span>{{$t('orderCommon.orderUserInfo')}}：</span>
+          <span>{{$t('couponPackageOrder.couponPackage')}}：</span>
           <el-input
-            v-model="searchParams.userInfo"
-            :placeholder="$t('orderCommon.orderUserInfoPlaceholder')"
+            v-model="searchParams.packName"
             size="small"
             class="default_input"
           ></el-input>
@@ -21,12 +20,39 @@
           ></el-input>
         </div>
         <div class="filters_item">
-          <span>{{$t('couponPackageOrder.couponPackage')}}：</span>
+          <span>{{$t('orderCommon.orderUserInfo')}}：</span>
           <el-input
-            v-model="searchParams.packName"
+            v-model="searchParams.userInfo"
+            :placeholder="$t('orderCommon.orderUserInfoPlaceholder')"
             size="small"
             class="default_input"
           ></el-input>
+        </div>
+        <div class="filters_item">
+          <span>支付方式：</span>
+          <el-select
+            v-model="searchParams.payCode"
+            :placeholder="$t('orderCommon.selectPlaceholder')"
+            size="small"
+            class="default_input"
+          >
+            <el-option
+              label="全部"
+              :value="null"
+            ></el-option>
+            <el-option
+              label="微信支付"
+              value="wxpay"
+            ></el-option>
+            <el-option
+              label="余额支付"
+              value="balance"
+            ></el-option>
+            <el-option
+              label="积分支付支付"
+              value="score"
+            ></el-option>
+          </el-select>
         </div>
         <div class="filters_item">
           <span>{{$t('orderCommon.orderTime')}}：</span>
