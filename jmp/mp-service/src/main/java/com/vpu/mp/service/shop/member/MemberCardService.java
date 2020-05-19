@@ -1,10 +1,8 @@
 package com.vpu.mp.service.shop.member;
 
 import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
-import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
 import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
 import static com.vpu.mp.db.shop.Tables.GOODS_CARD_COUPLE;
-import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_BRAND;
@@ -24,10 +22,8 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIM
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NORMAL;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NUM_LETTERS;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PAY_OWN_GOOD_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.REFUSED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_EXPIRED;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.VERIFIED;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_CASH;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_TO_BE_CONFIRMED;
@@ -40,7 +36,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,12 +45,10 @@ import java.util.stream.IntStream;
 
 import javax.validation.Valid;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
-import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -63,11 +56,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.CardBatchRecord;
 import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
-import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
 import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsCardCoupleRecord;
@@ -94,13 +84,9 @@ import com.vpu.mp.service.pojo.shop.decoration.module.ModuleCard;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
-import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
-import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
-import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
 import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.BatchGroupVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
@@ -147,11 +133,9 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
-import com.vpu.mp.service.pojo.wxapp.card.param.CardCustomActionParam;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.card.CardCreateService;
 import com.vpu.mp.service.shop.card.CardDetailService;
-import com.vpu.mp.service.shop.card.msg.CardMsgNoticeService;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -162,7 +146,6 @@ import com.vpu.mp.service.shop.member.card.LimitCardOpt;
 import com.vpu.mp.service.shop.member.card.NormalCardOpt;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.excel.UserImExcelWrongHandler;
-import com.vpu.mp.service.shop.member.wxapp.WxAppCardActivationService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
@@ -190,7 +173,7 @@ public class MemberCardService extends ShopBaseService {
 	@Autowired
 	private UserCardService userCardService;
 	@Autowired
-	private CardVerifyService cardVerifyService;
+	public CardVerifyService cardVerifyService;
 	@Autowired
 	private CardReceiveCodeService cardReceiveCode;
 	@Autowired
@@ -201,8 +184,6 @@ public class MemberCardService extends ShopBaseService {
 	@Autowired
 	private GradeCardService gradeCardService;
     @Autowired
-    protected DomainConfig domainConfig;
-    @Autowired
     protected ImageService imageService;
 	@Autowired 
 	private NormalCardOpt normalCardOpt;
@@ -210,14 +191,12 @@ public class MemberCardService extends ShopBaseService {
 	private LimitCardOpt limitCardOpt;
 	@Autowired
 	private GradeCardOpt gradeCardOpt;
-	@Autowired
-	private WxAppCardActivationService wxCardActSvc;
+
 	@Autowired
 	public CardCreateService cardCreateSvc;
 	@Autowired
 	public CardDetailService cardDetailSvc;
-	@Autowired
-	public CardMsgNoticeService cardMsgNoticeSvc;
+
 
 	
 	/**
@@ -442,7 +421,7 @@ public class MemberCardService extends ShopBaseService {
 				item.setAvatar(avatar);
 				// 背景图片全路径
 				if(!StringUtils.isBlank(item.getBgImg())) {
-					item.setBgImg(domainConfig.imageUrl(item.getBgImg()));
+					item.setBgImg(imageUrl(item.getBgImg()));
 				}
 			});
 		}
@@ -1204,165 +1183,6 @@ public class MemberCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 分页查询激活审核信息
-	 * 
-	 * @param param
-	 * @return
-	 */
-	public PageResult<ActiveAuditVo> getActivateAuditList(ActiveAuditParam param) {
-		logger().info("分页查询激活信息");
-		PageResult<? extends Record> results = cardVerifyService.getPageList(param);
-		PageResult<ActiveAuditVo> res = new PageResult<>();
-		res.setPage(results.getPage());
-		List<ActiveAuditVo> myList = new ArrayList<>();
-		
-		if(results.dataList.size()>0) {
-			// 所有的卡
-			List<String> nos = results.dataList.stream().map(x->x.get(CARD_EXAMINE.CARD_NO)).distinct().collect(Collectors.toList());
-			Map<String, MemberCardRecord> cardMap = cardDao.getCardByNo(nos.toArray(new String[0]));
-			Map<String,List<String>> cardCfgMap = new HashMap<>();
-			// 提前获取激活的选项
-			for(Map.Entry<String, MemberCardRecord> entry: cardMap.entrySet()) {
-				List<String> cfg = CardUtil.parseActivationCfg(entry.getValue().getActivationCfg());
-				cardCfgMap.put(entry.getKey(), cfg);
-			}
-			for(Record record: results.dataList) {
-				ActiveAuditVo vo = new ActiveAuditVo();
-				vo.setCardNo(record.get(CARD_EXAMINE.CARD_NO));
-				vo.setMobile(record.get(USER.MOBILE));
-				vo.setUsername(record.get(USER.USERNAME));
-				vo.setCreateTime(record.get(CARD_EXAMINE.CREATE_TIME));
-				vo.setStatus(record.get(CARD_EXAMINE.STATUS));
-				vo.setId(record.get(CARD_EXAMINE.ID));
-				vo.setRefuseDesc(record.get(CARD_EXAMINE.REFUSE_DESC));
-				// 激活数据项
-				List<String> activationCfg = cardCfgMap.get(vo.getCardNo());
-				for(String name: activationCfg) {
-					if("birthday".equals(name)) {
-						vo.setBirthDayDay(record.get(CARD_EXAMINE.BIRTHDAY_DAY));
-						vo.setBirthDayMonth(record.get(CARD_EXAMINE.BIRTHDAY_MONTH));
-						vo.setBirthDayYear(record.get(CARD_EXAMINE.BIRTHDAY_YEAR));
-					}else if("address".equals(name)){
-						vo.setProvinceCode(record.get(CARD_EXAMINE.PROVINCE_CODE));
-						vo.setCityCode(record.get(CARD_EXAMINE.CITY_CODE));
-						vo.setDistrictCode(record.get(CARD_EXAMINE.DISTRICT_CODE));
-					}else {
-						try {
-							Object value = record.get(Util.humpToUnderline(name));
-							PropertyUtils.setProperty(vo, name, value);
-						} catch (Exception e) {
-							// 该属性为空 
-						}		
-					}
-				}
-				
-				// deal with custom option
-				String customOpts = record.get(CARD_EXAMINE.CUSTOM_OPTIONS);
-				if(!StringUtils.isBlank(customOpts)) {
-					 List<CardCustomActionParam> opts = Util.json2Object(customOpts,new TypeReference<List<CardCustomActionParam>>() {
-				        }, false);
-					 vo.setCustomOptions(opts);
-				}
-				myList.add(vo);
-			}
-		}
-		// deal with industry and education
-		for (ActiveAuditVo activeAuditVo : myList) {
-			// education
-			if(activeAuditVo.getEducation()!= null) {
-				String educationStr = MemberEducationEnum.getNameByCode((int)activeAuditVo.getEducation());
-				activeAuditVo.setEducationStr(educationStr);
-			}
-			// industry
-			if(activeAuditVo.getIndustryInfo() != null) {
-				String industry = MemberIndustryEnum.getNameByCode((int)activeAuditVo.getIndustryInfo());
-				activeAuditVo.setIndustry(industry);
-			}
-			// deal address
-			if(activeAuditVo.getCityCode()!=null && activeAuditVo.getCityCode()!=null) {
-				Map<String,Object> adMap = new HashMap<>();
-				adMap.put(WxAppCardActivationService.PROVINCE_CODE, activeAuditVo.getProvinceCode());
-				adMap.put(WxAppCardActivationService.CITY_CODE, activeAuditVo.getCityCode());
-				adMap.put(WxAppCardActivationService.DISTRICT_CODE, activeAuditVo.getDistrictCode());
-				wxCardActSvc.dealWithAddressCode(adMap);
-				activeAuditVo.setCity((String)adMap.get(WxAppCardActivationService.CITY_CODE));
-				activeAuditVo.setProvince((String)adMap.get(WxAppCardActivationService.PROVINCE_CODE));
-				activeAuditVo.setDistrict((String)adMap.get(WxAppCardActivationService.DISTRICT_CODE));
-			}
-			
-		}
-		res.setDataList(myList);
-		return res;
-	}
-
-	/**
-	 * 审核通过
-	 * 
-	 * @param param
-	 * @return
-	 */
-	public void passActivateAudit(ActiveAuditParam param) {
-		this.transaction(() -> {
-			Timestamp now = DateUtil.getSqlTimestamp();
-			logger().info("申请激活会员卡通过: " + now);
-			// 更新card_examine 信息
-			CardExamineRecord record = setPassData(param.getId(), now);
-			cardDao.updateCardExamine(record);
-			// 更新激活
-			cardDao.updateUserCardByCardNo(param.getCardNo(), now);
-		});
-	}
-
-	/**
-	 * 审核通过数据
-	 * 
-	 * @param id
-	 * @return
-	 */
-	private CardExamineRecord setPassData(Integer id, Timestamp now) {
-		CardExamineRecord record = new CardExamineRecord();
-		record.setId(id);
-		record.setPassTime(now);
-		record.setStatus(VERIFIED);
-		return record;
-	}
-
-	/**
-	 * 审核不通过数据
-	 * 
-	 * @param
-	 * @return
-	 */
-	private CardExamineRecord setRejectData(ActiveAuditParam param) {
-		CardExamineRecord record = new CardExamineRecord();
-		record.setId(param.getId());
-		record.setRefuseTime(DateUtil.getSqlTimestamp());
-		record.setRefuseDesc(param.getRefuseDesc());
-		record.setStatus(REFUSED);
-		return record;
-	}
-
-	/**
-	 * 审核不通过
-	 * 
-	 * @param param
-	 */
-	public void rejectActivateAudit(ActiveAuditParam param) {
-		CardExamineRecord record = setRejectData(param);
-		int res = cardDao.updateCardExamine(record);
-		if(res>0) {
-			logger().info("发送订阅消息");
-			CardExamineRecord re = cardDao.getCardExamineRecordById(record.getId());
-			cardMsgNoticeSvc.sendAuditSuccessMsg(re);		
-		}
-		
-		
-		
-	}
-
-	
-
-	/**
 	 * 会员卡订单分页查询
 	 * 
 	 * @param param
@@ -1636,12 +1456,12 @@ public class MemberCardService extends ShopBaseService {
         //图片域名
         String shopAvatar = saas().shop.getShopAvatarById(getShopId());
         if(StringUtil.isNotEmpty(shopAvatar)){
-            vo.setShipImg(domainConfig.imageUrl(shopAvatar));
+            vo.setShipImg(imageUrl(shopAvatar));
         }else{
-            vo.setShipImg(domainConfig.imageUrl("image/admin/shop_logo_default.png"));
+            vo.setShipImg(imageUrl("image/admin/shop_logo_default.png"));
         }
         if(StringUtil.isNotEmpty(vo.getBgImg())){
-            vo.setBgImg(domainConfig.imageUrl(vo.getBgImg()));
+            vo.setBgImg(imageUrl(vo.getBgImg()));
         }
 
         vo.setHiddenCard(moduleCard.getHiddenCard());

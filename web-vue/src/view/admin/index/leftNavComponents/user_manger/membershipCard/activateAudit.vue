@@ -20,17 +20,11 @@
         </div>
         <div>
           <span>{{ $t('memberCard.applyTime') }}</span>
-          <el-date-picker
-            size="small"
-            v-model="dataValue"
-            type="daterange"
-            :range-separator="$t('memberCard.to')"
-            :start-placeholder="$t('memberCard.startDate')"
-            :end-placeholder="$t('memberCard.overDate')"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            :default-time="['00:00:00','23:59:59']"
-          >
-          </el-date-picker>
+          <date-time-picker
+            :showPicker='3'
+            @startTime="firstTime = $event"
+            @endTime="secondTime = $event"
+          />
         </div>
         <div style="margin-left:20px">
           <el-button
@@ -38,6 +32,11 @@
             size="small"
             @click="search"
           >{{ $t('memberCard.search') }}</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="exportData"
+          >导出</el-button>
         </div>
       </div>
     </div>
@@ -71,19 +70,40 @@
         </div>
         <div class="member_content">
           <ul>
-            <li v-if="item.realName">{{ $t('memberCard.realName') }}：<strong>{{item.realName}}</strong></li>
-            <li v-if="item.cid">{{ $t('memberCard.cid') }}：<strong>{{item.cid}}</strong></li>
-            <li v-if="item.sex !== null">{{ $t('memberCard.sex') }}: <strong>{{item.sex}}</strong></li>
-            <li v-if="item.birthDayYear !== null">{{$t('memberCard.birthday')}}: <strong>{{item.birthDayYear}}-{{item.birthDayMonth}}-{{item.birthDayDay}}</strong></li>
-            <li v-if="item.maritalStatus !== null">{{ $t('memberCard.maritalStatus') }}: <strong>{{item.maritalStatus}}</strong></li>
-            <li v-if="item.education">{{ $t('memberCard.education') }}：<strong>{{item.education}}</strong></li>
-            <li v-if="item.industry">{{ $t('memberCard.industry') }}：<strong>{{item.industry}}</strong></li>
-            <li v-if="item.city">{{ $t('memberCard.address') }}:{{item.province}} {{item.city}} {{item.district}}</li>
-            <li v-for="(opt,key) in item.customOptions"
-                :key="key">
-                {{opt.title}}：<strong>{{opt.content}}</strong>
+            <li v-if="item.realName"><span class="title">{{ $t('memberCard.realName') }}：</span><strong>{{item.realName}}</strong></li>
+            <li v-if="item.cid"><span class="title">{{ $t('memberCard.cid') }}：</span><strong>{{item.cid}}</strong></li>
+            <li v-if="item.sex !== null"><span class="title">{{ $t('memberCard.sex') }}: </span><strong>{{item.sex}}</strong></li>
+            <li v-if="item.birthDayYear !== null"><span class="title">{{$t('memberCard.birthday')}}: </span><strong>{{item.birthDayYear}}-{{item.birthDayMonth}}-{{item.birthDayDay}}</strong></li>
+            <li v-if="item.maritalStatus !== null"><span class="title">{{ $t('memberCard.maritalStatus') }}: </span><strong>{{item.maritalStatus}}</strong></li>
+            <li v-if="item.education"><span class="title">{{ $t('memberCard.education') }}：</span><strong>{{item.education}}</strong></li>
+            <li v-if="item.industry"><span class="title">{{ $t('memberCard.industry') }}：</span><strong>{{item.industry}}</strong></li>
+            <li v-if="item.city"><span class="title">{{ $t('memberCard.address') }}:</span>{{item.province}} {{item.city}} {{item.district}}</li>
+            <li
+              v-for="(opt,key) in item.customOptions"
+              :key="key"
+            >
+              <div v-if="opt.type !== 3">
+                <span class="title">{{opt.title}}：</span>
+                <strong>{{opt.content}}</strong>
+              </div>
+              <div v-else-if="opt.type === 3">
+                <span class="title">{{opt.title}}：</span>
+                <ul class="picture">
+                  <li
+                    v-for="(picture,index) in opt.pictureLinks"
+                    :key="index"
+                  >
+                    <img
+                      :src="picture"
+                      width="65px"
+                      height="65px"
+                    >
+                  </li>
+                </ul>
+              </div>
             </li>
           </ul>
+
           <div class="operate_box">
             <div
               class="content"
@@ -118,7 +138,10 @@
               v-if='item.status === 3'
             >
               <div>{{ $t('memberCard.failedAuditT') }}</div>
-              <div class="fail-detail" @click="showFailDetail(item)">查看详情</div>
+              <div
+                class="fail-detail"
+                @click="showFailDetail(item)"
+              >查看详情</div>
             </div>
           </div>
         </div>
@@ -136,16 +159,25 @@
         @handleDesc="handleFailAudit"
       >
       </my-fail-dialog>
+
+      <export-dialog
+        :visiable.sync="showExportDialog"
+        :queryContent="queryContent"
+      />
     </div>
   </div>
 </template>
 <script>
 import { getActivateAuditListRequest, passActivateAuditRequest, rejectActivateAudit } from '@/api/admin/memberManage/memberCard.js'
 import activateFailDialog from './subcomponents/cardAuditFailDialog.vue'
+import cardExamineExportDialog from '@/components/admin/card/cardExamineExportDialog.vue'
+import DateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination'),
-    myFailDialog: activateFailDialog
+    myFailDialog: activateFailDialog,
+    exportDialog: cardExamineExportDialog,
+    DateTimePicker
   },
   data () {
     return {
@@ -157,7 +189,8 @@ export default {
       cardId: null, // 会员卡id
       userNameInput: '',
       phoneNumInput: '',
-      dataValue: '',
+      firstTime: null,
+      secondTime: null,
       status: 1, //  默认是待审核
       activeName: 'first',
       tabData: [],
@@ -167,9 +200,32 @@ export default {
       ids: null,
       maritals: [],
       showAuditFailedDialog: false,
+      showExportDialog: false,
       currentId: null,
       currentDesc: null,
       currentStatus: 1
+    }
+  },
+  computed: {
+    queryContent () {
+      return [
+        {
+          title: this.$t('memberCard.realName'),
+          value: this.userNameInput
+        },
+        {
+          title: this.$t('memberCard.mobile'),
+          value: this.phoneNumInput
+        },
+        {
+          title: this.$t(`dateTimePicker.startTime`),
+          value: this.firstTime
+        },
+        {
+          title: this.$t(`dateTimePicker.endTime`),
+          value: this.secondTime
+        }
+      ]
     }
   },
   watch: {
@@ -202,8 +258,8 @@ export default {
         'status': this.status,
         'realName': this.userNameInput,
         'mobile': this.phoneNumInput,
-        'firstTime': this.dataValue ? this.dataValue[0] : null,
-        'secondTime': this.dataValue ? this.dataValue[1] : null,
+        'firstTime': this.firstTime,
+        'secondTime': this.secondTime,
         'ids': this.ids
       }
 
@@ -238,7 +294,8 @@ export default {
 
     // 清除输入框数据
     clearInputDate () {
-      this.tabData = this.userNameInput = this.phoneNumInput = this.dataValue = null
+      this.tabData = this.userNameInput = this.phoneNumInput = null
+      this.firstTime = this.secondTime = null
     },
 
     // 2- 数据处理
@@ -279,7 +336,7 @@ export default {
             }
             tmpContainer.push(
               {
-                title: opt.custom_title, content: content
+                title: opt.custom_title, content: content, type: opt.custom_type
               }
             )
           } else if (opt.custom_type === 1) {
@@ -290,13 +347,23 @@ export default {
             }
             tmpContainer.push(
               {
-                title: opt.custom_title, content: content
+                title: opt.custom_title, content: content, type: opt.custom_type
               }
             )
           } else if (opt.custom_type === 2) {
+            //  文本
             tmpContainer.push(
               {
-                title: opt.custom_title, content: opt.text
+                title: opt.custom_title, content: opt.text, type: opt.custom_type
+              }
+            )
+          } else if (opt.custom_type === 3) {
+            //  图片
+            tmpContainer.push(
+              {
+                title: opt.custom_title,
+                pictureLinks: opt.pictureLinks,
+                type: opt.custom_type
               }
             )
           }
@@ -346,6 +413,9 @@ export default {
       this.currentDesc = item.refuseDesc
       this.currentStatus = item.status
       this.showAuditFailedDialog = true
+    },
+    exportData () {
+      this.showExportDialog = true
     }
   }
 }
@@ -408,42 +478,51 @@ export default {
       .member_content {
         padding: 0 0 0 15px;
         display: flex;
+        flex-direction: row;
         ul {
           padding: 10px 0 10px 0;
           width: 80%;
-          display: inline-flex;
-          flex-direction: row;
+          display: flex;
+          flex-direction: column;
           flex-wrap: wrap;
-          float: left;
         }
         li {
-          float: left;
           padding: 10px 0 0 0;
-          flex: 0 1 33.3%;
         }
 
-        .operate_box {
-          width: 20%;
-          border-left: 1px solid #eee;
-          padding: 10px 0 10px 0;
+        li .title {
+          margin-right: 10px;
+        }
+        .picture {
           display: flex;
-          justify-content: center;
-          align-items: center;
-          .content {
-            display: flex;
-            flex-direction: column;
-            /deep/ .el-button {
-              width: 100px;
-            }
+          flex-direction: row;
+          li {
+            margin-right: 10px;
+          }
+        }
+      }
+
+      .operate_box {
+        width: 20%;
+        border-left: 1px solid #eee;
+        padding: 10px 0 10px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .content {
+          display: flex;
+          flex-direction: column;
+          /deep/ .el-button {
+            width: 100px;
           }
         }
       }
     }
   }
-.fail-detail{
-  padding: 5px 10px;
-  color: blue;
-  cursor: pointer;
-}
+  .fail-detail {
+    padding: 5px 10px;
+    color: blue;
+    cursor: pointer;
+  }
 }
 </style>

@@ -1,10 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.config.trade.third.ThirdAppAuthIdParam;
-import com.vpu.mp.service.pojo.shop.config.trade.third.ThirdAppKeyParam;
-import com.vpu.mp.service.pojo.shop.config.trade.third.ThirdAuthorizeParam;
-import com.vpu.mp.service.pojo.shop.config.trade.third.ThirdInfoParam;
+import com.vpu.mp.service.pojo.shop.config.trade.third.*;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +27,12 @@ public class AdminConfigThirdController  extends AdminBaseController {
     @PostMapping("/get")
     public JsonResult getThirdAuthInfo(@RequestBody @Valid ThirdInfoParam param){
         return success(shop().thirdAuthService.getThirdAuthInfo(param));
+    }
+
+    @PostMapping("/push/set")
+    public JsonResult setPush(ThirdErpPushParam param){
+        shop().thirdAuthService.setPush(param);
+        return success();
     }
 
     /**

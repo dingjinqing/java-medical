@@ -161,6 +161,9 @@
 .goods_price_info {
   color: #ff6666;
 }
+.goods_price{
+  position: relative;
+}
 .goods_price > text {
   font-size: 26rpx;
 }
@@ -439,4 +442,10 @@
   flex-direction: column;
   justify-content: center;
   color: #fff;
+}
+.share-button{
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }

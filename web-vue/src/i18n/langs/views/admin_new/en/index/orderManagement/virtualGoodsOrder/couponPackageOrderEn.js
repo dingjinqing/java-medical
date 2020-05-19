@@ -6,5 +6,6 @@ export const en = {
   orderSn: 'order sn',
   packName: 'pack name',
   startTime: 'start time',
-  endTime: 'end time'
+  endTime: 'end time',
+  payCode: 'Payment method'
 }

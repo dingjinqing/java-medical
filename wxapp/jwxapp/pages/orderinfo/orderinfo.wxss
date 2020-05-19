@@ -119,9 +119,15 @@
 .goods_info>.goods_spec {
   color: #888;
   font-size: 24rpx;
+  display: flex;
+}
+
+.goods_info>.goods_spec>text{
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  max-width: 460rpx;
+  flex: 1;
 }
 
 .goods_info>.goods_price_num {
@@ -405,4 +411,12 @@
   padding: 0;
   font-size: 30rpx;
   color: #fff;
+}
+
+.share-button-content{
+  background-color: #fff;
+}
+
+.share-button .btn-type-1 .btn-navigator-type-1 {
+  padding: 0;
 }
