@@ -385,6 +385,15 @@ export default {
             }
           })
           break
+        case 'look':
+          this.$router.push({
+            name: 'store_storemanage_reservation_record',
+            query: {
+              id: that.storeId,
+              servicename: row.serviceName
+            }
+          })
+          break
       }
     },
     selectChangeHandle (selects) {
