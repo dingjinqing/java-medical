@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.goods.es.convert.param;
 
 import com.google.common.collect.Lists;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.es.*;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.shop.goods.es.convert.exception.ParamConvertException;
@@ -66,11 +67,12 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
             propertyList.add(new FieldProperty(EsSearchName.GOODS_LABEL,param.getLabelId()));
         }
         if( null != param.getSaleTimeStart() ){
-            propertyList.add(new FieldProperty(EsSearchName.SALE_TIME,param.getSaleTimeStart(),Operator.GTE));
+            propertyList.add(new FieldProperty(
+                EsSearchName.SALE_TIME, DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL,param.getSaleTimeStart()),Operator.GTE));
 
         }
         if( null != param.getSaleTimeEnd() ){
-            propertyList.add(new FieldProperty(EsSearchName.SALE_TIME,param.getSaleTimeStart(),Operator.LTE));
+            propertyList.add(new FieldProperty(EsSearchName.SALE_TIME,DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL,param.getSaleTimeEnd()),Operator.LTE));
 
         }
         if( null != param.getBrandId() ){
