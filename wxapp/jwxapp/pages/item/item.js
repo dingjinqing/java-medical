@@ -278,7 +278,8 @@ global.wxPage({
               goodsDistribution,
               roomDetailMpInfo,
               deliverFeeAddressVo,
-              shareAwardId
+              shareAwardId,
+              showMall
             } = res.content
             let goodsMediaInfo = {
               goodsImgs, //商品图片
@@ -321,7 +322,8 @@ global.wxPage({
               goodsGifts, // 赠品,
               goodsDistribution, //分销信息,
               roomDetailMpInfo,
-              deliverFeeAddressVo
+              deliverFeeAddressVo,
+              showMall
             })
             this.setData({
               specParams,

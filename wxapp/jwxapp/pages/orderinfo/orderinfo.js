@@ -84,7 +84,7 @@ global.wxPage({
             orderInfo: orderInfo,
             groupDrawInfo: this.getGroupDrawInfo(orderInfo)
           });
-          this.setShareButtonData(Array.from(new Set(orderInfo.goods.map(item=>item.goodsId)))) //设置好物推荐信息
+          if (orderInfo.showMall) this.setShareButtonData(Array.from(new Set(orderInfo.goods.map(item=>item.goodsId)))) //设置好物推荐信息
         }
       },
       { orderSn: this.data.orderSn }
