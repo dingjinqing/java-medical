@@ -501,7 +501,15 @@
                         alt=""
                       >
                       <div class="right_info">
-                        <div class="goods_name"><span>{{goodsItem.goodsName}}</span></div>
+                        <div class="goods_name">
+                          <span>
+                            <!-- <span class="tags red" v-if="goodsItem.isGift === 1">会员专享</span> -->
+                            <!-- <span class="tags ef8115" v-if="goodsItem.isGift === 1">限时降价</span> -->
+                            <!-- <span class="tags ef8115" v-if="goodsItem.isGift === 1">首单特惠</span> -->
+                            <span class="tags red" v-if="goodsItem.isGift === 1">赠品</span>
+                          {{goodsItem.goodsName}}
+                          </span>
+                          </div>
                         <div class="goods_spec">{{goodsItem.goodsAttr}}</div>
                       </div>
                     </div>
@@ -703,7 +711,15 @@
                           alt=""
                         >
                         <div class="right_info">
-                          <div class="goods_name"><span>{{childGoods.goodsName}}</span></div>
+                          <div class="goods_name">
+                            <span>
+                              <!-- <span class="tags red" v-if="goodsItem.isGift === 1">会员专享</span> -->
+                              <!-- <span class="tags ef8115" v-if="goodsItem.isGift === 1">限时降价</span> -->
+                              <!-- <span class="tags ef8115" v-if="goodsItem.isGift === 1">首单特惠</span> -->
+                              <span class="tags red" v-if="goodsItem.isGift === 1">赠品</span>
+                              {{childGoods.goodsName}}
+                            </span>
+                          </div>
                           <div class="goods_spec">{{childGoods.goodsAttr}}</div>
                         </div>
                       </div>
@@ -1369,7 +1385,17 @@ export default {
                     overflow: hidden;
                     -webkit-box-orient: vertical;
                     text-align: left;
-                    line-height: 1;
+                    line-height: 21px;
+                    >.tags{
+                      border: 1px solid;
+                      padding: 0 3px;
+                      &.red{
+                        color: red;
+                      }
+                      &.ef8115{
+                        color:#ef8115;
+                      }
+                    }
                   }
                 }
               }
