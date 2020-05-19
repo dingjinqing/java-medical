@@ -79,8 +79,14 @@
           @mouseleave="handleToMouseleave(3)"
           class="suspension suspension_click2"
         >
-          <div class="inner">
-            <img :src="`${$imageHost}/image/admin/left_menu_question.png`">
+          <div
+            class="inner"
+            @click="handleToClick()"
+          >
+            <img
+              @click="handleToClick()"
+              :src="`${$imageHost}/image/admin/left_menu_question.png`"
+            >
           </div>
           <div
             class="toPosition"
