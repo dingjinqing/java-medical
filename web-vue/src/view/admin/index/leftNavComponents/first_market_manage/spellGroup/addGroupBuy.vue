@@ -796,7 +796,7 @@ import actShare from '@/components/admin/marketManage/marketActivityShareSetting
 // import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { addGroupBuyActivity, getGroupBuyDetail, updateGroupBuy } from '@/api/admin/marketManage/spellGroup.js'
 import { getSelectGoods } from '@/api/admin/marketManage/distribution.js'
-import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
+// import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
 
 export default {
   components: {
