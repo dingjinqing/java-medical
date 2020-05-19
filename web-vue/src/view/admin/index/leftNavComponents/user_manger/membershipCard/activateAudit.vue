@@ -200,7 +200,7 @@ export default {
       ids: null,
       maritals: [],
       showAuditFailedDialog: false,
-      showExportDialog: true,
+      showExportDialog: false,
       currentId: null,
       currentDesc: null,
       currentStatus: 1
