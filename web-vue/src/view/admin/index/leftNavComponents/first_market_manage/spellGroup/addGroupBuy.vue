@@ -498,36 +498,48 @@
                 >
                   <section
                     class="couponImgWrapper"
+                    :class="item.status === 0 ? 'couponImgWrapper': 'couponImgWrapperGary'"
                     style="line-height: normal"
                   >
                     <div
                       class="coupon_list_top"
+                      :class="item.status === 0 ? 'coupon_list_top': 'coupon_list_top_gray'"
                       v-if="item.actCode==='voucher'"
                     >
                       <span>￥</span>
-                      <span class="number">{{item.denomination}}</span>
+                      <span
+                        class="number"
+                        :class="item.status === 0 ? 'number' : 'gray'"
+                      >{{item.denomination}}</span>
                     </div>
                     <div
                       class="coupon_list_tops"
+                      :class="item.status === 0 ? 'coupon_list_tops': 'coupon_list_tops_gray'"
                       v-if="item.actCode==='discount'"
                     >
                       <span class="discount_number">{{item.denomination}}</span>
                       <span>{{$t('payReward.discount')}}</span>
                     </div>
-                    <div class="coupon_center_limit">{{item.useConsumeRestrict |
+                    <div
+                      class="coupon_center_limit"
+                      :class="item.status === 0 ? 'coupon_center_limit': 'coupon_center_limit_gray'"
+                    >{{item.useConsumeRestrict |
                       formatLeastConsume(item.leastConsume)}}
                     </div>
                     <!-- <div class="coupon_center_number">剩余{{item.surplus}}张</div> -->
                     <div
                       class="coupon_center_number"
+                      :class="item.status === 0 ? 'coupon_center_number':'gray'"
                       v-if="item.surplus !==0"
                     >剩余{{item.surplus}}张</div>
                     <div
                       class="coupon_center_number"
+                      :class="item.status === 0 ? 'coupon_center_number':'gray'"
                       v-if="item.surplus ===0"
                     >库存不限制</div>
                     <div
                       class="coupon_list_bottom"
+                      :class="item.status === 0 ? 'coupon_list_bottom': 'coupon_list_bottom_gray'"
                       :style="`background-image: url(${$imageHost}/image/admin/coupon_border.png)`"
                     >
                       <span v-if="item.scoreNumber === 0">领取</span>
@@ -1075,11 +1087,12 @@ export default {
           this.form.isDefault = data.isDefault
           this.form.shippingType = data.shippingType
           this.form.beginNum = data.beginNum
-          if (data.rewardCouponId) {
-            this.form.rewardCouponId = data.rewardCouponId.split(',')
-            this.rewardCouponIds = data.rewardCouponId.split(',')
-            this.getCouponList(this.rewardCouponIds.map(Number))
-          }
+          this.rewardCouponList = data.couponViews
+          // if (data.rewardCouponId) {
+          //   this.form.rewardCouponId = data.rewardCouponId.split(',')
+          //   this.rewardCouponIds = data.rewardCouponId.split(',')
+          //   this.getCouponList(this.rewardCouponIds.map(Number))
+          // }
           if (this.form.isGrouperCheap === 1) {
             this.showGrouperPrice = true
           } else {
@@ -1125,20 +1138,19 @@ export default {
     },
 
     // 获取优惠券信息
-    getCouponList (ids) {
-      console.log(ids, 'ids--')
-      this.rewardCouponList = []
-      ids.map((item, index) => {
-        updateCoupon(item).then((res) => {
-          if (res.error === 0) {
-            this.rewardCouponList.push(res.content[0])
-            console.log(this.rewardCouponList)
-            this.couponIdList = this.rewardCouponList.map(item => item.id)
-            console.log(this.couponIdList)
-          }
-        })
-      })
-    },
+    // getCouponList (ids) {
+    //   console.log(ids, 'ids--')
+    //   this.rewardCouponList = []
+    //   ids.map((item, index) => {
+    //     updateCoupon(item).then((res) => {
+    //       if (res.error === 0) {
+    //         this.rewardCouponList.push(res.content[0])
+    //         console.log(this.rewardCouponList)
+    //         this.couponIdList = this.rewardCouponList.map(item => item.id)
+    //       }
+    //     })
+    //   })
+    // },
 
     // 提交表单 保存
     submitForm (formName) {
@@ -1333,9 +1345,9 @@ export default {
     // 确认选择优惠券-新增
     handleToCheck (data, index) {
       console.log(data, 'coupon data---', index, 'index---')
-      this.couponIdList = data.map(item => item.id)
       if (this.rewardCouponList.length < 5) {
-        this.rewardCouponList = data
+        let invalid = this.rewardCouponList.filter(item => item.status !== 0)
+        this.rewardCouponList = data.concat(invalid)
         this.rewardCouponIds = []
         this.rewardCouponList.map((item, index) => {
           this.rewardCouponIds.push(item.id)
@@ -1353,6 +1365,7 @@ export default {
     },
     // 优惠券点击事件
     handleToCallDialog () {
+      this.couponIdList = this.getCouponIdsArray(this.rewardCouponList)
       this.showCouponDialog = !this.showCouponDialog
     },
     // 活动时间时间选择
@@ -1390,6 +1403,14 @@ export default {
           break
       }
       this.form.product = price
+    },
+
+    getCouponIdsArray (data) {
+      let res = []
+      data.forEach((item, index) => {
+        res.push(item.id)
+      })
+      return res
     },
 
     // 改变箭头事件
@@ -1527,16 +1548,31 @@ export default {
   border: 1px solid #fbb;
   border-radius: 10px;
 }
+.couponImgWrapperGary {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #d5d7d9;
+  border-radius: 10px;
+}
 
 .coupon_list_top {
   margin-top: 10px;
   color: #f60;
+}
+.coupon_list_top_gray {
+  margin-top: 10px;
+  color: #d5d7d9;
 }
 
 .coupon_list_tops {
   font-weight: bold;
   margin-top: 10px;
   color: #f60;
+}
+.coupon_list_tops_gray {
+  font-weight: bold;
+  margin-top: 10px;
+  color: #d5d7d9;
 }
 .discount_number {
   font-size: 20px;
@@ -1546,10 +1582,19 @@ export default {
   color: #f60;
   font-size: 12px !important;
 }
+.coupon_center_limit_gray {
+  color: #d5d7d9;
+}
 
 .coupon_center_number {
   height: 18px;
   color: #fbb;
+  font-size: 12px;
+}
+
+.gray {
+  height: 18px;
+  color: #d5d7d9;
   font-size: 12px;
 }
 
@@ -1561,6 +1606,10 @@ export default {
   color: #fff;
   background: #f66;
   font-size: 12px;
+  background-repeat: repeat-x;
+}
+.coupon_list_bottom_gray {
+  background: #d5d7d9;
   background-repeat: repeat-x;
 }
 
