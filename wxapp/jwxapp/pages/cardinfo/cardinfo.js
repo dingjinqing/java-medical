@@ -30,7 +30,7 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log(options, '腾飞测试++++++++++++++++++')
+    console.log(options, wx.getStorageSync('openid'), '腾飞测试++++++++++++++++++')
     if (!util.check_setting(options)) return;
     wx.hideShareMenu();
     let cardNo = options.cardNo ? options.cardNo : null
@@ -697,6 +697,7 @@ global.wxPage({
   },
   rebateGetCard: function () {
     let cardInfo = this.data.cardInfo
+    console.log(cardInfo)
     util.api('/api/wxapp/card/getgiveawaycard', function (res) {
       console.log(res)
       if (res.error == 0) {
@@ -718,14 +719,18 @@ global.wxPage({
   bindGetUserInfo: function (e) {
     console.log('触发')
     var that = this
-    util.getUserInfoCommon(e, function (userInfo) {
-      console.log(userInfo)
-      if (userInfo) {
-        that.setData({
-          ifGetSq: 1
-        })
-      }
-    });
+    if (wx.getStorageSync('openid')) {
+      this.rebateGetCard()
+    } else {
+      util.getUserInfoCommon(e, function (userInfo) {
+        console.log(userInfo)
+        if (userInfo) {
+          that.setData({
+            ifGetSq: 1
+          })
+        }
+      });
+    }
   },
   cancel_rebate: function () {
     var that = this;
