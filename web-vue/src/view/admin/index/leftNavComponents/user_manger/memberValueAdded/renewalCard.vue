@@ -343,13 +343,15 @@ export default {
     // 点击筛选
     handleToScreen () {
       console.log(this.showHeader)
+      let headerDataSecond = JSON.parse(JSON.stringify(this.headerDataSecond))
+      let headerDataThird = JSON.parse(JSON.stringify(this.headerDataThird))
       switch (this.showHeader) {
         case 'second':
           console.log(this.headerDataSecond)
-          this.$emit('getRenewalHeaderData', this.headerDataSecond)
+          this.$emit('getRenewalHeaderData', headerDataSecond)
           break
         case 'third':
-          this.$emit('getRenewalHeaderData', this.headerDataThird)
+          this.$emit('getRenewalHeaderData', headerDataThird)
           break
       }
     },
