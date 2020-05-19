@@ -786,10 +786,8 @@ export default {
           console.log(res, 'res--')
           this.param = res.content
           console.log(this.param)
-          this.param.effectiveDate = [res.content.startTime, res.content.endTime]
-          // console.log(this.param.effectiveDate)
-          // this.param.effectiveDate.push(res.content.startTime)
-          // this.param.effectiveDate.push(res.content.endTime)
+          let date = [res.content.startTime, res.content.endTime]
+          this.$set(this.param, 'effectiveDate', date)
           this.mrkingVoucherObjs = res.content.mrkingVoucherList
           this.rewardCouponObjs = res.content.rewardCouponList
           this.goodsRow = res.content.bargainGoods
