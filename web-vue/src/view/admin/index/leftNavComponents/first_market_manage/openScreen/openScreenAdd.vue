@@ -194,6 +194,7 @@
               >
                 <div
                   class="coupon-added"
+                  :class="{'coupon-invalid': item.status != 0}"
                   v-for="(item,index) in couponSelected"
                   :key="item.id"
                 >
@@ -269,6 +270,7 @@
               >
                 <div
                   class="coupon-added"
+                  :class="{'coupon-invalid': item.status != 0}"
                   v-for="item in disCouponSelected"
                   :key="item.id"
                 >
@@ -653,7 +655,9 @@ export default {
       this.addCouponVisible = !this.addCouponVisible
     },
     addCouponHandle (data) {
-      this.couponSelected = data
+      // 因为可能存在失效的优惠券，所以回显时，拼接未删除的失效的优惠券
+      let invalid = this.couponSelected.filter(item => item.status !== 0)
+      this.couponSelected = data.concat(invalid)
     },
     addDisCoupon () {
       this.addDisCouponVisible = !this.addDisCouponVisible
@@ -785,6 +789,16 @@ export default {
             font-size: 12px;
             line-height: 1;
             overflow: inherit;
+            &.coupon-invalid {
+              color: #d5d7d9;
+              border: 1px solid #d5d7d9;
+              .ca-stock-limit {
+                color: #d5d7d9;
+              }
+              .ca-bottom {
+                background-color: #d5d7d9;
+              }
+            }
             .ca-value {
               margin-top: 10px;
               font-size: 14px;
