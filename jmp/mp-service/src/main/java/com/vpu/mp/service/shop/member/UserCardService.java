@@ -2617,7 +2617,7 @@ public class UserCardService extends ShopBaseService {
             endDate = DateUtil.getLocalDateTime();
             param.setEndTime(endDate);
         }
-        Map<java.sql.Date, List<CardRenewAnalysisBo>> orderGoodsMap = getAnalysisOrderMap(param);
+        Map<java.sql.Date, List<CardRenewAnalysisBo>> orderGoodsMap = getRenewAnalysisOrderMap(param);
 
         Set<Integer> allUserIds = new HashSet<>();
         //填充
@@ -2664,16 +2664,34 @@ public class UserCardService extends ShopBaseService {
     }
 
     /**
+     * 会员卡续费订单数据
+     *
      * @param param
      * @return
      */
-    private Map<java.sql.Date, List<CardRenewAnalysisBo>> getAnalysisOrderMap(AnalysisParam param) {
+    private Map<java.sql.Date, List<CardRenewAnalysisBo>> getRenewAnalysisOrderMap(AnalysisParam param) {
         List<CardRenewAnalysisBo> list = db().select(DSL.date(CARD_RENEW.ADD_TIME).as("createTime"), CARD_RENEW.RENEW_ORDER_SN, CARD_RENEW.USER_ID, CARD_RENEW.MONEY_PAID, CARD_RENEW.USE_ACCOUNT, CARD_RENEW.MEMBER_CARD_REDUNCE)
             .from(CARD_RENEW)
             .where(CARD_RENEW.ADD_TIME.between(param.getStartTime(), param.getEndTime()))
             .and(CARD_RENEW.ORDER_STATUS.eq(CardConstant.CARD_RENEW_ORDER_STATUS_OK))
             .fetchInto(CardRenewAnalysisBo.class);
         return list.stream().collect(Collectors.groupingBy(CardRenewAnalysisBo::getCreateTime));
+    }
+
+    /**
+     * 会员卡充值订单数据
+     *
+     * @param param
+     * @return
+     */
+    private Map<java.sql.Date, List<CardChargeAnalysisBo>> getChargeAnalysisOrderMap(AnalysisParam param) {
+        List<CardChargeAnalysisBo> list = db().select(DSL.date(CHARGE_MONEY.CREATE_TIME).as("createTime"), CHARGE_MONEY.ORDER_SN, CHARGE_MONEY.USER_ID, CHARGE_MONEY.CHARGE, CHARGE_MONEY.RETURN_MONEY)
+            .from(CHARGE_MONEY)
+            .where(CHARGE_MONEY.CREATE_TIME.between(param.getStartTime(), param.getEndTime()))
+            .and(CHARGE_MONEY.CHARGE.ge(BigDecimal.ZERO))
+            .and(CHARGE_MONEY.TYPE.eq(ZERO))
+            .fetchInto(CardChargeAnalysisBo.class);
+        return list.stream().collect(Collectors.groupingBy(CardChargeAnalysisBo::getCreateTime));
     }
 
     /**
@@ -2739,6 +2757,72 @@ public class UserCardService extends ShopBaseService {
             select = select.and(CHARGE_MONEY.AFTER_CHARGE_MONEY.le(param.getAfterChargeMoneyMax()));
         }
         return select;
+    }
+
+    /**
+     * 会员卡续费记录
+     * 图表分析的数据
+     *
+     * @param param
+     * @return
+     */
+    public AnalysisVo cardChargeAnalysis(AnalysisParam param) {
+        AnalysisVo analysisVo = new AnalysisVo();
+        Timestamp startDate = param.getStartTime();
+        Timestamp endDate = param.getEndTime();
+        if (startDate == null || endDate == null) {
+            startDate = Timestamp.valueOf(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_BEGIN, DateUtil.getLocalDateTime()));
+            param.setStartTime(startDate);
+            endDate = DateUtil.getLocalDateTime();
+            param.setEndTime(endDate);
+        }
+        Map<java.sql.Date, List<CardChargeAnalysisBo>> orderGoodsMap = getChargeAnalysisOrderMap(param);
+
+        Set<Integer> allUserIds = new HashSet<>();
+        //填充
+        while (Objects.requireNonNull(startDate).compareTo(endDate) <= 0) {
+            java.sql.Date k = new Date(startDate.getTime());
+            List<CardChargeAnalysisBo> v = orderGoodsMap.get(k);
+            Set<Integer> userIds = new HashSet<>();
+
+            if (v != null) {
+                /**支付金额 */
+                BigDecimal paymentAmount = BigDecimal.ZERO;
+
+                BigDecimal returnAmount = BigDecimal.ZERO;
+                for (CardChargeAnalysisBo o : v) {
+                    userIds.add(o.getUserId());
+                    paymentAmount = BigDecimalUtil.addOrSubtrac(
+                        BigDecimalUtil.BigDecimalPlus.create(paymentAmount, BigDecimalUtil.Operator.add),
+                        BigDecimalUtil.BigDecimalPlus.create(o.getCharge(), BigDecimalUtil.Operator.add));
+                    returnAmount = BigDecimalUtil.addOrSubtrac(
+                        BigDecimalUtil.BigDecimalPlus.create(returnAmount, BigDecimalUtil.Operator.add),
+                        BigDecimalUtil.BigDecimalPlus.create(o.getReturnMoney(), BigDecimalUtil.Operator.add));
+                }
+
+                analysisVo.getDateList().add(k.toString());
+                analysisVo.getPaidOrderNumber().add(v.size());
+                analysisVo.getPaidUserNumber().add(userIds.size());
+                analysisVo.getPaymentAmount().add(paymentAmount);
+                analysisVo.getReturnAmount().add(returnAmount);
+            } else {
+                analysisVo.getDateList().add(k.toString());
+                analysisVo.getPaidOrderNumber().add(0);
+                analysisVo.getPaidUserNumber().add(0);
+                analysisVo.getPaymentAmount().add(BigDecimal.ZERO);
+                analysisVo.getReturnAmount().add(BigDecimal.ZERO);
+            }
+            allUserIds.addAll(userIds);
+            startDate = Util.getEarlyTimeStamp(startDate, 1);
+        }
+
+        AnalysisVo.AnalysisTotalVo totalVo = new AnalysisVo.AnalysisTotalVo();
+        totalVo.setTotalPaidOrderNumber(analysisVo.getPaidOrderNumber().stream().mapToInt(Integer::intValue).sum());
+        totalVo.setTotalPaidUserNumber(allUserIds.size());
+        totalVo.setTotalPaymentAmount(analysisVo.getPaymentAmount().stream().reduce(BigDecimal.ZERO, BigDecimal::add));
+        totalVo.setTotalReturnAmount(BigDecimal.ZERO);
+        analysisVo.setTotal(totalVo);
+        return analysisVo;
     }
 }
 

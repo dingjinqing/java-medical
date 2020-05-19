@@ -116,7 +116,7 @@ public class AdminUserCardController extends AdminBaseController {
      */
     @PostMapping("/api/admin/user/card/charge/analysis")
     public JsonResult cardChargeAnalysis(@RequestBody AnalysisParam param) {
-        return success(shop().userCard.cardRenewAnalysis(param));
+        return success(shop().userCard.cardChargeAnalysis(param));
     }
 
 
