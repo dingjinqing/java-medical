@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.recommend.SkuAttrList;
 import com.vpu.mp.service.pojo.shop.recommend.goods.BrandInfo;
@@ -22,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.recommend.goods.Product;
 import com.vpu.mp.service.pojo.shop.recommend.goods.SkuList;
 import com.vpu.mp.service.saas.categroy.SysCateService;
 import com.vpu.mp.service.saas.shop.ShopService;
+import com.vpu.mp.service.shop.config.WxShoppingListConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageService;
 
@@ -42,6 +44,8 @@ public class GoodsMallService extends ShopBaseService {
 	private ShopService shopService;
 	@Autowired
 	private ImageService imageService;
+	@Autowired
+	private WxShoppingListConfigService shoppingListConfig;
 
 	/**
 	 * 好物推荐商品   小程序页面
@@ -85,8 +89,12 @@ public class GoodsMallService extends ShopBaseService {
 			productVo.setTitle(goods.getGoodsName());
 			productVo.setDesc(goods.getGoodsName());
 			productVo.setCategoryList(list);
-			productVo.setImageList(goodsService.getGoodsImageList(goods.getGoodsId()));
-			productVo.setSrcMiniProgramPath("/pages/item/item?goods_id=" + goods.getGoodsId());
+			List<String> imageList = goodsService.getGoodsImageList(goods.getGoodsId());
+			if(imageList.isEmpty()) {
+				imageList.add(imageService.imageUrl(goods.getGoodsImg()));
+			}
+			productVo.setImageList(imageList);
+			productVo.setSrcMiniProgramPath("/pages/item/item?gid=" + goods.getGoodsId());
 			productVo.setSkuList(liSkuLists);
 			String logo = shop.getLogo();
 			productVo.setBrandInfo(new BrandInfo(shop.getShopName(), StringUtils.isEmpty(logo)?"":imageService.imageUrl(shop.getLogo())));
@@ -95,6 +103,41 @@ public class GoodsMallService extends ShopBaseService {
 			vo.add(pListProduct);
 		}
 		return vo;
+	}
+	
+	/**
+	 * 好物推荐，带校验是不是开了，用这个
+	 * @param goodsId
+	 * @return
+	 */
+	public List<ListProduct> checkShippingRecommendGoods(List<Integer> goodsId) {
+		List<ListProduct> list=new ArrayList<ListProduct>();
+		if(check("2")) {
+			list=shippingRecommendGoods(goodsId);
+		}
+		return list;
+	}
+
+	/**
+	 * 是否包含对应的数据 true：可以；false：不可以
+	 * @param value "1"订单详情页显示，"2"商品详情页显示
+	 * @return
+	 */
+	public boolean check(String value) {
+		WxShoppingListConfig config = shoppingListConfig.getShoppingListConfig();
+		String enabeld = config.getEnabeldWxShoppingList();
+		if(enabeld.equals("0")) {
+			//0"未开启 "1"开启
+			return false;
+		}
+		String recommend = config.getWxShoppingRecommend();
+		String[] split = recommend.split(",");
+		for (String string : split) {
+			if(string.equals(value)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

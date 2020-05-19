@@ -12,7 +12,6 @@
         prop="name"
       >
         <el-input
-          :disabled="isEditFlag"
           size="small"
           :placeholder="$t('marketCommon.actNamePlaceholder')"
           v-model="reduceData.name"
@@ -99,7 +98,6 @@
         prop="first"
       >
         <el-input-number
-          :disabled="isEditFlag"
           size="small"
           :min="0"
           :max="127"
@@ -113,18 +111,15 @@
         prop="isLimit"
       >
         <el-radio
-          :disabled="isEditFlag"
           v-model="reduceData.isLimit"
           label="0"
         >{{$t('reducePriceList.noLimit')}}</el-radio>
         <br />
         <el-radio
-          :disabled="isEditFlag"
           v-model="reduceData.isLimit"
           label="1"
         >{{$t('reducePriceList.limitQuantity')}}
           <el-input-number
-            :disabled="isEditFlag"
             v-model="reduceData.limitAmount"
             controls-position="right"
             :min="1"
@@ -135,7 +130,6 @@
         </el-radio>
         <div v-if="reduceData.isLimit === '1'">
           <el-checkbox
-            :disabled="isEditFlag"
             v-model="reduceData.limitFlag"
             :true-label="1"
             :false-label="0"
@@ -421,7 +415,6 @@
             <el-radio
               v-model="reduceData.shareConfig.shareAction"
               :label="1"
-              :disabled="isEditFlag"
             >默认样式</el-radio>
             <el-popover
               placement="right-start"
@@ -451,14 +444,12 @@
             <el-radio
               v-model="reduceData.shareConfig.shareAction"
               :label="2"
-              :disabled="isEditFlag"
             >自定义样式</el-radio>
             <div v-if="reduceData.shareConfig.shareAction === 2">
               <span>文案：</span>
               <el-input
                 v-model="reduceData.shareConfig.shareDoc"
                 size="small "
-                :disabled="isEditFlag"
                 style="width: 170px;"
               ></el-input>
             </div>
@@ -467,13 +458,11 @@
               <el-radio
                 v-model="reduceData.shareConfig.shareImgAction"
                 :label="1"
-                :disabled="isEditFlag"
               >活动商品信息图</el-radio>
               <div style="margin-left: 60px;">
                 <el-radio
                   v-model="reduceData.shareConfig.shareImgAction"
                   :label="2"
-                  :disabled="isEditFlag"
                 >自定义图片</el-radio>
               </div>
 
@@ -608,8 +597,8 @@ export default {
       // 展开更多配置
       arrorFlag: true,
       srcList: {
-        src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
-        src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`
+        src1: `${this.$imageHost}/image/admin/share/reduce_share.jpg`,
+        src2: `${this.$imageHost}/image/admin/share/reduce_pictorial.jpg`
       },
 
       isEditFlag: this.isEdite, // 编辑时部分信息不可修改

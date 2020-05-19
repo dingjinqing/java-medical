@@ -20,14 +20,6 @@ export const en = {
     {
       title: 'Disable',
       name: '4'
-    },
-    {
-      title: 'Bulk price reduction',
-      name: '5'
-    },
-    {
-      title: 'Batch mark up rate',
-      name: '6'
     }
   ],
 

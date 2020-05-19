@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.store.article;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 /**
@@ -14,6 +15,7 @@ public class ArticlePojo {
     /** id */
     private Integer articleId;
     /** 标题 */
+    @NotNull
     private String title;
     /** 关键词 */
     private String keyword;

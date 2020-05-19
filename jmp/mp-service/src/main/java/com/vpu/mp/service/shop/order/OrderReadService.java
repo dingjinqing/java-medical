@@ -114,6 +114,7 @@ import com.vpu.mp.service.shop.order.ship.BulkshipmentRecordService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
 import com.vpu.mp.service.shop.order.store.StoreOrderService;
 import com.vpu.mp.service.shop.order.sub.SubOrderService;
+import com.vpu.mp.service.shop.recommend.RecommendService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -228,7 +229,9 @@ public class OrderReadService extends ShopBaseService {
     private ShopAccountService shopAccount;
     @Autowired
     private ChildAccountService childAccount;
-
+    @Autowired
+    private RecommendService recommendService;
+    
 	/**
 	 * 订单查询
 	 * @param param
@@ -725,7 +728,7 @@ public class OrderReadService extends ShopBaseService {
 
         //客服按钮展示开关
         order.setOrderDetailService(shopCommonConfigService.getOrderDetailService());
-
+        order.setShowMall(recommendService.goodsMallService.check("1"));
 		return order;
 
 	}

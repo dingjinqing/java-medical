@@ -64,4 +64,7 @@ public class GoodsDetailMpBo extends GoodsDetailMpVo{
             ", goodsImg='" + goodsImg + '\'' +
             '}'+super.toString();
     }
+    
+    /**是否显示好物圈的按钮 */
+    private Boolean showMall;
 }

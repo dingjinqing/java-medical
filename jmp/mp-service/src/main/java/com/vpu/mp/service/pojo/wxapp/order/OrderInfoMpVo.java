@@ -88,4 +88,7 @@ public class OrderInfoMpVo extends OrderListMpVo{
      * 客服按钮展示开关
      */
     private Byte orderDetailService;
+    
+    /**是否显示好物圈的按钮 */
+    private Boolean showMall;
 }
