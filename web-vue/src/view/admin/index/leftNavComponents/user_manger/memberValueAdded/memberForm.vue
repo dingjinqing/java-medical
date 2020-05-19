@@ -6,53 +6,53 @@
       border
       highlight-current-row
       @current-change="handleCurrentChange"
-      height="300px"
       style="width: 100%;"
       header-row-class-name="tableClss"
       v-if="activeName==='second'"
+      v-loading="loading"
     >
       <el-table-column
-        prop="pageName"
+        prop="renewOrderSn"
         label="续费单号"
         align="center"
       ></el-table-column>
       <el-table-column
-        prop="createTime"
+        prop="cardName"
         label="会员卡"
         align="center"
       ></el-table-column>
       <el-table-column
-        prop="typeText"
+        prop="cardId"
         label="卡ID"
         align="center"
       ></el-table-column>
       <el-table-column
-        prop="typeText"
+        prop="username"
         label="会员昵称"
         align="center"
       ></el-table-column>
       <el-table-column
-        prop="typeText"
+        prop="mobile"
         label="手机号"
         align="center"
       ></el-table-column>
       <el-table-column
-        prop="typeText"
+        prop="addTime"
         label="续费时间"
         align="center"
       ></el-table-column>
       <el-table-column
-        prop="typeText"
+        prop="renewMoney"
         label="续费金额"
         align="center"
       ></el-table-column>
       <el-table-column
-        prop="typeText"
+        prop="renewTime"
         label="续费时长"
         align="center"
       ></el-table-column>
       <el-table-column
-        prop="typeText"
+        prop="renewExpireTime"
         label="当次续费后有效期"
         align="center"
         width="160"
@@ -64,7 +64,6 @@
       border
       highlight-current-row
       @current-change="handleCurrentChange"
-      height="300px"
       style="width: 100%;"
       header-row-class-name="tableClss"
       v-if="activeName==='third'"
@@ -120,13 +119,24 @@
         width="160"
       ></el-table-column>
     </el-table>
-    <Pagination
-      :page-params.sync="pageParams"
-      @pagination="handleToQueryData"
-    />
+    <div
+      class="pagination"
+      v-if="pageParams.totalRows>0"
+    >
+      <div>{{$t('programVersion.currentPage')}}：{{pageParams.currentPage}}，{{$t('programVersion.totalPage')}}：{{pageParams.pageCount}}，{{$t('programVersion.totalRecord')}}：{{pageParams.totalRows}}</div>
+      <el-pagination
+        @current-change="handleToQueryData"
+        :current-page.sync="pageParams.currentPage"
+        :page-size="20"
+        layout="prev, pager, next, jumper"
+        :total="pageParams.totalRows"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 <script>
+import { getRenewalDetails } from '@/api/admin/memberManage/memberValueAdd/memberValueAdd.js'
 export default {
   components: {
     Pagination: () => ('@/components/admin/pagination/pagination') // 分页组件
@@ -143,22 +153,60 @@ export default {
   },
   data () {
     return {
-      pageParams: {}, // 分页
-      tableData1: [] // 表格
+      pageParams: {
+        currentPage: 1
+      }, // 分页
+      tableData1: [], // 表格
+      propsData: {},
+      loading: false
     }
   },
   watch: {
     bottomFormData: {
       handler (newData) {
-        this.handleToQueryData(newData)
+        this.tableData1 = []
+        this.pageParams = {
+          currentPage: 1
+        }
+        this.propsData = newData
+        this.handleToQueryData()
       },
       deep: true
     }
   },
   methods: {
     // 初始请求数据
-    handleToQueryData (newData) {
-      console.log(this.activeName, newData)
+    handleToQueryData () {
+      this.loading = true
+      console.log(this.activeName, this.propsData)
+      switch (this.activeName) {
+        case 'second':
+          let params = {
+            renewOrderSn: this.propsData.renewalNo,
+            userInfo: this.propsData.memberInfo,
+            cardName: this.propsData.cardName,
+            cardId: this.propsData.cardId,
+            startTime: this.propsData.renewStartTime,
+            endTime: this.propsData.renewEndTime,
+            renewMoneyMin: this.propsData.renewalAmountmin,
+            renewMoneyMax: this.propsData.renewalAmountmax,
+            renewType: this.propsData.company,
+            renewTimeMin: this.propsData.afterRenewalStartTime,
+            renewTimeMax: this.propsData.afterRenewalEndTime,
+            currentPage: this.pageParams.currentPage,
+            pageRows: 20
+          }
+          getRenewalDetails(params).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.tableData1 = res.content.dataList
+              this.pageParams = res.content.page
+              this.loading = false
+              console.log(this.pageParams)
+            }
+          })
+          break
+      }
     },
     // 选中数据
     handleCurrentChange (row) {
@@ -181,6 +229,24 @@ export default {
     // padding: 8px 10px;
     .el-checkbox {
       margin-left: -4px;
+    }
+  }
+  .pagination {
+    background-color: #fff;
+    height: 50px;
+    line-height: 50px;
+    color: #333;
+    font-size: 14px;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 10px;
+    /deep/ .el-pagination {
+      display: flex;
+      align-items: center;
+      .el-pager {
+        display: flex;
+        align-items: center;
+      }
     }
   }
 }
