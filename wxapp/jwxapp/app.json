@@ -52,6 +52,10 @@
     "live-player-plugin": {
       "version": "1.0.11",
       "provider": "wx2b03c6e691cd7370"
+    },
+    "goodsSharePlugin": {
+      "version": "4.0.1",
+      "provider": "wx56c8f077de74b07c"
     }
   },
   "permission": {
@@ -61,7 +65,8 @@
   },
   "usingComponents": {
     "v-navigation": "/components/custom-navigation/index",
-    "v-popup-get-phone-number": "/components/popup/get-phone-number/index"
+    "v-popup-get-phone-number": "/components/popup/get-phone-number/index",
+    "share-button": "plugin://goodsSharePlugin/share-button"
   },
   "subpackages": [
     {
