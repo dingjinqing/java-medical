@@ -36,6 +36,11 @@ global.wxPage({
     let cardNo = options.cardNo ? options.cardNo : null
     let cardId = options.cardId ? options.cardId : null
     let giveCard = options.give_card ? options.give_card : 0;
+    if (wx.getStorageSync('openid') && giveCard == 1) {
+      this.setData({
+        ifGetSq: 1
+      })
+    }
     if (options.scene) {
       let scene = decodeURIComponent(options.scene).split('&')
       cardId = scene[0].split('=')[1]
@@ -719,18 +724,14 @@ global.wxPage({
   bindGetUserInfo: function (e) {
     console.log('触发')
     var that = this
-    if (wx.getStorageSync('openid')) {
-      this.rebateGetCard()
-    } else {
-      util.getUserInfoCommon(e, function (userInfo) {
-        console.log(userInfo)
-        if (userInfo) {
-          that.setData({
-            ifGetSq: 1
-          })
-        }
-      });
-    }
+    util.getUserInfoCommon(e, function (userInfo) {
+      console.log(userInfo)
+      if (userInfo) {
+        that.setData({
+          ifGetSq: 1
+        })
+      }
+    });
   },
   cancel_rebate: function () {
     var that = this;
