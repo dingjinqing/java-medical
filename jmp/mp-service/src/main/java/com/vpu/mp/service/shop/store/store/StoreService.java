@@ -1,43 +1,23 @@
 package com.vpu.mp.service.shop.store.store;
 
-import static com.vpu.mp.db.shop.tables.CommentService.COMMENT_SERVICE;
-import static com.vpu.mp.db.shop.tables.Store.STORE;
-import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
-import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
-import static com.vpu.mp.db.shop.tables.Article.ARTICLE;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import com.vpu.mp.db.shop.tables.Article;
 import com.vpu.mp.db.shop.tables.records.ArticleRecord;
-import com.vpu.mp.service.pojo.saas.shop.ShopConst;
-import com.vpu.mp.service.pojo.shop.store.article.ArticleParam;
-import com.vpu.mp.service.pojo.shop.store.article.ArticlePojo;
-import com.vpu.mp.service.pojo.shop.store.store.*;
-import com.vpu.mp.service.saas.overview.ShopOverviewService;
-import org.apache.commons.collections4.CollectionUtils;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.shop.ShopConst;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.account.StoreInfo;
+import com.vpu.mp.service.pojo.shop.store.article.ArticleParam;
+import com.vpu.mp.service.pojo.shop.store.article.ArticlePojo;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
+import com.vpu.mp.service.pojo.shop.store.store.*;
+import com.vpu.mp.service.saas.overview.ShopOverviewService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.store.comment.ServiceCommentService;
 import com.vpu.mp.service.shop.store.group.StoreGroupService;
@@ -45,8 +25,25 @@ import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static com.vpu.mp.db.shop.tables.Article.ARTICLE;
+import static com.vpu.mp.db.shop.tables.CommentService.COMMENT_SERVICE;
+import static com.vpu.mp.db.shop.tables.Store.STORE;
+import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
+import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 
 /**
@@ -217,6 +214,9 @@ public class StoreService extends ShopBaseService {
     public Boolean updateStore(StorePojo store) {
         StoreRecord record = new StoreRecord();
         this.assign(store, record);
+        if (store.getGroup() == null || store.getGroup() <= 0) {
+            record.setGroup(null);
+        }
         return db().executeUpdate(record) > 0 ? true : false;
     }
 
