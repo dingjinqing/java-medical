@@ -9,7 +9,7 @@
           label="会员卡购买"
           name="first"
         >
-          <memberCardOrder v-if="activeName ==='first'" />
+          <memberCardOrder v-if="activeName ==='first'&!isShowTransactionData" />
         </el-tab-pane>
         <el-tab-pane
           label="会员卡续费"
@@ -35,7 +35,7 @@
           label="优惠卷礼包购买"
           name="fourth"
         >
-          <couponPackageOrder v-if="activeName ==='fourth'" />
+          <couponPackageOrder v-if="activeName ==='fourth'&!isShowTransactionData" />
         </el-tab-pane>
       </el-tabs>
       <el-button
@@ -52,7 +52,10 @@
       v-if="(activeName==='second' || activeName==='third')&!isShowTransactionData"
     />
     <!--查看交易数据组件-->
-    <transactionData v-if="isShowTransactionData" />
+    <transactionData
+      :activeName="activeName"
+      v-if="isShowTransactionData"
+    />
   </div>
 </template>
 <script>

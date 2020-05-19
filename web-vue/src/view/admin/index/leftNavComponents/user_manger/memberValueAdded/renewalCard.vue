@@ -333,6 +333,12 @@ export default {
       ]
     }
   },
+  watch: {
+    showHeader (newData) {
+      console.log(newData)
+      this.handleToScreen()
+    }
+  },
   methods: {
     // 点击筛选
     handleToScreen () {

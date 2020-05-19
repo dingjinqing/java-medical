@@ -22,7 +22,7 @@
         type="daterange"
         size="small"
         @change="customDate"
-        value-format="yyyyMMdd"
+        value-format="yyyy-MM-dd"
         range-separator="-"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
@@ -30,7 +30,7 @@
       >
       </el-date-picker>
 
-      <div class="tips">{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</div>
+      <div class="tips">{{this.showStartTime}} - {{this.showEndTime}}</div>
     </div>
     <!--中部-->
     <div class="middle">
@@ -63,7 +63,14 @@
   </div>
 </template>
 <script>
+import { getMemberSardPurchase, getCouponpackPurchase } from '@/api/admin/memberManage/memberValueAdd/memberValueAdd.js'
 export default {
+  props: {
+    activeName: {
+      Type: String,
+      default: ''
+    }
+  },
   data () {
     this.chartSettings = {
       xAxisType: 'time'
@@ -95,15 +102,7 @@ export default {
       },
       chartData: {
         columns: ['日期', '成功支付单数', '成功支付人数', '支付金额', '退款金额'],
-        rows: [
-          { '日期': '2018-01-01', '成功支付单数': 1393, '成功支付人数': 1093, '支付金额': 1001, '退款金额': 2330 },
-          { '日期': '2018-01-02', '成功支付单数': 3530, '成功支付人数': 3230, '支付金额': 222, '退款金额': 1320 },
-          { '日期': '2018-01-03', '成功支付单数': 2923, '成功支付人数': 2623, '支付金额': 344, '退款金额': 1310 },
-          { '日期': '2018-01-05', '成功支付单数': 1723, '成功支付人数': 1423, '支付金额': 322, '退款金额': 205 },
-          { '日期': '2018-01-10', '成功支付单数': 3792, '成功支付人数': 3492, '支付金额': 5644, '退款金额': 260 },
-          { '日期': '2018-01-20', '成功支付单数': 4593, '成功支付人数': 4293, '支付金额': 3454, '退款金额': 290 }
-        ]
-
+        rows: []
       },
       appcolor: ['#5A8BFF', '#fc6181', '#fdb64a', '#ff9f7f'],
       middleData: [
@@ -123,49 +122,123 @@ export default {
           title: '退款金额',
           num: 0
         }
-      ]
+      ],
+      startTime: '',
+      endTime: '',
+      showStartTime: '',
+      showEndTime: ''
     }
   },
   mounted () {
-    this.loadData()
+    console.log(this.activeName)
+    this.handleToQueryData(this.activeName)
   },
   methods: {
     // 自定义时间
     customDate () {
-      this.chartChange = {
-        date: [],
-        number: []
-      }
+      // this.chartChange = {
+      //   date: [],
+      //   number: []
+      // }
       console.log('选择器的时间：', this.timeValue)
-      //   this.param.startTime = this.timeValue[0]
-      //   this.param.endTime = this.timeValue[1]
-      this.loadData()
+      this.startTime = this.timeValue[0]
+      this.endTime = this.timeValue[1]
+      this.handleToQueryData(this.activeName)
     },
     // time下拉框变化
     timeChangeHandler (time) {
       console.log(time)
-      if (time === 7 || time === 30) {
+      if (time !== 0) {
         this.chartChange = {
           date: [],
           number: []
         }
-        this.param.type = time
-        this.loadData()
-      } else {
-        this.param.type = time
+        this.handleToQueryData(this.activeName)
       }
     },
-    // 页面初始化数据
-    loadData () {
-      //     getSelect(this.param).then(res => {
-      //     console.log('访问趋势', res)
-      //     if (res.error === 0) {
-      //       this.handleData(res.content)
-      //     }
-      //   }).catch(err => console.log(err))
+    // 数据请求
+    handleToQueryData (newData) {
+      console.log(newData)
+      console.log(this.getDay(0))
+      let obj = {
+        'startTime': null,
+        'endTime': null
+      }
+      console.log(this.timeSelect)
+      switch (this.timeSelect) {
+        case 1:
+          obj.startTime = this.getDay(-1)
+          obj.endTime = this.getDay(0)
+          break
+        case 2:
+          obj.startTime = this.getDay(-2)
+          obj.endTime = this.getDay(0)
+          break
+        case 7:
+          obj.startTime = this.getDay(-7)
+          obj.endTime = this.getDay(0)
+          break
+        case 30:
+          obj.startTime = this.getDay(-30)
+          obj.endTime = this.getDay(0)
+          break
+      }
+      if (obj.startTime) {
+        this.startTime = obj.startTime
+        this.endTime = obj.endTime
+      } else {
+        obj.startTime = this.startTime
+        obj.endTime = this.endTime
+      }
+      this.showStartTime = this.startTime.split('-')[0] + '年' + this.startTime.split('-')[1] + '月' + this.startTime.split('-')[2] + '日'
+      this.showEndTime = this.endTime.split('-')[0] + '年' + this.endTime.split('-')[1] + '月' + this.endTime.split('-')[2] + '日'
+      obj.startTime = obj.startTime + ' 00:00:00'
+      obj.endTime = obj.endTime + ' 23:59:59'
+      switch (newData) {
+        case 'first':
+          getMemberSardPurchase(obj).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.handleData(res.content)
+            }
+          })
+          break
+        case 'fourth':
+          getCouponpackPurchase(obj).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.handleData(res.content)
+            }
+          })
+          break
+      }
     },
     // 数据处理
     handleData (content) {
+      this.middleData[0].num = content.total.totalPaidOrderNumber
+      this.middleData[1].num = content.total.totalPaidUserNumber
+      this.middleData[2].num = content.total.totalPaymentAmount
+      this.middleData[3].num = content.total.totalReturnAmount
+      let arr = []
+      content.dateList.forEach((item, index) => {
+        let obj = {}
+        obj['日期'] = item
+        arr.push(obj)
+      })
+      content.dateList.forEach((item, index) => {
+        arr[index]['成功支付单数'] = item
+      })
+      content.paidUserNumber.forEach((item, index) => {
+        arr[index]['成功支付人数'] = item
+      })
+      content.paymentAmount.forEach((item, index) => {
+        arr[index]['支付金额'] = item
+      })
+      content.returnAmount.forEach((item, index) => {
+        arr[index]['退款金额'] = item
+      })
+      console.log(arr)
+      this.chartData.rows = arr
       //   this.startDate.year = content.startTime.substring(0, 4)
       //   this.startDate.month = content.startTime.substring(4, 6)
       //   this.startDate.day = content.startTime.substring(6, 8)
@@ -178,7 +251,26 @@ export default {
       //     this.chartChange.number.push(item.number)
       //   })
       //   // 折线图数据部分
+    },
+    // 处理时间
+    getDay (day) {
+      let today = new Date()
+      let targetday = today.getTime() + 1000 * 60 * 60 * 24 * day
+      today.setTime(targetday) // 注意，这行是关键代码
 
+      let tYear = today.getFullYear()
+      let tMonth = today.getMonth()
+      let tDate = today.getDate()
+      tMonth = this.doHandleMonth(tMonth + 1)
+      tDate = this.doHandleMonth(tDate)
+      return tYear + '-' + tMonth + '-' + tDate
+    },
+    doHandleMonth (month) {
+      let m = month
+      if (month.toString().length === 1) {
+        m = '0' + month
+      }
+      return m
     }
   }
 }
@@ -229,6 +321,9 @@ export default {
   }
   .charts {
     padding: 0 50px;
+  }
+  /deep/ .el-date-editor {
+    margin-left: 10px;
   }
 }
 </style>
