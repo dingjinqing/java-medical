@@ -12,6 +12,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class AppAuthBo {
+    private Integer id;
     /**
      * 授权状态 1启用 0禁用
      */
