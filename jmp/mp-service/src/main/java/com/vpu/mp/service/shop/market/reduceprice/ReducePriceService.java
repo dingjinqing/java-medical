@@ -93,6 +93,10 @@ public class ReducePriceService extends ShopBaseService {
             }
             record.setShareConfig(Util.toJson(param.getShareConfig()));
         }
+        if (PERIOD_ACTION_NORMAL.equals(param.getPeriodAction())) {
+            //不按周期重复
+            record.setPointTime(null);
+        }
         List<Integer> goodsIds = new ArrayList<>();
         this.transaction(() -> {
             record.insert();
