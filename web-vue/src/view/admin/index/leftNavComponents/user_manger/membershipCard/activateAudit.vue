@@ -20,17 +20,11 @@
         </div>
         <div>
           <span>{{ $t('memberCard.applyTime') }}</span>
-          <el-date-picker
-            size="small"
-            v-model="dataValue"
-            type="daterange"
-            :range-separator="$t('memberCard.to')"
-            :start-placeholder="$t('memberCard.startDate')"
-            :end-placeholder="$t('memberCard.overDate')"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            :default-time="['00:00:00','23:59:59']"
-          >
-          </el-date-picker>
+          <date-time-picker
+            :showPicker='3'
+            @startTime="firstTime = $event"
+            @endTime="secondTime = $event"
+          />
         </div>
         <div style="margin-left:20px">
           <el-button
@@ -38,6 +32,11 @@
             size="small"
             @click="search"
           >{{ $t('memberCard.search') }}</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="exportData"
+          >导出</el-button>
         </div>
       </div>
     </div>
@@ -160,16 +159,25 @@
         @handleDesc="handleFailAudit"
       >
       </my-fail-dialog>
+
+      <export-dialog
+        :visiable.sync="showExportDialog"
+        :queryContent="queryContent"
+      />
     </div>
   </div>
 </template>
 <script>
 import { getActivateAuditListRequest, passActivateAuditRequest, rejectActivateAudit } from '@/api/admin/memberManage/memberCard.js'
 import activateFailDialog from './subcomponents/cardAuditFailDialog.vue'
+import cardExamineExportDialog from '@/components/admin/card/cardExamineExportDialog.vue'
+import DateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination'),
-    myFailDialog: activateFailDialog
+    myFailDialog: activateFailDialog,
+    exportDialog: cardExamineExportDialog,
+    DateTimePicker
   },
   data () {
     return {
@@ -181,7 +189,8 @@ export default {
       cardId: null, // 会员卡id
       userNameInput: '',
       phoneNumInput: '',
-      dataValue: '',
+      firstTime: null,
+      secondTime: null,
       status: 1, //  默认是待审核
       activeName: 'first',
       tabData: [],
@@ -191,9 +200,32 @@ export default {
       ids: null,
       maritals: [],
       showAuditFailedDialog: false,
+      showExportDialog: true,
       currentId: null,
       currentDesc: null,
       currentStatus: 1
+    }
+  },
+  computed: {
+    queryContent () {
+      return [
+        {
+          title: this.$t('memberCard.realName'),
+          value: this.userNameInput
+        },
+        {
+          title: this.$t('memberCard.mobile'),
+          value: this.phoneNumInput
+        },
+        {
+          title: this.$t(`dateTimePicker.startTime`),
+          value: this.firstTime
+        },
+        {
+          title: this.$t(`dateTimePicker.endTime`),
+          value: this.secondTime
+        }
+      ]
     }
   },
   watch: {
@@ -226,8 +258,8 @@ export default {
         'status': this.status,
         'realName': this.userNameInput,
         'mobile': this.phoneNumInput,
-        'firstTime': this.dataValue ? this.dataValue[0] : null,
-        'secondTime': this.dataValue ? this.dataValue[1] : null,
+        'firstTime': this.firstTime,
+        'secondTime': this.secondTime,
         'ids': this.ids
       }
 
@@ -262,7 +294,8 @@ export default {
 
     // 清除输入框数据
     clearInputDate () {
-      this.tabData = this.userNameInput = this.phoneNumInput = this.dataValue = null
+      this.tabData = this.userNameInput = this.phoneNumInput = null
+      this.firstTime = this.secondTime = null
     },
 
     // 2- 数据处理
@@ -380,6 +413,9 @@ export default {
       this.currentDesc = item.refuseDesc
       this.currentStatus = item.status
       this.showAuditFailedDialog = true
+    },
+    exportData () {
+      this.showExportDialog = true
     }
   }
 }
