@@ -197,7 +197,7 @@
         <el-input
           size="small"
           style="width: 200px"
-          v-model="form.desc"
+          v-model="form.rebate_center_name"
         ></el-input>
       </el-form-item>
 
@@ -371,7 +371,7 @@
                 </div>
                 <div class="rightInfo">
                   <p>{{ $t('distribution.rebateNickname') }}</p>
-                  <p> {{ this.form.rebate_center_name }} </p>
+                  <p> {{ this.form.desc }} </p>
                 </div>
               </div>
             </div>
@@ -389,7 +389,7 @@
               <span class="rightLabel">{{ $t('distribution.rebateWriting') }}</span>
               <el-input
                 size="small"
-                v-model="form.rebate_center_name"
+                v-model="form.desc"
                 class="inputWidth"
               ></el-input>
             </div>
@@ -589,14 +589,14 @@ export default {
         rank_status: 0, // 分销员排名开关
         vaild: 0, // 返利有效期
         protect_date: 0, // 分销员保护期
-        desc: '分销中心', // 分销中心页面名称
+        rebate_center_name: '分销中心', // 分销中心页面名称
         distribution_goods_type: 2, // 推荐商品(自定义)
         recommend_goods_id: '', // 推荐商品ID
         rebate_page_id: '', // 推广模版文案id
         withdraw_status: 1, // 返利体现开关
         withdraw_source: 'wx_mini', // 返利方式
         withdraw_cash: null, // 返利最小提现金额
-        rebate_center_name: '分享给你一个好物店铺快来购物吧！', // 邀请文案
+        desc: '分享给你一个好物店铺快来购物吧！', // 邀请文案
         bg_img: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_1.jpg' // 海报背景图
       },
       // 分销员信息
