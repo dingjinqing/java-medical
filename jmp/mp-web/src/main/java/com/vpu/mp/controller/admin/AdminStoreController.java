@@ -742,4 +742,17 @@ public class AdminStoreController extends AdminBaseController{
         PageResult<ArticlePojo> result = shop().store.articleList(param);
         return success(result);
     }
+
+    /**
+     * 门店公告-发布
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/article/release")
+    public JsonResult releaseArticle(@RequestBody ArticlePojo articlePojo) {
+        if(shop().store.releaseArticle(articlePojo.getArticleId())) {
+            return success();
+        }else {
+            return fail();
+        }
+    }
 }
