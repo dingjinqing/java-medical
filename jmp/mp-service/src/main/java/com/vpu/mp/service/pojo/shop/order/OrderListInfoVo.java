@@ -70,7 +70,7 @@ public class OrderListInfoVo {
 	private BigDecimal bkOrderMoney;
 	@JsonIgnore
 	private Integer userId;
-	@JsonIgnore
+    /**会员卡号*/
 	private String cardNo;
 	@JsonIgnore
 	private Integer memberCardId;

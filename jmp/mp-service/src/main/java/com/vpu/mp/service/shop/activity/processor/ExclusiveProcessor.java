@@ -268,6 +268,7 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
                         for(OrderMemberVo userCard : userCards) {
                             if(exclusiveCard.getId().equals(userCard.getInfo().getCardId())) {
                                 flag = true;
+                                one.setIsCardExclusive(OrderConstant.YES);
                                 break;
                             }
                         }

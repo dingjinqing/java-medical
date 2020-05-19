@@ -45,4 +45,8 @@ public class OrderGoodsVo {
 	private String productSn;
 	private BigDecimal marketPrice;
 	private Integer isGift;
+	/**普通商品营销类型*/
+	private Byte activityType;
+    /**会员专享*/
+    private Byte isCardExclusive;
 }

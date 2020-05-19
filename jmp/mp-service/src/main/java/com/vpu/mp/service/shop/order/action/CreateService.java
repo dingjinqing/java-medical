@@ -625,21 +625,19 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     public List<OrderGoodsBo> initOrderGoods(OrderBeforeParam param, List<Goods> goods, Integer userId, String memberCardNo, OrderCartProductBo uniteMarkeingtBo, Integer storeId) throws MpException {
         logger().info("initOrderGoods开始");
-        // TODO 会员卡类型校验（限次卡特殊处理）
-        Byte cardType = StringUtil.isBlank(memberCardNo) ? null : userCard.getCardType(memberCardNo);
         List<OrderGoodsBo> boList = new ArrayList<>(goods.size());
         for (Goods temp : goods) {
-            //TODO 预售商品，不支持现购买 && $card_type!=1 && !$storeId
+            //TODO 预售商品，不支持现购买 && !$storeId
             if(BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(temp.getGoodsInfo().getGoodsType())) {
                 preSaleCheck(temp);
             }
-            //TODO 扫码构改规格信息(前面查规格时已经用门店规格信息覆盖商品规格信息)
-            UniteMarkeingtRecalculateBo calculateResult = calculate.uniteMarkeingtRecalculate(temp, uniteMarkeingtBo.get(temp.getProductId()),userId);
-            logger().info("calculateResult:{}", calculateResult);
-            //数量限制
-            goodsNumLimit(temp);
-            //非加价购改价
+            //非加价购改价(加价购唯一入口在购物车)
             if(!BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS.equals(temp.getCartType())) {
+                //TODO 扫码构改规格信息(前面查规格时已经用门店规格信息覆盖商品规格信息)
+                UniteMarkeingtRecalculateBo calculateResult = calculate.uniteMarkeingtRecalculate(temp, uniteMarkeingtBo.get(temp.getProductId()),userId);
+                logger().info("calculateResult:{}", calculateResult);
+                //数量限制
+                goodsNumLimit(temp);
                 temp.setProductPrice(calculateResult.getPrice());
                 temp.setGoodsPriceAction(calculateResult.getActivityType());
             }

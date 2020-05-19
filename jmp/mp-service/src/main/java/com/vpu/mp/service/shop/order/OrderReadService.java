@@ -96,6 +96,7 @@ import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
+import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.action.ReturnService;
 import com.vpu.mp.service.shop.order.action.ShipService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
@@ -231,7 +232,8 @@ public class OrderReadService extends ShopBaseService {
     private ChildAccountService childAccount;
     @Autowired
     private RecommendService recommendService;
-    
+    @Autowired
+    private UserCardService userCard;
 	/**
 	 * 订单查询
 	 * @param param
@@ -393,6 +395,7 @@ public class OrderReadService extends ShopBaseService {
 			//过滤主订单下被拆出的goods
 			orderInfo.filterMainOrderGoods(mainOrder, goods.get(mainOrder.getOrderId()));
 		}
+        mainOrder.setCardName(userCard.memberCardService.getCardNameByNo(mainOrder.getCardNo()));
 		//拼团订单设置拼团中时间
         mainOrder.setPinStartTime(mainOrder.getPayTime());
         mainOrder.setRebateList(getOrderRebateInfo(mainOrder));
