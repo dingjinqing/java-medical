@@ -546,11 +546,7 @@ public class FormStatisticsService extends ShopBaseService {
                     if (c.getShowTypes().equals(NumberUtils.BYTE_ONE)){
                         c.getInnerVo().forEach(l->{
                             String arrString = l.getModuleValue().substring(1,l.getModuleValue().length()-1);
-//                        String[] arr = arrString.split(",");
                             String moduleValues = "";
-//                        for (int i=0;i<arr.length;i++){
-//                            moduleValues = moduleValues + " " + finalSelects.get(arr[i].substring(1,arr[i].length()-1));
-//                        }
                             moduleValues = moduleValues + " " + finalSelects.get(arrString);
                             l.setModuleValue(moduleValues);
                         });
@@ -583,13 +579,11 @@ public class FormStatisticsService extends ShopBaseService {
             feedBackOneVo.setCurIdx(idx);
             List<FeedBackInnerVo> innerVo = db().select(fsd.MODULE_NAME
                 , fsd.MODULE_TYPE
-                , fsd.MODULE_VALUE
-                , DSL.count().as("votes"))
+                , fsd.MODULE_VALUE)
                 .from(fsd)
                 .where(fsd.PAGE_ID.eq(pageId))
                 .and(fsd.CUR_IDX.eq(idx))
                 .and(fsd.MODULE_NAME.in(moduleName))
-                .groupBy(fsd.MODULE_VALUE,fsd.MODULE_NAME,fsd.MODULE_TYPE)
                 .fetchInto(FeedBackInnerVo.class);
             //处理多选
             Map<String,Integer> arrMap = new HashMap<>();
