@@ -597,8 +597,8 @@ export default {
       // 展开更多配置
       arrorFlag: true,
       srcList: {
-        src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
-        src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`
+        src1: `${this.$imageHost}/image/admin/share/reduce_share.jpg`,
+        src2: `${this.$imageHost}/image/admin/share/reduce_pictorial.jpg`
       },
 
       isEditFlag: false, // 编辑时部分信息不可修改

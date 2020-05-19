@@ -20,14 +20,6 @@ export const cn = {
     {
       title: '已停用',
       name: '4'
-    },
-    {
-      title: '批量降价',
-      name: '5'
-    },
-    {
-      title: '批量加价率',
-      name: '6'
     }
   ],
 
