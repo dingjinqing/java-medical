@@ -71,19 +71,40 @@
         </div>
         <div class="member_content">
           <ul>
-            <li v-if="item.realName">{{ $t('memberCard.realName') }}：<strong>{{item.realName}}</strong></li>
-            <li v-if="item.cid">{{ $t('memberCard.cid') }}：<strong>{{item.cid}}</strong></li>
-            <li v-if="item.sex !== null">{{ $t('memberCard.sex') }}: <strong>{{item.sex}}</strong></li>
-            <li v-if="item.birthDayYear !== null">{{$t('memberCard.birthday')}}: <strong>{{item.birthDayYear}}-{{item.birthDayMonth}}-{{item.birthDayDay}}</strong></li>
-            <li v-if="item.maritalStatus !== null">{{ $t('memberCard.maritalStatus') }}: <strong>{{item.maritalStatus}}</strong></li>
-            <li v-if="item.education">{{ $t('memberCard.education') }}：<strong>{{item.education}}</strong></li>
-            <li v-if="item.industry">{{ $t('memberCard.industry') }}：<strong>{{item.industry}}</strong></li>
-            <li v-if="item.city">{{ $t('memberCard.address') }}:{{item.province}} {{item.city}} {{item.district}}</li>
-            <li v-for="(opt,key) in item.customOptions"
-                :key="key">
-                {{opt.title}}：<strong>{{opt.content}}</strong>
+            <li v-if="item.realName"><span class="title">{{ $t('memberCard.realName') }}：</span><strong>{{item.realName}}</strong></li>
+            <li v-if="item.cid"><span class="title">{{ $t('memberCard.cid') }}：</span><strong>{{item.cid}}</strong></li>
+            <li v-if="item.sex !== null"><span class="title">{{ $t('memberCard.sex') }}: </span><strong>{{item.sex}}</strong></li>
+            <li v-if="item.birthDayYear !== null"><span class="title">{{$t('memberCard.birthday')}}: </span><strong>{{item.birthDayYear}}-{{item.birthDayMonth}}-{{item.birthDayDay}}</strong></li>
+            <li v-if="item.maritalStatus !== null"><span class="title">{{ $t('memberCard.maritalStatus') }}: </span><strong>{{item.maritalStatus}}</strong></li>
+            <li v-if="item.education"><span class="title">{{ $t('memberCard.education') }}：</span><strong>{{item.education}}</strong></li>
+            <li v-if="item.industry"><span class="title">{{ $t('memberCard.industry') }}：</span><strong>{{item.industry}}</strong></li>
+            <li v-if="item.city"><span class="title">{{ $t('memberCard.address') }}:</span>{{item.province}} {{item.city}} {{item.district}}</li>
+            <li
+              v-for="(opt,key) in item.customOptions"
+              :key="key"
+            >
+              <div v-if="opt.type !== 3">
+                <span class="title">{{opt.title}}：</span>
+                <strong>{{opt.content}}</strong>
+              </div>
+              <div v-else-if="opt.type === 3">
+                <span class="title">{{opt.title}}：</span>
+                <ul class="picture">
+                  <li
+                    v-for="(picture,index) in opt.pictureLinks"
+                    :key="index"
+                  >
+                    <img
+                      :src="picture"
+                      width="65px"
+                      height="65px"
+                    >
+                  </li>
+                </ul>
+              </div>
             </li>
           </ul>
+
           <div class="operate_box">
             <div
               class="content"
@@ -118,7 +139,10 @@
               v-if='item.status === 3'
             >
               <div>{{ $t('memberCard.failedAuditT') }}</div>
-              <div class="fail-detail" @click="showFailDetail(item)">查看详情</div>
+              <div
+                class="fail-detail"
+                @click="showFailDetail(item)"
+              >查看详情</div>
             </div>
           </div>
         </div>
@@ -279,7 +303,7 @@ export default {
             }
             tmpContainer.push(
               {
-                title: opt.custom_title, content: content
+                title: opt.custom_title, content: content, type: opt.custom_type
               }
             )
           } else if (opt.custom_type === 1) {
@@ -290,13 +314,23 @@ export default {
             }
             tmpContainer.push(
               {
-                title: opt.custom_title, content: content
+                title: opt.custom_title, content: content, type: opt.custom_type
               }
             )
           } else if (opt.custom_type === 2) {
+            //  文本
             tmpContainer.push(
               {
-                title: opt.custom_title, content: opt.text
+                title: opt.custom_title, content: opt.text, type: opt.custom_type
+              }
+            )
+          } else if (opt.custom_type === 3) {
+            //  图片
+            tmpContainer.push(
+              {
+                title: opt.custom_title,
+                pictureLinks: opt.pictureLinks,
+                type: opt.custom_type
               }
             )
           }
@@ -408,42 +442,51 @@ export default {
       .member_content {
         padding: 0 0 0 15px;
         display: flex;
+        flex-direction: row;
         ul {
           padding: 10px 0 10px 0;
           width: 80%;
-          display: inline-flex;
-          flex-direction: row;
+          display: flex;
+          flex-direction: column;
           flex-wrap: wrap;
-          float: left;
         }
         li {
-          float: left;
           padding: 10px 0 0 0;
-          flex: 0 1 33.3%;
         }
 
-        .operate_box {
-          width: 20%;
-          border-left: 1px solid #eee;
-          padding: 10px 0 10px 0;
+        li .title {
+          margin-right: 10px;
+        }
+        .picture {
           display: flex;
-          justify-content: center;
-          align-items: center;
-          .content {
-            display: flex;
-            flex-direction: column;
-            /deep/ .el-button {
-              width: 100px;
-            }
+          flex-direction: row;
+          li {
+            margin-right: 10px;
+          }
+        }
+      }
+
+      .operate_box {
+        width: 20%;
+        border-left: 1px solid #eee;
+        padding: 10px 0 10px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .content {
+          display: flex;
+          flex-direction: column;
+          /deep/ .el-button {
+            width: 100px;
           }
         }
       }
     }
   }
-.fail-detail{
-  padding: 5px 10px;
-  color: blue;
-  cursor: pointer;
-}
+  .fail-detail {
+    padding: 5px 10px;
+    color: blue;
+    cursor: pointer;
+  }
 }
 </style>
