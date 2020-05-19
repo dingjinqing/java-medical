@@ -148,7 +148,7 @@
 		</view>
 	</block>
 
-	<view class="appoint-btm" style='height:{{isIpx == 1?"160rpx;":"100rpx;"}};background:{{cardInfo.renewType == 0 ? "#fff" : "transparent"}};border:{{cardInfo.renewType != 0 ? "none" : ""}}'>
+	<view wx:if='{{success == 0}}' class="appoint-btm" style='height:{{isIpx == 1?"160rpx;":"100rpx;"}};background:{{cardInfo.renewType == 0 ? "#fff" : "transparent"}};border:{{cardInfo.renewType != 0 ? "none" : ""}}'>
 		<block wx:if="{{cardInfo.renewNum > 0 && cardInfo.renewType == 0}}">
 			<view class="all-money">
 				<text style='color:{{comColor}}'>待付金额：￥{{create_order.money_paid}}</text>
