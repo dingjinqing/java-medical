@@ -469,65 +469,75 @@
               <el-card class="box-card">
                 <div class="fontColor">{{$t('addBargainAct.friendsBargainCouponTip')}}</div>
                 <div class="middleContainer">
-                  <div>
-                    <div
-                      v-for="(item,index) in mrkingVoucherObjs"
-                      :key="index"
-                      class="addInfo"
-                      style="margin-right: 15px;"
+                  <div
+                    v-for="(item,index) in mrkingVoucherObjs"
+                    :key="index"
+                    class="addInfo"
+                    style="margin-right: 15px;"
+                  >
+                    <section
+                      class="couponImgWrapper"
+                      :class="item.status === 0 ? 'couponImgWrapper': 'couponImgWrapperGray'"
+                      style="line-height:normal"
                     >
-                      <section
-                        class="couponImgWrapper"
-                        style="line-height:normal"
-                      >
 
-                        <div
-                          class="coupon_list_top"
-                          v-if="item.actCode==='voucher'"
-                        >
-                          <span>￥</span>
-                          <span class="number">{{item.denomination}}</span>
-                        </div>
-                        <div
-                          class="coupon_list_top"
-                          v-if="item.actCode==='discount'"
-                        >
-                          <span style="font-size: 20px">{{item.denomination}}</span>
-                          <span style="font-size: 14px">{{$t('payReward.discount')}}</span>
-                        </div>
-                        <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
-                        <div
-                          class="coupon_center_number"
-                          v-if="item.surplus !==0"
-                        >剩余{{item.surplus}}张</div>
-                        <div
-                          class="coupon_center_number"
-                          v-if="item.surplus ===0"
-                        >库存不限制</div>
-                        <div
-                          class="coupon_list_bottom"
-                          style="font-size:12px"
-                        >
-                          <!-- <span v-if="item.scoreNumber === 0">领取</span>
+                      <div
+                        class="coupon_list_top"
+                        :class="item.status === 0 ? 'coupon_list_top' : 'couponListTop'"
+                        v-if="item.actCode==='voucher'"
+                      >
+                        <span>￥</span>
+                        <span
+                          class="number"
+                          :class="item.status === 0 ? 'number':'number_gray'"
+                        >{{item.denomination}}</span>
+                      </div>
+                      <div
+                        class="coupon_list_top"
+                        :class="item.status === 0 ? 'coupon_list_top' : 'couponListTop'"
+                        v-if="item.actCode==='discount'"
+                      >
+                        <span style="font-size: 20px">{{item.denomination}}</span>
+                        <span style="font-size: 14px">{{$t('payReward.discount')}}</span>
+                      </div>
+                      <div
+                        class="coupon_center_limit"
+                        :class="item.status === 0 ? 'coupon_center_limit':'couponCenterLimit'"
+                      >{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
+                      <div
+                        class="coupon_center_number"
+                        :class="item.status === 0?'coupon_center_number': 'couponCenterNumber'"
+                        v-if="item.surplus !==0"
+                      >剩余{{item.surplus}}张</div>
+                      <div
+                        class="coupon_center_number"
+                        :class="item.status === 0?'coupon_center_number': 'couponCenterNumber'"
+                        v-if="item.surplus ===0"
+                      >库存不限制</div>
+                      <div
+                        class="coupon_list_bottom"
+                        style="font-size:12px"
+                        :class="item.status===0? 'coupon_list_bottom':'couponListBottom'"
+                      >
+                        <!-- <span v-if="item.scoreNumber === 0">领取</span>
                           <div v-if="item.scoreNumber !== 0">
                             <span>{{item.scoreNumber}}</span>积分 兑换
                           </div> -->
-                          <span>领取</span>
-                        </div>
-                      </section>
-                      <!-- <span
+                        <span>领取</span>
+                      </div>
+                    </section>
+                    <!-- <span
                         @click="deleteCouponImg(index)"
                         class="deleteIcon"
                       >×</span> -->
-                      <div
-                        @click="deleteCouponImg(index)"
-                        class="deleteIcon"
+                    <div
+                      @click="deleteCouponImg(index)"
+                      class="deleteIcon"
+                    >
+                      <img
+                        :src="imgHost+'/image/admin/sign_del.png'"
+                        alt=""
                       >
-                        <img
-                          :src="imgHost+'/image/admin/sign_del.png'"
-                          alt=""
-                        >
-                      </div>
                     </div>
                   </div>
 
@@ -544,7 +554,6 @@
                     <p>{{$t('addBargainAct.addCoupon')}}</p>
                   </div>
                 </div>
-
                 <div class="fontColor">{{$t('addBargainAct.couponLimitTip')}}</div>
               </el-card>
             </el-form-item>
@@ -565,33 +574,45 @@
                   >
                     <section
                       class="couponImgWrapper"
+                      :class="item.status === 0 ? 'couponImgWrapper':'couponImgWrapperGray'"
                       style="line-height: normal"
                     >
                       <div
                         class="coupon_list_top"
+                        :class="item.status === 0? 'coupon_list_top':'couponListTop'"
                         v-if="item.actCode==='voucher'"
                       >
                         <span>￥</span>
-                        <span class="number">{{item.denomination}}</span>
+                        <span
+                          class="number"
+                          :class="item.status === 0 ? 'number' : 'number_gray'"
+                        >{{item.denomination}}</span>
                       </div>
                       <div
                         class="coupon_list_top"
+                        :class="item.status === 0 ? 'coupon_list_top' : 'couponListTop'"
                         v-if="item.actCode==='discount'"
                       >
                         <span style="font-size: 20px">{{item.denomination}}</span>
                         <span style="font-size: 14px">{{$t('payReward.discount')}}</span>
                       </div>
-                      <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
+                      <div
+                        class="coupon_center_limit"
+                        :class="item.status === 0 ? 'coupon_center_limit' : 'couponCenterLimit'"
+                      >{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
                       <div
                         class="coupon_center_number"
+                        :class="item.status === 0? 'coupon_center_number':'couponCenterNumber'"
                         v-if="item.surplus !==0"
                       >剩余{{item.surplus}}张</div>
                       <div
                         class="coupon_center_number"
+                        :class="item.status === 0? 'coupon_center_number': 'couponCenterNumber'"
                         v-if="item.surplus ===0"
                       >库存不限制</div>
                       <div
                         class="coupon_list_bottom"
+                        :class="item.status === 0 ? 'coupon_list_bottom' :'couponListBottom'"
                         style="font-size:12px"
                       >
                         <!-- <span v-if="item.scoreNumber === 0">领取</span>
@@ -1078,19 +1099,20 @@ export default {
     },
     // 确认选择优惠券-新增-删除
     handleToCheck (data, index) {
-      console.log(data, 'coupon-data')
-      console.log(this.rewardCouponObjs)
       if (this.dialogFlag === 1) {
-        // console.log(this.rewardCouponObjs)
         if (this.rewardCouponObjs.length >= 5) {
           return
         }
-        this.rewardCouponObjs = data
+        console.log(this.rewardCouponObjs)
+        let invalid = this.rewardCouponObjs.filter(item => item.status !== 0)
+        this.rewardCouponObjs = data.concat(invalid)
+        console.log(this.rewardCouponObjs)
       } else {
         if (this.mrkingVoucherObjs.length >= 5) {
-          return
+
         }
-        this.mrkingVoucherObjs = data
+        let invalid = this.mrkingVoucherObjs.filter(item => item.status !== 0)
+        this.mrkingVoucherObjs = data.concat(invalid)
       }
     },
     // 删除好友砍价优惠券图片
@@ -1449,10 +1471,19 @@ export default {
             height: 100%;
             border: 1px solid #fbb;
             border-radius: 10px;
+            margin-top: -1px;
             .coupon_list_top {
               margin-top: 10px;
               color: #f60;
               :nth-of-type(2) {
+                font-size: 20px;
+                font-weight: bold;
+              }
+            }
+            .couponListTop {
+              margin-top: 10px;
+              color: #d5d7d9;
+              .number_gray {
                 font-size: 20px;
                 font-weight: bold;
               }
@@ -1462,9 +1493,17 @@ export default {
               color: #f60;
               font-size: 12px !important;
             }
+            .couponCenterLimit {
+              height: 20px;
+              color: #d5d7d9;
+            }
             .coupon_center_number {
               height: 20px;
               color: #fbb;
+            }
+            .couponCenterNumber {
+              height: 20px;
+              color: #d5d7d9;
             }
             .coupon_list_bottom {
               height: 24px;
@@ -1476,6 +1515,20 @@ export default {
               background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
               background-repeat: repeat-x;
             }
+            .couponListBottom {
+              height: 24px;
+              line-height: 30px;
+              border-bottom-left-radius: 8px;
+              border-bottom-right-radius: 8px;
+              color: #fff;
+              background: #d5d7d9;
+              background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
+              background-repeat: repeat-x;
+            }
+          }
+
+          .couponImgWrapperGray {
+            border: 1px solid #d5d7d9;
           }
         }
       }
