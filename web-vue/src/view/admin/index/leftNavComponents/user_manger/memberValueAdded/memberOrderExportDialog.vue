@@ -18,7 +18,7 @@
       style="margin-top: 10px;"
     >
       <div v-if="ok(key,item)">
-        <div style="margin-top: 10px;">{{$t('couponPackageOrder.'+key)}}:{{item==='wxpay'?'微信':item==='balance'?'余额':item==='score'?'积分':item}}</div>
+        <div style="margin-top: 10px;">{{$t('memberCardOrder.exportData.'+key)}}:{{item==='wxpay'?'微信':item==='balance'?'余额':item==='score'?'积分':item}}</div>
 
       </div>
     </div>

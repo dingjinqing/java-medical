@@ -21,6 +21,7 @@ import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import com.vpu.mp.service.shop.member.UserCardService;
+import jodd.util.CollectionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
@@ -113,12 +114,12 @@ public class CartService extends ShopBaseService {
         cartBo.getCartGoodsList().forEach(goods -> {
             if (activityType != null && activityId != null) {
                 if (activityType.equals(goods.getActivityType()) && activityId.equals(goods.getActivityId())) {
-                    if (goodsIds != null) {
+                    if (CollectionUtils.isNotEmpty(goodsIds)) {
                         //取交集
-                        if(goodsIds.contains(goods.getGoodsId())){
+                        if (goodsIds.contains(goods.getGoodsId())) {
                             activityGoods.add(goods);
                         }
-                    }else{
+                    } else {
                         activityGoods.add(goods);
                     }
                 } else if (BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE.equals(activityType)) {
@@ -126,13 +127,13 @@ public class CartService extends ShopBaseService {
                         activityGoods.add(goods);
                     }
                 }
-            } else if (goodsIds != null) {
+            } else if (CollectionUtils.isNotEmpty(goodsIds)) {
                 if (goodsIds.contains(goods.getGoodsId())) {
                     activityGoods.add(goods);
                 }
             }
         });
-        if(goodsIds != null || (activityId != null && activityId > 0)){
+        if (CollectionUtils.isNotEmpty(goodsIds) || (activityId != null && activityId > 0)) {
             cartBo.setCartGoodsList(activityGoods);
         }
         return cartBo;

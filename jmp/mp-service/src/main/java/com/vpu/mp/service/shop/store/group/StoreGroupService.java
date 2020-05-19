@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.store.group;
 
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
@@ -55,7 +56,7 @@ public class StoreGroupService extends ShopBaseService{
 	}
 
 	private int getGroupNumberInGroup(int groupId){
-        return db().selectCount().from(STORE).where(STORE.GROUP.eq(groupId)).fetchOneInto(Integer.class);
+        return db().selectCount().from(STORE).where(STORE.GROUP.eq(groupId).and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchOneInto(Integer.class);
     }
 
     /**

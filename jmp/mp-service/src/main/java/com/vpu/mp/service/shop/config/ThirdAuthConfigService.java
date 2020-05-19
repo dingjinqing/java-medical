@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.config;
 
+import com.thoughtworks.xstream.core.BaseException;
 import com.vpu.mp.db.main.tables.records.AppAuthRecord;
 import com.vpu.mp.db.main.tables.records.AppRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -12,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * 第三方对接配置
@@ -42,6 +46,26 @@ public class ThirdAuthConfigService extends  BaseShopConfigService {
 
     public  Byte  getVerifyOrder(){
         return this.get(K_VERIFY_ORDER, Byte.class, (byte)0);
+    }
+
+    public void setCityOrderPush(@NotNull @Min(0) @Max(1) Byte action) {
+        this.set(K_CITY_ORDER_PUSH,action.toString());
+    }
+
+    public void verifyOrder(@NotNull @Min(0) @Max(1) Byte action) {
+        this.set(K_CITY_ORDER_PUSH,action.toString());
+    }
+
+    public void setPush(ThirdErpPushParam param) {
+        switch (param.getType()){
+            case K_CITY_ORDER_PUSH:
+                setCityOrderPush(param.getAction());
+                break;
+            case K_VERIFY_ORDER:
+                setCityOrderPush(param.getAction());
+            default:
+                throw new  BusinessException(JsonResultCode.CODE_CARD_RECEIVE_NOCODE);
+        }
     }
 
     public ThirdInfoVo getThirdAuthInfo(ThirdInfoParam param) {
@@ -136,4 +160,5 @@ public class ThirdAuthConfigService extends  BaseShopConfigService {
         }
 
     }
+
 }

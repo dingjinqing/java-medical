@@ -546,4 +546,9 @@ ALTER TABLE `b2c_member_card` ADD COLUMN `period_num` int(11) DEFAULT NULL COMME
 
 -- 用户导入添加备注
 ALTER TABLE `b2c_user_import_detail` ADD COLUMN `remark` text COMMENT '会员备注';
+
+-- 会员卡充值记录表补充字段
+ALTER TABLE `b2c_charge_money` ADD COLUMN `return_money` decimal(10,2) DEFAULT '0.00' COMMENT '已退金额';
+ALTER TABLE `b2c_charge_money` ADD COLUMN `after_charge_money` decimal(10,2) DEFAULT '0.00' COMMENT '充值后卡余额';
+ALTER TABLE `b2c_charge_money` ADD COLUMN `change_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '充值类型 1发卡 2用户充值 3 管理员操作';
 /***********************2.13*********************END*/

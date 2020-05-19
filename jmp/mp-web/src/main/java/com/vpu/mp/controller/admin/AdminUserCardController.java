@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.pojo.shop.member.account.CardConsumeParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.UserCardChargeListParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean.UserCardConsumeBeanBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardRenewListParam;
@@ -99,6 +100,22 @@ public class AdminUserCardController extends AdminBaseController {
      */
     @PostMapping("/api/admin/user/card/renew/analysis")
     public JsonResult cardRenewAnalysis(@RequestBody AnalysisParam param) {
+        return success(shop().userCard.cardRenewAnalysis(param));
+    }
+
+    /**
+     * 会员卡充值记录
+     */
+    @PostMapping("/api/admin/user/card/charge/order")
+    public JsonResult getCardChargeList(@RequestBody UserCardChargeListParam param) {
+        return success(shop().userCard.getCardChargeList(param, getLang()));
+    }
+
+    /**
+     * 会员卡充值记录数据分析
+     */
+    @PostMapping("/api/admin/user/card/charge/analysis")
+    public JsonResult cardChargeAnalysis(@RequestBody AnalysisParam param) {
         return success(shop().userCard.cardRenewAnalysis(param));
     }
 
