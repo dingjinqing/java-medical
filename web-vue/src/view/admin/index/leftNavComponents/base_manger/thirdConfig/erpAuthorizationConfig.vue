@@ -109,6 +109,7 @@
 </template>
 
 <script>
+import { getThirdAuth } from '@/api/admin/basicConfiguration/thirdConfig'
 export default {
   data () {
     return {
@@ -122,8 +123,18 @@ export default {
   },
   mounted () {
     this.oldVersion = this.formData.version
+    this.initData()
   },
   methods: {
+    initData () {
+      getThirdAuth({
+        action: 1
+      }).then(res => {
+        if (res.error === 0) {
+
+        }
+      })
+    },
     versionChange (val) {
       console.log('change:', val, this.oldVersion)
       if (this.oldVersion) {
