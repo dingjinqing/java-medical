@@ -9,22 +9,17 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
- * 第三方rep推送配置
  * @author 孔德成
  * @date 2020/5/19
  */
-@Setter
 @Getter
+@Setter
 @ToString
-public class ThirdErpPushParam {
-    public final static byte REP_ACTION=1;
-    public final static byte POS_ACTION=2;
-    public final static byte CRM_ACTION=3;
-
+public class ThirdSwitchProductParam {
     @NotNull
-    @Min(0)
-    @Max(1)
-    private Byte action;
+    @Min(1)
+    @Max(3)
+    private byte product;
     @NotNull
-    private String type;
+    private Integer id;
 }

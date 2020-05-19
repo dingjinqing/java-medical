@@ -139,9 +139,10 @@ public class ShopAppService  extends MainBaseService {
     }
 
 
-    public int updateAppAuthStatus(Integer id, Integer shopId, Byte status) {
+    public int updateAppAuthStatus(Integer id, Integer shopId,Integer sysId, Byte status) {
         return db().update(APP_AUTH).set(APP_AUTH.STATUS,status)
             .where(APP_AUTH.ID.eq(id.shortValue()))
+            .and(APP_AUTH.SYS_ID.eq(sysId))
             .and(APP_AUTH.SHOP_ID.eq(shopId)).execute();
     }
 
@@ -158,6 +159,14 @@ public class ShopAppService  extends MainBaseService {
         return db().update(APP_AUTH)
             .set(APP_AUTH.APP_KEY,appKey)
             .set(APP_AUTH.APP_SECRET,appSecret)
+            .where(APP_AUTH.ID.eq(id.shortValue()))
+            .and(APP_AUTH.SYS_ID.eq(sysId))
+            .and(APP_AUTH.SHOP_ID.eq(shopId))
+            .execute();
+    }
+
+    public int switchProduct(Integer id, Integer sysId, Integer shopId, byte product) {
+       return db().update(APP_AUTH).set(APP_AUTH.PRODUCT,product)
             .where(APP_AUTH.ID.eq(id.shortValue()))
             .and(APP_AUTH.SYS_ID.eq(sysId))
             .and(APP_AUTH.SHOP_ID.eq(shopId))
