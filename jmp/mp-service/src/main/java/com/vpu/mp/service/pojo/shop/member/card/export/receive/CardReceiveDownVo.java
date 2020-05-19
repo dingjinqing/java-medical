@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.member.card.cardReceiveExport;
+package com.vpu.mp.service.pojo.shop.member.card.export.receive;
 
 import java.sql.Timestamp;
 
