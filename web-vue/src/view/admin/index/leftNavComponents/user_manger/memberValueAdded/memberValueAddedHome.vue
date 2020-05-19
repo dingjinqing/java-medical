@@ -78,7 +78,6 @@ export default {
   methods: {
     // tap切换
     handleClick (tab, event) {
-      console.log(tab, event)
       this.isShowTransactionData = false
     },
     // 表头点击筛选回传表头信息数据

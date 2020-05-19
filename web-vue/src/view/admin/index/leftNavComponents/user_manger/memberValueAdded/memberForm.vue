@@ -171,7 +171,8 @@ export default {
         this.propsData = newData
         this.handleToQueryData()
       },
-      deep: true
+      deep: true,
+      immediate: true
     }
   },
   methods: {
