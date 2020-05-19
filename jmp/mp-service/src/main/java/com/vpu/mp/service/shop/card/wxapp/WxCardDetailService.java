@@ -163,7 +163,7 @@ public class WxCardDetailService extends ShopBaseService{
 	private CardGiveVo getCardGiveVo(MemberCardRecord memberCardRecord, UserCardRecord userCardRecord) {
 			logger().info("获取卡的转赠数据");
 			//	转赠信息
-			if(canGiveAway(userCardRecord,memberCardRecord,true)) {
+			if(canGiveAway(userCardRecord,memberCardRecord,false)) {
 				
 				Byte giveWayStatus = userCardRecord.getGiveAwayStatus();
 				if(UserCardConstant.GIVE_AWAY_ING.equals(giveWayStatus)) {
