@@ -746,6 +746,7 @@ global.wxPage({
   },
   rebateGetCard: function () {
     let cardInfo = this.data.cardInfo
+    console.log(cardInfo)
     util.api('/api/wxapp/card/getgiveawaycard', function (res) {
       console.log(res)
       if (res.error == 0) {
@@ -767,14 +768,18 @@ global.wxPage({
   bindGetUserInfo: function (e) {
     console.log('触发')
     var that = this
-    util.getUserInfoCommon(e, function (userInfo) {
-      console.log(userInfo)
-      if (userInfo) {
-        that.setData({
-          ifGetSq: 1
-        })
-      }
-    });
+    if (wx.getStorageSync('openid')) {
+      this.rebateGetCard()
+    } else {
+      util.getUserInfoCommon(e, function (userInfo) {
+        console.log(userInfo)
+        if (userInfo) {
+          that.setData({
+            ifGetSq: 1
+          })
+        }
+      });
+    }
   },
   cancel_rebate: function () {
     var that = this;
