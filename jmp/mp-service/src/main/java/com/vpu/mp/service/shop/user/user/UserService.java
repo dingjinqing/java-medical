@@ -276,7 +276,7 @@ public class UserService extends ShopBaseService {
 			String path = pathQuery.getPath();
 			Map<String, String> query = pathQuery.getQuery();
 			String groupDrawId = pathQuery.getQuery().get("group_draw_id");
-			if (path.equals("pages1/pinlotteryinfo/pinlotteryinfo") && groupDrawId != null
+			if ((path.equals("pages1/pinlotteryinfo/pinlotteryinfo")||path.equals("pages/pinlotteryinfo/pinlotteryinfo")) && groupDrawId != null
 					&& pathQuery.getQuery().get("invite_id") != null) {
 				pathQuery.getQuery().put("user_id", userId.toString());
 				saas.getShopApp(this.getShopId()).groupDraw.groupDrawInvite.createInviteRecord(path,  Integer.valueOf(groupDrawId),query, (byte) 1);
