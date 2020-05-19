@@ -356,6 +356,7 @@ global.wxPage({
             // [1,5,6,10] 会展示活动预告的活动
             if (res.content.activityAnnounceMpVo) this.getAnnounce(res.content.activityAnnounceMpVo, res.content.defaultPrd)
             this.getShareData() //获取分享内容
+            this.setShareButtonData() //获取好物推荐信息
             resolve(res.content)
             // 购买记录
             this.setData({
@@ -1103,6 +1104,16 @@ global.wxPage({
     this.setData({
       'deliverFeeAddressVo.status': addressData.status
     })
+  },
+  setShareButtonData(){
+    let goodsId = this.data.goodsId
+    util.api('/api/wxapp/mall/goods',res=>{
+      if(res.error === 0){
+        this.setData({
+          shareButtonData:res.content[0].product
+        })
+      }
+    },{goodsId:[goodsId]})
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

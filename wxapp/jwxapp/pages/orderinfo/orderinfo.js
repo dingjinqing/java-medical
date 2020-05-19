@@ -84,7 +84,7 @@ global.wxPage({
             orderInfo: orderInfo,
             groupDrawInfo: this.getGroupDrawInfo(orderInfo)
           });
-          console.log(this.data.groupDrawInfo)
+          this.setShareButtonData(Array.from(new Set(orderInfo.goods.map(item=>item.goodsId)))) //设置好物推荐信息
         }
       },
       { orderSn: this.data.orderSn }
@@ -222,6 +222,21 @@ global.wxPage({
     this.setData({
       preSaleRuleShow:true
     })
+  },
+  // 设置好物推荐商品信息
+  setShareButtonData(goodsId){
+    let goodsList = this.data.orderInfo.goods
+    util.api('/api/wxapp/mall/goods',res=>{
+      if(res.error === 0){
+        let data = res.content
+        goodsList.forEach(item=>{
+          item.shareButtonData = data.find(dataItem=>{return dataItem.goodsId === item.goodsId}).product
+        })
+        this.setData({
+          'orderInfo.goods':goodsList
+        })
+      }
+    },{goodsId})
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
