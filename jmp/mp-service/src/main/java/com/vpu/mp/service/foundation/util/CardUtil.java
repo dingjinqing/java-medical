@@ -418,4 +418,12 @@ public class CardUtil {
 		return UserCardConstant.SOURCE_GIVE_WAY.equals(cardSource);
 	}
 	
+	/**
+	 * 	是否为无限制转赠
+	 * @return true 无次数限制 || false: 有次数限制
+	 */
+	public static boolean isCardGiveAwayForeverTimes(Integer mostGiveAway) {
+		return NumberUtils.INTEGER_ZERO.equals(mostGiveAway);
+	}
+	
 }

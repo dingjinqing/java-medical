@@ -43,13 +43,13 @@
         </el-switch>
         <span>{{switchInfo}}</span>
         <span class="tip">开启后，用户可以将会员卡转赠给好友，好友领取后用户自己的会员卡将失效</span>
-        <div>
+        <div v-if="cardGive.cardGiveAway === 'on'">
           <el-checkbox
             v-model="cardGive.cardGiveContinue"
             :true-label="on"
             :false-label="off"
           >勾选后，用户转赠给好友，好友还可以继续转赠给其他人</el-checkbox>
-          <div>
+          <div v-if="cardGive.cardGiveContinue === 'on'">
             最大转赠次数
             <span class="max-give">
               <el-input
