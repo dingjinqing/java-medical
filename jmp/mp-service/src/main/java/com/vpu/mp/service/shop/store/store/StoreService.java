@@ -4,6 +4,9 @@ import com.vpu.mp.db.shop.tables.records.ArticleRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -28,6 +31,7 @@ import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -549,8 +553,10 @@ public class StoreService extends ShopBaseService {
      * @return
      */
     public Boolean addArticle(ArticlePojo articlePojo) {
-        ArticleRecord record = new ArticleRecord();
-        this.assign(articlePojo, record);
+        ArticleRecord record =db().newRecord(ARTICLE,articlePojo);
+        if (StringUtils.isEmpty(record.getTitle())||"".equals(articlePojo.getTitle())){
+            throw new BusinessException(JsonResultCode.CODE_PARAM_ERROR,",标题不能为空");
+        }
         return db().executeInsert(record) > 0 ? true : false;
     }
 
@@ -561,8 +567,10 @@ public class StoreService extends ShopBaseService {
      * @return
      */
     public Boolean updateArticle(ArticlePojo articlePojo) {
-        ArticleRecord record = new ArticleRecord();
-        this.assign(articlePojo, record);
+        ArticleRecord record =db().newRecord(ARTICLE,articlePojo);
+        if (StringUtils.isEmpty(record.getTitle())||"".equals(articlePojo.getTitle())){
+            throw new BusinessException(JsonResultCode.CODE_PARAM_ERROR,",标题不能为空");
+        }
         return db().executeUpdate(record) > 0 ? true : false;
     }
 
@@ -609,5 +617,14 @@ public class StoreService extends ShopBaseService {
         }
         PageResult<ArticlePojo> result = this.getPageResult(sql,param.getCurrentPage(),param.getPageRows(),ArticlePojo.class);
         return result;
+    }
+    /**
+     * 发布公告
+     *
+     * @param articleId
+     * @return
+     */
+    public Boolean releaseArticle(Integer articleId) {
+        return db().update(ARTICLE).set(ARTICLE.STATUS, NumberUtils.BYTE_ONE).where(ARTICLE.ARTICLE_ID.eq(articleId)).execute() > 0 ? true : false;
     }
 }
