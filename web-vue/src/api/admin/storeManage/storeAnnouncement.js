@@ -39,3 +39,12 @@ export function announcementDeleteApi (data) {
     method: 'post'
   })
 }
+
+// 发布公告
+export function releaseArticleApi (data) {
+  return service({
+    url: '/api/admin/store/article/release',
+    data,
+    method: 'post'
+  })
+}

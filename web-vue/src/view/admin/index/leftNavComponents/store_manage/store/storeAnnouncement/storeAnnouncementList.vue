@@ -85,6 +85,17 @@
                 ></i>
               </el-tooltip>
               <el-tooltip
+                v-if="row.status === 0"
+                :content="$t('storeAnnouncement.release')"
+                placement="top"
+                effect="light"
+              >
+                <i
+                  class="el-icon-s-promotion iconSpan"
+                  @click="edit('release', row)"
+                ></i>
+              </el-tooltip>
+              <el-tooltip
                 :content="$t('storeAnnouncement.delete')"
                 placement="top"
                 effect="light"
@@ -107,7 +118,7 @@
 </template>
 
 <script>
-import { announcementListApi, announcementDeleteApi } from '@/api/admin/storeManage/storeAnnouncement.js'
+import { announcementListApi, announcementDeleteApi, releaseArticleApi } from '@/api/admin/storeManage/storeAnnouncement.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -164,6 +175,24 @@ export default {
             query: {
               articleId: id
             }
+          })
+          break
+        case 'release':
+          that.$confirm(this.$t('storeAnnouncement.aypost'), {
+            confirmButtonText: this.$t('storeAnnouncement.yes'),
+            cancelButtonText: this.$t('storeAnnouncement.no'),
+            type: 'warning'
+          }).then(() => {
+            releaseArticleApi({
+              articleId: id
+            }).then(res => {
+              if (res.error === 0) {
+                that.$message.success(this.$t('storeAnnouncement.postS'))
+                that.initDataList()
+              } else {
+                that.$message.error(this.$t('storeAnnouncement.postF'))
+              }
+            })
           })
           break
         case 'delete':

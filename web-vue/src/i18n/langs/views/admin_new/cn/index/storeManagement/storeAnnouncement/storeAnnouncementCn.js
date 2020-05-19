@@ -23,5 +23,8 @@ export const cn = {
   content: '内容',
   save: '保存',
   saveSuccess: '保存成功',
-  updateSuccess: '更新成功'
+  updateSuccess: '更新成功',
+  aypost: '确认要发布吗？',
+  postS: '发布成功！',
+  postF: '发布失败！'
 }

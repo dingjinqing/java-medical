@@ -23,5 +23,8 @@ export const en = {
   content: 'Content',
   save: 'Save',
   saveSuccess: 'Save successful',
-  updateSuccess: 'Update succeeded'
+  updateSuccess: 'Update succeeded',
+  aypost: 'Are you sure you want to post? ',
+  postS: 'Post successfully! ',
+  postF: 'Post failed! '
 }
