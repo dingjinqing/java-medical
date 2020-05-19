@@ -506,6 +506,9 @@ public class WxCardExchangeService extends ShopBaseService {
 	public CardExchangTipVo getCardExchangTip(String cardNo,MemberCardRecord card) {
 		CardExchangTipVo vo = new CardExchangTipVo();
 		Byte periodLimit = card.getPeriodLimit();
+		if(periodLimit == null) {
+			return null;
+		}
 		TimeType[] values = TimeType.values();
 		
 		Integer exchangGoodsNum = getExchangGoodsTimesDuringPeriod(null,cardNo,values[periodLimit]);

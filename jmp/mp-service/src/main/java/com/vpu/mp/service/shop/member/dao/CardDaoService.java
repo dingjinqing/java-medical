@@ -79,8 +79,8 @@ import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
-import com.vpu.mp.service.pojo.shop.member.card.cardReceiveExport.CardReceiveDownVo;
 import com.vpu.mp.service.pojo.shop.member.card.dao.CardFullDetail;
+import com.vpu.mp.service.pojo.shop.member.card.export.receive.CardReceiveDownVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportErroPojo;
 
 /**
