@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.member.card;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -81,9 +82,14 @@ public class LimitCardOpt extends CardOpt {
 			if(uCard.getExchangSurplus()!=null) {
 				newCard.setExchangSurplus(uCard.getExchangSurplus());
 			}
-			//	剩余转赠次数
-			newCard.setGiveAwaySurplus(uCard.getGiveAwaySurplus()-1);
 			
+			if(CardUtil.isCardGiveAwayForeverTimes(mCard.getMostGiveAway())) {
+				//	无限转赠
+				newCard.setGiveAwaySurplus(Integer.MAX_VALUE);
+			}else {
+				//	剩余转赠次数
+				newCard.setGiveAwaySurplus(uCard.getGiveAwaySurplus()-1);
+			}
 		}else {
 			newCard.setCardSource(SOURCE_NORMAL);
 			//	门店兑换次数
@@ -148,4 +154,30 @@ public class LimitCardOpt extends CardOpt {
 		return personGetFlag && sendTotalCardFlag;
 	}
 
+	
+	/**
+	 * 	判断这张用户卡是否可以继续转赠
+	 * @param userCardRecord
+	 * @param memberCardRecord
+	 * @param rootControl 是否统一控制开放转赠权限 true 是，false 否
+	 * @return true 用户卡可以继续转赠  |  false 用户卡不可以继续转赠
+	 */
+	public boolean canGiveAway(UserCardRecord userCard,MemberCardRecord memberCard,boolean rootControl) {
+		Byte cardSource = userCard.getCardSource();
+		//	卡是否允许转赠
+		if(rootControl || CardUtil.isCardGiveWway(memberCard.getCardGiveAway())) {
+			//	正常的卡
+			if(CardUtil.isCardSourceNormal(cardSource)) {
+				return true;
+			} 
+			//	通过转赠获取的卡
+			if(CardUtil.isCardSourceGiveWay(cardSource) && CardUtil.isCardGiveContinue(memberCard.getCardGiveContinue())) {
+				//	检查是否为无限转赠或者是否还有有转赠次数
+				if(CardUtil.isCardGiveAwayForeverTimes(memberCard.getMostGiveAway()) || userCard.getGiveAwaySurplus()>0) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

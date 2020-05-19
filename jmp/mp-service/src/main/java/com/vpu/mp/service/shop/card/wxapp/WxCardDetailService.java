@@ -60,6 +60,7 @@ import com.vpu.mp.service.shop.market.couponpack.CouponPackService;
 import com.vpu.mp.service.shop.member.CardVerifyService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.ScoreService;
+import com.vpu.mp.service.shop.member.card.LimitCardOpt;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.store.store.StoreService;
@@ -86,6 +87,7 @@ public class WxCardDetailService extends ShopBaseService{
 	@Autowired private UserService userSvc;
 	@Autowired private CouponService couponService;
 	@Autowired private CouponPackService couponPackService;
+	@Autowired private LimitCardOpt limitCardOpt;
 	
 	/**
 	 * 	获取自定义的激活项
@@ -96,26 +98,7 @@ public class WxCardDetailService extends ShopBaseService{
 		return customOptions;
 	}
 	
-	/**
-	 * 	判断这张用户卡是否可以继续转赠
-	 * @param userCardRecord
-	 * @param memberCardRecord
-	 * @param rootControl 是否统一控制开放转赠权限 true 是，false 否
-	 * @return true 用户卡可以继续转赠  |  false 用户卡不可以继续转赠
-	 */
-	public boolean canGiveAway(UserCardRecord userCard,MemberCardRecord memberCard,boolean rootControl) {
-		Byte cardSource = userCard.getCardSource();
-		//	卡是否允许转赠
-		if(rootControl || CardUtil.isCardGiveWway(memberCard.getCardGiveAway())) {
-			if(CardUtil.isCardSourceNormal(cardSource)) {
-				return true;
-			} 
-			if(CardUtil.isCardSourceGiveWay(cardSource) && CardUtil.isCardGiveContinue(memberCard.getCardGiveContinue())) {
-				return true;
-			}
-		}
-		return false;
-	}
+	
 	
 	public WxAppUserCardVo getUserCardDetail(UserCardParam param,String lang) throws UserCardNullException {
 		logger().info("获取卡的详细信息");
@@ -179,7 +162,7 @@ public class WxCardDetailService extends ShopBaseService{
 	private CardGiveVo getCardGiveVo(MemberCardRecord memberCardRecord, UserCardRecord userCardRecord) {
 			logger().info("获取卡的转赠数据");
 			//	转赠信息
-			if(canGiveAway(userCardRecord,memberCardRecord,true)) {
+			if(limitCardOpt.canGiveAway(userCardRecord,memberCardRecord,true)) {
 				
 				Byte giveWayStatus = userCardRecord.getGiveAwayStatus();
 				if(UserCardConstant.GIVE_AWAY_ING.equals(giveWayStatus)) {
@@ -207,7 +190,7 @@ public class WxCardDetailService extends ShopBaseService{
 					}
 				}else {
 					//	卡可以转赠
-					if(canGiveAway(userCardRecord,memberCardRecord,false)) {
+					if(limitCardOpt.canGiveAway(userCardRecord,memberCardRecord,false)) {
 						logger().info("卡设置是允许转赠");
 						OrderInfoRecord orderRecord = orderInfoService.getNotFinishedOrderOfCard(userCardRecord.getCardNo());
 						if(orderRecord != null) {
@@ -217,7 +200,7 @@ public class WxCardDetailService extends ShopBaseService{
 										.cardOrderSn(orderRecord.getOrderSn())
 										.build();
 						}else {
-							//  转赠分享码
+							// 	转赠分享码
 							CardGiveVo cardGiveVo = wxCardGiveAwaySvc.getCardGiveImg(memberCardRecord);
 							cardGiveVo.setCanGiveWay(NumberUtils.BYTE_ONE);
 							//	该用户卡可以转赠
@@ -378,13 +361,13 @@ public class WxCardDetailService extends ShopBaseService{
 			logger().info("处理限次卡兑换的商品");
 			boolean partGoodsFlag = CardConstant.MCARD_ISE_PART.equals(userCard.getIsExchang());
 			if(partGoodsFlag) {
-				// 部分商品
+				//	部分商品
 				if(!StringUtils.isBlank(userCard.getExchangGoods())) {
 					List<Integer> goodsIdList = Util.splitValueToList(userCard.getExchangGoods());
 					res = goodsService.getGoodsList(goodsIdList, false);
 				}
 			}else {
-				// 全部商品，只取两个进行展示
+				//	全部商品，只取两个进行展示
 				GoodsPageListParam goodsParam = new GoodsPageListParam();
 				goodsParam.setPageRows(2);
 				goodsParam.setCurrentPage(1);
@@ -527,7 +510,7 @@ public class WxCardDetailService extends ShopBaseService{
 			String restrict = null;
 			Byte restrictType;
 			BigDecimal leastConsume=null;
-			if (NumberUtils.INTEGER_ZERO.equals(coupon.getUseConsumeRestrict())) {
+			if (NumberUtils.BYTE_ZERO.equals(coupon.getUseConsumeRestrict())) {
 				//	无门槛
 				restrict = Util.translateMessage(lang,JsonResultMessage.CARD_COUPON_NOLIMIT, i18nfile);
 				restrictType = NumberUtils.BYTE_ZERO;
