@@ -29,8 +29,13 @@ public class AdminConfigThirdController  extends AdminBaseController {
         return success(shop().thirdAuthService.getThirdAuthInfo(param));
     }
 
+    /**
+     * 推送配置
+     * @param param
+     * @return
+     */
     @PostMapping("/push/set")
-    public JsonResult setPush(ThirdErpPushParam param){
+    public JsonResult setPush(@RequestBody @Valid ThirdErpPushParam param){
         shop().thirdAuthService.setPush(param);
         return success();
     }
@@ -41,8 +46,11 @@ public class AdminConfigThirdController  extends AdminBaseController {
      */
     @PostMapping("/enable")
     public JsonResult authorize(@RequestBody @Validated ThirdAuthorizeParam param){
-        shop().thirdAuthService.authorize(param);
-        return success();
+        int authorize = shop().thirdAuthService.authorize(param);
+        if (authorize>0){
+            return success();
+        }
+        return fail();
     }
 
     /**
@@ -64,7 +72,33 @@ public class AdminConfigThirdController  extends AdminBaseController {
      */
     @PostMapping("/appkey/save")
     public JsonResult saveAppKey(@RequestBody @Valid ThirdAppKeyParam param){
-        shop().thirdAuthService.saveAppKey(param);
+        int i = shop().thirdAuthService.saveAppKey(param);
+        if (i>0)
+            return success();
+        else
+            return fail();
+    }
+
+    /**
+     * 切换erp版本
+     * @return
+     */
+    @PostMapping("/erp/product")
+    public JsonResult saveProduct(@RequestBody @Valid ThirdSwitchProductParam param){
+        int i = shop().thirdAuthService.switchProduct(param);
+        if (i>0){
+            return success();
+        }
+        return fail();
+    }
+
+    /**
+     * pos同步
+     * @return
+     */
+    @PostMapping("/pos/sync")
+    public JsonResult syncStoreGoods(ThirdPosSyncParam param ){
+        shop().thirdAuthService.posSyncStoreGoods(param);
         return success();
     }
 

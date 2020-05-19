@@ -1,21 +1,19 @@
 package com.vpu.mp.service.shop.config;
 
-import com.thoughtworks.xstream.core.BaseException;
 import com.vpu.mp.db.main.tables.records.AppAuthRecord;
 import com.vpu.mp.db.main.tables.records.AppRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
-import com.vpu.mp.service.pojo.shop.config.trade.ReturnBusinessAddressParam;
 import com.vpu.mp.service.pojo.shop.config.trade.third.*;
-import org.elasticsearch.common.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+
+import static com.vpu.mp.service.pojo.shop.config.trade.third.ThirdErpPushParam.*;
 
 /**
  * 第三方对接配置
@@ -62,7 +60,8 @@ public class ThirdAuthConfigService extends  BaseShopConfigService {
                 setCityOrderPush(param.getAction());
                 break;
             case K_VERIFY_ORDER:
-                setCityOrderPush(param.getAction());
+                verifyOrder(param.getAction());
+                break;
             default:
                 throw new  BusinessException(JsonResultCode.CODE_CARD_RECEIVE_NOCODE);
         }
@@ -123,10 +122,11 @@ public class ThirdAuthConfigService extends  BaseShopConfigService {
     /**
      * 授权
      * @param param
+     * @return
      */
-    public void authorize(ThirdAuthorizeParam param) {
-        int i = saas.shop.shopApp.updateAppAuthStatus(param.getId(),getShopId(),param.getStatus());
-        if (i>0&&param.getAction().equals((byte)3)&&param.getStatus().equals(BaseConstant.YES)){
+    public int authorize(ThirdAuthorizeParam param) {
+        int i = saas.shop.shopApp.updateAppAuthStatus(param.getId(),getShopId(),getSysId(),param.getStatus());
+        if (i>0&& param.getAction().equals(CRM_ACTION)&& BaseConstant.YES.equals(param.getStatus())){
             logger().info("授权crm-同步");
             AppAuthRecord appAuthRecord = saas.shop.shopApp.AddAppAuthInfo(getSysId(), getShopId(), param.getAction());
             if (appAuthRecord!=null&&appAuthRecord.getIsSync().equals(BaseConstant.YES)){
@@ -138,7 +138,7 @@ public class ThirdAuthConfigService extends  BaseShopConfigService {
                  */
             }
         }
-
+        return i;
     }
 
     public int resetSessionKey(Integer id) {
@@ -151,14 +151,37 @@ public class ThirdAuthConfigService extends  BaseShopConfigService {
         return 0;
     }
 
-    public void saveAppKey(ThirdAppKeyParam param) {
-        if (param.getAction().equals((byte)3)){
-            if (Strings.isNullOrEmpty(param.getAppSecret())) throw new BusinessException(JsonResultCode.CODE_CARD_RECEIVE_NOCODE);
-            logger().info("crm更新appkey");
-        }else {
-            int i = saas.shop.shopApp.updateAppAuthAppkey(param.getId(), getSysId(), getShopId(), param.getAppKey(), param.getAppSecret());
+    public int saveAppKey(ThirdAppKeyParam param) {
+        int i=0;
+        switch (param.getAction()){
+            case REP_ACTION:
+                logger().info("crm更新appkey");
+                 i = saas.shop.shopApp.updateAppAuthAppkey(param.getId(), getSysId(), getShopId(), param.getAppKey(), param.getAppSecret());
+                break;
+            case POS_ACTION:
+                logger().info("crm更新appkey");
+                i=saas.shop.shopApp.updateAppAuthAppkey(param.getId(), getSysId(), getShopId(), param.getAppKey(), param.getAppSecret());
+                break;
+            case CRM_ACTION:
+                logger().info("crm更新appkey");
+                i=saas.shop.shopApp.updateAppAuthAppkey(param.getId(), getSysId(), getShopId(), param.getAppKey(), param.getAppSecret());
+                break;
+            default:
         }
-
+        return i;
     }
 
+    public int switchProduct(ThirdSwitchProductParam param) {
+        return saas.shop.shopApp.switchProduct(param.getId(),getSysId(),getShopId(),param.getProduct());
+    }
+
+    /**
+     * pos同步
+     * @param param
+     */
+    public void posSyncStoreGoods(ThirdPosSyncParam param) {
+        logger().info("pos同步数据{}",param.getAction());
+
+
+    }
 }
