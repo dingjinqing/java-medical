@@ -42,6 +42,7 @@ import com.vpu.mp.service.pojo.shop.member.card.ActiveOverDueVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardVerifyResultVo;
+import com.vpu.mp.service.pojo.shop.member.card.export.examine.CardExamineDownVo;
 import com.vpu.mp.service.pojo.wxapp.card.param.CardCustomActionParam;
 import com.vpu.mp.service.shop.card.msg.CardMsgNoticeService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
@@ -455,6 +456,64 @@ public class CardVerifyService extends ShopBaseService {
 		}
 		res.setDataList(myList);
 		return res;
+	}
+	
+	/**
+	 * 导出激活数据为excel
+	 * @param param
+	 */
+	public void exportToExcel(ActiveAuditParam param) {
+		logger().info("导出会员卡审核数据为excel");
+		
+		PageResult<? extends Record> results = getPageList(param);
+		if(results.dataList!=null && results.dataList.size()>0) {
+			List<CardExamineDownVo> modelData = new ArrayList<>();
+			for(int i=0;i<results.dataList.size();i++) {
+				Record record = results.dataList.get(i);
+				CardExamineDownVo vo = record.into(CardExamineDownVo.class);
+			
+		
+				
+				// 地址
+				
+				
+				// 受教育程度
+				
+				
+				//	所在行业
+				
+				// 生日
+				
+				// 自定义权益
+				
+				// 审核时间
+				
+				//	审核人
+				
+				
+				// 审核状态
+			
+			
+			
+			
+			
+			
+				modelData.add(vo);
+			
+			
+			
+			}
+			
+			
+			
+			
+			
+		}
+		
+		
+		
+		
+		
 	}
 
 }
