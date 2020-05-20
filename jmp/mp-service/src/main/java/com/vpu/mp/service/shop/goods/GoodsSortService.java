@@ -354,21 +354,6 @@ public class GoodsSortService extends ShopBaseService {
     }
 
     /**
-     * 根据分类id集合查询说所有分类
-     * @param sortIds 分类id集合
-     * @return 分类集合
-     */
-    @Deprecated
-    public List<Sort> getList(List<Integer> sortIds) {
-        List<Sort> sorts = db().selectFrom(SORT).where(SORT.SORT_ID.in(sortIds)).fetchInto(Sort.class);
-
-        /* 处理图片路径 */
-        sorts.forEach(sort -> sort.setSortImgUrl(getImgFullUrlUtil(sort.getSortImg())));
-
-        return sorts;
-    }
-
-    /**
      *  查询分类详细信息
      * @param ids
      * @return
@@ -480,6 +465,17 @@ public class GoodsSortService extends ShopBaseService {
     }
 
 
+    /**
+     * 根据分类id获取所有普通分类
+     * @param sortIds 商家分类id
+     * @return
+     */
+    public List<SortRecord> getNormalSortByIds(List<Integer> sortIds) {
+        GoodsSortListParam param = new GoodsSortListParam();
+        param.setType(GoodsConstant.NORMAL_SORT);
+        param.setSortIds(sortIds);
+        return getSortListDao(param);
+    }
     /**
      * 根据筛选条件查询商家分类集合
      * @param param {@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam}

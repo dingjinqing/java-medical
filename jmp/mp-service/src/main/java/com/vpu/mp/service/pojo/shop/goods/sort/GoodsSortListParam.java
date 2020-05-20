@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.goods.sort;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * 分类列表查询数据入参
@@ -19,4 +20,6 @@ public class GoodsSortListParam {
     private Byte type;
     private Timestamp startCreateTime;
     private Timestamp endCreateTime;
+
+    private List<Integer> sortIds;
 }
