@@ -28,8 +28,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.service.foundation.data.BaseConstant.*;
-import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.*;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_GIFT;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MY_PRIZE;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_PAY_AWARD;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER;
+import static com.vpu.mp.service.foundation.data.BaseConstant.YES;
+import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_SOURCE_EVALUATION;
+import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_SOURCE_FRIEND_POWER;
+import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_SOURCE_LOTTERY;
+import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_SOURCE_PAY_AWARD;
+import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_STATUS_EXPIRE;
+import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_STATUS_RECEIVED;
 
 /**
  * 我的奖品
@@ -154,7 +164,7 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
                 break;
             default:
         }
-        order.setGoodsType(OrderInfoService.getGoodsTypeToInsert(collect));
+        order.setGoodsType(OrderInfoService.addGoodsTypeToInsert(order.getGoodsType(), collect));
     }
 
     /**

@@ -265,12 +265,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 setOtherValue(order, orderBo, orderBeforeVo);
                 //商品退款退货配置
                 calculate.setReturnCfg(orderBo.getOrderGoodsBo(), orderBo.getOrderType(), order);
-                //TODO exchang、好友助力
-                //TODO 订单类型拼接(支付有礼)
-                //订单入库,以上只有orderSn，无法获取orderId
+                //订单类型拼接(支付有礼)
                 order.setGoodsType(OrderInfoService.getGoodsTypeToInsert(orderBo.getOrderType()));
                 //保存营销活动信息 订单状态以改变（该方法不要在并发情况下出现临界资源）
                 marketProcessorFactory.processSaveOrderInfo(param,order);
+                //订单入库,以上只有orderSn，无法获取orderId
                 order.store();
                 order.refresh();
                 addOrderGoodsRecords(order, orderBo.getOrderGoodsBo());
