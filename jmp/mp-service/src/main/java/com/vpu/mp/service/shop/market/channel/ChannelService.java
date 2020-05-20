@@ -252,7 +252,7 @@ public class ChannelService extends ShopBaseService {
 	 */
 	public String createShare() {
 		BigInteger hex =new BigInteger(Util.randomId().replace("-", ""),16);
-		return convert62(hex).substring(0,5);
+		return convert62(hex).substring(0,6);
 	}
 	
 	private String convert62(BigInteger from) {
