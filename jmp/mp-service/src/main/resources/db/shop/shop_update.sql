@@ -551,4 +551,10 @@ ALTER TABLE `b2c_user_import_detail` ADD COLUMN `remark` text COMMENT '会员备
 ALTER TABLE `b2c_charge_money` ADD COLUMN `return_money` decimal(10,2) DEFAULT '0.00' COMMENT '已退金额';
 ALTER TABLE `b2c_charge_money` ADD COLUMN `after_charge_money` decimal(10,2) DEFAULT '0.00' COMMENT '充值后卡余额';
 ALTER TABLE `b2c_charge_money` ADD COLUMN `change_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '充值类型 1发卡 2用户充值 3 管理员操作';
+
+-- 黄壮壮 2020年05月20日 添加会卡审核表字段
+ALTER TABLE `b2c_card_examine` ADD COLUMN `sys_id` int(9) UNSIGNED DEFAULT NULL COMMENT '操作员ID';
+ALTER TABLE `b2c_card_examine` ADD COLUMN `account_id` int(9) UNSIGNED DEFAULT NULL COMMENT 'SUB操作员ID';
+ALTER TABLE `b2c_card_examine` ADD COLUMN `account_type` tinyint(1) DEFAULT 0 COMMENT '账户类型：0店铺账号，1系统账号';
+
 /***********************2.13*********************END*/
