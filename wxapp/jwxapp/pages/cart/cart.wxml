@@ -287,6 +287,10 @@
         </view>
       </view>
     </view>
+    <navigator class='to_goods_list' target="miniProgram" app-id='wx6885acbedba59c14' open-type="navigate" path="" version="release" extra-data='' hover-class='none'>
+      <image src='{{imageUrl}}/image/wxapp/stodownload1.jpg' mode='widthFix'></image>
+      <view>已同步至好物圈</view>
+    </navigator>
   </block>
   <!-- 底部 -->
   <block wx:if='{{fullList || purchaseList || cartGoodsList}}'>

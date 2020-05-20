@@ -28,6 +28,7 @@ public class CouponMsgNoticeService extends ShopBaseService {
      * @param couponDesc 优惠内容
      */
     public void sendCouponMsgNotice(Integer userId, String couponName, Timestamp startTime,Timestamp endTime,String couponDesc){
+        logger().info("开始处理当前卡券领取成功消息,用户id为：{},优惠券名称为：{}",userId,couponName);
         //公众号消息
         String[][] mpData = new String[][] {
             {couponName},

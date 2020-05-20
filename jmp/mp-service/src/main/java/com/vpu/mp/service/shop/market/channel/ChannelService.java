@@ -53,8 +53,8 @@ import lombok.NoArgsConstructor;
 @Service
 public class ChannelService extends ShopBaseService {
 
-	public static final String PAGE_PATH_PARAM_FORMAT = "page=%d&channel=%s";
-	public static final String GOODS_PATH_PARAM_FORMAT = "goods_id=%d&channel=%s";
+	public static final String PAGE_PATH_PARAM_FORMAT = "page=%d&c=%s";
+	public static final String GOODS_PATH_PARAM_FORMAT = "gid=%d&c=%s";
 	/** 分享码 进制转换使用 */
 	private static final String DIGIT = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	private static final BigInteger SCALE = new BigInteger("62");
@@ -252,7 +252,7 @@ public class ChannelService extends ShopBaseService {
 	 */
 	public String createShare() {
 		BigInteger hex =new BigInteger(Util.randomId().replace("-", ""),16);
-		return convert62(hex);
+		return convert62(hex).substring(0,6);
 	}
 	
 	private String convert62(BigInteger from) {

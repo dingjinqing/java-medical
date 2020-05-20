@@ -18,6 +18,10 @@ public class UserCardChargeListVo {
      */
     private String orderSn;
     /**
+     *
+     */
+    private Integer userId;
+    /**
      * 会员卡名称
      */
     private String cardName;

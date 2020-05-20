@@ -551,4 +551,7 @@ ALTER TABLE `b2c_user_import_detail` ADD COLUMN `remark` text COMMENT '会员备
 ALTER TABLE `b2c_charge_money` ADD COLUMN `return_money` decimal(10,2) DEFAULT '0.00' COMMENT '已退金额';
 ALTER TABLE `b2c_charge_money` ADD COLUMN `after_charge_money` decimal(10,2) DEFAULT '0.00' COMMENT '充值后卡余额';
 ALTER TABLE `b2c_charge_money` ADD COLUMN `change_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '充值类型 1发卡 2用户充值 3 管理员操作';
+
+-- 分销员统计信息
+ALTER TABLE `b2c_user_total_fanli` ADD COLUMN `final_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '总返利金额，total_money为提现后金额';
 /***********************2.13*********************END*/

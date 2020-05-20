@@ -1,7 +1,10 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.CardUtil;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.account.CardConsumeParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardChargeListParam;
@@ -12,20 +15,24 @@ import com.vpu.mp.service.pojo.shop.order.virtual.AnalysisParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreParam;
 import com.vpu.mp.service.pojo.wxapp.store.ValidCon;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
 /**
-* @author 黄壮壮
-* @Date: 2019年11月26日
-* @Description:
-*/
+ * @author 黄壮壮
+ * @Date: 2019年11月26日
+ * @Description:
+ */
 @RestController
 public class AdminUserCardController extends AdminBaseController {
-	/**
-	 * 用户卡 - 删除
+    /**
+     * 用户卡 - 删除
 	 */
 	@PostMapping("/api/admin/user/card/delete")
 	public JsonResult deleteUserCard(@RequestBody UserCardParam userCard) {
@@ -101,6 +108,13 @@ public class AdminUserCardController extends AdminBaseController {
     @PostMapping("/api/admin/user/card/renew/analysis")
     public JsonResult cardRenewAnalysis(@RequestBody AnalysisParam param) {
         return success(shop().userCard.cardRenewAnalysis(param));
+    }
+
+    @PostMapping("/api/admin/user/card/renew/export")
+    public void export(@RequestBody @Valid UserCardRenewListParam param, HttpServletResponse response) {
+        Workbook workbook = shop().userCard.exportRenewList(param, getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.VIRTUAL_ORDER_MEMBER_CARD_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        export2Excel(workbook, fileName, response);
     }
 
     /**
