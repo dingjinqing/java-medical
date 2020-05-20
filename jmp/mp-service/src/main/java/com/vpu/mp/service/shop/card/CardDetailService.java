@@ -183,13 +183,11 @@ public class CardDetailService extends ShopBaseService{
 	
 	private void assignCoupon(NormalCardToVo card) {
 		logger().info("处理优惠券信息");
-		List<CouponGivePopVo> couponList = couponGiveService.popWindows(new CouponGivePopParam());
 		List<Integer> couponIds = card.getCouponIds();
+		List<CouponGivePopVo> couponList = couponGiveService.getInfoByIds(couponIds);
 		if (isListAvailable(couponList) && isListAvailable(couponIds)) {
 			if(CardUtil.isSendCoupon(card.getSendCouponType())) {
-				List<CouponGivePopVo> res = couponList.stream().filter(coupon -> couponIds.contains(coupon.getId()))
-						.collect(Collectors.toList());
-				card.setCouponList(res);
+				card.setCouponList(couponList);
 			}else if(CardUtil.isSendCouponPack(card.getSendCouponType())) {
 				CouponPackUpdateVo couponPack = couponPackService.getCouponPackById(couponIds.get(0));
 				UserCardCouponPack pack = new UserCardCouponPack();

@@ -552,6 +552,11 @@ ALTER TABLE `b2c_charge_money` ADD COLUMN `return_money` decimal(10,2) DEFAULT '
 ALTER TABLE `b2c_charge_money` ADD COLUMN `after_charge_money` decimal(10,2) DEFAULT '0.00' COMMENT '充值后卡余额';
 ALTER TABLE `b2c_charge_money` ADD COLUMN `change_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '充值类型 1发卡 2用户充值 3 管理员操作';
 
+-- 黄壮壮 2020年05月20日 添加会卡审核表字段
+ALTER TABLE `b2c_card_examine` ADD COLUMN `sys_id` int(9) UNSIGNED DEFAULT NULL COMMENT '操作员ID';
+ALTER TABLE `b2c_card_examine` ADD COLUMN `account_id` int(9) UNSIGNED DEFAULT NULL COMMENT 'SUB操作员ID';
+ALTER TABLE `b2c_card_examine` ADD COLUMN `account_type` tinyint(1) DEFAULT 0 COMMENT '账户类型：0店铺账号，1系统账号';
+
 -- 分销员统计信息
 ALTER TABLE `b2c_user_total_fanli` ADD COLUMN `final_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '总返利金额，total_money为提现后金额';
 /***********************2.13*********************END*/

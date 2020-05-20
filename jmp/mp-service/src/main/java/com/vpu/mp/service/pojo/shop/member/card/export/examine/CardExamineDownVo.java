@@ -3,12 +3,17 @@ package com.vpu.mp.service.pojo.shop.member.card.export.examine;
 import java.sql.Timestamp;
 
 import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
+import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
 
+import lombok.Data;
+
+import org.jooq.types.UInteger;
 /**
  * 	会员卡审核数据下载对象
  * @author 黄壮壮
  *
  */
+@Data
 public class CardExamineDownVo {
 	/**
 	 * ID
@@ -32,7 +37,7 @@ public class CardExamineDownVo {
 	 * 	真实姓名
 	 */
 	@ExcelColumn(columnIndex = 3, columnName = "card.examine.export.realname")
-	private String realname;
+	private String realName;
 	
 	/**
 	 * 	手机号
@@ -69,7 +74,7 @@ public class CardExamineDownVo {
 	 * 	教育程度
 	 */
 	@ExcelColumn(columnIndex = 9, columnName = "card.examine.export.education")
-	private String education;
+	private String educationStr;
 	
 	/**
 	 * 所在行业
@@ -107,4 +112,30 @@ public class CardExamineDownVo {
 	@ExcelColumn(columnIndex = 15, columnName = "card.examine.export.examineStatus")
 	private String examineStatus;
 	
+	@ExcelIgnore
+	private Integer birthdayYear;
+	@ExcelIgnore
+	private Integer birthdayMonth;
+	@ExcelIgnore
+	private Integer birthdayDay;
+	@ExcelIgnore
+	private Byte education;
+	@ExcelIgnore
+	private Byte industryInfo;
+	@ExcelIgnore
+	private Integer provinceCode;
+	@ExcelIgnore
+	private Integer cityCode;
+	@ExcelIgnore
+	private Integer districtCode;
+	@ExcelIgnore
+	private String customOptions;
+	@ExcelIgnore
+	private Timestamp passTime;
+	@ExcelIgnore
+	private Timestamp refuseTime;
+	@ExcelIgnore
+	private UInteger sysId;
+	@ExcelIgnore
+	private Byte status;
 }

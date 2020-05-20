@@ -401,13 +401,13 @@ export default {
             name: 'check_order',
             flag: false
           },
-          {
-            imgUrl: this.$imageHost + '/image/admin/icon_left/fake_icon.png',
-            imgUrl_h: this.$imageHost + '/image/admin/icon_left/fake_icon_h.png',
-            span: '',
-            name: 'member_card_order',
-            flag: false
-          },
+          // {
+          //   imgUrl: this.$imageHost + '/image/admin/icon_left/fake_icon.png',
+          //   imgUrl_h: this.$imageHost + '/image/admin/icon_left/fake_icon_h.png',
+          //   span: '',
+          //   name: 'member_card_order',
+          //   flag: false
+          // },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/bullship.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/bullship_h.png',
