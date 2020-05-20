@@ -255,6 +255,7 @@
                     v-for="(itemC,indexC) in item.ordinaryCoupon"
                     :key="indexC"
                     class="addInfo clear"
+                    :class="{'coupon-invalid': itemC.status != 0}"
                   >
                     <section
                       class="couponImgWrapper"
@@ -328,6 +329,7 @@
                     v-for="(itemD,indexD) in item.splitCoupon"
                     :key="indexD"
                     class="addInfo"
+                    :class="{'coupon-invalid': itemD.status != 0}"
                   >
                     <section
                       class="couponImgWrapper"
@@ -895,9 +897,12 @@ export default {
       this.params.awardList.forEach((item, index) => {
         console.log(item, index)
         if (index === this.ordinaryIndex) {
-          item.couponIds = data.map(item => item.id)
-          console.log(item.couponIds)
-          item.ordinaryCoupon = data
+          // item.couponIds = data.map(item => item.id)
+          // console.log(item.couponIds)
+          // item.ordinaryCoupon = data
+          let invalid = item.ordinaryCoupon.filter(item => item.status !== 0)
+          item.ordinaryCoupon = data.concat(invalid)
+          item.couponIds = item.ordinaryCoupon.map(item => item.id)
         }
       })
 
@@ -1639,8 +1644,30 @@ export default {
             background: #fff;
             border: 1px solid #e4e4e4;
             margin-right: 20px;
+            border-radius: 10px;
+            margin-top: -1px;
             cursor: pointer;
             text-align: center;
+            &.coupon-invalid {
+              color: #d5d7d9;
+              border: 1px solid #d5d7d9;
+              .couponImgWrapper {
+                border: 1px solid #d5d7d9;
+                .coupon_list_top {
+                  color: #d5d7d9;
+                }
+                .coupon_center_limit {
+                  color: #d5d7d9;
+                }
+                .coupon_center_number {
+                  color: #d5d7d9;
+                }
+                .coupon_list_bottom {
+                  background: #d5d7d9;
+                  background-repeat: repeat-x;
+                }
+              }
+            }
             img {
               margin-top: 10px;
             }
