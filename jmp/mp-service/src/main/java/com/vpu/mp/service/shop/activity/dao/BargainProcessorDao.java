@@ -26,6 +26,7 @@ import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -200,9 +201,11 @@ public class BargainProcessorDao extends ShopBaseService {
         //临时记录
         param.setBargainRecordInfo(bargainRecordInfo);
 
-        for(OrderBeforeParam.Goods prd : param.getGoods()){
+        for(OrderBeforeParam.Goods prd : param.getGoods()) {
             //砍价价格
-            prd.setProductPrice(bargainRecordInfo.getGoodsPrice().subtract(bargainRecordInfo.getBargainMoney()));
+            BigDecimal price = bargainRecordInfo.getGoodsPrice().subtract(bargainRecordInfo.getBargainMoney());
+            prd.setProductPrice(price);
+            prd.setGoodsPrice(price);
         }
     }
 
