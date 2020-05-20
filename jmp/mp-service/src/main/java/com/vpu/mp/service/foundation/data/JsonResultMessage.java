@@ -601,6 +601,10 @@ public class JsonResultMessage {
 	public static final String MSG_CARD_ALLOW_TIME_OVER_ALIAS = "member.card.allow.times.over.alias";
 	public static final String MSG_CARD_ADD_TIMES_OVER_ALIAS = "member.card.add.times.over.alias";
 	public static final String MSG_CARD_PERIOD_ADD_TIMES_OVER_ALIAS = "member.card.period.add.times.over.alias";
+	public static final String MSG_CARD_EXAMINE_ING = "member.card.examine.ing";
+	public static final String MSG_CARD_EXAMINE_PASS = "member.card.examine.pass";
+	public static final String MSG_CARD_EXAMINE_REFUSE = "member.card.examine.refuse";
+
     /**
      * 	用户卡包邮信息
      */
@@ -1109,6 +1113,7 @@ public class JsonResultMessage {
     public static final String CARD_NO_TEMPLATE_NAME = "card.no.template.name";
     public static final String CARD_NO_IMPORT_NAME = "card.no.import.name";
     public static final String CARD_PWD_TEMPLATE_NAME = "card.pwd.template.name";
+    public static final String CARD_EXAMINE_FILE_NAME = "card.examine.file.name";
 
     // 商品效果导出
     public static final String GOODS_EFFECT_FILE_NAME = "overview.commodity.effect.file_name";

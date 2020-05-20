@@ -19,14 +19,22 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
+import org.jooq.types.UInteger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -42,8 +50,11 @@ import com.vpu.mp.service.pojo.shop.member.card.ActiveOverDueVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardVerifyResultVo;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.export.examine.CardExamineDownVo;
 import com.vpu.mp.service.pojo.wxapp.card.param.CardCustomActionParam;
+import com.vpu.mp.service.pojo.wxapp.card.param.CardCustomActionParam.SingleOption;
+import com.vpu.mp.service.saas.shop.ShopAccountService;
 import com.vpu.mp.service.shop.card.msg.CardMsgNoticeService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.dao.CardVerifyDaoService;
@@ -66,6 +77,7 @@ public class CardVerifyService extends ShopBaseService {
 	@Autowired public CardDaoService cardDaoSvc;
 	@Autowired public CardMsgNoticeService cardMsgNoticeSvc;
 	@Autowired public WxAppCardActivationService wxCardActSvc;
+	@Autowired private ShopAccountService shopAccountSvc;
 	/**
 	 *  分页查询
 	 */
@@ -358,7 +370,7 @@ public class CardVerifyService extends ShopBaseService {
 	 * 分页查询激活审核信息
 	 * 
 	 * @param param
-	 * @return
+	 * @return 
 	 */
 	public PageResult<ActiveAuditVo> getActivateAuditList(ActiveAuditParam param) {
 		logger().info("分页查询激活信息");
@@ -461,9 +473,17 @@ public class CardVerifyService extends ShopBaseService {
 	/**
 	 * 导出激活数据为excel
 	 * @param param
+	 * @return Workbook
 	 */
-	public void exportToExcel(ActiveAuditParam param) {
+	public Workbook exportToExcel(ActiveAuditParam param,String lang) {
 		logger().info("导出会员卡审核数据为excel");
+		Map<Integer,String> sysIdNameMap = new HashMap<>();
+		//	审核中
+		String examing = Util.translateMessage(lang, JsonResultCode.MSG_CARD_EXAMINE_ING.getMessage(), "excel",null);
+		//	审核通过
+		String pass = Util.translateMessage(lang, JsonResultCode.MSG_CARD_EXAMINE_PASS.getMessage(), "excel",null);
+		//	审核拒绝
+		String refuse = Util.translateMessage(lang, JsonResultCode.MSG_CARD_EXAMINE_REFUSE.getMessage(), "excel",null);
 		
 		PageResult<? extends Record> results = getPageList(param);
 		if(results.dataList!=null && results.dataList.size()>0) {
@@ -478,16 +498,14 @@ public class CardVerifyService extends ShopBaseService {
 				if(provinceCode != null) {
 					String name = wxCardActSvc.mapProvinceCodeToName(provinceCode);
 					if(!StringUtils.isBlank(name)) {
-						address.append(name);
-						address.append(" ");
+						address.append(name).append(" ");
 					}
 				}
 				Integer cityCode = record.get(CARD_EXAMINE.CITY_CODE);
 				if(cityCode != null) {
 					String name = wxCardActSvc.mapCityCodeToName(cityCode);
 					if(!StringUtils.isBlank(name)) {
-						address.append(name);
-						address.append(" ");
+						address.append(name).append(" ");
 					}
 				}
 				
@@ -499,44 +517,149 @@ public class CardVerifyService extends ShopBaseService {
 					}
 				}
 				vo.setAddress(address.toString());
-				// 受教育程度
 				
+				// 受教育程度
+				Byte education = record.get(CARD_EXAMINE.INDUSTRY_INFO);
+				if(education != null) {
+					vo.setEducationStr(MemberEducationEnum.getNameByCode((int)education));
+				}
 				
 				//	所在行业
 				Byte industry = record.get(CARD_EXAMINE.INDUSTRY_INFO);
-//				MemberIndustryEnum.getNameByCode((int));
+				if(industry != null) {
+					vo.setIndustry(MemberIndustryEnum.getNameByCode((int)industry));
+				}
+				
 				// 生日
+				StringBuilder birthDay = new StringBuilder();
+				Integer year = record.get(CARD_EXAMINE.BIRTHDAY_YEAR);
+				if(year != null) {
+					birthDay.append(year).append("/");
+				}
+				Integer month = record.get(CARD_EXAMINE.BIRTHDAY_MONTH);
+				if(month != null) {
+					birthDay.append(month).append("/");
+				}
+				Integer day = record.get(CARD_EXAMINE.BIRTHDAY_DAY);
+				if(day != null) {
+					birthDay.append(day);
+				}
+				vo.setBirthday(birthDay.toString());
 				
 				// 自定义权益
+				String customOpts = record.get(CARD_EXAMINE.CUSTOM_OPTIONS);
+				StringBuilder customContent = new StringBuilder();
+				if(!StringUtils.isBlank(customOpts)) {
+					 List<CardCustomActionParam> opts = Util.json2Object(customOpts,new TypeReference<List<CardCustomActionParam>>() {
+				        }, false);
+					 
+					 for(CardCustomActionParam item: opts) {	 
+						 Byte type = item.getCustomType();
+						 if(CardCustomAction.ActionType.SINGLE.val.equals(type)) {
+							 //	单选
+							 customContent
+							 	.append(item.getCustomTitle())
+							 	.append(":");
+							 
+							 List<SingleOption> optionArr = item.getOptionArr();
+							 if(optionArr!=null && optionArr.size()>0) {
+								 for(SingleOption choose: optionArr) {
+									 if(NumberUtils.BYTE_ONE.equals(choose.getIsChecked())) {
+										 customContent
+										 	.append(choose.getOptionTitle())
+										 	.append(";");
+										 break;
+									 }
+								 }
+								 
+							 }
+						 }else if(CardCustomAction.ActionType.MULTIPLE.val.equals(type)) {
+							 //	多选
+							 customContent
+							 	.append(item.getCustomTitle())
+							 	.append(":");
+							 
+							 List<SingleOption> optionArr = item.getOptionArr();
+							 if(optionArr!=null && optionArr.size()>0) {
+								 for(SingleOption choose: optionArr) {
+									 if(NumberUtils.BYTE_ONE.equals(choose.getIsChecked())) {
+										 customContent
+										 	.append(choose.getOptionTitle())
+										 	.append(";");
+									 }
+								 }
+							 }
+							 
+						 }else if(CardCustomAction.ActionType.TEXT.val.equals(type)) {
+							 // 文本
+							 customContent
+							 	.append(item.getCustomTitle())
+							 	.append(":")
+							 	.append(item.getText())
+							 	.append(";");
+							 	
+						 }else if(CardCustomAction.ActionType.PICTURE.val.equals(type)) {
+							 //	图片
+							 customContent
+							 	.append(item.getCustomTitle())
+							 	.append(":");
+							 String[] links = item.getPictureLinks();
+							 if(null != links && links.length>0) {
+								 for(int j=0;j<links.length;j++) {
+									 customContent
+									 	.append(imageUrl(links[j]))
+									 	.append(";");
+								 }
+							 }
+						 }
+					 }
+					 vo.setCustomOptions(customContent.toString());
+				}
 				
 				// 审核时间
+				Timestamp passTime = record.get(CARD_EXAMINE.PASS_TIME);
+				Timestamp refuseTime = record.get(CARD_EXAMINE.REFUSE_TIME);
+				if(passTime!=null) {
+					vo.setExamineTime(passTime.toLocalDateTime().toString());
+				}else if(refuseTime!=null) {
+					vo.setExamineTime(refuseTime.toLocalDateTime().toString());
+				}
 				
 				//	审核人
+				UInteger sysId = record.get(CARD_EXAMINE.SYS_ID);
+				if(sysId != null) {
+					Integer key = sysId.intValue();
+					String name = sysIdNameMap.get(key);
+					if(StringUtils.isBlank(name)) {
+						name = shopAccountSvc.getAccountInfoForId(key).getUserName();
+						sysIdNameMap.put(key, name);
+					}
+					vo.setExaminePerson(name);
+				}
 				
 				
 				// 审核状态
-			
-			
-			
-			
-			
-			
+				Byte status = record.get(CARD_EXAMINE.STATUS);
+				if(CardVerifyConstant.VSTAT_CHECKING.equals(status)) {
+					//	审核中
+					vo.setExamineStatus(examing);
+				}else if(CardVerifyConstant.VSTAT_PASS.equals(status)) {
+					//	审核通过
+					vo.setExamineStatus(pass);
+				}else if(CardVerifyConstant.VSTAT_REFUSED.equals(status)) {
+					//	审核拒绝
+					vo.setExamineStatus(refuse);
+				}
 				modelData.add(vo);
-			
-			
-			
 			}
 			
-			
-			
-			
-			
+			// excel 处理
+			Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+			ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+			excelWriter.writeModelList(modelData, CardExamineDownVo.class);
+			return workbook;
 		}
-		
-		
-		
-		
-		
+		return null;
 	}
 
 }

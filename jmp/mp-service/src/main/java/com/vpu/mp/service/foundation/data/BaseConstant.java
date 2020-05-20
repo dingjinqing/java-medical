@@ -8,7 +8,8 @@ package com.vpu.mp.service.foundation.data;
  */
 public final  class  BaseConstant {
 
-    public final static String LANGUAGE_TYPE_PARAM="param";
+    public static final String LANGUAGE_TYPE_PARAM="param";
+    public static final String LANGUAGE_TYPE_EXCEL = "excel";
 
 
     //******************** 营销活动活动*******************/
