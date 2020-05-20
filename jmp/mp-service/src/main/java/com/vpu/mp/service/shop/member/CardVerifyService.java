@@ -471,17 +471,40 @@ public class CardVerifyService extends ShopBaseService {
 			for(int i=0;i<results.dataList.size();i++) {
 				Record record = results.dataList.get(i);
 				CardExamineDownVo vo = record.into(CardExamineDownVo.class);
-			
-		
 				
 				// 地址
+				StringBuilder address = new StringBuilder();
+				Integer provinceCode = record.get(CARD_EXAMINE.PROVINCE_CODE);
+				if(provinceCode != null) {
+					String name = wxCardActSvc.mapProvinceCodeToName(provinceCode);
+					if(!StringUtils.isBlank(name)) {
+						address.append(name);
+						address.append(" ");
+					}
+				}
+				Integer cityCode = record.get(CARD_EXAMINE.CITY_CODE);
+				if(cityCode != null) {
+					String name = wxCardActSvc.mapCityCodeToName(cityCode);
+					if(!StringUtils.isBlank(name)) {
+						address.append(name);
+						address.append(" ");
+					}
+				}
 				
-				
+				Integer districtCode = record.get(CARD_EXAMINE.DISTRICT_CODE);
+				if(districtCode != null) {
+					String name = wxCardActSvc.mapDistrictCodeToName(districtCode);
+					if(!StringUtils.isBlank(name)) {
+						address.append(name);
+					}
+				}
+				vo.setAddress(address.toString());
 				// 受教育程度
 				
 				
 				//	所在行业
-				
+				Byte industry = record.get(CARD_EXAMINE.INDUSTRY_INFO);
+				MemberIndustryEnum.getNameByCode((int));
 				// 生日
 				
 				// 自定义权益

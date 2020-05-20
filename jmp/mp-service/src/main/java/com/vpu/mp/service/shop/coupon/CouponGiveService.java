@@ -980,6 +980,17 @@ public class CouponGiveService extends ShopBaseService {
     public MrkingVoucherRecord getInfoById(Integer id) {
         return db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(id)).fetchAny();
     }
+    
+    /**
+     * 根据Id列表获取优惠券列表信息
+     */
+    public List<CouponGivePopVo> getInfoByIds(List<Integer> ids) {
+    	List<CouponGivePopVo> list = db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.in(ids)).fetchInto(CouponGivePopVo.class);
+        for (CouponGivePopVo vo : list) {
+        	vo.setStatus(couponService.couponMpService.couponGetStatus(new MpGetCouponParam(vo.getId(), null)));
+		}
+        return list;
+    }
 
     /**
      * 卡券领取成功发送公众号消息

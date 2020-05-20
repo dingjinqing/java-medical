@@ -4,12 +4,16 @@ import java.sql.Timestamp;
 
 import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
+
+import lombok.Data;
+
 import org.jooq.types.UInteger;
 /**
  * 	会员卡审核数据下载对象
  * @author 黄壮壮
  *
  */
+@Data
 public class CardExamineDownVo {
 	/**
 	 * ID
