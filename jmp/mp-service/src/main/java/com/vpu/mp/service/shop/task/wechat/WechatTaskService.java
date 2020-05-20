@@ -218,7 +218,8 @@ public class WechatTaskService extends ShopBaseService {
             if(record!=null) {
             	logger().info("更新");
             	record = assignment(type, info, record);
-            	int update = record.update();
+            	record.setId(record.getId());
+            	int update = db().executeUpdate(record);
             	logger().info("统计更新：{}，结果：{}",info.getRefDate(),update);
             }else {
             	logger().info("插入");
