@@ -385,10 +385,7 @@ public class CardVerifyService extends ShopBaseService {
 				vo.setStatus(record.get(CARD_EXAMINE.STATUS));
 				vo.setId(record.get(CARD_EXAMINE.ID));
 				vo.setRefuseDesc(record.get(CARD_EXAMINE.REFUSE_DESC));
-				//	deal with address
-				vo.setCity(String.valueOf(record.get(CardVerifyConstant.CITY_NAME)));
-				vo.setProvince(String.valueOf(record.get(CardVerifyConstant.PROVINCE_NAME)));
-				vo.setDistrict(String.valueOf(record.get(CardVerifyConstant.DISTRICT_NAME)));
+				
 				
 				// 激活数据项
 				List<String> activationCfg = cardCfgMap.get(vo.getCardNo());
@@ -444,16 +441,16 @@ public class CardVerifyService extends ShopBaseService {
 				activeAuditVo.setIndustry(industry);
 			}
 			// deal address
-//			if(activeAuditVo.getCityCode()!=null && activeAuditVo.getCityCode()!=null) {
-//				Map<String,Object> adMap = new HashMap<>();
-//				adMap.put(WxAppCardActivationService.PROVINCE_CODE, activeAuditVo.getProvinceCode());
-//				adMap.put(WxAppCardActivationService.CITY_CODE, activeAuditVo.getCityCode());
-//				adMap.put(WxAppCardActivationService.DISTRICT_CODE, activeAuditVo.getDistrictCode());
-//				wxCardActSvc.dealWithAddressCode(adMap);
-//				activeAuditVo.setCity((String)adMap.get(WxAppCardActivationService.CITY_CODE));
-//				activeAuditVo.setProvince((String)adMap.get(WxAppCardActivationService.PROVINCE_CODE));
-//				activeAuditVo.setDistrict((String)adMap.get(WxAppCardActivationService.DISTRICT_CODE));
-//			}
+			if(activeAuditVo.getCityCode()!=null && activeAuditVo.getCityCode()!=null) {
+				Map<String,Object> adMap = new HashMap<>();
+				adMap.put(WxAppCardActivationService.PROVINCE_CODE, activeAuditVo.getProvinceCode());
+				adMap.put(WxAppCardActivationService.CITY_CODE, activeAuditVo.getCityCode());
+				adMap.put(WxAppCardActivationService.DISTRICT_CODE, activeAuditVo.getDistrictCode());
+				wxCardActSvc.dealWithAddressCode(adMap);
+				activeAuditVo.setCity((String)adMap.get(WxAppCardActivationService.CITY_CODE));
+				activeAuditVo.setProvince((String)adMap.get(WxAppCardActivationService.PROVINCE_CODE));
+				activeAuditVo.setDistrict((String)adMap.get(WxAppCardActivationService.DISTRICT_CODE));
+			}
 			
 		}
 		res.setDataList(myList);

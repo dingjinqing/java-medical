@@ -57,12 +57,9 @@ public class CardVerifyDaoService extends ShopBaseService {
 		f.add(USER.USERNAME);
 		Field<?>[] myFields = f.toArray(new Field<?>[0]);
 		Record myRecord = db().newRecord(myFields);
-		SelectJoinStep<?> select = db().select(myFields).select(DICT_PROVINCE.NAME.as(CardVerifyConstant.PROVINCE_NAME),DICT_DISTRICT.NAME.as(CardVerifyConstant.DISTRICT_NAME),DICT_CITY.NAME.as(CardVerifyConstant.CITY_NAME))
+		SelectJoinStep<?> select = db().select(myFields)
 					.from(CARD_EXAMINE)
-					.leftJoin(USER).on(CARD_EXAMINE.USER_ID.eq(USER.USER_ID))
-					.innerJoin(DICT_CITY).on(DICT_CITY.CITY_ID.eq(CARD_EXAMINE.CITY_CODE))
-					.innerJoin(DICT_DISTRICT).on(DICT_DISTRICT.DISTRICT_ID.eq(CARD_EXAMINE.DISTRICT_CODE))
-					.innerJoin(DICT_PROVINCE).on(DICT_PROVINCE.PROVINCE_ID.eq(CARD_EXAMINE.PROVINCE_CODE));
+					.leftJoin(USER).on(CARD_EXAMINE.USER_ID.eq(USER.USER_ID));
 		buildOptions(select,param);
 		return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), myRecord.getClass());
 	}
