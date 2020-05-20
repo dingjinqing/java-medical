@@ -80,3 +80,13 @@ export function renewExport (data) {
     responseType: 'blob'
   })
 }
+
+// 会员卡充值记录列表导出
+export function chargeExport (data) {
+  return service({
+    url: '/api/admin/user/card/charge/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}

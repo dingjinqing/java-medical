@@ -12,7 +12,6 @@
               <text class='own_brokerage' wx:if='{{rank_info.user_ranking == 0}}'>暂无排名</text>
             </view>
             <view class='rank_dai_name' style='background:{{comColor}}'>{{rank_info.level_name}}</view>
-            
         </view>
         <view class='own_ranking' wx:if='{{rank_info.user_rebate.final_money != null}}'>赚取佣金￥{{rank_info.user_rebate.final_money}}</view>
         <view class='own_ranking' wx:if='{{rank_info.user_rebate.final_money == null}}'>赚取佣金￥0.00</view>
@@ -63,7 +62,6 @@
             <view class='each_ranking'>￥{{item.final_money}}</view>
         </view>
       </view> 
-
       <view class='no_state' wx:if="{{rank_info.rebates_lists.length == 0}}">
           <image src='{{imageUrl}}image/wxapp/no_rank.png' mode='widthFix'></image>
       </view>

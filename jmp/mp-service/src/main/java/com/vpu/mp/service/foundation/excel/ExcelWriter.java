@@ -14,6 +14,7 @@ import org.apache.poi.ss.util.RegionUtil;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author 李晓冰
@@ -55,12 +56,12 @@ public class ExcelWriter extends AbstractExcelDisposer {
     private <T> ExcelSheetBean createSheetBean(Class<T> clazz, List<String> neededColumns) {
         ExcelSheetBean sheetBean = initSheet(clazz, neededColumns);
 
-        // 导出动态excle列的时候处理多余的excel空白列
-        if (neededColumns != null) {
+        // 导出指定excle列的时候处理多余的excel空白列
+        if (neededColumns != null&&neededColumns.size()>0) {
             HashMap<String, ExcelColumnBean> columnMap = sheetBean.columnMap;
-            for (Map.Entry<String, ExcelColumnBean> entry : columnMap.entrySet()) {
-                Integer index = neededColumns.indexOf(entry.getKey());
-                entry.getValue().columnIndex = index;
+            List<ExcelColumnBean> neededColumnsBean = columnMap.values().stream().filter(c->c.columnIndex!=-1).sorted(Comparator.comparing(c->c.columnIndex)).collect(Collectors.toList());
+            for (int i = 0; i < neededColumnsBean.size(); i++) {
+                neededColumnsBean.get(i).columnIndex=i;
             }
         }
         return sheetBean;
@@ -141,10 +142,6 @@ public class ExcelWriter extends AbstractExcelDisposer {
         }
     }
 
-    public <T> void writeModelList(List<T> dataArray, Class<T> clazz) {
-        writeModelList(dataArray, clazz, null);
-    }
-
     /**
      * 获取动态字段的列头和类型的对应关系
      *
@@ -210,11 +207,12 @@ public class ExcelWriter extends AbstractExcelDisposer {
 
         writeDataIntoSheet(sheetBean,sheet,dataArray,dynamicField);
     }
-    
-    
-    
-    
-    
+
+
+
+    public <T> void writeModelList(List<T> dataArray, Class<T> clazz) {
+        writeModelList(dataArray, clazz, null);
+    }
 
     /**
      * 将数据写入到excel中
@@ -243,14 +241,14 @@ public class ExcelWriter extends AbstractExcelDisposer {
         int headLineNum = sheetBean.headLineNum;
 
         int maxColumnIndex = -1;
-
+        // 寻找最大的位置下标
         for (Map.Entry<String, ExcelColumnBean> entry : sheetBean.columnMap.entrySet()) {
             ExcelColumnBean value = entry.getValue();
             if (maxColumnIndex < value.columnIndex) {
                 maxColumnIndex = value.columnIndex;
             }
         }
-
+        // 将未填写位置下标的依次追加到末尾
         for (Map.Entry<String, ExcelColumnBean> entry : sheetBean.columnMap.entrySet()) {
             ExcelColumnBean value = entry.getValue();
             if (value.columnIndex == -1) {

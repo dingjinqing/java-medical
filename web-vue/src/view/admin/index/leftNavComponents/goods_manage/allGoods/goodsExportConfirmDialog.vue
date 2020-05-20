@@ -117,7 +117,7 @@
                       <el-checkbox label="prdCostPrice">{{ $t('allGoods.exportDialog.prdCostPrice') }}</el-checkbox>
                     </li>
                     <li>
-                      <el-checkbox label="marketPrice">{{ $t('allGoods.exportDialog.marketPrice') }}</el-checkbox>
+                      <el-checkbox label="prdMarketPrice">{{ $t('allGoods.exportDialog.marketPrice') }}</el-checkbox>
                     </li>
                     <li>
                       <el-checkbox label="shopPrice">{{ $t('allGoods.exportDialog.shopPrice') }}</el-checkbox>
@@ -142,6 +142,12 @@
                     </li>
                     <li>
                       <el-checkbox label="prdCodes">{{ $t('allGoods.exportDialog.barcode') }}</el-checkbox>
+                    </li>
+                    <li>
+                      <el-checkbox label="deliverPlace">{{ $t('allGoods.exportDialog.deliverPlace') }}</el-checkbox>
+                    </li>
+                    <li>
+                      <el-checkbox label="gradeCardPrice">{{ $t('allGoods.exportDialog.gradeCardPrice') }}</el-checkbox>
                     </li>
                   </ul>
                 </el-checkbox-group>
@@ -192,7 +198,7 @@ export default {
         'goodsAd',
         'prdNumber',
         'prdCostPrice',
-        'marketPrice',
+        'prdMarketPrice',
         'shopPrice',
         'isOnSale',
         'limitBuyNum',
@@ -200,7 +206,9 @@ export default {
         'unit',
         'goodsImg',
         'imgUrl',
-        'prdCodes'
+        'prdCodes',
+        'deliverPlace',
+        'gradeCardPrice'
       ],
       baseChecked: [],
       baseisIndeterminate: false,

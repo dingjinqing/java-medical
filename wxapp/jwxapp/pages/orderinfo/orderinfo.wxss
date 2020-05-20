@@ -420,3 +420,18 @@
 .share-button .btn-type-1 .btn-navigator-type-1 {
   padding: 0;
 }
+
+.to_goods_list{
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  padding: 60rpx 0
+}
+.to_goods_list image{
+  width: 30rpx;
+  margin-right: 10rpx;
+}
+.to_goods_list view{
+  color: #666;
+  font-size: 24rpx;
+}
