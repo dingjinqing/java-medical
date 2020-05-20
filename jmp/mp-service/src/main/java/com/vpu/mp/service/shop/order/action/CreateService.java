@@ -883,6 +883,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setPreSaleDiscount(preSaleDiscount);
         vo.setTolalDiscountAfterPrice(tolalDiscountAfterPrice);
         vo.setInsteadPayCfg(param.getInsteadPayCfg());
+        vo.setPackageDiscount(packageSaleDiscount);
         // 积分使用规则
         setScorePayRule(vo);
         logger().info("金额处理赋值(processOrderBeforeVo),end");
