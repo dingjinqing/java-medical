@@ -71,6 +71,7 @@ import com.vpu.mp.service.pojo.shop.member.card.EffectTimeParam;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.UserCardChargeExportVo;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardChargeListParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardChargeListVo;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
