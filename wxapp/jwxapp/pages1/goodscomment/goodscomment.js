@@ -65,6 +65,7 @@ global.wxPage({
     } catch (error) {
       imageArray = commentImage
     }
+    if(typeof imageArray === 'string') imageArray = imageArray.split(',')
     imageArray = imageArray.map(item=>{
       return this.data.imageUrl + item
     })
