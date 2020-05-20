@@ -604,6 +604,8 @@ export default {
         callback(new Error('请填写活动预告时间'))
       } else if (value === 1 && !re.test(this.reduceData.preTimeValue)) {
         callback(new Error('活动预告时间填写不正确'))
+      } else {
+        callback()
       }
     }
     // 自定义校验折扣
@@ -1110,8 +1112,11 @@ export default {
         this.$message.warning('请完整填写活动商品价格!')
         return false
       }
+      console.log('校验前', this.reduceData)
       this.$refs['reduceData'].validate((valid) => {
+        console.log('校验中', this.reduceData)
         if (valid) {
+          console.log('校验通过', this.reduceData)
           // 有效期
           this.reduceData.startTime = this.reduceData.effectiveDate[0]
           this.reduceData.endTime = this.reduceData.effectiveDate[1]
