@@ -71,7 +71,7 @@ public enum RemarkTemplate {
 	/**	系统检测升级 */
 	SYSTEM_UPGRADE(3006,RemarkMessage.SYSTEM_UPGRADE),
     /**	会员卡续费 */
-    CARD_RENEW(3007,RemarkMessage.SYSTEM_UPGRADE),
+    CARD_RENEW(3007,RemarkMessage.CARD_RENEW),
 
 
 

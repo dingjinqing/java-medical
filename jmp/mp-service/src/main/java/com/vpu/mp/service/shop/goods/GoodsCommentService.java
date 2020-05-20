@@ -1125,8 +1125,14 @@ public class GoodsCommentService extends ShopBaseService {
                     item.setUserAvatar(item.getBogusUserAvatar());
                 }
                 //设置头像
-                if (item.getUserAvatar()==null||ANONYMOUS_FLAG.equals(item.getAnonymousflag())){
+                if (item.getUserAvatar()==null){
                     item.setUserAvatar("/image/admin/head_icon.png");
+                    if (!StringUtils.isEmpty(item.getBogusUserAvatar())&&!"".equals(item.getBogusUserAvatar())){
+                        item.setUserAvatar(item.getBogusUserAvatar());
+                    }
+                    if (ANONYMOUS_FLAG.equals(item.getAnonymousflag())){
+                        item.setUserAvatar("/image/admin/head_icon.png");
+                    }
                 }
             }
         }
