@@ -53,6 +53,17 @@ public class CollectionMallService extends ShopMallBaseService {
 	 * @return
 	 */
 	public Boolean addCartRows(Integer userId, List<Integer> cartRecIds) {
+		Boolean addCartRow=false;
+		try {
+			addCartRow = addCartRow(userId, cartRecIds);
+		} catch (Exception e) {
+			logger().info(e.getMessage(),e);
+		}
+		return addCartRow;
+
+	}
+
+	private Boolean addCartRow(Integer userId, List<Integer> cartRecIds) {
 		String openId = check(userId);
 		if (null == openId) {
 			return false;
@@ -106,7 +117,6 @@ public class CollectionMallService extends ShopMallBaseService {
 		}
 		logger().info("没有数据");
 		return false;
-
 	}
 
 	/**
@@ -116,6 +126,16 @@ public class CollectionMallService extends ShopMallBaseService {
 	 * @return
 	 */
 	public Boolean clearCartRows(Integer userId, List<Integer> cartRecIds) {
+		Boolean clearCartRow = false;
+		try {
+			clearCartRow = clearCartRow(userId, cartRecIds);
+		} catch (Exception e) {
+			logger().info(e.getMessage(),e);
+		}
+		return clearCartRow;
+	}
+
+	private Boolean clearCartRow(Integer userId, List<Integer> cartRecIds) {
 		String openId = check(userId);
 		if (null == openId) {
 			return false;
@@ -136,10 +156,7 @@ public class CollectionMallService extends ShopMallBaseService {
 		param.setSkuProductList(skuProductList);
 		SendCollectBean bean=new SendCollectBean(2, param,getShopId(),null);
 		saas.taskJobMainService.dispatchImmediately(bean,SendCollectBean.class.getName(),getShopId(),TaskJobEnum.WX_IMPORTORDER.getExecutionType());
-//		WxOpenResult result = addshoppinglistDel(param);
-//		return result.isSuccess();
 		return true;
-
 	}
 
 	/**
