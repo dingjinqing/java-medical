@@ -460,9 +460,9 @@ public class CardVerifyService extends ShopBaseService {
 				adMap.put(WxAppCardActivationService.CITY_CODE, activeAuditVo.getCityCode());
 				adMap.put(WxAppCardActivationService.DISTRICT_CODE, activeAuditVo.getDistrictCode());
 				wxCardActSvc.dealWithAddressCode(adMap);
-				activeAuditVo.setCity((String)adMap.get(WxAppCardActivationService.CITY_CODE));
-				activeAuditVo.setProvince((String)adMap.get(WxAppCardActivationService.PROVINCE_CODE));
-				activeAuditVo.setDistrict((String)adMap.get(WxAppCardActivationService.DISTRICT_CODE));
+				activeAuditVo.setCity(String.valueOf(adMap.get(WxAppCardActivationService.CITY_CODE)));
+				activeAuditVo.setProvince(String.valueOf(adMap.get(WxAppCardActivationService.PROVINCE_CODE)));
+				activeAuditVo.setDistrict(String.valueOf(adMap.get(WxAppCardActivationService.DISTRICT_CODE)));
 			}
 			
 		}
