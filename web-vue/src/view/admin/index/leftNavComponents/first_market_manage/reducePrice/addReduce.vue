@@ -1112,11 +1112,8 @@ export default {
         this.$message.warning('请完整填写活动商品价格!')
         return false
       }
-      console.log('校验前', this.reduceData)
       this.$refs['reduceData'].validate((valid) => {
-        console.log('校验中', this.reduceData)
         if (valid) {
-          console.log('校验通过', this.reduceData)
           // 有效期
           this.reduceData.startTime = this.reduceData.effectiveDate[0]
           this.reduceData.endTime = this.reduceData.effectiveDate[1]
