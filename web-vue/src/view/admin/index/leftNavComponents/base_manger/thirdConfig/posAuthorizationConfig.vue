@@ -2,6 +2,7 @@
   <div class="pos-authorization-config-page">
     <div class="content">
       <el-form
+        v-loading="loading"
         :model="formData"
         label-width="30%"
         label-position="left"
@@ -60,6 +61,7 @@ export default {
   mixins: [thirdConfigMixins],
   data () {
     return {
+      loading: false,
       action: 2,
       formData: {
         appBo: {},
@@ -80,17 +82,23 @@ export default {
     }
   },
   methods: {
+    // 同步Pos门店
     syncPosHandle (opera) {
+      this.loading = true
       syncPosApi({
         action: opera || '',
-        is: this.formData.appAuthBo.id
+        id: this.formData.appAuthBo.id
       }).then(res => {
+        this.loading = false
         if (res.error === 0) {
           this.$message.success('同步成功')
           this.initData()
         } else {
           this.$message.error(res.message)
         }
+      }).catch(err => {
+        this.loading = false
+        console.error(err)
       })
     }
   }

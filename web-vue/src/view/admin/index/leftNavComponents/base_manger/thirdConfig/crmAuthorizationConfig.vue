@@ -44,9 +44,6 @@
           <template v-else>
             <el-button type="text">删除授权</el-button>
           </template>
-          <el-button type="text">同步CRM门店</el-button>
-          <span class="label-con">注：仅同步未对接门店</span>
-          <el-button type="text">同步CRM商品到系统商品</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -59,6 +56,7 @@ export default {
   mixins: [thirdConfigMixins],
   data () {
     return {
+      action: 3,
       formData: {
         appBo: {},
         appAuthBo: {}

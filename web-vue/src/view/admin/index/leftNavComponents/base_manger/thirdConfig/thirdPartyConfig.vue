@@ -40,6 +40,11 @@ export default {
 }
 </script>
 
+<style>
+.confirmCls {
+  width: 260px;
+}
+</style>
 <style lang="scss" scoped>
 .container {
   padding: 10px;

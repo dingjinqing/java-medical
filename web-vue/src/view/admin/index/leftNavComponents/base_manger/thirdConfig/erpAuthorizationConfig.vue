@@ -35,10 +35,16 @@
         </el-form-item>
         <el-form-item label="SessionKey">
           <span class="label-con">{{formData.appAuthBo.sessionKey}}</span>
-          <span>(<el-button type="text">重置</el-button>)</span>
+          <span>(<el-button
+              type="text"
+              @click="resetSessionKey"
+            >重置</el-button>)</span>
         </el-form-item>
         <el-form-item label="卖家账号">
-          <el-input class="form-input">{{formData.appAuthBo.appKey}}</el-input>
+          <el-input
+            class="form-input"
+            v-model="formData.appAuthBo.appKey"
+          ></el-input>
           <el-button
             type="primary"
             @click="saveAppKeyHandle"
@@ -51,6 +57,7 @@
           <el-button
             v-if="formData.appAuthBo.status === 1"
             type="text"
+            @click="deleteAuthorize"
           >删除授权</el-button>
           <el-button
             v-if="formData.appAuthBo.status === 0"
@@ -60,20 +67,22 @@
         </el-form-item>
         <el-form-item label="自提订单核销后推送">
           <el-switch
-            v-model="formData.push"
+            v-model="formData.verifyOrder"
             active-color="#F7931E"
             inactive-color="#ccc"
             :active-value="1"
             :inactive-value="0"
+            @change="pushSetHandle('verify_order', $event)"
           ></el-switch>
         </el-form-item>
         <el-form-item label="同城配送订单已收货后推送">
           <el-switch
-            v-model="formData.push"
+            v-model="formData.cityOrderPush"
             active-color="#F7931E"
             inactive-color="#ccc"
             :active-value="1"
             :inactive-value="0"
+            @change="pushSetHandle('city_order_push', $event)"
           ></el-switch>
         </el-form-item>
         <!-- <div class="module-name">
@@ -124,7 +133,7 @@
 </template>
 
 <script>
-import { switchVersionApi } from '@/api/admin/basicConfiguration/thirdConfig'
+import { switchVersionApi, pushSetApi } from '@/api/admin/basicConfiguration/thirdConfig'
 import thirdConfigMixins from '@/mixins/basicManagementMixins/thirdConfigMixins.js'
 export default {
   mixins: [thirdConfigMixins],
@@ -135,7 +144,9 @@ export default {
         appBo: {},
         appAuthBo: {
           product: 1
-        }
+        },
+        verifyOrder: 0,
+        cityOrderPush: 0
       },
       oldVersion: '',
       newVersion: '',
@@ -183,6 +194,22 @@ export default {
     // 取消更改版本
     cancelSwitchVersion () {
       this.switchErpVersionVisible = false
+    },
+    // 更改推送
+    pushSetHandle (operate, val) {
+      console.log(operate, val)
+      let param = {
+        id: this.formData.appAuthBo.id,
+        status: val,
+        type: operate
+      }
+      pushSetApi(param).then(res => {
+        if (res.error === 0) {
+          this.$message.success('更改成功')
+        } else {
+          this.$message.error(res.message)
+        }
+      })
     }
   }
 }

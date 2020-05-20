@@ -11,7 +11,7 @@ export function getThirdAuth (data) {
 // 授权
 export function authorizeThird (data) {
   return service({
-    url: '/api/admin/basicConfiguration/thirdConfig',
+    url: '/api/admin/config/third/auth/enable',
     data,
     method: 'post'
   })
@@ -26,8 +26,8 @@ export function resetsessionkey (data) {
   })
 }
 
-// 推送配置
-export function pushSet (data) {
+// 推送配置：自提订单核销后推送、同城配送订单已收货后推送
+export function pushSetApi (data) {
   return service({
     url: '/api/admin/config/third/auth/push/set',
     data,
