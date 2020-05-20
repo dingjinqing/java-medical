@@ -796,6 +796,7 @@ public class Calculate extends ShopBaseService {
                 }
             }
         }
+        goods.setReducePriceId(uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getActivityId());
         return UniteMarkeingtRecalculateBo.create(reducePrice, BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE, uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getActivityId());
     }
 

@@ -403,7 +403,7 @@
               <div class="userInfo">
                 <div class="leftInfo">
                   <img
-                    src="http://mpdevimg2.weipubao.cn/image/admin/user_touxiang.png"
+                    :src="this.$imageHost + '/image/admin/user_touxiang.png'"
                     alt=""
                   >
                 </div>
@@ -417,7 +417,7 @@
               <span class="codeArea">{{ $t('distribution.rebateCode') }}</span>
               <img
                 class="codeTips"
-                src="http://mpdevimg2.weipubao.cn/image/admin/usr_codes.png"
+                :src="this.$imageHost + '/image/admin/usr_codes.png'"
                 alt=""
               >
             </div>
@@ -636,7 +636,7 @@ export default {
         withdraw_config: 1, // 提现设置
         withdraw_cash: null, // 返利最小提现金额
         desc: '分享给你一个好物店铺快来购物吧！', // 邀请文案
-        bg_img: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_1.jpg' // 海报背景图
+        bg_img: this.$imageHost + '/image/admin/dis_bg_1.jpg' // 海报背景图
       },
       // 分销员信息
       checkedList: [],
@@ -654,19 +654,19 @@ export default {
       tuneUpChooseGoods: false, // 商品弹窗
       goodsInfo: [], // 商品弹窗回调数据
       // 默认背景图
-      defaultValue: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_1.jpg',
+      defaultValue: this.$imageHost + '/image/admin/dis_bg_1.jpg',
       options: [{
         label: '背景图1',
-        value: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_1.jpg'
+        value: this.$imageHost + '/image/admin/dis_bg_1.jpg'
       }, {
         label: '背景图2',
-        value: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_2.jpg'
+        value: this.$imageHost + '/image/admin/dis_bg_2.jpg'
       }, {
         label: '背景图3',
-        value: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_3.jpg'
+        value: this.$imageHost + '/image/admin/dis_bg_3.jpg'
       }, {
         label: '背景图4',
-        value: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_4.jpg'
+        value: this.$imageHost + '/image/admin/dis_bg_4.jpg'
       }],
       tuneUp: false, //  调起添加图片弹窗flag
       imageSize: [640, 640], // 调起添加图片宽高

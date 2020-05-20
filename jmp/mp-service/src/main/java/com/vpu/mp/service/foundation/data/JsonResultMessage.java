@@ -1264,4 +1264,15 @@ public class JsonResultMessage {
     public static final String VIRTUAL_ORDER_MEMBER_CARD_CARD_TYPE_LIMIT = "virtual.order.member_card.card_type.limit";
     public static final String VIRTUAL_ORDER_MEMBER_CARD_CARD_TYPE_GRADE = "virtual.order.member_card.card_type.grade";
 
+    /**
+     * 会员卡续费记录导出
+     */
+    public static final String USER_CARD_RENEW_FILE_NAME = "user.card.renew.file_name";
+    public static final String USER_CARD_RENEW_CASH = "user.card.renew.cash";
+    public static final String USER_CARD_RENEW_INTEGRAL = "user.card.renew.integral";
+    public static final String USER_CARD_RENEW_DAY = "user.card.renew.day";
+    public static final String USER_CARD_RENEW_WEEK = "user.card.renew.week";
+    public static final String USER_CARD_RENEW_MONTH = "user.card.renew.month";
+
+
 }

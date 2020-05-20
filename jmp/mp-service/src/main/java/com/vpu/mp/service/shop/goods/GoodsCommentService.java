@@ -68,9 +68,9 @@ public class GoodsCommentService extends ShopBaseService {
     private static final Byte PUBLISH_FIRST = 1;
     private static final Byte CHECK_FIRST = 2;
     /**
-     * 显示未填写心得评论配置值
+     * 隐藏未填写心得评论配置值
      */
-    private static final Byte NOT_SHOW_STATE = 0;
+    private static final Byte NOT_SHOW_STATE = 1;
     /***商品评价状态对应码*/
     private static final Byte PASS_AUDIT = 1;
     private static final Byte NOT_PASS_AUDIT = 2;
@@ -462,7 +462,15 @@ public class GoodsCommentService extends ShopBaseService {
   public int addComment(GoodsCommentAddCommParam goodsCommentAddComm) {
       //有权限
       if (commentSwitch.getAddCommentSwitch(getSysId()).equals(NumberUtils.INTEGER_ONE)){
-
+          String sqlImg = "";
+          if (!StringUtils.isEmpty(goodsCommentAddComm.getCommImg())&&!"".equals(goodsCommentAddComm.getCommImg())){
+              String img = goodsCommentAddComm.getCommImg();
+              String[] imgArr = img.split(",");
+              for (String i:imgArr){
+                  sqlImg = sqlImg+"\""+i+"\""+",";
+              }
+              sqlImg = "["+sqlImg.substring(0,sqlImg.length()-1)+"]";
+          }
           Byte flag =1;
 
           //手动添加评价
@@ -491,7 +499,7 @@ public class GoodsCommentService extends ShopBaseService {
                   goodsCommentAddComm.getCreateTime(),
                   goodsCommentAddComm.getCommstar(),
                   goodsCommentAddComm.getCommNote(),
-                  goodsCommentAddComm.getCommImg(),
+                  sqlImg,
                   goodsCommentAddComm.getAnonymousFlag(),
                   NumberUtils.BYTE_ONE,
                   goodsCommentAddComm.getPrdId(),
@@ -1246,7 +1254,7 @@ public class GoodsCommentService extends ShopBaseService {
         }else {
             sql.and(COMMENT_GOODS.FLAG.notEqual(NOT_PASS_AUDIT));
         }
-        //是否展示未填写心得的评价
+        //是否隐藏未填写心得的评价
         if (NOT_SHOW_STATE.equals(commentSee)){
             sql.and(COMMENT_GOODS.COMM_NOTE.isNotNull());
         }
