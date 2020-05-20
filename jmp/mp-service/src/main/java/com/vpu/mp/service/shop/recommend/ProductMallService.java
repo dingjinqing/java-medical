@@ -92,7 +92,7 @@ public class ProductMallService extends ShopMallBaseService {
 			productVo.setDesc(goods.getGoodsName());
 			productVo.setCategoryList(list);
 			productVo.setImageList(goodsService.getGoodsImageList(goods.getGoodsId()));
-			productVo.setSrcWxappPath("/pages/item/item?goods_id=" + goods.getGoodsId());
+			productVo.setSrcWxappPath("/pages/item/item?gid=" + goods.getGoodsId());
 			productVo.setVersion(200);
 			vo.add(productVo);
 		}
