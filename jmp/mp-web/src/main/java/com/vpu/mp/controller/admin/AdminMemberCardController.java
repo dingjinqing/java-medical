@@ -449,11 +449,12 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 	@PostMapping("/activateAudit/list/export")
 	public void getActivateAuditList(@RequestBody ActiveAuditParam param,HttpServletResponse response) {
 		logger().info("会员卡审核导出");
+		String cardName = shop().member.card.getCardNameById(param.getCardId());
 		Workbook workbook = shop().member.card.cardVerifyService.exportToExcel(param,getLang());
 		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_EXAMINE_FILE_NAME, BaseConstant.LANGUAGE_TYPE_EXCEL,
 				"messages");
 		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
-		export2Excel(workbook, fileName + dateFormat, response);
+		export2Excel(workbook, cardName+fileName + dateFormat, response);
 	}
 	
 }
