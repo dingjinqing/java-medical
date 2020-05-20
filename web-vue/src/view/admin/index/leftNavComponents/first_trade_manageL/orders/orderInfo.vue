@@ -618,13 +618,13 @@
               <td v-if="rebateItem.rowSpan" :rowspan="rebateItem.rowSpan">{{rebateItem.username}}</td>
               <td v-if="rebateItem.rowSpan" :rowspan="rebateItem.rowSpan">{{rebateItem.realName}}</td>
               <td>{{rebateItem.goodsName}}</td>
-              <td>{{rebateItem.canRebateTotalMoney}}</td>
+              <td>{{rebateItem.rebateTotalMoney}}</td>
               <td>{{rebateItem.costPrice}}</td>
               <td>{{rebateItem.canRebateMoney}}</td>
               <td>{{rebateItem.rebateLevel | getRebateLevel}}</td>
               <td>{{(rebateItem.rebatePercent * 100).toFixed(2)}}%</td>
-              <td>{{(rebateItem.rebateMoney).toFixed(2)}}</td>
-              <td v-if="rebateIndex === 0" :rowspan="rebateList.length">{{order.orderStatus === 6 ? '返利完成' : '待返利'}}</td>
+              <td>{{(rebateItem.realRebateMoney).toFixed(2)}}</td>
+              <td v-if="rebateIndex === 0" :rowspan="rebateList.length">{{order.settlementFlag | getSettlementName}}</td>
               <td v-if="rebateIndex === 0" :rowspan="rebateList.length">{{order.orderStatus === 6 ? rebateItem.updateTime : ''}}</td>
             </tr>
           </tbody>
@@ -986,6 +986,14 @@ export default {
         2: '间接邀请'
       }
       return type[level]
+    },
+    getSettlementName (status) {
+      let type = {
+        0: '待返利',
+        1: '返利完成',
+        2: '不返利'
+      }
+      return type[status]
     }
   }
 }
