@@ -326,9 +326,13 @@ export default {
             this.$router.push({
               name: 'bargain'
             })
-          } if (name === '预约管理') {
+          } else if (name === '预约管理') {
             this.$router.push({
               name: 'store_storemanage_reservation'
+            })
+          } else if (this.$route.matched[2].name === 'store_storemanage_list') {
+            this.$router.push({
+              name: 'store_list'
             })
           } else {
             console.log(this.$route.name, this.nameArr.indexOf(this.$route.name), this.turnArr[this.nameArr.indexOf(this.$route.name)])
