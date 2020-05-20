@@ -116,7 +116,7 @@ global.wxPage({
   // 去返利排名列表页
   toRank: function () {
     util.navigateTo({
-      url: '/pages2/brokeragerank/brokeragerank',
+      url: '/pages1/brokeragerank/brokeragerank',
     })
   },
   // 去推广语页面
