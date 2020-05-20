@@ -3,19 +3,19 @@
     <div class="content">
       <el-tabs v-model="activeTab">
         <el-tab-pane
-          label="ERP授权配置"
+          :label="$t('thirdPartyConfig.erpAc')"
           name="first"
         >
           <erpAuthorizationConfig />
         </el-tab-pane>
         <el-tab-pane
-          label="POS授权配置"
+          :label="$t('thirdPartyConfig.posAc')"
           name="second"
         >
           <posAuthorizationConfig />
         </el-tab-pane>
         <el-tab-pane
-          label="CRM授权配置"
+          :label="$t('thirdPartyConfig.crmAc')"
           name="third"
         >
           <crmAuthorizationConfig />

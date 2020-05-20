@@ -21,6 +21,7 @@ import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.recommend.CollectionMallService;
 import jodd.util.CollectionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,9 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GOODS;
@@ -63,6 +62,11 @@ public class CartService extends ShopBaseService {
     /**加价购*/
     @Autowired
     private IncreasePurchaseService increasePurchase;
+    /**
+     * 好物圈
+     */
+    @Autowired
+    private CollectionMallService collectionMallService;
     /**
      * 用户会员卡
      */
@@ -283,9 +287,14 @@ public class CartService extends ShopBaseService {
      */
     public void removeCartProductById(Integer userId, Integer cartId) {
         db().delete(CART).where(CART.USER_ID.eq(userId)).and(CART.CART_ID.eq(cartId)).execute();
+        //好物圈
+        List<Integer> cardIdList = Collections.singletonList(cartId);
+        collectionMallService.clearCartRows(userId,cardIdList);
     }
 
     public int removeCartProductByIds(Integer userId, List<Integer> cartIds) {
+        //好物圈
+        collectionMallService.clearCartRows(userId,cartIds);
         return db().delete(CART).where(CART.USER_ID.eq(userId)).and(CART.CART_ID.in(cartIds)).execute();
     }
 
@@ -513,6 +522,9 @@ public class CartService extends ShopBaseService {
             //添加商品到购物车
             cardId = addSpecProduct(param.getUserId(), param.getPrdId(), param.getGoodsNumber(), param.getActivityId(), param.getActivityType());
             param.setType((byte)1);
+            //好物圈
+            List<Integer> cardIdList = Collections.singletonList(cardId);
+            collectionMallService.addCartRows(param.getUserId(),cardIdList);
         }
         //购物车中存在
         WxAppCartBo cartList = getCartList(param.getUserId());
@@ -522,6 +534,9 @@ public class CartService extends ShopBaseService {
         checkoutActivity(param,cardId,cartList);
         if (!resultMessage.getFlag()&&!inCartFlag){
             logger().info("删除多余商品");
+            //好物圈
+            List<Integer> cardIdList = Collections.singletonList(cardId);
+            collectionMallService.clearCartRows(param.getUserId(),cardIdList);
             removeCartProductById(param.getUserId(),cardId);
         }else if (resultMessage.getFlag()&&inCartFlag){
             logger().info("修改商品数量");

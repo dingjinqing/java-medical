@@ -997,6 +997,8 @@ public class CouponGiveService extends ShopBaseService {
      * @param couponsRecords 领取记录
      */
     public void sendCouponMessage(List<CustomerAvailCouponsRecord> couponsRecords){
+        logger().info("发券事务完成，开始处理发送卡券领取成功公众号消息");
+        logger().info("user-coupon记录是否存在：{}",couponsRecords!=null);
         couponsRecords.forEach(c->{
             MrkingVoucherRecord couponDetail = getInfoById(c.getActId());
             String couponDesc = "";

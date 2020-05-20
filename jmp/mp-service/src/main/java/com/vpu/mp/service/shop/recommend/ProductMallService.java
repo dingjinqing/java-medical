@@ -102,7 +102,11 @@ public class ProductMallService extends ShopMallBaseService {
 			productVo.setTitle(goods.getGoodsName());
 			productVo.setDesc(goods.getGoodsName());
 			productVo.setCategoryList(list);
-			productVo.setImageList(goodsService.getGoodsImageList(goods.getGoodsId()));
+			List<String> imageList = goodsService.getGoodsImageList(goods.getGoodsId());
+			if(imageList.isEmpty()) {
+				imageList.add(imageUrl(goods.getGoodsImg()));
+			}
+			productVo.setImageList(imageList);
 			productVo.setSrcWxappPath("/pages/item/item?gid=" + goods.getGoodsId());
 			productVo.setVersion(200);
 			vo.add(productVo);

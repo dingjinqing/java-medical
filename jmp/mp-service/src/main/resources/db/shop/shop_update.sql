@@ -557,4 +557,6 @@ ALTER TABLE `b2c_card_examine` ADD COLUMN `sys_id` int(9) UNSIGNED DEFAULT NULL 
 ALTER TABLE `b2c_card_examine` ADD COLUMN `account_id` int(9) UNSIGNED DEFAULT NULL COMMENT 'SUB操作员ID';
 ALTER TABLE `b2c_card_examine` ADD COLUMN `account_type` tinyint(1) DEFAULT 0 COMMENT '账户类型：0店铺账号，1系统账号';
 
+-- 分销员统计信息
+ALTER TABLE `b2c_user_total_fanli` ADD COLUMN `final_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '总返利金额，total_money为提现后金额';
 /***********************2.13*********************END*/

@@ -30,7 +30,14 @@
         prop="username"
         label="会员昵称"
         align="center"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          <span
+            @click="handleToClickUser(scope.row)"
+            class="userName"
+          >{{scope.row.username}}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="mobile"
         label="手机号"
@@ -45,12 +52,20 @@
         prop="renewMoney"
         label="续费金额"
         align="center"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          {{scope.row.renewMoney}}{{scope.row.renewType===0?'元':scope.row.renewType===1?'积分':''}}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="renewTime"
         label="续费时长"
         align="center"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          {{scope.row.renewTime}}{{scope.row.renewDateType===0?'日':scope.row.renewDateType===1?'周':'月'}}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="renewExpireTime"
         label="当次续费后有效期"
@@ -67,53 +82,65 @@
       style="width: 100%;"
       header-row-class-name="tableClss"
       v-if="activeName==='third'"
+      v-loading="loading"
     >
 
       <el-table-column
-        prop="pageName"
+        prop="orderSn"
         label="充值单号"
         align="center"
       ></el-table-column>
       <el-table-column
-        prop="createTime"
+        prop="cardName"
         label="会员卡"
         align="center"
       ></el-table-column>
       <el-table-column
-        prop="typeText"
+        prop="cardId"
         label="卡ID"
         align="center"
       ></el-table-column>
       <el-table-column
-        prop="typeText"
+        prop="username"
         label="会员昵称"
         align="center"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          <span
+            @click="handleToClickUser(scope.row)"
+            class="userName"
+          >{{scope.row.username}}</span>
+        </template>
+      </el-table-column>
       <el-table-column
-        prop="typeText"
+        prop="mobile"
         label="手机号"
         align="center"
       ></el-table-column>
 
       <el-table-column
-        prop="typeText"
+        prop="createTime"
         label="充值时间"
         align="center"
       ></el-table-column>
 
       <el-table-column
-        prop="typeText"
+        prop="charge"
         label="充值金额(元)"
         align="center"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          {{scope.row.charge}}
+        </template>
+      </el-table-column>
       <el-table-column
-        prop="typeText"
+        prop="afterChargeMoney"
         label="当次充值后卡余额(元)"
         align="center"
         width="160"
       ></el-table-column>
       <el-table-column
-        prop="type"
+        prop="reason"
         label="备注"
         align="center"
         width="160"
@@ -136,7 +163,7 @@
   </div>
 </template>
 <script>
-import { getRenewalDetails } from '@/api/admin/memberManage/memberValueAdd/memberValueAdd.js'
+import { getRenewalDetails, memberpCarRecharge } from '@/api/admin/memberManage/memberValueAdd/memberValueAdd.js'
 export default {
   components: {
     Pagination: () => ('@/components/admin/pagination/pagination') // 分页组件
@@ -207,11 +234,46 @@ export default {
             }
           })
           break
+        case 'third':
+          let params2 = {
+            orderSn: this.propsData.rechargeNo,
+            userInfo: this.propsData.memberInfo,
+            cardName: this.propsData.cardName,
+            cardId: this.propsData.cardId,
+            createTimeMin: this.propsData.rechargeStartTime,
+            createTimeMax: this.propsData.rechargeEndTime,
+            chargeMin: this.propsData.rechargeAmountmin,
+            chargeMax: this.propsData.rechargeAmountmax,
+            changeType: this.propsData.rechargeMethod,
+            afterChargeMoneyMin: this.propsData.afterRechargeStartTime,
+            afterChargeMoneyMax: this.propsData.afterRechargeEndTime,
+            currentPage: this.pageParams.currentPage,
+            pageRows: 20
+          }
+          memberpCarRecharge(params2).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.tableData1 = res.content.dataList
+              this.pageParams = res.content.page
+              this.loading = false
+              console.log(this.pageParams)
+            }
+          })
+          break
       }
     },
     // 选中数据
     handleCurrentChange (row) {
       console.log(row)
+    },
+    handleToClickUser (row) {
+      console.log(row)
+      this.$router.push({
+        path: '/admin/home/main/membershipInformation',
+        query: {
+          userId: row.userId
+        }
+      })
     }
   }
 }
@@ -249,6 +311,10 @@ export default {
         align-items: center;
       }
     }
+  }
+  .userName {
+    color: #5a8bff;
+    cursor: pointer;
   }
 }
 </style>
