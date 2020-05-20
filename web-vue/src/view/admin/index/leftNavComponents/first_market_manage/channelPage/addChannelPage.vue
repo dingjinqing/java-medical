@@ -675,17 +675,20 @@ export default {
           return
         }
       }
+      let params = {
+        'refresh': true
+      }
       // 关闭对话框
       this.choiseGooddialogVisible = false
       // 单选id
-      this.$emit('resultGoodsRow', this.checkedRow)
+      this.$emit('resultGoodsRow', this.checkedRow, params)
       // 多选id
       this.$http.$emit('choseGoodsId', this.checkedIdList)
       this.transmitGoodsIds(this.checkedIdList)
       this.$emit('resultGoodsIds', this.checkedIdList)
       this.$emit('result', this.checkedIdList)
       // 自定义页面回显
-      this.$emit('handleSelectTemplate', this.templateRow)
+      this.$emit('handleSelectTemplate', this.templateRow, params)
       // 找出差异数据
       let residueIds = this.checkedIdList.filter(id => {
         this.checkedRowList.forEach(itme => {
@@ -739,6 +742,11 @@ export default {
       console.log(requestObj)
       addChannelAct(requestObj).then(res => {
         console.log(res)
+        if (res.error === 0) {
+          this.$message.success('添加成功')
+        } else {
+          this.$message.error('添加失败')
+        }
       })
     },
     /* 翻页方法 */
