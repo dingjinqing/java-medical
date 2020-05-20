@@ -244,11 +244,37 @@ public class CardConstant {
      */
     public static final Integer INFINITE_EXCHANGE = 0;
 
-	/** 会员卡续费回调订单标识 */
+    /**
+     * 会员卡续费回调订单标识
+     */
     public static final String USER_CARD_RENEW_ORDER = "x";
-    /** 会员卡续费订单已完成 */
+    /**
+     * 会员卡续费订单已完成
+     */
     public static final Byte CARD_RENEW_ORDER_STATUS_OK = 1;
     public static final Byte ZERO = 0;
     public static final Byte ONE = 1;
     public static final Byte TWO = 2;
+
+    /**
+     * 会员卡续费金额类型-现金
+     */
+    public static final Byte USER_CARD_RENEW_TYPE_CASH = 0;
+    /**
+     * 会员卡续费金额类型-积分
+     */
+    public static final Byte USER_CARD_RENEW_TYPE_INTEGRAL = 1;
+
+    /**
+     * 会员卡续费时长类型-日
+     */
+    public static final Byte USER_CARD_RENEW_DATE_TYPE_DAY = 0;
+    /**
+     * 会员卡续费时长类型-周
+     */
+    public static final Byte USER_CARD_RENEW_DATE_TYPE_WEEK = 1;
+    /**
+     * 会员卡续费时长类型-月
+     */
+    public static final Byte USER_CARD_RENEW_DATE_TYPE_MONTH = 2;
 }

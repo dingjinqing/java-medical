@@ -18,6 +18,10 @@ public class UserCardRenewListVo {
      */
     private String renewOrderSn;
     /**
+     *
+     */
+    private Integer userId;
+    /**
      * 会员卡名称
      */
     private String cardName;
@@ -41,6 +45,11 @@ public class UserCardRenewListVo {
      * 续费金额
      */
     private BigDecimal renewMoney;
+    /**
+     * 续费金额的单位
+     * 0:现金 1：积分
+     */
+    private Byte renewType;
     /**
      * 续费时长
      */
