@@ -1942,6 +1942,10 @@ public class UserCardService extends ShopBaseService {
             .orderBy(USER_CARD.IS_DEFAULT.desc(),USER_CARD.MONEY.desc())
             .fetchInto(RenewValidCardList.class);
         cardList.forEach(c->{
+            if(StringUtils.isBlank(c.getBgColor())) {
+                // 默认背景色
+                c.setBgColor(CardUtil.getDefaultBgColor());
+            }
             if (c.getExpireTime()!=null&&c.getExpireTime().before(DateUtil.getLocalDateTime())){
                 c.setExpire(NumberUtils.BYTE_ONE);
             }else {
@@ -2871,6 +2875,35 @@ public class UserCardService extends ShopBaseService {
         totalVo.setTotalReturnAmount(BigDecimal.ZERO);
         analysisVo.setTotal(totalVo);
         return analysisVo;
+    }
+
+    /**
+     * 导出充值记录
+     *
+     * @param param
+     * @param lang
+     * @return
+     */
+    public Workbook exportChargeList(UserCardChargeListParam param, String lang) {
+        SelectConditionStep<? extends Record> select = db().select(CHARGE_MONEY.ORDER_SN, CHARGE_MONEY.USER_ID, MEMBER_CARD.CARD_NAME, USER_CARD.CARD_ID, USER.USERNAME, USER.MOBILE, CHARGE_MONEY.CHARGE, CHARGE_MONEY.CREATE_TIME, CHARGE_MONEY.RETURN_MONEY, CHARGE_MONEY.AFTER_CHARGE_MONEY, CHARGE_MONEY.REASON_ID, CHARGE_MONEY.CHANGE_TYPE)
+            .from(CHARGE_MONEY.leftJoin(USER_CARD).on(CHARGE_MONEY.CARD_NO.eq(USER_CARD.CARD_NO)))
+            .leftJoin(USER).on(CHARGE_MONEY.USER_ID.eq(USER.USER_ID))
+            .leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(CHARGE_MONEY.CARD_ID))
+            //已完成的
+            .where(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_NORMAL).and(CHARGE_MONEY.CHARGE.gt(BigDecimal.ZERO)));
+        select = chargeBuildOptions(select, param);
+        select = (SelectConditionStep<? extends Record>) select.orderBy(CHARGE_MONEY.CREATE_TIME.desc());
+        List<UserCardChargeExportVo> list = select.fetchInto(UserCardChargeExportVo.class);
+
+        list.forEach(o -> {
+            String reason = RemarkUtil.remarkI18N(lang, o.getReasonId(), o.getReason());
+            o.setReason(reason);
+        });
+
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+        excelWriter.writeModelList(list, UserCardChargeExportVo.class);
+        return workbook;
     }
 }
 

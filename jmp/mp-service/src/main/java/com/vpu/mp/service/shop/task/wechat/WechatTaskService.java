@@ -216,12 +216,18 @@ public class WechatTaskService extends ShopBaseService {
             MpUserPortraitRecord record = db().selectFrom(MP_USER_PORTRAIT).where(MP_USER_PORTRAIT.REF_DATE.eq(info.getRefDate())).fetchAny();
             
             if(record!=null) {
-            	return;
+            	logger().info("更新:{}",record.getId());
+            	record = assignment(type, info, record);
+            	record.setId(record.getId());
+            	int execute = db().update(MP_USER_PORTRAIT).set(record).where(MP_USER_PORTRAIT.ID.eq(record.getId())).execute();
+            	//int update = db().executeUpdate(record);
+            	logger().info("统计更新：{}，结果：{}",info.getRefDate(),execute);
             }else {
             	logger().info("插入");
             	record = db().newRecord(MP_USER_PORTRAIT);
             	record = assignment(type, info, record);
-            	record.insert();            	
+            	int insert = record.insert();
+            	logger().info("统计插入：{}，结果：{}",info.getRefDate(),insert);
             }
         } catch (WxErrorException e) {
             logger.error(CONTENT,e);

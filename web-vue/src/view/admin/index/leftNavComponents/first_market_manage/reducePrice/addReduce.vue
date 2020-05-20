@@ -604,6 +604,8 @@ export default {
         callback(new Error('请填写活动预告时间'))
       } else if (value === 1 && !re.test(this.reduceData.preTimeValue)) {
         callback(new Error('活动预告时间填写不正确'))
+      } else {
+        callback()
       }
     }
     // 自定义校验折扣
