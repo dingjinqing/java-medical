@@ -8,18 +8,25 @@
         label-suffix="："
         size="small"
       >
-        <el-form-item label="服务名称">
+        <el-form-item :label="$t('thirdPartyConfig.servicen')">
           <p class="label-con">{{formData.appBo.appName}}</p>
         </el-form-item>
         <el-form-item label="SessionKey">
           <span class="label-con">{{formData.appAuthBo.sessionKey}}</span>
-          <span>(<el-button type="text">重置</el-button>)</span>
+          <span>(<el-button
+              type="text"
+              @click="resetSessionKey"
+            >{{$t('thirdPartyConfig.reset')}}</el-button>)</span>
         </el-form-item>
         <el-form-item label="AppKey">
           <el-input
             class="form-input"
             v-model="formData.appAuthBo.appKey"
           ></el-input>
+          <!-- <el-button
+            type="primary"
+            @click="saveAppKeyHandle"
+          >{{$t('thirdPartyConfig.submit')}}</el-button> -->
         </el-form-item>
         <el-form-item label="AppSecret">
           <el-input
@@ -29,20 +36,23 @@
           <el-button
             type="primary"
             @click="saveAppKeyHandle"
-          >提交</el-button>
+          >{{$t('thirdPartyConfig.submit')}}</el-button>
         </el-form-item>
-        <el-form-item label="是否已授权">
+        <el-form-item :label="$t('thirdPartyConfig.whetherA')">
           <p class="label-con">{{formData.appAuthBo.status|fmtStatus}}</p>
         </el-form-item>
-        <el-form-item label="操作">
+        <el-form-item :label="$t('thirdPartyConfig.operate')">
           <template v-if="formData.appAuthBo.status === 0">
             <el-button
               type="text"
               @click="authorizeHandle"
-            >授权</el-button>
+            >{{$t('thirdPartyConfig.authorizate')}}</el-button>
           </template>
           <template v-else>
-            <el-button type="text">删除授权</el-button>
+            <el-button
+              type="text"
+              @click="deleteAuthorize"
+            >{{$t('thirdPartyConfig.deleteA')}}</el-button>
           </template>
         </el-form-item>
       </el-form>
@@ -60,18 +70,6 @@ export default {
       formData: {
         appBo: {},
         appAuthBo: {}
-      }
-    }
-  },
-  mounted () {
-    this.initData()
-  },
-  filters: {
-    fmtStatus (val) {
-      if (val === 0) {
-        return '未授权'
-      } else {
-        return '已授权'
       }
     }
   },
