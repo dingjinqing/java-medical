@@ -129,8 +129,7 @@
         </view>
       </view>
       <!-- 返利排名 -->
-      <!-- wx:if="{{dis_info.fanli_cfg.rank_status == 1 && dis_info.rebateRankingTop.length >= 3 }}" -->
-      <view class='all_rank' >
+      <view class='all_rank' wx:if="{{dis_info.rankStatus == 1 && dis_info.rebateRankingTop.length >= 3 }}">
         <view class='rank_title clearfix' bindtap='toRank'>
           <view>全网返利佣金排名</view>
           <view>查看全部 <image src='{{imageUrl}}image/wxapp/right_into.png'></image></view>
