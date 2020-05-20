@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.distribution;
 
+import com.vpu.mp.service.pojo.wxapp.distribution.RebateRankingTopVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.UserRebateVo;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -51,4 +53,10 @@ public class RebateCenterVo {
      * 我的分组
      */
     private String distributorGroup;
+    /**排行top*/
+    private List<RebateRankingTopVo> rebateRankingTop;
+    /**当前分销员佣金信息*/
+    private UserRebateVo userRebate;
+    /**当前分销员返利佣金排名*/
+    private Integer rebateRanking;
 }

@@ -1,9 +1,6 @@
 package com.vpu.mp.service.shop.distribution;
 
-import com.vpu.mp.db.shop.tables.records.DistributorApplyRecord;
-import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
-import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -23,16 +20,9 @@ import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
 import com.vpu.mp.service.pojo.shop.member.data.EducationVo;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.data.MarriageData;
-import com.vpu.mp.service.pojo.wxapp.distribution.ActivationInfoVo;
-import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
-import com.vpu.mp.service.pojo.wxapp.distribution.RebateOrderParam;
-import com.vpu.mp.service.pojo.wxapp.distribution.RebateOrderVo;
-import com.vpu.mp.service.pojo.wxapp.distribution.UserBaseInfoVo;
-import com.vpu.mp.service.pojo.wxapp.distribution.UserBindParam;
+import com.vpu.mp.service.pojo.wxapp.distribution.*;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.SelectOnConditionStep;
+import org.jooq.*;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,14 +33,7 @@ import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_APPLY;
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
-import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
-import static com.vpu.mp.db.shop.Tables.ORDER_GOODS_REBATE;
-import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
-import static com.vpu.mp.db.shop.Tables.USER_FANLI_STATISTICS;
+import static com.vpu.mp.db.shop.Tables.*;
 import static org.jooq.impl.DSL.sum;
 
 /**
@@ -280,13 +263,13 @@ public class MpDistributionService extends ShopBaseService{
         //用户信息
         BigDecimal account = db().select(USER.ACCOUNT).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(BigDecimal.class);
         //返利信息
-        UserTotalFanliVo userRebate = this.userTotalFanli.getUserRebate(userId);
-        if(userRebate.getTotalMoney() != null && userRebate.getTotalMoney().compareTo(account)<0){
-            rebateCenterVo.setCanWithdraw(userRebate.getTotalMoney());
+        UserTotalFanliVo userRebate1 = this.userTotalFanli.getUserRebate(userId);
+        if(userRebate1.getTotalMoney() != null && userRebate1.getTotalMoney().compareTo(account)<0){
+            rebateCenterVo.setCanWithdraw(userRebate1.getTotalMoney());
         }else{
             rebateCenterVo.setCanWithdraw(account);
         }
-        rebateCenterVo.setTotalWithdraw(userRebate.getTotalMoney());
+        rebateCenterVo.setTotalWithdraw(userRebate1.getTotalMoney());
         //待返利佣金
         BigDecimal waitFanliMoney = this.waitFanliMoney(userId);
         rebateCenterVo.setWaitWithdraw(waitFanliMoney);
@@ -308,6 +291,16 @@ public class MpDistributionService extends ShopBaseService{
         //我的分组
         DistributorGroupListVo groupInfo = distributorGroup.getGroupByUserId(userId);
         rebateCenterVo.setDistributorGroup(groupInfo.getGroupName());
+        //返利佣金排行top
+        List<RebateRankingTopVo> rebateRankingTop = this.getRebateRankingTop();
+        rebateCenterVo.setRebateRankingTop(rebateRankingTop);
+        //当前分销员排名
+        Integer rebateRanking = this.getRebateRanking(userId);
+        rebateCenterVo.setRebateRanking(rebateRanking);
+        //当前分销员返利信息
+        UserRebateVo userRebate = this.getUserRebate(userId);
+        rebateCenterVo.setUserRebate(userRebate);
+        //返利轮播信息
         return rebateCenterVo;
 
     }
@@ -370,6 +363,57 @@ public class MpDistributionService extends ShopBaseService{
     public DistributorInvitedListVo myInviteUser(DistributorInvitedListParam param){
         DistributorInvitedListVo invitedList = disList.getInvitedList(param);
         return invitedList;
+    }
+
+    /**
+     * 佣金排名前三榜
+     * @return
+     */
+    public List<RebateRankingTopVo> getRebateRankingTop(){
+        BigDecimal finalMoney = new BigDecimal(0.00);
+        Result<Record4<Integer, BigDecimal, String, String>> fetch = db().select(USER_TOTAL_FANLI.USER_ID, USER_TOTAL_FANLI.FINAL_MONEY, USER.USERNAME, USER_DETAIL.USER_AVATAR).from(USER_TOTAL_FANLI)
+            .leftJoin(USER).on(USER_TOTAL_FANLI.USER_ID.eq(USER.USER_ID))
+            .leftJoin(USER_DETAIL).on(USER_TOTAL_FANLI.USER_ID.eq(USER_DETAIL.USER_ID))
+            .where(USER_TOTAL_FANLI.FINAL_MONEY.ge(finalMoney)).orderBy(USER_TOTAL_FANLI.FINAL_MONEY.desc()).limit(3).fetch();
+        if(fetch != null){
+            return fetch.into(RebateRankingTopVo.class);
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * 当前分销员排名
+     * @param userId
+     */
+    public Integer getRebateRanking(Integer userId){
+        BigDecimal finalMoney = new BigDecimal(0.00);
+        Record record = db().select().from(USER_TOTAL_FANLI).where(USER_TOTAL_FANLI.USER_ID.eq(userId)).and(USER_TOTAL_FANLI.FINAL_MONEY.gt(finalMoney)).fetchOne();
+        if(record != null){
+            UserTotalFanliRecord userFanli = record.into(UserTotalFanliRecord.class);
+            //获取排行信息
+            Integer ranking = db().selectCount().from(USER_TOTAL_FANLI).leftJoin(USER).on(USER_TOTAL_FANLI.USER_ID.eq(USER.USER_ID))
+                .where(USER_TOTAL_FANLI.FINAL_MONEY.ge(userFanli.getFinalMoney())).orderBy(USER_TOTAL_FANLI.FINAL_MONEY.desc()).fetchOne().into(Integer.class);
+            return ranking;
+        }else{
+            return 0;
+        }
+    }
+
+    /**
+     * 当前分销员返利信息
+     * @param userId
+     * @return
+     */
+    public UserRebateVo getUserRebate(Integer userId){
+        Record record = db().select(USER_TOTAL_FANLI.FINAL_MONEY, USER.USER_ID, USER.USERNAME,USER_DETAIL.USER_AVATAR).from(USER_TOTAL_FANLI).leftJoin(USER).on(USER_TOTAL_FANLI.USER_ID.eq(USER.USER_ID))
+            .leftJoin(USER_DETAIL).on(USER_TOTAL_FANLI.USER_ID.eq(USER_DETAIL.USER_ID))
+            .where(USER_TOTAL_FANLI.USER_ID.eq(userId)).fetchOne();
+        if(record != null){
+            return record.into(UserRebateVo.class);
+        }else{
+            return null;
+        }
     }
 
     /**
