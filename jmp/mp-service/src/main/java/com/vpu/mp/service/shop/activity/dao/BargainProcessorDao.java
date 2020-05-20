@@ -31,7 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.BARGAIN_GOODS;
+import static com.vpu.mp.db.shop.Tables.BARGAIN_RECORD;
+import static com.vpu.mp.db.shop.Tables.BARGAIN_USER_LIST;
 import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
 
 /**
@@ -179,7 +181,7 @@ public class BargainProcessorDao extends ShopBaseService {
      * @param param
      */
     public void setOrderPrdBargainPrice(OrderBeforeParam param) throws MpException {
-        logger().info("砍价下单校验调试param:",param);
+        logger().info("砍价下单校验调试param:{}",param);
         BargainRecordInfo bargainRecordInfo = bargainService.bargainRecord.getRecordInfo(param.getRecordId());
         if(!bargainRecordInfo.getStatus().equals(BargainRecordService.STATUS_SUCCESS)){
             //状态不对

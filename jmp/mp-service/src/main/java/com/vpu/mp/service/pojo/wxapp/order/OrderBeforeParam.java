@@ -121,6 +121,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	public static class Goods{
 		@NotNull
 		private Integer goodsId;
+        /** 商品价(商品在结算页,) */
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
 		private BigDecimal goodsPrice;
 		/**购买数量*/
@@ -145,7 +146,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
 		private BigDecimal grouperGoodsReduce =BigDecimal.ZERO;
 		/**以下为后台产生逻辑值directPurchase*/
-        /** 规格价 */
+        /** 规格价(商品实际购买价格) */
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         private BigDecimal productPrice;
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
