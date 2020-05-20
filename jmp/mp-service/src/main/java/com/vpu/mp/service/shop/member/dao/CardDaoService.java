@@ -87,7 +87,6 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USI
  */
 @Service
 public class CardDaoService extends ShopBaseService {
-
 	public PageResult<CardHolderVo> getAllCardHolder(CardHolderParam param) {
 
 		User invitedUser = USER.as("a");
@@ -933,24 +932,6 @@ public class CardDaoService extends ShopBaseService {
 						.memberCard(memberCard)
 						.build();
 		};
-	}
-
-	/**
-	 * 	查询有效等级卡，简单信息
-	 * @return 等级卡List,该等价卡包括Id,name,grade信息
-	 */
-	public List<Map<String,Object>> getAllValidGradeCardList() {
-		 Result<Record3<Integer, String, String>> res = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME,MEMBER_CARD.GRADE)
-		 	 .from(MEMBER_CARD)
-			.where(MEMBER_CARD.CARD_TYPE.eq(CardConstant.MCARD_TP_GRADE))
-			.and(MEMBER_CARD.FLAG.eq(CardConstant.MCARD_FLAG_USING))
-			.fetch().into(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME,MEMBER_CARD.GRADE);
-		 List<Map<String,Object>> list = new ArrayList<>();
-		 for(int i=0;i<res.size();i++) {
-			 Record3<Integer, String, String> record = res.get(i);
-			 list.add(record.intoMap());
-		 }
-		return list;
 	}
 
     public String getCardNameByNo(String cardNo) {
