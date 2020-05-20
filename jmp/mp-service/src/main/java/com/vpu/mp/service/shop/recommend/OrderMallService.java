@@ -378,7 +378,7 @@ public class OrderMallService extends ShopMallBaseService {
 					: orderGood.getGoodsPrice().multiply(new BigDecimal(100)));
 			item.setStockAttrInfo(getOrderGoodsAttr(orderGood.getGoodsAttr()));
 			item.setCategoryList(sysCateService.getCategories(catId));
-			item.setItemDetailPage(new ItemDetailPage("/pages/item/item?goods_id=" + orderGood.getGoodsId()));
+			item.setItemDetailPage(new ItemDetailPage("/pages/item/item?gid=" + orderGood.getGoodsId()));
 			itemList.add(item);
 		}
 		return itemList;

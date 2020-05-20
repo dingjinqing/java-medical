@@ -52,6 +52,8 @@ public class CouponGiveService extends ShopBaseService {
     public CouponService couponService;
     @Autowired
     public UserTagService userTag;
+    @Autowired
+    private CouponMsgNoticeService couponMsgNoticeService;
     private static final MrkingVoucher MV = MrkingVoucher.MRKING_VOUCHER.as("MV");
 
     /**
@@ -723,11 +725,14 @@ public class CouponGiveService extends ShopBaseService {
                     userTag.addActivityTag(userId,couponTagIds, UserTagService.SRC_COUPON,Integer.valueOf(couponId));
                 }
             }
+            couponGiveBo.setSendCoupons(sendCoupons);
         }
         //更新优惠券表发放/领取数量
         couponService.updateCouponGiveOrReceiveNum(param.getAccessMode(), param.getCouponArray());
         couponGiveBo.setSuccessSize(successNum);
         logger().info("发券方法完成");
+        //发送公众号消息
+        sendCouponMessage(couponGiveBo.getSendCoupons());
         return couponGiveBo;
     }
 
@@ -974,5 +979,29 @@ public class CouponGiveService extends ShopBaseService {
      */
     public MrkingVoucherRecord getInfoById(Integer id) {
         return db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(id)).fetchAny();
+    }
+
+    /**
+     * 卡券领取成功发送公众号消息
+     * @param couponsRecords 领取记录
+     */
+    public void sendCouponMessage(List<CustomerAvailCouponsRecord> couponsRecords){
+        couponsRecords.forEach(c->{
+            MrkingVoucherRecord couponDetail = getInfoById(c.getActId());
+            String couponDesc = "";
+            switch (couponDetail.getActCode()){
+                case CouponConstant.ACT_CODE_VOUCHER:
+                    couponDesc = couponDetail.getDenomination()+"元";
+                    break;
+                case CouponConstant.ACT_CODE_DISCOUNT:
+                    couponDesc = couponDetail.getDenomination()+"折";
+                    break;
+                case CouponConstant.ACT_CODE_RANDOM:
+                    couponDesc = couponDetail.getRandomMin()+"元-"+couponDetail.getRandomMax()+"元";
+                    break;
+                default:
+            }
+            couponMsgNoticeService.sendCouponMsgNotice(c.getUserId(),couponDetail.getActName(),c.getStartTime(),c.getEndTime(),couponDesc);
+        });
     }
 }

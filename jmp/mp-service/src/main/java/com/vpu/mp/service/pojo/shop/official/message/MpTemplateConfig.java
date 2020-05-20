@@ -145,7 +145,12 @@ public enum MpTemplateConfig {
 		"OPENTM405766398",
 		"会员卡领取成功通知",
 		"{{first.DATA}}会员卡：{{keyword1.DATA}}会员类型：{{keyword2.DATA}}关联手机：{{keyword3.DATA}}有效期至：{{keyword4.DATA}}{{remark.DATA}}"
-	);
+	),
+    GET_COUPON(
+		"AT1198",
+        "卡券领取成功通知",
+        "卡券名称：{{keyword1.DATA}}有效日期：{{keyword2.DATA}}领取日期：{{keyword3.DATA}}优惠内容：{{keyword4.DATA}}"
+    );
 	/**
 	 * 模板编号
 	 */

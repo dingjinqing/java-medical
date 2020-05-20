@@ -14,10 +14,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.recommend.goods.ListProduct;
 import com.vpu.mp.service.pojo.wxapp.recommend.GoodsRecommendParam;
+/**
+ * 好物圈
+ * @author zhaojianqiang
+ * @date 2020年5月20日上午9:12:11
+ */
 @RestController
 public class WxAppRecMallController extends WxAppBaseController {
 	
-	
+	/**
+	 * 好物圈商品
+	 * @param param
+	 * @return
+	 */
 	@PostMapping(value = "/api/wxapp/mall/goods")
 	public JsonResult getGoodsMall(@RequestBody GoodsRecommendParam param) {
 		List<ListProduct> list = shop().recommendService.goodsMallService.checkShippingRecommendGoods(param.getGoodsId());
