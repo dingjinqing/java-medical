@@ -8,27 +8,27 @@
         label-suffix="："
         size="small"
       >
-        <el-form-item label="服务名称">
+        <el-form-item :label="$t('thirdPartyConfig.servicen')">
           <p
             class="label-con"
             v-text="formData.appBo.appName"
           ></p>
         </el-form-item>
-        <el-form-item label="ERP产品版本">
+        <el-form-item :label="$t('thirdPartyConfig.erppv')">
           <el-select
             v-model="formData.appAuthBo.product"
             @change="versionChange"
           >
             <el-option
-              label="企业版"
+              :label="$t('thirdPartyConfig.enterpriseE')"
               :value="1"
             ></el-option>
             <el-option
-              label="旗舰版"
+              :label="$t('thirdPartyConfig.flagship')"
               :value="2"
             ></el-option>
             <el-option
-              label="e快帮"
+              :label="$t('thirdPartyConfig.equick')"
               :value="3"
             ></el-option>
           </el-select>
@@ -38,9 +38,9 @@
           <span>(<el-button
               type="text"
               @click="resetSessionKey"
-            >重置</el-button>)</span>
+            >{{$t('thirdPartyConfig.reset')}}</el-button>)</span>
         </el-form-item>
-        <el-form-item label="卖家账号">
+        <el-form-item :label="$t('thirdPartyConfig.sellerA')">
           <el-input
             class="form-input"
             v-model="formData.appAuthBo.appKey"
@@ -48,24 +48,24 @@
           <el-button
             type="primary"
             @click="saveAppKeyHandle"
-          >提交</el-button>
+          >{{$t('thirdPartyConfig.submit')}}</el-button>
         </el-form-item>
-        <el-form-item label="是否已授权">
+        <el-form-item :label="$t('thirdPartyConfig.whetherA')">
           <p class="label-con">{{formData.appAuthBo.status|fmtStatus}}</p>
         </el-form-item>
-        <el-form-item label="操作">
+        <el-form-item :label="$t('thirdPartyConfig.operate')">
           <el-button
             v-if="formData.appAuthBo.status === 1"
             type="text"
             @click="deleteAuthorize"
-          >删除授权</el-button>
+          >{{$t('thirdPartyConfig.deleteA')}}</el-button>
           <el-button
             v-if="formData.appAuthBo.status === 0"
             type="text"
             @click="authorizeHandle"
-          >授权</el-button>
+          >{{$t('thirdPartyConfig.authorizate')}}</el-button>
         </el-form-item>
-        <el-form-item label="自提订单核销后推送">
+        <el-form-item :label="$t('thirdPartyConfig.aftermention')">
           <el-switch
             v-model="formData.verifyOrder"
             active-color="#F7931E"
@@ -75,7 +75,7 @@
             @change="pushSetHandle('verify_order', $event)"
           ></el-switch>
         </el-form-item>
-        <el-form-item label="同城配送订单已收货后推送">
+        <el-form-item :label="$t('thirdPartyConfig.afterReceived')">
           <el-switch
             v-model="formData.cityOrderPush"
             active-color="#F7931E"
@@ -110,23 +110,23 @@
     </div> -->
     <!-- 确认提交 -->
     <el-dialog
-      title="提醒"
+      :title="$t('thirdPartyConfig.remind')"
       width="260px"
       :visible.sync="switchErpVersionVisible"
     >
       <div>
-        <span style="color:red;">请谨慎操作，切换产品版本对应不同的ERP产品，</span>确定要操作吗?
+        <span style="color:red;">{{$t('thirdPartyConfig.cautionS')}}</span>{{$t('thirdPartyConfig.ayO')}}?
       </div>
       <div slot="footer">
         <el-button
           type="primary"
           size="small"
           @click="confirmSwitchVersion"
-        >确认</el-button>
+        >{{$t('thirdPartyConfig.yes')}}</el-button>
         <el-button
           size="small"
           @click="cancelSwitchVersion"
-        >取消</el-button>
+        >{{$t('thirdPartyConfig.no')}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -155,16 +155,6 @@ export default {
   },
   mounted () {
     this.oldVersion = this.formData.appAuthBo.product
-    this.initData()
-  },
-  filters: {
-    fmtStatus (val) {
-      if (val === 0) {
-        return '未授权'
-      } else {
-        return '已授权'
-      }
-    }
   },
   methods: {
     // ERP 产品版本更改
@@ -182,7 +172,7 @@ export default {
         product: this.newVersion
       }).then(res => {
         if (res.error === 0) {
-          this.$message.success('切换版本成功')
+          this.$message.success(this.$t('thirdPartyConfig.successS'))
           this.$set(this.formData.appAuthBo, 'product', this.newVersion)
           this.oldVersion = this.newVersion
           this.switchErpVersionVisible = false
@@ -205,7 +195,7 @@ export default {
       }
       pushSetApi(param).then(res => {
         if (res.error === 0) {
-          this.$message.success('更改成功')
+          this.$message.success(this.$t('thirdPartyConfig.successC'))
         } else {
           this.$message.error(res.message)
         }
