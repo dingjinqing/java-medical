@@ -504,7 +504,7 @@ public class CardVerifyService extends ShopBaseService {
 				
 				//	所在行业
 				Byte industry = record.get(CARD_EXAMINE.INDUSTRY_INFO);
-				MemberIndustryEnum.getNameByCode((int));
+//				MemberIndustryEnum.getNameByCode((int));
 				// 生日
 				
 				// 自定义权益
