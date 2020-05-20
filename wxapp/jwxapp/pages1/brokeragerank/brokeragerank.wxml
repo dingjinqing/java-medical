@@ -62,7 +62,6 @@
             <view class='each_ranking'>￥{{item.final_money}}</view>
         </view>
       </view> 
-
       <view class='no_state' wx:if="{{rank_info.rebates_lists.length == 0}}">
           <image src='{{imageUrl}}image/wxapp/no_rank.png' mode='widthFix'></image>
       </view>

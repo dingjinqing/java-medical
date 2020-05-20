@@ -8,7 +8,7 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
-    all_net: 1,
+    all_net: 1, // 排名类型(1全网排名, 0当前等级排名)
     rank_info: [],
   },
 
@@ -20,20 +20,17 @@ global.wxPage({
     var that = this;
     wx.hideShareMenu();
     rank_request(that)
-
   },
+  // 全网排名
   to_allnet: function () {
     var that = this;
-    that.setData({
-      all_net: 1,
-    })
+    that.setData({ all_net: 1 })
     rank_request(that);
   },
+  // 当前等级排名
   to_now: function () {
     var that = this;
-    that.setData({
-      all_net: 0,
-    })
+    that.setData({ all_net: 0 })
     rank_request(that);
   },
   /**
@@ -52,26 +49,24 @@ function rank_request(that) {
   //     rank_info.user_rebate.username = rank_info.user_rebate.username.substr(0, 3) + "...";
   //   }
   //   if (rank_info.rebate_list && rank_info.rebate_list != "") {
-  //     for (var i in rank_info.rebate_list) {
-  //       if (parseFloat(rank_info.rebate_list[i].final_money) > 100000) {
-  //         rank_info.rebate_list[i].final_money = parseFloat(rank_info.rebate_list[i].final_money).toFixed(0);
+  //     rank_info.rebate_list.forEach(item => {
+  //       if (parseFloat(item.final_money) > 100000) {
+  //         item.final_money = parseFloat(item.final_money).toFixed(0);
   //       }
-  //     }
+  //     })
   //   }
   //   if (rank_info.user_ranking <= 7) {
   //     rank_info.rebates_lists = rank_info.rebate_list.slice(3, rank_info.rebate_list.length);
-
   //   }
   //   if (rank_info.rebate_top_three && rank_info.rebate_top_three != "") {
-  //     for (var i = 0; i < rank_info.rebate_top_three.length; i++) {
-  //       if (parseFloat(rank_info.rebate_top_three[i].final_money) > 100000) {
-  //         rank_info.rebate_top_three[i].final_money = parseFloat(rank_info.rebate_top_three[i].final_money).toFixed(0);
+  //     rank_info.rebate_top_three.forEach(item => {
+  //       if (parseFloat(item.final_money) > 100000) {
+  //         item.final_money = parseFloat(item.final_money).toFixed(0);
   //       }
-  //     }
+  //     })
   //   }
   //   that.setData({
   //     rank_info: rank_info
   //   });
-
   // }, { all_net: that.data.all_net });
 }
