@@ -92,7 +92,18 @@ public class OrderMallService extends ShopMallBaseService {
 	 * @return
 	 */
 	public Boolean addCommonOrders(Integer userId, List<String> orderSns) {
+		Boolean addCommOrder=false;
+		try {
+			addCommOrder = addCommOrder(userId, orderSns);
+		} catch (Exception e) {
+			logger().info(e.getMessage(),e);
+		}
+		return addCommOrder;
+	}
 
+
+	private Boolean addCommOrder(Integer userId, List<String> orderSns) {
+		logger().info("添加好物圈订单");
 		String openId = check(userId);
 		if (null == openId) {
 			return false;
@@ -123,7 +134,7 @@ public class OrderMallService extends ShopMallBaseService {
 			extInfo.setPaymentMethod(order.getPayCode().equals(PayCode.PAY_CODE_WX_PAY) ? 1 : 2);
 			extInfo.setUserOpenId(openId);
 			extInfo.setOrderDetailPage(
-					new OrderDetailPage("/pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn()));
+					new OrderDetailPage("/pages/orderinfo/orderinfo?orderSn=" + order.getOrderSn()));
 			orderList.setExtInfo(extInfo);
 		}
 		logger().info("要发送的数据"+orderList);
@@ -132,8 +143,7 @@ public class OrderMallService extends ShopMallBaseService {
 		JsonRootBean jsonRootBean = new JsonRootBean(list);
 		SendOrderBean bean=new SendOrderBean(1, jsonRootBean,getShopId(),null);
 		saas.taskJobMainService.dispatchImmediately(bean,SendOrderBean.class.getName(),getShopId(),TaskJobEnum.WX_IMPORTORDER.getExecutionType());
-//		WxOpenResult importOrder = importOrderAdd(jsonRootBean);
-//		return importOrder.isSuccess();
+		logger().info("添加好物圈订单发队列了");
 		return true;
 	}
 
@@ -145,6 +155,17 @@ public class OrderMallService extends ShopMallBaseService {
 	 * @return
 	 */
 	public Boolean updateCommonOrders(Integer userId, List<String> orderSns) {
+		Boolean commonOrder=false;
+		try {
+			commonOrder = updateCommonOrder(userId, orderSns);
+		} catch (Exception e) {
+			logger().info(e.getMessage(),e);
+		}
+		return commonOrder;
+	}
+
+
+	private Boolean updateCommonOrder(Integer userId, List<String> orderSns) {
 		String openId = check(userId);
 		if (null == openId) {
 			return false;
@@ -152,7 +173,6 @@ public class OrderMallService extends ShopMallBaseService {
 		OrderList orderList = new OrderList();
 		for (String orderSn : orderSns) {
 			OrderInfoRecord order = orderInfo.getOrderByOrderSn(orderSn);
-			Result<OrderGoodsRecord> orderGoods = orderGoodsService.getOrderGoods(orderSn);
 			Byte orderStatus = order.getOrderStatus();
 			Integer status = getStatus(orderStatus);
 			if (status == null) {
@@ -165,7 +185,7 @@ public class OrderMallService extends ShopMallBaseService {
 			extInfo.setInvoiceInfo(getInvoiceInfo(order));
 			extInfo.setUserOpenId(openId);
 			extInfo.setOrderDetailPage(
-					new OrderDetailPage("/pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn()));
+					new OrderDetailPage("/pages/orderinfo/orderinfo?orderSn=" + order.getOrderSn()));
 			// 退款时，如果没有快递号，则把快递信息删除掉,否则会出错。
 			if (!(status == 5 && StringUtils.isEmpty(order.getShippingNo()))) {
 				extInfo.setExpressInfo(getExpressInfo(order));
@@ -178,8 +198,6 @@ public class OrderMallService extends ShopMallBaseService {
 		JsonRootBean jsonRootBean = new JsonRootBean(list);
 		SendOrderBean bean=new SendOrderBean(2, jsonRootBean,getShopId(),null);
 		saas.taskJobMainService.dispatchImmediately(bean,SendOrderBean.class.getName(),getShopId(),TaskJobEnum.WX_IMPORTORDER.getExecutionType());
-//		WxOpenResult importOrder = importOrderUpdate(jsonRootBean);
-//		return importOrder.isSuccess();
 		return true;
 	}
 
@@ -268,7 +286,7 @@ public class OrderMallService extends ShopMallBaseService {
 		InvoiceVo invoice = Util.parseJson(invoiceTitle, InvoiceVo.class);
 		InvoiceInfo info = new InvoiceInfo();
 		FieldsUtil.assignNotNull(invoice, info);
-		info.setInvoiceDetailPage(new InvoiceDetailPage("/pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn()));
+		info.setInvoiceDetailPage(new InvoiceDetailPage("/pages/orderinfo/orderinfo?orderSn=" + order.getOrderSn()));
 		return info;
 	}
 
