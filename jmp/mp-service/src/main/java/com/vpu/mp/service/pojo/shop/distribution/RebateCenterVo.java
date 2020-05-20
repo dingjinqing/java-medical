@@ -31,6 +31,10 @@ public class RebateCenterVo {
      */
     private String invitationCode;
     /**
+     *佣金排名开关
+     */
+    private Byte rankStatus;
+    /**
      * 邀请用户数
      */
     private Integer inviteUserNum;

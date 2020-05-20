@@ -61,6 +61,9 @@ public class MpDistributionService extends ShopBaseService{
     @Autowired
     public DistributorListService disList;
 
+    @Autowired
+    public DistributionConfigService disCfg;
+
     /**
      * 申请分销员页面信息
      * @param lang
@@ -270,6 +273,8 @@ public class MpDistributionService extends ShopBaseService{
         }else{
             rebateCenterVo.setCanWithdraw(account);
         }
+        Byte rankStatus = disCfg.getDistributionCfg().getRankStatus();
+        rebateCenterVo.setRankStatus(rankStatus);
         rebateCenterVo.setTotalWithdraw(userRebate1.getTotalMoney());
         //待返利佣金
         BigDecimal waitFanliMoney = this.waitFanliMoney(userId);

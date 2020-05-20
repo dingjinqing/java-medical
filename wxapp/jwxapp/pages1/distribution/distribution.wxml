@@ -129,7 +129,8 @@
         </view>
       </view>
       <!-- 返利排名 -->
-      <view class='all_rank' wx:if="{{dis_info.fanli_cfg.rank_status == 1 && dis_info.rebateTopThree.length >= 3 }}">
+      <!-- wx:if="{{dis_info.fanli_cfg.rank_status == 1 && dis_info.rebateRankingTop.length >= 3 }}" -->
+      <view class='all_rank' >
         <view class='rank_title clearfix' bindtap='toRank'>
           <view>全网返利佣金排名</view>
           <view>查看全部 <image src='{{imageUrl}}image/wxapp/right_into.png'></image></view>
@@ -145,21 +146,21 @@
         <view class='top_qiansan'>
           <view class='top1_person each_top'>
             <image class='rank_icon' src='{{imageUrl}}/image/wxapp/icon_top1.png'></image>
-            <image class='rank_touxiang' src='{{dis_info.rebateTopThree[0].userAvatar}}'></image>
-            <view class='rank_name'>{{dis_info.rebateTopThree[0].username}}</view>
-            <view class='rank_info'>￥{{dis_info.rebateTopThree[0].finalMoney}}</view>
+            <image class='rank_touxiang' src='{{dis_info.rebateRankingTop[0].userAvatar}}'></image>
+            <view class='rank_name'>{{dis_info.rebateRankingTop[0].username}}</view>
+            <view class='rank_info'>￥{{dis_info.rebateRankingTop[0].finalMoney}}</view>
           </view>
-          <view class='top2_person each_top' wx:if="{{dis_info.rebateTopThree[1]}}">
+          <view class='top2_person each_top' wx:if="{{dis_info.rebateRankingTop[1]}}">
             <image class='rank_icon' src='{{imageUrl}}/image/wxapp/icon_top2.png'></image>
-            <image class='rank_touxiang' src='{{dis_info.rebateTopThree[1].userAvatar}}'></image>
-            <view class='rank_name'>{{dis_info.rebateTopThree[1].username}}</view>
-            <view class='rank_info'>￥{{dis_info.rebateTopThree[1].finalMoney}}</view>
+            <image class='rank_touxiang' src='{{dis_info.rebateRankingTop[1].userAvatar}}'></image>
+            <view class='rank_name'>{{dis_info.rebateRankingTop[1].username}}</view>
+            <view class='rank_info'>￥{{dis_info.rebateRankingTop[1].finalMoney}}</view>
           </view>
-          <view class='top3_person each_top' wx:if="{{dis_info.rebateTopThree[2]}}">
+          <view class='top3_person each_top' wx:if="{{dis_info.rebateRankingTop[2]}}">
             <image class='rank_icon' src='{{imageUrl}}/image/wxapp/icon_top3.png'></image>
-            <image class='rank_touxiang' src='{{dis_info.rebateTopThree[2].userAvatar}}'></image>
-            <view class='rank_name'>{{dis_info.rebateTopThree[2].username}}</view>
-            <view class='rank_info'>￥{{dis_info.rebateTopThree[2].finalMoney}}</view>
+            <image class='rank_touxiang' src='{{dis_info.rebateRankingTop[2].userAvatar}}'></image>
+            <view class='rank_name'>{{dis_info.rebateRankingTop[2].username}}</view>
+            <view class='rank_info'>￥{{dis_info.rebateRankingTop[2].finalMoney}}</view>
           </view>
         </view>
       </view>

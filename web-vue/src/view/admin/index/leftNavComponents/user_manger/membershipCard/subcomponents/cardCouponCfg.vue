@@ -46,6 +46,7 @@
                 v-for="(item,index) in ruleForm.couponList"
                 :key="index"
                 class="coupon-list-item"
+                :class="{'coupon-invalid': item.status != 0}"
               >
                 <img
                   :src="$imageHost +'/image/admin/sign_del.png'"
@@ -107,7 +108,10 @@
                 label="2"
               >{{ $t('memberCard.sendCoupon') }}
               </el-radio>
-              <div class="coupon-pack-container" v-if="ruleForm.couponType==='2'">
+              <div
+                class="coupon-pack-container"
+                v-if="ruleForm.couponType==='2'"
+              >
                 <span>{{$t('memberCard.couponPack')}}：</span>
                 <select-coupon-pack
                   @selectCouponPack="setCouponPack"
@@ -193,9 +197,10 @@ export default {
     },
     handleCouponList (val) {
       console.log('添加优惠券', val)
-      // this.couponList = val
-      this.ruleForm.couponList = val
-      let res = val.map(({ id }) => id)
+      // 因为可能存在失效的优惠券，所以回显时，拼接未删除的失效的优惠券
+      let invalid = this.ruleForm.couponList.filter(item => item.status !== 0)
+      this.ruleForm.couponList = val.concat(invalid)
+      let res = this.ruleForm.couponList.map(({ id }) => id)
       this.ruleForm.couponIdList = res
 
       this.couponError = false
@@ -233,7 +238,7 @@ export default {
       flex-direction: column;
       .coupon-div-top {
         width: 385px;
-        /deep/ .el-radio{
+        /deep/ .el-radio {
           margin-right: 0px;
         }
         .coupon-list {
@@ -246,6 +251,26 @@ export default {
             margin-bottom: 15px;
             cursor: pointer;
             position: relative;
+            &.coupon-invalid {
+              .coupon-list-top {
+                color: #d5d7d9;
+                border: 1px solid #d5d7d9;
+                border-bottom: none;
+              }
+              .coupon-list-center {
+                color: #d5d7d9;
+                border-left: 1px solid #d5d7d9;
+                border-right: 1px solid #d5d7d9;
+                .coupon-center-number {
+                  color: #d5d7d9;
+                }
+              }
+              .coupon-list-bottom {
+                background-color: #d5d7d9;
+                border-left: 1px solid #d5d7d9;
+                border-right: 1px solid #d5d7d9;
+              }
+            }
             img {
               position: absolute;
               top: -5px;
@@ -323,7 +348,7 @@ export default {
     }
   }
 
-  .coupon-pack-container{
+  .coupon-pack-container {
     padding-left: 30px;
     display: flex;
   }

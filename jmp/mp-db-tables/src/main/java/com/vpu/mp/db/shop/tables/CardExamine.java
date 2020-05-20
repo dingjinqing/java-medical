@@ -5,6 +5,7 @@ package com.vpu.mp.db.shop.tables;
 
 
 import com.vpu.mp.db.shop.Indexes;
+import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
@@ -27,6 +28,7 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.UInteger;
 
 
 /**
@@ -42,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardExamine extends TableImpl<CardExamineRecord> {
 
-    private static final long serialVersionUID = 867501639;
+    private static final long serialVersionUID = 661568170;
 
     /**
      * The reference instance of <code>jmini_shop_489258.b2c_card_examine</code>
@@ -186,6 +188,21 @@ public class CardExamine extends TableImpl<CardExamineRecord> {
      * The column <code>jmini_shop_489258.b2c_card_examine.custom_options</code>. 自定义激活信息
      */
     public final TableField<CardExamineRecord, String> CUSTOM_OPTIONS = createField("custom_options", org.jooq.impl.SQLDataType.CLOB, this, "自定义激活信息");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_card_examine.sys_id</code>. 操作员ID
+     */
+    public final TableField<CardExamineRecord, UInteger> SYS_ID = createField("sys_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED, this, "操作员ID");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_card_examine.account_id</code>. SUB操作员ID
+     */
+    public final TableField<CardExamineRecord, UInteger> ACCOUNT_ID = createField("account_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED, this, "SUB操作员ID");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_card_examine.account_type</code>. 账户类型：0店铺账号，1系统账号
+     */
+    public final TableField<CardExamineRecord, Byte> ACCOUNT_TYPE = createField("account_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "账户类型：0店铺账号，1系统账号");
 
     /**
      * Create a <code>jmini_shop_489258.b2c_card_examine</code> table reference
