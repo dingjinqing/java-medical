@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.recommend.SendCollectBean;
+import com.vpu.mp.service.pojo.shop.recommend.SkuAttrList;
 import com.vpu.mp.service.pojo.shop.recommend.collect.JsonCollectBean;
 import com.vpu.mp.service.pojo.shop.recommend.collect.SkuInfo;
 import com.vpu.mp.service.pojo.shop.recommend.collect.SkuProductList;
@@ -86,7 +87,12 @@ public class CollectionMallService extends ShopMallBaseService {
 			skuProduct.setItemCode(String.valueOf(cart.getGoodsId()));
 			skuProduct.setTitle(cart.getGoodsName());
 			skuProduct.setDesc(cart.getGoodsName());
-			skuProduct.setCategoryList(sysCateService.getCategories(goodsRecord.getCatId()));
+			List<String> list = sysCateService.getCategories(goodsRecord.getCatId());
+			if (list == null || list.size() == 0) {
+				list = new ArrayList<String>();
+				list.add("未知");
+			}
+			skuProduct.setCategoryList(list);
 			List<String> imageList = goodsService.getGoodsImageList(goodsRecord.getGoodsId());
 			if(imageList.isEmpty()) {
 				imageList.add(imageUrl(goodsRecord.getGoodsImg()));
@@ -104,7 +110,11 @@ public class CollectionMallService extends ShopMallBaseService {
 					: productRecord.getPrdPrice().multiply(new BigDecimal(100)));
 			skuInfo.setStatus(ONE.equals(goodsRecord.getIsOnSale()) ? ONE : TWO);
 			skuInfo.setVersion((int) DateUtil.getLocalDateTime().getTime());
-			skuInfo.setSkuAttrList(goodsService.goodsSpecProductService.getSkuAttrList(productRecord.getPrdDesc()));
+			List<SkuAttrList> skuAttrList = goodsService.goodsSpecProductService.getSkuAttrList(productRecord.getPrdDesc());
+			if(skuAttrList.isEmpty()) {
+				skuAttrList.add(new SkuAttrList(goodsRecord.getGoodsName(), goodsRecord.getGoodsName()));
+			}
+			skuInfo.setSkuAttrList(skuAttrList);
 			skuProduct.setSkuInfo(skuInfo);
 			skuProductList.add(skuProduct);
 
