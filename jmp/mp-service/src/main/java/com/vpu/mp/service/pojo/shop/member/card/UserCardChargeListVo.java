@@ -58,7 +58,7 @@ public class UserCardChargeListVo {
      */
     private String reason;
     /**
-     * 当次续费后有效期
+     * 充值类型 1发卡 2用户充值 3 管理员操作
      */
     private Byte changeType;
 }
