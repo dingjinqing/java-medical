@@ -253,4 +253,11 @@ public class AdminTestController extends AdminBaseController {
     	saas.getShopApp(shopId()).shopTaskService.maMpScheduleTaskService.expiringCouponNotify();
 		return success();
     }
+    
+    @RequestMapping(value = "/api/admin/test/testTask")
+    public JsonResult testTask() {
+    	saas.getShopApp(shopId()).shopTaskService.wechatTaskService.beginDailyTask();
+		return success();
+    	
+    }
 }
