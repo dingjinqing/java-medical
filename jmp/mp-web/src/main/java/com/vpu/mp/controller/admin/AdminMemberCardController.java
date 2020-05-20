@@ -423,7 +423,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	@PostMapping(value="/valid/grade/card/list")
 	public JsonResult getAllValidGradeCardList() {
 		logger().info("获取有效的等级卡");
-		return success(shop().member.card.getAllValidGradeCardList());
+		return success(shop().member.card.gradeCardService.getAllValidGradeCardList());
 	}
 	
 	
@@ -443,5 +443,9 @@ public class AdminMemberCardController extends AdminBaseController {
 		export2Excel(workbook, fileName + dateFormat, response);
 		logger().info("结束下载领取详情");
 	}
+	
+	/**
+	 * 获取所有可用的等级卡接口
+	 */
 	
 }

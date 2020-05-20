@@ -179,7 +179,7 @@ public class MemberCardService extends ShopBaseService {
 	@Autowired
 	private QrCodeService qrCodeService;
 	@Autowired
-	private GradeCardService gradeCardService;
+	public GradeCardService gradeCardService;
     @Autowired
     protected ImageService imageService;
 	@Autowired 
@@ -1937,13 +1937,6 @@ public class MemberCardService extends ShopBaseService {
 		return cardDao.getCardDetailByNo(cardNo);
 	}
 	
-	/**
-	 * 	查询有效等级卡，简单信息
-	 * @return 等级卡List,该等价卡包括Id,name,grade信息
-	 */
-	public List<Map<String, Object>> getAllValidGradeCardList() {
-		return cardDao.getAllValidGradeCardList();
-	}
 
     public String getCardNameByNo(String cardNo) {
 	    if(StringUtils.isBlank(cardNo)) {

@@ -13,4 +13,6 @@ public class CardBasicVo {
 	public Integer id;
 	/** 会员卡id */
 	public String cardName;
+	/** 会员卡等级 */
+	public String grade;
 }
