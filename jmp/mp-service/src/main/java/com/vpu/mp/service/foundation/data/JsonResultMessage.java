@@ -140,7 +140,7 @@ public class JsonResultMessage {
     public static final String GOODS_EXPORT_COLUMN_PRD_SN = "goods.export.column.prd_sn";
     public static final String GOODS_EXPORT_COLUMN_PRD_NUMBER = "goods.export.column.prd_number";
     public static final String GOODS_EXPORT_COLUMN_PRD_COST_PRICE = "goods.export.column.prd_cost_price";
-    public static final String GOODS_EXPORT_COLUMN_MARKET_PRICE = "goods.export.column.market_price";
+    public static final String GOODS_EXPORT_COLUMN_MARKET_PRICE = "goods.export.column.prd_market_price";
     public static final String GOODS_EXPORT_COLUMN_SHOP_PRICE = "goods.export.column.shop_price";
     public static final String GOODS_EXPORT_COLUMN_IS_ON_SALE = "goods.export.column.is_on_sale";
     public static final String GOODS_EXPORT_COLUMN_LIMIT_BUY_NUMBER = "goods.export.column.limit_buy_number";

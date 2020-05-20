@@ -30,15 +30,14 @@ import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncGoodsPrdParam;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductMqParam;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductParam;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncStockParam;
-import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
-import com.vpu.mp.service.saas.es.EsMappingUpdateService;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainGoodsPriceBo;
+import com.vpu.mp.service.saas.es.EsMappingUpdateService;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
@@ -366,8 +365,8 @@ public class GoodsService extends ShopBaseService {
         Condition condition = this.buildOptions(goodsPageListParam);
 
         SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,
-            GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS.GOODS_AD, GOODS.IS_ON_SALE, GOODS.LIMIT_BUY_NUM, GOODS.GOODS_WEIGHT, GOODS.UNIT,
-            GOODS_BRAND.BRAND_NAME,GOODS.GOODS_NUMBER,
+            GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME,SORT.LEVEL, GOODS.SORT_ID, GOODS.GOODS_AD, GOODS.IS_ON_SALE, GOODS.LIMIT_BUY_NUM, GOODS.GOODS_WEIGHT, GOODS.UNIT,
+            GOODS_BRAND.BRAND_NAME,GOODS.GOODS_NUMBER,GOODS.DELIVER_PLACE,
             GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.CREATE_TIME,
             GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_SN, GOODS_SPEC_PRODUCT.PRD_COST_PRICE, GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,
             GOODS_SPEC_PRODUCT.PRD_IMG, GOODS_SPEC_PRODUCT.PRD_CODES)
@@ -2081,23 +2080,30 @@ public class GoodsService extends ShopBaseService {
         SelectConditionStep<?> selectFrom = this.createProductSelect(param);
         List<GoodsExportVo> list = selectFrom.limit(param.getExportRowStart() - 1, param.getExportRowEnd() - param.getExportRowStart() + 1).fetchInto(GoodsExportVo.class);
 
+        Set<Integer> sortIds = new HashSet<>(list.size());
+        List<Integer> prdIds = new ArrayList<>(list.size());
+
+        list.stream().forEach(vo->{
+            if (vo.getSortId() != null) {
+                sortIds.add(vo.getSortId());
+            }
+            prdIds.add(vo.getPrdId());
+        });
+        Map<Integer, SortRecord> sortMap = goodsSort.getNormalSortByIds(new ArrayList<>(sortIds)).stream().collect(Collectors.toMap(SortRecord::getSortId, Function.identity()));
+
+
         //循环处理需要处理的列
         for (GoodsExportVo goods : list) {
-//            goods.setCatName(SysCatServiceHelper.getSysCateVoByCatId(goods.getCatId()).getCatName());
 
-            if (param.getColumns().contains(GoodsExportVo.SORT_NAME_PARENT) || param.getColumns().contains(GoodsExportVo.SORT_NAME_CHILD)) {
-                SortRecord sort = saas.getShopApp(getShopId()).goods.goodsSort.getSortDao(goods.getSortId());
-                if (sort != null) {
-                    if (Sort.NO_PARENT_CODE.equals(sort.getParentId())) {
-                        //parent_id 是0，表示该分类是一级节点
-                        goods.setSortNameParent(sort.getSortName());
+            if (goods.getSortId() != null) {
+                SortRecord sortRecord = sortMap.get(goods.getSortId());
+                if (sortRecord != null) {
+                    if (GoodsConstant.ROOT_LEVEL.equals(sortRecord.getLevel())) {
+                        goods.setSortNameParent(sortRecord.getSortName());
                     } else {
-                        goods.setSortNameChild(sort.getSortName());
-
-                        SortRecord parent = saas.getShopApp(getShopId()).goods.goodsSort.getSortDao(sort.getParentId());
-                        if (parent != null) {
-                            goods.setSortNameParent(parent.getSortName());
-                        }
+                        goods.setSortNameChild(sortRecord.getSortName());
+                        SortRecord parent = sortMap.get(sortRecord.getParentId());
+                        goods.setSortNameParent((parent == null) ? null : parent.getSortName());
                     }
                 }
             }
@@ -2108,10 +2114,6 @@ public class GoodsService extends ShopBaseService {
 
             if (param.getColumns().contains(GoodsExportVo.IMG_URL)) {
                 goods.setImgUrl(getGoodsImageList(goods.getGoodsId()).stream().map(String::valueOf).collect(Collectors.joining(";")));
-            }
-
-            if (param.getColumns().contains(GoodsExportVo.MARKET_PRICE)) {
-                goods.setMarketPrice(goods.getPrdMarketPrice());
             }
 
         }

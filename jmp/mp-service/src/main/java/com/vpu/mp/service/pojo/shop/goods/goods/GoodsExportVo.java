@@ -76,7 +76,7 @@ public class GoodsExportVo {
      * 市场价
      */
     @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_MARKET_PRICE,columnIndex = 11)
-    private BigDecimal marketPrice;
+    private BigDecimal prdMarketPrice;
     /**
      * 零售价
      */
@@ -129,7 +129,7 @@ public class GoodsExportVo {
     @ExcelIgnore
     private Integer sortId;
     @ExcelIgnore
-    private BigDecimal prdMarketPrice;
+    private Integer prdId;
 
     //列名常量
     public static final String CREATE_TIME = "createTime";
