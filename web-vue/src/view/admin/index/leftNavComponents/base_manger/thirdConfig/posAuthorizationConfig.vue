@@ -9,14 +9,17 @@
         label-suffix="："
         size="small"
       >
-        <el-form-item label="服务名称">
+        <el-form-item :label="$t('thirdPartyConfig.servicen')">
           <p class="label-con">{{formData.appBo.appName}}</p>
         </el-form-item>
         <el-form-item label="SessionKey">
           <span class="label-con">{{formData.appAuthBo.sessionKey}}</span>
-          <span>(<el-button type="text">重置</el-button>)</span>
+          <span>(<el-button
+              type="text"
+              @click="resetSessionKey"
+            >{{$t('thirdPartyConfig.reset')}}</el-button>)</span>
         </el-form-item>
-        <el-form-item label="卖家账号">
+        <el-form-item :label="$t('thirdPartyConfig.sellerA')">
           <el-input
             class="form-input"
             v-model="formData.appAuthBo.appKey"
@@ -24,30 +27,33 @@
           <el-button
             type="primary"
             @click="saveAppKeyHandle"
-          >提交</el-button>
+          >{{$t('thirdPartyConfig.submit')}}</el-button>
         </el-form-item>
-        <el-form-item label="是否已授权">
+        <el-form-item :label="$t('thirdPartyConfig.whetherA')">
           <p class="label-con">{{formData.appAuthBo.status|fmtStatus}}</p>
         </el-form-item>
-        <el-form-item label="操作">
+        <el-form-item :label="$t('thirdPartyConfig.operate')">
           <template v-if="formData.appAuthBo.status === 0">
             <el-button
               type="text"
               @click="authorizeHandle"
-            >授权</el-button>
+            >{{$t('thirdPartyConfig.authorizate')}}</el-button>
           </template>
           <template v-if="formData.appAuthBo.status === 1">
-            <el-button type="text">删除授权</el-button>
+            <el-button
+              type="text"
+              @click="deleteAuthorize"
+            >{{$t('thirdPartyConfig.deleteA')}}</el-button>
           </template>
           <el-button
             type="text"
             @click="syncPosHandle('sync_store')"
-          >同步POS门店</el-button>
-          <span class="label-con">注：仅同步未对接门店</span>
+          >{{$t('thirdPartyConfig.syncPos')}}</el-button>
+          <span class="label-con">{{$t('thirdPartyConfig.syncPnote')}}</span>
           <el-button
             type="text"
             @click="syncPosHandle('sync_goods')"
-          >同步POS商品到系统商品</el-button>
+          >{{$t('thirdPartyConfig.syncPG')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -69,18 +75,6 @@ export default {
       }
     }
   },
-  mounted () {
-    this.initData()
-  },
-  filters: {
-    fmtStatus (val) {
-      if (val === 0) {
-        return '未授权'
-      } else {
-        return '已授权'
-      }
-    }
-  },
   methods: {
     // 同步Pos门店
     syncPosHandle (opera) {
@@ -91,7 +85,7 @@ export default {
       }).then(res => {
         this.loading = false
         if (res.error === 0) {
-          this.$message.success('同步成功')
+          this.$message.success(this.$t('thirdPartyConfig.successSync'))
           this.initData()
         } else {
           this.$message.error(res.message)
