@@ -63,7 +63,7 @@
   </div>
 </template>
 <script>
-import { getMemberSardPurchase, getCouponpackPurchase } from '@/api/admin/memberManage/memberValueAdd/memberValueAdd.js'
+import { getMemberSardPurchase, getCouponpackPurchase, getRenewPurchase, getRechargePurchase } from '@/api/admin/memberManage/memberValueAdd/memberValueAdd.js'
 export default {
   props: {
     activeName: {
@@ -167,11 +167,11 @@ export default {
       console.log(this.timeSelect)
       switch (this.timeSelect) {
         case 1:
-          obj.startTime = this.getDay(-1)
+          obj.startTime = this.getDay(0)
           obj.endTime = this.getDay(0)
           break
         case 2:
-          obj.startTime = this.getDay(-2)
+          obj.startTime = this.getDay(-1)
           obj.endTime = this.getDay(0)
           break
         case 7:
@@ -197,6 +197,22 @@ export default {
       switch (newData) {
         case 'first':
           getMemberSardPurchase(obj).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.handleData(res.content)
+            }
+          })
+          break
+        case 'second':
+          getRenewPurchase(obj).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.handleData(res.content)
+            }
+          })
+          break
+        case 'third':
+          getRechargePurchase(obj).then(res => {
             console.log(res)
             if (res.error === 0) {
               this.handleData(res.content)

@@ -42,7 +42,7 @@
 
 <script>
 import { download } from '@/util/excelUtil.js'
-import { getCouponPackageOrderExportTotalRows, exportCouponPackageOrder } from '@/api/admin/orderManage/virtualGoodsOrder.js'
+import { queryPurchaseExportNum, purchaseExport } from '@/api/admin/memberManage/memberValueAdd/memberValueAdd.js'
 export default {
   data () {
     return {
@@ -58,7 +58,7 @@ export default {
   methods: {
     initData () {
       console.log(this.param, 'get params')
-      getCouponPackageOrderExportTotalRows(this.param).then(res => {
+      queryPurchaseExportNum(this.param).then(res => {
         if (res.error === 0) {
           this.totalRows = res.content
         }
@@ -72,10 +72,10 @@ export default {
     confirm () {
       this.loading = true
       console.log(this.param, 'confirm param')
-      exportCouponPackageOrder(this.param).then(res => {
+      purchaseExport(this.param).then(res => {
         console.log(res, 'excle-data')
         let fileName = localStorage.getItem('V-content-disposition')
-        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '优惠券礼包订单导出.xlsx'
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '会员卡购买订单导出.xlsx'
         this.loading = false
         this.showNodes = false
         download(res, decodeURIComponent(fileName))

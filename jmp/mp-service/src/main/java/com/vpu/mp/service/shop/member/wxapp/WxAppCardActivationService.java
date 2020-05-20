@@ -152,38 +152,10 @@ public class WxAppCardActivationService extends ShopBaseService {
 				DEFAULT_CITYID:(Integer)userMap.get(CITY_CODE);
 		Integer districtId = userMap.get(DISTRICT_CODE)==null?
 				DEFAULT_DISTRICTID:(Integer)userMap.get(DISTRICT_CODE);	
-		DictProvinceRecord provinceName = provinceMap.get(provinceId);
-		if(provinceName==null) {
-			provinceName = saas.region.province.getProvinceName(provinceId);
-			provinceMap.put(provinceId, provinceName);
-		}
-		DictCityRecord cityName = cityMap.get(cityId);
-		if(cityName == null) {
-			cityName = saas.region.city.getCityName(cityId);
-			cityMap.put(cityId,cityName);
-		}
 		
-		DictDistrictRecord districtName = districtMap.get(districtId);
-		if(districtName==null) {
-			districtName = saas.region.district.getDistrictName(districtId);
-			districtMap.put(districtId, districtName);
-		}
-		
-		if(provinceName!=null) {
-			userMap.put(PROVINCE_CODE, provinceName.getName());
-		}else {
-			userMap.put(PROVINCE_CODE, null);
-		}
-		if(cityName != null) {
-			userMap.put(CITY_CODE, cityName.getName());
-		}else {
-			userMap.put(CITY_CODE, null);
-		}
-		if(districtName != null) {
-			userMap.put(DISTRICT_CODE, districtName.getName());
-		}else {
-			userMap.put(DISTRICT_CODE, null);
-		}
+		userMap.put(PROVINCE_CODE, mapProvinceCodeToName(provinceId));
+		userMap.put(DISTRICT_CODE,mapCityCodeToName(cityId)); 
+		userMap.put(DISTRICT_CODE, mapDistrictCodeToName(districtId));
 	}
 	
 	
@@ -348,5 +320,69 @@ public class WxAppCardActivationService extends ShopBaseService {
 			districtId = saas.region.district.getDistrictIdByNameAndCityId(cityId, districtName);
 		}
 		activeData.put(DISTRICT_CODE,districtId);
+	}
+	/**
+	 * 处理城市码到名称
+	 * @param cityId 城市代号码
+	 * @return 城市名称
+	 */
+	public String mapCityCodeToName(Integer cityId) {
+		if(cityId==null) {
+			cityId = DEFAULT_CITYID;
+		}
+		DictCityRecord cityName = cityMap.get(cityId);
+		if(cityName == null) {
+			cityName = saas.region.city.getCityName(cityId);
+			cityMap.put(cityId,cityName);
+		}
+		if(cityName != null) {
+			return cityName.getName();
+		}else {
+			return null;
+		}
+		
+	}
+	
+	/**
+	 * 处理省码到名称
+	 * @param provinceId 省代号码
+	 * @return 省名称
+	 */
+	public String mapProvinceCodeToName(Integer provinceId) {
+		if(provinceId == null) {
+			provinceId = DEFAULT_PROVINCEID;
+		}
+		DictProvinceRecord provinceName = provinceMap.get(provinceId);
+		if(provinceName==null) {
+			provinceName = saas.region.province.getProvinceName(provinceId);
+			provinceMap.put(provinceId, provinceName);
+		}
+		if(provinceName!=null) {
+			return provinceName.getName();
+		}else {
+			return null;
+		}
+	}
+	
+	/**
+	 * 处理区码到名称
+	 * @param provinceId 省代号码
+	 * @return 省名称
+	 */
+	public String mapDistrictCodeToName(Integer districtId) {
+		if(districtId == null) {
+			districtId = DEFAULT_DISTRICTID;
+		}
+		
+		DictDistrictRecord districtName = districtMap.get(districtId);
+		if(districtName==null) {
+			districtName = saas.region.district.getDistrictName(districtId);
+			districtMap.put(districtId, districtName);
+		}
+		if(districtName!=null) {
+			return districtName.getName();
+		}else {
+			return null;
+		}
 	}
 }

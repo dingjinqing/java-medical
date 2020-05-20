@@ -12,6 +12,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
+import org.jooq.types.UInteger;
 
 
 /**
@@ -27,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardExamineRecord extends UpdatableRecordImpl<CardExamineRecord> {
 
-    private static final long serialVersionUID = 1101875386;
+    private static final long serialVersionUID = 667105375;
 
     /**
      * Setter for <code>jmini_shop_489258.b2c_card_examine.id</code>. 订单id
@@ -393,6 +394,48 @@ public class CardExamineRecord extends UpdatableRecordImpl<CardExamineRecord> {
         return (String) get(25);
     }
 
+    /**
+     * Setter for <code>jmini_shop_489258.b2c_card_examine.sys_id</code>. 操作员ID
+     */
+    public void setSysId(UInteger value) {
+        set(26, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_489258.b2c_card_examine.sys_id</code>. 操作员ID
+     */
+    public UInteger getSysId() {
+        return (UInteger) get(26);
+    }
+
+    /**
+     * Setter for <code>jmini_shop_489258.b2c_card_examine.account_id</code>. SUB操作员ID
+     */
+    public void setAccountId(UInteger value) {
+        set(27, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_489258.b2c_card_examine.account_id</code>. SUB操作员ID
+     */
+    public UInteger getAccountId() {
+        return (UInteger) get(27);
+    }
+
+    /**
+     * Setter for <code>jmini_shop_489258.b2c_card_examine.account_type</code>. 账户类型：0店铺账号，1系统账号
+     */
+    public void setAccountType(Byte value) {
+        set(28, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_489258.b2c_card_examine.account_type</code>. 账户类型：0店铺账号，1系统账号
+     */
+    public Byte getAccountType() {
+        return (Byte) get(28);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -419,7 +462,7 @@ public class CardExamineRecord extends UpdatableRecordImpl<CardExamineRecord> {
     /**
      * Create a detached, initialised CardExamineRecord
      */
-    public CardExamineRecord(Integer id, Integer cardId, String cardNo, Integer userId, Byte status, String desc, String realName, String cid, Integer provinceCode, Integer cityCode, Integer districtCode, String sex, Integer birthdayYear, Integer birthdayMonth, Integer birthdayDay, Byte maritalStatus, Byte education, Byte industryInfo, Timestamp passTime, Timestamp refuseTime, String refuseDesc, Byte delFlag, Timestamp defTime, Timestamp createTime, Timestamp updateTime, String customOptions) {
+    public CardExamineRecord(Integer id, Integer cardId, String cardNo, Integer userId, Byte status, String desc, String realName, String cid, Integer provinceCode, Integer cityCode, Integer districtCode, String sex, Integer birthdayYear, Integer birthdayMonth, Integer birthdayDay, Byte maritalStatus, Byte education, Byte industryInfo, Timestamp passTime, Timestamp refuseTime, String refuseDesc, Byte delFlag, Timestamp defTime, Timestamp createTime, Timestamp updateTime, String customOptions, UInteger sysId, UInteger accountId, Byte accountType) {
         super(CardExamine.CARD_EXAMINE);
 
         set(0, id);
@@ -448,5 +491,8 @@ public class CardExamineRecord extends UpdatableRecordImpl<CardExamineRecord> {
         set(23, createTime);
         set(24, updateTime);
         set(25, customOptions);
+        set(26, sysId);
+        set(27, accountId);
+        set(28, accountType);
     }
 }
