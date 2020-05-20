@@ -424,6 +424,27 @@ public class OrderInfoService extends ShopBaseService {
     }
 
     /**
+     * goodsType
+     * @param goodsType order表数据
+     * @param orderType 新增类型
+     * @return
+     */
+    public static String addGoodsTypeToInsert(String goodsType, List<Byte> orderType) {
+        if(CollectionUtils.isEmpty(orderType)){
+            return goodsType;
+        }
+        if(StringUtils.isBlank(goodsType)) {
+            return getGoodsTypeToInsert(orderType);
+        }else {
+            StringBuilder sb = new StringBuilder(goodsType);
+            for (Byte type: orderType) {
+                sb.append("[").append(type).append("]");
+            }
+            return sb.toString();
+        }
+    }
+
+    /**
      * 转化订单类型
      * @param orderType
      * @return

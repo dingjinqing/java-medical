@@ -935,6 +935,7 @@ public class Calculate extends ShopBaseService {
             order.setFanliType(DistributionConstant.REBATE_ORDER);
             order.setFanliUserId(userInfo.getInviteId());
             order.setFanliMoney(rebateMoney);
+            order.setGoodsType(OrderInfoService.addGoodsTypeToInsert(order.getGoodsType(), Lists.newArrayList(BaseConstant.ACTIVITY_TYPE_REBATE)));
         }
     }
 
