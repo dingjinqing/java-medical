@@ -227,21 +227,15 @@
           style="width:auto;margin-left:20px"
         >
           <div class="phoneClass">充值后卡余额</div>
-          <el-date-picker
+          <el-input
             v-model="headerDataThird.afterRechargeStartTime"
-            type="date"
-            value-format="yyyy-MM-dd 00:00:00"
             size="small"
-          >
-          </el-date-picker>
+          ></el-input>
           &nbsp;至&nbsp;
-          <el-date-picker
+          <el-input
             v-model="headerDataThird.afterRechargeEndTime"
-            type="date"
-            value-format="yyyy-MM-dd 23:59:59"
             size="small"
-          >
-          </el-date-picker>
+          ></el-input>
         </div>
       </div>
       <div class="list button">
@@ -263,7 +257,8 @@
   </div>
 </template>
 <script>
-// import { download } from '@/util/excelUtil.js'
+import { download } from '@/util/excelUtil.js'
+import { renewExport } from '@/api/admin/memberManage/memberValueAdd/memberValueAdd.js'
 export default {
   props: {
     showHeader: {
@@ -336,6 +331,32 @@ export default {
   watch: {
     showHeader (newData) {
       console.log(newData)
+      this.headerDataSecond = {
+        renewalNo: '', // 续费单号
+        cardName: '', // 会员卡名称
+        cardId: '', // 卡ID
+        memberInfo: '', // 会员信息
+        renewStartTime: '', // 续费开始时间
+        renewEndTime: '', // 续费结束时间
+        renewalAmountmin: '', // 续费金额最小
+        renewalAmountmax: '', // 续费金额最大
+        afterRenewalStartTime: '', // 续费后有效期开始时间
+        afterRenewalEndTime: '', // 续费后有效期结束时间
+        company: 0 // 钱单位
+      }
+      this.headerDataThird = {
+        rechargeNo: '', // 充值单号
+        cardName: '', // 会员卡名称
+        cardId: '', // 卡ID
+        rechargeMethod: '', // 充值方式
+        memberInfo: '', // 会员信息
+        rechargeStartTime: '', // 充值开始时间
+        rechargeEndTime: '', // 充值结束时间
+        rechargeAmountmin: '', // 充值金额最小
+        rechargeAmountmax: '', // 充值金额最大
+        afterRechargeStartTime: '', // 充值后卡余额开始时间
+        afterRechargeEndTime: '' // 充值后卡余额结束时间
+      }
       this.handleToScreen()
     }
   },
@@ -357,11 +378,14 @@ export default {
     },
     // 点击导出
     handleToExport () {
-      // let fileName = localStorage.getItem('V-content-disposition')
-      //       fileName = fileName.split(';')[1].split('=')[1]
-      //       download(res, decodeURIComponent(fileName))
+      let params = JSON.parse(JSON.stringify(this.headerDataSecond))
       switch (this.showHeader) {
         case 'second':
+          renewExport(params).then(res => {
+            let fileName = localStorage.getItem('V-content-disposition')
+            fileName = fileName.split(';')[1].split('=')[1]
+            download(res, decodeURIComponent(fileName))
+          })
           break
         case 'third':
           break

@@ -365,6 +365,10 @@ export default {
             this.$router.push({
               name: 'full_cut'
             })
+          } else if (this.$route.matched[2].name === 'store_storemanage_list') {
+            this.$router.push({
+              name: 'store_list'
+            })
           } else {
             console.log(this.$route.name, this.nameArr.indexOf(this.$route.name), this.turnArr[this.nameArr.indexOf(this.$route.name)])
             if (name === '发起砍价用户列表') {
