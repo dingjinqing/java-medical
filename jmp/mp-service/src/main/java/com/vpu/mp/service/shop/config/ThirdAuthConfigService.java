@@ -51,16 +51,16 @@ public class ThirdAuthConfigService extends  BaseShopConfigService {
     }
 
     public void verifyOrder(@NotNull @Min(0) @Max(1) Byte action) {
-        this.set(K_CITY_ORDER_PUSH,action.toString());
+        this.set(K_VERIFY_ORDER,action.toString());
     }
 
     public void setPush(ThirdErpPushParam param) {
         switch (param.getType()){
             case K_CITY_ORDER_PUSH:
-                setCityOrderPush(param.getAction());
+                setCityOrderPush(param.getStatus());
                 break;
             case K_VERIFY_ORDER:
-                verifyOrder(param.getAction());
+                verifyOrder(param.getStatus());
                 break;
             default:
                 throw new  BusinessException(JsonResultCode.CODE_CARD_RECEIVE_NOCODE);
