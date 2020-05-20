@@ -16,4 +16,8 @@ public class CardVerifyConstant {
 	public final static Byte VDF_NO = 0;
 	/** - 1： 已经删除 */
 	public final static Byte VDF_YES = 1;
+	
+	public final static String PROVINCE_NAME = "provinceName";
+	public final static String CITY_NAME = "cityName";
+	public final static String DISTRICT_NAME = "districtName";
 }
