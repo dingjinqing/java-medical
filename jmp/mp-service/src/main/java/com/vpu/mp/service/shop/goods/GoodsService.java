@@ -33,6 +33,7 @@ import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncStockParam;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
@@ -51,6 +52,7 @@ import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.market.live.LiveService;
 import com.vpu.mp.service.shop.member.MemberCardService;
+import com.vpu.mp.service.shop.member.card.GradeCardService;
 import com.vpu.mp.service.shop.store.store.StoreGoodsService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import lombok.extern.slf4j.Slf4j;
@@ -114,6 +116,8 @@ public class GoodsService extends ShopBaseService {
     public ChooseLinkService chooseLink;
     @Autowired
     protected MemberCardService memberCardService;
+    @Autowired
+    protected GradeCardService gradeCardService;
     @Autowired
     public GoodsSpecProductService goodsSpecProductService;
     @Autowired
@@ -2081,20 +2085,40 @@ public class GoodsService extends ShopBaseService {
         List<GoodsExportVo> list = selectFrom.limit(param.getExportRowStart() - 1, param.getExportRowEnd() - param.getExportRowStart() + 1).fetchInto(GoodsExportVo.class);
 
         Set<Integer> sortIds = new HashSet<>(list.size());
+        Set<Integer> goodsIds = new HashSet<>(list.size());
         List<Integer> prdIds = new ArrayList<>(list.size());
 
         list.stream().forEach(vo->{
             if (vo.getSortId() != null) {
                 sortIds.add(vo.getSortId());
             }
+            goodsIds.add(vo.getGoodsId());
             prdIds.add(vo.getPrdId());
         });
+        // 提前处理辅助数据
         Map<Integer, SortRecord> sortMap = goodsSort.getNormalSortByIds(new ArrayList<>(sortIds)).stream().collect(Collectors.toMap(SortRecord::getSortId, Function.identity()));
 
+        boolean needGoodsMainImg = param.getColumns().contains(GoodsExportVo.GOODS_IMG);
+        boolean needGoodsSecondaryImgs = param.getColumns().contains(GoodsExportVo.IMG_URL);
+        boolean needGradeCardPrice = param.getColumns().contains(GoodsExportVo.GRADE_CARD_PRICE);
+
+
+        Map<Integer, List<String>> goodsSecondaryImgsMap = null;
+        List<CardBasicVo> allAvailableGradeCards = null;
+        Map<Integer, Map<String,GradePrdRecord>> prdGradeMaps =null;
+
+        if (needGoodsSecondaryImgs) {
+            goodsSecondaryImgsMap = getGoodsImageList(new ArrayList<>(goodsIds));
+        }
+        if (needGradeCardPrice) {
+            allAvailableGradeCards =  gradeCardService.getAllAvailableGradeCards();
+            List<String> grades = allAvailableGradeCards.stream().map(CardBasicVo::getGrade).collect(Collectors.toList());
+            prdGradeMaps = selectAvailableGradeInfoByPrdIds(prdIds, grades);
+            param.getColumns().addAll(grades);
+        }
 
         //循环处理需要处理的列
         for (GoodsExportVo goods : list) {
-
             if (goods.getSortId() != null) {
                 SortRecord sortRecord = sortMap.get(goods.getSortId());
                 if (sortRecord != null) {
@@ -2108,14 +2132,23 @@ public class GoodsService extends ShopBaseService {
                 }
             }
 
-            if (param.getColumns().contains(GoodsExportVo.GOODS_IMG)) {
-                goods.setGoodsImg(imageService.imageUrl(goods.getGoodsImg()));
+            if (needGoodsMainImg) {
+                goods.setGoodsImg(getImgFullUrlUtil(goods.getGoodsImg()));
             }
 
-            if (param.getColumns().contains(GoodsExportVo.IMG_URL)) {
-                goods.setImgUrl(getGoodsImageList(goods.getGoodsId()).stream().map(String::valueOf).collect(Collectors.joining(";")));
+            if (needGoodsSecondaryImgs) {
+                List<String> imgs = goodsSecondaryImgsMap.get(goods.getGoodsId());
+                if (imgs != null) {
+                    goods.setImgUrl(String.join(";", imgs));
+                }
             }
 
+            if (needGradeCardPrice) {
+                Map<String, GradePrdRecord> gradeMap = prdGradeMaps.get(goods.getPrdId());
+                if (gradeMap != null) {
+                    setGoodsExportVoGradePrice(goods,gradeMap);
+                }
+            }
         }
 
         Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
@@ -2124,6 +2157,46 @@ public class GoodsService extends ShopBaseService {
         return workbook;
     }
 
+    private void setGoodsExportVoGradePrice(GoodsExportVo vo,Map<String,GradePrdRecord> gradePrdRecordMap){
+        for (Map.Entry<String, GradePrdRecord> entry : gradePrdRecordMap.entrySet()) {
+            switch (entry.getKey()) {
+                case "v1":
+                    vo.setV1(entry.getValue().getGradePrice());
+                    break;
+                case "v2":
+                    vo.setV2(entry.getValue().getGradePrice());
+                    break;
+                case "v3":
+                    vo.setV3(entry.getValue().getGradePrice());
+                    break;
+                case "v4":
+                    vo.setV4(entry.getValue().getGradePrice());
+                    break;
+                case "v5":
+                    vo.setV5(entry.getValue().getGradePrice());
+                    break;
+                case "v6":
+                    vo.setV6(entry.getValue().getGradePrice());
+                    break;
+                case "v7":
+                    vo.setV7(entry.getValue().getGradePrice());
+                    break;
+                case "v8":
+                    vo.setV8(entry.getValue().getGradePrice());
+                    break;
+                case "v9":
+                    vo.setV9(entry.getValue().getGradePrice());
+                    break;
+                    default:;
+            }
+        }
+    }
+
+    private Map<Integer, Map<String,GradePrdRecord>> selectAvailableGradeInfoByPrdIds(List<Integer> prdIds,List<String> availabelGrades) {
+        List<GradePrdRecord> gradePrdRecords = db().selectFrom(GRADE_PRD)
+            .where(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GRADE_PRD.GRADE.in(availabelGrades)).and(GRADE_PRD.PRD_ID.in(prdIds))).fetchInto(GradePrdRecord.class);
+        return gradePrdRecords.stream().collect(Collectors.groupingBy(GradePrdRecord::getPrdId, Collectors.toMap(GradePrdRecord::getGrade, Function.identity())));
+    }
 
     /**
      * 取指定商品信息
@@ -2316,7 +2389,7 @@ public class GoodsService extends ShopBaseService {
      * 商品图片列表
      *
      * @param goodsIds goods id
-     * @return Map<goodsid   ,       List       <       url>>
+     * @return Map<goodsid,List<url>>
      */
     public Map<Integer, List<String>> getGoodsImageList(List<Integer> goodsIds) {
         Map<Integer, Result<GoodsImgRecord>> fetch = db().selectFrom(GOODS_IMG)

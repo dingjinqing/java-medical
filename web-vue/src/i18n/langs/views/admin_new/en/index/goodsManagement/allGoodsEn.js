@@ -105,7 +105,9 @@ export const en = {
     unit: 'Unit quantifier',
     goodsImg: 'Product master map',
     detailImg: 'Product detail map',
-    barcode: 'Product barcode'
+    barcode: 'Product barcode',
+    deliverPlace: 'Deliver place',
+    gradeCardPrice: 'Grade Price'
   },
   bottomOptions: {
     allCheck: 'All election',

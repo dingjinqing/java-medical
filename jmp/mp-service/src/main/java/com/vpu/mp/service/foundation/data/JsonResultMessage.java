@@ -149,6 +149,16 @@ public class JsonResultMessage {
     public static final String GOODS_EXPORT_COLUMN_GOODS_IMG = "goods.export.column.goods_img";
     public static final String GOODS_EXPORT_COLUMN_PRD_CODES= "goods.export.column.prd_codes";
     public static final String GOODS_EXPORT_COLUMN_IMG_URL= "goods.export.column.img_url";
+    public static final String GOODS_EXPORT_COLUMN_DELIVER_PLACE= "goods.export.column.deliver_place";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_1_PRICE= "goods.export.column.grade_1_price";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_2_PRICE= "goods.export.column.grade_2_price";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_3_PRICE= "goods.export.column.grade_3_price";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_4_PRICE= "goods.export.column.grade_4_price";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_5_PRICE= "goods.export.column.grade_5_price";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_6_PRICE= "goods.export.column.grade_6_price";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_7_PRICE= "goods.export.column.grade_7_price";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_8_PRICE= "goods.export.column.grade_8_price";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_9_PRICE= "goods.export.column.grade_9_price";
 
     /**
      * 商品评价

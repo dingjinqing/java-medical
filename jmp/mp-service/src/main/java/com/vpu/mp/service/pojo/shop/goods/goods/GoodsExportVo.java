@@ -120,6 +120,34 @@ public class GoodsExportVo {
     @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_IMG_URL,columnIndex = 19)
     private String imgUrl;
 
+    /**
+     * 商品默认发货地
+     */
+    @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_DELIVER_PLACE,columnIndex = 20)
+    private String deliverPlace;
+
+    /**
+     * 1到9级会员价
+     */
+    @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_GRADE_1_PRICE,columnIndex = 21)
+    private BigDecimal v1;
+    @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_GRADE_2_PRICE,columnIndex = 23)
+    private BigDecimal v2;
+    @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_GRADE_3_PRICE,columnIndex = 24)
+    private BigDecimal v3;
+    @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_GRADE_4_PRICE,columnIndex = 25)
+    private BigDecimal v4;
+    @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_GRADE_5_PRICE,columnIndex = 26)
+    private BigDecimal v5;
+    @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_GRADE_6_PRICE,columnIndex = 27)
+    private BigDecimal v6;
+    @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_GRADE_7_PRICE,columnIndex = 28)
+    private BigDecimal v7;
+    @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_GRADE_8_PRICE,columnIndex = 29)
+    private BigDecimal v8;
+    @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_GRADE_9_PRICE,columnIndex = 30)
+    private BigDecimal v9;
+
     @ExcelIgnore
     private Integer goodsId;
     @ExcelIgnore
@@ -143,7 +171,7 @@ public class GoodsExportVo {
     public static final String GOODS_AD = "goodsAd";
     public static final String PRD_NUMBER = "prdNumber";
     public static final String PRD_COST_PRICE = "prdCostPrice";
-    public static final String MARKET_PRICE = "marketPrice";
+    public static final String PRD_MARKET_PRICE = "prdMarketPrice";
     public static final String SHOP_PRICE = "shopPrice";
     public static final String IS_ON_SALE = "isOnSale";
     public static final String LIMIT_BUY_NUM = "limitBuyNum";
@@ -152,4 +180,6 @@ public class GoodsExportVo {
     public static final String GOODS_IMG = "goodsImg";
     public static final String IMG_URL = "imgUrl";
     public static final String PRD_CODES = "prdCodes";
+    public static final String DELIVER_PLACE = "deliverPlace";
+    public static final String GRADE_CARD_PRICE = "gradeCardPrice";
 }
