@@ -1,10 +1,6 @@
 // pages1/brokeragerank/brokeragerank.js
 var util = require('../../utils/util.js')
 var app = getApp()
-var imageUrl = app.globalData.imageUrl;
-var mobile = util.getCache('mobile');
-var rank_info = [];
-var all_net = 1;
 global.wxPage({
 
   /**
@@ -13,6 +9,7 @@ global.wxPage({
   data: {
     imageUrl: app.globalData.imageUrl,
     all_net: 1,
+    rank_info: [],
   },
 
   /**
@@ -50,7 +47,7 @@ global.wxPage({
 })
 function rank_request(that) {
   // util.api('/api/wxapp/rebate/ranking', function (res) {
-  //   rank_info = res.content;
+  //   var rank_info = res.content;
   //   if (rank_info.user_rebate.username.length > 4) {
   //     rank_info.user_rebate.username = rank_info.user_rebate.username.substr(0, 3) + "...";
   //   }
