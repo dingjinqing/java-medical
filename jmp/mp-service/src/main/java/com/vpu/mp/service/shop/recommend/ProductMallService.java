@@ -51,7 +51,18 @@ public class ProductMallService extends ShopMallBaseService {
 	 * @return
 	 */
 	public Boolean updateGoods(List<Integer> goodsId) {
+		Boolean updateGood = false;
+		try {
+			updateGood = updateGood(goodsId);
+		} catch (Exception e) {
+			logger().info(e.getMessage(),e);
+		}
+		return updateGood;
+		
+	}
 
+
+	private Boolean updateGood(List<Integer> goodsId) {
 		Boolean isOk = checkNoUserId();
 		if (!isOk) {
 			return false;
@@ -97,13 +108,9 @@ public class ProductMallService extends ShopMallBaseService {
 			vo.add(productVo);
 		}
 		JsonProductBean jsonRootBean=new JsonProductBean(vo);
-//		WxOpenResult importProductUpdate = importProductUpdate(jsonRootBean);
-//		return importProductUpdate.isSuccess();
 		SendProductBean bean=new SendProductBean(1, jsonRootBean,getShopId(),null);
 		saas.taskJobMainService.dispatchImmediately(bean,SendProductBean.class.getName(),getShopId(),TaskJobEnum.WX_IMPORTPRODUCT.getExecutionType());
 		return true;
-		
-
 	}
 	
 	
