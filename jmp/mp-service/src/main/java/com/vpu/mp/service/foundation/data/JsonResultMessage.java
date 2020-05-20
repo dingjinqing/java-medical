@@ -1274,5 +1274,10 @@ public class JsonResultMessage {
     public static final String USER_CARD_RENEW_WEEK = "user.card.renew.week";
     public static final String USER_CARD_RENEW_MONTH = "user.card.renew.month";
 
+    /**
+     * 会员卡充值记录导出
+     */
+    public static final String USER_CARD_CHARGE_FILE_NAME = "user.card.charge.file_name";
+
 
 }
