@@ -24,7 +24,7 @@ public class ThirdErpPushParam {
     @NotNull
     @Min(0)
     @Max(1)
-    private Byte action;
+    private Byte status;
     @NotNull
     private String type;
 }
