@@ -87,7 +87,11 @@ public class CollectionMallService extends ShopMallBaseService {
 			skuProduct.setTitle(cart.getGoodsName());
 			skuProduct.setDesc(cart.getGoodsName());
 			skuProduct.setCategoryList(sysCateService.getCategories(goodsRecord.getCatId()));
-			skuProduct.setImageList(goodsService.getGoodsImageList(goodsRecord.getGoodsId()));
+			List<String> imageList = goodsService.getGoodsImageList(goodsRecord.getGoodsId());
+			if(imageList.isEmpty()) {
+				imageList.add(imageUrl(goodsRecord.getGoodsImg()));
+			}
+			skuProduct.setImageList(imageList);
 			skuProduct.setSrcWxappPath("/pages/item/item?gid=" + goodsRecord.getGoodsId());
 			// 非高并发更新数据的场景不建议填写此字段
 			skuProduct.setVersion((int) DateUtil.getLocalDateTime().getTime());
