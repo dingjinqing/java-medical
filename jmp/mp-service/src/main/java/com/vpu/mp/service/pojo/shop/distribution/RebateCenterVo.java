@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.distribution;
 
+import com.vpu.mp.service.pojo.wxapp.distribution.RebateOrderListVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.RebateRankingTopVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.UserRebateVo;
 import lombok.Data;
@@ -30,6 +31,10 @@ public class RebateCenterVo {
      */
     private String invitationCode;
     /**
+     *佣金排名开关
+     */
+    private Byte rankStatus;
+    /**
      * 邀请用户数
      */
     private Integer inviteUserNum;
@@ -59,4 +64,6 @@ public class RebateCenterVo {
     private UserRebateVo userRebate;
     /**当前分销员返利佣金排名*/
     private Integer rebateRanking;
+    /**返利轮播信息*/
+    private List<RebateOrderListVo> RebateOrderList;
 }

@@ -128,7 +128,7 @@ public class ThirdAuthConfigService extends  BaseShopConfigService {
         int i = saas.shop.shopApp.updateAppAuthStatus(param.getId(),getShopId(),getSysId(),param.getStatus());
         if (i>0&& param.getAction().equals(CRM_ACTION)&& BaseConstant.YES.equals(param.getStatus())){
             logger().info("授权crm-同步");
-            AppAuthRecord appAuthRecord = saas.shop.shopApp.AddAppAuthInfo(getSysId(), getShopId(), param.getAction());
+            AppAuthRecord appAuthRecord = saas.shop.shopApp.getAppAuthInfo(getSysId(), getShopId(), param.getAction());
             if (appAuthRecord!=null&&appAuthRecord.getIsSync().equals(BaseConstant.YES)){
                 //TODO
                 /**

@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -59,6 +60,9 @@ public class MpDistributionService extends ShopBaseService{
 
     @Autowired
     public DistributorListService disList;
+
+    @Autowired
+    public DistributionConfigService disCfg;
 
     /**
      * 申请分销员页面信息
@@ -269,6 +273,8 @@ public class MpDistributionService extends ShopBaseService{
         }else{
             rebateCenterVo.setCanWithdraw(account);
         }
+        Byte rankStatus = disCfg.getDistributionCfg().getRankStatus();
+        rebateCenterVo.setRankStatus(rankStatus);
         rebateCenterVo.setTotalWithdraw(userRebate1.getTotalMoney());
         //待返利佣金
         BigDecimal waitFanliMoney = this.waitFanliMoney(userId);
@@ -301,6 +307,8 @@ public class MpDistributionService extends ShopBaseService{
         UserRebateVo userRebate = this.getUserRebate(userId);
         rebateCenterVo.setUserRebate(userRebate);
         //返利轮播信息
+        List<RebateOrderListVo> rebateOrderList = this.getRebateOrderList();
+        rebateCenterVo.setRebateOrderList(rebateOrderList);
         return rebateCenterVo;
 
     }
@@ -411,6 +419,29 @@ public class MpDistributionService extends ShopBaseService{
             .where(USER_TOTAL_FANLI.USER_ID.eq(userId)).fetchOne();
         if(record != null){
             return record.into(UserRebateVo.class);
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * 返利轮播信息
+     * @return
+     */
+    public List<RebateOrderListVo> getRebateOrderList(){
+        BigDecimal finalMoney = new BigDecimal(0.00);
+        Timestamp nowDate = Util.currentTimeStamp();
+        Timestamp toDate = Util.getEarlyTimeStamp(nowDate, 30);
+        Result<Record5<Integer, BigDecimal, Timestamp, String, String>> info = db().select(ORDER_INFO.FANLI_USER_ID, ORDER_INFO.FANLI_MONEY, ORDER_INFO.FINISHED_TIME, USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR)
+            .from(ORDER_INFO)
+            .leftJoin(USER_DETAIL).on(ORDER_INFO.FANLI_USER_ID.eq(USER_DETAIL.USER_ID))
+            .where(ORDER_INFO.FANLI_TYPE.eq((byte) 1))
+            .and(ORDER_INFO.FINISHED_TIME.gt((Timestamp) toDate))
+            .and(ORDER_INFO.SETTLEMENT_FLAG.eq((byte) 1))
+            .and(ORDER_INFO.FANLI_MONEY.gt(finalMoney))
+            .orderBy(ORDER_INFO.FINISHED_TIME.desc()).limit(10).fetch();
+        if(info != null){
+            return info.into(RebateOrderListVo.class);
         }else{
             return null;
         }

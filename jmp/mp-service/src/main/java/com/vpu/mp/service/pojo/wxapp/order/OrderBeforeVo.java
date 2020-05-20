@@ -6,7 +6,6 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
-
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
@@ -114,7 +113,7 @@ public class OrderBeforeVo {
     private Integer cancelTime;
     /**TODO 自提时间*/
     private Timestamp[][] pickupDate;
-    /**???*/
+    /**满折满减优惠金额*/
     @Builder.Default
     private BigDecimal promotionReduce = BigDecimalUtil.BIGDECIMAL_ZERO;
     /**打包一口价折扣金额*/

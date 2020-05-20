@@ -57,10 +57,12 @@ public class UserTotalFanliService extends ShopBaseService {
             insert.setMobile("");
             insert.setSublayerNumber(inviteCount);
             insert.setTotalMoney(money);
+            insert.setFinalMoney(money);
             insert.insert();
         }else {
             record.setSublayerNumber(inviteCount);
             record.setTotalMoney(BigDecimalUtil.add(record.getTotalMoney(), money));
+            record.setFinalMoney(BigDecimalUtil.add(record.getFinalMoney(), money));
             record.update();
         }
     }

@@ -3,15 +3,18 @@ package com.vpu.mp.service.saas.shop;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
+import com.vpu.mp.service.pojo.shop.auth.AuthConstant;
 import com.vpu.mp.service.pojo.shop.auth.ShopMenuParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopPriPassParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopVersionListVo;
@@ -24,7 +27,6 @@ import com.vpu.mp.service.pojo.shop.auth.shopMenuList;
  *
  */
 @Service
-
 public class ShopMenuService extends MainBaseService {
 
 	final protected String menuJson = "admin.authorityNew.json";
@@ -36,6 +38,9 @@ public class ShopMenuService extends MainBaseService {
 	private static final String ENNAMELIST = "enNameList";
 
 	private static final String CHILDCONFIG = "child_config";
+
+	@Autowired
+	private JedisManager jedis;
 	
 	/**
 	 * 子账户对应展示按钮和输入密码的权限校验
@@ -59,7 +64,8 @@ public class ShopMenuService extends MainBaseService {
 			return JsonResultCode.CODE_SUCCESS;
 		}
 
-		String json = Util.loadResource(authorityJson);
+		//Util.loadResource(authorityJson);
+		String json = getCacheInfo(AuthConstant.KEY_AUTHORITY,AuthConstant.FILE_AUTHORITYJSON);
 
 		ArrayList<ShopPriPassParam> list = Util.parseJson(json, new TypeReference<List<ShopPriPassParam>>() {
 		});
@@ -117,6 +123,20 @@ public class ShopMenuService extends MainBaseService {
 	}
 
 	/**
+	 * 从缓存读
+	 * @return
+	 */
+	private String getCacheInfo(String redisKey,String fileName) {
+		String json = jedis.get(redisKey);
+		if(StringUtils.isEmpty(json)) {
+			logger().info("文件{}没有缓存，重新读取",fileName);
+			json = Util.loadResource(fileName);
+			jedis.set(redisKey, json);
+		}
+		return json;
+	}
+
+	/**
 	 * 子账户对应发送api权限的校验
 	 * 
 	 * @param roleId
@@ -134,7 +154,8 @@ public class ShopMenuService extends MainBaseService {
 		if (StringUtils.isEmpty(reqeName)) {
 			return false;
 		}
-		String json = Util.loadResource(menuJson);
+		//Util.loadResource(menuJson);
+		String json = getCacheInfo(AuthConstant.KEY_MENU, AuthConstant.FILE_MENUJSON);
 
 		ArrayList<ShopMenuParam> list = Util.parseJson(json, new TypeReference<List<ShopMenuParam>>() {
 		});
@@ -222,8 +243,8 @@ public class ShopMenuService extends MainBaseService {
 			return JsonResultCode.CODE_FAIL;
 		}
 		VersionMainConfig mainConfig = vConfig.getMainConfig();
-
-		String json = Util.loadResource(versionJson);
+		//Util.loadResource(versionJson);
+		String json = getCacheInfo(AuthConstant.KEY_VERSION, AuthConstant.FILE_VERSIONJSON);
 		ArrayList<ShopVersionParam> list = Util.parseJson(json, new TypeReference<List<ShopVersionParam>>() {
 		});
 		List<String> versionJson = (List<String>) list.get(0).getIncludeApi();

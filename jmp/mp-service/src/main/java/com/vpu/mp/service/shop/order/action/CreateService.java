@@ -584,13 +584,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         processExpressList(storeLists, vo);
         //计算金额相关、vo赋值
         processOrderBeforeVo(param, vo, vo.getOrderGoods());
-        //赠品活动。。。
+        //赠品活动
         processBeforeUniteActivity(param, vo);
         //下单页面显示积分兑换金额时去除积分,结算不做此逻辑（只是为了展示方便）
         if(BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType())) {
             vo.getOrderGoods().forEach(x-> x.setDiscountedGoodsPrice(x.getGoodsScore() != null && x.getGoodsScore() > 0 ? BigDecimalUtil.subtrac(x.getDiscountedGoodsPrice(), BigDecimalUtil.divide(new BigDecimal(x.getGoodsScore()), new BigDecimal(vo.getScoreProportion()))) : x.getDiscountedGoodsPrice()));
-        }else if(BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER.equals(param.getActivityType())) {
-            vo.getOrderGoods().forEach(x-> {if(x.getIsGift() != null && OrderConstant.NO == x.getIsGift()) {x.setDiscountedGoodsPrice(x.getGoodsPrice());}});
         }
         // 积分使用规则
         setScorePayRule(vo);
@@ -637,6 +635,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 logger().info("calculateResult:{}", calculateResult);
                 //数量限制
                 goodsNumLimit(temp);
+                temp.setGoodsPrice(calculateResult.getPrice());
                 temp.setProductPrice(calculateResult.getPrice());
                 temp.setGoodsPriceAction(calculateResult.getActivityType());
             }

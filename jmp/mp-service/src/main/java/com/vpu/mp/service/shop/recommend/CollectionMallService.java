@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.recommend.SendCollectBean;
+import com.vpu.mp.service.pojo.shop.recommend.SkuAttrList;
 import com.vpu.mp.service.pojo.shop.recommend.collect.JsonCollectBean;
 import com.vpu.mp.service.pojo.shop.recommend.collect.SkuInfo;
 import com.vpu.mp.service.pojo.shop.recommend.collect.SkuProductList;
@@ -53,6 +54,17 @@ public class CollectionMallService extends ShopMallBaseService {
 	 * @return
 	 */
 	public Boolean addCartRows(Integer userId, List<Integer> cartRecIds) {
+		Boolean addCartRow=false;
+		try {
+			addCartRow = addCartRow(userId, cartRecIds);
+		} catch (Exception e) {
+			logger().info(e.getMessage(),e);
+		}
+		return addCartRow;
+
+	}
+
+	private Boolean addCartRow(Integer userId, List<Integer> cartRecIds) {
 		String openId = check(userId);
 		if (null == openId) {
 			return false;
@@ -75,8 +87,17 @@ public class CollectionMallService extends ShopMallBaseService {
 			skuProduct.setItemCode(String.valueOf(cart.getGoodsId()));
 			skuProduct.setTitle(cart.getGoodsName());
 			skuProduct.setDesc(cart.getGoodsName());
-			skuProduct.setCategoryList(sysCateService.getCategories(goodsRecord.getCatId()));
-			skuProduct.setImageList(goodsService.getGoodsImageList(goodsRecord.getGoodsId()));
+			List<String> list = sysCateService.getCategories(goodsRecord.getCatId());
+			if (list == null || list.size() == 0) {
+				list = new ArrayList<String>();
+				list.add("未知");
+			}
+			skuProduct.setCategoryList(list);
+			List<String> imageList = goodsService.getGoodsImageList(goodsRecord.getGoodsId());
+			if(imageList.isEmpty()) {
+				imageList.add(imageUrl(goodsRecord.getGoodsImg()));
+			}
+			skuProduct.setImageList(imageList);
 			skuProduct.setSrcWxappPath("/pages/item/item?gid=" + goodsRecord.getGoodsId());
 			// 非高并发更新数据的场景不建议填写此字段
 			skuProduct.setVersion((int) DateUtil.getLocalDateTime().getTime());
@@ -89,7 +110,11 @@ public class CollectionMallService extends ShopMallBaseService {
 					: productRecord.getPrdPrice().multiply(new BigDecimal(100)));
 			skuInfo.setStatus(ONE.equals(goodsRecord.getIsOnSale()) ? ONE : TWO);
 			skuInfo.setVersion((int) DateUtil.getLocalDateTime().getTime());
-			skuInfo.setSkuAttrList(goodsService.goodsSpecProductService.getSkuAttrList(productRecord.getPrdDesc()));
+			List<SkuAttrList> skuAttrList = goodsService.goodsSpecProductService.getSkuAttrList(productRecord.getPrdDesc());
+			if(skuAttrList.isEmpty()) {
+				skuAttrList.add(new SkuAttrList(goodsRecord.getGoodsName(), goodsRecord.getGoodsName()));
+			}
+			skuInfo.setSkuAttrList(skuAttrList);
 			skuProduct.setSkuInfo(skuInfo);
 			skuProductList.add(skuProduct);
 
@@ -106,7 +131,6 @@ public class CollectionMallService extends ShopMallBaseService {
 		}
 		logger().info("没有数据");
 		return false;
-
 	}
 
 	/**
@@ -116,6 +140,16 @@ public class CollectionMallService extends ShopMallBaseService {
 	 * @return
 	 */
 	public Boolean clearCartRows(Integer userId, List<Integer> cartRecIds) {
+		Boolean clearCartRow = false;
+		try {
+			clearCartRow = clearCartRow(userId, cartRecIds);
+		} catch (Exception e) {
+			logger().info(e.getMessage(),e);
+		}
+		return clearCartRow;
+	}
+
+	private Boolean clearCartRow(Integer userId, List<Integer> cartRecIds) {
 		String openId = check(userId);
 		if (null == openId) {
 			return false;
@@ -136,10 +170,7 @@ public class CollectionMallService extends ShopMallBaseService {
 		param.setSkuProductList(skuProductList);
 		SendCollectBean bean=new SendCollectBean(2, param,getShopId(),null);
 		saas.taskJobMainService.dispatchImmediately(bean,SendCollectBean.class.getName(),getShopId(),TaskJobEnum.WX_IMPORTORDER.getExecutionType());
-//		WxOpenResult result = addshoppinglistDel(param);
-//		return result.isSuccess();
 		return true;
-
 	}
 
 	/**

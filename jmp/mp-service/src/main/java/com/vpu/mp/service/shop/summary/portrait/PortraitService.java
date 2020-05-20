@@ -281,6 +281,9 @@ public class PortraitService extends ShopBaseService {
     
 	private PortraitMaxAndMin setMaxAndMin(Portrait portrait) {
 		List<PortraitItem> province = portrait.getProvince();
-		return new PortraitMaxAndMin(portraitMax(province), portraitMin(province));
+		int size = province.size();
+		/** 省的数量34个*/
+		int min = size >= 34 ? portraitMin(province) : 0;
+		return new PortraitMaxAndMin(portraitMax(province), min);
 	}
 }

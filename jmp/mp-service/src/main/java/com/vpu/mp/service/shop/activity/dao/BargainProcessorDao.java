@@ -26,12 +26,15 @@ import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.BARGAIN_GOODS;
+import static com.vpu.mp.db.shop.Tables.BARGAIN_RECORD;
+import static com.vpu.mp.db.shop.Tables.BARGAIN_USER_LIST;
 import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
 
 /**
@@ -179,7 +182,7 @@ public class BargainProcessorDao extends ShopBaseService {
      * @param param
      */
     public void setOrderPrdBargainPrice(OrderBeforeParam param) throws MpException {
-        logger().info("砍价下单校验调试param:",param);
+        logger().info("砍价下单校验调试param:{}",param);
         BargainRecordInfo bargainRecordInfo = bargainService.bargainRecord.getRecordInfo(param.getRecordId());
         if(!bargainRecordInfo.getStatus().equals(BargainRecordService.STATUS_SUCCESS)){
             //状态不对
@@ -198,9 +201,11 @@ public class BargainProcessorDao extends ShopBaseService {
         //临时记录
         param.setBargainRecordInfo(bargainRecordInfo);
 
-        for(OrderBeforeParam.Goods prd : param.getGoods()){
+        for(OrderBeforeParam.Goods prd : param.getGoods()) {
             //砍价价格
-            prd.setProductPrice(bargainRecordInfo.getGoodsPrice().subtract(bargainRecordInfo.getBargainMoney()));
+            BigDecimal price = bargainRecordInfo.getGoodsPrice().subtract(bargainRecordInfo.getBargainMoney());
+            prd.setProductPrice(price);
+            prd.setGoodsPrice(price);
         }
     }
 

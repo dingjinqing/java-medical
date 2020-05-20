@@ -1991,7 +1991,7 @@ public class UserCardService extends ShopBaseService {
                 accountParam.setRemarkData("会员卡续费"+order.getRenewOrderSn());
                 //扣减余额
                 accountService.updateUserAccount(accountParam,
-                    TradeOptParam.builder().tradeType((byte)2).tradeFlow((byte) 0).build());
+                    TradeOptParam.builder().tradeType(TYPE_CRASH_ACCOUNT_PAY.val()).tradeFlow(TRADE_FLOW_IN.val()).build());
             }
             if (order.getMemberCardRedunce().compareTo(BigDecimal.ZERO)>0){
                 logger().info("开始增加会员卡消费记录");
@@ -2043,7 +2043,7 @@ public class UserCardService extends ShopBaseService {
                 scoreParam.setRemarkCode(RemarkTemplate.CARD_RENEW.code);
                 scoreParam.setRemarkData("会员卡续费"+order.getRenewOrderSn());
                 scoreParam.setChangeWay(61);
-                scoreService.updateMemberScore(scoreParam,0,(byte)1,(byte)0);
+                scoreService.updateMemberScore(scoreParam,0,TYPE_SCORE_PAY.val(),TRADE_FLOW_IN.val());
             }
             //更新订单信息
             updateOrderInfo(order.getRenewOrderSn());
@@ -2498,7 +2498,7 @@ public class UserCardService extends ShopBaseService {
             accountParam.setRemarkData("会员卡续费"+order.getRenewOrderSn());
             //扣减余额
             accountService.updateUserAccount(accountParam,
-                TradeOptParam.builder().tradeType((byte)2).tradeFlow((byte) 0).build());
+                TradeOptParam.builder().tradeType(TYPE_CRASH_ACCOUNT_PAY.val()).tradeFlow(TRADE_FLOW_IN.val()).build());
         }
         if (order.getMemberCardRedunce().compareTo(BigDecimal.ZERO)>0){
             logger().info("开始增加会员卡消费记录");
