@@ -34,6 +34,7 @@
           <el-select
             v-model="param.sourceType"
             placeholder="请选择类型"
+            @change="handleType"
             size="small"
             class="default_width"
           >
@@ -273,12 +274,9 @@ export default {
         endTime: '',
         channelName: '',
         sourcePage: '',
-        sourceType: -1
+        sourceType: ''
       },
-      pageParams: {
-        currentPage: 1,
-        pageRows: 10
-      },
+      pageParams: {},
       tableData: [],
       turnUpChannelDialog: false,
       showShareDialog: false, // 分享弹窗
@@ -354,14 +352,18 @@ export default {
       })
     },
     initDataList () {
-      let obj = {
-        currentPage: 1,
-        pageRows: 10
+      if (this.param.endTime !== '') {
+        let arr = this.param.endTime.split(' ')
+        this.param.endTime = arr[0] + ' 59:59:59'
       }
-      channelList(obj).then(res => {
-        console.log(res)
+      let obj = {
+        currentPage: this.pageParams.currentPage,
+        pageRows: this.pageParams.pageRows
+      }
+      channelList(Object.assign({}, this.param, obj)).then(res => {
         if (res.error === 0) {
-          this.pageParams = res.content.page
+          // this.pageParams = res.content.page
+          this.pageParams = Object.assign({}, res.content.page)
           this.tableData = res.content.dataList
           this.handleDdta(res.content.dataList)
         }
@@ -384,12 +386,21 @@ export default {
       }
       return val
     },
-    choosingGoodsResult (row) {
-      console.log(row)
+    handleType (type) {
+      if (type === -1) {
+        this.param.sourceType = ''
+      }
+    },
+    choosingGoodsResult (row, rows) {
+      if (rows.refresh === true) {
+        this.initDataList()
+      }
     },
     // 自定义页面数据回传
-    handleSelectTemplate (data) {
-      // this.form.rebate_page_id = data.pageId
+    handleSelectTemplate (data, datas) {
+      if (datas.refresh === true) {
+        this.initDataList()
+      }
     }
   }
 }

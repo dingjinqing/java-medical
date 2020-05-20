@@ -503,9 +503,8 @@
                       <div class="right_info">
                         <div class="goods_name">
                           <span>
-                            <!-- <span class="tags red" v-if="goodsItem.isGift === 1">会员专享</span> -->
-                            <!-- <span class="tags ef8115" v-if="goodsItem.isGift === 1">限时降价</span> -->
-                            <!-- <span class="tags ef8115" v-if="goodsItem.isGift === 1">首单特惠</span> -->
+                            <span class="tags red" v-if="goodsItem.activityType">{{$t('order.activityTypeList')[goodsItem.activityType].name}}</span>
+                            <span class="tags red" v-if="goodsItem.isCardExclusive === 1">会员专享</span>
                             <span class="tags red" v-if="goodsItem.isGift === 1">赠品</span>
                           {{goodsItem.goodsName}}
                           </span>
@@ -713,9 +712,8 @@
                         <div class="right_info">
                           <div class="goods_name">
                             <span>
-                              <!-- <span class="tags red" v-if="goodsItem.isGift === 1">会员专享</span> -->
-                              <!-- <span class="tags ef8115" v-if="goodsItem.isGift === 1">限时降价</span> -->
-                              <!-- <span class="tags ef8115" v-if="goodsItem.isGift === 1">首单特惠</span> -->
+                              <span class="tags red" v-if="goodsItem.activityType">{{$t('order.activityTypeList')[goodsItem.activityType].name}}</span>
+                              <span class="tags red" v-if="goodsItem.isCardExclusive === 1">会员专享</span>
                               <span class="tags red" v-if="goodsItem.isGift === 1">赠品</span>
                               {{childGoods.goodsName}}
                             </span>

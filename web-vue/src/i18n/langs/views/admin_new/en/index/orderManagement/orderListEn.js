@@ -333,5 +333,17 @@ export const en = {
     {value: 2, label: 'Auto after-sales'}
     // {value: 3, label: 'ERP after-sales'},
     // {value: 4, label: 'POS after-sales'}
-  ]
+  ],
+  activityTypeList: {
+    1: {name: 'Group'},
+    3: {name: 'Bargain'},
+    4: {name: 'Point Redemption'},
+    5: {name: 'second kill'},
+    6: {name: 'Limited price reduction'},
+    7: {name: 'Redemption'},
+    8: {name: 'Match Team Draw'},
+    9: {name: 'Bid price'},
+    10: {name: 'Pre-sale'},
+    18: {name: 'First Order Special'}
+  }
 }

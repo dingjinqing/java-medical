@@ -193,7 +193,7 @@ public class GoodsCommentProcessorDao extends BaseShopConfigService {
         CommentDetailVo.CommentLevelInfo bad = new CommentDetailVo.CommentLevelInfo(CommentDetailVo.BAD_LEVEL,level1Num+level0Num);
         rets.add(bad);
 
-        Long imgNum = recordsList.stream().filter(x -> StringUtils.isNotBlank(x.get(COMMENT_GOODS.COMM_IMG))).count();
+        Long imgNum = recordsList.stream().filter(x -> StringUtils.isNotBlank(x.get(COMMENT_GOODS.COMM_IMG))&&!"[]".equals(x.get(COMMENT_GOODS.COMM_IMG))).count();
         CommentDetailVo.CommentLevelInfo imgLevel = new CommentDetailVo.CommentLevelInfo(CommentDetailVo.IMG_LEVEL,imgNum);
         rets.add(imgLevel);
 

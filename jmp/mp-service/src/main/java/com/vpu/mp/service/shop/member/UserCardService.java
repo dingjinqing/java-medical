@@ -9,6 +9,10 @@ import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -69,6 +73,7 @@ import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.BeanUtils;
@@ -88,6 +93,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
 import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
@@ -704,10 +712,11 @@ public class UserCardService extends ShopBaseService {
     }
 
     /**
-     * 	增加会员卡消费记录
-     * @param tradeType  {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME}
+     * 增加会员卡消费记录
+     *
+     * @param tradeType  {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
      * @param isContinue 卡余额时（次数或余额）在休息时间内（23:00-8:00）是否继续发送消息：true继续，false停止
-     * @param type 修改类型 0: 卡余额；1：兑换商品次数，2： 兑换门店次数
+     * @param type       修改类型 0: 卡余额；1：兑换商品次数，2： 兑换门店次数
      */
     public int cardConsumer(UserCardConsumeBean data, Integer adminUser, Byte tradeType, Byte tradeFlow, Byte type,
                             Boolean isContinue) {
@@ -1982,7 +1991,7 @@ public class UserCardService extends ShopBaseService {
                 accountParam.setRemarkData("会员卡续费"+order.getRenewOrderSn());
                 //扣减余额
                 accountService.updateUserAccount(accountParam,
-                    TradeOptParam.builder().tradeType((byte)2).tradeFlow((byte) 0).build());
+                    TradeOptParam.builder().tradeType(TYPE_CRASH_ACCOUNT_PAY.val()).tradeFlow(TRADE_FLOW_IN.val()).build());
             }
             if (order.getMemberCardRedunce().compareTo(BigDecimal.ZERO)>0){
                 logger().info("开始增加会员卡消费记录");
@@ -2034,7 +2043,7 @@ public class UserCardService extends ShopBaseService {
                 scoreParam.setRemarkCode(RemarkTemplate.CARD_RENEW.code);
                 scoreParam.setRemarkData("会员卡续费"+order.getRenewOrderSn());
                 scoreParam.setChangeWay(61);
-                scoreService.updateMemberScore(scoreParam,0,(byte)1,(byte)0);
+                scoreService.updateMemberScore(scoreParam,0,TYPE_SCORE_PAY.val(),TRADE_FLOW_IN.val());
             }
             //更新订单信息
             updateOrderInfo(order.getRenewOrderSn());
@@ -2489,7 +2498,7 @@ public class UserCardService extends ShopBaseService {
             accountParam.setRemarkData("会员卡续费"+order.getRenewOrderSn());
             //扣减余额
             accountService.updateUserAccount(accountParam,
-                TradeOptParam.builder().tradeType((byte)2).tradeFlow((byte) 0).build());
+                TradeOptParam.builder().tradeType(TYPE_CRASH_ACCOUNT_PAY.val()).tradeFlow(TRADE_FLOW_IN.val()).build());
         }
         if (order.getMemberCardRedunce().compareTo(BigDecimal.ZERO)>0){
             logger().info("开始增加会员卡消费记录");
@@ -2548,7 +2557,7 @@ public class UserCardService extends ShopBaseService {
      * @return
      */
     public PageResult<UserCardRenewListVo> getCardRenewList(UserCardRenewListParam param) {
-        SelectConditionStep<? extends Record> select = db().select(CARD_RENEW.RENEW_ORDER_SN, MEMBER_CARD.CARD_NAME, USER_CARD.CARD_ID, USER.USERNAME, USER.MOBILE, CARD_RENEW.ADD_TIME, CARD_RENEW.RENEW_MONEY, CARD_RENEW.RENEW_TIME, CARD_RENEW.RENEW_DATE_TYPE, CARD_RENEW.RENEW_EXPIRE_TIME)
+        SelectConditionStep<? extends Record> select = db().select(CARD_RENEW.RENEW_ORDER_SN, CARD_RENEW.RENEW_TYPE, CARD_RENEW.USER_ID, MEMBER_CARD.CARD_NAME, USER_CARD.CARD_ID, USER.USERNAME, USER.MOBILE, CARD_RENEW.ADD_TIME, CARD_RENEW.RENEW_MONEY, CARD_RENEW.RENEW_TIME, CARD_RENEW.RENEW_DATE_TYPE, CARD_RENEW.RENEW_EXPIRE_TIME)
             .from(CARD_RENEW.leftJoin(USER_CARD).on(CARD_RENEW.CARD_NO.eq(USER_CARD.CARD_NO)))
             .leftJoin(USER).on(CARD_RENEW.USER_ID.eq(USER.USER_ID))
             .leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(CARD_RENEW.CARD_ID))
@@ -2664,6 +2673,45 @@ public class UserCardService extends ShopBaseService {
     }
 
     /**
+     * 导出续费记录
+     *
+     * @param param
+     * @param lang
+     * @return
+     */
+    public Workbook exportRenewList(UserCardRenewListParam param, String lang) {
+        SelectConditionStep<? extends Record> select = db().select(CARD_RENEW.RENEW_ORDER_SN, MEMBER_CARD.CARD_NAME, USER_CARD.CARD_ID, USER.USERNAME, USER.MOBILE, CARD_RENEW.ADD_TIME, CARD_RENEW.RENEW_MONEY, CARD_RENEW.RENEW_TYPE, CARD_RENEW.RENEW_TIME, CARD_RENEW.RENEW_DATE_TYPE, CARD_RENEW.RENEW_EXPIRE_TIME)
+            .from(CARD_RENEW.leftJoin(USER_CARD).on(CARD_RENEW.CARD_NO.eq(USER_CARD.CARD_NO)))
+            .leftJoin(USER).on(CARD_RENEW.USER_ID.eq(USER.USER_ID))
+            .leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(CARD_RENEW.CARD_ID))
+            .where(CARD_RENEW.ORDER_STATUS.eq(CardConstant.CARD_RENEW_ORDER_STATUS_OK));
+        select = renewBuildOptions(select, param);
+        select = (SelectConditionStep<? extends Record>) select.orderBy(CARD_RENEW.ADD_TIME.desc());
+        List<UserCardRenewExportVo> list = select.fetchInto(UserCardRenewExportVo.class);
+
+        list.forEach(o -> {
+            if (CardConstant.USER_CARD_RENEW_TYPE_CASH.equals(o.getRenewType())) {
+                o.setRenewMoneyString(o.getRenewMoney().toString() + Util.translateMessage(lang, JsonResultMessage.USER_CARD_RENEW_CASH, OrderConstant.LANGUAGE_TYPE_EXCEL));
+            } else if (CardConstant.USER_CARD_RENEW_TYPE_INTEGRAL.equals(o.getRenewType())) {
+                o.setRenewMoneyString(o.getRenewMoney().toString() + Util.translateMessage(lang, JsonResultMessage.USER_CARD_RENEW_INTEGRAL, OrderConstant.LANGUAGE_TYPE_EXCEL));
+            }
+
+            if (CardConstant.USER_CARD_RENEW_DATE_TYPE_DAY.equals(o.getRenewDateType())) {
+                o.setRenewTimeString(o.getRenewTime().toString() + Util.translateMessage(lang, JsonResultMessage.USER_CARD_RENEW_DAY, OrderConstant.LANGUAGE_TYPE_EXCEL));
+            } else if (CardConstant.USER_CARD_RENEW_DATE_TYPE_WEEK.equals(o.getRenewDateType())) {
+                o.setRenewTimeString(o.getRenewTime().toString() + Util.translateMessage(lang, JsonResultMessage.USER_CARD_RENEW_WEEK, OrderConstant.LANGUAGE_TYPE_EXCEL));
+            } else if (CardConstant.USER_CARD_RENEW_DATE_TYPE_MONTH.equals(o.getRenewDateType())) {
+                o.setRenewTimeString(o.getRenewTime().toString() + Util.translateMessage(lang, JsonResultMessage.USER_CARD_RENEW_MONTH, OrderConstant.LANGUAGE_TYPE_EXCEL));
+            }
+        });
+
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+        excelWriter.writeModelList(list, UserCardRenewExportVo.class);
+        return workbook;
+    }
+
+    /**
      * 会员卡续费订单数据
      *
      * @param param
@@ -2701,7 +2749,7 @@ public class UserCardService extends ShopBaseService {
      * @return
      */
     public PageResult<UserCardChargeListVo> getCardChargeList(UserCardChargeListParam param, String language) {
-        SelectConditionStep<? extends Record> select = db().select(CHARGE_MONEY.ORDER_SN, MEMBER_CARD.CARD_NAME, USER_CARD.CARD_ID, USER.USERNAME, USER.MOBILE, CHARGE_MONEY.CHARGE, CHARGE_MONEY.CREATE_TIME, CHARGE_MONEY.RETURN_MONEY, CHARGE_MONEY.AFTER_CHARGE_MONEY, CHARGE_MONEY.REASON_ID, CHARGE_MONEY.CHANGE_TYPE)
+        SelectConditionStep<? extends Record> select = db().select(CHARGE_MONEY.ORDER_SN, CHARGE_MONEY.USER_ID, MEMBER_CARD.CARD_NAME, USER_CARD.CARD_ID, USER.USERNAME, USER.MOBILE, CHARGE_MONEY.CHARGE, CHARGE_MONEY.CREATE_TIME, CHARGE_MONEY.RETURN_MONEY, CHARGE_MONEY.AFTER_CHARGE_MONEY, CHARGE_MONEY.REASON_ID, CHARGE_MONEY.CHANGE_TYPE)
             .from(CHARGE_MONEY.leftJoin(USER_CARD).on(CHARGE_MONEY.CARD_NO.eq(USER_CARD.CARD_NO)))
             .leftJoin(USER).on(CHARGE_MONEY.USER_ID.eq(USER.USER_ID))
             .leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(CHARGE_MONEY.CARD_ID))

@@ -1,11 +1,13 @@
 package com.vpu.mp.service.shop.member.dao;
 
+import com.vpu.mp.db.main.tables.DictProvince;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardVerifyResultVo;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -22,6 +24,9 @@ import java.util.Set;
 
 import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
 import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
+import static com.vpu.mp.db.main.tables.DictDistrict.DICT_DISTRICT;
+import static com.vpu.mp.db.main.tables.DictProvince.DICT_PROVINCE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant.*;
 
 /**
