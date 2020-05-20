@@ -373,7 +373,7 @@ public class GoodsCommentService extends ShopBaseService {
       //有权限
       if (commentSwitch.getAddCommentSwitch(getSysId()).equals(NumberUtils.INTEGER_ONE)){
           String sqlImg = "";
-          if (!StringUtils.isEmpty(goodsCommentAddComm.getCommImg())||"".equals(goodsCommentAddComm.getCommImg())){
+          if (!StringUtils.isEmpty(goodsCommentAddComm.getCommImg())&&!"".equals(goodsCommentAddComm.getCommImg())){
               String img = goodsCommentAddComm.getCommImg();
               String[] imgArr = img.split(",");
               for (String i:imgArr){
