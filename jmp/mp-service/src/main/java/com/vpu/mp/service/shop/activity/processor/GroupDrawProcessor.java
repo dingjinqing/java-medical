@@ -92,6 +92,7 @@ public class GroupDrawProcessor implements CreateOrderProcessor,GoodsDetailProce
 		BigDecimal payMoney = groupDraw.getPayMoney();
 		log.info("价格改为" + payMoney);
 		goods.setProductPrice(payMoney);
+		goods.setGoodsPrice(payMoney);
 		groupDrawService.createInviteRecord(param);
 		log.info("processInitCheckedOrderCreate结束");
 	}
