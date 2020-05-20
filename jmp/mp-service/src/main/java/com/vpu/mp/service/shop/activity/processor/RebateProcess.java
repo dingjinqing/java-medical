@@ -2,12 +2,19 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
 import com.vpu.mp.service.pojo.shop.distribution.UserDistributionVo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.distribution.GoodsDistributionVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
@@ -17,12 +24,15 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.distribution.MpDistributionGoodsService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 分销
@@ -30,7 +40,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class RebateProcess implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,CreateOrderProcessor{
+public class RebateProcess implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,CreateOrderProcessor,ActivityCartListStrategy{
     @Autowired
     MpDistributionGoodsService distributionGoods;
     @Autowired
@@ -103,5 +113,38 @@ public class RebateProcess implements Processor,ActivityGoodsListProcessor,Goods
                 goodsDistributionVo.setRebateRatio(rebateRatioVo);
                 goodsDetailMpBo.setGoodsDistribution(goodsDistributionVo);
         }
+    }
+
+    //*************************************
+
+    /**
+     * 购物车 分销商品
+     * @param cartBo 业务数据类
+     */
+    @Override
+    public void doCartOperation(WxAppCartBo cartBo) {
+        log.info("购物车-分销-开始");
+        DistributionParam cfg = distributionGoods.distributionConf.getDistributionCfg();
+        //开关
+        if (cfg.getStatus() == OrderConstant.NO) {
+            log.info("购物车-分销-开关关闭processInitCheckedOrderCreate，结束");
+            return;
+        }
+        List<Integer> product = cartBo.getCartGoodsList().stream().map(WxAppCartGoods::getProductId).distinct().collect(Collectors.toList());
+        Map<Integer, UserRebatePriceRecord> rebatePriceRecordMap = distributionGoods.userRebatePrice.getUserRebatePrice(cartBo.getUserId(), product.toArray(new Integer[]{}))
+            .intoMap(UserRebatePriceRecord::getProductId);
+        cartBo.getCartGoodsList().forEach(goods -> {
+            UserRebatePriceRecord rebatePriceRecord = rebatePriceRecordMap.get(goods.getProductId());
+            if (rebatePriceRecord != null) {
+                log.info("购物车-分销-规格：{},分销价 ：{}", rebatePriceRecord.getProductId(), rebatePriceRecord.getAdvicePrice());
+                CartActivityInfo activityInfo = new CartActivityInfo();
+                activityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_REBATE);
+                activityInfo.setActivityId(rebatePriceRecord.getId());
+                activityInfo.setProductPrice(rebatePriceRecord.getAdvicePrice());
+                goods.getCartActivityInfos().add(activityInfo);
+                goods.setPriceStatus(BaseConstant.YES);
+            }
+        });
+        log.info("购物车-分销-结算");
     }
 }
