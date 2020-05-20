@@ -1937,6 +1937,10 @@ public class UserCardService extends ShopBaseService {
             .orderBy(USER_CARD.IS_DEFAULT.desc(),USER_CARD.MONEY.desc())
             .fetchInto(RenewValidCardList.class);
         cardList.forEach(c->{
+            if(StringUtils.isBlank(c.getBgColor())) {
+                // 默认背景色
+                c.setBgColor(CardUtil.getDefaultBgColor());
+            }
             if (c.getExpireTime()!=null&&c.getExpireTime().before(DateUtil.getLocalDateTime())){
                 c.setExpire(NumberUtils.BYTE_ONE);
             }else {
