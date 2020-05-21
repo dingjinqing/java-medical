@@ -72,3 +72,12 @@ export function reducePriceOrderListExport (data) {
     responseType: 'blob'
   })
 }
+
+// 限时降价活动效果
+export function getReduceAnalysisData (data) {
+  return service({
+    url: '/api/admin/market/reduceprice/analysis',
+    method: 'post',
+    data: data
+  })
+}

@@ -193,7 +193,7 @@
 </template>
 
 <script>
-import { effactSeckillList } from '@/api/admin/marketManage/seckill.js'
+import { getReduceAnalysisData } from '@/api/admin/marketManage/reducePrice.js'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import echarts from 'echarts'
 
@@ -242,20 +242,22 @@ export default {
       if (nowTime >= startTime && nowTime <= endTime) {
         // 进行中
         this.starDate = this.$route.query.startTime
+        console.log(this.$route.query.startTime)
       }
       if (startTime > nowTime || endTime < nowTime) {
         // 未开始或已结束
         this.starDate = this.$route.query.startTime
         this.endDate = this.$route.query.endTime
+        console.log(this.$route.query.startTime)
       }
 
       let params = {
-        skId: this.$route.query.id,
+        id: this.$route.query.id,
         startTime: this.starDate,
         endTime: this.endDate
       }
       this.handleEcharts()
-      effactSeckillList(params).then((res) => {
+      getReduceAnalysisData(params).then((res) => {
         if (res.error === 0) {
           this.total = res.content.total
           this.echartData = res.content

@@ -1,22 +1,17 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
+import com.vpu.mp.service.pojo.shop.market.reduceprice.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
-import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceAddParam;
-import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePricePageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceUpdateParam;
-import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceVo;
-import com.vpu.mp.service.pojo.shop.market.reduceprice.SimpleReducePriceParam;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -98,5 +93,13 @@ public class AdminReducePriceController extends AdminBaseController {
         Workbook workbook = shop().reducePrice.exportReducePriceOrderList(param, getLang());
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.REDUCE_PRICE_ORDER_LIST_FILENAME, OrderConstant.LANGUAGE_TYPE_EXCEL, OrderConstant.LANGUAGE_TYPE_EXCEL) + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
         export2Excel(workbook, fileName, response);
+    }
+
+    /**
+     * 活动效果分析
+     */
+    @PostMapping("/api/admin/market/reduceprice/analysis")
+    public JsonResult getReduceAnalysisData(@RequestBody @Validated ReducePriceAnalysisParam param) {
+        return success(shop().reducePrice.getReduceAnalysisData(param));
     }
 }

@@ -1150,8 +1150,12 @@ public class OrderReadService extends ShopBaseService {
 	 * @return
 	 */
 	public ActiveOrderList getActiveOrderList(Byte goodType, Integer activityId, Timestamp startTime, Timestamp  endTime) {
-		return marketOrderInfo.getActiveOrderList(goodType, activityId, startTime, endTime);
-	}
+        if (BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goodType)) {
+            //限时降价的订单
+            return marketOrderInfo.getActiveOrderList2(goodType, activityId, startTime, endTime);
+        }
+        return marketOrderInfo.getActiveOrderList(goodType, activityId, startTime, endTime);
+    }
 
 	 /**
      * 营销活动订单查询
