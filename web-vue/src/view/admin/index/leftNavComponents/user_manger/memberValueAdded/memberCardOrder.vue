@@ -54,16 +54,26 @@
             ></el-option>
           </el-select>
         </div>
-        <div class="filters_item">
+        <div
+          class="filters_item"
+          style="max-width: 500px;"
+        >
           <span>{{$t('orderCommon.orderTime')}}：</span>
           <el-date-picker
-            v-model="applicationTime"
-            type="datetimerange"
-            :range-separator="$t('orderCommon.to')"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            :start-placeholder="$t('orderCommon.startTime')"
-            :end-placeholder="$t('orderCommon.endTime')"
+            v-model="applicationTime0"
+            type="date"
             size="small"
+            value-format="yyyy-MM-dd 00:00:00"
+            :placeholder="$t('actionRecord.startTime')"
+          >
+          </el-date-picker>
+          &nbsp;至&nbsp;
+          <el-date-picker
+            v-model="applicationTime1"
+            type="date"
+            size="small"
+            value-format="yyyy-MM-dd 23:59:59"
+            :placeholder="$t('actionRecord.endTime')"
           >
           </el-date-picker>
         </div>
@@ -256,6 +266,8 @@ export default {
       searchParams: {},
       memberCardOrderList: [],
       applicationTime: '',
+      applicationTime0: '',
+      applicationTime1: '',
       showExportConfirm: false, // 是否展示导出数据弹窗
       // 原始表格数据
       originalData: []
@@ -283,8 +295,8 @@ export default {
     },
     initDataList () {
       this.loading = true
-      this.searchParams.startTime = this.applicationTime[0]
-      this.searchParams.endTime = this.applicationTime[1]
+      this.searchParams.startTime = this.applicationTime0
+      this.searchParams.endTime = this.applicationTime1
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
       getMemberCardOrderList(this.searchParams).then((res) => {
@@ -310,6 +322,7 @@ export default {
       this.memberCardOrderList = data
     },
     viewUserDetail (userId) {
+      console.log(userId)
       this.$router.push({
         name: 'membershipInformation',
         query: {
@@ -352,8 +365,8 @@ export default {
       }
     },
     exportDataList () {
-      this.searchParams.startTime = this.applicationTime[0]
-      this.searchParams.endTime = this.applicationTime[1]
+      this.searchParams.startTime = this.applicationTime0
+      this.searchParams.endTime = this.applicationTime1
       this.showExportConfirm = true
     }
   },

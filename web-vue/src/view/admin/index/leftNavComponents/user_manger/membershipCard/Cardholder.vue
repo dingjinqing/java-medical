@@ -60,7 +60,7 @@
               @endTime="secondDateTime = $event"/>
 
           </div>
-          <div style="margin-left: 56px;">
+          <div v-if="showActivation" style="margin-left: 56px;">
             <span style="width: auto;">是否提交激活申请</span>
             <el-select
               v-model="submitValue"
@@ -77,7 +77,7 @@
           </div>
         </div>
         <div class="topDiv">
-            <div>
+            <div v-if="showActivation">
             <span>审核状态</span>
             <el-select
               v-model="examineStatusValue"
@@ -198,6 +198,28 @@
           label="会员卡号"
           align="center"
         >
+        </el-table-column>
+        <el-table-column
+          label="是否提交激活申请"
+          align="center"
+          v-if="showActivation"
+        >
+        <template slot-scope="scope">
+           <span v-if="scope.row.status">是</span>
+           <span v-else>否</span>
+         </template>
+        </el-table-column>
+        <el-table-column
+          label="审核状态"
+          align="center"
+          v-if="showActivation"
+        >
+        <template slot-scope="scope">
+           <span v-if="scope.row.status===1">审核中</span>
+           <span v-else-if="scope.row.status===2">审核通过</span>
+           <span v-else-if="scope.row.status===3">审核失败</span>
+           <span v-else></span>
+         </template>
         </el-table-column>
         <el-table-column
           label="卡状态"
@@ -354,7 +376,14 @@ export default {
       firstDateTime: null, // 领取时间
       secondDateTime: null, // 领取时间
       tableData: [],
-      operation: ['充值明细', '消费明细', '废除']
+      operation: ['充值明细', '消费明细', '废除'],
+      cardType: null,
+      activation: null
+    }
+  },
+  computed: {
+    showActivation () {
+      return this.activation === 1
     }
   },
   created () {
@@ -384,9 +413,11 @@ export default {
       getAllCardHolders(obj).then(res => {
         if (res.error === 0) {
           // 成功
-          this.tableData = res.content.dataList
+          this.tableData = res.content.data.dataList
           // 分页信息
-          this.pageParams = res.content.page
+          this.pageParams = res.content.data.page
+          this.cardType = res.content.cardType
+          this.activation = res.content.activation
         }
       })
     },
@@ -406,6 +437,10 @@ export default {
           this.statusValue = -1
           this.firstDateTime = null
           this.secondDateTime = null
+          this.submitValue = -1
+          this.examineStatusValue = 0
+          this.consumeRecordValue = -1
+          this.chargeRecordValue = -1
           break
         case 2:
           this.exportInfo()

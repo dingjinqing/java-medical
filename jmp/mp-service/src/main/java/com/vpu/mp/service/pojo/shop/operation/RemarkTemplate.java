@@ -75,7 +75,8 @@ public enum RemarkTemplate {
 	SYSTEM_UPGRADE(3006,RemarkMessage.SYSTEM_UPGRADE),
     /**	会员卡续费 */
     CARD_RENEW(3007,RemarkMessage.CARD_RENEW),
-
+    /**	会员卡续费:  {订单号} */
+    CARD_RENEW_ORDER(3008,RemarkMessage.CARD_RENEW_ORDER),
 
 
 	/**

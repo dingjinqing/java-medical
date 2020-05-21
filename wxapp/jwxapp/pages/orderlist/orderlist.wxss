@@ -203,3 +203,6 @@
   margin-top: 20rpx;
   color: #999;
 }
+.goods_price view{
+ display: inline-block;
+}
