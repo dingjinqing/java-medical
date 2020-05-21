@@ -281,12 +281,13 @@ public class ReducePriceService extends ShopBaseService {
     }
 
     public Map<Integer, BigDecimal> getShowPriceByGoodsIds(List<Integer> goodsIds, Timestamp date) {
-        Map<Integer, Result<Record5<Integer, Byte, String, String, Integer>>> recordMap = db().select(
-            REDUCE_PRICE.ID,
-            REDUCE_PRICE.PERIOD_ACTION,
-            REDUCE_PRICE.EXTEND_TIME,
-            REDUCE_PRICE.POINT_TIME,
-            REDUCE_PRICE_GOODS.GOODS_ID)
+        Map<Integer, Result<Record5<Integer, Byte, String, String, Integer>>> recordMap = db()
+            .select(
+                REDUCE_PRICE.ID,
+                REDUCE_PRICE.PERIOD_ACTION,
+                REDUCE_PRICE.EXTEND_TIME,
+                REDUCE_PRICE.POINT_TIME,
+                REDUCE_PRICE_GOODS.GOODS_ID)
             .from(REDUCE_PRICE_GOODS)
             .leftJoin(REDUCE_PRICE).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID))
             .where(REDUCE_PRICE_GOODS.GOODS_ID.in(goodsIds))
@@ -294,7 +295,7 @@ public class ReducePriceService extends ShopBaseService {
             .and(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(REDUCE_PRICE.START_TIME.lessThan(date))
             .and(REDUCE_PRICE.END_TIME.greaterThan(date))
-            .orderBy(REDUCE_PRICE.CREATE_TIME.asc())
+            .orderBy(REDUCE_PRICE.FIRST.desc(),REDUCE_PRICE.CREATE_TIME.asc())
             .fetch()
             .intoGroups(REDUCE_PRICE_GOODS.GOODS_ID);
         Map<Integer, Integer> goodsIdAndReducePriceIdMap = recordMap.entrySet()
