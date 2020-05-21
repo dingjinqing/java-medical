@@ -967,7 +967,7 @@ export default {
         let reducePriceFloat = parseFloat(shopPrice - goodsPriceFloat).toFixed(3)
         itemData.goodsPrice = parseFloat(goodsPriceFloat.substring(0, goodsPriceFloat.length - 1))
         itemData.reducePrice = parseFloat(reducePriceFloat.substring(0, reducePriceFloat.length - 1))
-        if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
+        if (this.isEditFlag === false && itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
           itemData.reducePriceProduct.map(item => {
             let originalPrice = item.originalPrice
             let prdPriceFloat = (originalPrice * (parseFloat(rowData.discount / 10))).toFixed(3)
@@ -990,7 +990,7 @@ export default {
         let discountFloat = (parseFloat(goodsPriceFloat / shopPrice) * 10).toFixed(3)
         itemData.goodsPrice = parseFloat(goodsPriceFloat.substring(0, goodsPriceFloat.length - 1))
         itemData.discount = parseFloat(discountFloat.substring(0, discountFloat.length - 1))
-        if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
+        if (this.isEditFlag === false && itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
           itemData.reducePriceProduct.map(item => {
             let originalPrice = item.originalPrice
             let prdPriceFloat = parseFloat(originalPrice - rowData.reducePrice).toFixed(3)
@@ -1013,7 +1013,7 @@ export default {
         let discountFloat = (parseFloat(rowData.goodsPrice / shopPrice) * 10).toFixed(3)
         itemData.reducePrice = parseFloat(reducePriceFloat.substring(0, reducePriceFloat.length - 1))
         itemData.discount = parseFloat(discountFloat.substring(0, discountFloat.length - 1))
-        if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
+        if (this.isEditFlag === false && itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
           itemData.reducePriceProduct.map(item => {
             item.prdPrice = rowData.goodsPrice
           })

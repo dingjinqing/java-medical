@@ -346,7 +346,7 @@ global.wxPage({
       memberCardNo: 0,
       moneyPaid: 0.00,
       renewNum: parseFloat(opt.renew_num).toFixed(2),
-      scoreNum: opt.score_num,
+      scoreNum: Number(opt.score_num),
       useAccount: 0.00
     }
     console.log(that.data)

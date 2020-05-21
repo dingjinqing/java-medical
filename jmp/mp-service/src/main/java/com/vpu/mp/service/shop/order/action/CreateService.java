@@ -696,8 +696,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         logger().info("initOrderGoods开始");
         List<OrderGoodsBo> boList = new ArrayList<>(goods.size());
         for (Goods temp : goods) {
-            OrderGoodsBo bo = orderGoods.initOrderGoods(temp);
             goodsNumLimit(temp);
+            OrderGoodsBo bo = orderGoods.initOrderGoods(temp);
             boList.add(bo);
         }
         param.setBos(boList);
