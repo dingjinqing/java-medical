@@ -466,7 +466,7 @@ public class SeckillService extends ShopBaseService{
         return analysisVo;
     }
 
-    private ActiveDiscountMoney getDiscountMoneyByDate(List<ActiveDiscountMoney> discountMoneyList, Timestamp timestamp) {
+    public static ActiveDiscountMoney getDiscountMoneyByDate(List<ActiveDiscountMoney> discountMoneyList, Timestamp timestamp) {
         for (ActiveDiscountMoney data : discountMoneyList) {
             if (data.getCreateTime().equals(timestamp)) {
                 return data;
@@ -476,9 +476,9 @@ public class SeckillService extends ShopBaseService{
     }
 
     //用户数
-    private OrderActivityUserNum getUserNum(List<OrderActivityUserNum> list, Timestamp timestamp) {
+    public static OrderActivityUserNum getUserNum(List<OrderActivityUserNum> list, Timestamp timestamp) {
         for (OrderActivityUserNum activityUserNum : list) {
-            if (activityUserNum.getDate().equals(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,timestamp))) {
+            if (activityUserNum.getDate().equals(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, timestamp))) {
                 return activityUserNum;
             }
         }
