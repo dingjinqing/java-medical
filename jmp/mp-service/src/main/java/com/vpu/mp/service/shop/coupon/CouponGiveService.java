@@ -623,6 +623,8 @@ public class CouponGiveService extends ShopBaseService {
     public CouponGiveQueueBo handlerCouponGive(CouponGiveQueueParam param) {
         CouponGiveQueueBo couponGiveBo = new CouponGiveQueueBo();
         Integer successNum = 0;
+        //发券记录
+        List<CustomerAvailCouponsRecord> sendRecord = new ArrayList<>();
         // 插入user-coupon关联表
         for (String couponId : param.getCouponArray()) {
             logger().info("当前优惠券ID："+couponId+",准备发放");
@@ -696,6 +698,7 @@ public class CouponGiveService extends ShopBaseService {
                             couponDetails.setSurplus(couponDetails.getSurplus()-1);
                         }
                         //发券操作
+                        sendRecord.add(customerAvailCouponsRecord);
                         customerAvailCouponsRecord.insert();
                         couponGiveBo.getCouponSn().add(customerAvailCouponsRecord.getCouponSn());
                         if (couponDetails.getType().equals((byte)1)&& param.getSplitType().equals((byte)0)){
@@ -725,8 +728,8 @@ public class CouponGiveService extends ShopBaseService {
                     userTag.addActivityTag(userId,couponTagIds, UserTagService.SRC_COUPON,Integer.valueOf(couponId));
                 }
             }
-            couponGiveBo.setSendCoupons(sendCoupons);
         }
+        couponGiveBo.setSendCoupons(sendRecord);
         //更新优惠券表发放/领取数量
         couponService.updateCouponGiveOrReceiveNum(param.getAccessMode(), param.getCouponArray());
         couponGiveBo.setSuccessSize(successNum);
@@ -999,6 +1002,9 @@ public class CouponGiveService extends ShopBaseService {
     public void sendCouponMessage(List<CustomerAvailCouponsRecord> couponsRecords){
         logger().info("发券事务完成，开始处理发送卡券领取成功公众号消息");
         logger().info("user-coupon记录是否存在：{}",couponsRecords!=null);
+        if (couponsRecords!=null&&couponsRecords.size()>0){
+            logger().info("user-coupon记录为：{}",couponsRecords);
+        }
         couponsRecords.forEach(c->{
             MrkingVoucherRecord couponDetail = getInfoById(c.getActId());
             String couponDesc = "";
