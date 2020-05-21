@@ -1140,11 +1140,13 @@ public class OrderInfoService extends ShopBaseService {
         }
         if(BigDecimalUtil.compareTo(total, null) > 0) {
             orderRecord.setFanliMoney(total);
-            orderRecord.setSettlementFlag(OrderConstant.SETTLEMENT_NOT);
-        }else {
             orderRecord.setSettlementFlag(OrderConstant.SETTLEMENT_FINISH);
+            db().update(TABLE).set(TABLE.FANLI_MONEY, total).set(TABLE.SETTLEMENT_FLAG, OrderConstant.SETTLEMENT_NOT)
+                .where(TABLE.ORDER_ID.eq(orderRecord.getOrderId())).execute();
+        }else {
+            db().update(TABLE).set(TABLE.SETTLEMENT_FLAG, OrderConstant.SETTLEMENT_NOT)
+                .where(TABLE.ORDER_ID.eq(orderRecord.getOrderId())).execute();
         }
-        orderRecord.update();
     }
 
     /******************************************分割线以下与订单模块没有*直接*联系*********************************************/
