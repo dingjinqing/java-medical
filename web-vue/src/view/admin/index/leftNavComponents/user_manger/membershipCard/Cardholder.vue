@@ -354,7 +354,9 @@ export default {
       firstDateTime: null, // 领取时间
       secondDateTime: null, // 领取时间
       tableData: [],
-      operation: ['充值明细', '消费明细', '废除']
+      operation: ['充值明细', '消费明细', '废除'],
+      cardType: null,
+      activation: null
     }
   },
   created () {
@@ -384,9 +386,11 @@ export default {
       getAllCardHolders(obj).then(res => {
         if (res.error === 0) {
           // 成功
-          this.tableData = res.content.dataList
+          this.tableData = res.content.data.dataList
           // 分页信息
-          this.pageParams = res.content.page
+          this.pageParams = res.content.data.page
+          this.cardType = res.content.cardType
+          this.activation = res.content.activation
         }
       })
     },
