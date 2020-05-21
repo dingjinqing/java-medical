@@ -100,7 +100,7 @@ public class CardExamineDownVo {
 	 * 审核时间
 	 */
 	@ExcelColumn(columnIndex = 13, columnName = "card.examine.export.examineTime")
-	private String examineTime;
+	private Timestamp examineTime;
 	
 	/**
 	 * 审核人
