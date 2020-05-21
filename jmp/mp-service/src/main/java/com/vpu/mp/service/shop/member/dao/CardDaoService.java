@@ -850,10 +850,14 @@ public class CardDaoService extends ShopBaseService {
 		User invitedUser = USER.as("a");
 		SelectJoinStep<?> select = db()
 				.select(USER_CARD.USER_ID, USER.USERNAME, USER.MOBILE, invitedUser.USERNAME.as("invitedName"),
-						USER_CARD.CREATE_TIME, USER_CARD.CARD_NO, USER_CARD.FLAG, USER_CARD.EXPIRE_TIME,USER_CARD.UPDATE_TIME)
+						USER_CARD.CREATE_TIME, USER_CARD.CARD_NO, USER_CARD.FLAG, USER_CARD.EXPIRE_TIME,USER_CARD.UPDATE_TIME,
+						USER_CARD.MONEY,CARD_EXAMINE.STATUS,DSL.count(CHARGE_MONEY.CARD_NO).as("chargeTimes"),DSL.count(CARD_CONSUMER.CARD_NO).as("consumeTimes"))
 				.from(USER_CARD.leftJoin(USER.leftJoin(invitedUser).on(USER.INVITE_ID.eq(invitedUser.USER_ID))
 
-				).on(USER_CARD.USER_ID.eq(USER.USER_ID)));
+				).on(USER_CARD.USER_ID.eq(USER.USER_ID)))
+				.leftJoin(CARD_EXAMINE).on(USER_CARD.CARD_NO.eq(CARD_EXAMINE.CARD_NO))
+				.leftJoin(CHARGE_MONEY).on(USER_CARD.CARD_NO.eq(CHARGE_MONEY.CARD_NO))
+				.leftJoin(CARD_CONSUMER).on(USER_CARD.CARD_NO.eq(CARD_CONSUMER.CARD_NO));
 
 		buildOptions(param, select);
 		select.where(USER_CARD.CARD_ID.eq(param.getCardId())).orderBy(USER_CARD.USER_ID.desc());

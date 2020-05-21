@@ -64,6 +64,7 @@ import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsCardCoupleRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -146,6 +147,7 @@ import com.vpu.mp.service.shop.member.card.GradeCardService;
 import com.vpu.mp.service.shop.member.card.LimitCardOpt;
 import com.vpu.mp.service.shop.member.card.NormalCardOpt;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
+import com.vpu.mp.service.shop.member.excel.CardHolderColNameI18n;
 import com.vpu.mp.service.shop.member.excel.UserImExcelWrongHandler;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
@@ -1551,6 +1553,22 @@ public class MemberCardService extends ShopBaseService {
 		String expire = Util.translateMessage(lang, JsonResultMessage.USER_CARD_ONOK, "excel","messages");
 		String ok = Util.translateMessage(lang, JsonResultMessage.USER_CARD_OK, "excel","messages");
 		String abolition = Util.translateMessage(lang, JsonResultMessage.USER_CARD_ABOLITION, "excel","messages");
+		//	审核中
+		String examing = Util.translateMessage(lang, JsonResultCode.MSG_CARD_EXAMINE_ING.getMessage(), BaseConstant.LANGUAGE_TYPE_EXCEL,null);
+		//	审核通过
+		String pass = Util.translateMessage(lang, JsonResultCode.MSG_CARD_EXAMINE_PASS.getMessage(), BaseConstant.LANGUAGE_TYPE_EXCEL,null);
+		//	审核拒绝
+		String refuse = Util.translateMessage(lang, JsonResultCode.MSG_CARD_EXAMINE_REFUSE.getMessage(), BaseConstant.LANGUAGE_TYPE_EXCEL,null);
+		String yes = Util.translateMessage(lang, JsonResultMessage.YES, BaseConstant.LANGUAGE_TYPE_EXCEL,null);
+		String no = Util.translateMessage(lang, JsonResultMessage.NO, BaseConstant.LANGUAGE_TYPE_EXCEL,null);
+		List<String> statsList = new ArrayList<>();
+		statsList.add("");
+		statsList.add(examing);
+		statsList.add(pass);
+		statsList.add(refuse);
+		MemberCardRecord card = getCardById(param.getCardId());
+		boolean isNeedActive = CardUtil.isNeedActive(card.getActivation());
+		//	 会员卡检测
 		for (CardHolderExcelVo item : allCardHolderAll) {
 			if (item.getExpireTime() != null &&
 					DateUtil.getLocalDateTime().after(item.getExpireTime())) {
@@ -1565,9 +1583,33 @@ public class MemberCardService extends ShopBaseService {
 					item.setNflag(expire);
 				}
 			}
+			Map<String, Object> other = item.getOther();
+			if(isNeedActive) {
+				if(item.getStatus()==null) {
+					//	是否提交激活申请
+					other.put(CardHolderColNameI18n.IS_SUBMIT, no);
+					//	审核状态
+					other.put(CardHolderColNameI18n.STATUS,"");
+				}else {
+					//	是否提交激活申请
+					other.put(CardHolderColNameI18n.IS_SUBMIT, yes);
+					//	审核状态
+					other.put(CardHolderColNameI18n.STATUS, statsList.get(item.getStatus()));
+				}
+			}
+			
+			if(CardUtil.isNormalCard(card.getCardType())) {
+				//	卡余额
+				other.put(CardHolderColNameI18n.CARD_BALANCE,item.getMoney());
+				//	充值次数
+				other.put(CardHolderColNameI18n.CHARGE_TIMES,item.getChargeTimes());
+				//	消费次数
+				other.put(CardHolderColNameI18n.CONSUME_TIMES,item.getConsumeTimes());
+			}
 		}
 		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
 		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+		excelWriter.setColI18n(new CardHolderColNameI18n());
 		excelWriter.writeModelList(allCardHolderAll, CardHolderExcelVo.class);
 		return workbook;
 	}
