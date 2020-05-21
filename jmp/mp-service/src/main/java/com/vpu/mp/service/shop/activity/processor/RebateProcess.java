@@ -143,6 +143,7 @@ public class RebateProcess implements Processor,ActivityGoodsListProcessor,Goods
                 activityInfo.setProductPrice(rebatePriceRecord.getAdvicePrice());
                 goods.getCartActivityInfos().add(activityInfo);
                 goods.setPriceStatus(BaseConstant.YES);
+                goods.setPrdPrice(rebatePriceRecord.getAdvicePrice());
             }
         });
         log.info("购物车-分销-结算");

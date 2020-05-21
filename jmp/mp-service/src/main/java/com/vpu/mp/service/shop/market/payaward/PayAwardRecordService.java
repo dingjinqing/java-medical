@@ -67,6 +67,9 @@ public class PayAwardRecordService  extends ShopBaseService {
     public PayAwardRecordRecord getPayAwardRecordByOrderSn(String orderSn){
          return db().selectFrom(PAY_AWARD_RECORD).where(PAY_AWARD_RECORD.ORDER_SN.eq(orderSn)).fetchOne();
     }
+    public void updataStatut(Integer id,Byte status){
+        db().update(PAY_AWARD_RECORD).set(PAY_AWARD_RECORD.STATUS,status).where(PAY_AWARD_RECORD.ID.eq(id));
+    }
 
     /**
      * 获取参于次数

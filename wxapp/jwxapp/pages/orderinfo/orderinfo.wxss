@@ -29,6 +29,7 @@
 
 .status-name>image {
   width: 32rpx;
+  height: 32rpx;
   vertical-align: middle;
   margin-right: 10rpx;
 }
@@ -56,6 +57,7 @@
 
 .logistics>image:first-of-type, .address_info>image:first-of-type {
   width: 32rpx;
+  height: 32rpx;
 }
 
 .shipping_info_content {
