@@ -34,12 +34,10 @@ global.wxPage({
           orderInfo.orderStatusName = orderEvent.getOrderStatus(orderInfo);
           //订单商品总价
           orderInfo.goodsTotalPrice = orderInfo.goods.reduce((total, item) => { 
-            if(orderInfo.orderType.includes("10")){
-              return total += item.goodsPrice * item.goodsNumber
-            } else {
-              return total += item.discountedGoodsPrice * item.goodsNumber
-            }
-          }, 0)
+               total.money = Number(total.money) + Number((item.goodsPrice * item.goodsNumber).toFixed(2))
+               total.score = Number(total.score) + Number(item.goodsScore * item.goodsNumber)
+               return total
+          }, {money:0,score:0})
           // 订单活动类型
           if (orderInfo.orderType && orderInfo.orderType.length) {
             orderInfo.activityName = ""
