@@ -1,6 +1,10 @@
 package com.vpu.mp.service.shop.distribution;
 
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.DistributorApplyRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.UserTotalFanliRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -20,21 +24,40 @@ import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
 import com.vpu.mp.service.pojo.shop.member.data.EducationVo;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.data.MarriageData;
-import com.vpu.mp.service.pojo.wxapp.distribution.*;
+import com.vpu.mp.service.pojo.wxapp.distribution.ActivationInfoVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
+import com.vpu.mp.service.pojo.wxapp.distribution.RebateOrderListVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.RebateOrderParam;
+import com.vpu.mp.service.pojo.wxapp.distribution.RebateOrderVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.RebateRankingTopVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.UserBaseInfoVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.UserBindParam;
+import com.vpu.mp.service.pojo.wxapp.distribution.UserRebateVo;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
-import org.jooq.*;
-import org.jooq.tools.StringUtils;
+import org.jooq.Record;
+import org.jooq.Record2;
+import org.jooq.Record4;
+import org.jooq.Record5;
+import org.jooq.Result;
+import org.jooq.SelectOnConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_APPLY;
+import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
+import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
+import static com.vpu.mp.db.shop.Tables.ORDER_GOODS_REBATE;
+import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
+import static com.vpu.mp.db.shop.Tables.USER_FANLI_STATISTICS;
+import static com.vpu.mp.db.shop.Tables.USER_TOTAL_FANLI;
 import static org.jooq.impl.DSL.sum;
 
 /**
@@ -621,14 +644,18 @@ public class MpDistributionService extends ShopBaseService{
      * @return
      */
      public String getDistributorRealName(Integer userId) {
-         DistributorApplyParam record = db().selectFrom(DISTRIBUTOR_APPLY)
+         DistributorApplyRecord record = db().selectFrom(DISTRIBUTOR_APPLY)
              .where(DISTRIBUTOR_APPLY.USER_ID.eq(userId)
                  .and(DISTRIBUTOR_APPLY.CONFIG_FIELDS.like(likeValue("real_name")))
                  .and(DISTRIBUTOR_APPLY.STATUS.eq((byte) 1)))
              .orderBy(DISTRIBUTOR_APPLY.CREATE_TIME.desc())
-             .fetchAnyInto(DistributorApplyParam.class);
-         if (record != null && record.getActivationFields() != null && !StringUtils.isBlank(record.getActivationFields().getRealName())) {
-             return record.getActivationFields().getRealName();
+             .fetchAny();
+         if(record == null) {
+             return null;
+         }
+         DistributorApplyParam.InfoField infoField = Util.parseJson(record.getActivationFields(), DistributorApplyParam.InfoField.class);
+         if (infoField != null) {
+             return infoField.getRealName();
          }
          return null;
      }
