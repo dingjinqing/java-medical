@@ -1,9 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.collect;
 
-import com.vpu.mp.service.pojo.shop.coupon.CouponParamVo;
-import lombok.Data;
-
 import java.util.List;
+
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
+
+import lombok.Data;
 
 
 /**
@@ -13,5 +14,5 @@ import java.util.List;
  */
 @Data
 public class CollectGiftVo extends CollectGiftParam {
-    private List<CouponParamVo> couponDetail;
+    private List<CouponView> couponDetail;
 }

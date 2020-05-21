@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponParamVo;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
@@ -88,11 +89,8 @@ public class CollectGiftConfigService extends BaseShopConfigService{
         for (String s :couponIdsArr){
             couponIdsList.add(Integer.parseInt(s));
         }
-        List<CouponParamVo> records = db().select()
-            .from(MRKING_VOUCHER)
-            .where(MRKING_VOUCHER.ID.in(couponIdsList))
-            .fetchInto(CouponParamVo.class);
-        vo.setCouponDetail(records);
+        List<CouponView> list = coupon.getCouponViewByIds(couponIdsList);
+        vo.setCouponDetail(list);
         return vo;
     }
 	/**
