@@ -200,6 +200,26 @@
         >
         </el-table-column>
         <el-table-column
+          label="是否提交激活申请"
+          align="center"
+        >
+        <template slot-scope="scope">
+           <span v-if="scope.row.status">是</span>
+           <span v-else>否</span>
+         </template>
+        </el-table-column>
+        <el-table-column
+          label="审核状态"
+          align="center"
+        >
+        <template slot-scope="scope">
+           <span v-if="scope.row.status===1">审核中</span>
+           <span v-else-if="scope.row.status===2">审核通过</span>
+           <span v-else-if="scope.row.status===3">审核失败</span>
+           <span v-else></span>
+         </template>
+        </el-table-column>
+        <el-table-column
           label="卡状态"
           align="center"
         >
