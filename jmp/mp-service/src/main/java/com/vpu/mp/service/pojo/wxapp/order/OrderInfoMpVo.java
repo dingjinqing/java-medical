@@ -91,4 +91,6 @@ public class OrderInfoMpVo extends OrderListMpVo{
     
     /**是否显示好物圈的按钮 */
     private Boolean showMall;
+    /**商品数量（不包含赠品） */
+    private Integer goodsAmount;
 }
