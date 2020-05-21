@@ -154,7 +154,7 @@ public class WxAppCardActivationService extends ShopBaseService {
 				DEFAULT_DISTRICTID:(Integer)userMap.get(DISTRICT_CODE);	
 		
 		userMap.put(PROVINCE_CODE, mapProvinceCodeToName(provinceId));
-		userMap.put(DISTRICT_CODE,mapCityCodeToName(cityId)); 
+		userMap.put(CITY_CODE,mapCityCodeToName(cityId)); 
 		userMap.put(DISTRICT_CODE, mapDistrictCodeToName(districtId));
 	}
 	
