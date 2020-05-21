@@ -54,17 +54,73 @@
           </div>
           <div>
             <span>领卡时间</span>
-            <el-date-picker
-              v-model="dateValue"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              :default-time="['00:00:00','23:59:59']"
+            <date-time-picker
+              :showPicker='3'
+              @startTime="firstDateTime = $event"
+              @endTime="secondDateTime = $event"/>
+
+          </div>
+          <div style="margin-left: 56px;">
+            <span style="width: auto;">是否提交激活申请</span>
+            <el-select
+              v-model="submitValue"
               size="small"
             >
-            </el-date-picker>
+              <el-option
+                v-for="(item,index) in submitExamineOpts"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </div>
+        </div>
+        <div class="topDiv">
+            <div>
+            <span>审核状态</span>
+            <el-select
+              v-model="examineStatusValue"
+              size="small"
+            >
+              <el-option
+                v-for="(item,index) in examineStatusOpt"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <div>
+            <span>消费记录</span>
+            <el-select
+              v-model="consumeRecordValue"
+              size="small"
+            >
+              <el-option
+                v-for="(item,index) in consumeRecordOpt"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <div>
+            <span>充值记录</span>
+            <el-select
+              v-model="chargeRecordValue"
+              size="small"
+            >
+              <el-option
+                v-for="(item,index) in chargeRecordOpt"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
           </div>
         </div>
         <div class="bottomDiv">
@@ -200,8 +256,9 @@
 <script>
 import { getAllCardHolders, exportExcel, deleteUserCardRequest } from '@/api/admin/memberManage/memberCard.js'
 import { download } from '@/util/excelUtil.js'
+import DateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
 export default {
-  components: { Pagination: () => import('@/components/admin/pagination/pagination') },
+  components: { Pagination: () => import('@/components/admin/pagination/pagination'), DateTimePicker },
 
   data () {
     return {
@@ -229,8 +286,73 @@ export default {
         value: 2,
         label: '已过期'
       }],
+      submitExamineOpts: [
+        {
+          value: -1,
+          label: '全部'
+        },
+        {
+          value: 1,
+          label: '是'
+        },
+        {
+          value: 0,
+          label: '否'
+        }
+      ],
+      examineStatusOpt: [
+        {
+          value: 0,
+          label: '全部'
+        },
+        {
+          value: 1,
+          label: '待审核'
+        },
+        {
+          value: 2,
+          label: '审核通过'
+        },
+        {
+          value: 3,
+          label: '审核失败'
+        }
+      ],
+      consumeRecordOpt: [
+        {
+          value: -1,
+          label: '全部'
+        },
+        {
+          value: 1,
+          label: '有消费记录'
+        },
+        {
+          value: 0,
+          label: '无消费记录'
+        }
+      ],
+      chargeRecordOpt: [
+        {
+          value: -1,
+          label: '全部'
+        },
+        {
+          value: 1,
+          label: '有充值记录'
+        },
+        {
+          value: 0,
+          label: '无充值记录'
+        }
+      ],
       statusValue: -1, // 卡状态默认值
-      dateValue: null, // 领取时间
+      submitValue: -1, // 是否提交审核申请
+      examineStatusValue: 0, // 卡审核状态,
+      consumeRecordValue: -1, // 有无消费记录
+      chargeRecordValue: -1, // 有无充值记录
+      firstDateTime: null, // 领取时间
+      secondDateTime: null, // 领取时间
       tableData: [],
       operation: ['充值明细', '消费明细', '废除']
     }
@@ -254,8 +376,8 @@ export default {
         'mobile': this.phoneInput,
         'cardNo': this.cardNuberInput,
         'flag': this.statusValue,
-        'firstDateTime': this.dateValue ? this.dateValue[0] : null,
-        'secondDateTime': this.dateValue ? this.dateValue[1] : null
+        'firstDateTime': this.secondDateTime,
+        'secondDateTime': this.secondDateTime
       }
       console.log(obj)
       // 获取api
@@ -282,7 +404,8 @@ export default {
           this.phoneInput = ''
           this.cardNuberInput = ''
           this.statusValue = -1
-          this.dateValue = null
+          this.firstDateTime = null
+          this.secondDateTime = null
           break
         case 2:
           this.exportInfo()
@@ -339,8 +462,8 @@ export default {
         'mobile': this.phoneInput,
         'cardNo': this.cardNuberInput,
         'flag': this.statusValue,
-        'firstDateTime': this.dateValue ? this.dateValue[0] : null,
-        'secondDateTime': this.dateValue ? this.dateValue[1] : null
+        'firstDateTime': this.firstDateTime,
+        'secondDateTime': this.secondDateTime
       }
       exportExcel(obj).then(res => {
         let fileName = localStorage.getItem('V-content-disposition')
