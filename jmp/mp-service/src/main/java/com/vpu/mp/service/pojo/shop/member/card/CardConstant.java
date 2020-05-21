@@ -277,4 +277,20 @@ public class CardConstant {
      * 会员卡续费时长类型-月
      */
     public static final Byte USER_CARD_RENEW_DATE_TYPE_MONTH = 2;
+    
+    /**
+     * 	卡充值 charge_money
+     */
+    /**
+     * 	change_type: 1 发卡
+     */
+    public static final Byte CHARGE_SEND_CARD = 1;
+    /**
+     * 	change_type: 2 	用户充值
+     */
+    public static final Byte  CHARGE_USER_POWER = 2;
+    /**
+     * 	change_type: 3  管理员操作
+     */
+    public static final Byte CHARGE_ADMIN_OPT = 3;
 }
