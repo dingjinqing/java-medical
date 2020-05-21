@@ -210,7 +210,6 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
         Map<Integer, IntegralConvertProductVo> productMap = activityInfo.getProductVo().stream().collect(Collectors.toMap(IntegralConvertProductVo::getPrdId, Function.identity()));
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             IntegralConvertProductVo prd = productMap.get(goods.getProductId());
-            goods.setGoodsPrice(prd.getMoney());
             //实际价格 = 兑换价格 + 积分(积分换算成对应金额)
             goods.setProductPrice(
                 BigDecimalUtil.add(
