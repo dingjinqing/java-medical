@@ -1077,7 +1077,7 @@ public class MemberCardService extends ShopBaseService {
 	 * - 获取所有的持卡会员
 	 * @param param
 	 */
-	public PageResult<CardHolderVo> getAllCardHolder(CardHolderParam param) {
+	public Map<String,Object> getAllCardHolder(CardHolderParam param) {
 		Map<String,Object> res = new HashMap<>();
 		PageResult<CardHolderVo> allCardHolder = cardDao.getAllCardHolder(param);
 		/** - 如果查询的状态是过期的，设置返回的flag为2过期 */
@@ -1092,7 +1092,7 @@ public class MemberCardService extends ShopBaseService {
 		MemberCardRecord card = getCardById(param.getCardId());
 		res.put("cardType", card.getCardType());
 		res.put("activation",card.getActivation());
-		return allCardHolder;
+		return res;
 	}
 
 	/**

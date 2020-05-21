@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -154,7 +155,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 	@PostMapping("/cardholder")
 	public JsonResult getAllCardHolders(@RequestBody CardHolderParam param) {
 		logger().info("获取所有持卡会员");
-		PageResult<CardHolderVo> result = shop().member.card.getAllCardHolder(param);
+		Map<String,Object> result = shop().member.card.getAllCardHolder(param);
 		return success(result);
 	}
 	
