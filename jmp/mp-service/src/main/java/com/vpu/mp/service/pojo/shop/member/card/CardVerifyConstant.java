@@ -20,4 +20,8 @@ public class CardVerifyConstant {
 	public final static String PROVINCE_NAME = "provinceName";
 	public final static String CITY_NAME = "cityName";
 	public final static String DISTRICT_NAME = "districtName";
+	/** -有此条件 */
+	public final static Byte  HAS_CONDITION = 1;
+	/** -无此条件 */
+	public final static Byte NO_CONDITION = 0;
 }

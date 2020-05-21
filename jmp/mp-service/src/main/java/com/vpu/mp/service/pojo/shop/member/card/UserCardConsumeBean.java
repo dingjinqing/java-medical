@@ -26,7 +26,7 @@ public class UserCardConsumeBean {
 	private Integer countDis;
 	// 原来的钱
 	private BigDecimal moneyDis;
-	// 卡余额消耗金额
+	// 卡变动金额（如要消耗或充值的钱，区分正负号 必须填）
 	private BigDecimal money;
 	// 创建时间
 	private Timestamp createTime;
@@ -42,7 +42,7 @@ public class UserCardConsumeBean {
 
 	// 消费次数
 	private Integer count;
-	// 充值的钱
+	// 充值的钱 (不需要填写)
 	private BigDecimal charge;
 	// 支付方式
 	private String payment;
@@ -56,6 +56,14 @@ public class UserCardConsumeBean {
 	private Byte orderStatus;
 	// 微信支付id，用于发送模板消息
 	private String prepayId;
-	
+	/**
+	 * 	充值类型 1 发卡，2 用户充值，3 管理员操作 
+	 * {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.CHARGE_SEND_CARD}
+	 */
+	private Byte changeType;
+	/**
+	 *	 充值后的钱 （不必填）
+	 */
+	private BigDecimal afterChargeMoney;
 	
 }
