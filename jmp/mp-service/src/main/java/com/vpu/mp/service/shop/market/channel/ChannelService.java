@@ -55,6 +55,9 @@ public class ChannelService extends ShopBaseService {
 
 	public static final String PAGE_PATH_PARAM_FORMAT = "page=%d&c=%s";
 	public static final String GOODS_PATH_PARAM_FORMAT = "gid=%d&c=%s";
+
+	private static final String CUSTOMIZE_PATH="pages/index/index?";
+    private static final String GOODS_DETAIL_PATH="pages/item/item?";
 	/** 分享码 进制转换使用 */
 	private static final String DIGIT = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	private static final BigInteger SCALE = new BigInteger("62");
@@ -89,6 +92,11 @@ public class ChannelService extends ShopBaseService {
 			return result;
 		}
 		for (ChannelPageVo vo : result.dataList) {
+		    if( vo.getSourceType().equals(ChannelConstant.SOURCETYPE_CUSTOMIZE) ){
+		        vo.setShare(CUSTOMIZE_PATH+"page="+vo.getPageId());
+            }else{
+                vo.setShare(GOODS_DETAIL_PATH+"gid="+vo.getGoodsId());
+            }
 			vo.setOrderNum(getOrderNum(vo.getId(), ChannelConstant.INVITESOURCE));
 			vo.setNewUserNum(getUserNum(vo.getId(), ChannelConstant.INVITESOURCE));
 			setYesterdayInfo(vo);
@@ -164,10 +172,10 @@ public class ChannelService extends ShopBaseService {
 			step.where(CHANNEL.SOURCE_TYPE.eq(param.getSourceType()));
 		}
 		if (param.getStartTime() != null) {
-			step.where(CHANNEL.CREATE_TIME.ge(param.getStartTime()));
+			step.where(CHANNEL.CREATE_TIME.greaterOrEqual(param.getStartTime()));
 		}
 		if (param.getEndTime() != null) {
-			step.where(CHANNEL.CREATE_TIME.le(param.getEndTime()));
+			step.where(CHANNEL.CREATE_TIME.lessOrEqual(param.getEndTime()));
 		}
 
 		if (!StringUtils.isBlank(param.getSourcePage())) {
@@ -177,7 +185,7 @@ public class ChannelService extends ShopBaseService {
 			}
 			step.where(CHANNEL.PAGE_ID.in(idList));
 		}
-		step.orderBy(CHANNEL.CREATE_TIME);
+		step.orderBy(CHANNEL.CREATE_TIME.desc());
 		return;
 	}
 
@@ -210,10 +218,10 @@ public class ChannelService extends ShopBaseService {
 		String imageUrl =null;
 		if (record != null) {
 			if(ChannelConstant.SOURCETYPE_CUSTOMIZE.equals(record.getSourceType())) {
-				pathParam = String.format(PAGE_PATH_PARAM_FORMAT, record.getPageId(),record.getShare());
+				pathParam = String.format(CUSTOMIZE_PATH+PAGE_PATH_PARAM_FORMAT, record.getPageId(),record.getShare());
 				imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.INDEX, pathParam);
 			}else {
-				pathParam = String.format(GOODS_PATH_PARAM_FORMAT, record.getGoodsId(),record.getShare());
+				pathParam = String.format(GOODS_DETAIL_PATH+GOODS_PATH_PARAM_FORMAT, record.getGoodsId(),record.getShare());
 				imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, pathParam);
 			}
 
@@ -327,11 +335,17 @@ public class ChannelService extends ShopBaseService {
 	 */
 	public void recordChannel(String share,Integer userId,Byte type) {
 		ChannelRecord channelRecord = db().selectFrom(CHANNEL).where(CHANNEL.SHARE.eq(share)).fetchAny();
-		Result<ChannelRecordRecord> records = db().selectFrom(CHANNEL_RECORD).where(CHANNEL_RECORD.USER_ID.eq(userId).and(CHANNEL_RECORD.CHANNEL_ID.eq(channelRecord.getId())).and(CHANNEL_RECORD.CREATE_TIME.eq(DateUtil.getLocalTimeDate()))).fetch();
+		Result<ChannelRecordRecord> records = db().selectFrom(CHANNEL_RECORD)
+				.where(CHANNEL_RECORD.USER_ID.eq(userId).and(CHANNEL_RECORD.CHANNEL_ID.eq(channelRecord.getId()))
+						.and(dateFormat(CHANNEL_RECORD.CREATE_TIME, DateUtil.DATE_MYSQL_SIMPLE).eq(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE))))
+				.fetch();
 		if(records.size()>0) {
-			db().update(CHANNEL_RECORD).set(CHANNEL_RECORD.COUNT,records.size()+1)
-			.where(CHANNEL_RECORD.USER_ID.eq(userId).and(CHANNEL_RECORD.CHANNEL_ID.eq(channelRecord.getId()))
-					.and(CHANNEL_RECORD.CREATE_TIME.eq(DateUtil.getLocalTimeDate())).and(CHANNEL_RECORD.TYPE.eq((byte)0))).execute();
+			db().update(CHANNEL_RECORD).set(CHANNEL_RECORD.COUNT, records.size() + 1)
+					.where(CHANNEL_RECORD.USER_ID.eq(userId).and(CHANNEL_RECORD.CHANNEL_ID.eq(channelRecord.getId()))
+							.and(dateFormat(CHANNEL_RECORD.CREATE_TIME, DateUtil.DATE_MYSQL_SIMPLE)
+									.eq(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE)))
+							.and(CHANNEL_RECORD.TYPE.eq((byte) 0)))
+					.execute();
 		}else {
 			if(channelRecord!=null) {
 				ChannelRecordRecord newRecord = db().newRecord(CHANNEL_RECORD);
@@ -339,7 +353,8 @@ public class ChannelService extends ShopBaseService {
 				newRecord.setUserId(userId);
 				newRecord.setType(type);
 				newRecord.setCount(1);
-				newRecord.insert();
+				int insert = newRecord.insert();
+				logger().info("插入结果：{}",insert);
 			}
 			
 		}

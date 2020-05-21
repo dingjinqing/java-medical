@@ -282,8 +282,8 @@ public class UserService extends ShopBaseService {
 				saas.getShopApp(this.getShopId()).groupDraw.groupDrawInvite.createInviteRecord(path,  Integer.valueOf(groupDrawId),query, (byte) 1);
 			}
 			if (path.equals("pages/index/index")
-					|| path.equals("pages/item/item") && pathQuery.getQuery().get("channel") != null) {
-				saas.getShopApp(getShopId()).channelService.recordChannel(pathQuery.getChannel(), userId, (byte) 1);
+					|| path.equals("pages/item/item") && pathQuery.getQuery().get("c") != null) {
+				saas.getShopApp(getShopId()).channelService.recordChannel(pathQuery.getQuery().get("c"), userId, (byte) 1);
 			}
 			return user;
 		}
@@ -341,10 +341,10 @@ public class UserService extends ShopBaseService {
 			map.put("invite_act_id", pathQuery.getQuery().get("cardNo"));
 		}
 		if (path.equals("pages/item/item")) {
-			if (!StringUtils.isEmpty(pathQuery.getQuery().get("channel"))) {
+			if (!StringUtils.isEmpty(pathQuery.getQuery().get("c"))) {
 				// 渠道页
 				ChannelRecord channelInfo = saas.getShopApp(this.getShopId()).channelService
-						.getChannelInfo(pathQuery.getQuery().get("channel"));
+						.getChannelInfo(pathQuery.getQuery().get("c"));
 				if (channelInfo != null) {
 					map.put("invite_source", "channel");
 					map.put("invite_act_id", channelInfo.getId().toString());

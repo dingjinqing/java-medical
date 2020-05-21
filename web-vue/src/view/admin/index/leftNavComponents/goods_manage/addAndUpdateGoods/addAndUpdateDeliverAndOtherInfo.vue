@@ -88,7 +88,7 @@
         prop="goodsWeight"
       >
         <el-input-number
-          ref="goodsWeight"
+          ref="goodsWeightInput"
           v-model="goodsProductInfo.goodsWeight"
           size="small"
           controls-position="right"
@@ -207,6 +207,7 @@ import { getExclusiveCardList } from '@/api/admin/goodsManage/addAndUpdateGoods/
 import { deliverTemplateNameListApi, getDeliverTemplateApi, getDeliverTemplateConfigApi } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 // js工具函数导入
 import { format, parseDate } from '@/util/date'
+import {isNumberBlank} from '@/util/typeUtil'
 export default {
   props: {
     isDefaultPrd: {
@@ -537,6 +538,14 @@ export default {
         if (this.goodsProductInfo.saleTime.getTime() <= new Date().getTime()) {
           this.$message.warning({ message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.saleTimeCanNotBeBefore'), type: 'warning' })
           this.$refs.saleTimeInput.focus()
+          return false
+        }
+      }
+
+      if (this.isDefaultPrd && this.goodsWeightCfg === 1) {
+        if (isNumberBlank(this.goodsProductInfo.goodsWeight) || this.goodsProductInfo.goodsWeight <= 0) {
+          this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsWeightIsNull'))
+          this.$refs.goodsWeightInput.focus()
           return false
         }
       }
