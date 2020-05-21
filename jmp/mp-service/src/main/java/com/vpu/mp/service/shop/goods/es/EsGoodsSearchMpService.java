@@ -82,7 +82,7 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
     public PageResult<GoodsListMpBo> queryGoodsByParam(GoodsListMpParam mpParam) throws IOException {
         Integer shopId = getShopId();
         EsSearchParam param = assemblyEsSearchParam(mpParam,shopId);
-        PageResult<EsGoods> esGoodsPage = searchGoodsPageByParam(param);
+        PageResult<EsGoods> esGoodsPage = searchGoodsPageByParamForPage(param);
         return esPageConvertVoPage(esGoodsPage);
     }
 
@@ -135,7 +135,7 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
         }
         EsSearchParam param = assemblyEsSearchParam(mpParam,shopId);
         try {
-            PageResult<EsGoods> esGoodsPage = searchGoodsPageByParam(param);
+            PageResult<EsGoods> esGoodsPage = searchGoodsPageByParamForPage(param);
             return esPageConvertVoPage(esGoodsPage);
         } catch (IOException e) {
             log.error("EsGoodsSearchMpService-->queryGoodsByParam ElasticSearch connection error when querying");
@@ -153,7 +153,7 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
         Integer shopId = getShopId();
         EsSearchParam param = assemblyEsSearchParam(mpParam,shopId);
         try {
-            PageResult<EsGoods> esGoodsPage = searchGoodsPageByParam(param);
+            PageResult<EsGoods> esGoodsPage = searchGoodsPageByParamForPage(param);
             return esPageConvertVoPage(esGoodsPage);
         } catch (IOException e) {
             log.error("EsGoodsSearchMpService-->queryGoodsByParam ElasticSearch connection error when querying");

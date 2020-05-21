@@ -52,7 +52,7 @@ public class EsFactSearchService extends EsBaseSearchService{
 
         EsSearchParam param = getFactSearchParamByAdminGoodsListInit(goodsPageListParam,getShopId());
         EsSearchSourceBuilderParam searchParam = EsSearchSourceBuilderParamBuilder.builder()
-            .queryBuilder(assemblySearchBuilder(param.getSearchList()))
+            .queryBuilder(assemblySearchBuilder(param.getSearchList(),param.getSearchSource(),param.getAnalyzerStatus()))
             .aggregations(assemblyAggregationBuilder(param.getFactList()))
             .build();
         //es查询

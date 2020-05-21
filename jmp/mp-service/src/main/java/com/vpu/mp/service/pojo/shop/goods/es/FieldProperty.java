@@ -42,6 +42,8 @@ public class FieldProperty {
         this.searchName = searchName;
         this.value = value;
         this.useFullQuery = value instanceof List;
+        this.queryType = QueryType.MUST;
+
     }
     public FieldProperty(String searchName,Object value,Operator operator,QueryType queryType){
         this.operator = operator;

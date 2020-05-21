@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.goods.es;
 
 import com.vpu.mp.service.foundation.es.annotation.EsSearch;
+import com.vpu.mp.service.shop.goods.es.goods.EsSearchSource;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -26,8 +27,23 @@ public class EsSearchParam {
      */
     private List<Fact> factList;
 
-    private boolean queryByPage;
 
     private List<Sort> sorts;
+    /**
+     * ElasticSearch返回的查询字段
+     */
+    private String[] includes;
+    /**
+     * 是否分页
+     */
+    private Boolean queryByPage;
+    /**
+     * 查询来源
+     */
+    private EsSearchSource searchSource;
+    /**
+     * 分词配置状态
+     */
+    private Boolean analyzerStatus;
 
 }

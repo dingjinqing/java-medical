@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.config;
 
+import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.pojo.shop.config.*;
 import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class ShopCommonConfigService extends BaseShopConfigService{
     ShowCartConfig defaultShowCartConfig;
     @Autowired
     GoodsShareConfig defaultGoodsShareConfig;
+    @Autowired
+    JedisManager jedisManager;
 
 	/**
 	 * 是否显示前端店铺logo
@@ -866,6 +870,18 @@ public class ShopCommonConfigService extends BaseShopConfigService{
             this.setGoodsShareConfig(commonCfg.getGoodsShareCfg());
             this.setAccurateSearch(commonCfg.getAccurateSearch());
 		});
+		updateAnalyzerCache(commonCfg.getAccurateSearch());
 		return true;
 	}
+
+    /**
+     * 更新搜索配置cache
+     * @param value 值
+     */
+	private void updateAnalyzerCache(Byte value){
+        jedisManager.set(JedisKeyConstant.ANALYZER_STATUS+getShopId(),value.toString(),ShopCommonConfigCacheService.MAX_TIME_OUT);
+    }
+
+
+
 }
