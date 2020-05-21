@@ -326,6 +326,9 @@ public class MpDistributionService extends ShopBaseService{
             .and(ORDER_INFO.ORDER_STATUS.ge((byte)3))
             .and(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(userId))
             .fetchOne().into(BigDecimal.class);
+        if(waitFanliMoney == null){
+            waitFanliMoney = new BigDecimal(0.00);
+        }
         return waitFanliMoney;
     }
 
@@ -349,6 +352,9 @@ public class MpDistributionService extends ShopBaseService{
         BigDecimal TotalCanFanliMoney = db().select(sum(USER_FANLI_STATISTICS.TOTAL_CAN_FANLI_MONEY).as("can_fanli_goods_money"))
             .from(USER_FANLI_STATISTICS).where(USER_FANLI_STATISTICS.FANLI_USER_ID.eq(userId))
             .fetchOne().into(BigDecimal.class);
+        if(TotalCanFanliMoney == null){
+            TotalCanFanliMoney = new BigDecimal(0.00);
+        }
         return TotalCanFanliMoney;
     }
 
@@ -436,7 +442,7 @@ public class MpDistributionService extends ShopBaseService{
             .from(ORDER_INFO)
             .leftJoin(USER_DETAIL).on(ORDER_INFO.FANLI_USER_ID.eq(USER_DETAIL.USER_ID))
             .where(ORDER_INFO.FANLI_TYPE.eq((byte) 1))
-            .and(ORDER_INFO.FINISHED_TIME.gt((Timestamp) toDate))
+            .and(ORDER_INFO.FINISHED_TIME.gt(toDate))
             .and(ORDER_INFO.SETTLEMENT_FLAG.eq((byte) 1))
             .and(ORDER_INFO.FANLI_MONEY.gt(finalMoney))
             .orderBy(ORDER_INFO.FINISHED_TIME.desc()).limit(10).fetch();
