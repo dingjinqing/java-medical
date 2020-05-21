@@ -165,7 +165,7 @@ public class PictorialImgPx {
 
         customerTextStartX = customerRectStartX + 20;
         customerTextStartY = customerRectStartY + 12;
-        customerSecondTextStartY = customerTextStartY + 9;
+        customerSecondTextStartY = customerTextStartY;
 
         bottomStartY = headerHeight + goodsHeight + bgPadding + 5;
         // 底部二维码
@@ -392,7 +392,7 @@ public class PictorialImgPx {
      * 底部划线价，线的Y
      */
     public Integer getPriceLineY() {
-        return priceY + 4;
+        return priceY;
     }
 
 }
