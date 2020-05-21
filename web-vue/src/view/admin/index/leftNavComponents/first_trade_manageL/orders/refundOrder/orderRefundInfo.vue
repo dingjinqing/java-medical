@@ -252,7 +252,7 @@
             </tr>
             <tr>
               <td>{{$t('order.returnType')}}</td>
-              <td colspan="3">{{returnTypeMap.get(returnInfo.returnType)}} (商家手动售后)</td>
+              <td colspan="3">{{returnTypeMap.get(returnInfo.returnType)}} ({{$t(`order.returnWaysList`).find(item=>item.value === returnInfo.returnSource).label}})</td>
             </tr>
             <tr>
               <td>{{$t('order.returnStatus')}}</td>
