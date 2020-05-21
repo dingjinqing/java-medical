@@ -521,6 +521,20 @@
                       <span>{{$t('payReward.discount')}}</span>
                     </div>
                     <div
+                      class="coupon_list_top"
+                      :class="item.status === 0 ? 'coupon_list_top': 'coupon_list_top_gray'"
+                      v-if="item.actCode === 'random'"
+                    >
+                      ￥<span
+                        class="number"
+                        :class="item.status === 0 ? 'number' : 'gray'"
+                      >{{item.randomMax}}</span>
+                      <span
+                        class="hightest"
+                        :class="item.status === 0 ? 'hightest' : 'hightest-gray'"
+                      >最高</span>
+                    </div>
+                    <div
                       class="coupon_center_limit"
                       :class="item.status === 0 ? 'coupon_center_limit': 'coupon_center_limit_gray'"
                     >{{item.useConsumeRestrict |
@@ -1611,6 +1625,15 @@ export default {
 .coupon_list_bottom_gray {
   background: #d5d7d9;
   background-repeat: repeat-x;
+}
+.hightest {
+  font-size: 12px;
+  font-weight: bold;
+}
+.hightest-gray {
+  font-size: 12px;
+  font-weight: bold;
+  color: #d5d7d9;
 }
 
 .footer {
