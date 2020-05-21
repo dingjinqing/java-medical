@@ -742,7 +742,6 @@ export default {
       })
     },
     changeEvent (val) {
-      console.log(val)
       this.serviceId = this.reservation.serviceId
       let serviceInfo = this.reservationService.find(item => item.id === val)
       if (Number(serviceInfo.serviceType) === 1) {
@@ -750,7 +749,7 @@ export default {
       } else {
         this.technicianVisible = false
       }
-      console.log(serviceInfo)
+      this.$set(this.reservation, 'technicianId', '')
       this.getTechList()
     },
     // 技师下拉
