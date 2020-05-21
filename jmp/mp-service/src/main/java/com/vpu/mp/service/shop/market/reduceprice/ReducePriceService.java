@@ -23,14 +23,20 @@ import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialOrderExportV
 import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialOrderGoodsExportVo;
 import com.vpu.mp.service.pojo.shop.market.reduceprice.*;
 import com.vpu.mp.service.pojo.shop.member.tag.TagSrcConstant;
+import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisDataVo;
+import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisTotalVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
+import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
+import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
+import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
+import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -360,17 +366,17 @@ public class ReducePriceService extends ShopBaseService {
      */
     public Map<Integer,Record10<Integer, Integer, BigDecimal, String, String, Byte, Byte, Timestamp, Integer, Byte>> getProductReducePrice(List<Integer> prdIds){
         Timestamp date = DateUtil.getLocalDateTime();
-         Result<Record10<Integer, Integer, BigDecimal, String, String, Byte, Byte, Timestamp, Integer, Byte>> list =
-             db().select(REDUCE_PRICE_PRODUCT.PRD_ID,REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID,REDUCE_PRICE_PRODUCT.PRD_PRICE,
-                 REDUCE_PRICE.POINT_TIME,REDUCE_PRICE.EXTEND_TIME,REDUCE_PRICE.PERIOD_ACTION,REDUCE_PRICE.FIRST,REDUCE_PRICE.CREATE_TIME,REDUCE_PRICE.LIMIT_AMOUNT,REDUCE_PRICE.LIMIT_FLAG)
-            .from(REDUCE_PRICE_PRODUCT)
-            .leftJoin(REDUCE_PRICE).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID))
-            .where(REDUCE_PRICE_PRODUCT.PRD_ID.in(prdIds))
-            .and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
-            .and(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-            .and(REDUCE_PRICE.START_TIME.lessThan(date))
-            .and(REDUCE_PRICE.END_TIME.greaterThan(date))
-            .fetch();
+        Result<Record10<Integer, Integer, BigDecimal, String, String, Byte, Byte, Timestamp, Integer, Byte>> list =
+            db().select(REDUCE_PRICE_PRODUCT.PRD_ID,REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID,REDUCE_PRICE_PRODUCT.PRD_PRICE,
+                REDUCE_PRICE.POINT_TIME,REDUCE_PRICE.EXTEND_TIME,REDUCE_PRICE.PERIOD_ACTION,REDUCE_PRICE.FIRST,REDUCE_PRICE.CREATE_TIME,REDUCE_PRICE.LIMIT_AMOUNT,REDUCE_PRICE.LIMIT_FLAG)
+                .from(REDUCE_PRICE_PRODUCT)
+                .leftJoin(REDUCE_PRICE).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID))
+                .where(REDUCE_PRICE_PRODUCT.PRD_ID.in(prdIds))
+                .and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+                .and(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(REDUCE_PRICE.START_TIME.lessThan(date))
+                .and(REDUCE_PRICE.END_TIME.greaterThan(date))
+                .fetch();
         if (list == null) {
             return null;
         }
@@ -574,7 +580,7 @@ public class ReducePriceService extends ShopBaseService {
      * @return record信息 或 null
      */
     public ReducePriceRecord getReducePriceRecord(Integer activityId){
-       return db().selectFrom(REDUCE_PRICE).where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(REDUCE_PRICE.ID.eq(activityId)))
+        return db().selectFrom(REDUCE_PRICE).where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(REDUCE_PRICE.ID.eq(activityId)))
             .fetchAny();
     }
 
@@ -768,6 +774,71 @@ public class ReducePriceService extends ShopBaseService {
         }
 
         return workbook;
+    }
+
+    /**
+     * 限时降价效果分析的echarts图表数据
+     */
+    public SeckillAnalysisDataVo getReduceAnalysisData(ReducePriceAnalysisParam param) {
+        SeckillAnalysisDataVo analysisVo = new SeckillAnalysisDataVo();
+        Timestamp startDate = param.getStartTime();
+        Timestamp endDate = param.getEndTime();
+        if (startDate == null || endDate == null) {
+            startDate = DateUtil.currentMonthFirstDay();
+            endDate = DateUtil.getLocalDateTime();
+        }
+        //获取销售额等金额
+        List<ActiveDiscountMoney> discountMoneyList = saas.getShopApp(getShopId()).readOrder.getActiveDiscountMoney(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE, param.getId(), startDate, endDate);
+        //获取参与用户信息
+        ActiveOrderList activeOrderUserList = saas.getShopApp(getShopId()).readOrder.getActiveOrderList(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE, param.getId(), startDate, endDate);
+
+        while (Objects.requireNonNull(startDate).compareTo(endDate) <= 0) {
+            //活动实付金额、付款订单数、付款商品件数
+            ActiveDiscountMoney discountMoney = SeckillService.getDiscountMoneyByDate(discountMoneyList, startDate);
+            if (discountMoney == null) {
+                analysisVo.getPaymentAmount().add(BigDecimal.ZERO);
+                analysisVo.getDiscountAmount().add(BigDecimal.ZERO);
+                analysisVo.getCostEffectivenessRatio().add(BigDecimal.ZERO);
+                analysisVo.getPaidOrderNumber().add(0);
+                analysisVo.getPaidGoodsNumber().add(0);
+            } else {
+                BigDecimal goodsPrice = Optional.ofNullable(discountMoney.getPaymentAmount()).orElse(BigDecimal.ZERO);
+                BigDecimal marketPric = Optional.ofNullable(discountMoney.getDiscountAmount()).orElse(BigDecimal.ZERO);
+                analysisVo.getPaymentAmount().add(Optional.ofNullable(discountMoney.getPaymentAmount()).orElse(BigDecimal.ZERO));
+                analysisVo.getDiscountAmount().add(Optional.ofNullable(discountMoney.getDiscountAmount()).orElse(BigDecimal.ZERO));
+                analysisVo.getCostEffectivenessRatio().add(goodsPrice.compareTo(BigDecimal.ZERO) > 0 ?
+                    marketPric.divide(goodsPrice, BigDecimal.ROUND_FLOOR) : BigDecimal.ZERO);
+                analysisVo.getPaidOrderNumber().add(discountMoney.getPaidOrderNumber());
+                analysisVo.getPaidGoodsNumber().add(discountMoney.getPaidGoodsNumber());
+            }
+
+            //新用户数
+            OrderActivityUserNum newUser = SeckillService.getUserNum(activeOrderUserList.getNewUserNum(), startDate);
+            if (newUser == null) {
+                analysisVo.getNewUserNumber().add(0);
+            } else {
+                analysisVo.getNewUserNumber().add(newUser.getNum());
+            }
+            //老用户数
+            OrderActivityUserNum oldUser = SeckillService.getUserNum(activeOrderUserList.getOldUserNum(), startDate);
+            if (oldUser == null) {
+                analysisVo.getOldUserNumber().add(0);
+            } else {
+                analysisVo.getOldUserNumber().add(oldUser.getNum());
+            }
+            analysisVo.getDateList().add(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate));
+            startDate = Util.getEarlyTimeStamp(startDate, 1);
+        }
+        SeckillAnalysisTotalVo total = new SeckillAnalysisTotalVo();
+        total.setTotalPayment(analysisVo.getPaymentAmount().stream().reduce(BigDecimal.ZERO, BigDecimal::add));
+        total.setTotalDiscount(analysisVo.getDiscountAmount().stream().reduce(BigDecimal.ZERO, BigDecimal::add));
+        total.setTotalCostEffectivenessRatio(total.getTotalPayment().compareTo(BigDecimal.ZERO) > 0 ? total.getTotalDiscount().divide(total.getTotalPayment(), 3, BigDecimal.ROUND_HALF_UP) : BigDecimal.ZERO);
+        total.setTotalPaidOrderNumber(analysisVo.getPaidOrderNumber().stream().mapToInt(Integer::intValue).sum());
+        total.setTotalPaidGoodsNumber(analysisVo.getPaidGoodsNumber().stream().mapToInt(Integer::intValue).sum());
+        total.setTotalOldUserNumber(analysisVo.getOldUserNumber().stream().mapToInt(Integer::intValue).sum());
+        total.setTotalNewUserNumber(analysisVo.getNewUserNumber().stream().mapToInt(Integer::intValue).sum());
+        analysisVo.setTotal(total);
+        return analysisVo;
     }
 
 }
