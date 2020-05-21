@@ -60,7 +60,7 @@
               @endTime="secondDateTime = $event"/>
 
           </div>
-          <div style="margin-left: 56px;">
+          <div v-if="showActivation" style="margin-left: 56px;">
             <span style="width: auto;">是否提交激活申请</span>
             <el-select
               v-model="submitValue"
@@ -77,7 +77,7 @@
           </div>
         </div>
         <div class="topDiv">
-            <div>
+            <div v-if="showActivation">
             <span>审核状态</span>
             <el-select
               v-model="examineStatusValue"
@@ -202,6 +202,7 @@
         <el-table-column
           label="是否提交激活申请"
           align="center"
+          v-if="showActivation"
         >
         <template slot-scope="scope">
            <span v-if="scope.row.status">是</span>
@@ -211,6 +212,7 @@
         <el-table-column
           label="审核状态"
           align="center"
+          v-if="showActivation"
         >
         <template slot-scope="scope">
            <span v-if="scope.row.status===1">审核中</span>
@@ -377,6 +379,11 @@ export default {
       operation: ['充值明细', '消费明细', '废除'],
       cardType: null,
       activation: null
+    }
+  },
+  computed: {
+    showActivation () {
+      return this.activation === 1
     }
   },
   created () {
