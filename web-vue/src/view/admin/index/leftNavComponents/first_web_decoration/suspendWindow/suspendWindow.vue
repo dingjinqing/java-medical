@@ -12,6 +12,7 @@
             <div
               class="floatNav"
               v-if="topArr.length||bottomArr.length"
+              :style="!isShowIcon?'height:0':''"
             >
               <div class="navList">
                 <div
@@ -36,7 +37,10 @@
                 </div>
 
               </div>
-              <div class="nav_item nav_item_main">
+              <div
+                class="nav_item nav_item_main"
+                v-if="isShowIcon"
+              >
                 <img
                   class="nav_item_main_1"
                   :class="holdMainIcon?'active1':''"
@@ -141,6 +145,7 @@
                   v-model="isShowIcon"
                   active-color="#f7931e"
                   inactive-color="#ddd"
+                  @change="handleToIsShowIcon"
                 >
                 </el-switch>
               </div>
@@ -185,7 +190,10 @@
                       <div style="font-size:12px;color:#999">
                         建议尺寸：50 * 50
                       </div>
-                      <div class="reset">
+                      <div
+                        class="reset"
+                        @click="afterExpansion=afterExpansionB"
+                      >
                         <i class="el-icon-refresh-right"></i>重置图标
                       </div>
                     </div>
@@ -253,6 +261,7 @@
                           {{index>1?'重置图标':'系统图标'}}
                         </div>
                         <el-checkbox
+                          v-if="isShowIcon"
                           :disabled="!item.titleChecked"
                           v-model="item.isIndependentShow"
                           @change="chilrenRadioRightChange(index)"
@@ -311,6 +320,7 @@
                           建议尺寸：50 * 50
                         </div>
                         <el-checkbox
+                          v-if="isShowIcon"
                           :disabled="!item.titleChecked"
                           v-model="item.isIndependentShow"
                           @change="chilrenRadioRightChange(index)"
@@ -545,6 +555,34 @@ export default {
     this.handleToGetData()
   },
   methods: {
+    // 主图标开启值变化
+    handleToIsShowIcon (res) {
+      console.log(res, this.topArr, this.bottomArr)
+      if ((this.topArr.length + this.bottomArr.length) > 3 && !res) {
+        this.$message.error({
+          message: '关闭后最多可选3个图标，请减少后再选择',
+          showClose: true
+        })
+        this.isShowIcon = true
+      } else if (!res) {
+        let arr = []
+        this.childrenIconData.forEach((item, index) => {
+          if (item.titleChecked) {
+            let obj = {
+              name: item.title,
+              imgUrl: item.iconImgUrl,
+              isIndependentShow: true
+            }
+            arr.push(obj)
+          }
+        })
+        console.log(arr)
+        this.topArr = arr
+      } else {
+        this.bottomArr = []
+        this.handleToSertChecked()
+      }
+    },
     // 初始化获取数据
     handleToGetData () {
       getSuspensionData().then(res => {
@@ -747,7 +785,7 @@ export default {
     // 点击主图标展开
     handleChangeIcon (index, flag) {
       this.isChangeMainIcon = true
-      this.changeMainIconIndex = index
+      this.changeMainIconIndex = flag
       this.tuneUp = !this.tuneUp
     },
     // 选择主图  选择图片回传数据
@@ -841,6 +879,13 @@ export default {
         if (item.titleChecked) checkedNum++
       })
       console.log(checkedNum)
+      if (checkedNum > 3 && !this.isShowIcon) {
+        this.$message.error({
+          message: '最多可选3个独立子图标'
+        })
+        this.childrenIconData[res].titleChecked = false
+        return
+      }
       if (checkedNum > 6) {
         this.$message.error({
           message: '最多可选6个子图标'
@@ -855,6 +900,7 @@ export default {
       this.handleToSertChecked()
     },
     chilrenRadioRightChange (res) {
+      console.log(res)
       // 校验勾选数量
       let checkedNum = 0
       this.childrenIconData.forEach((item, index) => {
@@ -888,13 +934,21 @@ export default {
       console.log(arr)
       let topArr = []
       let bottomArr = []
-      arr.forEach((item, index) => {
-        if (item.isIndependentShow) {
+      if (this.isShowIcon) {
+        arr.forEach((item, index) => {
+          if (item.isIndependentShow) {
+            topArr.unshift(item)
+          } else {
+            bottomArr.unshift(item)
+          }
+        })
+      } else {
+        arr.forEach((item, index) => {
+          item.isIndependentShow = true
           topArr.unshift(item)
-        } else {
-          bottomArr.unshift(item)
-        }
-      })
+        })
+      }
+
       this.topArr = topArr
       this.bottomArr = bottomArr
       console.log(topArr, bottomArr)
