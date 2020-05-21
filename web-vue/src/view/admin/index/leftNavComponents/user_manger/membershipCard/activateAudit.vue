@@ -163,6 +163,9 @@
       <export-dialog
         :visiable.sync="showExportDialog"
         :queryContent="queryContent"
+        :maxNum="pageParams.totalRows"
+        :cardId="cardId"
+        :status="status"
       />
     </div>
   </div>
@@ -182,7 +185,7 @@ export default {
   data () {
     return {
       pageParams: {
-        totalRows: 10,
+        totalRows: 0,
         currentPage: 1,
         pageRows: 20
       },
