@@ -57,7 +57,7 @@
 				</block>
 			</view>
             <!-- 包邮权益（普通卡和等级卡）wx:if="{{cardInfo.freeship_limit>-1}}" -->
-			<view class="card_item_title" wx:if='{{cardInfo.freeship}}'>
+			<view class="card_item_title" wx:if='{{cardInfo.freeship&&cardInfo.freeship.type!=-1}}'>
 				<view class="item_title_left">
 					<image mode="widthFix" class="image" src="{{imageUrl}}image/wxapp/grade_circle.png" />
 				</view>

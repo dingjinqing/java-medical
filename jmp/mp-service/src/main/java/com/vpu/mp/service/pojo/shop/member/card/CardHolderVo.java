@@ -60,4 +60,9 @@ public class CardHolderVo {
 	 * 	会员卡类型
 	 */
 	private Byte cardType;
+	/**
+	 * 	卡的审核状态 null 没有提交申请，1： 审核中，2，审核成功，3： 审核失败 
+	 * {@link com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant}
+	 */
+	private Byte status;
 }

@@ -55,6 +55,8 @@ public class RemarkMessage {
 	public static final String FREESHIP_TOTAL_NUM = "member.card.freeship.total.num";
     /** 会员卡续费 */
     public static final String CARD_RENEW = "member.card.renew";
+    /** 会员卡续费: {订单号} */
+    public static final String CARD_RENEW_ORDER="member.card.renew.order";
 
 
 	/**

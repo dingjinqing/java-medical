@@ -1,5 +1,50 @@
 package com.vpu.mp.service.shop.member.dao;
 
+import static com.vpu.mp.db.shop.Tables.CARD_BATCH;
+import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
+import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
+import static com.vpu.mp.db.shop.Tables.CARD_RECEIVE_CODE;
+import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_BATCH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUNT_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.EXCHANG_COUNT_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_EXPIRED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_STOP;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Condition;
+import org.jooq.InsertValuesStep3;
+import org.jooq.InsertValuesStep4;
+import org.jooq.InsertValuesStep5;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.RecordMapper;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectSeekStep2;
+import org.jooq.Table;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.shop.tables.MemberCard;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.UserCard;
@@ -35,50 +80,6 @@ import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.dao.CardFullDetail;
 import com.vpu.mp.service.pojo.shop.member.card.export.receive.CardReceiveDownVo;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Condition;
-import org.jooq.InsertValuesStep3;
-import org.jooq.InsertValuesStep4;
-import org.jooq.InsertValuesStep5;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Record3;
-import org.jooq.RecordMapper;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectSeekStep2;
-import org.jooq.Table;
-import org.jooq.impl.DSL;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import static com.vpu.mp.db.shop.Tables.CARD_BATCH;
-import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
-import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
-import static com.vpu.mp.db.shop.Tables.CARD_RECEIVE_CODE;
-import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_BATCH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUNT_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.EXCHANG_COUNT_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_EXPIRED;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_STOP;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
 
 /**
  * @author 黄壮壮
@@ -92,10 +93,13 @@ public class CardDaoService extends ShopBaseService {
 		User invitedUser = USER.as("a");
 		SelectJoinStep<?> select = db()
 				.select(USER_CARD.USER_ID, USER.USERNAME, USER.MOBILE, invitedUser.USERNAME.as("invitedName"),
-						USER_CARD.CREATE_TIME, USER_CARD.CARD_NO, USER_CARD.FLAG, USER_CARD.EXPIRE_TIME,USER_CARD.UPDATE_TIME,MEMBER_CARD.CARD_TYPE)
+						USER_CARD.CREATE_TIME, USER_CARD.CARD_NO, USER_CARD.FLAG, USER_CARD.EXPIRE_TIME,USER_CARD.UPDATE_TIME,
+						MEMBER_CARD.CARD_TYPE,
+						CARD_EXAMINE.STATUS)
 				.from(USER_CARD.leftJoin(USER.leftJoin(invitedUser).on(USER.INVITE_ID.eq(invitedUser.USER_ID))
 										).on(USER_CARD.USER_ID.eq(USER.USER_ID)))
-				.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID));
+				.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
+				.leftJoin(CARD_EXAMINE).on(USER_CARD.CARD_NO.eq(CARD_EXAMINE.CARD_NO));
 				
 
 		buildOptions(param, select);

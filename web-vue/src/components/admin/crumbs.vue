@@ -347,6 +347,10 @@ export default {
           this.$router.push({
             name: 'payreward'
           })
+        } else if (routeName === 'bargain_activity') {
+          this.$router.push({
+            name: 'kanjia'
+          })
         } else {
           console.log(this.$route)
           if (name === '表单统计') {
@@ -356,6 +360,10 @@ export default {
           } else if (name === '砍价') {
             this.$router.push({
               name: 'bargain'
+            })
+          } else if (name === '限时降价') {
+            this.$router.push({
+              name: 'reduce_price'
             })
           } else if (name === '预约管理') {
             this.$router.push({
