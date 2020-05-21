@@ -631,6 +631,8 @@ public class OrderReadService extends ShopBaseService {
 			order.setGoods(goods.get(order.getOrderId()));
 			//订单操作设置（商品订单类型需要提前计算好）
 			setMpOrderOperation(order);
+            //积分兑换商品价格小程序端特殊展示
+            editShowGoodsPrice(order);
 			//拼团
 			if(order.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GROUP_BUY)) {
 				order.setGroupBuyInfo(groupBuyList.getByOrder(order.getOrderSn()));
@@ -731,11 +733,11 @@ public class OrderReadService extends ShopBaseService {
 
 	}
 
-    private void editShowGoodsPrice(OrderInfoMpVo order) {
+    private void editShowGoodsPrice(OrderListMpVo order) {
         if(order.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_INTEGRAL)) {
             order.getGoods().forEach(x-> {
                 if(x.getIsGift().equals((int) NO)) {
-                    x.setGoodsPrice(BigDecimalUtil.subtrac(x.getDiscountedGoodsPrice(), BigDecimalUtil.multiply(new BigDecimal(x.getGoodsScore()), order.getScoreDiscount())));
+                    x.setGoodsPrice(BigDecimalUtil.subtrac(x.getDiscountedGoodsPrice(), BigDecimalUtil.divide(new BigDecimal(x.getGoodsScore()), new BigDecimal(order.getScoreProportion()))));
                 } }
              );
         }
