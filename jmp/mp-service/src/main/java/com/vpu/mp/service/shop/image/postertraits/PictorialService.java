@@ -162,6 +162,8 @@ public class PictorialService extends ShopBaseService {
     public BufferedImage createBasicStylePictorialBgImage(ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String goodsName, String realPriceStr, String linePriceStr, PictorialImgPx imgPx) {
         //设置背景图
         BufferedImage bgBufferedImage = createBgImage(imgPx);
+        ImageUtil.addRect(bgBufferedImage, 5, 5,  imgPx.getBgWidth()-10, imgPx.getBgHeight()-10,  imgPx.getShopStyleColor(),10.0f, Color.WHITE);
+
         // 设置商品图片
         goodsImg = ImageUtil.resizeImage(imgPx.getGoodsWidth(), imgPx.getGoodsHeight(), goodsImg);
         ImageUtil.addTwoImage(bgBufferedImage, goodsImg, imgPx.getGoodsStartX(), imgPx.getGoodsStartY());
