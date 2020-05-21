@@ -59,6 +59,13 @@ public class EsUtil {
                     if( "scaled_float".equals(a.type()) ){
                         xContentBuilder.field("scaling_factor",a.scaledNumber());
                     }
+                    if( a.name().equals("goods_name") ){
+                        xContentBuilder.startObject("fields")
+                            .startObject("sing")
+                            .field("type","keyword")
+//                            .field("index","not_analyzed")
+                            .endObject().endObject();
+                    }
                     xContentBuilder.endObject();
                 }
             }

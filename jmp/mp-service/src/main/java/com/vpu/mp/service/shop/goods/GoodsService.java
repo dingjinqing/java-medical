@@ -13,6 +13,7 @@ import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -44,6 +45,7 @@ import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
 import com.vpu.mp.service.shop.config.ConfigService;
+import com.vpu.mp.service.shop.config.ShopCommonConfigCacheService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.MpDecorationService;
 import com.vpu.mp.service.shop.goods.es.*;
@@ -158,6 +160,8 @@ public class GoodsService extends ShopBaseService {
     private EsMappingUpdateService esMappingUpdateService;
     @Autowired
     private EsDataUpdateMqService esDataUpdateMqService;
+    @Autowired
+    private ShopCommonConfigCacheService shopCommonConfigCacheService;
 
     /**
      * 获取全品牌，标签，商家分类数据,平台分类数据
@@ -275,17 +279,28 @@ public class GoodsService extends ShopBaseService {
      */
     public PageResult<GoodsPageListVo> getPageList(GoodsPageListParam goodsPageListParam) {
         PageResult<GoodsPageListVo> pageResult;
+        assemblyGoodsPageListParam(goodsPageListParam);
         if (esUtilSearchService.esState()) {
             try {
                 pageResult = esGoodsSearchService.searchGoodsPageByParam(goodsPageListParam);
             } catch (IOException e) {
-                logger().info("es");
+                logger().info("【admin goods search】es error");
                 pageResult = getGoodsPageByDb(goodsPageListParam);
             }
         } else {
             pageResult = getGoodsPageByDb(goodsPageListParam);
         }
         return pageResult;
+    }
+
+    /**
+     * 需要对搜索条件进行二次封装
+     * @param goodsPageListParam 搜索条件
+     */
+    private void assemblyGoodsPageListParam(GoodsPageListParam goodsPageListParam){
+        //从缓存获取admin搜索分词配置
+        goodsPageListParam.setOpenedAnalyzer(shopCommonConfigCacheService.enabledAnalyzerStatus());
+
     }
 
     private PageResult<GoodsPageListVo> getGoodsPageByDb(GoodsPageListParam goodsPageListParam) {

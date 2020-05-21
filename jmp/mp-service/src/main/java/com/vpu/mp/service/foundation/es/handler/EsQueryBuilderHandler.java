@@ -5,6 +5,7 @@ import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
 import com.vpu.mp.service.pojo.shop.goods.es.Operator;
 import com.vpu.mp.service.pojo.shop.goods.es.QueryType;
+import com.vpu.mp.service.shop.goods.es.goods.EsSearchSource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.elasticsearch.index.query.*;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,7 @@ public class EsQueryBuilderHandler {
      * @param propertyList 查询条件
      * @return {@link BoolQueryBuilder}
      */
-    public BoolQueryBuilder assemblySearchBuilder(List<FieldProperty> propertyList ) {
+    public BoolQueryBuilder assemblySearchBuilder(List<FieldProperty> propertyList, EsSearchSource searchSource,Boolean enableAnalyzer) {
         BoolQueryBuilder resultQueryBuilder = QueryBuilders.boolQuery();
 
         AllQueryBuilders queryBuilderArrays = new AllQueryBuilders();
@@ -38,14 +39,22 @@ public class EsQueryBuilderHandler {
                 resultQueryBuilder.filter(QueryBuilders.termQuery(x.getSearchName(),x.getValue()));
                 continue;
             }
+
             //关键字查询单独处理
             if(EsSearchName.KEY_WORDS.equals(x.getSearchName())){
-                resultQueryBuilder.should(QueryBuilders.matchQuery(EsSearchName.GOODS_NAME,x.getValue()));
-                resultQueryBuilder.should(QueryBuilders.termQuery(EsSearchName.BRAND_NAME,x.getValue()));
-                resultQueryBuilder.should(QueryBuilders.termQuery(EsSearchName.SORT_NAME,x.getValue()));
-                resultQueryBuilder.should(QueryBuilders.termQuery(EsSearchName.CAT_NAME,x.getValue()));
+                if( searchSource.equals(EsSearchSource.ADMIN) && enableAnalyzer){
+                    resultQueryBuilder.must(QueryBuilders.wildcardQuery(EsSearchName.GOODS_NAME+".sing","*"+x.getValue()+"*"));
+                    continue;
+                }else{
+                    resultQueryBuilder.should(QueryBuilders.matchQuery(EsSearchName.GOODS_NAME,x.getValue())).boost(5);
+                    resultQueryBuilder.should(QueryBuilders.termQuery(EsSearchName.BRAND_NAME,x.getValue()));
+                    resultQueryBuilder.should(QueryBuilders.termQuery(EsSearchName.SORT_NAME,x.getValue()));
+                    resultQueryBuilder.should(QueryBuilders.termQuery(EsSearchName.CAT_NAME,x.getValue()));
+                    resultQueryBuilder.should(QueryBuilders.termQuery(EsSearchName.GOODS_SN,x.getValue()));
+                    resultQueryBuilder.should(QueryBuilders.termQuery(EsSearchName.PRD_SNS,x.getValue()));
+                    continue;
+                }
 
-                continue;
             }
             queryBuilderArrays.addToQueryBuilders(x.getQueryType(),getQueryBuilderByProperty(x));
 

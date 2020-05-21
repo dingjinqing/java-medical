@@ -16,6 +16,11 @@ public class JedisKeyConstant {
     public static final String GOODS_BRAND = "goods:brand:shop-id_";
     /**商家分类*/
     public static final String GOODS_SORT= "goods:sort:shop-id_";
+    /**
+     * 分词配置
+     */
+    public static final String ANALYZER_STATUS = "config:analyzer:";
+
     /**Es init*/
     public static final String ES_INIT= "es:init";
 

@@ -36,16 +36,20 @@ public class EsGoodsSearchService extends EsBaseSearchService{
 
     private static final EsGoodsConvertInterface<GoodsPageListVo> CONVERT =new GoodsPageListVoConverter();
 
+    /**
+     * admin商品列表（出售中、仓库中、已售罄）
+     * @param goodsPageListParam 查询参数
+     * @return 搜索结果（分页）
+     * @throws IOException 查询异常
+     */
     public PageResult<GoodsPageListVo> searchGoodsPageByParam(GoodsPageListParam goodsPageListParam) throws IOException {
-
         Integer shopId = getShopId();
         if(goodsPageListParam.getLabelId() != null){
             goodsPageListParam.setGoodsIds(esGoodsLabelSearchService.getGoodsIdsByLabelIds(Lists.newArrayList(goodsPageListParam.getLabelId()),EsGoodsConstant.GOODS_SEARCH_PAGE));
             goodsPageListParam.setLabelId(null);
         }
         EsSearchParam param = goodsParamConvertEsGoodsParam(goodsPageListParam,shopId);
-        param.setQueryByPage(Boolean.TRUE);
-        PageResult<EsGoods> pageResult = searchGoodsPageByParam(param);
+        PageResult<EsGoods> pageResult = searchGoodsPageByParamForPage(param);
         return esPageConvertVoPage(pageResult);
     }
 
