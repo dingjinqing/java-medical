@@ -13,7 +13,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record;
+import org.jooq.Result;
 import org.jooq.SelectJoinStep;
+import org.jooq.SelectLimitStep;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +63,29 @@ public class CardVerifyDaoService extends ShopBaseService {
 					.from(CARD_EXAMINE)
 					.leftJoin(USER).on(CARD_EXAMINE.USER_ID.eq(USER.USER_ID));
 		buildOptions(select,param);
-		return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), myRecord.getClass());
+		if(param.getStartNum()!=null && param.getEndNum()!=null) {
+			logger().info("查询区间");
+			Integer startNum = param.getStartNum()-1;
+			if(startNum<0) {
+				startNum = 0;
+			}
+			Integer rowNum = param.getEndNum()-startNum;
+			return getRangeResult(select,startNum,rowNum,myRecord.getClass());
+		}else {
+			return getPageResult(select, param.getCurrentPage(), param.getPageRows(), myRecord.getClass());
+		}
+
+	}
+	/**
+	 * 	查询区间
+	 * @return
+	 */
+	public <T> PageResult<T> getRangeResult(SelectLimitStep<?> select, Integer startNum, Integer rowNum,
+			Class<T> clazz) {
+		PageResult<T> pageResult = new PageResult<>();
+		Result<?> result = select.limit(startNum,rowNum).fetch();
+		pageResult.dataList = result.into(clazz);
+		return pageResult;
 	}
 	
 	public CardExamineRecord getLastRecord(ActiveAuditParam param) {

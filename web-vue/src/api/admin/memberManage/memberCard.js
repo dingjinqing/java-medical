@@ -243,6 +243,15 @@ export function exportExcel (data) {
     responseType: 'blob'
   })
 }
+//  会员卡审核导出
+export function exportExcelForCardExamine (data) {
+  return service({
+    url: '/api/admin/member/activateAudit/list/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
 
 // 获取导入领取码模板
 export function getExportExcel () {

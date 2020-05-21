@@ -40,12 +40,14 @@
       <div class="number">
         <p class="num-tip"><strong>导出条数</strong>（一次最多导出5000条数据）</p>
         <el-input-number
+          v-model="startNum"
           size="small"
           controls-position="right"
           style="width:100px;"
         ></el-input-number>
         <span>至</span>
         <el-input-number
+         v-model="endNum"
           size="small"
           controls-position="right"
           style="width:100px;"
@@ -58,7 +60,7 @@
         <el-button
           size="small"
           type="primary"
-          @click="handleDesc"
+          @click="handleExport"
         >确 定</el-button>
         <el-button
           @click="dialogVisiable = false"
@@ -71,6 +73,8 @@
 </template>
 
 <script>
+import { download } from '@/util/excelUtil.js'
+import { exportExcelForCardExamine } from '@/api/admin/memberManage/memberCard.js'
 export default {
   props: {
     visiable: {
@@ -80,6 +84,25 @@ export default {
     queryContent: {
       type: Array,
       default: () => { return [{ title: null, value: null }] }
+    },
+    maxNum: {
+      type: Number,
+      default: null
+    },
+    cardId: {
+      required: true,
+      default: null
+    },
+    status: {
+      type: Number,
+      required: true,
+      default: null
+    }
+  },
+  data () {
+    return {
+      startNum: 1,
+      endNum: 2
     }
   },
   computed: {
@@ -97,6 +120,35 @@ export default {
       } else {
         return this.queryContent.some(item => Boolean(item.value))
       }
+    }
+  },
+  watch: {
+    maxNum (newValue, oldValue) {
+      if (this.maxNum > 0) {
+        this.endNum = this.maxNum
+      }
+    }
+  },
+  methods: {
+    handleExport () {
+      this.dialogVisiable = false
+      let obj = {
+        'startNum': this.startNum,
+        'endNum': this.endNum,
+        'cardId': this.cardId,
+        'status': this.status,
+        'realName': this.queryContent[0].value,
+        'mobile': this.queryContent[1].value,
+        'firstTime': this.queryContent[2].value,
+        'secondTime': this.queryContent[3].value
+      }
+      exportExcelForCardExamine(obj).then(res => {
+        console.log('success')
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : 'template.xlsx'
+        console.log('文件名：' + fileName)
+        download(res, decodeURIComponent(fileName))
+      })
     }
   }
 }

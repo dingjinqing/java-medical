@@ -38,5 +38,9 @@ public class ActiveAuditParam {
 	private String refuseDesc;
 	// 审核超时
 	private Timestamp examineOver;
+	// 开始行
+	public Integer startNum;
+	// 结束行
+	public Integer endNum;
 
 }
