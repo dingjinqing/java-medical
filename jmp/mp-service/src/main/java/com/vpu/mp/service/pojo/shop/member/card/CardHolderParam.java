@@ -31,4 +31,24 @@ public class CardHolderParam {
 	private Timestamp firstDateTime;
 	/** - 领卡时间 结束范围 */
 	private Timestamp secondDateTime;
+	
+	/**
+	 * 	是否提交审核申请
+	 */
+	private Byte submitValue;
+	
+	/**
+	 * 	卡审核状态
+	 */
+	private Byte examineStatusValue;
+	
+	/**
+	 * 	有无消费记录
+	 */
+	private Byte consumeRecordValue;
+	
+	/**
+	 * 	有无充值记录
+	 */
+	private Byte chargeRecordValue;
 }
