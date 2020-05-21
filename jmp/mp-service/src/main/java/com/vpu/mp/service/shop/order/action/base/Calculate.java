@@ -792,6 +792,7 @@ public class Calculate extends ShopBaseService {
                     throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MAX, "限时降价最大限购", goods.getGoodsInfo().getGoodsName(), limitAmount.toString());
                 }else{
                     //不禁止继续下单时以原价购买
+                    goods.setReducePriceId(0);
                     return UniteMarkeingtRecalculateBo.create(goods.getProductPrice(), BaseConstant.ACTIVITY_TYPE_GENERAL, null);
                 }
             }
