@@ -347,6 +347,10 @@ export default {
           this.$router.push({
             name: 'payreward'
           })
+        } else if (routeName === 'bargain_activity') {
+          this.$router.push({
+            name: 'kanjia'
+          })
         } else {
           console.log(this.$route)
           if (name === '表单统计') {

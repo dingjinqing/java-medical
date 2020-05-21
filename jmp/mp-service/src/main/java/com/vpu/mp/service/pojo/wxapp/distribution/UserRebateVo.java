@@ -14,6 +14,8 @@ public class UserRebateVo {
     private Integer userId;
     /**用户头像*/
     private String userAvatar;
+    /**分销员昵称*/
+    private String username;
     /**返利金额*/
     private BigDecimal FinalMoney;
 }

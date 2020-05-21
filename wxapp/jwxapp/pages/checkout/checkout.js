@@ -772,7 +772,7 @@ global.wxPage({
   setScoreRedeemData(orderInfo){
    let scoreRedeemData = orderInfo.orderGoods.reduce((defaultData,item,index)=>{
       if(item.goodsScore) defaultData.score += item.goodsScore * item.goodsNumber
-      if(item.discountedGoodsPrice) defaultData.money += item.discountedGoodsPrice * item.goodsNumber
+      if(item.goodsPrice) defaultData.money += parseFloat(item.goodsPrice * item.goodsNumber).toFixed(2)
       return defaultData
     },{score:0,money:0})
     this.setData({scoreRedeemData})
