@@ -770,6 +770,11 @@ public class OrderInfoService extends ShopBaseService {
             }
 			break;
 		default:
+            if (OrderConstant.RT_ONLY_MONEY == returnOrder.getReturnType()) {
+                set.set(TABLE.REFUND_TIME, DateUtil.getSqlTimestamp());
+            } else {
+                set.set(TABLE.RETURN_TIME, DateUtil.getSqlTimestamp());
+            }
 			break;
 		}
 		set.where(TABLE.ORDER_SN.eq(returnOrder.getOrderSn())).execute();
