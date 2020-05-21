@@ -246,7 +246,7 @@
                   size="small"
                   controls-position="right"
                   class="small_input"
-                  @input="changeItemDiscount(scope.row)"
+                  @change="changeItemDiscount(scope.row)"
                 ></el-input-number> {{$t('reducePriceList.discount')}}
               </template>
             </el-table-column>
@@ -265,7 +265,7 @@
                   size="small"
                   controls-position="right"
                   class="small_input"
-                  @input="changeItemReducePrice(scope.row)"
+                  @change="changeItemReducePrice(scope.row)"
                 ></el-input-number> {{$t('marketCommon.yuan')}}
               </template>
             </el-table-column>
@@ -285,7 +285,7 @@
                   size="small"
                   controls-position="right"
                   class="small_input"
-                  @input="changeItemGoodsPrice(scope.row)"
+                  @change="changeItemGoodsPrice(scope.row)"
                 ></el-input-number> {{$t('marketCommon.yuan')}}
                 <p
                   class="price_blue"
@@ -837,9 +837,10 @@ export default {
         itemData.reducePrice = parseFloat(reducePriceFloat.substring(0, reducePriceFloat.length - 1))
         if (this.isEditFlag === false && itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
           itemData.reducePriceProduct.map(item => {
-            let originalPrice = item.originalPrice
-            let prdPriceFloat = (originalPrice * (parseFloat(rowData.discount / 10))).toFixed(3)
-            item.prdPrice = parseFloat(prdPriceFloat.substring(0, prdPriceFloat.length - 1))
+            // let originalPrice = item.originalPrice
+            // let prdPriceFloat = (originalPrice * (parseFloat(rowData.discount / 10))).toFixed(3)
+            // item.prdPrice = parseFloat(prdPriceFloat.substring(0, prdPriceFloat.length - 1))
+            item.prdPrice = rowData.goodsPrice
           })
         }
       }
@@ -860,9 +861,10 @@ export default {
         itemData.discount = parseFloat(discountFloat.substring(0, discountFloat.length - 1))
         if (this.isEditFlag === false && itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
           itemData.reducePriceProduct.map(item => {
-            let originalPrice = item.originalPrice
-            let prdPriceFloat = parseFloat(originalPrice - rowData.reducePrice).toFixed(3)
-            item.prdPrice = parseFloat(prdPriceFloat.substring(0, prdPriceFloat.length - 1))
+            // let originalPrice = item.originalPrice
+            // let prdPriceFloat = parseFloat(originalPrice - rowData.reducePrice).toFixed(3)
+            // item.prdPrice = parseFloat(prdPriceFloat.substring(0, prdPriceFloat.length - 1))
+            item.prdPrice = rowData.goodsPrice
           })
         }
       }
