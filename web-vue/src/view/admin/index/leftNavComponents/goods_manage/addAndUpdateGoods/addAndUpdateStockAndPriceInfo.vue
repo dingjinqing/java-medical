@@ -425,7 +425,7 @@
       </el-form-item>
 
       <el-form-item
-        :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.goodsPrdSn')"
+        :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.prdCodes')"
         v-if="!specInfoSwitch && needPrdCodes === 1"
       >
         <el-input
@@ -1405,17 +1405,6 @@ export default {
         //     return false
         //   }
         // }
-
-        if (this.goodsWeightCfg === 1) {
-          for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
-            let item = this.goodsProductInfo.goodsSpecProducts[i]
-            if (isNumberBlank(item.prdWeight) || item.prdWeight <= 0) {
-              this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsPrdWeightIsNull'))
-              document.getElementById('prdWeight_' + item.prdDesc).focus()
-              return false
-            }
-          }
-        }
         // 验证会员价格
         for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
           let specProduct = this.goodsProductInfo.goodsSpecProducts[i]

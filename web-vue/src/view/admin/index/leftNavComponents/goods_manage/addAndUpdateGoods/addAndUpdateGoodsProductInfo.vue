@@ -24,6 +24,8 @@ import {selectGoodsCommonConfig, openGoodsWeightCfg} from '@/api/admin/goodsMana
 import addAndUpdateBasicInfo from './addAndUpdateBasicInfo'
 import addAndUpdateStockAndPriceInfo from './addAndUpdateStockAndPriceInfo'
 import addAndUpdateDeliverAndOtherInfo from './addAndUpdateDeliverAndOtherInfo'
+// 导入js工具
+import {isNumberBlank} from '@/util/typeUtil'
 export default {
   components: { addAndUpdateBasicInfo, addAndUpdateStockAndPriceInfo, addAndUpdateDeliverAndOtherInfo },
   data () {
@@ -82,14 +84,32 @@ export default {
       let deliverAndOtherInfoData = this.$refs.deliverAndOtherInfo.getFormData()
 
       let deliverType = deliverAndOtherInfoData.deliverTemplateType
-
       // 选择重量模板
-      if (deliverType === 1 && this.transferData.goodsWeightCfg === 0) {
+      if (deliverType === 1) {
         // 但是没开启重量填写配置
-        this.goodsWeightDialogShow = true
-        return false
+        if (this.transferData.goodsWeightCfg === 0) {
+          this.goodsWeightDialogShow = true
+          return false
+        }
+        // 选择了重量模板则需要校验填入的数据是否正确
+        if (this.transferData.isDefaultPrd) {
+          if (isNumberBlank(deliverAndOtherInfoData.goodsWeight) || deliverAndOtherInfoData.goodsWeight <= 0) {
+            this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsWeightIsNull'))
+            this.$refs.deliverAndOtherInfo.$refs.goodsWeightInput.focus()
+            return false
+          }
+        } else {
+          let stockAndPriceInfoData = this.$refs.stockAndPriceInfo.getFormData()
+          for (let i = 0; i < stockAndPriceInfoData.goodsProductInfo.goodsSpecProducts.length; i++) {
+            let item = stockAndPriceInfoData.goodsProductInfo.goodsSpecProducts[i]
+            if (isNumberBlank(item.prdWeight) || item.prdWeight <= 0) {
+              this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsPrdWeightIsNull'))
+              document.getElementById('prdWeight_' + item.prdDesc).focus()
+              return false
+            }
+          }
+        }
       }
-
       return true
     },
     /* 获取数据 */
