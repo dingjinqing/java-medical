@@ -9,10 +9,9 @@
 
     <el-dialog :title="$t('goodsAddEditInfo.goodsInfoMissing')"
                :visible.sync="goodsWeightDialogShow"
-               width="30%">
-      <p class="infoContent">
-        {{$t('goodsAddEditInfo.goodsWeightConfigInfo')}}
-      </p>
+               width="610px">
+      <div class="infoContent" v-html="$t('goodsAddEditInfo.goodsWeightConfigInfo')">
+      </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="goodsWeightDialogConfirm">{{$t('goodsAddEditInfo.confirmBtn')}}</el-button>
       </span>
@@ -20,8 +19,6 @@
   </div>
 </template>
 <script>
-// js工具函数导入
-import {isNumberBlank} from '@/util/typeUtil'
 import {selectGoodsCommonConfig, openGoodsWeightCfg} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // 组件导入
 import addAndUpdateBasicInfo from './addAndUpdateBasicInfo'
@@ -82,35 +79,15 @@ export default {
       if (!validateVal) {
         return false
       }
-      let stockAndPriceInfoData = this.$refs.stockAndPriceInfo.getFormData()
       let deliverAndOtherInfoData = this.$refs.deliverAndOtherInfo.getFormData()
 
       let deliverType = deliverAndOtherInfoData.deliverTemplateType
 
       // 选择重量模板
-      if (deliverType === 1) {
+      if (deliverType === 1 && this.transferData.goodsWeightCfg === 0) {
         // 但是没开启重量填写配置
-        if ((this.transferData.goodsWeightCfg === 0)) {
-          this.goodsWeightDialogShow = true
-          return false
-        } else {
-          // 校验是否重量都写了
-          // 默认规格
-          if (this.transferData.isDefaultPrd) {
-            if (isNumberBlank(deliverAndOtherInfoData.goodsWeight)) {
-              this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsWeightIsNull'))
-              return false
-            }
-          } else {
-            let specPrds = stockAndPriceInfoData.goodsSpecProducts
-            for (let i = 0; i < specPrds.length; i++) {
-              if (isNumberBlank(specPrds[i].prdWeight)) {
-                this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsPrdWeightIsNull'))
-                return false
-              }
-            }
-          }
-        }
+        this.goodsWeightDialogShow = true
+        return false
       }
 
       return true
