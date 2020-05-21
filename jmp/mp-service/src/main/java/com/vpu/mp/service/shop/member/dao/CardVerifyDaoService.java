@@ -65,11 +65,11 @@ public class CardVerifyDaoService extends ShopBaseService {
 		buildOptions(select,param);
 		if(param.getStartNum()!=null && param.getEndNum()!=null) {
 			logger().info("查询区间");
-			Integer startNum = param.getStartNum();
+			Integer startNum = param.getStartNum()-1;
 			if(startNum<0) {
 				startNum = 0;
 			}
-			Integer rowNum = param.getEndNum()-param.getStartNum()+1;
+			Integer rowNum = param.getEndNum()-startNum;
 			return getRangeResult(select,startNum,rowNum,myRecord.getClass());
 		}else {
 			return getPageResult(select, param.getCurrentPage(), param.getPageRows(), myRecord.getClass());

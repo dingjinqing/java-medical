@@ -102,7 +102,7 @@ export default {
   data () {
     return {
       startNum: 1,
-      endNum: 1
+      endNum: 2
     }
   },
   computed: {
