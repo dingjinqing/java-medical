@@ -75,7 +75,10 @@
                 </view>
                 <view class="goods_spec">{{goodsItem.goodsAttr}}</view>
                 <view class="goods_price_num">
-                  <view class="goods_price" style="color:{{comColor}}">
+                  <view class="goods_price" style="color:{{comColor}}" wx:if="{{!filter.includes(item.orderType,4)}}">
+                     ￥{{goodsItem.goodsPrice}}
+                  </view>
+                  <view class="goods_price" style="color:{{comColor}}" wx:else>
                     {{goodsItem.goodsPrice > 0 ? '￥'+goodsItem.goodsPrice : ''}}
                     {{goodsItem.goodsPrice > 0 && goodsItem.goodsScore > 0 ? '+' : ''}}
                     {{goodsItem.goodsScore > 0 ? goodsItem.goodsScore + '积分' : ''}}
