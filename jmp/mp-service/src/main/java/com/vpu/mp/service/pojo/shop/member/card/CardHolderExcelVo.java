@@ -1,8 +1,10 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
+import com.vpu.mp.service.foundation.excel.annotation.ExcelDynamicColumn;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
 
@@ -44,6 +46,11 @@ public class CardHolderExcelVo {
 	@ExcelColumn(columnIndex = 6, columnName = "usercard.import.nflag")
 	private String nflag;
 	
+	
+	@ExcelDynamicColumn
+	private Map<String,Object> other;
+	
+	
 	/** -过期时间 */
 	@ExcelIgnore
 	private Timestamp expireTime;
@@ -52,4 +59,7 @@ public class CardHolderExcelVo {
 	/** 更新时间 */
 	@ExcelIgnore
 	private Timestamp updateTime;
+	/**	审核状态 */
+	@ExcelIgnore
+	private Byte status;
 }

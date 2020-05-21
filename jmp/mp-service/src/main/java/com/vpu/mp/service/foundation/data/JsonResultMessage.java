@@ -683,6 +683,11 @@ public class JsonResultMessage {
     public static final String UEXP_SUBLAYER_NUMBER = "user.export.sublayer_number";
     public static final String UEXP_LEVEL_NAME = "user.export.level_name";
     public static final String UEXP_GROUP_NAM = "user.export.group_name";
+    public static final String CARD_EXAMINE_STATUS_TITLE = "card.examine.status.title";
+    public static final String CARD_EXAMINE_SUBMIT_TITLE = "card.examine.submit.title";
+    public static final String CARD_EXAMINE_MONEY_TITLE = "card.examine.money.title";
+    public static final String CARD_EXAMINE_CONSUME_TITLE = "card.examine.consume.title";
+    public static final String CARD_EXAMINE_CHARGE_TITLE = "card.examine.charge.title";
 
     // 会员卡优惠券信息
     public static final String CARD_COUPON_RECEIVE_DAY_START = "card.receive.day.start";
