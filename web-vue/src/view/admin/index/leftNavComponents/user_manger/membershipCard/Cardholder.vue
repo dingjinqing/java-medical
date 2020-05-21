@@ -437,6 +437,10 @@ export default {
           this.statusValue = -1
           this.firstDateTime = null
           this.secondDateTime = null
+          this.submitValue = -1
+          this.examineStatusValue = 0
+          this.consumeRecordValue = -1
+          this.chargeRecordValue = -1
           break
         case 2:
           this.exportInfo()
