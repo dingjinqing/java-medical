@@ -296,6 +296,7 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
                     log.info("专享商品不可购买,{}" ,one.getGoodsInfo().getGoodsName());
                     throw new MpException(JsonResultCode.CODE_ORDER_EXCLUSIVE_GOODS_NO_BUY, "专享商品不可购买", one.getGoodsInfo().getGoodsName());
                 }
+
             }
         }
     }

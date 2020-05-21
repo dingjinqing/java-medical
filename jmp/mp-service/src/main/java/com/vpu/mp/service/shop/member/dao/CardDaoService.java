@@ -25,6 +25,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USI
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,6 +34,7 @@ import java.util.stream.IntStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Condition;
+import org.jooq.Field;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep4;
 import org.jooq.InsertValuesStep5;
@@ -92,13 +94,17 @@ import com.vpu.mp.service.pojo.shop.member.card.export.receive.CardReceiveDownVo
 @Service
 public class CardDaoService extends ShopBaseService {
 	public PageResult<CardHolderVo> getAllCardHolder(CardHolderParam param) {
-
 		User invitedUser = USER.as("a");
+		List<Field<?>> f = new ArrayList<>(Arrays.asList(USER_CARD.fields()));
+		f.add(USER.USERNAME);
+		f.add(USER.MOBILE);
+		f.add(invitedUser.USERNAME.as("invitedName"));
+		f.add(MEMBER_CARD.CARD_TYPE);
+		f.add(CARD_EXAMINE.STATUS);
+		Field<?>[] myFields = f.toArray(new Field<?>[0]);
+		
 		SelectJoinStep<?> select = db()
-				.select(USER_CARD.USER_ID, USER.USERNAME, USER.MOBILE, invitedUser.USERNAME.as("invitedName"),
-						USER_CARD.CREATE_TIME, USER_CARD.CARD_NO, USER_CARD.FLAG, USER_CARD.EXPIRE_TIME,USER_CARD.UPDATE_TIME,
-						MEMBER_CARD.CARD_TYPE,
-						CARD_EXAMINE.STATUS)
+				.select(myFields)
 				.from(USER_CARD.leftJoin(USER.leftJoin(invitedUser).on(USER.INVITE_ID.eq(invitedUser.USER_ID))
 										).on(USER_CARD.USER_ID.eq(USER.USER_ID)))
 				.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
@@ -108,7 +114,7 @@ public class CardDaoService extends ShopBaseService {
 
 		buildOptions(param, select);
 		select.where(USER_CARD.CARD_ID.eq(param.getCardId()))
-			  .groupBy(USER_CARD.CARD_NO)
+			  .groupBy(myFields)
 			  .orderBy(USER_CARD.USER_ID.desc());
 		
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), CardHolderVo.class);
