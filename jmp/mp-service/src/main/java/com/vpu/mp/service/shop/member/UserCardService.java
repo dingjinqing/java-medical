@@ -657,21 +657,22 @@ public class UserCardService extends ShopBaseService {
     public void addChargeMoney(MemberCardRecord card, UserCardRecord userCard) {
         logger().info("生成会员卡余额，门店，商品兑换次数记录");
         if (CardUtil.isNormalCard(card.getCardType()) && card.getSendMoney() != null) {
+        	//  发卡余额变动
             ChargeMoneyRecordBuilder builder = getPreparedChargeMoneyBuilder(card, userCard);
-            //  管理员发卡
+            builder.afterChargeMoney(userCard.getMoney()).changeType(CardConstant.CHARGE_SEND_CARD);
             builder.charge(new BigDecimal(card.getSendMoney())).reasonId(String.valueOf(RemarkTemplate.ADMIN_SEND_CARD.code)).build().insert();
 
         }
         if (CardUtil.isLimitCard(card.getCardType())) {
             if(CardUtil.canUseInStore(card.getStoreUseSwitch())) {
-                // 管理员发卡 - 门店服务次数
+                // 发卡 - 门店服务次数
                 ChargeMoneyRecordBuilder builder = getPreparedChargeMoneyBuilder(card, userCard);
                 builder.count(card.getCount().shortValue()).reasonId(String.valueOf(RemarkTemplate.SEND_CARD_REASON.code));
                 builder.build().insert();
             }
 
             if (CardUtil.canExchangGoods(card.getIsExchang())) {
-                // 管理员发卡 - 兑换商品数量
+                // 发卡 - 兑换商品数量
                 ChargeMoneyRecordBuilder builder = getPreparedChargeMoneyBuilder(card, userCard);
                 builder.count((short) 0).exchangCount(card.getExchangCount().shortValue()).reasonId(String.valueOf(RemarkTemplate.ADMIN_EXCHANGE_GOODS.code));
                 builder.build().insert();
