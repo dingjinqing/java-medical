@@ -21,7 +21,7 @@ export const cn = {
   confirmBtn: '确定',
   cancelBtn: '取消',
   goodsInfoMissing: '商品信息缺失',
-  goodsWeightConfigInfo: ' 当前商品运费设置已选【重量运费模板】，必须填写商品重量后保存。如页面未展示商品提示信息，请前往"基础配置-店铺基础配置-店铺通用配置"页面，开启"商品重量配置项设置"开关后,重新编辑商品信息。点击确定按钮，可自动开启',
+  goodsWeightConfigInfo: '·当前商品运费设置已选【重量运费模板】，必须填写商品重量后保存<br>·页面未展示商品重量配置信息，请开启“商品重量配置项设置”开关后，重新编辑商品信息<br>·点击确定按钮，可自动开启',
   warningInfo: {
     requireGoodsName: '请输入商品名称',
     requirePlatformClassify: '请选择平台分类',
@@ -45,8 +45,8 @@ export const cn = {
     goodsSpec: '规格: ',
     priceIsWrong: ' 价格填写错误',
     goodsNumIsWrong: ' 库存写错误',
-    goodsWeightIsNull: '请填写商品重量',
-    goodsPrdWeightIsNull: '请填写商品规格重量',
+    goodsWeightIsNull: '请正确填写商品重量',
+    goodsPrdWeightIsNull: '请正确填写商品规格重量',
     goodsPrdCodesInnerRepeated: '商品条码内部重复',
     goodsPrdCodesExist: '商品条码已存在',
     goodsNumberWrong: '商品库存填写错误',
@@ -212,7 +212,8 @@ export const cn = {
     saleOnTime: '自定义上架时间',
     saleTimeNotNll: '自定义时间不可为空',
     saleTimeCanNotBeBefore: '自定义时间不可早于当前时间',
-    notSale: '暂不售卖放入仓库'
+    notSale: '暂不售卖放入仓库',
+    chooseSaleTime: '请选择上架时间'
   },
   goodsDetail: {
     goodsDetailTitle: '商品详情',

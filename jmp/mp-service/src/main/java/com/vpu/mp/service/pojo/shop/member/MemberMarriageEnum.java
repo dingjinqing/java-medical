@@ -11,7 +11,7 @@ import com.vpu.mp.service.pojo.shop.member.data.MarriageData;
 /**
 * @author 黄壮壮
 * @Date: 2019年8月19日
-* @Description: 会员受教育程度-枚举类
+* @Description: 会员婚姻状况-枚举类
 */
 public enum MemberMarriageEnum {
 	

@@ -44,7 +44,7 @@ public class CouponMsgNoticeService extends ShopBaseService {
         List<Integer> userIdList = Collections.singletonList(userId);
         RabbitMessageParam msgParam = RabbitMessageParam.builder()
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GET_COUPON).data(mpData).build())
-            .page("pages/couponlist/couponlist")
+            .page("pages/coupon/coupon")
             .shopId(getShopId())
             .userIdList(userIdList)
             .type(MessageTemplateConfigConstant.GET_COUPON).build();
