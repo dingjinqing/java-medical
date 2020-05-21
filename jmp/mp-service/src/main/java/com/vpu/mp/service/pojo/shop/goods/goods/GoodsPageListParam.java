@@ -92,6 +92,11 @@ public class GoodsPageListParam {
      * 需要聚合查询的字段
      */
     private List<String> factNameList;
+    /**
+     * 是否开启分词配置
+     */
+    private Boolean openedAnalyzer = Boolean.FALSE;
+
 
     /**
      * 	分页信息

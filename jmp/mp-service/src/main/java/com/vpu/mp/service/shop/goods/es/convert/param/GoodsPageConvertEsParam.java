@@ -6,6 +6,8 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.es.*;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.shop.goods.es.convert.exception.ParamConvertException;
+import com.vpu.mp.service.shop.goods.es.goods.EsSearchFieldsConstant;
+import com.vpu.mp.service.shop.goods.es.goods.EsSearchSource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.search.sort.SortOrder;
@@ -49,9 +51,12 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
         }
         if(GoodsConstant.SALE_OUT.equals(param.getIsSaleOut())){
             propertyList.add(new FieldProperty(EsSearchName.GOODS_NUMBER,0, Operator.EQ));
-        }
-        if (GoodsConstant.NOT_SALE_OUT.equals(param.getIsSaleOut())){
+
+        }else if (GoodsConstant.NOT_SALE_OUT.equals(param.getIsSaleOut())){
             propertyList.add(new FieldProperty(EsSearchName.GOODS_NUMBER,0, Operator.GT));
+        }
+        if(StringUtils.isNotBlank(param.getGoodsName()) ){
+            propertyList.add(new FieldProperty(EsSearchName.KEY_WORDS,param.getGoodsName(),Operator.SIM));
         }
         if( null != param.getHighShopPrice() ){
             propertyList.add(new FieldProperty(EsSearchName.SHOP_PRICE,param.getHighShopPrice(),Operator.LTE));
@@ -86,9 +91,7 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
         if( null != param.getGoodsType() ){
             propertyList.add(new FieldProperty(EsSearchName.GOODS_TYPE,param.getGoodsType()));
         }
-        if(StringUtils.isNotBlank(param.getGoodsName()) ){
-            propertyList.add(new FieldProperty(EsSearchName.GOODS_NAME,param.getGoodsName(),Operator.SIM));
-        }
+
         if( null != param.getIsOnSale() ){
             propertyList.add(new FieldProperty(EsSearchName.IS_ON_SALE,param.getIsOnSale()));
         }
@@ -125,7 +128,9 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
         if( !propertyList.isEmpty() ){
             searchParam.setSearchList(propertyList);
         }
-
+        searchParam.setIncludes(EsSearchFieldsConstant.GOODS_SEARCH_STR);
+        searchParam.setSearchSource(EsSearchSource.ADMIN);
+        searchParam.setAnalyzerStatus(param.getOpenedAnalyzer());
         return searchParam;
     }
 }

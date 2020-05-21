@@ -138,7 +138,11 @@
         label="当次充值后卡余额(元)"
         align="center"
         width="160"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          {{scope.row.afterChargeMoney}}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="reason"
         label="备注"

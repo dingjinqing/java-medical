@@ -322,9 +322,9 @@ public class OrderOperationJudgment {
 	 */
 	public static boolean isShowRemindShip(OrderListMpVo order) {
 		if(CollectionUtils.isEmpty(order.getOrderType())) {
-			order.setOrderType(Arrays.asList(OrderInfoService.orderTypeToArray(order.getGoodsType())));
+			order.setOrderType(Arrays.asList(OrderInfoService.orderTypeToByte(order.getGoodsType())));
 		}
-		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getOrderType().indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT).toString()) == -1) {
+		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && !order.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT)) {
 			return true;
 		}
 		return false;

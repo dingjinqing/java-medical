@@ -275,7 +275,12 @@ public class ImageService extends ShopBaseService implements ImageDefault {
             record.setImgSize(bo.getSize());
             record.setImgOrigFname(bo.getImageName());
             // 去掉.jpg
-            record.setImgName(bo.getImageName().substring(0,bo.getImageName().lastIndexOf(".")));
+            if (bo.getImageName().lastIndexOf(".") != -1) {
+                record.setImgName(bo.getImageName().substring(0,bo.getImageName().lastIndexOf(".")));
+            }else{
+                record.setImgName(bo.getImageName());
+            }
+
             record.setImgPath(bo.getRelativeFilePath());
             record.setImgUrl(bo.getImgUrl());
             record.setImgCatId(0);

@@ -34,9 +34,14 @@ public class MemberCardOrderVo {
     private Byte canReturn;
     /** 购买方式：0：积分，1：现金 **/
     private Byte payType;
-    /** 用户名 **/
+    /**
+     * 用户名
+     **/
     private String username;
-    /** 手机号 **/
+    private Integer userId;
+    /**
+     * 手机号
+     **/
     private String mobile;
     /** 退款状态 **/
     private Byte returnFlag;

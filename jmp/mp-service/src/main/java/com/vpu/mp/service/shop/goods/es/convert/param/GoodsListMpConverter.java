@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.vpu.mp.service.foundation.es.annotation.EsSearch;
 import com.vpu.mp.service.pojo.shop.goods.es.*;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
+import com.vpu.mp.service.shop.goods.es.goods.EsSearchSource;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.util.CollectionUtils;
@@ -124,6 +125,7 @@ public class GoodsListMpConverter implements EsParamConvertInterface {
         if( !propertyList.isEmpty() ){
             searchParam.setSearchList(propertyList);
         }
+        searchParam.setSearchSource(EsSearchSource.WX_APP);
         return searchParam;
     }
 }

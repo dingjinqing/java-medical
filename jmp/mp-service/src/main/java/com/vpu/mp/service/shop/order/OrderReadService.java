@@ -139,7 +139,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -363,8 +362,6 @@ public class OrderReadService extends ShopBaseService {
 		Map<String, List<OrderConciseRefundInfoVo>> refundByOrderSn = returnOrder.getRefundByOrderSn(rOrderSns.toArray(new String[rOrderSns.size()])).intoGroups(returnOrder.TABLE.ORDER_SN,OrderConciseRefundInfoVo.class);
 		//查询退货款商品信息
 		Map<Integer, List<OrderReturnGoodsVo>> refundGoodsByOrderSn = returnOrderGoods.getByOrderSn(rOrderSns.toArray(new String[rOrderSns.size()])).intoGroups(returnOrderGoods.TABLE.RET_ID,OrderReturnGoodsVo.class);
-		//TODO 查询订单是否为活动奖品
-		List<String> prizesSns = Collections.emptyList();
 		//把退*商品信息插入退*订单信息中
 		refundByOrderSn.forEach((k,v)->
 			v.forEach(rOrder->
@@ -623,12 +620,11 @@ public class OrderReadService extends ShopBaseService {
 
 		 return result;
 		}
-		List<Integer> ids = orders.dataList.stream().map(OrderListMpVo::getOrderId).collect(Collectors.toList());
-		//商品
-		Map<Integer, List<OrderGoodsMpVo>> goods = orderGoods.getByOrderIds(ids.toArray(new Integer[ids.size()])).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsMpVo.class);
+        //商品
+		Map<Integer, List<OrderGoodsMpVo>> goods = orderGoods.getByOrderIds(orders.dataList.stream().map(OrderListMpVo::getOrderId).toArray(Integer[]::new)).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsMpVo.class);
 		for(OrderListMpVo order : orders.dataList) {
 			//订单类型
-			order.setOrderType(Arrays.asList(OrderInfoService.orderTypeToArray(order.getGoodsType())));
+			order.setOrderType(Arrays.asList(OrderInfoService.orderTypeToByte(order.getGoodsType())));
 			//奖品订单判断
 			order.setIsLotteryGift(isAwardOrder(order.getOrderType()) ? YES : NO);
 			//设置商品
@@ -636,7 +632,7 @@ public class OrderReadService extends ShopBaseService {
 			//订单操作设置（商品订单类型需要提前计算好）
 			setMpOrderOperation(order);
 			//拼团
-			if(order.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GROUP_BUY.toString())) {
+			if(order.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GROUP_BUY)) {
 				order.setGroupBuyInfo(groupBuyList.getByOrder(order.getOrderSn()));
 			}
 			//是否退过款
@@ -672,7 +668,7 @@ public class OrderReadService extends ShopBaseService {
 			throw new MpException(JsonResultCode.CODE_ORDER_NOT_EXIST);
 		}
 		OrderInfoMpVo order = orders.get(0);
-        List<String> orderType = Arrays.asList(OrderInfoService.orderTypeToArray(order.getGoodsType()));
+        List<Byte> orderType = Arrays.asList(OrderInfoService.orderTypeToByte(order.getGoodsType()));
 		//商品
 		Map<Integer, OrderGoodsMpVo> goods = orderGoods.getKeyMapByIds(order.getOrderId());
 		//set orderType
@@ -699,14 +695,13 @@ public class OrderReadService extends ShopBaseService {
 			order.setVerifierInfo(userInfo.getUsername(), userInfo.getMobile());
 		}
 		//子单
-		if(orderType.indexOf(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT.toString()) != -1 && order.getOrderSn().equals(order.getMainOrderSn()) && orders.size() > 1) {
+		if(orderType.contains(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT) && order.getOrderSn().equals(order.getMainOrderSn()) && orders.size() > 1) {
 			//只显示生成订单的子订单
 			order.setSubOrder(getSubOrder(orders.subList(1, orders.size())));
 		}
-		//好物圈
-
+		//TODO 好物圈
 		// 拼团
-		if(orderType.indexOf(BaseConstant.ACTIVITY_TYPE_GROUP_BUY.toString()) != -1){
+		if(orderType.contains(BaseConstant.ACTIVITY_TYPE_GROUP_BUY)){
 			GroupOrderVo groupOrder = groupBuyList.getByOrder(order.getOrderSn());
 			Integer groupBuyLimitAmout = groupBuyService.getGroupBuyLimitAmout(groupOrder.getActivityId());
 			List<GroupBuyUserInfo> pinUserList = groupBuyList.getGroupUserList(groupOrder.getGroupId());
@@ -716,7 +711,7 @@ public class OrderReadService extends ShopBaseService {
 			groupOrderVo.setStatus(groupOrder.getStatus());
 			groupOrderVo.setGroupBuyLimitAmout(groupBuyLimitAmout);
 			order.setGroupBuyInfo(groupOrderVo);
-		}else if(orderType.indexOf(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW.toString()) != -1) {
+		}else if(orderType.contains(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW)) {
 			//拼团抽奖
 			GroupDrawInfoByOrderVo groupDraw=new GroupDrawInfoByOrderVo();
 			GroupDrawInfoByOsVo groupByOrderSn = groupDrawService.getGroupByOrderSn(order.getOrderSn(), false);
@@ -726,17 +721,27 @@ public class OrderReadService extends ShopBaseService {
 			groupDraw.setPinUserGroup(groupDrawService.getGroupList(groupByOrderSn.getActivityId(), groupByOrderSn.getGroupId(), null));
 			order.setGroupDraw(groupDraw);
 		}
-
-		//优惠卷
-
+		//TODO 优惠卷
         //客服按钮展示开关
         order.setOrderDetailService(shopCommonConfigService.getOrderDetailService());
         order.setShowMall(recommendService.goodsMallService.check("1"));
+        //积分兑换商品价格小程序端特殊展示
+        editShowGoodsPrice(order);
 		return order;
 
 	}
 
-	/**
+    private void editShowGoodsPrice(OrderInfoMpVo order) {
+        if(order.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_INTEGRAL)) {
+            order.getGoods().forEach(x-> {
+                if(x.getIsGift().equals((int) NO)) {
+                    x.setGoodsPrice(BigDecimalUtil.subtrac(x.getDiscountedGoodsPrice(), BigDecimalUtil.multiply(new BigDecimal(x.getGoodsScore()), order.getScoreDiscount())));
+                } }
+             );
+        }
+	}
+
+    /**
 	 * mp订单操作设置
 	 * @param order
 	 */
@@ -770,9 +775,9 @@ public class OrderReadService extends ShopBaseService {
 	 * 奖品订单
 	 * @param orderType
 	 */
-	private boolean isAwardOrder(List<String> orderType) {
-		for (String type : orderType) {
-			if(OrderConstant.AWARD_ORDER.contains(Byte.valueOf(type))) {
+	private boolean isAwardOrder(List<Byte> orderType) {
+		for (Byte type : orderType) {
+			if(OrderConstant.AWARD_ORDER.contains(type)) {
 				return true;
 			}
 		}
@@ -1150,8 +1155,12 @@ public class OrderReadService extends ShopBaseService {
 	 * @return
 	 */
 	public ActiveOrderList getActiveOrderList(Byte goodType, Integer activityId, Timestamp startTime, Timestamp  endTime) {
-		return marketOrderInfo.getActiveOrderList(goodType, activityId, startTime, endTime);
-	}
+        if (BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goodType)) {
+            //限时降价的订单
+            return marketOrderInfo.getActiveOrderList2(goodType, activityId, startTime, endTime);
+        }
+        return marketOrderInfo.getActiveOrderList(goodType, activityId, startTime, endTime);
+    }
 
 	 /**
      * 营销活动订单查询
