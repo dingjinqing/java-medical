@@ -335,11 +335,17 @@ public class ChannelService extends ShopBaseService {
 	 */
 	public void recordChannel(String share,Integer userId,Byte type) {
 		ChannelRecord channelRecord = db().selectFrom(CHANNEL).where(CHANNEL.SHARE.eq(share)).fetchAny();
-		Result<ChannelRecordRecord> records = db().selectFrom(CHANNEL_RECORD).where(CHANNEL_RECORD.USER_ID.eq(userId).and(CHANNEL_RECORD.CHANNEL_ID.eq(channelRecord.getId())).and(CHANNEL_RECORD.CREATE_TIME.eq(DateUtil.getLocalTimeDate()))).fetch();
+		Result<ChannelRecordRecord> records = db().selectFrom(CHANNEL_RECORD)
+				.where(CHANNEL_RECORD.USER_ID.eq(userId).and(CHANNEL_RECORD.CHANNEL_ID.eq(channelRecord.getId()))
+						.and(dateFormat(CHANNEL_RECORD.CREATE_TIME, DateUtil.DATE_MYSQL_SIMPLE).eq(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE))))
+				.fetch();
 		if(records.size()>0) {
-			db().update(CHANNEL_RECORD).set(CHANNEL_RECORD.COUNT,records.size()+1)
-			.where(CHANNEL_RECORD.USER_ID.eq(userId).and(CHANNEL_RECORD.CHANNEL_ID.eq(channelRecord.getId()))
-					.and(CHANNEL_RECORD.CREATE_TIME.eq(DateUtil.getLocalTimeDate())).and(CHANNEL_RECORD.TYPE.eq((byte)0))).execute();
+			db().update(CHANNEL_RECORD).set(CHANNEL_RECORD.COUNT, records.size() + 1)
+					.where(CHANNEL_RECORD.USER_ID.eq(userId).and(CHANNEL_RECORD.CHANNEL_ID.eq(channelRecord.getId()))
+							.and(dateFormat(CHANNEL_RECORD.CREATE_TIME, DateUtil.DATE_MYSQL_SIMPLE)
+									.eq(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE)))
+							.and(CHANNEL_RECORD.TYPE.eq((byte) 0)))
+					.execute();
 		}else {
 			if(channelRecord!=null) {
 				ChannelRecordRecord newRecord = db().newRecord(CHANNEL_RECORD);
@@ -347,7 +353,8 @@ public class ChannelService extends ShopBaseService {
 				newRecord.setUserId(userId);
 				newRecord.setType(type);
 				newRecord.setCount(1);
-				newRecord.insert();
+				int insert = newRecord.insert();
+				logger().info("插入结果：{}",insert);
 			}
 			
 		}
