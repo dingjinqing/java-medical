@@ -72,7 +72,7 @@
               v-model="param.endTime"
               type="date"
               style="width:170px;"
-              value-format="yyyy-MM-dd 59:59:59"
+              value-format="yyyy-MM-dd 23:59:59"
               :placeholder="$t('actionRecord.endTime')"
               size="small"
             >
