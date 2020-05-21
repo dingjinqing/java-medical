@@ -66,8 +66,10 @@ public class CardHolderExcelVo {
 	/**	卡余额 */
 	@ExcelIgnore
 	private BigDecimal money;
+	/**	充值次数	*/
 	@ExcelIgnore
 	private Integer chargeTimes;
+	/**	消费次数	*/
 	@ExcelIgnore
 	private Integer consumeTimes;
 }

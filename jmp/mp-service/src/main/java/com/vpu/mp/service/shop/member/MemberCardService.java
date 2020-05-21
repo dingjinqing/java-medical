@@ -1583,7 +1583,7 @@ public class MemberCardService extends ShopBaseService {
 					item.setNflag(expire);
 				}
 			}
-			Map<String, Object> other = item.getOther();
+			Map<String, Object> other = new HashMap<>();
 			if(isNeedActive) {
 				if(item.getStatus()==null) {
 					//	是否提交激活申请
@@ -1606,6 +1606,7 @@ public class MemberCardService extends ShopBaseService {
 				//	消费次数
 				other.put(CardHolderColNameI18n.CONSUME_TIMES,item.getConsumeTimes());
 			}
+			item.setOther(other);
 		}
 		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
 		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
