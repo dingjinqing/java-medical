@@ -1168,7 +1168,7 @@ export default {
                 color: #666;
                 justify-content: space-between;
                 > span {
-                  width: 207px;
+                  width: 265px;
                   text-align: left;
                   overflow: hidden;
                   text-overflow: ellipsis;
