@@ -38,7 +38,7 @@ export const cn = {
   NoLandingPrompt: '禁止登录后会员将不能登录了，确定禁止登录吗?',
   ResumeLogin: '恢复登录',
   ResumeLoginPrompt: '确定要恢复会员的登录功能吗?',
-  Labeling: '打标签',
+  Labeling: '打标签 ',
   Seedetails: '查看详情',
   Allelection: '全选',
   options_one: [
