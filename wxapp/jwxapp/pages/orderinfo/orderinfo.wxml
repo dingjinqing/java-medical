@@ -123,8 +123,8 @@
     <view class="pre-sale-info" wx:if="{{isPreSaleOrder}}">
       <view class="info-top">
         <view class="status-item">
-          <view style="{{(orderInfo.orderPayWay === 1 && orderInfo.bkOrderPaid === 1) || (orderInfo.orderPayWay === 0 && filter.includes(orderInfo.orderType,'10') && orderInfo.orderStatus === 3) ? 'background-color:'+comColor+';border-color:rgba(255,255,255,0.8);':''}}"></view>
-          <text style="{{(orderInfo.orderPayWay === 1 && orderInfo.bkOrderPaid === 1) || (orderInfo.orderPayWay === 0 && filter.includes(orderInfo.orderType,'10') && orderInfo.orderStatus === 3) ? 'color:'+comColor+';' : ''}}">付定金</text>
+          <view style="{{(orderInfo.orderPayWay === 1 && orderInfo.bkOrderPaid === 1) || (orderInfo.orderPayWay === 0 && filter.includes(orderInfo.orderType,10) && orderInfo.orderStatus === 3) ? 'background-color:'+comColor+';border-color:rgba(255,255,255,0.8);':''}}"></view>
+          <text style="{{(orderInfo.orderPayWay === 1 && orderInfo.bkOrderPaid === 1) || (orderInfo.orderPayWay === 0 && filter.includes(orderInfo.orderType,10) && orderInfo.orderStatus === 3) ? 'color:'+comColor+';' : ''}}">付定金</text>
         </view>
         <view class="line" wx:if="{{orderInfo.orderPayWay === 1}}" style="{{orderInfo.bkOrderPaid === 2 ? 'background-color:'+comColor+';' : ''}}"></view>
         <view class="status-item" wx:if="{{orderInfo.orderPayWay === 1}}">
@@ -158,7 +158,11 @@
         {{goodsItem.goodsName}}</view>
         <view class="goods_spec"><text>{{goodsItem.goodsAttr}}</text><share-button wx:if="{{orderInfo.showMall}}" btn-class="share-button" product="{{goodsItem.shareButtonData}}" bind:error="on_error" type="3" >推荐好物</share-button></view>
         <view class="goods_price_num">
-          <view class="goods_price" style="color:{{comColor}}">￥{{isPreSaleOrder ? goodsItem.goodsPrice : goodsItem.discountedGoodsPrice}}</view>
+          <view class="goods_price" style="color:{{comColor}}">
+          {{goodsItem.goodsPrice ? '￥'+goodsItem.goodsPrice : ''}}
+          {{goodsItem.goodsPrice && goodsItem.goodsScore ? '+' : ''}}
+          {{goodsItem.goodsScore ? goodsItem.goodsScore + '积分' : ''}}
+          </view>
           <view class="goods_num">x{{goodsItem.goodsNumber}}</view>
         </view>
       </view>
@@ -210,9 +214,13 @@
       </view>
     </view> -->
     <view class="pay_info">
-      <view class="pay_item" wx:if="{{orderInfo.goodsTotalPrice > 0}}">
+      <view class="pay_item" wx:if="{{orderInfo.goodsTotalPrice.money > 0 || orderInfo.goodsTotalPrice.score > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.goodsTotalPrice")}}</text>
-        <text>￥{{orderInfo.goodsTotalPrice}}</text>
+        <view>
+        {{orderInfo.goodsTotalPrice.money > 0 ? '￥'+orderInfo.goodsTotalPrice.money : ''}}
+        {{orderInfo.goodsTotalPrice.money > 0 && orderInfo.goodsTotalPrice.score > 0 ? '+' : ''}}
+        {{orderInfo.goodsTotalPrice.score > 0 ? orderInfo.goodsTotalPrice.score + '积分' : ''}}
+        </view>
       </view>
       <view class="pay_item" wx:if="{{orderInfo.shippingFee > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.shippingFee")}}</text>
@@ -223,7 +231,7 @@
         <text>-￥{{orderInfo.discount}}</text>
       </view>
       <view class="pay_item" wx:if="{{orderInfo.memberCardReduce > 0}}">
-        <text>{{i18n.$t(localePack,"pages.order.cardReduce")}}</text>
+        <text>{{filter.includes(orderInfo.orderType,13) ? '限次卡抵扣金额' : i18n.$t(localePack,"pages.order.cardReduce")}}</text>
         <text>-￥{{orderInfo.memberCardReduce}}</text>
       </view>
       <view class="pay_item" wx:if="{{isPreSaleOrder&&orderInfo.preSaleDiscount > 0}}">

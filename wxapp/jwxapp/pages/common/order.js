@@ -264,13 +264,13 @@ var order = {
   getOrderStatus(orderData) {
     let typeArray = orderData.orderType;
     if (
-      typeArray.indexOf("17") != -1 &&
+      typeArray.indexOf(17) != -1 &&
       orderData.orderSn == orderData.mainOrderSn && [8, 10, 13].indexOf(orderData.orderStatus)
     ) {
       return "等待领取";
     } else {
       if (orderData.orderStatus != 3 && orderData.orderStatus != 5) {
-        if (orderData.orderStatus == 0 && typeArray.indexOf("10") != -1) {
+        if (orderData.orderStatus == 0 && typeArray.indexOf(10) != -1) {
           if (orderData.bkOrderPaid == 0) {
             return "待付定金";
           } else {
@@ -295,11 +295,11 @@ var order = {
     return "待发货";
   },
   getOrderTypeIconName(orderItem) {
-    if (orderItem.orderType.includes('1')) {
+    if (orderItem.orderType.includes(1)) {
       return '拼团'
-    } else if (orderItem.orderType.includes('3')) {
+    } else if (orderItem.orderType.includes(3)) {
       return '砍价'
-    } else if (orderItem.orderType.includes('5')) {
+    } else if (orderItem.orderType.includes(5)) {
       return '秒杀'
     } else {
       return null

@@ -76,8 +76,9 @@
                 <view class="goods_spec">{{goodsItem.goodsAttr}}</view>
                 <view class="goods_price_num">
                   <view class="goods_price" style="color:{{comColor}}">
-                    ￥
-                    <text>{{filter.includes(item.orderType,"10") ? goodsItem.goodsPrice : goodsItem.discountedGoodsPrice}}</text>
+                    {{goodsItem.goodsPrice > 0 ? '￥'+goodsItem.goodsPrice : ''}}
+                    {{goodsItem.goodsPrice > 0 && goodsItem.goodsScore > 0 ? '+' : ''}}
+                    {{goodsItem.goodsScore > 0 ? goodsItem.goodsScore + '积分' : ''}}
                   </view>
                   <view class="goods_num">x{{goodsItem.goodsNumber}}</view>
                 </view>
