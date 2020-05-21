@@ -358,6 +358,10 @@ export default {
             this.$router.push({
               name: 'bargain'
             })
+          } else if (name === '限时降价') {
+            this.$router.push({
+              name: 'reduce_price'
+            })
           } else if (name === '预约管理') {
             this.$router.push({
               name: 'store_storemanage_reservation'
