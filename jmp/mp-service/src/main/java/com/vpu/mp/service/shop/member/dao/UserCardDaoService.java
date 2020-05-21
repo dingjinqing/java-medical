@@ -470,7 +470,8 @@ public class UserCardDaoService extends ShopBaseService{
 	}
 
     /**
-	 * 消费记录
+     * 	充值记录
+     * @param userInfo 
 	 */
 	public void insertIntoCharge(UserCardConsumeBean data) {
 		ChargeMoneyRecord chargeMoney = db().newRecord(CHARGE_MONEY);
@@ -478,7 +479,7 @@ public class UserCardDaoService extends ShopBaseService{
 		chargeMoney.insert();
 	}
 	/**
-	 * 充值记录
+	 * 消费记录
 	 */
 	public void insertConsume(UserCardConsumeBean data) {
 		CardConsumerRecord cardConsumer = db().newRecord(CARD_CONSUMER);

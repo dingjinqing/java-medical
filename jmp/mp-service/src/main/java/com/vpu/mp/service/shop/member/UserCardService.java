@@ -875,6 +875,7 @@ public class UserCardService extends ShopBaseService {
                 userCardDao.insertConsume(data);
             } else {
                 data.setCharge(data.getMoney());
+                data.setAfterChargeMoney(userInfo.getMoney().add(data.getCharge()));
                 userCardDao.insertIntoCharge(data);
             }
         }
