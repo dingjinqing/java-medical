@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Map;
 
@@ -62,4 +63,11 @@ public class CardHolderExcelVo {
 	/**	审核状态 */
 	@ExcelIgnore
 	private Byte status;
+	/**	卡余额 */
+	@ExcelIgnore
+	private BigDecimal money;
+	@ExcelIgnore
+	private Integer chargeTimes;
+	@ExcelIgnore
+	private Integer consumeTimes;
 }

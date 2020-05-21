@@ -7,7 +7,11 @@ import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.excel.AbstractExcelDisposer;
 import com.vpu.mp.service.foundation.excel.util.IDymicColNameI18n;
 import com.vpu.mp.service.foundation.util.Util;
-
+/**
+ * 	持卡会员列表excel动态字段国际化
+ * @author 黄壮壮
+ *
+ */
 public class CardHolderColNameI18n implements IDymicColNameI18n {
 	//	是否提交激活申请
 	public static final String IS_SUBMIT = "isSubmit";
@@ -35,5 +39,4 @@ public class CardHolderColNameI18n implements IDymicColNameI18n {
 		String message = map.get(name);
 		return Util.translateMessage(language, message, AbstractExcelDisposer.LANGUAGE_TYPE_EXCEL);
 	}
-
 }

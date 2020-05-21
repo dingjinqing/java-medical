@@ -147,6 +147,7 @@ import com.vpu.mp.service.shop.member.card.GradeCardService;
 import com.vpu.mp.service.shop.member.card.LimitCardOpt;
 import com.vpu.mp.service.shop.member.card.NormalCardOpt;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
+import com.vpu.mp.service.shop.member.excel.CardHolderColNameI18n;
 import com.vpu.mp.service.shop.member.excel.UserImExcelWrongHandler;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
@@ -1582,21 +1583,33 @@ public class MemberCardService extends ShopBaseService {
 					item.setNflag(expire);
 				}
 			}
+			Map<String, Object> other = item.getOther();
 			if(isNeedActive) {
-				Map<String, Object> other = item.getOther();
 				if(item.getStatus()==null) {
 					//	是否提交激活申请
-					other.put("isSubmit", no);
+					other.put(CardHolderColNameI18n.IS_SUBMIT, no);
 					//	审核状态
-					other.put("examineStatus","");
+					other.put(CardHolderColNameI18n.STATUS,"");
 				}else {
-					other.put("isSubmit", yes);
-					other.put("examineStatus", statsList.get(item.getStatus()));
+					//	是否提交激活申请
+					other.put(CardHolderColNameI18n.IS_SUBMIT, yes);
+					//	审核状态
+					other.put(CardHolderColNameI18n.STATUS, statsList.get(item.getStatus()));
 				}
+			}
+			
+			if(CardUtil.isNormalCard(card.getCardType())) {
+				//	卡余额
+				other.put(CardHolderColNameI18n.CARD_BALANCE,item.getMoney());
+				//	充值次数
+				other.put(CardHolderColNameI18n.CHARGE_TIMES,item.getChargeTimes());
+				//	消费次数
+				other.put(CardHolderColNameI18n.CONSUME_TIMES,item.getConsumeTimes());
 			}
 		}
 		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
 		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+		excelWriter.setColI18n(new CardHolderColNameI18n());
 		excelWriter.writeModelList(allCardHolderAll, CardHolderExcelVo.class);
 		return workbook;
 	}
