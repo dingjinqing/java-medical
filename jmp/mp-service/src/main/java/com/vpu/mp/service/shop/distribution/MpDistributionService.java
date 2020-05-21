@@ -460,7 +460,7 @@ public class MpDistributionService extends ShopBaseService{
     public List<RebateOrderListVo> getRebateOrderList(){
         BigDecimal finalMoney = new BigDecimal(0.00);
         Timestamp nowDate = Util.currentTimeStamp();
-        Timestamp toDate = Util.getEarlyTimeStamp(nowDate, 30);
+        Timestamp toDate = Util.getEarlyTimeStamp(nowDate, -30);
         Result<Record5<Integer, BigDecimal, Timestamp, String, String>> info = db().select(ORDER_INFO.FANLI_USER_ID, ORDER_INFO.FANLI_MONEY, ORDER_INFO.FINISHED_TIME, USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR)
             .from(ORDER_INFO)
             .leftJoin(USER_DETAIL).on(ORDER_INFO.FANLI_USER_ID.eq(USER_DETAIL.USER_ID))
