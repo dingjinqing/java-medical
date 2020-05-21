@@ -489,8 +489,8 @@ public class CardVerifyService extends ShopBaseService {
 		String refuse = Util.translateMessage(lang, JsonResultCode.MSG_CARD_EXAMINE_REFUSE.getMessage(), BaseConstant.LANGUAGE_TYPE_EXCEL,null);
 		List<String> allSex = MemberSexEnum.getAllSex(lang);
 		PageResult<? extends Record> results = getPageList(param);
+		List<CardExamineDownVo> modelData = new ArrayList<>();
 		if(results.dataList!=null && results.dataList.size()>0) {
-			List<CardExamineDownVo> modelData = new ArrayList<>();
 			for(int i=0;i<results.dataList.size();i++) {
 				Record record = results.dataList.get(i);
 				CardExamineDownVo vo = record.into(CardExamineDownVo.class);
@@ -584,13 +584,18 @@ public class CardVerifyService extends ShopBaseService {
 							 
 							 List<SingleOption> optionArr = item.getOptionArr();
 							 if(optionArr!=null && optionArr.size()>0) {
+								 boolean notFirstFlag = false;
 								 for(SingleOption choose: optionArr) {
 									 if(NumberUtils.BYTE_ONE.equals(choose.getIsChecked())) {
+										 if(notFirstFlag) {
+											 customContent.append(",");
+										 }
 										 customContent
-										 	.append(choose.getOptionTitle())
-										 	.append(";");
+										 	.append(choose.getOptionTitle());
+										 notFirstFlag = true;
 									 }
 								 }
+								 customContent.append(";");
 							 }
 							 
 						 }else if(CardCustomAction.ActionType.TEXT.val.equals(type)) {
@@ -609,15 +614,19 @@ public class CardVerifyService extends ShopBaseService {
 							 String[] links = item.getPictureLinks();
 							 if(null != links && links.length>0) {
 								 for(int j=0;j<links.length;j++) {
+									 if(j>0) {
+										 customContent.append(",");
+									 }
 									 customContent
-									 	.append(imageUrl(links[j]))
-									 	.append(";");
+									 	.append("\n")
+									 	.append(imageUrl(links[j]));
 								 }
+								 customContent.append(";");
 							 }
 						 }
 					 }
 				}
-				vo.setCustomOptions(customContent.toString());
+				vo.setCustomContent(customContent.toString());
 				
 				// 审核时间
 				Timestamp passTime = record.get(CARD_EXAMINE.PASS_TIME);
@@ -669,14 +678,12 @@ public class CardVerifyService extends ShopBaseService {
 				}
 				modelData.add(vo);
 			}
-			
-			// excel 处理
-			Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
-			ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
-			excelWriter.writeModelList(modelData, CardExamineDownVo.class);
-			return workbook;
 		}
-		return null;
+		// excel 处理
+		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+		excelWriter.writeModelList(modelData, CardExamineDownVo.class);
+		return workbook;
 	}
 
 }
