@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -1583,7 +1584,7 @@ public class MemberCardService extends ShopBaseService {
 					item.setNflag(expire);
 				}
 			}
-			Map<String, Object> other = new HashMap<>();
+			Map<String, Object> other = new LinkedHashMap<>();
 			if(isNeedActive) {
 				if(item.getStatus()==null) {
 					//	是否提交激活申请
@@ -1611,7 +1612,7 @@ public class MemberCardService extends ShopBaseService {
 		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
 		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
 		excelWriter.setColI18n(new CardHolderColNameI18n());
-		excelWriter.writeModelList(allCardHolderAll, CardHolderExcelVo.class);
+		excelWriter.writeModelListWithDynamicColumn(allCardHolderAll, CardHolderExcelVo.class);
 		return workbook;
 	}
 	

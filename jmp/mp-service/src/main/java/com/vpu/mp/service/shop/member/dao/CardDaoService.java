@@ -846,12 +846,14 @@ public class CardDaoService extends ShopBaseService {
 	}
 	
 	public List<CardHolderExcelVo> getAllCardHolderAll(CardHolderParam param) {
-
 		User invitedUser = USER.as("a");
+		List<Field<?>> f = new ArrayList<>(Arrays.asList(USER_CARD.fields()));
+		f.add(USER.USERNAME);
+		f.add(invitedUser.USERNAME.as("invitedName"));
+		f.add(USER.MOBILE);
+		f.add(CARD_EXAMINE.STATUS);
 		SelectJoinStep<?> select = db()
-				.select(USER_CARD.USER_ID, USER.USERNAME, USER.MOBILE, invitedUser.USERNAME.as("invitedName"),
-						USER_CARD.CREATE_TIME, USER_CARD.CARD_NO, USER_CARD.FLAG, USER_CARD.EXPIRE_TIME,USER_CARD.UPDATE_TIME,
-						USER_CARD.MONEY,CARD_EXAMINE.STATUS,DSL.count(CHARGE_MONEY.CARD_NO).as("chargeTimes"),DSL.count(CARD_CONSUMER.CARD_NO).as("consumeTimes"))
+				.select(f.toArray(new Field<?>[0])).select(DSL.count(CHARGE_MONEY.CARD_NO).as("chargeTimes"),DSL.count(CARD_CONSUMER.CARD_NO).as("consumeTimes"))
 				.from(USER_CARD.leftJoin(USER.leftJoin(invitedUser).on(USER.INVITE_ID.eq(invitedUser.USER_ID))
 
 				).on(USER_CARD.USER_ID.eq(USER.USER_ID)))
@@ -860,7 +862,11 @@ public class CardDaoService extends ShopBaseService {
 				.leftJoin(CARD_CONSUMER).on(USER_CARD.CARD_NO.eq(CARD_CONSUMER.CARD_NO));
 
 		buildOptions(param, select);
-		select.where(USER_CARD.CARD_ID.eq(param.getCardId())).orderBy(USER_CARD.USER_ID.desc());
+		f.add(CHARGE_MONEY.CARD_NO);
+		f.add(CARD_CONSUMER.CARD_NO);
+		select.where(USER_CARD.CARD_ID.eq(param.getCardId()))
+			.groupBy(f.toArray(new Field<?>[0]))
+			.orderBy(USER_CARD.USER_ID.desc());
 		List<CardHolderExcelVo> list = new ArrayList<CardHolderExcelVo>();
 		Result<?> fetch = select.fetch();
 		if(fetch!=null) {
