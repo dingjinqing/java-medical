@@ -412,7 +412,9 @@ CREATE TABLE IF NOT EXISTS `b2c_checked_goods_cart` (
 );
 -- 2020年5月14日 虚拟商品会员卡下单增加会员卡卡号字段
 ALTER TABLE `b2c_virtual_order` ADD COLUMN `send_card_no` varchar(32) NOT NULL COMMENT '订单发送的会员卡no' ;
-
+-- 2020-05-21 渠道分析字段设置默认值
+ALTER TABLE b2c_channel ALTER COLUMN page_id SET DEFAULT '0';
+ALTER TABLE b2c_channel ALTER COLUMN goods_id SET DEFAULT '0';
 /*********************2.11*************************END*/
 
 
