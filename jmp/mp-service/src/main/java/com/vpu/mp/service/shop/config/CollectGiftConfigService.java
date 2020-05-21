@@ -1,13 +1,17 @@
 package com.vpu.mp.service.shop.config;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
+import com.vpu.mp.service.pojo.shop.coupon.CouponParamVo;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
+import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftVo;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
@@ -65,6 +69,30 @@ public class CollectGiftConfigService extends BaseShopConfigService{
 		return param;
 	}
 
+    /**
+     * 获取收藏有礼配置信息
+     * @return
+     */
+    public CollectGiftVo collectGiftInfo(){
+        CollectGiftParam param = collectGiftConfig();
+        CollectGiftVo vo = new CollectGiftVo();
+        vo.setCollectLogo(param.getCollectLogo());
+        vo.setCollectLogoSrc(param.getCollectLogoSrc());
+        vo.setCouponIds(param.getCouponIds());
+        vo.setEndTime(param.getEndTime());
+        vo.setOnOff(param.getOnOff());
+        vo.setScore(param.getScore());
+        vo.setShopName(param.getShopName());
+        vo.setStartTime(param.getStartTime());
+        String[] couponIdsArr = vo.getCouponIds().split(",");
+        List<Integer> couponIdsList = new ArrayList<>();
+        for (String s :couponIdsArr){
+            couponIdsList.add(Integer.parseInt(s));
+        }
+        List<CouponView> list = coupon.getCouponViewByIds(couponIdsList);
+        vo.setCouponDetail(list);
+        return vo;
+    }
 	/**
 	 *	开关控制
 	 */

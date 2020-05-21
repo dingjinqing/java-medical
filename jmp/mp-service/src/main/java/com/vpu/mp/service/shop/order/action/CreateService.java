@@ -588,7 +588,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         processBeforeUniteActivity(param, vo);
         //下单页面显示积分兑换金额时去除积分,结算不做此逻辑（只是为了展示方便）
         if(BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType())) {
-            vo.getOrderGoods().forEach(x-> x.setDiscountedGoodsPrice(x.getGoodsScore() != null && x.getGoodsScore() > 0 ? BigDecimalUtil.subtrac(x.getDiscountedGoodsPrice(), BigDecimalUtil.divide(new BigDecimal(x.getGoodsScore()), new BigDecimal(vo.getScoreProportion()))) : x.getDiscountedGoodsPrice()));
+            vo.getOrderGoods().forEach(x-> x.setGoodsPrice(x.getGoodsScore() != null && x.getGoodsScore() > 0 ? BigDecimalUtil.subtrac(x.getDiscountedGoodsPrice(), BigDecimalUtil.divide(new BigDecimal(x.getGoodsScore()), new BigDecimal(vo.getScoreProportion()))) : x.getDiscountedGoodsPrice()));
         }
         // 积分使用规则
         setScorePayRule(vo);
@@ -883,6 +883,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setPreSaleDiscount(preSaleDiscount);
         vo.setTolalDiscountAfterPrice(tolalDiscountAfterPrice);
         vo.setInsteadPayCfg(param.getInsteadPayCfg());
+        vo.setPackageDiscount(packageSaleDiscount);
         // 积分使用规则
         setScorePayRule(vo);
         logger().info("金额处理赋值(processOrderBeforeVo),end");

@@ -1,4 +1,5 @@
 var cache = require('./cache.js');
+var helper = require('./helper.js')
 var api = require('./api.js');
 
 var user = {
@@ -6,9 +7,14 @@ var user = {
     wx.login({
       success: function (res) {
         if (res.code) {
+          let path_query = wx.getLaunchOptionsSync()
+          if(path_query.query.scene) {
+            path_query.query = {...path_query.query,...helper.resetScene(path_query.query.scene)}
+            delete path_query.query.scene
+          }
           var data = {
             code: res.code,
-            path_query: wx.getLaunchOptionsSync(),
+            path_query: path_query,
             system_verion: wx.getSystemInfoSync().system
           };
           console.log('登录', data)

@@ -1923,6 +1923,15 @@ public class MemberCardService extends ShopBaseService {
 	}
 	
 	/**
+	 * 根据会员卡Id获取会员卡名称
+	 * @param cardId
+	 * @return String 会员卡名称
+	 */
+	public String getCardNameById(Integer cardId) {
+		return db().select(MEMBER_CARD.CARD_NAME).from(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchAnyInto(String.class);
+	}
+	
+	/**
 	 * 	获取会员卡使用统计使用数据
 	 */
 	public CardUseStats getCardUseStatistic(MemberCardRecord card) {

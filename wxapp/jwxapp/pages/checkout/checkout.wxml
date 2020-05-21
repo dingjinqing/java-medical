@@ -39,7 +39,12 @@
           <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
         </view>
       </view>
-
+      <view class="purchase-tips-content" wx:if="{{orderInfo.promotionReduce > 0 || orderInfo.packageDiscount > 0}}">
+        <view class="purchase-tips">
+          <image lazy-load="true" src="{{imageUrl}}image/wxapp/main_goods_notice.png"></image>
+          <text>{{orderInfo.promotionReduce > 0 ? '满折满减' : '一口价'}}活动不可与会员卡折扣和优惠券共享</text>
+        </view>
+      </view>
       <view class="goods_item" wx:for="{{orderInfo.orderGoods}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="goodsIndex">
         <image src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
         <view class="goods_info">
@@ -55,8 +60,8 @@
             <text class="goods-price-tag" wx:if="{{goodsItem.firstSpecialId > 0}}" style="background-color:{{comColor}};">首单特惠</text>
             <text class="goods-price-tag" wx:if="{{goodsItem.reducePriceId > 0}}" style="background-color:{{comColor}};">限时降价</text>
             <text class="price" decode='true' style="color:{{comColor}}">
-              <block wx:if="{{params.activityType != 4}}">{{i18n.$t(localePack,"pages.checkout.currency",{price:goodsItem.discountedGoodsPrice || '0'})}}</block>
-              <block wx:else>{{goodsItem.discountedGoodsPrice ? i18n.$t(localePack,"pages.checkout.currency",{price:goodsItem.discountedGoodsPrice}) : ''}}{{goodsItem.discountedGoodsPrice && goodsItem.goodsScore ? ' + ' : ''}}{{goodsItem.goodsScore ? goodsItem.goodsScore + '积分' : ''}}
+              <block wx:if="{{params.activityType != 4}}">{{i18n.$t(localePack,"pages.checkout.currency",{price:goodsItem.goodsPrice || '0'})}}</block>
+              <block wx:else>{{goodsItem.goodsPrice ? i18n.$t(localePack,"pages.checkout.currency",{price:goodsItem.goodsPrice}) : ''}}{{goodsItem.goodsPrice && goodsItem.goodsScore ? ' + ' : ''}}{{goodsItem.goodsScore ? goodsItem.goodsScore + '积分' : ''}}
               </block>
             </text>
             <text class="num">x{{goodsItem.goodsNumber}}</text>
@@ -195,9 +200,17 @@
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.order")+i18n.$t(localePack,"pages.checkout.total")}}</text>
           <text class="detail_content" style="color:{{comColor}};">{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.orderAmount || '0'})}}</text>
         </view>
-        <view class="detail_item" wx:if="{{orderInfo.tolalDiscountAfterPrice > 0}}">
+        <!-- <view class="detail_item" wx:if="{{orderInfo.tolalDiscountAfterPrice > 0}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.discount")+i18n.$t(localePack,"pages.checkout.goods")+i18n.$t(localePack,"pages.checkout.total")}}</text>
           <text class="detail_content" style="color:{{comColor}};">{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.tolalDiscountAfterPrice || '0'})}}</text>
+        </view> -->
+        <view class="detail_item" wx:if="{{orderInfo.promotionReduce > 0}}">
+          <text class="detail_title">促销活动</text>
+          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.promotionReduce || '0'})}}</text>
+        </view>
+        <view class="detail_item" wx:if="{{orderInfo.packageDiscount > 0}}">
+          <text class="detail_title">一口价优惠</text>
+          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.packageDiscount || '0'})}}</text>
         </view>
         <view class="detail_item" wx:if="{{preSaleInfo.preSalePrdInfo.discountPrice-preSaleInfo.preSalePrdInfo.depositPrice > 0}}">
           <text class="detail_title">定金抵扣</text>

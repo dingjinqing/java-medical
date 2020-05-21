@@ -50,7 +50,7 @@
 }
 .tabs-content{
   background-color: #fff;
-  min-height:300rpx;
+  min-height:180rpx;
   position: relative;
 }
 .no-comment{

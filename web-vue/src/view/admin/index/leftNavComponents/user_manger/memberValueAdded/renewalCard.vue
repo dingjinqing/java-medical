@@ -258,7 +258,7 @@
 </template>
 <script>
 import { download } from '@/util/excelUtil.js'
-import { renewExport } from '@/api/admin/memberManage/memberValueAdd/memberValueAdd.js'
+import { renewExport, chargeExport } from '@/api/admin/memberManage/memberValueAdd/memberValueAdd.js'
 export default {
   props: {
     showHeader: {
@@ -379,6 +379,7 @@ export default {
     // 点击导出
     handleToExport () {
       let params = JSON.parse(JSON.stringify(this.headerDataSecond))
+      let paramsCharge = JSON.parse(JSON.stringify(this.headerDataThird))
       switch (this.showHeader) {
         case 'second':
           renewExport(params).then(res => {
@@ -388,6 +389,11 @@ export default {
           })
           break
         case 'third':
+          chargeExport(paramsCharge).then(res => {
+            let fileName = localStorage.getItem('V-content-disposition')
+            fileName = fileName.split(';')[1].split('=')[1]
+            download(res, decodeURIComponent(fileName))
+          })
           break
       }
     }

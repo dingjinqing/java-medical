@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
+import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftVo;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -19,7 +20,7 @@ public class AdminCollectGiftController extends AdminBaseController{
 	 */
 	@GetMapping("/select")
 	public JsonResult collectGiftConfig() {
-		CollectGiftParam vo = shop().config.collectGiftConfigService.collectGiftConfig();
+		CollectGiftVo vo = shop().config.collectGiftConfigService.collectGiftInfo();
 		return success(vo);
 	}
 	/**

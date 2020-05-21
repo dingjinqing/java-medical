@@ -102,11 +102,6 @@
                 style="display: flex;align-items: center;flex-wrap: wrap;"
                 v-if="form.logo == 1"
               >
-                <!-- <span
-                  @click="deleteGoodsImg()"
-                  v-if="this.srcList.src !==`${this.$imageHost}/image/admin/add_img.png`"
-                  class="deleteIcon"
-                >×</span> -->
                 <div
                   @click="addGoodsImg"
                   class="ImgWrap"
@@ -151,6 +146,7 @@
                       v-for="(item,index) in couponData"
                       :key="index"
                       class="addInfo"
+                      :class="{'coupon-invalid': item.status != 0}"
                       style="margin-right: 15px;"
                     >
                       <section
@@ -171,11 +167,18 @@
                           <span style="font-size: 20px">{{item.denomination}}</span>
                           <span style="font-size: 14px">折</span>
                         </div>
+                        <div
+                          class="coupon_list_top"
+                          v-if="item.actCode==='random'"
+                        >
+                          ￥<span style="font-size: 20px">{{item.randomMax}}</span>
+                          <span style="font-size: 14px;">最高</span>
+                        </div>
                         <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
                         <div class="coupon_center_number">剩余{{item.surplus}}张</div>
                         <div
                           class="coupon_list_bottom"
-                          style="font-size:12px"
+                          :style="`backgroundImage:url('${$imageHost}/image/admin/coupon_border.png')`"
                         >
                           <span v-if="item.scoreNumber === 0">领取</span>
                           <div v-if="item.scoreNumber !== 0">
@@ -237,7 +240,6 @@
 import ImageDalog from '@/components/admin/imageDalog'
 import addCouponDialog from '@/components/admin/addCouponDialog'
 import { collectGiftSelect, collectGiftUpdate } from '@/api/admin/marketManage/collectGift.js'
-import { getCouponSelectComponentData } from '@/api/admin/marketManage/couponGive.js'
 
 export default {
   components: {
@@ -333,11 +335,14 @@ export default {
           console.log('收藏有礼配置为：', res.content)
           if (res.content.on_off === 0) {
             this.switchValue = false
-          } else { this.switchValue = true }
+          } else {
+            this.switchValue = true
+          }
           this.form.actTime.push(res.content.start_time)
           this.form.actTime.push(res.content.end_time)
           this.form.logo = `${res.content.collect_logo}`
           this.srcList.src = res.content.collect_logo_src
+          this.couponData = res.content.couponDetail
           if (res.content.score !== null) {
             this.integral = true
             this.score = res.content.score
@@ -345,50 +350,10 @@ export default {
           if (res.content.coupon_ids !== null) {
             this.coupon = true
             this.couponId = res.content.coupon_ids
-            this.couponData = res.content.coupon_ids.split(',')
+            // this.couponData = res.content.coupon_ids.split(',')
           }
-          let param = {
-            'actName': '',
-            'type': -1
-          }
-          getCouponSelectComponentData(param).then((res) => {
-            if (res.error === 0) {
-              this.dialogData = res.content
-              this.dialogData.map((item, index) => {
-                this.$set(item, 'ischeck', false)
-              })
-              this.dialogData.forEach((item, index) => {
-                item.ischeck = false
-                this.couponData.forEach((itemC, indexC) => {
-                  if (item.id === Number(itemC)) {
-                    item.ischeck = true
-                  }
-                })
-              })
-              let arr = []
-              this.dialogData.forEach((item, index) => {
-                if (item.ischeck) arr.push(item)
-              })
-              this.formatCoupon(arr)
-              this.couponData = arr
-            }
-          })
         }
       })
-    },
-    formatCoupon (data) {
-      let couponArr = []
-      let couponData = {
-        immediatelyGrantAmount: 0,
-        timingEvery: 0,
-        timingAmount: 0,
-        timingTime: '1',
-        timingUnit: '0'
-      }
-      data.map(item => {
-        couponArr.push(Object.assign({}, item, { send_num: '', coupon_set: couponData }))
-      })
-      return couponArr
     },
     submit () {
       this.scoreTemp = this.score
@@ -428,13 +393,10 @@ export default {
     // 优惠券回调
     handleToCheck (data) {
       console.log('coupon', data)
-      let couponKey = []
-      data.map((item) => {
-        couponKey.push(item.id)
-      })
-      this.couponData = data
-      this.couponId = couponKey.toString()
-      console.log('conponId', couponKey.toString())
+      let invalid = this.couponData.filter(item => item.status !== 0)
+      this.couponData = data.concat(invalid)
+      this.couponId = this.couponData.map(item => item.id).toString()
+      console.log(this.couponId, '3--')
       console.log('conponData', this.couponData)
     },
     // 删除优惠券图片
@@ -467,10 +429,6 @@ export default {
     imgDialogSelectedCallback (src) {
       this.srcList.src = src.imgUrl
     }
-    // 删除图片
-    // deleteGoodsImg () {
-    //   this.srcList.src = `${this.$imageHost}/image/admin/add_img.png`
-    // }
   },
   filters: {
     formatLeastConsume (useConsumeRestrict, leastConsume) {
@@ -590,6 +548,24 @@ export default {
       border: 1px solid #e4e4e4;
       border-radius: 10px;
       margin-right: 20px;
+      &.coupon-invalid {
+        .couponImgWrapper {
+          border: 1px solid #d5d7d9;
+          .coupon_list_top {
+            color: #d5d7d9;
+          }
+          .coupon_center_limit {
+            color: #d5d7d9;
+          }
+          .coupon_center_number {
+            color: #d5d7d9;
+          }
+          .coupon_list_bottom {
+            background: #d5d7d9;
+            background-repeat: repeat-x;
+          }
+        }
+      }
       cursor: pointer;
       text-align: center;
       img {
@@ -646,7 +622,6 @@ export default {
           border-bottom-right-radius: 8px;
           color: #fff;
           background: #f66;
-          background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
           background-repeat: repeat-x;
         }
       }

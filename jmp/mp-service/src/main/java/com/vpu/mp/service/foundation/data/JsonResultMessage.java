@@ -140,7 +140,7 @@ public class JsonResultMessage {
     public static final String GOODS_EXPORT_COLUMN_PRD_SN = "goods.export.column.prd_sn";
     public static final String GOODS_EXPORT_COLUMN_PRD_NUMBER = "goods.export.column.prd_number";
     public static final String GOODS_EXPORT_COLUMN_PRD_COST_PRICE = "goods.export.column.prd_cost_price";
-    public static final String GOODS_EXPORT_COLUMN_MARKET_PRICE = "goods.export.column.market_price";
+    public static final String GOODS_EXPORT_COLUMN_MARKET_PRICE = "goods.export.column.prd_market_price";
     public static final String GOODS_EXPORT_COLUMN_SHOP_PRICE = "goods.export.column.shop_price";
     public static final String GOODS_EXPORT_COLUMN_IS_ON_SALE = "goods.export.column.is_on_sale";
     public static final String GOODS_EXPORT_COLUMN_LIMIT_BUY_NUMBER = "goods.export.column.limit_buy_number";
@@ -149,6 +149,16 @@ public class JsonResultMessage {
     public static final String GOODS_EXPORT_COLUMN_GOODS_IMG = "goods.export.column.goods_img";
     public static final String GOODS_EXPORT_COLUMN_PRD_CODES= "goods.export.column.prd_codes";
     public static final String GOODS_EXPORT_COLUMN_IMG_URL= "goods.export.column.img_url";
+    public static final String GOODS_EXPORT_COLUMN_DELIVER_PLACE= "goods.export.column.deliver_place";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_1_PRICE= "goods.export.column.grade_1_price";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_2_PRICE= "goods.export.column.grade_2_price";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_3_PRICE= "goods.export.column.grade_3_price";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_4_PRICE= "goods.export.column.grade_4_price";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_5_PRICE= "goods.export.column.grade_5_price";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_6_PRICE= "goods.export.column.grade_6_price";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_7_PRICE= "goods.export.column.grade_7_price";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_8_PRICE= "goods.export.column.grade_8_price";
+    public static final String GOODS_EXPORT_COLUMN_GRADE_9_PRICE= "goods.export.column.grade_9_price";
 
     /**
      * 商品评价
@@ -601,6 +611,10 @@ public class JsonResultMessage {
 	public static final String MSG_CARD_ALLOW_TIME_OVER_ALIAS = "member.card.allow.times.over.alias";
 	public static final String MSG_CARD_ADD_TIMES_OVER_ALIAS = "member.card.add.times.over.alias";
 	public static final String MSG_CARD_PERIOD_ADD_TIMES_OVER_ALIAS = "member.card.period.add.times.over.alias";
+	public static final String MSG_CARD_EXAMINE_ING = "member.card.examine.ing";
+	public static final String MSG_CARD_EXAMINE_PASS = "member.card.examine.pass";
+	public static final String MSG_CARD_EXAMINE_REFUSE = "member.card.examine.refuse";
+
     /**
      * 	用户卡包邮信息
      */
@@ -1109,6 +1123,7 @@ public class JsonResultMessage {
     public static final String CARD_NO_TEMPLATE_NAME = "card.no.template.name";
     public static final String CARD_NO_IMPORT_NAME = "card.no.import.name";
     public static final String CARD_PWD_TEMPLATE_NAME = "card.pwd.template.name";
+    public static final String CARD_EXAMINE_FILE_NAME = "card.examine.file.name";
 
     // 商品效果导出
     public static final String GOODS_EFFECT_FILE_NAME = "overview.commodity.effect.file_name";
@@ -1273,6 +1288,11 @@ public class JsonResultMessage {
     public static final String USER_CARD_RENEW_DAY = "user.card.renew.day";
     public static final String USER_CARD_RENEW_WEEK = "user.card.renew.week";
     public static final String USER_CARD_RENEW_MONTH = "user.card.renew.month";
+
+    /**
+     * 会员卡充值记录导出
+     */
+    public static final String USER_CARD_CHARGE_FILE_NAME = "user.card.charge.file_name";
 
 
 }

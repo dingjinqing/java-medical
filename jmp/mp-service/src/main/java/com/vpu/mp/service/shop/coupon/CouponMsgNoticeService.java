@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.coupon;
 
+import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
@@ -29,12 +30,16 @@ public class CouponMsgNoticeService extends ShopBaseService {
      */
     public void sendCouponMsgNotice(Integer userId, String couponName, Timestamp startTime,Timestamp endTime,String couponDesc){
         logger().info("开始处理当前卡券领取成功消息,用户id为：{},优惠券名称为：{}",userId,couponName);
+        ShopRecord shop = saas().shop.getShopById(getShopId());
+        String shopName = shop.getShopName();
         //公众号消息
         String[][] mpData = new String[][] {
+            {"您好，您的{}优惠券已成功领取",couponDesc},
+            {shopName},
             {couponName},
             {endTime.toString()},
             {startTime.toString()},
-            {couponDesc}
+            {"请及时使用"}
         };
         List<Integer> userIdList = Collections.singletonList(userId);
         RabbitMessageParam msgParam = RabbitMessageParam.builder()

@@ -254,3 +254,21 @@
   margin-right: 25rpx;
   color: #888;
 }
+.purchase-tips{
+  height: 60rpx;
+  padding: 0 14rpx;
+  display: flex;
+  align-items: center;
+  color: #f60;
+  background: #fcf9cc;
+}
+.purchase-tips-content{
+  padding: 14rpx 14rpx 0;
+  margin:20rpx 0 -20rpx;
+  background-color: #fff;
+}
+.purchase-tips > image{
+  width: 36rpx;
+  height: 36rpx;
+  margin-right: 15rpx;
+}

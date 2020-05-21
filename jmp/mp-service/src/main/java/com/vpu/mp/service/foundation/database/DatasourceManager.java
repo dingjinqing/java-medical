@@ -1,17 +1,14 @@
 package com.vpu.mp.service.foundation.database;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.vpu.mp.config.DatabaseConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.config.DatabaseConfig;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
-import lombok.Data;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *

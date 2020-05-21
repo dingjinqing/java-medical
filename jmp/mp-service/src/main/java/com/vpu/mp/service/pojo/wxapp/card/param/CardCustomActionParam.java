@@ -15,7 +15,8 @@ public class CardCustomActionParam {
 	/**
 	 * 	选项内容
 	 */
-	static class SingleOption{
+	@Data
+	public static class SingleOption{
 		@JsonAlias({"option_title","optionTitle"})
 		@JsonProperty("option_title")
 		private String optionTitle;

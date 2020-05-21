@@ -72,7 +72,7 @@
               v-model="param.endTime"
               type="date"
               style="width:170px;"
-              value-format="yyyy-MM-dd 00:00:00"
+              value-format="yyyy-MM-dd 59:59:59"
               :placeholder="$t('actionRecord.endTime')"
               size="small"
             >
@@ -122,7 +122,7 @@
               {{scope.row.pageName}}
               <br />
               <span
-                class="el-icon-edit-outline iconSpan"
+                class="el-icon-view iconSpan"
                 @click="jumpToDataPage(scope.row.id)"
               ></span>
             </template>
@@ -136,10 +136,13 @@
           </el-table-column>
 
           <el-table-column
-            prop="sourceType"
+            prop=""
             label="源页面类型"
             align="center"
           >
+            <template slot-scope="scope">
+              {{scope.row.sourceType === 0 ? '自定义' : '商品'}}
+            </template>
           </el-table-column>
 
           <el-table-column
@@ -352,17 +355,12 @@ export default {
       })
     },
     initDataList () {
-      if (this.param.endTime !== '') {
-        let arr = this.param.endTime.split(' ')
-        this.param.endTime = arr[0] + ' 59:59:59'
-      }
       let obj = {
         currentPage: this.pageParams.currentPage,
         pageRows: this.pageParams.pageRows
       }
       channelList(Object.assign({}, this.param, obj)).then(res => {
         if (res.error === 0) {
-          // this.pageParams = res.content.page
           this.pageParams = Object.assign({}, res.content.page)
           this.tableData = res.content.dataList
           this.handleDdta(res.content.dataList)
@@ -391,13 +389,16 @@ export default {
         this.param.sourceType = ''
       }
     },
+    // 商品详情页数据回传
     choosingGoodsResult (row, rows) {
+      console.log(row, '-----row', rows)
       if (rows.refresh === true) {
         this.initDataList()
       }
     },
     // 自定义页面数据回传
     handleSelectTemplate (data, datas) {
+      console.log(data, '-----data', datas)
       if (datas.refresh === true) {
         this.initDataList()
       }
@@ -446,6 +447,11 @@ export default {
     margin: 0 10px 10px;
     padding: 15px;
     background: #fff;
+    .iconSpan {
+      font-size: 20px;
+      color: #5a8bff;
+      cursor: pointer;
+    }
   }
   /deep/ .tableClss th {
     background-color: #f5f5f5;

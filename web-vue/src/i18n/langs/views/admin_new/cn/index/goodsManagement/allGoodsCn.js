@@ -115,7 +115,9 @@ export const cn = {
     unit: '单位量词',
     goodsImg: '商品主图',
     detailImg: '商品详情图',
-    barcode: '商品条码'
+    barcode: '商品条码',
+    deliverPlace: '发货地',
+    gradeCardPrice: '会员价'
   },
   bottomOptions: {
     allCheck: '全选',

@@ -7,6 +7,7 @@ import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -255,16 +256,25 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
 
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
+        //会员可用会员卡
+        List<OrderMemberVo> userCards = userCardService.userCardDao.getOrderMembers(param.getWxUserInfo().getUserId(), new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE}, OrderConstant.MEMBER_CARD_ONLINE);
+        //会员等级
+        String lv = CardConstant.LOWEST_GRADE;
+        //会员可用会员卡中等级最高的卡
+        for (OrderMemberVo cardVo: userCards) {
+            if(CardUtil.isGradeCard(cardVo.getInfo().getCardType())) {
+                lv = cardVo.getInfo().getGrade();
+                break;
+            }
+        }
         for (OrderBeforeParam.Goods one: param.getGoods()) {
-            if(GoodsConstant.CARD_EXCLUSIVE.equals(one.getGoodsInfo().getIsCardExclusive())) {
-                // 获取商品所有专享卡（包含普通卡和等级卡）
-                List<MemberCardRecord> exclusiveCards = memberCardProcessorDao.getExclusiveInfo(one.getGoodsInfo().getGoodsId(), one.getGoodsInfo().getCatId(), one.getGoodsInfo().getSortId(), one.getGoodsInfo().getBrandId());
-                if(CollectionUtils.isNotEmpty(exclusiveCards)) {
-                    //会员可用会员卡
-                    List<OrderMemberVo> userCards = userCardService.userCardDao.getOrderMembers(param.getWxUserInfo().getUserId(), new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE}, OrderConstant.MEMBER_CARD_ONLINE);
-                    //flag
-                    boolean flag = false;
-                    for (MemberCardRecord exclusiveCard: exclusiveCards) {
+            // 获取商品所有专享卡（包含普通卡和等级卡）
+            List<MemberCardRecord> exclusiveCards = memberCardProcessorDao.getExclusiveInfo(one.getGoodsInfo().getGoodsId(), one.getGoodsInfo().getCatId(), one.getGoodsInfo().getSortId(), one.getGoodsInfo().getBrandId());
+            if(CollectionUtils.isNotEmpty(exclusiveCards)) {
+                //flag
+                boolean flag = false;
+                for (MemberCardRecord exclusiveCard: exclusiveCards) {
+                    if(!CardUtil.isGradeCard(exclusiveCard.getCardType())) {
                         for(OrderMemberVo userCard : userCards) {
                             if(exclusiveCard.getId().equals(userCard.getInfo().getCardId())) {
                                 flag = true;
@@ -275,13 +285,17 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
                         if(flag) {
                             break;
                         }
+                    } else if(lv.compareTo(exclusiveCard.getGrade()) >= 0){
+                        flag = true;
+                        one.setIsCardExclusive(OrderConstant.YES);
+                        break;
                     }
-                    if(!flag) {
-                        log.info("专享商品不可购买,{}" ,one.getGoodsInfo().getGoodsName());
-                        throw new MpException(JsonResultCode.CODE_ORDER_EXCLUSIVE_GOODS_NO_BUY, "专享商品不可购买", one.getGoodsInfo().getGoodsName());
-                    }
-                }
 
+                }
+                if(!flag) {
+                    log.info("专享商品不可购买,{}" ,one.getGoodsInfo().getGoodsName());
+                    throw new MpException(JsonResultCode.CODE_ORDER_EXCLUSIVE_GOODS_NO_BUY, "专享商品不可购买", one.getGoodsInfo().getGoodsName());
+                }
             }
         }
     }

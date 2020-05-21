@@ -130,8 +130,7 @@ const routes = [
     name: 'kanjia',
     meta: {
       crumbTitle: 'router.kanjia',
-      meta: 'first_market_manage',
-      category: 'first_market_manage'
+      meta: 'first_market_manage'
     },
     component: () =>
       import(
@@ -145,7 +144,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.bargain_activity',
       meta: 'first_market_manage',
-      category: 'bargain'
+      category: 'kanjia'
     },
     component: () =>
       import(
@@ -159,7 +158,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.bargain_order_list',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'kanjia'
     },
     component: () =>
       import(
@@ -173,7 +172,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.bargain_get_newuser_detail',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'kanjia'
     },
     component: () =>
       import(
@@ -187,7 +186,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.bargain_bargain_user',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'kanjia'
     },
     component: () =>
       import(
@@ -201,7 +200,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.bargain_effect_data',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'kanjia'
     },
     component: () =>
       import(
@@ -215,7 +214,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.bargain_record_detail',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'kanjia'
     },
     component: () =>
       import(
@@ -241,7 +240,8 @@ const routes = [
     name: 'pin_group_detailList',
     meta: {
       crumbTitle: 'router.pin_group_detailList',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'pin_group'
     },
     component: () =>
       import(
@@ -254,7 +254,8 @@ const routes = [
     name: 'pin_group_orderList',
     meta: {
       crumbTitle: 'router.pin_group_orderList',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'pin_group'
     },
     component: () =>
       import(
@@ -267,7 +268,8 @@ const routes = [
     name: ' pin_group_newUserDetail',
     meta: {
       crumbTitle: 'router.pin_group_newUserDetail',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'pin_group'
     },
     component: () =>
       import(
@@ -280,7 +282,8 @@ const routes = [
     name: ' pin_group_refundFailureOrder',
     meta: {
       crumbTitle: 'router.pin_group_refundFailureOrder',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'pin_group'
     },
     component: () =>
       import(
@@ -293,7 +296,8 @@ const routes = [
     name: ' pin_group_activityEffectData',
     meta: {
       crumbTitle: 'router.pin_group_activityEffectData',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'pin_group'
     },
     component: () =>
       import(
@@ -549,7 +553,8 @@ const routes = [
     name: 'promote_activity',
     meta: {
       crumbTitle: 'router.promote_activity',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'promote'
     },
     component: () =>
       import(
@@ -562,7 +567,8 @@ const routes = [
     name: 'promote_receive_details',
     meta: {
       crumbTitle: 'router.promote_receive_details',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'promote'
     },
     component: () =>
       import(
@@ -575,7 +581,8 @@ const routes = [
     name: 'promote_launch_details',
     meta: {
       crumbTitle: 'router.promote_launch_details',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'promote'
     },
     component: () =>
       import(
@@ -588,7 +595,8 @@ const routes = [
     name: 'promote_participate_details',
     meta: {
       crumbTitle: 'router.promote_participate_details',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'promote'
     },
     component: () =>
       import(
@@ -601,7 +609,8 @@ const routes = [
     name: 'promote_effect_data',
     meta: {
       crumbTitle: 'router.promote_effect_data',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'promote'
     },
     component: () =>
       import(
@@ -642,8 +651,7 @@ const routes = [
     name: 'group_draw',
     meta: {
       crumbTitle: 'router.group_draw',
-      meta: 'first_market_manage',
-      category: 'first_market_manage'
+      meta: 'first_market_manage'
     },
     component: () =>
       import(
@@ -657,7 +665,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.group_order',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'group_draw'
     },
     component: () =>
       import(
@@ -671,7 +679,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.group_user',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'group_draw'
     },
     component: () =>
       import(
@@ -685,7 +693,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.group_user_detail',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'group_draw'
     },
     component: () =>
       import(
@@ -699,7 +707,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.group_detail',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'group_draw'
     },
     component: () =>
       import(
@@ -713,7 +721,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.group_effect',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'group_draw'
     },
     component: () =>
       import(
@@ -865,7 +873,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.pin_integration_add',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'pin_integration'
     },
     component: () =>
       import(
@@ -880,7 +888,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.pin_integration_detail',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'pin_integration'
     },
     component: () =>
       import(
@@ -894,7 +902,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.pin_integration_analysis',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'pin_integration'
     },
     component: () =>
       import(
@@ -908,7 +916,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.pin_integration_success',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'pin_integration'
     },
     component: () =>
       import(
@@ -1544,7 +1552,8 @@ const routes = [
     name: 'addPayRewardAct',
     meta: {
       crumbTitle: 'router.addPayRewardAct',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'payreward'
     },
     component: () =>
       import(
@@ -1557,7 +1566,8 @@ const routes = [
     name: 'activityDetails',
     meta: {
       crumbTitle: 'router.activityDetails',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'payreward'
     },
     component: () =>
       import(

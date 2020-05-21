@@ -110,10 +110,16 @@ public class AdminUserCardController extends AdminBaseController {
         return success(shop().userCard.cardRenewAnalysis(param));
     }
 
+    /**
+     * 会员卡续费记录导出
+     *
+     * @param param
+     * @param response
+     */
     @PostMapping("/api/admin/user/card/renew/export")
-    public void export(@RequestBody @Valid UserCardRenewListParam param, HttpServletResponse response) {
+    public void cardRenewExport(@RequestBody @Valid UserCardRenewListParam param, HttpServletResponse response) {
         Workbook workbook = shop().userCard.exportRenewList(param, getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.VIRTUAL_ORDER_MEMBER_CARD_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.USER_CARD_RENEW_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
         export2Excel(workbook, fileName, response);
     }
 
@@ -131,6 +137,19 @@ public class AdminUserCardController extends AdminBaseController {
     @PostMapping("/api/admin/user/card/charge/analysis")
     public JsonResult cardChargeAnalysis(@RequestBody AnalysisParam param) {
         return success(shop().userCard.cardChargeAnalysis(param));
+    }
+
+    /**
+     * 会员卡充值记录导出
+     *
+     * @param param
+     * @param response
+     */
+    @PostMapping("/api/admin/user/card/charge/export")
+    public void cardChargeExport(@RequestBody @Valid UserCardChargeListParam param, HttpServletResponse response) {
+        Workbook workbook = shop().userCard.exportChargeList(param, getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.USER_CARD_CHARGE_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        export2Excel(workbook, fileName, response);
     }
 
 

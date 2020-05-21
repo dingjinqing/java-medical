@@ -1383,7 +1383,6 @@ export default {
                     overflow: hidden;
                     -webkit-box-orient: vertical;
                     text-align: left;
-                    line-height: 21px;
                     >.tags{
                       border: 1px solid;
                       padding: 0 3px;

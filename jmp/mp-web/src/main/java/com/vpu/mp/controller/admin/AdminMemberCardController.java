@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -53,9 +54,7 @@ import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
  */
 @RestController
 @RequestMapping(value = "/api/admin/member")
-public class AdminMemberCardController extends AdminBaseController {
-	private static final String LANGUAGE_TYPE_EXCEL = "excel";
-	/**
+public class AdminMemberCardController extends AdminBaseController {	/**
 	 * 会员卡 - 创建
 	 */
 	@PostMapping("/card/add")
@@ -163,7 +162,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	public void getAllCardHoldersExport(@RequestBody CardHolderParam param,HttpServletResponse response) {
 		logger().info("导出所有持卡会员");
 		Workbook workbook = shop().member.card.getAllCardHolderExport(param,getLang());
-		String fileName = Util.translateMessage(getLang(), JsonResultMessage.USER_CARD_TEMPLATE_NAME, LANGUAGE_TYPE_EXCEL,"messages");
+		String fileName = Util.translateMessage(getLang(), JsonResultMessage.USER_CARD_TEMPLATE_NAME, BaseConstant.LANGUAGE_TYPE_EXCEL,"messages");
 		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
 		export2Excel(workbook, fileName + dateFormat, response);
 		logger().info("结束导出所有持卡会员");
@@ -307,7 +306,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	public void getTemplate(HttpServletResponse response) {
 		logger().info("开始获取导入领取码模板");
 		Workbook workbook = shop().member.card.getCardNoTemplate(getLang());
-		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_NO_TEMPLATE_NAME, LANGUAGE_TYPE_EXCEL,"messages");
+		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_NO_TEMPLATE_NAME, BaseConstant.LANGUAGE_TYPE_EXCEL,"messages");
 		export2Excel(workbook, fileName, response);
 		logger().info("结束获取导入领取码模板");
 	}
@@ -355,7 +354,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	public void getErrorExcel(@RequestBody CardBatchDownLoadParam param, HttpServletResponse response) {
 		logger().info("开始下载领取码失败数据");
 		Workbook workbook = shop().member.card.getExcel(param.getBatchId(), getLang(),false,param.getIsPwd());
-		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_NO_IMPORT_NAME, LANGUAGE_TYPE_EXCEL,
+		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_NO_IMPORT_NAME, BaseConstant.LANGUAGE_TYPE_EXCEL,
 				"messages");
 		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
 		export2Excel(workbook, fileName + dateFormat, response);
@@ -372,7 +371,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	public void getSuccessExcel(@RequestBody CardBatchDownLoadParam param, HttpServletResponse response) {
 		logger().info("开始下载领取码成功数据");
 		Workbook workbook = shop().member.card.getExcel(param.getBatchId(), getLang(),true,param.getIsPwd());
-		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_NO_IMPORT_NAME, LANGUAGE_TYPE_EXCEL,
+		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_NO_IMPORT_NAME, BaseConstant.LANGUAGE_TYPE_EXCEL,
 				"messages");
 		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
 		export2Excel(workbook, fileName + dateFormat, response);
@@ -388,7 +387,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	public void getcodePwdTemplate(HttpServletResponse response) {
 		logger().info("开始获取导入领取码模板");
 		Workbook workbook = shop().member.card.getCardNoPwdTemplate(getLang());
-		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_NO_TEMPLATE_NAME, LANGUAGE_TYPE_EXCEL,"messages");
+		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_NO_TEMPLATE_NAME, BaseConstant.LANGUAGE_TYPE_EXCEL,"messages");
 		export2Excel(workbook, fileName, response);
 		logger().info("结束获取导入领取码模板");
 	}
@@ -437,7 +436,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	public void getErrorExcel(@RequestBody CodeReceiveParam param, HttpServletResponse response) {
 		logger().info("开始下载领取详情");
 		Workbook workbook = shop().member.card.getReceiveExcel(param, getLang());
-		String fileName = Util.translateMessage(getLang(), JsonResultMessage.USER_CARD_RECEIVE_NAME, LANGUAGE_TYPE_EXCEL,
+		String fileName = Util.translateMessage(getLang(), JsonResultMessage.USER_CARD_RECEIVE_NAME, BaseConstant.LANGUAGE_TYPE_EXCEL,
 				"messages");
 		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
 		export2Excel(workbook, fileName + dateFormat, response);
@@ -445,7 +444,17 @@ public class AdminMemberCardController extends AdminBaseController {
 	}
 	
 	/**
-	 * 获取所有可用的等级卡接口
+	 * 会员卡审核导出接口
 	 */
+	@PostMapping("/activateAudit/list/export")
+	public void getActivateAuditList(@RequestBody ActiveAuditParam param,HttpServletResponse response) {
+		logger().info("会员卡审核导出");
+		String cardName = shop().member.card.getCardNameById(param.getCardId());
+		Workbook workbook = shop().member.card.cardVerifyService.exportToExcel(param,getLang());
+		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_EXAMINE_FILE_NAME, BaseConstant.LANGUAGE_TYPE_EXCEL,
+				"messages");
+		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
+		export2Excel(workbook, cardName+fileName + dateFormat, response);
+	}
 	
 }

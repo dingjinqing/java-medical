@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
+import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
 
 import lombok.Data;
 
@@ -13,6 +14,7 @@ import org.jooq.types.UInteger;
  * @author 黄壮壮
  *
  */
+@ExcelSheet
 @Data
 public class CardExamineDownVo {
 	/**
