@@ -72,7 +72,7 @@ global.wxPage({
           totalMicroSecond = orderInfo.returnAuditPassNotShoppingDays / 1000 || 0
         }
         // 申请时间
-        if (refundStatus === 1 || refundStatus === 2) {
+        if (orderInfo.applyTime) {
           applicationTime = orderInfo.applyTime
         } else {
           applicationTime = orderInfo.shippingOrRefundTime
