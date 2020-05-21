@@ -80,7 +80,7 @@ public class OrderListMpVo{
 	private Byte isDelete;
 	private List<OrderGoodsMpVo> goods;
 	private GroupOrderVo groupBuyInfo;
-	private List<String> orderType;
+	private List<Byte> orderType;
     @JsonIgnore
 	private Byte orderPayWay;
     /**补款*/
