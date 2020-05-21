@@ -164,8 +164,8 @@ public class PictorialImgPx {
         customerIconStartY = customerRectStartY + 17;
 
         customerTextStartX = customerRectStartX + 20;
-        customerTextStartY = customerRectStartY + 10;
-        customerSecondTextStartY = customerTextStartY + 10;
+        customerTextStartY = customerRectStartY + 12;
+        customerSecondTextStartY = customerTextStartY + 9;
 
         bottomStartY = headerHeight + goodsHeight + bgPadding + 5;
         // 底部二维码
