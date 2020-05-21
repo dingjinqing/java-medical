@@ -66,7 +66,7 @@ public enum MemberSexEnum {
 		return name;
 	}
 	/**
-	 * 获取所有教育名称
+	 * 获取所有性别名称
 	 * @param lang 语言
 	 * @param choose true 加入"请选择"，false，没有此项
 	 */

@@ -31,6 +31,7 @@ import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
@@ -42,6 +43,8 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberSexEnum;
 import com.vpu.mp.service.pojo.shop.member.builder.ActiveOverDueVoBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
@@ -479,12 +482,12 @@ public class CardVerifyService extends ShopBaseService {
 		logger().info("导出会员卡审核数据为excel");
 		Map<Integer,String> sysIdNameMap = new HashMap<>();
 		//	审核中
-		String examing = Util.translateMessage(lang, JsonResultCode.MSG_CARD_EXAMINE_ING.getMessage(), "excel",null);
+		String examing = Util.translateMessage(lang, JsonResultCode.MSG_CARD_EXAMINE_ING.getMessage(), BaseConstant.LANGUAGE_TYPE_EXCEL,null);
 		//	审核通过
-		String pass = Util.translateMessage(lang, JsonResultCode.MSG_CARD_EXAMINE_PASS.getMessage(), "excel",null);
+		String pass = Util.translateMessage(lang, JsonResultCode.MSG_CARD_EXAMINE_PASS.getMessage(), BaseConstant.LANGUAGE_TYPE_EXCEL,null);
 		//	审核拒绝
-		String refuse = Util.translateMessage(lang, JsonResultCode.MSG_CARD_EXAMINE_REFUSE.getMessage(), "excel",null);
-		
+		String refuse = Util.translateMessage(lang, JsonResultCode.MSG_CARD_EXAMINE_REFUSE.getMessage(), BaseConstant.LANGUAGE_TYPE_EXCEL,null);
+		List<String> allSex = MemberSexEnum.getAllSex(lang);
 		PageResult<? extends Record> results = getPageList(param);
 		if(results.dataList!=null && results.dataList.size()>0) {
 			List<CardExamineDownVo> modelData = new ArrayList<>();
@@ -521,13 +524,13 @@ public class CardVerifyService extends ShopBaseService {
 				// 受教育程度
 				Byte education = record.get(CARD_EXAMINE.INDUSTRY_INFO);
 				if(education != null) {
-					vo.setEducationStr(MemberEducationEnum.getNameByCode((int)education));
+					vo.setEducationStr(MemberEducationEnum.getNameByCode((int)education,lang));
 				}
 				
 				//	所在行业
 				Byte industry = record.get(CARD_EXAMINE.INDUSTRY_INFO);
 				if(industry != null) {
-					vo.setIndustry(MemberIndustryEnum.getNameByCode((int)industry));
+					vo.setIndustry(MemberIndustryEnum.getNameByCode((int)industry,lang));
 				}
 				
 				// 生日
@@ -613,16 +616,16 @@ public class CardVerifyService extends ShopBaseService {
 							 }
 						 }
 					 }
-					 vo.setCustomOptions(customContent.toString());
 				}
+				vo.setCustomOptions(customContent.toString());
 				
 				// 审核时间
 				Timestamp passTime = record.get(CARD_EXAMINE.PASS_TIME);
 				Timestamp refuseTime = record.get(CARD_EXAMINE.REFUSE_TIME);
 				if(passTime!=null) {
-					vo.setExamineTime(passTime.toLocalDateTime().toString());
+					vo.setExamineTime(passTime);
 				}else if(refuseTime!=null) {
-					vo.setExamineTime(refuseTime.toLocalDateTime().toString());
+					vo.setExamineTime(refuseTime);
 				}
 				
 				//	审核人
@@ -638,7 +641,7 @@ public class CardVerifyService extends ShopBaseService {
 				}
 				
 				
-				// 审核状态
+				//	审核状态
 				Byte status = record.get(CARD_EXAMINE.STATUS);
 				if(CardVerifyConstant.VSTAT_CHECKING.equals(status)) {
 					//	审核中
@@ -649,6 +652,20 @@ public class CardVerifyService extends ShopBaseService {
 				}else if(CardVerifyConstant.VSTAT_REFUSED.equals(status)) {
 					//	审核拒绝
 					vo.setExamineStatus(refuse);
+				}
+				
+				//	性别
+				String sex = record.get(CARD_EXAMINE.SEX);
+				if("m".equals(sex)) {
+					vo.setSex(allSex.get(0));
+				}else if("f".equals(sex)) {
+					vo.setSex(allSex.get(1));
+				}
+				
+				//	婚姻状况
+				Byte maritalStatus = record.get(CARD_EXAMINE.MARITAL_STATUS);
+				if(maritalStatus != null) {
+					vo.setMaritalStatus(MemberMarriageEnum.getNameByCode(maritalStatus, lang));
 				}
 				modelData.add(vo);
 			}
