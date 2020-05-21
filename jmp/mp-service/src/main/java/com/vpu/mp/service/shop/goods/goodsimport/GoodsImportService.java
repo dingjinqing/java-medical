@@ -155,16 +155,16 @@ public class GoodsImportService extends ShopBaseService {
         List<GoodsImportDetailRecord> illegalGoods = new ArrayList<>(10);
 
         readyToImportGoodsList.removeIf(goodsBo -> {
-            if (StringUtils.isBlank(goodsBo.getGoodsName())) {
-                illegalGoods.add(importRecordService.convertVpuExcelImportBoToImportDetail(goodsBo, GoodsDataIIllegalEnum.GOODS_NAME_NULL, batchId));
-                return true;
-            }
             if (StringUtils.isBlank(goodsBo.getGoodsSn())) {
                 illegalGoods.add(importRecordService.convertVpuExcelImportBoToImportDetail(goodsBo, GoodsDataIIllegalEnum.GOODS_SN_NULL, batchId));
                 return true;
             }
             if (StringUtils.isBlank(goodsBo.getPrdSn())) {
                 illegalGoods.add(importRecordService.convertVpuExcelImportBoToImportDetail(goodsBo, GoodsDataIIllegalEnum.GOODS_PRD_SN_NULL, batchId));
+                return true;
+            }
+            if (StringUtils.isBlank(goodsBo.getGoodsName())) {
+                illegalGoods.add(importRecordService.convertVpuExcelImportBoToImportDetail(goodsBo, GoodsDataIIllegalEnum.GOODS_NAME_NULL, batchId));
                 return true;
             }
             if (!isUpdate && StringUtils.isBlank(goodsBo.getGoodsImgsStr())) {
@@ -194,10 +194,10 @@ public class GoodsImportService extends ShopBaseService {
         Map<String, List<GoodsVpuExcelImportBo>> goodsMap = readyToImportGoodsList.stream().collect(Collectors.groupingBy(GoodsVpuExcelImportBo::getGoodsSn));
         List<GoodsImportDetailRecord> successGoodsList = new ArrayList<>(readyToImportGoodsList.size() / 2);
         List<Integer> goodsIds = new ArrayList<>(successGoodsList.size());
-
+        Integer shopId = getShopId();
         for (Map.Entry<String, List<GoodsVpuExcelImportBo>> entry : goodsMap.entrySet()) {
             List<GoodsVpuExcelImportBo> value = entry.getValue();
-            Integer goodsId = goodsImportOperate(getShopId(), value, successGoodsList, illegalGoodsList, isUpdate, batchId);
+            Integer goodsId = goodsImportOperate(shopId, value, successGoodsList, illegalGoodsList, isUpdate, batchId);
             goodsIds.add(goodsId);
         }
 
@@ -717,8 +717,8 @@ public class GoodsImportService extends ShopBaseService {
         if (retStr == null) {
             return retStr;
         }
-        retStr = filterImgTag(goodsDesc, downloadImageBos);
-        retStr = filterBgUrlImg(retStr, downloadImageBos);
+//        retStr = filterImgTag(goodsDesc, downloadImageBos);
+//        retStr = filterBgUrlImg(retStr, downloadImageBos);
         return retStr;
     }
 

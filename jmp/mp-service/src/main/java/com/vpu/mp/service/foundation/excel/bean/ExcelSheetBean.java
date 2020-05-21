@@ -10,6 +10,7 @@ public class ExcelSheetBean {
     public int sheetNum;
     public int beginDataNum;
     public int headLineNum;
+    public boolean importBindByColumnName;
     public HashMap<String, ExcelColumnBean> columnMap=new HashMap<>();
 
 

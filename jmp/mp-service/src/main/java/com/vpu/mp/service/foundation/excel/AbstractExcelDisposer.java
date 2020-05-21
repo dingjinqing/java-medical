@@ -61,7 +61,7 @@ public abstract class AbstractExcelDisposer {
         sheetBean.sheetNum = sheetAnnotation.sheetNum();
         sheetBean.beginDataNum = sheetAnnotation.beginDataNum();
         sheetBean.headLineNum = sheetAnnotation.headLineNum();
-
+        sheetBean.importBindByColumnName = sheetAnnotation.importBindByColumnName();
 
         Field[] fields = clazz.getDeclaredFields();
 
