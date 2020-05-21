@@ -217,7 +217,8 @@ export const en = {
     saleOnTime: 'Custom sale time',
     saleTimeNotNll: 'sale Time can not be null',
     saleTimeCanNotBeBefore: 'sale Time can not be before now',
-    notSale: 'Not sale'
+    notSale: 'Not sale',
+    chooseSaleTime: 'Choose sale time'
   },
   goodsDetail: {
     goodsDetailTitle: 'Goods info',
