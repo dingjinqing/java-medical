@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.account.CardConsumeParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardChargeListParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean.UserCardConsumeBeanBuilder;
@@ -89,6 +90,7 @@ public class AdminUserCardController extends AdminBaseController {
             .message(param.getMessage())
             .payment("")
             .cardNo(param.getCardNo())
+            .changeType(CardConstant.CHARGE_ADMIN_OPT)
             .build();
         shop().userCard.cardConsumer(bean, 0, (byte) 10, (byte) 2, param.getType(), isContinue);
         return success();

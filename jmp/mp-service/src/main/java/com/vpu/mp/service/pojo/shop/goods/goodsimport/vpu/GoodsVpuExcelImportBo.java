@@ -45,9 +45,16 @@ public class GoodsVpuExcelImportBo extends GoodsExcelImportBase {
         limitBuyNum = m.getLimitBuyNum();
         prdWeight = m.getGoodsWeight();
         unit = m.getUnit();
-        goodsImgsStr = m.getGoodsImgsStr();
         goodsDesc = m.getGoodsDesc();
         deliverPlace = m.getDeliverPlace();
         prdCodes = m.getPrdCodes();
+        // 只要有图片就会更新商品的图片信息（不管填的是主图还是附图）
+        String imgs = null;
+        if (m.getGoodsImg() != null) {
+            imgs = m.getGoodsImg();
+        }
+        if (m.getGoodsImgsStr() != null) {
+            imgs = imgs==null?m.getGoodsImgsStr():imgs+";"+m.getGoodsImgsStr();
+        }
     }
 }

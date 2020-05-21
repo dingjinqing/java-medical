@@ -9,6 +9,8 @@ import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
+import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
+import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_BATCH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUNT_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.EXCHANG_COUNT_TYPE;
@@ -23,6 +25,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USI
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,6 +34,7 @@ import java.util.stream.IntStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Condition;
+import org.jooq.Field;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep4;
 import org.jooq.InsertValuesStep5;
@@ -73,6 +77,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardHolderExcelVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardNoImportTemplate;
+import com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ChargeParam;
 import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
@@ -89,21 +94,29 @@ import com.vpu.mp.service.pojo.shop.member.card.export.receive.CardReceiveDownVo
 @Service
 public class CardDaoService extends ShopBaseService {
 	public PageResult<CardHolderVo> getAllCardHolder(CardHolderParam param) {
-
 		User invitedUser = USER.as("a");
+		List<Field<?>> f = new ArrayList<>(Arrays.asList(USER_CARD.fields()));
+		f.add(USER.USERNAME);
+		f.add(USER.MOBILE);
+		f.add(invitedUser.USERNAME.as("invitedName"));
+		f.add(MEMBER_CARD.CARD_TYPE);
+		f.add(CARD_EXAMINE.STATUS);
+		Field<?>[] myFields = f.toArray(new Field<?>[0]);
+		
 		SelectJoinStep<?> select = db()
-				.select(USER_CARD.USER_ID, USER.USERNAME, USER.MOBILE, invitedUser.USERNAME.as("invitedName"),
-						USER_CARD.CREATE_TIME, USER_CARD.CARD_NO, USER_CARD.FLAG, USER_CARD.EXPIRE_TIME,USER_CARD.UPDATE_TIME,
-						MEMBER_CARD.CARD_TYPE,
-						CARD_EXAMINE.STATUS)
+				.select(myFields)
 				.from(USER_CARD.leftJoin(USER.leftJoin(invitedUser).on(USER.INVITE_ID.eq(invitedUser.USER_ID))
 										).on(USER_CARD.USER_ID.eq(USER.USER_ID)))
 				.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
-				.leftJoin(CARD_EXAMINE).on(USER_CARD.CARD_NO.eq(CARD_EXAMINE.CARD_NO));
-				
+				.leftJoin(CARD_EXAMINE).on(USER_CARD.CARD_NO.eq(CARD_EXAMINE.CARD_NO))
+				.leftJoin(CARD_CONSUMER).on(USER_CARD.CARD_NO.eq(CARD_CONSUMER.CARD_NO))
+				.leftJoin(CHARGE_MONEY).on(USER_CARD.CARD_NO.eq(CHARGE_MONEY.CARD_NO));
 
 		buildOptions(param, select);
-		select.where(USER_CARD.CARD_ID.eq(param.getCardId())).orderBy(USER_CARD.USER_ID.desc());
+		select.where(USER_CARD.CARD_ID.eq(param.getCardId()))
+			  .groupBy(myFields)
+			  .orderBy(USER_CARD.USER_ID.desc());
+		
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), CardHolderVo.class);
 	}
 
@@ -159,6 +172,45 @@ public class CardDaoService extends ShopBaseService {
 		if (param.getSecondDateTime() != null) {
 			select.where(USER_CARD.CREATE_TIME.le(param.getSecondDateTime()));
 		}
+		
+		/**	是否提交审核申请	*/
+		if(param.getSubmitValue()!=null) {
+			if(CardVerifyConstant.HAS_CONDITION.equals(param.getSubmitValue())) {
+				select.where(CARD_EXAMINE.CARD_NO.isNotNull());
+			}else if(CardVerifyConstant.NO_CONDITION.equals(param.getSubmitValue())) {
+				select.where(CARD_EXAMINE.CARD_NO.isNull());
+			}
+		}
+		
+		/**	 卡审核状态	*/
+		if(param.getExamineStatusValue()!=null) {
+			if(CardVerifyConstant.VSTAT_CHECKING.equals(param.getExamineStatusValue())) {
+				select.where(CARD_EXAMINE.STATUS.eq(CardVerifyConstant.VSTAT_CHECKING));
+			}else if(CardVerifyConstant.VSTAT_PASS.equals(param.getExamineStatusValue())){
+				select.where(CARD_EXAMINE.STATUS.eq(CardVerifyConstant.VSTAT_PASS));
+			}else if(CardVerifyConstant.VSTAT_REFUSED.equals(param.getExamineStatusValue())) {
+				select.where(CARD_EXAMINE.STATUS.eq(CardVerifyConstant.VSTAT_REFUSED));
+			}
+		}
+		
+		/**	 有无消费记录	*/
+		if(param.getConsumeRecordValue()!=null) {
+			if(CardVerifyConstant.HAS_CONDITION.equals(param.getConsumeRecordValue())) {
+				select.where(CARD_CONSUMER.CARD_NO.isNotNull());
+			}else if(CardVerifyConstant.NO_CONDITION.equals(param.getConsumeRecordValue())){
+				select.where(CARD_CONSUMER.CARD_NO.isNull());
+			}
+		}
+		
+		/**	有无充值记录 */
+		if(param.getChargeRecordValue()!=null) {
+			if(CardVerifyConstant.HAS_CONDITION.equals(param.getChargeRecordValue())) {
+				select.where(CHARGE_MONEY.CARD_NO.isNotNull());
+			}else if(CardVerifyConstant.NO_CONDITION.equals(param.getChargeRecordValue())){
+				select.where(CHARGE_MONEY.CARD_NO.isNull());
+			}
+		}
+		
 	}
 
 	/**

@@ -109,39 +109,44 @@ public class ExcelReader extends AbstractExcelDisposer {
             ExcelColumnBean columnBean = entry.getValue();
             int columnIndex = columnBean.columnIndex;
 
-            //设置了列索引，但是越界了
-            boolean isWrongIndex = columnIndex != -1 && (columnIndex < firstCellNum || columnIndex >= lastCellNum);
-            if (isWrongIndex) {
-                illegalHandler.handleIllegalParse(IllegalExcelBinder.createIllegalHeadInfo(headRow));
-                throw new IllegalExcelHeaderException();
+            // 如果导入时想通过excle表头名称和实体类的columnName对应的话就不对索引进行判断
+            if (!sheetBean.importBindByColumnName) {
+                //设置了列索引，但是越界了
+                boolean isWrongIndex = columnIndex != -1 && (columnIndex < firstCellNum || columnIndex >= lastCellNum);
+                if (isWrongIndex) {
+                    illegalHandler.handleIllegalParse(IllegalExcelBinder.createIllegalHeadInfo(headRow));
+                    throw new IllegalExcelHeaderException();
+                }
+
+                //设置了合法列索引
+                if (columnIndex != -1) {
+                    String cellValue = ExcelUtil.getCellStringValue(headRow.getCell(columnIndex));
+                    columnBean.columnName = cellValue;
+                    continue;
+                }
             }
 
-            //设置了合法列索引
-            if (columnIndex != -1) {
-                String cellValue = ExcelUtil.getCellStringValue(headRow.getCell(columnIndex));
-                columnBean.columnName = cellValue;
-                continue;
-            }
 
             //至此，model的该字段未设置sheet对应列的索引
             String columnName = columnBean.columnName;
 
-            int j = -1;
+            int i = firstCellNum;
             //根据设置的列名称查找对应索引
-            for (int i = firstCellNum; i < lastCellNum; i++) {
+            for (; i < lastCellNum; i++) {
                 Cell cell = headRow.getCell(i);
                 String cellValue = ExcelUtil.getCellStringValue(cell);
 
                 if (cellValue == null || !cellValue.trim().equals(columnName)) {
                     continue;
+                } else {
+                    columnBean.columnIndex = i;
                 }
-                j = i;
             }
             //类字段在excel head里没有对应索引
-            if (j == -1 || columnBean.columnIndex != j) {
-                illegalHandler.handleIllegalParse(IllegalExcelBinder.createIllegalHeadInfo(headRow));
-                throw new IllegalExcelHeaderException();
-            }
+//            if (j == -1 || columnBean.columnIndex != j) {
+//                illegalHandler.handleIllegalParse(IllegalExcelBinder.createIllegalHeadInfo(headRow));
+//                throw new IllegalExcelHeaderException();
+//            }
         }
     }
 

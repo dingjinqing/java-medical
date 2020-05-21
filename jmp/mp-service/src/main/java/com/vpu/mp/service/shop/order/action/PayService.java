@@ -231,8 +231,8 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
      */
     private ExecuteResult checkActivity(OrderInfoRecord order) {
         //订单类型
-        ArrayList<String> goodsType = Lists.newArrayList(OrderInfoService.orderTypeToArray(order.getGoodsType()));
-        if (goodsType.contains(ACTIVITY_TYPE_GROUP_BUY.toString())){
+        ArrayList<Byte> goodsType = Lists.newArrayList(OrderInfoService.orderTypeToByte(order.getGoodsType()));
+        if (goodsType.contains(ACTIVITY_TYPE_GROUP_BUY)){
             GroupOrderVo groupBuyRecord = groupBuyListService.getByOrder(order.getOrderSn());
             Timestamp date = DateUtil.getLocalDateTime();
             // 是否可以参加拼团
@@ -241,7 +241,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
                 String[] str2 = resultMessage.getMessages().toArray(new String[0]);
                 return ExecuteResult.create(resultMessage.getJsonResultCode(), null, str2);
             }
-        } else if (goodsType.contains(BaseConstant.ACTIVITY_TYPE_PRE_SALE.toString())){
+        } else if (goodsType.contains(BaseConstant.ACTIVITY_TYPE_PRE_SALE)){
             //预售
             PreSaleVo info = preSaleProcessorDao.getDetail(order.getActivityId());
             if(info == null || info.getDelFlag().equals(DelFlag.DISABLE_VALUE)) {

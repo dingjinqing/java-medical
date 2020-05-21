@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
 import com.vpu.mp.service.pojo.shop.goods.es.Operator;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
+import com.vpu.mp.service.shop.goods.es.goods.EsSearchSource;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequest;
@@ -57,7 +58,7 @@ public class EsUtilSearchService extends EsBaseSearchService{
         List<FieldProperty> propertyList = new ArrayList<>();
         propertyList.add(new FieldProperty(EsSearchName.SHOP_ID,getShopId()));
         propertyList.add(new FieldProperty(EsSearchName.UPDATE_TIME, DateUtil.getBeforeLocalFor(30), Operator.LT));
-        BoolQueryBuilder searchBuilder = assemblySearchBuilder(propertyList);
+        BoolQueryBuilder searchBuilder = assemblySearchBuilder(propertyList, EsSearchSource.ADMIN,Boolean.FALSE);
         EsSearchSourceBuilderParam param = EsSearchSourceBuilderParamBuilder.builder()
             .queryBuilder(searchBuilder)
             .build();
