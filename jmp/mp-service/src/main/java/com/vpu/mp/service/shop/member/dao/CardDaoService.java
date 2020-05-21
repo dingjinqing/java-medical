@@ -108,7 +108,7 @@ public class CardDaoService extends ShopBaseService {
 
 		buildOptions(param, select);
 		select.where(USER_CARD.CARD_ID.eq(param.getCardId()))
-			  .groupBy(USER_CARD.CARD_NO)
+			  .groupBy(USER_CARD.fields())
 			  .orderBy(USER_CARD.USER_ID.desc());
 		
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), CardHolderVo.class);

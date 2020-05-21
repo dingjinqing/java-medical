@@ -370,7 +370,7 @@ export default {
       ],
       statusValue: -1, // 卡状态默认值
       submitValue: -1, // 是否提交审核申请
-      examineStatusValue: 0, // 卡审核状态,
+      examineStatusValue: 0, // 卡审核状态
       consumeRecordValue: -1, // 有无消费记录
       chargeRecordValue: -1, // 有无充值记录
       firstDateTime: null, // 领取时间
@@ -406,7 +406,11 @@ export default {
         'cardNo': this.cardNuberInput,
         'flag': this.statusValue,
         'firstDateTime': this.secondDateTime,
-        'secondDateTime': this.secondDateTime
+        'secondDateTime': this.secondDateTime,
+        'submitValue': this.submitValue,
+        'examineStatusValue': this.examineStatusValue,
+        'consumeRecordValue': this.consumeRecordValue,
+        'chargeRecordValue': this.chargeRecordValue
       }
       console.log(obj)
       // 获取api
