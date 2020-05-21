@@ -8,7 +8,7 @@
     <section class="filter_condition">
       <div class="channel_info">
         <div>
-          <span>渠道页面分析：</span>
+          <span>渠道页面名称：</span>
           <el-input
             v-model="param.channelName"
             placeholder="请输入页面名称"
@@ -30,7 +30,7 @@
         </div>
 
         <div class="source_page">
-          <span>渠道页面分析：</span>
+          <span>来源页面类型：</span>
           <el-select
             v-model="param.sourceType"
             placeholder="请选择类型"
@@ -141,7 +141,7 @@
             align="center"
           >
             <template slot-scope="scope">
-              {{scope.row.sourceType === 0 ? '自定义' : '商品'}}
+              {{scope.row.sourceType === 0 ? '自定义页面' : '商品'}}
             </template>
           </el-table-column>
 
