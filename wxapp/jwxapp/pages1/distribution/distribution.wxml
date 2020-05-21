@@ -135,7 +135,7 @@
           <view>查看全部 <image src='{{imageUrl}}image/wxapp/right_into.png'></image></view>
         </view>
         <view class='own_paiming clearfix'>
-          <view class='own_rank'>{{dis_info.distributorRanking ? dis_info.distributorRanking : '暂无'}}</view>
+          <view class='own_rank'>{{dis_info.rebateRanking ? dis_info.rebateRanking : '暂无'}}</view>
           <image class='own_touxiang' src='{{dis_info.userRebate.userAvatar}}'></image>
           <view class='own_name'>{{dis_info.userRebate.username}}</view>
           <view class='own_info'>￥{{dis_info.userRebate.finalMoney ? dis_info.userRebate.finalMoney: 0.00}}</view>
