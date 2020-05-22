@@ -1,0 +1,88 @@
+  <!--pages/userinfo/userinfo.wxml-->
+<include src="../common/header.wxml"/>
+<view class='main-container'>
+  <block wx:if="{{user_block == 1}}">
+    <view class='main'>
+      <view>
+        <text class="main_txt" style="flex:1">头像</text>
+        <view class="user_touxiang">
+          <image src="{{user_avatar}}" class="user_imgs"></image>
+          <button open-type="getUserInfo" bindgetuserinfo="getUserInfo" class="avatar_btn"></button>
+        </view>
+      </view>
+      <view>
+        <text class='main_txt'>会员昵称</text>
+        <view class='main_ipt' style="width:350rpx;">{{user_info.username}}</view>
+        <button class="btn_info" open-type="getUserInfo" bindgetuserinfo="getUserInfo">获取昵称</button>
+      </view>
+      <view wx:if="{{mobile}}">
+        <text class='main_txt'>手机号码</text>
+        <view class='main_ipt' style="width:350rpx;">{{mobile}}</view>
+        <button open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber" class="btn_info">授权手机号</button>
+      </view>
+      <view>
+        <text class='main_txt'>性别</text>
+        <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+          <picker mode="selector" value="{{sex_index}}" range="{{array}}" bindchange="bindSexChange">  
+            <view class="picker">  
+              {{array[sex_index]}}  
+            </view>   
+          </picker>  
+        </view>
+      </view>
+      <view>
+        <text class='main_txt'>生日</text>
+        <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+          <picker mode="date" value="{{date}}" start="1900-01-01" end="2020-1-23" bindchange="bindDateChange">  
+            <view style='color:#888' wx:if="{{dates == '选择您的生日'}}">选择您的生日</view>
+            <view class="picker" wx:else>  
+              {{dates}}  
+            </view>   
+          </picker>  
+        </view>
+      </view>
+      <!-- <view>
+        <text class='main_txt'>真实姓名</text>
+        <block wx:if="{{ user_info.real_name != null && user_info.real_name != 'null' }}">
+          <input class='main_ipt' value='{{ user_info.real_name }}' bindblur='realName'  />
+        </block>
+        <block wx:else>
+          <input placeholder='输入您的真实姓名' placeholder-style='#ccc' class='main_ipt' bindblur='realName'  />
+        </block>
+      </view> -->
+      <view>
+        <text class='main_txt'>真实姓名</text>
+        <block wx:if="{{ user_info.userInfo.realName != null && user_info.userInfo.realName != 'null' }}">
+          <input class='main_ipt' value='{{ user_info.userInfo.realName }}' bindblur='realName'  />
+        </block>
+        <block wx:else>
+          <input placeholder='输入您的真实姓名' placeholder-style='#ccc' class='main_ipt' bindblur='realName'  />
+        </block>
+      </view>
+      <view>
+        <text class='main_txt'>所在地</text>
+        <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+          <picker mode="region" bindchange="bindRegionChange" value="{{region}}">
+            <view class="picker" wx:if="{{region[0] != ''}}">
+              {{region[0]}}，{{region[1]}}，{{region[2]}}
+            </view>
+            <view style='color:#888' wx:else>选择您的地址</view>
+          </picker>
+        </view>
+      </view>
+    </view>
+    <view class='footer'>
+      <block wx:if="{{act == 1}}">
+        <form report-submit='true' bindsubmit='toSave'>
+          <button formType="submit" style='background:#09BA07;'>激活会员卡</button>
+        </form>
+      </block>
+      <block wx:else>
+        <form report-submit='true' bindsubmit='toSave'>
+          <button formType="submit" style='background:{{comColor}}'>保存</button>
+        </form>
+      </block>
+    </view>
+  </block>
+</view>
+<include src="../common/footer.wxml"/>

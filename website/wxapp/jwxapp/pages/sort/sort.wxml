@@ -1,0 +1,70 @@
+<!--pages/sort/sort.wxml-->
+<include src="../common/header.wxml" />
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
+<view class='all'>
+  <!-- 搜索 -->
+  <view class='input_waimian' bindtap='to_search'>
+    <view class='search_input' wx:if='{{sort_menu != 0}}'>
+      <icon class="search-img" size="13" type="search"></icon>
+      <text>{{i18n.$t(localePack,"pages.store.searchGoods")}}</text>
+    </view>
+  </view>
+  <view class='sort_content clearfix' style='height:{{left_height}}px;overflow:hidden' wx:if='{{sort_menu != 0}}'>
+    <!-- 左侧数据 -->
+    <view class='left_item' style='height:{{left_height}}px;overflow-y:auto;overflow-x:hidden'>
+      <view class='each_item' wx:for="{{sort_menu}}" wx:key="key" bindtap='changeSort' data-selected="{{index}}" data-type="{{item.menuType}}" data-id="{{item.menuId}}" style='color:{{item.colors}};border-left:{{item.borderright}};background:{{item.backgr}}'>
+        {{item.menuName}}
+      </view>
+    </view>
+    <!-- 右侧数据 -->
+    <scroll-view class='right_item' wx:if="{{is_reco == 0 && is_brand == 0}}" style='height:{{right_height}}px;overflow-y:auto;overflow-x:hidden' scroll-y>
+      <view class='main-category'>
+        <block wx:if="{{isSingleGoods == 0}}">
+          <image src='{{sort_content.menuImg}}' bindtap='go_tiaozhuan' data-link="{{sort_content.menuImgLink}}" class='sort_tit_img' wx:if='{{sort_content.menuImg}}'></image>
+          <view class='sor_item clearfix'>
+            <view class='each_sort' bindtap='go_search' data-sort_names="{{item.sortName}}" data-sord_ids="{{item.sortId}}" wx:for="{{sort_content.contentList}}" wx:key="key">
+              <image src='{{item.sortImg}}' class='sort_img'></image>
+              <view class='sort_name two_row'>{{item.sortName}}</view>
+            </view>
+          </view>
+        </block>
+        <block wx:else>
+          <block wx:for="{{goodsArry}}" wx:key='key' wx:for-item="item" wx:for-index='index'>
+            <v-single-col-goods goods-data="{{item}}" del-market="{{sort_content.delMarket}}" show-cart="{{sort_content.showCart.show_cart}}" />
+          </block>
+        </block>
+      </view>
+    </scroll-view>
+    <view class='right_item right_itme_area' wx:if="{{is_reco == 1 && is_brand == 0 }}" style='height:{{right_height}}px;overflow-y:auto;overflow-x:hidden'>
+      <view class='main-category'>
+        <view>
+          <image src='{{sort_content.menuImg}}' bindtap='go_tiaozhuan' data-link='{{sort_content.menuImgLink}}' class='sort_tit_img' wx:if="{{sort_content.menuImg}}"></image>
+          <view class='sor_item clearfix' wx:for="{{sort_content.contentList}}" wx:key="key">
+            <view class='each_title'>{{item.sortName}}</view>
+            <view class='each_sort' bindtap='go_where' data-link="{{iem.imgLink}}" wx:for="{{item.goodsSorts}}" wx:key='key' wx:for-item="iem">
+              <image src='{{iem.sortImg}}' class='sort_img'></image>
+              <view class='sort_name two_row'>{{iem.sortName}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <v-brand is_search="0" right_height="{{right_height}}" brand_info="{{sort_content.contentList}}" show_rcommend_brand="{{show_rcommend_brand}}" is_brand="{{is_brand}}" all_brand="{{all_brand}}" />
+
+
+  </view>
+
+  <!--无分类  -->
+  <view class='no_state' wx:if='{{sort_menu == 0}}'>
+    <image src='{{imageUrl}}image/wxapp/no_sort.png' mode='widthFix'></image>
+    <view>{{i18n.$t(localePack,"pages.store.noClassification")}}</view>
+  </view>
+</view>
+
+<!--无分类  -->
+<include src="../common/footer.wxml" />
+
+<!--  选择规格（包含无规格情况）  -->
+<!-- <v-sel-spec gd="{{goodsData}}" show="{{show_spec}}" hide_cell="true" has_buy_btn="true" bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange">
+</v-sel-spec> -->

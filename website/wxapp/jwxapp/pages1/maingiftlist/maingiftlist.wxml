@@ -1,0 +1,55 @@
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
+<include src="/pages/common/header.wxml" />
+<v-container bindsearch="getSearchText">
+  <view slot="rule" class="rule" wx:if="{{ruleStr}}">
+    <text>{{ruleStr}}</text>
+  </view>
+  <view slot="rule" class="gift-list">
+    <text>{{i18n.$t(localePack,"page1.actPage.gift")}}：</text>
+    <view class="gift-list-info">
+     <block wx:for="{{giftList}}" wx:key="id">
+      <view class="list-item image-item" wx:if="{{giftList.length <= 6}}">
+        <image src="{{item.goodsImg}}"></image>
+      </view>
+      <view class="list-item image-item" wx:if="{{(isGiftViewMore || index < 5) && giftList.length > 6}}">
+        <image src="{{item.goodsImg}}"></image>
+      </view>
+     </block>
+      <view class="list-item" bindtap="setGiftViewMore" wx:if="{{giftList.length > 6}}">
+        <text class="gift-num">{{i18n.$t(localePack,"page1.actPage.totalNum,{num:giftList.length || '0'}")}}</text>
+        <text class="view-more">{{i18n.$t(localePack,"page1.actPage.viewMore")}}</text>
+      </view>
+    </view>
+  </view>
+  <view slot="goods-content" class="goods-content">
+    <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+      <block wx:for="{{pageItem}}" wx:key="goodsId" wx:for-index="itemIndex">
+        <v-single-col-goods goods-data="{{item}}" del-market="{{delMarket}}" show-cart="{{showCart}}" bindshowSpecDialog="showSpecDialog" />
+      </block>
+    </block>
+  </view>
+  <view class="footer" slot="footer">
+    <view class="selected-price">
+      <view>
+        {{i18n.$t(localePack,"page1.actPage.selected")}}<text style="color:{{comColor}};">￥{{checkedGoodsPrice || 0.00}}</text>
+      </view>
+      <view wx:if="{{changeDoc}}">
+        {{changeDoc}}
+      </view>
+    </view>
+    <view class="selected" style="background-color:{{commonColor}}" bindtap="showSelected">{{i18n.$t(localePack,"page1.actPage.viewSelectedGoods")}}</view>
+    <view class="cart" style="background-color:{{comColor}}" bindtap="goCart">{{i18n.$t(localePack,"page1.actPage.goCart")}}</view>	
+  </view>
+</v-container>
+
+<v-selected bindcartChange="cartChange" show="{{showSelectedDialog}}" goods-data="{{cartData.cartGoodsList}}"/>
+
+
+<v-spec-dialog wx:if="{{showSpec}}" show="{{showSpec}}" bind:close="bindCloseSpec" products-info="{{productsInfo}}" bindproductData="getProductData">
+  <v-goods-num-cfg slot="num-cfg"  origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
+  <view class="spec-footer" slot="footer">
+    <view class="footer_flex_view"  bindtap="addCart" style='color:#fff;background:{{comColor}};'>
+    <text>{{i18n.$t(localePack,"page1.actPage.addCart")}}</text>
+  </view>
+  </view>
+</v-spec-dialog>

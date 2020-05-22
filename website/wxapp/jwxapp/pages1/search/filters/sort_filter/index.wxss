@@ -1,0 +1,49 @@
+.filter-content{
+  width: 600rpx;
+  background-color: #fff;
+  border-top: 1rpx solid #eee;
+  transform: translateX(600rpx);
+  overflow-y: auto;
+}
+.sort-item{
+  display: flex;
+  border-bottom: 1rpx solid #eee;
+  align-items: center;
+  height: 100rpx;
+}
+.sort-item > .back{
+  width: 60rpx;
+  text-align: center;
+  display: flex;
+  z-index: 2;
+}
+.sort-item > .back > .back-image{
+  width: 14rpx;
+  height: 28rpx;
+  vertical-align: middle;
+  margin: auto;
+}
+.sort-item > .center-title{
+  flex: 1;
+  text-align: center;
+  margin-left: -60rpx;
+}
+.sort-item > .arrow > .arrow-image{
+  width: 26rpx;
+  height: 16rpx;
+  transition: transform 0.3s;
+}
+.sort-item > .sort-name{
+  flex: 1;
+  padding-left: 20rpx;
+}
+.sort-item > .arrow{
+  width: 40rpx;
+}
+.sort-item > .sort-name.second{
+  padding-left: 40rpx;
+  color: #666;
+}
+.sort-item > .arrow > .arrow-image.up{
+  transform: rotate(180deg);
+}

@@ -1,0 +1,21 @@
+<view class="input-container">
+  <view class='box1' wx:if="{{m.show_types == 1}}">
+    <view class='input_title'>
+      <text style='color:red' wx:if="{{m.confirm == 1}}">*</text>{{m.form_title}}</view>
+    <input type='text' maxlength='{{m.most_number}}' placeholder='{{m.placeholder}}' data-cur_idx='{{m.idx}}' bindblur='bindCheckInput' class='input_1' />
+  </view>
+  <view class='box2' wx:if="{{m.show_types == 2}}">
+    <view class='input_title1'>
+      <text style='color:red' wx:if="{{m.confirm == 1}}">*</text>{{m.form_title}}</view>
+    <view class='input_con1'>
+      <input type='text' maxlength='{{m.most_number}}' placeholder='{{m.placeholder}}' data-cur_idx='{{m.idx}}' bindblur='bindCheckInput' />
+    </view>
+  </view>
+  <view class='box3' wx:if="{{m.show_types == 0}}">
+    <view class='input_title1'>
+      <text style='color:red' wx:if="{{m.confirm == 1}}">*</text>{{m.form_title}}</view>
+    <view class='input_con2'>
+      <textarea maxlength='{{m.most_number}}' placeholder='{{m.placeholder}}' data-cur_idx='{{m.idx}}' bindblur='bindCheckInput'></textarea>
+    </view>
+  </view>
+</view>

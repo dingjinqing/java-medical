@@ -1,0 +1,7 @@
+<v-popup bind:close="bindClose" close_pos="mask-corner" back_style="background:#000" close_img_url="{{imageUrl}}image/wxapp/close_videos.png" show="{{show}}">
+  <view class='video-container'>
+    <cover-view class='z_video_title' wx:if="{{title && !videoplay}}">{{title}}</cover-view>
+    <video class="myVideo" autoplay='{{net_type == "wifi"}}' src="{{video_url}}" bindplay='bindVideoPlay' bindpause='bindVideoPause'  poster='{{poster}}' title='{{title}}'></video>
+    <view class='tips_liuliang' wx:if='{{net_type != "wifi"}}'>本次播放将消耗{{video_size}}M流量</view>
+  </view>
+</v-popup>

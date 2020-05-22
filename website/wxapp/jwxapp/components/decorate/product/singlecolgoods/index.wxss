@@ -1,0 +1,104 @@
+/* new 单列 */
+@import "../goodscommon/goodslabel.wxss";
+@import "/css/iconfont.wxss";
+.single_column {
+    width: 700rpx;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .single_column .xunhuan_one {
+    margin-bottom: 20rpx;
+    height: 280rpx;
+    overflow: hidden;
+    padding: 20rpx;
+    background: #fff;
+  }
+  
+  .single_column .product-image {
+    float: left;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .single_column .product-image .image {
+    height: 280rpx !important;
+    width: 280rpx !important;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+    float: left;
+  }
+  .product-image .item_img{
+    height: 280rpx !important;
+    width: 280rpx !important;
+  }
+  .single_column .save_money {
+    bottom: 0rpx !important;
+    width: 240rpx;
+    color: #fff;
+    font-size: 26rpx;
+    text-align: center;
+    border-radius: 0 80rpx 80rpx 0;
+    position: absolute;
+    left: 0;
+    z-index: 4;
+    height: 50rpx;
+    line-height: 50rpx;
+  }
+  
+  .single_column .module_text {
+    padding-left: 8rpx;
+    overflow: hidden;
+  }
+  
+  .single_column .product-name {
+    height: 190rpx;
+    font-size: 26rpx;
+    padding-left: 8rpx;
+    position: relative;
+    overflow: hidden;
+    padding-top: 10px;
+  }
+  
+  .single_column .sale_price {
+    font-size: 30rpx;
+    margin-top: -3rpx;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  
+  .single_column .market_price {
+    font-weight: normal;
+    margin-top: 0;
+    color: #999;
+    text-decoration: line-through;
+    display: inline-block;
+  }
+  
+  .single_column .top_title {
+    height: 70rpx;
+  }
+  .single_column  .product-price {
+    font-weight: bold;
+    padding: 8rpx 10rpx;
+    height: 70rpx;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .single_column .if_delete {
+    position: absolute;
+    bottom: 0rpx;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 24rpx;
+    padding: 10rpx 0;
+    width: 100%;
+    text-align: center;
+    z-index: 3;
+  }
+

@@ -1,0 +1,46 @@
+/* pages1/distrirecord/distrirecord.wxss */
+page{
+  height: 100%;
+  background: #f5f5f5;
+}
+.main_container{
+  background: #f5f5f5;
+  padding-top: 20rpx;
+}
+.grade_record{
+  background: #fff;
+}
+.grade_record .each_record{
+  margin-left: 20rpx;
+  width: 730rpx;
+  border-bottom: 2rpx solid #eee;
+  height: 140rpx;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column
+}
+.grade_record .each_record>view{
+  width: 100%
+}
+.grade_name{
+  color: #333;
+  font-size: 28rpx;
+  margin-bottom: 15rpx;
+}
+.record_time{
+  color: #999;
+  font-size: 24rpx;
+}
+.no_state{
+    width: 750rpx;
+    height: 100%;
+    text-align: center;
+    color: #666;
+    font-size: 26rpx;
+}
+.no_state image{
+  width: 200rpx;
+  margin-top: 380rpx;
+  margin-bottom: 20rpx;
+}

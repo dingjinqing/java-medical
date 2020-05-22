@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "v-pay-award":"/components/popup/pay_award/index"
+  }
+}

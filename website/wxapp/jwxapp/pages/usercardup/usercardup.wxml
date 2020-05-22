@@ -1,0 +1,19 @@
+<!--pages/usercardup/usercardup.wxml-->
+<include src='../common/header.wxml' />
+
+<view class='main-container'>
+  <block wx:for="{{ list }}" wx:key="key">
+    <view class='clearfix' wx:if="{{ item.grade != 0 }}">
+      <view>{{item.create_time}}</view>
+      <view wx:if="{{ item.grade == 1 }}">升级为{{item.new_card_name}}卡</view>
+      <view wx:if="{{ item.grade == -1 }}">降级为{{item.new_card_name}}卡</view>
+    </view>
+  </block>
+  <block wx:if="{{ no_card_record == 1 }}">
+    <view class='no_state'>
+      <image src='{{imageUrl}}/image/wxapp/no_card_record.png' mode='widthFix'></image>
+      <view>暂无升降级记录</view>
+    </view>
+  </block>
+</view>
+<include src="../common/footer.wxml"/>

@@ -1,0 +1,59 @@
+<!--pages1/distrigrade/distrigrade.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class='main_container' style='min-height:{{grade_info.is_has_up_level == true?"":"800rpx"}}'>
+    <block  wx:if='{{grade_info.is_has_up_level == true}}'>
+      <view class='grade_top'>
+          <view class='grade_bg' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'></view>
+          <image class='ranker_img' src='{{grade_info.useravatar}}'></image>
+          <view class='ranker_name'>{{grade_info.username}}</view>
+          <view class='grade_n'>
+            <text class='grade_name'>{{grade_info.level_name}}</text>
+          </view>
+
+      </view>
+      <view class='need_more'>
+        <view class='nm_title'>距下一等级</view>
+        <view class='grade_two'>
+            <view class='grade_now'>{{grade_info.level_name}}</view>
+            <view class='grade_next'>{{grade_info.next_level.level_name}}</view>
+        </view>
+        <block wx:if='{{grade_info.next_level.invite_number != 0 && grade_info.next_level.invite_number != ""}}'>
+          <view class='pro_bg1'>
+              <view class='precent_show' style='width:{{grade_info.person_width}}rpx'></view>
+          </view>
+          <view class='grade_twos'>
+              <view class='grade_now'>累积邀请用户数{{grade_info.sublayer_number}}/{{grade_info.next_level.invite_number}}</view>
+              <view class='grade_next'>{{grade_info.person_bili}}%</view>
+          </view>
+        </block>
+        <block wx:if='{{grade_info.next_level.total_distribution_money != 0 && grade_info.next_level.total_distribution_money != ""}}'>
+          <view class='pro_bg1'>
+              <view class='precent_show' style='width:{{grade_info.tui_money}}rpx'></view>
+          </view>
+          <view class='grade_twos'>
+              <view class='grade_now' style='flex:1.6'>累计推广金{{grade_info.user_fanli_money}}元/{{grade_info.next_level.total_distribution_money}}元</view>
+              <view class='grade_next' style='flex:0.4'>{{grade_info.tui_bili}}%</view>
+          </view>
+        </block>
+        <block wx:if='{{grade_info.next_level.total_buy_money != 0 && grade_info.next_level.total_buy_money != ""}}'>
+          <view class='pro_bg1'>
+              <view class='precent_show' style='width:{{grade_info.sum_money}}rpx'></view>
+          </view>
+          <view class='grade_twos' style='margin-bottom:0'>
+              <view class='grade_now' style='flex:1.6'>累计推广金与消费总额{{grade_info.user_order_money}}元/{{grade_info.next_level.total_buy_money}}元</view>
+              <view class='grade_next' style='flex:0.4'>{{grade_info.sum_bili}}%</view>
+          </view>
+        </block>
+      </view>
+    </block>
+    <view class='now_top' wx:if='{{grade_info.is_has_up_level == false}}'>
+        <image class='top_icon' src='{{imageUrl}}/image/wxapp/top_grade.png'></image>
+        <view class='top_tips'>当前已是最高等级</view>
+    </view>
+    <view class='more_record' bindtap='to_record'>
+        查看升降级记录
+        <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+    </view>
+</view>
+<include src="/pages/common/footer.wxml"/>
+

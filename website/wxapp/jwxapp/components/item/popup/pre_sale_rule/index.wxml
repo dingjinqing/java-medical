@@ -1,0 +1,16 @@
+<v-popup show="{{show}}" bindtap="bindClose" bind:close="bindClose" horizon="center" vertical="bottom" close_pos="inner">
+  <view class="selected-content">
+    <view class="title">
+      <text>活动规则</text>
+    </view>
+    <view class="rule-content">
+      <view>参与步骤：</view>
+      <view>1.在商品详情页选择商品规格，点击支付定金按钮到结算页下单并支付定金。</view>
+      <view>2.在指定尾款支付时间内，完成尾款支付，即可等待商家发货，具体发货时间以实际发货时间为准。</view>
+      <view>3.在订单列表中，可以随时查看订单进行状态。</view>
+      <view>注意事项：</view>
+      <view>1.定金膨胀商品只能线上支付，不支持货到付款。</view>
+      <view>2.尾款支付只能使用微信支付，不支持使用余额。</view>
+    </view>
+  </view>
+</v-popup>
