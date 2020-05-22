@@ -896,7 +896,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     private void memberCardFreeDelivery(OrderBeforeVo vo) {
         logger().info("卡包邮计算start");
-        if(vo.getDefaultMemberCard() != null && vo.getDefaultMemberCard().getInfo() != null) {
+        if(vo.getDefaultMemberCard() != null && vo.getDefaultMemberCard().getInfo() != null && BigDecimalUtil.compareTo(vo.getShippingFee(), null)>0) {
             ValidUserCardBean info = vo.getDefaultMemberCard().getInfo();
             if(info.getCardFreeShip() == null) {
                 //无此权益
