@@ -85,41 +85,72 @@
             prop="couponName"
             :label="$t('couponReceive.couponName')"
             align="center"
+            v-if="couponType === 0"
           ></el-table-column>
-          <!-- <el-table-column
+          <el-table-column
+            prop=""
             label="使用门槛"
             align="center"
-          ></el-table-column> -->
+            v-if="couponType === 0"
+          ></el-table-column>
           <el-table-column
-            prop="accessMode"
             :label="$t('couponReceive.receiveMethods')"
             align="center"
-          ></el-table-column>
-          <!-- <el-table-column
+          >
+            <template slot-scope="scope">
+              <span>{{scope.row.accessMode === 0 ? '发放' : '直接领取'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
             label="是否分享"
             align="center"
-          ></el-table-column>
+            v-if="couponType === 1"
+          >
+            <template slot-scope="scope">
+              <span>{{scope.row.isShare === 0 ? '否' : '是'}}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             label="领取用户数"
             align="center"
-          ></el-table-column>
+            v-if="couponType === 1"
+          >
+            <template slot-scope="scope">
+              <span
+                class="jumpStyle"
+                @click="receiveHandler()"
+              >{{scope.row.hasReceive}}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             label="优惠内容"
             align="center"
-          ></el-table-column> -->
+            v-if="couponType === 1"
+          >
+            <template slot-scope="scope">
+              <span>{{scope.row.denomination}}元</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="scoreNumber"
             :label="$t('couponReceive.pointExchage')"
             align="center"
+            v-if="couponType === 0"
           ></el-table-column>
           <el-table-column
             prop="isUsed"
             :label="$t('couponReceive.WhetherToUse')"
             align="center"
-          ></el-table-column>
+            v-if="couponType === 0"
+          >
+            <template slot-scope="scope">
+              <span>{{scope.row.isUsed === 0 ? '否' : '是'}}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             :label="$t('couponReceive.userOrderNumber')"
             align="center"
+            v-if="couponType === 0"
           >
             <template slot-scope="scope">
               <span
@@ -156,13 +187,14 @@
           <el-table-column
             :label="$t('couponReceive.operate')"
             align="center"
+            v-if="couponType === 0"
           >
             <template slot-scope="scope">
               <span
                 style="font-size: 22px;color: #5a8bff;"
                 class="el-icon-delete"
                 @click="deleteCoupon(scope.row.id)"
-                v-if="scope.row.isUsed === '否' && scope.row.endFlag === 0 && scope.row.delFlag === 0"
+                v-if="scope.row.isUsed === 0 && scope.row.endFlag === 0 && scope.row.delFlag === 0"
               ></span>
             </template>
           </el-table-column>
@@ -185,7 +217,7 @@ export default {
   data () {
     return {
       loading: false,
-      id: '',
+      id: '', // 优惠券id
       tableData: [],
       pageParams: {}, // 分页
       requestParams: {},
@@ -202,7 +234,8 @@ export default {
         { value: 2, label: '已使用' },
         { value: 3, label: '已过期' },
         { value: 4, label: '已废除' }
-      ]
+      ],
+      couponType: 0 // 优惠券类型(0: 普通, 1: 分裂)
     }
   },
   mounted () {
@@ -228,8 +261,8 @@ export default {
       }
       couponGetDetail(this.requestParams).then(res => {
         if (res.error === 0) {
+          this.couponType = res.content.dataList[0].type
           this.handleData(res.content.dataList)
-          // this.tableData = res.content.dataList
           this.pageParams = res.content.page
         }
       })
@@ -245,18 +278,6 @@ export default {
         } else {
           // 已过期
           item.endFlag = 1
-        }
-        // 领取方式
-        if (item.accessMode === 0) {
-          item.accessMode = '发放'
-        } else {
-          item.accessMode = '直接领取'
-        }
-        // 是否使用
-        if (item.isUsed === 0) {
-          item.isUsed = '否'
-        } else {
-          item.isUsed = '是'
         }
       })
       this.tableData = data
@@ -299,34 +320,12 @@ export default {
         }
       })
     },
-    // 是否使用
-    foramtUseStatus (data) {
-      switch (data) {
-        case 2:
-          return '是'
-        case 3:
-          return '已过期'
-        case 4:
-          return '已废除'
-        default:
-          return '否'
-      }
-    },
-    // 领取方式
-    foramtGetType (data) {
-      switch (data) {
-        case 2:
-          return '活动送券'
-        case 3:
-          return '支付送券'
-        case 4:
-          return '优惠券礼包'
-        case 5:
-          return '好友帮助砍价发券'
-        default:
-          return '直接领取'
-      }
+
+    // 领取用户数跳转
+    receiveHandler () {
+      // this.initDataList()
     }
+
   }
 }
 </script>
