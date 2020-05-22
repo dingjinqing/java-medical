@@ -35,10 +35,19 @@
             >
               <div class="fc-statics-title">
                 <span>{{$t('fullCuti18n.totalPaid')}}（元）</span>
-                <img
-                  class="fc-statics-search-icon"
-                  :src="$imageHost+'/image/admin/analysis_tishi.png'"
+                <el-popover
+                  placement="top"
+                  trigger="hover"
+                  width="300"
+                  :content="$t('fullCuti18n.totalPaidTip')"
                 >
+                  <img
+                    slot="reference"
+                    class="fc-statics-search-icon"
+                    :src="$imageHost+'/image/admin/analysis_tishi.png'"
+                    alt=""
+                  >
+                </el-popover>
               </div>
               <div
                 class="fc-statics-num"
@@ -51,11 +60,19 @@
             >
               <div class="fc-statics-title">
                 <span>{{$t('fullCuti18n.totalDiscount')}}（元）</span>
-                <img
-                  class="fc-statics-search-icon"
-                  :src="$imageHost+'/image/admin/analysis_tishi.png'"
-                  alt=""
+                <el-popover
+                  placement="top"
+                  trigger="hover"
+                  width="180"
+                  :content="$t('fullCuti18n.totalDiscountTip')"
                 >
+                  <img
+                    slot="reference"
+                    class="fc-statics-search-icon"
+                    :src="$imageHost+'/image/admin/analysis_tishi.png'"
+                    alt=""
+                  >
+                </el-popover>
               </div>
               <div
                 class="fc-statics-num"
@@ -68,11 +85,19 @@
             >
               <div class="fc-statics-title">
                 <span>{{$t('fullCuti18n.costEffect')}}</span>
-                <img
-                  class="fc-statics-search-icon"
-                  :src="$imageHost+'/image/admin/analysis_tishi.png'"
-                  alt=""
+                <el-popover
+                  placement="top"
+                  trigger="hover"
+                  width="260"
+                  :content="$t('fullCuti18n.costEffectTip')"
                 >
+                  <img
+                    slot="reference"
+                    class="fc-statics-search-icon"
+                    :src="$imageHost+'/image/admin/analysis_tishi.png'"
+                    alt=""
+                  >
+                </el-popover>
               </div>
               <div
                 class="fc-statics-num"
@@ -85,11 +110,19 @@
             >
               <div class="fc-statics-title">
                 <span>{{$t('fullCuti18n.payOrderNum')}}</span>
-                <img
-                  class="fc-statics-search-icon"
-                  :src="$imageHost+'/image/admin/analysis_tishi.png'"
-                  alt=""
+                <el-popover
+                  placement="top"
+                  trigger="hover"
+                  width="260"
+                  :content="$t('fullCuti18n.payOrderNumTip')"
                 >
+                  <img
+                    slot="reference"
+                    class="fc-statics-search-icon"
+                    :src="$imageHost+'/image/admin/analysis_tishi.png'"
+                    alt=""
+                  >
+                </el-popover>
               </div>
               <div
                 class="fc-statics-num"
@@ -102,11 +135,19 @@
             >
               <div class="fc-statics-title">
                 <span>{{$t('fullCuti18n.payGoodsNum')}}</span>
-                <img
-                  class="fc-statics-search-icon"
-                  :src="$imageHost+'/image/admin/analysis_tishi.png'"
-                  alt=""
+                <el-popover
+                  placement="top"
+                  trigger="hover"
+                  width="180"
+                  :content="$t('fullCuti18n.payGoodsNumTip')"
                 >
+                  <img
+                    slot="reference"
+                    class="fc-statics-search-icon"
+                    :src="$imageHost+'/image/admin/analysis_tishi.png'"
+                    alt=""
+                  >
+                </el-popover>
               </div>
               <div
                 class="fc-statics-num"
@@ -119,11 +160,19 @@
             >
               <div class="fc-statics-title">
                 <span>{{$t('fullCuti18n.newDealsUsers')}}</span>
-                <img
-                  class="fc-statics-search-icon"
-                  :src="$imageHost+'/image/admin/analysis_tishi.png'"
-                  alt=""
+                <el-popover
+                  placement="top"
+                  trigger="hover"
+                  width="260"
+                  :content="$t('fullCuti18n.newDealsUsersTip')"
                 >
+                  <img
+                    slot="reference"
+                    class="fc-statics-search-icon"
+                    :src="$imageHost+'/image/admin/analysis_tishi.png'"
+                    alt=""
+                  >
+                </el-popover>
               </div>
               <div
                 class="fc-statics-num"
@@ -136,11 +185,19 @@
             >
               <div class="fc-statics-title">
                 <span>{{$t('fullCuti18n.oldDealsUsers')}}</span>
-                <img
-                  class="fc-statics-search-icon"
-                  :src="$imageHost+'/image/admin/analysis_tishi.png'"
-                  alt=""
+                <el-popover
+                  placement="top"
+                  trigger="hover"
+                  width="260"
+                  :content="$t('fullCuti18n.oldDealsUsersTip')"
                 >
+                  <img
+                    slot="reference"
+                    class="fc-statics-search-icon"
+                    :src="$imageHost+'/image/admin/analysis_tishi.png'"
+                    alt=""
+                  >
+                </el-popover>
               </div>
               <div
                 class="fc-statics-num"

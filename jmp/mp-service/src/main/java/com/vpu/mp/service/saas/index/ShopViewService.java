@@ -242,7 +242,7 @@ public class ShopViewService extends MainBaseService {
         Map<String,OrderMoneyInfo> dateMap = localDates.stream().
             map(x->DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,Timestamp.valueOf(x.atStartOfDay()))).
             collect(Collectors.toMap(x->x,y->new OrderMoneyInfo(),(oldValue,newValue)->oldValue,LinkedHashMap::new));
-        Field<String> time = dateFormat(ORDER_INFO_NEW.PAY_TIME,DateUtil.DATE_FORMAT_SIMPLE).as("time");
+        Field<String> time = dateFormat(ORDER_INFO_NEW.PAY_TIME,DateUtil.DATE_MYSQL_SIMPLE).as("time");
         List<OrderMoneyInfo> moneyInfos = db().select(time,ORDER_INFO_NEW.PAY_CODE,DSL.sum(ORDER_INFO_NEW.MONEY_PAID).as("wxPayed"),
             DSL.sum(ORDER_INFO_NEW.USE_ACCOUNT).as("balancePayed"),
             DSL.sum(ORDER_INFO_NEW.MEMBER_CARD_REDUCE).as("cardBalancePayed"),
@@ -267,7 +267,7 @@ public class ShopViewService extends MainBaseService {
         Map<String,Integer> dateMap = localDates.stream().
             map(x->DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,Timestamp.valueOf(x.atStartOfDay()))).
             collect(Collectors.toMap(x->x,y->0,(oldValue,newValue)->oldValue,LinkedHashMap::new));
-        Field<String> time = dateFormat(ORDER_INFO_NEW.PAY_TIME,DateUtil.DATE_FORMAT_SIMPLE).as("time");
+        Field<String> time = dateFormat(ORDER_INFO_NEW.PAY_TIME,DateUtil.DATE_MYSQL_SIMPLE).as("time");
         Result<Record2<String,Integer>> result =db().
             select(time,DSL.count(ORDER_INFO_NEW.ORDER_ID)).
             from(ORDER_INFO_NEW).

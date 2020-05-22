@@ -119,5 +119,13 @@ export const en = {
   newDealsUsers: 'Number of new deals users',
   oldDealsUsers: 'Number of old deal users',
   psFDate: 'Please select a filter date! ',
-  cnotGreaterEnd: 'The start time cannot be greater than the end time'
+  cnotGreaterEnd: 'The start time cannot be greater than the end time',
+
+  totalPaidTip: 'The total actual payment amount of the active order (including account balance, membership card balance and WeChat payment, including refund part)',
+  totalDiscountTip: 'Total amount of event discount',
+  costEffectTip: 'Total amount of event discount / total amount paid for event',
+  payOrderNumTip: 'Number of payment orders (including refund part) brought by the event',
+  payGoodsNumTip: 'Number of goods paid for activity',
+  newDealsUsersTip: 'Number of users who placed an order at the store for the first time due to the event',
+  oldDealsUsersTip: 'There are payment orders in the store, the number of users participating in the event'
 }

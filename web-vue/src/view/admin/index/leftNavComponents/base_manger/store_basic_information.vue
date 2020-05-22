@@ -122,13 +122,13 @@
         </li>
       </ul>
     </el-main>
-    <el-footer style="text-align: center;">
+    <div class="basic-page-footer">
       <el-button
         type="primary"
         size="small"
         @click="saveBasicInfoHandle"
       >{{$t('storeBasicInformation.save')}}</el-button>
-    </el-footer>
+    </div>
 
     <!-- 选择后端logo -->
     <ImageDalog
@@ -242,6 +242,7 @@ export default {
 .shop_config {
   padding: 10px 25px;
   background: #fff;
+  margin-bottom: 50px;
 }
 .details_item {
   display: flex;
@@ -281,5 +282,17 @@ export default {
     margin-left: 20px;
     line-height: 24px;
   }
+}
+.basic-page-footer {
+  position: fixed;
+  bottom: 0;
+  left: 150px;
+  z-index: 10;
+  width: calc(100% - 150px);
+  height: 50px;
+  border-top: 1px solid #eee;
+  line-height: 50px;
+  background: #fdfdfd;
+  text-align: center;
 }
 </style>

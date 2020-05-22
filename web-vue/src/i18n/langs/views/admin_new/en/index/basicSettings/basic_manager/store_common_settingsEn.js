@@ -80,7 +80,7 @@ export const en = {
   customScheme: 'Custom scheme',
   sharedCopy: 'Shared copywriting set',
   shareTemp: "[Shared person's nickname] is an exclusive recommendation for you [Product price] [Product name]",
-  mayBe: 'The content displayed when users share it may be:',
+  mayBe: 'The content displayed when users share it may be',
   shareExample: 'The running piglet recommends Lenovo (thinkplus) worth 200 yuan for you.',
   shareNote: 'Note: When sharing the product directly with friends, you can display no more than 23 Chinese characters, and the excess will be omitted',
   peShareCopy: 'Please enter a shared copy',

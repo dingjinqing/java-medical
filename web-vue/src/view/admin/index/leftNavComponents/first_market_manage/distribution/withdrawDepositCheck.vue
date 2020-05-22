@@ -1,104 +1,134 @@
 <template>
   <div class="distributorListContent">
-    <div class="searchInfo_main">
-      <ul>
-        <li class="li">
-          <div class="liNav">
-            <span>申请人昵称</span>
-            <el-input
-              v-model="param.username"
-              placeholder="请填写昵称"
-              size="small"
-            ></el-input>
-          </div>
-          <div
-            class="liNav"
-            style="margin: 0 100px"
+    <el-form
+      :model="param"
+      label-width="120px"
+      :label-position="'right'"
+    >
+      <div>
+        <el-form-item
+          label="申请人昵称："
+          class="item"
+        >
+          <el-input
+            v-model="param.username"
+            placeholder="请填写内容"
+            size="small"
+            class="inputWidth"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="手机号："
+          class="item"
+        >
+          <el-input
+            v-model="param.mobile"
+            placeholder="请填写内容"
+            size="small"
+            class="inputWidth"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="真实姓名："
+          class="item"
+        >
+          <el-input
+            v-model="param.realName"
+            placeholder="请填写内容"
+            size="small"
+            class="inputWidth"
+          ></el-input>
+        </el-form-item>
+      </div>
+      <div>
+        <el-form-item
+          label="提现单号："
+          class="item"
+        >
+          <el-input
+            v-model="param.orderSn"
+            placeholder="请填写内容"
+            size="small"
+            class="inputWidth"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="申请时间："
+          class="item"
+        >
+          <el-date-picker
+            v-model="param.startTime"
+            type="date"
+            placeholder="选择日期"
+            value-format="yyyy-MM-dd 00:00:00"
+            size="small"
+            class="inputWidth"
           >
-            <span class="labelClass">手机号</span>
-            <el-input
-              v-model="param.mobile"
-              placeholder="请填写手机号"
-              size="small"
-            ></el-input>
-          </div>
-          <div class="liNav">
-            <span class="labelClass">真实姓名</span>
-            <el-input
-              v-model="param.realName"
-              placeholder="请填写真实姓名"
-              size="small"
-            >
-            </el-input>
-          </div>
-        </li>
-        <li class="li">
-          <div class="liNav">
-            <span class="labelClass">提现单号</span>
-            <el-input
-              v-model="param.orderSn"
-              placeholder="请填写提现单号"
-              size="small"
-            ></el-input>
-          </div>
-          <div
-            class="liNav1"
-            style="margin: 0 100px"
+          </el-date-picker>
+          <span>至</span>
+          <el-date-picker
+            v-model="param.endTime"
+            type="date"
+            placeholder="选择日期"
+            value-format="yyyy-MM-dd 23:59:59"
+            size="small"
+            class="inputWidth"
           >
-            <span class="labelClass">申请时间</span>
-            <el-date-picker
-              v-model="param.startTime"
-              class="timeInput"
-              type="datetime"
-              size="small"
-              placeholder="选择开始时间"
+          </el-date-picker>
+        </el-form-item>
+      </div>
+      <div>
+        <el-form-item
+          label="提现金额："
+          class="item"
+        >
+          <el-input
+            v-model="param.minCash"
+            placeholder="请填写内容"
+            size="small"
+            class="inputWidth"
+          ></el-input>
+          <span>至</span>
+          <el-input
+            v-model="param.maxCash"
+            placeholder="请填写内容"
+            size="small"
+            class="inputWidth"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="处理状态："
+          class="item"
+        >
+          <el-select
+            v-model="param.status"
+            placeholder="请选择"
+            size="small"
+            class="inputWidth"
+          >
+            <el-option
+              v-for="item in statusList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             >
-            </el-date-picker>至
-            <el-date-picker
-              v-model="param.endTime"
-              class="timeInput"
-              type="datetime"
-              size="small"
-              placeholder="选择结束时间"
-            >
-            </el-date-picker>
-          </div>
-        </li>
-
-        <li class="li">
-          <div class="liNav">
-            <span class="labelClass">提现金额</span>
-            <el-input
-              v-model="param.withdrawCash"
-              placeholder="请填写提现金额"
-              size="small"
-            ></el-input>
-          </div>
-          <div class="liNav">
-            <span class="labelClass">返利状态</span>
-            <el-select
-              size="small"
-              v-model="value"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </div>
-
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          class="item"
+          label-width="20px"
+        >
           <el-button
             type="primary"
             size="small"
           >筛选</el-button>
+          <el-button size="small">重置筛选</el-button>
           <el-button size="small">导出</el-button>
-        </li>
-      </ul>
-    </div>
+        </el-form-item>
+      </div>
+    </el-form>
+
     <div class="list">
       <el-table
         class="version-manage-table"
@@ -214,27 +244,40 @@ export default {
         username: '',
         mobile: '',
         realName: '',
-        withdrawCash: '',
+        orderSn: '',
         startTime: '',
         endTime: '',
-        orderSn: ''
-
+        minCash: '',
+        maxCash: '',
+        status: ''
       },
-      options: [
+      statusList: [
+        {
+          value: '0',
+          label: '全部处理状态'
+        },
         {
           value: '1',
-          label: '待返利'
+          label: '出账失败'
         },
         {
           value: '2',
-          label: '已返利'
+          label: '出账成功'
         },
         {
           value: '3',
-          label: '不返利'
+          label: '已审核, 待出账'
+        },
+        {
+          value: '4',
+          label: '已驳回申请'
+        },
+        {
+          value: '5',
+          label: '待审核'
         }
       ],
-      value: '',
+
       pageParams: {}
     }
   },
@@ -320,5 +363,11 @@ export default {
 .opt {
   text-align: center;
   color: #5a8bff;
+}
+.item {
+  display: inline-block;
+}
+.inputWidth {
+  width: 170px;
 }
 </style>

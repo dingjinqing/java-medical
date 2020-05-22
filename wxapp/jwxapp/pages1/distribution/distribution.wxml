@@ -155,8 +155,8 @@
           </view>
           <view class='top3_person each_top' wx:if="{{dis_info.rebateRankingTop[2]}}">
             <image class='rank_icon' src='{{imageUrl}}/image/wxapp/icon_top3.png'></image>
-            <image class='rank_touxiang' src='{{dis_info.rebateRankingTop[2].userAvatar}}'></image>
-            <view class='rank_name'>{{dis_info.rebateRankingTop[2].username}}</view>
+            <image class='rank_touxiang' src='{{dis_info.rebateRankingTop[2].userAvatar ? dis_info.rebateRankingTop[2].userAvatar : imageUrl + "/image/admin/head_icon.png"}}'></image>
+            <view class='rank_name'>{{dis_info.rebateRankingTop[2].username ? dis_info.rebateRankingTop[2].username : ''}}</view>
             <view class='rank_info'>￥{{dis_info.rebateRankingTop[2].finalMoney}}</view>
           </view>
         </view>

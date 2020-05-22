@@ -150,14 +150,13 @@
         >
           <template slot-scope="{row}">
             <div>
-              <el-link
-                href="javascript:void(0);"
-                style="color: #5a8bff;"
+              <div
+                style="color:#409EFF;cursor: pointer;"
                 @click="goUserDetail(row, $event)"
               >
                 <div>{{row.username}}</div>
                 <div>{{row.mobile}}</div>
-              </el-link>
+              </div>
             </div>
           </template>
         </el-table-column>

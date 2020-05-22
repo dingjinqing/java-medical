@@ -390,7 +390,8 @@
                   class="lastDiv"
                   style="margin-top:5px"
                 >
-                  <span @click="handleToLabel(item.userId)">{{$t('membershipIntroduction.Labeling')}}</span>
+                  <span @click="jumpToOrder(item.userId,item.userName)">{{$t('membershipIntroduction.OrderList')}}</span>
+                  <span @click="handleToLabel(item.userId)" style="margin-right: 25px;">{{$t('membershipIntroduction.Labeling')}}</span>
                   <span @click="hanldeToDetail(item.userId)">{{$t('membershipIntroduction.Seedetails')}}</span>
                 </div>
               </td>
@@ -1754,6 +1755,15 @@ export default {
         name: 'membershipInformation',
         query: {
           userId: userId
+        }
+      })
+    },
+    jumpToOrder (userId, userName) {
+      this.$router.push({
+        name: 'order',
+        query: {
+          userId,
+          userName
         }
       })
     },

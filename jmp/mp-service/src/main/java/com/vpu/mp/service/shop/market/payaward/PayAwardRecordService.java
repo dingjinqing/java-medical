@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import static com.vpu.mp.db.shop.Tables.PAY_AWARD_PRIZE;
 import static com.vpu.mp.db.shop.Tables.PAY_AWARD_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_GOODS;
 
 /**
  * 支付有礼记录
@@ -32,13 +33,19 @@ public class PayAwardRecordService  extends ShopBaseService {
      */
     public PageResult<PayAwardRecordListVo> getPayRewardRecordList(PayAwardRecordListParam param){
         SelectConditionStep<? extends Record> where = db().select(USER.USER_ID,USER.USERNAME,USER.MOBILE,
-                PAY_AWARD_RECORD.ORDER_SN,PAY_AWARD_RECORD.GIFT_TYPE,PAY_AWARD_RECORD.CREATE_TIME,PAY_AWARD_RECORD.STATUS)
+                PAY_AWARD_RECORD.ORDER_SN,PAY_AWARD_RECORD.GIFT_TYPE,PAY_AWARD_RECORD.CREATE_TIME,PAY_AWARD_RECORD.UPDATE_TIME,PAY_AWARD_RECORD.STATUS)
                 .from(PAY_AWARD_RECORD)
                 .leftJoin(USER).on(USER.USER_ID.eq(PAY_AWARD_RECORD.USER_ID))
                 .where(PAY_AWARD_RECORD.AWARD_ID.eq(param.getId()));
         buildOptions(where,param);
-        where.orderBy(PAY_AWARD_RECORD.CREATE_TIME.desc());
-        return getPageResult(where,param.getCurrentPage(),param.getPageRows(), PayAwardRecordListVo.class);
+        where.orderBy(PAY_AWARD_RECORD.UPDATE_TIME.desc());
+        PageResult<PayAwardRecordListVo> pageResult = getPageResult(where, param.getCurrentPage(), param.getPageRows(), PayAwardRecordListVo.class);
+        pageResult.getDataList().forEach(record->{
+            if (record.getGiftType()!=null&&record.getGiftType().equals(5)){
+                record.setCreateTime(record.getUpdateTime());
+            }
+        });
+        return pageResult;
     }
 
     private void buildOptions(SelectConditionStep<? extends Record> where, PayAwardRecordListParam param) {
@@ -66,6 +73,9 @@ public class PayAwardRecordService  extends ShopBaseService {
      */
     public PayAwardRecordRecord getPayAwardRecordByOrderSn(String orderSn){
          return db().selectFrom(PAY_AWARD_RECORD).where(PAY_AWARD_RECORD.ORDER_SN.eq(orderSn)).fetchOne();
+    }
+    public void updataStatut(Integer id,Byte status){
+        db().update(PAY_AWARD_RECORD).set(PAY_AWARD_RECORD.STATUS,status).where(PAY_AWARD_RECORD.ID.eq(id)).execute();
     }
 
     /**

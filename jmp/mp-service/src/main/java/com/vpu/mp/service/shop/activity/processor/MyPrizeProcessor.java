@@ -16,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.market.friendpromote.FriendPromoteService;
+import com.vpu.mp.service.shop.market.payaward.PayAwardRecordService;
 import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.apache.commons.lang3.StringUtils;
@@ -53,6 +54,8 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
     @Autowired
     private PrizeRecordService prizeRecordService;
     @Autowired private FriendPromoteService friendPromoteService;
+    @Autowired
+    private PayAwardRecordService payAwardRecordService;
     @Override
     public Byte getPriority() {
         return 0;
@@ -175,6 +178,10 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
         logger().info("奖品已成功领取");
         int i = prizeRecordService.updateReceivedPrize(param.getActivityId(), order.getOrderSn());
+        PrizeRecordRecord prizeRecord = prizeRecordService.getById(param.getActivityId());
+        if (prizeRecord.getActivityType().equals(PRIZE_SOURCE_PAY_AWARD)){
+            payAwardRecordService.updataStatut(prizeRecord.getRecordId(),(byte)1);
+        }
     }
 
     @Override

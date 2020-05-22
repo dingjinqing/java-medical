@@ -22,6 +22,7 @@ public class PayAwardRecordListVo {
      */
     private Integer giftType;
     private Timestamp createTime;
+    private Timestamp updateTime;
 
 }
 
