@@ -1,0 +1,24 @@
+.video-container {
+  width: 750rpx;
+  position: relative;
+}
+
+.myVideo {
+  width: 750rpx;
+}
+
+.tips_liuliang {
+  font-size: 26rpx;
+  color: #fff;
+  margin-top: 50rpx;
+  text-align: center;
+  width: 100%;
+}
+
+.z_video_title {
+  position: absolute;
+  top: 20rpx;
+  left: 50rpx;
+  z-index: 1;
+  color: white;
+}

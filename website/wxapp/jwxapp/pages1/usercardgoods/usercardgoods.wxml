@@ -1,0 +1,96 @@
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
+<include src="/pages/common/header.wxml" />
+<v-container bindsearch="getSearchText">
+	<view slot="rule" wx:if="{{cardExchangeTip}}">
+		<view class='pro_tips' style="{{cardExchangeTip.periodLimit==0?'justify-content: flex-start;':''}}">
+					<view>
+						<image class="image" src="{{imageUrl}}image/wxapp/icon_warning.png" />
+						<text wx:if="{{cardExchangeTip.periodLimit!=0}}" class="text">提示：以下商品每{{cardExchangeTip.periodLimit==1?'日':cardExchangeTip.periodLimit==2?'周':cardExchangeTip.periodLimit==3?'月':cardExchangeTip.periodLimit==4?'季度':cardExchangeTip.periodLimit==5?'年':''}}可兑换{{cardExchangeTip.periodNumber}}件</text>
+					</view>
+					<text  class="text" >{{cardExchangeTip.periodLimit==1?'今日':cardExchangeTip.periodLimit==2?'本周':cardExchangeTip.periodLimit==3?'本月':cardExchangeTip.periodLimit==4?'本季度':cardExchangeTip.periodLimit==5?'本年':''}}已兑换{{cardExchangeTip.periodExchangGoodsNum}}件</text>
+				</view>
+	</view>
+	<view slot="goods-content" class="goods-content">
+		<block
+		 wx:for="{{dataList}}"
+		 wx:for-item="pageItem"
+		 wx:key="pageIndex"
+		 wx:for-index="pageIndex"
+		 wx:if="{{dataList.length}}"
+		>
+			<view class='each_goods clearfix' wx:for='{{pageItem}}' wx:for-item="item" wx:for-index="itemIndex" wx:key='itemIndex'>
+				<view class='goods_lefts' bindtap='to_goods' data-goodsNumber="{{item.goodsNumber}}" data-goods_id="{{item.goodsId}}">
+					<image src='{{item.goodsImg}}' wx:if='{{item.goodsNumber}}'/>
+					<image class="sell_out" wx:if='{{!item.goodsNumber}}' src="{{imageUrl}}image/wxapp/goods_sell_out.png" />
+					<!--
+					<view class='reduce_price' wx:if="{{item.goods_price_action == 2}}" style='background:{{linColor}};color:#fff'>限时降价，立即查看</view>
+					<view class='reduce_price' wx:if="{{item.goods_price_action == 3}}" style='background:{{linColor}};color:#fff'>新人专享,首单特惠</view>
+					-->
+					
+				</view>
+				<view class='goods_right' bindtap='to_goods' data-goods_id="{{item.goodsId}}">
+					<view class='goods_name'>{{item.goodsName}}</view>
+					<!--
+					<view class="amount_num" style='color:{{comColor}}' wx:if='{{item.limit_amount > 0}}'>限购1件</view>
+					<view class='amount_num' style='color:{{comColor}}' wx:if='{{item.limit_num > 0}}'>限制兑换{{item.limit_num}}件</view>
+					-->
+					<view class='amount_num' style='color:{{comColor}}' wx:if='{{item.limitExchangNum}}'>限制兑换{{item.limitExchangNum}}件</view>
+					<view class='price_info clearfix'>
+						<view class='jiaqian'>
+						<!--
+							<view class='member_icon' wx:if='{{item.goods_price_action == 1}}'>会员价</view>
+						-->
+							<view class='sale_price' style='color:{{comColor}}'>￥
+								<text>{{item.realPrice}}</text>
+							</view>
+							<view class='original_price' wx:if='{{item.linePrice!=null && item.linePrice != "" && item.linePrice != 0}}'>￥{{item.linePrice}}</view>
+						</view>
+						<view class='btn_add_cart' data-goodsName="{{item.goodsName}}" data-goodsId='{{item.goodsId}}' data-goodsNumber="{{item.goodsNumber}}" catchtap="showSpecDialog">
+							<text class='iconfont icontianjia' style='color:{{comColor}};font-size:50rpx;'/>
+						</view>
+					</view>
+				</view>
+			</view>
+		</block>
+		<view class="pro_content_no" wx:if='{{!dataList.length}}'>
+			<image class="image" src='{{imageUrl}}/image/wxapp/no_result.png' mode='widthFix' />
+			<view class="view" class='empty_tips'>{{i18n.$t(localePack,'page1.usercardgoods.noApplicable')}}！</view>
+		</view>
+	</view>
+	<view class="footer" slot="footer">
+		<view class="left">
+			<view class="selected-price">
+				<text>{{i18n.$t(localePack,'page1.usercardgoods.totalNumber')}}</text>
+				<text class="text" style="color:{{comColor}};">{{exchangSurplus}}{{i18n.$t(localePack,'page1.usercardgoods.second')}}</text>
+			</view>
+		</view>
+		<view class="selected" style="background-color:{{commonColor}}" bindtap="showSelected">
+			<span>{{i18n.$t(localePack,'page1.usercardgoods.selectedItems')}}</span>
+			<span>({{totalNumber}})</span>
+		</view>
+		<view class="cart" style="background-color:{{comColor}}" bindtap="goCheckOut">立即兑换</view>
+	</view>
+</v-container>
+
+<v-selected bindcartChange="cartChange" custom-delete custom-control-num show="{{showSelectedDialog}}" goods-data="{{cartData}}" binddeletCart="deletCart" bindcartNumChange="cartNumChange" />
+
+<v-spec-dialog
+ wx:if="{{showSpec}}"
+ show="{{showSpec}}"
+ bind:close="bindCloseSpec"
+ products-info="{{productsInfo}}"
+ bindproductData="getProductData"
+>
+	<v-goods-num-cfg
+	 slot="num-cfg"
+	 origin="dialog"
+	 limit-info="{{limitInfo}}"
+	 bindgoodsNumData="getGoodsNum"
+	/>
+	<view class="spec-footer" slot="footer">
+		<view class="footer_flex_view" bindtap="addCart" style='color:#fff;background:{{comColor}};'>
+			<text>{{i18n.$t(localePack,'page1.usercardgoods.sure')}}</text>
+		</view>
+	</view>
+</v-spec-dialog>
+

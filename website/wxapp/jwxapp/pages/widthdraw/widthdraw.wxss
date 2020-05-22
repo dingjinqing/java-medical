@@ -1,0 +1,171 @@
+/* pages/widthdraw/widthdraw.wxss */
+page{
+  background: #f5f5f5;
+}
+.main-container{
+  margin-top: 2rpx;
+}
+.withdraw_top{
+  color: #666;
+  font-size: 24rpx;
+  text-align: center;
+  width: 750rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+}
+.withdraw_area{
+  width: 570rpx;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 4rpx;
+  padding: 40rpx 60rpx;
+  position: relative;
+}
+.withdraw_area .icon_money{
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  position: absolute;
+  left: 60rpx;
+  top: 120rpx;
+}
+.wa_word1{
+  text-align: left;
+  width: 100%;
+  color: #333;
+  font-size: 26rpx;
+}
+.wa_word1 text{
+  color: #666;
+  font-size: 24rpx;
+  margin-bottom: 50rpx;
+}
+.wa_money{
+  padding-bottom: 30rpx;
+  border-bottom: 2rpx solid #eee;
+  font-size: 44rpx;
+  color: #333;
+  font-weight: bold;
+  margin: 40rpx 0;
+  padding-left: 35rpx
+}
+.wa_word2{
+  margin-bottom: 40rpx;
+  display: flex;
+  justify-content: space-around;
+}
+.wa_word2 view:first-child{
+  color: #666;
+  font-size: 24rpx;
+  flex: 1.4;
+}
+.wa_word2 view:last-child{
+  color: #5b6a91;
+  font-size: 24rpx;
+  flex: 0.6;
+  text-align: right
+}
+.btn_with{
+  width: 570rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  color: #fff;
+  font-size: 30rpx;
+  margin: 0 auto;
+  border-radius: 8rpx;
+  background: linear-gradient(right,#f66,#ff9292);
+  background: -webkit-linear-gradient(right,#f66,#ff9292);
+  background: -moz-linear-gradient(right,#f66,#ff9292);
+  border: none;
+  padding: 0;
+}
+.btn_with::after{
+  border: none;
+  padding: 0;
+  border-radius: 0
+}
+.wechat_tips{
+  color: #666;
+  font-size: 24rpx;
+  width: 100%;
+  text-align: center;
+  margin: 20rpx 0;
+}
+
+.login_back{
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  position: absolute;
+  z-index: 9;
+  top: 0;
+}
+.login_content{
+  width: 590rpx;
+  background: #fff;
+  border-radius: 8rpx;
+  position: absolute;
+  left: 80rpx;
+  top: 300rpx;
+  padding-bottom: 30rpx;
+  z-index: 99
+}
+.login_title{
+  text-align: center;
+  position: relative;
+  color: #333;
+  font-size: 30rpx;
+  height: 110rpx;
+  line-height: 110rpx;
+}
+
+.login_title image{
+  width: 40rpx;
+  position: absolute;
+  right: 25rpx;
+  top: 35rpx
+}
+.to_confirm button{
+  width:530rpx;
+  height:80rpx;
+  line-height:80rpx;
+  text-align:center;
+  border-radius:8rpx;
+  background: linear-gradient(right,#f66,#ff9292);
+  background: -webkit-linear-gradient(right,#f66,#ff9292);
+  background: -moz-linear-gradient(right,#f66,#ff9292);
+  color:#fff;
+  margin-top:35rpx;
+  font-size:30rpx;
+  padding: 0;
+  margin: 0 auto;
+}
+.phone_content{
+  padding: 0 25rpx;
+}
+.phone_content .real_money{
+  padding: 20rpx 0rpx;
+  border-bottom: 2rpx solid #ccc;
+  display: flex;
+  align-items: center;
+}
+.name_title{
+  flex: 0.8;
+  color: #333;
+  font-size: 26rpx;
+  margin-top:-4rpx;
+}
+.input_name:-moz-placeholder{
+  color: #ccc;
+  font-size: 26rpx;
+}
+.name_tips{
+  margin: 20rpx 0 30rpx;
+  color: #999;
+  font-size: 24rpx;
+}
+.place-holder{
+   font-size: 24rpx;
+   font-weight: normal
+}

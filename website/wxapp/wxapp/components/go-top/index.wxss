@@ -1,0 +1,48 @@
+/* 回到顶部 */
+
+.back_top {
+  width: 110rpx;
+  height: 110rpx;
+  position: fixed;
+  right: 8rpx;
+  color: #999;
+  border-radius: 1000rpx;
+  border: 1px solid #ddd;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 999;
+}
+
+.back_top image {
+  width: 35rpx;
+  height: 15rpx;
+}
+.back_top1{
+    top: 850rpx;
+}
+.back_top2{
+    top: 980rpx;
+}
+
+.download_share {
+  width: 110rpx;
+  height: 110rpx;
+  position: fixed;
+   top: 850rpx;
+  right: 8rpx;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.download_share>view {
+  color: #fff;
+  width: 50rpx;
+  font-size: 24rpx;
+}

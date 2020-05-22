@@ -1,0 +1,219 @@
+<!--pages/lottery/lottery.wxml-->
+<include src="/pages/common/header.wxml" />
+<view class='main-container'>
+  <view class='lo_container'>
+    <view class='lc_top' style='background:url({{imageUrl}}/image/wxapp/lo_bg4.jpg) no-repeat;background-size:750rpx 920rpx;'>
+      <view class='btn_rule' bindtap='to_list'>
+        <text>抽奖记录</text>
+        <image src='{{imageUrl}}/image/wxapp/go_cou_list.png' mode='widthFix'></image>
+      </view>
+      <view class='lottery_area'>
+        <image src='{{imageUrl}}/image/wxapp/lo_coin1.png' mode='widthFix' class='coin1 coin'></image>
+        <image src='{{imageUrl}}/image/wxapp/lo_coin2.png' mode='widthFix' class='coin2 coin'></image>
+        <image src='{{imageUrl}}/image/wxapp/lo_coin3.png' mode='widthFix' class='coin3 coin'></image>
+        <view class='lo_bg clearfix'>
+          <view class='lo_item {{final_index == 0?"activitys":""}}'>
+            <view class='limiande'>
+              <image src='{{lottery_info.fourth_award.icon_imgs}}'></image>
+              <view wx:if='{{lottery_info.fourth_award.icon_text !=""}}'>{{lottery_info.fourth_award.icon_text}}</view>
+              <view wx:if='{{lottery_info.fourth_award.icon_text == ""}}'>四等奖</view>
+            </view>
+            <view class='mengceng' wx:if='{{is_meng == 1 && final_index != 0}}'></view>
+          </view>
+          <view class='lo_item {{final_index == 1?"activitys":""}}'>
+            <view class='limiande'>
+              <image src='{{lottery_info.no_award_image}}'></image>
+              <view wx:if='{{lottery_info.no_award_icon != null}}'>{{lottery_info.no_award_icon}}</view>
+              <view wx:if='{{lottery_info.no_award_icon == null}}'>谢谢参与</view>
+            </view>
+            <view class='mengceng' wx:if='{{is_meng == 1 && final_index != 1}}'></view>
+          </view>
+          <view class='lo_item {{final_index == 2?"activitys":""}}'>
+            <view class='limiande'>
+              <image src='{{lottery_info.third_award.icon_imgs}}'></image>
+              <view wx:if='{{lottery_info.third_award.icon_text != ""}}'>{{lottery_info.third_award.icon_text}}</view>
+              <view wx:if='{{lottery_info.third_award.icon_text == ""}}'>三等奖</view>
+            </view>
+            <view class='mengceng' wx:if='{{is_meng == 1 && final_index != 2}}'></view>
+          </view>
+          <view class='lo_item {{final_index == 3?"activitys":""}}'>
+            <view class='limiande'>
+              <image src='{{lottery_info.first_award.icon_imgs}}'></image>
+              <view wx:if='{{lottery_info.first_award.icon_text != ""}}'>{{lottery_info.first_award.icon_text}}</view>
+              <view wx:if='{{lottery_info.first_award.icon_text == ""}}'>一等奖</view>
+            </view>
+            <view class='mengceng' wx:if='{{is_meng == 1 && final_index != 3}}'></view>
+          </view>
+          <view class='lo_item {{final_index == 4?"activitys":""}}'>
+            <view class='limiande'>
+              <image src='{{lottery_info.second_award.icon_imgs}}'></image>
+              <view wx:if='{{lottery_info.second_award.icon_text != ""}}'>{{lottery_info.second_award.icon_text}}</view>
+              <view wx:if='{{lottery_info.second_award.icon_text == ""}}'>二等奖</view>
+            </view>
+            <view class='mengceng' wx:if='{{is_meng == 1 && final_index != 4}}'></view>
+          </view>
+          <view class='lo_item {{final_index == 5?"activitys":""}}'>
+            <view class='limiande'>
+              <image src='{{lottery_info.fourth_award.icon_imgs}}'></image>
+              <view wx:if='{{lottery_info.fourth_award.icon_text != ""}}'>{{lottery_info.fourth_award.icon_text}}</view>
+              <view wx:if='{{lottery_info.fourth_award.icon_text == ""}}'>四等奖</view>
+            </view>
+            <view class='mengceng' wx:if='{{is_meng == 1 && final_index != 5}}'></view>
+          </view>
+          <view class='lo_item {{final_index == 6?"activitys":""}}'>
+            <view class='limiande'>
+              <image src='{{lottery_info.third_award.icon_imgs}}'></image>
+              <view wx:if='{{lottery_info.third_award.icon_text != ""}}'>{{lottery_info.third_award.icon_text}}</view>
+              <view wx:if='{{lottery_info.third_award.icon_text == ""}}'>三等奖</view>
+            </view>
+            <view class='mengceng' wx:if='{{is_meng == 1 && final_index != 6}}'></view>
+          </view>
+          <view class='lo_item {{final_index == 7?"activitys":""}}'>
+            <view class='limiande'>
+              <image src='{{lottery_info.fourth_award.icon_imgs}}'></image>
+              <view wx:if='{{lottery_info.fourth_award.icon_text != ""}}'>{{lottery_info.fourth_award.icon_text}}</view>
+              <view wx:if='{{lottery_info.fourth_award.icon_text == ""}}'>四等奖</view>
+            </view>
+            <view class='mengceng' wx:if='{{is_meng == 1 && final_index != 7}}'></view>
+          </view>
+          <view class='lo_item {{final_index == 8?"activitys":""}}'>
+            <view class='limiande'>
+              <image src='{{lottery_info.second_award.icon_imgs}}'></image>
+              <view wx:if='{{lottery_info.second_award.icon_text != ""}}'>{{lottery_info.second_award.icon_text}}</view>
+              <view wx:if='{{lottery_info.second_award.icon_text == ""}}'>二等奖</view>
+            </view>
+            <view class='mengceng' wx:if='{{is_meng == 1 && final_index != 8}}'></view>
+          </view>
+        </view>
+        <view class='lo_adver clearfix' wx:if='{{lottery_info.resent_record !="" && lottery_info.resent_record != null && lottery_info.resent_record}}'>
+          <image src='{{imageUrl}}/image/wxapp/lo_words.png' mode='widthFix'></image>
+          <swiper class="swiper" autoplay="true" circular="false" vertical='true' interval='1500'>
+            <block wx:for="{{lottery_info.resent_record}}" wx:key='key'>
+              <swiper-item>
+                <view class='lo_words clearfix'>
+                  {{item.username}}获得
+                  <text wx:if='{{item.lottery_grade == 1}}'>{{lottery_info.first_award.icon_text}}</text>
+                  <text wx:if='{{item.lottery_grade == 2}}'>{{lottery_info.second_award.icon_text}}</text>
+                  <text wx:if='{{item.lottery_grade == 3}}'>{{lottery_info.third_award.icon_text}}</text>
+                  <text wx:if='{{item.lottery_grade == 4}}'>{{lottery_info.fourth_award.icon_text}}</text>
+                  <text wx:if='{{item.lottery_type != 4}}'>{{item.lottery_award}}</text>
+                  <text class='gift_names' wx:if='{{item.lottery_type == 4&&item.lottery_grade == 1}}'>{{lottery_info.goods_name[1]}}</text>
+                  <text class='gift_names' wx:if='{{item.lottery_type == 4&&item.lottery_grade == 2}}'>{{lottery_info.goods_name[2]}}</text>
+                  <text class='gift_names' wx:if='{{item.lottery_type == 4&&item.lottery_grade == 3}}'>{{lottery_info.goods_name[3]}}</text>
+                  <text class='gift_names' wx:if='{{item.lottery_type == 4&&item.lottery_grade == 4}}'>{{lottery_info.goods_name[4]}}</text>
+                </view>
+              </swiper-item>
+            </block>
+          </swiper>
+        </view>
+      </view>
+    </view>
+    <block wx:if="{{getsq == true || click_num == true}}">
+      <view class='btn_lottery' wx:if="{{lottery_info.can_lottery.status == 0 || lottery_info.can_lottery.status == 5}}">
+      <form report-submit='true' bindsubmit='startrolling'>
+         <button formType='submit' disabled='{{is_disable}}'>立即抽奖</button>
+      </form>
+      </view>
+    </block>
+    <block wx:else>
+      <button class='btn_lottery' wx:if="{{lottery_info.can_lottery.status == 0 || lottery_info.can_lottery.status == 5}}"  open-type="getUserInfo" bindgetuserinfo="getUserInfo">
+        <button disabled='{{is_disable}}'>立即抽奖</button>
+      </button>
+    </block>
+    <view class='btn_lottery' wx:if="{{lottery_info.can_lottery.status == 2 || lottery_info.can_lottery.status == 3 ||  lottery_info.can_lottery.status == 4 ||  lottery_info.can_lottery.status == 8 }}">
+      <button>{{lottery_info.can_lottery.msg}}</button>
+    </view>
+    <view class='btn_lottery' wx:if="{{lottery_info.can_lottery.status == 6}}">
+      <button open-type='share'>去分享</button>
+    </view>
+    <view class='btn_lottery' wx:if="{{lottery_info.can_lottery.status == 7}}" bindtap='startrolling'>
+      <button disabled='{{is_disable}}'>{{lottery_info.can_lottery.msg}}</button>
+    </view>
+
+    <view class='pay_score' wx:if='{{lottery_info.can_lottery.status == 7}}'>消耗{{lottery_info.score_per_chance}}积分可获得额外一次抽奖机会哦</view>
+    <view class='pay_score' wx:if='{{lottery_info.can_lottery.status == 6}}'>分享给好友可获得额外一次抽奖机会哦</view>
+    <view class='pay_score' wx:if='{{lottery_info.can_lottery.status == 0 && lottery_info.can_lottery.changes>0}}'>您有{{lottery_info.can_lottery.changes}}次抽奖机会</view>
+    <view class='lo_rules'>
+      <view class='rule_title'>
+        <image src='{{imageUrl}}/image/wxapp/lo_l.png' mode='widthFix'></image>
+        <text>活动规则</text>
+        <image src='{{imageUrl}}/image/wxapp/lo_r.png' mode='widthFix'></image>
+      </view>
+      <view class='lo_time'>
+        <view>活动有效期：</view>
+        <view>{{lottery_info.start_time}} 至 {{lottery_info.end_time}}</view>
+      </view>
+      <view class='lo_tips'>
+        <view>活动说明：</view>
+        <view style='margin-bottom:0'>
+          {{lottery_info.lottery_explain}}
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+<!-- 未中奖的弹框 -->
+<view class='not_award' style='display:{{not_award == 1?"block":"none"}}'>
+  <view class='zhezhao' bindtap='guandiao'></view>
+  <view class='not_award_detial'>
+    <image src='{{imageUrl}}/image/wxapp/award_bg.png' mode='widthFix' class='images1'></image>
+    <image src='{{imageUrl}}/image/wxapp/not_award1.png' mode='widthFix' class='images2'></image>
+
+    <view class='detail_content'>
+      <view class='actions_tit'>好
+        <text class="user-motto" decode="{{true}}">&nbsp;&nbsp;</text>遗
+        <text class="user-motto" decode="{{true}}">&nbsp;&nbsp;</text>憾</view>
+      <view>抱歉啦，这次没有中奖</view>
+      <view wx:if='{{award_grade.award_info && award_grade.award_info!=0 && award_grade.award_info!=""}}'>赠送您{{award_grade.award_info}}积分</view>
+      <view wx:if='{{award_grade.can_lottery.status != 8}}' style='margin-bottom:20rpx;'>再接再厉吧！</view>
+      <view wx:if='{{award_grade.can_lottery.status == 8}}' style='font-weight:bold;font-size:30rpx;'>送你{{award_grade.lottery_award}}！</view>
+      <view class='btn_not_award' bindtap='refresh_page'>
+        <button wx:if='{{award_grade.can_lottery.status == 0 || award_grade.can_lottery.status == 5}}'>再抽一次</button>
+        <button wx:if='{{award_grade.can_lottery.status == 6}}' open-type='share'>去分享</button>
+        <button wx:if='{{award_grade.can_lottery.status == 7}}'>消耗{{award_grade.can_lottery.score}}积分抽奖</button>
+        <button wx:if='{{award_grade.can_lottery.status == 8}}'>抽奖次数用光啦</button>
+      </view>
+    </view>
+  </view>
+  <view class='btn_close' bindtap='guandiao'>
+    <image src='{{imageUrl}}image/wxapp/split_btn1.png' mode='widthFix' />
+  </view>
+</view>
+
+<!-- 中奖的弹框 -->
+<view class='not_award' style='display:{{is_award == 1?"block":"none"}}'>
+  <view class='zhezhao' bindtap='guandiao1'></view>
+  <view class='not_award_detial' style='top:{{award_grade.lottery_type == 4?"80rpx":""}}'>
+    <image src='{{imageUrl}}/image/wxapp/award_bg.png' mode='widthFix' class='images1'></image>
+    <image src='{{imageUrl}}/image/wxapp/is_award1.png' mode='widthFix' class='images2'></image>
+    <view class='detail_content'>
+      <view class='actions_tit'>
+        <text wx:if='{{award_grade.lottery_grade == 1}}' class='text_grade'>{{lottery_info.first_award.icon_text}}</text>
+        <text wx:if='{{award_grade.lottery_grade == 2}}' class='text_grade'>{{lottery_info.second_award.icon_text}}</text>
+        <text wx:if='{{award_grade.lottery_grade == 3}}' class='text_grade'>{{lottery_info.third_award.icon_text}}</text>
+        <text wx:if='{{award_grade.lottery_grade == 4}}' class='text_grade'>{{lottery_info.fourth_award.icon_text}}</text>
+      </view>
+      <view class='jiangpin'>恭喜您获得</view>
+      <block wx:if='{{award_grade.lottery_type == 4}}'>
+        <view class='gift_name'>{{award_grade.goods_name}}</view>
+        <view class='gift_img'><image src='{{award_grade.goods_img}}'></image></view>
+      </block>
+      <view class='jiangpin' style='font-weight:bold' wx:if='{{award_grade.lottery_type != 4}}'>{{award_grade.lottery_award}}</view>
+      <view class='kuai_look' wx:if='{{award_grade.lottery_type == 4}}'>已放入“我的奖品”快领取吧</view>
+      <view bindtap='to_list' class='kuai_look' wx:if='{{award_grade.lottery_type != 4}}'>快去查看吧</view>
+      <view class='btn_not_award' bindtap='to_get_gift' wx:if='{{award_grade.lottery_type == 4}}'>
+        <button>立即领取</button>
+      </view>
+      <view class='btn_not_award' bindtap='refresh_pages' wx:if='{{award_grade.lottery_type != 4}}'>
+          <button wx:if='{{award_grade.can_lottery.status == 0 || award_grade.can_lottery.status == 5}}'>继续抽奖</button>
+          <button wx:if='{{award_grade.can_lottery.status == 6}}' open-type='share'>去分享</button>
+          <button wx:if='{{award_grade.can_lottery.status == 7}}'>消耗{{award_grade.can_lottery.score}}积分抽奖</button>
+          <button wx:if='{{award_grade.can_lottery.status == 8}}'>抽奖次数用光啦</button>
+      </view>
+    </view>
+  </view>
+  <view class='btn_close' bindtap='guandiao1'>
+    <image src='{{imageUrl}}image/wxapp/split_btn1.png' mode='widthFix' />
+  </view>
+</view>
+<include src="/pages/common/footer.wxml" />

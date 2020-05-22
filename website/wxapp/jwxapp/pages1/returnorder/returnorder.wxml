@@ -1,0 +1,113 @@
+<!-- 退货退款中心：page1/returnorder/returnorder.wxml -->
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
+<include src="/pages/common/header.wxml" />
+<view class="main-container">
+  <!-- 提交申请 -->
+  <block>
+    <view class="order-header">
+      <text class="activity-type-mark" wx:if="{{activityName != ''}}" style='color:{{comColor}};border-color:{{comColor}}'>{{activityName}}</text>
+      <text>{{i18n.$t(localePack,"page1.afterSale.orderNo")}}：{{orderSn}}</text>
+      <button class="copy-button" bindtap="copyOrder">{{i18n.$t(localePack,"page1.afterSale.copy")}}</button>
+    </view>
+    <view class="order-info" style="padding-bottom:0;">
+      <view>
+        <text class="order-required">*</text>
+        {{i18n.$t(localePack,"page1.afterSale.afterMarketType")}}
+      </view>
+      <view class="order-info-type">
+        <block wx:for="{{returnTypes}}" wx:key="index">
+          <text class="order-type" bindtap="toggleType" data-id="{{item.id}}" style="{{ returnType == item.id ? 'border: 1px solid #f66;color: #f66;background: url('+type_active+') right bottom/30rpx no-repeat' : '' }}">{{item.name}}</text>
+        </block>
+      </view>
+      <view class="order-goods-info" wx:for="{{goodsInfo}}" wx:key="index" bindtap="toggleGoodsSelect" data-index="{{index}}" data-sku="{{item.productId}}">
+        <view class="order-goods-check-wrap">
+          <image wx:if="{{item.sendNumber <= 0 && returnType == 1}}" src="{{checkbox_no}}" style="width:28rpx;height:28rpx;background-color: rgb(238, 238, 238);" />
+          <text wx:elif="{{!item.checked}}" class="iconfont iconduoxuanbiankuang order-goods-check"></text>
+          <text wx:elif="{{item.checked}}" class="iconfont iconduoxuan order-goods-check"></text>
+        </view>
+        <view class="order-goods-info-details">
+          <view class="order-goods-img">
+            <image class="goods-img" src="{{imageUrl + item.goodsImg}}" mode="scaleToFill"></image>
+            <view wx:if="{{item.sendNumber <= 0 && returnType == 1}}" class="no-shippied">未发货</view>
+          </view>
+          <view class="goods-wrap">
+            <view class="goods-name">
+              <text class="activity-type-mark" wx:if="{{item.isGift}}" style='color:{{comColor}};border-color:{{comColor}}'>{{i18n.$t(localePack,"page1.afterSale.gift")}}</text>
+              {{item.goodsName}}
+            </view>
+            <view class="goods-spec" style="opacity:{{item.goodsAttr?1:0}}">
+              {{item.goodsAttr}}
+            </view>
+            <view class="goods-price">
+              <text wx:if="{{goodsType == 4}}">{{i18n.$t(localePack,"page1.afterSale.integral")}}：{{ item.goodsScore }}<text wx:if="{{item.money > 0}}" style="margin-left:20rpx">{{i18n.$t(localePack,"page1.afterSale.cash")}}：￥{{ item.money }}</text></text>
+              <text wx:else>{{i18n.$t(localePack,"page1.afterSale.price")}}：￥{{item.goodsPrice}}</text>
+              <text>{{i18n.$t(localePack,"page1.afterSale.returnableNum")}}：{{item.returnable}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="order-info">
+      <view class="order-flex">
+        <text><text class="order-required">*</text>{{i18n.$t(localePack,"page1.afterSale.reasonApplication")}}：</text>
+        <view class="order-flex">
+          <picker mode="selector" bindchange="bindPickerChange" wx:if='{{returnType != 4}}' value="{{reasoneIndex}}" range="{{reasone}}">
+            <view>
+              <text>{{reasone[reasoneIndex]}}</text>
+              <image class="order-icon" src="{{click_look}}" mode="widthFix"></image>
+            </view>
+          </picker>
+          <picker mode="selector" bindchange="bindPickerChange" wx:if='{{returnType == 4}}' value="{{reasoneIndex}}" range="{{reasone_huan}}">
+            <text>{{reasone_huan[reasoneIndex]}}</text>
+            <image class="order-icon" src="{{click_look}}" mode="widthFix"></image>
+          </picker>
+        </view>
+      </view>
+    </view>
+    <view class="order-info" wx:if="{{returnType != 4}}">
+      <block wx:if="{{goodsType == 4}}">
+        <text><text class="order-place">*</text>{{i18n.$t(localePack,"page1.afterSale.refundPoints")}}：</text>
+        <text><text style="color:{{comColor}}">￥{{ orderInfo.returnScore }}</text></text>
+      </block>
+      <text><text class="order-place">*</text>{{i18n.$t(localePack,"page1.afterSale.refundAmount")}}：</text>
+      <text><text style="color:{{comColor}}">￥{{ returnMoney }}</text></text>
+    </view>
+    <view class="order-info" wx:if="{{selectGoodIds.length && isRefund && orderInfo.returnShippingFee&& !hasShipped}}">
+      <block>
+        <!-- 参考运费： -->
+        <text><text class="order-place">*</text>{{i18n.$t(localePack,"page1.afterSale.freightRefundAmount")}}：</text>
+        <text style="color:{{comColor}}">￥{{orderInfo.returnShippingFee}}</text>
+      </block>
+    </view>
+    <view class="order-info">
+      <view>
+        <text class="order-place">*</text>
+        <text>{{i18n.$t(localePack,"page1.afterSale.applyInstruct")}}：</text>
+        <text class="order-remark">（{{i18n.$t(localePack,"page1.afterSale.notFill")}}）</text>
+      </view>
+      <view class="order-textarea">
+        <textarea placeholder="{{i18n.$t(localePack,'page1.afterSale.applyDesc')}}" bindblur="reasonDescInput" value="{{reasonDesc}}"></textarea>
+      </view>
+    </view>
+    <view class="order-info">
+      <text class="order-left"><text class="order-place">*</text>{{i18n.$t(localePack,'page1.afterSale.uploadCertificate')}}：</text>
+      <view class="order-upload order-left" wx:for="{{uploadedImg}}" wx:key="index">
+        <image class="order-upload-img" src="{{imageUrl + item.imgPath}}" mode="cover" />
+        <image src='{{dele_service}}' class="order-upload-delete" bindtap='delImage' data-idx="{{index}}"></image>
+      </view>
+      <view class="order-upload order-left" bindtap="uploadRefundImg" wx:if="{{uploadedImg.length < 3}}">
+        <image class="order-upload-addicon" src="{{add_img}}"></image>
+      </view>
+    </view>
+  </block>
+  <view class="order-footer">
+    <form bindsubmit='submitRefund' class='ipx_en' wx:if='{{ (returnType == 4 && bottom.subscribe_message) || !bottom.subscribe_message }}'>
+      <button form-type='submit' class='footer-btn' style='background:{{comColor}};bottom:{{isIpx == 1?"60rpx;":"0rpx;"}}'>{{i18n.$t(localePack,'page1.afterSale.submitApplication')}}</button>
+    </form>
+    <!-- 换货提交 -->
+    <form bindtap="toSubscribeMessage" class='ipx_en' wx:if='{{returnType != 4 && bottom.subscribe_message }}'>
+      <button class='footer-btn' style='background:{{comColor}};bottom:{{isIpx == 1?"60rpx;":"0rpx;"}}'>{{i18n.$t(localePack,'page1.afterSale.submitApplication')}}</button>
+    </form>
+  </view>
+</view>
+<include src="/pages/common/footer.wxml" />

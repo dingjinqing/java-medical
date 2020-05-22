@@ -1,0 +1,65 @@
+@import "../fullship/fullship.wxss";
+
+.gift-list{
+  padding: 20rpx;
+  display: flex;
+  border-bottom: 2rpx solid #eee;
+}
+.gift-list > text{
+  color: #888;
+}
+.gift-list-info{
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: -12rpx;
+}
+.gift-list-info > .list-item{
+  background-color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 98rpx;
+  height: 98rpx;
+  box-sizing: border-box;
+  border: 2rpx solid #eee;
+  margin-left: 8rpx;
+  margin-bottom: 12rpx;
+}
+.gift-list-info > .list-item.image-item{
+  padding: 4rpx;
+}
+.gift-list-info > .list-item > image{
+  width: 100%;
+  height: 100%;
+}
+.gift-list-info > .list-item:nth-child(6n+1){
+  margin-left: 0;
+}
+.gift-list-info > .list-item > .gift-num{
+  font-size: 24rpx;
+  color: #666;
+}
+.gift-list-info > .list-item > .view-more{
+  font-size: 22rpx;
+  color: #999;
+}
+.footer > .selected-price{
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  justify-content: center;
+}
+.footer > .selected-price > view:first-child{
+  font-size: 24rpx;
+  color: #666;  
+  margin-bottom: 10rpx;
+}
+.footer > .selected-price > view:first-child > text{
+  font-size: 30rpx;
+}
+.footer > .selected-price > view:last-child{
+  font-size: 22rpx;
+  color: #666;
+}

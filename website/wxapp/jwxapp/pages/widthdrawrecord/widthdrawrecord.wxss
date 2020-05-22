@@ -1,0 +1,79 @@
+/* pages/widthdrawrecord/widthdrawrecord.wxss */
+page{
+  background: #f5f5f5;
+}
+.main-container{
+  margin-top: 2rpx;
+}
+view{
+  box-sizing: border-box;
+}
+.account_top{
+  background: #fff;
+  color: #000;
+  font-size: 30rpx;
+  text-align: center;
+  padding: 70rpx 0;
+  margin-bottom: 20rpx;
+}
+.account_top view:last-child{
+  color: #f66;
+  margin-top: 20rpx;
+  font-size: 48rpx
+}
+.account_top view:last-child text{
+  font-size: 60rpx;
+}
+.account_content{
+  width: 750rpx;
+  background: #fff;
+}
+.each_record{
+  height: 130rpx;
+  margin-left: 40rpx;
+  padding-right: 40rpx;
+  width: 710rpx;
+  border-bottom: 2rpx solid #eee;
+  display: flex;
+  justify-content:center;
+  flex-direction: column;
+}
+.each_record:last-child{
+  border: none;
+}
+.er_top{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx
+}
+.er_money{
+  flex: 1.2;
+}
+.er_money{
+  font-size: 28rpx;
+  color: #333;
+}
+.er_money text{
+  color: #666;
+  font-size: 24rpx;
+  margin-left: 20rpx;
+}
+.er_status{
+  flex: 0.8;
+  text-align: right;
+  color: #f66;
+  font-size: 28rpx;
+}
+.er_time{
+  color: #666;
+  font-size: 24rpx;
+}
+.load_style{
+    font-size: 24rpx;
+  color: #666;
+  width: 100%;
+  padding: 15rpx 0;
+  text-align: center
+}

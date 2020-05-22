@@ -1,0 +1,32 @@
+
+<include src="/pages/common/header.wxml" />
+ <view class="main-bg" style="height:calc(100% - {{margin_top_nav + 8}}px);background:{{topic_info.bg_img_type == 1 ? 'url(' + topic_info.bg_img_path + ') no-repeat 0 0/100% 100%' : '-webkit-linear-gradient(left,' + linColor + ',' + comColor1 +')'}}">  
+ </view>
+    <view class="assess_title">
+      {{assess_name}}
+    </view>
+    <view class="container">
+        <view class="topic_title">
+          {{topic_num}}、{{topic_info.topic_title}} ({{topic_info.option_type ? '多选' : '单选'}})
+        </view>
+        <image class="topic_type_pic" src='{{topic_info.topic_type_path}}' wx:if="{{topic_info.topic_type == 1}}"></image>
+        <video class="topic_type_video" src='{{topic_info.topic_type_path}}' wx:if="{{topic_info.topic_type == 2}}"></video>
+        <view class="topic_box">
+          <block wx:for="{{topic_info.option_content}}" wx:key="index">
+            <view class="topic_item_title" style="background:{{item.isCheck == 1 ? topicBgColor : ''}};" bindtap="{{topic_info.option_type ? 'multiple_choice' : 'single_choice'}}" data-index="{{index}}">
+             <text class="iconfont {{item.isCheck == 1 ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{item.isCheck == 1 ? comColor1 : linColor}}"></text>
+             <text style="color:{{item.isCheck == 1 ? comColor1 : '#333'}}">{{item.option_name}}</text>
+            </view>
+            <image class="topic_item_pic" src='{{item.option_img}}' wx:if="{{item.option_img != null && item.option_img!= ''}}"></image>
+          </block>
+        </view>
+    </view>
+
+    <view class="assess_button" bindtap='nextTopic' style="color:{{button_color != '' ? button_color.text_color : ''}};background-color:{{button_color != '' ? button_color.bg_color : ''}}" >
+      <block wx:if="{{!button_img}}">
+        下一题
+      </block>
+      <block wx:else>
+        <image src='{{button_img}}'></image>
+      </block>
+    </view>

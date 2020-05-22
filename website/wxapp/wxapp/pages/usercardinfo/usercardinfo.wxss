@@ -1,0 +1,712 @@
+/* USERCARDINFO.WXSS 2018.03.06 */
+page {
+  background: #f5f5f5;
+}
+.container {
+   overflow-x: hidden;  
+  z-index: 1;
+  overflow-y: scroll;
+}
+/*会员卡*/
+.card-top {
+  width: 94%;
+  height: 300rpx;
+  background: #E6CB96;
+  position: relative;
+  border-radius: 20rpx; 
+  margin: 3% 3%;
+  font-weight: bold;
+  overflow: hidden;
+}
+.card_type>view{
+  background: rgba(0,0,0,0.1);
+  width: 150rpx;
+  text-align: center;
+  height: 55rpx;
+  line-height: 55rpx;
+  float: right;
+  border-bottom-left-radius: 20rpx;
+  color: #fff;
+}
+.card_amount{
+  color: #fff;
+  font-size: 26rpx;
+  height: 40rpx;
+  line-height: 40rpx;
+}
+.card_amount .text2{
+  width: 160rpx;
+  height: 50rpx;
+  line-height: 50rpx;
+  text-align: center;
+  border: 1px solid #fff;
+  border-radius: 30rpx;
+  margin-left: 20rpx;
+  display: inline-block;
+}
+.card-image {
+  width: 90rpx;
+  height: 90rpx;
+  border-radius: 50%;
+  float:left;
+  margin-top: 10rpx;
+}
+
+.card-left {
+  padding-left: 30rpx;
+  position: relative;  
+  margin-top: 20rpx;
+}
+
+.card-name {
+  height: 90rpx;
+  color: #fff;
+  padding-left:18%;
+  font-size: 28rpx; 
+  padding-top: 15rpx;
+}
+
+.no-get-label {  
+  border:1rpx solid #fff;
+  display: inline-block;
+  border-radius:70rpx;
+  width:122rpx;
+  height:35rpx;
+  text-align:center;
+  line-height:35rpx;
+  color:#fff;
+  font-size: 24rpx;
+  margin-left:3%; 
+}
+
+.card-btm {
+  font-size: 24rpx;
+  color: #fff;
+  margin-top: 10rpx;
+}
+
+.card-rt-top-img {
+  width:42rpx;
+  height:42rpx;
+  position:absolute;
+  bottom: 30rpx;
+  right:30rpx;
+}
+/*领取会员卡 */
+.cardinfo-btm {
+  width: 100%;
+  height: 100rpx;
+  background: #fff;
+  position: absolute;
+  bottom: 0rpx;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.get-btn {
+  width: 360rpx;
+  height: 64rpx;
+  background: #09BA07;
+  line-height: 64rpx;
+  text-align: center;  
+  color: #fff;
+  font-size: 26rpx;
+  border-radius: 8rpx;
+  padding: 0;
+  border: none;
+}
+.get-btn::after{
+  padding: 0;
+  border: none;
+  border-radius: 0
+}
+/*会员卡信息 */
+.card-info {
+  width: 100%;
+  background: #fff; 
+}
+
+.card-center {
+  height: 100rpx;
+  background: #fff;
+  border-bottom: 2rpx solid #eee;
+  display: flex;
+  align-items: flex-start;
+  line-height: 100rpx;
+  margin-left:3%;
+} 
+
+.card-center .cart-info-lt {  
+  margin-right: 3%;
+  height: 100rpx;
+  line-height: 100rpx;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.card-center .cart-info-rt {  
+  margin-left:49%;
+  line-height:100rpx;
+  color: #888;
+  font-size: 26rpx;
+}
+.card-store .cart-info-rt,.card-goods .cart-info-rt{
+  margin-left: 63%;
+}
+.card-usetime .cart-info-rt{
+  margin: 0;
+  width: 64%;
+  text-align: right;
+}
+.arrow {
+  width: 40rpx;
+}
+
+.arrow-rt {
+  width: 25rpx;
+  height: 35rpx;
+  margin-left: 116%;
+  vertical-align: middle;
+}
+.arrow_rt_down{
+  width: 30rpx;
+  height: 20rpx;
+  margin-left: 85%;
+}
+
+.cart-info-ct {
+  font-size: 26rpx;
+  color:#353535;
+}
+
+.card-benefits1 {
+  display:block;
+}
+
+.card-benefits1, .card-benefits2 {
+  background:#fff;
+  border-bottom:2rpx solid #eee;
+  padding:3% 9%;
+  line-height:46rpx;
+  margin-left:3%;
+  box-sizing: border-box;
+}
+
+.card-benefits1 text, .card-benefits2 text {
+  width: 100%;
+  font-size: 26rpx;
+  color: #888;
+}
+.card_store_text text{
+  width: auto;
+}
+
+.card-phone {
+  border:0;
+}
+/* 会员卡使用说明 */  
+.card-introduction {
+  padding: 3% 3%;
+  background: #fff;
+  display: flex;
+  align-items: flex-start;
+}
+
+.card-lt-img {
+  width: 46rpx;
+  height:46rpx;
+}
+
+.card-rt {
+  margin: 1% 3%;
+}
+
+.card-rt text {
+  font-size: 26rpx;
+}
+
+.rt-text1 {
+  display: block;
+  color: #353535;
+  margin-bottom: 2%;
+}
+
+.rt-text2 {
+  color: #888;
+  display: block;
+  padding-right: 20rpx;
+}
+
+.card-lt {
+  line-height:72rpx;
+}
+
+/* 横线*/  
+.line{
+  margin-top: 20rpx;
+}
+
+/*弹出层二维码 */
+.modal-box {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  opacity: 0.5;
+  position: fixed;
+  top: 0;
+  left: 0; 
+  overflow: hidden;
+  z-index: 9000;
+}
+
+.modal-container {
+  width:88%;
+  margin:0 auto;
+  overflow:hidden;
+  z-index:9999;
+  position:fixed;
+  top:13%;
+  left:5.6%;
+}
+
+.modal-top {
+  width: 100%;
+  height: 170rpx;
+  background: #E6CB96;
+  border-top-left-radius: 10rpx;
+  border-top-right-radius: 10rpx;
+}
+
+.card-tanchu {
+  border-top-left-radius: 10rpx;
+  border-top-right-radius: 10rpx;
+}
+
+.modal-bottom {
+  width: 100%;
+  height: 690rpx; 
+  background: #fff;
+  border-bottom-left-radius: 10rpx;
+  border-bottom-right-radius: 10rpx;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.left-circle, .right-circle {
+  width: 18rpx;
+  height: 36rpx;
+  background: #000;
+  opacity: 0.6;
+}
+
+.left-circle {
+  border-radius: 0 50rpx 50rpx 0;
+  position: absolute;
+  top: 150rpx;
+}
+
+.right-circle {
+  border-radius:  50rpx 0 0 50rpx;
+  position: absolute;
+  top: 150rpx;
+  right: 0;
+}
+
+.modal-btm {
+  color: #fff;
+  font-size: 26rpx;
+  margin-top:2%;
+}
+
+.modal-btm-text2 {
+  float:right;
+  margin-right:3%;
+}
+
+.two-bar-codes {
+  width: 362rpx;
+  height: 362rpx;
+  margin: 7% 0;
+}
+.modal-bottom text {
+  color: #888;
+  font-size: 26rpx; 
+}
+.barcode {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.barcode > canvas {
+    width: 550rpx;
+    height: 150rpx;  
+}
+.grade_info{
+  font-size: 24rpx;
+  padding: 20rpx 3% 20rpx 11%;
+  border-bottom: 1px solid #eee;
+  color: #888
+}
+.pro_card{
+  margin: 6rpx 0 15rpx;
+  border-radius: 50rpx;
+  overflow: hidden;
+  width: 600rpx;
+}
+.pro_card progress{
+  height: 20rpx;
+  border-radius: 50rpx;
+}
+.con_card view{
+  padding-left: 26rpx;
+}
+.zhezhao{
+  width: 750rpx;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 99;
+}
+.grade_modal{
+  width: 100%;
+  position: fixed;
+  top: 300rpx;
+  z-index: 100;
+  padding: 0 120rpx;
+  box-sizing: border-box;
+}
+.grade_modal>view{
+  background: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.grade_modal .grade_modal_title{
+  height: 92rpx;
+  line-height: 92rpx;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  background: linear-gradient(to left,#e1bb7a,#f4d9aa);
+}
+.grade_modal_content{
+  padding: 25rpx;
+  padding-top: 0;
+  color: #888;
+  font-size: 24rpx;
+}
+.grade_modal_content>view{
+  margin-top: 25rpx;
+}
+.modal_content_head{
+  color: #000;
+  font-size: 26rpx;
+  margin-bottom: 10rpx;
+}
+.modal_content_head image{
+  width: 16rpx;
+  position: relative;
+  top: 0rpx;
+  margin-right: 10rpx;
+}
+.grade_xian{
+  width: 60rpx;
+  z-index: 99;
+  margin-left: 450rpx;
+}
+.modal_content_con{
+  padding-left: 30rpx;
+}
+.pro_amount{
+  position: relative;
+  margin-bottom: 10rpx;
+  min-height: 20rpx;
+  width: 600rpx;
+}
+.all_amount{
+  padding: 5rpx 15rpx;
+  background: #f8f2e4;
+  color: #d0b27e;
+  border-radius: 10rpx;
+  position: relative;
+}
+.all_shu{
+  position: relative;
+  width: 4rpx;
+  height: 36rpx;
+  background: #f8f2e4;
+  top: -30rpx;
+}
+/* 支付时间 */
+.pay_time{
+  color: #353535;
+  margin-left: 3%;
+}
+/* 激活审核 */
+.merchant_message{
+  border-radius:20rpx;
+  margin:3% 3% 0;
+  padding:3%;
+  background-color:#fff;
+}
+.merchant_message text:nth-child(1){
+  font-size:26rpx;
+  color:#333;
+}
+.merchant_message text:nth-child(2){
+  font-size:24rpx;
+  color:#999;
+}
+.merchant_message text{
+  display:block;
+}
+
+.buy_card_price{
+  position: absolute;
+  right: 30rpx;
+  bottom: 30rpx;
+  color: #fff;
+  font-size: 36rpx;
+}
+.zhezhao_coupon{
+  width: 750rpx;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 99;
+}
+.coupon_code{
+  position: fixed;
+  top: 30%;
+  width: 100%;
+  z-index: 999;
+  padding: 0 80rpx;
+  box-sizing: border-box;
+}
+.coupon_code>view{
+  background: white;
+  border-radius: 5px;
+}
+.coupon_code>view .code_ipt{
+  padding: 50rpx;
+  border-bottom: 1px solid #eee;
+  box-sizing: border-box;
+}
+.code_ipt input{
+  border: 1px solid #ddd;
+  width: 100%;
+  height: 80rpx;
+  padding-left: 20rpx;
+  font-size: 26rpx;
+  box-sizing: border-box;
+  border-radius: 4rpx;
+}
+.code_ipt input+input{
+  margin-top: 30rpx;
+}
+.code_btn{
+  display: flex
+}
+.code_btn view{
+  flex: 1;
+  height: 90rpx;
+  line-height: 90rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-sizing: border-box;
+  text-align: center;
+}
+.code_btn view:last-child{
+  color: #f66;
+  border-left: 1px solid #eee;
+}
+/* 限次卡兑换商品 */
+.card_goods_box{
+  padding-left: 76rpx;
+  overflow: hidden;
+}
+.goods_list{
+  margin: 22rpx 0 0 0;
+}
+.goods_list image{
+  width: 78rpx;
+  height: 78rpx;
+  float: left;
+}
+.goods_list .goods_info{
+  overflow: hidden;
+  padding-left: 22rpx;
+  padding-right: 30rpx;
+}
+.goods_info text{
+  display: block;
+}
+.goods_info text:first-of-type{
+  color: #333;
+  font-size: 24rpx;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.goods_info text:last-child{
+  font-size: 26rpx;
+  color: #ff6666;
+  margin-top: 15rpx;
+}
+.check_more{
+  text-align: center;
+  color: #999;
+}
+.check_more.down::after{
+  content: '';
+  width: 18rpx;
+  height: 18rpx;
+  border-left: 1rpx solid #999;
+  border-bottom: 1rpx solid #999;
+  transform: rotate(-45deg);
+  display: inline-block;
+  margin: 2rpx 0 0 8rpx;
+  vertical-align: text-top;
+}
+.check_more.up::after{
+  content: '';
+  width: 18rpx;
+  height: 18rpx;
+  border-top: 1rpx solid #999;
+  border-right: 1rpx solid #999;
+  transform: rotate(-45deg);
+  display: inline-block;
+  margin: 4rpx 0 0 8rpx;
+  vertical-align: middle;
+}
+.card_bottom_left{
+  position:absolute;
+  bottom:30rpx;
+  left:30rpx;
+  color:#fff;
+  font-size:26rpx;
+}
+.common-footer{
+  margin-bottom: 120rpx;
+}
+.card-benefits1 > .more_goods{
+  float: right;
+  width: auto;
+  color: #999;
+}
+.coupon_list{
+  margin-top: 10px;
+  display: flex;
+  overflow: hidden;
+  height:160rpx;
+}
+.coupon_list > .coupon_left {
+    background: red;
+    border-width: 1px 0 1px 1px;
+    border-color: red;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    flex: 1;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    color: #fff;
+}
+.coupon_list > .coupon_left > .coupon_left_top {
+    font-size: 13px;
+    color: #fff;
+    line-height: 25px;
+}
+.coupon_list > .coupon_left > .coupon_left_top > text {
+    font-size: 20px;
+    color: #fff;
+}
+.coupon_list > .coupon_left > .coupon_left_bottom {
+    font-size: 13px;
+    color: #fff;
+}
+.coupon_list > .coupon_left::before {
+    content: '';
+    position: absolute;
+    right: -3px;
+    top: -3px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #fff;
+    box-sizing: border-box;
+    border-width: 0 1px 1px 0;
+    border-color: #878787;
+    z-index: 2;
+}
+.coupon_list > .coupon_left::after {
+    content: '';
+    position: absolute;
+    right: -3px;
+    bottom: -3px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #fff;
+    z-index: 2;
+}
+.coupon_list > .coupon_right {
+    border-width: 1px 1px 1px 0;
+    border-style: solid;
+    border-color: #878787;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    flex: 2;
+    position: relative;
+    justify-content: space-around;
+    padding-left: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+.coupon_list > .coupon_right::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 80%;
+    border-left: 2px dashed #fff;
+    top: 50%;
+    left: -1px;
+    transform: translateY(-50%);
+}
+.coupon_list > .coupon_right > .coupon_name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
+.coupon_list > .coupon_right > .coupon_condition {
+    font-size: 12px;
+    color: #333;
+}
+.coupon_list > .coupon_right > .coupon_valid_until {
+    font-size: 12px;
+    color: #999;
+}
+.coupon_list_box{
+  padding-right: 30rpx;
+}
+.package_info{
+  line-height: 35px;
+  padding-left: 10px;
+  margin-top: 8px;
+  border-radius: 4px;
+}

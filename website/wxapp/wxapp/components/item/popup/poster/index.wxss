@@ -1,0 +1,26 @@
+
+.share_content{
+  position: relative;
+}
+.share_content image{
+  width: 580rpx;
+  height: 860rpx;
+  margin-bottom: 20rpx;
+}
+.share_content .btn_save_img{
+  width: 580rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  border-radius: 8rpx;
+  background: #f66;
+  color: #fff;
+  text-align: center;
+  font-size: 30rpx;
+  margin-bottom: 15rpx;
+}
+.share_content .save_tips{
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    font-size: 24rpx;
+}

@@ -1,0 +1,18 @@
+<view class="imgtwo-container" style='margin-bottom:{{m.margin_bot}}rpx'>
+  <view class="imgtwo-item" catchtap="bindJumpLink" data-url="{{m.title_link1}}" style="margin-right: 16rpx;" data-is_first_touch="{{m.is_first_touch}}" data-idx='{{m.idx}}'>
+    <image src="{{m.img_url1}}!middle?v=1.7" data-skip='{{m.is_preview != 1 || m.title_link1}}' bindtap="bindPreviewImage" mode='widthFix' data-src="{{m.img_url1}}" lazy-load="{{true}}"></image>
+    <text wx:if="{{m.name1 && m.hide_name != 1}}" class="goods_name">{{m.name1}}</text>
+    <view wx:if="{{m.price1 && m.hide_price != 1}}" class="price">
+      <text class="shop_price">￥{{m.price1}}</text>
+      <text wx:if="{{m.mk_price1!=0}}" class="market_price">￥{{m.mk_price1}}</text>
+    </view>
+  </view>
+  <view class="imgtwo-item" catchtap="bindJumpLink" data-url="{{m.title_link2}}" data-is_first_touch="{{m.is_first_touch}}" data-idx='{{m.idx}}'>
+    <image src="{{m.img_url2}}!middle?v=1.7" data-skip='{{m.is_preview != 1 || m.title_link2}}' bindtap="bindPreviewImage" data-src="{{m.img_url2}}" mode='widthFix' lazy-load="{{true}}"></image>
+    <text wx:if="{{m.name2 && m.hide_name != 1}}" class="goods_name">{{m.name2}}</text>
+    <view wx:if="{{m.price2 && m.hide_price != 1}}" class="price">
+      <text class="shop_price">￥{{m.price2}}</text>
+      <text wx:if="{{m.mk_price2!=0}}" class="market_price">￥{{m.mk_price2}}</text>
+    </view>
+  </view>
+</view>

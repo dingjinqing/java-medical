@@ -1,0 +1,20 @@
+<!--pages/appearancecode/appearancecode.wxml-->
+<include src="../common/header.wxml"/>
+<view class="main-container">
+    <block wx:if="{{!no_code}}">
+        <view wx:for="{{order_list}}" wx:key='key' class="code_container">
+            <text class="code_title">出场时请出示下方出场码完成核销</text>
+            <text class="code_title">{{item.verify_code}}</text>
+            <canvas canvas-id="{{item.verify_code}}" class="barcode_image"/>
+            <canvas canvas-id="qr{{item.verify_code}}" class="code_image"/>
+            <text class="pay_money">已付款￥{{item.total_money}}</text>
+            <text class="pay_time">{{item.add_time}}</text>
+        </view>
+    </block>
+    <block wx:else>
+        <view class="no_code">
+            <view class="no_code_title">—— <text>如何出场</text> ——</view>
+            <image src="{{imageUrl}}image/wxapp/no_code_new1.png" />
+        </view>
+    </block>
+</view>

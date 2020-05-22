@@ -1,0 +1,163 @@
+/*活动送券  */
+
+.one_coupon {
+  width: 550rpx;
+  height: 620rpx;
+}
+
+.cou_detail {
+  width: 550rpx;
+  height: 540rpx;
+}
+
+.cou_detail .tips1 {
+  width: 430rpx;
+  margin: 0 auto;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 40rpx;
+}
+
+.tips1 {
+  color: #fff;
+  font-size: 36rpx;
+  text-align: center;
+  width: 430rpx;
+  margin: 0 auto;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tips2 {
+  color: #fff;
+  font-size: 36rpx;
+  margin-top: 10rpx;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 120rpx;
+}
+
+.price_cou {
+  width: 400rpx;
+  margin: 50rpx auto;
+  height: 100rpx;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin-top: 115rpx;
+}
+
+.price_cou>view {
+  float: left;
+}
+
+.left_money {
+  color: #f66;
+  font-size: 50rpx;
+  font-weight: bold;
+  border-right: 2rpx dashed #ddd;
+  width: 200rpx;
+  margin-right: 10rpx;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.left_money text {
+  font-size: 70rpx;
+}
+
+.right_money {
+  width: 170rpx;
+  display: flex;
+  align-items: center;
+  padding-left: 20rpx;
+  color: #333;
+  font-size: 30rpx;
+}
+
+.tip3 {
+  color: #fff;
+  font-size: 30rpx;
+  margin-bottom: 10rpx;
+  text-align: center;
+  width: 100%;
+  margin-top: 85rpx;
+}
+
+.go_list {
+  color: #fff;
+  font-size: 24rpx;
+  text-align: center;
+  width: 100%;
+}
+
+.go_list image {
+  width: 15rpx;
+}
+
+.two_cou {
+  width: 550rpx;
+  height: 770rpx;
+}
+
+.price_cou2 {
+  height: 360rpx;
+  overflow-y: scroll
+}
+
+.each_tow {
+  width: 430rpx;
+  height: 170rpx;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.each_tow:last-of-type {
+  margin-bottom: 0;
+}
+
+.two_detail .tips2 {
+  margin-bottom: 40rpx;
+}
+
+.two_detail .tip3 {
+  margin-top: 25rpx;
+}
+
+.two_detail {
+  width: 550rpx;
+  height: 690rpx;
+}
+
+.each_tow .et_left {
+  width: 215rpx;
+  color: #f66;
+  font-size: 50rpx;
+  font-weight: bold;
+  border-right: 2rpx dashed #ddd;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.each_tow .et_left text {
+  font-size: 70rpx;
+}
+
+.each_tow .et_right {
+  width: 155rpx;
+  color: #333;
+  font-size: 30rpx;
+  padding: 0 30rpx;
+  text-align: center;
+}

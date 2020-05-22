@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "好友助力",
+  "usingComponents": {
+    "v-share-gooods": "/components/popup/share_goods/index"
+  }
+}

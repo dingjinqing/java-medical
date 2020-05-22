@@ -1,0 +1,48 @@
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
+<view class="body">
+  <include src="../common/header.wxml" />
+  <view class="main-container">
+    <view class="nav_list" style="top:{{margin_top_nav + 8}}px">
+        <view class="nav_list_item" style="{{status === 0 ? 'border-bottom-color:' + comColor + ';color:' + comColor + ';' : ''}}" data-status="0" bindtap="toggleStatus">未领取</view>
+        <view class="nav_list_item" style="{{status === 1 ? 'border-bottom-color:' + comColor + ';color:' + comColor + ';' : ''}}" data-status="1" bindtap="toggleStatus">已领取</view>
+        <view class="nav_list_item" style="{{status === 2 ? 'border-bottom-color:' + comColor + ';color:' + comColor + ';' : ''}}" data-status="2" bindtap="toggleStatus">已过期</view>
+    </view>
+    <view class="goods_list" style="margin-top:{{margin_top_nav + 59}}px" wx:if="{{dataList[0].length}}">
+     <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+      <block wx:for="{{pageItem}}" wx:key="cardNo" wx:for-index="itemIndex">
+        <view class="list_item">
+          <view class="gift_top" wx:if="{{item.prizeStatus !== 2}}">
+              <text class="order_sn" selectable wx:if="{{item.prizeStatus === 1}}">订单编号：{{item.orderSn}}</text>
+              <text class="gift_status" style="color:{{comColor}}">{{item.prizeStatus === 0 ? '未领取' : '已领取'}}</text>
+          </view>
+          <view class="goods_item">
+            <image src="{{item.orderGoodsMpVo.goodsImg}}"></image>
+            <view class="item_right">
+              <text class="goods_name" selectable>{{item.orderGoodsMpVo.goodsName}}</text>
+              <text class="goods_spec" selectable>{{item.orderGoodsMpVo.goodsAttr}}</text>
+              <view class="goods_price">
+                <text class="current_price" style="color:{{comColor}};" selectable>￥0.00</text>
+                <text class="goods_num">x1</text>
+              </view>
+              <image src="{{imageUrl}}/image/wxapp/out_time.png" class="expired" wx:if="{{item.prizeStatus === 2}}"></image>
+            </view>
+          </view>
+          <view class="gift_info">
+            <text class="gift_source" selectable>奖品来源：<text class="bold_text">{{giftType[item.activityType]}}</text></text>
+            <text class="pay_money" selectable wx:if="{{item.prizeStatus === 1}}">实付款：<text class="bold_text" >￥0.00</text></text>
+          </view>
+          <view class="gift_buttom" wx:if="{{item.prizeStatus !== 2}}">
+            <text selectable class="btn_item" style="color:{{comColor}};border-color:{{comColor}}" wx:if="{{item.prizeStatus === 1}}" data-order-sn="{{item.orderSn}}" bindtap="viewOrder">查看详情</text>
+            <text selectable class="btn_item" data-activity-id="{{item.id}}" data-goods-info="{{item.orderGoodsMpVo}}" style="color:#fff;border-color:{{comColor}};background-color:{{comColor}}" wx:if="{{item.prizeStatus === 0}}" bindtap="goCheckOut">立即领取</text>
+          </view>
+        </view>
+      </block>
+     </block>   
+    </view>
+    <view class="is-null" wx:if="{{loaded && !dataList[0].length}}">
+      <image src="{{imageUrl}}image/wxapp/no_result.png"></image>
+      <text>{{i18n.$t(localePack,"page1.history.errorTips")}}</text>
+    </view>
+  </view>
+  <include src="../common/footer.wxml" />
+</view>

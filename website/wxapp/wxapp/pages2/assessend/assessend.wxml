@@ -1,0 +1,75 @@
+
+<include src="/pages/common/header.wxml" />
+ <view class="main-bg" style="height:calc(100% - {{margin_top_nav + 8}}px);background:{{resultData.bg_type == 1 ? 'url(' + resultData.bg_img_path + ') no-repeat 0 0/100% 100%' : '-webkit-linear-gradient(left,' + linColor + ',' + comColor1 +')'}}">  
+ </view>
+  <view class="assess_title">
+    {{resultData.result}}
+    <button open-type='share' class="share_assess" wx:if="{{is_preview != 1}}">
+      分享好友
+    </button>
+    <view class="share_assess" style="top:110rpx;" wx:if="{{is_preview != 1}}" bindtap='go_share'>下载海报</view>
+  </view>
+  <view class="container">
+      <view class="topic_title clearfix" wx:if="{{resultData.activity_type == 1}}">
+        <view class='fl'>得分：<text>{{resultData.assess_score}}</text></view>
+        <view class='fr'>超过{{resultData.over_desc}}参与者</view>
+      </view>
+      <image class="topic_type_pic" src='{{resultData.result_img_path}}' wx:if="{{resultData.result_img_path != '' && resultData.result_img_path != null}}"></image>
+      <view class="result_desc">
+        {{resultData.result_desc}}
+      </view>
+  </view>
+
+  <view class="assess_content clearfix" wx:if="{{resultData.reward_type != 0 && resultData.reward_limit_type != 1 && share == 0 && gift_num > 0}}" bindtap='{{resultData.reward_limit_type == 2 ? "toCheckInfo":"getGift"}}'>
+    <image class="{{resultData.reward_type == 2 ? 'goods_gift' : ''}}" src='{{giftUrl}}' mode='widthFix'></image>
+    <view class="fr">
+        <view>活动<text>奖品</text></view>
+        <view>点击领取奖品</view>
+    </view>
+  </view>
+  <button open-type='share' class="assess_content clearfix" wx:if="{{resultData.reward_type != 0 && resultData.reward_limit_type == 1 && share == 0 && gift_num > 0 && is_preview == 0}}">
+    <image src='{{giftUrl}}' mode='widthFix' class="{{resultData.reward_type == 2 ? 'goods_gift' : ''}}"></image>
+    <view class="fr">
+        <view>活动<text>奖品</text></view>
+        <view>点击领取奖品</view>
+    </view>
+  </button>
+
+
+
+  <!-- 中奖的弹框 -->
+<view class='not_award' style='display:{{is_award == 1?"block":"none"}}'>
+  <view class='zhezhao' bindtap='guandiao1'></view>
+  <view class='not_award_detial'>
+    <image src='{{imageUrl}}/image/wxapp/award_bg.png' mode='widthFix' class='images1'></image>
+    <image src='{{imageUrl}}/image/wxapp/is_award1.png' mode='widthFix' class='images2'></image>
+    <view class='detail_content'>
+      <view class='actions_tit'>
+        <text class='text_grade'>恭 喜 您！</text>
+      </view>
+      <view class='jiangpin'>获得</view>
+      <block wx:if='{{resultData.reward_type == 2}}'>
+        <view class='gift_img'><image src='{{gift_info.goods_img}}'></image></view>
+      </block>
+      <view class='jiangpin' style='font-weight:bold' wx:if='{{resultData.reward_type != 2}}'>{{gift_info}}</view>
+      <view class='kuai_look' wx:if='{{resultData.reward_type == 2}}' bindtap='giftInfo'>已放入“我的奖品”快领取吧</view>
+      <view class='kuai_look' wx:if='{{resultData.reward_type != 2 && resultData.reward_type != 5}}' bindtap='giftInfo'>快去查看吧</view>
+      <view class='btn_not_award' bindtap='to_get_gift' wx:if='{{resultData.reward_type == 2}}'>
+        <button>立即领取</button>
+      </view>
+    </view>
+  </view>
+  <view class='btn_close' bindtap='guandiao1'>
+    <image src='{{imageUrl}}image/wxapp/split_btn1.png' mode='widthFix' />
+  </view>
+</view>
+
+<!--fenxiang弹框  -->
+  <view class='share_bg' style='display:{{is_share == 1?"block":"none"}};margin-top:{{margin_top_nav + 8}}px;'>
+    <view class='zhezhao' catchtap='not_show_share'></view>
+    <view class='share_content'>
+      <image src='{{pictorial}}'></image>
+      <view class='btn_save_img' bindtap='saveImgToPhotosAlbumTap'>保存图片</view>
+      <view class='save_tips'>保存图片到本地相册</view>
+    </view>
+  </view>

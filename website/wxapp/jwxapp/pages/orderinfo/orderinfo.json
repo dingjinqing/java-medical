@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "v-pre-sale-rule":"/components/item/popup/pre_sale_rule/index"
+  }
+}

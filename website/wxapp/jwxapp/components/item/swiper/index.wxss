@@ -1,0 +1,23 @@
+.swiper {
+  height: 100vw;
+  width: 100%;
+}
+.swiper .slide-image {
+  height: 100%;
+  width: 100%;
+}
+.swiper .video{
+  width: 100%;
+  height: 100%;
+}
+.video-content {
+  position: relative;
+}
+.video-content > .playBtn {
+  width: 125rpx;
+  height: 125rpx;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}

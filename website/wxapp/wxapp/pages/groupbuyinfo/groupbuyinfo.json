@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "拼团详情",
+  "usingComponents": {
+    "v-sel-spec": "/components/item/popup/spec/index",
+    "v-goods-recommend": "/components/item/recommend/index"
+  }
+}

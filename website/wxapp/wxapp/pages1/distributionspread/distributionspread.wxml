@@ -1,0 +1,26 @@
+<include src="/pages/common/header.wxml"/>
+<!-- <view class='all'> -->
+    <view class='content'>
+      <rich-text nodes="{{dis_desc}}"></rich-text>
+    </view>
+    <view class='bten_shenqing' style='background:{{comColor}}' wx:if='{{dis_content.user.is_distributor == 1}}' bindtap='to_distribution'>进入分销中心</view>
+    <view class='shenhe_tips' style='background:{{commonColor}};color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};' wx:if='{{dis_content.user.is_distributor == 0 && (dis_content.distribution_apply.status == 1 || dis_content.distribution_apply.status == 2)}}'>审核未通过，请重新申请</view>
+    <form report-submit='true' bindsubmit='apply_get'>
+     <button class='bten_shenqing' style='background:{{comColor}}' wx:if='{{dis_content.user.is_distributor == 0 && (dis_content.distribution_apply.status == 1 || dis_content.distribution_apply.status == 2)}}'  formType='submit'>申请成为分销员</button>
+    </form>
+    <view class='btn_wait bten_shenqing' wx:if='{{dis_content.user.is_distributor == 0 && dis_content.distribution_apply.status == 0}}'>等待审核</view>
+    <form report-submit='true' bindsubmit='apply_get'>
+      <button class='bten_shenqing' wx:if='{{dis_content.user.is_distributor == 0 && dis_content.distribution_apply == null}}' style='background:{{comColor}}' bindtap='apply_get' formType='submit'>申请成为分销员</button>
+    </form>
+
+    <!-- 绑定手机号弹窗 -->
+    <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="您需要绑定手机号才可以申请成为分销员" />
+
+    <!-- 已授权弹框 -->
+    <view class='moblie_authorize' wx:if="{{is_authorize}}">
+      <text>手机号已授权</text>
+      <form report-submit='true' bindsubmit='apply_get'>
+      <button class='authorize_button' bindtap='apply_get' formType='submit'>继续申请</button>
+      </form>
+    </view>
+

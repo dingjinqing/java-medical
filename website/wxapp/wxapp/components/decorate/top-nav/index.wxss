@@ -1,0 +1,60 @@
+@import "../goodscommon/goodslabel.wxss";
+@import "/css/iconfont.wxss";
+.top_nav_scroll{
+  background: #fff;
+  margin-bottom: 20rpx;
+}
+.top_nav {
+  white-space: nowrap;
+  height: 80rpx;
+  background: #fff;
+  line-height: 80rpx;
+  display: flex;
+}
+
+.top_single_flex {
+  flex: 1;
+}
+
+.top_double_flex {
+  flex: 0 0 22%;
+}
+
+.nav_bottom_select {
+  position: absolute;
+  bottom: -1rpx;
+  border: 2rpx solid #f66;
+  width: 75%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.top_nav_single {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.top_nav_single_content {
+  text-align: center;
+}
+
+.top_nav_title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 0px 10px;
+  height: 50rpx;
+  line-height: 50rpx;
+  margin-top: 15rpx;
+  width: 80%;
+  border-radius: 8rpx;
+}
+
+.select2 {
+  font-size: 32rpx;
+  font-weight: 600;
+  margin:0px 0px;
+  margin-top:15rpx; 
+  width: 100%;
+}

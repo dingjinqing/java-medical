@@ -1,0 +1,89 @@
+ <block wx:if="{{gd.gift.length != 0 && gd.gift != false}}">
+      <block wx:if="{{gd.gift.length == 1}}">
+        <view class='clearfix goods_gift' bindtap='ViewGift' data-index="0" style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;background-position-y:35rpx;'>
+          <view class='goods_act_title'>赠品</view>
+            <view class='all_cuxiao_info'>
+              <view class='goods_cuxiao_info clearfix'>
+                <view class='clearfix'>
+                  <view class='gift_content'>
+                    {{gd.gift[0].explain}}
+                  </view>
+                </view>
+              </view>
+              <view class='goods_img clearfix'>
+              <block wx:for="{{gd.gift[0].product_img}}" wx:key='key'>
+                <view class='gift_img'  wx:if="{{index < 4}}">
+                  <image src='{{item}}' mode="aspectFit"></image>
+                </view>
+              </block>
+                <view class='gift_img gift_num' wx:if="{{gd.gift[0].gift_product.length > 4}}">
+                  <text>共{{gd.gift[0].gift_product.length}}件</text>
+                </view>
+              </view>
+            </view>
+        </view>
+      </block>
+      <block wx:else>
+        <view class="clearfix goods_gift">
+          <view class='goods_act_title'>赠品</view>
+          <view class="goods_gift_list" style="{{giftMore ? 'max-height:auto;' : 'max-height:166rpx;'}}">
+            <view class="goods_gift_item" wx:for="{{gd.gift}}" bindtap='ViewGift' wx:key="{{index}}" data-index="{{index}}">
+              <text>{{item.explain}}</text>
+              <image src='{{imageUrl}}image/wxapp/right_into.png' mode="widthFix"></image>
+            </view>
+          </view>
+        </view>
+        <view class="goods_gift_view_more" wx:if="{{gd.gift.length > 3}}" bindtap='gift_view_more'><text class='{{giftMore ? "up" : "down"}}'>{{giftMore ? "收起更多" : "展开更多"}}</text></view>
+      </block>
+</block>
+      <!--  赠品活动弹框  -->
+    <action-sheet hidden="{{giftSheetHidden}}" bindchange="proGiftCancel">
+      <view class='promotion' hidden="{{ gitftSheetHidden }}">
+        <view class='pro_title'>
+          赠品
+          <image src='{{ img_close }}' mode="widthFix" bindtap="proGiftCancel" class='pro_close' />
+        </view>
+        <view class='pro_content'>
+          <view class='gift_rule clearfix'>
+            <view class='rule1' style='{{giftInfo.is_full_gift != 1 ? "width:720rpx;margin-right:0px;" : ""}}'>
+              赠品规则：
+              <text>{{giftInfo.explain}}</text>
+            </view>
+            <view class='rule2' bindtap='to_giftgoods' data-ids='{{giftInfo.id}}' wx:if="{{giftInfo.is_full_gift == 1}}">
+              去凑单
+              <image src='../../images/backward.png'></image>
+            </view>
+          </view>
+          <view class='gift_goods'>
+          <block wx:for="{{giftInfo.gift_product}}" wx:key='key'>
+            <view class='each_goods clearfix' bindtap='to_itemgoods' data-id = '{{item.goods_id}}'>
+              <view class='goods_lefts' style="position:relative;">
+                <image src='{{item.goods_img}}'></image>
+                  <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{imageUrl}}image/wxapp/goods_sell_out.png"></image>
+              </view>
+              <view class='goods_right'>
+                <view class='goods_name'>{{item.goods_name}}</view>
+                <view class='price_info clearfix'>
+                  <view class='jiaqian'>
+                    <view class='member_icon' wx:if='{{item.goods_price_action == 1}}'>会员专享</view>
+                    <view class='reduce' wx:if='{{item.goods_price_action == 2}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>限时降价</view>
+                    <view class='sale_price' style='color:{{comColor}}'>￥
+                      <text>{{item.shop_price }}</text>
+                    </view>
+                    <view class='original_price' wx:if='{{item.market_price!=null && item.market_price != ""}}'>￥{{item.market_price}}</view>
+                  </view>
+                  <!-- <view class='btn_add_cart' bindtap='add_to_cart'>
+                    X{{item.product_number}}
+                  </view> -->
+                </view>
+              </view>
+            </view>
+            </block>
+          </view>
+        </view>
+      </view>
+    </action-sheet>
+ 
+ 
+ 
+ 

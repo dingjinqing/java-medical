@@ -1,0 +1,55 @@
+<include src="/pages/common/header.wxml" />
+<view class='main-container'>
+  <view class='fs_top'>
+    <text class='iconfont icondanxuan' style='font-size:140rpx;color:{{comColor}}'></text>
+    <view class='top_word'>提交成功</view>
+  </view>
+  <view class='fs_title' wx:if='{{(success_info.send_score != null && success_info.send_score != 0) || success_info.send_coupon_list}}'>
+    <view class='heng'></view>
+    <view class='zi'>参与奖励</view>
+    <view class='heng'></view>
+  </view>
+  <view class='fs_content'>
+    <view class='jifen' bindtap='to_integral' wx:if='{{success_info.send_score != null && success_info.send_score != 0}}'>
+      <view>积分奖励</view>
+      <view style='color:{{comColor}}'>获得 {{success_info.send_score}} 积分 <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image></view>
+    </view>
+    <view class='coupon' bindtap='to_coupon' wx:if='{{success_info.send_coupon_list}}'>
+      <view>优惠券奖励</view>
+      <view style='color:{{comColor}}'>获得 {{success_info.send_coupon_list.length}} 张优惠券 <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image></view>
+    </view>
+  </view>
+  <view class='coupon_list'>
+    <view class='each_coupon clearfix' wx:for='{{success_info.send_coupon_list}}' wx:key='key'>
+      <view class="left" style='background:{{comColor}}'>
+        <view class='coupon_xian'>
+          <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
+        </view>
+        <view class="price" wx:if="{{item.act_code == 'voucher'}}">￥<text>{{item.amount}}</text></view>
+        <view class="price" wx:if="{{item.act_code == 'discount'}}"> <text>{{item.amount}}折</text></view>
+         <view class="price" wx:if="{{item.act_code == 'random'}}">￥<text>{{item.random_max}}</text>最高</view>
+        <view class='name'>{{item.act_name}}</view>
+      </view>
+      <view class="right">
+        <view class="case">
+          <block wx:if="{{item.limit_order_amount != 0 && item.limit_order_amount != null}}">
+            使用条件:满{{item.limit_order_amount}}可用(不含运费)
+          </block>
+          <block wx:else>
+            使用条件:无门槛(不含运费)
+          </block>
+        </view>
+        <view class="click_to_detail" wx:if='{{item.recommend_cat_id == null && item.recommend_goods_id == null && item.recommend_sort_id == null}}'>全部商品可用</view>
+        <view class="click_to_detail" wx:else>部分商品可用</view>
+        <view class="time_canuse">{{item.start_time}} - {{item.end_time}}</view>
+      </view>
+    </view>
+  </view>
+  <form report-submit='true' bindsubmit='to_anylink' wx:if='{{success_info.form_data.form_cfg.set_own_link == 1}}'>
+    <button class='btn_to_index' formType='submit' style='background:#ffbd4b;margin-bottom:20rpx'>{{success_info.form_data.form_cfg.custom_btn_name}}</button>
+  </form>
+  <form report-submit='true' bindsubmit='to_index'>
+      <button class='btn_to_index' formType='submit' style='background:{{comColor}}'>返回首页</button>
+  </form>
+</view>
+<include src="/pages/common/footer.wxml" />

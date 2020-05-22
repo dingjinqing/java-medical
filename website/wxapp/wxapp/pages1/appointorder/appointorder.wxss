@@ -1,0 +1,509 @@
+/* APPOINTMENT.WXSS 2018.03.07 */
+@import '/pages/goodsCheckout/goodsCheckout.wxss';
+page{
+  background: #f5f5f5;
+  padding-bottom: 100rpx;
+}
+.main-container{
+  min-height: 950rpx;
+}
+.appoint-name, .appoint-status, 
+.appoint-person, .appoint-service {
+  width: 100%;
+  background: #fff;
+
+  margin-bottom: 20rpx;
+}
+
+.tips {
+  color:#353535;
+}
+.no_check{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 130rpx;
+}
+.no_check image{
+  width: 70rpx;
+}
+.no_check view{
+  font-size: 14px;
+  color: #f66;
+}
+.no_check button{
+  position: absolute;
+ width:170rpx;
+height:100rpx;
+  opacity: 0;
+}
+
+.container {
+  position: relative;
+  overflow-x: hidden;
+  padding-bottom: 100rpx;
+}
+
+.appoint-detail {
+  width: 100%;
+  height: 200rpx;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+
+  margin: 20rpx 0;
+}
+
+.appoint-man, .appoint-phone {
+  width: 92%;
+  height: 100rpx;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0 4%;
+
+  border-bottom: 2rpx solid #eee; 
+}
+
+.appoint-man {
+  border-bottom: 2rpx solid #eee; 
+}
+
+.appoint-man input, .appoint-phone input {
+  text-align: right;
+  font-size: 28rpx;
+  color: #353535;
+}
+
+.img_pre {
+  width: 41rpx;
+  height: 41rpx;
+}
+
+
+.img_cancel {
+  width: 41rpx;
+  height: 41rpx;
+}
+
+.left-tips {
+  width: 32%;
+  font-size:28rpx;
+  color: #353535;
+}
+
+.right-tips {
+  width: 46%;
+}
+
+.appoint-time, .appoint-person {
+  width: 92%;
+  height: 100rpx;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4%;   
+}
+
+.appoint-time text, .appoint-person text {
+  font-size: 26rpx;
+}
+
+.appoint-time view, .appoint-person view {
+  width: 42%;
+  text-align: right;
+}
+
+
+.img_arrow {
+  width: 16rpx;
+  height: 32rpx;
+
+  float:right;
+  margin-top:2rpx;
+}
+
+
+ .appoint-service{
+   width: 92%;
+   padding: 30rpx 4%;
+   font-size: 26rpx;
+   color: #353535;
+} 
+.appoint-service label{
+  height: 60rpx;
+  line-height: 60rpx;
+  float: left;
+  margin-right: 20rpx;
+}
+.appoint-service input{
+  height: 60rpx;
+  line-height: 60rpx;
+  float: left;
+  width: 550rpx;
+}
+.appoint-service::after{
+  content: "";
+  display: block;
+  clear: both;
+}
+.appoint-intro {
+  padding: 0% 4%;
+}
+
+
+.modal-box {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  opacity: 0.5;
+
+  position: fixed;
+  top: 0;
+  left: 0; 
+  overflow: hidden;
+  z-index: 9000;
+}
+
+.modal-container {
+  width:100%;
+
+  overflow:hidden;
+  z-index:9999;
+  position:fixed;
+  bottom:0;
+}
+
+.modal-top {
+  width:100%;
+  height:100rpx;
+  background:#fff;
+
+  border-bottom:2rpx solid #eee;
+
+  text-align: center;
+  line-height: 100rpx;
+}
+
+.modal-top view {
+  font-size: 26rpx;
+  color: #353535;
+}
+
+.modal-top view text {
+  margin-left: 13%;
+}
+
+.modal-top image {
+  width: 50rpx;
+  height: 50rpx;
+
+  float: right;
+  padding: 4%;
+}
+
+.modal-bottom {
+  width: 100%;
+  height: 450rpx; 
+  background: #fff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.man-btn {
+  width:100%;
+
+  border-bottom: 2rpx solid #eee;
+  padding:2% 0;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.man-btn-row {
+  width:100%;
+
+  display:flex;
+  flex-direction:column;
+}
+
+.icon_sel {
+  width:6%;
+  
+  margin:0 4%;
+}
+
+.icon_sel image {
+  width:40rpx;
+  height: 40rpx;
+}
+
+.icon_man {
+  width: 80rpx;
+  height: 80rpx;
+
+  border-radius: 50%;
+  border: 2rpx solid #ccc; 
+
+  margin:0% 3% 0 0;
+}
+
+.title {
+  font-size: 26rpx;
+  color: #353535;
+
+  margin-bottom:5%;
+}
+
+.man-content {
+  display:flex;
+  flex-direction:column;
+  font-size:28rpx;
+}
+
+.man-text {
+  color: #888;
+}
+
+/*弹出层预约时间  */
+.modal-time-bottom {
+  width: 100%;
+  height: 605rpx; 
+  background: #fff;
+}
+
+.time-left {
+  height:100%;
+  width:40%;
+  border-right:2rpx solid #eee;
+  box-sizing: border-box;
+
+  flex-direction: column;
+
+  float: left;
+  overflow-y: auto;
+}
+
+.time-right {
+  width:60%;
+  height: 100%;
+
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.time-date {
+  height:85rpx;
+
+  line-height:83rpx;
+  font-size: 24rpx;
+  color:#353535;
+  text-align: center;
+  border-bottom: 2rpx solid #eee;
+
+  box-sizing: border-box;
+}
+
+.time-hour {
+  width:90%;
+  height:80rpx;
+
+  text-align:center;
+  line-height:80rpx;
+  font-size:26rpx;
+
+  margin: 20rpx;
+}
+
+
+.appointlist-box {
+  margin: 3% 0;
+}
+
+.appoint-price {
+  font-size: 24rpx;
+
+  color: #888;
+}
+
+.appoint-top {
+  width:92%;
+  height: 100rpx;
+  background: #fff;  
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4%;
+}
+
+.top-center {
+  width: 50%;
+  display:flex;  
+  align-items:center;
+
+  font-size: 28rpx;
+  color: #353535;
+}
+
+.top-center text {
+  margin: 0% 6%;
+}
+
+.top-right text {
+  font-size: 28rpx;
+  color: #f66;
+}
+
+.appoint-content {
+  padding: 25rpx 4%;
+  background: #fafafa;
+}
+.appoint-content::after{
+  content: "";
+  display: block;
+  clear: both
+}
+.appoint-content>view{
+  float: left;
+  height: 152rpx;
+}
+.appoint-content .content_img{
+  width: 170rpx;
+  overflow: hidden
+}
+
+.content-center {
+  position:relative;
+  width: 520rpx;
+}
+.content-center>text:first-of-type{
+  position: absolute;
+  top: 0;
+}
+.appoine_bottom{
+  position: absolute;
+  bottom: 0;
+  width: 500rpx;
+}
+.appoine_bottom::-webkit-scrollbar{
+	display:none;
+}
+.appoint-price {
+  width:76rpx;
+  height:35rpx;
+  line-height: 35rpx;
+  font-size:24rpx;
+  color:#E99130;
+  float:left;                                     
+  border:2rpx solid #F4C99F;
+  border-radius:7rpx;  
+  margin: 0rpx 5px 0 0;
+  display: flex;
+  justify-content: center;
+}
+.appoint-money {
+  font-size: 30rpx;
+  float: left;
+  color:#f66;
+  margin-right: 30rpx;
+  
+}
+.all-price{
+  float: left;
+  color: #999;
+  font-size: 24rpx;
+  position: relative;
+  top: 4rpx;
+}
+.content-center text {
+  font-size: 26rpx;
+}
+
+.center-text {
+  color: #888;
+}
+
+.center-text-price {
+  color: #f66;
+}
+
+.appoint-count {
+  height:60rpx;
+
+  padding-top:18%;
+}
+
+.appoint-bottom {
+  width: 92%;
+  height: 100rpx;  
+  background: #fff;
+
+  border-bottom:2rpx solid  #eee;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4%;
+}
+
+.appoint-bottom text {
+  font-size: 26rpx;
+  color: #353535;
+}
+
+
+.appoint-btm {
+  width: 100%;
+  height:100rpx;
+  background: #fff;
+
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+
+  display: flex;
+  justify-content: space-between;
+}
+
+.all-money {
+  width:63%;
+  height:100rpx;
+
+  text-align:right;
+  line-height:100rpx;
+  font-size:28rpx;
+  color:#f66;
+}
+
+.go-order {
+  width: 100%;
+  height: 100rpx;
+  background: #f66;
+  border: 0;
+  outline: 0;
+  border-radius: 0;
+  font-size: 28rpx;
+  line-height: 100rpx;
+  text-align: center;  
+  color:#fff;
+}
+.van-two-ellipsis{
+  text-overflow:ellipsis; 
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  word-break: break-all;
+  margin-bottom: 10rpx;
+  white-space: normal;
+}

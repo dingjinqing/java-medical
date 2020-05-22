@@ -1,0 +1,245 @@
+<!-- 预约服务：pages1/appointment/appointment.wxml -->
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
+<block>
+  <include src="/pages/common/header.wxml" />
+  <view class="main-container" wx:if="serviceInfo.delFlag === 0">
+    <view class="container" style="{{isIpx == 1 ?'padding-bottom:40rpx;':''}}">
+      <!-- 轮播图 -->
+      <view class="swiper-top">
+        <swiper class="swiper" autoplay="true" circular="true" indicator-dots="true" indicator-active-color="#fff" interval="5000" duration="500">
+          <block wx:for="{{serviceInfo.serviceImg}}" wx:key="index">
+            <swiper-item item-id="{{index}}+1">
+              <image class="slide-image" src="{{imageUrl}}{{item}}" mode="widthFix" lazy-load="false" binderror="" bindload="" />
+            </swiper-item>
+          </block>
+        </swiper>
+      </view>
+      <!-- 门店名称 -->
+      <view class="appoint-name">
+        <view class="name-top">{{serviceInfo.serviceName}}</view>
+        <view class="appoint-name-btm" wx:if="{{serviceInfo.serviceSubsist != 0 || serviceInfo.servicePrice != 0}}">
+          <block wx:if="{{serviceInfo.serviceSubsist > 0}}">
+            <view class="appoint-price" style="color:{{linColor}};border-color:{{linColor}}">
+              {{i18n.$t(localePack,"page1.reserve.deposit")}}
+            </view>
+            <view class="appoint-money" style='color:{{comColor}}'>
+              <text style="font-size:28rpx;">￥</text>
+              <text>{{serviceInfo.serviceSubsist}}</text>
+            </view>
+            <view class="appoint-old-price" wx:if="serviceInfo.servicePrice != 0">
+              {{i18n.$t(localePack,"page1.reserve.totalPriceOfService")}}：￥{{serviceInfo.servicePrice}}
+            </view>
+          </block>
+          <block wx:else>
+            <view class="appoint-price" wx:if="{{serviceInfo.servicePrice != 0}}" style="color:{{comColor}};border-color:{{comColor}}">
+              {{i18n.$t(localePack,"page1.reserve.totalPrice")}}
+            </view>
+            <view class="appoint-money" wx:if="{{serviceInfo.servicePrice != 0}}" style="color:{{comColor}};">
+              <text style="font-size:28rpx;">￥</text>
+              <text>{{serviceInfo.servicePrice}}</text>
+            </view>
+          </block>
+        </view>
+        <view class="charge_resolve" wx:if="{{serviceInfo.chargeResolve}}">
+          <image src="{{ img_charge }}" mode="widthFix" />
+          <text>{{serviceInfo.chargeResolve}}</text>
+        </view>
+      </view>
+      <!-- 营业状态 -->
+      <view class="appoint-status">
+        <view class="status-top status appoint-text" bindtap="showMap">
+          <image src="{{ img_addr }}"></image>
+          <text style="width:476rpx;">{{storeInfo.address}}</text>
+          <text style="width:170rpx;text-align: right;" wx:if="{{storeInfo.distance}}">
+            {{storeInfo.distance}}km
+          </text>
+        </view>
+        <view class="status-btm status">
+          <image src="{{ img_time }}"></image>
+          <view class="appoint-text">
+            {{i18n.$t(localePack,"page1.reserve.businessHours")}}：
+            <text wx:if="{{storeInfo.businessType == 1}}">{{i18n.$t(localePack,"page1.reserve.everyDay")}}</text>
+            <text wx:if="{{storeInfo.businessType == 0}}">{{i18n.$t(localePack,"page1.reserve.workingDay")}}</text>
+            {{storeInfo.openingTime}} - {{storeInfo.closeTime}}
+          </view>
+        </view>
+      </view>
+      <!-- 预约时间 -->
+      <view class="appoint_ss">
+        <view class="appoint-time" bindtap="timeShow">
+          <view class="app_tips appoint-text">
+            {{i18n.$t(localePack,"page1.reserve.appointment")}}
+          </view>
+          <view class="app_times">
+            <text class="app_text" wx:if="{{reservationInfoList && reservationInfoList.length > 0 && !reserveInfo.startTime}}" style="color:#666;">
+              <text>{{i18n.$t(localePack,"page1.reserve.pleaseChoose")}}</text>
+            </text>
+            <text class="app_text" wx:if="{{reservationInfoList && reserveInfo.startTime}}" style="color:{{comColor}}">
+              <text>{{reserveInfo.startTime}} - {{reserveInfo.endTime}}</text>
+            </text>
+            <text class="app_text" wx:if="{{!reservationInfoList}}">{{i18n.$t(localePack,"page1.reserve.noTime")}}</text>
+            <image class="brn_tight" src="{{imageUrl}}image/wxapp/right_into.png" mode="widthFix"></image>
+          </view>
+        </view>
+        <!-- 技师 -->
+        <block wx:if="{{serviceInfo.serviceType == 1}}">
+          <view class="appoint_tech" bindtap="techShow">
+            <view class="app_tips appoint-text">{{technicianTitle}}</view>
+            <view class="app_times">
+              <text class="app_text" wx:if="{{tech_name}}" style='color:{{comColor}}'>
+                <text>{{tech_name}}</text>
+              </text>
+              <text class="app_text" wx:if="{{!tech_name}}" style="color:#666;">{{i18n.$t(localePack,"page1.reserve.pleaseChoose")}}</text>
+              <image class="brn_tight" src="{{img_arrow}}" mode='widthFix'></image>
+            </view>
+          </view>
+        </block>
+      </view>
+      <!-- 评价 -->
+      <block wx:if="{{!!commentInfo}}">
+        <view class="goods-comment" bindtap="click_to_detail">
+          <view class="clearfix goods_comment_title">
+            <view class="goods_act_title">{{i18n.$t(localePack,"page1.reserve.evaluationTitle")}}</view>
+            <view class="goods_comment_all">
+              <text>{{i18n.$t(localePack,"page1.reserve.viewAll")}}</text>
+              <image class="click_more" src='{{ img_arrow }}' mode="widthFix"></image>
+            </view>
+          </view>
+          <view class="comment_list">
+            <view class="comment_list_top clearfix">
+              <view class="clearfix">
+                <view class="fl">
+                  <block wx:if="{{commentInfo.anonymousflag == 1}}">
+                    <image class="user_avatar" src='{{ nickAvatar }}' mode="widthFix" />
+                    <text>匿名用户</text>
+                  </block>
+                  <block wx:else>
+                    <image class="user_avatar" src='{{ commentInfo.userAvatar }}' mode="widthFix" />
+                    <text>{{ commentInfo.username}}</text>
+                  </block>
+                </view>
+                <view class="fr">
+                  <text class='iconfont iconshoucang' wx:if="{{commentInfo.commstar >= 1}}" style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;'></text>
+                  <text class='iconfont iconshoucang' wx:if="{{commentInfo.commstar >= 2}}" style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;'></text>
+                  <text class='iconfont iconshoucang' wx:if="{{commentInfo.commstar >= 3}}" style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;'></text>
+                  <text class='iconfont iconshoucang' wx:if="{{commentInfo.commstar >= 4}}" style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;'></text>
+                  <text class='iconfont iconshoucang' wx:if="{{commentInfo.commstar >= 5}}" style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;'></text>
+                </view>
+              </view>
+              <view class="comment_list_text">{{commentInfo.commNote}}</view>
+              <!-- 评价图片 -->
+              <view class="comment_list_img clearfix">
+                <block wx:for="{{commentInfo.commImg}}" wx:key="key" wx:for-item="item_img">
+                  <view>
+                    <image src="{{imageUrl + item_img}}" catchtap="clickComment" data-src="{{item_img}}"></image>
+                  </view>
+                </block>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+      <!-- 服务详情 -->
+      <block wx:if="{{storeInfo.content}}">
+        <view class="appoint-service">
+          <view class="appoint-service-name appoint-text">
+            {{i18n.$t(localePack,"page1.reserve.detailsOfService")}}
+          </view>
+          <view class="appoint-service-cont" style="overflow-x:hidden">
+            <view>
+              <rich-text content="{{storeInfo.content}}"></rich-text>
+            </view>
+          </view>
+        </view>
+      </block>
+      <!-- 底部 -->
+      <view class='footer clearfix' wx:if="{{storeInfo.businessState == 1}}" style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
+        <view class='footer_1'>
+          <view bindtap="toIndex">
+            <image src='{{ img_store }}' mode="widthFix"></image>
+            <view>{{i18n.$t(localePack,"page1.reserve.storeHome")}}</view>
+          </view>
+          <view>
+            <button open-type="contact" session-from="weapp"></button>
+            <image src='{{ img_sercer }}' mode="widthFix" style="margin-top:2rpx;"></image>
+            <view style="margin-top:6rpx;">{{i18n.$t(localePack,"page1.reserve.customer")}}</view>
+          </view>
+        </view>
+        <view class='footer_3' bindtap="reservationNow" style='background:{{comColor}}'>
+          {{i18n.$t(localePack,"page1.reserve.reservationNow")}}
+        </view>
+      </view>
+      <view class='footer clearfix no_check' wx:if="{{storeInfo.businessState != 1 || storeInfo.scanBuy == 1}}">
+        <button open-type="contact"></button>
+        <image src='{{img_service}}' mode='widthFix'></image>
+        <view>{{i18n.$t(localePack,"page1.reserve.customer")}}</view>
+      </view>
+    </view>
+  </view>
+  <include src="/pages/common/footer.wxml" />
+  <!-- 绑定手机号弹窗 -->
+  <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" content="{{i18n.$t(localePack,'page1.reserve.needPhonenum')}}" />
+  <!-- 弹出层预约时间 -->
+  <action-sheet hidden="{{!timeMode}}">
+    <view class='pro_title'>
+      {{i18n.$t(localePack,"page1.reserve.chooseTime")}}
+      <image src='{{ img_close }}' mode="widthFix" bindtap="timeClose" class='pro_close' />
+    </view>
+    <view class='pro_content' style='margin-bottom:{{isIpx == 1 ? "160rpx":"100rpx"}}'>
+      <view class='pc_left' style='height:{{isIpx == 1?"430rpx;":"500rpx;"}}'>
+        <block wx:for="{{reservationInfoList}}" wx:key="index">
+          <view data-key="{{index}}" data-date="{{item.reservationDate}}" bindtap="selectedDay" style='border-left-color:{{show_id == index?comColor:""}};color:{{show_id == index?comColor:""}}' class='{{show_id == index ?"ischecked":"normal"}}'>
+            {{item.reservationDate}}
+          </view>
+        </block>
+      </view>
+      <scroll-view scroll-y="true" class='pc_right' style='height:{{isIpx == 1?"430rpx;":"500rpx;"}}'>
+        <block wx:for="{{reservationInfoList}}" wx:key="index">
+          <view data-id='{{index}}' style="display:{{show_id == index?'block':'none'}}">
+            <block wx:for="{{item.reservationTimeList}}" wx:key="key2" wx:for-item="time" wx:for-index="time_id">
+              <view class="{{show_time == time_id ? 'active' : 'common' }}" data-key="{{time_id}}" data-start_time="{{time.startTime}}" data-end_time="{{time.endTime}}" bindtap='selectedHour' style='color:{{show_time == time_id?comColor:""}};background:{{show_time == time_id?somColor:""}}'>
+                {{time.startTime}} - {{time.endTime}}
+              </view>
+            </block>
+          </view>
+        </block>
+      </scroll-view>
+      <view class='card_sure' bindtap='timeConfirm' style='bottom:{{isIpx == 1?"60rpx;":"0rpx;"}};background:{{comColor}}'>
+        {{i18n.$t(localePack,"page1.reserve.determine")}}
+      </view>
+    </view>
+  </action-sheet>
+  <!-- 技师的弹框 -->
+  <action-sheet hidden="{{!techMode}}">
+    <view class='pro_title'>
+      {{i18n.$t(localePack,"page1.reserve.choose")}}{{serviceInfo.technician_title}}
+      <image src='{{ img_close }}' mode="widthFix" bindtap="techClose" class='pro_close' />
+    </view>
+    <view class='pro_content'>
+      <block wx:for="{{ technicianPojoList }}" wx:key="index">
+        <view class='each_person' data-index="{{index}}" bindtap='chooseTach' data-name="{{item.technicianName}}" data-id="{{item.id}}">
+          <!-- <view class='choose_btn'>
+            <image src="{{ item.src }}" mode="widthFix" wx:if='{{item.src != ""}}' />
+            <text class='iconfont icondanxuan' style='color:{{comColor}};font-size:40rpx' wx:if='{{item.src == ""}}'></text>
+          </view> -->
+          <radio class="choose_radio" value="{{item.id}}" checked="{{tech_id === item.id}}"></radio>
+          <view class='choose_info'>
+            <view class='pserson_logo'>
+              <image src='{{ item.bgImgPath }}'></image>
+            </view>
+            <view class='person_info'>
+              <view class='person_name'>{{ item.technicianName }}</view>
+              <view class='person_produce' wx:if="{{ item.technicianIntroduce }};">
+                {{ item.technicianIntroduce }}
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+    <view class='card_sure' bindtap='techConfirm' style='bottom:{{isIpx == 1?"60rpx;":"0rpx;"}};background:{{comColor}}'>
+      {{i18n.$t(localePack,"page1.reserve.determine")}}
+    </view>
+  </action-sheet>
+  <!-- 弹出层预约时间 -->
+</block>

@@ -1,0 +1,32 @@
+/* pages/agreement/agreement.wxss */
+view{
+  box-sizing: border-box;
+}
+.agreement{
+  border-top: 1px solid #eee;
+  padding: 30rpx;
+}
+.title{
+  font-size: 30rpx;
+  color: #000;
+  margin: 20rpx 0;
+}
+.content{
+  color: #888;
+  font-size: 28rpx;
+  line-height: 40rpx;
+  position: relative;
+}
+.content text{
+  float: left;
+}
+.content view{
+  width: 90%; 
+  float: left;
+}
+.content_a{
+  padding-left: 40rpx;
+  color: #888;
+  font-size: 28rpx;
+  position: relative;
+}

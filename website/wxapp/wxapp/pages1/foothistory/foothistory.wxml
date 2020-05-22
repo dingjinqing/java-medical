@@ -1,0 +1,86 @@
+<!--pages1/foothistory/foothistory.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class="main-container">
+    <view class="search_bar" style='top:{{margin_top_nav+8}}px'>
+      <view class="search-box">
+        <icon class="search-img" size="13" type="search"></icon>
+        <input type="text" bindblur="searchInput" placeholder="请输入搜索关键字" value="{{searchText}}" class="search_inpout" />
+      </view>
+    </view>
+    <view class="foot_content">
+        <view class="goods_content clearfix" wx:if='{{!isNull}}'>
+            <view class="each_day clearfix" wx:key='key' wx:for='{{foot_list}}' wx:for-item='day_item' wx:for-index='day_idnex'>
+              <view class="each_day_line">{{day_item.ref_date}}</view>
+              <view class="each_goods" wx:for='{{day_item.list}}' wx:for-item='gd_item' wx:for-index='gd_index' wx:key='key'
+                    data-goods_ids='{{gd_item.goods_id}}' data-goods_type='{{gd_item.goods_type}}' 
+                    data-is_prd='{{gd_item.is_prd}}' data-bargain_id="{{gd_item.bargin_id}}" 
+                    data-seckill_id="{{gd_item.seckill_id}}" data-prd_id='{{gd_item.prd_id}}' data-goods_id="{{gd_item.goods_id}}" 
+                    data-presale_id='{{gd_item.presale_id}}' data-goods_price='{{gd_item.shop_price}}' 
+                    data-integral_goods_id='{{gd_item.integral_goods_id}}' bindtap="toDetail">
+                  <view class="good_imgs">
+                    <include src="../../pages/goodscommon/searchlabelcommon.wxml" />
+                    <image src="{{gd_item.goods_img}}" class="goods_main_img" lazy-load="true"></image>
+                    <image class="sell_out" wx:if ='{{gd_item.goods_number == 0}}' src="{{imageUrl}}image/wxapp/goods_sell_out.png"></image>
+                    <image class="sell_out" wx:if ='{{gd_item.is_on_sale == 0}}' src="{{imageUrl}}image/wxapp/icon_shixiaoed.png"></image>
+                    <view class='reduce' wx:if="{{gd_item.goods_price_action == 2 && gd_item.goods_type != 1&& gd_item.goods_type != 3 && gd_item.goods_type != 5 && gd_item.goods_type != 4}}" style='background:{{linColor}};color:#fff'>限时降价，立即查看</view>
+                    <view class='grade' wx:elif="{{gd_item.goods_price_action == 3 && gd_item.goods_type != 1&& gd_item.goods_type != 3 && gd_item.goods_type != 5 && gd_item.goods_type != 4}}" style='background:{{linColor}};color:#fff'>新人专享,首单特惠</view>
+                    <view class='exclusive' wx:elif="{{gd_item.is_card_exclusive == 1 && gd_item.goods_type != 1 && gd_item.goods_type != 3 && gd_item.goods_type != 5 && gd_item.goods_type != 10 && gd_item.goods_type != 4 && gd_item.goods_price_action != 2 && gd_item.goods_price_action !=3 }}">会员专享商品，立即查看</view>
+                    <view class='grade  {{gd_item.goods_type == 4 ? "jf_pos" : ""}}' wx:elif="{{gd_item.goods_price_action == 1 && gd_item.goods_type != 1&& gd_item.goods_type != 3 && gd_item.goods_type != 5 && gd_item.goods_type != 4}}">专享会员价，立即查看</view>
+                    <view class='tuangou' wx:if="{{gd_item.goods_type == 1}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>开团立省{{pin_goods[gd_item.goods_id].less_money}}元</view>
+                    <view class='kanjia' wx:if="{{gd_item.goods_type == 3}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{gd_item.bargain_price}}元砍走</view>
+                  </view>
+                  <view class="gd_infos">
+                    <view class="namelab">
+                        <view class="good_names two_line" wx:if='{{gd_item.goods_tags == ""}}'>{{gd_item.goods_name}}</view>
+                        <view class='good_names one_line' wx:if='{{gd_item.goods_tags != ""}}'>{{gd_item.goods_name}}</view>
+                        <view class='title_label' wx:if='{{gd_item.goods_tags != ""}}'>
+                          <view class='pin_flag' wx:if='{{gd_item.goods_tags[0] != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{gd_item.goods_tags[0]}}</view>
+                          <view class='pin_flag' wx:if='{{gd_item.goods_tags[1] != undefined }}' style='color:{{comColor}};border-color:{{comColor}}'>{{gd_item.goods_tags[1]}}</view>
+                        </view>
+                    </view>
+                    <!-- 正常商品价格 -->
+                    <view class="good_money">
+                      <text class="price" wx:if="{{gd_item.goods_type == 0 || gd_item.goods_type == 6}}" style='color:{{comColor}};'>￥{{gd_item.reduce_price}}</text>
+                      <text class='price' wx:if='{{gd_item.goods_type == 10}}' style='color:{{comColor}};'>￥{{gd_item.shop_price}}</text>
+                      <text class="price" wx:if="{{gd_item.goods_type == 1}}" style='color:{{comColor}};'>￥{{pin_goods[gd_item.goods_id].pin_group_price}}</text>
+                      <text class='price' wx:if="{{gd_item.goods_type == 5}}" style='color:{{comColor}};'>￥{{gd_item.seckill_price}}</text>
+                      <text class='price' wx:if="{{gd_item.goods_type == 3}}" style='color:{{comColor}};'>￥{{gd_item.bargain_price}}</text>
+                      <block wx:if='{{footL.del_market != 0 && footL.show_cart.show_cart != 1 }}'>
+                        <!-- 市场价 -->
+                        <block wx:if='{{footL.del_market == 1 && gd_item.price_len < 16 }}'>
+                          <text class='pricese' wx:if="{{gd_item.goods_type > 0 && gd_item.goods_type != 6  && gd_item.max_price != null }}">￥{{gd_item.max_price}}</text>
+                          <text class='pricese' wx:if="{{(gd_item.goods_type == 6 || gd_item.goods_price_action == 3 || (gd_item.goods_price_action == 1 && gd_item.goods_type == 0))&& footL.show_cart.show_cart == 0}}">￥{{gd_item.max_price}}</text>
+                          <text class='pricese' wx:if="{{gd_item.goods_type == 0 && gd_item.goods_price_action != 3 && footL.show_cart.show_cart == 0 && gd_item.market_price != null && gd_item.market_price != '0' && gd_item.goods_price_action != 1}}">￥{{gd_item.market_price}}</text>
+                        </block>
+                        <!-- 销量 -->
+                        <text class='pricese line-through-none'  wx:if='{{footL.del_market == 2 && gd_item.sale_len < 16}}'>{{gd_item.goods_sale_num > 999 ? '999+' : gd_item.goods_sale_num}}人付款</text>
+                        <!-- 评价 -->
+                        <text wx:if='{{footL.del_market == 3 && gd_item.comment_len < 16}}' class='pricese line-through-none'>{{gd_item.comment_num > 999 ? '999+' : gd_item.comment_num}}人评价</text>
+                      </block>
+                      <!-- 购买按钮 -->
+                      <block wx:if="{{footL.show_cart.show_cart == 1 &&  (gd_item.goods_type == 0 || gd_item.goods_type == 6) && gd_item.real_len < 12}}">
+                        <text class='cart_btn iconfont icontianjia' style='font-size:42rpx;color:{{comColor}}' wx:if="{{footL.show_cart.cart_type == '0'}}" catchtap='bindAddCart' data-goods_id='{{gd_item.goods_id}}'></text>
+                        <text class='cart_btn iconfont icongouwuche1' style='font-size:42rpx;color:{{comColor}}' wx:if="{{footL.show_cart.cart_type == '1'}}" catchtap='bindAddCart' data-goods_id='{{gd_item.goods_id}}'></text>
+                        <text class='cart_btn right_buy_btn' style='background:{{comColor}}' wx:if="{{footL.show_cart.cart_type == '2'}}" catchtap='bindAddCart' data-goods_id='{{gd_item.goods_id}}'>马上抢</text>
+                        <text class='cart_btn cart_buy_btn' style='color:{{comColor}};border:1px solid {{comColor}}' wx:if="{{footL.show_cart.cart_type == '3'}}" catchtap='bindAddCart' data-goods_id='{{gd_item.goods_id}}'>购买</text>
+                      </block>
+                      <!-- 按钮结束 -->
+                    </view>
+                  </view>
+              </view>
+            </view>
+            <view class='load_style'>{{ is_load == 0 ? "已加载全部商品":"加载中。。。" }}</view>
+        </view>
+        <view class="isNull" wx:if='{{isNull}}'>
+            <image class="nullImage" src="{{imageUrl}}image/wxapp/no_result.png" style='margin-top:{{null_marginTop}};margin-bottom:{{null_marginBottom}}'></image>
+            <view class="nullContent">抱歉！没有找到相关的商品</view>
+        </view>
+        <v-goods-recommend wx:if='{{isNull}}' page-name='search' bind:reconmmendevent='hasRecommend'></v-goods-recommend>
+    </view>
+</view>
+<include src="/pages/common/footer.wxml"/>
+<v-sel-spec gd="{{goodsData}}" show="{{show_spec}}" 
+            hide_cell="true" has_buy_btn="true" 
+            bind:click_cell="bindClickSpecCell" 
+            bind:close="bindCloseSpec" bind:change="bindSpecChange">
+</v-sel-spec>

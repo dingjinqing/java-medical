@@ -1,0 +1,256 @@
+/* pages/newsearch/newsearch.wxss */
+/* @import "../recocommon/recocommon.wxss";
+@import "../goodscommon/goodslabel.wxss"; */
+@import "../../css/iconfont.wxss";
+page{
+  background: #f5f5f5;
+}
+view,text,input{
+  box-sizing: border-box;
+}
+.clearfix::after{
+  zoom: 1
+}
+.top_search{
+  width: 710rpx;
+  padding: 10rpx 0;
+  margin: 0 auto;
+}
+.search{
+  height: 80rpx;
+  display: flex;
+  flex-direction: row;
+  border-radius:14rpx;
+  border:1px solid #eeeeee;
+  background:#fff;
+  width: 600rpx;
+  float: left
+}
+.search-img{
+  margin: auto 0 auto 20rpx;
+}
+.placeholder{
+  font-size: 14px;
+  color: #d1d1d1;
+  margin-left: 20rpx;
+  font-family: "Microsoft YaHei", 微软雅黑, "Microsoft JhengHei";
+}
+.search input{
+  height: 100%;
+  width: 470rpx;
+  font-size: 28rpx;
+  margin-left: 20rpx;
+  padding-left: 12rpx;
+}
+.search image{
+  width: 30rpx;
+  margin-top: 22rpx
+}
+.btn_search{
+  width: 110rpx;
+  height: 80rpx;
+  text-align: center;
+  line-height: 82rpx;
+  float: left;
+}
+.icon_info{
+  padding: 25rpx 20rpx;
+  width: 750rpx;
+  background: #fff;
+}
+.search_history{
+  margin-top: 10rpx;
+}
+.sh_title{
+  margin-bottom: 25rpx;
+  color: #333;
+  font-size: 26rpx;
+}
+.some_item{
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  
+}
+.some_item_his{
+  height: 170rpx;
+  overflow: hidden
+}
+.each_item{
+  background: #f5f5f5;
+  padding: 20rpx;
+  font-size: 24rpx;
+  margin-bottom: 20rpx;
+  margin-right: 20rpx;
+  color:#666;
+  border-radius: 4rpx;
+  height: 72rpx;
+}
+.reco_info{
+  width: 750rpx;
+  margin-top: 0;
+  background: #fff;
+  padding-top: 30rpx;
+  padding: 0 15rpx;
+}
+.reco_info .each_view{
+  border: 2rpx solid #ddd;
+}
+.reco_info .each_view:nth-of-type(even){
+  float: right; 
+}
+.each_view image{
+  width: 346rpx;
+}
+.have_del{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 25rpx;
+}
+.have_del image{
+  width: 30rpx;
+}
+.have_del .sh_title{
+  margin-bottom: 0
+}
+.clearfix::after{
+  content: "";
+  display: block;
+  clear: both;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

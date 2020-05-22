@@ -1,0 +1,33 @@
+.content{
+  height: 600rpx;
+  background-color: #fff;
+  position: relative;
+  width:750rpx;
+}
+.title{
+  line-height: 80rpx;
+  text-align: center;
+  box-sizing: border-box;
+  border-bottom: 1rpx solid #eee;
+}
+.promotion-content{
+  padding:0 20rpx;
+  max-height: 416rpx;
+  overflow-y: scroll;
+}
+.desc{
+  display: flex;
+  width: 710rpx;
+  box-sizing: border-box;
+  margin: 10rpx auto ;
+  background: #f5f5f5;
+  padding: 25rpx 20rpx;
+  border-radius: 8rpx;
+  justify-content: center;
+}
+.desc .desc-content{
+  flex: 1;
+}
+.desc .desc-title{
+  font-weight: 600;
+}

@@ -1,0 +1,15 @@
+.service_block{
+  position: fixed;
+  top: 720rpx;
+  z-index: 200;
+  right: 0
+}
+.service_block image{
+  width:120rpx;
+  height:120rpx;
+  border-radius:50%; 
+}
+.service_block button{
+  border: none;
+  padding: 0
+}

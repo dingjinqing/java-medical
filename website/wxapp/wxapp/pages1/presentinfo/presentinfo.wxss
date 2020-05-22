@@ -1,0 +1,352 @@
+/* pages1/presentinfo/presentinfo.wxss */
+@import "../../css/iconfont.wxss";
+page{
+  overflow-x: hidden;
+  font-family: "Microsoft YaHei", 微软雅黑, "Microsoft JhengHei";
+}
+.clearfix::after{
+  contain: "";
+  display: block;
+  clear: both;
+}
+.pre_top{
+  width: 750rpx;
+  height: 360rpx;
+  background: -webkit-linear-gradient(top,#f66,#ff8585);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.top_bg{
+  position: absolute;
+  top: 130rpx;
+  left: 0;
+  width: 750rpx;
+  height: 300rpx;
+}
+.top_bg image{
+  width: 750rpx;
+  height: 100%;
+}
+.btn_to_rule{
+  padding:10rpx 20rpx;
+  font-size:24rpx;
+  background:rgba(0,0,0,0.3);
+  color:#fff;
+  border-radius:25rpx 0 0 25rpx;
+  position:absolute;
+  right:0;
+  top:180rpx;
+}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+   .pre_top .top_bg{
+     top: 170rpx;
+   }
+   .btn_to_rule{
+     top: 230rpx;
+   }
+}
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+   .pre_top .top_bg{
+     top: 155rpx;
+   }
+   .btn_to_rule{
+     top: 210rpx;
+   }
+}
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+    .pre_top .top_bg{
+     top: 155rpx;
+   }
+   .btn_to_rule{
+     top: 210rpx;
+   }
+}
+
+.user_avator{
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 100%;
+  border: 4rpx solid #fff;
+  margin: 50rpx 0 20rpx;
+}
+.user_avator image{
+  width: 100%;
+  height: 100%;
+  border-radius: 300rpx;
+}
+.user_name{
+  font-size: 28rpx;
+  color: #fff;
+}
+.user_name text{
+  margin: 0 10rpx;
+}
+.pre_content{
+  width: 700rpx; 
+  margin: 0 auto;
+  margin-top: -60rpx;
+  border-radius: 10rpx;
+  margin-bottom: 20rpx;
+}
+.good_area{
+   background: #fff;
+}
+.each_goods{
+  width: 660rpx;
+  margin-left: 20rpx;
+  height: 160rpx;
+  padding: 20rpx 0;
+  padding-right: 20rpx;
+  border-bottom: 2rpx solid #eee;
+}
+.goods_img{
+  width: 160rpx;
+  height: 160rpx;
+  overflow: hidden;
+  float: left;
+}
+.goods_img image{
+  width: 100%;
+  height: 100%;
+}
+.goods_info{
+  width: 480rpx;
+  height: 160rpx;
+  float: right;
+  position: relative;
+}
+.goods_name{
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  position: absolute;
+  top: 0
+}
+.goods_desc{
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 24rpx;
+  color: #999;
+  position: absolute;
+  top: 45rpx;
+}
+.goods_price{
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.goods_money{
+  color: #f66;
+  font-size: 24rpx;
+  flex: 0.8
+}
+.goods_money text{
+  font-size: 30rpx;
+}
+.goods_num_change{
+  display: flex;
+  
+}
+.goods_num_change image{
+  width: 45rpx;
+  height: 45rpx;
+  border-radius: 100%;
+}
+.goods_num_change input{
+  border: none;
+  width: 50rpx;
+  text-align: center;
+  margin: 0 10rpx;
+  display: inline-block;
+  min-height: 45rpx;
+  height: 45rpx;
+  line-height: 45rpx;
+}
+.goon_add_line{
+  width: 680rpx;
+  padding: 20rpx 0;
+  padding-right: 20rpx;
+  border-bottom: 2rpx solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+}
+.total_goods_num{
+  padding-left: 20rpx;
+}
+.btn_goon_add{
+  text-align: right;
+  color: #5c78bb;
+}
+.btn_goon_add image{
+  width: 16rpx;
+  position: relative;
+  top: 1rpx;
+}
+.look_all_goods{
+  width: 700rpx;
+  padding: 20rpx 0;
+  text-align: center;
+  background: #fff;
+}
+.look_all_goods image{
+  width: 26rpx;
+  margin-left: 10rpx;
+  position: relative;
+  top: -5rpx;
+}
+.tow_area{
+  margin: 0 auto 30rpx;
+  width: 700rpx;
+  border-radius: 10rpx;
+}
+.choose_same{
+  text-align: right;
+  padding-right: 20rpx;
+}
+
+.some_way{
+  width: 660rpx;
+  padding: 20rpx;
+  background: #fff;
+  border-radius: 10rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin: 0 auto;
+}
+.picker{
+  width: 700rpx;
+  padding: 20rpx 0;
+  border-top: 2rpx solid #eee;
+}
+.look_more_way{
+  text-align: right;
+  color: #5c78bb;
+}
+.look_more_way image{
+  width: 16rpx;
+  position: relative;
+  top: 1rpx;
+}
+.some_way>view{
+  flex: 1
+}
+.textarea_title{
+  padding: 0rpx 25rpx 0 50rpx;
+  margin-bottom: 30rpx;
+}
+.some_words{
+  height: 140rpx;
+  width: 700rpx;
+  border: none;
+  background: #fff;
+  margin: 0 auto;
+  margin-bottom: 30rpx;
+  padding-top: 20rpx;
+}
+.some_words input{
+  width: 680rpx;
+  padding-left: 20rpx;
+}
+.some_tips{
+  color: #999;
+  width: 700rpx;
+  margin: 0 auto; 
+  line-height: 40rpx;
+  margin-bottom: 25rpx;
+}
+.btn_fill_order{
+  width: 700rpx;
+  height: 90rpx;
+  background: #f66;
+  border-radius: 4rpx;
+  color: #fff;
+  text-align: center;
+  line-height: 90rpx;
+  font-size: 30rpx;
+  margin: 0 auto;
+  border: none;
+}
+.btn_fill_order::after{
+  border: none;
+  border-radius: 0
+}
+.play_modal{
+  width: 750rpx;
+  background: #f5f5f5;
+  position: fixed;
+  bottom: 0;
+  z-index: 99
+}
+.each_play_mode{
+  width: 750rpx;
+  height: 90rpx;
+  background: #fff;
+  text-align: center;
+  line-height: 90rpx;
+  border-bottom: 2rpx solid #eee;
+}
+.btn_play_cancel{
+  margin-top: 20rpx;
+}
+.now_no_goods{
+  margin-bottom: 20rpx;
+  width: 660rpx;
+  padding: 20rpx;
+  background: #fff;
+  border-radius: 10rpx;
+}
+.now_no_goods .no_imgs{
+    float: left;
+    width: 105rpx;
+    height: 105rpx;
+    border-radius: 100%;
+    margin-right: 20rpx;
+}
+.no_imgs image{
+  width: 105rpx;
+  height: 105rpx;
+  border-radius: 100%;
+}
+.no_word{
+  float: left;
+  height: 105rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-around;
+}
+.no_word view:first-of-type{
+  color: #333;
+  font-size: 30rpx;
+}
+.no_word view:last-of-type{
+  color: #999;
+  font-size: 24rpx;
+}
+.btn_to_more_goods{
+  width: 16rpx;
+}
+.to_more_pro{
+  height: 105rpx;
+  display: flex;
+  align-items: center;
+  float: right;
+}
+.modal_bg{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.3);
+  top: 0;
+  left: 0
+}

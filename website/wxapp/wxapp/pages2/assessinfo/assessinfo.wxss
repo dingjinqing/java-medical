@@ -1,0 +1,86 @@
+@import "../../css/iconfont.wxss";
+image,video{
+  vertical-align:middle;
+  width: 100%;
+  height: 360rpx;
+}
+.main-bg{
+  position:fixed;
+  width: 100%;
+  height: 100%;
+  background-color:#d0f7f4;
+}
+page{
+  padding-bottom: 200rpx;
+}
+.container{
+  box-sizing: border-box;
+  width: 690rpx;
+  margin: auto;
+  padding: 0 20rpx;
+  background-color: #fff;
+  border-radius: 10rpx;
+  position: relative;
+}
+.assess_title{
+  text-align: center;
+  color: #333;
+  line-height: 120rpx;
+  font-size: 36rpx;
+  font-weight: 600;
+  position: relative;
+}
+.topic_title{
+  line-height: 99rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  border-bottom: 1px solid #eee;
+}
+.topic_type_pic,.topic_type_video{
+  margin-top: 20rpx;
+}
+.topic_box{
+  padding-top: 20rpx;
+  padding-bottom: 20rpx;
+}
+.topic_item_title{
+  line-height: 100rpx;
+  color: #333;
+  font-size: 30rpx;
+  border-radius: 6rpx;
+}
+.topic_box > .topic_item_pic,.topic_box > .topic_item_title{
+  margin-top: 10rpx
+}
+.topic_box > .topic_item_title > text{
+  margin-left: 4rpx;
+}
+.topic_box > .topic_item_title:first-child{
+  margin-top: 0;
+}
+.topic_box > .topic_item_title > text:first-child{
+  /* vertical-align: top; */
+  font-size: 30rpx;
+}
+.topic_box > .topic_item_title > text:last-child{
+  color: #333;
+  font-size: 30rpx;
+}
+.assess_button{
+  text-align: center;
+  position: fixed;
+  bottom: 40rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 650rpx;
+  line-height: 80rpx;
+  color: #fff;
+  font-size: 30rpx;
+  border-radius: 40rpx;
+  background-color: #ccc;
+  overflow: hidden;
+}
+.assess_button image{
+  width: 100%;
+  height: 86rpx;
+}

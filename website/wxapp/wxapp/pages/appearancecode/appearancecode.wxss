@@ -1,0 +1,66 @@
+page{
+    background-color: #f5f5f5;
+}
+.main-container{
+    overflow-y: hidden;
+}
+.code_container{
+    width: 100%;
+    text-align: center;
+    background-color: #fff;
+    padding:40rpx 0;
+}
+.code_container+.code_container{
+    margin-top: 20rpx;
+}
+.code_title{
+    display: block;
+    color: #333;
+    font-size: 30rpx;
+    margin: 0 auto 40rpx;
+}
+.barcode_image{
+    display: block;
+    width: 500rpx;
+    height: 120rpx;
+    margin: 0 auto 0;
+}
+.code_image{
+    display: block;
+    width: 500rpx;
+    height: 500rpx;
+    margin: 0 auto 0;
+}
+.switch_code{
+    display: block;
+    font-size: 24rpx;
+    color: #ff6666;
+    margin-bottom: 40rpx;
+}
+.pay_money{
+    display: block;
+    margin-bottom: 20rpx;
+    font-size: 30rpx;
+    color: #333;
+}
+.pay_time{
+    display: block;
+    font-size: 24rpx;
+    color: #666;
+}
+.no_code {
+    text-align: center;
+    margin-top: 115rpx;
+}
+.no_code_title{
+    font-size: 34rpx;
+    color: #ddd;
+}
+.no_code_title text{
+    color: #999;
+}
+.no_code image{
+    width: 358rpx;
+    height: 836rpx;
+    margin-top: 60rpx;
+}

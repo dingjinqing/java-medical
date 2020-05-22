@@ -1,0 +1,99 @@
+.back-mask {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 99999;
+  top: 0;
+  font-size: 26rpx;
+}
+
+.horizon-left {
+  justify-content: flex-start;
+}
+
+.horizon-center,.horizon-init {
+  justify-content: center;
+}
+
+.horizon-right {
+  justify-content: flex-end;
+}
+
+.horizon-fill .popup {
+  width: 750rpx;
+}
+
+.vertical-top {
+  align-items: flex-start;
+}
+
+.vertical-center {
+  align-items: center;
+}
+
+.vertical-bottom {
+  align-items: flex-end;
+}
+
+.vertical-fill {
+  align-items: unset;
+}
+
+.vertical-fill .popup {
+  height: 100%;
+}
+
+.popup {
+  position: relative;
+  border-radius: 8px;
+}
+
+.close-container {
+  position: absolute;
+  z-index: 1;
+  top: 20rpx;
+  right: 30rpx;
+}
+
+.close-container image {
+  display: block;
+  width: 50rpx;
+  height: 50rpx;
+}
+
+.popup .outer {
+  height: 90rpx;
+  top: -90rpx;
+  right: 50rpx;
+}
+
+.vertical-line {
+  display: none;
+}
+
+.outer .vertical-line {
+  display: block;
+  margin: 0 auto;
+  width: 1px;
+  height: 40rpx;
+  background: #fff;
+}
+
+.popup .mask-corner {
+  position: fixed;
+  top: 20rpx;
+  right: 30rpx;
+}
+
+.inner image {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.hide {
+  display: none;
+}

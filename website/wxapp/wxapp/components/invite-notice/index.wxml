@@ -1,0 +1,10 @@
+<view wx:if="{{invite_id > 0 && invite.invite_flag}}" class="act_notice">
+  <view class="act_zhezhao">
+    <view class="share_intive" style="background:url({{invite.user_avatar}}) no-repeat;background-size:100%;"></view>
+    <view class='share_note'>
+      <view class="invite-name">{{invite.username}} </view>
+      <view class="invite-name2"> 分享给你一个好物店铺，快来选购吧！</view>
+    </view>
+  </view>
+  <view class="act_img" bindtap='bindInviteClose' data-invite="{{invite.invite_id}}" style="background:url({{imageUrl}}image/wxapp/invite_close.png) no-repeat;background-size:60%;"></view>
+</view>

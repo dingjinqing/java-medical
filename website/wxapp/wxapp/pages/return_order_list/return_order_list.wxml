@@ -1,0 +1,174 @@
+<include src="../common/header.wxml" />
+<view class='main-container'>
+  <view class="main">
+    <view class="main_header clearfix">
+      <view class="oeder-sn">
+        <view>订单号:{{order_sn}}</view>
+        <view>下单时间:{{order.add_time}}</view>
+      </view>
+      <block wx:if="{{can_return}}">
+        <view class="main_qingqiu" ><button bindtap="returnOrder" style='background:{{comColor}};' data-order_sn="{{order_sn}}" class="btn">创建退货请求</button ></view>
+      </block>
+    </view>
+    <block wx:if="{{order_incompleted == false}}">
+    </block>
+    <block wx:for="{{return_order_list}}" wx:key='key'>
+      <view class='return_sns'>退款编号：{{item.return_order_sn}}</view>
+      <!-- 买家申请退款的状态 -->
+      <view class='buyer_info'>
+        <view class='buyer_title'>
+            <view class='bt_left' bindtap="returnOrder" data-order_sn="{{order_sn}}" data-ret_id="{{item.ret_id}}" wx:if="{{item.operator == 0}}">商家</view>
+            <view class='bt_left' bindtap="returnOrder" data-order_sn="{{order_sn}}" data-ret_id="{{item.ret_id}}" wx:if="{{item.operator == 1}}">买家</view>
+            <view class='bt_left' bindtap="returnOrder" data-order_sn="{{order_sn}}" data-ret_id="{{item.ret_id}}" wx:if="{{item.operator == 2}}">系统</view>
+            <view class='return_state' style='color:{{comColor}}' bindtap="returnOrder" data-order_sn="{{order_sn}}" data-ret_id="{{item.ret_id}}" wx:if="{{item.refund_status == 1}}">
+                等待审核
+                <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+            </view>
+            <view class='return_state' style='color:{{comColor}}' bindtap="returnOrder" data-order_sn="{{order_sn}}" data-ret_id="{{item.ret_id}}" wx:if="{{item.refund_status == 2}}">
+                等待买家提交物流
+                <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+            </view>
+            <!-- 未收货拒绝退货退款 -->
+            <view class='return_state' style='color:{{comColor}}' bindtap="returnOrder" data-order_sn="{{order_sn}}" data-ret_id="{{item.ret_id}}" wx:if="{{item.refund_status == 3}}">
+                拒绝退款/退款
+                <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+            </view>
+            <view class='return_state' style='color:{{comColor}}' bindtap="returnOrder" data-order_sn="{{order_sn}}" data-ret_id="{{item.ret_id}}" wx:if="{{item.refund_status == 4 && item.return_type == 0}}">
+                等待卖家退款
+                <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+            </view>
+            <view class='return_state' style='color:{{comColor}}' bindtap="returnOrder" data-order_sn="{{order_sn}}" data-ret_id="{{item.ret_id}}" wx:if="{{item.refund_status == 4 && item.return_type == 1}}">
+                物流已提交，等待卖家确认
+                <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+            </view>
+            <view class='return_state' style='color:{{comColor}}' bindtap="returnOrder" data-order_sn="{{order_sn}}" data-ret_id="{{item.ret_id}}" wx:if="{{item.refund_status == 5}}">
+                {{returnTypeName[item.return_type]}}成功
+                <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+            </view>
+            <!-- 未收货的拒绝或者仅退款的拒绝 -->
+            <view class='return_state' style='color:{{comColor}}' bindtap="returnOrder" data-order_sn="{{order_sn}}" data-ret_id="{{item.ret_id}}" wx:if="{{item.refund_status == 6}}">
+                拒绝{{returnTypeName[item.return_type]}}
+                <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+            </view>
+            <view class='return_state' style='color:{{comColor}}' bindtap="returnOrder" data-order_sn="{{order_sn}}" data-ret_id="{{item.ret_id}}" wx:if="{{item.refund_status == 7 && item.operator != 2}}">
+                买家撤销退款申请
+                <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+            </view>
+            <view class='return_state' style='color:{{comColor}}' bindtap="returnOrder" data-order_sn="{{order_sn}}" data-ret_id="{{item.ret_id}}" wx:if="{{item.refund_status == 7 && item.operator == 2}}">
+                撤销退款申请
+                <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+            </view>
+        </view>
+        <view class="main_center" wx:key="index" wx:for-item='item'>
+            <block wx:if="{{item.refund_status == 1}}">
+              <view class='main_cen_left clearfix'><text>申请退货时间：</text>{{item.apply_time}}</view>
+              <view class='main_cen_left'>
+                <text>退款类型：</text>
+                {{returnTypeName[item.return_type]}}
+                <!-- <block>{{returnTypeName[item.return_type]}}</block>
+                <block wx:if='{{item.return_type == 1}}'>退货/退款</block>
+                <block wx:if='{{item.return_type == 2}}'>仅退运费</block> -->
+              </view>
+              <view class='main_cen_left'><text>退款原因：</text>{{item.reason}}</view>
+              <view wx:if="{{order.goods_type != 4}}" class='main_cen_left'>
+                  <text>退款金额：</text>￥{{item.money}}
+              </view>
+              <block wx:else>
+                <view class='main_cen_left'>
+                  <text wx:if="{{item.return_money>0}}">退款金额：</text>￥{{item.return_money}}
+                </view>
+                <view class='main_cen_left'>
+                  <text>退款积分：</text>{{item.return_score}}积分
+                </view>
+              </block>
+              <view class='main_cen_left'><text>运费金额：</text>￥{{item.can_return_free}}</view>
+              <view class='main_cen_left return_descs clearfix' wx:if='{{item.return_desc != ""}}'>
+                  <text>退款说明：</text>
+                  <text class='return_shuom'>{{item.return_desc}}</text>
+              </view>
+              <view class='main_cen_left return_descs clearfix' wx:if='{{item.goods_images != "" && item.goods_images!=null}}'>
+                  <text>退款凭证：</text>
+                  <view class='return_shuom' style='float:left'>
+                    <image src='{{item_img}}' mode='aspectFit' wx:for='{{item.goods_images}}' wx:key='key' wx:for-item='item_img'></image>
+                  </view>
+              </view>
+            </block>
+            <block wx:elif="{{item.refund_status == 2}}">
+              <view class='main_cen_left'><text>审核退款/退货申请时间：</text>{{item.apply_pass_time}}</view>
+              <view class='main_cen_left'><text>注：</text>请提交退货物流信息，商家会尽快处理您的订单。</view>
+            </block>
+            <block wx:elif="{{item.refund_status == 3}}">
+              <view class='main_cen_left'><text>申请拒绝时间：</text>{{item.apply_not_pass_time}}</view>
+              <block wx:if="{{item.apply_not_pass_reason != null}}">
+                <view class='main_cen_left'><text>拒绝理由：</text>{{item.apply_not_pass_reason}}</view>
+              </block>
+              <block wx:else>
+                <view class='main_cen_left'><text>拒绝理由：</text>无</view>
+              </block>
+            </block>
+            <block wx:elif="{{item.refund_status == 4 && item.return_type == 0}}">
+              <view class='main_cen_left'><text>申请退款/退货时间：</text>{{item.shipping_or_refund_time}}</view>
+              <view class='main_cen_left'>
+                <text>退款类型：</text>
+                {{returnTypeName[item.return_type]}}
+              </view>
+              <view class='main_cen_left'><text>退款原因：</text>{{item.reason}}</view>
+              <view wx:if="{{order.goods_type != 4}}" class='main_cen_left'>
+                  <text>退款金额：</text>￥{{item.money}}
+              </view>
+              <block wx:else>
+                <view class='main_cen_left'>
+                  <text wx:if="{{item.return_money>0}}">退款金额：</text>￥{{item.return_money}}
+                </view>
+                <view class='main_cen_left'>
+                  <text>退款积分：</text>{{item.return_score}}积分
+                </view>
+              </block>
+              <view class='main_cen_left'><text>运费金额：</text>￥{{item.can_return_free}}</view>
+              <view class='main_cen_left return_descs clearfix' wx:if='{{item.return_desc != "" }}'>
+                  <text>退款说明：</text>
+                  <text class='return_shuom'>{{item.return_desc}}</text>
+              </view>
+              <view class='main_cen_left return_descs clearfix' wx:if='{{item.goods_images != "" && item.goods_images!=null}}'>
+                  <text>退款凭证：</text>
+                  <view class='return_shuom' style='float:left'>
+                    <image src='{{item_img}}' mode='aspectFit' wx:for='{{item.goods_images}}' wx:key='key' wx:for-item='item_img'></image>
+                  </view>
+              </view>
+            </block>
+            <block wx:elif='{{item.refund_status == 4 && item.return_type == 1}}'>
+              <view class='main_cen_left'  wx:if="{{item.refund_status == 4 && item.return_type == 1}}"><text>提交物流时间：</text>{{item.shipping_or_refund_time}}</view>
+              <view class='main_cen_left'  wx:if="{{item.refund_status == 4 && item.return_type == 1}}"><text>物流公司：</text>{{item.shipping_type}}</view>
+              <view class='main_cen_left'  wx:if="{{item.refund_status == 4 && item.return_type == 1}}"><text>运单号码：</text>{{item.shipping_no}}</view>
+              <view class='main_cen_left'  wx:if="{{item.refund_status == 4 && item.return_type == 1}}"><text>联系电话：</text>{{item.phone}}</view>
+              <view class='main_cen_left return_descs clearfix'  wx:if="{{item.refund_status == 4 && item.return_type == 1&&item.voucher_images!=''&&item.voucher_images!=null}}">
+                  <text>物流凭证：</text>
+                  <view class='return_shuom' style='float:left'>
+                    <image src='{{item_img}}' mode='aspectFit' wx:for='{{item.voucher_images}}' wx:key='key' wx:for-item='item_img'></image>
+                  </view>
+              </view>
+            </block>
+            <block wx:elif="{{item.refund_status == 5}}">
+              <view class='main_cen_left' ><text>退款完成时间：</text>{{item.refund_success_time}}</view>
+              <view class='main_cen_left' ><text>注：</text>退款将在三个工作日内到账，本次维权结束。</view>
+            </block>
+            <block wx:elif="{{item.refund_status == 6}}">
+              <view class='main_cen_left' ><text>拒绝退货时间：</text>{{item.refund_refuse_time}}</view>
+              <block wx:if="{{item.refund_refuse_reason != null}}">
+                <view class='main_cen_left' ><text>拒绝理由：</text>{{item.refund_refuse_reason}}</view>
+              </block>
+              <block wx:else>
+                <view class='main_cen_left' ><text>拒绝理由：</text>无</view>
+              </block>
+            </block>
+            <block wx:elif="{{item.refund_status == 7}}">
+              <view class='main_cen_left'  wx:if="{{item.refund_status == 7}}"><text>撤销退款申请时间：</text>{{item.refund_cancel_time}}</view>
+              <view class='main_cen_left'  wx:if="{{item.refund_status == 7 && item.operator != 2}}">买家主动撤销退款申请。</view>
+              <view class='main_cen_left'  wx:if="{{item.refund_status == 7 && item.operator == 2}}">您未在商家审核退款申请之后7日内提交退货物流(或商家未确认收货),退款申请已自动撤销。</view>
+            </block>
+        </view>
+      </view>    
+    </block>
+  </view>
+</view>
+<include src="../common/footer.wxml"/>
