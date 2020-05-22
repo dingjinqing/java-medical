@@ -992,7 +992,7 @@ export default {
     },
     // 提交前校验
     validParam () {
-      if (this.param.bargainGoods === 0) {
+      if (this.param.bargainGoods.length === 0) {
         this.$message.warning(this.$t('addBargainAct.vaildGoodsSelect'))
         return false
       }
