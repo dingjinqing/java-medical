@@ -740,7 +740,7 @@ public class GroupDrawService extends ShopBaseService {
 				botton.setIsJoinDraw(ZERO);
 				botton.setIsOpenDraw(ZERO);
 				botton.setIsToInvite(ZERO);
-				if (groupInfo.getIsWinDraw().equals(ONE)) {
+				if (userJoinGroup.getIsWinDraw().equals(ONE)) {
 					logger().info("已中奖");
 					vo.setGroupStatus((byte) 11);
 					vo.setButton(botton);
