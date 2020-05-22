@@ -83,6 +83,7 @@ global.wxPage({
       'params.activityId': activityId,
       'params.recordId': recordId,
       'params.roomId':roomId,
+      preSaleInfo,
       inviteId
     })
     if (options.groupid) {
