@@ -101,9 +101,7 @@ public class CardDaoService extends ShopBaseService {
 		f.add(invitedUser.USERNAME.as("invitedName"));
 		f.add(MEMBER_CARD.CARD_TYPE);
 		f.add(CARD_EXAMINE.STATUS);
-		f.add(CARD_EXAMINE.CREATE_TIME);
 		Field<?>[] myFields = f.toArray(new Field<?>[0]);
-		
 		SelectJoinStep<?> select = db()
 				.select(myFields)
 				.from(USER_CARD.leftJoin(USER.leftJoin(invitedUser).on(USER.INVITE_ID.eq(invitedUser.USER_ID))
@@ -116,7 +114,7 @@ public class CardDaoService extends ShopBaseService {
 		buildOptions(param, select);
 		select.where(USER_CARD.CARD_ID.eq(param.getCardId()))
 			  .groupBy(myFields)
-			  .orderBy(CARD_EXAMINE.CREATE_TIME.desc(),USER_CARD.USER_ID.desc());		
+			  .orderBy(USER_CARD.CREATE_TIME.desc());		
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), CardHolderVo.class);
 	}
 

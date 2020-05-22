@@ -401,5 +401,20 @@ export const cn = {
   ],
   reveiveStatus: '领取状态',
   delStatus: '使用状态',
-  out: '导出'
+  out: '导出',
+  memberId: '会员ID',
+  cardNo: '会员卡号',
+  cardStatus: '卡状态',
+  receiveCardTime: '领卡时间',
+  examineSubmit: '是否提交激活申请',
+  examineStatus: '审核状态',
+  consumeRecord: '消费记录',
+  chargeRecord: '充值记录',
+  reset: '重置',
+  memberCardOut: '会员导出',
+  invitedPerson: '邀请人',
+  examing: '审核中',
+  examineFail: '审核失败',
+  cardNomal: '正常',
+  cardExpired: '已过期'
 }

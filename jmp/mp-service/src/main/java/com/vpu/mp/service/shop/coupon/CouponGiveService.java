@@ -648,8 +648,6 @@ public class CouponGiveService extends ShopBaseService {
                 logger().info("当前优惠券ID："+couponId+",发放失败，所选优惠券库存不足");
                 continue;
             }
-            // 发券入库
-            List<CustomerAvailCouponsRecord> sendCoupons = new ArrayList<>();
             for (Integer userId : param.getUserIds()) {
                 try {
                     byte finalType = type;
@@ -707,13 +705,12 @@ public class CouponGiveService extends ShopBaseService {
                             record.setUser(userId);
                             record.setUserId(userId);
                             record.setCouponId(Integer.valueOf(couponId));
-                            record.setAmount(couponDetails.getDenomination());
+                            record.setAmount(customerAvailCouponsRecord.getAmount());
                             record.setCouponSn(customerAvailCouponsRecord.getCouponSn());
                             record.setSource(param.getGetSource());
                             record.setReceiveCouponSn(customerAvailCouponsRecord.getCouponSn());
                             record.insert();
                         }
-                        sendCoupons.add(customerAvailCouponsRecord);
                     });
                     }catch (BusinessException e){
                         break;
@@ -728,7 +725,6 @@ public class CouponGiveService extends ShopBaseService {
                     userTag.addActivityTag(userId,couponTagIds, UserTagService.SRC_COUPON,Integer.valueOf(couponId));
                 }
             }
-            couponGiveBo.setSendCoupons(sendCoupons);
         }
         couponGiveBo.setSendCoupons(sendRecord);
         //更新优惠券表发放/领取数量
@@ -984,7 +980,7 @@ public class CouponGiveService extends ShopBaseService {
     public MrkingVoucherRecord getInfoById(Integer id) {
         return db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(id)).fetchAny();
     }
-    
+
     /**
      * 根据Id列表获取优惠券列表信息
      */

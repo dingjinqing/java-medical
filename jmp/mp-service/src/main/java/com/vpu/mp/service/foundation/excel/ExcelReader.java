@@ -154,8 +154,11 @@ public class ExcelReader extends AbstractExcelDisposer {
         T instant = clazz.newInstance();
 
         for (Map.Entry<String, ExcelColumnBean> entry : headParamMap.entrySet()) {
-            String filedName = entry.getKey();
             int columnIndex = entry.getValue().columnIndex;
+            if (columnIndex == -1) {
+                continue;
+            }
+            String filedName = entry.getKey();
             boolean notBeNull = entry.getValue().notNull;
 
             Cell cell = row.getCell(columnIndex);

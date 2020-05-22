@@ -2103,6 +2103,7 @@ public class UserCardService extends ShopBaseService {
                     .reasonId("3008")
                     .reason(order.getRenewOrderSn())
                     .type(NumberUtils.BYTE_ZERO)
+                    .payment("")
                     .build();
                 cardConsumer(userCardConsume);
             }
