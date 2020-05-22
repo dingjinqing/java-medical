@@ -49,12 +49,11 @@ public class GoodsVpuExcelImportBo extends GoodsExcelImportBase {
         deliverPlace = m.getDeliverPlace();
         prdCodes = m.getPrdCodes();
         // 只要有图片就会更新商品的图片信息（不管填的是主图还是附图）
-        String imgs = null;
         if (m.getGoodsImg() != null) {
-            imgs = m.getGoodsImg();
+            goodsImgsStr = m.getGoodsImg();
         }
         if (m.getGoodsImgsStr() != null) {
-            imgs = imgs==null?m.getGoodsImgsStr():imgs+";"+m.getGoodsImgsStr();
+            goodsImgsStr = goodsImgsStr==null?m.getGoodsImgsStr():goodsImgsStr+";"+m.getGoodsImgsStr();
         }
     }
 }
