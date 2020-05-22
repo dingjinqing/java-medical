@@ -385,7 +385,7 @@ public class PictorialImgPx {
     private Integer priceMargin = 10;
 
     public Integer getActivityTipTextY() {
-        return priceY + 11;
+        return priceY + 8;
     }
 
     /**
