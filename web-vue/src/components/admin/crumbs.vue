@@ -302,7 +302,7 @@ export default {
       console.log(data, this.titleList)
     },
     handleToClickCrumb (name, flag, index) {
-      console.log(name, flag, this.$route, this.nameArr.length, this.turnArr.length)
+      console.log('crumb:', name, flag, this.$route, this.nameArr.length, this.turnArr.length)
       let routeName = this.$route.name
       if (this.titleList.length < 3) return
       if (index === (this.titleList.length - 1)) return
@@ -357,9 +357,9 @@ export default {
             this.$router.push({
               name: 'form_decoration'
             })
-          } else if (name === '砍价') {
+          } else if (this.$route.meta.category === 'kanjia') {
             this.$router.push({
-              name: 'bargain'
+              name: 'kanjia'
             })
           } else if (name === '限时降价') {
             this.$router.push({
