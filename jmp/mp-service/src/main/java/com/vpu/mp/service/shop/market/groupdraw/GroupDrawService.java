@@ -715,7 +715,7 @@ public class GroupDrawService extends ShopBaseService {
 	public GroupJoinDetailVo getGroupJoinDetail(Integer userId, Integer groupDrawId, Integer groupId) {
 		GroupDrawRecord groupDraw = db().selectFrom(GROUP_DRAW).where(GROUP_DRAW.ID.eq(groupDrawId)).fetchAny();
 		JoinGroupListRecord groupInfo = getGroupInfo(groupDrawId, groupId);
-		List<GroupDrawList> groupList = getGroupList(groupDrawId, groupId, ZERO);
+		List<GroupDrawList> groupList = getGroupList(groupDrawId, groupId, null);
 		JoinGroupListRecord userJoinGroup = getUserJoinGroupInfo(userId, groupDrawId, groupId, true);
 		GroupDrawBotton botton = new GroupDrawBotton(ZERO, ONE, ONE);
 		if (userJoinGroup != null) {
