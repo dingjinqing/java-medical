@@ -1,0 +1,15 @@
+<!--pages1/pledgeannounce/pledgeannounce.wxml-->
+<include src="/pages/common/header.wxml" />
+<view class='service_content'>
+<block wx:for="{{pledge_list}}" wx:key='key'>
+  <view class='single_service clearfix'>
+    <view class='single_left'>
+      <image class='circle' src='{{imageUrl}}{{item.pledge_logo}}'></image>
+    </view>
+    <view class='single_right'>
+      <view class='r_top'>{{item.pledge_name}}</view>
+      <view class='r_bottom'>{{item.pledge_content}}</view>
+    </view>
+  </view>
+  </block>
+</view>

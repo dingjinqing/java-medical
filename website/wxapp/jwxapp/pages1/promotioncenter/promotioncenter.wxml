@@ -1,0 +1,266 @@
+<!--pages1/promotioncenter/promotioncenter.wxml-->
+<view class="" style="overflow: {{show_hidden ? 'hidden' : 'auto'}}; height: {{show_hidden ? '100%' : 'auto'}}; overflow-x:hidden">
+    <include src="/pages/common/header.wxml" />
+    <!-- 一些弹窗 -->
+    <view class="main_modal"  animation="{{animationLsi}}" style="height:calc(100% - {{navigation_h}}px)">
+        <view class="zhezhao_area" bindtap="not_play"></view>
+        <view class="sear_area">
+            <view class="search_item_area">
+                <view class="price_range">
+                  <view class="interval">价格区间</view>
+                  <view class="price_filter">
+                    <input type="number" placeholder="最低价" class="lowest" bindblur="min_priceInput" value="{{min_price}}" placeholder-style="color: #999;"></input>
+                    <view class="hengxian"></view>
+                    <input type="number" placeholder="最高价" class="lowest" bindblur="max_priceInput" value="{{max_price}}" placeholder-style="color: #999;"></input>
+                  </view>
+                </view>
+                <!-- 商品分类 -->
+                <view class="categories" wx:if="{{sort_goods_flag == 1}}">
+                  <view class="interval clearfix">
+                    商品分类
+                    <text style='color:{{comColor}}'>{{goods_sort_name}}</text>
+                  </view>
+                  <view class="price_filter">
+                    <view class="{{ sort_id == item.sort_id ? 'is_checked':'' }}" bindtap="checkedCategory" wx:for="{{goodsCategory1}}" wx:key="key" 
+                          data-id='{{item.sort_id}}' data-sort="{{item.sort_name}}" data-flag="{{dataFlag}}"
+                          style='color:{{sort_id ==item.sort_id ?comColor:""}};background:{{sort_id ==item.sort_id ?somColor:""}};border-color:{{sort_id ==item.sort_id ?comColor:""}}'>
+                          {{item.sort_name}}
+                    </view>
+                    <view class="more" bindtap="categoriesTap">更多...</view>
+                  </view>
+                </view>
+                <!-- 品牌 -->
+                <view class="categories pinpai_area" wx:if="{{goodsBrands1.length > 0}}">
+                  <view class="interval clearfix">
+                    品牌
+                    <text style='color:{{comColor}}'>{{selectBrandName}}</text>
+                  </view>
+                  <view class="price_filter">
+                    <view class='{{item.isCheck == 1 ?"is_checked":""}}' wx:for="{{goodsBrands1}}" wx:key='key' data-brand_id="{{item.id}}" wx:if="{{index <= 5}}" bindtap="activitybrand"
+                          style='color:{{item.isCheck == 1 ?comColor:""}};background:{{item.isCheck == 1 ?somColor:""}};border-color:{{item.isCheck == 1 ?comColor:""}};'>
+                          {{item.brand_name}}
+                    </view>
+                    <view class="more" bindtap="brandMoreTap">更多...</view>
+                  </view>
+                </view>
+                <!-- 活动 -->
+                <view class="categories pinpai_area" wx:if='{{active_list.length > 0}}'>
+                  <view class="interval clearfix">
+                    活动商品
+                    <text style='color:{{comColor}}'></text>
+                  </view>
+                  <view class="price_filter">
+                    <view wx:for='{{active_list}}' wx:key='key' data-id="{{item.id ? item.id : ''}}" 
+                          data-index="{{index}}" class="{{item.checked == 1 ? 'is_checked' : ''}}" catchtap="activityGoods"
+                          style='color:{{item.checked == 1 ?comColor:""}};background:{{item.checked == 1 ?somColor:""}};border-color:{{item.checked == 1 ?comColor:""}}'>
+                       {{item.name}}
+                    </view>
+                  </view>
+                </view>
+            </view>
+            <view class="som_btn">
+                <button bindtap="reset_search">重置</button>
+                <button class="confirm" bindtap="to_search" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>确认</button>
+            </view>
+        </view>
+    </view>
+    <!-- 更多分类 -->
+    <view animation="{{categoryLsi}}" class="categories-bullet">
+      <view class="zhezhao_area" catchtap="no_category"></view>
+      <view class="sear_area">
+        <view class="page">
+          <view class="more-categories">
+            <view style="width: 15%; height: 100%;" catchtap="to_filter">
+              <image src='{{imageUrl}}/image/wxapp/category_back.png'></image>
+            </view>
+            <text>更多分类</text>
+          </view>
+          <view class="li" bindtap='changeToggle'>
+            <view class="left" catchtap="clear_category" style="width: 100%;">全部分类</view>
+          </view>
+          <view wx:for="{{primaryfirst}}" wx:key="key" >
+            <view wx:if="{{item.sort_goods_num>0}}" class="li" data-index="{{index}}" data-id="{{item.sort_id}}" bindtap='changeToggle'>
+              <view class="left">{{item.sort_name}}({{item.sort_goods_num}})</view>
+              <image src='/images/comment_down.png' class='icon_down {{selectedFlag[index] ? "icon_down_rotate" : ""}}' style="margin-top: 42rpx;"></image>
+            </view>
+            <view wx:if="{{selectedFlag[index]}}" style="color: #666;">
+              <view class="li bg-gray" data-id="{{item.sort_id}}" data-sort="{{item.sort_name}}" catchtap='checkedCategory' style="color:{{item.sort_id == sort_id ?comColor : ''}}">
+                全部({{item.sort_goods_num}})
+              </view>
+              <block wx:for="{{item.child}}" wx:for-index="index1" wx:key='key' wx:for-item="itemName" hidden="true">
+                <view wx:if="{{itemName.sort_goods_num>0}}" class="li bg-gray" data-id="{{itemName.sort_id}}" catchtap='checkedCategory' data-sort="{{itemName.sort_name}}" data-parent_id="{{item.sort_id}}">
+                  <view style="color:{{itemName.sort_id == sort_id ? comColor : ''}}">{{itemName.sort_name}}({{itemName.sort_goods_num}})
+                  </view>
+                </view>
+              </block>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- 更多品牌 -->
+    <view animation="{{brandLsi}}" class="categories-bullet" catchtouchmove='preventMove'>
+      <view class="zhezhao_area" catchtap='no_brand'></view>
+      <view class="sear_area">
+        <view class="more-categories">
+          <view style="width: 15%; height: 100%;" catchtap="no_brand">
+            <image src='{{imageUrl}}/image/wxapp/category_back.png'></image>
+          </view>
+          <text>更多品牌</text>
+        </view>
+        <v-brand right_height="{{right_height}}" brand_info="{{goodsBrands}}" is_search="1" all_brand="1" bind:search_brand="activitybrand" />
+      </view>
+    </view>
+    <!-- 复制信息显示弹框 -->
+    <v-toast show="{{copyComplete}}" toast-info="{{toastInfo}}" />
+    <!-- 分享 -->
+    <!-- <v-invite-notice invite_id="{{invite_id}}" /> -->
+    <!-- <v-popup show="{{share_good}}" bind:close="bindClose" hide_close="{{true}}" horizon="center" vertical="bottom" bindtap='bindClose'>
+      <view class="share_dis_box">
+        <view class="popup_title">
+          分享
+          <image src="{{ imageUrl }}image/wxapp/close_icon.png" mode='widthFix' bindtap='bindClose'></image>
+        </view>
+        <view class="share_content_box">
+          <button catchtap='onShareAppMessage' open-type='share' data-now_indexs="{{choosed_index}}">
+            <image src="{{ imageUrl }}image/wxapp/share_friends.png" mode='widthFix' style='margin-bottom:20rpx;'></image>
+            <text>分享给朋友</text>
+          </button>
+          <view bindtap='go_share' data-now_indexs="{{choosed_index}}">
+            <image src="{{ imageUrl }}image/wxapp/download_img.png" mode='widthFix' style='margin-bottom:20rpx;'></image>
+            <text>下载海报</text>
+          </view>
+          <view bindtap='go_share' data-now_indexs="{{choosed_index}}" data-if_tor='{{1}}'>
+            <image src="{{ imageUrl }}image/wxapp/get_imgs_item.png" mode='widthFix' style='margin-bottom:20rpx;'></image>
+            <text>下载多图</text>
+          </view>
+        </view>
+      </view>
+    </v-popup> -->
+    <!-- 保存海报 -->
+    <view class='share_bg' style='display:{{is_share == 1?"block":"none"}};margin-top:{{margin_top_nav + 8}}px'>
+      <view class='zhezhao' catchtap='not_show_share'></view>
+      <view class='share_content'>
+        <image src='{{pictorial}}'></image>
+        <view class='btn_save_img' bindtap='saveImgToPhotosAlbumTap' style='background:{{comColor}}' data-iftor='{{if_tor}}' data-now_indexs="{{choosed_index}}">保存图片</view>
+        <view class='save_tips'>保存图片到本地相册</view>
+      </view>
+    </view>
+    <view class="{{isShow ? 'xianshi' : 'hidden'}}"></view>
+    <view class="main_container">
+        <view class="some_search">
+          <view class="search_input clearfix">
+              <view class='search_area'>
+                <icon class='search_img' size='13' type='search'></icon>
+                <input type='text' placeholder='请输入搜索关键字' bindblur='searchGoods' value='{{searchText}}'></input>
+              </view>
+              <view class="look_style look_diff_style">
+                  <view bindtap='change_style_btn' class="btn_show_style">
+                    查看 <image src="{{imageUrl}}image/wxapp/see_more_down.png" mode="widthFix"></image>
+                  </view>
+                  <view class="toggle_style" wx:if='{{show_change}}'>
+                    <view class="jiantou"></view>
+                    <view class="three_style">
+                      <view class="each_three" data-style='{{0}}' bindtap="toggle_style">商品信息</view>
+                      <view class="each_three" data-style='{{1}}' bindtap="toggle_style">商品列表</view>
+                      <view class="each_three" data-style='{{2}}' bindtap="toggle_style">商品多图</view>
+                    </view>
+                  </view>
+              </view>
+          </view>
+          <view class="top_bar">
+            <view bindtap="switchOrder" 
+                  style="color:{{sort_name=='goods_sale_num'?comColor:''}}" 
+                  class="{{sort_name=='goods_sale_num'?'selected':'normal'}}" data-type="goods_sale_num">
+                      销量<text class="icon">{{sort_order=='desc'?'↓':'↑'}}</text> 
+            </view>
+            <view bindtap="switchOrder" style="color:{{sort_name=='shop_price' ? comColor:''}}" 
+                  class="{{sort_name=='shop_price' ? 'selected':'normal'}}" data-type="shop_price">
+                  价格<text class="icon">{{sort_order=='desc'?'↓':'↑'}}</text>
+            </view>
+            <view bindtap='leftSlideIn' class="filter">
+                筛选<image src="{{imageUrl}}image/wxapp/filter.png" class="filterImage"></image>
+            </view>
+          </view>
+        </view>
+        <block wx:if='{{pro_goods != ""}}'>
+          <!-- 单列商品 -->
+          <view class="single_area" wx:if='{{show_which == 0}}' >
+            <view class="each_single clearfix" wx:for="{{pro_goods}}" wx:key='key'  bindtap="to_item" data-goods_id='{{item.goods_id}}'>
+              <view class="es_img">
+                <image src="{{item.goods_img}}"></image>
+                <view class='reduce' style='background:{{linColor}};color:#fff' wx:if='{{item.goods_price_action == 2}}'>限时降价，立即查看</view>
+                <view class='grade' style='background:{{linColor}};color:#fff' wx:if='{{item.goods_price_action == 3}}'>新人专享,首单特惠</view>
+                <view class='exclusive' wx:if='{{item.is_card_exclusive == 1 && item.goods_type != 5 && item.goods_price_action != 2 && item.goods_price_action !=3}}'>会员专享商品，立即查看</view>
+                <view class='grade' wx:elif='{{item.goods_price_action == 1}}'>专享会员价，立即查看</view>
+              </view>
+              <view class="es_goods">
+                <view class="es_info">
+                  <view class="es_name">{{item.goods_name}}</view>
+                  <view class="max_fanli" style="color:{{comColor}};border-color:{{comColor}}">最高返{{item.rebate_money}}元</view>
+                  <view class="es_price" style="color:{{comColor}}">￥{{item.region_price}}</view>
+                </view>
+                <view class="es_btns">
+                    <view class="btn_download" catchtap='go_share' data-now_indexs="{{index}}" data-if_tor='{{1}}'><text class="iconfont iconxiazai"></text>下载多图</view>
+                    <button class="btn_share" style="background:{{comColor}}" catchtap="shareGoods" data-now_index='{{index}}'>立即分享</button>
+                </view>
+              </view>
+            </view>
+          </view>
+          <!-- 双列商品 -->
+          <view class="double_area clearfix" wx:if='{{show_which == 1}}'>
+            <view class="each_double"  wx:for="{{pro_goods}}" wx:key='key' bindtap="to_item" data-goods_id='{{item.goods_id}}'>
+              <view class="ed_img">
+                <image src="{{item.goods_img}}"></image>
+                <view class='reduce' style='background:{{linColor}};color:#fff' wx:if='{{item.goods_price_action == 2}}'>限时降价，立即查看</view>
+                <view class='grade' style='background:{{linColor}};color:#fff' wx:if='{{item.goods_price_action == 3}}'>新人专享,首单特惠</view>
+                <view class='exclusive' wx:if='{{item.is_card_exclusive == 1 && item.goods_type != 5 && item.goods_price_action != 2 && item.goods_price_action !=3}}'>会员专享商品，立即查看</view>
+                <view class='grade' wx:elif='{{item.goods_price_action == 1}}'>专享会员价，立即查看</view>
+              </view>
+              <view class="ed_info">
+                  <view class="ed_goods">
+                      <view class="es_name">{{item.goods_name}}</view>
+                      <view class="max_fanli" style="color:{{comColor}};border-color:{{comColor}}">最高返{{item.rebate_money}}元</view>
+                  </view>
+                  <view class="ed_btn">
+                      <view class="es_price" style="color:{{comColor}};">￥{{item.reduce_price}}</view>
+                      <view class="ed_btn_share" style="color:{{comColor}};" catchtap="shareGoods" data-now_index='{{index}}'><text class="iconfont iconfenxiang" style="color:{{comColor}};"></text></view>
+                  </view>
+              </view>
+            </view>
+          </view>
+          <!-- 多图的 -->
+          <view class="mutiple_area" wx:if='{{show_which == 2}}'>
+            <view class="each_multiple"  wx:for="{{pro_goods}}" wx:key='key' bindtap="to_item" data-goods_id='{{item.goods_id}}'>
+              <view class="em_name">
+                <text class="em_grade" style="color:{{comColor}};border-color:{{comColor}}" wx:if='{{item.goods_price_action == 2}}'>限时降价</text>
+                <text class="em_grade" style="color:{{comColor}};border-color:{{comColor}}" wx:if='{{item.goods_price_action == 3}}'>首单特惠</text>
+                <text class="em_grade1" wx:if='{{item.is_card_exclusive == 1 && item.goods_type != 5 && item.goods_price_action != 2 && item.goods_price_action !=3}}'>会员专享</text>
+                <text class="em_grade1" wx:elif='{{item.goods_price_action == 1}}'>会员价</text>
+                {{item.goods_name}}
+              </view>
+              <view class="max_fanli" style="color:{{comColor}};border-color:{{comColor}}">最高返{{item.rebate_money}}元</view>
+              <view class="em_goods">
+                <view class="es_price" style="color:{{comColor}}">￥{{item.region_price}}</view>
+                <view class="btn_download" catchtap='go_share' data-now_indexs="{{index}}" data-if_tor='{{1}}'><text class="iconfont iconxiazai"></text>下载多图</view>
+              </view>
+              <view class="som_img clearfix">
+                <view class="each_img" wx:for='{{item.goods_images}}' wx:key='key' wx:for-item='item_img'>
+                    <image src="{{item_img}}"></image>
+                </view>
+              </view>
+              <button class="btn_share_em" style="background:{{comColor}}" catchtap="shareGoods" data-now_index='{{index}}'>立即分享</button>
+            </view>
+          </view>
+          <view class='load_style'>{{ is_load == 0 ? "已加载全部商品":"加载中。。。" }}</view>
+        </block>
+        <block wx:if='{{pro_goods == ""}}'>
+          <view class='nullBox'>
+            <image class="nullImage" src="{{imageUrl}}image/wxapp/no_result.png"></image>
+            <view class="nullContent">
+              <text>抱歉！没有找到相关的商品</text>
+            </view>
+          </view>
+        </block>
+    </view>
+</view>

@@ -1,0 +1,270 @@
+/* pages1/presentcheckout/presentcheckout.wxss */
+@import "../../css/iconfont.wxss";
+@import '../presentinfo/presentinfo.wxss';
+@import '../presentdetail/presentdetail.wxss';
+page{
+  overflow-x: hidden;
+  font-family: "Microsoft YaHei", 微软雅黑, "Microsoft JhengHei";
+  height: 90%
+}
+.main_container{
+  min-height: 77%
+}
+.clearfix::after{
+  contain: "";
+  display: block;
+  clear: both;
+}
+.time_tips{
+  font-size:14px;
+  color:#353535;
+  padding:20rpx 0;
+  text-align:center;
+}
+.time_tips image{
+  width:30rpx;
+  height:30rpx;
+  position:relative;
+  top:3px;
+}
+.time_tips text{
+  color: #f66;
+  font-size: 26rpx;
+}
+.good_area{
+  width: 700rpx;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 10rpx;
+  margin-bottom: 20rpx;
+}
+.each_goods{
+  padding: 20rpx;
+  margin-left: 0;
+  border: none
+}
+.address_area{
+  width: 660rpx;
+  margin: 0 auto;
+  padding: 40rpx 20rpx;
+  background: #fff;
+  border-radius: 10rpx;
+  margin-bottom: 20rpx;                                            
+  position: relative;
+}
+.add_bg{
+  position:absolute;
+  bottom:-5rpx;
+  width:680rpx;
+  left:10rpx;
+}
+.add_bg image{
+  width: 100%;
+  height: 4rpx;
+}
+.add_top{
+  float: left;
+}
+.add_top image{
+  width: 45rpx;
+  height: 40rpx;
+  margin-right: 20rpx;
+}
+.add_middle{
+  float: left;
+  width: 560rpx;
+}
+.aee_user{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 25rpx;
+}
+.aee_user>view:first-of-type{
+  width: 360rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.aee_user>view:last-of-type{
+  width: 200rpx;
+  text-align: right
+}
+.add_content{
+  width: 100%;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  line-height: 45rpx;
+  color: #666;
+}
+.add_end{
+  float: right;
+}
+.add_end image{
+  width: 16rpx;
+  padding-top: 70rpx;
+}
+.user_area{
+  padding: 20rpx 50rpx;
+  border-radius: 10rpx;
+  width: 600rpx;
+  background: #fff;
+  margin: 0 auto 20rpx;
+}
+.user_icon{
+  width: 120rpx;
+  height: 120rpx;
+  float: left;
+  margin-right: 30rpx;
+  border-radius: 300rpx;
+  border: 2rpx solid #fff;
+}
+.user_icon image{
+  width: 100%;
+  height: 100%;
+  border-radius: 300rpx;
+}
+.user_time{
+  float: left;
+  width: 440rpx;
+  height: 120rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-around
+}
+.us_name{
+  margin-bottom: 25rpx;
+}
+.order_area{
+  padding: 40rpx 20rpx;
+  border-radius: 10rpx;
+  width: 660rpx;
+  background: #fff;
+  margin: 0 auto 20rpx;
+}
+.order_area view view{
+  margin-bottom: 30rpx;
+}
+.order_area .oa_bottom view:last-of-type{
+  margin-bottom: 0
+}
+.oa_top{
+  border-bottom: 2rpx solid #eee;
+  margin-bottom: 30rpx;
+}
+
+.btn_confirm{
+  width: 700rpx;
+  margin: 0 auto;
+  height: 90rpx;
+  background: #f66;
+  color: #fff;
+  text-align: center;
+  line-height: 90rpx;
+  border-radius: 8rpx;
+  border: none;
+  font-size: 30rpx;
+}
+button::after{
+  border: none;
+  border-radius: 0
+}
+.add_title{
+  padding-bottom: 25rpx;
+  border-bottom: 2rpx solid #eee;
+  margin-bottom: 30rpx;
+}
+.kuaidi_info{
+  padding-bottom: 30rpx;
+  margin-bottom:30rpx;
+  border-bottom:2rpx solid #eee;
+}
+.kuaidi_icon{
+  float: left;
+  margin-right: 20rpx;
+}
+.kuaidi_word view:last-of-type{
+  margin-top: 25rpx;
+  color: #666
+}
+.kuaidi_info .kuaidi_icon image{
+    width: 45rpx;
+    height: 40rpx;
+} 
+.kuaidi_word{
+  float: left;
+  width: 560rpx;
+}
+.btn_to_kuaidi{
+  float: right;
+  padding-top: 15rpx;
+}
+.btn_to_kuaidi image{
+  width: 16rpx;
+}
+.no_add{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.no_left{
+  flex: 1.2;
+  display: flex;
+}
+.no_add image{
+  width: 45rpx;
+  height: 40rpx;
+  margin-right: 20rpx;
+}
+.no_add .no_words{
+  color: #666;
+}
+.btn_get_add{
+  flex: 0.8;
+  text-align: right
+}
+.btn_get_add image{
+  width: 16rpx;
+}
+.kefu_tips{
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  position: fixed;
+  right: 10rpx;
+  top: 850rpx;
+  z-index: 9999;
+  width: 80rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  border-radius: 200rpx;
+  font-size: 24rpx;
+}
+.kefu_tips .con_button {
+  position: absolute;
+  width: 80rpx;
+  height: 80rpx;
+  opacity: 0;
+  top:0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

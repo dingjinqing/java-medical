@@ -1,0 +1,23 @@
+.announce_container{
+  height: 80rpx;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.shop_img{
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rpx;
+}
+.shop_img image{
+  width: 34rpx;
+  height: 28rpx;
+}
+.shop_content{
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}

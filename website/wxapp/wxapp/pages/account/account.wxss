@@ -1,0 +1,53 @@
+/* pages/account/account.wxss */
+page{
+  background: #f5f5f5;
+}
+view{
+  box-sizing: border-box;
+}
+.account_top{
+  background: #fff;
+  color: #000;
+  font-size: 26rpx;
+  text-align: center;
+  padding: 70rpx 0;
+}
+.account_top text{
+  color: #f66;
+  font-size: 48rpx;
+  margin-top: 10rpx;
+}
+.load_style{
+    font-size: 24rpx;
+  color: #666;
+  width: 100%;
+  padding: 15rpx 0;
+  text-align: center
+}
+.account_content{
+  background: #fff;
+  margin-top: 20rpx;
+  padding-left: 40rpx;
+}
+.account_list{
+  padding: 28rpx 40rpx 28rpx 0;
+  border-bottom: 1px solid #eee;
+  font-size: 26rpx;
+  color: #000;
+}
+.account_list:last-child{
+  border: none;
+}
+.fl{
+  float: left;
+  width: 550rpx;
+}
+.fr{
+  float: right;
+}
+.account_list text{
+  color: #999;
+  font-size: 24rpx;
+  margin-top: 25rpx;
+  display: block
+}

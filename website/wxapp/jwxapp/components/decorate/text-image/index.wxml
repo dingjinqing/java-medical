@@ -1,0 +1,8 @@
+<!-- 左文右图 -->
+<view class="textimg_container" catchtap="bindJumpLink" data-url="{{m.title_link}}" data-idx='{{m.cur_idx}}'>
+  <image src='{{m.img_url}}' class='{{m.img_style == 0 ? "big_image" : "small_image"}} {{m.ti_type == 0 ? (m.img_style == 0 ? "b_i_l" : "s_i_l") : (m.img_style == 0 ? "b_i_r" : "s_i_r") }}'></image>
+  <view class='{{m.img_style == 0 ? "big_text" : "small_text"}} {{m.ti_type == 1 ? ( m.img_style == 0 ? "b_t_r" : "s_t_r") : ""}}'>
+    <rich-text  nodes="{{m.rich_text}}">
+    </rich-text>
+  </view>
+</view>

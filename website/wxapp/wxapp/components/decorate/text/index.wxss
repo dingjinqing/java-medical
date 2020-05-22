@@ -1,0 +1,6 @@
+.text-container{
+   font-size: 28rpx;
+   margin-bottom: 20rpx;
+   padding: 10px 10px;
+   background: #fff;
+}

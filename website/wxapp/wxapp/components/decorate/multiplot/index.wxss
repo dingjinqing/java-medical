@@ -1,0 +1,23 @@
+.multiplot-scroll{
+  white-space: nowrap;
+  margin-bottom: 20rpx;
+  height: 180rpx;
+}
+.scroll-item{
+  display: inline-block;
+  width:40%;
+
+  margin-right: 2%;  
+}
+.multiplot-scroll image{
+  width:100%;
+}
+
+.title-container{
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  background-color: yellow;
+  padding: 0 15rpx;
+  margin-bottom: 20rpx;
+}

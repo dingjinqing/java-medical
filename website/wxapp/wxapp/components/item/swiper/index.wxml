@@ -1,0 +1,18 @@
+<swiper class="swiper" autoplay="true" circular="true" indicator-dots='true' indicator-active-color="#fff">
+  <swiper-item wx:if='{{gd.goods_video_img}}' style='background:#f5f5f5;'>
+    <image src="{{gd.goods_video_img}}" class='myVideo' mode='aspectFit' bindtap='bindPlayVideo'></image>
+    <view class='btn_play' bindtap='bindPlayVideo'>
+      <image src='{{imageUrl}}image/wxapp/play_btn.png'></image>
+    </view>
+  </swiper-item>
+  <block wx:for="{{gd.imgs}}" wx:key="key" wx:for-index="index">
+    <swiper-item>
+      <image src="{{item}}!big" class="slide-image" mode="aspectFit" bindtap="bindPreviewUrls" data-src='{{item}}'></image>
+      <view>
+        {{index+1}}
+      </view>
+    </swiper-item>
+  </block>
+</swiper>
+
+<v-popup-video show="{{show_play}}" video_url="{{gd.goods_video}}" video_size="{{gd.goods_video_size}}" />

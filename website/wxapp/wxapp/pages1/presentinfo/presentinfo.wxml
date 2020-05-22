@@ -1,0 +1,115 @@
+<!--pages1/presentinfo/presentinfo.wxml-->
+<include src="/pages/common/header.wxml" />
+<view class='main_container' style='padding-bottom:{{ isIpx == 1 ? "60rpx" : "20rpx"}}'>
+    <view class='pre_top' style='background:-webkit-linear-gradient(top,{{linColor}},{{comColor1}})'>
+        <view class='user_avator'> <image src='{{user_img}}'></image> </view>
+        <view class='user_name'>来自 <text>{{user_name}}</text> 的礼物</view>
+        <view class='top_bg'><image src='{{imageUrl}}image/wxapp/pre_bg1.png'></image></view>
+        <view class='btn_to_rule' bindtap='toRule'> 活动规则</view>
+    </view>
+    <view class='pre_content'>
+        <!-- 有商品 -->
+        <view class='good_area' wx:if='{{gift_info.goods_list != ""}}'>
+          <block wx:if='{{flag == 0}}'>
+            <view class='each_goods clearfix' wx:for='{{gift_info.goods_list}}' wx:key='key' wx:if='{{index < 3}}'>
+                <view class='goods_img'> <image src='{{item.goods_img}}'></image> </view>
+                <view class='goods_info'>
+                    <view class='goods_name'>{{item.goods_name}}</view>
+                    <view class='goods_desc' wx:if='{{item.prd_desc != null}}'>{{item.prd_desc}}</view>
+                    <view class='goods_price'>
+                        <view class='goods_money' style="color:{{comColor}}">￥ <text>{{item.goods_price}}</text></view>
+                        <view class='goods_num_change'>
+                            <image src='{{imageUrl}}image/wxapp/present_del.png' class='btn_del' bindtap='goods_jian' data-index='{{index}}' data-goods_id='{{item.goods_id}}' data-prd_id='{{item.prd_id}}' data-prd_num='{{item.prd_number}}' wx:if='{{item.if_min == 0}}'></image>
+                            <image src='{{imageUrl}}image/wxapp/present_no_click.png' class='btn_del' bindtap='goods_jian'  data-index='{{index}}' data-goods_id='{{item.goods_id}}' data-prd_id='{{item.prd_id}}' data-prd_num='{{item.prd_number}}'  wx:if='{{item.if_min == 1}}'></image>
+                            <input type='text' value='{{item.goods_number}}' class='btn_add' bindblur='goods_change' data-index='{{index}}'  data-goods_id='{{item.goods_id}}' data-prd_id='{{item.prd_id}}' data-prd_num='{{item.prd_number}}'></input>
+                            <image src='{{imageUrl}}image/wxapp/present_add.png' bindtap='goods_add' data-index='{{index}}'  data-goods_id='{{item.goods_id}}' data-prd_id='{{item.prd_id}}' data-prd_num='{{item.prd_number}}'></image>
+                        </view>
+                    </view>
+                </view>
+            </view>
+          </block>
+          <block wx:if='{{flag == 1}}'>
+            <view class='each_goods clearfix' wx:for='{{gift_info.goods_list}}' wx:key='key'>
+                <view class='goods_img'> <image src='{{item.goods_img}}'></image> </view>
+                <view class='goods_info'>
+                    <view class='goods_name'>{{item.goods_name}}</view>
+                    <view class='goods_desc' wx:if='{{item.prd_desc != null}}'>{{item.prd_desc}}</view>
+                    <view class='goods_price'>
+                        <view class='goods_money'>￥ <text>{{item.goods_price}}</text></view>
+                        <view class='goods_num_change'>
+                            <image src='{{imageUrl}}image/wxapp/present_del.png' class='btn_del' bindtap='goods_jian' data-index='{{index}}' data-goods_id='{{item.goods_id}}' data-prd_id='{{item.prd_id}}' data-prd_num='{{item.prd_number}}' wx:if='{{item.if_min == 0}}'></image>
+                            <image src='{{imageUrl}}image/wxapp/present_no_click.png' class='btn_del' bindtap='goods_jian' data-index='{{index}}' data-goods_id='{{item.goods_id}}' data-prd_id='{{item.prd_id}}' data-prd_num='{{item.prd_number}}'  wx:if='{{item.if_min == 1}}'></image>
+                            <input type='text' value='{{item.goods_number}}' class='btn_add' bindblur='goods_change' data-index='{{index}}'  data-goods_id='{{item.goods_id}}' data-prd_id='{{item.prd_id}}' data-prd_num='{{item.prd_number}}'></input>
+                            <image src='{{imageUrl}}image/wxapp/present_add.png' bindtap='goods_add' data-index='{{index}}'  data-goods_id='{{item.goods_id}}' data-prd_id='{{item.prd_id}}' data-prd_num='{{item.prd_number}}'></image>
+                        </view>
+                    </view>
+                </view>
+            </view>
+          </block>
+        </view>
+
+        <!-- 没商品 -->
+        <view class='now_no_goods good_area clearfix' wx:if='{{gift_info.goods_list == ""}}'  bindtap='go_on_add_gift'>
+            <view class='no_imgs'><image src='{{imageUrl}}image/wxapp/present_icon1.png'></image></view>
+            <view class='no_word'>
+                <view>挑选礼物</view>
+                <view>点击这里，挑选你喜欢的礼物</view>
+            </view>
+            <view class='to_more_pro'>
+                <image class='btn_to_more_goods' src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
+            </view>
+        </view>  
+
+        <view class='goon_add_line' wx:if='{{gift_info.goods_list.length>0}}'>
+            <view class='total_goods_num'>共{{gift_info.goods_list.length}}份礼物</view>
+            <view class='btn_goon_add' bindtap='go_on_add_gift'>
+                继续添加 <image src='{{imageUrl}}image/wxapp/right_into_blue.png' mode='widthFix'></image>
+            </view>
+        </view>
+        <view class='look_all_goods' wx:if='{{gift_info.goods_list.length > 3}}' bindtap='to_look_all'>
+            <block wx:if='{{flag == 0}}'>查看</block> <block wx:if='{{flag == 1}}'>收起</block>全部 <image src='{{imageUrl}}image/wxapp/see_more_down.png' mode='widthFix'></image>
+        </view>
+    </view>
+    <view class='tow_area'>
+      <view class='some_way'>
+          <view>{{choosed_play_mode}}</view>
+          <view class='look_more_way' bindtap='more_act_type'>
+            更多玩法 <image src='{{imageUrl}}image/wxapp/right_into_blue.png' mode='widthFix'></image>
+          </view>
+      </view>
+      <view class='some_way picker' wx:if='{{if_time == 1}}'>
+          <view class='' style='padding-left:20rpx'>开奖日期</view>
+          <view class='choose_date choose_same'>
+              <picker mode='date' value='{{choosed_date}}' start='{{now_dates}}' end='{{end_dates}}' bindchange='change_open_date'>
+                  {{choosed_date}}
+              </picker>
+          </view>
+      </view>
+      <view class='some_way picker' wx:if='{{if_time == 1}}'>
+          <view class='' style='padding-left:20rpx;'>开奖时间</view>
+          <view class='choose_time choose_same'>
+              <picker mode='time' value='{{choosed_time}}' start='{{now_time}}' end='{{}}' bindchange='change_open_time'>
+                  {{choosed_time}}
+              </picker>
+          </view>
+      </view>
+    </view>
+    <view class='textarea_title'>传达心意，写祝福语</view>
+    <view class='some_words'>
+        <input placeholder='大吉大利，送你好礼' type='text' maxlength='15' bindblur='changeMsg' bindinput='changeMsg' bindconfirm='changeMsg'></input>
+    </view>
+    <view class='some_tips'>温馨提示：每位好友最多可领一份礼物，在支付后24小时内无人领取或领取后未填写收货地址的礼物，均会将款项退回您的付款账户。</view>
+    <form report-submit='true' bindsubmit='fill_order'>
+      <button class='btn_fill_order' style='background:{{comColor}}' formType='submit'>生成礼单</button>
+    </form>
+</view>
+<!-- 玩法弹框 -->
+<view class='modal_bg'  wx:if='{{if_play_mode == 1}}' catchtap='btn_cancel_act'></view>
+<view class='play_modal' wx:if='{{if_play_mode == 1}}'>
+    <view class='each_play_mode' wx:if='{{gift_info.gift_info.act_type_direct_giving == 1}}' data-paly='{{0}}' bindtap='choose_play_mode'>直接送礼</view>
+    <view class='each_play_mode' wx:if='{{gift_info.gift_info.act_type_first_served == 1}}' data-paly='{{1}}' bindtap='choose_play_mode'>先到先得</view>
+    <view class='each_play_mode' wx:if='{{gift_info.gift_info.act_type_timing_open == 1}}' data-paly='{{2}}' bindtap='choose_play_mode'>定时开奖</view>
+    <view class='each_play_mode btn_play_cancel' bindtap='btn_cancel_act'>取消</view>
+</view>
+<include src="/pages/common/footer.wxml" />
+

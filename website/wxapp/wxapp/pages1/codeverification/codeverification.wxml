@@ -1,0 +1,48 @@
+<include src="/pages/common/header.wxml" />
+<view class="main-container" style="height:100%">
+  <view class="scancode_top" style="{{orderList.length > 0 ? 'height:600rpx' : 'height:100%'}}">
+    <view class="scancode_box">
+      <view class="scancode_button" bindtap="scanCode" style='background:-webkit-linear-gradient(top,{{linColor}},{{comColor1}});border-color:{{somColor}};'>
+        <image src="{{imageUrl}}image/wxapp/scancode_bigqr.png" />
+        <text>扫核销码</text>
+      </view>
+      <input type="text" class="scancode_input" placeholder="手动输入核销码" bindconfirm='submit_input' confirm-type="done" />
+    </view>
+  </view>
+  <view class="scancode_bottom" wx:if="{{orderList.length > 0}}">
+    <view class="bottom_title">核销记录</view>
+    <block wx:if="{{ orderList.length > 0 }}">
+      <view wx:for="{{orderList}}" wx:for-item="order" class="each_order_info"
+       bindtap='toOrderInfo' data-order-sn='{{order.order_sn}}'>
+        <view class="order_title">
+          <view class='order_type' style='color:{{comColor}};border-color:{{comColor}}'>
+            <block>{{order.pos_flag == 1 ? '扫码购' : '自提'}}</block>
+          </view>订单编号：{{order.order_sn}}
+        </view>
+        <view class="order_info">
+          <view>
+            <text>下单人：</text>
+            <text>{{order.username}}</text>
+            <text>{{order.mobile}}</text>
+          </view>
+          <view>
+            <text>门店名称：</text>
+            <text>{{order.store_name}}</text>
+          </view>
+          <view>
+            <text>商品数量：</text>
+            <text>{{order.goods_amount}}件</text>
+          </view>
+          <view>
+            <text>消费金额：</text>
+            <text>￥{{order.money_paid}}</text>
+          </view>
+          <view>
+            <text>核销时间：</text>
+            <text>{{order.confirm_time}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

@@ -1,0 +1,52 @@
+<view class='goods-comment' bindtap='goAll' data-id="{{ gd.goods_id }}">
+      <view class='clearfix goods_comment_title'>
+        <view class='goods_act_title'>用户评价({{gd.comment_total}})</view>
+        <view class='goods_comment_all' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+          <text>查看全部</text>
+        </view>
+      </view>
+      <view class="goods_comment_num" >
+          <view class="type_num" catchtap='goType' data-id="{{ gd.goods_id }}" data-type="haoping" style='background:{{somColor}};color:{{comColor}}'>好评({{gd.comment_number[0].num}})</view>
+          <view class="type_num" catchtap='goType' data-id="{{ gd.goods_id }}" data-type="zhongping" style='background:{{somColor}};color:{{comColor}}'>中评({{gd.comment_number[1].num}})</view>
+          <view class="type_num" catchtap='goType' data-id="{{ gd.goods_id }}" data-type="chaping" style='background:{{somColor}};color:{{comColor}}'>差评({{gd.comment_number[2].num}})</view>
+          <view class="type_num" catchtap='goType' data-id="{{ gd.goods_id }}" data-type="youtu" style='background:{{somColor}};color:{{comColor}}'>有图({{gd.comment_number[3].num}})</view>
+      </view>
+      <view class='comment_list'>
+        <view class='comment_list_top clearfix'>
+          <view class="fl">
+            <image src='{{ comment_info.user_avatar }}' mode="widthFix" />
+            <text wx:if="{{comment_info.anonymousflag == 0}}">{{ comment_info.username }}</text>
+            <text wx:if="{{comment_info.anonymousflag == 1}}">{{ comment_info.name }}</text>
+          </view>
+          <view class="fr">
+            <!-- <image src='{{imageUrl}}image/wxapp/comstar_{{comment_info.commstar}}.png' mode="widthFix" /> -->
+            <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;' wx:if='{{comment_info.commstar >= 1}}'></text>
+            <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;' wx:if='{{comment_info.commstar >= 2}}'></text>
+            <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;' wx:if='{{comment_info.commstar >= 3}}'></text>
+            <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;' wx:if='{{comment_info.commstar >= 4}}'></text>
+            <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;' wx:if='{{comment_info.commstar >= 5}}'></text>
+          </view>
+        </view>
+        <view class='comment_list_text'>{{ comment_info.comm_note }}</view>
+        <view class='comment_list_spec' wx:if="{{comment_info.goods_attr}}">{{ comment_info.goods_attr }}</view>
+        <view class='comment_list_img clearfix' wx:if="{{comment_info.comm_img != ''}}">
+          <block wx:for="{{comment_info.comm_img}}" wx:key="key" wx:for-index="index" wx:for-item="item_img">
+            <view>
+              <image src='{{ item_img }}' catchtap='clickComment' data-src="{{ item_img }}" />
+            </view>
+          </block>
+        </view>
+        <view class="comment_list_reply" wx:if="{{gd.comment_info != null && comment_info.answer != null && comment_info.answer != ''}}">
+          <image class="reply_up" src='/images/reply_up.png'></image>
+          <view class="reply_content">
+            <view class="reply_text" catchtap='showReply' id="mjltest">
+              <text decode="{{true}}" class="{{isFold?'reply_hide':'reply_show'}}">回复:&nbsp;&nbsp;&nbsp;{{ comment_info.answer }}</text>
+            </view>
+            <view class="reply_image" wx:if="{{hh > 85}}">
+              <text catchtap='showReply'>{{isFold?'展开':'收起'}}</text>
+              <image src="{{isFold?'/images/comment_down.png':'/images/comment_up.png'}}" catchtap='showReply'></image>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>

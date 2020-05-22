@@ -115,32 +115,33 @@ export default {
     saveHandle () {
       let that = this
       this.$refs.announcementForm.validate(valid => {
-        console.log(valid)
-        let articleId = that.$route.query.articleId
-        let params = Object.assign({}, this.form)
-        if (!articleId) {
-          announcementAddApi(params).then(res => {
-            if (res.error === 0) {
-              that.$message.success(that.$t('storeAnnouncement.saveSuccess'))
-              that.$router.push({
-                path: '/admin/home/main/store/storeAnnouncement'
-              })
-            } else {
-              this.$message.error(res.message)
-            }
-          })
-        } else {
-          params.articleId = articleId
-          announcementUpdateApi(params).then(res => {
-            if (res.error === 0) {
-              that.$message.success(that.$t('storeAnnouncement.updateSuccess'))
-              that.$router.push({
-                path: '/admin/home/main/store/storeAnnouncement'
-              })
-            } else {
-              this.$message.error(res.message)
-            }
-          })
+        if (valid) {
+          let articleId = that.$route.query.articleId
+          let params = Object.assign({}, this.form)
+          if (!articleId) {
+            announcementAddApi(params).then(res => {
+              if (res.error === 0) {
+                that.$message.success(that.$t('storeAnnouncement.saveSuccess'))
+                that.$router.push({
+                  path: '/admin/home/main/store/storeAnnouncement'
+                })
+              } else {
+                this.$message.error(res.message)
+              }
+            })
+          } else {
+            params.articleId = articleId
+            announcementUpdateApi(params).then(res => {
+              if (res.error === 0) {
+                that.$message.success(that.$t('storeAnnouncement.updateSuccess'))
+                that.$router.push({
+                  path: '/admin/home/main/store/storeAnnouncement'
+                })
+              } else {
+                this.$message.error(res.message)
+              }
+            })
+          }
         }
       })
     }

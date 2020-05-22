@@ -1,0 +1,24 @@
+<!--pages/account/account.wxml-->
+<include src="../common/header.wxml" />
+<view class='main-container'>
+  <view class='account_top'>
+    <view>可用余额</view>
+    <text style='color:{{comColor}}'>{{ num }}</text>
+  </view>
+  <view class='account_content'>
+    <block wx:for="{{ account_list }}"  wx:key="key">
+      <view class='account_list'>
+        <view class='clearfix'>
+          <view class='fl'>{{ item.remark }}</view>
+          <view class='fr' wx:if="{{ item.is_paid == 0 }}"><block wx:if='{{item.amount >0}}'>+</block>{{ item.amount }}</view>
+          <view class='fr' wx:if="{{ item.is_paid == 1 }}"><block wx:if='{{item.amount >0}}'>+</block>{{ item.amount }}</view>
+          <view class='fr' wx:if="{{ item.is_paid == 2 }}">{{ item.amount }}</view>
+        </view>
+        <view wx:if="{{item.remark == '评价有礼获得'}}">{{item.order_sn}}</view>
+        <text>{{ item.add_time }}</text>
+      </view>
+    </block>
+    <view class='load_style' wx:if="{{is_load == 1}}">加载中...</view>
+  </view>
+</view>
+<include src="../common/footer.wxml"/>

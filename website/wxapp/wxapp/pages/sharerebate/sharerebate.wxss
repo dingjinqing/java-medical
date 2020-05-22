@@ -1,0 +1,289 @@
+/* pages/sharerebate/sharerebate.wxss */
+@import "../../css/iconfont.wxss";
+page{
+  background: #f5f5f5;
+  padding-bottom: 20rpx;
+  min-height: 100%
+}
+.clearfix{
+  contain: "";
+  display:block;
+  clear: both
+}
+.goods_area{
+  width: 670rpx;
+  background: #fff;
+  margin: 20rpx auto;
+  padding: 20rpx;
+  border-radius: 8rpx;
+}
+.goods_img{
+  float: left;
+  width: 220rpx;
+  height: 220rpx;
+  overflow: hidden
+}
+.goods_img image{
+  width: 220rpx;
+  height: 220rpx;
+}
+.goods_info{
+  float: right;
+  width: 430rpx;
+  height: 220rpx;
+  position: relative;
+}
+.goods_name{
+  position: absolute;
+  top: 0;
+  left: 0
+}
+.goods_price{
+  color: #f66;
+  position: absolute;
+  bottom: 0;
+  left: 0
+}
+.one_spec_price .each_line{
+  margin-bottom: 30rpx;
+}
+.one_spec_price .each_line:last-of-type{
+  margin-bottom: 0
+}
+.one_spec_price .change_price{
+  margin-bottom: 18rpx;
+}
+.one_spec_price .each_line .el_left{
+    float: left;
+    color: #333;
+}
+.one_spec_price .each_line .el_right{
+    float: left;
+}
+.advice_money{
+  color: rgb(153,153,153)
+}
+.have_border{
+  border-bottom: 2rpx solid rgb(221,221,221);
+  padding-bottom: 20rpx;
+}
+.have_border input{
+  float:left;
+  width:400rpx;
+  height:40rpx;
+  min-height:40rpx;
+}
+.have_border .price_icon{
+  float: left;
+  height:40rpx;
+  line-height:45rpx;
+}
+.have_border .btn_reset{
+  float: right;
+}
+.btn_reset{
+  width: 100rpx;
+  height: 48rpx;
+  line-height: 48rpx;
+  border: 2rpx solid #f66;
+  color: #f66;
+  text-align: center;
+  border-radius: 24rpx;
+  font-size: 24rpx;
+}
+.coupon_area{
+  width: 710rpx;
+  background: #fff;
+  margin: 20rpx auto;
+  padding: 20rpx 0 0;
+  border-radius: 8rpx;
+  margin-bottom: 180rpx;
+}
+.if_send{
+  padding: 0 20rpx;
+  width: 670rpx;
+  overflow: hidden;
+  padding-bottom: 20rpx;
+}
+.each_one{
+  float: left;
+  margin-right: 100rpx;
+}
+.each_one:last-of-type{
+  margin-right: 0
+}
+.each_one image{
+  width: 40rpx;
+  margin-right:20rpx;
+  position:relative;
+  top:5rpx;
+}
+.each_one text{
+  margin-right:20rpx;
+  position:relative;
+  top:5rpx;
+}
+.hr{
+  width: 710rpx;
+  height: 2rpx;
+  background: #eee;
+}
+.each_coupons{
+  padding: 0 20rpx;
+  width: 670rpx;
+  overflow: hidden;
+  padding-top: 20rpx;
+}
+.ec_left{
+  float: left;
+  width: 40rpx;
+  margin-right: 20rpx;
+  height:170rpx;
+  line-height:170rpx;
+}
+.ec_left image{
+  width: 40rpx;
+}
+.ec_right{
+  float: right;
+  width: 610rpx;
+}
+.each_coupon{
+  width: 610rpx;
+  margin: 0 auto;
+  height: 170rpx;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+}
+.each_coupon:last-of-type{
+  margin-bottom: 0;
+}
+.left{
+  float: left;
+  width: 230rpx;
+  height: 170rpx;
+  position: relative
+}
+.left view{
+  color: #fff;
+  font-size: 14px;
+  margin-top: 10rpx;
+  width: 230rpx;
+  text-align: center;
+}
+.left .name{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}
+.left .price{
+  margin-top: 50rpx;
+}
+.left .price text{
+  font-size: 20px;
+
+}
+.right{
+  float: right;
+  width:378rpx;
+  background: #fff;
+  height: 166rpx;
+  color: #333;
+  border-radius: 0 10rpx 10rpx 0;
+  position: relative;
+  border:2rpx solid #eee;
+  border-left:0;
+}
+.right .case{
+  position: absolute;
+  top: 25rpx;
+  font-size: 13px;
+  font-weight: 700;
+  padding-left: 20rpx;
+  color: #333;
+  overflow:hidden; 
+  text-overflow:ellipsis;
+  display:-webkit-box; 
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2; 
+}
+.right .time_canuse{
+  position: absolute;
+  top: 125rpx;
+  font-size: 11px;
+  padding-left: 20rpx;
+}
+.right .click_to_detail{
+  position: absolute;
+  top: 72rpx;
+  font-size: 12px;
+  width: 350rpx;
+  color: rgb(51,51,51);
+  padding-left: 20rpx;
+}
+.right .click_to_detail .coupon_time{
+  width: 100%;
+  /* overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap */
+}
+.left .coupon_xian{
+  height: 170rpx;
+  width: 4rpx;
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 9;
+}
+.left .coupon_xian image{
+  height: 170rpx;
+  width: 4rpx;
+}
+.bottom_btn{
+  position: fixed;
+  bottom: 0;
+  width: 750rpx;
+  background: #fff;
+  z-index: 999
+}
+.a_tips{
+  color:rgb(255,102,0);
+  font-size: 24rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  background: rgb(252,249,221);
+  padding-left: 20rpx;
+}
+.btn_share{
+  background: -webkit-linear-gradient(left,#f55,#f66);
+  color: #fff;
+  border: none;
+  padding: 0;
+  font-size: 30rpx;
+  border-radius: 0;
+  height: 100rpx;
+  line-height: 100rpx;
+  text-align: center
+}
+.btn_share::after{
+  border-radius: 0;
+  border: none
+}
+.coupon_info{
+  padding-bottom: 20rpx;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

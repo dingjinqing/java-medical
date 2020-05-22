@@ -1,0 +1,28 @@
+<wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
+<v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="center" vertical="bottom" bindtap='bindClose'>
+  <view class="payment_content">
+    <view class="content_top">
+      {{i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}
+      <image src="{{imageUrl}}image/wxapp/close_icon.png" bindtap='bindClose'></image>
+    </view>
+    <view class="content_info">
+        <view class="info_top">
+          <view class="info_tips">
+            <image src="{{imageUrl}}image/wxapp/main_goods_notice.png"></image>
+            <text>{{i18n.$t(localePack,"pages.checkout.balanceTips[0]",{maxCanUse:maxCanUse||"0"})}}</text>
+          </view>
+          <view class="input_box">
+            <text>{{i18n.$t(localePack,"pages.checkout.pay")+i18n.$t(localePack,"pages.checkout.balance")}}</text>
+            <text class="warn">{{msg}}</text>
+            <input type="digit" bindinput="changeInput" value="{{balanceInput}}"></input>
+          </view>
+          <view class="info_total">
+            <view>{{i18n.$t(localePack,"pages.checkout.my",{name:i18n.$t(localePack,"pages.checkout.balance")})}}：￥{{userBalance}}</view>
+          </view>
+        </view>
+    </view>
+    <view class="content_bottom" bindtap="{{canConfirm ? 'confirmData' : ''}}" style="background-color:{{canConfirm ? main_setting.comColor : '#999'}}">
+        {{i18n.$t(localePack,"pages.checkout.confirm")}}
+    </view>
+  </view>
+</v-popup>

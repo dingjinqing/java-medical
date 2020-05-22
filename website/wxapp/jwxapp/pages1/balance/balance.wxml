@@ -1,0 +1,34 @@
+<!--pages1/balance/balance.wxml-->
+<include src="/pages/common/header.wxml" />
+<view class='main-container'>
+    <view class='balace_top'>
+      <image src='{{imageUrl}}/image/wxapp/wode_yue.png' class='top_img1'></image>
+      <view class='top_word1'>当前余额</view>
+      <view class='top_word2'>￥<text>{{account_info.account}}</text></view>
+      <view class='top_word3'>
+        <block wx:if='{{account_info.withdraw == 0}}'>其中￥0.00可提现</block>
+        <block wx:if='{{account_info.withdraw != 0}}'>其中￥{{account_info.withdraw}}可提现</block>
+        <image class='top_img2' src='{{imageUrl}}/image/wxapp/yue_icon_tips.png' bindtap='give_tips'></image>
+      </view>
+    </view>
+    <view class='to_record'>
+      <view class='to_withdraw clearfix' bindtap='yue_record'>
+        <image src='{{imageUrl}}/image/wxapp/yue_record.png' class='re_img1' mode='widthFix'></image>
+        <view>余额明细</view>
+        <image src='{{imageUrl}}/image/wxapp/right_into.png' class='re_img2' mode='widthFix'></image>
+      </view>
+      <view class='to_withdraw clearfix' bindtap='withdraw_record'>
+        <image src='{{imageUrl}}/image/wxapp/withdraw_record.png' class='re_img1' mode='widthFix'></image>
+        <view>提现记录</view>
+        <image src='{{imageUrl}}/image/wxapp/right_into.png' class='re_img2' mode='widthFix'></image>
+      </view>
+    </view>
+    <view class='btn_get_money' bindtap='to_money' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>提现</view>
+
+  <!-- 绑定手机号弹窗 -->
+  <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="您需要绑定手机号才可以去提现" />
+
+</view>
+
+<include src="/pages/common/footer.wxml" />
+

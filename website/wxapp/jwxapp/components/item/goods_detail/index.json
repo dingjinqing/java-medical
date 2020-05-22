@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "v-decorate":"/components/decorate/decorate/index"
+  }
+}

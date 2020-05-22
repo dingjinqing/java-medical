@@ -1,0 +1,114 @@
+<!-- 预约订单详情：pages1/appointinfo/appointinfo.wxml -->
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
+<include src="/pages/common/header.wxml" />
+<view class='main-container'>
+  <view class="container">
+    <!-- 状态 -->
+    <view class='status' style='color:{{comColor}}'>
+      <text>{{orderInfo.orderStatusName}}</text>
+    </view>
+    <!-- 状态END -->
+    <!-- 到店时间 -->
+    <view class="arrive-time">
+      <view wx:if="{{orderInfo.technician_name}}">
+        {{i18n.$t(localePack,"page1.reserve.reservationTime")}}{{orderInfo.technician_title}}：{{orderInfo.technician_name}}
+      </view>
+      <view>
+        {{i18n.$t(localePack,"page1.reserve.reservation")}}：{{orderInfo.serviceDate}} {{orderInfo.servicePeriod}}
+      </view>
+      <view class="time-btm">
+        <view>
+          {{i18n.$t(localePack,"page1.reserve.reservationStoreAddress")}}：{{orderInfo.address}}
+        </view>
+        <view class="look-map" bindtap="showMap">
+          {{i18n.$t(localePack,"page1.reserve.checkTheMap")}}
+        </view>
+      </view>
+    </view>
+    <!-- 到店时间END -->
+    <!-- 门店信息 -->
+    <view class="appointlist-box">
+      <view class="appoint-top" data-storeId="{{orderInfo.storeId}}" bindtap='goStore'>
+        <view class="top-center">
+          <image src="{{imageUrl}}{{orderInfo.storeImg}}" style="width:50rpx;height:50rpx;"></image>
+        </view>
+        <view>{{orderInfo.storeName}}</view>
+        <view class="top-right">
+          <image src="{{img_arrow}}" style="width:16rpx;height:32rpx;"></image>
+        </view>
+      </view>
+      <view class="appoint-content">
+        <view class='ac_left' bindtap='toDetail' data-id="{{orderInfo.serviceId}}">
+          <image src="{{imageUrl}}{{orderInfo.serviceImg}}" style="width:152rpx;height:152rpx;"></image>
+        </view>
+        <view class="ac_right">
+          <view class='ar_names'>
+            <text>{{orderInfo.serviceName}}</text>
+          </view>
+          <block wx:if="{{orderInfo.serviceSubsist>0}}">
+            <view class='appoine_bottom'>
+              <view class="appoint-price" style="color:{{linColor}};border-color:{{linColor}}">
+                {{i18n.$t(localePack,"page1.reserve.deposit")}}
+              </view>
+              <view class="appoint-money" style='color:{{comColor}}'>
+                <text style='font-size:28rpx;'>￥</text>
+                {{orderInfo.serviceSubsist}}
+              </view>
+              <view class='all-price'>
+                {{i18n.$t(localePack,"page1.reserve.priceOfService")}}：￥{{orderInfo.servicePrice}}
+              </view>
+            </view>
+          </block>
+          <block wx:else>
+            <view class='appoine_bottom'>
+              <view class="appoint-money" style='color:{{comColor}}' wx:if='{{orderInfo.servicePrice>0}}'>
+                ￥{{orderInfo.servicePrice}}
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+    <!-- 门店信息 -->
+    <!-- 核销 -->
+    <view class="verification" wx:if="{{ orderInfo.orderStatus == 1 || orderInfo.orderStatus == 3}}">
+      <view class="veri-text">
+        <text>{{i18n.$t(localePack,"page1.reserve.writingCode")}}：{{orderInfo.verifyCode}}</text>
+      </view>
+      <view class="two-code-view">
+        <image class="two-code" src="{{orderInfo.verifyCodeImg}}"></image>
+      </view>
+    </view>
+    <!-- 核销END -->
+    <!-- 订单信息 -->
+    <view class="order-info">
+      <view>{{i18n.$t(localePack,"page1.reserve.orderNum")}}：{{orderInfo.orderSn}}</view>
+      <view>{{i18n.$t(localePack,"page1.reserve.orderTime")}}：{{orderInfo.createTime}}</view>
+    </view>
+    <!-- 订单信息END -->
+  </view>
+</view>
+<include src="/pages/common/footer.wxml" />
+<!-- 确认完成 -->
+<view class="confirm-complete" wx:if="{{ orderInfo.orderStatus == 1 || orderInfo.orderStatus == 3 || orderInfo.orderStatus == 0}}" style='height:{{isIpx == 1?"140rpx;":"80rpx;"}}'>
+  <view class="del-appoint" bindtap='toCancel' data-mobile="{{orderInfo.mobile}}" wx:if="{{orderInfo.orderStatus == 1}}">
+    {{i18n.$t(localePack,"page1.reserve.cancelAppointment")}}
+  </view>
+  <form report-submit='true' bindsubmit='toTrueCancel' wx:if="{{ orderInfo.orderStatus == 0 }}" data-order_id="{{orderInfo.orderId}}" data-orderSn="{{orderInfo.orderSn}}">
+    <button class="del-appoint del_btns" formType='submit'>{{i18n.$t(localePack,"page1.reserve.cancelAppointment")}}</button>
+  </form>
+  <view class="del-appoint" bindtap='toComment' data-storeId="{{orderInfo.storeId}}" data-orderSn="{{orderInfo.orderSn}}" wx:if="{{ orderInfo.orderStatus == 3 }}">
+    {{i18n.$t(localePack,"page1.reserve.reviewAppointment")}}
+  </view>
+  <form report-submit='true' bindsubmit='toConfirm' wx:if="{{ orderInfo.orderStatus == 1 }}">
+    <button class="confirm wancheng_btn" formType='submit' style="color:{{comColor}};border-color:{{comColor}}">
+      {{i18n.$t(localePack,"page1.reserve.confirmationCompleted")}}
+    </button>
+  </form>
+  <form report-submit='true' bindsubmit='toPay' wx:if="{{ orderInfo.orderStatus == 0 }}" data-orderSn="{{orderInfo.orderSn}}">
+    <button class="confirm wancheng_btn" formType='submit' style="color:{{comColor}};border-color:{{comColor}}">
+      {{i18n.$t(localePack,"page1.reserve.goPay")}}
+    </button>
+  </form>
+</view>
+<!-- 确认完成END -->

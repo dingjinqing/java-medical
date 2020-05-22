@@ -1,0 +1,579 @@
+.main-container{
+  overflow: hidden;
+}
+.merchant_message{
+  background-color: #fff;
+  border-radius: 20rpx;
+  margin: 3% 3% 0;
+  padding: 3%;
+}
+.merchant_message text{
+  display: block;
+}
+.merchant_message text:nth-child(1){
+  font-size: 26rpx;
+  color: #333;
+}
+.merchant_message text:nth-child(2){
+  font-size: 24rpx;
+  color: #999;
+}
+.card_surface_details{
+  width: 710rpx;
+  margin: 20rpx auto;
+  border-radius: 16rpx;
+  background-color: skyblue;
+  padding: 40rpx 0 20rpx 0;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+.card_type{
+  position: absolute;
+  line-height: 40rpx;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.2);
+  top: 0;
+  right: 0;
+  padding: 0 24rpx;
+  border-bottom-left-radius: 16rpx;
+}
+.card_info{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0 20rpx;
+  min-height: 280rpx;
+}
+.card_surface_top{
+  display: flex;
+  
+}
+.card_surface_top > .shop_img{
+  width: 90rpx;
+  height: 90rpx;
+  border-radius: 50%;
+  margin-right: 30rpx;
+}
+.card_surface_top > .card_name_box{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-weight: 600;
+  color: #fff;
+}
+.get_status{
+  border: 2rpx solid #fff;
+  padding: 0 20rpx;
+  border-radius: 34rpx;
+}
+.card_surface_bottom{
+  display: flex;
+  align-items:flex-end;
+  font-weight: 600;
+  color: #fff;
+}
+.surface_bottom_left{
+  display: flex;
+  flex: 1;
+}
+.surface_bottom_right{
+  width: auto;
+  font-size: 34rpx;
+}
+.surface_bottom_item{
+  display: flex;
+  flex-direction: column;
+}
+.qrcode{
+  width: 42rpx;
+  height: 42rpx;
+}
+.card_item_title{
+  padding: 14rpx;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-bottom: 2rpx solid #eee;
+}
+.card_item_title .item_title_left{
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 15rpx;
+}
+.card_item_title .item_title_left > image{
+  width: 100%;
+  height: 100%;
+}
+.card_item_title .item_title_content{
+  flex: 1;
+}
+.card_item_title .item_title_right{
+  color: #888;
+}
+.card_item_content{
+  padding: 0 14rpx 0 70rpx;
+  background-color: #fff;
+  border-bottom: 2rpx solid #eee;
+}
+.card_item_content .content_item{
+  line-height: 70rpx;
+  border-radius: 10rpx;
+  color: #888;
+}
+.flex_footer{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 80rpx;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.footer_btn{
+  line-height: 60rpx;
+  height: 60rpx;
+  padding: 0 60rpx;
+  background-color: skyblue;
+  border-radius: 10rpx;
+  color: #fff;
+}
+.goods_item{
+  display: flex;
+  padding-top: 10rpx;
+  margin-bottom: 20rpx;
+}
+.goods_item:last-of-type{
+  padding-bottom: 10rpx;
+}
+.goods_img{
+  width: 120rpx;
+  height: 120rpx;
+  margin-right: 10rpx;
+}
+.goods_right{
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  justify-content: space-between;
+  min-width: 0;
+  flex: 1;
+  position: relative;
+  height: 120rpx;
+}
+.goods_right > .goods_name{
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.description{
+  color: #888;
+  line-height: 50rpx;
+}
+.grade-content-desc{
+  display: flex;
+  flex-direction: column;
+  padding: 20rpx 0;
+  color: #888;
+}
+.compare-card-name{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.next-card{
+  color: #d0b27c;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.next-card image{
+  width: 20rpx;
+  height: 20rpx;
+  margin-left: 10rpx;
+}
+.card_status {
+  width: 130rpx;
+  height: 130rpx;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+.card_status > image {
+  width: 100%;
+  height: 100%;
+}
+.upgrade-condition{
+  display: flex;
+  flex-direction: column;
+  line-height: 40rpx;
+}
+.upgrade{
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  margin-top: 15rpx;
+}
+.upgrade .toCheckGradeEquity{
+  padding: 5rpx 15rpx;
+background: rgba(222, 189, 138, 0.2);
+color: rgba(222, 189, 138, 1);
+font-size: 20rpx;
+border-radius: 20rpx;
+
+}
+.condition-info{
+  padding-left: 40rpx;
+}
+.current-condition{
+  color: #d0b27c;
+}
+.zhezhao_coupon {
+  width: 750rpx;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 99;
+}
+
+.coupon_code {
+  position: fixed;
+  top: 30%;
+  width: 100%;
+  z-index: 999;
+  padding: 0 80rpx;
+  box-sizing: border-box;
+}
+
+.coupon_code>view {
+  background: white;
+  border-radius: 5px;
+}
+
+.coupon_code>view .code_ipt {
+  padding: 50rpx;
+  border-bottom: 1px solid #eee;
+  box-sizing: border-box;
+}
+
+.code_ipt input {
+  border: 1px solid #ddd;
+  width: 100%;
+  height: 80rpx;
+  padding-left: 20rpx;
+  font-size: 26rpx;
+  box-sizing: border-box;
+  border-radius: 4rpx;
+}
+
+.code_ipt input+input {
+  margin-top: 30rpx;
+}
+.code_btn {
+  display: flex;
+}
+
+.code_btn view {
+  flex: 1;
+  height: 90rpx;
+  line-height: 90rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.code_btn view:last-child {
+  color: #f66;
+  border-left: 1px solid #eee;
+}
+.pro_tips {
+  font-size: 24rpx;
+  color: #f60;
+  background: #fcf9dd;
+  font-family: "Microsoft YaHei", 微软雅黑, "Microsoft JhengHei";
+  overflow: hidden;
+  height: 70rpx;
+  line-height: 70rpx;
+  padding: 0 20rpx;
+  margin-bottom: 20rpx;
+display: flex;
+justify-content: space-between;
+}
+.pro_tips .text {
+  font-size: 24rpx;
+}
+
+.pro_tips .image {
+  width: 28rpx;
+  height: 28rpx;
+  position: relative;
+  top: 6rpx;
+  margin-right: 10rpx;
+
+}
+.exchang_goods{
+  padding-top: 20rpx;
+}
+.dh_limit,
+.dh_right {
+  position: absolute;
+}
+.dh_limit {
+  /* left: 22rpx; */
+  bottom: 52rpx;
+  font-size: 22rpx;
+}
+
+.dh_right {
+  right: 10rpx;
+  bottom: 0rpx;
+  width: 140rpx;
+  height: 50rpx;
+  line-height: 50rpx;
+  border-radius: 25rpx;
+  color: #fff;
+  text-align: center;
+  font-size: 22rpx;
+}
+.dh_more {
+  height: 70rpx;
+  line-height: 70rpx;
+  text-align: center;
+  background: #fff;
+  border-top: 1px solid #eee;
+  margin-bottom: 20rpx;
+}
+
+.coupon_list {
+  margin-bottom: 20rpx;
+  display: flex;
+  overflow: hidden;
+  height: 160rpx;
+}
+
+.coupon_list>.coupon_left {
+  background: red;
+  border-width: 1px 0 1px 1px;
+  border-color: red;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+  flex: 1;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  color: #fff;
+}
+
+.coupon_list>.coupon_left>.coupon_left_top {
+  font-size: 13px;
+  color: #fff;
+  line-height: 25px;
+}
+
+.coupon_list>.coupon_left>.coupon_left_top>text {
+  font-size: 20px;
+  color: #fff;
+}
+
+.coupon_list>.coupon_left>.coupon_left_bottom {
+  font-size: 13px;
+  color: #fff;
+}
+
+.coupon_list>.coupon_left::before {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-sizing: border-box;
+  border-width: 0 1px 1px 0;
+  border-color: #878787;
+  z-index: 2;
+}
+
+.coupon_list>.coupon_left::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #fff;
+  z-index: 2;
+}
+
+.coupon_list>.coupon_right {
+  border-width: 1px 1px 1px 0;
+  border-style: solid;
+  border-color: #878787;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  flex: 2;
+  position: relative;
+  justify-content: space-around;
+  padding-left: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.coupon_right>view {
+  line-height: initial
+}
+
+/* .coupon_list > .coupon_right::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 80%;
+  border-left: 2px dashed #fff;
+  top: 50%;
+  left: -1px;
+  transform: translateY(-50%);
+} */
+
+.coupon_list>.coupon_right>.coupon_name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+.coupon_list>.coupon_right>.coupon_condition {
+  font-size: 12px;
+  color: #333;
+}
+
+.coupon_list>.coupon_right>.coupon_valid_until {
+  font-size: 12px;
+  color: #999;
+}
+
+.coupon_list_box {
+  padding-right: 30rpx;
+}
+.counponTitle{
+  font-size: 26rpx;
+color: #888;
+padding: 24rpx 0;
+display: block;
+white-space: nowrap;
+}
+.infoCon{
+  display: flex;
+}
+.package_info {
+  line-height: 35px;
+  padding:0 10px;
+  margin-bottom: 20rpx;
+  border-radius: 4px;
+}
+
+.card-center {
+  height: 80rpx;
+  padding:14rpx;
+  background: #fff;
+  border-bottom: 2rpx solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-center .cart-info-lt {
+  /* height: 100rpx; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.arrow {
+  width: 40rpx;
+  margin-right: 15rpx;
+}
+.cart-info-ct {
+  font-size: 26rpx;
+  color: #353535;
+}
+.rebate_content {
+  width: 140rpx;
+  height: 50rpx;
+  line-height: 50rpx;
+  border-radius: 25rpx;
+  color: #fff;
+  text-align: center;
+  font-size: 22rpx;
+  margin-right: 20rpx;
+}
+.rebate_p {
+  width: 650rpx;
+  height: 380rpx;
+  position: absolute;
+  z-index: 8;
+  top: 520rpx;
+  left: 50%;
+  margin-left: -325rpx;
+  background: #fff;
+  border-radius: 10rpx;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.rebate_top {
+  height: 100rpx;
+  line-height: 100rpx;
+  font-size: 34rpx;
+  margin-top: 20rpx;
+  font-weight: bold;
+}
+
+.rebate_bottom {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border:1rpx solid #eee;
+  border-bottom: none;
+}
+.rebate_bottom>button,.rebate_bottom>view{
+  width: 50%;
+  background: #fff;
+  font-weight: bold;
+  font-size: 34rpx;
+  height: 90rpx;
+  line-height: 90rpx;
+  text-align: center;
+  border-radius: 0;
+  border:none;
+}
+.rebate_bottom>view{
+  border-right: 1rpx solid #eee;
+}
+.rebate_bottom button::after{
+border:none;
+}
+.card-price{
+  display: flex;
+  flex-direction: column;
+}
+.card-price > text+text{
+  margin-top: 5rpx;
+}
+.card-price > text.line-price{
+  text-decoration: line-through;
+}

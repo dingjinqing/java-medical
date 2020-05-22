@@ -1,0 +1,64 @@
+<!-- pages1/returnlogistics/returnlogistics.wxml -->
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
+<include src="/pages/common/header.wxml" />
+<view class="main-container">
+  <!-- 填写退货物流 -->
+  <block>
+    <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+      <view class="order-header-h">
+        <text class="order-place2">*</text>
+        {{i18n.$t(localePack,"page1.afterSale.pReturn")}}
+      </view>
+    </view>
+    <view class="order-info">
+      <view class="order-block-detail-item">
+        <text class="order-place2">*</text>
+        {{i18n.$t(localePack,"page1.afterSale.returnAddress")}}：{{orderInfo.returnAddress}}
+      </view>
+      <view class="order-block-detail-item">
+        <text class="order-place2">*</text>
+        {{i18n.$t(localePack,"page1.afterSale.zipCode")}}：{{orderInfo.zipCode}}
+      </view>
+      <view class="order-block-detail-item">
+        <text class="order-place2">*</text>
+        {{i18n.$t(localePack,"page1.afterSale.recipient")}}：{{orderInfo.consignee}}
+      </view>
+      <view>
+        <text class="order-place2">*</text>
+        {{i18n.$t(localePack,"page1.afterSale.contactNumber")}}：{{orderInfo.merchantTelephone}}
+      </view>
+    </view>
+    <view class="order-info order-flex">
+      <text><text class="order-required">*</text>{{i18n.$t(localePack,"page1.afterSale.logisticsCompany")}}：</text>
+      <!-- 选择快递公司 -->
+      <picker mode="selector" bindchange="bindCourierChange" value="{{courierIndex}}" range="{{couriers}}" range-key="shippingName">
+        <view>
+          <text>{{couriers[courierIndex].shippingName}}</text>
+          <image class="order-icon" src="{{click_look}}" mode="widthFix"></image>
+        </view>
+      </picker>
+    </view>
+    <view class="order-info order-flex">
+      <text><text class="order-required">*</text>{{i18n.$t(localePack,"page1.afterSale.waybillNumber")}}：</text>
+      <input class="order-flex-1" placeholder='{{i18n.$t(localePack,"page1.afterSale.pfillWaybillNum")}}' bindblur="shippingNoBlur" value="{{shippingNo}}" maxlength="15"></input>
+    </view>
+    <view class="order-info order-flex">
+      <text><text class="order-required">*</text>{{i18n.$t(localePack,"page1.afterSale.contactNumber")}}：</text>
+      <input class="order-flex-1" placeholder="{{i18n.$t(localePack,'page1.afterSale.pfillPhone')}}" value="{{phone}}" bindblur="phoneBlur" maxlength="11"></input>
+    </view>
+    <view class="order-info">
+      <text class="order-left"><text class="order-place2">*</text>{{i18n.$t(localePack,"page1.afterSale.uploadCertificate")}}：</text>
+      <view class="order-upload order-left" wx:for="{{uploadedImg}}" wx:key="index">
+        <image class="order-upload-img" src="{{imageUrl + item.imgPath}}" mode="cover" />
+        <image src='{{dele_service}}' class="order-upload-delete" bindtap='delImage' data-idx="{{index}}"></image>
+      </view>
+      <view class="order-upload order-left" bindtap="uploadRefundImg" wx:if="{{uploadedImg.length < 3}}">
+        <image class="order-upload-addicon" src="{{add_img}}"></image>
+      </view>
+    </view>
+    <view class="order-footer">
+      <button class='footer-btn' bindtap="submitReturnLogistics" style='background:{{comColor}};bottom:{{isIpx == 1?"60rpx;":"0rpx;"}}'>{{i18n.$t(localePack,"page1.afterSale.submitReturnLogisticsInfo")}}</button>
+    </view>
+  </block>
+</view>
+<include src="/pages/common/footer.wxml" />

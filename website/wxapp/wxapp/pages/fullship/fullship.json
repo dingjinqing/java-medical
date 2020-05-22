@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "包邮商品",
+  "usingComponents": {
+    "v-sel-spec": "/components/item/popup/spec/index"
+  }
+}

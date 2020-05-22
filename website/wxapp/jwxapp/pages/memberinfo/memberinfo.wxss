@@ -1,0 +1,167 @@
+@import "../../css/iconfont.wxss";
+page{
+  background: #f5f5f5;
+}
+view,text,input{
+  box-sizing: border-box;
+}
+.main{
+  margin-top: 20rpx;
+  padding-left: 30rpx;
+  background: #fff;
+  font-size: 26rpx;
+}
+.checkbox{
+  height: 80rpx;
+line-height: 80rpx;
+border-bottom: 1px solid #eee;
+display: flex;
+align-items: center;
+}
+.checkbox .image{
+width: 46rpx;
+height: 46rpx;
+}
+.imgView{
+  display: flex;
+  align-items: center;
+}
+.main>view{
+  position: relative;
+  padding: 0 0 20rpx 0rpx;
+  border-bottom: 1px solid #eee;
+}
+.main>.list{
+  padding: 20rpx 30rpx 20rpx 0rpx;
+}
+.main>view:last-child{
+  border: none;
+}
+.main_txt{
+  width: 20%;
+  height: 50rpx;
+  line-height: 50rpx;
+  float: left;
+}
+.main_ipt{
+  width: 100%;
+  display: inline-block;
+  /* padding-left: 20rpx; */
+  /* height: 50rpx; */
+  /* min-height: 50rpx; */
+  /* line-height: 50rpx; */
+  font-size: 26rpx;
+}
+.em{
+  color: #f66;
+  position: absolute;
+  left: -18rpx;
+  top: 13px;
+}
+.main_picker{
+  background-size: 15rpx 25rpx;
+  width: 100%;
+}
+.footer{
+  padding: 42rpx 30rpx;
+}
+.footer button{
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  color: #fff;
+  background: #f66;
+  border-radius: 3px;
+  font-size: 26rpx;
+}
+.zhezhao{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgb(255,255,255);
+  top: 0;
+  left: 0;
+  z-index: 9;
+}
+.tel{
+  display:inline-block;
+  font-size:24rpx;
+  vertical-align: middle;
+  background-color: #fff;
+  width: 27%;
+}
+.remark{
+  display: inline-block;
+  vertical-align: text-top;
+  border: 1rpx solid #eee;
+  margin-left: 104rpx;
+  height: 100rpx;
+  border-radius: 6rpx;
+  padding-left: 5rpx;
+  width: 524rpx;
+}
+.shai_right{
+  /* width:145rpx ; */
+  /* height: 145rpx; */
+  text-align: center;
+  margin-right: 20rpx;
+  display: inline-block;
+  vertical-align: text-top;
+  /* margin-left: 56rpx; */
+  /* padding: 20rpx 30rpx 20rpx 0rpx; */
+  margin: 10rpx 10rpx 20rpx 10rpx;
+
+}
+.shai_right image{
+  width: 200rpx;
+height: 200rpx;
+
+}
+.shai_content{
+  display: flex;
+flex-wrap: wrap;
+position: relative;
+padding: 20rpx 30rpx 20rpx 0rpx;
+/* border-bottom: 1px solid #eee; */
+
+}
+.shai_view{
+  display: inline-block;
+  border: 1px solid #eee;
+  position: relative;
+  width: 205rpx;
+  height: 205rpx;
+  /* margin-left: 56rpx; */
+  vertical-align: text-top;
+  margin: 10rpx 10rpx 20rpx 10rpx;
+
+}
+.shai_view image{
+    width: 200rpx;
+    height: 200rpx;
+}
+.must_choose{
+  color: #e64340;
+}
+.customTitle{
+  padding: 20rpx 30rpx 20rpx 0rpx;
+border-bottom: 1px solid #eee;
+
+}
+.custom_area{
+  padding: 20rpx 10rpx 20rpx;
+}
+.custom_area .textarea{
+  border: 1px solid #eee;
+  width: 640rpx;
+  padding: 10rpx;
+}
+.shai_close{
+  position: absolute;
+top: -10rpx;
+right: -10rpx;
+width: 26rpx!important;
+height: 26rpx!important;
+
+}

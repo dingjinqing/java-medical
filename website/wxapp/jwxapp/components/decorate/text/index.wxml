@@ -1,0 +1,2 @@
+<view class="text-container" style='margin-bottom:{{m.margin_bot}}rpx;color:{{m.fonts_color}};background:{{m.bgs_color}};text-align:{{(m.show_pos == 3 ? "right" :(m.show_pos == 2 ? "center" : "left") )}};font-size:{{(m.fonts_size == 1 ? "36rpx" :(m.fonts_size == 2 ? "28rpx" : "24rpx"))}}'
+  catchtap="bindJumpLink" data-url="{{m.title_link}}" data-idx='{{m.cur_idx}}'>{{m.title}}</view>

@@ -1,0 +1,208 @@
+<!-- APPOINTMENT.WXML 2018.03.07 -->
+<block wx:if="{{service_info.is_delete == 0}}">
+  <include src="/pages/common/header.wxml" />
+  <view class='main-container'>
+    <view class="container" style='{{isIpx == 1 ? "padding-bottom:40rpx;":" "}}'>
+      <!--轮播图  -->
+      <view class="swiper-top">
+        <swiper autoplay="true" circular="true" indicator-dots='true' indicator-active-color="#fff" interval="5000" duration="500" bindchange='onSlideChangeEnd' class='swiper'>
+          <block wx:for="{{img_info}}" wx:key="key" wx:for-index="index">
+            <swiper-item item-id="{{index}}+1">
+              <image src='{{item}}!big' class="slide-image"></image>
+            </swiper-item>
+          </block>
+        </swiper>
+      </view>
+
+      <!--门店名称 -->
+      <view class="appoint-name">
+        <view class="name-top">{{service_info.service_name}}</view>
+        <view class="appoint-name-btm" wx:if="{{service_info.service_subsist != 0 || service_info.service_price != 0}}">
+          <block wx:if="{{service_info.service_subsist>0}}">
+            <view class="appoint-price" wx:if='{{service_info.service_subsist != 0}}' style="color:{{linColor}};border-color:{{linColor}}">订金 </view>
+            <view class="appoint-money" wx:if='{{service_info.service_subsist != 0}}' style='color:{{comColor}}'>
+              <text style='font-size:28rpx;'>￥</text>{{service_info.service_subsist}}</view>
+            <view class='appoint-old-price' wx:if='{{service_info.service_price != 0}}'>服务总价：￥{{service_info.service_price}}</view>
+          </block>
+          <block wx:else>
+            <view class="appoint-price" wx:if='{{service_info.service_price != 0}}' style="color:{{comColor}};border-color:{{comColor}}">总价</view>
+            <view class="appoint-money" wx:if='{{service_info.service_price != 0}}' style="color:{{comColor}};">￥{{service_info.service_price}}</view>
+          </block>
+        </view>
+        <view class='charge_resolve' wx:if="{{service_info.charge_resolve != null}}">
+          <image src='{{img_charge}}' mode="widthFix" /> {{service_info.charge_resolve}}
+        </view>
+      </view>
+
+      <!--营业状态 -->
+      <view class="appoint-status">
+        <view class="status-top status appoint-text" bindtap='showMap'>
+          <image src="{{ img_addr }}"></image>
+          <text style='width:476rpx;'>{{store_info.address}}</text>
+          <text style='width:170rpx;text-align:right'>{{store_info.dis}}km</text>
+        </view>
+        <view class="status-btm status">
+          <image src="{{ img_time }}"></image>
+          <view class="appoint-text">营业时间：
+            <text wx:if="{{service_info.store.business_type == 1}}">每天</text>
+            <text wx:if="{{service_info.store.business_type == 0}}">工作日</text> {{service_info.store.opening_time}} - {{service_info.store.close_time}}
+          </view>
+        </view>
+      </view>
+
+      <!--预约时间 -->
+      <view class="appoint_ss">
+        <view class="appoint-time" bindtap='timeShow'>
+          <view class="app_tips appoint-text">预约时间</view>
+          <view bindtap="powerDrawer" data-statu="open" class='app_times'>
+            <text class="app_text" style="color:#666;" wx:if="{{date_info != '' && show_id == -1}}">请选择</text>
+            <text class="app_text" style="color:{{comColor}};" wx:if="{{date_info != '' && show_id > -1}}">{{date_info[show_id].date}}  {{date_info[show_id].time[show_time]}}</text>
+            <text class="app_text" wx:if="{{date_info == ''}}">暂无时间段可选择</text>
+            <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix' class='brn_tight' />
+          </view>
+        </view>
+        <!--技师  -->
+        <block wx:if="{{ service_info.service_type == 1 }}">
+          <view class='appoint_tech' bindtap='techShow'>
+            <view class="app_tips appoint-text">{{service_info.technician_title}}</view>
+            <view class='app_times'>
+              <text class="app_text" wx:if="{{tech_name}}" style='color:{{comColor}}'>{{tech_name}}</text>
+              <text class="app_text" wx:else style="color:#666;">请选择</text>
+              <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix' class='brn_tight' />
+            </view>
+          </view>
+        </block>
+      </view>
+      <!--  评价  -->
+      <block wx:if="{{ comment_info != null && comment_info != '' }}">
+        <view class='goods-comment' bindtap='click_to_detail'>
+          <view class='clearfix goods_comment_title'>
+            <view class='goods_act_title'>评价</view>
+
+            <view class='goods_comment_all'>
+              <text>查看全部</text>
+              <image src='{{ imageUrl }}/image/wxapp/backward_right.png' mode="widthFix" class='click_more'></image>
+            </view>
+          </view>
+          <view class='comment_list'>
+            <view class='comment_list_top clearfix'>
+              <view class="fl">
+                <image src='{{ comment_info.user_avatar }}' mode="widthFix" />
+                <text wx:if="{{comment_info.anonymousflag == 0}}">{{ comment_info.username }}</text>
+                <text wx:if="{{comment_info.anonymousflag == 1}}">{{ comment_info.name }}</text>
+              </view>
+              <view class="fr">
+                <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;' wx:if='{{comment_info.commstar >= 1}}'></text>
+                <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;' wx:if='{{comment_info.commstar >= 2}}'></text>
+                <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;' wx:if='{{comment_info.commstar >= 3}}'></text>
+                <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;' wx:if='{{comment_info.commstar >= 4}}'></text>
+                <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;' wx:if='{{comment_info.commstar >= 5}}'></text>
+              </view>
+            </view>
+            <view class='comment_list_text'>{{ comment_info.comm_note }}</view>
+            <view class='comment_list_img clearfix' wx:if="{{comment_info.comm_img != ''}}">
+              <block wx:for="{{comment_info.comm_img}}" wx:key="key" wx:for-index="index" wx:for-item="item_img">
+                <view>
+                  <image src='{{ item_img }}!small?v=1' catchtap='clickComment' data-src="{{ item_img }}" />
+                </view>
+              </block>
+            </view>
+          </view>
+        </view>
+      </block>
+      <!--服务详情 -->
+      <block wx:if="{{ service_info.content !=null && service_info.content != '' }}">
+        <view class="appoint-service">
+          <view class="appoint-service-name appoint-text"> 预约服务详情</view>
+          <view class="appoint-service-cont" style='overflow-x:hidden'>
+            <view> 
+              <rich-text nodes="{{content}}"></rich-text>
+            </view>
+          </view>
+        </view>
+      </block>
+
+
+      <!--  底部  -->
+      <view class='footer clearfix' wx:if="{{service_info.business_state == 1}}" style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
+        <view class='footer_1'>
+          <view bindtap="toIndex">
+            <image src='{{ img_store }}' mode="widthFix"></image>
+            <view>门店首页</view>
+          </view>
+          <view>
+            <contact-button open-type="contact" session-from="weapp"></contact-button>
+            <image src='{{ img_sercer }}' mode="widthFix" style="margin-top:2rpx;"></image>
+            <view style="margin-top:6rpx;">客服</view>
+          </view>
+        </view>
+        <view class='footer_3' bindtap="OneClickBuy" style='background:{{comColor}}'>立即预约</view>
+      </view>
+      <view class='footer clearfix no_check' wx:if="{{service_info.business_state != 1 || service_info.payment_way == 0}}">
+        <button open-type="contact"></button>
+        <image src='{{img_service}}' mode='widthFix'></image>
+        <view>客服</view>
+      </view>
+    </view>
+  </view>
+  <include src="/pages/common/footer.wxml" />
+
+  <!-- 绑定手机号弹窗 -->
+  <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="您需要绑定手机号才可以预约" />
+
+  <!--弹出层预约时间  -->
+  <action-sheet hidden="{{timeMode}}">
+    <view class='pro_title'>
+      选择预约时间
+      <image src='{{ img_close }}' mode="widthFix" bindtap="timeClose" class='pro_close' />
+    </view>
+    <view class='pro_content' style='margin-bottom:{{isIpx == 1 ? "160rpx":"100rpx"}}'>
+      <view class='pc_left' style='height:{{isIpx == 1?"430rpx;":"500rpx;"}}'>
+        <block wx:for="{{date_info}}" wx:key="index">
+          <view data-key="{{index}}" data-date_click="{{ item.date_click }}" style='border-left-color:{{show_id == index?comColor:""}};color:{{show_id == index?comColor:""}}' bindtap='dataClick' class='{{show_id == index ?"ischecked":"normal"}}'>{{item.date}}</view>
+        </block>
+      </view>
+      <view class='pc_right' style='height:{{isIpx == 1?"430rpx;":"500rpx;"}}'>
+        <block wx:for="{{date_info}}" wx:key="index">
+          <view data-id='{{index}}' style="display:{{show_id == index?'block':'none'}}">
+            <block wx:for="{{item.time}}" wx:key="key2" wx:for-item="time" wx:for-index="time_id">
+              <view class="{{show_time == time_id?'active':'common' }}" style='color:{{show_time == time_id?comColor:""}};background:{{show_time == time_id?somColor:""}}' data-time_id="{{time_id}}" bindtap='selectedHour'>{{time}}</view>
+            </block>
+          </view>
+        </block>
+      </view>
+      <view class='card_sure' bindtap='timeConfirm' style='bottom:{{isIpx == 1?"60rpx;":"0rpx;"}};background:{{comColor}}'>确定</view>
+    </view>
+
+  </action-sheet>
+
+
+  <!--技师的弹框  -->
+  <action-sheet hidden="{{techMode}}">
+    <view class='pro_title'>
+      选择{{service_info.technician_title}}
+      <image src='{{ img_close }}' mode="widthFix" bindtap="techClose" class='pro_close' />
+    </view>
+    <view class='pro_content'>
+      <block wx:for="{{ tech_array }}" wx:key="key" wx:for-index="index">
+        <view class='each_person' data-index="{{index}}" bindtap='chooseTach' data-name="{{item.technician_name}}" data-id="{{item.id}}">
+          <view class='choose_btn'>
+            <image src="{{ item.src }}" mode="widthFix"  wx:if='{{item.src != ""}}'/>
+            <text class='iconfont icondanxuan' style='color:{{comColor}};font-size:40rpx' wx:if='{{item.src == ""}}'></text>
+          </view>
+          <view class='choose_info'>
+            <view class='pserson_logo'>
+              <image src='{{ item.bg_img_path }}'></image>
+            </view>
+            <view class='person_info'>
+              <view class='person_name'>{{ item.technician_name }}</view>
+              <view class='person_produce' wx:if="{{ item.technician_introduce }};">{{ item.technician_introduce }}</view>
+            </view>
+          </view>
+        </view>
+      </block>
+
+    </view>
+    <view class='card_sure' bindtap='techConfirm' style='bottom:{{isIpx == 1?"60rpx;":"0rpx;"}};background:{{comColor}}'>确定</view>
+  </action-sheet>
+</block>

@@ -1,0 +1,44 @@
+.swiper {
+  height: 100vw;
+  width: 100%;
+}
+
+.video_imgs {
+  position: relative;
+  width: 750rpx;
+  height: 750rpx;
+}
+
+.myVideo {
+  width: 750rpx;
+  height: 750rpx;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 99;
+}
+
+.btn_play {
+  width: 125rpx;
+  height: 125rpx;
+  position: absolute;
+  top: 310rpx;
+  left: 310rpx;
+  z-index: 999999;
+  overflow: hidden;
+}
+
+.btn_play image {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper image {
+  height: 100%;
+  width: 100%;
+}
+
+.goods-info {
+  background: #fff;
+  padding: 30rpx;
+}

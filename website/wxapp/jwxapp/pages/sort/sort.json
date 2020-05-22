@@ -1,0 +1,8 @@
+{
+  "onReachBottomDistance": 100,
+  "disableScroll": true,
+  "usingComponents": {
+    "v-brand": "/components/brand/index",
+    "v-single-col-goods": "/components/item/single_col_goods/index"
+  }
+}

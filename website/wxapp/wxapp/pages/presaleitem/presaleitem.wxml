@@ -1,0 +1,363 @@
+<block wx:if="{{gd.is_delete == 0}}">
+  <include src="../common/header.wxml" />
+  <!-- 邀请分享 -->
+  <v-invite-notice invite_id="{{invite_id}}" />
+  <v-share-gooods show="{{share_good}}" bind:download_img="go_share" bind:share_message="onShareAppMessage" />
+  <view class='back_top' wx:if='{{top_display == 1&& pictorial&&specMove==true}}' bindtap='goTop'>
+    <view>
+      <image src='/images/gray_top.png'></image>
+    </view>
+    <view>顶部</view>
+  </view>
+  <view class='main-container' style='overflow:{{is_play == 1?"hidden":"auto"}};overflow-x:hidden'>
+    <!-- 轮播图 -->
+    <view>
+      <include src="../goodscommon/swipercommon.wxml" />
+    </view>
+    <view class='presale_span clearfix' style="background:{{comColor}}">
+      <view class='presale_price'>
+        <view class='pre_icon'>定金膨胀</view>
+        <view class='pre_money'>
+          <view class='pre_jia'>定金:￥{{pre_sale_money}}</view>
+          <view class='pre_rule' bindtap='return_tips' wx:if='{{gd.preSale.presale_type != 1}}'>{{gd.preSale.return_type == 1?"可":"不"}}退定金
+            <image mode='widthFix' src='{{imageUrl}}/image/wxapp/pre_tice1.png'></image>
+          </view>
+        </view>
+      </view>
+      <view class='pl_right'>
+        <view>距离结束仅剩</view>
+        <view wx:if='{{clock.length == 4}}' class='daojishis'>
+          <text  style='color:{{comColor}}'>{{clock[0]}}</text>天
+          <text  style='color:{{comColor}}'>{{clock[1]}}</text>:
+          <text  style='color:{{comColor}}'>{{clock[2]}}</text>:
+          <text  style='color:{{comColor}}'>{{clock[3]}}</text>
+        </view>
+        <view wx:if='{{clock.length == 3}}' class='daojishis'>
+          <text  style='color:{{comColor}}'>{{clock[0]}}</text>:
+          <text  style='color:{{comColor}}'>{{clock[1]}}</text>:
+          <text  style='color:{{comColor}}'>{{clock[2]}}</text>
+        </view>
+      </view>
+    </view>
+    <!--  商品基础信息  -->
+    <view class='goods-info'>
+      <view class='clearfix'>
+        <view class='goods_name'>{{ goods_name }}</view>
+        <toast hidden="{{toast1Hidden}}" duration="3000" bindchange="toast1Change">
+          收藏成功
+        </toast>
+        <toast hidden="{{toast2Hidden}}" duration="3000" bindchange="toast2Change">
+          取消收藏
+        </toast>
+        <view class='goods_collect' bindtap="toast1Tap">
+          <text class='iconfont iconshoucang1' style='color:{{comColor}};font-size:38rpx;' wx:if="{{collection == 0 }}"></text>
+          <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:38rpx;' wx:else></text>
+        </view>
+        <view class='goods_share' style="margin-right:20rpx" bindtap="shareGoods">
+          <text class='iconfont iconfenxiang' style='color:{{comColor}};font-size:38rpx;'></text>
+        </view>
+      </view>
+      <block wx:if="{{ goods_ad != null }}">
+        <view class='goods_ad'>
+          {{ goods_ad }}
+        </view>
+      </block>
+      <view class='goods_price' style='color:{{comColor}}'>
+        总价：￥
+        <text>{{item_price}}</text>
+        <text class="market_price" style='color:#999' wx:if='{{gd.market_price != null && gd.market_price != 0}}'>￥{{gd.market_price}}</text>
+      </view>
+      <block wx:if="{{gd.labels != null && gd.labels != ''}}">
+        <view class="label-content">
+          <text class='label-style' wx:for="{{gd.labels}}" wx:key='key' style='background:{{somColor}};color:{{comColor}}'>{{item.name}}</text>
+        </view>
+      </block>
+      <view class='presale_content' style='background:{{speColor}};'>
+        <view wx:if='{{gd.preSale.presale_type != 1}}'>现在支付定金可抵：￥{{pre_discount_money}}</view>
+        <view wx:if='{{gd.preSale.presale_type == 0}}'>尾款支付时间：{{gd.preSale.start_time}} - {{gd.preSale.end_time}}</view>
+        <view wx:if='{{gd.preSale.deliver_type == 0}}'>发货时间：{{gd.preSale.deliver_time}}</view>
+        <view wx:if='{{gd.preSale.deliver_type == 1}}'>发货时间：支付完成{{gd.preSale.deliver_days}}天后发货</view>
+        <view wx:if='{{gd.preSale.presale_type == 0}}' bindtap='ruleShow'>活动规则：支付定金-支付尾款-等待发货
+          <image mode='widthFix' src='{{imageUrl}}/image/wxapp/pre_tice2.png'></image>
+        </view>
+        <view wx:if='{{gd.preSale.presale_type == 1}}' bindtap='ruleShow'>活动规则：支付定金-等待发货
+          <image mode='widthFix' src='{{imageUrl}}/image/wxapp/pre_tice2.png'></image>
+        </view>
+      </view>
+      <view class="flex-wrp">
+        <view class="flex-item">库存：{{ goods_num }}{{gd.unit}}</view>
+        <view class="flex-item" style='text-align:center;' wx:if='{{gd.preSale.show_sale_number == 1}}'>已预订：{{gd.preSale.goods_products[0].sale_number}}</view>
+        <view class="flex-item" wx:if="{{gd.deliver_fee && gd.deliver_fee.code!=-1}}" style='text-align:right;'>运费：{{ gd.deliver_fee.fee }}</view>
+        <view class="flex-item" wx:else style='text-align:right;'>运费：0</view>
+      </view>
+    </view>
+    <!-- 发货地 -->
+    <view class='deliver_place' style='margin-top:20rpx;padding:20rpx 30rpx;background:#fff;color:#353535' wx:if='{{gd.deliver_place && gd.deliver_place != ""}}'>
+      <text style='color:#888;margin-right:10rpx;'>发货地</text>  {{gd.deliver_place}}
+    </view>
+    <!-- 限次卡兑换商品 -->
+    <view class="exchang_card clearfix"  wx:if="{{gd.exchang_card.length > 0}}">
+      <view>可使用限次卡兑换</view>
+      <view bindtap="OneClickBuy" data-exchang="1" style="color:{{comColor}}">立即兑换</view>
+    </view>
+    <!--分销  -->
+    <view class='diatribution_area clearfix' wx:if='{{ gd.rebate_ratio > 0 && ((gd.is_distributor == 1 && gd.judge_status == 1) || gd.judge_status != 1 )}}' >
+      <view class='da_title' style='color:{{comColor}};border-color:{{comColor}}'>分销</view>
+      <view class='da_tips'>活动商品不参与分销</view>
+    </view>
+    <view class='goods-act'>
+      <include src="../goodscommon/giftcommon.wxml" />
+    </view>
+
+    <!--  优惠活动  -->
+    <view class='goods-act' wx:if="{{gd.can_join_activity.length > 0 || gd.recommend_coupons.length > 0}}">
+      <block wx:if="{{ gd.recommend_coupons.length > 0 }}">
+        <view class='clearfix goods_coupon' bindtap="ViewCoupon" style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+          <view class='goods_act_title'>优惠券</view>
+          <view class='clearfix goods_coupon_list' wx:if="{{coupon_flag == 1}}">
+            <block wx:for="{{ view_coupon_list }}" wx:key="key">
+              <view>
+                <text style='background:{{somColor}};color:{{comColor}};border-color:{{borColor}}'>{{item.rule_doc}}</text>
+              </view>
+            </block>
+          </view>
+        </view>
+      </block>
+      <block wx:if="{{gd.can_join_activity.length > 0}}">
+        <view class='clearfix goods_cuxiao' bindtap="{{gd.can_join_activity.length == 1?'to_xiangqing':'proClcik'}}" style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;background-position-y:35rpx;'>
+          <view class='goods_act_title'>促销</view>
+          <view class='all_cuxiao_info'>
+            <view class='goods_cuxiao_info clearfix' wx:for='{{gd.can_join_activity}}' wx:key='key' wx:if='{{item.action == 3}}'>
+              <view class='clearfix'>
+                <view class='cuxiao_type' style='color:{{comColor}};border-color:{{comColor}}'>限时降价</view>
+                <view class='cuxiao_content'>
+                  {{item.name}}
+                </view>
+              </view>
+            </view>
+            <view class='goods_cuxiao_info' wx:for='{{gd.can_join_activity}}' wx:key='key' wx:if='{{item.action == 2}}'>
+              <view class='clearfix'>
+                <view class='cuxiao_type' style='color:{{comColor}};border-color:{{comColor}}'>满折满减</view>
+                <view class='cuxiao_content'>
+                  {{item.name}}
+                </view>
+              </view>
+            </view>
+            <view class='goods_cuxiao_info' wx:for='{{gd.can_join_activity}}' wx:key='key' wx:if='{{item.action == 4}}'>
+              <view class='clearfix'>
+                <view class='cuxiao_type' style='color:{{comColor}};border-color:{{comColor}}'>一口价</view>
+                <view class='cuxiao_content'>
+                  {{item.name}}
+                </view>
+              </view>
+            </view>
+            <view class='goods_cuxiao_info clearfix' wx:for='{{gd.can_join_activity}}' wx:key='key' wx:if='{{item.action == 1}}'>
+              <view class='clearfix'>
+                <view class='cuxiao_type' style='color:{{comColor}};border-color:{{comColor}}'>加价购</view>
+                <view class='cuxiao_content'>
+                  {{item.name}}即可换购商品
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!--  选择规格（包含无规格情况）  -->
+    <v-sel-spec gd="{{gd}}" show="{{show_spec}}" exchang_block="{{exchang_block}}" item_type='presale'
+    bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange">
+      <view slot="footer-nav" class='modal_footer' style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
+        <form wx:if="{{exchang_block==1}}">
+          <view class='modal_footer_exclusive' bindtap='OneClickBuy' data-id="{{gd.goods_id}}"  style='color:#fff;background:{{commonColor}}' data-exchang="1">立即兑换</view>
+        </form>
+        <form report-submit='true' bindsubmit='OneClickBuy' wx:if="{{exchang_block==0}}">
+          <button class='modal_footer_add' formType='submit' style='background:{{comColor}}'>支付定金</button>
+        </form>
+      </view>
+    </v-sel-spec>
+    <!--  选择规格  -->
+    <!-- <view class='goods-act'>
+      <block wx:if="{{spec_view == '1' }}">
+        <view class='goods-spc clearfix' bindtap="specShow" style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+          <view class='goods_act_title'>选择</view>
+          <view class='goods_cuxiao_info van-ellipsis' bindtap="specShow">
+             <text wx:if="{{prd_name == undefind}}">{{ spec_name }}</text>
+            <text wx:if="{{prd_name != undefind}}">已选：" {{prd_desc}}"</text>
+          </view>
+        </view>
+      </block>
+      <block wx:else>
+        <view class='goods-spc clearfix' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+          <view class='modal_spec_sum clearfix'>
+            <view class='fl'>购买数量：
+              <block wx:if="{{gd.limit_buy_num != null && gd.limit_buy_num > 0 && !gd.limit_max_num}}">
+                (最少{{gd.limit_buy_num}}{{gd.unit}})
+              </block>
+              <block wx:if="{{gd.limit_max_num != null && gd.limit_max_num > 0 && !gd.limit_buy_num}}">
+                (最多{{gd.limit_max_num}}{{gd.unit}})
+              </block>
+              <block wx:if="{{gd.limit_max_num != null && gd.limit_max_num > 0 && gd.limit_buy_num != null && gd.limit_buy_num > 0}}">
+                (最少{{gd.limit_buy_num}}{{gd.unit}}，最多{{gd.limit_max_num}}{{gd.unit}})
+              </block>
+            </view>
+            <view class='fr goods_fr'>
+              <text class="btn_minus" bindtap="btn_minus" data-num="{{good_nums}}" style='background:#fff;color:#666' wx:if="{{is_min == 0}}">-</text>
+              <text class="btn_minus" bindtap="btn_minus" data-num="{{good_nums}}" style='background:#f5f5f5;color:#ccc' wx:if="{{is_min == 1}}">-</text>
+              <input type="number" class="btn_buy_number" value="{{good_nums}}" bindblur='get_goods_number' />
+              <text class="btn_plus" bindtap="btn_plus" data-num="{{good_nums}}" style='background:#fff;color:#666' wx:if="{{is_max == 0}}">+</text>
+              <text class="btn_plus" bindtap="btn_plus" data-num="{{good_nums}}" style='background:#f5f5f5;color:#ccc' wx:if="{{is_max == 1}}">+</text>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view> -->
+    <!--  评价  -->
+    <block wx:if="{{ comment_info != null }}">
+      <include src="../goodscommon/samecomment.wxml" />
+    </block>
+    <!-- 海报，视频，公众号和商品详情 -->
+    <include src="../goodscommon/modalcommon.wxml" />
+    <!--  底部  -->
+    <view class='footer clearfix' wx:if="{{gd.disp == 1 || gd.payment != '' || gd.business_state == 1}}" style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
+      <view class='footer_1'>
+        <view wx:if='{{gd.custom_service == 1}}'>
+          <button class='xiaodekfu' open-type='contact' show-message-card="true" session-from="weapp" send-message-title="{{gd.goods_name}}" send-message-path="/pages/presaleitem/presaleitem?presale_id={{presale_id}}" send-message-img="{{gd.goods_img}}" bindcontact='bindContact'></button>
+          <image src='{{ img_sercer }}' mode="widthFix"></image>
+          <view>客服</view>
+        </view>
+        <view class='back_index' bindtap='to_index' wx:if='{{gd.custom_service != 1}}'>
+          <image src='{{imageUrl}}image/wxapp/back_index_item.png' mode='widthFix'></image>
+          <view>首页</view>
+        </view>
+        <view bindtap='gotoCart'>
+          <image src='{{ img_cart }}' mode="widthFix"></image>
+          <view class='cart_goods_num' style='color:{{comColor}};border-color:{{comColor}}'>{{cartGoodsNumber}}</view>
+          <view>购物车</view>
+        </view>
+      </view>
+      <form report-submit='true' bindsubmit='to_normal' wx:if='{{gd.preSale.buy_type == 1}}'>
+        <button class='footer_2' formType='submit' style='color:#fff;background:{{commonColor}}'>立即购买</button>
+      </form>
+      <form report-submit='true' bindsubmit='OneClickBuy'>
+        <button class='footer_3' formType='submit' style='background:{{comColor}};width:{{gd.preSale.buy_type == 1?"346rpx;":"526rpx;"}}'>支付定金</button>
+      </form>
+    </view>
+
+    <view class='footer clearfix no_check' wx:if="{{gd.disp == 0 || gd.payment == '' || (gd.payment[0].pay_code =='ali_mini_pay'&&gd.payment.length == 1) || gd.business_state != 1 || gd.is_store_pickup == 1}}">
+      <text class='iconfont iconkefu' style='color:{{comColor}};font-size:70rpx;'></text>
+      <view style='color:{{comColor}}'>客服</view>
+    </view>
+    <view wx:else>
+      <!-- 不在配送范围 -->
+      <view class='cannot-deliver' wx:if='{{gd.deliver_fee.code==-1}}' style='bottom:{{isIpx == 1?"165rpx;":"100rpx;"}}'>
+        注：当前所在区域不可配送
+      </view>
+    </view>
+    <!--  库存为0  -->
+    <block wx:if="{{ goods_num <= 0 || gd.is_on_sale == 0}}">
+      <view class='footer_over' bindtap='to_index' wx-if="{{goods_num <= 0}}">此商品已售罄</view>
+      <view class='footer_over' bindtap='to_index' wx-if="{{gd.is_on_sale == 0}}">此商品已下架</view>
+    </block>
+    
+    <!--  优惠券弹框  -->
+    <action-sheet hidden="{{actionSheetHidden}}" bindchange="actionSheetChange">
+      <view class='pro_title'>
+        优惠券
+        <image src='{{ img_close }}' mode="widthFix" bindtap="cancel" class='pro_close' />
+      </view>
+      <view style='height:660rpx;overflow-y:scroll'>
+        <block wx:for="{{coupon_list}}" wx:key="index">
+          <view class="coupon_list_item">
+            <view class="coupon_detail">
+              <view class="coupon_left" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+                <view>{{item.act_name}}</view>
+                <view class="coupon_left_text">
+                  <text wx:if="{{item.act_code=='voucher'}}">￥<text>{{item.denomination}}</text></text>
+                  <text wx:else><text>{{item.denomination}}</text>折</text>
+                </view>
+                <view class='coupon_xian'>
+                  <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
+                </view>
+              </view>
+              <view class="coupon_right">
+                <text class="coupon_condition" wx:if="{{item.least_consume == null}}">使用条件：无门槛</text>
+                <text class="coupon_condition" wx:else>使用条件：满{{item.least_consume}}元可用</text>
+                <block wx:if="{{ item.validity == null }}">
+                  <view class="coupon_time">有效时间：
+                    <text>{{item.start_time}}</text>
+                    <text class='end_time_r'> — {{item.end_time}}</text>
+                  </view>
+                </block>
+                <block wx:else>
+                  <view class="coupon_time">有效时间：自领取之日起
+                    <text>{{item.validity}}天内有效</text>
+                  </view>
+                </block>
+                <form report-submit='true' class="get_new_coupon" wx:if="{{item.can_fetch == 1}}" bindsubmit="getCouponNew" data-coupon="{{index}}" data-code="{{item.alias_code}}" data-vali="{{item.validation_code}}">
+                  <button form-type='submit' plain="false" disabled='{{item.disableds}}' style='background:{{somColor}};color:{{comColor}}'>立即领取</button>
+                </form>
+                <view class="get_new_coupon got_coupon" wx:else>
+                  已领取
+                </view>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </action-sheet>
+    <!--  促销活动弹框  -->
+    <action-sheet hidden="{{proMode}}" bindchange="proActionSheetChange">
+      <view class='promotion' hidden="{{ proMode }}">
+        <view class='pro_title'>
+          促销
+          <image src='{{ img_close }}' mode="widthFix" bindtap="proCancel" class='pro_close' />
+        </view>
+        <view class='pro_content'>
+          <view class='pro_tips' wx:if='{{gd.can_join_activity.length>1}}'>
+            <image src='{{imageUrl}}/image/wxapp/main_goods_notice.png' mode='widthFix'></image>
+            <view>以下促销活动仅可任选其一，可在购物车更改</view>
+          </view>
+          <view class='pro_con_list clearfix' wx:for='{{gd.can_join_activity}}' wx:key='key' wx:if='{{item.action == 3}}' data-ids='{{item.identity_id}}'>
+            <view class='pro_list_span'>限时降价</view>
+            <view>{{item.name}}</view>
+          </view>
+          <view class='pro_con_list clearfix' bindtap='to_full' wx:for='{{gd.can_join_activity}}' wx:key='key' wx:if='{{item.action == 2}}' data-ids='{{item.identity_id}}'>
+            <view class='pro_list_span'>满折满减</view>
+            <view>{{item.name}}</view>
+            <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix' class='go_img'></image>
+          </view>
+          <view class='pro_con_list clearfix' bindtap='to_package' wx:for='{{gd.can_join_activity}}' wx:key='key' wx:if='{{item.action == 4}}' data-ids='{{item.identity_id}}'>
+            <view class='pro_list_span'>一口价</view>
+            <view>{{item.name}}</view>
+            <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix' class='go_img'></image>
+          </view>
+          <view class='pro_con_list clearfix' bindtap='to_purchase' wx:for='{{gd.can_join_activity}}' wx:key='key' wx:if='{{item.action == 1}}' data-ids='{{item.identity_id}}'>
+            <view class='pro_list_span jiajiagou_icon'>加价购</view>
+            <view>{{item.name}}即可换购商品</view>
+            <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix' class='go_img'></image>
+          </view>
+        </view>
+      </view>
+    </action-sheet>
+    <!-- 定金膨胀的活动规则 -->
+    <action-sheet hidden="{{ruleMode}}" bindchange="preActionSheetChange">
+      <view class='promotion' hidden="{{ ruleMode }}">
+        <view class='pro_title'>
+          活动规则
+          <image src='{{ img_close }}' mode="widthFix" bindtap="ruleCancel" class='pro_close' />
+        </view>
+        <view class='pro_content pre_content'>
+          <view>参与步骤：</view>
+          <view>1.在商品详情页选择商品规格，点击支付定金按钮到结算页下单并支付定金。</view>
+          <view>2.在指定尾款支付时间内，完成尾款支付，即可等待商家发货，具体发货时间以实际发货时间为准。</view>
+          <view>3.在订单列表中，可以随时查看订单进行状态。</view>
+          <view>注意事项：</view>
+          <view>1.定金膨胀商品只能线上支付，不支持货到付款。</view>
+          <view>2.尾款支付只能使用微信支付，不支持使用余额。</view>
+        </view>
+      </view>
+    </action-sheet>
+  </view>
+  <include src="../common/footer.wxml" />
+</block>

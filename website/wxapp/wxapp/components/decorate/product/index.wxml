@@ -1,0 +1,754 @@
+<!--手动推荐  -->
+<view class='product-container person_reconmmend' style='{{m.goods_module_style == 1 ? "width:750rpx;margin-top:18rpx;" : ""}}'>
+  <block wx:if='{{m.goods_module_title == 1}}'>
+    <view class='module_names' style='{{m.tit_center == 1 ? "justify-content:center" : ""}}' data-url='{{m.title_link}}' bindtap='bindJumpLink'>
+      <image src="{{m.img_url}}" wx:if="{{m.img_url}}" />
+      <text>{{m.title}}</text>
+    </view>
+  </block>
+  <block wx:if='{{m.goods_module_title == 2}}'>
+    <view class='module_names' style='{{m.tit_center == 1 ? "justify-content:center" : ""}}' data-url='{{m.title_link}}' bindtap='bindJumpLink'>
+      <text>{{m.title}}</text>
+    </view>
+    <image src='{{m.img_title_url}}' wx:if='{{m.img_title_url}}' mode='widthFix' style='width:100%' data-url='{{m.title_link}}' bindtap='bindJumpLink'></image>
+  </block>
+
+  <!--大图商品  -->
+  <view class='product-item one_column' wx:if="{{m.col_type =='0'}}" style='{{m.goods_module_style == 1 ? "margin:none;padding:0 15rpx;" : ""}}background:{{m.goods_module_bg == 0 ? "": m.goods_bg_color}}'>
+    <block wx:for="{{m.goods_items}}" wx:key="key" wx:for-item="item" wx:for-index='index'>
+      <view class='xunhuan_one' style='border-radius:{{m.if_radius == 1?"16rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="{{item.goods_type == 10?'bindTopre':'bindJumpLink'}}"
+        data-is_first_touch="{{m.is_first_touch}}" data-url="pages/item/item?good_id={{item.goods_id}}" data-idx='{{m.idx}}' data-presale_id='{{item.presale_id}}' data-goods_type='{{item.goods_type}}' wx:if='{{ item.goods_type !=3 && item.goods_type !=1 && item.goods_type !=5}}'>
+        <view class='product-image' style='overflow-y:hidden;text-align:center;position:relative;height:{{m.goods_display == 2 ? "auto ":"300rpx"}}'>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <include src="../goodscommon/labelcommon.wxml" />
+          <view class='reduce_price' wx:if="{{item.goods_price_action == 2 && item.goods_type != 10}}" style='background:{{linColor}};color:#fff'>限时降价，立即查看</view>
+          <view class='reduce_price' wx:elif="{{item.goods_price_action == 3}}" style='background:{{linColor}};color:#fff'>新人专享，首单特惠</view>
+          <view class='exclusive' wx:elif="{{item.is_card_exclusive == 1 && item.goods_type != 1 && item.goods_type != 3 && item.goods_type != 5 && item.goods_type != 10 && item.goods_price_action != 2 && item.goods_price_action != 3}}">会员专享商品，立即查看</view>
+          <view class='grade' wx:elif="{{item.goods_price_action == 1 && item.goods_type != 10}}">专享会员价，立即查看</view>
+          <image src='{{item.img_url}}!big' mode='widthFix' lazy-load="{{true}}" wx:if="{{m.goods_display==1}}" style="width:300rpx;" class="item_img"></image>
+          <image src='{{item.img_url}}!big' mode='widthFix' lazy-load="{{true}}" wx:else class="item_img"></image>
+        </view>
+        <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+        <view class='product-name' wx:if='{{m.hide_name != 1}}'>
+          <block wx:if='{{item.goods_type == 10 || item.goods_tags != ""}}'>
+            <view class='van-ellipsis'>{{item.goods_name}}</view>
+            <view class='title_label'>
+              <view class='pin_flag' wx:if='{{item.goods_type == 10}}' style='color:{{comColor}};border-color:{{comColor}}'>预售</view>
+              <view class='pin_flag' wx:if='{{item.goods_tags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[0]}}</view>
+              <view class='pin_flag' wx:if='{{item.goods_tags[1] != undefined && item.goods_type != 10}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[1]}}</view>
+            </view>
+          </block>
+          <block wx:else>
+            <view class='van-two-ellipsis'>{{item.goods_name}}</view>
+          </block>
+        </view>
+        <view class='product-price'>
+          <block wx:if="{{m.hide_price != 1}}">
+            <view class='sale_price' wx:if='{{item.goods_type != 10}}' style='color:{{comColor}};'>￥{{item.reduce_price}}</view>
+            <view class='sale_price' wx:if='{{item.goods_type == 10}}' style='color:{{comColor}};'>￥{{item.shop_price}}</view>
+          </block>
+          <block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+            <block wx:if="{{m.show_market == 1}}">
+              <view class='market_price' wx:if="{{item.line_price != undefined && item.line_price != '0.00'}}">￥{{item.line_price}}</view>
+            </block>
+            <block wx:if="{{m.show_market == 2}}">
+              <view class='market_price line-through-none'>{{item.goods_sale_num > 999 ? '999+' : item.goods_sale_num}}人付款</view>
+            </block>
+            <block wx:if="{{m.show_market == 3}}">
+              <view class='market_price line-through-none'>{{item.comment_num > 999 ? '999+' : item.comment_num}}人评价</view>
+            </block>
+          </block>
+
+          <block wx:if="{{m.cart_btn == 0 && item.goods_type != 10}}">
+            <text class='cart_btn iconfont icontianjia' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'></text>
+            <text class='cart_btn iconfont icongouwuche1' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'></text>
+            <text class='cart_btn right_buy_btn' style='background:{{comColor}}' wx:if="{{m.cart_btn_choose == '2'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'>马上抢</text>
+            <text class='cart_btn cart_buy_btn' style='color:{{comColor}};border:1px solid {{comColor}}' wx:if="{{m.cart_btn_choose == '3'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'>购买</text>
+          </block>
+
+        </view>
+        <view class='if_delete' wx:if='{{item.is_delete == 1}}'>商品已删除</view>
+      </view>
+      <!-- 拼团 -->
+      <view class='xunhuan_one' style='border-radius:{{m.if_radius == 1?"16rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="bindJumpLink" data-is_first_touch="{{m.is_first_touch}}"
+        data-url="pages/groupbuyitem/groupbuyitem?pin_group_id={{m.pin_group_goods[item.goods_id].pin_activity_id}}" data-idx='{{m.idx}}' wx:if='{{m.pin_group_goods[item.goods_id] && item.goods_type ==1}}'>
+        <view class='product-image' style='overflow-y:hidden;text-align:center;height:{{m.goods_display == 2 ? "auto ":"300rpx"}}'>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <image src='{{item.img_url}}!big' mode='widthFix' lazy-load="{{true}}" wx:if="{{m.goods_display==1}}" style="width:300rpx;"></image>
+          <image src='{{item.img_url}}!big' mode='widthFix' lazy-load="{{true}}" wx:else></image>
+          <!-- <image src='{{item.img_url}}' mode='widthFix'></image> -->
+          <view class='save_money' wx:if='{{m.pin_group_goods[item.goods_id]}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}});bottom:{{m.goods_display == 2 ? "8rpx ":"0rpx"}}'>开团立省{{m.pin_group_goods[item.goods_id].less_money}}元</view>
+        </view>
+        <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+        <view class='product-name' wx:if='{{m.hide_name != 1}}'>
+          <view class='van-ellipsis'>{{item.goods_name}}</view>
+          <view class='title_label'>
+            <view class='pin_flag' style='color:{{comColor}};border-color:{{comColor}}'>拼团</view>
+            <view class='pin_flag' wx:if='{{item.goods_tags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[0]}}</view>
+          </view>
+        </view>
+        <view class='product-price'>
+          <view class='sale_price' style='color:{{comColor}};' wx:if="{{m.hide_price != 1}}">￥{{m.pin_group_goods[item.goods_id].pin_group_price}}</view>
+          <block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+            <block wx:if="{{m.show_market == 1}}">
+              <view class='market_price' wx:if="{{item.market_price != undefined && item.market_price != '0.00'}}">￥{{item.max_price}}</view>
+            </block>
+            <block wx:if="{{m.show_market == 2}}">
+              <view class='market_price line-through-none'>{{item.goods_sale_num > 999 ? '999+' : item.goods_sale_num}}人付款</view>
+            </block>
+            <block wx:if="{{m.show_market == 3}}">
+              <view class='market_price line-through-none'>{{item.comment_num > 999 ? '999+' : item.comment_num}}人评价</view>
+            </block>
+          </block>
+        </view>
+      </view>
+      <!-- 砍价 -->
+      <view class='xunhuan_one' style='border-radius:{{m.if_radius == 1?"16rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="bindToKanJia" data-inde='{{index}}'
+        data-is_prd='{{item.is_prd}}' data-is_first_touch="{{m.is_first_touch}}" data-link="pages/bargainitem/bargainitem?bargain_id={{item.bargin_id}}" data-zhujian="{{index}}" data-idx='{{m.idx}}' wx:if="{{item.goods_type == 3}}">
+        <view class='product-image' style='overflow-y:hidden;text-align:center;height:{{m.goods_display == 2 ? "auto ":"300rpx"}}'>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <image src='{{item.img_url}}!big' mode='widthFix' lazy-load="{{true}}" wx:if="{{m.goods_display==1}}" style="width:300rpx;"></image>
+          <image src='{{item.img_url}}!big' mode='widthFix' lazy-load="{{true}}" wx:else></image>
+          <view class='save_money kanjia_money' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}});bottom:{{m.goods_display == 2 ? "8rpx ":"0rpx"}}'>{{item.bargain_price}}元砍走</view>
+        </view>
+
+        <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+        <view class='product-name' wx:if='{{m.hide_name != 1}}'>
+          <view class='van-ellipsis'>{{item.goods_name}}</view>
+          <view class='title_label'>
+            <view class='pin_flag' style='color:{{comColor}};border-color:{{comColor}}'>砍价</view>
+            <view class='pin_flag' wx:if='{{item.goods_tags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[0]}}</view>
+          </view>
+        </view>
+        <view class='product-price'>
+          <view class='sale_price' style='color:{{comColor}}' wx:if="{{m.hide_price != 1}}">￥{{item.bargain_price}}</view>
+          <block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+            <block wx:if="{{m.show_market == 1}}">
+              <view class='market_price' wx:if="{{item.market_price != undefined && item.market_price != '0.00'}}">￥{{item.max_price}}</view>
+            </block>
+            <block wx:if="{{m.show_market == 2}}">
+              <view class='market_price line-through-none'>{{item.goods_sale_num > 999 ? '999+' : item.goods_sale_num}}人付款</view>
+            </block>
+            <block wx:if="{{m.show_market == 3}}">
+              <view class='market_price line-through-none'>{{item.comment_num > 999 ? '999+' : item.comment_num}}人评价</view>
+            </block>
+          </block>
+        </view>
+      </view>
+      <!--秒杀  -->
+      <view class='xunhuan_one' style='border-radius:{{m.if_radius == 1?"16rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="bindToSecKill" data-is_first_touch="{{m.is_first_touch}}"
+        data-sk_id='{{item.sk_id}}' data-idx='{{m.idx}}' data-link="pages/seckillitem/seckillitem?sk_id={{item.sk_id}}" wx:if='{{ item.goods_type ==5 }}'>
+        <view class='product-image' style='overflow-y:hidden;text-align:center;height:{{m.goods_display == 2 ? "auto ":"300rpx"}}'>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <image src='{{item.img_url}}!big' mode='widthFix' lazy-load="{{true}}" wx:if="{{m.goods_display==1}}" style="width:300rpx;"></image>
+          <image src='{{item.img_url}}!big' mode='widthFix' lazy-load="{{true}}" wx:else></image>
+        </view>
+        <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+        <view class='product-name' wx:if='{{m.hide_name != 1}}'>
+          <view class='van-ellipsis'>{{item.goods_name}}</view>
+          <view class='title_label'>
+            <view class='pin_flag' style='color:{{comColor}};border-color:{{comColor}}'>秒杀</view>
+            <view class='pin_flag' wx:if='{{item.goods_tags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[0]}}</view>
+          </view>
+        </view>
+        <view class='product-price'>
+          <view class='sale_price' style='color:{{comColor}}' wx:if="{{m.hide_price != 1}}">￥{{item.seckill_price}}</view>
+          <block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+            <block wx:if="{{m.show_market == 1}}">
+              <view class='market_price' wx:if="{{item.market_price != undefined && item.market_price != '0.00'}}">￥{{item.max_price}}</view>
+            </block>
+            <block wx:if="{{m.show_market == 2}}">
+              <view class='market_price line-through-none'>{{item.goods_sale_num > 999 ? '999+' : item.goods_sale_num}}人付款</view>
+            </block>
+            <block wx:if="{{m.show_market == 3}}">
+              <view class='market_price line-through-none'>{{item.comment_num > 999 ? '999+' : item.comment_num}}人评价</view>
+            </block>
+          </block>
+        </view>
+      </view>
+    </block>
+  </view>
+  <!--双列商品  -->
+  <view class='product-item two_column' wx:if="{{m.col_type =='1'}}" style='{{m.goods_module_style == 1 ? "width:720rpx;padding: 0 15rpx;" : ""}}background:{{m.goods_module_bg == 0 ? "": m.goods_bg_color}}'>
+    <block wx:for="{{m.goods_items}}" wx:key="key" wx:for-item="item" wx:for-index="index">
+      <view class='each_module' style='border-radius:{{m.if_radius == 1?"12rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="{{item.goods_type == 10?'bindTopre':'bindJumpLink'}}"
+        data-is_first_touch="{{m.is_first_touch}}" data-idx='{{m.idx}}' data-url="pages/item/item?good_id={{item.goods_id}}" data-presale_id='{{item.presale_id}}' data-goods_type='{{item.goods_type}}' wx:if='{{ item.goods_type !=3 && item.goods_type !=1 && item.goods_type !=5}}'>
+        <view class='product-image'>
+          <include src="../goodscommon/labelcommon.wxml" />
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <view class='reduce_price' wx:if="{{item.goods_price_action == 2 && item.goods_type != 10}}" style='background:{{linColor}};color:#fff'>限时降价，立即查看</view>
+          <view class='reduce_price' wx:elif="{{item.goods_price_action == 3}}" style='background:{{linColor}};color:#fff'>新人专享，首单特惠</view>
+          <view class='exclusive' wx:elif="{{item.is_card_exclusive == 1 && item.goods_type != 1 && item.goods_type != 3 && item.goods_type != 5 && item.goods_type != 10 && item.goods_price_action != 2 && item.goods_price_action != 3}}">会员专享商品，立即查看</view>
+          <view class='grade' wx:elif="{{item.goods_price_action == 1 && item.goods_type != 10}}">专享会员价，立即查看</view>
+          <image src='{{item.goods_img}}!middle' lazy-load="{{true}}" class="item_img"></image>
+        </view>
+        <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+        <view class='product-name' wx:if='{{m.hide_name != 1}}'>
+          <block wx:if='{{item.goods_type == 10 || item.goods_tags != ""}}'>
+            <view class='van-ellipsis'>{{item.goods_name}}</view>
+            <view class='title_label'>
+              <view class='pin_flag' wx:if='{{item.goods_type == 10}}' style='color:{{comColor}};border-color:{{comColor}}'>预售</view>
+              <view class='pin_flag' wx:if='{{item.goods_tags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[0]}}</view>
+              <view class='pin_flag' wx:if='{{item.goods_tags[1] != undefined && item.goods_type != 10}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[1]}}</view>
+            </view>
+          </block>
+          <block wx:else>
+            <view class='van-two-ellipsis'>{{item.goods_name}}</view>
+          </block>
+        </view>
+        <view class='product-price'>
+          <block wx:if="{{m.hide_price != 1}}">
+            <view class='sale_price' wx:if='{{item.goods_type != 10}}' style='color:{{comColor}};'>￥{{item.reduce_price}}</view>
+            <view class='sale_price' wx:if='{{item.goods_type == 10}}' style='color:{{comColor}};'>￥{{item.shop_price}}</view>
+          </block>
+          <block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+            <block wx:if="{{m.show_market == 1 && item.price_len < 16 }}">
+              <view class='market_price' wx:if="{{item.line_price != undefined && item.line_price != '0.00'}}">￥{{item.line_price}}</view>
+            </block>
+            <block wx:if="{{m.show_market == 2 && item.real_len < 9 }}">
+              <view class='market_price line-through-none'>{{item.goods_sale_num > 999 ? '999+' : item.goods_sale_num}}人付款</view>
+            </block>
+            <block wx:if="{{m.show_market == 3 && item.real_len < 9}}">
+              <view class='market_price line-through-none'>{{item.comment_num > 999 ? '999+' : item.comment_num}}人评价</view>
+            </block>
+          </block>
+          <block wx:if="{{m.cart_btn == 0 && item.goods_type != 10  && item.real_len < 12}}">
+            <text class='cart_btn iconfont icontianjia' style='font-size:40rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'></text>
+            <text class='cart_btn iconfont icongouwuche1' style='font-size:40rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'></text>
+            <text class='cart_btn right_buy_btn' style='background:{{comColor}}' wx:if="{{m.cart_btn_choose == '2'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'>马上抢</text>
+            <text class='cart_btn cart_buy_btn' style='color:{{comColor}};border:1px solid {{comColor}}' wx:if="{{m.cart_btn_choose == '3'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'>购买</text>
+          </block>
+
+        </view>
+        <view class='if_delete' wx:if='{{item.is_delete == 1}}'>商品已删除</view>
+      </view>
+      <!-- 拼团 -->
+      <view class='each_module' style='border-radius:{{m.if_radius == 1?"12rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="bindJumpLink" data-is_first_touch="{{m.is_first_touch}}"
+        data-idx='{{m.idx}}' data-url="pages/groupbuyitem/groupbuyitem?pin_group_id={{m.pin_group_goods[item.goods_id].pin_activity_id}}" wx:if='{{m.pin_group_goods[item.goods_id] && item.goods_type ==1}}'>
+        <view class='product-image'>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <image src='{{item.img_url}}!middle'></image>
+        </view>
+        <view class='save_money' wx:if='{{m.pin_group_goods[item.goods_id]}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>开团立省{{m.pin_group_goods[item.goods_id].less_money}}元</view>
+        <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+        <view class='product-name' wx:if="{{m.hide_name != 1}}">
+          <view class='van-ellipsis'>{{item.goods_name}}</view>
+          <view class='title_label'>
+            <view class='pin_flag' style='color:{{comColor}};border-color:{{comColor}}'>拼团</view>
+            <view class='pin_flag' wx:if='{{item.goods_tags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[0]}}</view>
+          </view>
+        </view>
+        <view class='product-price'>
+          <view class='sale_price' style='color:{{comColor}};' wx:if="{{m.hide_price != 1}}">￥{{m.pin_group_goods[item.goods_id].pin_group_price}}</view>
+          <block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+            <block wx:if="{{m.show_market == 1 && item.price_len < 16 }}">
+              <view class='market_price' wx:if="{{item.line_price != undefined && item.line_price != '0.00'}}">￥{{item.line_price}}</view>
+            </block>
+            <block wx:if="{{m.show_market == 2 && item.real_len < 9 }}">
+              <view class='market_price line-through-none'>{{item.goods_sale_num > 999 ? '999+' : item.goods_sale_num}}人付款</view>
+            </block>
+            <block wx:if="{{m.show_market == 3 && item.real_len < 9}}">
+              <view class='market_price line-through-none'>{{item.comment_num > 999 ? '999+' : item.comment_num}}人评价</view>
+            </block>
+          </block>
+        </view>
+      </view>
+
+      <!--砍价  -->
+      <view class='each_module' style='border-radius:{{m.if_radius == 1?"12rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' data-link="pages/bargainitem/bargainitem?bargain_id={{item.bargin_id}}"
+        data-is_prd='{{item.is_prd}}' catchtap="bindToKanJia" data-is_first_touch="{{m.is_first_touch}}" data-inde='{{index}}' data-idx='{{m.idx}}' data-zhujian="{{index}}" wx:if='{{item.goods_type == 3}}'>
+        <view class='product-image'>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <image src='{{item.img_url}}!middle'></image>
+        </view>
+        <view class='save_money kanjia_money' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{item.bargain_price}}元砍走</view>
+        <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+        <view class='product-name' wx:if='{{m.hide_name != 1}}'>
+          <view class='van-ellipsis'>{{item.goods_name}}</view>
+          <view class='title_label'>
+            <view class='pin_flag' style='color:{{comColor}};border-color:{{comColor}}'>砍价</view>
+            <view class='pin_flag' wx:if='{{item.goods_tags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[0]}}</view>
+          </view>
+        </view>
+        <view class='product-price'>
+          <view class='sale_price' style='color:{{comColor}}' wx:if="{{m.hide_price != 1}}">￥{{item.bargain_price}}</view>
+          <block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+            <block wx:if="{{m.show_market == 1 && item.price_len < 16 }}">
+              <view class='market_price' wx:if="{{item.line_price != undefined && item.line_price != '0.00'}}">￥{{item.line_price}}</view>
+            </block>
+            <block wx:if="{{m.show_market == 2 && item.real_len < 9 }}">
+              <view class='market_price line-through-none'>{{item.goods_sale_num > 999 ? '999+' : item.goods_sale_num}}人付款</view>
+            </block>
+            <block wx:if="{{m.show_market == 3 && item.real_len < 9}}">
+              <view class='market_price line-through-none'>{{item.comment_num > 999 ? '999+' : item.comment_num}}人评价</view>
+            </block>
+          </block>
+        </view>
+      </view>
+      <!--秒杀  -->
+      <view class='each_module' style='border-radius:{{m.if_radius == 1?"12rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="bindToSecKill" data-is_first_touch="{{m.is_first_touch}}"
+        data-idx='{{m.idx}}' data-sk_id='{{item.sk_id}}' data-link="pages/seckillitem/seckillitem?sk_id={{item.sk_id}}" wx:if='{{item.goods_type ==5}}'>
+        <view class='product-image'>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <image src='{{item.img_url}}!middle'></image>
+        </view>
+        <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+        <view class='product-name' wx:if='{{m.hide_name != 1}}'>
+          <view class='van-ellipsis'>{{item.goods_name}}</view>
+          <view class='title_label'>
+            <view class='pin_flag' style='color:{{comColor}};border-color:{{comColor}}'>秒杀</view>
+            <view class='pin_flag' wx:if='{{item.goods_tags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[0]}}</view>
+          </view>
+        </view>
+        <view class='product-price'>
+          <view class='sale_price' style='color:{{comColor}}' wx:if="{{m.hide_price != 1}}">￥{{item.seckill_price}}</view>
+          <block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+            <block wx:if="{{m.show_market == 1 && item.price_len < 16 }}">
+              <view class='market_price' wx:if="{{item.line_price != undefined && item.line_price != '0.00'}}">￥{{item.line_price}}</view>
+            </block>
+            <block wx:if="{{m.show_market == 2 && item.real_len < 9 }}">
+              <view class='market_price line-through-none'>{{item.goods_sale_num > 999 ? '999+' : item.goods_sale_num}}人付款</view>
+            </block>
+            <block wx:if="{{m.show_market == 3 && item.real_len < 9}}">
+              <view class='market_price line-through-none'>{{item.comment_num > 999 ? '999+' : item.comment_num}}人评价</view>
+            </block>
+          </block>
+        </view>
+      </view>
+    </block>
+  </view>
+  <!--三列商品  -->
+  <view class='product-item three_column' wx:if="{{m.col_type =='2'}}" style='{{m.goods_module_style == 1 ? "padding-top:20rpx;":""}}background:{{m.goods_module_bg == 0 ? "": m.goods_bg_color}}'>
+    <block wx:for="{{m.goods_items}}" wx:key="key" wx:for-item="item" wx:for-index='index'>
+      <view class='every_module' style='border-radius:{{m.if_radius == 1?"12rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="{{item.goods_type == 10?'bindTopre':'bindJumpLink'}}"
+        data-is_first_touch="{{m.is_first_touch}}" data-idx='{{m.idx}}' data-url="pages/item/item?good_id={{item.goods_id}}" data-presale_id='{{item.presale_id}}' data-goods_type='{{item.goods_type}}' wx:if='{{ item.goods_type !=3 && item.goods_type !=1 && item.goods_type !=5}}'>
+        <view class='product-image'>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <include src="../goodscommon/labelcommon.wxml" />
+          <view class='reduce_price' wx:if="{{item.goods_price_action == 2 && item.goods_type != 10}}" style='background:{{linColor}};color:#fff'>限时降价，立即查看</view>
+          <view class='reduce_price' wx:elif="{{item.goods_price_action == 3}}" style='background:{{linColor}};color:#fff'>新人专享，首单特惠</view>
+          <view class='exclusive' wx:elif="{{item.is_card_exclusive == 1 && item.goods_type != 1 && item.goods_type != 3 && item.goods_type != 5 && item.goods_type != 10 && item.goods_price_action != 2}}">会员专享商品</view>
+          <view class='grade' wx:elif="{{item.goods_price_action == 1&& item.goods_type != 10}}">专享会员价，立即查看</view>
+          <image src='{{item.goods_img}}!middle' lazy-load="{{true}}" class="item_img"></image>
+        </view>
+        <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+        <view class='product-name ' wx:else>
+          <block wx:if='{{item.goods_type == 10 || item.goods_tags != ""}}'>
+            <view class='van-ellipsis'>{{item.goods_name}}</view>
+            <view class='title_label'>
+              <view class='pin_flag' wx:if='{{item.goods_type == 10}}' style='color:{{comColor}};border-color:{{comColor}}'>预售</view>
+              <view class='pin_flag' wx:if='{{item.goods_tags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[0]}}</view>
+            </view>
+          </block>
+          <block wx:else>
+            <view class='van-two-ellipsis'>{{item.goods_name}}</view>
+          </block>
+        </view>
+        <view class='product-price'>
+          <block wx:if="{{m.hide_price != 1}}">
+            <view class='sale_price' wx:if='{{item.goods_type != 10}}' style='color:{{comColor}};'>￥{{item.reduce_price}}</view>
+            <view class='sale_price' wx:if='{{item.goods_type == 10}}' style='color:{{comColor}};'>￥{{item.shop_price}}</view>
+          </block>
+          <block wx:if="{{m.cart_btn == 0 && item.goods_type != 10  && item.real_len < 12}}">
+            <text class='cart_btn iconfont icontianjia' style='font-size:36rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'></text>
+            <text class='cart_btn iconfont icongouwuche1' style='font-size:36rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'></text>
+          </block>
+        </view>
+        <view class='if_delete' wx:if='{{item.is_delete == 1}}'>商品已删除</view>
+      </view>
+
+      <view class='every_module' style='border-radius:{{m.if_radius == 1?"12rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="bindJumpLink" data-is_first_touch="{{m.is_first_touch}}"
+        data-idx='{{m.idx}}' data-url="pages/groupbuyitem/groupbuyitem?pin_group_id={{m.pin_group_goods[item.goods_id].pin_activity_id}}" wx:if='{{m.pin_group_goods[item.goods_id] && item.goods_type == 1}}'>
+        <view class='product-image'>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <image src='{{item.img_url}}!small' style='width:230rpx;height:230rpx'></image>
+        </view>
+        <view class='save_money' wx:if='{{m.pin_group_goods[item.goods_id]}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>开团立省{{m.pin_group_goods[item.goods_id].less_money}}元</view>
+        <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+        <view class='product-name' wx:if='{{m.hide_name != 1}}'>
+          <view class='van-ellipsis'>{{item.goods_name}}</view>
+          <view class='title_label'>
+            <view class='pin_flag' style='color:{{comColor}};border-color:{{comColor}}'>拼团</view>
+          </view>
+        </view>
+        <view class='product-price'>
+          <view class='sale_price' style='color:{{comColor}};' wx:if="{{m.hide_price != 1}}">￥{{m.pin_group_goods[item.goods_id].pin_group_price}}</view>
+        </view>
+      </view>
+      <!-- 砍价 -->
+      <view class='every_module' style='border-radius:{{m.if_radius == 1?"12rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' data-link="pages/bargainitem/bargainitem?bargain_id={{item.bargin_id}}"
+        data-is_prd='{{item.is_prd}}' catchtap="bindToKanJia" data-is_first_touch="{{m.is_first_touch}}" data-inde='{{index}}' data-idx='{{m.idx}}' data-zhujian="{{index}}" wx:if='{{item.goods_type ==3}}'>
+        <view class='product-image'>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <image src='{{item.img_url}}!small' style='width:230rpx;height:230rpx'></image>
+        </view>
+        <view class='save_money kanjia_money' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{item.bargain_price}}元砍走</view>
+        <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+        <view class='product-name' wx:if='{{m.hide_name != 1}}'>
+          <view class='van-ellipsis'>{{item.goods_name}}</view>
+          <view class='title_label'>
+            <view class='pin_flag' style='color:{{comColor}};border-color:{{comColor}}'>砍价</view>
+          </view>
+        </view>
+        <view class='product-price'>
+          <view class='sale_price' style='color:{{comColor}}' wx:if="{{m.hide_price != 1}}">￥{{item.bargain_price}}</view>
+        </view>
+      </view>
+      <!-- 秒杀 -->
+      <view class='every_module' style='border-radius:{{m.if_radius == 1?"12rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="bindToSecKill" data-is_first_touch="{{m.is_first_touch}}"
+        data-sk_id='{{item.sk_id}}' data-idx='{{m.idx}}' data-link="pages/seckillitem/seckillitem?sk_id={{item.sk_id}}" wx:if='{{ item.goods_type ==5 }}'>
+        <view class='product-image'>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <image src='{{item.img_url}}!small' style='width:230rpx;height:230rpx'></image>
+        </view>
+        <!-- <view class='save_money' wx:if='{{m.pin_group_goods[item.goods_id]}}'>开团立省{{m.pin_group_goods[item.goods_id].less_money}}元</view> -->
+        <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+        <view class='product-name' wx:if='{{m.hide_name != 1}}'>
+          <view class='van-ellipsis'>{{item.goods_name}}</view>
+          <view class='title_label'>
+            <view class='pin_flag' style='color:{{comColor}};border-color:{{comColor}}'>秒杀</view>
+          </view>
+        </view>
+        <view class='product-price'>
+          <view class='sale_price' style='color:{{comColor}}' wx:if="{{m.hide_price != 1}}">￥{{item.seckill_price}}</view>
+        </view>
+      </view>
+    </block>
+  </view>
+  <!-- 多列商品 -->
+  <scroll-view class='three_column mul_column' scroll-x="true" wx:if="{{m.col_type =='3' && m.goods_items != ''}}" style="{{m.goods_module_style == 1 ? 'margin-bottom:0;height:470rpx;' : ''}}background:{{m.goods_module_bg == 0 ? '': m.goods_bg_color}}">
+    <block wx:for="{{m.goods_items}}" wx:key="index" wx:for-item="item" wx:for-index='idex'>
+      <view class='every_module' style='border-radius:{{m.if_radius == 1?"12rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="{{item.goods_type == 10?'bindTopre':'bindJumpLink'}}"
+        data-is_first_touch="{{m.is_first_touch}}" data-idx='{{m.idx}}' data-url="pages/item/item?good_id={{item.goods_id}}" data-presale_id='{{item.presale_id}}' data-goods_type='{{item.goods_type}}' wx:if='{{item.goods_type !=3 && item.goods_type !=1 && item.goods_type !=5}}'>
+        <view class="see_more" wx:if='{{idex == 6}}' catchtap='bindMenuClick'>
+          <view>查看更多</view>
+          <view class="see_line"></view>
+          <view style="line-height:20rpx;">see more</view>
+        </view>
+        <view class='product-image' style='white-space:normal;'>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <include src="../goodscommon/labelcommon.wxml" />
+          <view class='reduce_price' wx:if="{{item.goods_price_action == 2 && item.goods_type != 10}}" style='background:{{linColor}};color:#fff'>限时降价，立即查看</view>
+          <view class='reduce_price' wx:elif="{{item.goods_price_action == 3}}" style='background:{{linColor}};color:#fff'>新人专享，首单特惠</view>
+          <view class='exclusive' wx:elif="{{item.is_card_exclusive == 1 && item.goods_type != 1 && item.goods_type != 3 && item.goods_type != 5 && item.goods_type != 10 && item.goods_price_action != 2 && item.goods_price_action != 3}}">会员专享商品，立即查看</view>
+          <view class='grade' wx:elif="{{item.goods_price_action == 1 && item.goods_type != 10}}">专享会员价，立即查看</view>
+          <image src='{{item.goods_img}}!middle' lazy-load="{{true}}" class="item_img"></image>
+        </view>
+        <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+        <view class='product-name ' wx:else>
+          <block wx:if='{{item.goods_type == 10 || item.goods_tags != ""}}'>
+            <view class='van-ellipsis'>{{item.goods_name}}</view>
+            <view class='title_label'>
+              <view class='pin_flag' wx:if='{{item.goods_type == 10}}' style='color:{{comColor}};border-color:{{comColor}}'>预售</view>
+              <view class='pin_flag' wx:if='{{item.goods_tags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[0]}}</view>
+              <view class='pin_flag' wx:if='{{item.goods_tags[1] != undefined && item.goods_type != 10}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[1]}}</view>
+            </view>
+          </block>
+          <block wx:else>
+            <view class='van-two-ellipsis'>{{item.goods_name}}</view>
+          </block>
+        </view>
+        <view class='product-price'>
+          <block wx:if="{{m.hide_price != 1}}">
+            <view class='sale_price' wx:if='{{item.goods_type != 10}}' style='color:{{comColor}};'>￥{{item.reduce_price}}</view>
+            <view class='sale_price' wx:if='{{item.goods_type == 10}}' style='color:{{comColor}};'>￥{{item.shop_price}}</view>
+          </block>
+          <block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+            <block wx:if="{{m.show_market == 1 && item.price_len < 14 }}">
+              <view class='market_price' wx:if="{{item.line_price != undefined && item.line_price != '0.00'}}">￥{{item.line_price}}</view>
+            </block>
+            <block wx:if="{{m.show_market == 2 && item.real_len < 8 }}">
+              <view class='market_price line-through-none'>{{item.goods_sale_num > 999 ? '999+' : item.goods_sale_num}}人付款</view>
+            </block>
+            <block wx:if="{{m.show_market == 3 && item.real_len < 8}}">
+              <view class='market_price line-through-none'>{{item.comment_num > 999 ? '999+' : item.comment_num}}人评价</view>
+            </block>
+          </block>
+          <block wx:if="{{m.cart_btn == 0 && item.goods_type != 10 }}">
+            <text class='cart_btn iconfont icontianjia' style='font-size:36rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'></text>
+            <text class='cart_btn iconfont icongouwuche1' style='font-size:36rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'></text>
+          </block>
+
+        </view>
+        <view class='if_delete' wx:if='{{item.is_delete == 1}}'>商品已删除</view>
+      </view>
+      <!--拼团  -->
+      <view class='every_module' style='border-radius:{{m.if_radius == 1?"12rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="bindJumpLink" data-is_first_touch="{{m.is_first_touch}}"
+        data-idx='{{m.idx}}' data-url="pages/groupbuyitem/groupbuyitem?pin_group_id={{m.pin_group_goods[item.goods_id].pin_activity_id}}" wx:if='{{m.pin_group_goods[item.goods_id] && item.goods_type ==1}}'>
+        <view class="see_more"  wx:if='{{idex == 6}}'catchtap='bindMenuClick'>
+          <view>查看更多</view>
+          <view class="see_line"></view>
+          <view style="line-height:20rpx;">see more</view>
+        </view>
+        <view class='product-image'>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <image src='{{item.goods_img}}!small' lazy-load="{{true}}"></image>
+        </view>
+        <view class='save_money' wx:if='{{m.pin_group_goods[item.goods_id]}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>开团立省{{m.pin_group_goods[item.goods_id].less_money}}元</view>
+        <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+        <view class='product-name' wx:if='{{m.hide_name != 1}}'>
+          <view class='van-ellipsis'>{{item.goods_name}}</view>
+          <view class='title_label'>
+            <view class='pin_flag' style='color:{{comColor}};border-color:{{comColor}}'>拼团</view>
+            <view class='pin_flag' wx:if='{{item.goods_tags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[0]}}</view>
+          </view>
+        </view>
+        <view class='product-price'>
+          <view class='sale_price' style='color:{{comColor}};' wx:if="{{m.hide_price != 1}}">￥{{m.pin_group_goods[item.goods_id].pin_group_price}}</view>
+          <block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+            <block wx:if="{{m.show_market == 1 && item.price_len < 14 }}">
+              <view class='market_price' wx:if="{{item.line_price != undefined && item.line_price != '0.00'}}">￥{{item.line_price}}</view>
+            </block>
+            <block wx:if="{{m.show_market == 2 && item.real_len < 8 }}">
+              <view class='market_price line-through-none'>{{item.goods_sale_num > 999 ? '999+' : item.goods_sale_num}}人付款</view>
+            </block>
+            <block wx:if="{{m.show_market == 3 && item.real_len < 8}}">
+              <view class='market_price line-through-none'>{{item.comment_num > 999 ? '999+' : item.comment_num}}人评价</view>
+            </block>
+          </block>
+        </view>
+        <!-- <view class='orig_price'>￥{{m.pin_group_goods[item.goods_id].original_price}}</view> -->
+      </view>
+      <!--砍价  -->
+      <view class='every_module' style='border-radius:{{m.if_radius == 1?"12rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="bindToKanJia" data-is_prd='{{item.is_prd}}'
+        data-link="pages/bargainitem/bargainitem?bargain_id={{item.bargin_id}}" data-is_first_touch="{{m.is_first_touch}}" data-idx='{{m.idx}}' data-zhujian="{{idex}}" wx:if='{{item.goods_type ==3}}'>
+        <view class="see_more"  wx:if='{{idex == 6}}' catchtap='bindMenuClick'>
+          <view>查看更多</view>
+          <view class="see_line"></view>
+          <view style="line-height:20rpx;">see more</view>
+        </view>
+        <view class='product-image'>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <image src='{{item.goods_img}}!small' lazy-load="{{true}}"></image>
+        </view>
+        <view class='save_money kanjia_money' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{item.bargain_price}}元砍走</view>
+        <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+        <view class='product-name' wx:if='{{m.hide_name != 1}}'>
+          <view class='van-ellipsis'>{{item.goods_name}}</view>
+          <view class='title_label'>
+            <view class='pin_flag' style='color:{{comColor}};border-color:{{comColor}}'>砍价</view>
+            <view class='pin_flag' wx:if='{{item.goods_tags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[0]}}</view>
+          </view>
+        </view>
+        <view class='product-price'>
+          <view class='sale_price' style='color:{{comColor}}' wx:if="{{m.hide_price != 1}}">￥{{item.bargain_price}}</view>
+          <block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+            <block wx:if="{{m.show_market == 1 && item.price_len < 14 }}">
+              <view class='market_price' wx:if="{{item.line_price != undefined && item.line_price != '0.00'}}">￥{{item.line_price}}</view>
+            </block>
+            <block wx:if="{{m.show_market == 2 && item.real_len < 8 }}">
+              <view class='market_price line-through-none'>{{item.goods_sale_num > 999 ? '999+' : item.goods_sale_num}}人付款</view>
+            </block>
+            <block wx:if="{{m.show_market == 3 && item.real_len < 8}}">
+              <view class='market_price line-through-none'>{{item.comment_num > 999 ? '999+' : item.comment_num}}人评价</view>
+            </block>
+          </block>
+        </view>
+      </view>
+      <!--秒杀  -->
+      <view class='every_module' style='border-radius:{{m.if_radius == 1?"12rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="bindToSecKill" data-is_first_touch="{{m.is_first_touch}}"
+        data-sk_id='{{item.sk_id}}' data-idx='{{m.idx}}' data-link="pages/seckillitem/seckillitem?sk_id={{item.sk_id}}" wx:if='{{ item.goods_type ==5 }}'>
+        <view class="see_more"  wx:if='{{idex == 6}}' catchtap='bindMenuClick'>
+          <view>查看更多</view>
+          <view class="see_line"></view>
+          <view style="line-height:20rpx;">see more</view>
+        </view>
+        <view class='product-image'>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <image src='{{item.goods_img}}!small' lazy-load="{{true}}"></image>
+        </view>
+        <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+        <view class='product-name' wx:if='{{m.hide_name != 1}}'>
+          <view class='van-ellipsis'>{{item.goods_name}}</view>
+          <view class='title_label'>
+            <view class='pin_flag' style='color:{{comColor}};border-color:{{comColor}}'>秒杀</view>
+            <view class='pin_flag' wx:if='{{item.goods_tags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[0]}}</view>
+          </view>
+        </view>
+        <view class='product-price'>
+          <view class='sale_price' style='color:{{comColor}}' wx:if="{{m.hide_price != 1}}">￥{{item.seckill_price}}</view>
+          <block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+            <block wx:if="{{m.show_market == 1 && item.price_len < 14 }}">
+              <view class='market_price' wx:if="{{item.line_price != undefined && item.line_price != '0.00'}}">￥{{item.line_price}}</view>
+            </block>
+            <block wx:if="{{m.show_market == 2 && item.real_len < 8 }}">
+              <view class='market_price line-through-none'>{{item.goods_sale_num > 999 ? '999+' : item.goods_sale_num}}人付款</view>
+            </block>
+            <block wx:if="{{m.show_market == 3 && item.real_len < 8}}">
+              <view class='market_price line-through-none'>{{item.comment_num > 999 ? '999+' : item.comment_num}}人评价</view>
+            </block>
+          </block>
+        </view>
+      </view>
+    </block>
+  </scroll-view>
+  <!-- 单列商品 -->
+  <view class='product-item odd_column' wx:if="{{m.col_type =='4'}}" style='{{m.goods_module_style == 1 ? "margin:none;padding:0 15rpx;" : ""}}background:{{m.goods_module_bg == 0 ? "": m.goods_bg_color}}'>
+    <block wx:for="{{m.goods_items}}" wx:key="key" wx:for-item="item" wx:for-index='index'>
+      <view class='xunhuan_one' style='border-radius:{{m.if_radius == 1?"16rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="{{item.goods_type == 10?'bindTopre':'bindJumpLink'}}"
+        data-is_first_touch="{{m.is_first_touch}}" data-url="pages/item/item?good_id={{item.goods_id}}" data-idx='{{m.idx}}' data-presale_id='{{item.presale_id}}' data-goods_type='{{item.goods_type}}' wx:if='{{ item.goods_type !=3 && item.goods_type !=1 && item.goods_type !=5}}'>
+        <view class='product-image'>
+          <view class='if_delete' wx:if='{{item.is_delete == 1}}'>商品已删除</view>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <include src="../goodscommon/labelcommon.wxml" />
+          <view class='reduce_price' wx:if="{{item.goods_price_action == 2 && item.goods_type != 10}}" style='background:{{linColor}};color:#fff'>限时降价，立即查看</view>
+          <view class='reduce_price' wx:elif="{{item.goods_price_action == 3}}" style='background:{{linColor}};color:#fff'>新人专享，首单特惠</view>
+          <view class='exclusive' wx:elif="{{item.is_card_exclusive == 1 && item.goods_type != 1 && item.goods_type != 3 && item.goods_type != 5 && item.goods_type != 10 && item.goods_price_action != 2 && item.goods_price_action != 3}}">会员专享商品，立即查看</view>
+          <view class='grade' wx:elif="{{item.goods_price_action == 1 && item.goods_type != 10}}">专享会员价，立即查看</view>
+          <image src='{{item.img_url}}!big' mode='widthFix' lazy-load="{{true}}" class="item_img"></image>
+        </view>
+        <view class='module_text'>
+
+          <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+          <view class='product-name' wx:if='{{m.hide_name != 1}}'>
+            <view class='top_title'>
+              <view class='van-two-ellipsis'>{{item.goods_name}}</view>
+            </view>
+            <view class='title_label'>
+              <view class='pin_flag' wx:if='{{item.goods_type == 10}}' style='color:{{comColor}};border-color:{{comColor}}'>预售</view>
+              <view class='pin_flag' wx:if='{{item.goods_tags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[0]}}</view>
+              <view class='pin_flag' wx:if='{{item.goods_tags[1] != undefined && item.goods_type != 10}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[1]}}</view>
+            </view>
+          </view>
+          <view class='product-price'>
+            <block wx:if="{{m.hide_price != 1}}">
+              <view class='sale_price' wx:if='{{item.goods_type != 10}}' style='color:{{comColor}};'>￥{{item.reduce_price}}</view>
+              <view class='sale_price' wx:if='{{item.goods_type == 10}}' style='color:{{comColor}};'>￥{{item.shop_price}}</view>
+            </block>
+            <block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+              <block wx:if="{{m.show_market == 1}}">
+                <view class='market_price' wx:if="{{item.line_price != undefined && item.line_price != '0.00'}}">￥{{item.line_price}}</view>
+              </block>
+              <block wx:if="{{m.show_market == 2}}">
+                <view class='market_price line-through-none'>{{item.goods_sale_num > 999 ? '999+' : item.goods_sale_num}}人付款</view>
+              </block>
+              <block wx:if="{{m.show_market == 3}}">
+                <view class='market_price line-through-none'>{{item.comment_num > 999 ? '999+' : item.comment_num}}人评价</view>
+              </block>
+            </block>
+            <block wx:if="{{m.cart_btn == 0 && item.goods_type != 10}}">
+              <text class='cart_btn iconfont icontianjia' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'></text>
+              <text class='cart_btn iconfont icongouwuche1' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'></text>
+              <text class='cart_btn right_buy_btn' style='background:{{comColor}}' wx:if="{{m.cart_btn_choose == '2'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'>马上抢</text>
+              <text class='cart_btn cart_buy_btn' style='color:{{comColor}};border:1px solid {{comColor}}' wx:if="{{m.cart_btn_choose == '3'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'>购买</text>
+            </block>
+
+          </view>
+        </view>
+      </view>
+      <!-- 拼团 -->
+      <view class='xunhuan_one' style='border-radius:{{m.if_radius == 1?"16rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="bindJumpLink" data-is_first_touch="{{m.is_first_touch}}"
+        data-url="pages/groupbuyitem/groupbuyitem?pin_group_id={{m.pin_group_goods[item.goods_id].pin_activity_id}}" data-idx='{{m.idx}}' wx:if='{{m.pin_group_goods[item.goods_id] && item.goods_type ==1}}'>
+        <view class='product-image' style='overflow-y:hidden;text-align:center'>
+          <view class='if_delete' wx:if='{{item.is_delete == 1}}'>商品已删除</view>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <image src='{{item.img_url}}!big' mode='widthFix' lazy-load="{{true}}"></image>
+          <view class='save_money' wx:if='{{m.pin_group_goods[item.goods_id]}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>开团立省{{m.pin_group_goods[item.goods_id].less_money}}元</view>
+        </view>
+        <view class='module_text'>
+          <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+          <view class='product-name' wx:if='{{m.hide_name != 1}}'>
+            <view class='top_title'>
+              <view class='van-two-ellipsis'>{{item.goods_name}}</view>
+            </view>
+            <view class='title_label'>
+              <view class='pin_flag' style='color:{{comColor}};border-color:{{comColor}}'>拼团</view>
+              <view class='pin_flag' wx:if='{{item.goods_tags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[0]}}</view>
+            </view>
+          </view>
+          <view class='product-price'>
+            <view class='sale_price' style='color:{{comColor}};' wx:if="{{m.hide_price != 1}}">￥{{m.pin_group_goods[item.goods_id].pin_group_price}}</view>
+            <block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+              <block wx:if="{{m.show_market == 1}}">
+                <view class='market_price' wx:if="{{item.market_price != undefined && item.market_price != '0.00'}}">￥{{item.max_price}}</view>
+              </block>
+              <block wx:if="{{m.show_market == 2}}">
+                <view class='market_price line-through-none'>{{item.goods_sale_num > 999 ? '999+' : item.goods_sale_num}}人付款</view>
+              </block>
+              <block wx:if="{{m.show_market == 3}}">
+                <view class='market_price line-through-none'>{{item.comment_num > 999 ? '999+' : item.comment_num}}人评价</view>
+              </block>
+            </block>
+          </view>
+        </view>
+
+
+      </view>
+      <!-- 砍价 -->
+      <view class='xunhuan_one' style='border-radius:{{m.if_radius == 1?"16rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="bindToKanJia" data-inde='{{index}}'
+        data-is_prd='{{item.is_prd}}' data-is_first_touch="{{m.is_first_touch}}" data-link="pages/bargainitem/bargainitem?bargain_id={{item.bargin_id}}" data-zhujian="{{index}}" data-idx='{{m.idx}}' wx:if="{{item.goods_type == 3}}">
+        <view class='product-image' style='overflow-y:hidden;text-align:center'>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <view class='if_delete' wx:if='{{item.is_delete == 1}}'>商品已删除</view>
+          <image src='{{item.img_url}}!big' mode='widthFix' lazy-load="{{true}}"></image>
+          <view class='save_money kanjia_money' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{item.bargain_price}}元砍走</view>
+        </view>
+        <view class='module_text'>
+          <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+          <view class='product-name' wx:if='{{m.hide_name != 1}}'>
+            <view class='top_title'>
+              <view class='van-two-ellipsis'>{{item.goods_name}}</view>
+            </view>
+            <view class='title_label'>
+              <view class='pin_flag' style='color:{{comColor}};border-color:{{comColor}}'>砍价</view>
+              <view class='pin_flag' wx:if='{{item.goods_tags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[0]}}</view>
+            </view>
+          </view>
+          <view class='product-price'>
+            <view class='sale_price' style='color:{{comColor}}' wx:if="{{m.hide_price != 1}}">￥{{item.bargain_price}}</view>
+            <block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+              <block wx:if="{{m.show_market == 1}}">
+                <view class='market_price' wx:if="{{item.market_price != undefined && item.market_price != '0.00'}}">￥{{item.max_price}}</view>
+              </block>
+              <block wx:if="{{m.show_market == 2}}">
+                <view class='market_price line-through-none'>{{item.goods_sale_num > 999 ? '999+' : item.goods_sale_num}}人付款</view>
+              </block>
+              <block wx:if="{{m.show_market == 3}}">
+                <view class='market_price line-through-none'>{{item.comment_num > 999 ? '999+' : item.comment_num}}人评价</view>
+              </block>
+            </block>
+          </view>
+        </view>
+
+      </view>
+      <!--秒杀  -->
+      <view class='xunhuan_one' style='border-radius:{{m.if_radius == 1?"16rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="bindToSecKill" data-is_first_touch="{{m.is_first_touch}}"
+        data-sk_id='{{item.sk_id}}' data-idx='{{m.idx}}' data-link="pages/seckillitem/seckillitem?sk_id={{item.sk_id}}" wx:if='{{ item.goods_type ==5 }}'>
+        <view class='product-image' style='overflow-y:hidden;text-align:center'>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+          <view class='if_delete' wx:if='{{item.is_delete == 1}}'>商品已删除</view>
+          <image src='{{item.img_url}}!big' mode='widthFix' lazy-load="{{true}}"></image>
+        </view>
+        <view class='module_text'>
+          <view class='product-name' wx:if='{{m.hide_name == 1}}'></view>
+          <view class='product-name' wx:if='{{m.hide_name != 1}}'>
+            <view class='top_title'>
+              <view class='van-two-ellipsis'>{{item.goods_name}}</view>
+            </view>
+            <view class='title_label'>
+              <view class='pin_flag' style='color:{{comColor}};border-color:{{comColor}}'>秒杀</view>
+              <view class='pin_flag' wx:if='{{item.goods_tags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goods_tags[0]}}</view>
+            </view>
+          </view>
+          <view class='product-price'>
+            <view class='sale_price' style='color:{{comColor}}' wx:if="{{m.hide_price != 1}}">￥{{item.seckill_price}}</view>
+            <block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+              <block wx:if="{{m.show_market == 1}}">
+                <view class='market_price' wx:if="{{item.market_price != undefined && item.market_price != '0.00'}}">￥{{item.max_price}}</view>
+              </block>
+              <block wx:if="{{m.show_market == 2}}">
+                <view class='market_price line-through-none'>{{item.goods_sale_num > 999 ? '999+' : item.goods_sale_num}}人付款</view>
+              </block>
+              <block wx:if="{{m.show_market == 3}}">
+                <view class='market_price line-through-none'>{{item.comment_num > 999 ? '999+' : item.comment_num}}人评价</view>
+              </block>
+            </block>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>
+<!--  选择规格（包含无规格情况）  -->
+<v-sel-spec gd="{{goodsData}}" show="{{show_spec}}" hide_cell="true" has_buy_btn="true" bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange">
+</v-sel-spec>
