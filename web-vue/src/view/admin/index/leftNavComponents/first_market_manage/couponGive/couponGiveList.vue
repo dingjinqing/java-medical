@@ -239,7 +239,7 @@ export default {
           data[index].obj.province_code = data[index].obj.province_code ? data[index].obj.province_code : ''
           data[index].obj.city_code = data[index].obj.city_code ? data[index].obj.city_code : ''
           data[index].obj.district_code = data[index].obj.district_code ? data[index].obj.district_code : ''
-          data[index].people.push(`指定"${data[index].obj.province_code} ${data[index].obj.city_code} ${data[index].obj.district_code}"区域用户`)
+          data[index].people.push(`指定" ${data[index].obj.province_code} ${data[index].obj.city_code} ${data[index].obj.district_code} "区域用户`)
         }
         console.log(item.people.join(`<br/>`))
         data[index].people.forEach((item, index) => {
