@@ -91,4 +91,8 @@ public class OrderInfoVo extends OrderListInfoVo {
     private Byte settlementFlag;
     /**会员卡名称*/
     private String cardName;
+    /**订单退货完成时间 */
+    private Timestamp returnFinishTime;
+    /**订单退款完成时间*/
+    private Timestamp refundFinishTime;
 }
