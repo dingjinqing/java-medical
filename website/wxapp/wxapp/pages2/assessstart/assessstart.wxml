@@ -1,0 +1,22 @@
+<include src="/pages/common/header.wxml" />
+ <view class="main-container" style="height:calc(100% - {{margin_top_nav + 8}}px);background:{{assess_info.cover_style_type == 0 ? (assess_info.cover_style.assess_cover_bg == 1 ? 'url(' + assess_info.cover_style.cover_bg_img + ') no-repeat 0 0/100% 100%' : comColor1) : 'url(' + assess_info.cover_style.page_img + ') no-repeat 0 0/100% 100%'}} ">
+    <view class="container" wx:if="{{assess_info.cover_style_type == 0}}">
+        <text class="assess_title">{{assess_info.act_name}}</text>
+        <image class="cover_img" src='{{assess_info.cover_style.cover_img}}'></image>
+        <view class="assess_desc">
+          <text class="assess_desc_title">测试简介：</text>
+          <rich-text class="assess_desc_content" nodes='{{assess_info.cover_style.assess_desc}}'></rich-text>
+        </view>
+    </view>
+
+    <view class="footer_button_content" style="background:{{assess_info.cover_style_type == 0 ? comColor1 : '' }}">
+      <view class="assess_button" style="color:{{assess_info.cover_style_type == 0 ? assess_info.cover_style.button_text_color : ''}};background-color:{{assess_info.cover_style_type == 0 ? assess_info.cover_style.button_bg_color : ''}}" bindtap='goAssessInfo'>
+        <block wx:if="{{assess_info.cover_style_type == 0}}">
+          {{assess_info.cover_style.button_name}}
+        </block>
+        <block wx:else>
+          <image src='{{assess_info.cover_style.start_button_img}}'></image>
+        </block>
+      </view>
+    </view>
+ </view>

@@ -1,0 +1,25 @@
+<view class="sex-container">
+  <!--单行  -->
+  <view class='box1 clearfix' wx:if='{{m.show_types == 0}}' data-cur_idx='{{m.idx}}' style='background:url({{m.imgUrl}}image/wxapp/right_into.png) no-repeat;background-size:16rpx;background-position:700rpx center'>
+    <view class='sex_title'>
+      <text style='color:red' wx:if="{{m.confirm == 1}}">*</text>{{m.form_title}}</view>
+    <picker class='picker' bindchange="bindChange" data-cur_idx='{{m.idx}}' range='{{m.range_arr}}'>
+      <view style='float: right; margin-right: 50rpx;'>
+        {{m.sex_dates}}
+      </view>
+    </picker>
+
+  </view>
+
+  <!--多行  -->
+  <view class='box2 clearfix' wx:if='{{m.show_types == 1}}' data-cur_idx='{{m.idx}}'>
+    <view class='sex_title1'>
+      <text style='color:red' wx:if="{{m.confirm == 1}}">*</text>{{m.form_title}}</view>
+    <radio-group bindchange="bindChange" data-cur_idx='{{m.idx}}'>
+      <label class='sex_list'>
+        <radio name='sex' value="0" color='{{comColor}}' /> 男</label>
+      <label class='sex_list sex_list1'>
+        <radio name='female' value="1" color='{{comColor}}' /> 女</label>
+    </radio-group>
+  </view>
+</view>

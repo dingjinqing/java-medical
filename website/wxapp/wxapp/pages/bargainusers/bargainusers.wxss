@@ -1,0 +1,102 @@
+/* pages/bargainusers/bargainusers.wxss */
+page{
+  background: #f5f5f5;
+  overflow-x: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.all{
+   width:100%; 
+   padding: 30rpx 0;
+  background: linear-gradient(top,#f66,#ff734c);
+  background: -webkit-linear-gradient(top,#f66,#ff734c);
+  background: -moz-linear-gradient(top,#f66,#ff734c);
+}
+.load_style{
+    font-size: 24rpx;
+  color: #666;
+  width: 100%;
+  padding: 15rpx 0;
+  text-align: center
+}
+
+.clearfix{
+  display: block;
+  clear: both;
+  content: "";
+}
+.content{
+  margin: 0rpx auto;
+  
+  width: 670rpx;
+
+  background:rgba(255, 255, 255, 0.8);
+  border-radius: 8rpx;
+
+}
+.each_onne{
+  font-size: 26rpx;
+  margin: 0 30rpx;
+  padding: 15rpx 0;
+  border-bottom: 2rpx solid #ffd4d3;
+}
+.each_onne:last-of-type{
+  border: none
+}
+.each_onne .person_icom{
+    width: 84rpx;
+    height: 84rpx;
+    
+    border-radius: 300rpx;
+    float: left;
+    margin-right: 20rpx;
+}
+
+.each_onne .person_icom image{
+  width: 80rpx;
+  height: 80rpx;
+  border: 2rpx solid #ccc;
+  border-radius: 300rpx;
+}
+.each_onne  .person_name{
+  float: left;
+  height: 80rpx;
+  position: relative;
+  width: 225rpx;
+}
+.each_onne  .person_name view:first-of-type{
+  position: absolute;
+  top: 0;
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 26rpx;
+  color: #333;
+  white-space: nowrap
+}
+.each_onne  .person_name view:last-of-type{
+  position: absolute;
+  bottom: 0;
+   font-size: 24rpx;
+  color: #666;
+}
+.kanjiadeti{
+    float: left;
+    margin-left: 20rpx;
+     width: 50rpx;
+    height: 80rpx;
+    line-height: 80rpx;
+}
+.kanjiade_icon{
+    width: 45rpx;
+    height: 25rpx;
+    position:relative;
+    top:5rpx;
+    margin-right: 15rpx;
+}
+.person_price{
+  float: right;
+  height: 80rpx;
+  line-height: 80rpx;
+  color: #F66;
+  font-size: 30rpx;
+}

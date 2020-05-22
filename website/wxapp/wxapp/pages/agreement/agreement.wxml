@@ -1,0 +1,47 @@
+<!--pages/agreement/agreement.wxml-->
+<!--pages/account/account.wxml-->
+<include src="../common/header.wxml"/>
+  <view class='main-container'>
+  <view class='agreement'>
+    <view class='title'>《充值活动协议》</view>
+    <view class='content'>
+    尊敬的用户，为保障您的合法权益，请您在参加充值赠送活动前仔细阅读本规则，以免造成误解。当您点击“立即充值”按钮后，即视为您已阅读、理解本协议，并同意按本协议的规定参与充值。 
+    </view>
+    <view class='title'>1 活动规则</view>
+    <view class='content'>1.1充值赠送活动内容：</view>
+    <block wx:if="{{offset_momey == 0}}">
+      <block wx:for="{{recharge_arr}}" wx:key="key">
+        <view class='content' wx:if="{{item.score}}">充值满{{item.money}}元赠送{{item.score}}元</view>
+      </block>
+    </block>
+    <block wx:if="{{offset_momey == 1}}">
+      <view class='content'>充值每满{{recharge_arr.each_money}}元赠送{{recharge_arr.each_score}}元</view>
+    </block>
+    <block wx:else>
+      <view class='content'>仅充值</view>
+    </block>
+    <view class='title'>2 余额使用规则</view>
+    <view class='content'>2.1余额构成：</view>
+    <view class='content'>余额是指您实际支付的充值金额加上商家的赠送金额即构成您的充值卡余额(人民币);</view>
+    <view class='content'>2.2充值余额有效期：</view>
+    <view class='content'>充值及赠送金额有效期为自充值日起至卡有效期即止;</view>
+    <view class='content'>2.3余额使用规则：</view>
+    <view class='content clearfix'>
+      <text>1）</text>
+      <view>包含充值赠送余额在内的余额可用于支付允许门店范围内的支付</view>
+    </view>
+    <view class='content clearfix'>
+      <text>2）</text>
+      <view>充值赠送金额将在以下情形将会失效:</view>
+    </view>
+    <view class='content_a'>a.您主动注销用户账号;</view>
+    <view class='content_a'>b.会员卡到期;</view>
+    <view class='content_a'>c.因涉嫌违规导致您的用户账号被冻结或关闭;</view>
+    <view class='content_a'>d.其他根据用户协议、相关说明或规则导致我们无法向您提供服务或停用服务的情形。</view>
+    <view class='title'>3 正当性保证</view>
+    <view class='content'>我们包含充值赠送在内的所有优惠推广活动仅面向正当、合法使用我们小程序的用户。一旦您存在利用我们的规则漏洞进行任何形式的作弊行为（包括但不限于通过我们的活动获得不正当的经济利益），我们有权取消与作弊行为相关账户的赠送金额，追回您作弊所得的不正当经济利益、关闭作弊账户或与您相关的所有账户，并保留取消您后续使用小程序的权利，及依据严重程度追究您的法律责任</view>
+    <view class='title'>4 特别说明</view>
+    <view class='content'>如您选择立即充值即表示您同意并接受本协议并受其约束；如您不同意本协议，请立即放弃充值或停止使用本服务。</view>
+  </view>
+</view>
+<include src="../common/footer.wxml"/>

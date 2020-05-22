@@ -1,0 +1,37 @@
+  <!--pages/bargainlist/bargainlist.wxml-->
+<include src="/pages/common/header.wxml" />
+<view class='main-container'>
+  <view class='all'>
+    <view class='nav_list clearfix' style='top:{{margin_top_nav + 8}}px;'>
+        <view class='no_bargain {{is_pink == 0?"chooseed":""}}' style='color:{{is_pink == 0?comColor:""}};border-bottom-color:{{is_pink == 0?comColor:""}}' bindtap='change_tab' data-ctype='on'>砍价中</view>
+        <view class='success_bargain {{is_pink == 1?"chooseed":""}}' style='color:{{is_pink == 1?comColor:""}};border-bottom-color:{{is_pink == 1?comColor:""}}' bindtap='change_tab' data-ctype='success'>砍价成功</view>
+        <view class='fail_bargain {{is_pink == 2?"chooseed":""}}' style='color:{{is_pink == 2?comColor:""}};border-bottom-color:{{is_pink == 2?comColor:""}}' bindtap='change_tab' data-ctype='fail'>砍价失败</view>
+    </view>
+    <view class='bar_order_list' wx:if="{{info_list.length>0}}">
+        <view class='each_orders clearfix' wx:for="{{info_list}}" data-is_ordered="{{item.is_ordered}}" data-record_id="{{item.id}}" data-status="{{item.status}}" data-order_status="{{item.order_status}}" data-order_sn="{{item.order_sn}}" bindtap='to_info' wx:key='key'>
+            <image src='{{item.goods_img}}'  class='eo_left'></image>
+            <view class='eo_right'>
+                <view class='r_goods_name'>{{item.goods_name}}</view>
+                <view class='shengxiade clearfix'>
+                    <view class='sheng_time' style='background:{{somColor}};color:{{comColor}}'>{{item.end_time}}结束</view>
+                    <view class='sheng_unit'>仅剩{{item.stock}}件</view>
+                </view>
+                <view class='brn_price'>
+                    <view class='zero' style='color:{{comColor}}'>￥<text>{{item.expectation_price}}</text></view>
+                    <view class='shop_prices'>￥{{item.goods_price}}</view>
+                    <view class='btn_goon' wx:if='{{item.status == 0}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>继续砍价</view>
+                    <view class='btn_goon' wx:if='{{item.status == 1 && item.is_ordered == 0}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去结算</view>
+                    <view class='btn_goon' wx:if='{{item.status == 1 && item.is_ordered == 1 && item.order_status == 0}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去支付</view>
+                    <view class='btn_goon' wx:if='{{item.status == 1 && item.is_ordered == 1 && item.order_status != 0}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>查看订单</view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <view class='no_state'  wx:if='{{info_list.length ==  0}}'>
+        <image src='{{imageUrl}}image/wxapp/no_sort_order.png' mode='widthFix'></image>
+        <view class='no_tipss'>暂无数据</view>
+    </view>
+    <view class='load_style' wx:if="{{is_load == 1}}">加载中...</view>
+  </view>
+</view>
+<include src="../common/footer.wxml"/>

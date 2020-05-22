@@ -1,0 +1,195 @@
+@import "../login/login.wxss";
+@import "../goodscommon/goodscommon.wxss";
+@import "../../css/iconfont.wxss";
+.pin_info{
+  font-size: 26rpx;
+  color: #fff;
+  background: linear-gradient(left,#f66,#ff734c);
+  background: -webkit-linear-gradient(left,#f66,#ff734c);
+  background: -moz-linear-gradient(left,#f66,#ff734c);
+}
+.pin_info .pl_left{
+  float: left;
+  width: 425rpx;
+  height: 90rpx;
+  display: flex;
+  align-items: center;
+  padding-left: 20rpx;
+}
+
+.pin_info .pl_left .pl_notice{
+  border: 1px solid #fff;
+  border-radius: 5rpx;
+  padding: 0 5rpx;
+  font-size: 24rpx;
+  height:35rpx;
+  line-height:35rpx;
+}
+.pin_info .pl_left .pl_pin_price text{
+  font-size: 35rpx;
+  margin: 0 10rpx;
+}
+.pin_info .pl_left .pl_origin_price{
+  text-decoration: line-through;
+  margin-top: 14rpx;
+  font-size: 24rpx;
+  margin-left: 15rpx;
+}
+
+.pin_info .pl_right{
+  float: right;
+  width: 275rpx;
+  height: 90rpx;
+  padding-right: 15rpx;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  flex-direction: column;
+}
+.pin_info .pl_right view{
+  font-size: 24rpx;
+}
+.pin_info .pl_right view text{
+  font-size: 24rpx;
+  display: inline-block;
+  min-width: 35rpx;
+  text-align: center;
+}
+.pin_info .pl_right view text:first-of-type{
+  margin-left: 0;
+}
+.pin_info .pl_right view:first-of-type{
+  margin-bottom: 10rpx;
+}
+.kanjiade_icon{
+  width: 45rpx;
+  height: 25rpx;
+  position:relative;
+  top:5rpx;
+  margin-right: 10rpx;
+}
+
+.group_info{
+  background: #fff;
+  padding-left: 30rpx;
+  margin-bottom: 20rpx;
+  margin-top: 20rpx
+} 
+.group_info .gf_top{
+  padding: 20rpx 0;
+  font-size: 26rpx;
+  color: #353535;
+  display: flex;
+  border-bottom: 1px solid #eee;
+  line-height: 60rpx;
+}
+.group_info .gf_top view{
+  flex: 2;
+}
+.group_info .gf_top view:last-of-type{
+  flex: 1;
+  margin-right: 30rpx;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.group_info .gf_top view:last-of-type image{
+  width: 15rpx;
+  margin-left: 15rpx;
+  margin-top: 5rpx;
+}
+.each_group_info{
+  padding: 20rpx 0;
+  border-bottom: 1px solid #eee;
+  display: flex;
+}
+.each_group_info:last-of-type{
+  border-bottom: none;
+}
+.rule_info{
+  display: flex;
+  padding: 20rpx 0;
+  background: #fff;
+  font-size: 24rpx;
+  color: #666;
+  padding-right: 30rpx;
+}
+.rule_info .rf_each{
+  padding: 0 15rpx;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+}
+.rule_info .rf_each view:first-of-type{
+  width: 30rpx;
+  height: 30rpx;
+  align-self: center;
+  text-align: center;
+  border: 1px solid #666;
+  border-radius: 100rpx;
+  margin-right: 15rpx;
+  line-height: 30rpx;
+  overflow:hidden;
+}
+.rule_info .rf_each view:last-of-type{
+  flex: 5;
+  align-self: center;
+}
+.footer_2{
+  float: left;
+  width: 35%;
+  height: 100rpx;
+  line-height: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.footer_3{
+ float: left;
+  width: 35%;
+  color: #fff;
+  font-size: 30rpx;
+  background: #f66;
+  height: 100rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 0;
+  padding: 0rpx;
+  line-height: 1.555;
+}
+.btn_na{
+  width:262.5rpx;
+  border-radius: 0;
+  padding: 0;
+}
+.btn_na::after{
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+.modal_footer .modal_footer_now{
+  text-align: center;
+  background: #f66;
+  color: #fff;
+   line-height: 100rpx;
+   font-size: 30rpx;
+   border-radius: 0
+}
+.modal_footer .modal_footer_nows{
+  width: 100%;
+  text-align: center;
+  background: #f66;
+  color: #fff;
+   line-height: 100rpx;
+   font-size: 30rpx;
+   border-radius: 0
+} 
+.modal_footer .modal_footer_nows::after{
+  border: none;
+  border-radius: 0;
+}

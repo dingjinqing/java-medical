@@ -1,0 +1,92 @@
+<!--pages1/presentdetail/presentdetail.wxml-->
+<include src="/pages/common/header.wxml" />
+<view class='main_container'>
+    <view class='pre_top' style='background:-webkit-linear-gradient(top,{{linColor}},{{comColor1}})'></view>
+    <view class='top_bg'><image src='{{imageUrl}}image/wxapp/pre_bg1.png'></image></view>
+    <view class="kefu_tips">
+        咨询客服
+        <button open-type="contact" class='con_button'></button>
+      </view>
+    <view class='pre_content'>
+        <view class='user_avator'> <image src='{{gift_info.order_user.user_avatar}}'></image> </view>
+        <view class='effect_icon' wx:if='{{rest_num <= 0 && gift_info.receive_info == null && gift_info.order_info.user_id != user_id_now}}'> <image src='{{imageUrl}}image/wxapp/no_award_icon.png'></image> </view>
+        <view class='send_num'>{{gift_info.order_user.username}}送出{{gift_info.total_num}}份礼物</view>
+        <view class='bless_word'>{{gift_info.cart_info.message != null && gift_info.cart_info.message != '' ? gift_info.cart_info.message:"大吉大利，送你好礼"}}</view>
+        <block  wx:if='{{ gift_info.order_info.user_id == user_id_now}}'>
+          <view class='open_award_time' style='background:{{somColor}};color:{{comColor}};' wx:if='{{gift_info.cart_info.gift_type == 3}}'>开奖时间：{{gift_info.cart_info.draw_time}}</view>
+          <view class='good_area'>
+              <view class='each_goods clearfix' wx:for='{{gift_info.order_info.order_goods}}' wx:key='key'>
+                <view class='goods_img'> <image src='{{item.goods_img}}'></image> </view>
+                <view class='goods_info'>
+                    <view class='goods_name'>{{item.goods_name}}</view>
+                    <view class='goods_desc' wx:if='{{item.goods_attr!=null}}'>{{item.goods_attr}}</view>
+                    <view class='goods_price'>
+                      <view class='fenshu'>共{{item.goods_number}}件</view>
+                    </view>
+                </view>
+              </view>
+          </view>
+          <view class='goon_add_line'>
+              <view class='total_goods_num'>共{{gift_info.total_num}}份礼物</view>
+              <view class='btn_goon_add' bindtap='to_orderinfo'>
+                  查看订单  <image src='{{imageUrl}}image/wxapp/right_into_blue.png' mode='widthFix'></image>
+              </view>
+          </view>
+          <view class='goon_add_line' style='color:#666;justify-content:center' wx:if='{{gift_info.cart_info.gift_type != 1}}'>
+              送出后每位好友可以随机获得一份礼物
+          </view>
+        </block>
+        <view class='user_open' wx:if='{{ gift_info.order_info.user_id != user_id_now}}'>
+            <view class='user_oprn_bg'> <image src='{{imageUrl}}image/wxapp/pre_bg.png'></image> </view>
+            <view class='daojishia' wx:if='{{gift_info.cart_info.gift_type == 3 && gift_info.cart_info.surplus_second > 0}}' style='color:{{comColor}}'>
+              <block wx:if='{{clock != ""}}'>
+                <view style='color:#333'>距离开奖时间仅剩：</view> <text style='margin-left:0;background:{{comColor}}'>{{clock[0]}}</text>:<text style='background:{{comColor}}'>{{clock[1]}}</text>:<text style='background:{{comColor}}'>{{clock[2]}}</text>
+              </block>
+              <block wx:if='{{clock == ""}}'> <view style='color:#333'> 开奖已截止 </view> </block>
+            </view>
+            <view class='daojishia' wx:if='{{gift_info.cart_info.surplus_second <= 0 && gift_info.cart_info.gift_type == 3}}' style='color:{{comColor}}'>
+              开奖已截止 
+            </view>
+            <form report-submit='true' bindsubmit='get_gift'>
+              <button class='btn_get_gift' wx:if='{{rest_num > 0 && gift_info.receive_info == null}}' formType='submit' style='background:{{comColor}}'>领取礼物</button>
+            </form>
+            <view class='btn_get_gift' wx:if='{{gift_info.receive_info != null && gift_info.receive_info.status == 0 }}' bindtap='get_gifted' style='background:{{comColor}}'>完善信息</view>
+            <view class='no_award' wx:if='{{rest_num <= 0 && gift_info.receive_info == null}}'>来晚啦，礼物领光啦！</view>
+        </view>
+    </view>
+
+    <!-- 已领取列表 -->
+    <view class='get_user_list' wx:if='{{gift_info.receviced_order_list !=""}}'>
+        <view class='gul_title'>
+            <view>已领取{{gift_info.received_num}}份</view>
+            <view wx:if='{{ rest_num > 0 }}'>剩余{{rest_num}}份</view>
+        </view>
+        <view class='each_user clearfix' wx:for='{{gift_info.receviced_order_list}}' wx:key='key'>
+            <view class='ueseroinfo'>
+              <view class='user_img'>
+                  <image src='{{item.user_avatar}}'></image>
+                  <view class='zhongjicon' style='background:{{comColor}};' wx:if='{{item.gift_type == 3 && item.status == 1}}'>中奖</view>
+              </view>
+              <view class='user_name_tips'>
+                  <view  style='color:{{item.if_use == 0 && item.status == 0 ? "#999":""}}'>{{item.username}}</view>
+                  <view wx:if='{{item.if_use == 0 && item.status == 0}}'>已失效，{{item.status_name}}</view>
+              </view>
+              
+            </view>
+            <view class='award_name' style='color:{{item.if_use == 0 && item.status == 0 ? "#999":""}}'>{{item.goods_names}}</view>
+        </view>
+    </view>
+    <view class='pre_footer' style='padding-bottom:{{isIpx == 1 ? "60rpx":"0"}}' wx:if='{{ gift_info.order_info.user_id == user_id_now && rest_num != 0 && if_expire==0}}'>
+        <view class='share_pyq' bindtap='get_share_img' style='color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};background:{{commonColor}}'>发到朋友圈</view>
+        <button open-type='share' class='share_friend' style='background:{{comColor}}'>送给好友</button>
+    </view>
+    <!--朋友圈弹框  -->
+    <view class='share_bg' style='display:{{is_share == 1?"block":"none"}}'>
+      <view class='zhezhao' catchtap='not_show_share'></view>
+      <view class='share_content'>
+        <image src='{{pictorial}}'></image>
+        <view class='btn_save_img' bindtap='saveImgToPhotosAlbumTap'>保存图片</view>
+        <view class='save_tips'>保存图片到本地相册</view>
+      </view>
+    </view>
+</view>

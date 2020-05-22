@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "满折满减",
+  "usingComponents": {
+    "v-sel-spec": "/components/item/popup/spec/index"
+  }
+}

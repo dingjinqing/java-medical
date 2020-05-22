@@ -1,0 +1,10 @@
+<!--pages/manualbarcode/manualbarcode.wxml-->
+<include src="../common/header.wxml"/>
+<view class="main-container">
+    <image class="barcode" src="{{imageUrl}}image/wxapp/manualbarcode.png" />
+    <text class="tips">请参考上图，在下方输入框填写商品条码</text>
+    <view class="barcode_operate">
+        <input type="text" placeholder="请输入条码" focus bindinput="codeinfo"/>
+        <button bindtap="tocart" style='background:{{comColor}}'>加入购物车</button>
+    </view>
+</view>

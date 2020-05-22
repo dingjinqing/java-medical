@@ -1,0 +1,10 @@
+<v-popup class="act_lottery" show="{{show}}" bind:close="bindClose">
+   <view class='lo_detail'>
+    <view class='lo_content'>
+      <image src='{{imageUrl}}image/wxapp/index_lottery.png' class='lottery_bg'></image>
+      <view class='btn_to_lottery' bindtap='bindToLottery' data-lottery='{{lottery_id}}'>
+        <button>立即抽奖</button>
+      </view>
+    </view>
+  </view>
+</v-popup>

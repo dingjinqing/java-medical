@@ -1,0 +1,25 @@
+page{
+  background: #fff;
+}
+view{
+  box-sizing: border-box;
+}
+.full_content{
+  padding: 20rpx;
+}
+.title{
+  font-size: 30rpx;
+  font-weight: 600;
+  margin-bottom: 50rpx;
+  color: #333;
+}
+.time{
+  font-size: 26rpx;
+  color: #333;
+    font-weight: 500;
+  margin-bottom: 50rpx;
+}
+.place{
+  font-size: 26rpx;
+  color: #666;
+}

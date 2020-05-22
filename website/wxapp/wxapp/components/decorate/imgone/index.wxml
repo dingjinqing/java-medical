@@ -1,0 +1,9 @@
+  <view class="imgone-container" style='margin-bottom:{{m.margin_bot}}rpx' catchtap="bindJumpLink" data-url="{{m.title_link}}" data-is_first_touch = "{{m.is_first_touch}}"  data-idx='{{m.idx}}'>
+    <view class='hide_title' wx:if="{{m.title}}">{{m.title}}</view>
+    <image src="{{m.img_url}}!big?v=1" data-skip='{{m.is_preview != 1 || m.title_link}}' data-src="{{m.img_url}}" bindtap="bindPreviewImage" lazy-load="{{true}}" style='width:720rpx;'></image>
+    <text wx:if="{{m.name && m.hide_name != 1}}" class="goods_name">{{m.name}}</text>
+    <view wx:if="{{m.price && m.hide_price != 1}}" class="price">
+      <text class="shop_price">￥{{m.price}}</text>
+      <text wx:if="{{m.mk_price}}" class="market_price">￥{{m.mk_price}}</text>
+    </view>
+  </view>

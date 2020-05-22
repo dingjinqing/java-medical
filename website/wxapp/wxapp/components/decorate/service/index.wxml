@@ -1,0 +1,20 @@
+<view class='service_block other-service' wx:if="{{is_phone_block == 0}}">
+  <button open-type="contact" plain='false'>
+    <block wx:if="{{m.service != 8}}">
+      <image src="{{m.imgUrl}}/image/admin/shop_deco/customer{{m.service}}.png" />
+    </block>
+    <block wx:else>
+      <image src="{{m.img_url}}" />
+    </block>
+  </button>
+</view>
+<view class='service_block other-service' wx:if="{{is_phone_block == 1}}" >
+  <button open-type="contact" plain='false'>
+    <block wx:if="{{m.service != 8}}">
+      <image src="{{m.imgUrl}}/image/admin/shop_deco/customer{{m.service}}.png" />
+    </block>
+    <block wx:else>
+      <image src="{{m.img_url}}" />
+    </block>
+  </button>
+</view>

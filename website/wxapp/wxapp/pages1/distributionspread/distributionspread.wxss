@@ -1,0 +1,79 @@
+/* pages/distributionspread/distributionspread.wxss */
+@import "/pages/login/login.wxss";
+page{
+  background: #fff;
+  height: 100%;
+}
+.all{
+  height: 100%;
+}
+.content{
+  padding: 10rpx 20rpx;
+  padding-bottom: 120rpx;
+  overflow-x: hidden;
+}
+
+.shenhe_tips{
+  width: 100%;
+  height: 68rpx;
+  color: #f6925c;
+  background: #fff1eb;
+  text-align: center;
+  line-height: 68rpx;
+  font-size: 26rpx;
+  position: fixed;
+  bottom: 90rpx;
+}
+.bten_shenqing{
+  width: 100%;
+  height: 90rpx;
+  color: #fff;
+  background: #f66;
+  text-align: center;
+  line-height: 90rpx;
+  font-size: 28rpx;
+  position: fixed;
+  bottom: 0rpx;
+  border-radius: 0;
+}
+.bten_shenqing::after{
+  border-radius: 0;
+}
+.btn_wait{
+  background: #eee;
+  color: #999;
+}
+.common-footer .footer-text {
+  padding: 0;
+  margin-top: 20rpx;
+  background: #fff;
+}
+.moblie_authorize{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  padding: 40rpx;
+  background-color: #fff;
+  text-align: center;
+  border-radius: 6rpx;
+  width: 500rpx;
+  box-shadow:0 0rpx 15rpx 5rpx #bbb;
+}
+.moblie_authorize image{
+  position: absolute;
+  right: 10rpx;
+  top: 10rpx;
+  width: 40rpx;
+}
+.moblie_authorize text{
+  line-height: 150rpx;
+  font-size: 36rpx;
+}
+.authorize_button{
+  line-height: 70rpx;
+  background-color: #09ba07;
+  color: #fff;
+  border-radius: 6rpx;
+  font-size: 28rpx;
+}

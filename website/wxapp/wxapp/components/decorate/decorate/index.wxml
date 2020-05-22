@@ -1,0 +1,39 @@
+<view class="index-container" id="decorate">
+  <block wx:for="{{pageData}}" wx:key="key" wx:for-item="module">
+    <block wx:if="{{!module.need_request}}">
+      <v-advertise wx:if="{{module.component_name == 'v-advertise'}}" module="{{module}}" />
+      <v-advimg wx:elif="{{module.component_name == 'v-advimg'}}" module="{{module}}" />
+      <v-bargain wx:elif="{{module.component_name == 'v-bargain'}}" module="{{module}}" />
+      <v-card class="v-card" wx:elif="{{module.component_name == 'v-card'}}" bind:get_card_success="onGetCardSuccess" module="{{module}}" />
+      <v-carousel wx:elif="{{module.component_name == 'v-carousel'}}" module="{{module}}" />
+      <v-coupon wx:elif="{{module.component_name == 'v-coupon'}}" module="{{module}}" />
+      <v-goods-group class="v-goods-group" wx:elif="{{module.component_name == 'v-goods-group'}}" module="{{module}}" />
+      <v-hot-area wx:elif="{{module.component_name == 'v-hot-area'}}" module="{{module}}" />
+      <v-imgnav wx:elif="{{module.component_name == 'v-imgnav'}}" module="{{module}}" />
+      <v-imgone wx:elif="{{module.component_name == 'v-imgone'}}" module="{{module}}" />
+      <v-imgtwo wx:elif="{{module.component_name == 'v-imgtwo'}}" module="{{module}}" />
+      <v-integral wx:elif="{{module.component_name == 'v-integral'}}" module="{{module}}" />
+      <v-line wx:elif="{{module.component_name == 'v-line'}}" module="{{module}}" />
+      <v-map wx:elif="{{module.component_name == 'v-map'}}" module="{{module}}" />
+      <v-multiplot wx:elif="{{module.component_name == 'v-multiplot'}}" module="{{module}}" />
+      <v-official-accounts wx:elif="{{module.component_name == 'v-official-accounts'}}" module="{{module}}" />
+      <v-phone wx:elif="{{module.component_name == 'v-phone'}}" module="{{module}}" other-phone='otherPhone' />
+      <v-pinintegration wx:elif="{{module.component_name == 'v-pinintegration'}}" module="{{module}}" />
+      <v-pinlottery wx:elif="{{module.component_name == 'v-pinlottery'}}" module="{{module}}" />
+      <v-product wx:elif="{{module.component_name == 'v-product'}}" module="{{module}}" />
+      <v-search wx:elif="{{module.component_name == 'v-search'}}" module="{{module}}" />
+      <v-seckill wx:elif="{{module.component_name == 'v-seckill'}}" module="{{module}}" />
+      <v-service wx:elif="{{module.component_name == 'v-service'}}" is_phone_block="{{is_phone_block}}" module="{{module}}" other-service='otherService' />
+      <v-shop wx:elif="{{module.component_name == 'v-shop'}}" module="{{module}}" />
+      <v-shop-announce wx:elif="{{module.component_name == 'v-shop-announce'}}" module="{{module}}" />
+      <v-space wx:elif="{{module.component_name == 'v-space'}}" module="{{module}}" />
+      <v-text wx:elif="{{module.component_name == 'v-text'}}" module="{{module}}" />
+      <v-text-image wx:elif="{{module.component_name == 'v-text-image'}}" module="{{module}}" />
+      <v-title wx:elif="{{module.component_name == 'v-title'}}" module="{{module}}" />
+      <v-video wx:elif="{{module.component_name == 'v-video'}}" module="{{module}}" />
+      <v-rich-text wx:elif="{{module.component_name == 'v-rich-text'}}" module="{{module}}" />
+      <v-window wx:elif="{{module.component_name == 'v-window'}}" module="{{module}}" />
+      <v-top-nav wx:elif="{{module.component_name == 'v-top-nav'}}" bind:onPageScroll="onPageScroll" module="{{module}}" />
+    </block>
+  </block>
+</view>

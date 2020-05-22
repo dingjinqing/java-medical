@@ -1,0 +1,49 @@
+
+.lo_detail {
+  width: 570rpx;
+  height: 760rpx;
+}
+
+.lo_content {
+  width: 570rpx;
+  height: 670rpx;
+  position: relative;
+}
+
+.lo_content image {
+  width: 570rpx;
+  height: 670rpx;
+}
+
+.btn_to_lottery {
+  width: 395rpx;
+  height: 70rpx;
+  position: absolute;
+  bottom: 40rpx;
+  left: 88rpx;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 10rpx 8rpx #fdc247;
+  border-radius: 50rpx;
+}
+
+.btn_to_lottery button {
+  width: 395rpx;
+  height: 70rpx;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: linear-gradient(top, #feb83c, #fccc52);
+  background: -webkit-linear-gradient(top, #feb83c, #fccc52);
+  background: -moz-linear-gradient(top, #feb83c, #fccc52);
+  color: #fff;
+  text-align: center;
+  line-height: 70rpx;
+  border-radius: 50rpx;
+  font-size: 32rpx;
+  padding: 0;
+}
+
+.btn_to_lottery button::after {
+  border: none;
+}

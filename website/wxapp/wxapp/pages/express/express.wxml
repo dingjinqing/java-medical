@@ -1,0 +1,52 @@
+<!--pages/express/express.wxml-->
+<include src="../common/header.wxml" />
+<view class='main-container'>
+  <view class="container_have" wx:if="{{express_info.data != ''}}">
+    <!--信息列表  --> 
+    <view class="orderinfo_list"  data-order_sn = "{{express_info.order.order_sn}}">
+        <view class='ol_left'>
+          <image src='{{express_info.order.order_goods[0].goods_img}}' mode='widthFix'></image>
+        </view>
+        <view class='ol_right'>
+          <!-- <view class='ex_state' style='color:{{comColor}}'>{{express_info.state_name}}</view> -->
+          <view class='kuaidi_info'>
+            <text>{{express_info.delivery_name}}：</text>
+            <text>{{express_info.shipping_info.shipping_no}}</text>
+          </view>
+          <view class='kuaidi_phone'>
+            <text>发货时间：</text>
+            <text>{{express_info.shipping_info.shipping_time}}</text>
+          </view>
+        </view>
+    </view>
+
+    <!--物流信息  -->
+    <view class='express_content'>
+      <block wx:for="{{express_info.data}}" wx:key="key" wx:for-item="item" wx:for-key='index'>
+        <view class='each'>
+          <view class='each_icons'>
+            <view class='iconn' wx:if="{{index == 0}}" style='background:{{comColor}};padding:5rpx;border:2rpx solid {{comColor}}'></view>  
+            <view class='iconn' wx:else></view>
+          </view>
+          <view class='each_word' wx:if="{{index == 0}}" style='color:{{comColor}}'>
+            <view class='arrive_address'>{{item.context}}</view>
+            <view class='arrive_time'>{{item.ftime}}</view>
+          </view>
+          <view class='each_word' wx:else>
+            <view class='arrive_address'>{{item.context}}</view>
+            <view class='arrive_time'>{{item.ftime}}</view>
+          </view>
+          
+        </view>
+      </block>
+      <view class='hr_left' style='height:{{express_info.height}}rpx'></view>
+    </view>
+  </view>
+  <view class='container_not' wx:if="{{express_info.data == ''}}">
+      <view class='state_no'>
+        <image src='{{imageUrl}}image/wxapp/wuliu.png' mode='widthFix'></image>
+      </view>
+      <view class='nitices'>暂时没有物流信息</view>
+  </view>
+</view>
+<include src="../common/footer.wxml"/>

@@ -1,0 +1,165 @@
+/* pages1/presentlist/presentlist.wxss */
+page{
+  overflow-x: hidden;
+  font-family: "Microsoft YaHei", 微软雅黑, "Microsoft JhengHei";
+}
+.clearfix::after{
+  contain: "";
+  display: block;
+  clear: both;
+}
+.gift_top{
+  height:90rpx;
+  width:750rpx;
+  display:flex;
+  background:#fff;
+  border-top:2rpx solid #eee;
+  position:fixed;
+  z-index:999;
+  top:130rpx;
+}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+   .gift_top{
+     top: 180rpx;
+   }
+}
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+   .gift_top{
+     top: 155rpx;
+   }
+}
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+    .gift_top{
+     top: 155rpx;
+   }
+}
+.gift_container{
+  padding-top: 110rpx;
+}
+.nav_normal{
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #333;
+  font-size: 25rpx;
+  border-bottom: 6rpx solid #fff;
+}
+.each_order{
+  margin-bottom: 20rpx;
+  background: #fff;
+  position: relative;
+}
+.eo_top{
+  height:80rpx;
+  width:710rpx;
+  padding:0 20rpx;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content: space-between
+}
+.eo_top image{
+  width: 16rpx;
+  position:relative;
+  top:5rpx;
+  margin-left:10rpx;
+}
+.eo_top  text{
+  color: #f66;
+}
+.eo_goods .each_eo_goods{
+  padding:20rpx;
+  width:710rpx;
+  background:#fafafa;
+  margin-bottom:5rpx;
+}
+.eg_img{
+  float:left;
+  width:150rpx;
+  height:150rpx;
+  overflow:hidden;
+}
+.eg_img image{
+  width:150rpx;
+  height:150rpx;
+}
+.eg_info{
+  float:right;
+  width:530rpx;
+  height:150rpx;
+  position:relative;
+}
+.info_top{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%
+}
+.eg_name{
+  width: 100%;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+  margin-bottom: 10rpx;
+}
+.eg_desc{
+  color:#888;
+  font-size:24rpx;
+  width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.info_bottom{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.eg_money{
+  color: #f66;
+}
+.eg_end{
+  height:80rpx;
+  width:710rpx;
+  padding:0 20rpx;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.act_type{
+  font-weight: bold;
+}
+.act_price text{
+  font-weight: bold;
+}
+.no_state{
+  margin: 0 24rpx;
+  color: #666;
+  font-size: 26rpx;
+  text-align: center;
+  margin-top: 280rpx;
+  margin-bottom: 250rpx;
+}
+.no_state image{
+  width: 200rpx;
+  margin: 36rpx 0 20rpx 0;
+}
+.kaijiang_time{
+  padding:30rpx 20rpx;
+  
+}
+
+
+
+
+
+
+
+

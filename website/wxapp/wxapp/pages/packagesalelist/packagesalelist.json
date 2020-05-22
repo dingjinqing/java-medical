@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "打包一口价",
+  "usingComponents": {
+    "v-sel-spec": "/components/item/popup/spec/index"
+  }
+}

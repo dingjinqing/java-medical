@@ -1,0 +1,18 @@
+/* USERCARDLIST.WXSS 2018.03.06 */
+@import "../usercardlist/usercardlist.wxss"; 
+  .card-list {
+    width: 94%;
+    background: #E6CB96;
+    background-size: cover;
+    margin: 3% 3%;
+    border-radius: 8rpx;
+    position: relative;
+    height: 270rpx;
+  }
+  .denomination{
+    position:absolute;
+    bottom:60rpx;
+    right:20rpx;
+    color:#fff;
+    font-size:36rpx;
+  }
