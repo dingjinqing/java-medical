@@ -100,8 +100,8 @@ export default {
           }
         } else {
           let stockAndPriceInfoData = this.$refs.stockAndPriceInfo.getFormData()
-          for (let i = 0; i < stockAndPriceInfoData.goodsProductInfo.goodsSpecProducts.length; i++) {
-            let item = stockAndPriceInfoData.goodsProductInfo.goodsSpecProducts[i]
+          for (let i = 0; i < stockAndPriceInfoData.goodsSpecProducts.length; i++) {
+            let item = stockAndPriceInfoData.goodsSpecProducts[i]
             if (isNumberBlank(item.prdWeight) || item.prdWeight <= 0) {
               this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsPrdWeightIsNull'))
               document.getElementById('prdWeight_' + item.prdDesc).focus()

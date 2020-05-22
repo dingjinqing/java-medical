@@ -75,11 +75,11 @@ public class IntegralMallPictorialService extends ShareBaseService {
         // 积分兑换
         String exchangeStr = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_INTEGRAL_MALL_EXCHANGE, "", "messages");
         // ￥5.00+10积分
-        String priceStrTranslate = null;
+        String priceStrTranslate;
         if (param.getRealPrice() == null || param.getRealPrice().equals(BigDecimal.ZERO)) {
-            priceStrTranslate = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_INTEGRAL_MALL_PRICE_SCORE, "", "messages", baseParam.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString(), param.getScore().toString());
-        } else {
             priceStrTranslate =Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_INTEGRAL_MALL_SCORE, "", "messages",param.getScore().toString());
+        } else {
+            priceStrTranslate = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_INTEGRAL_MALL_PRICE_SCORE, "", "messages", baseParam.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString(), param.getScore().toString());
         }
         String linePriceStr = convertPriceWithFlag(shop.getShopLanguage(), baseParam.getLinePrice());
 
