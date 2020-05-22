@@ -269,7 +269,7 @@ public class OrderInfoService extends ShopBaseService {
 		if (param.orderStatus != null && param.orderStatus.length != 0) {
             List<Byte> status = Lists.newArrayList(param.orderStatus);
             Condition condition = DSL.noCondition();
-            if(status.contains(ORDER_RETURNING) || status.contains(ORDER_REFUNDING)) {
+            if(status.contains(ORDER_RETURNING) || status.contains(ORDER_REFUNDING) || status.contains(ORDER_RETURN_FINISHED) || status.contains(ORDER_REFUND_FINISHED)) {
                 select.leftJoin(RETURN_ORDER).on(TABLE.ORDER_ID.eq(RETURN_ORDER.ORDER_ID));
                 if(status.contains(ORDER_REFUNDING)) {
                     condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_ONLY_MONEY).and(RETURN_ORDER.REFUND_STATUS.eq(REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
