@@ -28,11 +28,11 @@ public class CardHolderColNameI18n implements IDymicColNameI18n {
 	public CardHolderColNameI18n() {
 		super();
 		map = new HashMap<>();
-		map.put(IS_SUBMIT, JsonResultMessage.CARD_EXAMINE_SUBMIT_TITLE);
-		map.put(STATUS, JsonResultMessage.CARD_EXAMINE_STATUS_TITLE);
-		map.put(CARD_BALANCE, JsonResultMessage.CARD_EXAMINE_MONEY_TITLE);
-		map.put(CONSUME_TIMES, JsonResultMessage.CARD_EXAMINE_CONSUME_TITLE);
-		map.put(CHARGE_TIMES, JsonResultMessage.CARD_EXAMINE_CHARGE_TITLE);
+		map.put(IS_SUBMIT,JsonResultMessage.CARD_EXAMINE_SUBMIT_TITLE);
+		map.put(STATUS,JsonResultMessage.CARD_EXAMINE_STATUS_TITLE);
+		map.put(CARD_BALANCE,JsonResultMessage.CARD_EXAMINE_MONEY_TITLE);
+		map.put(CONSUME_TIMES,JsonResultMessage.CARD_EXAMINE_CONSUME_TITLE);
+		map.put(CHARGE_TIMES,JsonResultMessage.CARD_EXAMINE_CHARGE_TITLE);
 	}
 	@Override
 	public String i18nName(String name,String language) {

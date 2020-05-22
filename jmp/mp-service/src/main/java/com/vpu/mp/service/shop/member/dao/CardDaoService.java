@@ -101,6 +101,7 @@ public class CardDaoService extends ShopBaseService {
 		f.add(invitedUser.USERNAME.as("invitedName"));
 		f.add(MEMBER_CARD.CARD_TYPE);
 		f.add(CARD_EXAMINE.STATUS);
+		f.add(CARD_EXAMINE.CREATE_TIME);
 		Field<?>[] myFields = f.toArray(new Field<?>[0]);
 		
 		SelectJoinStep<?> select = db()
@@ -115,8 +116,7 @@ public class CardDaoService extends ShopBaseService {
 		buildOptions(param, select);
 		select.where(USER_CARD.CARD_ID.eq(param.getCardId()))
 			  .groupBy(myFields)
-			  .orderBy(USER_CARD.USER_ID.desc());
-		
+			  .orderBy(CARD_EXAMINE.CREATE_TIME.desc(),USER_CARD.USER_ID.desc());		
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), CardHolderVo.class);
 	}
 
@@ -852,6 +852,7 @@ public class CardDaoService extends ShopBaseService {
 		f.add(invitedUser.USERNAME.as("invitedName"));
 		f.add(USER.MOBILE);
 		f.add(CARD_EXAMINE.STATUS);
+		f.add(CARD_EXAMINE.CREATE_TIME);
 		SelectJoinStep<?> select = db()
 				.select(f.toArray(new Field<?>[0])).select(DSL.count(CHARGE_MONEY.CARD_NO).as("chargeTimes"),DSL.count(CARD_CONSUMER.CARD_NO).as("consumeTimes"))
 				.from(USER_CARD.leftJoin(USER.leftJoin(invitedUser).on(USER.INVITE_ID.eq(invitedUser.USER_ID))
@@ -866,7 +867,7 @@ public class CardDaoService extends ShopBaseService {
 		f.add(CARD_CONSUMER.CARD_NO);
 		select.where(USER_CARD.CARD_ID.eq(param.getCardId()))
 			.groupBy(f.toArray(new Field<?>[0]))
-			.orderBy(USER_CARD.USER_ID.desc());
+			.orderBy(CARD_EXAMINE.CREATE_TIME.desc(),USER_CARD.USER_ID.desc());
 		List<CardHolderExcelVo> list = new ArrayList<CardHolderExcelVo>();
 		Result<?> fetch = select.fetch();
 		if(fetch!=null) {
