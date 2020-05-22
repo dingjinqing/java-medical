@@ -711,7 +711,6 @@ public class CouponGiveService extends ShopBaseService {
                             record.setReceiveCouponSn(customerAvailCouponsRecord.getCouponSn());
                             record.insert();
                         }
-                        sendCoupons.add(customerAvailCouponsRecord);
                     });
                     }catch (BusinessException e){
                         break;
