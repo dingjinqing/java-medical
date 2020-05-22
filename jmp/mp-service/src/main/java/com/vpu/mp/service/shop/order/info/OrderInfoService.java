@@ -1069,6 +1069,7 @@ public class OrderInfoService extends ShopBaseService {
         int returnOrderNum = db()
         			.selectCount()
         			.from(TABLE)
+        			.leftJoin(RETURN_ORDER).on(TABLE.ORDER_ID.eq(RETURN_ORDER.ORDER_ID))
         			.where(TABLE.CARD_NO.eq(cardNo))
         			.and(ORDER_INFO.SHIPPING_TIME.isNotNull())
         			.and(ORDER_INFO.ORDER_STATUS.in(OrderConstant.ORDER_CANCELLED,OrderConstant.ORDER_CLOSED,OrderConstant.ORDER_RETURN_FINISHED,OrderConstant.ORDER_REFUND_FINISHED))
