@@ -27,10 +27,10 @@
           <template slot-scope="{row}">
             <div class="nameImgWrap">
               <img class="imgItem" :src="row.prdImg===''||row.prdImg===null?row.goodsImg:row.prdImg">
-              <div class="nameItem" :title="row.prdDesc === ''?row.goodsName+$t('allGoods.allGoodsData.noPrdSn'):row.goodsName+row.prdDesc">
+              <div class="nameItem" :title="row.prdDesc === ''?row.goodsTitleName+$t('allGoods.allGoodsData.noPrdSn'):row.goodsTitleName+row.prdDesc">
                 <span v-if="row.sourceName !== null" class="goodsTypeSpanWrap">{{row.sourceName}}</span>
                 <span v-if="row.goodsTypeName !== null" class="goodsSourceSpanWrap">{{row.goodsTypeName}}</span>
-                {{row.goodsName}}
+                <span v-html="row.goodsName"></span>
                 <span v-if="row.prdDesc === ''">
                   ({{$t('allGoods.allGoodsData.noPrdSn')}})
                 </span>

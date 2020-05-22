@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.coupon.hold;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
@@ -15,6 +16,7 @@ public class CouponHoldListVo {
     private String username;
     private Integer userId;
     private String mobile;
+    private String couponSn;
     private String couponName;
     private Integer delFlag;
     /**
@@ -29,6 +31,15 @@ public class CouponHoldListVo {
      * 优惠券状态 0 未使用 1 使用 2 过期 3 废除
      */
     private Integer status;
+    /**优惠券类型 0：普通优惠券；1：分裂优惠券*/
+    private Integer type;
+    /**是否分享*/
+    private Integer isShare;
+    /**领取用户数*/
+    private Integer hasReceive;
+    private BigDecimal denomination;
+    /**voucher减价；discount；打折*/
+    private String actCode;
     private Integer scoreNumber;
     private String orderSn;
     private Timestamp startTime;

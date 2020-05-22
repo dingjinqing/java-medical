@@ -13,7 +13,6 @@ import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -307,7 +306,7 @@ public class GoodsService extends ShopBaseService {
         // 拼接过滤条件
         Condition condition = this.buildOptions(goodsPageListParam);
 
-        SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
+        SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME,GOODS.GOODS_NAME.as("goods_title_name"),GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
             GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER,
             GOODS.GOODS_SALE_NUM,GOODS.IS_CARD_EXCLUSIVE,GOODS.MARKET_PRICE)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
@@ -383,7 +382,7 @@ public class GoodsService extends ShopBaseService {
         // 拼接过滤条件
         Condition condition = this.buildOptions(goodsPageListParam);
 
-        SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,
+        SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME,GOODS.GOODS_NAME.as("goods_title_name"), GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,
             GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME,SORT.LEVEL, GOODS.SORT_ID, GOODS.GOODS_AD, GOODS.IS_ON_SALE, GOODS.LIMIT_BUY_NUM, GOODS.GOODS_WEIGHT, GOODS.UNIT,
             GOODS_BRAND.BRAND_NAME,GOODS.GOODS_NUMBER,GOODS.DELIVER_PLACE,
             GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.CREATE_TIME,

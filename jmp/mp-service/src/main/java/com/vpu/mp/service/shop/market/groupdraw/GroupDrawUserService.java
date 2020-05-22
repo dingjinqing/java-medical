@@ -361,7 +361,7 @@ public class GroupDrawUserService extends ShopBaseService {
 	private void updateGroupInfoByGoodsId(Integer groupDrawId, Integer goodsId) {
 		db().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.DRAW_STATUS, DREW)
 				.set(JOIN_GROUP_LIST.DRAW_TIME, DateUtil.getSqlTimestamp())
-				.where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId).and(JOIN_GROUP_LIST.GOODS_ID.eq(goodsId)));
+				.where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId).and(JOIN_GROUP_LIST.GOODS_ID.eq(goodsId))).execute();
 	}
 
 	/**

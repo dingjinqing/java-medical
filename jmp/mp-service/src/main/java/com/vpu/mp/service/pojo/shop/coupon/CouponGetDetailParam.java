@@ -10,10 +10,15 @@ import lombok.Data;
 @Data
 public class CouponGetDetailParam {
 	private Integer id;
+	/**优惠券类型：0：普通优惠券；1：分裂优惠券*/
+	private Integer couponType;
+	/**用户昵称*/
 	private String userName;
+	/**手机号*/
 	private String mobile;
+	/**使用状态 0 未使用 1 使用 2 过期 3 废除 */
 	private Byte isUsed;
-	
+
 	/**
      * 	分页信息
      */
