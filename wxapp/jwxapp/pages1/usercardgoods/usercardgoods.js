@@ -125,7 +125,7 @@ global.wxPage({
   showSpecDialog (e) { // 调起规格弹窗
     console.log(e.currentTarget.dataset.goodsnumber)
     if (!e.currentTarget.dataset.goodsnumber) {
-      util.toast_success(`${e.currentTarget.dataset.goodsName} ${this.$t('page1.usercardgoods.inventoryIs')}`)
+      util.showModal('提示', `${e.currentTarget.dataset.goodsname} ${this.$t('page1.usercardgoods.inventoryIs')}`, function () { }, false, '确定')
       return
     }
     util.api("/api/wxapp/goods/detail", res => {
