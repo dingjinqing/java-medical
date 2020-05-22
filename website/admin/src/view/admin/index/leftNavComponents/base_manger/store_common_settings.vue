@@ -575,6 +575,7 @@
                           <el-image
                             style="width:220px;"
                             :src="$imageHost + '/image/admin/pictorial/pictorial_style1.png'"
+                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style1.png']"
                           ></el-image>
                         </div>
                         <el-button
@@ -592,6 +593,7 @@
                           <el-image
                             style="width:220px;"
                             :src="$imageHost + '/image/admin/pictorial/pictorial_style2.png'"
+                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style2.png']"
                           ></el-image>
                         </div>
                         <el-button
@@ -609,6 +611,7 @@
                           <el-image
                             style="width:220px;"
                             :src="$imageHost + '/image/admin/pictorial/pictorial_style3.png'"
+                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style3.png']"
                           ></el-image>
                         </div>
                         <el-button
@@ -626,6 +629,7 @@
                           <el-image
                             style="width:220px;"
                             :src="$imageHost + '/image/admin/pictorial/pictorial_style4.png'"
+                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style4.png']"
                           ></el-image>
                         </div>
                         <el-button
@@ -643,6 +647,7 @@
                           <el-image
                             style="width:220px;"
                             :src="$imageHost + '/image/admin/pictorial/pictorial_style5.png'"
+                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style5.png']"
                           ></el-image>
                         </div>
                         <el-button
@@ -722,17 +727,15 @@
           </div>
         </li>
       </ul>
-
-      <div class="footer">
-        <el-button
-          size="small"
-          type="primary"
-          class="footer-btn"
-          @click="saveCommonInfoHandle"
-        >{{$t('storeCommonSettings.save')}}</el-button>
-      </div>
     </div>
-
+    <div class="basic-page-footer">
+      <el-button
+        size="small"
+        type="primary"
+        class="footer-btn"
+        @click="saveCommonInfoHandle"
+      >{{$t('storeCommonSettings.save')}}</el-button>
+    </div>
     <!-- 上传图片 -->
     <ImageDalog
       :tuneUp="tuneUp"
@@ -967,5 +970,17 @@ export default {
 .example-tips {
   margin-left: 15px;
   color: #999;
+}
+.basic-page-footer {
+  position: fixed;
+  bottom: 0;
+  left: 150px;
+  z-index: 10;
+  width: calc(100% - 150px);
+  height: 50px;
+  border-top: 1px solid #eee;
+  line-height: 50px;
+  background: #fdfdfd;
+  text-align: center;
 }
 </style>

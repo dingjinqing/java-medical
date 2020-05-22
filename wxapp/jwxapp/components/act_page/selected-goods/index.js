@@ -6,7 +6,12 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    goodsData: Array,
+    goodsData: {
+      type: Array,
+      observer(){
+        this.initData()
+      }
+    },
     customFooterLeft: {
       type: Boolean,
       value: false
@@ -51,6 +56,14 @@ global.wxComponent({
     },
     cartNumChange ({ detail }) {
       this.triggerEvent('cartNumChange', { ...detail })
+    },
+    initData(){
+      if(!this.data.goodsData || !this.data.goodsData.length > 0) return
+      this.setData({
+        selectedNum:this.data.goodsData.reduce((defaultNum,item)=>{
+          return defaultNum += item.cartNumber
+        },0)
+      })
     }
   }
 })

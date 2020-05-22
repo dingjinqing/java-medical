@@ -340,16 +340,19 @@
               {{$t('ShopConfiguration.SmallProgramAuthorizationPage.tip6')}}
             </div>
           </li>
-          <li style="margin-top: 50px;text-align: center;">
-            <el-button
-              size="small"
-              type="primary"
-              @click="handleToSave()"
-            >{{$t('ShopConfiguration.SmallProgramAuthorizationPage.Preservation')}}</el-button>
-          </li>
+          <!-- <li style="margin-top: 50px;text-align: center;">
+
+          </li> -->
         </ul>
       </div>
     </el-card>
+    <div class="basic-page-footer">
+      <el-button
+        size="small"
+        type="primary"
+        @click="handleToSave()"
+      >{{$t('ShopConfiguration.SmallProgramAuthorizationPage.Preservation')}}</el-button>
+    </div>
     <el-dialog
       :title="$t('ShopConfiguration.SmallProgramAuthorizationPage.prompt')"
       :visible.sync="centerDialogVisible"
@@ -655,6 +658,7 @@ export default {
 
 <style scoped lang="scss">
 .program_auth_details {
+  margin-bottom: 50px;
   /deep/ .el-card__header {
     border-left: 2px solid #5a8bff;
     font-size: 14px;
@@ -722,5 +726,17 @@ export default {
 }
 .moreHight {
   margin-top: 10px;
+}
+.basic-page-footer {
+  position: fixed;
+  bottom: 0;
+  left: 150px;
+  z-index: 10;
+  width: calc(100% - 150px);
+  height: 50px;
+  border-top: 1px solid #eee;
+  line-height: 50px;
+  background: #fdfdfd;
+  text-align: center;
 }
 </style>
