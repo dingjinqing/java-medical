@@ -681,6 +681,7 @@ public class CouponGiveService extends ShopBaseService {
                 couponGiveBo.getCouponSet().add(Integer.valueOf(couponId));
                 logger().info("当前优惠券ID："+couponId+",发放成功");
             }
+            couponGiveBo.setSendCoupons(sendCoupons);
         }
         //更新优惠券表发放/领取数量
         couponService.updateCouponGiveOrReceiveNum(param.getAccessMode(), param.getCouponArray());
