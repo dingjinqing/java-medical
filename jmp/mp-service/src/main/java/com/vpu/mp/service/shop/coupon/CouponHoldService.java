@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.coupon;
 
 import com.mysql.cj.util.StringUtils;
 import com.vpu.mp.db.shop.tables.CustomerAvailCoupons;
+import com.vpu.mp.db.shop.tables.DivisionReceiveRecord;
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -10,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -24,6 +26,8 @@ import static com.vpu.mp.db.shop.Tables.*;
  */
 @Service
 public class CouponHoldService extends ShopBaseService {
+    @Autowired
+    private CouponService  couponService;
 
 
     /**
@@ -39,7 +43,7 @@ public class CouponHoldService extends ShopBaseService {
 
         SelectJoinStep<? extends Record> select =
             db().select(u.USERNAME, u.MOBILE,
-                        m.ACT_NAME.as("coupon_name"),m.USE_SCORE,m.SCORE_NUMBER,
+                        m.ACT_NAME.as("coupon_name"),m.USE_SCORE,m.SCORE_NUMBER,m.TYPE,h.COUPON_SN,m.DENOMINATION,m.ACT_CODE,
                         h.ID,h.ACCESS_MODE, h.IS_USED,h.ORDER_SN, h.START_TIME, h.END_TIME, h.CREATE_TIME, h.USED_TIME,h.DEL_FLAG,h.USER_ID)
                 .from(h)
                 .leftJoin(m).on(h.ACT_ID.eq(m.ID))
@@ -60,6 +64,17 @@ public class CouponHoldService extends ShopBaseService {
                 v.setStatus(2);
             }else if (v.getDelFlag()==1){
                 v.setStatus(3);
+            }
+            //如果是分裂优惠券,展示领取人数;
+            if(v.getType() == 1){
+                Record record = db().select(DIVISION_RECEIVE_RECORD.IS_SHARE).from(DIVISION_RECEIVE_RECORD).where(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(v.getCouponSn())).fetchOne();
+                if(record != null){
+                    v.setIsShare(record.into(Integer.class));
+                }else{
+                    v.setIsShare(0);
+                }
+                int hasReceive = couponService.hasReceive(v.getCouponSn());
+                v.setHasReceive(hasReceive);
             }
         });
         return detailList ;
