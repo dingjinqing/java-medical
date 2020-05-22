@@ -119,6 +119,13 @@ export const cn = {
   newDealsUsers: '新成交用户数',
   oldDealsUsers: '老成交用户数',
   psFDate: '请选择筛选日期！',
-  cnotGreaterEnd: '开始时间不能大于结束时间'
+  cnotGreaterEnd: '开始时间不能大于结束时间',
 
+  totalPaidTip: '活动订单实际付款总金额（包括账户余额、会员卡余额及微信支付，包含退款部分）',
+  totalDiscountTip: '活动优惠的总金额',
+  costEffectTip: '活动优惠总金额/活动实付总金额',
+  payOrderNumTip: '活动带来的付款订单数（包括退款部分）',
+  payGoodsNumTip: '活动付款的商品件数',
+  newDealsUsersTip: '活动带来的首次在店铺下单的用户数',
+  oldDealsUsersTip: '在店铺有过付款订单，参与该活动的用户数'
 }

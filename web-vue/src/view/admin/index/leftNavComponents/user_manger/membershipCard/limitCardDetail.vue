@@ -655,6 +655,7 @@ export default {
     }
   }
   .footer {
+    z-index: 100;
     background: #f8f8fa;
     border-top: 1px solid #f2f2f2;
     text-align: center;

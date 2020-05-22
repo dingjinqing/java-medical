@@ -262,7 +262,19 @@ global.wxPage({
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () { },
+  onPullDownRefresh: function () {
+    this.requestDecoratePageData(
+      this._options.page,
+      this._options.scene,
+      this.renderData.bind(this),
+      true
+    );
+    // 初始化收藏有礼
+    this.renderCollectData()
+    // 初始化开屏有礼clearInterval
+    this.openGiftRequest()
+    wx.stopPullDownRefresh();
+  },
 
   /**
    * 页面上拉触底事件的处理函数
