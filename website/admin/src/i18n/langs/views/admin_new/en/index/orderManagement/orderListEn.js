@@ -205,6 +205,24 @@ export const en = {
     [15, 'Order received-picking up'],
     [16, 'Pickup-in delivery']
   ],
+  orderStatusFilterList: [
+    [null, 'all orders'],
+    [0, 'Pending payment'],
+    [1, 'Order Cancel'],
+    [2, 'Order closed'],
+    [3, 'Pending delivery / pending write-off'],
+    [4, 'shipped'],
+    [5, 'Received / already raised'],
+    [6, 'Order completed'],
+    [7, 'Returns'],
+    [8, 'Return completed'],
+    [11, 'Picture in the group'],
+    [12, 'has become a group'],
+    [13, 'Gift completion'],
+    [14, 'Pending Order'],
+    [15, 'Order received-picking up'],
+    [16, 'Pickup-in delivery']
+  ],
   orderStatus: [
     [null, 'All orders'],
     [0, 'Pending payment'],
