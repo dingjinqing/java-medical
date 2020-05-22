@@ -601,9 +601,6 @@ export default {
       :nth-of-type(2) {
         margin: 0 10px 0 0;
       }
-      /deep/ .el-input {
-        width: 200px !important;
-      }
     }
     span {
       white-space: nowrap;
