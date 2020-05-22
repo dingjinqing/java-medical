@@ -754,17 +754,18 @@ public class GroupDrawService extends ShopBaseService {
 						logger().info("没有中奖用户");
 					}
 				}
-			}
-			if (drawStatus.equals(TWO)) {
-				logger().info("未达到开奖条件-未中奖");
-				botton.setIsToInvite(ZERO);
-				botton.setIsJoinDraw(ZERO);
-				vo.setGroupStatus((byte) 12);
-				vo.setButton(botton);
-			} else {
-				logger().info("未开奖");
-				vo.setGroupStatus((byte) 10);
-				vo.setButton(botton);
+			}else {
+				if (drawStatus.equals(TWO)) {
+					logger().info("未达到开奖条件-未中奖");
+					botton.setIsToInvite(ZERO);
+					botton.setIsJoinDraw(ZERO);
+					vo.setGroupStatus((byte) 12);
+					vo.setButton(botton);
+				} else {
+					logger().info("未开奖");
+					vo.setGroupStatus((byte) 10);
+					vo.setButton(botton);
+				}				
 			}
 		}
 		if (status.equals(TWO)) {
