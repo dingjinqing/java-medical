@@ -728,6 +728,7 @@ public class CouponGiveService extends ShopBaseService {
                     userTag.addActivityTag(userId,couponTagIds, UserTagService.SRC_COUPON,Integer.valueOf(couponId));
                 }
             }
+            couponGiveBo.setSendCoupons(sendCoupons);
         }
         couponGiveBo.setSendCoupons(sendRecord);
         //更新优惠券表发放/领取数量
