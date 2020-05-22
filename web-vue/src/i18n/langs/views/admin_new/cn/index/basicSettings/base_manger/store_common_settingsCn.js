@@ -80,7 +80,7 @@ export const cn = {
   customScheme: '自定义方案',
   sharedCopy: '设置的分享文案',
   shareTemp: '【分享人昵称】为您独家推荐价值【商品价格】的【商品名称】',
-  mayBe: '则用户分享时显示的内容可能为：',
+  mayBe: '则用户分享时显示的内容可能为',
   shareExample: '奔跑的小猪为您独家推荐价值200元的联想（thinkplus），随身充...',
   shareNote: '注：直接向好友分享商品时，可展示不超过23个汉字，超出部分将省略',
   peShareCopy: '请输入分享文案',
