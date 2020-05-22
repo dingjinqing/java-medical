@@ -17,7 +17,10 @@
         <!-- 来源列表 -->
         <view wx:if="{{act_info.linkSource == 0}}">
           <view wx:if="{{act_info.type == 0}}">
-            <view wx:if="{{act_info.couponType == 1 && act_info.isShare == 0 && act_info.actCode == 'random'}}">
+            <view wx:if="{{act_info.couponType == 1 && act_info.isShare == 0 && act_info.actCode == 'random' && item.divisionEnabled == 0}}">
+              ￥<text>{{item.amount}}</text>
+            </view>
+            <view wx:elif="{{act_info.couponType == 1 && act_info.isShare == 0 && act_info.actCode == 'random' && item.divisionEnabled == 1}}">
               <text class="name-bottom">￥{{act_info.randomMax}}<text style="font-size: 22rpx;">最高</text></text>
               <view class="name-bottom" style="font-size: 22rpx;">随机优惠</view>
             </view>
