@@ -17,6 +17,7 @@ import java.util.*;
 public class  GoodsPageListVo {
     private Integer goodsId;
     private String goodsName;
+    private String goodsTitleName;
     private String goodsImg;
     private String goodsSn;
     private BigDecimal  marketPrice;
