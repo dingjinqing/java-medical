@@ -678,8 +678,8 @@ public class CouponGiveService extends ShopBaseService {
                         }
                         if (couponDetails.getType().equals((byte)1)&&couponDetails.getActCode().equals("random")){
                             log.info("面额随机优惠券");
-                            //Math.random()*(n+1-m)+m
-                            BigDecimal randomAmount = couponDetails.getRandomMax().add(BigDecimal.ONE).subtract(couponDetails.getRandomMin()).multiply(BigDecimal.valueOf(Math.random())).add(couponDetails.getRandomMin());
+                            //Math.random()*(n-m)+m
+                            BigDecimal randomAmount = couponDetails.getRandomMax().subtract(couponDetails.getRandomMin()).multiply(BigDecimal.valueOf(Math.random())).add(couponDetails.getRandomMin());
                             customerAvailCouponsRecord.setAmount(randomAmount);
                             log.info("随机生成优惠券金额在{}~{}直接:{}",couponDetails.getRandomMin(),couponDetails.getRandomMax(),randomAmount);
                         }
@@ -728,6 +728,7 @@ public class CouponGiveService extends ShopBaseService {
                     userTag.addActivityTag(userId,couponTagIds, UserTagService.SRC_COUPON,Integer.valueOf(couponId));
                 }
             }
+            couponGiveBo.setSendCoupons(sendCoupons);
         }
         couponGiveBo.setSendCoupons(sendRecord);
         //更新优惠券表发放/领取数量

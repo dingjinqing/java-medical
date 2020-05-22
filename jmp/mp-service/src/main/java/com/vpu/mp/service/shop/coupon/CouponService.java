@@ -107,7 +107,7 @@ public class CouponService extends ShopBaseService {
 
 	@Autowired
 	public CouponMpService couponMpService;
-	
+
     /**可用会员卡*/
     public static final byte COUPON_IS_USED_STATUS_AVAIL = 0;
     /**优惠券状态：使用*/
@@ -337,6 +337,7 @@ public class CouponService extends ShopBaseService {
     public PageResult<CouponHoldListVo> getDetail(CouponGetDetailParam param) {
         CouponHoldListParam couponParam = new CouponHoldListParam();
         couponParam.setActId(param.getId());
+        couponParam.setActId(param.getCouponType());
         couponParam.setMobile(param.getMobile());
         couponParam.setUsername(param.getUserName());
         couponParam.setStatus(param.getIsUsed());
@@ -574,7 +575,7 @@ public class CouponService extends ShopBaseService {
     }
 
     /**
-     * 分裂优惠券已领取数
+     * 单用户分裂优惠券已领取数
      * @param userId
      * @param couponSn
      * @return
@@ -583,6 +584,17 @@ public class CouponService extends ShopBaseService {
         Integer hasRecivie = db().selectCount().from(DIVISION_RECEIVE_RECORD).where(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(couponSn))
             .and(DIVISION_RECEIVE_RECORD.USER.eq(userId)).and(DIVISION_RECEIVE_RECORD.TYPE.eq((byte) 1)).fetchOne().into(Integer.class);
         return hasRecivie;
+    }
+
+    /**
+     * 分裂优惠券已领取数
+     * @param couponSn
+     * @return
+     */
+    public int hasReceive(String couponSn){
+        Record record = db().selectCount().from(DIVISION_RECEIVE_RECORD).where(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(couponSn))
+            .fetchOne();
+        return record.into(Integer.class);
     }
 
     /**

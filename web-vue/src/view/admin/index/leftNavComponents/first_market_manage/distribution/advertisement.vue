@@ -383,6 +383,7 @@ export default {
           }
         })
       }
+      this.search()
     }
   }
 }

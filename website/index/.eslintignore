@@ -1,0 +1,8 @@
+/build/
+/config/
+/dist/
+/*.js
+/test/unit/coverage/
+/src/components/admin/vue-cropper
+/static/
+/node_modules/

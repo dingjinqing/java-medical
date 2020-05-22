@@ -430,7 +430,7 @@ public class MpDistributionService extends ShopBaseService{
             UserTotalFanliRecord userFanli = record.into(UserTotalFanliRecord.class);
             //获取排行信息
             Integer ranking = db().selectCount().from(USER_TOTAL_FANLI).leftJoin(USER).on(USER_TOTAL_FANLI.USER_ID.eq(USER.USER_ID))
-                .where(USER_TOTAL_FANLI.FINAL_MONEY.ge(userFanli.getFinalMoney())).orderBy(USER_TOTAL_FANLI.FINAL_MONEY.desc()).fetchOne().into(Integer.class);
+                .where(USER_TOTAL_FANLI.FINAL_MONEY.ge(userFanli.getFinalMoney())).fetchOne().into(Integer.class);
             return ranking;
         }else{
             return 0;
