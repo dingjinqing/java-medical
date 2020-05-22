@@ -165,7 +165,7 @@ public class PictorialImgPx {
 
         customerTextStartX = customerRectStartX + 20;
         customerTextStartY = customerRectStartY + 12;
-        customerSecondTextStartY = customerTextStartY+9;
+        customerSecondTextStartY = customerTextStartY+7;
 
         bottomStartY = headerHeight + goodsHeight + bgPadding + 5;
         // 底部二维码
@@ -385,7 +385,7 @@ public class PictorialImgPx {
     private Integer priceMargin = 10;
 
     public Integer getActivityTipTextY() {
-        return priceY + 8;
+        return priceY + 5;
     }
 
     /**
