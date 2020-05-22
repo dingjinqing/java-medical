@@ -141,7 +141,7 @@
             align="center"
           >
             <template slot-scope="scope">
-              {{scope.row.sourceType === 0 ? '自定义页面' : '商品'}}
+              {{scope.row.sourceType === 0 ? '自定义页面' : '商品详情页'}}
             </template>
           </el-table-column>
 
