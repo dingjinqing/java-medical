@@ -1025,9 +1025,8 @@ export default {
         flex: 1;
         background: #ddd;
         height: 48px;
-        padding-right: 30px;
         color: #fff;
-        font-size: 16px;
+        font-size: 14px;
         position: relative;
         display: flex;
         justify-content: center;
