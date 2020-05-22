@@ -518,14 +518,7 @@
                       /{{goodsItem.productSn}}
                     </template>
                   </td>
-                  <td>
-                    <template v-if="orderItem.goodsTypeArray.indexOf('4') != -1 ">
-                      {{goodsItem.marketPrice.toFixed(2)}}
-                    </template>
-                    <template v-else>
-                      {{goodsItem.goodsPrice.toFixed(2)}}
-                    </template>
-                  </td>
+                  <td>{{goodsItem.goodsPrice.toFixed(2)}}</td>
                   <td>{{goodsItem.goodsNumber}}</td>
                   <td
                     v-if="goodsIndex === 0"

@@ -191,7 +191,7 @@ public final class ImageUtil {
         int textWidth = getTextWidth(bufferedImage, font, message);
         int textHeight = getTextAscent(bufferedImage, font);
         addFont(bufferedImage, message, font, x + linePad, y + textHeight, fontColor);
-        addLine(bufferedImage, x, y + textHeight / 4 * 3, x + textWidth + 2 * linePad, y + textHeight / 4 * 3, fontColor);
+        addLine(bufferedImage, x, y + textHeight / 3 * 2, x + textWidth + 2 * linePad, y + textHeight / 3 * 2, fontColor);
         return textWidth + 2 * linePad;
     }
 

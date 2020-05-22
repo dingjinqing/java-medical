@@ -566,13 +566,11 @@ public class PreSaleService extends ShopBaseService {
      * 获取小程序码
      */
     public ShareQrCodeVo getMpQrCode(Integer id) {
-        int goodsId = db().select(PRESALE.GOODS_ID).from(PRESALE).where(PRESALE.ID.eq(id)).fetchAny().into(Integer.class);
-        String pathParam=String.format("gid=%d&aid=%d&atp=%d", goodsId, id, BaseConstant.ACTIVITY_TYPE_PRE_SALE);
-        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, pathParam);
-
+        String pathParam = "pageFrom=10&actId=" + id;
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GOODS_SEARCH, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.GOODS_ITEM.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.GOODS_SEARCH.getPathUrl(pathParam));
         return vo;
     }
 

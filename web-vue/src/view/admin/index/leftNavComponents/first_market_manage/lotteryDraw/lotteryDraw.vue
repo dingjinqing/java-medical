@@ -478,27 +478,33 @@ export default {
 
     // 查看活动订单
     orderHanlder (id, name) {
-      this.$router.push({ name: 'group_draw_order', query: { id: id, name: name } })
+      this.toPush('group_draw_order', id, name)
     },
 
     // 获取新用户明细
     detailHanlder (id, name) {
-      this.$router.push({ name: 'group_draw_detail', query: { id: id, name: name } })
+      this.toPush('group_draw_detail', id, name)
     },
 
     // 参与用户
     userHanlder (id, name) {
-      this.$router.push({ name: 'group_draw_user', query: { id: id, name: name } })
+      this.toPush('group_draw_user', id, name)
     },
 
     // 开团明细
     groupHandler (id, name) {
-      this.$router.push({ name: 'group_draw_group', query: { id: id, name: name } })
+      this.toPush('group_draw_group', id, name)
     },
 
     // 查看活动数据效果
     effectHandler (id, startTime, endTime) {
-      this.$router.push({ name: 'group_draw_effect', query: { id: id, startTime: startTime, endTime: endTime } })
+      let routeData = this.$router.resolve({ name: 'group_draw_effect', query: { id: id, startTime: startTime, endTime: endTime } })
+      window.open(routeData.href, '_blank')
+    },
+
+    toPush (url, id, name) {
+      let routeData = this.$router.resolve({ name: url, query: { id: id, name: name } })
+      window.open(routeData.href, '_blank')
     }
   }
 

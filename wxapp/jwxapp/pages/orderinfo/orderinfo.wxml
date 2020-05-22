@@ -158,7 +158,10 @@
         {{goodsItem.goodsName}}</view>
         <view class="goods_spec"><text>{{goodsItem.goodsAttr}}</text><share-button wx:if="{{orderInfo.showMall}}" btn-class="share-button" product="{{goodsItem.shareButtonData}}" bind:error="on_error" type="3" >推荐好物</share-button></view>
         <view class="goods_price_num">
-          <view class="goods_price" style="color:{{comColor}}">
+          <view class="goods_price" style="color:{{comColor}}" wx:if="{{!filter.includes(orderInfo.orderType,4)}}">
+            ￥{{goodsItem.goodsPrice}}
+          </view>
+          <view class="goods_price" style="color:{{comColor}}" wx:else>
           {{goodsItem.goodsPrice ? '￥'+goodsItem.goodsPrice : ''}}
           {{goodsItem.goodsPrice && goodsItem.goodsScore ? '+' : ''}}
           {{goodsItem.goodsScore ? goodsItem.goodsScore + '积分' : ''}}
@@ -216,7 +219,10 @@
     <view class="pay_info">
       <view class="pay_item" wx:if="{{orderInfo.goodsTotalPrice.money > 0 || orderInfo.goodsTotalPrice.score > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.goodsTotalPrice")}}</text>
-        <view>
+        <view wx:if="{{!filter.includes(orderInfo.orderType,4)}}">
+          ￥{{orderInfo.goodsTotalPrice.money}}
+        </view>
+        <view wx:else>
         {{orderInfo.goodsTotalPrice.money > 0 ? '￥'+orderInfo.goodsTotalPrice.money : ''}}
         {{orderInfo.goodsTotalPrice.money > 0 && orderInfo.goodsTotalPrice.score > 0 ? '+' : ''}}
         {{orderInfo.goodsTotalPrice.score > 0 ? orderInfo.goodsTotalPrice.score + '积分' : ''}}
@@ -233,6 +239,10 @@
       <view class="pay_item" wx:if="{{orderInfo.memberCardReduce > 0}}">
         <text>{{filter.includes(orderInfo.orderType,13) ? '限次卡抵扣金额' : i18n.$t(localePack,"pages.order.cardReduce")}}</text>
         <text>-￥{{orderInfo.memberCardReduce}}</text>
+      </view>
+      <view class="pay_item" wx:if="{{filter.includes(orderInfo.orderType,13)}}">
+        <text>限次卡抵扣次数</text>
+        <text>-{{orderInfo.goodsAmount}}</text>
       </view>
       <view class="pay_item" wx:if="{{isPreSaleOrder&&orderInfo.preSaleDiscount > 0}}">
         <text>定金抵扣</text>

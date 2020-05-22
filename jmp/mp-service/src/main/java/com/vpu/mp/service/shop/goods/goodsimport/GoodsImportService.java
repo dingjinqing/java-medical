@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.goods.goodsimport;
 
 import com.vpu.mp.db.shop.tables.records.GoodsImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelReader;
@@ -40,10 +41,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -448,7 +446,7 @@ public class GoodsImportService extends ShopBaseService {
         transaction(() -> {
             try {
                 // 处理商品描述符图片
-                imageService.addImageToDbBatch(descDownloadBo);
+//                imageService.addImageToDbBatch(descDownloadBo);
 
                 // 处理商品图片
                 List<String> imgs = imageService.addImageToDbBatch(goodsImgsDownloadBo);
@@ -686,23 +684,43 @@ public class GoodsImportService extends ShopBaseService {
      */
     private List<DownloadImageBo> filterGoodsImages(List<GoodsVpuExcelImportBo> importBos) {
         List<DownloadImageBo> downloadImageBos = new ArrayList<>(5);
+        List<String> imgNames = new ArrayList<>(downloadImageBos.size());
+        Map<String,String> imgNameUrlMap = new HashMap<>(downloadImageBos.size());
 
-        for (GoodsVpuExcelImportBo importBo : importBos) {
+        // 判断哪些在数据库里面已经存在
+        for (GoodsVpuExcelImportBo importBo : importBos){
             String goodsImgsStr = importBo.getGoodsImgsStr();
             if (goodsImgsStr == null) {
                 continue;
             }
             String[] imgUrls = goodsImgsStr.replaceAll("；", ";").split(";");
             for (String imgUrl : imgUrls) {
-                DownloadImageBo bo = downLoadImg(imgUrl);
-                if (bo != null) {
-                    downloadImageBos.add(bo);
+                if (imgUrl.lastIndexOf("/") == -1) {
+                    continue;
                 }
-            }
-            if (downloadImageBos.size() > 5) {
-                downloadImageBos = downloadImageBos.subList(0, 5);
+                String imgName = imgUrl.substring(imgUrl.lastIndexOf("/")+1);
+                imgNames.add(imgName);
+                imgNameUrlMap.put(imgName,imgUrl);
             }
         }
+        List<UploadedImageRecord> imgsByImgOrgNames = imageService.getImgsByImgOrgNames(imgNames);
+        for (UploadedImageRecord record : imgsByImgOrgNames) {
+            imgNameUrlMap.remove(record.getImgOrigFname());
+            DownloadImageBo bo = new DownloadImageBo();
+            bo.setAlreadyHas(true);
+            bo.setRelativeFilePath(record.getImgPath());
+        }
+
+        for (String url : imgNameUrlMap.values()) {
+            DownloadImageBo bo = downLoadImg(url);
+            if (bo != null) {
+                downloadImageBos.add(bo);
+            }
+        }
+        if (downloadImageBos.size() > 5) {
+            downloadImageBos = downloadImageBos.subList(0, 5);
+        }
+
         return downloadImageBos;
     }
 

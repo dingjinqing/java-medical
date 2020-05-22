@@ -164,8 +164,8 @@ public class PictorialImgPx {
         customerIconStartY = customerRectStartY + 17;
 
         customerTextStartX = customerRectStartX + 20;
-        customerTextStartY = customerRectStartY + 10;
-        customerSecondTextStartY = customerTextStartY + 10;
+        customerTextStartY = customerRectStartY + 12;
+        customerSecondTextStartY = customerTextStartY+7;
 
         bottomStartY = headerHeight + goodsHeight + bgPadding + 5;
         // 底部二维码
@@ -385,14 +385,14 @@ public class PictorialImgPx {
     private Integer priceMargin = 10;
 
     public Integer getActivityTipTextY() {
-        return priceY + 11;
+        return priceY + 5;
     }
 
     /**
      * 底部划线价，线的Y
      */
     public Integer getPriceLineY() {
-        return priceY + 4;
+        return priceY+4;
     }
 
 }

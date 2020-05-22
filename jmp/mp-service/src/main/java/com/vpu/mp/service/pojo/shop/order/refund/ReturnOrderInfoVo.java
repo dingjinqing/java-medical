@@ -63,6 +63,7 @@ public class ReturnOrderInfoVo {
      * 客服按钮展示开关
      */
     private Byte returnService;
+    private Byte returnSource;
 }
 
 
