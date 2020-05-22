@@ -867,7 +867,7 @@ public class CardDaoService extends ShopBaseService {
 		f.add(CARD_CONSUMER.CARD_NO);
 		select.where(USER_CARD.CARD_ID.eq(param.getCardId()))
 			.groupBy(f.toArray(new Field<?>[0]))
-			.orderBy(CARD_EXAMINE.CREATE_TIME,USER_CARD.USER_ID.desc());
+			.orderBy(CARD_EXAMINE.CREATE_TIME.desc(),USER_CARD.USER_ID.desc());
 		List<CardHolderExcelVo> list = new ArrayList<CardHolderExcelVo>();
 		Result<?> fetch = select.fetch();
 		if(fetch!=null) {
