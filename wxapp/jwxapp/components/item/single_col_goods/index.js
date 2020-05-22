@@ -82,7 +82,7 @@ global.wxComponent({
       let delMarketType = {
         1: {
           className: 'gray-text line-through',
-          text: `${data.goodsData.linePrice ? '市场价: ' + data.goodsData.linePrice : ''}`
+          text: `${data.goodsData.linePrice ? '￥' + data.goodsData.linePrice : ''}`
         }, //关闭购物车按钮-划线价类别
         2: {
           className: 'gray-text',
