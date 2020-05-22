@@ -1,4 +1,0 @@
-/* pages/webview/webview.wxss */
-.common-footer .footer-text{
-  display: none;
-}

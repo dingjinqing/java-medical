@@ -1,3 +1,0 @@
-<view class='official_container' style='margin-bottom:{{m.margin_bot}}rpx'>
-  <official-account></official-account>
-</view>

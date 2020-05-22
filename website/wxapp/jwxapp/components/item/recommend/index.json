@@ -1,6 +1,0 @@
-{
-  "component": true,
-  "usingComponents": {
-    "v-double-col-goods": "/components/item/double_col_goods/index"
-  }
-}

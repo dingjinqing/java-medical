@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "商品评价",
-  "usingComponents": {
-    "v-pay-reword-custom": "/components/popup/pay-reward-custom/index"
-  }
-}

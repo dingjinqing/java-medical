@@ -1,6 +1,0 @@
-{
-  "component": true,
-  "usingComponents": {
-    "v-sel-spec": "/components/item/spec/index"
-  }
-}
