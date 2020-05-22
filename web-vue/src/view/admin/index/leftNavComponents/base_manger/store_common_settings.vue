@@ -575,6 +575,7 @@
                           <el-image
                             style="width:220px;"
                             :src="$imageHost + '/image/admin/pictorial/pictorial_style1.png'"
+                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style1.png']"
                           ></el-image>
                         </div>
                         <el-button
@@ -592,6 +593,7 @@
                           <el-image
                             style="width:220px;"
                             :src="$imageHost + '/image/admin/pictorial/pictorial_style2.png'"
+                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style2.png']"
                           ></el-image>
                         </div>
                         <el-button
@@ -609,6 +611,7 @@
                           <el-image
                             style="width:220px;"
                             :src="$imageHost + '/image/admin/pictorial/pictorial_style3.png'"
+                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style3.png']"
                           ></el-image>
                         </div>
                         <el-button
@@ -626,6 +629,7 @@
                           <el-image
                             style="width:220px;"
                             :src="$imageHost + '/image/admin/pictorial/pictorial_style4.png'"
+                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style4.png']"
                           ></el-image>
                         </div>
                         <el-button
@@ -643,6 +647,7 @@
                           <el-image
                             style="width:220px;"
                             :src="$imageHost + '/image/admin/pictorial/pictorial_style5.png'"
+                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style5.png']"
                           ></el-image>
                         </div>
                         <el-button
