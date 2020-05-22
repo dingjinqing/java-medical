@@ -1134,7 +1134,7 @@ public class OrderInfoService extends ShopBaseService {
      */
     private Timestamp[] getCardFreeShipInterval(Byte freeLimit) {
     	IntervalType[] values = DateUtil.IntervalType.values();
-    	return DateUtil.getInterval(values[values.length-freeLimit]);
+    	return DateUtil.getInterval(values[1 + values.length - freeLimit]);
     }
 
     public void setOrderRebateInfo(OrderInfoRecord orderRecord, BigDecimal total) {
