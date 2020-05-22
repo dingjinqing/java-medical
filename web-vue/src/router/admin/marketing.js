@@ -1383,7 +1383,8 @@ const routes = [
     name: 'market_act_give',
     meta: {
       crumbTitle: 'router.couponGive',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
     },
     component: () =>
       import(
@@ -1396,7 +1397,8 @@ const routes = [
     name: 'giveGift',
     meta: {
       crumbTitle: 'router.giveGift',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
     },
     component: () =>
       import(
@@ -1409,7 +1411,8 @@ const routes = [
     name: 'giveGift_details',
     meta: {
       crumbTitle: 'router.giveGift_details',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
     },
     component: () =>
       import(
@@ -1422,7 +1425,8 @@ const routes = [
     name: 'giveGift_receive',
     meta: {
       crumbTitle: 'router.giveGift_receive',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
     },
     component: () =>
       import(
@@ -1435,7 +1439,8 @@ const routes = [
     name: 'couponGive_receive_details',
     meta: {
       crumbTitle: 'router.couponGive_receive_details',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
     },
     component: () =>
       import(
@@ -1448,7 +1453,8 @@ const routes = [
     name: 'couponGive_grant_coupons',
     meta: {
       crumbTitle: 'router.couponGive_grant_coupons',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
     },
     component: () =>
       import(
@@ -1461,7 +1467,8 @@ const routes = [
     name: 'collectGift',
     meta: {
       crumbTitle: 'router.collectGift',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
     },
     component: () =>
       import(
@@ -1474,7 +1481,8 @@ const routes = [
     name: 'wechateGoodsCicle',
     meta: {
       crumbTitle: 'router.wechateGoodsCicle',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
     },
     component: () =>
       import(
@@ -1487,7 +1495,8 @@ const routes = [
     name: 'integral_convert',
     meta: {
       crumbTitle: 'router.integral_convert',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
     },
     component: () =>
       import(
@@ -1500,7 +1509,8 @@ const routes = [
     name: 'pointsExchangeOrder',
     meta: {
       crumbTitle: 'router.integral_convert',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
     },
     component: () =>
       import(
@@ -1513,7 +1523,8 @@ const routes = [
     name: 'pointsUserList',
     meta: {
       crumbTitle: 'router.pointsUserList',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
     },
     component: () =>
       import(
@@ -1526,7 +1537,8 @@ const routes = [
     name: 'newUserDetails',
     meta: {
       crumbTitle: 'router.integral_convert',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
     },
     component: () =>
       import(
