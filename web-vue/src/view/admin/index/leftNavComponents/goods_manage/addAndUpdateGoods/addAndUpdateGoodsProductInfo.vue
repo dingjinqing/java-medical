@@ -93,7 +93,7 @@ export default {
         }
       }
 
-      // 校验商品重量逻辑
+      // 需要校验商品重量逻辑
       if (this.transferData.goodsWeightCfg === 1) {
         // 选择了重量模板则需要校验填入的数据是否正确
         if (this.transferData.isDefaultPrd) {
