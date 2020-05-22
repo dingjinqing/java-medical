@@ -722,17 +722,15 @@
           </div>
         </li>
       </ul>
-
-      <div class="footer">
-        <el-button
-          size="small"
-          type="primary"
-          class="footer-btn"
-          @click="saveCommonInfoHandle"
-        >{{$t('storeCommonSettings.save')}}</el-button>
-      </div>
     </div>
-
+    <div class="basic-page-footer">
+      <el-button
+        size="small"
+        type="primary"
+        class="footer-btn"
+        @click="saveCommonInfoHandle"
+      >{{$t('storeCommonSettings.save')}}</el-button>
+    </div>
     <!-- 上传图片 -->
     <ImageDalog
       :tuneUp="tuneUp"
@@ -967,5 +965,17 @@ export default {
 .example-tips {
   margin-left: 15px;
   color: #999;
+}
+.basic-page-footer {
+  position: fixed;
+  bottom: 0;
+  left: 150px;
+  z-index: 10;
+  width: calc(100% - 150px);
+  height: 50px;
+  border-top: 1px solid #eee;
+  line-height: 50px;
+  background: #fdfdfd;
+  text-align: center;
 }
 </style>
