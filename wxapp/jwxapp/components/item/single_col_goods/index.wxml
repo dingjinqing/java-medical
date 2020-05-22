@@ -16,7 +16,7 @@
         </block>
         <block wx:else>
           <text class="realPrice" style="color:{{main_setting.comColor}}">￥<text style="font-size:36rpx;font-weight:600;">{{goodsData.prdPrice}}</text></text>
-          <text class="gray-text line-through" wx:if="{{goodsData.prdPrice < goodsData.goodsPrice}}">{{goodsData.goodsPrice}}</text>
+          <text class="gray-text line-through" wx:if="{{goodsData.prdPrice < goodsData.goodsPrice}}">￥{{goodsData.goodsPrice}}</text>
         </block>
       </view>
       <block wx:if="{{!enableNumEdit}}">
