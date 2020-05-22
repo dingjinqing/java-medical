@@ -36,7 +36,7 @@
             type="primary"
             size="small"
             @click="exportData"
-          >导出</el-button>
+          >{{$t('memberCard.out')}}</el-button>
         </div>
       </div>
     </div>
