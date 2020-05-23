@@ -60,6 +60,7 @@ const routes = baseRoutes.concat(
 )
 
 const router = new Router({
+  base: 'wxapp',
   mode: 'history',
   routes
 })
