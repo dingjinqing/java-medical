@@ -15,7 +15,6 @@
           class="version-manage-table"
           header-row-class-name="tableClss"
           :data="tableData"
-          :span-method="objectSpanMethod"
           border
           style="width: 100%"
         >
@@ -44,23 +43,16 @@
             width="250px"
           >
             <template slot-scope="scope">
-              <div
-                v-for="(item, index) in scope.row.goods"
-                :key="index"
-                style="overflow: hidden;margin-bottom: 10px;"
-              >
-                <div class="fl">
-                  <img
-                    :src="item.goodsImg"
-                    alt=""
-                    style="width: 100%; height: 100%;"
-                  >
-                </div>
-                <div class="fr">
-                  <p><span class="tips">限时降价</span><span>{{item.goodsName}}</span></p>
-                  <p>{{item.goodsAttr}}</p>
-                  <span></span>
-                </div>
+              <div class="fl">
+                <img
+                  :src="scope.row.goods[0].goodsImg"
+                  alt=""
+                  style="width: 100%; height: 100%;"
+                >
+              </div>
+              <div class="fr">
+                <p><span class="tips">限时降价</span><span>{{scope.row.goods[0].goodsName}}</span></p>
+                <p>{{scope.row.goods[0].goodsAttr}}</p>
               </div>
             </template>
           </el-table-column>
@@ -69,10 +61,7 @@
             align="center"
           >
             <template slot-scope="scope">
-              <div
-                v-for="(item, index) in scope.row.goods"
-                :key="index"
-              >{{item.goodsPrice}}</div>
+              <span>{{scope.row.goods[0].goodsPrice}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -160,25 +149,6 @@ export default {
     lang () { }
   },
   methods: {
-    // 合并列
-    objectSpanMethod ({ row, column, rowIndex, columnIndex }) {
-      console.log(row)
-      console.log(column)
-      console.log(rowIndex)
-      console.log(columnIndex)
-      // if (row.goods.length) {
-      //   return {
-      //     rowspan: 1,
-      //     colspan: row.goods.length
-      //   }
-      // } else {
-      //   return {
-      //     rowspan: 0,
-      //     colspan: 0
-      //   }
-      // }
-    },
-
     // 初始化数据
     initDataList () {
       this.loading = true
@@ -197,14 +167,12 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.forEach(item => {
-        // item.goods.push(item.goods[0])
         this.orderList.forEach(val => {
           if (item.orderStatus === val[0]) {
             item.orderStatus = val[1]
           }
         })
       })
-
       this.tableData = data
     },
 
