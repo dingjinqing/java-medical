@@ -16,7 +16,7 @@ public class CouponGetDetailParam {
 	private String userName;
 	/**手机号*/
 	private String mobile;
-	/**使用状态 0 未使用 1 使用 2 过期 3 废除 */
+	/**使用状态 1 未使用 2 使用 3 过期 4 废除 */
 	private Byte isUsed;
 
 	/**

@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
+import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -15,13 +16,13 @@ import java.util.List;
  * 2019年7月16日
  */
 @RestController
-@RequestMapping("/api")
+//@RequestMapping("/api")
 public class AdminCouponController extends AdminBaseController{
 //
-//	@Override
-//	protected ShopApplication shop() {
-//		return saas.getShopApp(471752);
-//	}
+	@Override
+	protected ShopApplication shop() {
+		return saas.getShopApp(471752);
+	}
 	/**
 	 * 创建优惠券
 	 * @param couponInfo
@@ -136,6 +137,17 @@ public class AdminCouponController extends AdminBaseController{
 		PageResult<CouponHoldListVo> detail = shop().coupon.getDetail(param);
 		return this.success(detail);
 	}
+
+    /**
+     * 领取分裂优惠券用户详情列表
+     * @param param
+     * @return
+     */
+	@PostMapping("/admin/coupon/get/user/detail")
+	public JsonResult getSplitCouponUserDetail(@RequestBody CouponGetDetailParam param){
+        PageResult<CouponHoldListVo> splitCoupinUserDetail = shop().coupon.getSplitCoupinUserDetail(param);
+        return this.success(splitCoupinUserDetail);
+    }
 
     /**
      * 删除用户优惠券

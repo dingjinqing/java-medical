@@ -13,6 +13,8 @@ import java.sql.Timestamp;
 public class CouponHoldListVo {
 
     private Integer id;
+    /**优惠券活动ID*/
+    private Integer actId;
     private String username;
     private Integer userId;
     private String mobile;
