@@ -73,9 +73,13 @@ public enum GoodsDataIIllegalEnum {
      */
     GOODS_PRD_CODES_EXIST((byte)14,"goods.prd.codes.exist"),
     /**
-     * 商品条码内部字重复, TODO:未国际化
+     * 商品条码内部字重复
      * */
-    GOODS_PRD_CODES_INNER_REPEATED((byte)15,"goods.prd.codes.inner.repeated");
+    GOODS_PRD_CODES_INNER_REPEATED((byte)15,"goods.prd.codes.inner.repeated"),
+    /**
+     * 成本价格不可为null
+     */
+    GOODS_COST_PRICE_IS_NULL((byte)16,"goods.cost.price.is.null");
 
 
     private byte errorCode;

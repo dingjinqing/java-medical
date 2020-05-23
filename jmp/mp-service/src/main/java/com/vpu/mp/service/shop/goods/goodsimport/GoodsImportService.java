@@ -14,7 +14,6 @@ import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsDataIIllegalEnum;
@@ -29,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 import com.vpu.mp.service.pojo.shop.image.DownloadImageBo;
+import com.vpu.mp.service.shop.goods.GoodsBrandService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSortService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
@@ -49,7 +49,6 @@ import java.util.stream.Collectors;
 
 /**
  * 商品导入
- *
  * @author 李晓冰
  * @date 2020年03月18日
  */
@@ -64,6 +63,8 @@ public class GoodsImportService extends ShopBaseService {
     GoodsService goodsService;
     @Autowired
     GoodsSortService goodsSortService;
+    @Autowired
+    GoodsBrandService goodsBrandService;
     /**
      * 最大导入数量
      */
@@ -71,7 +72,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 微铺宝商品excel模板导入
-     *
      * @param param 导入参数
      * @return 导入直接
      */
@@ -124,16 +124,15 @@ public class GoodsImportService extends ShopBaseService {
             List<GoodsVpuExcelImportBo> goodsList = goodsVpuExcelImportModels.stream().map(GoodsVpuExcelImportBo::new).collect(Collectors.toList());
             GoodsVpuExcelImportMqParam mqParam = new GoodsVpuExcelImportMqParam(goodsList, param.getLang(), param.getIsUpdate(), batchId, getShopId(), null);
             // 调用消息队列
-            saas.taskJobMainService.dispatchImmediately(mqParam, GoodsVpuExcelImportMqParam.class.getName(), getShopId(),
-                TaskJobsConstant.TaskJobEnum.GOODS_VPU_EXCEL_IMPORT.getExecutionType());
-//            goodsVpuExcelImportMqCallback(mqParam);
+//            saas.taskJobMainService.dispatchImmediately(mqParam, GoodsVpuExcelImportMqParam.class.getName(), getShopId(),
+//                TaskJobsConstant.TaskJobEnum.GOODS_VPU_EXCEL_IMPORT.getExecutionType());
+            goodsVpuExcelImportMqCallback(mqParam);
         }
         return code;
     }
 
     /**
      * 微铺宝商品excel模板导入mq 消费者回调方法
-     *
      * @param param
      */
     public void goodsVpuExcelImportMqCallback(GoodsVpuExcelImportMqParam param) {
@@ -144,7 +143,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 初步根据非空字段，将不合法的数据剔除，会修改readyToImportGoodsList集合
-     *
      * @param readyToImportGoodsList 待插入数据，方法会将不合法数据项剔除
      * @param batchId                批量处理id
      * @return 不合法的数据集合
@@ -173,6 +171,10 @@ public class GoodsImportService extends ShopBaseService {
                 illegalGoods.add(importRecordService.convertVpuExcelImportBoToImportDetail(goodsBo, GoodsDataIIllegalEnum.GOODS_SHOP_PRICE_IS_NULL, batchId));
                 return true;
             }
+            if (goodsBo.getCostPrice() == null) {
+                illegalGoods.add(importRecordService.convertVpuExcelImportBoToImportDetail(goodsBo, GoodsDataIIllegalEnum.GOODS_SHOP_PRICE_IS_NULL, batchId));
+                return true;
+            }
             return false;
         });
 
@@ -182,7 +184,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 商品待导入数据进行迭代处理
-     *
      * @param readyToImportGoodsList 准备被处理的目标数据集合
      * @param illegalGoodsList       不合法的数据集合
      * @param isUpdate               是否是更细操作
@@ -202,13 +203,14 @@ public class GoodsImportService extends ShopBaseService {
         importRecordService.updateGoodsImportSuccessNum(successGoodsList.size(), batchId);
         successGoodsList.addAll(illegalGoodsList);
         importRecordService.insertGoodsImportDetailBatch(successGoodsList);
-        goodsService.updateEs(goodsIds);
+        if (goodsIds.size() > 0) {
+            goodsService.updateEs(goodsIds);
+        }
     }
 
     /**
      * 导入每一个数据时琐lock:goods:shopId，避免admin端商品新增和修改
      * 单条商品数据处理，对应多条sku
-     *
      * @param shopId
      * @param goodsSkus
      * @param illegalGoodsList
@@ -255,7 +257,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 剔除掉带插入的同一商品内部规格编码重复的数据，此方法会修改goodsSkus对象本身
-     *
      * @param goodsSkus 同一个商品的sku的集合
      * @return
      */
@@ -275,7 +276,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 剔除掉带插入的同一商品内部商品条码重复的数据，此方法会修改goodsSkus对象本身
-     *
      * @param goodsSkus 同一个商品的sku的集合
      * @return
      */
@@ -297,7 +297,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 判断规格编码是否在数据库中重复
-     *
      * @param goodsSkus
      * @return
      */
@@ -321,7 +320,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 判断商品条码是否在数据库中重复
-     *
      * @param goodsSkus
      * @return
      */
@@ -345,7 +343,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 商品更新
-     *
      * @param importGoodsSkus
      * @param successGoodsList
      * @param illegalGoodsList
@@ -365,8 +362,8 @@ public class GoodsImportService extends ShopBaseService {
         if (importGoodsSkus.size() == 0) {
             return null;
         }
-        // 更新操作失败
         GoodsDataIllegalEnumWrap codeWrap = goodsRealUpdate(goodsRecord, goodsSpecProducts, importGoodsSkus);
+        // 更新操作失败
         if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
             illegalGoodsList.addAll(importRecordService.convertVpuExcelImportBosToImportDetails(importGoodsSkus, codeWrap.getIllegalEnum(), batchId));
             return null;
@@ -378,7 +375,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 根据导入的sku信息，更新商品原有的sku内容
-     *
      * @param goodsSn
      * @param importGoodsSkus
      * @param illegalGoodsList
@@ -399,6 +395,7 @@ public class GoodsImportService extends ShopBaseService {
             } else {
                 prd.setPrdPrice(sku.getShopPrice());
                 prd.setPrdMarketPrice(sku.getMarketPrice());
+                prd.setPrdCostPrice(sku.getCostPrice());
                 prd.setPrdNumber(sku.getStock());
                 prd.setPrdWeight(sku.getPrdWeight());
                 return false;
@@ -412,6 +409,7 @@ public class GoodsImportService extends ShopBaseService {
         Integer goodsNum = 0;
         BigDecimal shopPrice = BigDecimal.valueOf(Double.MAX_VALUE);
         BigDecimal marketPrice = BigDecimal.valueOf(Double.MIN_VALUE);
+        BigDecimal costPrice = BigDecimal.valueOf(Double.MAX_VALUE);
         BigDecimal goodsWeight = BigDecimal.valueOf(Double.MAX_VALUE);
         for (GoodsSpecProduct prd : goodsSpecProducts) {
             goodsNum += (prd.getPrdNumber() == null ? 0 : prd.getPrdNumber());
@@ -421,6 +419,9 @@ public class GoodsImportService extends ShopBaseService {
             if (prd.getPrdMarketPrice() != null && marketPrice.compareTo(prd.getPrdMarketPrice()) < 0) {
                 marketPrice = prd.getPrdMarketPrice();
             }
+            if (costPrice.compareTo(prd.getPrdCostPrice()) > 0) {
+                costPrice = prd.getPrdCostPrice();
+            }
             if (goodsWeight.compareTo(prd.getPrdWeight()) > 0) {
                 goodsWeight = prd.getPrdWeight();
             }
@@ -428,8 +429,9 @@ public class GoodsImportService extends ShopBaseService {
         goodsRecord.setGoodsName(bos.get(0).getGoodsName());
         goodsRecord.setGoodsAd(bos.get(0).getGoodsAd());
         goodsRecord.setGoodsNumber(goodsNum);
-        goodsRecord.setShopPrice(BigDecimal.valueOf(Double.MAX_VALUE).equals(shopPrice) ? BigDecimal.ZERO : shopPrice);
+        goodsRecord.setShopPrice(shopPrice);
         goodsRecord.setMarketPrice(BigDecimal.valueOf(Double.MIN_VALUE).equals(marketPrice) ? null : marketPrice);
+        goodsRecord.setCostPrice(costPrice);
         goodsRecord.setGoodsWeight(BigDecimal.valueOf(Double.MIN_VALUE).equals(goodsWeight) ? null : goodsWeight);
 
         GoodsDataIllegalEnumWrap resultCode = new GoodsDataIllegalEnumWrap();
@@ -437,11 +439,27 @@ public class GoodsImportService extends ShopBaseService {
         List<DownloadImageBo> goodsImgsDownloadBo = filterGoodsImages(bos);
 
         // 处理描述信息
+        GoodsVpuExcelImportBo bo = bos.get(0);
         List<DownloadImageBo> descDownloadBo = new ArrayList<>();
-        if (StringUtils.isNotBlank(bos.get(0).getGoodsDesc())) {
-            String desc = filterGoodsDesc(bos.get(0).getGoodsDesc(), descDownloadBo);
+        if (StringUtils.isNotBlank(bo.getGoodsDesc())) {
+            String desc = filterGoodsDesc(bo.getGoodsDesc(), descDownloadBo);
             goodsRecord.setGoodsDesc(desc);
         }
+        // 处理商家分类品牌
+        try {
+            // 此处为放入事务内，如果后面事务异常了那新增的品牌和商家分类不进行回滚
+            int sortId = goodsSortService.fixGoodsImportGoodsSort(bo.getFirstSortName(), bo.getSecondSortName());
+            goodsRecord.setSortId(sortId);
+            if (StringUtils.isNotBlank(bo.getBrandName())) {
+                Integer brandId = goodsBrandService.getOrAddBrand(bo.getBrandName());
+                goodsRecord.setBrandId(brandId);
+            }
+        } catch (Exception e) {
+            logger().warn("商品excel导入-更新-失败:" + e.getMessage());
+            resultCode.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
+            return resultCode;
+        }
+
 
         transaction(() -> {
             try {
@@ -453,12 +471,14 @@ public class GoodsImportService extends ShopBaseService {
                 if (imgs.size() > 0) {
                     goodsRecord.setGoodsImg(imgs.get(0));
                     imgs.remove(0);
-                    goodsService.updateGoodsChildImgsForImport(goodsRecord.getGoodsId(), imgs);
+                    if (imgs.size() > 0) {
+                        goodsService.updateGoodsChildImgsForImport(goodsRecord.getGoodsId(), imgs);
+                    }
                 }
                 goodsService.updateGoodsForImport(goodsRecord);
                 goodsService.goodsSpecProductService.updateSpecPrdForGoodsImport(goodsSpecProducts);
             } catch (Exception e) {
-                logger().debug("商品excel导入-更新-失败:" + e.getMessage());
+                logger().warn("商品excel导入-更新-失败:" + e.getMessage());
                 resultCode.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
             }
         });
@@ -467,7 +487,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 导入商品插入操作
-     *
      * @param goodsSkus        待插入数据
      * @param successGoodsList 成功数据集合
      * @param illegalGoodsList 失败数据集合
@@ -507,7 +526,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 商品插入操作
-     *
      * @return
      */
     private GoodsDataIllegalEnumWrap goodsRealInsert(List<GoodsVpuExcelImportBo> importBos) {
@@ -539,21 +557,33 @@ public class GoodsImportService extends ShopBaseService {
             goods.setGoodsDesc(desc);
         }
 
+        // 处理商家分类品牌
+        try {
+            // 此处为放入事务内，如果后面事务异常了那新增的品牌和商家分类不进行回滚
+            int sortId = goodsSortService.fixGoodsImportGoodsSort(bo.getFirstSortName(), bo.getSecondSortName());
+            goods.setSortId(sortId);
+            if (StringUtils.isNotBlank(bo.getBrandName())) {
+                Integer brandId = goodsBrandService.getOrAddBrand(bo.getBrandName());
+                goods.setBrandId(brandId);
+            }
+        } catch (Exception e) {
+            logger().warn("商品excel导入-插入-失败:" + e.getMessage());
+            resultCode.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
+            return resultCode;
+        }
+
+        // 这个地方是为了避免报异常
+        goods.setCatId(0);
+
         transaction(() -> {
             try {
-                // 处理商家分类
-                int sortId = goodsSortService.fixGoodsImportGoodsSort(bo.getFirstSortName(), bo.getSecondSortName());
-                goods.setSortId(sortId);
-
-                // 这个地方是为了避免报异常
-                goods.setCatId(0);
+                // 处理商品描述中包含的图片
+//                imageService.addImageToDbBatch(descDownloadImageBos);
 
                 // 处理用户指定的商品图片
                 List<String> imgs = imageService.addImageToDbBatch(downloadImageBos);
                 goods.setGoodsImg(imgs.remove(0));
                 goods.setGoodsImgs(imgs);
-                // 处理商品描述中包含的图片
-                imageService.addImageToDbBatch(descDownloadImageBos);
 
                 GoodsDataIllegalEnumWrap insertResult = goodsService.insert(goods);
                 resultCode.setIllegalEnum(insertResult.getIllegalEnum());
@@ -569,7 +599,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 将GoodsVpuExcelImportBo转换为Goods 准备进行插入或更新操作
-     *
      * @param importBos
      * @return
      */
@@ -589,7 +618,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 转换为对应的sku
-     *
      * @param importBos
      * @return
      */
@@ -599,6 +627,7 @@ public class GoodsImportService extends ShopBaseService {
             GoodsSpecProduct product = new GoodsSpecProduct();
             product.setPrdPrice(importBo.getShopPrice());
             product.setPrdMarketPrice(importBo.getMarketPrice());
+            product.setPrdCostPrice(importBo.getCostPrice());
             product.setPrdNumber(importBo.getStock());
             product.setPrdSn(importBo.getPrdSn());
             product.setPrdWeight(importBo.getPrdWeight());
@@ -614,7 +643,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 转换对应的GoodsSpec
-     *
      * @param importBos
      * @return
      */
@@ -654,7 +682,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * GoodsVpuExcelImportBo提取商品表使用信息，并转换为Goods类
-     *
      * @param goodsInfo GoodsVpuExcelImportBo
      * @return
      */
@@ -678,17 +705,16 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 处理外链图片集
-     *
      * @param importBos 待处理导入对象
      * @return 待入库
      */
     private List<DownloadImageBo> filterGoodsImages(List<GoodsVpuExcelImportBo> importBos) {
         List<DownloadImageBo> downloadImageBos = new ArrayList<>(5);
         List<String> imgNames = new ArrayList<>(downloadImageBos.size());
-        Map<String,String> imgNameUrlMap = new HashMap<>(downloadImageBos.size());
+        Map<String, String> imgNameUrlMap = new HashMap<>(downloadImageBos.size());
 
         // 判断哪些在数据库里面已经存在
-        for (GoodsVpuExcelImportBo importBo : importBos){
+        for (GoodsVpuExcelImportBo importBo : importBos) {
             String goodsImgsStr = importBo.getGoodsImgsStr();
             if (goodsImgsStr == null) {
                 continue;
@@ -698,9 +724,9 @@ public class GoodsImportService extends ShopBaseService {
                 if (imgUrl.lastIndexOf("/") == -1) {
                     continue;
                 }
-                String imgName = imgUrl.substring(imgUrl.lastIndexOf("/")+1);
+                String imgName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
                 imgNames.add(imgName);
-                imgNameUrlMap.put(imgName,imgUrl);
+                imgNameUrlMap.put(imgName, imgUrl);
             }
         }
         List<UploadedImageRecord> imgsByImgOrgNames = imageService.getImgsByImgOrgNames(imgNames);
@@ -709,6 +735,7 @@ public class GoodsImportService extends ShopBaseService {
             DownloadImageBo bo = new DownloadImageBo();
             bo.setAlreadyHas(true);
             bo.setRelativeFilePath(record.getImgPath());
+            downloadImageBos.add(bo);
         }
 
         for (String url : imgNameUrlMap.values()) {
@@ -726,7 +753,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 过滤商品描述信息
-     *
      * @param goodsDesc 商品描述信息
      * @return
      */
@@ -742,7 +768,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 过滤img标签
-     *
      * @param goodsDesc
      * @param downloadImageBos
      * @return
@@ -779,7 +804,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 过滤background-image 和background 的 url(xxxx)
-     *
      * @param goodsDesc
      * @param downloadImageBos
      * @return
@@ -821,7 +845,6 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 下载并上传外链图片
-     *
      * @param imgUrl 外链地址
      * @return null 无法处理
      */
@@ -830,20 +853,16 @@ public class GoodsImportService extends ShopBaseService {
             return null;
         }
         imgUrl = imgUrl.replaceAll("\\n", "").trim();
-        if (0 != imgUrl.indexOf("http")) {
-            imgUrl = "http://" + imgUrl;
-        }
         try {
             return imageService.downloadImgAndUpload(imgUrl, IMAGE_WIDTH, IMAGE_HEIGHT);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger().warn("商品excel导入-下载外链图片-失败:" + e.getMessage());
         }
         return null;
     }
 
     /**
      * 生成文件存储在yupYun上的文件位置
-     *
      * @param shopId   店铺id
      * @param fileName 文件名
      * @return 文件相对位置

@@ -10,8 +10,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
-
 /**
  * Date工具
  *
@@ -136,6 +134,14 @@ public final class DateUtil {
      */
     public static String getLocalDateFormat() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT_FULL));
+    }
+
+    /**
+     * 获取本地时间紧凑型格式：20200201115502
+     * @return
+     */
+    public static String getLocalDateFullTightFormat(){
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT_API_EXTERNAL));
     }
 
 	/**

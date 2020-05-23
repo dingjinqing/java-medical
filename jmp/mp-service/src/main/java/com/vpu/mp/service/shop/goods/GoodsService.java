@@ -915,7 +915,8 @@ public class GoodsService extends ShopBaseService {
 
         if (StringUtils.isBlank(goods.getGoodsSn())) {
             int count = db().fetchCount(GOODS) + 1;
-            goods.setGoodsSn(String.format("G10%08d", count));
+            String timeStr = DateUtil.getLocalDateFullTightFormat();
+            goods.setGoodsSn(String.format("G%s-%08d",timeStr,count));
         }
 
         // 设置商品分享海报配置信息

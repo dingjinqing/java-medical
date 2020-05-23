@@ -15,12 +15,14 @@ import java.math.BigDecimal;
 public class GoodsVpuExcelImportBo extends GoodsExcelImportBase {
     private String firstSortName;
     private String secondSortName;
+    private String brandName;
     /**sku对应的规格组合id编号*/
     private String prdSpecs;
     private String goodsAd;
     private Integer stock;
     private BigDecimal marketPrice;
     private BigDecimal shopPrice;
+    private BigDecimal costPrice;
     private Byte isOnSale;
     private Integer limitBuyNum;
     private BigDecimal prdWeight;
@@ -33,6 +35,7 @@ public class GoodsVpuExcelImportBo extends GoodsExcelImportBase {
     public GoodsVpuExcelImportBo(GoodsVpuExcelImportModel m){
         firstSortName = m.getFirstSortName();
         secondSortName = m.getSecondSortName();
+        brandName = m.getBrandName();
         goodsSn = m.getGoodsSn();
         goodsName = m.getGoodsName();
         prdDesc = m.getPrdDesc();
@@ -41,6 +44,7 @@ public class GoodsVpuExcelImportBo extends GoodsExcelImportBase {
         stock = m.getStock();
         marketPrice = m.getMarketPrice();
         shopPrice = m.getShopPrice();
+        costPrice = m.getCostPrice();
         isOnSale = m.getIsOnSale();
         limitBuyNum = m.getLimitBuyNum();
         prdWeight = m.getGoodsWeight();
