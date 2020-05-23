@@ -279,16 +279,6 @@ public class MpDistributionService extends ShopBaseService{
     }
 
     /**
-     * 判断用户是否为分销员
-     * @param userId
-     * return 0：否；1：是
-     */
-    public Integer isDistributor(Integer userId){
-        Integer isDistributor = db().select(USER.IS_DISTRIBUTOR).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(Integer.class);
-        return isDistributor;
-	}
-
-    /**
      * 获取分销推广文案
      * @return
      */
