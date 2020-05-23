@@ -10,7 +10,7 @@
     </form>
     <view class='btn_wait bten_shenqing' wx:if='{{status == 0}}'>等待审核</view>
     <form report-submit='true' bindsubmit='apply_get'>
-      <button class='bten_shenqing' wx:if='{{status == null}}' style='background:{{comColor}}' bindtap='apply_get' formType='submit'>申请成为分销员</button>
+      <button class='bten_shenqing' wx:if='{{status == null || status == 3}}' style='background:{{comColor}}' bindtap='apply_get' formType='submit'>申请成为分销员</button>
     </form>
 
     <!-- 绑定手机号弹窗 -->
