@@ -1,34 +1,36 @@
 <template>
   <div class="tab_content">
     <div class="table_list">
-      <div class="select_info">
-        <div class="leftarea">
-          <span>{{ $t('distribution.reviewMobile') + '：' }}</span>
+      <el-form
+        :model="searchForm"
+        label-width="90px"
+        label-position="right"
+        :inline="true"
+      >
+        <el-form-item :label="$t('distribution.reviewMobile') + '：'">
           <el-input
             v-model="searchForm.mobile"
             size="small"
             clearable
             class="inputWidth"
           ></el-input>
-        </div>
-        <div class="leftarea">
-          <span>{{ $t('distribution.reviewName') + '：' }}</span>
+        </el-form-item>
+        <el-form-item :label="$t('distribution.reviewName') + '：'">
           <el-input
             v-model="searchForm.username"
             size="small"
             clearable
             class="inputWidth"
           ></el-input>
-        </div>
-        <div class="midarea">
-          <span>{{ $t('distribution.reviewTime') + '：' }}</span>
+        </el-form-item>
+        <el-form-item :label="$t('distribution.reviewTime') + '：'">
           <el-date-picker
             v-model="searchForm.startTime"
             type="date"
             :placeholder="$t('distribution.reviewSelect')"
             size="small"
             value-format="yyyy-MM-dd HH:mm:ss"
-            class="inputWidth"
+            style="width: 190px;"
           >
           </el-date-picker>
           <span>{{ $t('distribution.to') }}</span>
@@ -38,18 +40,18 @@
             :placeholder="$t('distribution.reviewSelect')"
             size="small"
             value-format="yyyy-MM-dd HH:mm:ss"
-            class="inputWidth"
+            style="width: 190px;"
           >
           </el-date-picker>
-        </div>
-        <div class="rightarea">
+        </el-form-item>
+        <el-form-item>
           <el-button
             type="primary"
             size="small"
             @click="initDataList"
           >{{ $t('distribution.reviewSearch') }}</el-button>
-        </div>
-      </div>
+        </el-form-item>
+      </el-form>
 
       <el-tabs
         v-model="activeName"
@@ -573,44 +575,8 @@ export default {
 .table_list {
   position: relative;
   background-color: #fff;
-  .select_info {
-    display: flex;
-    margin: 10px 0px;
-    .leftarea {
-      display: flex;
-      margin-right: 50px;
-      .inputWidth {
-        width: 170px;
-      }
-    }
-    .rightarea {
-      display: flex;
-      :nth-of-type(1) {
-        margin-right: 5px;
-      }
-    }
-    .midarea {
-      display: flex;
-      margin-right: 30px;
-      :first-child {
-        margin-right: 10px;
-      }
-      :nth-of-type(1) {
-        margin-right: 10px;
-      }
-      :nth-of-type(2) {
-        margin: 0 10px 0 0;
-      }
-    }
-    span {
-      white-space: nowrap;
-      height: 32px;
-      line-height: 32px;
-    }
-    /deep/ .el-input__inner {
-      width: 200px;
-      display: inline-block;
-    }
+  .inputWidth {
+    width: 170px;
   }
   .footer {
     padding: 20px 0 20px 20px;
