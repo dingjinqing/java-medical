@@ -34,7 +34,7 @@ global.wxPage({
   // 申请成为分销员
   apply_get: function (e) {
     var that = this;
-    if (that.data.mobile == "") {
+    if (util.getCache('mobile') == "") {
       util.checkSession(function () {
         that.setData({
           is_block: 1
