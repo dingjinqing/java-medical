@@ -86,7 +86,6 @@ public class CouponService extends ShopBaseService {
      * @return
      */
     public Boolean couponAdd(CouponParam couponInfo) {
-        System.out.println(couponInfo);
         MrkingVoucherRecord record = new MrkingVoucherRecord();
         record.setSurplus(couponInfo.getTotalAmount());
         record.setAliasCode(this.generateAliasCode());
