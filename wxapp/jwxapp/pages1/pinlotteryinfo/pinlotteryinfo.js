@@ -21,6 +21,7 @@ global.wxPage({
     click_num: false,
     is_show_modal: 0, // 分享弹窗
     order_sn: '', // 订单号
+    shareFlag: 0,
     shareImg: '', // 分享图片
     shareDoc: '' // 分享文案
   },
@@ -58,9 +59,7 @@ global.wxPage({
     }
     clearTimeout(set_time_out);
     // 获取活动详情
-    util.getNeedTemplateId('group_draw', () => {
-      this.request_group()
-    })
+    this.request_group()
   },
 
   request_group () {
@@ -148,17 +147,19 @@ global.wxPage({
   },
   // 去参团
   to_join: function () {
-    let goodsList = [{
-      goodsId: goods_id,
-      prdRealPrice: this.data.group_info.groupDraw.payMoney,
-      goodsPrice: this.data.group_info.goods.shopPricee,
-      goodsNum: 1,
-      prdId: this.data.group_info.groupDraw.productId,
-      productId: this.data.group_info.groupDraw.productId
-    }]
-    console.log(goodsList)
-    util.navigateTo({
-      url: "/pages/checkout/checkout?activityType=8&activityId=" + Number(group_draw_id) + "&groupid=" + Number(group_id) + "&goodsList=" + JSON.stringify(goodsList) + '&inviteId=' + this.data.inviteId
+    util.getNeedTemplateId('draw_result', () => {
+      let goodsList = [{
+        goodsId: goods_id,
+        prdRealPrice: this.data.group_info.groupDraw.payMoney,
+        goodsPrice: this.data.group_info.goods.shopPricee,
+        goodsNum: 1,
+        prdId: this.data.group_info.groupDraw.productId,
+        productId: this.data.group_info.groupDraw.productId
+      }]
+      console.log(goodsList)
+      util.navigateTo({
+        url: "/pages/checkout/checkout?activityType=8&activityId=" + Number(group_draw_id) + "&groupid=" + Number(group_id) + "&goodsList=" + JSON.stringify(goodsList) + '&inviteId=' + this.data.inviteId
+      })
     })
   },
   // 去开团
@@ -333,6 +334,13 @@ global.wxPage({
   // 查看活动规则
   to_rule: function () {
     util.jumpToWeb('/wxapp/pinlottery/help', '&gid=' + group_draw_id);
+  },
+  // 去分享
+  to_share: function () {
+    // 订阅消息
+    util.getNeedTemplateId('draw_result', () => {
+      this.setData({ shareFlag: 1 })
+    })
   },
   /**
    * 用户点击右上角分享
