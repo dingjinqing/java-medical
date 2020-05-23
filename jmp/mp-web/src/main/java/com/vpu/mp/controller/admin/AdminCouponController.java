@@ -16,13 +16,13 @@ import java.util.List;
  * 2019年7月16日
  */
 @RestController
-//@RequestMapping("/api")
+@RequestMapping("/api")
 public class AdminCouponController extends AdminBaseController{
 //
-	@Override
-	protected ShopApplication shop() {
-		return saas.getShopApp(471752);
-	}
+//	@Override
+//	protected ShopApplication shop() {
+//		return saas.getShopApp(471752);
+//	}
 	/**
 	 * 创建优惠券
 	 * @param couponInfo
