@@ -8,13 +8,9 @@ import lombok.Data;
  */
 @Data
 public class DistributorApplyDetailParam {
-    public Integer id;
-    /**
-     * 用户ID
-     */
-    public Integer userId;
-    /**
-     * 审核状态 0：审核中；1：通过；2：拒绝
-     */
-    public Integer status;
+    private Integer id;
+    /**用户ID*/
+    private Integer userId;
+    /**审核状态 0：审核中；1：通过；2：拒绝；3：没申请过或被删除分销员*/
+    private Integer status;
 }
