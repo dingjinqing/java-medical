@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionNumConfig;
 import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsDataIIllegalEnum;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsDataIllegalEnumWrap;
@@ -32,6 +33,15 @@ public class GoodsWrapService extends ShopBaseService {
      */
     @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
     public GoodsDataIIllegalEnum insertWithLock(@RedisLockKeys Integer shopId, Goods goods) {
+        // 是否超出数量判断
+        Integer limitNum = saas.getShopApp(getShopId()).version.getLimitNum(VersionNumConfig.GOODSNUM);
+        if (limitNum != -1) {
+            Integer count = goodsService.selectGoodsCount();
+            if (count >= limitNum) {
+                return GoodsDataIIllegalEnum.GOODS_NUM_FETCH_LIMIT_NUM;
+            }
+        }
+
         GoodsDataIllegalEnumWrap codeWrap = goodsService.insert(goods);
         if (codeWrap.getGoodsId() != null) {
             goodsService.updateEs(Collections.singletonList(codeWrap.getGoodsId()));

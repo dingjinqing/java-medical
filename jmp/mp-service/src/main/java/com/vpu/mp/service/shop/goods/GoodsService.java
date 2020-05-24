@@ -20,7 +20,6 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
-import com.vpu.mp.service.pojo.saas.shop.version.VersionNumConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
@@ -850,15 +849,6 @@ public class GoodsService extends ShopBaseService {
     public GoodsDataIllegalEnumWrap insert(Goods goods) {
         GoodsDataIllegalEnumWrap codeWrap = new GoodsDataIllegalEnumWrap();
         codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_OK);
-
-        Integer limitNum = saas.getShopApp(getShopId()).version.getLimitNum(VersionNumConfig.GOODSNUM);
-        if (limitNum != -1) {
-            Integer count = selectGoodsCount();
-            if (count >= limitNum) {
-                codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
-                return codeWrap;
-            }
-        }
 
         transaction(() -> {
             try {
