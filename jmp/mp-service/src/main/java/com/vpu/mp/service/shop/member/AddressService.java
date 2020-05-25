@@ -10,7 +10,6 @@ import com.vpu.mp.service.pojo.shop.member.address.AddressInfo;
 import com.vpu.mp.service.pojo.shop.member.address.AddressLocation;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.address.WxAddress;
-import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -219,4 +218,20 @@ public class AddressService extends ShopBaseService {
         return Util.json2Object(HttpsUtils.get(QQ_MAP_GEOCODER_URL, param, true), AddressInfo.class, true);
     }
 
+    /**
+     * 王帅
+     * 获取地址
+     * @param userId    用户id
+     * @return 地址
+     */
+    public Integer randomOne(Integer userId) {
+        if (userId == null) {
+            return null;
+        }
+        UserAddressVo address = db().select().from(USER_ADDRESS).where(USER_ADDRESS.USER_ID.eq(userId)).fetchAnyInto(UserAddressVo.class);
+        if(address == null) {
+            return null;
+        }
+        return address.getAddressId();
+    }
 }

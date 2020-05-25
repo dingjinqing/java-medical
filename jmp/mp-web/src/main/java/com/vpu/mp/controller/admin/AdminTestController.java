@@ -1,28 +1,20 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.ArrayList;
-
-import javax.websocket.server.PathParam;
-
-import com.vpu.mp.service.shop.task.wechat.WechatTaskService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.beust.jcommander.internal.Maps;
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
-import com.vpu.mp.service.pojo.shop.summary.portrait.MaPortraitResult;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
-import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData.MaSubscribeDataBuilder;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
+import com.vpu.mp.service.shop.member.AddressService;
+import com.vpu.mp.service.shop.task.wechat.WechatTaskService;
 import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.wechat.OpenPlatform;
@@ -31,9 +23,16 @@ import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateTitleResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubscribeAddTemplateResult;
-
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 
@@ -50,6 +49,12 @@ public class AdminTestController extends AdminBaseController {
 
 	@Autowired
     private WechatTaskService wechatTaskService;
+
+    @Autowired
+    protected JedisManager redis;
+
+    @Autowired
+    protected AddressService address;
 
 	@RequestMapping(value = "/api/admin/test/addtemplate")
 	public JsonResult addtemplate() throws Exception {
@@ -248,4 +253,23 @@ public class AdminTestController extends AdminBaseController {
 		return success();
     }
 
+    @RequestMapping(value = "/test/redis/getKeys")
+    public JsonResult getKeys() {
+        logger().info("redis");
+        Set<String> keys = redis.keys("WXAPP*");
+        Map<Object, Object> objectObjectMap = Maps.newHashMap();
+        Integer shopId = Integer.valueOf(request.getHeader("V-ShopId"));
+        keys.forEach(
+            x->{
+                WxAppSessionUser wxAppSessionUser = Util.parseJson(redis.get(x), WxAppSessionUser.class);
+                if(wxAppSessionUser != null && shopId.equals(wxAppSessionUser.getShopId())) {
+                    Integer addressId = saas.getShopApp(shopId).addressService.randomOne(wxAppSessionUser.getUserId());
+                    if(addressId != null) {
+                        objectObjectMap.put(x, addressId);
+                    }
+                }
+            }
+        );
+        return success(objectObjectMap);
+    }
 }
