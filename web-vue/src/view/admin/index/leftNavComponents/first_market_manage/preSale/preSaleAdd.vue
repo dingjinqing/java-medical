@@ -706,7 +706,7 @@
         :product-info="productInfo"
         :isShowTwoStageMoney="showTwoStageMoney"
         :isShowPreMoneyAct="showPreMoneyAct"
-        @confirm="getProductdata"
+        @confrim="getProductdata"
       />
     </div>
   </div>
@@ -1035,9 +1035,18 @@ export default {
                       this.param.stock += Number(stock)
                     })
                   } else {
-                    let { goodsId, prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock } = item
-                    products.push({ goodsId, productId: prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock: Number(stock) })
-                    this.param.stock += Number(stock)
+                    if (this.isEditeFlag) {
+                      item.productList.forEach(item => {
+                        let { goodsId, productId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, stock } = item
+                        let preDiscountMoney2 = item.preDiscountMoney2 === 0 ? 'null' : item.preDiscountMoney2
+                        products.push({ goodsId, productId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock: Number(stock) })
+                        this.param.stock += Number(stock)
+                      })
+                    } else {
+                      let { goodsId, prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock } = item
+                      products.push({ goodsId, productId: prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock: Number(stock) })
+                      this.param.stock += Number(stock)
+                    }
                   }
                 })
 
@@ -1083,8 +1092,6 @@ export default {
     formatTimes () {
       const { isFullPay, twoSteps } = this
       if (isFullPay) {
-        // this.param.startTime = format(payTimeRange[0])
-        // this.param.endTime = format(payTimeRange[1])
         this.param.preStartTime = format(this.param.preTime1Range[0])
         this.param.preEndTime = format(this.param.preTime1Range[1])
       } else {
@@ -1111,6 +1118,7 @@ export default {
         this.loadStatus(content)
         // this.loadingGoods(content)
         console.log(this.param, 'get return param')
+        this.goodsIdList = content.goodsId.split(',').map(Number)
         if (content) {
           if (content.presaleType === 1) {
             // 全款购买 - 定金支付时间
@@ -1171,6 +1179,11 @@ export default {
         }
       }
 
+      if (this.goodsIdList.length === 0) {
+        this.$message.warning('请选择商品')
+        return false
+      }
+
       if (this.param.shareAction === 2 && !this.param.shareDoc) {
         this.$message.warning('请填写对应的分享文案')
         return false
@@ -1214,40 +1227,39 @@ export default {
     setCurrent (index) {
       // 拷贝一份数据
       let price = JSON.parse(JSON.stringify(this.param.products))
-      console.log(this.price, 'get-price')
 
       switch (index) {
         case 1:
           price.forEach(row => {
-            row.presalePrice = Number(price[0].presalePrice)
+            this.$set(row, 'presalePrice', this.param.products[0].presalePrice)
             this.changePriceInput(row)
           })
           this.activeIndex = 1
           break
         case 2:
           price.forEach(row => {
-            row.presaleNumber = Number(price[0].presaleNumber)
+            this.$set(row, 'presaleNumber', this.param.products[0].presaleNumber)
             this.changeStockInput(row)
           })
           this.activeIndex = 2
           break
         case 3:
           price.forEach(row => {
-            row.presaleMoney = Number(price[0].presaleMoney)
+            this.$set(row, 'presaleMoney', this.param.products[0].presaleMoney)
             this.changeEarnestMoney(row)
           })
           this.activeIndex = 3
           break
         case 4:
           price.forEach(row => {
-            row.preDiscountMoney1 = Number(price[0].preDiscountMoney1)
+            this.$set(row, 'preDiscountMoney1', this.param.products[0].preDiscountMoney1)
             this.changeDiscountMoney1(row)
           })
           this.activeIndex = 4
           break
         case 5:
           price.forEach(row => {
-            row.preDiscountMoney2 = Number(price[0].preDiscountMoney2)
+            this.$set(row, 'preDiscountMoney2', this.param.products[0].preDiscountMoney2)
             this.changeDiscountMoney2(row)
           })
           this.activeIndex = 5
