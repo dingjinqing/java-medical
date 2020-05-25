@@ -88,7 +88,6 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
  * 商品标签(b2c_goods_label,b2c_goods_label_couple)标签可以打在平台和商家分类上，在通过标签查商品时要进行关联查询，
  * 会员等价卡价格(b2c_grade_prd)，运费模板(b2c_deliver_fee_template)，会员专享商品(b2c_goods_card_couple),商品页模板，
  * 分销改价(b2c_goods_rebate_price)
- *
  * @author 李晓冰
  * @date 2019年6月25日
  */
@@ -163,7 +162,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取全品牌，标签，商家分类数据,平台分类数据
-     *
      * @param param {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitParam}
      * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitVo}
      */
@@ -186,7 +184,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 根据条件查询过滤商品所有需要的标签，品牌，商家分类信息项（统计对应的商品数量）
-     *
      * @param param {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitParam}
      * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitVo}
      */
@@ -219,7 +216,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取符合条件的商品的平台分类，商家分类信息
-     *
      * @param param {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitParam}
      * @return 商品信息集合
      */
@@ -244,7 +240,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 根据条件查询过滤商品所有需要的标签，品牌，商家分类信息项（对应的项内不统计对应的商品数量）
-     *
      * @param param {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitParam}
      * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitVo}
      */
@@ -271,7 +266,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 全部商品界面：商品分页查询，包含了部分规格信息（规格价格范围，规格类型数量）
-     *
      * @param goodsPageListParam {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}
      * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo}
      */
@@ -295,7 +289,7 @@ public class GoodsService extends ShopBaseService {
      * 需要对搜索条件进行二次封装
      * @param goodsPageListParam 搜索条件
      */
-    private void assemblyGoodsPageListParam(GoodsPageListParam goodsPageListParam){
+    private void assemblyGoodsPageListParam(GoodsPageListParam goodsPageListParam) {
         //从缓存获取admin搜索分词配置
         goodsPageListParam.setOpenedAnalyzer(shopCommonConfigCacheService.enabledAnalyzerStatus());
 
@@ -305,9 +299,9 @@ public class GoodsService extends ShopBaseService {
         // 拼接过滤条件
         Condition condition = this.buildOptions(goodsPageListParam);
 
-        SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME,GOODS.GOODS_NAME.as("goods_title_name"),GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
+        SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_NAME.as("goods_title_name"), GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
             GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER,
-            GOODS.GOODS_SALE_NUM,GOODS.IS_CARD_EXCLUSIVE,GOODS.MARKET_PRICE)
+            GOODS.GOODS_SALE_NUM, GOODS.IS_CARD_EXCLUSIVE, GOODS.MARKET_PRICE)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
             .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(condition);
 
@@ -324,7 +318,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取所有符合条件的商品id集合
-     *
      * @param goodsPageListParam {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}
      * @return 商品id结合
      */
@@ -353,7 +346,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 根据商品id集合获取对应的商品信息和规格信息
-     *
      * @param goodsIds
      * @return GoodsPageListVo
      */
@@ -374,16 +366,15 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 商品（规格）查询或导出的通用SelectConditionStep，每条记录包含了商品部分信息和必要的规格信息
-     *
      * @param goodsPageListParam {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}
      */
     private SelectConditionStep<?> createProductSelect(GoodsPageListParam goodsPageListParam) {
         // 拼接过滤条件
         Condition condition = this.buildOptions(goodsPageListParam);
 
-        SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME,GOODS.GOODS_NAME.as("goods_title_name"), GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,
-            GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME,SORT.LEVEL, GOODS.SORT_ID, GOODS.GOODS_AD, GOODS.IS_ON_SALE, GOODS.LIMIT_BUY_NUM, GOODS.GOODS_WEIGHT, GOODS.UNIT,
-            GOODS_BRAND.BRAND_NAME,GOODS.GOODS_NUMBER,GOODS.DELIVER_PLACE,
+        SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_NAME.as("goods_title_name"), GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
+            GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, SORT.LEVEL, GOODS.SORT_ID, GOODS.GOODS_AD, GOODS.IS_ON_SALE, GOODS.LIMIT_BUY_NUM, GOODS.GOODS_WEIGHT, GOODS.UNIT,
+            GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER, GOODS.DELIVER_PLACE,
             GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.CREATE_TIME,
             GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_SN, GOODS_SPEC_PRODUCT.PRD_COST_PRICE, GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,
             GOODS_SPEC_PRODUCT.PRD_IMG, GOODS_SPEC_PRODUCT.PRD_CODES)
@@ -399,7 +390,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 商品（规格）分页查询，每条记录包含了商品部分信息和必要的规格信息
-     *
      * @param goodsPageListParam {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}
      * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo}
      */
@@ -417,7 +407,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取符合条件的全部商品规格id集合
-     *
      * @param goodsPageListParam {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}
      * @return 规格id集合
      */
@@ -435,7 +424,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 分页条件拼凑
-     *
      * @param goodsPageListParam 过滤条件
      * @return where 过滤结果对象
      */
@@ -446,7 +434,7 @@ public class GoodsService extends ShopBaseService {
         condition = this.buildIsOnSaleOptions(condition, goodsPageListParam);
 
         // 售罄goodsName内容需要匹配：商品名称，货号，规格编码(查询规格列表时才进行匹配)
-        if (!StringUtils.isBlank(goodsPageListParam.getGoodsName())){
+        if (!StringUtils.isBlank(goodsPageListParam.getGoodsName())) {
             if (GoodsConstant.SALE_OUT.equals(goodsPageListParam.getIsSaleOut())) {
                 String likeStr = likeValue(goodsPageListParam.getGoodsName());
                 Condition nameCondition = GOODS.GOODS_NAME.like(likeStr).or(GOODS.GOODS_SN.like(likeStr)).or(GOODS_SPEC_PRODUCT.PRD_SN.like(likeStr));
@@ -459,9 +447,9 @@ public class GoodsService extends ShopBaseService {
         if (goodsPageListParam.getGoodsIds() != null && goodsPageListParam.getGoodsIds().size() > 0) {
             condition = condition.and(GOODS.GOODS_ID.in(goodsPageListParam.getGoodsIds()));
         }
-        
-        if(goodsPageListParam.getNotIncludeGoodsIds() != null && goodsPageListParam.getNotIncludeGoodsIds().size()>0) {
-        	condition = condition.and(GOODS.GOODS_ID.notIn(goodsPageListParam.getNotIncludeGoodsIds()));
+
+        if (goodsPageListParam.getNotIncludeGoodsIds() != null && goodsPageListParam.getNotIncludeGoodsIds().size() > 0) {
+            condition = condition.and(GOODS.GOODS_ID.notIn(goodsPageListParam.getNotIncludeGoodsIds()));
         }
         if (!StringUtils.isBlank(goodsPageListParam.getGoodsSn())) {
             condition = condition.and(GOODS.GOODS_SN.like(likeValue(goodsPageListParam.getGoodsSn())));
@@ -497,7 +485,6 @@ public class GoodsService extends ShopBaseService {
      * 出售中和已售罄都可以为上架状态（isOnSale = 1），而仓库中表示下架（isOnSale = 0）
      * 出售中：isOnSale=1&&goodsNumber!=0,已售罄：isOnSale=1&&goodsNumber==0
      * 仓库中：isOnSale=0
-     *
      * @param condition          已有过滤条件
      * @param goodsPageListParam goodsPageListParam 过滤条件
      * @return condition 拼装后的过滤条件
@@ -533,7 +520,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 处理平台分类和商家分类过滤条件
-     *
      * @param condition          已有过滤条件
      * @param goodsPageListParam goodsPageListParam 过滤条件
      * @return condition 拼装后的过滤条件
@@ -556,7 +542,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 处理标签过滤条件
-     *
      * @param condition          已有过滤条件
      * @param goodsPageListParam goodsPageListParam 滤条件
      * @return condition 拼装后的过滤条件
@@ -591,7 +576,6 @@ public class GoodsService extends ShopBaseService {
     /**
      * 处理价格过滤条件
      * 当{@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam#getSelectType()} 为2时价格按照规格价格进行筛选，否则按照商品价格进行筛选
-     *
      * @param condition          已有过滤条件
      * @param goodsPageListParam goodsPageListParam 带过滤条件的待执行语句
      * @return condition 拼装后的过滤条件
@@ -617,7 +601,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 排序条件过滤
-     *
      * @param scs                待排序语句
      * @param goodsPageListParam
      * @return
@@ -660,7 +643,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 处理商品或规格分页查询结果，设置对应的标签、平台分类、商品规格信息等
-     *
      * @param dataList      分页结果集
      * @param pageListParam 数据筛选条件
      */
@@ -691,7 +673,7 @@ public class GoodsService extends ShopBaseService {
                 item.getGoodsPointLabels().addAll(goodsPointLabels.get(item.getGoodsId()));
             }
             // 设置普通标签
-            if (goodsSortLabels.get(item.getSortId())!=null && goodsSortLabels.get(item.getSortId()).size() > 0){
+            if (goodsSortLabels.get(item.getSortId()) != null && goodsSortLabels.get(item.getSortId()).size() > 0) {
                 item.getGoodsNormalLabels().addAll(goodsSortLabels.get(item.getSortId()));
             }
             if (allGoodsLabels.size() > 0) {
@@ -709,7 +691,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 为商品设置相应的规格信息
-     *
      * @param goods             {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo}
      * @param goodsSpecProducts 商品对应的{@link com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct}集合
      */
@@ -750,7 +731,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 规格
-     *
      * @param goodsId 商品ID
      * @return GoodsProductVo
      */
@@ -790,10 +770,10 @@ public class GoodsService extends ShopBaseService {
      */
     public GoodsView getGoodsViewByProductId(Integer productId) {
         Record6<Integer, String, String, Integer, BigDecimal, String> record = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).
-                from(GOODS).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
-                .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).
-                        fetchOne();
-        if (record!=null){
+            from(GOODS).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
+            .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).
+                fetchOne();
+        if (record != null) {
             GoodsView goodsView = record.into(GoodsView.class);
             goodsView.setGoodsImg(getImgFullUrlUtil(goodsView.getGoodsImg()));
             return goodsView;
@@ -816,13 +796,12 @@ public class GoodsService extends ShopBaseService {
      * @param goodsId 商品id
      * @return id or null
      */
-    public Integer getGoodsDeliverTemplateIdById(Integer goodsId){
+    public Integer getGoodsDeliverTemplateIdById(Integer goodsId) {
         return db().select(GOODS.DELIVER_TEMPLATE_ID).from(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchAny(GOODS.DELIVER_TEMPLATE_ID);
     }
 
     /**
      * 获取所有商品所关联的有效品牌id集合
-     *
      * @return 品牌id集合
      */
     public List<Integer> getGoodsBrandIds() {
@@ -843,22 +822,14 @@ public class GoodsService extends ShopBaseService {
      * 添加商品无锁函数
      * 先插入商品，从而得到商品的id， 然后插入商品规格的属性和规格值，
      * 从而得到规格属性和规格值的id, 最后拼凑出prdSpecs再插入具体的商品规格
-     *
      * @param goods 商品信息
      */
     public GoodsDataIllegalEnumWrap insert(Goods goods) {
         GoodsDataIllegalEnumWrap codeWrap = new GoodsDataIllegalEnumWrap();
         codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_OK);
-
-        transaction(() -> {
-            try {
-                //存在重复值则直接返回
-                GoodsDataIIllegalEnum goodsDataIIllegalEnum = columnValueExistCheckForInsert(goods);
-                codeWrap.setIllegalEnum(goodsDataIIllegalEnum);
-                if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
-                    return;
-                }
-
+        try {
+            transaction(() ->
+            {
                 insertGoods(goods);
 
                 // 商品图片增加
@@ -882,21 +853,16 @@ public class GoodsService extends ShopBaseService {
                 //插入商品分销改价信息
                 insertGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
                 codeWrap.setGoodsId(goods.getGoodsId());
-            } catch (Exception e) {
-               logger().debug("商品新增error:"+e.getMessage());
-               throw e;
-            }
-        });
-
-        if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
-            return codeWrap;
+            });
+        } catch (Exception e) {
+            codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_DATA_ILLEGAL_FORMAT_FOR_DB);
+            logger().warn("商品新增error:" + e.getMessage());
         }
         return codeWrap;
     }
 
     /**
      * 插入数据并设置对应入参的id值
-     *
      * @param goods {@link com.vpu.mp.service.pojo.shop.goods.goods}
      */
     private void insertGoods(Goods goods) {
@@ -906,7 +872,7 @@ public class GoodsService extends ShopBaseService {
         if (StringUtils.isBlank(goods.getGoodsSn())) {
             int count = db().fetchCount(GOODS) + 1;
             String timeStr = DateUtil.getLocalDateFullTightFormat();
-            goods.setGoodsSn(String.format("G%s-%08d",timeStr,count));
+            goods.setGoodsSn(String.format("G%s-%08d", timeStr, count));
         }
 
         // 设置商品分享海报配置信息
@@ -919,7 +885,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 设置商品分享海报配置信息
-     *
      * @param goods {@link com.vpu.mp.service.pojo.shop.goods.goods}
      */
     private void setGoodsShareConfig(Goods goods) {
@@ -935,7 +900,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 插入商品专属会员卡
-     *
      * @param goods
      */
     private void insertMemberCards(Goods goods) {
@@ -947,7 +911,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 插入商品规格对应的会员卡价格
-     *
      * @param goodsGradePrds    商品规格对应会员卡
      * @param goodsSpecProducts 商品规格
      * @param goodsId           商品id
@@ -972,7 +935,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 插入商品分销改价信息
-     *
      * @param goodsRebatePrices
      * @param goodsSpecProducts
      * @param goodsId
@@ -997,7 +959,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 商品图片插入
-     *
      * @param goodsImgs 商品图片地址列表
      * @param goodsId   商品id
      */
@@ -1015,7 +976,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 商品标签插入
-     *
      * @param goodsLabels 标签id列表
      * @param goodsId     商品id
      */
@@ -1031,7 +991,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 预处理通过规格信息计算出商品的库存，最小商品价格信息, 并将结果注入到传入的引用对象。
-     *
      * @param goods
      */
     private void calculateGoodsPriceWeightAndNumber(Goods goods) {
@@ -1080,12 +1039,12 @@ public class GoodsService extends ShopBaseService {
             GoodsSpecProductRecord record = new GoodsSpecProductRecord();
             record.setPrdId(prdNumInfo.getPrdId());
             record.setPrdNumber(prdNumInfo.getPrdNumber());
-            goodsNum+=prdNumInfo.getPrdNumber();
+            goodsNum += prdNumInfo.getPrdNumber();
             prdList.add(record);
         }
         goodsRecord.setGoodsNumber(goodsNum);
 
-        transaction(()->{
+        transaction(() -> {
             db().batchUpdate(prdList).execute();
             db().executeUpdate(goodsRecord);
         });
@@ -1098,16 +1057,16 @@ public class GoodsService extends ShopBaseService {
             logger().debug("多商品修改数量-同步es数据异常：" + e.getMessage());
         }
     }
+
     /**
      * 商品修改
-     *
      * @param goods
      */
     public GoodsDataIllegalEnumWrap update(Goods goods) {
         GoodsDataIllegalEnumWrap codeWrap = new GoodsDataIllegalEnumWrap();
 
-        transaction(() -> {
-            try {
+        try {
+            transaction(() -> {
                 //存在重复值则直接返回
                 GoodsDataIIllegalEnum goodsDataIIllegalEnum = columnValueExistCheckForUpdate(goods);
                 codeWrap.setIllegalEnum(goodsDataIIllegalEnum);
@@ -1128,17 +1087,18 @@ public class GoodsService extends ShopBaseService {
                 updateMemberCards(goods);
                 //修改分销改价
                 updateGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
-            } catch (Exception e) {
-                logger().debug("商品修改error:"+e.getMessage());
-                throw e;
-            }
-        });
+            });
+        }catch (Exception e) {
+            logger().debug("商品修改error:" + e.getMessage());
+            codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_DATA_ILLEGAL_FORMAT_FOR_DB);
+        }
+
         if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
             return codeWrap;
         }
         //es更新
         try {
-            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus() ) {
+            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
                 esGoodsCreateService.updateEsGoodsIndex(goods.getGoodsId(), getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goods.getGoodsId());
             }
@@ -1151,7 +1111,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 修改商品表
-     *
      * @param goods {@link com.vpu.mp.service.pojo.shop.goods.goods}
      */
     private void updateGoods(Goods goods) {
@@ -1178,7 +1137,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 修改商品规格对应的会员卡价格，由于是一种关联表，每次修改可以先删除旧的然后再新增
-     *
      * @param goodsGradePrds    商品规格对应会员卡
      * @param goodsSpecProducts 商品规格
      * @param goodsId           商品id
@@ -1191,7 +1149,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 修改商品专属会员卡
-     *
      * @param goods
      */
     private void updateMemberCards(Goods goods) {
@@ -1202,7 +1159,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 插入商品分销改价信息
-     *
      * @param goodsRebatePrices
      * @param goodsSpecProducts
      * @param goodsId
@@ -1215,7 +1171,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 修改商品图片
-     *
      * @param goods
      */
     private void updateImgs(Goods goods) {
@@ -1230,7 +1185,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 修改商品标签
-     *
      * @param goods
      */
     private void updateLabels(Goods goods) {
@@ -1245,7 +1199,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 修改商品sku
-     *
      * @param goods 商品项
      */
     private void updateSpecPrd(Goods goods) {
@@ -1262,7 +1215,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 根据对象是否存prdId值提取出原有的规格对象（用来执行update操作，可能存在被删除项）
-     *
      * @param goodsSpecProducts 前端出入的全部规格对象
      * @return 原有的规格对象
      */
@@ -1274,7 +1226,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 根据对象是否存prdId值提取出新的规格对象（用来执行insert操作）
-     *
      * @param goodsSpecProducts 前端出入的全部规格对象
      * @return 新的规格对象
      */
@@ -1286,7 +1237,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 更新商品Es
-     *
      * @param goodsIds
      */
     public void updateEs(List<Integer> goodsIds) {
@@ -1294,18 +1244,18 @@ public class GoodsService extends ShopBaseService {
             if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
                 esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
-            }else{
-                esDataUpdateMqService.addEsGoodsIndex(goodsIds,getShopId(),DBOperating.UPDATE);
-                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,goodsIds,null);
+            } else {
+                esDataUpdateMqService.addEsGoodsIndex(goodsIds, getShopId(), DBOperating.UPDATE);
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.UPDATE, goodsIds, null);
             }
         } catch (Exception e) {
             logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
+            throw e;
         }
     }
 
     /**
      * 清除指定的sortId
-     *
      * @param sortIds
      */
     public void clearSortId(List<Integer> sortIds) {
@@ -1315,7 +1265,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 清除指定的brandId
-     *
      * @param brandIds
      */
     public void clearBrandId(List<Integer> brandIds) {
@@ -1340,7 +1289,6 @@ public class GoodsService extends ShopBaseService {
     /*************商品相关信息验证代码*************/
     /**
      * 判断商品会员卡价格是否正确
-     *
      * @param goods {@link com.vpu.mp.service.pojo.shop.goods.goods}
      * @return
      */
@@ -1369,11 +1317,10 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 商品新增接口数据重复检查（非原子操作）
-     *
      * @param goods 商品
      * @return {@link com.vpu.mp.service.foundation.data.JsonResult}
      */
-    private GoodsDataIIllegalEnum columnValueExistCheckForInsert(Goods goods) {
+    public GoodsDataIIllegalEnum columnValueExistCheckForInsert(Goods goods) {
         GoodsColumnCheckExistParam gcep = new GoodsColumnCheckExistParam();
         gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS);
 
@@ -1416,7 +1363,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 更新数据时判断传入的商品名称、货号，sku码和规格名值是否重复。
-     *
      * @param goods 商品
      * @return {@link JsonResult#getError()}!=0表示存在重复
      */
@@ -1471,7 +1417,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 判断字段值是否重复
-     *
      * @param goodsColumnExistParam
      * @return
      */
@@ -1508,7 +1453,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 根据货品编号获取商品
-     *
      * @param goodsSn
      * @return
      */
@@ -1519,7 +1463,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 商品名和商品码查重
-     *
      * @param select
      * @param goodsColumnExistParam
      * @return
@@ -1545,7 +1488,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 商品规格字段重复检查
-     *
      * @param select
      * @param goodsColumnExistParam
      * @return
@@ -1571,7 +1513,6 @@ public class GoodsService extends ShopBaseService {
     /**
      * 商品批量修改方法
      * 批量处理中会同时修改同一商品的全部规格数据，单独修改某一规格库存和价格时不可使用本方法
-     *
      * @param operateParam
      */
     public void batchOperate(GoodsBatchOperateParam operateParam) {
@@ -1624,9 +1565,9 @@ public class GoodsService extends ShopBaseService {
             if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
                 esGoodsCreateService.batchUpdateEsGoodsIndex(operateParam.getGoodsIds(), getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(operateParam.getGoodsIds(), DBOperating.UPDATE);
-            }else {
-                esDataUpdateMqService.addEsGoodsIndex(operateParam.getGoodsIds(),getShopId(),DBOperating.UPDATE);
-                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,operateParam.getGoodsIds(),null);
+            } else {
+                esDataUpdateMqService.addEsGoodsIndex(operateParam.getGoodsIds(), getShopId(), DBOperating.UPDATE);
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.UPDATE, operateParam.getGoodsIds(), null);
             }
         } catch (Exception e) {
             logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
@@ -1635,7 +1576,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 商品批量上下架处理
-     *
      * @param operateParam {@link GoodsBatchOperateParam#getIsOnSale()}==1上架，==0 下架
      */
     public void batchIsOnSaleOperate(GoodsBatchOperateParam operateParam) {
@@ -1645,9 +1585,9 @@ public class GoodsService extends ShopBaseService {
             if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
                 esGoodsCreateService.batchUpdateEsGoodsIndex(operateParam.getGoodsIds(), getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(operateParam.getGoodsIds(), DBOperating.UPDATE);
-            }else{
-                esDataUpdateMqService.addEsGoodsIndex(operateParam.getGoodsIds(),getShopId(),DBOperating.UPDATE);
-                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,operateParam.getGoodsIds(),null);
+            } else {
+                esDataUpdateMqService.addEsGoodsIndex(operateParam.getGoodsIds(), getShopId(), DBOperating.UPDATE);
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.UPDATE, operateParam.getGoodsIds(), null);
             }
         } catch (Exception e) {
             logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
@@ -1656,7 +1596,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 单独修改某一个商品规格的数量或价格,用于admin商品列表界面修改
-     *
      * @param param
      */
     public void updateGoodsPrdPriceNumbers(PrdPriceNumberParam param) {
@@ -1709,7 +1648,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 商品批量删除及单个删除
-     *
      * @param operateParam
      */
     public void delete(GoodsBatchOperateParam operateParam) {
@@ -1743,9 +1681,9 @@ public class GoodsService extends ShopBaseService {
             if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
                 esGoodsCreateService.deleteEsGoods(goodsIds, getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.DELETE);
-            }else{
-                esDataUpdateMqService.addEsGoodsIndex(goodsIds,getShopId(),DBOperating.UPDATE);
-                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,goodsIds,null);
+            } else {
+                esDataUpdateMqService.addEsGoodsIndex(goodsIds, getShopId(), DBOperating.UPDATE);
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.UPDATE, goodsIds, null);
             }
         } catch (Exception e) {
             logger().debug("商品删除-es同步数据异常：" + e.getMessage());
@@ -1754,7 +1692,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 删除关联图片
-     *
      * @param goodsIds
      */
     private void deleteImg(List<Integer> goodsIds) {
@@ -1763,7 +1700,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 删除商品规格会员价信息
-     *
      * @param goodsIds
      */
     private void deleteGradePrd(List<Integer> goodsIds) {
@@ -1772,7 +1708,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 删除商品规格分销价信息
-     *
      * @param goodsIds
      */
     private void deleteGoodsRebatePrices(List<Integer> goodsIds) {
@@ -1782,7 +1717,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 统计未删除商品总数量
-     *
      * @return 商品数量
      */
     public Integer selectGoodsCount() {
@@ -1792,7 +1726,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 查询商品详情
-     *
      * @param goodsId 商品id
      * @return 商品信息
      */
@@ -1857,7 +1790,7 @@ public class GoodsService extends ShopBaseService {
         goodsVo.setGoodsSharePostConfig(goodsSharePostConfig);
 
         // 设置直播间名称
-        if (goodsVo.getRoomId() !=  null) {
+        if (goodsVo.getRoomId() != null) {
             LiveBroadcastRecord liveBroadcastRecord = liveService.getLiveInfoByRoomId(goodsVo.getRoomId());
             if (liveBroadcastRecord == null) {
                 goodsVo.setRoomId(null);
@@ -1871,7 +1804,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 设置商品副图片
-     *
      * @param goods 商品对象
      */
     private void setGoodsImgs(GoodsVo goods) {
@@ -1891,7 +1823,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取商品规格会员价
-     *
      * @param goodsId
      * @return
      */
@@ -1902,7 +1833,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 批量获取商品规格会员价
-     *
      * @param goodsIds
      * @return
      */
@@ -1919,7 +1849,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取商品专享会员卡
-     *
      * @param goodsId 商品id
      * @return 会员卡ids
      */
@@ -1929,7 +1858,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取商品规格分销信息
-     *
      * @param goodsId 商品id
      * @return 商品规格分销集合
      */
@@ -1959,7 +1887,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取商品小程序展示页面
-     *
      * @param goodsId 商品id
      * @return GoodsQrCodeVo
      */
@@ -1982,7 +1909,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 将相对路劲修改为全路径
-     *
      * @param relativePath 相对路径
      * @return null或全路径
      */
@@ -1996,7 +1922,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 商品视频和快照图片相对路径转换全路径
-     *
      * @param relativePath    相对路径
      * @param videoOrSnapShop true: 视频，false: 快照
      * @return 全路径
@@ -2030,7 +1955,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 根据规格ID查寻商品信息
-     *
      * @param productId
      * @return
      */
@@ -2040,7 +1964,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取商品规格信息,用于页面显示
-     *
      * @param productId
      * @return
      */
@@ -2053,7 +1976,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 商品导出数据的条数
-     *
      * @param param
      * @return
      */
@@ -2082,7 +2004,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 商品列表导出（规格为主）
-     *
      * @param param
      * @param lang
      * @return workbook
@@ -2095,7 +2016,7 @@ public class GoodsService extends ShopBaseService {
         Set<Integer> goodsIds = new HashSet<>(list.size());
         List<Integer> prdIds = new ArrayList<>(list.size());
 
-        list.stream().forEach(vo->{
+        list.stream().forEach(vo -> {
             if (vo.getSortId() != null) {
                 sortIds.add(vo.getSortId());
             }
@@ -2112,13 +2033,13 @@ public class GoodsService extends ShopBaseService {
 
         Map<Integer, List<String>> goodsSecondaryImgsMap = null;
         List<CardBasicVo> allAvailableGradeCards = null;
-        Map<Integer, Map<String,GradePrdRecord>> prdGradeMaps =null;
+        Map<Integer, Map<String, GradePrdRecord>> prdGradeMaps = null;
 
         if (needGoodsSecondaryImgs) {
             goodsSecondaryImgsMap = getGoodsImageList(new ArrayList<>(goodsIds));
         }
         if (needGradeCardPrice) {
-            allAvailableGradeCards =  gradeCardService.getAllAvailableGradeCards();
+            allAvailableGradeCards = gradeCardService.getAllAvailableGradeCards();
             List<String> grades = allAvailableGradeCards.stream().map(CardBasicVo::getGrade).collect(Collectors.toList());
             prdGradeMaps = selectAvailableGradeInfoByPrdIds(prdIds, grades);
             param.getColumns().addAll(grades);
@@ -2153,7 +2074,7 @@ public class GoodsService extends ShopBaseService {
             if (needGradeCardPrice) {
                 Map<String, GradePrdRecord> gradeMap = prdGradeMaps.get(goods.getPrdId());
                 if (gradeMap != null) {
-                    setGoodsExportVoGradePrice(goods,gradeMap);
+                    setGoodsExportVoGradePrice(goods, gradeMap);
                 }
             }
         }
@@ -2164,7 +2085,7 @@ public class GoodsService extends ShopBaseService {
         return workbook;
     }
 
-    private void setGoodsExportVoGradePrice(GoodsExportVo vo,Map<String,GradePrdRecord> gradePrdRecordMap){
+    private void setGoodsExportVoGradePrice(GoodsExportVo vo, Map<String, GradePrdRecord> gradePrdRecordMap) {
         for (Map.Entry<String, GradePrdRecord> entry : gradePrdRecordMap.entrySet()) {
             switch (entry.getKey()) {
                 case "v1":
@@ -2194,12 +2115,13 @@ public class GoodsService extends ShopBaseService {
                 case "v9":
                     vo.setV9(entry.getValue().getGradePrice());
                     break;
-                    default:;
+                default:
+                    ;
             }
         }
     }
 
-    private Map<Integer, Map<String,GradePrdRecord>> selectAvailableGradeInfoByPrdIds(List<Integer> prdIds,List<String> availabelGrades) {
+    private Map<Integer, Map<String, GradePrdRecord>> selectAvailableGradeInfoByPrdIds(List<Integer> prdIds, List<String> availabelGrades) {
         List<GradePrdRecord> gradePrdRecords = db().selectFrom(GRADE_PRD)
             .where(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GRADE_PRD.GRADE.in(availabelGrades)).and(GRADE_PRD.PRD_ID.in(prdIds))).fetchInto(GradePrdRecord.class);
         return gradePrdRecords.stream().collect(Collectors.groupingBy(GradePrdRecord::getPrdId, Collectors.toMap(GradePrdRecord::getGrade, Function.identity())));
@@ -2207,7 +2129,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 取指定商品信息
-     *
      * @param idList
      * @param isCanUse
      * @return
@@ -2228,7 +2149,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取商品goodsType
-     *
      * @param goodsIds
      * @return
      * @throws MpException
@@ -2240,7 +2160,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 下单时获取goods
-     *
      * @param goodsIds
      * @return
      * @throws MpException
@@ -2253,7 +2172,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 批量更新商品、规格的数量和销量
-     *
      * @param params 待更新商品、规格数量销量信息
      */
     public void batchUpdateGoodsNumsAndSaleNumsForOrder(List<BatchUpdateGoodsNumAndSaleNumForOrderParam> params) {
@@ -2302,7 +2220,6 @@ public class GoodsService extends ShopBaseService {
     /**
      * Unsalable goods integer.滞销商品数量
      * 商品一个月内未进行过更新, 并且一个月内没参与任何订单(也就是没人买过)
-     *
      * @return the integer
      */
     public Integer unsalableGoods() {
@@ -2321,7 +2238,6 @@ public class GoodsService extends ShopBaseService {
     /**
      * Unsalable goods integer.滞销商品id集合
      * 商品一个月内未进行过更新, 并且一个月内没参与任何订单(也就是没人买过)
-     *
      * @return the integer
      */
     public Set<Integer> unsalableGoodsSet() {
@@ -2335,7 +2251,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * Small commodity inventory integer.统计商品库存偏小
-     *
      * @param num the num
      * @return the integer
      */
@@ -2345,7 +2260,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * Small commodity inventory integer.统计商品库存偏小的商品id集合
-     *
      * @param num the num
      * @return the integer
      */
@@ -2357,7 +2271,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 批量将活动商品改回普通商品
-     *
      * @param goodsIds
      */
     public void changeToNormalType(List<Integer> goodsIds) {
@@ -2378,7 +2291,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取商品幅图图片列表
-     *
      * @param goodsId
      * @return
      */
@@ -2394,9 +2306,8 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 商品图片列表
-     *
      * @param goodsIds goods id
-     * @return Map<goodsid,List<url>>
+     * @return Map<goodsid   ,   List   <   url>>
      */
     public Map<Integer, List<String>> getGoodsImageList(List<Integer> goodsIds) {
         Map<Integer, Result<GoodsImgRecord>> fetch = db().selectFrom(GOODS_IMG)
@@ -2435,7 +2346,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 根据品牌id获取商品id
-     *
      * @param brandId 品牌id
      * @return goodsId list
      */
@@ -2449,7 +2359,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 根据品牌id获取商品ids
-     *
      * @param brandIds 品牌ids
      * @return goodsId list
      */
@@ -2463,7 +2372,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 根据sortId list获取商品id
-     *
      * @param sortIds 品牌id
      * @return goodsId list
      */
@@ -2494,9 +2402,9 @@ public class GoodsService extends ShopBaseService {
             if (!goodsIds.isEmpty() && esUtilSearchService.esState()) {
                 esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
-            }else{
-                esDataUpdateMqService.addEsGoodsIndex(goodsIds,getShopId(),DBOperating.UPDATE);
-                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,goodsIds,null);
+            } else {
+                esDataUpdateMqService.addEsGoodsIndex(goodsIds, getShopId(), DBOperating.UPDATE);
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.UPDATE, goodsIds, null);
             }
         } catch (Exception e) {
             logger().debug("手动上架所有待上架商品-同步es数据异常：" + e.getMessage());
@@ -2505,7 +2413,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 取单个完整Goods
-     *
      * @return
      */
     public GoodsRecord getGoodsRecordById(int goodsId) {
@@ -2514,7 +2421,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 取多个完整Goods
-     *
      * @return
      */
     public Map<Integer, GoodsRecord> getGoodsRecordByIds(List<Integer> goodsIds) {
@@ -2523,7 +2429,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取满足条件的商品数量
-     *
      * @param param 条件
      * @return 商品数量
      */
@@ -2533,7 +2438,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取满足过滤条件的商品数量集合
-     *
      * @param params 过滤条件集合
      * @return 商品数量集合
      */
@@ -2587,7 +2491,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 查询普通商品分享时使用的分享信息
-     *
      * @param goodsId 商品id
      * @return 商品分享信息
      */
@@ -2610,7 +2513,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取指定条件的商品的数量
-     *
      * @param condition 指定的条件
      * @return 商品的数量
      */
@@ -2620,7 +2522,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * Exist boolean.商品是否存在
-     *
      * @param goodsId the goods id
      * @return the boolean
      */
@@ -2630,7 +2531,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 查询当前商品所处于的活动类型，秒杀、预售、砍价、拼团或其它
-     *
      * @param goodsId 商品id
      * @return {@link GoodsActivityType} 活动类型信息,如果商品不属于上述四种活动则返回null
      */
@@ -2677,7 +2577,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 得到指定条件下的商品id集合
-     *
      * @param catIds   指定平台分类id,逗号分隔的字符串
      * @param sortIds  指定商家分类id,逗号分隔的字符串
      * @param brandIds 指定品牌id,逗号分隔的字符串
@@ -2716,7 +2615,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 所有设置了专享商品标志的商品ID
-     *
      * @return
      */
     public List<Integer> getAllExclusiveGoodsIds() {
@@ -2725,7 +2623,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 刷新goods表里的comment_num
-     *
      * @param goodsId
      */
     public void updateGoodsCommentNum(int goodsId) {
@@ -2738,7 +2635,7 @@ public class GoodsService extends ShopBaseService {
                 esGoodsCreateService.updateEsGoodsIndex(goodsId, getShopId());
             }
         } catch (Exception e) {
-            logger().debug("商品修改-同步es数据异常："+e.getMessage());
+            logger().debug("商品修改-同步es数据异常：" + e.getMessage());
         }
     }
 
@@ -2747,25 +2644,25 @@ public class GoodsService extends ShopBaseService {
      * @param posSyncProductParam
      * @return
      */
-    public ApiJsonResult posSyncProductMq(PosSyncProductParam posSyncProductParam){
+    public ApiJsonResult posSyncProductMq(PosSyncProductParam posSyncProductParam) {
         ApiJsonResult apiJsonResult = new ApiJsonResult();
         Integer posShopId = posSyncProductParam.getShopId();
         if (posShopId == null) {
             apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
             apiJsonResult.setMsg("缺少必传参数shop_id");
-            return  apiJsonResult;
+            return apiJsonResult;
         }
         StoreRecord storeRecord = storeService.getStoreByPosShopId(posShopId);
         if (storeRecord == null) {
             apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
             apiJsonResult.setMsg("该店铺没有对应的门店");
-            return  apiJsonResult;
+            return apiJsonResult;
         }
 
         if (posSyncProductParam.getGoodsList() == null || posSyncProductParam.getGoodsList().size() == 0) {
             apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
             apiJsonResult.setMsg("缺少商品");
-            return  apiJsonResult;
+            return apiJsonResult;
         }
         PosSyncProductMqParam mqParam = new PosSyncProductMqParam();
         mqParam.setShopId(getShopId());
@@ -2780,18 +2677,18 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * pos 同步商品规格信息
-     * @param storeId 门店id
+     * @param storeId      门店id
      * @param goodsPrdList 规格同步信息
      */
-    public void posSyncProductMqCallback(Integer storeId,List<PosSyncGoodsPrdParam> goodsPrdList){
+    public void posSyncProductMqCallback(Integer storeId, List<PosSyncGoodsPrdParam> goodsPrdList) {
         Map<String, PosSyncGoodsPrdParam> posPrdMap = goodsPrdList.stream().collect(Collectors.toMap(PosSyncGoodsPrdParam::getPrdSn, Function.identity()));
         // 过滤掉prdSn无法匹配上的
         List<GoodsSpecProductRecord> goodsSpecPrdBySns = goodsSpecProductService.getGoodsSpecPrdBySn(posPrdMap.keySet());
 
         // 待更新规格条码字段的规格集合
-        List<GoodsSpecProductRecord> goodsSpecPrdReadyToUpdate = new ArrayList<>(goodsSpecPrdBySns.size()/2);
+        List<GoodsSpecProductRecord> goodsSpecPrdReadyToUpdate = new ArrayList<>(goodsSpecPrdBySns.size() / 2);
         List<PosSyncGoodsPrdParam> storePrdReadyToUpdate = new ArrayList<>(posPrdMap.size());
-        goodsSpecPrdBySns.forEach(prdRecord->{
+        goodsSpecPrdBySns.forEach(prdRecord -> {
             PosSyncGoodsPrdParam posSyncGoodsPrdParam = posPrdMap.get(prdRecord.getPrdSn());
             if (!Objects.equals(prdRecord.getPrdCodes(), posSyncGoodsPrdParam.getPrdCodes())) {
                 prdRecord.setPrdCodes(posSyncGoodsPrdParam.getPrdCodes());
@@ -2802,7 +2699,7 @@ public class GoodsService extends ShopBaseService {
             storePrdReadyToUpdate.add(posSyncGoodsPrdParam);
         });
         db().batchUpdate(goodsSpecPrdReadyToUpdate).execute();
-        storeGoodsService.batchUpdateForSyncPosProduct(storeId,storePrdReadyToUpdate);
+        storeGoodsService.batchUpdateForSyncPosProduct(storeId, storePrdReadyToUpdate);
     }
 
     /**
@@ -2810,31 +2707,31 @@ public class GoodsService extends ShopBaseService {
      * @param param
      * @return
      */
-    public ApiJsonResult posSyncStock(PosSyncStockParam param){
+    public ApiJsonResult posSyncStock(PosSyncStockParam param) {
         ApiJsonResult apiJsonResult = new ApiJsonResult();
         Integer posShopId = param.getPosShopId();
         if (posShopId == null) {
             apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
             apiJsonResult.setMsg("缺少必传参数shop_id");
-            return  apiJsonResult;
+            return apiJsonResult;
         }
 
         StoreRecord storeRecord = storeService.getStoreByPosShopId(posShopId);
         if (storeRecord == null) {
             apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
             apiJsonResult.setMsg("该店铺没有对应的门店");
-            return  apiJsonResult;
+            return apiJsonResult;
         }
 
         List<GoodsSpecProductRecord> goodsSpecPrdBySns = goodsSpecProductService.getGoodsSpecPrdBySn(Collections.singleton(param.getPrdSn()));
         if (goodsSpecPrdBySns == null || goodsSpecPrdBySns.size() == 0) {
             apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
             apiJsonResult.setMsg("该prd_sn没有对应的商品");
-            return  apiJsonResult;
+            return apiJsonResult;
         }
         Integer prdId = goodsSpecPrdBySns.get(0).getPrdId();
         Integer prdNum = (int) (Math.floor(param.getNumber()));
-        storeGoodsService.updatePrdNumForPosSyncStock(storeRecord.getStoreId(),prdId,prdNum);
+        storeGoodsService.updatePrdNumForPosSyncStock(storeRecord.getStoreId(), prdId, prdNum);
         return apiJsonResult;
     }
 }

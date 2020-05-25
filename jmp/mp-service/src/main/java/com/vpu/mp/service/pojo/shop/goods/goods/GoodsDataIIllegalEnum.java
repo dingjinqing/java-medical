@@ -79,8 +79,15 @@ public enum GoodsDataIIllegalEnum {
     /**
      * 成本价格不可为null
      */
-    GOODS_COST_PRICE_IS_NULL((byte)16,"goods.cost.price.is.null");
-
+    GOODS_COST_PRICE_IS_NULL((byte)16,"goods.cost.price.is.null"),
+    /**
+     * 商品数据格式插入数据库错误
+     */
+    GOODS_DATA_ILLEGAL_FORMAT_FOR_DB((byte)17,"goods.data.illegal.format.for.db"),
+    /**
+     * 商品信息同步es错误
+     */
+    GOODS_DATA_UPDATE_ES_ERROR((byte)18,"goods.data.update.es.error");
 
     private byte errorCode;
     private String errorMsg;
@@ -152,6 +159,12 @@ public enum GoodsDataIIllegalEnum {
             case 15:
                 retEnum = GoodsDataIIllegalEnum.GOODS_PRD_CODES_INNER_REPEATED;
                 break;
+            case 16:
+                retEnum = GoodsDataIIllegalEnum.GOODS_COST_PRICE_IS_NULL;
+            case 17:
+                retEnum = GoodsDataIIllegalEnum.GOODS_DATA_ILLEGAL_FORMAT_FOR_DB;
+            case 18:
+                retEnum = GoodsDataIIllegalEnum.GOODS_DATA_UPDATE_ES_ERROR;
             default:
                 retEnum = null;
         }

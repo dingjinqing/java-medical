@@ -41,10 +41,20 @@ public class GoodsWrapService extends ShopBaseService {
                 return GoodsDataIIllegalEnum.GOODS_NUM_FETCH_LIMIT_NUM;
             }
         }
+        // 数据重复性判断
+        //存在重复值则直接返回
+        GoodsDataIIllegalEnum goodsDataIIllegalEnum = goodsService.columnValueExistCheckForInsert(goods);
+        if (!GoodsDataIIllegalEnum.GOODS_OK.equals(goodsDataIIllegalEnum)) {
+            return goodsDataIIllegalEnum;
+        }
 
         GoodsDataIllegalEnumWrap codeWrap = goodsService.insert(goods);
         if (codeWrap.getGoodsId() != null) {
-            goodsService.updateEs(Collections.singletonList(codeWrap.getGoodsId()));
+            try {
+                goodsService.updateEs(Collections.singletonList(codeWrap.getGoodsId()));
+            } catch (Exception e) {
+                codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_DATA_UPDATE_ES_ERROR);
+            }
         }
         return codeWrap.getIllegalEnum();
     }

@@ -2,10 +2,11 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
@@ -22,10 +23,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author 李晓冰
@@ -447,10 +447,54 @@ public class AdminGoodsController extends AdminBaseController {
 
     @PostMapping("/api/admin/goods/export")
     public void export(@RequestBody @Valid GoodsExportParam param, HttpServletResponse response) {
-        shop().config.goodsCfg.setGoodsExportList(param.getColumns());
-        Workbook workbook = shop().goods.exportGoodsList(param, getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GOODS_EXPORT_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
-        export2Excel(workbook, fileName, response);
+//        shop().config.goodsCfg.setGoodsExportList(param.getColumns());
+//        Workbook workbook = shop().goods.exportGoodsList(param, getLang());
+//        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GOODS_EXPORT_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+//        export2Excel(workbook, fileName, response);
+        test(param,response);
+    }
+
+    public void test(GoodsExportParam param, HttpServletResponse response){
+        long startTime = System.currentTimeMillis();
+        String[] imgs = new String[]{"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1590215985441&di=43f423f1d30c4a0c8db2c03c75715aa0&imgtype=0&src=http%3A%2F%2Fa1.att.hudong.com%2F05%2F00%2F01300000194285122188000535877.jpg","https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1590215985442&di=d4da00b6b455fa70cae9567bbcf055b6&imgtype=0&src=http%3A%2F%2Fb2-q.mafengwo.net%2Fs5%2FM00%2F91%2F06%2FwKgB3FH_RVuATULaAAH7UzpKp6043.jpeg","https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1590215985442&di=e92aeec7f8af1fa8773c7724264e2854&imgtype=0&src=http%3A%2F%2Fcdn.duitang.com%2Fuploads%2Fitem%2F201409%2F08%2F20140908130732_kVXzh.jpeg","https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1590215985442&di=3c452179f0b8e5a947cc43f28a4a82aa&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F64%2F76%2F20300001349415131407760417677.jpg","https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1590215985442&di=bc61e47414f3bcdd7ea1ec6a868c89ee&imgtype=0&src=http%3A%2F%2Fa2.att.hudong.com%2F36%2F48%2F19300001357258133412489354717.jpg"};
+
+        List<String> imgList = Arrays.stream(imgs).collect(Collectors.toList());
+
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(getLang(), workbook);
+        List<GoodsExportVo> goodsList = new ArrayList<>();
+        int count = shop().goods.selectGoodsCount();
+        String timeStr = DateUtil.getLocalDateFullTightFormat();
+        for (int i =1; i <= 2000; i++) {
+            GoodsExportVo vo = new GoodsExportVo();
+            vo.setSortNameParent("日化用品");
+            vo.setSortNameChild("面部护肤");
+            vo.setGoodsName("导入测试2-"+i);
+            vo.setBrandName("迪奥");
+            vo.setGoodsSn(String.format("G%s-%08d",timeStr,count+i));
+            vo.setPrdDesc(null);
+            vo.setPrdSn(String.format("Prd%s-%08d",timeStr,count+i));
+            vo.setGoodsAd("广告");
+            vo.setPrdNumber(10);
+            vo.setPrdMarketPrice(BigDecimal.valueOf(100));
+            vo.setShopPrice(BigDecimal.valueOf(50));
+            vo.setPrdCostPrice(BigDecimal.valueOf(20));
+            vo.setIsOnSale((byte) 1);
+            vo.setLimitBuyNum(1);
+            vo.setGoodsWeight(BigDecimal.valueOf(1));
+            vo.setUnit("瓶");
+            vo.setGoodsImg(imgs[i%imgs.length]);
+            vo.setImgUrl(String.join(";",imgList));
+            vo.setPrdCodes(String.format("code%s-%08d",timeStr,count+i));
+            vo.setDeliverPlace("北京");
+            goodsList.add(vo);
+        }
+        long excelStartTime = System.currentTimeMillis();
+        excelWriter.writeModelList(goodsList, GoodsExportVo.class, param.getColumns());
+        export2Excel(workbook, "goods2", response);
+        long endTime = System.currentTimeMillis();
+        System.out.println("excel 转换时间："+(endTime - excelStartTime)/1000);
+        System.out.println("总时间："+(endTime-startTime)/1000);
     }
 
     /**
