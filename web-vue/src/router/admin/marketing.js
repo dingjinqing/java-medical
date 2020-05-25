@@ -1271,8 +1271,8 @@ const routes = [
   },
   // 营销管理/留存复购/消息推送
   {
-    path: '/api/admin/market/messagePush',
-    redirect: `/api/admin/market/messagePush/all`,
+    path: '/admin/market/messagePush',
+    redirect: '/admin/market/messagePush/all',
     // name: 'message_push',
     name: 'business_template_message',
     meta: {
@@ -1300,7 +1300,7 @@ const routes = [
           )
       },
       {
-        path: '/api/admin/market/messagePush/all',
+        path: '/admin/market/messagePush/all',
         name: 'all_message_push',
         meta: {
           crumbTitle: 'router.message_push',
@@ -1316,7 +1316,7 @@ const routes = [
   },
   // 营销管理/留存复购/消息推送/查看消息模板
   {
-    path: '/api/admin/market/messagePush/detail',
+    path: '/admin/market/messagePush/detail',
     name: 'template_detail',
     meta: {
       crumbTitle: 'router.template_detail',
@@ -1330,7 +1330,7 @@ const routes = [
   },
   // 营销管理/留存复购/消息推送/添加消息模板
   {
-    path: '/api/admin/market/messagePush/addMessage',
+    path: '/admin/market/messagePush/addMessage',
     name: 'add_message',
     meta: {
       crumbTitle: 'router.add_message_push',
@@ -1344,7 +1344,7 @@ const routes = [
   },
   // 营销管理/留存复购/消息推送/发送记录
   {
-    path: '/api/admin/market/messagePush/sendRecord',
+    path: '/admin/market/messagePush/sendRecord',
     name: 'send_record',
     meta: {
       crumbTitle: 'router.send_record',
