@@ -335,7 +335,7 @@ public class ReducePriceService extends ShopBaseService {
             .and(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(REDUCE_PRICE.START_TIME.lessThan(date))
             .and(REDUCE_PRICE.END_TIME.greaterThan(date))
-            .orderBy(REDUCE_PRICE.FIRST.desc())
+            .orderBy(REDUCE_PRICE.FIRST.desc(), REDUCE_PRICE.CREATE_TIME.desc())
             .fetchAny(REDUCE_PRICE.ID);
         if (reducePriceId == null) {
             return null;
@@ -596,7 +596,7 @@ public class ReducePriceService extends ShopBaseService {
                 res.setGoodsPrice(prdPriceList.get(0));
                 res.setMaxPrice(prdPriceList.get(prdPriceList.size() - 1));
                 res.setLimitAmount(firstSpecialRecord.getLimitAmount());
-                res.setGoodsPriceAction((byte)3);
+                res.setGoodsPriceAction((byte) 3);
                 return res;
             }
         }
@@ -606,22 +606,21 @@ public class ReducePriceService extends ShopBaseService {
         res.setIsCardExclusive(goodsInfo.getIsCardExclusive());
 
         //处理限时降价
-        if(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goodsInfo.getGoodsType())){
-            //当前生效的活动
-            ReducePriceRecord reducePriceRecord = getOnGoingReducePrice(goodsId,DateUtil.getLocalDateTime());
-            if(reducePriceRecord != null){
-                List<ReducePriceProductRecord> reducePriceProductRecords = getReducePriceProductRecordByGoodsId(reducePriceRecord.getId(),goodsId);
-                if(CollectionUtils.isNotEmpty(reducePriceProductRecords)){
-                    List<BigDecimal> prdPriceList = reducePriceProductRecords.stream().map(ReducePriceProductRecord::getPrdPrice).sorted().collect(Collectors.toList());
+        //当前生效的活动
+        ReducePriceRecord reducePriceRecord = getOnGoingReducePrice(goodsId, DateUtil.getLocalDateTime());
+        if (reducePriceRecord != null) {
+            List<ReducePriceProductRecord> reducePriceProductRecords = getReducePriceProductRecordByGoodsId(reducePriceRecord.getId(), goodsId);
+            if (CollectionUtils.isNotEmpty(reducePriceProductRecords)) {
+                List<BigDecimal> prdPriceList = reducePriceProductRecords.stream().map(ReducePriceProductRecord::getPrdPrice).sorted().collect(Collectors.toList());
 
-                    res.setGoodsPrice(prdPriceList.get(0));
-                    res.setMaxPrice(prdPriceList.get(prdPriceList.size() - 1));
-                    res.setLimitAmount(reducePriceRecord.getLimitAmount());
-                    res.setGoodsPriceAction((byte)2);
-                }
+                res.setGoodsPrice(prdPriceList.get(0));
+                res.setMaxPrice(prdPriceList.get(prdPriceList.size() - 1));
+                res.setLimitAmount(reducePriceRecord.getLimitAmount());
+                res.setGoodsPriceAction((byte) 2);
             }
-
         }
+
+
 
         //处理会员等级
         String userCardGrade = saas.getShopApp(getShopId()).userCard.userCardDao.getUserCardGrade(userId);
