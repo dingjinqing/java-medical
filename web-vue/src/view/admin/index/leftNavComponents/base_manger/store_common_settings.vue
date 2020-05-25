@@ -445,6 +445,7 @@
                       <el-image
                         style="width:200px;"
                         :src="$imageHost + '/image/admin/gd_share_ex1.jpg'"
+                        :preview-src-list="[$imageHost + '/image/admin/gd_share_ex1.jpg']"
                       ></el-image>
                     </div>
                     <el-button
@@ -495,7 +496,8 @@
                     <div>
                       <el-image
                         style="width:200px;"
-                        :src="$imageHost + '/image/admin/gd_share_ex1.jpg'"
+                        :src="$imageHost + '/image/admin/gd_share_ex2.jpg'"
+                        :preview-src-list="[$imageHost + '/image/admin/gd_share_ex2.jpg']"
                       ></el-image>
                     </div>
                     <el-button
