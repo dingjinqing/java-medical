@@ -118,9 +118,6 @@
 </template>
 <script>
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
-import vcolorpicker from 'vcolorpicker'
-import Vue from 'vue'
-Vue.use(vcolorpicker)
 export default {
   mixins: [decMixins],
   props: {

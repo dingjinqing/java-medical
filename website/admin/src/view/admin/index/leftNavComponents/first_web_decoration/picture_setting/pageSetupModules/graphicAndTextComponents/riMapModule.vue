@@ -56,9 +56,6 @@
 <script>
 import chinaData from '@/assets/china-data'
 import { deepCloneObj } from '@/util/deepCloneObj'
-import vcolorpicker from 'vcolorpicker'
-import Vue from 'vue'
-Vue.use(vcolorpicker)
 export default {
   components: {
     areaLinkage: () => import('@/components/admin/areaLinkage/areaLinkage.vue'), // 省市区下拉框
