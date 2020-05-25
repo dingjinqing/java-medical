@@ -67,7 +67,7 @@ public class AdminTemplateMessageController extends AdminBaseController {
     }
     @PostMapping("/getDetail")
     public JsonResult getTemplateMessageDetail(@RequestBody Integer id ){
-        saas.getShopApp(245547).shopTaskService.wechatTaskService.beginDailyTask();
+//        saas.getShopApp(245547).shopTaskService.wechatTaskService.beginDailyTask();
         return success(shop().messageTemplateService.getMessageDetail(id));
     }
     @PostMapping("/record/list")
