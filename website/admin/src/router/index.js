@@ -11,7 +11,7 @@ Vue.use(Router)
 
 const baseRoutes = [
   {
-    path: '/admin/index/login',
+    path: '/index/login',
     name: 'indexLogin',
     component: () => import('@/components/index/login')
   },
