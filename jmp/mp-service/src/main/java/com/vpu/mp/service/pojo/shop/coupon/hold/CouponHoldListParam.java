@@ -30,6 +30,8 @@ public class CouponHoldListParam {
      * 是否已经使用 1 未使用 2 已使用 3 已过期 4已废除
      */
     private Byte status;
+    /**优惠券类型 0：普通优惠券；1：分裂优惠券*/
+    private Byte couponType = 0;
 
 
     /**
