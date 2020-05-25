@@ -181,7 +181,9 @@ public class MallOverviewService extends ShopBaseService {
     public ToDoItemVo toDoItem(ToDoItemParam param){
         ToDoItemVo toDoItemVo = new ToDoItemVo();
         ShopAccountRecord oldRecord = shopAccountService.getAccountInfoForId(getSysId());
-        oldRecord.setBacklog(param.getBacklog());
+        if (!StringUtils.isEmpty(param.getBacklog())&&!"".equals(param.getBacklog())){
+            oldRecord.setBacklog(param.getBacklog());
+        }
         ShopAccountRecord newRecord = db().newRecord(SHOP_ACCOUNT,oldRecord);
         shopAccountService.updateAccountInfo(newRecord);
         Condition orderStatus = ORDER_INFO.ORDER_STATUS.eq((byte) 3);
