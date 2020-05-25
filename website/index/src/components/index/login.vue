@@ -254,7 +254,7 @@ export default {
                   type: 'success'
                 })
                 this.$router.push({
-                  name: 'shopMain'
+                  path: '/admin/admin/home/shopMain'
                 })
               }
             })
