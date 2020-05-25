@@ -212,9 +212,10 @@ export default {
     handleLogin (index) {
       console.log('进入后台')
       if (index === 0) {
-        this.$router.push({
-          name: 'shopMain'
+        let routeData = this.$router.resolve({
+          path: '/admin/admin/home/shopMain'
         })
+        window.open(routeData.href, '_blank')
       } else {
         loginRequestOut().then((res) => {
           console.log(res)
@@ -329,9 +330,10 @@ export default {
     // 登录注册跳转
     to_log_rej_page (res) {
       if (res === 'login') {
-        this.$router.push({
-          path: '/index/login'
+        let routeData = this.$router.resolve({
+          path: '/admin/index/login'
         })
+        window.open(routeData.href, '_blank')
       } else {
         this.$router.push({
           path: '/index/home/ontrial'

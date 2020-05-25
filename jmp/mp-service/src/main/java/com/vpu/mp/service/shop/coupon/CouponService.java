@@ -28,14 +28,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Record6;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectWhereStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,8 +75,16 @@ import com.vpu.mp.service.pojo.wxapp.coupon.ExpireTimeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
-
 import jodd.util.StringUtil;
+import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record6;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
 
 /**
  * 优惠券管理
@@ -344,6 +345,60 @@ public class CouponService extends ShopBaseService {
         couponParam.setPageRows(param.getPageRows());
         return couponHold.getCouponHoldList(couponParam);
 
+    }
+
+    /**
+     * 领取分裂优惠券用户详情
+     * @param param
+     * @return
+     */
+    public PageResult<CouponHoldListVo> getSplitCoupinUserDetail(CouponGetDetailParam param){
+        SelectConditionStep<? extends Record> select = db()
+            .select(CUSTOMER_AVAIL_COUPONS.ID,USER.USERNAME, USER.MOBILE, CUSTOMER_AVAIL_COUPONS.GET_SOURCE, CUSTOMER_AVAIL_COUPONS.IS_USED,
+                MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION, CUSTOMER_AVAIL_COUPONS.START_TIME, CUSTOMER_AVAIL_COUPONS.END_TIME, CUSTOMER_AVAIL_COUPONS.CREATE_TIME).from(DIVISION_RECEIVE_RECORD)
+            .leftJoin(CUSTOMER_AVAIL_COUPONS).on(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(CUSTOMER_AVAIL_COUPONS.COUPON_SN))
+            .leftJoin(USER).on(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(USER.USER_ID))
+            .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID))
+            .where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(param.getId()));
+        SelectConditionStep<? extends Record> sql = detailBuildOptions(select, param);
+        PageResult<CouponHoldListVo> info = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), CouponHoldListVo.class);
+        return info;
+    }
+
+    /**
+     * 领取分裂优惠券用户详情列表条件查询
+     * @param select
+     * @param param
+     * @return
+     */
+    public SelectConditionStep<? extends Record> detailBuildOptions(SelectConditionStep<? extends Record> select,CouponGetDetailParam param){
+        //手机号
+        if(StringUtil.isNotEmpty(param.getMobile())) {
+            select.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
+        }
+        //用户昵称
+        if(StringUtil.isNotEmpty(param.getUserName())) {
+            select.and(USER.USERNAME.like(this.likeValue(param.getUserName())));
+        }
+        //使用状态 1 未使用 2 使用 3 过期 4 废除
+        if(param.getIsUsed() != null) {
+            Timestamp nowTime =new Timestamp(System.currentTimeMillis());
+            if (param.getIsUsed()==1){
+                select.and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0))
+                    .and(CUSTOMER_AVAIL_COUPONS.END_TIME.ge(nowTime))
+                    .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 0));
+            }else if (param.getIsUsed()==2){
+                select.and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 1))
+                    .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 0));
+            }else if (param.getIsUsed()==3){
+                select.and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0))
+                    .and(CUSTOMER_AVAIL_COUPONS.END_TIME.lt(nowTime))
+                    .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 0));
+            }else if (param.getIsUsed()==4){
+                select.and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 1));
+            }
+        }
+        return select;
     }
 
     /**
