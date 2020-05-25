@@ -139,8 +139,8 @@ public class ReducePriceProcessor implements Processor, ActivityGoodsListProcess
         log.info("购物车-限时降价-开始");
         // 是限时降价商品且不是会员专享
         List<Integer> productList = cartBo.getCartGoodsList().stream()
-            .filter(goods -> BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goods.getGoodsRecord().getGoodsType()) && goods.getBuyStatus().equals(BaseConstant.YES))
-            .map(WxAppCartGoods::getProductId).collect(Collectors.toList());
+            .filter(goods -> goods.getBuyStatus().equals(BaseConstant.YES))
+                .map(WxAppCartGoods::getProductId).collect(Collectors.toList());
         Map<Integer, List<Record5<Integer, Integer, Byte, Integer, BigDecimal>>> goodsReduceListInfo = reducePriceProcessorDao.getGoodsProductReduceList(productList, DateUtil.getLocalDateTime());
         if (goodsReduceListInfo != null && goodsReduceListInfo.size() > 0) {
             cartBo.getCartGoodsList().stream().filter(goods ->
