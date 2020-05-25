@@ -212,8 +212,8 @@ global.wxPage({
   },  
   resetCartList(cartList){
     return cartList.filter(item=>item.cartNumber > 0).map(item=>{
-      item.activityType = this.getGoodsAct({goodsPriceAction:item.priceActivityType})
-      item.goodsPrice = this.getGoodsAct({goodsPriceAction:item.priceActivityType}) ? item.goodsPrice : item.prdMarketPrice
+      item.activityType = [6,18,22].includes(item.priceActivityType) ? item.priceActivityType : null
+      item.goodsPrice = [6,18,22].includes(item.priceActivityType)  ? item.goodsPrice : item.prdMarketPrice
       return item
     })
   },
