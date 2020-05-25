@@ -884,6 +884,12 @@ export default {
 
     // 保存分销配置
     addDistribution () {
+      // 分销审核项
+      var customFlag = this.form.custom_options.findIndex(item => { return item.is_checked === 1 })
+      if (this.form.auto_examine === 1 && customFlag === -1 && this.form.activation_cfg.length === 0) {
+        this.$message.warning('分销员审核至少选择一项需提交信息')
+        return false
+      }
       // 自定义激活项
       this.form.custom_options = this.customList
 
