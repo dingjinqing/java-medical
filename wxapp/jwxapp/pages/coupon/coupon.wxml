@@ -25,10 +25,7 @@
                   <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
                 </view>
                 <view class="price" wx:if="{{item.type == 0}}">
-                  <view wx:if="{{item.couponType == 1 && item.isShare == 0 && item.actCode == 'random' && item.divisionEnabled == 0}}">
-                    ￥<text>{{item.amount}}</text>
-                  </view>
-                  <view wx:elif="{{item.couponType == 1 && item.isShare == 0 && item.actCode == 'random' && item.divisionEnabled == 1}}">
+                  <view wx:if="{{item.couponType == 1 && item.isShare == 0 && item.actCode == 'random'}}">
                     ￥<text>{{item.randomMax}}</text><text style="font-size: 22rpx;">最高</text>
                   </view>
                   <view wx:else>
