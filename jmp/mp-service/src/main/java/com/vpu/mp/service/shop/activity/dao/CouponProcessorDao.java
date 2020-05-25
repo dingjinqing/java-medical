@@ -38,7 +38,7 @@ public class CouponProcessorDao extends ShopBaseService {
             .select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.USE_CONSUME_RESTRICT,
                 MRKING_VOUCHER.LEAST_CONSUME,MRKING_VOUCHER.TYPE,MRKING_VOUCHER.RANDOM_MAX)
             .from(MRKING_VOUCHER).where(condition)
-            .orderBy(MRKING_VOUCHER.ACT_CODE.asc(), MRKING_VOUCHER.DENOMINATION.asc(), MRKING_VOUCHER.CREATE_TIME.desc()).fetch());
+            .orderBy(MRKING_VOUCHER.ACT_CODE.asc(), MRKING_VOUCHER.DENOMINATION.asc(),MRKING_VOUCHER.RANDOM_MAX.asc(), MRKING_VOUCHER.CREATE_TIME.desc()).fetch());
         if (record5s.size() <= 0) {
             return null;
         }
@@ -63,11 +63,12 @@ public class CouponProcessorDao extends ShopBaseService {
         Condition condition =buildCondition(goodsId,catId,sortId,date,false);
         List<MrkingVoucherRecord> mrkingVoucherRecords = db().select()
             .from(MRKING_VOUCHER).where(condition)
-            .orderBy(MRKING_VOUCHER.ACT_CODE.asc(), MRKING_VOUCHER.DENOMINATION.asc(), MRKING_VOUCHER.CREATE_TIME.desc())
+            .orderBy(MRKING_VOUCHER.ACT_CODE.asc(), MRKING_VOUCHER.DENOMINATION.asc(),MRKING_VOUCHER.RANDOM_MAX.asc(), MRKING_VOUCHER.CREATE_TIME.desc())
             .fetchInto(MrkingVoucherRecord.class);
         Map<String, List<MrkingVoucherRecord>> collects = mrkingVoucherRecords.stream().collect(Collectors.groupingBy(MrkingVoucherRecord::getActCode, Collectors.toList()));
         List<MrkingVoucherRecord> discounts = collects.get(CouponConstant.ACT_CODE_DISCOUNT);
         List<MrkingVoucherRecord> vouchers = collects.get(CouponConstant.ACT_CODE_VOUCHER);
+        List<MrkingVoucherRecord> random = collects.get(CouponConstant.ACT_CODE_RANDOM);
 
         List<MrkingVoucherRecord> datas = new ArrayList<>();
         if (discounts != null) {
@@ -76,6 +77,10 @@ public class CouponProcessorDao extends ShopBaseService {
         if (vouchers != null) {
             Collections.reverse(vouchers);
             datas.addAll(vouchers);
+        }
+        if (random!=null){
+            Collections.reverse(random);
+            datas.addAll(random);
         }
         return datas;
     }
