@@ -213,7 +213,7 @@ export default {
       console.log('进入后台')
       if (index === 0) {
         this.$router.push({
-          name: 'shopMain'
+          path: '/admin/admin/home/shopMain'
         })
       } else {
         loginRequestOut().then((res) => {
@@ -330,7 +330,7 @@ export default {
     to_log_rej_page (res) {
       if (res === 'login') {
         this.$router.push({
-          path: '/index/login'
+          path: '/admin/index/login'
         })
       } else {
         this.$router.push({

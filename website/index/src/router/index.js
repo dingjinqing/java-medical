@@ -17,7 +17,7 @@ const baseRoutes = [{
   }
 },
 {
-  path: '/index/login',
+  path: '/admin/index/login',
   name: 'indexLogin',
   component: () => import('@/components/index/login')
 }
@@ -33,27 +33,27 @@ const router = new Router({
   routes
 })
 // 全局路由守卫
-router.beforeEach((to, from, next) => {
-  const nextRoute = ['shopMain', 'shop_view'] // 需要登录的页面
-  let token = Cookies.get('V-Index-Token') // 判断是否登录
-  if (nextRoute.indexOf(to.name) >= 0) {
-    // 检测是否登录的页面
-    console.log(token)
-    console.log(to)
-    if (token) {
-      next()
-    } else {
-      // 如果没有登录你访问的不是login就让你强制跳转到login页面
-      if (to.path !== '/index/login') {
-        next({
-          path: '/index/login'
-        })
-      }
-    }
-  } else {
-    next()
-  }
-})
+// router.beforeEach((to, from, next) => {
+//   const nextRoute = ['shopMain', 'shop_view'] // 需要登录的页面
+//   let token = Cookies.get('V-Index-Token') // 判断是否登录
+//   if (nextRoute.indexOf(to.name) >= 0) {
+//     // 检测是否登录的页面
+//     console.log(token)
+//     console.log(to)
+//     if (token) {
+//       next()
+//     } else {
+//       // 如果没有登录你访问的不是login就让你强制跳转到login页面
+//       if (to.path !== '/admin/index/login') {
+//         next({
+//           path: '/admin/index/login'
+//         })
+//       }
+//     }
+//   } else {
+//     next()
+//   }
+// })
 
 // 路由全局到达后钩子
 router.afterEach((to, from) => {
