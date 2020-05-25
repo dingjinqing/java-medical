@@ -553,13 +553,10 @@ global.wxPage({
     }
   },
   toSave: function (e) {
-    util.getNeedTemplateId('audit_upgrade', () => {
-      var that = this;
-      setTimeout(function () {
-        that.bind_submit(e)
-      }, 100);
-    })
-
+    var that = this;
+    setTimeout(function () {
+      that.bind_submit(e)
+    }, 100);
   },
   // 提交审核申请
   bind_submit: function (e) {
@@ -760,165 +757,168 @@ global.wxPage({
 
     if (!distribution) user_info.card_no = card_no;
 
-    if (that.data.save_flag == 1) {
-      that.setData({
-        save_flag: 0
-      })
-      if (distribution == 1) {
-        console.log(user_info)
-        util.api('/api/wxapp/distribution/distributor/apply', function (res) {
-          if (res.error == 0) {
-            if (res.error == -1) {
-              // 申请不成功, 邀请码不存在
-              util.showModal("提示", "邀请码不存在");
-            }
-            util.redirectTo({
-              url: '/pages/distributionspread/distributionspread'
-            })
-          }
-        }, {
-          activationFields: user_info,
-          configFields: JSON.stringify(config)
+    util.getNeedTemplateId('audit_upgrade', () => {
+      if (that.data.save_flag == 1) {
+        that.setData({
+          save_flag: 0
         })
-
-      } else {
-        console.log(card_no)
-        console.log(user_info)
-
-        util.api('/api/wxapp/activation/card', function (res) {
-          console.log(res)
-          if (res.error === 0) {
-            util.toast_success('激活成功', function () {
-              setTimeout(function () {
-                util.redirectTo({
-                  url: '/pages/cardlist/cardlist',
-                })
-              }, 2000);
-            });
-            that.data.template_ids = res.content.template_ids || [];
-            var user_info = res.content.data;
-            var fi_arr = res.content.fields;
-            console.log(fi_arr)
-            let keyArr = ['if_username', 'if_mobile', 'if_realname', 'if_invitation_code', 'if_work', 'if_citydoce', 'if_sex', 'if_birthdayyear', 'if_mar', 'if_edu']
-            let valArr = ['username', 'mobile', 'realName', 'invitation_code', 'cid', 'industryInfo', 'cityCode', 'sex', 'birthdayYear', 'maritalStatus', 'education']
-            fi_arr.map((item, index) => {
-              var val = keyArr[valArr.indexOf(fi_arr[index])]
-              let obj = {}
-              obj[val] = 1
-              if (valArr.indexOf(fi_arr[index]) != -1) {
-                that.setData(obj)
+        if (distribution == 1) {
+          console.log(user_info)
+          util.api('/api/wxapp/distribution/distributor/apply', function (res) {
+            if (res.error == 0) {
+              if (res.error == -1) {
+                // 申请不成功, 邀请码不存在
+                util.showModal("提示", "邀请码不存在");
               }
-            })
-            // 会员昵称
-            if (user_info.username) {
-              user_nick_name = user_info.username
-            }
-            // 真实姓名
-            if (user_info.realName) {
-              real_name = user_info.realName
-            }
-            // 身份证
-            if (user_info.cid) {
-              id_num = user_info.cid;
-              that.setData({
-                id_num: id_num,
+              util.redirectTo({
+                url: '/pages/distributionspread/distributionspread'
               })
             }
-            // 所在行业
-            if (res.content.industry_info) {
-              for (var i in res.content.industry_info) {
-                work_arr.push(res.content.industry_info[i])
-              }
-              if (user_info.industry_info == null) {
-                work_select = 0;
-              } else {
-                work_select = user_info.industry_info;
-              }
-              that.setData({
-                work_arr: work_arr,
-                work_select: work_select,
-              })
-            }
-            //所在地
-            if (user_info.city_code) {
-              region[0] = user_info.province_code;
-              region[1] = user_info.city_code;
-              region[2] = user_info.district_code;
-              that.setData({
-                region: region,
-              })
-            }
-            //性别
-            if (user_info.sex) {
-              if (user_info.sex == "f") {
-                sex_index = 2;
-              } else {
-                sex_index = 1;
-              }
-              that.setData({
-                sex_index: sex_index,
-              })
-            }
-            //生日
-            if (user_info.birthday_day != null && user_info.birthday_day != 0) {
-              if (parseInt(user_info.birthday_month) < 10) {
-                user_info.birthday_month = '0' + user_info.birthday_month;
-              }
-              if (parseInt(user_info.birthday_day) < 10) {
-                user_info.birthday_day = '0' + user_info.birthday_day;
-              }
-              dates = user_info.birthday_year + '-' + user_info.birthday_month + '-' + user_info.birthday_day;
-              that.setData({
-                // date: dates,
-                dates: dates,
-              })
-            }
-            // 婚姻状况
-            if (user_info.marital_status) {
-              if (user_info.marital_status == null) {
-                marry_index = 0;
-              } else {
-                marry_index = user_info.marital_status;
-              }
-              that.setData({
-                marry_index: marry_index
-              })
-            }
-            // 教育程度
-            if (res.content.education) {
-              for (var i in res.content.education) {
-                edu_array.push(res.content.education[i])
-              }
-              if (user_info.education == null) {
-                edu_select = 0;
-              } else {
-                edu_select = user_info.education;
-              }
-              console.log(edu_array, edu_select)
-              that.setData({
-                edu_array: edu_array,
-                edu_select: edu_select,
-              })
-            }
-            that.setData({
-              user_info: user_info,
-              mobile: that.data.mobile,
-            })
-          } else {
-            util.showModal("提示", '操作失败');
-          }
-          wx.hideLoading();
-          that.setData({
-            user_block: 1
+          }, {
+            activationFields: user_info,
+            configFields: JSON.stringify(config)
           })
-        }, { cardNo: card_no, isSetting: 1, activateOption: user_info, customOptions: custom_options })
-
-
-
+  
+        } else {
+          console.log(card_no)
+          console.log(user_info)
+  
+          util.api('/api/wxapp/activation/card', function (res) {
+            console.log(res)
+            if (res.error === 0) {
+              util.toast_success('激活成功', function () {
+                setTimeout(function () {
+                  util.redirectTo({
+                    url: '/pages/cardlist/cardlist',
+                  })
+                }, 2000);
+              });
+              that.data.template_ids = res.content.template_ids || [];
+              var user_info = res.content.data;
+              var fi_arr = res.content.fields;
+              console.log(fi_arr)
+              let keyArr = ['if_username', 'if_mobile', 'if_realname', 'if_invitation_code', 'if_work', 'if_citydoce', 'if_sex', 'if_birthdayyear', 'if_mar', 'if_edu']
+              let valArr = ['username', 'mobile', 'realName', 'invitation_code', 'cid', 'industryInfo', 'cityCode', 'sex', 'birthdayYear', 'maritalStatus', 'education']
+              fi_arr.map((item, index) => {
+                var val = keyArr[valArr.indexOf(fi_arr[index])]
+                let obj = {}
+                obj[val] = 1
+                if (valArr.indexOf(fi_arr[index]) != -1) {
+                  that.setData(obj)
+                }
+              })
+              // 会员昵称
+              if (user_info.username) {
+                user_nick_name = user_info.username
+              }
+              // 真实姓名
+              if (user_info.realName) {
+                real_name = user_info.realName
+              }
+              // 身份证
+              if (user_info.cid) {
+                id_num = user_info.cid;
+                that.setData({
+                  id_num: id_num,
+                })
+              }
+              // 所在行业
+              if (res.content.industry_info) {
+                for (var i in res.content.industry_info) {
+                  work_arr.push(res.content.industry_info[i])
+                }
+                if (user_info.industry_info == null) {
+                  work_select = 0;
+                } else {
+                  work_select = user_info.industry_info;
+                }
+                that.setData({
+                  work_arr: work_arr,
+                  work_select: work_select,
+                })
+              }
+              //所在地
+              if (user_info.city_code) {
+                region[0] = user_info.province_code;
+                region[1] = user_info.city_code;
+                region[2] = user_info.district_code;
+                that.setData({
+                  region: region,
+                })
+              }
+              //性别
+              if (user_info.sex) {
+                if (user_info.sex == "f") {
+                  sex_index = 2;
+                } else {
+                  sex_index = 1;
+                }
+                that.setData({
+                  sex_index: sex_index,
+                })
+              }
+              //生日
+              if (user_info.birthday_day != null && user_info.birthday_day != 0) {
+                if (parseInt(user_info.birthday_month) < 10) {
+                  user_info.birthday_month = '0' + user_info.birthday_month;
+                }
+                if (parseInt(user_info.birthday_day) < 10) {
+                  user_info.birthday_day = '0' + user_info.birthday_day;
+                }
+                dates = user_info.birthday_year + '-' + user_info.birthday_month + '-' + user_info.birthday_day;
+                that.setData({
+                  // date: dates,
+                  dates: dates,
+                })
+              }
+              // 婚姻状况
+              if (user_info.marital_status) {
+                if (user_info.marital_status == null) {
+                  marry_index = 0;
+                } else {
+                  marry_index = user_info.marital_status;
+                }
+                that.setData({
+                  marry_index: marry_index
+                })
+              }
+              // 教育程度
+              if (res.content.education) {
+                for (var i in res.content.education) {
+                  edu_array.push(res.content.education[i])
+                }
+                if (user_info.education == null) {
+                  edu_select = 0;
+                } else {
+                  edu_select = user_info.education;
+                }
+                console.log(edu_array, edu_select)
+                that.setData({
+                  edu_array: edu_array,
+                  edu_select: edu_select,
+                })
+              }
+              that.setData({
+                user_info: user_info,
+                mobile: that.data.mobile,
+              })
+            } else {
+              util.showModal("提示", '操作失败');
+            }
+            wx.hideLoading();
+            that.setData({
+              user_block: 1
+            })
+          }, { cardNo: card_no, isSetting: 1, activateOption: user_info, customOptions: custom_options })
+  
+  
+  
+        }
+      } else {
+        util.showModal("提示", '请勿重复提交');
       }
-    } else {
-      util.showModal("提示", '请勿重复提交');
-    }
+    })
+    
   },
   // 单选 选项
   bindRadiosChange (e) {
