@@ -111,7 +111,7 @@ global.wxPage({
     var score_type = user_center.sign_score.sign_data.sign_in_rules;
     console.log('score_type' + score_type)
     //TODO
-    util.jumpToWeb('/wxapp/sign/help')
+    util.jumpToWeb('/wxapp/wxapp/sign/help')
   },
 
   userRequest: function (e) {
