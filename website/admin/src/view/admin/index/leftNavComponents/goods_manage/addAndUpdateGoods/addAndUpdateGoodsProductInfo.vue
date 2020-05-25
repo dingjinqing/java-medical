@@ -91,25 +91,54 @@ export default {
           this.goodsWeightDialogShow = true
           return false
         }
+      }
+
+      // 需要校验商品重量逻辑
+      if (this.transferData.goodsWeightCfg === 1) {
         // 选择了重量模板则需要校验填入的数据是否正确
         if (this.transferData.isDefaultPrd) {
-          if (isNumberBlank(deliverAndOtherInfoData.goodsWeight) || deliverAndOtherInfoData.goodsWeight <= 0) {
-            this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsWeightIsNull'))
-            this.$refs.deliverAndOtherInfo.$refs.goodsWeightInput.focus()
-            return false
+          // 填了数据
+          if (!isNumberBlank(deliverAndOtherInfoData.goodsWeight)) {
+            // 数据不合法
+            if (deliverAndOtherInfoData.goodsWeight <= 0) {
+              this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsWeightIsNull'))
+              this.$refs.deliverAndOtherInfo.$refs.goodsWeightInput.focus()
+              return false
+            }
+          } else {
+            // 没填数据，但是选的是运费模板
+            if (deliverType === 1) {
+              this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsWeightIsNull'))
+              this.$refs.deliverAndOtherInfo.$refs.goodsWeightInput.focus()
+              return false
+            }
           }
         } else {
           let stockAndPriceInfoData = this.$refs.stockAndPriceInfo.getFormData()
-          for (let i = 0; i < stockAndPriceInfoData.goodsSpecProducts.length; i++) {
-            let item = stockAndPriceInfoData.goodsSpecProducts[i]
-            if (isNumberBlank(item.prdWeight) || item.prdWeight <= 0) {
-              this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsPrdWeightIsNull'))
-              document.getElementById('prdWeight_' + item.prdDesc).focus()
-              return false
+          if (deliverType === 1) {
+            for (let i = 0; i < stockAndPriceInfoData.goodsSpecProducts.length; i++) {
+              let item = stockAndPriceInfoData.goodsSpecProducts[i]
+              // 没填数据，或者数据错误
+              if (isNumberBlank(item.prdWeight) || item.prdWeight <= 0) {
+                this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsPrdWeightIsNull'))
+                document.getElementById('prdWeight_' + item.prdDesc).focus()
+                return false
+              }
+            }
+          } else {
+            for (let i = 0; i < stockAndPriceInfoData.goodsSpecProducts.length; i++) {
+              let item = stockAndPriceInfoData.goodsSpecProducts[i]
+              // 填数据但是数据错误
+              if (!isNumberBlank(item.prdWeight) && item.prdWeight <= 0) {
+                this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsPrdWeightIsNull'))
+                document.getElementById('prdWeight_' + item.prdDesc).focus()
+                return false
+              }
             }
           }
         }
       }
+
       return true
     },
     /* 获取数据 */
