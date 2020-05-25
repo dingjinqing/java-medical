@@ -11,7 +11,7 @@ import lombok.Data;
 public class CouponGetDetailParam {
 	private Integer id;
 	/**优惠券类型：0：普通优惠券；1：分裂优惠券*/
-	private Integer couponType;
+	private Byte couponType = 0;
 	/**用户昵称*/
 	private String userName;
 	/**手机号*/

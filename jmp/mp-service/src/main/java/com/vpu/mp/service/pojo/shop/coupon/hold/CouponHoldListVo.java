@@ -34,6 +34,7 @@ public class CouponHoldListVo {
      */
     private Integer status;
     /**优惠券类型 0：普通优惠券；1：分裂优惠券*/
+    private Byte couponType;
     private Integer type;
     /**是否分享*/
     private Integer isShare;
