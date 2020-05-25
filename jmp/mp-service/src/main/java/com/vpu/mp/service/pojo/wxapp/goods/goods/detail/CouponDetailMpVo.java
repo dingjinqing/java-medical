@@ -38,10 +38,12 @@ public class CouponDetailMpVo {
     /**是否已有用优惠券*/
     private Boolean alreadyHas;
 
-    /**优惠券类型voucher是减金额，discount打折*/
+    /**优惠券类型voucher是减金额，discount打折 random 随机*/
     private String actCode;
     /**优惠券面额*/
     private BigDecimal denomination;
+    /** 随机最大金额*/
+    private BigDecimal randomMax;
     /**是否存在使用门槛 0否 1是*/
     private Byte useConsumeRestrict;
     /** 满多少可用*/
@@ -70,5 +72,6 @@ public class CouponDetailMpVo {
         this.setUseConsumeRestrict(record.getUseConsumeRestrict());
         this.setLeastConsume(record.getLeastConsume());
         this.setValidationCode(record.getValidationCode());
+        this.setRandomMax(record.getRandomMax());
     }
 }
