@@ -291,18 +291,18 @@ public class ReducePriceService extends ShopBaseService {
             .and(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(REDUCE_PRICE.START_TIME.lessThan(date))
             .and(REDUCE_PRICE.END_TIME.greaterThan(date))
-            .orderBy(REDUCE_PRICE.FIRST.desc(),REDUCE_PRICE.CREATE_TIME.asc())
+            .orderBy(REDUCE_PRICE.FIRST.desc(),REDUCE_PRICE.CREATE_TIME.desc())
             .fetch()
             .intoGroups(REDUCE_PRICE_GOODS.GOODS_ID);
         Map<Integer, Integer> goodsIdAndReducePriceIdMap = recordMap.entrySet()
             .stream()
             .filter(x -> isActivityGoingOn(x.getValue().get(0)))
             .collect(Collectors.toMap(Map.Entry::getKey, x -> x.getValue().get(0).get(REDUCE_PRICE.ID)));
-        Condition condition = DSL.trueCondition();
-        goodsIdAndReducePriceIdMap.forEach(
-            (key, value) ->
-                condition.or(REDUCE_PRICE_PRODUCT.GOODS_ID.eq(key).and(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID.eq(value)))
-        );
+        Condition condition = DSL.noCondition();
+        for(Map.Entry<Integer,Integer> entry:goodsIdAndReducePriceIdMap.entrySet()){
+            condition = condition.or(REDUCE_PRICE_PRODUCT.GOODS_ID.eq(entry.getKey()).and(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID.eq(entry.getValue())));
+        }
+
         Map<Integer, BigDecimal> resultPriceMap = new HashMap<>(goodsIdAndReducePriceIdMap.size());
         Map<Integer, Result<Record2<Integer, BigDecimal>>> beatPrice = db()
             .select(REDUCE_PRICE_PRODUCT.GOODS_ID, REDUCE_PRICE_PRODUCT.PRD_PRICE)

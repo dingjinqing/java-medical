@@ -108,6 +108,8 @@ global.wxComponent({
                 'components.decorate.hit'
               )}${item.denomination}${this.$t('components.decorate.fracture')}`;
             }
+          } else if (item.actCode === 'random'){
+            obj.text = `领券减￥${item.randomMax}`
           }
           break;
         case 21:
