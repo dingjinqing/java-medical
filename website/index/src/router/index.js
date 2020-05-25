@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 import store from '../store' // 引入vuex实例对象
 // 引入其他路由文件
 import indexRoutes from '@/router/index/index'
