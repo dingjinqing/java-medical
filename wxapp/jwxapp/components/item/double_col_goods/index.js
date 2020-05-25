@@ -147,7 +147,7 @@ global.wxComponent({
         },
         '0-1': {
           className:'gray-text line-through',
-          text:`市场价: ${data.goodsData.linePrice}`
+          text:`￥${data.goodsData.linePrice}`
         }, //关闭购物车按钮-划线价类别
         '0-2': {
           className:'gray-text',

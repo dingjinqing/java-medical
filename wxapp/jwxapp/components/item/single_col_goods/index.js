@@ -42,6 +42,7 @@ global.wxComponent({
     ready() {
       this.setCartData()
       this.setDelMarket()
+      this.setGoodsActShow()
     }
   },
 
@@ -82,7 +83,7 @@ global.wxComponent({
       let delMarketType = {
         1: {
           className: 'gray-text line-through',
-          text: `${data.goodsData.linePrice ? '市场价: ' + data.goodsData.linePrice : ''}`
+          text: `${data.goodsData.linePrice ? '￥' + data.goodsData.linePrice : ''}`
         }, //关闭购物车按钮-划线价类别
         2: {
           className: 'gray-text',
@@ -169,6 +170,29 @@ global.wxComponent({
         `pages/item/item?gid=${goodsId}&atp=${activityType}&aid=${activityId}`,
         'navigateTo'
       )
+    },
+    setGoodsActShow(){
+      if(!this.data.goodsData || !this.data.goodsData.activityType) return
+      console.log(this.data.goodsData,this.data.goodsData.activityType)
+      let actInfo = {}
+      switch (this.data.goodsData.activityType) {
+        case 6:
+          actInfo.actName="限时降价，立即查看"
+          break;
+        case 18:
+          actInfo.actName="首单特惠，新人专享"
+          break;
+        case 22:
+          actInfo.isVipPrice=true
+          break;
+        case 98:
+          actInfo.actName="限时降价，立即查看"
+          actInfo.isVipPrice=true
+          break;
+      }
+      this.setData({
+        actInfo
+      })
     }
   }
 })

@@ -1377,15 +1377,17 @@ public class GoodsService extends ShopBaseService {
         gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS_SPEC_PRODUCTION);
         //检查sku sn是否重复
         for (GoodsSpecProduct goodsSpecProduct : goods.getGoodsSpecProducts()) {
+            gcep.setPrdId(goodsSpecProduct.getPrdId());
+
             if (StringUtils.isNotBlank(goodsSpecProduct.getPrdSn())) {
                 gcep.setPrdSn(goodsSpecProduct.getPrdSn());
                 gcep.setPrdId(goodsSpecProduct.getPrdId());
                 if (isColumnValueExist(gcep)) {
                     return GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST;
                 }
+                gcep.setPrdSn(null);
             }
             if (StringUtils.isNotBlank(goodsSpecProduct.getPrdCodes())) {
-                gcep.setPrdSn(null);
                 gcep.setPrdCodes(goodsSpecProduct.getPrdCodes());
                 if (isColumnValueExist(gcep)) {
                     return GoodsDataIIllegalEnum.GOODS_PRD_CODES_EXIST;

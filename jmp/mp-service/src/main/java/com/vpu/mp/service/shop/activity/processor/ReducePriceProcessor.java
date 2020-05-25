@@ -130,7 +130,7 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
         log.info("购物车-限时降价-开始");
         // 是限时降价商品且不是会员专享
         List<Integer> productList = cartBo.getCartGoodsList().stream()
-                .filter(goods -> BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goods.getGoodsRecord().getGoodsType())&&goods.getBuyStatus().equals(BaseConstant.YES))
+            .filter(goods -> goods.getBuyStatus().equals(BaseConstant.YES))
                 .map(WxAppCartGoods::getProductId).collect(Collectors.toList());
         Map<Integer, List<Record5<Integer, Integer, Byte, Integer, BigDecimal>>> goodsReduceListInfo = reducePriceProcessorDao.getGoodsProductReduceList(productList, DateUtil.getLocalDateTime());
         if (goodsReduceListInfo!=null&&goodsReduceListInfo.size()>0){
@@ -155,7 +155,7 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
                         log.info("购物车限时减价-修改价格");
                         goods.setPriceActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
                         goods.setPrdPrice(reducePrize);
-                        goods.setLimitMaxNum(limitNum);
+                        goods.setActivityLimitMinNum(limitNum);
                         goods.setActivityLimitType(limitFlag);
                         if (goods.getCartNumber()>limitNum&&limitFlag.equals(BaseConstant.LIMIT_FLAG_CONFINE)) {
                             log.info("购物车-限时降价-商品{}-限制商品数量{}-取消选中",goods.getGoodsName(),limitNum);

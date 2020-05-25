@@ -357,16 +357,11 @@
             <el-table-column
               align="center"
               label="活动价格"
-              :show-overflow-tooltip="true"
             >
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'products.' +  scope.$index+ '.presalePrice'"
-                  :rules="[
-                    { required: true, message: '活动价格不能为空' },
-                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.shopPrice)}, trigger: ['blur', 'change'] }
-                  ]"
-                  style="height: 56px;line-height: 56px;"
+                  :rules="[{ validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.shopPrice, scope.row)}, trigger: ['blur', 'change'] }]"
                 >
                   <el-input
                     v-model="scope.row.presalePrice"
@@ -387,16 +382,11 @@
               align="center"
               prop="presaleNumber"
               label="活动库存"
-              :show-overflow-tooltip="true"
             >
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'products.' +  scope.$index+ '.presaleNumber'"
-                  :rules="[
-                    { required: true, message: '活动库存不能为空' },
-                    { validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.goodsNumber)}, trigger: ['blur', 'change'] }
-                  ]"
-                  style="height: 56px;line-height: 56px;"
+                  :rules="[{ validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.goodsNumber, scope.row, scope.$index)}, trigger: ['blur', 'change']}]"
                 >
                   <el-input
                     v-model="scope.row.presaleNumber"
@@ -408,7 +398,7 @@
                   class="spec-tips"
                   @click="showSpec(scope.row)"
                   v-if="scope.row.goodsSpecProducts&&scope.row.goodsSpecProducts.length > 0"
-                >包含{{scope.row.goodsSpecProducts.length}}个规格</div>
+                >包含{{scope.row.goodsSpecProducts.length}}个规格；库存合计：{{scope.row.totalStock ? scope.row.totalStock : 0}}</div>
               </template>
             </el-table-column>
 
@@ -418,16 +408,11 @@
               prop="presaleMoney"
               label="定金"
               v-if="param.presaleType===0"
-              :show-overflow-tooltip="true"
             >
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'products.' +  scope.$index+ '.presaleMoney'"
-                  :rules="[
-                    { required: true, message: '定金不能为空'},
-                    { validator: (rule, value, callback)=>{validateReadyMoney(rule, value, callback, scope.row.shopPrice)}, trigger: ['blur', 'change'] }
-                  ]"
-                  style="height: 56px;line-height: 56px;"
+                  :rules="[{ validator: (rule, value, callback)=>{validateReadyMoney(rule, value, callback, scope.row.presalePrice, scope.row)}, trigger: ['blur', 'change']}]"
                 >
                   <el-input
                     v-model="scope.row.presaleMoney"
@@ -449,16 +434,11 @@
               prop="preDiscountMoney1"
               label="1阶段定金可抵扣金额"
               v-if="!isFullPay"
-              :show-overflow-tooltip="true"
             >
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'products.' +  scope.$index+ '.preDiscountMoney1'"
-                  :rules="[
-                    { required: true, message: '1阶段定金不能为空'},
-                    { validator: (rule, value, callback)=>{validateFirstStage(rule, value, callback, scope.row.shopPrice, scope.row.presaleMoney)}, trigger: ['blur', 'change'] }
-                  ]"
-                  style="height: 56px;line-height: 56px;"
+                  :rules="[{ validator: (rule, value, callback)=>{validateFirstStage(rule, value, callback, scope.row.presaleMoney, scope.row.presalePrice)}, trigger: ['blur', 'change']}]"
                 >
                   <el-input
                     v-model="scope.row.preDiscountMoney1"
@@ -480,16 +460,11 @@
               prop="preDiscountMoney2"
               label="2阶段定金可抵扣金额"
               v-if="twoSteps&&!isFullPay"
-              :show-overflow-tooltip="true"
             >
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'products.' +  scope.$index+ '.preDiscountMoney2'"
-                  :rules="[
-                    { required: true, message: '2阶段定金不能为空'},
-                    { validator: (rule, value, callback)=>{validateSecondStage(rule, value, callback, scope.row.presalePrice, scope.row.presaleMoney)}, trigger: ['blur', 'change'] }
-                  ]"
-                  style="height: 56px;line-height: 56px;"
+                  :rules="[{ validator: (rule, value, callback)=>{validateSecondStage(rule, value, callback, scope.row.presalePrice, scope.row.presaleMoney)}, trigger: ['blur', 'change']}]"
                 >
                   <el-input
                     v-model="scope.row.preDiscountMoney2"
@@ -588,9 +563,7 @@
           <el-form-item
             label="购买数量限制："
             prop="buyNumber"
-            :rules="[
-                { validator: (rule, value, callback)=>{validateBuyNumber(rule, value, callback)}, trigger: ['blur', 'change'] }
-              ]"
+            :rules="[{ validator: (rule, value, callback)=>{validateBuyNumber(rule, value, callback)}, trigger: ['blur', 'change']}]"
           >
             <div style="display:flex">
               <span>单用户最多可以购买</span>
@@ -733,7 +706,7 @@
         :product-info="productInfo"
         :isShowTwoStageMoney="showTwoStageMoney"
         :isShowPreMoneyAct="showPreMoneyAct"
-        @confirm="getProductdata"
+        @confrim="getProductdata"
       />
     </div>
   </div>
@@ -882,41 +855,81 @@ export default {
   methods: {
     ...mapActions(['transmitEditGoodsId']),
     // 验证是否选择了商品
-    validateMoney (rule, value, callback, prdPrice) {
-      var re = /^\d+(\.\d{1,2})?$/
-      if (!re.test(value)) {
-        callback(new Error('请填写非负数, 可以保留两位小数'))
+    validateMoney (rule, value, callback, prdPrice, row) {
+      console.log(row)
+      row.flag1 = false
+      // 找到最低活动价格
+      if (row.goodsSpecProducts && row.goodsSpecProducts.length > 0) {
+        row.goodsSpecProducts.forEach(item => {
+          if (prdPrice > item.presalePrice) {
+            prdPrice = item.presalePrice
+          }
+        })
+      }
+
+      // var re = /^\d+(\.\d{1,2})?$/
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!value) {
+        callback(new Error('活动价格不能为空'))
+      } else if (value < 0) {
+        callback(new Error('活动价格不能为负数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请输入正确价格，可以保留两位小数'))
       } else if (value > prdPrice) {
         callback(new Error('活动价格不能大于商品原价'))
       } else {
         callback()
+        row.flag1 = true
       }
     },
-    validateNum (rule, value, callback, goodsNumber) {
-      var re = /^[1-9]\d*$/
-      if (!re.test(value)) {
-        callback(new Error('请填写正整数'))
+
+    // 校验活动库存
+    validateNum (rule, value, callback, goodsNumber, row, index) {
+      row.flag2 = false
+      // 找到最低规格库存
+      if (row.goodsSpecProducts && row.goodsSpecProducts.length > 0) {
+        row.goodsSpecProducts.forEach(item => {
+          if (goodsNumber > item.prdNumber) {
+            goodsNumber = item.prdNumber
+          }
+        })
+      }
+
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!value) {
+        callback(new Error('活动库存不能为空'))
+      } else if (value < 0) {
+        callback(new Error('活动库存不能为负数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写0或正整数'))
       } else if (value > goodsNumber) {
         callback(new Error('活动库存不能大于商品库存'))
       } else {
         callback()
+        row.flag2 = true
       }
     },
-    validateReadyMoney (rule, value, callback, shopPrice) {
+
+    // 校验定金
+    validateReadyMoney (rule, value, callback, presalePrice, row) {
+      console.log(row)
       var re = /^\d+(\.\d{1,2})?$/
+
       if (!re.test(value)) {
         callback(new Error('请填写非负数, 可以保留两位小数'))
-      } else if (value > Number(shopPrice)) {
+      } else if (value > Number(presalePrice)) {
         callback(new Error('定金不能大于活动价格'))
       } else {
         callback()
       }
     },
-    validateFirstStage (rule, value, callback, shopPrice, presaleMoney) {
+
+    // 校验一阶段定金
+    validateFirstStage (rule, value, callback, presaleMoney, presalePrice) {
       var re = /^\d+(\.\d{1,2})?$/
       if (!re.test(value)) {
         callback(new Error('请填写非负数, 可以保留两位小数'))
-      } else if (value > Number(shopPrice)) {
+      } else if (value > Number(presalePrice)) {
         callback(new Error('1阶段定金不能大于活动价格'))
       } else if (value < Number(presaleMoney)) {
         callback(new Error('1阶段定金不能小于定金'))
@@ -924,6 +937,8 @@ export default {
         callback()
       }
     },
+
+    // 校验二阶段定金
     validateSecondStage (rule, value, callback, presalePrice, presaleMoney) {
       var re = /^\d+(\.\d{1,2})?$/
       if (!re.test(value)) {
@@ -977,10 +992,10 @@ export default {
               this.param.buyNumber = Number(this.param.buyNumber)
               console.log(param, 'get param')
               this.formatParam()
+
               if (!this.validateParam()) {
                 return false
               } else {
-                // const { param } = this
                 this.formatParam()
 
                 this.param.buyNumber = Number(this.param.buyNumber)
@@ -1003,25 +1018,42 @@ export default {
                   item.preDiscountMoney1 = Number(item.preDiscountMoney1)
                   item.preDiscountMoney2 = Number(item.preDiscountMoney2)
                 })
+
                 let products = []
-                // this.param.stock = 0
+                this.param.stock = 0
+                console.log(this.param.products)
                 this.param.products.forEach(item => {
                   if (item.goodsSpecProducts) {
                     console.log(item.goodsSpecProducts)
                     item.goodsSpecProducts.forEach(specItem => {
-                      let { prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock } = specItem
+                      console.log(specItem)
+                      let { presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, stock } = specItem
                       let goodsId = item.goodsId
-                      products.push({ goodsId, productId: prdId, presalePrice: Number(presalePrice), presaleNumber: Number(presaleNumber), presaleMoney: Number(presaleMoney), preDiscountMoney1: Number(preDiscountMoney1), preDiscountMoney2: Number(preDiscountMoney2), stock: Number(stock) })
-                      // this.param.stock += Number(stock)
+                      let productId = this.isEditeFlag ? specItem.productId : specItem.prdId
+                      let preDiscountMoney2 = specItem.preDiscountMoney2 === 0 ? 'null' : specItem.preDiscountMoney2
+                      products.push({ goodsId, productId, presalePrice: Number(presalePrice), presaleNumber: Number(presaleNumber), presaleMoney: Number(presaleMoney), preDiscountMoney1: Number(preDiscountMoney1), preDiscountMoney2: Number(preDiscountMoney2), stock: Number(stock) })
+                      this.param.stock += Number(stock)
                     })
                   } else {
-                    let { goodsId, prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock } = item
-                    products.push({ goodsId, productId: prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock: Number(stock) })
-                    // this.param.stock += Number(stock)
+                    if (this.isEditeFlag) {
+                      item.productList.forEach(item => {
+                        let { goodsId, productId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, stock } = item
+                        let preDiscountMoney2 = item.preDiscountMoney2 === 0 ? 'null' : item.preDiscountMoney2
+                        products.push({ goodsId, productId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock: Number(stock) })
+                        this.param.stock += Number(stock)
+                      })
+                    } else {
+                      let { goodsId, prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock } = item
+                      products.push({ goodsId, productId: prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock: Number(stock) })
+                      this.param.stock += Number(stock)
+                    }
                   }
                 })
 
                 if (this.update) {
+                  console.log(this.param)
+                  console.log(products)
+                  console.log()
                   updatePreSale({ ...this.param, products }).then(res => {
                     if (res.error === 0) {
                       console.log(res)
@@ -1060,8 +1092,6 @@ export default {
     formatTimes () {
       const { isFullPay, twoSteps } = this
       if (isFullPay) {
-        // this.param.startTime = format(payTimeRange[0])
-        // this.param.endTime = format(payTimeRange[1])
         this.param.preStartTime = format(this.param.preTime1Range[0])
         this.param.preEndTime = format(this.param.preTime1Range[1])
       } else {
@@ -1088,6 +1118,7 @@ export default {
         this.loadStatus(content)
         // this.loadingGoods(content)
         console.log(this.param, 'get return param')
+        this.goodsIdList = content.goodsId.split(',').map(Number)
         if (content) {
           if (content.presaleType === 1) {
             // 全款购买 - 定金支付时间
@@ -1096,7 +1127,11 @@ export default {
             // 定金膨胀 - 定金支付时间
             this.param.preTime1Range = [content.preStartTime, content.preEndTime]
             this.param.preTime2Range = [content.preStartTime2, content.preEndTime2]
-            this.showTwoStageMoney = true
+            if (content.preEndTime2) {
+              this.showTwoStageMoney = true
+            } else {
+              this.showTwoStageMoney = false
+            }
           }
           // 尾款支付时间
           this.param.tailPayTimeRange = [content.startTime, content.endTime]
@@ -1144,6 +1179,11 @@ export default {
         }
       }
 
+      if (this.goodsIdList.length === 0) {
+        this.$message.warning('请选择商品')
+        return false
+      }
+
       if (this.param.shareAction === 2 && !this.param.shareDoc) {
         this.$message.warning('请填写对应的分享文案')
         return false
@@ -1187,36 +1227,40 @@ export default {
     setCurrent (index) {
       // 拷贝一份数据
       let price = JSON.parse(JSON.stringify(this.param.products))
-      console.log(this.price, 'get-price')
 
       switch (index) {
         case 1:
           price.forEach(row => {
-            row.presalePrice = Number(price[0].presalePrice)
+            this.$set(row, 'presalePrice', this.param.products[0].presalePrice)
+            this.changePriceInput(row)
           })
           this.activeIndex = 1
           break
         case 2:
           price.forEach(row => {
-            row.presaleNumber = Number(price[0].presaleNumber)
+            this.$set(row, 'presaleNumber', this.param.products[0].presaleNumber)
+            this.changeStockInput(row)
           })
           this.activeIndex = 2
           break
         case 3:
           price.forEach(row => {
-            row.presaleMoney = Number(price[0].presaleMoney)
+            this.$set(row, 'presaleMoney', this.param.products[0].presaleMoney)
+            this.changeEarnestMoney(row)
           })
           this.activeIndex = 3
           break
         case 4:
           price.forEach(row => {
-            row.preDiscountMoney1 = Number(price[0].preDiscountMoney1)
+            this.$set(row, 'preDiscountMoney1', this.param.products[0].preDiscountMoney1)
+            this.changeDiscountMoney1(row)
           })
           this.activeIndex = 4
           break
         case 5:
           price.forEach(row => {
-            row.preDiscountMoney2 = Number(price[0].preDiscountMoney2)
+            this.$set(row, 'preDiscountMoney2', this.param.products[0].preDiscountMoney2)
+            this.changeDiscountMoney2(row)
           })
           this.activeIndex = 5
           break
@@ -1457,5 +1501,9 @@ export default {
   text-align: center;
   color: #409eff;
   cursor: pointer;
+}
+/deep/ .el-form-item__error {
+  position: relative;
+  text-align: left;
 }
 </style>

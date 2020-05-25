@@ -2132,16 +2132,20 @@ public class UserCardService extends ShopBaseService {
             }
             if (order.getMemberCardRedunce().compareTo(BigDecimal.ZERO)>0){
                 logger().info("开始增加会员卡消费记录");
-                UserCardParam cardInfo = userCardDao.getUserCardInfo(order.getMemberCardNo());
                 //增加会员卡消费记录
-                CardConsumerRecord record = new CardConsumerRecord();
-                record.setUserId(userId);
-                record.setMoney(new BigDecimal("-"+order.getMemberCardRedunce().toString()));
-                record.setCardNo(param.getMemberCardNo());
-                record.setCardId(cardInfo.getCardId());
-                record.setReason(order.getRenewOrderSn());
-                record.setType((byte)0);
-                db().executeInsert(record);
+                UserCardParam cardInfo = userCardDao.getUserCardInfo(order.getMemberCardNo());
+                UserCardConsumeBean userCardConsume = UserCardConsumeBean.builder()
+                    .userId(userId)
+                    .moneyDis(cardInfo.getMoney())
+                    .money(new BigDecimal("-"+order.getMemberCardRedunce().toString()))
+                    .cardNo(param.getMemberCardNo())
+                    .cardId(cardInfo.getCardId())
+                    .reasonId("3008")
+                    .reason(order.getRenewOrderSn())
+                    .type(NumberUtils.BYTE_ZERO)
+                    .payment("")
+                    .build();
+                cardConsumer(userCardConsume);
             }
             //支付
             if (order.getMoneyPaid().compareTo(BigDecimal.ZERO)>0){
@@ -2630,16 +2634,19 @@ public class UserCardService extends ShopBaseService {
         }
         if (order.getMemberCardRedunce().compareTo(BigDecimal.ZERO)>0){
              logger().info("开始增加会员卡消费记录");
-             UserCardParam cardInfo = userCardDao.getUserCardInfo(order.getMemberCardNo());
-             //增加会员卡消费记录
-             CardConsumerRecord record = new CardConsumerRecord();
-             record.setUserId(userInfo.getUserId());
-             record.setMoney(new BigDecimal("-"+order.getMemberCardRedunce().toString()));
-             record.setCardNo(order.getCardNo());
-             record.setCardId(cardInfo.getCardId());
-             record.setReason(order.getRenewOrderSn());
-             record.setType((byte)0);
-             db().executeInsert(record);
+            //增加会员卡消费记录
+            UserCardParam cardInfo = userCardDao.getUserCardInfo(order.getMemberCardNo());
+            UserCardConsumeBean userCardConsume = UserCardConsumeBean.builder()
+                .userId(order.getUserId())
+                .moneyDis(cardInfo.getMoney())
+                .money(new BigDecimal("-"+order.getMemberCardRedunce().toString()))
+                .cardNo(order.getMemberCardNo())
+                .cardId(cardInfo.getCardId())
+                .reasonId("3008")
+                .reason(order.getRenewOrderSn())
+                .type(NumberUtils.BYTE_ZERO)
+                .build();
+            cardConsumer(userCardConsume);
          }
          //更新订单信息
          updateOrderInfo(order.getRenewOrderSn());

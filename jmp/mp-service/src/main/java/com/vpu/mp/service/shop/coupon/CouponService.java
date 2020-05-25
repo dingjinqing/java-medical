@@ -1,5 +1,39 @@
 package com.vpu.mp.service.shop.coupon;
 
+import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
+import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
+import static com.vpu.mp.db.shop.Tables.DIVISION_RECEIVE_RECORD;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.service.foundation.util.Util.listToString;
+import static com.vpu.mp.service.foundation.util.Util.stringToList;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.records.CustomerAvailCouponsRecord;
 import com.vpu.mp.db.shop.tables.records.DivisionReceiveRecordRecord;
@@ -25,26 +59,7 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import jodd.util.StringUtil;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Timestamp;
 import java.text.ParseException;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.foundation.util.Util.listToString;
-import static com.vpu.mp.service.foundation.util.Util.stringToList;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
  * 优惠券管理
@@ -66,6 +81,8 @@ public class CouponService extends ShopBaseService {
 
     private String aliasCode;
 
+	@Autowired
+	public CouponMpService couponMpService;
 
     /**可用会员卡*/
     public static final byte COUPON_IS_USED_STATUS_AVAIL = 0;
@@ -84,7 +101,6 @@ public class CouponService extends ShopBaseService {
      * @return
      */
     public Boolean couponAdd(CouponParam couponInfo) {
-        System.out.println(couponInfo);
         MrkingVoucherRecord record = new MrkingVoucherRecord();
         record.setSurplus(couponInfo.getTotalAmount());
         record.setAliasCode(this.generateAliasCode());
@@ -293,6 +309,7 @@ public class CouponService extends ShopBaseService {
     public PageResult<CouponHoldListVo> getDetail(CouponGetDetailParam param) {
         CouponHoldListParam couponParam = new CouponHoldListParam();
         couponParam.setActId(param.getId());
+        couponParam.setCouponType(param.getCouponType());
         couponParam.setMobile(param.getMobile());
         couponParam.setUsername(param.getUserName());
         couponParam.setStatus(param.getIsUsed());
@@ -300,6 +317,60 @@ public class CouponService extends ShopBaseService {
         couponParam.setPageRows(param.getPageRows());
         return couponHold.getCouponHoldList(couponParam);
 
+    }
+
+    /**
+     * 领取分裂优惠券用户详情
+     * @param param
+     * @return
+     */
+    public PageResult<CouponHoldListVo> getSplitCoupinUserDetail(CouponGetDetailParam param){
+        SelectConditionStep<? extends Record> select = db()
+            .select(CUSTOMER_AVAIL_COUPONS.ID,USER.USERNAME, USER.MOBILE, CUSTOMER_AVAIL_COUPONS.GET_SOURCE, CUSTOMER_AVAIL_COUPONS.IS_USED,
+                MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION, CUSTOMER_AVAIL_COUPONS.START_TIME, CUSTOMER_AVAIL_COUPONS.END_TIME, CUSTOMER_AVAIL_COUPONS.CREATE_TIME).from(DIVISION_RECEIVE_RECORD)
+            .leftJoin(CUSTOMER_AVAIL_COUPONS).on(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(CUSTOMER_AVAIL_COUPONS.COUPON_SN))
+            .leftJoin(USER).on(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(USER.USER_ID))
+            .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID))
+            .where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(param.getId()));
+        SelectConditionStep<? extends Record> sql = detailBuildOptions(select, param);
+        PageResult<CouponHoldListVo> info = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), CouponHoldListVo.class);
+        return info;
+    }
+
+    /**
+     * 领取分裂优惠券用户详情列表条件查询
+     * @param select
+     * @param param
+     * @return
+     */
+    public SelectConditionStep<? extends Record> detailBuildOptions(SelectConditionStep<? extends Record> select,CouponGetDetailParam param){
+        //手机号
+        if(StringUtil.isNotEmpty(param.getMobile())) {
+            select.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
+        }
+        //用户昵称
+        if(StringUtil.isNotEmpty(param.getUserName())) {
+            select.and(USER.USERNAME.like(this.likeValue(param.getUserName())));
+        }
+        //使用状态 1 未使用 2 使用 3 过期 4 废除
+        if(param.getIsUsed() != null) {
+            Timestamp nowTime =new Timestamp(System.currentTimeMillis());
+            if (param.getIsUsed()==1){
+                select.and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0))
+                    .and(CUSTOMER_AVAIL_COUPONS.END_TIME.ge(nowTime))
+                    .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 0));
+            }else if (param.getIsUsed()==2){
+                select.and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 1))
+                    .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 0));
+            }else if (param.getIsUsed()==3){
+                select.and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0))
+                    .and(CUSTOMER_AVAIL_COUPONS.END_TIME.lt(nowTime))
+                    .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 0));
+            }else if (param.getIsUsed()==4){
+                select.and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 1));
+            }
+        }
+        return select;
     }
 
     /**
@@ -516,7 +587,7 @@ public class CouponService extends ShopBaseService {
     }
 
     /**
-     * 分裂优惠券已领取数
+     * 单用户分裂优惠券已领取数
      * @param userId
      * @param couponSn
      * @return
@@ -525,6 +596,17 @@ public class CouponService extends ShopBaseService {
         Integer hasRecivie = db().selectCount().from(DIVISION_RECEIVE_RECORD).where(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(couponSn))
             .and(DIVISION_RECEIVE_RECORD.USER.eq(userId)).and(DIVISION_RECEIVE_RECORD.TYPE.eq((byte) 1)).fetchOne().into(Integer.class);
         return hasRecivie;
+    }
+
+    /**
+     * 分裂优惠券已领取数
+     * @param couponSn
+     * @return
+     */
+    public int hasReceive(String couponSn){
+        Record record = db().selectCount().from(DIVISION_RECEIVE_RECORD).where(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(couponSn))
+            .fetchOne();
+        return record.into(Integer.class);
     }
 
     /**
