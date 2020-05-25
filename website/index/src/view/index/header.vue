@@ -330,7 +330,7 @@ export default {
     to_log_rej_page (res) {
       if (res === 'login') {
         this.$router.push({
-          path: '/admin/index/login'
+          path: '/admin/admin/index/login'
         })
       } else {
         this.$router.push({
