@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
@@ -11,6 +12,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.CouponDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.CouponListMpVo;
 import com.vpu.mp.service.shop.activity.dao.CouponProcessorDao;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.Record;
 import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,7 +54,7 @@ public class CouponProcessor implements Processor,ActivityGoodsListProcessor,Goo
 
         Timestamp now = DateUtil.getLocalDateTime();
         availableCapsules.forEach(capsule->{
-            Record5<Integer, String, BigDecimal, Byte, BigDecimal> couponInfo = couponProcessorDao.getGoodsCouponClosestInfo(capsule.getGoodsId(), capsule.getCatId(), capsule.getSortId(), now);
+            Record couponInfo = couponProcessorDao.getGoodsCouponClosestInfo(capsule.getGoodsId(), capsule.getCatId(), capsule.getSortId(), now);
             if (couponInfo == null) {
                 return;
             }
@@ -61,6 +63,8 @@ public class CouponProcessor implements Processor,ActivityGoodsListProcessor,Goo
             info.setDenomination(couponInfo.get(MRKING_VOUCHER.DENOMINATION));
             info.setUseConsumeRestrict(couponInfo.get(MRKING_VOUCHER.USE_CONSUME_RESTRICT));
             info.setLeastConsume(couponInfo.get(MRKING_VOUCHER.LEAST_CONSUME));
+            info.setType(couponInfo.get(MRKING_VOUCHER.TYPE));
+            info.setRandomMax(couponInfo.get(MRKING_VOUCHER.RANDOM_MAX));
             capsule.getGoodsActivities().add(info);
         });
     }
