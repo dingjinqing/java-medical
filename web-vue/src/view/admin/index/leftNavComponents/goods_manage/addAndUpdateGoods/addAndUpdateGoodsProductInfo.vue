@@ -120,11 +120,9 @@ export default {
               let item = stockAndPriceInfoData.goodsSpecProducts[i]
               // 没填数据，或者数据错误
               if (isNumberBlank(item.prdWeight) || item.prdWeight <= 0) {
-                if (item.prdWeight <= 0) {
-                  this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsPrdWeightIsNull'))
-                  document.getElementById('prdWeight_' + item.prdDesc).focus()
-                  return false
-                }
+                this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsPrdWeightIsNull'))
+                document.getElementById('prdWeight_' + item.prdDesc).focus()
+                return false
               }
             }
           } else {
@@ -132,11 +130,9 @@ export default {
               let item = stockAndPriceInfoData.goodsSpecProducts[i]
               // 填数据但是数据错误
               if (!isNumberBlank(item.prdWeight) && item.prdWeight <= 0) {
-                if (item.prdWeight <= 0) {
-                  this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsPrdWeightIsNull'))
-                  document.getElementById('prdWeight_' + item.prdDesc).focus()
-                  return false
-                }
+                this.$message.warning(this.$t('goodsAddEditInfo.warningInfo.goodsPrdWeightIsNull'))
+                document.getElementById('prdWeight_' + item.prdDesc).focus()
+                return false
               }
             }
           }
