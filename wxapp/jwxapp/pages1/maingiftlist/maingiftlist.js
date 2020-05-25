@@ -58,7 +58,7 @@ global.wxPage({
       if(res.error === 0){
         this.setData({
           cartData:{
-            cartGoodsList:res.content
+            cartGoodsList:this.resetCartList(res.content)
           }
         })
       }
@@ -186,7 +186,8 @@ global.wxPage({
       return {
         ...item,
         realPrice:item.goodsPrice,
-        linePrice:item.marketPrice
+        linePrice:item.marketPrice,
+        activityType:this.getGoodsAct(item)
       }
     })
   },
@@ -196,6 +197,25 @@ global.wxPage({
   },
   goCart(){	
     util.jumpLink('pages/cart/cart','navigateTo')	
+  },
+  getGoodsAct({goodsPriceAction}){
+    switch (goodsPriceAction) {
+      case 1:
+        return 22
+      case 2:
+        return 6
+      case 3:
+        return 18
+      default:
+        return null
+    }
+  },  
+  resetCartList(cartList){
+    return cartList.filter(item=>item.cartNumber > 0).map(item=>{
+      item.activityType = this.getGoodsAct({goodsPriceAction:item.priceActivityType})
+      item.goodsPrice = this.getGoodsAct({goodsPriceAction:item.priceActivityType}) ? item.goodsPrice : item.prdMarketPrice
+      return item
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
