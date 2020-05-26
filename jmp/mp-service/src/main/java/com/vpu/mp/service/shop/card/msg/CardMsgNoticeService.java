@@ -68,8 +68,8 @@ public class CardMsgNoticeService extends ShopBaseService {
 			mpData = new String[][] {
 				{"等级卡降级通知"},
 				{newCard.getCardName()},
-				{"降级级成功"},
-				{option}
+				{"通过"},
+                {"降级成功"}
 			};
 		}
 
