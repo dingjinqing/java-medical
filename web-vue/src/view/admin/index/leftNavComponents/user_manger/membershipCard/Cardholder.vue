@@ -153,7 +153,7 @@
             <span v-else-if="scope.row.flag === 2"> 转赠中 </span>
             <span v-else-if="scope.row.flag === 3"> 已转赠({{scope.row.getTime}});
                 <span @onclick="handleToUserDetail(scope.row.getUserId)" style="color: #5a8bff;cursor: pointer;">
-                  {{scope.row.giveName}}
+                  赠予:{{scope.row.giveName}}
                 </span>;
             </span>
             <span v-else-if="scope.row.flag === 4"> 已过期 </span>
