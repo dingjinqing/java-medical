@@ -129,7 +129,12 @@ public class GoodsImportService extends ShopBaseService {
             // 调用消息队列
 //            saas.taskJobMainService.dispatchImmediately(mqParam, GoodsVpuExcelImportMqParam.class.getName(), getShopId(),
 //                TaskJobsConstant.TaskJobEnum.GOODS_VPU_EXCEL_IMPORT.getExecutionType());
-            goodsVpuExcelImportMqCallback(mqParam);
+            try {
+                goodsVpuExcelImportMqCallback(mqParam);
+            }catch (Exception e){
+                logger().warn("商品导入操作失败："+e.getMessage());
+                code = JsonResultCode.CODE_FAIL;
+            }
         }
         return code;
     }
