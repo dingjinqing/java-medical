@@ -209,14 +209,13 @@ public class UserCardService extends ShopBaseService {
 	public void changeUserGradeCard(Integer userId, MemberCardRecord oldCard, MemberCardRecord newCard,
 			String option) {
 		logger().info("用户会员卡升级");
-		
+
 		//	更新卡
 		userCardDao.updateUserGradeCardId(userId, newCard.getId());
 		//	保存用户卡等级变动信息
 		cardUpgradeService.recordCardUpdateGrade(userId, oldCard, newCard, option);
 		//	用户卡升级订阅消息通知
 		cardMsgSvc.cardGradeChangeMsg(userId, oldCard, newCard, option);
-		
 		if (newCard.getSorce() != null && newCard.getSorce() > 0) {
 			addUserCardScore(userId, newCard);
 		}
@@ -334,7 +333,7 @@ public class UserCardService extends ShopBaseService {
 		logger().info("此时的会员卡等级："+uGrade);
 		MemberCardRecord userGradeCard = userCardDao.getUserGradeCard(userId);
 		cardId = userGradeCard.getId();
-		
+
 		boolean flag = false;
 		MemberCardRecord oldGradeCard = null,newGradeCard = null;
 		for (MemberCardRecord gCard : gCardList) {
@@ -373,7 +372,7 @@ public class UserCardService extends ShopBaseService {
 		}else {
 			uGrade = userCardGrade;
 		}
-		
+
 		Integer cardId = null;
 		if (!StringUtils.isBlank(uGrade)) {
 			List<MemberCardRecord> gradeCard = getAvailGradeCard();
@@ -1475,7 +1474,7 @@ public class UserCardService extends ShopBaseService {
 			MemberCardRecord mCardRec = new MemberCardRecord();
 			mCardRec.setFreeshipLimit(userCard.getFreeshipLimit());
 			mCardRec.setFreeshipNum(userCard.getFreeshipNum());
-			
+
 			CardFreeship freeshipData = cardFreeShipSvc.getFreeshipData(mCardRec, lang);
 			userCard.setFreeshipDesc(freeshipData.getDesc());
 		}else {
@@ -1613,7 +1612,7 @@ public class UserCardService extends ShopBaseService {
 				logger().info("没有查询到卡号");
 				throw new CardReceiveFailException();
 			}
-			
+
 			MemberCardRecord newCard = memberCardService.getCardById(cardId);
 
 			GradeCardData data = new GradeCardData();
