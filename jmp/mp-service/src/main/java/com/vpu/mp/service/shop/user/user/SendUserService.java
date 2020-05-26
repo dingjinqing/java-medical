@@ -160,7 +160,7 @@ public class SendUserService extends ShopBaseService {
 //                    info.setNumbers(maMap.get(id));
 //                    info.setCanSend(Boolean.TRUE);
 //                }
-                if( info.getCanSend() ){
+                if( info.getCanSend() && info.getIsChecked()){
                     result += 1;
                 }
                 list.add(info);
