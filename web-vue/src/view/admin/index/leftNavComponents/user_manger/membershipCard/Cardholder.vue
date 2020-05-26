@@ -166,7 +166,7 @@
         >
           <template slot-scope="scope">
             <span
-              @click="handleToUserDetail(scope.row)"
+              @click="handleToUserDetail(scope.row.userId)"
               style="cursor:pointer;color:#5a8bff"
             >
               {{scope.row.username}}
@@ -228,7 +228,13 @@
           <template slot-scope="scope">
             <span v-if="scope.row.flag === 0"> {{$t('memberCard.cardNomal')}} </span>
             <span v-else-if="scope.row.flag === 1"> {{$t('memberCard.alreadyDelete')}}({{scope.row.updateTime}}) </span>
-            <span v-else-if="scope.row.flag === 2"> {{$t('memberCard.cardExpired')}} </span>
+            <span v-else-if="scope.row.flag === 2"> 转赠中 </span>
+            <span v-else-if="scope.row.flag === 3"> 已转赠({{scope.row.getTime}});
+                <span @onclick="handleToUserDetail(scope.row.getUserId)" style="color: #5a8bff;cursor: pointer;">
+                  赠予:{{scope.row.giveName}}
+                </span>;
+            </span>
+            <span v-else-if="scope.row.flag === 4"> {{$t('memberCard.cardExpired')}} </span>
           </template>
         </el-table-column>
         <el-table-column
@@ -307,6 +313,10 @@ export default {
       {
         value: 2,
         label: '已过期'
+      },
+      {
+        value: 3,
+        label: '已转赠'
       }],
       submitExamineOpts: [
         {
@@ -483,11 +493,11 @@ export default {
     },
 
     // 跳转到会员详情页
-    handleToUserDetail (row) {
+    handleToUserDetail (userId) {
       this.$router.push({
         name: 'membershipInformation',
         query: {
-          userId: row.userId
+          userId: userId
         }
       })
     },

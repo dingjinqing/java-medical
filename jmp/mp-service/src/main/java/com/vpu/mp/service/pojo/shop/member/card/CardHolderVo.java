@@ -65,4 +65,19 @@ public class CardHolderVo {
 	 * {@link com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant}
 	 */
 	private Byte status;
+	
+	/**
+	 * 转赠成功时间
+	 */
+	private Timestamp getTime;
+	
+	/**
+	 * 转赠领取人
+	 */
+	private String giveName;
+	
+	/**
+	 * 转赠人Id
+	 */
+	private Integer getUserId;
 }

@@ -5,12 +5,10 @@ import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
 import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
 import static com.vpu.mp.db.shop.Tables.CARD_RECEIVE_CODE;
 import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
+import static com.vpu.mp.db.shop.Tables.GIVE_CARD_RECORD;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
-import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
-import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_BATCH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUNT_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.EXCHANG_COUNT_TYPE;
@@ -95,21 +93,28 @@ import com.vpu.mp.service.pojo.shop.member.card.export.receive.CardReceiveDownVo
 public class CardDaoService extends ShopBaseService {
 	public PageResult<CardHolderVo> getAllCardHolder(CardHolderParam param) {
 		User invitedUser = USER.as("a");
+		User giveCardUser = USER.as("b");
 		List<Field<?>> f = new ArrayList<>(Arrays.asList(USER_CARD.fields()));
 		f.add(USER.USERNAME);
 		f.add(USER.MOBILE);
 		f.add(invitedUser.USERNAME.as("invitedName"));
 		f.add(MEMBER_CARD.CARD_TYPE);
 		f.add(CARD_EXAMINE.STATUS);
+		f.add(GIVE_CARD_RECORD.GET_TIME);
+		f.add(giveCardUser.USERNAME.as("giveName"));
+		f.add(GIVE_CARD_RECORD.GET_USER_ID);
 		Field<?>[] myFields = f.toArray(new Field<?>[0]);
 		SelectJoinStep<?> select = db()
 				.select(myFields)
 				.from(USER_CARD.leftJoin(USER.leftJoin(invitedUser).on(USER.INVITE_ID.eq(invitedUser.USER_ID))
 										).on(USER_CARD.USER_ID.eq(USER.USER_ID)))
 				.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
+				.leftJoin(GIVE_CARD_RECORD.leftJoin(giveCardUser).on(GIVE_CARD_RECORD.GET_USER_ID.eq(giveCardUser.USER_ID)))
+					.on(USER_CARD.CARD_NO.eq(GIVE_CARD_RECORD.CARD_NO).and(USER_CARD.FLAG.eq(CardConstant.UCARD_FG_GIVED)))
 				.leftJoin(CARD_EXAMINE).on(USER_CARD.CARD_NO.eq(CARD_EXAMINE.CARD_NO))
 				.leftJoin(CARD_CONSUMER).on(USER_CARD.CARD_NO.eq(CARD_CONSUMER.CARD_NO))
 				.leftJoin(CHARGE_MONEY).on(USER_CARD.CARD_NO.eq(CHARGE_MONEY.CARD_NO));
+
 
 		buildOptions(param, select);
 		select.where(USER_CARD.CARD_ID.eq(param.getCardId()))
@@ -159,6 +164,9 @@ public class CardDaoService extends ShopBaseService {
 			}else if(param.getFlag().equals(UCARD_FG_STOP)) {
 				condition = condition.and(USER_CARD.FLAG.eq(param.getFlag()));
 				select.where(condition);
+			}else {
+				//	转赠中或已转赠
+				select.where(USER_CARD.FLAG.eq(param.getFlag()));
 			}
 		}
 		/** - 领卡时间 开始范围 */
