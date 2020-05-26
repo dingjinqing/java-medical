@@ -1451,6 +1451,18 @@ public class GoodsService extends ShopBaseService {
         return isColumnValueExist(param);
     }
 
+    public List<String> findGoodsNameExist(List<String> goodsNames) {
+       return db().select(GOODS.GOODS_NAME).from(GOODS)
+                .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_NAME.in(goodsNames)))
+                .fetch(GOODS.GOODS_NAME);
+    }
+
+    public List<String> findGoodsSnExist(List<String> goodsSns) {
+        return db().select(GOODS.GOODS_SN).from(GOODS)
+            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.in(goodsSns)))
+            .fetch(GOODS.GOODS_SN);
+    }
+
     /**
      * 根据货品编号获取商品
      * @param goodsSn

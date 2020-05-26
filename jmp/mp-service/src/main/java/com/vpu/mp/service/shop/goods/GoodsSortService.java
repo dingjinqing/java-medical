@@ -585,6 +585,11 @@ public class GoodsSortService extends ShopBaseService {
         return db().fetchExists(SORT, SORT.SORT_ID.eq(id));
     }
 
+
+    public Map<String,Integer> getSortMap(){
+       return db().select(SORT.SORT_NAME, SORT.SORT_ID).from(SORT)
+           .where(SORT.TYPE.eq(GoodsConstant.NORMAL_SORT)).fetchMap(SORT.SORT_NAME, SORT.SORT_ID);
+    }
     /**
      * 商品导入修复其不存在的分类信息
      *
@@ -592,7 +597,7 @@ public class GoodsSortService extends ShopBaseService {
      * @param secondSortName 二级分类名称
      * @return 应该绑定的商家分类id
      */
-    @SuppressWarnings("all")
+
     public int fixGoodsImportGoodsSort(String firstSortName, String secondSortName) {
         // 有一级，查看数据是否也存在，有则用没有则加
         int returnId = GoodsConstant.ROOT_PARENT_ID;
