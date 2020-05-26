@@ -370,5 +370,20 @@ export const en = {
   ],
   reveiveStatus: 'Receive status',
   delStatus: 'Use status',
-  out: 'Export'
+  out: 'Export',
+  memberId: 'Member ID',
+  cardNo: 'Member Card Number',
+  cardStatus: 'Card status',
+  receiveCardTime: 'Receive card time',
+  examineSubmit: 'Whether to submit an activation request',
+  examineStatus: 'Audit status',
+  consumeRecord: 'Consumption record',
+  chargeRecord: 'charge record',
+  reset: 'Reset',
+  memberCardOut: 'Member export',
+  invitedPerson: 'Invite people',
+  examing: 'Under review',
+  examineFail: 'Audit failure',
+  cardNomal: 'Normal',
+  cardExpired: 'Expired'
 }

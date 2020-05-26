@@ -4,41 +4,41 @@
       <div class="CardholderTop">
         <div class="topDiv">
           <div>
-            <span>会员ID</span>
+            <span>{{$t('memberCard.memberId')}}</span>
             <el-input
               v-model="carIdInput"
-              placeholder="请输入内容"
+              :placeholder="$t('memberCard.pleaseInput')"
               size="small"
             ></el-input>
           </div>
           <div>
-            <span>昵称</span>
+            <span>{{$t('memberCard.username')}}</span>
             <el-input
               v-model="carNameInput"
-              placeholder="请输入内容"
+              :placeholder="$t('memberCard.pleaseInput')"
               size="small"
             ></el-input>
           </div>
           <div>
-            <span>手机号</span>
+            <span>{{$t('memberCard.mobile')}}</span>
             <el-input
               v-model="phoneInput"
-              placeholder="请输入内容"
+              :placeholder="$t('memberCard.pleaseInput')"
               size="small"
             ></el-input>
           </div>
           <div>
-            <span>会员卡号</span>
+          <span>{{$t('memberCard.cardNo')}}</span>
             <el-input
               v-model="cardNuberInput"
-              placeholder="请输入内容"
+              :placeholder="$t('memberCard.pleaseInput')"
               size="small"
             ></el-input>
           </div>
         </div>
         <div class="topDiv">
           <div>
-            <span>卡状态</span>
+            <span>{{$t('memberCard.cardStatus')}}</span>
             <el-select
               v-model="statusValue"
               size="small"
@@ -53,7 +53,7 @@
             </el-select>
           </div>
           <div>
-            <span>领卡时间</span>
+            <span>{{$t('memberCard.receiveCardTime')}}</span>
             <date-time-picker
               :showPicker='3'
               @startTime="firstDateTime = $event"
@@ -61,7 +61,7 @@
 
           </div>
           <div v-if="showActivation" style="margin-left: 56px;">
-            <span style="width: auto;">是否提交激活申请</span>
+            <span style="width: auto;">{{$t('memberCard.examineSubmit')}}</span>
             <el-select
               v-model="submitValue"
               size="small"
@@ -78,7 +78,7 @@
         </div>
         <div class="topDiv">
             <div v-if="showActivation">
-            <span>审核状态</span>
+            <span>{{$t('memberCard.examineStatus')}}</span>
             <el-select
               v-model="examineStatusValue"
               size="small"
@@ -93,7 +93,7 @@
             </el-select>
           </div>
           <div>
-            <span>消费记录</span>
+            <span>{{$t('memberCard.consumeRecord')}}</span>
             <el-select
               v-model="consumeRecordValue"
               size="small"
@@ -108,7 +108,7 @@
             </el-select>
           </div>
           <div>
-            <span>充值记录</span>
+            <span>{{$t('memberCard.chargeRecord')}}</span>
             <el-select
               v-model="chargeRecordValue"
               size="small"
@@ -128,19 +128,19 @@
             type="primary"
             size="small"
             @click="handleTobtn(0)"
-          >筛选</el-button>
+      >{{$t('memberCard.filter')}}</el-button>
           <el-button
             type="info"
             plain
             size="small"
             @click="handleTobtn(1)"
-          >重置</el-button>
+          >{{$t('memberCard.reset')}}</el-button>
           <el-button
             type="info"
             plain
             size="small"
             @click="handleTobtn(2)"
-          >会员导出</el-button>
+          >{{$t('memberCard.memberCardOut')}}</el-button>
         </div>
       </div>
     </div>
@@ -155,18 +155,18 @@
         <el-table-column
           prop="userId"
           align="center"
-          label="会员ID"
+          :label="$t('memberCard.memberId')"
           width="90"
         >
         </el-table-column>
         <el-table-column
-          label="昵称"
+          :label="$t('memberCard.username')"
           width="115"
           align="center"
         >
           <template slot-scope="scope">
             <span
-              @click="handleToUserDetail(scope.row)"
+              @click="handleToUserDetail(scope.row.userId)"
               style="cursor:pointer;color:#5a8bff"
             >
               {{scope.row.username}}
@@ -175,60 +175,67 @@
         </el-table-column>
         <el-table-column
           prop="mobile"
-          label="手机号"
+          :label="$t('memberCard.mobile')"
           width="115"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="invitedName"
-          label="邀请人"
+          :label="$t('memberCard.invitedPerson')"
           width="120"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="createTime"
-          label="领卡时间"
+          :label="$t('memberCard.receiveCardTime')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="cardNo"
-          label="会员卡号"
+          :label="$t('memberCard.cardNo')"
           align="center"
+          width="180"
         >
         </el-table-column>
         <el-table-column
-          label="是否提交激活申请"
+          :label="$t('memberCard.examineSubmit')"
           align="center"
           v-if="showActivation"
         >
         <template slot-scope="scope">
-           <span v-if="scope.row.status">是</span>
-           <span v-else>否</span>
+           <span v-if="scope.row.status">{{$t('memberCard.yes')}}</span>
+           <span v-else>{{$t('memberCard.no')}}</span>
          </template>
         </el-table-column>
         <el-table-column
-          label="审核状态"
+          :label="$t('memberCard.examineStatus')"
           align="center"
           v-if="showActivation"
         >
         <template slot-scope="scope">
-           <span v-if="scope.row.status===1">审核中</span>
-           <span v-else-if="scope.row.status===2">审核通过</span>
-           <span v-else-if="scope.row.status===3">审核失败</span>
+           <span v-if="scope.row.status===1">{{$t('memberCard.examing')}}</span>
+           <span v-else-if="scope.row.status===2">{{$t('memberCard.successAudit')}}</span>
+           <span v-else-if="scope.row.status===3">{{$t('memberCard.examineFail')}}</span>
            <span v-else></span>
          </template>
         </el-table-column>
         <el-table-column
-          label="卡状态"
+          :label="$t('memberCard.cardStatus')"
           align="center"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.flag === 0"> 正常 </span>
-            <span v-else-if="scope.row.flag === 1"> 已废除({{scope.row.updateTime}}) </span>
-            <span v-else-if="scope.row.flag === 2"> 已过期 </span>
+            <span v-if="scope.row.flag === 0"> {{$t('memberCard.cardNomal')}} </span>
+            <span v-else-if="scope.row.flag === 1"> {{$t('memberCard.alreadyDelete')}}({{scope.row.updateTime}}) </span>
+            <span v-else-if="scope.row.flag === 2"> 转赠中 </span>
+            <span v-else-if="scope.row.flag === 3"> 已转赠({{scope.row.getTime}});赠予:
+                <span @click="handleToUserDetail(scope.row.getUserId)" style="color: #5a8bff;cursor: pointer;">
+                  {{scope.row.giveName}}
+                </span>;
+            </span>
+            <span v-else-if="scope.row.flag === 4"> {{$t('memberCard.cardExpired')}} </span>
           </template>
         </el-table-column>
         <el-table-column
@@ -307,6 +314,10 @@ export default {
       {
         value: 2,
         label: '已过期'
+      },
+      {
+        value: 3,
+        label: '已转赠'
       }],
       submitExamineOpts: [
         {
@@ -483,11 +494,11 @@ export default {
     },
 
     // 跳转到会员详情页
-    handleToUserDetail (row) {
+    handleToUserDetail (userId) {
       this.$router.push({
         name: 'membershipInformation',
         query: {
-          userId: row.userId
+          userId: userId
         }
       })
     },
