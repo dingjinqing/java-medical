@@ -22,7 +22,7 @@ Vue.use(VCharts);
 import VueClipboard from 'vue-clipboard2';
 Vue.use(VueClipboard);
 console.log(process.env)
-Vue.prototype.$imageHost = 'http://' + process.env.IMAGE_DOMAIN;
+Vue.prototype.$imageHost = '//' + process.env.IMAGE_DOMAIN;
 Vue.prototype.$imageHostDev = `@/assets/image/admin/`;
 // 全局事件总线
 Vue.prototype.$http = new Vue();
