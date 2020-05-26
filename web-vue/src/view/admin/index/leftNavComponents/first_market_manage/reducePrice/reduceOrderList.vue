@@ -155,6 +155,20 @@ export default {
       this.requestParams.activityId = this.actId
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
+      // 订单状态
+      var arr = []
+      if (this.requestParams.selectedOrderStatus || this.requestParams.selectedOrderStatus === 0) {
+        arr[0] = this.requestParams.selectedOrderStatus
+      }
+      if (arr !== []) {
+        this.requestParams.orderStatus = arr
+      }
+      // 下单时间
+      if (this.requestParams.createTimeStart) {
+        this.requestParams.createTimeEnd = this.requestParams.createTimeStart.replace('00:00:00', '23:59:59')
+      } else {
+        this.requestParams.createTimeEnd = null
+      }
       getReducePriceOrderList(this.requestParams).then((res) => {
         if (res.error === 0) {
           this.handleData(res.content.dataList)

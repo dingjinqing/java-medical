@@ -650,12 +650,16 @@ public class ReducePriceService extends ShopBaseService {
                 List<BigDecimal> prdPriceList = gradePrdRecords.stream().map(GradePrdRecord::getGradePrice).sorted().collect(Collectors.toList());
 
                 //有生效的限时降价价格，需要比较价格，取低的一个
-                if(res.getGoodsPrice() != null && res.getGoodsPrice().compareTo(BigDecimal.ZERO) > 0){
-                    if(prdPriceList.get(0).compareTo(res.getGoodsPrice()) < 0){
+                if (res.getGoodsPrice() != null && res.getGoodsPrice().compareTo(BigDecimal.ZERO) > 0) {
+                    if (prdPriceList.get(0).compareTo(res.getGoodsPrice()) < 0) {
                         res.setGoodsPrice(prdPriceList.get(0));
                         res.setMaxPrice(prdPriceList.get(prdPriceList.size() - 1));
-                        res.setGoodsPriceAction((byte)1);
+                        res.setGoodsPriceAction((byte) 1);
                     }
+                } else {
+                    res.setGoodsPrice(prdPriceList.get(0));
+                    res.setMaxPrice(prdPriceList.get(prdPriceList.size() - 1));
+                    res.setGoodsPriceAction((byte) 1);
                 }
             }
         }

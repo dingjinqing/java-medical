@@ -699,6 +699,14 @@ global.wxPage({
               util.showModal("提示", "请填写" + custom_arr[i].custom_title);
               return;
             }
+          } else if (custom_arr[i].customType == 2 && custom_arr[i].text == '') {
+            util.showModal("提示", "请填写" + custom_arr[i].customTitle);
+            return;
+          } else if (custom_arr[i].customType == 3 && !custom_arr[i].comm_img.length) {
+            util.showModal("提示", "请上传图片");
+            return;
+          } else if (custom_arr[i].customType == 3) {
+            custom_arr[i].pictureLinks = custom_arr[i].comm_img
           }
           custom_options.push(custom_arr[i])
           user_info.custom_options = custom_options

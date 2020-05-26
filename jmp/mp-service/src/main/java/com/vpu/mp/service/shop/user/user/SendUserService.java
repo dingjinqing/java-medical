@@ -294,8 +294,8 @@ public class SendUserService extends ShopBaseService {
         if( StringUtils.isNotBlank(query.getPhone()) ){
             select.and(USER.MOBILE.contains(query.getPhone()));
         }
-        select.groupBy(USER.USER_ID,USER.USERNAME,USER.MOBILE,MP_OFFICIAL_ACCOUNT_USER.SUBSCRIBE,count(MP_TEMPLATE_FORM_ID.USER_ID))
-            .orderBy(count(MP_TEMPLATE_FORM_ID.USER_ID).asc(),MP_OFFICIAL_ACCOUNT_USER.SUBSCRIBE.asc());
+        select.groupBy(USER.USER_ID,USER.USERNAME,USER.MOBILE,MP_OFFICIAL_ACCOUNT_USER.SUBSCRIBE)
+            .orderBy(MP_OFFICIAL_ACCOUNT_USER.SUBSCRIBE.asc());
         return getPageResult(select,query.getCurrentPage(), UserInfoVo.class);
     }
 
