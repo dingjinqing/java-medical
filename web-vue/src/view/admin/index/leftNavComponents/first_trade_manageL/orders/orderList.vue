@@ -33,14 +33,14 @@
           <div class="filters_item">
             <span>{{$t('order.orderStatusText')}}：</span>
             <el-select
-              v-model="searchParams.orderStatus"
+              v-model="filterOrderStatus"
               :placeholder="$t('order.defaultSelect')"
               size="small"
               class="default_input"
               filterable
             >
               <el-option
-                v-for="item in $t('order.orderStatusList')"
+                v-for="item in $t('order.orderStatus')"
                 :key="item[0]"
                 :label="item[1]"
                 :value="item[0]"
@@ -861,6 +861,7 @@ export default {
         6: `${this.$imageHost}/image/admin/pay_wx.png`
       },
       moreFilters: false,
+      filterOrderStatus: null,
       pageParams: {},
       searchParams: {
         activityId: this.$route.query.id,
@@ -911,8 +912,10 @@ export default {
         { value: '4', label: '已发货' },
         { value: '5', label: '已收货/已自提' },
         { value: '6', label: '已完成' },
-        { value: '7', label: '退货退款中' },
-        { value: '2', label: '已关闭' }
+        { value: '7', label: '售后中' },
+        { value: '8', label: '售后完成' },
+        { value: '2', label: '已关闭' },
+        {value: '30', label: '追星订单'}
       ],
       orderList: [
       ],
@@ -950,7 +953,7 @@ export default {
     this.searchParams.roomId = roomId || null
     console.log(userId)
     console.log('mounted-----------------------')
-    this.searchParams.orderStatus = this.$route.query.orderStatus ? this.$route.query.orderStatus : this.$route.params.orderStatus ? this.$route.params.orderStatus : null
+    this.filterOrderStatus = this.$route.query.orderStatus ? this.$route.query.orderStatus : this.$route.params.orderStatus ? this.$route.params.orderStatus : null
     if (this.$route.params.flag === 0 || this.$route.params.flag) { this.$set(this.shopHelperParams, 'shopHelperAction', this.$route.params.flag) }
     if (this.$route.params.IntegerDays) { this.$set(this.shopHelperParams, 'shopHelperActionDays', this.$route.params.IntegerDays) }
     // 初始化数据
@@ -967,9 +970,9 @@ export default {
         this.adminReload()
       }
     },
-    'searchParams.orderStatus': {
+    'filterOrderStatus': {
       handler (val) {
-        if ([null, 0, 3, 4, 5, 6, 7, 2].includes(val)) {
+        if ([null, 0, 3, 4, 5, 6, 7, 8, 2].includes(val)) {
           this.searchParams.orderStatus2 = val === null ? '-1' : String(val)
         } else {
           this.searchParams.orderStatus2 = null
@@ -994,8 +997,8 @@ export default {
   },
   methods: {
     handleClick (data) {
-      this.searchParams.orderStatus = Number(data.name)
-      if (data.name === '-1') this.searchParams.orderStatus = null
+      this.filterOrderStatus = Number(data.name)
+      if (data.name === '-1' || data.name === '30') this.filterOrderStatus = null
       this.search()
     },
     handleAreaData (data) {
@@ -1015,11 +1018,16 @@ export default {
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
       this.searchType = 0
+      let orderStatus = this.filterOrderStatus !== null ? [this.filterOrderStatus] : []
+      if (this.filterOrderStatus === 7) orderStatus = [7, 9]
+      if (this.filterOrderStatus === 8) orderStatus = [8, 10]
+      this.searchParams.orderStatus = orderStatus
       let obj = {
         ...this.searchParams,
-        orderStatus: this.searchParams.orderStatus !== null ? [this.searchParams.orderStatus] : [],
+        orderStatus: orderStatus,
         goodsType: this.searchParams.goodsType !== null ? [this.searchParams.goodsType] : [],
         payWay: this.searchParams.payWay !== null ? this.searchParams.payWay : null,
+        isStar: this.searchParams.orderStatus2 === '30' ? 1 : null,
         ...this.shopHelperParams
       }
       list(obj).then(res => {
