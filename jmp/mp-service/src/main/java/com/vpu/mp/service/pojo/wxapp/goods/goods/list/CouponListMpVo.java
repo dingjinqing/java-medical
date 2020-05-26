@@ -17,7 +17,7 @@ public class CouponListMpVo extends GoodsActivityBaseMp {
     public CouponListMpVo() {
         activityType = BaseConstant.ACTIVITY_TYPE_COUPON;
     }
-    /**优惠券类型voucher是减金额，discount打折*/
+    /**优惠券类型voucher是减金额，discount打折 random 随机 */
     private String actCode;
     /**优惠券面额*/
     private BigDecimal denomination;
@@ -25,4 +25,8 @@ public class CouponListMpVo extends GoodsActivityBaseMp {
     private Byte useConsumeRestrict;
     /** 满多少可用*/
     private BigDecimal leastConsume;
+    /** 类型**/
+    private Byte type;
+    /** 随机最大金额*/
+    private BigDecimal randomMax;
 }

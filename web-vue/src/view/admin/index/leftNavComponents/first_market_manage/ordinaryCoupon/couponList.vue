@@ -219,7 +219,7 @@
                 <span
                   style="font-size: 22px;"
                   class="iconfont iconmingxi1"
-                  @click="receiveDetails(scope.row.id)"
+                  @click="receiveDetails(scope.row.id, scope.row.type)"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -415,11 +415,12 @@ export default {
     },
 
     // 领取明细
-    receiveDetails (id) {
+    receiveDetails (id, type) {
       this.$router.push({
         path: '/admin/home/main/ordinaryCoupon/receiveDetails',
         query: {
-          id: id
+          id: id,
+          type: type
         }
       })
     },

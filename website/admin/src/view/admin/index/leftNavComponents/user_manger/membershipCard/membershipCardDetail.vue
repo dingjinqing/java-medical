@@ -1048,10 +1048,7 @@
   </div>
 </template>
 <script>
-import vcolorpicker from 'vcolorpicker'
 import { createMemberCardRequest, getCardDetailInfoRequest, updateCardRequest } from '@/api/admin/memberManage/memberCard.js'
-import Vue from 'vue'
-Vue.use(vcolorpicker)
 export default {
   components: {
     ImageDalog: () => import('@/components/admin/imageDalog'),

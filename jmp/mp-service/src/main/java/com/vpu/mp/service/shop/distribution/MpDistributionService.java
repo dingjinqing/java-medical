@@ -261,14 +261,21 @@ public class MpDistributionService extends ShopBaseService{
      * @return
      */
 	public DistributorApplyDetailParam getDistributorApplyDetail(DistributorApplyDetailParam param){
-	    //获取最新申请记录
+        DistributorApplyDetailParam detail = new DistributorApplyDetailParam();
+	    //用户是否分销员
+        Integer isDistributor = this.isDistributor(param.getUserId());
+        //获取最新申请记录
 	   Record record = db().select().from(DISTRIBUTOR_APPLY).where(DISTRIBUTOR_APPLY.USER_ID.eq(param.getUserId())).
            orderBy(DISTRIBUTOR_APPLY.CREATE_TIME.desc()).limit(1).fetchOne();
 	   if(record != null){
-           return record.into(DistributorApplyDetailParam.class);
+           detail = record.into(DistributorApplyDetailParam.class);
+           if(isDistributor == 0 && detail.getStatus() == 1){
+               detail.setStatus(3);
+           }
        }else {
-	       return null;
+           detail.setStatus(3);
        }
+	   return detail;
     }
 
     /**

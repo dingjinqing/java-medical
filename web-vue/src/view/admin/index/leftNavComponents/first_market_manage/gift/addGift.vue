@@ -735,6 +735,10 @@ export default {
           productNumber: item.productNumber
         })
       })
+      // 活动商品
+      if (this.param.goodsRange === 0) {
+        this.param.goodsIds = []
+      }
       console.log(this.param)
       if (this.update) {
         // 编辑保存

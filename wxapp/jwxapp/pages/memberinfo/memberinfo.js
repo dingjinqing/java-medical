@@ -130,40 +130,33 @@ global.wxPage({
           console.log(res.content)
           var user_info = res.content.userBaseInfo;
           // 自定义激活项
-          let custom_arr = res.content.customOptions ? res.content.customOptions : []
-
+          let custom_arr = res.content.cfg.custom_options
           if (custom_arr.length > 0) {
             for (var i in custom_arr) {
-              if (custom_arr[i].customType == 0) {
+              if (custom_arr[i].custom_type == 0) {
                 custom_arr[i].custom_select = 0
-                for (var j in custom_arr[i].optionArr) {
-                  let obj = {
-                    optionTitle: custom_arr[i].optionArr[j],
-                    isChecked: 0
-                  }
-                  custom_arr[i].optionArr[j] = obj
-                  if (custom_arr[i].isChecked == 1) {
+                for (var j in custom_arr[i].option_arr) {
+                  if (custom_arr[i].is_checked == 1) {
                     if (j == 0) {
-                      custom_arr[i].optionArr[j].isChecked = true
+                      custom_arr[i].option_arr[j].checked = true
                     } else {
-                      custom_arr[i].optionArr[j].isChecked = false
+                      custom_arr[i].option_arr[j].checked = false
                     }
                   } else {
-                    custom_arr[i].optionArr[j].isChecked = false
+                    custom_arr[i].option_arr[j].checked = false
                   }
                 }
-              } else if (custom_arr[i].customType == 1) {
-                for (var j in custom_arr[i].optionArr) {
-                  let obj = {
-                    optionTitle: custom_arr[i].optionArr[j],
-                    isChecked: 0
-                  }
-                  custom_arr[i].optionArr[j] = obj
-                  custom_arr[i].optionArr[j].isChecked = false
+              } else if (custom_arr[i].custom_type == 1) {
+                for (var j in custom_arr[i].option_arr) {
+                  custom_arr[i].option_arr[j].checked = false
                 }
-              } else if (custom_arr[i].customType == 2) {
+              } else if (custom_arr[i].custom_type == 2) {
                 custom_arr[i].text = ''
               }
+              that.setData({
+                if_custom: 1,
+                custom_arr: custom_arr
+              })
 
             }
             console.log(custom_arr)
@@ -685,49 +678,73 @@ global.wxPage({
     // 自定义激活项
     var custom_arr = that.data.custom_arr
     var custom_options = []
-    for (var i in custom_arr) {
-      if (custom_arr[i].isChecked == 1) {
-        // 必填项
-        if (custom_arr[i].optionVer == 1) {
-          if (custom_arr[i].customType == 0 || custom_arr[i].customType == 1) {
-            var result = custom_arr[i].optionArr.some(function (item) {
-              if (item.isChecked == true) {
-                return true
-              } else {
-                return false;
+    if (distribution == 1) {
+      for (var i in custom_arr) {
+        if (custom_arr[i].is_checked == 1) {
+          // 必填项
+          if (custom_arr[i].option_ver == 1) {
+            if (custom_arr[i].custom_type == 0 || custom_arr[i].custom_type == 1) {
+              var result = custom_arr[i].option_arr.some(function (item) {
+                if (item.checked == true) {
+                  return true
+                } else {
+                  return false;
+                }
+              })
+              if (result == false) {
+                util.showModal("提示", "请填写" + custom_arr[i].custom_title);
+                return;
               }
-            })
-            if (result == false) {
+            } else if (custom_arr[i].custom_type == 2 && custom_arr[i].text == '') {
+              util.showModal("提示", "请填写" + custom_arr[i].custom_title);
+              return;
+            }
+          }
+          custom_options.push(custom_arr[i])
+          user_info.custom_options = custom_options
+        }
+      }
+    } else {
+      for (var i in custom_arr) {
+        if (custom_arr[i].isChecked == 1) {
+          // 必填项
+          if (custom_arr[i].optionVer == 1) {
+            if (custom_arr[i].customType == 0 || custom_arr[i].customType == 1) {
+              var result = custom_arr[i].optionArr.some(function (item) {
+                if (item.isChecked == true) {
+                  return true
+                } else {
+                  return false;
+                }
+              })
+              if (result == false) {
+                util.showModal("提示", "请填写" + custom_arr[i].customTitle);
+                return;
+              }
+
+
+            } else if (custom_arr[i].customType == 2 && custom_arr[i].text == '') {
               util.showModal("提示", "请填写" + custom_arr[i].customTitle);
               return;
             }
-
-
-          } else if (custom_arr[i].customType == 2 && custom_arr[i].text == '') {
-            util.showModal("提示", "请填写" + custom_arr[i].customTitle);
-            return;
-          } else if (custom_arr[i].customType == 3 && !custom_arr[i].comm_img.length) {
-            util.showModal("提示", "请上传图片");
-            return;
-          } else if (custom_arr[i].customType == 3) {
-            custom_arr[i].pictureLinks = custom_arr[i].comm_img
           }
-        }
-        if (custom_arr[i].customType == 0 || custom_arr[i].customType == 1) {
-          // isChecked处理
-          custom_arr[i].optionArr.forEach((item, index) => {
-            if (item.isChecked == true) {
-              custom_arr[i].optionArr[index].isChecked = 1
-            } else {
-              custom_arr[i].optionArr[index].isChecked = 0
-            }
-          })
-        }
-        custom_options.push(custom_arr[i])
+          if (custom_arr[i].customType == 0 || custom_arr[i].customType == 1) {
+            // isChecked处理
+            custom_arr[i].optionArr.forEach((item, index) => {
+              if (item.isChecked == true) {
+                custom_arr[i].optionArr[index].isChecked = 1
+              } else {
+                custom_arr[i].optionArr[index].isChecked = 0
+              }
+            })
+          }
+          custom_options.push(custom_arr[i])
 
+        }
       }
+      console.log(custom_options)
     }
-    console.log(custom_options)
+
     //激活
     if (user_info.real_name == "" && this.data.if_realname == 1) {
       util.showModal("提示", "请填写真实姓名");
@@ -780,7 +797,7 @@ global.wxPage({
     }
 
     if (!distribution) user_info.card_no = card_no;
-    console.log('sss')
+
     if (that.data.save_flag == 1) {
       that.setData({
         save_flag: 0
@@ -801,7 +818,6 @@ global.wxPage({
           activationFields: user_info,
           configFields: JSON.stringify(config)
         })
-
       } else {
         console.log(card_no)
         console.log(user_info)
@@ -937,9 +953,14 @@ global.wxPage({
 
 
       }
+
     } else {
       util.showModal("提示", '请勿重复提交');
     }
+
+
+
+
   },
   // 单选 选项
   bindRadiosChange (e) {
@@ -1076,13 +1097,19 @@ global.wxPage({
     let custom_arr = that.data.custom_arr
     let valueList = e.currentTarget.dataset.value
     console.log(index, custom_arr, e, valueList)
-    custom_arr[index].optionArr.find((item, index) => {
-      // item.isChecked = false
-      if (valueList == item.optionTitle) {
-        item.isChecked = !item.isChecked
-      }
-    })
-    // that.$set()
+    if (distribution == 1) {
+      custom_arr[index].option_arr.find((item, index) => {
+        if (valueList == item.option_title) {
+          item.checked = !item.checked
+        }
+      })
+    } else {
+      custom_arr[index].optionArr.find((item, index) => {
+        if (valueList == item.optionTitle) {
+          item.isChecked = !item.isChecked
+        }
+      })
+    }
     that.setData({
       custom_arr: custom_arr
     })

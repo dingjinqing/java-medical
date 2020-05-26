@@ -497,10 +497,14 @@
         <el-form
           ref="customForm"
           :model="customForm"
-          label-width="21%"
-          :label-position="'right'"
+          :rules="fromRules"
+          label-width="100px"
+          label-position="right"
         >
-          <el-form-item label="选项类型：">
+          <el-form-item
+            label="选项类型："
+            prop="custom_type"
+          >
             <el-radio-group
               v-model="customForm.custom_type"
               @change="typeChange"
@@ -510,7 +514,10 @@
               <el-radio :label="2">文本</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="标题：">
+          <el-form-item
+            label="标题："
+            prop="custom_title"
+          >
             <el-input
               size="small"
               maxlength="20"
@@ -525,7 +532,11 @@
               v-for="(item, index) in customForm.option_arr"
               :key="index"
             >
-              <el-form-item :label="'选项' + (index + 1) + '：'">
+              <el-form-item
+                :label="'选项' + (index + 1) + '：'"
+                :prop="'option_arr.' + index + '.option_title'"
+                :rules="[{ required: true, message: '请填写内容', trigger: 'change' }]"
+              >
                 <el-input
                   size="small"
                   v-model="item.option_title"
@@ -687,7 +698,13 @@ export default {
         }],
         option_ver: 1, // 条件验证
         is_checked: 1 // 是否选中
+      },
+      // 自定义表单校验
+      fromRules: {
+        custom_type: [{ required: true, message: '请填写选项类型', trigger: 'change' }],
+        custom_title: [{ required: true, message: '请填写标题', trigger: 'change' }]
       }
+
     }
   },
   watch: {
@@ -803,6 +820,7 @@ export default {
       if (value === 0) {
         this.customForm.option_ver = 1
       }
+      this.$refs['customForm'].clearValidate()
     },
 
     // 添加选项
@@ -819,33 +837,37 @@ export default {
 
     // 确定自定义激活项
     sureCustomHandler () {
-      if (!this.isEdit) {
-        // 添加
-        if (!this.customList) {
-          this.customList = []
-        }
-        this.customList.push(this.customForm)
-      } else {
-        // 编辑
-        this.customList.forEach((item, index) => {
-          if (this.editIndex === index) {
-            item = this.customForm
+      this.$refs['customForm'].validate((valid) => {
+        if (valid) {
+          if (!this.isEdit) {
+            // 添加
+            if (!this.customList) {
+              this.customList = []
+            }
+            this.customList.push(this.customForm)
+          } else {
+            // 编辑
+            this.customList.forEach((item, index) => {
+              if (this.editIndex === index) {
+                item = this.customForm
+              }
+            })
           }
-        })
-      }
-      this.customDialogVisible = false
-      // 清空弹窗数据
-      this.customForm = {
-        custom_type: 0,
-        custom_title: '',
-        option_arr: [{
-          option_title: ''
-        }, {
-          option_title: ''
-        }],
-        option_ver: 1,
-        is_checked: 0
-      }
+          this.customDialogVisible = false
+          // 清空弹窗数据
+          this.customForm = {
+            custom_type: 0,
+            custom_title: '',
+            option_arr: [{
+              option_title: ''
+            }, {
+              option_title: ''
+            }],
+            option_ver: 1,
+            is_checked: 0
+          }
+        }
+      })
     },
 
     // 取消自定义激活项
@@ -884,6 +906,12 @@ export default {
 
     // 保存分销配置
     addDistribution () {
+      // 分销审核项
+      var customFlag = this.form.custom_options.findIndex(item => { return item.is_checked === 1 })
+      if (this.form.auto_examine === 1 && customFlag === -1 && this.form.activation_cfg.length === 0) {
+        this.$message.warning('分销员审核至少选择一项需提交信息')
+        return false
+      }
       // 自定义激活项
       this.form.custom_options = this.customList
 

@@ -240,6 +240,7 @@ export default {
   },
   mounted () {
     this.id = this.$route.query.id
+    this.couponType = this.$route.query.type
     this.searchData.mobile = this.$route.query.phoneNum
     this.searchData.userName = this.$route.query.userName
     this.searchData.isUsed = this.$route.query.isUsed
@@ -250,6 +251,7 @@ export default {
     // 领取明细列表
     initDataList () {
       this.requestParams.id = this.id
+      this.requestParams.couponType = this.couponType
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       this.requestParams.mobile = this.searchData.mobile
@@ -261,7 +263,6 @@ export default {
       }
       couponGetDetail(this.requestParams).then(res => {
         if (res.error === 0) {
-          this.couponType = res.content.dataList[0].type
           this.handleData(res.content.dataList)
           this.pageParams = res.content.page
         }

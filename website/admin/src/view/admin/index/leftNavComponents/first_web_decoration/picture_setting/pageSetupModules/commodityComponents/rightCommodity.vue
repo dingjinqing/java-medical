@@ -531,11 +531,8 @@
   </div>
 </template>
 <script>
-import vcolorpicker from 'vcolorpicker'
-import Vue from 'vue'
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 import { queryDataList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
-Vue.use(vcolorpicker)
 export default {
   mixins: [decMixins],
   components: {

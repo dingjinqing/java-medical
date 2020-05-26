@@ -128,6 +128,8 @@
 import wrapper from '@/components/admin/wrapper/wrapper'
 import { couponGiveList } from '@/api/admin/marketManage/couponGive.js'
 import pagination from '@/components/admin/pagination/pagination'
+import chinaData from '@/assets/china-data'
+import { deepCloneObj } from '@/util/deepCloneObj'
 export default {
   components: {
     pagination, wrapper
@@ -137,12 +139,14 @@ export default {
       actName: '',
       tableData: [],
       pageParams: {}, // 分页
-      requestParam: {}
+      requestParam: {},
+      areaList: [] // 省市区全部数据
     }
   },
   mounted () {
     // 初始化数据
     this.handleSelect()
+    this.areaList = deepCloneObj(chinaData)
   },
   methods: {
     handleSelect () {
@@ -210,6 +214,32 @@ export default {
           if (data[index].obj.point_start_time != null && data[index].obj.point_end_time != null) {
             data[index].people.push(`${item.obj.point_start_time}-${item.obj.point_end_time}${this.$t('couponGive.loginRecord')}`)
           }
+        }
+
+        if (data[index].obj.province_code || data[index].obj.city_code || data[index].obj.district_code) {
+          this.areaList.forEach(item1 => {
+            if (data[index].obj.province_code && (item1.provinceId === data[index].obj.province_code)) {
+              data[index].obj.province_code = item1.provinceName
+              if (data[index].obj.city_code && item1.areaCity) {
+                item1.areaCity.forEach(item2 => {
+                  if (item2.cityId === data[index].obj.city_code) {
+                    data[index].obj.city_code = item2.cityName
+                    if (data[index].obj.district_code && item2.areaDistrict) {
+                      item2.areaDistrict.forEach(item3 => {
+                        if (item3.districtId === data[index].obj.district_code) {
+                          data[index].obj.district_code = item3.districtName
+                        }
+                      })
+                    }
+                  }
+                })
+              }
+            }
+          })
+          data[index].obj.province_code = data[index].obj.province_code ? data[index].obj.province_code : ''
+          data[index].obj.city_code = data[index].obj.city_code ? data[index].obj.city_code : ''
+          data[index].obj.district_code = data[index].obj.district_code ? data[index].obj.district_code : ''
+          data[index].people.push(`指定" ${data[index].obj.province_code} ${data[index].obj.city_code} ${data[index].obj.district_code} "区域用户`)
         }
         console.log(item.people.join(`<br/>`))
         data[index].people.forEach((item, index) => {

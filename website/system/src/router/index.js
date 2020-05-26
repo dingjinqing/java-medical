@@ -22,6 +22,7 @@ const routes = baseRoutes.concat(
 )
 
 const router = new Router({
+  base: 'system',
   mode: 'history',
   routes
 })

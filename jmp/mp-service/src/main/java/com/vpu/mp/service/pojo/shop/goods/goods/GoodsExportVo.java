@@ -38,12 +38,12 @@ public class GoodsExportVo {
     @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_BRAND_NAME,columnIndex = 3)
     private String brandName;
     /**
-     * 货品编号
+     * 商品货号
      */
     @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_GOODS_SN,columnIndex = 4)
     private String goodsSn;
     /**
-     * 货品名称
+     * 商品名称
      */
     @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_GOODS_NAME,columnIndex = 5)
     private String goodsName;
@@ -53,7 +53,7 @@ public class GoodsExportVo {
     @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_PRD_DESC,columnIndex = 6)
     private String prdDesc;
     /**
-     * 商品广告词
+     * 商品广告
      */
     @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_GOODS_AD,columnIndex = 7)
     private String goodsAd;

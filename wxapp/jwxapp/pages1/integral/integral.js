@@ -74,7 +74,7 @@ global.wxPage({
 
   toWeb: function () {
     console.log(this.data)
-    util.jumpToWeb(`/wxapp/score/scoreDocument?navHeight=${this.data.margin_top_nav}`);
+    util.jumpToWeb(`/wxapp/wxapp/score/scoreDocument?navHeight=${this.data.margin_top_nav}`);
   },
 
   signScore: function (e) {
@@ -99,10 +99,10 @@ global.wxPage({
         // util.toast_fail(res.content);
       }
     }, {
-        score: score,
-        form_id: form_id,
-        open_id: open_id
-      })
+      score: score,
+      form_id: form_id,
+      open_id: open_id
+    })
   },
 
   lookRule: function (e) {
@@ -111,7 +111,7 @@ global.wxPage({
     var score_type = user_center.sign_score.sign_data.sign_in_rules;
     console.log('score_type' + score_type)
     //TODO
-    util.jumpToWeb('/wxapp/sign/help')
+    util.jumpToWeb('/wxapp/wxapp/sign/help')
   },
 
   userRequest: function (e) {
@@ -148,8 +148,8 @@ global.wxPage({
         expire: expire
       })
     }, {
-        currentPage: that.data.currentPage
-      });
+      currentPage: that.data.currentPage
+    });
   },
   // 自定义模板加载
   processWindowData: function (pageContent) {
@@ -193,7 +193,7 @@ global.wxPage({
   }
 })
 
-function get_score(that) {
+function get_score (that) {
   util.api('/api/wxapp/score/list', function (res) {
     var listL = res.content.list;
     that.data.last_page = listL.page.lastPage;
@@ -213,6 +213,6 @@ function get_score(that) {
     })
   }, {
 
-      currentPage: that.data.currentPage
-    });
+    currentPage: that.data.currentPage
+  });
 }

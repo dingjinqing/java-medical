@@ -137,7 +137,7 @@
                 <span
                   style="font-size: 22px;"
                   class="iconfont icondingdan"
-                  @click="seckillOrderHanlder(scope.row.id)"
+                  @click="reduceOrderHanlder(scope.row.id, scope.row.name)"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -360,8 +360,8 @@ export default {
     },
 
     // 订单明细
-    seckillOrderHanlder (id) {
-      this.$router.push({ name: 'reduce_price_order', query: { id: id } })
+    reduceOrderHanlder (id, actName) {
+      this.$router.push({ name: 'reduce_price_order', query: { id: id, actName: actName } })
     },
 
     // 活动效果数据

@@ -1,34 +1,36 @@
 <template>
   <div class="tab_content">
     <div class="table_list">
-      <div class="select_info">
-        <div class="leftarea">
-          <span>{{ $t('distribution.reviewMobile') + '：' }}</span>
+      <el-form
+        :model="searchForm"
+        label-width="90px"
+        label-position="right"
+        :inline="true"
+      >
+        <el-form-item :label="$t('distribution.reviewMobile') + '：'">
           <el-input
             v-model="searchForm.mobile"
             size="small"
             clearable
             class="inputWidth"
           ></el-input>
-        </div>
-        <div class="leftarea">
-          <span>{{ $t('distribution.reviewName') + '：' }}</span>
+        </el-form-item>
+        <el-form-item :label="$t('distribution.reviewName') + '：'">
           <el-input
             v-model="searchForm.username"
             size="small"
             clearable
             class="inputWidth"
           ></el-input>
-        </div>
-        <div class="midarea">
-          <span>{{ $t('distribution.reviewTime') + '：' }}</span>
+        </el-form-item>
+        <el-form-item :label="$t('distribution.reviewTime') + '：'">
           <el-date-picker
             v-model="searchForm.startTime"
             type="date"
             :placeholder="$t('distribution.reviewSelect')"
             size="small"
             value-format="yyyy-MM-dd HH:mm:ss"
-            class="inputWidth"
+            style="width: 190px;"
           >
           </el-date-picker>
           <span>{{ $t('distribution.to') }}</span>
@@ -38,18 +40,18 @@
             :placeholder="$t('distribution.reviewSelect')"
             size="small"
             value-format="yyyy-MM-dd HH:mm:ss"
-            class="inputWidth"
+            style="width: 190px;"
           >
           </el-date-picker>
-        </div>
-        <div class="rightarea">
+        </el-form-item>
+        <el-form-item>
           <el-button
             type="primary"
             size="small"
             @click="initDataList"
           >{{ $t('distribution.reviewSearch') }}</el-button>
-        </div>
-      </div>
+        </el-form-item>
+      </el-form>
 
       <el-tabs
         v-model="activeName"
@@ -79,19 +81,19 @@
               colspan="6"
               style="text-align: left;"
             >
-              <div class="header">ID：{{ item.userId }}</div>
-              <div class="header">{{ $t('distribution.reviewName') + '：' }}<span
+              <span class="titleStyle">ID：{{ item.userId }}</span>
+              <span class="titleStyle">{{ $t('distribution.reviewName') + '：' }}<span
                   class="active"
                   @click="detailHandler(item.userId)"
-                >{{ item.username }}</span></div>
-              <div
-                class="header"
+                >{{ item.username }}</span></span>
+              <span
+                class="titleStyle"
                 v-if="item.mobile"
-              >{{ $t('distribution.reviewMobile') + '：' }}{{ item.mobile }}</div>
-              <div
-                class="header"
+              >{{ $t('distribution.reviewMobile') + '：' }}{{ item.mobile }}</span>
+              <span
+                class="titleStyle"
                 v-if="item.createTime"
-              >{{ $t('distribution.reviewTime') + '：' }}{{ item.createTime }}</div>
+              >{{ $t('distribution.reviewTime') + '：' }}{{ item.createTime }}</span>
               <!-- <div
                 class="header"
                 v-if="item.activationFields.invitation_code"
@@ -118,15 +120,15 @@
           </tr>
 
           <tr>
-            <td v-if="item.userId !== ''">{{ $t('distribution.reviewRealName') }}</td>
-            <td v-if="item.userId !== ''">{{ item.activationFields.real_name ? item.activationFields.real_name : $t('distribution.reviewNo') }}</td>
-            <td v-if="item.userId !== ''">{{ $t('distribution.reviewMobile') }}</td>
-            <td v-if="item.userId !== ''">{{ item.activationFields.mobile ? item.activationFields.mobile : $t('distribution.reviewNo') }}</td>
-            <td v-if="item.userId !== ''">{{ $t('distribution.reviewId') }}</td>
-            <td v-if="item.userId !== ''">{{ item.activationFields.cid ? item.activationFields.cid : $t('distribution.reviewNo') }}</td>
+            <td v-if="item.configFields !== '[]'">{{ $t('distribution.reviewRealName') }}</td>
+            <td v-if="item.configFields !== '[]'">{{ item.activationFields.real_name ? item.activationFields.real_name : $t('distribution.reviewNo') }}</td>
+            <td v-if="item.configFields !== '[]'">{{ $t('distribution.reviewMobile') }}</td>
+            <td v-if="item.configFields !== '[]'">{{ item.activationFields.mobile ? item.activationFields.mobile : $t('distribution.reviewNo') }}</td>
+            <td v-if="item.configFields !== '[]'">{{ $t('distribution.reviewId') }}</td>
+            <td v-if="item.configFields !== '[]'">{{ item.activationFields.cid ? item.activationFields.cid : $t('distribution.reviewNo') }}</td>
             <td
               colspan="6"
-              v-if="item.userId === ''"
+              v-if="item.configFields === '[]'"
               class="middle"
             >{{ $t('distribution.reviewTip') }}</td>
             <td
@@ -181,7 +183,7 @@
             >{{ item.msg }}</td>
 
           </tr>
-          <tr v-if="item.userId !== ''">
+          <tr v-if="item.configFields !== '[]'">
             <td>{{ $t('distribution.reviewSex') }}</td>
             <td>{{ item.activationFields.sex ? item.checkField.sex : $t('distribution.reviewNo') }}</td>
             <td>{{ $t('distribution.reviewBirthday') }}</td>
@@ -190,7 +192,7 @@
             <td>{{ item.activationFields.marital_status ? item.checkField.maritalName : $t('distribution.reviewNo') }}</td>
 
           </tr>
-          <tr v-if="item.userId !== ''">
+          <tr v-if="item.configFields !== '[]'">
             <td>{{ $t('distribution.reviewEducation') }}</td>
             <td>{{ item.activationFields.education ? item.checkField.educationName : $t('distribution.reviewNo') }}</td>
             <td>{{ $t('distribution.reviewIndustry') }}</td>
@@ -199,11 +201,11 @@
             <td>{{ item.activationFields.address ? item.activationFields.address : $t('distribution.reviewNo') }}</td>
 
           </tr>
-          <tr v-if="item.userId !== ''">
+          <tr v-if="item.configFields !== '[]'">
             <td>{{ $t('distribution.reviewNote') }}</td>
             <td colspan="5">{{ item.activationFields.remarks ? item.activationFields.remarks : $t('distribution.reviewNo') }}</td>
           </tr>
-          <tr v-if="item.userId !== ''">
+          <tr v-if="item.configFields !== '[]'">
             <td>{{ $t('distribution.reviewImg') }}</td>
             <td colspan="5">
               <a
@@ -573,47 +575,8 @@ export default {
 .table_list {
   position: relative;
   background-color: #fff;
-  .select_info {
-    display: flex;
-    margin: 10px 0px;
-    .leftarea {
-      display: flex;
-      margin-right: 50px;
-      .inputWidth {
-        width: 170px;
-      }
-    }
-    .rightarea {
-      display: flex;
-      :nth-of-type(1) {
-        margin-right: 5px;
-      }
-    }
-    .midarea {
-      display: flex;
-      margin-right: 30px;
-      :first-child {
-        margin-right: 10px;
-      }
-      :nth-of-type(1) {
-        margin-right: 10px;
-      }
-      :nth-of-type(2) {
-        margin: 0 10px 0 0;
-      }
-      /deep/ .el-input {
-        width: 200px !important;
-      }
-    }
-    span {
-      white-space: nowrap;
-      height: 32px;
-      line-height: 32px;
-    }
-    /deep/ .el-input__inner {
-      width: 200px;
-      display: inline-block;
-    }
+  .inputWidth {
+    width: 170px;
   }
   .footer {
     padding: 20px 0 20px 20px;
@@ -641,6 +604,9 @@ export default {
   }
   .title {
     background-color: #eee;
+  }
+  .titleStyle {
+    margin-right: 20px;
   }
   .header {
     display: inline-block;

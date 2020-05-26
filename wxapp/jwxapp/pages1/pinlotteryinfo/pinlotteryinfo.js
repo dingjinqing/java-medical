@@ -147,17 +147,19 @@ global.wxPage({
   },
   // 去参团
   to_join: function () {
-    let goodsList = [{
-      goodsId: goods_id,
-      prdRealPrice: this.data.group_info.groupDraw.payMoney,
-      goodsPrice: this.data.group_info.goods.shopPricee,
-      goodsNum: 1,
-      prdId: this.data.group_info.groupDraw.productId,
-      productId: this.data.group_info.groupDraw.productId
-    }]
-    console.log(goodsList)
-    util.navigateTo({
-      url: "/pages/checkout/checkout?activityType=8&activityId=" + Number(group_draw_id) + "&groupid=" + Number(group_id) + "&goodsList=" + JSON.stringify(goodsList) + '&inviteId=' + this.data.inviteId
+    util.getNeedTemplateId('draw_result', () => {
+      let goodsList = [{
+        goodsId: goods_id,
+        prdRealPrice: this.data.group_info.groupDraw.payMoney,
+        goodsPrice: this.data.group_info.goods.shopPricee,
+        goodsNum: 1,
+        prdId: this.data.group_info.groupDraw.productId,
+        productId: this.data.group_info.groupDraw.productId
+      }]
+      console.log(goodsList)
+      util.navigateTo({
+        url: "/pages/checkout/checkout?activityType=8&activityId=" + Number(group_draw_id) + "&groupid=" + Number(group_id) + "&goodsList=" + JSON.stringify(goodsList) + '&inviteId=' + this.data.inviteId
+      })
     })
   },
   // 去开团

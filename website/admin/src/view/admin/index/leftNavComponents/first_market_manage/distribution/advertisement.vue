@@ -307,15 +307,10 @@ export default {
       }).then(() => {
         advertisementPause(id).then(res => {
           if (res.error === 0) {
-            this.$message.success({
-              type: 'success',
-              message: '停用成功!'
-            })
+            this.$message.success({ message: '停用成功!' })
             this.search()
           }
         })
-      }).catch(() => {
-
       })
     },
     start (id) {
@@ -326,15 +321,10 @@ export default {
       }).then(() => {
         advertisementStart(id).then(res => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: '启用成功!'
-            })
+            this.$message.success({ message: '启用成功!' })
             this.search()
           }
         })
-      }).catch(() => {
-
       })
     },
     del (id) {
@@ -345,15 +335,10 @@ export default {
       }).then(() => {
         advertisementDelete(id).then(res => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
+            this.$message.success({ message: '删除成功!' })
             this.search()
           }
         })
-      }).catch(() => {
-
       })
     },
     cancel () {
@@ -364,10 +349,7 @@ export default {
       if (this.opt === 1) {
         advertisementAdd(this.param).then(res => {
           if (res.error === 0) {
-            this.$message({
-              message: '添加成功',
-              type: 'success'
-            })
+            this.$message.success({ message: '添加成功' })
             this.search()
           }
         })
@@ -375,10 +357,7 @@ export default {
         this.param.id = this.id
         advertisementSave(this.param).then(res => {
           if (res.error === 0) {
-            this.$message({
-              message: '编辑成功',
-              type: 'success'
-            })
+            this.$message.success({ message: '编辑成功' })
             this.search()
           }
         })

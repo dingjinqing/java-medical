@@ -149,10 +149,7 @@
   </div>
 </template>
 <script>
-import vcolorpicker from 'vcolorpicker'
-import Vue from 'vue'
 import { shopStyleGetRequest, shopStyleModifyRequest } from '@/api/admin/shopStyle.js'
-Vue.use(vcolorpicker)
 export default {
   data () {
     return {

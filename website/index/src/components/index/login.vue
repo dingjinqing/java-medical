@@ -230,7 +230,7 @@ export default {
                 })
                 console.log(1111)
                 this.$router.push({
-                  name: 'shopMain'
+                  path: '/admin/admin/home/shopMain'
                 })
                 console.log(2222)
               }
@@ -254,7 +254,7 @@ export default {
                   type: 'success'
                 })
                 this.$router.push({
-                  name: 'shopMain'
+                  path: '/admin/admin/home/shopMain'
                 })
               }
             })

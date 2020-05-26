@@ -183,7 +183,7 @@ export default {
           })
           return false
         }
-        if (!this.secKillProduct[i].stock) {
+        if (!this.secKillProduct[i].presaleNumber) {
           this.$message.error({
             message: '请输入活动库存'
           })
@@ -219,7 +219,7 @@ export default {
           })
           return false
         }
-        if (!this.secKillProduct[i].preDiscountMoney2) {
+        if ((!this.secKillProduct[i].preDiscountMoney2) && (this.isShowTwoStageMoney && this.isShowPreMoneyAct)) {
           this.$message.error({
             message: '请输入二阶段可抵扣金额'
           })

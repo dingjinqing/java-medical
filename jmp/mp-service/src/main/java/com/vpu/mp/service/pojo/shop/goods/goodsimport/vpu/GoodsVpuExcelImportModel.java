@@ -22,10 +22,11 @@ public class GoodsVpuExcelImportModel {
     /**一级分类名称*/
     @ExcelColumn(columnName = "vpu.import.goods.first.sort")
     private String firstSortName;
-
     /**二级分类名称*/
     @ExcelColumn(columnName = "vpu.import.goods.second.sort")
     private String secondSortName;
+    @ExcelColumn(columnName = "vpu.import.goods.brand")
+    private String brandName;
     /**货品编号*/
     @ExcelColumn(columnName = "vpu.import.goods.sn")
     private String goodsSn;
@@ -44,12 +45,14 @@ public class GoodsVpuExcelImportModel {
     /**商品库存*/
     @ExcelColumn(columnName = "vpu.import.goods.stock")
     private Integer stock;
-    /**市场价格*/
+    /**市场价*/
     @ExcelColumn(columnName = "vpu.import.goods.market.price")
     private BigDecimal marketPrice;
     /**商品店铺价格-零售价*/
     @ExcelColumn(columnName = "vpu.import.goods.shop.price")
     private BigDecimal shopPrice;
+    @ExcelColumn(columnName = "vpu.import.goods.cost.price")
+    private BigDecimal costPrice;
     /**是否上架1是0否*/
     @ExcelColumn(columnName = "vpu.import.goods.is.on.sale")
     private Byte isOnSale;

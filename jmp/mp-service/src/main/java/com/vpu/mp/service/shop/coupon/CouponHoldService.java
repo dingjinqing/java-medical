@@ -40,13 +40,16 @@ public class CouponHoldService extends ShopBaseService {
         MrkingVoucher m = MRKING_VOUCHER;
         /* 用户持有的优惠券 */
         CustomerAvailCoupons h = CUSTOMER_AVAIL_COUPONS;
+        /**分裂优惠券领取记录*/
+        DivisionReceiveRecord d = DIVISION_RECEIVE_RECORD;
 
         SelectJoinStep<? extends Record> select =
             db().select(u.USERNAME, u.MOBILE,
-                        m.ACT_NAME.as("coupon_name"),m.USE_SCORE,m.SCORE_NUMBER,m.TYPE,h.COUPON_SN,m.DENOMINATION,m.ACT_CODE,
-                        h.ID,h.ACCESS_MODE, h.IS_USED,h.ORDER_SN, h.START_TIME, h.END_TIME, h.CREATE_TIME, h.USED_TIME,h.DEL_FLAG,h.USER_ID)
+                        m.ACT_NAME.as("coupon_name"),m.USE_SCORE,m.SCORE_NUMBER,h.ACT_ID,h.TYPE,h.COUPON_SN,m.DENOMINATION,m.ACT_CODE,m.USE_CONSUME_RESTRICT,m.TYPE.as("coupon_type"),
+                        m.LEAST_CONSUME, h.ID,h.ACCESS_MODE, h.IS_USED,h.ORDER_SN, h.START_TIME, h.END_TIME, h.CREATE_TIME, h.USED_TIME,h.DEL_FLAG,h.USER_ID)
                 .from(h)
                 .leftJoin(m).on(h.ACT_ID.eq(m.ID))
+                .leftJoin(d).on(d.COUPON_SN.eq(h.COUPON_SN))
                 .leftJoin(u).on(h.USER_ID.eq(u.USER_ID));
         buildOptions(select,param);
         select.orderBy(h.CREATE_TIME.desc());
@@ -88,6 +91,9 @@ public class CouponHoldService extends ShopBaseService {
      * @return
      */
     private SelectJoinStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> select, CouponHoldListParam param) {
+        if(param.getCouponType() == 1){
+            select.where(DIVISION_RECEIVE_RECORD.USER_ID.eq(0));
+        }
         if (param.getActId()!=null){
             select.where(CUSTOMER_AVAIL_COUPONS.ACT_ID .eq(param.getActId()));
         }

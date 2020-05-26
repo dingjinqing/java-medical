@@ -1,0 +1,94 @@
+.ml-10 {
+  margin-left: 10px;
+}
+
+.fz-14 {
+  font-size: 14px;
+}
+
+.ml-20 {
+  margin-left: 20px;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.table-th {
+  th {
+    padding: 2px 0;
+    font-weight: 400;
+    font-size: 13px;
+    color: #333;
+    background: #eaedf4;
+  }
+}
+
+.pagination-wrap {
+  background: #fff;
+  padding: 10px;
+}
+
+.flr {
+  float: right;
+}
+
+.fll {
+  float: left;
+}
+
+.clearfixed::after {
+  content: '';
+  display: block;
+  clear: both;
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
+
+.ml-6 {
+  margin-left: 6px;
+}
+
+.pd-10 {
+  padding: 10px;
+}
+
+.bg-white {
+  background: #fff;
+}
+
+.mr-6 {
+  margin-right: 6px;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.el-dialog__header {
+  text-align: center;
+  font-size: 14px;
+  background-color: #f3f3f3;
+  padding-top: 10px;
+}
+.el-dialog__header .el-dialog__title {
+  font-size: 14px;
+}
+.el-dialog__header .el-dialog__headerbtn {
+  top: 12px;
+}
+.el-dialog__footer {
+  padding-bottom: 10px;
+  border-top: 1px solid #f3f3f3;
+}
+.el-dialog__wrapper{
+  display: flex;
+  .el-dialog{
+    margin: auto !important
+  }
+}
+
+.el-range-editor--small .el-range-separator {
+  box-sizing: content-box;
+}

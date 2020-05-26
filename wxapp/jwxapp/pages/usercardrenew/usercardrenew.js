@@ -115,7 +115,7 @@ global.wxPage({
     } else {
       cardInfo.shopAvatar = that.data.bottom.logo;
     }
-    cardInfo.renewNum = cardInfo.renewNum.toFixed(2)
+    cardInfo.renewNum = Number(cardInfo.renewNum).toFixed(2)
     that.setData({
       cardInfo: cardInfo,
       bg: bg,
@@ -144,10 +144,16 @@ global.wxPage({
         }
         // 会员卡样式弹框 背景处理
         if (cardArray[i].bgType == 1) {
-          cardArray[i].bgImg = imageUrl + cardArray[i].bgImg;
+          let reg = /^http*/
+          if (!reg.test(cardArray[i].bgImg)) {
+            cardArray[i].bgImg = imageUrl + cardArray[i].bgImg;
+          } else {
+            cardArray[i].bgImg = cardArray[i].bgImg
+          }
         }
-        console.log(i, cardInfo)
+        console.log(i, cardInfo.memberCardNo.toString())
         if (i.toString() == cardInfo.memberCardNo.toString()) {
+          console.log('cf')
           that.data.user_money.member_card_money = parseFloat(cardArray[i].money); // 选择支付的卡的余额
           that.setData({
             cardChooseName: cardArray[i].cardName,
@@ -229,16 +235,23 @@ global.wxPage({
   // 选中会员卡样式弹窗确定事件
   getSelectCard (res) {
     console.log(res)
-    let nowCheck = this.data.memberCardsList.find(item => item.cardNo == res.detail)
-    this.data.choose_card.card_choose_name = nowCheck.cardName;
-    this.data.choose_card.card_no = nowCheck.cardNo;
-    console.log(this.data.memberCardsList)
-    this.data.cardInfo.memberCardNo = res.detail
-    this.data.defaultMemberCardNo = res.detail
+    if (res.detail) {
+      let nowCheck = this.data.memberCardsList.find(item => item.cardNo == res.detail)
+      this.data.choose_card.card_choose_name = nowCheck.cardName;
+      this.data.choose_card.card_no = nowCheck.cardNo;
+      console.log(this.data.memberCardsList)
+      this.data.cardInfo.memberCardNo = res.detail
+    } else {
+      this.setData({
+        cardChooseName: '',
+        'cardInfo.memberCardNo': -1,
+        memberCardNo: 0,
+        choose_card: {}
+      })
+    }
     this.checkCancelYue();
     this.checkCancelCard();
     this.loadData(this.data.cardInfo, 0, this);
-    console.log(nowCheck)
   },
   // 点击会员卡余额支付调起支付弹窗
   payClick (e) {

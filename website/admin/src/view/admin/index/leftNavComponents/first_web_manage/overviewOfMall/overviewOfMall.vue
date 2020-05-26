@@ -1319,10 +1319,25 @@ export default {
     },
 
     // 代办事项
-    getTodoDate () {
-      toDoItemRequest().then((res) => {
+    getTodoDate (flag) {
+      var dataValue = []
+      this.checkList.forEach(item => {
+        item.isCheck = false
+        this.checkData.forEach(val => {
+          if (item.label === val) {
+            item.isCheck = true
+            dataValue.push(item.value)
+          }
+        })
+      })
+      var selectVal = '' // 获取选中的值
+      toDoItemRequest({ backlog: flag ? dataValue.toString() : null }).then((res) => {
         let data = res.content
         if (res.error === 0) {
+          if (res.content.backlog) {
+            selectVal = res.content.backlog.split(',')
+            selectVal = selectVal.map(Number)
+          }
           for (var i = 0; i < this.checkList.length; i++) {
             if (this.checkList[i].label === '待发货订单' || this.checkList[i].label === 'Order to be shipped') {
               this.checkList[i].num = data.toBeDelivered
@@ -1343,11 +1358,20 @@ export default {
             } else if (this.checkList[i].label === '服务评价待审核' || this.checkList[i].label === 'Service evaluation to be reviewed') {
               this.checkList[i].num = data.serviceEvaluationPr
             }
+
             this.checkList[i].isCheck = false
-            for (var j = 0; j < this.checkData.length; j++) {
-              if (this.checkList[i].label === this.checkData[j]) {
-                this.checkList[i].isCheck = true
-              }
+            if (selectVal !== '') {
+              selectVal.forEach(val => {
+                if (this.checkList[i].value === val) {
+                  this.checkList[i].isCheck = true
+                }
+              })
+            } else {
+              this.checkData.forEach(val => {
+                if (this.checkList[i].label === val) {
+                  this.checkList[i].isCheck = true
+                }
+              })
             }
           }
         }
@@ -1357,6 +1381,12 @@ export default {
     // 自定义事项弹框
     customizeHandler () {
       this.dataDialog = true
+      this.checkData = []
+      this.checkList.forEach(item => {
+        if (item.isCheck === true) {
+          this.checkData.push(item.label)
+        }
+      })
       this.selectData = this.checkData
     },
 
@@ -1369,7 +1399,7 @@ export default {
     // 确定自定义事项弹窗
     sureDataHandler () {
       if (this.checkData.length === 5) {
-        this.getTodoDate()
+        this.getTodoDate(1)
         this.$nextTick(() => {
           this.dataDialog = false
         })
@@ -1934,22 +1964,26 @@ a {
   text-decoration: none;
 }
 
-.left-order-content > .new_order:nth-child(1) > a .order_top {
+.left-order-content > .new_order:nth-child(1) > a .order_top,
+.left-order-content > .new_order:nth-child(6) > a .order_top {
   background-color: #dfecff;
   color: #5a8bff;
 }
 
-.left-order-content > .new_order:nth-child(2) > a .order_top {
+.left-order-content > .new_order:nth-child(2) > a .order_top,
+.left-order-content > .new_order:nth-child(7) > a .order_top {
   background-color: #ffdee4;
   color: #fc6181;
 }
 
-.left-order-content > .new_order:nth-child(3) > a .order_top {
+.left-order-content > .new_order:nth-child(3) > a .order_top,
+.left-order-content > .new_order:nth-child(8) > a .order_top {
   background-color: #fff0c4;
   color: #fdb64a;
 }
 
-.left-order-content > .new_order:nth-child(4) > a .order_top {
+.left-order-content > .new_order:nth-child(4) > a .order_top,
+.left-order-content > .new_order:nth-child(9) > a .order_top {
   background-color: #dfecff;
   color: #5a8bff;
 }

@@ -67,6 +67,7 @@ const routes = baseRoutes.concat(
 )
 
 const router = new Router({
+  base: 'admin',
   mode: 'history',
   routes
 })

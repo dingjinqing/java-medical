@@ -11,16 +11,13 @@
           {{i18n.$t(localePack,"pages.coupon.card")}}
         </view>
         <!-- <view class="record" wx:if="{{act_info.isShare == 1}}" bindtap="to_getRecord">领取记录</view> -->
-        <view class="record" bindtap="to_getRecord" data-act_id="{{act_info.actId}}" data-coupon_sn="{{act_info.couponSn}}">领取记录</view>
+        <view class="record" wx:if="{{act_info.isShare == 1}}" bindtap="to_getRecord" data-act_id="{{act_info.actId}}" data-coupon_sn="{{act_info.couponSn}}">领取记录</view>
         <text class="name-top" wx:if="{{act_info.id !=''}}">{{act_info.actName}}</text>
         <text class="name-top" wx:else>{{i18n.$t(localePack,"pages.coupon.couponName")}}</text>
         <!-- 来源列表 -->
         <view wx:if="{{act_info.linkSource == 0}}">
           <view wx:if="{{act_info.type == 0}}">
-            <view wx:if="{{act_info.couponType == 1 && act_info.isShare == 0 && act_info.actCode == 'random' && item.divisionEnabled == 0}}">
-              ￥<text>{{item.amount}}</text>
-            </view>
-            <view wx:elif="{{act_info.couponType == 1 && act_info.isShare == 0 && act_info.actCode == 'random' && item.divisionEnabled == 1}}">
+            <view wx:if="{{act_info.couponType == 1 && act_info.isShare == 0 && act_info.actCode == 'random'}}">
               <text class="name-bottom">￥{{act_info.randomMax}}<text style="font-size: 22rpx;">最高</text></text>
               <view class="name-bottom" style="font-size: 22rpx;">随机优惠</view>
             </view>
