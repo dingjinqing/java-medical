@@ -87,7 +87,7 @@ public class CardDaoService extends ShopBaseService {
 		SelectJoinStep<?> select = db()
 				.select(USER_CARD.USER_ID, USER.USERNAME, USER.MOBILE, invitedUser.USERNAME.as("invitedName"),
 						USER_CARD.CREATE_TIME, USER_CARD.CARD_NO, USER_CARD.FLAG, USER_CARD.EXPIRE_TIME,USER_CARD.UPDATE_TIME,
-						MEMBER_CARD.CARD_TYPE,GIVE_CARD_RECORD.GET_TIME,giveCardUser.USERNAME.as("giveName"))
+						MEMBER_CARD.CARD_TYPE,GIVE_CARD_RECORD.GET_TIME,giveCardUser.USERNAME.as("giveName"),GIVE_CARD_RECORD.GET_USER_ID)
 				.from(USER_CARD.leftJoin(USER.leftJoin(invitedUser).on(USER.INVITE_ID.eq(invitedUser.USER_ID))
 										).on(USER_CARD.USER_ID.eq(USER.USER_ID)))
 				.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
@@ -140,6 +140,9 @@ public class CardDaoService extends ShopBaseService {
 			}else if(param.getFlag().equals(UCARD_FG_STOP)) {
 				condition = condition.and(USER_CARD.FLAG.eq(param.getFlag()));
 				select.where(condition);
+			}else {
+				//	转赠中或已转赠
+				select.where(USER_CARD.FLAG.eq(param.getFlag()));
 			}
 		}
 		/** - 领卡时间 开始范围 */

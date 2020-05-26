@@ -70,4 +70,9 @@ public class CardHolderVo {
 	 * 转赠领取人
 	 */
 	private String giveName;
+	
+	/**
+	 * 转赠人Id
+	 */
+	private Integer getUserId;
 }
