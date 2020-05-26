@@ -23,6 +23,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
+import com.vpu.mp.service.pojo.shop.distribution.UserTotalFanliVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
@@ -40,6 +41,7 @@ import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser.WxUserInfo;
 import com.vpu.mp.service.saas.shop.ShopImageManageService;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
+import com.vpu.mp.service.shop.distribution.UserTotalFanliService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.UserCardService;
@@ -58,6 +60,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -110,6 +113,9 @@ public class UserService extends ShopBaseService {
 
 	@Autowired
 	public WxUserCardService wxUserCardService;
+	
+	@Autowired
+	private UserTotalFanliService userTotalFanliService;
 
 
     private int[] userActiveEnter = { 1001, 1005, 1006, 1019, 1020, 1024, 1026, 1027, 1023, 1028, 1034, 1035, 1037,
@@ -540,10 +546,25 @@ public class UserService extends ShopBaseService {
 					rebate.setRankStatus((byte)0);
 					rebate.setProtectDate((byte)-1);
 				}
-				iconItem.put("is_distributor", user.getIsDistributor());
-				iconItem.put("judge_status", rebate.getJudgeStatus());
-				iconItem.put("is_rebate", rebate.getStatus());
-				iconItem.put("rebate_center_name", rebate.getRebateCenterName()==null?"分销中心":rebate.getRebateCenterName());
+				if (isOne(iconItem.get("show_type")) && (!user.getIsDistributor().equals(SYCUPDATE))
+						&& Objects.equals(rebate.getStatus(), SYCUPDATE)
+						&& Objects.equals(rebate.getJudgeStatus(), SYCUPDATE)) {
+					iconItem.put("is_show", 0);
+
+				}else {
+					iconItem.put("is_distributor", user.getIsDistributor());
+					iconItem.put("judge_status", rebate.getJudgeStatus());
+					iconItem.put("is_rebate", rebate.getStatus());
+					iconItem.put("withdraw_status", rebate.getWithdrawStatus());
+					UserTotalFanliVo userRebate = userTotalFanliService.getUserRebate(user.getUserId());
+					BigDecimal totalMoney = userRebate==null?new BigDecimal("0"):userRebate.getTotalMoney();
+					BigDecimal account = user.getAccount();
+					iconItem.put("withdraw_money", totalMoney.compareTo(account)==-1?totalMoney:account);
+					iconItem.put("rebate_center_name", rebate.getRebateCenterName()==null?"分销中心":rebate.getRebateCenterName());
+					if(!isOne(rebate.getWithdrawConfig())) {
+						iconItem.put("withdraw_money", 0);
+					}
+				}
 			}
 			if (iconItem.get("icon_name").equals("user_activate")) {
 				Boolean activateIsNotice = isNoticeUserActivation(user.getUserId());
