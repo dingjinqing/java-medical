@@ -204,9 +204,9 @@ public class GoodsImportService extends ShopBaseService {
                 illegalGoodsList.addAll(importRecordService.convertVpuExcelImportBosToImportDetails(bos, codeWrap.getIllegalEnum(), assistParam.getBatchId()));
             } else {
                 assistParam.setGoodsCount(assistParam.getGoodsCount() + 1);
+                goodsIds.add(codeWrap.getGoodsId());
                 successGoodsList.addAll(importRecordService.convertVpuExcelImportBosToImportDetails(bos, codeWrap.getIllegalEnum(), assistParam.getBatchId(), true));
             }
-            goodsIds.add(codeWrap.getGoodsId());
         }
     }
 
