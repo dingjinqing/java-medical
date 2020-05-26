@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep4;
@@ -127,7 +128,7 @@ public class CardDaoService extends ShopBaseService {
 			select.where(USER_CARD.CARD_NO.like(likeValue));
 		}
 		/** - 卡状态 */
-		if (param.getFlag() != null) {
+		if (param.getFlag() != null && !NumberUtils.BYTE_MINUS_ONE.equals(param.getFlag())) {
 			/** - 状态为过期 */
 			Condition condition = DSL.noCondition();
 			if (param.getFlag().equals(UCARD_FG_EXPIRED)) {
