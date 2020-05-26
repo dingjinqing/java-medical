@@ -153,7 +153,7 @@
             <span v-else-if="scope.row.flag === 1"> 已废除({{scope.row.updateTime}}) </span>
             <span v-else-if="scope.row.flag === 2"> 转赠中 </span>
             <span v-else-if="scope.row.flag === 3"> 已转赠({{scope.row.getTime}});赠予:
-                <span @onclick="handleToUserDetail(scope.row.getUserId)" style="color: #5a8bff;cursor: pointer;">
+                <span @click="handleToUserDetail(scope.row.getUserId)" style="color: #5a8bff;cursor: pointer;">
                   {{scope.row.giveName}}
                 </span>;
             </span>
