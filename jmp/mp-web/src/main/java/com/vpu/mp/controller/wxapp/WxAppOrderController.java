@@ -89,57 +89,57 @@ public class WxAppOrderController extends WxAppBaseController{
         }
     }
 
-	/**
-	 * 	退款、退货创建页面
-	 */
-	@PostMapping("/refund/query")
-	public JsonResult mpRefundGoodsList(@RequestBody @Valid OrderOperateQueryParam param) {
-		param.setIsMp(OrderConstant.IS_MP_Y);
-		try {
-			return success(shop().orderActionFactory.orderQuery(param));
-		} catch (MpException e) {
+    /**
+     * 	退款、退货创建页面
+     */
+    @PostMapping("/refund/query")
+    public JsonResult mpRefundGoodsList(@RequestBody @Valid OrderOperateQueryParam param) {
+        param.setIsMp(OrderConstant.IS_MP_Y);
+        try {
+            return success(shop().orderActionFactory.orderQuery(param));
+        } catch (MpException e) {
             return fail(e.getErrorCode(), e.getCodeParam());
-		}
-	}
+        }
+    }
 
-	/**
-	 * 退款退货
-	 */
-	@PostMapping("/refund")
-	public JsonResult refundMoney(@RequestBody @Valid RefundParam param) {
-		param.setIsMp(OrderConstant.IS_MP_Y);
-		param.setWxUserInfo(wxAppAuth.user());
+    /**
+     * 退款退货
+     */
+    @PostMapping("/refund")
+    public JsonResult refundMoney(@RequestBody @Valid RefundParam param) {
+        param.setIsMp(OrderConstant.IS_MP_Y);
+        param.setWxUserInfo(wxAppAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
         }else {
             return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
         }
-	}
+    }
 
-	/**
-	 * 延长收货、确认收货、取消订单、提醒发货、删除订单
-	 */
-	@PostMapping("/operation")
-	public JsonResult cancel(@RequestBody @Valid OrderOperateQueryParam param) {
-		param.setIsMp(OrderConstant.IS_MP_Y);
-		param.setWxUserInfo(wxAppAuth.user());
+    /**
+     * 延长收货、确认收货、取消订单、提醒发货、删除订单
+     */
+    @PostMapping("/operation")
+    public JsonResult cancel(@RequestBody @Valid OrderOperateQueryParam param) {
+        param.setIsMp(OrderConstant.IS_MP_Y);
+        param.setWxUserInfo(wxAppAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
         }else {
             return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
         }
-	}
+    }
 
-	/**
-	 * 订单列表
-	 */
-	@PostMapping("/list")
-	public JsonResult list(@RequestBody @Valid OrderListParam param) {
-		param.setWxUserInfo(wxAppAuth.user());
-		return success(shop().readOrder.getPageList(param));
-	}
+    /**
+     * 订单列表
+     */
+    @PostMapping("/list")
+    public JsonResult list(@RequestBody @Valid OrderListParam param) {
+        param.setWxUserInfo(wxAppAuth.user());
+        return success(shop().readOrder.getPageList(param));
+    }
 
     /**
      * 订单列表
@@ -186,6 +186,7 @@ public class WxAppOrderController extends WxAppBaseController{
 		return success(shop().readOrder.statistic(wxAppAuth.user().getUserId()));
 	}
 
+
     /**
      * 售后中心退款订单列表(存在退款)
      * @param param
@@ -212,23 +213,23 @@ public class WxAppOrderController extends WxAppBaseController{
         }
     }
 
-	/**
-	 * 历史购买
-	 * @param param
-	 */
-	@PostMapping("/goods/history")
-	public JsonResult getHistoryGoodsList(@RequestBody @Valid OrderGoodsHistoryListParam param){
-		Integer userId = wxAppAuth.user().getUserId();
-		FootprintListVo historyVos = shop().readOrder.buyingHistoryGoodsList(userId, param.getKeyword(), param.getCurrentPage(), param.getPageRows());
-		return success(historyVos);
-	}
+    /**
+     * 历史购买
+     * @param param
+     */
+    @PostMapping("/goods/history")
+    public JsonResult getHistoryGoodsList(@RequestBody @Valid OrderGoodsHistoryListParam param){
+        Integer userId = wxAppAuth.user().getUserId();
+        FootprintListVo historyVos = shop().readOrder.buyingHistoryGoodsList(userId, param.getKeyword(), param.getCurrentPage(), param.getPageRows());
+        return success(historyVos);
+    }
 
     /**
      * 支持快递公司
      */
     @PostMapping("/express")
-	public JsonResult getExpress(){
-	    return success(shop().express.getEnabledList());
+    public JsonResult getExpress(){
+        return success(shop().express.getEnabledList());
     }
 
     /**************好友代付start*******************/
@@ -293,29 +294,29 @@ public class WxAppOrderController extends WxAppBaseController{
     }
     /**************好友代付end*********************/
 
-	@PostMapping("/addtest")
-	public JsonResult test(){
-		List<String> list=new ArrayList<String>();
-		list.add("P201911221631543263");
-		list.add("P201911221635533137");
-		Boolean addCommonOrders = shop().recommendService.orderMallService.addCommonOrders(wxAppAuth.user().getUserId(), list);
-		if(addCommonOrders) {
-			return success();
-		}
-		return fail();
+    @PostMapping("/addtest")
+    public JsonResult test(){
+        List<String> list=new ArrayList<String>();
+        list.add("P201911221631543263");
+        list.add("P201911221635533137");
+        Boolean addCommonOrders = shop().recommendService.orderMallService.addCommonOrders(wxAppAuth.user().getUserId(), list);
+        if(addCommonOrders) {
+            return success();
+        }
+        return fail();
 
-	}
+    }
 
-	@PostMapping("/cart/addtest")
-	public JsonResult test2(){
-		List<Integer> list=new ArrayList<>();
-		list.add(60);
-		list.add(62);
-		Boolean addCommonOrders = shop().recommendService.collectionMallService.addCartRows(wxAppAuth.user().getUserId(), list);
-		if(addCommonOrders) {
-			return success();
-		}
-		return fail();
+    @PostMapping("/cart/addtest")
+    public JsonResult test2(){
+        List<Integer> list=new ArrayList<>();
+        list.add(60);
+        list.add(62);
+        Boolean addCommonOrders = shop().recommendService.collectionMallService.addCartRows(wxAppAuth.user().getUserId(), list);
+        if(addCommonOrders) {
+            return success();
+        }
+        return fail();
 
-	}
+    }
 }
