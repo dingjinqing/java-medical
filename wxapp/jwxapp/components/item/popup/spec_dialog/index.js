@@ -109,8 +109,10 @@ global.wxComponent({
           this.data.productsInfo.products[0].prdNumber = activity.stock
           limitBuyNum = 1
         }
-        if(activity && [6,18,22,98].includes(activity.activityType) && activity.isLimit){
-          if(activity.limitFlag){
+        if(activity && [6,18,22,98].includes(activity.activityType)){
+          this.data.productsInfo.products[0].prdRealPrice = activity[actPrdType[this.data.productsInfo.activity.activityType]['prdListName']][0][actPrdType[activity.activityType]['prdRealPrice']]
+          this.data.productsInfo.products[0].prdLinePrice = activity[actPrdType[this.data.productsInfo.activity.activityType]['prdListName']][0][actPrdType[activity.activityType]['prdLinePrice']]
+          if(activity.isLimit && activity.limitFlag){
             limitMaxNum = activity.limitAmount
           } else {
             limitMaxNum = 0

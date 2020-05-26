@@ -286,7 +286,8 @@ export default {
           levelUserIds: null,
           users: '',
           levelStatus: 1,
-          amount: ''
+          amount: '',
+          levelText: '一级'
         }, {
           levelId: 2,
           levelName: 'v2',
@@ -297,7 +298,8 @@ export default {
           levelUserIds: null,
           users: '',
           levelStatus: 0,
-          amount: ''
+          amount: '',
+          levelText: '二级'
         }, {
           levelId: 3,
           levelName: '分销员组3',
@@ -308,7 +310,8 @@ export default {
           levelUserIds: null,
           users: '',
           levelStatus: 1,
-          amount: ''
+          amount: '',
+          levelText: '三级'
         }, {
           levelId: 4,
           levelName: '分销员组4',
@@ -319,7 +322,8 @@ export default {
           levelUserIds: null,
           users: '',
           levelStatus: 1,
-          amount: ''
+          amount: '',
+          levelText: '四级'
         }, {
           levelId: 5,
           levelName: '分销员组5',
@@ -330,7 +334,8 @@ export default {
           levelUserIds: null,
           users: '',
           levelStatus: 0,
-          amount: ''
+          amount: '',
+          levelText: '五级'
         }]
       },
       // 校验表单
@@ -347,7 +352,7 @@ export default {
     // 获取分销员等级
     initDataList () {
       getDistributionLevel().then((res) => {
-        if (res.error === 0 && res.content) {
+        if (res.error === 0 && res.content && res.content.length > 0) {
           this.handleData(res.content.levelList)
         }
       })

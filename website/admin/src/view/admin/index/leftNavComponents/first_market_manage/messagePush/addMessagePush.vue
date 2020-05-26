@@ -210,7 +210,7 @@
                       @change="handleOnClickUserChange"
                     >选择指定的会员 </el-checkbox>
                     <span v-if="params.onClickUser">
-                      <span style="margin-left:-15px">
+                      <span>
                         <el-button
                           @click="handleAddMember"
                           type="text"
@@ -387,6 +387,7 @@
       <getUserDialog
         @dialog-cancel="closeDialog"
         :dialogVisible="dialogVisible"
+        :userKey="userKey"
       />
     </el-card>
     <!--保存时页面勾选提示弹窗-->
@@ -975,11 +976,10 @@ export default {
     // 获取发送人群数量
     fetchUserList (params) {
       getUserNumberApi(params).then(res => {
-        const { error, content } = res
-        if (error === 0) {
+        if (res.error === 0) {
           console.log(res) // 返回发送人群的数量
-          const { userKey, userNumber } = content
-          console.log(`key+num${userKey}, ${userNumber}`)
+          const { userKey, userNumber } = res.content
+          console.log(userKey)
           this.userNumber = userNumber
           this.userKey = userKey
         }
