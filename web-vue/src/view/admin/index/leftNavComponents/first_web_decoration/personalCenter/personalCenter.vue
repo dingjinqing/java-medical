@@ -1017,6 +1017,22 @@
                       <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
                       <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
                     </el-radio-group>
+                    <div>
+                      <el-select
+                        v-model="val.show_type"
+                        size="small"
+                        style="width: 170px;margin-bottom: 10px;"
+                      >
+                        <el-option
+                          label="全部用户可见"
+                          value="0"
+                        ></el-option>
+                        <el-option
+                          label="仅分销员可见"
+                          value="1"
+                        ></el-option>
+                      </el-select>
+                    </div>
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
                         class="imgContainter"
@@ -1482,7 +1498,8 @@ export default {
             icon_name: 'distribution',
             icon: '/image/admin/uc_config/icon_dis.png',
             link: '',
-            link_name: ''
+            link_name: '',
+            show_type: '0'
           },
           {
             is_show: '1',
@@ -1634,7 +1651,8 @@ export default {
             icon_name: 'distribution',
             icon: '/image/admin/uc_config/icon_dis.png',
             link: '',
-            link_name: ''
+            link_name: '',
+            show_type: '0'
           },
           {
             is_show: '1',
