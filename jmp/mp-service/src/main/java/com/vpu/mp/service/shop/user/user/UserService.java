@@ -23,7 +23,6 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
-import com.vpu.mp.service.pojo.shop.distribution.UserTotalFanliVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
@@ -41,7 +40,6 @@ import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser.WxUserInfo;
 import com.vpu.mp.service.saas.shop.ShopImageManageService;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
-import com.vpu.mp.service.shop.distribution.UserTotalFanliService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.UserCardService;
@@ -60,7 +58,6 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -113,9 +110,6 @@ public class UserService extends ShopBaseService {
 
 	@Autowired
 	public WxUserCardService wxUserCardService;
-	
-	@Autowired
-	private UserTotalFanliService userTotalFanliService;
 
 
     private int[] userActiveEnter = { 1001, 1005, 1006, 1019, 1020, 1024, 1026, 1027, 1023, 1028, 1034, 1035, 1037,
@@ -248,9 +242,7 @@ public class UserService extends ShopBaseService {
 			if (!source.isEmpty()) {
 				logger().info("邀请来源不空" + source.toString());
 				user.setInviteSource(source.get("invite_source"));
-				String string = source.get("invite_act_id");
-				logger().info("活动id：{}",string);
-				user.setInviteActId(Integer.parseInt(string == null ? "0" : string));
+				user.setInviteActId(Integer.parseInt(source.get("invite_act_id")));
 			} else {
 				logger().info("邀请来源为空");
 			}
@@ -282,14 +274,14 @@ public class UserService extends ShopBaseService {
 			String path = pathQuery.getPath();
 			Map<String, String> query = pathQuery.getQuery();
 			String groupDrawId = pathQuery.getQuery().get("group_draw_id");
-			if ((path.equals("pages1/pinlotteryinfo/pinlotteryinfo")||path.equals("pages/pinlotteryinfo/pinlotteryinfo")) && groupDrawId != null
+			if (path.equals("pages/pinlotteryinfo/pinlotteryinfo") && groupDrawId != null
 					&& pathQuery.getQuery().get("invite_id") != null) {
 				pathQuery.getQuery().put("user_id", userId.toString());
 				saas.getShopApp(this.getShopId()).groupDraw.groupDrawInvite.createInviteRecord(path,  Integer.valueOf(groupDrawId),query, (byte) 1);
 			}
 			if (path.equals("pages/index/index")
-					|| path.equals("pages/item/item") && pathQuery.getQuery().get("c") != null) {
-				saas.getShopApp(getShopId()).channelService.recordChannel(pathQuery.getQuery().get("c"), userId, (byte) 1);
+					|| path.equals("pages/item/item") && pathQuery.getQuery().get("channel") != null) {
+				saas.getShopApp(getShopId()).channelService.recordChannel(pathQuery.getChannel(), userId, (byte) 1);
 			}
 			return user;
 		}
@@ -308,7 +300,7 @@ public class UserService extends ShopBaseService {
 			userSource = -2;// 被动进入
 		}
 		if (IntStream.of(scanqrode).anyMatch(x -> x == scene)) {
-			userSource = -3; // 扫码进入
+			userSource = -1; // 扫码进入
 		}
 		return userSource;
 	}
@@ -316,41 +308,40 @@ public class UserService extends ShopBaseService {
 	public Map<String, String> getInviteSource(PathQuery pathQuery) {
 		String path = pathQuery.getPath();
 		logger().info("登录路径"+path);
-		logger().info("pathQuery的内容：{}",pathQuery.toString());
 		Map<String, String> map = new HashMap<String, String>();
 		if (path.equals("pages/groupbuyitem/groupbuyitem") || path.equals("pages/groupbuyinfo/groupbuyinfo")) {
-			map.put("invite_source", "groupbuy");// 多人拼团
+			map.put("invite_source", "groupbuy");// 拼团
 			map.put("invite_act_id", pathQuery.getQuery().get("pin_group_id"));
 		}
-		if (path.equals("pages/bargainlist/bargainlist") || path.equals("pages/bargaininfo/bargaininfo")) {
+		if (path.equals("pages/bargainitem/bargainitem") || path.equals("pages/bargaininfo/bargaininfo")) {
 			map.put("invite_source", "bargain");// 砍价
 			map.put("invite_act_id", pathQuery.getQuery().get("bargain_id"));
 		}
 		if (path.equals("pages/seckillitem/seckillitem")) {
-			map.put("invite_source", "seckill");// 秒杀 跟item合并了，没用
+			map.put("invite_source", "seckill");// 秒杀
 			map.put("invite_act_id", pathQuery.getQuery().get("sk_id"));
 		}
-		if (path.equals("pages1/integral/integral")) {
+		if (path.equals("pages/integralitem/integralitem")) {
 			map.put("invite_source", "integral");// 积分购买
 			map.put("invite_act_id", pathQuery.getQuery().get("integral_goods_id"));
 		}
-		if (path.equals("pages1/lottery/lottery")) {
+		if (path.equals("pages/lottery/lottery")) {
 			map.put("invite_source", "lottery");// 抽奖
-			map.put("invite_act_id", pathQuery.getQuery().get("lotteryId"));
+			map.put("invite_act_id", pathQuery.getQuery().get("lottery_id"));
 		}
-		if (path.equals("pages1/form/form")) {
+		if (path.equals("pages/form/form")) {
 			map.put("invite_source", "form");// 表单
 			map.put("invite_act_id", pathQuery.getQuery().get("page_id"));
 		}
-		if (path.equals("pages/cardinfo/cardinfo")) {
+		if (path.equals("pages/usercardinfo/usercardinfo")) {
 			map.put("invite_source", "membercard");// 会员卡
-			map.put("invite_act_id", pathQuery.getQuery().get("cardNo"));
+			map.put("invite_act_id", pathQuery.getQuery().get("card_id"));
 		}
 		if (path.equals("pages/item/item")) {
-			if (!StringUtils.isEmpty(pathQuery.getQuery().get("c"))) {
+			if (!StringUtils.isEmpty(pathQuery.getQuery().get("channel"))) {
 				// 渠道页
 				ChannelRecord channelInfo = saas.getShopApp(this.getShopId()).channelService
-						.getChannelInfo(pathQuery.getQuery().get("c"));
+						.getChannelInfo(pathQuery.getQuery().get("channel"));
 				if (channelInfo != null) {
 					map.put("invite_source", "channel");
 					map.put("invite_act_id", channelInfo.getId().toString());
@@ -389,13 +380,13 @@ public class UserService extends ShopBaseService {
 			map.put("invite_source", "purchase_price");// 满折满减
 			map.put("invite_act_id", pathQuery.getQuery().get("identity_id"));
 		}
-		if (path.equals("pages1/pinlotteryinfo/pinlotteryinfo")||path.equals("pages/pinlotteryinfo/pinlotteryinfo")) {
+		if (path.equals("pages/pinlotteryinfo/pinlotteryinfo")) {
 			map.put("invite_source", "group_draw");// 拼团抽奖
 			map.put("invite_act_id", pathQuery.getQuery().get("group_draw_id"));
 		}
-		if (path.equals("pages1/pinintegration/pinintegration")) {
+		if (path.equals("pages/pinintegration/pinintegration")) {
 			map.put("invite_source", "pin_integration");// 拼团抽奖
-			map.put("invite_act_id", pathQuery.getQuery().get("pid"));
+			map.put("invite_act_id", pathQuery.getQuery().get("pinInte_id"));
 		}
 		if (path.equals("pages1/promoteinfo/promoteinfo")) {
 			map.put("invite_source", "friend_promote");// 好友助力
@@ -546,25 +537,10 @@ public class UserService extends ShopBaseService {
 					rebate.setRankStatus((byte)0);
 					rebate.setProtectDate((byte)-1);
 				}
-				if (isOne(iconItem.get("show_type")) && (!user.getIsDistributor().equals(SYCUPDATE))
-						&& Objects.equals(rebate.getStatus(), SYCUPDATE)
-						&& Objects.equals(rebate.getJudgeStatus(), SYCUPDATE)) {
-					iconItem.put("is_show", 0);
-
-				}else {
-					iconItem.put("is_distributor", user.getIsDistributor());
-					iconItem.put("judge_status", rebate.getJudgeStatus());
-					iconItem.put("is_rebate", rebate.getStatus());
-					iconItem.put("withdraw_status", rebate.getWithdrawStatus());
-					UserTotalFanliVo userRebate = userTotalFanliService.getUserRebate(user.getUserId());
-					BigDecimal totalMoney = userRebate.getTotalMoney()==null?new BigDecimal("0"):userRebate.getTotalMoney();
-					BigDecimal account = user.getAccount();
-					iconItem.put("withdraw_money", totalMoney.compareTo(account)==-1?totalMoney:account);
-					iconItem.put("rebate_center_name", rebate.getRebateCenterName()==null?"分销中心":rebate.getRebateCenterName());
-					if(!isOne(rebate.getWithdrawConfig())) {
-						iconItem.put("withdraw_money", 0);
-					}
-				}
+				iconItem.put("is_distributor", user.getIsDistributor());
+				iconItem.put("judge_status", rebate.getJudgeStatus());
+				iconItem.put("is_rebate", rebate.getStatus());
+				iconItem.put("rebate_center_name", rebate.getRebateCenterName()==null?"分销中心":rebate.getRebateCenterName());
 			}
 			if (iconItem.get("icon_name").equals("user_activate")) {
 				Boolean activateIsNotice = isNoticeUserActivation(user.getUserId());
@@ -582,7 +558,7 @@ public class UserService extends ShopBaseService {
 
 
 	private Boolean isOne(Object object) {
-		return Objects.equals(object, 1)|| Objects.equals(object, "1");
+		return object.equals(1)||object.equals("1");
 	}
 
 	/**
