@@ -302,7 +302,6 @@ export default {
       console.log(this.cardEffectTime.fixedDate)
       this.cardEffectTime.receiveDay = data.receiveDay
       this.cardEffectTime.dateType = data.dateType ? String(data.dateType) : '0'
-      debugger
       // 适用商品
       this.cardSuiteGoodsCfgData.isExchange = data.cardExchangGoods.isExchange
       this.cardSuiteGoodsCfgData.exchangCount = data.cardExchangGoods.exchangCount
