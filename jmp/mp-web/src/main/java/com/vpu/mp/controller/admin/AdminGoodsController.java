@@ -2,11 +2,13 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
@@ -447,11 +449,11 @@ public class AdminGoodsController extends AdminBaseController {
 
     @PostMapping("/api/admin/goods/export")
     public void export(@RequestBody @Valid GoodsExportParam param, HttpServletResponse response) {
-//        shop().config.goodsCfg.setGoodsExportList(param.getColumns());
-//        Workbook workbook = shop().goods.exportGoodsList(param, getLang());
-//        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GOODS_EXPORT_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
-//        export2Excel(workbook, fileName, response);
-        test(param,response);
+        shop().config.goodsCfg.setGoodsExportList(param.getColumns());
+        Workbook workbook = shop().goods.exportGoodsList(param, getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GOODS_EXPORT_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        export2Excel(workbook, fileName, response);
+//        test(param,response);
     }
 
     public void test(GoodsExportParam param, HttpServletResponse response){
