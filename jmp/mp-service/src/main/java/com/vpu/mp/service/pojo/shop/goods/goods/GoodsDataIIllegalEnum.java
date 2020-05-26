@@ -161,10 +161,13 @@ public enum GoodsDataIIllegalEnum {
                 break;
             case 16:
                 retEnum = GoodsDataIIllegalEnum.GOODS_COST_PRICE_IS_NULL;
+                break;
             case 17:
                 retEnum = GoodsDataIIllegalEnum.GOODS_DATA_ILLEGAL_FORMAT_FOR_DB;
+                break;
             case 18:
                 retEnum = GoodsDataIIllegalEnum.GOODS_DATA_UPDATE_ES_ERROR;
+                break;
             default:
                 retEnum = null;
         }

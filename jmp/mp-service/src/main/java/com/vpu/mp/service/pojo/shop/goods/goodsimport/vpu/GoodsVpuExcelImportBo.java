@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class GoodsVpuExcelImportBo extends GoodsExcelImportBase {
+    private int operateBusId;
+
     private String firstSortName;
     private String secondSortName;
     private String brandName;

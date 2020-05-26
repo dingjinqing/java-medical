@@ -230,6 +230,18 @@ public class GoodsBrandService extends ShopBaseService {
         return brand;
     }
 
+    public Map<String,Integer> getNormalBrandMap(){
+        return db().select(GOODS_BRAND.BRAND_NAME, GOODS_BRAND.ID).from(GOODS_BRAND)
+            .where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchMap(GOODS_BRAND.BRAND_NAME, GOODS_BRAND.ID);
+    }
+
+    public Integer addBrand(String brandName) {
+        GoodsBrandRecord record = db().newRecord(GOODS_BRAND);
+        record.setBrandName(brandName);
+        record.insert();
+        return record.getId();
+    }
+
     /**
      * 根据品牌名称获取品牌id，如果不存在就新增
      * @param brandName

@@ -14,7 +14,6 @@ import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionNumConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
@@ -26,6 +25,7 @@ import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportBo;
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportModel;
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportMqParam;
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportParam;
+import com.vpu.mp.service.pojo.shop.goods.sort.GoodsNormalSortParam;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
@@ -127,9 +127,9 @@ public class GoodsImportService extends ShopBaseService {
             List<GoodsVpuExcelImportBo> goodsList = goodsVpuExcelImportModels.stream().map(GoodsVpuExcelImportBo::new).collect(Collectors.toList());
             GoodsVpuExcelImportMqParam mqParam = new GoodsVpuExcelImportMqParam(goodsList, param.getLang(), param.getIsUpdate(), batchId, getShopId(), null);
             // 调用消息队列
-            saas.taskJobMainService.dispatchImmediately(mqParam, GoodsVpuExcelImportMqParam.class.getName(), getShopId(),
-                TaskJobsConstant.TaskJobEnum.GOODS_VPU_EXCEL_IMPORT.getExecutionType());
-//            goodsVpuExcelImportMqCallback(mqParam);
+//            saas.taskJobMainService.dispatchImmediately(mqParam, GoodsVpuExcelImportMqParam.class.getName(), getShopId(),
+//                TaskJobsConstant.TaskJobEnum.GOODS_VPU_EXCEL_IMPORT.getExecutionType());
+            goodsVpuExcelImportMqCallback(mqParam);
         }
         return code;
     }
@@ -140,9 +140,452 @@ public class GoodsImportService extends ShopBaseService {
      */
     public void goodsVpuExcelImportMqCallback(GoodsVpuExcelImportMqParam param) {
         List<GoodsVpuExcelImportBo> readyToImportGoodsList = Optional.ofNullable(param.getGoodsVpuExcelImportBos()).orElse(new ArrayList<>());
-        List<GoodsImportDetailRecord> illegalGoodsList = filterIllegalGoodsListForNull(readyToImportGoodsList, param.getBatchId(), param.isUpdate());
-        goodsImportIterateOperate(readyToImportGoodsList, illegalGoodsList, param.isUpdate(), param.getBatchId());
+        Integer shopId = getShopId();
+        // 辅助数据
+        Integer limitNum = saas.getShopApp(shopId).version.getLimitNum(VersionNumConfig.GOODSNUM);
+        Integer goodsCount = goodsService.selectGoodsCount();
+        GoodsImportAssistParam assistParam = new GoodsImportAssistParam();
+        assistParam.setBatchId(param.getBatchId());
+        assistParam.setLimitNum(limitNum);
+        assistParam.setGoodsCount(goodsCount);
+        assistParam.setUpdate(param.isUpdate());
+
+//        List<GoodsImportDetailRecord> illegalGoodsList = filterIllegalGoodsListForNull(readyToImportGoodsList, param.getBatchId(), param.isUpdate());
+//        goodsImportIterateOperate(readyToImportGoodsList, illegalGoodsList, assistParam);
+
+        List<Integer> goodsIds = new ArrayList<>(readyToImportGoodsList.size() / 2);
+        List<GoodsImportDetailRecord> successGoodsList = new ArrayList<>(readyToImportGoodsList.size() / 2);
+        List<GoodsImportDetailRecord> illegalGoodsList = new ArrayList<>(readyToImportGoodsList.size() / 2);
+
+        if (!assistParam.isUpdate()) {
+            goodsVpuExcelImportForInsert(shopId, readyToImportGoodsList, successGoodsList, goodsIds, illegalGoodsList, assistParam);
+        }
+
+        importRecordService.updateGoodsImportSuccessNum(successGoodsList.size(), assistParam.getBatchId());
+        successGoodsList.addAll(illegalGoodsList);
+        importRecordService.insertGoodsImportDetailBatch(successGoodsList);
+        if (goodsIds.size() > 0) {
+            goodsService.updateEs(goodsIds);
+        }
     }
+
+    @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
+    private void goodsVpuExcelImportForInsert(@RedisLockKeys Integer shopId, List<GoodsVpuExcelImportBo> readyToImportGoodsList, List<GoodsImportDetailRecord> successGoodsList, List<Integer> goodsIds, List<GoodsImportDetailRecord> illegalGoodsList, GoodsImportAssistParam assistParam) {
+        HashMap<String, List<GoodsVpuExcelImportBo>> goodsSnMapBos = new HashMap<>(readyToImportGoodsList.size() / 4);
+        // 预处理插入数据
+        preFilterRepeatedGoodsDatasForInsert(readyToImportGoodsList, illegalGoodsList, goodsSnMapBos, assistParam);
+        // 统一处理商品描述内容，这样正则解析器速度稍快
+        disposeGoodsDesc(goodsSnMapBos);
+        // 获取品牌映射
+        Map<String, Integer> brandMap = goodsBrandService.getNormalBrandMap();
+        // 获取分类映射
+        Map<String, Integer> sortMap = goodsSortService.getSortMap();
+
+        for (Map.Entry<String, List<GoodsVpuExcelImportBo>> entry : goodsSnMapBos.entrySet()) {
+            List<GoodsVpuExcelImportBo> bos = entry.getValue();
+            if (isGoodsNumOversize(assistParam)) {
+                illegalGoodsList.addAll(importRecordService.convertVpuExcelImportBosToImportDetails(bos, GoodsDataIIllegalEnum.GOODS_NUM_FETCH_LIMIT_NUM, assistParam.getBatchId()));
+                continue;
+            }
+
+            Goods goods = convertGoodsExcelImportBosToGoodsWithSku(bos);
+            // 执行真正的插入操作
+            GoodsDataIllegalEnumWrap codeWrap = realInsert(bos, goods, brandMap, sortMap);
+            if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
+                illegalGoodsList.addAll(importRecordService.convertVpuExcelImportBosToImportDetails(bos, codeWrap.getIllegalEnum(), assistParam.getBatchId()));
+            } else {
+                assistParam.setGoodsCount(assistParam.getGoodsCount() + 1);
+                successGoodsList.addAll(importRecordService.convertVpuExcelImportBosToImportDetails(bos, codeWrap.getIllegalEnum(), assistParam.getBatchId(), true));
+            }
+            goodsIds.add(codeWrap.getGoodsId());
+        }
+    }
+
+    /**
+     * 商品导入预处理-过滤存在（内部或数据库）重复字段的数据
+     * prdSn,prdCode导入数据内部自重复处理
+     * goodsName,goodsSn,prdSn,prdCodes是否数据库内存在重复
+     * @param readyToImportGoodsList 待导入数据
+     * @param assistParam            商品导入辅助参数数据
+     * @param goodsSnMapBos          存放最终可用的商品数据
+     */
+    private void preFilterRepeatedGoodsDatasForInsert(List<GoodsVpuExcelImportBo> readyToImportGoodsList, List<GoodsImportDetailRecord> illegalGoodsList, HashMap<String, List<GoodsVpuExcelImportBo>> goodsSnMapBos, GoodsImportAssistParam assistParam) {
+        boolean isUpdate = assistParam.isUpdate();
+        Integer batchId = assistParam.getBatchId();
+
+        //商品数量达到上限
+        if (!isUpdate && isGoodsNumOversize(assistParam)) {
+            importRecordService.convertVpuExcelImportBosToImportDetails(readyToImportGoodsList, GoodsDataIIllegalEnum.GOODS_NUM_FETCH_LIMIT_NUM, batchId);
+            readyToImportGoodsList.clear();
+            return;
+        }
+
+        // 分组prdSn和prdCode,检查是否内部数据存在重复（prdCode=null是合法的检查时需要特殊处理）
+        // 商品名称和goodsSn不用内部重复检查，如果重复了则表明是同一个商品的不同sku,所以对商品名和goodsSn的分组房子了数据库查重的时候，尽量延迟内存的占用
+        HashMap<String, List<GoodsVpuExcelImportBo>> prdSnMapBos = new HashMap<>(readyToImportGoodsList.size() / 2);
+        HashMap<String, List<GoodsVpuExcelImportBo>> prdCodeMapBos = new HashMap<>(readyToImportGoodsList.size() / 2);
+        // 移除必填字段为null的情况
+        readyToImportGoodsList.removeIf(bo -> {
+            // 检查基础字段是否为null
+            GoodsDataIIllegalEnum illegalEnum = isBoBaseColumnNull(bo, assistParam.isUpdate());
+            if (!GoodsDataIIllegalEnum.GOODS_OK.equals(illegalEnum)) {
+                illegalGoodsList.add(importRecordService.convertVpuExcelImportBoToImportDetail(bo, illegalEnum, assistParam.getBatchId()));
+                return true;
+            }
+            //prdSn分组
+            List<GoodsVpuExcelImportBo> bos = prdSnMapBos.computeIfAbsent(bo.getPrdSn(), k -> new ArrayList<>(2));
+            bos.add(bo);
+            // prdCode分组
+            bos = prdCodeMapBos.computeIfAbsent(bo.getPrdCodes(), k -> new ArrayList<>(2));
+            bos.add(bo);
+
+            return false;
+        });
+        // 不用考虑prdCode为null的情况
+        prdCodeMapBos.remove(null);
+        // prdSn,prdCode导入数据内部自重复处理
+        isBoBaseColumnInnerRepeated(readyToImportGoodsList, illegalGoodsList, prdSnMapBos, prdCodeMapBos, batchId);
+        // goodsName,goodsSn,prdSn,prdCodes是否数据库内存在重复
+        isBoBaseColumnDbRepeatedForInsert(readyToImportGoodsList, illegalGoodsList, goodsSnMapBos, prdSnMapBos, prdCodeMapBos, batchId);
+    }
+
+    /**
+     * 插入操作判断字段是否数据库内部重复
+     * @param readyToImportGoodsList
+     * @param illegalGoodsList
+     * @param goodsSnMapBos
+     * @param prdSnMapBos
+     * @param prdCodeMapBos
+     * @param batchId
+     */
+    private void isBoBaseColumnDbRepeatedForInsert(List<GoodsVpuExcelImportBo> readyToImportGoodsList, List<GoodsImportDetailRecord> illegalGoodsList, HashMap<String, List<GoodsVpuExcelImportBo>> goodsSnMapBos, HashMap<String, List<GoodsVpuExcelImportBo>> prdSnMapBos, HashMap<String, List<GoodsVpuExcelImportBo>> prdCodeMapBos, Integer batchId) {
+        int baseNum = 500;
+        // 找出在数据库内已经存在的值
+        List<String> goodsSnsForDb = new ArrayList<>(readyToImportGoodsList.size() / 2);
+        List<String> goodsNameForDb = new ArrayList<>(readyToImportGoodsList.size() / 2);
+        List<String> prdSnsForDb = new ArrayList<>(readyToImportGoodsList.size() / 2);
+        List<String> prdCodesForDb = new ArrayList<>(readyToImportGoodsList.size() / 2);
+
+        List<String> goodsSnsRepeated = new ArrayList<>();
+        List<String> goodsNamesRepeated = new ArrayList<>();
+        List<String> prdSnsRepeated = new ArrayList<>(readyToImportGoodsList.size() / 4);
+        List<String> prdCodesRepeated = new ArrayList<>(readyToImportGoodsList.size() / 4);
+
+        Map<String, List<GoodsVpuExcelImportBo>> goodsNameMapBos = new HashMap<>(goodsSnMapBos.size());
+
+        for (int i = 1; i <= readyToImportGoodsList.size(); i++) {
+            if (i % baseNum == 0) {
+                goodsSnsRepeated.addAll(goodsService.findGoodsSnExist(goodsSnsForDb));
+                goodsNamesRepeated.addAll(goodsService.findGoodsNameExist(goodsNameForDb));
+                prdSnsRepeated.addAll(goodsService.goodsSpecProductService.findSkuPrdSnExist(prdSnsForDb));
+                prdCodesRepeated.addAll(goodsService.goodsSpecProductService.findSkuPrdCodesExist(prdCodesForDb));
+                goodsSnsRepeated.clear();
+                goodsNamesRepeated.clear();
+                prdSnsForDb.clear();
+                prdCodesForDb.clear();
+            }
+            GoodsVpuExcelImportBo bo = readyToImportGoodsList.get(i - 1);
+            goodsSnsForDb.add(bo.getGoodsSn());
+            goodsNameForDb.add(bo.getGoodsName());
+            prdSnsForDb.add(bo.getPrdSn());
+            if (bo.getPrdCodes() != null) {
+                prdCodesForDb.add(bo.getPrdCodes());
+            }
+
+            //goodsSn分组
+            List<GoodsVpuExcelImportBo> bos = goodsSnMapBos.computeIfAbsent(bo.getGoodsSn(), k -> new ArrayList<>(2));
+            bos.add(bo);
+            //goodsName分组
+            bos = goodsNameMapBos.computeIfAbsent(bo.getGoodsName(), k -> new ArrayList<>(2));
+            bos.add(bo);
+        }
+        goodsSnsRepeated.addAll(goodsService.findGoodsSnExist(goodsSnsForDb));
+        goodsNamesRepeated.addAll(goodsService.findGoodsNameExist(goodsNameForDb));
+        prdSnsRepeated.addAll(goodsService.goodsSpecProductService.findSkuPrdSnExist(prdSnsForDb));
+        prdCodesRepeated.addAll(goodsService.goodsSpecProductService.findSkuPrdCodesExist(prdCodesForDb));
+
+        // 将已存在的从对应map移除，那么map里面存放的是暂时合法的数据
+        for (String goodsSn : goodsSnsRepeated) {
+            List<GoodsVpuExcelImportBo> illegal = goodsSnMapBos.remove(goodsSn);
+            if (illegal != null) {
+                illegalGoodsList.addAll(importRecordService.convertVpuExcelImportBosToImportDetails(illegal, GoodsDataIIllegalEnum.GOODS_SN_EXIST, batchId));
+            }
+        }
+        for (String goodsName : goodsNamesRepeated) {
+            List<GoodsVpuExcelImportBo> illegal = goodsNameMapBos.remove(goodsName);
+            if (illegal != null) {
+                illegalGoodsList.addAll(importRecordService.convertVpuExcelImportBosToImportDetails(illegal, GoodsDataIIllegalEnum.GOODS_NAME_EXIST, batchId));
+            }
+        }
+        for (String prdSn : prdSnsRepeated) {
+            List<GoodsVpuExcelImportBo> illegal = prdSnMapBos.remove(prdSn);
+            if (illegal != null) {
+                illegalGoodsList.addAll(importRecordService.convertVpuExcelImportBosToImportDetails(illegal, GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST, batchId));
+            }
+        }
+        for (String prdCode : prdCodesRepeated) {
+            List<GoodsVpuExcelImportBo> illegal = prdCodeMapBos.remove(prdCode);
+            if (illegal != null) {
+                illegalGoodsList.addAll(importRecordService.convertVpuExcelImportBosToImportDetails(illegal, GoodsDataIIllegalEnum.GOODS_PRD_CODES_EXIST, batchId));
+            }
+        }
+        // 直接移除不合法的
+        readyToImportGoodsList.removeIf(bo -> {
+            if (goodsSnMapBos.get(bo.getGoodsSn()) == null) {
+                return true;
+            }
+            if (goodsNameMapBos.get(bo.getGoodsName()) == null) {
+                return true;
+            }
+            if (prdSnMapBos.get(bo.getPrdSn()) == null) {
+                return true;
+            }
+            if (bo.getPrdCodes() != null && prdCodeMapBos.get(bo.getPrdCodes()) == null) {
+                return true;
+            }
+            return false;
+        });
+        goodsSnsForDb = null;
+        goodsNameForDb = null;
+        prdSnsForDb = null;
+        prdCodesForDb = null;
+        goodsSnsRepeated = null;
+        goodsNamesRepeated = null;
+        prdSnsRepeated = null;
+        prdCodesRepeated = null;
+
+        // goodsSnMapBos中存在的数据可能由于prdSn、goodsName、prdCodes三种条件重复而被从readyToImportGoodsList中移除
+        goodsSnMapBos.clear();
+
+        readyToImportGoodsList.forEach(bo -> {
+            List<GoodsVpuExcelImportBo> bos = goodsSnMapBos.get(bo.getGoodsSn());
+            if (bos == null) {
+                bos = new ArrayList<>(2);
+                goodsSnMapBos.put(bo.getGoodsSn(), bos);
+            } else {
+                // 处理商品名称以，第一条数据为准
+                GoodsVpuExcelImportBo b = bos.get(0);
+                bo.setGoodsName(b.getGoodsName());
+            }
+            bos.add(bo);
+        });
+
+        // 插入后序操作都以goodsSnMapBos为数据源，readyToImportGoodsList的作用已结束，所以就不需要进行其它操作
+        readyToImportGoodsList.clear();
+    }
+
+    @SuppressWarnings("all")
+    private GoodsDataIllegalEnumWrap realInsert(List<GoodsVpuExcelImportBo> importBos, Goods goods, Map<String, Integer> brandMap, Map<String, Integer> sortMap) {
+        GoodsDataIllegalEnumWrap resultCode = new GoodsDataIllegalEnumWrap();
+        // 处理图片
+        List<DownloadImageBo> downloadImageBos = filterGoodsImages(importBos);
+        if (downloadImageBos.size() == 0) {
+            resultCode.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_IMG_IS_WRONG);
+            return resultCode;
+        }
+        GoodsVpuExcelImportBo bo = importBos.get(0);
+        // 处理商家分类品牌
+        try {
+            // 处理
+            if (StringUtils.isNotBlank(bo.getFirstSortName()) || StringUtils.isNotBlank(bo.getSecondSortName())) {
+                Integer sortId = disposeSortName(bo.getFirstSortName(), bo.getSecondSortName(), sortMap);
+                goods.setSortId(sortId);
+            }
+
+            if (StringUtils.isNotBlank(bo.getBrandName())) {
+                Integer integer = disposeBrandName(bo.getBrandName(), brandMap);
+                goods.setBrandId(integer);
+            }
+        } catch (Exception e) {
+            logger().warn("商品excel导入-插入-失败:" + e.getMessage());
+            resultCode.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
+            return resultCode;
+        }
+        // 这个地方是为了避免报异常
+        goods.setCatId(0);
+        try {
+            transaction(() -> {
+                // 处理用户指定的商品图片
+                List<String> imgs = imageService.addImageToDbBatch(downloadImageBos);
+                goods.setGoodsImg(imgs.remove(0));
+                goods.setGoodsImgs(imgs);
+
+                GoodsDataIllegalEnumWrap insertResult = goodsService.insert(goods);
+                resultCode.setIllegalEnum(insertResult.getIllegalEnum());
+                resultCode.setGoodsId(insertResult.getGoodsId());
+            });
+        } catch (Exception e) {
+            logger().debug("商品excel导入：" + e.getMessage());
+            resultCode.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
+        }
+        return resultCode;
+    }
+
+    /**
+     * 处理商家分类
+     * @param firstSortName  一级分类名
+     * @param secondSortName 二级分类名
+     * @param sortMap        分类映射
+     * @return 分类id
+     */
+    private Integer disposeSortName(String firstSortName, String secondSortName, Map<String, Integer> sortMap) {
+        Integer returnId = null;
+        if (StringUtils.isNotBlank(firstSortName)) {
+            returnId = sortMap.get(firstSortName);
+            if (returnId == null) {
+                GoodsNormalSortParam param = new GoodsNormalSortParam();
+                param.setParentId(GoodsConstant.ROOT_PARENT_ID);
+                param.setSortName(firstSortName);
+                param.setLevel((short) 0);
+                returnId = goodsSortService.insertNormal(param);
+                sortMap.put(firstSortName, returnId);
+            }
+        }
+
+        if (StringUtils.isNotBlank(secondSortName)) {
+            Integer secondId = sortMap.get(secondSortName);
+            if (secondId == null) {
+                GoodsNormalSortParam param = new GoodsNormalSortParam();
+                param.setParentId(GoodsConstant.ROOT_PARENT_ID);
+                param.setSortName(secondSortName);
+                param.setLevel((short) 0);
+                if (returnId != null) {
+                    param.setParentId(returnId);
+                    param.setLevel((short) 1);
+                }
+                secondId = goodsSortService.insertNormal(param);
+                sortMap.put(secondSortName, secondId);
+            }
+            returnId = secondId;
+        }
+        return returnId;
+    }
+
+    /**
+     * 处理品牌名称
+     * @param brandName
+     * @param brandMap
+     * @return
+     */
+    private Integer disposeBrandName(String brandName, Map<String, Integer> brandMap) {
+        Integer brandId = brandMap.get(brandName);
+        if (brandId == null) {
+            brandId = goodsBrandService.addBrand(brandName);
+            brandMap.put(brandName, brandId);
+        }
+        return brandId;
+    }
+
+    /**
+     * 通过正则表达式过滤商品描述
+     * @param goodsSnMapBos
+     */
+    private void disposeGoodsDesc(HashMap<String, List<GoodsVpuExcelImportBo>> goodsSnMapBos) {
+        Pattern bodyPattern = Pattern.compile("<body>([\\s\\S]*)</body>");
+        Pattern scriptPattern = Pattern.compile("(<script[\\s\\S]*?/>)|(?:<script[^/>]*?>[\\s\\S]*?<(\\s)*?/script(\\s\\S)*?>)");
+        Pattern stylePattern = Pattern.compile("<style[^>]*>[\\s\\S]*</style>");
+        Pattern documentPattern = Pattern.compile("<!DOCTYPE[^>]*>");
+        Pattern lineFeedPattern = Pattern.compile("[\\r\\n]*");
+        Pattern mediaPattern = Pattern.compile("(<audio[^>]*>[\\s\\S]*</audio>)|(<video[^>]*>[\\s\\S]*</video>)|(<object[^>]*>[\\s\\S]*</object>)|(<embed[^>]*?/>)");
+
+        for (Map.Entry<String, List<GoodsVpuExcelImportBo>> entry : goodsSnMapBos.entrySet()) {
+            List<GoodsVpuExcelImportBo> bos = entry.getValue();
+            String goodsDesc = bos.get(0).getGoodsDesc();
+            if (StringUtils.isBlank(goodsDesc)) {
+                continue;
+            }
+            Matcher matcher = bodyPattern.matcher(goodsDesc);
+            goodsDesc = matcher.replaceAll(goodsDesc);
+            matcher = scriptPattern.matcher(goodsDesc);
+            goodsDesc = matcher.replaceAll(goodsDesc);
+            matcher = stylePattern.matcher(goodsDesc);
+            goodsDesc = matcher.replaceAll(goodsDesc);
+            matcher = documentPattern.matcher(goodsDesc);
+            goodsDesc = matcher.replaceAll(goodsDesc);
+            matcher = lineFeedPattern.matcher(goodsDesc);
+            goodsDesc = matcher.replaceAll(goodsDesc);
+            matcher = mediaPattern.matcher(goodsDesc);
+            goodsDesc = matcher.replaceAll(goodsDesc);
+
+            for (GoodsVpuExcelImportBo bo : bos) {
+                bo.setGoodsDesc(goodsDesc);
+            }
+        }
+
+
+    }
+
+    /**
+     * 商品导入预处理-判断基础数据是否为null
+     * @param bo       待导入数据
+     * @param isUpdate 是否是更新操作
+     */
+    private GoodsDataIIllegalEnum isBoBaseColumnNull(GoodsVpuExcelImportBo bo, boolean isUpdate) {
+        if (StringUtils.isBlank(bo.getGoodsName())) {
+            return GoodsDataIIllegalEnum.GOODS_NAME_NULL;
+        }
+        if (StringUtils.isBlank(bo.getGoodsSn())) {
+            return GoodsDataIIllegalEnum.GOODS_SN_NULL;
+        }
+        if (StringUtils.isBlank(bo.getPrdSn())) {
+            return GoodsDataIIllegalEnum.GOODS_PRD_SN_NULL;
+        }
+        // 插入操作特殊校验
+        if (!isUpdate && StringUtils.isBlank(bo.getGoodsImgsStr())) {
+            return GoodsDataIIllegalEnum.GOODS_IMG_IS_WRONG;
+        }
+        if (!isUpdate && bo.getShopPrice() == null) {
+            return GoodsDataIIllegalEnum.GOODS_SHOP_PRICE_IS_NULL;
+        }
+        if (!isUpdate && bo.getCostPrice() == null) {
+            return GoodsDataIIllegalEnum.GOODS_COST_PRICE_IS_NULL;
+        }
+
+        return GoodsDataIIllegalEnum.GOODS_OK;
+    }
+
+    /**
+     * 校验
+     * @param readyToImportGoodsList
+     * @param illegalGoodsList
+     * @param prdSnMapBos
+     * @param prdCodeMapBos
+     * @param batchId
+     */
+    private void isBoBaseColumnInnerRepeated(List<GoodsVpuExcelImportBo> readyToImportGoodsList, List<GoodsImportDetailRecord> illegalGoodsList, HashMap<String, List<GoodsVpuExcelImportBo>> prdSnMapBos, HashMap<String, List<GoodsVpuExcelImportBo>> prdCodeMapBos, Integer batchId) {
+        readyToImportGoodsList.removeIf(bo -> {
+            List<GoodsVpuExcelImportBo> bos = prdSnMapBos.get(bo.getPrdSn());
+            // bo的prdSn在对应的prdSnMapBos肯定存在，如果不存在证明在之前已经由于存在重复prdSn项而被移除
+            if (bos == null) {
+                return true;
+            }
+            if (bos.size() > 1) {
+                illegalGoodsList.addAll(importRecordService.convertVpuExcelImportBosToImportDetails(bos, GoodsDataIIllegalEnum.GOODS_PRD_SN_INNER_REPEATED, batchId));
+                // 防止被错误数据被重复加入
+                prdSnMapBos.remove(bo.getPrdSn());
+                return true;
+            }
+
+            // prdCode 可以为null,但是不可以重复
+            if (bo.getPrdCodes() != null) {
+                bos = prdCodeMapBos.get(bo.getPrdCodes());
+                if (bos == null) {
+                    return true;
+                }
+                if (bos.size() > 1) {
+                    illegalGoodsList.addAll(importRecordService.convertVpuExcelImportBosToImportDetails(bos, GoodsDataIIllegalEnum.GOODS_PRD_CODES_INNER_REPEATED, batchId));
+                    // 防止被错误数据被重复加入
+                    prdCodeMapBos.remove(bo.getPrdCodes());
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+
+
+    /********以上为新方法********/
+
 
     /**
      * 初步根据非空字段，将不合法的数据剔除，会修改readyToImportGoodsList集合
@@ -189,33 +632,23 @@ public class GoodsImportService extends ShopBaseService {
      * 商品待导入数据进行迭代处理
      * @param readyToImportGoodsList 准备被处理的目标数据集合
      * @param illegalGoodsList       不合法的数据集合
-     * @param isUpdate               是否是更细操作
-     * @param batchId                本次批量操作id
+     * @param assistParam            商品导入辅助参数数据
      */
-    private void goodsImportIterateOperate(List<GoodsVpuExcelImportBo> readyToImportGoodsList, List<GoodsImportDetailRecord> illegalGoodsList, Boolean isUpdate, Integer batchId) {
+    private void goodsImportIterateOperate(List<GoodsVpuExcelImportBo> readyToImportGoodsList, List<GoodsImportDetailRecord> illegalGoodsList, GoodsImportAssistParam assistParam) {
         Map<String, List<GoodsVpuExcelImportBo>> goodsMap = readyToImportGoodsList.stream().collect(Collectors.groupingBy(GoodsVpuExcelImportBo::getGoodsSn));
         List<GoodsImportDetailRecord> successGoodsList = new ArrayList<>(readyToImportGoodsList.size() / 2);
         List<Integer> goodsIds = new ArrayList<>(successGoodsList.size());
         Integer shopId = getShopId();
 
-        // 是否超出数量判断
-        Integer limitNum = saas.getShopApp(getShopId()).version.getLimitNum(VersionNumConfig.GOODSNUM);
-        Integer goodsCount = goodsService.selectGoodsCount();
-        GoodsImportAssistParam assistParam = new GoodsImportAssistParam();
-        assistParam.setBatchId(batchId);
-        assistParam.setLimitNum(limitNum);
-        assistParam.setGoodsCount(goodsCount);
-        assistParam.setUpdate(isUpdate);
-
         for (Map.Entry<String, List<GoodsVpuExcelImportBo>> entry : goodsMap.entrySet()) {
             List<GoodsVpuExcelImportBo> value = entry.getValue();
-            Integer goodsId = goodsImportOperate(shopId, value, successGoodsList, illegalGoodsList,assistParam);
+            Integer goodsId = goodsImportOperate(shopId, value, successGoodsList, illegalGoodsList, assistParam);
             if (goodsId != null) {
                 goodsIds.add(goodsId);
             }
         }
 
-        importRecordService.updateGoodsImportSuccessNum(successGoodsList.size(), batchId);
+        importRecordService.updateGoodsImportSuccessNum(successGoodsList.size(), assistParam.getBatchId());
         successGoodsList.addAll(illegalGoodsList);
         importRecordService.insertGoodsImportDetailBatch(successGoodsList);
         if (goodsIds.size() > 0) {
@@ -243,7 +676,7 @@ public class GoodsImportService extends ShopBaseService {
 
         // 检查prdSn码是否会有内部自重复的
         List<? extends GoodsExcelImportBase> illegalPrdSnRepeated = getSkuPrdSnRepeated(goodsSkus);
-        List<GoodsImportDetailRecord> recordsPrdSn = importRecordService.convertVpuExcelImportBosToImportDetails((List<GoodsVpuExcelImportBo>) illegalPrdSnRepeated, GoodsDataIIllegalEnum.GOODS_PRD_SN_INNER_REPEATED,  assistParam.getBatchId());
+        List<GoodsImportDetailRecord> recordsPrdSn = importRecordService.convertVpuExcelImportBosToImportDetails((List<GoodsVpuExcelImportBo>) illegalPrdSnRepeated, GoodsDataIIllegalEnum.GOODS_PRD_SN_INNER_REPEATED, assistParam.getBatchId());
         illegalGoodsList.addAll(recordsPrdSn);
         // 无有效数据直接返回
         if (goodsSkus.size() == 0) {
@@ -251,7 +684,7 @@ public class GoodsImportService extends ShopBaseService {
         }
         // 检查prdCodes码是否会有内部自重复的
         List<? extends GoodsExcelImportBase> illegalPrdCodesRepeated = getSkuPrdCodesRepeated(goodsSkus);
-        List<GoodsImportDetailRecord> recordsPrdCodes = importRecordService.convertVpuExcelImportBosToImportDetails((List<GoodsVpuExcelImportBo>) illegalPrdCodesRepeated, GoodsDataIIllegalEnum.GOODS_PRD_CODES_INNER_REPEATED,  assistParam.getBatchId());
+        List<GoodsImportDetailRecord> recordsPrdCodes = importRecordService.convertVpuExcelImportBosToImportDetails((List<GoodsVpuExcelImportBo>) illegalPrdCodesRepeated, GoodsDataIIllegalEnum.GOODS_PRD_CODES_INNER_REPEATED, assistParam.getBatchId());
         illegalGoodsList.addAll(recordsPrdCodes);
         // 无有效数据直接返回
         if (goodsSkus.size() == 0) {
@@ -374,6 +807,7 @@ public class GoodsImportService extends ShopBaseService {
             return false;
         }
     }
+
     /**
      * 商品更新
      * @param importGoodsSkus
@@ -417,7 +851,7 @@ public class GoodsImportService extends ShopBaseService {
     private List<GoodsSpecProduct> disposeGoodsPrdForUpdate(String goodsSn, List<GoodsVpuExcelImportBo> importGoodsSkus, List<GoodsImportDetailRecord> illegalGoodsList, Integer batchId) {
         // 处理规格信息
         List<GoodsSpecProduct> goodsSpecProducts = goodsService.goodsSpecProductService.selectByGoodsSn(goodsSn);
-        Map<String, GoodsSpecProduct> goodsSpecPrdMap = goodsSpecProducts.stream().collect(Collectors.toMap(GoodsSpecProduct::getPrdSn, Function.identity()));
+        Map<String, GoodsSpecProduct> goodsSpecPrdMap = goodsSpecProducts.stream().collect(Collectors.toMap(GoodsSpecProduct::getPrdSn, Function.identity(),(oldVal,newVal)->newVal));
 
         importGoodsSkus.removeIf(sku -> {
             GoodsSpecProduct prd = goodsSpecPrdMap.get(sku.getPrdSn());
@@ -523,7 +957,7 @@ public class GoodsImportService extends ShopBaseService {
      * @param goodsSkus        待插入数据
      * @param successGoodsList 成功数据集合
      * @param illegalGoodsList 失败数据集合
-     * @param assistParam  辅助参数
+     * @param assistParam      辅助参数
      * @return 插入成功后产生的商品id
      */
     @SuppressWarnings("unchecked")
@@ -552,7 +986,7 @@ public class GoodsImportService extends ShopBaseService {
             illegalGoodsList.addAll(recordsPrdCodes);
         } else {
             recordsPrdCodes = importRecordService.convertVpuExcelImportBosToImportDetails(goodsSkus, codeWrap.getIllegalEnum(), assistParam.getBatchId(), true);
-            assistParam.setGoodsCount(assistParam.getGoodsCount()+1);
+            assistParam.setGoodsCount(assistParam.getGoodsCount() + 1);
             successGoodsList.addAll(recordsPrdCodes);
         }
         return codeWrap.getGoodsId();
@@ -611,8 +1045,6 @@ public class GoodsImportService extends ShopBaseService {
 
         transaction(() -> {
             try {
-                // 处理商品描述中包含的图片
-//                imageService.addImageToDbBatch(descDownloadImageBos);
 
                 // 处理用户指定的商品图片
                 List<String> imgs = imageService.addImageToDbBatch(downloadImageBos);
@@ -681,7 +1113,7 @@ public class GoodsImportService extends ShopBaseService {
      * @return
      */
     private List<GoodsSpec> convertGoodsExcelImportBosToGoodsSpecs(List<GoodsVpuExcelImportBo> importBos) {
-        List<GoodsSpec> goodsSpecs =new ArrayList<>(3);
+        List<GoodsSpec> goodsSpecs = new ArrayList<>(3);
         GoodsVpuExcelImportBo base = importBos.get(0);
         // 使用的是默认规格
         if (StringUtils.isBlank(base.getPrdDesc())) {
@@ -696,13 +1128,13 @@ public class GoodsImportService extends ShopBaseService {
 
         for (String specKV : specKVs) {
             String[] kvs = specKV.split(GoodsSpecProductService.PRD_VAL_DELIMITER);
-            if (kvs.length == 1) {
+            if (kvs.length != 2) {
                 return goodsSpecs;
             }
             GoodsSpec spec = new GoodsSpec(kvs[0], new ArrayList<>());
             goodsSpecs.add(spec);
         }
-        Map<String, GoodsSpec> goodsSpecsMap = goodsSpecs.stream().collect(Collectors.toMap(GoodsSpec::getSpecName, Function.identity()));
+        Map<String, GoodsSpec> goodsSpecsMap = goodsSpecs.stream().collect(Collectors.toMap(GoodsSpec::getSpecName, Function.identity(),(oldVal,newVal)->newVal));
         // 解析规格组V
         for (GoodsVpuExcelImportBo importBo : importBos) {
             String desc = importBo.getPrdDesc();
@@ -919,7 +1351,7 @@ public class GoodsImportService extends ShopBaseService {
     }
 
     @Data
-    private class GoodsImportAssistParam{
+    private class GoodsImportAssistParam {
         private Integer batchId;
         private Integer limitNum;
         private Integer goodsCount;
