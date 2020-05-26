@@ -8,6 +8,7 @@
       :before-close="handleClose"
       center
     >
+
       <div class="title">
         注：因微信小程序官方限制，本日部分用户可接收的消息数量已达上限，故接收不到本次消息推送
       </div>
@@ -51,47 +52,54 @@
 
       </div>
       <!-- table -->
-      <div>
-        <el-table>
-          <el-table
-            :data="tableData"
-            style="width: 100%"
-            border
-          >
-            <!-- 表格无数据的时候 -->
-            <template slot="empty">
-              <el-image
-                style="width: 30px; height: 30px"
-                :src="urls.url1"
-              ></el-image>
-            </template>
+      <div class="main">
+        <el-table
+          :data="tableData"
+          style="width: 100%"
+          border
+          @selection-change="handleSelectionChangeRoom"
+          ref="multipleTable"
+          header-row-class-name="tableClss"
+          class="version-manage-table"
+          highlight-current-row
+          :row-key="getRowKeys"
+        >
 
-            <el-table-column
-              prop="id"
-              label="id"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="userName"
-              label="昵称"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="phone"
-              label="手机号"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="id"
-              label="可接受信息数量"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="isVisit"
-              label="是否关注公众号"
-            >
-            </el-table-column>
-          </el-table>
+          <el-table-column
+            align="center"
+            type="selection"
+            :selectable='selectDisableRoom'
+            width="60"
+            :reserve-selection="true"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="userId"
+            label="id"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="username"
+            label="昵称"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="mobile"
+            label="手机号"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="subscribe"
+            label="是否关注公众号"
+            align="center"
+          >
+            <template slot-scope="scope">
+              {{scope.row.subscribe?'是':'否'}}
+            </template>
+          </el-table-column>
         </el-table>
         <div class="footer">
           <span>{{$t('formStatisticsHome.currentPage')}}{{currentPage}}/{{totalPage}}，{{$t('formStatisticsHome.generalRecord')}}{{totalRows}}{{$t('formStatisticsHome.strip')}}</span>
@@ -169,12 +177,12 @@ export default {
         },
         {
           label: `是`,
-          value: true,
+          value: 1,
           falg: 1
         },
         {
           label: `否`,
-          value: false,
+          value: 0,
           falg: 0
         }
       ],
@@ -185,10 +193,7 @@ export default {
        * 表格数据
        */
       tableData: [],
-      urls: {
-        url1: `${this.$imageHost}/image/admin/no_data.png`
-      }
-
+      selectVal: []
     }
   },
   watch: {
@@ -197,6 +202,12 @@ export default {
         this.fetchData()
       }
     }
+    // userKey (newData, oldData) {
+    //   console.log(newData, oldData)
+    //   if (newData !== oldData) {
+    //     this.fetchData()
+    //   }
+    // }
   },
   mounted () {
 
@@ -229,7 +240,17 @@ export default {
       getUserArrayApi(params).then(res => {
         console.log(res)
         if (res.error === 0) {
-          this.tableData = res.content
+          this.tableData = res.content.dataList
+          this.totalPage = res.content.page.pageCount
+          this.totalRows = res.content.page.totalRows
+          console.log(this.tableData, this.$refs.multipleTable)
+          this.$refs.multipleTable.clearSelection()
+          console.log(this.tableData)
+          this.tableData.forEach((item, index) => {
+            if (item.isChecked) {
+              this.$refs.multipleTable.toggleRowSelection(item)
+            }
+          })
         }
       }).catch(error => console.log(error))
     },
@@ -242,6 +263,27 @@ export default {
     },
     handleCancle () {
       this.handleClose()
+    },
+    // 多选值改变
+    handleSelectionChangeRoom (res) {
+      console.log(res)
+      this.selectVal = res
+    },
+    // 禁用设置
+    selectDisableRoom (row, index) {
+      console.log(row)
+      if (row.canSend) {
+        return true
+      }
+    },
+    //  点击确定
+    handleSave () {
+      console.log(this.selectVal)
+      this.$emit('handleToGet', this.selectVal)
+      this.$emit('dialog-cancel')
+    },
+    getRowKeys (row) {
+      return row.userId
     }
   }
 }
@@ -261,5 +303,27 @@ export default {
     align-items: center;
     margin-top: 10px;
   }
+  /deep/ .tableClss th {
+    background-color: #f5f5f5;
+    border: none;
+    height: 36px;
+    font-weight: bold;
+    color: #000;
+    padding: 8px 10px;
+    .el-checkbox {
+      margin-left: -4px;
+    }
+  }
+  .main {
+    height: 400px;
+    overflow-y: auto;
+  }
+  // /deep/
+  //   .el-table__header
+  //   .el-table-column--selection
+  //   .cell
+  //   .el-checkbox:after {
+  //   content: null;
+  // }
 }
 </style>
