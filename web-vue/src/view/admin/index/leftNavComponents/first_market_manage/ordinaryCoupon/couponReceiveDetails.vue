@@ -250,7 +250,7 @@ export default {
         { value: 3, label: '已过期' },
         { value: 4, label: '已废除' }
       ],
-      couponType: 0 // 优惠券类型(0: 普通, 1: 分裂)
+      couponType: 0 // 优惠券类型(0: 普通, 1: 分裂, 2: 分裂领取用户)
     }
   },
   mounted () {
@@ -265,11 +265,13 @@ export default {
   methods: {
     // 领取明细列表
     initDataList (flag) {
+      this.requestParams = {}
       if (flag) {
         this.couponType = flag // 分裂优惠券用户领取
+      } else {
+        this.requestParams.couponType = this.id
       }
       this.requestParams.id = this.id
-      this.requestParams.couponType = this.id
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       this.requestParams.mobile = this.searchData.mobile
