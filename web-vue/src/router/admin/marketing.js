@@ -1287,7 +1287,7 @@ const routes = [
     children: [
       // 营销管理/留存复购/推送统计
       {
-        path: '/api/admin/market/messagePush/pushStatistics',
+        path: '/admin/market/messagePush/pushStatistics',
         name: 'push_statistics',
         meta: {
           crumbTitle: 'router.message_push',

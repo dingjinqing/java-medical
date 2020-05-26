@@ -388,6 +388,7 @@
         @dialog-cancel="closeDialog"
         :dialogVisible="dialogVisible"
         :userKey="userKey"
+        @handleToGet="handleToGet"
       />
     </el-card>
     <!--保存时页面勾选提示弹窗-->
@@ -427,7 +428,7 @@ import memberListDialog from './memberListDialog'
 import getUserDialog from './getUserDialog'
 import chooseSelect from '@/components/admin/chooseSelect/chooseSelect'
 import dateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
-import { allCardApi, contentAddApi, getUserNumberApi, addMessageApi } from '@/api/admin/marketManage/messagePush.js'
+import { allCardApi, contentAddApi, getUserNumberApi, addMessageApi, xgMessageApi } from '@/api/admin/marketManage/messagePush.js'
 import { delObj } from '@/util/formatData'
 export default {
   name: 'addMessagePush',
@@ -975,6 +976,10 @@ export default {
     },
     // 获取发送人群数量
     fetchUserList (params) {
+      if (this.userKey) {
+        params.userKey = this.userKey
+      }
+      console.log(params)
       getUserNumberApi(params).then(res => {
         if (res.error === 0) {
           console.log(res) // 返回发送人群的数量
@@ -1084,6 +1089,24 @@ export default {
     handleToSetCheck () {
       this.$router.push({
         name: 'message_config'
+      })
+    },
+    // 获取人群弹窗选中数据
+    handleToGet (res) {
+      console.log(res)
+      let arr = []
+      res.forEach((item, index) => {
+        arr.push(item.userId)
+      })
+      let params = {
+        userIds: arr,
+        userKey: this.userKey
+      }
+      xgMessageApi(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.fetchUserList(this.params)
+        }
       })
     }
   }
