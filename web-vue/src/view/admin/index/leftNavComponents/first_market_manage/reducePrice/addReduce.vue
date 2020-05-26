@@ -411,7 +411,7 @@
                   <div style="width: 100%; height: 100%;">
                     <img
                       v-if="reduceData.shareConfig.shareImg === ''"
-                      src="http://jmpdevimg.weipubao.cn/image/admin/shop_beautify/add_decorete.png"
+                      :src="$$imageHost + '/image/admin/shop_beautify/add_decorete.png'"
                       alt=""
                     >
                     <img

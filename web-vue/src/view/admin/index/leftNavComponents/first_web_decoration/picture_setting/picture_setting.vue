@@ -337,7 +337,7 @@ export default {
       pageSetdialogVisible: false,
       dialogVisibleShare: false,
       dialogVisible: false,
-      shareImg: 'http://mpdev.weipubao.cn/upload/4748160/qrcode/33/T33P307bfc9947d3756c206033bd06eb13b0_20190614100251.jpg',
+      shareImg: this.$imageHost + '/upload/4748160/qrcode/33/T33P307bfc9947d3756c206033bd06eb13b0_20190614100251.jpg',
       pathInput: '',
       flag: true,
       tuneUpMiniPage: false,
