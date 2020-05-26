@@ -68,6 +68,7 @@
           <el-table-column
             :label="$t('couponReceive.userNickName')"
             align="center"
+            :key="Math.random()"
           >
             <template slot-scope="scope">
               <span
@@ -80,22 +81,26 @@
             prop="mobile"
             :label="$t('couponReceive.mobile')"
             align="center"
+            :key="Math.random()"
           ></el-table-column>
           <el-table-column
             prop="couponName"
             :label="$t('couponReceive.couponName')"
             align="center"
             v-if="couponType === 0"
+            :key="Math.random()"
           ></el-table-column>
           <el-table-column
             prop=""
             label="使用门槛"
             align="center"
             v-if="couponType === 0"
+            :key="Math.random()"
           ></el-table-column>
           <el-table-column
             :label="$t('couponReceive.receiveMethods')"
             align="center"
+            :key="Math.random()"
           >
             <template slot-scope="scope">
               <span>{{scope.row.accessMode === 0 ? '发放' : '直接领取'}}</span>
@@ -105,6 +110,7 @@
             label="是否分享"
             align="center"
             v-if="couponType === 1"
+            :key="Math.random()"
           >
             <template slot-scope="scope">
               <span>{{scope.row.isShare === 0 ? '否' : '是'}}</span>
@@ -114,18 +120,20 @@
             label="领取用户数"
             align="center"
             v-if="couponType === 1"
+            :key="Math.random()"
           >
             <template slot-scope="scope">
               <span
                 class="jumpStyle"
                 @click="receiveHandler()"
-              >{{scope.row.hasReceive}}</span>
+              >{{scope.row.hasReceive ? scope.row.hasReceive : 0}}</span>
             </template>
           </el-table-column>
           <el-table-column
             label="优惠内容"
             align="center"
-            v-if="couponType === 1"
+            v-if="couponType === 1 || couponType === 2"
+            :key="Math.random()"
           >
             <template slot-scope="scope">
               <span>{{scope.row.denomination}}元</span>
@@ -136,12 +144,14 @@
             :label="$t('couponReceive.pointExchage')"
             align="center"
             v-if="couponType === 0"
+            :key="Math.random()"
           ></el-table-column>
           <el-table-column
             prop="isUsed"
             :label="$t('couponReceive.WhetherToUse')"
             align="center"
-            v-if="couponType === 0"
+            v-if="couponType === 0 || couponType === 2"
+            :key="Math.random()"
           >
             <template slot-scope="scope">
               <span>{{scope.row.isUsed === 0 ? '否' : '是'}}</span>
@@ -151,6 +161,7 @@
             :label="$t('couponReceive.userOrderNumber')"
             align="center"
             v-if="couponType === 0"
+            :key="Math.random()"
           >
             <template slot-scope="scope">
               <span
@@ -165,6 +176,7 @@
             sortable
             align="center"
             width="160px"
+            :key="Math.random()"
           >
             <template slot-scope="scope">
               {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
@@ -176,6 +188,7 @@
             sortable
             align="center"
             width="160px"
+            :key="Math.random()"
           ></el-table-column>
           <el-table-column
             prop="usedTime"
@@ -183,11 +196,13 @@
             sortable
             align="center"
             width="160px"
+            :key="Math.random()"
           ></el-table-column>
           <el-table-column
             :label="$t('couponReceive.operate')"
             align="center"
-            v-if="couponType === 0"
+            v-if="couponType === 0 || couponType === 2"
+            :key="Math.random()"
           >
             <template slot-scope="scope">
               <span
@@ -209,7 +224,7 @@
 </template>
 
 <script>
-import { couponGetDetail, deleteCouponDetail } from '@/api/admin/marketManage/couponList.js'
+import { couponGetDetail, deleteCouponDetail, couponUserDetail } from '@/api/admin/marketManage/couponList.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -249,9 +264,12 @@ export default {
   },
   methods: {
     // 领取明细列表
-    initDataList () {
+    initDataList (flag) {
+      if (flag) {
+        this.couponType = flag // 分裂优惠券用户领取
+      }
       this.requestParams.id = this.id
-      this.requestParams.couponType = this.couponType
+      this.requestParams.couponType = this.id
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       this.requestParams.mobile = this.searchData.mobile
@@ -261,12 +279,21 @@ export default {
       } else {
         this.requestParams.isUsed = this.searchData.isUsed
       }
-      couponGetDetail(this.requestParams).then(res => {
-        if (res.error === 0) {
-          this.handleData(res.content.dataList)
-          this.pageParams = res.content.page
-        }
-      })
+      if (this.couponType === 2) {
+        couponUserDetail(this.requestParams).then(res => {
+          if (res.error === 0) {
+            this.handleData(res.content.dataList)
+            this.pageParams = res.content.page
+          }
+        })
+      } else {
+        couponGetDetail(this.requestParams).then(res => {
+          if (res.error === 0) {
+            this.handleData(res.content.dataList)
+            this.pageParams = res.content.page
+          }
+        })
+      }
     },
 
     // 表格处理数据
@@ -324,7 +351,7 @@ export default {
 
     // 领取用户数跳转
     receiveHandler () {
-      // this.initDataList()
+      this.initDataList(2)
     }
 
   }
