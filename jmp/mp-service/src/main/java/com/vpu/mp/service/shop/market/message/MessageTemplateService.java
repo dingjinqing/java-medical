@@ -125,6 +125,7 @@ public class MessageTemplateService extends ShopBaseService {
         for( UserInfoVo vo:page.getDataList() ){
             UserInfoByRedis r = map.get(vo.getUserId());
             vo.setIsChecked(r.getIsChecked());
+            vo.setCanSend(r.getCanSend());
         }
     }
 
