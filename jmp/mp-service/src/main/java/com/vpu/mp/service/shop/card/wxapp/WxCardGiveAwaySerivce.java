@@ -129,7 +129,7 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 					.build();
 				
 				GiveCardRecordRecord giveCardRecordRecord = GiveCardRecordRecordBuilder.create()
-					.getUserId(param.getCardId())
+					.getUserId(param.getUserId())
 					.getTime(DateUtil.getLocalDateTime())
 					.getCardNo(cardNo)
 					.flag(FLAG_SUCCESS)
