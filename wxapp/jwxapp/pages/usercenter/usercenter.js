@@ -98,22 +98,25 @@ global.wxPage({
     })
   },
   to_where: function (e) {
-    // 查看最新的审核状态
-    util.navigateTo({
-      url: "/pages/distributionspread/distributionspread",
-    })
-    // var judge_statuss = e.currentTarget.dataset.judge_status;
-    // var is_distributors = e.currentTarget.dataset.is_distributor;
-    // if (is_distributors == 0 && judge_statuss == 1) {
-    //   util.navigateTo({
-    //     url: "/pages/distributionspread/distributionspread",
-    //   })
-    // } else {
-    //   var names = e.currentTarget.dataset.names;
-    //   util.navigateTo({
-    //     url: '/pages/distribution/distribution?names=' + names,
-    //   })
-    // }
+    var judge_statuss = e.currentTarget.dataset.judge_status; // 分销审核配置
+    var is_distributors = e.currentTarget.dataset.is_distributor; // 分销员
+    var can_withdraw = parseFloat(e.currentTarget.dataset.can_withdraw); // 提现金额
+    var names = e.currentTarget.dataset.names;
+    if (is_distributors == 0 && judge_statuss == 1) {
+      if (can_withdraw > 0) {
+        util.navigateTo({
+          url: '/pages/distribution/distribution?names=' + names,
+        })
+      } else {
+        util.navigateTo({
+          url: "/pages/distributionspread/distributionspread",
+        })
+      }
+    } else {
+      util.navigateTo({
+        url: '/pages/distribution/distribution?names=' + names,
+      })
+    }
   },
   toSign: function (e) {
     is_sign = 1;
