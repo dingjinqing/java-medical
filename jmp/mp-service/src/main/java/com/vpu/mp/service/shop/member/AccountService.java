@@ -115,7 +115,7 @@ public class AccountService extends ShopBaseService {
 			{String.valueOf(param.getAmount().abs())},
 			{String.valueOf(newAccount.abs())},
 			{Util.getdate("yyyy-MM-dd HH:mm:ss")},
-			{subscribueRemark}
+			{param.getRemarkData()}
 		};
 		
 		List<Integer> arrayList = Collections.<Integer>singletonList(param.getUserId());
@@ -127,7 +127,7 @@ public class AccountService extends ShopBaseService {
 			{Util.getdate("yyyy-MM-dd HH:mm:ss")},
 			{String.valueOf(param.getAmount().abs())},
 			{String.valueOf(newAccount.abs())},
-			{subscribueRemark}
+			{param.getRemarkData()}
 		};
 		RabbitMessageParam param2 = RabbitMessageParam.builder()
 				.maTemplateData(

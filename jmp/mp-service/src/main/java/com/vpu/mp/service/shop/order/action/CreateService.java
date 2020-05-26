@@ -999,7 +999,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             throw new MpException(JsonResultCode.CODE_ORDER_SCORE_LIMIT);
         }
         //积分支付最小限制
-        if(vo.getScorePayLimit().equals(YES) && param.getScoreDiscount() > vo.getScorePayNum()){
+        if(vo.getScorePayLimit().equals(YES) && param.getScoreDiscount() < vo.getScorePayNum()){
             throw new MpException(JsonResultCode.CODE_ORDER_SCORE_LIMIT);
         }
         //TODO 限次卡校验
