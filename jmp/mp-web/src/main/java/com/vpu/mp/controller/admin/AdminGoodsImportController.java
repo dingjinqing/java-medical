@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelUtil;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.goods.goodsimport.ImportResultCodeWrap;
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportModel;
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportParam;
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuImportListParam;
@@ -44,12 +45,19 @@ public class AdminGoodsImportController extends AdminBaseController{
         param.setLang(getLang());
         param.setExcelTypeEnum(excelTypeEnum);
 
-        JsonResultCode jsonResultCode = shop().goodsImportService.goodsVpuExcelImport(param);
-        if (JsonResultCode.CODE_SUCCESS.equals(jsonResultCode)) {
-            return success();
+        ImportResultCodeWrap importResultCodeWrap = shop().goodsImportService.goodsVpuExcelImport(param);
+
+        if (JsonResultCode.CODE_SUCCESS.equals(importResultCodeWrap.getResultCode())) {
+            return success(importResultCodeWrap.getBatchId());
         } else {
-            return fail(jsonResultCode);
+            return fail(importResultCodeWrap.getResultCode());
         }
+    }
+
+    @GetMapping("/api/admin/goods/vpu/excel/download/finish/{batchId}")
+    public JsonResult isBatchFinish(@PathVariable Integer batchId){
+        boolean finish = shop().goodsImportRecordService.isFinish(batchId);
+        return success(finish);
     }
 
     @PostMapping("/api/admin/goods/vpu/excel/operate/list")

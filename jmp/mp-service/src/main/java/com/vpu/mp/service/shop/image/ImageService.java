@@ -315,7 +315,16 @@ public class ImageService extends ShopBaseService implements ImageDefault {
                 .fetchAny(0);
         return Util.getInteger(imageSize);
     }
-
+    /**
+     * 根据图片orgName查询图片信息
+     * @param imgOrgNames 原名集合
+     * @return 图片信息集合
+     */
+    public List<UploadedImageRecord> getImgsByImgOrgNames(List<String> imgOrgNames) {
+        return db().select(UPLOADED_IMAGE.IMG_ORIG_FNAME,UPLOADED_IMAGE.IMG_PATH).from(UPLOADED_IMAGE)
+            .where(UPLOADED_IMAGE.IMG_ORIG_FNAME.in(imgOrgNames).and(UPLOADED_IMAGE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
+            .fetchInto(UploadedImageRecord.class);
+    }
     /**
      * 添加外链图片到数据库
      *

@@ -578,6 +578,17 @@ public class GoodsSpecProductService extends ShopBaseService {
     }
 
     /**
+     * 查询传入的prdCodes集合中哪些是数据库中已经存在的
+     *
+     * @param prdCodes
+     * @return
+     */
+    public List<String> findSkuPrdCodesExist(List<String> prdCodes) {
+        return db().select(GOODS_SPEC_PRODUCT.PRD_CODES).from(GOODS_SPEC_PRODUCT)
+            .where(GOODS_SPEC_PRODUCT.PRD_CODES.in(prdCodes))
+            .fetch(GOODS_SPEC_PRODUCT.PRD_CODES);
+    }
+    /**
      * 判断商品规格名和规格值是否内部自重复
      *
      * @param specs 商品规格

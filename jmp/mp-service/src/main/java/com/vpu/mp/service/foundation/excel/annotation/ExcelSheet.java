@@ -30,4 +30,10 @@ public @interface ExcelSheet {
      * @return
      */
     int beginDataNum() default 1;
+
+    /**
+     * 导入时通过表头字段名称匹配而不是顺序
+     * @return
+     */
+    boolean importBindByColumnName() default false;
 }

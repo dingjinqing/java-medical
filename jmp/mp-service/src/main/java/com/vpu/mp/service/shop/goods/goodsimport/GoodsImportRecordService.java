@@ -41,6 +41,8 @@ public class GoodsImportRecordService extends ShopBaseService {
 
     @Autowired
     ImageService imageService;
+
+    public static final Byte FINISH = 1;
     /**
      * 分页查询导入操作记录
      * @param param
@@ -119,6 +121,24 @@ public class GoodsImportRecordService extends ShopBaseService {
         return goodsImportRecord.getId();
     }
 
+    /**
+     * 以下两个方法在10上添加，需要依次写到11、12、13上
+     * @param batchId
+     */
+    public void updateImportFinish(Integer batchId){
+        db().update(GOODS_IMPORT).set(GOODS_IMPORT.IS_FINISH,FINISH).where(GOODS_IMPORT.ID.eq(batchId));
+    }
+
+    /**
+     * 导入是否完成
+     * @param batchId
+     * @return
+     */
+    public boolean isFinish(Integer batchId){
+        Byte isFinish = db().select(GOODS_IMPORT.IS_FINISH)
+            .where(GOODS_IMPORT.ID.eq(batchId).and(GOODS_IMPORT.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny(GOODS_IMPORT.IS_FINISH);
+        return FINISH.equals(isFinish);
+    }
     /**
      * 更新导入的成功数
      * @param successNum 成功数量
