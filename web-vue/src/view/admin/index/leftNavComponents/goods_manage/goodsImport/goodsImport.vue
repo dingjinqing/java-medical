@@ -1,5 +1,5 @@
 <template>
-  <div class="container goods-import-page">
+  <div class="container goods-import-page" v-loading="vLoading">
     <div class="top">
       <div class="desc-wrap clearfix">
         <p class="desc">{{$t('goodsImport.importExplanation')}}</p>
@@ -213,6 +213,7 @@ export default {
   data () {
     let that = this
     return {
+      vLoading: false,
       tableData: [],
       queryParams: {},
       pageParams: {
@@ -321,11 +322,13 @@ export default {
       let formdata = new FormData()
       formdata.append('file', this.fileList[0].raw)
       formdata.append('isUpdate', this.uploadParams.isUpdate)
+      this.vLoading = true
+      that.importGoodsDialogVisible = false
       uploadGoodsApi(formdata).then(res => {
+        this.vLoading = false
         console.log('res:', res)
         if (res.error === 0) {
           that.$message.success(that.$t('goodsImport.uploadSuccess'))
-          that.importGoodsDialogVisible = false
         } else {
           that.$message.error(res.message)
         }

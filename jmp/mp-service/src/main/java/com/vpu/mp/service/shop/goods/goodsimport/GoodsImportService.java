@@ -159,14 +159,18 @@ public class GoodsImportService extends ShopBaseService {
 
         if (!assistParam.isUpdate()) {
             goodsVpuExcelImportForInsert(shopId, readyToImportGoodsList, successGoodsList, goodsIds, illegalGoodsList, assistParam);
+            importRecordService.updateGoodsImportSuccessNum(successGoodsList.size(), assistParam.getBatchId());
+            successGoodsList.addAll(illegalGoodsList);
+            importRecordService.insertGoodsImportDetailBatch(successGoodsList);
+            if (goodsIds.size() > 0) {
+                goodsService.updateEs(goodsIds);
+            }
+        }else {
+            filterIllegalGoodsListForNull(readyToImportGoodsList,assistParam.getBatchId(),assistParam.isUpdate());
+            goodsImportIterateOperate(readyToImportGoodsList,illegalGoodsList,assistParam);
         }
 
-        importRecordService.updateGoodsImportSuccessNum(successGoodsList.size(), assistParam.getBatchId());
-        successGoodsList.addAll(illegalGoodsList);
-        importRecordService.insertGoodsImportDetailBatch(successGoodsList);
-        if (goodsIds.size() > 0) {
-            goodsService.updateEs(goodsIds);
-        }
+
     }
 
     @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
