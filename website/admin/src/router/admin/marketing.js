@@ -981,7 +981,7 @@ const routes = [
     path: '/admin/home/main/openScreen/add',
     name: 'open_screen_add',
     meta: {
-      crumbTitle: 'router.open_screen',
+      crumbTitle: ['router.open_screen_add', 'router.open_screen_edit'],
       meta: 'first_market_manage',
       category: 'market_gifted'
     },

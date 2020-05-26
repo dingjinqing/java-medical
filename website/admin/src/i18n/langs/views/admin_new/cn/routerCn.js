@@ -250,6 +250,8 @@ export const cn = {
   package_price_order: ['营销管理', '打包一口价', '活动订单'],
   // 营销管理 开屏有礼
   open_screen: ['营销管理', '开屏有礼'],
+  open_screen_add: ['营销管理', '开屏有礼', '添加活动'],
+  open_screen_edit: ['营销管理', '开屏有礼', '编辑活动'],
   // 营销管理 开屏有礼 活动明细
   open_screen_detail: ['营销管理', '开屏有礼', '活动明细'],
   // 营销管理 评价有礼

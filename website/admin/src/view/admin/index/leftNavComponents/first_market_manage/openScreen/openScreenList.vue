@@ -174,7 +174,9 @@ export default {
       queryParams: {
         nvaType: 1
       },
-      pageParams: {}
+      pageParams: {
+        currentPage: 1
+      }
     }
   },
   watch: {
