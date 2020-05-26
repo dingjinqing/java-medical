@@ -375,6 +375,8 @@ export const en = {
   ],
   // 营销管理 开屏有礼
   open_screen: ['Marketing management', 'Open screen courtesy'],
+  open_screen_add: ['Marketing Management', 'Open Screen Politely', 'Add Activity'],
+  open_screen_edit: ['Marketing Management', 'Open Screen and Polite', 'Edit Activity'],
   // 营销管理 开屏有礼 活动明细
   open_screen_detail: ['Marketing management', 'Open screen courtesy', 'Activity details'],
   // 营销管理 评价有礼

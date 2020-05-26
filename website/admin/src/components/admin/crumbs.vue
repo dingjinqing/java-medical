@@ -182,6 +182,13 @@ export default {
       }
       // console.log(this.$t(`${this.$route.meta.crumbTitle}`))
       let data = JSON.parse(JSON.stringify(this.$t(this.$route.meta.crumbTitle)))
+      if (Array.isArray(this.$route.meta.crumbTitle) && this.$route.meta.crumbTitle[0].indexOf('add') > -1) {
+        if (this.$route.query.id) {
+          data = JSON.parse(JSON.stringify(this.$t(this.$route.meta.crumbTitle[1])))
+        } else {
+          data = JSON.parse(JSON.stringify(this.$t(this.$route.meta.crumbTitle[0])))
+        }
+      }
       console.log(data, this.$route)
       if (data[1] === '会员列表' && data[2]) {
         data[2] = this.$route.query.name + '-' + data[2]
@@ -289,6 +296,13 @@ export default {
       }
 
       let data = JSON.parse(JSON.stringify(this.$t(this.$route.meta.crumbTitle)))
+      if (Array.isArray(this.$route.meta.crumbTitle) && this.$route.meta.crumbTitle[0].indexOf('add') > -1) {
+        if (this.$route.query.id) {
+          data = JSON.parse(JSON.stringify(this.$t(this.$route.meta.crumbTitle[1])))
+        } else {
+          data = JSON.parse(JSON.stringify(this.$t(this.$route.meta.crumbTitle[0])))
+        }
+      }
       this.titleLeft = data.concat(this.titleList)[0]
       this.titleList = data.concat(this.titleList)
     },
@@ -297,6 +311,13 @@ export default {
       console.log(newData)
       this.titleList = [`${newData.item.cardName} -- 会员卡充值明细`]
       let data = JSON.parse(JSON.stringify(this.$t(this.$route.meta.crumbTitle)))
+      if (Array.isArray(this.$route.meta.crumbTitle) && this.$route.meta.crumbTitle[0].indexOf('add') > -1) {
+        if (this.$route.query.id) {
+          data = JSON.parse(JSON.stringify(this.$t(this.$route.meta.crumbTitle[1])))
+        } else {
+          data = JSON.parse(JSON.stringify(this.$t(this.$route.meta.crumbTitle[0])))
+        }
+      }
       this.titleLeft = data.concat(this.titleList)[0]
       this.titleList = data.concat(this.titleList)
       console.log(data, this.titleList)
@@ -385,6 +406,12 @@ export default {
               })
             } else {
               console.log(this.$route.name, this.nameArr.indexOf(this.$route.name), this.turnArr[this.nameArr.indexOf(this.$route.name)])
+              if (this.nameArr.indexOf(this.$route.name) === -1 && this.$route.meta.category) {
+                this.$router.push({
+                  name: this.$route.meta.category
+                })
+                return false
+              }
               this.$router.push({
                 name: this.turnArr[this.nameArr.indexOf(this.$route.name)]
               })
