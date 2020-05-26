@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu;
 
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.GoodsExcelImportBase;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class GoodsVpuExcelImportBo extends GoodsExcelImportBase {
     private int operateBusId;
 
