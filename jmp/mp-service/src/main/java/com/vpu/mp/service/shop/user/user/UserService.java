@@ -582,7 +582,7 @@ public class UserService extends ShopBaseService {
 
 
 	private Boolean isOne(Object object) {
-		return object.equals(1)||object.equals("1");
+		return Objects.equals(object, 1)|| Objects.equals(object, "1");
 	}
 
 	/**
