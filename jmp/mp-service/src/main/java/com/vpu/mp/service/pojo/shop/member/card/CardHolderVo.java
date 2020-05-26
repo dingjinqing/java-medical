@@ -60,4 +60,14 @@ public class CardHolderVo {
 	 * 	会员卡类型
 	 */
 	private Byte cardType;
+	
+	/**
+	 * 转赠成功时间
+	 */
+	private Timestamp getTime;
+	
+	/**
+	 * 转赠领取人
+	 */
+	private String giveName;
 }
