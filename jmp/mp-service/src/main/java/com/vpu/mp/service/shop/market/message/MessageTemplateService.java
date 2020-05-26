@@ -106,15 +106,14 @@ public class MessageTemplateService extends ShopBaseService {
         Map<Integer,UserInfoByRedis> map = list
             .stream()
             .collect(Collectors.toMap(UserInfoByRedis::getUserId,x->x));
-        query.getUserIds().stream().forEach(x->{
-            UserInfoByRedis r = map.get(x);
-            if (r.getIsChecked()) {
-                r.setIsChecked(Boolean.FALSE);
-            } else {
-                r.setIsChecked(Boolean.TRUE);
+        for( UserInfoByRedis userInfoByRedis: list ){
+            Integer userId = userInfoByRedis.getUserId();
+            if( query.getUserIds().contains(userId) ){
+                userInfoByRedis.setIsChecked(Boolean.TRUE);
+            }else{
+                userInfoByRedis.setIsChecked(Boolean.FALSE);
             }
-            map.put(x,r);
-        });
+        }
         for(Map.Entry<Integer,UserInfoByRedis> entry:map.entrySet()){
             newList.add(entry.getValue());
         }
@@ -125,6 +124,7 @@ public class MessageTemplateService extends ShopBaseService {
         for( UserInfoVo vo:page.getDataList() ){
             UserInfoByRedis r = map.get(vo.getUserId());
             vo.setIsChecked(r.getIsChecked());
+            vo.setCanSend(r.getCanSend());
         }
     }
 

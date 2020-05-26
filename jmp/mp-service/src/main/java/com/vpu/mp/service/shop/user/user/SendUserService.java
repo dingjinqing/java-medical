@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Maps;
 import com.vpu.mp.db.shop.tables.User;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -142,31 +143,37 @@ public class SendUserService extends ShopBaseService {
                 }
             }
         }
-        if (!userIdSet.isEmpty()){
-            List<UserInfoByRedis> list= new ArrayList<>(userIdSet.size());
-            Map<Integer, Record4<Integer,String,String,String>> mpMap = getAllMpUser(new ArrayList<>(userIdSet));
-            Map<Integer,Integer> maMap = getAllMaUser(new ArrayList<>(userIdSet));
-            for( Integer id:userIdSet ){
-                UserInfoByRedis info = new UserInfoByRedis();
-                info.setUserId(id);
-                if(mpMap.containsKey(id)  ){
-                    info.setIsChecked(Boolean.TRUE);
-                    info.setIsVisitMp(Boolean.TRUE);
-                    info.setCanSend(Boolean.TRUE);
+
+
+
+            if( !userIdSet.isEmpty() ){
+                List<UserInfoByRedis> list= new ArrayList<>(userIdSet.size());
+                Map<Integer,UserInfoByRedis> map = Maps.newHashMap();
+                if( StringUtils.isNotBlank(query.getUserKey()) ){
+                    List<UserInfoByRedis> redisList = getSendUserInfoByRedisKey(query.getUserKey());
+                    map= redisList
+                        .stream()
+                        .collect(Collectors.toMap(UserInfoByRedis::getUserId,x->x));
                 }
-                //先注释小程序的判断
-//                if(maMap.containsKey(id)  ){
-//                    info.setIsChecked(Boolean.TRUE);
-//                    info.setNumbers(maMap.get(id));
-//                    info.setCanSend(Boolean.TRUE);
-//                }
-                if( info.getCanSend() ){
-                    result += 1;
+                Map<Integer, Record4<Integer,String,String,String>> mpMap = getAllMpUser(new ArrayList<>(userIdSet));
+                for( Integer id:userIdSet ){
+                    UserInfoByRedis info = new UserInfoByRedis();
+                    info.setUserId(id);
+                    if(mpMap.containsKey(id)  ){
+                        info.setIsChecked(Boolean.TRUE);
+                        info.setIsVisitMp(Boolean.TRUE);
+                        info.setCanSend(Boolean.TRUE);
+                    }
+                    if( StringUtils.isNotBlank(query.getUserKey()) && map.containsKey(id)){
+                        info.setIsChecked(map.get(id).getIsChecked());
+                    }
+                    if( info.getCanSend() && info.getIsChecked()){
+                        result += 1;
+                    }
+                    list.add(info);
                 }
-                list.add(info);
+                setUserToJedis(key,list);
             }
-            setUserToJedis(key,list);
-        }
         return result;
     }
     public void setUserToJedis(String key,List<UserInfoByRedis> list){
@@ -294,8 +301,8 @@ public class SendUserService extends ShopBaseService {
         if( StringUtils.isNotBlank(query.getPhone()) ){
             select.and(USER.MOBILE.contains(query.getPhone()));
         }
-        select.groupBy(USER.USER_ID,USER.USERNAME,USER.MOBILE,MP_OFFICIAL_ACCOUNT_USER.SUBSCRIBE,count(MP_TEMPLATE_FORM_ID.USER_ID))
-            .orderBy(count(MP_TEMPLATE_FORM_ID.USER_ID).asc(),MP_OFFICIAL_ACCOUNT_USER.SUBSCRIBE.asc());
+        select.groupBy(USER.USER_ID,USER.USERNAME,USER.MOBILE,MP_OFFICIAL_ACCOUNT_USER.SUBSCRIBE)
+            .orderBy(MP_OFFICIAL_ACCOUNT_USER.SUBSCRIBE.asc());
         return getPageResult(select,query.getCurrentPage(), UserInfoVo.class);
     }
 

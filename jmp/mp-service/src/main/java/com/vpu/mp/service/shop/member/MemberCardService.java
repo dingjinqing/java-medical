@@ -1121,7 +1121,7 @@ public class MemberCardService extends ShopBaseService {
 	public PageResult<CardHolderVo> getAllCardHolder(CardHolderParam param) {
 
 		PageResult<CardHolderVo> allCardHolder = cardDao.getAllCardHolder(param);
-		/** - 如果查询的状态是过期的，设置返回的flag为2过期 */
+		/** - 如果查询的状态是过期的，设置返回的flag为4过期 */
 		for (CardHolderVo item : allCardHolder.dataList) {
 			if (item.getExpireTime() != null &&
 					DateUtil.getLocalDateTime().after(item.getExpireTime())) {

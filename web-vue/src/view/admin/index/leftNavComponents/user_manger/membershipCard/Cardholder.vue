@@ -110,7 +110,7 @@
         >
           <template slot-scope="scope">
             <span
-              @click="handleToUserDetail(scope.row)"
+              @click="handleToUserDetail(scope.row.userId)"
               style="cursor:pointer;color:#5a8bff"
             >
               {{scope.row.username}}
@@ -150,7 +150,13 @@
           <template slot-scope="scope">
             <span v-if="scope.row.flag === 0"> 正常 </span>
             <span v-else-if="scope.row.flag === 1"> 已废除({{scope.row.updateTime}}) </span>
-            <span v-else-if="scope.row.flag === 2"> 已过期 </span>
+            <span v-else-if="scope.row.flag === 2"> 转赠中 </span>
+            <span v-else-if="scope.row.flag === 3"> 已转赠({{scope.row.getTime}});
+                <span @onclick="handleToUserDetail(scope.row.getUserId)" style="color: #5a8bff;cursor: pointer;">
+                  赠予:{{scope.row.giveName}}
+                </span>;
+            </span>
+            <span v-else-if="scope.row.flag === 4"> 已过期 </span>
           </template>
         </el-table-column>
         <el-table-column
@@ -228,6 +234,10 @@ export default {
       {
         value: 2,
         label: '已过期'
+      },
+      {
+        value: 3,
+        label: '已转赠'
       }],
       statusValue: -1, // 卡状态默认值
       dateValue: null, // 领取时间
@@ -321,11 +331,11 @@ export default {
     },
 
     // 跳转到会员详情页
-    handleToUserDetail (row) {
+    handleToUserDetail (userId) {
       this.$router.push({
         name: 'membershipInformation',
         query: {
-          userId: row.userId
+          userId: userId
         }
       })
     },
