@@ -307,6 +307,7 @@ public class CouponService extends ShopBaseService {
      * @return
      */
     public PageResult<CouponHoldListVo> getDetail(CouponGetDetailParam param) {
+        logger().info("优惠券领取明细入参数1"+param);
         CouponHoldListParam couponParam = new CouponHoldListParam();
         couponParam.setActId(param.getId());
         couponParam.setCouponType(param.getCouponType());
@@ -315,6 +316,7 @@ public class CouponService extends ShopBaseService {
         couponParam.setStatus(param.getIsUsed());
         couponParam.setCurrentPage(param.getCurrentPage());
         couponParam.setPageRows(param.getPageRows());
+        logger().info("优惠券领取明细入参2"+couponParam);
         return couponHold.getCouponHoldList(couponParam);
 
     }
