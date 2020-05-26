@@ -1102,6 +1102,7 @@ export default {
     },
     addNodes (orderSn) {
       this.showNodes = true
+
       this.notesOrderSn = orderSn
     },
     goodsTypeFilter (goodsType) {
