@@ -98,6 +98,15 @@ export function couponGetDetail (data) {
   })
 }
 
+// 分裂优惠券领取明细
+export function couponUserDetail (data) {
+  return service({
+    url: '/api/admin/coupon/get/user/detail',
+    method: 'post',
+    data: data
+  })
+}
+
 // 删除明细
 export function deleteCouponDetail (data) {
   return service({
