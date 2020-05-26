@@ -153,6 +153,7 @@ public class GoodsImportService extends ShopBaseService {
      * @param param
      */
     public void goodsVpuExcelImportMqCallback(GoodsVpuExcelImportMqParam param) {
+        logger().debug("商品导入回调函数开始执行");
         List<GoodsVpuExcelImportBo> readyToImportGoodsList = Optional.ofNullable(param.getGoodsVpuExcelImportBos()).orElse(new ArrayList<>());
         Integer shopId = getShopId();
         // 辅助数据
@@ -169,12 +170,15 @@ public class GoodsImportService extends ShopBaseService {
         List<GoodsImportDetailRecord> illegalGoodsList = new ArrayList<>(readyToImportGoodsList.size() / 2);
 
         if (!assistParam.isUpdate()) {
+            logger().debug("商品导入-插入操作");
             goodsVpuExcelImportForInsert(shopId, readyToImportGoodsList, successGoodsList, goodsIds, illegalGoodsList, assistParam);
             importRecordService.updateGoodsImportSuccessNum(successGoodsList.size(), assistParam.getBatchId());
             successGoodsList.addAll(illegalGoodsList);
             importRecordService.insertGoodsImportDetailBatch(successGoodsList);
             if (goodsIds.size() > 0) {
+                logger().debug("商品导入-更新es goodsIds:"+ goodsIds.toString());
                 goodsService.updateEs(goodsIds);
+                logger().debug("商品导入-更新es 完成:");
             }
         }else {
             filterIllegalGoodsListForNull(readyToImportGoodsList,assistParam.getBatchId(),assistParam.isUpdate());
@@ -182,6 +186,7 @@ public class GoodsImportService extends ShopBaseService {
         }
 
         importRecordService.updateImportFinish(assistParam.getBatchId());
+        logger().debug("商品导入-完成:");
     }
 
     @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
@@ -196,6 +201,7 @@ public class GoodsImportService extends ShopBaseService {
         // 获取分类映射
         Map<String, Integer> sortMap = goodsSortService.getSortMap();
 
+        logger().debug("商品导入-执行插入数据库");
         for (Map.Entry<String, List<GoodsVpuExcelImportBo>> entry : goodsSnMapBos.entrySet()) {
             List<GoodsVpuExcelImportBo> bos = entry.getValue();
             if (isGoodsNumOversize(assistParam)) {
@@ -214,7 +220,9 @@ public class GoodsImportService extends ShopBaseService {
                 successGoodsList.addAll(importRecordService.convertVpuExcelImportBosToImportDetails(bos, codeWrap.getIllegalEnum(), assistParam.getBatchId(), true));
             }
         }
+        logger().debug("商品导入-执行插入完成");
     }
+
 
     /**
      * 商品导入预处理-过滤存在（内部或数据库）重复字段的数据
