@@ -126,7 +126,7 @@
             width="220"
             trigger="hover"
           >
-            <el-image src="http://jmpdevimg.weipubao.cn/image/admin/new_preview_image/pin_lottery.jpg"></el-image>
+            <el-image :src="$imageHost + '/image/admin/new_preview_image/pin_lottery.jpg'"></el-image>
             <el-button
               slot="reference"
               type="text"
@@ -699,7 +699,6 @@ export default {
   color: #fff;
   background: #f66;
   font-size: 12px;
-  /* background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png"); */
   background-repeat: repeat-x;
 }
 .deleteIcon {

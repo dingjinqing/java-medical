@@ -1497,7 +1497,7 @@ export default {
       border-bottom-right-radius: 8px;
       color: #fff;
       background: #f66;
-      background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
+      background-image: url("https://jmpdevimg.weipubao.cn/image/admin/coupon_border.png");
       background-repeat: repeat-x;
     }
   }

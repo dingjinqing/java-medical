@@ -117,8 +117,6 @@ export default {
         'search_sort': '0', // 商家分类是否显示
         'sort_bg_color': '#666666' // 图标颜色
       },
-      // imageHost: this.$imageHost,
-      imageHost: 'http://jmpdevimg.weipubao.cn/',
       tuneUp: false, //  调起添加图片弹窗flag
       imageSize: [640, 300], // 调起添加图片宽高
       isDraggable: false, // 添加商品弹窗是否开启多选底部可拖拽状态

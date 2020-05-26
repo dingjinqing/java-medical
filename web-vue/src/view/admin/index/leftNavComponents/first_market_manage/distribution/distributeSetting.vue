@@ -430,7 +430,7 @@
                 >
                   <img
                     v-if="form.bg_img === ''"
-                    src="http://jmpdevimg.weipubao.cn/image/admin/shop_beautify/add_decorete.png"
+                    :src="$imageHost + '/image/admin/shop_beautify/add_decorete.png'"
                     alt=""
                   >
                   <img
@@ -590,7 +590,6 @@ export default {
   },
   data () {
     return {
-      imageHost: 'http://jmpdevimg.weipubao.cn/',
       vaildDate: null, // 有效期天数
       protectDate: null, // 保护期天数
       isEdit: false, // 自定义激活项弹窗是否编辑状态
@@ -1103,7 +1102,6 @@ a {
   color: #919191;
   position: relative;
   height: 330px;
-  /* background-image: url(http://mpdevimg2.weipubao.cn/image/admin/dis_bg_1.jpg); */
   background-size: 100%, 100%;
 }
 
