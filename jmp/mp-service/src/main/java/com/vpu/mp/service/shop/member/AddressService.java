@@ -41,10 +41,10 @@ public class AddressService extends ShopBaseService {
     public List<String> getUserAddressById(Integer userId) {
         logger().info("获取用户" + userId + "的详细地址信息");
         List<String> addressList = db().select(USER_ADDRESS.COMPLETE_ADDRESS)
-                .from(USER_ADDRESS)
-                .where(USER_ADDRESS.USER_ID.eq(userId))
-                .fetch()
-                .into(String.class);
+            .from(USER_ADDRESS)
+            .where(USER_ADDRESS.USER_ID.eq(userId))
+            .fetch()
+            .into(String.class);
 
         addressList.forEach(logger()::info);
         return addressList;
@@ -89,14 +89,14 @@ public class AddressService extends ShopBaseService {
      */
     public UserAddressRecord getUserAddressInfo(Integer userId, WxAddress wxAddress) {
         UserAddressRecord addressRecord = db().selectFrom(USER_ADDRESS)
-                .where(USER_ADDRESS.USER_ID.eq(userId))
-                .and(USER_ADDRESS.CONSIGNEE.eq(wxAddress.getUserName()))
-                .and(USER_ADDRESS.MOBILE.eq(wxAddress.getTelNumber()))
-                .and(USER_ADDRESS.PROVINCE_NAME.like(likeValue(wxAddress.getProvinceName())))
-                .and(USER_ADDRESS.CITY_NAME.like(likeValue(wxAddress.getCityName())))
-                .and(USER_ADDRESS.DISTRICT_NAME.like(likeValue(wxAddress.getCountyName())))
-                .and(USER_ADDRESS.ADDRESS.like(likeValue(wxAddress.getDetailInfo())))
-                .fetchOne();
+            .where(USER_ADDRESS.USER_ID.eq(userId))
+            .and(USER_ADDRESS.CONSIGNEE.eq(wxAddress.getUserName()))
+            .and(USER_ADDRESS.MOBILE.eq(wxAddress.getTelNumber()))
+            .and(USER_ADDRESS.PROVINCE_NAME.like(likeValue(wxAddress.getProvinceName())))
+            .and(USER_ADDRESS.CITY_NAME.like(likeValue(wxAddress.getCityName())))
+            .and(USER_ADDRESS.DISTRICT_NAME.like(likeValue(wxAddress.getCountyName())))
+            .and(USER_ADDRESS.ADDRESS.like(likeValue(wxAddress.getDetailInfo())))
+            .fetchOne();
         if (addressRecord != null && (addressRecord.getLat() == null || addressRecord.getLng() == null)) {
             AddressLocation addressLocation = getGeocoderAddressLocation(wxAddress.getCompleteAddress());
             if (AddressLocation.STATUS_OK.equals(addressLocation.getStatus())){
@@ -122,7 +122,7 @@ public class AddressService extends ShopBaseService {
         }
         AddressInfo.Result.AddressComponent address = addressInfo.getResult().getAddressComponent();
         if (StringUtils.isEmpty(address.getCity())||StringUtils.isEmpty(address.getDistrict())
-                ||StringUtils.isEmpty(address.getProvince())||StringUtils.isEmpty(address.getNation())){
+            ||StringUtils.isEmpty(address.getProvince())||StringUtils.isEmpty(address.getNation())){
             return null;
         }
         AddressCode addressCode = checkAndUpdateAddress(address.getProvince(), address.getCity(), address.getDistrict());
@@ -218,20 +218,4 @@ public class AddressService extends ShopBaseService {
         return Util.json2Object(HttpsUtils.get(QQ_MAP_GEOCODER_URL, param, true), AddressInfo.class, true);
     }
 
-    /**
-     * 王帅
-     * 获取地址
-     * @param userId    用户id
-     * @return 地址
-     */
-    public Integer randomOne(Integer userId) {
-        if (userId == null) {
-            return null;
-        }
-        UserAddressVo address = db().select().from(USER_ADDRESS).where(USER_ADDRESS.USER_ID.eq(userId)).fetchAnyInto(UserAddressVo.class);
-        if(address == null) {
-            return null;
-        }
-        return address.getAddressId();
-    }
 }
