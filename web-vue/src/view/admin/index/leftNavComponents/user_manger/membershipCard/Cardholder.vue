@@ -228,6 +228,10 @@ export default {
       {
         value: 2,
         label: '已过期'
+      },
+      {
+        value: 3,
+        label: '已转赠'
       }],
       statusValue: -1, // 卡状态默认值
       dateValue: null, // 领取时间
