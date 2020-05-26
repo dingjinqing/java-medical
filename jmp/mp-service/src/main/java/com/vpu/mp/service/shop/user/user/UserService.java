@@ -557,7 +557,7 @@ public class UserService extends ShopBaseService {
 					iconItem.put("is_rebate", rebate.getStatus());
 					iconItem.put("withdraw_status", rebate.getWithdrawStatus());
 					UserTotalFanliVo userRebate = userTotalFanliService.getUserRebate(user.getUserId());
-					BigDecimal totalMoney = userRebate==null?new BigDecimal("0"):userRebate.getTotalMoney();
+					BigDecimal totalMoney = userRebate.getTotalMoney()==null?new BigDecimal("0"):userRebate.getTotalMoney();
 					BigDecimal account = user.getAccount();
 					iconItem.put("withdraw_money", totalMoney.compareTo(account)==-1?totalMoney:account);
 					iconItem.put("rebate_center_name", rebate.getRebateCenterName()==null?"分销中心":rebate.getRebateCenterName());
