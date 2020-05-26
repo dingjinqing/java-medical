@@ -885,6 +885,10 @@ export default {
         this.$message.warning('分销员审核至少选择一项需提交信息')
         return false
       }
+      if (this.form.activation === 1 && this.form.auto_examine === 0) {
+        this.$message.warning('自动审核需要校验邀请码, 请开启分销员个人信息审核')
+        return false
+      }
       // 自定义激活项
       this.form.custom_options = this.customList
 

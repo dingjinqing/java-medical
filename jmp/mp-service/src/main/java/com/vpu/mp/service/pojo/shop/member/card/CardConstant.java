@@ -193,10 +193,12 @@ public class CardConstant {
 
 
 
-	/** user_card表 flag 0 正常使用，1已经删除  2 已过期*/
+	/** user_card表 flag 0 正常使用，1已经删除  2转赠中,3已转赠,4 已过期	*/
 	public static final Byte UCARD_FG_USING = 0;
 	public static final Byte UCARD_FG_STOP = 1;
-	public static final Byte UCARD_FG_EXPIRED = 2;
+	public static final Byte UCARD_FG_GIVING = 2;
+	public static final Byte UCARD_FG_GIVED = 3;
+	public static final Byte UCARD_FG_EXPIRED = 4;
 	/** user_card 激活 */
 	public static final Boolean UCARD_ACT_NO = false;
 	public static final Boolean UCARD_ACT_TRUE = true;
