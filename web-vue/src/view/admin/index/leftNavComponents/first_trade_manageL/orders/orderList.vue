@@ -243,7 +243,7 @@
               type="datetime"
               :placeholder="$t('membershipIntroduction.Starttime')"
               value-format="yyyy-MM-dd HH:mm:ss"
-              class="default_input"
+              class="middle_input"
               @change="datePickerChange(true,orderTime)"
               size="small"
             />
@@ -253,7 +253,7 @@
               type="datetime"
               :placeholder="$t('membershipIntroduction.Endtime')"
               value-format="yyyy-MM-dd HH:mm:ss"
-              class="default_input"
+              class="middle_input"
               @change="datePickerChange(false,orderTime)"
               :picker-options="orderEndTime"
               default-time="23:59:59"
@@ -282,7 +282,7 @@
               :placeholder="$t('membershipIntroduction.Starttime')"
               value-format="yyyy-MM-dd HH:mm:ss"
               @change="datePickerChange(true,completeTime)"
-              class="default_input"
+              class="middle_input"
               size="small"
             />
              至
@@ -293,7 +293,7 @@
               value-format="yyyy-MM-dd HH:mm:ss"
               @change="datePickerChange(false,completeTime)"
               :picker-options="completeEndTime"
-              class="default_input"
+              class="middle_input"
               default-time="23:59:59"
               size="small"
             />
@@ -1394,6 +1394,9 @@ export default {
   }
   .default_input {
     width: 180px;
+  }
+  .middle_input{
+    width:185px
   }
 }
 </style>
