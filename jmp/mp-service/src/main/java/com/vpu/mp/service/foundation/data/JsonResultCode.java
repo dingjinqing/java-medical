@@ -218,6 +218,8 @@ public enum JsonResultCode {
     CODE_ORDER_EXCLUSIVE_GOODS_NO_BUY(120089, JsonResultMessage.MSG_ORDER_EXCLUSIVE_GOODS_NO_BUY),
     /**为预售商品，不支持现购*/
     CODE_ORDER_PRESALE_GOODS_NOT_SUPORT_BUY(120090, JsonResultMessage.MSG_ORDER_PRESALE_GOODS_NOT_SUPORT_BUY),
+    /**订单支付金额异常，请检查是否有超付情况*/
+    CODE_ORDER_MONEYPAID_ERROR_PLEASE_CHECK(120091, JsonResultMessage.MSG_ORDER_MONEYPAID_ERROR_PLEASE_CHECK),
     /**
      * 去支付
      */

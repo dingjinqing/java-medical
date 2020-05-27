@@ -44,7 +44,7 @@
               size="small"
             >
               <el-option
-                v-for="(item,index) in selectOptions"
+                v-for="(item,index) in $t('membershipIntroduction.cardStatusOpt')"
                 :key="index"
                 :label="item.label"
                 :value="item.value"
@@ -230,7 +230,7 @@
             <span v-if="scope.row.flag === 0"> {{$t('memberCard.cardNomal')}} </span>
             <span v-else-if="scope.row.flag === 1"> {{$t('memberCard.alreadyDelete')}}({{scope.row.updateTime}}) </span>
             <span v-else-if="scope.row.flag === 2"> 转赠中 </span>
-            <span v-else-if="scope.row.flag === 3"> 已转赠({{scope.row.getTime}});赠予:
+            <span v-else-if="scope.row.flag === 3"> {{$t('membershipIntroduction.cardGived')}}({{scope.row.getTime}});赠予:
                 <span @click="handleToUserDetail(scope.row.getUserId)" style="color: #5a8bff;cursor: pointer;">
                   {{scope.row.giveName}}
                 </span>;
@@ -301,24 +301,6 @@ export default {
       carNameInput: '',
       phoneInput: '',
       cardNuberInput: '',
-      selectOptions: [{
-        value: -1,
-        label: '全部'
-      }, {
-        value: 0,
-        label: '正常'
-      }, {
-        value: 1,
-        label: '已废除'
-      },
-      {
-        value: 2,
-        label: '已过期'
-      },
-      {
-        value: 3,
-        label: '已转赠'
-      }],
       submitExamineOpts: [
         {
           value: -1,

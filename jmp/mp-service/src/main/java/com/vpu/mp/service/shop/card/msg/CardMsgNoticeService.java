@@ -51,12 +51,11 @@ public class CardMsgNoticeService extends ShopBaseService {
 				{Util.getdate("yyyy-MM-dd HH:mm:ss")},
 				{"升级成功"}
 			};
-			
 			mpData = new String[][] {
 				{"等级卡升级通知"},
 				{newCard.getCardName()},
-				{"升级成功"},
-				{option}
+                {"通过"},
+                {"升级成功"}
 			};
 		}else {
 			//	降级数据
@@ -65,15 +64,15 @@ public class CardMsgNoticeService extends ShopBaseService {
 				{Util.getdate("yyyy-MM-dd HH:mm:ss")},
 				{"降级成功"}
 			};
-			
+
 			mpData = new String[][] {
 				{"等级卡降级通知"},
 				{newCard.getCardName()},
-				{"降级级成功"},
-				{option}
+				{"通过"},
+                {"降级成功"}
 			};
 		}
-		
+
 		MaSubscribeData data = MaSubscribeData.builder().data307(maData).build();
 		RabbitMessageParam param2 = RabbitMessageParam.builder()
 				.maTemplateData(
@@ -85,7 +84,7 @@ public class CardMsgNoticeService extends ShopBaseService {
 				.type(MessageTemplateConfigConstant.MEMBER_LEVEL_UP).build();
 		saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
 	}
-	
+
 	/**
 	 * 	发卡通知
 	 * @param cardNo 卡号

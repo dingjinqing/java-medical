@@ -24,4 +24,8 @@ public class UserCardDetailParam {
 	private Byte cardType;
 	/** - 会员卡id */
 	private Integer cardId;
+	/**
+	 * 会员卡状态
+	 */
+	private Byte statusValue;
 }

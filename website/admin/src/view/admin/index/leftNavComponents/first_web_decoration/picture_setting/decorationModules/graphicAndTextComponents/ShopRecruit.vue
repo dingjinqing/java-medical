@@ -81,8 +81,6 @@ export default {
       activeBorder: false, // 模块公共
       activeSetHere: false, // 模块公共
       hoverTips: 'hoverTips', // 英文适配  模块公共
-      // imageHost: this.$imageHost,
-      imageHost: 'http://jmpdevimg.weipubao.cn/',
       shopAvatar: '', // 头像
       // 模块私有
       data: {

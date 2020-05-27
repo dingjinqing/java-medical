@@ -9,8 +9,8 @@ export const en = {
   Member: 'Member',
   memberName: 'memberName',
   CardNumber: 'Membership Card Number',
-  membershipcard: 'Type of membership card',
-  Collectiontime: 'Collection time',
+  membershipcard: 'Type',
+  Collectiontime: 'Time',
   placeNameNum: 'Please enter a nickname',
   distributionData: [
     {
@@ -125,10 +125,10 @@ export const en = {
   to: 'to',
   Endtime: 'End time',
   Starttime: 'Start date',
-  phoneNum: 'Cell-phone number',
+  phoneNum: 'Mobile',
   wechatNickname: 'Wechat nickname',
   source: 'source',
-  membershipCard: 'Membership card',
+  membershipCard: 'Card',
   label: 'Label',
   registrationTime: 'Registration time',
   inviter: 'Inviter',
@@ -456,9 +456,9 @@ export const en = {
     id: null,
     cardName: 'All Card'
   },
-  chargeDetail: 'chargeDetail',
-  consumeDetail: 'consumeDetail',
-  deleteCard: 'DEL',
+  chargeDetail: 'charge',
+  consumeDetail: 'consume',
+  deleteCard: 'del',
 
   add: 'Add',
   normalCardFull: 'NormalCard',
@@ -516,5 +516,29 @@ export const en = {
       label: 'Yes'
     }
   ],
-  distributorTip: 'distrbutor'
+  distributorTip: 'distrbutor',
+  cardStatus: 'Card status',
+  cardStatusOpt: [
+    {
+      value: -1,
+      label: 'All'
+    },
+    {
+      value: 0,
+      label: 'Normal'
+    },
+    {
+      value: 1,
+      label: 'Delete'
+    },
+    {
+      value: 2,
+      label: 'Expired'
+    },
+    {
+      value: 3,
+      label: 'Gived'
+    }
+  ],
+  cardGived: 'Gived'
 }
