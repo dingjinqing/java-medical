@@ -196,7 +196,7 @@
 								{{val.optionTitle}}
                			 		</view>
 							</label>
-
+              
 						</checkbox-group> -->
           <block wx:for='{{item.optionArr}}' wx:for-item='val' wx:for-index='indexC' wx:key='indexC'>
             <view class="checkbox" style="{{val.isChecked?'':'padding-left:4rpx'}}" bindtap="checkboxChange" data-value='{{val.optionTitle}}' data-index='{{index}}'>
