@@ -318,7 +318,6 @@ export default {
     },
     uploadFileRequest () {
       let that = this
-      that.loading = true
       let formdata = new FormData()
       formdata.append('file', this.fileList[0].raw)
       formdata.append('isUpdate', this.uploadParams.isUpdate)
@@ -342,7 +341,7 @@ export default {
             that.$message.success(that.$t('goodsImport.uploadSuccess'))
           } else {
             that.queryIsFinish(batchId)
-            console.log('继续定时检测')
+            console.log('继续定时检测-batchId:' + batchId)
           }
         })
       }, 10000)
