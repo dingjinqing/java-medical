@@ -123,6 +123,7 @@ public class GoodsImportService extends ShopBaseService {
                 default:
                     code = JsonResultCode.CODE_FAIL;
             }
+            codeWrap.setResultCode(code);
         } else if (goodsVpuExcelImportModels.size() > MAX_IMPORT_NUM) {
             codeWrap.setResultCode(JsonResultCode.GOODS_EXCEL_IMPORT_NUM_OUT_OF_SIZE);
             return codeWrap;

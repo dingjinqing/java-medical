@@ -126,7 +126,8 @@ public class GoodsImportRecordService extends ShopBaseService {
      * @param batchId
      */
     public void updateImportFinish(Integer batchId){
-        db().update(GOODS_IMPORT).set(GOODS_IMPORT.IS_FINISH,FINISH).where(GOODS_IMPORT.ID.eq(batchId));
+        db().update(GOODS_IMPORT).set(GOODS_IMPORT.IS_FINISH,FINISH)
+            .where(GOODS_IMPORT.ID.eq(batchId)).execute();
     }
 
     /**
