@@ -35,17 +35,19 @@ global.wxComponent({
     },
     init(){
       let moneyPaid = this.data.moneyPaid
-      moneyPaid = (moneyPaid * this.data.scoreProportion).toFixed(0);
-      let scoreMax = (this.data.scoreMax * this.data.scoreProportion).toFixed(0)
+      moneyPaid = Math.floor(moneyPaid * this.data.scoreProportion);
+      let scoreMax = Math.floor(this.data.scoreMax * this.data.scoreProportion)
+      console.log(scoreMax)
       let userScore = this.data.userScore
       let scoreMin = this.data.scoreMin
       let useMaxScore = parseInt(moneyPaid > scoreMax ? (scoreMax > userScore ? userScore : scoreMax) : (moneyPaid > userScore ? userScore : moneyPaid));
       let msg = ''
       let canConfirm = true
+      console.log(userScore,scoreMin)
       if(userScore === 0) {
         msg = this.$t("pages.checkout.integralTips[1]")
         canConfirm = false
-      } else if (userScore < scoreMin){
+      } else if (useMaxScore < scoreMin){
         msg = this.$t("pages.checkout.integralTips[2]", { scoreMin: scoreMin})
         canConfirm = false
       } else if (useMaxScore === 0){
