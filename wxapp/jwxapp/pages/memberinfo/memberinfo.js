@@ -610,9 +610,9 @@ global.wxPage({
     }
     //所在地
     if (this.data.if_citydoce == 1) {
-      user_info.province_code = regionCode[0];
-      user_info.city_code = regionCode[1];
-      user_info.district_code = regionCode[2];
+      user_info.province_code = region[0] == '' ? '' : regionCode[0];
+      user_info.city_code = region[1] == '' ? '' : regionCode[1];
+      user_info.district_code = region[2] == '' ? '' : regionCode[2];
       user_info.address = "";
       config.push('address')
     }
