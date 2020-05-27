@@ -44,7 +44,7 @@
               size="small"
             >
               <el-option
-                v-for="(item,index) in selectOptions"
+                v-for="(item,index) in $t('membershipIntroduction.cardStatusOpt')"
                 :key="index"
                 :label="item.label"
                 :value="item.value"
@@ -222,24 +222,6 @@ export default {
       carNameInput: '',
       phoneInput: '',
       cardNuberInput: '',
-      selectOptions: [{
-        value: -1,
-        label: '全部'
-      }, {
-        value: 0,
-        label: '正常'
-      }, {
-        value: 1,
-        label: '已废除'
-      },
-      {
-        value: 2,
-        label: '已过期'
-      },
-      {
-        value: 3,
-        label: '已转赠'
-      }],
       statusValue: -1, // 卡状态默认值
       dateValue: null, // 领取时间
       tableData: [],
