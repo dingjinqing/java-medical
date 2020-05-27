@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @SshShellComponent
-@ShellCommandGroup("ElasticSearch Commands")
+@ShellCommandGroup("WxTask Commands")
 public class TaskCommand {
 
     @Autowired
