@@ -152,6 +152,7 @@ p {
   min-width: 100%;
   flex: 1;
   overflow-y: auto;
+  padding-bottom: 10px;
 }
 .rightContainer {
   flex: 1;
