@@ -966,12 +966,18 @@ export default {
 
     // 跳转新建会员卡
     addMemberCard () {
-      window.open('/admin/home/main/normalCardDetail')
+      let routeUrl = this.$router.resolve({
+        path: '/admin/home/main/normalCardDetail'
+      })
+      window.open(routeUrl.href, '_blank')
     },
 
     // 跳转管理会员卡
     manageMemberCard () {
-      window.open('/admin/home/main/user_card')
+      let routeUrl = this.$router.resolve({
+        path: '/admin/home/main/user_card'
+      })
+      window.open(routeUrl.href, '_blank')
     },
 
     // 校验秒杀价格

@@ -50,37 +50,37 @@ export const en = {
       value: 1,
       label: 'To be shipped',
       isCheck: false,
-      link: '/admin/home/main/orders/waiting?orderStatus=3'
+      link: '/admin/admin/home/main/orders/waiting?orderStatus=3'
     },
     {
       value: 2,
       label: 'Pending disposal',
       isCheck: false,
-      link: '/admin/home/main/orders/refund/list'
+      link: '/admin/admin/home/main/orders/refund/list'
     },
     {
       value: 3,
       label: 'Sold out',
       isCheck: false,
-      link: '/admin/home/main/goodsManage/goodsForSaleOut'
+      link: '/admin/admin/home/main/goodsManage/goodsForSaleOut'
     },
     {
       value: 4,
       label: 'To be audited',
       isCheck: false,
-      link: '/admin/home/main/goodsManage/evaluationManagement?activeName=second'
+      link: '/admin/admin/home/main/goodsManage/evaluationManagement?activeName=second'
     },
     {
       value: 5,
       label: 'Waiting for delivery',
       isCheck: false,
-      link: '/admin/home/main/orders/self'
+      link: '/admin/admin/home/main/orders/self'
     },
     {
       value: 6,
       label: 'Reviewed by distributor',
       isCheck: false,
-      link: '/admin/home/main/distributorCheck'
+      link: ''
     },
     {
       value: 7,
@@ -92,7 +92,7 @@ export const en = {
       value: 8,
       label: 'Cash withdrawal',
       isCheck: false,
-      link: '/admin/home/main/withdrawDepositCheck'
+      link: ''
     },
     {
       value: 9,
@@ -158,42 +158,42 @@ export const en = {
     {
       icon: '/image/admin/new_ov/drpt.png',
       title: 'Multiplayer group',
-      link: '/admin/home/main/spellGroup'
+      link: '/admin/admin/home/main/spellGroup'
     },
     {
       icon: '/image/admin/new_ov/fx.png',
       title: 'Retail',
-      link: '/admin/home/main/distribution'
+      link: '/admin/admin/home/main/distribution'
     },
     {
       icon: '/image/admin/new_ov/hyzl.png',
       title: 'Friend help',
-      link: '/admin/home/main/friendHelp'
+      link: '/admin/admin/home/main/friendHelp'
     },
     {
       icon: '/image/admin/new_ov/hdyl.png',
       title: 'Kaiping is polite',
-      link: '/admin/home/main/openScreen/list'
+      link: '/admin/admin/home/main/openScreen/list'
     },
     {
       icon: '/image/admin/new_ov/kj.png',
       title: 'Bargain',
-      link: '/admin/home/main/bargain'
+      link: '/admin/admin/home/main/bargain'
     },
     {
       icon: '/image/admin/new_ov/ptcj.png',
       title: 'Assemble',
-      link: '/admin/home/main/lotteryDraw'
+      link: '/admin/admin/home/main/lotteryDraw'
     },
     {
       icon: '/image/admin/new_ov/yhqlb.png',
       title: 'Coupon pack',
-      link: '/admin/home/main/couponPackage'
+      link: '/admin/admin/home/main/couponPackage'
     },
     {
       icon: '/image/admin/new_ov/zfyl.png',
       title: 'Payment of courtesy',
-      link: '/admin/home/main/payReward'
+      link: '/admin/admin/home/main/payReward'
     }
   ],
 

@@ -46,37 +46,37 @@ export const cn = {
       value: 1,
       label: '待发货订单',
       isCheck: false,
-      link: '/admin/home/main/orders/waiting?orderStatus=3'
+      link: '/admin/admin/home/main/orders/waiting?orderStatus=3'
     },
     {
       value: 2,
       label: '待处理退款退货',
       isCheck: false,
-      link: '/admin/home/main/orders/refund/list'
+      link: '/admin/admin/home/main/orders/refund/list'
     },
     {
       value: 3,
       label: '已售罄商品',
       isCheck: false,
-      link: '/admin/home/main/goodsManage/goodsForSaleOut'
+      link: '/admin/admin/home/main/goodsManage/goodsForSaleOut'
     },
     {
       value: 4,
       label: '商品评价待审核',
       isCheck: false,
-      link: '/admin/home/main/goodsManage/evaluationManagement?activeName=second'
+      link: '/admin/admin/home/main/goodsManage/evaluationManagement?activeName=second'
     },
     {
       value: 5,
       label: '待提货订单',
       isCheck: false,
-      link: '/admin/home/main/orders/self'
+      link: '/admin/admin/home/main/orders/self'
     },
     {
       value: 6,
       label: '分销员待审核',
       isCheck: false,
-      link: '/admin/home/main/distributorCheck'
+      link: ''
     },
     {
       value: 7,
@@ -88,7 +88,7 @@ export const cn = {
       value: 8,
       label: '分销提现待审核',
       isCheck: false,
-      link: '/admin/home/main/withdrawDepositCheck'
+      link: ''
     },
     {
       value: 9,
@@ -151,42 +151,42 @@ export const cn = {
     {
       icon: '/image/admin/new_ov/drpt.png',
       title: '多人拼团',
-      link: '/admin/home/main/spellGroup'
+      link: '/admin/admin/home/main/spellGroup'
     },
     {
       icon: '/image/admin/new_ov/fx.png',
       title: '分销',
-      link: '/admin/home/main/distribution'
+      link: '/admin/admin/home/main/distribution'
     },
     {
       icon: '/image/admin/new_ov/hyzl.png',
       title: '好友助力',
-      link: '/admin/home/main/friendHelp'
+      link: '/admin/admin/home/main/friendHelp'
     },
     {
       icon: '/image/admin/new_ov/hdyl.png',
       title: '开屏有礼',
-      link: '/admin/home/main/openScreen/list'
+      link: '/admin/admin/home/main/openScreen/list'
     },
     {
       icon: '/image/admin/new_ov/kj.png',
       title: '砍价',
-      link: '/admin/home/main/bargain'
+      link: '/admin/admin/home/main/bargain'
     },
     {
       icon: '/image/admin/new_ov/ptcj.png',
       title: '拼团抽奖',
-      link: '/admin/home/main/lotteryDraw'
+      link: '/admin/admin/home/main/lotteryDraw'
     },
     {
       icon: '/image/admin/new_ov/yhqlb.png',
       title: '优惠券礼包',
-      link: '/admin/home/main/couponPackage'
+      link: '/admin/admin/home/main/couponPackage'
     },
     {
       icon: '/image/admin/new_ov/zfyl.png',
       title: '支付有礼',
-      link: '/admin/home/main/payReward'
+      link: '/admin/admin/home/main/payReward'
     }
   ],
 

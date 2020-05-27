@@ -1199,12 +1199,11 @@ export default {
 
     },
 
-    addMemberCard () {
-      window.open('/admin/home/main/normalCardDetail')
-    },
-
     manageMemberCard () {
-      window.open('/admin/home/main/user_card')
+      let routeUrl = this.$router.resolve({
+        path: '/admin/home/main/user_card'
+      })
+      window.open(routeUrl.href, '_blank')
     },
 
     // 切换触发校验

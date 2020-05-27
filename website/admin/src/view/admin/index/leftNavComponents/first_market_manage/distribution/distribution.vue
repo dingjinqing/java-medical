@@ -120,6 +120,10 @@ export default {
     })
 
     // 店铺助手跳转分销审核
+    if (this.$route.query.distributorName) {
+      // tab重新赋值
+      this.activeName = this.$route.query.distributorName
+    }
     console.log(this.$route.params)
     if (this.$route.params.flag === 1) {
       if (this.$route.params.distributorName) {
