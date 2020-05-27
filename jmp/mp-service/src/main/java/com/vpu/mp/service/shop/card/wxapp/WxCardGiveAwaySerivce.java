@@ -104,6 +104,18 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 		});
 	}
 	
+	/**
+	 * 处理判断转赠中的卡
+	 * @param cardNo
+	 */
+	public void dealWithGivingCard(String cardNo) {
+		GiveCardRecordRecord giveWayInfo = getNormalGiveCardRecordByCardNo(cardNo);
+		if(giveWayInfo != null || giveWayInfo.getDeadline().before(DateUtil.getLocalDateTime())) {
+			DefaultCardParam param = new DefaultCardParam();
+			param.setCardNo(cardNo);
+			quitLimitCardGiveAway(param);
+		}
+	}
 	
 	/**
 	 * 	领取赠送的会员卡

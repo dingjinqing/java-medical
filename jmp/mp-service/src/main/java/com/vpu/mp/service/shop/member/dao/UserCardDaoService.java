@@ -325,7 +325,7 @@ public class UserCardDaoService extends ShopBaseService{
 
         return selectValidCardSQL()
 			.where(USER_CARD.USER_ID.eq(userId))
-			.and(USER_CARD.FLAG.eq(MCARD_DF_NO))
+			.and(USER_CARD.FLAG.in(CardConstant.UCARD_FG_USING,CardConstant.UCARD_FG_GIVING))
 			.and(
 					(USER_CARD.EXPIRE_TIME.isNull())
 					.or(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))

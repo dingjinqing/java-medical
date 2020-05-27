@@ -22,7 +22,7 @@
 					<view class="card_list_item" style="{{item.cardBgStyle}}">
 						<view class="card_type">{{item.cardTypeName}}</view>
 						<view class="card_item_info">
-							<image mode="widthFix" class="shop_img" src="{{item.avatar}}" />
+							<image mode="widthFix" class="shop_img" src="{{item.avatar}}" wx:if="{{item.avatar}}"/>
 							<view class="info_item">
 								<view class="card-name">
 									{{ item.cardName }}
