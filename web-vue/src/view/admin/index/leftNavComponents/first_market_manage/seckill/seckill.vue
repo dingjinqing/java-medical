@@ -454,7 +454,7 @@ export default {
   position: relative;
   margin-top: 10px;
   background-color: #fff;
-  padding: 15px;
+  padding: 20px;
 }
 .balanceDialo .el-dialog__body {
   padding-bottom: 0 !important;
