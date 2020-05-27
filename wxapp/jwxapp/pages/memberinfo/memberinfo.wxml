@@ -83,7 +83,7 @@
 				<view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
 					<picker
 					 mode="date"
-					 value="{{date}}"
+					 value="{{dates}}"
 					 start="1978-01-01"
 					 end="2020-1-23"
 					 bindchange="bindDateChange"
