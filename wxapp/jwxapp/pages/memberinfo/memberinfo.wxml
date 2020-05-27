@@ -208,7 +208,7 @@
 			</view>
 			<!-- 自定义激活项 -->
 			<view class="list" wx:for="{{custom_arr}}" wx:key="index" wx:if="{{distribution == 1 && item.is_checked == 1}}">
-				<text class='main_txt'>{{item.custom_title}}</text>
+				<text>{{item.custom_title}}</text>
 				<view class='main_ipt main_picker' wx:if="{{item.custom_type == 0}}" style="padding-left:0">
 					<radio-group bindchange="bindRadioChange" data-index="{{index}}">
 						<view class="customTitle" wx:for='{{item.option_arr}}' wx:for-item="itemC" wx:for-index="indexC" wx:key="indexC">
