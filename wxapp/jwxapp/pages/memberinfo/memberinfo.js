@@ -292,9 +292,9 @@ global.wxPage({
             regionCode[0] = user_info.provinceCode;
             regionCode[1] = user_info.cityCode;
             regionCode[2] = user_info.districtCode;
-            region[0] = user_info.provinceCode;
-            region[1] = user_info.cityCode;
-            region[2] = user_info.districtCode;
+            // region[0] = user_info.provinceCode;
+            // region[1] = user_info.cityCode;
+            // region[2] = user_info.districtCode;
             that.setData({
               region: region,
             })
