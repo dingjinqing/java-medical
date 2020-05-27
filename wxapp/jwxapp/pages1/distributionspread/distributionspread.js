@@ -42,23 +42,18 @@ global.wxPage({
       })
       return false;
     }
-    util.navigateTo({
-      url: '/pages/memberinfo/memberinfo?distribution=1'
-    })
-    // if (that.dis_content.auto_examine === 1) {
-    //   util.navigateTo({
-    //     url: '/pages/memberinfo/memberinfo?distribution=1'
-    //   })
-    // } else {
-    //   util.api('/api/wxapp/distribution/distributor/apply', function (res) {
-    //     if (res.error == 0) {
-    //       this.dis_request(that)
-    //     }
-    //   }, {
-    //     activationFields: {},
-    //     configFields: '[]'
-    //   })
-    // }
+    if (that.data.dis_content.activation == 1) {
+      util.navigateTo({
+        url: '/pages/memberinfo/memberinfo?distribution=1'
+      })
+    } else {
+      util.api('/api/wxapp/distribution/distributor/apply', function (res) {
+        dis_request(that)
+      }, {
+        activationFields: {},
+        configFields: '[]'
+      })
+    }
   },
 
   // 授权手机号回调
