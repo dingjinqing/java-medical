@@ -69,14 +69,14 @@ public class CouponHoldService extends ShopBaseService {
                 v.setStatus(3);
             }
             //如果是分裂优惠券,展示领取人数;
-            if(v.getType() == 1){
+            if(v.getCouponType() == 1){
                 Record record = db().select(DIVISION_RECEIVE_RECORD.IS_SHARE).from(DIVISION_RECEIVE_RECORD).where(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(v.getCouponSn())).fetchOne();
                 if(record != null){
                     v.setIsShare(record.into(Integer.class));
                 }else{
                     v.setIsShare(0);
                 }
-                int hasReceive = couponService.hasReceive(v.getCouponSn());
+                int hasReceive = couponService.hasReceive(v.getUserId());
                 v.setHasReceive(hasReceive);
             }
         });
@@ -92,7 +92,7 @@ public class CouponHoldService extends ShopBaseService {
      */
     private SelectJoinStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> select, CouponHoldListParam param) {
         if(param.getCouponType() == 1){
-            select.where(DIVISION_RECEIVE_RECORD.USER_ID.eq(0));
+            select.where(DIVISION_RECEIVE_RECORD.TYPE.eq((byte)0));
         }
         if (param.getActId()!=null){
             select.where(CUSTOMER_AVAIL_COUPONS.ACT_ID .eq(param.getActId()));

@@ -42,7 +42,6 @@
         header-row-class-name="tableClss"
         :data="tableData"
         border
-        style="width: 99.9% !important;"
       >
         <el-table-column
           prop="name"
@@ -454,7 +453,7 @@ export default {
   position: relative;
   margin-top: 10px;
   background-color: #fff;
-  padding: 15px;
+  padding: 20px;
 }
 .balanceDialo .el-dialog__body {
   padding-bottom: 0 !important;

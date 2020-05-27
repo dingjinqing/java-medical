@@ -307,7 +307,6 @@ public class CouponService extends ShopBaseService {
      * @return
      */
     public PageResult<CouponHoldListVo> getDetail(CouponGetDetailParam param) {
-        logger().info("优惠券领取明细入参数1"+param);
         CouponHoldListParam couponParam = new CouponHoldListParam();
         couponParam.setActId(param.getId());
         couponParam.setCouponType(param.getCouponType());
@@ -316,7 +315,6 @@ public class CouponService extends ShopBaseService {
         couponParam.setStatus(param.getIsUsed());
         couponParam.setCurrentPage(param.getCurrentPage());
         couponParam.setPageRows(param.getPageRows());
-        logger().info("优惠券领取明细入参2"+couponParam);
         return couponHold.getCouponHoldList(couponParam);
 
     }
@@ -333,7 +331,7 @@ public class CouponService extends ShopBaseService {
             .leftJoin(CUSTOMER_AVAIL_COUPONS).on(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(CUSTOMER_AVAIL_COUPONS.COUPON_SN))
             .leftJoin(USER).on(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(USER.USER_ID))
             .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID))
-            .where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(param.getId()));
+            .where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(param.getId())).and(DIVISION_RECEIVE_RECORD.USER.eq(param.getShareId()));
         SelectConditionStep<? extends Record> sql = detailBuildOptions(select, param);
         PageResult<CouponHoldListVo> info = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), CouponHoldListVo.class);
         return info;
@@ -602,13 +600,14 @@ public class CouponService extends ShopBaseService {
 
     /**
      * 分裂优惠券已领取数
-     * @param couponSn
+     * @param userId
      * @return
      */
-    public int hasReceive(String couponSn){
-        Record record = db().selectCount().from(DIVISION_RECEIVE_RECORD).where(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(couponSn))
-            .fetchOne();
-        return record.into(Integer.class);
+    public int hasReceive(Integer userId){
+        Result<Record1<Integer>> fetch = db().select(DIVISION_RECEIVE_RECORD.USER_ID).from(DIVISION_RECEIVE_RECORD).where(DIVISION_RECEIVE_RECORD.USER.eq(userId)).groupBy(DIVISION_RECEIVE_RECORD.USER_ID)
+            .fetch();
+        int hasReceive = fetch.size();
+        return hasReceive;
     }
 
     /**
