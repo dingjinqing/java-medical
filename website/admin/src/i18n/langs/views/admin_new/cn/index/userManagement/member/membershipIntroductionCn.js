@@ -514,5 +514,28 @@ export const cn = {
       label: '是'
     }
   ],
-  distributorTip: '是否是分销员'
+  distributorTip: '是否是分销员',
+  cardStatus: '会员卡状态',
+  cardStatusOpt: [
+    {
+      value: -1,
+      label: '全部'
+    },
+    {
+      value: 0,
+      label: '正常'
+    },
+    {
+      value: 1,
+      label: '已废除'
+    },
+    {
+      value: 2,
+      label: '已过期'
+    },
+    {
+      value: 3,
+      label: '已转赠'
+    }
+  ]
 }
