@@ -14,13 +14,11 @@
           :label="$t('seckill.activityName') + '：'"
           prop="name"
         >
-          <el-col :span="8">
-            <el-input
-              v-model="form.name"
-              size="small"
-              style="width: 170px"
-            ></el-input>
-          </el-col>
+          <el-input
+            v-model="form.name"
+            size="small"
+            style="width: 170px"
+          ></el-input>
         </el-form-item>
         <el-form-item
           :label="$t('seckill.validDate') + '：'"
