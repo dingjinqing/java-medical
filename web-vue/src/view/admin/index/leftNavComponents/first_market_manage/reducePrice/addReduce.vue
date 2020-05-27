@@ -113,24 +113,30 @@
         <el-radio
           v-model="reduceData.isLimit"
           label="0"
+          :disabled="isEditFlag"
+          @change="limitChange"
         >{{$t('reducePriceList.noLimit')}}</el-radio>
         <br />
         <el-radio
           v-model="reduceData.isLimit"
           label="1"
+          :disabled="isEditFlag"
+          @change="limitChange"
         >{{$t('reducePriceList.limitQuantity')}}
           <el-input-number
             v-model="reduceData.limitAmount"
             controls-position="right"
-            :min="1"
+            :min="0"
             size="small"
             class="small_input"
+            :disabled="isEditFlag"
           ></el-input-number>
           {{$t('reducePriceList.piece')}}
         </el-radio>
-        <div v-if="reduceData.isLimit === '1'">
+        <div>
           <el-checkbox
             v-model="reduceData.limitFlag"
+            :disabled="reduceData.isLimit === '0' || isEditFlag"
             :true-label="1"
             :false-label="0"
           >{{$t('reducePriceList.limitQuantityTip')}}</el-checkbox>
@@ -586,6 +592,16 @@ export default {
   },
   props: ['isEdite', 'editId'],
   data () {
+    // 自定义限购
+    var validateLimit = (rule, value, callback) => {
+      if (value === '1' && this.reduceData.limitAmount === undefined) {
+        callback(new Error('请填写限购数量'))
+      } else if (value === '1' && this.reduceData.limitAmount === 0) {
+        callback(new Error('限购数量必须大于0'))
+      } else {
+        callback()
+      }
+    }
     // 自定义活动商品
     var validateGoods = (rule, value, callback) => {
       console.log(this.pageShowGoodsList)
@@ -703,7 +719,7 @@ export default {
           { required: true, message: '请填写优先级', trigger: 'blur' }
         ],
         isLimit: [
-          { required: true, message: '请填写限购数量', trigger: 'change' }
+          { required: true, validator: validateLimit, trigger: 'change' }
         ],
         showGoodsList: [
           { required: true, validator: validateGoods, trigger: 'change' }
@@ -1057,9 +1073,10 @@ export default {
           this.CycleData = this.reduceData.pointTime
           // 限购数量
           if (this.reduceData.limitAmount !== null && this.reduceData.limitAmount > 0) {
-            this.reduceData.isLimit = '1'
+            this.$set(this.reduceData, 'isLimit', '1')
           } else {
-            this.reduceData.isLimit = '0'
+            this.reduceData.limitAmount = 1
+            this.$set(this.reduceData, 'isLimit', '0')
           }
 
           // 活动分享
@@ -1164,8 +1181,6 @@ export default {
       })
     },
 
-    clickHandler () { },
-
     // 标签弹窗
     selectLabel () {
       if (this.isEditFlag === true) {
@@ -1206,6 +1221,16 @@ export default {
       this.$refs.reduceData.validateField('batchDiscount')
       this.$refs.reduceData.validateField('batchReduce')
       this.$refs.reduceData.validateField('batchFinalPrice')
+    },
+
+    clickHandler () { },
+
+    // 限购切换
+    limitChange (val) {
+      if (val === '0') {
+        this.reduceData.limitFlag = 0
+      }
+      this.$refs.reduceData.validateField('isLimit')
     }
 
     // 提交前校验
