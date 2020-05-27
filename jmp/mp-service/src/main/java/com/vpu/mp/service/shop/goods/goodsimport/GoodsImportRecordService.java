@@ -136,7 +136,7 @@ public class GoodsImportRecordService extends ShopBaseService {
      * @return
      */
     public boolean isFinish(Integer batchId){
-        Byte isFinish = db().select(GOODS_IMPORT.IS_FINISH)
+        Byte isFinish = db().select(GOODS_IMPORT.IS_FINISH).from(GOODS_IMPORT)
             .where(GOODS_IMPORT.ID.eq(batchId).and(GOODS_IMPORT.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny(GOODS_IMPORT.IS_FINISH);
         return FINISH.equals(isFinish);
     }

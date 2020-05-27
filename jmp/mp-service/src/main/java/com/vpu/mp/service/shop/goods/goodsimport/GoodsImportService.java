@@ -421,7 +421,7 @@ public class GoodsImportService extends ShopBaseService {
                 goods.setBrandId(integer);
             }
         } catch (Exception e) {
-            logger().warn("商品excel导入-插入-失败:" + e.getMessage());
+            logger().warn("商品excel导入-品牌商家分类插入-失败:" + e.getMessage());
             resultCode.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
             return resultCode;
         }

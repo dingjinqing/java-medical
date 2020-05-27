@@ -10,7 +10,7 @@ public enum GoodsDataIIllegalEnum {
     /**
      * 数据在操作过程中产生异常错误
      */
-    GOODS_FAIL((byte) -1, null),
+    GOODS_FAIL((byte) -1, "goods.import.server.fail"),
     /**
      * 数据操作成功
      */
