@@ -327,7 +327,7 @@ export default {
       uploadGoodsApi(formdata).then(res => {
         console.log('res:', res)
         if (res.error === 0) {
-          that.queryIsFinish(res.batchId)
+          that.queryIsFinish(res.content)
         } else {
           that.$message.error(res.message)
         }
