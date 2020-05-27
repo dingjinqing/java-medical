@@ -708,27 +708,6 @@ export default {
         return false
       })
       console.log('返回参数', residueIds, Array.from(this.checkedRowList), this.checkedIdList)
-      // if (this.loadProduct) {
-      //   getProductListByIds({ productId: residueIds }).then(res => {
-      //     res.content.forEach(item => {
-      //       this.checkedRowList.push(item)
-      //     })
-      //     console.log('返回参数', residueIds, Array.from(this.checkedRowList), this.checkedIdList)
-      //     this.$emit('resultGoodsDatas', Array.from(this.checkedRowList))
-      //     // 把选中的id集合和url集合回传
-      //     this.$emit('res', this.checkedIdList, this.checkedUrlList)
-      //   })
-      // } else {
-      //   getGoodsListByIds({ goodsIds: residueIds }).then(res => {
-      //     res.content.forEach(item => {
-      //       this.checkedRowList.push(item)
-      //     })
-      //     console.log('返回参数', this.checkedRowList, Array.from(this.checkedRowList))
-      //     this.$emit('resultGoodsDatas', Array.from(this.checkedRowList))
-      //     // 把选中的id集合和url集合回传
-      //     this.$emit('res', this.checkedIdList, this.checkedUrlList)
-      //   })
-      // }
       if (this.requestParam.sourceType === 0) {
         this.contentId = this.selectedPageId
       } else {
@@ -740,6 +719,10 @@ export default {
         contentId: this.contentId
       }
       console.log(requestObj)
+      if (this.isEmpty(this.requestParam.channelName)) {
+        this.$message.error('渠道页面名字不能为空')
+        return false
+      }
       addChannelAct(requestObj).then(res => {
         console.log(res)
         if (res.error === 0) {
@@ -856,11 +839,18 @@ export default {
         // 选择全部只有全部商品id
         this.checkedIdList = this.allGoodsProductId
       } else {
-        // this.checkedPageRow(flag)
         this.clearCheckedRow()
       }
       this.hxTableData()
-    }
+    },
+    /* 判断是否为空 */
+    isEmpty (obj) {
+      if (typeof obj === 'undefined' || obj == null || obj === '') {
+        return true
+      } else {
+        return false
+      }
+    },
   }
 }
 </script>
