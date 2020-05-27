@@ -60,7 +60,7 @@
       <view class="list" wx:if='{{if_birthdayyear == 1}}'>
         <text class='main_txt'>生日</text>
         <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
-          <picker mode="date" value="{{date}}" start="1978-01-01" end="2020-1-23" bindchange="bindDateChange">
+          <picker mode="date" value="{{dates}}" start="1978-01-01" end="2020-1-23" bindchange="bindDateChange">
             <view wx:if="{{dates == '选择您的生日'}}">请选择</view>
             <view class="picker" wx:else>{{dates}}</view>
           </picker>
