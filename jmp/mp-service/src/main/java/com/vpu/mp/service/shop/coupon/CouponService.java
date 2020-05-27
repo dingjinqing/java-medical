@@ -646,9 +646,10 @@ public class CouponService extends ShopBaseService {
      * @return
      */
     public int hasReceive(Integer userId){
-        Record record = db().selectCount().from(DIVISION_RECEIVE_RECORD).where(DIVISION_RECEIVE_RECORD.USER.eq(userId))
-            .fetchOne();
-        return record.into(Integer.class);
+        Result<Record1<Integer>> fetch = db().select(DIVISION_RECEIVE_RECORD.USER_ID).from(DIVISION_RECEIVE_RECORD).where(DIVISION_RECEIVE_RECORD.USER.eq(userId)).groupBy(DIVISION_RECEIVE_RECORD.USER_ID)
+            .fetch();
+        int hasReceive = fetch.size();
+        return hasReceive;
     }
 
     /**
