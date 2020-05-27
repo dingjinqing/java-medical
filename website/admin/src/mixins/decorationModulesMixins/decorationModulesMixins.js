@@ -400,7 +400,7 @@ export default {
             'module_name': 'm_shop',
             'shop_name': localStorage.getItem('V-shopName'),
             'shop_notice': '',
-            'shop_bg_path': localStorage.getItem('V-shopAvatar'),
+            'shop_bg_path': localStorage.getItem('V-AccountShopAvatar'),
             'bg_url': vm.$imageHost + '/image/admin/shop_beautify/beau1.png',
             'bg_fullUrl': '',
             'ok_ajax': 1
