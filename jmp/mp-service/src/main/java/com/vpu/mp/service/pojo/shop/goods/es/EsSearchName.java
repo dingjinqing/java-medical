@@ -87,8 +87,38 @@ public interface EsSearchName {
     String SALE_TIME = "sale_time";
     String TOTAL_SALE_NUMBER = "total_sale_number";
     String ROOM_ID = "room_id";
+    String PRDS = "prds";
+
+     interface PRD{
+        String PRD_ID = "prd_id";
+
+        String PRD_NUMBER = "prd_number";
+
+        String PRD_WEIGHT = "prd_weight";
+
+        String PRD_REAL_PRICE = "prd_real_price";
+
+        String PRD_LINE_PRICE = "prd_line_price";
+
+        String PRD_SPECS = "prd_specs";
+
+        String PRD_DESC = "prd_desc";
+
+        String PRD_IMG = "prd_img";
+
+        String PRD_CODES = "prd_codes";
+
+    }
+
+
+
+
+
+
     /**单纯搜索使用，es中无此字段*/
     String KEY_WORDS = "key_words";
+
+
 
 
 }

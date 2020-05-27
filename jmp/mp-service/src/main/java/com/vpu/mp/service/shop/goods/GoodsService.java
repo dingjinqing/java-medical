@@ -394,14 +394,22 @@ public class GoodsService extends ShopBaseService {
      * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo}
      */
     public PageResult<GoodsPageListVo> getProductPageList(GoodsPageListParam goodsPageListParam) {
-        SelectConditionStep<?> selectFrom = this.createProductSelect(goodsPageListParam);
+        PageResult<GoodsPageListVo> pageResult = null;
+        if( esUtilSearchService.esState() ){
+            try {
+                pageResult = esGoodsSearchService.searchGoodsPageForProduct(goodsPageListParam);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else{
+            SelectConditionStep<?> selectFrom = this.createProductSelect(goodsPageListParam);
 
-        PageResult<GoodsPageListVo> pageResult = this.getPageResult(selectFrom, goodsPageListParam.getCurrentPage(),
-            goodsPageListParam.getPageRows(), GoodsPageListVo.class);
+            pageResult= this.getPageResult(selectFrom, goodsPageListParam.getCurrentPage(),
+                goodsPageListParam.getPageRows(), GoodsPageListVo.class);
 
-        // 结果集标签、平台分类、规格信息二次处理
-        this.disposeGoodsPageListVo(pageResult.getDataList(), goodsPageListParam);
-
+            // 结果集标签、平台分类、规格信息二次处理
+            this.disposeGoodsPageListVo(pageResult.getDataList(), goodsPageListParam);
+        }
         return pageResult;
     }
 

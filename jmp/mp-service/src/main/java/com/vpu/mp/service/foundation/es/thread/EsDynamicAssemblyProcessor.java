@@ -34,7 +34,6 @@ public class EsDynamicAssemblyProcessor extends MainBaseService {
      * @param goods 商品
      */
     private void dynamicAssemblyData(EsGoods goods){
-        goods.setTestTime(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, new Date()));
     }
 
 }

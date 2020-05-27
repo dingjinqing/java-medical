@@ -25,6 +25,10 @@ public class EsGoods  {
     @EsFiled(name = EsSearchName.GOODS_NAME,type = EsFiledTypeConstant.TEXT,searchAnalyzer = "ik_max_word",analyzer = "ik_max_word")
     private String goodsName;
     /**
+     * admin鼠标悬浮时商品的展示名称(防止和带html的标签高亮字段)
+     */
+    private String goodsTitleName;
+    /**
      * 商品广告词
      */
     @EsFiled(name = EsSearchName.GOODS_AD,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
@@ -362,7 +366,11 @@ public class EsGoods  {
     @EsFiled(name=EsSearchName.ROOM_ID,type = EsFiledTypeConstant.INTEGER)
     private Integer roomId;
 
+    /**
+     * 商品规格对象
+     */
+    @EsFiled(name=EsSearchName.PRDS,type = EsFiledTypeConstant.OBJECT,index = false)
+    private List<EsGoodsProduct> prds;
 
-    @EsFiled(name="test_time",type = EsFiledTypeConstant.DATE)
-    private String testTime;
+
 }
