@@ -2,9 +2,9 @@
   <div class="receiveDetail">
     <div class="receiveDetailMain">
       <div class="filter">
-        <div class="top spDiv">
-          <div :class="mixinleftDiv">
-            <span>{{$t('membershipIntroduction.phoneNum')}}：</span>
+        <div class="top">
+          <div>
+            <span>{{$t('membershipIntroduction.phoneNum')}}</span>
             <el-input
               v-model="phoneNum"
               :placeholder="$t('membershipIntroduction.placePhoneNum')"
@@ -12,15 +12,16 @@
             ></el-input>
           </div>
           <div>
-            <span>{{$t('membershipIntroduction.nickname')}}：</span>
+            <span>{{$t('membershipIntroduction.nickname')}}</span>
             <el-input
               v-model="nameInput"
               :placeholder="$t('membershipIntroduction.placeNameNum')"
               size="small"
             ></el-input>
           </div>
-          <div class="receiveDetailDate">
-            <span>{{$t('membershipIntroduction.Collectiontime')}}：</span>
+          <div>
+            <span>{{$t('membershipIntroduction.Collectiontime')}}</span>
+
             <el-date-picker
               v-model="dateInput"
               type="daterange"
@@ -31,14 +32,15 @@
               :start-placeholder="$t('membershipIntroduction.startdata')"
               :end-placeholder="$t('membershipIntroduction.enddate')"
               value-format='yyyy-MM-dd'
+              style="width:230px;"
             >
             </el-date-picker>
           </div>
         </div>
 
-        <div class="top middle">
+        <div class="top">
           <div>
-            <span>{{$t('membershipIntroduction.membershipCard')}}：</span>
+            <span>{{$t('membershipIntroduction.membershipCard')}}</span>
             <el-select
               v-model="membershipCardValue"
               :placeholder="$t('membershipIntroduction.placeChoise')"
@@ -53,8 +55,24 @@
               </el-option>
             </el-select>
           </div>
-          <div class="middleType">
-            <span class="middleTypeSpan">{{$t('membershipIntroduction.membershipcard')}}：</span>
+          <div>
+            <span>{{$t('membershipIntroduction.membershipcard')}}</span>
+            <el-select
+              v-model="CardTypeValue"
+              :placeholder="$t('membershipIntroduction.placeChoise')"
+              size="small"
+            >
+              <el-option
+                v-for="item in CardTypeOptins"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </div>
+           <div>
+            <span>{{$t('membershipIntroduction.membershipcard')}}</span>
             <el-select
               v-model="CardTypeValue"
               :placeholder="$t('membershipIntroduction.placeChoise')"
@@ -76,6 +94,7 @@
               @click="loadUserCardData()"
             >{{$t('membershipIntroduction.screen')}}</el-button>
           </div>
+
         </div>
       </div>
 
@@ -460,7 +479,7 @@ export default {
 }
 
 </script>
-<style scoped>
+<style scoped lang="scss">
 .noData {
   height: 100px;
   display: flex;
@@ -500,18 +519,24 @@ export default {
   display: flex;
 }
 .top > div {
+  min-width: 320px;
+  width: 20%;
   display: flex;
-  width: 280px;
+}
+.top > div > span{
+  width: 80px;
+  display: inline-block;
+  text-overflow: nowrap;
+  margin-right: 10px;
 }
 .top > div:nth-of-type(2) {
   margin: 0 100px;
 }
 .top > div > span {
   display: inline-block;
-  width: 80px;
   line-height: 30px;
   line-height: 30px;
-  text-align: left;
+  text-align: right;
   /* margin-right: 25px; */
   color: #333;
 }
@@ -523,15 +548,6 @@ export default {
 }
 .middle {
   margin-top: 20px;
-}
-/* .spDiv {
-  padding-left: 22px;
-} */
-.middleType {
-  margin-left: 60px !important;
-}
-.middleTypeSpan {
-  width: 100px !important;
 }
 
 .content {
@@ -559,12 +575,6 @@ thead td {
   padding: 8px 10px;
   vertical-align: middle !important;
 }
-/* thead td:nth-of-type(1) {
-  width: 220px;
-}
-thead td:nth-of-type(2) {
-  width: 104px;
-} */
 
 tbody td {
   text-align: center;
@@ -582,10 +592,6 @@ tbody td {
   margin-left: 0px;
 }
 
-.td-money > img{
-  /* padding-right: 10px; */
-}
-
 td {
   padding: 8px 10px;
   vertical-align: middle !important;
@@ -595,9 +601,6 @@ td {
   width: 490px !important;
 }
 
-.mixinleftDiv {
-  width: 280px !important;
-}
 .operateDiv {
   color: #0e70ca;
 }
@@ -605,15 +608,10 @@ td {
   cursor: pointer;
   margin-left: -3px;
 }
-</style>
-<style>
-.receiveDetailMain .top .el-input__inner {
-  width: 150px !important;
+/deep/ .el-input__inner{
+  width: 140px;
 }
-.receiveDetail .receiveDetailMain .receiveDetailDate .el-input__inner {
-  width: 350px !important;
-}
-#memberCard {
-  margin: 10px auto;
+/deep/ .el-select{
+  width: 140px;
 }
 </style>
