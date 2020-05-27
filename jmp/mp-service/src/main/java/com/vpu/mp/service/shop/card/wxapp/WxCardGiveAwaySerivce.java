@@ -110,7 +110,7 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 	 */
 	public void dealWithGivingCard(String cardNo) {
 		GiveCardRecordRecord giveWayInfo = getNormalGiveCardRecordByCardNo(cardNo);
-		if(giveWayInfo != null || giveWayInfo.getDeadline().before(DateUtil.getLocalDateTime())) {
+		if(giveWayInfo != null && giveWayInfo.getDeadline().before(DateUtil.getLocalDateTime())) {
 			DefaultCardParam param = new DefaultCardParam();
 			param.setCardNo(cardNo);
 			quitLimitCardGiveAway(param);
