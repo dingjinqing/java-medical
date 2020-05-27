@@ -153,6 +153,10 @@
                     {{$t('membershipIntroduction.using')}}
                   </span>
                 </span>
+                <span v-else-if="item.flag==2">
+                    <!-- 使用中 -->
+                    {{$t('membershipIntroduction.using')}}
+                  </span>
                 <span v-else-if="item.flag==1">
                   <!-- 已弃用 -->
                   {{$t('membershipIntroduction.abolished')}}
@@ -288,7 +292,7 @@ export default {
       membershipCardOptins: [],
       membershipCardValue: '',
       CardTypeOptins: [],
-      CardTypeValue: '',
+      CardTypeValue: null,
       statusValue: -1,
       page_one: true,
       tbodyFlag: false,
