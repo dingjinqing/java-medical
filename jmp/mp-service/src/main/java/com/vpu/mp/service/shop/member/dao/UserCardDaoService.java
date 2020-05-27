@@ -494,7 +494,7 @@ public class UserCardDaoService extends ShopBaseService{
 				.leftJoin(MEMBER_CARD)
 				.on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
 				.where(USER_CARD.USER_ID.eq(param.getUserId()))
-				.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+				.and(USER_CARD.FLAG.notEqual(CardConstant.UCARD_FG_STOP))
 				.orderBy(MEMBER_CARD.GRADE.desc(),USER_CARD.IS_DEFAULT.desc(),USER_CARD.CREATE_TIME.desc());
         return getPageResult(select, param.getCurrentPage(), param.getPageRows(), WxAppUserCardVo.class);
     }
