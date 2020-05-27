@@ -157,6 +157,10 @@
                   <!-- 已弃用 -->
                   {{$t('membershipIntroduction.abolished')}}
                 </span>
+                <span v-else-if="item.flag==3">
+                  <!-- 已转赠 -->
+                  {{$t('membershipIntroduction.cardGived')}}
+                </span>
               </td>
               <td class="td-money"  style="margin: 0px;padding: 0px;">
                 <div class="moneyModify" v-if="item.cardType==='0' ">
