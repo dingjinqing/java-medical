@@ -1,0 +1,41 @@
+/* components/usercenter/useraddress/useraddress.wxss */
+.no-address-text {
+  color:#666;
+  text-align: center;
+}
+.no-address-btns {
+  padding: 42rpx 30rpx;
+}
+.no-address-btn {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  border-radius: 3px;
+  font-size: 26rpx;
+}
+.new-btn {
+  color: #fff;
+  background: #f66;
+}
+.wd-btn {
+  margin-top: 10rpx;
+  border: 1px solid #333;
+}
+
+/*  */
+.address-list-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.address-list-footer button {
+  width: 40%;
+  border-radius: 10rpx;
+  border: 1px solid #333;
+  font-size: 26rpx;
+}

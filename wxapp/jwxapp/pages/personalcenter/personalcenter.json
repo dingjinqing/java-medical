@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "个人中心",
+  "usingComponents": {
+    "userinfo": "../../components/usercenter/userinfo/userinfo",
+    "address": "../../components/usercenter/useraddress/useraddress"
+  }
+}

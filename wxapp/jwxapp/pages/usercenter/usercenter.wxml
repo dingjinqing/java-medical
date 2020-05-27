@@ -3,7 +3,7 @@
 <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="main-container" style='overflow-x:hidden;padding-bottom:50rpx;'>
   <view class="top">
-    <image src="{{wx_user_avatar}}" bindtap="bindJumpLink" data-url="/pages/userinfo/userinfo" class="touxiang" mode="widthFix" wx:if='{{wx_user_avatar!=""}}'></image>
+    <image src="{{wx_user_avatar}}" bindtap="bindJumpLink" data-url="/pages/personalcenter/personalcenter" class="touxiang" mode="widthFix" wx:if='{{wx_user_avatar!=""}}'></image>
     <image src="{{imageUrl}}image/wxapp/icon_no_4.png" bindtap="bindJumpLink" data-url="/pages/userinfo/userinfo" class="touxiang" mode="widthFix" wx:if='{{wx_user_avatar==""}}'></image>
     <view class="number" wx:if="{{user_center[0].sign_score.is_open_sign == 1 && user_center[0].sign_score.sign_data.receive_score > 0 && user_center[0].sign_score.is_open_sign==1}}">
       {{user_name}}

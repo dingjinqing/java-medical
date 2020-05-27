@@ -1,0 +1,43 @@
+<!--components/usercenter/useraddress/useraddress.wxml-->
+<view class="main-container">
+  <view class="address-list">
+    <view class="address-wrap">
+      <block>
+        <view class="address-item">
+          <view class="address-item-top">
+            <view>
+              <text>许一晨</text>
+              <text>13800000000</text>
+            </view>
+            <view>地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址(邮编)</view>
+          </view>
+          <view class="address-item-bottom">
+            <label>
+              <radio value="1" checked="false" />
+              设为默认地址
+            </label>
+            <view>
+              <text>编辑</text>
+              <text>删除</text>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view> 
+    <view class="address-list-footer">
+      <button>从微信获取新地址</button>
+      <button>新增收货地址</button>
+    </view>
+  </view>
+  <view class="no-address" wx:if="{{false}}">
+    <view class="no-address-top">
+      <image class="no-address-icon" src="" mode="widthFix" />
+      <view class="no-address-text">您还没有收货地址</view>
+    </view>
+    <view class="no-address-btns">
+      <button bindtap="newAdressHandle" class="no-address-btn new-btn" style="background:{{comColor}}">新增地址</button>
+      <button bindtap="getWechatAdress" class="no-address-btn wd-btn">从微信获取新地址</button>
+    </view>
+  </view>
+</view>
+  
