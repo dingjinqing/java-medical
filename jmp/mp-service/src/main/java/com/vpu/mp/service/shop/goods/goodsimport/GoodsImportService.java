@@ -401,6 +401,18 @@ public class GoodsImportService extends ShopBaseService {
     @SuppressWarnings("all")
     private GoodsDataIllegalEnumWrap realInsert(List<GoodsVpuExcelImportBo> importBos, Goods goods, Map<String, Integer> brandMap, Map<String, Integer> sortMap) {
         GoodsDataIllegalEnumWrap resultCode = new GoodsDataIllegalEnumWrap();
+        // 检查规格名称是否存在重复
+        boolean isOk = goodsService.goodsSpecProductService.isSpecNameOrValueRepeat(goods.getGoodsSpecs());
+        if (!isOk) {
+            resultCode.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_SPEC_K_V_REPEATED);
+            return resultCode;
+        }
+        // 校验输入的规格组是否正确
+        isOk = goodsService.goodsSpecProductService.isGoodsSpecProductDescRight(goods.getGoodsSpecProducts(), goods.getGoodsSpecs());
+        if (!isOk) {
+            resultCode.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_PRD_DESC_WRONG);
+            return resultCode;
+        }
         // 处理图片
         List<DownloadImageBo> downloadImageBos = filterGoodsImages(importBos);
         if (downloadImageBos.size() == 0) {
