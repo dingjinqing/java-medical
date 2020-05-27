@@ -36,10 +36,10 @@
         <template v-if="form.judge_status === 1">
           <div>
             自动审核：<el-checkbox
-              v-model="form.activation"
+              v-model="form.auto_examine"
               :true-label='1'
               :false-label='0'
-              @change="activationChange"
+              @change="examineChange"
             >{{ $t('distribution.reviewedInvitation') }}</el-checkbox>
           </div>
           <div>
@@ -51,18 +51,18 @@
           </div>
           <div>
             <el-switch
-              v-model="form.auto_examine"
+              v-model="form.activation"
               :active-value='1'
               :inactive-value='0'
             ></el-switch>
-            <span v-if="form.auto_examine === 1">已开启</span>
-            <span v-if="form.auto_examine === 0">已关闭</span>
+            <span v-if="form.activation === 1">已开启</span>
+            <span v-if="form.activation === 0">已关闭</span>
             <span class="text">{{ $t('distribution.reviewedInfo') }}</span>
           </div>
 
           <!-- 审核信息 -->
           <div
-            v-if="form.auto_examine === 1"
+            v-if="form.activation === 1"
             style="width: 900px;"
           >
             <el-checkbox-group v-model="form.activation_cfg">
@@ -627,9 +627,9 @@ export default {
         status: 0, // 分销开关
         judge_status: 0, // 分销员审核开关
         // 自动审核
-        activation: 0, // 是否需要提交个人信息
-        // 信息开关
         auto_examine: 0,
+        // 信息开关
+        activation: 0, // 是否需要提交个人信息
         // 自定义激活项
         custom_options: [],
         // invitationCode: 1, // 邀请码
@@ -907,11 +907,11 @@ export default {
     addDistribution () {
       // 分销审核项
       var customFlag = this.form.custom_options.findIndex(item => { return item.is_checked === 1 })
-      if (this.form.auto_examine === 1 && customFlag === -1 && this.form.activation_cfg.length === 0) {
+      if (this.form.activation === 1 && customFlag === -1 && this.form.activation_cfg.length === 0) {
         this.$message.warning('分销员审核至少选择一项需提交信息')
         return false
       }
-      if (this.form.activation === 1 && this.form.auto_examine === 0) {
+      if (this.form.auto_examine === 1 && this.form.activation === 0) {
         this.$message.warning('自动审核需要校验邀请码, 请开启分销员个人信息审核')
         return false
       }
@@ -1042,7 +1042,7 @@ export default {
     },
 
     // 自动审核切换
-    activationChange (value) {
+    examineChange (value) {
       let hasCheck = this.form.activation_cfg.some((item, index) => {
         if (item === '邀请码') {
           return true
