@@ -230,7 +230,7 @@
             <span v-if="scope.row.flag === 0"> {{$t('memberCard.cardNomal')}} </span>
             <span v-else-if="scope.row.flag === 1"> {{$t('memberCard.alreadyDelete')}}({{scope.row.updateTime}}) </span>
             <span v-else-if="scope.row.flag === 2"> 转赠中 </span>
-            <span v-else-if="scope.row.flag === 3"> 已转赠({{scope.row.getTime}});赠予:
+            <span v-else-if="scope.row.flag === 3"> {{$t('membershipIntroduction.cardGived')}}({{scope.row.getTime}});赠予:
                 <span @click="handleToUserDetail(scope.row.getUserId)" style="color: #5a8bff;cursor: pointer;">
                   {{scope.row.giveName}}
                 </span>;

@@ -539,5 +539,6 @@ export const en = {
       value: 3,
       label: 'Gived'
     }
-  ]
+  ],
+  cardGived: 'Gived'
 }
