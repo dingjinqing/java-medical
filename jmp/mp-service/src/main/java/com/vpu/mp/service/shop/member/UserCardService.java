@@ -242,8 +242,8 @@ public class UserCardService extends ShopBaseService {
 			String[][] mpData = new String[][] {
 				{"等级卡升级通知"},
 				{newCard.getCardName()},
-				{"升级成功"},
-				{option}
+				{"通过"},
+				{"升级成功"}
 			};
 			List<Integer> arrayList = Collections.<Integer>singletonList(userId);
 			MaSubscribeData data = MaSubscribeData.builder().data307(maData).build();

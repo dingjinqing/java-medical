@@ -218,11 +218,13 @@ public class ChannelService extends ShopBaseService {
 		String imageUrl =null;
 		if (record != null) {
 			if(ChannelConstant.SOURCETYPE_CUSTOMIZE.equals(record.getSourceType())) {
-				pathParam = String.format(CUSTOMIZE_PATH+PAGE_PATH_PARAM_FORMAT, record.getPageId(),record.getShare());
+				pathParam = String.format(PAGE_PATH_PARAM_FORMAT, record.getPageId(),record.getShare());
 				imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.INDEX, pathParam);
+				pathParam = CUSTOMIZE_PATH + pathParam;
 			}else {
 				pathParam = String.format(GOODS_DETAIL_PATH+GOODS_PATH_PARAM_FORMAT, record.getGoodsId(),record.getShare());
 				imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, pathParam);
+                pathParam = GOODS_DETAIL_PATH + pathParam;
 			}
 
 			qrCodeVo = new QrCodeShareVo(imageUrl,pathParam);
