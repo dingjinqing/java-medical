@@ -393,14 +393,18 @@ export default {
     choosingGoodsResult (row, rows) {
       console.log(row, '-----row', rows)
       if (rows.refresh === true) {
-        this.initDataList()
+        setTimeout(() => {
+          this.initDataList()
+        }, 20)
       }
     },
     // 自定义页面数据回传
     handleSelectTemplate (data, datas) {
       console.log(data, '-----data', datas)
       if (datas.refresh === true) {
-        this.initDataList()
+        setTimeout(() => {
+          this.initDataList()
+        }, 20)
       }
     }
   }
