@@ -72,14 +72,14 @@
             </el-select>
           </div>
            <div>
-            <span>{{$t('membershipIntroduction.membershipcard')}}</span>
+            <span>{{$t('membershipIntroduction.cardStatus')}}</span>
             <el-select
-              v-model="CardTypeValue"
+              v-model="statusValue"
               :placeholder="$t('membershipIntroduction.placeChoise')"
               size="small"
             >
               <el-option
-                v-for="item in CardTypeOptins"
+                v-for="item in $t('membershipIntroduction.cardStatusOpt')"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -285,6 +285,7 @@ export default {
       membershipCardValue: '',
       CardTypeOptins: [],
       CardTypeValue: '',
+      statusValue: -1,
       page_one: true,
       tbodyFlag: false,
       trList: [], // 表格数据
@@ -342,7 +343,8 @@ export default {
         'createTimeFirst': this.dateInput[0],
         'createTimeSecond': this.dateInput[1],
         'cardId': this.membershipCardValue,
-        'cardType': this.CardTypeValue
+        'cardType': this.CardTypeValue,
+        'statusValue': this.statusValue
       }
       console.log(obj)
       getAllMemberCardDetailRequest(obj).then(res => {
