@@ -64,10 +64,11 @@ export default {
       langName: 'zh_CN',
       cnInit: {
         selector: '#cnTinymce',
-        language_url: `//${window.location.host}/static/tinymce/tinymce_languages/langs/zh_CN.js`,
+        base_url: '/system/static/tinymce',
+        language_url: `/system/static/tinymce/tinymce_languages/langs/zh_CN.js`,
         language: 'zh_CN',
         height: 450,
-        skin_url: `//${window.location.host}/static/tinymce/skins/ui/oxide`,
+        skin_url: `/system/static/tinymce/skins/ui/oxide`,
         plugins: this.plugins,
         toolbar: this.toolbar,
         branding: false,
@@ -140,7 +141,7 @@ export default {
       // tinymce.EditorManager.execCommand('mceRemoveEditor', true, 'cnTinymce')
       if (type === 'zh_CN') {
         this.cnInit.language = 'zh_CN'
-        this.cnInit.language_url = `http://${window.location.host}/static/tinymce/tinymce_languages/langs/zh_CN.js`
+        this.cnInit.language_url = `/system/static/tinymce/tinymce_languages/langs/zh_CN.js`
       } else {
         delete this.cnInit.language
         delete this.cnInit.language_url
