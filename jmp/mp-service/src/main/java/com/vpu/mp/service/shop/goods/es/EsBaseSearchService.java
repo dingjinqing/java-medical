@@ -28,9 +28,11 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.Highlighter;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -210,6 +212,18 @@ public class EsBaseSearchService extends ShopBaseService {
         if( param.getIncludes() != null){
             sourceBuilder.fetchSource(param.getIncludes(), null);
         }
+        HighlightBuilder highlightBuilder = new HighlightBuilder();
+        HighlightBuilder.Field field ;
+        if ( param.getAnalyzerStatus() ){
+            field = new HighlightBuilder.Field(GOODS_NAME+".sing");
+        }else{
+            field = new HighlightBuilder.Field(GOODS_NAME);
+        }
+
+        field.preTags("<font color='red'>");
+        field.postTags("</font>");
+        highlightBuilder.field(field);
+        sourceBuilder.highlighter(highlightBuilder);
 
         return sourceBuilder;
     }
@@ -225,7 +239,18 @@ public class EsBaseSearchService extends ShopBaseService {
         SearchHit[] hits = searchResponse.getHits().getHits();
         List<EsGoods> data = new LinkedList<>();
         for( SearchHit hit:hits){
-            data.add(Util.parseJson(hit.getSourceAsString(),EsGoods.class, EsUtil.ES_FILED_SERIALIZER));
+            EsGoods esGoods = Util.parseJson(hit.getSourceAsString(),EsGoods.class, EsUtil.ES_FILED_SERIALIZER);
+            if( !hit.getHighlightFields().isEmpty() ){
+                if( hit.getHighlightFields().containsKey(GOODS_NAME) ){
+                    esGoods.setGoodsTitleName(esGoods.getGoodsName());
+                    esGoods.setGoodsName(hit.getHighlightFields().get(GOODS_NAME).fragments()[0].toString());
+                }else if(hit.getHighlightFields().containsKey(GOODS_NAME+".sing")){
+                    esGoods.setGoodsTitleName(esGoods.getGoodsName());
+                    esGoods.setGoodsName(hit.getHighlightFields().get(GOODS_NAME+".sing").fragments()[0].toString());
+                }
+            }
+
+            data.add(esGoods);
         }
         return data;
     }

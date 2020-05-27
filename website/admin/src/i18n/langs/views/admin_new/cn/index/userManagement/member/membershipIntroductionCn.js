@@ -537,5 +537,6 @@ export const cn = {
       value: 3,
       label: '已转赠'
     }
-  ]
+  ],
+  cardGived: '已转赠'
 }

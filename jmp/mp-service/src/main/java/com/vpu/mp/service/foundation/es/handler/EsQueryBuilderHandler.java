@@ -43,7 +43,7 @@ public class EsQueryBuilderHandler {
             //关键字查询单独处理
             if(EsSearchName.KEY_WORDS.equals(x.getSearchName())){
                 if( searchSource.equals(EsSearchSource.ADMIN) && enableAnalyzer){
-                    resultQueryBuilder.must(QueryBuilders.wildcardQuery(EsSearchName.GOODS_NAME+".sing","*"+x.getValue()+"*"));
+                    resultQueryBuilder.must(QueryBuilders.matchPhraseQuery(EsSearchName.GOODS_NAME+".sing",x.getValue()));
                     continue;
                 }else{
                     resultQueryBuilder.should(QueryBuilders.matchQuery(EsSearchName.GOODS_NAME,x.getValue())).boost(5);

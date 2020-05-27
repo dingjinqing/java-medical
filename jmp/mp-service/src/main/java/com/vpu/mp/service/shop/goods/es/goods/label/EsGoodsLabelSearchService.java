@@ -100,10 +100,16 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
      * @param type {@link EsGoodsConstant#GOODS_DETAIL_PAGE} page source
      * @return List<EsGoodsLabel>
      */
-    public List<Integer> getGoodsIdsByLabelIds(List<Integer> labelIds,Byte type) throws IOException {
+    public List<Integer> getGoodsIdsByLabelIds(List<Integer> labelIds,Byte type) {
         Integer shopId = getShopId();
         SearchRequest searchRequest = assemblySearchRequestByLabelId(shopId,labelIds,type);
-        SearchResponse response = search(searchRequest);
+        SearchResponse response = null;
+        try {
+            response = search(searchRequest);
+        } catch (IOException e) {
+            log.error("【ElasticSearch query error】getGoodsIdsByLabelIds error");
+            return Lists.newArrayList();
+        }
         return getGoodsIds(response);
     }
 

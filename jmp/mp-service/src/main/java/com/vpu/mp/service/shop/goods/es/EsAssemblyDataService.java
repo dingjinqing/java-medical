@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortCacheInfo;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.goods.*;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoodsProduct;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
@@ -121,7 +122,7 @@ public class EsAssemblyDataService extends ShopBaseService {
                 List<GoodsSpecProductRecord> list = goodsProductMap.get(goodsId);
                 list.sort(Comparator.comparing(GoodsSpecProductRecord::getPrdPrice));
                 List<BigDecimal> specPrdPrices = Lists.newLinkedList();
-                List<GoodsPrdMpVo> voList = Lists.newArrayList();
+                List<EsGoodsProduct> voList = Lists.newArrayList();
                 StringBuilder prdSns = new StringBuilder();
                 if( list.size() == 1 && StringUtils.isBlank(list.get(0).getPrdSpecs()) ){
                     esGoods.setDefPrd(true);
@@ -129,13 +130,14 @@ public class EsAssemblyDataService extends ShopBaseService {
                     esGoods.setDefPrd(false);
                 }
                 list.forEach(x -> {
-                    voList.add(new GoodsPrdMpVo(x));
+                    voList.add(new EsGoodsProduct(x));
                     specPrdPrices.add(x.getPrdPrice());
                     prdSns.append(x.getPrdSn()).append(",");
                 });
                 esGoods.setPrdSns(prdSns.toString());
                 int length = specPrdPrices.size();
                 esGoods.setPrdJson(Util.toJson(voList));
+                esGoods.setPrds(voList);
                 esGoods.setMaxSpecPrdPrices(specPrdPrices.get(length - 1));
                 esGoods.setMinSpecPrdPrices(specPrdPrices.get(0));
 

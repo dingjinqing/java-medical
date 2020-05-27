@@ -1,16 +1,20 @@
 package com.vpu.mp.service.foundation.es;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.service.foundation.es.annotation.EsFiled;
 import com.vpu.mp.service.foundation.es.annotation.EsFiledSerializer;
 import com.vpu.mp.service.foundation.es.annotation.EsFiledTypeConstant;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoodsProduct;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.admin.indices.alias.Alias;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.indices.CreateIndexRequest;
+import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -37,44 +41,58 @@ public class EsUtil {
             xContentBuilder = JsonXContent.contentBuilder()
                 .startObject()
                 .startObject("properties");
-            Field[] fieldArray = clz.getDeclaredFields();
-            for( Field field : fieldArray ){
-                EsFiled a = field.getAnnotation(EsFiled.class);
-                if( a != null ){
-                    xContentBuilder.startObject(a.name());
-                    xContentBuilder.field("type",a.type());
-                    xContentBuilder.field("index",a.index());
-                    if( EsFiledTypeConstant.DATE.equals(a.type()) ){
-                        xContentBuilder.field("format","yyyy-MM-dd HH:mm:ss");
-                    }
-                    if(StringUtils.isNotBlank(a.analyzer()) ){
-                        xContentBuilder.field("analyzer",a.analyzer());
-                    }
-                    if( StringUtils.isNotBlank(a.copyTo()) ){
-                        xContentBuilder.field("copy_to",a.copyTo());
-                    }
-                    if(StringUtils.isNotBlank(a.searchAnalyzer()) ){
-                        xContentBuilder.field("search_analyzer",a.searchAnalyzer());
-                    }
-                    if( "scaled_float".equals(a.type()) ){
-                        xContentBuilder.field("scaling_factor",a.scaledNumber());
-                    }
-                    if( a.name().equals("goods_name") ){
-                        xContentBuilder.startObject("fields")
-                            .startObject("sing")
-                            .field("type","keyword")
-//                            .field("index","not_analyzed")
-                            .endObject().endObject();
-                    }
-                    xContentBuilder.endObject();
-                }
-            }
+            assemblyXContentBuilder(xContentBuilder,clz);
             xContentBuilder.endObject().endObject();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         return xContentBuilder;
+    }
+    private static void assemblyXContentBuilder(XContentBuilder xContentBuilder,Class<?> clz) throws IOException {
+        Field[] fieldArray = clz.getDeclaredFields();
+        for( Field field : fieldArray ){
+            EsFiled a = field.getAnnotation(EsFiled.class);
+            if( a != null ){
+                xContentBuilder.startObject(a.name());
+                xContentBuilder.field("type",a.type());
+                if( field.getName().equals(EsSearchName.PRDS)){
+                    xContentBuilder.startObject("properties");
+                    assemblyXContentBuilder(xContentBuilder,EsGoodsProduct.class);
+                    xContentBuilder.endObject();
+                }else{
+                    xContentBuilder.field("index",a.index());
+                }
+
+
+
+                if( EsFiledTypeConstant.DATE.equals(a.type()) ){
+                    xContentBuilder.field("format","yyyy-MM-dd HH:mm:ss");
+                }
+                if(StringUtils.isNotBlank(a.analyzer()) ){
+                    xContentBuilder.field("analyzer",a.analyzer());
+                }
+                if( StringUtils.isNotBlank(a.copyTo()) ){
+                    xContentBuilder.field("copy_to",a.copyTo());
+                }
+                if(StringUtils.isNotBlank(a.searchAnalyzer()) ){
+                    xContentBuilder.field("search_analyzer",a.searchAnalyzer());
+                }
+                if( "scaled_float".equals(a.type()) ){
+                    xContentBuilder.field("scaling_factor",a.scaledNumber());
+                }
+                if( a.name().equals("goods_name") ){
+                    xContentBuilder.startObject("fields")
+                        .startObject("sing")
+                        .field("type","text")
+                        .field("analyzer","diy_my_analyzer")
+//                            .field("index","not_analyzed")
+                        .endObject().endObject();
+                }
+
+                xContentBuilder.endObject();
+            }
+        }
     }
 
     /**
@@ -110,16 +128,56 @@ public class EsUtil {
             throw new Error("ElasticSearch create index error");
         }
         CreateIndexRequest createIndexRequest = new CreateIndexRequest(indexName);
-        createIndexRequest.settings(Settings.builder()
-            //由于现阶段的ElasticSearch的部署是单机版因此副分片数量设为0（副分片需要至少两个ES服务才能生效）
-            .put("index.number_of_replicas",0)
-            .put("index.number_of_shards",3)
-        );
+        createIndexRequest.settings(getIndexSetting(aliaName));
         createIndexRequest.mapping(mapping);
         if( setAlias ){
             createIndexRequest.alias(new Alias(aliaName));
         }
         return createIndexRequest;
+    }
+
+    private static XContentBuilder getIndexSetting(String aliaName){
+        try {
+            //由于现阶段的ElasticSearch的部署是单机版因此副分片数量设为0（副分片需要至少两个ES服务才能生效）
+            XContentBuilder builder = JsonXContent.contentBuilder()
+                .startObject()
+                .field("number_of_replicas",0)
+                .field("number_of_shards",1);
+            if( aliaName.equals(EsGoodsConstant.GOODS_ALIA_NAME) ){
+                getNgramAnalyzerSetting(builder);
+            }
+            return builder.endObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    /**
+     * 实现类似sql like 查询的自定分词器
+     * @return json（setting）
+     */
+    private static XContentBuilder getNgramAnalyzerSetting(XContentBuilder builder){
+        try {
+                builder.startObject("analysis")
+                    .startObject("analyzer")
+                        .startObject("diy_my_analyzer")
+                            .field("tokenizer","my_tokenizer")
+                        .endObject()
+                    .endObject()
+                    .startObject("tokenizer")
+                        .startObject("my_tokenizer")
+                            .field("type","ngram")
+                            .field("min_gram",1)
+                            .field("max_gram",1)
+//                            .field("token_chars", Lists.newArrayList("letter", "digit"))
+                        .endObject()
+                    .endObject()
+                .endObject();
+            return builder;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

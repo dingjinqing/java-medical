@@ -25,4 +25,6 @@ public class EsFiledTypeConstant {
 
     public static final String BOOL = "boolean";
 
+    public static final String OBJECT = "object";
+
 }
