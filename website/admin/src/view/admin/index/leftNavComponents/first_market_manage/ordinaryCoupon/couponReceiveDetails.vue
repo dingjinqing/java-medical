@@ -125,7 +125,7 @@
             <template slot-scope="scope">
               <span
                 class="jumpStyle"
-                @click="receiveHandler()"
+                @click="receiveHandler(scope.row.userId)"
               >{{scope.row.hasReceive ? scope.row.hasReceive : 0}}</span>
             </template>
           </el-table-column>
@@ -264,12 +264,13 @@ export default {
   },
   methods: {
     // 领取明细列表
-    initDataList (flag) {
+    initDataList (flag, userId) {
       this.requestParams = {}
       if (flag) {
         this.couponType = flag // 分裂优惠券用户领取
+        this.requestParams.shareId = userId
       } else {
-        this.requestParams.couponType = this.id
+        this.requestParams.couponType = this.couponType
       }
       this.requestParams.id = this.id
       this.requestParams.currentPage = this.pageParams.currentPage
@@ -352,8 +353,8 @@ export default {
     },
 
     // 领取用户数跳转
-    receiveHandler () {
-      this.initDataList(2)
+    receiveHandler (userId) {
+      this.initDataList(2, userId)
     }
 
   }
