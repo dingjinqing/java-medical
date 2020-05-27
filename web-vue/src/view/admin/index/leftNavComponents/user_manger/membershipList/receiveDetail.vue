@@ -2,7 +2,7 @@
   <div class="receiveDetail">
     <div class="receiveDetailMain">
       <div class="filter">
-        <div class="top">
+        <div class="top" style="margin-bottom: 10px;">
           <div>
             <span>{{$t('membershipIntroduction.phoneNum')}}</span>
             <el-input
@@ -129,7 +129,7 @@
               <td>{{item.cardNo}}</td>
               <td>{{item.username}} </td>
               <td>{{item.cardName}}
-                <div id="memberCard">
+                <div class="memberCard">
                   <div v-if="item.cardType==='0'">
                     {{$t('membershipIntroduction.normalCard')}}
                   </div>
@@ -613,5 +613,8 @@ td {
 }
 /deep/ .el-select{
   width: 140px;
+}
+.memberCard{
+  margin-top: 5px;
 }
 </style>
