@@ -753,7 +753,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param vo
      * @param bos
      */
-    public void processOrderBeforeVo(OrderBeforeParam param, OrderBeforeVo vo, List<OrderGoodsBo> bos) {
+    public void processOrderBeforeVo(OrderBeforeParam param, OrderBeforeVo vo, List<OrderGoodsBo> bos) throws MpException {
         logger().info("金额处理赋值(processOrderBeforeVo),start");
         //积分兑换比
         Integer scoreProportion = scoreCfg.getScoreProportion();
@@ -825,6 +825,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }else if(BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE.equals(param.getActivityType()) && orderPackageSale != null){
             currentMoneyPaid = BigDecimalUtil.add(orderPackageSale.getTotalPrice(), vo.getShippingFee());
         }
+        //当前微信支付金额(使用大额优惠券，支付金额不为负的，重算为0)
+        if(BigDecimalUtil.compareTo(currentMoneyPaid, BigDecimal.ZERO) < 0){
+            currentMoneyPaid = BigDecimal.ZERO;
+        }
         //支付金额
         BigDecimal moneyPaid = BigDecimalUtil.addOrSubtrac(
             BigDecimalUtil.BigDecimalPlus.create(currentMoneyPaid, BigDecimalUtil.Operator.subtrac),
@@ -832,9 +836,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             BigDecimalUtil.BigDecimalPlus.create(useAccount, BigDecimalUtil.Operator.subtrac),
             BigDecimalUtil.BigDecimalPlus.create(cardBalance, null)
         );
-        //支付金额(使用大额优惠券，支付金额不为负的，等于运费金额)
+        //支付金额(小于0说明前端多付金额)
         if(BigDecimalUtil.compareTo(moneyPaid, BigDecimal.ZERO) < 0){
-            moneyPaid = BigDecimal.ZERO;
+            throw new MpException(JsonResultCode.CODE_ORDER_MONEYPAID_ERROR_PLEASE_CHECK);
         }
         //好友代付
         if(param.getOrderPayWay() != null && param.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
