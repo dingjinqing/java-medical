@@ -151,7 +151,7 @@ export default {
         if (res.error === 0) {
           console.log(res.content)
           this.$message.success(res.message)
-          this.reflushData()
+          this.getList()
         } else {
           this.$message.error(res.message)
         }
