@@ -160,7 +160,7 @@ export default {
       console.log(this.isSubLogin)
       this.lang = localStorage.getItem('WEPUBAO_LANGUAGE')
       this.$http.$on('changeHead', () => {
-        this.shopAvatar = localStorage.getItem('V-shopAvatar')
+        this.shopAvatar = localStorage.getItem('V-AccountShopAvatar')
         this.accountName = localStorage.getItem('V-AccountName')
       })
       if (Cookies.get('V-Index-Token')) {
@@ -172,7 +172,7 @@ export default {
           if (res.error === 0) {
             this.shopAvatar = res.content.shopAvatar
 
-            localStorage.setItem('V-shopAvatar', res.content.shopAvatar)
+            localStorage.setItem('V-AccountShopAvatar', res.content.shopAvatar)
           }
           console.log(res)
         })
