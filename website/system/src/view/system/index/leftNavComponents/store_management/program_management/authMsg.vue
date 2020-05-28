@@ -392,13 +392,6 @@
                         style="wdith:150px;height:150px"
                         :src="dataList.testQrPath"
                       >
-                      <!-- <el-avatar
-                        style="vertical-align: middle"
-                        shape="square"
-                        :size="150"
-                        fit="fit"
-                        src="http://mpdevimg2.weipubao.cn/upload/saas/mp/qr/wxeaeb5c37a376f415.jpg"
-                      /> -->
 
                       <el-button
                         style="vertical-align: middle"

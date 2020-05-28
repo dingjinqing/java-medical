@@ -147,7 +147,7 @@ export default {
       modulesSaveData: {
         'img_items': [
           // {
-          //   'img_url': 'http://mpdevimg2.weipubao.cn/upload/4748160/image/20200227/73f2c8e4a1165fb55fe939463473f909f9dc4b0d.jpeg',
+          //   'img_url': '',
           //   'title_link': 'pages/sort/sort',
           //   'src_width': '800',
           //   'src_height': '800',

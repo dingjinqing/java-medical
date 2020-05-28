@@ -1008,7 +1008,7 @@ export default {
           <p>若24小时内未凑够拼团人数，则拼团失败，失败后系统会自动将所有支付的货款原路返回，具体到账时间按照各支付渠道为准。</p>
           <div>
             <p>拼团流程</p>
-            <image src="http://mpdevimg2.weipubao.cn/image/wxapp/icon_group4.png" style="max-width: 100%;"></image>
+            <image src="${this.$imageHost}/image/wxapp/icon_group4.png" style="max-width: 100%;"></image>
           </div>
         </div>
       `

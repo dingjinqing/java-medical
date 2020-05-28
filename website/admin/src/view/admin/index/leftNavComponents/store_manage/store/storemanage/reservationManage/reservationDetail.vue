@@ -108,7 +108,7 @@
           <div style="margin-top: 20px">
             <el-row :gutter="6">
               <el-col :span="2"><img
-                  src="http://mpdevimg2.weipubao.cn/image/admin/since-edit.png"
+                  :src="$imageHost+'/image/admin/since-edit.png'"
                   class="add_text"
                   style="cursor: pointer"
                   alt=""

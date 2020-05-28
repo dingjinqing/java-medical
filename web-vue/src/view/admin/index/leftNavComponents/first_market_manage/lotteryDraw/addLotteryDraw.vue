@@ -729,7 +729,6 @@ export default {
   color: #fff;
   background: #d5d7d9;
   font-size: 12px;
-  /* background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png"); */
   background-repeat: repeat-x;
 }
 .deleteIcon {

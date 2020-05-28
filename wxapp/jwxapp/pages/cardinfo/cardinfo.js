@@ -112,12 +112,12 @@ global.wxPage({
         // cardInfo.custom_rights = [
         //   {
         //     cright_content: "one for test",
-        //     cright_image: "http://mpdevimg2.weipubao.cn/upload/0/image/20190708/crop_pADgmTm2w2az2bMu.jpeg",
+        //     cright_image: "",
         //     cright_name: "one"
         //   },
         //   {
         //     cright_content: "two for test",
-        //     cright_image: "http://mpdevimg2.weipubao.cn/upload/0/image/20200206/crop_4LfGH88XPGhulaRI.jpeg",
+        //     cright_image: "",
         //     cright_name: "two"
         //   }
         // ]
