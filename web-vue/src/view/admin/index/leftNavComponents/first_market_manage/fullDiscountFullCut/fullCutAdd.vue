@@ -575,10 +575,11 @@
                       </td>
                       <td>￥{{item.shopPrice}}</td>
                       <td>{{item.goodsNumber}}</td>
-                      <td @click="deleteGoods(index)">
+                      <td>
                         <span
                           v-if="!params.id"
                           class="edit-icon"
+                          @click="deleteGoods(index)"
                         >删除</span>
                       </td>
                     </tr>
@@ -1190,6 +1191,9 @@ export default {
     },
     // 选择商品数据处理-部分
     onlyChooseGoodsHandler () {
+      if (this.params.id) {
+        return false
+      }
       this.isOnlyShowChooseGoods = true
       this.tuneUpChooseGoodsDialog = !this.tuneUpChooseGoodsDialog
     },
