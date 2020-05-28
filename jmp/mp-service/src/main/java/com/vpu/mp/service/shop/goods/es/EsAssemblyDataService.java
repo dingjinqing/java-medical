@@ -103,7 +103,11 @@ public class EsAssemblyDataService extends ShopBaseService {
             goodsLabelFilter.put(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode(), Collections.singletonList(goodsId));
             GoodsRecord goods = goodsMap.get(goodsId);
             EsGoods esGoods = assemblyEsGoods(goods, shopId);
-
+            if (validationMap(goodsShowPriceMap, goodsId)) {
+                esGoods.setShowPrice(goodsShowPriceMap.get(goodsId));
+            } else {
+                esGoods.setShowPrice(esGoods.getShopPrice());
+            }
             if (validationMap(goodsGradePrdMap, goodsId)) {
                 assemblyVipPriceImp(esGoods, goodsGradePrdMap.get(goodsId));
             }
@@ -113,11 +117,7 @@ public class EsAssemblyDataService extends ShopBaseService {
             if( validationMap(goodsVideoMap,goodsId) ){
                 esGoods.setVideoInfo(Util.toJson(goodsVideoMap.get(goodsId)));
             }
-            if (validationMap(goodsShowPriceMap, goodsId)) {
-                esGoods.setShowPrice(goodsShowPriceMap.get(goodsId));
-            } else {
-                esGoods.setShowPrice(esGoods.getShopPrice());
-            }
+
             if (validationMap(goodsProductMap, goodsId)) {
                 List<GoodsSpecProductRecord> list = goodsProductMap.get(goodsId);
                 list.sort(Comparator.comparing(GoodsSpecProductRecord::getPrdPrice));
@@ -277,7 +277,15 @@ public class EsAssemblyDataService extends ShopBaseService {
 
     }
 
-
+    /**
+     * 封装v会员等级价
+     * 针对不同的goodsType有不同的封装方式
+     *  (1).当goodsType是砍价、拼团、秒杀、定金膨胀时，会员等级价存的是商品对应的活动的最低价
+     *  (2).当goodsType是限时降价时，活动价和会员价做对比，取最低价
+     *  (3).其他的情况时有会员价取会员价，没有放活动价，会动价也没有放正常价
+     * @param esGoods
+     * @param goodsGradePrdList
+     */
     private void assemblyVipPriceImp(EsGoods esGoods, List<GoodsGradePrd> goodsGradePrdList) {
         if (!goodsGradePrdList.isEmpty()) {
             for (GoodsGradePrd goodsGradePrd : goodsGradePrdList) {
