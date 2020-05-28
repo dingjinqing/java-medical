@@ -98,7 +98,8 @@
         "insteadcheckout/insteadcheckout",
         "appointcomment/appointcomment",
         "form/form",
-        "formsuccess/formsuccess"
+        "formsuccess/formsuccess",
+        "addressedit/addressedit"
       ]
     }
   ],

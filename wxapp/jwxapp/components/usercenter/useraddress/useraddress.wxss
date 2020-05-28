@@ -1,4 +1,5 @@
 /* components/usercenter/useraddress/useraddress.wxss */
+/* 没有收货地址时展示 */
 .no-address-text {
   color:#666;
   text-align: center;
@@ -23,7 +24,32 @@
   border: 1px solid #333;
 }
 
-/*  */
+/* 收货地址列表 */
+.address-item {
+  background: #fff;
+  margin-top: 20rpx;
+  padding: 30rpx 30rpx 0;
+}
+.address-item-top text {
+  font-size: 32rpx;
+  line-height: 60rpx;
+}
+.ait-address {
+  font-size: 24rpx;
+}
+.address-item-bottom {
+  overflow: hidden;
+  line-height: 80rpx;
+}
+.aib-left {
+
+}
+.aib-left radio {
+  transform: scale(0.7, 0.7)
+}
+.aib-right {
+  float: right;
+}
 .address-list-footer {
   position: fixed;
   bottom: 0;
@@ -34,8 +60,8 @@
   width: 100%;
 }
 .address-list-footer button {
-  width: 40%;
-  border-radius: 10rpx;
-  border: 1px solid #333;
+  flex: 1;
+  margin: 20rpx;
+  border-radius: 4rpx;
   font-size: 26rpx;
 }

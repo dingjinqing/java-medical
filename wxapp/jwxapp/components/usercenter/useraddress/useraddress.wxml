@@ -1,5 +1,6 @@
 <!--components/usercenter/useraddress/useraddress.wxml-->
 <view class="main-container">
+  <!-- 地址列表 -->
   <view class="address-list">
     <view class="address-wrap">
       <block>
@@ -7,28 +8,28 @@
           <view class="address-item-top">
             <view>
               <text>许一晨</text>
-              <text>13800000000</text>
+              <text style="margin-left: 20rpx;">13800000000</text>
             </view>
-            <view>地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址(邮编)</view>
+            <view class="ait-address">地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址(邮编)</view>
           </view>
           <view class="address-item-bottom">
-            <label>
-              <radio value="1" checked="false" />
-              设为默认地址
+            <label class="aib-left">
+              <radio value="1" checked="false" />设为默认地址
             </label>
-            <view>
+            <view class="aib-right">
               <text>编辑</text>
-              <text>删除</text>
+              <text style="margin-left: 20rpx;">删除</text>
             </view>
           </view>
         </view>
       </block>
     </view> 
     <view class="address-list-footer">
-      <button>从微信获取新地址</button>
-      <button>新增收货地址</button>
+      <button bindtap="getWechatAdress" class="wd-btn">从微信获取新地址</button>
+      <button bindtap="newAdressHandle" class="new-btn" style="background:{{comColor}}">新增收货地址</button>
     </view>
   </view>
+  <!-- 没有地址时展示 -->
   <view class="no-address" wx:if="{{false}}">
     <view class="no-address-top">
       <image class="no-address-icon" src="" mode="widthFix" />

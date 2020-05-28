@@ -1,0 +1,11 @@
+<!--pages1/addressedit/addressedit.wxml-->
+<include src="../../pages/common/header.wxml" />
+<view class="main-container">
+  <view class="content">
+    <view class="">
+      <text>从微信获取新地址</text>
+    </view>
+    <view class="auto-recognition"></view>
+  </view>
+</view>
+<include src="/pages/common/footer.wxml" />

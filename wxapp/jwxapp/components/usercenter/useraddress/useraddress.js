@@ -27,6 +27,11 @@ global.wxComponent({
           console.log(err)
         }
       })
+    },
+    newAdressHandle () {
+      wx.navigateTo({
+        url: '/pages1/addressedit/addressedit',
+      })
     }
   }
 })
