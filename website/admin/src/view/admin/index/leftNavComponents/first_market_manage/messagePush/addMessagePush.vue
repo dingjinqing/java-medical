@@ -259,6 +259,7 @@
                               style="width:120px"
                               size="small"
                               v-model="item.ipt"
+                              onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
                             > </el-input>
                             <span>{{ item.label | filterA  }}</span>
                           </span>
@@ -294,7 +295,7 @@
                 <!-- 发送时间 -->
                 <el-form-item
                   :label="labels.label7"
-                  :rules="[{required: true }]"
+                  prop="timeRules"
                 >
                   <div>
                     <el-radio
@@ -325,6 +326,8 @@
                       :style="senAction===2?'display:none':''"
                     ></div>
                   </div>
+                </el-form-item>
+                <el-form-item prop="timeRules2">
                   <div style="color:#999;fontSize:12px;margin:5px 0">
                     所有可送达的用户均会第一时间收到一次此消息
                   </div>
@@ -372,9 +375,10 @@
       />
       <!-- 选择商品弹窗 -->
       <choosingGoods
-        @res="getRes"
+        @resultGoodsDatas="getRes"
         :tuneUpChooseGoods="tuneUpChooseGoods"
         :chooseGoodsBack="params.goodsIdList"
+        :checkedNumMax="3"
       />
       <!-- 选择内容模板消息 -->
       <chooseTemplateDialog
@@ -443,6 +447,32 @@ export default {
     getUserDialog
   },
   data () {
+    var validatePass = (rule, value, callback) => {
+      console.log(value)
+
+      if (this.senAction === 2) {
+        console.log(new Date(this.endTime), Date.now())
+        if (!this.startTime) {
+          callback(new Error('请选择发送时间'))
+        } else if (new Date(this.endTime) < Date.now()) {
+          callback(new Error('持续发送的结束时间不能小于当前时间'))
+        }
+      } else {
+        callback()
+      }
+    }
+    var validatePass2 = (rule, value, callback) => {
+      console.log(value)
+      if (this.senAction === 4) {
+        if (!this.startTimeTiming) {
+          callback(new Error('请选择发送时间'))
+        } else if (new Date(this.startTime) < Date.now()) {
+          callback(new Error('定时发送的时间不能小于当前时间'))
+        }
+      } else {
+        callback()
+      }
+    }
     return {
       checklistVisible: false, // 是否页面勾选弹窗flag
       checkedData: [], // 初始化弹窗选中的行
@@ -535,6 +565,12 @@ export default {
         content: [
           { validator: this.checkMessageContent, trigger: 'blur', required: true }
 
+        ],
+        timeRules: [
+          { validator: validatePass, trigger: 'blur', required: true }
+        ],
+        timeRules2: [
+          { validator: validatePass2, trigger: 'blur', required: true }
         ]
       },
       /**
@@ -642,7 +678,8 @@ export default {
       tuneUpSelectLink: false,
       isJudgeStartTimeOne: '',
       isJudgeStartTimeTwo: '',
-      userKey: null
+      userKey: null,
+      startTimeTiming: ''
     }
   },
   watch: {
@@ -652,15 +689,16 @@ export default {
           this.startTime = this.moment().format('YYYY-MM-DD HH:mm:ss')
           break
         case 2:
-          this.startTime = this.time.startTime
-          this.endTime = this.time.endTime
+          // this.startTime = this.time.startTime
+          // this.endTime = this.time.endTime
           break
         case 4:
-          this.startTime = this.time.startTime
+          // this.startTimeTiming = this.time.startTime
           break
         default:
           break
       }
+      this.$refs['form'].validate(() => { })
     }
   },
   created () {
@@ -704,6 +742,12 @@ export default {
       } else {
         link = this.pageLink
       }
+      let startTime = ''
+      if (this.senAction === 2) {
+        startTime = this.startTime
+      } else {
+        startTime = this.startTimeTiming
+      }
       const params = {
         name: this.formData.name,
         title: this.formData.title,
@@ -714,7 +758,7 @@ export default {
         userInfo: this.params,
         sendAction: this.senAction,
         userKey: this.userKey,
-        startTime: this.startTime,
+        startTime: startTime,
         endTime: this.endTime
       }
       console.log(params)
@@ -755,7 +799,7 @@ export default {
     },
     getTime2 (val) {
       this.time = val
-      this.startTime = val.startTime
+      this.startTimeTiming = val.startTime
       this.isJudgeStartTimeTwo = val.startTime
     },
     // 关闭会员弹窗
@@ -915,15 +959,16 @@ export default {
       }
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
-    getRes (ids, urls) {
-      if (ids.length > 3) {
-        this.$message.warning('最多选择3个商品')
-      } else {
-        this.params.goodsIdList = ids
-        this.imgsList = urls
-        // 发送获取人数
-        this.fetchUserList(this.params)
-      }
+    getRes (res) {
+      let id = []
+      res.forEach((item, index) => {
+        id.push(item.goodsId)
+      })
+      console.log(res, id)
+      this.params.goodsIdList = id
+      this.imgsList = res
+      // 发送获取人数
+      this.fetchUserList(this.params)
     },
     // 删除图片
     handleDelImg (id) {
@@ -931,7 +976,7 @@ export default {
         return
       }
       this.imgsList = this.imgsList.filter(item => item.goodsId !== id)
-      this.params.goodsIdList = this.goodsIdList.filter(item => item !== id)
+      this.params.goodsIdList = this.params.goodsIdList.filter(item => item !== id)
       this.fetchUserList(this.params)
     },
     // 获取选中的path
@@ -1056,20 +1101,26 @@ export default {
           })
         }
         isNone = false
-      } else if (this.senAction === 2) {
-        if (!this.isJudgeStartTimeOne) {
+      } else if (this.params.onClickCustomRule) {
+        if (!this.optionsList.length) {
           this.$message.error({
-            message: '持续发送请选择日期区间',
+            message: '未选择自定义选项',
             showClose: true
           })
-        }
-        isNone = false
-      } else if (this.senAction === 4) {
-        if (!this.isJudgeStartTimeTwo) {
-          this.$message.error({
-            message: '定时发送请选择发送日期',
-            showClose: true
+        } else {
+          console.log(this.optionsList)
+          let flag = false
+          this.optionsList.forEach((item, index) => {
+            if (item.ipt === '') {
+              flag = true
+            }
           })
+          if (flag) {
+            this.$message.error({
+              message: '请完善自定义信息',
+              showClose: true
+            })
+          }
         }
         isNone = false
       }
