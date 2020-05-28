@@ -113,7 +113,7 @@ public class MpOfficialAccountMessageService extends MainBaseService {
                 .templateId(templateId).data(keywordValues);
         }
 		if (StringUtils.isNotBlank(page) && StringUtils.isNotBlank(maAppId)) {
-            page = page + ((page.indexOf("?") != -1 ? "&" : "?") + "rnd=" + Util.randomId());
+            page = page + ((page.contains("?") ? "&" : "?") + "rnd=" + Util.randomId());
             messageBuilder.miniProgram(new WxMpTemplateMessage.MiniProgram(maAppId,page,false));
 		}
 		String sendTemplateMsg = null;
