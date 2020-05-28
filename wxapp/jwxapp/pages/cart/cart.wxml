@@ -271,7 +271,7 @@
           <view class="btn_check" style="width:60rpx;margin-right:10rpx;"><view class="shixiao_icon">失效</view></view>
           <view class='n_goods_info' style="margin-right:18rpx;">
             <view class='ng_left' bindtap='to_goods' data-goods_id='{{item.goodsId}}' data-tips='{{item.tip}}'>
-              <image src='{{item.goods_img}}'></image>
+              <image src='{{item.goodsImg}}'></image>
               <view class='no_click_tips' wx:if='{{item.tip}}'>{{item.tip}}</view>
             </view>
             <view class='ng_right'>
