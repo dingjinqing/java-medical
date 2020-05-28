@@ -66,4 +66,12 @@ public class RebateCenterVo {
     private Integer rebateRanking;
     /**返利轮播信息*/
     private List<RebateOrderListVo> RebateOrderList;
+    /**是否是分销员*/
+    private Integer isDistributor;
+
+    /**分销开关*/
+    private Byte status;
+
+    /**分销审核开关*/
+    private Byte judgeStatus;
 }
