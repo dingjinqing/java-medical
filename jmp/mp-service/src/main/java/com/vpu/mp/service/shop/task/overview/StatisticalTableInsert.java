@@ -17,6 +17,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -96,15 +97,21 @@ public class StatisticalTableInsert extends ShopBaseService {
      * Insert trades now. b2c_trades表，实时统计当天的数据
      */
     public void insertTradesNow() {
+
+        //yyyy-MM-dd格式当前日期
         Date refDate = Date.valueOf(LocalDate.now());
         LocalDateTime today = LocalDate.now().atStartOfDay();
         byte hour = (byte) LocalDateTime.now().getHour();
+        //上一个小时的始末时间
         Timestamp start = Timestamp.valueOf(today.plusHours(hour - 1));
         Timestamp end = Timestamp.valueOf(today.plusHours(hour));
         TradesRecord record = new TradesRecord();
         ProductOverviewParam param = new ProductOverviewParam();
         if (hour - 1 < INTEGER_ZERO) {
-            refDate = Date.valueOf(LocalDate.now().minusDays(INTEGER_ZERO));
+            Calendar c = Calendar.getInstance();
+            c.setTime(refDate);
+            c.add(Calendar.DAY_OF_MONTH,-1);
+            refDate = new Date(c.getTime().getTime());
             hour = 23;
         } else {
             --hour;

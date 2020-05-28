@@ -74,7 +74,7 @@ public class UserSummaryTaskService extends ShopBaseService {
      */
     public Integer getPv(Timestamp startTime, Timestamp endTime) {
         Condition timeCondition = LOGIN.CREATE_TIME.ge(startTime).and(LOGIN.CREATE_TIME.lessThan(endTime));
-        return db().fetchCount(LOGIN, timeCondition);
+        return db().select(DSL.sum(LOGIN.COUNT)).from(LOGIN).where(timeCondition).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
     }
 
     /**
