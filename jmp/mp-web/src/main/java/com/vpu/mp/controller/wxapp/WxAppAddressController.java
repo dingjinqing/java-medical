@@ -3,13 +3,11 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.pojo.shop.member.address.AddressIdParam;
-import com.vpu.mp.service.pojo.shop.member.address.AddressListVo;
-import com.vpu.mp.service.pojo.shop.member.address.AddressParam;
-import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
+import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
+import com.vpu.mp.service.pojo.shop.member.address.*;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.K;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,11 +58,11 @@ public class WxAppAddressController extends WxAppBaseController {
     @PostMapping("/get")
     public JsonResult getAddress(@RequestBody @Valid AddressIdParam param){
         Integer userId = wxAppAuth.user().getUserId();
-        UserAddressVo address = shop().addressService.getAddressById(userId, param.getAddressId());
+        UserAddressRecord address = shop().addressService.getAddressById(userId, param.getAddressId());
         if (address==null){
             return fail();
         }
-        return success();
+        return success(address.into(UserAddressVo.class));
     }
 
     /***
@@ -72,14 +70,19 @@ public class WxAppAddressController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/add")
-    public JsonResult addAddress(){
+    public JsonResult addAddress(@RequestBody @Valid AddressAddParam param){
         WxAppSessionUser user =wxAppAuth.user();
         Integer addressUserNotDeleteCount = shop().addressService.getAddressUserNotDeleteCount(user.getUserId());
         if (addressUserNotDeleteCount>USER_ADDRESS_MAX_COUNT){
             log.info("用户{}不能添加地址数量上限{}",user.getUserId(),USER_ADDRESS_MAX_COUNT);
             return fail(JsonResultCode.USER_ADDRESS_COUNT_MORE_THAN_MAX,USER_ADDRESS_MAX_COUNT);
         }
-        return null;
+        param.setUserId(user.getUserId());
+        int i = shop().addressService.addAddress(param);
+        if (i>0){
+            return success();
+        }
+        return fail();
     }
 
     /**
@@ -106,26 +109,50 @@ public class WxAppAddressController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/update")
-    public JsonResult updateAddress(){
-        return null;
+    public JsonResult updateAddress(@RequestBody @Validated(UpdateGroup.class) AddressAddParam param){
+        int i = shop().addressService.updateAddress(param);
+        if (i>0){
+            return success();
+        }
+        return fail();
     }
 
     /**
      * 删除地址
-     * @return
      */
     @PostMapping("/remove")
-    public JsonResult removeAddress(){
-        return null;
+    public JsonResult removeAddress(@RequestBody @Validated AddressIdParam param){
+        Integer userId = wxAppAuth.user().getUserId();
+        int i = shop().addressService.removeAddress(userId, param.getAddressId());
+        if (i>0){
+            return success();
+        }
+        return fail();
     }
 
     /**
      * 选择默认的地址
-     * @return
      */
     @PostMapping("/default")
-    public JsonResult defaultAddress(){
-        return null;
+    public JsonResult defaultAddress(@RequestBody @Validated AddressIdParam param){
+        Integer userId = wxAppAuth.user().getUserId();
+        int i = shop().addressService.defaultAddress(userId, param.getAddressId());
+        if (i>0){
+            return success();
+        }
+        return fail();
+    }
+
+    /**
+     * 获取地址信息
+     */
+    @PostMapping("/getLocation")
+    public JsonResult getLocationAddressInfo(@RequestBody @Validated LocationParam param){
+        AddressCode addressCode = shop().addressService.getLocationAddressInfo(param.getLat(), param.getLng());
+        if (addressCode!=null){
+            return success(addressCode);
+        }
+        return fail();
     }
 
 }
