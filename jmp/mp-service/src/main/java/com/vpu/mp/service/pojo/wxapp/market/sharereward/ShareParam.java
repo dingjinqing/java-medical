@@ -24,5 +24,4 @@ public class ShareParam {
      */
     private Integer goodsId;
 
-    Integer launchUserId;
 }

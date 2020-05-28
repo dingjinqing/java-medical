@@ -114,7 +114,7 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     private Byte customService;
 
     /**
-     * 分享有礼活动ID
+     * 该商品可以参加的分享有礼活动ID
      */
     private Integer shareAwardId;
 

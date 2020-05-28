@@ -189,14 +189,16 @@ global.wxPage({
   onLoad: function (options) {
     console.log(options, '++++++++++++++++++++++++')
     if (!options.gid) return
-    let { gid: goodsId, aid: activityId = null, atp: activityType = null,room_id:roomId = null,rebateConfig=null, inviteId=null} = options
+    let { gid: goodsId, aid: activityId = null, atp: activityType = null,room_id:roomId = null,rebateConfig=null, inviteId=null, shareAwardLaunchUserId = null, shareAwardId = null} = options
     this.setData({
       goodsId,
       activityId:activityId === 'null' ? null : activityId,
       activityType:activityType === 'null' || activityType === '0' ? null : activityType,
       roomId:roomId,
       rebateConfig,
-      inviteId
+      inviteId,
+      shareAwardLaunchUserId,
+      shareAwardId
     })
     this.requestGoodsInfo()
   },
@@ -205,6 +207,10 @@ global.wxPage({
     let result = new Promise((resolve, reject) => {
       let customParams = {}
       if(this.data.rebateConfig) customParams.rebateConfig = JSON.parse(this.data.rebateConfig)
+      if(this.data.shareAwardId && this.data.shareAwardLaunchUserId) {
+        customParams.shareAwardId = this.data.shareAwardId
+        customParams.shareAwardLaunchUserId =  this.data.shareAwardLaunchUserId
+      }
       util.api(
         '/api/wxapp/goods/detail',
         res => {
@@ -999,6 +1005,25 @@ global.wxPage({
    */
   onShareAppMessage: function () {
     console.log(this.data.buttonShareData)
+    //分享记录
+    util.api('/api/wxapp/shareaward/goods/share',res=>{
+      console.log(res)
+    },{
+      goodsId: this.data.goodsId,
+      activityId: this.data.goodsInfo.activity.activityId,
+      activityType: this.data.goodsInfo.activity.activityType,
+      userId: util.getCache('user_id'),
+    })
+    //分享有礼记录
+    if(this.data.shareAwardId){
+      util.api('/api/wxapp/shareaward/goods/shareaward',res=>{
+        console.log(res)
+      },{
+        goodsId: this.data.goodsId,
+        activityId: this.data.shareAwardId,
+        userId: util.getCache('user_id'),
+      })
+    }
     return {
       ...this.data.buttonShareData
     }
@@ -1011,7 +1036,10 @@ global.wxPage({
           if (this.data.goodsInfo.activity) {
             path += `&atp=${this.data.goodsInfo.activity.activityType}&aid=${this.data.goodsInfo.activity.activityId}`
           }
-          console.log(res)
+          if(this.data.shareAwardId){
+            path += `&shareAwardId=${this.data.shareAwardId}&shareAwardLaunchUserId=${util.getCache('user_id')}`
+          }
+          console.log(path)
           resolve({
             title: res.content.shareDoc,
             path: path,
