@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.data.MarriageData;
 import com.vpu.mp.service.pojo.wxapp.distribution.*;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
+import jodd.util.StringUtil;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -276,16 +277,30 @@ public class MpDistributionService extends ShopBaseService{
      * @param userId
      * @return
      */
-    public RebateCenterVo rebateCenter(Integer userId){
+    public RebateCenterVo rebateCenter(Integer userId) {
         RebateCenterVo rebateCenterVo = new RebateCenterVo();
+        //是否是分销员
+        Integer isDistributor = this.isDistributor(userId);
+        rebateCenterVo.setIsDistributor(isDistributor);
+        //分销开关是否开启
+        DistributionParam distributionCfg = this.distributionCfg.getDistributionCfg();
+        rebateCenterVo.setStatus(distributionCfg.getStatus());
+        //分销审核开关是否开启
+        rebateCenterVo.setJudgeStatus(distributionCfg.getJudgeStatus());
         //用户信息
         BigDecimal account = db().select(USER.ACCOUNT).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(BigDecimal.class);
         //返利信息
         UserTotalFanliVo userRebate = this.userTotalFanli.getUserRebate(userId);
-        if(userRebate.getTotalMoney() != null && userRebate.getTotalMoney().compareTo(account)<0){
+        if (userRebate.getTotalMoney() != null && userRebate.getTotalMoney().compareTo(account) < 0) {
             rebateCenterVo.setCanWithdraw(userRebate.getTotalMoney());
-        }else{
+        } else {
             rebateCenterVo.setCanWithdraw(account);
+        }
+        if (distributionCfg.getStatus() != 1 || (isDistributor != 1 && distributionCfg.getJudgeStatus() == 1)){
+            if (distributionCfg.getWithdrawStatus() != 1) {
+                BigDecimal account1 = new BigDecimal("0.00");
+                rebateCenterVo.setCanWithdraw(account1);
+            }
         }
         rebateCenterVo.setTotalWithdraw(userRebate.getTotalMoney());
         //待返利佣金
