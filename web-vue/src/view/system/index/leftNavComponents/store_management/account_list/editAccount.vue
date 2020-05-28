@@ -288,24 +288,15 @@ export default {
         this.$message.error('最大店铺数量不能为空或0')
         this.$refs.maxShopNum.$el.querySelector('input').focus()
         return false
-      } if (this.isEmpty(this.formData.buyTime)) {
-        this.$message.error('首次续费时间不能为空')
-        this.$refs.buyTime.$el.querySelector('input').focus()
-        return false
-      } if (this.isEmpty(this.formData.endTime)) {
-        this.$message.error('到期时间不能为空')
-        this.$refs.endTime.$el.querySelector('input').focus()
-        return false
-      } else {
-        if (!this.isEmpty(this.formData.mobile)) {
-          if (!(this.phonereg.test(this.formData.mobile))) {
-            this.$message.error('手机号格式错误')
-            this.$refs.mobile.$el.querySelector('input').focus()
-            return false
-          }
-        }
-        return true
       }
+      if (!this.isEmpty(this.formData.mobile)) {
+        if (!(this.phonereg.test(this.formData.mobile))) {
+          this.$message.error('手机号格式错误')
+          this.$refs.mobile.$el.querySelector('input').focus()
+          return false
+        }
+      }
+      return true
     },
     isEmpty (obj) {
       if (typeof obj === 'undefined' || obj == null || obj === '') {
