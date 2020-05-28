@@ -21,7 +21,6 @@ public class ShopRenewReq {
 	@NotNull
 	private Integer sysId;
 	private String mobile;
-	@NotNull
 	private BigDecimal renewMoney;
 	@NotNull
 	private Timestamp expireTime;

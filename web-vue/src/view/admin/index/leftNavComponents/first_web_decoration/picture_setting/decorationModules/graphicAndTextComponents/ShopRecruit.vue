@@ -124,7 +124,7 @@ export default {
           this.data = newData
         }
         console.log(newData)
-        this.shopAvatar = localStorage.getItem('V-shopAvatar')
+        this.shopAvatar = localStorage.getItem('V-AccountShopAvatar')
       },
       immediate: true,
       deep: true
