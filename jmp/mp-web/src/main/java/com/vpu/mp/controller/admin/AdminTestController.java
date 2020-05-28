@@ -6,11 +6,14 @@ import java.util.List;
 import javax.websocket.server.PathParam;
 
 import com.vpu.mp.service.shop.task.wechat.WechatTaskService;
+
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -227,8 +230,11 @@ public class AdminTestController extends AdminBaseController {
     @RequestMapping(value = "/api/admin/test/live")
     public JsonResult testLive() {
         logger().info("直播列表导入测试");
-        //List<WxMaLiveRoomInfo> getliveinfo = saas.getShopApp(245547).liveService.getliveinfo();
-        saas.getShopApp(245547).liveService.getLiveList();
+        Result<ShopRecord> result = saas.shop.getAll();
+		result.forEach((r) -> {
+			boolean liveList = saas.getShopApp(r.getShopId()).liveService.getLiveList();
+			logger().info("获取店铺：{}；的直播列表结果：{}",r.getShopId(),liveList);
+		});
         logger().info("直播列表导入测试结束");
         return success();
 
