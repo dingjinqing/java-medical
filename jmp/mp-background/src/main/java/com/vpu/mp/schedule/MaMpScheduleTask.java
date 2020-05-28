@@ -81,7 +81,7 @@ public class MaMpScheduleTask {
 	/**
 	 * 获取直播列表，每半小时一次
 	 */
-	@Scheduled(cron = "0 0/30 * * * ? ")
+	@Scheduled(cron = "0 */1 * * * ?")
 	public void liveBroadcast() {
 		Result<ShopRecord> result = saas.shop.getAll();
 		result.forEach((r) -> {
