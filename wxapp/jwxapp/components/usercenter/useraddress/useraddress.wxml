@@ -1,43 +1,49 @@
 <!--components/usercenter/useraddress/useraddress.wxml-->
 <view class="main-container">
   <!-- 地址列表 -->
-  <view class="address-list">
+  <view class="address-list" wx:if="{{false}}">
     <view class="address-wrap">
       <block>
         <view class="address-item">
           <view class="address-item-top">
-            <view>
-              <text>许一晨</text>
-              <text style="margin-left: 20rpx;">13800000000</text>
+            <view class="ait-title">
+              <text class="ait-name">许一晨</text>
+              <text class="ait-mobile">13800000000</text>
             </view>
-            <view class="ait-address">地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址(邮编)</view>
+            <view class="ait-address">地址地址地址地址地址地址地址地址地址地址地址地址地址(邮编)</view>
           </view>
+          <view class="address-item-line"></view>
           <view class="address-item-bottom">
             <label class="aib-left">
               <radio value="1" checked="false" />设为默认地址
             </label>
             <view class="aib-right">
               <text>编辑</text>
-              <text style="margin-left: 20rpx;">删除</text>
+              <text class="aib-right-line"></text>
+              <text>删除</text>
             </view>
           </view>
         </view>
       </block>
     </view> 
     <view class="address-list-footer">
-      <button bindtap="getWechatAdress" class="wd-btn">从微信获取新地址</button>
+      <button bindtap="getWechatAdress" class="wd-btn">
+        <image class="wechat-icon" src="{{imageUrl}}image/wxapp/wechat_icon.png"></image>微信导入
+      </button>
       <button bindtap="newAdressHandle" class="new-btn" style="background:{{comColor}}">新增收货地址</button>
     </view>
   </view>
   <!-- 没有地址时展示 -->
-  <view class="no-address" wx:if="{{false}}">
+  <view class="no-address" wx:if="{{true}}">
     <view class="no-address-top">
-      <image class="no-address-icon" src="" mode="widthFix" />
+      <image class="no-address-icon" src="{{imageUrl}}image/wxapp/no_address.png" mode="widthFix" />
       <view class="no-address-text">您还没有收货地址</view>
     </view>
-    <view class="no-address-btns">
-      <button bindtap="newAdressHandle" class="no-address-btn new-btn" style="background:{{comColor}}">新增地址</button>
-      <button bindtap="getWechatAdress" class="no-address-btn wd-btn">从微信获取新地址</button>
+    <view class="address-list-footer">
+      <button bindtap="getWechatAdress" class="wd-btn">
+        <image class="wechat-icon" src="{{imageUrl}}image/wxapp/wechat_icon.png"></image>微信导入
+      </button>
+      <button bindtap="newAdressHandle" class="new-btn" style="background:{{comColor}}">新增收货地址</button>
     </view>
   </view>
 </view>

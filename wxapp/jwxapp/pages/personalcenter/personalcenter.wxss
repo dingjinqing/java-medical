@@ -1,7 +1,4 @@
 /* pages/personalcenter/personalcenter.wxss */
-.main-container {
-  margin-top: 140rpx;
-}
 .top_nav {
   display: flex;
   height: 100rpx;

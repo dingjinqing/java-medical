@@ -15,6 +15,19 @@ global.wxPage({
 
   },
 
+  getWechatAdress () {
+    wx.chooseAddress({
+      success (res) {
+        console.log(res)
+      },
+      fail (err) {
+        console.log(err)
+      }
+    })
+  },
+
+  bindTextAreaBlur () {},
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
