@@ -57,10 +57,10 @@
               v-for="(item, index) in row.condition"
               :key="index"
             >
-              <span v-if="row.type == 2 && item.fullMoney && item.reduceMoney">满{{item.fullMoney}}元减{{item.reduceMoney}}</span>
-              <span v-else-if="row.type == 2 && item.amount && item.reduceMoney">满{{item.amount}}件减{{item.reduceMoney}}</span>
-              <span v-else-if="row.type == 1 && item.fullMoney && item.reduceMoney">每满{{item.fullMoney}}元减{{item.reduceMoney}}</span>
-              <span v-else-if="row.type == 1 && item.amount && item.reduceMoney">每满{{item.amount}}件减{{item.reduceMoney}}</span>
+              <span v-if="row.type == 2 && item.fullMoney && item.reduceMoney">满{{item.fullMoney}}元减{{item.reduceMoney}}元</span>
+              <span v-else-if="row.type == 2 && item.amount && item.reduceMoney">满{{item.amount}}件减{{item.reduceMoney}}元</span>
+              <span v-else-if="row.type == 1 && item.fullMoney && item.reduceMoney">每满{{item.fullMoney}}元减{{item.reduceMoney}}元</span>
+              <span v-else-if="row.type == 1 && item.amount && item.reduceMoney">每满{{item.amount}}件减{{item.reduceMoney}}元</span>
               <span v-else-if="row.type == 3 && item.fullMoney && item.discount">满{{item.fullMoney}}元打{{item.discount}}折</span>
               <span v-else-if="row.type == 3 && item.amount && item.discount">满{{item.amount}}件打{{item.discount}}折</span>
               <span v-else-if="row.type == 4">第{{item.amount}}件,打{{item.discount}}折</span>
