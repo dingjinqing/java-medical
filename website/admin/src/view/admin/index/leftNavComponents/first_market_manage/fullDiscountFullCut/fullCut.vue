@@ -57,12 +57,12 @@
               v-for="(item, index) in row.condition"
               :key="index"
             >
-              <span v-if="row.type == 2 && item.fullMoney && item.reduceMoney">{{$t('fullCuti18n.full')}}{{item.fullMoney}}{{$t('fullCuti18n.yuan')}}{{$t('fullCuti18n.less')}}{{item.reduceMoney}}</span>
-              <span v-else-if="row.type == 2 && item.amount && item.reduceMoney">{{$t('fullCuti18n.full')}}{{item.amount}}{{$t('fullCuti18n.piece')}}{{$t('fullCuti18n.less')}}{{item.reduceMoney}}</span>
-              <span v-else-if="row.type == 1 && item.fullMoney && item.reduceMoney">{{$t('fullCuti18n.perFull')}}{{item.fullMoney}}{{$t('fullCuti18n.yuan')}}{{$t('fullCuti18n.less')}}{{item.reduceMoney}}</span>
-              <span v-else-if="row.type == 1 && item.amount && item.reduceMoney">{{$t('fullCuti18n.perFull')}}{{item.amount}}{{$t('fullCuti18n.piece')}}{{$t('fullCuti18n.less')}}{{item.reduceMoney}}</span>
-              <span v-else-if="row.type == 3 && item.fullMoney && item.discount">{{$t('fullCuti18n.full')}}{{item.fullMoney}}{{$t('fullCuti18n.yuan')}}{{$t('fullCuti18n.hit')}}{{item.discount}}折</span>
-              <span v-else-if="row.type == 3 && item.amount && item.discount">{{$t('fullCuti18n.full')}}{{item.amount}}{{$t('fullCuti18n.piece')}}{{$t('fullCuti18n.hit')}}{{item.discount}}折</span>
+              <span v-if="row.type == 2 && item.fullMoney && item.reduceMoney">{{$t('fullCuti18n.full')}}{{item.fullMoney}}{{$t('fullCuti18n.yuan')}}{{$t('fullCuti18n.less')}}{{item.reduceMoney}}{{$t('fullCuti18n.yuan')}}</span>
+              <span v-else-if="row.type == 2 && item.amount && item.reduceMoney">{{$t('fullCuti18n.full')}}{{item.amount}}{{$t('fullCuti18n.piece')}}{{$t('fullCuti18n.less')}}{{item.reduceMoney}}{{$t('fullCuti18n.yuan')}}</span>
+              <span v-else-if="row.type == 1 && item.fullMoney && item.reduceMoney">{{$t('fullCuti18n.perFull')}}{{item.fullMoney}}{{$t('fullCuti18n.yuan')}}{{$t('fullCuti18n.less')}}{{item.reduceMoney}}{{$t('fullCuti18n.yuan')}}</span>
+              <span v-else-if="row.type == 1 && item.amount && item.reduceMoney">{{$t('fullCuti18n.perFull')}}{{item.amount}}{{$t('fullCuti18n.piece')}}{{$t('fullCuti18n.less')}}{{item.reduceMoney}}{{$t('fullCuti18n.yuan')}}</span>
+              <span v-else-if="row.type == 3 && item.fullMoney && item.discount">{{$t('fullCuti18n.full')}}{{item.fullMoney}}{{$t('fullCuti18n.yuan')}}{{$t('fullCuti18n.hit')}}{{item.discount}}{{$t('fullCuti18n.fold')}}</span>
+              <span v-else-if="row.type == 3 && item.amount && item.discount">{{$t('fullCuti18n.full')}}{{item.amount}}{{$t('fullCuti18n.piece')}}{{$t('fullCuti18n.hit')}}{{item.discount}}{{$t('fullCuti18n.fold')}}</span>
               <span v-else-if="row.type == 4">{{$t('fullCuti18n.no')}}{{item.amount}}{{$t('fullCuti18n.piece')}},{{$t('fullCuti18n.hit')}}{{item.discount}}{{$t('fullCuti18n.fold')}}</span>
               <span v-else>{{row.type}}</span>
             </div>

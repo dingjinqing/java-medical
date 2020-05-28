@@ -282,7 +282,7 @@ export default {
         // {
         //   'goods_id': '1139',
         //   'integral_goods_id': '175',
-        //   'goods_img': 'http://mpdevimg2.weipubao.cn/upload/4748160/image/20191211/yGJPwQANqKOHCqWS.jpeg',
+        //   'goods_img': '',
         //   'goods_name': '夜间保湿修护唇膜 补水保湿 20克',
         //   'stock_sum': '4',
         //   'prd_price': '59.00',
@@ -296,7 +296,7 @@ export default {
         // {
         //   'goods_id': '1156',
         //   'integral_goods_id': '176',
-        //   'goods_img': 'http://mpdevimg2.weipubao.cn/upload/4748160/image/20190929/5b641c86N5b3f6ae6.jpg',
+        //   'goods_img': '',
         //   'goods_name': '原味泡芙',
         //   'stock_sum': '132',
         //   'prd_price': '200.00',

@@ -225,44 +225,7 @@ export default {
       ],
       startTime: null,
       endTime: null,
-      tableData: [
-        {
-          accountNumber: 'tester001',
-          phoneNum: '13683043470',
-          fillMobileNumber: '18236936251',
-          feedbackTime: '2018-08-27 09:29:01',
-          useVersion: '旗舰版',
-          questionType: '功能使用咨询',
-          questionContent: '哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈',
-          img: 'http://mpdevimg2.weipubao.cn/upload/0/image/20200217/crop_KC9xqSLdERhny50V.jpeg',
-          status: '未查看',
-          id: 1
-        },
-        {
-          accountNumber: 'tester002',
-          phoneNum: '13683043470',
-          fillMobileNumber: '18236936251',
-          feedbackTime: '2018-08-27 09:29:01',
-          useVersion: '旗舰版',
-          questionType: '功能使用咨询',
-          questionContent: '哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈',
-          img: '',
-          status: '未查看',
-          id: 1
-        },
-        {
-          accountNumber: 'tester003',
-          phoneNum: '13683043470',
-          fillMobileNumber: '18236936251',
-          feedbackTime: '2018-08-27 09:29:01',
-          useVersion: '旗舰版',
-          questionType: '功能使用咨询',
-          questionContent: '哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈',
-          img: 'http://mpdevimg2.weipubao.cn/upload/0/image/20200217/crop_KC9xqSLdERhny50V.jpeg',
-          status: '未查看',
-          id: 1
-        }
-      ],
+      tableData: [],
       pageParams: {
         currentPage: 1,
         pageRows: 20

@@ -146,13 +146,7 @@ export default {
       nowPathClick: null, // 当前点击的选择链接按钮所在列表的下标
       modulesSaveData: {
         'img_items': [
-          // {
-          //   'img_url': 'http://mpdevimg2.weipubao.cn/upload/4748160/image/20200227/73f2c8e4a1165fb55fe939463473f909f9dc4b0d.jpeg',
-          //   'title_link': 'pages/sort/sort',
-          //   'src_width': '800',
-          //   'src_height': '800',
-          //   'can_show': '0'
-          // }
+
         ],
         'is_preview': '0'
       } // 模块保存数据

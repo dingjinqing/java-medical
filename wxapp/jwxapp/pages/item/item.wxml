@@ -69,7 +69,7 @@
             <text class="iconfont iconfenxiang" style="color:{{comColor}}"></text>
           </view>
           <view class="goods_share" bindtap="share" wx:else>
-            <image class="share_new_img" src="http://mpdevimg2.weipubao.cn/image/wxapp/new_share_img.png" role="img"></image>
+            <image class="share_new_img" src="{{imageUrl}}image/wxapp/new_share_img.png" role="img"></image>
           </view>
           <view ></view>
           <view class="goods_collect" bindtap="toogleCollect">

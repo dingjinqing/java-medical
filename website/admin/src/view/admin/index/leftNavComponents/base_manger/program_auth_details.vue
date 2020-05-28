@@ -317,7 +317,7 @@
                 trigger="hover"
               >
                 <img
-                  src="http://mpdevimg2.weipubao.cn/image/admin/new_preview_image/goods_thing.jpg"
+                  :src="$imageHost+'/image/admin/new_preview_image/goods_thing.jpg'"
                   class="thum-img"
                   alt=""
                 >

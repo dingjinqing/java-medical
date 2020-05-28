@@ -486,10 +486,7 @@ export default {
         console.log(newData)
         // 测试数据
         // newData['sort_length'] = newData.sort_group_arr.length
-        // newData['goods_img'] = [
-        //   'http://mpdevimg2.weipubao.cn/upload/0/image/20191018/crop_KXCyQS7bFi7w4RgL.jpeg',
-        //   'http://mpdevimg2.weipubao.cn/upload/4748160/image/20191218/SQzKExx7QTSH1kzu.jpeg'
-        // ]
+        // newData['goods_img'] = []
         // newData['goods_name'] = [
         //   '海阔跳的高',
         //   '门店商品8--勿动'

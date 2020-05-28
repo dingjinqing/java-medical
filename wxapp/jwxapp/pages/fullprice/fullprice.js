@@ -280,6 +280,7 @@ global.wxPage({
 
   // 关闭已选商品弹窗
   proActionChange: function () {
+    full_request(this);
     this.setData({
       checkMode: true
     })

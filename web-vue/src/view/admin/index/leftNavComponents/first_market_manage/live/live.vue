@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="showInfo">
-      <div  v-if="auditState!==null&&auditState===0" style="height: 500px;">
+      <div  v-if="(auditState!==null&&auditState===0)||(auditState!==null&&auditState===0&&isAuthLive)" style="height: 500px;">
       <el-row>
          <el-col :span="7"></el-col>
          <el-col :span="10">
@@ -151,7 +151,7 @@ export default {
         if (res.error === 0) {
           console.log(res.content)
           this.$message.success(res.message)
-          this.reflushData()
+          this.getList()
         } else {
           this.$message.error(res.message)
         }
