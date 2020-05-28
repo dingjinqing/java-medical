@@ -142,6 +142,7 @@ export default {
           data[index] = 'empty'
         }
         if (this.isSubLogin) {
+          data[0] = this.$t('changePassword')
           data[1] = 'empty'
         }
       })

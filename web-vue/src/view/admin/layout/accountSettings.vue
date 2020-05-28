@@ -59,12 +59,13 @@
             <li>
               <div class="li modify btn">
                 <el-button
+                  size="small"
                   type="primary"
                   @click="handleSave()"
                 >{{$t('accountSetting.s_modify')}}</el-button>
                 <el-button
                   @click="to_allShops()"
-                  size="medium"
+                  size="small"
                   style="margin-left:20px"
                 >{{$t('accountSetting.to_shop_list')}}</el-button>
               </div>
@@ -110,13 +111,13 @@
             <li>
               <el-button
                 type="primary"
-                size="mini"
+                size="small"
                 @click="modifyPasswordSure()"
               > {{$t('accountSetting.sure')}}</el-button>
               <el-button
                 type="info"
                 plain
-                size="mini"
+                size="small"
                 style="margin-left:20px"
                 @click="to_accountmain()"
               >{{$t('accountSetting.back')}}</el-button>
@@ -164,6 +165,10 @@ export default {
     // 初始化语言
     this.langDefault()
     this.accountName = localStorage.getItem('V-AccountName')
+    if (localStorage.getItem('V-isSubLogin') === 'true') {
+      // 子账户登录
+      this.shop_config_ul_flag = false
+    }
     // 初始化账户设置
     this.queryAccount()
   },

@@ -27,7 +27,10 @@
       <div class="account">
         <div class="menu">
           <div class="menu_main">
-            <span class="avatar">
+            <span
+              class="avatar"
+              v-if="!isSubLogin"
+            >
               <img :src="imageUrl[1].img_2">
             </span>
             <span>
@@ -163,6 +166,7 @@ export default {
           data[index] = 'empty'
         }
         if (this.isSubLogin) {
+          data[0] = '修改密码'
           data[2] = 'empty'
         }
       })
