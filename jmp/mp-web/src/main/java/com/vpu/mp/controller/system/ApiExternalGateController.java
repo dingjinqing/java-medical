@@ -29,6 +29,9 @@ public class ApiExternalGateController extends ShopBaseService {
     @PostMapping("/service/gateWay")
     public ApiJsonResult gateWay(@RequestBody ApiExternalGateParam param){
         try {
+            // 日志请求记录
+            apiCallLog(param);
+
             // 必要系统参数验证
             String nullKey = gateService.checkSystemParam(param);
             if (nullKey != null) {
@@ -113,4 +116,7 @@ public class ApiExternalGateController extends ShopBaseService {
         log.info("service api response："+ Util.toJson(apiJsonResult));
     }
 
+    private void apiCallLog(ApiExternalGateParam param) {
+        log.info("service api call："+Util.toJson(param));
+    }
 }

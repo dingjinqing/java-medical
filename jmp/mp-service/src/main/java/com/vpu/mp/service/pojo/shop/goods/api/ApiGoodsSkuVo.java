@@ -1,0 +1,41 @@
+package com.vpu.mp.service.pojo.shop.goods.api;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import lombok.Data;
+
+import java.math.BigDecimal;
+
+/**
+ *  对外接口-商品列表和详情中sku信息
+ * @author 李晓冰
+ * @date 2020年05月28日
+ */
+@Data
+public class ApiGoodsSkuVo {
+    @JsonProperty("sku_id")
+    private Integer skuId;
+    @JsonProperty("prd_sn")
+    private String prdSn;
+    @JsonProperty("prd_price")
+    private BigDecimal prdPrice;
+    @JsonProperty("prd_number")
+    private Integer prdNumber;
+    @JsonProperty("prd_desc")
+    private String prdDesc;
+    @JsonProperty("prd_img")
+    private String prdImg;
+    @JsonProperty("del_flag")
+    private Byte delFlag = 0;
+
+    public static ApiGoodsSkuVo convertFromGoodsSpecProductRecord(GoodsSpecProductRecord record){
+        ApiGoodsSkuVo vo = new ApiGoodsSkuVo();
+        vo.setSkuId(record.getPrdId());
+        vo.setPrdSn(record.getPrdSn());
+        vo.setPrdPrice(record.getPrdPrice());
+        vo.setPrdNumber(record.getPrdNumber());
+        vo.setPrdDesc(record.getPrdDesc());
+        vo.setPrdImg(record.getPrdImg());
+        return vo;
+    }
+}

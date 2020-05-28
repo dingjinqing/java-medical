@@ -10,8 +10,10 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.util.api.ApiBasePageParam;
 import com.vpu.mp.service.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
+import com.vpu.mp.service.pojo.shop.goods.api.ApiGoodsPageResult;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductParam;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncStockParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -258,6 +260,15 @@ public class ApiExternalGateService extends MainBaseService {
             case ApiExternalGateConfig.SERVICE_DELIVER_EXCHANGE_GOODS:
                 //发货（换货未实现）
                 break;
+            case ApiExternalGateConfig.SERVICE_GOODS_LIST:
+                apiJsonResult = goodsList(param);
+                break;
+            case ApiExternalGateConfig.SERVICE_SINGLE_GOODS:
+                // 单个商品信息获取
+                break;
+            case ApiExternalGateConfig.SERVICE_SYNC_STOCK:
+                // 同步上皮库存
+                break;
             default:
                 apiJsonResult = new ApiJsonResult();
                 apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_INVALID_SERVICE);
@@ -426,6 +437,23 @@ public class ApiExternalGateService extends MainBaseService {
             result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
             result.setMsg((String)executeResult.getResult());
         }
+        return result;
+    }
+
+    /**
+     * erp-ekb 抓取商品信息
+     * @param gateParam
+     * @return
+     */
+    private ApiJsonResult goodsList(ApiExternalGateParam gateParam) {
+        ApiBasePageParam param = Util.parseJson(gateParam.getContent(), ApiBasePageParam.class);
+        if (param == null) {
+           param = new ApiBasePageParam();
+        }
+        ApiGoodsPageResult goodsPageResult = saas().getShopApp(gateParam.getShopId()).goods.apiGetGoodsList(param);
+
+        ApiJsonResult result = new ApiJsonResult();
+        result.setData(goodsPageResult);
         return result;
     }
 }

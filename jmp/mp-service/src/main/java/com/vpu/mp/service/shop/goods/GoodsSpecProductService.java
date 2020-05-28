@@ -688,4 +688,14 @@ public class GoodsSpecProductService extends ShopBaseService {
         return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_SN.in(prdSn)).fetchInto(GoodsSpecProductRecord.class);
     }
 
+    /**
+     *  erp-ekb对接外部系统使用-返回商品附属的规格信息
+     * @param goodsIds 商品id集合
+     * @return
+     */
+    public Map<Integer,List<GoodsSpecProductRecord>> apiGetGoodsSpecPrdMapByGoodsIds(List<Integer> goodsIds) {
+       return db().select(GOODS_SPEC_PRODUCT.GOODS_ID,GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_SN,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_IMG)
+            .from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.in(goodsIds))
+            .fetchGroups(GOODS_SPEC_PRODUCT.GOODS_ID,GoodsSpecProductRecord.class);
+    }
 }

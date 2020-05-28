@@ -18,9 +18,14 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.util.api.ApiBasePageParam;
+import com.vpu.mp.service.foundation.util.api.ApiPageResult;
 import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.goods.api.ApiGoodsPageResult;
+import com.vpu.mp.service.pojo.shop.goods.api.ApiGoodsSkuVo;
+import com.vpu.mp.service.pojo.shop.goods.api.ApiGoodsVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
@@ -2611,5 +2616,68 @@ public class GoodsService extends ShopBaseService {
         Integer prdNum = (int) (Math.floor(param.getNumber()));
         storeGoodsService.updatePrdNumForPosSyncStock(storeRecord.getStoreId(),prdId,prdNum);
         return apiJsonResult;
+    }
+
+    /**
+     * erp-ekb 获取指定时间范围内未删除在售的商品
+     * @param pageParam 分页参数
+     * @return 商品列表信息
+     */
+    public ApiGoodsPageResult apiGetGoodsList(ApiBasePageParam pageParam) {
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
+
+        if (pageParam.getStartTime() != null) {
+            condition = condition.and(GOODS.UPDATE_TIME.gt(pageParam.getStartTime()));
+        }
+        if (pageParam.getEndTime() != null) {
+            condition = condition.and(GOODS.UPDATE_TIME.lt(pageParam.getEndTime()));
+        }
+
+        SelectConditionStep<?> selectConditionStep = db().select(GOODS.GOODS_ID, GOODS.GOODS_SN, GOODS.GOODS_NAME,GOODS.GOODS_IMG, GOODS.CREATE_TIME, GOODS.UPDATE_TIME,GOODS.SORT_ID)
+            .from(GOODS).where(condition);
+
+        // 查询分页结果，并将统一的ApiPageResult转换为商品特定的分页结果对象
+        ApiPageResult apiPageResult = this.getApiPageResult(selectConditionStep, pageParam.getPage(), pageParam.getPageSize(), GoodsRecord.class);
+        @SuppressWarnings("unchecked")
+        List<GoodsRecord> goodsRecordList = (List<GoodsRecord>) apiPageResult.getDataList();
+
+        List<ApiGoodsVo> apiGoodsVos = new ArrayList<>(goodsRecordList.size());
+        List<Integer> goodsIds = new ArrayList<>(goodsRecordList.size());
+        List<Integer> sortIds = new ArrayList<>(goodsRecordList.size());
+        for (GoodsRecord goodsRecord : goodsRecordList) {
+            apiGoodsVos.add(ApiGoodsVo.convertFromGoodsRecord(goodsRecord));
+            goodsIds.add(goodsRecord.getGoodsId());
+            sortIds.add(goodsRecord.getSortId());
+        }
+        Map<Integer, String> sortNameMap = goodsSort.apiGetSortNameMap(sortIds);
+        Map<Integer, List<GoodsSpecProductRecord>> specPrdMap = goodsSpecProductService.apiGetGoodsSpecPrdMapByGoodsIds(goodsIds);
+
+        apiGoodsVos.removeIf(apiGoodsVo -> {
+            List<GoodsSpecProductRecord> specPrdList = specPrdMap.get(apiGoodsVo.getGoodsId());
+            if (specPrdList == null || specPrdList.size() == 0) {
+                return true;
+            }
+
+            List<ApiGoodsSkuVo> apiGoodsSkuVos = new ArrayList<>();
+            for (GoodsSpecProductRecord specProductRecord : specPrdList) {
+                ApiGoodsSkuVo apiGoodsSkuVo = ApiGoodsSkuVo.convertFromGoodsSpecProductRecord(specProductRecord);
+                apiGoodsSkuVo.setPrdImg(getImgFullUrlUtil(apiGoodsSkuVo.getPrdImg()));
+                apiGoodsSkuVos.add(apiGoodsSkuVo);
+            }
+
+            apiGoodsVo.setGoodsImg(getImgFullUrlUtil(apiGoodsVo.getGoodsImg()));
+            apiGoodsVo.setCatName(sortNameMap.get(apiGoodsVo.getSortId()));
+            apiGoodsVo.setSkuCount(apiGoodsSkuVos.size());
+            apiGoodsVo.setSkuList(apiGoodsSkuVos);
+
+            return false;
+        });
+
+        ApiGoodsPageResult goodsPageResult = new ApiGoodsPageResult();
+        goodsPageResult.setCurPageNo(apiPageResult.getCurPageNo());
+        goodsPageResult.setPageSize(apiPageResult.getPageSize());
+        goodsPageResult.setTotalGoodsCount(apiPageResult.getTotalCount());
+        goodsPageResult.setGoodsList(apiGoodsVos);
+        return goodsPageResult;
     }
 }
