@@ -359,7 +359,7 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
      */
 	public BigDecimal getShippingFeeByTemplate(Integer districtCode, Integer templateId, Integer totalNumber, BigDecimal totalPrice, BigDecimal totalWeight) throws MpException {
 	    logger().info("计算订单商品单个运费模板运费");
-	    if(0 == templateId.intValue()){
+	    if(0 == templateId.intValue()||districtCode==null){
             //默认模板
             logger().debug("使用商品默认运费信息");
             return getShippingFeeByDefaultTemplate(totalPrice);

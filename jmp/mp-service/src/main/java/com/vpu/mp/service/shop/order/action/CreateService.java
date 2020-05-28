@@ -1,10 +1,7 @@
 package com.vpu.mp.service.shop.order.action;
 
 import com.beust.jcommander.internal.Lists;
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -421,6 +418,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     /**
      * 获取默认地址
+     *  规则:默认地址>上次下单地址>null
      *
      * @param userId
      * @param addressId
@@ -429,14 +427,19 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     public UserAddressVo getDefaultAddress(Integer userId, Integer addressId) {
         UserAddressVo defaultAddress = null;
         if (addressId != null) {
-            // 输入addressId
             defaultAddress = address.get(addressId, userId);
+            logger().info("获取默认地址{}",defaultAddress);
         }
         // 输入地址无效
         if (defaultAddress == null) {
-            // 没输入addressId
             defaultAddress = orderInfo.getLastOrderAddress(userId);
-            // TODO 更新经纬度
+            if (defaultAddress!=null){
+                UserAddressRecord addressInfo = address.getAddressById(userId, defaultAddress.getAddressId());
+                if (addressInfo!=null&&addressInfo.getDelFlag().equals(DelFlag.NORMAL_VALUE)){
+                    defaultAddress = addressInfo.into(UserAddressVo.class);
+                }
+            }
+            logger().info("获取上次下单地址{}",defaultAddress);
         }
         return defaultAddress;
     }

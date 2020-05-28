@@ -185,6 +185,10 @@ ALTER TABLE `b2c_coupon_pack` ADD COLUMN `show_cart` tinyint(1) DEFAULT '1' COMM
 
 -- 20200508微信退款记录表增加订单号字段长度（预售订单补款退款时长度超限制）
 ALTER TABLE `b2c_order_refund_record` MODIFY COLUMN `order_sn` varchar(22) NOT NULL DEFAULT '' COMMENT '订单编号';
+
+-- 2020年5月27日 kdc 地址表增加默认字段,删除字段
+ALTER TABLE `b2c_user_address`    ADD COLUMN `del_flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0未删除 1删除';
+ALTER TABLE `b2c_user_address`    ADD COLUMN `is_default` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否是默认地址 0不是 1是';
 /***********************2.10*********************END*/
 
 
