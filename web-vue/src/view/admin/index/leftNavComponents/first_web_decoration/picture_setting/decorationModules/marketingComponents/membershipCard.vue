@@ -145,7 +145,7 @@ export default {
     // 初始化数据
     this.defaultData()
     // 初始化获取头像
-    this.shopAvatar = localStorage.getItem('V-shopAvatar') || this.$imageHost + '/image/admin/shop_def_y.png'
+    this.shopAvatar = localStorage.getItem('V-AccountShopAvatar') || this.$imageHost + '/image/admin/shop_def_y.png'
     // 获取初始全局颜色
     this.overallColor = localStorage.getItem('V-backgroundColor') || '#e6cb96'
   },

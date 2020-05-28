@@ -192,12 +192,11 @@ export default {
       }
       accountManageRequest(obj).then((res) => {
         if (res.error === 0) {
-          localStorage.setItem('V-shopAvatar', this.imageUrl[0].img_1)
+          localStorage.setItem('V-AccountShopAvatar', this.imageUrl[0].img_1)
           localStorage.setItem('V-AccountName', this.accountName)
           this.$http.$emit('changeHead')
-          this.$message({
-            message: '保存成功',
-            type: 'success'
+          this.$message.success({
+            message: '保存成功'
           })
         }
         console.log(res)
@@ -233,9 +232,8 @@ export default {
       if (flag === false) return
       modifyPasswordRequest(this.modifyObj).then((res) => {
         if (res.error === 0) {
-          this.$message({
-            message: '修改密码成功',
-            type: 'success'
+          this.$message.success({
+            message: '修改密码成功'
           })
         }
       })
@@ -247,21 +245,20 @@ export default {
         console.log(this.modifyObj[item])
         // if (!this.modifyObj[item] || !reg.test(this.modifyObj[item])) { this.$message({ message: '警告哦，这是一条警告消息', type: 'warning' }) }
         if (!reg.test(this.modifyObj[item])) {
-          this.$message({
-            message: '密码应为6至16位非中文且不能为空',
-            type: 'warning'
+          this.$message.error({
+            message: '密码应为6至16位非中文且不能为空'
           })
           return false
         }
         if (this.modifyObj.passwd === this.modifyObj.newPasswd) {
-          this.$message({
+          this.$message.error({
             message: '新密码不能与旧密码相同',
             type: 'warning'
           })
           return false
         }
         if (this.modifyObj.newPasswd !== this.modifyObj.confNewPasswd) {
-          this.$message({
+          this.$message.error({
             message: '确认密码不相同',
             type: 'warning'
           })

@@ -178,7 +178,7 @@ export default {
         this.isSubLogin = true
       }
       this.lang = localStorage.getItem('WEPUBAO_LANGUAGE')
-      this.imageUrl[1].img_2 = localStorage.getItem('V-shopAvatar')
+      this.imageUrl[1].img_2 = localStorage.getItem('V-AccountShopAvatar')
       this.accountName = localStorage.getItem('V-AccountName')
       if (Cookies.get('V-Token')) {
         this.user_flag = true
