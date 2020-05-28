@@ -69,7 +69,7 @@
                   class="coupon_list_bottom"
                   :style="`backgroundImage:url('${$imageHost}/image/admin/coupon_border.png')`"
                 >{{item.useScore===0?'领取':item.scoreNumber+'积分 兑换'}} </div>
-                <div class="coupon_name">{{item.actName}}</div>
+                <div class="coupon_name">{{item.type===1?'[分裂]':''}}{{item.actName}}</div>
               </div>
             </div>
 
