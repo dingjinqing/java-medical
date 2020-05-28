@@ -2,16 +2,14 @@ package com.vpu.mp.service.shop.member;
 
 import com.vpu.mp.config.TxMapLBSConfig;
 import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.HttpsUtils;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.member.address.AddressCode;
-import com.vpu.mp.service.pojo.shop.member.address.AddressInfo;
-import com.vpu.mp.service.pojo.shop.member.address.AddressLocation;
-import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
-import com.vpu.mp.service.pojo.shop.member.address.WxAddress;
+import com.vpu.mp.service.pojo.shop.member.address.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +28,7 @@ import static com.vpu.mp.db.shop.Tables.USER_ADDRESS;
 @Slf4j
 public class AddressService extends ShopBaseService {
     private static final String QQ_MAP_GEOCODER_URL = "https://apis.map.qq.com/ws/geocoder/v1";
+    public static final Integer USER_ADDRESS_MAX_COUNT=50;
 
     @Autowired
     private TxMapLBSConfig txMapLBSConfig;
@@ -216,6 +215,53 @@ public class AddressService extends ShopBaseService {
         param.put("location", lat + "," + lng);
         param.put("key", txMapLBSConfig.getKey());
         return Util.json2Object(HttpsUtils.get(QQ_MAP_GEOCODER_URL, param, true), AddressInfo.class, true);
+    }
+
+    /**
+     * 获取用户的地址信息
+     * @param userId 用户id
+     * @return
+     */
+    public AddressListVo getAddressList(Integer userId) {
+        AddressListVo vo =new AddressListVo();
+        List<UserAddressVo> list = db().selectFrom(USER_ADDRESS)
+            .where(USER_ADDRESS.USER_ID.eq(userId))
+            .and(USER_ADDRESS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .orderBy(USER_ADDRESS.IS_DEFAULT.desc(),USER_ADDRESS.CREATE_TIME.desc())
+            .fetchInto(UserAddressVo.class);
+        if (!list.isEmpty()){
+            vo.setAddressList(list);
+        }
+        return vo;
+    }
+
+    /**
+     * 获取用户地址信息
+     * @param userId 用户id
+     * @param addressId 地址di
+     * @return
+     */
+    public UserAddressVo getAddressById(Integer userId, Integer addressId) {
+        return db().selectFrom(USER_ADDRESS)
+            .where(USER_ADDRESS.ADDRESS_ID.eq(addressId))
+            .and(USER_ADDRESS.USER_ID.eq(userId))
+            .fetchOneInto(UserAddressVo.class);
+
+    }
+
+    /**
+     * 查询未删除的用户地址数量
+     * @param userId 用户id
+     * @return 地址数量
+     */
+    public Integer getAddressUserNotDeleteCount(Integer userId){
+        Record1<Integer> fetchOne = db().selectCount().from(USER_ADDRESS)
+            .where(USER_ADDRESS.USER_ID.eq(userId))
+            .and(USER_ADDRESS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchOne();
+        if (fetchOne!=null){
+            return fetchOne.component1();
+        }
+        return 0;
     }
 
 }

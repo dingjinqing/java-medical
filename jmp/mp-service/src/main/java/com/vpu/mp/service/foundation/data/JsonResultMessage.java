@@ -652,7 +652,8 @@ public class JsonResultMessage {
     public static final String CARD_COUPON_SATISFY = "card.coupon.satisfiy";
     public static final String CARD_COUPON_CON_ALL = "user.card.coupon.condition.all";
     public static final String CARD_COUPON_CON_PART = "user.card.coupon.condition.part";
-
+    //用户-地址
+    public static final String USER_ADDRESS_COUNT_MORE_THAN_MAX = "user.address.count.more.than.max";
 
     /**
      * 概览

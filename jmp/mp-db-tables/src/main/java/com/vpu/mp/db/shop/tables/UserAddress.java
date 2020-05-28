@@ -42,10 +42,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserAddress extends TableImpl<UserAddressRecord> {
 
-    private static final long serialVersionUID = 1110140341;
+    private static final long serialVersionUID = -1335887088;
 
     /**
-     * The reference instance of <code>mini_shop_6797286.b2c_user_address</code>
+     * The reference instance of <code>mini_shop_471752.b2c_user_address</code>
      */
     public static final UserAddress USER_ADDRESS = new UserAddress();
 
@@ -58,151 +58,156 @@ public class UserAddress extends TableImpl<UserAddressRecord> {
     }
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.address_id</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.address_id</code>.
      */
     public final TableField<UserAddressRecord, Integer> ADDRESS_ID = createField("address_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.address_name</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.address_name</code>.
      */
-    public final TableField<UserAddressRecord, String> ADDRESS_NAME = createField("address_name", org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserAddressRecord, String> ADDRESS_NAME = createField("address_name", org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.user_id</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.user_id</code>.
      */
-    public final TableField<UserAddressRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<UserAddressRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.user_cid</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.user_cid</code>.
      */
-    public final TableField<UserAddressRecord, String> USER_CID = createField("user_cid", org.jooq.impl.SQLDataType.VARCHAR(40).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserAddressRecord, String> USER_CID = createField("user_cid", org.jooq.impl.SQLDataType.VARCHAR(40).nullable(false).defaultValue(DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.wx_openid</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.wx_openid</code>.
      */
-    public final TableField<UserAddressRecord, String> WX_OPENID = createField("wx_openid", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserAddressRecord, String> WX_OPENID = createField("wx_openid", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.consignee</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.consignee</code>.
      */
-    public final TableField<UserAddressRecord, String> CONSIGNEE = createField("consignee", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserAddressRecord, String> CONSIGNEE = createField("consignee", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.email</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.email</code>.
      */
-    public final TableField<UserAddressRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserAddressRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.country_code</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.country_code</code>.
      */
-    public final TableField<UserAddressRecord, Integer> COUNTRY_CODE = createField("country_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<UserAddressRecord, Integer> COUNTRY_CODE = createField("country_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.province_name</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.province_name</code>.
      */
-    public final TableField<UserAddressRecord, String> PROVINCE_NAME = createField("province_name", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserAddressRecord, String> PROVINCE_NAME = createField("province_name", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.province_code</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.province_code</code>.
      */
-    public final TableField<UserAddressRecord, Integer> PROVINCE_CODE = createField("province_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<UserAddressRecord, Integer> PROVINCE_CODE = createField("province_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.city_code</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.city_code</code>.
      */
-    public final TableField<UserAddressRecord, Integer> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<UserAddressRecord, Integer> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.city_name</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.city_name</code>.
      */
-    public final TableField<UserAddressRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserAddressRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.district_code</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.district_code</code>.
      */
-    public final TableField<UserAddressRecord, Integer> DISTRICT_CODE = createField("district_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<UserAddressRecord, Integer> DISTRICT_CODE = createField("district_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.district_name</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.district_name</code>.
      */
-    public final TableField<UserAddressRecord, String> DISTRICT_NAME = createField("district_name", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserAddressRecord, String> DISTRICT_NAME = createField("district_name", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.address</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.address</code>.
      */
-    public final TableField<UserAddressRecord, String> ADDRESS = createField("address", org.jooq.impl.SQLDataType.VARCHAR(120).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserAddressRecord, String> ADDRESS = createField("address", org.jooq.impl.SQLDataType.VARCHAR(120).nullable(false).defaultValue(DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.complete_address</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.complete_address</code>.
      */
-    public final TableField<UserAddressRecord, String> COMPLETE_ADDRESS = createField("complete_address", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserAddressRecord, String> COMPLETE_ADDRESS = createField("complete_address", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.zipcode</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.zipcode</code>.
      */
-    public final TableField<UserAddressRecord, String> ZIPCODE = createField("zipcode", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserAddressRecord, String> ZIPCODE = createField("zipcode", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.tel</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.tel</code>.
      */
-    public final TableField<UserAddressRecord, String> TEL = createField("tel", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserAddressRecord, String> TEL = createField("tel", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.mobile</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.mobile</code>.
      */
-    public final TableField<UserAddressRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserAddressRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.best_time</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.best_time</code>.
      */
-    public final TableField<UserAddressRecord, String> BEST_TIME = createField("best_time", org.jooq.impl.SQLDataType.VARCHAR(120).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserAddressRecord, String> BEST_TIME = createField("best_time", org.jooq.impl.SQLDataType.VARCHAR(120).nullable(false).defaultValue(DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.is_default</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.is_default</code>.
      */
-    public final TableField<UserAddressRecord, Byte> IS_DEFAULT = createField("is_default", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<UserAddressRecord, Byte> IS_DEFAULT = createField("is_default", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.last_used_time</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.last_used_time</code>.
      */
-    public final TableField<UserAddressRecord, Timestamp> LAST_USED_TIME = createField("last_used_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<UserAddressRecord, Timestamp> LAST_USED_TIME = createField("last_used_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.inline("NULL", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.create_time</code>.
+     * The column <code>mini_shop_471752.b2c_user_address.create_time</code>.
      */
-    public final TableField<UserAddressRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<UserAddressRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.update_time</code>. 最后修改时间
+     * The column <code>mini_shop_471752.b2c_user_address.update_time</code>. 最后修改时间
      */
-    public final TableField<UserAddressRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<UserAddressRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.lat</code>. 纬度
+     * The column <code>mini_shop_471752.b2c_user_address.lat</code>. 纬度
      */
-    public final TableField<UserAddressRecord, String> LAT = createField("lat", org.jooq.impl.SQLDataType.VARCHAR(20), this, "纬度");
+    public final TableField<UserAddressRecord, String> LAT = createField("lat", org.jooq.impl.SQLDataType.VARCHAR(20).defaultValue(DSL.inline("NULL", org.jooq.impl.SQLDataType.VARCHAR)), this, "纬度");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_user_address.lng</code>. 经度
+     * The column <code>mini_shop_471752.b2c_user_address.lng</code>. 经度
      */
-    public final TableField<UserAddressRecord, String> LNG = createField("lng", org.jooq.impl.SQLDataType.VARCHAR(20), this, "经度");
+    public final TableField<UserAddressRecord, String> LNG = createField("lng", org.jooq.impl.SQLDataType.VARCHAR(20).defaultValue(DSL.inline("NULL", org.jooq.impl.SQLDataType.VARCHAR)), this, "经度");
 
     /**
-     * Create a <code>mini_shop_6797286.b2c_user_address</code> table reference
+     * The column <code>mini_shop_471752.b2c_user_address.del_flag</code>. 0默认 1删除
+     */
+    public final TableField<UserAddressRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0默认 1删除");
+
+    /**
+     * Create a <code>mini_shop_471752.b2c_user_address</code> table reference
      */
     public UserAddress() {
         this(DSL.name("b2c_user_address"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_6797286.b2c_user_address</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_user_address</code> table reference
      */
     public UserAddress(String alias) {
         this(DSL.name(alias), USER_ADDRESS);
     }
 
     /**
-     * Create an aliased <code>mini_shop_6797286.b2c_user_address</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_user_address</code> table reference
      */
     public UserAddress(Name alias) {
         this(alias, USER_ADDRESS);

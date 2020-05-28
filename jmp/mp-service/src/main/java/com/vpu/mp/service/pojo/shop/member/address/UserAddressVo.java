@@ -24,4 +24,5 @@ public class UserAddressVo {
 	private String districtName;
 	private String lat;
 	private String lng;
+	private Byte isDefault;
 }

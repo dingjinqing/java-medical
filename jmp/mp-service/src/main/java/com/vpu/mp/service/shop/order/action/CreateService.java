@@ -436,7 +436,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if (defaultAddress == null) {
             // 没输入addressId
             defaultAddress = orderInfo.getLastOrderAddress(userId);
-            // TODO 更新经纬度
+            // TODO 更新经纬度  地址铺
         }
         return defaultAddress;
     }
