@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.vpu.mp.db.shop.tables.User;
 import org.apache.commons.collections4.CollectionUtils;
@@ -85,7 +86,13 @@ public class SendUserService extends ShopBaseService {
      * @return 从redis获取的数据
      */
     public List<UserInfoByRedis> getSendUserInfoByRedisKey(String key){
-        return Util.readValue(jedisManager.get(key),List.class,UserInfoByRedis.class);
+        String value = jedisManager.get(key);
+        if( StringUtils.isNotBlank(value) ){
+            return Util.readValue(value,List.class,UserInfoByRedis.class);
+        }else {
+            return Lists.newArrayList();
+        }
+
     }
 
     /**
