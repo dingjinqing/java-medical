@@ -25,6 +25,9 @@ public class ShareAwardProcessor implements Processor, GoodsDetailProcessor {
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
         capsule.setShareAwardId(shareRewardService.getAvailableShareAward(param.getUserId(), param.getGoodsId()));
+        if (param.getShareAwardLaunchUserId() != null && param.getShareAwardLaunchUserId() > 0 && param.getShareAwardId() != null && param.getShareAwardId() > 0 && !param.getShareAwardLaunchUserId().equals(param.getUserId())) {
+            shareRewardService.fromShare2GoodsDetail(param.getShareAwardLaunchUserId(), param.getUserId(), param.getGoodsId(), param.getShareAwardId());
+        }
     }
 
     /**

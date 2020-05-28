@@ -429,6 +429,8 @@ public class GoodsMpService extends ShopBaseService {
         capsuleParam.setActivityType(param.getActivityType());
         capsuleParam.setLat(param.getLat());
         capsuleParam.setLon(param.getLon());
+        capsuleParam.setShareAwardLaunchUserId(param.getShareAwardLaunchUserId());
+        capsuleParam.setShareAwardId(param.getShareAwardId());
         processorFactory.doProcess(goodsDetailMpBo, capsuleParam);
         if(param.getRebateConfig() != null){
             mpDisGoods.addRebatePrice(goodsDetailMpBo,param);

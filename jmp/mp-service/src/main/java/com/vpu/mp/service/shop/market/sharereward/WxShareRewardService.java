@@ -34,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.Record1;
 import org.jooq.TableField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -95,8 +96,6 @@ public class WxShareRewardService extends ShopBaseService {
      * @param param the param
      */
     public void shareAward(ShareParam param) {
-        // 添加分享记录
-        shareRecord(param);
         int activityId = param.getActivityId();
         int userId = param.getUserId();
         int goodId = param.getGoodsId();
@@ -132,7 +131,7 @@ public class WxShareRewardService extends ShopBaseService {
             record.setActivityId(activityId);
             record.setUserId(userId);
             record.setActivityType(activityType);
-            record.setCount(INTEGER_ZERO);
+            record.setCount(INTEGER_ONE);
             record.insert();
         }
         return getRecordRecord(exist);
@@ -185,7 +184,7 @@ public class WxShareRewardService extends ShopBaseService {
         Condition condition1 = AWARD.CONDITION.eq(BYTE_ONE);
         Condition condition2 = AWARD.CONDITION.eq(BYTE_TWO).and(DslPlus.findInSet(goodsId, AWARD.GOODS_IDS));
         Condition condition3 = AWARD.CONDITION.eq(BYTE_THREE).and(AWARD.GOODS_PV.greaterThan(goodsPv));
-        Integer shareId = db().select(AWARD.ID).from(AWARD).where(condition).and(condition1.or(condition2).or(condition3)).orderBy(AWARD.PRIORITY).limit(INTEGER_ONE).fetchOneInto(Integer.class);
+        Record1<Integer> shareId = db().select(AWARD.ID).from(AWARD).where(condition).and(condition1.or(condition2).or(condition3)).orderBy(AWARD.PRIORITY.desc(), AWARD.CREATE_TIME.desc()).fetchAny();
         if (Objects.isNull(shareId)) {
             log.info("无可用的分享有礼活动！");
             return INTEGER_ZERO;
@@ -195,7 +194,7 @@ public class WxShareRewardService extends ShopBaseService {
             .and(AWARD_RECORD.GOODS_ID.eq(goodsId))
             .and(AWARD_RECORD.CREATE_TIME.greaterThan(Timestamp.valueOf(LocalDate.now().atStartOfDay()))));
         if (count == 0) {
-            return shareId;
+            return shareId.value1();
         }
         // 校验每日的分享次数上限
         int limit = shareReward.getDailyShareAwardValue();
@@ -203,7 +202,7 @@ public class WxShareRewardService extends ShopBaseService {
             log.info("分享有礼活动已达到每日分享次数上限{}！", limit);
             return INTEGER_ZERO;
         }
-        return shareId;
+        return shareId.value1();
     }
 
     /**
