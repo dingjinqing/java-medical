@@ -2,10 +2,7 @@ package com.vpu.mp.service.shop;
 
 import com.vpu.mp.service.shop.assess.AssessService;
 import com.vpu.mp.service.shop.collection.CollectService;
-import com.vpu.mp.service.shop.config.ConfigService;
-import com.vpu.mp.service.shop.config.ShopBasicConfigService;
-import com.vpu.mp.service.shop.config.TradeService;
-import com.vpu.mp.service.shop.config.WxShoppingListConfigService;
+import com.vpu.mp.service.shop.config.*;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.decoration.*;
@@ -517,4 +514,10 @@ public class ShopApplication {
      */
     @Autowired
     public MessageRecordService msgRecordService;
+    /**
+     * 第三方对接配置
+     */
+    @Autowired
+    public ThirdAuthConfigService thirdAuthService;
+
 }
