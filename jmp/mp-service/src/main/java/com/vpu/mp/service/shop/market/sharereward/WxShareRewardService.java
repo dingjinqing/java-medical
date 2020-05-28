@@ -300,10 +300,10 @@ public class WxShareRewardService extends ShopBaseService {
             count = shareReward.autoincrementUserNum(awardRecord.getId());
         }
         // 更新当前活动进行的进度
-        updateProcess(activityId, count, ExtBo.builder().userId(launchUserId).changeWay(55).goodsId(goodsId).build());
+        updateProcess(activityId, count, ExtBo.builder().userId(launchUserId).changeWay(55).goodsId(goodsId).build(), awardRecord);
     }
 
-    private void updateProcess(Integer activityId, int count, ExtBo ext) {
+    private void updateProcess(Integer activityId, int count, ExtBo ext, ShareAwardRecordRecord awardRecord) {
         int userId = ext.getUserId();
         int goodsId = ext.getGoodsId();
         // 获取活动信息详情
@@ -314,9 +314,9 @@ public class WxShareRewardService extends ShopBaseService {
         list.forEach(rule -> {
             if (Objects.nonNull(rule)) {
                 // 满足规则条件
-                if (count >= rule.getInviteNum()) {
+                if (awardRecord.get(getField(rule.getRuleLevel())).compareTo(BYTE_TWO) < 0 && count >= rule.getInviteNum()) {
                     // 更新分享进度(进度加一)
-                    updateAwardRecord(userId, activityId, goodsId, AWARD_RECORD.STATUS, AWARD_RECORD.STATUS.add(INTEGER_ONE));
+                    updateAwardRecord(userId, activityId, goodsId, AWARD_RECORD.STATUS, BYTE_THREE.equals(rule.getRuleLevel()) ? BYTE_THREE : (byte) (rule.getRuleLevel() + 1));
                     // 奖品剩余库存是否充足
                     if (rule.getStock() > 0) {
                         try {
