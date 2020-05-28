@@ -311,10 +311,12 @@ public class WxShareRewardService extends ShopBaseService {
         List<ShareRule> list = info.getShareRules();
         // 遍历活动规则
         log.info("用户已分享次数：{}", count);
-        list.forEach(rule -> {
+        int inviteNum = 0;
+        for (ShareRule rule : list) {
             if (Objects.nonNull(rule)) {
+                inviteNum += rule.getInviteNum();
                 // 满足规则条件
-                if (awardRecord.get(getField(rule.getRuleLevel())).compareTo(BYTE_TWO) < 0 && count >= rule.getInviteNum()) {
+                if (awardRecord.get(getField(rule.getRuleLevel())).compareTo(BYTE_TWO) < 0 && count >= inviteNum) {
                     // 更新分享进度(进度加一)
                     updateAwardRecord(userId, activityId, goodsId, AWARD_RECORD.STATUS, BYTE_THREE.equals(rule.getRuleLevel()) ? BYTE_THREE : (byte) (rule.getRuleLevel() + 1));
                     // 奖品剩余库存是否充足
@@ -350,7 +352,8 @@ public class WxShareRewardService extends ShopBaseService {
                     }
                 }
             }
-        });
+        }
+        ;
 
     }
 
