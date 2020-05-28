@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 对外接口-商品列表和详情中商品信息
+ * 对外接口-商品列表-商品信息
  * @author 李晓冰
  * @date 2020年05月28日
  */

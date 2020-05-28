@@ -23,9 +23,7 @@ import com.vpu.mp.service.foundation.util.api.ApiPageResult;
 import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.shop.goods.api.ApiGoodsPageResult;
-import com.vpu.mp.service.pojo.shop.goods.api.ApiGoodsSkuVo;
-import com.vpu.mp.service.pojo.shop.goods.api.ApiGoodsListVo;
+import com.vpu.mp.service.pojo.shop.goods.api.*;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
@@ -2679,5 +2677,56 @@ public class GoodsService extends ShopBaseService {
         goodsPageResult.setTotalGoodsCount(apiPageResult.getTotalCount());
         goodsPageResult.setGoodsList(apiGoodsListVos);
         return goodsPageResult;
+    }
+
+    /**
+     * erp-ekb 获取指定商品信息(包含已删除商品)
+     * @param param
+     * @return
+     */
+    public ApiGoodsDetailVo apiGetSingleGoods(ApiGoodsDetailParam param){
+        GoodsRecord goodsRecord = db().select(GOODS.GOODS_ID, GOODS.GOODS_SN, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.CREATE_TIME, GOODS.UPDATE_TIME, GOODS.SORT_ID, GOODS.DEL_FLAG)
+            .from(GOODS).where(GOODS.GOODS_ID.eq(param.getGoodsId())).fetchAnyInto(GoodsRecord.class);
+        if (goodsRecord == null) {
+            return null;
+        }
+        ApiGoodsDetailVo goodsDetailVo = new ApiGoodsDetailVo(goodsRecord);
+        // 处理商品图片
+        List<String> imgList = db().select(GOODS_IMG.IMG_URL).from(GOODS_IMG).where(GOODS_IMG.GOODS_ID.eq(goodsDetailVo.getGoodsId())).fetch(GOODS_IMG.IMG_URL);
+        List<String> imgFullList =  new ArrayList<>();
+        imgFullList.add(getImgFullUrlUtil(goodsDetailVo.getGoodsImg()));
+        for (String s : imgList) {
+            imgFullList.add(getImgFullUrlUtil(s));
+        }
+        goodsDetailVo.setGoodsImgs(imgFullList);
+
+        // 设置分类
+        Map<Integer, String> sortNameMap = goodsSort.apiGetSortNameMap(Collections.singletonList(goodsDetailVo.getSortId()));
+        goodsDetailVo.setCatName(sortNameMap.get(goodsDetailVo.getSortId()));
+
+        // 处理规格信息
+        // 需要处理商品已经被删除情况
+        Map<Integer, List<GoodsSpecProductRecord>> specPrdMap = goodsSpecProductService.apiGetGoodsSpecPrdMapByGoodsIds(Collections.singletonList(goodsDetailVo.getGoodsId()));
+        List<GoodsSpecProductBakRecord> goodsSpecProductBakRecords = goodsSpecProductService.apiGetGoodsSpecPrdDeletedMByGoodsId(goodsDetailVo.getGoodsId());
+        List<GoodsSpecProductRecord> specPrdList = specPrdMap.get(goodsDetailVo.getGoodsId());
+
+        List<ApiGoodsSkuVo> apiGoodsSkuVos = new ArrayList<>(2);
+        if (specPrdList != null) {
+            for (GoodsSpecProductRecord specProductRecord : specPrdList) {
+                ApiGoodsSkuVo apiGoodsSkuVo = new ApiGoodsSkuVo(specProductRecord);
+                apiGoodsSkuVo.setPrdImg(getImgFullUrlUtil(apiGoodsSkuVo.getPrdImg()));
+                apiGoodsSkuVos.add(apiGoodsSkuVo);
+            }
+        }
+
+        for (GoodsSpecProductBakRecord goodsSpecProductBakRecord : goodsSpecProductBakRecords) {
+            ApiGoodsSkuVo apiGoodsSkuVo = new ApiGoodsSkuVo(goodsSpecProductBakRecord);
+            apiGoodsSkuVo.setPrdImg(getImgFullUrlUtil(apiGoodsSkuVo.getPrdImg()));
+            apiGoodsSkuVos.add(apiGoodsSkuVo);
+        }
+
+        goodsDetailVo.setSkuList(apiGoodsSkuVos);
+        goodsDetailVo.setSkuCount(apiGoodsSkuVos.size());
+        return goodsDetailVo;
     }
 }
