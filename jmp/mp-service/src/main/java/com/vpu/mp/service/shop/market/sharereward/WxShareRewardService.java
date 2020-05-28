@@ -189,6 +189,12 @@ public class WxShareRewardService extends ShopBaseService {
             log.info("无可用的分享有礼活动！");
             return INTEGER_ZERO;
         }
+
+        if (db().fetchExists(AWARD_RECORD, AWARD_RECORD.USER_ID.eq(userId).and(AWARD_RECORD.SHARE_ID.eq(shareId.value1())).and(AWARD_RECORD.GOODS_ID.eq(goodsId)))) {
+            //已经参加该活动
+            return shareId.value1();
+        }
+
         // 是否参加过当前商品分享有礼活动
         int count = db().fetchCount(ATTEND.leftJoin(AWARD_RECORD).on(ATTEND.RECORD_ID.eq(AWARD_RECORD.ID)), AWARD_RECORD.USER_ID.eq(userId)
             .and(AWARD_RECORD.GOODS_ID.eq(goodsId))
