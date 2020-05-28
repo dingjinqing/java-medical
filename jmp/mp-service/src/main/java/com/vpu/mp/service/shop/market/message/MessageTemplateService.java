@@ -168,8 +168,8 @@ public class MessageTemplateService extends ShopBaseService {
                     {""},
                     {templateConfigRecord.getTitle()},
                     {templateConfigRecord.getContent()},
-                    {DateUtil.getLocalDateTime().toString()},
-                    {"点击查看详情"}
+                    {"点击查看详情"},
+                    {DateUtil.getLocalDateTime().toString()}
                 })
                 .build())
             .build();

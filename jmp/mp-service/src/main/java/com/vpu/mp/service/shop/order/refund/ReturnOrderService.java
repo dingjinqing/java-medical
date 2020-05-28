@@ -118,6 +118,7 @@ public class ReturnOrderService extends ShopBaseService{
                     or(TABLE.ORDER_SN.like(likeValue(search))).
                     or(SUB_TABLE.GOODS_NAME.like(likeValue(search))));
         }
+        select.orderBy(TABLE.RET_ID.desc());
         return select;
     }
 	/**
