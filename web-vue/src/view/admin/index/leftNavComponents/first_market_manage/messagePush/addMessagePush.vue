@@ -372,9 +372,10 @@
       />
       <!-- 选择商品弹窗 -->
       <choosingGoods
-        @res="getRes"
+        @resultGoodsDatas="getRes"
         :tuneUpChooseGoods="tuneUpChooseGoods"
         :chooseGoodsBack="params.goodsIdList"
+        :checkedNumMax="3"
       />
       <!-- 选择内容模板消息 -->
       <chooseTemplateDialog
@@ -915,15 +916,16 @@ export default {
       }
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
-    getRes (ids, urls) {
-      if (ids.length > 3) {
-        this.$message.warning('最多选择3个商品')
-      } else {
-        this.params.goodsIdList = ids
-        this.imgsList = urls
-        // 发送获取人数
-        this.fetchUserList(this.params)
-      }
+    getRes (res) {
+      let id = []
+      res.forEach((item, index) => {
+        id.push(item.goodsId)
+      })
+      console.log(res, id)
+      this.params.goodsIdList = id
+      this.imgsList = res
+      // 发送获取人数
+      this.fetchUserList(this.params)
     },
     // 删除图片
     handleDelImg (id) {
@@ -931,7 +933,7 @@ export default {
         return
       }
       this.imgsList = this.imgsList.filter(item => item.goodsId !== id)
-      this.params.goodsIdList = this.goodsIdList.filter(item => item !== id)
+      this.params.goodsIdList = this.params.goodsIdList.filter(item => item !== id)
       this.fetchUserList(this.params)
     },
     // 获取选中的path
