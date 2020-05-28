@@ -323,6 +323,7 @@ public class ShopOfficialAccount extends MainBaseService {
 	 * @throws WxErrorException
 	 */
 	public String generateThirdPartCode(AdminTokenAuthInfo user, String appId) throws WxErrorException {
+		logger().info("传入appid为：{}",appId);
 		boolean subLogin = user.isSubLogin();
 		// 主账户是1
 		int accountAction = subLogin ? 2 : 1;
