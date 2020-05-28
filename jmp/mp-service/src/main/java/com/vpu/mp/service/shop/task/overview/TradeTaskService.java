@@ -71,4 +71,7 @@ public class TradeTaskService extends ShopBaseService {
             .fetchOptionalInto(BigDecimal.class).orElse(BIGDECIMAL_ZERO);
     }
 
+    public void orderUserNum(Timestamp start,Timestamp end){
+
+    }
 }
