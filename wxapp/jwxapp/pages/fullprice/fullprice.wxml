@@ -103,7 +103,7 @@
             </view>
             <view class='eg_lefts'>
               <image src='{{item.goodsImg}}' wx:if='{{item.prdImg == ""}}'></image>
-              <image src='{{imageUrl}}/{{item.prdImg}}' wx:if='{{item.prdImg != ""}}'></image>
+              <image src='{{item.prdImg}}' wx:if='{{item.prdImg != ""}}'></image>
               <view class='reduce_price' wx:if="{{item.priceActivityType == 6}}" style='background:{{linColor}};color:#fff'>{{i18n.$t(localePack,"pages.cart.activeLabel1")}}</view>
               <view class='reduce_price' wx:if="{{item.priceActivityType == 18}}" style='background:{{linColor}};color:#fff'>{{i18n.$t(localePack,"pages.cart.activeLabel2")}}</view>
               <view></view>

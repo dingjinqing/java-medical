@@ -773,6 +773,7 @@ const en = {
     'Choose Shops',
     'Sign out'
   ],
+  changePassword: 'Change Password',
   // admin选择店铺页面contact组件数据
   adminContact: {
     phoneNum: 'Customer Service Telephone: 400-010-1039',
