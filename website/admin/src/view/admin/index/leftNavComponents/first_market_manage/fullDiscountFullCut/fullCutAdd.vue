@@ -576,10 +576,11 @@
                       </td>
                       <td>￥{{item.shopPrice}}</td>
                       <td>{{item.goodsNumber}}</td>
-                      <td @click="deleteGoods(index)">
+                      <td>
                         <span
                           v-if="!params.id"
                           class="edit-icon"
+                          @click="deleteGoods(index)"
                         >{{$t('fullCuti18n.delete')}}</span>
                       </td>
                     </tr>
