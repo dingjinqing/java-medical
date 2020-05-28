@@ -208,9 +208,16 @@
                       style="line-height:normal"
                     >
                       <div class="coupon_list_top">
-                        <span v-if="item.actCode==='voucher'">￥ {{item.denomination}}</span>
-                        <span v-if="item.actCode==='discount'">{{item.denomination}} 折</span>
-                        <span v-if="item.actCode==='random'">{{item.randomMax}}最高</span>
+                        <span
+                          v-if="item.actCode==='voucher'"
+                          class="number"
+                        >￥{{item.denomination}}</span>
+                        <span v-if="item.actCode==='discount'">
+                          <span class="number">{{item.denomination}}</span> 折
+                        </span>
+                        <span v-if="item.actCode==='random'">
+                          <span class="number">￥{{item.randomMax}}</span>最高
+                        </span>
                       </div>
                       <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
                       <div
@@ -1091,9 +1098,9 @@ export default {
     border: 1px solid #fbb;
     border-radius: 10px;
     .coupon_list_top {
-      margin-top: 10px;
+      // margin-top: 10px;
       color: #f60;
-      :nth-of-type(2) {
+      .number {
         font-size: 20px;
         font-weight: bold;
       }
