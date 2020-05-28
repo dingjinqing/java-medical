@@ -19,5 +19,5 @@ public class ApiGoodsPageResult extends ApiPageResult {
     @JsonProperty("total_goods_count")
     private Integer totalGoodsCount;
     @JsonProperty("goods_list")
-    private List<ApiGoodsVo> goodsList;
+    private List<ApiGoodsListVo> goodsList;
 }

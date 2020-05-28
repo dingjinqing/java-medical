@@ -28,14 +28,15 @@ public class ApiGoodsSkuVo {
     @JsonProperty("del_flag")
     private Byte delFlag = 0;
 
-    public static ApiGoodsSkuVo convertFromGoodsSpecProductRecord(GoodsSpecProductRecord record){
-        ApiGoodsSkuVo vo = new ApiGoodsSkuVo();
-        vo.setSkuId(record.getPrdId());
-        vo.setPrdSn(record.getPrdSn());
-        vo.setPrdPrice(record.getPrdPrice());
-        vo.setPrdNumber(record.getPrdNumber());
-        vo.setPrdDesc(record.getPrdDesc());
-        vo.setPrdImg(record.getPrdImg());
-        return vo;
+    public ApiGoodsSkuVo() {
+    }
+
+    public ApiGoodsSkuVo(GoodsSpecProductRecord record){
+        this.skuId = record.getPrdId();
+        this.prdSn = record.getPrdSn();
+        this.prdPrice = record.getPrdPrice();
+        this.prdNumber = record.getPrdNumber();
+        this.prdDesc = record.getPrdDesc();
+        this.prdImg = record.getPrdImg();
     }
 }

@@ -25,7 +25,7 @@ import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.api.ApiGoodsPageResult;
 import com.vpu.mp.service.pojo.shop.goods.api.ApiGoodsSkuVo;
-import com.vpu.mp.service.pojo.shop.goods.api.ApiGoodsVo;
+import com.vpu.mp.service.pojo.shop.goods.api.ApiGoodsListVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
@@ -2641,34 +2641,34 @@ public class GoodsService extends ShopBaseService {
         @SuppressWarnings("unchecked")
         List<GoodsRecord> goodsRecordList = (List<GoodsRecord>) apiPageResult.getDataList();
 
-        List<ApiGoodsVo> apiGoodsVos = new ArrayList<>(goodsRecordList.size());
+        List<ApiGoodsListVo> apiGoodsListVos = new ArrayList<>(goodsRecordList.size());
         List<Integer> goodsIds = new ArrayList<>(goodsRecordList.size());
         List<Integer> sortIds = new ArrayList<>(goodsRecordList.size());
         for (GoodsRecord goodsRecord : goodsRecordList) {
-            apiGoodsVos.add(ApiGoodsVo.convertFromGoodsRecord(goodsRecord));
+            apiGoodsListVos.add(new ApiGoodsListVo(goodsRecord));
             goodsIds.add(goodsRecord.getGoodsId());
             sortIds.add(goodsRecord.getSortId());
         }
         Map<Integer, String> sortNameMap = goodsSort.apiGetSortNameMap(sortIds);
         Map<Integer, List<GoodsSpecProductRecord>> specPrdMap = goodsSpecProductService.apiGetGoodsSpecPrdMapByGoodsIds(goodsIds);
 
-        apiGoodsVos.removeIf(apiGoodsVo -> {
-            List<GoodsSpecProductRecord> specPrdList = specPrdMap.get(apiGoodsVo.getGoodsId());
+        apiGoodsListVos.removeIf(apiGoodsListVo -> {
+            List<GoodsSpecProductRecord> specPrdList = specPrdMap.get(apiGoodsListVo.getGoodsId());
             if (specPrdList == null || specPrdList.size() == 0) {
                 return true;
             }
 
             List<ApiGoodsSkuVo> apiGoodsSkuVos = new ArrayList<>();
             for (GoodsSpecProductRecord specProductRecord : specPrdList) {
-                ApiGoodsSkuVo apiGoodsSkuVo = ApiGoodsSkuVo.convertFromGoodsSpecProductRecord(specProductRecord);
+                ApiGoodsSkuVo apiGoodsSkuVo = new ApiGoodsSkuVo(specProductRecord);
                 apiGoodsSkuVo.setPrdImg(getImgFullUrlUtil(apiGoodsSkuVo.getPrdImg()));
                 apiGoodsSkuVos.add(apiGoodsSkuVo);
             }
 
-            apiGoodsVo.setGoodsImg(getImgFullUrlUtil(apiGoodsVo.getGoodsImg()));
-            apiGoodsVo.setCatName(sortNameMap.get(apiGoodsVo.getSortId()));
-            apiGoodsVo.setSkuCount(apiGoodsSkuVos.size());
-            apiGoodsVo.setSkuList(apiGoodsSkuVos);
+            apiGoodsListVo.setGoodsImg(getImgFullUrlUtil(apiGoodsListVo.getGoodsImg()));
+            apiGoodsListVo.setCatName(sortNameMap.get(apiGoodsListVo.getSortId()));
+            apiGoodsListVo.setSkuCount(apiGoodsSkuVos.size());
+            apiGoodsListVo.setSkuList(apiGoodsSkuVos);
 
             return false;
         });
@@ -2677,7 +2677,7 @@ public class GoodsService extends ShopBaseService {
         goodsPageResult.setCurPageNo(apiPageResult.getCurPageNo());
         goodsPageResult.setPageSize(apiPageResult.getPageSize());
         goodsPageResult.setTotalGoodsCount(apiPageResult.getTotalCount());
-        goodsPageResult.setGoodsList(apiGoodsVos);
+        goodsPageResult.setGoodsList(apiGoodsListVos);
         return goodsPageResult;
     }
 }

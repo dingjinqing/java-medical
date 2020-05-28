@@ -9,12 +9,11 @@ import java.sql.Timestamp;
 import java.util.List;
 
 /**
- * 对外接口-商品列表和详情中商品信息
  * @author 李晓冰
  * @date 2020年05月28日
  */
 @Data
-public class ApiGoodsVo {
+public class ApiGoodsBaseVo {
     @JsonProperty("goods_id")
     private Integer goodsId;
     @JsonProperty("goods_sn")
@@ -23,8 +22,6 @@ public class ApiGoodsVo {
     private String catName;
     @JsonProperty("goods_name")
     private String goodsName;
-    @JsonProperty("goods_img")
-    private String goodsImg;
     @JsonProperty("add_time")
     private Timestamp addTime;
     @JsonProperty("update_time")
@@ -37,15 +34,15 @@ public class ApiGoodsVo {
     @JsonIgnore
     private Integer sortId;
 
-    public static ApiGoodsVo convertFromGoodsRecord(GoodsRecord goodsRecord){
-        ApiGoodsVo vo =new ApiGoodsVo();
-        vo.setGoodsId(goodsRecord.getGoodsId());
-        vo.setGoodsSn(goodsRecord.getGoodsSn());
-        vo.setGoodsName(goodsRecord.getGoodsName());
-        vo.setGoodsImg(goodsRecord.getGoodsImg());
-        vo.setAddTime(goodsRecord.getCreateTime());
-        vo.setUpdateTime(goodsRecord.getUpdateTime());
-        vo.setSortId(goodsRecord.getSortId());
-        return vo;
+    public ApiGoodsBaseVo() {
+    }
+
+    public ApiGoodsBaseVo(GoodsRecord goodsRecord) {
+        this.goodsId = goodsRecord.getGoodsId();
+        this.goodsSn = goodsRecord.getGoodsSn();
+        this.goodsName = goodsRecord.getGoodsName();
+        this.addTime = goodsRecord.getCreateTime();
+        this.updateTime = goodsRecord.getUpdateTime();
+        this.sortId = goodsRecord.getSortId();
     }
 }
