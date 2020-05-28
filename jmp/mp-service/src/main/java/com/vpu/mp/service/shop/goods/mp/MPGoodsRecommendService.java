@@ -194,14 +194,15 @@ public class MPGoodsRecommendService extends ShopBaseService {
         //普通推荐
         else {
             recommendGoodsIds = getSellRecommendGoodsIds(record);
-            if (recommendGoodsIds.size() == 0) {
-                return null;
-            }
-            int recommendNumber = record.getRecommendNumber() == null ? 6 : record.getRecommendNumber();
-            if (recommendGoodsIds.size() > recommendNumber) {
-                Collections.shuffle(recommendGoodsIds);
-                return recommendGoodsIds.subList(0, recommendNumber);
-            }
+        }
+        //统一控制数量超出问题
+        if (recommendGoodsIds.size() == 0) {
+            return null;
+        }
+        int recommendNumber = record.getRecommendNumber() == null ? 6 : record.getRecommendNumber();
+        if (recommendGoodsIds.size() > recommendNumber) {
+            Collections.shuffle(recommendGoodsIds);
+            return recommendGoodsIds.subList(0, recommendNumber);
         }
         logger().info("最终商品推荐活动id："+recommendGoodsIds);
         return recommendGoodsIds;
@@ -356,6 +357,7 @@ public class MPGoodsRecommendService extends ShopBaseService {
      * @return 商品id
      */
     public List<Integer> getSmartRecommendGoodsIds(RecommendGoodsRecord record, Integer userId) {
+        logger().info("开始获取智能推荐商品id");
         //得到推荐商品数量
         int recommendNumber = record.getRecommendNumber() == null ? 6 : record.getRecommendNumber();
         //推荐的商品id、商家分类id、品牌id、平台分类id
@@ -487,6 +489,7 @@ public class MPGoodsRecommendService extends ShopBaseService {
                 }
             }
         }
+        logger().info("智能筛选后的商品id为：{}",totalGoodsIds);
         return totalGoodsIds;
     }
 
@@ -714,7 +717,7 @@ public class MPGoodsRecommendService extends ShopBaseService {
             .or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_TWO).and(GOODS_LABEL_COUPLE.GTA_ID.eq(catId)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
             .or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_THREE).and(GOODS_LABEL_COUPLE.GTA_ID.eq(sortId)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
             .or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_FOUR).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
-            .orderBy(DSL.min(GOODS_LABEL_COUPLE.TYPE).asc(), GOODS_LABEL.LEVEL.desc(), GOODS_LABEL.CREATE_TIME.desc())
+            .orderBy(GOODS_LABEL_COUPLE.TYPE.asc(), GOODS_LABEL.LEVEL.desc(), GOODS_LABEL.CREATE_TIME.desc())
             .limit(LIMIT_ONE_NUM)
             .fetchOptionalInto(Integer.class)
             .orElse(null);
