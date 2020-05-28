@@ -456,6 +456,8 @@ export default {
           callback(new Error('请选择发送时间'))
         } else if (new Date(this.endTime) < Date.now()) {
           callback(new Error('持续发送的结束时间不能小于当前时间'))
+        } else {
+          callback()
         }
       } else {
         callback()
@@ -466,8 +468,10 @@ export default {
       if (this.senAction === 4) {
         if (!this.startTimeTiming) {
           callback(new Error('请选择发送时间'))
-        } else if (new Date(this.startTime) < Date.now()) {
+        } else if (new Date(this.startTimeTiming) < Date.now()) {
           callback(new Error('定时发送的时间不能小于当前时间'))
+        } else {
+          callback()
         }
       } else {
         callback()
