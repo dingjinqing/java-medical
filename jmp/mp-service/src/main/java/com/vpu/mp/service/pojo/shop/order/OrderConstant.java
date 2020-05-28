@@ -201,12 +201,13 @@ public class OrderConstant {
 	/**一分*/
 	public final static BigDecimal CENT = new BigDecimal("0.01");
 
-	/**操作人：商家 0 、买家1、定时任务2、mq3、pos4*/
+	/**操作人：商家 0 、买家1、定时任务2、mq3、pos4、erp/ekb5**/
 	public final static byte IS_MP_Y = 1;
 	public final static byte IS_MP_ADMIN = 0;
 	public final static byte IS_MP_AUTO = 2;
     public final static byte IS_MP_MQ = 3;
     public final static byte IS_MP_POS = 4;
+    public final static byte IS_MP_ERP_OR_EKB = 5;
 	/**
 	 * 订单退款退货流程操作
 	 */

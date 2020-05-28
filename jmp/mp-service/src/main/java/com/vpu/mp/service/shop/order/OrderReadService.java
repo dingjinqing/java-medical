@@ -190,7 +190,7 @@ public class OrderReadService extends ShopBaseService {
     @Autowired
     private ReturnService returnService;
     @Autowired
-    private ExpressService expressService;
+    public ExpressService expressService;
     @Autowired
     private ConfigService configService;
     @Autowired

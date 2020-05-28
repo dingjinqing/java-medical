@@ -236,6 +236,28 @@ public class ApiExternalGateService extends MainBaseService {
             case ApiExternalGateConfig.SERVICE_POS_VERIFY_ORDER:
                 apiJsonResult = posVerifyOrder(param);
                 break;
+            case ApiExternalGateConfig.SERVICE_ORDER_LIST:
+                //订单列表
+                break;
+            case ApiExternalGateConfig.SERVICE_SINGLE_ORDER:
+                //单个订单
+                break;
+            case ApiExternalGateConfig.SERVICE_SYNC_LOGISTICS:
+                //同步物流单号(发货)
+                apiJsonResult = saas().getShopApp(param.getShopId()).orderApi.shipping(param);
+                break;
+            case ApiExternalGateConfig.SERVICE_REFUND_ORDER_LIST:
+                //退款订单列表
+                break;
+            case ApiExternalGateConfig.SERVICE_REFUND_ORDER:
+                //退款订单
+                break;
+            case ApiExternalGateConfig.SERVICE_SYNC_REFUND_ORDER_RESULT:
+                //同步退款结果
+                break;
+            case ApiExternalGateConfig.SERVICE_DELIVER_EXCHANGE_GOODS:
+                //发货（换货未实现）
+                break;
             default:
                 apiJsonResult = new ApiJsonResult();
                 apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_INVALID_SERVICE);
@@ -296,7 +318,7 @@ public class ApiExternalGateService extends MainBaseService {
         }
         if(StringUtils.isBlank(param.getOrderSn())) {
             result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
-            result.setMsg("参数order_sn为");
+            result.setMsg("参数order_sn为空");
             return result;
         }
         if(param.getOrderStatus() == null || !param.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)) {
