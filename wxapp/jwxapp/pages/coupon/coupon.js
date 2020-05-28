@@ -337,6 +337,14 @@ global.wxPage({
     var that = this;
     var couponSn = res.target.dataset.coupon_sn;
     var actId = res.target.dataset.act_id;
+    util.api('/api/wxapp/divsionCoupon/share', function (res) {
+      this.data.allCoupon.forEach(item => {
+        if (item.couponSn === couponSn) {
+          item.isShare = 1
+        }
+      })
+      console.log(that.data.allCoupon);
+    }, { couponSn: couponSn});
     return {
       title: '分享优惠券',
       path: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + actId + "&inviteId=" + util.getCache('user_id'),
