@@ -209,7 +209,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
-                this.path = 'pages/getCoupon/getCoupon?id='
+                this.path = 'pages/getCoupon/getCoupon?couponId='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
