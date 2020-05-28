@@ -762,6 +762,7 @@ const cn = {
     '选择店铺',
     '退出'
   ],
+  changePassword: '修改密码',
   // admin选择店铺页面contact组件数据
   adminContact: {
     phoneNum: '客服电话：400-010-1039',
