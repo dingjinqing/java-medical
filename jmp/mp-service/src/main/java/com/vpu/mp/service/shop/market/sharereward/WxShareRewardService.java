@@ -189,6 +189,12 @@ public class WxShareRewardService extends ShopBaseService {
             log.info("无可用的分享有礼活动！");
             return INTEGER_ZERO;
         }
+
+        if (db().fetchExists(AWARD_RECORD, AWARD_RECORD.USER_ID.eq(userId).and(AWARD_RECORD.SHARE_ID.eq(shareId.value1())).and(AWARD_RECORD.GOODS_ID.eq(goodsId)))) {
+            //已经参加该活动
+            return shareId.value1();
+        }
+
         // 是否参加过当前商品分享有礼活动
         int count = db().fetchCount(ATTEND.leftJoin(AWARD_RECORD).on(ATTEND.RECORD_ID.eq(AWARD_RECORD.ID)), AWARD_RECORD.USER_ID.eq(userId)
             .and(AWARD_RECORD.GOODS_ID.eq(goodsId))
@@ -294,10 +300,10 @@ public class WxShareRewardService extends ShopBaseService {
             count = shareReward.autoincrementUserNum(awardRecord.getId());
         }
         // 更新当前活动进行的进度
-        updateProcess(activityId, count, ExtBo.builder().userId(launchUserId).changeWay(55).goodsId(goodsId).build());
+        updateProcess(activityId, count, ExtBo.builder().userId(launchUserId).changeWay(55).goodsId(goodsId).build(), awardRecord);
     }
 
-    private void updateProcess(Integer activityId, int count, ExtBo ext) {
+    private void updateProcess(Integer activityId, int count, ExtBo ext, ShareAwardRecordRecord awardRecord) {
         int userId = ext.getUserId();
         int goodsId = ext.getGoodsId();
         // 获取活动信息详情
@@ -305,12 +311,14 @@ public class WxShareRewardService extends ShopBaseService {
         List<ShareRule> list = info.getShareRules();
         // 遍历活动规则
         log.info("用户已分享次数：{}", count);
-        list.forEach(rule -> {
+        int inviteNum = 0;
+        for (ShareRule rule : list) {
             if (Objects.nonNull(rule)) {
+                inviteNum += rule.getInviteNum();
                 // 满足规则条件
-                if (count >= rule.getInviteNum()) {
+                if (awardRecord.get(getField(rule.getRuleLevel())).compareTo(BYTE_TWO) < 0 && count >= inviteNum) {
                     // 更新分享进度(进度加一)
-                    updateAwardRecord(userId, activityId, goodsId, AWARD_RECORD.STATUS, AWARD_RECORD.STATUS.add(INTEGER_ONE));
+                    updateAwardRecord(userId, activityId, goodsId, AWARD_RECORD.STATUS, BYTE_THREE.equals(rule.getRuleLevel()) ? BYTE_THREE : (byte) (rule.getRuleLevel() + 1));
                     // 奖品剩余库存是否充足
                     if (rule.getStock() > 0) {
                         try {
@@ -344,7 +352,8 @@ public class WxShareRewardService extends ShopBaseService {
                     }
                 }
             }
-        });
+        }
+        ;
 
     }
 
