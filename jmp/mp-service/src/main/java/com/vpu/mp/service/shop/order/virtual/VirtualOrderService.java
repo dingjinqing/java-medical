@@ -13,7 +13,6 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.data.AccountData;
 import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
 import com.vpu.mp.service.pojo.shop.member.data.UserCardData;
-import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
@@ -22,8 +21,10 @@ import com.vpu.mp.service.pojo.shop.order.virtual.*;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Record2;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
+import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -220,37 +221,6 @@ public class VirtualOrderService extends ShopBaseService {
     }
     
     /**
-     * 获取用户的虚拟订单
-     */
-    public UserOrderBean getConsumeOrder(Integer userId) {
-    	logger().info("获取用户的虚拟订单信息");
-    	return db().select(DSL.count(VIRTUAL_ORDER.ORDER_ID).as("orderNum"),
-				DSL.sum(VIRTUAL_ORDER.MONEY_PAID.add(VIRTUAL_ORDER.USE_ACCOUNT).add(VIRTUAL_ORDER.MEMBER_CARD_BALANCE)).as("totalMoneyPaid"))
-    		.from(VIRTUAL_ORDER)
-    		.where(VIRTUAL_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED))
-    		.and(VIRTUAL_ORDER.USER_ID.eq(userId))
-    		.fetchAnyInto(UserOrderBean.class);
-    }
-    
-    /**
-     * 获取用户退款的虚拟订单
-     */
-    public UserOrderBean getReturnOrder(Integer userId) {
-    	logger().info("获取用户退款的虚拟订单信息");
-    	VirtualOrderRefundRecord LOCAL_TABLE = VIRTUAL_ORDER_REFUND_RECORD;
-    	return db().select(DSL.countDistinct(LOCAL_TABLE.ORDER_SN).as("orderNum"),
-    				DSL.sum(LOCAL_TABLE.MONEY_PAID
-    						.add(LOCAL_TABLE.USE_ACCOUNT)
-    						.add(LOCAL_TABLE.MEMBER_CARD_BALANCE)
-    					).as("totalMoneyPaid")
-    			)
-    		.from(LOCAL_TABLE)
-    		.where(LOCAL_TABLE.IS_SUCCESS.eq(REFUND_STATUS_SUCCESS))
-    		.and(LOCAL_TABLE.USER_ID.eq(userId))
-    		.fetchAnyInto(UserOrderBean.class);
-    }
-    
-    /**
      * 获取虚拟订单最近下单时间
      */
     public Timestamp lastOrderTime(Integer userId) {
@@ -342,5 +312,24 @@ public class VirtualOrderService extends ShopBaseService {
             .and(VIRTUAL_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED))
             .fetchInto(VirtualOrderAnalysisBo.class);
         return list.stream().collect(Collectors.groupingBy(VirtualOrderAnalysisBo::getCreateTime));
+    }
+
+    /**
+     * 获取用户退款订单统计
+     * return <累计退款金额,累计退款订单数>
+     */
+    public Tuple2<BigDecimal, Integer> getUserReturnOrderStatistics(Integer userId) {
+        VirtualOrderRefundRecord LOCAL_TABLE = VIRTUAL_ORDER_REFUND_RECORD;
+        Record2<Integer, BigDecimal> r = db().select(DSL.countDistinct(LOCAL_TABLE.ORDER_SN).as("orderNum"),
+            DSL.sum(LOCAL_TABLE.MONEY_PAID
+                .add(LOCAL_TABLE.USE_ACCOUNT)
+                .add(LOCAL_TABLE.MEMBER_CARD_BALANCE)
+            ).as("totalMoneyPaid")
+        )
+            .from(LOCAL_TABLE)
+            .where(LOCAL_TABLE.IS_SUCCESS.eq(REFUND_STATUS_SUCCESS))
+            .and(LOCAL_TABLE.USER_ID.eq(userId))
+            .fetchAny();
+        return new Tuple2<>(r.value2(), r.value1());
     }
 }

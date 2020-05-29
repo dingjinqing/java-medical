@@ -1,20 +1,5 @@
 package com.vpu.mp.service.shop.member;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,18 +8,18 @@ import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.pojo.shop.member.MemberBasicInfoVo;
-import com.vpu.mp.service.pojo.shop.member.MemberDetailsVo;
-import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
-import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
-import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
-import com.vpu.mp.service.pojo.shop.member.userExp.UserExcelModel;
-import com.vpu.mp.service.pojo.shop.member.userExp.UserExpCardVo;
-import com.vpu.mp.service.pojo.shop.member.userExp.UserExpCont;
-import com.vpu.mp.service.pojo.shop.member.userExp.UserExpParam;
-import com.vpu.mp.service.pojo.shop.member.userExp.UserExpVo;
+import com.vpu.mp.service.pojo.shop.member.*;
+import com.vpu.mp.service.pojo.shop.member.userExp.*;
 import com.vpu.mp.service.shop.member.dao.MemberDaoService;
 import com.vpu.mp.service.shop.member.excel.UserExpColNameI18n;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 	会员导出
@@ -210,36 +195,36 @@ public class UserExportService extends ShopBaseService{
 	private Object dealWithDistributorInfo(MemberTransactionStatisticsVo details, String key) {
 		Object value = null;
 		if(UserExpCont.EXP_REBATE_ORDER_NUM.equals(key)) {
-			// 获返利订单数量
-			value = details.getRebateOrderNum();
-		}else if(UserExpCont.EXP_CALCULATE_MONEY.equals(key)) {
-			// 返利商品总金额
-			value = details.getTotalCanFanliMoney();
-		}else if(UserExpCont.EXP_REBATE_MONEY.equals(key)) {
-			// 获返利订单佣金总额
-			value = details.getRebateMoney();
-		}else if(UserExpCont.EXP_WITHDRAW_MONEY.equals(key)) {
-			// 已提现佣金总额
-			value = details.getWithdrawCash();
-		}else if(UserExpCont.EXP_SUBLAYER_NUMBER.equals(key)) {
-			// 下级用户数
-			value = details.getSublayerNumber();
-		}else if(UserExpCont.EXP_LEVEL_NAME.equals(key)) {
-			// 分销员等级
-			value = details.getLevelName();
-		}else if(UserExpCont.EXP_GROUP_NAME.equals(key)) {
-			// 分销员分组
-			value = details.getGroupName();
-		}else if(UserExpCont.EXP_ORDER .equals(key)) {
-			// 累计消费单数
-			value = details.getOrderNum();
-		}else if(UserExpCont.EXP_RETURN_ORDER_MONEY.equals(key)) {
-			// 累计退款金额
-			value = details.getReturnOrderMoney();
-		}else if(UserExpCont.EXP_RETURN_ORDER.equals(key)) {
-			// 累计退款订单数
-			value = details.getReturnOrderNum();
-		}
+            // 获返利订单数量
+            value = details.getDistributionStatistics().getRebateOrderNum();
+        }else if(UserExpCont.EXP_CALCULATE_MONEY.equals(key)) {
+            // 返利商品总金额
+            value = details.getDistributionStatistics().getTotalCanFanliMoney();
+        }else if(UserExpCont.EXP_REBATE_MONEY.equals(key)) {
+            // 获返利订单佣金总额
+            value = details.getDistributionStatistics().getRebateMoney();
+        }else if(UserExpCont.EXP_WITHDRAW_MONEY.equals(key)) {
+            // 已提现佣金总额
+            value = details.getDistributionStatistics().getWithdrawCash();
+        }else if(UserExpCont.EXP_SUBLAYER_NUMBER.equals(key)) {
+            // 下级用户数
+            value = details.getDistributionStatistics().getSublayerNumber();
+        }else if(UserExpCont.EXP_LEVEL_NAME.equals(key)) {
+            // 分销员等级
+            value = details.getDistributionStatistics().getLevelName();
+        }else if(UserExpCont.EXP_GROUP_NAME.equals(key)) {
+            // 分销员分组
+            value = details.getDistributionStatistics().getGroupName();
+        }else if(UserExpCont.EXP_ORDER .equals(key)) {
+            // 累计消费单数
+            value = details.getAllTransactionStatistics().getOrderNum();
+        }else if(UserExpCont.EXP_RETURN_ORDER_MONEY.equals(key)) {
+            // 累计退款金额
+            value = details.getAllTransactionStatistics().getReturnOrderMoney();
+        }else if(UserExpCont.EXP_RETURN_ORDER.equals(key)) {
+            // 累计退款订单数
+            value = details.getAllTransactionStatistics().getReturnOrderNum();
+        }
 		return value;
 		
 	}

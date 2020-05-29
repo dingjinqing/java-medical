@@ -12,13 +12,18 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.virtual.*;
+import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardOrderExportVo;
+import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardOrderParam;
+import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardOrderVo;
+import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderRefundParam;
 import jodd.util.StringUtil;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.SelectOnConditionStep;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -194,5 +199,21 @@ public class MemberCardOrderService extends VirtualOrderService {
         ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
         excelWriter.writeModelList(list, MemberCardOrderExportVo.class);
         return workbook;
+    }
+
+    /**
+     * 用户下单统计
+     *
+     * @param userId
+     * @return
+     */
+    public UserOrderBean getUserOrderStatistics(int userId) {
+        return db().select(DSL.count(VIRTUAL_ORDER.ORDER_ID).as("orderNum"),
+            DSL.sum(VIRTUAL_ORDER.MONEY_PAID.add(VIRTUAL_ORDER.USE_ACCOUNT).add(VIRTUAL_ORDER.MEMBER_CARD_BALANCE)).as("totalMoneyPaid"))
+            .from(VIRTUAL_ORDER)
+            .where(VIRTUAL_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED))
+            .and(VIRTUAL_ORDER.GOODS_TYPE.eq(GOODS_TYPE_MEMBER_CARD))
+            .and(VIRTUAL_ORDER.USER_ID.eq(userId))
+            .fetchAnyInto(UserOrderBean.class);
     }
 }

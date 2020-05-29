@@ -1,77 +1,20 @@
 package com.vpu.mp.service.shop.member;
 
-import static com.vpu.mp.db.shop.Tables.CHANNEL;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
-import static com.vpu.mp.db.shop.Tables.TAG;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
-import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
-import static com.vpu.mp.db.shop.Tables.USER_TAG;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.date;
-
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.InsertValuesStep2;
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.jooq.SelectField;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectWhereStep;
-import org.jooq.UpdateSetMoreStep;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
-import com.vpu.mp.db.shop.tables.records.TagRecord;
-import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
-import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.db.shop.tables.records.UserTagRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.CardUtil;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.util.*;
 import com.vpu.mp.service.pojo.shop.area.AreaCityVo;
 import com.vpu.mp.service.pojo.shop.area.AreaDistrictVo;
 import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
-import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.member.MemberBasicInfoVo;
-import com.vpu.mp.service.pojo.shop.member.MemberDetailsVo;
-import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
-import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
-import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
-import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
-import com.vpu.mp.service.pojo.shop.member.MemberParam;
-import com.vpu.mp.service.pojo.shop.member.MemberRecordExportVo;
-import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
-import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
-import com.vpu.mp.service.pojo.shop.member.SourceNameEnum;
+import com.vpu.mp.service.pojo.shop.member.*;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
@@ -93,6 +36,26 @@ import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.*;
+import org.jooq.lambda.tuple.Tuple2;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.Tables.*;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.date;
 
 
 /**
@@ -559,27 +522,30 @@ public class MemberService extends ShopBaseService {
 		/** 最近浏览时间如果updateTime 为null，则设置为createTime */
 		if(loginTime != null) {
 			if (loginTime.get(USER_LOGIN_RECORD.UPDATE_TIME) != null) {
-				memberBasicInfoVo.setUpdateTime(loginTime.get(USER_LOGIN_RECORD.UPDATE_TIME));
-			} else {
-				memberBasicInfoVo.setUpdateTime(loginTime.get(USER_LOGIN_RECORD.CREATE_TIME));
-			}
-		}
-		/** 累计积分 */
-		Integer totalScore = score.getAccumulationScore(userId);
-		memberBasicInfoVo.setTotalScore(totalScore);
+                memberBasicInfoVo.setUpdateTime(loginTime.get(USER_LOGIN_RECORD.UPDATE_TIME));
+            } else {
+                memberBasicInfoVo.setUpdateTime(loginTime.get(USER_LOGIN_RECORD.CREATE_TIME));
+            }
+        }
+        /** 累计积分 */
+        Integer totalScore = score.getAccumulationScore(userId);
+        memberBasicInfoVo.setTotalScore(totalScore);
 
-		/** 订单相关信息 */
-		getOrderInfo(userId, transStatistic, memberBasicInfoVo);
+        /** 订单相关信息 */
+        getOrderStatistics(userId, transStatistic);
+        memberBasicInfoVo.setTotalConsumpAmount(transStatistic.getAllTransactionStatistics().getTotalMoneyPaid());
+        /** 客单价 */
+        memberBasicInfoVo.setUnitPrice(transStatistic.getAllTransactionStatistics().getUnitPrice());
 
-		/** 优惠券 */
-		memberBasicInfoVo.setCanUseCouponNum(couponSvc.getCanUseCouponNum(userId));
-		
-		/** 详细地址 */
-		List<String> addressList = address.getUserAddressById(userId);
-		memberBasicInfoVo.setAddressList(addressList);
+        /** 优惠券 */
+        memberBasicInfoVo.setCanUseCouponNum(couponSvc.getCanUseCouponNum(userId));
 
-		/** 受教育程度 */
-		Byte eduCode = memberBasicInfoVo.getEducation();
+        /** 详细地址 */
+        List<String> addressList = address.getUserAddressById(userId);
+        memberBasicInfoVo.setAddressList(addressList);
+
+        /** 受教育程度 */
+        Byte eduCode = memberBasicInfoVo.getEducation();
 		if(eduCode != null) {
 			memberBasicInfoVo.setEducationStr(MemberEducationEnum.valueOf(eduCode).getName());
 			logger().info("受教育程度" + MemberEducationEnum.valueOf(eduCode).getName());
@@ -603,15 +569,7 @@ public class MemberService extends ShopBaseService {
 		
 		/** 邀请人分销分组名称 */
 		memberBasicInfoVo.setInviteGroupName(distributorListService.getGroupName(userId));
-		
-		/** ---统计信息--- */
-		/** 最近下单的订单信息 */
-		LocalDateTime lastOrderTime = order.lastOrderTime(userId);
-		if(lastOrderTime != null) {
-			transStatistic.setLastAddOrder(lastOrderTime.toString());
-		}else {
-			transStatistic.setLastAddOrder("0");
-		}
+
 		return memberBasicInfoVo;
 	}
 
@@ -748,31 +706,31 @@ public class MemberService extends ShopBaseService {
 			DistributorListVo distributor = getDistributor(userId, memberBasicInfoVo);
 			if (distributor != null) {
 
-				/** 返利商品总金额(元) */
-				transStatistic.setTotalCanFanliMoney(distributor.getTotalCanFanliMoney());
+                /** 返利商品总金额(元) */
+                transStatistic.getDistributionStatistics().setTotalCanFanliMoney(distributor.getTotalCanFanliMoney());
 
-				/** 获返利佣金总额(元) */
-				transStatistic.setRebateMoney(BigDecimalUtil.add(distributor.getTotalFanliMoney(), distributor.getWaitFanliMoney()));
+                /** 获返利佣金总额(元) */
+                transStatistic.getDistributionStatistics().setRebateMoney(BigDecimalUtil.add(distributor.getTotalFanliMoney(), distributor.getWaitFanliMoney()));
 
 
-				/** 分销员分组 */
-				transStatistic.setGroupName(distributor.getGroupName());
+                /** 分销员分组 */
+                transStatistic.getDistributionStatistics().setGroupName(distributor.getGroupName());
 
-				/** 分销员等级 */
-				transStatistic.setLevelName(distributor.getLevelName());
+                /** 分销员等级 */
+                transStatistic.getDistributionStatistics().setLevelName(distributor.getLevelName());
 
-				/** 下级用户数 */
-				transStatistic.setSublayerNumber(distributor.getSublayerNumber());
+                /** 下级用户数 */
+                transStatistic.getDistributionStatistics().setSublayerNumber(distributor.getSublayerNumber());
 
-				/** 获返利订单数量 */
-				transStatistic.setRebateOrderNum(distributorListService.getRebateOrderNum(userId));
-			}
+                /** 获返利订单数量 */
+                transStatistic.getDistributionStatistics().setRebateOrderNum(distributorListService.getRebateOrderNum(userId));
+            }
 			/**-获取分销提现 */
 			DistributionWithdrawRecord distributionWithdraw = distributorWithdrawService.getWithdrawByUserId(userId);
 			if(distributionWithdraw != null) {
-				/** -已提现佣金总额(元) */
-				transStatistic.setWithdrawCash(distributionWithdraw.getWithdrawCash());
-			}
+                /** -已提现佣金总额(元) */
+                transStatistic.getDistributionStatistics().setWithdrawCash(distributionWithdraw.getWithdrawCash());
+            }
 			
 		}
 	}
@@ -798,40 +756,119 @@ public class MemberService extends ShopBaseService {
 		return null;
 	}
 
-	/** 获取用户详情关于订单的信息 */
-	private void getOrderInfo(Integer userId, MemberTransactionStatisticsVo transStatistic,
-			MemberBasicInfoVo memberBasicInfoVo) {
-		
-		/** 累计消费金额 */
-		UserOrderBean userOrder = order.getAllConsumeOrder(userId);
-		memberBasicInfoVo.setTotalConsumpAmount(userOrder.getTotalMoneyPaid());
-		
-		/** 客单价 */
-		memberBasicInfoVo.setUnitPrice(userOrder.getUnitPrice());
-		
-		/** 累计消费订单数 */
-		transStatistic.setOrderNum(userOrder.getOrderNum());
-		logger().info("累计消费订单数" + userOrder.getOrderNum());
+    /**
+     * 获取用户详情关于订单的信息
+     */
+    private void getOrderStatistics(Integer userId, MemberTransactionStatisticsVo transStatistic) {
 
-		UserOrderBean returnOrder = returnOrderSvc.getReturnOrder(userId);
-		/** 累计退款金额 */
-		transStatistic.setReturnOrderMoney(returnOrder.getTotalMoneyPaid());
-		logger().info("累计退款金额 " + returnOrder.getTotalMoneyPaid());
-
-		/** 累计退款订单数 */
-		transStatistic.setReturnOrderNum(returnOrder.getOrderNum());
-		logger().info("累计退款订单数 " + returnOrder.getOrderNum());
-	}
+        UserOrderBean userOrder = order.getUserOrderStatistics(userId);
+        Tuple2<BigDecimal, Integer> returnOrderTuple = returnOrderSvc.getUserReturnOrderStatistics(userId);
+        //实物订单统计（普通订单）
+        transStatistic.getPhysicalTransactionStatistics().setLastOrderTime(userOrder.getLastOrderTime());
+        transStatistic.getPhysicalTransactionStatistics().setOrderNum(userOrder.getOrderNum());
+        transStatistic.getPhysicalTransactionStatistics().setTotalMoneyPaid(userOrder.getTotalMoneyPaid());
+        transStatistic.getPhysicalTransactionStatistics().setUnitPrice(userOrder.getUnitPrice());
+        transStatistic.getPhysicalTransactionStatistics().setReturnOrderMoney(returnOrderTuple.v1);
+        transStatistic.getPhysicalTransactionStatistics().setReturnOrderNum(returnOrderTuple.v2);
 
 
-	/**
-	 * 更新会员的信息
-	 * @param param
-	 */
-	public void updateMemberInfo(MemberParam param) {
-		/** 更新用户邀请人*/
-		if(param.getInviteId()!=null) {
-			/** 更新user表*/
+        // 会员卡购买订单
+        UserOrderBean memberCardOrder = saas().getShopApp(getShopId()).memberCardOrder.getUserOrderStatistics(userId);
+        // 优惠券礼包订单
+        UserOrderBean couponPackOrder = saas().getShopApp(getShopId()).couponPackOrder.getUserOrderStatistics(userId);
+        // 会员卡续费订单
+        UserOrderBean cardRenew = saas().getShopApp(getShopId()).userCard.getRenewOrderStatistics(userId);
+        // 会员卡充值订单
+        UserOrderBean cardCharge = saas().getShopApp(getShopId()).userCard.getChargeOrderStatistics(userId);
+        //会员卡和优惠券礼包的退款
+        Tuple2<BigDecimal, Integer> returnVirtualOrder = saas().getShopApp(getShopId()).memberCardOrder.getUserReturnOrderStatistics(userId);
+        //增值交易统计
+        transStatistic.getAppreciationTransactionStatistics().setMemberCardPurchaseOrderNum(memberCardOrder.getOrderNum());
+        transStatistic.getAppreciationTransactionStatistics().setCouponPackPurchaseOrderNum(couponPackOrder.getOrderNum());
+        transStatistic.getAppreciationTransactionStatistics().setMemberCardRenewOrderNum(cardRenew.getOrderNum());
+        transStatistic.getAppreciationTransactionStatistics().setMemberCardChargeOrderNum(cardCharge.getOrderNum());
+
+
+        // 门店服务订单
+        UserOrderBean serviceOrder = saas().getShopApp(getShopId()).store.serviceOrder.getUserOrderStatistics(userId);
+        // 退款服务订单
+        Tuple2<BigDecimal, Integer> returnServiceOrder = saas().getShopApp(getShopId()).store.serviceOrder.getUserReturnOrderStatistics(userId);
+        //门店服务预约交易统计
+        transStatistic.getStoreServiceOrderTransactionStatistics().setLastOrderTime(serviceOrder.getLastOrderTime());
+        transStatistic.getStoreServiceOrderTransactionStatistics().setOrderNum(serviceOrder.getOrderNum());
+        transStatistic.getStoreServiceOrderTransactionStatistics().setTotalMoneyPaid(serviceOrder.getTotalMoneyPaid());
+        transStatistic.getStoreServiceOrderTransactionStatistics().setUnitPrice(serviceOrder.getUnitPrice());
+        transStatistic.getStoreServiceOrderTransactionStatistics().setReturnOrderMoney(returnServiceOrder.v1);
+        transStatistic.getStoreServiceOrderTransactionStatistics().setReturnOrderNum(returnServiceOrder.v2);
+
+
+        // 门店买单订单
+        UserOrderBean storeOrder = saas().getShopApp(getShopId()).store.reservation.storeOrderService.getUserOrderStatistics(userId);
+        // 退款买单订单
+        Tuple2<BigDecimal, Integer> returnStoreOrder = saas().getShopApp(getShopId()).store.reservation.storeOrderService.getUserReturnOrderStatistics(userId);
+        //门店买单订单交易统计
+        transStatistic.getStoreOrderTransactionStatistics().setLastOrderTime(storeOrder.getLastOrderTime());
+        transStatistic.getStoreOrderTransactionStatistics().setOrderNum(storeOrder.getOrderNum());
+        transStatistic.getStoreOrderTransactionStatistics().setTotalMoneyPaid(storeOrder.getTotalMoneyPaid());
+        transStatistic.getStoreOrderTransactionStatistics().setUnitPrice(storeOrder.getUnitPrice());
+
+
+        //all 求和
+        transStatistic.getAllTransactionStatistics().setLastOrderTime(getMaxTimestamp(
+            transStatistic.getPhysicalTransactionStatistics().getLastOrderTime(),
+            transStatistic.getStoreServiceOrderTransactionStatistics().getLastOrderTime(),
+            transStatistic.getStoreOrderTransactionStatistics().getLastOrderTime()
+        ));
+        transStatistic.getAllTransactionStatistics().setTotalMoneyPaid(
+            BigDecimalUtil.addOrSubtrac(
+                BigDecimalUtil.BigDecimalPlus.create(userOrder.getTotalMoneyPaid(), BigDecimalUtil.Operator.add),
+                BigDecimalUtil.BigDecimalPlus.create(memberCardOrder.getTotalMoneyPaid(), BigDecimalUtil.Operator.add),
+                BigDecimalUtil.BigDecimalPlus.create(couponPackOrder.getTotalMoneyPaid(), BigDecimalUtil.Operator.add),
+                BigDecimalUtil.BigDecimalPlus.create(cardRenew.getTotalMoneyPaid(), BigDecimalUtil.Operator.add),
+                BigDecimalUtil.BigDecimalPlus.create(cardCharge.getTotalMoneyPaid(), BigDecimalUtil.Operator.add),
+                BigDecimalUtil.BigDecimalPlus.create(serviceOrder.getTotalMoneyPaid(), BigDecimalUtil.Operator.add),
+                BigDecimalUtil.BigDecimalPlus.create(storeOrder.getTotalMoneyPaid(), BigDecimalUtil.Operator.add))
+        );
+        transStatistic.getAllTransactionStatistics().setOrderNum(
+            userOrder.getOrderNum() + memberCardOrder.getOrderNum() + couponPackOrder.getOrderNum() + cardRenew.getOrderNum() + cardCharge.getOrderNum() + serviceOrder.getOrderNum() + storeOrder.getOrderNum()
+        );
+        transStatistic.getAllTransactionStatistics().setUnitPrice(
+            transStatistic.getAllTransactionStatistics().getOrderNum() > 0 ?
+                BigDecimalUtil.divide(transStatistic.getAllTransactionStatistics().getTotalMoneyPaid(), new BigDecimal(transStatistic.getAllTransactionStatistics().getOrderNum())) :
+                BigDecimal.ZERO
+        );
+        transStatistic.getAllTransactionStatistics().setReturnOrderMoney(
+            BigDecimalUtil.addOrSubtrac(
+                BigDecimalUtil.BigDecimalPlus.create(returnOrderTuple.v1, BigDecimalUtil.Operator.add),
+                BigDecimalUtil.BigDecimalPlus.create(returnVirtualOrder.v1, BigDecimalUtil.Operator.add),
+                BigDecimalUtil.BigDecimalPlus.create(returnServiceOrder.v1, BigDecimalUtil.Operator.add),
+                BigDecimalUtil.BigDecimalPlus.create(returnStoreOrder.v1, BigDecimalUtil.Operator.add))
+        );
+        transStatistic.getAllTransactionStatistics().setReturnOrderNum(
+            returnOrderTuple.v2 + returnVirtualOrder.v2 + returnServiceOrder.v2 + returnStoreOrder.v2
+        );
+    }
+
+    private static Timestamp getMaxTimestamp(Timestamp... timestamps) {
+        Timestamp r = null;
+        for (Timestamp t : timestamps) {
+            if (t != null && (r == null || t.after(r))) {
+                r = t;
+            }
+        }
+        return r;
+    }
+
+
+    /**
+     * 更新会员的信息
+     *
+     * @param param
+     */
+    public void updateMemberInfo(MemberParam param) {
+        /** 更新用户邀请人*/
+        if (param.getInviteId() != null) {
+            /** 更新user表*/
 			memberDao.updateMemberInviteId(param.getUserId(),param.getInviteId());
 		}
 		
@@ -856,15 +893,15 @@ public class MemberService extends ShopBaseService {
 											  cardList.add(new AvailableMemberCardVo(record.get(MEMBER_CARD.ID),record.get(MEMBER_CARD.CARD_TYPE),record.get(MEMBER_CARD.CARD_NAME)));
 										  }
 										  }
-									  );
-		return cardList;
-	}
+                              );
+        return cardList;
+    }
 
 
-	/**
-	 * 处理会员获取会员卡详情
-	 * @param userId
-	 * @param param
+    /**
+     * 处理会员获取会员卡详情
+     * @param param
+     * @param param
 	 * @return
 	 */
 	public List<UserCardDetailVo> getAllUserCardDetail(UserCardDetailParam param) {
@@ -877,14 +914,14 @@ public class MemberService extends ShopBaseService {
 		 for(UserCardDetailVo vo: res) {
 			 UserCardParam card = cardMap.get(vo.getCardNo());
 			 CardFreeship freeshipData = freeShipSvc.getFreeshipData(card, null);
-			 vo.setFreeShip(freeshipData);			 
-		 }
-		 return res;
-	}
-	
-	/**
-	 * 获得用户手机号
-	 * @param userId
+			 vo.setFreeShip(freeshipData);
+         }
+        return res;
+    }
+
+    /**
+     * 获得用户手机号
+     * @param mobile
 	 * @return
 	 */
 	public UserImportDetailRecord getUserByMobile(String mobile) {

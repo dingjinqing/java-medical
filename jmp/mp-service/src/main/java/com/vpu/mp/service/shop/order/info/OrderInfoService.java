@@ -1098,7 +1098,8 @@ public class OrderInfoService extends ShopBaseService {
 
     /**
      * 计算改会员卡在当前周期使用次数
-     * @param String cardNo
+     *
+     * @param cardNo
      * @param freeLimit -1：不包邮，0:不限制，1：持卡有效期内，2：年，3：季，4：月，5：周，6：日
      * @return int 包邮使用次数 正数：已经使用包邮次数，负数表示可使用的次数
      */
@@ -1186,123 +1187,58 @@ public class OrderInfoService extends ShopBaseService {
 				DSL.sum(TABLE.MONEY_PAID.add(TABLE.USE_ACCOUNT).add(TABLE.MEMBER_CARD_BALANCE)).as("totalMoneyPaid"))
 			.from(TABLE)
 			.where(TABLE.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY)
-				.or(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).and(TABLE.BK_ORDER_PAID.greaterThan(OrderConstant.BK_PAY_NO)))
-			  )
-			.and(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN).or(TABLE.MAIN_ORDER_SN.eq("")))
-			.and(TABLE.IS_COD.eq(OrderConstant.IS_COD_NO)
-					.or(TABLE.IS_COD.eq(OrderConstant.IS_COD_YES).and(TABLE.SHIPPING_TIME.isNotNull()))
-				)
-			.and(TABLE.USER_ID.eq(userId))
-			.fetchAnyInto(UserOrderBean.class);
+                .or(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).and(TABLE.BK_ORDER_PAID.greaterThan(OrderConstant.BK_PAY_NO)))
+            )
+             .and(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN).or(TABLE.MAIN_ORDER_SN.eq("")))
+             .and(TABLE.IS_COD.eq(OrderConstant.IS_COD_NO)
+                 .or(TABLE.IS_COD.eq(OrderConstant.IS_COD_YES).and(TABLE.SHIPPING_TIME.isNotNull()))
+             )
+             .and(TABLE.USER_ID.eq(userId))
+             .fetchAnyInto(UserOrderBean.class);
 
-		 // 门店买单订单
-		 UserOrderBean storeOrder = saas().getShopApp(getShopId()).store.reservation.storeOrderService.getConsumerOrder(userId);
+        // 门店买单订单
+        UserOrderBean storeOrder = saas().getShopApp(getShopId()).store.reservation.storeOrderService.getUserOrderStatistics(userId);
 
-		 // 门店服务订单
-		 UserOrderBean serviceOrder = saas().getShopApp(getShopId()).store.serviceOrder.getConsumerOrder(userId);
+        // 门店服务订单
+        UserOrderBean serviceOrder = saas().getShopApp(getShopId()).store.serviceOrder.getUserOrderStatistics(userId);
 
-		 // 会员卡续费订单
-		 UserOrderBean cardRenew = saas().getShopApp(getShopId()).userCard.getConsumerOrder(userId);
+        // 会员卡续费订单
+        UserOrderBean cardRenew = saas().getShopApp(getShopId()).userCard.getRenewOrderStatistics(userId);
 
-		 Integer orderNum = order.getOrderNum()+storeOrder.getOrderNum()+serviceOrder.getOrderNum()+cardRenew.getOrderNum();
-		 BigDecimal totalMoneyPaid = BigDecimal.ZERO;
-		 List<BigDecimal> tmp = Arrays.<BigDecimal>asList(order.getTotalMoneyPaid(),storeOrder.getTotalMoneyPaid(),serviceOrder.getTotalMoneyPaid(),cardRenew.getTotalMoneyPaid());
-		 for(BigDecimal val: tmp) {
-			 totalMoneyPaid = BigDecimalUtil.add(totalMoneyPaid, val);
-		 }
-		 return UserOrderBean.builder().orderNum(orderNum).totalMoneyPaid(totalMoneyPaid).build();
+        Integer orderNum = order.getOrderNum() + storeOrder.getOrderNum() + serviceOrder.getOrderNum() + cardRenew.getOrderNum();
+        BigDecimal totalMoneyPaid = BigDecimal.ZERO;
+        List<BigDecimal> tmp = Arrays.<BigDecimal>asList(order.getTotalMoneyPaid(), storeOrder.getTotalMoneyPaid(), serviceOrder.getTotalMoneyPaid(), cardRenew.getTotalMoneyPaid());
+        for (BigDecimal val : tmp) {
+            totalMoneyPaid = BigDecimalUtil.add(totalMoneyPaid, val);
+        }
+        return UserOrderBean.builder().orderNum(orderNum).totalMoneyPaid(totalMoneyPaid).build();
+    }
+
+    /**
+     * 获取用户下单统计
+     */
+    public UserOrderBean getUserOrderStatistics(Integer userId) {
+        Condition condition = (TABLE.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY)
+            .or(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).and(TABLE.BK_ORDER_PAID.greaterThan(OrderConstant.BK_PAY_NO))))
+            .and(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN).or(TABLE.MAIN_ORDER_SN.eq("")))
+            .and(TABLE.IS_COD.eq(OrderConstant.IS_COD_NO)
+                .or(TABLE.IS_COD.eq(OrderConstant.IS_COD_YES).and(TABLE.SHIPPING_TIME.isNotNull())))
+            .and(TABLE.USER_ID.eq(userId));
+
+        Record1<Timestamp> createTime = db().select(TABLE.CREATE_TIME).from(TABLE).where(condition).orderBy(TABLE.CREATE_TIME.desc()).fetchAny();
+        if (createTime != null) {
+            UserOrderBean order = db().select(DSL.count(TABLE.ORDER_ID).as("orderNum"),
+                DSL.sum(TABLE.MONEY_PAID.add(TABLE.USE_ACCOUNT).add(TABLE.MEMBER_CARD_BALANCE)).as("totalMoneyPaid"))
+                .from(TABLE)
+                .where(condition)
+                .fetchAnyInto(UserOrderBean.class);
+
+            order.setLastOrderTime(createTime.value1());
+            order.setUnitPrice(BigDecimalUtil.divide(order.getTotalMoneyPaid(), new BigDecimal(order.getOrderNum())));
+            return order;
+        }
+        return new UserOrderBean();
 	}
-
-	/**
-	 * 获取用户所有消费订单
-	 */
-	public UserOrderBean getAllConsumeOrder(Integer userId){
-		logger().info("获取用户所有消费订单");
-		UserOrderBean order = getConsumeOrder(userId);
-		UserOrderBean cardOrder = saas().getShopApp(getShopId()).memberCardOrder.getConsumeOrder(userId);
-
-		Integer orderNum = order.getOrderNum()+cardOrder.getOrderNum();
-		BigDecimal orderMoney = BigDecimalUtil.add(order.getTotalMoneyPaid(),cardOrder.getTotalMoneyPaid());
-		BigDecimal unitPrice = BigDecimal.ZERO;
-		if(orderNum>0) {
-			unitPrice = BigDecimalUtil.divide(orderMoney, BigDecimal.valueOf(orderNum));
-		}
-		return UserOrderBean.builder()
-					.orderNum(orderNum)
-					.totalMoneyPaid(orderMoney)
-					.unitPrice(unitPrice)
-					.build();
-	}
-
-
-
-
-
-	/**
-	 * 会员卡消费余额
-	 *
-	 * @param userId
-	 * @return
-	 */
-	public BigDecimal getCardConsumpAmount(Integer userId) {
-
-		Record1<BigDecimal> record = getCardConsumpAmountSql(userId);
-		if (record != null) {
-			return record.into(BigDecimal.class);
-		} else {
-			return BigDecimal.ZERO;
-		}
-	}
-
-	public Record1<BigDecimal> getCardConsumpAmountSql(Integer userId) {
-		return db().select(sum(ORDER_INFO.MEMBER_CARD_BALANCE)).from(ORDER_INFO).where(ORDER_INFO.USER_ID.eq(userId))
-				.and(ORDER_INFO.ORDER_STATUS.eq(ORDER_FINISHED)).fetchAny();
-	}
-
-	/**
-	 * 最近下单时间
-	 */
-	public LocalDateTime lastOrderTime(Integer userId) {
-		logger().info("获取用户最近下单时间");
-		// 普通订单
-		Timestamp orderTime = lastNormalOrderTime(userId);
-		// 虚拟订单
-		 Timestamp cardOrderTime = saas().getShopApp(getShopId()).memberCardOrder.lastOrderTime(userId);
-		// 门店订单
-		 Timestamp storeStoreTime = saas().getShopApp(getShopId()).store.reservation.storeOrderService.lastOrderTime(userId);
-		// 服务订单
-		 Timestamp serviceTime = saas().getShopApp(getShopId()).store.serviceOrder.lastOrderTime(userId);
-
-		 List<Timestamp> times = Arrays.<Timestamp>asList(orderTime,cardOrderTime,storeStoreTime,serviceTime);
-		 LocalDateTime res = null;
-		 for(Timestamp t: times) {
-			 if(t != null) {
-				 LocalDateTime cur = t.toLocalDateTime();
-				 if(res == null) {
-					 res = cur;
-				 }else {
-					 if(cur.isAfter(res)) {
-						 res = cur;
-					 }
-				 }
-			 }
-		 }
-		 logger().info("最近下单时间： "+res);
-		 return res;
-	}
-
-	/**
-	 * 普通订单最近下单时间
-	 */
-	public Timestamp lastNormalOrderTime(Integer userId) {
-		logger().info("普通订单最近下单时间");
-		return db().select(TABLE.CREATE_TIME)
-			.from(TABLE)
-			.where(TABLE.USER_ID.eq(userId))
-			.orderBy(TABLE.CREATE_TIME.desc())
-			.fetchAnyInto(Timestamp.class);
-	}
-
 
 	/**
 	 * 获取一个组订单的退款数量

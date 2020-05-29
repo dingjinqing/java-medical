@@ -16,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackConstant;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
+import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
@@ -457,6 +458,22 @@ public class CouponPackOrderService extends VirtualOrderService {
         ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
         excelWriter.writeModelList(list, CouponPackOrderExportVo.class);
         return workbook;
+    }
+
+    /**
+     * 用户下单统计
+     *
+     * @param userId
+     * @return
+     */
+    public UserOrderBean getUserOrderStatistics(int userId) {
+        return db().select(DSL.count(VIRTUAL_ORDER.ORDER_ID).as("orderNum"),
+            DSL.sum(VIRTUAL_ORDER.MONEY_PAID.add(VIRTUAL_ORDER.USE_ACCOUNT).add(VIRTUAL_ORDER.MEMBER_CARD_BALANCE)).as("totalMoneyPaid"))
+            .from(VIRTUAL_ORDER)
+            .where(VIRTUAL_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED))
+            .and(VIRTUAL_ORDER.GOODS_TYPE.eq(GOODS_TYPE_COUPON_PACK))
+            .and(VIRTUAL_ORDER.USER_ID.eq(userId))
+            .fetchAnyInto(UserOrderBean.class);
     }
 
 
