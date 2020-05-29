@@ -174,9 +174,9 @@ export const cn = {
   // 营销管理 分享有礼 添加分享有礼活动
   share_polite_add: ['营销管理', '分享有礼', '分享有礼活动'],
   // 营销管理 普通优惠券
-  ordinary_coupon: ['营销管理', '普通优惠券'],
+  ordinary_coupon: ['营销管理', '优惠券'],
   // 营销管理 普通优惠券 领取明细
-  ordinary_coupon_receive_details: ['营销管理', '普通优惠券', '领取明细'],
+  ordinary_coupon_receive_details: ['营销管理', '优惠券', '领取明细'],
   // 营销管理 拼团抽奖
   group_draw: ['营销管理', '拼团抽奖'],
   // 营销管理 拼团抽奖 活动订单
@@ -265,7 +265,7 @@ export const cn = {
   // 营销管理 定金膨胀活动明细
   presale_detail: ['营销管理', '定金膨胀', '活动明细'],
   // 营销活动 普通优惠券
-  ordinaryCoupon: ['营销管理', '普通优惠券'],
+  ordinaryCoupon: ['营销管理', '优惠券'],
   // 营销管理 秒杀
   seckill: ['营销管理', '秒杀'],
   // 营销管理 秒杀-添加
