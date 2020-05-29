@@ -220,17 +220,18 @@ global.wxPage({
    * 用户点击右上角分享
    */
   onShareAppMessage: function (res) {
+    var that = this
     var couponSn = res.target.dataset.coupon_sn;
     var actId = res.target.dataset.act_id;
-    util.api('/api/wxapp/divsionCoupon/share', function (res) {
+    util.api('/api/wxapp/coupon/split/share', function (res) {
       that.setData({
-       'act_info.isShare': 1,
+        'act_info.isShare': 1
       })
     }, { couponSn: couponSn });
     return {
       title: '分享优惠券',
       path: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + actId + "&inviteId=" + util.getCache('user_id'),
-      imageUrl: this.data.imageUrl + '/image/wxapp/share_icon.jpg',
+      imageUrl: that.data.imageUrl + '/image/wxapp/share_icon.jpg',
     }
   },
 
