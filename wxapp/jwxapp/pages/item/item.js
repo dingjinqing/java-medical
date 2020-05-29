@@ -215,8 +215,7 @@ global.wxPage({
       rebateConfig,
       inviteId,
       shareAwardLaunchUserId,
-      shareAwardId
-      inviteId,
+      shareAwardId,
       cardExchange: {
         isChange,
         cardNo,
