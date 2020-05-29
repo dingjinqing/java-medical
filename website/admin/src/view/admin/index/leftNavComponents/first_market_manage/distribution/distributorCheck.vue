@@ -452,7 +452,6 @@ export default {
       distributionGroup(this.pageParams).then((res) => {
         if (res.error === 0) {
           this.selectData = res.content.dataList
-          this.pageParams = res.content.page
         }
       })
     },
