@@ -19,7 +19,7 @@ export const en = {
   giveGiftsDesc: 'Buy goods to send friends',
   sharePolite: 'share and polite',
   sharePoliteDesc: 'Share merchandise to receive rewards and increase product exposure',
-  coupon: 'ordinary coupon',
+  coupon: 'Coupon',
   couponDesc: 'Issue coupons to users',
   couponPackage: 'coupon package',
   couponPackageDesc: 'One user gets multiple coupons',

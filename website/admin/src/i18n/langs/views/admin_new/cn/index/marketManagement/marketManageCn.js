@@ -19,7 +19,7 @@ export const cn = {
   giveGiftsDesc: '购买商品送好友',
   sharePolite: '分享有礼',
   sharePoliteDesc: '分享商品获得优惠奖励，提高商品曝光率',
-  coupon: '普通优惠券',
+  coupon: '优惠券',
   couponDesc: '向用户发放优惠券',
   couponPackage: '优惠券礼包',
   couponPackageDesc: '用户一个获得多张优惠券',
