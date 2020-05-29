@@ -102,8 +102,8 @@
               <text class='iconfont iconshanchu1' style='color:{{comColor}};font-size:40rpx;'></text>
             </view>
             <view class='eg_lefts'>
-              <image src='{{item.goodsImg}}' wx:if='{{item.prdImg == ""}}'></image>
-              <image src='{{item.prdImg}}' wx:if='{{item.prdImg != ""}}'></image>
+              <image src='{{item.prdImg}}' wx:if='{{item.prdImg && item.prdImg != ""}}'></image>
+              <image src='{{item.goodsImg}}' wx:else></image>
               <view class='reduce_price' wx:if="{{item.priceActivityType == 6}}" style='background:{{linColor}};color:#fff'>{{i18n.$t(localePack,"pages.cart.activeLabel1")}}</view>
               <view class='reduce_price' wx:if="{{item.priceActivityType == 18}}" style='background:{{linColor}};color:#fff'>{{i18n.$t(localePack,"pages.cart.activeLabel2")}}</view>
               <view></view>
