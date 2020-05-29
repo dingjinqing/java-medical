@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.coupon;
 
-import com.vpu.mp.db.shop.tables.DivisionReceiveRecord;
 import com.vpu.mp.db.shop.tables.records.DivisionReceiveRecordRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -20,6 +19,8 @@ import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponDelParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponPageDecorationVo;
 import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.member.tag.UserTagService;
+import org.jooq.Record;
 import org.jooq.Record5;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +35,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.db.shop.Tables.DIVISION_RECEIVE_RECORD;
-import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_PAY_AWARD;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.PAY_AWARD_GIVE_STATUS_RECEIVED;
 
 /**
  * @author: 王兵兵
