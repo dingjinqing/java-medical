@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.goods;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.*;
@@ -18,20 +17,11 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.foundation.util.api.ApiBasePageParam;
-import com.vpu.mp.service.foundation.util.api.ApiPageResult;
-import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.shop.goods.api.*;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelSelectListVo;
-import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncGoodsPrdParam;
-import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductMqParam;
-import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductParam;
-import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncStockParam;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
@@ -1853,7 +1843,7 @@ public class GoodsService extends ShopBaseService {
      * @param relativePath 相对路径
      * @return null或全路径
      */
-    private String getImgFullUrlUtil(String relativePath) {
+    public String getImgFullUrlUtil(String relativePath) {
         if (StringUtils.isBlank(relativePath)) {
             return null;
         } else {
@@ -2518,215 +2508,5 @@ public class GoodsService extends ShopBaseService {
         } catch (Exception e) {
             logger().debug("商品修改-同步es数据异常："+e.getMessage());
         }
-    }
-
-    /**
-     * pos同步商品信息 上下架和价格
-     * @param posSyncProductParam
-     * @return
-     */
-    public ApiJsonResult posSyncProductMq(PosSyncProductParam posSyncProductParam){
-        ApiJsonResult apiJsonResult = new ApiJsonResult();
-        Integer posShopId = posSyncProductParam.getShopId();
-        if (posShopId == null) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
-            apiJsonResult.setMsg("缺少必传参数shop_id");
-            return  apiJsonResult;
-        }
-        StoreRecord storeRecord = storeService.getStoreByPosShopId(posShopId);
-        if (storeRecord == null) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
-            apiJsonResult.setMsg("该店铺没有对应的门店");
-            return  apiJsonResult;
-        }
-
-        if (posSyncProductParam.getGoodsList() == null || posSyncProductParam.getGoodsList().size() == 0) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
-            apiJsonResult.setMsg("缺少商品");
-            return  apiJsonResult;
-        }
-        PosSyncProductMqParam mqParam = new PosSyncProductMqParam();
-        mqParam.setShopId(getShopId());
-        mqParam.setStoreId(storeRecord.getStoreId());
-        mqParam.setGoodsPrdList(posSyncProductParam.getGoodsList());
-        // 调用消息队列
-        saas.taskJobMainService.dispatchImmediately(mqParam, PosSyncProductMqParam.class.getName(), getShopId(),
-            TaskJobsConstant.TaskJobEnum.POS_SYNC_PRODUCT.getExecutionType());
-//        posSyncProductMqCallback(storeRecord.getStoreId(),posSyncProductParam.getGoodsList());
-        return apiJsonResult;
-    }
-
-    /**
-     * pos 同步商品规格信息
-     * @param storeId 门店id
-     * @param goodsPrdList 规格同步信息
-     */
-    public void posSyncProductMqCallback(Integer storeId,List<PosSyncGoodsPrdParam> goodsPrdList){
-        Map<String, PosSyncGoodsPrdParam> posPrdMap = goodsPrdList.stream().collect(Collectors.toMap(PosSyncGoodsPrdParam::getPrdSn, Function.identity()));
-        // 过滤掉prdSn无法匹配上的
-        List<GoodsSpecProductRecord> goodsSpecPrdBySns = goodsSpecProductService.getGoodsSpecPrdBySn(posPrdMap.keySet());
-
-        // 待更新规格条码字段的规格集合
-        List<GoodsSpecProductRecord> goodsSpecPrdReadyToUpdate = new ArrayList<>(goodsSpecPrdBySns.size()/2);
-        List<PosSyncGoodsPrdParam> storePrdReadyToUpdate = new ArrayList<>(posPrdMap.size());
-        goodsSpecPrdBySns.forEach(prdRecord->{
-            PosSyncGoodsPrdParam posSyncGoodsPrdParam = posPrdMap.get(prdRecord.getPrdSn());
-            if (!Objects.equals(prdRecord.getPrdCodes(), posSyncGoodsPrdParam.getPrdCodes())) {
-                prdRecord.setPrdCodes(posSyncGoodsPrdParam.getPrdCodes());
-                goodsSpecPrdReadyToUpdate.add(prdRecord);
-            }
-
-            posSyncGoodsPrdParam.setPrdId(prdRecord.getPrdId());
-            storePrdReadyToUpdate.add(posSyncGoodsPrdParam);
-        });
-        db().batchUpdate(goodsSpecPrdReadyToUpdate).execute();
-        storeGoodsService.batchUpdateForSyncPosProduct(storeId,storePrdReadyToUpdate);
-    }
-
-    /**
-     * pos 对接 同步规格数量
-     * @param param
-     * @return
-     */
-    public ApiJsonResult posSyncStock(PosSyncStockParam param){
-        ApiJsonResult apiJsonResult = new ApiJsonResult();
-        Integer posShopId = param.getPosShopId();
-        if (posShopId == null) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
-            apiJsonResult.setMsg("缺少必传参数shop_id");
-            return  apiJsonResult;
-        }
-
-        StoreRecord storeRecord = storeService.getStoreByPosShopId(posShopId);
-        if (storeRecord == null) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
-            apiJsonResult.setMsg("该店铺没有对应的门店");
-            return  apiJsonResult;
-        }
-
-        List<GoodsSpecProductRecord> goodsSpecPrdBySns = goodsSpecProductService.getGoodsSpecPrdBySn(Collections.singleton(param.getPrdSn()));
-        if (goodsSpecPrdBySns == null || goodsSpecPrdBySns.size() == 0) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
-            apiJsonResult.setMsg("该prd_sn没有对应的商品");
-            return  apiJsonResult;
-        }
-        Integer prdId = goodsSpecPrdBySns.get(0).getPrdId();
-        Integer prdNum = (int) (Math.floor(param.getNumber()));
-        storeGoodsService.updatePrdNumForPosSyncStock(storeRecord.getStoreId(),prdId,prdNum);
-        return apiJsonResult;
-    }
-
-    /**
-     * erp-ekb 获取指定时间范围内未删除在售的商品
-     * @param pageParam 分页参数
-     * @return 商品列表信息
-     */
-    public ApiGoodsPageResult apiGetGoodsList(ApiBasePageParam pageParam) {
-        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
-
-        if (pageParam.getStartTime() != null) {
-            condition = condition.and(GOODS.UPDATE_TIME.gt(pageParam.getStartTime()));
-        }
-        if (pageParam.getEndTime() != null) {
-            condition = condition.and(GOODS.UPDATE_TIME.lt(pageParam.getEndTime()));
-        }
-
-        SelectConditionStep<?> selectConditionStep = db().select(GOODS.GOODS_ID, GOODS.GOODS_SN, GOODS.GOODS_NAME,GOODS.GOODS_IMG, GOODS.CREATE_TIME, GOODS.UPDATE_TIME,GOODS.SORT_ID)
-            .from(GOODS).where(condition);
-
-        // 查询分页结果，并将统一的ApiPageResult转换为商品特定的分页结果对象
-        ApiPageResult apiPageResult = this.getApiPageResult(selectConditionStep, pageParam.getPage(), pageParam.getPageSize(), GoodsRecord.class);
-        @SuppressWarnings("unchecked")
-        List<GoodsRecord> goodsRecordList = (List<GoodsRecord>) apiPageResult.getDataList();
-
-        List<ApiGoodsListVo> apiGoodsListVos = new ArrayList<>(goodsRecordList.size());
-        List<Integer> goodsIds = new ArrayList<>(goodsRecordList.size());
-        List<Integer> sortIds = new ArrayList<>(goodsRecordList.size());
-        for (GoodsRecord goodsRecord : goodsRecordList) {
-            apiGoodsListVos.add(new ApiGoodsListVo(goodsRecord));
-            goodsIds.add(goodsRecord.getGoodsId());
-            sortIds.add(goodsRecord.getSortId());
-        }
-        Map<Integer, String> sortNameMap = goodsSort.apiGetSortNameMap(sortIds);
-        Map<Integer, List<GoodsSpecProductRecord>> specPrdMap = goodsSpecProductService.apiGetGoodsSpecPrdMapByGoodsIds(goodsIds);
-
-        apiGoodsListVos.removeIf(apiGoodsListVo -> {
-            List<GoodsSpecProductRecord> specPrdList = specPrdMap.get(apiGoodsListVo.getGoodsId());
-            if (specPrdList == null || specPrdList.size() == 0) {
-                return true;
-            }
-
-            List<ApiGoodsSkuVo> apiGoodsSkuVos = new ArrayList<>();
-            for (GoodsSpecProductRecord specProductRecord : specPrdList) {
-                ApiGoodsSkuVo apiGoodsSkuVo = new ApiGoodsSkuVo(specProductRecord);
-                apiGoodsSkuVo.setPrdImg(getImgFullUrlUtil(apiGoodsSkuVo.getPrdImg()));
-                apiGoodsSkuVos.add(apiGoodsSkuVo);
-            }
-
-            apiGoodsListVo.setGoodsImg(getImgFullUrlUtil(apiGoodsListVo.getGoodsImg()));
-            apiGoodsListVo.setCatName(sortNameMap.get(apiGoodsListVo.getSortId()));
-            apiGoodsListVo.setSkuCount(apiGoodsSkuVos.size());
-            apiGoodsListVo.setSkuList(apiGoodsSkuVos);
-
-            return false;
-        });
-
-        ApiGoodsPageResult goodsPageResult = new ApiGoodsPageResult();
-        goodsPageResult.setCurPageNo(apiPageResult.getCurPageNo());
-        goodsPageResult.setPageSize(apiPageResult.getPageSize());
-        goodsPageResult.setTotalGoodsCount(apiPageResult.getTotalCount());
-        goodsPageResult.setGoodsList(apiGoodsListVos);
-        return goodsPageResult;
-    }
-
-    /**
-     * erp-ekb 获取指定商品信息(包含已删除商品)
-     * @param param
-     * @return
-     */
-    public ApiGoodsDetailVo apiGetSingleGoods(ApiGoodsDetailParam param){
-        GoodsRecord goodsRecord = db().select(GOODS.GOODS_ID, GOODS.GOODS_SN, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.CREATE_TIME, GOODS.UPDATE_TIME, GOODS.SORT_ID, GOODS.DEL_FLAG)
-            .from(GOODS).where(GOODS.GOODS_ID.eq(param.getGoodsId())).fetchAnyInto(GoodsRecord.class);
-        if (goodsRecord == null) {
-            return null;
-        }
-        ApiGoodsDetailVo goodsDetailVo = new ApiGoodsDetailVo(goodsRecord);
-        // 处理商品图片
-        List<String> imgList = db().select(GOODS_IMG.IMG_URL).from(GOODS_IMG).where(GOODS_IMG.GOODS_ID.eq(goodsDetailVo.getGoodsId())).fetch(GOODS_IMG.IMG_URL);
-        List<String> imgFullList =  new ArrayList<>();
-        imgFullList.add(getImgFullUrlUtil(goodsDetailVo.getGoodsImg()));
-        for (String s : imgList) {
-            imgFullList.add(getImgFullUrlUtil(s));
-        }
-        goodsDetailVo.setGoodsImgs(imgFullList);
-
-        // 设置分类
-        Map<Integer, String> sortNameMap = goodsSort.apiGetSortNameMap(Collections.singletonList(goodsDetailVo.getSortId()));
-        goodsDetailVo.setCatName(sortNameMap.get(goodsDetailVo.getSortId()));
-
-        // 处理规格信息
-        // 需要处理商品已经被删除情况
-        Map<Integer, List<GoodsSpecProductRecord>> specPrdMap = goodsSpecProductService.apiGetGoodsSpecPrdMapByGoodsIds(Collections.singletonList(goodsDetailVo.getGoodsId()));
-        List<GoodsSpecProductBakRecord> goodsSpecProductBakRecords = goodsSpecProductService.apiGetGoodsSpecPrdDeletedMByGoodsId(goodsDetailVo.getGoodsId());
-        List<GoodsSpecProductRecord> specPrdList = specPrdMap.get(goodsDetailVo.getGoodsId());
-
-        List<ApiGoodsSkuVo> apiGoodsSkuVos = new ArrayList<>(2);
-        if (specPrdList != null) {
-            for (GoodsSpecProductRecord specProductRecord : specPrdList) {
-                ApiGoodsSkuVo apiGoodsSkuVo = new ApiGoodsSkuVo(specProductRecord);
-                apiGoodsSkuVo.setPrdImg(getImgFullUrlUtil(apiGoodsSkuVo.getPrdImg()));
-                apiGoodsSkuVos.add(apiGoodsSkuVo);
-            }
-        }
-
-        for (GoodsSpecProductBakRecord goodsSpecProductBakRecord : goodsSpecProductBakRecords) {
-            ApiGoodsSkuVo apiGoodsSkuVo = new ApiGoodsSkuVo(goodsSpecProductBakRecord);
-            apiGoodsSkuVo.setPrdImg(getImgFullUrlUtil(apiGoodsSkuVo.getPrdImg()));
-            apiGoodsSkuVos.add(apiGoodsSkuVo);
-        }
-
-        goodsDetailVo.setSkuList(apiGoodsSkuVos);
-        goodsDetailVo.setSkuCount(apiGoodsSkuVos.size());
-        return goodsDetailVo;
     }
 }

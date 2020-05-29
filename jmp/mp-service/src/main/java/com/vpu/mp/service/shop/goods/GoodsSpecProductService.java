@@ -710,4 +710,20 @@ public class GoodsSpecProductService extends ShopBaseService {
         return db().select(GOODS_SPEC_PRODUCT_BAK.GOODS_ID, GOODS_SPEC_PRODUCT_BAK.PRD_ID, GOODS_SPEC_PRODUCT_BAK.PRD_SN, GOODS_SPEC_PRODUCT_BAK.PRD_PRICE, GOODS_SPEC_PRODUCT_BAK.PRD_NUMBER, GOODS_SPEC_PRODUCT_BAK.PRD_DESC, GOODS_SPEC_PRODUCT_BAK.PRD_IMG)
             .from(GOODS_SPEC_PRODUCT_BAK).where(GOODS_SPEC_PRODUCT_BAK.GOODS_ID.eq(goodsId)).fetchInto(GoodsSpecProductBakRecord.class);
     }
+
+    /**
+     * erp-ekb对接外部系统使用-根据skuId 返回其所属商品的所有sku
+     * @param prdId
+     * @return
+     */
+    public Map<Integer,GoodsSpecProductRecord> apiGetGoodsSpecPrdByPrdId(Integer prdId){
+        Integer goodsId = db().select(GOODS_SPEC_PRODUCT.GOODS_ID).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId))
+            .fetchAny(GOODS_SPEC_PRODUCT.GOODS_ID);
+        if (goodsId == null) {
+            return null;
+        }
+        return db().select(GOODS_SPEC_PRODUCT.GOODS_ID,GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_NUMBER)
+                .from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId))
+                .fetchMap(GOODS_SPEC_PRODUCT.PRD_ID,GoodsSpecProductRecord.class);
+    }
 }

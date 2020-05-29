@@ -16,6 +16,7 @@ import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.shop.goods.api.ApiGoodsDetailParam;
 import com.vpu.mp.service.pojo.shop.goods.api.ApiGoodsDetailVo;
 import com.vpu.mp.service.pojo.shop.goods.api.ApiGoodsPageResult;
+import com.vpu.mp.service.pojo.shop.goods.api.ApiSyncStockParam;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductParam;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncStockParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -260,7 +261,8 @@ public class ApiExternalGateService extends MainBaseService {
                 apiJsonResult = singleGoods(param);
                 break;
             case ApiExternalGateConfig.SERVICE_SYNC_STOCK:
-                // 同步上皮库存
+                // 同步商品库存
+                apiJsonResult = syncStock(param);
                 break;
             default:
                 apiJsonResult = new ApiJsonResult();
@@ -280,7 +282,7 @@ public class ApiExternalGateService extends MainBaseService {
         if (param == null) {
             return contentErrorResult();
         }
-        return saas().getShopApp(gateParam.getShopId()).goods.posSyncProductMq(param);
+        return saas().getShopApp(gateParam.getShopId()).apiGoodsService.posSyncProductMq(param);
     }
 
     /**
@@ -293,7 +295,7 @@ public class ApiExternalGateService extends MainBaseService {
         if (param == null) {
             return contentErrorResult();
         }
-        return saas().getShopApp(gateParam.getShopId()).goods.posSyncStock(param);
+        return saas().getShopApp(gateParam.getShopId()).apiGoodsService.posSyncStock(param);
     }
 
     private ApiJsonResult contentErrorResult() {
@@ -443,7 +445,7 @@ public class ApiExternalGateService extends MainBaseService {
         if (param == null) {
             param = new ApiBasePageParam();
         }
-        ApiGoodsPageResult goodsPageResult = saas().getShopApp(gateParam.getShopId()).goods.apiGetGoodsList(param);
+        ApiGoodsPageResult goodsPageResult = saas().getShopApp(gateParam.getShopId()).apiGoodsService.apiGetGoodsList(param);
 
         ApiJsonResult result = new ApiJsonResult();
         result.setData(goodsPageResult);
@@ -466,8 +468,35 @@ public class ApiExternalGateService extends MainBaseService {
             result.setMsg(ApiExternalGateConfig.ERROR_LACK_PARAM_MSG + "：" + "goods_id");
             return result;
         }
-        ApiGoodsDetailVo goodsDetailVo = saas().getShopApp(gateParam.getShopId()).goods.apiGetSingleGoods(param);
+        ApiGoodsDetailVo goodsDetailVo = saas().getShopApp(gateParam.getShopId()).apiGoodsService.apiGetSingleGoods(param);
         result.setData(goodsDetailVo);
         return result;
+    }
+
+    /**
+     * erp-ekb 同步库存
+     * @param gateParam param
+     * @return result
+     */
+    private ApiJsonResult syncStock(ApiExternalGateParam gateParam){
+        ApiSyncStockParam param = Util.parseJson(gateParam.getContent(), ApiSyncStockParam.class);
+        if (param == null) {
+            return contentErrorResult();
+        }
+        if (param.getSkuId() == null || param.getGoodsNum() == null) {
+            ApiJsonResult result = new ApiJsonResult();
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setMsg(ApiExternalGateConfig.ERROR_LACK_PARAM_MSG + "：" + (param.getSkuId() == null ?"sku_id":"goods_num"));
+            return result;
+        }
+
+        if (param.getGoodsNum() < 0) {
+            ApiJsonResult result = new ApiJsonResult();
+            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setMsg("库存数量小于0");
+            return result;
+        }
+
+        return  saas().getShopApp(gateParam.getShopId()).apiGoodsService.syncStock(param);
     }
 }

@@ -25,10 +25,7 @@ import com.vpu.mp.service.shop.distribution.PromotionLanguageService;
 import com.vpu.mp.service.shop.distribution.RebateGoodsService;
 import com.vpu.mp.service.shop.distribution.RebateStrategyService;
 import com.vpu.mp.service.shop.express.ExpressService;
-import com.vpu.mp.service.shop.goods.FootPrintService;
-import com.vpu.mp.service.shop.goods.GoodsRecommendService;
-import com.vpu.mp.service.shop.goods.GoodsService;
-import com.vpu.mp.service.shop.goods.GoodsWrapService;
+import com.vpu.mp.service.shop.goods.*;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
@@ -553,4 +550,9 @@ public class ShopApplication {
     @Autowired
     public ThirdAuthConfigService thirdAuthService;
 
+    /**
+     * 第三方对接
+     */
+    @Autowired
+    public ApiGoodsService apiGoodsService;
 }
