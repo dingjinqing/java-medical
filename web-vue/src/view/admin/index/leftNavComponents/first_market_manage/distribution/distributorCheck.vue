@@ -354,10 +354,7 @@ export default {
       },
       activeName: '0', // tab值
       // 分页
-      pageParams: {
-        currentPage: 1,
-        pageRows: 20
-      },
+      pageParams: {},
       tableData: [], // 表格数据
 
       // 分销员分组弹窗
