@@ -37,8 +37,8 @@ import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.recommend.RecommendService;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
@@ -100,6 +100,8 @@ public class GoodsMpService extends ShopBaseService {
     private UserGoodsRecordService userLoginRecordService;
     @Autowired
     private RecommendService recommendService;
+    @Autowired
+    private UserCardService userCardService;
 
     /**
      * 从es或者数据库内获取数据，并交给处理器进行处理
@@ -115,6 +117,9 @@ public class GoodsMpService extends ShopBaseService {
 
         if (esUtilSearchService.esState()) {
             try {
+                if (userId == null) {
+                    param.setUserGrade(userCardService.getUserGrade(userId));
+                }
                 /*如果商品范围选择的是商品标签，先查询商品标签的es，获得商品标签对应的goodsIds*/
                 if (StringUtils.isNotBlank(param.getGoodsArea()) &&
                     param.getGoodsArea().equals(GoodsListMpParam.LABEL_AREA)) {
@@ -254,6 +259,9 @@ public class GoodsMpService extends ShopBaseService {
         }
         if (esUtilSearchService.esState()) {
             try {
+                if (userId == null) {
+                    param.setUserGrade(userCardService.getUserGrade(userId));
+                }
                 // 从es获取
                 log.debug("小程序-es-搜索商品列表-param:" +  Util.toJson(param));
                 goodsListCapsules = getPageIndexGoodsListFromEs(param);
@@ -390,7 +398,8 @@ public class GoodsMpService extends ShopBaseService {
         if (esUtilSearchService.esState()) {
             try {
                 log.debug("小程序-es-搜索商品详情");
-                goodsDetailMpBo = esGoodsSearchMpService.queryGoodsById(param.getGoodsId());
+                param.setUserGrade(userCardService.getUserGrade(param.getUserId()));
+                goodsDetailMpBo = esGoodsSearchMpService.queryGoodsById(param);
                 log.debug("小程序-es-搜索商品详情结果:{}", goodsDetailMpBo);
                 // 商品已删除，在es内不存在
                 if (goodsDetailMpBo == null) {

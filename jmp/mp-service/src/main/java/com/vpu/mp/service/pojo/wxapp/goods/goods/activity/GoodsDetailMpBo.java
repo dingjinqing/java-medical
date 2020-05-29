@@ -42,7 +42,7 @@ public class GoodsDetailMpBo extends GoodsDetailMpVo{
     public static class GradePrd{
         private Integer prdId;
         private BigDecimal gradePrice;
-        private String grade;
+        private Boolean isGradePrice;
     }
 
     /** 商品已被哪些processor处理过（商品列表里面将处理的营销码值存入） */

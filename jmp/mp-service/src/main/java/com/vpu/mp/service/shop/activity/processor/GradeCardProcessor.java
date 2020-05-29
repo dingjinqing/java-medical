@@ -35,7 +35,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -101,7 +100,7 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
 
             // 不存在限时降价，或者会员价格比限时降价低则加入会员价活动信息
             capsule.setRealPrice(record3.get(GRADE_PRD.GRADE_PRICE));
-            // 如果商品是会员专享的话则价格显示会员价的价格，但是提示信息显示会员专享，就不会执行下面if内语句（ps:filterParam处已经过滤掉了首单特惠）
+            // 如果商品是会员专享的话则价格显示会员价的价格，但是提示信息显示会员专享，就不会执行下面if内语句
             if (!capsule.getProcessedTypes().contains(BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE)) {
                 GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
                 activity.setActivityType(ACTIVITY_TYPE_MEMBER_GRADE);
@@ -112,6 +111,11 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
     }
 
     /*****************商品详情处理******************/
+    /**
+     * 不考虑拼砍秒预售首单
+     * @param capsule  商品详情对象{@link com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo}
+     * @param param
+     */
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
 
@@ -144,7 +148,7 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
             }).collect(Collectors.toList());
         } else {
             // 过滤符合用户等级的规格，es获取的是所有等级的价格，而不是针对用户等级的
-            gradePrdMpVos = gradeCards.stream().filter(gradePrd -> grade.equals(gradePrd.getGrade())).sorted(Comparator.comparing(GoodsDetailMpBo.GradePrd::getGradePrice)).map(x -> {
+            gradePrdMpVos = gradeCards.stream().map(x -> {
                 GradePrdMpVo prd = new GradePrdMpVo();
                 prd.setGradePrice(x.getGradePrice());
                 prd.setProductId(x.getPrdId());
@@ -152,6 +156,7 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
                 return prd;
             }).collect(Collectors.toList());
         }
+
 
         // 用户所拥有的等级卡在本商品上没有对应的等级会员价
         if (gradePrdMpVos == null || gradePrdMpVos.size() == 0) {
@@ -179,7 +184,7 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
                 // reducePricePrdMpVo可能为null,创建限时降价后商品的规格信息可能又被修改
                 // 如果为null，则价格按照会员价设置
                 ReducePricePrdMpVo reducePricePrdMpVo = reducePrdMap.get(gradePrd.getProductId());
-                if (reducePricePrdMpVo!=null&&reducePricePrdMpVo.getReducePrice().compareTo(gradePrd.getGradePrice()) < 0) {
+                if (reducePricePrdMpVo!=null&&reducePricePrdMpVo.getReducePrice().compareTo(gradePrd.getGradePrice()) <= 0) {
                     prdMpVo.setIsGradePrice(false);
                     prdMpVo.setActivityPrice(reducePricePrdMpVo.getReducePrice());
                 } else {
