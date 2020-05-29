@@ -63,5 +63,7 @@ export const en = {
   piAmount: 'Please enter the amount',
   amountNum: 'Amount must be a number',
   pselectLink: 'Please select a link',
-  piPizesNum: 'Please enter the number of prizes'
+  piPizesNum: 'Please enter the number of prizes',
+  split: 'split',
+  manage: 'manage'
 }
