@@ -243,34 +243,38 @@ global.wxPage({
     that.setData({
       checkMode: false
     });
-    util.api('/api/wxapp/fullprice/checkedlist', function (res) {
-      if (res.error == 0) {
-        var full_change_info = res.content;
-        var selectCount = 0;
-        full_change_info.forEach(item => {
-          item.limitMinStyle = 0
-          item.limitMaxStyle = 0
-          // 限购样式
-          if ((item.cartNumber >= item.prdNumber) || (item.activityLimitMaxNum != null && (item.cartNumber >= item.activityLimitMaxNum)) || (item.activityLimitMaxNum == null && item.limitMaxNum != 0 && (item.cartNumber >= item.limitMaxNum))) {
-            item.limitMaxStyle = 1
-          }
-          if ((item.cartNumber <= 1) || (item.activityLimitMinNum != null && (item.cartNumber <= item.activityLimitMinNum)) || (item.activityLimitMaxNum == null && item.limitBuyNum != 0 && (item.cartNumber <= item.limitBuyNum))) {
-            item.limitMinStyle = 1
-          }
-          // 已选数量
-          selectCount += item.cartNumber
-        })
-
-        that.setData({
-          full_change_info: full_change_info,
-          selectCount: selectCount,
-          can_del: 0
-        })
-      } else {
-        util.showModal("提示", res.message);
-        return false;
-      }
-    }, { strategyId: that.data.strategy_id });
+    return new Promise(resolve => {
+      util.api('/api/wxapp/fullprice/checkedlist', function (res) {
+        if (res.error == 0) {
+          var full_change_info = res.content;
+          var selectCount = 0;
+          full_change_info.forEach(item => {
+            item.limitMinStyle = 0
+            item.limitMaxStyle = 0
+            // 限购样式
+            if ((item.cartNumber >= item.prdNumber) || (item.activityLimitMaxNum != null && (item.cartNumber >= item.activityLimitMaxNum)) || (item.activityLimitMaxNum == null && item.limitMaxNum != 0 && (item.cartNumber >= item.limitMaxNum))) {
+              item.limitMaxStyle = 1
+            }
+            if ((item.cartNumber <= 1) || (item.activityLimitMinNum != null && (item.cartNumber <= item.activityLimitMinNum)) || (item.activityLimitMaxNum == null && item.limitBuyNum != 0 && (item.cartNumber <= item.limitBuyNum))) {
+              item.limitMinStyle = 1
+            }
+            // 已选数量
+            selectCount += item.cartNumber
+          })
+  
+          that.setData({
+            full_change_info: full_change_info,
+            selectCount: selectCount,
+            can_del: 0
+          })
+          resolve(that.data.can_del)
+        } else {
+          util.showModal("提示", res.message);
+          return false;
+        }
+      }, { strategyId: that.data.strategy_id });
+    })
+    
   },
 
   // 跳转购物车
@@ -310,10 +314,12 @@ global.wxPage({
     wx.showLoading({
       title: '删除中...',
     })
-    util.api('/api/wxapp/cart/remove', (res) => {
+    util.api('/api/wxapp/cart/remove', async res => {
       wx.hideLoading();
       if (res.error === 0) {
-        that.showCheck()
+        let flag = await that.showCheck()
+        console.log(flag)
+        that.setData({ can_del: 1 }) 
       } else {
         util.showModal('提示', res.message)
         return false;
