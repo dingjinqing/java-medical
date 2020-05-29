@@ -19,7 +19,7 @@
             <view class="item-left" style="background-color:{{comColor}};">
               <view class="coupon-money" wx:if="{{couponItem.actCode === 'voucher'}}">￥<text>{{couponItem.denomination}}</text></view>
               <view class="coupon-money" wx:elif="{{couponItem.actCode === 'discount'}}"><text>{{couponItem.denomination}}</text>{{i18n.$t(localePack,"page1.virtualCheckout.discount")}}</view>
-              <view class="coupon-money" wx:elif="{{couponItem.actCode === 'random'}}"><text>{{couponItem.randomMax}}</text>{{i18n.$t(localePack,"page1.virtualCheckout.randomMax")}}</view>
+              <view class="coupon-money" wx:elif="{{couponItem.actCode === 'random'}}">￥<text>{{couponItem.randomMax}}</text>{{i18n.$t(localePack,"page1.virtualCheckout.randomMax")}}</view>
               <view class="coupon-limit">
                 {{couponItem.leastConsume ? i18n.$t(localePack,"page1.virtualCheckout.limitTips",{price:couponItem.leastConsume || '0.00'}) : i18n.$t(localePack,"page1.virtualCheckout.nolimit")}}
               </view>
