@@ -102,7 +102,7 @@ global.wxPage({
       util.api('/api/wxapp/cart/add', function (res) {
         if (res.error == 0) {
           util.toast_success('已加入购物车');
-          full_request(that)
+          money_request(that)
         } else {
           util.showModal("提示", res.message);
           return false;
@@ -211,7 +211,7 @@ global.wxPage({
     util.api("/api/wxapp/cart/add", res => {
       if (res.error == 0) {
         util.toast_success('已加入购物车');
-        full_request(that)
+        money_request(that)
       } else {
         util.showModal("提示", res.message);
         return false;
@@ -284,7 +284,7 @@ global.wxPage({
 
   // 关闭已选商品弹窗
   proActionChange: function () {
-    full_request(this);
+    money_request(that)
     this.setData({
       checkMode: true
     })
@@ -301,7 +301,7 @@ global.wxPage({
   // 符号关闭已选商品弹窗
   closeCheck: function () {
     var that = this;
-    full_request(that);
+    money_request(that)
     that.setData({
       checkMode: true
     });
@@ -511,6 +511,43 @@ global.wxPage({
     }, { strategyId: that.data.strategy_id, currentPage: that.data.page, search: that.data.searchText, pageRows: 10 });
   }
 })
+// 更新金额和提示
+function money_request(that) {
+  util.api('/api/wxapp/fullprice/goodslist', function (res) {
+    if (res.error == 0) {
+      var full_info = res.content;
+      var al_goods_prices = full_info.totalPrice; // 金额
+      // 金额提示
+      if (full_info.fullPriceDoc) {
+        var all_goods_doc = ''
+        if (full_info.fullPriceDoc.docType == 0) {
+          all_goods_doc = '快选择商品参加活动吧'
+        } else if (full_info.fullPriceDoc.docType == 1) {
+          all_goods_doc = '下单立减' + full_info.fullPriceDoc.reduceMoney + '元'
+        } else if (full_info.fullPriceDoc.docType == 2) {
+          all_goods_doc = '再选' + full_info.fullPriceDoc.diffPrice + '元，即可减' + full_info.fullPriceDoc.reduceMoney + '元'
+        } else if (full_info.fullPriceDoc.docType == 3) {
+          all_goods_doc = '再选' + full_info.fullPriceDoc.diffPrice + '元，即可打' + full_info.fullPriceDoc.discount + '折'
+        } else if (full_info.fullPriceDoc.docType == 4) {
+          all_goods_doc = '再选' + full_info.fullPriceDoc.diffNumber + '件，即可减' + full_info.fullPriceDoc.reduceMoney + '元'
+        } else if (full_info.fullPriceDoc.docType == 5) {
+          all_goods_doc = '再选' + full_info.fullPriceDoc.diffNumber + '件，即可打' + full_info.fullPriceDoc.discount + '折'
+        }
+      }
+      that.setData({
+        al_goods_prices: al_goods_prices, // 金额
+        all_goods_doc: all_goods_doc // 金额提示
+      })
+    } else {
+      util.showModal("提示", res.message, function () {
+        wx.navigateBack({
+
+        })
+      });
+      return false;
+    }
+  }, { strategyId: that.data.strategy_id, currentPage: that.data.page, search: that.data.searchText, pageRows: 10 });
+}
 function full_request(that) {
   util.api('/api/wxapp/fullprice/goodslist', function (res) {
     if (res.error == 0) {
