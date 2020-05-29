@@ -1,7 +1,7 @@
 <!--components/usercenter/useraddress/useraddress.wxml-->
 <view class="main-container">
   <!-- 地址列表 -->
-  <view class="address-list" wx:if="{{false}}">
+  <view class="address-list" wx:if="{{true}}">
     <view class="address-wrap">
       <block>
         <view class="address-item">
@@ -34,16 +34,18 @@
     </view>
   </view>
   <!-- 没有地址时展示 -->
-  <view class="no-address" wx:if="{{true}}">
-    <view class="no-address-top">
-      <image class="no-address-icon" src="{{imageUrl}}image/wxapp/no_address.png" mode="widthFix" />
-      <view class="no-address-text">您还没有收货地址</view>
-    </view>
-    <view class="address-list-footer">
-      <button bindtap="getWechatAdress" class="wd-btn">
-        <image class="wechat-icon" src="{{imageUrl}}image/wxapp/wechat_icon.png"></image>微信导入
-      </button>
-      <button bindtap="newAdressHandle" class="new-btn" style="background:{{comColor}}">新增收货地址</button>
+  <view class="no-address" wx:if="{{false}}">
+    <view style="position:relative;width:100%;height:100%;">
+      <view class="no-address-top">
+        <image class="no-address-icon" src="{{imageUrl}}image/wxapp/no_address.png" mode="widthFix" />
+        <view class="no-address-text">您还没有收货地址</view>
+      </view>
+      <view class="address-list-footer">
+        <button bindtap="getWechatAdress" class="wd-btn">
+          <image class="wechat-icon" src="{{imageUrl}}image/wxapp/wechat_icon.png"></image>微信导入
+        </button>
+        <button bindtap="newAdressHandle" class="new-btn" style="background:{{comColor}}">新增收货地址</button>
+      </view>
     </view>
   </view>
 </view>

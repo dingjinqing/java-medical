@@ -15,7 +15,8 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -100%);
+  transform: translate(-50%, -50%);
+  margin-top: -208rpx;
 }
 .no-address-text { 
   color:#666;
@@ -103,7 +104,7 @@
 .aib-left radio {
   transform: scale(0.6, 0.6);
   position: relative;
-  top: -3rpx;
+  top: -1rpx;
 }
 .aib-right {
   display: flex;
