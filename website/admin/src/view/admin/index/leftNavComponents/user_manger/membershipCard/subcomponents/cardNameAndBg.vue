@@ -30,7 +30,7 @@
               label="0"
             >{{ $t('memberCard.bgColor') }}</el-radio>
             <!-- 默认值defaultBgColor -->
-            <el-color-picker v-model="ruleForm.bgColor"></el-color-picker>
+            <el-color-picker v-model="ruleForm.bgColor" size="small"></el-color-picker>
           </div>
           <div class="bgBottom">
             <el-radio
