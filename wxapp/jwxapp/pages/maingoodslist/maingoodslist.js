@@ -79,7 +79,7 @@ global.wxPage({
       util.api('/api/wxapp/cart/add', function (res) {
         if (res.error == 0) {
           util.toast_success('已加入购物车');
-          main_request(that);
+          money_request(that)
         } else {
           util.showModal("提示", res.message);
           return false;
@@ -189,7 +189,7 @@ global.wxPage({
     util.api("/api/wxapp/cart/add", res => {
       if (res.error == 0) {
         util.toast_success('已加入购物车');
-        main_request(that)
+        money_request(that)
       } else {
         util.showModal("提示", res.message);
         return false;
@@ -324,7 +324,7 @@ global.wxPage({
           // get_price: get_price,
           // get_doc: get_doc
         })
-        main_request(that);
+        // main_request(that);
       } else {
         util.showModal("提示", res.message);
         return false;
@@ -403,6 +403,37 @@ global.wxPage({
     }, { purchasePriceId: that.data.identity_id, search: that.data.searchText, currentPage: that.data.page, pageRows: 10 });
   },
 })
+// 更新金额和提示
+function money_request (that) {
+  util.api('/api/wxapp/purchase/goodslist', function (res) {
+    if (res.error == 0) {
+      var main_goods_info = res.content;
+      var get_price = main_goods_info.mainPrice; // 金额
+      // 金额提示
+      if (main_goods_info.changeDoc) {
+        var get_doc = ''
+        if (main_goods_info.changeDoc.state == 0) {
+          get_doc = '快选择商品参加活动吧'
+        } else if (main_goods_info.changeDoc.state == 1) {
+          get_doc = '再选' + main_goods_info.changeDoc.diffPrice + '元可以换购'
+        } else if (main_goods_info.changeDoc.state == 2) {
+          get_doc = '已满足一条换购规则'
+        }
+      }
+      that.setData({
+        get_price: get_price,
+        get_doc: get_doc
+      })
+    } else {
+      util.showModal("提示", res.message, function () {
+        util.reLaunch({
+          url: '/pages/index/index'
+        })
+      });
+      return false;
+    }
+  }, { purchasePriceId: that.data.identity_id, search: that.data.searchText, currentPage: that.data.page, pageRows: 10 });
+}
 function main_request (that) {
   util.api('/api/wxapp/purchase/goodslist', function (res) {
     if (res.error == 0) {

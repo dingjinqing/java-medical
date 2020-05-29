@@ -492,7 +492,7 @@
                       <span class="number">{{coupon_duplicate[0].denomination}}</span>折
                     </span>
                     <span v-if="coupon_duplicate[0].actCode === 'random'">
-                      <span class="number">{{coupon_duplicate[0].randomMax}}</span>最高
+                      ￥<span class="number">{{coupon_duplicate[0].randomMax}}</span>最高
                     </span>
                   </div>
                   <div
@@ -695,12 +695,13 @@
       :singleElection="true"
     >
     </choosingGoods>
-    <!--奖励类型-添加优惠券-->
+    <!--奖励类型-添加普通优惠券-->
     <AddCouponDialog
       singleElection="true"
       @handleToCheck="handleToCheck"
       :tuneUpCoupon="showCouponDialog"
       :couponBack="couponIdList"
+      :type=0
     />
 
     <ImageDalog
