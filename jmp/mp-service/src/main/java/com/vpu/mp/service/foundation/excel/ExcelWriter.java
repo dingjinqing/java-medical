@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 public class ExcelWriter extends AbstractExcelDisposer {
     private Workbook workbook;
     private String sheetName;
-    
-    
+
+
     public ExcelWriter(Workbook workbook, String sheetName) {
         this(AbstractExcelDisposer.DEFAULT_LANGUAGE, workbook, sheetName);
     }
@@ -150,7 +150,7 @@ public class ExcelWriter extends AbstractExcelDisposer {
      * @return key 列头名称，value 该列的类型
      */
     private Map<String, Class> getDynamicColumnMap(Object obj, Field field) throws Exception {
-    	field.setAccessible(true);
+        field.setAccessible(true);
         Object val = field.get(obj);
         if (!(val instanceof Map)) {
             throw new Exception("动态字段类型错误，仅支持Map类型");
@@ -160,16 +160,16 @@ public class ExcelWriter extends AbstractExcelDisposer {
         for (Object o : map.entrySet()) {
             Map.Entry entry = (Map.Entry) o;
             if(entry.getValue()==null) {
-            	 returnMap.put(entry.getKey().toString(), String.class);
+                returnMap.put(entry.getKey().toString(), String.class);
             }else {
-            	 returnMap.put(entry.getKey().toString(), entry.getValue().getClass());
+                returnMap.put(entry.getKey().toString(), entry.getValue().getClass());
             }
         }
         return returnMap;
     }
 
-   
-    
+
+
     public <T> void writeModelListWithDynamicColumn(List<T> dataArray, Class<T> clazz) {
         if (dataArray.size() == 0) {
             // 如果传入的是空数据，则按照无动态列进行处理
@@ -431,5 +431,5 @@ public class ExcelWriter extends AbstractExcelDisposer {
         RegionUtil.setBorderTop(border, region, sheet);      //上边框
     }
 
-    
+
 }

@@ -25,13 +25,13 @@ public abstract class AbstractExcelDisposer {
     public static final String LANGUAGE_TYPE_EXCEL="excel";
 
     public static final String DEFAULT_LANGUAGE="zh_CN";
-    
+
     public String language;
     /**
      * 动态列国际化
      */
     protected IDymicColNameI18n colI18n;
-    
+
     public AbstractExcelDisposer() {
     }
 
@@ -40,7 +40,7 @@ public abstract class AbstractExcelDisposer {
     }
 
     protected ExcelSheetBean initSheet(Class<?> clazz){
-       return initSheet(clazz,null);
+        return initSheet(clazz,null);
     }
     /**
      *  初始化ExcelSheetBean，映射model类和excel
@@ -137,11 +137,11 @@ public abstract class AbstractExcelDisposer {
             columnBean.columnIndex = maxColumnIndex++;
             // 处理动态列的国际化
             if(colI18n!=null) {
-            	columnBean.columnName = colI18n.i18nName(stringClassEntry.getKey(),language);
+                columnBean.columnName = colI18n.i18nName(stringClassEntry.getKey(),language);
             }else {
-            	columnBean.columnName = stringClassEntry.getKey();
+                columnBean.columnName = stringClassEntry.getKey();
             }
-            
+
             columnBean.fieldClazz = stringClassEntry.getValue();
             columnBean.isDynamicColumn = true;
             sheetBean.columnMap.put(stringClassEntry.getKey(),columnBean);
@@ -154,13 +154,13 @@ public abstract class AbstractExcelDisposer {
     private void processMapClazzField(){
 
     }
-    
+
     /**
      * 设置动态列的国际化
      * @param colI18n
      */
-	public void setColI18n(IDymicColNameI18n colI18n) {
-		this.colI18n = colI18n;
-	}
+    public void setColI18n(IDymicColNameI18n colI18n) {
+        this.colI18n = colI18n;
+    }
 
 }

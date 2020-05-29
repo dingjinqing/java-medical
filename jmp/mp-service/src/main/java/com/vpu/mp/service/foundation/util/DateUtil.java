@@ -29,6 +29,7 @@ public final class DateUtil {
 	public static final String DATE_FORMAT_FULL = "yyyy-MM-dd HH:mm:ss";
 
 	public static final String DATE_FORMAT_FULL_NO_UNDERLINE = "yyyyMMddHHmmss";
+    public static final String DATE_FORMAT_API_EXTERNAL = "yyyyMMddHHmmss";
 
 	public static final String DATE_MYSQL_SIMPLE="%Y-%m-%d";
 	
@@ -38,7 +39,6 @@ public final class DateUtil {
 	
 	public static final String DATE_FORMAT_FULL_BEGIN="yyyy-MM-dd 00:00:00";
 	public static final String DATE_FORMAT_FULL_END="yyyy-MM-dd 23:59:59";
-    public static final String DATE_FORMAT_API_EXTERNAL = "yyyyMMddHHmmss";
 
     //时分秒最小
     public static final LocalTime minTime = LocalTime.of(0, 0, 0);

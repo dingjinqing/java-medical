@@ -241,7 +241,6 @@ public class GoodsBrandService extends ShopBaseService {
         record.insert();
         return record.getId();
     }
-
     /**
      * 根据品牌名称获取品牌id，如果不存在就新增
      * @param brandName
