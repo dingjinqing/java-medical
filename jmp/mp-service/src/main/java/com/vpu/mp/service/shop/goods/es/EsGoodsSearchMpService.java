@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpPinYinVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSearchSortMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortCacheInfo;
@@ -99,6 +100,33 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
             //TODO 先功能实现，结构优化后续再说
             List<EsGoodsLabel> goodsLabels =
                 esGoodsLabelSearchService.getGoodsLabelByGoodsId(goodsId,EsGoodsConstant.GOODS_DETAIL_PAGE);
+            GoodsDetailMpBo result = DETAIL_CONVERT.convert(esGoods);
+            if( CollectionUtils.isNotEmpty(goodsLabels) ){
+                List<String> labelNames = goodsLabels.stream().
+                    filter(x-> StringUtils.isNotBlank(x.getName())).
+                    map(EsGoodsLabel::getName).
+                    collect(Collectors.toList());
+                result.setLabels(labelNames);
+            }
+            return result;
+        } catch (IOException e) {
+            log.error("EsGoodsSearchMpService-->queryGoodsById ElasticSearch connection error when querying");
+            throw e;
+        }
+    }
+    /**
+     * 商品详情的基本信息(ElasticSearch)
+     * @param param 查询参数
+     * @return 详情页Bo
+     * @throws IOException ElasticSearch连接异常
+     */
+    public GoodsDetailMpBo queryGoodsById(GoodsDetailMpParam param) throws IOException {
+        Integer shopId = getShopId();
+        try {
+            EsGoods esGoods = getEsGoodsById(param.getGoodsId(),shopId);
+            //TODO 先功能实现，结构优化后续再说
+            List<EsGoodsLabel> goodsLabels =
+                esGoodsLabelSearchService.getGoodsLabelByGoodsId(param.getGoodsId(),EsGoodsConstant.GOODS_DETAIL_PAGE);
             GoodsDetailMpBo result = DETAIL_CONVERT.convert(esGoods);
             if( CollectionUtils.isNotEmpty(goodsLabels) ){
                 List<String> labelNames = goodsLabels.stream().

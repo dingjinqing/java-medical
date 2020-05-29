@@ -240,12 +240,11 @@ public class EsBaseSearchService extends ShopBaseService {
         List<EsGoods> data = new LinkedList<>();
         for( SearchHit hit:hits){
             EsGoods esGoods = Util.parseJson(hit.getSourceAsString(),EsGoods.class, EsUtil.ES_FILED_SERIALIZER);
+            esGoods.setGoodsTitleName(esGoods.getGoodsName());
             if( !hit.getHighlightFields().isEmpty() ){
                 if( hit.getHighlightFields().containsKey(GOODS_NAME) ){
-                    esGoods.setGoodsTitleName(esGoods.getGoodsName());
                     esGoods.setGoodsName(hit.getHighlightFields().get(GOODS_NAME).fragments()[0].toString());
                 }else if(hit.getHighlightFields().containsKey(GOODS_NAME+".sing")){
-                    esGoods.setGoodsTitleName(esGoods.getGoodsName());
                     esGoods.setGoodsName(hit.getHighlightFields().get(GOODS_NAME+".sing").fragments()[0].toString());
                 }
             }
