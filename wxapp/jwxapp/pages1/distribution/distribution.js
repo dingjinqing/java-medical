@@ -207,9 +207,15 @@ global.wxPage({
   },
   // 去首页或申请
   bindRedirectTo: function (e) {
-    util.redirectTo({
-      url: e.currentTarget.dataset.page
-    })
+    if (this.data.dis_info.status == 0) {
+      util.navigateTo({
+        url: "/pages/index/index",
+      })
+    } else {
+      util.navigateTo({
+        url: "/pages/distributionspread/distributionspread",
+      })
+    }
   },
   // 申请成为分销员
   apply_get: function (e) {
@@ -280,33 +286,13 @@ function dis_request(that) {
       })
       that.setData({
         dis_info: dis_info,
-        rebate_center: 1,
+        rebate_center: dis_info.isDistributor == 1 ? 1 : 2,
+        have_account: dis_info.canWithdraw > 0 ? 1 : 0,
         // page_id: page_id,
         // distributor_name: dis_info.fanli_cfg.distributor_name,
         // is_bind_mobile: dis_info.is_bind_mobile,
         copy_content: dis_info.invitationCode ? dis_info.invitationCode : ''
       })
     } 
-    // else if (res.message == "您还不是分销员" && res.content.withdraw_money > 0) {
-    //   var dis_info = res.content;
-    //   dis_info.rebate_info.final_money = parseFloat(dis_info.rebate_info.final_money).toFixed(2);
-    //   dis_info.rebate_info.wait_fanli_money = parseFloat(dis_info.rebate_info.wait_fanli_money).toFixed(2);
-    //   that.setData({
-    //     dis_info: dis_info,
-    //     rebate_center: 2,
-    //     have_account: 1,
-    //     distributor_name: dis_info.fanli_cfg.distributor_name
-    //   })
-    // } else {
-    //   that.setData({
-    //     dis_info: res.content,
-    //     rebate_center: 2,
-    //     have_account: 0,
-    //     none_message: res.message,
-    //     none_jump_page: res.content.page,
-    //     distributor_name: dis_info.fanli_cfg.distributor_name
-    //   })
-    // }
   });
 }
-

@@ -186,9 +186,9 @@
   <!-- 非分销员且没余额 -->
   <view wx:if="{{rebate_center == 2 && have_account == 0}}" class='none_container'>
     <image class='none_image' src='{{imageUrl}}/image/wxapp/rebate_center_none.png'></image>
-    <view class='none_message'>{{none_message}}</view>
-    <view class='none_button' bindtap='bindRedirectTo' data-page='{{none_jump_page}}' style='color:{{comColor}};border-color:{{comColor}}'>
-      {{none_jump_page == '/pages/index/index' ? '回首页' : '申请' + (distributor_name || '分销员') }}
+    <view class='none_message'>{{dis_info.status == 0 ? '该功能未开启' : '您还不是分销员'}}</view>
+    <view class='none_button' bindtap='bindRedirectTo' style='color:{{comColor}};border-color:{{comColor}}'>
+      {{dis_info.status == 0 ? '回首页' : '申请' + (distributor_name || '分销员') }}
     </view>
   </view>
   <!-- 分享框-->
