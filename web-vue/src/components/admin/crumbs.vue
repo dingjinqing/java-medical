@@ -210,36 +210,36 @@ export default {
       this.$http.$on('distributionTap', (index) => {
         console.log(index)
         switch (index) {
-          case '0':
+          case 0:
             data[2] = '分销配置'
             console.log(data)
             break
-          case '1':
+          case 1:
             data[2] = '分销员等级配置'
             console.log(data)
             break
-          case '2':
+          case 2:
             data[2] = '返利策略配置'
             break
-          case '3':
+          case 3:
             data[2] = '分销员列表'
             break
-          case '4':
+          case 4:
             data[2] = '分销员分组'
             break
-          case '5':
+          case 5:
             data[2] = '佣金统计'
             break
-          case '6':
+          case 6:
             data[2] = '商品返利统计'
             break
-          case '7':
+          case 7:
             data[2] = '返利提现审核'
             break
-          case '8':
+          case 8:
             data[2] = '分销员审核'
             break
-          case '9':
+          case 9:
             data[2] = '分销推广语'
             break
         }
