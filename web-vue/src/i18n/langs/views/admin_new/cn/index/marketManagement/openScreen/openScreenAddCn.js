@@ -63,5 +63,7 @@ export const cn = {
   piAmount: '请输入金额',
   amountNum: '金额必须为数字',
   pselectLink: '请选择链接',
-  piPizesNum: '请输入奖品份数'
+  piPizesNum: '请输入奖品份数',
+  split: '分裂',
+  manage: '管理'
 }
