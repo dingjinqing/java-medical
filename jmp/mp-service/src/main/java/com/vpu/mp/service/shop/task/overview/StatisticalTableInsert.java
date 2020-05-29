@@ -7,6 +7,7 @@ import com.vpu.mp.db.shop.tables.records.UserSummaryTrendRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewParam;
+import com.vpu.mp.service.pojo.shop.overview.realtime.RealTimeBo;
 import org.jooq.Record3;
 import org.jooq.lambda.tuple.Tuple3;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,12 +81,13 @@ public class StatisticalTableInsert extends ShopBaseService {
     }
 
     private TradesRecord createTradesRecord(ProductOverviewParam param, Timestamp start, Timestamp end, TradesRecord record, byte hour, Date refDate) {
+        RealTimeBo bo = tradeTaskService.orderUserMoney(start, end);
         record.reset();
         record.setUv(userSummary.getUv(start, end));
         record.setPv(userSummary.getPv(start, end));
-        record.setPayUserNum(goodsStatistic.paidUv(createParam(param, start, end)));
-        record.setPayOrderMoney(goodsStatistic.orderUserMoney(start, end));
-        record.setPayOrderNum(userSummary.orderNum(start, end));
+        record.setPayUserNum(tradeTaskService.orderUserNum(start, end));
+        record.setPayOrderMoney(null!=bo.getTotalMoneyPaid()?bo.getTotalMoneyPaid():BigDecimal.ZERO);
+        record.setPayOrderNum(null!=bo.getOrderNum()?bo.getOrderNum():0);
         record.setPct(BigDecimalUtil.divideWithOutCheck(record.getPayOrderMoney(), record.getPayUserNum()));
         record.setUvPayRatio(BigDecimalUtil.divideWithOutCheck(record.getPayUserNum(), record.getUv()));
         record.setHour(hour);
