@@ -1,25 +1,5 @@
 package com.vpu.mp.service.foundation.excel;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.RegionUtil;
-
 import com.vpu.mp.service.foundation.excel.annotation.ExcelDynamicColumn;
 import com.vpu.mp.service.foundation.excel.bean.ClassList;
 import com.vpu.mp.service.foundation.excel.bean.ExcelColumnBean;
@@ -27,9 +7,14 @@ import com.vpu.mp.service.foundation.excel.bean.ExcelSheetBean;
 import com.vpu.mp.service.foundation.excel.exception.IllegalExcelDataException;
 import com.vpu.mp.service.foundation.excel.exception.IllegalExcelHeaderException;
 import com.vpu.mp.service.foundation.excel.exception.IllegalSheetPositionException;
-import com.vpu.mp.service.foundation.excel.util.IDymicColNameI18n;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
+
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author 李晓冰
@@ -39,8 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ExcelWriter extends AbstractExcelDisposer {
     private Workbook workbook;
     private String sheetName;
-    
-    
+
+
     public ExcelWriter(Workbook workbook, String sheetName) {
         this(AbstractExcelDisposer.DEFAULT_LANGUAGE, workbook, sheetName);
     }
@@ -71,12 +56,12 @@ public class ExcelWriter extends AbstractExcelDisposer {
     private <T> ExcelSheetBean createSheetBean(Class<T> clazz, List<String> neededColumns) {
         ExcelSheetBean sheetBean = initSheet(clazz, neededColumns);
 
-        // 导出动态excle列的时候处理多余的excel空白列
-        if (neededColumns != null) {
+        // 导出指定excle列的时候处理多余的excel空白列
+        if (neededColumns != null&&neededColumns.size()>0) {
             HashMap<String, ExcelColumnBean> columnMap = sheetBean.columnMap;
-            for (Map.Entry<String, ExcelColumnBean> entry : columnMap.entrySet()) {
-                Integer index = neededColumns.indexOf(entry.getKey());
-                entry.getValue().columnIndex = index;
+            List<ExcelColumnBean> neededColumnsBean = columnMap.values().stream().filter(c->c.columnIndex!=-1).sorted(Comparator.comparing(c->c.columnIndex)).collect(Collectors.toList());
+            for (int i = 0; i < neededColumnsBean.size(); i++) {
+                neededColumnsBean.get(i).columnIndex=i;
             }
         }
         return sheetBean;
@@ -157,10 +142,6 @@ public class ExcelWriter extends AbstractExcelDisposer {
         }
     }
 
-    public <T> void writeModelList(List<T> dataArray, Class<T> clazz) {
-        writeModelList(dataArray, clazz, null);
-    }
-
     /**
      * 获取动态字段的列头和类型的对应关系
      *
@@ -169,7 +150,7 @@ public class ExcelWriter extends AbstractExcelDisposer {
      * @return key 列头名称，value 该列的类型
      */
     private Map<String, Class> getDynamicColumnMap(Object obj, Field field) throws Exception {
-    	field.setAccessible(true);
+        field.setAccessible(true);
         Object val = field.get(obj);
         if (!(val instanceof Map)) {
             throw new Exception("动态字段类型错误，仅支持Map类型");
@@ -179,16 +160,16 @@ public class ExcelWriter extends AbstractExcelDisposer {
         for (Object o : map.entrySet()) {
             Map.Entry entry = (Map.Entry) o;
             if(entry.getValue()==null) {
-            	 returnMap.put(entry.getKey().toString(), String.class);
+                returnMap.put(entry.getKey().toString(), String.class);
             }else {
-            	 returnMap.put(entry.getKey().toString(), entry.getValue().getClass());
+                returnMap.put(entry.getKey().toString(), entry.getValue().getClass());
             }
         }
         return returnMap;
     }
 
-   
-    
+
+
     public <T> void writeModelListWithDynamicColumn(List<T> dataArray, Class<T> clazz) {
         if (dataArray.size() == 0) {
             // 如果传入的是空数据，则按照无动态列进行处理
@@ -226,11 +207,12 @@ public class ExcelWriter extends AbstractExcelDisposer {
 
         writeDataIntoSheet(sheetBean,sheet,dataArray,dynamicField);
     }
-    
-    
-    
-    
-    
+
+
+
+    public <T> void writeModelList(List<T> dataArray, Class<T> clazz) {
+        writeModelList(dataArray, clazz, null);
+    }
 
     /**
      * 将数据写入到excel中
@@ -259,14 +241,14 @@ public class ExcelWriter extends AbstractExcelDisposer {
         int headLineNum = sheetBean.headLineNum;
 
         int maxColumnIndex = -1;
-
+        // 寻找最大的位置下标
         for (Map.Entry<String, ExcelColumnBean> entry : sheetBean.columnMap.entrySet()) {
             ExcelColumnBean value = entry.getValue();
             if (maxColumnIndex < value.columnIndex) {
                 maxColumnIndex = value.columnIndex;
             }
         }
-
+        // 将未填写位置下标的依次追加到末尾
         for (Map.Entry<String, ExcelColumnBean> entry : sheetBean.columnMap.entrySet()) {
             ExcelColumnBean value = entry.getValue();
             if (value.columnIndex == -1) {
@@ -388,15 +370,16 @@ public class ExcelWriter extends AbstractExcelDisposer {
                                 cell1.setCellStyle(styleMap.get(innerColumnBean.columnIndex));
                                 cNo.add(innerColumnBean.columnIndex);
                                 innerRow.add(tempRowIndex);
+                                System.out.println(innerColumnBean);
                                 System.out.println(
-                                    "行：" + tempRowIndex + " 列：" + innerColumnBean.columnIndex + "   " + value1);
+                                    fieldName + "-行：" + tempRowIndex + " 列：" + innerColumnBean.columnIndex + "   " + value1);
                                 ExcelUtil.setCellValue(cell1, value1);
                                 tempRowIndex = tempRowIndex + 1;
                             }
                         }
                         rowList.add(tempRowIndex - 1);
                     } else {
-                        System.out.println("行：" + rowIndex + " 列：" + columnBean.columnIndex + "   " + value);
+                        System.out.println(fieldName + "---行：" + rowIndex + " 列：" + columnBean.columnIndex + "   " + value);
                         columnList.add(columnBean.columnIndex);
                         ExcelUtil.setCellValue(cell, value);
                     }
@@ -448,5 +431,5 @@ public class ExcelWriter extends AbstractExcelDisposer {
         RegionUtil.setBorderTop(border, region, sheet);      //上边框
     }
 
-    
+
 }

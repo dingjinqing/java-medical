@@ -16,4 +16,5 @@ public class DownloadImageBo {
     private String relativeFilePath;
     private String imgUrl;
     private String imageType;
+    private boolean alreadyHas;
 }

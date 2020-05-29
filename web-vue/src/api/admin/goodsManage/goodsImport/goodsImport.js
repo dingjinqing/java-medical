@@ -31,3 +31,10 @@ export function uploadGoodsApi (data) {
     data
   })
 }
+
+export function isImportFinish (data) {
+  return service({
+    url: `/api/admin/goods/vpu/excel/download/finish/${data}`,
+    method: 'get'
+  })
+}

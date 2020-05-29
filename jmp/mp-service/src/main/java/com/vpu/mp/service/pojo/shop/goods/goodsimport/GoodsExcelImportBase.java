@@ -17,4 +17,6 @@ public class GoodsExcelImportBase {
     /**商家编码*/
     protected String prdSn;
     protected String prdDesc;
+    /**商品条码*/
+    protected String prdCodes;
 }
