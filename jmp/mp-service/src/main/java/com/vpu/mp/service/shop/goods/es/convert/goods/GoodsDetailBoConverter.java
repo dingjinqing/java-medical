@@ -92,7 +92,7 @@ public class GoodsDetailBoConverter implements EsGoodsConvertInterface<GoodsDeta
                     for (String prdPrice : prdPrices) {
                         String[] prdAndPrice = prdPrice.split(":");
                         GoodsDetailMpBo.GradePrd gradePrd = new GoodsDetailMpBo.GradePrd();
-                        gradePrd.setGrade(vipLevel);
+//                        gradePrd.setGrade(vipLevel);
                         gradePrd.setPrdId(Integer.valueOf(prdAndPrice[0]));
                         gradePrd.setGradePrice(BigDecimal.valueOf(Double.parseDouble(prdAndPrice[1])));
                         gradePrdList.add(gradePrd);

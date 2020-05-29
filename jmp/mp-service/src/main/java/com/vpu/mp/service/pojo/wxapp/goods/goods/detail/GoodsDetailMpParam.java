@@ -42,4 +42,5 @@ public class GoodsDetailMpParam {
      */
     private Integer shareAwardId;
 
+    private String userGrade;
 }

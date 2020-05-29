@@ -102,4 +102,6 @@ public class GoodsListMpParam extends BasePageParam{
      * 是否展示售罄商品 true展示 false否
      */
     private Boolean soldOutGoodsShow;
+
+    private String userGrade;
 }

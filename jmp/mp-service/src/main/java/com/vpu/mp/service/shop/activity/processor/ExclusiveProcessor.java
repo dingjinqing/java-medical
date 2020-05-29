@@ -138,6 +138,11 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
         }
     }
 
+    /**
+     * 处理用户是否可以购买该商品
+     * @param capsule  商品详情对象{@link com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo}
+     * @param param
+     */
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
         //不是会员专享

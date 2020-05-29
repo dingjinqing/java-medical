@@ -93,6 +93,11 @@ public class ReducePriceProcessor implements Processor, ActivityGoodsListProcess
     }
 
     /*****************商品详情处理*******************/
+    /**
+     * 不考虑拼砍秒预售首单
+     * @param capsule  商品详情对象{@link com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo}
+     * @param param
+     */
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
         // 存在一种可能是列表展示的是会员价，进入详情后发现限时降价和列表可以共存，所以限时降价没有像其他活动那样判断activityType和activityId
