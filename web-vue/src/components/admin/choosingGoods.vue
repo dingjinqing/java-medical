@@ -514,17 +514,27 @@ export default {
       }
     },
     /* 数据回显,全选 */
-    hxTableData () {
-      this.tableData.forEach(item => {
-        item.ischecked = false
-        this.checkedIdList.forEach(checkeId => {
-          if (this.loadProduct) {
-            if (item.prdId === checkeId) { item.ischecked = true }
+    hxTableData (clickAll, pdFlag) {
+      if (clickAll) {
+        this.tableData.forEach((item, index) => {
+          if (pdFlag) {
+            item.ischecked = true
           } else {
-            if (item.goodsId === checkeId) { item.ischecked = true }
+            item.ischecked = false
           }
         })
-      })
+      } else {
+        this.tableData.forEach(item => {
+          item.ischecked = false
+          this.checkedIdList.forEach(checkeId => {
+            if (this.loadProduct) {
+              if (item.prdId === checkeId) { item.ischecked = true }
+            } else {
+              if (item.goodsId === checkeId) { item.ischecked = true }
+            }
+          })
+        })
+      }
 
       let flag = this.tableData.filter((item, index) => {
         return item.ischecked === false
@@ -533,7 +543,15 @@ export default {
         this.checkPageAllFlag = true
       } else {
         this.checkPageAllFlag = false
-        this.checkAllFlag = false
+        if (clickAll) {
+          if (pdFlag) {
+            this.checkAllFlag = true
+          } else {
+            this.checkAllFlag = false
+          }
+        } else {
+          this.checkAllFlag = false
+        }
       }
     },
     /* 重置过滤条件数据 */
@@ -574,6 +592,7 @@ export default {
           return
         }
       }
+      console.log(this.checkedIdList)
       // 关闭对话框
       this.choiseGooddialogVisible = false
       // 单选id
@@ -732,7 +751,7 @@ export default {
         // this.checkedPageRow(flag)
         this.clearCheckedRow()
       }
-      this.hxTableData()
+      this.hxTableData(true, flag)
     }
 
   }
