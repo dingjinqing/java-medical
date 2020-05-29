@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 /**
+ *  对外接口-商品列表和详情中商品信息基类
  * @author 李晓冰
  * @date 2020年05月28日
  */

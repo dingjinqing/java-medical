@@ -589,6 +589,10 @@ public class GoodsSortService extends ShopBaseService {
         return db().fetchExists(SORT, SORT.SORT_ID.eq(id));
     }
 
+    public Map<String,Integer> getSortMap(){
+        return db().select(SORT.SORT_NAME, SORT.SORT_ID).from(SORT)
+            .where(SORT.TYPE.eq(GoodsConstant.NORMAL_SORT)).fetchMap(SORT.SORT_NAME, SORT.SORT_ID);
+    }
     /**
      * 商品导入修复其不存在的分类信息
      *

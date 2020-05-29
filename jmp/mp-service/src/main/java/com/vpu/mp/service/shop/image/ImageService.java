@@ -270,12 +270,22 @@ public class ImageService extends ShopBaseService implements ImageDefault {
 
         List<UploadedImageRecord> records = new ArrayList<>();
         for (DownloadImageBo bo : downloadImageBos) {
+            if (Boolean.TRUE.equals(bo.isAlreadyHas())) {
+                imgRelativePath.add(bo.getRelativeFilePath());
+                continue;
+            }
+
             UploadedImageRecord record = new UploadedImageRecord();
             record.setImgType(bo.getImageType());
             record.setImgSize(bo.getSize());
             record.setImgOrigFname(bo.getImageName());
             // 去掉.jpg
-            record.setImgName(bo.getImageName().substring(0,bo.getImageName().lastIndexOf(".")));
+            if (bo.getImageName().lastIndexOf(".") != -1) {
+                record.setImgName(bo.getImageName().substring(0,bo.getImageName().lastIndexOf(".")));
+            }else{
+                record.setImgName(bo.getImageName());
+            }
+
             record.setImgPath(bo.getRelativeFilePath());
             record.setImgUrl(bo.getImgUrl());
             record.setImgCatId(0);
@@ -287,6 +297,17 @@ public class ImageService extends ShopBaseService implements ImageDefault {
 
         db().batchInsert(records).execute();
         return imgRelativePath;
+    }
+
+    /**
+     * 根据图片orgName查询图片信息
+     * @param imgOrgNames 原名集合
+     * @return 图片信息集合
+     */
+    public List<UploadedImageRecord> getImgsByImgOrgNames(List<String> imgOrgNames) {
+        return db().select(UPLOADED_IMAGE.IMG_ORIG_FNAME,UPLOADED_IMAGE.IMG_PATH).from(UPLOADED_IMAGE)
+            .where(UPLOADED_IMAGE.IMG_ORIG_FNAME.in(imgOrgNames).and(UPLOADED_IMAGE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
+            .fetchInto(UploadedImageRecord.class);
     }
     /**
      * 得到图片信息

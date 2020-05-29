@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.goods.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductBakRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import lombok.Data;
 
@@ -38,5 +39,15 @@ public class ApiGoodsSkuVo {
         this.prdNumber = record.getPrdNumber();
         this.prdDesc = record.getPrdDesc();
         this.prdImg = record.getPrdImg();
+    }
+
+    public ApiGoodsSkuVo(GoodsSpecProductBakRecord record){
+        this.skuId = record.getPrdId();
+        this.prdSn = record.getPrdSn();
+        this.prdPrice = record.getPrdPrice();
+        this.prdNumber = record.getPrdNumber();
+        this.prdDesc = record.getPrdDesc();
+        this.prdImg = record.getPrdImg();
+        delFlag = 1;
     }
 }

@@ -34,6 +34,7 @@ public final class DateUtil {
 	public static final String DATE_FORMAT_FULL = "yyyy-MM-dd HH:mm:ss";
 
 	public static final String DATE_FORMAT_FULL_NO_UNDERLINE = "yyyyMMddHHmmss";
+    public static final String DATE_FORMAT_API_EXTERNAL = "yyyyMMddHHmmss";
 
 	public static final String DATE_MYSQL_SIMPLE="%Y-%m-%d";
 	
@@ -109,6 +110,14 @@ public final class DateUtil {
      */
     public static String getLocalDateFormat() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT_FULL));
+    }
+
+    /**
+     * 获取本地时间紧凑型格式：20200201115502
+     * @return
+     */
+    public static String getLocalDateFullTightFormat(){
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT_API_EXTERNAL));
     }
 
 	/**
