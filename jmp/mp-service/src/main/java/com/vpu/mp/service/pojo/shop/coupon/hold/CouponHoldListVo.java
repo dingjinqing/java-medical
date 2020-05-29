@@ -41,6 +41,8 @@ public class CouponHoldListVo {
     /**领取用户数*/
     private Integer hasReceive;
     private BigDecimal denomination;
+    /**优惠卷金额*/
+    private BigDecimal amount;
     /**voucher减价；discount；打折*/
     private String actCode;
     /**是否有使用门槛 0:无门槛；1：满金额使用*/

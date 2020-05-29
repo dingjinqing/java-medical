@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
+import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.recommend.SkuAttrList;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryVo;
 import com.vpu.mp.service.shop.store.store.StoreGoodsService;
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 
 /**
  * @author 李晓冰
@@ -702,5 +704,15 @@ public class GoodsSpecProductService extends ShopBaseService {
         return true;
     }
 
-
+    //******************goods_spec_product_bak************************************//
+    /**
+     * 查询商品规格
+     */
+    public ProductSmallInfoVo getProductBakByPrdId(Integer prdId){
+        return db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS_SPEC_PRODUCT_BAK.PRD_DESC, GOODS.GOODS_IMG,
+            GOODS_SPEC_PRODUCT_BAK.PRD_NUMBER, GOODS_SPEC_PRODUCT_BAK.PRD_PRICE, GOODS.IS_ON_SALE)
+            .from(GOODS_SPEC_PRODUCT_BAK)
+            .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT_BAK.GOODS_ID))
+            .where(GOODS_SPEC_PRODUCT_BAK.PRD_ID.eq(prdId)).fetchOneInto(ProductSmallInfoVo.class);
+    }
 }

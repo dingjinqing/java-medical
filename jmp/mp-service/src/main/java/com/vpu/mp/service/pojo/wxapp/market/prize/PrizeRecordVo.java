@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.market.prize;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +25,10 @@ public class PrizeRecordVo {
     private Integer   expiredDay;
     private Timestamp expiredTime;
     private Timestamp createTime;
+    /**
+     * 商品状态 0正常 1商品失效
+     */
+    private Byte goodsStatus = BaseConstant.NO;
 
     private OrderGoodsMpVo orderGoodsMpVo;
 
