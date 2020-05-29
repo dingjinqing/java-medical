@@ -157,7 +157,7 @@ public class DatabaseManager {
             ret = execScript(dbConfig, "db/shop/db_shop_data.sql");
             loger.debug("db_shop_data.sql执行结果" + ret);
         }
-        return ret;
+        return ret && updateRet;
     }
 
 	/**
