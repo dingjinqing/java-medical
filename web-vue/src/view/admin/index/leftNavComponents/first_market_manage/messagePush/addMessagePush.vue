@@ -896,7 +896,7 @@ export default {
           value: `指定时间内有登录记录`
         })
         this.params.customRuleInfo.loginEnd = ``
-        this.params.loginStart.loginStart = ``
+        this.params.customRuleInfo.loginStart = ``
         this.fetchUserList(this.params)
       } else {
         console.log(val)
@@ -1061,6 +1061,7 @@ export default {
       this.fetchUserList(this.params)
     },
     loginStartAndLoginEnd (val) {
+      console.log(val)
       const { startTime, endTime } = val
       this.loginStart = startTime
       this.loginEnd = endTime
@@ -1080,6 +1081,7 @@ export default {
             message: '请选择指定商品',
             showClose: true
           })
+          return false
         }
         isNone = false
       } else if (this.params.onClickCard) {
@@ -1088,6 +1090,7 @@ export default {
             message: '请选择会员卡',
             showClose: true
           })
+          return false
         }
         isNone = false
       } else if (this.params.onClickTag) {
@@ -1096,6 +1099,7 @@ export default {
             message: '请选择会员标签',
             showClose: true
           })
+          return false
         }
         isNone = false
       } else if (this.params.onClickUser) {
@@ -1104,16 +1108,18 @@ export default {
             message: '请选择指定会员',
             showClose: true
           })
+          return false
         }
         isNone = false
       } else if (this.params.onClickCustomRule) {
-        if (!this.optionsList.length) {
+        if (!this.optionsList.length && !this.showTime) {
           this.$message.error({
             message: '未选择自定义选项',
             showClose: true
           })
+          return false
         } else {
-          console.log(this.optionsList)
+          console.log(this.optionsList, this.params.customRuleInfo.loginStart)
           let flag = false
           this.optionsList.forEach((item, index) => {
             if (isNaN(item.ipt)) {
@@ -1127,7 +1133,15 @@ export default {
             this.$message.error({
               message: '请完善自定义信息',
               showClose: true
+
             })
+            return false
+          } else if (this.showTime && !this.params.customRuleInfo.loginStart) {
+            this.$message.error({
+              message: '请完善自定义信息',
+              showClose: true
+            })
+            return false
           }
         }
         isNone = false
