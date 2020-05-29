@@ -3,10 +3,7 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RequestUtil;
-import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
-import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponVo;
-import com.vpu.mp.service.pojo.shop.coupon.MpGetSplitCouponParam;
-import com.vpu.mp.service.pojo.shop.coupon.MpGetSplitCouponVo;
+import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackIdParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackOrderBeforeParam;
@@ -97,8 +94,19 @@ public class WxAppCouponController extends WxAppBaseController {
 		return this.success(couponDetail);
 	}
 
+    /**
+     * 分享优惠卷
+     */
+    @PostMapping("/split/share")
+	public JsonResult shareSplitCouPon(@RequestBody @Validated MpCouponSnParam param){
+        Integer userId = wxAppAuth.user().getUserId();
+        param.setUserId(userId);
+        shop().mpCoupon.shareSplitCoupon(param);
+        return success();
+    }
+
 	/**
-	 * 分享分裂优惠券
+	 * 获取分享分裂优惠券
 	 * @return
 	 */
 	@PostMapping("/split/get")
