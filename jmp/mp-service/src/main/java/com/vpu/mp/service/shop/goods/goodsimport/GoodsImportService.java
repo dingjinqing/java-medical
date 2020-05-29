@@ -413,6 +413,14 @@ public class GoodsImportService extends ShopBaseService {
             resultCode.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_PRD_DESC_WRONG);
             return resultCode;
         }
+        String prdDesc = goods.getGoodsSpecProducts().get(0).getPrdDesc();
+        // 处理是否是单规格数据
+        if (goods.getGoodsSpecProducts().size() == 1 && StringUtils.isBlank(prdDesc)) {
+            goods.setIsDefaultProduct((byte) 1);
+        } else {
+            goods.setIsDefaultProduct((byte) 0);
+        }
+
         // 处理图片
         List<DownloadImageBo> downloadImageBos = filterGoodsImages(importBos);
         if (downloadImageBos.size() == 0) {
