@@ -859,6 +859,7 @@ export default {
     handleIpt (item) {
       console.log(item)
       const { key, ipt } = item
+      if (isNaN(ipt)) return
       for (let a in this.params.customRuleInfo) {
         if (a === key) {
           switch (a) {
@@ -1115,6 +1116,9 @@ export default {
           console.log(this.optionsList)
           let flag = false
           this.optionsList.forEach((item, index) => {
+            if (isNaN(item.ipt)) {
+              item.ipt = ''
+            }
             if (item.ipt === '') {
               flag = true
             }
