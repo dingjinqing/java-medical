@@ -18,6 +18,9 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.util.api.ApiBasePageParam;
+import com.vpu.mp.service.pojo.saas.api.ApiExternalGateParam;
+import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
@@ -932,7 +935,15 @@ public class OrderReadService extends ShopBaseService {
         return result;
     }
 
-    /*********************************************************************************************************/
+    public ApiJsonResult getPageList(ApiExternalGateParam gateParam) {
+        ApiBasePageParam param = Util.parseJson(gateParam.getContent(), ApiBasePageParam.class);
+        if (param == null) {
+            param = new ApiBasePageParam();
+        }
+        orderInfo.getOrders(param);
+        return null;
+    }
+        /*********************************************************************************************************/
 
 	/**
 	 * 分裂营销活动的活动数据分析的订单部分数据

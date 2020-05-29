@@ -17,9 +17,9 @@ import com.vpu.mp.service.pojo.shop.goods.api.ApiGoodsPageResult;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductParam;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncStockParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.pos.PosReturnGoodsParam;
-import com.vpu.mp.service.pojo.shop.order.pos.PosReturnGoodsVo;
-import com.vpu.mp.service.pojo.shop.order.pos.PosVerifyOrderParam;
+import com.vpu.mp.service.pojo.shop.order.api.PosReturnGoodsParam;
+import com.vpu.mp.service.pojo.shop.order.api.PosReturnGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.api.PosVerifyOrderParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.verify.verifyParam;
@@ -240,6 +240,8 @@ public class ApiExternalGateService extends MainBaseService {
                 break;
             case ApiExternalGateConfig.SERVICE_ORDER_LIST:
                 //订单列表
+                //同步物流单号(发货)
+                apiJsonResult = saas().getShopApp(param.getShopId()).readOrder.getPageList(param);
                 break;
             case ApiExternalGateConfig.SERVICE_SINGLE_ORDER:
                 //单个订单
@@ -256,6 +258,7 @@ public class ApiExternalGateService extends MainBaseService {
                 break;
             case ApiExternalGateConfig.SERVICE_SYNC_REFUND_ORDER_RESULT:
                 //同步退款结果
+                apiJsonResult = saas().getShopApp(param.getShopId()).orderApi.returnOrder(param);
                 break;
             case ApiExternalGateConfig.SERVICE_DELIVER_EXCHANGE_GOODS:
                 //发货（换货未实现）

@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.order.pos;
+package com.vpu.mp.service.pojo.shop.order.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

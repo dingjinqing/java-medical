@@ -16,8 +16,8 @@ import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.api.ApiShippingParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
-import com.vpu.mp.service.pojo.shop.order.pos.PosShippingParam;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
@@ -233,7 +233,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
      * @param param
      * @return
      */
-    public ApiJsonResult shippingApi(PosShippingParam param) throws MpException {
+    public ApiJsonResult shippingApi(ApiShippingParam param) throws MpException {
         ApiJsonResult result = new ApiJsonResult();
         if (param == null) {
             result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);

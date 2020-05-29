@@ -2,10 +2,18 @@ package com.vpu.mp.service.foundation.util;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -310,5 +318,16 @@ public final class DateUtil {
      */
     public static Timestamp get1970TimeStamp() {
         return Timestamp.from(DATE_1970.toInstant());
+    }
+
+    /**
+     * 获取30天前的时间
+     */
+    public static Timestamp getBefore30Day() {
+        return Timestamp.from(Instant.now().plus(-30 , ChronoUnit.DAYS));
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getBefore30Day());
     }
 }

@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.order.pos;
+package com.vpu.mp.service.pojo.shop.order.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
-public class PosShippingParam {
+public class ApiShippingParam {
     @JsonProperty("order_sn")
     private String orderSn;
     @JsonProperty("logistics_code")

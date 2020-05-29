@@ -544,4 +544,12 @@ public class OrderConstant {
         }
         return RETRURN_REASON_TYPE_DESC[index];
     }
+
+    /**对外接口 start*/
+    /**
+     *  退款结果：同意agree 拒绝refuse
+     */
+    public static final String API_RETURN_AGREE = "agree";
+    public static final String API_RETURN_REFUSE = "refuse";
+    /**对外接口 end*/
 }
