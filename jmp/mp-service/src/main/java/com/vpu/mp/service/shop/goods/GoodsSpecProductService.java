@@ -178,7 +178,6 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 根据商品GoodsSn查询对应的sku
-     *
      * @param goodsSn
      * @return
      */
@@ -231,6 +230,7 @@ public class GoodsSpecProductService extends ShopBaseService {
 
         goodsSpecService.updateForGoodsUpdate(goodsSpecs);
     }
+
 
     private void batchUpdateGoodsSku(List<GoodsSpecProduct> goodsSpecProducts) {
         if (goodsSpecProducts.size() == 0) {
@@ -336,7 +336,6 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 商品excel导入-更新-更新对应规格信息
-     *
      * @param goodsSpecProducts
      */
     public void updateSpecPrdForGoodsImport(List<GoodsSpecProduct> goodsSpecProducts) {
@@ -352,7 +351,6 @@ public class GoodsSpecProductService extends ShopBaseService {
         }
         db().batchUpdate(records).execute();
     }
-
     /**
      * 根据商品id集合查询出商品id和规格项的对应分组映射
      *
@@ -571,9 +569,9 @@ public class GoodsSpecProductService extends ShopBaseService {
 
 
     /**
-     * 查询传入的prdSns集合中哪些是数据库中已经存在的
+     * 查询传入的prdSn集合中哪些是数据库中已经存在的
      *
-     * @param prdSns
+     * @param prdSn
      * @return
      */
     public List<String> findSkuPrdSnExist(List<String> prdSns) {
@@ -593,7 +591,6 @@ public class GoodsSpecProductService extends ShopBaseService {
             .where(GOODS_SPEC_PRODUCT.PRD_CODES.in(prdCodes))
             .fetch(GOODS_SPEC_PRODUCT.PRD_CODES);
     }
-
     /**
      * 判断商品规格名和规格值是否内部自重复
      *

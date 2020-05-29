@@ -10,7 +10,7 @@ public enum GoodsDataIIllegalEnum {
     /**
      * 数据在操作过程中产生异常错误
      */
-    GOODS_FAIL((byte) -1, null),
+    GOODS_FAIL((byte) -1, "goods.import.server.fail"),
     /**
      * 数据操作成功
      */
@@ -73,10 +73,21 @@ public enum GoodsDataIIllegalEnum {
      */
     GOODS_PRD_CODES_EXIST((byte)14,"goods.prd.codes.exist"),
     /**
-     * 商品条码内部字重复, TODO:未国际化
+     * 商品条码内部字重复
      * */
-    GOODS_PRD_CODES_INNER_REPEATED((byte)15,"goods.prd.codes.inner.repeated");
-
+    GOODS_PRD_CODES_INNER_REPEATED((byte)15,"goods.prd.codes.inner.repeated"),
+    /**
+     * 成本价格不可为null
+     */
+    GOODS_COST_PRICE_IS_NULL((byte)16,"goods.cost.price.is.null"),
+    /**
+     * 商品数据格式插入数据库错误
+     */
+    GOODS_DATA_ILLEGAL_FORMAT_FOR_DB((byte)17,"goods.data.illegal.format.for.db"),
+    /**
+     * 商品信息同步es错误
+     */
+    GOODS_DATA_UPDATE_ES_ERROR((byte)18,"goods.data.update.es.error");
 
     private byte errorCode;
     private String errorMsg;
@@ -147,6 +158,15 @@ public enum GoodsDataIIllegalEnum {
                 break;
             case 15:
                 retEnum = GoodsDataIIllegalEnum.GOODS_PRD_CODES_INNER_REPEATED;
+                break;
+            case 16:
+                retEnum = GoodsDataIIllegalEnum.GOODS_COST_PRICE_IS_NULL;
+                break;
+            case 17:
+                retEnum = GoodsDataIIllegalEnum.GOODS_DATA_ILLEGAL_FORMAT_FOR_DB;
+                break;
+            case 18:
+                retEnum = GoodsDataIIllegalEnum.GOODS_DATA_UPDATE_ES_ERROR;
                 break;
             default:
                 retEnum = null;

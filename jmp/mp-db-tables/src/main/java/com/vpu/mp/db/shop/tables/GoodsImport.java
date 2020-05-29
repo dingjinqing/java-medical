@@ -8,25 +8,14 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.GoodsImportRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -42,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsImport extends TableImpl<GoodsImportRecord> {
 
-    private static final long serialVersionUID = -800756141;
+    private static final long serialVersionUID = -1708227168;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_import</code>
@@ -65,22 +54,22 @@ public class GoodsImport extends TableImpl<GoodsImportRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_goods_import.total_num</code>. 导入总数
      */
-    public final TableField<GoodsImportRecord, Integer> TOTAL_NUM = createField("total_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "导入总数");
+    public final TableField<GoodsImportRecord, Integer> TOTAL_NUM = createField("total_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "导入总数");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_import.success_num</code>. 导入成功数
      */
-    public final TableField<GoodsImportRecord, Integer> SUCCESS_NUM = createField("success_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "导入成功数");
+    public final TableField<GoodsImportRecord, Integer> SUCCESS_NUM = createField("success_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "导入成功数");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_import.del_flag</code>.
      */
-    public final TableField<GoodsImportRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<GoodsImportRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_import.del_time</code>. 删除时间
      */
-    public final TableField<GoodsImportRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
+    public final TableField<GoodsImportRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_import.import_file_path</code>. 导入源文件地址
@@ -90,17 +79,22 @@ public class GoodsImport extends TableImpl<GoodsImportRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_goods_import.is_update</code>. 是否更新：0新增，1更新
      */
-    public final TableField<GoodsImportRecord, Byte> IS_UPDATE = createField("is_update", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否更新：0新增，1更新");
+    public final TableField<GoodsImportRecord, Byte> IS_UPDATE = createField("is_update", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否更新：0新增，1更新");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_import.create_time</code>.
      */
-    public final TableField<GoodsImportRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<GoodsImportRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_import.update_time</code>. 最后修改时间
      */
-    public final TableField<GoodsImportRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<GoodsImportRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_import.is_finish</code>. 商品导入操作是否完成
+     */
+    public final TableField<GoodsImportRecord, Byte> IS_FINISH = createField("is_finish", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "商品导入操作是否完成");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods_import</code> table reference
