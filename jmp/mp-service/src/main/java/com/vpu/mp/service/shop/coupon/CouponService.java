@@ -1,39 +1,5 @@
 package com.vpu.mp.service.shop.coupon;
 
-import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
-import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
-import static com.vpu.mp.db.shop.Tables.DIVISION_RECEIVE_RECORD;
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.service.foundation.util.Util.listToString;
-import static com.vpu.mp.service.foundation.util.Util.stringToList;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.records.CustomerAvailCouponsRecord;
 import com.vpu.mp.db.shop.tables.records.DivisionReceiveRecordRecord;
@@ -56,7 +22,6 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponParamVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.coupon.CouponWxUserImportVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponWxVo;
@@ -77,6 +42,7 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -86,6 +52,32 @@ import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
+import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
+import static com.vpu.mp.db.shop.Tables.DIVISION_RECEIVE_RECORD;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.service.foundation.util.Util.listToString;
+import static com.vpu.mp.service.foundation.util.Util.stringToList;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
  * 优惠券管理
@@ -230,15 +222,12 @@ public class CouponService extends ShopBaseService {
      * @param couponId
      * @return
      */
-	public List<CouponParamVo> getOneCouponInfo(Integer couponId) {
-		/** 单条返回列表，之前写的人写的有问题，前端调用太多，有缘人改吧*/
-		List<CouponParamVo> list = db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(couponId))
-				.fetchInto(CouponParamVo.class);
-		for (CouponParamVo item : list) {
-			item.setStatus(couponMpService.couponGetStatus(new MpGetCouponParam(couponId, null)));
-		}
-		return list;
-	}
+    public List<CouponParam> getOneCouponInfo(Integer couponId) {
+        List<CouponParam> couponInfo = db().select().from(MRKING_VOUCHER)
+            .where(MRKING_VOUCHER.ID.eq(couponId))
+            .fetch().into(CouponParam.class);
+        return couponInfo;
+    }
 
     /**
      * 获取单个优惠券信息
