@@ -375,6 +375,16 @@ public class CouponMpService extends ShopBaseService {
     }
 
     /**
+     * 分享分裂优惠卷
+     * @param param
+     */
+    public void shareSplitCoupon(MpCouponSnParam param) {
+        db().update(DIVISION_RECEIVE_RECORD)
+            .set(DIVISION_RECEIVE_RECORD.IS_SHARE,BaseConstant.YES)
+            .where(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(param.getCouponSn()))
+            .and(DIVISION_RECEIVE_RECORD.USER.eq(param.getUserId()));
+    }
+    /**
      *适用全部商品的正在进行中的优惠券(库存大于0)
      * @return
      */
@@ -388,15 +398,5 @@ public class CouponMpService extends ShopBaseService {
         } else{
             return null;
         }
-    }
-    /**
-     * 分享分裂优惠卷
-     * @param param
-     */
-    public void shareSplitCoupon(MpCouponSnParam param) {
-        db().update(DIVISION_RECEIVE_RECORD)
-            .set(DIVISION_RECEIVE_RECORD.IS_SHARE,BaseConstant.YES)
-            .where(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(param.getCouponSn()))
-            .and(DIVISION_RECEIVE_RECORD.USER.eq(param.getUserId()));
     }
 }
