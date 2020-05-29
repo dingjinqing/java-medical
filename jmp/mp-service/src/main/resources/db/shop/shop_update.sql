@@ -185,6 +185,8 @@ ALTER TABLE `b2c_coupon_pack` ADD COLUMN `show_cart` tinyint(1) DEFAULT '1' COMM
 
 -- 20200508微信退款记录表增加订单号字段长度（预售订单补款退款时长度超限制）
 ALTER TABLE `b2c_order_refund_record` MODIFY COLUMN `order_sn` varchar(22) NOT NULL DEFAULT '' COMMENT '订单编号';
+-- 20200526 李晓冰商品导入详情添加是否导入成功字段
+ALTER TABLE `b2c_goods_import` ADD COLUMN `is_finish` tinyint(1) DEFAULT '0' COMMENT '商品导入操作是否完成';
 /***********************2.10*********************END*/
 
 

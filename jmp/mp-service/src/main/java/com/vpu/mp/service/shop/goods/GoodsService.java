@@ -792,16 +792,9 @@ public class GoodsService extends ShopBaseService {
     public GoodsDataIllegalEnumWrap insert(Goods goods) {
         GoodsDataIllegalEnumWrap codeWrap = new GoodsDataIllegalEnumWrap();
         codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_OK);
-
-        transaction(() -> {
-            try {
-                //存在重复值则直接返回
-                GoodsDataIIllegalEnum goodsDataIIllegalEnum = columnValueExistCheckForInsert(goods);
-                codeWrap.setIllegalEnum(goodsDataIIllegalEnum);
-                if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
-                    return;
-                }
-
+        try {
+            transaction(() ->
+            {
                 insertGoods(goods);
 
                 // 商品图片增加
@@ -825,17 +818,12 @@ public class GoodsService extends ShopBaseService {
                 //插入商品分销改价信息
                 insertGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
                 codeWrap.setGoodsId(goods.getGoodsId());
-            } catch (Exception e) {
-                e.printStackTrace();
-                codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
-                return;
-            }
-        });
-
-        if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
-            return  codeWrap;
+            });
+        } catch (Exception e) {
+            codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_DATA_ILLEGAL_FORMAT_FOR_DB);
+            logger().warn("商品新增error:" + e.getMessage());
         }
-        return  codeWrap;
+        return codeWrap;
     }
 
     /**
@@ -848,8 +836,11 @@ public class GoodsService extends ShopBaseService {
         calculateGoodsPriceAndNumber(goods);
 
         if (StringUtils.isBlank(goods.getGoodsSn())) {
-            int count = db().fetchCount(GOODS) + 1;
-            goods.setGoodsSn(String.format("G10%08d", count));
+            if (StringUtils.isBlank(goods.getGoodsSn())) {
+                int count = db().fetchCount(GOODS) + 1;
+                String timeStr = DateUtil.getLocalDateFullTightFormat();
+                goods.setGoodsSn(String.format("G%s-%08d", timeStr, count));
+            }
         }
 
         // 设置商品分享海报配置信息
@@ -1274,7 +1265,7 @@ public class GoodsService extends ShopBaseService {
      * @param goods 商品
      * @return {@link com.vpu.mp.service.foundation.data.JsonResult}
      */
-    private GoodsDataIIllegalEnum columnValueExistCheckForInsert(Goods goods) {
+    public GoodsDataIIllegalEnum columnValueExistCheckForInsert(Goods goods) {
         GoodsColumnCheckExistParam gcep = new GoodsColumnCheckExistParam();
         gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS);
 
@@ -1350,6 +1341,15 @@ public class GoodsService extends ShopBaseService {
     /*************结束*************/
 
     /**
+     * 统计未删除商品总数量
+     * @return 商品数量
+     */
+    public Integer selectGoodsCount() {
+        int i = db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        return i;
+    }
+
+    /**
      * 判断字段值是否重复
      *
      * @param goodsColumnExistParam
@@ -1384,6 +1384,18 @@ public class GoodsService extends ShopBaseService {
         param.setGoodsId(goodsId);
         param.setGoodsName(goodsName);
         return isColumnValueExist(param);
+    }
+
+    public List<String> findGoodsNameExist(List<String> goodsNames) {
+        return db().select(GOODS.GOODS_NAME).from(GOODS)
+            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_NAME.in(goodsNames)))
+            .fetch(GOODS.GOODS_NAME);
+    }
+
+    public List<String> findGoodsSnExist(List<String> goodsSns) {
+        return db().select(GOODS.GOODS_SN).from(GOODS)
+            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.in(goodsSns)))
+            .fetch(GOODS.GOODS_SN);
     }
 
     /**
