@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.coupon;
 
-import com.vpu.mp.db.shop.tables.DivisionReceiveRecord;
 import com.vpu.mp.db.shop.tables.records.DivisionReceiveRecordRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -8,7 +7,6 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
@@ -34,9 +32,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.db.shop.Tables.DIVISION_RECEIVE_RECORD;
-import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_PAY_AWARD;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.PAY_AWARD_GIVE_STATUS_RECEIVED;
 
 /**
  * @author: 王兵兵
@@ -372,4 +367,14 @@ public class CouponMpService extends ShopBaseService {
                 .fetch();
     }
 
+    /**
+     * 分享分裂优惠卷
+     * @param param
+     */
+    public void shareSplitCoupon(MpCouponSnParam param) {
+        db().update(DIVISION_RECEIVE_RECORD)
+            .set(DIVISION_RECEIVE_RECORD.IS_SHARE,BaseConstant.YES)
+            .where(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(param.getCouponSn()))
+            .and(DIVISION_RECEIVE_RECORD.USER.eq(param.getUserId()));
+    }
 }
