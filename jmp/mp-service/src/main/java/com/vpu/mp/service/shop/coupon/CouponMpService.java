@@ -375,6 +375,6 @@ public class CouponMpService extends ShopBaseService {
         db().update(DIVISION_RECEIVE_RECORD)
             .set(DIVISION_RECEIVE_RECORD.IS_SHARE,BaseConstant.YES)
             .where(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(param.getCouponSn()))
-            .and(DIVISION_RECEIVE_RECORD.USER.eq(param.getUserId()));
+            .and(DIVISION_RECEIVE_RECORD.USER.eq(param.getUserId())).execute();
     }
 }
