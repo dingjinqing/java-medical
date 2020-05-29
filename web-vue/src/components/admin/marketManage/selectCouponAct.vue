@@ -11,24 +11,24 @@
       <el-option
         v-for="item in selects"
         :key="item.id"
-        :label="item.actName"
+        :label="item.type==1?'['+$t('openScreenAdd.split')+']'+item.actName:item.actName"
         :value="item.id"
       ></el-option>
     </el-select>
     <el-button
       type="text"
       @click="initSelectData"
-    >刷新</el-button>
+    >{{$t('luckyDraw.refreshs')}}</el-button>
     <el-divider direction="vertical"></el-divider>
     <el-button
       type="text"
       @click="toAdd"
-    >新建</el-button>
+    >{{$t('luckyDraw.make')}}</el-button>
     <el-divider direction="vertical"></el-divider>
     <el-button
       type="text"
       @click="toList"
-    >管理</el-button>
+    >{{$t('openScreenAdd.manage')}}</el-button>
   </div>
 </template>
 
