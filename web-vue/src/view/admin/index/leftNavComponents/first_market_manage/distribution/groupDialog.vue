@@ -39,7 +39,7 @@
   </el-dialog>
 </template>
 <script>
-import { distributorGroupList } from '@/api/admin/marketManage/distribution.js'
+import { distributorAllGroup } from '@/api/admin/marketManage/distribution.js'
 export default {
   props: {
     // 调起弹窗
@@ -70,9 +70,9 @@ export default {
     this.groupList()
   },
   methods: {
-    // 获取分销员分组
+    // 获取所有分销员分组
     groupList () {
-      distributorGroupList().then(res => {
+      distributorAllGroup().then(res => {
         this.groupNameList = res.content
       })
     },

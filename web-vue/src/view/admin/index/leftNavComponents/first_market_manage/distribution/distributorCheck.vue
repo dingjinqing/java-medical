@@ -294,7 +294,7 @@
 </template>
 
 <script>
-import { getCheckList, distributionGroup, getCheckPass, getCheckRefuse, setBatchGroup } from '@/api/admin/marketManage/distribution.js'
+import { getCheckList, distributorAllGroup, getCheckPass, getCheckRefuse, setBatchGroup } from '@/api/admin/marketManage/distribution.js'
 import chinaData from '@/assets/china-data'
 import { deepCloneObj } from '@/util/deepCloneObj'
 export default {
@@ -411,12 +411,10 @@ export default {
       console.log(this.tableData)
     },
 
-    // 获取分销员分组
+    // 获取所有分销员分组
     getDistributionGroup () {
-      distributionGroup(this.pageParams).then((res) => {
-        if (res.error === 0) {
-          this.groupNameList = res.content.dataList
-        }
+      distributorAllGroup().then((res) => {
+        this.groupNameList = res.content.dataList
       })
     },
 
