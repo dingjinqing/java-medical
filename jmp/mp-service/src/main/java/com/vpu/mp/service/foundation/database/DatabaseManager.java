@@ -148,10 +148,10 @@ public class DatabaseManager {
             return false;
         }
 
-        boolean ret = execScript(dbConfig, "db/shop/db_shop_init.sql");
+        boolean ret = execScript(dbConfig, "db/shop/db_shop.sql");
         boolean updateRet = execScript(dbConfig, "db/shop/shop_update.sql");;
         // 测试用，测完删log
-        loger.debug("db_shop_init执行结果{}\nshop_update.sql执行结果{}",ret,updateRet);
+        loger.debug("db_shop执行结果{}\nshop_update.sql执行结果{}",ret,updateRet);
         if (ret && updateRet) {
             loger.debug("准备执行db_shop_data.sql的dbConfig" + dbConfig);
             ret = execScript(dbConfig, "db/shop/db_shop_data.sql");
