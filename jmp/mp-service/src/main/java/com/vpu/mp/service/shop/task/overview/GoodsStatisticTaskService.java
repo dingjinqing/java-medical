@@ -19,6 +19,7 @@ import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.GoodsSummary.GOODS_SUMMARY;
 import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_THREE;
 import static org.apache.commons.lang3.math.NumberUtils.*;
@@ -826,4 +827,18 @@ public class GoodsStatisticTaskService extends ShopBaseService {
         return singleGoodsClinchNum(param).values().stream().reduce(INTEGER_ZERO, Integer::sum);
     }
 
+    /**
+     * 加购人数
+     * @param start 开始时间
+     * @param end   结束时间
+     * @return      人数
+     */
+    public Integer addCartUserNum(Timestamp start,Timestamp end){
+        return db().select(DSL.countDistinct(CART.USER_ID))
+            .from(CART)
+            .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(CART.GOODS_ID))
+            .where(CART.CREATE_TIME.ge(start))
+            .and(CART.CREATE_TIME.lessThan(end))
+            .fetchOneInto(Integer.class);
+    }
 }
