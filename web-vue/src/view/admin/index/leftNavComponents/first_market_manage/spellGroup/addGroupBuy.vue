@@ -627,6 +627,7 @@
         @handleToCheck="handleToCheck"
         :tuneUpCoupon="showCouponDialog"
         :couponBack="couponIdList"
+        :type="-1"
       />
 
       <!-- 选择图片弹框 -->

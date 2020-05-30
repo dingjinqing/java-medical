@@ -624,7 +624,7 @@
       @handleToCheck="addCouponHandle"
       :tuneUpCoupon="addCouponVisible"
       :couponBack.sync="emptySelect"
-      :type=0
+      :type="0"
     />
 
     <!--活动配置 - 添加分裂优惠券-->

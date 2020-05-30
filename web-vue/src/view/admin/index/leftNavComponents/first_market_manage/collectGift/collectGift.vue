@@ -220,6 +220,7 @@
         @checkReturnFormat="handleToCheck"
         :tuneUpCoupon="showCouponDialog"
         :couponBack="couponIdList"
+        :type="-1"
       />
     </div>
     <!-- 保存修改 -->
