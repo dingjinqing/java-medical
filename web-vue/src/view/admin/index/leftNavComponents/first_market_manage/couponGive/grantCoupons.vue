@@ -318,6 +318,7 @@
       @checkReturnFormat="handleToCheck"
       :tuneUpCoupon="showCouponDialog"
       :couponBack="couponIdList"
+      :type="-1"
     />
   </div>
 </template>>

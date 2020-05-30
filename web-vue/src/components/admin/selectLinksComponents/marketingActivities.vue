@@ -2,6 +2,21 @@
   <div>
     <div class="top">
       <span>{{$t('selectLinks.marketingActivities')}}/ {{this.navText}}</span>
+      <div v-if="nowIndex === 7">
+        <span>优惠券类型：</span>
+        <el-select
+          v-model="couponType"
+          size="small"
+          style="width: 170px;"
+        >
+          <el-option
+            v-for="(item, index) in typeList"
+            :key="index"
+            :value="item.value"
+            :label="item.label"
+          ></el-option>
+        </el-select>
+      </div>
     </div>
     <div class="content">
       <table width='100%'>
@@ -62,7 +77,19 @@ export default {
       noImg: this.$imageHost + '/image/admin/no_data.png',
       navText: '',
       couponFlag: false, // 优惠券td flag
-      path: ''//  显示和保存的路径
+      path: '', //  显示和保存的路径
+      couponType: -1,
+      // 优惠券类型
+      typeList: [{
+        label: '全部',
+        value: -1
+      }, {
+        label: '普通优惠券',
+        value: 0
+      }, {
+        label: '分裂优惠券',
+        value: 1
+      }]
     }
   },
   computed: {
@@ -276,6 +303,9 @@ export default {
   padding: 10px;
   font-size: 14px;
   color: #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .noData {
   height: 100px;
