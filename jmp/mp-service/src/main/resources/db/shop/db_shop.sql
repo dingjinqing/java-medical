@@ -4666,13 +4666,26 @@ CREATE TABLE `b2c_xcx_customer_page` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`page_id`)
 )COMMENT='微信小程序自定义页面表';
-
-CREATE TABLE `b2c_user_remark` (
-  `id`          mediumint(10)  NOT NULL AUTO_INCREMENT,
-  `user_id`     mediumint(8)  NOT NULL DEFAULT '0',
-  `remark`      TEXT COMMENT '会员备注',
-  `add_time`    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `is_delete`   tinyint(1)  NOT NULL DEFAULT '0' COMMENT'0:未删除；1删除',
-  PRIMARY KEY (`id`),
-  key `user_id` (`user_id`)
-)COMMENT='会员备注';
+CREATE TABLE `b2c_pin_integration_define` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `shop_id` int(11) NOT NULL COMMENT '店铺id',
+  `name` varchar(100) NOT NULL COMMENT '活动名称',
+  `inte_total` int(11) NOT NULL DEFAULT '0' COMMENT '总抽奖积分',
+  `inte_group` int(11) NOT NULL DEFAULT '0' COMMENT '每个团总积分',
+  `limit_amount` smallint(6) NOT NULL COMMENT '成团人数',
+  `join_limit` smallint(6) NOT NULL COMMENT '参团限制',
+  `divide_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '瓜分方式：0：按邀请好友数量瓜分，1：好友均分，2：随机瓜分',
+  `start_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '开始时间',
+  `end_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '结束时间',
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态： 1：启用  0： 禁用',
+  `del_flag` tinyint(1) NOT NULL DEFAULT '0',
+  `del_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '删除时间',
+  `inte_remain` int(11) NOT NULL DEFAULT '0' COMMENT '剩余积分',
+  `is_day_divide` tinyint(1) NOT NULL COMMENT '是否开团24小时自动开奖',
+  `param_n` float NOT NULL DEFAULT '0' COMMENT '常数n',
+  `is_continue` tinyint(1) NOT NULL DEFAULT '1' COMMENT '继续： 1：继续  0： 结束',
+  `advertise` varchar(100) NOT NULL COMMENT '活动宣传语',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`)
+);
