@@ -395,7 +395,7 @@
 </template>
 
 <script>
-import { distributorList, distributorLevelList, distributorGroupList, delDistributor, setInviteCode, setBatchGroup } from '@/api/admin/marketManage/distribution.js'
+import { distributorList, distributorLevelList, distributorAllGroup, delDistributor, setInviteCode, setBatchGroup } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
@@ -511,9 +511,9 @@ export default {
         this.distributorLevel = res.content.dataList
       })
     },
-    // 分组下拉列表
+    // 分组所有数据
     groupList () {
-      distributorGroupList().then(res => {
+      distributorAllGroup().then(res => {
         this.groupNameList = res.content
       })
     },
