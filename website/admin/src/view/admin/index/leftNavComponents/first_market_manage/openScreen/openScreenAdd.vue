@@ -419,6 +419,7 @@
       :tuneUpCoupon="addCouponVisible"
       :couponBack="couponAdded"
       @handleToCheck="addCouponHandle"
+      :type="0"
     ></addCouponDialog>
 
     <!-- 选择分裂优惠券 -->

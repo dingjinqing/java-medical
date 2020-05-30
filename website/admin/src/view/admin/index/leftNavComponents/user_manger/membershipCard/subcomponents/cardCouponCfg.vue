@@ -128,6 +128,7 @@
       :tuneUpCoupon="couponDialogVisable"
       :couponBack="couponBack"
       @handleToCheck="handleCouponList"
+      :type="-1"
     />
   </div>
 </template>

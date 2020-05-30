@@ -701,7 +701,7 @@
       @handleToCheck="handleToCheck"
       :tuneUpCoupon="showCouponDialog"
       :couponBack="couponIdList"
-      :type=0
+      :type="this.flag === 1 ? 0 : -1"
     />
 
     <ImageDalog
@@ -978,6 +978,7 @@ export default {
       showCouponDialog: false, // 优惠券弹窗
       coupon_duplicate: [], // 失败送优惠券数据
       couponIdList: [], // 优惠券回显数据id
+      flag: 1, // 两个优惠券弹窗区分
       showImageDialog: false,
       imgHost: `${this.$imageHost}`,
 
@@ -1247,6 +1248,7 @@ export default {
     },
     // 选择优惠券弹窗
     handleToCallDialog (val) {
+      this.flag = val
       this.showCouponDialog = !this.showCouponDialog
       this.couponIdList = []
       if (val === 1) {

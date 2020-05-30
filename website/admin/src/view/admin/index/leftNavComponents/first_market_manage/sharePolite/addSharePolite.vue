@@ -448,6 +448,7 @@
       @handleToCheck="handleToCheck"
       :couponBack="couponIdList"
       ref="templateRefresh"
+      :type="-1"
     />
   </div>
 </template>
