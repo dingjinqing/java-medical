@@ -154,7 +154,7 @@
               <span
                 @click="numClickHandler"
                 style="color: #5a8bff;cursor: pointer;"
-              >{{ scope.row.users }}</span>
+              >{{ scope.row.users ? scope.row.users : 0 }}</span>
             </template>
           </el-table-column>
           <el-table-column
