@@ -67,6 +67,7 @@
       :couponBack='couponBack'
       origin='decCouponPackage'
       @handleToCheck='handleToCheck'
+      :type="-1"
     />
   </div>
 </template>

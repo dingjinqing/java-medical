@@ -727,6 +727,7 @@
       @handleToCheck="handleToCheck"
       :tuneUpCoupon="showCouponDialog"
       :couponBack="couponIdList"
+      :type="-1"
     />
     <!--商品选择-->
     <choosingGoods
