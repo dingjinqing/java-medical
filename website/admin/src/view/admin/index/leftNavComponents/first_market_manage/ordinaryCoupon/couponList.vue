@@ -36,7 +36,7 @@
           </el-form-item>
           <el-form-item label="优惠券类型：">
             <el-select
-              v-model="searchForm.type"
+              v-model="searchForm.couponType"
               size="small"
               class='search_content'
             >
@@ -62,6 +62,7 @@
           size="small"
           @click="addCoupon()"
         >{{$t('ordinaryCouponList.addCoupon')}}</el-button>
+
       </div>
     </div>
 
@@ -305,12 +306,12 @@ export default {
       // 搜索条件
       searchForm: {
         actName: '',
-        type: -1
+        couponType: 2
       },
       // 优惠券类型
       typeList: [{
         label: '全部',
-        value: -1
+        value: 2
       }, {
         label: '普通优惠券',
         value: 0
