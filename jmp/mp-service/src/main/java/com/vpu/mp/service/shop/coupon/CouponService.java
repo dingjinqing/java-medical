@@ -186,6 +186,9 @@ public class CouponService extends ShopBaseService {
      */
     public SelectConditionStep<Record> buildOptions(SelectJoinStep<Record> select, CouponListParam param) {
         SelectConditionStep<Record> sql = select.where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        if(param.getCouponType() != 2){
+            sql = sql.and(MRKING_VOUCHER.TYPE.eq(param.getCouponType()));
+        }
         if (param.getActName() != null) {
             sql = sql.and(MRKING_VOUCHER.ACT_NAME.contains(param.getActName()));
         }
@@ -352,7 +355,7 @@ public class CouponService extends ShopBaseService {
             .leftJoin(CUSTOMER_AVAIL_COUPONS).on(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(CUSTOMER_AVAIL_COUPONS.COUPON_SN))
             .leftJoin(USER).on(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(USER.USER_ID))
             .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID))
-            .where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(param.getId())).and(DIVISION_RECEIVE_RECORD.USER.eq(param.getShareId()));
+            .where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(param.getId())).and(DIVISION_RECEIVE_RECORD.USER.eq(param.getShareId())).and(DIVISION_RECEIVE_RECORD.RECEIVE_COUPON_SN.eq(param.getCouponSn()));
         SelectConditionStep<? extends Record> sql = detailBuildOptions(select, param);
         PageResult<CouponHoldListVo> info = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), CouponHoldListVo.class);
         info.dataList.forEach(data->{
@@ -628,8 +631,11 @@ public class CouponService extends ShopBaseService {
      * @param userId
      * @return
      */
-    public int hasReceive(Integer userId){
-        Result<Record1<Integer>> fetch = db().select(DIVISION_RECEIVE_RECORD.USER_ID).from(DIVISION_RECEIVE_RECORD).where(DIVISION_RECEIVE_RECORD.USER.eq(userId)).groupBy(DIVISION_RECEIVE_RECORD.USER_ID)
+    public int hasReceive(Integer userId,Integer couponId){
+        Result<Record1<Integer>> fetch = db().select(DIVISION_RECEIVE_RECORD.USER_ID).from(DIVISION_RECEIVE_RECORD)
+            .where(DIVISION_RECEIVE_RECORD.USER.eq(userId))
+            .and(DIVISION_RECEIVE_RECORD.COUPON_ID.eq(couponId))
+            .groupBy(DIVISION_RECEIVE_RECORD.USER_ID)
             .fetch();
         int hasReceive = fetch.size();
         return hasReceive;
