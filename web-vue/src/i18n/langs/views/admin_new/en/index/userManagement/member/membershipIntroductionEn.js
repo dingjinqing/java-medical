@@ -42,36 +42,240 @@ export const en = {
       content: '/'
     }
   ],
-  transactionData: [
+  transactionData1: [
     {
-      title: 'Latest order time',
+      title: 'Last order time',
       content: 'No order yet',
-      tip: 'Last time the user placed an order (including refunded orders)'
+      tip: 'Last time the user placed an order (including refunded orders)',
+      value: 'lastOrderTime',
+      linkName: ''
     },
     {
-      title: 'Passenger Unit Price',
-      content: '￥ 0.00',
-      tip: 'Average consumption amount per order (including refunded orders)'
+      title: 'Customer unit price',
+      content: '0',
+      tip: 'Average consumption amount per order (including refunded orders)',
+      value: 'unitPrice',
+      linkName: ''
     },
     {
-      title: 'Cumulative order amount',
-      content: 'No order yet',
-      tip: 'Accumulated consumption amount of users in the mall (paid part, including refunded order amount)'
+      title: 'Accumulated consumption amount',
+      content: '0',
+      tip: 'Accumulated consumption amount of users in the mall (paid part, including refunded order amount)',
+      value: 'totalMoneyPaid',
+      linkName: ''
     },
     {
       title: 'Cumulative consumption orders',
-      content: '￥ 0.00',
-      tip: 'Cumulative consumption orders of users in the mall (paid part, including refunded orders)'
+      content: '0',
+      tip: 'Cumulative consumption orders of users in the mall (paid part, including refunded orders)',
+      value: 'orderNum',
+      linkName: ''
     },
     {
-      title: 'Accumulated refund',
+      title: 'Accumulated refund amount',
       content: '0',
-      tip: 'Accumulated refund'
+      tip: 'Accumulated refund amount of users in the mall',
+      value: 'returnOrderMoney',
+      linkName: ''
     },
     {
       title: 'Cumulative refund orders',
-      content: '￥ 0.00',
-      tip: 'Cumulative number of refund orders of users in the mall (orders with refund behavior)'
+      content: '0',
+      tip: 'Cumulative number of refund orders of users in the mall (orders with refund behavior)',
+      value: 'returnOrderNum',
+      linkName: ''
+    }
+  ],
+  transactionData2: [
+    {
+      title: 'Last order time',
+      content: 'No order yet',
+      tip: 'The last time the user places an order for physical goods (including refunded orders and pending orders)',
+      value: 'lastOrderTime',
+      linkName: 'order'
+    },
+    {
+      title: 'Customer unit price',
+      content: '0',
+      tip: 'Average order consumption amount of physical goods purchased by users (including refunded orders)',
+      value: 'unitPrice',
+      linkName: 'order'
+    },
+    {
+      title: 'Accumulated consumption amount',
+      content: '0',
+      tip: 'Accumulated consumption amount of physical goods purchased by users in the mall (paid part, including refunded order amount)',
+      value: 'totalMoneyPaid',
+      linkName: 'order'
+    },
+    {
+      title: 'Cumulative consumption orders',
+      content: '0',
+      tip: 'Cumulative consumption orders of physical goods purchased by users in the mall (paid orders, including refunded orders)',
+      value: 'orderNum',
+      linkName: 'order'
+    },
+    {
+      title: 'Accumulated refund amount',
+      content: '0',
+      tip: 'Amount refunded after the user purchases physical goods in the mall',
+      value: 'returnOrderMoney',
+      linkName: 'order'
+    },
+    {
+      title: 'Cumulative refund orders',
+      content: '0',
+      tip: 'Total number of orders refunded by users after purchasing physical goods in the mall',
+      value: 'returnOrderNum',
+      linkName: 'order'
+    }
+  ],
+  transactionData3: [
+    {
+      title: 'Last order time',
+      content: 'No order yet',
+      tip: 'The last time a user places an order for a non physical product (including refunded order and pending order)',
+      value: 'lastOrderTime',
+      linkName: 'order'
+    },
+    {
+      title: 'Customer unit price',
+      content: '0',
+      tip: 'Average consumption amount of each purchase of non physical goods (including refunded orders)',
+      value: 'unitPrice',
+      linkName: 'order'
+    },
+    {
+      title: 'Accumulated consumption amount',
+      content: '0',
+      tip: 'Accumulated consumption amount of non physical goods purchased by users in the mall (paid part, including refunded order amount)',
+      value: 'totalMoneyPaid',
+      linkName: 'order'
+    },
+    {
+      title: 'Cumulative consumption orders',
+      content: '0',
+      tip: 'Cumulative consumption orders of non physical goods purchased by users in the mall (paid orders, including refunded orders)',
+      value: 'orderNum',
+      linkName: 'order'
+    },
+    {
+      title: 'Accumulated refund amount',
+      content: '0',
+      tip: 'Amount refunded by users after purchasing non physical goods in the mall',
+      value: 'returnOrderMoney',
+      linkName: 'order'
+    },
+    {
+      title: 'Cumulative refund orders',
+      content: '0',
+      tip: 'Total number of orders refunded by users after purchasing non physical goods in the mall',
+      value: 'returnOrderNum',
+      linkName: 'order'
+    }
+  ],
+  transactionData4: [
+    {
+      title: 'Number of purchase orders for membership card',
+      content: '0',
+      tip: 'Number of orders (including refunded orders) that users purchase membership cards in the mall',
+      value: 'memberCardPurchaseOrderNum',
+      linkName: ''
+    },
+    {
+      title: '会员卡续费单数',
+      content: '0',
+      tip: 'Renewal order of membership card',
+      value: 'memberCardRenewOrderNum',
+      linkName: ''
+    },
+    {
+      title: '会员卡充值单数',
+      content: '0',
+      tip: 'Top up order of membership card',
+      value: 'memberCardChargeOrderNum',
+      linkName: ''
+    },
+    {
+      title: '优惠券礼包购买订单数',
+      content: '0',
+      tip: 'Number of purchase orders for coupon package',
+      value: 'couponPackPurchaseOrderNum',
+      linkName: ''
+    }
+  ],
+  transactionData5: [
+    {
+      title: 'Last order time',
+      content: 'No order yet',
+      tip: 'The last time the user places an order for service reservation (including refunded order, to be served, to be paid order)',
+      value: 'lastOrderTime',
+      linkName: ''
+    },
+    {
+      title: 'Number of orders successfully paid',
+      content: '0',
+      tip: 'The number of paid orders (paid orders, including refunded orders) that users make service appointments in the mall',
+      value: 'orderNum',
+      linkName: ''
+    },
+    {
+      title: 'Accumulated consumption amount',
+      content: '0',
+      tip: 'Accumulated consumption amount of user is reservation service in the mall (paid part, including refunded order amount)',
+      value: 'totalMoneyPaid',
+      linkName: ''
+    },
+    {
+      title: 'Customer unit price',
+      content: '0',
+      tip: 'Average order consumption amount of each reservation service (including refunded orders)',
+      value: 'unitPrice',
+      linkName: ''
+    },
+    {
+      title: 'Accumulated refund amount',
+      content: '0',
+      tip: 'The amount of refund after the user makes a service appointment in the mall',
+      value: 'returnOrderMoney',
+      linkName: ''
+    },
+    {
+      title: 'Cumulative refund orders',
+      content: '0',
+      tip: 'Total number of orders refunded by users after service appointment in the mall',
+      value: 'returnOrderNum',
+      linkName: ''
+    }
+  ],
+  transactionData6: [
+    {
+      title: 'Last order time',
+      content: 'No order yet',
+      tip: 'Time when the user last placed an order for the store to pay the bill',
+      value: 'lastOrderTime',
+      linkName: 'check_order'
+    },
+    {
+      title: 'Number of purchase orders of stores',
+      content: '0',
+      tip: 'The number of orders (paid orders, including refunded orders) that the user purchases from stores in the mall',
+      value: 'orderNum',
+      linkName: 'check_order'
+    },
+    {
+      title: 'Accumulated consumption amount',
+      content: '0',
+      tip: 'Accumulated consumption amount of customers paying for the store in the mall',
+      value: 'totalMoneyPaid',
+      linkName: 'check_order'
+    },
+    {
+      title: 'Customer unit price',
+      content: '0',
+      tip: 'Average consumption amount of each store purchase order',
+      value: 'unitPrice',
+      linkName: 'check_order'
     }
   ],
   OrderList: 'Order List',
@@ -248,7 +452,7 @@ export const en = {
   placeWXNameNum: 'Please enter your Weixin nickname',
   placeChoise: 'Please choose',
   placeinpuLabel: 'Please enter the label',
-  cardOptions: [{id: 0, cardName: 'ALL'}],
+  cardOptions: [{ id: 0, cardName: 'ALL' }],
   userFromSource: [{
     value: '0',
     label: 'ALL'
