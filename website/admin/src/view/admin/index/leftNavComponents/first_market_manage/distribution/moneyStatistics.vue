@@ -270,7 +270,7 @@
 </template>
 
 <script>
-import { brokerageList, distributorGroupList } from '@/api/admin/marketManage/distribution.js'
+import { brokerageList, distributorAllGroup } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -376,12 +376,10 @@ export default {
       this.tableData = data
     },
 
-    // 获取分销员分组
+    // 获取所有分销员分组
     getGroupList () {
-      distributorGroupList().then(res => {
-        if (res.error === 0) {
-          this.groupList = res.content
-        }
+      distributorAllGroup().then(res => {
+        this.groupList = res.content
       })
     },
 
