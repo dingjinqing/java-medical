@@ -2,12 +2,13 @@
   <div>
     <div class="searchInfo">
       <el-select
-        size="small"
-        v-model="value"
+        v-model="goodsValue"
         placeholder="请选择"
+        size="small"
+        class="inputStyle"
       >
         <el-option
-          v-for="item in options"
+          v-for="item in goodsClassify"
           :key="item.value"
           :label="item.label"
           :value="item.value"
@@ -18,14 +19,13 @@
         size="small"
         placeholder="请输入内容"
         prefix-icon="el-icon-search"
-        v-model="input2"
-        class="input"
-      >
-      </el-input>
+        v-model="goodsName"
+        class="inputStyle"
+      ></el-input>
       <el-button
         type="primary"
         size="small"
-        style="margin: 0 20px 0 20px"
+        @click="initData"
       >筛选</el-button>
       <el-button size="small">导出</el-button>
     </div>
@@ -88,7 +88,7 @@
     </div>
     <pagination
       :page-params.sync="pageParams"
-      @pagination="list"
+      @pagination="initData"
     />
   </div>
 
@@ -96,34 +96,30 @@
 
 <script>
 import { goodsReturnStatistics } from '@/api/admin/marketManage/distribution.js'
-// 引入分页
-import pagination from '@/components/admin/pagination/pagination'
 export default {
-  components: { pagination },
+  components: {
+    pagination: () => import('@/components/admin/pagination/pagination')
+  },
   data () {
     return {
+      goodsValue: '',
+      goodsName: '',
+      goodsClassify: [],
       tableData: [],
-      value: '',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }],
-      input2: '',
       pageParams: {}
     }
   },
   mounted () {
-    this.list()
+    this.initData()
   },
   methods: {
-    list () {
-      goodsReturnStatistics(this.pageParams).then(res => {
+    initData () {
+      let requestParams = {}
+      requestParams.goodsValue = this.goodsValue
+      requestParams.goodsName = this.goodsName
+      requestParams.currentPage = this.pageParams.currentPage
+      requestParams.pageRows = this.pageParams.pageRows
+      goodsReturnStatistics(requestParams).then(res => {
         if (res.error === 0) {
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
@@ -147,9 +143,9 @@ export default {
 <style lang="scss" scoped>
 .searchInfo {
   display: flex;
-  .input {
-    width: 200px;
-    margin-left: 50px;
+  .inputStyle {
+    width: 170px;
+    margin-right: 20px;
   }
 }
 /deep/ .tableClss th {
