@@ -76,7 +76,7 @@ public class CouponHoldService extends ShopBaseService {
                 }else{
                     v.setIsShare(0);
                 }
-                int hasReceive = couponService.hasReceive(v.getUserId());
+                int hasReceive = couponService.hasReceive(v.getUserId(),v.getActId());
                 v.setHasReceive(hasReceive);
             }
         });

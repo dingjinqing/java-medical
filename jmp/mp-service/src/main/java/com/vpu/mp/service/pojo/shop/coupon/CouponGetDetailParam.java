@@ -13,6 +13,8 @@ public class CouponGetDetailParam {
 	private Integer id;
 	/**分享人ID*/
 	private Integer shareId;
+	/**优惠券sn*/
+	private String couponSn;
 	/**优惠券类型：0：普通优惠券；1：分裂优惠券*/
 	private Byte couponType = 0;
 	/**用户昵称*/
