@@ -235,7 +235,6 @@ export default {
       id: '', // 优惠券id
       tableData: [],
       pageParams: {}, // 分页
-      requestParams: {},
       // 搜索
       searchData: {
         mobile: '',
@@ -250,12 +249,14 @@ export default {
         { value: 3, label: '已过期' },
         { value: 4, label: '已废除' }
       ],
-      couponType: 0 // 优惠券类型(0: 普通, 1: 分裂, 2: 分裂领取用户)
+      couponType: 0, // 优惠券类型(0: 普通, 1: 分裂, 2: 分裂领取用户)
+      shareUserId: null // 分享者id
     }
   },
   mounted () {
     this.id = this.$route.query.id
     this.couponType = this.$route.query.type
+
     this.searchData.mobile = this.$route.query.phoneNum
     this.searchData.userName = this.$route.query.userName
     this.searchData.isUsed = this.$route.query.isUsed
@@ -264,33 +265,34 @@ export default {
   },
   methods: {
     // 领取明细列表
-    initDataList (flag, userId) {
-      this.requestParams = {}
-      if (flag) {
-        this.couponType = flag // 分裂优惠券用户领取
-        this.requestParams.shareId = userId
+    initDataList () {
+      let requestParams = {}
+      if (this.couponType === 2) {
+        this.shareUserId = this.$router.query.shareUserId
+        requestParams.shareId = this.shareUserId
       } else {
-        this.requestParams.couponType = this.couponType
+        requestParams.couponType = this.couponType
       }
-      this.requestParams.id = this.id
-      this.requestParams.currentPage = this.pageParams.currentPage
-      this.requestParams.pageRows = this.pageParams.pageRows
-      this.requestParams.mobile = this.searchData.mobile
-      this.requestParams.userName = this.searchData.userName
+      requestParams.id = this.id
+      requestParams.currentPage = this.pageParams.currentPage
+      requestParams.pageRows = this.pageParams.pageRows
+      requestParams.mobile = this.searchData.mobile
+      requestParams.userName = this.searchData.userName
       if (this.searchData.isUsed === -1) {
-        this.requestParams.isUsed = null
+        requestParams.isUsed = null
       } else {
-        this.requestParams.isUsed = this.searchData.isUsed
+        requestParams.isUsed = this.searchData.isUsed
       }
       if (this.couponType === 2) {
-        couponUserDetail(this.requestParams).then(res => {
+        couponUserDetail(requestParams).then(res => {
           if (res.error === 0) {
             this.handleData(res.content.dataList)
             this.pageParams = res.content.page
           }
         })
       } else {
-        couponGetDetail(this.requestParams).then(res => {
+        console.log(requestParams)
+        couponGetDetail(requestParams).then(res => {
           if (res.error === 0) {
             this.handleData(res.content.dataList)
             this.pageParams = res.content.page
@@ -354,7 +356,14 @@ export default {
 
     // 领取用户数跳转
     receiveHandler (userId) {
-      this.initDataList(2, userId)
+      this.$router.push({
+        path: '/admin/home/main/ordinaryCoupon/receiveDetails',
+        query: {
+          id: this.id,
+          type: 2,
+          shareUserId: userId
+        }
+      })
     }
 
   }
@@ -417,7 +426,6 @@ export default {
   height: 36px;
   font-weight: bold;
   color: #000;
-  padding: 8px 10px;
 }
 .jumpStyle {
   color: #5a8bff;
