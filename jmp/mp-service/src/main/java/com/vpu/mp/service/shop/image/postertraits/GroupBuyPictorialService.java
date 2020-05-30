@@ -133,10 +133,7 @@ public class GroupBuyPictorialService extends ShopBaseService {
             Color lineColor = new Color(255, 102, 102);
             // "开团省2元" 文字
             String startGroupMoneyText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_SAVE, null, "messages", saveMoney);
-            ImageUtil.addFont(bgBufferImg, startGroupMoneyText, ImageUtil.SourceHanSansCN(Font.PLAIN, 18), 265, 130, lineColor);
-            int width = ImageUtil.getTextWidth(bgBufferImg, ImageUtil.SourceHanSansCN(Font.PLAIN, 18), startGroupMoneyText);
-            // 添加开团省边框
-            ImageUtil.addRect(bgBufferImg, 255, 100, width + 10, 40, lineColor, new Color(255, 238, 238));
+            ImageUtil.addFontWithRect(bgBufferImg, 250, 130, startGroupMoneyText, ImageUtil.SourceHanSansCN(Font.PLAIN, 18),lineColor,new Color(255, 238, 238),lineColor);
 
 
             String moneyFlag = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages");
