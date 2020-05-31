@@ -8,6 +8,7 @@
           v-model="couponType"
           size="small"
           style="width: 170px;"
+          @change="couponTypeChange()"
         >
           <el-option
             v-for="(item, index) in typeList"
@@ -68,7 +69,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import { packListRequest, assessListRequest, cardListRequest, voucherListRequest, packageListRequest, mrkingListRequest, lotteryListRequest, pinListRequest, integrationListRequest, promoteListRequest, priceListRequest } from '@/api/admin/selectLinksApi/selectLinksApi'
 export default {
-  data () {
+  data() {
     return {
       nowIndex: null,
       trList: [],
@@ -78,11 +79,11 @@ export default {
       navText: '',
       couponFlag: false, // 优惠券td flag
       path: '', //  显示和保存的路径
-      couponType: -1,
+      couponType: 2,
       // 优惠券类型
       typeList: [{
         label: '全部',
-        value: -1
+        value: 2
       }, {
         label: '普通优惠券',
         value: 0
@@ -94,14 +95,14 @@ export default {
   },
   computed: {
     ...mapGetters(['selectlinksIndex']),
-    selectlinksIndex_ () {
+    selectlinksIndex_() {
       console.log(this.selectlinksIndex)
       return this.selectlinksIndex
     }
   },
   watch: {
     selectlinksIndex_: {
-      handler (newData, oldData) {
+      handler(newData, oldData) {
         console.log(newData)
         if (newData.index === 7) {
           this.couponFlag = true
@@ -114,13 +115,13 @@ export default {
       immediate: true
     }
   },
-  mounted () {
+  mounted() {
     // 初始化语言
     this.langDefault()
   },
   methods: {
     ...mapActions(['choisePagePath']),
-    defaultData (newData) {
+    defaultData(newData) {
       console.log(newData)
       this.nowIndex = newData.index
       this.clickIindex = null
@@ -229,7 +230,7 @@ export default {
             })
             break
           case 7:
-            voucherListRequest().then((res) => {
+            voucherListRequest(this.couponType).then((res) => {
               if (res.error === 0) {
                 if (!res.content.length) {
                   this.tbodyFlag = false
@@ -288,15 +289,29 @@ export default {
       console.log(newData)
     },
     // 行选中高亮
-    handleClick (index) {
+    handleClick(index) {
       this.clickIindex = index
       let path = `${this.path}${this.trList[index].id}`
       this.$emit('handleToGetDetailData', this.trList[index])
       this.choisePagePath(path)
-    }
+    },
+    // 切换优惠券类型
+    couponTypeChange() {
+      voucherListRequest(this.couponType).then((res) => {
+        if (res.error === 0) {
+          if (!res.content.length) {
+            this.tbodyFlag = false
+          } else {
+            this.tbodyFlag = true
+          }
+          this.path = 'pages/getCoupon/getCoupon?couponId='
+          this.trList = res.content
+        } else if (res.error === -1) this.tbodyFlag = false
+        console.log(res)
+      })
 
+    }
   }
-}
 </script>
 <style scoped>
 .top {
