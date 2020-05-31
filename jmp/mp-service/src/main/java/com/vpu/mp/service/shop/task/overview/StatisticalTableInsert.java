@@ -129,16 +129,16 @@ public class StatisticalTableInsert extends ShopBaseService {
         ProductOverviewParam param = new ProductOverviewParam();
         UserSummaryTrendRecord record = new UserSummaryTrendRecord();
         LocalDateTime today = LocalDate.now().atStartOfDay();
-        Timestamp end = Timestamp.valueOf(today.minusDays(1));
+        Timestamp end = Timestamp.valueOf(today);
         TYPE_LIST_1.forEach((e) ->
-            db().executeInsert(createUserSummaryTrendRecord(Timestamp.valueOf(today.minusDays(e+1)), end, e, record, param)
+            db().executeInsert(createUserSummaryTrendRecord(Timestamp.valueOf(today.minusDays(e)), end, e, record, param)
             ));
     }
 
     private UserSummaryTrendRecord createUserSummaryTrendRecord(Timestamp start, Timestamp end, byte type, UserSummaryTrendRecord record, ProductOverviewParam param) {
         RealTimeBo bo = tradeTaskService.orderUserMoney(start, end,null);
         record.reset();
-        record.setRefDate(Date.valueOf(LocalDate.now().minusDays(1)));
+        record.setRefDate(Date.valueOf(LocalDate.now()));
         record.setType(type);
         record.setLoginData(userSummary.getUv(start, end));
         record.setUserData(userSummary.getUserTotal(start, end));
