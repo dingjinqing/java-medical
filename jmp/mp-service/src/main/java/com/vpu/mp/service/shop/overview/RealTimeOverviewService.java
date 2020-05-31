@@ -120,8 +120,8 @@ public class RealTimeOverviewService extends ShopBaseService {
     public CoreIndicatorVo coreIndicator(CoreIndicatorParam param){
         UserSummaryTrend us = UserSummaryTrend.USER_SUMMARY_TREND.as("us");
 
-        Condition one = us.REF_DATE.eq(Util.getEarlySqlDate(new Date(),-1)).and(us.TYPE.eq(param.getScreeningTime()));
-        Condition preOne = us.REF_DATE.eq(Util.getEarlySqlDate(new Date(),-(param.getScreeningTime()+1))).and(us.TYPE.eq(param.getScreeningTime()));
+        Condition one = us.REF_DATE.eq(Util.getEarlySqlDate(new Date(),0)).and(us.TYPE.eq(param.getScreeningTime()));
+        Condition preOne = us.REF_DATE.eq(Util.getEarlySqlDate(new Date(),-(param.getScreeningTime()))).and(us.TYPE.eq(param.getScreeningTime()));
 
         Optional<CoreIndicatorVo> optional = getConditionSelect().and(one).fetchOptionalInto(CoreIndicatorVo.class);
         CoreIndicatorVo indicatorVo = optional.orElse(new CoreIndicatorVo());
