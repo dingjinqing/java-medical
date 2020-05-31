@@ -76,9 +76,9 @@ export function packageListRequest () {
   })
 }
 // 优惠券
-export function voucherListRequest () {
+export function voucherListRequest (data) {
   return service({
-    url: '/api/admin/decorate/voucher/list',
+    url: `/api/admin/decorate/voucher/list?couponType=${data}`,
     method: 'get'
   })
 }

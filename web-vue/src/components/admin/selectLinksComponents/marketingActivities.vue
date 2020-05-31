@@ -8,6 +8,7 @@
           v-model="couponType"
           size="small"
           style="width: 170px;"
+          @change="couponTypeChange()"
         >
           <el-option
             v-for="(item, index) in typeList"
@@ -76,11 +77,11 @@ export default {
       navText: '',
       couponFlag: false, // 优惠券td flag
       path: '', //  显示和保存的路径
-      couponType: -1,
+      couponType: 2,
       // 优惠券类型
       typeList: [{
         label: '全部',
-        value: -1
+        value: 2
       }, {
         label: '普通优惠券',
         value: 0
@@ -227,7 +228,7 @@ export default {
             })
             break
           case 7:
-            voucherListRequest().then((res) => {
+            voucherListRequest(this.couponType).then((res) => {
               if (res.error === 0) {
                 if (!res.content.length) {
                   this.tbodyFlag = false
@@ -291,6 +292,21 @@ export default {
       let path = `${this.path}${this.trList[index].id}`
       this.$emit('handleToGetDetailData', this.trList[index])
       this.choisePagePath(path)
+    },
+    // 切换优惠券类型
+    couponTypeChange () {
+      voucherListRequest(this.couponType).then((res) => {
+        if (res.error === 0) {
+          if (!res.content.length) {
+            this.tbodyFlag = false
+          } else {
+            this.tbodyFlag = true
+          }
+          this.path = 'pages/getCoupon/getCoupon?couponId='
+          this.trList = res.content
+        } else if (res.error === -1) this.tbodyFlag = false
+        console.log(res)
+      })
     }
 
   }
