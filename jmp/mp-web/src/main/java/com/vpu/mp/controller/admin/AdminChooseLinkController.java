@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelSelectListVo;
 import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
+import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	public Boolean commonLink() {
 		return false;
 	}
-	
+
 	/**
 	 * 商品链接
 	 * @return
@@ -42,7 +43,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		PageResult<GoodsLinkVo> goodsLinkList = shop().chooselink.getGoodsLink(param);
 		return this.success(goodsLinkList);
 	}
-	
+
 	/**
 	 * 自定义页面
 	 * @param param
@@ -53,7 +54,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		PageResult<XcxCustomerPageVo> pageList = shop().chooselink.customPage(param);
 		return success(pageList);
 	}
-	
+
 	/**
 	 * 创建网页跳转内容
 	 * @param param
@@ -67,7 +68,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		if(!linkPath.matches(pattern)) {
 			return this.fail(JsonResultMessage.DECORATE_URL_ILLEGAL);
 		}
-		
+
 		int result = shop().chooselink.saveWebLink(param);
 		if(result > 0) {
 			return this.success(result);
@@ -75,7 +76,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 			return this.fail();
 		}
 	}
-	
+
 	/**
 	 * 网页跳转列表
 	 * @return
@@ -84,7 +85,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	public JsonResult webLink() {
 		List<XcxLinkListVo> list = shop().chooselink.getWebLink();
 		return this.success(list);
-		
+
 	}
 
 	/**
@@ -97,7 +98,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		int res = shop().chooselink.delWebLink(id);
 		return this.success(res);
 	}
-	
+
 	/**
 	 * 表单页面链接
 	 * @return
@@ -107,7 +108,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		List<PageFormVo> list = shop().chooselink.getFromPage();
 		return this.success(list);
 	}
-	
+
 	/**
 	 * 门店列表
 	 * @param param
@@ -118,7 +119,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		PageResult<StoreVo> storeList = shop().chooselink.store(param);
 		return this.success(storeList);
 	}
-	
+
 	/**
 	 * 获取小程序名称
 	 * @return
@@ -128,7 +129,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		List<XcxNameListVo> list = shop().chooselink.getXcxNameList();
 		return this.success(list);
 	}
-	
+
 	/**
 	 * 小程序跳转链接列表
 	 * @return
@@ -138,7 +139,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		List<XcxLinkListVo> linkList = shop().chooselink.getXcxLinkList();
 		return this.success(linkList);
 	}
-	
+
 	/**
 	 * 添加小程序跳转链接
 	 * @param param
@@ -164,7 +165,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		int res = shop().chooselink.delXcxLink(id);
 		return this.success(res);
 	}
-	
+
 	/**
 	 * 拼团抽奖链接
 	 * @return
@@ -174,7 +175,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		List<ActivityVo> pinDrawList = shop().chooselink.getGroupDrawList();
 		return this.success(pinDrawList);
 	}
-	
+
 	/**
 	 * 瓜分积分链接
 	 * @return
@@ -184,7 +185,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		List<ActivityVo> integrationList = shop().chooselink.getIntegrationList();
 		return this.success(integrationList);
 	}
-	
+
 	/**
 	 * 好友助力链接
 	 * @return
@@ -194,7 +195,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		List<ActivityVo> promoteList = shop().chooselink.getPromoteList();
 		return this.success(promoteList);
 	}
-	
+
 	/**
 	 * 加价购链接
 	 * @return
@@ -204,7 +205,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		List<ActivityVo> priceList = shop().chooselink.getPriceList();
 		return this.success(priceList);
 	}
-	
+
 	/**
 	 * 幸运到抽奖链接
 	 * @return
@@ -214,17 +215,17 @@ public class AdminChooseLinkController extends AdminBaseController{
 		List<ActivityVo> lotteryList = shop().chooselink.getLotteryList();
 		return this.success(lotteryList);
 	}
-	
+
 	/**
 	 * 优惠券链接
 	 * @return
 	 */
 	@GetMapping(value = "/admin/decorate/voucher/list")
-	public JsonResult voucherList() {
-		 List<ActivityVo> voucherList = shop().chooselink.getVoucherList();
+	public JsonResult voucherList(Byte couponType) {
+		 List<ActivityVo> voucherList = shop().chooselink.getVoucherList(couponType);
 		 return this.success(voucherList);
 	}
-	
+
 	/**
 	 * 会员卡链接
 	 * @return
@@ -234,7 +235,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		 List<ActivityVo> cardList = shop().chooselink.getCardList();
 		 return this.success(cardList);
 	}
-	
+
 	/**
 	 * 一口价链接
 	 * @return
@@ -244,7 +245,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		 List<ActivityVo> packageList = shop().chooselink.getPackageList();
 		 return this.success(packageList);
 	}
-	
+
 	/**
 	 * 满折满减活动链接
 	 * @return
@@ -254,7 +255,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		List<ActivityVo> mrkingList = shop().chooselink.getMrkingList();
 		return this.success(mrkingList);
 	}
-	
+
 	/**
 	 * 测评活动链接
 	 * @return
@@ -264,7 +265,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		 List<ActivityVo> assessList = shop().chooselink.getAssessList();
 		 return this.success(assessList);
 	}
-	
+
 	/**
 	 * 优惠券礼包
 	 * @return
@@ -274,7 +275,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		List<ActivityVo> packList = shop().chooselink.getPackList();
 		return this.success(packList);
 	}
-	
+
 	/**
 	 * 选择平台分类
 	 * @return
@@ -284,7 +285,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		List<SysCatevo> parentList = SysCatServiceHelper.getAllSysCateVoByCat();
 		return this.success(parentList);
 	}
-	
+
 	/**
 	 * 选择平台分类,根据父id获取下级分类
 	 * @return
@@ -294,7 +295,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		List<ChildCateVo> parentList = saas.sysCate.getSysCateChild(parentId);
 		return this.success(parentList);
 	}
-	
+
 	/**
 	 * 品牌分类
 	 * @return
@@ -304,7 +305,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		List<GoodsBrandClassifyVo> chooseBrandList = shop().goods.goodsBrand.getBrandClassifyList();
 		return this.success(chooseBrandList);
     }
-	
+
 	/**
 	 * 商家分类
 	 * @return
@@ -314,7 +315,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 		List<SortVo> sortList = shop().chooselink.getSortList();
 		return this.success(sortList);
 	}
-	
+
 	/**
 	 * 商品标签链接
 	 * @return

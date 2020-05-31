@@ -172,16 +172,35 @@ public class ChooseLinkService extends ShopBaseService {
      *  启用,开始和未开始,库存大于0或者不限制库存的
 	 * @return
 	 */
-	public List<ActivityVo> getVoucherList() {
-        List<ActivityVo> list = db().select().from(MRKING_VOUCHER)
-            .where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-            .and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_NORMAL))
-            .and(MRKING_VOUCHER.END_TIME.ge(new Timestamp(System.currentTimeMillis())).or((MRKING_VOUCHER.VALIDITY_TYPE.eq((byte)1))))
-            .and(MRKING_VOUCHER.SURPLUS.gt(0).and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte)0)).or(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte)1)))
-            .fetchInto(ActivityVo.class);
-        getActivityStatus(list);
-       return list;
+	public List<ActivityVo> getVoucherList(Byte couponType) {
+        SelectConditionStep<Record> select = db().select().from(MRKING_VOUCHER)
+            .where(MRKING_VOUCHER.END_TIME.ge(new Timestamp(System.currentTimeMillis())).or((MRKING_VOUCHER.VALIDITY_TYPE.eq((byte) 1))))
+            .and(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0))
+            .and(MRKING_VOUCHER.SURPLUS.gt(0).and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte) 0)).or(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte) 1)))
+            .and(MRKING_VOUCHER.ENABLED.eq((byte) 1));
+        SelectConditionStep<Record> records = couponBuildOptions(select, couponType);
+        Result<Record> record = records.fetch();
+        if(record != null){
+            return record.into(ActivityVo.class);
+        }else{
+            return null;
+        }
 	}
+
+    /**
+     * 优惠券链接条件查询
+     *
+     * @param select
+     * @param couponType
+     * @return
+     */
+    private SelectConditionStep<Record> couponBuildOptions(SelectConditionStep<Record> select, Byte couponType) {
+        //优惠券类型 0：普通优惠券；1：分裂优惠券；2：全部
+        if (couponType != 2) {
+            select.and(MRKING_VOUCHER.TYPE.eq(couponType));
+        }
+        return select;
+    }
 
 	/**
 	 * 会员卡链接
