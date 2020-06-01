@@ -174,7 +174,10 @@
     </div>
     <div class="topContainer">
       <div class="titleEdit"><span>{{$t('membershipIntroduction.Transactionstatistics')}}</span><span @click="jumpToOrderPage">{{$t('membershipIntroduction.OrderList')}}</span></div>
-      <div class="transactionTab">
+      <div
+        class="transactionTab"
+        v-if="transactionTabFlag === true"
+      >
         <p
           v-for="(item, index) in transactionTab"
           :key="index"
@@ -188,6 +191,7 @@
           v-for="(item,index) in transactionData"
           :key="index"
           :class="index!==0?'borderLeft':''"
+          v-if="!(transactionTabFlag === false && (item.value === 'unitPrice' || item.value === 'totalMoneyPaid'))"
         >
           <p>
             {{item.title}}
@@ -710,6 +714,7 @@ export default {
       cityCode: null,
       districtCode: null,
       // 交易统计tab
+      transactionTabFlag: false,
       transactionTabIndex: 0,
       transactionTab: [
         {
@@ -852,12 +857,28 @@ export default {
           console.log(this.transStatistic)
           let item = this.transactionTabIndex + 1
           this.transactionData = this.$t('membershipIntroduction.transactionData' + item)
-          for (var j in this.transStatistic[0]) {
-            this.transactionData.forEach(item => {
-              if (item.value === j) {
-                item.content = this.transStatistic[0][j]
-              }
-            })
+          if (Object.prototype.toString.call(Object.values(this.transStatistic)[0]) === '[object Object]') {
+            // tab显示
+            this.transactionTabFlag = true
+            for (var j in this.transStatistic[0]) {
+              this.transactionData.forEach(item => {
+                if (item.value === j) {
+                  item.content = this.transStatistic[0][j]
+                }
+              })
+            }
+          } else {
+            // tab隐藏
+            this.transactionTabFlag = false
+            for (var key in this.transStatistic) {
+              this.transactionData.forEach(item => {
+                if (item.value === key) {
+                  item.content = this.transStatistic[key]
+                } else if (key === 'lastAddOrder' && item.value === 'lastOrderTime') {
+                  item.content = this.transStatistic[key].replace('T', ' ')
+                }
+              })
+            }
           }
 
           // 处理时间
@@ -914,7 +935,7 @@ export default {
           // 用户标签信息
           this.handleToLabel()
           // 交易 统计
-          this.dealWithTransactionData()
+          // this.dealWithTransactionData()
           // 分销 统计
           this.dealWithdDistributionData()
         }
