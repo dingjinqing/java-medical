@@ -261,51 +261,51 @@ export const cn = {
       linkName: 'order'
     }
   ],
+  // transactionData3: [
+  //   {
+  //     title: '最近下单时间',
+  //     content: '暂未下单',
+  //     tip: '用户最近一次购买非实物商品下单的时间（包括已退款订单、待付款订单）',
+  //     value: 'lastOrderTime',
+  //     linkName: 'order'
+  //   },
+  //   {
+  //     title: '客单价',
+  //     content: '0',
+  //     tip: '用户平均每笔购买非实物商品的订单消费金额（包括已退款订单）',
+  //     value: 'unitPrice',
+  //     linkName: 'order'
+  //   },
+  //   {
+  //     title: '累计消费金额',
+  //     content: '0',
+  //     tip: '用户在商城购买非实物商品累计消费金额（已支付部分，包括已退款订单金额）',
+  //     value: 'totalMoneyPaid',
+  //     linkName: 'order'
+  //   },
+  //   {
+  //     title: '累计消费订单数',
+  //     content: '0',
+  //     tip: '用户在商城购买非实物商品累计消费订单数（已支付订单，包括已退款订单）',
+  //     value: 'orderNum',
+  //     linkName: 'order'
+  //   },
+  //   {
+  //     title: '累计退款金额',
+  //     content: '0',
+  //     tip: '用户在商城购买非实物商品后发生退款的金额',
+  //     value: 'returnOrderMoney',
+  //     linkName: 'order'
+  //   },
+  //   {
+  //     title: '累计退款订单数',
+  //     content: '0',
+  //     tip: '用户在商城购买非实物商品后发生退款的总订单数',
+  //     value: 'returnOrderNum',
+  //     linkName: 'order'
+  //   }
+  // ],
   transactionData3: [
-    {
-      title: '最近下单时间',
-      content: '暂未下单',
-      tip: '用户最近一次购买非实物商品下单的时间（包括已退款订单、待付款订单）',
-      value: 'lastOrderTime',
-      linkName: 'order'
-    },
-    {
-      title: '客单价',
-      content: '0',
-      tip: '用户平均每笔购买非实物商品的订单消费金额（包括已退款订单）',
-      value: 'unitPrice',
-      linkName: 'order'
-    },
-    {
-      title: '累计消费金额',
-      content: '0',
-      tip: '用户在商城购买非实物商品累计消费金额（已支付部分，包括已退款订单金额）',
-      value: 'totalMoneyPaid',
-      linkName: 'order'
-    },
-    {
-      title: '累计消费订单数',
-      content: '0',
-      tip: '用户在商城购买非实物商品累计消费订单数（已支付订单，包括已退款订单）',
-      value: 'orderNum',
-      linkName: 'order'
-    },
-    {
-      title: '累计退款金额',
-      content: '0',
-      tip: '用户在商城购买非实物商品后发生退款的金额',
-      value: 'returnOrderMoney',
-      linkName: 'order'
-    },
-    {
-      title: '累计退款订单数',
-      content: '0',
-      tip: '用户在商城购买非实物商品后发生退款的总订单数',
-      value: 'returnOrderNum',
-      linkName: 'order'
-    }
-  ],
-  transactionData4: [
     {
       title: '会员卡购买订单数',
       content: '0',
@@ -335,7 +335,7 @@ export const cn = {
       linkName: ''
     }
   ],
-  transactionData5: [
+  transactionData4: [
     {
       title: '最近下单时间',
       content: '暂未下单',
@@ -379,7 +379,7 @@ export const cn = {
       linkName: ''
     }
   ],
-  transactionData6: [
+  transactionData5: [
     {
       title: '最近下单时间',
       content: '暂未下单',
