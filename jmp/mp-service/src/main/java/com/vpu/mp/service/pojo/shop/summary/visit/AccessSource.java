@@ -67,7 +67,7 @@ public enum AccessSource implements ChartInfo {
     KNOWLEDGE(54, "source.knowledge"),
     MP_ORDER(55, "source.mp_order"),
     MP_LIVE(56, "source.mp_live"),
-    GROUP_TOOLS(56, "source.group_tools");
+    GROUP_TOOLS(57, "source.group_tools");
 
     private Integer index;
     private String source;

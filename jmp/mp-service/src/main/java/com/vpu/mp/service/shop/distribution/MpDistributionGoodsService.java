@@ -63,10 +63,12 @@ public class MpDistributionGoodsService extends ShopBaseService {
         //获取用户分销等级
         UserDistributionVo distributionLevel = this.userDistributionLevel(userId);
         DistributionStrategyParam goodsRebateStrategy = this.distributionStrategyInfo(goodsId,catId,sortId);
-        RebateRatioVo userRebateRatio = this.getUserRebateRatio(userId, distributionLevel, goodsRebateStrategy);
-
-
-        return userRebateRatio;
+        if(goodsRebateStrategy == null){
+            return null;
+        }else{
+            RebateRatioVo userRebateRatio = this.getUserRebateRatio(userId, distributionLevel, goodsRebateStrategy);
+            return userRebateRatio;
+        }
     }
 
     //分销配置
