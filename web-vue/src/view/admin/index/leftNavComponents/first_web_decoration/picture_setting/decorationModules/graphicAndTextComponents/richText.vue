@@ -96,11 +96,12 @@ export default {
     },
     // 右侧模块点击传回中间当前高亮模块的数据
     backData: { // 模块公共
-      handler (newData) {
+      handler (newData, oldData) {
         if (newData) {
-          this.moduleSaveData = newData
+          let render = JSON.parse(JSON.stringify(newData))
+          render.rich_text = render.rich_text.replace(/<img/g, `<img style="width:100%;height:auto"`)
+          this.moduleSaveData = render
         }
-        console.log(newData)
       },
       immediate: true,
       deep: true
@@ -158,5 +159,9 @@ export default {
 .richText {
   padding: 10px;
   word-break: break-all;
+  img {
+    width: 100%;
+    height: auto;
+  }
 }
 </style>
