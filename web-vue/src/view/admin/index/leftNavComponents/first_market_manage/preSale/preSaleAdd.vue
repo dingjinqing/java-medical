@@ -861,8 +861,8 @@ export default {
       // 找到最低活动价格
       if (row.goodsSpecProducts && row.goodsSpecProducts.length > 0) {
         row.goodsSpecProducts.forEach(item => {
-          if (prdPrice > item.presalePrice) {
-            prdPrice = item.presalePrice
+          if (prdPrice > item.shopPrice) {
+            prdPrice = item.shopPrice
           }
         })
       }
@@ -875,7 +875,7 @@ export default {
         callback(new Error('活动价格不能为负数'))
       } else if (!re.test(value)) {
         callback(new Error('请输入正确价格，可以保留两位小数'))
-      } else if (value > prdPrice) {
+      } else if (Number(value) > Number(prdPrice)) {
         callback(new Error('活动价格不能大于商品原价'))
       } else {
         callback()
