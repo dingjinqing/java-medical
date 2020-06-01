@@ -69,7 +69,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import { packListRequest, assessListRequest, cardListRequest, voucherListRequest, packageListRequest, mrkingListRequest, lotteryListRequest, pinListRequest, integrationListRequest, promoteListRequest, priceListRequest } from '@/api/admin/selectLinksApi/selectLinksApi'
 export default {
-  data() {
+  data () {
     return {
       nowIndex: null,
       trList: [],
@@ -95,14 +95,14 @@ export default {
   },
   computed: {
     ...mapGetters(['selectlinksIndex']),
-    selectlinksIndex_() {
+    selectlinksIndex_ () {
       console.log(this.selectlinksIndex)
       return this.selectlinksIndex
     }
   },
   watch: {
     selectlinksIndex_: {
-      handler(newData, oldData) {
+      handler (newData, oldData) {
         console.log(newData)
         if (newData.index === 7) {
           this.couponFlag = true
@@ -115,13 +115,13 @@ export default {
       immediate: true
     }
   },
-  mounted() {
+  mounted () {
     // 初始化语言
     this.langDefault()
   },
   methods: {
     ...mapActions(['choisePagePath']),
-    defaultData(newData) {
+    defaultData (newData) {
       console.log(newData)
       this.nowIndex = newData.index
       this.clickIindex = null
@@ -289,14 +289,14 @@ export default {
       console.log(newData)
     },
     // 行选中高亮
-    handleClick(index) {
+    handleClick (index) {
       this.clickIindex = index
       let path = `${this.path}${this.trList[index].id}`
       this.$emit('handleToGetDetailData', this.trList[index])
       this.choisePagePath(path)
     },
     // 切换优惠券类型
-    couponTypeChange() {
+    couponTypeChange () {
       voucherListRequest(this.couponType).then((res) => {
         if (res.error === 0) {
           if (!res.content.length) {
@@ -309,9 +309,9 @@ export default {
         } else if (res.error === -1) this.tbodyFlag = false
         console.log(res)
       })
-
     }
   }
+}
 </script>
 <style scoped>
 .top {
