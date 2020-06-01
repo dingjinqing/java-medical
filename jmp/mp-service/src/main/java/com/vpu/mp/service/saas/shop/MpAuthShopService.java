@@ -450,6 +450,12 @@ public class MpAuthShopService extends MainBaseService {
 	public WxOpenResult uploadCode(String appId, Integer templateId)
 			throws WxErrorException {
 		MpVersionRecord version = saas.shop.mpVersion.getRow(templateId);
+		if(null==version) {
+			WxOpenResult wxOpenResult = new WxOpenResult();
+			wxOpenResult.setErrcode("100050");
+			wxOpenResult.setErrmsg("模板id不存在");
+			return wxOpenResult;
+		}
 		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		MpWxMaOpenCommitExtInfo extInfo = new MpWxMaOpenCommitExtInfo();
