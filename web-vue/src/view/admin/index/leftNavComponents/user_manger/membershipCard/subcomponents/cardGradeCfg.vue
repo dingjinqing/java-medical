@@ -143,11 +143,12 @@ export default {
     this.langDefault()
     this.initGradeOptions()
     this.$on('checkRule', () => {
+      this.checkGradeScore()
+      this.checkGradeCrash()
       if (this.ruleForm.gradeValue) {
         this.valid = false
       } else {
         this.valid = true
-        // this.$message.warning('请输入等级')
       }
 
       if (this.valid || this.scoreValid || this.crashValid) {
