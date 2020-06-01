@@ -186,7 +186,7 @@
                     class="input_error"
                   >
                     <el-input
-                      v-model="scope.row.expectationPrice"
+                      v-model.number="scope.row.expectationPrice"
                       size="mini"
                       style="width:50%"
                     >
@@ -934,11 +934,11 @@ export default {
 
     validateExpectationPrice (rule, value, callback, shopPrice, floorPrice, row) {
       var re = /^(0|\+?[1-9][0-9]*)$/
-      if (!value) {
+      if (value === '' || value === undefined) {
         callback(new Error('砍价底价不能为空'))
       } else if (value < 0) {
         callback(new Error('砍价底价不能为负数'))
-      } else if (!re.test(value)) {
+      } else if (!re.test(Number(value))) {
         callback(new Error('请填写0或者正整数'))
       } else if (Number(value) > Number(shopPrice)) {
         callback(new Error('砍价底价不能大于商品原价'))
