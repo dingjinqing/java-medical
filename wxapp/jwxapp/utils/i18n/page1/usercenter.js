@@ -51,5 +51,6 @@ module.exports = {
   toActivate: "去激活",
   backHome: "回到首页",
   activationFail: "激活失败",
-  knowIt: "知道啦"
+  knowIt: "知道啦",
+  needPhone: "您需要绑定手机号才可以激活",
 }
