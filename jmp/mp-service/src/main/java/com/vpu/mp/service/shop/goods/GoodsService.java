@@ -1050,10 +1050,7 @@ public class GoodsService extends ShopBaseService {
         }
         //es更新
         try {
-            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus() ) {
-                esGoodsCreateService.updateEsGoodsIndex(goods.getGoodsId(), getShopId());
-                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goods.getGoodsId());
-            }
+            updateEs(goods.getGoodsId());
         } catch (Exception e) {
             logger().debug("商品修改-同步es数据异常：" + e.getMessage());
             codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
@@ -1212,6 +1209,36 @@ public class GoodsService extends ShopBaseService {
             }
         } catch (Exception e) {
             logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
+        }
+    }
+
+    /**
+     * 根据单个商品id同步修改商品es信息
+     * @param goodsId
+     */
+    public void updateEs(Integer goodsId){
+        if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus() ) {
+            esGoodsCreateService.updateEsGoodsIndex(goodsId, getShopId());
+            esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsId);
+        }
+    }
+
+    /**
+     * 删除商品时-同步es操作(非异步操作)
+     * @param goodsIds
+     */
+    public void updateEsDeleteSync(List<Integer> goodsIds) {
+        try {
+            //更新es
+            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
+                esGoodsCreateService.deleteEsGoods(goodsIds, getShopId());
+                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.DELETE);
+            }else{
+                esDataUpdateMqService.addEsGoodsIndex(goodsIds,getShopId(),DBOperating.UPDATE);
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,goodsIds,null);
+            }
+        } catch (Exception e) {
+            logger().debug("商品删除-es同步数据异常：" + e.getMessage());
         }
     }
 
@@ -1549,17 +1576,7 @@ public class GoodsService extends ShopBaseService {
 
         }
         //更新es
-        try {
-            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
-                esGoodsCreateService.batchUpdateEsGoodsIndex(operateParam.getGoodsIds(), getShopId());
-                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(operateParam.getGoodsIds(), DBOperating.UPDATE);
-            }else {
-                esDataUpdateMqService.addEsGoodsIndex(operateParam.getGoodsIds(),getShopId(),DBOperating.UPDATE);
-                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,operateParam.getGoodsIds(),null);
-            }
-        } catch (Exception e) {
-            logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
-        }
+        updateEs(operateParam.getGoodsIds());
     }
 
     /**
@@ -1570,17 +1587,7 @@ public class GoodsService extends ShopBaseService {
     public void batchIsOnSaleOperate(GoodsBatchOperateParam operateParam) {
         List<GoodsRecord> goodsRecords = operateParam.toUpdateGoodsRecord();
         db().batchUpdate(goodsRecords).execute();
-        try {
-            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
-                esGoodsCreateService.batchUpdateEsGoodsIndex(operateParam.getGoodsIds(), getShopId());
-                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(operateParam.getGoodsIds(), DBOperating.UPDATE);
-            }else{
-                esDataUpdateMqService.addEsGoodsIndex(operateParam.getGoodsIds(),getShopId(),DBOperating.UPDATE);
-                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,operateParam.getGoodsIds(),null);
-            }
-        } catch (Exception e) {
-            logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
-        }
+        updateEs(operateParam.getGoodsIds());
     }
 
     /**
@@ -1667,18 +1674,7 @@ public class GoodsService extends ShopBaseService {
             deleteGoodsRebatePrices(goodsIds);
         });
 
-        try {
-            //更新es
-            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
-                esGoodsCreateService.deleteEsGoods(goodsIds, getShopId());
-                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.DELETE);
-            }else{
-                esDataUpdateMqService.addEsGoodsIndex(goodsIds,getShopId(),DBOperating.UPDATE);
-                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,goodsIds,null);
-            }
-        } catch (Exception e) {
-            logger().debug("商品删除-es同步数据异常：" + e.getMessage());
-        }
+        updateEsDeleteSync(goodsIds);
     }
 
     /**

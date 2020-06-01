@@ -11,8 +11,6 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsDataIllegalEnumWrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-
 /**
  * 由于GoodsService类属性存在循环引用，导致添加切面时属性无法注入
  * 在此wrap类上添加切面进行锁控制
@@ -51,7 +49,7 @@ public class GoodsWrapService extends ShopBaseService {
         GoodsDataIllegalEnumWrap codeWrap = goodsService.insert(goods);
         if (codeWrap.getGoodsId() != null) {
             try {
-                goodsService.updateEs(Collections.singletonList(codeWrap.getGoodsId()));
+                goodsService.updateEs(codeWrap.getGoodsId());
             } catch (Exception e) {
                 codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_DATA_UPDATE_ES_ERROR);
             }
