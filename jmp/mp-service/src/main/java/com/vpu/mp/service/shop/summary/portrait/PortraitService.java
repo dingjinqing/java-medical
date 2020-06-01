@@ -9,11 +9,13 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.db.shop.tables.MpUserPortrait;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
@@ -149,12 +151,25 @@ public class PortraitService extends ShopBaseService {
     }
 
     private MpUserPortraitRecord getPortraitResult(Integer type) {
-        return db().select(MP_USER_PORTRAIT.VISIT_UV, MP_USER_PORTRAIT.VISIT_UV_NEW)
+        List<MpUserPortraitRecord> vo = new ArrayList<>();
+        List<MpUserPortraitRecord> recordList = db().select(MP_USER_PORTRAIT.VISIT_UV, MP_USER_PORTRAIT.VISIT_UV_NEW,MP_USER_PORTRAIT.TYPE)
                 .from(MP_USER_PORTRAIT)
-                .where(MP_USER_PORTRAIT.CREATE_TIME.lessOrEqual(Timestamp.from(Instant.now()))
-                        .and(MP_USER_PORTRAIT.TYPE.equal(type.byteValue())))
-                .limit(1)
-                .fetchOneInto(MP_USER_PORTRAIT);
+                .where(MP_USER_PORTRAIT.CREATE_TIME.lessOrEqual(Timestamp.from(Instant.now())))
+                .orderBy(MP_USER_PORTRAIT.ID.desc())
+                .limit(3)
+                .fetchInto(MP_USER_PORTRAIT);
+        if (null!=recordList&&recordList.size()>0){
+            recordList.forEach(r->{
+                if (type.byteValue()== r.getType()){
+                    vo.add(r);
+                }
+            });
+        }
+        MpUserPortraitRecord result = new MpUserPortraitRecord();
+        if (vo.size() > 0){
+            result = vo.get(0);
+        }
+        return result;
     }
 
     /**
