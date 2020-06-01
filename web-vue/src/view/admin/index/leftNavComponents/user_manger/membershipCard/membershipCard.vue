@@ -252,7 +252,7 @@
             <div
               class="new_card"
               @click="handleToCardDetail(2)"
-              v-show="addStatus"
+              v-show="showAddIcon"
             >
               <img :src="new_card_img">
               <span style="color: #9e9e9e;font-size: 15px;padding: 12px 0">{{ $t('memberCard.addMemberCard') }}</span>
@@ -378,6 +378,11 @@ import { deleteCardRequest, getAllMemberCardRequest, changeCardStatueRequest } f
 export default {
   components: {
     ShareCodeDialog: () => import('@/components/admin/shareCodeDialog')
+  },
+  computed: {
+    showAddIcon () {
+      return this.cardDataThird.length < 9
+    }
   },
   data () {
     return {
