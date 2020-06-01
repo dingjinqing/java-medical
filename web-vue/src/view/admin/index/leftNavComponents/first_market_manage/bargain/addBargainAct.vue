@@ -521,8 +521,8 @@
                       >库存不限制</div>
                       <div
                         class="coupon_list_bottom"
-                        style="font-size:12px"
                         :class="item.status===0? 'coupon_list_bottom':'couponListBottom'"
+                        :style="`background-image: url(${$imageHost}/image/admin/coupon_border.png`"
                       >
                         <!-- <span v-if="item.scoreNumber === 0">领取</span>
                           <div v-if="item.scoreNumber !== 0">
@@ -1578,6 +1578,7 @@ export default {
             .coupon_list_bottom {
               height: 24px;
               line-height: 30px;
+              margin-top: 2px;
               border-bottom-left-radius: 8px;
               border-bottom-right-radius: 8px;
               color: #fff;
