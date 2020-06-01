@@ -220,4 +220,14 @@ public class LiveGoodsService extends ShopBaseService {
 	private BigDecimal toYuan(BigDecimal money) {
 		return money.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
 	}
+	/**
+	 * 增加直播间商品加购数
+	 * @param roomId
+	 * @param goodsId
+	 */
+	public void incrementAddCartNum(Integer roomId, Integer goodsId) {
+		int execute = db().update(LIVE_GOODS).set(LIVE_GOODS.ADD_CART_NUM, LIVE_GOODS.ADD_CART_NUM.add(1))
+				.where(LIVE_GOODS.ROOM_ID.eq(roomId).and(LIVE_GOODS.GOODS_ID.eq(goodsId))).execute();
+		logger().info("直播加购商品id：{}，房间号：{}，结果：{}",goodsId,roomId,execute);
+	}
 }
