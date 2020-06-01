@@ -2,21 +2,17 @@ package com.vpu.mp.service.shop.task.market;
 
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.db.shop.tables.records.PresaleRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
-import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
-import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -24,7 +20,6 @@ import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -32,7 +27,6 @@ import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
 import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -104,8 +98,9 @@ public class PreSaleTaskService extends ShopBaseService {
     }
 
     private List<Integer> getCurrentPreSaleGoodsIdList(){
-        return db().select(PRESALE.GOODS_ID).from(PRESALE).where(
-            PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
+        return db().select(PRESALE_PRODUCT.GOODS_ID)
+            .from(PRESALE_PRODUCT).innerJoin(PRESALE).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
+            .where(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
             .and(PRESALE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and((PRESALE.PRE_START_TIME.lt(DateUtil.getLocalDateTime()).and(PRESALE.PRE_END_TIME.gt(DateUtil.getLocalDateTime()))).or(PRESALE.PRE_START_TIME_2.lt(DateUtil.getLocalDateTime()).and(PRESALE.PRE_END_TIME_2.gt(DateUtil.getLocalDateTime()))))
         ).fetchInto(Integer.class);
