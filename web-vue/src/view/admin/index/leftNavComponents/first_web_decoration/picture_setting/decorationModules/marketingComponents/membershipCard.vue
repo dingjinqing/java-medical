@@ -87,8 +87,8 @@ export default {
         backgroundColor: '#ecc98f',
         bgImgUrl: ''
       },
-      shopAvatar: null, // 店铺头像
-      overallColor: null // 默认颜色
+      shopAvatar: this.$imageHost + '/image/admin/shop_def_y.png', // 店铺头像
+      overallColor: '#e6cb96' // 默认颜色
     }
   },
   watch: {
@@ -145,9 +145,10 @@ export default {
     // 初始化数据
     this.defaultData()
     // 初始化获取头像
-    this.shopAvatar = localStorage.getItem('V-AccountShopAvatar') || this.$imageHost + '/image/admin/shop_def_y.png'
-    // 获取初始全局颜色
-    this.overallColor = localStorage.getItem('V-backgroundColor') || '#e6cb96'
+    let avatar = localStorage.getItem('V-shopAvatar')
+    if (avatar) {
+      this.shopAvatar = avatar
+    }
   },
   methods: {
     defaultData () {

@@ -762,10 +762,6 @@ export default {
           return 'background-color:' + item.bgColor
         } else {
           // 获取初始全局颜色
-          let defaultColor = localStorage.getItem('V-backgroundColor')
-          if (defaultColor) {
-            return `background-color:${defaultColor}`
-          }
           return 'background-color:#e6cb96'
         }
       } else {
