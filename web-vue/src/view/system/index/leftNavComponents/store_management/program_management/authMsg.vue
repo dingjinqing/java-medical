@@ -312,7 +312,7 @@
               <el-button
                 size="small"
                 type="primary"
-                @click="handleSureSetPay(7)"
+                @click="handleSureSetPay(12)"
               >
                 {{$t('programVersion.clickSubmissionAudit')}}
               </el-button>
@@ -837,6 +837,11 @@ export default {
           obj.act = 'refresh-audit-state'
           obj.appId = this.dataList.appId
           obj.wechatId = wechatid
+          break
+        case 12:
+          obj.act = 'upload-audit'
+          obj.templateId = this.tem_id
+          break
       }
       publishSetRequest(obj).then(res => {
         console.log(res)
