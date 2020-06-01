@@ -46,6 +46,7 @@ public class LiveService extends ShopBaseService {
 	
 	private static final Byte ONE = 1;
 
+	private static final Byte ZERO = 0;
 	/** 直播中 */
 	private static final int LIVING_ON = 101;
     /** 直播未开始 */
@@ -56,6 +57,8 @@ public class LiveService extends ShopBaseService {
 	private static final int LIVING_FORBIDDEN = 104;
     /** 直播暂停中 */
 	private static final int LIVING_PAUSE = 105;
+    /** 直播异常 */
+	private static final int LIVING_EXCEPTION = 106 ;
 	/** 直播已过期*/
     private static final int LIVING_OUT_OF_DATE = 107;
 
@@ -122,7 +125,7 @@ public class LiveService extends ShopBaseService {
      */
     public PageResult<LiveListVo> getListForGoodsEdit(BasePageParam pageParam) {
         SelectSeekStep1<LiveBroadcastRecord, Integer> liveBroadcastRecords = db().selectFrom(LIVE_BROADCAST)
-            .where(LIVE_BROADCAST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(LIVE_BROADCAST.LIVE_STATUS.in(Arrays.asList(LIVING_ON, LIVING_NOT_START, LIVING_END, LIVING_PAUSE))))
+            .where(LIVE_BROADCAST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(LIVE_BROADCAST.LIVE_STATUS.in(Arrays.asList(LIVING_ON, LIVING_NOT_START, LIVING_END, LIVING_PAUSE, LIVING_EXCEPTION))))
             .orderBy(LIVE_BROADCAST.ROOM_ID.desc());
         return this.getPageResult(liveBroadcastRecords, pageParam.getCurrentPage(), pageParam.getPageRows(), LiveListVo.class);
     }
@@ -259,7 +262,7 @@ public class LiveService extends ShopBaseService {
 		if(!successLive.isEmpty()) {
 			int execute = db().update(LIVE_BROADCAST).set(LIVE_BROADCAST.DEL_FLAG, ONE)
 					.set(LIVE_BROADCAST.DEL_TIME, DateUtil.getSqlTimestamp())
-					.where(LIVE_BROADCAST.ID.notIn(successLive)).execute();
+					.where(LIVE_BROADCAST.ID.notIn(successLive).and(LIVE_BROADCAST.DEL_FLAG.eq(ZERO))).execute();
 			logger().info("更新其他直播为失效：{}",execute);
 		}
 		logger().info("店铺获取直播：{}的结束",getShopId());

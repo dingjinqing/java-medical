@@ -16,6 +16,7 @@ global.wxComponent({
       type: Object,
       value: {},
       observer (newVal, oldVal) {
+        // console.log(newVal)
         if (newVal) this.processModuleData(newVal);
       }
     }
@@ -105,14 +106,14 @@ global.wxComponent({
           } else {
             // console.log('触发')
             l[i] = data[key] = this._timerConvertModule(d[i]);
-            if (l[i].need_request) delayed[i] = l[i].cur_idx;
+            if (l[i].need_request) delayed[i] = `c_${l[i].cur_idx}`;
             loadMore = true;
           }
         } else {  // 则更新数据不同的模块
           // console.log('l有值')
           if (!d[i] || l[i] && (JSON.stringify(d[i]) != JSON.stringify(l[i]))) {
             l[i] = data[key] = this._timerConvertModule(d[i]) || {};
-            if (l[i].need_request) delayed[i] = l[i].cur_idx;
+            if (l[i].need_request) delayed[i] = `c_${l[i].cur_idx}`;
             // console.log(l[i])
             // delayed[i] = `c_${l[i].cur_idx}`
           }

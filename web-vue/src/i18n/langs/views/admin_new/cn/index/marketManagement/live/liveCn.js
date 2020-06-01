@@ -62,6 +62,7 @@ export const cn = {
   status105: '暂停中',
   status106: '异常',
   status107: '已过期',
+  unkonw: '未知',
   goodInfo: '商品信息',
   goodsSn: '商品货号',
   shopPrice: '店铺售价（元）',

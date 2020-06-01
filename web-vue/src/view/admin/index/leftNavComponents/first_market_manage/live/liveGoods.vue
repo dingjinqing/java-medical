@@ -5,9 +5,9 @@
       <el-table-column
         prop="name"
         :label="$t('live.goodInfo')"
-        width="130px">
+        width="160px">
         <template slot-scope="scope">
-          <img :src="scope.row.coverImg" style="width: 50px;height: 50px;float: left;" />
+          <img :src="scope.row.coverImg" style="width: 50px;height: 50px;float: left;margin-right:10px" />
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
