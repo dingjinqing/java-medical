@@ -223,7 +223,7 @@
         @checkReturnFormat="handleToCheck"
         :tuneUpCoupon="showCouponDialog"
         :couponBack="couponIdList"
-        :type="-1"
+        :type="0"
       />
     </div>
     <!-- 保存修改 -->
@@ -613,7 +613,8 @@ export default {
           font-size: 12px !important;
         }
         .coupon_center_number {
-          height: 20px;
+          height: 18px;
+          font-size: 12px;
           color: #fbb;
         }
         .coupon_list_bottom {

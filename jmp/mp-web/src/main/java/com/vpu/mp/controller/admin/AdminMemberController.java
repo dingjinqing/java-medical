@@ -1,33 +1,11 @@
 package com.vpu.mp.controller.admin;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
-import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.graphbuilder.struc.LinkedList;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.member.MemberDetailsVo;
-import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
-import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
-import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
-import com.vpu.mp.service.pojo.shop.member.MemberParam;
-import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
+import com.vpu.mp.service.pojo.shop.member.*;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
@@ -37,6 +15,13 @@ import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.List;
 /**
  * 会员管理
  * @author 黄壮壮
@@ -106,12 +91,6 @@ public class AdminMemberController extends AdminBaseController{
 		export2Excel(workbook, fileName + dateFormat, response);
 		logger().info("会员导出完毕");
 	}
-	
-	
-	
-	
-	
-	
 	
 	/**	
 	 * 会员卡-弹窗
@@ -204,12 +183,13 @@ public class AdminMemberController extends AdminBaseController{
 		List<AvailableMemberCardVo> allAvailableMemberCard = shop().member.getAllAvailableMemberCard(userId);
 		return success(allAvailableMemberCard);
 	}
-	
-	/**
-	 * 获取用户持有会员卡明细
-	 * @param userId
-	 * @return
-	 */
+
+    /**
+     * 获取用户持有会员卡明细
+     *
+     * @param param
+     * @return
+     */
 	@PostMapping("/card/detail/list")
 	public JsonResult getAllUserCardDetail(@RequestBody UserCardDetailParam param) {
 		logger().info("正在获取会员领取会员卡明细");

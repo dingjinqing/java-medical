@@ -43,6 +43,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -630,42 +631,39 @@ public class StoreOrderService extends ShopBaseService {
             setPayName(Objects.nonNull(paymentVo) ? paymentVo.getPayName() : StringUtils.EMPTY);
         }});
     }
-    
+
     /**
      * 获取用户门店买单信息
      */
-    public UserOrderBean getConsumerOrder(Integer userId) {
-    	logger().info("获取用户门店买单信息");
-    	return db().select(DSL.count(TABLE.ORDER_ID).as("orderNum"),
-						   DSL.sum(TABLE.MONEY_PAID.add(TABLE.USE_ACCOUNT).add(TABLE.MEMBER_CARD_BALANCE)).as("totalMoneyPaid"))
-					.from(TABLE)
-    			    .where(TABLE.ORDER_STATUS.ge(StoreConstant.PAY_SUCCESS))
-					.and(TABLE.USER_ID.eq(userId))
-					.fetchAnyInto(UserOrderBean.class);
+    public UserOrderBean getUserOrderStatistics(Integer userId) {
+        logger().info("获取用户门店买单信息");
+        Record1<Timestamp> createTime = db().select(TABLE.CREATE_TIME).from(TABLE)
+            .where(TABLE.ORDER_STATUS.ge(StoreConstant.PAY_SUCCESS))
+            .and(TABLE.USER_ID.eq(userId))
+            .orderBy(TABLE.CREATE_TIME.desc())
+            .fetchAny();
+        if (createTime != null) {
+            UserOrderBean userOrderBean = db().select(DSL.count(TABLE.ORDER_ID).as("orderNum"),
+                DSL.sum(TABLE.MONEY_PAID.add(TABLE.USE_ACCOUNT).add(TABLE.MEMBER_CARD_BALANCE)).as("totalMoneyPaid"))
+                .from(TABLE)
+                .where(TABLE.ORDER_STATUS.ge(StoreConstant.PAY_SUCCESS))
+                .and(TABLE.USER_ID.eq(userId))
+                .fetchAnyInto(UserOrderBean.class);
+            userOrderBean.setLastOrderTime(createTime.value1());
+            userOrderBean.setUnitPrice(BigDecimalUtil.divide(userOrderBean.getTotalMoneyPaid(), new BigDecimal(userOrderBean.getOrderNum())));
+            return userOrderBean;
+        }
+        return new UserOrderBean();
     }
-    
+
     /**
-     * 获取用户门店买单退款订单信息
+     * 获取用户的门店买单退款订单信息
+     * return <累计退款金额,累计退款订单数>
      */
-	public UserOrderBean getReturnOrder(Integer userId) {
-		logger().info("获取用户门店买单退款订单信息");
-		return db().select(DSL.count(TABLE.ORDER_ID).as("orderNum"),
-				DSL.sum(TABLE.MONEY_PAID.add(TABLE.USE_ACCOUNT).add(TABLE.MEMBER_CARD_BALANCE)).as("totalMoneyPaid"))
-			.from(TABLE)
-			.where(TABLE.ORDER_STATUS.eq(StoreConstant.REFUND_SUCCESS))
-			.and(TABLE.USER_ID.eq(userId))
-			.fetchAnyInto(UserOrderBean.class);
-	}
-	
-	/**
-	 * 获取门店最近下单时间
-	 */
-	public Timestamp lastOrderTime(Integer userId) {
-		logger().info("获取门店最近下单时间");
-		return db().select(TABLE.CREATE_TIME)
-					.from(TABLE)
-					.where(TABLE.USER_ID.eq(userId))
-					.orderBy(TABLE.CREATE_TIME.desc())
-					.fetchAnyInto(Timestamp.class);
-	}
+    public Tuple2<BigDecimal, Integer> getUserReturnOrderStatistics(Integer userId) {
+        logger().info("获取用户的门店服务退款订单信息");
+        // TODO 等待门店买单退款业务功能添加  service_order_refund
+
+        return new Tuple2<>(BigDecimal.ZERO, 0);
+    }
 }

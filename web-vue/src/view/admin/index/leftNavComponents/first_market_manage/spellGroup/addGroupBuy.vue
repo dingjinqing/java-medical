@@ -1731,4 +1731,8 @@ export default {
   margin-right: 10px;
   color: #666;
 }
+.hightest {
+  font-size: 12px;
+  font-weight: bold;
+}
 </style>

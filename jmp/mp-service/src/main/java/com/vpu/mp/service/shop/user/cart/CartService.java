@@ -20,6 +20,7 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
+import com.vpu.mp.service.shop.market.live.LiveGoodsService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.recommend.CollectionMallService;
 import jodd.util.CollectionUtil;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.Cart.CART;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 
 
 
@@ -72,7 +74,8 @@ public class CartService extends ShopBaseService {
      */
     @Autowired
     private UserCardService userCardService;
-
+    @Autowired
+    private LiveGoodsService liveGoodsService;
 
     /**
      * 购物车列表
@@ -541,6 +544,12 @@ public class CartService extends ShopBaseService {
         }else if (resultMessage.getFlag()&&inCartFlag){
             logger().info("修改商品数量");
             changeGoodsNumber(param.getUserId(),0,cardId,param.getPrdId(),param.getGoodsNumber());
+        }
+        if(null!=param.getRoomId()) {
+        	GoodsSpecProductRecord record = db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(param.getPrdId())).fetchAny();
+        	if(record!=null) {
+        		liveGoodsService.incrementAddCartNum(param.getRoomId(), record.getGoodsId());        	        		
+        	}
         }
         return resultMessage;
     }

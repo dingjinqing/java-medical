@@ -212,7 +212,7 @@
             v-else
           >{{item.content}}</div>
           <div
-            v-if="transactionTabIndex === 3"
+            v-if="transactionTabIndex === 2"
             style="text-align: center;margin-top: 10px;"
           >
             <el-button
@@ -226,7 +226,7 @@
       </div>
       <div
         class="transactionOrder"
-        v-if="transactionTabIndex !== 0 && transactionTabIndex !== 3"
+        v-if="transactionTabIndex !== 0 && transactionTabIndex !== 2"
       >
         <el-button
           type="primary"
@@ -711,25 +711,32 @@ export default {
       districtCode: null,
       // 交易统计tab
       transactionTabIndex: 0,
-      transactionTab: [{
-        label: '全部交易统计',
-        value: 'allTransactionStatistics'
-      }, {
-        label: '实物商品交易统计',
-        value: 'physicalTransactionStatistics'
-      }, {
-        label: '非实物商品交易统计',
-        value: ''
-      }, {
-        label: '会员增值交易统计',
-        value: 'appreciationTransactionStatistics'
-      }, {
-        label: '门店服务预约交易统计',
-        value: 'storeServiceOrderTransactionStatistics'
-      }, {
-        label: '门店买单交易统计',
-        value: 'storeOrderTransactionStatistics'
-      }]
+      transactionTab: [
+        {
+          label: '全部交易统计',
+          value: 'allTransactionStatistics'
+        },
+        {
+          label: '实物商品交易统计',
+          value: 'physicalTransactionStatistics'
+        },
+        // {
+        //   label: '非实物商品交易统计',
+        //   value: ''
+        // },
+        {
+          label: '会员增值交易统计',
+          value: 'appreciationTransactionStatistics'
+        },
+        {
+          label: '门店服务预约交易统计',
+          value: 'storeServiceOrderTransactionStatistics'
+        },
+        {
+          label: '门店买单交易统计',
+          value: 'storeOrderTransactionStatistics'
+        }
+      ]
     }
   },
   created () {
