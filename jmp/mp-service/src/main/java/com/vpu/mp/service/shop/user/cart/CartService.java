@@ -14,7 +14,6 @@ import com.vpu.mp.service.pojo.wxapp.cart.WxAppAddGoodsToCartParam;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
-import com.vpu.mp.service.shop.activity.dao.FullReductionProcessorDao;
 import com.vpu.mp.service.shop.activity.factory.CartProcessorContext;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
@@ -22,7 +21,6 @@ import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import com.vpu.mp.service.shop.market.live.LiveGoodsService;
 import com.vpu.mp.service.shop.member.UserCardService;
-import jodd.util.CollectionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
@@ -38,10 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.STORE_GOODS;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.Cart.CART;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 
 
 
@@ -511,7 +507,7 @@ public class CartService extends ShopBaseService {
             ResultMessage resultMessage = checkProductNumber(param.getPrdId(), param.getGoodsNumber());
             if (!resultMessage.getFlag()) {
                 logger().info("购物车-添加商品-错误");
-                return ResultMessage.builder().message("商品错误").build();
+                return resultMessage;
             }
             //添加商品到购物车
             cardId = addSpecProduct(param.getUserId(), param.getPrdId(), param.getGoodsNumber(), param.getActivityId(), param.getActivityType());
@@ -521,19 +517,20 @@ public class CartService extends ShopBaseService {
         WxAppCartBo cartList = getCartList(param.getUserId());
         //校验商品数量
         ResultMessage resultMessage = checkoutLimit(param, cardId, cartList);
-        //切换商品活动
-        checkoutActivity(param,cardId,cartList);
         if (!resultMessage.getFlag()&&!inCartFlag){
             logger().info("删除多余商品");
             removeCartProductById(param.getUserId(),cardId);
+            return resultMessage;
         }else if (resultMessage.getFlag()&&inCartFlag){
             logger().info("修改商品数量");
             changeGoodsNumber(param.getUserId(),0,cardId,param.getPrdId(),param.getGoodsNumber());
+            //切换商品活动
+            checkoutActivity(param,cardId,cartList);
         }
         if(null!=param.getRoomId()) {
         	GoodsSpecProductRecord record = db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(param.getPrdId())).fetchAny();
         	if(record!=null) {
-        		liveGoodsService.incrementAddCartNum(param.getRoomId(), record.getGoodsId());        	        		
+        		liveGoodsService.incrementAddCartNum(param.getRoomId(), record.getGoodsId());
         	}
         }
         return resultMessage;
@@ -542,7 +539,7 @@ public class CartService extends ShopBaseService {
     private void checkoutActivity(WxAppAddGoodsToCartParam param, Integer cardId, WxAppCartBo cartList) {
         if (param.getActivityType()!=null){
             logger().info("修改商品的活动");
-            Map<Integer, List<WxAppCartGoods>> cartGoodsMap = cartList.getCartGoodsList().stream().collect(Collectors.groupingBy(WxAppCartGoods::getCartId));
+            Map<Integer, List<WxAppCartGoods>> cartGoodsMap = getCartGoodsMap(cartList);
             List<WxAppCartGoods> wxAppCartGoods = cartGoodsMap.get(cardId);
             if (wxAppCartGoods != null && wxAppCartGoods.size() > 0) {
                 WxAppCartGoods cartGoods = wxAppCartGoods.get(0);
@@ -561,7 +558,7 @@ public class CartService extends ShopBaseService {
      * @return
      */
     private ResultMessage checkoutLimit(WxAppAddGoodsToCartParam param, Integer cardId, WxAppCartBo cartList) {
-        Map<Integer, List<WxAppCartGoods>> cartGoodsMap = cartList.getCartGoodsList().stream().collect(Collectors.groupingBy(WxAppCartGoods::getCartId));
+        Map<Integer, List<WxAppCartGoods>> cartGoodsMap = getCartGoodsMap(cartList);
         List<WxAppCartGoods> wxAppCartGoods = cartGoodsMap.get(cardId);
         if (wxAppCartGoods != null && wxAppCartGoods.size() > 0) {
             WxAppCartGoods cartGoods = wxAppCartGoods.get(0);
@@ -614,6 +611,10 @@ public class CartService extends ShopBaseService {
             return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_CART_GOODS_NO_LONGER_VALID).build();
         }
         return ResultMessage.builder().flag(true).build();
+    }
+
+    private Map<Integer, List<WxAppCartGoods>> getCartGoodsMap(WxAppCartBo cartList) {
+        return cartList.getCartGoodsList().stream().collect(Collectors.groupingBy(WxAppCartGoods::getCartId));
     }
 
     private boolean isLimitValid(Integer limitNum) {

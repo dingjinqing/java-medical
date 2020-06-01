@@ -231,10 +231,7 @@
               <el-table-column prop="name" :label="$t('goodsAddEditInfo.goodsDistribution.liveRoomName')"/>
               <el-table-column :label="$t('goodsAddEditInfo.goodsDistribution.liveStatus')">
                 <template slot-scope="{row}">
-                  <span v-if="row.liveStatus === 101">{{$t('goodsAddEditInfo.goodsDistribution.onLiving')}}</span>
-                  <span v-if="row.liveStatus === 102">{{$t('goodsAddEditInfo.goodsDistribution.liveNotStart')}}</span>
-                  <span v-if="row.liveStatus === 103">{{$t('goodsAddEditInfo.goodsDistribution.liveEnd')}}</span>
-                  <span v-if="row.liveStatus === 105">{{$t('goodsAddEditInfo.goodsDistribution.livePausing')}}</span>
+                  <span>{{row.liveStatus | getLiveStatus(liveStatusName)}}</span>
                 </template>
               </el-table-column>
               <el-table-column :label="$t('goodsAddEditInfo.goodsDistribution.liveStartTime')" prop="startTime"/>
@@ -497,6 +494,23 @@ export default {
         retData.goodsSharePostConfig.shareImgUrl = null
       }
       return retData
+    },
+    liveStatusName (val) {
+      let statusName = {
+        101: this.$t('live.status101'),
+        102: this.$t('live.status102'),
+        103: this.$t('live.status103'),
+        104: this.$t('live.status104'),
+        105: this.$t('live.status105'),
+        106: this.$t('live.status106'),
+        107: this.$t('live.status107')
+      }
+      return statusName[val] || this.$t('live.unkonw')
+    }
+  },
+  filters: {
+    getLiveStatus (val, liveStatusName) {
+      return liveStatusName(val)
     }
   },
   mounted () {
