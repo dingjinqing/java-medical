@@ -499,7 +499,7 @@ export default {
 
     // 初始化语言
     this.langDefault()
-    this.backgroundColor = localStorage.getItem('V-backgroundColor') || 'rgb(255, 102, 102)'
+    this.backgroundColor = 'rgb(255, 102, 102)'
     this.backgroundColorTransparent = this.backgroundColor.split(')')[0] + ',0.4)'
   },
   methods: {
