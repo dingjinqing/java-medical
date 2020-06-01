@@ -68,6 +68,7 @@ public class PurchaseGoodsListVo {
          * 单规格商品的规格ID
          */
         private Integer prdId;
+        private Integer goodsNumber;
 
         //活动数据
         /**
