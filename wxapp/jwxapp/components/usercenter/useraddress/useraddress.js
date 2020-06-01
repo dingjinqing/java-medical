@@ -1,4 +1,6 @@
 // components/usercenter/useraddress/useraddress.js
+import util from '../../../utils/util'
+
 global.wxComponent({
   /**
    * 组件的属性列表
@@ -37,9 +39,18 @@ global.wxComponent({
    */
   methods: {
     getWechatAdress () {
+      let that = this
       wx.chooseAddress({
-        success (res) {
-          console.log(res)
+        success (op) {
+          console.log('微dizhi:',op)
+          util.api('/api/wxapp/address/wxadd', res => {
+            console.log(res)
+            if (res.error === 0) {
+              that.triggerEvent('addaddress')
+            }
+          }, {
+            wxAddress:op
+          })
         },
         fail (err) {
           console.log(err)

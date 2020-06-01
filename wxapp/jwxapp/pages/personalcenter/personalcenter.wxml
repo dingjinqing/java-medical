@@ -10,7 +10,7 @@
       <userinfo options="{{options}}" comColor="{{comColor}}"/>
     </view>
     <view hidden="{{tabIndex !== 'address'}}">
-      <address options="{{options}}" comColor="{{comColor}}" data="{{addressList}}"/>
+      <address options="{{options}}" comColor="{{comColor}}" data="{{addressList}}" bindaddaddress="refreshList"/>
     </view>
   </view>
 </view>

@@ -1,4 +1,7 @@
 /* components/usercenter/useraddress/useraddress.wxss */
+.address-list {
+  margin-bottom: 120rpx;
+}
 /* 没有收货地址时展示 */
 .no-address {
   margin-top: 10rpx;
