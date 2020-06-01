@@ -478,6 +478,13 @@
                           <span style="font-size: 20px">{{item.denomination}}</span>
                           <span style="font-size: 14px">{{$t('payReward.discount')}}</span>
                         </div>
+                        <div
+                          class="coupon_list_top"
+                          v-if="item.actCode === 'random'"
+                        >
+                          ￥<span class="number_heightest">{{item.randomMax}}</span>
+                          <span class="hightest">最高</span>
+                        </div>
                         <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
                         <div
                           class="coupon_center_number"
@@ -563,6 +570,13 @@
                       >
                         <span style="font-size: 20px">{{item.denomination}}</span>
                         <span style="font-size: 14px">{{$t('payReward.discount')}}</span>
+                      </div>
+                      <div
+                        class="coupon_list_top"
+                        v-if="item.actCode === 'random'"
+                      >
+                        ￥<span class="number_heightest">{{item.randomMax}}</span>
+                        <span class="hightest">最高</span>
                       </div>
                       <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
                       <div
@@ -1175,6 +1189,14 @@ export default {
                 font-size: 20px;
                 font-weight: bold;
               }
+              .number_heightest {
+                font-size: 20px;
+                font-weight: bold;
+              }
+              .hightest {
+                font-size: 12px;
+                font-weight: bold;
+              }
             }
             .coupon_center_limit {
               height: 20px;
@@ -1182,7 +1204,8 @@ export default {
               font-size: 12px !important;
             }
             .coupon_center_number {
-              height: 20px;
+              height: 18px;
+              font-size: 12px;
               color: #fbb;
             }
             .coupon_list_bottom {
