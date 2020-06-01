@@ -484,6 +484,8 @@ global.wxComponent({
         goodsNum: goodsNumber,
         prdId
       } = this.data.productInfo
+      let customParams = {}
+      if (this.data.roomId) customParams.roomId = this.data.roomId
       util.api(
         "/api/wxapp/cart/add",
         res => {
@@ -498,7 +500,8 @@ global.wxComponent({
         }, {
         goodsNumber: goodsNumber,
         prdId: prdId,
-        type: 2
+        type: 2,
+        ...customParams
       }
       );
     },
