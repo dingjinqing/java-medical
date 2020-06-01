@@ -63,7 +63,7 @@
 .ait-title {
   line-height: 33rpx;
   font-weight: bold;
-  padding-bottom: 10rpx;
+  padding-bottom: 16rpx;
 }
 .ait-name,.ait-mobile {
   font-size: 30rpx;

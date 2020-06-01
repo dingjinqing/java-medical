@@ -4,7 +4,12 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    comColor: String
+    data: {
+      type: Array,
+      value: []
+    },
+    comColor: String,
+    options: Object
   },
 
   /**
@@ -12,6 +17,19 @@ global.wxComponent({
    */
   data: {
 
+  },
+
+  /**
+   * 观察者
+   */
+  observers: {
+    data: function (val) {
+      console.log(val)
+    }
+  },
+
+  ready () {
+    console.log(this.data.data)
   },
 
   /**
@@ -28,6 +46,7 @@ global.wxComponent({
         }
       })
     },
+    // 微信导入后新增到数据库
     newAdressHandle () {
       wx.navigateTo({
         url: '/pages1/addressedit/addressedit',

@@ -1,16 +1,16 @@
 <!--components/usercenter/useraddress/useraddress.wxml-->
 <view class="main-container">
   <!-- 地址列表 -->
-  <view class="address-list" wx:if="{{true}}">
+  <view class="address-list" wx:if="{{data&&data.length>0}}">
     <view class="address-wrap">
-      <block>
+      <block wx:for="{{data}}" wx:key="addressId">
         <view class="address-item">
           <view class="address-item-top">
             <view class="ait-title">
-              <text class="ait-name">许一晨</text>
-              <text class="ait-mobile">13800000000</text>
+              <text class="ait-name">{{item.consignee}}</text>
+              <text class="ait-mobile">{{item.mobile}}</text>
             </view>
-            <view class="ait-address">地址地址地址地址地址地址地址地址地址地址地址地址地址(邮编)</view>
+            <view class="ait-address">{{item.completeAddress}}{{item.zipcode?"("+item.zipcode+")":""}}</view>
           </view>
           <view class="address-item-line"></view>
           <view class="address-item-bottom">
@@ -34,7 +34,7 @@
     </view>
   </view>
   <!-- 没有地址时展示 -->
-  <view class="no-address" wx:if="{{false}}">
+  <view class="no-address" wx:if="{{!data||!data.length}}">
     <view style="position:relative;width:100%;height:100%;">
       <view class="no-address-top">
         <image class="no-address-icon" src="{{imageUrl}}image/wxapp/no_address.png" mode="widthFix" />

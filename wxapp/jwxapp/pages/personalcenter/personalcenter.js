@@ -1,11 +1,14 @@
 // pages/personalcenter/personalcenter.js
+var util = require("../../utils/util.js");
+
 global.wxPage({
 
   /**
    * 页面的初始数据
    */
   data: {
-    tabIndex: 'usercenter'
+    tabIndex: 'usercenter',
+    addressList: []
   },
 
   /**
@@ -14,6 +17,22 @@ global.wxPage({
   onLoad: function (options) {
     this.setData({
       options: options
+    })
+    this.initData()
+  },
+
+  /**
+   * 请求收货地址
+   */
+  initData () {
+    let that = this
+    util.api('/api/wxapp/address/list', res => {
+      if (res.error === 0) {
+        console.log(res.content)
+        that.setData({
+          addressList: res.content.addressList || []
+        })
+      }
     })
   },
 

@@ -82,6 +82,9 @@
 .aei-item input {
   flex: 1;
 }
+.region-picker {
+  flex: 1;
+}
 .recognition-icon {
   display: inline-block;
   vertical-align: middle;

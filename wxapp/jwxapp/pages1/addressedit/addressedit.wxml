@@ -33,7 +33,12 @@
       <view class="aei-item">
         <label>
           <text>地区信息</text>
-          <input placeholder="选择省、市、区"></input>
+          <!-- <input placeholder="选择省、市、区"></input> -->
+          <picker class="region-picker" mode="region" value="{{formData.region}}">
+            <view class="region-picker-wrap">
+              <input placeholder="选择省、市、区" value="{{formData.region}}"></input>
+            </view>
+          </picker>
         </label>
         <view style="margin-right: 20rpx"><image class="recognition-icon" src="{{imageUrl}}image/wxapp/recognition.png"></image>定位</view>
       </view>

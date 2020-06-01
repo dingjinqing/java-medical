@@ -5,7 +5,9 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-
+    formData: {
+      region: []
+    }
   },
 
   /**
