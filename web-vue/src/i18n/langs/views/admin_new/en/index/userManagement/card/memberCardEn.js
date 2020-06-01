@@ -309,5 +309,6 @@ export const en = {
       batchId: 0,
       name: 'All'
     }
-  ]
+  ],
+  repeatSubmit: 'Do not repeat submit'
 }

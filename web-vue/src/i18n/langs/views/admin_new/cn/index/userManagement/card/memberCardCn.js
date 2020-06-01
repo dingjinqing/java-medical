@@ -347,5 +347,6 @@ export const cn = {
       batchId: 0,
       name: '全部'
     }
-  ]
+  ],
+  repeatSubmit: '正在处理信息,请勿重复提交'
 }
