@@ -20,7 +20,6 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
-import com.vpu.mp.service.pojo.saas.shop.version.VersionNumConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
@@ -37,8 +36,8 @@ import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
-import com.vpu.mp.service.saas.es.EsMappingUpdateService;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainGoodsPriceBo;
+import com.vpu.mp.service.saas.es.EsMappingUpdateService;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
@@ -2492,7 +2491,7 @@ public class GoodsService extends ShopBaseService {
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsGroupBuyListInfo = groupBuyProcessorDao.getGoodsGroupBuyListInfo(Collections.singletonList(goodsId), now);
         if (goodsGroupBuyListInfo.containsKey(goodsId)) {
             Record3<Integer, Integer, BigDecimal> record3 = goodsGroupBuyListInfo.get(goodsId).get(0);
-            type.setActivityId(record3.get(GROUP_BUY_PRODUCT_DEFINE.ID));
+            type.setActivityId(record3.get(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID));
             type.setActivityType(BaseConstant.ACTIVITY_TYPE_GROUP_BUY);
             return type;
         }
