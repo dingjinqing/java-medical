@@ -8,7 +8,7 @@
       >
         <div class="card-detail">
           <div>
-            <img :src="$imageHost+'/image/admin/img_home/testImg.jpeg'">
+            <img :src="cardAvatar">
             <span>{{cardName}}</span>
           </div>
         </div>
@@ -310,10 +310,15 @@ export default {
   mounted () {
     this.langDefault()
     this.initData()
+    let avatar = localStorage.getItem('V-shopAvatar')
+    if (avatar) {
+      this.cardAvatar = avatar
+    }
   },
   data () {
     return {
-      leftNavData: []
+      leftNavData: [],
+      cardAvatar: this.$imageHost + '/' + 'image/admin/shop_def_y.png'
     }
   },
   watch: {
