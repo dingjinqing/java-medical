@@ -61,6 +61,7 @@ export const en = {
   status105: 'Pausing',
   status106: 'Exception',
   status107: 'Expired',
+  unkonw: 'unkonw',
   goodInfo: 'Product information',
   goodsSn: 'Commodity number',
   shopPrice: 'Shop price (yuan)',
