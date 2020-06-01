@@ -6,6 +6,7 @@
       :rules="rules"
       ref="ruleForm"
       label-width="100px"
+      @submit.native.prevent
     >
       <el-form-item
         :label="$t('memberCard.memberPower')"
@@ -23,6 +24,7 @@
             v-model="ruleForm.discount"
             size="small"
             :controls="false"
+            @change="checkoutDiscount"
           >
           </el-input-number>
           <span>{{ $t('memberCard.discount') }}</span>
@@ -313,6 +315,9 @@ export default {
       console.log(this.ruleForm.choosedBrandId)
       this.noneBlockDiscArr[this.brandType].num = idList.length
       console.log(this.noneBlockDiscArr[this.brandType].num)
+    },
+    checkoutDiscount () {
+      this.$refs.ruleForm.validateField('discount')
     }
   }
 }

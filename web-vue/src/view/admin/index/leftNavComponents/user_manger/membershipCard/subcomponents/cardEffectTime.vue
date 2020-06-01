@@ -54,6 +54,7 @@
             :min="0"
             :max="999999999"
             v-model="ruleForm.receiveDay"
+            @change="$refs.ruleForm.validateField('receiveDay')"
           >
           </el-input-number>
           <el-select

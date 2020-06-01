@@ -7,6 +7,7 @@
       ref="ruleForm"
       label-width="100px"
       :hide-required-asterisk="false"
+      @submit.native.prevent
     >
       <el-form-item
         :label="$t('memberCard.gradeSetting')"
@@ -26,6 +27,7 @@
               :max="999999999"
               :controls="false"
               @blur="checkGradeScore"
+              @change="checkGradeScore"
             >
             </el-input-number>
             <span>{{$t('memberCard.unitM')}}</span>
@@ -41,6 +43,7 @@
               :max="999999999"
               :controls="false"
               @blur="checkGradeCrash"
+              @change="checkGradeCrash"
             >
             </el-input-number>
             <span>{{$t('memberCard.yuan')}}</span>

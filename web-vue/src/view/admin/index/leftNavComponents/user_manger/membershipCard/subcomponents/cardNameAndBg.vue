@@ -6,6 +6,7 @@
       :rules="rules"
       ref="ruleForm"
       label-width="100px"
+      @submit.native.prevent
     >
       <el-form-item
         :label="$t('memberCard.memberCardName')"
@@ -15,6 +16,7 @@
         <el-input
           v-model="ruleForm.cardName"
           size="small"
+         @change="checkoutName"
         >
         </el-input>
       </el-form-item>
@@ -180,6 +182,9 @@ export default {
     },
     getDefaultBgImg () {
       return 'backgroundImage:url(' + this.$imageHost + '/image/admin/add_img.png);backgroundRepeat:no-repeat'
+    },
+    checkoutName () {
+      this.$refs.ruleForm.validateField('cardName')
     }
   }
 }

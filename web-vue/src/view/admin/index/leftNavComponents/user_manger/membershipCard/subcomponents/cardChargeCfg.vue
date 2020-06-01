@@ -6,6 +6,7 @@
       :rules="rules"
       ref="ruleForm"
       label-width="100px"
+      @submit.native.prevent
     >
       <div class="card-charge-top">
         <el-form-item prop="sendMoney">
@@ -25,6 +26,7 @@
               :min="0"
               :max="999999999"
               class="inputWidth"
+              @change="$refs.ruleForm.validateField('sendMoney')"
             >
             </el-input-number>
             <span class='yuan-info'>{{ $t('memberCard.yuan') }}</span>
