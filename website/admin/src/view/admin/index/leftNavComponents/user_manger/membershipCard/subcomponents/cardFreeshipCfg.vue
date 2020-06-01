@@ -1,6 +1,6 @@
 <template>
     <div class="freeship_container">
-        <el-form label-width="200px">
+        <el-form label-width="170px">
             <el-form-item class="on_free_ship">
                     <el-checkbox v-model="turnOn">{{$t('memberCard.freeship')}}</el-checkbox>
                     <span>{{$t('memberCard.freeshipTip')}}</span>
@@ -233,6 +233,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+*,/deep/ .el-form-item__label,
+/deep/ .el-radio__label,
+/deep/ .el-checkbox__label{
+  font-size: 13px;
+}
 .freeship_container{
     margin-bottom: 0px;
     /deep/ .el-form-item {

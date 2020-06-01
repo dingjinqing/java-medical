@@ -348,11 +348,16 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+*,/deep/ .el-form-item__label,
+/deep/ .el-radio__label,
+/deep/ .el-checkbox__label{
+  font-size: 13px;
+}
 .discountRoot {
   #market-act{
     background-color: #fff;
     padding: 5px 20px;
-    width: 60%;
+    width: 80%;
   }
   table{
     table-layout: auto;
@@ -377,7 +382,7 @@ export default {
     color: #999;
   }
   .discountItem {
-    padding-left: 100px;
+    padding-left: 75px;
     .discountDiv {
       display: flex;
       height: 40px;

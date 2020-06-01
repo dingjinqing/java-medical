@@ -1,6 +1,6 @@
 <template>
     <div class="rightsContainer">
-        <el-form label-width="200px">
+        <el-form label-width="170px">
             <el-form-item>
                 <el-checkbox v-model="turnOn" >自定义权益</el-checkbox>
             </el-form-item>
@@ -95,6 +95,11 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+*,/deep/ .el-form-item__label,
+/deep/ .el-radio__label,
+/deep/ .el-checkbox__label{
+  font-size: 13px;
+}
 .rightsContainer{
     margin-bottom: 20px;
     /deep/ .el-form-item{

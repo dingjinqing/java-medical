@@ -261,9 +261,14 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+*,/deep/ .el-form-item__label,
+/deep/ .el-radio__label,
+/deep/ .el-checkbox__label{
+  font-size: 13px;
+}
 .card-store-div {
   .card-store-item {
-    padding-left: 100px;
+    padding-left: 75px;
     .store-tip {
       color: #9d9d9d;
       font-size: 13px;
