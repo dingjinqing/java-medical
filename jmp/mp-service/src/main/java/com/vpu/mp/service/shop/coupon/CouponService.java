@@ -828,7 +828,8 @@ public class CouponService extends ShopBaseService {
             where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId).
                 and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((COUPON_IS_USED_STATUS_AVAIL)).
                     and(CUSTOMER_AVAIL_COUPONS.START_TIME.le(now)).
-                    and(CUSTOMER_AVAIL_COUPONS.END_TIME.greaterThan(now))
+                    and(CUSTOMER_AVAIL_COUPONS.END_TIME.greaterThan(now)).
+                    and(CUSTOMER_AVAIL_COUPONS.DIVISION_ENABLED.eq((byte)0))
             .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))).
             orderBy(CUSTOMER_AVAIL_COUPONS.END_TIME.desc()).
             fetchInto(OrderCouponVo.class);
