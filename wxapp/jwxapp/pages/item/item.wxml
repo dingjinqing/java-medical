@@ -69,7 +69,7 @@
             <text class="iconfont iconfenxiang" style="color:{{comColor}}"></text>
           </view>
           <view class="goods_share" bindtap="share" wx:else>
-            <image class="share_new_img" src="http://mpdevimg2.weipubao.cn/image/wxapp/new_share_img.png" role="img"></image>
+            <image class="share_new_img" src="{{imageUrl}}/image/wxapp/new_share_img.png" role="img"></image>
           </view>
           <view ></view>
           <view class="goods_collect" bindtap="toogleCollect">
@@ -287,62 +287,51 @@
 <!-- 分享|下载海报|多图弹窗 -->
 <!-- <v-share show="{{showShareDialog}}" share-data="{{shareData}}"/> -->
 <v-share show="{{showShareDialog}}" share-data="{{shareData}}">
-  <view slot="shareInvite" class="shareInvite">
+  <view slot="shareInvite" class="shareInvite" wx:if='{{shareAwardId !== 0}}'>
     <view class="invite_text">
       <view class='invite_friend'>邀好友查看,即可获得活动奖励</view>
     </view>
-    <!-- 第一级奖励 -->
-     <view class='invite_content invite_mul'>
-      <view class='invite_people'>
-        <view class='share_text'>邀{{shareContent1.invite_num}}人</view>
-        <view class='circle_line'>
-          <view class="circle_line_after"></view>
-          <view class="circle_line_after2"></view>
-        </view>
-        <view class="people">
-          <image src='{{imageUrl}}image/wxapp/share_big_people.png' class='user_image'></image>
-        </view>
-        <view>
-          <view class='share_or' wx:if='{{shareContent1.share_state === 3}}'>进行中</view>
-          <view class='share_or' wx:if='{{shareContent1.share_state === 1 || shareContent1.share_state === 2 }}'>未邀请</view>
-          <view class='share_or get_share' wx:if="{{shareContent1.share_state === 0}}" data-type="{{shareContent1.reward_type}}" bindtap="getShare">查看奖励</view>
-        </view>
-      </view>
-      
-      <!-- 第二级奖励 -->
-      <view class='invite_people'>
-        <view class='share_text'>邀{{shareContent2.invite_num}}人</view>
-        <view class='circle_line'>
-          <view class="circle_line_after2"></view>
-        </view>
-        <view class='people'>
-          <block>
-            <image src='{{imageUrl}}image/wxapp/share_big_people.png' class='user_image'></image>
-          </block>
-        </view>
-        <view>
-          <view class='share_or' wx:if='{{shareContent2.share_state === 0}}'>进行中</view>
-          <view class='share_or' wx:elif='{{shareContent2.share_state === 1}}'>未邀请</view>
-          <view class='share_or get_share' wx:else >查看奖励</view>
-        </view>
-      </view>
 
-      <!-- 第三级奖励 -->
-      <view class='invite_people'>
-        <view class='share_text'>邀{{shareContent3.invite_num}}人</view>
-        <view class="circle_line"></view>
-        <view class='people'>
-          <block>
-            <image src='{{imageUrl}}image/wxapp/share_big_people.png' class='user_image'></image>
+    <!-- 只有第一级的情况 -->
+    <view class="invite_content invite_one" wx:if='{{returnData.shareRules.length === 1}}'>
+      <view class='share_text'>邀{{shareContent1.invite_num}}人</view>
+      <view class="invite_people">
+        <block wx:for='{{shareContent1.user_info_list}}' wx:key='key' data-index='index'>
+          <image class='border-none' src='{{imageUrl}}/image/wxapp/share_big_people.png'  wx:if='{{item == null}}'></image>
+          <image class='user_image' src='{{item.userAvatar}}' wx:else></image>
+        </block>
+      </view>
+      <view class='share_or' wx:if='{{shareContent1.user_info_list.length === 0}}'>未邀请</view>
+      <view class='share_or' wx:elif='{{shareContent1.user_info_list.length !== shareContent1.invite_num}}'>进行中</view>
+      <view class='share_or get_share' data-type="{{item.reward_type}}" bindtap="getShare" wx:else>查看奖励</view>
+    </view>
+
+    <!-- 有多级的情况  -->
+    <view class='invite_content invite_mul' wx:else>
+      <view class='invite_people' wx:for='{{returnData.shareRules}}' wx:key='key' data-index='index'>
+        <view class='share_text'>邀{{item.invite_num}}人</view>
+
+        <view class='circle_line'>
+          <view class='circle_line_after2' wx:if='{{item.rule_level !== 3 && returnData.shareRules.length===3}}'></view>
+          <view class="{{((item.rule_level !== 2) && (returnData.shareRules.length===2)) ? 'circle_line_after' : ''}}"></view>
+        </view>
+
+         <view class='people'>
+          <block wx:for='{{item.user_info_list}}' wx:for-item='items' wx:key='key' data-index='index'>
+            <image class='border-none' src='{{imageUrl}}/image/wxapp/share_big_people.png' wx:if='{{items=== null}}'></image>
+            <image class='user_image' src='{{items.userAvatar}}' wx:else></image>
           </block>
         </view>
-        <view>
-          <view class='share_or' wx:if='{{shareContent3.share_state === 0}}'>进行中</view>
-          <view class='share_or' wx:elif='{{shareContent3.share_state === 1}}'>未邀请</view>
-          <view class='share_or get_share' wx:else>查看奖励</view>
+
+         <view>
+          <view class='share_or' wx:if='{{item.share_state === 4}}'>未邀请</view>
+          <view class='share_or' wx:if='{{item.share_state === 0}}'>进行中</view>
+          <view class='share_or get_share' data-type="{{item.reward_type}}"  data-stock="{{item.stock}}" bindtap="getShare"  wx:if="{{item.share_state ===  1 || item.share_state ===  2}}">查看奖励</view>
         </view>
+
       </view>
     </view>
+
     <view class='invite_message'>
       <view>注：
         <text wx:if='{{returnData.visitFirst == 0}}'>仅邀请新用户有效，</text>每天最多可参与{{shareLimit}}个活动</view>

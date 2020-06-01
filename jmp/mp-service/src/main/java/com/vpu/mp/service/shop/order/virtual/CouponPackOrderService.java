@@ -266,6 +266,7 @@ public class CouponPackOrderService extends VirtualOrderService {
         insertVirtualOrderRecord.setGoodsType(GOODS_TYPE_COUPON_PACK);
         insertVirtualOrderRecord.setAccessMode(couponPackRecord.getAccessMode());
         insertVirtualOrderRecord.setCurrency(saas().shop.getCurrency(getShopId()));
+        insertVirtualOrderRecord.setSendCardNo("");
 
         insertVirtualOrderRecord.insert();
         WebPayVo vo = null;

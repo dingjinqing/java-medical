@@ -1009,6 +1009,7 @@
       :tuneUpCoupon="tuneUpCoupon"
       :couponBack="couponBack"
       @handleToCheck="handleToCheck"
+      :type="-1"
     />
     <!--选择商品弹窗-->
     <ChoosingGoods />

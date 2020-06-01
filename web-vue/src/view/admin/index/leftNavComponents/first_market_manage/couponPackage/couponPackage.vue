@@ -58,7 +58,10 @@
           :header-cell-style="{
             'background-color':'#f5f5f5',
             'text-align':'center',
-            'border':'none'
+            'border':'none',
+            'font-weight': 'bold',
+            'color': '#000',
+            'padding': '8px 10px'
           }"
           :cell-style="{
             'text-align':'center'

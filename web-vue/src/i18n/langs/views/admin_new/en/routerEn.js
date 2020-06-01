@@ -225,11 +225,11 @@ export const en = {
     'Effect data'
   ],
   // 营销管理 普通优惠券
-  ordinary_coupon: ['Marketing management', 'ordinary coupon'],
+  ordinary_coupon: ['Marketing management', 'Coupon'],
   // 营销管理 普通优惠券 领取明细
   ordinary_coupon_receive_details: [
     'Marketing management',
-    'ordinary coupon',
+    'Coupon',
     'Receive details'
   ],
   // 营销管理 拼团抽奖
@@ -392,7 +392,7 @@ export const en = {
   // 营销管理 定金膨胀活动明细
   presale_detail: ['Marketing Management', 'Pre Sale', 'View Pre Sale Detail'],
   // 营销活动 普通优惠券
-  ordinaryCoupon: ['Marketing Management', 'General Coupons'],
+  ordinaryCoupon: ['Marketing Management', 'Coupons'],
   // 营销管理 秒杀
   seckill: ['Marketing Management', 'Seckill'],
   // 营销管理 秒杀-添加

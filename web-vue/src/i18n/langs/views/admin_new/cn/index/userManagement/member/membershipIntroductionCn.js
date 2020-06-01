@@ -173,37 +173,240 @@ export const cn = {
   ],
   Transactionstatistics: '交易统计',
   OrderList: '订单列表',
-  transactionData: [
+  transactionData1: [
     {
       title: '最近下单时间',
       content: '暂未下单',
-      tip: '用户最近一次下单的时间(包括已退款订单)'
-
+      tip: '用户最近一次下单的时间（包括已退款订单）',
+      value: 'lastOrderTime',
+      linkName: ''
     },
     {
       title: '客单价',
-      content: '￥ 0.00',
-      tip: '用户平均每笔订单消费金额（包括已退款订单）'
+      content: '0',
+      tip: '用户平均每笔订单消费金额（包括已退款订单）',
+      value: 'unitPrice',
+      linkName: ''
     },
     {
       title: '累计消费金额',
-      content: '暂未下单',
-      tip: '用户在商城累计消费金额（已支付部分，包括已退款订单金额）'
+      content: '0',
+      tip: '用户在商城累计消费金额（已支付部分，包括已退款订单金额）',
+      value: 'totalMoneyPaid',
+      linkName: ''
     },
     {
       title: '累计消费订单数',
       content: '0',
-      tip: '用户在商城累计消费订单数（已支付部分，包括已退款订单）'
+      tip: '用户在商城累计消费订单数（已支付部分，包括已退款订单）',
+      value: 'orderNum',
+      linkName: ''
     },
     {
-      title: '累计退款',
-      content: '￥ 0.00',
-      tip: '用户在商城累计退款金额'
+      title: '累计退款金额',
+      content: '0',
+      tip: '用户在商城累计退款金额',
+      value: 'returnOrderMoney',
+      linkName: ''
     },
     {
       title: '累计退款订单数',
-      content: '暂未退单',
-      tip: '用户在商城累计退款订单数（发生退款行为的订单）'
+      content: '0',
+      tip: '用户在商城累计退款订单数（发生退款行为的订单）',
+      value: 'returnOrderNum',
+      linkName: ''
+    }
+  ],
+  transactionData2: [
+    {
+      title: '最近下单时间',
+      content: '暂未下单',
+      tip: '用户最近一次购买实物商品下单的时间（包括已退款订单、待付款订单）',
+      value: 'lastOrderTime',
+      linkName: 'order'
+    },
+    {
+      title: '客单价',
+      content: '0',
+      tip: '用户平均每笔购买实物商品的订单消费金额（包括已退款订单）',
+      value: 'unitPrice',
+      linkName: 'order'
+    },
+    {
+      title: '累计消费金额',
+      content: '0',
+      tip: '用户在商城购买实物商品累计消费金额（已支付部分，包括已退款订单金额）',
+      value: 'totalMoneyPaid',
+      linkName: 'order'
+    },
+    {
+      title: '累计消费订单数',
+      content: '0',
+      tip: '用户在商城购买实物商品累计消费订单数（已支付订单，包括已退款订单）',
+      value: 'orderNum',
+      linkName: 'order'
+    },
+    {
+      title: '累计退款金额',
+      content: '0',
+      tip: '用户在商城购买实物商品后发生退款的金额',
+      value: 'returnOrderMoney',
+      linkName: 'order'
+    },
+    {
+      title: '累计退款订单数',
+      content: '0',
+      tip: '用户在商城购买实物商品后发生退款的总订单数',
+      value: 'returnOrderNum',
+      linkName: 'order'
+    }
+  ],
+  transactionData3: [
+    {
+      title: '最近下单时间',
+      content: '暂未下单',
+      tip: '用户最近一次购买非实物商品下单的时间（包括已退款订单、待付款订单）',
+      value: 'lastOrderTime',
+      linkName: 'order'
+    },
+    {
+      title: '客单价',
+      content: '0',
+      tip: '用户平均每笔购买非实物商品的订单消费金额（包括已退款订单）',
+      value: 'unitPrice',
+      linkName: 'order'
+    },
+    {
+      title: '累计消费金额',
+      content: '0',
+      tip: '用户在商城购买非实物商品累计消费金额（已支付部分，包括已退款订单金额）',
+      value: 'totalMoneyPaid',
+      linkName: 'order'
+    },
+    {
+      title: '累计消费订单数',
+      content: '0',
+      tip: '用户在商城购买非实物商品累计消费订单数（已支付订单，包括已退款订单）',
+      value: 'orderNum',
+      linkName: 'order'
+    },
+    {
+      title: '累计退款金额',
+      content: '0',
+      tip: '用户在商城购买非实物商品后发生退款的金额',
+      value: 'returnOrderMoney',
+      linkName: 'order'
+    },
+    {
+      title: '累计退款订单数',
+      content: '0',
+      tip: '用户在商城购买非实物商品后发生退款的总订单数',
+      value: 'returnOrderNum',
+      linkName: 'order'
+    }
+  ],
+  transactionData4: [
+    {
+      title: '会员卡购买订单数',
+      content: '0',
+      tip: '用户在商城购买会员卡的订单数（包括已退款订单）',
+      value: 'memberCardPurchaseOrderNum',
+      linkName: ''
+    },
+    {
+      title: '会员卡续费单数',
+      content: '0',
+      tip: '用户在商城给会员卡续费的交易单数（包括已退款续费单）',
+      value: 'memberCardRenewOrderNum',
+      linkName: ''
+    },
+    {
+      title: '会员卡充值单数',
+      content: '0',
+      tip: '用户在商城给会员卡充值的交易单数（包括已退款充值单）',
+      value: 'memberCardChargeOrderNum',
+      linkName: ''
+    },
+    {
+      title: '优惠券礼包购买订单数',
+      content: '0',
+      tip: '用户在商城购买优惠券礼包的订单数（包括已退款订单）',
+      value: 'couponPackPurchaseOrderNum',
+      linkName: ''
+    }
+  ],
+  transactionData5: [
+    {
+      title: '最近下单时间',
+      content: '暂未下单',
+      tip: '用户最近一次进行服务预约下单的时间（包括已退款订单、待服务、待付款订单）',
+      value: 'lastOrderTime',
+      linkName: ''
+    },
+    {
+      title: '成功支付订单数',
+      content: '0',
+      tip: '用户在商城进行服务预约的已支付订单数（已支付订单，包括已退款订单）',
+      value: 'orderNum',
+      linkName: ''
+    },
+    {
+      title: '累计消费金额',
+      content: '0',
+      tip: '用户在商城预约服务累计消费金额（已支付部分，包括已退款订单金额）',
+      value: 'totalMoneyPaid',
+      linkName: ''
+    },
+    {
+      title: '客单价',
+      content: '0',
+      tip: '用户平均每笔预约服务的订单消费金额（包括已退款订单）',
+      value: 'unitPrice',
+      linkName: ''
+    },
+    {
+      title: '累计退款金额',
+      content: '0',
+      tip: '用户在商城进行服务预约后发生退款的金额',
+      value: 'returnOrderMoney',
+      linkName: ''
+    },
+    {
+      title: '累计退款订单数',
+      content: '0',
+      tip: '用户在商城进行服务预约后发生退款的总订单数',
+      value: 'returnOrderNum',
+      linkName: ''
+    }
+  ],
+  transactionData6: [
+    {
+      title: '最近下单时间',
+      content: '暂未下单',
+      tip: '用户最近一次进行门店买单下单的时间',
+      value: 'lastOrderTime',
+      linkName: 'check_order'
+    },
+    {
+      title: '门店买单订单数',
+      content: '0',
+      tip: '用户在商城进行门店买单的订单数（已支付订单，包括已退款订单）',
+      value: 'orderNum',
+      linkName: 'check_order'
+    },
+    {
+      title: '累计消费金额',
+      content: '0',
+      tip: '用户在商城进行门店买单累计消费金额',
+      value: 'totalMoneyPaid',
+      linkName: 'check_order'
+    },
+    {
+      title: '客单价',
+      content: '0',
+      tip: '用户平均每笔门店买单订单消费金额',
+      value: 'unitPrice',
+      linkName: 'check_order'
     }
   ],
   distributionData: [
@@ -247,7 +450,7 @@ export const cn = {
   ExchangeFrequency: '兑换商品次数(次)',
   freeshiptimes: '剩余包邮次数',
   noData: '暂无相关数据',
-  cardOptions: [{id: 0, cardName: '全部'}],
+  cardOptions: [{ id: 0, cardName: '全部' }],
   userFromSource: [{
     value: '0',
     label: '全部'

@@ -1,37 +1,5 @@
 <template>
   <div class="content">
-    <!-- tabs -->
-    <!-- <div class="main">
-      <statusTab
-        v-model="nav"
-        :activityName="activityName"
-        :standard="true"
-      />
-      <div class="wrapper">
-        <span>{{$t('ordinaryCouponList.couponName')}}：</span>
-        <el-input
-          size="small"
-          v-model="actName"
-          clearable
-          :placeholder="$t('ordinaryCouponList.inputPlaceholder')"
-          class='search_content'
-        >
-        </el-input>
-        <el-button
-          type="primary"
-          size="small"
-          @click="handleClick"
-          class="btn"
-        >{{$t('ordinaryCouponList.search')}}</el-button>
-        <el-button
-          type="primary"
-          size="small"
-          @click="addCoupon()"
-          class="barginBtn"
-        >{{$t('ordinaryCouponList.addCoupon')}}</el-button>
-      </div>
-    </div> -->
-
     <!-- tab -->
     <div class="main">
       <el-tabs
@@ -49,27 +17,52 @@
       </el-tabs>
 
       <div class="wrapper">
-        <span>{{$t('ordinaryCouponList.couponName')}}：</span>
-        <el-input
-          size="small"
-          v-model="actName"
-          clearable
-          :placeholder="$t('ordinaryCouponList.inputPlaceholder')"
-          class='search_content'
+        <el-form
+          ref="searchForm"
+          :model="searchForm"
+          :inline="true"
+          label-width="100px"
+          label-position="right"
+          style="flex: 1;"
         >
-        </el-input>
-        <el-button
-          type="primary"
-          size="small"
-          @click="handleClick"
-          class="btn"
-        >{{$t('ordinaryCouponList.search')}}</el-button>
+          <el-form-item :label="$t('ordinaryCouponList.couponName') + '：'">
+            <el-input
+              size="small"
+              v-model="searchForm.actName"
+              clearable
+              :placeholder="$t('ordinaryCouponList.inputPlaceholder')"
+              class='search_content'
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="优惠券类型：">
+            <el-select
+              v-model="searchForm.couponType"
+              size="small"
+              class='search_content'
+            >
+              <el-option
+                v-for="(item, index) in typeList"
+                :key="index"
+                :value="item.value"
+                :label="item.label"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              size="small"
+              @click="handleClick"
+              class="btn"
+            >{{$t('ordinaryCouponList.search')}}</el-button>
+          </el-form-item>
+        </el-form>
         <el-button
           type="primary"
           size="small"
           @click="addCoupon()"
-          class="barginBtn"
         >{{$t('ordinaryCouponList.addCoupon')}}</el-button>
+
       </div>
     </div>
 
@@ -310,11 +303,25 @@ export default {
     return {
       nav: '1',
       tabInfo: this.$t('ordinaryCouponList.tabInfo'),
-      actName: null, // 搜索条件
+      // 搜索条件
+      searchForm: {
+        actName: '',
+        couponType: 2
+      },
+      // 优惠券类型
+      typeList: [{
+        label: '全部',
+        value: 2
+      }, {
+        label: '普通优惠券',
+        value: 0
+      }, {
+        label: '分裂优惠券',
+        value: 1
+      }],
       activityNameactivityName: this.$t('ordinaryCouponList.coupon'),
       tableData: [],
       pageParams: {}, // 分页
-      requestParams: {},
       shareDialog: false, // 分享弹窗
       shareImg: '',
       sharePath: ''
@@ -327,14 +334,12 @@ export default {
   methods: {
     // 优惠券列表
     handleClick () {
-      this.requestParams.nav = this.nav
-      if (this.actName === '') {
-        this.actName = null
-      }
-      this.requestParams.actName = this.actName
-      this.requestParams.currentPage = this.pageParams.currentPage
-      this.requestParams.pageRows = this.pageParams.pageRows
-      couponList(this.requestParams).then((res) => {
+      let requestParams = {}
+      requestParams = this.searchForm
+      requestParams.nav = this.nav
+      requestParams.currentPage = this.pageParams.currentPage
+      requestParams.pageRows = this.pageParams.pageRows
+      couponList(requestParams).then((res) => {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
           this.pageParams = res.content.page
@@ -494,14 +499,12 @@ export default {
     position: relative;
     background-color: #fff;
     padding: 15px;
-    span {
-      line-height: 30px;
-    }
-    .btn {
-      margin-left: 10px;
-    }
-    .barginBtn {
-      float: right;
+    .wrapper {
+      display: flex;
+      align-items: center;
+      /deep/ .el-form-item {
+        margin-bottom: 0px;
+      }
     }
   }
 }
@@ -544,7 +547,7 @@ export default {
   }
 }
 .search_content {
-  width: 220px;
+  width: 170px;
 }
 .opt {
   text-align: left;

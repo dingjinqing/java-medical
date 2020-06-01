@@ -178,7 +178,7 @@
 </template>
 
 <script>
-import { distributorList, distributorLevelList, distributorGroupList } from '@/api/admin/marketManage/distribution.js'
+import { distributorList, distributorLevelList, distributorAllGroup } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination')
@@ -241,8 +241,8 @@ export default {
           this.groupLevelList = res.content
         }
       })
-      // 分组下拉框
-      distributorGroupList().then(res => {
+      // 分销员分组全部数据
+      distributorAllGroup().then(res => {
         if (res.error === 0) {
           this.groupNameList = res.content
         }

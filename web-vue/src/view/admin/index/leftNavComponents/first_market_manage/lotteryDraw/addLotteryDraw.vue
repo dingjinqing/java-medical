@@ -323,6 +323,7 @@
       @handleToCheck="handleToCheck"
       :tuneUpCoupon="showCouponDialog"
       :couponBack="couponIdList"
+      :type="-1"
     />
 
     <!--添加商品弹窗-->

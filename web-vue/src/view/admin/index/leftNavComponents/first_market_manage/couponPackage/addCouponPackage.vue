@@ -363,6 +363,7 @@
       :tuneUpCoupon="showCouponDialog"
       :couponBack="couponIdList"
       @handleToCheck="handleToCheck"
+      :type="-1"
     />
 
     <!-- 设置优惠券内容 -->

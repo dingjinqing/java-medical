@@ -185,6 +185,9 @@ public class CouponService extends ShopBaseService {
      */
     public SelectConditionStep<Record> buildOptions(SelectJoinStep<Record> select, CouponListParam param) {
         SelectConditionStep<Record> sql = select.where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        if(param.getCouponType() != 2){
+            sql = sql.and(MRKING_VOUCHER.TYPE.eq(param.getCouponType()));
+        }
         if (param.getActName() != null) {
             sql = sql.and(MRKING_VOUCHER.ACT_NAME.contains(param.getActName()));
         }

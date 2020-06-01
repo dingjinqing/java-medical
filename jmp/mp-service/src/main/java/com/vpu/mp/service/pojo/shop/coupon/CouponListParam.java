@@ -11,8 +11,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CouponListParam {
+    /**状态*/
 	private Integer nav;
+	/**优惠券名称*/
 	private String actName;
+	/**优惠券类型*/
+	private Byte couponType;
 
 	/**
      * 	分页信息

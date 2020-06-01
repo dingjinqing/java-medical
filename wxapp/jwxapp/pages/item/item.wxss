@@ -408,13 +408,39 @@
   position: relative;
   z-index: 9;
 }
+.invite_one {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+.invite_one .invite_people {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.invite_one image {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
+  border: 1px dashed #fff;
+  box-sizing: border-box;
+  margin: 0 10rpx;
+}
 .invite_mul {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
 }
+.invite_mul image {
+  width: 50rpx;
+  height: 50rpx;
+  border-radius: 25rpx;
+  border: 1px dashed #fff;
+  box-sizing: border-box;
+}
 .share_or {
-  width: 120rpx;
+  width: 140rpx;
   height: 50rpx;
   text-align: center;
   line-height: 50rpx;

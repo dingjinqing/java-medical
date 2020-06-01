@@ -2,6 +2,22 @@
   <div>
     <div class="top">
       <span>{{$t('selectLinks.marketingActivities')}}/ {{this.navText}}</span>
+      <div v-if="nowIndex === 7">
+        <span>优惠券类型：</span>
+        <el-select
+          v-model="couponType"
+          size="small"
+          style="width: 170px;"
+          @change="couponTypeChange()"
+        >
+          <el-option
+            v-for="(item, index) in typeList"
+            :key="index"
+            :value="item.value"
+            :label="item.label"
+          ></el-option>
+        </el-select>
+      </div>
     </div>
     <div class="content">
       <table width='100%'>
@@ -60,7 +76,19 @@ export default {
       noImg: this.$imageHost + '/image/admin/no_data.png',
       navText: '',
       couponFlag: false, // 优惠券td flag
-      path: ''//  显示和保存的路径
+      path: '', //  显示和保存的路径
+      couponType: 2,
+      // 优惠券类型
+      typeList: [{
+        label: '全部',
+        value: 2
+      }, {
+        label: '普通优惠券',
+        value: 0
+      }, {
+        label: '分裂优惠券',
+        value: 1
+      }]
     }
   },
   computed: {
@@ -200,7 +228,7 @@ export default {
             })
             break
           case 7:
-            voucherListRequest().then((res) => {
+            voucherListRequest(this.couponType).then((res) => {
               if (res.error === 0) {
                 if (!res.content.length) {
                   this.tbodyFlag = false
@@ -264,6 +292,21 @@ export default {
       let path = `${this.path}${this.trList[index].id}`
       this.$emit('handleToGetDetailData', this.trList[index])
       this.choisePagePath(path)
+    },
+    // 切换优惠券类型
+    couponTypeChange () {
+      voucherListRequest(this.couponType).then((res) => {
+        if (res.error === 0) {
+          if (!res.content.length) {
+            this.tbodyFlag = false
+          } else {
+            this.tbodyFlag = true
+          }
+          this.path = 'pages/getCoupon/getCoupon?couponId='
+          this.trList = res.content
+        } else if (res.error === -1) this.tbodyFlag = false
+        console.log(res)
+      })
     }
 
   }
@@ -274,6 +317,9 @@ export default {
   padding: 10px;
   font-size: 14px;
   color: #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .noData {
   height: 100px;

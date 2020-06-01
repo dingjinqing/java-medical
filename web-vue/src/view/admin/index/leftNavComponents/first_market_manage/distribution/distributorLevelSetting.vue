@@ -121,7 +121,7 @@
             <a
               href="javascript:void(0);"
               @click="numClickHandler"
-            >{{ scope.row.users }}</a>
+            >{{ scope.row.users?scope.row.users:0 }}</a>
           </template>
         </el-table-column>
 
