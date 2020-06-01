@@ -37,13 +37,12 @@
       <div style="display:flex">
         <div
           class="label_style"
-          v-for="(item, index) in this.span_data"
+          v-for="(item, index) in span_data"
           :key="index"
         >
           <div
-            :id="item.name"
-            :class="spanStyle"
-            @click="changeData(item.name, index)"
+            :class="item.active?'span_normal':'span_cancel'"
+            @click="changeData(item, index)"
           >{{item.name}}</div>
         </div>
       </div>
@@ -160,7 +159,7 @@ export default {
       timeRange: this.$t('tradesStatistics.timeRange'),
       value: 1,
       screeningTime: '1',
-      spanStyle: 'span_normal',
+
       // 请求入参
       param: {
         type: 1,
@@ -210,6 +209,10 @@ export default {
       },
       emptyLine: true
     }
+  },
+
+  computed: {
+
   },
 
   methods: {
@@ -271,8 +274,15 @@ export default {
     },
     cancelStyle () {
       this.span_data.map((item, index) => {
-        document.getElementById(item.name).setAttribute('class', 'span_normal')
+        // document.getElementById(item.name).setAttribute('class', 'span_normal')
+        item.active = true
       })
+    },
+    spanStyle: function (active) {
+      if (active) {
+        return 'span_normal'
+      }
+      return 'span_cancel'
     },
     // 指定时间段-上
     dateChangeHandler (time) {
@@ -304,9 +314,9 @@ export default {
           this.endDate.day = res.content.endDate.substring(6, 8)
           this.histogram_data = res.content.accessSourceSessionCnt
           this.histogram_data.map((item, index) => {
+            this.$set(this.histogram_data[index], 'active', true)
+            // item.active = true
             this.histogram[index] = item.key
-            delete item.key
-            delete item.isShow
           })
           this.chartData.rows = this.histogram_data
           if (this.chartData.rows.length === 0) {
@@ -321,23 +331,28 @@ export default {
         }
       }).catch(err => console.log(err))
     },
-    changeData (name, index) {
+    changeData (item, index) {
+      // let name = item.name
+      this.$set(this.span_data[index], 'active', !item.active)
+      console.log(this.span_data)
+      this.param.cancelBtn = this.span_data.filter(item => !item.active).map(item => item.key)
+      this.initData()
       // 动态点击改变柱状图数据
-      console.log(name)
-      if (document.getElementById(name).className === 'span_cancel') {
-        this.param.cancelBtn.map((item, index1) => {
-          if (item === this.histogram[index]) {
-            this.arrayData = index1
-          }
-        })
-        this.param.cancelBtn.splice(this.arrayData, 1)
-        document.getElementById(name).setAttribute('class', 'span_normal')
-        this.initData()
-      } else if (document.getElementById(name).className === 'span_normal') {
-        this.param.cancelBtn.push(this.histogram[index])
-        document.getElementById(name).setAttribute('class', 'span_cancel')
-        this.initData()
-      }
+      // console.log(name)
+      // if (document.getElementById(name).className === 'span_cancel') {
+      //   this.param.cancelBtn.map((item, index1) => {
+      //     if (item === this.histogram[index]) {
+      //       this.arrayData = index1
+      //     }
+      //   })
+      //   this.param.cancelBtn.splice(this.arrayData, 1)
+      //   document.getElementById(name).setAttribute('class', 'span_normal')
+      //   this.initData()
+      // } else if (document.getElementById(name).className === 'span_normal') {
+      //   this.param.cancelBtn.push(this.histogram[index])
+      //   document.getElementById(name).setAttribute('class', 'span_cancel')
+      //   this.initData()
+      // }
     }
   }
 }
