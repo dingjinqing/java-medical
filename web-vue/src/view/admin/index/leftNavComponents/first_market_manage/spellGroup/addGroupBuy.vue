@@ -464,6 +464,13 @@
                       <span class="discount_number">{{item.denomination}}</span>
                       <span>{{$t('payReward.discount')}}</span>
                     </div>
+                    <div
+                      class="coupon_list_top"
+                      v-if="item.actCode === 'random'"
+                    >
+                      ￥<span class="number">{{item.randomMax}}</span>
+                      <span class="hightest">最高</span>
+                    </div>
                     <div class="coupon_center_limit">{{item.useConsumeRestrict |
                       formatLeastConsume(item.leastConsume)}}
                     </div>
@@ -1401,6 +1408,10 @@ export default {
 }
 .number {
   font-size: 20px;
+  font-weight: bold;
+}
+.hightest {
+  font-size: 12px;
   font-weight: bold;
 }
 </style>
