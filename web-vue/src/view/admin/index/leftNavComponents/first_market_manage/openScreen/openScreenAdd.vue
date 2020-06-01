@@ -227,7 +227,9 @@
                   <div
                     class="ca-bottom"
                     :style="'background-image:url(' + $imageHost + '/image/admin/coupon_border.png'"
-                  ></div>
+                  >
+                    <span>领取</span>
+                  </div>
                   <img
                     @click="deleteCoupon(index)"
                     class="ca-close"
@@ -309,7 +311,9 @@
                   <div
                     class="ca-bottom"
                     :style="'background-image:url(' + $imageHost + '/image/admin/coupon_border.png'"
-                  ></div>
+                  >
+                    <span>领取</span>
+                  </div>
                   <img
                     @click="deleteDisCoupon()"
                     class="ca-close"

@@ -498,6 +498,14 @@
                         <span style="font-size: 14px">{{$t('payReward.discount')}}</span>
                       </div>
                       <div
+                        class="coupon_list_top"
+                        :class="item.status === 0 ? 'coupon_list_top' : 'couponListTop'"
+                        v-if="item.actCode === 'random'"
+                      >
+                        ￥<span class="number_heightest">{{item.randomMax}}</span>
+                        <span class="hightest">最高</span>
+                      </div>
+                      <div
                         class="coupon_center_limit"
                         :class="item.status === 0 ? 'coupon_center_limit':'couponCenterLimit'"
                       >{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
@@ -592,6 +600,14 @@
                       >
                         <span style="font-size: 20px">{{item.denomination}}</span>
                         <span style="font-size: 14px">{{$t('payReward.discount')}}</span>
+                      </div>
+                      <div
+                        class="coupon_list_top"
+                        :class="item.status === 0 ? 'coupon_list_top' : 'couponListTop'"
+                        v-if="item.actCode === 'random'"
+                      >
+                        ￥<span class="number_heightest">{{item.randomMax}}</span>
+                        <span class="hightest">最高</span>
                       </div>
                       <div
                         class="coupon_center_limit"
@@ -1524,6 +1540,14 @@ export default {
                 font-size: 20px;
                 font-weight: bold;
               }
+              .number_heightest {
+                font-size: 20px;
+                font-weight: bold;
+              }
+              .hightest {
+                font-size: 12px;
+                font-weight: bold;
+              }
             }
             .couponListTop {
               margin-top: 10px;
@@ -1543,7 +1567,8 @@ export default {
               color: #d5d7d9;
             }
             .coupon_center_number {
-              height: 20px;
+              height: 18px;
+              font-size: 12px;
               color: #fbb;
             }
             .couponCenterNumber {
