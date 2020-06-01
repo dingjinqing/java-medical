@@ -758,13 +758,16 @@ global.wxPage({
 
           if (cur !== 0) {
             currentRule.share_state = cur
-          } else {
+          } else if (cur === 0) {
             // cur = 0
-            if (goingNum === 0) {
+            if (goingNum === 0 && isHasUser) {
               currentRule.share_state = cur
               goingNum++
+            } else {
+              currentRule.share_state = notInvited
             }
-            currentRule.share_state = notInvited
+          } else {
+            currentRule.share_state = cur
           }
         }
 
