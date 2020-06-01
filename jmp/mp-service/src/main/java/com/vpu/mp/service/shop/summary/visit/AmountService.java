@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.MpDailyVisit.MP_DAILY_VISIT;
@@ -240,6 +237,8 @@ public class AmountService extends BaseVisitService {
         VisitStatisticsVo vo = new VisitStatisticsVo();
         List<String> dates = groupedValue.stream().map(RefDateRecord::getRefDate).collect(Collectors.toList());
         List<Double> values = groupedValue.stream().map(RefDateRecord::getValue).collect(Collectors.toList());
+        Collections.reverse(dates);
+        Collections.reverse(values);
         vo.setDate(dates);
         vo.setList(values);
         return vo;
