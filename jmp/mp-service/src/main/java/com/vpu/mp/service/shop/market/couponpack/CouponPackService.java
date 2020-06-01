@@ -600,53 +600,65 @@ public class CouponPackService extends ShopBaseService {
 
         if (usablePackList != null && usablePackList.size() > 0) {
             for (CouponPackRecord couponPackRecord : usablePackList) {
-                //该礼包里是否有可用的优惠券
-                boolean isApplicable = false;
-                //是否全是折扣券
-                boolean onlyDiscount = true;
-                Set<Integer> applicableGoodsIds = new HashSet<>();
-                List<CouponPackVoucherVo> voucherVos = couponPackVoucherService.getCouponPackVoucherList(couponPackRecord.getId());
-                //包里的优惠券张数
-                int totalAmount = 0;
-                //包里的优惠券总价值
-                BigDecimal totalValue = BigDecimal.ZERO;
-                for (CouponPackVoucherVo voucher : voucherVos) {
-                    totalAmount += voucher.getTotalAmount();
-                    if (voucher.getActCode().equals(CouponConstant.ACT_CODE_VOUCHER)) {
-                        onlyDiscount = false;
-                        totalValue = BigDecimalUtil.add(totalValue, BigDecimalUtil.multiply(voucher.getDenomination(), new BigDecimal(voucher.getTotalAmount())));
+                if (couponPackRecord.getShowCart().equals(BaseConstant.YES)) {
+                    //该礼包里是否有可用的优惠券
+                    boolean isApplicable = false;
+                    //是否全是折扣券
+                    boolean onlyDiscount = true;
+                    Set<Integer> applicableGoodsIds = new HashSet<>();
+                    List<CouponPackVoucherVo> voucherVos = couponPackVoucherService.getCouponPackVoucherList(couponPackRecord.getId());
+                    //包里的优惠券张数
+                    int totalAmount = 0;
+                    //包里的优惠券总价值
+                    BigDecimal totalValue = BigDecimal.ZERO;
+                    for (CouponPackVoucherVo voucher : voucherVos) {
+                        totalAmount += voucher.getTotalAmount();
+                        if (voucher.getActCode().equals(CouponConstant.ACT_CODE_VOUCHER)) {
+                            onlyDiscount = false;
+                            totalValue = BigDecimalUtil.add(totalValue, BigDecimalUtil.multiply(voucher.getDenomination(), new BigDecimal(voucher.getTotalAmount())));
+                        } else if (voucher.getActCode().equals(CouponConstant.ACT_CODE_RANDOM)) {
+                            onlyDiscount = false;
+                            totalValue = BigDecimalUtil.add(totalValue, BigDecimalUtil.multiply(voucher.getRandomMax(), new BigDecimal(voucher.getTotalAmount())));
+                        }
+                        if (voucher.getIsAllGoodsUse()) {
+                            isApplicable = true;
+                            continue;
+                        }
+                        if (StringUtil.isNotEmpty(voucher.getRecommendGoodsId())) {
+                            applicableGoodsIds.addAll(Util.splitValueToList(voucher.getRecommendGoodsId()));
+                        }
+                        if (StringUtil.isNotEmpty(voucher.getRecommendCatId()) || StringUtil.isNotEmpty(voucher.getRecommendSortId())) {
+                            List<Integer> goodsIds = goodsService.getOnShelfGoodsIdList(Util.splitValueToList(voucher.getRecommendCatId()), Util.splitValueToList(voucher.getRecommendSortId()), Collections.emptyList());
+                            applicableGoodsIds.addAll(goodsIds);
+                        }
                     }
-                    if (voucher.getIsAllGoodsUse()) {
-                        isApplicable = true;
-                        break;
+                    if (!isApplicable) {
+                        applicableGoodsIds.retainAll(cartGoodsIds);
+                        if (CollectionUtils.isNotEmpty(applicableGoodsIds)) {
+                            isApplicable = true;
+                        }
                     }
-                    if (StringUtil.isNotEmpty(voucher.getRecommendGoodsId())) {
-                        applicableGoodsIds.addAll(Util.splitValueToList(voucher.getRecommendGoodsId()));
+                    if (isApplicable) {
+                        CouponPackCartVo.PackInfo pack = new CouponPackCartVo.PackInfo();
+                        pack.setActId(couponPackRecord.getId());
+                        pack.setPackName(couponPackRecord.getPackName());
+                        pack.setOnlyDiscount(onlyDiscount);
+                        pack.setIsReceive(couponPackOrderService.getUserCouponPackBuyCount(couponPackRecord.getId(), userId) > 0 ? true : false);
+                        pack.setTotalAmount(totalAmount);
+                        pack.setTotalValue(totalValue);
+                        vo.getPackList().add(pack);
                     }
-                    if (StringUtil.isNotEmpty(voucher.getRecommendCatId()) || StringUtil.isNotEmpty(voucher.getRecommendSortId())) {
-                        List<Integer> goodsIds = goodsService.getOnShelfGoodsIdList(Util.splitValueToList(voucher.getRecommendCatId()), Util.splitValueToList(voucher.getRecommendSortId()), Collections.emptyList());
-                        applicableGoodsIds.addAll(goodsIds);
-                    }
-                }
-                if (!isApplicable) {
-                    applicableGoodsIds.retainAll(cartGoodsIds);
-                    if (CollectionUtils.isNotEmpty(applicableGoodsIds)) {
-                        isApplicable = true;
-                    }
-                }
-                if (isApplicable) {
-                    CouponPackCartVo.PackInfo pack = new CouponPackCartVo.PackInfo();
-                    pack.setActId(couponPackRecord.getId());
-                    pack.setPackName(couponPackRecord.getPackName());
-                    pack.setOnlyDiscount(onlyDiscount);
-                    pack.setIsReceive(couponPackOrderService.getUserCouponPackBuyCount(couponPackRecord.getId(), userId) > 0 ? true : false);
-                    pack.setTotalAmount(totalAmount);
-                    pack.setTotalValue(totalValue);
-                    vo.getPackList().add(pack);
                 }
             }
             if (CollectionUtils.isNotEmpty(vo.getPackList())) {
-                Optional<CouponPackCartVo.PackInfo> max = vo.getPackList().stream().max((x, y) -> x.getTotalValue().compareTo(y.getTotalValue()));
+                vo.setPackList(vo.getPackList().stream().sorted(Comparator.comparing(CouponPackCartVo.PackInfo::getIsReceive)).collect(Collectors.toList()));
+                Optional<CouponPackCartVo.PackInfo> max;
+                if (vo.getPackList().stream().filter(c -> !c.getIsReceive()).count() > 0) {
+                    max = vo.getPackList().stream().filter(c -> !c.getIsReceive()).max((x, y) -> x.getTotalValue().compareTo(y.getTotalValue()));
+                } else {
+                    max = vo.getPackList().stream().max((x, y) -> x.getTotalValue().compareTo(y.getTotalValue()));
+                }
+
                 vo.setMaxReduce(max.isPresent() ? max.get().getTotalValue() : null);
                 return vo;
             }
