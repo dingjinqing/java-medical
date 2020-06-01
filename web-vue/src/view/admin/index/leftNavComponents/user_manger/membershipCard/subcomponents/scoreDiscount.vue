@@ -318,9 +318,15 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+
+*,/deep/ .el-form-item__label,
+/deep/ .el-radio__label,
+/deep/ .el-checkbox__label{
+  font-size: 13px;
+}
 .discountRoot {
   .discountItem {
-    padding-left: 100px;
+    padding-left: 75px;
     .discountDiv {
       display: flex;
       height: 40px;

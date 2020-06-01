@@ -192,9 +192,15 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+
+/deep/ .el-form-item__label,
+/deep/ .el-radio__label{
+  font-size: 13px;
+}
+
 .cardNameAndBg {
   .userCardName {
-    padding-left: 100px;
+    padding-left: 75px;
     /deep/ .el-input {
       width: 41%;
       .el-input__inner {
@@ -211,7 +217,7 @@ export default {
     /deep/ .el-form-item__label {
       margin-left: -8px;
     }
-    padding-left: 100px;
+    padding-left: 75px;
     .backgroundDiv {
       .bgTop {
         height: 40px;
