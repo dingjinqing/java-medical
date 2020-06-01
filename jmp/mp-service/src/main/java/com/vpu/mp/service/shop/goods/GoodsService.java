@@ -2681,7 +2681,7 @@ public class GoodsService extends ShopBaseService {
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsGroupBuyListInfo = groupBuyProcessorDao.getGoodsGroupBuyListInfo(Collections.singletonList(goodsId), now);
         if (goodsGroupBuyListInfo.containsKey(goodsId)) {
             Record3<Integer, Integer, BigDecimal> record3 = goodsGroupBuyListInfo.get(goodsId).get(0);
-            type.setActivityId(record3.get(GROUP_BUY_PRODUCT_DEFINE.ID));
+            type.setActivityId(record3.get(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID));
             type.setActivityType(BaseConstant.ACTIVITY_TYPE_GROUP_BUY);
             return type;
         }
