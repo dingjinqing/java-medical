@@ -27,7 +27,10 @@
         border
         :header-cell-style="{
           'background-color':'#f5f5f5',
-          'border':'none'
+          'border':'none',
+          'font-weight': 'bold',
+          'color': '#000',
+          'padding': '8px 10px'
         }"
       >
         <el-table-column
