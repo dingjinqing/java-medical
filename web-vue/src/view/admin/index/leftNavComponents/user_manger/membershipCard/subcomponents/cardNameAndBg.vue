@@ -29,11 +29,7 @@
               v-model="ruleForm.bgType"
               label="0"
             >{{ $t('memberCard.bgColor') }}</el-radio>
-            <colorPicker
-              v-model="ruleForm.bgColor"
-              :defaultColor="defaultBgColor"
-              v-on:change="handleChangeColor"
-            />
+             <el-color-picker v-model="ruleForm.bgColor"></el-color-picker>
           </div>
           <div class="bgBottom">
             <el-radio
@@ -165,9 +161,6 @@ export default {
   methods: {
     isBlank (str) {
       return (!str || /^\s*$/.test(str))
-    },
-    handleChangeColor () {
-      console.log(this.ruleForm.bgColor)
     },
     // 添加图片
     handleToAddImg () {
