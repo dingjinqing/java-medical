@@ -52,7 +52,6 @@ import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
 import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_ONE_PHASE;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_TWO_PHASE;
-import static org.jooq.impl.DSL.select;
 import static org.springframework.util.StringUtils.isEmpty;
 
 /**
@@ -601,5 +600,41 @@ public class PreSaleService extends ShopBaseService {
 				MarketVo.class);
 		return pageResult;
 	}
+
+    /**
+     * 从admin扫码活动码查看活动下的商品信息
+     * @param activityId 活动id
+     * @param baseCondition 过滤商品id基础条件
+     * @return 可用商品id集合
+     */
+    public List<Integer> getPreSaleCanUseGoodsIds(Integer activityId,Condition baseCondition) {
+        Timestamp now = DateUtil.getLocalDateTime();
+        // 一阶段或二阶段付定金时间限制
+        // 付定金：时间限制在第一阶段或第二阶段内
+        //全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）
+        Condition condition = (PRESALE.PRE_START_TIME.lt(now).and(PRESALE.PRE_END_TIME.gt(now))).or(PRESALE.PRE_START_TIME_2.lt(now).and(PRESALE.PRE_END_TIME_2.gt(now)));
+        PresaleRecord presaleRecord = db().selectFrom(PRESALE).where(PRESALE.ID.eq(activityId).and(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(condition)).fetchAny();
+
+        if (presaleRecord == null || DelFlag.NORMAL_VALUE.equals(presaleRecord.getDelFlag())) {
+            logger().debug("小程序-admin-presale-扫码进小程序搜索列表页-活动已删除或停止");
+            return new ArrayList<>(0);
+        }
+
+        logger().debug("小程序-admin-presale-扫码进小程序搜索列表页-搜索商品goodsType是预售类型且在本预售活动下的可用商品");
+        List<Integer> goodsIds = db().selectDistinct(PRESALE_PRODUCT.GOODS_ID).from(PRESALE_PRODUCT).innerJoin(GOODS).on(PRESALE_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
+            .where(baseCondition.and(GOODS.GOODS_TYPE.eq(BaseConstant.ACTIVITY_TYPE_PRE_SALE)).and(PRESALE_PRODUCT.PRESALE_ID.eq(activityId))).fetch(PRESALE_PRODUCT.GOODS_ID);
+        logger().debug("小程序-admin-presale-扫码进小程序搜索列表页-goodsIds:{}", goodsIds);
+
+        Integer first = presaleRecord.getFirst();
+        // 过滤正在进行且优先级比activityId对应的活动优先级高或者创建时间晚
+        Condition activityCondition = PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(PRESALE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(condition);
+        Condition firstCondition =PRESALE.FIRST.gt(first).or(PRESALE.FIRST.eq(first).and(PRESALE.CREATE_TIME.gt(presaleRecord.getCreateTime())));
+
+        List<Integer> otherGoodsIds = db().selectDistinct(PRESALE_PRODUCT.GOODS_ID).from(PRESALE).innerJoin(PRESALE_PRODUCT).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
+            .where(activityCondition.and(firstCondition)).fetch(PRESALE_PRODUCT.GOODS_ID);
+
+        goodsIds.removeAll(otherGoodsIds);
+        return goodsIds;
+    }
 
 }

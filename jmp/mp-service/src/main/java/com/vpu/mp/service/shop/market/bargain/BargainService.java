@@ -551,7 +551,7 @@ public class BargainService extends ShopBaseService  {
         BargainRecord record = getBargainActById(activityId);
         if (record == null || record.getEndTime().compareTo(now) <= 0) {
             logger().debug("小程序-admin-bargain-扫码进小程序搜索列表页-活动已删除或停止");
-            return null;
+            return new ArrayList<>();
         }
 
         List<Integer> goodsIds = db().selectDistinct(BARGAIN_GOODS.GOODS_ID)

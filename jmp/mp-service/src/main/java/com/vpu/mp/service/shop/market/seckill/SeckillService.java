@@ -748,7 +748,7 @@ public class SeckillService extends ShopBaseService{
         SecKillDefineRecord record = getSeckillActById(activityId);
         if (record == null || record.getEndTime().compareTo(now) <= 0) {
             logger().debug("小程序-admin-seckill-扫码进小程序搜索列表页-活动已删除或停止");
-            return null;
+            return new ArrayList<>();
         }
 
         List<Integer> goodsIds = db().selectDistinct(SEC_KILL_PRODUCT_DEFINE.GOODS_ID)

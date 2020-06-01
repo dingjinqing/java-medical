@@ -13,6 +13,7 @@ import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
 import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
+import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -61,6 +62,8 @@ public class GoodsSearchMpService extends ShopBaseService {
     @Autowired
     BargainService bargainService;
     @Autowired
+    PreSaleService preSaleService;
+    @Autowired
     private ShopCommonConfigService shopCommonConfigService;
     @Autowired
     WxCardExchangeService wxCardExchangeSvc;
@@ -68,7 +71,6 @@ public class GoodsSearchMpService extends ShopBaseService {
     /**
      * 小程序端-商品搜索界面-可使用搜索条件数据初始化
      * 由ES反向推到可用数据
-     *
      * @return {@link GoodsSearchFilterConditionMpVo}
      */
     public GoodsSearchFilterConditionMpVo getGoodsSearchFilterCondition() {
@@ -88,7 +90,6 @@ public class GoodsSearchMpService extends ShopBaseService {
 
     /**
      * 从数据库反小程序端商品搜索条件
-     *
      * @return {@link GoodsSearchFilterConditionMpVo}
      */
     private GoodsSearchFilterConditionMpVo getGoodsSearchFilterConditionFromDb() {
@@ -117,11 +118,13 @@ public class GoodsSearchMpService extends ShopBaseService {
                 goodsIds = getGoodsIdsLimitedForSecKillQrCode(param);
             } else if (GoodsSearchMpParam.PAGE_FROM_COUPON.equals(param.getPageFrom())) {
                 goodsIds = getGoodsIdsLimitedForVoucher(param);
-            } else if (GoodsSearchMpParam.PAGE_FROM_BARGAIN.equals(param.getPageFrom())){
+            } else if (GoodsSearchMpParam.PAGE_FROM_BARGAIN.equals(param.getPageFrom())) {
                 goodsIds = getGoodsIdsLimitedForBargainQrCode(param);
-            } else if(GoodsSearchMpParam.PAGE_FROM_CARD_EXCHANGE_GOODS.equals(param.getPageFrom())) {
-            	goodsIds = getGoodsIdsLimitedForCardExchangeGoods(param);
-            }else {
+            } else if (GoodsSearchMpParam.PAGE_FROM_CARD_EXCHANGE_GOODS.equals(param.getPageFrom())) {
+                goodsIds = getGoodsIdsLimitedForCardExchangeGoods(param);
+            } else if (GoodsSearchMpParam.PAGE_FROM_PRE_SALE.equals(param.getPageFrom())) {
+                goodsIds = getGoodsIdsLimitedForPreSaleQrCode(param);
+            } else {
                 // 空数组将搜索不出来商品
                 goodsIds = new ArrayList<>();
             }
@@ -130,12 +133,11 @@ public class GoodsSearchMpService extends ShopBaseService {
         PageResult<GoodsListMpBo> pageResult = searchGoods(param);
 
         goodsMpService.disposeGoodsList(pageResult.dataList, param.getUserId());
-       return createSearchContentVo(pageResult);
+        return createSearchContentVo(pageResult);
     }
 
 
-
-	private GoodsSearchContentVo createSearchContentVo(PageResult<GoodsListMpBo> pageResult){
+    private GoodsSearchContentVo createSearchContentVo(PageResult<GoodsListMpBo> pageResult) {
         GoodsShowStyleConfigBo goodsShowStyle = goodsMpService.getGoodsShowStyle();
         GoodsSearchContentVo vo = new GoodsSearchContentVo();
         vo.setDelMarket(goodsShowStyle.getDelMarket());
@@ -146,7 +148,6 @@ public class GoodsSearchMpService extends ShopBaseService {
 
     /**
      * admin拼团活动扫码进入
-     *
      * @param param GoodsSearchMpParam
      * @return 该活动下的有效商品信息
      */
@@ -157,7 +158,6 @@ public class GoodsSearchMpService extends ShopBaseService {
 
     /**
      * admin秒杀活动扫码进入
-     *
      * @param param GoodsSearchMpParam
      * @return 该活动下的有效商品信息
      */
@@ -168,7 +168,6 @@ public class GoodsSearchMpService extends ShopBaseService {
 
     /**
      * 小程序优惠券进入
-     *
      * @param param GoodsSearchMpParam
      * @return 该活动下的有效商品信息
      */
@@ -186,23 +185,33 @@ public class GoodsSearchMpService extends ShopBaseService {
      * @return 该活动下的有效商品信息
      */
     private List<Integer> getGoodsIdsLimitedForBargainQrCode(GoodsSearchMpParam param) {
-        int activityId =  param.getOuterPageParam().getActId();
+        int activityId = param.getOuterPageParam().getActId();
         return bargainService.getBargainCanUseGoodsIds(activityId, goodsMpService.getGoodsBaseCondition());
     }
-    
-    
+
+
     /**
      * 会员卡兑换商品进入
      * @return null 表示全部商品 | List 可兑换商品的Id
      */
-    private List<Integer> getGoodsIdsLimitedForCardExchangeGoods(GoodsSearchMpParam param){
-    	String cardNo = param.getOuterPageParam().getCardNo();
-    	return wxCardExchangeSvc.getCardExchangGoodsIds(cardNo);
+    private List<Integer> getGoodsIdsLimitedForCardExchangeGoods(GoodsSearchMpParam param) {
+        String cardNo = param.getOuterPageParam().getCardNo();
+        List<Integer> goodsIds = wxCardExchangeSvc.getCardExchangGoodsIds(cardNo);
+        return goodsIds == null ? new ArrayList<>() : goodsIds;
+    }
+
+    /**
+     * admin预售活动扫码进入
+     * @param param
+     * @return
+     */
+    private List<Integer> getGoodsIdsLimitedForPreSaleQrCode(GoodsSearchMpParam param) {
+        int activityId = param.getOuterPageParam().getActId();
+        return preSaleService.getPreSaleCanUseGoodsIds(activityId, goodsMpService.getGoodsBaseCondition());
     }
 
     /**
      * 搜索小程序商品信息
-     *
      * @param param 商品信息过滤条件
      * @return 搜索出来的商品信息
      */
@@ -210,7 +219,7 @@ public class GoodsSearchMpService extends ShopBaseService {
         PageResult<GoodsListMpBo> pageResult = null;
         if (esUtilSearchService.esState()) {
             //店铺的默认商品排序规则
-            if(shopCommonConfigService.getSearchSort().equals((byte) 1)){
+            if (shopCommonConfigService.getSearchSort().equals((byte) 1)) {
                 param.setShopSortItem(goodsMpService.getShopGoodsSortEnum());
                 param.setShopSortDirection(SortDirectionEnum.DESC);
             }
@@ -292,13 +301,13 @@ public class GoodsSearchMpService extends ShopBaseService {
 
     /**
      * 排序字段拼接
-     * @param param  请求条件
+     * @param param 请求条件
      * @return 待排序字段集合
      */
     protected List<SortField<?>> buildSearchOrderFields(GoodsSearchMpParam param) {
         List<SortField<?>> list = new ArrayList<>(2);
 
-        if(param.getSortItem() != null && param.getSortItem() != SortItemEnum.NULL){
+        if (param.getSortItem() != null && param.getSortItem() != SortItemEnum.NULL) {
             //目前用户可以指定销量和价格两种排序方式
             if (SortItemEnum.SALE_NUM.equals(param.getSortItem())) {
                 if (SortDirectionEnum.DESC.equals(param.getSortDirection())) {
@@ -316,7 +325,7 @@ public class GoodsSearchMpService extends ShopBaseService {
             }
         }
 
-        if(shopCommonConfigService.getSearchSort().equals(Byte.valueOf((byte)1))){
+        if (shopCommonConfigService.getSearchSort().equals(Byte.valueOf((byte) 1))) {
             list.add(goodsMpService.getShopGoodsSort());
         }
         log.info("db搜索排序-" + list);

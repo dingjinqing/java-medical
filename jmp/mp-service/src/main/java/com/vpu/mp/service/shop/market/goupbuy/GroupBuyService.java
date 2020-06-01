@@ -49,10 +49,6 @@ import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record3;
-import org.jooq.Result;
 import jodd.util.StringUtil;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +61,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.*;
@@ -824,7 +819,7 @@ public class GroupBuyService extends ShopBaseService {
         GroupBuyDefineRecord record = getGroupBuyDefinedInfoBuyId(activityId);
         if (record == null || record.getEndTime().compareTo(now) <= 0) {
             logger().debug("小程序-admin-groupbuy-扫码进小程序搜索列表页-活动已删除或停止");
-            return null;
+            return new ArrayList<>();
         }
 
         logger().debug("小程序-admin-groupbuy-扫码进小程序搜索列表页-搜索商品goodsType是拼团类型且在本拼团活动下的可用商品");
