@@ -130,51 +130,51 @@ export const en = {
       linkName: 'order'
     }
   ],
+  // transactionData3: [
+  //   {
+  //     title: 'Last order time',
+  //     content: 'No order yet',
+  //     tip: 'The last time a user places an order for a non physical product (including refunded order and pending order)',
+  //     value: 'lastOrderTime',
+  //     linkName: 'order'
+  //   },
+  //   {
+  //     title: 'Customer unit price',
+  //     content: '0',
+  //     tip: 'Average consumption amount of each purchase of non physical goods (including refunded orders)',
+  //     value: 'unitPrice',
+  //     linkName: 'order'
+  //   },
+  //   {
+  //     title: 'Accumulated consumption amount',
+  //     content: '0',
+  //     tip: 'Accumulated consumption amount of non physical goods purchased by users in the mall (paid part, including refunded order amount)',
+  //     value: 'totalMoneyPaid',
+  //     linkName: 'order'
+  //   },
+  //   {
+  //     title: 'Cumulative consumption orders',
+  //     content: '0',
+  //     tip: 'Cumulative consumption orders of non physical goods purchased by users in the mall (paid orders, including refunded orders)',
+  //     value: 'orderNum',
+  //     linkName: 'order'
+  //   },
+  //   {
+  //     title: 'Accumulated refund amount',
+  //     content: '0',
+  //     tip: 'Amount refunded by users after purchasing non physical goods in the mall',
+  //     value: 'returnOrderMoney',
+  //     linkName: 'order'
+  //   },
+  //   {
+  //     title: 'Cumulative refund orders',
+  //     content: '0',
+  //     tip: 'Total number of orders refunded by users after purchasing non physical goods in the mall',
+  //     value: 'returnOrderNum',
+  //     linkName: 'order'
+  //   }
+  // ],
   transactionData3: [
-    {
-      title: 'Last order time',
-      content: 'No order yet',
-      tip: 'The last time a user places an order for a non physical product (including refunded order and pending order)',
-      value: 'lastOrderTime',
-      linkName: 'order'
-    },
-    {
-      title: 'Customer unit price',
-      content: '0',
-      tip: 'Average consumption amount of each purchase of non physical goods (including refunded orders)',
-      value: 'unitPrice',
-      linkName: 'order'
-    },
-    {
-      title: 'Accumulated consumption amount',
-      content: '0',
-      tip: 'Accumulated consumption amount of non physical goods purchased by users in the mall (paid part, including refunded order amount)',
-      value: 'totalMoneyPaid',
-      linkName: 'order'
-    },
-    {
-      title: 'Cumulative consumption orders',
-      content: '0',
-      tip: 'Cumulative consumption orders of non physical goods purchased by users in the mall (paid orders, including refunded orders)',
-      value: 'orderNum',
-      linkName: 'order'
-    },
-    {
-      title: 'Accumulated refund amount',
-      content: '0',
-      tip: 'Amount refunded by users after purchasing non physical goods in the mall',
-      value: 'returnOrderMoney',
-      linkName: 'order'
-    },
-    {
-      title: 'Cumulative refund orders',
-      content: '0',
-      tip: 'Total number of orders refunded by users after purchasing non physical goods in the mall',
-      value: 'returnOrderNum',
-      linkName: 'order'
-    }
-  ],
-  transactionData4: [
     {
       title: 'Number of purchase orders for membership card',
       content: '0',
@@ -204,7 +204,7 @@ export const en = {
       linkName: ''
     }
   ],
-  transactionData5: [
+  transactionData4: [
     {
       title: 'Last order time',
       content: 'No order yet',
@@ -248,7 +248,7 @@ export const en = {
       linkName: ''
     }
   ],
-  transactionData6: [
+  transactionData5: [
     {
       title: 'Last order time',
       content: 'No order yet',
