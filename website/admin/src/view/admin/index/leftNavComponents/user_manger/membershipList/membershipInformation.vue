@@ -212,7 +212,7 @@
             v-else
           >{{item.content}}</div>
           <div
-            v-if="transactionTabIndex === 3"
+            v-if="transactionTabIndex === 2"
             style="text-align: center;margin-top: 10px;"
           >
             <el-button
@@ -226,7 +226,7 @@
       </div>
       <div
         class="transactionOrder"
-        v-if="transactionTabIndex !== 0 && transactionTabIndex !== 3"
+        v-if="transactionTabIndex !== 0 && transactionTabIndex !== 2"
       >
         <el-button
           type="primary"
