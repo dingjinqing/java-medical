@@ -180,28 +180,28 @@ export const en = {
       content: '0',
       tip: 'Number of orders (including refunded orders) that users purchase membership cards in the mall',
       value: 'memberCardPurchaseOrderNum',
-      linkName: ''
+      linkName: 'member_value_added'
     },
     {
       title: '会员卡续费单数',
       content: '0',
       tip: 'Renewal order of membership card',
       value: 'memberCardRenewOrderNum',
-      linkName: ''
+      linkName: 'member_value_added'
     },
     {
       title: '会员卡充值单数',
       content: '0',
       tip: 'Top up order of membership card',
       value: 'memberCardChargeOrderNum',
-      linkName: ''
+      linkName: 'member_value_added'
     },
     {
       title: '优惠券礼包购买订单数',
       content: '0',
       tip: 'Number of purchase orders for coupon package',
       value: 'couponPackPurchaseOrderNum',
-      linkName: ''
+      linkName: 'member_value_added'
     }
   ],
   transactionData4: [
