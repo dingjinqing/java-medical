@@ -102,12 +102,6 @@
           >
           </el-table-column>
           <el-table-column
-            :label="$t('live.numb')"
-            align="center"
-          >
-          -
-          </el-table-column>
-          <el-table-column
             prop="goodsListNum"
             :label="$t('live.goodsListNum')"
             align="center"
