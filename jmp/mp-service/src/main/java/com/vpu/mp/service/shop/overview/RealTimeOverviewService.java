@@ -66,7 +66,7 @@ public class RealTimeOverviewService extends ShopBaseService {
                         .or(OrderInfo.ORDER_INFO.IS_COD.eq((byte)1)
                                 .and(OrderInfo.ORDER_INFO.SHIPPING_TIME.isNotNull())))
                 .fetchInto(Integer.class);
-        realTimeVo.setPayUserNum(new Tuple2<>(Util.isEmpty(todayPayUserNum) ? 0 : todayPayUserNum.get(0),Util.isEmpty(yesPayUserNum) ? 0 : todayPayUserNum.get(0)));
+        realTimeVo.setPayUserNum(new Tuple2<>(Util.isEmpty(todayPayUserNum) ? 0 : todayPayUserNum.get(0),Util.isEmpty(yesPayUserNum) ? 0 : yesPayUserNum.get(0)));
         /* uv */
         List<Integer> uvToday = db().select(DSL.countDistinct(USER_LOGIN_RECORD.USER_ID))
                 .from(USER_LOGIN_RECORD)

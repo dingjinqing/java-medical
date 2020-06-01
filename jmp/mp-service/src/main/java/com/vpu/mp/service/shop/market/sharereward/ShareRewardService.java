@@ -367,13 +367,13 @@ public class ShareRewardService extends BaseShopConfigService {
             .from(AWARD_RECEIVE).leftJoin(AWARD).on(AWARD_RECEIVE.SHARE_ID.eq(AWARD.ID)).leftJoin(GOODS).on(AWARD_RECEIVE.GOODS_ID.eq(GOODS.GOODS_ID)).leftJoin(USER).on(AWARD_RECEIVE.USER_ID.eq(USER.USER_ID)).where(AWARD_RECEIVE.SHARE_ID.eq(param.getShareId()));
 
         if (StringUtils.isNotEmpty(param.getGoodsName())) {
-            conditionStep = conditionStep.and(GOODS.GOODS_NAME.like(this.likeReplace(param.getGoodsName())));
+            conditionStep = conditionStep.and(GOODS.GOODS_NAME.contains(param.getGoodsName()));
         }
         if (StringUtils.isNotEmpty(param.getMobile())) {
-            conditionStep = conditionStep.and(USER.MOBILE.like(this.likeReplace(param.getMobile())));
+            conditionStep = conditionStep.and(USER.MOBILE.contains(param.getMobile()));
         }
         if (StringUtils.isNotEmpty(param.getUsername())) {
-            conditionStep = conditionStep.and(USER.USERNAME.like(this.likeReplace(param.getUsername())));
+            conditionStep = conditionStep.and(USER.USERNAME.contains(param.getUsername()));
         }
         if (param.getRewardLevel() != null) {
             conditionStep = conditionStep.and(AWARD_RECEIVE.AWARD_LEVEL.eq(param.getRewardLevel()));
