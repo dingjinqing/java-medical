@@ -55,12 +55,6 @@
       </div>
     </div>
     <div class="footer">
-      <!-- <div
-        class="save"
-        @click="handleToSave"
-      >
-
-      </div> -->
       <el-button type="primary" size="small" @click="handleToSave">{{$t('memberCard.save')}}</el-button>
     </div>
   </div>
