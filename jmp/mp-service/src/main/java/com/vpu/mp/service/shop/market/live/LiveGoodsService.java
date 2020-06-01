@@ -46,6 +46,7 @@ public class LiveGoodsService extends ShopBaseService {
 	private GoodsMpService goodsMp;
 
 	private static final Byte ONE = 1;
+	private static final Byte ZERO = 0;
 
 	/**
 	 * 获得直播间商品列表
@@ -58,7 +59,7 @@ public class LiveGoodsService extends ShopBaseService {
 				.select(GOODS.GOODS_NAME, GOODS.GOODS_SN, GOODS.SHOP_PRICE, GOODS.GOODS_NUMBER, GOODS.SORT_ID,
 						GOODS.BRAND_ID, GOODS.GOODS_IMG)
 				.from(LIVE_GOODS).leftJoin(GOODS).on(LIVE_GOODS.GOODS_ID.eq(GOODS.GOODS_ID))
-				.where(LIVE_GOODS.LIVE_ID.eq(id)).fetchInto(LiveRomeGoodListVo.class);
+				.where(LIVE_GOODS.LIVE_ID.eq(id).and(LIVE_GOODS.DEL_FLAG.eq(ZERO))).fetchInto(LiveRomeGoodListVo.class);
 		return list;
 	}
 
@@ -152,7 +153,7 @@ public class LiveGoodsService extends ShopBaseService {
 		
 		if(!successGoodIds.isEmpty()) {
 			int execute = db().update(LIVE_GOODS).set(LIVE_GOODS.DEL_FLAG, ONE).set(LIVE_GOODS.DEL_TIME, DateUtil.getSqlTimestamp())
-					.where(LIVE_GOODS.ID.notIn(successGoodIds).and(LIVE_GOODS.ROOM_ID.eq(roomId))).execute();
+					.where(LIVE_GOODS.ID.notIn(successGoodIds).and(LIVE_GOODS.ROOM_ID.eq(roomId).and(LIVE_GOODS.DEL_FLAG.eq(ZERO)))).execute();
 			logger().info("更新失效的商品：{}",execute);
 		}
 		return successGoodIds;
