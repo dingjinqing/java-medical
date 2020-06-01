@@ -139,20 +139,20 @@ public class LiveGoodsService extends ShopBaseService {
 				int update = goodsData.update();
 				logger().info("房间：{}，更新商品id：{}，结果：{}",roomId,goodsData.getGoodsId(), update);
 				if(update>0) {
-					successGoodIds.add(goodsData.getGoodsId());					
+					successGoodIds.add(goodsData.getId());					
 				}
 			}else {
 				int insert = goodsData.insert();
 				logger().info("房间：{}，插入商品id：{}，结果：{}",roomId,goodsData.getGoodsId(), insert);
 				if(insert>0) {
-					successGoodIds.add(goodsData.getGoodsId());					
+					successGoodIds.add(goodsData.getId());					
 				}
 			}
 		}
 		
 		if(!successGoodIds.isEmpty()) {
 			int execute = db().update(LIVE_GOODS).set(LIVE_GOODS.DEL_FLAG, ONE).set(LIVE_GOODS.DEL_TIME, DateUtil.getSqlTimestamp())
-					.where(LIVE_GOODS.GOODS_ID.notIn(successGoodIds).and(LIVE_GOODS.ROOM_ID.eq(roomId))).execute();
+					.where(LIVE_GOODS.ID.notIn(successGoodIds).and(LIVE_GOODS.ROOM_ID.eq(roomId))).execute();
 			logger().info("更新失效的商品：{}",execute);
 		}
 		return successGoodIds;
