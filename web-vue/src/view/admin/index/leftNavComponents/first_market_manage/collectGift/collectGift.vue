@@ -175,7 +175,7 @@
                         <div class="coupon_center_number">剩余{{item.surplus}}张</div>
                         <div
                           class="coupon_list_bottom"
-                          style="font-size:12px"
+                          :style="`background-image: url(${$imageHost}/image/admin/coupon_border.png)`"
                         >
                           <span v-if="item.scoreNumber === 0">领取</span>
                           <div v-if="item.scoreNumber !== 0">
@@ -220,7 +220,7 @@
         @checkReturnFormat="handleToCheck"
         :tuneUpCoupon="showCouponDialog"
         :couponBack="couponIdList"
-        :type="-1"
+        :type="0"
       />
     </div>
     <!-- 保存修改 -->
@@ -637,7 +637,8 @@ export default {
           font-size: 12px !important;
         }
         .coupon_center_number {
-          height: 20px;
+          height: 18px;
+          font-size: 12px;
           color: #fbb;
         }
         .coupon_list_bottom {
@@ -647,7 +648,6 @@ export default {
           border-bottom-right-radius: 8px;
           color: #fff;
           background: #f66;
-          background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
           background-repeat: repeat-x;
         }
       }
