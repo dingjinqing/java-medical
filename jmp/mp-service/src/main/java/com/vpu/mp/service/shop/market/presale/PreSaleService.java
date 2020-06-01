@@ -615,7 +615,7 @@ public class PreSaleService extends ShopBaseService {
         Condition condition = (PRESALE.PRE_START_TIME.lt(now).and(PRESALE.PRE_END_TIME.gt(now))).or(PRESALE.PRE_START_TIME_2.lt(now).and(PRESALE.PRE_END_TIME_2.gt(now)));
         PresaleRecord presaleRecord = db().selectFrom(PRESALE).where(PRESALE.ID.eq(activityId).and(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(condition)).fetchAny();
 
-        if (presaleRecord == null || DelFlag.NORMAL_VALUE.equals(presaleRecord.getDelFlag())) {
+        if (presaleRecord == null || DelFlag.DISABLE_VALUE.equals(presaleRecord.getDelFlag())) {
             logger().debug("小程序-admin-presale-扫码进小程序搜索列表页-活动已删除或停止");
             return new ArrayList<>(0);
         }
