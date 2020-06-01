@@ -271,19 +271,23 @@ function dis_request(that) {
       // }
       
       // 轮播返利信息
-      dis_info.rebateOrderList.forEach(item => {
-        if (item.finishedTime) {
-          item.finishedTime = item.finishedTime.substring(0, 10);
-        }
-        if (item.username.length > 4) {
-          item.username = item.username.substring(0, 4) + "...";
-        }
-        item.fanliMoney = parseFloat(item.fanliMoney).toFixed(2);
-      })
+      if (dis_info.rebateOrderList && dis_info.rebateOrderList.length > 0) {
+        dis_info.rebateOrderList.forEach(item => {
+          if (item.finishedTime) {
+            item.finishedTime = item.finishedTime.substring(0, 10);
+          }
+          if (item.username.length > 4) {
+            item.username = item.username.substring(0, 4) + "...";
+          }
+          item.fanliMoney = parseFloat(item.fanliMoney).toFixed(2);
+        })
+      }
       // 返利排名
-      dis_info.rebateRankingTop.forEach(item => {
-        item.finalMoney = parseFloat(item.finalMoney).toFixed(2);
-      })
+      if (dis_info.rebateRankingTop && dis_info.rebateRankingTop.length > 0) {
+        dis_info.rebateRankingTop.forEach(item => {
+          item.finalMoney = parseFloat(item.finalMoney).toFixed(2);
+        })
+      }
       that.setData({
         dis_info: dis_info,
         rebate_center: dis_info.isDistributor == 1 ? 1 : 2,
