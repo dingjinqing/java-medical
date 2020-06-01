@@ -229,9 +229,9 @@ global.wxPage({
     let result = new Promise((resolve, reject) => {
       let customParams = {}
       if (this.data.rebateConfig) customParams.rebateConfig = JSON.parse(this.data.rebateConfig)
-      if(this.data.shareAwardId && this.data.shareAwardLaunchUserId) {
+      if (this.data.shareAwardId && this.data.shareAwardLaunchUserId) {
         customParams.shareAwardId = this.data.shareAwardId
-        customParams.shareAwardLaunchUserId =  this.data.shareAwardLaunchUserId
+        customParams.shareAwardLaunchUserId = this.data.shareAwardLaunchUserId
       }
       util.api(
         '/api/wxapp/goods/detail',
@@ -649,12 +649,12 @@ global.wxPage({
   },
   // 分享弹窗
   share () {
-   this.setData({
-    showShareDialog: true
-   })
+    this.setData({
+      showShareDialog: true
+    })
   },
   //请求分享数据
-  async getShareData(){
+  async getShareData () {
     let activityData = {}
     let {
       goodsId: targetId,
@@ -724,11 +724,61 @@ global.wxPage({
         var shareContent1 = res.content.infoVo.shareRules[0]
         var shareContent2 = res.content.infoVo.shareRules[1]
         var shareContent3 = res.content.infoVo.shareRules[2]
+
+        //分享有礼的用户参与信息
+        let shareUserArr = res.content.infoVo.shareRules
+        // 未邀请
+        let notInvited = 4   // 未邀请
+        let goingNum = 0   // 每一级参与的人数
+        let isHasUser = false  // 是否有用户
+
+        for (i = 0; i < 3; i++) {
+          let currentRule = shareUserArr[i]
+
+          if (!currentRule) break
+          //	状态
+          let cur = currentRule.share_state
+
+          currentRule.share_state = notInvited
+
+          if (!isHasUser) {
+            isHasUser = currentRule.user_info_list.length > 0
+            console.log(isHasUser)
+          }
+
+          if (cur !== 0) {
+            currentRule.share_state = cur
+          } else {
+            // cur = 0
+            if (goingNum === 0) {
+              currentRule.share_state = cur
+              goingNum++
+            }
+            currentRule.share_state = notInvited
+          }
+        }
+
+        var not_join_user1 = shareContent1.invite_num - shareContent1.user_info_list.length
+        for (var i = 0; i < not_join_user1; i++) {
+          var peo1 = shareContent1.user_info_list.push(null)
+        }
+        if (shareContent2) {
+          var not_join_user2 = shareContent2.invite_num - shareContent2.user_info_list.length
+          for (var i = 0; i < not_join_user2; i++) {
+            var peo2 = shareContent2.user_info_list.push(null)
+          }
+        }
+        if (shareContent3) {
+          var not_join_user3 = shareContent3.invite_num - shareContent3.user_info_list.length
+          for (var i = 0; i < not_join_user3; i++) {
+            var peo3 = shareContent3.user_info_list.push(null)
+          }
+        }
         this.setData({
           returnData,
-          shareContent1,
-          shareContent2,
-          shareContent3,
+          shareContent1: peo1,
+          shareContent2: peo2,
+          shareContent3: peo3,
           shareLimit: shareLimit
         })
       }
@@ -741,12 +791,20 @@ global.wxPage({
   // 分享有礼-查看奖励跳转
   getShare (e) {
     let reward_type = e.currentTarget.dataset.type
+    let stock = e.currentTarget.dataset.stock
     if (reward_type === 1) {
       util.jumpLink('/pages1/integral/integral')
     } else if (reward_type === 2) {
       util.jumpLink('/pages/coupon/coupon')
     } else {
-      util.jumpLink('pages1/lottery/lottery')
+      if (stock === 0) {
+        wx.showToast({
+          title: '奖励已被领取完',
+          duration: 1000
+        })
+      } else {
+        util.jumpLink('pages1/lottery/lottery')
+      }
     }
   },
   // 切换收藏
@@ -1054,10 +1112,10 @@ global.wxPage({
       url: `plugin-private://wx2b03c6e691cd7370/pages/live-player-plugin?room_id=${roomId}`
     })
   },
-  getLiveInfo(){
-    let {roomId,liveStatus} = this.data.roomDetailMpInfo
-    livePlayer.getLiveStatus({room_id:roomId})
-      .then(res=>{
+  getLiveInfo () {
+    let { roomId, liveStatus } = this.data.roomDetailMpInfo
+    livePlayer.getLiveStatus({ room_id: roomId })
+      .then(res => {
         let liveStatus = res.liveStatus
         this.setData({
           liveStatus
@@ -1146,19 +1204,19 @@ global.wxPage({
   onShareAppMessage: function () {
     console.log(this.data.buttonShareData)
     //分享记录
-    util.api('/api/wxapp/shareaward/goods/share',res=>{
+    util.api('/api/wxapp/shareaward/goods/share', res => {
       console.log(res)
-    },{
+    }, {
       goodsId: this.data.goodsId,
-      activityId: this.data.goodsInfo.activity.activityId,
-      activityType: this.data.goodsInfo.activity.activityType,
+      activityId: this.data.goodsInfo.activity != null ? this.data.goodsInfo.activity.activityId : null,
+      activityType: this.data.goodsInfo.activity != null ? this.data.goodsInfo.activity.activityType : null,
       userId: util.getCache('user_id'),
     })
     //分享有礼记录
-    if(this.data.shareAwardId){
-      util.api('/api/wxapp/shareaward/goods/shareaward',res=>{
+    if (this.data.shareAwardId) {
+      util.api('/api/wxapp/shareaward/goods/shareaward', res => {
         console.log(res)
-      },{
+      }, {
         goodsId: this.data.goodsId,
         activityId: this.data.shareAwardId,
         userId: util.getCache('user_id'),
@@ -1176,7 +1234,7 @@ global.wxPage({
           if (this.data.goodsInfo.activity) {
             path += `&atp=${this.data.goodsInfo.activity.activityType}&aid=${this.data.goodsInfo.activity.activityId}`
           }
-          if(this.data.shareAwardId){
+          if (this.data.shareAwardId) {
             path += `&shareAwardId=${this.data.shareAwardId}&shareAwardLaunchUserId=${util.getCache('user_id')}`
           }
           console.log(path)
