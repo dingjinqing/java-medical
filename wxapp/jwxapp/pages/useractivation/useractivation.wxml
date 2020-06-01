@@ -55,7 +55,7 @@
   
 
 <!-- 绑定手机号弹窗 -->
-<v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="{{i18n.$t(localePack,'page1.reserve.needPhonenum')}}" />
+<v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="{{i18n.$t(localePack,'page1.usercenter.needPhone')}}" />
 
 <view class="activation_fail" wx:if="{{is_fail == 1}}" catchtap="close_fail">
   <view class="fail_content">
