@@ -98,7 +98,9 @@ export default {
     backData: { // 模块公共
       handler (newData) {
         if (newData) {
-          this.moduleSaveData = newData
+          let render = JSON.parse(JSON.stringify(newData))
+          render.rich_text = render.rich_text.replace(/<img/g, `<img style="width:100%;height:auto"`)
+          this.moduleSaveData = render
         }
         console.log(newData)
       },
