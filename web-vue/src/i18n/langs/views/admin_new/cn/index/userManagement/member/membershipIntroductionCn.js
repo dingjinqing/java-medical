@@ -311,28 +311,28 @@ export const cn = {
       content: '0',
       tip: '用户在商城购买会员卡的订单数（包括已退款订单）',
       value: 'memberCardPurchaseOrderNum',
-      linkName: ''
+      linkName: 'member_value_added'
     },
     {
       title: '会员卡续费单数',
       content: '0',
       tip: '用户在商城给会员卡续费的交易单数（包括已退款续费单）',
       value: 'memberCardRenewOrderNum',
-      linkName: ''
+      linkName: 'member_value_added'
     },
     {
       title: '会员卡充值单数',
       content: '0',
       tip: '用户在商城给会员卡充值的交易单数（包括已退款充值单）',
       value: 'memberCardChargeOrderNum',
-      linkName: ''
+      linkName: 'member_value_added'
     },
     {
       title: '优惠券礼包购买订单数',
       content: '0',
       tip: '用户在商城购买优惠券礼包的订单数（包括已退款订单）',
       value: 'couponPackPurchaseOrderNum',
-      linkName: ''
+      linkName: 'member_value_added'
     }
   ],
   transactionData4: [
