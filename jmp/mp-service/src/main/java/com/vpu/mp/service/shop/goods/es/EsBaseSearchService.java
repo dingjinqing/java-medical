@@ -92,7 +92,8 @@ public class EsBaseSearchService extends ShopBaseService {
         GOODS_WEIGHT,
         GOODS_DESC,
         ROOM_ID,
-        SECONDARY_GOODS_IMAGES
+        SECONDARY_GOODS_IMAGES,
+        VIDEO_INFO_JSON
     };
 
 
