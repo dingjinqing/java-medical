@@ -6,6 +6,7 @@
       :rules="rules"
       ref="ruleForm"
       label-width="100px"
+      @submit.native.prevent
     >
       <el-form-item
         :label="$t('memberCard.memberCardName')"
@@ -15,6 +16,7 @@
         <el-input
           v-model="ruleForm.cardName"
           size="small"
+         @change="checkoutName"
         >
         </el-input>
       </el-form-item>
@@ -28,12 +30,9 @@
             <el-radio
               v-model="ruleForm.bgType"
               label="0"
+              style="margin-right: 26px;"
             >{{ $t('memberCard.bgColor') }}</el-radio>
-            <colorPicker
-              v-model="ruleForm.bgColor"
-              :defaultColor="defaultBgColor"
-              v-on:change="handleChangeColor"
-            />
+             <el-color-picker v-model="ruleForm.bgColor"></el-color-picker>
           </div>
           <div class="bgBottom">
             <el-radio
@@ -166,9 +165,6 @@ export default {
     isBlank (str) {
       return (!str || /^\s*$/.test(str))
     },
-    handleChangeColor () {
-      console.log(this.ruleForm.bgColor)
-    },
     // 添加图片
     handleToAddImg () {
       this.imgDisable = !this.imgDisable
@@ -187,14 +183,34 @@ export default {
     },
     getDefaultBgImg () {
       return 'backgroundImage:url(' + this.$imageHost + '/image/admin/add_img.png);backgroundRepeat:no-repeat'
+    },
+    checkoutName () {
+      this.$refs.ruleForm.validateField('cardName')
     }
   }
 }
 </script>
 <style scoped lang="scss">
+
+/deep/ .el-form-item__label,
+/deep/ .el-radio__label{
+  font-size: 13px;
+}
+/deep/ .el-icon-close:before{
+  content: ""
+}
+/deep/ .el-icon-arrow-down:before {
+    content: "";
+}
+/deep/ .el-color-picker__trigger{
+  border: 0px solid #e6e6e6;
+  height: 35px;
+  width: 70px;
+}
+
 .cardNameAndBg {
   .userCardName {
-    padding-left: 100px;
+    padding-left: 75px;
     /deep/ .el-input {
       width: 41%;
       .el-input__inner {
@@ -211,7 +227,7 @@ export default {
     /deep/ .el-form-item__label {
       margin-left: -8px;
     }
-    padding-left: 100px;
+    padding-left: 75px;
     .backgroundDiv {
       .bgTop {
         height: 40px;

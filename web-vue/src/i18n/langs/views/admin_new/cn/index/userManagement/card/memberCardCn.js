@@ -141,7 +141,7 @@ export const cn = {
   isNeedtoBuy: '是否需要购买：',
   crashBuy: '现金购买',
   scoreBuy: '积分购买',
-  unitM: '分',
+  unitM: '积分',
   receiveCodeSetting: '领取码领取',
   batchOne: '批次',
   batchName: '批次名称',
@@ -347,5 +347,7 @@ export const cn = {
       batchId: 0,
       name: '全部'
     }
-  ]
+  ],
+  repeatSubmit: '正在处理信息,请勿重复提交',
+  addUp: '累计'
 }

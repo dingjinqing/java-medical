@@ -55,12 +55,7 @@
       </div>
     </div>
     <div class="footer">
-      <div
-        class="save"
-        @click="handleToSave"
-      >
-        {{$t('memberCard.save')}}
-      </div>
+      <el-button type="primary" size="small" @click="handleToSave">{{$t('memberCard.save')}}</el-button>
     </div>
   </div>
 </template>
@@ -153,8 +148,12 @@ export default {
         flag: flagTmp
       },
       cardGradeCfgData: {
+        checkedScore: [],
+        checkedMoney: [],
         gradeScore: undefined,
         gradeCrash: undefined,
+        gradeScore2: null,
+        gradeCrash2: null,
         gradeValue: null,
         valid: false
       },
@@ -178,7 +177,8 @@ export default {
         cardEffectTime: null,
         cardStoreCfgData: null,
         cardUsageCfgData: cardUsageCfgDataTmp
-      }
+      },
+      isCanSave: true //  防止重复提交
     }
   },
   mounted () {
@@ -252,6 +252,16 @@ export default {
       // 升级
       this.cardGradeCfgData.gradeScore = data.gradeConditionJson.gradeScore
       this.cardGradeCfgData.gradeCrash = data.gradeConditionJson.gradeMoney
+      if (this.cardGradeCfgData.gradeScore !== null) {
+        this.cardGradeCfgData.checkedScore = ['on']
+      } else {
+        this.cardGradeCfgData.gradeScore = void 0
+      }
+      if (this.cardGradeCfgData.gradeCrash !== null) {
+        this.cardGradeCfgData.checkedMoney = ['on']
+      } else {
+        this.cardGradeCfgData.gradeCrash = void 0
+      }
       this.cardGradeCfgData.gradeValue = data.grade
 
       // 激活条件
@@ -321,7 +331,12 @@ export default {
 
       if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardGradeCfgData.valid && this.cardActiveCfgData.valid && this.cardScoreCfgData.valid) {
         // 保存数据
-        this.prepareCardData()
+        if (this.isCanSave) {
+          this.isCanSave = false // 禁用保存
+          this.prepareCardData()
+        } else {
+          this.$message.warning(this.$t('memberCard.repeatSubmit'))
+        }
       }
 
       // 保存数据
@@ -340,6 +355,14 @@ export default {
         }
         this.cardScoreCfgData.goodsMoney = goodsMoney
         this.cardScoreCfgData.getScores = getScores
+      }
+
+      //  升级条件数据
+      if (this.cardGradeCfgData.checkedScore.length > 0 && this.cardGradeCfgData.checkedScore[0] === 'on') {
+        this.cardGradeCfgData.gradeScore2 = this.cardGradeCfgData.gradeScore
+      }
+      if (this.cardGradeCfgData.checkedMoney.length > 0 && this.cardGradeCfgData.checkedMoney[0] === 'on') {
+        this.cardGradeCfgData.gradeCrash2 = this.cardGradeCfgData.gradeCrash
       }
     },
     prepareCardData () {
@@ -379,7 +402,7 @@ export default {
         },
         'desc': this.cardUsageCfgData.desc,
         'mobile': this.cardUsageCfgData.mobile,
-        'gradeConditionJson': { gradeScore: this.cardGradeCfgData.gradeScore, gradeMoney: this.cardGradeCfgData.gradeCrash },
+        'gradeConditionJson': { gradeScore: this.cardGradeCfgData.gradeScore2, gradeMoney: this.cardGradeCfgData.gradeCrash2 },
         'grade': this.cardGradeCfgData.gradeValue,
         'activation': this.cardActiveCfgData.activation,
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
@@ -399,20 +422,28 @@ export default {
     // 2- 创建会员卡接口
     createMemberCard (data) {
       createMemberCardRequest(data).then(res => {
+        //  恢复可以保存
         console.log(res)
+        this.isCanSave = true
         if (res.error === 0) {
           // success
           // 清除数据，并进行跳转
           this.successOptions()
+        } else {
+          this.$message.warning(this.$t('memberCard.cardCreateFailed'))
         }
       })
     },
     updateCardInfo (data) {
       updateCardRequest(data).then(res => {
+        //  恢复可以保存
+        this.isCanSave = true
         console.log(res)
         if (res.error === 0) {
           // success
           this.successOptions()
+        } else {
+          this.$message.warning(this.$t('memberCard.cardCreateFailed'))
         }
       })
     },

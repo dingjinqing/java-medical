@@ -6,6 +6,7 @@
       :rules="rules"
       ref="ruleForm"
       label-width="100px"
+      @submit.native.prevent
     >
       <div class="card-charge-top">
         <el-form-item prop="sendMoney">
@@ -25,6 +26,7 @@
               :min="0"
               :max="999999999"
               class="inputWidth"
+              @change="$refs.ruleForm.validateField('sendMoney')"
             >
             </el-input-number>
             <span class='yuan-info'>{{ $t('memberCard.yuan') }}</span>
@@ -78,7 +80,7 @@
               </el-input-number>
               <span class='yuan-info'>{{ $t('memberCard.yuan') }}</span>
               <img
-                style="cursor:pointer"
+                style="cursor:pointer;vertical-align: text-bottom;"
                 :src="$imageHost +'/image/admin/sign_jia.png' "
                 @click="handleToAddChargeArr()"
               >
@@ -115,7 +117,7 @@
                 </el-input-number>
                 <span class='yuan-info'>{{ $t('memberCard.yuan') }}</span>
                 <img
-                  style="cursor:pointer"
+                  style="cursor:pointer;vertical-align: text-bottom;"
                   :src="$imageHost +'/image/admin/sign_del.png' "
                   @click="handleToDelChargeArr(index)"
                 >
@@ -387,16 +389,25 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+*,/deep/ .el-form-item__label,
+/deep/ .el-radio__label,
+/deep/ .el-checkbox__label{
+  font-size: 13px;
+}
+
+/deep/ .el-radio {
+        margin-right: 10px;
+}
 .card-charge {
   .card-charge-top {
     // /deep/ .el-form-item__error {
     //   padding-left: 200px;
     // }
     /deep/ .el-form-item__error {
-      padding-left: 100px;
+      padding-left: 75px;
     }
     .charge-item {
-      padding-left: 100px;
+      padding-left: 75px;
       display: flex;
       align-items: center;
       .send-info {
@@ -428,10 +439,10 @@ export default {
           width: 120px;
         }
         .send-info {
-          margin: 0 10px;
+          margin: 0 0px;
         }
         .yuan-info {
-          margin: 0 5px 0 20px;
+          margin: 0 0px 0 0px;
         }
       }
     }
@@ -441,16 +452,16 @@ export default {
       display: flex;
       align-items: center;
       .charge-full {
-        margin-right: 31px;
+        margin-right: 10px;
       }
       /deep/ .el-input-number {
         width: 120px;
       }
       .send-info {
-        margin: 0 10px;
+        margin: 0px;
       }
       .yuan-info {
-        margin: 0 5px 0 20px;
+        margin: 0px;
       }
     }
 
@@ -462,16 +473,16 @@ export default {
         display: flex;
         align-items: center;
         /deep/ .el-radio {
-          margin-right: 19px;
+          margin-right: 10px;
         }
         /deep/ .el-input-number {
           width: 120px;
         }
         .send-info {
-          margin: 0 15px;
+          margin: 0 0px;
         }
         .yuan-info {
-          margin: 0 5px 0 20px;
+          margin: 0;
         }
       }
     }
