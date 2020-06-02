@@ -16,8 +16,8 @@ const baseRoutes = [
     component: () => import('@/components/system/login')
   },
   {
-    path: '/system/index',
-    redirect: 'systemLogin'
+    path: '/index',
+    redirect: '/system/login'
   },
   {
     path: '/home/index',

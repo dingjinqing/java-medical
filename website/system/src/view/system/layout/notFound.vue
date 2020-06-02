@@ -26,13 +26,17 @@ export default {
     handleToClick (flag) {
       if (flag) {
         let routeData = this.$router.resolve({
-          path: '/system/system/login'
+          path: '/admin/login'
         })
+        console.log(routeData)
+        routeData.href = '/admin/index/login'
         window.open(routeData.href, '_blank')
       } else {
         let routeData1 = this.$router.resolve({
-          path: '/admin/index/login'
+          path: '/system/login'
         })
+        console.log(routeData1)
+        routeData1.href = '/system/system/login'
         window.open(routeData1.href, '_blank')
       }
     }
