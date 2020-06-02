@@ -82,7 +82,7 @@ global.wxPage({
           console.log(res)
           if (res.error === 0) {
             util.redirectTo({
-              url: '/pages/personalcenter/personalcenter'
+              url: '/pages/personalcenter/personalcenter?tabIndex=2'
             })
           } else {
             util.showModal('提醒', res.message)
