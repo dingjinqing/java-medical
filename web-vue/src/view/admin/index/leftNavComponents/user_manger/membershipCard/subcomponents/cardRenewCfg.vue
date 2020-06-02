@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <el-form :model="$data" :rules="myRules" label-width="200px" :inline-message="true" >
+        <el-form :model="$data" :rules="myRules" label-width="175px" :inline-message="true" >
             <el-form-item label="会员续费(续有效时长):" :rules="[{required: true}]">
 
                 <el-radio :value="renewMemberCard" :label="0" @change="change('renewMemberCard',0)">不可续费</el-radio>
@@ -123,6 +123,11 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+*,/deep/ .el-form-item__label,
+/deep/ .el-radio__label,
+/deep/ .el-checkbox__label{
+  font-size: 13px;
+}
     .container{
         margin-bottom: 22px;
         position: relative;

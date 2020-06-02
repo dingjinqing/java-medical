@@ -75,7 +75,7 @@ export default {
   },
   data () {
     return {
-      width: '40%',
+      width: '600px',
       desc: null,
       inputValue: void 0,
       inputError: false
