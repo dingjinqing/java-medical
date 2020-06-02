@@ -8,7 +8,10 @@ global.wxComponent({
   properties: {
     data: {
       type: Array,
-      value: []
+      value: [],
+      observer(val){
+        console.log(val)
+      }
     },
     comColor: String,
     options: Object
@@ -46,7 +49,7 @@ global.wxComponent({
           util.api('/api/wxapp/address/wxadd', res => {
             console.log(res)
             if (res.error === 0) {
-              that.triggerEvent('addaddress')
+              that.triggerEvent('refreshlist')
             }
           }, {
             wxAddress:op
@@ -61,6 +64,51 @@ global.wxComponent({
     newAdressHandle () {
       wx.navigateTo({
         url: '/pages1/addressedit/addressedit',
+      })
+    },
+
+    // 设置默认地址
+    changeDefaultRadio(e) {
+      console.log(e)
+      let that = this
+      let id = Number(e.currentTarget.dataset.id)
+      util.api('/api/wxapp/address/default', res => {
+        if (res.error === 0) {
+          that.triggerEvent('refreshlist')
+        } else {
+          util.toast_fail(res.message)
+        }
+      }, {
+        addressId: id
+      })
+    },
+
+    // 删除地址
+    handleDeleteAddress (e) {
+      let that = this
+      console.log(e)
+      let id = e.currentTarget.dataset.id
+      if (id) {
+        util.confirm('提示', '确认要删除该地址吗？', () => {
+          util.api('/api/wxapp/address/remove', res => {
+            if (res.error === 0) {
+              console.log(res)
+              util.toast_success('删除成功!')
+              that.triggerEvent('refreshlist')
+            } else {
+              util.toast_fail(res.message)
+            }
+          }, {
+            addressId: id
+          })
+        })
+      }
+    },
+    // 编辑地址
+    handleEditAddress (e) {
+      let id = e.currentTarget.dataset.id
+      wx.navigateTo({
+        url: '/pages1/addressedit/addressedit?addressId='+id
       })
     }
   }

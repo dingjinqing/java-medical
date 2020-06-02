@@ -1,6 +1,7 @@
 var addressList = []; //地址列表
 var zipCodeList = []; //邮编列表
 var zipCode = require("./zipCode.js");
+var util = require('../../util')
 
 console.log("正在加载省市区数据...");
 
@@ -20,23 +21,39 @@ const wx_getaddress = () => {
         }
       } else {
         setTimeout(() => {
-          wx.request({
-            url: "https://wangzc.wang/addressJson/" + i,
-            method: "GET",
-            success: function(res) {
+          util.api('/api/wxapp/address/database', res => {
+            if (res.error === 0) {
               index++;
               wx.setStorage({
                 key: i + "",
-                data: JSON.stringify(res.data)
+                data: res.content
               });
               //  console.log('第' + index + '条数据加载完毕')
-              array = [...array, ...res.data];
+              if (res.content) {
+                array = [...array, ...JSON.parse(res.content)];
+              }
               if (index == length) {
                 resolve(array);
               }
             }
-          });
-        }, 2000 * i);
+          }, {index:i})
+          // wx.request({
+          //   url: "https://wangzc.wang/addressJson/" + i,
+          //   method: "GET",
+          //   success: function(res) {
+          //     index++;
+          //     wx.setStorage({
+          //       key: i + "",
+          //       data: JSON.stringify(res.data)
+          //     });
+          //     console.log('第' + index + '条数据加载完毕', res.data)
+          //     array = [...array, ...res.data];
+          //     if (index == length) {
+          //       resolve(array);
+          //     }
+          //   }
+          // });
+        }, 500 * i);
       }
     }
   });

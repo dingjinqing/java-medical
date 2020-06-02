@@ -8,6 +8,7 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
+    addressId: '',
     textarea: '',
     region: [],
     regionCode: [],
@@ -17,15 +18,31 @@ global.wxPage({
       address: '',
       districtCode: '',
       isDefault: false,
-      zipcode: ''
+      zipCode: ''
     }
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
-
+  onLoad: function (option) {
+    let that = this
+    if (option && option.addressId) {
+      this.setData({
+        addressId:option.addressId
+      })
+      util.api('/api/wxapp/address/get', res => {
+        if (res.error === 0) {
+          let content = res.content
+          content.zipCode = content.zipcode
+          that.setData({
+            region: [content.provinceName, content.cityName, content.districtName],
+            regionCode: [content.provinceCode, content.cityCode, content.districtCode],
+            formData: Object.assign({}, content)
+          })
+        }
+      }, {addressId: option.addressId})
+    }
   },
 
   smart (val){
@@ -38,8 +55,7 @@ global.wxPage({
    * 自动识别快递信息
    */
   async handleAutoRecognition () {
-    let textarea = '新疆阿克苏温宿县博孜墩柯尔克孜族乡吾斯塘博村一组306号 150-3569-6956 马云 (201011)'
-    console.log(textarea)
+    let textarea = this.data.textarea
     await this.getAddressData()
     let address =  await this.smart(textarea)
     console.log(address)
@@ -48,12 +64,16 @@ global.wxPage({
       mobile: address.phone,
       address: address.address,
       districtCode: address.districtCode||'',
+      zipCode: address.zipCode,
       isDefault: false
     }
     let region = [address.province, address.city, address.county]
     this.setData({formData:formData, region: region})
   },
 
+  /**
+   * 从微信获取地址
+   */
   getWechatAdress () {
     wx.chooseAddress({
       success (op) {
@@ -77,7 +97,16 @@ global.wxPage({
     })
   },
 
-  bindTextAreaBlur () {},
+  /**
+   * 自动识别收货信息填写
+   */
+  bindTextAreaInput (e) {
+    console.log(e)
+    let value = e.detail.value
+    this.setData({
+      textarea: value
+    })
+  },
 
   /**
    * 选择地址
@@ -86,7 +115,7 @@ global.wxPage({
     console.log('picker发送选择改变，携带值为', e)
     this.setData({
       regionCode: e.detail.code,
-      'formData.zipcode': e.detail.postcode,
+      'formData.zipCode': e.detail.postcode,
       region: e.detail.value
     })
   },
@@ -105,7 +134,8 @@ global.wxPage({
           if (op.error === 0) {
             let content = op.content
             that.setData({
-              region: [content.postalName, content.cityName, content.districtName]
+              region: [content.postalName, content.cityName, content.districtName],
+              regionCode: [content.postalId, content.cityId, content.districtId]
             })
           } else {
             util.showModal('提醒', '定位失败')
@@ -116,6 +146,13 @@ global.wxPage({
         })
       }
     })
+  },
+
+  /**
+   * 编辑表单
+   */
+  bindChangeHandle (e) {
+    console.log(e)
   },
 
   /**
@@ -133,6 +170,9 @@ global.wxPage({
     console.log(e)
     // 校验用户填写
     let formData = e.detail.value
+    this.setData({
+      formData: formData
+    })
     if (formData.consignee === '') {
       wx.showToast({
         title: '请填写收件人!'
@@ -143,7 +183,7 @@ global.wxPage({
         title: '请填写正确的联系电话！'
       })
       return false;
-    } else if (formData.region.lenng <= 0) {
+    } else if (this.data.region.lenng <= 0) {
       wx.showToast({
         title: '请选择所在地区！',
       })
@@ -154,7 +194,65 @@ global.wxPage({
       })
       return false
     }
+    if (!formData.isDefault) {
+      this.setData({
+        'formData.isDefault': 0
+      })
+    } else {
+      this.setData({
+        'formData.isDefault': 1
+      })
+    }
     // 处理地址
+    this.processAddress()
+    console.log(this.data.formData)
+    if (!this.data.addressId) {
+      // 新增
+      util.api('/api/wxapp/address/add', res => {
+        if (res.error === 0) {
+          console.log(res)
+          util.toast_success('新增成功!')
+          util.navigateTo('/pages/personalcenter/personalcenter?tabIndex=2')
+        } else {
+          util.fail_toast(res.message)
+        }
+      }, this.data.formData)
+    } else {
+      // 编辑
+      this.setData({
+        'formData.addressId': this.data.addressId
+      })
+      formData.addressId = this.data.addressId
+      util.api('/api/wxapp/address/update', res => {
+        if (res.error === 0) {
+          console.log(res)
+          util.toast_success('更新成功!')
+          util.navigateTo('/pages/personalcenter/personalcenter?tabIndex=2')
+        } else {
+          util.fail_toast(res.message)
+        }
+      }, this.data.formData)
+    }
+  },
+
+  processAddress () {
+    let region = this.data.region
+    let regionCode = this.data.regionCode
+    let formData = this.data.formData
+    if (region.length > 0) {
+      formData.provinceName = region[0]
+      formData.cityName = region[1]
+      formData.districtName = region[2]
+    }
+    if (regionCode.length > 0) {
+      formData.provinceCode = regionCode[0]
+      formData.cityCode = regionCode[1]
+      formData.districtCode = regionCode[2]
+    }
+    console.log(formData)
+    this.setData({
+      formData: formData
+    })
   },
 
   /**

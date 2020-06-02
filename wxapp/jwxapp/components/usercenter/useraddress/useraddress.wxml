@@ -3,6 +3,7 @@
   <!-- 地址列表 -->
   <view class="address-list" wx:if="{{data&&data.length>0}}">
     <view class="address-wrap">
+    
       <block wx:for="{{data}}" wx:key="addressId">
         <view class="address-item">
           <view class="address-item-top">
@@ -14,17 +15,18 @@
           </view>
           <view class="address-item-line"></view>
           <view class="address-item-bottom">
-            <label class="aib-left">
-              <radio value="1" checked="false" />设为默认地址
-            </label>
+              <label class="aib-left" catchtap="changeDefaultRadio" data-id="{{item.addressId}}" data-default="{{item.isDefault}}">
+                <radio value="{{item.addressId}}"  name="setdefault" checked="{{item.isDefault==1}}" data-id="{{item.addressId}}" data-default="{{item.isDefault}}"/>设为默认地址
+              </label>
             <view class="aib-right">
-              <text>编辑</text>
+              <text bindtap="handleEditAddress" data-id="{{item.addressId}}">编辑</text>
               <text class="aib-right-line"></text>
-              <text>删除</text>
+              <text bindtap="handleDeleteAddress" data-id="{{item.addressId}}">删除</text>
             </view>
           </view>
         </view>
       </block>
+    
     </view> 
     <view class="address-list-footer">
       <button bindtap="getWechatAdress" class="wd-btn">

@@ -13,7 +13,7 @@
       <view class="auto-recognition">
         <view class="ar-top">自动识别收货信息</view>
         <view class="ar-text-area">
-          <textarea auto-focus class="art-textarea" value="{{textarea}}" bindblur="bindTextAreaBlur" placeholder="请输入或粘贴地址文本，可自动识别姓名、电话和地址，如：北京市海淀区西直门北大街54号伊泰大厦。"></textarea>
+          <textarea auto-focus class="art-textarea" value="{{textarea}}" bindinput="bindTextAreaInput" placeholder="请输入或粘贴地址文本，可自动识别姓名、电话和地址，如：北京市海淀区西直门北大街54号伊泰大厦。"></textarea>
           <button bindtap="handleAutoRecognition" class="auto-recognition-btn">自动识别</button>
         </view>
       </view>
@@ -22,7 +22,7 @@
         <view class="aei-item">
           <label>
             <text>收货人</text>
-            <input value="{{formData.consignee}}" name="consignee" placeholder="请填写收货人姓名"></input>
+            <input value="{{formData.consignee}}" name="consignee" bindchange="bindChangeHandle" placeholder="请填写收货人姓名"></input>
           </label>
         </view>
         <view class="aei-item">
@@ -52,7 +52,7 @@
         <view class="aei-item">
           <label>
             <text>邮编</text>
-            <input vlaue="{{formData.zipcode}}" name="zipcode" placeholder="邮政编码（选填）"></input>
+            <input value="{{formData.zipCode}}" name="zipCode" placeholder="邮政编码（选填）"></input>
           </label>
         </view>
       </view>

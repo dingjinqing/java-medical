@@ -8,15 +8,25 @@ global.wxPage({
    */
   data: {
     tabIndex: 'usercenter',
-    addressList: []
+    addressList: [],
+    options: {}
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: function (option) {
+    if (option && option.tabIndex) {
+      let tabIndex = this.data.tabIndex
+      if (Number(option.tabIndex) === 2 || option.tabIndex.indexOf('address') > -1) {
+        tabIndex = 'address'
+      }
+      this.setData({
+        tabIndex: tabIndex
+      })
+    }
     this.setData({
-      options: options
+      options: option
     })
     this.initData()
   },
