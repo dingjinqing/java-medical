@@ -223,7 +223,7 @@
               type="primary"
               plain
               size="small"
-              @click="jumpToHandler"
+              @click="jumpToMemberHandler(item.linkName, index)"
             >查看订单</el-button>
           </div>
         </div>
@@ -1548,6 +1548,24 @@ export default {
       }
     },
     // 交易统计查看订单
+    jumpToMemberHandler (linkName, index) {
+      let activeName = ''
+      if (index === 0) {
+        activeName = 'first'
+      } else if (index === 1) {
+        activeName = 'second'
+      } else if (index === 2) {
+        activeName = 'third'
+      } else {
+        activeName = 'fourth'
+      }
+      this.$router.push({
+        name: linkName,
+        query: {
+          activeName: activeName
+        }
+      })
+    },
     jumpToHandler () {
       if (this.transactionData[0].linkName === '') {
         return false

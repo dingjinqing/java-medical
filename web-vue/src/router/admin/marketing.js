@@ -645,6 +645,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/ordinaryCoupon/couponReceiveDetails'
       )
   },
+  // 分裂优惠券领取用户明细
+  {
+    path: '/admin/home/main/ordinaryCoupon/userDetail',
+    name: 'ordinary_coupon_user_detail',
+    meta: {
+      crumbTitle: 'router.ordinary_coupon_receive_details',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/ordinaryCoupon/userDetail'
+      )
+  },
   // 拼团抽奖活动
   {
     path: '/admin/home/main/lotteryDraw',

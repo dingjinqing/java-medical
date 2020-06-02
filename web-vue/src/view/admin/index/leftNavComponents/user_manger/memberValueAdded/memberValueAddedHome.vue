@@ -75,6 +75,9 @@ export default {
       rightText: '查看交数据' // 右上角动态文案
     }
   },
+  mounted () {
+    this.activeName = this.$route.query.activeName
+  },
   methods: {
     // tap切换
     handleClick (tab, event) {

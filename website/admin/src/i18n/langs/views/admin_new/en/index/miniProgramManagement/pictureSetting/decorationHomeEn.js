@@ -105,20 +105,20 @@ export const en = {
       flag: true,
       name: 'm_official_accounts'
     },
-    {
-      imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/service.png',
-      text: 'Customer service module',
-      id: 25,
-      flag: true,
-      name: 'm_service'
-    },
-    {
-      imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/drag_phone.png',
-      text: 'Telephone module',
-      id: 26,
-      flag: true,
-      name: 'm_phone'
-    },
+    // {
+    //   imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/service.png',
+    //   text: 'Customer service module',
+    //   id: 25,
+    //   flag: true,
+    //   name: 'm_service'
+    // },
+    // {
+    //   imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/drag_phone.png',
+    //   text: 'Telephone module',
+    //   id: 26,
+    //   flag: true,
+    //   name: 'm_phone'
+    // },
     {
       imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/dg_navigation.png',
       text: 'Shop recruitment settings',
