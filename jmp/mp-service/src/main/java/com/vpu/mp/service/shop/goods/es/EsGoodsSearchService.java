@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelSelectListVo;
 import com.vpu.mp.service.shop.goods.es.convert.goods.EsGoodsConvertInterface;
 import com.vpu.mp.service.shop.goods.es.convert.goods.GoodsPageListVoConverter;
@@ -85,6 +86,18 @@ public class EsGoodsSearchService extends EsBaseSearchService{
         }
     }
 
+    public List<Integer> getGoodsIdsByParam(GoodsPageListParam goodsPageListParam) throws IOException {
+        Integer shopId = getShopId();
+        goodsPageListParam.setPageRows(10000);
+        if(goodsPageListParam.getLabelId() != null){
+            goodsPageListParam.setGoodsIds(esGoodsLabelSearchService.getGoodsIdsByLabelIds(Lists.newArrayList(goodsPageListParam.getLabelId()),EsGoodsConstant.GOODS_SEARCH_PAGE));
+            goodsPageListParam.setLabelId(null);
+        }
+        EsSearchParam param = goodsParamConvertEsGoodsParam(goodsPageListParam,shopId);
+        PageResult<EsGoods> pageResult = searchGoodsPageByParam(param);
+        return pageResult.dataList.stream().map(EsGoods::getGoodsId).collect(Collectors.toList());
+    }
+
     private PageResult<GoodsPageListVo> esPageConvertVoPage(PageResult<EsGoods> esPage){
 
         PageResult<GoodsPageListVo> result = new PageResult<>();
@@ -98,9 +111,19 @@ public class EsGoodsSearchService extends EsBaseSearchService{
             esGoodsList.forEach(x-> {
                 GoodsPageListVo vo = CONVERT.convert(x);
                 if( !labelMap.isEmpty() && labelMap.containsKey(vo.getGoodsId()) ){
-                    List<GoodsLabelSelectListVo> labelVos = Lists.newLinkedList();
-                    labelMap.get(vo.getGoodsId()).forEach(y->labelVos.add(new GoodsLabelSelectListVo(y.getId(),y.getName())));
-                    vo.setGoodsPointLabels(labelVos);
+                    //指定标签
+                    List<GoodsLabelSelectListVo> specifiedLabelVos = Lists.newLinkedList();
+                    //普通标签
+                    List<GoodsLabelSelectListVo> ordinaryLabelVos = Lists.newLinkedList();
+                    labelMap.get(vo.getGoodsId()).forEach(y->{
+                        if(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode().equals(y.getType()) ){
+                            specifiedLabelVos.add(new GoodsLabelSelectListVo(y.getId(),y.getName()));
+                        }else{
+                            ordinaryLabelVos.add(new GoodsLabelSelectListVo(y.getId(),y.getName()));
+                        }
+                    });
+                    vo.setGoodsPointLabels(specifiedLabelVos);
+                    vo.setGoodsNormalLabels(ordinaryLabelVos);
                 }
                 voList.add(vo);
             });
