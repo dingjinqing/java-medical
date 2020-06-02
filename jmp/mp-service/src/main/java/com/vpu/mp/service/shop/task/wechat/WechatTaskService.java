@@ -12,16 +12,14 @@ import static com.vpu.mp.db.shop.tables.MpWeeklyRetain.MP_WEEKLY_RETAIN;
 import static com.vpu.mp.db.shop.tables.MpWeeklyVisit.MP_WEEKLY_VISIT;
 
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import org.jooq.Field;
 import org.jooq.Table;
@@ -132,7 +130,7 @@ public class WechatTaskService extends ShopBaseService {
     private void getVisitDistribution(WxMaAnalysisService service,Date date){
         try {
             WxMaVisitDistribution result = service.getVisitDistribution(date,date);
-            if(validationData(result, MP_DISTRIBUTION_VISIT)){
+            if(validationData(result.getRefDate(), MP_DISTRIBUTION_VISIT)){
                 return ;
             }
             MpDistributionVisitRecord record = db().newRecord(MP_DISTRIBUTION_VISIT);
@@ -345,7 +343,7 @@ public class WechatTaskService extends ShopBaseService {
                 record.setRefDate(info.getRefDate());
                 record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
                 record.setVisitUv(Util.toJson(info.getVisitUv()));
-                if(validationData(info, MP_DAILY_RETAIN)){
+                if(validationData(info.getRefDate(), MP_DAILY_RETAIN)){
                     db().update(MP_DAILY_RETAIN).set(record).where(MP_DAILY_RETAIN.REF_DATE.eq(info.getRefDate())).execute();
                 }else{
                     record.insert();
@@ -362,21 +360,46 @@ public class WechatTaskService extends ShopBaseService {
      * @param date
      */
     private void getWeeklyRetainInfo(WxMaAnalysisService service,Date date){
-        try {
-            LocalDate startDate = LocalDate.parse(local.get(),
-                    DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT_SHORT)).minusDays(6);
-            WxMaRetainInfo info = service.getWeeklyRetainInfo(
-                    java.sql.Date.valueOf(startDate),date);
-            if(validationData(info, MP_WEEKLY_RETAIN)){
+            List<WxMaRetainInfo> infos = Lists.newArrayList();
+            for (int i = 1; i < 6; i++) {
+                Date startDate = DateUtil.convert(LocalDate.now().minusWeeks(i).with(DayOfWeek.MONDAY));
+                Date endDate = DateUtil.convert(LocalDate.now().minusWeeks(i).with(DayOfWeek.SUNDAY));
+                WxMaRetainInfo info = getWeeklyRetain(service,startDate,endDate);
+                if( info!= null ){
+                    infos.add(info);
+                }
+            }
+            //如果查询结束后数据为空，直接返回终止操作
+            if( infos.isEmpty() ){
                 return ;
             }
-            MpWeeklyRetainRecord record = db().newRecord(MP_WEEKLY_RETAIN);
-            record.setRefDate(info.getRefDate());
-            record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
-            record.setVisitUv(Util.toJson(info.getVisitUv()));
-            record.insert();
+            //由于没有主键因此暂时先不使用batch操作
+            for( WxMaRetainInfo info :infos ){
+                MpWeeklyRetainRecord record = db().newRecord(MP_WEEKLY_RETAIN);
+                record.setRefDate(info.getRefDate());
+                record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
+                record.setVisitUv(Util.toJson(info.getVisitUv()));
+                if(validationData(info.getRefDate(), MP_WEEKLY_RETAIN)){
+                    db().update(MP_WEEKLY_RETAIN).set(record).where(MP_WEEKLY_RETAIN.REF_DATE.eq(info.getRefDate())).execute();
+                }else{
+                    record.insert();
+                }
+            }
+    }
+    public WxMaRetainInfo getWeeklyRetain(WxMaAnalysisService service,Date star,Date end){
+        try {
+            return service.getWeeklyRetainInfo(star,end);
         } catch (WxErrorException e) {
-            logger.error(CONTENT,e);
+            logger.error(e.getMessage());
+            return null;
+        }
+    }
+    public WxMaRetainInfo getMonthlyRetain(WxMaAnalysisService service,Date star,Date end){
+        try {
+            return service.getMonthlyRetainInfo(star,end);
+        } catch (WxErrorException e) {
+            logger.error(e.getMessage());
+            return null;
         }
     }
     /**
@@ -385,24 +408,43 @@ public class WechatTaskService extends ShopBaseService {
      * @param date
      */
     private void getMonthlyRetainInfo(WxMaAnalysisService service,Date date){
-        try {
-            LocalDate startDate = LocalDate.parse(local.get(),
-                    DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT_SHORT)).withDayOfMonth(1);
-            WxMaRetainInfo info = service.getWeeklyRetainInfo(
-                    java.sql.Date.valueOf(startDate),date);
-            if(validationData(info, MP_MONTHLY_RETAIN)){
+            List<WxMaRetainInfo> infos = Lists.newArrayList();
+            for( int i = 1; i < 3;i++){
+                LocalDate local = LocalDate.now();
+                LocalDate month = local.minusMonths(i);
+                Date startDate = DateUtil.convert(month.withDayOfMonth(1));
+                Date endDate = DateUtil.convert(month.withDayOfMonth(month.lengthOfMonth()));
+                WxMaRetainInfo info = getMonthlyRetain(service,startDate,endDate);
+                if( info!= null ){
+                    infos.add(info);
+                }
+            }
+            //如果查询结束后数据为空，直接返回终止操作
+            if( infos.isEmpty() ){
                 return ;
             }
-            MpMonthlyRetainRecord record = db().newRecord(MP_MONTHLY_RETAIN);
-            record.setRefDate(info.getRefDate());
-            record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
-            record.setVisitUv(Util.toJson(info.getVisitUv()));
-            record.insert();
-        } catch (WxErrorException e) {
-            logger.error(CONTENT,e);
-        }
+            //由于没有主键因此暂时先不使用batch操作
+            for( WxMaRetainInfo info :infos ){
+                MpMonthlyRetainRecord record = db().newRecord(MP_MONTHLY_RETAIN);
+                record.setRefDate(info.getRefDate());
+                record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
+                record.setVisitUv(Util.toJson(info.getVisitUv()));
+                if( validationData(info.getRefDate(), MP_MONTHLY_RETAIN)){
+                    db().update(MP_MONTHLY_RETAIN).set(record).where(MP_MONTHLY_RETAIN.REF_DATE.eq(info.getRefDate())).execute();
+                }else{
+                    record.insert();
+                }
+            }
+
     }
-    private boolean validationData(Object o,Table<?> table){
+    private boolean validationData(String refDate,Table<?> table){
+        if( refDate == null ){
+            return false;
+        }
+        Field<String> data = DSL.val(refDate);
+        return isHavingData(table, data);
+    }
+    private boolean validationData(List<?> o,Table<?> table){
         if( o == null ){
             return false;
         }
