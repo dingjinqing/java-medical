@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.goods.es;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -123,7 +125,7 @@ public class EsGoodsSearchService extends EsBaseSearchService{
                         }
                     });
                     vo.setGoodsPointLabels(specifiedLabelVos);
-                    vo.setGoodsNormalLabels(ordinaryLabelVos);
+                    vo.setGoodsNormalLabels(Sets.newHashSet(ordinaryLabelVos.iterator()));
                 }
                 voList.add(vo);
             });
