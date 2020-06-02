@@ -17,7 +17,7 @@ const baseRoutes = [
   },
   {
     path: '/system/index',
-    redirect: '/system/system/login'
+    redirect: 'systemLogin'
   },
   {
     path: '/home/index',
