@@ -5,6 +5,7 @@
       status-icon
       ref="ruleForm"
       label-width="100px"
+      @submit.native.prevent
     >
       <el-form-item
         :label="$t('memberCard.suiteableGoods')"
