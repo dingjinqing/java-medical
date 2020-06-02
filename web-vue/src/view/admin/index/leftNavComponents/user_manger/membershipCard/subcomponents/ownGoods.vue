@@ -228,9 +228,14 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+*,/deep/ .el-form-item__label,
+/deep/ .el-radio__label,
+/deep/ .el-checkbox__label{
+  font-size: 13px;
+}
 .ownGoodsDiv {
   .ownGoodsItem {
-    padding-left: 100px;
+    padding-left: 75px;
     .vipDiv {
       .prompt {
         color: #666;

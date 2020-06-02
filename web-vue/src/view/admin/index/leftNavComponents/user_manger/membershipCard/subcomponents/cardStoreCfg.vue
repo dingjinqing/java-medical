@@ -4,6 +4,7 @@
       :model="ruleForm"
       ref="ruleForm"
       label-width="100px"
+      @submit.native.prevent
     >
       <el-form-item
         class="card-store-item"
@@ -261,9 +262,10 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+
 .card-store-div {
   .card-store-item {
-    padding-left: 100px;
+    padding-left: 75px;
     .store-tip {
       color: #9d9d9d;
       font-size: 13px;
