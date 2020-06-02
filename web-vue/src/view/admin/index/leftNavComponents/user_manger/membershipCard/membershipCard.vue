@@ -1017,7 +1017,7 @@ export default {
                 color: #fff;
               }
               .time {
-                margin-top: 4px;
+                margin-top: 10px;
                 color: #fff;
                 span {
                   width: 200px;
@@ -1031,6 +1031,7 @@ export default {
               font-size: 12px;
               .grade_tip {
                 color: #fff;
+                margin-top: 10px;
               }
             }
             .card_edit {
