@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.shop.member.address;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,7 +33,14 @@ public class AddressInfo {
         private AddressComponent addressComponent;
         @JsonProperty("formatted_addresses")
         private FormattedAddresses formattedAddresses;
+        @JsonProperty("ad_info")
+        private AdCodeInfo adInfo;
 
+        @Getter
+        @Setter
+        public class  AdCodeInfo{
+            private String adcode;
+        }
         /**
          * 人性化地址
          */
