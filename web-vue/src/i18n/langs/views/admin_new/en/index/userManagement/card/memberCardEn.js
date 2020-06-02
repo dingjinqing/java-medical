@@ -310,5 +310,6 @@ export const en = {
       name: 'All'
     }
   ],
-  repeatSubmit: 'Do not repeat submit'
+  repeatSubmit: 'Do not repeat submit',
+  addUp: 'add up'
 }

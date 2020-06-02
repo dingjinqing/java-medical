@@ -148,8 +148,12 @@ export default {
         flag: flagTmp
       },
       cardGradeCfgData: {
+        checkedScore: [],
+        checkedMoney: [],
         gradeScore: undefined,
         gradeCrash: undefined,
+        gradeScore2: null,
+        gradeCrash2: null,
         gradeValue: null,
         valid: false
       },
@@ -248,6 +252,16 @@ export default {
       // 升级
       this.cardGradeCfgData.gradeScore = data.gradeConditionJson.gradeScore
       this.cardGradeCfgData.gradeCrash = data.gradeConditionJson.gradeMoney
+      if (this.cardGradeCfgData.gradeScore !== null) {
+        this.cardGradeCfgData.checkedScore = ['on']
+      } else {
+        this.cardGradeCfgData.gradeScore = void 0
+      }
+      if (this.cardGradeCfgData.gradeCrash !== null) {
+        this.cardGradeCfgData.checkedMoney = ['on']
+      } else {
+        this.cardGradeCfgData.gradeCrash = void 0
+      }
       this.cardGradeCfgData.gradeValue = data.grade
 
       // 激活条件
@@ -342,6 +356,14 @@ export default {
         this.cardScoreCfgData.goodsMoney = goodsMoney
         this.cardScoreCfgData.getScores = getScores
       }
+
+      //  升级条件数据
+      if (this.cardGradeCfgData.checkedScore.length > 0 && this.cardGradeCfgData.checkedScore[0] === 'on') {
+        this.cardGradeCfgData.gradeScore2 = this.cardGradeCfgData.gradeScore
+      }
+      if (this.cardGradeCfgData.checkedMoney.length > 0 && this.cardGradeCfgData.checkedMoney[0] === 'on') {
+        this.cardGradeCfgData.gradeCrash2 = this.cardGradeCfgData.gradeCrash
+      }
     },
     prepareCardData () {
       this.dealWithDynamicArrayData()
@@ -380,7 +402,7 @@ export default {
         },
         'desc': this.cardUsageCfgData.desc,
         'mobile': this.cardUsageCfgData.mobile,
-        'gradeConditionJson': { gradeScore: this.cardGradeCfgData.gradeScore, gradeMoney: this.cardGradeCfgData.gradeCrash },
+        'gradeConditionJson': { gradeScore: this.cardGradeCfgData.gradeScore2, gradeMoney: this.cardGradeCfgData.gradeCrash2 },
         'grade': this.cardGradeCfgData.gradeValue,
         'activation': this.cardActiveCfgData.activation,
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
