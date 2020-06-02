@@ -219,12 +219,18 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+*,/deep/ .el-form-item__label,
+/deep/ .el-radio__label,
+/deep/ .el-checkbox__label{
+  font-size: 13px;
+}
+
 .card-coupon {
   /deep/ .el-form-item {
     margin-bottom: 2px;
   }
   .coupon-item {
-    padding-left: 100px;
+    padding-left: 75px;
     .coupon-info {
       color: #9d9d9d;
       margin-left: 25px;

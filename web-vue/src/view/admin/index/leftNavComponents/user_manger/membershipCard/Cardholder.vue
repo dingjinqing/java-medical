@@ -28,7 +28,7 @@
             ></el-input>
           </div>
           <div>
-          <span>{{$t('memberCard.cardNo')}}</span>
+            <span>{{$t('memberCard.cardNo')}}</span>
             <el-input
               v-model="cardNuberInput"
               :placeholder="$t('memberCard.pleaseInput')"
@@ -57,10 +57,14 @@
             <date-time-picker
               :showPicker='3'
               @startTime="firstDateTime = $event"
-              @endTime="secondDateTime = $event"/>
+              @endTime="secondDateTime = $event"
+            />
 
           </div>
-          <div v-if="showActivation" style="margin-left: 56px;">
+          <div
+            v-if="showActivation"
+            style="margin-left: 56px;"
+          >
             <span style="width: auto;">{{$t('memberCard.examineSubmit')}}</span>
             <el-select
               v-model="submitValue"
@@ -77,7 +81,7 @@
           </div>
         </div>
         <div class="topDiv">
-            <div v-if="showActivation">
+          <div v-if="showActivation">
             <span>{{$t('memberCard.examineStatus')}}</span>
             <el-select
               v-model="examineStatusValue"
@@ -128,7 +132,7 @@
             type="primary"
             size="small"
             @click="handleTobtn(0)"
-      >{{$t('memberCard.filter')}}</el-button>
+          >{{$t('memberCard.filter')}}</el-button>
           <el-button
             type="info"
             plain
@@ -205,22 +209,22 @@
           align="center"
           v-if="showActivation"
         >
-        <template slot-scope="scope">
-           <span v-if="scope.row.status">{{$t('memberCard.yes')}}</span>
-           <span v-else>{{$t('memberCard.no')}}</span>
-         </template>
+          <template slot-scope="scope">
+            <span v-if="scope.row.status">{{$t('memberCard.yes')}}</span>
+            <span v-else>{{$t('memberCard.no')}}</span>
+          </template>
         </el-table-column>
         <el-table-column
           :label="$t('memberCard.examineStatus')"
           align="center"
           v-if="showActivation"
         >
-        <template slot-scope="scope">
-           <span v-if="scope.row.status===1">{{$t('memberCard.examing')}}</span>
-           <span v-else-if="scope.row.status===2">{{$t('memberCard.successAudit')}}</span>
-           <span v-else-if="scope.row.status===3">{{$t('memberCard.examineFail')}}</span>
-           <span v-else></span>
-         </template>
+          <template slot-scope="scope">
+            <span v-if="scope.row.status===1">{{$t('memberCard.examing')}}</span>
+            <span v-else-if="scope.row.status===2">{{$t('memberCard.successAudit')}}</span>
+            <span v-else-if="scope.row.status===3">{{$t('memberCard.examineFail')}}</span>
+            <span v-else></span>
+          </template>
         </el-table-column>
         <el-table-column
           :label="$t('memberCard.cardStatus')"
@@ -231,9 +235,12 @@
             <span v-else-if="scope.row.flag === 1"> {{$t('memberCard.alreadyDelete')}}({{scope.row.updateTime}}) </span>
             <span v-else-if="scope.row.flag === 2"> 转赠中 </span>
             <span v-else-if="scope.row.flag === 3"> {{$t('membershipIntroduction.cardGived')}}({{scope.row.getTime}});赠予:
-                <span @click="handleToUserDetail(scope.row.getUserId)" style="color: #5a8bff;cursor: pointer;">
-                  {{scope.row.giveName}}
-                </span>;
+              <span
+                @click="handleToUserDetail(scope.row.getUserId)"
+                style="color: #5a8bff;cursor: pointer;"
+              >
+                {{scope.row.giveName}}
+              </span>;
             </span>
             <span v-else-if="scope.row.flag === 4"> {{$t('memberCard.cardExpired')}} </span>
           </template>
