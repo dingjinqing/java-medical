@@ -184,7 +184,7 @@ export default {
   },
   mounted () {
     this.id = this.$route.query.id
-    this.shareUserId = this.$router.query.shareUserId
+    this.shareUserId = this.$route.query.shareUserId
 
     // 初始化数据
     this.initDataList()
