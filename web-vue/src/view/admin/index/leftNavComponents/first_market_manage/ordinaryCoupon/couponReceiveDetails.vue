@@ -156,7 +156,7 @@
             <template slot-scope="scope">
               <span
                 class="jumpStyle"
-                @click="receiveHandler(scope.row.userId)"
+                @click="receiveHandler(scope.row.userId, scope.row.couponSn)"
               >{{scope.row.hasReceive ? scope.row.hasReceive : 1}}</span>
             </template>
           </el-table-column>
@@ -342,12 +342,13 @@ export default {
     },
 
     // 领取用户数跳转
-    receiveHandler (userId) {
+    receiveHandler (userId, couponSn) {
       this.$router.push({
         path: '/admin/home/main/ordinaryCoupon/userDetail',
         query: {
           id: this.id,
-          shareUserId: userId
+          shareUserId: userId,
+          couponSn: couponSn
         }
       })
     }

@@ -179,12 +179,14 @@ export default {
         { value: 3, label: '已过期' },
         { value: 4, label: '已废除' }
       ],
-      shareUserId: null // 分享者id
+      shareUserId: null, // 分享者id
+      couponSn: null
     }
   },
   mounted () {
     this.id = this.$route.query.id
     this.shareUserId = this.$route.query.shareUserId
+    this.couponSn = this.$route.query.couponSn
 
     // 初始化数据
     this.initDataList()
@@ -195,6 +197,7 @@ export default {
       let requestParams = {}
       requestParams.id = this.id
       requestParams.shareId = this.shareUserId
+      requestParams.couponSn = this.couponSn
       requestParams.currentPage = this.pageParams.currentPage
       requestParams.pageRows = this.pageParams.pageRows
       requestParams.mobile = this.searchData.mobile
