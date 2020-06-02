@@ -152,7 +152,6 @@ export default {
     this.langDefault()
     this.initGradeOptions()
     this.$on('checkRule', () => {
-      debugger
       if (this.ruleForm.gradeValue) {
         this.valid = false
       } else {
