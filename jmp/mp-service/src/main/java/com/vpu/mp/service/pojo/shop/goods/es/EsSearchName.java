@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.goods.es;
 
+import java.math.BigDecimal;
+
 /**
  * es和goods 字段映射关系
  * @author 卢光耀
@@ -88,6 +90,7 @@ public interface EsSearchName {
     String TOTAL_SALE_NUMBER = "total_sale_number";
     String ROOM_ID = "room_id";
     String PRDS = "prds";
+    String GRADES = "grades";
 
      interface PRD{
         String PRD_ID = "prd_id";
@@ -108,6 +111,11 @@ public interface EsSearchName {
 
         String PRD_CODES = "prd_codes";
 
+    }
+    interface GRADE{
+        String PRD_ID = "prd_id";
+        String GRADE_PRICE = "grade_price";
+        String GRADE = "grade";
     }
 
 

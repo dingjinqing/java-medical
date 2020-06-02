@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoodsGrade;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsProduct;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
 import org.apache.commons.lang3.StringUtils;
@@ -56,16 +57,17 @@ public class EsUtil {
             if( a != null ){
                 xContentBuilder.startObject(a.name());
                 xContentBuilder.field("type",a.type());
-                if( field.getName().equals(EsSearchName.PRDS)){
+                if( field.getName().equals(EsSearchName.PRDS) ){
                     xContentBuilder.startObject("properties");
                     assemblyXContentBuilder(xContentBuilder,EsGoodsProduct.class);
+                    xContentBuilder.endObject();
+                }else if(EsSearchName.GRADES.equals(field.getName())){
+                    xContentBuilder.startObject("properties");
+                    assemblyXContentBuilder(xContentBuilder, EsGoodsGrade.class);
                     xContentBuilder.endObject();
                 }else{
                     xContentBuilder.field("index",a.index());
                 }
-
-
-
                 if( EsFiledTypeConstant.DATE.equals(a.type()) ){
                     xContentBuilder.field("format","yyyy-MM-dd HH:mm:ss");
                 }

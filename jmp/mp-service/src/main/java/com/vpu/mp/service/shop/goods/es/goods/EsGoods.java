@@ -198,48 +198,48 @@ public class EsGoods  {
     /**
      * 商品v1会员等级价格
      */
-    @EsFiled(name = EsSearchName.V1,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
-    private String v1;
+    @EsFiled(name = EsSearchName.V1,type = EsFiledTypeConstant.SCALED_FLOAT)
+    private BigDecimal v1;
     /**
      * 商品v2会员等级价格
      */
-    @EsFiled(name = EsSearchName.V2,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
-    private String v2;
+    @EsFiled(name = EsSearchName.V2,type = EsFiledTypeConstant.SCALED_FLOAT)
+    private BigDecimal v2;
     /**
      * 商品v3会员等级价格
      */
-    @EsFiled(name = EsSearchName.V3,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
-    private String v3;
+    @EsFiled(name = EsSearchName.V3,type = EsFiledTypeConstant.SCALED_FLOAT)
+    private BigDecimal v3;
     /**
      * 商品v4会员等级价格
      */
-    @EsFiled(name = EsSearchName.V4,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
-    private String v4;
+    @EsFiled(name = EsSearchName.V4,type = EsFiledTypeConstant.SCALED_FLOAT)
+    private BigDecimal v4;
     /**
      * 商品v5会员等级价格
      */
-    @EsFiled(name = EsSearchName.V5,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
-    private String v5;
+    @EsFiled(name = EsSearchName.V5,type = EsFiledTypeConstant.SCALED_FLOAT)
+    private BigDecimal v5;
     /**
      * 商品v6会员等级价格
      */
-    @EsFiled(name = EsSearchName.V6,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
-    private String v6;
+    @EsFiled(name = EsSearchName.V6,type = EsFiledTypeConstant.SCALED_FLOAT)
+    private BigDecimal v6;
     /**
      * 商品v7会员等级价格
      */
-    @EsFiled(name = EsSearchName.V7,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
-    private String v7;
+    @EsFiled(name = EsSearchName.V7,type = EsFiledTypeConstant.SCALED_FLOAT)
+    private BigDecimal v7;
     /**
      * 商品v8会员等级价格
      */
-    @EsFiled(name = EsSearchName.V8,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
-    private String v8;
+    @EsFiled(name = EsSearchName.V8,type = EsFiledTypeConstant.SCALED_FLOAT)
+    private BigDecimal v8;
     /**
      * 商品v9会员等级价格
      */
-    @EsFiled(name = EsSearchName.V9,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
-    private String v9;
+    @EsFiled(name = EsSearchName.V9,type = EsFiledTypeConstant.SCALED_FLOAT)
+    private BigDecimal v9;
     /**
      * 商品展示价格
      */
@@ -371,6 +371,9 @@ public class EsGoods  {
      */
     @EsFiled(name=EsSearchName.PRDS,type = EsFiledTypeConstant.OBJECT,index = false)
     private List<EsGoodsProduct> prds;
+
+    @EsFiled(name = EsSearchName.GRADES,type = EsFiledTypeConstant.OBJECT)
+    private List<EsGoodsGrade> grades;
 
 
 }

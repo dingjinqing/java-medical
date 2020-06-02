@@ -1,13 +1,17 @@
 package com.vpu.mp.service.shop.goods.es;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.jedis.data.SortDataHelper;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandSelectListVo;
+import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
+import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsGradePrd;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelAndCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
@@ -21,6 +25,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortCacheInfo;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.goods.*;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoodsGrade;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsProduct;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
@@ -29,6 +34,7 @@ import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record2;
 import org.jooq.Result;
@@ -64,6 +70,11 @@ public class EsAssemblyDataService extends ShopBaseService {
     private SortDataHelper sortDataHelper;
     @Autowired
     private ImageService imageService;
+
+
+
+    private static final String[] VIP_FIELDS = {EsSearchName.V1,EsSearchName.V2,EsSearchName.V3
+        ,EsSearchName.V4,EsSearchName.V5,EsSearchName.V6,EsSearchName.V7,EsSearchName.V8,EsSearchName.V9};
 
 
     public List<EsGoods> assemblyEsGoods(List<Integer> goodsIds, Integer shopId) {
@@ -108,9 +119,7 @@ public class EsAssemblyDataService extends ShopBaseService {
             } else {
                 esGoods.setShowPrice(esGoods.getShopPrice());
             }
-            if (validationMap(goodsGradePrdMap, goodsId)) {
-                assemblyVipPriceImp(esGoods, goodsGradePrdMap.get(goodsId));
-            }
+            assemblyVipPriceImp(esGoods, goodsGradePrdMap.get(goodsId));
             if( validationMap(imageUrlMap,goodsId) ){
                 esGoods.setSecondaryGoodsImages(imageUrlMap.get(goodsId));
             }
@@ -287,30 +296,53 @@ public class EsAssemblyDataService extends ShopBaseService {
      * @param goodsGradePrdList
      */
     private void assemblyVipPriceImp(EsGoods esGoods, List<GoodsGradePrd> goodsGradePrdList) {
-        if (!goodsGradePrdList.isEmpty()) {
-            for (GoodsGradePrd goodsGradePrd : goodsGradePrdList) {
-                if(StringUtils.isBlank(goodsGradePrd.getGrade())){
-                    continue ;
+
+        Map<String,List<GoodsGradePrd>> goodsGradeMap = Maps.newHashMap();
+            if(CollectionUtils.isNotEmpty(goodsGradePrdList)){
+                goodsGradeMap = goodsGradePrdList.stream()
+                    .sorted(Comparator.comparing(GoodsGradePrd::getGradePrice))
+                    .collect(Collectors.groupingBy(GoodsGradePrd::getGrade));
+            }
+        List<EsGoodsGrade> goodsGrades = Lists.newArrayList();
+        for( String grade: VIP_FIELDS){
+            boolean containsKey = goodsGradeMap.containsKey(grade);
+            if( BaseConstant.ACTIVITY_TYPE_GROUP_BUY.equals(esGoods.getGoodsType()) ||
+                BaseConstant.ACTIVITY_TYPE_BARGAIN.equals(esGoods.getGoodsType()) ||
+                BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(esGoods.getGoodsType()) ||
+                BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(esGoods.getGoodsType()) ){
+                setGradePrice(grade,esGoods.getShowPrice(),esGoods);
+            }else if( BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(esGoods.getGoodsType()) ){
+                if( containsKey ){
+                    setGradePrice(grade,goodsGradeMap.get(grade).get(0).getGradePrice().max(esGoods.getShowPrice()),esGoods);
+                }else{
+                    setGradePrice(grade,esGoods.getShowPrice(),esGoods);
                 }
-                try {
-                    StringBuilder vipLevelPrice;
-                    Field v = esGoods.getClass().getDeclaredField(goodsGradePrd.getGrade());
-                    v.setAccessible(true);
-                    if( v.get(esGoods) == null ){
-                        vipLevelPrice = new StringBuilder();
-                    }else{
-                        vipLevelPrice = new StringBuilder(v.get(esGoods).toString());
-                    }
-                    vipLevelPrice.append(goodsGradePrd.getPrdId()).
-                        append(":").
-                        append(goodsGradePrd.getGradePrice()).
-                        append(";");
-                    v.set(esGoods,vipLevelPrice.toString());
-                } catch (NoSuchFieldException | IllegalAccessException e) {
-                    log.error("建立esGoods【id={}】索引时封装会员价失败", esGoods.getGoodsId());
-                    e.printStackTrace();
+            }else {
+                setGradePrice(grade,esGoods.getShowPrice(),esGoods);
+            }
+            if( containsKey ){
+                List<GoodsGradePrd> gradePrds = goodsGradeMap.get(grade);
+                for( GoodsGradePrd prd:gradePrds){
+                    EsGoodsGrade goodsGrade = new EsGoodsGrade();
+                    goodsGrade.setGrade(grade);
+                    goodsGrade.setGradePrice(prd.getGradePrice());
+                    goodsGrade.setPrdId(prd.getPrdId());
+                    goodsGrades.add(goodsGrade);
                 }
             }
+        }
+        if( !goodsGrades.isEmpty() ){
+            esGoods.setGrades(goodsGrades);
+        }
+    }
+    private void setGradePrice(String vipLevel,BigDecimal price,EsGoods esGoods){
+        try {
+            Field v = esGoods.getClass().getDeclaredField(vipLevel);
+            v.setAccessible(true);
+            v.set(esGoods,price);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            log.error("建立esGoods【id={}】索引时封装会员价失败", esGoods.getGoodsId());
+            e.printStackTrace();
         }
     }
 
