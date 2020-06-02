@@ -6,6 +6,7 @@
       :rules="rules"
       ref="ruleFormScore"
       label-width="100px"
+      @submit.native.prevent
     >
       <div class="sendScoreTop">
         <el-form-item prop="score">
@@ -21,6 +22,7 @@
               size="small"
               :controls="false"
               :precision="0"
+              @change="$refs.ruleFormScore.validateField('score')"
             >
             </el-input-number>
             <span class="scoreInfo">{{ $t('memberCard.score') }}</span>

@@ -6,6 +6,7 @@
       :rules="rules"
       ref="ruleForm"
       label-width="100px"
+      @submit.native.prevent
     >
       <el-form-item
         :label="$t('memberCard.memberPower')"
@@ -23,6 +24,7 @@
             v-model="ruleForm.discount"
             size="small"
             :controls="false"
+            @change="checkoutDiscount"
           >
           </el-input-number>
           <span>{{ $t('memberCard.discount') }}</span>
@@ -343,6 +345,9 @@ export default {
     appendActivity (val) {
       this.marketActivities.splice(0, this.marketActivities.length)
       this.marketActivities.push(...val)
+    },
+    checkoutDiscount () {
+      this.$refs.ruleForm.validateField('discount')
     }
   }
 }

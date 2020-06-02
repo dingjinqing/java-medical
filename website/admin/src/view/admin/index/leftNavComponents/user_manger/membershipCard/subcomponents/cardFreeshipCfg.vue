@@ -11,7 +11,7 @@
                 </div>
                 <div>
                     <el-radio v-model="freeshipType" label="1">{{$t('memberCard.cardHolder')}}</el-radio>
-                    <el-form :model="$data"  style="display: inline-block;">
+                    <el-form :model="$data"  style="display: inline-block;" @submit.native.prevent>>
                       <el-form-item prop="shipTimeVal" :rules="shipRules.shipTimeVal">
                         <el-select  :value="$data.shipTimeVal" size="small" style="width: 150px;" @change="updateShipTimeVal">
                             <el-option v-for="(item,index) in shipTime"
@@ -23,10 +23,13 @@
                       </el-form-item>
                     </el-form>
                     <span>{{$t('memberCard.enjoy')}}</span>
-                    <el-form :inline="true"   :model="$data" ref="shipNum" :rules="shipRules" style="display: inline-block">
+                    <el-form :inline="true"   :model="$data" ref="shipNum" :rules="shipRules" style="display: inline-block" @submit.native.prevent>>
                       <el-form-item prop="shipNum">
                         <!-- 当通过校验时，触发input事件(但是目前有elementui有bug通过第一个校验后，就会调用) -->
-                          <el-input v-model.number="$data.shipNum" size="small" style="width: 80px;" @input="changeShipNum('shipNum')"></el-input>
+                          <el-input v-model.number="$data.shipNum" size="small" style="width: 80px;"
+                            @input="changeShipNum('shipNum')"
+                            @change="$refs.shipNum.validateField('shipNum')">
+                          </el-input>
                       </el-form-item>
                     </el-form>
                     <span>{{$t('memberCard.timesFreeship')}}</span>
