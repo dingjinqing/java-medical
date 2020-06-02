@@ -96,7 +96,7 @@ public class EsGoodsSearchService extends EsBaseSearchService{
             goodsPageListParam.setLabelId(null);
         }
         EsSearchParam param = goodsParamConvertEsGoodsParam(goodsPageListParam,shopId);
-        PageResult<EsGoods> pageResult = searchGoodsPageByParam(param);
+        PageResult<EsGoods> pageResult = searchGoodsPageByParamForPage(param);
         return pageResult.dataList.stream().map(EsGoods::getGoodsId).collect(Collectors.toList());
     }
 
