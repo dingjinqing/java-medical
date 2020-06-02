@@ -59,7 +59,6 @@
       <div class="table_box">
         <el-table
           v-loading="loading"
-          class="version-manage-table"
           header-row-class-name="tableClss"
           :data="tableData"
           style="width:100%;"

@@ -10,6 +10,7 @@
           name="first"
         >
           <distributeSetting
+            v-if="activeName === 'first'"
             @tabChange="tabChange"
             @inviteCode="inviteCodeHandler"
           />
@@ -18,19 +19,23 @@
           :label="$t('distribution.distributorLevelCfg')"
           name="second"
         >
-          <distributorLevelSetting @tabChange="tabChange" />
+          <distributorLevelSetting
+            v-if="activeName === 'second'"
+            @tabChange="tabChange"
+          />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.rebateStrategyCfg')"
           name="third"
         >
-          <returnPolicySetting />
+          <returnPolicySetting v-if="activeName === 'third'" />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.distributorList')"
           name="fouth"
         >
           <distributorList
+            v-if="activeName === 'fouth'"
             :inviteFlag="inviteCode"
             :optGroupId="optGroupId"
           />
@@ -40,6 +45,7 @@
           name="fifth"
         >
           <distributorGroup
+            v-if="activeName === 'fifth'"
             @tabChange="tabChange"
             @optGroupId="getGroupId"
           />
@@ -48,31 +54,31 @@
           :label="$t('distribution.commissionStatistics')"
           name="sixth"
         >
-          <moneyStatistics />
+          <moneyStatistics v-if="activeName === 'sixth'" />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.rebateGoodsStatistics')"
           name="seventh"
         >
-          <goodsReturnStatistics />
+          <goodsReturnStatistics v-if="activeName === 'seventh'" />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.withdrawAudit')"
           name="eighth"
         >
-          <withdrawDepositCheck />
+          <withdrawDepositCheck v-if="activeName === 'eighth'" />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.distributorAudit')"
           name="ninth"
         >
-          <distributorCheck />
+          <distributorCheck v-if="activeName === 'ninth'" />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.advertisement')"
           name="tenth"
         >
-          <advertisement />
+          <advertisement v-if="activeName === 'tenth'" />
         </el-tab-pane>
       </el-tabs>
     </div>
