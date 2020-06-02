@@ -11,15 +11,19 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.api.ApiBasePageParam;
+import com.vpu.mp.service.foundation.util.api.ApiPageResult;
 import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.api.ApiReturnOrderListVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnListVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.ReturnGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -36,6 +40,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -621,7 +626,30 @@ public class ReturnOrderService extends ShopBaseService{
 		
 		return UserOrderBean.builder().orderNum(count).totalMoneyPaid(orderAmount).build();
 	}
-	
+
+    public Map<String, List<ApiReturnOrderListVo>> getOrderByOrderSns(List<String> sns) {
+        if(CollectionUtils.isEmpty(sns)) {
+            return new HashMap<>(0);
+        }
+        return db().selectFrom(TABLE).where(TABLE.ORDER_SN.in(sns)).fetchGroups(TABLE.ORDER_SN, ApiReturnOrderListVo.class);
+    }
+
+    public <T> ApiPageResult<T> getPageList(ApiBasePageParam param, Class<T> clazz) {
+        SelectWhereStep<ReturnOrderRecord> select = db().selectFrom(TABLE);
+        buildOptions(select, param);
+        return getApiPageResult(select, param.getPage(), param.getPageSize(), clazz);
+    }
+
+    private void buildOptions(SelectWhereStep<ReturnOrderRecord> select, ApiBasePageParam param) {
+	    //只能查询最近30天内的记录
+        select.where(TABLE.CREATE_TIME.ge(DateUtil.getBefore30Day()));
+        if(param.getStartTime() != null) {
+            select.where(TABLE.CREATE_TIME.ge(param.getStartTime()));
+        }
+        if(param.getEndTime() != null) {
+            select.where(TABLE.CREATE_TIME.le(param.getEndTime()));
+        }
+    }
 }
 
 

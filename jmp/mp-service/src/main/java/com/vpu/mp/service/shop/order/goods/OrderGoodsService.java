@@ -15,6 +15,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderGoodsListVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.api.ApiOrderGoodsListVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
@@ -59,6 +60,7 @@ import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 public class OrderGoodsService extends ShopBaseService{
 
 	public final OrderGoods TABLE = ORDER_GOODS;
+
 	/** 商品数量 发货数量 退款成功数量*/
 	public static byte TOTAL_GOODSNUMBER = 0,TOTAL_SENDNUMBER = 1,TOTAL_SUCCESSRETURNNUMBER = 2;
 
@@ -463,5 +465,17 @@ public class OrderGoodsService extends ShopBaseService{
      */
     public int isGift(int recId){
 	    return db().select(TABLE.IS_GIFT).from(TABLE).where(TABLE.REC_ID.eq(recId)).fetchOptionalInto(Integer.class).orElse(0);
+    }
+
+    /**
+     * 	通过订单sn[]查询其下商品
+     * @param orderSns
+     * @return Map<String, List<OrderGoodsMpVo>>
+     */
+    public Map<String, List<ApiOrderGoodsListVo>> getGoodsByOrderSns(List<String> orderSns) {
+        return db().select(TABLE.REC_ID,TABLE.PRODUCT_ID,TABLE.PRODUCT_SN,TABLE.GOODS_ID,TABLE.GOODS_SN,TABLE.GOODS_NAME,TABLE.GOODS_ATTR,TABLE.DISCOUNTED_GOODS_PRICE,TABLE.GOODS_NUMBER,TABLE.REFUND_STATUS,TABLE.SEND_NUMBER)
+            .from(TABLE)
+            .where(TABLE.ORDER_SN.in(orderSns))
+            .fetchGroups(TABLE.ORDER_SN,ApiOrderGoodsListVo.class);
     }
 }

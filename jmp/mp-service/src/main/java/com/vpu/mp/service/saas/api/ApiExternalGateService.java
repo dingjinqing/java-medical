@@ -233,11 +233,11 @@ public class ApiExternalGateService extends MainBaseService {
                 break;
             case ApiExternalGateConfig.SERVICE_ORDER_LIST:
                 //订单列表
-                //同步物流单号(发货)
                 apiJsonResult = saas().getShopApp(param.getShopId()).readOrder.getPageList(param);
                 break;
             case ApiExternalGateConfig.SERVICE_SINGLE_ORDER:
                 //单个订单
+                apiJsonResult = saas().getShopApp(param.getShopId()).readOrder.apiGet(param);
                 break;
             case ApiExternalGateConfig.SERVICE_SYNC_LOGISTICS:
                 //同步物流单号(发货)
@@ -245,9 +245,7 @@ public class ApiExternalGateService extends MainBaseService {
                 break;
             case ApiExternalGateConfig.SERVICE_REFUND_ORDER_LIST:
                 //退款订单列表
-                break;
-            case ApiExternalGateConfig.SERVICE_REFUND_ORDER:
-                //退款订单
+                apiJsonResult = saas().getShopApp(param.getShopId()).readOrder.getReturnPageList(param);
                 break;
             case ApiExternalGateConfig.SERVICE_SYNC_REFUND_ORDER_RESULT:
                 //同步退款结果
@@ -321,23 +319,23 @@ public class ApiExternalGateService extends MainBaseService {
         PosVerifyOrderParam param = Util.parseJson(gateParam.getContent(), PosVerifyOrderParam.class);
         ApiJsonResult result = new ApiJsonResult();
         if (param == null) {
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg("content为空");
             return result;
         }
         if (StringUtils.isBlank(param.getOrderSn())) {
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg("参数order_sn为空");
             return result;
         }
         if (param.getOrderStatus() == null || !param.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)) {
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg("参数order_status非法");
             return result;
         }
         OrderInfoRecord order = saas().getShopApp(gateParam.getShopId()).readOrder.orderInfo.getOrderByOrderSn(param.getOrderSn());
         if (order == null) {
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg("核销订单不存在");
             return result;
         }
@@ -352,7 +350,7 @@ public class ApiExternalGateService extends MainBaseService {
             result.setCode(ApiExternalGateConfig.ERROR_CODE_SUCCESS);
         } else {
             log.error("pos核销失败，executeResult：{}", executeResult);
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg((String) executeResult.getResult());
         }
         return result;
@@ -362,25 +360,25 @@ public class ApiExternalGateService extends MainBaseService {
         PosReturnGoodsParam param = Util.parseJson(gateParam.getContent(), PosReturnGoodsParam.class);
         ApiJsonResult result = new ApiJsonResult();
         if (param == null) {
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg("content为空");
             return result;
         }
         if (StringUtils.isBlank(param.getOrderSn())) {
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg("参数order_sn为空");
             return result;
         }
         //订单
         OrderInfoRecord order = saas().getShopApp(gateParam.getShopId()).readOrder.orderInfo.getOrderByOrderSn(param.getOrderSn());
         if (order == null) {
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg("退款订单不存在");
             return result;
         }
         //校验商品构造ReturnGoods
         if (MapUtils.isEmpty(param.getGoods()) || MapUtils.isEmpty(param.getGift())) {
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg("参数goods或gift为空");
             return result;
         }
@@ -408,7 +406,7 @@ public class ApiExternalGateService extends MainBaseService {
                 }
             }
             if (oneReturnGoods == null) {
-                result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+                result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
                 result.setMsg("退款订单商品不存在");
                 return result;
             } else {
@@ -432,7 +430,7 @@ public class ApiExternalGateService extends MainBaseService {
             result.setData(Util.toJson(new PosReturnGoodsVo(executeParam.getReturnMoney(), executeParam.getShippingFee())));
         } else {
             log.error("pos退款失败，executeResult：{}", executeResult);
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg((String) executeResult.getResult());
         }
         return result;

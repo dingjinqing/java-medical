@@ -34,7 +34,6 @@ public final class DateUtil {
 	public static final String DATE_FORMAT_FULL = "yyyy-MM-dd HH:mm:ss";
 
 	public static final String DATE_FORMAT_FULL_NO_UNDERLINE = "yyyyMMddHHmmss";
-    public static final String DATE_FORMAT_API_EXTERNAL = "yyyyMMddHHmmss";
 
 	public static final String DATE_MYSQL_SIMPLE="%Y-%m-%d";
 	

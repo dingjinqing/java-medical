@@ -236,28 +236,28 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
     public ApiJsonResult shippingApi(ApiShippingParam param) throws MpException {
         ApiJsonResult result = new ApiJsonResult();
         if (param == null) {
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg("content为空");
             return result;
         }
         if(StringUtils.isBlank(param.getOrderSn())) {
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg("参数order_sn为空");
             return result;
         }
         if(StringUtils.isBlank(param.getLogisticsCode())) {
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg("参数logistics_code为空");
             return result;
         }
         if(StringUtils.isBlank(param.getLogisticsNo())) {
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg("参数logistics_no为空");
             return result;
         }
         OrderInfoRecord order = saas().getShopApp(getShopId()).readOrder.orderInfo.getOrderByOrderSn(param.getOrderSn());
         if(order == null ) {
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg("发货订单不存在");
             return result;
         }
@@ -279,7 +279,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
             }
         }
         if(CollectionUtils.isEmpty(shipGoodsInfo)) {
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg("无可发货商品");
             return result;
         }
@@ -293,7 +293,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
         //获取快递公司
         ExpressVo expressVo = saas().getShopApp(getShopId()).readOrder.expressService.getByCode(param.getLogisticsCode());
         if(expressVo == null) {
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg("快递公司不存在");
             return result;
         }
@@ -303,7 +303,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
             result.setCode(ApiExternalGateConfig.ERROR_CODE_SUCCESS);
         }else {
             logger.error("外服系统调用发货接口失败，executeResult：{}", executeResult);
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             result.setMsg(Util.translateMessage(AbstractExcelDisposer.DEFAULT_LANGUAGE, executeResult.getErrorCode().getMessage(), JsonResult.LANGUAGE_TYPE_MSG, executeResult.getErrorParam()));
         }
         return result;

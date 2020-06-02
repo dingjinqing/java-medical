@@ -152,11 +152,11 @@ public abstract  class AbstractCommonBaseService {
      * @param clazz
      * @param <T>
      */
-    public <T> ApiPageResult getApiPageResult(SelectLimitStep<?> select, Integer currentPage, Integer pageRows,
+    public <T> ApiPageResult<T> getApiPageResult(SelectLimitStep<?> select, Integer currentPage, Integer pageRows,
                                               Class<T> clazz){
         PageResult<T> pageResult = getPageResult(select, currentPage, pageRows, clazz);
 
-        ApiPageResult apiPageResult = new ApiPageResult();
+        ApiPageResult<T> apiPageResult = new ApiPageResult<>();
         apiPageResult.setCurPageNo(pageResult.page.currentPage);
         apiPageResult.setPageSize(pageResult.page.pageCount);
         apiPageResult.setTotalCount(pageResult.page.totalRows);

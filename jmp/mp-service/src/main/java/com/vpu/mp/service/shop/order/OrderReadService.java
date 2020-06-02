@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order;
 
+import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
@@ -19,6 +20,7 @@ import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.util.api.ApiBasePageParam;
+import com.vpu.mp.service.foundation.util.api.ApiPageResult;
 import com.vpu.mp.service.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
@@ -38,9 +40,17 @@ import com.vpu.mp.service.pojo.shop.order.OrderParam;
 import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
+import com.vpu.mp.service.pojo.shop.order.api.ApiOrderGoodsListVo;
+import com.vpu.mp.service.pojo.shop.order.api.ApiOrderListVo;
+import com.vpu.mp.service.pojo.shop.order.api.ApiOrderPageResult;
+import com.vpu.mp.service.pojo.shop.order.api.ApiOrderQueryParam;
+import com.vpu.mp.service.pojo.shop.order.api.ApiReturnGoodsListVo;
+import com.vpu.mp.service.pojo.shop.order.api.ApiReturnOrderListVo;
+import com.vpu.mp.service.pojo.shop.order.api.ApiReturnOrderPageResult;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.order.must.OrderMustVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OperatorRecord;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
@@ -131,6 +141,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
@@ -935,15 +946,287 @@ public class OrderReadService extends ShopBaseService {
         return result;
     }
 
+    /**
+     * api单个订单
+     * @param gateParam
+     * @return
+     */
+    public ApiJsonResult apiGet(ApiExternalGateParam gateParam) {
+        ApiOrderQueryParam param = Util.parseJson(gateParam.getContent(), ApiOrderQueryParam.class);
+        ApiJsonResult result = new ApiJsonResult();
+        if (param == null) {
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setMsg("content为空");
+            return result;
+        }
+        if (StringUtils.isBlank(param.getOrderSn())) {
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setMsg("参数order_sn为空");
+            return result;
+        }
+        ApiPageResult<ApiOrderListVo> pageResult = getApiOrderListVos(param);
+        if(CollectionUtils.isEmpty(pageResult.getDataList())) {
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setMsg("查无此单");
+            return result;
+        }
+        return new ApiJsonResult(pageResult.getDataList().get(0));
+    }
+
+    /**
+     * api订单列表
+     * @param gateParam
+     * @return
+     */
     public ApiJsonResult getPageList(ApiExternalGateParam gateParam) {
+        ApiOrderQueryParam param = Util.parseJson(gateParam.getContent(), ApiOrderQueryParam.class);
+        if (param == null) {
+            param = new ApiOrderQueryParam();
+        }
+        param.setOrderSn(null);
+        ApiPageResult<ApiOrderListVo> pageResult = getApiOrderListVos(param);
+        ApiOrderPageResult result = new ApiOrderPageResult();
+        result.setCurPageNo(pageResult.getCurPageNo());
+        result.setPageSize(pageResult.getPageSize());
+        result.setTotalOrderCount(pageResult.getTotalCount());
+        result.setOrderList(pageResult.getDataList());
+        return new ApiJsonResult(result);
+    }
+
+    /**
+     * api退款订单列表
+     * @param gateParam
+     * @return
+     */
+    public ApiJsonResult getReturnPageList(ApiExternalGateParam gateParam) {
         ApiBasePageParam param = Util.parseJson(gateParam.getContent(), ApiBasePageParam.class);
         if (param == null) {
-            param = new ApiBasePageParam();
+            param = new ApiOrderQueryParam();
         }
-        orderInfo.getOrders(param);
-        return null;
+        ApiPageResult<ApiReturnOrderListVo> pageResult = returnOrder.getPageList(param, ApiReturnOrderListVo.class);
+        List<ApiReturnOrderListVo> dataList = pageResult.getDataList();
+        //设置退款商品
+        setReturnGoods(dataList);
+        //erp需要的一些数值转化
+        dataTransform(dataList);
+        ApiReturnOrderPageResult result = new ApiReturnOrderPageResult();
+        result.setCurPageNo(pageResult.getCurPageNo());
+        result.setPageSize(pageResult.getPageSize());
+        result.setTotalOrderCount(pageResult.getTotalCount());
+        result.setOrderList(pageResult.getDataList());
+        return new ApiJsonResult(result);
     }
-        /*********************************************************************************************************/
+
+    private ApiPageResult<ApiOrderListVo> getApiOrderListVos(ApiOrderQueryParam param) {
+        ApiPageResult<ApiOrderListVo> pageResult = orderInfo.getOrders(param, ApiOrderListVo.class);
+        //订单
+        List<ApiOrderListVo> orders = pageResult.getDataList();
+        //快递公司
+        Map<Byte, ExpressVo> expressMap = expressService.getAll().stream().collect(Collectors.toMap(ExpressVo::getShippingId, Function.identity()));
+        //设置快递公司名称
+        setShippingName(orders, expressMap);
+        //用户手机号昵称
+        setUserInfo(orders);
+        //下单真实信息
+        setOrderMustInfo(orders);
+        //发票
+        setInvoiceInfo(orders);
+        //商品
+        setGoodsInfo(orders, expressMap);
+        //退款信息
+        setRetuenInfo(orders, expressMap);
+        return pageResult;
+    }
+
+    /**
+     * set ShippingName
+     * @param orders
+     * @param expressMap
+     */
+    private void setShippingName(List<ApiOrderListVo> orders, Map<Byte, ExpressVo> expressMap) {
+        if(CollectionUtils.isEmpty(orders)) {
+            return;
+        }
+        orders.forEach(x->{
+            ExpressVo vo = expressMap.get(x.getShippingId());
+            if(vo != null) {
+                x.setShippingName(vo.getShippingName());
+            }
+        });
+    }
+
+    /**
+     * set username、Mobile
+     * @param orders
+     */
+    private void setUserInfo(List<ApiOrderListVo> orders) {
+        if(CollectionUtils.isEmpty(orders)) {
+            return;
+        }
+        List<UserRecord> users = user.getUserRecordByIds(orders.stream().map(ApiOrderListVo::getUserId).collect(Collectors.toList()));
+        Map<Integer, UserRecord> usersMap = users.stream().collect(Collectors.toMap(UserRecord::getUserId, Function.identity()));
+        orders.forEach(x->{
+            UserRecord vo = usersMap.get(x.getUserId());
+            if(vo != null) {
+                x.setUsername(vo.getMobile() + vo.getUsername());
+            }
+        });
+    }
+
+    /**
+     * set OrderMustInfo
+     * @param orders
+     */
+    private void setOrderMustInfo(List<ApiOrderListVo> orders) {
+        if(CollectionUtils.isEmpty(orders)) {
+            return;
+        }
+        List<OrderMustVo> orderMustInfo = orderMust.getOrderMustByOrderSns(orders.stream().map(ApiOrderListVo::getOrderSn).collect(Collectors.toList()));
+        Map<String, OrderMustVo> orderMustMap = orderMustInfo.stream().collect(Collectors.toMap(OrderMustVo::getOrderSn, Function.identity()));
+        orders.forEach(x->{
+            OrderMustVo vo = orderMustMap.get(x.getOrderSn());
+            if(vo != null) {
+                x.setOrderRealName(vo.getOrderRealName());
+                x.setOrderCid(vo.getOrderCid());
+                x.setConsigneeRealName(vo.getConsigneeRealName());
+                x.setConsigneeCid(vo.getConsigneeCid());
+            }
+        });
+    }
+
+    /**
+     * set InvoiceInfo TODO 2.14新加发票测试后删除TODO
+     * @param orders
+     */
+    private void setInvoiceInfo(List<ApiOrderListVo> orders) {
+        if(CollectionUtils.isEmpty(orders)) {
+            return;
+        }
+        orders.forEach(
+            x->{
+                if(!StringUtils.isBlank(x.getInvoiceTitle())) {
+                    x.setInvoiceInfo(Util.parseJson(x.getInvoiceTitle(), InvoiceVo.class));
+                }
+            }
+        );
+    }
+
+    /**
+     * setGoodsInfo
+     * @param orders
+     * @param expressMap
+     */
+    private void setGoodsInfo(List<ApiOrderListVo> orders, Map<Byte, ExpressVo> expressMap) {
+        if(CollectionUtils.isEmpty(orders)) {
+            return;
+        }
+        Map<String, List<ApiOrderGoodsListVo>> goodsInfo = orderGoods.getGoodsByOrderSns(orders.stream().map(ApiOrderListVo::getOrderSn).collect(Collectors.toList()));
+        //发货信息
+        Map<String, List<ShippingInfoVo>> shippingInfo = shipInfo.getShippingByOrderSn(orders.stream().map(ApiOrderListVo::getOrderSn).toArray(String[]::new));
+        for (ApiOrderListVo order: orders) {
+            //商品
+            List<ApiOrderGoodsListVo> goods = goodsInfo.get(order.getOrderSn());
+            order.setOrderGoodsInfo(goods);
+            //商品设置配送信息
+            List<ShippingInfoVo> goodsShipping = shippingInfo.get(order.getOrderSn());
+            if (CollectionUtils.isNotEmpty(goodsShipping)) {
+                for (ShippingInfoVo shippingInfoVo : goodsShipping) {
+                    List<Integer> recIds = shippingInfoVo.getGoods().stream().map(ShippingInfoVo.Goods::getOrderGoodsId).collect(Collectors.toList());
+                    for(ApiOrderGoodsListVo goodsVo : goods) {
+                        if(goodsVo.getSendNumber() > 0 && recIds.contains(goodsVo.getRecId())) {
+                            goodsVo.setShippingNo(shippingInfoVo.getShippingNo());
+                            goodsVo.setShippingTime(shippingInfoVo.getShippingTime());
+                            ExpressVo expressVo = expressMap.get(shippingInfoVo.getShippingId());
+                            goodsVo.setShippingName(expressVo == null ? null : expressVo.getShippingName());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * set RetuenInfo
+     * @param orders
+     * @param expressMap
+     */
+    private void setRetuenInfo(List<ApiOrderListVo> orders, Map<Byte, ExpressVo> expressMap) {
+        if(CollectionUtils.isEmpty(orders)) {
+            return;
+        }
+        Map<String, List<ApiReturnOrderListVo>> returnOrderInfo = returnOrder.getOrderByOrderSns(orders.stream().map(ApiOrderListVo::getOrderSn).collect(Collectors.toList()));
+
+        for (ApiOrderListVo order : orders) {
+            List<ApiReturnOrderListVo> returnOrders = returnOrderInfo.get(order.getOrderSn());
+            if(CollectionUtils.isEmpty(returnOrders)) {
+                break;
+            }
+            for (ApiReturnOrderListVo ro : returnOrders) {
+                ro.setReason(OrderConstant.getReturnReasonDesc(ro.getReasonType().intValue()));
+                String shippingName = null;
+                if(!StringUtils.isBlank(ro.getShippingType())) {
+                    ExpressVo expressVo = expressMap.get(Byte.parseByte(ro.getShippingType()));
+                    shippingName = expressVo == null ? null : expressVo.getShippingName();
+                }
+                ro.setShippingName(shippingName);
+                if(!StringUtils.isBlank(ro.getGoodsImages())) {
+                    ArrayList goodsImagesArray = Util.parseJson(ro.getGoodsImages(), ArrayList.class);
+                    if(CollectionUtils.isNotEmpty(goodsImagesArray)) {
+                        StringBuilder sb = new StringBuilder();
+                        for (int i = 0; i < goodsImagesArray.size(); i++) {
+                            sb.append(imageUrl(goodsImagesArray.get(i).toString()));
+                            if(i != goodsImagesArray.size() -1) {
+                                sb.append(",");
+                            }
+                        }
+                        ro.setGoodsImages(sb.toString());
+                    }
+                }
+                if(!StringUtils.isBlank(ro.getVoucherImages())) {
+                    ArrayList voucherImagesArray = Util.parseJson(ro.getVoucherImages(), ArrayList.class);
+                    if(CollectionUtils.isNotEmpty(voucherImagesArray)) {
+                        StringBuilder sb = new StringBuilder();
+                        for (int i = 0; i < voucherImagesArray.size(); i++) {
+                            sb.append(imageUrl(voucherImagesArray.get(i).toString()));
+                            if(i != voucherImagesArray.size() -1) {
+                                sb.append(",");
+                            }
+                        }
+                        ro.setVoucherImages(sb.toString());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * setReturnGoods
+     * @param dataList
+     */
+    private void setReturnGoods(List<ApiReturnOrderListVo> dataList) {
+        if(CollectionUtils.isEmpty(dataList)) {
+            return;
+        }
+        Map<Integer, List<ApiReturnGoodsListVo>> refundGoods = returnOrderGoods.getByOrderSn(dataList.stream().map(ApiReturnOrderListVo::getOrderSn).toArray(String[]::new)).intoGroups(returnOrderGoods.TABLE.RET_ID, ApiReturnGoodsListVo.class);
+        dataList.forEach(x->x.setReturnGoodsList(refundGoods.get(x.getRetId())));
+    }
+
+    /**
+     * data Transform
+     * @param dataList
+     */
+    private void dataTransform(List<ApiReturnOrderListVo> dataList) {
+        if(CollectionUtils.isEmpty(dataList)) {
+            return;
+        }
+        for (ApiReturnOrderListVo returnOrderVo : dataList) {
+            //TODO 售前、售后状态
+            returnOrderVo.setAfterSales(null);
+            //erp退款状态转化
+            returnOrderVo.setErpRefundStatus(OrderConstant.getErpReturnStatus(returnOrderVo.getRefundStatus(), !StringUtils.isBlank(returnOrderVo.getShippingNo())));
+        }
+    }
+    /*********************************************************************************************************/
 
 	/**
 	 * 分裂营销活动的活动数据分析的订单部分数据

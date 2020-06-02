@@ -45,7 +45,6 @@ public class ApiOrderListVo {
     private Byte refundStatus;
     private String addMessage;
     private Byte shippingId;
-    @JsonProperty("shipping_name")
     private String shippingName;
     private String shippingNo;
     private Timestamp shippingTime;
@@ -54,6 +53,8 @@ public class ApiOrderListVo {
     private BigDecimal memberCardReduce;
     private BigDecimal memberCardBalance;
     private BigDecimal discountAmount;
+    @JsonIgnore
+    private Integer userId;
     /**
      * 用户手机号昵称
      */
@@ -62,14 +63,12 @@ public class ApiOrderListVo {
     private String orderCid;
     private String consigneeRealName;
     private String consigneeCid;
-    private Byte invoiceType;
-    @JsonIgnore
+    @JsonProperty("invoice_type")
     private Integer invoiceContent;
     @JsonIgnore
     private String invoiceTitle;
     private InvoiceVo invoiceInfo;
     @JsonProperty("order_goods_list")
-    private List<?> orderGoodsInfo;
-    @JsonProperty("return_info")
-    private List<?> returnInfo;
+    private List<ApiOrderGoodsListVo> orderGoodsInfo;
+    private List<ApiReturnOrderListVo> returnInfo;
 }

@@ -8,16 +8,15 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- * 订单列表分页类-此类是由于php目前规定的对接文档字段不统一导致，
+ * 退款订单列表分页类-此类是由于php目前规定的对接文档字段不统一导致，
  * 后期可以直接在ApiPageResult类进行统一
  * @author 王帅
- * @date 2020年05月28日
  */
 @Getter
 @Setter
-public class ApiOrderPageResult extends ApiPageResult {
+public class ApiReturnOrderPageResult extends ApiPageResult {
     @JsonProperty("total_order_count")
     private Integer totalOrderCount;
-    @JsonProperty("order_list")
-    private List<ApiOrderListVo> orderList;
+    @JsonProperty("list")
+    private List<ApiReturnOrderListVo> orderList;
 }

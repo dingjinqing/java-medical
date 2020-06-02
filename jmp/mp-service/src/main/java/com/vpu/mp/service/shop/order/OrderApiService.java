@@ -33,7 +33,7 @@ public class OrderApiService extends ShopBaseService {
             return shipService.shippingApi(Util.parseJson(gateParam.getContent(), ApiShippingParam.class));
         } catch (MpException e) {
             ApiJsonResult apiJsonResult = new ApiJsonResult();
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
             apiJsonResult.setMsg(e.getMessage());
             return apiJsonResult;
         }
