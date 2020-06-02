@@ -1,6 +1,6 @@
 <template>
     <div class="freeship_container">
-        <el-form label-width="170px">
+        <el-form label-width="175px">
             <el-form-item class="on_free_ship">
                     <el-checkbox v-model="turnOn">{{$t('memberCard.freeship')}}</el-checkbox>
                     <span>{{$t('memberCard.freeshipTip')}}</span>
@@ -253,7 +253,7 @@ export default {
         }
     }
     .free_ship_content{
-        margin-left: 72px;
+        margin-left: 75px;
         /deep/ .el-select{
             width: 150px;
         }
