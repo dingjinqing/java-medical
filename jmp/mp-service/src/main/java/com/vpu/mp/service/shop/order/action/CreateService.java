@@ -1,7 +1,10 @@
 package com.vpu.mp.service.shop.order.action;
 
 import com.beust.jcommander.internal.Lists;
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -428,18 +431,15 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         UserAddressVo defaultAddress = null;
         if (addressId != null) {
             defaultAddress = address.get(addressId, userId);
-            logger().info("获取默认地址{}",defaultAddress);
         }
         // 输入地址无效
         if (defaultAddress == null) {
-            defaultAddress = orderInfo.getLastOrderAddress(userId);
-            if (defaultAddress!=null){
-                UserAddressRecord addressInfo = address.getAddressById(userId, defaultAddress.getAddressId());
-                if (addressInfo!=null&&addressInfo.getDelFlag().equals(DelFlag.NORMAL_VALUE)){
-                    defaultAddress = addressInfo.into(UserAddressVo.class);
-                }
+            //先查默认地址
+            defaultAddress = address.getefaultAddress(userId);
+            if(defaultAddress == null) {
+                //上次下单地址
+                defaultAddress = orderInfo.getLastOrderAddress(userId);
             }
-            logger().info("获取上次下单地址{}",defaultAddress);
         }
         return defaultAddress;
     }
