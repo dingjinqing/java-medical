@@ -143,6 +143,8 @@ export default {
     this.langDefault()
     this.initGradeOptions()
     this.$on('checkRule', () => {
+      this.checkGradeScore()
+      this.checkGradeCrash()
       if (this.ruleForm.gradeValue) {
         this.valid = false
       } else {
