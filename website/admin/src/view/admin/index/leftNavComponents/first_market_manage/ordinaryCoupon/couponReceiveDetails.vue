@@ -298,6 +298,9 @@ export default {
         }
       })
       this.tableData = data
+      if (this.tableData && this.tableData.length > 0) {
+        this.couponType = this.tableData[0].couponType
+      }
     },
 
     // 删除明细
