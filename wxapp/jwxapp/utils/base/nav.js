@@ -6,7 +6,7 @@ var nav = {
   getUrl (path) {
     path = path || "";
     path = path.indexOf("/") === 0 ? path.substr(1) : path;
-    var schema = config.schema ? config.schema : "http";
+    var schema = config.schema ? config.schema : "https";
     return schema + "://" + config.main_host + "/" + path;
   },
   getImageUrl (path) {

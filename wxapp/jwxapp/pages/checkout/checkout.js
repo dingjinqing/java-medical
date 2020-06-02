@@ -52,7 +52,8 @@ global.wxPage({
       consigneeRealName: '',
       consigneeCid: '',
       custom: ''
-    }
+    },
+    options: {}
   },
 
   /**
@@ -62,6 +63,10 @@ global.wxPage({
     let goods = []
     let { goodsList, activityType, activityId, recordId, preSaleInfo=null } = options
     console.log(options)
+    wx.setStorage({
+      data: options,
+      key: 'orderOptions'
+    })
     JSON.parse(goodsList).forEach(item => {
       let {
         goodsId,
@@ -144,41 +149,42 @@ global.wxPage({
   },
   // 选择地址
   addAddress () {
-    wx.chooseAddress({
-      success: res => {
-        util.api(
-          '/api/wxapp/address/choose',
-          res => {
-            console.log(res)
-            if (res.error === 0) {
-              this.setData({
-                'params.addressId': res.content.addressId
-              })
-              console.log()
-              this.requestOrder()
-            }
-          },
-          { wxAddress: { ...res } }
-        )
-      },
-      fail: function () {
-        wx.getSetting({
-          success: function (res) {
-            if (!res.authSetting['scope.address']) {
-              util.showModal(
-                '是否打开设置页面',
-                '需要获取您的位置信息，请到小程序的设置页面打开授权',
-                function () {
-                  wx.openSetting({
-                    success: function (res) { }
-                  })
-                }
-              )
-            }
-          }
-        })
-      }
-    })
+    util.navigateTo('/components/usercenter/useraddress/useraddress?select=1')
+    // wx.chooseAddress({
+    //   success: res => {
+    //     util.api(
+    //       '/api/wxapp/address/choose',
+    //       res => {
+    //         console.log(res)
+    //         if (res.error === 0) {
+    //           this.setData({
+    //             'params.addressId': res.content.addressId
+    //           })
+    //           console.log()
+    //           this.requestOrder()
+    //         }
+    //       },
+    //       { wxAddress: { ...res } }
+    //     )
+    //   },
+    //   fail: function () {
+    //     wx.getSetting({
+    //       success: function (res) {
+    //         if (!res.authSetting['scope.address']) {
+    //           util.showModal(
+    //             '是否打开设置页面',
+    //             '需要获取您的位置信息，请到小程序的设置页面打开授权',
+    //             function () {
+    //               wx.openSetting({
+    //                 success: function (res) { }
+    //               })
+    //             }
+    //           )
+    //         }
+    //       }
+    //     })
+    //   }
+    // })
   },
   // 默认填充
   defaultInput (orderInfo) {

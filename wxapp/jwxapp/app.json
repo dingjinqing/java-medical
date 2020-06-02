@@ -36,7 +36,8 @@
     "pages/fullprice/fullprice",
     "pages/maingoodslist/maingoodslist",
     "pages/usercardup/usercardup",
-    "pages/personalcenter/personalcenter"
+    "pages/personalcenter/personalcenter",
+    "components/usercenter/useraddress/useraddress"
   ],
   "window": {
     "backgroundTextStyle": "dark",

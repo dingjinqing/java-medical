@@ -53,10 +53,19 @@
 
 /* 收货地址列表 */
 .address-item {
+  position: relative;
   margin-top: 20rpx;
   padding-left: 20rpx;
   background: #fff;
   color: #333333;
+}
+.select-address-icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50rpx;
+  height: 50rpx;
+  z-index: 100;
 }
 .address-item-top {
   padding-right: 20rpx;

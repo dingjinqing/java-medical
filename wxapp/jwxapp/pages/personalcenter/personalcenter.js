@@ -8,7 +8,6 @@ global.wxPage({
    */
   data: {
     tabIndex: 'usercenter',
-    addressList: [],
     options: {}
   },
 
@@ -27,22 +26,6 @@ global.wxPage({
     }
     this.setData({
       options: option
-    })
-    this.initData()
-  },
-
-  /**
-   * 请求收货地址
-   */
-  initData () {
-    let that = this
-    util.api('/api/wxapp/address/list', res => {
-      if (res.error === 0) {
-        console.log(res.content)
-        that.setData({
-          addressList: res.content.addressList || []
-        })
-      }
     })
   },
 
