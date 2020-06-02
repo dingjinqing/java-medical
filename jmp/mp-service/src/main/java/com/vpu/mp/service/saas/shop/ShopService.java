@@ -678,4 +678,17 @@ public class ShopService extends MainBaseService {
         }
 	    return Lists.newArrayList();
     }
+
+    /**
+     * 根据店铺id获取对应小程序名称
+     * @param shopId 店铺id
+     * @return       小程序名称
+     */
+    public String getShopNickName(Integer shopId){
+        return db().select(MP_AUTH_SHOP.NICK_NAME)
+            .from(MP_AUTH_SHOP)
+            .where(MP_AUTH_SHOP.SHOP_ID.eq(shopId))
+            .limit(1)
+            .fetchOneInto(String.class);
+    }
 }

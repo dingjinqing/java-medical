@@ -30,8 +30,7 @@ public class CouponMsgNoticeService extends ShopBaseService {
      */
     public void sendCouponMsgNotice(Integer userId, String couponName, Timestamp startTime,Timestamp endTime,String couponDesc){
         logger().info("开始处理当前卡券领取成功消息,用户id为：{},优惠券名称为：{}",userId,couponName);
-        ShopRecord shop = saas().shop.getShopById(getShopId());
-        String shopName = shop.getShopName();
+        String shopName = saas().shop.getShopNickName(getShopId());
         String firstData = "您好，您的"+couponDesc+"优惠券已成功领取";
         //公众号消息
         String[][] mpData = new String[][] {

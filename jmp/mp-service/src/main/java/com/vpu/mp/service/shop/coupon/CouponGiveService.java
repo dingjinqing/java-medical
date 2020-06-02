@@ -1017,7 +1017,7 @@ public class CouponGiveService extends ShopBaseService {
                     break;
                 default:
             }
-            couponMsgNoticeService.sendCouponMsgNotice(c.getUserId(),couponDetail.getActName(),c.getStartTime(),c.getEndTime(),couponDesc);
+            couponMsgNoticeService.sendCouponMsgNotice(c.getUserId(),couponDetail.getActName(),c.getCreateTime(),c.getEndTime(),couponDesc);
         });
     }
 }
