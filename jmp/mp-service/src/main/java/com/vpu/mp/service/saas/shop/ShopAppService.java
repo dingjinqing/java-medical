@@ -115,6 +115,8 @@ public class ShopAppService  extends MainBaseService {
         appAuthRecord.setStatus(BaseConstant.NO);
         appAuthRecord.setSessionKey(generateUniqueSessionKey(shopId));
         appAuthRecord.setIsSync(BaseConstant.NO);
+        appAuthRecord.setAddTime(DateUtil.getLocalDateTime());
+        appAuthRecord.setUpdateTime(DateUtil.getLocalDateTime());
         appAuthRecord.insert();
         appAuthRecord.refresh();
         return appAuthRecord;
@@ -141,6 +143,7 @@ public class ShopAppService  extends MainBaseService {
 
     public int updateAppAuthStatus(Integer id, Integer shopId,Integer sysId, Byte status) {
         return db().update(APP_AUTH).set(APP_AUTH.STATUS,status)
+            .set(APP_AUTH.UPDATE_TIME,DateUtil.getLocalDateTime())
             .where(APP_AUTH.ID.eq(id.shortValue()))
             .and(APP_AUTH.SYS_ID.eq(sysId))
             .and(APP_AUTH.SHOP_ID.eq(shopId)).execute();
@@ -159,6 +162,7 @@ public class ShopAppService  extends MainBaseService {
         return db().update(APP_AUTH)
             .set(APP_AUTH.APP_KEY,appKey)
             .set(APP_AUTH.APP_SECRET,appSecret)
+            .set(APP_AUTH.UPDATE_TIME,DateUtil.getLocalDateTime())
             .where(APP_AUTH.ID.eq(id.shortValue()))
             .and(APP_AUTH.SYS_ID.eq(sysId))
             .and(APP_AUTH.SHOP_ID.eq(shopId))
@@ -167,6 +171,7 @@ public class ShopAppService  extends MainBaseService {
 
     public int switchProduct(Integer id, Integer sysId, Integer shopId, byte product) {
        return db().update(APP_AUTH).set(APP_AUTH.PRODUCT,product)
+            .set(APP_AUTH.UPDATE_TIME,DateUtil.getLocalDateTime())
             .where(APP_AUTH.ID.eq(id.shortValue()))
             .and(APP_AUTH.SYS_ID.eq(sysId))
             .and(APP_AUTH.SHOP_ID.eq(shopId))
