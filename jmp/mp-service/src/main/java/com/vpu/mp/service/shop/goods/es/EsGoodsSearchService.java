@@ -56,6 +56,17 @@ public class EsGoodsSearchService extends EsBaseSearchService{
         return esPageConvertVoPage(pageResult);
     }
 
+    public List<Integer> getGoodsIdsByParam(GoodsPageListParam goodsPageListParam) throws IOException {
+        Integer shopId = getShopId();
+        goodsPageListParam.setPageRows(10000);
+        if(goodsPageListParam.getLabelId() != null){
+            goodsPageListParam.setGoodsIds(esGoodsLabelSearchService.getGoodsIdsByLabelIds(Lists.newArrayList(goodsPageListParam.getLabelId()),EsGoodsConstant.GOODS_SEARCH_PAGE));
+            goodsPageListParam.setLabelId(null);
+        }
+        EsSearchParam param = goodsParamConvertEsGoodsParam(goodsPageListParam,shopId);
+        PageResult<EsGoods> pageResult = searchGoodsPageByParam(param);
+        return pageResult.dataList.stream().map(EsGoods::getGoodsId).collect(Collectors.toList());
+    }
 
     private PageResult<GoodsPageListVo> esPageConvertVoPage(PageResult<EsGoods> esPage){
 

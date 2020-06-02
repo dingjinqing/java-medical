@@ -92,7 +92,8 @@ public class EsBaseSearchService extends ShopBaseService {
         GOODS_WEIGHT,
         GOODS_DESC,
         ROOM_ID,
-        SECONDARY_GOODS_IMAGES
+        SECONDARY_GOODS_IMAGES,
+        VIDEO_INFO_JSON
     };
 
 
@@ -219,7 +220,8 @@ public class EsBaseSearchService extends ShopBaseService {
 
         //isQueryByPage == false代表ES搜索不需要进行分页
         if( !param.isQueryByPage() ){
-            Page esPage = Page.getPage(1,1,1);
+            Page esPage = Page.getPage(1,1,Optional.of(param.getPageRows()).orElse(1));
+            param.setQueryByPage(true);
             EsSearchSourceBuilderParam searchParam = assemblySourceBuilderParam(param,esPage,GOODS_SEARCH_STR,null);
             sourceBuilder = assemblySearchSourceBuilder(searchParam);
             result.setPage(esPage);

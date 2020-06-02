@@ -308,12 +308,16 @@ public class GoodsService extends ShopBaseService {
 //        }
 //        return pageResult.getDataList().stream().map(GoodsPageListVo::getGoodsId).collect(Collectors.toList());
         // 拼接过滤条件
-        Condition condition = this.buildOptions(goodsPageListParam);
+        List<Integer> goodsIds;
+        try {
+            goodsIds =  esGoodsSearchService.getGoodsIdsByParam(goodsPageListParam);
+        } catch (IOException e) {
+            Condition condition = this.buildOptions(goodsPageListParam);
 
-        List<Integer> goodsIds = db().select(GOODS.GOODS_ID)
-            .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
-            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(condition).fetch(GOODS.GOODS_ID);
-
+            goodsIds = db().select(GOODS.GOODS_ID)
+                .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
+                .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(condition).fetch(GOODS.GOODS_ID);
+        }
         return goodsIds;
     }
 
@@ -1208,8 +1212,8 @@ public class GoodsService extends ShopBaseService {
      */
     public void updateEsDeleteSync(List<Integer> goodsIds) {
         try {
-            //更新es
-            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
+            //es服务正常时,索引同更步新，否则走队列
+            if (esUtilSearchService.esState() ) {
                 esGoodsCreateService.deleteEsGoods(goodsIds, getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.DELETE);
             }else{
