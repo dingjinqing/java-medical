@@ -54,6 +54,7 @@
             :min="0"
             :max="999999999"
             v-model="ruleForm.receiveDay"
+            @change="$refs.ruleForm.validateField('receiveDay')"
           >
           </el-input-number>
           <el-select
@@ -216,9 +217,14 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+*,/deep/ .el-form-item__label,
+/deep/ .el-radio__label,
+/deep/ .el-checkbox__label{
+  font-size: 13px;
+}
 .effective-time {
   .date-item {
-    padding-left: 100px;
+    padding-left: 75px;
     /deep/ .el-form-item__label:before {
       content: "*";
       color: #f56c6c;
