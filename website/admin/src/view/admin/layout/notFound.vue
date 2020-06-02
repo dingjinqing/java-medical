@@ -3,7 +3,7 @@
     <div class="content">
       <img
         style="margin-left:-30px"
-        src="http://mpdevimg2.weipubao.cn/image/admin/page_404.png"
+        :src="$imageHost+'/image/admin/page_404.png'"
         alt=""
       >
       <div class="tips">
