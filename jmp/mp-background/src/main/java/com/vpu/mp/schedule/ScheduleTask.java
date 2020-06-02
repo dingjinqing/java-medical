@@ -66,7 +66,7 @@ public class ScheduleTask {
 	/**
 	 * 每周获取微信数据（每周一6-12点每半个小时执行一次）
 	 */
-	@Scheduled(cron = "0 0,30 6-12 * * ?")
+	@Scheduled(cron = "0 0,30 6,7,8,9,10,11,12 ? * MON")
 	public void taskWeeklyWechat(){
 		Result<ShopRecord> result = saas.shop.getAll();
         for (ShopRecord record : result) {
