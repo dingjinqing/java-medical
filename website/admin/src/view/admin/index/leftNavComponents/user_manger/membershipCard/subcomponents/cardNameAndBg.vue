@@ -30,6 +30,7 @@
             <el-radio
               v-model="ruleForm.bgType"
               label="0"
+              style="margin-right: 26px;"
             >{{ $t('memberCard.bgColor') }}</el-radio>
             <!-- 默认值defaultBgColor -->
             <el-color-picker v-model="ruleForm.bgColor" size="small"></el-color-picker>
@@ -192,6 +193,19 @@ export default {
 /deep/ .el-radio__label{
   font-size: 13px;
 }
+
+/deep/ .el-icon-close:before{
+  content: ""
+}
+/deep/ .el-icon-arrow-down:before {
+    content: "";
+}
+/deep/ .el-color-picker__trigger{
+  border: 0px solid #e6e6e6;
+  height: 35px;
+  width: 70px;
+}
+
 .cardNameAndBg {
   .userCardName {
     padding-left: 75px;
