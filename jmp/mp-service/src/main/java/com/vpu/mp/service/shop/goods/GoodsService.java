@@ -1208,8 +1208,8 @@ public class GoodsService extends ShopBaseService {
      */
     public void updateEsDeleteSync(List<Integer> goodsIds) {
         try {
-            //更新es
-            if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
+            //es服务正常时,索引同更步新，否则走队列
+            if (esUtilSearchService.esState() ) {
                 esGoodsCreateService.deleteEsGoods(goodsIds, getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.DELETE);
             }else{
