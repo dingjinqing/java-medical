@@ -22,7 +22,8 @@
           <div v-show="Number(cardEffectTime.expiredType) !== 2">
             <cardRenewCfg
               v-bind.sync="cardRenew"
-              ref="cardRenew" />
+              ref="cardRenew"
+            />
           </div>
 
           <cardStoreCfg
@@ -84,18 +85,19 @@
         </div>
         <div class="advance-setting">
           <div class="rightTitle">高级设置</div>
-          <card-advance-cfg :cardTag="cardTag"
-              :cardType="cardType"/>
+          <card-advance-cfg
+            :cardTag="cardTag"
+            :cardType="cardType"
+          />
         </div>
       </div>
     </div>
     <div class="footer">
-      <div
-        class="save"
+      <el-button
+        type="primary"
+        size="small"
         @click="handleToSave"
-      >
-        {{$t('memberCard.save')}}
-      </div>
+      >{{$t('memberCard.save')}}</el-button>
     </div>
   </div>
 </template>
@@ -302,10 +304,14 @@ export default {
         customRightsFlag: 'off',
         customRightsAll: []
       },
+
       cardTag: {
         cardTag: 'off',
         cardTagId: []
-      }
+      },
+
+      isCanSave: true
+
     }
   },
   mounted () {
@@ -589,7 +595,12 @@ export default {
           this.cardChargeCfgData.valid && this.cardCouponCfgData.valid && this.cardEffectTime.valid &&
           this.cardReceiveCfgData.valid && this.cardActiveCfgData.valid && this.freeship.valid) {
           // 保存数据
-          this.prepareCardData()
+          if (this.isCanSave) {
+            this.isCanSave = false // 禁用保存
+            this.prepareCardData()
+          } else {
+            this.$message.warning(this.$t('memberCard.repeatSubmit'))
+          }
         } else {
           this.$message.error('保存失败')
         }
@@ -723,19 +734,25 @@ export default {
     createMemberCard (data) {
       createMemberCardRequest(data).then(res => {
         console.log(res)
+        this.isCanSave = true
         if (res.error === 0) {
           // success
           // 清除数据，并进行跳转
           this.successOptions()
+        } else {
+          this.$message.warning(this.$t('memberCard.cardCreateFailed'))
         }
       })
     },
     updateCardInfo (data) {
       updateCardRequest(data).then(res => {
         console.log(res)
+        this.isCanSave = true
         if (res.error === 0) {
           // success
           this.successOptions()
+        } else {
+          this.$message.warning(this.$t('memberCard.cardCreateFailed'))
         }
       })
     },
@@ -765,7 +782,7 @@ export default {
       }
     },
     dealWithCardTag () {
-      this.cardTag.cardTagId = this.cardTag.cardTagId.map(({id}) => id)
+      this.cardTag.cardTagId = this.cardTag.cardTagId.map(({ id }) => id)
     },
     dealWithCustomAction () {
       // true/false 转换1/0
@@ -813,7 +830,7 @@ export default {
     .rightContainerTop,
     .member-rights,
     .rightContainerBottom,
-    .advance-setting  {
+    .advance-setting {
       padding: 10px 1%;
       background: #f8f8f8;
       border: 1px solid #e4e4e4;

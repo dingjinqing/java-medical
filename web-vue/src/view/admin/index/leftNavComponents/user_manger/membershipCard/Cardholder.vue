@@ -78,12 +78,14 @@
             plain
             size="small"
             @click="handleTobtn(1)"
+            style="margin-left: 10px;"
           >重置</el-button>
           <el-button
             type="info"
             plain
             size="small"
             @click="handleTobtn(2)"
+            style="margin-left: 10px;"
           >会员导出</el-button>
         </div>
       </div>
