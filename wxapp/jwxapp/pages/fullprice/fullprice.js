@@ -63,10 +63,15 @@ global.wxPage({
     var goodsId = e.currentTarget.dataset.goods_id
     var cartNumber = e.currentTarget.dataset.cart_number
     var limitAmount = e.currentTarget.dataset.limit_amount
+    var goodsNumber = e.currentTarget.dataset.goods_number
     that.setData({
       basicNumber: e.currentTarget.dataset.cart_number,
       basicLimit: e.currentTarget.dataset.limit_amount
     })
+    if (goodsNumber === 0) {
+      util.showModal('提示', '商品库存为0');
+      return false
+    }
     // 不可参与购买且会员列表不为空
     if (that.data.full_info.state == 4 && that.data.full_info.cardList.length == 1 && that.data.full_info.cardList[0].cardType == 2) {
       util.showModal("提示", '您当前的会员等级不满足，仅拥有' + that.data.full_info.cardList[0].cardName + '等级卡用户可购买此商品。可在"个人中心"查看会员卡权益');
