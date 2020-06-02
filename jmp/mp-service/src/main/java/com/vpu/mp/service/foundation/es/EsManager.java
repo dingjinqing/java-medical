@@ -15,6 +15,7 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.GetAliasesResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -171,9 +172,21 @@ public class EsManager {
      * @param ids documentId List
      * @throws IOException 连接错误
      */
+    public void deleteIndexByIdAsync(String indexName, List<String> ids) throws IOException {
+        BulkRequest request = new BulkRequest();
+        ids.forEach(x-> request.add(new DeleteRequest(indexName,x)));
+        batchDocuments(request);
+    }
+    /**
+     * 根据索引名称和documentID删除索引(同步)
+     * @param indexName 索引名称
+     * @param ids documentId List
+     * @throws IOException 连接错误
+     */
     public void deleteIndexById(String indexName, List<String> ids) throws IOException {
         BulkRequest request = new BulkRequest();
         ids.forEach(x-> request.add(new DeleteRequest(indexName,x)));
+        request.setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
         batchDocuments(request);
     }
 
