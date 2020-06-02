@@ -94,12 +94,7 @@
       </div>
     </div>
     <div class="footer">
-      <div
-        class="save"
-        @click="handleToSave"
-      >
-        {{$t('memberCard.save')}}
-      </div>
+      <el-button type="primary" size="small" @click="handleToSave">{{$t('memberCard.save')}}</el-button>
     </div>
   </div>
 </template>
@@ -309,7 +304,8 @@ export default {
         cardTag: 'off',
         cardTagId: []
       },
-      marketActivities: []
+      marketActivities: [],
+      isCanSave: true
     }
   },
   mounted () {
@@ -601,7 +597,12 @@ export default {
           this.cardChargeCfgData.valid && this.cardCouponCfgData.valid && this.cardEffectTime.valid &&
           this.cardReceiveCfgData.valid && this.cardActiveCfgData.valid && this.freeship.valid) {
           // 保存数据
-          this.prepareCardData()
+          if (this.isCanSave) {
+            this.isCanSave = false // 禁用保存
+            this.prepareCardData()
+          } else {
+            this.$message.warning(this.$t('memberCard.repeatSubmit'))
+          }
         } else {
           this.$message.error('保存失败')
         }
@@ -736,19 +737,25 @@ export default {
     createMemberCard (data) {
       createMemberCardRequest(data).then(res => {
         console.log(res)
+        this.isCanSave = true
         if (res.error === 0) {
           // success
           // 清除数据，并进行跳转
           this.successOptions()
+        } else {
+          this.$message.warning(this.$t('memberCard.cardCreateFailed'))
         }
       })
     },
     updateCardInfo (data) {
       updateCardRequest(data).then(res => {
         console.log(res)
+        this.isCanSave = true
         if (res.error === 0) {
           // success
           this.successOptions()
+        } else {
+          this.$message.warning(this.$t('memberCard.cardCreateFailed'))
         }
       })
     },
