@@ -6,12 +6,14 @@ import com.vpu.mp.service.pojo.shop.summary.visit.PageVisitVo;
 import com.vpu.mp.service.pojo.shop.summary.visit.PageVisitVoItem;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitPageParam;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.elasticsearch.search.DocValueFormat;
 import org.jooq.Result;
 import org.jooq.SortField;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -82,7 +84,7 @@ public class PageService extends BaseVisitService {
             item.setPageShareUv(String.valueOf(r.getPageShareUv()));
             item.setPageVisitPv(String.valueOf(r.getPageVisitPv()));
             item.setPageVisitUv(String.valueOf(r.getPageVisitUv()));
-            item.setPageStayTimePv(r.getPageStaytimePv());
+            item.setPageStayTimePv(doubleFormat(r.getPageStaytimePv()));
             item.setPageName(pageNameOf(r.getPagePath()));
             item.setExitRate(getExitRate(r.getExitpagePv(),r.getPageVisitPv()));
             return item;
@@ -123,5 +125,9 @@ public class PageService extends BaseVisitService {
      */
     private Map<String, String> pageMap() {
         return PropertiesUtil.toMap("visit/pages.properties");
+    }
+    private Double doubleFormat(Double d){
+        BigDecimal b = new BigDecimal(d);
+        return b.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 }

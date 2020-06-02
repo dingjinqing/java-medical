@@ -101,6 +101,7 @@ public class RetainService extends BaseVisitService {
             day.setSum(sum);
             retains.add(day);
         });
+        Collections.reverse(retains);
         return retains;
     }
 

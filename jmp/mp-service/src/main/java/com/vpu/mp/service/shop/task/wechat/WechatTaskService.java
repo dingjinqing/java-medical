@@ -347,8 +347,9 @@ public class WechatTaskService extends ShopBaseService {
                 record.setVisitUv(Util.toJson(info.getVisitUv()));
                 if(validationData(info, MP_DAILY_RETAIN)){
                     db().update(MP_DAILY_RETAIN).set(record).where(MP_DAILY_RETAIN.REF_DATE.eq(info.getRefDate())).execute();
+                }else{
+                    record.insert();
                 }
-                record.insert();
             }
 
         } catch (WxErrorException e) {
