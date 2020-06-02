@@ -240,6 +240,8 @@ export const en = {
     'Coupon',
     'Receive details'
   ],
+  // 营销管理 普通优惠券 领取明细
+  ordinary_coupon_user_detail: ['Marketing management', 'Coupon', 'Collect user list'],
   // 营销管理 拼团抽奖
   group_draw: ['Marketing management', 'raffle draw'],
   // 营销管理 拼团抽奖 活动订单

@@ -650,7 +650,7 @@ const routes = [
     path: '/admin/home/main/ordinaryCoupon/userDetail',
     name: 'ordinary_coupon_user_detail',
     meta: {
-      crumbTitle: 'router.ordinary_coupon_receive_details',
+      crumbTitle: 'router.ordinary_coupon_user_detail',
       meta: 'first_market_manage',
       category: 'first_market_manage'
     },
