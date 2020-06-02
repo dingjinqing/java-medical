@@ -1079,7 +1079,7 @@ export default {
                 color: #fff;
               }
               .time {
-                margin-top: 4px;
+                margin-top: 10px;
                 color: #fff;
                 span {
                   width: 200px;
