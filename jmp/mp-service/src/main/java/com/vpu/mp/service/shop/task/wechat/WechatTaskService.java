@@ -337,15 +337,20 @@ public class WechatTaskService extends ShopBaseService {
      */
     private void getDailyRetainInfo(WxMaAnalysisService service,Date date){
         try {
-            WxMaRetainInfo info = service.getDailyRetainInfo(date,date);
-            if(validationData(info, MP_DAILY_RETAIN)){
-                return ;
+            LocalDate localDate = LocalDate.now();
+            for( int i = 1; i<15;i++ ){
+                Date dateParam = DateUtil.convert(localDate.minusDays(-i));
+                WxMaRetainInfo info = service.getDailyRetainInfo(dateParam,dateParam);
+                MpDailyRetainRecord record = db().newRecord(MP_DAILY_RETAIN);
+                record.setRefDate(info.getRefDate());
+                record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
+                record.setVisitUv(Util.toJson(info.getVisitUv()));
+                if(validationData(info, MP_DAILY_RETAIN)){
+                    record.update();
+                }
+                record.insert();
             }
-            MpDailyRetainRecord record = db().newRecord(MP_DAILY_RETAIN);
-            record.setRefDate(info.getRefDate());
-            record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
-            record.setVisitUv(Util.toJson(info.getVisitUv()));
-            record.insert();
+
         } catch (WxErrorException e) {
             logger.error(CONTENT,e);
         }
