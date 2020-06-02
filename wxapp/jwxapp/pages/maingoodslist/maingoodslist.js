@@ -64,10 +64,15 @@ global.wxPage({
     var prdId = e.currentTarget.dataset.prd_id
     var cartNumber = e.currentTarget.dataset.cart_number
     var limitAmount = e.currentTarget.dataset.limit_amount
+    var goodsNumber = e.currentTarget.dataset.goods_number
     that.setData({
       basicNumber: e.currentTarget.dataset.cart_number,
       basicLimit: e.currentTarget.dataset.limit_amount
     })
+    if (goodsNumber === 0) {
+      util.showModal('提示', '商品库存为0');
+      return false
+    }
     // 添加购物车
     if (prdId) {
       // 单规格
