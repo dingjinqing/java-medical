@@ -31,7 +31,7 @@ public class TaskCommand {
 
     @ShellMethod("WX Task. --all[false|true]default true --shop-id<shopId>")
     @ShellMethodAvailability("argsAvailability")
-    public void wxTask(@ShellOption(arity = 1, defaultValue = "true") boolean all, @ShellOption( defaultValue = "0")int shopId) {
+    public void wxTaskD(@ShellOption(arity = 1, defaultValue = "true") boolean all, @ShellOption( defaultValue = "0")int shopId) {
         List<Integer> shopIdList = getShopIds(all,shopId);
         log.info("开始微信每天数据定时任务");
         for (Integer id : shopIdList) {
@@ -39,6 +39,38 @@ public class TaskCommand {
             try {
                 saas.getShopApp(id).
                     shopTaskService.wechatTaskService.beginDailyTask();
+            }catch (Exception e){
+                log.info("【错误信息】：{}",e.getMessage());
+                log.info("微信数据定时任务失败-店铺{}",id);
+            }
+        }
+    }
+    @ShellMethod("WX Task. --all[false|true]default true --shop-id<shopId>")
+    @ShellMethodAvailability("argsAvailability")
+    public void wxTaskW(@ShellOption(arity = 1, defaultValue = "true") boolean all, @ShellOption( defaultValue = "0")int shopId) {
+        List<Integer> shopIdList = getShopIds(all,shopId);
+        log.info("开始微信每周数据定时任务");
+        for (Integer id : shopIdList) {
+            log.info("微信数据定时任务-店铺{}",id);
+            try {
+                saas.getShopApp(id).
+                    shopTaskService.wechatTaskService.beginWeeklyTask();
+            }catch (Exception e){
+                log.info("【错误信息】：{}",e.getMessage());
+                log.info("微信数据定时任务失败-店铺{}",id);
+            }
+        }
+    }
+    @ShellMethod("WX Task. --all[false|true]default true --shop-id<shopId>")
+    @ShellMethodAvailability("argsAvailability")
+    public void wxTaskDM(@ShellOption(arity = 1, defaultValue = "true") boolean all, @ShellOption( defaultValue = "0")int shopId) {
+        List<Integer> shopIdList = getShopIds(all,shopId);
+        log.info("开始微信每月数据定时任务");
+        for (Integer id : shopIdList) {
+            log.info("微信数据定时任务-店铺{}",id);
+            try {
+                saas.getShopApp(id).
+                    shopTaskService.wechatTaskService.beginMonthlyTask();
             }catch (Exception e){
                 log.info("【错误信息】：{}",e.getMessage());
                 log.info("微信数据定时任务失败-店铺{}",id);
