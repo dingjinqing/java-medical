@@ -72,13 +72,26 @@ const baseRoutes = [{
   path: '/wxapp/pinlottery/help', // 小程序内跳转拼团抽奖规则
   name: 'pinLotteryRules',
   component: () => import('@/view/admin/layout/pinLotteryRules')
+},
+{
+  path: '/system/index',
+  redirect: '/system/login'
+},
+{
+  path: '/home/index',
+  redirect: '/index/login'
+},
+{
+  path: '*',
+  name: 'NotFount',
+  component: () => import('@/view/admin/layout/notFound')
 }
 ]
 const routes = baseRoutes.concat(
-  baseRoutes,
   indexRoutes,
   adminRoutes,
-  systemRouters
+  systemRouters,
+  baseRoutes
 )
 
 const router = new Router({

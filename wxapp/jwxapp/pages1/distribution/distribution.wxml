@@ -178,9 +178,13 @@
       </view>
     </block>
     <!-- 重新申请（非分销员但是有余额）  -->
-    <block wx:if='{{ have_account == 1 && rebate_center == 2 }}'>
+    <block wx:if='{{ have_account == 1 && rebate_center == 2 && dis_info.judgeStatus == 1 }}'>
       <view class="this_bg"><image src="{{imageUrl}}/image/wxapp/had_acc_dis.png"></image></view>
       <view class="btn_to_invite btn_re_apply" style="background:{{comColor}}" bindtap='apply_get'>重新申请成为{{distributor_name || '分销员'}}</view>
+    </block>
+    <block wx:if='{{ have_account == 1 && rebate_center == 2 && dis_info.judgeStatus == 0 }}'>
+      <view class="this_bg"><image src="{{imageUrl}}/image/wxapp/had_acc_dis.png"></image></view>
+      <view class="btn_to_invite btn_re_apply" style="background:{{comColor}}" bindtap='show_image'>邀请好友成为{{distributor_name || '分销员'}}</view>
     </block>
   </view>
   <!-- 非分销员且没余额 -->
