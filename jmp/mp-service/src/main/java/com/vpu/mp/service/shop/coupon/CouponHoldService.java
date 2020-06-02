@@ -46,7 +46,7 @@ public class CouponHoldService extends ShopBaseService {
         SelectJoinStep<? extends Record> select =
             db().select(u.USERNAME, u.MOBILE,
                         m.ACT_NAME.as("coupon_name"),m.USE_SCORE,m.SCORE_NUMBER,h.ACT_ID,h.TYPE,h.COUPON_SN,m.DENOMINATION,m.ACT_CODE,m.USE_CONSUME_RESTRICT,m.TYPE.as("coupon_type"),
-                        m.LEAST_CONSUME, h.ID,h.ACCESS_MODE, h.IS_USED,h.ORDER_SN, h.START_TIME, h.END_TIME, h.CREATE_TIME, h.USED_TIME,h.DEL_FLAG,h.USER_ID)
+                        m.LEAST_CONSUME, h.ID,h.ACCESS_MODE, h.IS_USED,h.ORDER_SN, h.START_TIME, h.END_TIME, h.CREATE_TIME, h.USED_TIME,h.DEL_FLAG,h.USER_ID,d.AMOUNT)
                 .from(h)
                 .leftJoin(m).on(h.ACT_ID.eq(m.ID))
                 .leftJoin(d).on(d.COUPON_SN.eq(h.COUPON_SN))
@@ -70,6 +70,7 @@ public class CouponHoldService extends ShopBaseService {
             }
             //如果是分裂优惠券,展示领取人数;
             if(v.getCouponType() == 1){
+                v.setDenomination(v.getAmount());
                 Record record = db().select(DIVISION_RECEIVE_RECORD.IS_SHARE).from(DIVISION_RECEIVE_RECORD).where(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(v.getCouponSn())).fetchOne();
                 if(record != null){
                     v.setIsShare(record.into(Integer.class));
