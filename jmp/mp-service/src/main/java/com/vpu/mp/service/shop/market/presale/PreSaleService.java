@@ -9,8 +9,6 @@ import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -52,7 +50,6 @@ import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
 import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_ONE_PHASE;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_TWO_PHASE;
-import static org.jooq.impl.DSL.select;
 import static org.springframework.util.StringUtils.isEmpty;
 
 /**
@@ -118,7 +115,16 @@ public class PreSaleService extends ShopBaseService {
         query.groupBy(TABLE.ID,  TABLE.FIRST,TABLE.PRESALE_TYPE,TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME, TABLE.PRE_PAY_STEP,TABLE.START_TIME,
             TABLE.END_TIME, TABLE.STATUS, TABLE.PRE_START_TIME_2, TABLE.PRE_END_TIME_2);
         query.orderBy(TABLE.FIRST.desc(),TABLE.CREATE_TIME.desc());
-        return getPageResult(query, param, PreSaleListVo.class);
+        PageResult<PreSaleListVo> pageResult = getPageResult(query, param, PreSaleListVo.class);
+        for (PreSaleListVo data : pageResult.getDataList()) {
+            Byte actStatus = Util.getActStatus(data.getStatus(), data.getPreStartTime(), data.getPreEndTime());
+            //未开始状态,查询第二段定金膨胀
+            if (actStatus == NAVBAR_TYPE_FINISHED&&data.getPrePayStep()==2){
+                actStatus = Util.getActStatus(data.getStatus(), data.getPreStartTime2(), data.getPreEndTime2());
+            }
+            data.setCurrentStatus(actStatus);
+        }
+        return pageResult;
     }
 
     /**
