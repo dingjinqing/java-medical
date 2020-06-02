@@ -61,12 +61,18 @@ global.wxPage({
    */
   onLoad: function (options) {
     let goods = []
-    let { goodsList, activityType, activityId, recordId, preSaleInfo=null } = options
+    let { goodsList, activityType, activityId, recordId, preSaleInfo=null, addressId } = options
     console.log(options)
     wx.setStorage({
       data: options,
       key: 'orderOptions'
     })
+    if (addressId) {
+      this.setData({
+        addressId: addressId
+      })
+      this.requestAddress()
+    }
     JSON.parse(goodsList).forEach(item => {
       let {
         goodsId,
@@ -185,6 +191,39 @@ global.wxPage({
     //     })
     //   }
     // })
+  },
+  requestAddress () {
+    let that = this
+    util.api('/api/wxapp/address/get', op => {
+      if (op.error === 0) {
+        let wxAddress = op.content
+        util.api(
+          '/api/wxapp/address/choose',
+          res => {
+            console.log(res)
+            if (res.error === 0) {
+              that.setData({
+                'params.addressId': res.content.addressId
+              })
+              console.log()
+              that.requestOrder()
+            }
+          },
+          { wxAddress: {
+            errMsg: '',
+            userName: wxAddress.consignee,
+            nationalCode: '',
+            telNumber: wxAddress.mobile,
+            postalCode: wxAddress.provinceCode,
+            provinceName: wxAddress.provinceName,
+            cityName: wxAddress.cityName,
+            cityCode: wxAddress.cityCode,
+            countyName: wxAddress.districtName,
+            detailInfo: wxAddress.address
+          } }
+        )
+      }
+    }, {addressId: this.data.addressId})
   },
   // 默认填充
   defaultInput (orderInfo) {

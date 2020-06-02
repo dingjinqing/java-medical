@@ -170,7 +170,7 @@ global.wxComponent({
         console.log(this.data.orderOptions)
         let opts = this.stringOpts(this.data.orderOptions)
         console.log(opts)
-        // util.navigateTo('/pages/checkout/checkout?addressId='+id+'&'+this.data.orderOptions)
+        util.navigateTo('/pages/checkout/checkout?addressId='+id+'&'+opts)
       }
     },
 

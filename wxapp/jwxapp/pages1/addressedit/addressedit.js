@@ -178,7 +178,7 @@ global.wxPage({
         title: '请填写收件人!'
       })
       return false;
-    } else if (formData.mobile === '') {
+    } else if (formData.mobile === '' || !(/^[\d-]{7,11}$/.test(formData.mobile))) {
       wx.showToast({
         title: '请填写正确的联系电话！'
       })
