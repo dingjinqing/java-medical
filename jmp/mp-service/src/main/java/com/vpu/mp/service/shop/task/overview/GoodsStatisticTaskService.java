@@ -19,6 +19,7 @@ import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.GoodsSummary.GOODS_SUMMARY;
 import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
+import static com.vpu.mp.db.shop.tables.Cart.CART;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_THREE;
@@ -46,10 +47,6 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * The constant USER_GR.
      */
     public static final UserGoodsRecord USER_GR = UserGoodsRecord.USER_GOODS_RECORD.as("USER_GR");
-    /**
-     * The constant CART.
-     */
-    public static final UserCartRecord CART = UserCartRecord.USER_CART_RECORD.as("CART");
     /**
      * The constant ORDER_G.
      */
@@ -223,7 +220,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * @return the add cart goods number
      */
     public Map<Integer, Integer> getSingleAddCartGoodsNumber(ProductOverviewParam param) {
-        return commonBuilder1(param, sum(CART.NUM));
+        return commonBuilder1(param, sum(CART.CART_NUMBER));
     }
 
     /**
@@ -834,11 +831,16 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * @return      人数
      */
     public Integer addCartUserNum(Timestamp start,Timestamp end){
-        return db().select(DSL.countDistinct(CART.USER_ID))
+        List<Integer> count = db().selectDistinct(CART.USER_ID)
             .from(CART)
             .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(CART.GOODS_ID))
             .where(CART.CREATE_TIME.ge(start))
             .and(CART.CREATE_TIME.lessThan(end))
-            .fetchOneInto(Integer.class);
+            .fetchInto(Integer.class);
+        Integer sum=0;
+        if (null!=count){
+            sum=count.size();
+        }
+        return sum;
     }
 }

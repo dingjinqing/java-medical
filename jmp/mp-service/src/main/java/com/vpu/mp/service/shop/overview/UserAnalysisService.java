@@ -12,10 +12,7 @@ import java.sql.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static com.vpu.mp.db.shop.Tables.USER_RFM_SUMMARY;
 import static com.vpu.mp.db.shop.Tables.USER_SUMMARY_TREND;
@@ -693,6 +690,9 @@ public class UserAnalysisService extends ShopBaseService {
       rebuyWeekVo.add(secondVo);
       rebuyWeekVo.add(thirdVo);
       rebuyWeekVo.add(fourthVo);
+      rebuyWeekVo.forEach(r->{
+          r.setXAxis("第"+r.getWeekNum()+"周"+"("+r.getStartTime().substring(5,10)+"~"+r.getEndTime().substring(5,10)+")");
+      });
       // 返回集合
       RebuyVo rebuyVo =
           new RebuyVo() {
