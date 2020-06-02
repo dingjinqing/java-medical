@@ -997,7 +997,8 @@ export default {
   .membershipCardMain {
     position: relative;
     background-color: #fff;
-    overflow: hidden;
+    min-width: 1200px;
+    overflow-x: auto;
     overflow-y: auto;
     padding: 15px 25px;
     .changePage {
@@ -1009,7 +1010,7 @@ export default {
     .firstDiv {
       background: #fff;
       padding: 0 1%;
-      overflow: hidden;
+      overflow: auto;
       min-width: 1000px;
       padding-right: 0;
       .firstListDiv {
