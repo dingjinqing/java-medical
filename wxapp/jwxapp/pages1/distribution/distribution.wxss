@@ -660,7 +660,7 @@ swiper-item {
 .btn_to_invite{
   background: #f66;
   color: #fff;
-  /* width: 710rpx; */
+  width: 710rpx;
   height: 80rpx;
   border-radius: 8rpx;
   text-align: center;
