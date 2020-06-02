@@ -48,6 +48,7 @@ public class CouponMsgNoticeService extends ShopBaseService {
             .shopId(getShopId())
             .userIdList(userIdList)
             .type(MessageTemplateConfigConstant.GET_COUPON).build();
+        logger().info("msgParam为:{}",msgParam);
         saas().taskJobMainService.dispatchImmediately(msgParam,RabbitMessageParam.class.getName(),getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
     }
 }

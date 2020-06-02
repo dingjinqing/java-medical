@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
@@ -1017,7 +1018,7 @@ public class CouponGiveService extends ShopBaseService {
                     break;
                 default:
             }
-            couponMsgNoticeService.sendCouponMsgNotice(c.getUserId(),couponDetail.getActName(),c.getCreateTime(),c.getEndTime(),couponDesc);
+            couponMsgNoticeService.sendCouponMsgNotice(c.getUserId(),couponDetail.getActName(), DateUtil.getSqlTimestamp(),c.getEndTime(),couponDesc);
         });
     }
 }
