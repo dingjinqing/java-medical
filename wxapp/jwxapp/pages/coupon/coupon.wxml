@@ -25,11 +25,14 @@
                   <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
                 </view>
                 <view class="price" wx:if="{{item.type == 0}}">
-                  <view wx:if="{{item.couponType == 1 && item.isShare == 0 && item.actCode == 'random'}}">
+                  <view wx:if="{{item.couponType == 1 && item.isShare == 0 && item.actCode == 'random' && item.isGrant == 1}}">
                     ￥<text>{{item.randomMax}}</text><text style="font-size: 22rpx;">最高</text>
                   </view>
-                  <view wx:else>
+                  <view wx:elif="{{item.actCode == 'voucher' || item.actCode == 'random'}}">
                     ￥<text>{{item.amount}}</text>
+                  </view>
+                  <view wx:else>
+                    <text>{{item.amount}}{{i18n.$t(localePack,"pages.coupon.amount")}}</text>
                   </view>
                 </view>
                 <view class="price" wx:if="{{item.type == 1}}"> <text>{{item.amount}}{{i18n.$t(localePack,"pages.coupon.amount")}}</text></view>
@@ -53,26 +56,33 @@
                     <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[2]}}</text>
                     <text style='color:#666'>{{i18n.$t(localePack,"pages.coupon.timeTip")}}</text>
                   </view>
-                  <view class="share_tag" style="color:{{comColor}};background:{{somColor}};" wx:if='{{item.couponType == 1}}'>分享券</view>
+                  <view class="share_tag" style="color:{{comColor}};background:{{somColor}};" wx:if='{{item.couponType == 1 && item.isGrant == 1}}'>分享券</view>
               </view>
             </view>
               
             <!-- <view class="go_use" catchtap="to_search" data-act_id="{{item.actId}}" style='color:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.goUse")}}</view> -->
             <!-- 去使用 && 去分享 -->
-            <view class="go_use" wx:if='{{item.divisionEnabled == 0 && item.couponType == 1}}' style='color:{{comColor}};display: flex;align-items:center;justify-content: center;'>
+            <view class="go_use" wx:if='{{item.divisionEnabled == 0 && item.couponType == 1 && item.isGrant == 1}}' style='color:{{comColor}};display: flex;align-items:center;justify-content: center;'>
               <text catchtap="to_search" data-act_id="{{item.actId}}" style="width:50%;display:inline-block;border-right: 1rpx solid #eee;height: 40rpx;line-height: 40rpx;">去使用</text>
               <button class='split_btn_get' open-type="share" style="font-size:24rpx;color:{{comColor}};margin:0;width:50%;" data-act_id='{{item.actId}}' data-coupon_sn="{{item.couponSn}}" wx:if='{{item.canShare == 1}}'>去分享</button>
               <text wx:else style='color:#666;width:50%;' catchtap="full_people" data-act_id='{{item.actId}}' data-coupon_sn="{{item.couponSn}}">去分享</text>
             </view>
             <!-- 去使用 || 去分享 -->
             <view class="go_use" wx:else style='color:{{comColor}}'>
-              <block wx:if='{{item.divisionEnabled == 0 && item.couponType == 0}}'>
+              <block wx:if="{{item.divisionEnabled == 1 && item.couponType == 1 && item.isGrant == 1}}">
+                <text style="font-size:24rpx;color:#999;">把券分享给好友，且好友领取后本券即可使用</text>
+                <button class='split_btn_get' open-type="share" style="float:right;margin-right:20rpx;font-size:24rpx;color:{{comColor}}" data-act_id='{{item.actId}}' data-coupon_sn="{{item.couponSn}}">去分享</button>
+              </block>
+              <block wx:else>
+                <text catchtap="to_search" data-act_id="{{item.actId}}" style="width:100%;display:inline-block">去使用</text>
+              </block>
+              <!-- <block wx:if='{{item.divisionEnabled == 0 && item.couponType == 0}}'>
                 <text catchtap="to_search" data-act_id="{{item.actId}}" style="width:100%;display:inline-block">去使用</text>
               </block>
               <block wx:else>
                 <text style="font-size:24rpx;color:#999;">把券分享给好友，且好友领取后本券即可使用</text>
                 <button class='split_btn_get' open-type="share" style="float:right;margin-right:20rpx;font-size:24rpx;color:{{comColor}}" data-act_id='{{item.actId}}' data-coupon_sn="{{item.couponSn}}">去分享</button>
-              </block>
+              </block> -->
             </view>
           </view>
 
