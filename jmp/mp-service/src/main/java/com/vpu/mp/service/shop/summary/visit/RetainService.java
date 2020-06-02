@@ -101,7 +101,6 @@ public class RetainService extends BaseVisitService {
             day.setSum(sum);
             retains.add(day);
         });
-        Collections.reverse(retains);
         return retains;
     }
 
@@ -146,6 +145,7 @@ public class RetainService extends BaseVisitService {
                 .from(MP_DAILY_RETAIN)
                 /* ref_date 在 start 和 end 之间的 */
                 .where(MP_DAILY_RETAIN.REF_DATE.between(startDate).and(endDate))
+                .orderBy(MP_DAILY_RETAIN.REF_DATE.desc())
                 .fetch().into(MP_DAILY_RETAIN);
     }
 
@@ -159,6 +159,7 @@ public class RetainService extends BaseVisitService {
                 /* ref_date 中的开始日期 >= start 且 ref_date 中的结束日期 <= end */
                 .where(MP_WEEKLY_RETAIN.REF_DATE.substring(1, 8).greaterOrEqual(startDate)
                         .and(MP_WEEKLY_RETAIN.REF_DATE.substring(10, 8).lessOrEqual(endDate)))
+                .orderBy(MP_WEEKLY_RETAIN.REF_DATE.desc())
                 .fetch().into(MP_WEEKLY_RETAIN);
     }
 
@@ -171,6 +172,7 @@ public class RetainService extends BaseVisitService {
                 .from(MP_MONTHLY_RETAIN)
                 /* ref_date 在 start 的年月和 end 的年月之间 */
                 .where(MP_MONTHLY_RETAIN.REF_DATE.between(yearAndMonthOf(startDate)).and(yearAndMonthOf(endDate)))
+                .orderBy(MP_MONTHLY_RETAIN.REF_DATE.desc())
                 .fetch().into(MP_MONTHLY_RETAIN);
     }
 
