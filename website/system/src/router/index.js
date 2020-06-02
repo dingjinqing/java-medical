@@ -14,11 +14,24 @@ const baseRoutes = [
     path: '/system/login',
     name: 'systemLogin',
     component: () => import('@/components/system/login')
+  },
+  {
+    path: '/system/index',
+    redirect: '/system/system/login'
+  },
+  {
+    path: '/home/index',
+    redirect: '/admin/index/login'
+  },
+  {
+    path: '*',
+    name: 'NotFount',
+    component: () => import('@/view/system/layout/notFound')
   }
 ]
 const routes = baseRoutes.concat(
-  baseRoutes,
-  systemRouters
+  systemRouters,
+  baseRoutes
 )
 
 const router = new Router({
