@@ -386,5 +386,6 @@ export const en = {
   examineFail: 'Audit failure',
   cardNomal: 'Normal',
   cardExpired: 'Expired',
-  repeatSubmit: 'Do not repeat submit'
+  repeatSubmit: 'Do not repeat submit',
+  addUp: 'add up'
 }

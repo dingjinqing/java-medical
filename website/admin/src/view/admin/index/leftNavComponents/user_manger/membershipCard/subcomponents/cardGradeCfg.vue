@@ -19,7 +19,9 @@
         </span>
         <div class="grade-condition">
           <el-form-item class="grade-score">
-            <span>{{$t('memberCard.gradeScore')}}</span>
+            <el-checkbox-group v-model="val.checkedScore" @change="validScore" style="display: inline-block;">
+              <el-checkbox label="on">{{$t('memberCard.gradeScore')}}</el-checkbox>
+           </el-checkbox-group>
             <el-input-number
               v-model="ruleForm.gradeScore"
               size="small"
@@ -35,7 +37,9 @@
           </el-form-item>
           <div>{{$t('memberCard.or')}}</div>
           <el-form-item class="grade-amount">
-            <span>{{$t('memberCard.gradeAmountCon')}}</span>
+            <el-checkbox-group v-model="val.checkedMoney" @change="validMoney" style="display: inline-block;">
+              <el-checkbox label="on">{{$t('memberCard.gradeAmountCon')}}</el-checkbox>
+           </el-checkbox-group>
             <el-input-number
               v-model="ruleForm.gradeCrash"
               size="small"
@@ -101,6 +105,12 @@ export default {
       set () {
         this.$emit('input', this.ruleForm)
       }
+    },
+    isCheckScoreOpt () {
+      return this.val.checkedScore.length > 0 && this.val.checkedScore[0] === 'on'
+    },
+    isCheckCrashOpt () {
+      return this.val.checkedMoney.length > 0 && this.val.checkedMoney[0] === 'on'
     }
   },
   watch: {
@@ -143,29 +153,34 @@ export default {
     this.langDefault()
     this.initGradeOptions()
     this.$on('checkRule', () => {
-      this.checkGradeScore()
-      this.checkGradeCrash()
       if (this.ruleForm.gradeValue) {
         this.valid = false
       } else {
         this.valid = true
-        // this.$message.warning('请输入等级')
       }
 
-      if (this.valid || this.scoreValid || this.crashValid) {
+      this.checkGradeScore()
+      this.checkGradeCrash()
+      if (this.isCheckScoreOpt || this.isCheckCrashOpt) {
+        if (this.valid || this.scoreValid || this.crashValid) {
         // 等级
-        if (this.valid) {
-          this.$message.warning(this.$t('memberCard.chooseGrade'))
-        } else if (this.scoreValid) {
+          if (this.valid) {
+            this.$message.warning(this.$t('memberCard.chooseGrade'))
+          } else if (this.scoreValid) {
           // 升级积分
-          this.$message.warning(this.$t('memberCard.gradeScoreError'))
-        } else if (this.crashValid) {
+            this.$message.warning(this.$t('memberCard.gradeScoreError'))
+          } else if (this.crashValid) {
           // 升级余额
-          this.$message.warning(this.$t('memberCard.gradeCrashError'))
+            this.$message.warning(this.$t('memberCard.gradeCrashError'))
+          }
+        } else {
+        // validate success
+          this.ruleForm.valid = true
         }
       } else {
-        // validate success
-        this.ruleForm.valid = true
+        this.scoreValid = true
+        this.crashValid = true
+        this.$message.warning('请选择升级条件')
       }
     })
   },
@@ -210,12 +225,30 @@ export default {
       return !val && val !== 0
     },
     checkGradeScore () {
-      let res = this.checkUndefindNullNotIncludeZero(this.ruleForm.gradeScore)
-      this.scoreValid = res
+      if (this.isCheckScoreOpt) {
+        let res = this.checkUndefindNullNotIncludeZero(this.ruleForm.gradeScore)
+        this.scoreValid = res
+      } else {
+        this.scoreValid = false
+      }
     },
     checkGradeCrash () {
-      let res = this.checkUndefindNullNotIncludeZero(this.ruleForm.gradeCrash)
-      this.crashValid = res
+      if (this.isCheckCrashOpt) {
+        let res = this.checkUndefindNullNotIncludeZero(this.ruleForm.gradeCrash)
+        this.crashValid = res
+      } else {
+        this.crashValid = false
+      }
+    },
+    validScore () {
+      if (!this.val.checkedScore.length > 0) {
+        this.checkGradeScore()
+      }
+    },
+    validMoney () {
+      if (!this.val.checkedMoney.length > 0) {
+        this.checkGradeCrash()
+      }
     }
   }
 }
@@ -238,6 +271,7 @@ export default {
       .grade-score {
         span {
           margin-right: 10px;
+          margin-left: -10px;
         }
         /deep/ .el-input {
           width: 90%;
@@ -246,6 +280,7 @@ export default {
       .grade-amount {
         span {
           margin-right: 10px;
+          margin-left: -10px;
         }
         /deep/ .el-input {
           width: 90%;

@@ -322,12 +322,10 @@
                       </span>
                     </div>
                     <div class="grade_condition">
-                      <p class="grade_tip">{{$t('memberCard.gradeCondition')}}</p>
-                      <div class="grade_detail">
-                        <p> {{$t('memberCard.gradeScore')}} {{item.gradeConditionJson.gradeScore}}{{$t('memberCard.unitM')}}</p>
-                        <p>{{$t('memberCard.or')}}</p>
-                        <p>{{$t('memberCard.gradeAmountCon')}}{{item.gradeConditionJson.gradeMoney}}{{$t('memberCard.yuan')}}</p>
-                      </div>
+                      <p class="grade_tip">
+                        {{$t('memberCard.gradeCondition')}}
+                        {{getGradeCardDetailInfo(item.gradeConditionJson)}}
+                      </p>
                     </div>
                   </div>
                   <div class="card_edit">
@@ -986,6 +984,22 @@ export default {
         anotherNewCardId: stopCfgData.anotherNewCardId
       }
       this.stopCardStatusRequest(data)
+    },
+    getGradeCardDetailInfo (condition) {
+      let desc = this.$t('memberCard.addUp')
+      let count = 0
+      if (condition.gradeScore !== null) {
+        count++
+        desc += condition.gradeScore + this.$t('memberCard.unitM')
+      }
+
+      if (condition.gradeMoney !== null) {
+        if (count > 0) {
+          desc += this.$t('memberCard.or')
+        }
+        desc += condition.gradeMoney + this.$t('memberCard.yuan')
+      }
+      return desc
     }
   }
 }
@@ -1079,9 +1093,6 @@ export default {
               font-size: 12px;
               .grade_tip {
                 color: #fff;
-              }
-              .grade_detail {
-                padding-left: 20px;
               }
             }
             .card_edit {

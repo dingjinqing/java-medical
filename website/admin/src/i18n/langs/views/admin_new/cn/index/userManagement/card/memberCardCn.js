@@ -417,5 +417,6 @@ export const cn = {
   examineFail: '审核失败',
   cardNomal: '正常',
   cardExpired: '已过期',
-  repeatSubmit: '正在处理信息,请勿重复提交'
+  repeatSubmit: '正在处理信息,请勿重复提交',
+  addUp: '累计'
 }
