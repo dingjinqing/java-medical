@@ -77,41 +77,11 @@ public class AddressService extends ShopBaseService {
      * @return
      */
     public UserAddressRecord chooseAddress(Integer userId, WxAddress wxAddress) {
-        UserAddressRecord userAddress = getUserAddressInfo(userId, wxAddress);
-        if (userAddress == null) {
-            log.info("添加用户地址[userid:" + userId + "]" + Util.toJson(wxAddress));
-            userAddress = addWxAddress(userId, wxAddress);
-        }
+        log.info("添加用户地址[userid:" + userId + "]" + Util.toJson(wxAddress));
+        UserAddressRecord  userAddress = addWxAddress(userId, wxAddress);
         return userAddress;
     }
 
-    /**
-     * 获取用户地址信息
-     *
-     * @param userId
-     * @param wxAddress
-     * @return
-     */
-    public UserAddressRecord getUserAddressInfo(Integer userId, WxAddress wxAddress) {
-        UserAddressRecord addressRecord = db().selectFrom(USER_ADDRESS)
-            .where(USER_ADDRESS.USER_ID.eq(userId))
-            .and(USER_ADDRESS.CONSIGNEE.eq(wxAddress.getUserName()))
-            .and(USER_ADDRESS.MOBILE.eq(wxAddress.getTelNumber()))
-            .and(USER_ADDRESS.PROVINCE_NAME.like(likeValue(wxAddress.getProvinceName())))
-            .and(USER_ADDRESS.CITY_NAME.like(likeValue(wxAddress.getCityName())))
-            .and(USER_ADDRESS.DISTRICT_NAME.like(likeValue(wxAddress.getCountyName())))
-            .and(USER_ADDRESS.ADDRESS.like(likeValue(wxAddress.getDetailInfo())))
-            .fetchOne();
-        if (addressRecord != null && (addressRecord.getLat() == null || addressRecord.getLng() == null)) {
-            AddressLocation addressLocation = getGeocoderAddressLocation(wxAddress.getCompleteAddress());
-            if (AddressLocation.STATUS_OK.equals(addressLocation.getStatus())){
-                addressRecord.setLat(addressLocation.getResult().getLocation().getLat());
-                addressRecord.setLng(addressLocation.getResult().getLocation().getLng());
-                addressRecord.update();
-            }
-        }
-        return addressRecord;
-    }
 
     /**
      * 根据微信地图定位获取库中的区县code
@@ -306,6 +276,14 @@ public class AddressService extends ShopBaseService {
                 record.setLng(location.getResult().getLocation().getLng());
             }
         }
+        if (param.getCityCode()==null||param.getDistrictCode()==null||param.getProvinceCode()==null){
+            log.info("地址的");
+            AddressCode addressCode = checkAndUpdateAddress(param.getProvinceName(), param.getCityName(), param.getDistrictName());
+            record.setProvinceCode(addressCode.getPostalId());
+            record.setCityCode(addressCode.getCityId());
+            record.setDistrictCode(addressCode.getDistrictId());
+        }
+
         int insert = record.insert();
         if (insert>0&&record.getIsDefault().equals(BaseConstant.YES)){
             log.info("修改默认地址");

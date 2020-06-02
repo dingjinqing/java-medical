@@ -49,8 +49,6 @@ public class AddressAddParam {
     /**
      * 邮编
      */
-    @NotNull
-    @NotBlank
     private String zipcode;
     /**
      * 省
@@ -61,7 +59,6 @@ public class AddressAddParam {
     /**
      * 省编码
      */
-    @NotNull
     private Integer provinceCode;
     /**
      * 市
@@ -72,7 +69,6 @@ public class AddressAddParam {
     /**
      * 市编码
      */
-    @NotNull
     private Integer cityCode;
     /**
      * 区县名
@@ -83,7 +79,6 @@ public class AddressAddParam {
     /**
      * 区县编码
      */
-    @NotNull
     private Integer districtCode;
     /**
      * 定位
