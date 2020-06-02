@@ -7,7 +7,14 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.HttpsUtils;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.member.address.*;
+import com.vpu.mp.service.pojo.shop.member.address.AddressAddParam;
+import com.vpu.mp.service.pojo.shop.member.address.AddressCode;
+import com.vpu.mp.service.pojo.shop.member.address.AddressInfo;
+import com.vpu.mp.service.pojo.shop.member.address.AddressListVo;
+import com.vpu.mp.service.pojo.shop.member.address.AddressLocation;
+import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
+import com.vpu.mp.service.pojo.shop.member.address.WxAddress;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.common.Strings;
@@ -63,13 +70,22 @@ public class AddressService extends ShopBaseService {
         if (addressId == null || userId == null) {
             return null;
         }
-        return db().select().from(USER_ADDRESS)
-            .where(USER_ADDRESS.ADDRESS_ID.eq(addressId))
-            .and(USER_ADDRESS.USER_ID.eq(userId))
-            .and(USER_ADDRESS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-            .and(USER_ADDRESS.IS_DEFAULT.eq(BaseConstant.YES))
-            .fetchAnyInto(UserAddressVo.class);
+        UserAddressVo address = db().select().from(USER_ADDRESS).where(USER_ADDRESS.ADDRESS_ID.eq(addressId).and(USER_ADDRESS.USER_ID.eq(userId))).fetchAnyInto(UserAddressVo.class);
+        return address;
     }
+
+    /**
+     * 王帅
+     * @param userId    用户id
+     * @return 地址
+     */
+    public UserAddressVo getefaultAddress(Integer userId) {
+        if (userId == null) {
+            return null;
+        }
+        return db().select().from(USER_ADDRESS).where(USER_ADDRESS.USER_ID.eq(userId).and(USER_ADDRESS.IS_DEFAULT.eq(OrderConstant.YES))).fetchAnyInto(UserAddressVo.class);
+    }
+
 
     /**
      * 选择地址cd
