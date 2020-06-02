@@ -267,7 +267,7 @@
             <div
               class="new_card"
               @click="handleToCardDetail(2)"
-              v-show="addStatus"
+              v-show="showAddIcon"
             >
               <img :src="new_card_img">
               <span style="color: #9e9e9e;font-size: 15px;padding: 12px 0">{{ $t('memberCard.addMemberCard') }}</span>
@@ -405,6 +405,11 @@ export default {
     ShareCodeDialog: () => import('@/components/admin/shareCodeDialog'),
     CardFormPage: () => import('./cardFormPage'), // 切换表格页面组件
     GradeCardSettingDialog: () => import('./subcomponents/dialog/GradeCardSettingDialog')
+  },
+  computed: {
+    showAddIcon () {
+      return this.cardDataThird.length < 9
+    }
   },
   data () {
     return {
