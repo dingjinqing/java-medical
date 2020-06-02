@@ -136,9 +136,12 @@ public class RealTimeOverviewService extends ShopBaseService {
         indicatorVo.setUv2PaidIncr(div(temp.getUv2Paid(),indicatorVo.getUv2Paid()-temp.getUv2Paid()));
         indicatorVo.setPctIncr(div(temp.getPct(),indicatorVo.getPct()-temp.getPct()));
         /* 获取折线图数据 */
-        indicatorVo.setLineChartVos(getConditionSelect().and(us.REF_DATE.lessThan(Util.getEarlySqlDate(new Date(),0)))
-                .and(us.REF_DATE.greaterOrEqual(Util.getEarlySqlDate(new Date(),-param.getScreeningTime())))
+        indicatorVo.setLineChartVos(getConditionSelect().and(us.REF_DATE.le(Util.getEarlySqlDate(new Date(),0)))
+                .and(us.REF_DATE.greaterThan(Util.getEarlySqlDate(new Date(),-param.getScreeningTime())))
                 .and(us.TYPE.eq((byte)1)).fetchInto(LineChartVo.class));
+        indicatorVo.getLineChartVos().forEach(l->{
+            l.setDate(Util.getEarlyDate(l.getDate(),-1));
+        });
         return indicatorVo;
     }
 
