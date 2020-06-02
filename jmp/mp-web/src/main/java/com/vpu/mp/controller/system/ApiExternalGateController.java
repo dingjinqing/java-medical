@@ -27,7 +27,7 @@ public class ApiExternalGateController extends ShopBaseService {
     private ApiExternalGateService gateService;
 
     @PostMapping("/service/gateWay")
-    public ApiJsonResult gateWay(@RequestBody ApiExternalGateParam param){
+    public ApiJsonResult gateWay(ApiExternalGateParam param){
         try {
             // 日志请求记录
             apiCallLog(param);
