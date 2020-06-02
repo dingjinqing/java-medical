@@ -41,6 +41,8 @@ public class PreSaleListVo implements StatusContainer {
     private Integer orderUserQuantity;
     private Byte status;
 
+    private Byte currentStatus;
+
     private Timestamp preStartTime2;
     private Timestamp preEndTime2;
 
