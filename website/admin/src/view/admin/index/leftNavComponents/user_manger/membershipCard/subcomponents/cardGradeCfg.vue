@@ -35,7 +35,6 @@
             <span>{{$t('memberCard.unitM')}}</span>
             <span v-if="scoreValid" class="error-tip"> {{$t('memberCard.gradeScoreError')}} </span>
           </el-form-item>
-          <div>{{$t('memberCard.or')}}</div>
           <el-form-item class="grade-amount">
             <el-checkbox-group v-model="val.checkedMoney" @change="validMoney" style="display: inline-block;">
               <el-checkbox label="on">{{$t('memberCard.gradeAmountCon')}}</el-checkbox>
