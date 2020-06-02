@@ -502,7 +502,14 @@ public class PreSaleService extends ShopBaseService {
             .and(TABLE.START_TIME.lessThan(date))
             .and(TABLE.END_TIME.greaterThan(date))
             .and(TABLE.STATUS.eq((byte)1))
-            .fetchMap(SUB_TABLE.GOODS_ID,SUB_TABLE.PRESALE_PRICE);
+            .orderBy(TABLE.FIRST.desc(),TABLE.CREATE_TIME.desc(),SUB_TABLE.PRESALE_PRICE.asc())
+            .fetch()
+            .stream()
+            .collect(
+                Collectors
+                    .toMap(x->x.get(SUB_TABLE.GOODS_ID),
+                        y->y.get( SUB_TABLE.PRESALE_PRICE),(olValue,newValue)->olValue)
+            );
     }
 
 	/**
