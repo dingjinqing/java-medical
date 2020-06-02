@@ -22,7 +22,7 @@
 }
 .top_tips .tt_bottom{
   color: #726f68;
-  font-size: 28rpx;
+  font-size: 26rpx;
   font-weight: bold;
 }
 .top_tips .tt_bottom text{

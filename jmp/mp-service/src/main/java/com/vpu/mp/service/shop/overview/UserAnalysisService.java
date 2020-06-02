@@ -140,7 +140,7 @@ public class UserAnalysisService extends ShopBaseService {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
     Calendar c = Calendar.getInstance();
     // Calendar.DATE=5 代表对日期操作，减去N，得到N天前
-    c.add(Calendar.DATE, -1);
+    c.add(Calendar.DATE, 0);
     // 转换成Date型
     java.util.Date time = c.getTime();
     // 转换并返回指定时间格式的String型时间
@@ -158,7 +158,7 @@ public class UserAnalysisService extends ShopBaseService {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
     Calendar c = Calendar.getInstance();
     // Calendar.DATE=5 代表对日期操作，减去N，得到N天前
-    c.add(Calendar.DATE, -(type + 1));
+    c.add(Calendar.DATE, -(type));
     // 转换成Date型
     java.util.Date time = c.getTime();
     // 转换并返回指定时间格式的String型时间
