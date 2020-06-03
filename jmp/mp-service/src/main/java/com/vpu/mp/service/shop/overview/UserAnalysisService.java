@@ -609,8 +609,11 @@ public class UserAnalysisService extends ShopBaseService {
             param.setWeekNum(weekOfYear);
             int weekYear = calendar.get(Calendar.YEAR);
             calendar.setWeekDate(weekYear,weekOfYear,1);
-            String endTime = calendar.getTime().toString();
-            param.setSunday(endTime);
+            long endTime = calendar.getTime().getTime();
+            java.util.Date date = new java.util.Date(endTime);
+            SimpleDateFormat df =new SimpleDateFormat("yyyy-MM-dd");
+            String sundayDate = df.format(date);
+            param.setSunday(sundayDate);
         }
       DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
       // 周日转date型
