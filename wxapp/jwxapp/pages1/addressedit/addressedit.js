@@ -104,7 +104,6 @@ global.wxPage({
   getWechatAdress () {
     wx.chooseAddress({
       success (op) {
-        console.log('微dizhi:',op)
         util.api('/api/wxapp/address/wxadd', res => {
           console.log(res)
           if (res.error === 0) {
@@ -152,6 +151,10 @@ global.wxPage({
    */
   handleRecognition () {
     let that = this
+    console.log('定位...')
+    if (wx.canIUse('wx.getLocation')) {
+      console.log('can...')
+    }
     wx.getLocation({
       altitude: 'altitude',
       success (res) {
@@ -171,6 +174,66 @@ global.wxPage({
           lat: res.latitude,
           lng: res.longitude
         })
+      },
+      fail (err) {
+        console.log(err)
+        if (err.errMsg.indexOf('auth')>-1) {
+          wx.getSetting({
+            success (tip) {
+              console.log('getsetting...', tip)
+              if (!tip.authSetting['scope.userLocation']) {
+                wx.showModal({
+                  title: '是否授权当前位置',
+                  content: '需要获取您的地理位置，请确认授权，否则定位功能将无法使用',
+                  success: function(tip) {
+                    if (tip.confirm) {
+                      wx.openSetting({
+                        success: (res) => {
+                          console.log(res)
+                          if (res.authSetting['scope.userLocation']) {
+                            wx.showToast({
+                              title: '地理位置授权成功',
+                              icon: 'success'
+                            })
+                            wx.getLocation({
+                              altitude: 'altitude',
+                              success (res) {
+                                console.log('location:', res)
+                                util.api('/api/wxapp/address/getLocation',  op=> {
+                                  console.log(op)
+                                  if (op.error === 0) {
+                                    let content = op.content
+                                    that.setData({
+                                      region: [content.postalName, content.cityName, content.districtName],
+                                      regionCode: [content.postalId, content.cityId, content.districtId]
+                                    })
+                                  } else {
+                                    util.showModal('提醒', '定位失败')
+                                  }
+                                }, {
+                                  lat: res.latitude,
+                                  lng: res.longitude
+                                })
+                              },
+                            })
+                          } else {
+                            util.fail_toast('地理位置授权失败')
+                          }
+                        },
+                        fail: (err) => {
+                          console.log(err)
+                        }
+                      })
+                    }
+                  }
+                })
+              }
+            },
+            fail (err) {
+              console.log('getsetting fail', err)
+            }
+          })
+        }
       }
     })
   },
@@ -202,22 +265,26 @@ global.wxPage({
     })
     if (formData.consignee === '') {
       wx.showToast({
-        title: '请填写收件人!'
+        title: '请填写收件人!',
+        icon: 'none'
       })
       return false;
     } else if (formData.mobile === '' || !(/^[\d-]{7,11}$/.test(formData.mobile))) {
       wx.showToast({
-        title: '请填写正确的联系电话！'
+        title: '请填写正确的联系电话！',
+        icon: 'none'
       })
       return false;
     } else if (this.data.region.lenng <= 0) {
       wx.showToast({
         title: '请选择所在地区！',
+        icon: 'none'
       })
       return false
     } else if (formData.address === '') {
       wx.showToast({
         title: '请填写街道信息！',
+        icon: 'none'
       })
       return false
     }

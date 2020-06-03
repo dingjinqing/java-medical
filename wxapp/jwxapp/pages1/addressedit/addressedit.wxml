@@ -13,11 +13,11 @@
       <view class="auto-recognition">
         <view class="ar-top">
           <text>自动识别收货信息</text>
-          <switch checked="{{autoSwitch}}" bindchange="handleAutoSwicth" color="#FF6666"></switch>  
+          <switch checked="{{autoSwitch}}" bindchange="handleAutoSwicth" color="{{comColor?comColor:'#FF6666'}}"></switch>
         </view>
         <view class="ar-text-area" wx:if="{{autoSwitch}}">
           <textarea auto-focus class="art-textarea" value="{{textarea}}" bindinput="bindTextAreaInput" placeholder="请输入或粘贴地址文本，可自动识别姓名、电话和地址，如：北京市海淀区西直门北大街54号伊泰大厦。"></textarea>
-          <button bindtap="handleAutoRecognition" class="auto-recognition-btn">自动识别</button>
+          <button bindtap="handleAutoRecognition" class="auto-recognition-btn" style="color:{{comColor}};border:1px solid {{comColor}};">自动识别</button>
         </view>
       </view>
       <view class="address-edit-info">
@@ -61,7 +61,7 @@
       </view>
       <view class="set-auto">
         <label>设为默认地址</label>
-        <switch checked="{{!!formData.isDefault}}" name="isDefault" bindchange="handleDefault" color="#FF6666"></switch>
+        <switch checked="{{!!formData.isDefault}}" name="isDefault" bindchange="handleDefault" color="{{comColor?comColor:'#FF6666'}}"></switch>
       </view>
     </view>
     <view class="footer">
