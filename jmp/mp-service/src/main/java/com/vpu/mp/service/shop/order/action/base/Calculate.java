@@ -825,7 +825,7 @@ public class Calculate extends ShopBaseService {
     public void calculatePrice(OrderBeforeParam param) {
         DistributionParam cfg = distributionGoods.distributionConf.getDistributionCfg();
         //开关
-        if (cfg.getStatus() == null || cfg.getStatus() == OrderConstant.NO) {
+        if (cfg == null || cfg.getStatus() == null || cfg.getStatus() == OrderConstant.NO) {
             logger().info("开关关闭，结束");
             return;
         }
@@ -852,7 +852,7 @@ public class Calculate extends ShopBaseService {
         //配置
         DistributionParam cfg = distributionGoods.distributionConf.getDistributionCfg();
         //开关
-        if (cfg.getStatus() == null || cfg.getStatus() == OrderConstant.NO) {
+        if (cfg == null || cfg.getStatus() == null || cfg.getStatus() == OrderConstant.NO) {
             logger().info("开关关闭processSaveOrderInfo，结束");
             return;
         }
