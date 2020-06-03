@@ -1,70 +1,31 @@
 package com.vpu.mp.service.shop.card;
 
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CHECKED;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_BGT_COLOR;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_BGT_IMG;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_CTP_COUPON;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_CTP_PACKAGE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DIS_ALL;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DIS_PART;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_NON;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_BUY;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_CODE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_DEFAULT;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_REA_CODE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_REA_PWD;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_ALL;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_BAN;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_PART;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_SUSE_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_SUSE_OK;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
-
-import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
+import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.member.card.base.CardMarketActivity;
-import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
-import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
+import com.vpu.mp.service.pojo.shop.member.card.create.*;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights.RightSwitch;
-import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods.GoodsCfg;
-import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
-import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
-import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
-import com.vpu.mp.service.pojo.shop.member.card.create.CardRight;
-import com.vpu.mp.service.pojo.shop.member.card.create.CardTag;
 import com.vpu.mp.service.shop.member.CardReceiveCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.*;
+
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 /**
  * 创建会员卡
  * @author 黄壮壮
@@ -449,13 +410,8 @@ public class CardCreateService extends ShopBaseService{
 				for(CardRight right: customRightsAll) {
 					String imgUrl = right.getCrightImage();
 					if(!StringUtils.isBlank(imgUrl)) {
-						try {
-							URL url = new URL(imgUrl);
-							imgUrl = url.getPath();
-						} catch (MalformedURLException e) {
-							imgUrl = null;
-						}
-					}
+                        imgUrl = RegexUtil.getUri(imgUrl);
+                    }
 					right.setCrightImage(imgUrl);
 				}
 			}

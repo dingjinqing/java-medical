@@ -157,7 +157,8 @@ public class RegexUtil {
     }
 
     private static ThreadLocal<Pattern> backgroundPatternThreadLocal = new ThreadLocal<>();
-    public static Pattern getBgUrlPattern(){
+
+    public static Pattern getBgUrlPattern() {
         Pattern pattern = backgroundPatternThreadLocal.get();
         if (pattern == null) {
             String bgUrlReg = "(?:background-image:[\\s\\S]*?url\\(([\\s\\S]*?)\\);)|(?:background:[\\s\\S]*?url\\(([\\s\\S]*?)\\))";
@@ -165,6 +166,23 @@ public class RegexUtil {
             backgroundPatternThreadLocal.set(pattern);
         }
         return pattern;
+    }
+
+    /**
+     * 去掉域名，取资源路径
+     *
+     * @param url
+     * @return
+     */
+    public static String getUri(String url) {
+        String regx = "(?://|https://|http://)" + "(?:(?:\\w+\\.){2,3}|[a-zA-Z0-9]+)(?:\\w+)" + "(?::[0-9]+)?" + "([^?]*)";
+
+        Pattern p = Pattern.compile(regx);
+        Matcher matcher = p.matcher(url);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return url;
     }
 
 }

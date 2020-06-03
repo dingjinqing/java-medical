@@ -1,27 +1,31 @@
 package com.vpu.mp.service.shop.config;
 
+import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
+import com.vpu.mp.service.foundation.util.Util;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 
 /**
- * 
  * @author 新国
- *
  */
 @Service
 
 public class ShopStyleConfigService extends BaseShopConfigService {
-	
-	final public static String K_SHOP_STYLE = "shop_style";
-	
-	/**
-	 * 获取店铺风格配置
-	 * 
-	 * @return
-	 */
-	public ShopStyleConfig getShopStyleConfig() {
-		return this.getJsonObject(K_SHOP_STYLE, ShopStyleConfig.class);
+    @Autowired
+    JedisManager jedisManager;
+
+    final public static String K_SHOP_STYLE = "shop_style";
+
+    /**
+     * 获取店铺风格配置
+     *
+     * @return
+     */
+    public ShopStyleConfig getShopStyleConfig() {
+        return this.getJsonObject(K_SHOP_STYLE, ShopStyleConfig.class);
 	}
 
 	/**
@@ -31,6 +35,11 @@ public class ShopStyleConfigService extends BaseShopConfigService {
 	 * @return
 	 */
 	public int setShopStyleConfig(ShopStyleConfig config) {
-		return this.setJsonObject(K_SHOP_STYLE, config);
-	}
+		int res = this.setJsonObject(K_SHOP_STYLE, config);
+        if (res > 0) {
+            //缓存
+            jedisManager.set(JedisKeyConstant.CONFIG_SHOP_STYLE + getShopId(), Util.toJson(config), ShopCommonConfigCacheService.MAX_TIME_OUT);
+        }
+        return res;
+    }
 }

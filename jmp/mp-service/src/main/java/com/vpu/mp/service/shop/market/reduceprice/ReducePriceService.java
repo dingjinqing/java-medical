@@ -12,6 +12,7 @@ import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
@@ -22,21 +23,21 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialOrderExportVo;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialOrderGoodsExportVo;
 import com.vpu.mp.service.pojo.shop.market.reduceprice.*;
-import com.vpu.mp.service.pojo.shop.member.tag.TagSrcConstant;
 import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisDataVo;
 import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisTotalVo;
+import com.vpu.mp.service.pojo.shop.member.tag.TagSrcConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
-import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
-import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.goods.GoodsService;
-import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
+import com.vpu.mp.service.shop.member.TagService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -47,8 +48,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -98,11 +97,7 @@ public class ReducePriceService extends ShopBaseService {
         assign(param, record);
         if (param.getShareConfig() != null) {
             if (param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())) {
-                try {
-                    param.getShareConfig().setShareImg(new URL(param.getShareConfig().getShareImg()).getPath());
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
+                param.getShareConfig().setShareImg(RegexUtil.getUri(param.getShareConfig().getShareImg()));
             }
             record.setShareConfig(Util.toJson(param.getShareConfig()));
         }
@@ -220,11 +215,7 @@ public class ReducePriceService extends ShopBaseService {
         assign(param, record);
         if (param.getShareConfig() != null) {
             if (param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())) {
-                try {
-                    param.getShareConfig().setShareImg(new URL(param.getShareConfig().getShareImg()).getPath());
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
+                param.getShareConfig().setShareImg(RegexUtil.getUri(param.getShareConfig().getShareImg()));
             }
             record.setShareConfig(Util.toJson(param.getShareConfig()));
         }

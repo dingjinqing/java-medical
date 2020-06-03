@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.config;
 
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.*;
 import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -209,9 +210,13 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setShowLogo(Byte value) {
-		Assert.isTrue(value ==(byte)0 || value == (byte)1,"setShowLogo need value equal zero or one");
-		return this.set(K_SHOW_LOGO, value,Byte.class);
-	}
+        Assert.isTrue(value == (byte) 0 || value == (byte) 1, "setShowLogo need value equal zero or one");
+        int res = this.set(K_SHOW_LOGO, value, Byte.class);
+        if (res > 0) {
+            jedisManager.set(JedisKeyConstant.CONFIG_SHOW_LOGO + getShopId(), value.toString(), ShopCommonConfigCacheService.MAX_TIME_OUT);
+        }
+        return res;
+    }
 
     /**
 	 * 店铺logo点击时的跳转链接
@@ -227,9 +232,13 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setLogoLink(String value) {
-		Assert.isTrue(!"".equals(value),"setLogoLink need value not equal empty");
-		return this.set(K_LOGO_LINK, value);
-	}
+        Assert.isTrue(!"".equals(value), "setLogoLink need value not equal empty");
+        int res = this.set(K_LOGO_LINK, value);
+        if (res > 0) {
+            jedisManager.set(JedisKeyConstant.CONFIG_LOGO_LINK + getShopId(), value, ShopCommonConfigCacheService.MAX_TIME_OUT);
+        }
+        return res;
+    }
 
     /**
 	 * 取待付款订单取消时间（分钟）
@@ -862,24 +871,26 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 			if(commonCfg.getDefaultSort() != null && commonCfg.getDefaultSort() > 0){
                 this.setDefaultSort(commonCfg.getDefaultSort());
             }
-			this.setShareConfig(commonCfg.getShareConfig());
-			this.setBindMobile(commonCfg.getBindMobile());
-			this.setGeoLocation(commonCfg.getGeographicLocation());
+            this.setShareConfig(commonCfg.getShareConfig());
+            this.setBindMobile(commonCfg.getBindMobile());
+            this.setGeoLocation(commonCfg.getGeographicLocation());
             this.setGoodsWeightCfg(commonCfg.getGoodsWeightCfg());
             this.setNeedPrdCodes(commonCfg.getNeedPrdCodes());
             this.setGoodsShareConfig(commonCfg.getGoodsShareCfg());
             this.setAccurateSearch(commonCfg.getAccurateSearch());
-		});
-		updateAnalyzerCache(commonCfg.getAccurateSearch());
-		return true;
-	}
+        });
+        updateAllConfigCache(commonCfg);
+        return true;
+    }
 
     /**
-     * 更新搜索配置cache
-     * @param value 值
+     * 更新店铺通用配置cache
+     *
+     * @param commonCfg
      */
-	private void updateAnalyzerCache(Byte value){
-        jedisManager.set(JedisKeyConstant.ANALYZER_STATUS+getShopId(),value.toString(),ShopCommonConfigCacheService.MAX_TIME_OUT);
+    private void updateAllConfigCache(ShopCommonCfgInfo commonCfg) {
+        jedisManager.set(JedisKeyConstant.CONFIG_ANALYZER_STATUS + getShopId(), commonCfg.getAccurateSearch().toString(), ShopCommonConfigCacheService.MAX_TIME_OUT);
+        jedisManager.set(JedisKeyConstant.CONFIG_SHARE_CONFIG + getShopId(), Util.toJson(commonCfg.getShareConfig()), ShopCommonConfigCacheService.MAX_TIME_OUT);
     }
 
 

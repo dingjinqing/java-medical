@@ -32,26 +32,28 @@ public class ConfigService extends ShopBaseService {
 	private static final byte ONE = 1;
 	@Autowired
 	public BottomNavigatorConfigService bottomCfg;
-	@Autowired
-	public SearchConfigService searchCfg;
-	@Autowired
-	public ShopStyleConfigService shopStyleCfg;
-	@Autowired
-	public CommentConfigService commentConfigService;
-	@Autowired
-	public PledgeConfigService pledgeCfg;
-	@Autowired
-	public ShopCommonConfigService shopCommonConfigService;
-	@Autowired
-	public ShopReturnConfigService returnConfigService;
-	@Autowired
-	public UserCenterConfigService userCenterConfigService;
-	@Autowired
-	public StoreConfigService storeConfigService;
-	@Autowired
-	public DistributionConfigService distributionCfg;
-	@Autowired
-	public ShopMsgTemplateConfigService shopMsgTemplateService;
+    @Autowired
+    public SearchConfigService searchCfg;
+    @Autowired
+    public ShopStyleConfigService shopStyleCfg;
+    @Autowired
+    public CommentConfigService commentConfigService;
+    @Autowired
+    public PledgeConfigService pledgeCfg;
+    @Autowired
+    public ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    public ShopCommonConfigCacheService shopCommonConfigCacheService;
+    @Autowired
+    public ShopReturnConfigService returnConfigService;
+    @Autowired
+    public UserCenterConfigService userCenterConfigService;
+    @Autowired
+    public StoreConfigService storeConfigService;
+    @Autowired
+    public DistributionConfigService distributionCfg;
+    @Autowired
+    public ShopMsgTemplateConfigService shopMsgTemplateService;
 	@Autowired
 	public BargainConfigService bargainCfg;
 	@Autowired
@@ -86,24 +88,24 @@ public class ConfigService extends ShopBaseService {
      */
     public WxAppConfigVo getAppConfig(WxAppSessionUser user) {
         ShopRecord shop = saas.shop.getShopById(getShopId());
-        Byte showLogo = shopCommonConfigService.getShowLogo();
+        Byte showLogo = shopCommonConfigCacheService.getShowLogo();
         WxAppConfigVo config = new WxAppConfigVo();
         Setting setting = WxAppConfigVo.Setting.builder().shopFlag(shop.getShopFlag())
-				.shopStyle(convertShopStyle(shopCommonConfigService.getShopStyle()))
-				.hideBottom(shop.getHidBottom()).build();
-		config.setBottomNavigateMenuList(bottomCfg.getBottomNavigatorConfig());
-		config.setShowLogo(showLogo);
-		if(StringUtil.isNotEmpty(shop.getLogo())){
+            .shopStyle(convertShopStyle(shopCommonConfigCacheService.getShopStyleConfig()))
+            .hideBottom(shop.getHidBottom()).build();
+        config.setBottomNavigateMenuList(shopCommonConfigCacheService.getBottomNavigatorConfig());
+        config.setShowLogo(showLogo);
+        if (StringUtil.isNotEmpty(shop.getLogo())) {
             config.setLogo(domainConfig.imageUrl(shop.getLogo()));
         }
-		config.setLogoLink(shopCommonConfigService.getLogoLink());
-		config.setSetting(setting);
-		config.setStatus(getStatus(user!=null?user.getUserId():null));
-		ShowPoster showPoster = new ShowPoster();
-		// TODO: 取ShowPoster数据
-		config.setShowPoster(showPoster);
-		return config;
-	}
+        config.setLogoLink(shopCommonConfigCacheService.getLogoLink());
+        config.setSetting(setting);
+        config.setStatus(getStatus(user != null ? user.getUserId() : null));
+        ShowPoster showPoster = new ShowPoster();
+        // TODO: 取ShowPoster数据
+        config.setShowPoster(showPoster);
+        return config;
+    }
 
 	/**
 	 * 获取店铺风格 rgb/rgba转16进制

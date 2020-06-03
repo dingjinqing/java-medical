@@ -1,19 +1,5 @@
 package com.vpu.mp.service.shop.member.wxapp;
 
-import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
@@ -23,6 +9,7 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
+import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
@@ -42,6 +29,17 @@ import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.user.user.UserService;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
 /**
  * @author 黄壮壮
  * 	激活会员卡服务
@@ -251,14 +249,11 @@ public class WxAppCardActivationService extends ShopBaseService {
 		String[] pictureLinks = item.getPictureLinks();
 		if(pictureLinks!=null && pictureLinks.length>0) {
 			for(int i=0;i<pictureLinks.length;i++) {
-				String url = pictureLinks[i];
-				try {
-					String url2 = (new URL(url)).getPath();
-					pictureLinks[i] = url2;
-				} catch (MalformedURLException e) {
-					pictureLinks[i] = url;
-				}
-			}
+                String url = pictureLinks[i];
+                String url2 = (RegexUtil.getUri(url));
+                pictureLinks[i] = url2;
+
+            }
 		}
 		item.setPictureLinks(pictureLinks);
 	}

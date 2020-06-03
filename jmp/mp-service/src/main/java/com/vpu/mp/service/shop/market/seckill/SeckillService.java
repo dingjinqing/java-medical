@@ -14,6 +14,7 @@ import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
@@ -57,8 +58,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -209,11 +208,7 @@ public class SeckillService extends ShopBaseService{
             assign(param,record);
             if(param.getShareConfig() != null) {
                 if(param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())){
-                    try {
-                        param.getShareConfig().setShareImg(new URL(param.getShareConfig().getShareImg()).getPath());
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
+                    param.getShareConfig().setShareImg(RegexUtil.getUri(param.getShareConfig().getShareImg()));
                 }
                 record.setShareConfig(Util.toJson(param.getShareConfig()));
             }
@@ -250,11 +245,7 @@ public class SeckillService extends ShopBaseService{
         assign(param,record);
         if(param.getShareConfig() != null) {
             if(param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())){
-                try {
-                    param.getShareConfig().setShareImg(new URL(param.getShareConfig().getShareImg()).getPath());
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
+                param.getShareConfig().setShareImg(RegexUtil.getUri(param.getShareConfig().getShareImg()));
             }
             record.setShareConfig(Util.toJson(param.getShareConfig()));
         }

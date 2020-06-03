@@ -239,7 +239,6 @@ public class MpDecorationService extends ShopBaseService {
             pageContent = record.getPagePublishContent();
         }
 
-        ShopRecord shop = saas.shop.getShopById(this.getShopId());
         UserRecord userRecord = user.getUserByUserId(param.getUserId());
 
         Map<String, Object> pageInfo = convertPageContent(pageContent, userRecord);
@@ -276,7 +275,7 @@ public class MpDecorationService extends ShopBaseService {
      * @param shareConfig
      */
     protected void setShareConfig(ShareConfig shareConfig) {
-        ShopShareConfig shopShareConfig = config.shopCommonConfigService.getShareConfig();
+        ShopShareConfig shopShareConfig = config.shopCommonConfigCacheService.getShareConfig();
         if (shopShareConfig != null) {
             FieldsUtil.assignNotNull(shopShareConfig, shareConfig);
         }

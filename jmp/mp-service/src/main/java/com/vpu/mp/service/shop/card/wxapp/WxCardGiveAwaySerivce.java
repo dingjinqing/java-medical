@@ -1,17 +1,5 @@
 package com.vpu.mp.service.shop.card.wxapp;
 
-import static com.vpu.mp.db.shop.Tables.GIVE_CARD_RECORD;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.sql.Timestamp;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Condition;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.GiveCardRecordRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
@@ -19,6 +7,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.pojo.shop.member.builder.GiveCardRecordRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.base.UserCardConstant;
@@ -27,6 +16,15 @@ import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.wxapp.card.vo.CardGiveVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.card.LimitCardOpt;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+
+import static com.vpu.mp.db.shop.Tables.GIVE_CARD_RECORD;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
 
 
 /**
@@ -176,18 +174,14 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 	 * @param CardGiveVo 里面包括图片路径
 	 */
 	public CardGiveVo getCardGiveImg(MemberCardRecord card) {
-		logger().info("获取转赠卡分享图片");
-		CardGiveVo cardGiveVo = new CardGiveVo();
-		try {
-			String fullShareImg = qrCodeSvc.createCardGiveAwayImage(card);
-			URL url = new URL(fullShareImg);
-			
-			cardGiveVo.setFullShareImg(fullShareImg);
-			cardGiveVo.setShareImg(url.getPath());
-		} catch (MalformedURLException e) {
-			logger().info("错误： 获取转赠卡分享图片: "+"fullShareImg");
-		}
-		return cardGiveVo;
-	}
+        logger().info("获取转赠卡分享图片");
+        CardGiveVo cardGiveVo = new CardGiveVo();
+
+        String fullShareImg = qrCodeSvc.createCardGiveAwayImage(card);
+
+        cardGiveVo.setFullShareImg(fullShareImg);
+        cardGiveVo.setShareImg(RegexUtil.getUri(fullShareImg));
+        return cardGiveVo;
+    }
 	
 }

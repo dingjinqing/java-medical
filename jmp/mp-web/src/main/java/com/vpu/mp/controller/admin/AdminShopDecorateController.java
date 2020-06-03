@@ -223,9 +223,13 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@PostMapping("/admin/bottom/update")
 	public JsonResult updateDecorateBottom(@RequestBody @Valid ValidList<BottomNavigatorConfig> bottomNavConfg) {
-		shop().config.bottomCfg.setBottomNavigatorConfig(bottomNavConfg);
-		return success();
-	}
+        int res = shop().config.bottomCfg.setBottomNavigatorConfig(bottomNavConfg);
+        if (res > 0) {
+            return success();
+        } else {
+            return fail();
+        }
+    }
 
     /**
      * 查询 搜索配置

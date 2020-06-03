@@ -14,10 +14,7 @@ import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.HttpsUtils;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.util.*;
 import com.vpu.mp.service.pojo.saas.decorate.DecorationTemplatePojo;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
 import com.vpu.mp.service.pojo.shop.config.SuspendWindowConfig;
@@ -38,8 +35,6 @@ import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.PageClassification.PAGE_CLASSIFICATION;
@@ -596,59 +591,59 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                 case ModuleConstant.M_SCROLL_IMAGE:
                     ModuleScrollImage moduleScrollImage = objectMapper.readValue(node.getValue().toString(), ModuleScrollImage.class);
                     for (ModuleScrollImage.ImageItem imageItem : moduleScrollImage.getImgItems()) {
-                        imageItem.setImageUrl(new URL(imageItem.getImageUrl()).getPath());
+                        imageItem.setImageUrl(RegexUtil.getUri(imageItem.getImageUrl()));
                     }
                     return moduleScrollImage;
                 case ModuleConstant.M_IMAGE_GUIDE:
                     ModuleImageGuide moduleImageGuide = objectMapper.readValue(node.getValue().toString(), ModuleImageGuide.class);
                     for (ModuleImageGuide.NavItem navItem : moduleImageGuide.getNavGroup()) {
-                        navItem.setNavSrc(new URL(navItem.getNavSrc()).getPath());
+                        navItem.setNavSrc(RegexUtil.getUri(navItem.getNavSrc()));
                     }
                     return moduleImageGuide;
                 case ModuleConstant.M_IMAGE_ADVER:
                     ModuleImageAdver moduleImageAdver = objectMapper.readValue(node.getValue().toString(), ModuleImageAdver.class);
                     for (ModuleImageAdver.ImageAdItem item : moduleImageAdver.getImageList()){
-                        item.setImage(new URL(item.getImage()).getPath());
+                        item.setImage(RegexUtil.getUri(item.getImage()));
                     }
                     return moduleImageAdver;
                 case ModuleConstant.M_MAGIC_CUBE:
                     ModuleMagicCube moduleMagicCube = objectMapper.readValue(node.getValue().toString(), ModuleMagicCube.class);
                     for(ModuleMagicCube.BlockItem blockItem : moduleMagicCube.getData().values()){
-                        blockItem.setImgUrl(new URL(blockItem.getImgUrl()).getPath());
+                        blockItem.setImgUrl(RegexUtil.getUri(blockItem.getImgUrl()));
                     }
                     return moduleMagicCube;
                 case ModuleConstant.M_HOT_AREA:
                     ModuleHotArea moduleHotArea = objectMapper.readValue(node.getValue().toString(), ModuleHotArea.class);
-                    moduleHotArea.getData().setBgImgUrl(new URL(moduleHotArea.getData().getBgImgUrl()).getPath());
+                    moduleHotArea.getData().setBgImgUrl(RegexUtil.getUri(moduleHotArea.getData().getBgImgUrl()));
                     return moduleHotArea;
                 case ModuleConstant.M_TEXT_IMAGE:
                     ModuleTextImage moduleTextImage = objectMapper.readValue(node.getValue().toString(), ModuleTextImage.class);
-                    moduleTextImage.setImgUrl(new URL(moduleTextImage.getImgUrl()).getPath());
+                    moduleTextImage.setImgUrl(RegexUtil.getUri(moduleTextImage.getImgUrl()));
                     return moduleTextImage;
                 case ModuleConstant.M_TITLE:
                     ModuleTitle moduleTitle = objectMapper.readValue(node.getValue().toString(), ModuleTitle.class);
                     if(StringUtil.isNotEmpty(moduleTitle.getImgUrl())){
-                        moduleTitle.setImgUrl(new URL(moduleTitle.getImgUrl()).getPath());
+                        moduleTitle.setImgUrl(RegexUtil.getUri(moduleTitle.getImgUrl()));
                     }
                     return moduleTitle;
                 case ModuleConstant.M_VIDEO:
                     checkAuth(VersionName.SUB_2_M_VIDEO);
                     ModuleVideo moduleVideo = objectMapper.readValue(node.getValue().toString(), ModuleVideo.class);
-                    if(StringUtil.isNotEmpty(moduleVideo.getVideoUrl())){
-                        moduleVideo.setVideoUrl(new URL(moduleVideo.getVideoUrl()).getPath());
-                        moduleVideo.setVideoImg(new URL(moduleVideo.getVideoImg()).getPath());
+                    if(StringUtil.isNotEmpty(moduleVideo.getVideoUrl())) {
+                        moduleVideo.setVideoUrl(RegexUtil.getUri(moduleVideo.getVideoUrl()));
+                        moduleVideo.setVideoImg(RegexUtil.getUri(moduleVideo.getVideoImg()));
                     }
                     if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
-                        moduleVideo.setImgUrl(new URL(moduleVideo.getImgUrl()).getPath());
+                        moduleVideo.setImgUrl(RegexUtil.getUri(moduleVideo.getImgUrl()));
                     }
                     return moduleVideo;
                 case ModuleConstant.M_SHOP:
                     ModuleShop moduleShop = objectMapper.readValue(node.getValue().toString(), ModuleShop.class);
                     if(StringUtil.isNotEmpty(moduleShop.getShopBgPath())){
-                        moduleShop.setShopBgPath(new URL(moduleShop.getShopBgPath()).getPath());
+                        moduleShop.setShopBgPath(RegexUtil.getUri(moduleShop.getShopBgPath()));
                     }
                     if(StringUtil.isNotEmpty(moduleShop.getBgUrl())){
-                        moduleShop.setBgUrl(new URL(moduleShop.getBgUrl()).getPath());
+                        moduleShop.setBgUrl(RegexUtil.getUri(moduleShop.getBgUrl()));
                     }
                     return moduleShop;
                 case ModuleConstant.M_MAP:
@@ -660,14 +655,14 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                 	checkAuth(VersionName.SUB_2_M_MEMBER_CARD);
                     ModuleCard moduleCard = objectMapper.readValue(node.getValue().toString(), ModuleCard.class);
                     if(StringUtil.isNotEmpty(moduleCard.getBgImg())){
-                        moduleCard.setBgImg(new URL(moduleCard.getBgImg()).getPath());
+                        moduleCard.setBgImg(RegexUtil.getUri(moduleCard.getBgImg()));
                     }
                     return moduleCard;
                 case ModuleConstant.M_GROUP_DRAW:
                 	checkAuth(VersionName.SUB_2_M_GROUP_DRAW);
                     ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
                     if(StringUtil.isNotEmpty(moduleGroupDraw.getModuleImg())){
-                        moduleGroupDraw.setModuleImg(new URL(moduleGroupDraw.getModuleImg()).getPath());
+                        moduleGroupDraw.setModuleImg(RegexUtil.getUri(moduleGroupDraw.getModuleImg()));
                     }
                     return moduleGroupDraw;
                 case ModuleConstant.M_INTEGRAL:
@@ -676,7 +671,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     if(!moduleIntegral.getIntegralGoods().isEmpty()){
                         for(ModuleIntegral.IntegralGoods g : moduleIntegral.getIntegralGoods()){
                             if(StringUtil.isNotEmpty(g.getGoodsImg())){
-                                g.setGoodsImg(new URL(g.getGoodsImg()).getPath());
+                                g.setGoodsImg(RegexUtil.getUri(g.getGoodsImg()));
                             }
                         }
                     }
@@ -704,10 +699,10 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
         if("page_cfg".equals(node.getKey())){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
             if(StringUtil.isNotEmpty(pageCfg.getPageBgImage())){
-                pageCfg.setPageBgImage(new URL(pageCfg.getPageBgImage()).getPath());
+                pageCfg.setPageBgImage(RegexUtil.getUri(pageCfg.getPageBgImage()));
             }
             if(StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())){
-                pageCfg.getPictorial().setShareImgPath(new URL(pageCfg.getPictorial().getShareImgPath()).getPath());
+                pageCfg.getPictorial().setShareImgPath(RegexUtil.getUri(pageCfg.getPictorial().getShareImgPath()));
             }
             return pageCfg;
         }
@@ -856,22 +851,18 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
      * @param param
      */
     public boolean setSuspendWindowConfigDraft(SuspendWindowConfig param) {
-        try {
-            if (StringUtil.isNotBlank(param.getMainBefore())) {
-                param.setMainBefore(new URL(param.getMainBefore()).getPath());
-            }
-            if (StringUtil.isNotBlank(param.getMainAfter())) {
-                param.setMainAfter(new URL(param.getMainAfter()).getPath());
-            }
-            for (SuspendWindowConfig.ChildIcon c : param.getChildrenArr()) {
-                if (StringUtil.isNotBlank(c.getImg())) {
-                    c.setImg(new URL(c.getImg()).getPath());
-                }
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return false;
+        if (StringUtil.isNotBlank(param.getMainBefore())) {
+            param.setMainBefore(RegexUtil.getUri(param.getMainBefore()));
         }
+        if (StringUtil.isNotBlank(param.getMainAfter())) {
+            param.setMainAfter(RegexUtil.getUri(param.getMainAfter()));
+        }
+        for (SuspendWindowConfig.ChildIcon c : param.getChildrenArr()) {
+            if (StringUtil.isNotBlank(c.getImg())) {
+                c.setImg(RegexUtil.getUri(c.getImg()));
+            }
+        }
+
         suspendWindowConfigService.setSuspendCfgDraft(param);
         return true;
     }
@@ -882,21 +873,16 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
      * @param param
      */
     public boolean setSuspendWindowConfig(SuspendWindowConfig param) {
-        try {
-            if (StringUtil.isNotBlank(param.getMainBefore())) {
-                param.setMainBefore(new URL(param.getMainBefore()).getPath());
+        if (StringUtil.isNotBlank(param.getMainBefore())) {
+            param.setMainBefore(RegexUtil.getUri(param.getMainBefore()));
+        }
+        if (StringUtil.isNotBlank(param.getMainAfter())) {
+            param.setMainAfter(RegexUtil.getUri(param.getMainAfter()));
+        }
+        for (SuspendWindowConfig.ChildIcon c : param.getChildrenArr()) {
+            if (StringUtil.isNotBlank(c.getImg())) {
+                c.setImg(RegexUtil.getUri(c.getImg()));
             }
-            if (StringUtil.isNotBlank(param.getMainAfter())) {
-                param.setMainAfter(new URL(param.getMainAfter()).getPath());
-            }
-            for (SuspendWindowConfig.ChildIcon c : param.getChildrenArr()) {
-                if (StringUtil.isNotBlank(c.getImg())) {
-                    c.setImg(new URL(c.getImg()).getPath());
-                }
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return false;
         }
         suspendWindowConfigService.setSuspendCfgDraft(param);
         suspendWindowConfigService.setSuspendCfg(param);
