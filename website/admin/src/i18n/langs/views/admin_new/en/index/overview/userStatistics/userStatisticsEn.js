@@ -7,6 +7,7 @@ export const en = {
   year: 'Year',
   month: 'Month',
   day: 'Day',
+  compareLastWeek: 'Last Week',
   compareLastMonth: 'Last Month',
   timeRange: [
     { value: 1, label: 'last 1 day' },

@@ -7,6 +7,7 @@ export const cn = {
   year: '年',
   month: '月',
   day: '日',
+  compareLastWeek: '较前一周',
   compareLastMonth: '较前一月',
   timeRange: [
     { value: 1, label: '最新1天' },
