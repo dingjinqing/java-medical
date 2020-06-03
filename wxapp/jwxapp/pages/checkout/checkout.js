@@ -157,7 +157,7 @@ global.wxPage({
   // 选择地址
   addAddress () {
     let addressId = -1
-    if (this.data.orderInfo && this.data.orderInfo.address.addressId) {
+    if (this.data.orderInfo && this.data.orderInfo.address && this.data.orderInfo.address.addressId) {
       addressId = this.data.orderInfo.address.addressId
     }
     util.navigateTo('/components/usercenter/useraddress/useraddress?select='+addressId)
