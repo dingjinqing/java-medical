@@ -206,6 +206,17 @@ export default {
     DistributorDialog: () => import('@/components/admin/distributorDialog')
   },
   data () {
+    // 自定义校验名称
+    var validatelevel = (rule, value, callback) => {
+      let result = this.tableData.findIndex(item => { return value === item.groupName })
+      if (!value) {
+        callback(new Error('请填写分组名称'))
+      } else if (result !== -1) {
+        callback(new Error('分组名称已存在, 请重新填写'))
+      } else {
+        callback()
+      }
+    }
     return {
       groupName: '', // 搜索条件
       v: 1, // 保存配置
@@ -219,7 +230,7 @@ export default {
       // 表单校验
       paramRules: {
         groupName: [
-          { required: true, message: '请填写分组名称', trigger: 'blur' }
+          { required: true, validator: validatelevel, trigger: 'change' }
         ],
         canSelect: [
           { required: true, message: '请选择用户是否支持', trigger: 'change' }
