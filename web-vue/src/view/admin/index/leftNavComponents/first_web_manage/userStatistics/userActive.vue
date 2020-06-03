@@ -21,8 +21,8 @@
     <div class="fromWrapper">
       <div
         class="fromItem"
-        v-for="item in table"
-        :key="item.number"
+        v-for="(item,index) in table"
+        :key="index"
       >
         <div
           class="fromInfo"
@@ -85,11 +85,6 @@ export default {
   data () {
     return {
       timeSelect: 1,
-      // timeRange: [
-      //   { value: 1, label: '最新1天' },
-      //   { value: 7, label: '最新7天' },
-      //   { value: 30, label: '最新30天' }
-      // ],
       timeRange: this.$t('userStatistics.timeRange'),
       params: 1,
       originalData: {
@@ -134,7 +129,7 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.originalData = res.content
-          this.handleData(this.originalData)
+          this.handleData(res.content)
         }
       }).catch(err => console.log(err))
     },
@@ -170,7 +165,7 @@ export default {
       this.originalData.getCouponNumberRate = this.numberChange(data.couponDataRate)
       // 加购会员数
       this.originalData.addBuyNumber = data.cartData
-      this.originalData.orderUserDataRate = this.numberChange(data.orderUserDataRate)
+      this.originalData.addBuyNumberRate = this.numberChange(data.cartDataRate)
       // 成交会员数
       this.originalData.successNumber = data.orderUserData
       this.originalData.successNumberRate = this.numberChange(data.orderUserDataRate)
@@ -209,7 +204,7 @@ export default {
           title1: this.$t('userStatistics.addBuyMemberRate'),
           content1: this.$t('userStatistics.addBuyMemberCoumpute'),
           number: this.originalData.addBuyNumber,
-          rate: this.originalData.orderUserDataRate
+          rate: this.originalData.addBuyNumberRate
         },
         {
           name: this.$t('userStatistics.tradeSuccessNumber'),
