@@ -232,6 +232,7 @@ export const en = {
     'Coupon',
     'Receive details'
   ],
+  ordinary_coupon_user_detail: ['Marketing management', 'Coupon', 'Collect user list'],
   // 营销管理 拼团抽奖
   group_draw: ['Marketing management', 'raffle draw'],
   // 营销管理 拼团抽奖 活动订单

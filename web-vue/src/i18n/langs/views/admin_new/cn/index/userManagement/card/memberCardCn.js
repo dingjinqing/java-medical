@@ -360,5 +360,7 @@ export const cn = {
   getCouponStart: '领券日开始',
   day: '天',
   hour: '小时',
-  minute: '分'
+  minute: '分',
+  repeatSubmit: '正在处理信息,请勿重复提交',
+  addUp: '累计'
 }

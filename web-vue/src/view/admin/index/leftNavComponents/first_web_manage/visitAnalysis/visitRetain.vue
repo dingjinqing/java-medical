@@ -232,7 +232,9 @@ export default {
             } else {
               percent = parseFloat(value / first * 100).toFixed(2)
             }
-            percents.push(percent)
+            if (percents.length < 6) {
+              percents.push(percent)
+            }
           }
         }
         item.percents = percents

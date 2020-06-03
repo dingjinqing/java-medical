@@ -1,0 +1,54 @@
+<!--components/usercenter/useraddress/useraddress.wxml-->
+<include wx:if="{{select}}" src="../../../pages/common/header.wxml"/>
+<view class="main-container">
+  <!-- 地址列表 -->
+  <view class="address-list" wx:if="{{addressList&&addressList.length>0}}">
+    <view class="address-wrap">
+      <block wx:for="{{addressList}}" wx:key="addressId">
+        <view class="address-item" catchtap="{{select?'catchSelectAddress':''}}" data-id="{{item.addressId}}">
+          <image wx:if="{{select && item.select}}" class="select-address-icon" src="{{imageUrl}}image/wxapp/card_choosed.png"></image>
+          <view class="address-item-top">
+            <view class="ait-title">
+              <text class="ait-name">{{item.consignee}}</text>
+              <text class="ait-mobile">{{item.mobile}}</text>
+            </view>
+            <view class="ait-address">{{item.completeAddress}}{{item.zipcode?"("+item.zipcode+")":""}}</view>
+          </view>
+          <view class="address-item-line"></view>
+          <view class="address-item-bottom">
+              <label class="aib-left" catchtap="changeDefaultRadio" data-id="{{item.addressId}}" data-default="{{item.isDefault}}">
+                <radio value="{{item.addressId}}"  name="setdefault" checked="{{item.isDefault==1}}" data-id="{{item.addressId}}" data-default="{{item.isDefault}}"/>设为默认地址
+              </label>
+            <view class="aib-right">
+              <text catchtap="handleEditAddress" data-id="{{item.addressId}}">编辑</text>
+              <text class="aib-right-line"></text>
+              <text catchtap="handleDeleteAddress" data-id="{{item.addressId}}">删除</text>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view> 
+    <view class="address-list-footer">
+      <button bindtap="getWechatAdress" class="wd-btn">
+        <image class="wechat-icon" src="{{imageUrl}}image/wxapp/wechat_icon.png"></image>微信导入
+      </button>
+      <button bindtap="newAdressHandle" class="new-btn" style="background:{{comColor}}">新增收货地址</button>
+    </view>
+  </view>
+  <!-- 没有地址时展示 -->
+  <view class="no-address" wx:if="{{!addressList||!addressList.length}}">
+    <view style="position:relative;width:100%;height:100%;">
+      <view class="no-address-top">
+        <image class="no-address-icon" src="{{imageUrl}}image/wxapp/no_address.png" mode="widthFix" />
+        <view class="no-address-text">您还没有收货地址</view>
+      </view>
+      <view class="address-list-footer">
+        <button bindtap="getWechatAdress" class="wd-btn">
+          <image class="wechat-icon" src="{{imageUrl}}image/wxapp/wechat_icon.png"></image>微信导入
+        </button>
+        <button bindtap="newAdressHandle" class="new-btn" style="background:{{comColor}}">新增收货地址</button>
+      </view>
+    </view>
+  </view>
+</view>
+  

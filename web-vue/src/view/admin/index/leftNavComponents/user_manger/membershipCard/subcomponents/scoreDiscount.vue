@@ -6,6 +6,7 @@
       :rules="rules"
       ref="ruleForm"
       label-width="100px"
+      @submit.native.prevent
     >
       <el-form-item
         :label="$t('memberCard.memberPower')"
@@ -23,72 +24,91 @@
             v-model="ruleForm.discount"
             size="small"
             :controls="false"
+            @change="checkoutDiscount"
           >
           </el-input-number>
           <span>{{ $t('memberCard.discount') }}</span>
         </div>
       </el-form-item>
 
-      <el-form-item class="discountItem" v-if="ruleForm.powerDiscount">
-        <div  id="market-act">
+      <el-form-item
+        class="discountItem"
+        v-if="ruleForm.powerDiscount"
+      >
+        <div id="market-act">
 
-         <table>
-            <tr><td id="left-col">折扣叠加：</td><td id="right-col">不可与营销活动共用</td></tr>
-            <tr><td></td><td class="tip">可选择会员卡折扣不与哪些营销活动共用</td></tr>
-            <tr><td></td><td>
-              <el-checkbox-group v-model="tmpact" @change="appendActivity">
-                <el-checkbox label="COUPON">优惠券</el-checkbox>
-                <el-checkbox label="REDUCE_PRICE">限时降价</el-checkbox>
-                <el-checkbox label="FIRST_SPECIAL">首单特惠</el-checkbox>
-                <el-checkbox label="MEMBER_PRICE">会员价</el-checkbox>
-              </el-checkbox-group>
-              </td></tr>
+          <table>
+            <tr>
+              <td id="left-col">折扣叠加：</td>
+              <td id="right-col">不可与营销活动共用</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td class="tip">可选择会员卡折扣不与哪些营销活动共用</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                <el-checkbox-group
+                  v-model="tmpact"
+                  @change="appendActivity"
+                >
+                  <el-checkbox label="COUPON">优惠券</el-checkbox>
+                  <el-checkbox label="REDUCE_PRICE">限时降价</el-checkbox>
+                  <el-checkbox label="FIRST_SPECIAL">首单特惠</el-checkbox>
+                  <el-checkbox label="MEMBER_PRICE">会员价</el-checkbox>
+                </el-checkbox-group>
+              </td>
+            </tr>
           </table>
 
           <div class="disCountGoodsDiv">
-          <div class="disCountGoodsIntro">{{ $t('memberCard.memberDiscountGoods') }}</div>
-          <el-radio
-            v-model="ruleForm.discountGoodsType"
-            label='1'
-          >
-            {{ $t('memberCard.allGoods') }}
-          </el-radio>
-          <el-radio
-            v-model="ruleForm.discountGoodsType"
-            label='0'
-          >
-            {{ $t('memberCard.assignGoods') }}
-          </el-radio>
-        </div>
-        <!-- Start: 点击指定商品后显示模块 -->
-        <div
-          v-if="ruleForm.discountGoodsType==='0'"
-          class="noneBlock"
-        >
+            <div class="disCountGoodsIntro">{{ $t('memberCard.memberDiscountGoods') }}</div>
+            <el-radio
+              v-model="ruleForm.discountGoodsType"
+              label='1'
+            >
+              {{ $t('memberCard.allGoods') }}
+            </el-radio>
+            <el-radio
+              v-model="ruleForm.discountGoodsType"
+              label='0'
+            >
+              {{ $t('memberCard.assignGoods') }}
+            </el-radio>
+          </div>
+          <!-- Start: 点击指定商品后显示模块 -->
           <div
-            v-for="(item,index) in noneBlockDiscArr"
-            :key="index"
+            v-if="ruleForm.discountGoodsType==='0'"
+            class="noneBlock"
           >
-          <!-- 去掉平台分类 -->
-          <div class="noneBlockList" v-if="index !== 2">
             <div
-              class="noneBlockLeft"
-              @click="handleToAddGoods(index, false)"
+              v-for="(item,index) in noneBlockDiscArr"
+              :key="index"
             >
-              <img :src="loadAddSymbol()">
-              {{item.name}}
-            </div>
-            <div
-              v-if="item.num"
-              class="noneBlockRight"
-              @click="handleToAddGoods(index, true)"
-            >
-              {{ item.info }}：{{item.num}}{{ item.unit  }}
-            </div>
+              <!-- 去掉平台分类 -->
+              <div
+                class="noneBlockList"
+                v-if="index !== 2"
+              >
+                <div
+                  class="noneBlockLeft"
+                  @click="handleToAddGoods(index, false)"
+                >
+                  <img :src="loadAddSymbol()">
+                  {{item.name}}
+                </div>
+                <div
+                  v-if="item.num"
+                  class="noneBlockRight"
+                  @click="handleToAddGoods(index, true)"
+                >
+                  {{ item.info }}：{{item.num}}{{ item.unit  }}
+                </div>
 
+              </div>
             </div>
           </div>
-        </div>
         </div>
 
       </el-form-item>
@@ -343,41 +363,50 @@ export default {
     appendActivity (val) {
       this.marketActivities.splice(0, this.marketActivities.length)
       this.marketActivities.push(...val)
+    },
+    checkoutDiscount () {
+      this.$refs.ruleForm.validateField('discount')
     }
   }
 }
 </script>
 <style scoped lang="scss">
+*,
+/deep/ .el-form-item__label,
+/deep/ .el-radio__label,
+/deep/ .el-checkbox__label {
+  font-size: 13px;
+}
 .discountRoot {
-  #market-act{
+  #market-act {
     background-color: #fff;
     padding: 5px 20px;
     width: 60%;
   }
-  table{
+  table {
     table-layout: auto;
     width: 100%;
   }
-  #left-col{
+  #left-col {
     width: 80px;
     text-align: left;
     padding: 0px;
   }
-  td+td{
+  td + td {
     width: auto;
     padding-left: 30px;
-    /deep/ .el-checkbox{
+    /deep/ .el-checkbox {
       margin: 0 10px 0 0;
-      /deep/ .el-checkbox__label{
+      /deep/ .el-checkbox__label {
         padding-left: 5px;
       }
     }
   }
-  .tip{
+  .tip {
     color: #999;
   }
   .discountItem {
-    padding-left: 100px;
+    padding-left: 75px;
     .discountDiv {
       display: flex;
       height: 40px;

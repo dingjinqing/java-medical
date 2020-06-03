@@ -322,5 +322,7 @@ export const en = {
   getCouponStart: 'During',
   day: 'day',
   hour: 'hour',
-  minute: 'minute'
+  minute: 'minute',
+  repeatSubmit: 'Do not repeat submit',
+  addUp: 'add up'
 }

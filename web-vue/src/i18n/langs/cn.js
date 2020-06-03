@@ -691,7 +691,7 @@ const cn = {
     footer_con_5: 'POS门店系统',
     footer_con_6: '免费微店',
     footer_con_7: '云筹大数据',
-    footer_con_8: '北京微铺宝网络科技有限公司',
+    footer_con_8: '天津掌商先机网络科技有限公司',
     footer_con_9: '版权所有',
     footer_con_10: '京ICP备14046261号'
   },

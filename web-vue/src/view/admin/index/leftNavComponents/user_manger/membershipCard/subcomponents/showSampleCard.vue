@@ -8,7 +8,7 @@
       >
         <div class="card-detail">
           <div>
-            <img :src="$imageHost+'/image/admin/img_home/testImg.jpeg'">
+            <img :src="cardAvatar">
             <span>{{cardName}}</span>
           </div>
         </div>
@@ -222,7 +222,7 @@
             </div>
           </div>
         </div>
-         <show-coupon :coupon="allData.cardCouponCfgData" />
+        <show-coupon :coupon="allData.cardCouponCfgData" />
       </div>
 
     </div>
@@ -310,6 +310,11 @@ export default {
   mounted () {
     this.langDefault()
     this.initData()
+
+    let avatar = localStorage.getItem('V-shopAvatar')
+    if (avatar) {
+      this.cardAvatar = avatar
+    }
   },
   data () {
     return {
@@ -355,7 +360,9 @@ export default {
           children: [this.$t('memberCard.allStores')]
         }
       ]
+      this.cardAvatar = this.$imageHost + '/' + 'image/admin/shop_def_y.png'
     },
+
     getMiniLog (item) {
       return 'backgroundImage: url(' + item.backGroundImgUrl + ')'
     },

@@ -192,7 +192,7 @@
                       style="width:50%"
                     >
                     </el-input>
-                    ({{$t('addBargainAct.default0')}})
+                    <!-- ({{$t('addBargainAct.default0')}}) -->
                   </el-form-item>
                 </template>
               </el-table-column>
@@ -232,7 +232,7 @@
                       </el-form-item>
                     </div>
                     <div style="margin-top:5px;">
-                      <span>({{$t('addBargainAct.default0')}})</span>
+                      <!-- <span>({{$t('addBargainAct.default0')}})</span> -->
                       <span style="color: #999;">{{$t('addBargainAct.sttlementAmountTip')}}</span>
                     </div>
                   </div>

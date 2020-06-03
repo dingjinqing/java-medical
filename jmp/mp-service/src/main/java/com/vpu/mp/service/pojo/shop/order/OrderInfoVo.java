@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -89,4 +90,6 @@ public class OrderInfoVo extends OrderListInfoVo {
     private Timestamp returnFinishTime;
     /**订单退款完成时间*/
     private Timestamp refundFinishTime;
+    /**代付明细*/
+    private List<InsteadPayDetailsVo> insteadPayInfo;
 }

@@ -37,7 +37,9 @@
     "pages/maingoodslist/maingoodslist",
     "pages/usercardup/usercardup",
     "pages/splitinfo/splitinfo",
-    "pages/usercardrenew/usercardrenew"
+    "pages/usercardrenew/usercardrenew",
+    "pages/personalcenter/personalcenter",
+    "components/usercenter/useraddress/useraddress"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -118,9 +120,13 @@
         "sharerebate/sharerebate",
         "livetransition/livetransition",
         "aftersaleorder/aftersaleorder",
-        "packagesalelist/packagesalelist"
+        "packagesalelist/packagesalelist",
+        "addressedit/addressedit"
       ]
     }
+  ],
+  "navigateToMiniProgramAppIdList":[
+    "wx6885acbedba59c14"
   ],
   "sitemapLocation": "sitemap.json"
 }

@@ -177,6 +177,8 @@ export const cn = {
   ordinary_coupon: ['营销管理', '优惠券'],
   // 营销管理 普通优惠券 领取明细
   ordinary_coupon_receive_details: ['营销管理', '优惠券', '领取明细'],
+  // 营销管理 普通优惠券 领取明细
+  ordinary_coupon_user_detail: ['营销管理', '优惠券', '领取用户列表'],
   // 营销管理 拼团抽奖
   group_draw: ['营销管理', '拼团抽奖'],
   // 营销管理 拼团抽奖 活动订单

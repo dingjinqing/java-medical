@@ -4,6 +4,7 @@
       :model="ruleForm"
       ref="ruleForm"
       label-width="100px"
+      @submit.native.prevent
     >
       <el-form-item
         :label="$t('memberCard.useNeedKnow')"
@@ -65,9 +66,15 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+*,/deep/ .el-form-item__label,
+/deep/ .el-radio__label,
+/deep/ .el-checkbox__label{
+  font-size: 13px;
+}
+
 .card-usage-div {
   .usage-item {
-    padding-left: 100px;
+    padding-left: 75px;
     /deep/ .el-textarea {
       width: 80%;
     }

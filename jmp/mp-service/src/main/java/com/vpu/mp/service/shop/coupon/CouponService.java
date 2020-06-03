@@ -349,12 +349,12 @@ public class CouponService extends ShopBaseService {
     public PageResult<CouponHoldListVo> getSplitCoupinUserDetail(CouponGetDetailParam param){
         SelectConditionStep<? extends Record> select = db()
             .select(CUSTOMER_AVAIL_COUPONS.ID,USER.USERNAME, USER.MOBILE, CUSTOMER_AVAIL_COUPONS.GET_SOURCE, CUSTOMER_AVAIL_COUPONS.IS_USED,
-                MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION, CUSTOMER_AVAIL_COUPONS.START_TIME, CUSTOMER_AVAIL_COUPONS.END_TIME,
+                MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION, CUSTOMER_AVAIL_COUPONS.START_TIME, CUSTOMER_AVAIL_COUPONS.END_TIME,CUSTOMER_AVAIL_COUPONS.USED_TIME,CUSTOMER_AVAIL_COUPONS.DEL_FLAG,
                     CUSTOMER_AVAIL_COUPONS.CREATE_TIME,CUSTOMER_AVAIL_COUPONS.AMOUNT).from(DIVISION_RECEIVE_RECORD)
             .leftJoin(CUSTOMER_AVAIL_COUPONS).on(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(CUSTOMER_AVAIL_COUPONS.COUPON_SN))
             .leftJoin(USER).on(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(USER.USER_ID))
             .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID))
-            .where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(param.getId())).and(DIVISION_RECEIVE_RECORD.USER.eq(param.getShareId()));
+            .where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(param.getId())).and(DIVISION_RECEIVE_RECORD.USER.eq(param.getShareId())).and(DIVISION_RECEIVE_RECORD.RECEIVE_COUPON_SN.eq(param.getCouponSn()));
         SelectConditionStep<? extends Record> sql = detailBuildOptions(select, param);
         PageResult<CouponHoldListVo> info = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), CouponHoldListVo.class);
         info.dataList.forEach(data->{
@@ -407,7 +407,7 @@ public class CouponService extends ShopBaseService {
      * @return
      */
     public CouponView getCouponViewById(int id) {
-        return db().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.USE_CONSUME_RESTRICT, MRKING_VOUCHER.SURPLUS, MRKING_VOUCHER.VALIDITY_TYPE, MRKING_VOUCHER.VALIDITY, MRKING_VOUCHER.VALIDITY_HOUR, MRKING_VOUCHER.VALIDITY_MINUTE, MRKING_VOUCHER.START_TIME, MRKING_VOUCHER.END_TIME, MRKING_VOUCHER.RECOMMEND_GOODS_ID, MRKING_VOUCHER.RECOMMEND_CAT_ID, MRKING_VOUCHER.RECOMMEND_SORT_ID).from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(id)).and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchOne().into(CouponView.class);
+        return db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(id)).and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchOne().into(CouponView.class);
     }
 
     /**
@@ -539,6 +539,9 @@ public class CouponService extends ShopBaseService {
         if(org.apache.commons.lang3.StringUtils.isNotBlank(param.getCouponSn())) {
             select.where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.eq(param.getCouponSn()));
         }
+        if(param.getIsShowEnabledShareSplit() != null) {
+            select.where(CUSTOMER_AVAIL_COUPONS.DIVISION_ENABLED.eq(param.getIsShowEnabledShareSplit()));
+        }
     	select.orderBy(CUSTOMER_AVAIL_COUPONS.ID.desc());
     }
 
@@ -638,8 +641,8 @@ public class CouponService extends ShopBaseService {
      */
     public int hasReceive(Integer userId,Integer couponId){
         Result<Record1<Integer>> fetch = db().select(DIVISION_RECEIVE_RECORD.USER_ID).from(DIVISION_RECEIVE_RECORD)
-            .where(DIVISION_RECEIVE_RECORD.USER.eq(userId))
-            .and(DIVISION_RECEIVE_RECORD.COUPON_ID.eq(couponId))
+            .where(DIVISION_RECEIVE_RECORD.COUPON_ID.eq(couponId))
+            .and(DIVISION_RECEIVE_RECORD.USER.eq(userId))
             .groupBy(DIVISION_RECEIVE_RECORD.USER_ID)
             .fetch();
         int hasReceive = fetch.size();
@@ -829,6 +832,7 @@ public class CouponService extends ShopBaseService {
         param.setCurrentPage(1);
         param.setNav((byte)0);
         param.setPageRows(99);
+        param.setIsShowEnabledShareSplit((byte)0);
         PageResult<AvailCouponVo> coupons = getCouponByUser(param);
         if(coupons.dataList == null) {
             return null;
