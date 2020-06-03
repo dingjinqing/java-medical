@@ -159,8 +159,8 @@ public class BargainProcessorDao extends ShopBaseService {
         }
 
         // 一个用户同活动下同一个商品处于正在砍价中 只能有一个
-        int bargainCount = db().fetchCount(BARGAIN_RECORD,BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(BARGAIN_RECORD.BARGAIN_ID.eq(bargainRecord.getId()))
-            .and(BARGAIN_RECORD.USER_ID.eq(userId)).and(BARGAIN_RECORD.GOODS_ID.eq(goodsId)).and(BARGAIN_RECORD.STATUS.eq(BargainRecordService.STATUS_IN_PROCESS)));
+        int bargainCount = db().fetchCount(BARGAIN_RECORD, BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(BARGAIN_RECORD.BARGAIN_ID.eq(bargainRecord.getId()))
+            .and(BARGAIN_RECORD.USER_ID.eq(userId)).and(BARGAIN_RECORD.GOODS_ID.eq(goodsId)));
         if (bargainCount > 0) {
             logger().debug("用户存在正在砍价[activityId:{}]", bargainRecord.getId());
             return BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT;

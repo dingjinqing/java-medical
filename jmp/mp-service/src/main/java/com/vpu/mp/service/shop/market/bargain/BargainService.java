@@ -241,12 +241,13 @@ public class BargainService extends ShopBaseService  {
             }
             record.setShareConfig(Util.toJson(param.getShareConfig()));
         }
-        this.transaction(()->{
+        record.setStock(param.getBargainGoods().stream().mapToInt((x) -> x.getStock()).sum());
+        this.transaction(() -> {
             db().executeUpdate(record);
-            if(CollectionUtils.isNotEmpty(param.getBargainGoods())){
-                param.getBargainGoods().forEach(bargainGoods->{
+            if (CollectionUtils.isNotEmpty(param.getBargainGoods())) {
+                param.getBargainGoods().forEach(bargainGoods -> {
                     BargainGoodsRecord bargainGoodsRecord = db().newRecord(BARGAIN_GOODS);
-                    assign(bargainGoods,bargainGoodsRecord);
+                    assign(bargainGoods, bargainGoodsRecord);
                     bargainGoodsRecord.update();
                 });
             }
