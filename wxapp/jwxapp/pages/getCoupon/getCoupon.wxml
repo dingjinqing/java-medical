@@ -157,7 +157,7 @@
               </view>
             </block> -->
             <!-- 去使用 && 去分享 -->
-            <block wx:if="{{act_info.isUsed == 0 && act_info.isExpire == 0 && act_info.divisionEnabled == 0 && item.couponType == 1 && isGrant == 1}}">
+            <block wx:if="{{act_info.isUsed == 0 && act_info.isExpire == 0 && act_info.divisionEnabled == 0 && act_info.couponType == 1 && isGrant == 1}}">
               <view class="coupon-vw-btn vw-btn">
                 <button class="coupon-button" bindtap="to_search" data-act_id="{{act_info.actId}}" style='color:{{comColor}};border-color:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.isUsed")}}</button>
                 <block  wx:if="{{act_info.couponType == 1}}">
