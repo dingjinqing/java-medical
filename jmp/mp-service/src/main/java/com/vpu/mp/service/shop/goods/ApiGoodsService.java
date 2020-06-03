@@ -165,14 +165,13 @@ public class ApiGoodsService extends ShopBaseService {
             .from(GOODS).where(condition);
 
         // 查询分页结果，并将统一的ApiPageResult转换为商品特定的分页结果对象
-        ApiPageResult apiPageResult = this.getApiPageResult(selectConditionStep, pageParam.getPage(), pageParam.getPageSize(), GoodsRecord.class);
-        @SuppressWarnings("unchecked")
-        List<GoodsRecord> goodsRecordList = (List<GoodsRecord>) apiPageResult.getDataList();
+        ApiPageResult<GoodsRecord> apiPageResult = this.getApiPageResult(selectConditionStep, pageParam.getPage(), pageParam.getPageSize(), GoodsRecord.class);
 
-        List<ApiGoodsListVo> apiGoodsListVos = new ArrayList<>(goodsRecordList.size());
-        List<Integer> goodsIds = new ArrayList<>(goodsRecordList.size());
-        List<Integer> sortIds = new ArrayList<>(goodsRecordList.size());
-        for (GoodsRecord goodsRecord : goodsRecordList) {
+        List<ApiGoodsListVo> apiGoodsListVos = new ArrayList<>(apiPageResult.getDataList().size());
+
+        List<Integer> goodsIds = new ArrayList<>(apiPageResult.getDataList().size());
+        List<Integer> sortIds = new ArrayList<>(apiPageResult.getDataList().size());
+        for (GoodsRecord goodsRecord : apiPageResult.getDataList()) {
             apiGoodsListVos.add(new ApiGoodsListVo(goodsRecord));
             goodsIds.add(goodsRecord.getGoodsId());
             sortIds.add(goodsRecord.getSortId());
