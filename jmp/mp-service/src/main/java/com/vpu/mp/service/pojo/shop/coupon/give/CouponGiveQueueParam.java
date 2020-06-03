@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.coupon.give;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -54,4 +55,9 @@ public class CouponGiveQueueParam {
 
 	/** 发放活动的订单的订单编号 */
 	private String accessOrderSn;
+    /**
+     * 限制优惠卷库存 0不限制 1限制 默认限制
+     */
+	private Byte limitNumType = BaseConstant.YES;
+
 }

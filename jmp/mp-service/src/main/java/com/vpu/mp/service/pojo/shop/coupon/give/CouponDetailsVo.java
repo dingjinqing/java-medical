@@ -16,6 +16,10 @@ public class CouponDetailsVo {
   private Byte limitSurplusFlag;
   /** 优惠券库存 */
   private Integer surplus;
+    /**
+    * 优惠卷每人限领数量
+    */
+  private Integer receivePerPerson;
   /** voucher：减价；discount:打折 */
   private String actCode;
   /** 优惠券名称 */

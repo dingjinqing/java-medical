@@ -1269,4 +1269,31 @@ public class CouponService extends ShopBaseService {
                 .execute();
     }
 
+    /**
+     * 获取领取数量
+     * @param userId 用户id
+     * @param couponId 优惠卷id
+     * @return 0
+     */
+    public int getUserCouponNum(Integer userId, Integer couponId){
+        return db().selectCount().from(CUSTOMER_AVAIL_COUPONS)
+            .where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId))
+            .and(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(couponId)).fetchAny().component1();
+    }
+
+    /**
+     * 获取(领取/发放)优惠卷数量
+     * @param userId 用户id
+     * @param couponId 优惠卷id
+     * @param accessMode 1领取 2发放 3礼包
+     * @return
+     */
+    public int getUserCouponNum(Integer userId, Integer couponId,Byte accessMode){
+        return db().selectCount().from(CUSTOMER_AVAIL_COUPONS)
+            .where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId))
+            .and(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(couponId))
+            .and(CUSTOMER_AVAIL_COUPONS.ACCESS_MODE.eq(accessMode))
+            .fetchAny().component1();
+    }
+
 }
