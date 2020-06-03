@@ -114,16 +114,13 @@
         "appointcomment/appointcomment",
         "form/form",
         "formsuccess/formsuccess",
-<<<<<<< HEAD
         "maingiftlist/maingiftlist",
         "goodscomment/goodscomment",
         "usercardgoods/usercardgoods",
         "sharerebate/sharerebate",
         "livetransition/livetransition",
-        "aftersaleorder/aftersaleorder"
-=======
+        "aftersaleorder/aftersaleorder",
         "addressedit/addressedit"
->>>>>>> master
       ]
     }
   ],
