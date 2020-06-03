@@ -425,7 +425,7 @@ export default {
   color: #333;
   background: #fff;
   position: relative;
-  z-index: 2022;
+  z-index: 200;
   // overflow: hidden;
 }
 .canClick {
