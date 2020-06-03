@@ -8,7 +8,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public class GoodsPageListVoForProductConverter implements EsGoodsConvertInterface<List<GoodsPageListVo>>{
     @Override
@@ -28,9 +30,12 @@ public class GoodsPageListVoForProductConverter implements EsGoodsConvertInterfa
             vo.setIsDefaultPrd(esGoods.getDefPrd());
 
             if( esGoods.getDefPrd()!= null && esGoods.getDefPrd() && !esGoods.getPrds().isEmpty() ){
-
                 vo.setPrdId(CollectionUtils.isNotEmpty(esGoods.getPrds())?esGoods.getPrds().get(0).getPrdId():0);
             }
+            vo.setPrdTypeNum(esGoods.getPrds().size()==1?0:esGoods.getPrds().size());
+            vo.setPrdImg(product.getPrdImg());
+            vo.setPrdPrice(Optional.of(product.getPrdRealPrice()).orElse(BigDecimal.ZERO));
+            vo.setPrdNumber(Optional.of(product.getPrdNumber()).orElse(0));
             if(StringUtils.isNotBlank(esGoods.getCatName())){
                 String[] catName = esGoods.getCatName().split(" ");
                 vo.setCatName(catName[catName.length-1]);
