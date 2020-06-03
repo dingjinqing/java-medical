@@ -4,13 +4,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
 import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.DistributionConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -825,7 +825,7 @@ public class Calculate extends ShopBaseService {
     public void calculatePrice(OrderBeforeParam param) {
         DistributionParam cfg = distributionGoods.distributionConf.getDistributionCfg();
         //开关
-        if (cfg.getStatus() == OrderConstant.NO) {
+        if (cfg.getStatus() == null || cfg.getStatus() == OrderConstant.NO) {
             logger().info("开关关闭，结束");
             return;
         }
@@ -849,10 +849,15 @@ public class Calculate extends ShopBaseService {
      * @param order
      */
     public void rebate(OrderBeforeParam param, OrderInfoRecord order) {
-        //获取该订单参与分销计算商品数量（除赠品）
-        BigDecimal[] tolal = getTolalNumberAndPriceByType(param.getBos(), OrderConstant.D_T_REBATE, null);
         //配置
         DistributionParam cfg = distributionGoods.distributionConf.getDistributionCfg();
+        //开关
+        if (cfg.getStatus() == null || cfg.getStatus() == OrderConstant.NO) {
+            logger().info("开关关闭processSaveOrderInfo，结束");
+            return;
+        }
+        //获取该订单参与分销计算商品数量（除赠品）
+        BigDecimal[] tolal = getTolalNumberAndPriceByType(param.getBos(), OrderConstant.D_T_REBATE, null);
         //商品平均积分抵扣
         BigDecimal avgScoreDiscount = BigDecimalUtil.divide(order.getScoreDiscount(), tolal[BY_TYPE_TOLAL_NUMBER], RoundingMode.HALF_UP);
         //进行中的返利策略
