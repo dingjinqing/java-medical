@@ -9,6 +9,8 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DistributionConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -468,6 +470,7 @@ public class Calculate extends ShopBaseService {
 
     /**
      * 计算运费
+     * 默认地址>最近使用地址>定位
      *
      * @param userId      用户id
      * @param lat         经度
@@ -482,23 +485,33 @@ public class Calculate extends ShopBaseService {
      */
     public BigDecimal calculateShippingFee(Integer userId, String lat, String lng, Integer goodsId, Integer templateId, Integer totalNumber, BigDecimal goodsPrice, BigDecimal goodWeight) {
         logger().debug("开始计算运费，输入 userId{},lat:{},lng:{},goodsId:{},templateId:{},totalNumber:{},goodsPrice:{},goodsWeight:{}", userId, lat, lng, goodsId, templateId, totalNumber, goodsPrice, goodWeight);
-
-        AddressInfo userAddress = addressService.getGeocoderAddressInfo(lat, lng);
-        logger().debug("封装用户地址信息：{}", userAddress);
-        Integer districtCode = addressService.getUserAddressDistrictId(userAddress);
-        logger().debug("获取用户地址区域code:{}", districtCode);
-        if (districtCode == null) {
-            logger().debug("获取用户最近订单地址");
+        UserAddressRecord defaultAddress = addressService.getDefaultAddress(userId);
+        if (defaultAddress==null){
+            logger().info("默认地址为空,获取最近使用地址");
             UserAddressVo lastOrderAddress = orderInfoService.getLastOrderAddress(userId);
-            if (lastOrderAddress == null) {
+            if (lastOrderAddress!=null){
+                UserAddressRecord addressInfo = addressService.getAddressById(userId, lastOrderAddress.getAddressId());
+                if (addressInfo!=null&&addressInfo.getDelFlag().equals(DelFlag.NORMAL_VALUE)){
+                    defaultAddress = addressInfo;
+                }
+            }
+        }
+        Integer districtCode=null;
+        if (defaultAddress==null){
+            logger().info("最近地址不可用,获取定位地址");
+            AddressInfo userAddress = addressService.getGeocoderAddressInfo(lat, lng);
+            logger().debug("定位地址：{}", userAddress);
+            districtCode = addressService.getUserAddressDistrictId(userAddress);
+            logger().debug("获取用户地址区域code:{}", districtCode);
+            if (districtCode==null){
                 logger().debug("获取用户最近登录地址");
                 Integer userLoginRecordDistrictCode = userLoginRecordService.getUserLoginRecordDistrictCode(userId);
                 if (userLoginRecordDistrictCode != null) {
                     districtCode = userLoginRecordDistrictCode;
                 }
-            } else {
-                districtCode = lastOrderAddress.getDistrictCode();
             }
+        }else {
+            districtCode= defaultAddress.getDistrictCode();
         }
         logger().debug("用户地址code:{}", districtCode);
         BigDecimal shippingFeeByTemplate = BigDecimal.ZERO;

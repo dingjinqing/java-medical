@@ -37,7 +37,9 @@
     "pages/maingoodslist/maingoodslist",
     "pages/usercardup/usercardup",
     "pages/splitinfo/splitinfo",
-    "pages/usercardrenew/usercardrenew"
+    "pages/usercardrenew/usercardrenew",
+    "pages/personalcenter/personalcenter",
+    "components/usercenter/useraddress/useraddress"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -112,12 +114,16 @@
         "appointcomment/appointcomment",
         "form/form",
         "formsuccess/formsuccess",
+<<<<<<< HEAD
         "maingiftlist/maingiftlist",
         "goodscomment/goodscomment",
         "usercardgoods/usercardgoods",
         "sharerebate/sharerebate",
         "livetransition/livetransition",
         "aftersaleorder/aftersaleorder"
+=======
+        "addressedit/addressedit"
+>>>>>>> master
       ]
     }
   ],

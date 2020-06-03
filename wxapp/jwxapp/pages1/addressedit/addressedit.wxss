@@ -1,0 +1,118 @@
+/* pages1/addressedit/addressedit.wxss */
+.main-container {
+
+}
+.address-edit-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20rpx;
+  background: #fff;
+  line-height: 90rpx;
+  font-size: 26rpx;
+}
+.wechat-icon {
+  display: inline-block;
+  width: 38rpx;
+  height: 31rpx;
+  margin-right: 16rpx;
+  vertical-align: middle;
+}
+.right-into {
+  width: 11rpx;
+  height: 23rpx;
+}
+.auto-recognition {
+  height: auto;
+  margin-top: 20rpx;
+  padding: 0 20rpx 20rpx;
+  background: #fff;
+}
+.ar-top {
+  display: flex;
+  justify-content: space-between;
+  height: 90rpx;
+  line-height: 90rpx;
+  font-weight: bold;
+}
+.ar-text-area {
+  box-sizing: border-box;
+  position: relative;
+  height: 225rpx;
+  padding: 20rpx;
+  background: #F8F8F8;
+}
+.art-textarea {
+  width: 100%;
+  height: 92rpx;
+  line-height: 40rpx;
+  font-size: 26rpx;
+}
+.auto-recognition-btn {
+  position: absolute;
+  bottom: 20rpx;
+  right: 20rpx;
+  float: right;
+  border: 1px solid #FF6666;
+  border-radius: 4rpx;
+  color: #FF6666;
+  font-size: 24rpx;
+  background-color: inherit;
+}
+.address-edit-info {
+  background: #fff;
+  margin-top: 20rpx;
+  padding-left: 20rpx;
+}
+.aei-item {
+  display: flex;
+  height: 90rpx;
+  line-height: 90rpx;
+  overflow: hidden;
+  border-top: 1px solid #eee;
+}
+.aei-item label {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.aei-item label text {
+  width: 170rpx;
+  flex: 0 0 170rpx;
+}
+.aei-item input {
+  flex: 1;
+}
+.region-picker {
+  flex: 1;
+}
+.recognition-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 30rpx;
+  height: 30rpx;
+  padding-right: 10rpx;
+}
+.set-auto {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20rpx;
+  padding: 0 20rpx;
+  height: 90rpx;
+  line-height: 90rpx;
+  background: #fff;
+}
+.footer {
+  margin: 20rpx;
+}
+.save-btn {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  background: #FF6666;
+  text-align: center;
+  color: #fff;
+  font-size: 26rpx;
+}

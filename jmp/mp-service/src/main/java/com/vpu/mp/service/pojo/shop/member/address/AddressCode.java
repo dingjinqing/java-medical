@@ -10,7 +10,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AddressCode {
+    private String postalName;
     private Integer postalId;
+    private String cityName;
     private Integer cityId;
+    private String districtName;
     private Integer districtId;
 }

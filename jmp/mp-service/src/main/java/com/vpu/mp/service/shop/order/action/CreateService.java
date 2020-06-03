@@ -408,6 +408,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     /**
      * 获取默认地址
+     *  规则:默认地址>上次下单地址>null
      *
      * @param userId
      * @param addressId
@@ -416,14 +417,16 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     public UserAddressVo getDefaultAddress(Integer userId, Integer addressId) {
         UserAddressVo defaultAddress = null;
         if (addressId != null) {
-            // 输入addressId
             defaultAddress = address.get(addressId, userId);
         }
         // 输入地址无效
         if (defaultAddress == null) {
-            // 没输入addressId
-            defaultAddress = orderInfo.getLastOrderAddress(userId);
-            // TODO 更新经纬度
+            //先查默认地址
+            defaultAddress = address.getefaultAddress(userId);
+            if(defaultAddress == null) {
+                //上次下单地址
+                defaultAddress = orderInfo.getLastOrderAddress(userId);
+            }
         }
         return defaultAddress;
     }
