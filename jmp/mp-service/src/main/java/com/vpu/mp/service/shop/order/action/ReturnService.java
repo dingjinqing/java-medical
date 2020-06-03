@@ -227,7 +227,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 						//退款订单记录
 						returnStatusChange.addRecord(rOrder, param.getIsMp(), OrderConstant.RETURN_OPERATE[param.getReturnOperate()]);
 						return;
-					} else if(param.getIsMp().equals(OrderConstant.IS_MP_ADMIN) && Byte.valueOf(OrderConstant.RT_GOODS).equals(param.getReturnType())) {
+					} else if(!param.getIsMp().equals(OrderConstant.IS_MP_Y) && Byte.valueOf(OrderConstant.RT_GOODS).equals(param.getReturnType())) {
                         //后台直接发起退货退款时设置退款状态为4以便于后续操作
                         rOrder.setRefundStatus(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
                     }

@@ -602,6 +602,19 @@ public class UserAnalysisService extends ShopBaseService {
    */
   public RebuyVo getRebuyTrend(RebuyParam param) {
     try {
+        if(null==param.getWeekNum()||StringUtils.isBlank(param.getSunday())){
+            Calendar calendar = Calendar.getInstance();
+            calendar.setFirstDayOfWeek(Calendar.MONDAY);
+            int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
+            param.setWeekNum(weekOfYear);
+            int weekYear = calendar.get(Calendar.YEAR);
+            calendar.setWeekDate(weekYear,weekOfYear,1);
+            long endTime = calendar.getTime().getTime();
+            java.util.Date date = new java.util.Date(endTime);
+            SimpleDateFormat df =new SimpleDateFormat("yyyy-MM-dd");
+            String sundayDate = df.format(date);
+            param.setSunday(sundayDate);
+        }
       DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
       // 周日转date型
       java.util.Date sunday = dateFormat.parse(param.getSunday());

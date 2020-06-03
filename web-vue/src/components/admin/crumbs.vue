@@ -431,6 +431,8 @@ export default {
   padding-left: 25px;
   color: #333;
   background: #fff;
+  position: relative;
+  z-index: 200;
   // overflow: hidden;
 }
 .canClick {

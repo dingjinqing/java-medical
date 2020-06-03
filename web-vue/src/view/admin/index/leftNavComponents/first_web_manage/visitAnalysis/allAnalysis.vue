@@ -9,6 +9,8 @@
         clearable
         @change="actionChangeHandler"
         class="actionSelect"
+        popper-class="pop-cls"
+        :popper-append-to-body="false"
       >
         <el-option
           v-for="item in actionRange"
@@ -24,6 +26,8 @@
         clearable
         @change="timeChangeHandler"
         class="timeSelect"
+        popper-class="pop-cls"
+        :popper-append-to-body="false"
       >
         <el-option
           v-for="item in timeRange"
@@ -39,6 +43,8 @@
         clearable
         @change="gradeChangeHandler"
         class="gradeSelect"
+        popper-class="pop-cls"
+        :popper-append-to-body="false"
       >
         <el-option
           v-for="item in gradeRange"
@@ -62,7 +68,11 @@
       >
       </el-date-picker>
       <span>{{this.startDate.year}}{{$t('visitAnalysis.years')}}{{this.startDate.month}}{{$t('visitAnalysis.months')}}{{this.startDate.day}}{{$t('visitAnalysis.days')}} - {{this.endDate.year}}{{$t('visitAnalysis.years')}}{{this.endDate.month}}{{$t('visitAnalysis.months')}}{{this.endDate.day}}{{$t('visitAnalysis.days')}}</span>
-      <el-button type="primary" size="small" @click="exportData()">{{$t('visitAnalysis.export')}}</el-button>
+      <el-button
+        type="primary"
+        size="small"
+        @click="exportData()"
+      >{{$t('visitAnalysis.export')}}</el-button>
     </div>
     <div v-show="this.param.action===1"><span>{{$t('visitAnalysis.totalSessionCount')}}:</span>{{this.totalNum}}</div>
     <div v-show="this.param.action===2"><span>{{$t('visitAnalysis.totalPv')}}:</span>{{this.totalNum}}</div>
@@ -70,15 +80,21 @@
     <div v-show="this.param.action===6"><span>{{$t('visitAnalysis.aveStayTime')}}:</span>{{this.averageNum}}</div>
     <div v-show="this.param.action===7"><span>{{$t('visitAnalysis.aveVisitDepth')}}:</span>{{this.averageNum}}</div>
     <!--    折线图数据-->
-    <div v-show="this.controlShow" id="allAnalysisCharts"></div>
-    <div class="noData" v-show="this.totalNum===0"><span>{{$t('visitAnalysis.noData')}}</span></div>
+    <div
+      v-show="this.controlShow"
+      id="allAnalysisCharts"
+    ></div>
+    <div
+      class="noData"
+      v-show="this.totalNum===0"
+    ><span>{{$t('visitAnalysis.noData')}}</span></div>
   </div>
 </template>
 
 <script>
 import echarts from 'echarts'
 import { download } from '@/util/excelUtil.js'
-import {amountAnalysis, excelExport} from '@/api/admin/firstWebManage/visitAnalysis/visitAnalysis.js'
+import { amountAnalysis, excelExport } from '@/api/admin/firstWebManage/visitAnalysis/visitAnalysis.js'
 
 export default {
   components: {},
@@ -263,36 +279,39 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-  .allAnalysis {
-    padding: 10px;
-    background: #fff;
+.allAnalysis {
+  padding: 10px;
+  background: #fff;
 
-    .top {
-      height: 50px;
-      line-height: 50px;
-      color: #333;
-      .actionSelect {
-        width: 140px;
-        margin: 0 10px 0 2px;
-      }
-      .timeSelect {
-        width: 140px;
-        margin: 0 10px 0 2px;
-      }
-      .gradeSelect {
-        width: 140px;
-        margin: 0 10px 0 2px;
-      }
+  .top {
+    height: 50px;
+    line-height: 50px;
+    color: #333;
+    .pop-cls {
+      margin-top: 0;
     }
-    .noData{
-      height: 300px;
-      text-align: center;
-      padding-top: 150px;
+    .actionSelect {
+      width: 140px;
+      margin: 0 10px 0 2px;
+    }
+    .timeSelect {
+      width: 140px;
+      margin: 0 10px 0 2px;
+    }
+    .gradeSelect {
+      width: 140px;
+      margin: 0 10px 0 2px;
     }
   }
-
-  #allAnalysisCharts {
-    width: 90%;
+  .noData {
     height: 300px;
+    text-align: center;
+    padding-top: 150px;
   }
+}
+
+#allAnalysisCharts {
+  width: 90%;
+  height: 300px;
+}
 </style>
