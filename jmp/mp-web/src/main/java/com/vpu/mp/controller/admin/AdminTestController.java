@@ -1,5 +1,20 @@
 package com.vpu.mp.controller.admin;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.websocket.server.PathParam;
+
+import com.vpu.mp.service.shop.task.wechat.WechatTaskService;
+
+import org.jooq.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
@@ -10,7 +25,7 @@ import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
-import com.vpu.mp.service.shop.task.wechat.WechatTaskService;
+import com.vpu.mp.service.saas.shop.ThirdPartyMsgServices;
 import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.wechat.OpenPlatform;
@@ -21,12 +36,6 @@ import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateTitleResu
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubscribeAddTemplateResult;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
 
 /**
  *
@@ -43,6 +52,9 @@ public class AdminTestController extends AdminBaseController {
 
     @Autowired
     private WechatTaskService wechatTaskService;
+
+	@Autowired
+	private ThirdPartyMsgServices thirdPartyMsgServices;
 
     @RequestMapping(value = "/api/admin/test/addtemplate")
     public JsonResult addtemplate() throws Exception {
@@ -215,13 +227,14 @@ public class AdminTestController extends AdminBaseController {
 
     }
 
-
-
     @RequestMapping(value = "/api/admin/test/live")
     public JsonResult testLive() {
         logger().info("直播列表导入测试");
-        //List<WxMaLiveRoomInfo> getliveinfo = saas.getShopApp(245547).liveService.getliveinfo();
-        //saas.getShopApp(245547).liveService.getLiveList();
+        Result<ShopRecord> result = saas.shop.getAll();
+		result.forEach((r) -> {
+			boolean liveList = saas.getShopApp(r.getShopId()).liveService.getLiveList();
+			logger().info("获取店铺：{}；的直播列表结果：{}",r.getShopId(),liveList);
+		});
         logger().info("直播列表导入测试结束");
         return success();
 
@@ -229,9 +242,9 @@ public class AdminTestController extends AdminBaseController {
 
     @RequestMapping(value = "/api/admin/test/sendOrderMsg")
     public JsonResult testSendOrderMsg() {
-//    	OrderInfoRecord order = saas.getShopApp(245547).member.order.getOrderByOrderSn("P202004092146259689");
-//    	thirdPartyMsgServices.thirdPartService(order);
-        return success();
+    	OrderInfoRecord order = saas.getShopApp(245547).member.order.getOrderByOrderSn("P202004092146259689");
+    	thirdPartyMsgServices.thirdPartService(order);
+		return success();
     }
 
     @RequestMapping(value = "/api/admin/test/expiring")
@@ -240,5 +253,4 @@ public class AdminTestController extends AdminBaseController {
         saas.getShopApp(shopId()).shopTaskService.maMpScheduleTaskService.expiringCouponNotify();
         return success();
     }
-
 }

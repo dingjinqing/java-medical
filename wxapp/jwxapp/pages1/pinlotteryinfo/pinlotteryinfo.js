@@ -21,7 +21,9 @@ global.wxPage({
     click_num: false,
     is_show_modal: 0, // 分享弹窗
     order_sn: '', // 订单号
-    share_img: '', // 分享图片
+    shareFlag: 0,
+    shareImg: '', // 分享图片
+    shareDoc: '' // 分享文案
   },
 
   /**
@@ -32,6 +34,9 @@ global.wxPage({
     group_draw_id = options.group_draw_id;
     goods_id = options.goods_id;
     group_id = options.group_id;
+    this.setData({
+      inviteId: options.inviteId || null
+    })
     var that = this;
     // 判断用户是否登录
     var user_name = util.getCache('nickName');
@@ -54,9 +59,7 @@ global.wxPage({
     }
     clearTimeout(set_time_out);
     // 获取活动详情
-    util.getNeedTemplateId('group_draw', () => {
-      this.request_group()
-    })
+    this.request_group()
   },
 
   request_group () {
@@ -92,6 +95,16 @@ global.wxPage({
           group_info: group_info,
           user_arr: user_arr
         })
+
+        // 获取分享图片
+        util.api('/api/wxapp/groupdraw/share/info', function (res) {
+          if (res.error == 0) {
+            that.setData({
+              shareImg: res.content.imgUrl,
+              shareDoc: res.content.shareDoc
+            })
+          }
+        }, { activityId: group_draw_id, realPrice: group_info.groupDraw.payMoney, linePrice: group_info.goods.shopPrice, targetId: goods_id });
       } else {
         util.showModal("提示", res.message, function () {
           util.reLaunch({
@@ -101,15 +114,15 @@ global.wxPage({
         return false;
       }
     }, {
+      group_draw_id: group_draw_id,
+      goods_id: goods_id,
+      group_id: group_id,
+      options: {
         group_draw_id: group_draw_id,
         goods_id: goods_id,
-        group_id: group_id,
-        options: {
-          group_draw_id: group_draw_id,
-          goods_id: goods_id,
-          group_id: group_id
-        }
-      })
+        group_id: group_id
+      }
+    })
   },
 
   // 查看活动列表
@@ -134,17 +147,19 @@ global.wxPage({
   },
   // 去参团
   to_join: function () {
-    let goodsList = [{
-      goodsId: goods_id,
-      prdRealPrice: this.data.group_info.groupDraw.payMoney,
-      goodsPrice: this.data.group_info.goods.shopPricee,
-      goodsNum: 1,
-      prdId: this.data.group_info.groupDraw.productId,
-      productId: this.data.group_info.groupDraw.productId
-    }]
-    console.log(goodsList)
-    util.navigateTo({
-      url: "/pages/checkout/checkout?activityType=8&activityId=" + Number(group_draw_id) + "&groupid=" + Number(group_id) + "&goodsList=" + JSON.stringify(goodsList)
+    util.getNeedTemplateId('draw_result', () => {
+      let goodsList = [{
+        goodsId: goods_id,
+        prdRealPrice: this.data.group_info.groupDraw.payMoney,
+        goodsPrice: this.data.group_info.goods.shopPricee,
+        goodsNum: 1,
+        prdId: this.data.group_info.groupDraw.productId,
+        productId: this.data.group_info.groupDraw.productId
+      }]
+      console.log(goodsList)
+      util.navigateTo({
+        url: "/pages/checkout/checkout?activityType=8&activityId=" + Number(group_draw_id) + "&groupid=" + Number(group_id) + "&goodsList=" + JSON.stringify(goodsList) + '&inviteId=' + this.data.inviteId
+      })
     })
   },
   // 去开团
@@ -320,16 +335,23 @@ global.wxPage({
   to_rule: function () {
     util.jumpToWeb('/wxapp/pinlottery/help', '&gid=' + group_draw_id);
   },
+  // 去分享
+  to_share: function () {
+    // 订阅消息
+    util.getNeedTemplateId('draw_result', () => {
+      this.setData({ shareFlag: 1 })
+    })
+  },
   /**
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
     var that = this;
     return {
-      title: "快来参与" + that.data.group_info.group_draw.pay_money + "元拼团大抽奖吧",
-      // imageUrl: that.data.imageUrl + that.data.share_img,
-      path: '/pages/pinlotteryinfo/pinlotteryinfo?group_draw_id=' + group_draw_id + "&goods_id=" + goods_id + "&group_id=" + group_id + '&invite_id=' + util.getCache('user_id'),
+      title: that.data.shareDoc,
+      imageUrl: that.data.shareImg,
+      path: '/pages1/pinlotteryinfo/pinlotteryinfo?group_draw_id=' + group_draw_id + "&goods_id=" + goods_id + "&group_id=" + group_id + '&invite_id=' + util.getCache('user_id'),
     }
   },
-  
+
 })

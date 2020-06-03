@@ -181,7 +181,7 @@
       >
         <el-button
           size="small"
-          @click="addGroupDialog = false"
+          @click="cancelGroupHandler"
         >取 消</el-button>
         <el-button
           type="primary"
@@ -206,6 +206,17 @@ export default {
     DistributorDialog: () => import('@/components/admin/distributorDialog')
   },
   data () {
+    // 自定义校验名称
+    var validatelevel = (rule, value, callback) => {
+      let result = this.tableData.findIndex(item => { return value === item.groupName })
+      if (!value) {
+        callback(new Error('请填写分组名称'))
+      } else if (result !== -1) {
+        callback(new Error('分组名称已存在, 请重新填写'))
+      } else {
+        callback()
+      }
+    }
     return {
       groupName: '', // 搜索条件
       v: 1, // 保存配置
@@ -219,7 +230,7 @@ export default {
       // 表单校验
       paramRules: {
         groupName: [
-          { required: true, message: '请填写分组名称', trigger: 'blur' }
+          { required: true, validator: validatelevel, trigger: 'change' }
         ],
         canSelect: [
           { required: true, message: '请选择用户是否支持', trigger: 'change' }
@@ -301,6 +312,7 @@ export default {
         if (valid) {
           // 关闭弹窗
           this.addGroupDialog = false
+          this.$refs['param'].resetFields()
           if (this.typeFlag === 0) {
             // 添加保存
             distributionGroupAdd(this.param).then(res => {
@@ -325,6 +337,13 @@ export default {
           }
         }
       })
+    },
+
+    // 取消添加分销员分组
+    cancelGroupHandler () {
+      // 关闭弹窗
+      this.addGroupDialog = false
+      this.$refs['param'].resetFields()
     },
 
     // 删除分组
@@ -363,6 +382,8 @@ export default {
         if (res.error === 0) {
           this.$message.success({ message: '添加成功' })
           this.initGroupList()
+        } else {
+          this.$message.warning(res.message)
         }
       })
     },

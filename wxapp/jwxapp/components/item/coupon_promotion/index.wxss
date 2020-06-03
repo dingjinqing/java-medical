@@ -55,6 +55,9 @@
 .gift-goods-list .gift-gift-item + .gift-gift-item{
   margin-left: 10rpx;
 }
+.gift-goods-list .gift-gift-item:nth-child(5n+1){
+  margin-left: 0;
+}
 .gift-goods-list .gift-gift-item image{
   width: 100%;
   height: 100%;

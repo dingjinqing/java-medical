@@ -109,8 +109,10 @@ global.wxComponent({
           this.data.productsInfo.products[0].prdNumber = activity.stock
           limitBuyNum = 1
         }
-        if(activity && [6,18,22,98].includes(activity.activityType) && activity.isLimit){
-          if(activity.limitFlag){
+        if(activity && [6,18,22,98].includes(activity.activityType)){
+          this.data.productsInfo.products[0].prdRealPrice = activity[actPrdType[this.data.productsInfo.activity.activityType]['prdListName']][0][actPrdType[activity.activityType]['prdRealPrice']]
+          this.data.productsInfo.products[0].prdLinePrice = activity[actPrdType[this.data.productsInfo.activity.activityType]['prdListName']][0][actPrdType[activity.activityType]['prdLinePrice']]
+          if(activity.isLimit && activity.limitFlag){
             limitMaxNum = activity.limitAmount
           } else {
             limitMaxNum = 0
@@ -276,7 +278,7 @@ global.wxComponent({
       } else {
         select_prd.prdNumber = select_prd['prdNumber']
       }
-      console.log(limitMaxNum)
+      console.log(select_prd)
       this.setData({
         checkedProduct: select_prd
       })
@@ -337,8 +339,6 @@ global.wxComponent({
       var stock = null
       if(this.data.productsInfo.activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && [1,5,10].includes(this.data.productsInfo.activity.activityType)){
         stock = prd_specs['actProduct']['stock']
-      } else if (this.data.productsInfo.activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && this.data.productsInfo.activity.activityType === 3){
-        stock = this.data.productsInfo.activity.stock
       } else {
         stock = prd_specs['prdNumber']
       }

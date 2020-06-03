@@ -247,6 +247,66 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/store_manage/store/serviceConfig'
       )
+  },
+  // 门店公告
+  {
+    path: '/admin/home/main/store/storeAnnouncement',
+    name: 'store_announcement',
+    meta: {
+      crumbTitle: 'router.store_announcement',
+      meta: 'store_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/store_manage/store/storeAnnouncement/storeAnnouncementList'
+      )
+  },
+  // 门店公告新增
+  {
+    path: '/admin/home/main/store/storeAnnouncementAdd',
+    name: 'store_announcement_add',
+    meta: {
+      crumbTitle: 'router.store_announcement_add',
+      meta: 'store_manage',
+      category: 'store_announcement'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/store_manage/store/storeAnnouncement/storeAnnouncementAdd'
+      )
+  },
+  // 门店权限
+  {
+    path: '/admin/home/main/store/storePermission',
+    name: 'store_permission',
+    redirect: { name: 'store_permission_list' },
+    meta: {
+      crumbTitle: 'router.store_permission',
+      meta: 'store_manage'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/store_manage/store/storePermission/storePermission'),
+    children: [
+      {
+        path: 'list',
+        name: 'store_permission_list',
+        meta: {
+          crumbTitle: 'router.store_permission',
+          meta: 'store_manage',
+          category: 'store_permission'
+        },
+        component: () => import('@/view/admin/index/leftNavComponents/store_manage/store/storePermission/storePermissionList')
+      },
+      {
+        path: 'setting',
+        name: 'store_permission_setting',
+        meta: {
+          crumbTitle: 'router.store_permission',
+          meta: 'store_manage',
+          category: 'store_permission'
+        },
+        component: () => import('@/view/admin/index/leftNavComponents/store_manage/store/storePermission/storePermissionSetting')
+      }
+    ]
   }
 ]
 

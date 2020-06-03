@@ -6,56 +6,81 @@ global.wxPage({
    */
   data: {
     imageUrl: util.getImageUrl(""),
-    test:{
-      moneyPaid:'微信支付',
-      useCardBalance:'会员卡余额支付',
-      useScore:'积分支付',
-      useBalance:'余额支付'
-    }
+    goodsType: 1
   },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let {orderSn = null,useInfo,isNotGoods=null} = options
+    let {
+      orderSn = null, useInfo, goodsType = 1, cardNo = null
+    } = options
     this.setData({
+      test: {
+        moneyPaid: this.$t("pages.order.payCode.wxpay"),
+        useCardBalance: this.$t("pages.order.payCode.cardBalance"),
+        useScore: this.$t("pages.order.payCode.score"),
+        useBalance: this.$t("pages.order.payCode.balance")
+      },
       orderSn,
-      useInfo:JSON.parse(useInfo),
-      isNotGoods
+      useInfo: JSON.parse(useInfo),
+      goodsType: +goodsType,
+      cardNo
+    })
+    this.setData({
+      buttonName: this.getButtonData(+goodsType)
     })
     this.selectComponent('#recommend').requestData()
     this.payGiftRequest()
   },
-  checkOrder(){
-    util.jumpLink(`/pages/orderinfo/orderinfo?orderSn=${this.data.orderSn}`,'navigateTo')
+  checkOrder() {
+    let goodsType = this.data.goodsType
+    switch (goodsType) {
+      case 2:
+        util.jumpLink(`pages/coupon/coupon`, 'navigateTo')
+        break;
+      case 3:
+        util.jumpLink(`pages/cardinfo/cardinfo?cardNo=${this.data.cardNo}`, 'navigateTo')
+        break;
+      default:
+        util.jumpLink(`/pages/orderinfo/orderinfo?orderSn=${this.data.orderSn}`, 'navigateTo')
+        break;
+    }
   },
-  goHome(){
-    util.jumpLink(`/pages/index/index`,'redirectTo')
+  goHome() {
+    util.jumpLink(`/pages/index/index`, 'redirectTo')
   },
-  payGiftRequest(){
-    if(!this.data.orderSn) return
-    util.api('/api/wxapp/payaward/prize/info',res=>{
-      if(res.error === 0 && res.content){
+  payGiftRequest() {
+    if (!this.data.orderSn) return
+    util.api('/api/wxapp/payaward/prize/info', res => {
+      if (res.error === 0 && res.content) {
         let awardInfo = this.getAwardInfo(res.content)
         this.setData({
-          payAwardDialog:true,
+          payAwardDialog: true,
           awardInfo
         })
       } else {
 
       }
-    },{orderSn:this.data.orderSn})
+    }, {
+      orderSn: this.data.orderSn
+    })
   },
-  getAwardInfo({currentAwardTimes:currentStep,payAwardSize:totalStep,payAwardPrize:awardInfo,message}){
+  getAwardInfo({
+    currentAwardTimes: currentStep,
+    payAwardSize: totalStep,
+    payAwardPrize: awardInfo,
+    message
+  }) {
     const needParams = {
-      0:[null],
-      1:['couponView'],
-      2:['couponView'],
-      3:['lotteryId'],
-      4:['account'],
-      5:['product','productId','keepDays'],
-      6:['scoreNumber'],
-      7:['customImage','customLink'],
+      0: [null],
+      1: ['couponView'],
+      2: ['couponView'],
+      3: ['lotteryId'],
+      4: ['account'],
+      5: ['product', 'productId', 'keepDays'],
+      6: ['scoreNumber'],
+      7: ['customImage', 'customLink'],
     }
     let stepInfo = {
       hasStep: (totalStep > 1),
@@ -65,10 +90,10 @@ global.wxPage({
     return {
       stepInfo,
       message,
-      giftInfo:{
-        giftType:awardInfo.giftType,
-        awardInfo:{
-          ...this.filterObj(awardInfo,needParams[awardInfo.giftType])
+      giftInfo: {
+        giftType: awardInfo.giftType,
+        awardInfo: {
+          ...this.filterObj(awardInfo, needParams[awardInfo.giftType])
         }
       }
     }
@@ -82,9 +107,20 @@ global.wxPage({
     Object.keys(obj)
       .filter(key => arr.includes(key))
       .forEach(key => {
-          result[key] = obj[key];
+        result[key] = obj[key];
       });
     return result;
+  },
+  getButtonData(goodsType) {
+    if(goodsType === 3 && !this.data.cardNo) return null
+    switch (goodsType) {
+      case 1:
+        return this.$t("pages.order.viewOrder")
+      case 2:
+        return this.$t("pages.order.viewCouponList")
+      case 3:
+        return this.$t("pages.order.viewCardInfo")
+    }
   },
   /**
    * 页面上拉触底事件的处理函数

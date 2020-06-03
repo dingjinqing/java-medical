@@ -15,4 +15,5 @@ public class DefaultCardParam {
 	@NotBlank
 	private String cardNo;
 	private Integer userId;
+	private Integer cardId;
 }

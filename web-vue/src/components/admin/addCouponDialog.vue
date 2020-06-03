@@ -3,8 +3,8 @@
     <el-dialog
       title="选择优惠券"
       :visible.sync="dialogVisible"
-      width="550px"
       :modal-append-to-body='false'
+      center
     >
       <div class="couponDialogDIiv">
         <div class="couponTop">
@@ -13,15 +13,30 @@
               v-model="couponInput"
               placeholder="请输入优惠券名称"
               size="small"
+              class="inputWidth"
             ></el-input>
             <el-select
               v-if="type === -1"
               v-model="couponType"
               size="small"
+              class="inputWidth"
               @change="couponTypeChaneg"
             >
               <el-option
                 v-for="item in couponTypes"
+                :key="item.id"
+                :label="item.label"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+            <el-select
+              v-model="couponStatus"
+              size="small"
+              class="inputWidth"
+              @change="couponTypeChaneg"
+            >
+              <el-option
+                v-for="item in statusList"
                 :key="item.id"
                 :label="item.label"
                 :value="item.id"
@@ -69,7 +84,7 @@
                   class="coupon_list_bottom"
                   :style="`backgroundImage:url('${$imageHost}/image/admin/coupon_border.png')`"
                 >{{item.useScore===0?'领取':item.scoreNumber+'积分 兑换'}} </div>
-                <div class="coupon_name">{{item.actName}}</div>
+                <div class="coupon_name">{{item.type===1?'[分裂]':''}}{{item.actName}}</div>
               </div>
             </div>
 
@@ -121,7 +136,13 @@ export default {
         { id: 0, label: '普通优惠券' },
         { id: 1, label: '分裂优惠券' }
       ],
-      couonType: ''
+      statusList: [
+        { id: -1, label: '全部' },
+        { id: 0, label: '进行中' },
+        { id: 1, label: '未开始' }
+      ],
+      couonType: '',
+      couonStatus: ''
     }
   },
   props: ['origin', 'singleElection', 'tuneUpCoupon', 'couponBack', 'type', 'formDecType'],
@@ -163,7 +184,7 @@ export default {
       if (this.type !== undefined && this.type !== '') {
         param.type = this.couponType
       } else {
-        param.type = 0
+        param.type = -1
       }
       getCouponSelectComponentData(param).then((res) => {
         if (res.error === 0) {
@@ -275,18 +296,18 @@ export default {
     .couponTop {
       display: flex;
       justify-content: space-between;
-      /deep/ .el-input {
-        width: 80%;
-        margin-right: 10px;
-      }
       .top_leftDiv {
         display: flex;
+        .inputWidth {
+          width: 170px;
+          margin-right: 10px;
+        }
       }
       span {
         width: 60px;
         height: 32px;
         line-height: 32px;
-        display: block;
+        display: inline-block;
         color: #5a8bff;
         cursor: pointer;
         i {

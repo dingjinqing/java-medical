@@ -17,7 +17,7 @@
           <el-button
             type="primary"
             size="small"
-            v-if="tabSwitch < '5'"
+            v-if="tableListView"
             @click="addReduce"
           >添加限时降价活动</el-button>
         </el-tab-pane>
@@ -29,25 +29,13 @@
       :isEdite="isEdite"
       :editId="editId"
       @addReduceSubmit="addReduceSubmit"
-      v-if="tabSwitch > '6'"
-    />
-
-    <!-- 批量降价 -->
-    <batchReduce
-      v-if="tabSwitch === '5'"
-      @addHandler="addReduce"
-    />
-
-    <!-- 批量加价率 -->
-    <batchMarkUpRate
-      v-if="tabSwitch === '6'"
-      @addHandler="addReduce"
+      v-if="tableListView===false"
     />
 
     <!-- 表格 -->
     <div
       class="table_list"
-      v-if="tabSwitch < '5'"
+      v-if="tableListView"
     >
       <el-table
         class="version-manage-table"
@@ -148,7 +136,7 @@
                 <span
                   style="font-size: 22px;"
                   class="el-icon-tickets"
-                  @click="seckillOrderHanlder(scope.row.id)"
+                  @click="reduceOrderHanlder(scope.row.id, scope.row.name)"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -204,7 +192,7 @@ export default {
     return {
       loading: false,
       tabSwitch: '1',
-      tableListView: false, // tab显示隐藏
+      tableListView: true, // tab显示隐藏
       tabInfo: this.$t('reducePriceList.tabInfo'),
       tableData: [], // 表格数据
       pageParams: {}, // 分页
@@ -263,28 +251,28 @@ export default {
     },
 
     showTabAddGroup (title) {
-      if (this.tabSwitch === '8' || this.tabInfo.length > 7) {
+      if (this.tabSwitch === '6' || this.tabInfo.length > 5) {
         this.closeTabAddGroup()
       }
       this.tabInfo.push({
         title: title,
-        name: '8'
+        name: '6'
       })
-      this.tabSwitch = '8'
+      this.tabSwitch = '6'
       this.tableListView = false
     },
 
     closeTabAddGroup () {
       // 新增标签
-      if (this.tabSwitch === '8') {
+      if (this.tabSwitch === '6') {
         return
       }
       // 不是新增
-      if (this.tabInfo.length > 7) {
+      if (this.tabInfo.length > 5) {
         this.tableListView = true
         this.tabInfo.pop({
           title: '编辑限时降价活动',
-          name: '8'
+          name: '6'
         })
         console.log('closeTabAddGroup', this.tabInfo)
       }
@@ -358,8 +346,8 @@ export default {
     },
 
     // 订单明细
-    seckillOrderHanlder (id) {
-      this.$router.push({ name: 'reduce_price_order', query: { id: id } })
+    reduceOrderHanlder (id, actName) {
+      this.$router.push({ name: 'reduce_price_order', query: { id: id, actName: actName } })
     },
 
     // 活动效果数据

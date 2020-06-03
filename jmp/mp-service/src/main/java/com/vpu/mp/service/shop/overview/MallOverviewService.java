@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.overview;
 
+import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -7,6 +8,7 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.overview.*;
+import com.vpu.mp.service.saas.shop.ShopAccountService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.WxShoppingListConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -39,6 +41,7 @@ import static com.vpu.mp.db.shop.tables.Sort.SORT;
 import static com.vpu.mp.db.shop.tables.UserSummaryTrend.USER_SUMMARY_TREND;
 import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
+import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.DEFAULT_SCALE;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.BYTE_THREE;
@@ -84,6 +87,9 @@ public class MallOverviewService extends ShopBaseService {
 
     @Autowired
     public CardDaoService cardDaoService;
+
+    @Autowired
+    public ShopAccountService shopAccountService;
 
     public static final List<Byte> RECENT_DATE = new ArrayList<Byte>() {{
         add(Byte.valueOf("0"));
@@ -172,8 +178,14 @@ public class MallOverviewService extends ShopBaseService {
      * 代办事项
      * @return
      */
-    public ToDoItemVo toDoItem(){
+    public ToDoItemVo toDoItem(ToDoItemParam param){
         ToDoItemVo toDoItemVo = new ToDoItemVo();
+        ShopAccountRecord oldRecord = shopAccountService.getAccountInfoForId(getSysId());
+        if (!StringUtils.isEmpty(param.getBacklog())&&!"".equals(param.getBacklog())){
+            oldRecord.setBacklog(param.getBacklog());
+        }
+        ShopAccountRecord newRecord = db().newRecord(SHOP_ACCOUNT,oldRecord);
+        shopAccountService.updateAccountInfo(newRecord);
         Condition orderStatus = ORDER_INFO.ORDER_STATUS.eq((byte) 3);
         Condition deliverType0 = ORDER_INFO.DELIVER_TYPE.eq((byte) 0);
         Condition deliverType1 = ORDER_INFO.DELIVER_TYPE.eq((byte) 1);
@@ -196,6 +208,8 @@ public class MallOverviewService extends ShopBaseService {
         toDoItemVo.setMembershipCardPr(db().fetchCount(CardExamine.CARD_EXAMINE,CardExamine.CARD_EXAMINE.STATUS.eq((byte)1)));
         toDoItemVo.setDistributionWithdrawalPr(db().fetchCount(DistributionWithdraw.DISTRIBUTION_WITHDRAW,DistributionWithdraw.DISTRIBUTION_WITHDRAW.STATUS.eq((byte)1)));
         toDoItemVo.setServiceEvaluationPr(db().fetchCount(CommentService.COMMENT_SERVICE,CommentService.COMMENT_SERVICE.FLAG.eq((byte)0)));
+        ShopAccountRecord shopAccountRecord = shopAccountService.getAccountInfoForId(getSysId());
+        toDoItemVo.setBacklog(StringUtils.isEmpty(shopAccountRecord.getBacklog())?null:shopAccountRecord.getBacklog());
         return toDoItemVo;
     }
 

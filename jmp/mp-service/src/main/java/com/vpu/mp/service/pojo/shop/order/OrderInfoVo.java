@@ -83,4 +83,8 @@ public class OrderInfoVo extends OrderListInfoVo {
     private Boolean isReturnBk;
     /**是否展示手动退款退货按钮*/
     private Boolean showManualReturn;
+    /**订单退货完成时间 */
+    private Timestamp returnFinishTime;
+    /**订单退款完成时间*/
+    private Timestamp refundFinishTime;
 }

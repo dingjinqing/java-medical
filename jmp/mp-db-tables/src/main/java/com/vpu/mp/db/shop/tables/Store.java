@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Store extends TableImpl<StoreRecord> {
 
-    private static final long serialVersionUID = 188878068;
+    private static final long serialVersionUID = -775416694;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_store</code>
@@ -85,12 +85,12 @@ public class Store extends TableImpl<StoreRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_store.business_state</code>. 营业状态1:营业，0:关店
      */
-    public final TableField<StoreRecord, Byte> BUSINESS_STATE = createField("business_state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "营业状态1:营业，0:关店");
+    public final TableField<StoreRecord, Byte> BUSINESS_STATE = createField("business_state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "营业状态1:营业，0:关店");
 
     /**
      * The column <code>mini_shop_471752.b2c_store.business_type</code>. 营业时间1：每天，0：工作日
      */
-    public final TableField<StoreRecord, Byte> BUSINESS_TYPE = createField("business_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "营业时间1：每天，0：工作日");
+    public final TableField<StoreRecord, Byte> BUSINESS_TYPE = createField("business_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "营业时间1：每天，0：工作日");
 
     /**
      * The column <code>mini_shop_471752.b2c_store.opening_time</code>. 开门时间
@@ -150,27 +150,32 @@ public class Store extends TableImpl<StoreRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_store.pos_shop_id</code>. pos店铺id
      */
-    public final TableField<StoreRecord, Integer> POS_SHOP_ID = createField("pos_shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "pos店铺id");
+    public final TableField<StoreRecord, Integer> POS_SHOP_ID = createField("pos_shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "pos店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_store.create_time</code>.
      */
-    public final TableField<StoreRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<StoreRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_store.update_time</code>. 最后修改时间
      */
-    public final TableField<StoreRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<StoreRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_store.auto_pick</code>. 设定自提
      */
-    public final TableField<StoreRecord, Short> AUTO_PICK = createField("auto_pick", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "设定自提");
+    public final TableField<StoreRecord, Short> AUTO_PICK = createField("auto_pick", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "设定自提");
 
     /**
      * The column <code>mini_shop_471752.b2c_store.del_flag</code>. 1为删除状态
      */
-    public final TableField<StoreRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1为删除状态");
+    public final TableField<StoreRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1为删除状态");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_store.city_service</code>. 支持同城配送 1:支持
+     */
+    public final TableField<StoreRecord, Byte> CITY_SERVICE = createField("city_service", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "支持同城配送 1:支持");
 
     /**
      * Create a <code>mini_shop_471752.b2c_store</code> table reference

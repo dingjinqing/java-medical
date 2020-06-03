@@ -1,9 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.bargain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import lombok.Data;
 
 /**
  * @author 王兵兵
@@ -17,6 +18,11 @@ public class BargainRecordPageListQueryVo {
 	 * 主键 
 	 */
 	private Integer id;
+
+	@JsonIgnore
+	private Integer bargainId;
+    @JsonIgnore
+    private Integer goodsId;
 	
 	private String goodsName;
 	private BigDecimal goodsPrice;

@@ -147,6 +147,12 @@
 .goods_operate text {
   font-size: 36rpx;
 }
+.share_new_img {
+  width: 39rpx !important;
+  height: 31rpx;
+  position: relative;
+  top: 8rpx;
+}
 .goods_ad {
   color: #888;
   font-size: 24rpx;
@@ -230,4 +236,216 @@
   line-height: 80rpx;
   background: #fff6e6;
   color: #ffb93c;
+}
+.goods-image{
+  position: relative;
+}
+.live-tips{
+  display: flex;
+  height: 90rpx;
+  width: 750rpx;
+  background-color: rgb(255,247,210);
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  justify-content: center;
+  align-items: center;
+}
+.live-avatar-content{
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 50%;
+  border: 2rpx solid rgba(255,126,0,0.4);
+  box-sizing: border-box;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16rpx;
+}
+@keyframes scaleDraw {  
+  0%{
+      transform: scale(1); 
+  }
+  25%{
+      transform: scale(1.1); 
+  }
+  50%{
+      transform: scale(1);
+  }
+  75%{
+      transform: scale(1.1);
+  }
+}
+.live-avatar-content > .live-avatar{
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  border:2px solid rgba(255,126,0,1);
+  -webkit-animation-name: scaleDraw; 
+  -webkit-animation-timing-function: ease-in-out; 
+  -webkit-animation-iteration-count: infinite;  
+  -webkit-animation-duration: 5s; 
+}
+.live-desc{
+  color:rgba(255,126,0,1);
+}
+.live-close{
+  width: 36rpx;
+  height: 36rpx;
+  position: absolute;
+  right: 20rpx;
+  top: 50%;
+  margin-top: -18rpx;
+}
+.goods-image  .subscribe--live-player-subscribe__btn{
+  height: 50rpx;
+  width: 140rpx;
+  border: 2rpx solid;
+  text-align: center;
+  margin-left: 18rpx;
+  line-height: 46rpx;
+  border-radius: 25rpx;
+  box-sizing: border-box;
+  font-size: 26rpx;
+}
+.goods-image  .subscribe--live-player-notSubscribe{
+  color:#fff;background:linear-gradient(90deg,rgba(243,177,62,1),rgba(247,145,61,1));border:none;
+  line-height: 50rpx;
+}
+.goods-image  .subscribe--live-player-hasSubscribe{
+  color:rgba(247,145,61,1);
+  background-color: transparent;
+}
+.sell-out{
+  text-align: center;
+  line-height: 80rpx;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  z-index: 1;
+}
+.shareInvite{
+  position: relative;
+  background: #7e56c5;
+}
+.invite_text{
+  text-align: center;
+}
+.invite_friend {
+  padding-top: 10px;
+  text-align: center;
+  font-size: 24rpx;
+  color: #fff;
+}
+.invite_people{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.share_text {
+  font-size: 24rpx;
+  color: #fff;
+}
+.circle_line {
+  background-color: #fff;
+  width: 16rpx;
+  height: 16rpx;
+  margin: 0px 0 0 0px;
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 0 0 10rpx rgba(255, 255, 255, 0.2);
+}
+
+.circle_line_after, .circle_line_after2 {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.2);
+  width: 4rpx;
+  height: 100rpx;
+  top: 30rpx;
+  left: 50%;
+  margin-left: -2rpx;
+}
+
+.circle_line_after2 {
+  height: 55rpx;
+}
+.people {
+  width: 260rpx;
+  display: flex;
+  align-items: center;
+}
+.invite_content {
+  width: 650rpx;
+  height: 330rpx;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 10rpx;
+  margin-left: 50rpx;
+  margin-top: 30rpx;
+  box-sizing: border-box;
+  padding: 20rpx;
+  position: relative;
+  z-index: 9;
+}
+.invite_one {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+.invite_one .invite_people {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.invite_one image {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
+  border: 1px dashed #fff;
+  box-sizing: border-box;
+  margin: 0 10rpx;
+}
+.invite_mul {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.invite_mul image {
+  width: 50rpx;
+  height: 50rpx;
+  border-radius: 25rpx;
+  border: 1px dashed #fff;
+  box-sizing: border-box;
+}
+.share_or {
+  width: 140rpx;
+  height: 50rpx;
+  text-align: center;
+  line-height: 50rpx;
+  color: #fff;
+}
+.get_share {
+  width: 140rpx;
+  border: 1px solid #fff;
+  border-radius: 50rpx;
+}
+.user_image {
+  width: 50rpx;
+  height: 50rpx;
+  border-radius: 25rpx;
+}
+.invite_message{
+  text-align: center;
+  margin-top: 20rpx;
+  height: 100rpx;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #fff;
 }

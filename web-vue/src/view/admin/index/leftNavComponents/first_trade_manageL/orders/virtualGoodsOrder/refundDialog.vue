@@ -29,8 +29,8 @@
       class="coupon_refund"
       v-if="refundInfo.viewOrderType === 'couponPackage' && refundInfo.action === 'refund'"
     >
-      <div class="coupon_refund_top">
-        <p>{{$t('refundDialog.refundTip')}}:</p>
+      <div class="coupon_refund_top" v-if="refundInfo.useAccount > 0 || refundInfo.memberCardBalance > 0 || refundInfo.moneyPaid > 0 || refundInfo.useScore > 0">
+        <p v-if="refundInfo.useAccount > 0">{{$t('refundDialog.refundTip')}}:</p>
         <p v-if="refundInfo.useAccount > 0">{{$t('refundDialog.refund')}}{{$t('refundDialog.balance')}}:<el-input-number
             v-model="refundData.account"
             size="small"
@@ -238,12 +238,14 @@ export default {
     display: flex;
     flex-direction: column;
     padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
     p {
       & + p {
         margin-top: 10px;
       }
     }
+  }
+  .coupon_refund_top{
+    border-bottom: 1px solid #eee;
   }
   .coupon_refund_bottom {
     padding-top: 10px;

@@ -1,11 +1,13 @@
 package com.vpu.mp.service.pojo.wxapp.order.refund;
 
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * 小程序售后中心退款列表
@@ -15,6 +17,8 @@ import java.sql.Timestamp;
 @Setter
 @ToString
 public class ReturnOrderListMp {
+    private Integer retId;
+    private List<OrderReturnGoodsVo> goods;
     /**1买家；0商家（包含定时任务）*/
     private Byte role;
     private Byte refundStatus;

@@ -16,8 +16,11 @@ export const en = {
   returnToList: 'Return list',
   filter: 'Filter',
   createTime: 'Create time',
+  alreadySelected: 'Already selected：',
   confirmBtn: 'Confirm',
   cancelBtn: 'Cancel',
+  goodsInfoMissing: 'goods info missing',
+  goodsWeightConfigInfo: ' The deliver template already selected is \'Weight Type\'，for saving must has goods weight value.If there is no goods weight input，Please go "Basic Config-Shop Basic Config-Shop Normal Config"，and then enable"Goods Weight Config" setting,for reediting goods info。Click OK button can enable the setting auto',
   warningInfo: {
     requireGoodsName: 'Require goods name',
     requirePlatformClassify: 'Require platform classify',
@@ -41,7 +44,17 @@ export const en = {
     goodsPrdSnRepeat: 'goods prd sn repeat',
     goodsSpec: 'Spec: ',
     priceIsWrong: ' price is wrong',
-    goodsNumIsWrong: ' goods number is wrong'
+    goodsNumIsWrong: ' goods number is wrong',
+    goodsWeightIsNull: 'goods weight is null',
+    goodsPrdWeightIsNull: 'goods prd weight is null',
+    goodsPrdCodesInnerRepeated: 'goods prd codes inner repeated',
+    goodsPrdCodesExist: 'goods prd codes exist',
+    goodsNumberWrong: 'goods number is wrong',
+    goodsPriceWrong: 'goods price is wrong',
+    costPriceWrong: 'cost price is wrong',
+    memberPriceIsNull: 'member price is null',
+    memberPriceIsLarger: 'member price is lager than goods price',
+    limitPriceIsWrong: 'limit price is larger than max price'
   },
   basicInfo: {
     title: 'basicinfo',
@@ -86,6 +99,7 @@ export const en = {
     unitTip: 'The length limit is 3 words',
     sortId: 'Merchant classification：',
     sortIdDefault: 'Choose Merchant classification',
+    alreadySelected: 'Already Selected',
     goodsLabel: 'Goods label：',
     goodsLabelDefault: 'Choose goods label',
     goodsLabelNew: 'Create label',
@@ -113,15 +127,18 @@ export const en = {
     goodsSpecPrice: 'SKU Price：',
     goodsSpecShopPrice: 'Price(dollars)',
     goodsSpecShopCost: 'Cost price(dollars)',
+    goodsSpecPrdWeight: 'Weight',
     goodsSpecMarketPrice: 'Market price(dollars)',
     goodsSpecGoodsNum: 'Stock',
     goodsSpecGoodsPrdSn: 'SKU SN',
+    goodsSpecGoodsPrdCodes: 'Prd Codes',
     goodsSpecGoodsImg: 'SKU Picture',
     batchUpdate: 'Batch Setting',
     batchPrice: 'Price',
     batchCost: 'Cost price',
-    batchMarketPrice: 'Market price',
+    batchMarketPrice: 'Market Price',
     batchNum: 'Stock',
+    batchWeight: 'Prd Weight',
     batchImgSrc: 'SKU Picture',
     goodsNumber: 'Goods Stock：',
     goodsNumberTip:
@@ -133,10 +150,11 @@ export const en = {
     goodsGradeMember: 'Membership price：',
     goodsGradeMemberTip:
       'Membership price is only set for grade membership card, non-grade membership card can not set membership price.If the grade membership card also contains member discount, then member price and member discount can be enjoyed at the same time',
-    goodsGradeMemberSetting: 'Membership price setting：',
     goodsSpecPrdPrice: 'Goods sku price',
-    goodsPrice: 'Goods price',
-    unifyMemberCardsPrice: 'Unify member card price'
+    unifyMemberCardsPrice: 'Unify member card price',
+    prdPrice: 'Prd price($)',
+    goodsPrice: 'Goods price($)',
+    unifyMemberPrice: 'Unify Member Price'
   },
   stockAndPriceInfoOther: {
     limitBuyNum: 'Minimum purchase quantity：',
@@ -149,7 +167,8 @@ export const en = {
     baseSale: 'Initial sales：',
     baseSaleSetting:
       'After setting, the sales volume seen by your user = initial sales volume + order quantity, the initial sales volume is not counted into the statistics.',
-    goodsPrdSn: 'Goods SKU SN：'
+    goodsPrdSn: 'Goods SKU SN：',
+    prdCodes: 'Prd Codes：'
   },
   deliverAndOtherInfo: {
     title: 'Deliver info',
@@ -198,7 +217,8 @@ export const en = {
     saleOnTime: 'Custom sale time',
     saleTimeNotNll: 'sale Time can not be null',
     saleTimeCanNotBeBefore: 'sale Time can not be before now',
-    notSale: 'Not sale'
+    notSale: 'Not sale',
+    chooseSaleTime: 'Choose sale time'
   },
   goodsDetail: {
     goodsDetailTitle: 'Goods info',
@@ -258,6 +278,19 @@ export const en = {
     shareGoodsDocTip: 'Please enter no more than 15 words',
     shareGoodsImg: 'Share poster',
     shareGoodsImgRadio1: 'Goods main picture',
-    shareGoodsImgRadio2: 'Customer picture'
+    shareGoodsImgRadio2: 'Customer picture',
+    goodsLive: 'Goods Live:',
+    goodsLiveTipInfo: 'Live info will be posted on goods detail info page after adding it',
+    selectLiveRoomInfo: 'Select Living Room',
+    addLiveRoomInfo: 'add living room',
+    liveRoomName: 'Living Name',
+    liveStatus: 'Living Status',
+    onLiving: 'on living',
+    liveNotStart: 'not start',
+    liveEnd: 'end',
+    livePausing: 'pausing',
+    liveStartTime: 'Living start time',
+    liveEndTime: 'Living end time',
+    selectLiveInfoWarning: 'Please select live info'
   }
 }

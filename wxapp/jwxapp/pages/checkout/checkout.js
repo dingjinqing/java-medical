@@ -61,7 +61,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     let goods = []
-    let { goodsList, activityType, activityId, recordId, preSaleInfo=null, addressId } = options
+    let { goodsList, activityType, activityId, recordId, preSaleInfo = null, roomId = null, inviteId = null, addressId} = options
     console.log(options)
     wx.setStorage({
       data: options,
@@ -93,7 +93,10 @@ global.wxPage({
       'params.isCart': goods[0].isCart, //购物车来源|商品详情
       'params.activityType': activityType,
       'params.activityId': activityId,
-      'params.recordId': recordId
+      'params.recordId': recordId,
+      'params.roomId':roomId,
+      preSaleInfo,
+      inviteId
     })
     if (options.groupid) {
       this.setData({
@@ -122,7 +125,9 @@ global.wxPage({
         } else {
           util.showModal('提示', res.message, function () {
             let pages = getCurrentPages()
-            if (pages.length > 1) {
+            if (res.error == 147012 && res.content) {
+              util.jumpLink(res.content)
+            } else if (pages.length > 1) {
               wx.navigateBack()
             } else {
               util.jumpLink('/pages/index/index', 'reLaunch')
@@ -604,8 +609,6 @@ global.wxPage({
       })
       return false
     }
-    console.log(this.data.orderInfo.must)
-    console.log(this.data.must)
     let mustTips = ''
     if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeCid && !this.data.must.consigneeCid) mustTips = '收货人身份证为必填项，请输入'
     if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeRealName && !this.data.must.consigneeRealName) mustTips = '收货人姓名为必填项，请输入'
@@ -616,6 +619,11 @@ global.wxPage({
       util.showModal('提示',mustTips)
       return false
     }
+    if(this.data.orderInfo.term && this.data.orderInfo.term.serviceTerms === 1 && this.data.orderInfo.term.serviceChoose === 0){
+      util.showModal('提示',`请同意${this.data.orderInfo.term.serviceName}后再试`)
+      return false
+    }
+
     return true
   },
   // 关闭弹窗
@@ -668,6 +676,8 @@ global.wxPage({
       } else if (addParams.insteadPayNum) {
         delete addParams.insteadPayNum
       }
+      if (this.data.params.roomId) addParams.roomId = Number(this.data.params.roomId)
+      if (this.data.inviteId) addParams.inviteId = Number(this.data.inviteId)
       console.log(addParams)
       let params = {
         goods,
@@ -815,6 +825,14 @@ global.wxPage({
     },{score:0,money:0})
     this.setData({scoreRedeemData})
     console.log(this.data.scoreRedeemData)
+  },
+  changeTerm(){
+    this.setData({
+      'orderInfo.term.serviceChoose' : this.data.orderInfo.term.serviceChoose ? 0 : 1
+    })
+  },
+  goService(){
+    util.jumpToWeb('/wxapp/checkout/services')
   },
   viewPreSaleRule(){
     this.setData({

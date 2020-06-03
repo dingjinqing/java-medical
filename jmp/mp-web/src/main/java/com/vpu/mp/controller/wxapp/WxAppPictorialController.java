@@ -205,6 +205,7 @@ public class WxAppPictorialController extends WxAppBaseController  {
     private JsonResult getActivityPictorialInfo(GoodsShareBaseParam param) {
         WxAppSessionUser user = wxAppAuth.user();
         param.setUserId(user.getUserId());
+        param.setUserName(user.getUsername());
         GoodsPictorialInfo activityPictorialInfo = shop().pictorialIntegrationService.getActivityPictorialInfo(param);
         Byte code = activityPictorialInfo.getPictorialCode();
         if (PictorialConstant.ACTIVITY_DELETED.equals(code)) {

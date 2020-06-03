@@ -54,3 +54,8 @@ export default {
   align-items: center;
 }
 </style>
+<style>
+.el-date-range-picker {
+  z-index: 100 !important;
+}
+</style>

@@ -1,28 +1,85 @@
 package com.vpu.mp.service.shop.member.dao;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.google.common.collect.Lists;
+
+import static com.vpu.mp.db.shop.Tables.GRADE_PRD;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
+import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
+import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
+
+import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.UserCardRecord;
+import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
+import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
+import com.vpu.mp.db.shop.tables.records.CardUpgradeRecord;
+import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.Tables;
-import com.vpu.mp.db.shop.tables.records.*;
+
+import org.jooq.impl.DSL;
+import org.jooq.Record;
+import org.jooq.Record2;
+import org.jooq.Condition;
+import org.jooq.Select;
+import org.jooq.SelectSelectStep;
+import org.jooq.SelectSeekStep3;
+import org.jooq.SelectConditionStep;
+import org.jooq.AggregateFunction;
+import org.jooq.SelectJoinStep;
+
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.AVAILABLE_IN_STORE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_ALL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_STOP;
+
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.CardUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.*;
+
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+
+
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardVo;
 import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
-import com.vpu.mp.service.pojo.shop.member.card.*;
+import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
+import com.vpu.mp.service.pojo.shop.member.card.EffectTimeBean;
+import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
+import com.vpu.mp.service.pojo.shop.member.card.CardBgBean;
+import com.vpu.mp.service.pojo.shop.member.card.EffectTimeParam;
+import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
+import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
+
 import com.vpu.mp.service.shop.card.CardFreeShipService;
 import com.vpu.mp.service.shop.member.UserCardService;
-import lombok.extern.slf4j.Slf4j;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.collect.Lists;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.*;
-import org.jooq.impl.DSL;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,20 +88,14 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
-import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
 * @author 黄壮壮
 * @Date: 2019年10月10日
 * @Description:
 */
-@Slf4j
+
 @Service
 public class UserCardDaoService extends ShopBaseService{
 	public final static Byte CARD_ONLINE = 0;
@@ -175,7 +226,7 @@ public class UserCardDaoService extends ShopBaseService{
             .collect(toList());
         // 设置会员卡有效时间
         result.forEach(this::setCardEffectTime);
-        log.debug("用户【{}】在门店【{}】的有效会员卡列表：{}", userId, storeId, result);
+        logger().debug("用户【{}】在门店【{}】的有效会员卡列表：{}", userId, storeId, result);
         return result;
     }
 
@@ -279,7 +330,7 @@ public class UserCardDaoService extends ShopBaseService{
 
         return selectValidCardSQL()
 			.where(USER_CARD.USER_ID.eq(userId))
-			.and(USER_CARD.FLAG.eq(MCARD_DF_NO))
+			.and(USER_CARD.FLAG.in(CardConstant.UCARD_FG_USING,CardConstant.UCARD_FG_GIVING))
 			.and(
 					(USER_CARD.EXPIRE_TIME.isNull())
 					.or(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
@@ -448,7 +499,7 @@ public class UserCardDaoService extends ShopBaseService{
 				.leftJoin(MEMBER_CARD)
 				.on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
 				.where(USER_CARD.USER_ID.eq(param.getUserId()))
-				.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+				.and(USER_CARD.FLAG.notEqual(CardConstant.UCARD_FG_STOP))
 				.orderBy(MEMBER_CARD.GRADE.desc(),USER_CARD.IS_DEFAULT.desc(),USER_CARD.CREATE_TIME.desc());
         return getPageResult(select, param.getCurrentPage(), param.getPageRows(), WxAppUserCardVo.class);
     }
@@ -740,6 +791,70 @@ public class UserCardDaoService extends ShopBaseService{
 		return condition;
 	}
 	
+	/**
+	 * 	更新用户卡为停止使用
+	 */
+	public int updateUserCardFlag(DefaultCardParam param) {
+		logger().info("更新用户卡为停止使用");
+		return db().update(USER_CARD)
+			.set(USER_CARD.FLAG,CardConstant.UCARD_FG_STOP)
+			.where(USER_CARD.USER_ID.eq(param.getUserId()))
+			.and(USER_CARD.CARD_NO.eq(param.getCardNo()))
+			.execute();
+	}
+	/**
+	 * 	获取已经领取该卡的用户数量
+	 * @param cardId 卡ID
+	 */
+	public int getCardNum(Integer cardId) {
 	
+		logger().info("查询领取该卡的用户数量");
+		return getSelectRecieveCardSql(cardId,true)
+					.orderBy(DSL.max(USER_CARD.CREATE_TIME).desc())
+					.fetchOne(0, int.class);
+	}
+
+	/**
+	 *	 查询该卡被领取的数量
+	 */
+	public int getCardUserList(Integer cardId) {
+		logger().info("查询该卡被领取的数量");
+		return getSelectRecieveCardSql(cardId).fetchOne(0, int.class);
+	}
 	
+	/**
+	 * 	查询可以该卡可以正常使用的数量
+	 */
+	public int getCanUseCardNum(Integer cardId,boolean isNeedActive) {
+		logger().info("查询可以该卡可以正常使用的数量");
+		Condition condition = DSL.noCondition().and(USER_CARD.FLAG.eq(CardConstant.UCARD_FG_USING));
+		if(isNeedActive) {
+			// 卡只有激活后才能正常使用
+			condition = condition.and(USER_CARD.ACTIVATION_TIME.isNotNull());
+		}
+		return getSelectRecieveCardSql(cardId)
+					.and(condition)
+					.fetchOne(0, int.class);
+	}
+	
+	/**
+	 * 	查询已经发送出去的卡Sql
+	 */
+	private SelectConditionStep<Record2<Integer, Timestamp>> getSelectRecieveCardSql(Integer cardId){
+		return getSelectRecieveCardSql(cardId,false);
+	}
+	private SelectConditionStep<Record2<Integer, Timestamp>> getSelectRecieveCardSql(Integer cardId,boolean isDistinctUserId) {
+		Select<?> subQuery = db().select(DSL.max(CARD_EXAMINE.ID).as(CARD_EXAMINE.ID),CARD_EXAMINE.CARD_NO).from(CARD_EXAMINE).groupBy(CARD_EXAMINE.CARD_NO);
+		
+		AggregateFunction<Integer> count = DSL.count();
+		if(isDistinctUserId) {
+			count = DSL.countDistinct(USER_CARD.USER_ID);
+		}		
+		SelectConditionStep<Record2<Integer, Timestamp>> query = db().select(count,DSL.max(USER_CARD.CREATE_TIME)).from(USER_CARD)
+			.leftJoin(subQuery.asTable("a")).on(DSL.field("a.card_no").eq(USER_CARD.CARD_NO))
+			.leftJoin(CARD_EXAMINE.asTable("b")).on(DSL.field("b.id").eq(DSL.field("a.id")))
+			.leftJoin(USER).on(USER.USER_ID.eq(USER_CARD.USER_ID))
+			.where(USER_CARD.CARD_ID.eq(cardId));
+		return query;
+	}
 }

@@ -10,6 +10,10 @@
     </view>
   </block>
   <block wx:else>
+    <view class="coupon-package-tips" wx:if="{{couponPackage}}" bindtap="viewCouponPackage">
+      领券最高减价{{couponPackage.maxReduce}}元
+      <view class="get-coupon">领券 <image src="{{imageUrl}}image/wxapp/right_into_color.png"></image></view>
+    </view>
     <!-- 普通商品 -->
     <view class='normal_goods_container putong'>
       <view class='enen' wx:for='{{cartGoodsList}}' wx:key='key'>
@@ -48,7 +52,7 @@
                   <view class='member_icon' wx:if="{{item.isMember == 1}}">会员价</view>
                   <view class='reduce_icon' wx:if="{{item.isReduce == 1}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>限时降价</view>
                   <view class='reduce_icon' wx:if="{{item.isFirstOrder == 1}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>首单特惠</view>
-                  <view class='goods_prices' style='color:{{comColor}}'>￥<text>{{item.goodsPrice}}</text></view>
+                  <view class='goods_prices' style='color:{{comColor}}'>￥<text>{{item.prdPrice}}</text></view>
                 </view>
                 <view class='ng_number clearfix'>
                   <view class="btn_jian {{item.limitMinStyle == 1 ? 'not_tap' : ''}}" bindtap="goodsNumChange" data-activity_type="{{item.activityType}}" data-activity_id="{{item.activityId}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-item="{{item}}" data-type="minus">-</view>
@@ -122,7 +126,7 @@
                   <view class='member_icon' wx:if="{{item2.isMember == 1}}">会员价</view>
                   <view class='reduce_icon' wx:if="{{item2.isReduce == 1}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>限时降价</view>
                   <view class='reduce_icon' wx:if="{{item2.isFirstOrder == 1}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>首单特惠</view>
-                  <view class='goods_prices' style='color:{{comColor}}'>￥<text>{{item2.goodsPrice}}</text></view>
+                  <view class='goods_prices' style='color:{{comColor}}'>￥<text>{{item2.prdPrice}}</text></view>
                 </view>
                 <view class='ng_number clearfix'>
                   <view class="btn_jian {{item2.limitMinStyle == 1 ? 'not_tap' : ''}}" bindtap="goodsNumChange" data-activity_type="{{item2.activityType}}" data-activity_id="{{item2.activityId}}" data-cart_id="{{item2.cartId}}" data-prd_id="{{item2.productId}}" data-cart_number="{{item2.cartNumber}}" data-item="{{item2}}" data-type="minus">-</view>
@@ -204,7 +208,7 @@
                   <view class='member_icon' wx:if="{{item4.isMember == 1}}">会员价</view>
                   <view class='reduce_icon' wx:if="{{item4.isReduce == 1}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>限时降价</view>
                   <view class='reduce_icon' wx:if="{{item4.isFirstOrder == 1}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>首单特惠</view>
-                  <view class='goods_prices' style='color:{{comColor}}'>￥<text>{{item4.goodsPrice}}</text></view>
+                  <view class='goods_prices' style='color:{{comColor}}'>￥<text>{{item4.prdPrice}}</text></view>
                 </view>
                 <view class='ng_number clearfix'>
                   <!-- <view class='btn_jian' data-act='{{1}}' data-act_in='{{item3.identity_id}}' catchtap='btn_del_each' data-indexs="{{index4}}" style='background:{{item4.is_less == 1?"#f5f5f5":"#fff"}};color:{{item4.is_less == 1?"#ccc":"#666"}}'>-</view>
@@ -246,7 +250,7 @@
             <view class='cga_specs' wx:if="{{item4.prdDesc}}">{{item4.prdDesc}}</view>
             <view class='cga_price_info'>
               <view class='cga_rice'>
-                <view class='cga_market' style='color:{{comColor}}'>￥{{item4.goodsPrice}}</view>
+                <view class='cga_market' style='color:{{comColor}}'>￥{{item4.prdPrice}}</view>
               </view>
               <view class='cga_nums'>X{{item4.cartNumber}}</view>
             </view>
@@ -267,7 +271,7 @@
           <view class="btn_check" style="width:60rpx;margin-right:10rpx;"><view class="shixiao_icon">失效</view></view>
           <view class='n_goods_info' style="margin-right:18rpx;">
             <view class='ng_left' bindtap='to_goods' data-goods_id='{{item.goodsId}}' data-tips='{{item.tip}}'>
-              <image src='{{item.goods_img}}'></image>
+              <image src='{{item.goodsImg}}'></image>
               <view class='no_click_tips' wx:if='{{item.tip}}'>{{item.tip}}</view>
             </view>
             <view class='ng_right'>
@@ -352,4 +356,6 @@
 
 <!-- 推荐商品 -->
 <v-recommend id="recommend" pageName="item" />
+<!-- 优惠券礼包弹窗 -->
+<v-coupon-package-dialog show="{{showCouponPackageDialog}}" coupon-package-list="{{couponPackage.packList}}" />
 <include src="../common/footer.wxml" />

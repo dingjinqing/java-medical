@@ -1314,6 +1314,7 @@ public class GroupDrawService extends ShopBaseService {
 				.fetchOneInto(BigDecimal.class);
 	}
     
+	
 	/**
 	 * 获取抽奖码数量
 	 * @param groupDrawId

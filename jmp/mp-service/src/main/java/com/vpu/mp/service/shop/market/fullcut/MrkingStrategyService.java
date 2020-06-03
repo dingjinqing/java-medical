@@ -6,7 +6,6 @@ import com.vpu.mp.db.shop.tables.records.MrkingStrategyRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -223,6 +222,18 @@ public class MrkingStrategyService extends ShopBaseService {
             return vo;
         }
 
+        //Conditions
+        List<MrkingStrategyCondition> conditions = getMrkingStrategyCondition(param.getStrategyId());
+        vo.setCondition(conditions);
+        vo.setType(MrkingStrategyAct.getType());
+
+        //根据购物车里的商品计算底边条的提醒文案
+        WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION,param.getStrategyId());
+        vo.setFullPriceDoc(getStrategyGoodsDoc(cartBo,MrkingStrategyAct.getType(),conditions));
+        vo.setTotalPrice(cartBo.getCartGoodsList().stream().map(
+            wxAppCartGoods -> wxAppCartGoods.getPrdPrice().multiply(BigDecimal.valueOf(wxAppCartGoods.getCartNumber()))
+        ).reduce(BigDecimal.ZERO, BigDecimal::add));
+
         if(StringUtil.isNotEmpty(MrkingStrategyAct.getCardId())){
             //设置了持有会员卡才可以参与活动
             List<Integer> cardIds = Util.splitValueToList(MrkingStrategyAct.getCardId());
@@ -241,7 +252,7 @@ public class MrkingStrategyService extends ShopBaseService {
         if (MrkingStrategyAct.getActType().equals(ACT_TYPE_SECTION)) {
             List<Integer> inGoodsIds = getMrkingStrategyGoodsIds(MrkingStrategyAct);
             List<Integer> userExclusiveGoodsIds = goodsCardCoupleService.getGoodsUserNotExclusive(userId);
-            inGoodsIds = Util.diffList(inGoodsIds,userExclusiveGoodsIds);
+            inGoodsIds.removeAll(userExclusiveGoodsIds);
             goodsPageResult = getGoods(inGoodsIds,Collections.emptyList(),param.getSearch(),param.getCurrentPage(),param.getPageRows());
         }else {
             List<Integer> notInGoodsIds = goodsCardCoupleService.getGoodsUserNotExclusive(userId);
@@ -262,20 +273,10 @@ public class MrkingStrategyService extends ShopBaseService {
             goods.setGoodsPrice(goodsPriceBo.getGoodsPrice());
             goods.setMaxPrice(goodsPriceBo.getMaxPrice());
             goods.setMarketPrice(goodsPriceBo.getMaxPrice());
+
+            goods.setCartGoodsNumber(cartBo.getCartGoodsList().stream().filter(cartGoods->cartGoods.getGoodsId().equals(goods.getGoodsId())).mapToInt(WxAppCartGoods::getCartNumber).sum());
         });
         vo.setGoods(goodsPageResult);
-
-        //Conditions
-        List<MrkingStrategyCondition> conditions = getMrkingStrategyCondition(param.getStrategyId());
-        vo.setCondition(conditions);
-        vo.setType(MrkingStrategyAct.getType());
-
-        //根据购物车里的商品计算底边条的提醒文案
-        WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION,param.getStrategyId());
-        vo.setFullPriceDoc(getStrategyGoodsDoc(cartBo,MrkingStrategyAct.getType(),conditions));
-        vo.setTotalPrice(cartBo.getCartGoodsList().stream().map(
-            wxAppCartGoods -> wxAppCartGoods.getPrdPrice().multiply(BigDecimal.valueOf(wxAppCartGoods.getCartNumber()))
-        ).reduce(BigDecimal.ZERO, BigDecimal::add));
 
         return vo;
     }
@@ -314,7 +315,7 @@ public class MrkingStrategyService extends ShopBaseService {
      */
     private PageResult<MrkingStrategyGoodsListVo.Goods> getGoods(List<Integer> inGoodsIds,List<Integer> notInGoodsIds,String search,Integer currentPage,Integer pageRows){
         Byte soldOutGoods = shopCommonConfigService.getSoldOutGoods();
-        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE,GOODS.IS_DEFAULT_PRODUCT).from(GOODS);
+        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE, GOODS.CAT_ID, GOODS.GOODS_TYPE, GOODS.SORT_ID, GOODS.IS_CARD_EXCLUSIVE, GOODS.IS_DEFAULT_PRODUCT, GOODS.GOODS_NUMBER).from(GOODS);
         select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         select.where(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
         if(!NumberUtils.BYTE_ONE.equals(soldOutGoods)){
@@ -505,6 +506,11 @@ public class MrkingStrategyService extends ShopBaseService {
         }
 
         return doc;
+    }
+
+    public List<WxAppCartGoods> getWxAppCheckedGoodsList(MrkingStrategyGoodsListParam param,Integer userId){
+        WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION,param.getStrategyId());
+        return cartBo.getCartGoodsList();
     }
 
 

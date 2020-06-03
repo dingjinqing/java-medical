@@ -4,8 +4,8 @@
 package com.vpu.mp.db.shop;
 
 
-import com.vpu.mp.db.shop.tables.GroupBuyDefine;
-import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
+import com.vpu.mp.db.shop.tables.VirtualOrder;
+import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
 
 import javax.annotation.Generated;
 
@@ -16,7 +16,7 @@ import org.jooq.impl.Internal;
 
 /**
  * A class modelling foreign key relationships and constraints of tables of 
- * the <code>mini_shop_4748160</code> schema.
+ * the <code>mini_shop_471752</code> schema.
  */
 @Generated(
     value = {
@@ -32,13 +32,13 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
-    public static final Identity<GroupBuyDefineRecord, Integer> IDENTITY_GROUP_BUY_DEFINE = Identities0.IDENTITY_GROUP_BUY_DEFINE;
+    public static final Identity<VirtualOrderRecord, Integer> IDENTITY_VIRTUAL_ORDER = Identities0.IDENTITY_VIRTUAL_ORDER;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<GroupBuyDefineRecord> KEY_B2C_GROUP_BUY_DEFINE_PRIMARY = UniqueKeys0.KEY_B2C_GROUP_BUY_DEFINE_PRIMARY;
+    public static final UniqueKey<VirtualOrderRecord> KEY_B2C_VIRTUAL_ORDER_PRIMARY = UniqueKeys0.KEY_B2C_VIRTUAL_ORDER_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -50,10 +50,10 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
-        public static Identity<GroupBuyDefineRecord, Integer> IDENTITY_GROUP_BUY_DEFINE = Internal.createIdentity(GroupBuyDefine.GROUP_BUY_DEFINE, GroupBuyDefine.GROUP_BUY_DEFINE.ID);
+        public static Identity<VirtualOrderRecord, Integer> IDENTITY_VIRTUAL_ORDER = Internal.createIdentity(VirtualOrder.VIRTUAL_ORDER, VirtualOrder.VIRTUAL_ORDER.ORDER_ID);
     }
 
     private static class UniqueKeys0 {
-        public static final UniqueKey<GroupBuyDefineRecord> KEY_B2C_GROUP_BUY_DEFINE_PRIMARY = Internal.createUniqueKey(GroupBuyDefine.GROUP_BUY_DEFINE, "KEY_b2c_group_buy_define_PRIMARY", GroupBuyDefine.GROUP_BUY_DEFINE.ID);
+        public static final UniqueKey<VirtualOrderRecord> KEY_B2C_VIRTUAL_ORDER_PRIMARY = Internal.createUniqueKey(VirtualOrder.VIRTUAL_ORDER, "KEY_b2c_virtual_order_PRIMARY", VirtualOrder.VIRTUAL_ORDER.ORDER_ID);
     }
 }

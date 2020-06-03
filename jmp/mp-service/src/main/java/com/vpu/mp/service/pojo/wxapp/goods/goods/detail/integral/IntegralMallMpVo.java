@@ -21,6 +21,8 @@ public class IntegralMallMpVo extends GoodsActivityDetailMp {
     private Integer redeemNum;
     /**当前用户最大可兑换数量*/
     private Integer maxExchangeNum;
+    /**活动总库存*/
+    private Integer stock;
     /**
      * 积分兑换活动商品规格信息
      */

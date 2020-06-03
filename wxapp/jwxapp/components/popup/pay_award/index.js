@@ -84,7 +84,7 @@ global.wxComponent({
       if(this.data.giftInfo.giftType === 3){
         this.goLottery()
       } else if(this.data.giftInfo.giftType === 2){
-        this.shareCoupon()
+        this.goCouponList()
       } else {
         this.bindClose()
       }
@@ -100,9 +100,6 @@ global.wxComponent({
     },
     goLottery(){
       util.jumpLink(`pages1/lottery/lottery?lotteryId=${this.data.giftInfo.awardInfo.lotteryId}&lotterySource=${this.data.popupName === '开屏有礼' ? 1 : 2}`,'navigateTo')
-    },
-    shareCoupon(){
-      this.triggerEvent('TODO')
     }
   }
 });

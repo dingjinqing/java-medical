@@ -51,6 +51,8 @@ public enum RemarkTemplate {
 	ORDER_VIRTUAL_RETURN_DEFAULT(2015,RemarkMessage.MSG_ORDER_VIRTUAL_RETURN_DEFAULT),
     /**	订单完成送积分	*/
     ORDER_FINISH_SEND_SCORE(2016,RemarkMessage.MSG_ORDER_FINISH_SEND_SCORE),
+    /**	订单完成返利	*/
+    ORDER_REBATE(2017,RemarkMessage.MSG_ORDER_REBATE),
 
 
     /**
@@ -68,8 +70,10 @@ public enum RemarkTemplate {
 	OPEN_CARD_SEND(3005,RemarkMessage.OPEN_CARD_SEND),
 	/**	系统检测升级 */
 	SYSTEM_UPGRADE(3006,RemarkMessage.SYSTEM_UPGRADE),
-
-
+    /**	会员卡续费 */
+    CARD_RENEW(3007,RemarkMessage.CARD_RENEW),
+    /**	会员卡续费:  {订单号} */
+    CARD_RENEW_ORDER(3008,RemarkMessage.CARD_RENEW_ORDER),
 
 
 	/**

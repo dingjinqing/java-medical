@@ -51,7 +51,6 @@ public class JsonResultMessage {
     public static final String MSG_CODE_ACCOUNT_ID_NOT = "account.id.not";
 	public static final String MSG_CODE_SHOP_EXPIRE = "code.shop.expire";
 
-
     // 图片
 
     public static final String MSG_IMGAE_UPLOAD_FAILED = "image.upload.failed";
@@ -112,6 +111,8 @@ public class JsonResultMessage {
     public static final String GOODS_SPEC_NAME_REPETITION = "goods.spec.name.repetition";
     public static final String GOODS_SPEC_VAL_REPETITION = "goods.spec.val.repetition";
     public static final String GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT="goods.spec.attribute.spec.k.v.conflict";
+    public static final String GOODS_NUM_FETCH_LIMIT_NUM = "goods.num.fetch.limit.num";
+    public static final String GOODS_PRD_CODES_EXIST = "goods.prd.codes.exist";
 
     public static final String GOODS_RECOMMEND_NAME_NOT_NULL = "goods.recommend.name.notNull";
     public static final String GOODS_RECOMMEND_TYPE_NOT_NULL = "goods.recommend.type.notNull";
@@ -146,6 +147,8 @@ public class JsonResultMessage {
     public static final String GOODS_EXPORT_COLUMN_GOODS_WEIGHT = "goods.export.column.goods_weight";
     public static final String GOODS_EXPORT_COLUMN_UNIT = "goods.export.column.unit";
     public static final String GOODS_EXPORT_COLUMN_GOODS_IMG = "goods.export.column.goods_img";
+    public static final String GOODS_EXPORT_COLUMN_PRD_CODES= "goods.export.column.prd_codes";
+    public static final String GOODS_EXPORT_COLUMN_IMG_URL= "goods.export.column.img_url";
 
     /**
      * 商品评价
@@ -391,6 +394,11 @@ public class JsonResultMessage {
     public static final String MESSAGE_TEMPLATE_NO_OPEN = "message.template.no.open";
 
     /**
+     * 营销--打包一口价
+     */
+    public static final String PACKAGE_SALE_RULE_CHANGED = "package.sale.rules.changed";
+
+    /**
      * 文章_分类
      */
     public static final String ARTICLE_CATEGORY_IS_EXIST = "api.code.article_category_is_exist";
@@ -472,6 +480,7 @@ public class JsonResultMessage {
     public static final String CODE_WX_LOGISTICS_API_CALL_FAILED = "wx.logistics.api.call.failed";
     public static final String CODE_STORE_PAY_LOWER_SCORE_DOWN_CONFIG = "wx.store.pay.lower.score.down.config";
     public static final String CODE_STORE_PAY_HIGHER_SCORE_UP_CONFIG = "wx.store.pay.higher.score.up.config";
+    public static final String MSF_STORE_NEED_HAVE = "store.need.have";
 
     /**
      * 门店技师管理
@@ -612,7 +621,8 @@ public class JsonResultMessage {
     public static final String CODE_EXCEL_NUM_MAX = "code.excel.num.max";
     public static final String CODE_EXCEL_NUM_MIN = "code.excel.num.min";
     public static final String CODE_EXCEL_HAVE_SAME = "code.excel.have.same";
-
+    public static final String CODE_CARD_RECEIVE_VALIDLINK = "code.card.receive.validlink";
+    public static final String CODE_CARD_RECEIVE_BYSELF = "code.card.receive.byself";
     /**
      *  会员列表导出
      */
@@ -1149,6 +1159,8 @@ public class JsonResultMessage {
     public static final String GOODS_EXCEL_UPLOAD_UPYUN_WRONG = "goods.excel.upload.upyun.wrong";
     public static final String GOODS_EXCEL_IMPORT_NUM_OUT_OF_SIZE = "goods.excel.import.num.out.of.size";
 
+
+
     /**
      * 优惠券礼包订单导出
      */
@@ -1171,4 +1183,9 @@ public class JsonResultMessage {
     public static final String VIRTUAL_ORDER_COUPON_PACK_RETURN_CARD_BALANCE = "virtual.order.coupon_pack.return_card_balance";
     public static final String VIRTUAL_ORDER_COUPON_PACK_REFUNDED = "virtual.order.coupon_pack.refunded";
     public static final String VIRTUAL_ORDER_COUPON_PACK_PAYMENT_SUCCESSFUL = "virtual.order.coupon_pack.payment_successful";
+
+    /**
+     * 营销-限时降价订单excel导出
+     */
+    public static final String REDUCE_PRICE_ORDER_LIST_FILENAME = "reduceprice.order.list.file_name";
 }

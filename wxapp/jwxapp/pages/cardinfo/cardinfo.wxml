@@ -1,11 +1,11 @@
 <view class="body">
 	<include src="../common/header.wxml" />
 	<view class="main-container" wx:if="{{cardInfo}}">
-    <view class="merchant_message" wx:if="{{cardInfo.cardVerifyStatus===3 && cardInfo.activationTime===null && cardInfo.activation===1}}">
-      <text>商家未通过您的激活申请</text>
-      <text v-if="cardInfo.isExamine.refuseDesc">
+		<view class="merchant_message" wx:if="{{cardInfo.cardVerifyStatus===3 && cardInfo.activationTime===null && cardInfo.activation===1}}">
+			<text>商家未通过您的激活申请</text>
+			<text v-if="cardInfo.isExamine.refuseDesc">
         驳回原因:{{cardInfo.isExamine.refuseDesc}}</text>
-    </view>
+		</view>
 		<view class="card_surface_details" style="{{cardInfo.cardBgStyle}}">
 			<view class="card_type">{{cardInfo.cardTypeName}}</view>
 			<view class="card_info">
@@ -17,8 +17,8 @@
 						</view>
 						<view class="card_exp">
 							<text wx:if="{{cardInfo.expireType == 0}}">
-              有效期：{{cardInfo.cardExpireTime}}
-            </text>
+                				有效期：{{cardInfo.cardExpireTime}}
+              				</text>
 							<text wx:elif="{{cardInfo.expireType == 1}}">有效期：{{cardInfo.startDate}} 至 {{cardInfo.endDate}}</text>
 							<text wx:elif="{{cardInfo.expireType == 2}}">永久有效</text>
 						</view>
@@ -27,26 +27,35 @@
 				<view class="card_surface_bottom">
 					<view class="surface_bottom_left">
 						<view class="surface_bottom_item">
-							<view wx:if="{{cardInfo.cardType === 0 && cardInfo.chargeMoney && cardInfo.money>=0}}">余额：￥{{cardInfo.money}}</view>
+							<view wx:if="{{cardInfo.cardType === 0 && cardInfo.chargeMoney && cardInfo.money>=0 && cardInfo.cardNo}}">余额：￥{{cardInfo.money}}</view>
 							<block wx:if="{{cardInfo.cardType === 1}}">
 								<view wx:if="{{cardInfo.exchangSurplus}}">剩余可兑换商品数量：{{cardInfo.exchangSurplus}} (运费以实际结算价为准)</view>
 								<view wx:if="{{cardInfo.surplus}}">剩余可使用服务次数：{{cardInfo.surplus}}</view>
 							</block>
 						</view>
 					</view>
-					<view class="surface_bottom_right" wx:if="{{!cardInfo.cardStopImg}}">
+					<view class="surface_bottom_right" wx:if="{{!cardInfo.cardStopImg&&cardInfo.userCardFlag != 3}}">
 						<!-- ￥10000 -->
 						<image
-						 mode="widthFix"
 						 wx:if="{{cardInfo.cardNo !== null}}"
+						 mode="widthFix"
 						 class="qrcode"
 						 bindtap="showQrCode"
 						 src="{{imageUrl}}image/wxapp/erweima1.png"
 						/>
 					</view>
+					<view class="card-price" wx:if="{{!cardInfo.cardNo && cardInfo.cardPrice}}">
+						<text>{{cardInfo.cardPrice.realPrice}}</text>
+						<text class="line-price" wx:if="{{cardInfo.cardPrice.linePrice}}"/>
+
+
+					</view>
 				</view>
 				<view class="card_status" wx:if="{{cardInfo.cardStopImg}}">
 					<image mode="widthFix" src="{{cardInfo.cardStopImg}}" />
+				</view>
+				<view class="card_status" wx:elif="{{cardInfo.userCardFlag == 3}}">
+					<image mode="widthFix" src="{{imageUrl}}/image/wxapp/card_rebate.png?v=1" />
 				</view>
 			</view>
 		</view>
@@ -69,314 +78,391 @@
 		<view class="card_item_content" wx:if="{{cardInfo.nextGradeCard && cardInfo.nextGradeCard.gradeConditionJson.gradeScore || cardInfo.nextGradeCard.gradeConditionJson.gradeMoney}}">
 			<view class="grade-content-desc">
 				<view class="compare-card-name">
-					<text class="current-card">{{cardInfo.cardName}}</text>
-					<view class="next-card">
-						<view>
-							<text>{{cardInfo.nextGradeCard.cardName}}</text>
-							<image src="{{imageUrl}}image/wxapp/path.png" />
+					<text class="current-card">{{cardInfo.cardName}}
+</text>
+						<view class="next-card">
+							<view>
+								<text>{{cardInfo.nextGradeCard.cardName}}</text>
+								<image src="{{imageUrl}}image/wxapp/path.png" />
+							</view>
+							<text>{{cardInfo.nextGradeCard.gradeConditionJson.gradeScore || cardInfo.nextGradeCard.gradeConditionJson.gradeMoney}}{{unit}}</text>
 						</view>
-						<text>{{cardInfo.nextGradeCard.gradeConditionJson.gradeScore || cardInfo.nextGradeCard.gradeConditionJson.gradeMoney}}{{unit}}</text>
+					</view>
+					<view class="progress-view">
+						<progress percent="{{percentage}}" activeColor="#d0b27c" backgroundColor="#f5ecda" />
+					</view>
+					<view class="current-condition">{{currentCondition}}{{unit}}</view>
+					<view class="upgrade-condition">
+						<text>升级条件：</text>
+						<text class="condition-info">{{JSON.parse(cardInfo.gradeCondition).gradeScore}}累积积分达到{{cardInfo.nextGradeCard.gradeConditionJson.gradeScore}}分</text>
+						<text class="condition-info">累积消费金额达到{{cardInfo.nextGradeCard.gradeConditionJson.gradeMoney}}元（仅包含微信、余额支付）</text>
 					</view>
 				</view>
-				<view class="progress-view">
-					<progress percent="{{percentage}}" activeColor="#d0b27c" backgroundColor="#f5ecda" />
-				</view>
-				<view class="current-condition">{{currentCondition}}{{unit}}</view>
-				<view class="upgrade-condition">
-					<text>升级条件：</text>
-					<text class="condition-info">{{JSON.parse(cardInfo.gradeCondition).gradeScore}}累积积分达到{{cardInfo.nextGradeCard.gradeConditionJson.gradeScore}}分</text>
-					<text class="condition-info">累积消费金额达到{{cardInfo.nextGradeCard.gradeConditionJson.gradeMoney}}元（仅包含微信、余额支付）</text>
-				</view>
 			</view>
-		</view>
-		<!-- 会员权益折扣 -->
-		<view class="card_item_title" wx:if="{{cardInfo.discount}}">
-			<view class="item_title_left">
-				<image mode="widthFix" src="{{imageUrl}}image/wxapp/discount.png" />
-			</view>
-			<view class="item_title_content">
-				会员权益(折扣)
-			</view>
-			<view class="item_title_right" />
-		</view>
-		<view class="card_item_content" wx:if="{{cardInfo.discount}}">
-			<view class="content_item">
-				{{cardInfo.discountIsAll === 1 ? '全部商品购物打'+cardInfo.discount+'折' : '部分商品购物打'+cardInfo.discount+'折'}}
-			</view>
-		</view>
-		<!-- 会员权益 余额 -->
-		<view class="card_item_title" wx:if="{{cardInfo.chargeMoney}}">
-			<view class="item_title_left">
-				<image mode="widthFix" src="{{imageUrl}}image/wxapp/discount.png" />
-			</view>
-			<view class="item_title_content">
-				会员权益(余额)
-			</view>
-			<view class="item_title_right" />
-		</view>
-		<view class="card_item_content" wx:if="{{cardInfo.chargeMoney}}">
-			<view class="content_item" wx:if="{{cardInfo.sendMoney}}">开卡赠送{{cardInfo.sendMoney}}元</view>
-			<block wx:if="{{cardInfo.chargeMoney && cardInfo.chargeMoney.offsetMoney === 1}}">
-				<view class="content_item">购物每满{{cardInfo.chargeMoney.perMoney}}元赠送{{cardInfo.chargeMoney.perGetMoney}}元</view>
-			</block>
-			<block wx:elif="{{cardInfo.chargeMoney && cardInfo.chargeMoney.offsetMoney === 0}}">
-				<view
-				 class="content_item"
-				 wx:for="{{cardInfo.chargeMoney.money}}"
-				 wx:for-item="moneyItem"
-				 wx:for-index="moneyIndex"
-				 wx:key="moneyIndex"
-				>购物满{{moneyItem}}元,赠送{{cardInfo.chargeMoney.getMoney[moneyIndex]}}元
-				</view>
-			</block>
-		</view>
-		<!-- 会员权益 积分 -->
-		<view class="card_item_title" wx:if="{{cardInfo.buyScore}}">
-			<view class="item_title_left">
-				<image mode="widthFix" src="{{imageUrl}}image/wxapp/score.png" />
-			</view>
-			<view class="item_title_content">
-				会员权益(积分)
-			</view>
-			<view class="item_title_right" />
-		</view>
-		<view class="card_item_content" wx:if="{{cardInfo.buyScore}}">
-			<view class="content_item" wx:if="{{cardInfo.sorce}}">开卡赠送{{cardInfo.sorce}}积分</view>
-			<block wx:if="{{cardInfo.buyScore && cardInfo.buyScore.offset === 1}}">
-				<view class="content_item">购物每满{{cardInfo.buyScore.perGoodsMoney}}元赠送{{cardInfo.buyScore.perGetScores}}积分</view>
-			</block>
-			<block wx:elif="{{cardInfo.buyScore && cardInfo.buyScore.offset === 0}}">
-				<view
-				 class="content_item"
-				 wx:for="{{cardInfo.buyScore.goodsMoney}}"
-				 wx:for-item="scoreItem"
-				 wx:for-index="scoreIndex"
-				 wx:key="scoreIndex"
-				>购物满{{scoreItem}}元,赠送{{cardInfo.buyScore.getScores[scoreIndex]}}积分
-				</view>
-			</block>
-		</view>
-		<!-- 包邮权益（普通卡和等级卡）wx:if="{{cardInfo.freeship_limit>-1}}" -->
-		<view class="card_item_title" wx:if='{{(cardInfo.cardType== 0 || cardInfo.cardType==2) && ((cardInfo.cardNo && cardInfo.freeLimit>=0) || (!cardInfo.cardNo && cardInfo.freeshipLimit>=0))}}'>
-			<view class="item_title_left">
-				<image mode="widthFix" src="{{imageUrl}}image/wxapp/card_free_ship.png" />
-			</view>
-			<view class="item_title_content">
-				会员权益（包邮）
-			</view>
-			<view class="item_title_right" />
-		</view>
-		<view class="card_item_content" wx:if='{{(cardInfo.cardType== 0 || cardInfo.cardType==2) && cardInfo.freeLimit>=0}}'>
-			<view class="content_item">
-				{{cardInfo.freeshipDesc}}
-			</view>
-		</view>
-		<!-- 自定义策略 -->
-		<view
-		 wx:if="{{cardInfo.customRights.customRightsFlag=='on'}}"
-		 wx:for="{{cardInfo.customRights.customRightsAll}}"
-		 wx:key="indexC"
-		 wx:for-index="indexC"
-		 wx:for-item="itemC"
-		>
-			<view class="card_item_title"  data-index="{{indexC}}">
+			<!-- 会员权益折扣 -->
+			<view class="card_item_title" wx:if="{{cardInfo.discount}}">
 				<view class="item_title_left">
-					<image src="{{itemC.crightImage}}" mode='widthFix' />
+					<image mode="widthFix" src="{{imageUrl}}image/wxapp/discount.png" />
 				</view>
 				<view class="item_title_content">
-					{{itemC.crightName}}
+					会员权益(折扣)
+				</view>
+				<view class="item_title_right" />
+			</view>
+			<view class="card_item_content" wx:if="{{cardInfo.discount}}">
+				<view class="content_item">
+					{{cardInfo.discountIsAll === 1 ? '全部商品购物打'+cardInfo.discount+'折' : '部分商品购物打'+cardInfo.discount+'折'}}
 				</view>
 			</view>
-			<view class="card_item_content">
-				<view class="content_item">{{itemC.crightContent}}</view>
+			<!-- 会员权益 余额 -->
+			<view class="card_item_title" wx:if="{{cardInfo.chargeMoney}}">
+				<view class="item_title_left">
+					<image mode="widthFix" src="{{imageUrl}}image/wxapp/discount.png" />
+				</view>
+				<view class="item_title_content">
+					会员权益(余额)
+				</view>
+				<view class="item_title_right" />
 			</view>
-		</view>
-		<!-- 会员专享商品 -->
-		<view class="card_item_title" wx:if="{{cardInfo.powerPayOwnGood === 'on'}}">
-			<view class="item_title_left">
-				<image mode="widthFix" src="{{imageUrl}}image/wxapp/card_info_goods.png" />
+			<view class="card_item_content" wx:if="{{cardInfo.chargeMoney}}">
+				<view class="content_item" wx:if="{{cardInfo.sendMoney}}">开卡赠送{{cardInfo.sendMoney}}元</view>
+				<block wx:if="{{cardInfo.chargeMoney && cardInfo.chargeMoney.offsetMoney === 1}}">
+					<view class="content_item">购物每满{{cardInfo.chargeMoney.perMoney}}元赠送{{cardInfo.chargeMoney.perGetMoney}}元</view>
+				</block>
+				<block wx:elif="{{cardInfo.chargeMoney && cardInfo.chargeMoney.offsetMoney === 0}}">
+					<view
+					 class="content_item"
+					 wx:for="{{cardInfo.chargeMoney.money}}"
+					 wx:for-item="moneyItem"
+					 wx:for-index="moneyIndex"
+					 wx:key="moneyIndex"
+					>购物满{{moneyItem}}元,赠送{{cardInfo.chargeMoney.getMoney[moneyIndex]}}元
+					</view>
+				</block>
 			</view>
-			<view class="item_title_content">
-				会员卡专享商品
+			<!-- 会员权益 积分 -->
+			<view class="card_item_title" wx:if="{{cardInfo.buyScore}}">
+				<view class="item_title_left">
+					<image mode="widthFix" src="{{imageUrl}}image/wxapp/score.png" />
+				</view>
+				<view class="item_title_content">
+					会员权益(积分)
+				</view>
+				<view class="item_title_right" />
 			</view>
-			<view class="item_title_right">
-				查看 >
+			<view class="card_item_content" wx:if="{{cardInfo.buyScore}}">
+				<view class="content_item" wx:if="{{cardInfo.sorce}}">开卡赠送{{cardInfo.sorce}}积分</view>
+				<block wx:if="{{cardInfo.buyScore && cardInfo.buyScore.offset === 1}}">
+					<view class="content_item">购物每满{{cardInfo.buyScore.perGoodsMoney}}元赠送{{cardInfo.buyScore.perGetScores}}积分</view>
+				</block>
+				<block wx:elif="{{cardInfo.buyScore && cardInfo.buyScore.offset === 0}}">
+					<view
+					 class="content_item"
+					 wx:for="{{cardInfo.buyScore.goodsMoney}}"
+					 wx:for-item="scoreItem"
+					 wx:for-index="scoreIndex"
+					 wx:key="scoreIndex"
+					>购物满{{scoreItem}}元,赠送{{cardInfo.buyScore.getScores[scoreIndex]}}积分
+					</view>
+				</block>
 			</view>
-		</view>
-		<!-- 限次卡兑换适用商品 -->
-		<view class="card_item_title" wx:if="{{cardInfo.cardType === 1 && cardInfo.isExchang != 0}}">
-			<view class="item_title_left">
-				<image mode="widthFix" src="{{imageUrl}}image/wxapp/goods_icon.png" />
+			<!-- 包邮权益（普通卡和等级卡）wx:if="{{cardInfo.freeship_limit>-1}}" -->
+			<view class="card_item_title" wx:if='{{(cardInfo.cardType== 0 || cardInfo.cardType==2) && ((cardInfo.cardNo && cardInfo.freeLimit>=0) || (!cardInfo.cardNo && cardInfo.freeshipLimit>=0))}}'>
+				<view class="item_title_left">
+					<image mode="widthFix" src="{{imageUrl}}image/wxapp/card_free_ship.png" />
+				</view>
+				<view class="item_title_content">
+					会员权益（包邮）
+				</view>
+				<view class="item_title_right" />
 			</view>
-			<view class="item_title_content">
-				适用商品
+			<view class="card_item_content" wx:if='{{(cardInfo.cardType== 0 || cardInfo.cardType==2) && cardInfo.freeLimit>=0}}'>
+				<view class="content_item">
+					{{cardInfo.freeshipDesc}}
+				</view>
 			</view>
-			<view class="item_title_right">
-				<view wx:if="{{cardInfo.isExchang === 2}}">全部商品 ></view>
-				<view wx:else>查看 ></view>
-			</view>
-		</view>
-		<view class="card_item_content" wx:if="{{cardInfo.cardType === 1 && cardInfo.isExchang != 0}}">
-
+			<!-- 自定义策略 -->
 			<view
-			 class="content_item goods_item"
-			 wx:for="{{cardInfo.goodsList}}"
-			 wx:for-item="goodsListItem"
-			 wx:for-index="goodsListIndex"
-			 wx:key="goodsListIndex"
+			 wx:if="{{cardInfo.customRights.customRightsFlag=='on'}}"
+			 wx:for="{{cardInfo.customRights.customRightsAll}}"
+			 wx:key="indexC"
+			 wx:for-index="indexC"
+			 wx:for-item="itemC"
 			>
-				<image class="goods_img" src="{{imageUrl}}{{goodsListItem.goodsImg}}" />
-				<view class="goods_right">
-					<view class="goods_name">{{goodsListItem.goodsName}}</view>
-					<view class="goods_price" style="color:{{comColor}}">￥{{goodsListItem.shopPrice}} </view>
+				<view class="card_item_title" data-index="{{indexC}}" bindtap='{{cardInfo.give_away_status == 2 ? "show_rebate" : ""}}'>
+					<view class="item_title_left">
+						<image src="{{itemC.crightImage}}" mode='widthFix' />
+					</view>
+					<view class="item_title_content">
+						{{itemC.crightName}}
+					</view>
+				</view>
+				<view class="card_item_content">
+					<view class="content_item">{{itemC.crightContent}}</view>
+				</view>
+			</view>
+			<!-- 会员专享商品 -->
+			<view class="card_item_title" wx:if="{{cardInfo.powerPayOwnGood === 'on'}}" bindtap='{{cardInfo.give_away_status == 2 ? "show_rebate" : "to_search"}}'>
+				<view class="item_title_left">
+					<image mode="widthFix" src="{{imageUrl}}image/wxapp/card_info_goods.png" />
+				</view>
+				<view class="item_title_content">
+					会员卡专享商品
+				</view>
+				<view class="item_title_right">
+					查看 >
+				</view>
+			</view>
+			<!-- 限次卡兑换适用商品 -->
+			<view class="card_item_title" wx:if="{{cardInfo.cardType === 1 && cardInfo.isExchang != 0}}">
+				<view class="item_title_left">
+					<image mode="widthFix" src="{{imageUrl}}image/wxapp/goods_icon.png" />
+				</view>
+				<view class="item_title_content">
+					兑换商品
+				</view>
+			</view>
+			<view class="card_item_content exchang_goods" wx:if="{{cardInfo.cardType === 1 && cardInfo.isExchang != 0}}">
+				<view class='pro_tips' wx:if='{{cardInfo.periodLimit > 0}}'>
+					<image class="image" src="{{imageUrl}}image/wxapp/icon_warning.png" />
+					<text class="text">提示：{{cardInfo.period_msg1}}</text>
+					<text  class="text" style="float:right">{{cardInfo.period_msg2}}</text>
+				</view>
+				<view
+				 class="content_item goods_item"
+				 wx:for="{{cardInfo.goodsList}}"
+				 wx:for-item="goodsListItem"
+				 wx:for-index="goodsListIndex"
+				 wx:key="goodsListIndex"
+				 data-goods_id="{{goodsListItem.goodsId}}" 
+				 data-is_list="{{cardInfo.goodsList.length < 2 ? 1:2}}"
+				 bindtap='{{cardInfo.give_away_status == 2 ? "show_rebate" : "to_goods"}}'
+				 wx:if='{{goodsListIndex <= 1}}'
+				>
+					<image class="goods_img" src="{{imageUrl}}{{goodsListItem.goodsImg}}" />
+					<view class="goods_right">
+						<view class="goods_name">{{goodsListItem.goodsName}}</view>
+						<view class="goods_price" style="color:{{comColor}}">￥{{goodsListItem.shopPrice}}</view>
+						<text style="color:{{comColor}}" class="dh_limit" wx:if='{{item.limitNum}}'>限制兑换{{item.limitNum}}次</text>
+						<text style="background:{{comColor}}" class="dh_right" wx:if="{{cardInfo.goodsList.length < 2}}">去兑换</text>
+					</view>
+				</view>
+			</view>
+			<view
+			 class="dh_more"
+			 wx:if="{{cardInfo.goodsList.length >1}}"
+			 bindtap='{{cardInfo.give_away_status == 2 ? "show_rebate" : "checkMore"}}'
+			 data-card_id='{{cardInfo.cardId}}'
+			 data-card_no='{{cardInfo.cardNo}}'
+			 style="color:{{comColor}}"
+			>兑换更多商品
+			</view>
+			<!-- 限次卡转赠 -->
+			<view class='card-center' wx:if='{{cardInfo.cardGive.canGiveWay==1 && give_card == 0}}'>
+				<block wx:if="{{cardInfo.cardGive.canGiveWay == 1}}">
+					<view class="cart-info-lt">
+						<image class="arrow" src="{{imageUrl}}image/wxapp/card_icon_rebate.png" mode='widthFix' />
+						<view class="cart-info-ct">转赠给好友</view>
+					</view>
+					<view wx:if='{{cardInfo.userCardFlag == 2}}'>
+						<text style="color:{{comColor}};margin-right:20rpx;" data-status='1'  catchtap="to_rebate">会员卡转赠中</text>
+						<image
+						 src="{{imageUrl}}image/wxapp/right_into.png"
+						 mode="widthFix"
+						 style="width:15rpx;margin-right:0rpx;"
+						 catchtap="cancel_rebate"
+						/>
+					</view>
+					<view wx:elif='{{cardInfo.userCardFlag == 3}}' data-status='2' catchtap="to_rebate">
+						<text style="color:{{comColor}}" >{{cardInfo.giveUsername}} 已领取</text>
+					</view>
+					<view
+					 class="rebate_content"
+					 style="background:{{comColor}}"
+					 data-status='0'
+					 catchtap="to_rebate"
+					 wx:else
+					>转赠
+					</view>
+				</block>
+			</view>
+			<!--开卡送券-->
+			<view class="card_item_title" wx:if="{{cardInfo.cardType === 5 && cardInfo.sendCouponSwitch == 1}}">
+				<view class="item_title_left">
+					<image mode="widthFix" src="{{ imageUrl }}/image/admin/card_send_coupon.png" />
+				</view>
+				<view class="item_title_content">
+					开卡送券
 				</view>
 
 			</view>
-		</view>
-		<!--开卡送券-->
-		<view class="card_item_title" wx:if="{{cardInfo.cardType === 5 && cardInfo.sendCouponSwitch == 1}}">
-			<view class="item_title_left">
-				<image mode="widthFix" src="{{ imageUrl }}/image/admin/card_send_coupon.png" />
-			</view>
-			<view class="item_title_content">
-				开卡送券
-			</view>
-	
-		</view>
-    <view class="card_item_content" wx:if="{{cardInfo.cardType === 5 && cardInfo.sendCouponSwitch == 1&&cardInfo.coupons}}">
+			<view class="card_item_content" wx:if="{{cardInfo.cardType === 5 && cardInfo.sendCouponSwitch == 1&&cardInfo.coupons}}">
 
-			<block wx:if="{{cardInfo.sendCouponType == 0}}">
-						<text class="counponTitle">领取<text wx:if="{{cardInfo.activation == 1}}">并激活</text>本卡后获赠以下优惠券</text>
-						<view class='coupon_list' wx:for="{{cardInfo.coupons}}" wx:key="id"  bindtap="viewCoupon">
-							<view class='coupon_left' style="background:{{comColor1}};">
-								<view class='coupon_left_top'>
-                <!--
+				<block wx:if="{{cardInfo.sendCouponType == 0}}">
+					<text class="counponTitle">领取<text wx:if="{{cardInfo.activation == 1}}">并激活</text>
+					本卡后获赠以下优惠券
+					</text>
+					<view
+					 class='coupon_list'
+					 wx:for="{{cardInfo.coupons}}"
+					 wx:key="id"
+					 bindtap="viewCoupon"
+					>
+						<view class='coupon_left' style="background:{{comColor1}};">
+							<view class='coupon_left_top'>
+								<!--
                 <block wx:if="{{item.act_code == 'voucher'}}">
 										￥
 										<text>{{item.denomination}}</text>
 									</block>
                 -->
-									
-									<block>
-										<text>2</text>折
-									</block>
-								</view>
-								<view class='conpon_left_bottom'>use_condition</view>
+
+								<block>
+									<text>2</text>
+									折
+								</block>
 							</view>
-							<view class="coupon_right">
-								<view class='coupon_name'>腾飞</view>
-								<view class='coupon_condition'>问问</view>
-								<view class='coupon_valid_until'>2020-03-12</view>
-							</view>
+							<view class='conpon_left_bottom'>use_condition</view>
 						</view>
-					</block>
-					<block wx:else>
-						<text class="counponTitle">领取<text wx:if="{{cardInfo.activation == 1}}">并激活</text>本卡后获赠优惠券礼包</text>
-						<view class='package_info' data-pack_id="{{cardInfo.couponPack.id}}" bindtap="to_cou_package" style="background-color: {{bgColor}};color: {{comColor1}};">
-              <!--
+						<view class="coupon_right">
+							<view class='coupon_name'>腾飞</view>
+							<view class='coupon_condition'>问问</view>
+							<view class='coupon_valid_until'>2020-03-12</view>
+						</view>
+					</view>
+				</block>
+				<block wx:else>
+					<text class="counponTitle">领取<text wx:if="{{cardInfo.activation == 1}}">并激活</text>
+					本卡后获赠优惠券礼包
+					</text>
+					<view
+					 class='package_info'
+					 data-pack_id="{{cardInfo.couponPack.id}}"
+					 bindtap="to_cou_package"
+					 style="background-color: {{bgColor}};color: {{comColor1}};"
+					>
+						<!--
               {{card_info.couponPack.act_name}}
               -->
-              腾飞测试
-						</view>
-					</block>
-		</view>
-		<!--门店-->
-		<view class="card_item_title" bindtap='toStoreList' wx:if="{{cardInfo.storeUseSwitch >= 0}}">
-			<view class="item_title_left">
-				<image mode="widthFix" src="{{imageUrl}}image/admin/store_icon.png" />
+						腾飞测试
+					</view>
+				</block>
 			</view>
-			<view class="item_title_content">
-				使用门店
-			</view>
-			<view class="item_title_right">
-				{{cardInfo.storeUseSwitch === 0 ? '全部门店' : cardInfo.storeList.length+'家'}} >
-			</view>
-		</view>
-		<view class="card_item_title" wx:if="{{cardInfo.cardType === 1 && cardInfo.storeUseSwitch >= 0}}">
-			<view class="item_title_left">
-				<image mode="widthFix" src="{{imageUrl}}image/admin/time_block.png" />
-			</view>
-			<view class="item_title_content">
-				允许使用时间
-			</view>
-			<view class="item_title_right">
-				<block wx:if="{{cardInfo.useTime === 0}}">工作日,双休日</block>
-				<block wx:elif="{{cardInfo.useTime === 1}}">工作日</block>
-				<block wx:else>双休日</block>
-			</view>
-		</view>
-		<view class="card_item_title" bindtap="phoneCall" wx:if="{{ cardInfo.mobile != null && cardInfo.mobile != '' }}">
-			<view class="item_title_left">
-				<image mode="widthFix" src="{{imageUrl}}image/wxapp/card_phone.png" />
-			</view>
-			<view class="item_title_content">
-				联系电话
-			</view>
-			<view class="item_title_right">
-				{{cardInfo.mobile}}
-			</view>
-		</view>
-		<view
-		 class="card_item_title"
-		 data-cardNo="{{cardInfo.cardNo}}"
-		 bindtap='toCardRecord'
-		 wx:if="{{ cardInfo.cardNo && cardInfo.cardType != 2}}"
-		>
-			<view class="item_title_left">
-				<image mode="widthFix" src="{{imageUrl}}image/admin/user_card_record.png" />
-			</view>
-			<view class="item_title_content">
-				使用记录
-			</view>
-			<view class="item_title_right">
-				查看 >
-			</view>
-		</view>
-		<view class="card_item_title" wx:if="{{ cardInfo.cardNo && cardInfo.cardType === 2}}" bindtap="toUserCardUp">
-			<view class="item_title_left">
-				<image mode="widthFix" src="{{imageUrl}}image/admin/user_card_record.png" />
-			</view>
-			<view class="item_title_content">
-				升降级记录
-			</view>
-			<view class="item_title_right">
-				查看 >
-			</view>
-		</view>
-		<view class="card_item_title" wx:if="{{ cardInfo.isPay === 1 && cardInfo.buyTime != null }}">
-			<view class="item_title_left">
-				<image mode="widthFix" src="{{imageUrl}}image/admin/user_card_record.png" />
-			</view>
-			<view class="item_title_content">
-				支付时间：{{cardInfo.buyTime}}
-			</view>
-		</view>
-		<view class="card_item_title" wx:if="{{ (cardInfo.desc != null && cardInfo.desc != '') || cardInfo.activation === 1 }}">
-			<view class="item_title_left">
-				<image mode="widthFix" src="{{imageUrl}}image/wxapp/article.png" />
-			</view>
-			<view class="item_title_content">
-				会员卡使用说明
-			</view>
-		</view>
-		<view class="card_item_content" wx:if="{{ (cardInfo.desc != null && cardInfo.desc != '') || cardInfo.activation === 1 }}">
-			<view class="content_item" wx:if="{{cardInfo.activation === 1}}">领取后需要填写激活信息进行激活才可使用</view>
-			<view class="description" wx:if="{{ cardInfo.desc != null && cardInfo.desc != '' }}">{{cardInfo.desc}}</view>
-		</view>
-	</view>
 
-	<view class="flex_footer" wx:if="{{!(cardInfo.examine && cardInfo.cardVerifyStatus === 1)}}">
-		<view
-		 class="footer_btn"
-		 data-btnType="{{btnType}}"
-		 data-cardNo="{{cardInfo.cardNo}}"
-		 data-cardId="{{cardInfo.cardId}}"
-		 style='background:{{comColor}}'
-		 bindtap="handleToBtn"
-		>{{bottomBtnText}}
+			<view class="card_item_title" bindtap='toStoreList' wx:if="{{cardInfo.storeUseSwitch >= 0}}">
+				<view class="item_title_left">
+					<image mode="widthFix" src="{{imageUrl}}image/admin/store_icon.png" />
+				</view>
+				<view class="item_title_content">
+					使用门店
+				</view>
+				<view class="item_title_right">
+					{{cardInfo.storeUseSwitch === 0 ? '全部门店' : cardInfo.storeList.length+'家'}} >
+				</view>
+			</view>
+			<view class="card_item_title" wx:if="{{cardInfo.cardType === 1 && cardInfo.storeUseSwitch >= 0}}">
+				<view class="item_title_left">
+					<image mode="widthFix" src="{{imageUrl}}image/admin/time_block.png" />
+				</view>
+				<view class="item_title_content">
+					允许使用时间
+				</view>
+				<view class="item_title_right">
+					<block wx:if="{{cardInfo.useTime === 0}}">工作日,双休日</block>
+					<block wx:elif="{{cardInfo.useTime === 1}}">工作日</block>
+					<block wx:else>双休日</block>
+				</view>
+			</view>
+			<view class="card_item_title" bindtap="phoneCall" wx:if="{{ cardInfo.mobile != null && cardInfo.mobile != '' }}">
+				<view class="item_title_left">
+					<image mode="widthFix" src="{{imageUrl}}image/wxapp/card_phone.png" />
+				</view>
+				<view class="item_title_content">
+					联系电话
+				</view>
+				<view class="item_title_right">
+					{{cardInfo.mobile}}
+				</view>
+			</view>
+			<view
+			 class="card_item_title"
+			 data-cardNo="{{cardInfo.cardNo}}"
+			 bindtap='toCardRecord'
+			 wx:if="{{ cardInfo.cardNo && cardInfo.cardType != 2}}"
+			>
+				<view class="item_title_left">
+					<image mode="widthFix" src="{{imageUrl}}image/admin/user_card_record.png" />
+				</view>
+				<view class="item_title_content">
+					使用记录
+				</view>
+				<view class="item_title_right">
+					查看 >
+				</view>
+			</view>
+			<view class="card_item_title" wx:if="{{ cardInfo.cardNo && cardInfo.cardType === 2}}" bindtap="toUserCardUp">
+				<view class="item_title_left">
+					<image mode="widthFix" src="{{imageUrl}}image/admin/user_card_record.png" />
+				</view>
+				<view class="item_title_content">
+					升降级记录
+				</view>
+				<view class="item_title_right">
+					查看 >
+				</view>
+			</view>
+			<view class="card_item_title" wx:if="{{ cardInfo.isPay === 1 && cardInfo.buyTime != null }}">
+				<view class="item_title_left">
+					<image mode="widthFix" src="{{imageUrl}}image/admin/user_card_record.png" />
+				</view>
+				<view class="item_title_content">
+					支付时间：{{cardInfo.buyTime}}
+				</view>
+			</view>
+			<view class="card_item_title" wx:if="{{ (cardInfo.desc != null && cardInfo.desc != '') || cardInfo.activation === 1 }}">
+				<view class="item_title_left">
+					<image mode="widthFix" src="{{imageUrl}}image/wxapp/article.png" />
+				</view>
+				<view class="item_title_content">
+					会员卡使用说明
+				</view>
+			</view>
+			<view class="card_item_content" wx:if="{{ (cardInfo.desc != null && cardInfo.desc != '') || cardInfo.activation === 1 }}">
+				<view class="content_item" wx:if="{{cardInfo.activation === 1}}">领取后需要填写激活信息进行激活才可使用</view>
+				<view class="description" wx:if="{{ cardInfo.desc != null && cardInfo.desc != '' }}">{{cardInfo.desc}}</view>
+			</view>
 		</view>
+		<view class="flex_footer" wx:if="{{!(cardInfo.examine && cardInfo.cardVerifyStatus === 1&&give_card==0)&&cardInfo.userCardFlag != 3}}">
+			<view
+			 class="footer_btn"
+			 data-btnType="{{btnType}}"
+			 data-cardNo="{{cardInfo.cardNo}}"
+			 data-cardId="{{cardInfo.cardId}}"
+			 style='background:{{comColor}}'
+			 bindtap="handleToBtn"
+			>{{bottomBtnText}}
+			</view>
+		</view>
+		<view class="flex_footer" wx:if="{{give_card==1}}">
+			<view
+			 class="footer_btn"
+			 wx:if='{{ifGetSq == 1}}'
+			 style='background:{{comColor}}'
+			 bindtap="rebateGetCard"
+			>领取会员卡
+			</view>
+			<button
+			 class="footer_btn"
+			 open-type="getUserInfo"
+			 style='background:{{comColor}};font-size:26rpx'
+			 bindgetuserinfo="bindGetUserInfo"
+			 wx:else
+			>领取会员卡
+			</button>
+		</view>
+		<include src="../common/footer.wxml" />
+
 	</view>
-	<include src="../common/footer.wxml" />
 
 	<v-poster image="{{qrCode}}" show="{{showQrcode}}" />
 	<!-- 绑定手机号弹窗 -->
@@ -406,5 +492,18 @@
 			</view>
 		</view>
 	</view>
-</view>
+	<view class="pop_rebate" style='position:fixed;z-index:9999;' wx:if='{{rebate_show == true}}'>
+		<view class="zhezhao_coupon">
+			<view class="rebate_p">
+				<view class="rebate_top">转赠会员卡</view>
+				<view style="color:#999;text-align:center;margin-top:15rpx;">
+					<text style="font-size:34rpx;">是否确认将本卡转赠给好友？\n转赠成功后本卡将失效</text>
+				</view>
+				<view class="rebate_bottom">
+					<view bindtap="cancel_rebtae">取消</view>
+					<button open-type="share" style='color:{{comColor}}'>确认转赠</button>
+				</view>
+			</view>
+		</view>
+	</view>
 

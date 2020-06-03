@@ -383,7 +383,7 @@ export default {
       let flag = true
       value.forEach((item, index) => {
         if (index !== (value.length - 1)) {
-          if (!Number(item.stock)) {
+          if (!Number(item.stock) && this.editId === -1) {
             flag = true
             callback(new Error(this.$t('mintegralExchange.cannotBeEmpty')))
           } else if ((Number(item.stock) !== '') && (Number(item.stock) > item.goodsStock)) {
@@ -532,13 +532,15 @@ export default {
         checkImgData: [
           { validator: validate3, trigger: 'blur' }
         ]
-      }
+      },
+      editId: -1
     }
   },
   watch: {
     id: {
       handler (newData) {
         console.log(newData)
+        this.editId = newData
         if (newData !== -1) {
           console.log(this.status)
           this.isSureTop = true

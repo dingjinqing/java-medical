@@ -264,7 +264,7 @@ public class StoreReservation extends ShopBaseService {
         // 设置服务起始日期, 不能预约过期的服务, 持续时间最多两个月
         LocalDate now = LocalDate.now();
         LocalDate startDate = service.getStartDate().toLocalDate().compareTo(now) > 0 ? service.getStartDate().toLocalDate() : now;
-        LocalDate twoMonthsLater = service.getStartDate().toLocalDate().plus(2, ChronoUnit.MONTHS);
+        LocalDate twoMonthsLater = startDate.plus(2, ChronoUnit.MONTHS);
         LocalDate endDate = service.getEndDate().toLocalDate().compareTo(twoMonthsLater) <= 0 ? service.getEndDate().toLocalDate() : twoMonthsLater;
         log.debug("服务有效预约日期为:{} - {}", startDate, endDate);
 

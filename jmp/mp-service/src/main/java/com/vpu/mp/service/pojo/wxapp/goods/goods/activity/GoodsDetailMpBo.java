@@ -33,7 +33,9 @@ public class GoodsDetailMpBo extends GoodsDetailMpVo{
     private Integer goodsVideoId;
     @JsonIgnore
     private List<GradePrd> gradeCardPrice = new ArrayList<>();
-
+    /**直播间id*/
+    @JsonIgnore
+    private Integer roomId;
     //************ElasticSearch中的数据**************end
 
     @Data

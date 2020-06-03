@@ -565,7 +565,7 @@ public class OrderReadService extends ShopBaseService {
         OrderCenter result = new OrderCenter();
         PageResult<OrderListMpVo> orders = mpOrderInfo.getPageList(param);
         result.setOrders(orders);
-        Map<Byte, Integer> orderStatusNum = mpOrderInfo.getOrderStatusNum(param.getWxUserInfo().getUserId(), param, false);
+        Map<Byte, Integer> orderStatusNum = mpOrderInfo.getOrderStatusNum(param.getWxUserInfo().getUserId(), param.getSearch(), false, 0);
         result.setOrderStatuCount(orderStatusNum);
         if(CollectionUtils.isEmpty(orders.dataList)) {
 
@@ -785,7 +785,7 @@ public class OrderReadService extends ShopBaseService {
 			return 0;
 		}
 		Integer days = trade.getExtendReceiveDays();
-		return days.intValue();
+		return days;
 	}
 
 	/**
@@ -828,19 +828,20 @@ public class OrderReadService extends ShopBaseService {
 	}
 
 	/**
-	 * 统计订单各个状态的数量
-	 * @param param
+	 * 统计订单各个状态的数量(个人中心用)
+	 * @param userId
 	 * @return
 	 */
-	public Map<Byte, Integer> statistic(OrderListParam param) {
-		return mpOrderInfo.getOrderStatusNum(param.getWxUserInfo().getUserId(), param, false);
+	public Map<Byte, Integer> statistic(Integer userId) {
+        int returnCount = returnOrder.getReturnOrderCount(userId, null);
+        return mpOrderInfo.getOrderStatusNum(userId, null, false, returnCount);
 	}
 
     /**
-     * 小程序端点击售后中心展示数据(曾经退过)
+     * 小程序端订单列表/详情点击售后中心展示数据(曾经退过)
      * @param param
      */
-    public AfterSaleServiceVo mpReturnList(OrderParam param) throws MpException {
+    public AfterSaleServiceVo mpOrderReturnList(OrderParam param) throws MpException {
         AfterSaleServiceVo vo = new AfterSaleServiceVo();
         OrderInfoRecord order = orderInfo.getOrderByOrderSn(param.getOrderSn());
         vo.setOrderSn(order.getOrderSn());
@@ -882,6 +883,28 @@ public class OrderReadService extends ShopBaseService {
                 vo.getReturnOrderlist().add(returnOrderListMp);
         });
         return vo;
+    }
+
+    /**
+     * 小程序售后中心
+     * @param param
+     * @return
+     */
+    public PageResult<ReturnOrderListMp> mpReturnList(OrderListParam param) {
+        PageResult<ReturnOrderListMp> result = returnOrder.getPageList(param);
+        List<Integer> collect;
+        List<ReturnOrderListMp> dataList = result.dataList;
+        if(dataList != null && dataList.size() > 0 ) {
+            collect = dataList.stream().map(ReturnOrderListMp::getRetId).collect(Collectors.toList());
+        }else {
+            return result;
+        }
+        //获取订单再分组
+            Map<Integer, List<OrderReturnGoodsVo>> goods = returnOrderGoods.getByRetIds(collect.toArray(new Integer[]{})).intoGroups(returnOrderGoods.TABLE.RET_ID,OrderReturnGoodsVo.class);
+        for (ReturnOrderListMp order : dataList) {
+            order.setGoods(goods.get(order.getRetId()));
+        }
+        return result;
     }
 
     /**
@@ -968,8 +991,12 @@ public class OrderReadService extends ShopBaseService {
 	 * @return
 	 */
 	public ActiveOrderList getActiveOrderList(Byte goodType, Integer activityId, Timestamp startTime, Timestamp  endTime) {
-		return marketOrderInfo.getActiveOrderList(goodType, activityId, startTime, endTime);
-	}
+        if (BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goodType)) {
+            //限时降价的订单
+            return marketOrderInfo.getActiveOrderList2(goodType, activityId, startTime, endTime);
+        }
+        return marketOrderInfo.getActiveOrderList(goodType, activityId, startTime, endTime);
+    }
 
 	 /**
      * 营销活动订单查询

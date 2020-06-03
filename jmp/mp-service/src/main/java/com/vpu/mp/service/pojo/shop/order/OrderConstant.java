@@ -385,6 +385,7 @@ public class OrderConstant {
 	public static final byte WAIT_DELIVERY = 2;
 	public static final byte SHIPPED = 3;
 	public static final byte FINISHED = 4;
+	@Deprecated
 	public static final byte REFUND = 5;
 
 	/**
@@ -421,6 +422,8 @@ public class OrderConstant {
     public static final Byte D_T_FULL_REDUCE = 2;
     /**预售*/
     public static final Byte D_T_FULL_PRE_SALE = 3;
+    /**分销*/
+    public static final Byte D_T_REBATE = 4;
     /**
      * table : b2c_customer_avail_coupons type 1为减价，2为打折
      */

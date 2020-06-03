@@ -102,3 +102,19 @@ export function getCommentSwitch () {
     method: 'get'
   })
 }
+// 设置置顶
+export function setTop (data) {
+  return service({
+    url: `/api/admin/goods/comment/setTop`,
+    method: 'post',
+    data: data
+  })
+}
+// 取消置顶
+export function cancelTop (data) {
+  return service({
+    url: `/api/admin/goods/comment/cancelTop`,
+    method: 'post',
+    data: data
+  })
+}

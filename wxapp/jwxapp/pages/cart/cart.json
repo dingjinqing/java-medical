@@ -1,5 +1,6 @@
 {
   "usingComponents": {
-    "v-recommend":"/components/item/recommend/index"
+    "v-recommend":"/components/item/recommend/index",
+    "v-coupon-package-dialog":"./coupon_package/index"
   }
 }

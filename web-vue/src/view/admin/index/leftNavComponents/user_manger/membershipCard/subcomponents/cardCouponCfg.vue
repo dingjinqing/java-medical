@@ -33,7 +33,10 @@
               <span class="coupon-info">
                 {{ $t('memberCard.offerInfo') }}
               </span>
-              <span v-if="couponError"  class="coupon-error-tip">{{$t('memberCard.couponErrorTip')}}</span>
+              <span
+                v-if="couponError"
+                class="coupon-error-tip"
+              >{{$t('memberCard.couponErrorTip')}}</span>
             </div>
             <div
               v-if="ruleForm.couponType==='1'"
@@ -114,6 +117,7 @@
       :tuneUpCoupon="couponDialogVisable"
       :couponBack="couponBack"
       @handleToCheck="handleCouponList"
+      :type="-1"
     />
   </div>
 </template>
@@ -214,8 +218,8 @@ export default {
       color: #9d9d9d;
       margin-left: 25px;
     }
-    .coupon-error-tip{
-      color: #F56C6C;
+    .coupon-error-tip {
+      color: #f56c6c;
       font-size: 12px;
     }
     .send-coupon {

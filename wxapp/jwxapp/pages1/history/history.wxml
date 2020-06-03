@@ -1,12 +1,13 @@
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="body">
   <include src="/pages/common/header.wxml"/>
-  <view class="main-container" wx:if="{{dataList}}">
+  <view class="main-container">
     <view class="filter" style="top:{{margin_top_nav + 8}}px">
       <view class="input_box">
         <view>
         <icon size="13" type="search" role="img"></icon>
         </view>
-        <input placeholder="请输入搜索关键字" bindconfirm="handleSearch" value="{{searchText}}"></input>
+        <input placeholder='{{i18n.$t(localePack,"page1.history.searchPlaceholder")}}' bindconfirm="handleSearch" value="{{searchText}}"></input>
       </view>
     </view>
     <view class="content">
@@ -16,16 +17,16 @@
               <text class="date">{{item.date}}</text>
               <view class="goods_content">
               <block wx:for="{{item.goodsList}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="goodsIndex">
-                <v-double-col-goods goods-data="{{goodsItem}}"/>
+                <v-double-col-goods wx:if="{{goodsItem}}" goods-data="{{goodsItem}}" del-market="{{delMarket}}" show-cart="{{showCart}}"/>
               </block>
               </view>
             </block>
           </block>
       </block>
-      <block wx:else>
+      <block wx:if="{{loaded && !dataList[0].length}}">
         <view class="is-null" >
           <image src="{{imageUrl}}image/wxapp/no_result.png"></image>
-          <text>抱歉！没有找到相关的商品</text>
+          <text>{{i18n.$t(localePack,"page1.history.errorTips")}}</text>
         </view>
       </block>
     </view>

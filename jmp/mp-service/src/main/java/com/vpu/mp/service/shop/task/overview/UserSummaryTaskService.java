@@ -25,8 +25,7 @@ import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
 import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService.*;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
  * The type User summary task service.
@@ -74,7 +73,7 @@ public class UserSummaryTaskService extends ShopBaseService {
      */
     public Integer getPv(Timestamp startTime, Timestamp endTime) {
         Condition timeCondition = LOGIN.CREATE_TIME.ge(startTime).and(LOGIN.CREATE_TIME.lessThan(endTime));
-        return db().fetchCount(LOGIN, timeCondition);
+        return db().select(DSL.sum(LOGIN.COUNT)).from(LOGIN).where(timeCondition).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
     }
 
     /**
@@ -133,7 +132,9 @@ public class UserSummaryTaskService extends ShopBaseService {
      * @return the integer
      */
     public Integer chargeUserSum(Timestamp startTime, Timestamp endTime) {
-        Condition timeCondition = CHARGE.CREATE_TIME.ge(startTime).and(CHARGE.CREATE_TIME.lessThan(endTime));
+        Condition timeCondition = CHARGE.CREATE_TIME.ge(startTime).and(CHARGE.CREATE_TIME.lessThan(endTime))
+            .and(CHARGE.TYPE.eq(BYTE_ZERO))
+            .and(CHARGE.CHARGE.greaterThan(BIGDECIMAL_ZERO));
         return db().select(DSL.countDistinct(CHARGE.USER_ID)).from(CHARGE).where(timeCondition).fetchOneInto(Integer.class);
     }
 

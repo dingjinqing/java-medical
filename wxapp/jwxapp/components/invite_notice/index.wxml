@@ -1,0 +1,8 @@
+<view class="invite-content" wx:if="{{inviteId && showInviteNotice}}">
+  <image class="user-avatar" src="{{userAvatar}}"></image>
+  <view class="share-note">
+    <text>{{username}}</text>
+    <text>分享给你一个好物店铺，快来选购吧！</text>
+  </view>
+  <image class="close-button" bindtap="closeInviteNotice" src="{{imageUrl}}image/wxapp/invite_close.png"></image>
+</view>

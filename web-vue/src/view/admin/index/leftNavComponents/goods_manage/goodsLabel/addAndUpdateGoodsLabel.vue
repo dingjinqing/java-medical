@@ -98,7 +98,7 @@
                 <el-radio
                   v-model="goodsLabelData.listPattern"
                   :label="1"
-                >样式1</el-radio>
+                >{{$t('allGoodsLabel.labelStyle1')}}</el-radio>
               </div>
               <div style="flex-grow: 1;text-align: center;">
                 <div class="imgWrap" @click="goodsLabelData.listPattern=2">
@@ -107,7 +107,7 @@
                 <el-radio
                   v-model="goodsLabelData.listPattern"
                   :label="2"
-                >样式2</el-radio>
+                >{{$t('allGoodsLabel.labelStyle2')}}</el-radio>
               </div>
               <div style="flex-grow: 1;text-align: center;">
                 <div class="imgWrap" @click="goodsLabelData.listPattern=3">
@@ -116,7 +116,7 @@
                 <el-radio
                   v-model="goodsLabelData.listPattern"
                   :label="3"
-                >样式3</el-radio>
+                >{{$t('allGoodsLabel.labelStyle3')}}</el-radio>
               </div>
               <div style="flex-grow: 1;text-align: center;">
                 <div class="imgWrap" @click="goodsLabelData.listPattern=4">
@@ -125,7 +125,7 @@
                 <el-radio
                   v-model="goodsLabelData.listPattern"
                   :label="4"
-                >样式4</el-radio>
+                >{{$t('allGoodsLabel.labelStyle4')}}</el-radio>
               </div>
             </div>
           </div>
@@ -142,20 +142,30 @@
                 v-model="goodsLabelData.isAll"
                 :label="0"
               >{{$t('addAndUpdateGoodsLabel.pointGoods')}}</el-radio>
+              <el-radio
+                v-model="goodsLabelData.isAll"
+                :label="2"
+              >{{$t('addAndUpdateGoodsLabel.notAddGoods')}}</el-radio>
             </div>
             <div v-if="goodsLabelData.isAll ===0">
               <div @click="addGoodsClicked" class="pointGoodsItemBtnWrap">
                 <el-button size="small">+{{$t('addAndUpdateGoodsLabel.addGoods')}}</el-button>
-                <span>已选{{selectedGoodsList.length}}件商品</span>
+                <!--已选8件商品-->
+                <span>
+                  {{$t('addAndUpdateGoodsLabel.alreadySelected')}}
+                  {{selectedGoodsList.length}}
+                  {{$t('addAndUpdateGoodsLabel.selectGoods')}}
+                </span>
               </div>
               <div @click="tuneUpChooseSort=true" class="pointGoodsItemBtnWrap">
                 <el-button  size="small">+{{$t('addAndUpdateGoodsLabel.addSort')}}</el-button>
-                <span>已选{{selectedSortList.length}}件商家</span>
+                <!--已选9件商家分类-->
+                <span>
+                  {{$t('addAndUpdateGoodsLabel.alreadySelected')}}
+                  {{selectedSortList.length}}
+                  {{$t('addAndUpdateGoodsLabel.selectSorts')}}
+                </span>
               </div>
-              <!--<div @click="tuneUpChooseCat=true" class="pointGoodsItemBtnWrap">-->
-                <!--<el-button size="small">+{{$t('addAndUpdateGoodsLabel.addCategory')}}</el-button>-->
-                <!--<span>已选{{selectedCatList.length}}件平台</span>-->
-              <!--</div>-->
             </div>
           </div>
         </el-form-item>
@@ -180,12 +190,18 @@
 
 <script>
 // api引入
-import { isGoodsLabelNameOk, addGoodsLabel, updateGoodsLabel, getGoodsLabel } from '@/api/admin/goodsManage/goodsLabel/goodsLabel'
+import {
+  addGoodsLabel,
+  getGoodsLabel,
+  isGoodsLabelNameOk,
+  updateGoodsLabel
+} from '@/api/admin/goodsManage/goodsLabel/goodsLabel'
 // 组件引入
 import choosingGoods from '@/components/admin/choosingGoods'
 import catSortDialog from '@/components/admin/addingBusClassDialog'
 // 工具类引入
-import { isStrBlank } from '@/util/typeUtil'
+import {isStrBlank} from '@/util/typeUtil'
+
 export default {
   name: 'addAndUpdateGoodsLabel',
   components: {choosingGoods, catSortDialog},
@@ -307,6 +323,9 @@ export default {
           this.selectedGoodsList = labelData.goodsIds
           this.selectedSortList = labelData.sortIds
           // this.selectedCatList = labelData.catIds
+        } else {
+          this.selectedGoodsList = []
+          this.selectedSortList = []
         }
       })
     },
@@ -346,8 +365,6 @@ export default {
       if (this.goodsLabelData.isAll === 0) {
         params.goodsIds = this.selectedGoodsList
         params.sortIds = this.selectedSortList
-        // params.catIds = this.selectedCatList
-        params.catIds = []
       }
       return params
     },
@@ -356,8 +373,22 @@ export default {
       if (!this._validateGoodsLabelData()) {
         return
       }
+      if (this.isUpdate && this.goodsLabelData.isAll === 2 && (this.selectedGoodsList.length > 0 || this.selectedSortList.length > 0)) {
+        this.$confirm(this.$t('addAndUpdateGoodsLabel.isResetGoodsLabels'), this.$t('addAndUpdateGoodsLabel.resetGoodsLabels'), {
+          confirmButtonText: this.$t('addAndUpdateGoodsLabel.confirm'),
+          cancelButtonText: this.$t('addAndUpdateGoodsLabel.cancel'),
+          type: 'warning'
+        }).then(() => {
+          this.saveAction()
+        }).catch(() => {
+          // 取消按钮回调
+        })
+      } else {
+        this.saveAction()
+      }
+    },
+    saveAction () {
       let params = this._getFormData()
-
       let execFun = this.isUpdate ? updateGoodsLabel : addGoodsLabel
       execFun(params).then(res => {
         if (res.error === 0) {
@@ -431,7 +462,7 @@ export default {
 }
 .pointGoodsItemBtnWrap{
   cursor: pointer;
-  width: 200px;
+  width: 250px;
 }
 .contentFooter {
   position: absolute;

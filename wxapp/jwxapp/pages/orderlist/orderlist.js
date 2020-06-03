@@ -59,7 +59,7 @@ global.wxPage({
         pageRows: 20,
         type: this.data.navType[this.data.scrollIntoId],
         search: this.data.searchInput
-      }
+      },'',true
     );
   },
   formatData(order) {

@@ -46,7 +46,28 @@ public enum AccessSource implements ChartInfo {
     WX_AD(33, "source.wx_ad"),
     OTHER_MOBILE_APP(34, "source.other_mobile_app"),
     DISCOVER_ENTRY_MY_MP(35, "source.discover_entry_my_mp"),
-    TASK_BAR_MY_MP(36, "source.task_bar_my_mp");
+    TASK_BAR_MY_MP(36, "source.task_bar_my_mp"),
+    WX_CIRCLE(37, "source.wx_circle"),
+    TOP_UP_PHONE(38, "source.top_up_phone"),
+    H5(39, "source.h5"),
+    PLUGIN(40, "source.plugin"),
+    EVERYBODY_IS_USING(41, "source.everybody_is_using"),
+    DISCOVERY_PAGE(42, "source.discovery_page"),
+    FLOATING_WINDOW(43, "source.floating_window"),
+    PEOPLE_NEARBY(44, "source.people_nearby"),
+    TAKE_A_LOOK(45, "source.take_a_look"),
+    CIRCLE_OF_FRIENDS(46, "source.circle_of_friends"),
+    ENTERPRISE_WX(47, "source.enterprise_wx"),
+    VIDEO(48, "source.video"),
+    COLLECTION(49, "source.collection"),
+    WX_RED_ENVELOPES(50, "source.wx_red_envelopes"),
+    WX_GAME_CENTER(51, "source.wx_game_center"),
+    SHAKE(52, "source.shake"),
+    PUBLIC_SHOPPING_GUIDE_NEWS(53, "source.public_shopping_guide_news"),
+    KNOWLEDGE(54, "source.knowledge"),
+    MP_ORDER(55, "source.mp_order"),
+    MP_LIVE(56, "source.mp_live"),
+    GROUP_TOOLS(57, "source.group_tools");
 
     private Integer index;
     private String source;

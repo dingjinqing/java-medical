@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
@@ -103,19 +102,15 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
         //查询商品的秒杀活动,获取活动id
         Result<? extends Record> secKillInfoList = secKillProcessorDao.getSecKillInfoList(secProductList, cartBo.getDate());
         if (secKillInfoList!=null&&secKillInfoList.size()>0){
-            List<SeckillProductBo> seckillProductBoList = secKillInfoList.into(SeckillProductBo.class);
-            Map<Integer, List<SeckillProductBo>> seckillProductBoMap = seckillProductBoList.stream().collect(Collectors.groupingBy(SeckillProductBo::getProductId));
+            Map<Integer, SeckillProductBo> seckillProductBoMap = secKillInfoList.intoMap(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID,SeckillProductBo.class);
             cartBo.getCartGoodsList().forEach(goods->{
-                List<SeckillProductBo> seckillProductBos = seckillProductBoMap.get(goods.getProductId());
-                if (seckillProductBos!=null&&seckillProductBos.size()>0){
-                    SeckillProductBo seckillPrd = seckillProductBos.get(0);
-                    if (seckillPrd!=null){
-                        CartActivityInfo seckillProductInfo =new CartActivityInfo();
-                        seckillProductInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
-                        seckillProductInfo.setActivityId(seckillPrd.getSkId());
-                        seckillProductInfo.setProductPrice(seckillPrd.getSecKillPrice());
-                        goods.getCartActivityInfos().add(seckillProductInfo);
-                    }
+                SeckillProductBo seckillPrd = seckillProductBoMap.get(goods.getProductId());
+                if (seckillPrd!=null){
+                    CartActivityInfo seckillProductInfo =new CartActivityInfo();
+                    seckillProductInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
+                    seckillProductInfo.setActivityId(seckillPrd.getSkId());
+                    seckillProductInfo.setProductPrice(seckillPrd.getSecKillPrice());
+                    goods.getCartActivityInfos().add(seckillProductInfo);
                 }
             });
         }

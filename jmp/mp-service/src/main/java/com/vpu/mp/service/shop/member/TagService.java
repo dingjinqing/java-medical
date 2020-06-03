@@ -25,6 +25,7 @@ import com.vpu.mp.service.pojo.shop.member.tag.TagInfoVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagPageListParam;
 import com.vpu.mp.service.pojo.shop.member.tag.UpdateTagParam;
 import com.vpu.mp.service.shop.member.dao.tag.TagDao;
+import com.vpu.mp.service.shop.member.tag.UserTagService;
 import com.vpu.mp.service.pojo.shop.member.tag.CommonTagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 
@@ -36,6 +37,7 @@ import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 public class TagService extends ShopBaseService {
 	final static Byte DELETE_NO = 0;
 	@Autowired private TagDao tagDao;
+	@Autowired public UserTagService userTagSvc;
 
 	public PageResult<TagInfoVo> getPageList(TagPageListParam param) {
 
@@ -43,12 +45,6 @@ public class TagService extends ShopBaseService {
 		Tag t = TAG.as("t");
 
 		final Byte existTag = 0;
-
-		/*
-		 * Field<Integer> count =
-		 * this.db().select(DSL.count()).from(ut).where(ut.TAG_ID.eq(t.TAG_ID)).groupBy(
-		 * ut.TAG_ID) .asField("count");
-		 */
 
 		Field<Integer> count = this.db().select(DSL.count()).from(ut).where(ut.TAG_ID.eq(t.TAG_ID)).asField("count");
 		SelectWhereStep<Record4<Integer, String, Timestamp, Integer>> select = (SelectWhereStep<Record4<Integer, String, Timestamp, Integer>>) this
@@ -179,12 +175,7 @@ public class TagService extends ShopBaseService {
 	 * @return  List<TagVo> 不会为null
 	 */
 	public List<TagVo> getUserTag(Integer userId) {
-		return db().select(TAG.TAG_ID,TAG.TAG_NAME)
-			.from(USER_TAG)
-			.leftJoin(TAG).on(USER_TAG.TAG_ID.eq(TAG.TAG_ID))
-			.where(USER_TAG.USER_ID.eq(userId))
-			.orderBy(USER_TAG.TAG_ID.asc())
-			.fetchInto(TagVo.class);
+		return userTagSvc.getUserTag(userId);
 	}
 	
 	/**
@@ -193,13 +184,7 @@ public class TagService extends ShopBaseService {
 	 * @return Map<Integer, List<TagVo>> 用户对应的标签，不会为null
 	 */
 	public Map<Integer, List<TagVo>> getUserTag(List<Integer> userIds) {
-		Map<Integer, List<TagVo>> res = db().select(TAG.TAG_ID,TAG.TAG_NAME,USER_TAG.USER_ID)
-				.from(USER_TAG)
-				.leftJoin(TAG).on(USER_TAG.TAG_ID.eq(TAG.TAG_ID))
-				.where(USER_TAG.USER_ID.in(userIds))
-				.orderBy(USER_TAG.TAG_ID.asc())
-				.fetchGroups(USER_TAG.USER_ID, TagVo.class);
-		return res;
+		return userTagSvc.getUserTag(userIds);
 	}
 	
 	/**

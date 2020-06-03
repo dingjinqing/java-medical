@@ -23,6 +23,14 @@ global.wxComponent({
     showCart: {
       type: Object,
       value: null
+    },
+    customDelete:{
+      type:Boolean,
+      value:false
+    },
+    customControlNum:{
+      type:Boolean,
+      value:false
     }
   },
 
@@ -34,6 +42,7 @@ global.wxComponent({
     ready() {
       this.setCartData()
       this.setDelMarket()
+      this.setGoodsActShow()
     }
   },
 
@@ -74,15 +83,15 @@ global.wxComponent({
       let delMarketType = {
         1: {
           className: 'gray-text line-through',
-          text: `市场价: ${data.goodsData.linePrice}`
+          text: `${data.goodsData.linePrice ? '￥' + data.goodsData.linePrice : ''}`
         }, //关闭购物车按钮-划线价类别
         2: {
           className: 'gray-text',
-          text: `销量: ${data.goodsData.goodsSaleNum}`
+          text: `${data.goodsData.goodsSaleNum ? '销量: ' + data.goodsData.goodsSaleNum : ''}`
         },
         3: {
           className: 'gray-text',
-          text: `评价数: ${data.goodsData.commentNum}`
+          text: `${data.goodsData.commentNum ? '评价数: ' + data.goodsData.commentNum : ''}`
         }
       }
       this.setData({
@@ -91,7 +100,10 @@ global.wxComponent({
     },
     // 删除购物车
     delCartGoods(e) {
-      console.log(e.currentTarget.dataset.cartId)
+      if(this.data.customDelete){
+        this.triggerEvent('deletCart',{...this.data.goodsData})
+        return
+      }
       util.api(
         '/api/wxapp/cart/remove',
         res => {
@@ -106,7 +118,11 @@ global.wxComponent({
     // 更改购物车商品数量
     changeGoodsNum(e) {
       let { type } = e.currentTarget.dataset
-      let { cartId, cartNumber, productId, activityType, activityId } = this.data.goodsData
+      let { cartNumber, productId, activityType, activityId } = this.data.goodsData
+      if(this.data.customControlNum){
+        this.triggerEvent('cartNumChange',{type,...this.data.goodsData})
+        return
+      }
       util.api('/api/wxapp/cart/add', res => {
         if (res.error == 0) {
           this.triggerEvent('cartChange') //购物车改变触发
@@ -124,7 +140,7 @@ global.wxComponent({
     },
     changeCartInput(e){
       let cartNumber = parseInt(e.detail.value)
-      let { cartId, productId, activityType, activityId } = this.data.goodsData
+      let { productId, activityType, activityId } = this.data.goodsData
       if(!isNaN(cartNumber)){
 
         util.api('/api/wxapp/cart/add', res => {
@@ -154,6 +170,29 @@ global.wxComponent({
         `pages/item/item?gid=${goodsId}&atp=${activityType}&aid=${activityId}`,
         'navigateTo'
       )
+    },
+    setGoodsActShow(){
+      if(!this.data.goodsData || !this.data.goodsData.activityType) return
+      console.log(this.data.goodsData,this.data.goodsData.activityType)
+      let actInfo = {}
+      switch (this.data.goodsData.activityType) {
+        case 6:
+          actInfo.actName="限时降价，立即查看"
+          break;
+        case 18:
+          actInfo.actName="首单特惠，新人专享"
+          break;
+        case 22:
+          actInfo.isVipPrice=true
+          break;
+        case 98:
+          actInfo.actName="限时降价，立即查看"
+          actInfo.isVipPrice=true
+          break;
+      }
+      this.setData({
+        actInfo
+      })
     }
   }
 })

@@ -222,7 +222,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 						//退款订单记录
 						returnStatusChange.addRecord(rOrder, param.getIsMp(), OrderConstant.RETURN_OPERATE[param.getReturnOperate()]);
 						return;
-					} else if(param.getIsMp().equals(OrderConstant.IS_MP_ADMIN) && Byte.valueOf(OrderConstant.RT_GOODS).equals(param.getReturnType())) {
+					} else if(!param.getIsMp().equals(OrderConstant.IS_MP_Y) && Byte.valueOf(OrderConstant.RT_GOODS).equals(param.getReturnType())) {
                         //后台直接发起退货退款时设置退款状态为4以便于后续操作
                         rOrder.setRefundStatus(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
                     }
@@ -733,8 +733,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                     //买家已提交物流信息，商家在 ? 日内未处理，系统将默认同意退款退货，并自动退款给买家
                     param.setReturnOperate(null);
                 }else if(order.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDIT_PASS) && order.getReturnType().equals(OrderConstant.RT_GOODS)) {
-                    //商家同意退款退货，买家在 ? 日内未提交物流信息，且商家未确认收货并退款，退款申请将自动撤销。
-                    param.setReturnOperate(OrderConstant.RETURN_OPERATE_MP_REVOKE);
+                    //商家同意退款退货，买家在 ? 日内未提交物流信息，且商家未确认收货并退款，退款申请将自动完成。
                 }
                 ExecuteResult result = execute(param);
                 if(result == null || result.isSuccess()) {

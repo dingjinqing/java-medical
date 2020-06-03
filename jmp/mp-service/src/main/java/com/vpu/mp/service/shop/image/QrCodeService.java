@@ -98,18 +98,15 @@ public class QrCodeService extends ShopBaseService {
 
             try {
                 //判断upYun上是否有该图片
-                logger().warn("判断upYun是否存在");
                 Map<String, String> fileInfo = this.imageService.getUpYunClient().getFileInfo(relativePath);
                 if (fileInfo != null) {
                     //有图片则直接返回图片全路径
-                    logger().warn("upYun图片已存在直接返回："+fullPath);
                     return fullPath;
                 }
             } catch (IOException | UpException e) {
                 //如果失败则认为图片不存在
                 logger().warn("upYun 获取图片信息失败："+e.getMessage());
             }
-            logger().warn("判断upYun不否存在");
             //upYun不存在则将该记录设置为删除状态
             db().update(CODE).set(CODE.DEL_FLAG,DelFlag.DISABLE.getCode())
                 .where(CODE.PARAM_ID.eq(paramId)).execute();
@@ -158,7 +155,7 @@ public class QrCodeService extends ShopBaseService {
     }
 
     public String getQrCodeImgRelativePath(short type){
-        return format("upload/%s/qrcode/%s/",  getShopId(), type);
+        return format("upload/%s/qrcode/%s/",getShopId(), type);
     }
     
     
@@ -289,7 +286,7 @@ public class QrCodeService extends ShopBaseService {
 	}
 	
     /**
-     * 获取 会员卡头像
+     * 	获取 会员卡头像
      */
 	private BufferedImage getCardVatar() {
 		String shopAvatar = saas().shop.getShopAvatarById(this.getShopId());
@@ -314,13 +311,17 @@ public class QrCodeService extends ShopBaseService {
 	}
 
     /**
-     * 获取底层图片
+     * 	获取底层图片
      */
 	private BufferedImage getBgImg(Integer width,Integer height) {
+		String userBgPath = "image/wxapp/user_background.png";
+		return getBgImg(width,height,userBgPath);
+	}
+		
+	private BufferedImage getBgImg(Integer width,Integer height,String userBgPath) {
 		// 背景图片
     	BufferedImage bgImg = null;
     	InputStream loadFile = null;
-    	String userBgPath = "image/wxapp/user_background.png";
     	try {
     		loadFile = Util.loadFile(userBgPath);
 			bgImg = ImageIO.read(loadFile);
@@ -345,8 +346,35 @@ public class QrCodeService extends ShopBaseService {
 		return obj == null;
 	}
     
-    
-    
+    /**
+     * 	获取转赠会员卡图
+     *	@return	图片绝对路径
+     */
+    public String createCardGiveAwayImage(MemberCardRecord card) {
+    	logger().info("获取转赠会员卡图");
+    	final short type = 45;
+    	//	背景
+    	final String bgPath = "image/wxapp/card_give_away.png";
+    	BufferedImage giveWayBgImg = getBgImg(500,400,bgPath);
+    	
+    	//	头像
+    	BufferedImage cardVatar = getCardVatar();
+    	
+    	//	会员卡名称
+    	ImageUtil.addTwoImage(giveWayBgImg, cardVatar, 30, 20);
+    	ImageUtil.addFont(giveWayBgImg, card.getCardName(), ImageUtil.SourceHanSansCN(Font.BOLD, 30), 170, 90,
+				Color.WHITE);
+
+    	String relativePath =getQrCodeImgRelativePath(type)+format("T%sP%s_%s.jpg", type, card.getId(), DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE));
+    	byte[] imgBytes = ImageUtil.changeImageToByteArr(giveWayBgImg);
+    	try {
+			this.imageService.getUpYunClient().writeFile(relativePath, imgBytes, true);
+		} catch (Exception e) {
+			logger().error("转赠卡上传upyun失败");
+		}
+    	
+    	return imageService.imageUrl(relativePath);
+    }
     
     
     

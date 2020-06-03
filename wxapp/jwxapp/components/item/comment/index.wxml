@@ -3,13 +3,13 @@
     <view class="item_left">
       用户评价({{all}})
     </view>
-    <view class="item_right">查看全部></view>
+    <view class="item_right" data-type="0" bindtap="viewComment">查看全部></view>
   </view>
   <view class="label-content comment_box">
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>好评({{positive}})</text>
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>中评({{moderate}})</text>
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>差评({{negative}})</text>
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>有图({{hasPic}})</text>
+    <text class="label-content_style" data-type="1" bindtap="viewComment" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>好评({{positive}})</text>
+    <text class="label-content_style" data-type="2" bindtap="viewComment" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>中评({{moderate}})</text>
+    <text class="label-content_style" data-type="3" bindtap="viewComment" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>差评({{negative}})</text>
+    <text class="label-content_style" data-type="4" bindtap="viewComment" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>有图({{hasPic}})</text>
   </view>
   <view class="item_line"></view>
   <view class="flex_box">

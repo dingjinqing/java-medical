@@ -193,10 +193,235 @@ ALTER TABLE `b2c_user_address`    ADD COLUMN `del_flag` tinyint(1) NOT NULL DEFA
 ALTER TABLE `b2c_user_address`    ADD COLUMN `is_default` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否是默认地址 0不是 1是';
 /***********************2.10*********************END*/
 
+/***********************2.11*********************BEGIN*/
+-- 2020-03-26 砍价支持选择多商品
+ALTER TABLE `b2c_bargain` MODIFY COLUMN `goods_id` varchar(9999)  COMMENT '商品ID';
+ALTER TABLE `b2c_bargain` ADD COLUMN `first` int(9) NOT NULL DEFAULT 0 COMMENT '优先级';
+CREATE TABLE IF NOT EXISTS `b2c_bargain_goods` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
+  `bargain_id` int(9) DEFAULT '0' COMMENT '砍价活动主键',
+  `goods_id` int(9) DEFAULT '0',
+  `expectation_price` decimal(10,2) DEFAULT '0.00' COMMENT '指定金额结算模式的砍价底价 或 砍到任意金额结算模式的结算金额上限',
+  `floor_price` decimal(10,2) DEFAULT '0.00' COMMENT '任意金额结算模式的结算金额底价',
+  `stock` int(9) DEFAULT '0' COMMENT '活动库存',
+  `sale_num` int(9) DEFAULT '0' COMMENT '销量',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+)COMMENT='砍价活动商品表';
+
+-- 2020-03-30 门店表添加支持同城配送字段
+ALTER TABLE `b2c_store` ADD COLUMN `city_service` tinyint(1) DEFAULT '0' COMMENT '支持同城配送 1:支持';
+
+-- 2020-03-30 新增b2c_article表
+CREATE TABLE IF NOT EXISTS `b2c_article` (
+  `article_id` int(11) NOT NULL AUTO_INCREMENT,
+  `category_id` int(11) NOT NULL DEFAULT '1' COMMENT '文章分类',
+  `title` varchar(256) DEFAULT NULL,
+  `author` varchar(50)  DEFAULT NULL,
+  `keyword` varchar(256) DEFAULT NULL COMMENT '标签',
+  `desc` varchar(1024)  DEFAULT NULL COMMENT '文章描述',
+  `content` text ,
+  `is_recommend` tinyint(1) DEFAULT '0' COMMENT '1:推荐',
+  `is_top` tinyint(1) DEFAULT '0' COMMENT '1:置顶',
+  `status` tinyint(1) DEFAULT '0' COMMENT '0未发布,1已发布',
+  `pub_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `last_visit_time` datetime DEFAULT NULL,
+  `pv` int(11) DEFAULT NULL,
+  `show_footer` tinyint(1) DEFAULT '0' COMMENT '0:不在footer显示，1：显示',
+  `part_type` tinyint(1) DEFAULT '0' COMMENT '文章所属类型：0普通，1门店公告类文章',
+  `cover_img` varchar(50) DEFAULT NULL COMMENT '封面图片路径',
+  `is_del` tinyint(1) DEFAULT '0' COMMENT '0未删除,1已删除',
+  PRIMARY KEY (`article_id`),
+  KEY `is_recommend` (`is_recommend`),
+  KEY `is_top` (`is_top`)
+);
+
+-- 2020年3月30日 kdc 预售改为多商品 增加优先级 和预告时间
+ALTER TABLE `b2c_presale` MODIFY COLUMN `goods_id` varchar(1000) NOT NULL DEFAULT 0 COMMENT '商品id 1,2,4' ;
+ALTER TABLE `b2c_presale` ADD COLUMN `pre_time` int(8) NOT NULL DEFAULT 0 COMMENT '预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数' ;
+ALTER TABLE `b2c_presale` ADD COLUMN `first` int(8) NULL DEFAULT 1 COMMENT '优先级' ;
+
+CREATE TABLE IF NOT EXISTS `b2c_live_goods` (
+  `id`  int NOT NULL AUTO_INCREMENT,
+  `live_id`  int NOT NULL COMMENT '直播表关联ID',
+  `room_id`  int NOT NULL COMMENT '直播间ID',
+  `goods_id`  int NULL DEFAULT 0,
+  `cover_img`  varchar(255) NULL COMMENT '商品图',
+  `url`  varchar(255) NULL COMMENT '小程序路径',
+  `price`  decimal(10,2) NULL,
+  `name`  varchar(255) NULL COMMENT '商品名称',
+  `add_cart_num`  int NULL DEFAULT 0 COMMENT '加购数',
+  `price_end`  decimal(10,2) NULL DEFAULT 0 COMMENT '另一个价格',
+  `price_type`  tinyint(1) NULL DEFAULT 1 COMMENT '价格形式：1一口价 2价格区间 3显示折扣价',
+  `del_flag`  tinyint(1) NULL DEFAULT 0,
+  `del_time`  datetime NULL,
+  PRIMARY KEY (`id`),
+  INDEX `live_id` (`live_id`),
+  INDEX `room_id` (`room_id`),
+  INDEX `goods_id` (`goods_id`)
+);
+
+CREATE TABLE IF NOT EXISTS `b2c_live_broadcast` (
+  `id`  int NOT NULL AUTO_INCREMENT ,
+  `room_id`  int NOT NULL COMMENT '直播间ID' ,
+  `name`  varchar(255) NOT NULL COMMENT '直播间名称' ,
+  `live_status`  smallint NULL DEFAULT 0 COMMENT '直播状态 101: 直播中, 102: 未开始, 103: 已结束, 104: 禁播, 105: 暂停中, 106: 异常, 107: 已过期' ,
+  `start_time`  datetime NULL COMMENT '计划开始时间' ,
+  `end_time`  datetime NULL COMMENT '计划结束时间' ,
+  `anchor_name`  varchar(100) NULL DEFAULT NULL COMMENT '主播名' ,
+  `cover_img`  varchar(255) NULL DEFAULT NULL COMMENT '封面图片 url' ,
+  `anchor_img`  varchar(255) NULL DEFAULT NULL COMMENT '直播间图片url' ,
+  `add_time`  datetime NULL DEFAULT CURRENT_TIMESTAMP ,
+  `update_time`  datetime NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP ,
+  `del_flag`  tinyint(1) NULL DEFAULT 0,
+  `del_time`  datetime NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `room_id` (`room_id`)
+);
+-- 2020年04月03日 商品规格表添加规格重量属性
+ALTER TABLE b2c_goods MODIFY goods_weight DECIMAL(10,3) DEFAULT NULL COMMENT '商品重量，默认规格重量或自定义规格中的最小重量';
+ALTER TABLE b2c_goods_spec_product add COLUMN prd_weight DECIMAL(10,3) DEFAULT NULL COMMENT '规格重量';
+ALTER TABLE b2c_goods_spec_product_bak add COLUMN prd_weight DECIMAL(10,3) DEFAULT NULL COMMENT '规格重量';
+
+-- 2020年04月06日  新增会员卡续费表
+CREATE TABLE IF NOT EXISTS `b2c_card_renew` (
+  `id` int(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(20) NOT NULL DEFAULT '0' COMMENT '用户id',
+  `card_id` int(20) NOT NULL DEFAULT '0' COMMENT '续费会员卡id',
+  `card_no` varchar(32) NOT NULL DEFAULT '' COMMENT '会员卡号',
+  `add_time` timestamp NULL DEFAULT NULL COMMENT '续费时间',
+  `renew_money` decimal(10,2) DEFAULT '0.00' COMMENT '续费金额',
+  `renew_time` int(11) DEFAULT NULL COMMENT '续费时间',
+  `renew_date_type` tinyint(1) DEFAULT NULL COMMENT '0:日，1:周 2: 月',
+  `renew_type` tinyint(1) DEFAULT '0' COMMENT '0:现金 1：积分',
+  `payment` varchar(90) NOT NULL COMMENT '支付方式',
+  `pay_code` varchar(30) NOT NULL DEFAULT '' COMMENT '支付代号',
+  `prepay_id` varchar(191) DEFAULT NULL COMMENT '微信支付Id，用于发送模板消息',
+  `message` varchar(191) DEFAULT '' COMMENT '备注',
+  `renew_order_sn` varchar(20) NOT NULL DEFAULT '' COMMENT '续费单号',
+  `money_paid` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单应付金额',
+  `order_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单状态 0：待支付，1：已完成',
+  `member_card_no` varchar(32) DEFAULT '0' COMMENT '会员卡NO',
+  `member_card_redunce` decimal(10,2) DEFAULT '0.00' COMMENT '会员卡抵扣金额',
+  `use_score` decimal(10,2) DEFAULT '0.00' COMMENT '积分抵扣金额',
+  `use_account` decimal(10,2) DEFAULT '0.00' COMMENT '用户消费余额',
+  `pay_time` timestamp NULL DEFAULT NULL COMMENT '支付时间',
+  `ali_trade_no` varchar(60) DEFAULT '' COMMENT '支付宝交易单号',
+  `renew_expire_time` timestamp NULL DEFAULT NULL COMMENT '续费后过期时间',
+  PRIMARY KEY (`id`)
+);
+
+-- 商品标签修改del_flag字段类型，添加is_none字段
+ALTER TABLE b2c_goods_label MODIFY del_flag TINYINT not NULL default 0 COMMENT '是否删除 0否 1是';
+ALTER TABLE b2c_goods_label add COLUMN is_none TINYINT(1) DEFAULT 0 COMMENT '是否不选择商品： 1：是  0： 否';
+
+ALTER TABLE `b2c_order_info` ADD COLUMN `room_id` INT(11) NULL DEFAULT '0' COMMENT '直播间ID';
+-- 商品表添加直播间id字段
+ALTER TABLE b2c_goods add COLUMN room_id int(4) COMMENT '直播间id';
+-- 2020年04月10日 添加自定义激活配置
+ALTER TABLE `b2c_member_card` ADD COLUMN `custom_options` text COMMENT '自定义激活信息配置';
 
 
+-- 2020年04月10日 添加自定义激活配置
+ALTER TABLE `b2c_member_card` ADD COLUMN `custom_options` text COMMENT '自定义激活信息配置';
+
+-- 2020-04-10 分裂优惠券分享领取记录
+CREATE TABLE IF NOT EXISTS `b2c_division_receive_record` (
+  `id` mediumint(8) NOT NULL AUTO_INCREMENT,
+  `user` mediumint(8)  NOT NULL DEFAULT '0' COMMENT '分享的user_id',
+  `user_id` mediumint(8)  NOT NULL DEFAULT '0' COMMENT '分享后领取的user_id',
+  `coupon_id` mediumint(8)  NOT NULL DEFAULT '0' COMMENT '分裂优惠券id 对应优惠券表中id',
+  `coupon_sn` varchar(60) NOT NULL DEFAULT '' COMMENT '分裂优惠券的sn唯一标识',
+  `receive_num` int(11) NOT NULL DEFAULT '0' COMMENT '可领取个数',
+  `receive_per_num` smallint(3) NOT NULL DEFAULT '0' COMMENT '分裂优惠券领券人数是否限制 0不限制 1限制',
+  `source` tinyint(2) DEFAULT NULL COMMENT '送券活动来源',
+  `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '打折或减价量',
+  `receive_coupon_sn` varchar(60) NOT NULL DEFAULT '' COMMENT '领取的sn唯一标识',
+  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0主分裂优惠券 1 点击链接领取的',
+  `is_share` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0未分享 1分享',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '领取时间',
+  PRIMARY KEY (`id`),
+  KEY `user` (`user`)
+);
+-- 2020年4月13日 增加分裂优惠券是否可用
+ALTER TABLE `b2c_customer_avail_coupons` ADD COLUMN `division_enabled` tinyint(1) NOT NULL  DEFAULT 0 COMMENT '是否可用,0可用 1不可用(只适用分裂优惠券)';
+
+-- 2020年04月13日 添加自定义激活信息
+ALTER TABLE `b2c_card_examine` ADD COLUMN `custom_options` text COMMENT '自定义激活信息';
+
+-- 2020年04月13日 修改会员卡续费表字段
+ALTER TABLE `b2c_card_renew` MODIFY COLUMN `id` int(20) NOT NULL AUTO_INCREMENT;
+
+-- 2020年04月14日 添加会员卡同步标签
+ALTER TABLE `b2c_member_card` ADD COLUMN `card_tag` tinyint(1) DEFAULT 0 COMMENT '是否开启给领卡用户打标签0否，1是';
+ALTER TABLE `b2c_member_card` ADD COLUMN `card_tag_id` varchar(20) COMMENT '领卡打标签id';
+
+-- 2020年04月14日 添加会员卡转赠字段
+ALTER TABLE `b2c_member_card` ADD COLUMN `card_give_away` tinyint(1) DEFAULT 0 COMMENT '0:不可转赠，1:可以转赠';
+ALTER TABLE `b2c_member_card` ADD COLUMN `card_give_continue` tinyint(1) DEFAULT 0 COMMENT '0:不可继续转赠，1:可以继续转赠';
+ALTER TABLE `b2c_member_card` ADD COLUMN `most_give_away` int(10) DEFAULT 0 COMMENT '最多可转赠多少次 0不限制';
 
 
+-- 2020年04月15日 添加限次卡转赠记录表
+CREATE TABLE IF NOT EXISTS `b2c_give_card_record` (
+  `id`int(20) NOT NULL AUTO_INCREMENT,
+  `user_id` int(8)  not null default 0 comment '转赠人用户ID',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP comment '转赠时间',
+  `card_no` varchar(32) default '' not null comment '转赠会员卡号',
+  `get_user_id` int(8) not null default 0 comment '获赠人用户ID',
+  `get_time` timestamp null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '领取时间',
+  `get_card_no` varchar(32) default '' not null comment '获赠会员卡号',
+  `flag` tinyint(1) default '0' comment '正常 1放弃 2 转赠成功',
+  `deadline` timestamp NULL DEFAULT NULL comment '链接截止时间',
+  PRIMARY KEY (`id`)
+);
+
+-- 2020年04月15日 在用户卡表中添加转赠字段
+ALTER TABLE `b2c_user_card` ADD COLUMN `give_away_status` tinyint(1) DEFAULT 0 COMMENT '0:正常，1:转赠中，2转赠成功';
+ALTER TABLE `b2c_user_card` ADD COLUMN `give_away_surplus` int(11) DEFAULT NULL COMMENT '卡剩余赠送次数';
+ALTER TABLE `b2c_user_card` ADD COLUMN `card_source` tinyint(1) NOT NULL DEFAULT 0 COMMENT '卡来源 0:正常  2 别人转赠 ';
+
+-- 2020年04月16日 修改备注
+ALTER TABLE `b2c_user_card` MODIFY COLUMN `flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0:正常，1:删除 2 转赠中 3 已转赠';
+
+-- 2020年04月16日 用户标签添加字段
+ALTER TABLE `b2c_user_tag` ADD COLUMN `source` smallint(2) NOT NULL DEFAULT 0 COMMENT '标签来源 0 后台设置 1领券 2领卡';
+ALTER TABLE `b2c_user_tag` ADD COLUMN `tool_id` int(11) COMMENT '优惠券或会员卡id';
+ALTER TABLE `b2c_user_tag` ADD COLUMN `times` smallint(5) DEFAULT 1 COMMENT '打标签次数，会员卡或优惠券过期停用时次数减一，为0时删除';
+
+--订单返利商品表添加 商品行ID
+ALTER TABLE `b2c_order_goods_rebate` ADD COLUMN `rec_id` int(11) NOT NULL DEFAULT 0 COMMENT '商品行ID';
+
+
+-- 2020年04月21日 ws
+ALTER TABLE `b2c_order_goods` MODIFY COLUMN `fanli_strategy` VARCHAR ( 2999 ) DEFAULT '' COMMENT '返利配置详情';
+
+
+-- 2020年04月24日 添加 已选活动商品表
+CREATE TABLE IF NOT EXISTS `b2c_checked_goods_cart` (
+	`id` int(20) NOT NULL AUTO_INCREMENT,
+	`action` TINYINT(1) DEFAULT 0 COMMENT '活动类型: 1：限次卡兑换',
+	`identity_id` VARCHAR(50) DEFAULT '0' NULL COMMENT '活动ID',
+	`user_id` INT(8) NOT NULL DEFAULT 0 COMMENT '用户ID',
+	`goods_id` INT(8) NOT NULL DEFAULT 0 COMMENT '商品ID',
+	`product_id` INT(11) NOT NULL DEFAULT 0 COMMENT '商品规格组合的产品ID',
+	`goods_number` INT(8) NOT NULL DEFAULT 1 COMMENT '商品数量',
+	`create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+	`update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+	PRIMARY KEY (`id`),
+	INDEX `user_id` (`user_id`),
+  	INDEX `action` (`action`),
+  	INDEX `identity_id` (`identity_id`),
+  	INDEX `product_id` (`product_id`)
+);
+-- 2020年5月14日 虚拟商品会员卡下单增加会员卡卡号字段
+ALTER TABLE `b2c_virtual_order` ADD COLUMN `send_card_no` varchar(32) NOT NULL COMMENT '订单发送的会员卡no' ;
+-- 2020-05-21 渠道分析字段设置默认值
+ALTER TABLE `b2c_channel` ALTER COLUMN `page_id` SET DEFAULT '0';
+ALTER TABLE `b2c_channel` ALTER COLUMN `goods_id` SET DEFAULT '0';
+/*********************2.11*************************END*/
 
 
 

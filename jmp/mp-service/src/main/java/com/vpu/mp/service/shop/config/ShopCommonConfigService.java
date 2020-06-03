@@ -1,9 +1,6 @@
 package com.vpu.mp.service.shop.config;
 
-import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
-import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
-import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
+import com.vpu.mp.service.pojo.shop.config.*;
 import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +19,8 @@ public class ShopCommonConfigService extends BaseShopConfigService{
     ShopShareConfig defaultShopShareConfig;
     @Autowired
     ShowCartConfig defaultShowCartConfig;
+    @Autowired
+    GoodsShareConfig defaultGoodsShareConfig;
 
 	/**
 	 * 是否显示前端店铺logo
@@ -176,6 +175,18 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      */
     final public static String K_DEFAULT_SORT = "default_sort";
 
+    /**
+     * 商品重量配置项设置
+     */
+    final public static String GOODS_WEIGHT_CFG = "goods_weight_cfg";
+    /**
+     * 商品条码配置项设置
+     */
+    final public static String NEED_PRD_CODES = "need_prd_codes";
+    /**
+     * 商品分享配置
+     */
+    final public static String GOODS_SHARE_CFG = "goods_share_cfg";
 
     /**
 	 * 是否显示Logo配置
@@ -713,7 +724,69 @@ public class ShopCommonConfigService extends BaseShopConfigService{
         return this.set(K_DEFAULT_SORT, value,Integer.class);
     }
 
+    /**
+     * 获取商品重量配置项设置
+     * @return
+     */
+    public Byte getGoodsWeightCfg() {
+        return this.get(GOODS_WEIGHT_CFG, Byte.class, (byte)0);
+    }
 
+    /**
+     * 设置商品重量配置项
+     * @param value 0 或者 1
+     * @return
+     */
+    public int setGoodsWeightCfg(Byte value) {
+        Assert.isTrue(value ==(byte)0 || value == (byte)1,"setGoodsWeightCfg need value equal zero or one");
+        return this.set(GOODS_WEIGHT_CFG, value,Byte.class);
+    }
+
+    /**
+     * 获取商品条码配置项设置
+     * @return
+     */
+    public Byte getNeedPrdCodes() {
+        return this.get(NEED_PRD_CODES, Byte.class, (byte)0);
+    }
+
+    /**
+     * 设置商品条码配置项
+     * @param value 0 或者 1
+     * @return
+     */
+    public int setNeedPrdCodes(Byte value) {
+        Assert.isTrue(value ==(byte)0 || value == (byte)1,"setNeedPrdCodes need value equal zero or one");
+        return this.set(NEED_PRD_CODES, value,Byte.class);
+    }
+    /**
+     * 商品分享配置
+     * @return
+     */
+    public GoodsShareConfig getGoodsShareConfig() {
+        return this.getJsonObject(GOODS_SHARE_CFG, GoodsShareConfig.class, defaultGoodsShareConfig);
+    }
+
+    /**
+     * 设置店铺分享配置
+     * @param value 0 或者 1
+     * @return
+     */
+    public int setGoodsShareConfig(GoodsShareConfig value) {
+        Assert.isTrue(value != null,"setGoodsShareConfig need value not null");
+        return this.setJsonObject(GOODS_SHARE_CFG, value);
+    }
+
+    /**
+     * 获取商品编辑相关店铺默认配置
+     * @return {@link GoodsCommonConfig getGoodsCommonConfig}
+     */
+    public GoodsCommonConfig getGoodsCommonConfig(){
+        GoodsCommonConfig goodsCommonConfig =new GoodsCommonConfig();
+        goodsCommonConfig.setGoodsWeightCfg(this.getGoodsWeightCfg());
+        goodsCommonConfig.setNeedPrdCodes(this.getNeedPrdCodes());
+        return goodsCommonConfig;
+    }
     /**
 	 * 取通用配置
 	 */
@@ -736,6 +809,9 @@ public class ShopCommonConfigService extends BaseShopConfigService{
             commonCfg.setShareConfig(this.getShareConfig());
             commonCfg.setBindMobile(this.getBindMobile());
             commonCfg.setGeographicLocation(this.getGeoLocation());
+            commonCfg.setGoodsWeightCfg(this.getGoodsWeightCfg());
+            commonCfg.setNeedPrdCodes(this.getNeedPrdCodes());
+            commonCfg.setGoodsShareCfg(this.getGoodsShareConfig());
 		});
 
         return commonCfg;
@@ -765,6 +841,9 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 			this.setShareConfig(commonCfg.getShareConfig());
 			this.setBindMobile(commonCfg.getBindMobile());
 			this.setGeoLocation(commonCfg.getGeographicLocation());
+            this.setGoodsWeightCfg(commonCfg.getGoodsWeightCfg());
+            this.setNeedPrdCodes(commonCfg.getNeedPrdCodes());
+            this.setGoodsShareConfig(commonCfg.getGoodsShareCfg());
 		});
 		return true;
 	}

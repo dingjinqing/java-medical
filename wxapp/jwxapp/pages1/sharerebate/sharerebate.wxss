@@ -1,0 +1,95 @@
+.goods-content{
+  width: 670rpx;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 20rpx;
+  display: flex;
+  border-radius: 8rpx;
+}
+.goods-content > .goods-image{
+  width: 220rpx;
+  height: 220rpx;
+  margin-right: 20rpx;
+}
+.goods-content > .goods-info{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.a-tips{
+  width: 670rpx;
+  margin: 0 auto;
+  background: rgb(252, 249, 221);
+  color: rgb(255, 102, 0);
+  font-size: 24rpx;
+  padding: 20rpx;
+  margin-top: 16rpx;
+  line-height: 40rpx;
+}
+.spec-set-content{
+  background-color: #fff;
+  margin: 0 auto;
+  margin-top: 16rpx;
+  display: flex;
+  flex-direction: column;
+  width: 670rpx;
+  padding: 20rpx;
+  border-radius: 8rpx;
+}
+.spec-set-content > view+view{
+  margin-top: 36rpx;
+}
+.spec-set-content > .spec-name,.spec-set-content > view > .item-title{
+  color: #333;
+}
+.spec-set-content > .spec-item-info{
+  display: flex;
+}
+.spec-set-content > .spec-item-info > .item-right{
+  flex: 1;
+}
+.price-set{
+  display: flex;
+  flex-direction: column;
+}
+.price-set > .price-input{
+  display: flex;
+  align-items: center;
+  padding-bottom: 20rpx;
+  border-bottom: 2rpx solid #eee;
+}
+.price-set > .price-input > input {
+  flex: 1;
+}
+.price-set > .price-input > .reset{
+  width: 100rpx;
+  height: 48rpx;
+  line-height: 48rpx;
+  border: 2rpx solid;
+  text-align: center;
+  border-radius: 24rpx;
+  font-size: 24rpx;
+}
+.footer-button{
+  position: fixed;
+  bottom: 0;
+  width: 750rpx;
+  z-index: 2;
+}
+.footer-button > .a-tips{
+  width: 750rpx;
+  box-sizing: border-box;
+}
+.footer-button > .btn_share{
+  color: #fff;
+  border: none;
+  padding: 0;
+  font-size: 30rpx;
+  border-radius: 0;
+  height: 100rpx;
+  line-height: 100rpx;
+  text-align: center;
+}
+.footer-text{
+  padding-bottom: 200rpx !important;
+}

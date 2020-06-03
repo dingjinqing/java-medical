@@ -210,7 +210,7 @@
                       @change="handleOnClickUserChange"
                     >选择指定的会员 </el-checkbox>
                     <span v-if="params.onClickUser">
-                      <span style="margin-left:-15px">
+                      <span>
                         <el-button
                           @click="handleAddMember"
                           type="text"
@@ -259,6 +259,7 @@
                               style="width:120px"
                               size="small"
                               v-model="item.ipt"
+                              onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
                             > </el-input>
                             <span>{{ item.label | filterA  }}</span>
                           </span>
@@ -294,7 +295,7 @@
                 <!-- 发送时间 -->
                 <el-form-item
                   :label="labels.label7"
-                  :rules="[{required: true }]"
+                  prop="timeRules"
                 >
                   <div>
                     <el-radio
@@ -325,6 +326,8 @@
                       :style="senAction===2?'display:none':''"
                     ></div>
                   </div>
+                </el-form-item>
+                <el-form-item prop="timeRules2">
                   <div style="color:#999;fontSize:12px;margin:5px 0">
                     所有可送达的用户均会第一时间收到一次此消息
                   </div>
@@ -372,9 +375,10 @@
       />
       <!-- 选择商品弹窗 -->
       <choosingGoods
-        @res="getRes"
+        @resultGoodsDatas="getRes"
         :tuneUpChooseGoods="tuneUpChooseGoods"
         :chooseGoodsBack="params.goodsIdList"
+        :checkedNumMax="3"
       />
       <!-- 选择内容模板消息 -->
       <chooseTemplateDialog
@@ -387,6 +391,8 @@
       <getUserDialog
         @dialog-cancel="closeDialog"
         :dialogVisible="dialogVisible"
+        :userKey="userKey"
+        @handleToGet="handleToGet"
       />
     </el-card>
     <!--保存时页面勾选提示弹窗-->
@@ -426,7 +432,7 @@ import memberListDialog from './memberListDialog'
 import getUserDialog from './getUserDialog'
 import chooseSelect from '@/components/admin/chooseSelect/chooseSelect'
 import dateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
-import { allCardApi, contentAddApi, getUserNumberApi, addMessageApi } from '@/api/admin/marketManage/messagePush.js'
+import { allCardApi, contentAddApi, getUserNumberApi, addMessageApi, xgMessageApi } from '@/api/admin/marketManage/messagePush.js'
 import { delObj } from '@/util/formatData'
 export default {
   name: 'addMessagePush',
@@ -441,6 +447,36 @@ export default {
     getUserDialog
   },
   data () {
+    var validatePass = (rule, value, callback) => {
+      console.log(value)
+
+      if (this.senAction === 2) {
+        console.log(new Date(this.endTime), Date.now())
+        if (!this.startTime) {
+          callback(new Error('请选择发送时间'))
+        } else if (new Date(this.endTime) < Date.now()) {
+          callback(new Error('持续发送的结束时间不能小于当前时间'))
+        } else {
+          callback()
+        }
+      } else {
+        callback()
+      }
+    }
+    var validatePass2 = (rule, value, callback) => {
+      console.log(value)
+      if (this.senAction === 4) {
+        if (!this.startTimeTiming) {
+          callback(new Error('请选择发送时间'))
+        } else if (new Date(this.startTimeTiming) < Date.now()) {
+          callback(new Error('定时发送的时间不能小于当前时间'))
+        } else {
+          callback()
+        }
+      } else {
+        callback()
+      }
+    }
     return {
       checklistVisible: false, // 是否页面勾选弹窗flag
       checkedData: [], // 初始化弹窗选中的行
@@ -533,6 +569,12 @@ export default {
         content: [
           { validator: this.checkMessageContent, trigger: 'blur', required: true }
 
+        ],
+        timeRules: [
+          { validator: validatePass, trigger: 'blur', required: true }
+        ],
+        timeRules2: [
+          { validator: validatePass2, trigger: 'blur', required: true }
         ]
       },
       /**
@@ -640,7 +682,8 @@ export default {
       tuneUpSelectLink: false,
       isJudgeStartTimeOne: '',
       isJudgeStartTimeTwo: '',
-      userKey: null
+      userKey: null,
+      startTimeTiming: ''
     }
   },
   watch: {
@@ -650,15 +693,16 @@ export default {
           this.startTime = this.moment().format('YYYY-MM-DD HH:mm:ss')
           break
         case 2:
-          this.startTime = this.time.startTime
-          this.endTime = this.time.endTime
+          // this.startTime = this.time.startTime
+          // this.endTime = this.time.endTime
           break
         case 4:
-          this.startTime = this.time.startTime
+          // this.startTimeTiming = this.time.startTime
           break
         default:
           break
       }
+      this.$refs['form'].validate(() => { })
     }
   },
   created () {
@@ -702,6 +746,12 @@ export default {
       } else {
         link = this.pageLink
       }
+      let startTime = ''
+      if (this.senAction === 2) {
+        startTime = this.startTime
+      } else {
+        startTime = this.startTimeTiming
+      }
       const params = {
         name: this.formData.name,
         title: this.formData.title,
@@ -712,7 +762,7 @@ export default {
         userInfo: this.params,
         sendAction: this.senAction,
         userKey: this.userKey,
-        startTime: this.startTime,
+        startTime: startTime,
         endTime: this.endTime
       }
       console.log(params)
@@ -753,7 +803,7 @@ export default {
     },
     getTime2 (val) {
       this.time = val
-      this.startTime = val.startTime
+      this.startTimeTiming = val.startTime
       this.isJudgeStartTimeTwo = val.startTime
     },
     // 关闭会员弹窗
@@ -809,6 +859,7 @@ export default {
     handleIpt (item) {
       console.log(item)
       const { key, ipt } = item
+      if (isNaN(ipt)) return
       for (let a in this.params.customRuleInfo) {
         if (a === key) {
           switch (a) {
@@ -845,7 +896,7 @@ export default {
           value: `指定时间内有登录记录`
         })
         this.params.customRuleInfo.loginEnd = ``
-        this.params.loginStart.loginStart = ``
+        this.params.customRuleInfo.loginStart = ``
         this.fetchUserList(this.params)
       } else {
         console.log(val)
@@ -913,15 +964,16 @@ export default {
       }
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
-    getRes (ids, urls) {
-      if (ids.length > 3) {
-        this.$message.warning('最多选择3个商品')
-      } else {
-        this.params.goodsIdList = ids
-        this.imgsList = urls
-        // 发送获取人数
-        this.fetchUserList(this.params)
-      }
+    getRes (res) {
+      let id = []
+      res.forEach((item, index) => {
+        id.push(item.goodsId)
+      })
+      console.log(res, id)
+      this.params.goodsIdList = id
+      this.imgsList = res
+      // 发送获取人数
+      this.fetchUserList(this.params)
     },
     // 删除图片
     handleDelImg (id) {
@@ -929,7 +981,7 @@ export default {
         return
       }
       this.imgsList = this.imgsList.filter(item => item.goodsId !== id)
-      this.params.goodsIdList = this.goodsIdList.filter(item => item !== id)
+      this.params.goodsIdList = this.params.goodsIdList.filter(item => item !== id)
       this.fetchUserList(this.params)
     },
     // 获取选中的path
@@ -974,12 +1026,15 @@ export default {
     },
     // 获取发送人群数量
     fetchUserList (params) {
+      if (this.userKey) {
+        params.userKey = this.userKey
+      }
+      console.log(params)
       getUserNumberApi(params).then(res => {
-        const { error, content } = res
-        if (error === 0) {
+        if (res.error === 0) {
           console.log(res) // 返回发送人群的数量
-          const { userKey, userNumber } = content
-          console.log(`key+num${userKey}, ${userNumber}`)
+          const { userKey, userNumber } = res.content
+          console.log(userKey)
           this.userNumber = userNumber
           this.userKey = userKey
         }
@@ -1006,6 +1061,7 @@ export default {
       this.fetchUserList(this.params)
     },
     loginStartAndLoginEnd (val) {
+      console.log(val)
       const { startTime, endTime } = val
       this.loginStart = startTime
       this.loginEnd = endTime
@@ -1025,6 +1081,7 @@ export default {
             message: '请选择指定商品',
             showClose: true
           })
+          return false
         }
         isNone = false
       } else if (this.params.onClickCard) {
@@ -1033,6 +1090,7 @@ export default {
             message: '请选择会员卡',
             showClose: true
           })
+          return false
         }
         isNone = false
       } else if (this.params.onClickTag) {
@@ -1041,6 +1099,7 @@ export default {
             message: '请选择会员标签',
             showClose: true
           })
+          return false
         }
         isNone = false
       } else if (this.params.onClickUser) {
@@ -1049,22 +1108,41 @@ export default {
             message: '请选择指定会员',
             showClose: true
           })
+          return false
         }
         isNone = false
-      } else if (this.senAction === 2) {
-        if (!this.isJudgeStartTimeOne) {
+      } else if (this.params.onClickCustomRule) {
+        if (!this.optionsList.length && !this.showTime) {
           this.$message.error({
-            message: '持续发送请选择日期区间',
+            message: '未选择自定义选项',
             showClose: true
           })
-        }
-        isNone = false
-      } else if (this.senAction === 4) {
-        if (!this.isJudgeStartTimeTwo) {
-          this.$message.error({
-            message: '定时发送请选择发送日期',
-            showClose: true
+          return false
+        } else {
+          console.log(this.optionsList, this.params.customRuleInfo.loginStart)
+          let flag = false
+          this.optionsList.forEach((item, index) => {
+            if (isNaN(item.ipt)) {
+              item.ipt = ''
+            }
+            if (item.ipt === '') {
+              flag = true
+            }
           })
+          if (flag) {
+            this.$message.error({
+              message: '请完善自定义信息',
+              showClose: true
+
+            })
+            return false
+          } else if (this.showTime && !this.params.customRuleInfo.loginStart) {
+            this.$message.error({
+              message: '请完善自定义信息',
+              showClose: true
+            })
+            return false
+          }
         }
         isNone = false
       }
@@ -1084,6 +1162,24 @@ export default {
     handleToSetCheck () {
       this.$router.push({
         name: 'message_config'
+      })
+    },
+    // 获取人群弹窗选中数据
+    handleToGet (res) {
+      console.log(res)
+      let arr = []
+      res.forEach((item, index) => {
+        arr.push(item.userId)
+      })
+      let params = {
+        userIds: arr,
+        userKey: this.userKey
+      }
+      xgMessageApi(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.fetchUserList(this.params)
+        }
       })
     }
   }

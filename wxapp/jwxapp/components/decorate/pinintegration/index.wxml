@@ -1,7 +1,7 @@
 <wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="pin_content" style='background:{{m.module_bg == 1 ? m.moude_img1: m.moude_img2}} no-repeat ; background-size:100%;margin-bottom:{{m.show_type == 1?"0":m.margin_bot}}rpx;' bindtap='bindToPinIntegration' data-act_id="{{m.act_id}}">
   <block wx:if="{{m.pin_title == '1'}}">
-    <view class="p1" style='color:{{m.font_color }}'>{{m.inte_total}}{{i18n.$t(localePack,'components.decorate.waitinForYou')}}，</view>
+    <view class="p1" style='color:{{m.font_color }}'>{{m.inte_total == 0 ? i18n.$t(localePack,'components.decorate.infinite') : m.inte_total}}{{i18n.$t(localePack,'components.decorate.waitinForYou')}}，</view>
     <view class="p2" style='color:{{m.font_color}}'>{{i18n.$t(localePack,'components.decorate.cashForShopping')}}！</view>
   </block>
   <block wx:else>

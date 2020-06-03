@@ -352,6 +352,7 @@ export default {
   padding: 0 25px 0 45px;
   padding-left: 34px;
   position: absolute;
+  z-index: 300;
 }
 .left {
   float: left;
@@ -480,6 +481,7 @@ label {
   float: right;
   margin-right: 30px;
   cursor: pointer;
+  z-index: 3000;
 }
 .head_list_lang {
   position: absolute;
@@ -491,7 +493,7 @@ label {
   color: #333;
   text-align: center;
   top: 85px;
-  z-index: 1000;
+  z-index: 3000;
   box-shadow: 1px 1px 1px #ccc;
   border-radius: 3px;
 }

@@ -36,10 +36,10 @@
         <template v-if="form.judge_status === 1">
           <div>
             自动审核：<el-checkbox
-              v-model="form.activation"
+              v-model="form.auto_examine"
               :true-label='1'
               :false-label='0'
-              @change="activationChange"
+              @change="examineChange"
             >{{ $t('distribution.reviewedInvitation') }}</el-checkbox>
           </div>
           <div>
@@ -51,18 +51,18 @@
           </div>
           <div>
             <el-switch
-              v-model="form.auto_examine"
+              v-model="form.activation"
               :active-value='1'
               :inactive-value='0'
             ></el-switch>
-            <span v-if="form.auto_examine === 1">已开启</span>
-            <span v-if="form.auto_examine === 0">已关闭</span>
+            <span v-if="form.activation === 1">已开启</span>
+            <span v-if="form.activation === 0">已关闭</span>
             <span class="text">{{ $t('distribution.reviewedInfo') }}</span>
           </div>
 
           <!-- 审核信息 -->
           <div
-            v-if="form.auto_examine === 1"
+            v-if="form.activation === 1"
             style="width: 900px;"
           >
             <el-checkbox-group v-model="form.activation_cfg">
@@ -197,7 +197,7 @@
         <el-input
           size="small"
           style="width: 200px"
-          v-model="form.desc"
+          v-model="form.rebate_center_name"
         ></el-input>
       </el-form-item>
 
@@ -365,13 +365,13 @@
               <div class="userInfo">
                 <div class="leftInfo">
                   <img
-                    src="http://mpdevimg2.weipubao.cn/image/admin/user_touxiang.png"
+                    :src="this.$imageHost + '/image/admin/user_touxiang.png'"
                     alt=""
                   >
                 </div>
                 <div class="rightInfo">
                   <p>{{ $t('distribution.rebateNickname') }}</p>
-                  <p> {{ this.form.rebate_center_name }} </p>
+                  <p> {{ this.form.desc }} </p>
                 </div>
               </div>
             </div>
@@ -379,7 +379,7 @@
               <span class="codeArea">{{ $t('distribution.rebateCode') }}</span>
               <img
                 class="codeTips"
-                src="http://mpdevimg2.weipubao.cn/image/admin/usr_codes.png"
+                :src="this.$imageHost + '/image/admin/usr_codes.png'"
                 alt=""
               >
             </div>
@@ -389,7 +389,7 @@
               <span class="rightLabel">{{ $t('distribution.rebateWriting') }}</span>
               <el-input
                 size="small"
-                v-model="form.rebate_center_name"
+                v-model="form.desc"
                 class="inputWidth"
               ></el-input>
             </div>
@@ -419,7 +419,7 @@
                 >
                   <img
                     v-if="form.bg_img === ''"
-                    src="http://jmpdevimg.weipubao.cn/image/admin/shop_beautify/add_decorete.png"
+                    :src="$imageHost + '/image/admin/shop_beautify/add_decorete.png'"
                     alt=""
                   >
                   <img
@@ -459,10 +459,14 @@
         <el-form
           ref="customForm"
           :model="customForm"
-          label-width="21%"
-          :label-position="'right'"
+          :rules="fromRules"
+          label-width="100px"
+          label-position="right"
         >
-          <el-form-item label="选项类型：">
+          <el-form-item
+            label="选项类型："
+            prop="custom_type"
+          >
             <el-radio-group
               v-model="customForm.custom_type"
               @change="typeChange"
@@ -472,7 +476,10 @@
               <el-radio :label="2">文本</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="标题：">
+          <el-form-item
+            label="标题："
+            prop="custom_title"
+          >
             <el-input
               size="small"
               maxlength="20"
@@ -487,7 +494,11 @@
               v-for="(item, index) in customForm.option_arr"
               :key="index"
             >
-              <el-form-item :label="'选项' + (index + 1) + '：'">
+              <el-form-item
+                :label="'选项' + (index + 1) + '：'"
+                :prop="'option_arr.' + index + '.option_title'"
+                :rules="[{ required: true, message: '请填写内容', trigger: 'change' }]"
+              >
                 <el-input
                   size="small"
                   v-model="item.option_title"
@@ -568,7 +579,6 @@ export default {
   },
   data () {
     return {
-      imageHost: 'http://jmpdevimg.weipubao.cn/',
       vaildDate: null, // 有效期天数
       protectDate: null, // 保护期天数
       isEdit: false, // 自定义激活项弹窗是否编辑状态
@@ -579,9 +589,9 @@ export default {
         status: 0, // 分销开关
         judge_status: 0, // 分销员审核开关
         // 自动审核
-        activation: 0, // 是否需要提交个人信息
-        // 信息开关
         auto_examine: 0,
+        // 信息开关
+        activation: 0, // 是否需要提交个人信息
         // 自定义激活项
         custom_options: [],
         // invitationCode: 1, // 邀请码
@@ -589,15 +599,15 @@ export default {
         rank_status: 0, // 分销员排名开关
         vaild: 0, // 返利有效期
         protect_date: 0, // 分销员保护期
-        desc: '分销中心', // 分销中心页面名称
+        rebate_center_name: '分销中心', // 分销中心页面名称
         distribution_goods_type: 2, // 推荐商品(自定义)
         recommend_goods_id: '', // 推荐商品ID
         rebate_page_id: '', // 推广模版文案id
         withdraw_status: 1, // 返利体现开关
         withdraw_source: 'wx_mini', // 返利方式
         withdraw_cash: null, // 返利最小提现金额
-        rebate_center_name: '分享给你一个好物店铺快来购物吧！', // 邀请文案
-        bg_img: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_1.jpg' // 海报背景图
+        desc: '分享给你一个好物店铺快来购物吧！', // 邀请文案
+        bg_img: this.$imageHost + '/image/admin/dis_bg_1.jpg' // 海报背景图
       },
       // 分销员信息
       checkedList: [],
@@ -615,19 +625,19 @@ export default {
       tuneUpChooseGoods: false, // 商品弹窗
       goodsInfo: [], // 商品弹窗回调数据
       // 默认背景图
-      defaultValue: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_1.jpg',
+      defaultValue: this.$imageHost + '/image/admin/dis_bg_1.jpg',
       options: [{
         label: '背景图1',
-        value: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_1.jpg'
+        value: this.$imageHost + '/image/admin/dis_bg_1.jpg'
       }, {
         label: '背景图2',
-        value: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_2.jpg'
+        value: this.$imageHost + '/image/admin/dis_bg_2.jpg'
       }, {
         label: '背景图3',
-        value: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_3.jpg'
+        value: this.$imageHost + '/image/admin/dis_bg_3.jpg'
       }, {
         label: '背景图4',
-        value: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_4.jpg'
+        value: this.$imageHost + '/image/admin/dis_bg_4.jpg'
       }],
       tuneUp: false, //  调起添加图片弹窗flag
       imageSize: [640, 640], // 调起添加图片宽高
@@ -648,7 +658,13 @@ export default {
         }],
         option_ver: 1, // 条件验证
         is_checked: 1 // 是否选中
+      },
+      // 自定义表单校验
+      fromRules: {
+        custom_type: [{ required: true, message: '请填写选项类型', trigger: 'change' }],
+        custom_title: [{ required: true, message: '请填写标题', trigger: 'change' }]
       }
+
     }
   },
   watch: {
@@ -758,6 +774,7 @@ export default {
       if (value === 0) {
         this.customForm.option_ver = 1
       }
+      this.$refs['customForm'].clearValidate()
     },
 
     // 添加选项
@@ -774,33 +791,37 @@ export default {
 
     // 确定自定义激活项
     sureCustomHandler () {
-      if (!this.isEdit) {
-        // 添加
-        if (!this.customList) {
-          this.customList = []
-        }
-        this.customList.push(this.customForm)
-      } else {
-        // 编辑
-        this.customList.forEach((item, index) => {
-          if (this.editIndex === index) {
-            item = this.customForm
+      this.$refs['customForm'].validate((valid) => {
+        if (valid) {
+          if (!this.isEdit) {
+            // 添加
+            if (!this.customList) {
+              this.customList = []
+            }
+            this.customList.push(this.customForm)
+          } else {
+            // 编辑
+            this.customList.forEach((item, index) => {
+              if (this.editIndex === index) {
+                item = this.customForm
+              }
+            })
           }
-        })
-      }
-      this.customDialogVisible = false
-      // 清空弹窗数据
-      this.customForm = {
-        custom_type: 0,
-        custom_title: '',
-        option_arr: [{
-          option_title: ''
-        }, {
-          option_title: ''
-        }],
-        option_ver: 1,
-        is_checked: 0
-      }
+          this.customDialogVisible = false
+          // 清空弹窗数据
+          this.customForm = {
+            custom_type: 0,
+            custom_title: '',
+            option_arr: [{
+              option_title: ''
+            }, {
+              option_title: ''
+            }],
+            option_ver: 1,
+            is_checked: 0
+          }
+        }
+      })
     },
 
     // 取消自定义激活项
@@ -839,6 +860,16 @@ export default {
 
     // 保存分销配置
     addDistribution () {
+      // 分销审核项
+      var customFlag = this.form.custom_options.findIndex(item => { return item.is_checked === 1 })
+      if (this.form.activation === 1 && customFlag === -1 && this.form.activation_cfg.length === 0) {
+        this.$message.warning('分销员审核至少选择一项需提交信息')
+        return false
+      }
+      if (this.form.auto_examine === 1 && this.form.activation === 0) {
+        this.$message.warning('自动审核需要校验邀请码, 请开启分销员个人信息审核')
+        return false
+      }
       // 自定义激活项
       this.form.custom_options = this.customList
 
@@ -960,7 +991,7 @@ export default {
     },
 
     // 自动审核切换
-    activationChange (value) {
+    examineChange (value) {
       let hasCheck = this.form.activation_cfg.some((item, index) => {
         if (item === '邀请码') {
           return true
@@ -1047,7 +1078,6 @@ a {
   color: #919191;
   position: relative;
   height: 330px;
-  /* background-image: url(http://mpdevimg2.weipubao.cn/image/admin/dis_bg_1.jpg); */
   background-size: 100%, 100%;
 }
 

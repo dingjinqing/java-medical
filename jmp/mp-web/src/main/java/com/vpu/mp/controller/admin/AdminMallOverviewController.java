@@ -72,8 +72,8 @@ public class AdminMallOverviewController extends AdminBaseController {
      * @return json result
      */
     @PostMapping("/api/admin/malloverview/toDoItem")
-    public JsonResult toDoItem(){
-        ToDoItemVo vo = shop().mallOverview.toDoItem();
+    public JsonResult toDoItem(@RequestBody ToDoItemParam param){
+        ToDoItemVo vo = shop().mallOverview.toDoItem(param);
         return vo!=null ? success(vo) : fail(JsonResultMessage.OVERVIEW_MALL_TODOITEM_GET_FAILED);
     }
 
@@ -164,7 +164,7 @@ public class AdminMallOverviewController extends AdminBaseController {
             //数据展示
             .dataDemonstrationVo(shop().mallOverview.dataDemonstration(param.getDataDemonstrationParam()))
             //代办事项
-            .toDoItemVo(shop().mallOverview.toDoItem())
+            .toDoItemVo(shop().mallOverview.toDoItem(param.getToDoItemParam()))
             //店铺助手
             .shopAssistantVo(shopAssistantInvoke(param.getShopAssistantParam()))
             .build());

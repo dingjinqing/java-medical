@@ -265,7 +265,7 @@ export default {
     // 添加消息推送
     handleAddMessagePush () {
       this.$router.push({
-        path: `/api/admin/market/messagePush/addMessage`
+        path: '/admin/market/messagePush/addMessage'
       })
     },
     // 筛选

@@ -12,6 +12,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.config.message.MessageConfigVo;
 import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
+import com.vpu.mp.service.pojo.shop.distribution.UpdateUserLevel;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
@@ -37,6 +38,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -273,18 +275,16 @@ public class OrderOperateSendMessage extends ShopBaseService {
      * @param subOrder
      * @param orderId
      */
-    public void sendinsteadPayReturn(BigDecimal money, SubOrderInfoRecord subOrder, Integer orderId){
+    public void sendInsteadPayReturn(BigDecimal money, SubOrderInfoRecord subOrder, Integer orderId){
         logger().info("代付退款操作消息推送start");
         //商品名称
         String goodsName = getGoodsName(orderGoods.getByOrderId(orderId));
-        //小程序数据
-        //String[][] maData = new String[][] { { money.toString() }, { subOrder.getMainOrderSn() }, { applyTime }, { goodsName }, { "卖家已同意退款,将原路退回到你的账户" }, { Util.getdate(DateUtil.DATE_FORMAT_FULL) }};
         //公众号数据
         String[][] mpData = null;
         if(isSendMp(MessageTemplateConfigConstant.STATUS_RETURN_MONEY)) {
             mpData = new String[][] { { "退款" }, { "代付处理退款" }, { money.toString() }, { StringUtils.EMPTY }};
         }
-            //参数
+        //参数
         RabbitMessageParam param = RabbitMessageParam.builder()
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_REFUND).data(mpData).build())
             .page(null)
@@ -296,6 +296,37 @@ public class OrderOperateSendMessage extends ShopBaseService {
         logger().info("代付退款操作消息推送end");
     }
 
+    /**
+     * TODO　返利增加余额消息推送
+     */
+    public void rebate(Integer userId, String orderSn, BigDecimal money, Integer orderUserId) {
+        logger().info("返利增加余额消息推送start");
+
+        logger().info("返利增加余额消息推送end");
+    }
+
+    /**
+     * 分销员等级变换消息推送
+     * @param values
+     */
+    public void rebateUpdateUserLevel(Collection<UpdateUserLevel> values) {
+        if(!isSendMp(MessageTemplateConfigConstant.FAIL_REVIEW)) {
+           return;
+        }
+        for (UpdateUserLevel value: values) {
+            //公众号数据
+            String[][] mpData = new String[][] { { "等级提升通知" }, { value.getOldLevelName() }, { value.getNewLevelName() }, { DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL)}};
+            //参数
+            RabbitMessageParam param = RabbitMessageParam.builder()
+                .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_REFUND).data(mpData).build())
+                .page("pages/distribution/distribution")
+                .shopId(getShopId())
+                .userIdList(Collections.singletonList(value.getUserId()))
+                .type(RabbitParamConstant.Type.LEVEL_UP)
+                .build();
+            saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
+        }
+    }
     private String getGoodsName(List<OrderGoodsRecord> orderGoods) {
         return getString(orderGoods.get(0).getGoodsName(), orderGoods.stream().mapToInt(OrderGoodsRecord::getGoodsNumber).sum(), orderGoods.size());
     }

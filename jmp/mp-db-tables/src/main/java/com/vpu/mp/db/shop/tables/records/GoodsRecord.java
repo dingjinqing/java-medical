@@ -26,7 +26,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
 
-    private static final long serialVersionUID = 106801726;
+    private static final long serialVersionUID = -1041305040;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods.goods_id</code>.
@@ -141,28 +141,28 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_goods.goods_weight</code>.
+     * Setter for <code>mini_shop_471752.b2c_goods.goods_weight</code>. 商品重量，默认规格重量或自定义规格中的最小重量
      */
     public void setGoodsWeight(BigDecimal value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_goods.goods_weight</code>.
+     * Getter for <code>mini_shop_471752.b2c_goods.goods_weight</code>. 商品重量，默认规格重量或自定义规格中的最小重量
      */
     public BigDecimal getGoodsWeight() {
         return (BigDecimal) get(8);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_goods.market_price</code>.
+     * Setter for <code>mini_shop_471752.b2c_goods.market_price</code>. 市场价格，多规格时取最高
      */
     public void setMarketPrice(BigDecimal value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_goods.market_price</code>.
+     * Getter for <code>mini_shop_471752.b2c_goods.market_price</code>. 市场价格，多规格时取最高
      */
     public BigDecimal getMarketPrice() {
         return (BigDecimal) get(9);
@@ -714,6 +714,20 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
         return (Integer) get(48);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods.room_id</code>. 直播间id
+     */
+    public void setRoomId(Integer value) {
+        set(49, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods.room_id</code>. 直播间id
+     */
+    public Integer getRoomId() {
+        return (Integer) get(49);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -740,7 +754,7 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
     /**
      * Create a detached, initialised GoodsRecord
      */
-    public GoodsRecord(Integer goodsId, Integer shopId, Integer catId, String goodsSn, String goodsName, Integer brandId, String goodsAd, Integer goodsNumber, BigDecimal goodsWeight, BigDecimal marketPrice, BigDecimal shopPrice, BigDecimal costPrice, String goodsDesc, String goodsImg, Byte isOnSale, Byte delFlag, Byte goodsType, Integer deliverTemplateId, Integer goodsSaleNum, Integer goodsCollectNum, Timestamp createTime, Timestamp updateTime, Byte state, String reason, Integer subAccountId, Timestamp saleTime, Integer limitBuyNum, String unit, Integer limitMaxNum, Byte saleType, Integer sortId, String goodsVideo, String goodsVideoImg, Integer goodsVideoSize, Integer goodsVideoId, Integer goodsPageId, Byte isPageUp, Byte isCardExclusive, Integer baseSale, Byte source, Byte isControlPrice, Byte canRebate, Byte promotionLanguageSwitch, String promotionLanguage, String deliverPlace, String shareConfig, Byte isDefaultProduct, Integer pv, Integer commentNum) {
+    public GoodsRecord(Integer goodsId, Integer shopId, Integer catId, String goodsSn, String goodsName, Integer brandId, String goodsAd, Integer goodsNumber, BigDecimal goodsWeight, BigDecimal marketPrice, BigDecimal shopPrice, BigDecimal costPrice, String goodsDesc, String goodsImg, Byte isOnSale, Byte delFlag, Byte goodsType, Integer deliverTemplateId, Integer goodsSaleNum, Integer goodsCollectNum, Timestamp createTime, Timestamp updateTime, Byte state, String reason, Integer subAccountId, Timestamp saleTime, Integer limitBuyNum, String unit, Integer limitMaxNum, Byte saleType, Integer sortId, String goodsVideo, String goodsVideoImg, Integer goodsVideoSize, Integer goodsVideoId, Integer goodsPageId, Byte isPageUp, Byte isCardExclusive, Integer baseSale, Byte source, Byte isControlPrice, Byte canRebate, Byte promotionLanguageSwitch, String promotionLanguage, String deliverPlace, String shareConfig, Byte isDefaultProduct, Integer pv, Integer commentNum, Integer roomId) {
         super(Goods.GOODS);
 
         set(0, goodsId);
@@ -792,5 +806,6 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
         set(46, isDefaultProduct);
         set(47, pv);
         set(48, commentNum);
+        set(49, roomId);
     }
 }

@@ -455,12 +455,18 @@ public class OrderInfoService extends ShopBaseService {
 	 */
 	public SelectWhereStep<?> activeBuildOptions(SelectJoinStep<?> select, OrderPageListQueryParam param) {
 		if (param.activityId != null) {
-		    if(param.goodsType != null && param.goodsType.length != 0 && Arrays.asList(param.getGoodsType()).contains(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)){
-		        //首单特惠的活动ID记录在订单商品行内
-		        select.where(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)).and(ORDER_GOODS.ACTIVITY_ID.eq(param.getActivityId()));
-            }else{
+		    if (param.goodsType != null && param.goodsType.length != 0 && Arrays.asList(param.getGoodsType()).contains(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)) {
+                //首单特惠的活动ID记录在订单商品行内
+                select.where(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)).and(ORDER_GOODS.ACTIVITY_ID.eq(param.getActivityId()));
+            } else if (param.goodsType != null && param.goodsType.length != 0 && Arrays.asList(param.getGoodsType()).contains(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE)) {
+                //限时降价的活动ID记录在订单商品行内
+                select.where(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE)).and(ORDER_GOODS.ACTIVITY_ID.eq(param.getActivityId()));
+            } else {
                 select.where(ORDER_INFO.ACTIVITY_ID.eq(param.activityId));
             }
+		}
+		if(param.getRoomId()!=null) {
+			select.where(ORDER_INFO.ROOM_ID.eq(param.getRoomId()));
 		}
 		return select;
 	}
@@ -1032,12 +1038,11 @@ public class OrderInfoService extends ShopBaseService {
 
     /**
      * 计算改会员卡在当前周期使用次数
-     * @param userId userId
-     * @param cardId cardId
+     * @param String cardNo
      * @param freeLimit -1：不包邮，0:不限制，1：持卡有效期内，2：年，3：季，4：月，5：周，6：日
-     * @return freeLimit = -1 / 0 / 1 -> 0
+     * @return int 包邮使用次数 正数：已经使用包邮次数，负数表示可使用的次数
      */
-    public int getCardFreeShipSum(Integer userId, Integer cardId, Byte freeLimit) {
+    public int getCardFreeShipSum(String cardNo, Byte freeLimit) {
         logger().info("计算改会员卡在当前周期使用次数");
     	if(freeLimit <= CardFreeship.shipType.SHIP_IN_EFFECTTIME.getType()) {
             return 0;
@@ -1048,17 +1053,31 @@ public class OrderInfoService extends ShopBaseService {
         	logger().info("cardFreeShipInterval为null");
         	return 0; 
         }
-        int result = db().
+        
+        //	周期内包邮下单数量
+        int orderNum = db().
 	            selectCount().
 	            from(TABLE).
-	            where(TABLE.USER_ID.eq(userId).
+	            where(TABLE.CARD_NO.eq(cardNo).
 	                and(TABLE.IS_FREESHIP_CARD.eq(OrderConstant.YES)).
-	                and(TABLE.MEMBER_CARD_ID.eq(cardId)).
 	                and(TABLE.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED)).
 	                and(TABLE.CREATE_TIME.ge(cardFreeShipInterval[0])).
 	                and(TABLE.CREATE_TIME.le(cardFreeShipInterval[1]))).
 	            fetchOne(0,int.class);
-        return  result;
+        
+        //	周期内包邮退货的订单数
+        int returnOrderNum = db()
+        			.selectCount()
+        			.from(TABLE)
+        			.leftJoin(RETURN_ORDER).on(TABLE.ORDER_ID.eq(RETURN_ORDER.ORDER_ID))
+        			.where(TABLE.CARD_NO.eq(cardNo))
+        			.and(ORDER_INFO.SHIPPING_TIME.isNotNull())
+        			.and(ORDER_INFO.ORDER_STATUS.in(OrderConstant.ORDER_CANCELLED,OrderConstant.ORDER_CLOSED,OrderConstant.ORDER_RETURN_FINISHED,OrderConstant.ORDER_REFUND_FINISHED))
+        			.and(RETURN_ORDER.REFUND_SUCCESS_TIME.ge(cardFreeShipInterval[0]))
+        			.and(RETURN_ORDER.REFUND_SUCCESS_TIME.le(cardFreeShipInterval[1]))
+        			.fetchOne(0,int.class);
+        			
+        return  orderNum-returnOrderNum;
     }
 
     /**
@@ -1543,6 +1562,20 @@ public class OrderInfoService extends ShopBaseService {
 												.and(ORDER_GOODS.GOODS_ID.eq(goodsId)
 														.and(DslPlus.findInSet(goodsType, TABLE.GOODS_TYPE)))))))
 				.fetchAnyInto(TABLE);
+    }
+    
+    /**
+     * 	获得用户兑换卡未完成订单
+     * @return OrderInfoRecord || null 如果没有数据
+     */
+    public OrderInfoRecord getNotFinishedOrderOfCard(String cardNo) {
+    	logger().info("获取用户兑换卡尾完成的订单");
+    	Condition condition = TABLE.CARD_NO.eq(cardNo)
+    			.and(TABLE.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY))
+    			.and(TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_FINISHED,OrderConstant.ORDER_RETURN_FINISHED,OrderConstant.ORDER_REFUND_FINISHED))
+    			.and(TABLE.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[]{BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER})));
+		
+    	return db().fetchOne(TABLE, condition);
     }
 
 }

@@ -112,6 +112,7 @@ export default {
 }
 .EvaluationContent_main {
   padding: 10px;
+  padding-bottom: 0;
   background: #fff;
   // position: relative;
   // background-color: #fff;

@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.market.gift;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 public class RuleVo {
 
     /** 满金额 **/
-    private Double fullPrice;
+    private BigDecimal fullPrice;
     /** 满件数 **/
     private Integer fullNumber;
     /** 支付开始时间 **/

@@ -139,7 +139,7 @@
                 @click="processRefunds(orderItem.orderSn,$event)"
                 class="refund_status"
               ></td>
-              <td>{{orderItem.moneyPaid}}</td>
+              <td>{{orderItem.newMoneyPaid}}</td>
             </tr>
           </tbody>
           <tbody
@@ -229,8 +229,7 @@ export default {
         } else {
           item.price = item.orderAmount + this.currencyPool[item.currency][this.lang][0]
         }
-
-        item.moneyPaid += this.currencyPool[item.currency][this.lang][0]
+        item.newMoneyPaid = item.moneyPaid + this.currencyPool[item.currency][this.lang][0]
       })
       this.memberCardOrderList = data
     },
@@ -246,6 +245,7 @@ export default {
       let orderInfo = this.memberCardOrderList.find(item => {
         return item.orderSn === orderSn
       })
+      console.log(orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore)
       if (orderInfo.returnFlag === 0 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > 0)) {
         return `<div>${this.$t('orderCommon.orderFinished')}<br/><a class="refund" >${this.$t('orderCommon.manualRefund')}</a></div>`
       } else if (orderInfo.returnFlag === 0) {

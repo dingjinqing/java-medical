@@ -14,6 +14,7 @@ export const en = {
   vaildDate: 'Validity period',
   statusName: 'activity status',
   goodsName: 'goods name',
+  level: 'priority',
   goodsNumber: 'Commodity stocks',
   stock: 'bargain stock',
   successNumber: 'Number of success',

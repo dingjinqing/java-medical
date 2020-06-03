@@ -68,6 +68,7 @@
           <el-table-column
             :label="$t('couponReceive.userNickName')"
             align="center"
+            :key="Math.random()"
           >
             <template slot-scope="scope">
               <span
@@ -80,46 +81,54 @@
             prop="mobile"
             :label="$t('couponReceive.mobile')"
             align="center"
+            :key="Math.random()"
           ></el-table-column>
           <el-table-column
             prop="couponName"
             :label="$t('couponReceive.couponName')"
             align="center"
+            v-if="couponType === 0"
+            :key="Math.random()"
           ></el-table-column>
-          <!-- <el-table-column
+          <el-table-column
+            prop=""
             label="使用门槛"
             align="center"
-          ></el-table-column> -->
+            v-if="couponType === 0"
+            :key="Math.random()"
+          ></el-table-column>
           <el-table-column
-            prop="accessMode"
             :label="$t('couponReceive.receiveMethods')"
             align="center"
-          ></el-table-column>
-          <!-- <el-table-column
-            label="是否分享"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            label="领取用户数"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            label="优惠内容"
-            align="center"
-          ></el-table-column> -->
+            :key="Math.random()"
+          >
+            <template slot-scope="scope">
+              <span>{{scope.row.accessMode === 0 ? '发放' : '直接领取'}}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="scoreNumber"
             :label="$t('couponReceive.pointExchage')"
             align="center"
+            v-if="couponType === 0"
+            :key="Math.random()"
           ></el-table-column>
           <el-table-column
             prop="isUsed"
             :label="$t('couponReceive.WhetherToUse')"
             align="center"
-          ></el-table-column>
+            v-if="couponType === 0"
+            :key="Math.random()"
+          >
+            <template slot-scope="scope">
+              <span>{{scope.row.isUsed === 0 ? '否' : '是'}}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             :label="$t('couponReceive.userOrderNumber')"
             align="center"
+            v-if="couponType === 0"
+            :key="Math.random()"
           >
             <template slot-scope="scope">
               <span
@@ -129,11 +138,46 @@
             </template>
           </el-table-column>
           <el-table-column
+            label="是否分享"
+            align="center"
+            v-if="couponType === 1"
+            :key="Math.random()"
+          >
+            <template slot-scope="scope">
+              <span>{{scope.row.isShare === 0 ? '否' : '是'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="领取用户数"
+            align="center"
+            v-if="couponType === 1"
+            :key="Math.random()"
+          >
+            <template slot-scope="scope">
+              <span
+                class="jumpStyle"
+                @click="receiveHandler(scope.row.userId, scope.row.couponSn)"
+              >{{scope.row.hasReceive ? scope.row.hasReceive : 1}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="优惠内容"
+            align="center"
+            v-if="couponType === 1"
+            :key="Math.random()"
+          >
+            <template slot-scope="scope">
+              <span v-if="scope.row.actCode === 'random' || scope.row.actCode === 'voucher'">{{scope.row.denomination ? scope.row.denomination : 0}}元</span>
+              <span v-if="scope.row.actCode === 'discount'">{{scope.row.denomination ? scope.row.denomination : 0}}折</span>
+            </template>
+          </el-table-column>
+          <el-table-column
             prop="validityTime"
             :label="$t('couponReceive.validDate')"
             sortable
             align="center"
             width="160px"
+            :key="Math.random()"
           >
             <template slot-scope="scope">
               {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
@@ -145,6 +189,7 @@
             sortable
             align="center"
             width="160px"
+            :key="Math.random()"
           ></el-table-column>
           <el-table-column
             prop="usedTime"
@@ -152,17 +197,20 @@
             sortable
             align="center"
             width="160px"
+            :key="Math.random()"
           ></el-table-column>
           <el-table-column
             :label="$t('couponReceive.operate')"
             align="center"
+            v-if="couponType === 0"
+            :key="Math.random()"
           >
             <template slot-scope="scope">
               <span
                 style="font-size: 22px;color: #5a8bff;"
                 class="el-icon-delete"
                 @click="deleteCoupon(scope.row.id)"
-                v-if="scope.row.isUsed === '否' && scope.row.endFlag === 0 && scope.row.delFlag === 0"
+                v-if="scope.row.isUsed === 0 && scope.row.endFlag === 0 && scope.row.delFlag === 0"
               ></span>
             </template>
           </el-table-column>
@@ -185,10 +233,9 @@ export default {
   data () {
     return {
       loading: false,
-      id: '',
+      id: '', // 优惠券id
       tableData: [],
       pageParams: {}, // 分页
-      requestParams: {},
       // 搜索
       searchData: {
         mobile: '',
@@ -202,11 +249,14 @@ export default {
         { value: 2, label: '已使用' },
         { value: 3, label: '已过期' },
         { value: 4, label: '已废除' }
-      ]
+      ],
+      couponType: 0 // 优惠券类型(0: 普通, 1: 分裂)
     }
   },
   mounted () {
     this.id = this.$route.query.id
+    this.couponType = this.$route.query.type
+
     this.searchData.mobile = this.$route.query.phoneNum
     this.searchData.userName = this.$route.query.userName
     this.searchData.isUsed = this.$route.query.isUsed
@@ -216,20 +266,21 @@ export default {
   methods: {
     // 领取明细列表
     initDataList () {
-      this.requestParams.id = this.id
-      this.requestParams.currentPage = this.pageParams.currentPage
-      this.requestParams.pageRows = this.pageParams.pageRows
-      this.requestParams.mobile = this.searchData.mobile
-      this.requestParams.userName = this.searchData.userName
+      let requestParams = {}
+      requestParams.id = this.id
+      requestParams.couponType = this.couponType
+      requestParams.currentPage = this.pageParams.currentPage
+      requestParams.pageRows = this.pageParams.pageRows
+      requestParams.mobile = this.searchData.mobile
+      requestParams.userName = this.searchData.userName
       if (this.searchData.isUsed === -1) {
-        this.requestParams.isUsed = null
+        requestParams.isUsed = null
       } else {
-        this.requestParams.isUsed = this.searchData.isUsed
+        requestParams.isUsed = this.searchData.isUsed
       }
-      couponGetDetail(this.requestParams).then(res => {
+      couponGetDetail(requestParams).then(res => {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
-          // this.tableData = res.content.dataList
           this.pageParams = res.content.page
         }
       })
@@ -246,20 +297,11 @@ export default {
           // 已过期
           item.endFlag = 1
         }
-        // 领取方式
-        if (item.accessMode === 0) {
-          item.accessMode = '发放'
-        } else {
-          item.accessMode = '直接领取'
-        }
-        // 是否使用
-        if (item.isUsed === 0) {
-          item.isUsed = '否'
-        } else {
-          item.isUsed = '是'
-        }
       })
       this.tableData = data
+      if (this.tableData && this.tableData.length > 0) {
+        this.couponType = this.tableData[0].couponType
+      }
     },
 
     // 删除明细
@@ -299,33 +341,17 @@ export default {
         }
       })
     },
-    // 是否使用
-    foramtUseStatus (data) {
-      switch (data) {
-        case 2:
-          return '是'
-        case 3:
-          return '已过期'
-        case 4:
-          return '已废除'
-        default:
-          return '否'
-      }
-    },
-    // 领取方式
-    foramtGetType (data) {
-      switch (data) {
-        case 2:
-          return '活动送券'
-        case 3:
-          return '支付送券'
-        case 4:
-          return '优惠券礼包'
-        case 5:
-          return '好友帮助砍价发券'
-        default:
-          return '直接领取'
-      }
+
+    // 领取用户数跳转
+    receiveHandler (userId, couponSn) {
+      this.$router.push({
+        path: '/admin/home/main/ordinaryCoupon/userDetail',
+        query: {
+          id: this.id,
+          shareUserId: userId,
+          couponSn: couponSn
+        }
+      })
     }
   }
 }
@@ -387,7 +413,6 @@ export default {
   height: 36px;
   font-weight: bold;
   color: #000;
-  padding: 8px 10px;
 }
 .jumpStyle {
   color: #5a8bff;

@@ -372,170 +372,37 @@
     </div>
 
     <!-- 邀请码弹窗 -->
-    <el-dialog
-      title="邀请码"
-      :visible.sync="invitationDialog"
-      :close-on-click-modal="false"
-      width="30%"
-      center
-    >
-      邀请码：
-      <el-input
-        v-model="inviteCode"
-        class="inputWidth"
-        size="small"
-      ></el-input>
-
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          @click="cancelInvitation"
-          size="small"
-        >取 消</el-button>
-        <el-button
-          type="primary"
-          size="small"
-          @click="sureInvitation"
-        >确 定</el-button>
-      </span>
-    </el-dialog>
+    <inviteCodeDialog
+      :tuneUp="invitationDialog"
+      :inviteCodeBack="inviteCode"
+      @resultCodeRow="choosingCodeResult"
+    />
 
     <!-- 分销员分组 -->
-    <el-dialog
-      title="设置分销员分组"
-      :visible.sync="groupDialog"
-      :close-on-click-modal="false"
-      width="30%"
-      center
-    >
-      选择分组：
-      <el-select
-        v-model="groupValue"
-        placeholder="请选择分组"
-        size="small"
-        class="inputWidth"
-      >
-        <el-option
-          v-for="group in groupNameList"
-          :key="group.id"
-          :label="group.groupName"
-          :value="group.id"
-        >
-        </el-option>
-      </el-select>
-
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          @click="cancelGroup"
-          size="small"
-        >取 消</el-button>
-        <el-button
-          type="primary"
-          size="small"
-          @click="sureGroup"
-        >确 定</el-button>
-      </span>
-    </el-dialog>
+    <groupDialog
+      :tuneUp="groupDialog"
+      :groupBack="groupValue"
+      @resultGroupRow="choosingGroupResult"
+    />
 
     <!-- 备注弹窗 -->
-    <el-dialog
-      title="会员备注信息"
-      :visible.sync="remarksDialog"
-      :close-on-click-modal="false"
-      width="50%"
-      center
-    >
-      <el-form>
-        <el-form-item label="备注信息：">
-          <el-input
-            v-model="remarksText"
-            type="textarea"
-            placeholder="请输入备注内容"
-            :rows="2"
-            maxlength="200"
-            show-word-limit
-            style="width: 60%;"
-          >
-          </el-input>
-          <el-button
-            type="primary"
-            size="small"
-            @click="addRemarksHandler"
-          >添加</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-table
-            class="version-manage-table"
-            header-row-class-name="tableClss"
-            :data="remarksList"
-            border
-            style="width: 100%"
-          >
-            <el-table-column
-              label="序号"
-              align="center"
-            >
-              <template slot-scope="scope">{{ scope.$index + 1 }}</template>
-            </el-table-column>
-            <el-table-column
-              prop="addTime"
-              label="添加时间"
-              align="center"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="remark"
-              label="内容"
-              align="center"
-            >
-            </el-table-column>
-            <el-table-column
-              label="操作"
-              align="center"
-            >
-              <template slot-scope="scope">
-                <span
-                  style="font-size: 22px;color: #5a8bff;"
-                  class="el-icon-delete"
-                  @click="delRemarksHandler(scope.row.id)"
-                ></span>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-form-item>
-      </el-form>
-
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          @click="closeremarks"
-          size="small"
-        >取 消</el-button>
-        <el-button
-          type="primary"
-          size="small"
-          @click="closeremarks"
-        >确 定</el-button>
-      </span>
-    </el-dialog>
+    <remarksDialog
+      :tuneUp="remarksDialog"
+      :userId="remarksUserId"
+    />
 
   </div>
 </template>
 
 <script>
-import { distributorList, distributorLevelList, distributorGroupList, delDistributor, setInviteCode, setBatchGroup, addRemarks, getRemarksList, delRemarks } from '@/api/admin/marketManage/distribution.js'
-// 引入分页
-import pagination from '@/components/admin/pagination/pagination'
-
+import { distributorList, distributorLevelList, distributorAllGroup, delDistributor, setInviteCode, setBatchGroup } from '@/api/admin/marketManage/distribution.js'
 export default {
-  components: { pagination },
+  components: {
+    pagination: () => import('@/components/admin/pagination/pagination'),
+    groupDialog: () => import('./groupDialog'),
+    inviteCodeDialog: () => import('./inviteCodeDialog'),
+    remarksDialog: () => import('./remarksDialog')
+  },
   props: {
     inviteFlag: {
       type: Boolean,
@@ -587,19 +454,17 @@ export default {
 
       // 邀请码弹窗
       invitationDialog: false,
-      invitationUserId: '',
+      invitationUserId: null,
       inviteCode: '',
 
       // 分销员分组
       groupDialog: false,
       groupUserId: [],
-      groupValue: '',
+      groupValue: 0,
 
       // 会员备注
       remarksDialog: false,
-      remarksUserId: '',
-      remarksText: '',
-      remarksList: []
+      remarksUserId: null
     }
   },
   watch: {
@@ -646,9 +511,9 @@ export default {
         this.distributorLevel = res.content.dataList
       })
     },
-    // 分组下拉列表
+    // 分组所有数据
     groupList () {
-      distributorGroupList().then(res => {
+      distributorAllGroup().then(res => {
         this.groupNameList = res.content
       })
     },
@@ -696,27 +561,23 @@ export default {
       this.inviteCode = invitationCode
     },
 
-    // 确定邀请码
-    sureInvitation () {
+    // 邀请码弹窗回调函数
+    choosingCodeResult (data) {
       setInviteCode({
         userId: this.invitationUserId,
-        inviteCode: this.inviteCode
+        inviteCode: data
       }).then(res => {
         if (res.error === 0) {
           if (res.content === 1) {
-            this.invitationDialog = false
             this.$message.success('设置成功')
-            this.initDataList()
           } else if (res.content === 0) {
             this.$message.warning('该邀请码已存在')
           }
+          this.initDataList()
+        } else {
+          this.$message.success(res.message)
         }
       })
-    },
-
-    // 取消邀请码
-    cancelInvitation () {
-      this.invitationDialog = false
     },
 
     // 分销员分组设置
@@ -725,90 +586,31 @@ export default {
       this.groupUserId = []
       this.groupUserId.push(userId)
 
-      var obj = this.groupNameList.find((item, index) => {
+      var result = this.groupNameList.find((item, index) => {
         return item.groupName === groupName
       })
-      if (obj === undefined) {
-        this.groupValue = ''
-      } else {
-        this.groupValue = obj.id
-      }
+      this.groupValue = result === undefined ? 0 : result.id
     },
 
-    // 确定分销员分组
-    sureGroup () {
+    // 分销员分组弹窗回调函数
+    choosingGroupResult (data) {
       setBatchGroup({
         userId: this.groupUserId,
-        groupId: this.groupValue
+        groupId: data
       }).then(res => {
         if (res.error === 0) {
-          this.groupDialog = false
           this.$message.success('设置成功')
           this.initDataList()
-          // 复原
-          this.allChecked = false
-          this.checkedValue = '0'
-          this.groupValue = ''
+        } else {
+          this.$message.success(res.message)
         }
       })
-    },
-
-    // 取消分销员分组
-    cancelGroup () {
-      this.groupDialog = false
-      // 复原
-      this.allChecked = false
-      this.checkedValue = '0'
-      this.groupValue = ''
     },
 
     // 备注会员信息
     remarksHandler (userId) {
       this.remarksUserId = userId // 要操作的用户
       this.remarksDialog = !this.remarksDialog
-      this.getRemarksList()
-    },
-
-    // 获取备注列表
-    getRemarksList () {
-      getRemarksList({ userId: this.remarksUserId }).then(res => {
-        if (res.error === 0) {
-          this.remarksList = res.content
-          this.remarksText = ''
-        }
-      })
-    },
-
-    // 添加备注信息
-    addRemarksHandler () {
-      if (this.remarksText === '') {
-        this.$message.warning('请填写备注信息')
-      } else {
-        addRemarks({
-          userId: this.remarksUserId,
-          remark: this.remarksText
-        }).then(res => {
-          if (res.error === 0) {
-            this.getRemarksList()
-          }
-        })
-      }
-    },
-
-    // 删除备注信息
-    delRemarksHandler (id) {
-      delRemarks(id).then(res => {
-        if (res.error === 0) {
-          this.$message.success('删除成功')
-          this.getRemarksList()
-        }
-      })
-    },
-
-    // 关闭会员备注弹窗
-    closeremarks () {
-      this.remarksText = ''
-      this.remarksDialog = false
     },
 
     // 下级用户数跳转

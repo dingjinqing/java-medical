@@ -17,6 +17,7 @@ public class GoodsColumnCheckExistParam {
 
     private Integer prdId;
     private String prdSn;
+    private String prdCodes;
 
     public static enum ColumnCheckForEnum {
     	//商品信息重复判断

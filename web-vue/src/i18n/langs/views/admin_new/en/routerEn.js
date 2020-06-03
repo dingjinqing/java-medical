@@ -124,6 +124,8 @@ export const en = {
   base_manger: ['Basic configuration', 'Shop Foundation Configuration'],
   // 基础配置  交易配置
   pay: ['Basic configuration', 'Pay Configuration'],
+  // 基础配置  交易配置 服务条款配置
+  termsService: ['Basic configuration', 'Pay Configuration', 'Terms of service configuration'],
   // 基础配置  店铺权限
   child_config: ['Basic configuration', 'Shop authority'],
   // 基础配置  模板消息
@@ -220,13 +222,14 @@ export const en = {
     'Effect data'
   ],
   // 营销管理 普通优惠券
-  ordinary_coupon: ['Marketing management', 'ordinary coupon'],
+  ordinary_coupon: ['Marketing management', 'Coupon'],
   // 营销管理 普通优惠券 领取明细
   ordinary_coupon_receive_details: [
     'Marketing management',
-    'ordinary coupon',
+    'Coupon',
     'Receive details'
   ],
+  ordinary_coupon_user_detail: ['Marketing management', 'Coupon', 'Collect user list'],
   // 营销管理 拼团抽奖
   group_draw: ['Marketing management', 'raffle draw'],
   // 营销管理 拼团抽奖 活动订单
@@ -332,6 +335,10 @@ export const en = {
     'share polite',
     'add share polite activity'
   ],
+  // live
+  live_broadcast: ['Marketing management', 'live'],
+  // 营销管理 渠道页面分析
+  channel: ['Marketing management', 'Channel page analysis'],
   // 营销管理 限时降价
   reduce: ['Marketing management', 'Limited Time Price Reduction'],
   // 营销管理 限时降价 订单明细
@@ -383,7 +390,7 @@ export const en = {
   // 营销管理 定金膨胀活动明细
   presale_detail: ['Marketing Management', 'Pre Sale', 'View Pre Sale Detail'],
   // 营销活动 普通优惠券
-  ordinaryCoupon: ['Marketing Management', 'General Coupons'],
+  ordinaryCoupon: ['Marketing Management', 'Coupons'],
   // 营销管理 秒杀
   seckill: ['Marketing Management', 'Seckill'],
   // 营销管理 秒杀-添加
@@ -542,5 +549,11 @@ export const en = {
   // 门店管理 技师管理 排班配置
   schedule_setting: ['Technician management', 'Shift configuration'],
   // 门店管理 门店服务配置
-  store_service_config: ['Store management', 'Store Service Configuration']
+  store_service_config: ['Store management', 'Store Service Configuration'],
+  // 门店公告
+  store_announcement: ['Store Management', 'Store Announcement'],
+  // 门店公告 添加公告
+  store_announcement_add: ['Store Management', 'Store Announcement', 'Add announcement'],
+  // 门店权限
+  store_permission: ['Store Management', 'Store permissions']
 }

@@ -146,6 +146,7 @@ public class TaskJobMainService extends MainBaseService {
                     .from(TASK_JOB_MAIN)
                     .leftJoin(TASK_JOB_CONTENT).on(TASK_JOB_CONTENT.ID.eq(TASK_JOB_MAIN.CONTENT_ID))
                     .where(TASK_JOB_MAIN.STATUS.eq(TaskJobsConstant.STATUS_NEW))
+                    .and(TASK_JOB_MAIN.TYPE.notEqual(TaskJobsConstant.TYPE_ONCE))
                     .and(TASK_JOB_MAIN.NEXT_EXECUTE_TIME.lessOrEqual(DateUtil.getLocalDateTime()))
                     .fetch();
                 List<Integer> jobIds = result.stream().map(x->x.get(TASK_JOB_CONTENT.ID)).collect(Collectors.toList());

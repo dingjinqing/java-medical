@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpPinYinVo;
 import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpVo;
 import com.vpu.mp.service.shop.goods.GoodsBrandService;
 import com.vpu.mp.service.shop.image.ImageService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -82,7 +83,9 @@ public class GoodsBrandDataHelper extends ShopBaseService implements DataHelperI
     private void updateLogoPath(List<GoodsBrandMpVo> vos){
         for( GoodsBrandMpVo vo :vos ){
             String url = vo.getLogo();
-            vo.setLogo(imageService.imageUrl(url));
+            if(StringUtils.isNotBlank(url)){
+                vo.setLogo(imageService.imageUrl(url));
+            }
         }
     }
 

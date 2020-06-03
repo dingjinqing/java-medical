@@ -1,0 +1,21 @@
+<!--pages1/distrirecord/distrirecord.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class='main_container' style='height:{{grade_info.length > 0?"":"85%"}}'>
+    <block wx:if='{{grade_info.length > 0}}'>
+    <view class='grade_record'>
+        <view class='each_record' wx:for='{{grade_info}}' wx:key='key'>
+            <view class='grade_name' wx:if='{{item.is_go_up == 0}}'>降级为{{item.new_level_name}}</view>
+            <view class='grade_name' wx:if='{{item.is_go_up == 1}}'>升级为{{item.new_level_name}}</view>
+            <view class='record_time'>{{item.update_time}}</view>
+        </view>
+    </view>
+    </block>
+    <block wx:else>
+      <view class='no_state'>
+          <image src='{{imageUrl}}/image/wxapp/no_invite.png' mode='widthFix'></image>
+          <view>暂无升降级记录</view>
+      </view>
+    </block>
+</view>
+<include src="/pages/common/footer.wxml"/>
+

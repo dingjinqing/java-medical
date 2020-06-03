@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.member.card;
 
 import java.math.BigDecimal;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
@@ -11,10 +10,6 @@ import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
-import com.vpu.mp.service.shop.member.MemberCardService;
-import com.vpu.mp.service.shop.member.ScoreService;
-import com.vpu.mp.service.shop.member.UserCardService;
-import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 
 /**
  * 	普通卡操作
@@ -23,19 +18,7 @@ import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
  */
 @Service
 public class NormalCardOpt extends CardOpt {
-	
-	@Autowired
-	private UserCardService userCardService;
-	@Autowired 
-	private UserCardDaoService userCardDao;
-	
-	@Autowired
-	private MemberCardService cardService;
-	
-	@Autowired
-	private ScoreService scoreService;
 
-	
 	public NormalCardOpt() {
 		super(CardConstant.MCARD_TP_NORMAL);
 	}
@@ -76,7 +59,8 @@ public class NormalCardOpt extends CardOpt {
 		userCardService.addUserCardScore(userId, card);
 		//	赠送卡余额记录
 		userCardService.addChargeMoney(card, uCard);
-		
+		//	同步打标签
+		addAcitivityTag(userId,card);
 		
 		//	发送模板消息
 		userCardService.sendScoreTemplateMsg(card);

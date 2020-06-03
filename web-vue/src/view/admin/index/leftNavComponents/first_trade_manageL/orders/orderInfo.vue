@@ -5,6 +5,14 @@
         <span>{{$t('order.orderSn')}}：{{searchParam.orderSn}}</span>
         <span>{{$t('order.orderStatusText')}}：{{orderStatusMap.get(order.orderStatus)}}</span>
       </div>
+      <div class="order-status-bar">
+        <template v-for="(item,index) in timeFlowDiagramMapping[statusKey]">
+          <div :key="index" :class="{'active':order[item]}">
+            <span>{{$t('order.timeFlowDiagram')[item]}}</span>
+            <span v-if="order[item]">{{order[item]}}</span>
+          </div>
+        </template>
+      </div>
       <div class="since-info-detail">
         <div class="order_info">
           <div class="title">{{$t('order.orderInfo')}}</div>
@@ -373,6 +381,15 @@
                       </template>
                       <template v-else-if="oneOrder.deliverType == 0 && oneOrder.orderStatus == 3">
                         {{$t('order.waitShip')}}
+                        <template v-if="oneOrder.orderRemindTime">
+                          <el-tooltip
+                            class="item"
+                            effect="dark"
+                            :content="$t('order.remindTime') + oneOrder.orderRemindTime"
+                            placement="top"
+                          >
+                            <i class="el-icon-question"></i> </el-tooltip>
+                        </template>
                       </template>
                       <template v-else-if="oneOrder.deliverType == 1 && oneOrder.orderStatus == 5">
                         {{$t('order.takeByself')}}
@@ -601,7 +618,7 @@
         </table>
       </div>
     </div>
-    <div
+    <!-- <div
       class="status_box"
       :class="{hide:!showStatus}"
     >
@@ -628,7 +645,7 @@
           </div>
         </template>
       </div>
-    </div>
+    </div> -->
     <nodesDialog
       :show.sync="showNodes"
       :orderSn="notesOrderSn"
@@ -959,6 +976,71 @@ export default {
         margin-right: 60px;
       }
     }
+    .order-status-bar{
+      display: flex;
+      padding: 5px 0 20px;
+      > div{
+        flex: 1;
+        background: #ddd;
+        height: 48px;
+        padding-right: 30px;
+        color: #fff;
+        font-size: 16px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        > span + span{
+          margin-top: 5px;
+        }
+        &::after{
+          content: '';
+          position: absolute;
+          height: 0;
+          width: 0;
+          border-top: 24px solid transparent;
+          border-bottom: 24px solid transparent;
+          border-left: 30px solid #ddd;
+          right: -30px;
+        }
+        &:last-of-type{
+          &::after{
+            content: '';
+            position: absolute;
+            height: 0;
+            width: 0;
+            border-top: 0;
+            border-bottom: 0;
+            border-left: 0;
+            right: 0;
+          }
+        }
+        & + div::before{
+          content: '';
+          position: absolute;
+          height: 0;
+          width: 0;
+          border-left: 30px solid transparent;
+          border-bottom: 24px solid #ddd;
+          border-top: 24px solid #ddd;
+          left: -30px;
+        }
+        & + div{
+          margin-left: 70px;
+          &.active::before{
+            border-bottom-color: #5a8bff;
+            border-top-color: #5a8bff;
+          }
+        }
+        &.active{
+          background-color: #5a8bff;
+          &::after{
+            border-left-color: #5a8bff;
+          }
+        }
+      }
+    }
     .since-info-path {
       margin-bottom: 10px;
     }
@@ -1134,99 +1216,99 @@ export default {
     cursor: pointer;
   }
 }
-.status_box {
-  position: fixed;
-  right: 0;
-  width: 215px;
-  top: 140px;
-  bottom: 0;
-  margin-bottom: 0 !important;
-  display: flex;
-  align-items: center;
-  transition: right 0.3s ease-in;
-  padding: 0;
-  z-index: 2;
-  &.hide {
-    right: -180px;
-  }
-  .view {
-    width: 35px;
-    cursor: pointer;
-  }
-  .step_content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    background-color: #fff;
-    padding: 10px 0 10px 10px;
-    .item_content {
-      flex-shrink: 1;
-      flex-basis: 50%;
-      display: flex;
-      color: #666;
-      &.is-finish {
-        color: skyblue;
-      }
-      &.is_wait {
-        color: #000;
-      }
-      &.is_end {
-        flex-basis: auto !important;
-        flex-shrink: 0;
-        flex-grow: 0;
-      }
-      &:last-of-type {
-        .item_line {
-          display: none;
-        }
-      }
-      .item_head {
-        width: 24px;
-        position: relative;
-        .item_line {
-          position: absolute;
-          width: 2px;
-          top: 0;
-          bottom: 0;
-          left: 11px;
-          background-color: #c0c4cc;
-        }
-        .item_text {
-          border-radius: 50%;
-          border: 2px solid;
-          border-color: inherit;
-          position: relative;
-          z-index: 1;
-          display: inline-flex;
-          justify-content: center;
-          align-items: center;
-          width: 24px;
-          height: 24px;
-          font-size: 14px;
-          box-sizing: border-box;
-          background: #fff;
-          transition: 0.15s ease-out;
-          font-weight: 600;
-          line-height: 1;
-          color: inherit;
-        }
-      }
-      .item_main {
-        flex: 1;
-        padding-left: 10px;
-        .item_title {
-          line-height: 24px;
-          padding-bottom: 8px;
-        }
-        .item_description {
-          margin-top: -5px;
-          font-size: 12px;
-          line-height: 20px;
-          font-weight: 400;
-        }
-      }
-    }
-  }
-}
+// .status_box {
+//   position: fixed;
+//   right: 0;
+//   width: 215px;
+//   top: 140px;
+//   bottom: 0;
+//   margin-bottom: 0 !important;
+//   display: flex;
+//   align-items: center;
+//   transition: right 0.3s ease-in;
+//   padding: 0;
+//   z-index: 2;
+//   &.hide {
+//     right: -180px;
+//   }
+//   .view {
+//     width: 35px;
+//     cursor: pointer;
+//   }
+//   .step_content {
+//     flex: 1;
+//     display: flex;
+//     flex-direction: column;
+//     height: 100%;
+//     background-color: #fff;
+//     padding: 10px 0 10px 10px;
+//     .item_content {
+//       flex-shrink: 1;
+//       flex-basis: 50%;
+//       display: flex;
+//       color: #666;
+//       &.is-finish {
+//         color: skyblue;
+//       }
+//       &.is_wait {
+//         color: #000;
+//       }
+//       &.is_end {
+//         flex-basis: auto !important;
+//         flex-shrink: 0;
+//         flex-grow: 0;
+//       }
+//       &:last-of-type {
+//         .item_line {
+//           display: none;
+//         }
+//       }
+//       .item_head {
+//         width: 24px;
+//         position: relative;
+//         .item_line {
+//           position: absolute;
+//           width: 2px;
+//           top: 0;
+//           bottom: 0;
+//           left: 11px;
+//           background-color: #c0c4cc;
+//         }
+//         .item_text {
+//           border-radius: 50%;
+//           border: 2px solid;
+//           border-color: inherit;
+//           position: relative;
+//           z-index: 1;
+//           display: inline-flex;
+//           justify-content: center;
+//           align-items: center;
+//           width: 24px;
+//           height: 24px;
+//           font-size: 14px;
+//           box-sizing: border-box;
+//           background: #fff;
+//           transition: 0.15s ease-out;
+//           font-weight: 600;
+//           line-height: 1;
+//           color: inherit;
+//         }
+//       }
+//       .item_main {
+//         flex: 1;
+//         padding-left: 10px;
+//         .item_title {
+//           line-height: 24px;
+//           padding-bottom: 8px;
+//         }
+//         .item_description {
+//           margin-top: -5px;
+//           font-size: 12px;
+//           line-height: 20px;
+//           font-weight: 400;
+//         }
+//       }
+//     }
+//   }
+// }
 </style>

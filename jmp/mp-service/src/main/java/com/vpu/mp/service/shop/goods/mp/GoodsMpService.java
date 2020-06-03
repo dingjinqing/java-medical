@@ -27,6 +27,7 @@ import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
+import com.vpu.mp.service.shop.distribution.MpDistributionGoodsService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
 import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
@@ -88,6 +89,8 @@ public class GoodsMpService extends ShopBaseService {
     public GoodsGroupMpService goodsGroupMpService;
     @Autowired
     private ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    private MpDistributionGoodsService mpDisGoods;
 
     /**
      * 从es或者数据库内获取数据，并交给处理器进行处理
@@ -425,7 +428,13 @@ public class GoodsMpService extends ShopBaseService {
         capsuleParam.setActivityType(param.getActivityType());
         capsuleParam.setLat(param.getLat());
         capsuleParam.setLon(param.getLon());
+        capsuleParam.setShareAwardLaunchUserId(param.getShareAwardLaunchUserId());
+        capsuleParam.setShareAwardId(param.getShareAwardId());
         processorFactory.doProcess(goodsDetailMpBo, capsuleParam);
+        if (param.getRebateConfig() != null) {
+            mpDisGoods.addRebatePrice(goodsDetailMpBo, param);
+        }
+
         return goodsDetailMpBo;
     }
 
@@ -556,7 +565,7 @@ public class GoodsMpService extends ShopBaseService {
         Record record1 = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_NUMBER,
             GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID, GOODS_BRAND.BRAND_NAME, GOODS.DELIVER_TEMPLATE_ID, GOODS.DELIVER_PLACE, GOODS.GOODS_WEIGHT, GOODS.DEL_FLAG, GOODS.IS_ON_SALE,
             GOODS.GOODS_IMG, GOODS.GOODS_VIDEO_ID, GOODS.GOODS_VIDEO, GOODS.GOODS_VIDEO_IMG, GOODS.GOODS_VIDEO_SIZE,
-            GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM, GOODS.IS_CARD_EXCLUSIVE, GOODS.IS_PAGE_UP, GOODS.GOODS_PAGE_ID, GOODS.GOODS_AD, GOODS.GOODS_DESC, GOODS.CAN_REBATE)
+            GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM, GOODS.IS_CARD_EXCLUSIVE, GOODS.IS_PAGE_UP, GOODS.GOODS_PAGE_ID, GOODS.GOODS_AD, GOODS.GOODS_DESC, GOODS.CAN_REBATE,GOODS.CAN_REBATE,GOODS.ROOM_ID)
             .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
             .where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny();
         if (record1 == null) {
@@ -622,13 +631,8 @@ public class GoodsMpService extends ShopBaseService {
      * @return 商品ID集合
      */
     public List<Integer> getGoodsIdsBySortIdDao(Integer sortId) {
-        boolean showSoldOutGoods = canShowSoldOutGoods();
-        Condition condition=GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
-        if (!showSoldOutGoods) {
-            condition= condition.and(GOODS.GOODS_NUMBER.gt(0));
-        }
-        condition = condition.and(GOODS.SORT_ID.eq(sortId));
-        return db().select(GOODS.GOODS_ID).from(GOODS).where(condition).fetch(GOODS.GOODS_ID);
+        Condition goodsBaseCondition = getGoodsBaseCondition();
+        return db().select(GOODS.GOODS_ID).from(GOODS).where(goodsBaseCondition.and(GOODS.SORT_ID.eq(sortId))).fetch(GOODS.GOODS_ID);
     }
 
     /**

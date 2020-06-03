@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.market.packagesale;
 
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.PackageSaleRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -18,8 +20,7 @@ import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDefineVo.GoodsGro
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListParam;
-import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListVo;
+import com.vpu.mp.service.pojo.wxapp.market.packagesale.*;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -253,13 +254,13 @@ public class PackSaleService extends ShopBaseService {
 		GoodsGroupVo groupVo = convert2GoodsGroupVo(defineVo, record.getGroupName_1(), record.getGoodsNumber_1(), record.getGoodsIds_1(), record.getCatIds_1(), record.getSortIds_1());
 		defineVo.setGroup1(groupVo);
 		
-		if(record.getGoodsGroup_2() != Status.NORMAL) {
+		if(!record.getGoodsGroup_2().equals(Status.NORMAL)) {
 			return defineVo;
 		}
 		groupVo = convert2GoodsGroupVo(defineVo, record.getGroupName_2(), record.getGoodsNumber_2(), record.getGoodsIds_2(), record.getCatIds_2(), record.getSortIds_2());
 		defineVo.setGroup2(groupVo);
 		
-		if(record.getGoodsGroup_3() != Status.NORMAL) {
+		if(!record.getGoodsGroup_3().equals(Status.NORMAL)) {
 			return defineVo;
 		}
 		groupVo = convert2GoodsGroupVo(defineVo, record.getGroupName_3(), record.getGoodsNumber_3(), record.getGoodsIds_3(), record.getCatIds_3(), record.getSortIds_3());
@@ -330,20 +331,20 @@ public class PackSaleService extends ShopBaseService {
 	 * @return 
 	 */
 	private SelectConditionStep<?> buildDetailOptions(SelectConditionStep<?> step, PackSaleDetailParam param) {
-		if(!StringUtils.isBlank(param.getMobile())) {
-			step.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
-		}
-		if(!StringUtils.isBlank(param.getOrderSn())) {
-			step.and(ORDER_INFO.ORDER_SN.like(this.likeValue(param.getOrderSn())));
-		}
-		if(!StringUtils.isBlank(param.getUserName())) {
-			step.and(USER.USERNAME.like(this.likeValue(param.getUserName())));
-		}
-		step.orderBy(ORDER_INFO.CREATE_TIME);
-		return step;
-	}
+        if (!StringUtils.isBlank(param.getMobile())) {
+            step.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
+        }
+        if (!StringUtils.isBlank(param.getOrderSn())) {
+            step.and(ORDER_INFO.ORDER_SN.like(this.likeValue(param.getOrderSn())));
+        }
+        if (!StringUtils.isBlank(param.getUserName())) {
+            step.and(USER.USERNAME.like(this.likeValue(param.getUserName())));
+        }
+        step.orderBy(ORDER_INFO.CREATE_TIME.desc());
+        return step;
+    }
 
-	private List<PackSaleParam.GoodsGroup> getPackageGroups(PackageSaleRecord packageSaleRecord){
+	public List<PackSaleParam.GoodsGroup> getPackageGroups(PackageSaleRecord packageSaleRecord){
 	    List<PackSaleParam.GoodsGroup> res = new ArrayList<>();
         PackSaleParam.GoodsGroup g1 = new PackSaleParam.GoodsGroup();
         g1.setGroupId((byte)1);
@@ -354,7 +355,7 @@ public class PackSaleService extends ShopBaseService {
         g1.setCatIdList(Util.splitValueToList(packageSaleRecord.getCatIds_1()));
         res.add(g1);
 
-        if(packageSaleRecord.getGoodsGroup_2() == Status.NORMAL){
+        if(packageSaleRecord.getGoodsGroup_2().equals(Status.NORMAL)){
             PackSaleParam.GoodsGroup g2 = new PackSaleParam.GoodsGroup();
             g2.setGroupId((byte)2);
             g2.setGroupName(packageSaleRecord.getGroupName_2());
@@ -362,9 +363,10 @@ public class PackSaleService extends ShopBaseService {
             g2.setGoodsIdList(Util.splitValueToList(packageSaleRecord.getGoodsIds_2()));
             g2.setSortIdList(Util.splitValueToList(packageSaleRecord.getSortIds_2()));
             g2.setCatIdList(Util.splitValueToList(packageSaleRecord.getCatIds_2()));
+            res.add(g2);
         }
 
-        if(packageSaleRecord.getGoodsGroup_3() == Status.NORMAL){
+        if(packageSaleRecord.getGoodsGroup_3().equals(Status.NORMAL)){
             PackSaleParam.GoodsGroup g3 = new PackSaleParam.GoodsGroup();
             g3.setGroupId((byte)3);
             g3.setGroupName(packageSaleRecord.getGroupName_3());
@@ -372,6 +374,7 @@ public class PackSaleService extends ShopBaseService {
             g3.setGoodsIdList(Util.splitValueToList(packageSaleRecord.getGoodsIds_3()));
             g3.setSortIdList(Util.splitValueToList(packageSaleRecord.getSortIds_3()));
             g3.setCatIdList(Util.splitValueToList(packageSaleRecord.getCatIds_3()));
+            res.add(g3);
         }
 
         return res;
@@ -385,7 +388,7 @@ public class PackSaleService extends ShopBaseService {
      */
 	public PackageSaleGoodsListVo getWxAppGoodsList(PackageSaleGoodsListParam param,Integer userId){
         PackageSaleGoodsListVo vo = new PackageSaleGoodsListVo();
-        PackageSaleRecord packageSaleRecord = db().selectFrom(PACKAGE_SALE).where(PACKAGE_SALE.ID.eq(param.getPackageId())).fetchAny();
+        PackageSaleRecord packageSaleRecord = getRecord(param.getPackageId());
         if(packageSaleRecord == null || packageSaleRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
             vo.setState((byte)1);
             return vo;
@@ -425,6 +428,7 @@ public class PackSaleService extends ShopBaseService {
         PageResult<PackageSaleGoodsListVo.Goods> goods = getGoods(getPackageSaleGroupGoodsIds(groups.get(param.getGroupId() - 1)),param.getSortName(),param.getSortOrder(),param.getSearch(),param.getCurrentPage(),param.getPageRows());
         goods.getDataList().forEach(g->{
             g.setChooseNumber(packageGoodsCartService.getUserGroupGoodsNumber(userId,param.getPackageId(),param.getGroupId(),g.getGoodsId()));
+            g.setGoodsProducts(goodsService.getAllProductListByGoodsId(g.getGoodsId()));
         });
         vo.setGoods(goods);
 
@@ -443,7 +447,7 @@ public class PackSaleService extends ShopBaseService {
      */
     private PageResult<PackageSaleGoodsListVo.Goods> getGoods(List<Integer> inGoodsIds,Byte sortName,Byte sortOrder,String search,Integer currentPage,Integer pageRows){
         Byte soldOutGoods = shopCommonConfigService.getSoldOutGoods();
-        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE).from(GOODS);
+        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE,GOODS.IS_DEFAULT_PRODUCT).from(GOODS);
         select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         select.where(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
         if(!NumberUtils.BYTE_ONE.equals(soldOutGoods)){
@@ -482,18 +486,160 @@ public class PackSaleService extends ShopBaseService {
      * @param group
      * @return
      */
-    private List<Integer> getPackageSaleGroupGoodsIds(PackSaleParam.GoodsGroup group){
+    public List<Integer> getPackageSaleGroupGoodsIds(PackSaleParam.GoodsGroup group){
         List<Integer> res = new ArrayList<>();
 
         if(CollectionUtils.isNotEmpty(group.getGoodsIdList())){
             res.removeAll(group.getGoodsIdList());
             res.addAll(group.getGoodsIdList());
         }
-        List<Integer> goodsIds = goodsService.getOnShelfGoodsIdList(group.getCatIdList(),group.getSortIdList(), Collections.emptyList());
-        res.removeAll(goodsIds);
-        res.addAll(goodsIds);
+        if(CollectionUtils.isNotEmpty(group.getCatIdList()) || CollectionUtils.isNotEmpty(group.getSortIdList())){
+            List<Integer> goodsIds = goodsService.getOnShelfGoodsIdList(group.getCatIdList(),group.getSortIdList(), Collections.emptyList());
+            res.removeAll(goodsIds);
+            res.addAll(goodsIds);
+        }
 
         return res;
+    }
+
+    /**
+     * 已选商品
+     * @param param
+     * @param userId
+     * @return
+     */
+    public PackageSaleCheckedGoodsListVo getCheckedGoodsList(PackageSaleGoodsListParam param, Integer userId){
+        PackageSaleCheckedGoodsListVo vo = new PackageSaleCheckedGoodsListVo();
+
+        PackageSaleRecord packageSaleRecord = getRecord(param.getPackageId());
+        List<PackSaleParam.GoodsGroup> groups = getPackageGroups(packageSaleRecord);
+        List<PackageSaleCheckedGoodsListVo.GroupGoodsVo> goodsList = new ArrayList<>(3);
+        groups.forEach(group -> {
+            PackageSaleCheckedGoodsListVo.GroupGoodsVo groupGoodsVo = new PackageSaleCheckedGoodsListVo.GroupGoodsVo();
+            groupGoodsVo.setGoodsNumber(group.getGoodsNumber());
+            groupGoodsVo.setGroupId(group.getGroupId());
+            groupGoodsVo.setGroupName(group.getGroupName());
+            groupGoodsVo.setSelectList(packageGoodsCartService.getUserGroupCartGoods(userId,param.getPackageId(),group.getGroupId()));
+            goodsList.add(groupGoodsVo);
+        });
+        vo.setGoodsList(goodsList);
+        vo.setTotalSelectNumber(packageGoodsCartService.getUserGroupGoodsNumber(userId,param.getPackageId()));
+        vo.setTotalSelectMoney(packageGoodsCartService.getUserPackageMoney(userId,packageSaleRecord));
+
+        return vo;
+    }
+
+    public PackageSaleRecord getRecord(int packageId){
+        return db().selectFrom(PACKAGE_SALE).where(PACKAGE_SALE.ID.eq(packageId)).fetchAny();
+    }
+
+    /**
+     * 加购
+     * @param param
+     * @param userId
+     * @return
+     */
+    public PackageSaleAddCartVo addPackageGoodsToCart(PackageSaleGoodsAddParam param,int userId){
+        PackageSaleAddCartVo vo = new PackageSaleAddCartVo();
+
+        PackageSaleRecord packageSaleRecord = getRecord(param.getPackageId());
+        Byte state = checkPackage(packageSaleRecord);
+        if(!state.equals((byte)0)){
+            vo.setState(state);
+            return vo;
+        }
+
+        List<PackSaleParam.GoodsGroup> groups = getPackageGroups(packageSaleRecord);
+        if(param.getGroupId() > groups.size()){
+            vo.setState((byte)5);
+            return vo;
+        }
+        PackSaleParam.GoodsGroup thisGroup = groups.get(param.getGroupId() -1);
+        List<Integer> effectiveGoodsIds = getPackageSaleGroupGoodsIds(thisGroup);
+        if(!effectiveGoodsIds.contains(param.getGoodsId())){
+            vo.setState((byte)5);
+            return vo;
+        }
+        int hasSelectNumber = packageGoodsCartService.getUserGroupGoodsNumber(userId,param.getPackageId(),param.getGroupId());
+        if((hasSelectNumber + param.getGoodsNumber()) > thisGroup.getGoodsNumber()){
+            vo.setState((byte)6);
+            vo.setGroupName(thisGroup.getGroupName());
+            return vo;
+        }
+        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getGoodsId());
+        if(goodsRecord == null || goodsRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
+            vo.setState((byte)7);
+            return vo;
+        }
+        if(goodsRecord.getIsOnSale().equals(GoodsConstant.OFF_SALE)){
+            vo.setState((byte)8);
+            return vo;
+        }
+        GoodsSpecProductRecord goodsSpecProductRecord = goodsService.goodsSpecProductService.selectSpecByProId(param.getProductId());
+        if(goodsSpecProductRecord == null){
+            vo.setState((byte)7);
+            return vo;
+        }
+        if(goodsSpecProductRecord.getPrdNumber() < param.getGoodsNumber()){
+            vo.setState((byte)9);
+            return vo;
+        }
+
+        //校验通过
+        packageGoodsCartService.addPackageGoods(param,userId);
+        return vo;
+    }
+
+    private Byte checkPackage(PackageSaleRecord packageSaleRecord){
+        if(packageSaleRecord == null || packageSaleRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
+            return (byte)1;
+        }
+        if(packageSaleRecord.getStatus().equals(BaseConstant.ACTIVITY_STATUS_DISABLE)){
+            return (byte)2;
+        }
+        if(packageSaleRecord.getEndTime().before(DateUtil.getLocalDateTime())){
+            return (byte)3;
+        }
+        if(packageSaleRecord.getStartTime().after(DateUtil.getLocalDateTime())){
+            return (byte)4;
+        }
+        return 0;
+    }
+
+    /**
+     * 去结算
+     * @param packageId
+     * @param userId
+     * @return
+     */
+    public PackageSaleCheckoutVo toCheckout(int packageId,int userId){
+        PackageSaleCheckoutVo vo = new PackageSaleCheckoutVo();
+
+        PackageSaleRecord packageSaleRecord = getRecord(packageId);
+        Byte state = checkPackage(packageSaleRecord);
+        if(!state.equals((byte)0)){
+            vo.setState(state);
+            return vo;
+        }
+
+        List<PackSaleParam.GoodsGroup> groups = getPackageGroups(packageSaleRecord);
+        for(PackSaleParam.GoodsGroup group : groups){
+            int groupSelectNumber = packageGoodsCartService.getUserGroupGoodsNumber(userId,packageId,group.getGroupId());
+            if(groupSelectNumber < group.getGoodsNumber()){
+                vo.setState((byte)4);
+                vo.setGroupName(group.getGroupName());
+                return vo;
+            }
+            if(groupSelectNumber > group.getGoodsNumber()){
+                vo.setState((byte)5);
+                vo.setGroupName(group.getGroupName());
+                return vo;
+            }
+        }
+
+        vo.setGoods(packageGoodsCartService.getUserGroupCartGoods(packageId,userId));
+        vo.setState((byte)0);
+        return vo;
     }
 }
 

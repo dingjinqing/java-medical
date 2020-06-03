@@ -108,6 +108,8 @@ global.wxComponent({
                 'components.decorate.hit'
               )}${item.denomination}${this.$t('components.decorate.fracture')}`;
             }
+          } else if (item.actCode === 'random'){
+            obj.text = `领券减￥${item.randomMax}`
           }
           break;
         case 21:
@@ -147,7 +149,7 @@ global.wxComponent({
         },
         '0-1': {
           className:'gray-text line-through',
-          text:`市场价: ${data.goodsData.linePrice}`
+          text:`￥${data.goodsData.linePrice}`
         }, //关闭购物车按钮-划线价类别
         '0-2': {
           className:'gray-text',

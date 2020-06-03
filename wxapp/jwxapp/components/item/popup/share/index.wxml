@@ -4,6 +4,7 @@
       分享
       <image class="image" src="{{ imageUrl }}image/wxapp/close_icon.png" mode='widthFix' bindtap='bindClose'></image>
     </view>
+    <slot name="shareInvite" />
     <view class="content_box">
       <button class="button" bindtap='share' open-type='share'>
         <image class="image" src="{{ imageUrl }}image/wxapp/share_friends.png" mode='widthFix'></image>

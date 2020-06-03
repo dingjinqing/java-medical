@@ -1,0 +1,12 @@
+<include src="/pages/common/header.wxml"/>
+<view class="main-container" style="height:calc(100vh - {{(margin_top_nav + 8) * 2}}px)">
+  <view class="live-info">
+    <view class="live-image-content">
+      <view>
+        <image src="http://jmpdevimg.weipubao.cn/upload/245547/image/20191223/Gpsm5Se1vO1cKCIgpYrU.jpg"></image>
+      </view>
+    </view>
+    <view class="live-title">悦诗风吟直播间</view>
+    <view class="live-name">小红帽</view>
+  </view>
+</view>

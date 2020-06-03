@@ -5,7 +5,9 @@ import com.vpu.mp.service.pojo.wxapp.distribution.GoodsDistributionVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.gift.GoodsGiftMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.live.RoomDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.PromotionBase;
+import com.vpu.mp.service.pojo.wxapp.order.record.GoodsOrderRecordSmallVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -59,6 +61,8 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
 
     /**商品规格信息*/
     List<GoodsPrdMpVo> products;
+    /**是否在售，0否1是*/
+    private Byte isOnSale;
     //************ElasticSearch中的数据**************end
 
     /**用户是否可以购买本商品*/
@@ -69,8 +73,8 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     private BigDecimal deliverPrice;
     /**是否已删除，当搜索的商品已删除时，需要前端判断并进行处理*/
     private Byte delFlag;
-    /**是否在售，0否1是*/
-    private Byte isOnSale;
+    /**商品关联的直播间信息*/
+    private RoomDetailMpVo roomDetailMpInfo;
     /**是否收藏*/
     private Boolean isCollected;
     /**商品评价信息*/
@@ -85,6 +89,8 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     List<MemberCardDetailMpVo> memberCards;
     /** 详情页所指定的营销活动 */
     private GoodsActivityBaseMp activity;
+    /**商品最近的五条购买记录 */
+    private List<GoodsOrderRecordSmallVo> goodsRecord;
 
     /**商品促销活动列表*/
     Map<Byte,List<? extends PromotionBase>> promotions = new HashMap<>();
@@ -96,7 +102,7 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     /**
      * 服务承诺信息
      */
-    private  List<PledgeInfo> pledgeList;
+    private List<PledgeInfo> pledgeList;
 
     /**
      * 销量展示开关
@@ -106,6 +112,11 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
      * 客服按钮展示开关
      */
     private Byte customService;
+
+    /**
+     * 该商品可以参加的分享有礼活动ID
+     */
+    private Integer shareAwardId;
 
     @Override
     public String toString() {

@@ -15,6 +15,12 @@ public class GoodsDistributionVo {
      * 是否分销改价 0：否；1是
      */
     private Byte canRebate;
+    /**
+     * 是否是分销员
+     */
     private Byte isDistributor;
+    /**
+     * 返利比例
+     */
     private RebateRatioVo rebateRatio;
 }

@@ -12,22 +12,24 @@ import org.springframework.stereotype.Component;
 @Component
 public class ToDoItemVo {
     /** 待提货订单 */
-    private int pendingOrder;
+    private Integer pendingOrder;
     /** 待发货 */
-    private int toBeDelivered;
+    private Integer toBeDelivered;
     /**  退货退款 */
-    private int refunds;
+    private Integer refunds;
     /** 已售罄商品 */
-    private int soldOutGoods;
+    private Integer soldOutGoods;
     /** 待审核Pending Review用简写Pr表示 */
     /** 商品评价待审核 */
-    private int productEvaluationPr;
+    private Integer productEvaluationPr;
     /** 分销员待审核 */
-    private int distributorPr;
+    private Integer distributorPr;
     /** 会员卡待审核 */
-    private int membershipCardPr;
+    private Integer membershipCardPr;
     /** 分销提现待审核 */
-    private int distributionWithdrawalPr;
+    private Integer distributionWithdrawalPr;
     /** 服务评价待审核 */
-    private int serviceEvaluationPr;
+    private Integer serviceEvaluationPr;
+    /** 当前选项 */
+    private String backlog;
 }

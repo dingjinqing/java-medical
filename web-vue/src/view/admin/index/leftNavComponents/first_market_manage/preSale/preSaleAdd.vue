@@ -21,6 +21,7 @@
             :key="index"
             v-model="param.presaleType"
             :label="index"
+            @change="changePreAct"
           >{{item}}</el-radio>
         </el-form-item>
         <el-form-item
@@ -29,11 +30,26 @@
         >
           <el-input
             v-model="param.presaleName"
+            placeholder="请输入活动名称"
             size="small"
             style="width:180px"
           ></el-input>
           <span style="color:#999;margin-left:10px;">只作为商家记录使用，用户不会看到这个名称</span>
         </el-form-item>
+
+        <el-form-item
+          label="优先级："
+          prop="first"
+        >
+          <el-input
+            v-model="param.first"
+            size="small"
+            placeholder="请输入优先级"
+            style="width: 180px"
+          ></el-input>
+          <span style="color:#999;margin-left:10px;">用于区分不同定金膨胀活动的优先级，请填写正整数，数值越大优先级越高</span>
+        </el-form-item>
+
         <!-- 定金膨胀 -->
         <el-form-item
           v-show="!isFullPay"
@@ -63,8 +79,8 @@
               </el-date-picker>
               <el-button
                 size="small"
-                v-show="!twoSteps"
-                @click="param.prePayStep=2"
+                v-show="!twoSteps&&!isEditeFlag"
+                @click="handleTwoState"
               >添加定金支付时段</el-button>
             </el-form-item>
 
@@ -141,6 +157,49 @@
           </el-date-picker>
         </el-form-item>
 
+        <!-- 活动预告 -->
+        <el-form-item label="活动预告：">
+          <div>
+            <span style="color:#999">活动开始前会在商品详情中展示活动预告信息</span>
+            <el-popover
+              placement="right-start"
+              width="220"
+              trigger="hover"
+            >
+              <el-image :src="srcList.src3"></el-image>
+              <el-button
+                slot="reference"
+                type="text"
+              >查看示例</el-button>
+            </el-popover>
+          </div>
+          <div>
+            <el-radio-group v-model="activityType">
+              <el-radio
+                :label="1"
+                :disabled="isEditeFlag"
+              >
+                活动开始前
+                <el-input
+                  v-model="param.preTime"
+                  :disabled="isEditeFlag"
+                  style="width:80px"
+                  size="small"
+                ></el-input>
+                小时进行预告
+              </el-radio>
+              <el-radio
+                :label="-1"
+                :disabled="isEditeFlag"
+              >活动创建完成后即进行公告</el-radio>
+              <el-radio
+                :label="0"
+                :disabled="isEditeFlag"
+              >不进行活动预告</el-radio>
+            </el-radio-group>
+          </div>
+        </el-form-item>
+
         <!-- 活动商品 -->
         <el-form-item
           label="活动商品："
@@ -156,10 +215,9 @@
 
           <el-input
             :disabled="true"
-            v-if="false"
             v-model="param.goodsId"
             size="small"
-            style="width: 170px;"
+            style="width: 170px;display:none"
           ></el-input>
           <el-button
             :disabled="isEditeFlag"
@@ -278,19 +336,19 @@
             empty-text="暂无数据"
           >
             <el-table-column
-              prop="prdDesc"
-              label="规格"
+              prop="goodsName"
+              label="商品名称"
               align="center"
             >
             </el-table-column>
             <el-table-column
-              prop="prdPrice"
+              prop="shopPrice"
               label="商品原价(元)"
               align="center"
             >
             </el-table-column>
             <el-table-column
-              prop="prdNumber"
+              prop="goodsNumber"
               label="商品库存"
               align="center"
             >
@@ -299,97 +357,78 @@
             <el-table-column
               align="center"
               label="活动价格"
-              prop="presalePrice"
             >
-              <template slot="append">
-                <span>活动价格</span>
-                <el-button
-                  @click="setCurrent(1)"
-                  size="small"
-                  icon="el-icon-edit"
-                >批量设置
-                </el-button>
-              </template>
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'products.' +  scope.$index+ '.presalePrice'"
-                  :rules="[
-                  { required: true, message: '活动价格不能为空' },
-                  { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.prdPrice)}, trigger: ['blur', 'change'] }
-              ]"
-                  style="height: 56px;line-height: 56px;"
+                  :rules="[{ validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.shopPrice, scope.row)}, trigger: ['blur', 'change'] }]"
                 >
                   <el-input
-                    :disabled="isEditeFlag"
                     v-model="scope.row.presalePrice"
+                    @input="changePriceInput(scope.row)"
                     size="small"
                   />
                 </el-form-item>
+                <div
+                  class="spec-tips"
+                  @click="showSpec(scope.row)"
+                  v-if="scope.row.goodsSpecProducts&&scope.row.goodsSpecProducts.length > 0"
+                >包含{{scope.row.goodsSpecProducts.length}}个规格</div>
               </template>
             </el-table-column>
+
+            <!-- 活动库存 -->
             <el-table-column
               align="center"
               prop="presaleNumber"
               label="活动库存"
             >
-              <template slot="append">
-                <span>活动库存</span>
-                <el-button
-                  @click="setCurrent(2)"
-                  size="mini"
-                  icon="el-icon-edit"
-                >
-                </el-button>
-              </template>
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'products.' +  scope.$index+ '.presaleNumber'"
-                  :rules="[
-                { required: true, message: '活动库存不能为空' },
-                { validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.prdNumber)}, trigger: ['blur', 'change'] }
-              ]"
-                  style="height: 56px;line-height: 56px;"
+                  :rules="[{ validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.goodsNumber, scope.row, scope.$index)}, trigger: ['blur', 'change']}]"
                 >
                   <el-input
-                    :disabled="isEditeFlag"
                     v-model="scope.row.presaleNumber"
+                    @input="changeStockInput(scope.row)"
                     size="small"
                   />
                 </el-form-item>
+                <div
+                  class="spec-tips"
+                  @click="showSpec(scope.row)"
+                  v-if="scope.row.goodsSpecProducts&&scope.row.goodsSpecProducts.length > 0"
+                >包含{{scope.row.goodsSpecProducts.length}}个规格；库存合计：{{scope.row.totalStock ? scope.row.totalStock : 0}}</div>
               </template>
             </el-table-column>
+
+            <!-- 定金 -->
             <el-table-column
               align="center"
               prop="presaleMoney"
               label="定金"
               v-if="param.presaleType===0"
             >
-              <template slot="append">
-                <span>定金</span>
-                <el-button
-                  @click="setCurrent(3)"
-                  size="mini"
-                  icon="el-icon-edit"
-                >定金说明
-                </el-button>
-              </template>
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'products.' +  scope.$index+ '.presaleMoney'"
-                  :rules="[
-                    { required: true, message: '定金不能为空'},
-                    { validator: (rule, value, callback)=>{validateReadyMoney(rule, value, callback, scope.row.presalePrice)}, trigger: ['blur', 'change'] }
-                  ]"
-                  style="height: 56px;line-height: 56px;"
+                  :rules="[{ validator: (rule, value, callback)=>{validateReadyMoney(rule, value, callback, scope.row.presalePrice, scope.row)}, trigger: ['blur', 'change']}]"
                 >
                   <el-input
-                    :disabled="isEditeFlag"
                     v-model="scope.row.presaleMoney"
+                    @input="changeEarnestMoney(scope.row)"
                     size="small"
                   />
                 </el-form-item>
+                <div
+                  class="spec-tips"
+                  @click="showSpec(scope.row)"
+                  v-if="scope.row.goodsSpecProducts&&scope.row.goodsSpecProducts.length > 0"
+                >包含{{scope.row.goodsSpecProducts.length}}个规格</div>
               </template>
             </el-table-column>
+
+            <!-- 1阶段定金可抵扣金额 -->
             <el-table-column
               align="center"
               prop="preDiscountMoney1"
@@ -399,52 +438,63 @@
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'products.' +  scope.$index+ '.preDiscountMoney1'"
-                  :rules="[
-                    { required: true, message: '1阶段定金不能为空'},
-                    { validator: (rule, value, callback)=>{validateFirstStage(rule, value, callback, scope.row.presalePrice, scope.row.presaleMoney)}, trigger: ['blur', 'change'] }
-                  ]"
-                  style="height: 56px;line-height: 56px;"
+                  :rules="[{ validator: (rule, value, callback)=>{validateFirstStage(rule, value, callback, scope.row.presaleMoney, scope.row.presalePrice)}, trigger: ['blur', 'change']}]"
                 >
                   <el-input
-                    :disabled="isEditeFlag"
                     v-model="scope.row.preDiscountMoney1"
+                    @input="changeDiscountMoney1(scope.row)"
                     size="small"
                   />
                 </el-form-item>
+                <div
+                  class="spec-tips"
+                  @click="showSpec(scope.row)"
+                  v-if="scope.row.goodsSpecProducts&&scope.row.goodsSpecProducts.length > 0"
+                >包含{{scope.row.goodsSpecProducts.length}}个规格</div>
               </template>
             </el-table-column>
+
+            <!-- 2阶段定金可抵扣金额 -->
             <el-table-column
               align="center"
               prop="preDiscountMoney2"
               label="2阶段定金可抵扣金额"
               v-if="twoSteps&&!isFullPay"
             >
-              <template slot="append">
-                <span>2阶段定金可抵扣金额</span>
-                <el-button
-                  @click="setCurrent(5)"
-                  size="mini"
-                  icon="el-icon-edit"
-                >2阶段可以抵扣的金额
-                </el-button>
-              </template>
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'products.' +  scope.$index+ '.preDiscountMoney2'"
-                  :rules="[
-                    { required: true, message: '2阶段定金不能为空'},
-                    { validator: (rule, value, callback)=>{validateSecondStage(rule, value, callback, scope.row.presalePrice, scope.row.presaleMoney)}, trigger: ['blur', 'change'] }
-                  ]"
-                  style="height: 56px;line-height: 56px;"
+                  :rules="[{ validator: (rule, value, callback)=>{validateSecondStage(rule, value, callback, scope.row.presalePrice, scope.row.presaleMoney)}, trigger: ['blur', 'change']}]"
                 >
                   <el-input
-                    :disabled="isEditeFlag"
                     v-model="scope.row.preDiscountMoney2"
+                    @input="changeDiscountMoney2(scope.row)"
                     size="small"
                   />
                 </el-form-item>
+                <div
+                  class="spec-tips"
+                  @click="showSpec(scope.row)"
+                  v-if="scope.row.goodsSpecProducts&&scope.row.goodsSpecProducts.length > 0"
+                >包含{{scope.row.goodsSpecProducts.length}}个规格</div>
               </template>
             </el-table-column>
+
+            <!-- 操作 -->
+            <el-table-column
+              label="操作"
+              align="center"
+              v-if="!isEditeFlag"
+            >
+              <template slot-scope="scope">
+                <div
+                  v-if="scope.row.goodsId"
+                  @click="deleteGoods(scope.row, scope.row.goodsId)"
+                  style="cursor:pointer;color:#409eff"
+                >删除</div>
+              </template>
+            </el-table-column>
+
             <template
               slot="empty"
               style="height：0"
@@ -513,9 +563,7 @@
           <el-form-item
             label="购买数量限制："
             prop="buyNumber"
-            :rules="[
-                { validator: (rule, value, callback)=>{validateBuyNumber(rule, value, callback)}, trigger: ['blur', 'change'] }
-              ]"
+            :rules="[{ validator: (rule, value, callback)=>{validateBuyNumber(rule, value, callback)}, trigger: ['blur', 'change']}]"
           >
             <div style="display:flex">
               <span>单用户最多可以购买</span>
@@ -637,10 +685,10 @@
 
       <!--添加商品弹窗-->
       <choosingGoods
-        @resultGoodsRow="choosingGoodsResult"
+        @resultGoodsDatas="choosingGoodsResult"
         :chooseGoodsBack="goodsIdList"
         :tuneUpChooseGoods="isShowChoosingGoodsDialog"
-        :singleElection="true"
+        :singleElection="false"
         :showTips="true"
       />
 
@@ -651,6 +699,15 @@
         @handleSelectImg='handleSelectImg'
         :imageSize="[800, 800]"
       />
+
+      <!-- 信息规格弹窗 -->
+      <preSaleDialog
+        :productDialog.sync="showSpecDialog"
+        :product-info="productInfo"
+        :isShowTwoStageMoney="showTwoStageMoney"
+        :isShowPreMoneyAct="showPreMoneyAct"
+        @confrim="getProductdata"
+      />
     </div>
   </div>
 </template>
@@ -660,26 +717,18 @@ import inputEdit from '@/components/admin/inputEdit'
 import choosingGoods from '@/components/admin/choosingGoods'
 import ImageDalog from '@/components/admin/imageDalog'
 import status from '@/components/admin/marketManage/status/status'
-import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
 import { format } from '@/util/date'
 import { createPreSale, updatePreSale, getDetail } from '@/api/admin/marketManage/preSale'
+import preSaleDialog from './preSaleDialog'
 
 export default {
   components: {
     inputEdit,
     choosingGoods,
-    ImageDalog
+    ImageDalog,
+    preSaleDialog
   },
   data () {
-    // 活动商品校验
-    var checkGoods = (rule, value, callback) => {
-      console.log(value)
-      if (!this.param.goodsId) {
-        return callback(new Error('请选择活动商品'))
-      } else {
-        callback()
-      }
-    }
     // 发货时间校验
     var checkDeliverType = (rule, value, callback) => {
       console.log(value)
@@ -690,6 +739,16 @@ export default {
         callback(new Error('请填写尾款发货时间'))
       } else if (value === 2 && !re.test(this.param.deliverDays)) {
         callback(new Error('支付完成后发货日期必须大于0'))
+      } else {
+        callback()
+      }
+    }
+    var validLevel = (rule, value, callback) => {
+      var reg = /^(0|[1-9][0-9]*)$/
+      if (value === '' || !value) {
+        callback(new Error('请输入优先级'))
+      } else if (!reg.test(value)) {
+        callback(new Error('请输入0和正整数'))
       } else {
         callback()
       }
@@ -716,7 +775,8 @@ export default {
       showImageDialog: false,
       srcList: {
         src1: `${this.$imageHost}/image/admin/share/presale_share.jpg`,
-        src2: `${this.$imageHost}/image/admin/share/presale_pictorial.jpg`
+        src2: `${this.$imageHost}/image/admin/share/presale_pictorial.jpg`,
+        src3: `${this.$imageHost}/image/admin/share/advance_presale.jpg`
       },
       ArrowArr: [
         { img_1: this.$imageHost + '/image/admin/show_more.png' },
@@ -726,6 +786,11 @@ export default {
       activeIndex: 0,
       isEditeFlag: false,
       goodsIdList: [],
+      showSpecDialog: false,
+      productInfo: {},
+      showTwoStageMoney: false,
+      showPreMoneyAct: false,
+      activityType: 1,
 
       /**
        * 请求参数
@@ -757,17 +822,22 @@ export default {
         shareImgAction: 1,
         shareImg: '',
         products: [],
-        goodsName: ''
+        goodsName: '',
+        first: '',
+        preTime: 24
       },
       formRules: {
         presaleType: { required: true },
         presaleName: { required: true, message: '请填写活动名称', trigger: 'blur' },
-        goodsId: { required: true, validator: checkGoods, trigger: 'change' },
+        goodsId: [{ required: true, message: '请选择活动商品', trigger: 'change' }],
         deliverType: { required: true, validator: checkDeliverType, trigger: 'change' },
         discountType: { required: true },
         returnType: { required: true },
         showSaleNumber: { required: true },
-        buyType: { required: true }
+        buyType: { required: true },
+        first: [
+          { required: true, validator: validLevel, trigger: ['blur', 'change'] }
+        ]
       }
     }
   },
@@ -785,67 +855,115 @@ export default {
   methods: {
     ...mapActions(['transmitEditGoodsId']),
     // 验证是否选择了商品
-    validateMoney (rule, value, callback, prdPrice) {
-      var re = /^\d+(\.\d{1,2})?$/
-      if (value < 0) {
-        callback(new Error('价格不能为负数'))
+    validateMoney (rule, value, callback, prdPrice, row) {
+      console.log(row)
+      row.flag1 = false
+      // 找到最低活动价格
+      if (row.goodsSpecProducts && row.goodsSpecProducts.length > 0) {
+        row.goodsSpecProducts.forEach(item => {
+          if (prdPrice > item.shopPrice) {
+            prdPrice = item.shopPrice
+          }
+        })
+      }
+
+      // var re = /^\d+(\.\d{1,2})?$/
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!value) {
+        callback(new Error('活动价格不能为空'))
+      } else if (value < 0) {
+        callback(new Error('活动价格不能为负数'))
       } else if (!re.test(value)) {
-        callback(new Error('请保留两位小数'))
-      } else if (value > prdPrice) {
-        callback(new Error('价格已大于商品原价'))
+        callback(new Error('请输入正确价格，可以保留两位小数'))
+      } else if (Number(value) > Number(prdPrice)) {
+        callback(new Error('活动价格不能大于商品原价'))
       } else {
         callback()
+        row.flag1 = true
       }
     },
-    validateNum (rule, value, callback, prdNumber) {
-      var re = /^[1-9]\d*$/
+
+    // 校验活动库存
+    validateNum (rule, value, callback, goodsNumber, row, index) {
+      row.flag2 = false
+      // 找到最低规格库存
+      if (row.goodsSpecProducts && row.goodsSpecProducts.length > 0) {
+        row.goodsSpecProducts.forEach(item => {
+          if (goodsNumber > item.prdNumber) {
+            goodsNumber = item.prdNumber
+          }
+        })
+      }
+
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!value) {
+        callback(new Error('活动库存不能为空'))
+      } else if (value < 0) {
+        callback(new Error('活动库存不能为负数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写0或正整数'))
+      } else if (value > goodsNumber) {
+        callback(new Error('活动库存不能大于商品库存'))
+      } else {
+        callback()
+        row.flag2 = true
+      }
+    },
+
+    // 校验定金
+    validateReadyMoney (rule, value, callback, presalePrice, row) {
+      console.log(row)
+      var re = /^\d+(\.\d{1,2})?$/
+
       if (!re.test(value)) {
-        callback(new Error('请填写正整数'))
-      } else if (value > prdNumber) {
-        callback(new Error('库存已大于商品库存'))
+        callback(new Error('请填写非负数, 可以保留两位小数'))
+      } else if (value > Number(presalePrice)) {
+        callback(new Error('定金不能大于活动价格'))
       } else {
         callback()
       }
     },
-    validateReadyMoney (rule, value, callback, presalePrice) {
+
+    // 校验一阶段定金
+    validateFirstStage (rule, value, callback, presaleMoney, presalePrice) {
       var re = /^\d+(\.\d{1,2})?$/
-      if (value < 0) {
-        callback(new Error('定金不能为负数'))
-      } else if (!re.test(value)) {
-        callback(new Error('请保留两位小数'))
+      if (!re.test(value)) {
+        callback(new Error('请填写非负数, 可以保留两位小数'))
       } else if (value > Number(presalePrice)) {
-        callback(new Error('定金已大于活动价格'))
-      } else {
-        callback()
-      }
-    },
-    validateFirstStage (rule, value, callback, presalePrice, presaleMoney) {
-      var re = /^\d+(\.\d{1,2})?$/
-      if (value < 0) {
-        callback(new Error('定金不能为负数'))
-      } else if (!re.test(value)) {
-        callback(new Error('请保留两位小数'))
-      } else if (value > Number(presalePrice)) {
-        callback(new Error('定金已大于活动价格'))
+        callback(new Error('1阶段定金不能大于活动价格'))
       } else if (value < Number(presaleMoney)) {
-        callback(new Error('数值不能小于定金'))
+        callback(new Error('1阶段定金不能小于定金'))
       } else {
         callback()
       }
     },
+
+    // 校验二阶段定金
     validateSecondStage (rule, value, callback, presalePrice, presaleMoney) {
       var re = /^\d+(\.\d{1,2})?$/
-      if (value < 0) {
-        callback(new Error('定金不能为负数'))
-      } else if (!re.test(value)) {
-        callback(new Error('请保留两位小数'))
+      if (!re.test(value)) {
+        callback(new Error('请填写非负数, 可以保留两位小数'))
       } else if (value > Number(presalePrice)) {
-        callback(new Error('定金已大于活动价格'))
+        callback(new Error('2阶段定金不能大于活动价格'))
       } else if (value < Number(presaleMoney)) {
-        callback(new Error('数值不能小于定金'))
+        callback(new Error('2阶段定金不能小于定金'))
       } else {
         callback()
       }
+    },
+    // 一阶段定金支付时间
+    dateChange (date) {
+      this.param.preStartTime = date[0]
+      this.param.preEndTime = date[1]
+    },
+    // 二阶段定金支付时间
+    dateChange2 (date) {
+      this.param.preStartTime2 = date[0]
+      this.param.preEndTime2 = date[1]
+    },
+    endMoneyTime (val) {
+      this.param.startTime = val[0]
+      this.param.endTime = val[1]
     },
     // 验证数量
     validateBuyNumber (rule, value, callback) {
@@ -863,20 +981,6 @@ export default {
     changTime (e) {
       this.$refs.param.validateField('deliverType')
     },
-    // 一阶段定金支付时间
-    dateChange (date) {
-      this.param.preStartTime = date[0]
-      this.param.preEndTime = date[1]
-    },
-    // 二阶段定金支付时间
-    dateChange2 (date) {
-      this.param.preStartTime2 = date[0]
-      this.param.preEndTime2 = date[1]
-    },
-    endMoneyTime (val) {
-      this.param.startTime = val[0]
-      this.param.endTime = val[1]
-    },
     // 保存
     add () {
       this.$refs['param'].validate((valid) => {
@@ -888,11 +992,69 @@ export default {
               this.param.buyNumber = Number(this.param.buyNumber)
               console.log(param, 'get param')
               this.formatParam()
+
               if (!this.validateParam()) {
                 return false
               } else {
+                this.formatParam()
+
+                this.param.buyNumber = Number(this.param.buyNumber)
+                this.param.first = Number(this.param.first)
+                this.param.deliverDays = Number(this.param.deliverDays)
+                if (this.activityType === 0) {
+                  this.param.preTime = 0
+                } else if (this.activityType === -1) {
+                  this.param.preTime = -1
+                } else {
+                  this.param.preTime = Number(this.param.preTime)
+                }
+
+                this.param.products.forEach((item, index) => {
+                  console.log(item)
+                  item.productId = Number(item.prdId)
+                  item.presalePrice = Number(item.presalePrice)
+                  item.presaleNumber = Number(item.presaleNumber)
+                  item.presaleMoney = Number(item.presaleMoney)
+                  item.preDiscountMoney1 = Number(item.preDiscountMoney1)
+                  item.preDiscountMoney2 = Number(item.preDiscountMoney2)
+                })
+
+                let products = []
+                this.param.stock = 0
+                console.log(this.param.products)
+                this.param.products.forEach(item => {
+                  if (item.goodsSpecProducts) {
+                    console.log(item.goodsSpecProducts)
+                    item.goodsSpecProducts.forEach(specItem => {
+                      console.log(specItem)
+                      let { presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, stock } = specItem
+                      let goodsId = item.goodsId
+                      let productId = this.isEditeFlag ? specItem.productId : specItem.prdId
+                      let preDiscountMoney2 = specItem.preDiscountMoney2 === 0 ? 'null' : specItem.preDiscountMoney2
+                      products.push({ goodsId, productId, presalePrice: Number(presalePrice), presaleNumber: Number(presaleNumber), presaleMoney: Number(presaleMoney), preDiscountMoney1: Number(preDiscountMoney1), preDiscountMoney2: Number(preDiscountMoney2), stock: Number(stock) })
+                      this.param.stock += Number(stock)
+                    })
+                  } else {
+                    if (this.isEditeFlag) {
+                      item.productList.forEach(item => {
+                        let { goodsId, productId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, stock } = item
+                        let preDiscountMoney2 = item.preDiscountMoney2 === 0 ? 'null' : item.preDiscountMoney2
+                        products.push({ goodsId, productId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock: Number(stock) })
+                        this.param.stock += Number(stock)
+                      })
+                    } else {
+                      let { goodsId, prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock } = item
+                      products.push({ goodsId, productId: prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock: Number(stock) })
+                      this.param.stock += Number(stock)
+                    }
+                  }
+                })
+
                 if (this.update) {
-                  updatePreSale(param).then(res => {
+                  console.log(this.param)
+                  console.log(products)
+                  console.log()
+                  updatePreSale({ ...this.param, products }).then(res => {
                     if (res.error === 0) {
                       console.log(res)
                       this.$message.success('更新成功')
@@ -902,7 +1064,7 @@ export default {
                     }
                   })
                 } else {
-                  createPreSale(param).then(res => {
+                  createPreSale({ ...this.param, products }).then(res => {
                     if (res.error === 0) {
                       console.log(res)
                       this.$message.success('添加成功')
@@ -930,8 +1092,6 @@ export default {
     formatTimes () {
       const { isFullPay, twoSteps } = this
       if (isFullPay) {
-        // this.param.startTime = format(payTimeRange[0])
-        // this.param.endTime = format(payTimeRange[1])
         this.param.preStartTime = format(this.param.preTime1Range[0])
         this.param.preEndTime = format(this.param.preTime1Range[1])
       } else {
@@ -950,12 +1110,15 @@ export default {
       const { id } = this.$route.params
       getDetail(id).then(({ content }) => {
         this.param = content
-        console.log(this.param.shareImg)
+        this.param.products = this.initEditProduct(content.goodsList)
+        this.param.preTime = this.initActivityNotice(content.preTime)
+        this.param.goodsId = content.goodsId
         this.getImgeUrl(content.shareImg)
 
         this.loadStatus(content)
         // this.loadingGoods(content)
         console.log(this.param, 'get return param')
+        this.goodsIdList = content.goodsId.split(',').map(Number)
         if (content) {
           if (content.presaleType === 1) {
             // 全款购买 - 定金支付时间
@@ -964,6 +1127,11 @@ export default {
             // 定金膨胀 - 定金支付时间
             this.param.preTime1Range = [content.preStartTime, content.preEndTime]
             this.param.preTime2Range = [content.preStartTime2, content.preEndTime2]
+            if (content.preEndTime2) {
+              this.showTwoStageMoney = true
+            } else {
+              this.showTwoStageMoney = false
+            }
           }
           // 尾款支付时间
           this.param.tailPayTimeRange = [content.startTime, content.endTime]
@@ -1011,6 +1179,11 @@ export default {
         }
       }
 
+      if (this.goodsIdList.length === 0) {
+        this.$message.warning('请选择商品')
+        return false
+      }
+
       if (this.param.shareAction === 2 && !this.param.shareDoc) {
         this.$message.warning('请填写对应的分享文案')
         return false
@@ -1028,6 +1201,22 @@ export default {
       this.param.preTime2Range = []
       this.param.preStartTime2 = ''
       this.param.preEndTime2 = ''
+      this.showTwoStageMoney = false
+    },
+    // 添加定二阶段金支付时间按钮点击事件
+    handleTwoState () {
+      this.param.prePayStep = 2
+      if (this.param.presaleType === 0) {
+        this.showTwoStageMoney = true
+      }
+    },
+    changePreAct (val) {
+      console.log(val)
+      if (val === 0) {
+        this.showPreMoneyAct = true
+      } else {
+        this.showPreMoneyAct = false
+      }
     },
     showChoosingGoods () {
       this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
@@ -1038,41 +1227,138 @@ export default {
     setCurrent (index) {
       // 拷贝一份数据
       let price = JSON.parse(JSON.stringify(this.param.products))
-      console.log(this.price, 'get-price')
 
       switch (index) {
         case 1:
           price.forEach(row => {
-            row.presalePrice = Number(price[0].presalePrice)
+            this.$set(row, 'presalePrice', this.param.products[0].presalePrice)
+            this.changePriceInput(row)
           })
           this.activeIndex = 1
           break
         case 2:
           price.forEach(row => {
-            row.presaleNumber = Number(price[0].presaleNumber)
+            this.$set(row, 'presaleNumber', this.param.products[0].presaleNumber)
+            this.changeStockInput(row)
           })
           this.activeIndex = 2
           break
         case 3:
           price.forEach(row => {
-            row.presaleMoney = Number(price[0].presaleMoney)
+            this.$set(row, 'presaleMoney', this.param.products[0].presaleMoney)
+            this.changeEarnestMoney(row)
           })
           this.activeIndex = 3
           break
         case 4:
           price.forEach(row => {
-            row.preDiscountMoney1 = Number(price[0].preDiscountMoney1)
+            this.$set(row, 'preDiscountMoney1', this.param.products[0].preDiscountMoney1)
+            this.changeDiscountMoney1(row)
           })
           this.activeIndex = 4
           break
         case 5:
           price.forEach(row => {
-            row.preDiscountMoney2 = Number(price[0].preDiscountMoney2)
+            this.$set(row, 'preDiscountMoney2', this.param.products[0].preDiscountMoney2)
+            this.changeDiscountMoney2(row)
           })
           this.activeIndex = 5
           break
       }
       this.param.products = price
+    },
+    // 删除商品
+    deleteGoods (data, id) {
+      let index = this.goodsIdList.findIndex(item => {
+        return item === id
+      })
+      this.goodsIdList.splice(index, 1)
+      let goodsTarget = this.param.products.findIndex(item => {
+        return id === item.goodsId
+      })
+      this.param.products.splice(goodsTarget, 1)
+    },
+    getProductdata ({ goodsId, prdInfo }) {
+      console.log(goodsId, prdInfo)
+      console.log(this.param.products)
+      let target = this.param.products.find(item => { return item.goodsId === goodsId })
+      let index = this.param.products.findIndex(item => { return item.goodsId === goodsId })
+      this.$set(this.param.products[index], 'presalePrice', prdInfo[0].presalePrice)
+      this.$set(this.param.products[index], 'presaleNumber', prdInfo[0].presaleNumber)
+      this.$set(this.param.products[index], 'presaleMoney', prdInfo[0].presaleMoney)
+      this.$set(this.param.products[index], 'preDiscountMoney1', prdInfo[0].preDiscountMoney1)
+      this.$set(this.param.products[index], 'preDiscountMoney2', prdInfo[0].preDiscountMoney2)
+      target.goodsSpecProducts = prdInfo
+      this.changePriceInput(target, true)
+      this.changeStockInput(target, true)
+      this.changeEarnestMoney(target, true)
+      this.changeDiscountMoney1(target, true)
+      this.changeDiscountMoney2(target, true)
+    },
+    showSpec (goodsInfo) {
+      if (this.param.presaleType === 0) {
+        this.showPreMoneyAct = true
+      }
+      this.productInfo = goodsInfo
+      this.showSpecDialog = true
+      console.log(this.param.presaleType)
+      console.log(this.showSpecDialog)
+    },
+    // 改变活动价格
+    changePriceInput (goodsInfo, isDialog = null) {
+      console.log(goodsInfo)
+      if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
+        goodsInfo.priceErrorMsg = null
+        goodsInfo.goodsSpecProducts.forEach((item, index) => {
+          console.log(item)
+          if (!isDialog) item.presalePrice = goodsInfo.presalePrice
+          // if (this.validatePrdPrice(item) && !goodsInfo.priceErrorMsg) {
+          //   goodsInfo.priceErrorMsg = '有规格拼团价大于原价，请修改'
+          // }
+        })
+      }
+    },
+    // 改变活动库存
+    changeStockInput (goodsInfo, isDialog = null) {
+      if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
+        goodsInfo.stockErrorMsg = null
+        goodsInfo.totalStock = 0
+        goodsInfo.goodsSpecProducts.forEach((item, index) => {
+          console.log(item)
+          if (!isDialog) item.presaleNumber = goodsInfo.presaleNumber
+          goodsInfo.totalStock += parseInt(item.presaleNumber)
+          // if (this.validatePrdStock(item) && !goodsInfo.stockErrorMsg) {
+          //   goodsInfo.stockErrorMsg = '有规格拼团库存大于原库存，请修改'
+          // }
+        })
+      }
+    },
+    // 改变定金
+    changeEarnestMoney (goodsInfo, isDialog = null) {
+      if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
+        goodsInfo.stockErrorMsg = null
+        goodsInfo.goodsSpecProducts.forEach((item, index) => {
+          if (!isDialog) item.presaleMoney = goodsInfo.presaleMoney
+        })
+      }
+    },
+    // 改变一阶段的金额
+    changeDiscountMoney1 (goodsInfo, isDialog = null) {
+      if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
+        goodsInfo.stockErrorMsg = null
+        goodsInfo.goodsSpecProducts.forEach((item, index) => {
+          if (!isDialog) item.preDiscountMoney1 = goodsInfo.preDiscountMoney1
+        })
+      }
+    },
+    // 改变二阶段的金额
+    changeDiscountMoney2 (goodsInfo, isDialog = null) {
+      if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
+        goodsInfo.stockErrorMsg = null
+        goodsInfo.goodsSpecProducts.forEach((item, index) => {
+          if (!isDialog) item.preDiscountMoney2 = goodsInfo.preDiscountMoney2
+        })
+      }
     },
     // 改变"收起、展开更多配置"事件
     handleToChangeArror () {
@@ -1081,20 +1367,33 @@ export default {
     // 获取商品ids
     choosingGoodsResult (row) {
       console.log(row, 'goodsInfo')
-      this.param.goodsName = row.goodsName
-      this.param.goodsId = row.goodsId
-      this.goodsIdList.push(row.goodsId)
-
-      // 初始化规格表格
-      getAllGoodsProductList(this.param.goodsId).then(res => {
-        console.log(res.content, 'param')
-        res.content.forEach((item, index) => {
-          item.index = index
-          item.productId = item.prdId
-        })
-        this.param.products = res.content
-        console.log(this.param.products, 'this.form.products')
+      this.goodsIdList = row.map(item => { return item.goodsId })
+      this.param.goodsId = this.goodsIdList.join(',')
+      this.param.products = row
+    },
+    // 处理回显的所选商品数据显示
+    initEditProduct (goods) {
+      let newdata = []
+      goods.forEach(item => {
+        let expand = item.productList.length < 2 ? { ...item.productList[0], goodsName: item.goodsName } : { ...item.productList[0], goodsSpecProducts: item.productList, goodsName: item.goodsName }
+        newdata.push({ ...item, ...expand })
       })
+      return newdata
+    },
+    initActivityNotice (val) {
+      console.log(val)
+      if (val === -1) {
+        this.activityType = -1
+        this.param.preTime = 24
+      } else if (val === 0) {
+        this.activityType = 0
+        this.param.preTime = 24
+      } else if (val > 0) {
+        this.activityType = 1
+        this.param.preTime = val
+      } else {
+      }
+      return this.param.preTime
     },
     // 分享 - 调起图片弹窗
     addGoodsImg () {
@@ -1197,5 +1496,14 @@ export default {
 }
 .settings {
   color: #5a8bff;
+}
+.spec-tips {
+  text-align: center;
+  color: #409eff;
+  cursor: pointer;
+}
+/deep/ .el-form-item__error {
+  position: relative;
+  text-align: left;
 }
 </style>

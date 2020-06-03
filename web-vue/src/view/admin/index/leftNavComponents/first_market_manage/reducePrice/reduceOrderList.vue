@@ -19,16 +19,22 @@
           style="width: 100%"
         >
           <el-table-column
-            prop=""
             label="活动名称"
             align="center"
-          ></el-table-column>
+          >
+            <template>
+              <span>{{ this.actName }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             label="订单号"
             align="center"
           >
             <template slot-scope="scope">
-              <span class="itemColor">{{ scope.row.orderSn }}</span>
+              <span
+                class="itemColor"
+                @click="orderHandler(scope.row.orderSn)"
+              >{{ scope.row.orderSn }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -36,26 +42,28 @@
             align="center"
             width="250px"
           >
-            <!-- <template slot-scope="scope">
+            <template slot-scope="scope">
               <div class="fl">
                 <img
-                  :src="$imageHost+'/image/admin/icon_jia.png'"
+                  :src="scope.row.goods[0].goodsImg"
                   alt=""
                   style="width: 100%; height: 100%;"
                 >
               </div>
               <div class="fr">
-                <p><span class="tips">限时降价</span>商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述</p>
-                <p>规格scale:大规;规格tast:甜</p>
-                <div></div>
+                <p><span class="tips">限时降价</span><span>{{scope.row.goods[0].goodsName}}</span></p>
+                <p>{{scope.row.goods[0].goodsAttr}}</p>
               </div>
-            </template> -->
+            </template>
           </el-table-column>
           <el-table-column
-            prop=""
             label="单价"
             align="center"
-          ></el-table-column>
+          >
+            <template slot-scope="scope">
+              <span>{{scope.row.goods[0].goodsPrice}}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="createTime"
             label="下单时间"
@@ -100,109 +108,6 @@
             align="center"
           ></el-table-column>
         </el-table>
-
-        <!-- <el-table
-          v-loading="loading"
-          :data="tableData"
-          style="width:100%;"
-          border
-          :header-cell-style="{
-            'background-color':'#f5f5f5',
-            'text-align':'center',
-            'border':'none'
-          }"
-          :cell-style="{
-            'text-align':'center'
-          }"
-          :cell-class-name="goodsInfo"
-        >
-          <template v-for="item in tableLabel">
-
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="item.index"
-              v-if="item.index === 2"
-              width="400"
-            >
-              <el-table-column
-                :label="$t('marketCommon.goodsName')"
-                width="300"
-                cell-style="{
-                  'padding':0
-                }"
-              >
-                <template slot-scope="scope">
-                  <div
-                    v-for="goodsItem in scope.row.goods"
-                    :key="goodsItem.goodsId"
-                    class="goods_info"
-                  >
-                    <img
-                      :src="$imageHost+'/image/admin/icon_jia.png'"
-                      alt=""
-                      class="goods_img"
-                    >
-                    <span class="goods_name">{{goodsItem.goodsName}}</span>
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column
-                :label="$t('marketCommon.price')"
-                width="100"
-              >
-                <template slot-scope="scope">
-                  <div
-                    class="goods_price"
-                    v-for="goodsItem in scope.row.goods"
-                    :key="goodsItem.goodsId"
-                  >
-                    {{goodsItem.goodsPrice}}
-                  </div>
-                </template>
-              </el-table-column>
-            </el-table-column>
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="item.index"
-              v-else-if="item.index === 4"
-            >
-              <template
-                slot-scope="scope"
-                @click="jumpUserInfo(scope.row.userId)"
-              >
-                <span>{{scope.row.username}}</span><br><span>{{scope.row.userMobile}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="item.index"
-              v-else-if="item.index === 5"
-            >
-              <template slot-scope="scope">
-                <span>{{scope.row.consignee}}</span><br><span>{{scope.row.mobile}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="item.index"
-              v-else-if="item.index === 6"
-            >
-              <template slot-scope="scope">
-                <span>￥{{scope.row.moneyPaid}}</span><br><span>({{$t('reducePriceList.expressDelivery')}}￥{{scope.row.shippingFee}})</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="item.index"
-              v-else
-            ></el-table-column>
-          </template>
-        </el-table> -->
         <pagination
           :page-params.sync="pageParams"
           @pagination="initDataList"
@@ -213,7 +118,8 @@
 </template>
 
 <script>
-import { getReducePriceOrderList } from '@/api/admin/marketManage/reducePrice.js'
+import { download } from '@/util/excelUtil.js'
+import { getReducePriceOrderList, reducePriceOrderListExport } from '@/api/admin/marketManage/reducePrice.js'
 import marketOrderSearchTab from '@/components/admin/marketManage/marketOrderSearchTab.vue'
 export default {
   components: {
@@ -223,6 +129,7 @@ export default {
     this.langDefault()
     if (this.$route.query.id > 0) {
       this.actId = this.$route.query.id
+      this.actName = this.$route.query.actName
       this.initDataList()
     }
   },
@@ -232,39 +139,36 @@ export default {
       pageParams: {},
       requestParams: {},
       tableData: [],
-      tableLabel: [
-        { index: 1, prop: 'orderSn', label: this.$t('marketCommon.orderSn') },
-        { index: 2, prop: '', label: this.$t('reducePriceList.goodsInfo') },
-        { index: 3, prop: 'createTime', label: this.$t('marketCommon.orderTime') },
-        { index: 4, prop: '', label: this.$t('marketCommon.orderUserInfo') },
-        { index: 5, prop: '', label: this.$t('marketCommon.consigneeInfo') },
-        { index: 6, prop: 'moneyPaid', label: this.$t('marketCommon.moneyPaid') },
-        { index: 7, prop: 'orderStatus', label: this.$t('marketCommon.orderStatus') }
-      ],
-
-      actId: null
+      actName: '', // 活动名称
+      actId: null,
+      orderList: this.$t('order.orderStatusList') // 订单状态
     }
   },
   watch: {
     // 国际化
-    lang () {
-      this.tableLabel = [
-        { index: 1, prop: 'orderSn', label: this.$t('marketCommon.orderSn') },
-        { index: 2, prop: '', label: this.$t('reducePriceList.goodsInfo') },
-        { index: 3, prop: 'createTime', label: this.$t('marketCommon.orderTime') },
-        { index: 4, prop: '', label: this.$t('marketCommon.orderUserInfo') },
-        { index: 5, prop: '', label: this.$t('marketCommon.consigneeInfo') },
-        { index: 6, prop: 'moneyPaid', label: this.$t('marketCommon.moneyPaid') },
-        { index: 7, prop: 'orderStatus', label: this.$t('marketCommon.orderStatus') }
-      ]
-    }
+    lang () { }
   },
   methods: {
+    // 初始化数据
     initDataList () {
       this.loading = true
       this.requestParams.activityId = this.actId
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
+      // 订单状态
+      var arr = []
+      if (this.requestParams.selectedOrderStatus || this.requestParams.selectedOrderStatus === 0) {
+        arr[0] = this.requestParams.selectedOrderStatus
+      }
+      if (arr !== []) {
+        this.requestParams.orderStatus = arr
+      }
+      // 下单时间
+      if (this.requestParams.createTimeStart) {
+        this.requestParams.createTimeEnd = this.requestParams.createTimeStart.replace('00:00:00', '23:59:59')
+      } else {
+        this.requestParams.createTimeEnd = null
+      }
       getReducePriceOrderList(this.requestParams).then((res) => {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
@@ -273,29 +177,46 @@ export default {
         }
       })
     },
+
     // 表格数据处理
     handleData (data) {
-      // this.tableData = data
+      data.forEach(item => {
+        this.orderList.forEach(val => {
+          if (item.orderStatus === val[0]) {
+            item.orderStatus = val[1]
+          }
+        })
+      })
+      this.tableData = data
     },
-    goodsInfo (data) {
-      if (data.columnIndex === 1 || data.columnIndex === 2) {
-        return 'no_padding'
-      } else {
-        return ''
-      }
-    },
-    handleAreaData (data) {
-      this.provinceCode = data.province
-      this.cityCode = data.city
-      this.districtCode = data.district
-    },
+
+    // 导出数据
     exportDataList () {
-      alert(11)
+      reducePriceOrderListExport(this.requestParams).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '限时降价订单导出.xlsx'
+        download(res, decodeURIComponent(fileName))
+      })
     },
 
     // 下单人信息
     userHandler (id) {
+      this.$router.push({
+        path: '/admin/home/main/membershipInformation',
+        query: {
+          userId: id
+        }
+      })
+    },
 
+    // 跳转订单详情
+    orderHandler (orderSn) {
+      this.$router.push({
+        path: '/admin/home/main/orders/info',
+        query: {
+          orderSn: orderSn
+        }
+      })
     }
   }
 }
@@ -439,5 +360,6 @@ export default {
   color: #ef8115;
   border-radius: 2px;
   font-size: 12px;
+  margin-right: 3px;
 }
 </style>

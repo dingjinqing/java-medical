@@ -33,11 +33,11 @@ export default {
       headers: [
         {
           label: this.$t(`messagePush.fullMessagePush`),
-          name: `/api/admin/market/messagePush/all`
+          name: `/admin/market/messagePush/all`
         },
         {
           label: this.$t(`messagePush.pushTheStatistics`),
-          name: `/api/admin/market/messagePush/pushStatistics`
+          name: `/admin/market/messagePush/pushStatistics`
         }
       ]
     }
@@ -50,11 +50,11 @@ export default {
       this.headers = [
         {
           label: this.$t(`messagePush.fullMessagePush`),
-          name: `/api/admin/market/messagePush/all`
+          name: `/admin/market/messagePush/all`
         },
         {
           label: this.$t(`messagePush.pushTheStatistics`),
-          name: `/api/admin/market/messagePush/pushStatistics`
+          name: `/admin/market/messagePush/pushStatistics`
         }
       ]
     }

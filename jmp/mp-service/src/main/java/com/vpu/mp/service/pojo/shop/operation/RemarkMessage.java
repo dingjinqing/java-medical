@@ -31,7 +31,7 @@ public class RemarkMessage {
 	public static final String MSG_ORDER_RETURN_CARD_ACCOUNT = "order.return.card.account";
 	public static final String MSG_ORDER_VIRTUAL_RETURN_DEFAULT = "order.virtual.return.default";
     public static final String MSG_ORDER_FINISH_SEND_SCORE = "order.finish.send.score";
-
+    public static final String MSG_ORDER_REBATE = "order.rebate";
 	/**
 	 * 会员卡
 	 */
@@ -51,7 +51,10 @@ public class RemarkMessage {
 	public static final String FREESHIP_NUM = "member.card.freeship.num";
 	/** 可享受包邮{0}次 */
 	public static final String FREESHIP_TOTAL_NUM = "member.card.freeship.total.num";
-
+    /** 会员卡续费 */
+    public static final String CARD_RENEW = "member.card.renew";
+    /** 会员卡续费: {订单号} */
+    public static final String CARD_RENEW_ORDER="member.card.renew.order";
 
 
 	/**

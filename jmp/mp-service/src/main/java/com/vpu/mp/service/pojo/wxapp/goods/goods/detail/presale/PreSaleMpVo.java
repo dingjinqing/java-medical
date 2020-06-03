@@ -35,7 +35,8 @@ public class PreSaleMpVo extends GoodsActivityDetailMp {
     private Boolean originalBuy;
     /**用户单次可购买数量*/
     private Integer limitAmount;
-
+    /**预售总库存*/
+    private Integer stock;
     /**定金支付时使用 尾款支付开始时间*/
     private Timestamp finalPaymentStart;
     /**尾款支付结束时间*/

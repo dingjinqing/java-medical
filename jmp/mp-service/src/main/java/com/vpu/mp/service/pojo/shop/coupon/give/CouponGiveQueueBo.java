@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.coupon.give;
 
+import com.vpu.mp.db.shop.tables.records.CustomerAvailCouponsRecord;
 import lombok.Getter;
 import lombok.Setter;
 import org.checkerframework.checker.units.qual.A;
@@ -29,4 +30,8 @@ public class CouponGiveQueueBo {
      * 发送优惠券的编号
      */
     private List<String> couponSn =new ArrayList<>();
+    /**
+     * 发送优惠券记录
+     */
+    private List<CustomerAvailCouponsRecord> sendCoupons;
 }

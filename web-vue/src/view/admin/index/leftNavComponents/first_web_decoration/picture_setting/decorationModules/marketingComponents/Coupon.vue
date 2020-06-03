@@ -22,7 +22,9 @@
             class="coupon_list_top"
             :style="'color:'+backgroundColor+';'"
           >
-            {{item.act_code==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.act_code==='discount'?$t('coupon.fracture'):''}}</i></span>
+            <span v-if="item.act_code==='discount'">{{item.denomination}}<i style="font-size:14px">{{$t('coupon.fracture')}}</i></span>
+            <span v-if="item.act_code==='voucher'">¥{{item.denomination}}</span>
+            <span v-if="item.act_code==='random'">¥{{item.randomMax}}<i style="font-size:12px">{{$t('coupon.randomMax')}}</i></span>
           </div>
           <div class="coupon_list_center">
             <div
@@ -59,7 +61,9 @@
             :style="'color:'+backgroundColor"
           >
             <div>
-              {{data.coupon_arr[0].act_code==='discount'?'':'¥'}}<span style="font-size:20px">{{data.coupon_arr[0].denomination}}<i style="font-size:14px">{{data.coupon_arr[0].act_code==='discount'?$t('coupon.fracture'):''}}</i></span>
+              <span v-if="data.coupon_arr[0].act_code==='discount'">{{data.coupon_arr[0].denomination}}<i style="font-size:14px">{{$t('coupon.fracture')}}</i></span>
+              <span v-if="data.coupon_arr[0].act_code==='voucher'">¥{{data.coupon_arr[0].denomination}}</span>
+              <span v-if="data.coupon_arr[0].act_code==='random'">¥{{data.coupon_arr[0].randomMax}}<i style="font-size:12px">{{$t('coupon.randomMax')}}</i></span>
 
             </div>
           </div>
@@ -140,7 +144,8 @@ export default {
             'coupon_id': '',
             'use_score': '0',
             'score_number': 'xx',
-            'limitSurplusFlag': ''
+            'limitSurplusFlag': '',
+            'randomMax': ''
           }
         ]
       }

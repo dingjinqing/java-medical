@@ -356,7 +356,11 @@ public class EsGoods  {
      */
     @EsFiled(name=EsSearchName.TOTAL_SALE_NUMBER,type = EsFiledTypeConstant.INTEGER)
     private Integer totalSaleNumber;
-
+    /**
+     * 直播id
+     */
+    @EsFiled(name=EsSearchName.ROOM_ID,type = EsFiledTypeConstant.INTEGER)
+    private Integer roomId;
 
 
     @EsFiled(name="test_time",type = EsFiledTypeConstant.DATE)

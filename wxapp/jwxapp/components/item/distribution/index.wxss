@@ -1,0 +1,59 @@
+@import "/css/item.wxss";
+@import "/css/iconfont.wxss";
+.not-involved{
+  display: flex;
+  padding: 0 30rpx;
+  height: 100rpx;
+  align-items: center;
+  background-color: #fff;
+  margin-top: 20rpx;
+}
+.not-involved > view:first-child{
+  border: 2rpx solid;
+  margin-right:20rpx;
+  padding: 4rpx 6rpx;
+}
+.distribution-top{
+  position: relative;
+}
+.distribution-top > .item_middle{
+  text-align: right;
+  color: #999;
+  padding-right: 20rpx;
+}
+.distribution-share{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  opacity: 0;
+}
+.distribution-info{
+  padding: 30rpx;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.distribution-info > .distribution-info-content{
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+}
+.distribution-info > .distribution-info-content+.distribution-info-content{
+  border-left: 2rpx solid #eee;
+}
+.distribution-info-content > view:first-child{
+  color: #888;
+  margin-bottom: 16rpx;
+}
+.distribution-info-content > view:first-child > text{
+  vertical-align: middle;
+}
+.distribution-info-content > view:first-child > image{
+  width: 30rpx;
+  height: 30rpx;
+  margin-left: 10rpx;
+  vertical-align: middle;
+}

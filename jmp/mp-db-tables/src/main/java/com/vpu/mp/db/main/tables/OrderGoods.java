@@ -245,7 +245,7 @@ public class OrderGoods extends TableImpl<OrderGoodsRecord> {
     /**
      * The column <code>mini_main.b2c_order_goods.fanli_strategy</code>. 返利比例
      */
-    public final TableField<OrderGoodsRecord, String> FANLI_STRATEGY = createField("fanli_strategy", org.jooq.impl.SQLDataType.VARCHAR(299).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "返利比例");
+    public final TableField<OrderGoodsRecord, String> FANLI_STRATEGY = createField("fanli_strategy", org.jooq.impl.SQLDataType.VARCHAR(2999).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "返利比例");
 
     /**
      * The column <code>mini_main.b2c_order_goods.fanli_percent</code>. 返利比例

@@ -21,6 +21,7 @@ export const en = {
   pv: 'Number of visits',
   uv: 'Number of visitors',
   uvNew: 'New user number',
+  uvAct: 'Active users',
   stayTimeUv: 'Average stay time',
   stayTimePv: 'Average dwell time',
   visitDepthAve: 'Average access depth',

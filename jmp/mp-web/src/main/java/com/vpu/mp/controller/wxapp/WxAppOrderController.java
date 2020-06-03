@@ -139,34 +139,45 @@ public class WxAppOrderController extends WxAppBaseController{
     }
 
     /**
-     * 订单详情
+     * 订单列表
      */
-    @PostMapping("/get")
-    public JsonResult get(@RequestBody @Valid OrderParam param) {
-        try {
-            return success(shop().readOrder.mpGet(param));
-        } catch (MpException e) {
-            return fail(e.getErrorCode(), e.getCodeParam());
-        }
+    @PostMapping("/refund/list/search")
+    public JsonResult mpReturnList(@RequestBody @Valid OrderListParam param) {
+        param.setWxUserInfo(wxAppAuth.user());
+        return success(shop().readOrder.mpReturnList(param));
     }
 
-    /**
-     * 统计数量
-     */
-    @PostMapping("/statistic")
-    public JsonResult statistic(@RequestBody @Valid OrderListParam param) {
-        param.setWxUserInfo(wxAppAuth.user());
-        return success(shop().readOrder.statistic(param));
-    }
+	/**
+	 * 订单详情
+	 */
+	@PostMapping("/get")
+	public JsonResult get(@RequestBody @Valid OrderParam param) {
+		try {
+			return success(shop().readOrder.mpGet(param));
+		} catch (MpException e) {
+			return fail(e.getErrorCode(), e.getCodeParam());
+		}
+	}
+
+	/**
+	 * 统计数量（废弃）
+	 */
+	@Deprecated
+	@PostMapping("/statistic")
+	public JsonResult statistic(@RequestBody @Valid OrderListParam param) {
+		param.setWxUserInfo(wxAppAuth.user());
+		return success(shop().readOrder.statistic(wxAppAuth.user().getUserId()));
+	}
+
 
     /**
      * 售后中心退款订单列表(存在退款)
      * @param param
      */
     @PostMapping("/refund/list")
-    public JsonResult mpReturnList(@RequestBody @Valid OrderParam param){
+	public JsonResult mpOrderReturnList(@RequestBody @Valid OrderParam param){
         try {
-            return success(shop().readOrder.mpReturnList(param));
+            return success(shop().readOrder.mpOrderReturnList(param));
         } catch (MpException e) {
             return fail(e.getErrorCode(), e.getCodeParam());
         }

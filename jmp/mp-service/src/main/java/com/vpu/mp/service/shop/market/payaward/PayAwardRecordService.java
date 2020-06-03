@@ -109,7 +109,7 @@ public class PayAwardRecordService  extends ShopBaseService {
         return  db().selectFrom(PAY_AWARD_PRIZE)
                 .where(PAY_AWARD_PRIZE.PAY_AWARD_ID.eq(payAwardId))
                 .and(PAY_AWARD_PRIZE.ID.eq(prizeId))
-                .and(PAY_AWARD_PRIZE.SEND_NUM.lt(PAY_AWARD_PRIZE.AWARD_NUMBER).or(PAY_AWARD_PRIZE.AWARD_NUMBER.eq(0))).fetchOne();
+                .and(PAY_AWARD_PRIZE.SEND_NUM.lt(PAY_AWARD_PRIZE.AWARD_NUMBER)).fetchOne();
 
     }
     /**

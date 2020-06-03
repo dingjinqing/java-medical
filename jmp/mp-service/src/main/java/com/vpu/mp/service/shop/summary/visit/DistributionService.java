@@ -192,6 +192,7 @@ public class DistributionService extends BaseVisitService {
                 setValue(tempMap.getValue());
             }});
         }
+        logger().info("当前items:{}",items);
         items.forEach(i -> {
             Integer key = i.getKey();
             ChartInfo kv = Arrays.stream(info)

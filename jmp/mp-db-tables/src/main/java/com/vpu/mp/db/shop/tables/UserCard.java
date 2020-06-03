@@ -7,6 +7,7 @@ package com.vpu.mp.db.shop.tables;
 import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.Keys;
+import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 
 import java.math.BigDecimal;
@@ -43,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserCard extends TableImpl<UserCardRecord> {
 
-    private static final long serialVersionUID = -157172095;
+    private static final long serialVersionUID = 2072695310;
 
     /**
      * The reference instance of <code>jmini_shop_489258.b2c_user_card</code>
@@ -134,6 +135,21 @@ public class UserCard extends TableImpl<UserCardRecord> {
     public final TableField<UserCardRecord, Integer> FREE_NUM = createField("free_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "周期内包邮次数");
 
     /**
+     * The column <code>jmini_shop_489258.b2c_user_card.give_away_status</code>. 0:正常，1:转赠中，2转赠成功
+     */
+    public final TableField<UserCardRecord, Byte> GIVE_AWAY_STATUS = createField("give_away_status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:正常，1:转赠中，2转赠成功");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_user_card.give_away_surplus</code>. 卡剩余赠送次数
+     */
+    public final TableField<UserCardRecord, Integer> GIVE_AWAY_SURPLUS = createField("give_away_surplus", org.jooq.impl.SQLDataType.INTEGER, this, "卡剩余赠送次数");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_user_card.card_source</code>. 卡来源 0:正常  2 别人转赠 
+     */
+    public final TableField<UserCardRecord, Byte> CARD_SOURCE = createField("card_source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "卡来源 0:正常  2 别人转赠 ");
+
+    /**
      * Create a <code>jmini_shop_489258.b2c_user_card</code> table reference
      */
     public UserCard() {
@@ -171,7 +187,7 @@ public class UserCard extends TableImpl<UserCardRecord> {
      */
     @Override
     public Schema getSchema() {
-        return MiniShop_471752.MINI_SHOP_471752;
+    	return MiniShop_471752.MINI_SHOP_471752;
     }
 
     /**

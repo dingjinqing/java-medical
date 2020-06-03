@@ -20,7 +20,13 @@ public class GoodsPriceBo {
 
     private BigDecimal goodsPrice;
 
+    /**
+     * 最大的一个规格价
+     */
     private BigDecimal maxPrice;
+
+    private BigDecimal marketPrice;
+    private Byte isCardExclusive;
 
     /**
      * 限时降价、首单特惠活动的限购

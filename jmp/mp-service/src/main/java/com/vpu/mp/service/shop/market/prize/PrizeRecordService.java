@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.market.prize;
 
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -12,6 +13,7 @@ import com.vpu.mp.service.pojo.wxapp.market.prize.PrizeRecordParam;
 import com.vpu.mp.service.pojo.wxapp.market.prize.PrizeRecordVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import org.jooq.Record;
@@ -43,6 +45,8 @@ public class PrizeRecordService extends ShopBaseService {
     private OrderGoodsService orderGoodsService;
     @Autowired
     private GoodsService  goodsService;
+    @Autowired
+    private GoodsSpecProductService goodsSpecProductService;
     @Autowired
     private AtomicOperation atomicOperation;
     @Autowired
@@ -101,6 +105,19 @@ public class PrizeRecordService extends ShopBaseService {
                     orderGoodsMpVo.setGoodsName(product.getGoodsName());
                     orderGoodsMpVo.setGoodsId(product.getGoodsId());
                     prizeRecord.setOrderGoodsMpVo(orderGoodsMpVo);
+                }else {
+                    logger().info("商品规格已删除,去备份表去查询");
+                    ProductSmallInfoVo productBak = goodsSpecProductService.getProductBakByPrdId(prizeRecord.getPrdId());
+                    if (productBak!=null){
+                        OrderGoodsMpVo orderGoodsMpVo = new OrderGoodsMpVo();
+                        orderGoodsMpVo.setProductId(prizeRecord.getPrdId());
+                        orderGoodsMpVo.setGoodsAttr(productBak.getPrdDesc());
+                        orderGoodsMpVo.setGoodsImg(domainConfig.imageUrl(productBak.getGoodsImg()));
+                        orderGoodsMpVo.setGoodsName(productBak.getGoodsName());
+                        orderGoodsMpVo.setGoodsId(productBak.getGoodsId());
+                        prizeRecord.setOrderGoodsMpVo(orderGoodsMpVo);
+                        prizeRecord.setGoodsStatus(BaseConstant.YES);
+                    }
                 }
             }else {
                 prizeRecord.setOrderGoodsMpVo(orderGoodsMpVos.get(0));
@@ -143,17 +160,17 @@ public class PrizeRecordService extends ShopBaseService {
         Timestamp localDateTime = DateUtil.getLocalDateTime();
         Result<PrizeRecordRecord> fetch = db().selectFrom(PRIZE_RECORD).where(PRIZE_RECORD.PRIZE_STATUS.eq(PRIZE_STATUS_UNCLAIMED))
                 .and(PRIZE_RECORD.EXPIRED_TIME.lt(localDateTime)).fetch();
-
         fetch.forEach(prizeRecord->{
-            Record goodsRecord = goodsService.getGoodsByProductId(prizeRecord.getPrdId());
-            if (goodsRecord!=null){
-                GoodsView goodsView = goodsRecord.into(GoodsView.class);
-                try {
+            GoodsView goodsView = goodsService.getGoodsViewByProductId(prizeRecord.getPrdId());
+            try {
+                if (goodsView!=null){
                     atomicOperation.updateStockAndSalesByLock(goodsView.getGoodsId(),prizeRecord.getPrdId(),-1,true);
-                } catch (MpException e) {
-                    e.printStackTrace();
-                    logger().error("我的奖品过期--归还商品库存失败");
+                }else {
+                    logger().info("奖品过期-商品规格失效");
                 }
+            } catch (MpException e) {
+                e.printStackTrace();
+                logger().error("我的奖品过期--归还商品库存失败");
             }
         });
         logger().info("修改我的奖品记录状态");

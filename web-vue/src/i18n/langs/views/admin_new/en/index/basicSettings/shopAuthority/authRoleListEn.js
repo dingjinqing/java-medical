@@ -126,6 +126,8 @@ export const en = {
   group_manage: 'group management',
   store_service_config: 'Store Service Configuration',
   config_list: 'Store basic configuration',
+  store_announcement: 'Store Anoouncement',
+  store_permission: 'Store Permission',
   pay: 'transaction configuration',
   child_config: 'store permissions',
   action_record: 'Operation record',

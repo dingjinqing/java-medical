@@ -13,7 +13,7 @@
           <div class="leftName">{{ form.title }}</div>
           <img
             class="leftTitle"
-            src="http://mpdevimg2.weipubao.cn/image/admin/shop_beautify/phone_tops.png"
+            :src="this.$imageHost + '/image/admin/shop_beautify/phone_tops.png'"
             alt=""
           >
           <div

@@ -59,7 +59,6 @@ public class AdminGroupBuyController extends AdminBaseController {
     @PostMapping("/admin/market/groupbuy/add")
     public JsonResult addGroupBuy(@RequestBody @Valid GroupBuyParam param) {
         Timestamp date = DateUtil.getLocalDateTime();
-
         shop().groupBuy.addGroupBuy(param);
         return success();
     }

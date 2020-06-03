@@ -1,0 +1,21 @@
+<!--pages1/distripromotion/distripromotion.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class='main-container'>
+  <view class="dis_content" wx:for="{{promotionList}}" wx:key="{{index}}">
+    <view class="promotion_title">
+      {{item.title}}
+      <view class='copy' bindtap='toCopy' data-content='{{item.promotion_language}}' style="border-color:{{somColor}};color:{{comColor}}">复制</view>
+      <view class='promotion_title_tips' wx:if="{{item.is_default == 1}}">默认</view>
+      <view class='promotion_title_tips' data-lanid='{{item.id}}' data-isdefault='{{item.is_default}}' bindtap='toDefault' wx:if="{{item.is_default == 0}}">设为默认</view>
+    </view>
+    <view class="promotion_content">
+      {{item.promotion_language}}
+    </view>
+    <!--<view class='promotion_bottom clearfix'>
+      <view class="promotion_bottom_button" bindtap='toCopy' data-content='{{item.promotion_language}}' style="color:{{comColor}}">复制到剪切板</view>
+      <view class="promotion_bottom_button" data-lanid='{{item.id}}' data-isdefault='{{item.is_default}}' bindtap='toDefault' wx:if="{{item.is_default == 0}}" style="color:{{comColor}}">设为默认</view>
+      <view class="promotion_bottom_button" data-lanid='{{item.id}}' data-isdefault='{{item.is_default}}' bindtap='toDefault' wx:if="{{item.is_default == 1}}" style="color:{{comColor}}">取消默认</view>
+    </view>-->
+  </view>
+</view>
+<include src="/pages/common/footer.wxml"/>

@@ -260,6 +260,7 @@ export default {
   },
   created () {
     this.queryParams.storeId = this.$route.query.id
+    this.queryParams.serviceName = this.$route.query.servicename
     this.langDefault()
     this.initDataList()
   },

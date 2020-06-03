@@ -1,30 +1,37 @@
 package com.vpu.mp.service.shop.coupon;
 
+import com.vpu.mp.db.shop.tables.records.DivisionReceiveRecordRecord;
+import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
+import com.vpu.mp.service.pojo.shop.coupon.*;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
-import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleCoupon;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponDelParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponPageDecorationVo;
 import com.vpu.mp.service.shop.member.MemberService;
+import org.jooq.Record5;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
-import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * @author: 王兵兵
@@ -103,7 +110,7 @@ public class CouponMpService extends ShopBaseService {
      * @param param
      * @return
      */
-    public CouponListVo getCouponData(mpGetCouponParam param){
+    public CouponListVo getCouponData(MpGetCouponParam param){
         CouponListVo couponData = db().select().from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(param.getCouponId()))
             .fetchOneInto(CouponListVo.class);
         return couponData;
@@ -125,7 +132,7 @@ public class CouponMpService extends ShopBaseService {
      * @param param 0：领取成功；1：优惠券不存在；2：优惠券过期；3：优惠券体用；4：库存为0；5：可用积分不足；6：积分更新失败；7；领取次数达上限
      * @return
      */
-    public Byte fetchCoupon(mpGetCouponParam param){
+    public Byte fetchCoupon(MpGetCouponParam param){
         CouponListVo couponData = this.getCouponData(param);
         Integer userId = param.getUserId();
         Byte couponGetStatus = this.couponGetStatus(param);
@@ -192,7 +199,7 @@ public class CouponMpService extends ShopBaseService {
      * @param param 0：可正常领取；1：优惠券不存在；2：优惠券过期；3：优惠券体用；4：库存为0
      * @return
      */
-    public Byte couponGetStatus(mpGetCouponParam param){
+    public Byte couponGetStatus(MpGetCouponParam param){
         Timestamp nowDate = DateUtil.getLocalDateTime();
         //判断领取限制
         CouponListVo couponData = this.getCouponData(param);
@@ -226,5 +233,148 @@ public class CouponMpService extends ShopBaseService {
             .where(CUSTOMER_AVAIL_COUPONS.ID.eq(param.getCouponId())).execute();
         return res;
 
+    }
+
+    public MpGetSplitCouponVo getSplitCoupon(MpGetSplitCouponParam param) {
+        logger().info("领取分裂优惠券");
+        MpGetSplitCouponVo vo = new MpGetSplitCouponVo();
+        MrkingVoucherRecord couponRecord = coupon.couponGiveService.getInfoById(param.getCouponId());
+        Result<Record5<Integer, String, String, Timestamp, BigDecimal>> receiveInfo = getReceiveInfo(param.getCouponSn(), param.getShareUserId());
+        long count = receiveInfo.stream().filter(info -> info.get(DIVISION_RECEIVE_RECORD.USER_ID).equals(param.getUserId())).count();
+        if ((couponRecord.getReceivePerNum()==1&&couponRecord.getReceiveNum()<=receiveInfo.size())
+                ||(couponRecord.getLimitSurplusFlag()==0&&couponRecord.getSurplus()<=0)){
+            logger().info("已经领完");
+            vo.setStatus((byte)2);
+            return vo;
+        }
+        if (count == 0) {
+            logger().info("开始发卷");
+            CouponAndVoucherDetailVo oneCouponDetail = coupon.getOneCouponDetail(param.getCouponSn());
+            if (oneCouponDetail != null) {
+                CouponGiveQueueParam couponGive = new CouponGiveQueueParam();
+                couponGive.setUserIds(Collections.singletonList(param.getUserId()));
+                couponGive.setCouponArray(new String[]{param.getCouponId() + ""});
+                couponGive.setActId(oneCouponDetail.getActId());
+                couponGive.setAccessMode((byte) 1);
+                couponGive.setSplitType((byte) 1);
+                couponGive.setGetSource(CouponConstant.COUPON_GIVE_SOURCE_SPLIT_COUPON);
+                CouponGiveQueueBo sendData = coupon.couponGiveService.handlerCouponGive(couponGive);
+                if (sendData.getSuccessSize() > 0) {
+                    logger().info("发卷成功");
+                    if (receiveInfo.size() == 1) {
+                        logger().info("第一次分享,分享者优惠券可用");
+                        coupon.updateSplitCouponEnabled(param.getCouponSn());
+                    }
+                    saveDivisionReceiveRecord(param, sendData);
+                    vo.setStatus((byte)1);
+                }else {
+                    vo.setStatus((byte)4);
+                }
+            }
+        }else {
+            logger().info("已领取过优惠券");
+            vo.setStatus((byte)3);
+        }
+        return vo;
+    }
+
+    /**
+     * 分裂优惠券分享记录
+     * @param param
+     * @param sendData
+     */
+    private void saveDivisionReceiveRecord(MpGetSplitCouponParam param, CouponGiveQueueBo sendData) {
+        DivisionReceiveRecordRecord record = db().newRecord(DIVISION_RECEIVE_RECORD);
+        record.setUser(param.getShareUserId());
+        record.setUserId(param.getUserId());
+        record.setCouponId(param.getCouponId());
+        record.setCouponSn(sendData.getCouponSn().get(0));
+        record.setAmount(sendData.getSendCoupons().get(0).getAmount());
+        record.setSource(param.getSource());
+        record.setType((byte)1);
+        record.setReceiveCouponSn(param.getCouponSn());
+        record.insert();
+    }
+
+
+    /**
+     * 分裂优惠券详情
+     * @param param
+     * @return
+     */
+    public MpGetCouponVo getSplitCouponDetail(MpGetSplitCouponParam param) {
+        logger().info("分裂优惠券详情");
+        MpGetCouponVo vo =new MpGetCouponVo();
+        Timestamp time = DateUtil.getLocalDateTime();
+        MrkingVoucherRecord couponRecord = coupon.couponGiveService.getInfoById(param.getCouponId());
+        //分享优惠券用户信息
+        Result<Record5<Integer, String, String, Timestamp, BigDecimal>> receiveInfo = getReceiveInfo(param.getCouponSn(), param.getShareUserId());
+        List<MpGetCouponVo.UserInfo> userInfos =new ArrayList<>();
+        receiveInfo.forEach(userRecord->{
+            MpGetCouponVo.UserInfo userInfo = userRecord.into(MpGetCouponVo.UserInfo.class);
+            Integer[] timeDifference = DateUtil.getTimeDifference(time, userRecord.get(DIVISION_RECEIVE_RECORD.CREATE_TIME));
+            userInfo.setTime(timeDifference);
+            userInfo.setUsername(userInfo.getUsername()==null?"神秘小伙伴":userInfo.getUsername());
+            userInfos.add(userInfo);
+        });
+        if (param.getUserId().equals(param.getShareUserId())){
+            vo.setHaveNum(userInfos.size());
+            vo.setIsOneself((byte)1);
+        }else {
+            long count = receiveInfo.stream().filter(info -> info.get(DIVISION_RECEIVE_RECORD.USER_ID).equals(param.getUserId())).count();
+            if (count>0){
+                logger().info("领取过改优惠券");
+                vo.setStatus((byte)2);
+            }else if ((couponRecord.getReceivePerNum()==1&&couponRecord.getReceiveNum()<=userInfos.size())
+                    ||(couponRecord.getLimitSurplusFlag()==0&&couponRecord.getSurplus()<=0)){
+                logger().info("已经领完");
+                vo.setStatus((byte)3);
+            }else {
+                if (couponRecord.getValidity()>0){
+                    logger().info("优惠卷已过期");
+                    vo.setStatus((byte)4);
+                }
+                if (couponRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
+                    logger().info("优惠券已经删除");
+                    vo.setStatus((byte)5);
+                }
+            }
+        }
+        if ("random".equals(couponRecord.getActCode())||"voucher".equals(couponRecord.getActCode())){
+            vo.setUnit("元");
+        }else {
+            vo.setUnit("折");
+        }
+        vo.setUserInfos(userInfos);
+        AvailCouponDetailVo info = couponRecord.into(AvailCouponDetailVo.class);
+        vo.setCouponInfo(info);
+        return vo;
+    }
+
+    /**
+     * 查询分裂优惠券分享信息
+     * @param couponSn 优惠券sn
+     * @param shareUserId 分享者id
+     * @return
+     */
+    private Result<Record5<Integer, String, String, Timestamp, BigDecimal>> getReceiveInfo(String couponSn, Integer shareUserId){
+        return  db().select(DIVISION_RECEIVE_RECORD.USER_ID,USER_DETAIL.USERNAME,USER_DETAIL.USER_AVATAR,DIVISION_RECEIVE_RECORD.CREATE_TIME ,DIVISION_RECEIVE_RECORD.AMOUNT)
+                .from(DIVISION_RECEIVE_RECORD)
+                .leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(DIVISION_RECEIVE_RECORD.USER_ID))
+                .where(DIVISION_RECEIVE_RECORD.RECEIVE_COUPON_SN.eq(couponSn))
+                .and(DIVISION_RECEIVE_RECORD.USER.eq(shareUserId))
+                .orderBy(DIVISION_RECEIVE_RECORD.CREATE_TIME.desc())
+                .fetch();
+    }
+
+    /**
+     * 分享分裂优惠卷
+     * @param param
+     */
+    public void shareSplitCoupon(MpCouponSnParam param) {
+        db().update(DIVISION_RECEIVE_RECORD)
+            .set(DIVISION_RECEIVE_RECORD.IS_SHARE,BaseConstant.YES)
+            .where(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(param.getCouponSn()))
+            .and(DIVISION_RECEIVE_RECORD.USER.eq(param.getUserId())).execute();
     }
 }

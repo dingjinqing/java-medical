@@ -74,6 +74,8 @@ public class ConfigService extends ShopBaseService {
     public OrderExportConfigService orderExportCfg;
     @Autowired
     public DomainConfig domainConfig;
+    @Autowired
+    public GoodsConfigService goodsCfg;
 	/**
 	 * 得到店铺配置
 	 *

@@ -211,6 +211,9 @@ public class Indexes {
     public static final Index USER_SUMMARY_TREND_PRIMARY = Indexes0.USER_SUMMARY_TREND_PRIMARY;
     public static final Index USER_SUMMARY_TREND_REF_TYPE = Indexes0.USER_SUMMARY_TREND_REF_TYPE;
     public static final Index SHOP_ACCOUNT_USER_NAME = Indexes0.SHOP_ACCOUNT_USER_NAME;
+    public static final Index STORE_ACCOUNT_ACCOUNT_NAME = Indexes0.STORE_ACCOUNT_ACCOUNT_NAME;
+    public static final Index STORE_ACCOUNT_MOBILE = Indexes0.STORE_ACCOUNT_MOBILE;
+    public static final Index STORE_ACCOUNT_PRIMARY = Indexes0.STORE_ACCOUNT_PRIMARY;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -399,5 +402,8 @@ public class Indexes {
         public static Index USER_SUMMARY_TREND_REF_TYPE = Internal.createIndex("ref_type", UserSummaryTrend.USER_SUMMARY_TREND, new OrderField[] { UserSummaryTrend.USER_SUMMARY_TREND.REF_DATE, UserSummaryTrend.USER_SUMMARY_TREND.TYPE }, false);
         public static Index SHOP_ACCOUNT_USER_NAME = Internal.createIndex("user_name", ShopAccount.SHOP_ACCOUNT, new OrderField[] { ShopAccount.SHOP_ACCOUNT.USER_NAME }, true);
         public static Index TASK_JOB_CONTENT_PRIMARY = Internal.createIndex("PRIMARY", TaskJobContent.TASK_JOB_CONTENT, new OrderField[] { TaskJobContent.TASK_JOB_CONTENT.ID }, true);
+        public static Index STORE_ACCOUNT_ACCOUNT_NAME = Internal.createIndex("account_name", StoreAccount.STORE_ACCOUNT, new OrderField[] { StoreAccount.STORE_ACCOUNT.ACCOUNT_NAME }, false);
+        public static Index STORE_ACCOUNT_MOBILE = Internal.createIndex("mobile", StoreAccount.STORE_ACCOUNT, new OrderField[] { StoreAccount.STORE_ACCOUNT.MOBILE }, false);
+        public static Index STORE_ACCOUNT_PRIMARY = Internal.createIndex("PRIMARY", StoreAccount.STORE_ACCOUNT, new OrderField[] { StoreAccount.STORE_ACCOUNT.ACCOUNT_ID }, true);
     }
 }

@@ -40,9 +40,7 @@
         <view id="SHIPPED" bindtap="handleChangeNav" style="{{scrollIntoId === 'SHIPPED' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
           {{i18n.$t(localePack,"pages.order.navType.SHIPPED")}}({{navStatusNum[3]}})
         </view>
-        <view id="RETURNING" bindtap="handleChangeNav" style="{{scrollIntoId === 'RETURNING' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
-          {{i18n.$t(localePack,"pages.order.navType.RETURNING")}}({{navStatusNum[5]}})
-        </view>
+        
       </scroll-view>
     </view>
     <view class="order_list">

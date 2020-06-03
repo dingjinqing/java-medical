@@ -414,7 +414,7 @@
                             v-for="itema in couponlist"
                             :key="itema.id"
                             :value="itema.id"
-                            :label="itema.actName"
+                            :label="itema.type===1?'['+$t('openScreenAdd.split')+']'+itema.actName:itema.actName"
                           ></el-option>
                         </el-select>
                         <span

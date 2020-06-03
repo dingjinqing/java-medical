@@ -20,4 +20,12 @@ public class WxAppMrkingStrategyController extends WxAppBaseController {
     public JsonResult mrkingStrategyGoodsList(@RequestBody @Validated MrkingStrategyGoodsListParam param) {
         return success(shop().mrkingStrategy.getWxAppGoodsList(param,wxAppAuth.user().getUserId()));
     }
+
+    /**
+     * 	满折满减活动页的已选择商品列表接口
+     */
+    @PostMapping("/api/wxapp/fullprice/checkedlist")
+    public JsonResult mrkingStrategyCheckedList(@RequestBody @Validated MrkingStrategyGoodsListParam param) {
+        return success(shop().mrkingStrategy.getWxAppCheckedGoodsList(param,wxAppAuth.user().getUserId()));
+    }
 }

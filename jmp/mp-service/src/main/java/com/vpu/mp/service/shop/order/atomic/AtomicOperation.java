@@ -231,9 +231,7 @@ public class AtomicOperation extends ShopBaseService {
             if(goodsStock < 0) {
                 goodsStock = 0;
             }
-            if(productStock < 0) {
-                productStock = 0;
-            }
+
         }
         List<ProductNumInfo> productNumInfoList= new ArrayList<>();
         productNumInfoList.add(ProductNumInfo.builder().prdId(productId).prdNum(productStock).build());

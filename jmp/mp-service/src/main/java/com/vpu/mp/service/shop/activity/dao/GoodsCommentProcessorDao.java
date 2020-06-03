@@ -158,7 +158,7 @@ public class GoodsCommentProcessorDao extends BaseShopConfigService {
      * @param commentConfig      用户评价配置
      * @param commentStateConfig 是否显示未留言评价
      */
-    private List<CommentDetailVo.CommentLevelInfo> calculateGoodsCommentNumInfo(Integer goodsId, Byte commentConfig, Byte commentStateConfig) {
+    public List<CommentDetailVo.CommentLevelInfo> calculateGoodsCommentNumInfo(Integer goodsId, Byte commentConfig, Byte commentStateConfig) {
         Condition condition = COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode());
         if (SHOW_STATE.equals(commentStateConfig)) {
             condition = condition.and(COMMENT_GOODS.COMM_NOTE.isNotNull());
@@ -193,7 +193,7 @@ public class GoodsCommentProcessorDao extends BaseShopConfigService {
         CommentDetailVo.CommentLevelInfo bad = new CommentDetailVo.CommentLevelInfo(CommentDetailVo.BAD_LEVEL,level1Num+level0Num);
         rets.add(bad);
 
-        Long imgNum = recordsList.stream().filter(x -> StringUtils.isNotBlank(x.get(COMMENT_GOODS.COMM_IMG))).count();
+        Long imgNum = recordsList.stream().filter(x -> StringUtils.isNotBlank(x.get(COMMENT_GOODS.COMM_IMG))&&!"[]".equals(x.get(COMMENT_GOODS.COMM_IMG))).count();
         CommentDetailVo.CommentLevelInfo imgLevel = new CommentDetailVo.CommentLevelInfo(CommentDetailVo.IMG_LEVEL,imgNum);
         rets.add(imgLevel);
 

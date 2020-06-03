@@ -1,4 +1,7 @@
 package com.vpu.mp.service.foundation.util;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_ALL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_PART;
+
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,6 +17,9 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.EffectTimeBean;
 import com.vpu.mp.service.pojo.shop.member.card.EffectTimeParam;
+import com.vpu.mp.service.pojo.shop.member.card.base.UserCardConstant;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardGive.CardGiveSwitch;
 /**
 * @author 黄壮壮
 * @Date: 2019年11月28日
@@ -139,6 +145,22 @@ public class CardUtil {
 	 */
 	public static boolean canExchangGoods(Byte isExchang) {
 		return !CardConstant.MCARD_ISE_NON.equals(isExchang);
+	}
+	
+	/**
+	 * 是否可以兑换全部商品
+	 * @return true 是，false 否
+	 */
+	public static boolean isExchangAllGoods(Byte isExchange) {
+		return MCARD_ISE_ALL.equals(isExchange);
+	}
+	
+	/**
+	 * 是否可以兑换部分商品
+	 * @return true 是，false 否
+	 */
+	public static boolean isExchangPartGoods(Byte isExchange) {
+		return MCARD_ISE_PART.equals(isExchange);
 	}
 	
 	/**
@@ -297,10 +319,10 @@ public class CardUtil {
 	 */
 	public static EffectTimeBean getUserCardEffectTime(EffectTimeParam card) {
 		EffectTimeBean bean = new EffectTimeBean();
-		// 按照领卡的时间快照将进行设置
+		//	按照领卡的时间快照将进行设置
 		if(isCardFixTime(card.getExpireType()) && 
 				card.getExpireTime() != null) {
-			// 固定时间 取会员卡的设置的起始时间，以及领卡时设置的过期时间
+			//	固定时间 取会员卡的设置的起始时间，以及领卡时设置的过期时间
 			if(card.getStartTime() != null) {
 				bean.setStartDate(card.getStartTime().toLocalDateTime().toLocalDate());
 				bean.setStartTime(card.getStartTime());
@@ -312,7 +334,7 @@ public class CardUtil {
 		}else if(isCardTimeStartFrom(card.getExpireType()) || 
 				(isCardTimeForever(card.getExpireType()) &&
 						card.getExpireTime() != null) ) {
-			// 自领取之日起 取用户领卡的时间  或者 永久有效，但是之前设置了有效期也取快照
+			//	自领取之日起 取用户领卡的时间  或者 永久有效，但是之前设置了有效期也取快照
 			if(card.getCreateTime() != null) {
 				bean.setStartDate(card.getCreateTime().toLocalDateTime().toLocalDate());
 				bean.setStartTime(card.getCreateTime());
@@ -325,10 +347,10 @@ public class CardUtil {
 		}
 		
 		if(card.getExpireTime() != null) {
-			// 取快照 有效期
+			//	取快照 有效期
 			bean.setExpireType(NumberUtils.BYTE_ONE);
 		}else {
-			// 永久有效
+			//	永久有效
 			bean.setExpireType((byte)2);
 		}
 		
@@ -360,6 +382,48 @@ public class CardUtil {
 		}else {
 			return time.toLocalDateTime().toLocalDate();
 		}
+	}
+	/**
+	 * 	会员卡是否开启转赠模式
+	 * @param cardGiveWay
+	 * @return true开启 | false 禁止转赠
+	 */
+	public static boolean isCardGiveWway(Byte cardGiveWay) {
+		CardGiveSwitch val = CardGive.CardGiveSwitch.values()[cardGiveWay];
+		return CardGive.CardGiveSwitch.on.equals(val);
+	}
+	
+	/**
+	 * 	卡是否允许继续转赠
+	 * 	@return true 可以继续转赠 |  false 不允许继续转赠
+	 */
+	public static boolean isCardGiveContinue(Byte cardGiveContinue) {
+		CardGiveSwitch val = CardGive.CardGiveSwitch.values()[cardGiveContinue];
+		return CardGive.CardGiveSwitch.on.equals(val);
+	}
+	
+	/**
+	 * 	卡来源是否正常
+	 * @return true 正常来源  |  false 非正常来源
+	 */
+	public static boolean isCardSourceNormal(Byte cardSource) {
+		return UserCardConstant.SOURCE_NORMAL.equals(cardSource);
+	}
+	
+	/**
+	 * 	卡来源与转赠
+	 *	@return true 转赠 | false 非转赠 
+	 */
+	public static boolean isCardSourceGiveWay(Byte cardSource) {
+		return UserCardConstant.SOURCE_GIVE_WAY.equals(cardSource);
+	}
+	
+	/**
+	 * 	是否为无限制转赠
+	 * @return true 无次数限制 || false: 有次数限制
+	 */
+	public static boolean isCardGiveAwayForeverTimes(Integer mostGiveAway) {
+		return NumberUtils.INTEGER_ZERO.equals(mostGiveAway);
 	}
 	
 }

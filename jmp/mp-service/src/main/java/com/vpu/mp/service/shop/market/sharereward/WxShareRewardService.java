@@ -34,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.Record1;
 import org.jooq.TableField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -95,8 +96,6 @@ public class WxShareRewardService extends ShopBaseService {
      * @param param the param
      */
     public void shareAward(ShareParam param) {
-        // 添加分享记录
-        shareRecord(param);
         int activityId = param.getActivityId();
         int userId = param.getUserId();
         int goodId = param.getGoodsId();
@@ -132,7 +131,7 @@ public class WxShareRewardService extends ShopBaseService {
             record.setActivityId(activityId);
             record.setUserId(userId);
             record.setActivityType(activityType);
-            record.setCount(INTEGER_ZERO);
+            record.setCount(INTEGER_ONE);
             record.insert();
         }
         return getRecordRecord(exist);
@@ -185,17 +184,23 @@ public class WxShareRewardService extends ShopBaseService {
         Condition condition1 = AWARD.CONDITION.eq(BYTE_ONE);
         Condition condition2 = AWARD.CONDITION.eq(BYTE_TWO).and(DslPlus.findInSet(goodsId, AWARD.GOODS_IDS));
         Condition condition3 = AWARD.CONDITION.eq(BYTE_THREE).and(AWARD.GOODS_PV.greaterThan(goodsPv));
-        Integer shareId = db().select(AWARD.ID).from(AWARD).where(condition).and(condition1.or(condition2).or(condition3)).orderBy(AWARD.PRIORITY).limit(INTEGER_ONE).fetchOneInto(Integer.class);
+        Record1<Integer> shareId = db().select(AWARD.ID).from(AWARD).where(condition).and(condition1.or(condition2).or(condition3)).orderBy(AWARD.PRIORITY.desc(), AWARD.CREATE_TIME.desc()).fetchAny();
         if (Objects.isNull(shareId)) {
             log.info("无可用的分享有礼活动！");
             return INTEGER_ZERO;
         }
+
+        if (db().fetchExists(AWARD_RECORD, AWARD_RECORD.USER_ID.eq(userId).and(AWARD_RECORD.SHARE_ID.eq(shareId.value1())).and(AWARD_RECORD.GOODS_ID.eq(goodsId)))) {
+            //已经参加该活动
+            return shareId.value1();
+        }
+
         // 是否参加过当前商品分享有礼活动
-        int count = db().fetchCount(ATTEND, AWARD_RECORD.USER_ID.eq(userId)
+        int count = db().fetchCount(ATTEND.leftJoin(AWARD_RECORD).on(ATTEND.RECORD_ID.eq(AWARD_RECORD.ID)), AWARD_RECORD.USER_ID.eq(userId)
             .and(AWARD_RECORD.GOODS_ID.eq(goodsId))
             .and(AWARD_RECORD.CREATE_TIME.greaterThan(Timestamp.valueOf(LocalDate.now().atStartOfDay()))));
         if (count == 0) {
-            return shareId;
+            return shareId.value1();
         }
         // 校验每日的分享次数上限
         int limit = shareReward.getDailyShareAwardValue();
@@ -203,7 +208,7 @@ public class WxShareRewardService extends ShopBaseService {
             log.info("分享有礼活动已达到每日分享次数上限{}！", limit);
             return INTEGER_ZERO;
         }
-        return shareId;
+        return shareId.value1();
     }
 
     /**
@@ -220,7 +225,24 @@ public class WxShareRewardService extends ShopBaseService {
         // 获取活动信息详情
         ShareRewardInfoVo info = shareReward.getShareInfo(activityId);
         List<ShareRule> rules = info.getShareRules();
-        rules.forEach(rule -> rule.setUserInfoList(getBatchUserList(getAttendUserList(userId, goodsId, activityId, rule.getRuleLevel()))));
+        ShareAwardRecordRecord awardRecord = shareReward.getShareAwardRecord(activityId, userId, goodsId);
+        rules.forEach(rule -> {
+            rule.setUserInfoList(getBatchUserList(getAttendUserList(userId, goodsId, activityId, rule.getRuleLevel())));
+            if (awardRecord != null) {
+                switch (rule.getRuleLevel()) {
+                    case 1:
+                        rule.setShareState(awardRecord.getFirstAward());
+                        break;
+                    case 2:
+                        rule.setShareState(awardRecord.getSecondAward());
+                        break;
+                    case 3:
+                        rule.setShareState(awardRecord.getThirdAward());
+                        break;
+                    default:
+                }
+            }
+        });
         // 获取每日用户可分享次数上限参数
         int limitNum = shareReward.getDailyShareAwardValue();
         return GoodsShareDetail.builder().dailyShareLimit(limitNum).infoVo(info).build();
@@ -278,10 +300,10 @@ public class WxShareRewardService extends ShopBaseService {
             count = shareReward.autoincrementUserNum(awardRecord.getId());
         }
         // 更新当前活动进行的进度
-        updateProcess(activityId, count, ExtBo.builder().userId(launchUserId).changeWay(55).goodsId(goodsId).build());
+        updateProcess(activityId, count, ExtBo.builder().userId(launchUserId).changeWay(55).goodsId(goodsId).build(), awardRecord);
     }
 
-    private void updateProcess(Integer activityId, int count, ExtBo ext) {
+    private void updateProcess(Integer activityId, int count, ExtBo ext, ShareAwardRecordRecord awardRecord) {
         int userId = ext.getUserId();
         int goodsId = ext.getGoodsId();
         // 获取活动信息详情
@@ -289,12 +311,14 @@ public class WxShareRewardService extends ShopBaseService {
         List<ShareRule> list = info.getShareRules();
         // 遍历活动规则
         log.info("用户已分享次数：{}", count);
-        list.forEach(rule -> {
+        int inviteNum = 0;
+        for (ShareRule rule : list) {
             if (Objects.nonNull(rule)) {
+                inviteNum += rule.getInviteNum();
                 // 满足规则条件
-                if (count >= rule.getInviteNum()) {
+                if (awardRecord.get(getField(rule.getRuleLevel())).compareTo(BYTE_TWO) < 0 && count >= inviteNum) {
                     // 更新分享进度(进度加一)
-                    updateAwardRecord(userId, activityId, goodsId, AWARD_RECORD.STATUS, AWARD_RECORD.STATUS.add(INTEGER_ONE));
+                    updateAwardRecord(userId, activityId, goodsId, AWARD_RECORD.STATUS, BYTE_THREE.equals(rule.getRuleLevel()) ? BYTE_THREE : (byte) (rule.getRuleLevel() + 1));
                     // 奖品剩余库存是否充足
                     if (rule.getStock() > 0) {
                         try {
@@ -328,7 +352,8 @@ public class WxShareRewardService extends ShopBaseService {
                     }
                 }
             }
-        });
+        }
+        ;
 
     }
 

@@ -359,7 +359,7 @@
                     <div>
                       <img
                         v-if="form.shareConfig.shareImg === ''"
-                        src="http://jmpdevimg.weipubao.cn/image/admin/shop_beautify/add_decorete.png"
+                        :src="$imageHost + '/image/admin/shop_beautify/add_decorete.png'"
                         alt=""
                       >
                       <img

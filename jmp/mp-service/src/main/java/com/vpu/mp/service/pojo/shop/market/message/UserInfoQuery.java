@@ -13,7 +13,6 @@ import java.util.List;
 */
 @Data
 public class UserInfoQuery {
-    @JsonIgnore
     /** redis存储的唯一标识 */
     private String userKey;
     /** 勾选加购人群 */

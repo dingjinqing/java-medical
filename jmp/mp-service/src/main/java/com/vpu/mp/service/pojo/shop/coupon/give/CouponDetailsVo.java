@@ -36,4 +36,14 @@ public class CouponDetailsVo {
     private Integer validityMinute;
     /** 优惠券满多少元可用 */
     private BigDecimal leastConsume;
+    /**优惠券类型，0：普通优惠券；1：分裂优惠券*/
+    private Byte type;
+  /**
+   * 最小面额
+   */
+  private BigDecimal randomMin;
+  /**
+   * 最大面额
+   */
+    private BigDecimal randomMax;
 }

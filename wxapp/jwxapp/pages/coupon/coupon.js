@@ -9,87 +9,76 @@ var set_time_out;
 var startX = 0;
 var endX;
 var maxRight = 146;
-// pages/test/test.js
 global.wxPage({
 
   /**
    * 页面的初始数据
    */
   data: {
-    page_id:1,
-    can_used_flag: true,
-    cou_used_flag: false,
-    cou_guoqi_flag: false,
-    can_used_header_flag: false,
-    cou_used_header_flag: false,
-    cou_guoqi_header_flag: false,
     imageUrl: app.globalData.imageUrl,
-    unusedNum:0,
-    usedNum: 0,
-    expiredNum:0,
-    this_type: 0,
-    allCoupon:[],
+    unusedNum: 0, // 未使用个数
+    usedNum: 0, // 已使用个数
+    expiredNum: 0, // 已过期个数
+    this_type: 0, // 状态
+    allCoupon: [], // 列表数据
     page: 1,
-    last_page: 1,
+    lastPage: 1,
     pageRows: 20,
   },
- 
+
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    var _this = this;
     clearTimeout(set_time_out);
-    _this.dataList()
+    this.dataList()
   },
 
   /**
    * 优惠券列表
    */
-  dataList: function (){
-    var _this = this;
+  dataList: function () {
+    var that = this;
     wx.showLoading({
       title: '加载中···',
     })
     clearTimeout(set_time_out);
     util.api('/api/wxapp/coupon/list', function (res) {
+      wx.hideLoading();
       if (res.error == 0) {
-        _this.data.last_page = res.content.couponList.page.lastPage; 
-        _this.setData({
+        that.setData({
+          lastPage: res.content.couponList.page.lastPage,
           unusedNum: res.content.unusedNum,
           usedNum: res.content.usedNum,
           expiredNum: res.content.expiredNum,
           allCoupon: res.content.couponList.dataList
-        }) 
+        })
         // 格式化时间
-        if (_this.data.allCoupon.length > 0) {
-          _this.data.allCoupon.forEach(function (item) {
+        if (that.data.allCoupon.length > 0) {
+          that.data.allCoupon.forEach(function (item) {
             if (item.startTime && item.endTime) {
               item.startTime = item.startTime.toString().slice(0, 10)
               item.endTime = item.endTime.toString().slice(0, 10)
             }
-            item.remain_seconds_all = item.remainHours * 3600 + item.remainMinutes * 60 + item.remainSeconds
+            item.remainSecondsAll = item.remainHours * 3600 + item.remainMinutes * 60 + item.remainSeconds
           })
           // 倒计时
-          _this.countdown(_this, _this.data.allCoupon);
+          that.countdown(that, that.data.allCoupon);
         }
 
-        console.log(_this.data.allCoupon)
-
-        _this.setData({
-          allCoupon: _this.data.allCoupon
-        }) 
-        wx.hideLoading();
+        that.setData({
+          allCoupon: that.data.allCoupon
+        })
       } else {
         util.showModal("提示", res.message, function () {
           util.jumpLink("pages/index/index", 'redirectTo');
         }, false);
         return false;
       }
-    }, { 
-      nav: _this.data.this_type,
-      currentPage: _this.data.page,
-      pageRows: _this.data.pageRows
+    }, {
+      nav: that.data.this_type,
+      currentPage: that.data.page,
+      pageRows: that.data.pageRows
     });
   },
 
@@ -100,11 +89,11 @@ global.wxPage({
     set_time_out = setTimeout(function () {
       // 放在最后--
       for (var i in dataList) {
-        dataList[i].remain_seconds_all -= 1;
-        if (dataList[i].remain_seconds_all < 0 || dataList[i].remain_seconds_all == NaN) {
+        dataList[i].remainSecondsAll -= 1;
+        if (dataList[i].remainSecondsAll < 0 || dataList[i].remainSecondsAll == NaN) {
           dataList[i].time_tips = "";
         } else {
-          dataList[i].time_tips = util.dateformat(dataList[i].remain_seconds_all);
+          dataList[i].time_tips = util.dateformat(dataList[i].remainSecondsAll);
           // console.log(dataList[i].time_tips)
         }
       }
@@ -120,17 +109,18 @@ global.wxPage({
    */
   onReachBottom: function () {
     var that = this;
-    if (that.data.page == that.data.last_page) { return false };
+    if (that.data.page == that.data.lastPage) { return false };
     that.data.page = that.data.page + 1;
     clearTimeout(set_time_out);
     wx.showLoading({
       title: '加载中···',
     })
     util.api('/api/wxapp/coupon/list', function (res) {
+      wx.hideLoading();
       if (res.error == 0) {
         var cou_listL = res.content.couponList.dataList;
         var cou_list = [];
-        that.data.last_page = res.content.couponList.page.lastPage;
+        that.data.lastPage = res.content.couponList.page.lastPage;
         if (cou_listL.length > 0) {
           cou_list = cou_listL;
           cou_list = that.data.allCoupon.concat(cou_list);
@@ -140,11 +130,10 @@ global.wxPage({
               item.startTime = item.startTime.toString().slice(0, 10)
               item.endTime = item.endTime.toString().slice(0, 10)
             }
-            item.remain_seconds_all = item.remainHours * 3600 + item.remainMinutes * 60 + item.remainSeconds
+            item.remainSecondsAll = item.remainHours * 3600 + item.remainMinutes * 60 + item.remainSeconds
           })
           that.countdown(that, cou_list);
         }
-        wx.hideLoading();
         that.setData({
           allCoupon: cou_list,
         })
@@ -155,11 +144,10 @@ global.wxPage({
         return false;
       }
     }, {
-        nav: that.data.this_type,
-        currentPage: that.data.page,
-        pageRows: that.data.pageRows
+      nav: that.data.this_type,
+      currentPage: that.data.page,
+      pageRows: that.data.pageRows
     });
-    console.log(this.data)
   },
 
   /**
@@ -250,10 +238,13 @@ global.wxPage({
       allCoupon: Coupon
     })
   },
+
+  /**
+   * 删除优惠券
+   */
   coupon_del: function (e) {
     var that = this;
-    var coupon_id = e.currentTarget.dataset.coupon_id;
-    var coupon_sn = e.currentTarget.dataset.coupon_sn;
+    var id = e.currentTarget.dataset.id;
     util.showModal('', '您确定要删除该优惠券？', function () {
       var animate = '';
       var Coupon = that.data.allCoupon;
@@ -261,7 +252,7 @@ global.wxPage({
         if (res.error === 0) {
           for (let i = 0; i < Coupon.length; i++) {
             Coupon[i].right = 0;
-            if (coupon_id == Coupon[i].id) {
+            if (id == Coupon[i].id) {
               Coupon.splice(i, 1)
               i--;
             }
@@ -273,7 +264,7 @@ global.wxPage({
             animate: animate
           })
         }
-      }, { couponId: coupon_id })
+      }, { couponId: id })
     }, true, '取消', '确定')
   },
 
@@ -281,36 +272,37 @@ global.wxPage({
    * 优惠券状态tab切换
    */
   change: function (e) {
-    var _this = this;
+    var that = this;
     var name = e.target.dataset.name;
     console.log(name)
     if (name == 'can') {
-      _this.setData({
+      that.setData({
         this_type: 0,
-      }) 
+      })
     }
     if (name == 'used') {
-      _this.setData({
-        this_type:1,
-      }) 
+      that.setData({
+        this_type: 1,
+      })
     }
     if (name == 'time') {
-      _this.setData({
+      that.setData({
         this_type: 2,
       })
     }
-    _this.data.allCoupon = []
-    _this.data.page = 1;
+    that.data.allCoupon = []
+    that.data.page = 1;
     clearTimeout(set_time_out);
-    _this.dataList()
+    that.dataList()
   },
 
   /**
    * 优惠券详情
    */
-  couponDetail:function(opt){
+  couponDetail: function (opt) {
     var couponSn = opt.currentTarget.dataset.couponsn;
-    util.jumpLink('/pages/getCoupon/getCoupon?couponSn=' + couponSn + '&type=' + this.data.this_type);
+    var isGrant = opt.currentTarget.dataset.is_grant;
+    util.jumpLink('/pages/getCoupon/getCoupon?couponSn=' + couponSn + '&type=' + this.data.this_type + '&isGrant=' + isGrant);
   },
 
   /**
@@ -324,5 +316,39 @@ global.wxPage({
         actId
       })
     })}`);
+  },
+
+  /**
+  * 分享已满员
+  */
+  full_people: function (e) {
+    var couponSn = e.target.dataset.coupon_sn;
+    var actId = e.target.dataset.act_id;
+    util.showModal("提示", '领取人数已满', function () {
+      util.navigateTo({
+        url: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + actId + "&inviteId=" + util.getCache('user_id'),
+      })
+    }, true, '取消', '领取记录');
+  },
+
+  /**
+  * 用户点击右上角分享
+  */
+  onShareAppMessage: function (res) {
+    var that = this;
+    var couponSn = res.target.dataset.coupon_sn;
+    var actId = res.target.dataset.act_id;
+    util.api('/api/wxapp/coupon/split/share', function (res) {
+      that.data.allCoupon.forEach(item => {
+        if (item.couponSn == couponSn) {
+          item.isShare = 1
+        }
+      })
+    }, { couponSn: couponSn});
+    return {
+      title: '分享优惠券',
+      path: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + actId + "&inviteId=" + util.getCache('user_id'),
+      imageUrl: that.data.imageUrl + 'image/wxapp/share_icon.jpg',
+    }
   }
 })

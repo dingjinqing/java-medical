@@ -1,1 +1,232 @@
 /* pages1/distributionorder/distributionorder.wxss */
+.clearfix:after{
+  content: "";
+  display: block;
+  clear: both;
+}
+page{
+  height: 100%;
+  background: #f5f5f5;
+}
+.load_style{
+    font-size: 24rpx;
+  color: #666;
+  width: 100%;
+  padding: 15rpx 0;
+  text-align: center
+}
+.disorder_container{
+  width: 750rpx;
+  background: #f5f5f5;
+  overflow-x: hidden;
+  height: 100%；
+}
+.dis_top{
+  position: relative;
+  height: 180rpx;
+  text-align: center;
+}
+.top_bg{
+  width: 100%;
+  height: 110rpx;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  background: linear-gradient(top,#f66,#ff9292);
+  background: -webkit-linear-gradient(top,#f66,#ff9292);
+  background: -moz-linear-gradient(top,#f66,#ff9292);
+}
+.dis_amount{
+  position: absolute;
+  z-index: 9999;
+  background: #fff;
+  border-radius: 8rpx;
+  padding: 25rpx 0;
+  width: 702rpx;
+  left: 24rpx;
+  top: 35rpx;
+}
+.dis_amount>view{
+  float: left;
+  width: 350rpx;
+}
+.dis_amount>view view:first-of-type{
+  font-size: 30rpx;
+  color: #353535;
+  margin-bottom: 15rpx
+}
+.dis_amount>view view:last-of-type{
+  font-size: 26rpx;
+  color: #999;
+}
+.search_list{
+    background: #fff;
+    margin-top: 20rpx;
+}
+.search_list .order_nav{
+    padding: 30rpx 0;
+    margin-left: 24rpx;
+    border-bottom: 2rpx solid #eee;
+}
+.search_list .order_nav .mav_item{
+  height: 55rpx;
+  width: 160rpx;
+  margin-right: 111rpx;
+  line-height: 55rpx;
+  font-size: 26rpx;
+  text-align: center;
+  color: #353535;
+  float: left;
+  border: 2rpx solid #eee;
+  border-radius: 70rpx;
+}
+.search_list .order_nav .actives{
+  border-color: #f66;
+  background: #ffeeee;
+  color: #f66;
+}
+.search_list .order_nav .mav_item:last-of-type{
+  margin-right: 0;
+}
+.time_chooses{
+  height: 90rpx;
+  line-height: 90rpx;
+  margin-left: 24rpx;
+  border-bottom: 2rpx solid #eee;
+  font-size: 26rpx;
+  color: #353535;
+  
+}
+.time_chooses>view:first-of-type{
+  float: left
+}
+.time_chooses picker{
+  float: right;
+  margin-right: 60rpx;
+}
+.amount_money_time{
+  padding: 20rpx 0;
+  text-align: center;
+  font-size: 26rpx;
+  color: #666;
+}
+.amount_money_time text{
+  font-weight: 600；
+}
+.all_order_info {
+  width: 704rpx;
+  margin: 0 auto;
+}
+.all_order_info .each_order_info{
+  background: #fff;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  border-radius: 12rpx;
+}
+.all_order_info .each_order_info .three_info{
+    background: #f5f5f5;
+    padding: 25rpx 20rpx;
+    border-radius: 12rpx;
+    font-size: 26rpx;
+    color: #353535;
+}
+.each_order_info .three_info .sentence{
+  margin-bottom: 15rpx;
+}
+.each_order_info .three_info .sentence:last-of-type{
+  margin-bottom: 0;
+}
+.all_order_info .each_order_info .three_info image{
+  width: 50rpx;
+  height: 50rpx;
+  border-radius: 100rpx;
+  float: left;
+  margin-right: 20rpx;
+}
+.each_order_info .three_info .sentence view{
+  float: left;
+  height: 40rpx;
+  line-height: 40rpx;
+  width: 530rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 4rpx;
+}
+.fanli_state{
+  padding: 30rpx 0;
+  font-size: 26rpx;
+  color: #353535;
+  padding-bottom: 0
+}
+.fanli_state>view{
+  float: left;
+  width: 221rpx;
+  text-align: center;
+}
+.fanli_state>view view:first-of-type{
+    color: #666;
+    margin-bottom: 15rpx;
+}
+.fanli_time{
+  padding-top: 20rpx;
+  font-size: 26rpx;
+  border-top: 2rpx solid #eee;
+  margin-top: 20rpx;
+}
+.fanli_time view:last-of-type{
+  color: #353535;
+  float: right
+}
+.fanli_time view:first-of-type{
+  color: #666;
+  float: left
+}
+.loading{
+  padding: 0 10rpx; 
+  text-align: center; 
+  font-size: 26rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+}
+.loading:before{
+  display: inline-block; 
+  margin-right: 5rpx; 
+  vertical-align: middle; 
+  content: ''; 
+  width: 40rpx; 
+  height: 40rpx; 
+  
+  background-size: contain; 
+  animation: rotate 1s linear infinite; 
+}
+.loading.complete:before{
+  display: none; 
+}
+.no_state{
+  background: #fff;
+  margin: 0 24rpx;
+  color: #666;
+  font-size: 26rpx;
+  height: 575rpx;
+  text-align: center;
+}
+.no_state image{
+  width: 200rpx;
+  margin: 160rpx 0 20rpx 0;
+}
+.warning_mes{
+  font-size: 26rpx;
+  color: #f5851f;
+  margin-bottom: 20rpx;
+  height: 30rpx;
+  display: flex;
+  align-items: center
+}
+.warning_mes image{
+  width: 30rpx;
+  position: relative;
+  top: 4rpx;
+  margin-right: 10rpx;
+}

@@ -117,6 +117,8 @@ module.exports = {
     "history": "我的足迹",
     "returnorderlist": "退货中心",
     "returndetail": "退货/退款详情",
-    "usercardup": '升级记录'
+    "usercardup": '升级记录',
+    "aftersaleorder": "退款/售后",
+    "livetransition": "直播"
   }
 }

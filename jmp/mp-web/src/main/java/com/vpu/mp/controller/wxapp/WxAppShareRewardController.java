@@ -51,9 +51,4 @@ public class WxAppShareRewardController extends WxAppBaseController {
         return success();
     }
 
-    @PostMapping("/api/wxapp/shareaward/goods/test")
-    public JsonResult test(@RequestBody @Validated ShareParam param) {
-        shop().wxShareReward.fromShare2GoodsDetail(param.getLaunchUserId(), param.getUserId(), param.getGoodsId(), param.getActivityId());
-        return success();
-    }
 }

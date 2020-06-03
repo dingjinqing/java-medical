@@ -23,8 +23,8 @@
       <view class="desc-info">
         <view class="info">
           <text class="goods-price" style="color:{{main_setting.comColor}};">
-            <text class="spec-price-tag" wx:if="{{productsInfo.activity.activityType === 6 || (productsInfo.activity.activityType === 98 && !filter.getActPrd(checkedProduct,activityPrds).isGradePrice)}}" style="background-color:{{main_setting.comColor}};">限时降价</text>
-            <text class="spec-price-tag" wx:if="{{productsInfo.activity.activityType === 22 || (productsInfo.activity.activityType === 98 && filter.getActPrd(checkedProduct,activityPrds).isGradePrice)}}" style="background: linear-gradient(to left, #e0c787, #d9ae69);">会员价</text>
+            <text class="spec-price-tag" wx:if="{{productsInfo.activity.activityType === 6 || (productsInfo.activity.activityType === 98 && !checkedProduct.actProduct.isGradePrice)}}" style="background-color:{{main_setting.comColor}};">限时降价</text>
+            <text class="spec-price-tag" wx:if="{{productsInfo.activity.activityType === 22 || (productsInfo.activity.activityType === 98 && checkedProduct.actProduct.isGradePrice)}}" style="background: linear-gradient(to left, #e0c787, #d9ae69);">会员价</text>
             <text class="price">{{productsInfo.activity.activityType !== 4 ? '￥' : ''}}{{checkedProduct.prdRealPrice}}</text>
           </text>
           <block wx:if="{{unselect_spec_names}}">

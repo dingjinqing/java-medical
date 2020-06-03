@@ -37,14 +37,18 @@ public class ShopViewService extends MainBaseService {
     public ShopViewVo getShopViewData(ShopViewParam param){
         ThreadLocalCache.timestampThreadLocal.set(LocalDate.now());
         ShopViewVo vo = new ShopViewVo();
-
-
-
+        vo.setAccountStatisticsInfo(getAccountStatisticsInfo());
+        vo.setOrderStatisticsInfo(getOrderStatisticsInfo(param));
+        vo.setUserStatisticsInfo(getUserStatisticsInfo(param));
         ThreadLocalCache.timestampThreadLocal.remove();
         return vo;
     }
 
-
+    /**
+     * 获取订单统计相关数据
+     * @param param {@link ShopViewParam}
+     * @return {@link UserStatisticsInfo}
+     */
     public OrderStatisticsInfo getOrderStatisticsInfo(ShopViewParam param){
         OrderStatisticsInfo info = new OrderStatisticsInfo();
         info.setAllOrderNum(getAllOrderNum());
@@ -67,7 +71,6 @@ public class ShopViewService extends MainBaseService {
         UserStatisticsInfo info = new UserStatisticsInfo();
         info.setAllNum(getAllUserNum());
         info.setUserNumsInfo(getUserNumByDay(param));
-
 
         return info;
     }
@@ -322,4 +325,6 @@ public class ShopViewService extends MainBaseService {
         }
         return buildMoneyInit(dateMap);
     }
+
+
 }

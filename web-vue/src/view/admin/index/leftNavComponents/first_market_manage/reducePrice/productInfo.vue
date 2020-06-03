@@ -105,6 +105,11 @@ export default {
       this.productShow = false
     },
     confrim () {
+      var result = this.reducePriceProduct.findIndex(item => { return item.prdPrice > item.originalPrice })
+      if (result !== -1) {
+        this.$message.warning('折后价不能高于商品规格原价')
+        return false
+      }
       this.$emit('confrim', this.productInfo.goodsId, this.reducePriceProduct)
       this.productShow = false
     }

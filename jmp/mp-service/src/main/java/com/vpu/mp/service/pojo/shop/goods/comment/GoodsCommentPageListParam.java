@@ -29,6 +29,10 @@ public class GoodsCommentPageListParam {
     public static final Byte NOT_FROM_SHOP_ASSISTANT=0;
     /** 从店铺助手跳转来 */
     public static final Byte FROM_SHOP_ASSISTANT=1;
+    /** 置顶 */
+    public static final Byte TOP=1;
+    /** 未置顶 */
+    public static final Byte NOT_TOP=0;
     /**
      * 	搜索条件
      */
@@ -42,6 +46,8 @@ public class GoodsCommentPageListParam {
     private Integer nDays = 3;
     /** 是否从店铺助手跳转来 默认否 */
     private Byte shopAssistantFlag = NOT_FROM_SHOP_ASSISTANT;
+    /** 是否筛选置顶评价 */
+    private Byte isTop;
     /**
      * 	分页信息
      */

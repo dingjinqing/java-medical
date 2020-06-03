@@ -38,11 +38,11 @@
         class="dialog-footer"
       >
         <el-button
+          type="primary"
           @click="handleSave"
           size="small"
         >确定</el-button>
         <el-button
-          type="primary"
           @click="handleCancel"
           size="small"
         >取消</el-button>
@@ -98,6 +98,9 @@ export default {
         const { error, content } = res
         if (error === 0) {
           this.content = content
+          if (content.length) {
+            this.radio = content[0].id
+          }
         }
         this.loading = false
       }).catch(err => console.log(err))

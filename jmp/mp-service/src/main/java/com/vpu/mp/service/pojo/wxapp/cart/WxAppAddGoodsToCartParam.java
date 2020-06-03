@@ -47,6 +47,7 @@ public class WxAppAddGoodsToCartParam {
      * 活动id
      */
     private Integer activityId;
-
+    /** 直播的roomId*/
+    private Integer roomId;
 
 }

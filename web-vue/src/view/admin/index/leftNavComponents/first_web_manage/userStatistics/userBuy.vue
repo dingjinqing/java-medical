@@ -14,7 +14,7 @@
         :value="item.value"
       ></el-option>
     </el-select>
-    {{defaultWeek}}
+    周
     <el-date-picker
       ref='time'
       v-model="defaultWeek"
@@ -24,9 +24,9 @@
       :placeholder="$t('userStatistics.selectWeek')"
       @change="handleWeek"
       :picker-options="{firstDayOfWeek: 1}"
+      size="small"
     >
     </el-date-picker>
-    <span>{{this.startDate.year}}{{$t('userStatistics.year')}}{{this.startDate.month}}{{$t('userStatistics.month')}}{{this.startDate.day}}{{$t('userStatistics.day')}} - {{this.endDate.year}}{{$t('userStatistics.year')}}{{this.endDate.month}}{{$t('userStatistics.month')}}{{this.endDate.day}}{{$t('userStatistics.day')}}</span>
 
     <!-- echarts图表部分 -->
     <div id="userBuyCharts"></div>
@@ -46,12 +46,10 @@ export default {
   mounted () {
     this.langDefault()
     this.initData()
-    this.getDefaultWeek()
+    this.handleWeek()
     this.myChart = echarts.init(document.getElementById('userBuyCharts'))
   },
-  computed: {
-
-  },
+  computed: {},
   data () {
     return {
       timeSelect: this.$t('userStatistics.naturalWeek'),
@@ -79,11 +77,7 @@ export default {
         month: '',
         day: ''
       },
-      date1: '2019',
-      date2: '2020',
-      date3: '2021',
-      date4: '2022'
-
+      weekDate: []
     }
   },
   watch: {
@@ -114,60 +108,38 @@ export default {
       return num
     },
 
-    getDefaultWeek () {
-      var date = new Date()
-      console.log(date)
-      console.log(date.getTime())
-    },
-
     handleWeek (val) {
       console.log(val)
       const TuesdayDate = new Date(val).getTime()
-      // this.paramsObject.monday = this.getDates(new Date(TuesdayDate - 86400000))
       this.paramsObject.sunday = this.getDates(new Date(TuesdayDate + 5 * 86400000))
       this.initData()
     },
 
     initData () {
-      // this.$nextTick(()=>{
-
-      // })
-      // console.log(this.$refs['time'].$el.children[0].value)
-
       console.log(this.paramsObject)
-      userReBuy(
-        this.paramsObject
-      ).then(res => {
+      userReBuy(this.paramsObject).then(res => {
         console.log(res)
         if (res.error === 0) {
           this.originalData = res.content
-          this.handleData(this.originalData)
+          this.handleData(res.content)
         }
       }).catch(err => console.log(err))
     },
 
     // 处理接口返回来的数据
     handleData (data) {
-      console.log(data, 'data---')
-      // this.startDate.year = data.startTime.split('-')[0]
-      // this.startDate.month = data.startTime.split('-')[1]
-      // this.startDate.day = data.startTime.split('-')[2]
-
-      // this.endDate.year = data.endTime.split('-')[0]
-      // this.endDate.month = data.endTime.split('-')[1]
-      // this.endDate.day = data.endTime.split('-')[2]
       console.log(data)
+      this.weekDate = []
+      this.weekNumList = []
+      this.againBuyRate = []
+      this.endTime = []
       data.rebuyWeekVo.map(item => {
         this.weekNumList.push(item.weekNum)
-        console.log(this.weekNumList)
         this.againBuyRate.push(item.rebuyRate)
-        console.log(this.againBuyRate, 'againBuyRate')
         this.startTime.push(item.startTime)
-        console.log(this.startTime, 'startTime')
         this.endTime.push(item.endTime)
-        console.log(this.endTime, 'endTime')
+        this.weekDate.push(item.xaxis)
       })
-
       this.echartsData = {
         tooltip: {
           trigger: 'axis'
@@ -184,14 +156,7 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          // data: this.userDate
-          data: [
-            // { week: 45, start: '2019-11-18', end: '2019-11-20' },
-            // { week: 46, start: '2020-11-18', end: '2019-11-20' },
-            // { week: 47, start: '2021-11-18', end: '2019-11-20' }
-            // 1, 2, 3, 4, 5, 6, 7
-            this.date1, this.date2, this.date3, this.date4
-          ]
+          data: this.weekDate
         },
         yAxis: {
           type: 'value'
@@ -204,7 +169,6 @@ export default {
           }
         ]
       }
-
       this.myChart.setOption(this.echartsData)
     }
   }

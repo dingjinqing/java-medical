@@ -22,6 +22,8 @@ public class ProductVo {
     private Integer productId;
     /** 规格名 **/
     private String prdDesc;
+    /**商品名称*/
+    private String goodsName;
     /** 原价 **/
     private BigDecimal prdPrice;
     /** 库存 **/

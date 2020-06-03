@@ -1,8 +1,11 @@
 package com.vpu.mp.service.pojo.shop.member.ucard;
 
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.vpu.mp.service.pojo.wxapp.card.param.CardCustomActionParam;
 
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +20,7 @@ public class ActivateCardParam {
 	private Integer userId;
 	// 激活选项
 	JsonNode activateOption;
+	// 自定义激活项
+	List<CardCustomActionParam> customOptions;
 	
 }

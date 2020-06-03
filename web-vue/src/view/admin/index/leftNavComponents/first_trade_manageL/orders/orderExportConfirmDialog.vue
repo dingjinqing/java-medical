@@ -156,9 +156,6 @@ export default {
       console.log(this.searchParam)
       this.searchParam.exportRowStart = this.exportRowStart
       this.searchParam.exportRowEnd = this.exportRowEnd
-      if (this.searchParam.orderStatus) {
-        this.searchParam.orderStatus = [this.searchParam.orderStatus]
-      }
       if (this.searchParam.goodsType) {
         this.searchParam.goodsType = [this.searchParam.goodsType]
       }

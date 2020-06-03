@@ -11,9 +11,11 @@ import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.config.GoodsShareConfig;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.share.*;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +52,8 @@ public class PictorialService extends ShopBaseService {
     private UserService user;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private ShopCommonConfigService shopCommonConfigService;
 
     /**
      * 分享海报时使用的默认头像
@@ -143,7 +147,7 @@ public class PictorialService extends ShopBaseService {
         ImageUtil.addRect(bgBufferedImage, 0, 0, imgPx.getBgWidth(), imgPx.getBgHeight(), null, Color.WHITE);
         // 设置用户头像
         BufferedImage userAvatarImage = ImageUtil.makeRound(userInfo.getUserAvatarImage(), imgPx.getUserHeaderDiameter());
-        ImageUtil.addTwoImage(bgBufferedImage, userAvatarImage, imgPx.getBgPadding(), imgPx.getBgPadding());
+        ImageUtil.addTwoImage(bgBufferedImage, userAvatarImage, imgPx.getHeaderStartX(), imgPx.getHeaderStartY());
         // 设置用户名
         ImageUtil.addFont(bgBufferedImage, userInfo.getUserName(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getUserNameX(), imgPx.getUserNameY(), imgPx.getDefaultFontColor(), false);
         // 设置宣传语
@@ -157,7 +161,7 @@ public class PictorialService extends ShopBaseService {
 
         // 设置二维码
         qrCodeImg = ImageUtil.resizeImageTransparent(imgPx.getQrCodeWidth(), imgPx.getQrCodeWidth(), qrCodeImg);
-        ImageUtil.addTwoImage(bgBufferedImage, qrCodeImg, imgPx.getQrCodeStartX(), imgPx.getBottomStartY());
+        ImageUtil.addTwoImage(bgBufferedImage, qrCodeImg, imgPx.getQrCodeStartX(), imgPx.getQrCodeStartY());
 
         // 设置商品名称
         int goodsNameHeight = pictorialAddFontName(bgBufferedImage, goodsName, imgPx);
@@ -166,12 +170,12 @@ public class PictorialService extends ShopBaseService {
         if (realPrice != null) {
             String realPriceStr = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")
                 + realPrice.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-            ImageUtil.addFont(bgBufferedImage, realPriceStr, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), imgPx.getBgPadding(), imgPx.getPriceY(), imgPx.getRealPriceColor(), false);
+            ImageUtil.addFont(bgBufferedImage, realPriceStr, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), imgPx.getBottomTextStartX(), imgPx.getPriceY(), imgPx.getRealPriceColor(), false);
 
             Integer realPriceHeight = imgPx.getLargeFontAscent(bgBufferedImage);
             // 设置划线价
             if (linePrice != null) {
-                Integer lineStartX = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceStr) + imgPx.getBgPadding() + 10;
+                Integer lineStartX = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceStr) + imgPx.getBottomTextStartX() + 10;
                 String linePriceStr = linePrice.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
                 ImageUtil.addFontWithLine(bgBufferedImage, lineStartX, imgPx.getPriceY() + realPriceHeight / 4, linePriceStr, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getLinePriceColor());
             }
@@ -194,7 +198,7 @@ public class PictorialService extends ShopBaseService {
         int nameTextLength = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), goodsName);
 
         if (nameTextLength <= imgPx.getGoodsNameCanUseWidth()) {
-            ImageUtil.addFont(bgBufferedImage, goodsName, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBgPadding(), imgPx.getGoodsNameStartY(), imgPx.getGoodsNameColor(), false);
+            ImageUtil.addFont(bgBufferedImage, goodsName, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBottomTextStartX(), imgPx.getGoodsNameStartY(), imgPx.getGoodsNameColor(), false);
             return nameCharHeight;
         } else {
             double oneCharWidth = Math.ceil(nameTextLength * 1.0 / goodsName.length());
@@ -211,7 +215,7 @@ public class PictorialService extends ShopBaseService {
                 } else {
                     text = goodsName.substring(i, i + oneLineCharNum);
                 }
-                ImageUtil.addFont(bgBufferedImage, text, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBgPadding(), nextTextStartY, imgPx.getGoodsNameColor(), false);
+                ImageUtil.addFont(bgBufferedImage, text, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBottomTextStartX(), nextTextStartY, imgPx.getGoodsNameColor(), false);
                 nextTextStartY += nameCharHeight;
             }
             return nextTextStartY - imgPx.getGoodsNameStartY();
@@ -416,6 +420,45 @@ public class PictorialService extends ShopBaseService {
     }
 
     /**
+     * 根据店铺通用配置，获取用户配置的分享和海报下载时宣语
+     * @param userName 用户名
+     * @param goodsName 商品名
+     * @param goodsPrice 商品价格
+     * @param isPictorial true下载海报，false商品分享
+     * @return null 表示使用的是默认宣传语，否则用户定义的宣传语，已进行长度截断
+     */
+    public String getCommonConfigDoc(String userName,String goodsName,BigDecimal goodsPrice,String lang,Boolean isPictorial){
+        final String userNameTag = "【分享人昵称】",goodsNameTag = "【商品名称】",goodsPriceTag = "【商品价格】";
+
+        GoodsShareConfig goodsShareConfig = shopCommonConfigService.getGoodsShareConfig();
+        String shareDoc = null;
+        // 分享
+        if (!isPictorial) {
+            // 自定义文案
+            if (!GoodsShareConfig.DEFAULT_VALUE.equals(goodsShareConfig.getGoodsShareCommon())){
+                shareDoc = goodsShareConfig.getCommonDoc();
+            }
+        } else {
+            // 自定义文案
+            if (!GoodsShareConfig.DEFAULT_VALUE.equals(goodsShareConfig.getGoodsSharePictorial())){
+                shareDoc = goodsShareConfig.getPictorialDoc();
+            }
+        }
+        if (shareDoc != null) {
+            String moneyFlag = Util.translateMessage(lang, JsonResultMessage.WX_MA_PICTORIAL_MONEY, "messages");
+            shareDoc = shareDoc.replace(userNameTag,userName);
+            shareDoc = shareDoc.replace(goodsNameTag,goodsName);
+            shareDoc = shareDoc.replace(goodsPriceTag,goodsPrice.setScale(2,BigDecimal.ROUND_HALF_UP).toString()+moneyFlag);
+            if (!isPictorial) {
+                shareDoc = shareDoc.length() > 23 ? shareDoc.substring(0, 23) + "..." : shareDoc;
+            } else {
+                shareDoc = shareDoc.length() > 20 ? shareDoc.substring(0, 20) + "..." : shareDoc;
+            }
+        }
+        return shareDoc;
+    }
+
+    /**
      * 生成表单海报背景图
      *
      * @param userAvatarImg 用户头像
@@ -425,7 +468,7 @@ public class PictorialService extends ShopBaseService {
      * @return 通过图片 buffered image
      */
     public BufferedImage createFormPictorialBgImage(BufferedImage userAvatarImg, BufferedImage qrCodeImg, BufferedImage bgImg
-        , PictorialFormImgPx imgPx) {
+        , PictorialFormImgPx imgPx, String shareDpc, String accountName) {
         //设置白画布
         BufferedImage bgBufferedImage = new BufferedImage(imgPx.getBgWidth(), imgPx.getBgHeight(), BufferedImage.TYPE_USHORT_555_RGB);
         ImageUtil.addRect(bgBufferedImage, 0, 0, imgPx.getBgWidth(), imgPx.getBgHeight(), null, Color.WHITE);
@@ -433,6 +476,10 @@ public class PictorialService extends ShopBaseService {
         // 设置用户头像
         BufferedImage userAvatarImage = ImageUtil.makeRound(userAvatarImg, imgPx.getUserHeaderDiameter());
         ImageUtil.addTwoImage(bgBufferedImage, userAvatarImage, imgPx.getBgPadding(), imgPx.getBgPadding());
+
+        ImageUtil.addFont(bgBufferedImage, accountName, ImageUtil.SourceHanSansCN(Font.PLAIN, 18), 140, 85, new Color(102, 102, 102));
+
+        ImageUtil.addFont(bgBufferedImage, shareDpc, ImageUtil.SourceHanSansCN(Font.PLAIN, 22), imgPx.getBgPadding(), imgPx.getQrCodeWidth(), new Color(51, 51, 51));
 
         // 设置背景图
         bgImg = ImageUtil.resizeImage(imgPx.getBgImgWidth(), imgPx.getBgImgWidth(), bgImg);

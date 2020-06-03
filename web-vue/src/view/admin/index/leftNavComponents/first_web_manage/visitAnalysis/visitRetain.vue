@@ -7,7 +7,6 @@
       <el-select
         v-model="actionSelect"
         size="small"
-        clearable
         @change="actionChangeHandler"
         class="actionSelect"
       >
@@ -22,7 +21,6 @@
       <el-select
         v-model="timeSelect"
         size="small"
-        clearable
         @change="timeChangeHandler"
         class="timeSelect"
       >
@@ -38,7 +36,6 @@
       <el-select
         v-model="gradeSelect"
         size="small"
-        clearable
         @change="gradeChangeHandler"
         class="gradeSelect"
       >
@@ -69,18 +66,32 @@
     <table class="visitretain-table">
       <thead class="visitretain-thead">
         <tr>
-<!--          时间-->
+          <!--  时间 -->
           <th>{{$t('visitAnalysis.time')}}</th>
-<!--          新增用户数-->
-          <th>{{$t('visitAnalysis.uvNew')}}</th>
-<!--          一天后-->
-          <th>1{{$t('visitAnalysis.dayLater')}}</th>
-          <th>2{{$t('visitAnalysis.dayLater')}}</th>
-          <th>3{{$t('visitAnalysis.dayLater')}}</th>
-          <th>4{{$t('visitAnalysis.dayLater')}}</th>
-          <th>5{{$t('visitAnalysis.dayLater')}}</th>
-<!--          六天后-->
-          <th>6{{$t('visitAnalysis.dayLater')}}</th>
+          <!--  用户数-->
+          <th>{{param.action== 1?$t('visitAnalysis.uvNew'):$t('visitAnalysis.uvAct')}}</th>
+          <template v-if="param.grading === 1">
+            <!-- 1天后 -->
+            <th>1{{$t('visitAnalysis.dayLater')}}</th>
+            <!-- 2天后 -->
+            <th>2{{$t('visitAnalysis.dayLater')}}</th>
+            <!-- 3天后 -->
+            <th>3{{$t('visitAnalysis.dayLater')}}</th>
+            <!-- 4天后 -->
+            <th>4{{$t('visitAnalysis.dayLater')}}</th>
+            <!-- 5天后 -->
+            <th>5{{$t('visitAnalysis.dayLater')}}</th>
+            <!-- 6天后 -->
+            <th>6{{$t('visitAnalysis.dayLater')}}</th>
+          </template>
+          <template v-else-if="param.grading === 7">
+            <!-- 一周后 -->
+            <th>1周后</th>
+            <!-- 两周后 -->
+            <th>2周后</th>
+            <!-- 三周后 -->
+            <th>3周后</th>
+          </template>
         </tr>
       </thead>
       <tbody class="visitretain-tbody">
@@ -94,11 +105,15 @@
             v-for="(percent, percentIndex) in item.percents"
             :key="percentIndex"
             class="noborder"
-            :class="{green: percent !== '', 'deep-green': percent > 0}"
-          >{{percent}}%</td>
+            :class="{green: percent == '' || percent === 0 ||percent === '0.00', 'deep-green': percent > 0}"
+          >{{percent - 0 >= 0 ? percent+'%' : ''}}</td>
         </tr>
       </tbody>
     </table>
+    <div
+      v-if="tableData.length === 0"
+      style="margin-left:5px;padding:20px;text-align:center;border:1px solid #e6e6e6;"
+    >暂无相关数据</div>
   </div>
 </template>
 
@@ -130,9 +145,9 @@ export default {
         { value: 30, label: this.$t('visitAnalysis.month') }
       ],
       param: {
-        action: 2,
-        type: '7',
-        grading: '1',
+        action: 2, // 统计类别 新增留存1，活跃留存2
+        type: 7, // 最近7天:7，最近30天:30，自定义:0
+        grading: 1, // 粒度日1，周7，月30
         startDate: '',
         endDate: ''
       },
@@ -217,7 +232,9 @@ export default {
             } else {
               percent = parseFloat(value / first * 100).toFixed(2)
             }
-            percents.push(percent)
+            if (percents.length < 6) {
+              percents.push(percent)
+            }
           }
         }
         item.percents = percents
