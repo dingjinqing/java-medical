@@ -31,7 +31,8 @@
           <div class="rightTitle">会员权益</div>
           <cardSuiteGoodsCfg
             :val="cardSuiteGoodsCfgData"
-            @input="initCardSuiteGoodsCfgData" />
+            @input="initCardSuiteGoodsCfgData"
+          />
           <!-- 自定义权益 -->
           <cardCustomRights v-bind.sync="customRights" />
         </div>
@@ -50,19 +51,20 @@
         </div>
         <div class="advance-setting">
           <div class="rightTitle">高级设置</div>
-          <card-advance-cfg :cardTag="cardTag"
-              :cardGive="cardGive"
-              :cardType="cardType"/>
+          <card-advance-cfg
+            :cardTag="cardTag"
+            :cardGive="cardGive"
+            :cardType="cardType"
+          />
         </div>
       </div>
     </div>
     <div class="footer">
-      <div
-        class="save"
+      <el-button
+        type="primary"
+        size="small"
         @click="handleToSave"
-      >
-        {{$t('memberCard.save')}}
-      </div>
+      >{{$t('memberCard.save')}}</el-button>
     </div>
   </div>
 </template>
@@ -247,6 +249,7 @@ export default {
         cardStoreCfgData: cardStoreCfgDataTmp,
         cardUsageCfgData: cardUsageCfgDataTmp
       },
+
       // 自定义权益
       customRights: {
         customRightsFlag: 'off',
@@ -260,7 +263,10 @@ export default {
         cardGiveAway: 'off',
         cardGiveContinue: 'off',
         mostGiveAway: null
-      }
+      },
+
+      isCanSave: true
+
     }
   },
   mounted () {
@@ -449,8 +455,14 @@ export default {
       this.$refs.cardActiveCfgData.$emit('checkRule')
 
       if (this.cardNameAndBg.valid && this.cardEffectTime.valid && this.cardStoreCfgData.valid &&
-           this.cardReceiveCfgData.valid && this.cardActiveCfgData.valid) {
-        this.prepareCardData()
+        this.cardReceiveCfgData.valid && this.cardActiveCfgData.valid) {
+        // 保存数据
+        if (this.isCanSave) {
+          this.isCanSave = false // 禁用保存
+          this.prepareCardData()
+        } else {
+          this.$message.warning(this.$t('memberCard.repeatSubmit'))
+        }
       } else {
         this.$message.error('保存失败')
       }
@@ -522,20 +534,26 @@ export default {
     // 2- 创建会员卡接口
     createMemberCard (data) {
       createMemberCardRequest(data).then(res => {
+        this.isCanSave = true
         console.log(res)
         if (res.error === 0) {
           // success
           // 清除数据，并进行跳转
           this.successOptions()
+        } else {
+          this.$message.warning(this.$t('memberCard.cardCreateFailed'))
         }
       })
     },
     updateCardInfo (data) {
       updateCardRequest(data).then(res => {
         console.log(res)
+        this.isCanSave = true
         if (res.error === 0) {
           // success
           this.successOptions()
+        } else {
+          this.$message.warning(this.$t('memberCard.cardCreateFailed'))
         }
       })
     },
@@ -565,7 +583,7 @@ export default {
       }
     },
     dealWithCardTag () {
-      this.cardTag.cardTagId = this.cardTag.cardTagId.map(({id}) => id)
+      this.cardTag.cardTagId = this.cardTag.cardTagId.map(({ id }) => id)
     },
     dealWithCustomAction () {
       // true/false 转换1/0
@@ -627,8 +645,8 @@ export default {
         margin-bottom: 10px;
       }
     }
-    .advance-setting{
-       margin-bottom: 0px;
+    .advance-setting {
+      margin-bottom: 0px;
     }
   }
   .footer {

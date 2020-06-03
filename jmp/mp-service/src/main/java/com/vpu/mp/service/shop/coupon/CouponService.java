@@ -350,7 +350,7 @@ public class CouponService extends ShopBaseService {
     public PageResult<CouponHoldListVo> getSplitCoupinUserDetail(CouponGetDetailParam param){
         SelectConditionStep<? extends Record> select = db()
             .select(CUSTOMER_AVAIL_COUPONS.ID,USER.USERNAME, USER.MOBILE, CUSTOMER_AVAIL_COUPONS.GET_SOURCE, CUSTOMER_AVAIL_COUPONS.IS_USED,
-                MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION, CUSTOMER_AVAIL_COUPONS.START_TIME, CUSTOMER_AVAIL_COUPONS.END_TIME,
+                MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION, CUSTOMER_AVAIL_COUPONS.START_TIME, CUSTOMER_AVAIL_COUPONS.END_TIME,CUSTOMER_AVAIL_COUPONS.USED_TIME,CUSTOMER_AVAIL_COUPONS.DEL_FLAG,
                     CUSTOMER_AVAIL_COUPONS.CREATE_TIME,CUSTOMER_AVAIL_COUPONS.AMOUNT).from(DIVISION_RECEIVE_RECORD)
             .leftJoin(CUSTOMER_AVAIL_COUPONS).on(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(CUSTOMER_AVAIL_COUPONS.COUPON_SN))
             .leftJoin(USER).on(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(USER.USER_ID))
@@ -633,8 +633,8 @@ public class CouponService extends ShopBaseService {
      */
     public int hasReceive(Integer userId,Integer couponId){
         Result<Record1<Integer>> fetch = db().select(DIVISION_RECEIVE_RECORD.USER_ID).from(DIVISION_RECEIVE_RECORD)
-            .where(DIVISION_RECEIVE_RECORD.USER.eq(userId))
-            .and(DIVISION_RECEIVE_RECORD.COUPON_ID.eq(couponId))
+            .where(DIVISION_RECEIVE_RECORD.COUPON_ID.eq(couponId))
+            .and(DIVISION_RECEIVE_RECORD.USER.eq(userId))
             .groupBy(DIVISION_RECEIVE_RECORD.USER_ID)
             .fetch();
         int hasReceive = fetch.size();

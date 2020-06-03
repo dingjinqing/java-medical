@@ -267,7 +267,7 @@
             <div
               class="new_card"
               @click="handleToCardDetail(2)"
-              v-show="addStatus"
+              v-show="showAddIcon"
             >
               <img :src="new_card_img">
               <span style="color: #9e9e9e;font-size: 15px;padding: 12px 0">{{ $t('memberCard.addMemberCard') }}</span>
@@ -322,12 +322,10 @@
                       </span>
                     </div>
                     <div class="grade_condition">
-                      <p class="grade_tip">{{$t('memberCard.gradeCondition')}}</p>
-                      <div class="grade_detail">
-                        <p> {{$t('memberCard.gradeScore')}} {{item.gradeConditionJson.gradeScore}}{{$t('memberCard.unitM')}}</p>
-                        <p>{{$t('memberCard.or')}}</p>
-                        <p>{{$t('memberCard.gradeAmountCon')}}{{item.gradeConditionJson.gradeMoney}}{{$t('memberCard.yuan')}}</p>
-                      </div>
+                      <p class="grade_tip">
+                        {{$t('memberCard.gradeCondition')}}
+                        {{getGradeCardDetailInfo(item.gradeConditionJson)}}
+                      </p>
                     </div>
                   </div>
                   <div class="card_edit">
@@ -399,6 +397,11 @@ export default {
   components: {
     ShareCodeDialog: () => import('@/components/admin/shareCodeDialog'),
     CardFormPage: () => import('./cardFormPage') // 切换表格页面组件
+  },
+  computed: {
+    showAddIcon () {
+      return this.cardDataThird.length < 9
+    }
   },
   data () {
     return {
@@ -789,10 +792,6 @@ export default {
           return 'background-color:' + item.bgColor
         } else {
           // 获取初始全局颜色
-          let defaultColor = localStorage.getItem('V-backgroundColor')
-          if (defaultColor) {
-            return `background-color:${defaultColor}`
-          }
           return 'background-color:#e6cb96'
         }
       } else {
@@ -959,8 +958,26 @@ export default {
     // 点击切换按钮
     handleToChangePage () {
       this.changePageFlag = !this.changePageFlag
+    },
+
+    getGradeCardDetailInfo (condition) {
+      let desc = this.$t('memberCard.addUp')
+      let count = 0
+      if (condition.gradeScore !== null) {
+        count++
+        desc += condition.gradeScore + this.$t('memberCard.unitM')
+      }
+
+      if (condition.gradeMoney !== null) {
+        if (count > 0) {
+          desc += this.$t('memberCard.or')
+        }
+        desc += condition.gradeMoney + this.$t('memberCard.yuan')
+      }
+      return desc
     }
   }
+
 }
 </script>
 <style lang="scss" scoped>
@@ -975,7 +992,8 @@ export default {
   .membershipCardMain {
     position: relative;
     background-color: #fff;
-    overflow: hidden;
+    min-width: 1200px;
+    overflow-x: auto;
     overflow-y: auto;
     padding: 15px 25px;
     .changePage {
@@ -987,7 +1005,7 @@ export default {
     .firstDiv {
       background: #fff;
       padding: 0 1%;
-      overflow: hidden;
+      overflow-x: auto;
       min-width: 1000px;
       padding-right: 0;
       .firstListDiv {
@@ -1037,7 +1055,7 @@ export default {
                 color: #fff;
               }
               .time {
-                margin-top: 4px;
+                margin-top: 10px;
                 color: #fff;
                 span {
                   width: 200px;
@@ -1051,9 +1069,7 @@ export default {
               font-size: 12px;
               .grade_tip {
                 color: #fff;
-              }
-              .grade_detail {
-                padding-left: 20px;
+                margin-top: 10px;
               }
             }
             .card_edit {

@@ -12,10 +12,7 @@ import java.sql.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static com.vpu.mp.db.shop.Tables.USER_RFM_SUMMARY;
 import static com.vpu.mp.db.shop.Tables.USER_SUMMARY_TREND;
@@ -605,6 +602,19 @@ public class UserAnalysisService extends ShopBaseService {
    */
   public RebuyVo getRebuyTrend(RebuyParam param) {
     try {
+        if(null==param.getWeekNum()||StringUtils.isBlank(param.getSunday())){
+            Calendar calendar = Calendar.getInstance();
+            calendar.setFirstDayOfWeek(Calendar.MONDAY);
+            int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
+            param.setWeekNum(weekOfYear);
+            int weekYear = calendar.get(Calendar.YEAR);
+            calendar.setWeekDate(weekYear,weekOfYear,1);
+            long endTime = calendar.getTime().getTime();
+            java.util.Date date = new java.util.Date(endTime);
+            SimpleDateFormat df =new SimpleDateFormat("yyyy-MM-dd");
+            String sundayDate = df.format(date);
+            param.setSunday(sundayDate);
+        }
       DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
       // 周日转date型
       java.util.Date sunday = dateFormat.parse(param.getSunday());
@@ -693,6 +703,9 @@ public class UserAnalysisService extends ShopBaseService {
       rebuyWeekVo.add(secondVo);
       rebuyWeekVo.add(thirdVo);
       rebuyWeekVo.add(fourthVo);
+      rebuyWeekVo.forEach(r->{
+          r.setXAxis("第"+r.getWeekNum()+"周"+"("+r.getStartTime().substring(5,10)+"~"+r.getEndTime().substring(5,10)+")");
+      });
       // 返回集合
       RebuyVo rebuyVo =
           new RebuyVo() {

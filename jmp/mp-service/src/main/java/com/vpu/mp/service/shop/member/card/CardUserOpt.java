@@ -99,10 +99,13 @@ public class CardUserOpt extends CardOpt {
 		BigDecimal amount = uCardSvc.getUserTotalSpendAmount(userId);
 		
 		GradeConditionJson gradeCondition = uCardSvc.getGradeCondition(userTotalScore, amount, mCard);
-		boolean result =  gradeCondition.getGradeScore().intValue() <= userTotalScore
-				|| BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(), amount) <= 0;
-		logger().info("判断是否可以领取等级会员卡"+result);
-		return result;
+		if(gradeCondition.getGradeScore()!=null && gradeCondition.getGradeScore().intValue() <= userTotalScore) {
+			return true;
+		}
+		if(gradeCondition.getGradeMoney()!=null && BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(), amount) <= 0) {
+			return true;
+		}
+		return false;
 		
 	}
 	

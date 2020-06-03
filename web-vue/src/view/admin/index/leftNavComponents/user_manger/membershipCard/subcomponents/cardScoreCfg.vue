@@ -6,6 +6,7 @@
       :rules="rules"
       ref="ruleFormScore"
       label-width="100px"
+      @submit.native.prevent
     >
       <div class="sendScoreTop">
         <el-form-item prop="score">
@@ -21,6 +22,7 @@
               size="small"
               :controls="false"
               :precision="0"
+              @change="$refs.ruleFormScore.validateField('score')"
             >
             </el-input-number>
             <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
@@ -63,7 +65,7 @@
               </el-input-number>
               <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
               <img
-                style="cursor:pointer"
+                style="cursor:pointer;vertical-align: text-bottom;"
                 :src="$imageHost +'/image/admin/sign_jia.png' "
                 @click="handleToAddIntegral()"
               >
@@ -92,9 +94,9 @@
                     v-model="ruleForm.addIntegralArr[index].rightInput"
                   >
                   </el-input-number>
-                  <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
+                   <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
                   <img
-                    style="cursor:pointer"
+                    style="cursor:pointer;vertical-align: text-bottom;"
                     :src="$imageHost +'/image/admin/sign_del.png' "
                     @click="handleToDelIntegral(index)"
                   >
@@ -358,6 +360,17 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+
+*,/deep/ .el-form-item__label,
+/deep/ .el-radio__label,
+/deep/ .el-checkbox__label{
+  font-size: 13px;
+}
+
+.item-middle{
+  display: inline-block;
+  vertical-align: middle;
+}
 .scoreReceiveDiv {
   /deep/ .el-checkbox__label {
     color: black;
@@ -367,10 +380,10 @@ export default {
       margin-bottom: 20px;
     }
     /deep/ .el-form-item__error{
-      margin-left: 100px;
+      margin-left: 75px;
     }
     .scoreReceiveItem {
-      padding-left: 100px;
+      padding-left: 75px;
       display: flex;
       align-items: center;
       /deep/ .el-checkbox {
@@ -404,7 +417,7 @@ export default {
         }
       }
       padding-left: 170px;
-      margin-right: 32px;
+      margin-right: 10px;
       display: flex;
       align-items: center;
       .send-full-error{
@@ -414,7 +427,7 @@ export default {
         font-size: 12px;
       }
       /deep/ .el-radio {
-        margin-right: 32px;
+        margin-right: 10px;
       }
       /deep/ .el-input {
         width: 20%;
@@ -424,10 +437,10 @@ export default {
         }
       }
       .scoreInfo {
-        margin: 0 5px 0 20px;
+        margin: 0 1px 0 1px;
       }
       .sendInfo {
-        margin: 0 10px;
+        margin: 0;
       }
     }
     .scoreReceiveAddSubItem {
@@ -435,7 +448,7 @@ export default {
       display: flex;
       align-items: center;
       .shopFullInfo {
-        margin-right: 31px;
+        margin-right: 10px;
       }
       /deep/ .el-input {
         width: 100% !important;
@@ -445,10 +458,10 @@ export default {
         }
       }
       .sendInfo {
-        margin: 0 10px;
+        margin: 0 0px;
       }
       .scoreInfo {
-        margin: 0 5px 0 20px;
+        margin: 0 0px;
       }
     }
 
@@ -457,7 +470,7 @@ export default {
         display: flex;
         align-items: center;
         /deep/ .el-radio {
-          margin-right: 18px;
+          margin-right: 10px;
         }
         /deep/ .el-input {
           width: 100% !important;
@@ -467,10 +480,10 @@ export default {
           }
         }
         .scoreInfo {
-          margin-left: 20px;
+          margin-left: 0px;
         }
         .sendInfo {
-          margin: 0 10px;
+          margin: 0 0px;
         }
 
     }
@@ -496,7 +509,7 @@ export default {
         color: red;
       }
       .sendInfo {
-        margin: 0 10px;
+        margin: 0 0px;
       }
     }
   }

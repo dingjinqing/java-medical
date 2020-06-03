@@ -371,6 +371,10 @@ export default {
         }
         if (item.actCode === 'discount') {
           item.denomination = `打${item.denomination}折`
+        } else if (item.actCode === 'voucher') {
+          item.denomination = `${item.denomination}元`
+        } else if (item.actCode === 'random') {
+          item.denomination = `${item.randomMin}-${item.randomMax}元`
         }
         // if (item.validityType === 1) {
         //   item.vaildDate = `领取开始${item.validity}天${item.validityHour}小时${item.validityMinute}分内有效`
