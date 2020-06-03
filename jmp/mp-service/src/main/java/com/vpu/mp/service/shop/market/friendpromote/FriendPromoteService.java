@@ -47,6 +47,7 @@ import com.vpu.mp.db.shop.tables.FriendPromoteDetail;
 import com.vpu.mp.db.shop.tables.FriendPromoteLaunch;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteLaunchRecord;
@@ -101,7 +102,7 @@ import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 好友助力
- * 
+ *
  * @author liangchen
  * @date 2019年8月7日
  */
@@ -116,7 +117,7 @@ public class FriendPromoteService extends ShopBaseService {
 	private static FriendPromoteActivity fpa = FriendPromoteActivity.FRIEND_PROMOTE_ACTIVITY.as("fpa");
 	private static FriendPromoteLaunch fpl = FriendPromoteLaunch.FRIEND_PROMOTE_LAUNCH.as("fpl");
 	private static FriendPromoteDetail fpd = FriendPromoteDetail.FRIEND_PROMOTE_DETAIL.as("fpd");
-	
+
 	private static final Byte[] s=new Byte[] {(byte)0,(byte)1};
 	private static final byte ZERO = 0;
 	private static final byte ONE = 1;
@@ -276,7 +277,7 @@ public class FriendPromoteService extends ShopBaseService {
 			}else {
 				sql.and(fpl.PROMOTE_STATUS.notEqual(FriendPromoteReceiveParam.RECEIVED));
 			}
-			
+
 		}
 		// 整合分页信息
 		PageResult<FriendPromoteReceiveVo> pageResult = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
@@ -360,7 +361,7 @@ public class FriendPromoteService extends ShopBaseService {
 				sql.having(a.INVITE_SOURCE.notEqual(MemberService.INVITE_SOURCE_PROMOTE).or(a.INVITE_SOURCE.isNull()));
 			}
 		}
-		
+
 		// 整合分页信息
 		PageResult<FriendPromoteParticipateVo> pageResult = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
 				FriendPromoteParticipateVo.class);
@@ -428,7 +429,7 @@ public class FriendPromoteService extends ShopBaseService {
 		db().executeUpdate(record);
 
 	}
-	
+
 	/**
 	 * 助力活动信息
 	 * @param promoteId
@@ -444,7 +445,7 @@ public class FriendPromoteService extends ShopBaseService {
 		}
 		return selectFrom.fetchAny();
 	}
-	
+
 	/**
 	 * 获取结束前后
 	 * @param hours
@@ -465,7 +466,7 @@ public class FriendPromoteService extends ShopBaseService {
 		}
 		return into;
 	}
-	
+
 	/**
 	 * 获取助力失败列表
 	 * @param hours
@@ -486,7 +487,7 @@ public class FriendPromoteService extends ShopBaseService {
 		}
 		return into;
 	}
-	
+
 	/**
 	 * 修改助力状态
 	 * @param status
@@ -496,7 +497,7 @@ public class FriendPromoteService extends ShopBaseService {
 	public int upPromoteInfo(Byte status,Integer id) {
 		return db().update(fpl).set(fpl.PROMOTE_STATUS,status ).where(fpl.ID.eq(id)).execute();
 	}
-	
+
 	/**
 	 * 助力失效前一小时
 	 * @param hours
@@ -523,7 +524,7 @@ public class FriendPromoteService extends ShopBaseService {
 		}
 		return into;
 	}
-	
+
 	public FriendPromoteSelectVo getUserLaunchInfo(Integer launchId) {
 		Record fetchAny = db()
 				.select(fpl.asterisk(), fpa.ACT_CODE, fpa.ACT_NAME, fpa.REWARD_CONTENT, fpa.REWARD_TYPE,
@@ -1505,6 +1506,7 @@ public class FriendPromoteService extends ShopBaseService {
                         param.setAccessMode((byte)0);
                         param.setGetSource((byte)16);
                         param.setActId(promoteInfo.getId());
+                        param.setLimitNumType(BaseConstant.NO);
                         CouponGiveQueueBo couponGiveQueueBo = couponGiveService.handlerCouponGive(param);
                         if (couponGiveQueueBo.getSuccessSize()==0){
                             logger().info("优惠券发放失败");

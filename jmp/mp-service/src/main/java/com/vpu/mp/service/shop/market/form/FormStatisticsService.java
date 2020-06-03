@@ -1026,8 +1026,8 @@ public class FormStatisticsService extends ShopBaseService {
      */
     private Integer saveSubmitForm(FormSubmitDataParam param, FormPageRecord formRecord, CouponGiveQueueBo sendData) {
         final Integer[] submitId = {0};
-        db().transaction(configuration -> {
-            FormSubmitListRecord listRecord =db().newRecord(  fsl);
+        this.transaction(() -> {
+            FormSubmitListRecord listRecord = db().newRecord(fsl);
             listRecord.setPageId(param.getPageId());
             listRecord.setUserId(param.getUser().getUserId());
             listRecord.setNickName(param.getUser().getUsername());
