@@ -63,7 +63,6 @@ import org.elasticsearch.common.Strings;
 import org.jooq.Record6;
 import org.jooq.Record8;
 import org.jooq.SelectConditionStep;
-import org.jooq.impl.DSL;
 import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,6 +77,7 @@ import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import static com.vpu.mp.db.shop.tables.FormSubmitDetails.FORM_SUBMIT_DETAILS;
 import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_FORM_STATISTICS;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.*;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
@@ -86,7 +86,6 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_FORM_D
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.jooq.impl.DSL.*;
-import static com.vpu.mp.db.shop.tables.FormSubmitDetails.FORM_SUBMIT_DETAILS;
 
 /**
  * @author liufei

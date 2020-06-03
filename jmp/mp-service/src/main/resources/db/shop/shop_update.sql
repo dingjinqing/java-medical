@@ -187,6 +187,10 @@ ALTER TABLE `b2c_coupon_pack` ADD COLUMN `show_cart` tinyint(1) DEFAULT '1' COMM
 ALTER TABLE `b2c_order_refund_record` MODIFY COLUMN `order_sn` varchar(22) NOT NULL DEFAULT '' COMMENT '订单编号';
 -- 20200526 李晓冰商品导入详情添加是否导入成功字段
 ALTER TABLE `b2c_goods_import` ADD COLUMN `is_finish` tinyint(1) DEFAULT '0' COMMENT '商品导入操作是否完成';
+
+-- 2020年5月27日 kdc 地址表增加默认字段,删除字段
+ALTER TABLE `b2c_user_address`    ADD COLUMN `del_flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0未删除 1删除';
+ALTER TABLE `b2c_user_address`    ADD COLUMN `is_default` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否是默认地址 0不是 1是';
 /***********************2.10*********************END*/
 
 /***********************2.11*********************BEGIN*/

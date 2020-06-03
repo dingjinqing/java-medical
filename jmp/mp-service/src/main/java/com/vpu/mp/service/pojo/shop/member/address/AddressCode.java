@@ -17,3 +17,4 @@ public class AddressCode {
     private Integer districtCode;
     private String districtName;
 }
+

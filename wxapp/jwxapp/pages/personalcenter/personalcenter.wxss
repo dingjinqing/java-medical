@@ -1,0 +1,15 @@
+/* pages/personalcenter/personalcenter.wxss */
+.top_nav {
+  display: flex;
+  height: 100rpx;
+  line-height: 100rpx;
+  justify-content:space-around;
+  align-items: center;
+  margin-top: 20rpx;
+  background: #fff;
+}
+.top_nav_item {
+  width: 25%;
+  text-align: center;
+  border-bottom: 1px solid rgba(0,0,0,0);
+}
