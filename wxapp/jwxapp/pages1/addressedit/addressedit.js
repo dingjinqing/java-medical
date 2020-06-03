@@ -19,7 +19,8 @@ global.wxPage({
       districtCode: '',
       isDefault: false,
       zipCode: ''
-    }
+    },
+    autoSwitch: true
   },
 
   /**
@@ -43,6 +44,32 @@ global.wxPage({
         }
       }, {addressId: option.addressId})
     }
+    // 初始化自动识别swicth
+    wx.getStorage({
+      key: 'autoSwitch',
+      success: res => {
+        console.log(res)
+        const autoSwitch = res.data
+        if (autoSwitch === false||autoSwitch === true) {
+          that.setData({
+            autoSwitch: autoSwitch
+          })
+        }
+      }
+    })
+    
+  },
+
+  handleAutoSwicth (e) {
+    console.log(e)
+    let value = e.detail.value
+    this.setData({
+      autoSwitch: value
+    })
+    wx.setStorage({
+      data: value,
+      key: 'autoSwitch'
+    })
   },
 
   smart (val){

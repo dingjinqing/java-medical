@@ -23,12 +23,14 @@
   height: 23rpx;
 }
 .auto-recognition {
-  height: 335rpx;
+  height: auto;
   margin-top: 20rpx;
   padding: 0 20rpx 20rpx;
   background: #fff;
 }
 .ar-top {
+  display: flex;
+  justify-content: space-between;
   height: 90rpx;
   line-height: 90rpx;
   font-weight: bold;

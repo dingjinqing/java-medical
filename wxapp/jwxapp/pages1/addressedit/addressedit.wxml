@@ -11,8 +11,11 @@
         <image class="right-into" src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
       </view>
       <view class="auto-recognition">
-        <view class="ar-top">自动识别收货信息</view>
-        <view class="ar-text-area">
+        <view class="ar-top">
+          <text>自动识别收货信息</text>
+          <switch checked="{{autoSwitch}}" bindchange="handleAutoSwicth" color="#FF6666"></switch>  
+        </view>
+        <view class="ar-text-area" wx:if="{{autoSwitch}}">
           <textarea auto-focus class="art-textarea" value="{{textarea}}" bindinput="bindTextAreaInput" placeholder="请输入或粘贴地址文本，可自动识别姓名、电话和地址，如：北京市海淀区西直门北大街54号伊泰大厦。"></textarea>
           <button bindtap="handleAutoRecognition" class="auto-recognition-btn">自动识别</button>
         </view>
