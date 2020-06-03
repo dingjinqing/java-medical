@@ -356,7 +356,7 @@ public class CouponService extends ShopBaseService {
             .leftJoin(CUSTOMER_AVAIL_COUPONS).on(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(CUSTOMER_AVAIL_COUPONS.COUPON_SN))
             .leftJoin(USER).on(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(USER.USER_ID))
             .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID))
-            .where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(param.getId())).and(DIVISION_RECEIVE_RECORD.USER.eq(param.getShareId()));
+            .where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(param.getId())).and(DIVISION_RECEIVE_RECORD.USER.eq(param.getShareId())).and(DIVISION_RECEIVE_RECORD.RECEIVE_COUPON_SN.eq(param.getCouponSn()));
         SelectConditionStep<? extends Record> sql = detailBuildOptions(select, param);
         PageResult<CouponHoldListVo> info = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), CouponHoldListVo.class);
         info.dataList.forEach(data->{
