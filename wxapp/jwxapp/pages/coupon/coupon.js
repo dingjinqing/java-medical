@@ -301,7 +301,8 @@ global.wxPage({
    */
   couponDetail: function (opt) {
     var couponSn = opt.currentTarget.dataset.couponsn;
-    util.jumpLink('/pages/getCoupon/getCoupon?couponSn=' + couponSn + '&type=' + this.data.this_type);
+    var isGrant = opt.currentTarget.dataset.is_grant;
+    util.jumpLink('/pages/getCoupon/getCoupon?couponSn=' + couponSn + '&type=' + this.data.this_type + '&isGrant=' + isGrant);
   },
 
   /**

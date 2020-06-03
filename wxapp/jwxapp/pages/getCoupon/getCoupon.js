@@ -21,6 +21,7 @@ global.wxPage({
     input_vali: '', // 领取码
     detailType: 1, // 详情类型(个人中心详情: 0, 装修详情: 1)
     couponStatus: '0', // 优惠券状态(0未使用, 1已使用,2已过期)
+    isGrant: 1, // 用户类型(1发放者, 0被发放者)
   },
 
   /**
@@ -32,8 +33,10 @@ global.wxPage({
     that.setData({
       couponSn: options.couponSn,
       couponId: Number(options.couponId),
-      couponStatus: options.type
+      couponStatus: options.type,
+      isGrant: options.isGrant
     })
+    console.log(that.data.isGrant)
     // 查看详情
     util.api("api/wxapp/coupon/detail", function (res) {
       if (res.error == 0) {
