@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 /**
  * @author 王帅
@@ -23,5 +24,8 @@ public class InsteadPayDetailsVo {
     private BigDecimal refundMoney;
     private String message;
     private String userAvatar;
+    private String paySn;
+    private Timestamp payTime;
+    private Timestamp refundTime;
 
 }

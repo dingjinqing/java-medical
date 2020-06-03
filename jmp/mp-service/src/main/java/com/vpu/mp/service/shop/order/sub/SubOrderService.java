@@ -58,6 +58,15 @@ public class SubOrderService  extends ShopBaseService {
         return getPageResult(select, currentPage, pageRows, InsteadPayDetailsVo.class);
     }
 
+    public List<InsteadPayDetailsVo> paymentDetails(String orderSn){
+        return db().select(TABLE_USER_DETAIL.USER_AVATAR, TABLE.SUB_ORDER_SN, TABLE.MAIN_ORDER_SN, TABLE.USER_ID, TABLE.USERNAME, TABLE.ORDER_STATUS, TABLE.MONEY_PAID, TABLE.REFUND_MONEY, TABLE.MESSAGE, TABLE.PAY_SN, TABLE.PAY_TIME, TABLE.REFUND_TIME)
+            .from(TABLE).leftJoin(TABLE_USER_DETAIL).on(TABLE.USER_ID.eq(TABLE_USER_DETAIL.USER_ID))
+            .where(TABLE.MAIN_ORDER_SN.eq(orderSn)
+                .and(TABLE.ORDER_STATUS.in(OrderConstant.SubOrderConstant.SUB_ORDER_PAY_OK, OrderConstant.SubOrderConstant.SUB_ORDER_REFUND_SUCESS)))
+            .orderBy(TABLE.PAY_TIME.desc())
+            .fetchInto(InsteadPayDetailsVo.class);
+    }
+
     public SubOrderInfoRecord get(String subOrderSn){
         return db().selectFrom(TABLE).where(TABLE.SUB_ORDER_SN.eq(subOrderSn)).fetchAny();
     }

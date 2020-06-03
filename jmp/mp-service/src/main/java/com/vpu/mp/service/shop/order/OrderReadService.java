@@ -398,6 +398,8 @@ public class OrderReadService extends ShopBaseService {
         mainOrder.setRebateList(getOrderRebateInfo(mainOrder));
         mainOrder.setPinEndTime(groupDrawService.groupDrawOrders.getEndTime(mainOrder.getOrderSn()));
         mainOrder.setAffirmTime(mainOrder.getConfirmTime());
+        //设置代付明细
+        mainOrder.setInsteadPayInfo(subOrderService.paymentDetails(mainOrder.getOrderSn()));
 		return mainOrder;
 	}
 
