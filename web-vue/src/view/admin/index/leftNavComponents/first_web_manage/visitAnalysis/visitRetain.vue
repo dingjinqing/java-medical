@@ -69,17 +69,17 @@
     <table class="visitretain-table">
       <thead class="visitretain-thead">
         <tr>
-<!--          时间-->
+          <!--          时间-->
           <th>{{$t('visitAnalysis.time')}}</th>
-<!--          新增用户数-->
+          <!--          新增用户数-->
           <th>{{$t('visitAnalysis.uvNew')}}</th>
-<!--          一天后-->
+          <!--          一天后-->
           <th>1{{$t('visitAnalysis.dayLater')}}</th>
           <th>2{{$t('visitAnalysis.dayLater')}}</th>
           <th>3{{$t('visitAnalysis.dayLater')}}</th>
           <th>4{{$t('visitAnalysis.dayLater')}}</th>
           <th>5{{$t('visitAnalysis.dayLater')}}</th>
-<!--          六天后-->
+          <!--          六天后-->
           <th>6{{$t('visitAnalysis.dayLater')}}</th>
         </tr>
       </thead>
@@ -217,7 +217,9 @@ export default {
             } else {
               percent = parseFloat(value / first * 100).toFixed(2)
             }
-            percents.push(percent)
+            if (percents.length < 6) {
+              percents.push(percent)
+            }
           }
         }
         item.percents = percents
