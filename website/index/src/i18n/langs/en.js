@@ -95,7 +95,7 @@ const en = {
     footer_con_5: 'POS Store System',
     footer_con_6: 'Free microshop',
     footer_con_7: 'Cloud computing data',
-    footer_con_8: 'Beijing Weipubao Network Technology Co., Ltd.',
+    footer_con_8: 'Tianjin Zhangshang Xianji Network Technology Co., Ltd',
     footer_con_9: 'Copyright',
     footer_con_10: 'Beijing ICP No. 14046261'
   },
