@@ -108,7 +108,7 @@ public class CardMsgNoticeService extends ShopBaseService {
 		RabbitMessageParam param2 = RabbitMessageParam.builder()
 				.mpTemplateData(
 						MpTemplateData.builder().config(MpTemplateConfig.GET_CARD).data(mpData).build())
-				.page("pages/cardinfo/cardinfo?card_no="+cardNo).shopId(getShopId())
+				.page("pages/cardinfo/cardinfo?cardNo="+cardNo).shopId(getShopId())
 				.userIdList(arrayList)
 				.type(MessageTemplateConfigConstant.SUCCESS_MEMBER_CARD_GET).build();
 		saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
