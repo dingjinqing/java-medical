@@ -634,6 +634,7 @@ public class CouponService extends ShopBaseService {
     public int hasReceive(Integer userId,Integer couponId){
         Result<Record1<Integer>> fetch = db().select(DIVISION_RECEIVE_RECORD.USER_ID).from(DIVISION_RECEIVE_RECORD)
             .where(DIVISION_RECEIVE_RECORD.COUPON_ID.eq(couponId))
+            .and(DIVISION_RECEIVE_RECORD.USER.eq(userId))
             .groupBy(DIVISION_RECEIVE_RECORD.USER_ID)
             .fetch();
         int hasReceive = fetch.size();
