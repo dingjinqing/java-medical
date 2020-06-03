@@ -39,7 +39,9 @@
     "pages/splitinfo/splitinfo",
     "pages/usercardrenew/usercardrenew",
     "components/suspend-window/index",
-    "components/popup/view_benefits/index"
+    "components/popup/view_benefits/index",
+    "pages/personalcenter/personalcenter",
+    "components/usercenter/useraddress/useraddress"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -125,7 +127,8 @@
         "sharerebate/sharerebate",
         "livetransition/livetransition",
         "aftersaleorder/aftersaleorder",
-        "packagesalelist/packagesalelist"
+        "packagesalelist/packagesalelist",
+        "addressedit/addressedit"
       ]
     }
   ],
