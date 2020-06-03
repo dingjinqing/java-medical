@@ -181,7 +181,7 @@
       >
         <el-button
           size="small"
-          @click="addGroupDialog = false"
+          @click="cancelGroupHandler"
         >{{$t('distribution.inviteCancel')}}</el-button>
         <el-button
           type="primary"
@@ -301,6 +301,7 @@ export default {
         if (valid) {
           // 关闭弹窗
           this.addGroupDialog = false
+          this.$refs['param'].resetFields()
           if (this.typeFlag === 0) {
             // 添加保存
             distributionGroupAdd(this.param).then(res => {
@@ -325,6 +326,13 @@ export default {
           }
         }
       })
+    },
+
+    // 取消添加分销员分组
+    cancelGroupHandler () {
+      // 关闭弹窗
+      this.addGroupDialog = false
+      this.$refs['param'].resetFields()
     },
 
     // 删除分组
