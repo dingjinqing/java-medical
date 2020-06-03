@@ -36,7 +36,7 @@
       </view>
     </view>
     <view class="shipping_info">
-      <navigator wx:if="{{orderInfo.shippingInfo && orderInfo.shippingInfo[0].shippingId !== 42}}">
+      <navigator wx:if="{{orderInfo.shippingInfo && orderInfo.shippingInfo[0].shippingId !== 42}}" path='pages/result/result?nu={{orderInfo.shippingInfo[0].shippingNo}}&com=&querysource=third_xcx' target="miniProgram" app-id='wx6885acbedba59c14' open-type="navigate" version="release">
         <view class="logistics" style='background:url({{imageUrl}}image/wxapp/right_into.png) 95% center no-repeat;background-size:16rpx 32rpx;'>
           <image mode="widthFix" src="{{imageUrl}}image/wxapp/icon_get.png"></image>
           <view class="shipping_info_content">
