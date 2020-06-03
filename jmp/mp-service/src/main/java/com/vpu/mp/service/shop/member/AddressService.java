@@ -312,7 +312,7 @@ public class AddressService extends ShopBaseService {
         return db().selectFrom(USER_ADDRESS)
             .where(USER_ADDRESS.USER_ID.eq(userId))
             .and(USER_ADDRESS.IS_DEFAULT.eq(BaseConstant.YES))
-            .fetchOne();
+            .fetchAny();
     }
     /**
      * 查询未删除的用户地址数量
@@ -378,6 +378,13 @@ public class AddressService extends ShopBaseService {
                 record.setLat(location.getResult().getLocation().getLat());
                 record.setLng(location.getResult().getLocation().getLng());
             }
+        }
+        if (BaseConstant.YES.equals(param.getIsDefault())){
+            db().update(USER_ADDRESS)
+                .set(USER_ADDRESS.IS_DEFAULT,BaseConstant.NO)
+                .where(USER_ADDRESS.USER_ID.eq(param.getUserId()))
+                .and(USER_ADDRESS.ADDRESS_ID.notEqual(record.getAddressId()))
+                .execute();
         }
         return record.update();
     }

@@ -1165,15 +1165,21 @@ public class MpAuthShopService extends MainBaseService {
 		switch (param.getIsSubMerchant()) {
 		case 0:
 			// 微信直连支付
-			wxOpenResult.setErrcode(String.valueOf(JsonResultCode.WX_MA_FEATURE_NOT_OPEN));
-			wxOpenResult.setErrmsg(JsonResultMessage.WX_MA_FEATURE_NOT_OPEN);
-			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_SETTING_SUB_MERCHANT, wxOpenResult, WxContentTemplate.WX_FEATURE_NOT_OPEN.code, new String[] {String.valueOf(param.getIsSubMerchant())});
+			int execute3 = db().update(MP_AUTH_SHOP).set(MP_AUTH_SHOP.IS_SUB_MERCHANT,AUDIT_STATE_NO_SUBMIT).where(MP_AUTH_SHOP.APP_ID.eq(param.getAppId())).execute();
+			Integer templateIds=WxContentTemplate.WX_SETTING_SUB_MERCHANT_FAIL.code;
+			if(execute3>0) {
+				templateIds=WxContentTemplate.WX_SETTING_SUB_MERCHANT_SUCCESS.code;
+			}
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_SETTING_SUB_MERCHANT, wxOpenResult, templateIds, new String[] {String.valueOf(param.getIsSubMerchant())});
 			break;
 		case 1:
 			// 微铺宝子商户支付
-			wxOpenResult.setErrcode(String.valueOf(JsonResultCode.WX_MA_FEATURE_NOT_OPEN));
-			wxOpenResult.setErrmsg(JsonResultMessage.WX_MA_FEATURE_NOT_OPEN);
-			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_SETTING_SUB_MERCHANT, wxOpenResult, WxContentTemplate.WX_FEATURE_NOT_OPEN.code, new String[] {String.valueOf(param.getIsSubMerchant())});
+			int execute4 = db().update(MP_AUTH_SHOP).set(MP_AUTH_SHOP.IS_SUB_MERCHANT,AUDIT_STATE_AUDITING).where(MP_AUTH_SHOP.APP_ID.eq(param.getAppId())).execute();
+			Integer templateIds2=WxContentTemplate.WX_SETTING_SUB_MERCHANT_FAIL.code;
+			if(execute4>0) {
+				templateIds2=WxContentTemplate.WX_SETTING_SUB_MERCHANT_SUCCESS.code;
+			}
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_SETTING_SUB_MERCHANT, wxOpenResult, templateIds2, new String[] {String.valueOf(param.getIsSubMerchant())});
 			break;
 		case 2:
 			// 通联子商户支付
@@ -1187,7 +1193,7 @@ public class MpAuthShopService extends MainBaseService {
 			int execute = db().update(MP_AUTH_SHOP).set(MP_AUTH_SHOP.UNION_PAY_APP_ID, param.getUnion_pay_app_id())
 					.set(MP_AUTH_SHOP.UNION_PAY_CUS_ID, param.getUnion_pay_cus_id())
 					.set(MP_AUTH_SHOP.UNION_PAY_APP_KEY, param.getUnion_pay_app_key())
-					.set(MP_AUTH_SHOP.IS_SUB_MERCHANT, param.getIsSubMerchant().byteValue()).execute();
+					.set(MP_AUTH_SHOP.IS_SUB_MERCHANT, param.getIsSubMerchant().byteValue()).where(MP_AUTH_SHOP.APP_ID.eq(param.getAppId())).execute();
 			if (execute > 0) {
 				wxOpenResult.setErrcode(String.valueOf(JsonResultCode.CODE_SUCCESS));
 				wxOpenResult.setErrmsg(JsonResultMessage.MSG_SUCCESS);
@@ -1204,7 +1210,7 @@ public class MpAuthShopService extends MainBaseService {
 			int execute2 = db().update(MP_AUTH_SHOP)
 					.set(MP_AUTH_SHOP.MERCHANT_CATEGORY_CODE, param.getMerchant_category_code())
 					.set(MP_AUTH_SHOP.FEE_TYPE, param.getFee_type())
-					.set(MP_AUTH_SHOP.IS_SUB_MERCHANT, param.getIsSubMerchant().byteValue()).execute();
+					.set(MP_AUTH_SHOP.IS_SUB_MERCHANT, param.getIsSubMerchant().byteValue()).where(MP_AUTH_SHOP.APP_ID.eq(param.getAppId())).execute();
 			if (execute2 > 0) {
 				wxOpenResult.setErrcode(String.valueOf(JsonResultCode.CODE_SUCCESS));
 				wxOpenResult.setErrmsg(JsonResultMessage.MSG_SUCCESS);
