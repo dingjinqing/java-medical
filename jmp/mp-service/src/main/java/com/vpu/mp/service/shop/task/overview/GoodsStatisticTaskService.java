@@ -81,11 +81,11 @@ public class GoodsStatisticTaskService extends ShopBaseService {
             // 品牌条件
             extCondition = extCondition.and(BAK.BRAND_ID.eq(param.getBrandId()));
         }
-        if (param.getBrandId() > 0) {
+        if (param.getSortId() > 0) {
             // 商家分类条件
             extCondition = extCondition.and(BAK.SORT_ID.eq(param.getSortId()));
         }
-        if (param.getBrandId() > 0) {
+        if (param.getLabelId() > 0) {
             // 标签条件
             extCondition = extCondition.and(LABEL.LABEL_ID.eq(param.getLabelId()).and(LABEL.TYPE.eq(BYTE_ONE)));
         }
