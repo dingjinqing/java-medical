@@ -82,6 +82,7 @@ module.exports = {
     "usercardrecord": "使用记录",
     "usercardup": "升降级记录",
     "usercenter": "个人中心",
+    "personalcenter": "个人中心",
     "userinfo": "编辑",
     "userqrcode": "我的二维码",
     "webview": "浏览器",

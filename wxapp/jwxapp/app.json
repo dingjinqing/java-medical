@@ -35,7 +35,9 @@
     "pages/cardrecord/cardrecord",
     "pages/fullprice/fullprice",
     "pages/maingoodslist/maingoodslist",
-    "pages/usercardup/usercardup"
+    "pages/usercardup/usercardup",
+    "pages/personalcenter/personalcenter",
+    "components/usercenter/useraddress/useraddress"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -97,7 +99,8 @@
         "insteadcheckout/insteadcheckout",
         "appointcomment/appointcomment",
         "form/form",
-        "formsuccess/formsuccess"
+        "formsuccess/formsuccess",
+        "addressedit/addressedit"
       ]
     }
   ],

@@ -2,16 +2,23 @@ package com.vpu.mp.service.shop.member;
 
 import com.vpu.mp.config.TxMapLBSConfig;
 import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.HttpsUtils;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.address.AddressAddParam;
 import com.vpu.mp.service.pojo.shop.member.address.AddressCode;
 import com.vpu.mp.service.pojo.shop.member.address.AddressInfo;
+import com.vpu.mp.service.pojo.shop.member.address.AddressListVo;
 import com.vpu.mp.service.pojo.shop.member.address.AddressLocation;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.address.WxAddress;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.common.Strings;
+import org.jooq.Record1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +37,7 @@ import static com.vpu.mp.db.shop.Tables.USER_ADDRESS;
 @Slf4j
 public class AddressService extends ShopBaseService {
     private static final String QQ_MAP_GEOCODER_URL = "https://apis.map.qq.com/ws/geocoder/v1";
+    public static final Integer USER_ADDRESS_MAX_COUNT=50;
 
     @Autowired
     private TxMapLBSConfig txMapLBSConfig;
@@ -67,46 +75,29 @@ public class AddressService extends ShopBaseService {
     }
 
     /**
+     * 王帅
+     * @param userId    用户id
+     * @return 地址
+     */
+    public UserAddressVo getefaultAddress(Integer userId) {
+        if (userId == null) {
+            return null;
+        }
+        return db().select().from(USER_ADDRESS).where(USER_ADDRESS.USER_ID.eq(userId).and(USER_ADDRESS.IS_DEFAULT.eq(OrderConstant.YES))).fetchAnyInto(UserAddressVo.class);
+    }
+
+
+    /**
      * 选择地址cd
      *
      * @return
      */
     public UserAddressRecord chooseAddress(Integer userId, WxAddress wxAddress) {
-        UserAddressRecord userAddress = getUserAddressInfo(userId, wxAddress);
-        if (userAddress == null) {
-            log.info("添加用户地址[userid:" + userId + "]" + Util.toJson(wxAddress));
-            userAddress = addWxAddress(userId, wxAddress);
-        }
+        log.info("添加用户地址[userid:" + userId + "]" + Util.toJson(wxAddress));
+        UserAddressRecord  userAddress = addWxAddress(userId, wxAddress);
         return userAddress;
     }
 
-    /**
-     * 获取用户地址信息
-     *
-     * @param userId
-     * @param wxAddress
-     * @return
-     */
-    public UserAddressRecord getUserAddressInfo(Integer userId, WxAddress wxAddress) {
-        UserAddressRecord addressRecord = db().selectFrom(USER_ADDRESS)
-            .where(USER_ADDRESS.USER_ID.eq(userId))
-            .and(USER_ADDRESS.CONSIGNEE.eq(wxAddress.getUserName()))
-            .and(USER_ADDRESS.MOBILE.eq(wxAddress.getTelNumber()))
-            .and(USER_ADDRESS.PROVINCE_NAME.like(likeValue(wxAddress.getProvinceName())))
-            .and(USER_ADDRESS.CITY_NAME.like(likeValue(wxAddress.getCityName())))
-            .and(USER_ADDRESS.DISTRICT_NAME.like(likeValue(wxAddress.getCountyName())))
-            .and(USER_ADDRESS.ADDRESS.like(likeValue(wxAddress.getDetailInfo())))
-            .fetchOne();
-        if (addressRecord != null && (addressRecord.getLat() == null || addressRecord.getLng() == null)) {
-            AddressLocation addressLocation = getGeocoderAddressLocation(wxAddress.getCompleteAddress());
-            if (AddressLocation.STATUS_OK.equals(addressLocation.getStatus())){
-                addressRecord.setLat(addressLocation.getResult().getLocation().getLat());
-                addressRecord.setLng(addressLocation.getResult().getLocation().getLng());
-                addressRecord.update();
-            }
-        }
-        return addressRecord;
-    }
 
     /**
      * 根据微信地图定位获取库中的区县code
@@ -141,6 +132,12 @@ public class AddressService extends ShopBaseService {
     public UserAddressRecord addWxAddress(Integer userId, WxAddress wxAddress) {
         AddressCode addressCode = checkAndUpdateAddress(wxAddress.getProvinceName(),wxAddress.getCityName(),wxAddress.getCountyName());
         UserAddressRecord address = db().newRecord(USER_ADDRESS);
+        AddressLocation addressLocation = getGeocoderAddressLocation(wxAddress.getCompleteAddress());
+        if (AddressLocation.STATUS_OK.equals(addressLocation.getStatus())){
+            address.setLat(addressLocation.getResult().getLocation().getLat());
+            address.setLng(addressLocation.getResult().getLocation().getLng());
+            address.update();
+        }
         address.setProvinceCode(addressCode.getPostalId());
         address.setProvinceName(wxAddress.getProvinceName());
         address.setCityCode(addressCode.getCityId());
@@ -187,8 +184,11 @@ public class AddressService extends ShopBaseService {
             log.info("新增库中没有的微信地址区县[district:" + districtNmae + "]");
             districtId = saas.region.district.addNewDistrict(cityId, districtNmae);
         }
+        addressCode.setPostalName(provinceName);
         addressCode.setPostalId(provinceId);
+        addressCode.setCityName(cityName);
         addressCode.setCityId(cityId);
+        addressCode.setDistrictName(districtNmae);
         addressCode.setDistrictId(districtId);
         return addressCode;
     }
@@ -218,4 +218,167 @@ public class AddressService extends ShopBaseService {
         return Util.json2Object(HttpsUtils.get(QQ_MAP_GEOCODER_URL, param, true), AddressInfo.class, true);
     }
 
+    /**
+     * 获取用户的地址信息
+     * @param userId 用户id
+     * @return
+     */
+    public AddressListVo getAddressList(Integer userId) {
+        AddressListVo vo =new AddressListVo();
+        List<UserAddressVo> list = db().selectFrom(USER_ADDRESS)
+            .where(USER_ADDRESS.USER_ID.eq(userId))
+            .and(USER_ADDRESS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .orderBy(USER_ADDRESS.IS_DEFAULT.desc(),USER_ADDRESS.CREATE_TIME.desc())
+            .fetchInto(UserAddressVo.class);
+        if (!list.isEmpty()){
+            vo.setAddressList(list);
+        }
+        return vo;
+    }
+
+    /**
+     * 获取用户地址信息
+     * @param userId 用户id
+     * @param addressId 地址di
+     * @return
+     */
+    public UserAddressRecord getAddressById(Integer userId, Integer addressId) {
+        return db().selectFrom(USER_ADDRESS)
+            .where(USER_ADDRESS.ADDRESS_ID.eq(addressId))
+            .and(USER_ADDRESS.USER_ID.eq(userId))
+            .fetchOne();
+
+    }
+
+    /**
+     * 获取默认地址
+     * @param userId 用户id
+     * @return 地址信息 or null
+     */
+    public UserAddressRecord getDefaultAddress(Integer userId){
+        return db().selectFrom(USER_ADDRESS)
+            .where(USER_ADDRESS.USER_ID.eq(userId))
+            .and(USER_ADDRESS.IS_DEFAULT.eq(BaseConstant.YES))
+            .fetchOne();
+    }
+    /**
+     * 查询未删除的用户地址数量
+     * @param userId 用户id
+     * @return 地址数量
+     */
+    public Integer getAddressUserNotDeleteCount(Integer userId){
+        Record1<Integer> fetchOne = db().selectCount().from(USER_ADDRESS)
+            .where(USER_ADDRESS.USER_ID.eq(userId))
+            .and(USER_ADDRESS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchOne();
+        if (fetchOne!=null){
+            return fetchOne.component1();
+        }
+        return 0;
+    }
+
+    /**
+     * 添加手写地址
+     * @param param 参数
+     * @return 1添加成功 0失败
+     */
+    public int addAddress(AddressAddParam param) {
+        UserAddressRecord record = db().newRecord(USER_ADDRESS, param);
+        record.setCompleteAddress(param.getCompleteAddress());
+        if (Strings.isNullOrEmpty(param.getLat())){
+            AddressLocation location = getGeocoderAddressLocation(param.getCompleteAddress());
+            if (AddressLocation.STATUS_OK.equals(location.getStatus())) {
+                log.info("查询地址定位信息");
+                record.setLat(location.getResult().getLocation().getLat());
+                record.setLng(location.getResult().getLocation().getLng());
+            }
+        }
+        if (param.getCityCode()==null||param.getDistrictCode()==null||param.getProvinceCode()==null){
+            log.info("地址的");
+            AddressCode addressCode = checkAndUpdateAddress(param.getProvinceName(), param.getCityName(), param.getDistrictName());
+            record.setProvinceCode(addressCode.getPostalId());
+            record.setCityCode(addressCode.getCityId());
+            record.setDistrictCode(addressCode.getDistrictId());
+        }
+
+        int insert = record.insert();
+        if (insert>0&&record.getIsDefault().equals(BaseConstant.YES)){
+            log.info("修改默认地址");
+            db().update(USER_ADDRESS)
+                .set(USER_ADDRESS.IS_DEFAULT,BaseConstant.NO)
+                .where(USER_ADDRESS.USER_ID.eq(param.getUserId()))
+                .and(USER_ADDRESS.ADDRESS_ID.notEqual(record.getAddressId()))
+                .execute();
+        }
+        return insert;
+    }
+
+    /**
+     * 更新地址信息
+     * @param param 地址信息
+     * @return 1更新成功 0失败
+     */
+    public int updateAddress(AddressAddParam param) {
+        UserAddressRecord record = db().newRecord(USER_ADDRESS, param);
+        AddressLocation location = getGeocoderAddressLocation(param.getCompleteAddress());
+        if (Strings.isNullOrEmpty(param.getLat())) {
+            if (AddressLocation.STATUS_OK.equals(location.getStatus())) {
+                record.setLat(location.getResult().getLocation().getLat());
+                record.setLng(location.getResult().getLocation().getLng());
+            }
+        }
+        return record.update();
+    }
+
+    /**
+     * 删除地址
+     * @param userId 用户id
+     * @param addressId 地址di
+     * @return 1成功 0失败
+     */
+    public int removeAddress(Integer userId, Integer addressId) {
+      return db().update(USER_ADDRESS)
+            .set(USER_ADDRESS.DEL_FLAG,DelFlag.DISABLE_VALUE)
+            .where(USER_ADDRESS.ADDRESS_ID.eq(addressId))
+            .and(USER_ADDRESS.USER_ID.eq(userId))
+            .execute();
+    }
+
+    /**
+     * 选中默认地址
+     * @param userId 用户id
+     * @param addressId 地址id
+     * @return
+     */
+    public int defaultAddress(Integer userId, Integer addressId) {
+        log.info("去除之前的默认地址");
+        db().update(USER_ADDRESS)
+            .set(USER_ADDRESS.IS_DEFAULT,BaseConstant.NO)
+            .where(USER_ADDRESS.USER_ID.eq(userId))
+            .execute();
+        log.info("选中新的默认地址");
+        return db().update(USER_ADDRESS)
+            .set(USER_ADDRESS.IS_DEFAULT,BaseConstant.YES)
+            .where(USER_ADDRESS.ADDRESS_ID.eq(addressId))
+            .and(USER_ADDRESS.USER_ID.eq(userId))
+            .execute();
+    }
+
+    /**
+     * 通过定位获取省市区信息
+     * @param lat 维度
+     * @param lng 经度
+     */
+    public AddressCode getLocationAddressInfo(String lat, String lng) {
+        AddressInfo addressInfo = getGeocoderAddressInfo(lat, lng);
+        logger().debug("封装用户地址信息：{}", addressInfo);
+        if (addressInfo!=null&&addressInfo.getStatus().equals(AddressInfo.STATUS_OK)){
+            AddressInfo.Result.AddressComponent address = addressInfo.getResult().getAddressComponent();
+            if (StringUtils.isEmpty(address.getCity())||StringUtils.isEmpty(address.getDistrict())
+                ||StringUtils.isEmpty(address.getProvince())||StringUtils.isEmpty(address.getNation())){
+                return null;
+            }
+            return checkAndUpdateAddress(address.getProvince(), address.getCity(), address.getDistrict());
+        }
+        return null;
+    }
 }
