@@ -311,7 +311,7 @@ export default {
         startTime: '',
         endTime: '',
         strategyType: 0, // 佣金计算方式
-        selfPurchase: 1, // 分销员自购返利
+        selfPurchase: 0, // 分销员自购返利
         costProtection: 0, // 成本价保护
         firstRebate: 0, // 邀请新用户下首单返利配置
         sendCoupon: 1, // 分销员权限

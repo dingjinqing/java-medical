@@ -102,7 +102,8 @@
             align="center"
           >
             <template slot-scope="scope">
-              <span>{{scope.row.denomination ? scope.row.denomination : 0}}元</span>
+              <span v-if="scope.row.actCode === 'random' || scope.row.actCode === 'voucher'">{{scope.row.denomination ? scope.row.denomination : 0}}元</span>
+              <span v-if="scope.row.actCode === 'discount'">{{scope.row.denomination ? scope.row.denomination : 0}}折</span>
             </template>
           </el-table-column>
           <el-table-column
