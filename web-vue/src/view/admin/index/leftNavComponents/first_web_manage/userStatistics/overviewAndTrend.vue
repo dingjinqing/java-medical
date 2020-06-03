@@ -46,7 +46,12 @@
           class="num"
           style="color: #5A8BFF"
         >{{item.number}}</div>
-        <div>{{$t('userStatistics.compareLastMonth')}} {{item.rate}}</div>
+        <div>
+          <span v-if="params === 1 || params === '1'">{{$t('userStatistics.compareLastDay')}}</span>
+          <span v-else-if="params === 7">{{$t('userStatistics.compareLastWeek')}}</span>
+          <span v-else>{{$t('userStatistics.compareLastMonth')}}</span>
+          {{item.rate}}
+        </div>
       </div>
     </div>
 
