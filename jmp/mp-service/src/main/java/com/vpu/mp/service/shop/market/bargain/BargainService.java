@@ -231,8 +231,8 @@ public class BargainService extends ShopBaseService  {
 		assign(param,record);
 		record.setBargainMax(param.getBargainMax());
 		record.setBargainMin(param.getBargainMin());
-        if(param.getShareConfig() != null) {
-            if(param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())){
+        if (param.getShareConfig() != null) {
+            if (param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())) {
                 try {
                     param.getShareConfig().setShareImg(new URL(param.getShareConfig().getShareImg()).getPath());
                 } catch (MalformedURLException e) {
@@ -241,7 +241,9 @@ public class BargainService extends ShopBaseService  {
             }
             record.setShareConfig(Util.toJson(param.getShareConfig()));
         }
-        record.setStock(param.getBargainGoods().stream().mapToInt((x) -> x.getStock()).sum());
+        if (param.getBargainGoods() != null && param.getBargainGoods().size() > 0) {
+            record.setStock(param.getBargainGoods().stream().mapToInt((x) -> x.getStock()).sum());
+        }
         this.transaction(() -> {
             db().executeUpdate(record);
             if (CollectionUtils.isNotEmpty(param.getBargainGoods())) {
