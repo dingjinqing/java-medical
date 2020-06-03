@@ -31,4 +31,10 @@ public class AvailCouponParam {
      * 卡号
      */
     private String couponSn;
+
+    /**
+     * 是否展示不可使用的分裂优惠券
+     */
+    private Byte isShowEnabledShareSplit;
+
 }

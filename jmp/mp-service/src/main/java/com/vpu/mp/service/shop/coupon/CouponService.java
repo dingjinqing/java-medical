@@ -539,6 +539,9 @@ public class CouponService extends ShopBaseService {
         if(org.apache.commons.lang3.StringUtils.isNotBlank(param.getCouponSn())) {
             select.where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.eq(param.getCouponSn()));
         }
+        if(param.getIsShowEnabledShareSplit() != null) {
+            select.where(CUSTOMER_AVAIL_COUPONS.DIVISION_ENABLED.eq(param.getIsShowEnabledShareSplit()));
+        }
     	select.orderBy(CUSTOMER_AVAIL_COUPONS.ID.desc());
     }
 
@@ -829,6 +832,7 @@ public class CouponService extends ShopBaseService {
         param.setCurrentPage(1);
         param.setNav((byte)0);
         param.setPageRows(99);
+        param.setIsShowEnabledShareSplit((byte)0);
         PageResult<AvailCouponVo> coupons = getCouponByUser(param);
         if(coupons.dataList == null) {
             return null;
