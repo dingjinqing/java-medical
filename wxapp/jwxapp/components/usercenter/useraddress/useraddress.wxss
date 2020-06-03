@@ -143,6 +143,7 @@
   transform: scaleX(0.5);
 }
 .address-list-footer {
+  box-sizing: border-box;
   position: fixed;
   bottom: 0;
   left: 0;

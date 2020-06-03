@@ -69,9 +69,10 @@ global.wxPage({
     })
     if (addressId) {
       this.setData({
-        addressId: addressId
+        addressId: addressId,
+        'params.addressId': addressId
       })
-      this.requestAddress()
+      // this.requestAddress()
     }
     JSON.parse(goodsList).forEach(item => {
       let {
@@ -155,7 +156,11 @@ global.wxPage({
   },
   // 选择地址
   addAddress () {
-    util.navigateTo('/components/usercenter/useraddress/useraddress?select=1')
+    let addressId = -1
+    if (this.data.orderInfo && this.data.orderInfo.address.addressId) {
+      addressId = this.data.orderInfo.address.addressId
+    }
+    util.navigateTo('/components/usercenter/useraddress/useraddress?select='+addressId)
     // wx.chooseAddress({
     //   success: res => {
     //     util.api(

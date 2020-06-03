@@ -20,9 +20,9 @@
                 <radio value="{{item.addressId}}"  name="setdefault" checked="{{item.isDefault==1}}" data-id="{{item.addressId}}" data-default="{{item.isDefault}}"/>设为默认地址
               </label>
             <view class="aib-right">
-              <text bindtap="handleEditAddress" data-id="{{item.addressId}}">编辑</text>
+              <text catchtap="handleEditAddress" data-id="{{item.addressId}}">编辑</text>
               <text class="aib-right-line"></text>
-              <text bindtap="handleDeleteAddress" data-id="{{item.addressId}}">删除</text>
+              <text catchtap="handleDeleteAddress" data-id="{{item.addressId}}">删除</text>
             </view>
           </view>
         </view>

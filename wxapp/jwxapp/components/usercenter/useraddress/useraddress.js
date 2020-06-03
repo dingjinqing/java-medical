@@ -38,6 +38,9 @@ global.wxComponent({
           key: 'orderOptions',
           success (res) {
             if (res) {
+              if (res.data.addressId) {
+                delete res.data.addressId
+              }
               that.setData({
                 orderOptions: res.data
               })
@@ -60,14 +63,21 @@ global.wxComponent({
             let len = list.length
             for(let i = 0; i< len; i++) {
               let item = list[i]
-              if (item.isDefault) {
-                item.select = true
-                break
-              } else {
-                if (i >= len-1) {
+              if (that.data.select && that.data.select != -1) {
+                if (item.addressId == that.data.select) {
                   item.select = true
+                  break
                 }
-                break
+              } else {
+                if (item.isDefault) {
+                  item.select = true
+                  break
+                } else {
+                  if (i >= len-1) {
+                    item.select = true
+                  }
+                  break
+                }
               }
             }
           }
@@ -157,7 +167,8 @@ global.wxComponent({
       console.log(e)
       if (this.data.select) {
         let id = e.currentTarget.dataset.id
-        this.data.addressList.map(item => {
+        let addressList = this.data.addressList
+        addressList.forEach(item => {
           if (item.addressId === id) {
             item.select = true
           } else {
@@ -165,11 +176,11 @@ global.wxComponent({
           }
         })
         this.setData({
-          addressList: this.data.addressList
+          addressList: addressList
         })
         console.log(this.data.orderOptions)
         let opts = this.stringOpts(this.data.orderOptions)
-        console.log(opts)
+        console.log(opts, id)
         util.navigateTo('/pages/checkout/checkout?addressId='+id+'&'+opts)
       }
     },
