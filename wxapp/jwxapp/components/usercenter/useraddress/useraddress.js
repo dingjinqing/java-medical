@@ -59,7 +59,7 @@ global.wxComponent({
           console.log(res.content)
           // 默认选中一个
           if (that.data.select) {
-            let list = res.content.addressList
+            let list = res.content.addressList || []
             let len = list.length
             for(let i = 0; i< len; i++) {
               let item = list[i]

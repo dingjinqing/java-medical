@@ -55,7 +55,7 @@
         <view class="aei-item">
           <label>
             <text>邮编</text>
-            <input value="{{formData.zipCode}}" name="zipCode" placeholder="邮政编码（选填）"></input>
+            <input value="{{formData.zipcode}}" name="zipcode" placeholder="邮政编码（选填）"></input>
           </label>
         </view>
       </view>
