@@ -137,7 +137,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -358,8 +357,6 @@ public class OrderReadService extends ShopBaseService {
 		Map<String, List<OrderConciseRefundInfoVo>> refundByOrderSn = returnOrder.getRefundByOrderSn(rOrderSns.toArray(new String[rOrderSns.size()])).intoGroups(returnOrder.TABLE.ORDER_SN,OrderConciseRefundInfoVo.class);
 		//查询退货款商品信息
 		Map<Integer, List<OrderReturnGoodsVo>> refundGoodsByOrderSn = returnOrderGoods.getByOrderSn(rOrderSns.toArray(new String[rOrderSns.size()])).intoGroups(returnOrderGoods.TABLE.RET_ID,OrderReturnGoodsVo.class);
-		//TODO 查询订单是否为活动奖品
-		List<String> prizesSns = Collections.emptyList();
 		//把退*商品信息插入退*订单信息中
 		refundByOrderSn.forEach((k,v)->
 			v.forEach(rOrder->
@@ -393,6 +390,8 @@ public class OrderReadService extends ShopBaseService {
 		//拼团订单设置拼团中时间
         mainOrder.setPinStartTime(mainOrder.getPayTime());
         mainOrder.setRebateList(getOrderRebateInfo(mainOrder));
+        //设置代付明细
+        mainOrder.setInsteadPayInfo(subOrderService.paymentDetails(mainOrder.getOrderSn()));
 		return mainOrder;
 	}
 
