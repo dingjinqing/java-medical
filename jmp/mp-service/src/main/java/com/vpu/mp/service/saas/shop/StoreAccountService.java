@@ -185,7 +185,7 @@ public class StoreAccountService extends MainBaseService {
 
 	public StoreAccountRecord findInfo(String accountName, String mobile, Integer accountId) {
 		SelectConditionStep<StoreAccountRecord> where = db().selectFrom(STORE_ACCOUNT)
-				.where(STORE_ACCOUNT.ACCOUNT_NAME.eq(accountName).or(STORE_ACCOUNT.MOBILE.eq(mobile)));
+				.where(STORE_ACCOUNT.ACCOUNT_NAME.eq(accountName).or(STORE_ACCOUNT.MOBILE.eq(mobile)).and(STORE_ACCOUNT.DEL_FLAG.eq(NODEL)));
 		if (accountId != null) {
 			where.and(STORE_ACCOUNT.ACCOUNT_ID.ne(accountId));
 		}
