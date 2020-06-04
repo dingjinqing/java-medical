@@ -55,7 +55,7 @@ export default {
       default: null
     },
     renewNum: {
-      type: Object,
+      type: Number,
       default: null
     },
     renewTime: {
