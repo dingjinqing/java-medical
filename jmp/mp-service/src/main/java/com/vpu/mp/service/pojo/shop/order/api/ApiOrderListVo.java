@@ -48,6 +48,8 @@ public class ApiOrderListVo {
     private String shippingName;
     private String shippingNo;
     private Timestamp shippingTime;
+    @JsonIgnore
+    private Timestamp confirmTime;
     private Byte deliverType;
     private BigDecimal promotionReduce;
     private BigDecimal memberCardReduce;

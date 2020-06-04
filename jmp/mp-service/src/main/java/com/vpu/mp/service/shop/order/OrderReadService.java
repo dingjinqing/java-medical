@@ -1221,8 +1221,19 @@ public class OrderReadService extends ShopBaseService {
         if(CollectionUtils.isEmpty(dataList)) {
             return;
         }
+        //获取退款订单对于的订单
+        Map<String, List<OrderListInfoVo>> orders = orderInfo.getOrders(dataList.stream().map(ApiReturnOrderListVo::getOrderSn).collect(Collectors.toList()));
         for (ApiReturnOrderListVo returnOrderVo : dataList) {
-            //TODO 售前、售后状态
+            //售前、售后状态
+            List<OrderListInfoVo> orderListInfoVos = orders.get(returnOrderVo.getOrderSn());
+            if(CollectionUtils.isNotEmpty(orderListInfoVos)) {
+                Timestamp confirmTime = orderListInfoVos.get(0).getConfirmTime();
+                if(confirmTime != null && returnOrderVo.getCreateTime().after(confirmTime)) {
+                    returnOrderVo.setAfterSales((byte)2);
+                }else {
+                    returnOrderVo.setAfterSales((byte)1);
+                }
+            }
             returnOrderVo.setAfterSales(null);
             //erp退款状态转化
             returnOrderVo.setErpRefundStatus(OrderConstant.getErpReturnStatus(returnOrderVo.getRefundStatus(), !StringUtils.isBlank(returnOrderVo.getShippingNo())));
