@@ -164,8 +164,8 @@ global.wxPage({
           if (op.error === 0) {
             let content = op.content
             that.setData({
-              region: [content.postalName, content.cityName, content.districtName],
-              regionCode: [content.postalId, content.cityId, content.districtId]
+              region: [content.postalName||content.provinceName, content.cityName, content.districtName],
+              regionCode: [content.postalId||content.provinceCode, content.cityId, content.districtId]
             })
           } else {
             util.showModal('提醒', '定位失败')
