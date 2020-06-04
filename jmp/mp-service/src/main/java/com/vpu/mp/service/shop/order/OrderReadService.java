@@ -1161,8 +1161,9 @@ public class OrderReadService extends ShopBaseService {
         for (ApiOrderListVo order : orders) {
             List<ApiReturnOrderListVo> returnOrders = returnOrderInfo.get(order.getOrderSn());
             if(CollectionUtils.isEmpty(returnOrders)) {
-                break;
+                continue;
             }
+            order.setReturnInfo(returnOrders);
             for (ApiReturnOrderListVo ro : returnOrders) {
                 ro.setReason(OrderConstant.getReturnReasonDesc(ro.getReasonType().intValue()));
                 String shippingName = null;
