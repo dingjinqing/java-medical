@@ -365,7 +365,7 @@ export default {
 .middle {
   float: right;
   height: 100%;
-  margin-right: 22px;
+  /* margin-right: 22px; */
   position: relative;
 }
 .account {
@@ -447,7 +447,7 @@ label {
   display: flex;
   height: 85px;
   float: left;
-  margin-left: 6%;
+  margin-left: 3%;
 }
 .header_nav > div {
   height: 85px;
