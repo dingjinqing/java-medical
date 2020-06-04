@@ -159,7 +159,10 @@
               type="primary"
               size="small"
             >筛选</el-button>
-            <el-button size="small">导出</el-button>
+            <el-button
+              size="small"
+              @click="exportDataList"
+            >导出</el-button>
           </div>
         </div>
       </el-form>
@@ -391,11 +394,40 @@
       :userId="remarksUserId"
     />
 
+    <!-- 导出数据提示弹窗 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="exportDialog"
+      width="30%"
+      center
+    >
+      <el-alert
+        :title="exportTip"
+        type="warning"
+        show-icon
+      ></el-alert>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          size="small"
+          @click="exportDialog = false"
+        >取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="sureExportHandler"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import { distributorList, distributorLevelList, distributorAllGroup, delDistributor, setInviteCode, setBatchGroup } from '@/api/admin/marketManage/distribution.js'
+import { download } from '@/util/excelUtil.js'
+import { distributorList, distributorLevelList, distributorAllGroup, delDistributor, setInviteCode, setBatchGroup, distributorListExport } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
@@ -464,7 +496,11 @@ export default {
 
       // 会员备注
       remarksDialog: false,
-      remarksUserId: null
+      remarksUserId: null,
+
+      // 导出数据弹窗
+      exportDialog: false,
+      exportTip: ''
     }
   },
   watch: {
@@ -659,6 +695,35 @@ export default {
           })
         }
       }
+    },
+
+    // 导出数据
+    exportDataList () {
+      this.initDataList()
+      this.$nextTick(() => {
+        this.exportTip = `根据以下条件筛选出${this.pageParams.totalRows}条数据,是否确认导出？`
+        this.exportDialog = !this.exportDialog
+      })
+    },
+
+    // 确定导出
+    sureExportHandler () {
+      this.exportDialog = false
+      // 搜索条件
+      var obj = {}
+      for (var i in this.param) {
+        if (this.param[i]) {
+          obj[i] = this.param[i]
+        }
+      }
+      if (this.optGroupId) {
+        obj.optGroupId = this.optGroupId
+      }
+      distributorListExport(obj).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '分销员列表导出.xlsx'
+        download(res, decodeURIComponent(fileName))
+      })
     }
 
   }
