@@ -13,12 +13,12 @@
                         <el-radio :value="renewType" :label="0" @change="change('renewType',0)">元</el-radio>
                         <el-radio :value="renewType" :label="1" @change="change('renewType',1)">积分</el-radio>
                         <el-form-item prop="renewNum">
-                            <el-input :value="renewNum" size="small" style="width:155px" @input="change('renewNum',$event)"></el-input>
+                            <el-input-number v-if="renewType === 1" :precision="0" :step="0" :controls="false" placeholder="" :min="0" :max="999999999" :value="renewNum" size="small" style="width:155px" @input="change('renewNum',$event)"></el-input-number>
+                            <el-input-number v-else :precision="2" :controls="false" :min="0" :max="999999999" placeholder="" :value="renewNum" size="small" style="width:155px" @input="change('renewNum',$event)"></el-input-number>
                             <span>{{renewTypeName}}</span>
                         </el-form-item>
                     </el-form-item>
                     <el-form-item label="续费时长:" prop="renewTime">
-
                         <el-input :value="renewTime" size="small" style="width:155px" @input="change('renewTime',$event)">
                         </el-input>
 
@@ -107,15 +107,16 @@ export default {
       console.log(val)
       this.$emit('update:renewTime', this.time)
     },
-
     change (key, val) {
-      console.log(key, val)
       if (val === '') {
         val = null
       } else {
-        val = isNaN(Number(val)) ? val : Number(val)
+        if (this.renewNum === null && val === 0) {
+          val = void 0
+        } else {
+          val = isNaN(Number(val)) ? val : Number(val)
+        }
       }
-
       this.$emit(`update:${key}`, val)
     }
 

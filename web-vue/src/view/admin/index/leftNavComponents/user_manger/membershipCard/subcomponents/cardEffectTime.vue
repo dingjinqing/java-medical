@@ -27,7 +27,8 @@
             :end-placeholder="$t('memberCard.overDate')"
             value-format="yyyy-MM-dd HH:mm:ss"
             :default-time="['00:00:00','23:59:59']"
-            size="small"
+            size="mini"
+            style="z-index: 2020 !important;"
           >
           </el-date-picker>
         </div>
@@ -222,6 +223,10 @@ export default {
 /deep/ .el-checkbox__label{
   font-size: 13px;
 }
+/deep/ .el-popper {
+    z-index: 2020 !important;
+}
+
 .effective-time {
   .date-item {
     padding-left: 75px;
