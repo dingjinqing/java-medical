@@ -1199,7 +1199,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     public void checkPayWay(CreateParam param, OrderBeforeVo vo) throws MpException {
         Map<String, PaymentVo> supportPayment = payment.getSupportPayment();
-        if(OrderConstant.MP_PAY_CODE_WX_PAY.equals(param.getOrderPayWay()) && null == supportPayment.get(OrderConstant.MP_PAY_CODE_TO_STRING[param.getOrderPayWay()])){
+        if(BigDecimalUtil.compareTo(vo.getMoneyPaid(), null) > 0 && OrderConstant.MP_PAY_CODE_WX_PAY.equals(param.getOrderPayWay()) && null == supportPayment.get(OrderConstant.MP_PAY_CODE_TO_STRING[param.getOrderPayWay()])){
             //wx
             throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_WX);
         }
