@@ -108,11 +108,12 @@ public class DistributorListService extends ShopBaseService{
         com.vpu.mp.db.shop.tables.User a = USER.as("a");
 		//微信昵称
 		if(StringUtil.isNotEmpty(param.getUsername())) {
-			where.and(a.USERNAME.eq(param.getUsername()));
+			where.and(d.USERNAME.eq(param.getUsername()));
 		}
+
 		//手机号
 		if(StringUtil.isNotEmpty(param.getMobile())) {
-			where.and(a.MOBILE.contains(param.getMobile()));
+			where.and(d.MOBILE.contains(param.getMobile()));
 		}
 		//真实姓名
 		if(StringUtil.isNotEmpty(param.getRealName())) {
