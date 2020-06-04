@@ -2,13 +2,10 @@ package com.vpu.mp.service.shop.goods.es.convert.param;
 
 import com.google.common.collect.Lists;
 import com.vpu.mp.service.pojo.shop.goods.es.*;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpParam;
-import com.vpu.mp.service.pojo.wxapp.goods.search.SortDirectionEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.search.SortItemEnum;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.search.sort.SortOrder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,26 +31,32 @@ public class GoodsSearchMpConverter implements EsParamConvertInterface  {
         searchParam.setCurrentPage(param.getCurrentPage());
         searchParam.setPageRows(param.getPageRows());
         propertyList.add(new FieldProperty(EsSearchName.IS_ON_SALE,1));
-        if( null != shopId ){
-            propertyList.add(new FieldProperty(EsSearchName.SHOP_ID,shopId));
+        if (null != shopId) {
+            propertyList.add(new FieldProperty(EsSearchName.SHOP_ID, shopId));
         }
         //关键字查询支持：
         //1.商品名称（模糊查询）
         //2.商品品牌（精确查询）
-        if( StringUtils.isNotBlank(param.getKeyWords()) ){
-            propertyList.add(new FieldProperty(EsSearchName.KEY_WORDS,param.getKeyWords()));
+        if (StringUtils.isNotBlank(param.getKeyWords())) {
+            propertyList.add(new FieldProperty(EsSearchName.KEY_WORDS, param.getKeyWords()));
 //            propertyList.add(new FieldProperty(EsSearchName.BRAND_NAME,param.getKeyWords()));
         }
-        if( null != param.getMinPrice() ){
-            propertyList.add(new FieldProperty(EsSearchName.SHOW_PRICE,param.getMinPrice(),Operator.GTE));
+        /* 是否展示售罄商品 */
+        if (param.getSoldOutGoodsShow()) {
+            propertyList.add(new FieldProperty(EsSearchName.GOODS_NUMBER, 0, Operator.GTE));
+        } else {
+            propertyList.add(new FieldProperty(EsSearchName.GOODS_NUMBER, 0, Operator.GT));
         }
-        if( null != param.getMaxPrice() ){
-            propertyList.add(new FieldProperty(EsSearchName.SHOW_PRICE,param.getMaxPrice(),Operator.LTE));
+        if (null != param.getMinPrice()) {
+            propertyList.add(new FieldProperty(EsSearchName.SHOW_PRICE, param.getMinPrice(), Operator.GTE));
         }
-        if( !CollectionUtils.isEmpty(param.getSortIds()) ){
-            propertyList.add(new FieldProperty(EsSearchName.FULL_SORT_ID,param.getSortIds()));
+        if (null != param.getMaxPrice()) {
+            propertyList.add(new FieldProperty(EsSearchName.SHOW_PRICE, param.getMaxPrice(), Operator.LTE));
         }
-        if( !CollectionUtils.isEmpty(param.getBrandIds()) ){
+        if (!CollectionUtils.isEmpty(param.getSortIds())) {
+            propertyList.add(new FieldProperty(EsSearchName.FULL_SORT_ID, param.getSortIds()));
+        }
+        if (!CollectionUtils.isEmpty(param.getBrandIds())) {
             propertyList.add(new FieldProperty(EsSearchName.BRAND_ID,param.getBrandIds()));
         }
         if( !CollectionUtils.isEmpty(param.getActivityTypes()) ){

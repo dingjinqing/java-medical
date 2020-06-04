@@ -217,6 +217,7 @@ public class GoodsSearchMpService extends ShopBaseService {
      */
     private PageResult<GoodsListMpBo> searchGoods(GoodsSearchMpParam param) {
         PageResult<GoodsListMpBo> pageResult = null;
+        param.setSoldOutGoodsShow(goodsMpService.canShowSoldOutGoods());
         if (esUtilSearchService.esState()) {
             //店铺的默认商品排序规则
             if (shopCommonConfigService.getSearchSort().equals((byte) 1)) {

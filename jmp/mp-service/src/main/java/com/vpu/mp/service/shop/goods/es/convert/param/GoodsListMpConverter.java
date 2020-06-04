@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.goods.es.convert.param;
 
 import com.google.common.collect.Lists;
-import com.vpu.mp.service.foundation.es.annotation.EsSearch;
 import com.vpu.mp.service.pojo.shop.goods.es.*;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.shop.goods.es.goods.EsSearchSource;
@@ -12,7 +11,6 @@ import org.springframework.util.CollectionUtils;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 
 import static com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam.*;
 
@@ -70,25 +68,31 @@ public class GoodsListMpConverter implements EsParamConvertInterface {
             }
             /* 关键词*/
             if( StringUtils.isNotBlank(param.getKeywords())){
-                propertyList.add(new FieldProperty(EsSearchName.KEY_WORDS,param.getKeywords()));
+                propertyList.add(new FieldProperty(EsSearchName.KEY_WORDS, param.getKeywords()));
             }
             /* 商品最高价 */
-            if( param.getMaxPrice() != null ){
-                propertyList.add(new FieldProperty(EsSearchName.SHOW_PRICE,param.getMaxPrice(),Operator.LTE));
+            if (param.getMaxPrice() != null) {
+                propertyList.add(new FieldProperty(EsSearchName.SHOW_PRICE, param.getMaxPrice(), Operator.LTE));
             }
             /* 商品最低价 */
-            if( param.getMinPrice() != null ){
-                propertyList.add(new FieldProperty(EsSearchName.SHOW_PRICE,param.getMinPrice(),Operator.GTE));
+            if (param.getMinPrice() != null) {
+                propertyList.add(new FieldProperty(EsSearchName.SHOW_PRICE, param.getMinPrice(), Operator.GTE));
+            }
+            /* 是否展示售罄商品 */
+            if (param.getSoldOutGoodsShow()) {
+                propertyList.add(new FieldProperty(EsSearchName.GOODS_NUMBER, 0, Operator.GTE));
+            } else {
+                propertyList.add(new FieldProperty(EsSearchName.GOODS_NUMBER, 0, Operator.GT));
             }
             /* 商品范围*/
-            if( StringUtils.isNotBlank(param.getGoodsArea()) ){
+            if (StringUtils.isNotBlank(param.getGoodsArea())) {
                 String goodsArea = param.getGoodsArea();
-                if( !CollectionUtils.isEmpty(param.getGoodsAreaData()) ){
-                    if ( (BRAND_AREA).equals(goodsArea) ){
-                        propertyList.add(new FieldProperty(EsSearchName.BRAND_ID,param.getGoodsAreaData()));
-                    }else if( (CAT_AREA).equals(goodsArea) ){
-                        propertyList.add(new FieldProperty(EsSearchName.FULL_CAT_ID,param.getGoodsAreaData()));
-                    }else if( (LABEL_AREA).equals(goodsArea) ){
+                if (!CollectionUtils.isEmpty(param.getGoodsAreaData())) {
+                    if ((BRAND_AREA).equals(goodsArea)) {
+                        propertyList.add(new FieldProperty(EsSearchName.BRAND_ID, param.getGoodsAreaData()));
+                    } else if ((CAT_AREA).equals(goodsArea)) {
+                        propertyList.add(new FieldProperty(EsSearchName.FULL_CAT_ID, param.getGoodsAreaData()));
+                    } else if ((LABEL_AREA).equals(goodsArea)) {
                         /*商品标签查goodsId*/
                         propertyList.add(new FieldProperty(EsSearchName.GOODS_ID,param.getGoodsItems()));
                     }else if( (SORT_AREA).equals(goodsArea) ){

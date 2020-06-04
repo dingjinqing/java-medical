@@ -57,7 +57,14 @@ public class GoodsSearchMpParam extends BasePageParam {
      */
     private SortDirectionEnum shopSortDirection;
 
-    /**外面搜索条件限制的商品范围，null表示不限制，长度为0的数组表示没有合法商品*/
+    /**
+     * 是否展示售罄商品 true展示 false否
+     */
+    private Boolean soldOutGoodsShow;
+
+    /**
+     * 外面搜索条件限制的商品范围，null表示不限制，长度为0的数组表示没有合法商品
+     */
     private List<Integer> goodsIds;
 
     /**
