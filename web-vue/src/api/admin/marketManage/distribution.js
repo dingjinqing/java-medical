@@ -311,6 +311,16 @@ export function distributorList (data) {
   })
 }
 
+// 导出分销员列表数据
+export function distributorListExport (data) {
+  return service({
+    url: '/api/admin/distribution/distrobutor/list/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
+
 // 分销员等级列表
 export function distributorLevelList (data) {
   return service({
