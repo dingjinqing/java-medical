@@ -159,10 +159,10 @@
               type="primary"
               size="small"
             >{{$t('distribution.screen')}}</el-button>
-            <el-button
+            <!-- <el-button
               size="small"
               @click="exportDataList"
-            >{{$t('distribution.export')}}</el-button>
+            >{{$t('distribution.export')}}</el-button> -->
           </div>
         </div>
       </el-form>
