@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="showInfo">
-      <div  v-if="(auditState!==null&&auditState===0)||(auditState!==null&&auditState===0&&isAuthLive)" style="height: 500px;">
+      <div  v-if="isAuthLive&&(auditState!==null&&(auditState===0||auditState==2))" style="height: 500px;">
       <el-row>
          <el-col :span="7"></el-col>
          <el-col :span="10">
