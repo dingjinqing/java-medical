@@ -65,6 +65,7 @@
         :start-placeholder="$t('visitAnalysis.startDate')"
         :end-placeholder="$t('visitAnalysis.endDate')"
         class="custom"
+        popper-class="lower_level"
       >
       </el-date-picker>
       <span>{{this.startDate.year}}{{$t('visitAnalysis.years')}}{{this.startDate.month}}{{$t('visitAnalysis.months')}}{{this.startDate.day}}{{$t('visitAnalysis.days')}} - {{this.endDate.year}}{{$t('visitAnalysis.years')}}{{this.endDate.month}}{{$t('visitAnalysis.months')}}{{this.endDate.day}}{{$t('visitAnalysis.days')}}</span>
