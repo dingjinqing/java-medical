@@ -29,8 +29,12 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
-import com.vpu.mp.service.pojo.wxapp.order.*;
+import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.packsale.OrderPackageSale;
@@ -76,11 +80,17 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.*;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELIVER_TYPE_COURIER;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
 
 /**
  * 下单逻辑处理
@@ -1166,7 +1176,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     public void checkPayWay(CreateParam param, OrderBeforeVo vo) throws MpException {
         Map<String, PaymentVo> supportPayment = payment.getSupportPayment();
-        if(OrderConstant.MP_PAY_CODE_WX_PAY.equals(param.getOrderPayWay()) && null == supportPayment.get(OrderConstant.MP_PAY_CODE_TO_STRING[param.getOrderPayWay()])){
+        if(BigDecimalUtil.compareTo(vo.getMoneyPaid(), null) > 0 && OrderConstant.MP_PAY_CODE_WX_PAY.equals(param.getOrderPayWay()) && null == supportPayment.get(OrderConstant.MP_PAY_CODE_TO_STRING[param.getOrderPayWay()])){
             //wx
             throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_WX);
         }
