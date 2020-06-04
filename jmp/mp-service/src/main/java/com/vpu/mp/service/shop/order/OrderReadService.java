@@ -95,6 +95,7 @@ import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
+import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.order.action.ReturnService;
 import com.vpu.mp.service.shop.order.action.ShipService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
@@ -213,7 +214,8 @@ public class OrderReadService extends ShopBaseService {
     private GroupDrawService groupDrawService;
     @Autowired
     private ShopCommonConfigService shopCommonConfigService;
-
+    @Autowired
+    private MemberService member;
 	/**
 	 * 订单查询
 	 * @param param
@@ -1063,12 +1065,12 @@ public class OrderReadService extends ShopBaseService {
         if(CollectionUtils.isEmpty(orders)) {
             return;
         }
-        List<UserRecord> users = user.getUserRecordByIds(orders.stream().map(ApiOrderListVo::getUserId).collect(Collectors.toList()));
+        List<UserRecord> users = member.getUserRecordByIds(orders.stream().map(ApiOrderListVo::getUserId).collect(Collectors.toList()));
         Map<Integer, UserRecord> usersMap = users.stream().collect(Collectors.toMap(UserRecord::getUserId, Function.identity()));
         orders.forEach(x->{
             UserRecord vo = usersMap.get(x.getUserId());
             if(vo != null) {
-                x.setUsername(vo.getMobile() + vo.getUsername());
+                x.setUsername(StringUtils.join(vo.getMobile() , vo.getUsername()));
             }
         });
     }

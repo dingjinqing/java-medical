@@ -77,7 +77,7 @@ public class ApiExternalGateController extends ShopBaseService {
             responseLog(result);
             return result;
         } catch (Exception e) {
-           log.error("servcie gateWay error:"+e.getMessage());
+           log.error("servcie gateWay error:", e);
            return response(ApiExternalGateConfig.ERROR_SYSTEM_FAIL,ApiExternalGateConfig.ERROR_SYSTEM_FAIL_MSG);
         }
     }

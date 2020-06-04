@@ -900,4 +900,8 @@ public class MemberService extends ShopBaseService {
 	}
 	
 
+    public Result<UserRecord> getUserRecordByIds(List<Integer> collect) {
+        return db().selectFrom(User.USER).where(User.USER.USER_ID.in(collect))
+            .fetchInto(User.USER);
+    }
 }
