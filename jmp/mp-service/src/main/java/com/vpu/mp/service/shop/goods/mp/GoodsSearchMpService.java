@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,6 +128,14 @@ public class GoodsSearchMpService extends ShopBaseService {
         PageResult<GoodsListMpBo> pageResult = searchGoods(param);
 
         goodsMpService.disposeGoodsList(pageResult.dataList, param.getUserId());
+        // 临时添加，13版本要删除
+        if (pageResult.dataList != null && pageResult.dataList.size()>0) {
+            for (GoodsListMpBo goodsListMpBo : pageResult.dataList) {
+                if (goodsListMpBo.getLinePrice() == null) {
+                    goodsListMpBo.setLinePrice(BigDecimal.ZERO);
+                }
+            }
+        }
         GoodsShowStyleConfigBo goodsShowStyle = goodsMpService.getGoodsShowStyle();
         GoodsSearchContentVo vo = new GoodsSearchContentVo();
         vo.setDelMarket(goodsShowStyle.getDelMarket());
