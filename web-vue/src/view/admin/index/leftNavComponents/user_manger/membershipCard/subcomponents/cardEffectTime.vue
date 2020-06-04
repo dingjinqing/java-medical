@@ -223,9 +223,10 @@ export default {
 /deep/ .el-checkbox__label{
   font-size: 13px;
 }
-/deep/ .el-date-range-picker {
+/deep/ .el-popper {
     z-index: 2020 !important;
 }
+
 .effective-time {
   .date-item {
     padding-left: 75px;
