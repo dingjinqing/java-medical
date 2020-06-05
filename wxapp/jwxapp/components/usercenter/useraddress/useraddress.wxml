@@ -27,6 +27,7 @@
           </view>
         </view>
       </block>
+      <view style="height:120rpx;margin-top: 20rpx;"></view>
     </view> 
     <view class="address-list-footer">
       <button bindtap="getWechatAdress" class="wd-btn">
