@@ -552,11 +552,16 @@
                     v-if="bgImg!=''"
                     @click="changeImgHandler(item.module_name, '')"
                   >
-                    <el-image
+                    <!-- <el-image
                       fit="cover"
                       :src="imgHost + bgImg"
                       style="width: 100%; height: 100%"
-                    ></el-image>
+                    ></el-image> -->
+                    <img
+                      :src="imgHost + bgImg"
+                      alt=""
+                      style="width: 100%; height: 100%"
+                    >
                   </div>
                   <div
                     class="customizeImgWrap"
@@ -564,11 +569,16 @@
                     @click="changeImgHandler(item.module_name, '')"
                   >
 
-                    <el-image
+                    <!-- <el-image
                       fit="scale-down"
                       :src="imgHost + '/image/admin/add_img_bg.png'"
                       style="width: 100%; height: 100%"
-                    />
+                    /> -->
+                    <img
+                      :src="imgHost + '/image/admin/add_img_bg.png'"
+                      alt=""
+                      style="width: 100%; height: 100%"
+                    >
                   </div>
                 </el-radio-group>
               </el-collapse-item>
@@ -702,10 +712,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -728,10 +742,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -754,10 +772,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -790,10 +812,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -826,10 +852,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -989,10 +1019,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -1038,10 +1072,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -1071,10 +1109,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -1104,10 +1146,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -1138,10 +1184,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -1171,10 +1221,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -1204,10 +1258,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -1237,10 +1295,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -1270,10 +1332,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -1320,10 +1386,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -2462,6 +2532,13 @@ export default {
 .imgContainter .el-image {
   width: 100%;
   height: 100%;
+  border: 1px solid #ccc;
+}
+
+.imgContainter img {
+  width: 100%;
+  height: 100%;
+  padding: 14px;
   border: 1px solid #ccc;
 }
 
