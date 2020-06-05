@@ -10,7 +10,7 @@
     <div class="main clearfix">
       <div class="main-left">
         <img
-          :src="$imageHost+'/image/admin/2020_new_year.jpg'"
+          :src="$imageHost+'/image/admin/hc_new_logo.jpg'"
           alt=""
         />
       </div>
