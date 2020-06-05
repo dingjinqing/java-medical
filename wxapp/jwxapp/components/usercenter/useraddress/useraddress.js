@@ -87,6 +87,8 @@ global.wxComponent({
         }
       })
     },
+
+    // 微信导入后新增到数据库
     getWechatAdress () {
       let that = this
       wx.chooseAddress({
@@ -107,10 +109,11 @@ global.wxComponent({
         }
       })
     },
-    // 微信导入后新增到数据库
+    
+    // 新增收货地址
     newAdressHandle () {
       wx.navigateTo({
-        url: '/pages1/addressedit/addressedit',
+        url: '/pages1/addressedit/addressedit?select='+this.data.select,
       })
     },
 
@@ -158,7 +161,7 @@ global.wxComponent({
     handleEditAddress (e) {
       let id = e.currentTarget.dataset.id
       wx.navigateTo({
-        url: '/pages1/addressedit/addressedit?addressId='+id
+        url: '/pages1/addressedit/addressedit?addressId='+id+'&select='+this.data.select
       })
     },
 
