@@ -352,7 +352,7 @@ export default {
   padding: 0 25px 0 45px;
   padding-left: 34px;
   position: absolute;
-  z-index: 40;
+  z-index: 110;
 }
 .left {
   float: left;
