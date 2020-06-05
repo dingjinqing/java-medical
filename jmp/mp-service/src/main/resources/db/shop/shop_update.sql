@@ -107,8 +107,8 @@ ALTER TABLE `b2c_sec_kill_product_define` ADD COLUMN `goods_id` int(8) NOT NULL 
 -- 2020年2月26日10:46:57  秒杀活动表添加优先级字段
 ALTER TABLE `b2c_sec_kill_define` ADD COLUMN `first` tinyint(3) NOT NULL DEFAULT 0 COMMENT '优先级';
 -- 2020年2月26日10:46:57  秒杀活动表修改goods_id类型为字符串
-ALTER TABLE `b2c_sec_kill_define` DROP  INDEX IF exists `goods_id`;
-ALTER TABLE `b2c_sec_kill_define` MODIFY COLUMN `goods_id` text  COMMENT '商品ID';
+-- ALTER TABLE `b2c_sec_kill_define` DROP  INDEX IF exists `goods_id`;
+-- ALTER TABLE `b2c_sec_kill_define` MODIFY COLUMN `goods_id` text  COMMENT '商品ID';
 -- 2020年2月26日20:13:50 拼团活动表goods_id 字段有int转换为string
 ALTER TABLE `b2c_group_buy_define` MODIFY COLUMN `goods_id` text NOT NULL COMMENT '商品id';
 -- 2020年2月27日16:35:50 好友助力新增单天助力限制字段
@@ -190,7 +190,7 @@ ALTER TABLE `b2c_goods_import` ADD COLUMN `is_finish` tinyint(1) DEFAULT '0' COM
 
 -- 2020年5月27日 kdc 地址表增加默认字段,删除字段
 ALTER TABLE `b2c_user_address`    ADD COLUMN `del_flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0未删除 1删除';
-ALTER TABLE `b2c_user_address`    ADD COLUMN `is_default` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否是默认地址 0不是 1是';
+-- ALTER TABLE `b2c_user_address`    ADD COLUMN `is_default` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否是默认地址 0不是 1是';
 /***********************2.10*********************END*/
 
 /***********************2.11*********************BEGIN*/
@@ -325,7 +325,7 @@ ALTER TABLE `b2c_member_card` ADD COLUMN `custom_options` text COMMENT '自定�
 
 
 -- 2020年04月10日 添加自定义激活配置
-ALTER TABLE `b2c_member_card` ADD COLUMN `custom_options` text COMMENT '自定义激活信息配置';
+-- ALTER TABLE `b2c_member_card` ADD COLUMN `custom_options` text COMMENT '自定义激活信息配置';
 
 -- 2020-04-10 分裂优惠券分享领取记录
 CREATE TABLE IF NOT EXISTS `b2c_division_receive_record` (
