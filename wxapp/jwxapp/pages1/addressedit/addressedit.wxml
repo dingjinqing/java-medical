@@ -17,7 +17,7 @@
         </view>
         <view class="ar-text-area" wx:if="{{autoSwitch}}">
           <textarea auto-focus class="art-textarea" value="{{textarea}}" bindinput="bindTextAreaInput" placeholder="请输入或粘贴地址文本，可自动识别姓名、电话和地址，如：北京市海淀区西直门北大街54号伊泰大厦。"></textarea>
-          <button bindtap="handleAutoRecognition" class="auto-recognition-btn" style="color:{{comColor}};border:1px solid {{comColor}};">自动识别</button>
+          <button catchtap="handleAutoRecognition" class="auto-recognition-btn" style="color:{{comColor}};border:1px solid {{comColor}};">自动识别</button>
         </view>
       </view>
       <view class="address-edit-info">

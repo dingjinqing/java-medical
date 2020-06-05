@@ -702,6 +702,7 @@ export default {
   },
   data () {
     return {
+      orderSn: null,
       order: {},
       showNodes: false,
       showAddress: false,
@@ -751,8 +752,9 @@ export default {
     }
   },
   created () {
+    this.orderSn = this.$route.query.orderSn
     this.arrayToMap()
-    this.search(this.$route.query.orderSn)
+    this.search()
     this.langDefault()
   },
   watch: {
@@ -775,7 +777,7 @@ export default {
       }
     },
     search (orderSn) {
-      this.searchParam.orderSn = orderSn
+      this.searchParam.orderSn = this.orderSn
       info(this.searchParam).then(res => {
         this.order = res.content
         this.goodsTypeArray = this.order.goodsType.substring(1, this.order.goodsType.length - 1).split('][')
@@ -853,6 +855,11 @@ export default {
         action: 3
       }
       close(obj).then(res => {
+        if (res.error === 0) {
+          this.search()
+        } else {
+          this.$message.error(res.message)
+        }
       })
     },
     finish (orderInfo) {
@@ -862,6 +869,11 @@ export default {
         action: 5
       }
       finish(obj).then(res => {
+        if (res.error === 0) {
+          this.search()
+        } else {
+          this.$message.error(res.message)
+        }
       })
     },
     goReturnView (orderSn) {

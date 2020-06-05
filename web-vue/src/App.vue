@@ -56,6 +56,6 @@ export default {
 </style>
 <style>
 .lower_level {
-  z-index: 20 !important;
+  z-index: 10 !important;
 }
 </style>
