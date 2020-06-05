@@ -164,6 +164,9 @@ global.wxComponent({
         if(data.showCart.show_cart === 1 && [1,3,4,5,8,10].includes(this.data.goodsData.activityType)){
           textContent = ''
         }
+        if(data.showCart.show_cart === 0 && data.delMarket === 1 && (data.goodsData.linePrice <= data.goodsData.realPrice || !data.goodsData.linePrice)){
+          textContent = ''
+        }
         this.setData({
           textContent
         })
