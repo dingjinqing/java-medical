@@ -73,4 +73,7 @@ public class ApiOrderListVo {
     @JsonProperty("order_goods_list")
     private List<ApiOrderGoodsListVo> orderGoodsInfo;
     private List<ApiReturnOrderListVo> returnInfo;
+    @JsonProperty("add_time")
+    private Timestamp createTime;
+    private Timestamp payTime;
 }

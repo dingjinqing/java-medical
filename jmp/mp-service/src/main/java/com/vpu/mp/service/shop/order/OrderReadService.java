@@ -1025,6 +1025,8 @@ public class OrderReadService extends ShopBaseService {
         List<ApiOrderListVo> orders = pageResult.getDataList();
         //快递公司
         Map<Byte, ExpressVo> expressMap = expressService.getAll().stream().collect(Collectors.toMap(ExpressVo::getShippingId, Function.identity()));
+        //订单信息转化
+        orderDataTransform(orders);
         //设置快递公司名称
         setShippingName(orders, expressMap);
         //用户手机号昵称
@@ -1238,6 +1240,24 @@ public class OrderReadService extends ShopBaseService {
             returnOrderVo.setAfterSales(null);
             //erp退款状态转化
             returnOrderVo.setErpRefundStatus(OrderConstant.getErpReturnStatus(returnOrderVo.getRefundStatus(), !StringUtils.isBlank(returnOrderVo.getShippingNo())));
+        }
+    }
+
+    /**
+     * data Transform
+     * @param dataList
+     */
+    private void orderDataTransform(List<ApiOrderListVo> dataList) {
+        if(CollectionUtils.isEmpty(dataList)) {
+            return;
+        }
+        for (ApiOrderListVo order : dataList) {
+            order.setDiscountAmount(BigDecimalUtil.addOrSubtrac(
+                BigDecimalUtil.BigDecimalPlus.create(order.getDiscount(), BigDecimalUtil.Operator.add),
+                BigDecimalUtil.BigDecimalPlus.create(order.getScoreDiscount(), BigDecimalUtil.Operator.add),
+                BigDecimalUtil.BigDecimalPlus.create(order.getPromotionReduce(), BigDecimalUtil.Operator.add),
+                BigDecimalUtil.BigDecimalPlus.create(order.getMemberCardReduce(), BigDecimalUtil.Operator.add)
+            ));
         }
     }
     /*********************************************************************************************************/
