@@ -78,16 +78,37 @@ public class MpPaymentService extends ShopBaseService {
 	 */
 	protected WxPayConfig  getWxPayConfig(MpAuthShopRecord mp) {
 		byte[] keyContent = null;
+		//子商户模式
+		Byte isSubMerchant = 1;
 		try {
 			keyContent = PemToPkcs12.pemToPkcs12(mp.getPayKeyContent(), mp.getPayCertContent(), mp.getPayMchId().toCharArray());
 		} catch (Exception e) {
 			this.logger().error("pemToPkcs12 error, message: {}", e.getMessage());
 		}
 		WxPayConfig payConfig = new WxPayConfig();
-		payConfig.setAppId(mp.getAppId());
-		payConfig.setMchId(mp.getPayMchId());
-		payConfig.setMchKey(mp.getPayKey());
-		payConfig.setKeyContent(keyContent);
+		if(isSubMerchant.equals(mp.getIsSubMerchant())) {
+		    //微信直连
+            payConfig.setAppId(mp.getAppId());
+            payConfig.setMchId(mp.getPayMchId());
+            payConfig.setMchKey(mp.getPayKey());
+            payConfig.setKeyContent(keyContent);
+        }else {
+		   /* ## 微信服务商配置
+            ## cert_path 为storage_path('wechat/payment/srv_pay_cert.pem')
+            ## key_path  为storage_path('wechat/payment/srv_pay_key.pem')
+            WX_SRV_APP_ID=wx6f33c81ffc53c3af
+            WX_SRV_MCH_ID=1271059801
+            WX_SRV_KEY=6f33c81ffc53c3af6f33c81ffc53c3af
+                SUBSCRIBE_MESSAGE = true*/
+		    //子商户模式
+            payConfig.setAppId("wx6f33c81ffc53c3af");
+            payConfig.setMchId("1271059801");
+            payConfig.setMchKey("6f33c81ffc53c3af6f33c81ffc53c3af");
+            payConfig.setSubAppId(mp.getAppId());
+            payConfig.setSubMchId(mp.getPayMchId());
+            payConfig.setKeyContent(keyContent);
+        }
+
 		return payConfig;
 	}
 
