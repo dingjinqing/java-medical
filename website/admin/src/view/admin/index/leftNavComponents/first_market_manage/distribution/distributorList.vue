@@ -159,10 +159,10 @@
               type="primary"
               size="small"
             >{{$t('distribution.screen')}}</el-button>
-            <el-button
+            <!-- <el-button
               size="small"
               @click="exportDataList"
-            >{{$t('distribution.export')}}</el-button>
+            >{{$t('distribution.export')}}</el-button> -->
           </div>
         </div>
       </el-form>
@@ -539,29 +539,34 @@ export default {
   methods: {
     // 分销员列表
     initDataList () {
-      this.requestParams = {}
-      // 搜索条件
-      for (var i in this.param) {
-        if (this.param[i]) {
-          this.requestParams[i] = this.param[i]
+      return new Promise((resolve, reject) => {
+        this.requestParams = {}
+        // 搜索条件
+        for (var i in this.param) {
+          if (this.param[i]) {
+            this.requestParams[i] = this.param[i]
+          }
         }
-      }
-      if (this.optGroupId) {
-        this.requestParams.optGroupId = this.optGroupId
-      }
-      // 排序
-      if (this.sortField && this.sortWay) {
-        this.requestParams.sortField = this.sortField
-        this.requestParams.sortWay = this.sortWay
-      }
-      this.requestParams.currentPage = this.pageParams.currentPage
-      this.requestParams.pageRows = this.pageParams.pageRows
-      distributorList(this.requestParams).then(res => {
-        if (res.error === 0) {
-          this.tableData = res.content.dataList
-          this.pageParams = res.content.page
-          this.checkList[2].label = '对筛选出的' + res.content.page.totalRows + '人修改分组'
+        if (this.optGroupId) {
+          this.requestParams.optGroupId = this.optGroupId
         }
+        // 排序
+        if (this.sortField && this.sortWay) {
+          this.requestParams.sortField = this.sortField
+          this.requestParams.sortWay = this.sortWay
+        }
+        this.requestParams.currentPage = this.pageParams.currentPage
+        this.requestParams.pageRows = this.pageParams.pageRows
+        distributorList(this.requestParams).then(res => {
+          if (res.error === 0) {
+            this.tableData = res.content.dataList
+            this.pageParams = res.content.page
+            this.checkList[2].label = '对筛选出的' + res.content.page.totalRows + '人修改分组'
+            resolve(this.pageParams)
+          }
+        }).catch(error => {
+          reject(error)
+        })
       })
     },
     // 等级下拉列表
@@ -763,8 +768,7 @@ export default {
 
     // 导出数据
     exportDataList () {
-      this.initDataList()
-      this.$nextTick(() => {
+      this.initDataList().then(() => {
         this.exportTip = `根据以下条件筛选出${this.pageParams.totalRows}条数据,是否确认导出？`
         this.exportDialog = !this.exportDialog
       })
