@@ -5,7 +5,6 @@
 let util = require("../../utils/util.js")
 let config = require("../../utils/config.js")
 var app = getApp();
-// var imageUrl = app.globalData.imageUrl
 var couponSn;
 
 var couponId;
@@ -20,7 +19,7 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    imageUrl: "http://miniimg.cn/",
+    imageUrl: app.globalData.imageUrl,
     act_info: {},
     detailType: 1, // 详情类型(个人中心详情: 0, 装修详情: 1)
   },
@@ -156,7 +155,7 @@ global.wxPage({
             util.toast_fail('领取失败');
           }
         }, {
-            couponId: d.coupon_id,
+            couponId: couponId
           })
       }
     } else {
