@@ -829,7 +829,7 @@ export default {
               this.isToChangeData = true
               this.handleToGetModulesGoods(turnToString, true, true)
               let goodsArrBack = []
-              turnToString.forEach((item, index) => {
+              turnToString.goods_items.forEach((item, index) => {
                 goodsArrBack.push(item.goodsId)
               })
               this.GoodsBack = goodsArrBack
