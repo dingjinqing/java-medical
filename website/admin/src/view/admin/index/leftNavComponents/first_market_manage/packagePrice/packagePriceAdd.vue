@@ -1191,27 +1191,42 @@ export default {
             'startTime': this.param.validity[0],
             'endTime': this.param.validity[1],
             'totalMoney': Number(this.param.totalMoney),
-            'totalRatio': Number(this.param.totalRatio),
-            'group1': {
-              'groupName': this.param.groupName,
-              'goodsNumber': this.param.goodsNumber,
-              'goodsIdList': this.selectedGoodsIdList,
-              'catIdList': this.platformIdList,
-              'sortIdList': this.bussinessIdList
-            },
-            'group2': {
-              'groupName': this.param.groupName2,
-              'goodsNumber': this.param.goodsNumber2,
-              'goodsIdList': this.selectedGoodsIdList2,
-              'catIdList': this.platformIdList2,
-              'sortIdList': this.bussinessIdList2
-            },
-            'group3': {
-              'groupName': this.param.groupName3,
-              'goodsNumber': this.param.goodsNumber3,
-              'goodsIdList': this.selectedGoodsIdList3,
-              'catIdList': this.platformIdList3,
-              'sortIdList': this.bussinessIdList3
+            'totalRatio': Number(this.param.totalRatio)
+          }
+          if (this.group1Flag === true) {
+            obj = {
+              ...obj,
+              'group1': {
+                'groupName': this.param.groupName,
+                'goodsNumber': this.param.goodsNumber,
+                'goodsIdList': this.selectedGoodsIdList,
+                'catIdList': this.platformIdList,
+                'sortIdList': this.bussinessIdList
+              }
+            }
+          }
+          if (this.group2Flag === true) {
+            obj = {
+              ...obj,
+              'group2': {
+                'groupName': this.param.groupName2,
+                'goodsNumber': this.param.goodsNumber2,
+                'goodsIdList': this.selectedGoodsIdList2,
+                'catIdList': this.platformIdList2,
+                'sortIdList': this.bussinessIdList2
+              }
+            }
+          }
+          if (this.group3Flag === true) {
+            obj = {
+              ...obj,
+              'group3': {
+                'groupName': this.param.groupName3,
+                'goodsNumber': this.param.goodsNumber3,
+                'goodsIdList': this.selectedGoodsIdList3,
+                'catIdList': this.platformIdList3,
+                'sortIdList': this.bussinessIdList3
+              }
             }
           }
           if (this.isEdite === false) {
@@ -1257,7 +1272,7 @@ export default {
           if (data.group2.groupName || data.group2.goodsNumber) {
             this.group2Flag = true
           }
-          if (data.group3.groupName || data.group3.goodsNumber) {
+          if (data.group3 && (data.group3.groupName || data.group3.goodsNumber)) {
             this.group3Flag = true
           }
           let date = [data.startTime, data.endTime]
@@ -1277,6 +1292,7 @@ export default {
           this.bussinessIdList = data.group1.sortIdList
 
           // 商品组2
+          if (!data.group2 || !data.group2.groupName) return
           this.$set(this.param, 'groupName2', data.group2.groupName)
           this.$set(this.param, 'goodsNumber2', data.group2.goodsNumber)
           this.goodsList2 = data.group2.goodsList
@@ -1289,6 +1305,7 @@ export default {
           this.bussinessIdList2 = data.group2.sortIdList
 
           // 商品组3
+          if (!data.group3 || !data.group3.groupName) return
           this.$set(this.param, 'groupName3', data.group3.groupName)
           this.$set(this.param, 'goodsNumber3', data.group3.goodsNumber)
           this.goodsList3 = data.group3.goodsList
