@@ -55,7 +55,7 @@ export default {
 }
 </style>
 <style>
-.el-date-range-picker {
-  z-index: 20 !important;
+.lower_level {
+  z-index: 10 !important;
 }
 </style>
