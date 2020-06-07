@@ -14,6 +14,7 @@ import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.util.SignUtils;
 import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.config.WxSerMchConfig;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -47,6 +48,8 @@ public class MpPaymentService extends ShopBaseService {
 
 	@Autowired
 	public PaymentService pay;
+    @Autowired
+    private WxSerMchConfig wxSerMchConfig;
 
 	/**
 	 * 得到店铺小程序支付实例
@@ -79,33 +82,26 @@ public class MpPaymentService extends ShopBaseService {
 	protected WxPayConfig  getWxPayConfig(MpAuthShopRecord mp) {
 		byte[] keyContent = null;
 		//子商户模式
-		Byte isSubMerchant = 1;
-		try {
-			keyContent = PemToPkcs12.pemToPkcs12(mp.getPayKeyContent(), mp.getPayCertContent(), mp.getPayMchId().toCharArray());
-		} catch (Exception e) {
-			this.logger().error("pemToPkcs12 error, message: {}", e.getMessage());
-		}
+		Byte subMch = 1;
+        try {
+            keyContent = PemToPkcs12.pemToPkcs12(mp.getPayKeyContent(), mp.getPayCertContent(), subMch.equals(mp.getIsSubMerchant()) ? wxSerMchConfig.getWxSrvKey().toCharArray() : mp.getPayMchId().toCharArray());
+        } catch (Exception e) {
+            this.logger().error("pemToPkcs12 error, message: {}", e.getMessage());
+        }
 		WxPayConfig payConfig = new WxPayConfig();
-		if(isSubMerchant.equals(mp.getIsSubMerchant())) {
-		    //微信直连
+		if(subMch.equals(mp.getIsSubMerchant())) {
+		    //子商户模式
+            payConfig.setAppId(wxSerMchConfig.getWxSrvAppId());
+            payConfig.setMchId(wxSerMchConfig.getWxSrvMchId());
+            payConfig.setMchKey(wxSerMchConfig.getWxSrvKey());
+            payConfig.setSubAppId(mp.getAppId());
+            payConfig.setSubMchId(mp.getPayMchId());
+            payConfig.setKeyContent(keyContent);
+        }else {
+            //微信直连
             payConfig.setAppId(mp.getAppId());
             payConfig.setMchId(mp.getPayMchId());
             payConfig.setMchKey(mp.getPayKey());
-            payConfig.setKeyContent(keyContent);
-        }else {
-		   /* ## 微信服务商配置
-            ## cert_path 为storage_path('wechat/payment/srv_pay_cert.pem')
-            ## key_path  为storage_path('wechat/payment/srv_pay_key.pem')
-            WX_SRV_APP_ID=wx6f33c81ffc53c3af
-            WX_SRV_MCH_ID=1271059801
-            WX_SRV_KEY=6f33c81ffc53c3af6f33c81ffc53c3af
-                SUBSCRIBE_MESSAGE = true*/
-		    //子商户模式
-            payConfig.setAppId("wx6f33c81ffc53c3af");
-            payConfig.setMchId("1271059801");
-            payConfig.setMchKey("6f33c81ffc53c3af6f33c81ffc53c3af");
-            payConfig.setSubAppId(mp.getAppId());
-            payConfig.setSubMchId(mp.getPayMchId());
             payConfig.setKeyContent(keyContent);
         }
 
@@ -168,15 +164,16 @@ public class MpPaymentService extends ShopBaseService {
         logger().info("微信预支付调用接口start,clientIp:{},goodsName:{},orderSn:{},amount:{},openId:{}", clientIp,  goodsName,  orderSn,  amount,  openId);
 		WxPayment wxPayment = this.getMpPay();
 		WxPayUnifiedOrderRequest payInfo = WxPayUnifiedOrderRequest.newBuilder()
-				.openid(openId)
-				.outTradeNo(orderSn)
+            .openid(StringUtils.isBlank(wxPayment.getConfig().getSubAppId()) ? openId : null)
+            .subOpenid(StringUtils.isBlank(wxPayment.getConfig().getSubAppId()) ? null : openId)
+            .outTradeNo(orderSn)
             // 订单总金额，单位为分
             .totalFee(amount.multiply(HUNDRED).intValue())
-				.body(Util.filterEmoji(goodsName, ""))
-				.tradeType(WxPayConstants.TradeType.JSAPI)
-				.spbillCreateIp(clientIp)
-				.notifyUrl(domainConfig.getWxMaPayNotifyUrl(this.getShopId()))
-				.build();
+            .body(Util.filterEmoji(goodsName, ""))
+            .tradeType(WxPayConstants.TradeType.JSAPI)
+            .spbillCreateIp(clientIp)
+            .notifyUrl(domainConfig.getWxMaPayNotifyUrl(this.getShopId()))
+            .build();
 		this.logger().info("PartnerKey is : {}", wxPayment.getConfig().getMchKey());
 		//已经校验
 		WxPayUnifiedOrderResult result = wxPayment.unifiedOrder(payInfo);
