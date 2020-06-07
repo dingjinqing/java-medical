@@ -1252,12 +1252,19 @@ public class OrderReadService extends ShopBaseService {
             return;
         }
         for (ApiOrderListVo order : dataList) {
-            order.setDiscountAmount(BigDecimalUtil.addOrSubtrac(
-                BigDecimalUtil.BigDecimalPlus.create(order.getDiscount(), BigDecimalUtil.Operator.add),
-                BigDecimalUtil.BigDecimalPlus.create(order.getScoreDiscount(), BigDecimalUtil.Operator.add),
-                BigDecimalUtil.BigDecimalPlus.create(order.getPromotionReduce(), BigDecimalUtil.Operator.add),
-                BigDecimalUtil.BigDecimalPlus.create(order.getMemberCardReduce(), BigDecimalUtil.Operator.add)
-            ));
+            order.setDiscountAmount(
+                BigDecimalUtil.addOrSubtrac(
+                    BigDecimalUtil.BigDecimalPlus.create(order.getDiscount(), BigDecimalUtil.Operator.add),
+                    BigDecimalUtil.BigDecimalPlus.create(order.getScoreDiscount(), BigDecimalUtil.Operator.add),
+                    BigDecimalUtil.BigDecimalPlus.create(order.getPromotionReduce(), BigDecimalUtil.Operator.add),
+                    BigDecimalUtil.BigDecimalPlus.create(order.getMemberCardReduce())
+                ));
+            order.setMoneyPaid(
+                BigDecimalUtil.addOrSubtrac(
+                    BigDecimalUtil.BigDecimalPlus.create(order.getMoneyPaid(), BigDecimalUtil.Operator.add),
+                    BigDecimalUtil.BigDecimalPlus.create(order.getUseAccount(), BigDecimalUtil.Operator.add),
+                    BigDecimalUtil.BigDecimalPlus.create(order.getMemberCardBalance())
+                ));
         }
     }
     /*********************************************************************************************************/
