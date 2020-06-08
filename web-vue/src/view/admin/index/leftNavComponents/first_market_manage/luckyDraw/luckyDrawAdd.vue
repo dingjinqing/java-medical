@@ -154,7 +154,7 @@
                   prop="startTime"
                   :inline-message="true"
                 >
-                  <span>{{$t('luckyDraw.effectiveTime')}}：</span>
+                  <!-- <span>{{$t('luckyDraw.effectiveTime')}}：</span>
                   <el-date-picker
                     v-model="requestParam.startTime"
                     type="datetime"
@@ -179,7 +179,17 @@
                     default-time="23:59:59"
                     value-format="yyyy-MM-dd HH:mm:ss"
                   >
-                  </el-date-picker>
+                  </el-date-picker> -->
+                  <el-date-picker
+                    v-model="datepicker"
+                    type="datetimerange"
+                    size="small"
+                    :range-separator="$t('luckyDraw.to')"
+                    :start-placeholder="$t('luckyDraw.selectDateTime')"
+                    :end-placeholder="$t('luckyDraw.selectDateTime')"
+                    :default-time="['00:00:00', '23:59:59']"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                  ></el-date-picker>
                 </el-form-item>
               </el-form-item>
 
@@ -736,6 +746,7 @@ export default {
       callback()
     }
     return {
+      datepicker: [],
       requestParam: {
         lotteryName: '',
         lotteryExplain: '',
@@ -804,6 +815,15 @@ export default {
     }
   },
   watch: {
+    datepicker: function (val) {
+      if (val && val.length && val[0]) {
+        this.$set(this.requestParam, 'startTime', val[0])
+        this.$set(this.requestParam, 'endTime', val[1])
+      } else {
+        this.$set(this.requestParam, 'startTime', '')
+        this.$set(this.requestParam, 'endTime', '')
+      }
+    },
     freeChanceType: function (val) {
       if (val <= 0) {
         this.freeChances = ''

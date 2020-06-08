@@ -583,7 +583,7 @@ export default {
         stock: 0, // 活动总库存
         cardId: [], // 会员卡id
         activityTag: 0, // 同步打标签
-        activityTagId: '', // 标签id值
+        activityTagId: [], // 标签id值
         shareConfig: {
           shareAction: 1,
           shareDoc: '',
