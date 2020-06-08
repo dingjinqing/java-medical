@@ -185,7 +185,7 @@
                   :class="loadProduct?'tdCenter':''"
                 >
                   <img :src="item.prdImg || item.goodsImg">
-                  <span>{{item.goodsName}}</span>
+                  <div v-html="item.goodsName"></div>
                   <!-- 规格描述 -->
                   <span v-if="loadProduct">{{item.prdDesc}}</span>
                 </td>
