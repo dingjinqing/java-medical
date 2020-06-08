@@ -80,6 +80,7 @@ public class PackageSaleGoodsListVo {
          * 是否单规格商品（默认一个规格）
          */
         private Byte isDefaultProduct;
+        private Integer goodsNumber;
 
         //用户已选择的该商品的数量
         private Integer chooseNumber;
