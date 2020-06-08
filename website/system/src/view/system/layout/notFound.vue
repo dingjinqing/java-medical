@@ -15,7 +15,7 @@
           style="margin: 0 20px"
           @click="handleToClick(1)"
         >admin后台</div>
-        <div @click="$router.push({path:'/'})">官网</div>
+        <div @click="handleToClick(2)">官网</div>
       </div>
     </div>
   </div>
@@ -24,20 +24,31 @@
 export default {
   methods: {
     handleToClick (flag) {
-      if (flag) {
-        let routeData = this.$router.resolve({
-          path: '/admin/login'
-        })
-        console.log(routeData)
-        routeData.href = '/admin/index/login'
-        window.open(routeData.href, '_blank')
-      } else {
-        let routeData1 = this.$router.resolve({
-          path: '/system/login'
-        })
-        console.log(routeData1)
-        routeData1.href = '/system/system/login'
-        window.open(routeData1.href, '_blank')
+      switch (flag) {
+        case 0:
+          let routeData1 = this.$router.resolve({
+            path: '/system/login'
+          })
+          console.log(routeData1.href)
+          routeData1.href = '/system/system/login'
+          window.open(routeData1.href, '_self')
+          break
+        case 1:
+          let routeData = this.$router.resolve({
+            path: '/admin/login'
+          })
+          console.log(routeData.href)
+          routeData.href = '/admin/index/login'
+          window.open(routeData.href, '_self')
+          break
+        case 2:
+          let routeData2 = this.$router.resolve({
+            path: '/admin/login'
+          })
+          console.log(routeData2.href)
+          routeData2.href = '/'
+          window.open(routeData2.href, '_self')
+          break
       }
     }
   }

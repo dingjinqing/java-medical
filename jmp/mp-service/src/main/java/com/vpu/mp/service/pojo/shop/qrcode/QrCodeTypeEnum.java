@@ -57,7 +57,7 @@ public enum QrCodeTypeEnum {
     /*定金膨胀详情*/
     DOWN_PAYMENT_INFO((byte) 24, "pages/presaleitem/presaleitem"),
     /*一口价详情*/
-    BUY_NOW_PRICE_INFO((byte) 25, "pages/packagesalelist/packagesalelist"),
+    BUY_NOW_PRICE_INFO((byte) 25, "pages1/packagesalelist/packagesalelist"),
     /*海报—积分商品详情*/
     POSTER_INTEGRAL_ITEM_INFO((byte) 26, "pages/integralitem/integralitem"),
     /*扫码购*/

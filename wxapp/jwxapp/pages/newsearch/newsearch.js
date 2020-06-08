@@ -95,8 +95,8 @@ global.wxPage({
   },
   // 搜索
   bindSearch: function (e) {
-    console.log(search_word);
-    var data = search_word.replace(/\s/g,"");
+    console.log(this.data.search_word);
+    var data = this.data.search_word.replace(/\s/g,"");
     // 添加热词
     if (data != "") {
       util.api('/api/wxapp/search/addHotWords', function (res) {}, {

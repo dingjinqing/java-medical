@@ -149,6 +149,11 @@ public class WxCardDetailService extends ShopBaseService{
 		card.setCardCustomRights(customRights);
 		if(CardUtil.isLimitCard(card.getCardType())) {
 			card.setCardGive(getCardGiveVo(memberCardRecord, userCardRecord));
+			//	处理转赠信息
+			if(!param.getUserId().equals(card.getUserId())) {
+				card.setUserId(param.getUserId());
+				card.setCardNo(null);
+			}
 		}
 		//	优惠券
 		UserCardVo voTmp = new UserCardVo();

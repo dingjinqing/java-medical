@@ -196,15 +196,13 @@ public class WxShareRewardService extends ShopBaseService {
         }
 
         // 是否参加过当前商品分享有礼活动
-        int count = db().fetchCount(ATTEND.leftJoin(AWARD_RECORD).on(ATTEND.RECORD_ID.eq(AWARD_RECORD.ID)), AWARD_RECORD.USER_ID.eq(userId)
-            .and(AWARD_RECORD.GOODS_ID.eq(goodsId))
-            .and(AWARD_RECORD.CREATE_TIME.greaterThan(Timestamp.valueOf(LocalDate.now().atStartOfDay()))));
+        int count = db().fetchCount(AWARD_RECORD, AWARD_RECORD.USER_ID.eq(userId).and(AWARD_RECORD.CREATE_TIME.greaterThan(Timestamp.valueOf(LocalDate.now().atStartOfDay()))));
         if (count == 0) {
             return shareId.value1();
         }
         // 校验每日的分享次数上限
         int limit = shareReward.getDailyShareAwardValue();
-        if (count >= limit) {
+        if (limit > 0 && count >= limit) {
             log.info("分享有礼活动已达到每日分享次数上限{}！", limit);
             return INTEGER_ZERO;
         }

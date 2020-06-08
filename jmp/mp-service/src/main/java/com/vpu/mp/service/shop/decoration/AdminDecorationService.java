@@ -12,6 +12,7 @@ import com.vpu.mp.config.TxMapLBSConfig;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.*;
@@ -404,7 +405,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
     public int delXcxPage(PageClassificationVo param) {
         int result = db()
             .update(XCX_CUSTOMER_PAGE)
-            .set(XCX_CUSTOMER_PAGE.PAGE_ENABLED, (byte) 0)
+            .set(XCX_CUSTOMER_PAGE.PAGE_ENABLED, BaseConstant.NO)
             .where(XCX_CUSTOMER_PAGE.PAGE_ID.eq(param.getPageId()))
             .execute();
         return result;
@@ -905,6 +906,14 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
         for (SuspendWindowConfig.ChildIcon c : res.getChildrenArr()) {
             if (StringUtil.isNotBlank(c.getImg())) {
                 c.setImg(domainConfig.imageUrl(c.getImg()));
+            }
+        }
+        for (Integer pageId : res.getPageIds()) {
+            if (pageId > 1) {
+                XcxCustomerPageRecord record = getPageById(pageId);
+                if (record == null || record.getPageEnabled().equals(BaseConstant.NO)) {
+                    res.getPageIds().remove(pageId);
+                }
             }
         }
         return res;

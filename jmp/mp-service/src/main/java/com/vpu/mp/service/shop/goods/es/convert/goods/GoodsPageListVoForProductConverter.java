@@ -31,6 +31,8 @@ public class GoodsPageListVoForProductConverter implements EsGoodsConvertInterfa
 
             if( esGoods.getDefPrd()!= null && esGoods.getDefPrd() && !esGoods.getPrds().isEmpty() ){
                 vo.setPrdId(CollectionUtils.isNotEmpty(esGoods.getPrds())?esGoods.getPrds().get(0).getPrdId():0);
+            }else{
+                vo.setPrdId(product.getPrdId());
             }
             vo.setPrdTypeNum(esGoods.getPrds().size()==1?0:esGoods.getPrds().size());
             vo.setPrdImg(product.getPrdImg());
