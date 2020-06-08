@@ -77,7 +77,7 @@ global.wxComponent({
           }
         }
       }
-      children_arr_ordinary.reverse();
+      // children_arr_ordinary.reverse();
       children_arr_ordinary.forEach((item, index) => {
         if (if_active == 1 && children_arr.length <= 3) { // 展开
           children_arr_ordinary[index].translate = (index + 1) * 120;
