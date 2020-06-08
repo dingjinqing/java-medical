@@ -125,7 +125,7 @@
           <el-button
             type="primary"
             size="small"
-            @click="dialogVisible = false"
+            @click="goVersionUpgrade"
           >了解更多</el-button>
         </span>
       </el-dialog>
@@ -874,6 +874,13 @@ export default {
         query: {
           change_components: '9'
         }
+      })
+    },
+    // 版本升级或续费
+    goVersionUpgrade () {
+      this.$router.push({
+        path: '/admin/home/main/versionUpgrade',
+        query: { mod: '营销管理' }
       })
     }
   }

@@ -12,6 +12,7 @@
         <el-button
           type="primary"
           size="small"
+          style="margin-left:10px;"
           @click="applyChange(1)"
         >{{$t('versionUpgrade.applyRenewal')}}</el-button>
         <span class="tips">

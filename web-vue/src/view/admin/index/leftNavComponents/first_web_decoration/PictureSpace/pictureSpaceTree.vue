@@ -5,6 +5,7 @@
       <div class="dialog_top">
         <el-upload
           class="upload-demo"
+          style="float:left;"
           :before-upload="beforeUpLoad"
           multiple
           :limit="5"
@@ -16,33 +17,33 @@
             size="small"
             type="primary"
           >{{$t('imgageDalog.upload')}}</el-button>
-
+        </el-upload>
+        <div
+          @mouseover="tip_over()"
+          @mouseleave="tip_leave()"
+          class="title_tip"
+        >{{$t('imgsSpace.tipTitle')}}<img :src="tip_img">
           <div
-            @mouseover="tip_over()"
-            @mouseleave="tip_leave()"
-            class="title_tip"
-          >{{$t('imgsSpace.tipTitle')}}<img :src="tip_img">
-            <div
-              class="tip_hidden"
-              v-if="tip_hidden_flag"
-            >
-              <div class="system_info_content_top">{{$t('imgsSpace.hiddleTitle')}}</div>
-              <div class="system_info_content_bottom">
-                <el-button
-                  type="primary"
-                  size="mini"
-                >{{$t('imgsSpace.modeText')}}</el-button>
-              </div>
+            class="tip_hidden"
+            v-if="tip_hidden_flag"
+          >
+            <div class="system_info_content_top">{{$t('imgsSpace.hiddleTitle')}}</div>
+            <div class="system_info_content_bottom">
+              <el-button
+                type="primary"
+                @click="goVersionUpgrade"
+                size="mini"
+              >{{$t('imgsSpace.modeText')}}</el-button>
             </div>
           </div>
-          <div
-            slot="tip"
-            class="tips"
-            :class="imageDalogTip_lineHeight"
-          >
-            <img :src="imgUrl[0].img_1">
-            {{$t('imgageDalog.tip')}}</div>
-        </el-upload>
+        </div>
+        <div
+          slot="tip"
+          class="tips"
+          :class="imageDalogTip_lineHeight"
+        >
+          <img :src="imgUrl[0].img_1">
+          {{$t('imgageDalog.tip')}}</div>
       </div>
       <!-- dialog_middle -->
       <div class="dialog_middle">
@@ -677,6 +678,13 @@ export default {
       this.currentPage3 = 1
       console.log('触发')
       this.detailImgsSearch()
+    },
+    // 版本升级或续费
+    goVersionUpgrade () {
+      this.$router.push({
+        path: '/admin/home/main/versionUpgrade',
+        query: { mod: '图片空间' }
+      })
     }
   }
 }
