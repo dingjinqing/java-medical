@@ -57,7 +57,7 @@
           sortable="custom"
           align="center"
           :label="$t('allGoods.allGoodsData.shopPrice')"
-          width="120"
+          width="130"
         >
           <template slot-scope="{row}">
             <!--非默认规格-->
@@ -117,7 +117,7 @@
           sortable="custom"
           align="center"
           :label="$t('allGoods.allGoodsData.goodsNumber')"
-          width="100"
+          width="130"
         >
           <template slot-scope="{row,$index}">
             <span v-if="row.prdId === null">
