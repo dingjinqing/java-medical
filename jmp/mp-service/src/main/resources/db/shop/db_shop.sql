@@ -3696,8 +3696,7 @@ CREATE TABLE `b2c_spec` (
   `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺id',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
-  PRIMARY KEY (`spec_id`),
-  UNIQUE KEY `unique_spec_name_goods_id` (`spec_name`,`goods_id`)
+  PRIMARY KEY (`spec_id`)
 );
 
 
@@ -3711,7 +3710,6 @@ CREATE TABLE `b2c_spec_vals` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`spec_val_id`),
-  UNIQUE KEY `unique_spec_id_spec_val_name` (`spec_id`,`spec_val_name`),
   KEY `spec_id` (`spec_id`)
 )COMMENT='规格表 `b2c_spec`';
 
