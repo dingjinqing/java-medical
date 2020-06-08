@@ -485,7 +485,7 @@
                       <span class="number">{{coupon_duplicate[0].denomination}}</span>折
                     </span>
                     <span v-if="coupon_duplicate[0].actCode === 'random'">
-                      <span class="number">{{coupon_duplicate[0].randomMax}}</span>最高
+                      ￥<span class="number">{{coupon_duplicate[0].randomMax}}</span>最高
                     </span>
                   </div>
                   <div class="coupon_center_limit">{{coupon_duplicate[0].useConsumeRestrict | formatLeastConsume(coupon_duplicate[0].leastConsume)}}</div>
@@ -657,12 +657,13 @@
       :singleElection="true"
     >
     </choosingGoods>
-    <!--奖励类型-添加优惠券-->
+    <!--奖励类型-添加普通优惠券-->
     <AddCouponDialog
       singleElection="true"
       @handleToCheck="handleToCheck"
       :tuneUpCoupon="showCouponDialog"
       :couponBack="couponIdList"
+      :type="this.flag === 1 ? 0 : -1"
     />
 
     <ImageDalog
@@ -933,6 +934,7 @@ export default {
       showCouponDialog: false, // 优惠券弹窗
       coupon_duplicate: [], // 失败送优惠券数据
       couponIdList: [], // 优惠券回显数据id
+      flag: 1, // 两个优惠券弹窗区分
       showImageDialog: false,
       imgHost: `${this.$imageHost}`,
 
@@ -943,6 +945,7 @@ export default {
         img_2: this.$imageHost + '/image/admin/hid_some.png'
       }],
       arrorFlag: true // 展开更多配置
+
     }
   },
   created () {
@@ -1181,6 +1184,7 @@ export default {
     },
     // 选择优惠券弹窗
     handleToCallDialog (val) {
+      this.flag = val
       this.showCouponDialog = !this.showCouponDialog
       this.couponIdList = []
       if (val === 1) {
@@ -1440,7 +1444,7 @@ export default {
       border-bottom-right-radius: 8px;
       color: #fff;
       background: #f66;
-      background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
+      background-image: url("https://jmpdevimg.weipubao.cn/image/admin/coupon_border.png");
       background-repeat: repeat-x;
     }
   }

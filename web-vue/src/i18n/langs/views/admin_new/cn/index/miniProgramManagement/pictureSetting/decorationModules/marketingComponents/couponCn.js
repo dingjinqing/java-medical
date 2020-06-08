@@ -34,6 +34,7 @@ export const cn = {
   receive: '领取',
   integral: '积分 兑换',
   fracture: '折',
+  randomMax: '最高',
   unlimitedInventory: '库存无限制',
   coupon: '优惠券',
   couponModule: '优惠券模块',

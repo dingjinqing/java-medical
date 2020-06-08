@@ -195,9 +195,16 @@
                       style="line-height:normal"
                     >
                       <div class="coupon_list_top">
-                        <span v-if="item.actCode==='voucher'">￥ {{item.denomination}}</span>
-                        <span v-if="item.actCode==='discount'">{{item.denomination}} 折</span>
-                        <span v-if="item.actCode==='random'"></span>
+                        <span
+                          v-if="item.actCode==='voucher'"
+                          class="number"
+                        >￥{{item.denomination}}</span>
+                        <span v-if="item.actCode==='discount'">
+                          <span class="number">{{item.denomination}}</span> 折
+                        </span>
+                        <span v-if="item.actCode==='random'">
+                          <span class="number">￥{{item.randomMax}}</span>最高
+                        </span>
                       </div>
                       <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
                       <div
@@ -298,6 +305,7 @@
       @checkReturnFormat="handleToCheck"
       :tuneUpCoupon="showCouponDialog"
       :couponBack="couponIdList"
+      :type="-1"
     />
   </div>
 </template>>
@@ -613,6 +621,7 @@ export default {
       this.couponData.forEach(item => {
         this.params.couponGiveGrantInfoParams.coupon_ids.push(item.id)
       })
+      this.couponIdList = this.params.couponGiveGrantInfoParams.coupon_ids
       this.$refs['params'].validateField('coupon')
     },
 
@@ -1039,9 +1048,9 @@ export default {
     border: 1px solid #fbb;
     border-radius: 10px;
     .coupon_list_top {
-      margin-top: 10px;
+      // margin-top: 10px;
       color: #f60;
-      :nth-of-type(2) {
+      .number {
         font-size: 20px;
         font-weight: bold;
       }
@@ -1062,7 +1071,7 @@ export default {
       border-bottom-right-radius: 8px;
       color: #fff;
       background: #f66;
-      background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
+      background-image: url("https://mpdev.weipubao.cn/image/admin/coupon_border.png");
       background-repeat: repeat-x;
     }
   }

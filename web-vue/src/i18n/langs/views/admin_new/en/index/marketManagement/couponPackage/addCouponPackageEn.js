@@ -56,6 +56,7 @@ export const en = {
   every: 'every',
   prompt: 'tip',
   delCouponConfirm: 'Whether to delete the coupon?',
+  highest: 'highest',
 
   // 校验
   validStrategy1: 'The number of strategies issued immediately is greater than the total amount of bonds issued!',

@@ -83,6 +83,13 @@ export const addMessageApi = data =>
     method: 'post',
     data
   })
+// 修改勾选状态
+export const xgMessageApi = data =>
+  service({
+    url: `/api/admin/market/message/template/updateCheckedUser`,
+    method: 'post',
+    data
+  })
 // 查看消息模板
 export const getDetailApi = data =>
   service({

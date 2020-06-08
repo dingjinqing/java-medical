@@ -1,6 +1,12 @@
 <template>
   <div class="membershipCard">
     <div class="membershipCardMain">
+      <el-button
+        class="changePage"
+        size="small"
+        type="primary"
+        @click="handleToChangePage()"
+      >切换为{{changePageFlag?'卡片':'表格'}}</el-button>
       <el-tabs
         v-model="activeName"
         @tab-click="handleClick"
@@ -9,7 +15,10 @@
           :label="$t('memberCard.normalCard')"
           name="first"
         >
-          <div class="firstDiv">
+          <div
+            class="firstDiv"
+            v-if="!changePageFlag"
+          >
             <div
               class="new_card"
               @click="handleToCardDetail(0)"
@@ -133,7 +142,10 @@
           :label="$t('memberCard.limitCard')"
           name="second"
         >
-          <div class="firstDiv">
+          <div
+            class="firstDiv"
+            v-if="!changePageFlag"
+          >
             <div
               class="new_card"
               @click="handleToCardDetail(1)"
@@ -248,7 +260,10 @@
           :label="$t('memberCard.gradeCard')"
           name="third"
         >
-          <div class="firstDiv">
+          <div
+            class="firstDiv"
+            v-if="!changePageFlag"
+          >
             <div
               class="new_card"
               @click="handleToCardDetail(2)"
@@ -366,6 +381,11 @@
           </div>
         </el-tab-pane>
       </el-tabs>
+      <!--表格页面-->
+      <CardFormPage
+        v-if="changePageFlag"
+        :cardType="currentCardType"
+      />
     </div>
     <!--二维码弹窗-->
     <ShareCodeDialog />
@@ -375,7 +395,8 @@
 import { deleteCardRequest, getAllMemberCardRequest, changeCardStatueRequest } from '@/api/admin/memberManage/memberCard.js'
 export default {
   components: {
-    ShareCodeDialog: () => import('@/components/admin/shareCodeDialog')
+    ShareCodeDialog: () => import('@/components/admin/shareCodeDialog'),
+    CardFormPage: () => import('./cardFormPage') // 切换表格页面组件
   },
   computed: {
     showAddIcon () {
@@ -384,6 +405,7 @@ export default {
   },
   data () {
     return {
+      changePageFlag: false, // 切换按钮文案
       currentCardType: 0, // 默认的会员卡为普通会员卡
       activeName: 'first',
       cardData: [], // 普通会员卡容器
@@ -432,6 +454,7 @@ export default {
         default:
           break
       }
+      this.changePageFlag = false
     }
   },
   mounted () {
@@ -641,9 +664,11 @@ export default {
       deleteCardRequest({ id }).then(res => {
         if (res.error === 0) {
           console.log('删除成功')
-          this.getBackEndData({ 'currentPage': 0,
+          this.getBackEndData({
+            'currentPage': 0,
             'pageRows': 100,
-            'cardType': this.currentCardType })
+            'cardType': this.currentCardType
+          })
         }
       })
     },
@@ -657,9 +682,11 @@ export default {
         if (res.error === 0) {
           console.log('停止成功')
           this.loadAllPageData()
-          this.getBackEndData({ 'currentPage': 0,
+          this.getBackEndData({
+            'currentPage': 0,
             'pageRows': 100,
-            'cardType': this.currentCardType })
+            'cardType': this.currentCardType
+          })
         }
       })
     },
@@ -928,6 +955,11 @@ export default {
 
       console.log(item, flag)
     },
+    // 点击切换按钮
+    handleToChangePage () {
+      this.changePageFlag = !this.changePageFlag
+    },
+
     getGradeCardDetailInfo (condition) {
       let desc = this.$t('memberCard.addUp')
       let count = 0
@@ -964,6 +996,12 @@ export default {
     overflow-x: auto;
     overflow-y: auto;
     padding: 15px 25px;
+    .changePage {
+      position: absolute;
+      top: 13px;
+      right: 27px;
+      z-index: 10;
+    }
     .firstDiv {
       background: #fff;
       padding: 0 1%;

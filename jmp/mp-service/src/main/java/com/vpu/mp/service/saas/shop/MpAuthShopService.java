@@ -68,6 +68,7 @@ import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MaMpBindParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
+import com.vpu.mp.service.pojo.shop.market.live.LiveCheckVo;
 import com.vpu.mp.service.pojo.shop.market.message.BatchUploadCodeParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
@@ -1058,17 +1059,14 @@ public class MpAuthShopService extends MainBaseService {
     }
 
     /**
-     * 	获得小程序发版版本  1 正常版本 2 好物推荐版本
+     * 	获得小程序发版版本  1 正常版本 2 好物推荐版本 3 直播普通 4 直播好物
      * @param appId
      * @return
      */
 	public Byte getMpPackageVersion(String appId) {
-		MaWxPlusInListInner plugin = getPlugin(appId);
-		if(plugin!=null&&plugin.getStatus().equals("2")) {
-			return 2;
-		}
-		return 1;
-
+		Byte plugin = getPlugin(appId);
+		logger().info("小程序：{}的版本为：{}", appId, plugin);
+		return plugin;
 	}
 
 	/**
@@ -1076,7 +1074,7 @@ public class MpAuthShopService extends MainBaseService {
 	 * @param appId
 	 * @return
 	 */
-	public MaWxPlusInListInner getPlugin(String appId) {
+	public Byte getPlugin(String appId) {
 		WxOpenAccountService service =open.getMaExtService();
     	Map<String, String> map=new HashMap<String, String>(0);
     	map.put("action", "list");
@@ -1087,16 +1085,36 @@ public class MpAuthShopService extends MainBaseService {
 			e.printStackTrace();
 		}
     	//好物圈的appId
-    	appId="wx56c8f077de74b07c";
+		String haoWu = "wx56c8f077de74b07c";
+		//直播的appId
+		String live = "wx2b03c6e691cd7370";
+		boolean hasGoodsShipping=false;
+		boolean hasLive=false;
     	if(plugInManage.getErrcode().equals("0")&&plugInManage.getErrmsg().equals("ok")) {
     		 List<MaWxPlusInListInner> pluginList = plugInManage.getPluginList();
     		for(MaWxPlusInListInner inner:pluginList) {
-    			if(inner.getAppid().equals(appId)) {
-    				return inner;
+				if (inner.getAppid().equals(haoWu) && inner.getStatus().equals("2")) {
+					hasGoodsShipping=true;
+					logger().info("小程序：{}，有好物圈权限",appId);
+    				continue;
+    			}
+				if (inner.getAppid().equals(live) && inner.getStatus().equals("2")) {
+					boolean checkHasLive = checkHasLive(getAuthShopByAppId(appId));
+					if(checkHasLive) {
+						logger().info("小程序：{}，有直播权限",appId);
+						hasLive=true;						
+					}
     			}
     		}
     	}
-		return null;
+    	if(hasGoodsShipping&&hasLive) {
+    		return 4;
+    	}if(hasLive) {
+    		return 3;
+    	}if(hasGoodsShipping) {
+    		return 2;
+    	}
+		return 1;
 	}
 
 
@@ -1147,15 +1165,21 @@ public class MpAuthShopService extends MainBaseService {
 		switch (param.getIsSubMerchant()) {
 		case 0:
 			// 微信直连支付
-			wxOpenResult.setErrcode(String.valueOf(JsonResultCode.WX_MA_FEATURE_NOT_OPEN));
-			wxOpenResult.setErrmsg(JsonResultMessage.WX_MA_FEATURE_NOT_OPEN);
-			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_SETTING_SUB_MERCHANT, wxOpenResult, WxContentTemplate.WX_FEATURE_NOT_OPEN.code, new String[] {String.valueOf(param.getIsSubMerchant())});
+			int execute3 = db().update(MP_AUTH_SHOP).set(MP_AUTH_SHOP.IS_SUB_MERCHANT,AUDIT_STATE_NO_SUBMIT).where(MP_AUTH_SHOP.APP_ID.eq(param.getAppId())).execute();
+			Integer templateIds=WxContentTemplate.WX_SETTING_SUB_MERCHANT_FAIL.code;
+			if(execute3>0) {
+				templateIds=WxContentTemplate.WX_SETTING_SUB_MERCHANT_SUCCESS.code;
+			}
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_SETTING_SUB_MERCHANT, wxOpenResult, templateIds, new String[] {String.valueOf(param.getIsSubMerchant())});
 			break;
 		case 1:
 			// 微铺宝子商户支付
-			wxOpenResult.setErrcode(String.valueOf(JsonResultCode.WX_MA_FEATURE_NOT_OPEN));
-			wxOpenResult.setErrmsg(JsonResultMessage.WX_MA_FEATURE_NOT_OPEN);
-			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_SETTING_SUB_MERCHANT, wxOpenResult, WxContentTemplate.WX_FEATURE_NOT_OPEN.code, new String[] {String.valueOf(param.getIsSubMerchant())});
+			int execute4 = db().update(MP_AUTH_SHOP).set(MP_AUTH_SHOP.IS_SUB_MERCHANT,AUDIT_STATE_AUDITING).where(MP_AUTH_SHOP.APP_ID.eq(param.getAppId())).execute();
+			Integer templateIds2=WxContentTemplate.WX_SETTING_SUB_MERCHANT_FAIL.code;
+			if(execute4>0) {
+				templateIds2=WxContentTemplate.WX_SETTING_SUB_MERCHANT_SUCCESS.code;
+			}
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_SETTING_SUB_MERCHANT, wxOpenResult, templateIds2, new String[] {String.valueOf(param.getIsSubMerchant())});
 			break;
 		case 2:
 			// 通联子商户支付
@@ -1169,7 +1193,7 @@ public class MpAuthShopService extends MainBaseService {
 			int execute = db().update(MP_AUTH_SHOP).set(MP_AUTH_SHOP.UNION_PAY_APP_ID, param.getUnion_pay_app_id())
 					.set(MP_AUTH_SHOP.UNION_PAY_CUS_ID, param.getUnion_pay_cus_id())
 					.set(MP_AUTH_SHOP.UNION_PAY_APP_KEY, param.getUnion_pay_app_key())
-					.set(MP_AUTH_SHOP.IS_SUB_MERCHANT, param.getIsSubMerchant().byteValue()).execute();
+					.set(MP_AUTH_SHOP.IS_SUB_MERCHANT, param.getIsSubMerchant().byteValue()).where(MP_AUTH_SHOP.APP_ID.eq(param.getAppId())).execute();
 			if (execute > 0) {
 				wxOpenResult.setErrcode(String.valueOf(JsonResultCode.CODE_SUCCESS));
 				wxOpenResult.setErrmsg(JsonResultMessage.MSG_SUCCESS);
@@ -1186,7 +1210,7 @@ public class MpAuthShopService extends MainBaseService {
 			int execute2 = db().update(MP_AUTH_SHOP)
 					.set(MP_AUTH_SHOP.MERCHANT_CATEGORY_CODE, param.getMerchant_category_code())
 					.set(MP_AUTH_SHOP.FEE_TYPE, param.getFee_type())
-					.set(MP_AUTH_SHOP.IS_SUB_MERCHANT, param.getIsSubMerchant().byteValue()).execute();
+					.set(MP_AUTH_SHOP.IS_SUB_MERCHANT, param.getIsSubMerchant().byteValue()).where(MP_AUTH_SHOP.APP_ID.eq(param.getAppId())).execute();
 			if (execute2 > 0) {
 				wxOpenResult.setErrcode(String.valueOf(JsonResultCode.CODE_SUCCESS));
 				wxOpenResult.setErrmsg(JsonResultMessage.MSG_SUCCESS);
@@ -1723,5 +1747,52 @@ public class MpAuthShopService extends MainBaseService {
 		if(allTester!=null) {
 			record.setTester(Util.toJson(allTester));
 		}
+	}
+	
+	/**
+	 * 检查是否有直播权限集
+	 * @param record
+	 * @return
+	 */
+	public boolean checkHasLive(MpAuthShopRecord record) {
+		String funcInfo = record.getFuncInfo();
+		funcInfo = funcInfo.replace("[", "");
+		funcInfo = funcInfo.replace("]", "");
+		logger().info("权限集为：{}" + funcInfo);
+		String[] split = funcInfo.split(",");
+		for (String string : split) {
+			if(string.equals("52")) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * 直播的校验
+	 * @param shopId
+	 * @return
+	 */
+	public LiveCheckVo checkLive(Integer shopId) {
+		MpAuthShopRecord authShop = getAuthShopByShopId(shopId);
+		boolean isAuthLive=true;
+		if(authShop==null) {
+			return new LiveCheckVo(isAuthLive,null,false);
+		}
+		boolean hasLiveFunc = checkHasLive(authShop);
+		logger().info("店铺：{}，是否有直播权限：{}",shopId,hasLiveFunc);
+		if(hasLiveFunc) {
+			isAuthLive=false;
+		}
+		Byte packageVersion = saas.shop.mpOperateLog.getLastAuditSuccessPackage(authShop.getAppId());
+		Byte three=3;
+		Byte four=4;
+		List<Byte> list=new ArrayList<Byte>();
+		list.add(three);
+		list.add(four);
+		if(!list.contains(packageVersion)) {
+			isAuthLive=true;
+		}
+		return new LiveCheckVo(isAuthLive,authShop.getAuditState(),hasLiveFunc);
 	}
 }

@@ -2,9 +2,7 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.pojo.wxapp.comment.AddCommentParam;
-import com.vpu.mp.service.pojo.wxapp.comment.CommentListParam;
-import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
+import com.vpu.mp.service.pojo.wxapp.comment.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,4 +47,14 @@ public class WxAppCommentController extends WxAppBaseController {
     }
     return success();
   }
+
+    /**
+     * 单商品评价详情
+     * @param param
+     */
+    @PostMapping("/goods")
+    public JsonResult getGoodsComment(@RequestBody MPGoodsCommentParam param) {
+        CommentInfo commentInfo = shop().goods.goodsComment.goodsComment(param);
+        return success(commentInfo);
+    }
 }

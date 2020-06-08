@@ -9,6 +9,7 @@
     <serviceSubUserList v-if="flag1" />
     <noticeList v-if="flag7" />
     <noticeDetail v-if="flag8" />
+    <ProblemFeedback v-if="flag9" />
   </div>
 </template>
 <script>
@@ -28,7 +29,8 @@ export default {
     ServiceAuthListDetail: () => import('./serviceAuthListDetail'),
     serviceSubUserList: () => import('./serviceSubUserList'),
     noticeList: () => import('./noticeList'),
-    noticeDetail: () => import('./noticeDetail')
+    noticeDetail: () => import('./noticeDetail'),
+    ProblemFeedback: () => import('./problemFeedback')
   },
 
   data () {
@@ -41,7 +43,8 @@ export default {
       flag4: false,
       flag6: false,
       flag7: false,
-      flag8: false
+      flag8: false,
+      flag9: false
     }
   },
   watch: {
@@ -105,12 +108,16 @@ export default {
             console.log('传的id')
             console.log(this.$route.query.id)
             break
+          case '9':
+            this.flag9 = true
+            break
           default:
             this.flag4 = true
             this.flag = true
             break
         }
       }
+      console.log(this.flag9)
     }
   }
 }

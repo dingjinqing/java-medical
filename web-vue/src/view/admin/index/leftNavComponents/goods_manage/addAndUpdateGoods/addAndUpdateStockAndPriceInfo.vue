@@ -91,13 +91,15 @@
         <div class="specInfoWrap">
           <table class="specInfoWrapTable">
             <tr>
-              <th class="specInfoWrapTableThSkuName">SKU</th>
-              <th class="specInfoWrapTableInputTh">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopPrice')}}</th>
-              <th class="specInfoWrapTableInputTh">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopCost')}}</th>
-              <th class="specInfoWrapTableInputTh">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecMarketPrice')}}</th>
-              <th class="specInfoWrapTableInputTh">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsNum')}}</th>
-              <th class="specInfoWrapTableInputTh">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsPrdSn')}}</th>
-              <th class="specInfoWrapTableInputTh">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsImg')}}</th>
+              <th>SKU</th>
+              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopPrice')}}</th>
+              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopCost')}}</th>
+              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecMarketPrice')}}</th>
+              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsNum')}}</th>
+              <th v-if="goodsWeightCfg === 1">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecPrdWeight')}}</th>
+              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsPrdSn')}}</th>
+              <th v-if="needPrdCodes === 1">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsPrdCodes')}}</th>
+              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsImg')}}</th>
             </tr>
             <tr
               v-for="(item,index) in goodsProductInfo.goodsSpecProducts"
@@ -124,11 +126,21 @@
                   v-model.number="item.prdNumber"
                   @change="specPrdInputChange(item.prdNumber,'prdNumber_'+item.prdDesc,item,'prdNumber')"
                 /></td>
+              <td v-if="goodsWeightCfg === 1"><input
+                :id="'prdWeight_'+item.prdDesc"
+                v-model.number="item.prdWeight"
+                @change="specPrdInputChange(item.prdWeight,'prdWeight_'+item.prdDesc,item,'prdWeight')"
+              /></td>
               <td><input
                   :id="'prdSn_'+item.prdDesc"
                   v-model="item.prdSn"
                   @change="specPrdSnChange(item,index,$event.target.value,$event)"
                 /></td>
+              <td v-if="needPrdCodes === 1"><input
+                :id="'prdCodes_'+item.prdDesc"
+                v-model="item.prdCodes"
+                @change="specPrdCodesChange(item,index,$event.target.value,$event)"
+              /></td>
               <td>
                 <div
                   style="margin: 0 auto;width: 30px;height: 30px;border: 1px solid #ccc;cursor: pointer;"
@@ -154,6 +166,7 @@
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdCostPrice')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchCost')}}</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdMarketPrice')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchMarketPrice')}}</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdNumber')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchNum')}}</span>
+            <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdWeight')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchWeight')}}</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdImg')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchImgSrc')}}</span>
           </div>
         </div>
@@ -230,8 +243,8 @@
           <table class="specInfoWrapTable" v-if="specInfoSwitch">
             <tr>
               <th class="specInfoWrapTableThSkuName">SKU</th>
-              <!--规格价格(元)-->
-              <th class="specInfoWrapTableInputTh">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecPrdPrice')}}</th>
+              <!--规格价格（元）-->
+              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.prdPrice')}}</th>
               <template v-for="item in memberCards">
                 <th
                   :key="item.id"
@@ -266,13 +279,12 @@
                   size="small"
                   :underline="false"
                   @click="unifyMemberCardsPrice(item)"
-                >{{$t('goodsAddEditInfo.stockAndPriceInfo.unifyMemberCardsPrice')}}</el-link>
+                >{{$t('goodsAddEditInfo.stockAndPriceInfo.unifyMemberPrice')}}</el-link>
               </td>
             </tr>
           </table>
           <table class="specInfoWrapTable" v-else>
             <tr>
-              <!--商品价格(元)-->
               <th class="specInfoWrapTableInputTh">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsPrice')}}</th>
               <template v-for="item in memberCards">
                 <th
@@ -304,7 +316,7 @@
                   size="small"
                   :underline="false"
                   @click="unifyMemberCardsPrice()"
-                >{{$t('goodsAddEditInfo.stockAndPriceInfo.unifyMemberCardsPrice')}}</el-link>
+                >{{$t('goodsAddEditInfo.stockAndPriceInfo.unifyMemberPrice')}}</el-link>
               </td>
             </tr>
           </table>
@@ -412,6 +424,18 @@
         />
       </el-form-item>
 
+      <el-form-item
+        :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.prdCodes')"
+        v-if="!specInfoSwitch && needPrdCodes === 1"
+      >
+        <el-input
+          v-model="goodsProductInfo.prdCodes"
+          size="small"
+          style="width:170px;"
+          @change="defaultSpecCodesChangeRepeatCheck"
+        />
+      </el-form-item>
+
     </el-form>
     <!--图片dialog-->
     <ImageDalog
@@ -431,6 +455,16 @@ import {isNumberBlank, isStrBlank} from '@/util/typeUtil'
 import ImageDalog from '@/components/admin/imageDalog'
 
 export default {
+  props: {
+    needPrdCodes: {
+      type: Number,
+      default: 0
+    },
+    goodsWeightCfg: {
+      type: Number,
+      default: 0
+    }
+  },
   inject: ['isUpdateWrap'],
   components: {
     ImageDalog
@@ -458,7 +492,9 @@ export default {
         prdPrice: 0,
         prdCost: 0,
         prdSn: null,
-        prdSnBak: null
+        prdSnBak: null,
+        prdCodes: null,
+        prdCodesBak: null
       },
       stockAndPriceRules: {
         prdNumber: [
@@ -495,6 +531,9 @@ export default {
       this.stockAndPriceRules.prdNumber[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsNumber')
       this.stockAndPriceRules.prdPrice[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsPrice')
       this.stockAndPriceRules.prdCost[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsCostPrice')
+    },
+    specInfoSwitch (newVal) {
+      this.$emit('default_prd_change', !newVal)
     }
   },
   methods: {
@@ -551,16 +590,9 @@ export default {
     /* 商品规格价格、成本价格、库存发生变化变化 */
     specPrdInputChange (val, inputId, item, key) {
       if (typeof val !== 'number') {
-        if (inputId.indexOf('prdMarketPrice_') > -1 && !isNumberBlank(val)) {
+        if (inputId.indexOf('prdMarketPrice_') > -1 || inputId.indexOf('prdWeight_') > -1) {
           item[key] = null
-        }
-        if (inputId.indexOf('prdPrice_') > -1) {
-          item[key] = 0
-        }
-        if (inputId.indexOf('prdCostPrice_') > -1) {
-          item[key] = 0
-        }
-        if (inputId.indexOf('prdNumber_') > -1) {
+        } else {
           item[key] = 0
         }
         document.getElementById(inputId).focus()
@@ -600,6 +632,36 @@ export default {
           event.target.focus()
         } else {
           item.prdSnBak = item.prdSn
+        }
+      })
+    },
+    /* 商品条码改变 */
+    specPrdCodesChange (item, index, newVal, event) {
+      if (isStrBlank(newVal)) {
+        item.prdCodes = null
+        item.prdCodesBak = null
+        return
+      }
+
+      if (this._isSpecPrdCodesRepeated(index, newVal)) {
+        this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsPrdCodesInnerRepeated'), type: 'warning' })
+        item.prdCodes = item.prdCodesBak
+        event.target.focus()
+        return
+      }
+
+      let data = {
+        columnCheckFor: 1,
+        prdId: item.prdId,
+        prdCodes: newVal
+      }
+      isGoodsColumnValueExist(data).then(res => {
+        if (res.error === 0) {
+          this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsPrdCodesExist'), type: 'warning' })
+          item.prdCodes = item.prdCodesBak
+          event.target.focus()
+        } else {
+          item.prdCodesBak = item.prdCodes
         }
       })
     },
@@ -773,6 +835,26 @@ export default {
           continue
         }
         if (this.goodsProductInfo.goodsSpecProducts[i].prdSn === newVal) {
+          return true
+        }
+      }
+      return false
+    },
+    /*
+     * 商家条码是否重复
+     * index: newVal在goodsSpecProducts数组的索引
+     * newVal: 待比较的规格编码值
+     * */
+    _isSpecPrdCodesRepeated (index, newVal) {
+      if (isStrBlank(newVal)) {
+        return false
+      }
+      for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
+        // 自己不和自己比较
+        if (i === index) {
+          continue
+        }
+        if (this.goodsProductInfo.goodsSpecProducts[i].prdCodes === newVal) {
           return true
         }
       }
@@ -960,8 +1042,11 @@ export default {
         prdCostPrice: 0, // sku成本价 接口需要数据
         prdMarketPrice: null, // sku市场价 接口需要
         prdNumber: 0, // sku数量 接口需要数据
+        prdWeight: null, // sku重量 接口需要
         prdSn: null, // sku sn码 用户输入项
         prdSnBak: null, // sku sn码 接口需要数据
+        prdCodes: null, // sku 商品条码 用户输入项
+        prdCodesBak: null, // sku 商品条码 接口需要数据
         prdImg: {
           imgUrl: null, // 图片全路径 接口需要数据
           imgPath: null // 图片相对路径 接口需要数据
@@ -1071,9 +1156,9 @@ export default {
       }
 
       let data = {
-        columnCheckFor: 0,
-        goodsId: this.goodsProductInfo.goodsId,
-        goodsSn: this.goodsProductInfo.prdSn
+        columnCheckFor: 1,
+        prdId: this.goodsProductInfo.prdId,
+        prdSn: this.goodsProductInfo.prdSn
       }
       isGoodsColumnValueExist(data).then(res => {
         if (res.error === 0) {
@@ -1081,6 +1166,26 @@ export default {
           this.goodsProductInfo.prdSn = this.goodsProductInfo.prdSnBak
         } else {
           this.goodsProductInfo.prdSnBak = this.goodsProductInfo.prdSn
+        }
+      })
+    },
+    defaultSpecCodesChangeRepeatCheck () {
+      if (isStrBlank(this.goodsProductInfo.prdCodes)) {
+        this.goodsProductInfo.prdCodesBak = this.goodsProductInfo.prdCodes
+        return
+      }
+
+      let data = {
+        columnCheckFor: 1,
+        prdId: this.goodsProductInfo.prdId,
+        prdCodes: this.goodsProductInfo.prdCodes
+      }
+      isGoodsColumnValueExist(data).then(res => {
+        if (res.error === 0) {
+          this.$message.warning({ message: '商品条码重复', type: 'warning' })
+          this.goodsProductInfo.prdCodes = this.goodsProductInfo.prdCodesBak
+        } else {
+          this.goodsProductInfo.prdCodesBak = this.goodsProductInfo.prdCodes
         }
       })
     },
@@ -1124,6 +1229,8 @@ export default {
           prdNumber: specPrd.prdNumber,
           prdSn: specPrd.prdSn,
           prdSnBak: specPrd.prdSn,
+          prdCodes: specPrd.prdCodes,
+          prdCodesBak: specPrd.prdCodesBak,
           prdImg: {
             imgUrl: specPrd.prdImg,
             imgPath: specPrd.prdImgPath
@@ -1143,8 +1250,11 @@ export default {
           prdCostPrice: specPrd.prdCostPrice,
           prdMarketPrice: specPrd.prdMarketPrice,
           prdNumber: specPrd.prdNumber,
+          prdWeight: specPrd.prdWeight,
           prdSn: specPrd.prdSn,
           prdSnBak: specPrd.prdSn,
+          prdCodes: specPrd.prdCodes,
+          prdCodesBak: specPrd.prdCodes,
           prdImg: {
             imgUrl: specPrd.prdImgUrl,
             imgPath: specPrd.prdImg
@@ -1202,7 +1312,11 @@ export default {
         // 如果使用null的话vue那个组件认为你想要的是默认值 0，其实我是想显示空白
         this.goodsProductInfo.marketPrice = goodsData.marketPrice === null ? undefined : goodsData.marketPrice
         this.goodsProductInfo.prdCost = goodsData.costPrice
+        this.goodsProductInfo.prdId = goodsData.goodsSpecProducts[0].prdId
         this.goodsProductInfo.prdSn = goodsData.goodsSpecProducts[0].prdSn
+        this.goodsProductInfo.prdSnBak = goodsData.goodsSpecProducts[0].prdSn
+        this.goodsProductInfo.prdCodes = goodsData.goodsSpecProducts[0].prdCodes
+        this.goodsProductInfo.prdCodesBak = goodsData.goodsSpecProducts[0].prdCodes
       }
     },
     /* 页面数据初始化链，避免页面数据未加载完成的时候就初始化待修改商品数据，返回一个Promise */
@@ -1215,7 +1329,7 @@ export default {
       this.arrorFlag = false
       return this.initPageDataLink().then(() => {
         let isUseDefaultPrd = false
-
+        // 初始化店铺配置的商品编辑相关信息
         // 判断是否使用默认的规格项
         let prdDesc = goodsData.goodsSpecProducts[0].prdDesc
         if (goodsData.goodsSpecProducts.length === 1 && isStrBlank(prdDesc)) {
@@ -1226,7 +1340,6 @@ export default {
         this._initGoodsSpecs(goodsData, isUseDefaultPrd)
         // 初始化商品规格项（sku）
         this._initGoodsSpecProducts(goodsData, isUseDefaultPrd)
-
         // 初始化会员卡信息
         this._initMemberCards(goodsData)
         // 会员价设置是否显示设置
@@ -1279,7 +1392,6 @@ export default {
         //     return false
         //   }
         // }
-
         // 验证会员价格
         for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
           let specProduct = this.goodsProductInfo.goodsSpecProducts[i]
@@ -1305,19 +1417,19 @@ export default {
       } else {
         // 商品库存检查
         if (isNumberBlank(this.goodsProductInfo.prdNumber) || this.goodsProductInfo.prdNumber < 0) {
-          this.$message.warning({ message: '商品库存填写错误', type: 'warning' })
+          this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsNumberWrong'), type: 'warning' })
           this.$refs.prdNumberInput.focus()
           return false
         }
         // 商品价格验证
         if (isNumberBlank(this.goodsProductInfo.prdPrice) || this.goodsProductInfo.prdPrice < 0) {
-          this.$message.warning({ message: '商品价格填写错误', type: 'warning' })
+          this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsPriceWrong'), type: 'warning' })
           this.$refs.prdPriceInput.focus()
           return false
         }
         // 成本价格验证
         if (isNumberBlank(this.goodsProductInfo.prdCost) || this.goodsProductInfo.prdCost < 0) {
-          this.$message.warning({ message: '成本价格填写错误', type: 'warning' })
+          this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsPriceWrong'), type: 'warning' })
           this.$refs.prdPriceInput.focus()
           return false
         }
@@ -1328,12 +1440,12 @@ export default {
             continue
           }
           if (isNumberBlank(item.cardPrice) || item.cardPrice < 0) {
-            this.$message.warning({ message: '会员价格不可为空', type: 'warning' })
+            this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.memberPriceIsNull'), type: 'warning' })
             document.getElementById(item.cardName).focus()
             return false
           }
           if (item.cardPrice > this.goodsProductInfo.prdPrice) {
-            this.$message.warning({ message: '会员价格不可高于商品价格', type: 'warning' })
+            this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.memberPriceIsLarger'), type: 'warning' })
             document.getElementById(item.cardName).focus()
             return false
           }
@@ -1344,7 +1456,7 @@ export default {
       if (this.goodsProductInfo.limitBuyNum !== 0 && this.goodsProductInfo.limitMaxNum !== 0) {
         if (!isNumberBlank(this.goodsProductInfo.limitBuyNum) && !isNumberBlank(this.goodsProductInfo.limitMaxNum)) {
           if (this.goodsProductInfo.limitBuyNum > this.goodsProductInfo.limitMaxNum) {
-            this.$message.warning({ message: '最小限购数量不可大于最大限购数量', type: 'warning' })
+            this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.limitPriceIsWrong'), type: 'warning' })
             this.$refs.limitBuyNumInput.focus()
             return false
           }
@@ -1404,6 +1516,7 @@ export default {
           prdDesc: '',
           prdSpecs: '',
           prdSn: this.goodsProductInfo.prdSn,
+          prdCodes: this.goodsProductInfo.prdCodes,
           prdNumber: this.goodsProductInfo.prdNumber,
           prdPrice: this.goodsProductInfo.prdPrice,
           prdCostPrice: this.goodsProductInfo.prdCost,
@@ -1426,8 +1539,10 @@ export default {
             prdPrice: specProduct.prdPrice,
             prdCostPrice: specProduct.prdCostPrice | 0,
             prdNumber: specProduct.prdNumber,
+            prdWeight: specProduct.prdWeight,
             prdMarketPrice: specProduct.prdMarketPrice,
             prdSn: specProduct.prdSn,
+            prdCodes: specProduct.prdCodes,
             prdImg: specProduct.prdImg.imgPath
           })
 
@@ -1534,6 +1649,7 @@ export default {
   cursor: pointer;
   opacity: 0.8;
 }
+
 .specInfoWrap .specInfoWrapTable{
   min-width: 1000px;
 }

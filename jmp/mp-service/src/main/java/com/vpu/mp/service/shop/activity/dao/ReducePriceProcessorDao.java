@@ -52,7 +52,7 @@ public class ReducePriceProcessorDao extends ShopBaseService {
             .and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(REDUCE_PRICE_GOODS.GOODS_ID.in(goodsIds))
             .and(REDUCE_PRICE.END_TIME.gt(date))
-            .orderBy(REDUCE_PRICE.CREATE_TIME)
+            .orderBy(REDUCE_PRICE.FIRST.desc(),REDUCE_PRICE.CREATE_TIME.desc())
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(REDUCE_PRICE_GOODS.GOODS_ID)));
 
         Condition condition = DSL.noCondition();
@@ -97,7 +97,7 @@ public class ReducePriceProcessorDao extends ShopBaseService {
      */
     public ReducePriceMpVo getReducePriceInfo(Integer goodsId,Timestamp date){
         List<ReducePriceRecord> reducePriceRecords = db().select(REDUCE_PRICE.asterisk()).from(REDUCE_PRICE).innerJoin(REDUCE_PRICE_GOODS).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID))
-            .where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(REDUCE_PRICE_GOODS.GOODS_ID.eq(goodsId)))
+            .where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(REDUCE_PRICE_GOODS.GOODS_ID.eq(goodsId)).and(REDUCE_PRICE.END_TIME.gt(date)))
             .orderBy(REDUCE_PRICE.FIRST.desc(),REDUCE_PRICE.CREATE_TIME.desc()).fetchInto(ReducePriceRecord.class);
 
         if (reducePriceRecords==null||reducePriceRecords.size() == 0) {
@@ -108,11 +108,6 @@ public class ReducePriceProcessorDao extends ShopBaseService {
         ReducePriceRecord reducePriceRecord = reducePriceRecords.get(0);
         Integer reduceId = reducePriceRecord.getId();
 
-        // 活动结束
-        if (date.compareTo(reducePriceRecord.getEndTime()) > 0) {
-            logger().debug("活动结束[activityId:{}]", reduceId);
-            return null;
-        }
 
         ReducePriceMpVo vo =new ReducePriceMpVo();
         vo.setActivityId(reducePriceRecord.getId());

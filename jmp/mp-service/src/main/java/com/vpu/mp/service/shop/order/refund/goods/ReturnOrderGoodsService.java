@@ -55,6 +55,14 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 				.fetch();
 		return goods;	
 	}
+
+    public Result<Record> getByRetIds(Integer... retIds) {
+        Result<Record> goods = db().select(TABLE.asterisk()).from(TABLE)
+            .where(TABLE.RET_ID.in(retIds))
+            .orderBy(TABLE.ID)
+            .fetch();
+        return goods;
+    }
 	
 	public Result<ReturnOrderGoodsRecord> getReturnGoods(String orderSn,Integer retId) {
 		 return db().selectFrom(TABLE).where(TABLE.ORDER_SN.eq(orderSn).and(TABLE.RET_ID.eq(retId))).fetch();

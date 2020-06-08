@@ -3335,7 +3335,7 @@ CREATE TABLE `b2c_search_history` (
 
 CREATE TABLE `b2c_sec_kill_define` (
   `sk_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '秒杀活动id',
-  `goods_id` int(11) NOT NULL COMMENT '商品id',
+  `goods_id` text COMMENT '商品ID',
   `name` varchar(100) NOT NULL COMMENT '活动名称',
   `limit_amount` smallint(6) NOT NULL COMMENT '每人限购数量',
   `limit_paytime` smallint(6) NOT NULL COMMENT '规定的有效支付时间',
@@ -3351,8 +3351,7 @@ CREATE TABLE `b2c_sec_kill_define` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `card_id` text COMMENT '专属会员卡',
   `share_config` text COMMENT '分享配置',
-  PRIMARY KEY (`sk_id`),
-  KEY `goods_id` (`goods_id`)
+  PRIMARY KEY (`sk_id`)
 )COMMENT='秒杀定义';
 
 

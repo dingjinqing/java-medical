@@ -42,6 +42,15 @@ export function integrationRules (data) {
   })
 }
 
+// 问题反馈
+export function feedbackRequest (data) {
+  return service({
+    url: '/api/admin/question/feedback',
+    method: 'post',
+    data: data
+  })
+}
+
 // 小程序拼团抽奖规则接口
 export function pinLotteryRules (data) {
   return service({

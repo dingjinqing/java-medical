@@ -8,8 +8,10 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 /**
  * @author 黄壮壮
  * @Date: 2019年11月1日
- * @Description:
+ * @Description: generate by generateRecordBuild.py
  */
+
+
 public class MemberCardRecordBuilder {
 	private MemberCardRecord record;
 	
@@ -457,7 +459,50 @@ public class MemberCardRecordBuilder {
 		return this;
 	}
 
+	public MemberCardRecordBuilder customOptions (String customOptions) {
+		if(customOptions != null){
+			record.setCustomOptions(customOptions);
+		}
+		return this;
+	}
+
+	public MemberCardRecordBuilder cardTag (Byte cardTag) {
+		if(cardTag != null){
+			record.setCardTag(cardTag);
+		}
+		return this;
+	}
+
+	public MemberCardRecordBuilder cardTagId (String cardTagId) {
+		if(cardTagId != null){
+			record.setCardTagId(cardTagId);
+		}
+		return this;
+	}
+
+	public MemberCardRecordBuilder cardGiveAway (Byte cardGiveAway) {
+		if(cardGiveAway != null){
+			record.setCardGiveAway(cardGiveAway);
+		}
+		return this;
+	}
+
+	public MemberCardRecordBuilder cardGiveContinue (Byte cardGiveContinue) {
+		if(cardGiveContinue != null){
+			record.setCardGiveContinue(cardGiveContinue);
+		}
+		return this;
+	}
+
+	public MemberCardRecordBuilder mostGiveAway (Integer mostGiveAway) {
+		if(mostGiveAway != null){
+			record.setMostGiveAway(mostGiveAway);
+		}
+		return this;
+	}
+
 	public MemberCardRecord build() {
 		return record;
 	}
 }
+

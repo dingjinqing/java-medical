@@ -10,6 +10,7 @@ import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
 import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
+import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +59,8 @@ public class GoodsSearchMpService extends ShopBaseService {
     SeckillService seckillService;
     @Autowired
     CouponService couponService;
+    @Autowired
+    BargainService bargainService;
     @Autowired
     private ShopCommonConfigService shopCommonConfigService;
 
@@ -113,16 +117,25 @@ public class GoodsSearchMpService extends ShopBaseService {
                 goodsIds = getGoodsIdsLimitedForSecKillQrCode(param);
             } else if (GoodsSearchMpParam.PAGE_FROM_COUPON.equals(param.getPageFrom())) {
                 goodsIds = getGoodsIdsLimitedForVoucher(param);
-            } else {
+            } else if (GoodsSearchMpParam.PAGE_FROM_BARGAIN.equals(param.getPageFrom())){
+                goodsIds = getGoodsIdsLimitedForBargainQrCode(param);
+            }else {
                 // 空数组将搜索不出来商品
                 goodsIds = new ArrayList<>();
             }
             param.setGoodsIds(goodsIds);
         }
-
         PageResult<GoodsListMpBo> pageResult = searchGoods(param);
 
         goodsMpService.disposeGoodsList(pageResult.dataList, param.getUserId());
+        // 临时添加，13版本要删除
+        if (pageResult.dataList != null && pageResult.dataList.size()>0) {
+            for (GoodsListMpBo goodsListMpBo : pageResult.dataList) {
+                if (goodsListMpBo.getLinePrice() == null) {
+                    goodsListMpBo.setLinePrice(BigDecimal.ZERO);
+                }
+            }
+        }
         GoodsShowStyleConfigBo goodsShowStyle = goodsMpService.getGoodsShowStyle();
         GoodsSearchContentVo vo = new GoodsSearchContentVo();
         vo.setDelMarket(goodsShowStyle.getDelMarket());
@@ -168,6 +181,16 @@ public class GoodsSearchMpService extends ShopBaseService {
     }
 
     /**
+     * admin砍价活动扫码进入
+     * @param param GoodsSearchMpParam
+     * @return 该活动下的有效商品信息
+     */
+    private List<Integer> getGoodsIdsLimitedForBargainQrCode(GoodsSearchMpParam param) {
+        int activityId =  param.getOuterPageParam().getActId();
+        return bargainService.getBargainCanUseGoodsIds(activityId, goodsMpService.getGoodsBaseCondition());
+    }
+
+    /**
      * 搜索小程序商品信息
      *
      * @param param 商品信息过滤条件
@@ -198,7 +221,6 @@ public class GoodsSearchMpService extends ShopBaseService {
 
     /**
      * 数据库搜索商品
-     *
      * @param param 搜索条件
      * @return 搜索到的内容
      */
@@ -213,7 +235,6 @@ public class GoodsSearchMpService extends ShopBaseService {
 
     /**
      * 商品搜索-db-条件拼接
-     *
      * @param param 搜索条件
      * @return
      */
@@ -261,14 +282,13 @@ public class GoodsSearchMpService extends ShopBaseService {
 
     /**
      * 排序字段拼接
-     *
-     * @param param 请求条件
+     * @param param  请求条件
      * @return 待排序字段集合
      */
     protected List<SortField<?>> buildSearchOrderFields(GoodsSearchMpParam param) {
         List<SortField<?>> list = new ArrayList<>(2);
 
-        if (param.getSortItem() != null && param.getSortItem() != SortItemEnum.NULL) {
+        if(param.getSortItem() != null && param.getSortItem() != SortItemEnum.NULL){
             //目前用户可以指定销量和价格两种排序方式
             if (SortItemEnum.SALE_NUM.equals(param.getSortItem())) {
                 if (SortDirectionEnum.DESC.equals(param.getSortDirection())) {
@@ -286,7 +306,7 @@ public class GoodsSearchMpService extends ShopBaseService {
             }
         }
 
-        if (shopCommonConfigService.getSearchSort().equals(Byte.valueOf((byte) 1))) {
+        if(shopCommonConfigService.getSearchSort().equals(Byte.valueOf((byte)1))){
             list.add(goodsMpService.getShopGoodsSort());
         }
         log.info("db搜索排序-" + list);

@@ -3,8 +3,12 @@ package com.vpu.mp.service.shop.distribution;
 import com.vpu.mp.db.shop.tables.DistributorLevel;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.DistributorApplyRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
@@ -15,12 +19,10 @@ import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
 import com.vpu.mp.service.pojo.shop.member.data.EducationVo;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.data.MarriageData;
-import com.vpu.mp.service.pojo.wxapp.distribution.ActivationInfoVo;
-import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
-import com.vpu.mp.service.pojo.wxapp.distribution.UserBaseInfoVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.*;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
-import org.jooq.Record;
-import org.jooq.Record4;
+import jodd.util.StringUtil;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +56,9 @@ public class MpDistributionService extends ShopBaseService{
     @Autowired
     public DistributorGroupService distributorGroup;
 
+    @Autowired
+    public DistributorListService disList;
+
     /**
      * 申请分销员页面信息
      * @param lang
@@ -80,10 +85,12 @@ public class MpDistributionService extends ShopBaseService{
             baseInfo.setEducationName(education);
         }
         //性别
-        if(baseInfo.getSex().equalsIgnoreCase("f")){
-            baseInfo.setSex("女");
-        }else if(baseInfo.getSex().equalsIgnoreCase("m")){
-            baseInfo.setSex("男");
+        if(baseInfo.getSex() != null){
+            if(baseInfo.getSex().equalsIgnoreCase("f")){
+                baseInfo.setSex("女");
+            }else if(baseInfo.getSex() != null && baseInfo.getSex().equalsIgnoreCase("m")){
+                baseInfo.setSex("男");
+            }
         }
         //婚姻状况
         if(baseInfo.getMaritalStatus() != null){
@@ -226,15 +233,32 @@ public class MpDistributionService extends ShopBaseService{
      * @return
      */
 	public DistributorApplyDetailParam getDistributorApplyDetail(DistributorApplyDetailParam param){
-	    //获取最新申请记录
+        DistributorApplyDetailParam detail = new DistributorApplyDetailParam();
+	    //用户是否分销员
+        Integer isDistributor = this.isDistributor(param.getUserId());
+        //获取最新申请记录
 	   Record record = db().select().from(DISTRIBUTOR_APPLY).where(DISTRIBUTOR_APPLY.USER_ID.eq(param.getUserId())).
            orderBy(DISTRIBUTOR_APPLY.CREATE_TIME.desc()).limit(1).fetchOne();
 	   if(record != null){
-           return record.into(DistributorApplyDetailParam.class);
+           detail = record.into(DistributorApplyDetailParam.class);
+           if(isDistributor == 0 && detail.getStatus() == 1){
+               detail.setStatus(3);
+           }
        }else {
-	       return null;
+           detail.setStatus(3);
        }
+	   return detail;
     }
+
+    /**
+     * 判断用户是否为分销员
+     * @param userId
+     * return 0：否；1：是
+     */
+    public Integer isDistributor(Integer userId){
+        Integer isDistributor = db().select(USER.IS_DISTRIBUTOR).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(Integer.class);
+        return isDistributor;
+	}
 
     /**
      * 获取分销推广文案
@@ -242,6 +266,9 @@ public class MpDistributionService extends ShopBaseService{
      */
     public DistributionDocumentParam getDistributorDoc(){
         DistributionDocumentParam distributionDocument = distributionCfg.getDistributionDocument();
+        //获取分销审核开关配置
+        Byte activation = this.distributionCfg.getDistributionCfg().getActivation();
+        distributionDocument.setActivation(activation);
         return distributionDocument;
     }
 
@@ -250,21 +277,38 @@ public class MpDistributionService extends ShopBaseService{
      * @param userId
      * @return
      */
-    public RebateCenterVo rebateCenter(Integer userId){
+    public RebateCenterVo rebateCenter(Integer userId) {
         RebateCenterVo rebateCenterVo = new RebateCenterVo();
+        //是否是分销员
+        Integer isDistributor = this.isDistributor(userId);
+        rebateCenterVo.setIsDistributor(isDistributor);
+        //分销开关是否开启
+        DistributionParam distributionCfg = this.distributionCfg.getDistributionCfg();
+        rebateCenterVo.setStatus(distributionCfg.getStatus());
+        //分销审核开关是否开启
+        rebateCenterVo.setJudgeStatus(distributionCfg.getJudgeStatus());
         //用户信息
         BigDecimal account = db().select(USER.ACCOUNT).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(BigDecimal.class);
         //返利信息
         UserTotalFanliVo userRebate = this.userTotalFanli.getUserRebate(userId);
-        if(userRebate.getTotalMoney().compareTo(account)<0){
+        if (userRebate.getTotalMoney() != null && userRebate.getTotalMoney().compareTo(account) < 0) {
             rebateCenterVo.setCanWithdraw(userRebate.getTotalMoney());
-        }else{
+        } else {
             rebateCenterVo.setCanWithdraw(account);
+        }
+        if (distributionCfg.getStatus() != 1 || (isDistributor != 1 && distributionCfg.getJudgeStatus() == 1)){
+            if (distributionCfg.getWithdrawStatus() != 1) {
+                BigDecimal account1 = new BigDecimal("0.00");
+                rebateCenterVo.setCanWithdraw(account1);
+            }
         }
         rebateCenterVo.setTotalWithdraw(userRebate.getTotalMoney());
         //待返利佣金
         BigDecimal waitFanliMoney = this.waitFanliMoney(userId);
         rebateCenterVo.setWaitWithdraw(waitFanliMoney);
+        //我的邀请码
+        UserRecord userInfo = db().select().from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(UserRecord.class);
+        rebateCenterVo.setInvitationCode(userInfo.getInvitationCode());
         //邀请用户数
         Integer inviteUserNum = this.inviteUserNum(userId);
         rebateCenterVo.setInviteUserNum(inviteUserNum);
@@ -278,7 +322,7 @@ public class MpDistributionService extends ShopBaseService{
         DistributorLevelParam distributorLevelInfo = this.distributorLevel(userId);
         rebateCenterVo.setDistributorLevel(distributorLevelInfo.getLevelName());
         //我的分组
-        DistributorGroupListVo groupInfo = distributorGroup.getOneInfo(userId);
+        DistributorGroupListVo groupInfo = distributorGroup.getGroupByUserId(userId);
         rebateCenterVo.setDistributorGroup(groupInfo.getGroupName());
         return rebateCenterVo;
 
@@ -332,5 +376,94 @@ public class MpDistributionService extends ShopBaseService{
         DistributorLevelParam distributorLevelInfo = db().select(DISTRIBUTOR_LEVEL.LEVEL_NAME).from(USER.leftJoin(DISTRIBUTOR_LEVEL).on(USER.DISTRIBUTOR_LEVEL.eq(DISTRIBUTOR_LEVEL.LEVEL_ID)))
             .where(USER.USER_ID.eq(userId)).fetchOne().into(DistributorLevelParam.class);
         return distributorLevelInfo;
+    }
+
+    /**
+     * 分销员邀请下级用户（我邀请的用户）
+     * @param param
+     * @return
+     */
+    public PageResult<DistributorInvitedListVo> myInviteUser(DistributorInvitedListParam param){
+        PageResult<DistributorInvitedListVo> invitedList = disList.getInvitedList(param);
+        return invitedList;
+    }
+
+    /**
+     * 邀请用户返利订单
+     * @param param
+     * @return
+     */
+    public PageResult<RebateOrderVo> rebateOrder(RebateOrderParam param){
+        SelectOnConditionStep<? extends Record> select = db().select(ORDER_GOODS_REBATE.ORDER_SN, ORDER_INFO.CREATE_TIME, ORDER_INFO.FINISHED_TIME,
+            ORDER_INFO.ORDER_STATUS, ORDER_INFO.ORDER_STATUS_NAME, USER.USERNAME, sum(ORDER_GOODS_REBATE.REAL_REBATE_MONEY).as("fanliMoney"),
+            ORDER_GOODS_REBATE.REBATE_LEVEL)
+            .from(ORDER_GOODS_REBATE)
+            .leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
+            .leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
+        SelectOnConditionStep<? extends Record> sql = rebateOrderOptions(select, param);
+        PageResult<RebateOrderVo> pageResult = getPageResult(sql, param.getCurrentPage(), param.getRowsPage(), RebateOrderVo.class);
+
+        for(RebateOrderVo list : pageResult.dataList){
+            getCanCalculateMoney(list.getOrderSn(),param.getUserId());
+        }
+        //TODO 计算实际返利信息
+
+        return pageResult;
+    }
+
+    /**
+     * 返利订单条件查询
+     * @param select
+     * @param param
+     * @return
+     */
+    public SelectOnConditionStep<? extends Record> rebateOrderOptions(SelectOnConditionStep<? extends Record> select,RebateOrderParam param){
+        select.where(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(param.getUserId()));
+        if(param.getStartTime() != null && param.getStartTime() != null){
+            select.and(ORDER_INFO.CREATE_TIME.gt(param.getStartTime())).and(ORDER_INFO.CREATE_TIME.lt(param.getEndTime()));
+        }
+        select.groupBy(ORDER_GOODS_REBATE.ORDER_SN, ORDER_INFO.CREATE_TIME, ORDER_INFO.FINISHED_TIME,
+            ORDER_INFO.ORDER_STATUS, ORDER_INFO.ORDER_STATUS_NAME, USER.USERNAME,
+            ORDER_GOODS_REBATE.REBATE_LEVEL);
+        return select;
+    }
+
+    /**
+     * 计算订单返利金额
+     * @param orderSn
+     * @param rebateUserId
+     * @return
+     */
+    public BigDecimal getCanCalculateMoney(String orderSn,Integer rebateUserId) {
+        //查询商品行信息
+        List<OrderGoodsRecord> orderGoodsInfo = db().select(ORDER_GOODS.ORDER_SN, ORDER_GOODS.PRODUCT_ID, ORDER_GOODS.CAN_CALCULATE_MONEY, ORDER_GOODS.GOODS_NUMBER, ORDER_GOODS.RETURN_NUMBER)
+            .from(ORDER_GOODS).where(ORDER_GOODS.ORDER_SN.eq(orderSn)).fetch().into(OrderGoodsRecord.class);
+
+        //得到订单信息 SETTLEMENT_FLAG：结算标记：0未结算；1结算
+        Integer settlementFlag = db().select(ORDER_INFO.SETTLEMENT_FLAG).from(ORDER_INFO).where(ORDER_INFO.ORDER_SN.eq(orderSn)).fetchOne().into(Integer.class);
+        BigDecimal calculateMoney = new BigDecimal(0);
+        for (OrderGoodsRecord item : orderGoodsInfo) {
+            if (rebateUserId > 0 && settlementFlag == 1) {
+                Record2<BigDecimal, BigDecimal> record = db().select(ORDER_GOODS_REBATE.REBATE_MONEY, ORDER_GOODS_REBATE.REAL_REBATE_MONEY).from(ORDER_GOODS_REBATE).where(ORDER_GOODS_REBATE.ORDER_SN.eq(item.getOrderSn())).and(ORDER_GOODS_REBATE.PRODUCT_ID.eq(item.getProductId()))
+                    .and(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(rebateUserId)).fetchOne();
+                if (record != null) {
+                    OrderGoodsRebateRecord goodsRebate = record.into(OrderGoodsRebateRecord.class);
+                    if (goodsRebate.getRebateMoney().compareTo(BigDecimal.ZERO) > 0) {
+                        BigDecimal divide = goodsRebate.getRealRebateMoney().divide(goodsRebate.getRebateMoney(), 2);
+                        calculateMoney = calculateMoney.multiply(divide);
+                    } else {
+                        BigDecimal goodsNumber = BigDecimal.valueOf(item.getGoodsNumber());
+                        BigDecimal returnNumber = BigDecimal.valueOf(item.getReturnNumber());
+                        calculateMoney = calculateMoney.add(item.getCanCalculateMoney().multiply(goodsNumber.subtract(returnNumber)));
+                    }
+                }
+            } else {
+                BigDecimal goodsNumber = BigDecimal.valueOf(item.getGoodsNumber());
+                BigDecimal returnNumber = BigDecimal.valueOf(item.getReturnNumber());
+                calculateMoney = calculateMoney.add(item.getCanCalculateMoney().multiply(goodsNumber.subtract(returnNumber)));
+            }
+
+        }
+        return calculateMoney;
     }
 }

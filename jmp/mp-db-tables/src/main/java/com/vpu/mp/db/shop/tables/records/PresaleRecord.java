@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PresaleRecord extends UpdatableRecordImpl<PresaleRecord> {
 
-    private static final long serialVersionUID = 665377578;
+    private static final long serialVersionUID = -1946407487;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_presale.id</code>. 活动id
@@ -170,17 +170,17 @@ public class PresaleRecord extends UpdatableRecordImpl<PresaleRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_presale.goods_id</code>. 商品id
+     * Setter for <code>mini_shop_471752.b2c_presale.goods_id</code>. 商品id 1,2,4
      */
-    public void setGoodsId(Integer value) {
+    public void setGoodsId(String value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_presale.goods_id</code>. 商品id
+     * Getter for <code>mini_shop_471752.b2c_presale.goods_id</code>. 商品id 1,2,4
      */
-    public Integer getGoodsId() {
-        return (Integer) get(10);
+    public String getGoodsId() {
+        return (String) get(10);
     }
 
     /**
@@ -365,6 +365,34 @@ public class PresaleRecord extends UpdatableRecordImpl<PresaleRecord> {
         return (String) get(23);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_presale.pre_time</code>. 预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数
+     */
+    public void setPreTime(Integer value) {
+        set(24, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_presale.pre_time</code>. 预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数
+     */
+    public Integer getPreTime() {
+        return (Integer) get(24);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_presale.first</code>. 优先级
+     */
+    public void setFirst(Integer value) {
+        set(25, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_presale.first</code>. 优先级
+     */
+    public Integer getFirst() {
+        return (Integer) get(25);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -391,7 +419,7 @@ public class PresaleRecord extends UpdatableRecordImpl<PresaleRecord> {
     /**
      * Create a detached, initialised PresaleRecord
      */
-    public PresaleRecord(Integer id, Byte presaleType, String presaleName, Byte prePayStep, Timestamp preStartTime, Timestamp preEndTime, Timestamp preStartTime_2, Timestamp preEndTime_2, Timestamp startTime, Timestamp endTime, Integer goodsId, Byte deliverType, Timestamp deliverTime, Integer deliverDays, Byte discountType, Byte returnType, Integer showSaleNumber, Byte buyType, Integer buyNumber, Byte status, Byte delFlag, Timestamp createTime, Timestamp updateTime, String shareConfig) {
+    public PresaleRecord(Integer id, Byte presaleType, String presaleName, Byte prePayStep, Timestamp preStartTime, Timestamp preEndTime, Timestamp preStartTime_2, Timestamp preEndTime_2, Timestamp startTime, Timestamp endTime, String goodsId, Byte deliverType, Timestamp deliverTime, Integer deliverDays, Byte discountType, Byte returnType, Integer showSaleNumber, Byte buyType, Integer buyNumber, Byte status, Byte delFlag, Timestamp createTime, Timestamp updateTime, String shareConfig, Integer preTime, Integer first) {
         super(Presale.PRESALE);
 
         set(0, id);
@@ -418,5 +446,7 @@ public class PresaleRecord extends UpdatableRecordImpl<PresaleRecord> {
         set(21, createTime);
         set(22, updateTime);
         set(23, shareConfig);
+        set(24, preTime);
+        set(25, first);
     }
 }

@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.records.CommentGoodsRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.*;
@@ -14,8 +15,9 @@ import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.comment.*;
-import com.vpu.mp.service.saas.categroy.SysCateService;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.CommentDetailVo;
 import com.vpu.mp.service.saas.comment.CommentSwitch;
+import com.vpu.mp.service.shop.activity.dao.GoodsCommentProcessorDao;
 import com.vpu.mp.service.shop.config.CommentConfigService;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.goods.mp.MPGoodsRecommendService;
@@ -48,17 +50,37 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
  */
 @Service
 public class GoodsCommentService extends ShopBaseService {
-    @Autowired private CommentConfigService commentConfigService;
-    @Autowired private CommentSwitch commentSwitch;
+  @Autowired private CommentConfigService commentConfigService;
+  @Autowired private CommentSwitch commentSwitch;
   @Autowired private CouponGiveService couponGiveService;
   @Autowired private ScoreService scoreService;
   @Autowired private AccountService accountService;
   @Autowired private MPGoodsRecommendService mpGoodsRecommendService;
+  @Autowired private GoodsCommentProcessorDao goodsCommentProcessorDao;
   private static final int THREE = 3;
   private static final int FOUR = 4;
   private static final int FIVE = 5;
   private static final byte GET_SOURCE = 3;
-
+    /**
+     * 审核配置对应码  0不审，1先发后审，2先审后发
+     */
+    private static final Byte NOT_AUDIT = 0;
+    private static final Byte PUBLISH_FIRST = 1;
+    private static final Byte CHECK_FIRST = 2;
+    /**
+     * 隐藏未填写心得评论配置值
+     */
+    private static final Byte NOT_SHOW_STATE = 1;
+    /***商品评价状态对应码*/
+    private static final Byte PASS_AUDIT = 1;
+    private static final Byte NOT_PASS_AUDIT = 2;
+    /** 筛选条件 */
+    private static final Byte GOOD_TYPE = 1;
+    private static final Byte MID_TYPE = 2;
+    private static final Byte BAD_TYPE = 3;
+    private static final Byte PIC_TYPE = 4;
+    /** 匿名标识 */
+    private static final Byte ANONYMOUS_FLAG = 0;
   public static final Condition TRUE_CONDITION = DSL.trueCondition();
 
   /**
@@ -80,6 +102,7 @@ public class GoodsCommentService extends ShopBaseService {
                     COMMENT_GOODS.ANONYMOUSFLAG,
                     COMMENT_GOODS.BOGUS_USERNAME,
                     COMMENT_GOODS.COMMENT_AWARD_ID,
+                    COMMENT_GOODS.IS_TOP,
                     GOODS.GOODS_NAME,
                     GOODS.GOODS_IMG,
                     USER.USER_ID,
@@ -164,6 +187,10 @@ public class GoodsCommentService extends ShopBaseService {
           select.and(COMMENT_GOODS.FLAG.eq(BYTE_ZERO))
               .and(COMMENT_GOODS.CREATE_TIME.add(param.getNDays()).lessThan(Timestamp.valueOf(LocalDateTime.now())));
       }
+    //根据是否置顶查询
+    if (GoodsCommentPageListParam.TOP.equals(param.getIsTop())){
+        select.and(COMMENT_GOODS.IS_TOP.eq(GoodsCommentPageListParam.TOP));
+    }
   }
 
     /**
@@ -345,17 +372,16 @@ public class GoodsCommentService extends ShopBaseService {
   public int addComment(GoodsCommentAddCommParam goodsCommentAddComm) {
       //有权限
       if (commentSwitch.getAddCommentSwitch(getSysId()).equals(NumberUtils.INTEGER_ONE)){
-          //查询审核配置
-//          Byte commSwitch = commentConfigService.getCommentConfig();
+          String sqlImg = "";
+          if (!StringUtils.isEmpty(goodsCommentAddComm.getCommImg())&&!"".equals(goodsCommentAddComm.getCommImg())){
+              String img = goodsCommentAddComm.getCommImg();
+              String[] imgArr = img.split(",");
+              for (String i:imgArr){
+                  sqlImg = sqlImg+"\""+i+"\""+",";
+              }
+              sqlImg = "["+sqlImg.substring(0,sqlImg.length()-1)+"]";
+          }
           Byte flag =1;
-//          //不用审核 先发后审
-//          if (commSwitch.equals(BYTE_ONE)||commSwitch.equals(BYTE_ZERO)){
-//              flag = 1;
-//          }
-//          //先审后发
-//          else {
-//              flag = 0;
-//          }
 
           //手动添加评价
           db().insertInto(
@@ -383,7 +409,7 @@ public class GoodsCommentService extends ShopBaseService {
                   goodsCommentAddComm.getCreateTime(),
                   goodsCommentAddComm.getCommstar(),
                   goodsCommentAddComm.getCommNote(),
-                  goodsCommentAddComm.getCommImg(),
+                  sqlImg,
                   goodsCommentAddComm.getAnonymousFlag(),
                   NumberUtils.BYTE_ONE,
                   goodsCommentAddComm.getPrdId(),
@@ -748,6 +774,9 @@ public class GoodsCommentService extends ShopBaseService {
         if (StringUtils.isBlank(param.getCommNote())){
             param.setCommNote(null);
         }
+        if (StringUtils.isBlank(param.getCommImg())){
+            param.setCommNote(null);
+        }
         // 为指定商品添加评论
         db().insertInto(
             COMMENT_GOODS,
@@ -1030,5 +1059,143 @@ public class GoodsCommentService extends ShopBaseService {
             select.and(COMMENT_GOODS.COMM_NOTE.isNotNull()).and(COMMENT_GOODS.COMM_NOTE.notEqual(""));
         }
         return select.fetchOptionalInto(Integer.class).orElse(0);
+    }
+
+    /**
+     * 将评论置顶
+     * @param param 评价记录id
+     */
+    public void setTop(GoodsCommentIdParam param){
+        db().update(COMMENT_GOODS)
+            .set(COMMENT_GOODS.IS_TOP,GoodsCommentPageListParam.TOP)
+            .set(COMMENT_GOODS.TOP_TIME, DateUtil.getSqlTimestamp())
+            .where(COMMENT_GOODS.ID.eq(param.getId()))
+            .execute();
+    }
+
+    /**
+     * 取消评论置顶
+     * @param param 评价记录id
+     */
+    public void cancelTop(GoodsCommentIdParam param){
+        Timestamp topTime = null;
+        db().update(COMMENT_GOODS)
+            .set(COMMENT_GOODS.IS_TOP,GoodsCommentPageListParam.NOT_TOP)
+            .set(COMMENT_GOODS.TOP_TIME, topTime)
+            .where(COMMENT_GOODS.ID.eq(param.getId()))
+            .execute();
+    }
+
+    /**
+     * 单商品评价详情
+     * @param param goodsId和筛选条件
+     * @return 评价详情和百分比
+     */
+    public CommentInfo goodsComment(MPGoodsCommentParam param){
+        //0不用审核，1先发后审，2先审后发
+        Byte commentFlag = commentConfigService.getCommentConfig();
+        //设置前端是否隐藏未填写心得的评价，0关，1开
+        Byte commentSee = commentConfigService.getSwitchConfig();
+        PageResult<MPGoodsCommentVo> comment = getGoodsComment(param.getGoodsId(),param.getType(),commentFlag,commentSee,param.getCurrentPage(),param.getPageRows());
+        if (comment!=null){
+            for (MPGoodsCommentVo item : comment.getDataList()){
+                Integer answerId = db().select(COMMENT_GOODS_ANSWER.ANSWER_ID)
+                    .from(COMMENT_GOODS_ANSWER)
+                    .where(COMMENT_GOODS_ANSWER.COMMENT_ID.eq(item.getId()))
+                    .and(COMMENT_GOODS_ANSWER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                    .orderBy(COMMENT_GOODS_ANSWER.CREATE_TIME.desc())
+                    .limit(1)
+                    .fetchOneInto(Integer.class);
+                String content = db().select(COMMENT_GOODS_ANSWER.CONTENT)
+                    .from(COMMENT_GOODS_ANSWER)
+                    .where(COMMENT_GOODS_ANSWER.COMMENT_ID.eq(item.getId()))
+                    .and(COMMENT_GOODS_ANSWER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                    .orderBy(COMMENT_GOODS_ANSWER.CREATE_TIME.desc())
+                    .limit(1)
+                    .fetchOneInto(String.class);
+                if (answerId!=null){
+                    item.setAnswerId(answerId);
+                    item.setAnswer(content);
+                }
+                //兼容商家添加的评价
+                if (item.getUsername()==null){
+                    item.setUsername(item.getBogusUsername());
+                }
+                if (item.getUserAvatar()==null){
+                    item.setUserAvatar(item.getBogusUserAvatar());
+                }
+                //设置头像
+                if (item.getUserAvatar()==null){
+                    item.setUserAvatar("/image/admin/head_icon.png");
+                    if (!StringUtils.isEmpty(item.getBogusUserAvatar())&&!"".equals(item.getBogusUserAvatar())){
+                        item.setUserAvatar(item.getBogusUserAvatar());
+                    }
+                    if (ANONYMOUS_FLAG.equals(item.getAnonymousflag())){
+                        item.setUserAvatar("/image/admin/head_icon.png");
+                    }
+                }
+            }
+        }
+        List<CommentDetailVo.CommentLevelInfo> number = goodsCommentProcessorDao.calculateGoodsCommentNumInfo(param.getGoodsId(),commentFlag,commentSee);
+        CommentInfo commentInfo = new CommentInfo();
+        commentInfo.setComment(comment);
+        commentInfo.setNumber(number);
+        return commentInfo;
+    }
+
+
+    /**
+     * 得到当前商品的评价详情
+     * @param goodsId 商品id
+     * @param commentFlag 审核配置
+     * @param commentSee 是否展示未填写心得的评价
+     * @param type 筛选条件
+     * @return 评价详情
+     */
+    public PageResult<MPGoodsCommentVo> getGoodsComment(Integer goodsId,Byte type,Byte commentFlag,Byte commentSee,Integer currentPage,Integer pageRows){
+        SelectConditionStep<? extends Record> sql = db().select(COMMENT_GOODS.ID,COMMENT_GOODS.COMMSTAR,
+            COMMENT_GOODS.ANONYMOUSFLAG,COMMENT_GOODS.COMM_NOTE,COMMENT_GOODS.COMM_IMG,
+            ORDER_GOODS.GOODS_ATTR,USER_DETAIL.USERNAME,USER_DETAIL.USER_AVATAR,
+            COMMENT_GOODS.CREATE_TIME,COMMENT_GOODS.BOGUS_USERNAME,COMMENT_GOODS.BOGUS_USER_AVATAR,
+            GOODS_SPEC_PRODUCT.PRD_DESC,COMMENT_GOODS.IS_TOP,COMMENT_GOODS.TOP_TIME)
+            .from(COMMENT_GOODS)
+            .leftJoin(ORDER_GOODS).on(COMMENT_GOODS.REC_ID.eq(ORDER_GOODS.REC_ID))
+            .leftJoin(GOODS_SPEC_PRODUCT).on(COMMENT_GOODS.PRD_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
+            .leftJoin(USER_DETAIL).on(COMMENT_GOODS.USER_ID.eq(USER_DETAIL.USER_ID))
+            .where(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(COMMENT_GOODS.GOODS_ID.eq(goodsId));
+        //审核配置
+        if (CHECK_FIRST.equals(commentFlag)){
+            sql.and(COMMENT_GOODS.FLAG.eq(PASS_AUDIT));
+        }else {
+            sql.and(COMMENT_GOODS.FLAG.notEqual(NOT_PASS_AUDIT));
+        }
+        //是否隐藏未填写心得的评价
+        if (NOT_SHOW_STATE.equals(commentSee)){
+            sql.and(COMMENT_GOODS.COMM_NOTE.isNotNull());
+        }
+        //评价星级设置
+        List<Byte> goodsType = new ArrayList<>();
+        goodsType.add((byte)5);
+        goodsType.add((byte)4);
+        List<Byte> midType = new ArrayList<>();
+        midType.add((byte)3);
+        midType.add((byte)2);
+        List<Byte> badType = new ArrayList<>();
+        badType.add((byte)1);
+        badType.add((byte)0);
+        if (GOOD_TYPE.equals(type)){
+            sql.and(COMMENT_GOODS.COMMSTAR.in(goodsType));
+        }else if (MID_TYPE.equals(type)){
+            sql.and(COMMENT_GOODS.COMMSTAR.in(midType));
+        }else if (BAD_TYPE.equals(type)){
+            sql.and(COMMENT_GOODS.COMMSTAR.in(badType));
+        }else if (PIC_TYPE.equals(type)){
+            sql.and(COMMENT_GOODS.COMM_IMG.isNotNull().and(COMMENT_GOODS.COMM_IMG.notEqual("[]")));
+        }
+        sql.orderBy(COMMENT_GOODS.IS_TOP.desc(),COMMENT_GOODS.TOP_TIME.desc(),COMMENT_GOODS.CREATE_TIME.desc())
+            .fetchInto(MPGoodsCommentVo.class);
+        PageResult<MPGoodsCommentVo> vo = this.getPageResult(sql,currentPage,pageRows,MPGoodsCommentVo.class);
+        return vo;
     }
 }

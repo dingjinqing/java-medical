@@ -320,7 +320,7 @@ export function distributorLevelList (data) {
   })
 }
 // 分销员分组列表
-export function distributorGroupList (data) {
+export function distributorAllGroup (data) {
   return service({
     url: '/api/admin/distribution/distributor/group',
     method: 'get',

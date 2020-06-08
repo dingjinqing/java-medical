@@ -13,8 +13,8 @@ import com.vpu.mp.db.shop.tables.records.DistributorLevelRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecord;
-import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.db.shop.tables.records.TradesRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
@@ -40,6 +40,7 @@ public class Keys {
     // -------------------------------------------------------------------------
     // IDENTITY definitions
     // -------------------------------------------------------------------------
+    public static final Identity<DivisionReceiveRecordRecord, Integer> IDENTITY_DIVISION_RECEIVE_RECORD = Identities0.IDENTITY_DIVISION_RECEIVE_RECORD;
     public static final UniqueKey<PledgeRelatedRecord> KEY_B2C_PLEDGE_RELATED_PRIMARY = UniqueKeys0.KEY_B2C_PLEDGE_RELATED_PRIMARY;
     public static final Identity<PledgeRelatedRecord, Integer> IDENTITY_PLEDGE_RELATED = Identities0.IDENTITY_PLEDGE_RELATED;
     public static final UniqueKey<SearchHistoryRecord> KEY_B2C_SEARCH_HISTORY_PRIMARY = UniqueKeys0.KEY_B2C_SEARCH_HISTORY_PRIMARY;
@@ -264,12 +265,17 @@ public class Keys {
     public static final Identity<CartRecord, Integer> IDENTITY_CART = Identities0.IDENTITY_CART;
     public static final Identity<PayAwardPrizeRecord, Integer> IDENTITY_PAY_AWARD_PRIZE = Identities0.IDENTITY_PAY_AWARD_PRIZE;
     public static final Identity<UserRemarkRecord, Integer> IDENTITY_USER_REMARK = Identities0.IDENTITY_USER_REMARK;
-
-
-
+    public static final Identity<BargainGoodsRecord, Integer> IDENTITY_BARGAIN_GOODS = Identities0.IDENTITY_BARGAIN_GOODS;
+    public static final Identity<ArticleRecord, Integer> IDENTITY_ARTICLE = Identities0.IDENTITY_ARTICLE;
+    public static final Identity<LiveGoodsRecord, Integer> IDENTITY_LIVE_GOODS = Identities0.IDENTITY_LIVE_GOODS;
+    public static final Identity<LiveBroadcastRecord, Integer> IDENTITY_LIVE_BROADCAST = Identities0.IDENTITY_LIVE_BROADCAST;
+    public static final Identity<CardRenewRecord, Integer> IDENTITY_CARD_RENEW = Identities0.IDENTITY_CARD_RENEW;
+    public static final Identity<GiveCardRecordRecord, Integer> IDENTITY_GIVE_CARD_RECORD = Identities0.IDENTITY_GIVE_CARD_RECORD;
+    public static final Identity<CheckedGoodsCartRecord, Integer> IDENTITY_CHECKED_GOODS_CART = Identities0.IDENTITY_CHECKED_GOODS_CART;
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
+    public static final UniqueKey<DivisionReceiveRecordRecord> KEY_B2C_DIVISION_RECEIVE_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_DIVISION_RECEIVE_RECORD_PRIMARY;
     public static final UniqueKey<UserCardRecord> KEY_B2C_USER_CARD_PRIMARY = UniqueKeys0.KEY_B2C_USER_CARD_PRIMARY;
     public static final UniqueKey<PrizeRecordRecord> KEY_B2C_PRIZE_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_PRIZE_RECORD_PRIMARY;
     public static final UniqueKey<PayAwardPrizeRecord> KEY_B2C_PAY_AWARD_PRIZE_PRIMARY = UniqueKeys0.KEY_B2C_PAY_AWARD_PRIZE_PRIMARY;
@@ -516,9 +522,15 @@ public class Keys {
     public static final UniqueKey<UserRfmSummaryRecord> KEY_B2C_USER_RFM_SUMMARY_PRIMARY = UniqueKeys0.KEY_B2C_USER_RFM_SUMMARY_PRIMARY;
     public static final UniqueKey<SubscribeMessageRecord> KEY_B2C_SUBSCRIBE_MESSAGE_PRIMARY = UniqueKeys0.KEY_B2C_SUBSCRIBE_MESSAGE_PRIMARY;
     public static final UniqueKey<UserRemarkRecord> KEY_B2C_USER_REMARK_PRIMARY = UniqueKeys0.KEY_B2C_USER_REMARK_PRIMARY;
-
-
-
+    public static final UniqueKey<BargainGoodsRecord> KEY_B2C_BARGAIN_GOODS_PRIMARY = UniqueKeys0.KEY_B2C_BARGAIN_GOODS_PRIMARY;
+    public static final UniqueKey<ArticleRecord> KEY_B2C_ARTICLE_PRIMARY = UniqueKeys0.KEY_B2C_ARTICLE_PRIMARY;
+    public static final UniqueKey<LiveGoodsRecord> KEY_B2C_LIVE_GOODS_PRIMARY = UniqueKeys0.KEY_B2C_LIVE_GOODS_PRIMARY;
+    public static final UniqueKey<LiveBroadcastRecord> KEY_B2C_LIVE_BROADCAST_PRIMARY = UniqueKeys0.KEY_B2C_LIVE_BROADCAST_PRIMARY;
+    public static final UniqueKey<LiveBroadcastRecord> KEY_B2C_LIVE_BROADCAST_ROOM_ID = UniqueKeys0.KEY_B2C_LIVE_BROADCAST_ROOM_ID;
+    public static final UniqueKey<CardRenewRecord> KEY_B2C_CARD_RENEW_PRIMARY = UniqueKeys0.KEY_B2C_CARD_RENEW_PRIMARY;
+    public static final UniqueKey<GiveCardRecordRecord> KEY_B2C_GIVE_CARD_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_GIVE_CARD_RECORD_PRIMARY;
+    public static final UniqueKey<CheckedGoodsCartRecord> KEY_B2C_CHECKED_GOODS_CART_PRIMARY = UniqueKeys0.KEY_B2C_CHECKED_GOODS_CART_PRIMARY;
+    
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -529,6 +541,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<DivisionReceiveRecordRecord, Integer> IDENTITY_DIVISION_RECEIVE_RECORD = Internal.createIdentity(DivisionReceiveRecord.DIVISION_RECEIVE_RECORD, DivisionReceiveRecord.DIVISION_RECEIVE_RECORD.ID);
         public static Identity<PledgeRelatedRecord, Integer> IDENTITY_PLEDGE_RELATED = Internal.createIdentity(PledgeRelated.PLEDGE_RELATED, PledgeRelated.PLEDGE_RELATED.ID);
         public static Identity<SearchHistoryRecord, Integer> IDENTITY_SEARCH_HISTORY = Internal.createIdentity(SearchHistory.SEARCH_HISTORY, SearchHistory.SEARCH_HISTORY.ID);
         public static Identity<MpSceneRecordRecord, Integer> IDENTITY_MP_SCENE_RECORD = Internal.createIdentity(MpSceneRecord.MP_SCENE_RECORD, MpSceneRecord.MP_SCENE_RECORD.ID);
@@ -748,9 +761,17 @@ public class Keys {
         public static Identity<CartRecord, Integer> IDENTITY_CART = Internal.createIdentity(Cart.CART, Cart.CART.CART_ID);
         public static Identity<PayAwardPrizeRecord, Integer> IDENTITY_PAY_AWARD_PRIZE = Internal.createIdentity(PayAwardPrize.PAY_AWARD_PRIZE, PayAwardPrize.PAY_AWARD_PRIZE.ID);
         public static Identity<UserRemarkRecord, Integer> IDENTITY_USER_REMARK = Internal.createIdentity(UserRemark.USER_REMARK, UserRemark.USER_REMARK.ID);
+        public static Identity<BargainGoodsRecord, Integer> IDENTITY_BARGAIN_GOODS = Internal.createIdentity(BargainGoods.BARGAIN_GOODS, BargainGoods.BARGAIN_GOODS.ID);
+        public static Identity<ArticleRecord, Integer> IDENTITY_ARTICLE = Internal.createIdentity(Article.ARTICLE, Article.ARTICLE.ARTICLE_ID);
+        public static Identity<LiveGoodsRecord, Integer> IDENTITY_LIVE_GOODS = Internal.createIdentity(LiveGoods.LIVE_GOODS, LiveGoods.LIVE_GOODS.ID);
+        public static Identity<LiveBroadcastRecord, Integer> IDENTITY_LIVE_BROADCAST = Internal.createIdentity(LiveBroadcast.LIVE_BROADCAST, LiveBroadcast.LIVE_BROADCAST.ID);
+        public static Identity<CardRenewRecord, Integer> IDENTITY_CARD_RENEW = Internal.createIdentity(CardRenew.CARD_RENEW, CardRenew.CARD_RENEW.ID);
+        public static Identity<GiveCardRecordRecord, Integer> IDENTITY_GIVE_CARD_RECORD = Internal.createIdentity(GiveCardRecord.GIVE_CARD_RECORD, GiveCardRecord.GIVE_CARD_RECORD.ID);
+        public static Identity<CheckedGoodsCartRecord, Integer> IDENTITY_CHECKED_GOODS_CART = Internal.createIdentity(CheckedGoodsCart.CHECKED_GOODS_CART, CheckedGoodsCart.CHECKED_GOODS_CART.ID);
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<DivisionReceiveRecordRecord> KEY_B2C_DIVISION_RECEIVE_RECORD_PRIMARY = Internal.createUniqueKey(DivisionReceiveRecord.DIVISION_RECEIVE_RECORD, "KEY_b2c_division_receive_record_PRIMARY", DivisionReceiveRecord.DIVISION_RECEIVE_RECORD.ID);
         public static final UniqueKey<PledgeRelatedRecord> KEY_B2C_PLEDGE_RELATED_PRIMARY = Internal.createUniqueKey(PledgeRelated.PLEDGE_RELATED, "KEY_b2c_pledge_related_PRIMARY", PledgeRelated.PLEDGE_RELATED.ID);
         public static final UniqueKey<SearchHistoryRecord> KEY_B2C_SEARCH_HISTORY_PRIMARY = Internal.createUniqueKey(SearchHistory.SEARCH_HISTORY, "KEY_b2c_search_history_PRIMARY", SearchHistory.SEARCH_HISTORY.ID);
         public static final UniqueKey<MpSceneRecordRecord> KEY_B2C_MP_SCENE_RECORD_PRIMARY = Internal.createUniqueKey(MpSceneRecord.MP_SCENE_RECORD, "KEY_b2c_mp_scene_record_PRIMARY", MpSceneRecord.MP_SCENE_RECORD.ID);
@@ -1003,5 +1024,13 @@ public class Keys {
         public static final UniqueKey<UserRfmSummaryRecord> KEY_B2C_USER_RFM_SUMMARY_PRIMARY = Internal.createUniqueKey(UserRfmSummary.USER_RFM_SUMMARY, "KEY_b2c_user_rfm_summary_PRIMARY", UserRfmSummary.USER_RFM_SUMMARY.ID);
         public static final UniqueKey<SubscribeMessageRecord> KEY_B2C_SUBSCRIBE_MESSAGE_PRIMARY = Internal.createUniqueKey(SubscribeMessage.SUBSCRIBE_MESSAGE, "KEY_b2c_subscribe_message_PRIMARY", SubscribeMessage.SUBSCRIBE_MESSAGE.REC_ID);
         public static final UniqueKey<UserRemarkRecord> KEY_B2C_USER_REMARK_PRIMARY = Internal.createUniqueKey(UserRemark.USER_REMARK, "KEY_b2c_user_remark_PRIMARY", UserRemark.USER_REMARK.ID);
+        public static final UniqueKey<BargainGoodsRecord> KEY_B2C_BARGAIN_GOODS_PRIMARY = Internal.createUniqueKey(BargainGoods.BARGAIN_GOODS, "KEY_b2c_bargain_goods_PRIMARY", BargainGoods.BARGAIN_GOODS.ID);
+        public static final UniqueKey<ArticleRecord> KEY_B2C_ARTICLE_PRIMARY = Internal.createUniqueKey(Article.ARTICLE, "KEY_b2c_article_PRIMARY", Article.ARTICLE.ARTICLE_ID);
+        public static final UniqueKey<LiveGoodsRecord> KEY_B2C_LIVE_GOODS_PRIMARY = Internal.createUniqueKey(LiveGoods.LIVE_GOODS, "KEY_b2c_live_goods_PRIMARY", LiveGoods.LIVE_GOODS.ID);
+        public static final UniqueKey<LiveBroadcastRecord> KEY_B2C_LIVE_BROADCAST_PRIMARY = Internal.createUniqueKey(LiveBroadcast.LIVE_BROADCAST, "KEY_b2c_live_broadcast_PRIMARY", LiveBroadcast.LIVE_BROADCAST.ID);
+        public static final UniqueKey<LiveBroadcastRecord> KEY_B2C_LIVE_BROADCAST_ROOM_ID = Internal.createUniqueKey(LiveBroadcast.LIVE_BROADCAST, "KEY_b2c_live_broadcast_room_id", LiveBroadcast.LIVE_BROADCAST.ROOM_ID);
+        public static final UniqueKey<CardRenewRecord> KEY_B2C_CARD_RENEW_PRIMARY = Internal.createUniqueKey(CardRenew.CARD_RENEW, "KEY_b2c_card_renew_PRIMARY", CardRenew.CARD_RENEW.ID);
+        public static final UniqueKey<GiveCardRecordRecord> KEY_B2C_GIVE_CARD_RECORD_PRIMARY = Internal.createUniqueKey(GiveCardRecord.GIVE_CARD_RECORD, "KEY_b2c_give_card_record_PRIMARY", GiveCardRecord.GIVE_CARD_RECORD.ID);
+        public static final UniqueKey<CheckedGoodsCartRecord> KEY_B2C_CHECKED_GOODS_CART_PRIMARY = Internal.createUniqueKey(CheckedGoodsCart.CHECKED_GOODS_CART, "KEY_b2c_checked_goods_cart_PRIMARY", CheckedGoodsCart.CHECKED_GOODS_CART.ID);
     }
 }

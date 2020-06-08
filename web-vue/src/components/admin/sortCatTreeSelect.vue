@@ -135,9 +135,9 @@ export default {
     },
     /* 获取选中项的文本内容 */
     getSelectedText () {
-      if (this.selectedId === null) {
-        return this.selectType === 'sort' ? this.$t('allGoods.allGoodsHeaderData.chooseSort') : this.$t('allGoods.allGoodsHeaderData.chooseCategory')
-      }
+      // if (this.selectedId === null) {
+      //   return this.selectType === 'sort' ? this.$t('allGoods.allGoodsHeaderData.chooseSort') : this.$t('allGoods.allGoodsHeaderData.chooseCategory')
+      // }
       let itemId = 'sortId'
       let itemName = 'sortName'
       if (this.treeType === 'cat') {

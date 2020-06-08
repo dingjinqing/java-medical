@@ -1,12 +1,10 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
-import com.vpu.mp.service.pojo.shop.distribution.RebateCenterVo;
-import com.vpu.mp.service.pojo.wxapp.distribution.ActivationInfoVo;
-import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
+import com.vpu.mp.service.pojo.shop.distribution.*;
+import com.vpu.mp.service.pojo.wxapp.distribution.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,7 +41,7 @@ public class WxAppDistributionController extends WxAppBaseController{
         ActivationInfoVo activationInfo = shop().mpDistribution.getActivationInfo(userId,getLang());
         return this.success(activationInfo);
     }
-	
+
 	/**
 	 * 用户申请成为分销员接口
 	 * @param param
@@ -91,5 +89,52 @@ public class WxAppDistributionController extends WxAppBaseController{
         Integer userId = wxAppAuth.user().getUserId();
         RebateCenterVo rebateCenter = shop().mpDistribution.rebateCenter(userId);
         return this.success(rebateCenter);
+    }
+
+    /**
+     * 分销员邀请的下级用户列表
+     * @param param
+     * @return
+     */
+    @PostMapping("myInvite")
+    public JsonResult myInviteUser(@RequestBody DistributorInvitedListParam param){
+        Integer userId = wxAppAuth.user().getUserId();
+        param.setUserId(userId);
+        PageResult<DistributorInvitedListVo> inviteList = shop().mpDistribution.myInviteUser(param);
+        return this.success(inviteList);
+    }
+
+    /**
+     * 分销员邀请用户返利订单列表
+     * @param param
+     * @return
+     */
+    @PostMapping("rebateOrder")
+    public JsonResult rebateOrderList(@RequestBody RebateOrderParam param){
+        PageResult<RebateOrderVo> rebateOrderVo = shop().mpDistribution.rebateOrder(param);
+        return this.success(rebateOrderVo);
+    }
+
+    //分销改价相关
+    /**
+     * 商品分销改价页信息
+     * @param param
+     * @return
+     */
+    @PostMapping("rebate/goods/config")
+    public JsonResult rebateGoodsCfg(@RequestBody RebateGoodsCfgParam param) {
+        GoodsRebateChangePriceVo goodsRebateChangePriceVo = shop().mpDisGoods.rebateGoodsCfg(param);
+        return this.success(goodsRebateChangePriceVo);
+    }
+
+    /**
+     * 分享人信息
+     * @param param
+     * @return
+     */
+    @PostMapping("rebate/user/share")
+    public JsonResult shareUserInfo(@RequestBody ShareUserInfoParam param){
+        ShareUserInfoVo shareUserInfo = shop().mpDisGoods.getShareUserInfo(param);
+        return this.success(shareUserInfo);
     }
 }

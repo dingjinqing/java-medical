@@ -59,16 +59,39 @@ const baseRoutes = [{
   component: () => import('@/view/admin/layout/promoteRules')
 },
 {
+  path: '/wxapp/distribution/help', // 小程序内跳转分销中心规则
+  name: 'distributionRules',
+  component: () => import('@/view/admin/layout/distributionRules')
+},
+{
+  path: '/wxapp/checkout/services', // 小程序内跳转服务承诺
+  name: 'checkoutServices',
+  component: () => import('@/view/admin/layout/services')
+},
+{
   path: '/wxapp/pinlottery/help', // 小程序内跳转拼团抽奖规则
   name: 'pinLotteryRules',
   component: () => import('@/view/admin/layout/pinLotteryRules')
+},
+{
+  path: '/system/index',
+  redirect: '/system/login'
+},
+{
+  path: '/home/index',
+  redirect: '/index/login'
+},
+{
+  path: '*',
+  name: 'NotFount',
+  component: () => import('@/view/admin/layout/notFound')
 }
 ]
 const routes = baseRoutes.concat(
-  baseRoutes,
   indexRoutes,
   adminRoutes,
-  systemRouters
+  systemRouters,
+  baseRoutes
 )
 
 const router = new Router({
@@ -114,6 +137,8 @@ router.beforeEach((to, from, next) => {
   }
   console.log(to)
   console.log(lang)
-  loadLanguageAsync(lang).then(() => next())
+  loadLanguageAsync(lang).then(() => {
+    next()
+  })
 })
 export default router

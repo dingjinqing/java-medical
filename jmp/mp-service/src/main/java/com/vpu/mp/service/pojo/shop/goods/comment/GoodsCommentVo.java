@@ -53,4 +53,6 @@ public class GoodsCommentVo {
     private Byte flag;
     /** 规格描述 */
     private String prdDesc;
+    /** 是否置顶 */
+    private Byte isTop;
 }

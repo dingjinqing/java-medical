@@ -352,6 +352,7 @@ export default {
   padding: 0 25px 0 45px;
   padding-left: 34px;
   position: absolute;
+  z-index: 110;
 }
 .left {
   float: left;
@@ -364,7 +365,7 @@ export default {
 .middle {
   float: right;
   height: 100%;
-  margin-right: 22px;
+  /* margin-right: 22px; */
   position: relative;
 }
 .account {
@@ -446,7 +447,7 @@ label {
   display: flex;
   height: 85px;
   float: left;
-  margin-left: 6%;
+  margin-left: 3%;
 }
 .header_nav > div {
   height: 85px;
@@ -480,6 +481,7 @@ label {
   float: right;
   margin-right: 30px;
   cursor: pointer;
+  z-index: 3000;
 }
 .head_list_lang {
   position: absolute;
@@ -491,7 +493,7 @@ label {
   color: #333;
   text-align: center;
   top: 85px;
-  z-index: 1000;
+  z-index: 3000;
   box-shadow: 1px 1px 1px #ccc;
   border-radius: 3px;
 }

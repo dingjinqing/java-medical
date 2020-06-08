@@ -243,7 +243,7 @@ export default {
 }
 
 .freeship_container{
-    margin-bottom: 25px;
+    margin-bottom: 0px;
     /deep/ .el-form-item {
         margin-bottom: 2px;
     }

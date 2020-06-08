@@ -50,6 +50,9 @@ public final class DateUtil {
     //时分秒最大
     public static final LocalTime maxTime = LocalTime.of(23, 59, 59);
 
+
+    private static final  ZoneId defaultZoneId = ZoneId.systemDefault();
+
 	/**
 	 * 转换日期格式输出
 	 * @param format
@@ -70,6 +73,32 @@ public final class DateUtil {
         LocalDateTime localDateTime = convertLocalDate(date);
         return  localDateTime.format(DateTimeFormatter.ofPattern(format));
     }
+    /**
+     * 转换日期格式输出
+     * @param format
+     * @param date
+     * @return
+     */
+    public static String dateFormat(String format, LocalDate date) {
+        return  date.format(DateTimeFormatter.ofPattern(format));
+    }
+    /**
+     * 日期类型转换
+     * @param source
+     * @return localDate
+     */
+    public static LocalDate convert(Date source) {
+        Instant instant = source.toInstant();
+        return  instant.atZone(defaultZoneId).toLocalDate();
+    }
+    /**
+     * 日期类型转换
+     * @param source
+     * @return localDate
+     */
+    public static Date convert(LocalDate source) {
+        return  Date.from(source.atStartOfDay(defaultZoneId).toInstant());
+    }
 
 	/**
 	 * Date 转为 LocalDateTime
@@ -78,7 +107,7 @@ public final class DateUtil {
 	 */
 	public static LocalDateTime convertLocalDate(Date date) {
 		Instant instant = date.toInstant();
-		ZoneId zone = ZoneId.systemDefault();
+        ZoneId zone = ZoneId.systemDefault();
 		return  LocalDateTime.ofInstant(instant, zone);
 	}
 
@@ -335,7 +364,19 @@ public final class DateUtil {
         return Timestamp.from(Instant.now().plus(-30 , ChronoUnit.DAYS));
     }
 
-    public static void main(String[] args) {
-        System.out.println(getBefore30Day());
-    }
+	/**
+	 * 时间差 时间1-时间2
+	 * @param formatTime1 时间1
+	 * @param formatTime2 时间2
+	 * @return 天 时 分 秒
+	 */
+	public static Integer[] getTimeDifference(Timestamp formatTime1, Timestamp formatTime2) {
+		long t1 = formatTime1.getTime();
+		long t2 = formatTime2.getTime();
+		Integer days =(int)((t1-t2)/(1000*60*60*24));
+		Integer hours=(int) (t1 - t2)/(1000*60*60)-days*(24);
+		Integer minutes=(int) (t1 - t2)/(1000*60)-days*(60*24)-hours*(60);
+		Integer second=(int) ((t1 - t2)/1000-days*(60*60*24)-hours*(60*60)-minutes*60);
+		return new Integer[]{days,hours,minutes,second};
+	}
 }

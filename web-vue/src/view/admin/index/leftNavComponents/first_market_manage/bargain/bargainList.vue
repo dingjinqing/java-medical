@@ -75,22 +75,8 @@
         </el-table-column>
 
         <el-table-column
-          prop="goodsName"
-          :label="$t('bargainList.goodsName')"
-          align="center"
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop="goodsNumber"
-          :label="$t('bargainList.goodsNumber')"
-          align="center"
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop="stock"
-          :label="$t('bargainList.stock')"
+          prop="first"
+          :label="$t('bargainList.level')"
           align="center"
         >
         </el-table-column>
@@ -120,7 +106,7 @@
                 effect="dark"
                 :content="$t('marketCommon.edit')"
                 placement="top"
-                v-if="scope.row.status === 1"
+                v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
                 <i
                   class="el-icon-edit-outline"
@@ -140,7 +126,7 @@
                 ></i>
               </el-tooltip>
               <el-tooltip
-                v-if="scope.row.status === 1"
+                v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
                 class="item"
                 effect="dark"
                 :content="$t('marketCommon.disable')"
@@ -152,7 +138,7 @@
                 ></i>
               </el-tooltip>
               <el-tooltip
-                v-else
+                v-if="scope.row.currentState === 4"
                 class="item"
                 effect="dark"
                 :content="$t('marketCommon.enabled')"
@@ -168,6 +154,7 @@
                 effect="dark"
                 :content="$t('marketCommon.share')"
                 placement="top"
+                v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
                 <i
                   @click="shareBargain(scope.row.id)"
@@ -179,6 +166,7 @@
                 effect="dark"
                 :content="$t('bargainList.getBargainOrders')"
                 placement="top"
+                v-if="scope.row.currentState !== 2"
               >
                 <i
                   class="el-icon-tickets"
@@ -190,6 +178,7 @@
                 effect="dark"
                 :content="$t('marketCommon.getSourceUserList')"
                 placement="top"
+                v-if="scope.row.currentState !== 2"
               >
                 <i
                   class="el-icon-user-solid"
@@ -201,6 +190,7 @@
                 effect="dark"
                 :content="$t('bargainList.bargainRecordList')"
                 placement="top"
+                v-if="scope.row.currentState !== 2"
               >
                 <i
                   class="el-icon-s-unfold"

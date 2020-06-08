@@ -23,7 +23,9 @@
                   class="coupon_list_top"
                   :style="'color:'+backgroundColor"
                 >
-                  {{item.act_code==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.act_code==='discount'?$t('coupon.fracture'):''}}</i></span>
+                  <span v-if="item.act_code==='discount'">{{item.denomination}}<i style="font-size:14px">{{$t('coupon.fracture')}}</i></span>
+                  <span v-if="item.act_code==='voucher'">¥{{item.denomination}}</span>
+                  <span v-if="item.act_code==='random'">¥{{item.randomMax}}<i style="font-size:12px">{{$t('coupon.randomMax')}}</i></span>
                 </div>
                 <div class="coupon_list_center">
                   <div
@@ -65,6 +67,7 @@
       :couponBack='couponBack'
       origin='decCouponPackage'
       @handleToCheck='handleToCheck'
+      :type="-1"
     />
   </div>
 </template>
@@ -203,7 +206,8 @@ export default {
           'coupon_id': item.id, // 优惠券id
           'use_score': item.useScore, // 是否可以积分兑换
           'score_number': item.scoreNumber, // 需要积分数
-          'limitSurplusFlag': item.limitSurplusFlag
+          'limitSurplusFlag': item.limitSurplusFlag,
+          'randomMax': item.randomMax // 分裂最高价
         }
         console.log(obj)
         if (isExistence.length === 0) {

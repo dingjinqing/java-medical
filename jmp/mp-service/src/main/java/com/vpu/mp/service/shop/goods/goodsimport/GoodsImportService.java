@@ -1136,6 +1136,8 @@ public class GoodsImportService extends ShopBaseService {
             product.setPrdCostPrice(importBo.getCostPrice());
             product.setPrdNumber(importBo.getStock());
             product.setPrdSn(importBo.getPrdSn());
+            product.setPrdWeight(importBo.getPrdWeight());
+            product.setPrdCodes(importBo.getPrdCodes());
             if (StringUtils.isNotBlank(importBo.getPrdDesc())) {
                 importBo.setPrdDesc(importBo.getPrdDesc().replaceAll("：", GoodsSpecProductService.PRD_VAL_DELIMITER).replaceAll("；", GoodsSpecProductService.PRD_DESC_DELIMITER));
             }

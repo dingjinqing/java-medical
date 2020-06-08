@@ -19,11 +19,16 @@ public class GoodsSpecProduct {
     private BigDecimal prdMarketPrice;
     private BigDecimal prdCostPrice;
     private Integer prdNumber;
+    private BigDecimal prdWeight;
 
     /**
      * 	规格编码
      */
 	private String prdSn;
+	/**
+     * 商品条码
+     * */
+	private String prdCodes;
 	private String prdSpecs;
 	private String prdDesc;
 

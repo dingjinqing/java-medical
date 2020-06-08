@@ -1,0 +1,98 @@
+/* pages/userinfo/userinfo.wxss */
+page{
+  background: #f5f5f5;
+}
+view,text,input{
+  box-sizing: border-box;
+}
+.main{
+  margin-top: 10rpx;
+  padding-left: 30rpx;
+  background: #fff;
+  font-size: 26rpx;
+}
+.main>view{
+  display: flex;
+  align-items: center;
+  padding: 20rpx 30rpx 20rpx 0rpx;
+  border-bottom: 1px solid #eee;
+}
+.main>view::after{
+  display: block;
+  clear: both;
+  content: ''
+}
+.main>view:last-child{
+  border: none;
+}
+.main_txt{
+  width: 20%;
+  height: 50rpx;
+  line-height: 50rpx;
+  /* float: left; */
+}
+.main_ipt{
+  width: 80%;
+  /* float: left; */
+  padding-left: 20rpx;
+  height: 50rpx;
+  min-height: 50rpx;
+  line-height: 50rpx;
+  font-size: 26rpx;
+}
+.em{
+  color: #f66;
+  position: absolute;
+  left: -18rpx;
+  top: 13px;
+}
+.main_picker{
+  background-size: 15rpx 25rpx;
+}
+.footer{
+  padding: 42rpx 30rpx;
+}
+.footer button{
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  color: #fff;
+  background: #f66;
+  border-radius: 3px;
+  font-size: 26rpx;
+}
+.btn_info{
+  font-size:24rpx;
+  background-color: #fff;
+  width: 200rpx;
+  /* float: left; */
+  border: 2rpx solid #eee;
+}
+button::after{
+  border: none;
+  border-radius: 0
+}
+.user_touxiang{
+  flex: 1;
+  text-align: right;
+  position: relative;
+}
+.user_touxiang image{
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 100rpx;
+}
+.avatar_btn{
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 100rpx;
+  padding: 0;
+  margin: 0;
+  border: none;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  z-index: 99;
+  top: 0
+}

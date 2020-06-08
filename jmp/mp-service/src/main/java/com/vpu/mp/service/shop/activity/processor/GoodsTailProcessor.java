@@ -3,22 +3,21 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeBo;
-import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
-import com.vpu.mp.service.pojo.shop.distribution.UserDistributionVo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
-import com.vpu.mp.service.pojo.wxapp.distribution.GoodsDistributionVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.live.RoomDetailMpVo;
 import com.vpu.mp.service.shop.activity.dao.TailProcessorDao;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.distribution.MpDistributionGoodsService;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.market.live.LiveService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +52,8 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
     MpDistributionGoodsService distributionGoods;
     @Autowired
     private ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    private LiveService liveService;
 
     /*****处理器优先级*****/
     @Override
@@ -142,22 +143,13 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
             Integer defaultNum  = Integer.valueOf(0).equals(goodsDetailMpBo.getLimitBuyNum())? 1:goodsDetailMpBo.getLimitBuyNum();
             BigDecimal deliverPrice = calculate.calculateShippingFee(param.getUserId(),param.getLon(), param.getLat(), param.getGoodsId(), goodsDetailMpBo.getDeliverTemplateId(), defaultNum,goodsDetailMpBo.getProducts().get(0).getPrdRealPrice(),goodsDetailMpBo.getGoodsWeight());
             goodsDetailMpBo.setDeliverPrice(deliverPrice);
-            log.debug("小程序-商品详情-处理运费信息结束");
+        }
+        // 处理直播信息
+        if (goodsDetailMpBo.getRoomId() != null) {
+            RoomDetailMpVo roomDetail = liveService.getLiveInfoForGoodsMpDetail(goodsDetailMpBo.getRoomId());
+            goodsDetailMpBo.setRoomDetailMpInfo(roomDetail);
         }
 
-        //商品分销
-//        if(GoodsConstant.REBATE.equals(goodsDetailMpBo.getCanRebate())){
-//            log.debug("小程序-商品详情-处理分销信息");
-//            GoodsDistributionVo goodsDistributionVo = new GoodsDistributionVo();
-//            //获取用户分销等级
-//            UserDistributionVo distributionLevel = distributionGoods.userDistributionLevel(param.getUserId());
-//            RebateRatioVo rebateRatioVo = distributionGoods.goodsRebateInfo(param.getGoodsId(), param.getCatId(), param.getSortId(), param.getUserId());
-//            goodsDistributionVo.setIsDistributor(distributionLevel.getIsDistributor());
-//            goodsDistributionVo.setCanRebate((byte)1);
-//            goodsDistributionVo.setRebateRatio(rebateRatioVo);
-//            goodsDetailMpBo.setGoodsDistribution(goodsDistributionVo);
-//            log.debug("小程序-商品详情-处理分销信息结束");
-//        }
     }
 
     /**

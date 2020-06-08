@@ -24,6 +24,10 @@ public class RebateCenterVo {
      */
     private BigDecimal waitWithdraw;
     /**
+     * 邀请码
+     */
+    private String invitationCode;
+    /**
      * 邀请用户数
      */
     private Integer inviteUserNum;
@@ -47,4 +51,13 @@ public class RebateCenterVo {
      * 我的分组
      */
     private String distributorGroup;
+
+    /**是否是分销员*/
+    private Integer isDistributor;
+
+    /**分销开关*/
+    private Byte status;
+
+    /**分销审核开关*/
+    private Byte judgeStatus;
 }

@@ -33,14 +33,14 @@
           <div class="filters_item">
             <span>{{$t('order.orderStatusText')}}：</span>
             <el-select
-              v-model="searchParams.orderStatus"
+              v-model="filterOrderStatus"
               :placeholder="$t('order.defaultSelect')"
               size="small"
               class="default_input"
               filterable
             >
               <el-option
-                v-for="item in $t('order.orderStatusList')"
+                v-for="item in $t('order.orderStatus')"
                 :key="item[0]"
                 :label="item[1]"
                 :value="item[0]"
@@ -230,24 +230,42 @@
             v-show="moreFilters"
           >
             <span>{{$t('order.orderTime')}}：</span>
-            <el-date-picker
+            <!-- <el-date-picker
               v-model="orderTime"
-              type="daterange"
               :range-separator="$t('membershipIntroduction.to')"
               :start-placeholder="$t('membershipIntroduction.Starttime')"
               :end-placeholder="$t('membershipIntroduction.Endtime')"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              :default-time="['00:00:00','23:59:59']"
               size="small"
             >
-            </el-date-picker>
+            </el-date-picker> -->
+            <el-date-picker
+              v-model="orderTime.startTime"
+              type="datetime"
+              :placeholder="$t('membershipIntroduction.Starttime')"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              class="middle_input"
+              @change="datePickerChange(true,orderTime)"
+              size="small"
+            />
+             至
+            <el-date-picker
+              v-model="orderTime.endTime"
+              type="datetime"
+              :placeholder="$t('membershipIntroduction.Endtime')"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              class="middle_input"
+              @change="datePickerChange(false,orderTime)"
+              :picker-options="orderEndTime"
+              default-time="23:59:59"
+              size="small"
+            />
           </div>
           <div
             class="filters_item"
             v-show="moreFilters"
           >
             <span>{{$t('order.completeTime')}}：</span>
-            <el-date-picker
+            <!-- <el-date-picker
               v-model="completeTime"
               type="daterange"
               :range-separator="$t('membershipIntroduction.to')"
@@ -257,7 +275,28 @@
               :default-time="['00:00:00','23:59:59']"
               size="small"
             >
-            </el-date-picker>
+            </el-date-picker> -->
+            <el-date-picker
+              v-model="completeTime.startTime"
+              type="datetime"
+              :placeholder="$t('membershipIntroduction.Starttime')"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              @change="datePickerChange(true,completeTime)"
+              class="middle_input"
+              size="small"
+            />
+             至
+            <el-date-picker
+              v-model="completeTime.endTime"
+              type="datetime"
+              :placeholder="$t('membershipIntroduction.Endtime')"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              @change="datePickerChange(false,completeTime)"
+              :picker-options="completeEndTime"
+              class="middle_input"
+              default-time="23:59:59"
+              size="small"
+            />
           </div>
         </div>
       </div>
@@ -502,6 +541,15 @@
                         </template>
                         <template v-else-if="orderItem.deliverType == 0 && orderItem.orderStatus == 3 && searchParams.pinStatus.length == 0">
                           {{$t('order.waitShip')}}
+                          <template v-if="orderItem.orderRemindTime">
+                            <el-tooltip
+                              class="item"
+                              effect="dark"
+                              :content="$t('order.remindTime') + orderItem.orderRemindTime"
+                              placement="top"
+                            >
+                              <i class="el-icon-question"></i> </el-tooltip>
+                          </template>
                         </template>
                         <template v-else-if="orderItem.deliverType == 1 && orderItem.orderStatus == 5">
                           {{$t('order.takeByself')}}
@@ -813,6 +861,7 @@ export default {
         6: `${this.$imageHost}/image/admin/pay_wx.png`
       },
       moreFilters: false,
+      filterOrderStatus: null,
       pageParams: {},
       searchParams: {
         activityId: this.$route.query.id,
@@ -839,10 +888,17 @@ export default {
         cityCode: null,
         districtCode: null,
         orderStatus2: '-1',
-        shippingNo: ''
+        shippingNo: '',
+        roomId: null
       },
-      orderTime: null,
-      completeTime: null,
+      orderTime: {
+        startTime: null,
+        endTime: null
+      },
+      completeTime: {
+        startTime: null,
+        endTime: null
+      },
       sourceList: [
       ],
       storeList: [
@@ -856,8 +912,10 @@ export default {
         { value: '4', label: '已发货' },
         { value: '5', label: '已收货/已自提' },
         { value: '6', label: '已完成' },
-        { value: '7', label: '退货退款中' },
-        { value: '2', label: '已关闭' }
+        { value: '7', label: '售后中' },
+        { value: '8', label: '售后完成' },
+        { value: '2', label: '已关闭' },
+        {value: '30', label: '追星订单'}
       ],
       orderList: [
       ],
@@ -873,6 +931,16 @@ export default {
         provinceCode: '',
         cityCode: '',
         districtCode: ''
+      },
+      orderEndTime: {
+        disabledDate: time => {
+          return time.getTime() < new Date(this.orderTime.startTime).getTime()
+        }
+      },
+      completeEndTime: {
+        disabledDate: time => {
+          return time.getTime() < new Date(this.completeTime.startTime).getTime()
+        }
       }
     }
   },
@@ -881,9 +949,11 @@ export default {
     let userId = this.$route.query.userId
     let userName = this.$route.query.userName
     this.searchParams.userName = userName || null
+    let roomId = this.$route.query.roomId
+    this.searchParams.roomId = roomId || null
     console.log(userId)
     console.log('mounted-----------------------')
-    this.searchParams.orderStatus = this.$route.query.orderStatus ? this.$route.query.orderStatus : this.$route.params.orderStatus ? this.$route.params.orderStatus : null
+    this.filterOrderStatus = this.$route.query.orderStatus ? this.$route.query.orderStatus : this.$route.params.orderStatus ? this.$route.params.orderStatus : null
     if (this.$route.params.flag === 0 || this.$route.params.flag) { this.$set(this.shopHelperParams, 'shopHelperAction', this.$route.params.flag) }
     if (this.$route.params.IntegerDays) { this.$set(this.shopHelperParams, 'shopHelperActionDays', this.$route.params.IntegerDays) }
     // 初始化数据
@@ -900,9 +970,9 @@ export default {
         this.adminReload()
       }
     },
-    'searchParams.orderStatus': {
+    'filterOrderStatus': {
       handler (val) {
-        if ([null, 0, 3, 4, 5, 6, 7, 2].includes(val)) {
+        if ([null, 0, 3, 4, 5, 6, 7, 8, 2].includes(val)) {
           this.searchParams.orderStatus2 = val === null ? '-1' : String(val)
         } else {
           this.searchParams.orderStatus2 = null
@@ -910,19 +980,25 @@ export default {
       },
       immediate: true
     },
-    completeTime (val) {
-      this.searchParams.finishedTimeStart = val ? val[0] : null
-      this.searchParams.finishedTimeEnd = val ? val[1] : null
+    completeTime: {
+      handler (val) {
+        this.searchParams.finishedTimeStart = val.startTime ? val.startTime : null
+        this.searchParams.finishedTimeEnd = val.endTime ? val.endTime : null
+      },
+      deep: true
     },
-    orderTime (val) {
-      this.searchParams.createTimeStart = val ? val[0] : null
-      this.searchParams.createTimeEnd = val ? val[1] : null
+    orderTime: {
+      handler (val) {
+        this.searchParams.createTimeStart = val.startTime ? val.startTime : null
+        this.searchParams.createTimeEnd = val.endTime ? val.endTime : null
+      },
+      deep: true
     }
   },
   methods: {
     handleClick (data) {
-      this.searchParams.orderStatus = Number(data.name)
-      if (data.name === '-1') this.searchParams.orderStatus = null
+      this.filterOrderStatus = Number(data.name)
+      if (data.name === '-1' || data.name === '30') this.filterOrderStatus = null
       this.search()
     },
     handleAreaData (data) {
@@ -942,11 +1018,16 @@ export default {
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
       this.searchType = 0
+      let orderStatus = this.filterOrderStatus !== null ? [this.filterOrderStatus] : []
+      if (this.filterOrderStatus === 7) orderStatus = [7, 9]
+      if (this.filterOrderStatus === 8) orderStatus = [8, 10]
+      this.searchParams.orderStatus = orderStatus
       let obj = {
         ...this.searchParams,
-        orderStatus: this.searchParams.orderStatus !== null ? [this.searchParams.orderStatus] : [],
+        orderStatus: orderStatus,
         goodsType: this.searchParams.goodsType !== null ? [this.searchParams.goodsType] : [],
         payWay: this.searchParams.payWay !== null ? this.searchParams.payWay : null,
+        isStar: this.searchParams.orderStatus2 === '30' ? 1 : null,
         ...this.shopHelperParams
       }
       list(obj).then(res => {
@@ -1065,6 +1146,20 @@ export default {
     },
     handleExportColumnSelect () {
       this.showExportConfirm = true
+    },
+    /* 验证输入的时间范围是否合法 */
+    datePickerChange (isStart, target) {
+      if (target.startTime === null || target.endTime === null) {
+        return
+      }
+      if (new Date(target.startTime).getTime() <= new Date(target.endTime).getTime()) {
+        return
+      }
+      if (isStart) {
+        target.startTime = null
+      } else {
+        target.endTime = null
+      }
     }
   }
 }
@@ -1299,6 +1394,9 @@ export default {
   }
   .default_input {
     width: 180px;
+  }
+  .middle_input{
+    width:185px
   }
 }
 </style>

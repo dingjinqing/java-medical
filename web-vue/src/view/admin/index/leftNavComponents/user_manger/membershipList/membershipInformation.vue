@@ -164,29 +164,80 @@
               style="color:#5A8BFF;cursor: pointer;"
               @click="handleSetUp(index)"
             >{{$t('membershipIntroduction.setup')}}</span>
-            <span @click="jumpToDetailPage(index)" style="margin-top:10px;color:#5A8BFF;cursor: pointer;display:block">{{item.num}}</span>
+            <span
+              @click="jumpToDetailPage(index)"
+              style="margin-top:10px;color:#5A8BFF;cursor: pointer;display:block"
+            >{{item.num}}</span>
           </div>
         </li>
       </ul>
     </div>
     <div class="topContainer">
       <div class="titleEdit"><span>{{$t('membershipIntroduction.Transactionstatistics')}}</span><span @click="jumpToOrderPage">{{$t('membershipIntroduction.OrderList')}}</span></div>
+      <div
+        class="transactionTab"
+        v-if="transactionTabFlag === true"
+      >
+        <p
+          v-for="(item, index) in transactionTab"
+          :key="index"
+          :class="index === transactionTabIndex ? 'hignLight' : ''"
+          @click="transactionTabSelect(index, item.value)"
+        >{{item.label}}</p>
+      </div>
       <div class="transactionDiv">
         <div
           style="flex:1"
           v-for="(item,index) in transactionData"
           :key="index"
           :class="index!==0?'borderLeft':''"
+          v-if="!(transactionTabFlag === false && (item.value === 'unitPrice' || item.value === 'totalMoneyPaid'))"
         >
           <p>
             {{item.title}}
-            <el-tooltip effect="light" placement="top">
-               <div slot="content">{{item.tip}}</div>
-               <i class="el-icon-question icon-style"></i>
+            <el-tooltip
+              effect="light"
+              placement="top"
+            >
+              <div slot="content">{{item.tip}}</div>
+              <i class="el-icon-question icon-style"></i>
             </el-tooltip>
           </p>
-          <div class="transactionBottom">{{item.content}}</div>
+          <div
+            class="transactionBottom"
+            v-if="item.value === 'lastOrderTime'"
+          >{{item.content ? item.content : '暂未下单'}}</div>
+          <div
+            class="transactionBottom"
+            v-else-if="item.value === 'unitPrice' || item.value === 'totalMoneyPaid' || item.value === 'returnOrderMoney'"
+          >￥{{item.content ? Number(item.content).toFixed(2) : '0.00'}}</div>
+          <div
+            class="transactionBottom"
+            v-else
+          >{{item.content}}</div>
+          <div
+            v-if="transactionTabIndex === 2"
+            style="text-align: center;margin-top: 10px;"
+          >
+            <el-button
+              type="primary"
+              plain
+              size="small"
+              @click="jumpToHandler"
+            >查看订单</el-button>
+          </div>
         </div>
+      </div>
+      <div
+        class="transactionOrder"
+        v-if="transactionTabIndex !== 0 && transactionTabIndex !== 2"
+      >
+        <el-button
+          type="primary"
+          plain
+          size="small"
+          @click="jumpToHandler"
+        >查看订单</el-button>
       </div>
     </div>
     <div class="topContainer">
@@ -260,8 +311,9 @@
             </el-form-item>
             <el-form-item :label="$t('membershipIntroduction.localtion')">
               <ProAndUrbA
-              :address="address"
-              @handleToGetProCode="handleToGetProCode" />
+                :address="address"
+                @handleToGetProCode="handleToGetProCode"
+              />
             </el-form-item>
             <el-form-item :label="$t('membershipIntroduction.Maritalstatus')">
               <el-col :span="12">
@@ -361,10 +413,10 @@
     <!--修改邀请人弹窗-->
     <div class="baseInfo">
       <!--选择会员弹窗组件-->
-    <ChooseUser
-      :dialogVisible.sync="modifypersonDialogVisible"
-      @rowData="dealRowData"
-    />
+      <ChooseUser
+        :dialogVisible.sync="modifypersonDialogVisible"
+        @rowData="dealRowData"
+      />
     </div>
     <!--标签信息编辑弹窗-->
     <div class="balanceDialo">
@@ -550,15 +602,13 @@
       </el-dialog>
     </div>
     <!--设置会员卡弹窗类别二-->
-    <div
-      class="balanceDialo"
-    >
-        <ModifyData
+    <div class="balanceDialo">
+      <ModifyData
         :model="modifyDialogData"
         :userId="userId"
         @submitRes="hanldeModifyData"
-        >
-        </ModifyData>
+      >
+      </ModifyData>
 
     </div>
   </div>
@@ -662,7 +712,36 @@ export default {
       cardNameIndex: 0,
       provinceCode: null,
       cityCode: null,
-      districtCode: null
+      districtCode: null,
+      // 交易统计tab
+      transactionTabFlag: false,
+      transactionTabIndex: 0,
+      transactionTab: [
+        {
+          label: '全部交易统计',
+          value: 'allTransactionStatistics'
+        },
+        {
+          label: '实物商品交易统计',
+          value: 'physicalTransactionStatistics'
+        },
+        // {
+        //   label: '非实物商品交易统计',
+        //   value: ''
+        // },
+        {
+          label: '会员增值交易统计',
+          value: 'appreciationTransactionStatistics'
+        },
+        {
+          label: '门店服务预约交易统计',
+          value: 'storeServiceOrderTransactionStatistics'
+        },
+        {
+          label: '门店买单交易统计',
+          value: 'storeOrderTransactionStatistics'
+        }
+      ]
     }
   },
   created () {
@@ -696,7 +775,6 @@ export default {
   },
   methods: {
     defaultMessage () {
-      this.transactionData = this.$t('membershipIntroduction.transactionData')
       this.distributionData = this.$t('membershipIntroduction.distributionData')
       this.checkMoreText = this.$t('membershipIntroduction.Seemore')
       // 性别
@@ -777,6 +855,31 @@ export default {
           // 交易统计
           this.transStatistic = res.content.transStatistic
           console.log(this.transStatistic)
+          let item = this.transactionTabIndex + 1
+          this.transactionData = this.$t('membershipIntroduction.transactionData' + item)
+          if (Object.prototype.toString.call(Object.values(this.transStatistic)[0]) === '[object Object]') {
+            // tab显示
+            this.transactionTabFlag = true
+            for (var j in this.transStatistic[0]) {
+              this.transactionData.forEach(item => {
+                if (item.value === j) {
+                  item.content = this.transStatistic[0][j]
+                }
+              })
+            }
+          } else {
+            // tab隐藏
+            this.transactionTabFlag = false
+            for (var key in this.transStatistic) {
+              this.transactionData.forEach(item => {
+                if (item.value === key) {
+                  item.content = this.transStatistic[key]
+                } else if (key === 'lastAddOrder' && item.value === 'lastOrderTime') {
+                  item.content = this.transStatistic[key].replace('T', ' ')
+                }
+              })
+            }
+          }
 
           // 处理时间
           if (this.memberBasicInfo.createTime) {
@@ -832,7 +935,7 @@ export default {
           // 用户标签信息
           this.handleToLabel()
           // 交易 统计
-          this.dealWithTransactionData()
+          // this.dealWithTransactionData()
           // 分销 统计
           this.dealWithdDistributionData()
         }
@@ -1425,6 +1528,37 @@ export default {
         this.loadMemberInfo()
       }
       this.modifyDialogData.visiable = false
+    },
+
+    // 切换交易统计tab
+    transactionTabSelect (index, value) {
+      this.transactionTabIndex = index
+      let item = this.transactionTabIndex + 1
+      this.transactionData = this.$t('membershipIntroduction.transactionData' + item)
+      for (var i in this.transStatistic) {
+        if (value === i) {
+          for (var j in this.transStatistic[i]) {
+            this.transactionData.forEach(item => {
+              if (item.value === j) {
+                item.content = this.transStatistic[i][j]
+              }
+            })
+          }
+        }
+      }
+    },
+    // 交易统计查看订单
+    jumpToHandler () {
+      if (this.transactionData[0].linkName === '') {
+        return false
+      }
+      this.$router.push({
+        name: this.transactionData[0].linkName,
+        query: {
+          userId: this.userId,
+          userName: this.memberBasicInfo.username
+        }
+      })
     }
   }
 }
@@ -1788,9 +1922,32 @@ td {
 .specialAddMoney .el-input {
   width: 100px !important;
 }
-.icon-style{
+.icon-style {
   font-size: 15px;
   color: #b8bbbb;
   cursor: pointer;
+}
+
+.topContainer .transactionTab {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: center;
+  height: 40px;
+  line-height: 40px;
+}
+.topContainer .transactionTab p {
+  flex: 1;
+  background: #ecf2ff;
+  cursor: pointer;
+}
+.topContainer .transactionTab .hignLight {
+  background: #5a8bff;
+  color: #fff;
+}
+.topContainer .transactionOrder {
+  padding-bottom: 20px;
+  text-align: center;
 }
 </style>

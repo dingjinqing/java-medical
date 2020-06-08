@@ -54,7 +54,7 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
                 cartGoods.setGoodsImg(cartService.getImgFullUrlUtil(cartGoods.getGoodsRecord().getGoodsImg()));
             }
             if (cartGoods.getProductRecord()!=null&&!Strings.isNullOrEmpty(cartGoods.getProductRecord().getPrdImg())){
-                cartGoods.setGoodsImg(cartService.getImgFullUrlUtil(cartGoods.getProductRecord().getPrdImg()));
+                cartGoods.setPrdImg(cartService.getImgFullUrlUtil(cartGoods.getProductRecord().getPrdImg()));
             }
         });
         //删除的,下架的--移动到失效列表
@@ -117,6 +117,7 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
             goods.setPrdNumber(productRecord.getPrdNumber());
             //初始化价格
             goods.setPrdPrice(productRecord.getPrdPrice());
+            goods.setPrdMarketPrice(productRecord.getPrdMarketPrice());
             goods.setGoodsPrice(productRecord.getPrdPrice());
         }
 

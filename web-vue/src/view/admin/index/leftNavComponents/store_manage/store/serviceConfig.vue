@@ -244,7 +244,7 @@ export default {
         if (res.error === 0) {
           let initStoreList = []
           this.pageParams = res.content.page
-          this.storeParamList = res.content.dataList
+          this.storeParamList = res.content.storePageListVo.dataList
           this.storeParamList.map((item, index) => {
             if (item.businessState === 0) {
               item.businessState = '关店'

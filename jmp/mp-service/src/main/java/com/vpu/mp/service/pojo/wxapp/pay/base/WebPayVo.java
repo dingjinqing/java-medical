@@ -18,5 +18,6 @@ public class WebPayVo {
     @JsonIgnore
     private WxPayUnifiedOrderResult result;
     private String orderSn;
+    private String cardSn;
     private String orderType;
 }

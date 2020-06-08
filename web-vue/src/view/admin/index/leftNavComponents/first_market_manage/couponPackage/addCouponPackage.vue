@@ -33,6 +33,12 @@
                       >￥<span>{{item.denomination}}</span></div>
                       <div
                         class="coupon_price"
+                        v-else-if="item.actCode == 'random'"
+                      >
+                        ￥<span>{{item.randomMax}}{{$t('addCouponPackage.highest')}}</span>
+                      </div>
+                      <div
+                        class="coupon_price"
                         v-else
                       ><span>{{item.denomination}}</span>{{$t('addCouponPackage.discount')}}</div>
                       <div class="coupon_rule">{{item.useConsumeRestrict > 0? $t('addCouponPackage.full')+ item.leastConsume + $t('addCouponPackage.yuan')+$t('addCouponPackage.available') : $t('addCouponPackage.unrestricted')}}</div>
@@ -44,7 +50,7 @@
                       >
                     </div>
                     <div class="coupon_right">
-                      <div class="coupon_name">{{item.actName}}</div>
+                      <div class="coupon_name">{{item.type===1?"["+$t('openScreenAdd.split')+"]":""}}{{item.actName}}</div>
                       <div class="coupon_limits">{{item.recommendCatId || item.recommendGoodsId || item.recommendSortId ? $t('addCouponPackage.forSpecifiedGoods') : $t('addCouponPackage.forAllGoods')}}></div>
                       <div class="coupon_time">2019-08-21--2019-08-31</div>
                       <div class="coupon_icon">{{item.send_num ?item.send_num:0}}{{$t('addCouponPackage.sheet')}}</div>
@@ -149,11 +155,17 @@
                   <el-table-column :label="$t('addCouponPackage.couponInfo')">
                     <template slot-scope="scope">
                       <div class="coupon_info">
-                        <span class="coupon_name">{{scope.row.actName}}</span>
+                        <span class="coupon_name">{{scope.row.type === 1?"["+$t('openScreenAdd.split')+"]":''}}{{scope.row.actName}}</span>
                         <div
                           class="coupon_price"
                           v-if="scope.row.actCode == 'voucher'"
                         >￥<span>{{scope.row.denomination}}</span></div>
+                        <div
+                          class="coupon_price"
+                          v-else-if="scope.row.actCode == 'random'"
+                        >
+                          ￥<span>{{scope.row.randomMax}}{{$t('addCouponPackage.highest')}}</span>
+                        </div>
                         <div
                           class="coupon_price"
                           v-else
@@ -351,6 +363,7 @@
       :tuneUpCoupon="showCouponDialog"
       :couponBack="couponIdList"
       @handleToCheck="handleToCheck"
+      :type="-1"
     />
 
     <!-- 设置优惠券内容 -->

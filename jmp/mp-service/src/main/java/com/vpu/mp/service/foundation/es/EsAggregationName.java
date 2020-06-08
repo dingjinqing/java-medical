@@ -9,7 +9,7 @@ public interface EsAggregationName {
     /**
      * default goods label aggregation return data
      */
-    String[] LABEL_AGGREGATION_SOURCE = {EsLabelName.NAME,EsLabelName.ID,EsLabelName.LIST_PATTERN};
+    String[] LABEL_AGGREGATION_SOURCE = {EsLabelName.NAME,EsLabelName.ID,EsLabelName.LIST_PATTERN,EsLabelName.TYPE};
 
 
 

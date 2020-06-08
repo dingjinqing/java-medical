@@ -54,3 +54,8 @@ export default {
   align-items: center;
 }
 </style>
+<style>
+.lower_level {
+  z-index: 10 !important;
+}
+</style>

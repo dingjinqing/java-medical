@@ -232,6 +232,13 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
                 orderFullReduce.setBos(entry.getValue());
                 orderFullReduce.initRatio();
                 result.add(orderFullReduce);
+                //记录满折满减活动折扣到每件商品的价格
+                orderFullReduce.getBos().forEach(
+                    x-> x.setPerDiscount(BigDecimalUtil.multiplyOrDivide(
+                            BigDecimalUtil.BigDecimalPlus.create(x.getDiscountedTotalPrice(), BigDecimalUtil.Operator.divide),
+                            BigDecimalUtil.BigDecimalPlus.create(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE], BigDecimalUtil.Operator.multiply),
+                            BigDecimalUtil.BigDecimalPlus.create(discount)
+                        )));
                 log.info("满折满减计算成功，详情：{}", orderFullReduce);
             }
         }

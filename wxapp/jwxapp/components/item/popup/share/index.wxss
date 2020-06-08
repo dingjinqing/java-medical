@@ -1,5 +1,4 @@
 .share_goods_box{
-  height: 390rpx;
   background-color: #fff;
   width:750rpx;
 }

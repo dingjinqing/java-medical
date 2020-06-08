@@ -436,7 +436,7 @@ export default {
       display: flex;
       margin: 10px 0;
       .money_paytime {
-        margin-left: 30px;
+        margin-left: 70px;
       }
       .choose {
         margin-left: 15px;

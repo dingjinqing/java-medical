@@ -19,6 +19,8 @@ import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.GoodsSummary.GOODS_SUMMARY;
 import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
+import static com.vpu.mp.db.shop.tables.Cart.CART;
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_THREE;
 import static org.apache.commons.lang3.math.NumberUtils.*;
@@ -45,10 +47,6 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * The constant USER_GR.
      */
     public static final UserGoodsRecord USER_GR = UserGoodsRecord.USER_GOODS_RECORD.as("USER_GR");
-    /**
-     * The constant CART.
-     */
-    public static final UserCartRecord CART = UserCartRecord.USER_CART_RECORD.as("CART");
     /**
      * The constant ORDER_G.
      */
@@ -83,11 +81,11 @@ public class GoodsStatisticTaskService extends ShopBaseService {
             // 品牌条件
             extCondition = extCondition.and(BAK.BRAND_ID.eq(param.getBrandId()));
         }
-        if (param.getBrandId() > 0) {
+        if (param.getSortId() > 0) {
             // 商家分类条件
             extCondition = extCondition.and(BAK.SORT_ID.eq(param.getSortId()));
         }
-        if (param.getBrandId() > 0) {
+        if (param.getLabelId() > 0) {
             // 标签条件
             extCondition = extCondition.and(LABEL.LABEL_ID.eq(param.getLabelId()).and(LABEL.TYPE.eq(BYTE_ONE)));
         }
@@ -222,7 +220,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * @return the add cart goods number
      */
     public Map<Integer, Integer> getSingleAddCartGoodsNumber(ProductOverviewParam param) {
-        return commonBuilder1(param, sum(CART.NUM));
+        return commonBuilder1(param, sum(CART.CART_NUMBER));
     }
 
     /**
@@ -826,4 +824,23 @@ public class GoodsStatisticTaskService extends ShopBaseService {
         return singleGoodsClinchNum(param).values().stream().reduce(INTEGER_ZERO, Integer::sum);
     }
 
+    /**
+     * 加购人数
+     * @param start 开始时间
+     * @param end   结束时间
+     * @return      人数
+     */
+    public Integer addCartUserNum(Timestamp start,Timestamp end){
+        List<Integer> count = db().selectDistinct(CART.USER_ID)
+            .from(CART)
+            .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(CART.GOODS_ID))
+            .where(CART.CREATE_TIME.ge(start))
+            .and(CART.CREATE_TIME.lessThan(end))
+            .fetchInto(Integer.class);
+        Integer sum=0;
+        if (null!=count){
+            sum=count.size();
+        }
+        return sum;
+    }
 }

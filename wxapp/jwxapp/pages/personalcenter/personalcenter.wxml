@@ -1,0 +1,17 @@
+<!--个人中心：pages/personalcenter/personalcenter.wxml-->
+<include src="../common/header.wxml" />
+<view class="main-container">
+  <view class="top_nav">
+    <view class="top_nav_item" data-id="usercenter" bindtap="handleChangeNav" style="{{tabIndex === 'usercenter' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">个人信息</view>
+    <view class="top_nav_item" data-id="address" bindtap="handleChangeNav"  style="{{tabIndex === 'address' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">收货地址</view>
+  </view>
+  <view class="content">
+    <view hidden="{{tabIndex !== 'usercenter'}}">
+      <userinfo options="{{options}}" comColor="{{comColor}}"/>
+    </view>
+    <view hidden="{{tabIndex !== 'address'}}">
+      <address options="{{options}}" comColor="{{comColor}}" data="{{addressList}}" />
+    </view>
+  </view>
+</view>
+  

@@ -32,7 +32,7 @@ public class WxAppVideoController extends WxAppBaseController {
      * @throws Exception
      */
     @PostMapping(value = "/upload/one")
-    protected JsonResult uploadOneFile(UploadVideoParam param, Part file)  {
+    public JsonResult uploadOneFile(UploadVideoParam param, Part file)  {
         Integer userId = wxAppAuth.user().getUserId();
         // 校验
         ResultMessage jsonResultCode = null;
@@ -68,6 +68,7 @@ public class WxAppVideoController extends WxAppBaseController {
                     param.getVideoCatId(),
                     userId);
         } catch (Exception e) {
+            logger().error("视频上传又拍云失败");
             e.printStackTrace();
             return fail();
         }

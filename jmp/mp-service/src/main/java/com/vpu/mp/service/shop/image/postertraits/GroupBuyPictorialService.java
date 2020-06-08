@@ -25,8 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -95,7 +94,11 @@ public class GroupBuyPictorialService extends ShopBaseService {
             }
             shareInfoVo.setImgUrl(imgPath);
             ShopRecord shop = saas.shop.getShopById(getShopId());
-            String shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_DOC, null, "messages", groupBuyDefineRecord.getLimitAmount(), param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+            String shareDoc = null;
+            shareDoc = pictorialService.getCommonConfigDoc(param.getUserName(), goodsRecord.getGoodsName(), param.getRealPrice(), shop.getShopLanguage(), false);
+            if (shareDoc == null) {
+                shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_DOC, "", "messages", groupBuyDefineRecord.getLimitAmount(), param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+            }
             shareInfoVo.setShareDoc(shareDoc);
         }
         shareInfoVo.setImgUrl(imageService.getImgFullUrl(shareInfoVo.getImgUrl()));
@@ -130,10 +133,7 @@ public class GroupBuyPictorialService extends ShopBaseService {
             Color lineColor = new Color(255, 102, 102);
             // "开团省2元" 文字
             String startGroupMoneyText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_SAVE, null, "messages", saveMoney);
-            ImageUtil.addFont(bgBufferImg, startGroupMoneyText, ImageUtil.SourceHanSansCN(Font.PLAIN, 18), 265, 130, lineColor);
-            int width = ImageUtil.getTextWidth(bgBufferImg, ImageUtil.SourceHanSansCN(Font.PLAIN, 18), startGroupMoneyText);
-            // 添加开团省边框
-            ImageUtil.addRect(bgBufferImg, 255, 100, width + 10, 40, lineColor, new Color(255, 238, 238));
+            ImageUtil.addFontWithRect(bgBufferImg, 250, 130, startGroupMoneyText, ImageUtil.SourceHanSansCN(Font.PLAIN, 18),lineColor,new Color(255, 238, 238),lineColor);
 
 
             String moneyFlag = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages");
@@ -214,9 +214,12 @@ public class GroupBuyPictorialService extends ShopBaseService {
         }
 
         groupBuyLog("pictorial", "获取商品分享语");
-        String shareDoc;
+        String shareDoc = null;
         if (PictorialShareConfig.DEFAULT_STYLE.equals(shareConfig.getShareAction())) {
-            shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_DOC, null, "messages", groupBuyDefineRecord.getLimitAmount(), param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+            shareDoc = pictorialService.getCommonConfigDoc(param.getUserName(), goodsRecord.getGoodsName(), param.getRealPrice(), shop.getShopLanguage(), true);
+            if (shareDoc == null) {
+                shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_DOC, null, "messages", groupBuyDefineRecord.getLimitAmount(), param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+            }
         } else {
             shareDoc = shareConfig.getShareDoc();
         }

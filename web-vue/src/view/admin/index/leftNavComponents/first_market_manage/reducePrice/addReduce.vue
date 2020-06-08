@@ -12,7 +12,6 @@
         prop="name"
       >
         <el-input
-          :disabled="isEditFlag"
           size="small"
           :placeholder="$t('marketCommon.actNamePlaceholder')"
           v-model="reduceData.name"
@@ -52,7 +51,6 @@
         prop="first"
       >
         <el-input-number
-          :disabled="isEditFlag"
           size="small"
           :min="0"
           :max="127"
@@ -66,30 +64,32 @@
         prop="isLimit"
       >
         <el-radio
-          :disabled="isEditFlag"
           v-model="reduceData.isLimit"
           label="0"
+          :disabled="isEditFlag"
+          @change="limitChange"
         >{{$t('reducePriceList.noLimit')}}</el-radio>
         <br />
         <el-radio
-          :disabled="isEditFlag"
           v-model="reduceData.isLimit"
           label="1"
+          :disabled="isEditFlag"
+          @change="limitChange"
         >{{$t('reducePriceList.limitQuantity')}}
           <el-input-number
-            :disabled="isEditFlag"
             v-model="reduceData.limitAmount"
             controls-position="right"
-            :min="1"
+            :min="0"
             size="small"
             class="small_input"
+            :disabled="isEditFlag"
           ></el-input-number>
           {{$t('reducePriceList.piece')}}
         </el-radio>
-        <div v-if="reduceData.isLimit === '1'">
+        <div>
           <el-checkbox
-            :disabled="isEditFlag"
             v-model="reduceData.limitFlag"
+            :disabled="reduceData.isLimit === '0' || isEditFlag"
             :true-label="1"
             :false-label="0"
           >{{$t('reducePriceList.limitQuantityTip')}}</el-checkbox>
@@ -110,6 +110,7 @@
         <span
           @click="onlyShowChoosingGoods"
           style="color: #e4393c"
+          v-if="goodsIdList && goodsIdList.length > 0"
         >{{$t('adSharePolite.alreadyChoose')}}{{this.goodsIdList.length}}{{$t('adSharePolite.goods')}}</span>
       </el-form-item>
       <div
@@ -121,47 +122,68 @@
             <em>*</em> {{$t('reducePriceList.setDiscount')}}：
           </div>
           <div class="item_right">
-            <el-radio-group v-model="batchFlag">
-              <el-radio
-                :label="1"
-                :disabled="isEditFlag"
-              >{{$t('reducePriceList.batch')}}
-                <el-input-number
-                  :disabled="batchFlag != 1 ? true : false"
-                  v-model="reduceData.batchDiscount"
-                  :controls="false"
-                  size="small"
-                  controls-position="right"
-                  class="small_input"
-                  :min="0"
-                  :max="10"
-                ></el-input-number>{{$t('reducePriceList.discount')}}</el-radio>
-              <el-radio
-                :label="2"
-                :disabled="isEditFlag"
-              >{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceReduction')}}
-                <el-input-number
-                  :disabled="batchFlag != 2 ? true : false"
-                  v-model="reduceData.batchReduce"
-                  :controls="false"
-                  size="small"
-                  controls-position="right"
-                  class="small_input"
-                  :min="0"
-                ></el-input-number>{{$t('marketCommon.yuan')}}</el-radio>
-              <el-radio
-                :label="3"
-                :disabled="isEditFlag"
-              >{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceAfterDiscount')}}
-                <el-input-number
-                  :disabled="batchFlag != 3 ? true : false"
-                  v-model="reduceData.batchFinalPrice"
-                  :controls="false"
-                  size="small"
-                  controls-position="right"
-                  class="small_input"
-                  :min="0"
-                ></el-input-number>{{$t('marketCommon.yuan')}}</el-radio>
+            <el-radio-group
+              v-model="batchFlag"
+              @change="batchFlagChange"
+            >
+              <el-form-item
+                style="margin-bottom: 0px;display: inline-block;margin-right: 20px;"
+                label-width="0px"
+                prop="batchDiscount"
+              >
+                <el-radio
+                  :label="1"
+                  :disabled="isEditFlag"
+                >{{$t('reducePriceList.batch')}}
+                  <el-input-number
+                    :disabled="batchFlag != 1 ? true : false"
+                    v-model="reduceData.batchDiscount"
+                    :controls="false"
+                    size="small"
+                    controls-position="right"
+                    class="small_input"
+                    :min="0"
+                    :max="10"
+                  ></el-input-number>{{$t('reducePriceList.discount')}}</el-radio>
+              </el-form-item>
+              <el-form-item
+                style="margin-bottom: 0px;display: inline-block;margin-right: 20px;"
+                label-width="0px"
+                prop="batchReduce"
+              >
+                <el-radio
+                  :label="2"
+                  :disabled="isEditFlag"
+                >{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceReduction')}}
+                  <el-input-number
+                    :disabled="batchFlag != 2 ? true : false"
+                    v-model="reduceData.batchReduce"
+                    :controls="false"
+                    size="small"
+                    controls-position="right"
+                    class="small_input"
+                    :min="0"
+                  ></el-input-number>{{$t('marketCommon.yuan')}}</el-radio>
+              </el-form-item>
+              <el-form-item
+                style="margin-bottom: 0px;display: inline-block;margin-right: 20px;"
+                label-width="0px"
+                prop="batchFinalPrice"
+              >
+                <el-radio
+                  :label="3"
+                  :disabled="isEditFlag"
+                >{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceAfterDiscount')}}
+                  <el-input-number
+                    :disabled="batchFlag != 3 ? true : false"
+                    v-model="reduceData.batchFinalPrice"
+                    :controls="false"
+                    size="small"
+                    controls-position="right"
+                    class="small_input"
+                    :min="0"
+                  ></el-input-number>{{$t('marketCommon.yuan')}}</el-radio>
+              </el-form-item>
             </el-radio-group>
             <el-button
               :disabled="isEditFlag"
@@ -230,7 +252,7 @@
                   size="small"
                   controls-position="right"
                   class="small_input"
-                  @input="changeItemDiscount(scope.row)"
+                  @change="changeItemDiscount(scope.row)"
                 ></el-input-number> {{$t('reducePriceList.discount')}}
               </template>
             </el-table-column>
@@ -249,7 +271,7 @@
                   size="small"
                   controls-position="right"
                   class="small_input"
-                  @input="changeItemReducePrice(scope.row)"
+                  @change="changeItemReducePrice(scope.row)"
                 ></el-input-number> {{$t('marketCommon.yuan')}}
               </template>
             </el-table-column>
@@ -269,7 +291,7 @@
                   size="small"
                   controls-position="right"
                   class="small_input"
-                  @input="changeItemGoodsPrice(scope.row)"
+                  @change="changeItemGoodsPrice(scope.row)"
                 ></el-input-number> {{$t('marketCommon.yuan')}}
                 <p
                   class="price_blue"
@@ -332,7 +354,6 @@
             <el-radio
               v-model="reduceData.shareConfig.shareAction"
               :label="1"
-              :disabled="isEditFlag"
             >默认样式</el-radio>
             <el-popover
               placement="right-start"
@@ -362,14 +383,12 @@
             <el-radio
               v-model="reduceData.shareConfig.shareAction"
               :label="2"
-              :disabled="isEditFlag"
             >自定义样式</el-radio>
             <div v-if="reduceData.shareConfig.shareAction === 2">
               <span>文案：</span>
               <el-input
                 v-model="reduceData.shareConfig.shareDoc"
                 size="small "
-                :disabled="isEditFlag"
                 style="width: 170px;"
               ></el-input>
             </div>
@@ -378,13 +397,11 @@
               <el-radio
                 v-model="reduceData.shareConfig.shareImgAction"
                 :label="1"
-                :disabled="isEditFlag"
               >活动商品信息图</el-radio>
               <div style="margin-left: 60px;">
                 <el-radio
                   v-model="reduceData.shareConfig.shareImgAction"
                   :label="2"
-                  :disabled="isEditFlag"
                 >自定义图片</el-radio>
               </div>
 
@@ -400,7 +417,7 @@
                   <div style="width: 100%; height: 100%;">
                     <img
                       v-if="reduceData.shareConfig.shareImg === ''"
-                      src="http://jmpdevimg.weipubao.cn/image/admin/shop_beautify/add_decorete.png"
+                      :src="$$imageHost + '/image/admin/shop_beautify/add_decorete.png'"
                       alt=""
                     >
                     <img
@@ -477,11 +494,57 @@ export default {
   },
   props: ['isEdite', 'editId'],
   data () {
+    // 自定义限购
+    var validateLimit = (rule, value, callback) => {
+      if (value === '1' && this.reduceData.limitAmount === undefined) {
+        callback(new Error('请填写限购数量'))
+      } else if (value === '1' && this.reduceData.limitAmount === 0) {
+        callback(new Error('限购数量必须大于0'))
+      } else {
+        callback()
+      }
+    }
     // 自定义活动商品
     var validateGoods = (rule, value, callback) => {
       console.log(this.pageShowGoodsList)
       if (!this.pageShowGoodsList || this.pageShowGoodsList.length === 0) {
         callback(new Error('请选择活动商品'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验折扣
+    var validateDiscount = (rule, value, callback) => {
+      if (this.batchFlag === 1) {
+        if (!value && value !== 0) {
+          callback(new Error('请填写批量折扣'))
+        } else {
+          callback()
+        }
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验减价
+    var validateReduce = (rule, value, callback) => {
+      if (this.batchFlag === 2) {
+        if (!value && value !== 0) {
+          callback(new Error('请填写批量减价'))
+        } else {
+          callback()
+        }
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验折后价
+    var validateFinalPrice = (rule, value, callback) => {
+      if (this.batchFlag === 3) {
+        if (!value && value !== 0) {
+          callback(new Error('请填写批量折扣价'))
+        } else {
+          callback()
+        }
       } else {
         callback()
       }
@@ -496,8 +559,8 @@ export default {
       // 展开更多配置
       arrorFlag: true,
       srcList: {
-        src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
-        src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`
+        src1: `${this.$imageHost}/image/admin/share/reduce_share.jpg`,
+        src2: `${this.$imageHost}/image/admin/share/reduce_pictorial.jpg`
       },
 
       isEditFlag: false, // 编辑时部分信息不可修改
@@ -538,10 +601,19 @@ export default {
           { required: true, message: '请填写优先级', trigger: 'blur' }
         ],
         isLimit: [
-          { required: true, message: '请填写限购数量', trigger: 'change' }
+          { required: true, validator: validateLimit, trigger: 'change' }
         ],
         showGoodsList: [
           { required: true, validator: validateGoods, trigger: 'change' }
+        ],
+        batchDiscount: [
+          { required: true, validator: validateDiscount, trigger: 'change' }
+        ],
+        batchReduce: [
+          { required: true, validator: validateReduce, trigger: 'change' }
+        ],
+        batchFinalPrice: [
+          { required: true, validator: validateFinalPrice, trigger: 'change' }
         ]
       },
 
@@ -770,52 +842,69 @@ export default {
         return rowData.goodsId === item.goodsId
       })
       let itemData = this.pageShowGoodsList[goodsTarget]
-      let shopPrice = parseFloat(itemData.shopPrice)
-      let goodsPriceFloat = (shopPrice * parseFloat(rowData.discount / 10)).toFixed(3)
-      let reducePriceFloat = parseFloat(shopPrice - goodsPriceFloat).toFixed(3)
-      itemData.goodsPrice = parseFloat(goodsPriceFloat.substring(0, goodsPriceFloat.length - 1))
-      itemData.reducePrice = parseFloat(reducePriceFloat.substring(0, reducePriceFloat.length - 1))
-      // if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
-      //   itemData.reducePriceProduct.map(item => {
-      //     let originalPrice = item.originalPrice
-      //     let prdPriceFloat = (originalPrice * (parseFloat(rowData.discount / 10))).toFixed(3)
-      //     item.prdPrice = parseFloat(prdPriceFloat.substring(0, prdPriceFloat.length - 1))
-      //   })
-      // }
+      if (rowData.discount === undefined) {
+        itemData.goodsPrice = undefined
+        itemData.reducePrice = undefined
+      } else {
+        let shopPrice = parseFloat(itemData.shopPrice)
+        let goodsPriceFloat = (shopPrice * parseFloat(rowData.discount / 10)).toFixed(3)
+        let reducePriceFloat = parseFloat(shopPrice - goodsPriceFloat).toFixed(3)
+        itemData.goodsPrice = parseFloat(goodsPriceFloat.substring(0, goodsPriceFloat.length - 1))
+        itemData.reducePrice = parseFloat(reducePriceFloat.substring(0, reducePriceFloat.length - 1))
+        if (this.isEditFlag === false && itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
+          itemData.reducePriceProduct.map(item => {
+            // let originalPrice = item.originalPrice
+            // let prdPriceFloat = (originalPrice * (parseFloat(rowData.discount / 10))).toFixed(3)
+            // item.prdPrice = parseFloat(prdPriceFloat.substring(0, prdPriceFloat.length - 1))
+            item.prdPrice = rowData.goodsPrice
+          })
+        }
+      }
     },
     changeItemReducePrice (rowData) {
       let goodsTarget = this.pageShowGoodsList.findIndex(item => {
         return rowData.goodsId === item.goodsId
       })
       let itemData = this.pageShowGoodsList[goodsTarget]
-      let shopPrice = parseFloat(itemData.shopPrice)
-      let goodsPriceFloat = parseFloat(shopPrice - rowData.reducePrice).toFixed(3)
-      let discountFloat = (parseFloat(goodsPriceFloat / shopPrice) * 10).toFixed(3)
-      itemData.goodsPrice = parseFloat(goodsPriceFloat.substring(0, goodsPriceFloat.length - 1))
-      itemData.discount = parseFloat(discountFloat.substring(0, discountFloat.length - 1))
-      // if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
-      //   itemData.reducePriceProduct.map(item => {
-      //     let originalPrice = item.originalPrice
-      //     let prdPriceFloat = parseFloat(originalPrice - rowData.reducePrice).toFixed(3)
-      //     item.prdPrice = parseFloat(prdPriceFloat.substring(0, prdPriceFloat.length - 1))
-      //   })
-      // }
+      if (rowData.reducePrice === undefined) {
+        itemData.goodsPrice = undefined
+        itemData.discount = undefined
+      } else {
+        let shopPrice = parseFloat(itemData.shopPrice)
+        let goodsPriceFloat = parseFloat(shopPrice - rowData.reducePrice).toFixed(3)
+        let discountFloat = (parseFloat(goodsPriceFloat / shopPrice) * 10).toFixed(3)
+        itemData.goodsPrice = parseFloat(goodsPriceFloat.substring(0, goodsPriceFloat.length - 1))
+        itemData.discount = parseFloat(discountFloat.substring(0, discountFloat.length - 1))
+        if (this.isEditFlag === false && itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
+          itemData.reducePriceProduct.map(item => {
+            // let originalPrice = item.originalPrice
+            // let prdPriceFloat = parseFloat(originalPrice - rowData.reducePrice).toFixed(3)
+            // item.prdPrice = parseFloat(prdPriceFloat.substring(0, prdPriceFloat.length - 1))
+            item.prdPrice = rowData.goodsPrice
+          })
+        }
+      }
     },
     changeItemGoodsPrice (rowData) {
       let goodsTarget = this.pageShowGoodsList.findIndex(item => {
         return rowData.goodsId === item.goodsId
       })
       let itemData = this.pageShowGoodsList[goodsTarget]
-      let shopPrice = parseFloat(itemData.shopPrice)
-      let reducePriceFloat = parseFloat(shopPrice - rowData.goodsPrice).toFixed(3)
-      let discountFloat = (parseFloat(rowData.goodsPrice / shopPrice) * 10).toFixed(3)
-      itemData.reducePrice = parseFloat(reducePriceFloat.substring(0, reducePriceFloat.length - 1))
-      itemData.discount = parseFloat(discountFloat.substring(0, discountFloat.length - 1))
-      // if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
-      //   itemData.reducePriceProduct.map(item => {
-      //     item.prdPrice = rowData.goodsPrice
-      //   })
-      // }
+      if (rowData.goodsPrice === undefined) {
+        itemData.reducePrice = undefined
+        itemData.discount = undefined
+      } else {
+        let shopPrice = parseFloat(itemData.shopPrice)
+        let reducePriceFloat = parseFloat(shopPrice - rowData.goodsPrice).toFixed(3)
+        let discountFloat = (parseFloat(rowData.goodsPrice / shopPrice) * 10).toFixed(3)
+        itemData.reducePrice = parseFloat(reducePriceFloat.substring(0, reducePriceFloat.length - 1))
+        itemData.discount = parseFloat(discountFloat.substring(0, discountFloat.length - 1))
+        if (this.isEditFlag === false && itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
+          itemData.reducePriceProduct.map(item => {
+            item.prdPrice = rowData.goodsPrice
+          })
+        }
+      }
     },
     reduceError (rowData) {
       if (rowData.discount || rowData.reducePrice || rowData.goodsPrice) {
@@ -851,9 +940,10 @@ export default {
           this.CycleData = this.reduceData.pointTime
           // 限购数量
           if (this.reduceData.limitAmount !== null && this.reduceData.limitAmount > 0) {
-            this.reduceData.isLimit = '1'
+            this.$set(this.reduceData, 'isLimit', '1')
           } else {
-            this.reduceData.isLimit = '0'
+            this.reduceData.limitAmount = 1
+            this.$set(this.reduceData, 'isLimit', '0')
           }
 
           // 活动分享
@@ -881,6 +971,16 @@ export default {
 
     // 保存限时降价
     saveClickHandler () {
+      var result = this.pageShowGoodsList.findIndex(item => { return item.discount === undefined || item.reducePrice === undefined || item.goodsPrice === undefined })
+      if (result === -1) {
+        var errorTip = this.pageShowGoodsList.map(item => { return this.reduceError(item) })
+        if (errorTip.findIndex(item => { return item !== '' }) !== -1) {
+          return false
+        }
+      } else {
+        this.$message.warning('请完整填写活动商品价格!')
+        return false
+      }
       this.$refs['reduceData'].validate((valid) => {
         if (valid) {
           // 有效期
@@ -923,7 +1023,22 @@ export default {
       })
     },
 
-    clickHandler () { }
+    // 批量设置切换
+    batchFlagChange () {
+      this.$refs.reduceData.validateField('batchDiscount')
+      this.$refs.reduceData.validateField('batchReduce')
+      this.$refs.reduceData.validateField('batchFinalPrice')
+    },
+
+    clickHandler () { },
+
+    // 限购切换
+    limitChange (val) {
+      if (val === '0') {
+        this.reduceData.limitFlag = 0
+      }
+      this.$refs.reduceData.validateField('isLimit')
+    }
 
     // 提交前校验
     // validParam() {
@@ -1048,10 +1163,10 @@ export default {
     border-left: 1px solid #ebeef5;
     border-right: 1px solid #ebeef5;
     > .item_title {
-      line-height: 60px;
+      line-height: 90px;
     }
     > .item_right {
-      line-height: 60px;
+      line-height: 90px;
     }
   }
   > .item_title {
@@ -1142,5 +1257,8 @@ export default {
   line-height: 80px;
   margin-left: 20px;
   color: rgb(153, 153, 153);
+}
+.el-radio {
+  margin-right: 0;
 }
 </style>

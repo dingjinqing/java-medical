@@ -1,0 +1,169 @@
+/* components/usercenter/useraddress/useraddress.wxss */
+/* 没有收货地址时展示 */
+.no-address {
+  margin-top: 10rpx;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+}
+.no-address-header {
+  height: 20rpx;
+  background: #f5f5f5;
+}
+.no-address-top {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin-top: -208rpx;
+}
+.no-address-text { 
+  color:#666;
+  text-align: center;
+}
+.no-address-icon {
+  width: 260rpx;
+  margin-bottom: 40rpx;
+}
+.no-address-btns {
+  position: fixed;
+  padding: 42rpx 30rpx;
+}
+.no-address-btn {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  border-radius: 3px;
+  font-size: 26rpx;
+}
+.new-btn {
+  color: #fff;
+  background: #f66;
+  margin-left: 10rpx;
+}
+.wd-btn {
+  border: 1px solid #333;
+  margin-right: 10rpx;
+}
+
+/* 收货地址列表 */
+.address-item {
+  position: relative;
+  margin-top: 20rpx;
+  padding-left: 20rpx;
+  background: #fff;
+  color: #333333;
+}
+.select-address-icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50rpx;
+  height: 50rpx;
+  z-index: 100;
+}
+.address-item-top {
+  padding-right: 20rpx;
+  padding-top: 30rpx;
+  padding-bottom: 30rpx;
+}
+.ait-title {
+  line-height: 33rpx;
+  font-weight: bold;
+  padding-bottom: 16rpx;
+}
+.ait-name,.ait-mobile {
+  font-size: 30rpx;
+}
+.ait-name {
+  display: inline-block;
+  width: 170rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ait-address {
+  font-size: 24rpx;
+  line-height: 33rpx;
+  color: #666;
+}
+.address-item-line {
+  position: relative;
+}
+.address-item-line::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: #eee;
+  transform: scaleY(0.5);
+}
+.address-item-bottom {
+  overflow: hidden;
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: 26rpx;
+}
+.aib-left {
+
+}
+.aib-left radio {
+  transform: scale(0.6, 0.6);
+  position: relative;
+  top: -1rpx;
+}
+.aib-right {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  float: right;
+  width: 196rpx;
+}
+.aib-right text {
+  padding-right: 20rpx;
+  color: #999;
+}
+.aib-right-line {
+  position: relative;
+}
+.aib-right-line::after {
+  content: '';
+  position: absolute;
+  bottom: -12rpx;
+  left: 0;
+  width: 1rpx;
+  height: 26rpx;
+  background: #999;
+  transform: scaleX(0.5);
+}
+.address-list-footer {
+  box-sizing: border-box;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 120rpx;
+  background: #fff;
+  padding: 20rpx;
+}
+.address-list-footer button {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+}
+.wechat-icon {
+  width: 39rpx;
+  height: 32rpx;
+  margin-right: 16rpx;
+}

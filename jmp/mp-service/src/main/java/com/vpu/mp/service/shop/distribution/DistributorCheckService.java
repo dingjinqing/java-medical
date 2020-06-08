@@ -55,7 +55,7 @@ public class DistributorCheckService extends ShopBaseService{
 	public void buildOptions(SelectConditionStep<Record> select,DistributorCheckListParam param){
 	    //根据手机号查询
         if(isNotEmpty(param.getMobile())){
-            select.and(USER.MOBILE.eq(param.getMobile()));
+            select.and(USER.MOBILE.like(likeValue(param.getMobile())));
         }
         //根据用户名
         if(isNotEmpty(param.getUsername())){
@@ -63,11 +63,11 @@ public class DistributorCheckService extends ShopBaseService{
         }
         //申请开始时间
         if(param.getStartTime() !=null){
-            select.and(DISTRIBUTOR_APPLY.CREATE_TIME.le(param.getStartTime()));
+            select.and(DISTRIBUTOR_APPLY.CREATE_TIME.ge(param.getStartTime()));
         }
         //申请结束时间
         if(param.getEndTime() != null){
-            select.and(DISTRIBUTOR_APPLY.CREATE_TIME.ge(param.getEndTime()));
+            select.and(DISTRIBUTOR_APPLY.CREATE_TIME.le(param.getEndTime()));
         }
         //flag = 1是从店铺助手过来
         if(param.getFlag() == 1){

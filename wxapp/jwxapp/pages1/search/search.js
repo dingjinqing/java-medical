@@ -19,7 +19,6 @@ global.wxPage({
       activityTypes: [],
       labelIds: [],
       pageFrom:null,
-      goodsIds:[],
       outerPageParam:{}
     }
   },
@@ -45,9 +44,6 @@ global.wxPage({
     this.setData({
       loaded:false
     })
-    wx.showLoading({
-      title: '加载中',
-    })
     util.api(
       '/api/wxapp/goods/search',
       res => {
@@ -68,7 +64,6 @@ global.wxPage({
             showCart:res.content.showCart,
             ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.pageResult.dataList
           });
-          wx.hideLoading()
         }
       },
       {
@@ -78,7 +73,7 @@ global.wxPage({
         sortItem: this.data.sortItem,
         sortDirection: this.data.sortDirection,
         ...this.data.filterData
-      }
+      },'',true
     );
   },
   // 获取右侧筛选信息
@@ -120,7 +115,6 @@ global.wxPage({
   },
   loadFilter (options) {
     return new Promise((resolve, reject) => {
-      if(options.scene) options = this.resetScene(options.scene)
       let target = {
         filterData: {},
         data: {}

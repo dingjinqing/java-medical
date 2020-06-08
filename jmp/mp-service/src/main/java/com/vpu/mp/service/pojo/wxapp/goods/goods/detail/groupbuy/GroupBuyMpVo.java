@@ -34,7 +34,8 @@ public class GroupBuyMpVo extends GoodsActivityDetailMp {
 
     /**活动运费 0 不免运费 1 免运费*/
     private Byte freeShip;
-
+    /** 拼团活动总库存*/
+    private Integer stock;
     /** 正在进行中拼团列表信息 */
     private List<GroupBuyListMpVo> groupBuyListMpVos;
 

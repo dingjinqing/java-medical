@@ -1,0 +1,31 @@
+.invite-content{
+  display: flex;
+  align-items: center;
+  height: 76rpx;
+  background: #ffeded;
+  padding: 0 30rpx;
+}
+.user-avatar{
+  width: 55rpx;
+  height: 55rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+.share-note{
+  flex: 1;
+  color: #ff6666;
+  display: flex;
+}
+.share-note > text{
+  font-size: 24rpx;
+}
+.share-note > text:first-of-type{
+  margin-right: 20rpx;
+  max-width: 150rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.close-button{
+  height: 36rpx;
+  width: 36rpx;
+}

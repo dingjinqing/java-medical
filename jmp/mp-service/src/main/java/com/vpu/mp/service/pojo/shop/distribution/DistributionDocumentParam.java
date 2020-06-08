@@ -9,6 +9,8 @@ import lombok.Data;
  */
 @Data
 public class DistributionDocumentParam {
+    /**审核开关 0：关闭；1：开启*/
+    private Byte activation;
     /**
      * 页面标题
      */

@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVo
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.record.GoodsOrderRecordSmallVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
@@ -49,6 +50,7 @@ import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
 /**
@@ -307,21 +309,28 @@ public class OrderGoodsService extends ShopBaseService{
             discountDetail(StringUtils.EMPTY).
             deliverTemplateId(goods.getGoodsInfo().getDeliverTemplateId()).
             //商品质量
-            goodsWeight(goods.getGoodsInfo().getGoodsWeight()).
+            goodsWeight(goods.getProductInfo().getPrdWeight()).
             //TODO 后续处理
             userCoupon(null).
             catId(goods.getGoodsInfo().getCatId()).
             sortId(goods.getGoodsInfo().getSortId()).
             brandId(goods.getGoodsInfo().getBrandId()).
             goodsPriceAction(goods.getGoodsPriceAction()).
+            reducePriceId(goods.getReducePriceId() == null ? NumberUtils.INTEGER_ZERO : goods.getReducePriceId()).
             purchasePriceId(goods.getPurchasePriceId()).
             purchasePriceRuleId(goods.getPurchasePriceRuleId()).
-            reducePriceId(null).
             firstSpecialId(goods.getFirstSpecialId() == null ? NumberUtils.INTEGER_ZERO : goods.getFirstSpecialId()).
             isCardExclusive(goods.getGoodsInfo().getIsCardExclusive()).
+            reducePriceId(goods.getReducePriceId()).
             promoteInfo(null).
             build();
-        logger().info("initOrderGoods初始化数据结束，参数为：",bo.toString());
+
+        //限时降价的ID和TYPE存入order_goods
+        if(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goods.getGoodsPriceAction()) && goods.getReducePriceId() != null){
+            bo.setActivityId(goods.getReducePriceId());
+            bo.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
+        }
+        logger().info("initOrderGoods初始化数据结束，参数为：{}",bo.toString());
         return bo;
     }
 
@@ -345,6 +354,10 @@ public class OrderGoodsService extends ShopBaseService{
                 record.setActivityType(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE);
                 record.setActivityId(bo.getPurchasePriceId());
                 record.setActivityRule(bo.getPurchasePriceRuleId());
+            }else if(bo.getReducePriceId() != null && bo.getReducePriceId() > 0) {
+                //限时降价
+                record.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
+                record.setActivityId(bo.getReducePriceId());
             }
             if(bo.getPurchasePriceId() != null) {
                 record.setPurchaseId(bo.getPurchasePriceId());
@@ -382,6 +395,9 @@ public class OrderGoodsService extends ShopBaseService{
             if(bo.getFreeShip() != null && bo.getFreeShip() > 0){
                 //满包邮
                 type.add(BaseConstant.ACTIVITY_TYPE_FREESHIP_ORDER);
+            }
+            if(bo.getGoodsPriceAction() != null && bo.getGoodsPriceAction().equals(BaseConstant.ACTIVITY_TYPE_REBATE)) {
+                type.add(BaseConstant.ACTIVITY_TYPE_REBATE);
             }
         }
         if(BigDecimalUtil.compareTo(insteadPayMoney, null) == 1) {
@@ -477,5 +493,64 @@ public class OrderGoodsService extends ShopBaseService{
             .from(TABLE)
             .where(TABLE.ORDER_SN.in(orderSns))
             .fetchGroups(TABLE.ORDER_SN,ApiOrderGoodsListVo.class);
+    }
+
+	/**
+	 * 商品购买记录
+	 *
+	 * @param goodsId 商品id
+	 * @return 最进的五条数据
+	 */
+	public List<GoodsOrderRecordSmallVo> getGoodsRecord(Integer goodsId) {
+		SelectHavingStep<Record2<String, BigDecimal>> subQuery1 = db()
+				.select(ORDER_INFO.MAIN_ORDER_SN, DSL.sum(TABLE.GOODS_NUMBER).sub(DSL.sum(TABLE.RETURN_NUMBER)).as("remain_num"))
+				.from(TABLE)
+				.leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(TABLE.ORDER_SN))
+				.where(ORDER_INFO.MAIN_ORDER_SN.notEqual(ORDER_INFO.ORDER_SN))
+				.and(DSL.length(ORDER_INFO.ORDER_SN).gt(10))
+				.and(TABLE.GOODS_ID.eq(goodsId))
+				.groupBy(ORDER_INFO.MAIN_ORDER_SN);
+		SelectHavingStep<Record2<String, BigDecimal>> subQuery2 = db()
+				.select(ORDER_INFO.ORDER_SN, DSL.sum(TABLE.GOODS_NUMBER).sub(DSL.sum(TABLE.RETURN_NUMBER)).as("remain_num"))
+				.from(TABLE)
+				.leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(TABLE.ORDER_SN))
+				.where(TABLE.GOODS_ID.eq(goodsId))
+				.and(DSL.length(ORDER_INFO.MAIN_ORDER_SN).lt(10))
+				.groupBy(ORDER_INFO.ORDER_SN);
+		List<GoodsOrderRecordSmallVo> goodsOrderRecordSmallVos = db().select(USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR, ORDER_INFO.CREATE_TIME)
+				.from(ORDER_INFO)
+				.leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(ORDER_INFO.USER_ID))
+				.leftJoin(subQuery1).on(subQuery1.field(ORDER_INFO.MAIN_ORDER_SN).eq(ORDER_INFO.ORDER_SN))
+				.leftJoin(subQuery2).on(subQuery2.field(ORDER_INFO.ORDER_SN).eq(ORDER_INFO.ORDER_SN))
+				.where(ORDER_INFO.ORDER_STATUS.notIn(OrderConstant.ORDER_WAIT_PAY, OrderConstant.ORDER_CANCELLED, OrderConstant.ORDER_CLOSED, OrderConstant.ORDER_REFUND_FINISHED))
+				.and(USER_DETAIL.USERNAME.notEqual(""))
+				.and(USER_DETAIL.USERNAME.isNotNull())
+				.and(subQuery1.field("remain_num", Integer.class).gt(0)
+						.or(subQuery2.field("remain_num", Integer.class).gt(0)))
+				.orderBy(ORDER_INFO.CREATE_TIME.desc())
+				.limit(5).fetchInto(GoodsOrderRecordSmallVo.class);
+		return goodsOrderRecordSmallVos;
+	}
+
+    /**
+     * 用户已对某个限时降价活动下单的商品数量
+     * @param userId
+     * @param reducePriceId
+     * @param prdId
+     * @return
+     */
+	public int getBuyGoodsNumberByReducePriceId(int userId,int reducePriceId,int prdId){
+        Timestamp[] periodTime = saas.getShopApp(getShopId()).reducePrice.getCurrentPeriodTime(reducePriceId);
+        SelectConditionStep<? extends Record> select = db().select(DSL.sum(TABLE.GOODS_NUMBER)).from(TABLE).leftJoin(ORDER_INFO).on(TABLE.ORDER_ID.eq(ORDER_INFO.ORDER_ID)).
+            where(TABLE.ACTIVITY_ID.eq(reducePriceId)).
+            and(ORDER_INFO.USER_ID.eq(userId)).
+            and(TABLE.PRODUCT_ID.eq(prdId)).
+            and(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).
+            and(TABLE.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE)).
+            and(ORDER_INFO.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY));
+	    if(periodTime != null){
+            select.and(ORDER_INFO.CREATE_TIME.ge(periodTime[0])).and(ORDER_INFO.CREATE_TIME.le(periodTime[1]));
+        }
+        return select.fetchAnyInto(int.class);
     }
 }

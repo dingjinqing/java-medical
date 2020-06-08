@@ -595,7 +595,7 @@ public class IncreasePurchaseService extends ShopBaseService {
         //过滤掉用户不能买的专属商品
         List<Integer> inGoodsIds = Util.splitValueToList(purchasePriceDefineRecord.getGoodsId());
         List<Integer> userExclusiveGoodsIds = goodsCardCoupleService.getGoodsUserNotExclusive(userId);
-        inGoodsIds = Util.diffList(inGoodsIds,userExclusiveGoodsIds);
+        inGoodsIds.removeAll(userExclusiveGoodsIds);
 
         //商品列表
         PageResult<PurchaseGoodsListVo.Goods> goodsPageResult = getGoods(inGoodsIds,param.getSearch(),param.getCurrentPage(),param.getPageRows());
@@ -630,7 +630,7 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     private PageResult<PurchaseGoodsListVo.Goods> getGoods(List<Integer> inGoodsIds,String search,Integer currentPage,Integer pageRows){
         Byte soldOutGoods = shopCommonConfigService.getSoldOutGoods();
-        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE,GOODS.IS_DEFAULT_PRODUCT).from(GOODS);
+        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE, GOODS.CAT_ID, GOODS.GOODS_TYPE, GOODS.SORT_ID, GOODS.IS_CARD_EXCLUSIVE, GOODS.IS_DEFAULT_PRODUCT, GOODS.GOODS_NUMBER).from(GOODS);
         select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         select.where(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
         if(!NumberUtils.BYTE_ONE.equals(soldOutGoods)){

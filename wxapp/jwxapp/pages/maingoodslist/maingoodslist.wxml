@@ -45,7 +45,7 @@
               </view>
               <view class='original_price' wx:if='{{item.marketPrice!=null && item.marketPrice != ""}}'>￥{{item.marketPrice}}</view>
             </view>
-            <view class='btn_add_cart' bindtap='add_to_cart' data-goods_id='{{item.goodsId}}' data-prd_id='{{item.prdId}}' data-cart_number="{{item.cartGoodsNumber}}" data-limit_amount="{{item.limitAmount}}">
+            <view class='btn_add_cart' bindtap='add_to_cart' data-goods_id='{{item.goodsId}}' data-prd_id='{{item.prdId}}' data-cart_number="{{item.cartGoodsNumber}}" data-limit_amount="{{item.limitAmount}}" data-goods_number="{{item.goodsNumber}}">
               <text class='iconfont iconjiarugouwuche' style='color:{{comColor}};font-size:60rpx;'></text>
             </view>
           </view>

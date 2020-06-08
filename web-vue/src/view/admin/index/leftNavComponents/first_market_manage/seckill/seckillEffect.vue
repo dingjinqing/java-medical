@@ -187,18 +187,20 @@ export default {
   methods: {
     initEcharts () {
       this.myChart = echarts.init(document.getElementById('charts'))
-
-      var startTime = new Date(this.$route.query.startTime).getTime()
-      var endTime = new Date(this.$route.query.endTime).getTime()
-      var nowTime = new Date(this.endDate).getTime()
-      if (nowTime >= startTime && nowTime <= endTime) {
-        // 进行中
-        this.starDate = this.$route.query.startTime
-      }
-      if (startTime > nowTime || endTime < nowTime) {
-        // 未开始或已结束
-        this.starDate = this.$route.query.startTime
-        this.endDate = this.$route.query.endTime
+      if (window.performance.navigation.type !== 1) {
+        // 首次加载
+        var startTime = new Date(this.$route.query.startTime).getTime()
+        var endTime = new Date(this.$route.query.endTime).getTime()
+        var nowTime = new Date(this.endDate).getTime()
+        if (nowTime >= startTime && nowTime <= endTime) {
+          // 进行中
+          this.starDate = this.$route.query.startTime
+        }
+        if (startTime > nowTime || endTime < nowTime) {
+          // 未开始或已结束
+          this.starDate = this.$route.query.startTime
+          this.endDate = this.$route.query.endTime
+        }
       }
 
       let params = {

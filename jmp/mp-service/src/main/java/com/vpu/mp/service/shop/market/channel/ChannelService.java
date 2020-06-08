@@ -53,8 +53,11 @@ import lombok.NoArgsConstructor;
 @Service
 public class ChannelService extends ShopBaseService {
 
-	public static final String PAGE_PATH_PARAM_FORMAT = "page=%d&channel=%s";
-	public static final String GOODS_PATH_PARAM_FORMAT = "goods_id=%d&channel=%s";
+	public static final String PAGE_PATH_PARAM_FORMAT = "page=%d&c=%s";
+	public static final String GOODS_PATH_PARAM_FORMAT = "gid=%d&c=%s";
+
+	private static final String CUSTOMIZE_PATH="pages/index/index?";
+    private static final String GOODS_DETAIL_PATH="pages/item/item?";
 	/** 分享码 进制转换使用 */
 	private static final String DIGIT = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	private static final BigInteger SCALE = new BigInteger("62");
@@ -89,6 +92,11 @@ public class ChannelService extends ShopBaseService {
 			return result;
 		}
 		for (ChannelPageVo vo : result.dataList) {
+		    if( vo.getSourceType().equals(ChannelConstant.SOURCETYPE_CUSTOMIZE) ){
+		        vo.setShare(CUSTOMIZE_PATH+"page="+vo.getPageId());
+            }else{
+                vo.setShare(GOODS_DETAIL_PATH+"gid="+vo.getGoodsId());
+            }
 			vo.setOrderNum(getOrderNum(vo.getId(), ChannelConstant.INVITESOURCE));
 			vo.setNewUserNum(getUserNum(vo.getId(), ChannelConstant.INVITESOURCE));
 			setYesterdayInfo(vo);
@@ -164,10 +172,10 @@ public class ChannelService extends ShopBaseService {
 			step.where(CHANNEL.SOURCE_TYPE.eq(param.getSourceType()));
 		}
 		if (param.getStartTime() != null) {
-			step.where(CHANNEL.CREATE_TIME.ge(param.getStartTime()));
+			step.where(CHANNEL.CREATE_TIME.greaterOrEqual(param.getStartTime()));
 		}
 		if (param.getEndTime() != null) {
-			step.where(CHANNEL.CREATE_TIME.le(param.getEndTime()));
+			step.where(CHANNEL.CREATE_TIME.lessOrEqual(param.getEndTime()));
 		}
 
 		if (!StringUtils.isBlank(param.getSourcePage())) {
@@ -177,7 +185,7 @@ public class ChannelService extends ShopBaseService {
 			}
 			step.where(CHANNEL.PAGE_ID.in(idList));
 		}
-		step.orderBy(CHANNEL.CREATE_TIME);
+		step.orderBy(CHANNEL.CREATE_TIME.desc());
 		return;
 	}
 
@@ -212,9 +220,11 @@ public class ChannelService extends ShopBaseService {
 			if(ChannelConstant.SOURCETYPE_CUSTOMIZE.equals(record.getSourceType())) {
 				pathParam = String.format(PAGE_PATH_PARAM_FORMAT, record.getPageId(),record.getShare());
 				imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.INDEX, pathParam);
+				pathParam = CUSTOMIZE_PATH + pathParam;
 			}else {
-				pathParam = String.format(GOODS_PATH_PARAM_FORMAT, record.getGoodsId(),record.getShare());
+				pathParam = String.format(GOODS_DETAIL_PATH+GOODS_PATH_PARAM_FORMAT, record.getGoodsId(),record.getShare());
 				imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, pathParam);
+                pathParam = GOODS_DETAIL_PATH + pathParam;
 			}
 
 			qrCodeVo = new QrCodeShareVo(imageUrl,pathParam);
@@ -252,7 +262,7 @@ public class ChannelService extends ShopBaseService {
 	 */
 	public String createShare() {
 		BigInteger hex =new BigInteger(Util.randomId().replace("-", ""),16);
-		return convert62(hex);
+		return convert62(hex).substring(0,6);
 	}
 	
 	private String convert62(BigInteger from) {

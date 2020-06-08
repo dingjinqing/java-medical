@@ -13,6 +13,8 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class BargainApplyParam {
     @NotNull
+    private Integer goodsId;
+    @NotNull
     private Integer bargainId;
     @NotNull
     private Integer prdId;

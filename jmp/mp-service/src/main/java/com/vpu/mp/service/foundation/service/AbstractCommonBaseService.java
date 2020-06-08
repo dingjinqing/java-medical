@@ -126,7 +126,7 @@ public abstract  class AbstractCommonBaseService {
 	}
 
 	protected Logger logger() {
-		return LoggerFactory.getLogger(getClass());
+		return LoggerFactory.getLogger(this.getClass());
 	}
 
 	protected OpenPlatform open() {

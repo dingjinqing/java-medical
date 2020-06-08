@@ -33,7 +33,9 @@ global.wxComponent({
     dealtAct: {
       type: Object,
       value: null
-    }
+    },
+    inviteId:Number,
+    roomId:String
   },
 
   /**

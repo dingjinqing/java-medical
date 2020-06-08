@@ -1,5 +1,8 @@
 <template>
-  <div class="links">
+  <div
+    class="links"
+    v-if="dialogVisible"
+  >
     <!-- 弹窗 -->
     <el-dialog
       :title="$t('selectLinks.dialogTitle')"
@@ -81,6 +84,7 @@
         <div
           class="right_box"
           style="overflow:auto"
+          v-if="reFresh"
         >
           <!-- <router-view></router-view> -->
           <!-- 动态组价 -->
@@ -135,6 +139,7 @@ export default {
   },
   data () {
     return {
+      reFresh: true,
       currentComponent: commonLinks,
       dialogVisible: false,
       click_active: 'click_active',
@@ -166,7 +171,12 @@ export default {
     },
     tuneUpSelectLink () {
       console.log(this.dialogVisible)
-      this.dialogVisible = true
+      this.reFresh = false
+      this.$nextTick(() => {
+        this.reFresh = true
+        this.dialogVisible = true
+        this.level_one_click(0)
+      })
     },
     lang () {
       this.level_one_DataList = this.$t('selectLinks.level_one_DataList')

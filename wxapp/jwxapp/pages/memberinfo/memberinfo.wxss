@@ -1,3 +1,4 @@
+@import "../../css/iconfont.wxss";
 page{
   background: #f5f5f5;
 }
@@ -10,10 +11,28 @@ view,text,input{
   background: #fff;
   font-size: 26rpx;
 }
+.checkbox{
+  height: 80rpx;
+line-height: 80rpx;
+border-bottom: 1px solid #eee;
+display: flex;
+align-items: center;
+}
+.checkbox .image{
+width: 46rpx;
+height: 46rpx;
+}
+.imgView{
+  display: flex;
+  align-items: center;
+}
 .main>view{
   position: relative;
-  padding: 20rpx 30rpx 20rpx 0rpx;
+  padding: 0 0 20rpx 0rpx;
   border-bottom: 1px solid #eee;
+}
+.main>.list{
+  padding: 20rpx 30rpx 20rpx 0rpx;
 }
 .main>view:last-child{
   border: none;
@@ -25,12 +44,12 @@ view,text,input{
   float: left;
 }
 .main_ipt{
-  width: 80%;
+  width: 100%;
   display: inline-block;
-  padding-left: 20rpx;
-  height: 50rpx;
-  min-height: 50rpx;
-  line-height: 50rpx;
+  /* padding-left: 20rpx; */
+  /* height: 50rpx; */
+  /* min-height: 50rpx; */
+  /* line-height: 50rpx; */
   font-size: 26rpx;
 }
 .em{
@@ -41,6 +60,7 @@ view,text,input{
 }
 .main_picker{
   background-size: 15rpx 25rpx;
+  width: 100%;
 }
 .footer{
   padding: 42rpx 30rpx;
@@ -105,4 +125,20 @@ view,text,input{
 .shai_view image{
     width: 140rpx;
     height: 140rpx;
+}
+.must_choose{
+  color: #e64340;
+}
+.customTitle{
+  padding: 20rpx 30rpx 20rpx 0rpx;
+border-bottom: 1px solid #eee;
+
+}
+.custom_area{
+  padding: 20rpx 10rpx 20rpx;
+}
+.custom_area .textarea{
+  border: 1px solid #eee;
+  width: 640rpx;
+  padding: 10rpx;
 }

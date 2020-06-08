@@ -102,4 +102,5 @@ public class OrderListInfoVo {
     private Integer scoreProportion;
     @JsonIgnore
     private Byte isLock;
+    private Timestamp orderRemindTime;
 }

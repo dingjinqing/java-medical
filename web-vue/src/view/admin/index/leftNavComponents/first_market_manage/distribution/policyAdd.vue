@@ -294,9 +294,9 @@ export default {
         validity: '', // 有效期
         startTime: '',
         endTime: '',
-        selfPurchase: 1, // 分销员自购返利
-        costProtection: 1, // 成本价保护
-        firstRebate: 1, // 邀请新用户下首单返利配置
+        selfPurchase: 0, // 分销员自购返利
+        costProtection: 0, // 成本价保护
+        firstRebate: 0, // 邀请新用户下首单返利配置
         sendCoupon: 1, // 分销员权限
         recommendType: 0, // 分销商品
         recommendGoodsId: [], // 商品ID
@@ -487,15 +487,17 @@ export default {
     saveClickHandler () {
       var re = /^([0-9]|([1-4][0-9]|50))(\.\d{1})?$/
       for (var i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].fanliRatio !== undefined && !re.test(this.tableData[i].fanliRatio)) {
-          this.$message.warning('直接邀请返利比例在0%-50%之间')
-          return
-        } else if (this.tableData[i].rebateRatio !== undefined && !re.test(this.tableData[i].rebateRatio)) {
-          this.$message.warning('间接邀请返利比例在0%-50%之间')
-          return
-        } else if (this.form.firstRebate === 1 && this.tableData[i].firstRatio !== undefined && !re.test(this.tableData[i].firstRatio)) {
-          this.$message.warning('首单返利比例在0%-50%之间')
-          return
+        if (i === 0) {
+          if (this.tableData[i].fanliRatio !== undefined && !re.test(this.tableData[i].fanliRatio)) {
+            this.$message.warning('直接邀请返利比例在0%-50%之间')
+            return
+          } else if (this.tableData[i].rebateRatio !== undefined && !re.test(this.tableData[i].rebateRatio)) {
+            this.$message.warning('间接邀请返利比例在0%-50%之间')
+            return
+          } else if (this.form.firstRebate === 1 && this.tableData[i].firstRatio !== undefined && !re.test(this.tableData[i].firstRatio)) {
+            this.$message.warning('首单返利比例在0%-50%之间')
+            return
+          }
         }
       }
 
@@ -709,7 +711,7 @@ export default {
   background: #fff;
 }
 .footer {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   right: 27px;
   left: 160px;

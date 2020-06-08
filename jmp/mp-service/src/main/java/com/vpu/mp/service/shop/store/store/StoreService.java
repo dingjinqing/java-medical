@@ -1,20 +1,26 @@
 package com.vpu.mp.service.shop.store.store;
 
+import com.vpu.mp.db.shop.tables.records.ArticleRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.shop.ShopConst;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.shop.store.account.StoreInfo;
+import com.vpu.mp.service.pojo.shop.store.article.ArticleParam;
+import com.vpu.mp.service.pojo.shop.store.article.ArticlePojo;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
-import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
-import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
-import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
-import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
+import com.vpu.mp.service.pojo.shop.store.store.*;
+import com.vpu.mp.service.saas.overview.ShopOverviewService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.store.comment.ServiceCommentService;
 import com.vpu.mp.service.shop.store.group.StoreGroupService;
@@ -24,6 +30,7 @@ import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -35,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.vpu.mp.db.shop.tables.Article.ARTICLE;
 import static com.vpu.mp.db.shop.tables.CommentService.COMMENT_SERVICE;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
@@ -112,23 +120,45 @@ public class StoreService extends ShopBaseService {
      */
     @Autowired
     public StoreReservation reservation;
-
+    /**
+     * 店铺等级
+     */
+    @Autowired
+    public ShopOverviewService shopOverviewService;
     /**
      * 门店列表分页查询
      *
      * @param param
      * @return StorePageListVo
      */
-    public PageResult<StorePageListVo> getPageList(StoreListQueryParam param) {
+    public StoreVo getPageList(StoreListQueryParam param) {
         SelectWhereStep<? extends Record> select = db().select(
             STORE.STORE_ID, STORE.STORE_NAME, STORE.POS_SHOP_ID, STORE_GROUP.GROUP_NAME, STORE.PROVINCE_CODE, STORE.CITY_CODE, STORE.DISTRICT_CODE, STORE.ADDRESS, STORE.MANAGER,
-            STORE.MOBILE, STORE.OPENING_TIME, STORE.CLOSE_TIME, STORE.BUSINESS_STATE, STORE.AUTO_PICK, STORE.BUSINESS_TYPE
+            STORE.MOBILE, STORE.OPENING_TIME, STORE.CLOSE_TIME, STORE.BUSINESS_STATE, STORE.AUTO_PICK, STORE.BUSINESS_TYPE,STORE.CITY_SERVICE
         ).from(STORE)
             .leftJoin(STORE_GROUP).on(STORE.GROUP.eq(STORE_GROUP.GROUP_ID));
 
         select = this.buildOptions(select, param);
         select.where(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(STORE.CREATE_TIME.desc());
-        return getPageResult(select, param.getCurrentPage(), param.getPageRows(), StorePageListVo.class);
+        PageResult<StorePageListVo> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), StorePageListVo.class);
+        Integer totalNum = 0;
+        String shopVersion = shopOverviewService.getShopVersion(getShopId());
+        if (ShopConst.shopType.V_1.equals(shopVersion)){
+            totalNum = 1;
+        }else if(ShopConst.shopType.V_2.equals(shopVersion)){
+            totalNum = 5;
+        }else if(ShopConst.shopType.V_3.equals(shopVersion)){
+            totalNum = 10;
+        }else if(ShopConst.shopType.V_4.equals(shopVersion)){
+            totalNum = 200;
+        }
+        Integer nowNum = pageResult.getDataList().size();
+        Integer canCreateNum = totalNum-nowNum;
+        StoreVo storeVo = new StoreVo();
+        storeVo.setShopVersion(shopVersion);
+        storeVo.setCanCreateNum(canCreateNum);
+        storeVo.setStorePageListVo(pageResult);
+        return storeVo;
     }
 
     public SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends Record> select, StoreListQueryParam param) {
@@ -150,6 +180,18 @@ public class StoreService extends ShopBaseService {
         }
         if (!StringUtils.isEmpty(param.getKeywords())) {
             select.where(STORE.STORE_NAME.contains(param.getKeywords()).or(STORE.MANAGER.contains(param.getKeywords())).or(STORE.POS_SHOP_ID.like(param.getKeywords())));
+        }
+        //查询条件-营业状态
+        if (!StoreListQueryParam.CONDITION_ALL.equals(param.getBusinessState())){
+            select.where(STORE.BUSINESS_STATE.eq(param.getBusinessState()));
+        }
+        //查询条件-门店自提
+        if (!StoreListQueryParam.CONDITION_ALL_SHORT.equals(param.getAutoPick())){
+            select.where(STORE.AUTO_PICK.eq(param.getAutoPick()));
+        }
+        //查询条件-同城配送
+        if (!StoreListQueryParam.CONDITION_ALL.equals(param.getCityService())){
+            select.where(STORE.CITY_SERVICE.eq(param.getCityService()));
         }
         return select;
     }
@@ -175,6 +217,9 @@ public class StoreService extends ShopBaseService {
     public Boolean updateStore(StorePojo store) {
         StoreRecord record = new StoreRecord();
         this.assign(store, record);
+        if (store.getGroup() == null || store.getGroup() <= 0) {
+            record.setGroup(null);
+        }
         return db().executeUpdate(record) > 0 ? true : false;
     }
 
@@ -357,6 +402,7 @@ public class StoreService extends ShopBaseService {
         logger().info("获取所有门店id和名称");
         return db().select(STORE.STORE_ID, STORE.STORE_NAME)
             .from(STORE)
+            .where(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .fetchInto(StoreBasicVo.class);
     }
 
@@ -457,5 +503,113 @@ public class StoreService extends ShopBaseService {
             .where(COMMENT_SERVICE.DEL_FLAG.eq(BYTE_ZERO))
             .and(COMMENT_SERVICE.FLAG.eq(BYTE_ZERO))
             .fetchMap(COMMENT_SERVICE.STORE_ID, STORE.STORE_NAME);
+    }
+    
+    /**
+     * 获得门店数量
+     * @param storeIds
+     * @return
+     */
+    public Integer getStoreNum(List<Integer> storeIds) {
+    	return db().select(DSL.sum(STORE.STORE_ID)).from(STORE).where(STORE.STORE_ID.in(storeIds)).fetchAnyInto(Integer.class);
+    }
+    
+    /**
+     * 根据id列表获取店铺
+     * @param storeIds
+     * @return
+     */
+    public List<StoreInfo> getStoreByIds(List<Integer> storeIds) {
+    	return  db().selectFrom(STORE).where(STORE.STORE_ID.in(storeIds)).fetchInto(StoreInfo.class);
+    }
+    
+    /**
+     * 获取所有门店id和名称
+     */
+    public List<StoreInfo> getAllStores() {
+        logger().info("获取所有门店id和名称");
+        return db().select(STORE.STORE_ID, STORE.STORE_NAME)
+            .from(STORE).fetchInto(StoreInfo.class);
+    }
+    /**
+     * 新增公告
+     *
+     * @param articlePojo
+     * @return
+     */
+    public Boolean addArticle(ArticlePojo articlePojo) {
+        ArticleRecord record =db().newRecord(ARTICLE,articlePojo);
+        if (StringUtils.isEmpty(record.getTitle())||"".equals(articlePojo.getTitle())){
+            throw new BusinessException(JsonResultCode.CODE_PARAM_ERROR,",标题不能为空");
+        }
+        return db().executeInsert(record) > 0 ? true : false;
+    }
+
+    /**
+     * 更新公告
+     *
+     * @param articlePojo
+     * @return
+     */
+    public Boolean updateArticle(ArticlePojo articlePojo) {
+        ArticleRecord record =db().newRecord(ARTICLE,articlePojo);
+        if (StringUtils.isEmpty(record.getTitle())||"".equals(articlePojo.getTitle())){
+            throw new BusinessException(JsonResultCode.CODE_PARAM_ERROR,",标题不能为空");
+        }
+        return db().executeUpdate(record) > 0 ? true : false;
+    }
+
+    /**
+     * 删除公告
+     *
+     * @param articleId
+     * @return
+     */
+    public Boolean delArticle(Integer articleId) {
+        return db().update(ARTICLE).set(ARTICLE.IS_DEL, DelFlag.DISABLE.getCode()).where(ARTICLE.ARTICLE_ID.eq(articleId)).execute() > 0 ? true : false;
+    }
+
+    /**
+     * 取单个公告信息
+     *
+     * @param articleId
+     * @return ArticlePojo
+     */
+    public ArticlePojo getArticle(Integer articleId) {
+        ArticleRecord r = db().fetchOne(ARTICLE, ARTICLE.ARTICLE_ID.eq(articleId));
+        if(r == null){
+            return null;
+        }
+        return r.into(ArticlePojo.class);
+    }
+
+    /**
+     * 门店公告分页查询
+     * @param param 标题 发布状态
+     * @return 分页信息
+     */
+    public PageResult<ArticlePojo> articleList(ArticleParam param){
+        SelectConditionStep<? extends Record> sql = db().select()
+            .from(ARTICLE)
+            .where(ARTICLE.IS_DEL.eq(DelFlag.NORMAL_VALUE));
+        //查询条件-标题
+        if (param.getTitle() != null && !"".equals(param.getTitle())) {
+            sql.and(ARTICLE.TITLE.like(this.likeValue(param.getTitle())));
+        }
+        //查询条件-发布状态
+        if (!ArticleParam.ALL_STATUS.equals(param.getStatus())){
+            sql.and(ARTICLE.STATUS.eq(param.getStatus()));
+        }
+        PageResult<ArticlePojo> result = this.getPageResult(sql,param.getCurrentPage(),param.getPageRows(),ArticlePojo.class);
+        return result;
+    }
+    /**
+     * 发布公告
+     *
+     * @param articleId
+     * @return
+     */
+    public Boolean releaseArticle(Integer articleId) {
+        return db().update(ARTICLE).set(ARTICLE.STATUS, NumberUtils.BYTE_ONE).where(ARTICLE.ARTICLE_ID.eq(articleId)).execute() > 0 ? true : false;
     }
 }

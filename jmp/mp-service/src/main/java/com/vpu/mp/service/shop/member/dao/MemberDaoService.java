@@ -53,6 +53,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberParam;
 import com.vpu.mp.service.pojo.shop.member.OrderRuleParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 import com.vpu.mp.service.pojo.shop.member.userExp.UserExpCardVo;
 import com.vpu.mp.service.pojo.shop.member.userExp.UserExpParam;
@@ -429,6 +430,25 @@ public class MemberDaoService extends ShopBaseService {
 				.and(getReceiveCardEndTimeCondition(DateUtil.convertToTimestamp(param.getCreateTimeSecond())))
 				.and(getCardIdCondition(param.getCardId()))
 				.and(getCardTypeCondition(param.getCardType()));
+			
+			
+			/** - 卡状态 */
+			if (param.getStatusValue() != null && !NumberUtils.BYTE_MINUS_ONE.equals(param.getStatusValue())) {
+				/** - 状态为过期 */
+				if (CardConstant.UCARD_FG_EXPIRED.equals(param.getStatusValue())) {
+					condition = condition.and(USER_CARD.EXPIRE_TIME.le(DateUtil.getLocalDateTime()));
+					
+				} else if (CardConstant.UCARD_FG_USING.equals(param.getStatusValue())) {
+					condition = condition.and(USER_CARD.EXPIRE_TIME.ge(DateUtil.getLocalDateTime()).or(USER_CARD.EXPIRE_TIME.isNull()))
+										.and(USER_CARD.FLAG.eq(param.getStatusValue()));
+				}else if(CardConstant.UCARD_FG_STOP.equals(param.getStatusValue())) {
+					condition = condition.and(USER_CARD.FLAG.eq(param.getStatusValue()));
+					
+				}else {
+					//	转赠中或已转赠
+					condition = condition.and(USER_CARD.FLAG.eq(param.getStatusValue()));
+				}
+			}
 		}
 		return condition;
 	}

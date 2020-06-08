@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsGroupListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsVo;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
+import org.jooq.tools.json.JSONObject;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;

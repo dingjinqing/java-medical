@@ -206,7 +206,6 @@ public class FirstSpecialPictorialService extends ShopBaseService {
         BufferedImage qrCodeImage;
         try {
             qrCodeImage = ImageIO.read(new URL(mpQrcode));
-//            qrCodeImage = ImageIO.read(new File("E:/qrcode.jpg"));
         } catch (IOException e) {
             pictorialLog("pictorial", "获取二维码失败");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
@@ -222,18 +221,17 @@ public class FirstSpecialPictorialService extends ShopBaseService {
 
         pictorialLog("pictorial", "国际化价格");
         String realPriceText =  Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-        String linePriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
         String firstSpecialTip = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_FIRST_SPECIAL_INFO, "messages");
 
         pictorialLog("pictorial", "添加首单特惠文字");
-        int tipWidth = ImageUtil.addFontWithRect(bgBufferedImage, imgPx.getBgPadding(), imgPx.getPriceY(), firstSpecialTip, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getRealPriceColor(),null,imgPx.getRealPriceColor());
+        int tipWidth = ImageUtil.addFontWithRect(bgBufferedImage, imgPx.getBottomTextStartX(), imgPx.getPriceY(), firstSpecialTip, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getRealPriceColor(),null,imgPx.getRealPriceColor());
         pictorialLog("pictorial", "添加真实价");
         int realPriceTextStartX = imgPx.getBgPadding()+tipWidth+ imgPx.getBgPadding() + 10;
         ImageUtil.addFont(bgBufferedImage, realPriceText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceTextStartX, imgPx.getPriceY() - 10, imgPx.getRealPriceColor(), false);
         pictorialLog("pictorial", "添加划线价");
         Integer textWidth = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceText);
-        int linePriceTextStartX = realPriceTextStartX+textWidth+imgPx.getBgPadding() + 10;
-        ImageUtil.addFontWithLine(bgBufferedImage, linePriceTextStartX, imgPx.getPriceY()- 4, param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getLinePriceColor());
+        int linePriceTextStartX = realPriceTextStartX+textWidth+ 10;
+        ImageUtil.addFontWithLine(bgBufferedImage, linePriceTextStartX, imgPx.getPriceY()-2, param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getLinePriceColor());
 
         pictorialLog("pictorial", "转换base64");
         String base64 = ImageUtil.toBase64(bgBufferedImage);

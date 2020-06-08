@@ -178,7 +178,8 @@ global.wxPage({
           }
         }, {
             bargainId: bargain_info.recordInfo.bargainId,
-            prdId: bargain_info.recordInfo.prdId
+            prdId: bargain_info.recordInfo.prdId,
+            goodsId: bargain_info.recordInfo.goodsId
           })
       }
     })
@@ -471,7 +472,8 @@ function request_kanjia(that) {
       }, {
           activityId: bargain_info.recordInfo.bargainId,
           realPrice: bargain_info.bargainPrice,
-          linePrice: bargain_info.recordInfo.prdPrice
+          linePrice: bargain_info.recordInfo.prdPrice,
+          targetId: bargain_info.recordInfo.goodsId
         })
 
 

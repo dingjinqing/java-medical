@@ -30,7 +30,17 @@ public class CardConstant {
 	public static final Byte MCARD_REA_CODE = 1;
 	/** receive_action 卡号+密码 2*/
 	public static final Byte MCARD_REA_PWD = 2;
-	
+
+	//******* 0:不支持现金购买，1:支持现金购买
+	/**
+	 * 0:不支持现金购买
+	 */
+	public static final Byte MCARD_CARD_PAY_NO_CASH = 0;
+	/**
+	 *1:支持现金购买
+	 */
+	public static final Byte MCARD_CARD_PAY_CASH = 1;
+
 	/** 过期类型  */
 	/** expire_type固定日期 */
 	public static final Byte MCARD_ET_FIX = 0;
@@ -183,10 +193,12 @@ public class CardConstant {
 
 
 
-	/** user_card表 flag 0 正常使用，1已经删除  2 已过期*/
+	/** user_card表 flag 0 正常使用，1已经删除  2转赠中,3已转赠,4 已过期	*/
 	public static final Byte UCARD_FG_USING = 0;
 	public static final Byte UCARD_FG_STOP = 1;
-	public static final Byte UCARD_FG_EXPIRED = 2;
+	public static final Byte UCARD_FG_GIVING = 2;
+	public static final Byte UCARD_FG_GIVED = 3;
+	public static final Byte UCARD_FG_EXPIRED = 4;
 	/** user_card 激活 */
 	public static final Boolean UCARD_ACT_NO = false;
 	public static final Boolean UCARD_ACT_TRUE = true;
@@ -228,4 +240,8 @@ public class CardConstant {
     /**用户会员卡已过期*/
 	public static final Byte USER_CARD_STATUS_OUT_OF_EXPIRE = 4;
 
+	/** 会员卡续费回调订单标识 */
+    public static final String USER_CARD_RENEW_ORDER = "x";
+    /** 会员卡续费订单已完成 */
+    public static final Byte CARD_RENEW_ORDER_STATUS_OK = 1;
 }

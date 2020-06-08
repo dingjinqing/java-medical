@@ -63,7 +63,6 @@ public class CardFreeShipService extends ShopBaseService{
 	 */
 	public CardFreeship getFreeshipData(UserCardParam card,String lang) {
 		logger().info("获取用户卡的包邮信息");
-
 		if(card.getFreeLimit()==null) {
 			return new CardFreeship();
 		}
@@ -75,7 +74,7 @@ public class CardFreeShipService extends ShopBaseService{
 			desc = freeShipDescs.get(0);
 		}else if(card.getFreeLimit()>0) {
 			// 使用包邮次数，以便计算剩余的包邮次数
-			Integer hasFree = orderInfoSvc.getCardFreeShipSum(card.getUserId(),card.getCardId(),card.getFreeLimit());
+			Integer hasFree = orderInfoSvc.getCardFreeShipSum(card.getCardNo(),card.getFreeLimit());
 			
 			// 剩余包邮次数多少
 			remainNum -= hasFree;

@@ -1,109 +1,80 @@
 <template>
   <div class="content">
-    <div class="table_list">
-      <div class="select_info">
-        <div class="leftarea">
-          <span>{{$t('distribution.createTime')}}</span>
-          <el-date-picker
-            v-model="time.startCreateTime"
-            type="datetime"
-            :placeholder="$t('distribution.chooseDate')"
-            size="small"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          >
-          </el-date-picker>
-          <span>{{$t('distribution.to')}}</span>
-          <el-date-picker
-            v-model="time.endCreateTime"
-            type="datetime"
-            :placeholder="$t('distribution.chooseDate')"
-            size="small"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          >
-          </el-date-picker>
-        </div>
-        <div class="leftarea">
-          <span>{{$t('distribution.endModifyTime')}}</span>
-          <el-date-picker
-            v-model="time.startUpdateTime"
-            type="datetime"
-            :placeholder="$t('distribution.chooseDate')"
-            size="small"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          >
-          </el-date-picker>
-          <span>{{$t('distribution.to')}}</span>
-          <el-date-picker
-            v-model="time.endUpdateTime"
-            type="datetime"
-            :placeholder="$t('distribution.chooseDate')"
-            size="small"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          >
-          </el-date-picker>
-        </div>
-        <div class="midarea">
-          <span>{{$t('distribution.advertisementContent')}}</span>
-          <el-input
-            v-model="promotionLanguage"
-            size="small"
-            :placeholder="$t('distribution.inputAdvertisement')"
-          ></el-input>
-        </div>
-        <div class="rightarea">
-          <el-button
-            type="primary"
-            size="small"
-            @click="search()"
-          >{{$t('distribution.search')}}</el-button>
-        </div>
-      </div>
+    <el-form
+      :model="time"
+      label-width="110px"
+      label-position="right"
+      :inline="true"
+    >
+      <el-form-item :label="$t('distribution.createTime') + '：'">
+        <el-date-picker
+          v-model="time.startCreateTime"
+          type="datetime"
+          :placeholder="$t('distribution.chooseDate')"
+          size="small"
+          style="width: 190px;"
+          value-format="yyyy-MM-dd HH:mm:ss"
+        >
+        </el-date-picker>
+        <span>{{$t('distribution.to')}}</span>
+        <el-date-picker
+          v-model="time.endCreateTime"
+          type="datetime"
+          :placeholder="$t('distribution.chooseDate')"
+          size="small"
+          style="width: 190px;"
+          value-format="yyyy-MM-dd HH:mm:ss"
+        >
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item :label="$t('distribution.endModifyTime') + '：'">
+        <el-date-picker
+          v-model="time.startUpdateTime"
+          type="datetime"
+          :placeholder="$t('distribution.chooseDate')"
+          size="small"
+          style="width: 190px;"
+          value-format="yyyy-MM-dd HH:mm:ss"
+        >
+        </el-date-picker>
+        <span>{{$t('distribution.to')}}</span>
+        <el-date-picker
+          v-model="time.endUpdateTime"
+          type="datetime"
+          :placeholder="$t('distribution.chooseDate')"
+          size="small"
+          style="width: 190px;"
+          value-format="yyyy-MM-dd HH:mm:ss"
+        >
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item :label="$t('distribution.advertisementContent') + '：'">
+        <el-input
+          v-model="time.promotionLanguage"
+          size="small"
+          style="width: 170px;"
+          :placeholder="$t('distribution.inputAdvertisement')"
+        ></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="primary"
+          size="small"
+          @click="search()"
+        >{{$t('distribution.search')}}</el-button>
+      </el-form-item>
+    </el-form>
+
+    <div style="margin-bottom: 10px;">
       <el-button
         :plain="true"
         type="primary"
         size="small"
         @click="add"
       >{{$t('distribution.addAdvertisement')}}</el-button>
-      <el-dialog
-        :title="$t('distribution.addAdvertisement')"
-        :visible.sync="centerDialogVisible"
-        width="30%"
-        center
-      >
-        <div class="title">
-          <span>{{$t('distribution.title')}}</span>
-          <el-input
-            prop="title"
-            size="small"
-            v-model="param.title"
-          ></el-input>
-        </div>
-        <div class="languageContent">
-          <span>{{$t('distribution.addNote')}}</span>
-
-          <el-input
-            v-model="param.promotionLanguage"
-            type="textarea"
-            :placeholder="$t('distribution.inputAdvertisement')"
-            rows=6
-          ></el-input>
-
-        </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button @click="cancel">{{$t('distribution.cancleBtn')}}</el-button>
-          <el-button
-            v-model="opt"
-            type="primary"
-            @click="confirm()"
-          >{{$t('distribution.confirmBt')}}</el-button>
-        </span>
-      </el-dialog>
     </div>
 
-    <div class="table_list">
+    <div>
       <el-table
         v-loading="loading"
         class="version-manage-table"
@@ -177,6 +148,49 @@
       />
     </div>
 
+    <!-- 推广语弹窗 -->
+    <el-dialog
+      :title="$t('distribution.addAdvertisement')"
+      :visible.sync="centerDialogVisible"
+      width="30%"
+      center
+    >
+      <div style="margin-bottom: 20px;">
+        <span>{{$t('distribution.title') + '：'}}</span>
+        <el-input
+          prop="title"
+          size="small"
+          style="width: 170px;"
+          v-model="param.title"
+        ></el-input>
+      </div>
+      <div>
+        <span>{{$t('distribution.addNote')}}</span>
+        <el-input
+          v-model="param.promotionLanguage"
+          type="textarea"
+          :placeholder="$t('distribution.inputAdvertisement')"
+          rows=6
+          style="margin-top: 10px;"
+        ></el-input>
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          @click="cancel"
+          size="small"
+        >{{$t('distribution.cancleBtn')}}</el-button>
+        <el-button
+          v-model="opt"
+          type="primary"
+          @click="confirm()"
+          size="small"
+        >{{$t('distribution.confirmBt')}}</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -197,9 +211,9 @@ export default {
         startCreateTime: '',
         endCreateTime: '',
         startUpdateTime: '',
-        endUpdateTime: ''
+        endUpdateTime: '',
+        promotionLanguage: ''
       },
-      promotionLanguage: null,
       centerDialogVisible: false,
       youAD: '',
       param: {
@@ -238,7 +252,7 @@ export default {
     },
     search () {
       this.loading = true
-      this.pageParams.promotionLanguage = this.promotionLanguage
+      this.pageParams.promotionLanguage = this.time.promotionLanguage
       this.pageParams.startCreateTime = this.time.startCreateTime
       this.pageParams.endCreateTime = this.time.endCreateTime
       this.pageParams.startUpdateTime = this.time.startUpdateTime
@@ -293,15 +307,10 @@ export default {
       }).then(() => {
         advertisementPause(id).then(res => {
           if (res.error === 0) {
-            this.$message.success({
-              type: 'success',
-              message: '停用成功!'
-            })
+            this.$message.success({ message: '停用成功!' })
             this.search()
           }
         })
-      }).catch(() => {
-
       })
     },
     start (id) {
@@ -312,15 +321,10 @@ export default {
       }).then(() => {
         advertisementStart(id).then(res => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: '启用成功!'
-            })
+            this.$message.success({ message: '启用成功!' })
             this.search()
           }
         })
-      }).catch(() => {
-
       })
     },
     del (id) {
@@ -331,15 +335,10 @@ export default {
       }).then(() => {
         advertisementDelete(id).then(res => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
+            this.$message.success({ message: '删除成功!' })
             this.search()
           }
         })
-      }).catch(() => {
-
       })
     },
     cancel () {
@@ -350,25 +349,19 @@ export default {
       if (this.opt === 1) {
         advertisementAdd(this.param).then(res => {
           if (res.error === 0) {
-            this.$message({
-              message: '添加成功',
-              type: 'success'
-            })
-            this.search()
+            this.$message.success({ message: '添加成功' })
           }
         })
       } else {
         this.param.id = this.id
         advertisementSave(this.param).then(res => {
           if (res.error === 0) {
-            this.$message({
-              message: '编辑成功',
-              type: 'success'
-            })
+            this.$message.success({ message: '编辑成功' })
             this.search()
           }
         })
       }
+      this.search()
     }
   }
 }

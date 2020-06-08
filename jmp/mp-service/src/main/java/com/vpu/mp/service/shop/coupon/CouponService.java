@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.coupon;
 
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.records.CustomerAvailCouponsRecord;
+import com.vpu.mp.db.shop.tables.records.DivisionReceiveRecordRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -13,18 +14,40 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.coupon.*;
+import com.vpu.mp.service.pojo.shop.coupon.CouponAllParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponAllVo;
+import com.vpu.mp.service.pojo.shop.coupon.CouponAndVoucherDetailVo;
+import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
+import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
+import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
+import com.vpu.mp.service.pojo.shop.coupon.CouponWxUserImportVo;
+import com.vpu.mp.service.pojo.shop.coupon.CouponWxVo;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.coupon.*;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailParam;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponListVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponParam;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.ExpireTimeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import jodd.util.StringUtil;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record6;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +59,23 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
+import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
+import static com.vpu.mp.db.shop.Tables.DIVISION_RECEIVE_RECORD;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.service.foundation.util.Util.listToString;
 import static com.vpu.mp.service.foundation.util.Util.stringToList;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
@@ -65,6 +101,8 @@ public class CouponService extends ShopBaseService {
 
     private String aliasCode;
 
+	@Autowired
+	public CouponMpService couponMpService;
 
     /**可用会员卡*/
     public static final byte COUPON_IS_USED_STATUS_AVAIL = 0;
@@ -83,7 +121,6 @@ public class CouponService extends ShopBaseService {
      * @return
      */
     public Boolean couponAdd(CouponParam couponInfo) {
-        System.out.println(couponInfo);
         MrkingVoucherRecord record = new MrkingVoucherRecord();
         record.setSurplus(couponInfo.getTotalAmount());
         record.setAliasCode(this.generateAliasCode());
@@ -149,6 +186,9 @@ public class CouponService extends ShopBaseService {
      */
     public SelectConditionStep<Record> buildOptions(SelectJoinStep<Record> select, CouponListParam param) {
         SelectConditionStep<Record> sql = select.where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        if(param.getCouponType() != 2){
+            sql = sql.and(MRKING_VOUCHER.TYPE.eq(param.getCouponType()));
+        }
         if (param.getActName() != null) {
             sql = sql.and(MRKING_VOUCHER.ACT_NAME.contains(param.getActName()));
         }
@@ -226,11 +266,9 @@ public class CouponService extends ShopBaseService {
                     condition = condition.or(GOODS.SORT_ID.in(sortIds));
                 }
             }
-
-           return condition;
+            return condition;
         }
     }
-
     /**
      * 保存编辑信息
      *
@@ -294,6 +332,7 @@ public class CouponService extends ShopBaseService {
     public PageResult<CouponHoldListVo> getDetail(CouponGetDetailParam param) {
         CouponHoldListParam couponParam = new CouponHoldListParam();
         couponParam.setActId(param.getId());
+        couponParam.setCouponType(param.getCouponType());
         couponParam.setMobile(param.getMobile());
         couponParam.setUsername(param.getUserName());
         couponParam.setStatus(param.getIsUsed());
@@ -304,13 +343,72 @@ public class CouponService extends ShopBaseService {
     }
 
     /**
+     * 领取分裂优惠券用户详情
+     * @param param
+     * @return
+     */
+    public PageResult<CouponHoldListVo> getSplitCoupinUserDetail(CouponGetDetailParam param){
+        SelectConditionStep<? extends Record> select = db()
+            .select(CUSTOMER_AVAIL_COUPONS.ID,USER.USERNAME, USER.MOBILE, CUSTOMER_AVAIL_COUPONS.GET_SOURCE, CUSTOMER_AVAIL_COUPONS.IS_USED,
+                MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION, CUSTOMER_AVAIL_COUPONS.START_TIME, CUSTOMER_AVAIL_COUPONS.END_TIME,CUSTOMER_AVAIL_COUPONS.USED_TIME,CUSTOMER_AVAIL_COUPONS.DEL_FLAG,
+                    CUSTOMER_AVAIL_COUPONS.CREATE_TIME,CUSTOMER_AVAIL_COUPONS.AMOUNT).from(DIVISION_RECEIVE_RECORD)
+            .leftJoin(CUSTOMER_AVAIL_COUPONS).on(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(CUSTOMER_AVAIL_COUPONS.COUPON_SN))
+            .leftJoin(USER).on(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(USER.USER_ID))
+            .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID))
+            .where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(param.getId())).and(DIVISION_RECEIVE_RECORD.USER.eq(param.getShareId())).and(DIVISION_RECEIVE_RECORD.RECEIVE_COUPON_SN.eq(param.getCouponSn()));
+        SelectConditionStep<? extends Record> sql = detailBuildOptions(select, param);
+        PageResult<CouponHoldListVo> info = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), CouponHoldListVo.class);
+        info.dataList.forEach(data->{
+            //优惠卷的金额在领取记录里
+            data.setDenomination(data.getAmount());
+        });
+        return info;
+    }
+
+    /**
+     * 领取分裂优惠券用户详情列表条件查询
+     * @param select
+     * @param param
+     * @return
+     */
+    public SelectConditionStep<? extends Record> detailBuildOptions(SelectConditionStep<? extends Record> select,CouponGetDetailParam param){
+        //手机号
+        if(StringUtil.isNotEmpty(param.getMobile())) {
+            select.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
+        }
+        //用户昵称
+        if(StringUtil.isNotEmpty(param.getUserName())) {
+            select.and(USER.USERNAME.like(this.likeValue(param.getUserName())));
+        }
+        //使用状态 1 未使用 2 使用 3 过期 4 废除
+        if(param.getIsUsed() != null) {
+            Timestamp nowTime =new Timestamp(System.currentTimeMillis());
+            if (param.getIsUsed()==1){
+                select.and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0))
+                    .and(CUSTOMER_AVAIL_COUPONS.END_TIME.ge(nowTime))
+                    .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 0));
+            }else if (param.getIsUsed()==2){
+                select.and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 1))
+                    .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 0));
+            }else if (param.getIsUsed()==3){
+                select.and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0))
+                    .and(CUSTOMER_AVAIL_COUPONS.END_TIME.lt(nowTime))
+                    .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 0));
+            }else if (param.getIsUsed()==4){
+                select.and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 1));
+            }
+        }
+        return select;
+    }
+
+    /**
      * 取单个优惠券的基本信息
      *
      * @param id
      * @return
      */
     public CouponView getCouponViewById(int id) {
-        return db().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.USE_CONSUME_RESTRICT, MRKING_VOUCHER.SURPLUS, MRKING_VOUCHER.VALIDITY_TYPE, MRKING_VOUCHER.VALIDITY, MRKING_VOUCHER.VALIDITY_HOUR, MRKING_VOUCHER.VALIDITY_MINUTE, MRKING_VOUCHER.START_TIME, MRKING_VOUCHER.END_TIME, MRKING_VOUCHER.RECOMMEND_GOODS_ID, MRKING_VOUCHER.RECOMMEND_CAT_ID, MRKING_VOUCHER.RECOMMEND_SORT_ID).from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(id)).and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchOne().into(CouponView.class);
+        return db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(id)).and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchOne().into(CouponView.class);
     }
 
     /**
@@ -337,9 +435,9 @@ public class CouponService extends ShopBaseService {
      */
     public PageResult<AvailCouponVo> getCouponByUser(AvailCouponParam param) throws ParseException {
         //某用户全部优惠券
-        SelectJoinStep<? extends Record> select = db().select(CUSTOMER_AVAIL_COUPONS.ID, CUSTOMER_AVAIL_COUPONS.ACT_ID,CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.TYPE, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.START_TIME,
+        SelectJoinStep<? extends Record> select = db().select(CUSTOMER_AVAIL_COUPONS.ID,CUSTOMER_AVAIL_COUPONS.ACT_ID,CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.TYPE, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.START_TIME,
             CUSTOMER_AVAIL_COUPONS.END_TIME, CUSTOMER_AVAIL_COUPONS.IS_USED, CUSTOMER_AVAIL_COUPONS.LIMIT_ORDER_AMOUNT, MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.RECOMMEND_GOODS_ID,MRKING_VOUCHER.RECOMMEND_CAT_ID,MRKING_VOUCHER.RECOMMEND_SORT_ID,
-           MRKING_VOUCHER.CARD_ID)
+           MRKING_VOUCHER.CARD_ID,MRKING_VOUCHER.TYPE.as("couponType"),MRKING_VOUCHER.ACT_CODE,CUSTOMER_AVAIL_COUPONS.DIVISION_ENABLED,MRKING_VOUCHER.RECEIVE_PER_NUM,MRKING_VOUCHER.RECEIVE_NUM,MRKING_VOUCHER.RANDOM_MAX)
             .from(CUSTOMER_AVAIL_COUPONS
                 .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)));
 
@@ -348,6 +446,27 @@ public class CouponService extends ShopBaseService {
         SelectConditionStep<? extends Record> sql = select.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId()));
         PageResult<AvailCouponVo> lists = getPageResult(sql, param.getCurrentPage(), param.getPageRows(), AvailCouponVo.class);
         for (AvailCouponVo list:lists.dataList){
+            list.setCanShare(0); //0不可以分享；1可以分享
+            //分裂优惠券属性
+            if(list.getCouponType() == 1){
+                Record record = db().select().from(DIVISION_RECEIVE_RECORD).where(DIVISION_RECEIVE_RECORD.USER.eq(param.getUserId()))
+                    .and(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(list.getCouponSn())).and(DIVISION_RECEIVE_RECORD.TYPE.eq((byte) 0))
+                    .fetchOne();
+                if(record != null){
+                    DivisionReceiveRecordRecord into = record.into(DivisionReceiveRecordRecord.class);
+                    list.setIsGrant(1); //发放人
+                    list.setIsShare(into.getIsShare());  //0:未分享；1：已分享
+                }else{
+                    list.setIsShare((byte)0);
+                    list.setIsGrant(0); //被发放
+                }
+
+                int hasReceive = hasReceive(param.getUserId(), list.getCouponSn());
+                //判断分裂优惠券是否限制领取 0：不限制；1限制 和 已领取数是否大于限制数
+                if(!(list.getReceivePerNum() == 1 && hasReceive >= list.getReceiveNum())){
+                    list.setCanShare(1);
+                }
+            }
             ExpireTimeVo remain = getExpireTime(list.getEndTime());
             if(remain != null){
                 list.setRemainDays(remain.getRemainDays());
@@ -431,9 +550,10 @@ public class CouponService extends ShopBaseService {
                 .where(MRKING_VOUCHER.ID.eq(param.couponId))
                 .fetchOne();
         }else{
-             record = db().select(CUSTOMER_AVAIL_COUPONS.ID,CUSTOMER_AVAIL_COUPONS.ACT_ID,CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.TYPE, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.START_TIME,
+             record = db().select(CUSTOMER_AVAIL_COUPONS.ID, CUSTOMER_AVAIL_COUPONS.ACT_ID,CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.TYPE, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.START_TIME,
                 CUSTOMER_AVAIL_COUPONS.END_TIME, CUSTOMER_AVAIL_COUPONS.IS_USED, CUSTOMER_AVAIL_COUPONS.LIMIT_ORDER_AMOUNT, MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.USE_SCORE,MRKING_VOUCHER.SCORE_NUMBER,MRKING_VOUCHER.LEAST_CONSUME,
-                MRKING_VOUCHER.RECOMMEND_GOODS_ID,MRKING_VOUCHER.RECOMMEND_CAT_ID,MRKING_VOUCHER.RECOMMEND_SORT_ID,MRKING_VOUCHER.USE_CONSUME_RESTRICT,MRKING_VOUCHER.USE_EXPLAIN,MRKING_VOUCHER.VALIDATION_CODE,MRKING_VOUCHER.CARD_ID)
+                MRKING_VOUCHER.RECOMMEND_GOODS_ID,MRKING_VOUCHER.RECOMMEND_CAT_ID,MRKING_VOUCHER.RECOMMEND_SORT_ID,MRKING_VOUCHER.USE_CONSUME_RESTRICT,MRKING_VOUCHER.USE_EXPLAIN,MRKING_VOUCHER.VALIDATION_CODE,MRKING_VOUCHER.CARD_ID,MRKING_VOUCHER.TYPE.as("couponType"),
+                 MRKING_VOUCHER.RECEIVE_NUM,MRKING_VOUCHER.RECEIVE_PER_NUM,MRKING_VOUCHER.RANDOM_MAX,CUSTOMER_AVAIL_COUPONS.DIVISION_ENABLED,MRKING_VOUCHER.ACT_CODE)
                 .from(CUSTOMER_AVAIL_COUPONS
                     .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)))
                 .where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.eq(param.couponSn))
@@ -460,10 +580,65 @@ public class CouponService extends ShopBaseService {
                 }
                 list.setLinkSource(1);
             }
+            if(param.getCouponId() == null) {
+                list.setCanShare(0); //0不可以分享；1可以分享
+                if (list.getCouponType() == 1) {
+                    DivisionReceiveRecordRecord canShare = isCanShare(list.getCouponSn());
+                    if(canShare != null)
+                        list.setIsShare(canShare.getIsShare());
+                    else
+                        list.setIsShare((byte)0);
+                    int hasReceive = hasReceive(param.getUserId(), param.couponSn);
+                    if (!(list.getReceivePerNum() == 1 && hasReceive >= list.getReceiveNum())) {
+                        list.setCanShare(1);
+                    }
+                }
+            }
             return list;
         }else{
             return null;
         }
+    }
+
+    /**
+     * 判断分裂优惠券是否可以分享
+     * @param couponSn
+     * @return
+     */
+    public DivisionReceiveRecordRecord isCanShare(String couponSn){
+        Record record = db().select().from(DIVISION_RECEIVE_RECORD).where(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(couponSn)).and(DIVISION_RECEIVE_RECORD.TYPE.eq((byte) 0)).fetchOne();
+        if(record != null){
+            return record.into(DivisionReceiveRecordRecord.class);
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * 单用户分裂优惠券已领取数
+     * @param userId
+     * @param couponSn
+     * @return
+     */
+    public int hasReceive(Integer userId,String couponSn){
+        Integer hasRecivie = db().selectCount().from(DIVISION_RECEIVE_RECORD).where(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(couponSn))
+            .and(DIVISION_RECEIVE_RECORD.USER.eq(userId)).and(DIVISION_RECEIVE_RECORD.TYPE.eq((byte) 1)).fetchOne().into(Integer.class);
+        return hasRecivie;
+    }
+
+    /**
+     * 分裂优惠券已领取数
+     * @param userId
+     * @return
+     */
+    public int hasReceive(Integer userId,Integer couponId){
+        Result<Record1<Integer>> fetch = db().select(DIVISION_RECEIVE_RECORD.USER_ID).from(DIVISION_RECEIVE_RECORD)
+            .where(DIVISION_RECEIVE_RECORD.COUPON_ID.eq(couponId))
+            .and(DIVISION_RECEIVE_RECORD.USER.eq(userId))
+            .groupBy(DIVISION_RECEIVE_RECORD.USER_ID)
+            .fetch();
+        int hasReceive = fetch.size();
+        return hasReceive;
     }
 
     /**
@@ -653,7 +828,8 @@ public class CouponService extends ShopBaseService {
             where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId).
                 and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((COUPON_IS_USED_STATUS_AVAIL)).
                     and(CUSTOMER_AVAIL_COUPONS.START_TIME.le(now)).
-                    and(CUSTOMER_AVAIL_COUPONS.END_TIME.greaterThan(now))
+                    and(CUSTOMER_AVAIL_COUPONS.END_TIME.greaterThan(now)).
+                    and(CUSTOMER_AVAIL_COUPONS.DIVISION_ENABLED.eq((byte)0))
             .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))).
             orderBy(CUSTOMER_AVAIL_COUPONS.END_TIME.desc()).
             fetchInto(OrderCouponVo.class);
@@ -1030,6 +1206,28 @@ public class CouponService extends ShopBaseService {
         }
         return into;
     }
+    /**
+     * 获取优惠信息一条信息
+     * @param couponSn conponSn
+     * @return 一条数据
+     */
+    public CouponAndVoucherDetailVo getOneCouponDetail(String couponSn) {
+        Record record = db().select(CUSTOMER_AVAIL_COUPONS.asterisk(),
+                MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.LEAST_CONSUME,
+                MRKING_VOUCHER.USE_EXPLAIN, MRKING_VOUCHER.RECOMMEND_GOODS_ID, MRKING_VOUCHER.RECOMMEND_CAT_ID, MRKING_VOUCHER.RECOMMEND_SORT_ID,
+                MRKING_VOUCHER.USE_SCORE, MRKING_VOUCHER.SCORE_NUMBER, MRKING_VOUCHER.DEL_FLAG,
+                MRKING_VOUCHER.VALIDITY, MRKING_VOUCHER.VALIDITY_HOUR, MRKING_VOUCHER.VALIDITY_MINUTE,
+                MRKING_VOUCHER.RANDOM_MAX, MRKING_VOUCHER.RANDOM_MIN, MRKING_VOUCHER.TYPE.as("couponType"),
+                MRKING_VOUCHER.RECEIVE_PER_NUM, MRKING_VOUCHER.RECEIVE_NUM)
+                .from(CUSTOMER_AVAIL_COUPONS)
+                .leftJoin(MRKING_VOUCHER).on(MRKING_VOUCHER.ID.eq(CUSTOMER_AVAIL_COUPONS.ACT_ID))
+                .where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.eq(couponSn))
+                .fetchAny();
+        if (record != null) {
+           return record.into(CouponAndVoucherDetailVo.class);
+        }
+        return null;
+    }
 
     /**
      * 获取小程序码
@@ -1054,4 +1252,16 @@ public class CouponService extends ShopBaseService {
 
         return vo;
     }
+
+    /**
+     * 分裂优惠券可用
+     * @param couponSn 优惠券sn
+     */
+    public void updateSplitCouponEnabled(String couponSn){
+        db().update(CUSTOMER_AVAIL_COUPONS)
+                .set(CUSTOMER_AVAIL_COUPONS.DIVISION_ENABLED,(byte)0)
+                .where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.eq(couponSn))
+                .execute();
+    }
+
 }

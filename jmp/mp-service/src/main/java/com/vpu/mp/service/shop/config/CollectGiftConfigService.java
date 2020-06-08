@@ -5,8 +5,8 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
+import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
-import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant;
@@ -154,7 +154,7 @@ public class CollectGiftConfigService extends BaseShopConfigService{
             for(Integer id : ids){
                 Timestamp nowDate = new Timestamp(System.currentTimeMillis());
                 //判断领取限制
-                mpGetCouponParam param = new mpGetCouponParam();
+                MpGetCouponParam param = new MpGetCouponParam();
                 param.setCouponId(id);
                 CouponListVo couponData = mpCoupon.getCouponData(param);
                 //通过alias_code查看优惠券是否存在

@@ -34,6 +34,7 @@ export const en = {
   receive: 'Receive',
   integral: 'Point exchange',
   fracture: 'fracture',
+  randomMax: 'max',
   unlimitedInventory: 'Unlimited inventory',
   coupon: 'Coupon',
   couponModule: 'Coupon module',

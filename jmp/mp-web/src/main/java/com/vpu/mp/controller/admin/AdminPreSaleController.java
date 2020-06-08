@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListParam;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -102,7 +103,7 @@ public class AdminPreSaleController extends AdminBaseController {
      * 创建活动
      */
     @PostMapping("/add")
-    public JsonResult addPreSale(@RequestBody @Valid PreSaleParam param) {
+    public JsonResult addPreSale(@RequestBody @Validated PreSaleParam param) {
         shop().preSale.addPreSale(param);
         return success();
     }

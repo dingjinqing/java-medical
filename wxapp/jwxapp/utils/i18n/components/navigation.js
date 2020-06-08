@@ -82,6 +82,7 @@ module.exports = {
     "usercardrecord": "使用记录",
     "usercardup": "升降级记录",
     "usercenter": "个人中心",
+    "personalcenter": "个人中心",
     "userinfo": "编辑",
     "userqrcode": "我的二维码",
     "webview": "浏览器",
@@ -116,6 +117,8 @@ module.exports = {
     "history": "我的足迹",
     "returnorderlist": "退货中心",
     "returndetail": "退货/退款详情",
-    "usercardup": '升级记录'
+    "usercardup": '升级记录',
+    "aftersaleorder": "退款/售后",
+    "livetransition": "直播"
   }
 }

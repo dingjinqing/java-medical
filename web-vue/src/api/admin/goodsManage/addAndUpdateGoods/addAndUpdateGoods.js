@@ -16,6 +16,22 @@ export function selectParentPlatformClassification (catId) {
   })
 }
 
+// 查询商品新增时店铺设置的通用配置项
+export function selectGoodsCommonConfig () {
+  return service({
+    url: `/api/admin/goods/common/cfg`,
+    method: 'get'
+  })
+}
+
+// 开启店铺通用配置-重量配置
+export function openGoodsWeightCfg () {
+  return service({
+    url: `/api/admin/config/shop/common/open/goods/weight/cfg`,
+    method: 'get'
+  })
+}
+
 // 商品新增，发送请求分为有sku和无sku两个示例
 export function addGoodsApi (data) {
   return service({

@@ -44,7 +44,7 @@
               size="small"
             >
               <el-option
-                v-for="(item,index) in selectOptions"
+                v-for="(item,index) in $t('membershipIntroduction.cardStatusOpt')"
                 :key="index"
                 :label="item.label"
                 :value="item.value"
@@ -112,7 +112,7 @@
         >
           <template slot-scope="scope">
             <span
-              @click="handleToUserDetail(scope.row)"
+              @click="handleToUserDetail(scope.row.userId)"
               style="cursor:pointer;color:#5a8bff"
             >
               {{scope.row.username}}
@@ -143,6 +143,7 @@
           prop="cardNo"
           label="会员卡号"
           align="center"
+          width="180"
         >
         </el-table-column>
         <el-table-column
@@ -152,7 +153,13 @@
           <template slot-scope="scope">
             <span v-if="scope.row.flag === 0"> 正常 </span>
             <span v-else-if="scope.row.flag === 1"> 已废除({{scope.row.updateTime}}) </span>
-            <span v-else-if="scope.row.flag === 2"> 已过期 </span>
+            <span v-else-if="scope.row.flag === 2"> 转赠中 </span>
+            <span v-else-if="scope.row.flag === 3"> {{$t('membershipIntroduction.cardGived')}}({{scope.row.getTime}});赠予:
+                <span @click="handleToUserDetail(scope.row.getUserId)" style="color: #5a8bff;cursor: pointer;">
+                  {{scope.row.giveName}}
+                </span>;
+            </span>
+            <span v-else-if="scope.row.flag === 4"> 已过期 </span>
           </template>
         </el-table-column>
         <el-table-column
@@ -217,20 +224,6 @@ export default {
       carNameInput: '',
       phoneInput: '',
       cardNuberInput: '',
-      selectOptions: [{
-        value: -1,
-        label: '全部'
-      }, {
-        value: 0,
-        label: '正常'
-      }, {
-        value: 1,
-        label: '已废除'
-      },
-      {
-        value: 2,
-        label: '已过期'
-      }],
       statusValue: -1, // 卡状态默认值
       dateValue: null, // 领取时间
       tableData: [],
@@ -323,11 +316,11 @@ export default {
     },
 
     // 跳转到会员详情页
-    handleToUserDetail (row) {
+    handleToUserDetail (userId) {
       this.$router.push({
         name: 'membershipInformation',
         query: {
-          userId: row.userId
+          userId: userId
         }
       })
     },

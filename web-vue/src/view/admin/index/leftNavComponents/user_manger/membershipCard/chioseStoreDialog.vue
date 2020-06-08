@@ -148,12 +148,12 @@ export default {
         currentPage: 0,
         pageRows: 20
       }
-
       storeList(storPageParam).then(res => {
         if (res.error === 0) {
           console.log(res.content.dataList)
           this.pageParams = res.content.page
-          this.storeParamList = res.content.dataList
+          this.storeParamList = res.content.storePageListVo.dataList
+          console.log(this.storeParamList)
           this.storeParamList.map((item, index) => {
             if (item.businessState === 0) {
               item.businessState = '关店'

@@ -6,11 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.upyun.UpException;
 import com.vpu.mp.config.UpYunConfig;
-import com.vpu.mp.db.shop.tables.CustomerAvailCoupons;
-import com.vpu.mp.db.shop.tables.FormPage;
-import com.vpu.mp.db.shop.tables.FormSubmitDetails;
-import com.vpu.mp.db.shop.tables.FormSubmitList;
-import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.FormPageRecord;
 import com.vpu.mp.db.shop.tables.records.FormSubmitDetailsRecord;
 import com.vpu.mp.db.shop.tables.records.FormSubmitListRecord;
@@ -35,25 +31,7 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponAndVoucherDetailVo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
-import com.vpu.mp.service.pojo.shop.market.form.FeedBackDetail;
-import com.vpu.mp.service.pojo.shop.market.form.FeedBackDetailParam;
-import com.vpu.mp.service.pojo.shop.market.form.FeedBackDetailVo;
-import com.vpu.mp.service.pojo.shop.market.form.FeedBackInfoParam;
-import com.vpu.mp.service.pojo.shop.market.form.FeedBackInnerVo;
-import com.vpu.mp.service.pojo.shop.market.form.FeedBackOneVo;
-import com.vpu.mp.service.pojo.shop.market.form.FeedBackStatisticsVo;
-import com.vpu.mp.service.pojo.shop.market.form.FormAddParam;
-import com.vpu.mp.service.pojo.shop.market.form.FormCopyVo;
-import com.vpu.mp.service.pojo.shop.market.form.FormDetail;
-import com.vpu.mp.service.pojo.shop.market.form.FormDetailParam;
-import com.vpu.mp.service.pojo.shop.market.form.FormDetailVo;
-import com.vpu.mp.service.pojo.shop.market.form.FormFeedExportVo;
-import com.vpu.mp.service.pojo.shop.market.form.FormFeedParam;
-import com.vpu.mp.service.pojo.shop.market.form.FormFeedVo;
-import com.vpu.mp.service.pojo.shop.market.form.FormInfoVo;
-import com.vpu.mp.service.pojo.shop.market.form.FormSearchParam;
-import com.vpu.mp.service.pojo.shop.market.form.FormStatusParam;
-import com.vpu.mp.service.pojo.shop.market.form.FormUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.form.*;
 import com.vpu.mp.service.pojo.shop.market.form.pojo.FormCfgBo;
 import com.vpu.mp.service.pojo.shop.market.form.pojo.FormInfoBo;
 import com.vpu.mp.service.pojo.shop.market.form.pojo.FormModulesBo;
@@ -97,41 +75,17 @@ import java.math.RoundingMode;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.FormSubmitDetails.FORM_SUBMIT_DETAILS;
 import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_FORM_STATISTICS;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.ALL;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.BG_IMG;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.COUPON_ID;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.FORM_CHAR;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.FORM_DEFAULT_BG_IMG;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.M_CHOOSE;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.M_SEX;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.M_SLIDE;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.M_UPLOAD_VIDEO;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.ModuleUploadVideo;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.SELECT;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.SEND_COUPON_LIST;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.SEND_SCORE;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.SEND_SCORE_NUMBER;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.SPECIAL;
+import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.*;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_FORM_DECORATION_GIFT;
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.countDistinct;
-import static org.jooq.impl.DSL.min;
-import static org.jooq.impl.DSL.trueCondition;
+import static org.jooq.impl.DSL.*;
 
 /**
  * @author liufei
@@ -372,7 +326,7 @@ public class FormStatisticsService extends ShopBaseService {
             // 背景图
             BufferedImage bgImgBuf = ImageIO.read(new URL(imageService.getImgFullUrl(bgImg)));
             // 创建海报图片
-            BufferedImage pictorialImg = pictorialService.createFormPictorialBgImage(userAvator, qrCodImg, bgImgBuf, new PictorialFormImgPx());
+            BufferedImage pictorialImg = pictorialService.createFormPictorialBgImage(userAvator, qrCodImg, bgImgBuf, new PictorialFormImgPx(), "我有一份" + record.getPageName() + "邀请你来填写奥，查看有礼，尽享好物", saas.shop.account.getAccountInfoForId(getSysId()).getAccountName());
             // 获取海报图片路径
             Tuple2<String, String> path = pictorialService.getImgDir(4, pictorialService.getImgFileName(String.valueOf(pageId), String.valueOf(0), String.valueOf(4)));
             // 将待分享图片上传到U盘云，并在数据库缓存记录

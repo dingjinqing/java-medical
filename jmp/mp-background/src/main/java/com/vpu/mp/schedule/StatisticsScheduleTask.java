@@ -47,7 +47,7 @@ public class StatisticsScheduleTask implements CronRunnable {
         Result<ShopRecord> result = saas.shop.getAll();
         result.forEach((r) -> {
             ShopApplication shop = saas.getShopApp(r.getShopId());
-            shop.shopTaskService.statisticalTableInsert.insertTrades();
+//            shop.shopTaskService.statisticalTableInsert.insertTrades();
             shop.shopTaskService.statisticalTableInsert.insertUserSummaryTrend();
         });
     }

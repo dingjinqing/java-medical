@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @Component
 public class EsAggregationHandler {
 
+
     /**
      * 封装fact查询builder
      * @param factList 聚合参数{@link EsGoodsConstant.EsGoodsSearchFact}
@@ -38,15 +39,17 @@ public class EsAggregationHandler {
 
     /**
      * assembly LabelAggregationBuilder by goodsId
-     *
+     * @param groupSize 返回分组的数量
+     * @param querySize 每一组返回数据的数量
      * @return {@link AggregationBuilder}
      */
-    public AggregationBuilder assemblyLabelAggregationBuilderByGoodsId(){
+    public AggregationBuilder assemblyLabelAggregationBuilderByGoodsId(Integer groupSize,Integer querySize){
         AggregationBuilder aggregationBuilder = AggregationBuilders.terms(EsLabelName.GOODS_ID)
-            .field(EsLabelName.GOODS_ID);
+            .field(EsLabelName.GOODS_ID)
+            .size(groupSize);
         TopHitsAggregationBuilder topHitsAggregationBuilder = AggregationBuilders
             .topHits(EsAggregationName.LABEL_NAME)
-            .size(5)
+            .size(querySize)
             .fetchSource(EsAggregationName.LABEL_AGGREGATION_SOURCE,null)
             .sort(EsLabelName.LEVEL,SortOrder.DESC)
             .sort(EsLabelName.TYPE, SortOrder.ASC)

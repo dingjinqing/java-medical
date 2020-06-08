@@ -270,7 +270,7 @@
             class="coupon_list_top"
             :style="'color:'+backgroundColor"
           >
-            {{item.act_code==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.act_code==='discount'?$t('coupon.fracture'):''}}</i></span>
+            {{item.act_code==='discount'?'':'¥'}}<span>{{item.type===1&&item.act_code==='random'?item.randomMax:item.denomination}}<i style="font-size:14px">{{item.act_code==='discount'?$t('coupon.fracture'):item.type===1&&item.act_code==='random'?'最高':''}}</i></span>
           </div>
           <div class="coupon_list_center">
             <div
@@ -425,7 +425,7 @@ export default {
       couponBackData: [], // 选择优惠卷回显数据
       backgroundColorTransparent: '',
       backgroundColor: '',
-      noThreshold: '', // 优惠卷相关
+      noThreshold: '不限制', // 优惠卷相关
       full: '', // 优惠卷相关
       available: '', // 优惠卷相关
       surplus: '', // 优惠卷相关
@@ -435,7 +435,7 @@ export default {
   },
   watch: {
     lang () {
-      this.noThreshold = this.$t('coupon.noThreshold')
+      // this.noThreshold = this.$t('coupon.noThreshold')
       this.full = this.$t('coupon.full')
       this.available = this.$t('coupon.available')
       this.surplus = this.$t('coupon.surplus')
@@ -499,7 +499,7 @@ export default {
 
     // 初始化语言
     this.langDefault()
-    this.backgroundColor = localStorage.getItem('V-backgroundColor') || 'rgb(255, 102, 102)'
+    this.backgroundColor = 'rgb(255, 102, 102)'
     this.backgroundColorTransparent = this.backgroundColor.split(')')[0] + ',0.4)'
   },
   methods: {
@@ -554,7 +554,9 @@ export default {
           'coupon_id': item.id, // 优惠券id
           'use_score': item.useScore, // 是否可以积分兑换
           'score_number': item.scoreNumber, // 需要积分数
-          'limitSurplusFlag': item.limitSurplusFlag
+          'limitSurplusFlag': item.limitSurplusFlag,
+          'type': item.type,
+          'randomMax': item.randomMax
         }
         console.log(isExistence, obj, item)
         if (isExistence.length === 0) {

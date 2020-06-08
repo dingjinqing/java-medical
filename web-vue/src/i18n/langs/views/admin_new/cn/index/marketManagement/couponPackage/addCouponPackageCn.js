@@ -57,6 +57,7 @@ export const cn = {
   every: '每',
   prompt: '提示',
   delCouponConfirm: '是否删除该优惠券？',
+  highest: '最高',
 
   // 校验
   validStrategy1: '策略立即发放数量大于发券总量！',

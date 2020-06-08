@@ -132,10 +132,20 @@ public enum MpTemplateConfig {
     	"审核结果{{keyword1.DATA}}审核时间{{keyword2.DATA}}未通过原因{{keyword3.DATA}}申请时间{{keyword4.DATA}}申请内容{{keyword5.DATA}}"
     ),
     AUDIT_SUCCESS(
-    	"AT0168",
-    	"审核通过提醒",
-    	"审核结果{{keyword1.DATA}}审核时间{{keyword2.DATA}}申请时间{{keyword3.DATA}}申请内容{{keyword4.DATA}}"
+        	"AT0168",
+        	"审核通过提醒",
+        	"审核结果{{keyword1.DATA}}审核时间{{keyword2.DATA}}申请时间{{keyword3.DATA}}申请内容{{keyword4.DATA}}"
+        ),
+    REBATE_USER_UP_GRADE(
+        "OPENTM403179330",
+        "分销商等级变动通知",
+        "{{first.DATA}}当前等级：{{keyword1.DATA}}原始等级：{{keyword2.DATA}}升级时间：{{keyword3.DATA}}{{remark.DATA}}"
     ),
+    NEW_ORDER_REMIND(
+            "OPENTM204958750",
+            "店铺新订单成交通知",
+            "{{first.DATA}}订单金额：{{keyword1.DATA}}订单详情：{{keyword2.DATA}}订单号：{{keyword3.DATA}}买家会员：{{keyword4.DATA}}{{remark.DATA}}"
+        ),
 	GET_CARD(
 		"OPENTM405766398",
 		"会员卡领取成功通知",

@@ -296,5 +296,14 @@ public class ShopOverviewService extends MainBaseService {
             select.and(USER_LOGIN_RECORD.ACCOUNT_TYPE.eq(param.getAccountType()));
         }
     }
-
+    /**
+     * Shop version String.店铺版本
+     *
+     * @param shopId the shop id
+     * @return String 版本级别
+     */
+    public String getShopVersion(Integer shopId) {
+        String level = db().select(SHOP.SHOP_TYPE).from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne().into(String.class);
+        return level;
+    }
 }

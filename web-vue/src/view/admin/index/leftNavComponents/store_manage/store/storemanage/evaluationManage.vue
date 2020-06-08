@@ -67,6 +67,7 @@ export default {
             name: 'store_storemanage_reservation_record',
             query: {
               id: this.id,
+              servicename: this.$route.query.servicename,
               businessHours: this.$route.query.businessHours,
               businessType: this.$route.query.businessType
             }

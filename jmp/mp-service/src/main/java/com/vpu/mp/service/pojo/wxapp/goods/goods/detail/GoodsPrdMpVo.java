@@ -16,6 +16,8 @@ public class GoodsPrdMpVo {
     /**规格id*/
     private Integer prdId;
     private Integer prdNumber;
+    /**商品重量*/
+    private BigDecimal prdWeight;
     /** 规格最终价格，数据库取prd_price*/
     private BigDecimal prdRealPrice;
     /**规格划线价,首次取时取市场价*/
@@ -23,6 +25,7 @@ public class GoodsPrdMpVo {
     private String prdSpecs;
     private String prdDesc;
     private String prdImg;
+    private String prdCodes;
     //************ElasticSearch中的数据**************start
 
 
@@ -37,5 +40,7 @@ public class GoodsPrdMpVo {
         this.prdSpecs = record.getPrdSpecs();
         this.prdDesc = record.getPrdDesc();
         this.prdImg = record.getPrdImg();
+        this.prdCodes = record.getPrdCodes();
+        this.prdWeight = record.getPrdWeight();
     }
 }

@@ -30,6 +30,8 @@ global.wxComponent({
                   'components.decorate.hit'
                 )}${newItem.denomination}${this.$t('components.decorate.fracture')}`;
               }
+            } else if (newItem.actCode === 'random') {
+              newItem.text = `领券减￥${newItem.randomMax}`
             }
             return newItem
           })

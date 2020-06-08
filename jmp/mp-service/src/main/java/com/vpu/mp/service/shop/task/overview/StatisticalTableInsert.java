@@ -7,6 +7,7 @@ import com.vpu.mp.db.shop.tables.records.UserSummaryTrendRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewParam;
+import com.vpu.mp.service.pojo.shop.overview.realtime.RealTimeBo;
 import org.jooq.Record3;
 import org.jooq.lambda.tuple.Tuple3;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -79,12 +81,13 @@ public class StatisticalTableInsert extends ShopBaseService {
     }
 
     private TradesRecord createTradesRecord(ProductOverviewParam param, Timestamp start, Timestamp end, TradesRecord record, byte hour, Date refDate) {
+        RealTimeBo bo = tradeTaskService.orderUserMoney(start, end,null);
         record.reset();
         record.setUv(userSummary.getUv(start, end));
         record.setPv(userSummary.getPv(start, end));
-        record.setPayUserNum(goodsStatistic.paidUv(createParam(param, start, end)));
-        record.setPayOrderMoney(goodsStatistic.orderUserMoney(start, end));
-        record.setPayOrderNum(userSummary.orderNum(start, end));
+        record.setPayUserNum(tradeTaskService.orderUserNum(start, end).size());
+        record.setPayOrderMoney(null!=bo.getTotalMoneyPaid()?bo.getTotalMoneyPaid():BigDecimal.ZERO);
+        record.setPayOrderNum(null!=bo.getOrderNum()?bo.getOrderNum():0);
         record.setPct(BigDecimalUtil.divideWithOutCheck(record.getPayOrderMoney(), record.getPayUserNum()));
         record.setUvPayRatio(BigDecimalUtil.divideWithOutCheck(record.getPayUserNum(), record.getUv()));
         record.setHour(hour);
@@ -96,15 +99,21 @@ public class StatisticalTableInsert extends ShopBaseService {
      * Insert trades now. b2c_trades表，实时统计当天的数据
      */
     public void insertTradesNow() {
+
+        //yyyy-MM-dd格式当前日期
         Date refDate = Date.valueOf(LocalDate.now());
         LocalDateTime today = LocalDate.now().atStartOfDay();
         byte hour = (byte) LocalDateTime.now().getHour();
+        //上一个小时的始末时间
         Timestamp start = Timestamp.valueOf(today.plusHours(hour - 1));
         Timestamp end = Timestamp.valueOf(today.plusHours(hour));
         TradesRecord record = new TradesRecord();
         ProductOverviewParam param = new ProductOverviewParam();
         if (hour - 1 < INTEGER_ZERO) {
-            refDate = Date.valueOf(LocalDate.now().minusDays(INTEGER_ZERO));
+            Calendar c = Calendar.getInstance();
+            c.setTime(refDate);
+            c.add(Calendar.DAY_OF_MONTH,-1);
+            refDate = new Date(c.getTime().getTime());
             hour = 23;
         } else {
             --hour;
@@ -127,35 +136,34 @@ public class StatisticalTableInsert extends ShopBaseService {
     }
 
     private UserSummaryTrendRecord createUserSummaryTrendRecord(Timestamp start, Timestamp end, byte type, UserSummaryTrendRecord record, ProductOverviewParam param) {
+        RealTimeBo bo = tradeTaskService.orderUserMoney(start, end,null);
         record.reset();
         record.setRefDate(Date.valueOf(LocalDate.now()));
         record.setType(type);
         record.setLoginData(userSummary.getUv(start, end));
         record.setUserData(userSummary.getUserTotal(start, end));
         record.setCouponData(userSummary.receiveCouponUserNum(start, end));
-        record.setCartData(goodsStatistic.addCartUserNum(createParam(param, start, end)));
+        record.setCartData(goodsStatistic.addCartUserNum(start, end));
         record.setRegUserData(userSummary.getUserNum(start, end));
         record.setUpgradeUserData(userSummary.upgradeUserSum(start, end));
         record.setChargeUserData(userSummary.chargeUserSum(start, end));
         // 付款用户数（distinct(userId)）
-        record.setOrderUserData(goodsStatistic.totalCustomerTranNum(start, end).size());
+        record.setOrderUserData(tradeTaskService.orderUserNum(start, end).size());
         // 付款人数
-        record.setPayPeopleNum(goodsStatistic.totalPeopleTranNum(start, end));
-        record.setNewOrderUserData(goodsStatistic.newCustomerTranNum(start, end));
-        record.setOldOrderUserData(goodsStatistic.oldCustomerTranNum(start, end));
-        record.setTotalPaidMoney(goodsStatistic.orderUserMoney(start, end));
+        record.setPayPeopleNum(tradeTaskService.orderPeopleNum(start, end));
+        record.setNewOrderUserData(tradeTaskService.newOrderUserNum(start, end).size());
+        record.setOldOrderUserData(tradeTaskService.oldOrderUserNum(start, end).size());
+        record.setPayOrderNum(null!=bo.getOrderNum()?bo.getOrderNum():0);
+        record.setTotalPaidMoney(null!=bo.getTotalMoneyPaid()?bo.getTotalMoneyPaid():BigDecimal.ZERO);
+        record.setNewPaidMoney(tradeTaskService.newOrderUserMoney(start, end).getTotalMoneyPaid());
+        record.setOldPaidMoney(tradeTaskService.oldOrderUserMoney(start, end).getTotalMoneyPaid());
         record.setPayGoodsNumber(userSummary.payUserGoodsNum(start, end).values().stream().reduce(INTEGER_ZERO, Integer::sum));
         record.setNewPayGoodsNumber(userSummary.payNewUserGoodsNum(start, end));
         record.setOldPayGoodsNumber(userSummary.payOldUserGoodsNum(start, end));
-        record.setNewPaidMoney(userSummary.payNewUserMoney(start, end));
-        record.setOldPaidMoney(userSummary.payOldUserMoney(start, end));
-        record.setPayOrderNum(userSummary.orderNum(start, end));
         record.setLoginPv(userSummary.getPv(start, end));
-        record.setOrderNum(userSummary.generateOrderNum(start, end));
+        record.setOrderNum(tradeTaskService.generateOrderNum(start, end));
         // 下单用户数（distinct(userId)）
-        record.setOrderUserNum(userSummary.generateOrderUserNum(start, end));
-        // 下单人数
-        record.setOrderUserNum(userSummary.generatePeopleUserNum(start, end));
+        record.setOrderUserNum(tradeTaskService.generateOrderUserNum(start, end));
         return record;
     }
 
@@ -246,13 +254,13 @@ public class StatisticalTableInsert extends ShopBaseService {
         TradesRecordSummaryRecord record = new TradesRecordSummaryRecord();
         TYPE_LIST.forEach((e) -> {
             record.reset();
-            record.setRefDate(Date.valueOf(today.toLocalDate()));
+            record.setRefDate(Date.valueOf(today.minusDays(1).toLocalDate()));
             record.setType(e);
-            record.setIncomeTotalMoney(tradeTaskService.getTotalIncomeMoney(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)));
-            record.setOutgoMoney(tradeTaskService.getTotalExpensesMoney(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)));
+            record.setIncomeTotalMoney(tradeTaskService.getTotalIncomeMoney(Timestamp.valueOf(today.minusDays(e+1)), Timestamp.valueOf(today.minusDays(1))));
+            record.setOutgoMoney(tradeTaskService.getTotalExpensesMoney(Timestamp.valueOf(today.minusDays(e+1)), Timestamp.valueOf(today.minusDays(1))));
             record.setIncomeRealMoney(record.getIncomeTotalMoney().subtract(record.getOutgoMoney()));
-            record.setIncomeTotalScore(tradeTaskService.getTotalIncomeScore(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)));
-            record.setOutgoScore(tradeTaskService.getTotalExpensesScore(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)));
+            record.setIncomeTotalScore(tradeTaskService.getTotalIncomeScore(Timestamp.valueOf(today.minusDays(e+1)), Timestamp.valueOf(today.minusDays(1))));
+            record.setOutgoScore(tradeTaskService.getTotalExpensesScore(Timestamp.valueOf(today.minusDays(e+1)), Timestamp.valueOf(today.minusDays(1))));
             record.setIncomeRealScore(record.getIncomeTotalScore().subtract(record.getOutgoScore()));
             db().executeInsert(record);
         });

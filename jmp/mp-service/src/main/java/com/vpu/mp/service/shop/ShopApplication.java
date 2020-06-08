@@ -61,6 +61,7 @@ import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import com.vpu.mp.service.shop.market.integralconvert.IntegralConvertService;
 import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
+import com.vpu.mp.service.shop.market.live.LiveService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
 import com.vpu.mp.service.shop.market.message.MessageTemplateService;
 import com.vpu.mp.service.shop.market.packagesale.PackSaleService;
@@ -93,6 +94,7 @@ import com.vpu.mp.service.shop.overview.OverviewService;
 import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
 import com.vpu.mp.service.shop.overview.TransactionStatisticsService;
 import com.vpu.mp.service.shop.payment.PaymentService;
+import com.vpu.mp.service.shop.question.FeedbackService;
 import com.vpu.mp.service.shop.recommend.RecommendService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
@@ -260,6 +262,9 @@ public class ShopApplication {
      */
     @Autowired
     public MpDistributionService  mpDistribution;
+    /**分销商品service*/
+    @Autowired
+    public MpDistributionGoodsService mpDisGoods;
 	@Autowired
 	public MemberCardOrderService memberCardOrder;
 	@Autowired
@@ -555,4 +560,14 @@ public class ShopApplication {
      */
     @Autowired
     public ApiGoodsService apiGoodsService;
+
+    @Autowired
+    public FeedbackService feedbackService;
+
+    /**
+     * 小程序直播
+     */
+    @Autowired
+    public LiveService liveService;
+
 }

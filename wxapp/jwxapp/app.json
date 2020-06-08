@@ -35,7 +35,11 @@
     "pages/cardrecord/cardrecord",
     "pages/fullprice/fullprice",
     "pages/maingoodslist/maingoodslist",
-    "pages/usercardup/usercardup"
+    "pages/usercardup/usercardup",
+    "pages/splitinfo/splitinfo",
+    "pages/usercardrenew/usercardrenew",
+    "pages/personalcenter/personalcenter",
+    "components/usercenter/useraddress/useraddress"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -43,6 +47,12 @@
     "navigationBarTitleText": "首页",
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"
+  },
+  "plugins": {
+    "live-player-plugin": {
+      "version": "1.0.7",
+      "provider": "wx2b03c6e691cd7370"
+    }
   },
   "permission": {
     "scope.userLocation": {
@@ -63,8 +73,14 @@
         "balance/balance",
         "integral/integral",
         "distribution/distribution",
-        "distributionorder/distributionorder",
         "distributionspread/distributionspread",
+        "distrigrade/distrigrade",
+        "distrirecord/distrirecord",
+        "inviteduser/inviteduser",
+        "promotioncenter/promotioncenter",
+        "brokeragerank/brokeragerank",
+        "distripromotion/distripromotion",
+        "distributionorder/distributionorder",
         "shopcheckout/shopcheckout",
         "appointment/appointment",
         "scancode/scancode",
@@ -97,7 +113,14 @@
         "insteadcheckout/insteadcheckout",
         "appointcomment/appointcomment",
         "form/form",
-        "formsuccess/formsuccess"
+        "formsuccess/formsuccess",
+        "maingiftlist/maingiftlist",
+        "goodscomment/goodscomment",
+        "usercardgoods/usercardgoods",
+        "sharerebate/sharerebate",
+        "livetransition/livetransition",
+        "aftersaleorder/aftersaleorder",
+        "addressedit/addressedit"
       ]
     }
   ],

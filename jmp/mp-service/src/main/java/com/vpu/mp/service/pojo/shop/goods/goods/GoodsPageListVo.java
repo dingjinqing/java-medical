@@ -1,12 +1,12 @@
 package com.vpu.mp.service.pojo.shop.goods.goods;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelSelectListVo;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 商品（规格）分页信息返回类，该类同时使用于
@@ -20,6 +20,7 @@ public class  GoodsPageListVo {
     private String goodsName;
     private String goodsImg;
     private String goodsSn;
+    private BigDecimal marketPrice;
     private BigDecimal shopPrice;
     private Byte source;
     private Byte goodsType;
@@ -27,10 +28,14 @@ public class  GoodsPageListVo {
     private String catName;
     private String sortName;
     private Integer sortId;
+    private Integer brandId;
     private String brandName;
     private Integer goodsNumber;
     private Integer goodsSaleNum;
-    private List<GoodsLabelSelectListVo> goodsLabels = new ArrayList<>();
+    /** 指定标签集合（在商品列表只展示可修改的标签）*/
+    private List<GoodsLabelSelectListVo> goodsPointLabels = Lists.newArrayList();
+    /** 普通标签集合（在商品列表只展示不可修改的标签）商家分类上的标签和全部商品类型标签*/
+    private List<GoodsLabelSelectListVo> goodsNormalLabels = Lists.newArrayList();
     /**
      * 商品对应的规格数据,未使用
      */

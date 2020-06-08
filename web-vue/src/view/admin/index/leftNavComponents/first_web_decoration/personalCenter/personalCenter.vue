@@ -184,7 +184,7 @@
                   class="each_item"
                   v-for="(val, key) in item.content"
                   :key="key"
-                  v-if="val.icon_name=='wait_comment' && isShowOrder=='1'"
+                  v-if="val.icon_name=='wait_comment' && (isShowOrder=='1' || (isShowOrder=='2' && val.is_show=='1'))"
                 >
                   <div class="item_img">
                     <img
@@ -198,7 +198,7 @@
                   class="each_item"
                   v-for="(val, key) in item.content"
                   :key="key"
-                  v-if="val.icon_name=='refund'"
+                  v-if="val.icon_name=='refund' && (isShowOrder=='1' || (isShowOrder=='2' && val.is_show=='1'))"
                 >
                   <div class="item_img">
                     <img
@@ -348,6 +348,21 @@
                 <div class="titleLeft">{{ item.title }}</div>
               </div>
               <div class="serveContent">
+                <div
+                  class="each_serve"
+                  style="display: flex;"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name==='afterSale' && val.is_show=='1'"
+                >
+                  <div class="serve_img">
+                    <img
+                      :src="imgHost + val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="serve_word">{{ $t('personalCenter.wait5') }}</div>
+                </div>
                 <div
                   class="each_serve"
                   style="display: flex;"
@@ -537,11 +552,16 @@
                     v-if="bgImg!=''"
                     @click="changeImgHandler(item.module_name, '')"
                   >
-                    <el-image
+                    <!-- <el-image
                       fit="cover"
                       :src="imgHost + bgImg"
                       style="width: 100%; height: 100%"
-                    ></el-image>
+                    ></el-image> -->
+                    <img
+                      :src="imgHost + bgImg"
+                      alt=""
+                      style="width: 100%; height: 100%"
+                    >
                   </div>
                   <div
                     class="customizeImgWrap"
@@ -549,11 +569,16 @@
                     @click="changeImgHandler(item.module_name, '')"
                   >
 
-                    <el-image
+                    <!-- <el-image
                       fit="scale-down"
                       :src="imgHost + '/image/admin/add_img_bg.png'"
                       style="width: 100%; height: 100%"
-                    />
+                    /> -->
+                    <img
+                      :src="imgHost + '/image/admin/add_img_bg.png'"
+                      alt=""
+                      style="width: 100%; height: 100%"
+                    >
                   </div>
                 </el-radio-group>
               </el-collapse-item>
@@ -687,10 +712,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -713,10 +742,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -739,10 +772,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -755,6 +792,16 @@
                     </div>
                   </el-form-item>
                   <el-form-item :label="$t('personalCenter.waitComment')">
+                    <label
+                      slot="label"
+                      v-if="item.module_style === '2'"
+                    >
+                      <el-radio
+                        v-model="orderRadio"
+                        label="1"
+                        @change="orderHabdler(orderRadio)"
+                      >{{$t('personalCenter.waitComment')}}</el-radio>
+                    </label>
                     <div
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
@@ -765,10 +812,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -781,6 +832,16 @@
                     </div>
                   </el-form-item>
                   <el-form-item :label="$t('personalCenter.refund')">
+                    <label
+                      slot="label"
+                      v-if="item.module_style === '2'"
+                    >
+                      <el-radio
+                        v-model="orderRadio"
+                        label="2"
+                        @change="orderHabdler(orderRadio)"
+                      >{{$t('personalCenter.refund')}}</el-radio>
+                    </label>
                     <div
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
@@ -791,10 +852,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -937,10 +1002,10 @@
                     <p>{{ $t('personalCenter.serveTitle') }}</p>
                   </el-form-item>
                   <el-form-item
-                    :label="$t('personalCenter.distribution') + '：'"
+                    :label="$t('personalCenter.wait5') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="val.icon_name=='distribution'"
+                    v-if="val.icon_name==='afterSale'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -954,10 +1019,67 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
+                        <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
+                      </div>
+                      <div style="margin-left: 10px;">
+                        <p style="color: #999;">{{ $t('personalCenter.iconTip') }}</p>
+                        <el-button
+                          type="text"
+                          @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_after.png')"
+                        >{{ $t('personalCenter.resetIcon') }}</el-button>
+                      </div>
+                    </div>
+                  </el-form-item>
+                  <el-form-item
+                    :label="$t('personalCenter.distribution') + '：'"
+                    v-for="(val, key) in item.content"
+                    :key="key"
+                    v-if="val.icon_name==='distribution'"
+                  >
+                    <el-radio-group
+                      v-model="val.is_show"
+                      @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
+                    >
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
+                    </el-radio-group>
+                    <div>
+                      <el-select
+                        v-model="val.show_type"
+                        size="small"
+                        style="width: 170px;margin-bottom: 10px;"
+                      >
+                        <el-option
+                          label="全部用户可见"
+                          value="0"
+                        ></el-option>
+                        <el-option
+                          label="仅分销员可见"
+                          value="1"
+                        ></el-option>
+                      </el-select>
+                    </div>
+                    <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
+                      <div
+                        class="imgContainter"
+                        @click="changeImgHandler(item.module_name, val.icon_name, key)"
+                      >
+                        <!-- <el-image
+                          fit="scale-down"
+                          :src="imgHost + val.icon"
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -973,7 +1095,7 @@
                     :label="$t('personalCenter.bargain') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="val.icon_name=='bargain'"
+                    v-if="val.icon_name==='bargain'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -987,10 +1109,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -1006,7 +1132,7 @@
                     :label="$t('personalCenter.award') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="val.icon_name=='award'"
+                    v-if="val.icon_name==='award'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1020,10 +1146,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -1040,7 +1170,7 @@
                     :label="$t('personalCenter.commentList') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="val.icon_name=='comment_list'"
+                    v-if="val.icon_name==='comment_list'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1054,10 +1184,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -1073,7 +1207,7 @@
                     :label="$t('personalCenter.storeList') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="val.icon_name=='store_list'"
+                    v-if="val.icon_name==='store_list'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1087,10 +1221,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -1106,7 +1244,7 @@
                     :label="$t('personalCenter.userActivate') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="val.icon_name=='user_activate'"
+                    v-if="val.icon_name==='user_activate'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1120,10 +1258,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -1139,7 +1281,7 @@
                     :label="$t('personalCenter.orderVerify') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="val.icon_name=='order_verify'"
+                    v-if="val.icon_name==='order_verify'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1153,10 +1295,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -1172,7 +1318,7 @@
                     :label="$t('personalCenter.presentList') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="val.icon_name=='present_list'"
+                    v-if="val.icon_name==='present_list'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1186,10 +1332,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -1206,7 +1356,7 @@
                     :label="$t('personalCenter.customIcon') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="val.icon_name=='custom_icon'"
+                    v-if="val.icon_name==='custom_icon'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1236,10 +1386,14 @@
                         class="imgContainter"
                         @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
-                        <el-image
+                        <!-- <el-image
                           fit="scale-down"
                           :src="imgHost + val.icon"
-                        />
+                        /> -->
+                        <img
+                          :src="imgHost + val.icon"
+                          alt=""
+                        >
                         <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
@@ -1383,7 +1537,7 @@ export default {
           {
             icon_name: 'refund',
             icon: '/image/admin/uc_config/uc_order_icon5.png',
-            is_show: '1'
+            is_show: '0'
           }
         ]
       }, {
@@ -1404,10 +1558,18 @@ export default {
         content: [
           {
             is_show: '1',
+            icon_name: 'afterSale',
+            icon: '/image/admin/uc_config/icon_after.png',
+            link: '',
+            link_name: ''
+          },
+          {
+            is_show: '1',
             icon_name: 'distribution',
             icon: '/image/admin/uc_config/icon_dis.png',
             link: '',
-            link_name: ''
+            link_name: '',
+            show_type: '0'
           },
           {
             is_show: '1',
@@ -1528,7 +1690,7 @@ export default {
           {
             icon_name: 'refund',
             icon: '/image/admin/uc_config/uc_order_icon5.png',
-            is_show: '1'
+            is_show: '0'
           }
         ]
       }, {
@@ -1549,10 +1711,18 @@ export default {
         content: [
           {
             is_show: '1',
+            icon_name: 'afterSale',
+            icon: '/image/admin/uc_config/icon_after.png',
+            link: '',
+            link_name: ''
+          },
+          {
+            is_show: '1',
             icon_name: 'distribution',
             icon: '/image/admin/uc_config/icon_dis.png',
             link: '',
-            link_name: ''
+            link_name: '',
+            show_type: '0'
           },
           {
             is_show: '1',
@@ -1636,11 +1806,22 @@ export default {
           this.bgImg = this.rightData[1].bg_img
           this.bgImage = this.imgHost + this.bgImg
 
-          for (var i = 0; i < this.leftData.length; i++) {
-            if (this.leftData[i].module_name === 'order') {
-              this.isShowOrder = this.leftData[i].module_style
+          this.leftData.forEach(item => {
+            if (item.module_name === 'order') {
+              // 模块样式
+              this.isShowOrder = item.module_style
+              item.content.forEach(val => {
+                // 选择显示模块
+                if (val.is_show === '0') {
+                  if (val.icon_name === 'wait_comment') {
+                    this.orderRadio = '2'
+                  } else {
+                    this.orderRadio = '1'
+                  }
+                }
+              })
             }
-          }
+          })
         }
       })
     },
@@ -1915,6 +2096,29 @@ export default {
       //   }
       // }
       // this.customValue++
+    },
+
+    // 订单配置项切换
+    orderHabdler (value) {
+      this.rightData.forEach(item => {
+        if (item.module_name === 'order') {
+          item.content.forEach(val => {
+            if (value === '1') {
+              if (val.icon_name === 'wait_comment') {
+                val.is_show = '1'
+              } else if (val.icon_name === 'refund') {
+                val.is_show = '0'
+              }
+            } else {
+              if (val.icon_name === 'refund') {
+                val.is_show = '1'
+              } else if (val.icon_name === 'wait_comment') {
+                val.is_show = '0'
+              }
+            }
+          })
+        }
+      })
     }
   }
 }
@@ -2328,6 +2532,13 @@ export default {
 .imgContainter .el-image {
   width: 100%;
   height: 100%;
+  border: 1px solid #ccc;
+}
+
+.imgContainter img {
+  width: 100%;
+  height: 100%;
+  padding: 14px;
   border: 1px solid #ccc;
 }
 

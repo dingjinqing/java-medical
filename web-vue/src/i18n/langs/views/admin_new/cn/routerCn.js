@@ -106,6 +106,8 @@ export const cn = {
   base_manger: ['基础配置', '店铺基础配置'],
   // 基础配置  交易配置
   pay: ['基础配置', '交易配置'],
+  // 基础配置  交易配置 服务条款配置
+  termsService: ['基础配置', '交易配置', '服务条款配置'],
   // 基础配置  店铺权限
   child_config: ['基础配置', '店铺权限'],
   // 基础配置  模板消息
@@ -171,9 +173,11 @@ export const cn = {
   // 营销管理 分享有礼 添加分享有礼活动
   share_polite_add: ['营销管理', '分享有礼', '分享有礼活动'],
   // 营销管理 普通优惠券
-  ordinary_coupon: ['营销管理', '普通优惠券'],
+  ordinary_coupon: ['营销管理', '优惠券'],
   // 营销管理 普通优惠券 领取明细
-  ordinary_coupon_receive_details: ['营销管理', '普通优惠券', '领取明细'],
+  ordinary_coupon_receive_details: ['营销管理', '优惠券', '领取明细'],
+  // 营销管理 普通优惠券 领取明细
+  ordinary_coupon_user_detail: ['营销管理', '优惠券', '领取用户列表'],
   // 营销管理 拼团抽奖
   group_draw: ['营销管理', '拼团抽奖'],
   // 营销管理 拼团抽奖 活动订单
@@ -262,7 +266,7 @@ export const cn = {
   // 营销管理 定金膨胀活动明细
   presale_detail: ['营销管理', '定金膨胀', '活动明细'],
   // 营销活动 普通优惠券
-  ordinaryCoupon: ['营销管理', '普通优惠券'],
+  ordinaryCoupon: ['营销管理', '优惠券'],
   // 营销管理 秒杀
   seckill: ['营销管理', '秒杀'],
   // 营销管理 秒杀-添加
@@ -335,6 +339,10 @@ export const cn = {
   feedbackStatistics: ['营销管理', '表单统计', '反馈统计'],
   // 营销管理 表单统计  查看详情页
   feedbackDetails: ['营销管理', '表单统计', '反馈列表', '反馈详情'],
+  // 直播
+  live_broadcast: ['营销管理', '直播'],
+  // 营销管理 渠道页面分析
+  channel: ['营销管理', '渠道页面分析'],
   // 订单管理 全部订单
   order: ['订单管理', '全部订单'],
   // 订单管理 查看详情
@@ -380,5 +388,11 @@ export const cn = {
   // 门店管理 技师管理 排班配置
   schedule_setting: ['技师管理', '排班配置'],
   // 门店管理 门店服务配置
-  store_service_config: ['门店管理', '门店服务配置']
+  store_service_config: ['门店管理', '门店服务配置'],
+  // 门店公告
+  store_announcement: ['门店管理', '门店公告'],
+  // 门店公告 添加公告
+  store_announcement_add: ['门店管理', '门店公告', '添加公告'],
+  // 门店权限
+  store_permission: ['门店管理', '门店权限']
 }

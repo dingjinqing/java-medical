@@ -18,6 +18,7 @@ import java.util.List;
 @Setter
 @ToString
 public abstract class BaseMarketingBaseVo {
+    /**折扣金额*/
     private BigDecimal totalDiscount;
     private BigDecimal totalGoodsNumber;
     private BigDecimal totalPrice;

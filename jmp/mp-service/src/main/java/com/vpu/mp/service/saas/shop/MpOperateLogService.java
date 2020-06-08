@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOperateLogRecord;
+import com.vpu.mp.db.main.tables.records.MpVersionRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -249,5 +250,24 @@ public class MpOperateLogService extends MainBaseService {
 			return fetch.into(MpOperateVo.class);
 		}
 		
+	}
+	
+	/**
+	 * 获得最后一次审核通过的版本
+	 * @param appId
+	 * @return
+	 */
+	public Byte getLastAuditSuccessPackage(String appId) {
+		MpOperateLogRecord operateLog = db().selectFrom(MP_OPERATE_LOG)
+				.where(MP_OPERATE_LOG.OPERATE_TYPE.eq(OP_TYPE_AUDIT_SUCCESS).and(MP_OPERATE_LOG.APP_ID.eq(appId)))
+				.orderBy(MP_OPERATE_LOG.OPERATE_ID.desc()).fetchAny();
+		if(operateLog!=null&&operateLog.getTemplateId()!=null) {
+			MpVersionRecord template = db().selectFrom(MP_VERSION).where(MP_VERSION.TEMPLATE_ID.eq(operateLog.getTemplateId())).fetchAny();
+			if(template==null) {
+				return (byte)1;
+			}
+			return template.getPackageVersion();
+		}
+		return (byte)1;
 	}
 }

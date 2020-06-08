@@ -63,5 +63,9 @@ public class CreateParam extends OrderBeforeParam{
         if(getScanStoreId() != null && getScanStoreId() > 0){
             orderRecord.setPosFlag(OrderConstant.YES);
         }
+		if (null != this.getRoomId()) {
+			orderRecord.setRoomId(this.getRoomId());
+		}
+
     }
 }

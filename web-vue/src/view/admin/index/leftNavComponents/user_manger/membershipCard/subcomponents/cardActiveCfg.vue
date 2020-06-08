@@ -26,7 +26,10 @@
         </div>
         <div class="active-tip">
           <span>{{ $t('memberCard.chooseUserInfo') }}</span>
-          <span v-if="activeError" class="active-error">请选择激活配置信息</span>
+          <span
+            v-if="activeError"
+            class="active-error"
+          >请选择激活配置信息</span>
         </div>
         <div
           v-if="ruleForm.activation==='1'"
@@ -45,6 +48,7 @@
               <el-checkbox label="address">{{ $t('memberCard.address') }}</el-checkbox>
             </el-checkbox-group>
           </div>
+          <my-action :myData.sync="val.customAction" />
           <div class="active-bottom">
             <div class="exmine-tip">{{ $t('memberCard.isactiveInfo') }}</div>
             <el-radio
@@ -62,7 +66,11 @@
   </div>
 </template>
 <script>
+import cardSelfDefActivation from './CardSelfDefActivation'
 export default {
+  components: {
+    myAction: cardSelfDefActivation
+  },
   props: {
     val: {
       type: Object,
@@ -70,7 +78,8 @@ export default {
         return {
           activation: '0',
           activationCfgBox: [],
-          examine: '0'
+          examine: '0',
+          customAction: []
         }
       }
     }
@@ -86,7 +95,13 @@ export default {
         return this.val
       },
       set () {
+        let customFlag = false
+        if (this.ruleForm.customAction !== null && this.ruleForm.customAction.length > 0) {
+          customFlag = this.ruleForm.customAction.some(item => item.checked)
+        }
         if (this.ruleForm.activationCfgBox.length > 0 || this.ruleForm.activation === '0') {
+          this.activeError = false
+        } else if (customFlag) {
           this.activeError = false
         }
         this.$emit('input', this.ruleForm)
@@ -105,8 +120,21 @@ export default {
   mounted () {
     this.langDefault()
     this.$on('checkRule', () => {
+      //  check custom action
+      let customFlag = false
+      if (this.ruleForm.customAction !== null && this.ruleForm.customAction.length > 0) {
+        customFlag = this.ruleForm.customAction.some(item => item.checked)
+      }
+
+      //  remove empty string
+      for (var i = 0; i < this.ruleForm.activationCfgBox.length; i++) {
+        if (!this.ruleForm.activationCfgBox[i]) {
+          this.ruleForm.activationCfgBox.splice(i, 1)
+        }
+      }
+
       if (this.ruleForm.activation === '1') {
-        if (this.ruleForm.activationCfgBox.length > 0) {
+        if (this.ruleForm.activationCfgBox.length > 0 || customFlag) {
           this.ruleForm.valid = true
           this.activeError = false
         } else {
@@ -138,8 +166,8 @@ export default {
       color: #9d9d9d;
       font-size: 13px;
       padding-left: 50px;
-      .active-error{
-        color: #F56C6C;
+      .active-error {
+        color: #f56c6c;
         font-size: 12px;
         padding-left: 10px;
       }

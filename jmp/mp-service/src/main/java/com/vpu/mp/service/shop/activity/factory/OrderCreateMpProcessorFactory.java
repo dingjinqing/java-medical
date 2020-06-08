@@ -39,6 +39,8 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
         BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
         BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE,
         BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE,
+        BaseConstant.ACTIVITY_TYPE_REBATE,
+        BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE,
         BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION,
         BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE
     );
@@ -60,7 +62,8 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
             BaseConstant.ACTIVITY_TYPE_MY_PRIZE,
             BaseConstant.ACTIVITY_TYPE_PRE_SALE,
             BaseConstant.ACTIVITY_TYPE_GROUP_DRAW,
-            BaseConstant.ACTIVITY_TYPE_INTEGRAL
+            BaseConstant.ACTIVITY_TYPE_INTEGRAL,
+            BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE
     );
 
     /**

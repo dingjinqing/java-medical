@@ -25,19 +25,23 @@ public class WxAppCartGoods {
      */
     private Integer cartId;
     /**
-     * 商品现在价格80
+     * 商品现在价格
      */
     private BigDecimal goodsPrice;
     /**
-     * 最终价格 参加活动后的价格80
+     * 最终价格
      */
     private BigDecimal prdPrice;
     /**
-     * 添加购物车时价格100
+     * 规格的市场价
+     */
+    private BigDecimal prdMarketPrice;
+    /**
+     * 添加购物车时价格
      */
     private BigDecimal originalPrice;
     /**
-     * 添加购物车时原价格
+     * 数量
      */
     private Integer cartNumber;
     /**

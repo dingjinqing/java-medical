@@ -4,7 +4,7 @@
 package com.vpu.mp.db.shop;
 
 
-import com.vpu.mp.db.shop.tables.GroupBuyDefine;
+import com.vpu.mp.db.shop.tables.VirtualOrder;
 
 import javax.annotation.Generated;
 
@@ -14,7 +14,7 @@ import org.jooq.impl.Internal;
 
 
 /**
- * A class modelling indexes of tables of the <code>mini_shop_4748160</code> 
+ * A class modelling indexes of tables of the <code>mini_shop_471752</code> 
  * schema.
  */
 @Generated(
@@ -31,13 +31,17 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
-    public static final Index GROUP_BUY_DEFINE_PRIMARY = Indexes0.GROUP_BUY_DEFINE_PRIMARY;
+    public static final Index VIRTUAL_ORDER_ORDER_SN = Indexes0.VIRTUAL_ORDER_ORDER_SN;
+    public static final Index VIRTUAL_ORDER_PRIMARY = Indexes0.VIRTUAL_ORDER_PRIMARY;
+    public static final Index VIRTUAL_ORDER_USER_ID = Indexes0.VIRTUAL_ORDER_USER_ID;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
-        public static Index GROUP_BUY_DEFINE_PRIMARY = Internal.createIndex("PRIMARY", GroupBuyDefine.GROUP_BUY_DEFINE, new OrderField[] { GroupBuyDefine.GROUP_BUY_DEFINE.ID }, true);
+        public static Index VIRTUAL_ORDER_ORDER_SN = Internal.createIndex("order_sn", VirtualOrder.VIRTUAL_ORDER, new OrderField[] { VirtualOrder.VIRTUAL_ORDER.ORDER_SN }, false);
+        public static Index VIRTUAL_ORDER_PRIMARY = Internal.createIndex("PRIMARY", VirtualOrder.VIRTUAL_ORDER, new OrderField[] { VirtualOrder.VIRTUAL_ORDER.ORDER_ID }, true);
+        public static Index VIRTUAL_ORDER_USER_ID = Internal.createIndex("user_id", VirtualOrder.VIRTUAL_ORDER, new OrderField[] { VirtualOrder.VIRTUAL_ORDER.USER_ID }, false);
     }
 }

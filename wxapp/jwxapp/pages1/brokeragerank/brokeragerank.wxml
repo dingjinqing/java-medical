@@ -1,0 +1,134 @@
+<!--pages1/brokeragerank/brokeragerank.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class='main-container'>
+  <view class='rank_container'>
+    <block wx:if='{{rank_info.user_ranking <= 7}}'>
+      <view class='rank_top clearfix'>
+        <image src='{{rank_info.user_rebate.user_avatar}}' class='own_touxaing'></image>
+        <view class='own_info'>
+            <view class='own_name'>
+              {{rank_info.user_rebate.username}}
+              <text class='own_brokerage' wx:if='{{rank_info.user_ranking != 0}}'>第{{rank_info.user_ranking}}名</text>
+              <text class='own_brokerage' wx:if='{{rank_info.user_ranking == 0}}'>暂无排名</text>
+            </view>
+            <view class='rank_dai_name' style='background:{{comColor}}'>{{rank_info.level_name}}</view>
+            
+        </view>
+        <view class='own_ranking' wx:if='{{rank_info.user_rebate.final_money != null}}'>赚取佣金￥{{rank_info.user_rebate.final_money}}</view>
+        <view class='own_ranking' wx:if='{{rank_info.user_rebate.final_money == null}}'>赚取佣金￥0.00</view>
+        <view class='top_bg' style='background:-webkit-linear-gradient(bottom,{{linColor}},{{comColor1}})'></view>
+      </view> 
+      <view class='rank_tab' wx:if="{{bottom.tk_shop_style == 0}}">
+          <view class='rt_left'>
+              <view class='all_net {{all_net == 1 ? "actived":""}}' style='border-color:{{all_net == 1 ?comColor:""}};color:{{all_net == 1 ?comColor:""}}' bindtap='to_allnet'>全网佣金排行</view>
+          </view>
+          <view class='rt_right'>
+              <view class='now_rankt {{all_net == 0 ? "actived":""}}' style='border-color:{{all_net == 0 ?comColor:""}};color:{{all_net == 0 ?comColor:""}}' bindtap='to_now'>当前等级佣金排行</view>
+          </view>
+      </view>
+      <view class='rank_three clearfix' wx:if='{{rank_info.rebate_list!=""}}' style="{{bottom.tk_shop_style == 0 ? '' : 'margin-top:20rpx'}}">
+        <view class='rank_second' wx:if='{{rank_info.rebate_list[1]}}'>
+            <view class='second_tou'>
+                <image src='{{rank_info.rebate_list[1].user_avatar}}' class='second_touxaing'></image>
+                <image class='rank_2' src='{{imageUrl}}/image/wxapp/icon_top2.png'></image>
+            </view>
+            <view class='name_2'>{{rank_info.rebate_list[1].username}}</view>
+            <view class='rage_2'>￥{{rank_info.rebate_list[1].final_money}}</view>
+        </view>
+        <view class='rank_first'>
+            <view class='first_tou'>
+                <image src='{{rank_info.rebate_list[0].user_avatar}}' class='first_touxaing'></image>
+                <image class='rank_1' src='{{imageUrl}}/image/wxapp/icon_top1.png'></image>
+            </view>
+            <view class='name_1'>{{rank_info.rebate_list[0].username}}</view>
+            <view class='rage_1'>￥{{rank_info.rebate_list[0].final_money}}</view>
+        </view>
+        <view class='rank_thrid' wx:if='{{rank_info.rebate_list[2]}}'>
+            <view class='thrid_tou'>
+                <image src='{{rank_info.rebate_list[2].user_avatar}}' class='thrid_touxaing'></image>
+                <image class='rank_3' src='{{imageUrl}}/image/wxapp/icon_top3.png'></image>
+            </view>
+            <view class='name_3'>{{rank_info.rebate_list[2].username}}</view>
+            <view class='rage_3'>￥{{rank_info.rebate_list[2].final_money}}</view>
+        </view>
+      </view>
+      <view class='other_three' wx:if="{{rank_info.rebates_lists.length != 0}}">
+        <view class='each_one clearfix' wx:for="{{rank_info.rebates_lists}}" wx:key="key">
+            <image src='{{item.user_avatar}}' class='each_touxaing'></image>
+            <view class='each_info'>
+                
+                <view class='each_brokerage'>第{{item.runking}}名</view>
+                <view class='each_name'>{{item.username}}</view>
+            </view>
+            <view class='each_ranking'>￥{{item.final_money}}</view>
+        </view>
+      </view> 
+
+      <view class='no_state' wx:if="{{rank_info.rebates_lists.length == 0}}">
+          <image src='{{imageUrl}}image/wxapp/no_rank.png' mode='widthFix'></image>
+      </view>
+    </block>
+    <block wx:if='{{rank_info.user_ranking > 7}}'>
+      <view class='rank_top clearfix' style='padding-top:0;height:{{bottom.tk_shop_style == 0 ? "600rpx" : "500rpx"}};'>
+        <view class='own_xinxi' style='background:-webkit-linear-gradient(bottom,{{linColor}},{{comColor1}});position:relative;height:140rpx;'>
+          <image src='{{rank_info.user_rebate.user_avatar}}' class='own_touxaing'></image>
+          <view class='own_info'>
+              <view class='own_name'>
+              {{rank_info.user_rebate.username}}
+              <text class='own_brokerage' wx:if='{{rank_info.user_ranking != 0}}'>第{{rank_info.user_ranking}}名</text>
+              <text class='own_brokerage' wx:if='{{rank_info.user_ranking == 0}}'>暂无排名</text>
+            </view>
+            <view class='rank_dai_name' style='background:{{comColor}}'>{{rank_info.level_name}}</view>
+          </view>
+          <view class='own_ranking' wx:if='{{rank_info.user_rebate.final_money != null}}'>赚取佣金￥{{rank_info.user_rebate.final_money}}</view>
+          <view class='own_ranking' wx:if='{{rank_info.user_rebate.final_money == null}}'>赚取佣金￥0.00</view>
+        </view>
+        <view class='rank_tab' wx:if="{{bottom.tk_shop_style == 0}}">
+          <view class='rt_left'>
+              <view class='all_net {{all_net == 1 ? "actived":""}}' style='border-color:{{all_net == 1 ?comColor:""}};color:{{all_net == 1 ?comColor:""}}' bindtap='to_allnet'>全网佣金排行</view>
+          </view>
+          <view class='rt_right'>
+              <view class='now_rankt {{all_net == 0 ? "actived":""}}' style='border-color:{{all_net == 0 ?comColor:""}};color:{{all_net == 0 ?comColor:""}}' bindtap='to_now'>当前等级佣金排行</view>
+          </view>
+      </view>
+        <view class='rank_three clearfix' style='margin-top:20rpx;'>
+            <view class='rank_second' wx:if='{{rank_info.rebate_top_three[1]}}'>
+                <view class='second_tou'>
+                    <image src='{{rank_info.rebate_top_three[1].user_avatar}}' class='second_touxaing'></image>
+                    <image class='rank_2' src='{{imageUrl}}/image/wxapp/icon_top2.png'></image>
+                </view>
+                <view class='name_2'>{{rank_info.rebate_top_three[1].username}}</view>
+                <view class='rage_2'>￥{{rank_info.rebate_top_three[1].final_money}}</view>
+            </view>
+            <view class='rank_first'>
+                <view class='first_tou'>
+                    <image src='{{rank_info.rebate_top_three[0].user_avatar}}' class='first_touxaing'></image>
+                    <image class='rank_1' src='{{imageUrl}}/image/wxapp/icon_top1.png'></image>
+                </view>
+                <view class='name_1'>{{rank_info.rebate_top_three[0].username}}</view>
+                <view class='rage_1'>￥{{rank_info.rebate_top_three[0].final_money}}</view>
+            </view>
+            <view class='rank_thrid' wx:if='{{rank_info.rebate_top_three[1]}}'>
+                <view class='thrid_tou'>
+                    <image src='{{rank_info.rebate_top_three[2].user_avatar}}' class='thrid_touxaing'></image>
+                    <image class='rank_3' src='{{imageUrl}}/image/wxapp/icon_top3.png'></image>
+                </view>
+                <view class='name_3'>{{rank_info.rebate_top_three[2].username}}</view>
+                <view class='rage_3'>￥{{rank_info.rebate_top_three[2].final_money}}</view>
+            </view>
+          </view>
+      </view> 
+      <view class='other_three'>
+        <view class='each_one clearfix' wx:for="{{rank_info.rebate_list}}" wx:key="key">
+            <image src='{{item.user_avatar}}' class='each_touxaing'></image>
+            <view class='each_info'>
+                <view class='each_name'>{{item.username}}</view>
+                <view class='each_brokerage'>{{item.runking}}</view>
+            </view>
+            <view class='each_ranking'>￥{{item.final_money}}</view>
+        </view>
+      </view> 
+    </block>  
+  </view>
+</view>
+<include src="/pages/common/footer.wxml"/>

@@ -3,7 +3,11 @@ package com.vpu.mp.service.shop.task.order;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.wxapp.store.ReservationDetail;
-import com.vpu.mp.service.shop.order.action.*;
+import com.vpu.mp.service.shop.order.action.CloseService;
+import com.vpu.mp.service.shop.order.action.FinishService;
+import com.vpu.mp.service.shop.order.action.PayService;
+import com.vpu.mp.service.shop.order.action.ReceiveService;
+import com.vpu.mp.service.shop.order.action.ReturnService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,9 +78,9 @@ public class OrderTaskService extends ShopBaseService {
      * 退货退款
      */
     public void autoReturnOrder(){
-        logger().info("订单未支付通知定时任务start,shop:{}", getShopId());
+        logger().info("退货退款定时任务start,shop:{}", getShopId());
         refund.autoReturnOrder();
-        logger().info("订单未支付通知定时任务end");
+        logger().info("退货退款定时任务end");
     }
 
     /**

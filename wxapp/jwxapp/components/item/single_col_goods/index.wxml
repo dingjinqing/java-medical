@@ -1,14 +1,16 @@
 <view class="goods-item" bindtap="{{!enableNumEdit ? 'goItem' : ''}}">
   <view class="edit" wx:if="{{isEdit}}">
-    <text class="iconfont iconshanchu1" data-cart-id="{{goodsData.cartId}}" catchtap="delCartGoods" style="font-size:40rpx;color:{{main_setting.comColor}}"></text>
+    <text class="iconfont iconshanchu1" data-cart-id="{{goodsData.cartId}}" data-goods-id="{{goodsData.goodsId}}" catchtap="delCartGoods" style="font-size:40rpx;color:{{main_setting.comColor}}"></text>
   </view>
   <view class="all-image">
-    <image class="goods-image" src="{{goodsData.goodsImg}}"></image>
+    <image class="goods-image" src="{{goodsData.goodsImg}}" lazy-load="true"></image>
+    <view wx:if="{{actInfo.actName}}" class="act-tags" style="background-color:{{main_setting.linColor}};">{{actInfo.actName}}</view>
   </view>
   <view class="goods-info">
    <text class="goods-name">{{goodsData.goodsName}}</text>
-   <text class="gray-text" wx:if="{{enableNumEdit && goodsData.prdDesc}}">{{goodsData.prdDesc}}</text>
+   <text class="gray-text" wx:if="{{goodsData.prdDesc}}">{{goodsData.prdDesc}}</text>
    <view class="goods-info-bottom">
+      <view class="vipPriceTag" wx:if="{{actInfo.isVipPrice}}">会员价</view>
       <view class="goods-price">
         <block wx:if="{{!enableNumEdit}}">
           <text class="realPrice" style="color:{{main_setting.comColor}}">￥<text style="font-size:36rpx;font-weight:600;">{{goodsData.realPrice}}</text></text>
@@ -16,7 +18,7 @@
         </block>
         <block wx:else>
           <text class="realPrice" style="color:{{main_setting.comColor}}">￥<text style="font-size:36rpx;font-weight:600;">{{goodsData.prdPrice}}</text></text>
-          <text class="gray-text line-through" wx:if="{{goodsData.prdPrice < goodsData.goodsPrice}}">{{goodsData.goodsPrice}}</text>
+          <text class="gray-text line-through" wx:if="{{goodsData.prdPrice < goodsData.goodsPrice}}">￥{{goodsData.goodsPrice}}</text>
         </block>
       </view>
       <block wx:if="{{!enableNumEdit}}">
@@ -32,5 +34,3 @@
    </view>
   </view>
 </view>
-
-

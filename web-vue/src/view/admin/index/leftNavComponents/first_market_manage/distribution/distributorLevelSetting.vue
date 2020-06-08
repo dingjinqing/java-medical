@@ -121,7 +121,7 @@
             <a
               href="javascript:void(0);"
               @click="numClickHandler"
-            >{{ scope.row.users }}</a>
+            >{{ scope.row.users?scope.row.users:0 }}</a>
           </template>
         </el-table-column>
 
@@ -193,7 +193,8 @@ export default {
         totalBuyMoney: 0,
         levelUserIds: null,
         users: '',
-        levelStatus: 1
+        levelStatus: 1,
+        levelText: '一级'
       }, {
         levelId: 2,
         levelName: 'v2',
@@ -203,7 +204,8 @@ export default {
         totalBuyMoney: 0,
         levelUserIds: null,
         users: '',
-        levelStatus: 0
+        levelStatus: 0,
+        levelText: '二级'
       }, {
         levelId: 3,
         levelName: '分销员组3',
@@ -213,7 +215,8 @@ export default {
         totalBuyMoney: 0,
         levelUserIds: null,
         users: '',
-        levelStatus: 1
+        levelStatus: 1,
+        levelText: '三级'
       }, {
         levelId: 4,
         levelName: '分销员组4',
@@ -223,7 +226,8 @@ export default {
         totalBuyMoney: 0,
         levelUserIds: null,
         users: '',
-        levelStatus: 1
+        levelStatus: 1,
+        levelText: '四级'
       }, {
         levelId: 5,
         levelName: '分销员组5',
@@ -233,7 +237,8 @@ export default {
         totalBuyMoney: 0,
         levelUserIds: null,
         users: '',
-        levelStatus: 0
+        levelStatus: 0,
+        levelText: '五级'
       }],
       centerDialogVisible: false, // 规则弹框
       turnUpDialog: false, // 等级弹窗
@@ -248,7 +253,7 @@ export default {
     // 获取分销员等级
     initDataList () {
       getDistributionLevel().then((res) => {
-        if (res.error === 0 && res.content) {
+        if (res.error === 0 && res.content && res.content.length > 0) {
           this.handleData(res.content.levelList)
         }
       })

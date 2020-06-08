@@ -44,7 +44,7 @@
               <view>{{i18n.$t(localePack,"page1.pinlottery.noPrize3")}}</view>
               <view class='luck_info'>
                   <image src='{{group_info.groupJoinDetail.drawUser.userAvatar}}'></image>
-                  {{group_info.groupJoinDetail.drawUser.username}}
+                  {{group_info.groupJoinDetail.drawUser.userName}}
               </view>
           </view>
         </block>
@@ -68,17 +68,17 @@
             <view class='first_avater'>
               <view class='captian' style='background:{{comColor}}'>{{i18n.$t(localePack,"page1.pinlottery.grouper")}}</view>
               <image src='{{group_info.groupJoinDetail.userList[0].userAvatar}}' style='border-color:{{comColor}}'></image>
-              <view class='user_name'>{{group_info.groupJoinDetail.userList[0].username}}</view>
+              <view class='user_name'>{{group_info.groupJoinDetail.userList[0].userName}}</view>
             </view>
             <view class='other_avater' wx:for="{{user_arr}}" wx:if='{{user_arr!=""}}' wx:key='key'>
               <image src='{{item.userAvatar}}'></image>
-              <view class='user_name'>{{item.username}}</view>
+              <view class='user_name'>{{item.userName}}</view>
             </view>
-            <view class='other_avater' wx:if="{{group_info.groupJoinDetail.surplusGroupNum < 14}}" wx:for="{{group_info.groupJoinDetail.surplusGroupNum}}">
+            <view class='other_avater' wx:if="{{group_info.groupJoinDetail.surplusGroupNum < 14}}" wx:for="{{group_info.groupJoinDetail.surplusGroupNum}}" wx:key='key'>
               <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
               <view class='user_name'>{{i18n.$t(localePack,"page1.pinlottery.waitInvitation")}}</view>
             </view>
-            <view class='other_avater' wx:if="{{group_info.groupJoinDetail.surplusGroupNum >= 14}}" wx:for="{{group_info.groupJoinDetail.surplusGroupNum - 1}}" >
+            <view class='other_avater' wx:if="{{group_info.groupJoinDetail.surplusGroupNum >= 14}}" wx:for="{{group_info.groupJoinDetail.surplusGroupNum - 1}}" wx:key='key'>
               <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
               <view class='user_name'>{{i18n.$t(localePack,"page1.pinlottery.waitInvitation")}}</view>
             </view>
@@ -91,7 +91,8 @@
         <!-- 拼团结果 -->
         <view class='btn_invites' wx:if='{{(group_info.groupJoinDetail.groupStatus == 0 && group_info.groupJoinDetail.button.isToInvite == 1) || (group_info.groupJoinDetail.group_status == 10 && group_info.groupJoinDetail.button.isToInvite == 1)}}'>
           <block wx:if="{{getsq == true || click_num == true}}">
-            <button open-type='share' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,"page1.pinlottery.btnInvites1")}}</button>
+            <button open-type='share' wx:if="{{shareFlag == 1}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,"page1.pinlottery.btnInvites1")}}</button>
+            <button bindtap='to_share' wx:if="{{shareFlag == 0}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,"page1.pinlottery.btnInvites1")}}</button>
           </block>
           <block wx:else>
             <button open-type="getUserInfo" bindgetuserinfo="getUserInfo" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,"page1.pinlottery.btnInvites1")}}</button>

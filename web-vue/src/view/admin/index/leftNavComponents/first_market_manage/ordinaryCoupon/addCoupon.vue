@@ -83,11 +83,13 @@
                       v-model="param.type"
                       :label=0
                       :disabled="editType"
+                      @change="typeChange"
                     >{{ $t('ordinaryCoupon.generalCoupons') }}</el-radio>
                     <el-radio
                       v-model="param.type"
                       :label=1
                       :disabled="editType"
+                      @change="typeChange"
                     >{{ $t('ordinaryCoupon.splitCoupon') }} <el-tooltip
                         effect="dark"
                         :content="$t('ordinaryCoupon.splitTip')"
@@ -243,7 +245,7 @@
                     <p>
                       <el-radio
                         v-model="param.preferentialType"
-                        :label=0
+                        :label="0"
                         :disabled="editType"
                         @change="preferentialTypeChange"
                       >{{ $t('ordinaryCoupon.typeRadio2') }}</el-radio>
@@ -261,7 +263,7 @@
                     <p>
                       <el-radio
                         v-model="param.preferentialType"
-                        :label=1
+                        :label="1"
                         :disabled="editType"
                         @change="preferentialTypeChange"
                       >{{ $t('ordinaryCoupon.typeRadio3') }}</el-radio>
@@ -313,7 +315,6 @@
                 <el-form-item
                   :label="$t('ordinaryCoupon.receivePerPerson') + '：'"
                   prop="receivePerPerson"
-                  v-if="param.type===0"
                 >
                   <div class="ft">
                     <el-select
@@ -332,6 +333,7 @@
                 </el-form-item>
                 <el-form-item
                   :label="$t('ordinaryCoupon.member') + '：'"
+                  style="margin-bottom: 10px;"
                   v-if="param.type===0"
                   prop="isExclusive"
                 >
@@ -388,23 +390,25 @@
                   ></el-input>
                 </el-form-item>
                 <el-form-item
-                  :label="$t('ordinaryCoupon.couponNum') + '：'"
-                  prop="couponNum"
+                  :label="$t('ordinaryCoupon.receivePerNum') + '：'"
+                  prop="receivePerNum"
                   v-if="param.type===1"
                 >
                   <div>
                     <el-radio
-                      v-model="param.couponNum"
+                      v-model="param.receivePerNum"
                       :label="0"
                       :disabled="editType"
+                      @change="receivePerNumChange"
                     >{{ $t('ordinaryCoupon.numRadio1') }}</el-radio>
                     <el-radio
-                      v-model="param.couponNum"
+                      v-model="param.receivePerNum"
                       :label="1"
                       :disabled="editType"
+                      @change="receivePerNumChange"
                     >{{ $t('ordinaryCoupon.numRadio2') }}</el-radio>
                     <el-input
-                      :disabled="param.couponNum==1 && !editType ?false:true"
+                      :disabled="param.receivePerNum==1 && !editType ?false:true"
                       v-model="param.receiveNum"
                       size="small"
                       class="small_input"
@@ -517,6 +521,37 @@
                     </div>
                   </div>
                 </el-form-item>
+
+                <!-- <el-form-item label="优惠叠加：">
+                  <el-checkbox>不与限时降价、首单特惠、会员价活动共用</el-checkbox>
+                </el-form-item>
+                <el-form-item
+                  label="同步打标签："
+                  v-if="param.type===0"
+                >
+                  <el-checkbox>给领券用户打标签</el-checkbox>
+                  <span
+                    class="labelStyle"
+                    @click="selectLabel"
+                  >选择标签</span>
+                  <div v-if="pickLabel.length > 0">
+                    <p style="color: #999;">最多可设置3个标签</p>
+                    <span
+                      v-for="(item, index) in pickLabel"
+                      :key="index"
+                      class="labelContent"
+                    >
+                      {{item.value}}
+                      <i
+                        class="el-icon-close"
+                        @click="deleteLabel(index)"
+                        style="color: #999; margin-left: 3px;cursorL pointer;"
+                      ></i>
+                    </span>
+                  </div>
+
+                </el-form-item> -->
+
                 <el-form-item :label="$t('ordinaryCoupon.useExplain') + '：'">
                   <el-input
                     type="textarea"
@@ -554,11 +589,69 @@
       @BusClassTrueDetailData="busClassDialogResult"
       :backDataArr="commInfo"
     />
+
+    <!-- 标签弹窗 -->
+    <el-dialog
+      title="标签"
+      :visible.sync="labelDialogVisible"
+      :close-on-click-modal="false"
+      width="300px"
+      center
+    >
+      <div>
+        <div style="overflow: hidden;">
+          <span style="color: #a3a3a3;float:left;">请选择标签</span>
+          <span style="float: right;">
+            <span
+              class="labelStyle"
+              @click="refreshLabel"
+            >刷新</span>
+            <span class="labelStyle">/</span>
+            <span
+              class="labelStyle"
+              @click="addLabel"
+            >新建</span>
+          </span>
+        </div>
+
+        <el-select
+          v-model="labelValue"
+          filterable
+          multiple
+          size="small"
+          style="margin-top: 10px;width: 100%;"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in labelList"
+            :key="item.id"
+            :label="item.value"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          @click="closeLabelDialog"
+          size="small"
+        >取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="sureLabelDialog"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 <script>
 import { saveCoupon, updateCoupon, updateSaveCoupon } from '@/api/admin/marketManage/couponList.js'
-import { allCardApi } from '@/api/admin/marketManage/messagePush'
+import { allCardApi, allTagApi } from '@/api/admin/marketManage/messagePush'
 export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
@@ -612,7 +705,7 @@ export default {
         callback(new Error('请填写随机金额'))
       } else if (value === 2 && ((!re.test(this.param.randomMin) && !re1.test(this.param.randomMin)) || (!re.test(this.param.randomMax) && !re1.test(this.param.randomMax)))) {
         callback(new Error(this.$t('ordinaryCoupon.validateNum')))
-      } else if (this.param.randomMin > this.param.randomMax) {
+      } else if (Number(this.param.randomMin) > Number(this.param.randomMax)) {
         callback(new Error('最大金额不能比最小金额小'))
       } else {
         callback()
@@ -630,12 +723,12 @@ export default {
       }
     }
     // 自定义领券人数
-    var validateCouponNum = (rule, value, callback) => {
-      var re = /^(0|\+?[1-9][0-9]*)$/
+    var validateReceivePerNum = (rule, value, callback) => {
+      var re = /^([2-9]|([1-9]\d+))$/
       if (value === 1 && this.param.receiveNum === null) {
         callback(new Error('请填写领券人数'))
       } else if (value === 1 && !re.test(this.param.receiveNum)) {
-        callback(new Error(this.$t('ordinaryCoupon.validateNum')))
+        callback(new Error(this.$t('ordinaryCoupon.validateNum2')))
       } else {
         callback()
       }
@@ -699,7 +792,7 @@ export default {
         recommendSortId: '', // 指定商家分类
         randomMin: null, // 随机金额1
         randomMax: null, // 随机金额2
-        couponNum: 0, // 领券人数
+        receivePerNum: 0, // 领券人数
         receiveNum: null, // 人数
         // enabled: 1, // 隐藏
         suitGoods: 0, // 隐藏
@@ -724,7 +817,7 @@ export default {
         preferentialType: { required: true, validator: validatePreferentialType, trigger: 'change' },
         useScore: { required: true, validator: validateisRandom, trigger: 'change' },
         receivePerPerson: { required: true, message: this.$t('ordinaryCoupon.validatereceivePerPerson'), trigger: 'change' },
-        couponNum: { required: true, validator: validateCouponNum, trigger: 'change' },
+        receivePerNum: { required: true, validator: validateReceivePerNum, trigger: 'change' },
         isExclusive: { validator: validateIsExclusive, trigger: 'change' },
         useConsumeRestrict: { required: true, validator: validateuseConsumeRestrict, trigger: 'change' },
         availableGoods: { required: true, validator: validateAvailableGoods, trigger: 'change' }
@@ -779,7 +872,12 @@ export default {
       platClass: [],
       platClassRow: [],
       // 平台分类/商家分类共享变量
-      commInfo: []
+      commInfo: [],
+
+      labelDialogVisible: false, // 标签弹窗
+      labelValue: [], // 标签值
+      labelList: [], // 标签列表
+      pickLabel: [] // 选中标签
     }
   },
   watch: {
@@ -794,6 +892,8 @@ export default {
 
     this.dataDefalut()
     this.getCardList()
+    this.getTagList()
+    // 编辑初始化
     if (this.couponId) {
       this.editType = true
       this.getOneInfo()
@@ -817,11 +917,20 @@ export default {
       })
     },
 
+    // 获取会员卡数据
     getCardList () {
-      // 会员卡数据
       allCardApi().then((res) => {
         if (res.error === 0) {
           this.cardList = res.content
+        }
+      })
+    },
+
+    // 获取标签列表
+    getTagList () {
+      allTagApi().then(res => {
+        if (res.error === 0) {
+          this.labelList = res.content
         }
       })
     },
@@ -878,9 +987,9 @@ export default {
           // 领券人数
           this.param.receiveNum = data.receiveNum
           if (this.param.receiveNum === 0) {
-            this.param.couponNum = 0
+            this.param.receivePerNum = 0
           } else {
-            this.param.couponNum = 1
+            this.param.receivePerNum = 1
           }
           // 会员专享
           this.param.cardId = data.cardId
@@ -941,7 +1050,7 @@ export default {
             this.param.actCode = 'random'
           }
           // 领券人数
-          if (this.param.couponNum === 0) {
+          if (this.param.receivePerNum === 0) {
             this.param.receiveNum = 0
           }
           // 发放的总数量
@@ -1111,6 +1220,16 @@ export default {
     },
 
     // 切换触发校验
+    typeChange () {
+      if (this.param.type === 0) {
+        // 普通
+        this.param.preferentialType = 0
+      } else {
+        // 分裂
+        this.param.preferentialType = 2
+      }
+      this.$refs['param'].validateField('preferentialType')
+    },
     validityTypeChange (value) {
       this.$refs['param'].validateField('validityType')
       this.$refs['param'].validateField('validityType1')
@@ -1134,6 +1253,64 @@ export default {
         this.platClass = []
       }
       this.$refs['param'].validateField('availableGoods')
+    },
+    receivePerNumChange (e) {
+      this.$refs['param'].validateField('receivePerNum')
+    },
+
+    // 选择标签
+    selectLabel () {
+      this.labelDialogVisible = !this.labelDialogVisible
+      // 已选回显
+      this.labelValue = []
+      this.labelList.forEach(item => {
+        this.pickLabel.forEach(val => {
+          if (item.id === val.id) {
+            this.labelValue.push(item.id)
+          }
+        })
+      })
+    },
+
+    // 刷新标签
+    refreshLabel () {
+      this.getTagList()
+      this.$nextTick(() => {
+        this.$message.success('刷新成功')
+      })
+    },
+
+    // 新建标签
+    addLabel () {
+      this.$router.push('/admin/home/main/labelManagement')
+    },
+
+    // 确定标签
+    sureLabelDialog () {
+      this.labelDialogVisible = false
+      console.log(this.labelValue)
+      this.pickLabel = []
+      this.labelList.forEach(item => {
+        this.labelValue.forEach(val => {
+          if (item.id === val) {
+            this.pickLabel.push(item)
+          }
+        })
+      })
+      // 清空选择框
+      this.labelValue = []
+    },
+
+    // 取消标签
+    closeLabelDialog () {
+      this.labelDialogVisible = false
+      // 清空选择框
+      this.labelValue = []
+    },
+
+    // 删除标签
+    deleteLabel (index) {
+      this.pickLabel.splice(index, 1)
     }
   },
   computed: {
@@ -1191,6 +1368,21 @@ export default {
     text-align: center;
     z-index: 99;
   }
+}
+.labelStyle {
+  color: #5a8bff;
+  cursor: pointer;
+}
+.labelContent {
+  height: 30px;
+  background: rgba(235, 241, 255, 1);
+  border: 1px solid rgba(180, 202, 255, 1);
+  border-radius: 2px;
+  text-align: center;
+  line-height: 30px;
+  padding: 3px 10px;
+  margin-right: 10px;
+  color: #666;
 }
 .el-form-item {
   margin: 15px 0 !important;

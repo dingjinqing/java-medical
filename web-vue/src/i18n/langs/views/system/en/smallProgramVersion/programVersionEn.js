@@ -48,6 +48,8 @@ export const en = {
   operationData: ['Bulk Upload and Submit for Audit', 'View the current version operation log', 'Set to the current version in use'],
   ordinaryVersion: 'Ordinary version',
   goodVersion: 'Good Version',
+  ordinaryLiveVersion: 'Ordinary Live Version',
+  goodLiveVersion: 'GoodLiveVersion',
   currentPage: '20 rows per page, current page',
   totalPage: 'PageCount',
   totalRecord: 'Total number of records',

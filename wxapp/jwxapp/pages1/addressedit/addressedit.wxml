@@ -1,0 +1,72 @@
+<!--pages1/addressedit/addressedit.wxml-->
+<include src="../../pages/common/header.wxml" />
+<view class="main-container">
+  <form bindsubmit="formSubmit">
+    <view class="content">
+      <view class="address-edit-top">
+        <view bindtap="getWechatAdress">
+          <image class="wechat-icon" src="{{imageUrl}}image/wxapp/wechat_icon.png"></image>
+          <text>从微信获取新地址</text>
+        </view>
+        <image class="right-into" src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
+      </view>
+      <view class="auto-recognition">
+        <view class="ar-top">
+          <text>自动识别收货信息</text>
+          <switch checked="{{autoSwitch}}" bindchange="handleAutoSwicth" color="{{comColor?comColor:'#FF6666'}}"></switch>
+        </view>
+        <view class="ar-text-area" wx:if="{{autoSwitch}}">
+          <textarea auto-focus class="art-textarea" value="{{textarea}}" bindinput="bindTextAreaInput" placeholder="请输入或粘贴地址文本，可自动识别姓名、电话和地址，如：北京市海淀区西直门北大街54号伊泰大厦。"></textarea>
+          <button catchtap="handleAutoRecognition" class="auto-recognition-btn" style="color:{{comColor}};border:1px solid {{comColor}};">自动识别</button>
+        </view>
+      </view>
+      <view class="address-edit-info">
+        <view class="ar-top">收货地址</view>
+        <view class="aei-item">
+          <label>
+            <text>收货人</text>
+            <input value="{{formData.consignee}}" name="consignee" bindchange="bindChangeHandle" placeholder="请填写收货人姓名"></input>
+          </label>
+        </view>
+        <view class="aei-item">
+          <label>
+            <text>联系电话</text>
+            <input value="{{formData.mobile}}" name="mobile" placeholder="请填写手机号码"></input>
+          </label>
+        </view>
+        <view class="aei-item">
+          <label>
+            <text>地区信息</text>
+            <!-- <input placeholder="选择省、市、区"></input> -->
+            <picker id="regionPicker" class="region-picker" name="region" mode="region" value="{{region}}" bindchange="bindRegionChange">
+              <view class="region-picker-wrap">
+                <input placeholder="选择省、市、区" value="{{region}}" readonly="readonly"></input>
+              </view>
+            </picker>
+          </label>
+          <view style="margin-right: 20rpx" catchtap="handleRecognition"><image class="recognition-icon" src="{{imageUrl}}image/wxapp/recognition.png"></image>定位</view>
+        </view>
+        <view class="aei-item">
+          <label>
+            <text>详细地址</text>
+            <input value="{{formData.address}}" name="address" placeholder="街道门牌信息"></input>
+          </label>
+        </view>
+        <view class="aei-item">
+          <label>
+            <text>邮编</text>
+            <input value="{{formData.zipcode}}" name="zipcode" placeholder="邮政编码（选填）"></input>
+          </label>
+        </view>
+      </view>
+      <view class="set-auto">
+        <label>设为默认地址</label>
+        <switch checked="{{!!formData.isDefault}}" name="isDefault" bindchange="handleDefault" color="{{comColor?comColor:'#FF6666'}}"></switch>
+      </view>
+    </view>
+    <view class="footer">
+      <button class="save-btn" formType="submit" style="background:{{comColor}};color: #fff;">保存</button>
+    </view>
+  </form>
+</view>
+<include src="/pages/common/footer.wxml" />

@@ -11,4 +11,5 @@ public class OverviewParam {
     public FixedAnnouncementParam fixedAnnouncementParam;
     public DataDemonstrationParam dataDemonstrationParam;
     public ShopAssistantParam shopAssistantParam;
+    public ToDoItemParam toDoItemParam;
 }

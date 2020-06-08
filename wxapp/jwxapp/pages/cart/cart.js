@@ -51,7 +51,8 @@ global.wxPage({
           fullList: Object.keys(res.content.fullReductionGoodsMap).length == 0 ? null : res.content.fullReductionGoodsMap,
           purchaseList: Object.keys(res.content.purchasePriceGoodsMap).length == 0 ? null : res.content.purchasePriceGoodsMap,
           isAllCheck: res.content.isAllCheck,
-          totalPrice: res.content.totalPrice
+          totalPrice: res.content.totalPrice,
+          couponPackage: res.content.couponPackage
         })
 
         if (this.data.cartGoodsList && this.data.cartGoodsList.length > 0) {
@@ -854,6 +855,12 @@ global.wxPage({
     var storeId = e.currentTarget.dataset.store_id;
     util.navigateTo({
       url: '/pages/maingoodslist/maingoodslist?identity_id=' + activityId + '&store_id=' + storeId,
+    })
+  },
+  // 打开优惠券礼包弹窗
+  viewCouponPackage(){
+    this.setData({
+      showCouponPackageDialog:true
     })
   }
 })

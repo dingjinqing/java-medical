@@ -200,6 +200,9 @@ public class WechatMessageTemplateService extends ShopBaseService {
     		for(Integer userId:userIdList) {
 				MpOfficialAccountUserRecord accountUserListByRecord = saas.getShopApp(shopId).officialAccountUser
 						.getAccountUserByUserId(userId);
+				if( accountUserListByRecord == null ){
+				    continue;
+                }
     			//通过shopId得到小程序信息
     			WxUserInfo info=WxUserInfo.builder()
     					.userId(userId)
@@ -235,4 +238,3 @@ public class WechatMessageTemplateService extends ShopBaseService {
 		return false;
     }
 }
-

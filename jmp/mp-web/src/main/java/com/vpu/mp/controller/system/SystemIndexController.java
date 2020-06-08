@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class SystemIndexController extends SystemBaseController {
 
+    /**
+     * system概览-概览
+     * @param param {@link ShopViewParam}
+     * @return {@link JsonResult}
+     */
     @PostMapping("/api/system/index/shopView")
     public JsonResult shopView(ShopViewParam param){
         return success(saas.shopViewService.getShopViewData(param));

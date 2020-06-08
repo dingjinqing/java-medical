@@ -1,15 +1,5 @@
 package com.vpu.mp.controller.wxapp;
 
-import java.io.IOException;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
@@ -18,6 +8,17 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupActivityCopyWriting;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupInteMaVo;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
+import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawVo;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
+import java.util.Map;
 /**
  * 
  * @author zhaojianqiang

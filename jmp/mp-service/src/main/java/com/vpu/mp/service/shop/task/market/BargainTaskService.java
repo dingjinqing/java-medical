@@ -1,9 +1,13 @@
 package com.vpu.mp.service.shop.task.market;
 
 import com.vpu.mp.db.shop.Tables;
+import com.vpu.mp.db.shop.tables.records.BargainGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.BargainRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -21,7 +25,7 @@ import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.market.bargain.BargainRecordService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import jodd.util.StringUtil;
-import org.jooq.Record2;
+import org.apache.commons.collections.CollectionUtils;
 import org.jooq.Record4;
 import org.jooq.Record5;
 import org.jooq.Result;
@@ -37,6 +41,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
+import static com.vpu.mp.db.shop.tables.BargainGoods.BARGAIN_GOODS;
 import static com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.User.USER;
@@ -66,7 +71,7 @@ public class BargainTaskService extends ShopBaseService {
         List<Integer> changeToNormalGoodsIds = Util.diffList(pastBargainGoodsIdList,currentBargainGoodsIdList);
         List<Integer> changeToActGoodsIds = Util.diffList(currentBargainGoodsIdList,pastBargainGoodsIdList);
 
-        if(changeToNormalGoodsIds != null && changeToNormalGoodsIds.size() > 0){
+        if(CollectionUtils.isNotEmpty(changeToNormalGoodsIds)){
             //活动已失效，将goodsType改回去
             goodsService.changeToNormalType(changeToNormalGoodsIds);
             //异步更新ES
@@ -74,7 +79,7 @@ public class BargainTaskService extends ShopBaseService {
             //TODO 记录变动
         }
 
-        if(changeToActGoodsIds != null && changeToActGoodsIds.size() > 0){
+        if(CollectionUtils.isNotEmpty(changeToActGoodsIds)){
             //有新的活动生效，商品goodsType标记活动类型
             changeToBargainType(changeToActGoodsIds);
             //刷新砍价库存
@@ -125,7 +130,7 @@ public class BargainTaskService extends ShopBaseService {
     public void sendBargainProgress() {
         Result<Record5<Integer, Integer, Integer, String, BigDecimal>> records = getExpiringBargainRecords();
         records.forEach(r -> {
-            sendBargainProgressNotify(r.get(BARGAIN_RECORD.USER_ID), r.get(BARGAIN.EXPECTATION_PRICE), r.get(GOODS.GOODS_NAME), r.get(BARGAIN_RECORD.ID), r.get(BARGAIN_RECORD.USER_NUMBER));
+            sendBargainProgressNotify(r.get(BARGAIN_RECORD.USER_ID), r.get(BARGAIN_GOODS.EXPECTATION_PRICE), r.get(GOODS.GOODS_NAME), r.get(BARGAIN_RECORD.ID), r.get(BARGAIN_RECORD.USER_NUMBER));
         });
     }
     
@@ -134,12 +139,14 @@ public class BargainTaskService extends ShopBaseService {
     }
 
     private List<Integer> getCurrentBargainGoodsIdList(){
-        return db().select(BARGAIN.GOODS_ID).from(BARGAIN).where(
-            BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
+        List<Integer> res=  db().select(BARGAIN_GOODS.GOODS_ID).from(BARGAIN)
+            .leftJoin(BARGAIN_GOODS).on(BARGAIN.ID.eq(BARGAIN_GOODS.BARGAIN_ID))
+            .where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
             .and(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(BARGAIN.START_TIME.lt(DateUtil.getLocalDateTime()))
             .and(BARGAIN.END_TIME.gt(DateUtil.getLocalDateTime()))
         ).fetchInto(Integer.class);
+        return res.stream().distinct().collect(Collectors.toList());
     }
 
     /**
@@ -157,20 +164,24 @@ public class BargainTaskService extends ShopBaseService {
      * @param goodsIds
      */
     private void updateBargainGoodsStock(List<Integer> goodsIds){
-        Result<Record2<Integer, Integer>> records = db().select(BARGAIN.ID,GOODS.GOODS_NUMBER).from(
-            BARGAIN.innerJoin(GOODS).on(BARGAIN.GOODS_ID.eq(GOODS.GOODS_ID).and(BARGAIN.STOCK.gt(GOODS.GOODS_NUMBER)))
-        ).where(
-            BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
-            .and(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
-            .and(BARGAIN.START_TIME.lt(DateUtil.getLocalDateTime()))
-            .and(BARGAIN.END_TIME.gt(DateUtil.getLocalDateTime()))
-            .and(BARGAIN.GOODS_ID.in(goodsIds))
-        ).fetch();
-        if(records != null && records.isNotEmpty()){
-            records.forEach(r->{
-                db().update(BARGAIN).set(BARGAIN.STOCK,r.value2()).where(BARGAIN.ID.eq(r.value1())).execute();
-            });
-        }
+        goodsIds.forEach(goodsId->{
+            BargainRecord bargain = db().selectFrom(BARGAIN)
+                .where(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+                .and(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(BARGAIN.START_TIME.lt(DateUtil.getLocalDateTime()))
+                .and(BARGAIN.END_TIME.gt(DateUtil.getLocalDateTime()))
+                .and(DslPlus.findInSet(goodsId, BARGAIN.GOODS_ID))
+                .orderBy(BARGAIN.FIRST.desc(),BARGAIN.CREATE_TIME.desc())
+                .fetchAny();
+            if(bargain != null){
+                BargainGoodsRecord bargainGoods = db().fetchAny(BARGAIN_GOODS,BARGAIN_GOODS.BARGAIN_ID.eq(bargain.getId()).and(BARGAIN_GOODS.GOODS_ID.eq(goodsId)));
+                GoodsRecord goods = goodsService.getGoodsRecordById(goodsId);
+                if(goods.getGoodsNumber() < bargainGoods.getStock()){
+                    bargainGoods.setStock(goods.getGoodsNumber());
+                    bargainGoods.update();
+                }
+            }
+        });
     }
 
     /**
@@ -183,10 +194,11 @@ public class BargainTaskService extends ShopBaseService {
         Timestamp start = DateUtil.convertToTimestamp(DateUtil.dateFormat("yyyy-MM-dd HH:mm:00", time));
         Timestamp end = DateUtil.convertToTimestamp(DateUtil.dateFormat("yyyy-MM-dd HH:mm:59", time));
         logger().info("定时发送砍价进度");
-        return db().select(BARGAIN_RECORD.ID, BARGAIN_RECORD.USER_ID, BARGAIN_RECORD.USER_NUMBER, GOODS.GOODS_NAME, BARGAIN.EXPECTATION_PRICE)
+        return db().select(BARGAIN_RECORD.ID, BARGAIN_RECORD.USER_ID, BARGAIN_RECORD.USER_NUMBER, GOODS.GOODS_NAME, BARGAIN_GOODS.EXPECTATION_PRICE)
             .from(BARGAIN_RECORD)
             .leftJoin(BARGAIN).on(BARGAIN_RECORD.BARGAIN_ID.eq(BARGAIN.ID))
             .leftJoin(GOODS).on(BARGAIN_RECORD.GOODS_ID.eq(GOODS.GOODS_ID))
+            .leftJoin(BARGAIN_GOODS).on(BARGAIN_GOODS.BARGAIN_ID.eq(BARGAIN_RECORD.BARGAIN_ID).and(BARGAIN_GOODS.GOODS_ID.eq(BARGAIN_RECORD.GOODS_ID)))
             .where(BARGAIN_RECORD.STATUS.eq(BargainRecordService.STATUS_IN_PROCESS))
             .and(BARGAIN.END_TIME.le(end))
             .and(BARGAIN.END_TIME.ge(start))

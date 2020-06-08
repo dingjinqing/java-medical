@@ -63,6 +63,10 @@ public class GoodsSearchMpParam extends BasePageParam {
     /**从优惠券跳转至商品搜索页面，展示其关联的商品信息 pageFrom=20*/
     public static final Byte PAGE_FROM_COUPON=BaseConstant.ACTIVITY_TYPE_COUPON;
     /**从哪个页面跳转至搜索页面，null表示直接进入搜索页进行搜索*/
+    /**从砍价活动跳转至商品搜索页面，展示其关联的商品信息 pageFrom=3*/
+    public static final Byte PAGE_FROM_BARGAIN=BaseConstant.ACTIVITY_TYPE_BARGAIN;
+
+    /**从哪个页面跳转至搜索页面，目前用于区分从商品分组模块跳转至此，目前从分组跳转时未从es查数据*/
     private Byte pageFrom;
 
     private GoodsSearchMpOuterParam outerPageParam;

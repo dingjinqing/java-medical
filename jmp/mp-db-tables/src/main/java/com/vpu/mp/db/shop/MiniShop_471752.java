@@ -31,9 +31,14 @@ public class MiniShop_471752 extends SchemaImpl {
     private static final long serialVersionUID = -390755599;
 
     /**
+     * The table <code>mini_shop_471752.b2c_division_receive_record</code>.
+     */
+    public final DivisionReceiveRecord DIVISION_RECEIVE_RECORD = com.vpu.mp.db.shop.tables.DivisionReceiveRecord.DIVISION_RECEIVE_RECORD;
+    /**
      * The table <code>mini_shop_4748160.b2c_prize_record</code>.
      */
     public final PrizeRecord PRIZE_RECORD = com.vpu.mp.db.shop.tables.PrizeRecord.PRIZE_RECORD;
+
 
     /**
      * The table <code>mini_shop_4748160.b2c_pay_award_prize</code>.
@@ -1065,6 +1070,16 @@ public class MiniShop_471752 extends SchemaImpl {
     public final UserRfmSummary USER_RFM_SUMMARY = com.vpu.mp.db.shop.tables.UserRfmSummary.USER_RFM_SUMMARY;
 
     /**
+     * The table <code>mini_shop_471752.b2c_bargain_goods</code>.
+     */
+    public final BargainGoods BARGAIN_GOODS = com.vpu.mp.db.shop.tables.BargainGoods.BARGAIN_GOODS;
+    
+    /**
+     * The table <code>mini_shop_471752..b2c_card_renew</code>.
+     */
+    public final CardRenew CARD_RENEW = com.vpu.mp.db.shop.tables.CardRenew.CARD_RENEW;
+    
+    /**
      * No further instances allowed
      */
     private MiniShop_471752() {
@@ -1289,6 +1304,8 @@ public class MiniShop_471752 extends SchemaImpl {
             com.vpu.mp.db.shop.tables.ShareAwardRecord.SHARE_AWARD_RECORD,
             ShareAwardReceive.SHARE_AWARD_RECEIVE,
             AttendShareUser.ATTEND_SHARE_USER,
-            UserRfmSummary.USER_RFM_SUMMARY);
+            UserRfmSummary.USER_RFM_SUMMARY,
+            BargainGoods.BARGAIN_GOODS,
+            CardRenew.CARD_RENEW);
     }
 }

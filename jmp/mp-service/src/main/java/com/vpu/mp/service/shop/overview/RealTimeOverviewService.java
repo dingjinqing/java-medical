@@ -66,7 +66,7 @@ public class RealTimeOverviewService extends ShopBaseService {
                         .or(OrderInfo.ORDER_INFO.IS_COD.eq((byte)1)
                                 .and(OrderInfo.ORDER_INFO.SHIPPING_TIME.isNotNull())))
                 .fetchInto(Integer.class);
-        realTimeVo.setPayUserNum(new Tuple2<>(Util.isEmpty(todayPayUserNum) ? 0 : todayPayUserNum.get(0),Util.isEmpty(yesPayUserNum) ? 0 : todayPayUserNum.get(0)));
+        realTimeVo.setPayUserNum(new Tuple2<>(Util.isEmpty(todayPayUserNum) ? 0 : todayPayUserNum.get(0),Util.isEmpty(yesPayUserNum) ? 0 : yesPayUserNum.get(0)));
         /* uv */
         List<Integer> uvToday = db().select(DSL.countDistinct(USER_LOGIN_RECORD.USER_ID))
                 .from(USER_LOGIN_RECORD)
@@ -120,8 +120,8 @@ public class RealTimeOverviewService extends ShopBaseService {
     public CoreIndicatorVo coreIndicator(CoreIndicatorParam param){
         UserSummaryTrend us = UserSummaryTrend.USER_SUMMARY_TREND.as("us");
 
-        Condition one = us.REF_DATE.eq(Util.getEarlySqlDate(new Date(),-1)).and(us.TYPE.eq(param.getScreeningTime()));
-        Condition preOne = us.REF_DATE.eq(Util.getEarlySqlDate(new Date(),-(param.getScreeningTime()+1))).and(us.TYPE.eq(param.getScreeningTime()));
+        Condition one = us.REF_DATE.eq(Util.getEarlySqlDate(new Date(),0)).and(us.TYPE.eq(param.getScreeningTime()));
+        Condition preOne = us.REF_DATE.eq(Util.getEarlySqlDate(new Date(),-(param.getScreeningTime()))).and(us.TYPE.eq(param.getScreeningTime()));
 
         Optional<CoreIndicatorVo> optional = getConditionSelect().and(one).fetchOptionalInto(CoreIndicatorVo.class);
         CoreIndicatorVo indicatorVo = optional.orElse(new CoreIndicatorVo());
@@ -136,9 +136,12 @@ public class RealTimeOverviewService extends ShopBaseService {
         indicatorVo.setUv2PaidIncr(div(temp.getUv2Paid(),indicatorVo.getUv2Paid()-temp.getUv2Paid()));
         indicatorVo.setPctIncr(div(temp.getPct(),indicatorVo.getPct()-temp.getPct()));
         /* 获取折线图数据 */
-        indicatorVo.setLineChartVos(getConditionSelect().and(us.REF_DATE.lessThan(Util.getEarlySqlDate(new Date(),0)))
-                .and(us.REF_DATE.greaterOrEqual(Util.getEarlySqlDate(new Date(),-param.getScreeningTime())))
+        indicatorVo.setLineChartVos(getConditionSelect().and(us.REF_DATE.le(Util.getEarlySqlDate(new Date(),0)))
+                .and(us.REF_DATE.greaterThan(Util.getEarlySqlDate(new Date(),-param.getScreeningTime())))
                 .and(us.TYPE.eq((byte)1)).fetchInto(LineChartVo.class));
+        indicatorVo.getLineChartVos().forEach(l->{
+            l.setDate(Util.getEarlyDate(l.getDate(),-1));
+        });
         return indicatorVo;
     }
 

@@ -38,7 +38,7 @@ public class GoodsPrdProcessorDao extends ShopBaseService {
      */
     public List<GoodsSpecProductRecord> getGoodsDetailPrds(Integer goodsId){
         return db().select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER,
-            GOODS_SPEC_PRODUCT.PRD_SPECS, GOODS_SPEC_PRODUCT.PRD_DESC)
+            GOODS_SPEC_PRODUCT.PRD_WEIGHT,GOODS_SPEC_PRODUCT.PRD_SPECS, GOODS_SPEC_PRODUCT.PRD_DESC)
             .from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).orderBy(GOODS_SPEC_PRODUCT.PRD_ID)
             .fetchInto(GoodsSpecProductRecord.class);
     }
