@@ -5,6 +5,7 @@
       <div class="dialog_top">
         <el-upload
           class="upload-demo"
+          style="float:left;"
           :before-upload="beforeUpLoad"
           multiple
           :limit="5"
@@ -16,8 +17,8 @@
             size="small"
             type="primary"
           >{{$t('imgageDalog.upload')}}</el-button>
-
-          <div
+        </el-upload>
+        <div
             @mouseover="tip_over()"
             @mouseleave="tip_leave()"
             class="title_tip"
@@ -31,6 +32,7 @@
                 <el-button
                   type="primary"
                   size="mini"
+                  @click="goVersionUpgrade"
                 >{{$t('imgsSpace.modeText')}}</el-button>
               </div>
             </div>
@@ -42,7 +44,6 @@
           >
             <img :src="imgUrl[0].img_1">
             {{$t('imgageDalog.tip')}}</div>
-        </el-upload>
       </div>
       <!-- dialog_middle -->
       <div class="dialog_middle">
@@ -677,6 +678,13 @@ export default {
       this.currentPage3 = 1
       console.log('触发')
       this.detailImgsSearch()
+    },
+    // 版本升级或续费
+    goVersionUpgrade () {
+      this.$router.push({
+        path: '/admin/home/main/versionUpgrade',
+        query: { mod: '图片空间' }
+      })
     }
   }
 }
