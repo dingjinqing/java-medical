@@ -23,6 +23,7 @@
               size="small"
               style="width:50%;"
               v-model="data.carousel_speed"
+              @keyup.native="proving($event)"
             ></el-input>
             秒
           </div>
@@ -177,6 +178,13 @@ export default {
     this.langDefault()
   },
   methods: {
+    proving (e) {
+      console.log(e.target.value)
+      let boolean = new RegExp('^[1-9][0-9]*$').test(e.target.value)
+      if (!boolean) {
+        e.target.value = ''
+      }
+    },
     // 导航配置列表右上角icon点击统一处理
     handleToClickIcon (index, flag) {
       let item = this.data.img_items[index]
