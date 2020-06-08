@@ -28,7 +28,7 @@ public class PosSyncProductListener  implements BaseRabbitHandler {
 
     @RabbitHandler
     public void handler(@Payload PosSyncProductMqParam param, Message message, Channel channel){
-        saas.getShopApp(param.getShopId()).goods.posSyncProductMqCallback(param.getStoreId(),param.getGoodsPrdList());
+        saas.getShopApp(param.getShopId()).apiGoodsService.posSyncProductMqCallback(param.getStoreId(),param.getGoodsPrdList());
         //更新taskJob进度和状态
         saas.taskJobMainService.updateProgress(Util.toJson(param), param.getTaskJobId(), 0,1);
     }
