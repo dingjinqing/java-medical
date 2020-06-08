@@ -421,6 +421,9 @@ ALTER TABLE `b2c_virtual_order` ADD COLUMN `send_card_no` varchar(32) NOT NULL C
 -- 2020-05-21 渠道分析字段设置默认值
 ALTER TABLE `b2c_channel` ALTER COLUMN `page_id` SET DEFAULT '0';
 ALTER TABLE `b2c_channel` ALTER COLUMN `goods_id` SET DEFAULT '0';
+-- 2020年06月08日 删除规格名和规格值表唯一索引
+alter table b2c_spec drop index unique_spec_name_goods_id;
+alter table b2c_spec_vals drop index unique_spec_id_spec_val_name;
 /*********************2.11*************************END*/
 
 
