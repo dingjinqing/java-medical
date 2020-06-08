@@ -572,6 +572,10 @@ public class MemberCardService extends ShopBaseService {
 				String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(cardVo.getBgImg());
 				cardVo.setBgImg(imageUrl);
 			}
+			if(StringUtils.isBlank(cardVo.getBgColor())) {
+				cardVo.setBgColor(CardUtil.getDefaultBgColor());
+			}
+			
 			if (MCARD_TP_NORMAL.equals(cardType)) {
 				vo.getNormalCard().add(cardVo);
 			} else if (MCARD_TP_LIMIT.equals(cardType)) {
