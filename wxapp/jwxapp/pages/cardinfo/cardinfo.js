@@ -71,24 +71,31 @@ global.wxPage({
         // cardInfo.give_away_status = 3
         // cardInfo.can_give_away = 1
         // end
-        if ((!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) && ((!cardInfo.examine) || (cardInfo.cardVerifyStatus === 2))) {
-          that.setData({
-            carStatus: "已领取"
-          })
-        } else if (cardInfo.examine && cardInfo.cardVerifyStatus === 1) {
-          that.setData({
-            carStatus: "审核中"
-          })
-        } else if (cardInfo.examine && cardInfo.cardVerifyStatus === 3) {
+        if(cardInfo.cardNo){
+          if ((!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) && ((!cardInfo.examine) || (cardInfo.cardVerifyStatus === 2))) {
+            that.setData({
+              carStatus: "已领取"
+            })
+          } else if (cardInfo.examine && cardInfo.cardVerifyStatus === 1) {
+            that.setData({
+              carStatus: "审核中"
+            })
+          } else if (cardInfo.examine && cardInfo.cardVerifyStatus === 3) {
 
+            that.setData({
+              carStatus: "未通过"
+            })
+          } else {
+            that.setData({
+              carStatus: "未激活"
+            })
+          }
+        }else{
           that.setData({
-            carStatus: "未通过"
-          })
-        } else {
-          that.setData({
-            carStatus: "未激活"
+            carStatus: "未领取"
           })
         }
+        
         cardInfo.cardExpireTime = that.getCardExpireTime(cardInfo);
         cardInfo.cardBgStyle = that.getCardBg(cardInfo);
         cardInfo.cardTypeName = that.getTypeName(cardInfo.cardType);
