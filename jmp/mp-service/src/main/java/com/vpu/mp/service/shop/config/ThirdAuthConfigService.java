@@ -5,6 +5,7 @@ import com.vpu.mp.db.main.tables.records.AppRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.config.trade.third.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -146,6 +147,7 @@ public class ThirdAuthConfigService extends  BaseShopConfigService {
         if (appAuthRecord!=null){
             String s = saas.shop.shopApp.generateUniqueSessionKey(getShopId());
             appAuthRecord.setSessionKey(s);
+            appAuthRecord.setUpdateTime(DateUtil.getLocalDateTime());
            return appAuthRecord.update();
         }
         return 0;

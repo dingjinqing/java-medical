@@ -1018,7 +1018,7 @@ const en = {
   versionList, // system 版本列表
   ShopConfiguration, // admin 店铺基础配置
   adminPageFramework, // admin页面框架
-  thirdPartyConfig, // 第三方接口配置
+  thirdPartyConfig, // 第三方对接
 
   // 概览
   overview, // 商城概览

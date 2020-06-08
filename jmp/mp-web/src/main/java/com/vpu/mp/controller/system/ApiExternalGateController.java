@@ -27,8 +27,11 @@ public class ApiExternalGateController extends ShopBaseService {
     private ApiExternalGateService gateService;
 
     @PostMapping("/service/gateWay")
-    public ApiJsonResult gateWay(@RequestBody ApiExternalGateParam param){
+    public ApiJsonResult gateWay(ApiExternalGateParam param){
         try {
+            // 日志请求记录
+            apiCallLog(param);
+
             // 必要系统参数验证
             String nullKey = gateService.checkSystemParam(param);
             if (nullKey != null) {
@@ -74,7 +77,7 @@ public class ApiExternalGateController extends ShopBaseService {
             responseLog(result);
             return result;
         } catch (Exception e) {
-           log.error("servcie gateWay error:"+e.getMessage());
+           log.error("servcie gateWay error:", e);
            return response(ApiExternalGateConfig.ERROR_SYSTEM_FAIL,ApiExternalGateConfig.ERROR_SYSTEM_FAIL_MSG);
         }
     }
@@ -113,4 +116,7 @@ public class ApiExternalGateController extends ShopBaseService {
         log.info("service api response："+ Util.toJson(apiJsonResult));
     }
 
+    private void apiCallLog(ApiExternalGateParam param) {
+        log.info("service api call："+Util.toJson(param));
+    }
 }

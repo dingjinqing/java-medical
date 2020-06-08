@@ -962,6 +962,20 @@ const routes = [{
             '@/view/admin/index/leftNavComponents/base_manger/actionRecord/actionRecord'
           )
       },
+      // 基础配置 第三方配置
+      {
+        path: '/admin/home/main/thirdConfig',
+        name: 'third_auth',
+        meta: {
+          crumbTitle: 'router.third_auth',
+          meta: 'base_manger',
+          category: 'third_auth'
+        },
+        component: () =>
+          import(
+            '@/view/admin/index/leftNavComponents/base_manger/thirdConfig/thirdPartyConfig'
+          )
+      },
       // 版本升级与续费
       {
         path: '/admin/home/main/versionUpgrade',

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.goods;
 
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductBakRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -701,6 +702,47 @@ public class GoodsSpecProductService extends ShopBaseService {
         return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_SN.in(prdSn)).fetchInto(GoodsSpecProductRecord.class);
     }
 
+    public List<GoodsSpecProductRecord> getGoodsSpecPrdBySn(Collection<String> prdSn) {
+        return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_SN.in(prdSn)).fetchInto(GoodsSpecProductRecord.class);
+    }
+
+    /**
+     *  erp-ekb对接外部系统使用-返回商品附属的规格信息
+     * @param goodsIds 商品id集合
+     * @return
+     */
+    public Map<Integer,List<GoodsSpecProductRecord>> apiGetGoodsSpecPrdMapByGoodsIds(List<Integer> goodsIds) {
+       return db().select(GOODS_SPEC_PRODUCT.GOODS_ID,GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_SN,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_IMG)
+            .from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.in(goodsIds))
+            .fetchGroups(GOODS_SPEC_PRODUCT.GOODS_ID,GoodsSpecProductRecord.class);
+    }
+
+    /**
+     * erp-ekb对接外部系统使用-返回商品附属的已删除的规格信息
+     * 如果删除删除了，那么在规格表内是不存在的(返回的结果肯定大于等于商品真实sku,需要和erp后期沟通再)
+     * @param goodsId
+     * @return
+     */
+    public List<GoodsSpecProductBakRecord> apiGetGoodsSpecPrdDeletedMByGoodsId(Integer goodsId) {
+        return db().select(GOODS_SPEC_PRODUCT_BAK.GOODS_ID, GOODS_SPEC_PRODUCT_BAK.PRD_ID, GOODS_SPEC_PRODUCT_BAK.PRD_SN, GOODS_SPEC_PRODUCT_BAK.PRD_PRICE, GOODS_SPEC_PRODUCT_BAK.PRD_NUMBER, GOODS_SPEC_PRODUCT_BAK.PRD_DESC, GOODS_SPEC_PRODUCT_BAK.PRD_IMG)
+            .from(GOODS_SPEC_PRODUCT_BAK).where(GOODS_SPEC_PRODUCT_BAK.GOODS_ID.eq(goodsId)).fetchInto(GoodsSpecProductBakRecord.class);
+    }
+
+    /**
+     * erp-ekb对接外部系统使用-根据skuId 返回其所属商品的所有sku
+     * @param prdId
+     * @return
+     */
+    public Map<Integer,GoodsSpecProductRecord> apiGetGoodsSpecPrdByPrdId(Integer prdId){
+        Integer goodsId = db().select(GOODS_SPEC_PRODUCT.GOODS_ID).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId))
+            .fetchAny(GOODS_SPEC_PRODUCT.GOODS_ID);
+        if (goodsId == null) {
+            return null;
+        }
+        return db().select(GOODS_SPEC_PRODUCT.GOODS_ID,GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_NUMBER)
+                .from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId))
+                .fetchMap(GOODS_SPEC_PRODUCT.PRD_ID,GoodsSpecProductRecord.class);
+    }
     //******************goods_spec_product_bak************************************//
     /**
      * 查询商品规格

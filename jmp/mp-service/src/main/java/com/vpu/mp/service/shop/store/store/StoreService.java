@@ -58,7 +58,6 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
  */
 @Slf4j
 @Service
-
 public class StoreService extends ShopBaseService {
 
     /**
@@ -278,6 +277,16 @@ public class StoreService extends ShopBaseService {
             storePojo.setPickDetail(Util.json2Object(storePojo.getPickTimeDetail(),StorePickDetailPojo.class,false));
         }
         return storePojo;
+    }
+
+    /**
+     * 通过posShopId获取门店信息
+     * @param posStoreId 门店使用的pos id
+     * @return 门店信息
+     */
+    public StoreRecord getStoreByPosShopId(Integer posStoreId) {
+      return db().selectFrom(STORE)
+          .where(STORE.POS_SHOP_ID.eq(posStoreId).and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny();
     }
 
     /**

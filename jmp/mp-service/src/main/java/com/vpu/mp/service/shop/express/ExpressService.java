@@ -43,4 +43,15 @@ public class ExpressService extends ShopBaseService {
         }
         return db().selectFrom(TABLE).where(TABLE.SHIPPING_NAME.eq(name)).fetchOneInto(ExpressVo.class);
     }
+
+    public ExpressVo getByCode(String name) {
+        if(StringUtils.isBlank(name)) {
+            return null;
+        }
+        return db().selectFrom(TABLE).where(TABLE.SHIPPING_CODE.eq(name)).fetchOneInto(ExpressVo.class);
+    }
+
+    public List<ExpressVo> getAll(){
+        return db().selectFrom(TABLE).fetchInto(ExpressVo.class);
+    }
 }

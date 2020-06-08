@@ -490,4 +490,10 @@ public class RabbitConfig {
         RabbitListenerEndpointRegistry registry = new RabbitListenerEndpointRegistry();
         return registry;
     }
+
+    /**pos.sync.product队列绑定 direct.pos.sync 路由 */
+    @Bean
+    public Binding bindingPosSyncProductQueue(){
+        return BindingBuilder.bind(posSyncProductQueue()).to(posSyncExchange()).with(BINDING_EXCHANGE_POS_SYNC_PRODUCT_KEY);
+    }
 }

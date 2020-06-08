@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.order;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -201,13 +202,13 @@ public class OrderConstant {
 	/**一分*/
 	public final static BigDecimal CENT = new BigDecimal("0.01");
 
-	/**操作人：商家 0 、买家1、定时任务2、mq3、pos4*/
+	/**操作人：商家 0 、买家1、定时任务2、mq3、pos4、erp/ekb5**/
 	public final static byte IS_MP_Y = 1;
 	public final static byte IS_MP_ADMIN = 0;
 	public final static byte IS_MP_AUTO = 2;
     public final static byte IS_MP_MQ = 3;
     public final static byte IS_MP_POS = 4;
-    public final static byte IS_MP_ERP = 5;
+    public final static byte IS_MP_ERP_OR_EKB = 5;
 
     /**
      *   ReturnSource
@@ -232,6 +233,8 @@ public class OrderConstant {
     public final static byte RS_AUTO_GIVE_GIFT = 1;
     public final static byte RS_AUTO_GROUP_BUY = 2;
 
+    public final static byte IS_MP_POS = 4;
+    public final static byte IS_MP_ERP_OR_EKB = 5;
 	/**
 	 * 订单退款退货流程操作
 	 */
@@ -578,4 +581,48 @@ public class OrderConstant {
     /**申请售后时间*/
     public static final byte OQSR_APPLY_RETURN = 1;
 
+
+    /**对外接口 start*/
+    /**
+     *  退款结果：同意agree 拒绝refuse
+     */
+    public static final String API_RETURN_AGREE = "agree";
+    public static final String API_RETURN_REFUSE = "refuse";
+    /**
+     * erp 退款/退款订单状态ERP_RETURN_STATUS ->ERS
+     */
+    /**等待卖家同意*/
+    private static final String ERS_WAIT_SELLER_AGREE= "WAIT_SELLER_AGREE";
+    /**等待买家退货*/
+    private static final String ERS_WAIT_BUYER_RETURN_GOODS = "WAIT_BUYER_RETURN_GOODS";
+    /**卖家拒绝*/
+    private static final String ERS_SELLER_REFUSE_BUYER = "SELLER_REFUSE_BUYER";
+    /**成功*/
+    private static final String ERS_SUCCESS = "SUCCESS";
+    /**关闭*/
+    private static final String ERS_CLOSED = "CLOSED";
+    /**等待卖家收货*/
+    private static final String ERS_WAIT_SELLER_CONFIRM_GOODS = "WAIT_SELLER_CONFIRM_GOODS";
+    /**RER 与 小程序退款状态转化*/
+    private static final ImmutableMap<Byte, String> ERP_RETURN_STATUS;
+
+    static{
+        ERP_RETURN_STATUS = ImmutableMap.<Byte, String>builder()
+            .put(REFUND_STATUS_AUDITING, ERS_WAIT_SELLER_AGREE)
+            .put(REFUND_STATUS_AUDIT_PASS, ERS_WAIT_BUYER_RETURN_GOODS)
+            .put(REFUND_STATUS_AUDIT_NOT_PASS, ERS_SELLER_REFUSE_BUYER)
+            .put(REFUND_STATUS_APPLY_REFUND_OR_SHIPPING, ERS_WAIT_SELLER_AGREE)
+            .put(REFUND_STATUS_FINISH, ERS_SUCCESS)
+            .put(REFUND_STATUS_REFUSE, ERS_SELLER_REFUSE_BUYER)
+            .put(REFUND_STATUS_CLOSE, ERS_CLOSED)
+            .build();
+    }
+
+    public static String getErpReturnStatus(Byte status, boolean isSubmitInfo) {
+        if(REFUND_STATUS_APPLY_REFUND_OR_SHIPPING == status && isSubmitInfo) {
+            return ERS_WAIT_SELLER_CONFIRM_GOODS;
+        }
+        return ERP_RETURN_STATUS.get(status);
+    }
+    /**对外接口 end*/
 }

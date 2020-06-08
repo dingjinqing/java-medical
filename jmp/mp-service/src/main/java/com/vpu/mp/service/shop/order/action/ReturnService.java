@@ -1,22 +1,28 @@
 package com.vpu.mp.service.shop.order.action;
 
 import com.google.common.collect.Lists;
+import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.excel.AbstractExcelDisposer;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.shop.config.trade.ReturnBusinessAddressParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.api.ApiReturnParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
@@ -49,6 +55,7 @@ import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
 import com.vpu.mp.service.shop.order.refund.record.OrderRefundRecordService;
 import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Result;
 import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
@@ -765,5 +772,91 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             && (orderInfoRecord.getOrderStatus().equals(OrderConstant.ORDER_REFUND_FINISHED) || orderInfoRecord.getOrderStatus().equals(OrderConstant.ORDER_RETURN_FINISHED))) {
             coupon.releaserCoupon(order.getOrderSn());
         }
+    }
+
+    public ApiJsonResult returnOrderApi(ApiReturnParam param) {
+        ApiJsonResult result = new ApiJsonResult();
+        if (param == null) {
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setMsg("参数content为空");
+            return result;
+        }
+        if (StringUtils.isBlank(param.getOrderSn())) {
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setMsg("参数order_sn为空");
+            return result;
+        }
+        if (StringUtils.isBlank(param.getRefundType())) {
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setMsg("参数refund_type为空");
+            return result;
+        }
+        if (OrderConstant.API_RETURN_REFUSE.equals(param.getRefundType()) && StringUtils.isBlank(param.getRefuseReason())) {
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setMsg("参数refuse_reason为空");
+            return result;
+        }
+        ReturnOrderRecord rOrder = returnOrder.getByReturnOrderSn(param.getReturnOrderSn());
+        if(rOrder == null) {
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setMsg("退款订单不存在");
+            return result;
+        }
+        RefundParam executeParam = new RefundParam();
+        executeParam.setAction(Integer.valueOf(OrderServiceCode.RETURN.ordinal()).byteValue());
+        executeParam.setIsMp(OrderConstant.IS_MP_ERP_OR_EKB);
+        executeParam.setOrderId(rOrder.getOrderId());
+        executeParam.setOrderSn(rOrder.getOrderSn());
+        executeParam.setRetId(rOrder.getRetId());
+        executeParam.setReturnType(rOrder.getReturnType());
+        executeParam.setReturnMoney(rOrder.getMoney());
+        executeParam.setShippingFee(rOrder.getShippingFee());
+        //获取当前操作
+        if(OrderConstant.API_RETURN_AGREE.equals(param.getRefundType())) {
+            //同意
+            if(rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) && rOrder.getReturnType().equals(OrderConstant.RT_ONLY_MONEY)) {
+                //同意买家仅退款申请
+                executeParam.setReturnOperate(null);
+            }else if(rOrder.getReturnType().equals(OrderConstant.RT_GOODS) && rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDITING)) {
+                //同意买家退货申请
+                executeParam.setReturnOperate(OrderConstant.RETURN_OPERATE_ADMIN_AGREE_RETURN);
+                ReturnBusinessAddressParam defaultAddress = shopReturncfg.getDefaultAddress();
+                if(defaultAddress != null) {
+                    executeParam.setConsignee(defaultAddress.getConsignee());
+                    executeParam.setReturnAddress(defaultAddress.getReturnAddress());
+                    executeParam.setMerchantTelephone(defaultAddress.getMerchantTelephone());
+                    executeParam.setZipCode(defaultAddress.getZipCode());
+                }
+            }else if(rOrder.getReturnType().equals(OrderConstant.RT_GOODS) && (rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDIT_PASS) || rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING))) {
+                //卖家同意退货申请或者买家提交物流后可以完成退款
+                executeParam.setReturnOperate(null);
+            }else {
+                result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+                result.setMsg("当前退款订单无法执行当前操作");
+                return result;
+            }
+        }else {
+            //拒绝
+            if(rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) || rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDIT_PASS)) {
+                executeParam.setRefundRefuseReason(param.getRefuseReason());
+                executeParam.setReturnOperate(OrderConstant.RETURN_OPERATE_ADMIN_REFUSE);
+            }else if(rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDITING)) {
+                executeParam.setReturnOperate(OrderConstant.RETURN_OPERATE_ADMIN_REFUSE_RETURN_GOODS_APPLY);
+                executeParam.setApplyNotPassReason(param.getRefuseReason());
+            }else {
+                result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+                result.setMsg("当前退款订单无法执行当前操作");
+                return result;
+            }
+            ExecuteResult executeResult = saas().getShopApp(getShopId()).orderActionFactory.orderOperate(executeParam);
+            if(executeResult == null || executeResult.isSuccess()) {
+                result.setCode(ApiExternalGateConfig.ERROR_CODE_SUCCESS);
+            }else {
+                logger.error("外服系统调用退款接口失败，executeResult：{}", executeResult);
+                result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+                result.setMsg(Util.translateMessage(AbstractExcelDisposer.DEFAULT_LANGUAGE, executeResult.getErrorCode().getMessage(), JsonResult.LANGUAGE_TYPE_MSG, executeResult.getErrorParam()));
+            }
+        }
+        return result;
     }
 }
