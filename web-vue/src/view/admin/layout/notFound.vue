@@ -10,11 +10,6 @@
         SORRY!您访问的页面找不到了，请重新加载或者点击下方的常用链接
       </div>
       <div class="link">
-        <div @click="$router.push({name:'systemLogin'})">system后台</div>
-        <div
-          style="margin: 0 20px"
-          @click="$router.push({name:'indexLogin'})"
-        >admin后台</div>
         <div @click="$router.push({path:'/'})">官网</div>
       </div>
     </div>
