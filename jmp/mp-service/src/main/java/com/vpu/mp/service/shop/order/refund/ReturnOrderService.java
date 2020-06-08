@@ -14,7 +14,6 @@ import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.api.ApiBasePageParam;
 import com.vpu.mp.service.foundation.util.api.ApiPageResult;
-import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
@@ -24,11 +23,17 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.ReturnGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
-import org.apache.commons.collections4.CollectionUtils;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.refund.ReturnOrderListMp;
+import org.apache.commons.collections4.CollectionUtils;
 import org.elasticsearch.common.Strings;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record2;
+import org.jooq.Result;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.tools.StringUtils;
@@ -38,7 +43,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -246,7 +250,7 @@ public class ReturnOrderService extends ShopBaseService{
             returnOrder.setReturnSource(OrderConstant.RS_ADMIN);
         }else if(Byte.valueOf(OrderConstant.IS_MP_POS).equals(param.getIsMp())) {
             returnOrder.setReturnSource(OrderConstant.RS_POS);
-        }else if(Byte.valueOf(OrderConstant.IS_MP_ERP).equals(param.getIsMp())) {
+        }else if(Byte.valueOf(OrderConstant.IS_MP_ERP_OR_EKB).equals(param.getIsMp())) {
             returnOrder.setReturnSource(OrderConstant.RS_ERP);
         }else if(Byte.valueOf(OrderConstant.IS_MP_AUTO).equals(param.getIsMp()) && param.getReturnSourceType() != null) {
             returnOrder.setReturnSource(OrderConstant.RS_AUTO);
@@ -682,12 +686,13 @@ public class ReturnOrderService extends ShopBaseService{
     private void buildOptions(SelectWhereStep<ReturnOrderRecord> select, ApiBasePageParam param) {
         //只能查询最近30天内的记录
         select.where(TABLE.CREATE_TIME.ge(DateUtil.getBefore30Day()));
-        if(param.getStartTime() != null) {
+        if (param.getStartTime() != null) {
             select.where(TABLE.CREATE_TIME.ge(param.getStartTime()));
         }
-        if(param.getEndTime() != null) {
+        if (param.getEndTime() != null) {
             select.where(TABLE.CREATE_TIME.le(param.getEndTime()));
         }
+    }
 }
 
 

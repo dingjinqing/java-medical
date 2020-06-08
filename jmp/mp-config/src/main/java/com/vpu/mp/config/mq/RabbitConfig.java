@@ -1,6 +1,10 @@
 package com.vpu.mp.config.mq;
 
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.AcknowledgeMode;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitBootstrapConfiguration;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -489,11 +493,5 @@ public class RabbitConfig {
     public RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry(){
         RabbitListenerEndpointRegistry registry = new RabbitListenerEndpointRegistry();
         return registry;
-    }
-
-    /**pos.sync.product队列绑定 direct.pos.sync 路由 */
-    @Bean
-    public Binding bindingPosSyncProductQueue(){
-        return BindingBuilder.bind(posSyncProductQueue()).to(posSyncExchange()).with(BINDING_EXCHANGE_POS_SYNC_PRODUCT_KEY);
     }
 }

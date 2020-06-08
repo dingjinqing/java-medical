@@ -5,7 +5,6 @@ import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -20,7 +19,12 @@ import com.vpu.mp.service.pojo.shop.store.article.ArticleParam;
 import com.vpu.mp.service.pojo.shop.store.article.ArticlePojo;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
-import com.vpu.mp.service.pojo.shop.store.store.*;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
+import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
+import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
+import com.vpu.mp.service.pojo.shop.store.store.StorePickDetailPojo;
+import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
+import com.vpu.mp.service.pojo.shop.store.store.StoreVo;
 import com.vpu.mp.service.saas.overview.ShopOverviewService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.store.comment.ServiceCommentService;
@@ -32,7 +36,12 @@ import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -277,16 +286,6 @@ public class StoreService extends ShopBaseService {
             storePojo.setPickDetail(Util.json2Object(storePojo.getPickTimeDetail(),StorePickDetailPojo.class,false));
         }
         return storePojo;
-    }
-
-    /**
-     * 通过posShopId获取门店信息
-     * @param posStoreId 门店使用的pos id
-     * @return 门店信息
-     */
-    public StoreRecord getStoreByPosShopId(Integer posStoreId) {
-      return db().selectFrom(STORE)
-          .where(STORE.POS_SHOP_ID.eq(posStoreId).and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny();
     }
 
     /**

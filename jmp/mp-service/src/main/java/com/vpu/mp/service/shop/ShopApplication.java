@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop;
 
 import com.vpu.mp.service.shop.assess.AssessService;
 import com.vpu.mp.service.shop.collection.CollectService;
-import com.vpu.mp.service.shop.config.*;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.ThirdAuthConfigService;
@@ -80,7 +79,6 @@ import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
 import com.vpu.mp.service.shop.market.sharereward.WxShareRewardService;
 import com.vpu.mp.service.shop.marketCalendar.MarketCalendarService;
-import com.vpu.mp.service.shop.member.*;
 import com.vpu.mp.service.shop.member.AddressService;
 import com.vpu.mp.service.shop.member.CardVerifyService;
 import com.vpu.mp.service.shop.member.MemberService;
@@ -582,10 +580,5 @@ public class ShopApplication {
      */
     @Autowired
     public MarketCalendarService calendarService;
-    /**
-     * 第三方对接配置
-     */
-    @Autowired
-    public ThirdAuthConfigService thirdAuthService;
 
 }

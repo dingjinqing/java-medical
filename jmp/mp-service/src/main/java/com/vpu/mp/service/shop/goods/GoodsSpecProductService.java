@@ -16,17 +16,31 @@ import com.vpu.mp.service.pojo.shop.recommend.SkuAttrList;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryVo;
 import com.vpu.mp.service.shop.store.store.StoreGoodsService;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.*;
+import org.jooq.BatchBindStep;
+import org.jooq.DSLContext;
+import org.jooq.Query;
+import org.jooq.Record;
+import org.jooq.Record3;
+import org.jooq.Record4;
+import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT_BAK;
+import static com.vpu.mp.db.shop.Tables.SORT;
+import static com.vpu.mp.db.shop.Tables.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 
 /**
@@ -698,10 +712,6 @@ public class GoodsSpecProductService extends ShopBaseService {
         }
         return true;
     }
-    public List<GoodsSpecProductRecord> getGoodsSpecPrdBySn(Collection<String> prdSn) {
-        return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_SN.in(prdSn)).fetchInto(GoodsSpecProductRecord.class);
-    }
-
     public List<GoodsSpecProductRecord> getGoodsSpecPrdBySn(Collection<String> prdSn) {
         return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_SN.in(prdSn)).fetchInto(GoodsSpecProductRecord.class);
     }

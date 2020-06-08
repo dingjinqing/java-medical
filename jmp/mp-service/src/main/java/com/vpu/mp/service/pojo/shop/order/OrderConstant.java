@@ -233,8 +233,6 @@ public class OrderConstant {
     public final static byte RS_AUTO_GIVE_GIFT = 1;
     public final static byte RS_AUTO_GROUP_BUY = 2;
 
-    public final static byte IS_MP_POS = 4;
-    public final static byte IS_MP_ERP_OR_EKB = 5;
 	/**
 	 * 订单退款退货流程操作
 	 */
