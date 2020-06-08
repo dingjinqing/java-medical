@@ -207,11 +207,11 @@ public class PackSaleService extends ShopBaseService {
 	 * @return 
 	 */
 	public PackSaleShareVo getMpQrCode(Integer id) {
-		String param = "package_id="+id;
-		String imgUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.BUY_NOW_PRICE_INFO, param);
-		String pathUrl = QrCodeTypeEnum.BUY_NOW_PRICE_INFO.getPathUrl(param);
-		return new PackSaleShareVo(pathUrl,imgUrl);
-	}
+        String param = "packageId=" + id;
+        String imgUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.BUY_NOW_PRICE_INFO, param);
+        String pathUrl = QrCodeTypeEnum.BUY_NOW_PRICE_INFO.getPathUrl(param);
+        return new PackSaleShareVo(pathUrl, imgUrl);
+    }
 	/**
 	 * 启用活动
 	 * @param id
