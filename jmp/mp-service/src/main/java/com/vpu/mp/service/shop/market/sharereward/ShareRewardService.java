@@ -390,23 +390,33 @@ public class ShareRewardService extends BaseShopConfigService {
         for (ShareReceiveDetailVo vo : pageResult.getDataList()) {
             try {
                 Integer shareId = vo.getShareId();
-                vo.setInviteUserNum(getInviteUserNum(shareId));
-                vo.setInviteNewUserNum(getInviteNewUserNum(shareId));
+                ShareAwardRecordRecord shareAwardRecordRecord = getShareAwardRecord(shareId, vo.getUserId(), vo.getGoodsId());
+                vo.setInviteUserNum(getInviteUserNum(shareId, shareAwardRecordRecord.getId()));
+                vo.setInviteNewUserNum(getInviteNewUserNum(shareId, shareAwardRecordRecord.getId()));
                 switch (vo.getAwardLevel()) {
                     case CONDITION_ONE:
                         JsonNode fNode = MAPPER.readTree(vo.getFirstLevelRule());
                         vo.setRewardType(Byte.valueOf(fNode.get(REWARD_TYPE).asText()));
                         vo.setScore(fNode.get(SCORE).asInt());
+                        if (vo.getInviteUserNum() > fNode.get(INVITE_NUM).asInt()) {
+                            vo.setInviteUserNum(fNode.get(INVITE_NUM).asInt());
+                        }
                         break;
                     case CONDITION_TWO:
                         JsonNode sNode = MAPPER.readTree(vo.getSecondLevelRule());
                         vo.setRewardType(Byte.valueOf(sNode.get(REWARD_TYPE).asText()));
                         vo.setScore(sNode.get(SCORE).asInt());
+                        if (vo.getInviteUserNum() > sNode.get(INVITE_NUM).asInt()) {
+                            vo.setInviteUserNum(sNode.get(INVITE_NUM).asInt());
+                        }
                         break;
                     case CONDITION_THREE:
                         JsonNode tNode = MAPPER.readTree(vo.getThirdLevelRule());
                         vo.setRewardType(Byte.valueOf(tNode.get(REWARD_TYPE).asText()));
                         vo.setScore(tNode.get(SCORE).asInt());
+                        if (vo.getInviteUserNum() > tNode.get(INVITE_NUM).asInt()) {
+                            vo.setInviteUserNum(tNode.get(INVITE_NUM).asInt());
+                        }
                         break;
                     default:
                         break;
@@ -424,8 +434,8 @@ public class ShareRewardService extends BaseShopConfigService {
      *
      * @param shareId 分享活动id
      */
-    private Integer getInviteUserNum(Integer shareId) {
-        return db().select(DSL.countDistinct(ATTEND.USER_ID)).from(ATTEND).where(ATTEND.SHARE_ID.eq(shareId)).fetchOptionalInto(Integer.class).orElse(0);
+    private Integer getInviteUserNum(Integer shareId, Integer recordId) {
+        return db().select(DSL.countDistinct(ATTEND.USER_ID)).from(ATTEND).where(ATTEND.SHARE_ID.eq(shareId)).and(ATTEND.RECORD_ID.eq(recordId)).fetchOptionalInto(Integer.class).orElse(0);
     }
 
     /**
@@ -433,8 +443,8 @@ public class ShareRewardService extends BaseShopConfigService {
      *
      * @param shareId 分享活动id
      */
-    private Integer getInviteNewUserNum(Integer shareId) {
-        return db().select(DSL.countDistinct(ATTEND.USER_ID)).from(ATTEND).where(ATTEND.SHARE_ID.eq(shareId)).and(ATTEND.IS_NEW.eq(CONDITION_ONE)).fetchOptionalInto(Integer.class).orElse(0);
+    private Integer getInviteNewUserNum(Integer shareId, Integer recordId) {
+        return db().select(DSL.countDistinct(ATTEND.USER_ID)).from(ATTEND).where(ATTEND.SHARE_ID.eq(shareId)).and(ATTEND.IS_NEW.eq(CONDITION_ONE)).and(ATTEND.RECORD_ID.eq(recordId)).fetchOptionalInto(Integer.class).orElse(0);
     }
 
     /**
