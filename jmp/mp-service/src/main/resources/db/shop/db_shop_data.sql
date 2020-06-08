@@ -70,6 +70,8 @@ INSERT INTO `b2c_shop_cfg`(k, v) VALUES ( 'user_center', '[{\"module_name\":\"gl
 INSERT INTO `b2c_shop_cfg`(k, v) VALUES ('instead_pay', '{\"status\":false,\"singlePay\":true,\"orderUserMessageSingle\":\"哎吆，不错哦！\",\"insteadPayMessageSingle\":\"哎吆，不错哦！帮你付款啦！\",\"multiplePay\":true,\"orderUserMessageMultiple\":\"谁能帮我\",\"insteadPayMessageMultiple\":\"哈哈，代付下\",\"payRatioText\":[\"意思意思\",\"情比金坚\",\"一掷千金\"],\"payRatioNumber\":[10,20],\"insteadPayWay\":0}');
 #运费模板
 INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('deliver_template','{\"templateName\":0,\"feeLimit\":0,\"price\":0}');
+#商品分词搜索配置
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('accurate_search',0);
 #模版消息
 INSERT INTO `b2c_message_template_config`(`id`, `open_ma`, `open_mp`) VALUES (2001, 0, 0);
 INSERT INTO `b2c_message_template_config`(`id`, `open_ma`, `open_mp`) VALUES (2002, 1, 1);
