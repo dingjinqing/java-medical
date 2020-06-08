@@ -1529,7 +1529,6 @@ export default {
         }
       }
       .decRight {
-        z-index: 100;
         width: 41.4%;
         margin-left: 20px;
       }
