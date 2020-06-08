@@ -259,8 +259,9 @@
       </view>
     </view>
   </block>
+
+  <include src="../common/footer.wxml" />
 </view>
-<include src="../common/footer.wxml" />
 <!-- 积分签到 -->
 <view class='zhezhao' wx:if="{{is_sign == 1}}" bindtap='closeSign'></view>
 <view class='modal_sign' wx:if="{{is_sign == 1}}">
