@@ -629,4 +629,14 @@ public class GoodsSortService extends ShopBaseService {
         }
         return returnId;
     }
+
+    /**
+     *  erp-ekb对接外部系统使用-返回分类id和名字的映射
+     * @param sortIds  分类id集合
+     * @return 映射
+     */
+    public Map<Integer, String> apiGetSortNameMap(List<Integer> sortIds) {
+        return db().select(SORT.SORT_ID, SORT.SORT_NAME).from(SORT)
+            .where(SORT.SORT_ID.in(sortIds)).fetchMap(SORT.SORT_ID, SORT.SORT_NAME);
+    }
 }

@@ -1,31 +1,28 @@
 package com.vpu.mp.service.shop.store.store;
 
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
+import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.category.SysCatevo;
+import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncGoodsPrdParam;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoods;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryVo;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateParam;
+import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
+import org.jooq.*;
+import org.jooq.tools.StringUtils;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.pojo.saas.category.SysCatevo;
-import com.vpu.mp.service.pojo.shop.store.goods.StoreGoods;
-import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateParam;
-import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
-import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
-import org.jooq.Record;
-import org.jooq.SelectWhereStep;
-import org.jooq.tools.StringUtils;
-
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
-import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryVo;
-
-import org.springframework.stereotype.Service;
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 
 /**
  * @author 王兵兵
@@ -38,6 +35,8 @@ public class StoreGoodsService extends ShopBaseService{
 
     public static final Byte ON_SALE = 1;
     public static final Byte OFF_SALE = 0;
+    public static final Byte SYNC = 1;
+    public static final Byte NOT_SYNC = 0;
 
 
     /**
@@ -102,7 +101,7 @@ public class StoreGoodsService extends ShopBaseService{
 
         return pageResult;
     }
-	
+
 	/**
 	 * 条件查询
 	 * @param select
@@ -157,5 +156,53 @@ public class StoreGoodsService extends ShopBaseService{
         } else {
             return saas.shop.image.imageUrl(relativePath);
         }
+    }
+
+    /**
+     * pos 同步数据批量更新
+     * @param storeId 门店id
+     * @param goodsPrdParams 待修改数据集合
+     */
+    public void batchUpdateForSyncPosProduct(Integer storeId, List<PosSyncGoodsPrdParam> goodsPrdParams) {
+        if (goodsPrdParams.size()==0) {
+            return;
+        }
+        PosSyncGoodsPrdParam item = goodsPrdParams.get(0);
+        DSLContext db = db();
+        String sql = db.update(STORE_GOODS)
+            .set(STORE_GOODS.IS_ON_SALE,item.getIsOnSale())
+            .set(STORE_GOODS.PRODUCT_PRICE,item.getPrdPrice())
+            .set(STORE_GOODS.IS_SYNC,SYNC).where(STORE_GOODS.STORE_ID.eq(storeId).and(STORE_GOODS.PRD_ID.eq(item.getPrdId())))
+            .getSQL();
+
+        Query query = db.query(sql);
+        BatchBindStep batchStep = db.batch(query);
+        int addedCount = 0;
+        final int batchCount = 500;
+
+        for (int i = 0; i < goodsPrdParams.size(); i++) {
+            item = goodsPrdParams.get(i);
+            addedCount++;
+            batchStep = batchStep.bind(item.getIsOnSale(), item.getPrdPrice(),SYNC, storeId, item.getPrdId());
+
+            if (addedCount == batchCount) {
+                batchStep.execute();
+                batchStep = db.batch(query);
+                addedCount = 0;
+            }
+        }
+        batchStep.execute();
+    }
+
+    /**
+     * 跟新门店商品规格库存
+     * @param storeId 门店id
+     * @param prdId 规格id
+     * @param number 规格数量
+     */
+    public void updatePrdNumForPosSyncStock(Integer storeId, Integer prdId,Integer number) {
+        db().update(STORE_GOODS).set(STORE_GOODS.PRODUCT_NUMBER,number)
+            .where(STORE_GOODS.PRD_ID.eq(prdId).and(STORE_GOODS.STORE_ID.eq(storeId)))
+            .execute();
     }
 }

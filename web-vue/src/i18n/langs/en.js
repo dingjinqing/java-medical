@@ -56,6 +56,10 @@ import {
 import {
   en as adminPageFramework
 } from './views/admin_new/en/adminPageFrameworkEn'
+// 基础信息 第三方对接配置
+import {
+  en as thirdPartyConfig
+} from './views/admin_new/en/index/basicSettings/thirdPartyConfig/thirdPartyConfigEn'
 
 // 商品管理系列国际化
 // 商品管理/全部商品
@@ -997,6 +1001,7 @@ const en = {
   versionList, // system 版本列表
   ShopConfiguration, // admin 店铺基础配置
   adminPageFramework, // admin页面框架
+  thirdPartyConfig, // 第三方对接
 
   // 概览
   overview, // 商城概览

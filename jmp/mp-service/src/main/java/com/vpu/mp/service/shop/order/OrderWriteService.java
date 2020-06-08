@@ -20,10 +20,10 @@ import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 @Service
 public class OrderWriteService extends ShopBaseService {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     public ReturnMethodService returnMethodService;
-
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * 订单标星切换

@@ -4,8 +4,11 @@ import com.vpu.mp.db.shop.tables.OrderMust;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.must.OrderMustVo;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustParam;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Record;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.OrderMust.ORDER_MUST;
 
@@ -41,5 +44,17 @@ public class OrderMustService extends ShopBaseService {
             return;
         }
         db().newRecord(TABLE, must).store();
+    }
+
+    /**
+     * 按订单号查询下单必填信息
+     * @param orderSns
+     * @return PageResult
+     */
+    public List<OrderMustVo> getOrderMustByOrderSns(List<String> orderSns){
+        if(CollectionUtils.isEmpty(orderSns)) {
+            return null;
+        }
+        return db().select(TABLE.asterisk()).from(TABLE).where(TABLE.ORDER_SN.in(orderSns)).fetchInto(OrderMustVo.class);
     }
 }

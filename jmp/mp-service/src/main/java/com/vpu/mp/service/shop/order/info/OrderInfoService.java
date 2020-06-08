@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.api.ApiPageResult;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.order.UserCenterNumBean;
@@ -20,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
+import com.vpu.mp.service.pojo.shop.order.api.ApiOrderQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
@@ -1053,7 +1055,7 @@ public class OrderInfoService extends ShopBaseService {
         	logger().info("cardFreeShipInterval为null");
         	return 0; 
         }
-        
+
         //	周期内包邮下单数量
         int orderNum = db().
 	            selectCount().
@@ -1064,7 +1066,7 @@ public class OrderInfoService extends ShopBaseService {
 	                and(TABLE.CREATE_TIME.ge(cardFreeShipInterval[0])).
 	                and(TABLE.CREATE_TIME.le(cardFreeShipInterval[1]))).
 	            fetchOne(0,int.class);
-        
+
         //	周期内包邮退货的订单数
         int returnOrderNum = db()
         			.selectCount()
@@ -1076,7 +1078,7 @@ public class OrderInfoService extends ShopBaseService {
         			.and(RETURN_ORDER.REFUND_SUCCESS_TIME.ge(cardFreeShipInterval[0]))
         			.and(RETURN_ORDER.REFUND_SUCCESS_TIME.le(cardFreeShipInterval[1]))
         			.fetchOne(0,int.class);
-        			
+
         return  orderNum-returnOrderNum;
     }
 
@@ -1121,6 +1123,27 @@ public class OrderInfoService extends ShopBaseService {
         return startAndEnd;
     }
 
+    public <T>ApiPageResult<T> getOrders(ApiOrderQueryParam param, Class<T> clazz) {
+        SelectWhereStep<OrderInfoRecord> select = db().selectFrom(TABLE);
+        buildOptions(select, param);
+        return getApiPageResult(select, param.getPage(), param.getPageSize(), clazz);
+    }
+
+    private void buildOptions(SelectWhereStep<OrderInfoRecord> select, ApiOrderQueryParam param) {
+        if(!StringUtils.isBlank(param.getOrderSn())) {
+            select.where(TABLE.ORDER_SN.eq(param.getOrderSn()));
+        }else {
+            //只能查询最近30天内的记录
+            select.where(TABLE.CREATE_TIME.ge(DateUtil.getBefore30Day()));
+            if(param.getStartTime() != null) {
+                select.where(TABLE.CREATE_TIME.ge(param.getStartTime()));
+            }
+            if(param.getEndTime() != null) {
+                select.where(TABLE.CREATE_TIME.le(param.getEndTime()));
+            }
+        }
+
+    }
     /******************************************分割线以下与订单模块没有*直接*联系*********************************************/
 	/**
 	 * 根据用户id获取累计消费金额
@@ -1563,7 +1586,7 @@ public class OrderInfoService extends ShopBaseService {
 														.and(DslPlus.findInSet(goodsType, TABLE.GOODS_TYPE)))))))
 				.fetchAnyInto(TABLE);
     }
-    
+
     /**
      * 	获得用户兑换卡未完成订单
      * @return OrderInfoRecord || null 如果没有数据
@@ -1574,7 +1597,7 @@ public class OrderInfoService extends ShopBaseService {
     			.and(TABLE.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY))
     			.and(TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_FINISHED,OrderConstant.ORDER_RETURN_FINISHED,OrderConstant.ORDER_REFUND_FINISHED))
     			.and(TABLE.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[]{BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER})));
-		
+
     	return db().fetchOne(TABLE, condition);
     }
 

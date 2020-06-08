@@ -132,6 +132,8 @@ export const en = {
   templateMessage: ['Basic configuration', 'Template Message'],
   // 基础配置 服务承诺
   pledge: ['Basic configuration', 'Service Pledge'],
+  // 基础配置  第三方对接配置
+  third_auth: ['Basic configuration', 'Third-party docking configuration'],
   // 基础配置  操作记录
   action_record: ['Basic configuration', 'Operation record'],
   // 小程序管理 自定义页面装修
