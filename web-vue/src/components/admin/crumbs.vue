@@ -347,6 +347,14 @@ export default {
           this.$router.push({
             name: 'payreward'
           })
+        } else if (routeName === 'share_polite_detail') {
+          this.$router.push({
+            name: 'share_award'
+          })
+        } else if (routeName === 'share_polite_add') {
+          this.$router.push({
+            name: 'share_award'
+          })
         } else if (routeName === 'bargain_activity') {
           this.$router.push({
             name: 'kanjia'

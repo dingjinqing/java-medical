@@ -224,7 +224,7 @@ export default {
       dailyLimit: 0,
       pageParams: {},
       param: {
-        status: 0,
+        status: 1,
         category: 0,
         // 分页
         currentPage: 0,
@@ -301,7 +301,7 @@ export default {
               item.rewardType[indexC] = '优惠券'
               break
             case 3:
-              item.rewardType[indexC] = '幸运大转盘'
+              item.rewardType[indexC] = '幸运大抽奖'
           }
         })
         item.rewardType = item.rewardType.join('、')
