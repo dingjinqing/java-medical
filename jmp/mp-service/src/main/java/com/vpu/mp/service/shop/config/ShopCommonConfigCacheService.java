@@ -24,6 +24,8 @@ public class ShopCommonConfigCacheService extends BaseShopConfigService {
     private JedisManager jedisManager;
     @Autowired
     private DomainConfig domainConfig;
+    @Autowired
+    ShopShareConfig defaultShopShareConfig;
 
     public static final Integer MAX_TIME_OUT = 60 * 60 * 24;
 
@@ -41,7 +43,7 @@ public class ShopCommonConfigCacheService extends BaseShopConfigService {
                 .from(SHOP_CFG)
                 .where(SHOP_CFG.K.eq(ShopCommonConfigService.K_ACCURATE_SEARCH))
                 .fetchAny(SHOP_CFG.V));
-        return result.equals("1");
+        return result != null && result.equals("1");
     }
 
     /**
@@ -92,7 +94,7 @@ public class ShopCommonConfigCacheService extends BaseShopConfigService {
                 .from(SHOP_CFG)
                 .where(SHOP_CFG.K.eq(ShopCommonConfigService.K_LOGO_LINK))
                 .fetchAny(SHOP_CFG.V));
-        return result;
+        return result == null ? "" : result;
     }
 
     /**
@@ -109,7 +111,7 @@ public class ShopCommonConfigCacheService extends BaseShopConfigService {
                 .from(SHOP_CFG)
                 .where(SHOP_CFG.K.eq(ShopCommonConfigService.K_SHARE_CONFIG))
                 .fetchAny(SHOP_CFG.V));
-        return Util.parseJson(result, ShopShareConfig.class);
+        return result == null ? defaultShopShareConfig : Util.parseJson(result, ShopShareConfig.class);
     }
 
     /**
