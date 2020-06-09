@@ -185,7 +185,7 @@
               class="rules_part"
               style="display: flex;"
             >
-              <div style="margin-top: 10px;">{{ (index+1)+$t('adSharePolite.level') }}</div>
+              <div style="margin-top: 10px;width:25px">{{ (index+1)+$t('adSharePolite.level') }}</div>
               <div>
                 <!-- 邀请满几人 -->
                 <el-form-item
@@ -205,7 +205,7 @@
                   <i
                     v-if="index>0"
                     class="el-icon-delete"
-                    style="color:#409eff;cursor:pointer;font-size:18px;margin-left:190px"
+                    style="color:#409eff;cursor:pointer;font-size:18px;margin-left:185px"
                     @click="deleteItem(index)"
                   ></i>
                 </el-form-item>
@@ -282,13 +282,13 @@
                   ]"
                 >
                   <el-button
-                    @click="handleToCallDialog(index)"
+                    @click="handleToCallDialog(item,index)"
                     style="padding:5px"
                   >{{$t('adSharePolite.addCoupon')}}</el-button>
                   <el-link
                     type="primary"
                     :underline="false"
-                    @click="refreshCoupn(index)"
+                    @click="refreshCoupn(item,index)"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.refresh')}}
                   </el-link>
@@ -446,7 +446,7 @@
       :singleElection="true"
       :tuneUpCoupon="tuneUpCoupon"
       @handleToCheck="handleToCheck"
-      :couponBack="couponIdList"
+      :couponBack.sync="couponIdList"
       ref="templateRefresh"
       :type="0"
     />
@@ -637,9 +637,14 @@ export default {
   methods: {
     ...mapActions(['transmitEditGoodsId']),
     // 选择优惠券弹窗
-    handleToCallDialog (index) {
+    handleToCallDialog (item, index) {
       this.index = index
-      this.tuneUpCoupon = !this.tuneUpCoupon
+      let arr = []
+      arr.push(Number(item.coupon))
+      this.couponIdList = arr
+      this.$nextTick(() => {
+        this.tuneUpCoupon = !this.tuneUpCoupon
+      })
     },
     // 优惠券回调
     handleToCheck (data) {
@@ -675,7 +680,6 @@ export default {
     choosingGoodsResult (ids) {
       console.log('ids--', ids)
       this.param.goodsIds = ids.toString()
-      console.log(this.param.goodsIds, 'goodsIds')
       this.goodIdList = ids
       this.selectGoods = ids.length
     },
@@ -812,6 +816,7 @@ export default {
               this.param.effectiveDate = [this.param.startTime, this.param.endTime]
               if (res.content.condition === 2) {
                 this.selectGoods = res.content.goodsIds.split(',').length
+                this.goodIdList = res.content.goodsIds.split(',').map(Number)
               }
             })
           }
@@ -940,9 +945,14 @@ export default {
     },
 
     // 优惠券刷新
-    refreshCoupn () {
+    refreshCoupn (item, index) {
       this.$refs.templateRefresh.handleToSure()
       this.$nextTick(() => {
+        this.param.shareRules[index].coupon_name = ''
+        this.param.shareRules[index].couponStock = ''
+        this.param.shareRules[index].coupon = []
+        this.couponIdList = this.param.shareRules[index].coupon
+        this.$forceUpdate()
         this.$message.success('刷新成功')
       })
     },
