@@ -43,8 +43,12 @@
             <view class='ng_right'>
               <view class='ng_goods_name'>{{item.goodsName}}</view>
               <view class='ng_goods_desc' wx:if='{{item.prdDesc}}' bindtap="bindShowSpec" data-goods_id="{{item.goodsId}}" data-prd_specs="{{item.prdDesc}}" data-goods_number='{{item.goodsNumber}}' data-rec_id="{{item.rec_id}}">
-                {{item.prdDesc}}
-                <image src="{{imageUrl}}/image/wxapp/pin/detail-down.png"></image>
+                <view class="desc_content">
+                  <view class="text">{{item.prdDesc}}</view>
+                  <view class="image">
+                    <image src="{{imageUrl}}/image/wxapp/pin/detail-down.png"></image>
+                  </view>
+                </view>
               </view>
               <view class='ng_goods_jiang' style='color:{{comColor}}' wx:if="{{item.diffPrice}}">比加入时降了{{item.diffPrice}}元</view>
               <view class='ng_goods_price'>
@@ -117,8 +121,12 @@
             <view class='ng_right'>
               <view class='ng_goods_name'>{{item2.goodsName}}</view>
               <view class='ng_goods_desc' wx:if='{{item2.prdDesc}}' bindtap="bindShowSpec" data-goods_id="{{item2.goodsId}}" data-prd_specs="{{item2.prdDesc}}" data-goods_number='{{item2.goodsNumber}}' data-rec_id="{{item2.rec_id}}">
-                {{item2.prdDesc}}
-                <image src="{{imageUrl}}/image/wxapp/pin/detail-down.png"></image>
+                <view class="desc_content">
+                  <view class="text">{{item2.prdDesc}}</view>
+                  <view class="image">
+                    <image src="{{imageUrl}}/image/wxapp/pin/detail-down.png"></image>
+                  </view>
+                </view>
               </view>
               <view class='ng_goods_jiang' style='color:{{comColor}}' wx:if="{{item2.diffPrice}}">比加入时降了{{item2.diffPrice}}元</view>
               <view class='ng_goods_price'>
@@ -191,8 +199,12 @@
             <view class='ng_right'>
               <view class='ng_goods_name'>{{item4.goodsName}}</view>
               <view class='ng_goods_desc' wx:if='{{item4.prdDesc}}' bindtap="bindShowSpec" data-goods_id="{{item4.goodsId}}" data-prd_specs="{{item4.prdDesc}}" data-goods_number='{{item4.goodsNumber}}' data-rec_id="{{item4.rec_id}}">
-                {{item4.prdDesc}}
-                <image src="{{imageUrl}}/image/wxapp/pin/detail-down.png"></image>
+                <view class="desc_content">
+                  <view class="text">{{item4.prdDesc}}</view>
+                  <view class="image">
+                    <image src="{{imageUrl}}/image/wxapp/pin/detail-down.png"></image>
+                  </view>
+                </view>
               </view>
               <view class='ng_goods_jiang' style='color:{{comColor}}' wx:if="{{item4.diffPrice}}">比加入时降了{{item4.diffPrice}}元</view>
               <!-- <view class='ng_goods_jiang' style='color:{{comColor}}' wx:if='{{item4.less_money > 0 && !item4.limit_amount && item4.prd_number >= 5}}'>比加入时降了{{item4.less_money}}元</view>
