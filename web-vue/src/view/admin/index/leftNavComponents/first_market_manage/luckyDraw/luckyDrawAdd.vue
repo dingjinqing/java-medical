@@ -1003,6 +1003,7 @@ export default {
       if (this.isEdite) {
         getLottery({ id: this.id }).then(res => {
           if (res.error === 0) {
+            this.datepicker = [res.content.startTime, res.content.endTime]
             res.content.prizeList.map((item, index) => {
               item.lotteryGrade = item.lotteryGrade.toString()
               item.chance = 100 * item.chanceNumerator / item.chanceDenominator
