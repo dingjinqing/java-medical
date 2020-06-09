@@ -19,10 +19,15 @@ public class SearchCardParam {
 	 * 分页信息
 	 */
 	/**
-     * 分页信息
+     * 	分页信息
      */
     private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
     private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
     @JsonAlias({"userId", "user_id"})
     private Integer userId;
+    
+    /**
+     *	 是否过滤掉停用会员卡
+     */
+    private Boolean filterStop = Boolean.TRUE;
 }

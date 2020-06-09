@@ -675,7 +675,8 @@ export default {
           this.getBackEndData({
             'currentPage': 0,
             'pageRows': 100,
-            'cardType': this.currentCardType
+            'cardType': this.currentCardType,
+            'filterStop': false
           })
         }
       })
