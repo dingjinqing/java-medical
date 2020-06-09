@@ -350,7 +350,7 @@ global.wxPage({
     return {
       title: that.data.shareDoc,
       imageUrl: that.data.shareImg,
-      path: '/pages1/pinlotteryinfo/pinlotteryinfo?group_draw_id=' + group_draw_id + "&goods_id=" + goods_id + "&group_id=" + group_id + '&invite_id=' + util.getCache('user_id'),
+      path: '/pages1/pinlotteryinfo/pinlotteryinfo?group_draw_id=' + group_draw_id + "&goods_id=" + goods_id + "&group_id=" + group_id + '&inviteId=' + util.getCache('user_id'),
     }
   },
 
