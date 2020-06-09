@@ -96,6 +96,9 @@ public class PackageSaleProcessor implements CreateOrderProcessor, GoodsDetailPr
             List<Integer> effectiveGoodsIds = packSaleService.getPackageSaleGroupGoodsIds(group);
             actGoodsIds.addAll(effectiveGoodsIds);
         }
+        param.getGoods().forEach(goods->{
+            goods.setIsAlreadylimitNum(true);
+        });
 
         Set<Integer> orderGoodsIds = new HashSet<>(param.getGoodsIds());
         if (!actGoodsIds.containsAll(orderGoodsIds)) {
