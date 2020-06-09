@@ -84,7 +84,7 @@ public class MpPaymentService extends ShopBaseService {
 		//子商户模式
 		Byte subMch = 1;
         try {
-            keyContent = PemToPkcs12.pemToPkcs12(mp.getPayKeyContent(), mp.getPayCertContent(), subMch.equals(mp.getIsSubMerchant()) ? wxSerMchConfig.getWxSrvKey().toCharArray() : mp.getPayMchId().toCharArray());
+            keyContent = PemToPkcs12.pemToPkcs12(mp.getPayKeyContent(), mp.getPayCertContent(), subMch.equals(mp.getIsSubMerchant()) ? wxSerMchConfig.getWxSrvMchId().toCharArray() : mp.getPayMchId().toCharArray());
         } catch (Exception e) {
             this.logger().error("pemToPkcs12 error, message: {}", e.getMessage());
         }
@@ -247,8 +247,12 @@ public class MpPaymentService extends ShopBaseService {
         } else if (WxPayConstants.TradeType.APP.equals(result.getTradeType())) {
             //TODO App支付
         } else if (WxPayConstants.TradeType.JSAPI.equals(result.getTradeType())) {
+            String appid = result.getAppid();
+            if (StringUtils.isNotEmpty(result.getSubAppId())) {
+                appid = result.getSubAppId();
+            }
             //二次签名
-            payInfo.put("appId", result.getAppid());
+            payInfo.put("appId", appid);
             payInfo.put("timeStamp", timestamp);
             payInfo.put("nonceStr", nonceStr);
             payInfo.put("package", "prepay_id=" + prepayId);
@@ -256,7 +260,7 @@ public class MpPaymentService extends ShopBaseService {
             String md5 = SignUtils.createSign(payInfo, WxPayConstants.SignType.MD5, config.getMchKey(), null);
             //公众号支付/小程序支付.
             vo = JsApiVo.builder().
-                appId(result.getAppid()).
+                appId(appid).
                 timeStamp(timestamp).
                 nonceStr(nonceStr).
                 packageAlias("prepay_id=" + prepayId).
