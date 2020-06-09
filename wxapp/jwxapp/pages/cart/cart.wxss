@@ -192,13 +192,33 @@ page{
   top: 50rpx;
   color: #666;
   font-size: 24rpx;
+  /* padding: 6rpx 10rpx; */
+  /* text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  background: #f6f6f6; */
+  width: 90%;
+}
+.ng_goods_desc .desc_content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.ng_goods_desc .desc_content .text {
+  background: #f6f6f6;
   padding: 6rpx 10rpx;
+  
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  background: #f6f6f6;
 }
-.ng_goods_desc image{
+.ng_goods_desc .desc_content .image {
+  background: #f6f6f6;
+  width: 20rpx;
+  padding: 6rpx 10rpx;
+  padding-left: 0rpx;
+}
+.ng_goods_desc .desc_content image{
   width:20rpx;
   height: 15rpx;
 }

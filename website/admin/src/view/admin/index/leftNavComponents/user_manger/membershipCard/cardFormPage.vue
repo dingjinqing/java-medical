@@ -201,7 +201,8 @@ export default {
       let obj = {
         'currentPage': 0,
         'pageRows': 100,
-        'cardType': this.cardType
+        'cardType': this.cardType,
+        'filterStop': false
       }
       getAllMemberCardRequest(obj).then(res => {
         console.log(res)

@@ -12,8 +12,8 @@
 		</view>
 	</view>
 	<view slot="custom-filter" class="term-filter">
-		<view style="{{sortName === 1 ? 'color:' + comColor + ';' : ''}}" data-type="1" bindtap="customFilter">销量 {{sortName === 1 ? sortOrder === 1 ? '⬆' : '⬇' : ''}}</view>
-		<view style="{{sortName === 2 ? 'color:' + comColor + ';' : ''}}" data-type="2" bindtap="customFilter">价格 {{sortName === 2 ? sortOrder === 1 ? '⬆' : '⬇' : ''}}</view>
+		<view style="{{sortName === 1 ? 'color:' + comColor + ';' : ''}}" data-type="1" bindtap="customFilter">销量 {{sortName === 1 ? sortOrder === 1 ? '⬇' : '⬆' : ''}}</view>
+		<view style="{{sortName === 2 ? 'color:' + comColor + ';' : ''}}" data-type="2" bindtap="customFilter">价格 {{sortName === 2 ? sortOrder === 1 ? '⬇' : '⬆' : ''}}</view>
 	</view>
 	<view slot="goods-content" class="goods-content">
 		<block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">

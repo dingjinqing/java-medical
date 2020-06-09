@@ -173,22 +173,25 @@ public class JedisManager {
 		}
 	}
 	/**
-	 * 从redis读取数据，取不到从自定义的查询里取，并存到redis里
-	 * @author: 卢光耀
-	 * @date: 2019-07-17 14:13
-	 *
-	 */
+     * 从redis读取数据;取不到从自定义的查询里取，并存到redis里;数据库查询不到，返回null
+     *
+     * @author: 卢光耀
+     * @date: 2019-07-17 14:13
+     */
 	public String getValueAndSave(String key, Integer timeOut, JedisGetProcess function){
 		String value;
 		try (Jedis jedis = getJedisPool().getResource()){
 			value = jedis.get(key);
 			if( value != null ){
 				return value;
-			}else {
-				value = function.getByDb();
-				jedis.set(key,value);
-				jedis.expire(key,timeOut);
-				return value;
+            } else {
+                value = function.getByDb();
+                if (value == null) {
+                    return null;
+                }
+                jedis.set(key, value);
+                jedis.expire(key, timeOut);
+                return value;
 			}
 		}
 	}

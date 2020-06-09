@@ -803,8 +803,11 @@ global.wxPage({
   },
   // 分享有礼-查看奖励跳转
   getShare (e) {
+    console.log(e)
     let reward_type = e.currentTarget.dataset.type
     let stock = e.currentTarget.dataset.stock
+    let lottery = e.currentTarget.dataset.lotterty
+    console.log(lottery)
     if (reward_type === 1) {
       util.jumpLink('/pages1/integral/integral')
     } else if (reward_type === 2) {
@@ -816,7 +819,7 @@ global.wxPage({
           duration: 1000
         })
       } else {
-        util.jumpLink('pages1/lottery/lottery')
+        util.jumpLink('pages1/lottery/lottery?lotteryId=' + lottery)
       }
     }
   },

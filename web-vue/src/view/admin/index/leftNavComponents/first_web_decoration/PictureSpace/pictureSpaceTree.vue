@@ -715,6 +715,7 @@ export default {
   text-align: justify;
 }
 .system_info_content_bottom {
+  text-align: center;
   padding-top: 7px;
 }
 .tip_hidden {
