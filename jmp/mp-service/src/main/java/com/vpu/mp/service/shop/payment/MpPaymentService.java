@@ -84,7 +84,12 @@ public class MpPaymentService extends ShopBaseService {
 		//子商户模式
 		Byte subMch = 1;
         try {
-            keyContent = PemToPkcs12.pemToPkcs12(mp.getPayKeyContent(), mp.getPayCertContent(), subMch.equals(mp.getIsSubMerchant()) ? wxSerMchConfig.getWxSrvMchId().toCharArray() : mp.getPayMchId().toCharArray());
+            //TODO 后期加缓存
+            if(subMch.equals(mp.getIsSubMerchant())) {
+                keyContent = PemToPkcs12.pemToPkcs12(wxSerMchConfig.getWxSrvPayKey(), wxSerMchConfig.getWxSrvPayCert(), wxSerMchConfig.getWxSrvMchId().toCharArray());
+            }else {
+                keyContent = PemToPkcs12.pemToPkcs12(mp.getPayKeyContent(), mp.getPayCertContent(), mp.getPayMchId().toCharArray());
+            }
         } catch (Exception e) {
             this.logger().error("pemToPkcs12 error, message: {}", e.getMessage());
         }
