@@ -467,8 +467,20 @@ global.wxComponent({
       util.api('/api/wxapp/cart/list', res => {
         if (res.error === 0) {
           let {
-            cartGoodsList: goodsList
+            cartGoodsList,
+            purchasePriceGoodsMap,
+            fullReductionGoodsMap
           } = res.content
+          let purchaseGoodsList = Object.keys(purchasePriceGoodsMap).reduce((defaultData,item)=>{
+            defaultData = [...defaultData,...purchasePriceGoodsMap[item]]
+            return defaultData
+          },[])
+          let fullReductionGoodsList = Object.keys(fullReductionGoodsMap).reduce((defaultData,item)=>{
+            defaultData = [...defaultData,...fullReductionGoodsMap[item]]
+            return defaultData
+          },[])
+          let goodsList = [...purchaseGoodsList,...fullReductionGoodsList,...cartGoodsList]
+          console.log(goodsList)
           let cartNum = goodsList.reduce((total, item, index) => {
             return total += item.cartNumber
           }, 0)
