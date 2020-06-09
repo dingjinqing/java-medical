@@ -515,7 +515,8 @@ export default {
       let obj = {
         'currentPage': 0,
         'pageRows': 100,
-        'cardType': this.currentCardType
+        'cardType': this.currentCardType,
+        'filterStop': false
       }
       console.log(obj)
       // 请求后台api
@@ -698,7 +699,8 @@ export default {
           this.getBackEndData({
             'currentPage': 0,
             'pageRows': 100,
-            'cardType': this.currentCardType
+            'cardType': this.currentCardType,
+            'filterStop': false
           })
         }
       })
