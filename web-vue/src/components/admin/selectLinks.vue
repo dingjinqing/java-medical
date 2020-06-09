@@ -1,5 +1,8 @@
 <template>
-  <div class="links">
+  <div
+    class="links"
+    v-if="dialogVisible"
+  >
     <!-- 弹窗 -->
     <el-dialog
       :title="$t('selectLinks.dialogTitle')"

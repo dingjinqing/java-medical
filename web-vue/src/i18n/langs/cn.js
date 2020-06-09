@@ -57,6 +57,10 @@ import {
 import {
   cn as adminPageFramework
 } from './views/admin_new/cn/adminPageFrameworkCn'
+// 基础信息 第三方对接配置
+import {
+  cn as thirdPartyConfig
+} from './views/admin_new/cn/index/basicSettings/thirdPartyConfig/thirdPartyConfigCn'
 
 import {
   cn as videoSpace
@@ -1004,6 +1008,7 @@ const cn = {
   versionList, // system 版本列表
   ShopConfiguration, // admin 店铺基础配置
   adminPageFramework, // admin页面框架
+  thirdPartyConfig, // 第三方对接
 
   // 概览
   overview, // 商城概览

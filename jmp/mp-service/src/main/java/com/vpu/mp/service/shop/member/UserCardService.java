@@ -659,7 +659,7 @@ public class UserCardService extends ShopBaseService {
 				content.append(String.format("可使用门店服务%d次,", card.getCount()));
 			}
 			content.setLength(content.length() - 1);
-		} else if (card.getDiscount().intValue() > 0) {
+		} else if (card.getDiscount() != null && card.getDiscount().intValue() > 0) {
 			content.append(String.format("打%f折", card.getDiscount().floatValue()));
 		}
 		StringBuilder expireTimeMessage = new StringBuilder();

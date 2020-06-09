@@ -27,8 +27,11 @@ public class ApiExternalGateController extends ShopBaseService {
     private ApiExternalGateService gateService;
 
     @PostMapping("/service/gateWay")
-    public ApiJsonResult gateWay(@RequestBody ApiExternalGateParam param){
+    public ApiJsonResult gateWay(ApiExternalGateParam param){
         try {
+            // 日志请求记录
+            apiCallLog(param);
+
             // 必要系统参数验证
             String nullKey = gateService.checkSystemParam(param);
             if (nullKey != null) {
@@ -71,11 +74,24 @@ public class ApiExternalGateController extends ShopBaseService {
             }
 
             ApiJsonResult result = gateService.serviceFunCall(param);
-            return response(result.getCode(),result.getMsg(),result.getData());
+            responseLog(result);
+            return result;
         } catch (Exception e) {
-           log.error("servcie gateWay error:"+e.getMessage());
+           log.error("servcie gateWay error:", e);
            return response(ApiExternalGateConfig.ERROR_SYSTEM_FAIL,ApiExternalGateConfig.ERROR_SYSTEM_FAIL_MSG);
         }
+    }
+
+    /**
+     * 临时测试使用
+     * @param param
+     * @return
+     */
+    @PostMapping("/service/test")
+    public ApiJsonResult test(@RequestBody ApiExternalGateParam param){
+        ApiJsonResult result = gateService.serviceFunCall(param);
+        responseLog(result);
+        return result;
     }
 
     /**
@@ -85,24 +101,22 @@ public class ApiExternalGateController extends ShopBaseService {
      * @return {@link ApiJsonResult}
      */
     private ApiJsonResult response(Integer errorCode, String errorMsg){
-        return response(errorCode,errorMsg,null);
-    }
-
-    /**
-     * 统一返回信息出口
-     * @param errorCode 操作结果码值
-     * @param errorMsg 操作结果信息
-     * @param data 操作结果数据
-     * @return {@link ApiJsonResult}
-     */
-    private ApiJsonResult response(Integer errorCode, String errorMsg, Object data) {
         ApiJsonResult apiJsonResult = new ApiJsonResult();
         apiJsonResult.setCode(errorCode);
         apiJsonResult.setMsg(errorMsg);
-        if (data != null) {
-            apiJsonResult.setData(data);
-        }
-        log.info("service api response："+ Util.toJson(apiJsonResult));
+        responseLog(apiJsonResult);
         return apiJsonResult;
+    }
+
+    /**
+     * 统一日志
+     * @param apiJsonResult 接口返回信息
+     */
+    private void responseLog(ApiJsonResult apiJsonResult){
+        log.info("service api response："+ Util.toJson(apiJsonResult));
+    }
+
+    private void apiCallLog(ApiExternalGateParam param) {
+        log.info("service api call："+Util.toJson(param));
     }
 }

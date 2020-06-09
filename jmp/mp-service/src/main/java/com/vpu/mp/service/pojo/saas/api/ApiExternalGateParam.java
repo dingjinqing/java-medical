@@ -34,7 +34,7 @@ public class ApiExternalGateParam {
     private String content;
     private String sign;
 
-
+    /**店铺id，从sessionKey中解析得到*/
     private Integer shopId;
     private String requestId;
 }

@@ -18,7 +18,7 @@ global.wxPage({
       address: '',
       districtCode: '',
       isDefault: false,
-      zipCode: ''
+      zipcode: ''
     },
     autoSwitch: true
   },
@@ -35,7 +35,7 @@ global.wxPage({
       util.api('/api/wxapp/address/get', res => {
         if (res.error === 0) {
           let content = res.content
-          content.zipCode = content.zipcode
+          content.zipcode = content.zipcode
           that.setData({
             region: [content.provinceName, content.cityName, content.districtName],
             regionCode: [content.provinceCode, content.cityCode, content.districtCode],
@@ -91,7 +91,7 @@ global.wxPage({
       mobile: address.phone,
       address: address.address,
       districtCode: address.districtCode||'',
-      zipCode: address.zipCode,
+      zipcode: address.zipCode,
       isDefault: false
     }
     let region = [address.province, address.city, address.county]
@@ -141,7 +141,7 @@ global.wxPage({
     console.log('picker发送选择改变，携带值为', e)
     this.setData({
       regionCode: e.detail.code,
-      'formData.zipCode': e.detail.postcode,
+      'formData.zipcode': e.detail.postcode,
       region: e.detail.value
     })
   },
@@ -164,8 +164,8 @@ global.wxPage({
           if (op.error === 0) {
             let content = op.content
             that.setData({
-              region: [content.postalName, content.cityName, content.districtName],
-              regionCode: [content.postalId, content.cityId, content.districtId]
+              region: [content.postalName||content.provinceName, content.cityName, content.districtName],
+              regionCode: [content.postalId||content.provinceCode, content.cityId, content.districtId]
             })
           } else {
             util.showModal('提醒', '定位失败')
@@ -269,7 +269,7 @@ global.wxPage({
         icon: 'none'
       })
       return false;
-    } else if (formData.mobile === '' || !(/^[\d-]{7,11}$/.test(formData.mobile))) {
+    } else if (formData.mobile === '' || !(/^[\d-]{7,12}$/.test(formData.mobile))) {
       wx.showToast({
         title: '请填写正确的联系电话！',
         icon: 'none'

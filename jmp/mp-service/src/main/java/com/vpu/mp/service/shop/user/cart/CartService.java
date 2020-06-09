@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -539,10 +540,9 @@ public class CartService extends ShopBaseService {
     private void checkoutActivity(WxAppAddGoodsToCartParam param, Integer cardId, WxAppCartBo cartList) {
         if (param.getActivityType()!=null){
             logger().info("修改商品的活动");
-            Map<Integer, List<WxAppCartGoods>> cartGoodsMap = getCartGoodsMap(cartList);
-            List<WxAppCartGoods> wxAppCartGoods = cartGoodsMap.get(cardId);
-            if (wxAppCartGoods != null && wxAppCartGoods.size() > 0) {
-                WxAppCartGoods cartGoods = wxAppCartGoods.get(0);
+            Map<Integer, WxAppCartGoods> cartGoodsMap = getCartGoodsMap(cartList);
+            WxAppCartGoods cartGoods = cartGoodsMap.get(cardId);
+            if (cartGoods != null) {
                 if (!param.getActivityType().equals(cartGoods.getActivityType())||!param.getActivityId().equals(cartGoods.getExtendId())){
                     switchActivityGoods(param.getUserId(),cardId,param.getActivityId(),param.getActivityType());
                 }
@@ -558,11 +558,10 @@ public class CartService extends ShopBaseService {
      * @return
      */
     private ResultMessage checkoutLimit(WxAppAddGoodsToCartParam param, Integer cardId, WxAppCartBo cartList) {
-        Map<Integer, List<WxAppCartGoods>> cartGoodsMap = getCartGoodsMap(cartList);
-        List<WxAppCartGoods> wxAppCartGoods = cartGoodsMap.get(cardId);
-        if (wxAppCartGoods != null && wxAppCartGoods.size() > 0) {
-            WxAppCartGoods cartGoods = wxAppCartGoods.get(0);
-            if (param.getType().equals(WxAppAddGoodsToCartParam.CART_GOODS_NUM_TYPE_ADD)){
+        Map<Integer, WxAppCartGoods> cartGoodsMap = getCartGoodsMap(cartList);
+        WxAppCartGoods cartGoods = cartGoodsMap.get(cardId);
+        if (cartGoods != null) {
+             if(param.getType().equals(WxAppAddGoodsToCartParam.CART_GOODS_NUM_TYPE_ADD)){
                 param.setGoodsNumber(cartGoods.getCartNumber()+param.getGoodsNumber());
             }
             logger().info("购物车-修改商品{}数量{}", cartGoods.getGoodsName(), param.getGoodsNumber());
@@ -613,8 +612,8 @@ public class CartService extends ShopBaseService {
         return ResultMessage.builder().flag(true).build();
     }
 
-    private Map<Integer, List<WxAppCartGoods>> getCartGoodsMap(WxAppCartBo cartList) {
-        return cartList.getCartGoodsList().stream().collect(Collectors.groupingBy(WxAppCartGoods::getCartId));
+    private Map<Integer, WxAppCartGoods> getCartGoodsMap(WxAppCartBo cartList) {
+      return cartList.getCartGoodsList().stream().collect(Collectors.toMap(WxAppCartGoods::getCartId, Function.identity()));
     }
 
     private boolean isLimitValid(Integer limitNum) {

@@ -1,14 +1,22 @@
 
 package com.vpu.mp.service.shop.order.action;
 
+import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PartOrderGoodsShipRecord;
+import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.excel.AbstractExcelDisposer;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
+import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.api.ApiShippingParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
@@ -23,6 +31,8 @@ import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -217,4 +227,85 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		return true;
 	}
 
+
+    /**
+     * 发货统一对外接口
+     * @param param
+     * @return
+     */
+    public ApiJsonResult shippingApi(ApiShippingParam param) throws MpException {
+        ApiJsonResult result = new ApiJsonResult();
+        if (param == null) {
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setMsg("content为空");
+            return result;
+        }
+        if(StringUtils.isBlank(param.getOrderSn())) {
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setMsg("参数order_sn为空");
+            return result;
+        }
+        if(StringUtils.isBlank(param.getLogisticsCode())) {
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setMsg("参数logistics_code为空");
+            return result;
+        }
+        if(StringUtils.isBlank(param.getLogisticsNo())) {
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setMsg("参数logistics_no为空");
+            return result;
+        }
+        OrderInfoRecord order = saas().getShopApp(getShopId()).readOrder.orderInfo.getOrderByOrderSn(param.getOrderSn());
+        if(order == null ) {
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setMsg("发货订单不存在");
+            return result;
+        }
+        //此次发货商品
+        List<ShipParam.ShipGoods> shipGoodsInfo = new ArrayList<>();
+        //参数中的发货商品
+        List<Integer> recIds = param.getRecIds();
+        //发货信息查询
+        OrderOperateQueryParam queryParam = new OrderOperateQueryParam();
+        queryParam.setOrderId(order.getOrderId());
+        queryParam.setOrderSn(order.getOrderSn());
+        ShipVo shipInfo = (ShipVo)query(queryParam);
+        for (OrderGoodsVo goods : shipInfo.getOrderGoodsVo()) {
+            if(CollectionUtils.isEmpty(recIds) || recIds.contains(goods.getRecId())) {
+                ShipGoods shipGoods = new ShipGoods();
+                shipGoods.setRecId(goods.getRecId());
+                shipGoods.setSendNumber(goods.getGoodsNumber());
+                shipGoodsInfo.add(shipGoods);
+            }
+        }
+        if(CollectionUtils.isEmpty(shipGoodsInfo)) {
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setMsg("无可发货商品");
+            return result;
+        }
+        ShipParam shipParam = new ShipParam();
+        shipParam.setOrderId(order.getOrderId());
+        shipParam.setOrderSn(order.getOrderSn());
+        shipParam.setAction((byte) OrderServiceCode.ADMIN_SHIP.ordinal());
+        shipParam.setIsMp(OrderConstant.IS_MP_ERP_OR_EKB);
+        shipParam.setShippingNo(param.getLogisticsNo());
+        shipParam.setShipGoods(shipGoodsInfo.toArray(new ShipParam.ShipGoods[0]));
+        //获取快递公司
+        ExpressVo expressVo = saas().getShopApp(getShopId()).readOrder.expressService.getByCode(param.getLogisticsCode());
+        if(expressVo == null) {
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setMsg("快递公司不存在");
+            return result;
+        }
+        shipParam.setShippingId(expressVo.getShippingId());
+        ExecuteResult executeResult = saas().getShopApp(getShopId()).orderActionFactory.orderOperate(shipParam);
+        if(executeResult == null || executeResult.isSuccess()) {
+            result.setCode(ApiExternalGateConfig.ERROR_CODE_SUCCESS);
+        }else {
+            logger.error("外服系统调用发货接口失败，executeResult：{}", executeResult);
+            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setMsg(Util.translateMessage(AbstractExcelDisposer.DEFAULT_LANGUAGE, executeResult.getErrorCode().getMessage(), JsonResult.LANGUAGE_TYPE_MSG, executeResult.getErrorParam()));
+        }
+        return result;
+    }
 }

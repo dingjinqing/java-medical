@@ -134,6 +134,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+*,/deep/ .el-form-item__label,
+/deep/ .el-radio__label,
+/deep/ .el-checkbox__label{
+  font-size: 13px;
+}
 .tip {
   color: #9d9d9d;
   padding-left: 0px;

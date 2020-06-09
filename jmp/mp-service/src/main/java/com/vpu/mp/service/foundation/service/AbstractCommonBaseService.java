@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.api.ApiPageResult;
 import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import com.vpu.mp.service.saas.SaasApplication;
 import com.vpu.mp.service.wechat.OpenPlatform;
@@ -141,5 +142,26 @@ public abstract  class AbstractCommonBaseService {
         ExcelWriter excelWriter = new ExcelWriter(workbook);
         excelWriter.writeModelList(list, clazz);
         return workbook;
+    }
+
+    /**
+     * 对外接口分页方法
+     * @param select
+     * @param currentPage
+     * @param pageRows
+     * @param clazz
+     * @param <T>
+     */
+    public <T> ApiPageResult<T> getApiPageResult(SelectLimitStep<?> select, Integer currentPage, Integer pageRows,
+                                              Class<T> clazz){
+        PageResult<T> pageResult = getPageResult(select, currentPage, pageRows, clazz);
+
+        ApiPageResult<T> apiPageResult = new ApiPageResult<>();
+        apiPageResult.setCurPageNo(pageResult.page.currentPage);
+        apiPageResult.setPageSize(pageResult.page.pageCount);
+        apiPageResult.setTotalCount(pageResult.page.totalRows);
+        apiPageResult.setDataList(pageResult.getDataList());
+
+        return apiPageResult;
     }
 }
