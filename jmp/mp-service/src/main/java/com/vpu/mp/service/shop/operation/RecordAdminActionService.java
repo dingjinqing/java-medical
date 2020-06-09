@@ -1,20 +1,5 @@
 package com.vpu.mp.service.shop.operation;
 
-import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
-import org.jooq.SelectWhereStep;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.config.AuthConfig;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
@@ -28,6 +13,20 @@ import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionInfo;
 import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionPojo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record;
+import org.jooq.SelectWhereStep;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
 
 /**
  * 操作记录的实现逻辑
@@ -193,18 +192,21 @@ public class RecordAdminActionService extends ShopBaseService {
 		List<String> resultList = new ArrayList<String>(2);
 		String result = jedis.getValueAndSave(key, timeout, () -> {
 			switch (type) {
-			case REQUEST_TYPE_ACCOUNT:
-				return this.getAccountNameAndMobile(id, resultList);
-			case REQUEST_TYPE_SYSTEM:
-				return this.getSystemNameAndMobile(id, resultList);
-			case REQUEST_TYPE_NONE:
-				return this.getNameAndMobileByNoRequest();
-			default:
-				return "";
-			}
-		});
-		return Arrays.asList(result.split(","));
-	}
+                case REQUEST_TYPE_ACCOUNT:
+                    return this.getAccountNameAndMobile(id, resultList);
+                case REQUEST_TYPE_SYSTEM:
+                    return this.getSystemNameAndMobile(id, resultList);
+                case REQUEST_TYPE_NONE:
+                    return this.getNameAndMobileByNoRequest();
+                default:
+                    return "";
+            }
+        });
+        if (result == null) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList(result.split(","));
+    }
 
 	private String getAccountNameAndMobile(Integer accountId, List<String> resultList) {
 		ShopChildAccountRecord subAccount = saas.shop.subAccount.getSubAccountInfo(accountId);
