@@ -879,7 +879,11 @@ export default {
       if (newData === '1') {
         console.log(this.data)
         // this.data.goodsListData = []
-        this.handleToGetModulesGoods(this.data, true)
+        this.isToChangeData = true
+        this.handleToGetModulesGoods(this.data, true, true)
+      } else {
+        this.handleToGetModulesGoods(this.data, false)
+        this.isToChangeData = false
       }
     },
     'data.goods_items' (newData) {
