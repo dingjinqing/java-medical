@@ -87,7 +87,7 @@
             v-model="wechatpayconf.payKey"
           ></el-input>
         </li>
-        <li class="specialHeight">
+        <li class="specialHeight" v-if="wechatpayconf.isSubMerchant === 0">
           <span>{{$t('payConfiguration.payCertContent')}}</span>
           <el-input
             size="small"
@@ -97,7 +97,7 @@
             v-model="wechatpayconf.payCertContent"
           ></el-input>
         </li>
-        <li class="specialHeight">
+        <li class="specialHeight" v-if="wechatpayconf.isSubMerchant === 0">
           <span>{{$t('payConfiguration.payKeyContent')}}</span>
           <el-input
             size="small"
@@ -308,6 +308,10 @@ export default {
       this.showSettingDialog = false
     },
     save () {
+      if (this.wechatpayconf.isSubMerchant === 1) {
+        delete this.wechatpayconf.payCertContent
+        delete this.wechatpayconf.payKeyContent
+      }
       wechatPayUpdate(this.wechatpayconf).then(res => {
         console.log(res)
         if (res.error === 0) {
