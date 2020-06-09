@@ -84,52 +84,55 @@ public class PackSaleParam {
 		if(group1.getGoodsIdList() != null) {
 			String goodsIds = StringUtils.join(group1.getGoodsIdList(), PackSaleConstant.ID_DELIMITER);
 			record.setGoodsIds_1(goodsIds);
-		}
-		if(group1.getCatIdList() != null) {
-			String catIds = StringUtils.join(group1.getCatIdList(), PackSaleConstant.ID_DELIMITER);
-			record.setCatIds_1(catIds);
-		}
-		if(group1.getSortIdList() != null) {
-			String sortIds = StringUtils.join(group1.getSortIdList(), PackSaleConstant.ID_DELIMITER);
-			record.setSortIds_1(sortIds);
-		}
-		if(group2 == null) {
-			return record;
-		}
-		record.setGroupName_2(group2.getGroupName());
-		record.setGoodsGroup_2(Status.NORMAL);
-		record.setGoodsNumber_2(group2.getGoodsNumber());
-		if(group2.getGoodsIdList() != null) {
-			String goodsIds = StringUtils.join(group2.getGoodsIdList(), PackSaleConstant.ID_DELIMITER);
-			record.setGoodsIds_2(goodsIds);
-		}
-		if(group2.getCatIdList() != null) {
-			String catIds = StringUtils.join(group2.getCatIdList(), PackSaleConstant.ID_DELIMITER);
-			record.setCatIds_2(catIds);
-		}
-		if(group2.getSortIdList() != null) {
-			String sortIds = StringUtils.join(group2.getSortIdList(), PackSaleConstant.ID_DELIMITER);
-			record.setSortIds_2(sortIds);
-		}
-		if(group3 == null) {
-			return record;
-		}
+        }
+        if (group1.getCatIdList() != null) {
+            String catIds = StringUtils.join(group1.getCatIdList(), PackSaleConstant.ID_DELIMITER);
+            record.setCatIds_1(catIds);
+        }
+        if (group1.getSortIdList() != null) {
+            String sortIds = StringUtils.join(group1.getSortIdList(), PackSaleConstant.ID_DELIMITER);
+            record.setSortIds_1(sortIds);
+        }
+        if (group2 == null) {
+            record.setGoodsGroup_2(Status.DISABLED);
+        } else {
+            record.setGroupName_2(group2.getGroupName());
+            record.setGoodsGroup_2(Status.NORMAL);
+            record.setGoodsNumber_2(group2.getGoodsNumber());
+            if (group2.getGoodsIdList() != null) {
+                String goodsIds = StringUtils.join(group2.getGoodsIdList(), PackSaleConstant.ID_DELIMITER);
+                record.setGoodsIds_2(goodsIds);
+            }
+            if (group2.getCatIdList() != null) {
+                String catIds = StringUtils.join(group2.getCatIdList(), PackSaleConstant.ID_DELIMITER);
+                record.setCatIds_2(catIds);
+            }
+            if (group2.getSortIdList() != null) {
+                String sortIds = StringUtils.join(group2.getSortIdList(), PackSaleConstant.ID_DELIMITER);
+                record.setSortIds_2(sortIds);
+            }
+        }
 
-		record.setGoodsGroup_3(Status.NORMAL);
-		record.setGroupName_3(group3.getGroupName());
-		record.setGoodsNumber_3(group3.getGoodsNumber());
-		if(group3.getGoodsIdList() != null) {
-			String goodsIds = StringUtils.join(group3.getGoodsIdList(), PackSaleConstant.ID_DELIMITER);
-			record.setGoodsIds_3(goodsIds);
-		}
-		if(group3.getCatIdList() != null) {
-			String catIds = StringUtils.join(group3.getCatIdList(), PackSaleConstant.ID_DELIMITER);
-			record.setCatIds_3(catIds);
-		}
-		if(group3.getSortIdList() != null) {
-			String sortIds = StringUtils.join(group3.getSortIdList(), PackSaleConstant.ID_DELIMITER);
-			record.setSortIds_3(sortIds);
-		}
-		return record;
-	}
+        if (group3 == null) {
+            record.setGoodsGroup_3(Status.DISABLED);
+        } else {
+            record.setGoodsGroup_3(Status.NORMAL);
+            record.setGroupName_3(group3.getGroupName());
+            record.setGoodsNumber_3(group3.getGoodsNumber());
+            if (group3.getGoodsIdList() != null) {
+                String goodsIds = StringUtils.join(group3.getGoodsIdList(), PackSaleConstant.ID_DELIMITER);
+                record.setGoodsIds_3(goodsIds);
+            }
+            if (group3.getCatIdList() != null) {
+                String catIds = StringUtils.join(group3.getCatIdList(), PackSaleConstant.ID_DELIMITER);
+                record.setCatIds_3(catIds);
+            }
+            if (group3.getSortIdList() != null) {
+                String sortIds = StringUtils.join(group3.getSortIdList(), PackSaleConstant.ID_DELIMITER);
+                record.setSortIds_3(sortIds);
+            }
+        }
+
+        return record;
+    }
 }
