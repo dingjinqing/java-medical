@@ -220,7 +220,7 @@ global.wxPage({
     var sort_ids = e.currentTarget.dataset.sord_ids;
     var sort_names = e.currentTarget.dataset.sort_names;
     util.navigateTo({
-      url: `/pages1/search/search?sortIds=${JSON.stringify([sort_ids])}`,
+      url: `/pages/search/search?sortIds=${JSON.stringify([sort_ids])}`,
     })
   },
   // 推荐分类跳转

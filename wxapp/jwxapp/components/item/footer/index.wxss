@@ -30,18 +30,22 @@
 }
 .small_view .cart_goods_num {
   position: absolute;
-  line-height: 26rpx;
+  width:30rpx;
   text-align: center;
-  padding: 0 6rpx;
+  line-height: 30rpx;
   border: 1px solid;
   background-color: #fff;
   font-size: 20rpx;
-  border-radius: 50%;
-  right: 20rpx;
+  left: 60rpx;
   top: 2rpx;
 }
 .small_view .image {
   width: 44rpx;
+  height: 40rpx;
+}
+button.small_view{
+  background-color: #fff;
+  line-height: unset;
 }
 .footer_flex_view {
   flex: 1;

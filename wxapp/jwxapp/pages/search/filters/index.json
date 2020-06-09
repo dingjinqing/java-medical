@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "v-popup": "/components/popup/popup/index",
+    "v-sort-filter":"./sort_filter/index",
+    "v-brand-filter":"./brand_filter/index"
+  }
+}

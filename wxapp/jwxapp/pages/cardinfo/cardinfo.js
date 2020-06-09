@@ -674,7 +674,7 @@ global.wxPage({
   to_search: function (e) {
     var card_id = e.currentTarget.dataset.card_id;
     util.navigateTo({
-      url: '/pages1/searchs/search'
+      url: '/pages/searchs/search'
     })
   },
   // 点击转赠

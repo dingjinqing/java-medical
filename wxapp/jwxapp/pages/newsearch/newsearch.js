@@ -104,7 +104,7 @@ global.wxPage({
         hotWords: data
       })
     }
-    util.jumpLink('/pages1/search/search?keyWords=' + data, "redirectTo")
+    util.jumpLink('/pages/search/search?keyWords=' + data, "redirectTo")
   },
   
   to_search: function (e) {
