@@ -674,6 +674,9 @@ public class CardDaoService extends ShopBaseService {
 				mCard.setBgImg(imageUrl);
 			}
 		}
+		if(StringUtils.isBlank(mCard.getBgColor())) {
+			mCard.setBgColor(CardUtil.getDefaultBgColor());
+		}
 		return mCard;
 		
 	}
