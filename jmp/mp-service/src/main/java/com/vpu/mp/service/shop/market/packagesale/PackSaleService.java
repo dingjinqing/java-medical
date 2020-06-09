@@ -263,28 +263,26 @@ public class PackSaleService extends ShopBaseService {
 	 * @return
 	 */
 	private PackSaleDefineVo convert2PackSaleDefineVo(PackageSaleRecord record) {
-		if(record == null) {
-			return null;
-		}
-		PackSaleDefineVo defineVo = record.into(PackSaleDefineVo.class);
+        if (record == null) {
+            return null;
+        }
+        PackSaleDefineVo defineVo = record.into(PackSaleDefineVo.class);
 
-		GoodsGroupVo groupVo = convert2GoodsGroupVo(defineVo, record.getGroupName_1(), record.getGoodsNumber_1(), record.getGoodsIds_1(), record.getCatIds_1(), record.getSortIds_1());
-		defineVo.setGroup1(groupVo);
-		
-		if(!record.getGoodsGroup_2().equals(Status.NORMAL)) {
-			return defineVo;
-		}
-		groupVo = convert2GoodsGroupVo(defineVo, record.getGroupName_2(), record.getGoodsNumber_2(), record.getGoodsIds_2(), record.getCatIds_2(), record.getSortIds_2());
-		defineVo.setGroup2(groupVo);
-		
-		if(!record.getGoodsGroup_3().equals(Status.NORMAL)) {
-			return defineVo;
-		}
-		groupVo = convert2GoodsGroupVo(defineVo, record.getGroupName_3(), record.getGoodsNumber_3(), record.getGoodsIds_3(), record.getCatIds_3(), record.getSortIds_3());
-		defineVo.setGroup3(groupVo);
-		
-		return defineVo;
-	}
+        GoodsGroupVo groupVo = convert2GoodsGroupVo(defineVo, record.getGroupName_1(), record.getGoodsNumber_1(), record.getGoodsIds_1(), record.getCatIds_1(), record.getSortIds_1());
+        defineVo.setGroup1(groupVo);
+
+        if (record.getGoodsGroup_2().equals(Status.NORMAL)) {
+            groupVo = convert2GoodsGroupVo(defineVo, record.getGroupName_2(), record.getGoodsNumber_2(), record.getGoodsIds_2(), record.getCatIds_2(), record.getSortIds_2());
+            defineVo.setGroup2(groupVo);
+        }
+
+        if (record.getGoodsGroup_3().equals(Status.NORMAL)) {
+            groupVo = convert2GoodsGroupVo(defineVo, record.getGroupName_3(), record.getGoodsNumber_3(), record.getGoodsIds_3(), record.getCatIds_3(), record.getSortIds_3());
+            defineVo.setGroup3(groupVo);
+        }
+
+        return defineVo;
+    }
 	GoodsGroupVo convert2GoodsGroupVo(PackSaleDefineVo defineVo,String groupName,Integer goodsNumber,String goodsIds,String catIds,String sortIds) {
 		GoodsGroupVo groupVo = defineVo.new GoodsGroupVo();
 		groupVo.setGroupName(groupName);
