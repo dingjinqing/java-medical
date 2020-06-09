@@ -57,7 +57,7 @@
 
             </td>
             <td class="tb_decorate_a">
-              pages1/search/search?{{(classificationFlag===0)?('cat_id='+item.catId):(classificationFlag===1)?('sort_id='+item.sortId):(classificationFlag===2?('brand_id='+item.id):('label_id='+item.id))}}
+              pages1/search/search?{{(classificationFlag===0)?('cat_id='+item.catId):(classificationFlag===1)?('sortIds=['+item.sortId+']'):(classificationFlag===2?('brandIds=['+item.id+']'):('labelIds=['+item.id+']'))}}
             </td>
           </tr>
         </tbody>
@@ -284,13 +284,13 @@ export default {
       console.log('选中', item)
       let path = ''
       switch (this.classificationFlag) {
-        case 0: path = 'pages1/search/search/' + 'cat_id=' + this.trList[index].catId
+        case 0: path = 'pages1/search/search?' + 'cat_id=' + this.trList[index].catId
           break
-        case 1: path = 'pages1/search/search/' + 'sort_id=' + this.trList[index].sortId
+        case 1: path = 'pages1/search/search?' + 'sortIds=' + JSON.stringify([this.trList[index].sortId])
           break
-        case 2: path = 'pages1/search/search/' + 'brand_id=' + this.trList[index].id
+        case 2: path = 'pages1/search/search?' + 'brandIds=' + JSON.stringify([this.trList[index].id])
           break
-        case 3: path = 'pages1/search/search/' + 'label_id=' + this.trList[index].id
+        case 3: path = 'pages1/search/search?' + 'labelIds=' + JSON.stringify([this.trList[index].id])
           break
       }
       this.choisePagePath(path)
