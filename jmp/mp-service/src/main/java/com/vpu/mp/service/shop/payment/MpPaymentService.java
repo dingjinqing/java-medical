@@ -93,7 +93,7 @@ public class MpPaymentService extends ShopBaseService {
 		    //子商户模式
             payConfig.setAppId(wxSerMchConfig.getWxSrvAppId());
             payConfig.setMchId(wxSerMchConfig.getWxSrvMchId());
-            payConfig.setMchKey(wxSerMchConfig.getWxSrvKey());
+            payConfig.setMchKey(mp.getPayKey());
             payConfig.setSubAppId(mp.getAppId());
             payConfig.setSubMchId(mp.getPayMchId());
             payConfig.setKeyContent(keyContent);
