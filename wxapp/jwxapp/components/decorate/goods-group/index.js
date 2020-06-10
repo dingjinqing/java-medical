@@ -119,7 +119,7 @@ global.wxComponent({
       }
       console.log(sortIds, brandIds, labelIds, goodsIds)
       if (d.click == 1) {
-        util.jumpLink(`/pages1/search/search${util.getUrlParams({
+        util.jumpLink(`/pages/search/search${util.getUrlParams({
           pageFrom: 0,
           outerPageParam: JSON.stringify({
             sortIds,

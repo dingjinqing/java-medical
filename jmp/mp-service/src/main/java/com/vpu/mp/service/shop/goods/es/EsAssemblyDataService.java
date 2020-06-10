@@ -139,6 +139,10 @@ public class EsAssemblyDataService extends ShopBaseService {
                     esGoods.setDefPrd(false);
                 }
                 list.forEach(x -> {
+                    if( StringUtils.isNotBlank(x.getPrdImg()) ){
+                        String imgUlr = imageService.imageUrl(x.getPrdImg());
+                        x.setPrdImg(imgUlr);
+                    }
                     voList.add(new EsGoodsProduct(x));
                     specPrdPrices.add(x.getPrdPrice());
                     prdSns.append(x.getPrdSn()).append(",");

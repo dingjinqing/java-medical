@@ -509,7 +509,7 @@ export default {
       console.log(flag)
       if (flag) {
         this.showSix = false
-        this.activeName = 'first'
+        this.activeName = 'second'
         this.actState = 0
         this.handleToInit()
       }
@@ -614,7 +614,7 @@ export default {
   }
   .name {
     width: 115px;
-    height: 40px;
+    // height: 40px;
     text-overflow: ellipsis;
     overflow: hidden;
     -webkit-box-orient: vertical;

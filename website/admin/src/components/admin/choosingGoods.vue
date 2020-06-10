@@ -185,7 +185,10 @@
                   :class="loadProduct?'tdCenter':''"
                 >
                   <img :src="item.prdImg || item.goodsImg">
-                  <div v-html="item.goodsName"></div>
+                  <div
+                    class="ellipsis"
+                    v-html="item.goodsName"
+                  ></div>
                   <!-- 规格描述 -->
                   <span v-if="loadProduct">{{item.prdDesc}}</span>
                 </td>
@@ -356,12 +359,12 @@ export default {
       // 分页
       pageParams: {
         currentPage: 1,
-        pageRows: 3
+        pageRows: 20
       },
       // 筛选条件
       requestParam: {
         currentPage: 1,
-        pageRows: 3,
+        pageRows: 20,
         // 在售商品
         isOnSale: this.upperlowershelves ? null : 1,
         isSaleOut: 0,
@@ -416,7 +419,7 @@ export default {
       if (this.initialConditionRender.length) {
         this.requestParam = {
           currentPage: 1,
-          pageRows: 3,
+          pageRows: 20,
           isOnSale: this.upperlowershelves ? null : 1,
           isSaleOut: 0,
           catId: null,
@@ -552,7 +555,7 @@ export default {
       this.choiseGooddialogVisible = false
       this.requestParam = {
         currentPage: 1,
-        pageRows: 3,
+        pageRows: 20,
         // 在售商品
         isOnSale: this.upperlowershelves ? null : 1,
         isSaleOut: 0,
@@ -861,6 +864,21 @@ img {
   margin-left: 10px;
 }
 .isLeft {
+  text-align: left;
+  display: flex;
+}
+.ellipsis {
+  width: 140px;
+  height: 40px !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal !important;
+  word-break: break-all;
+  padding-left: 10px;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 20px;
   text-align: left;
 }
 .isLeft img {

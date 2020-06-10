@@ -85,7 +85,10 @@
             >
               + {{$t('mintegralExchange.chooseCommodity')}}
             </span>
-            <span v-if="ruleForm.checkGoodsName">{{ruleForm.checkGoodsName}}</span>
+            <span
+              v-if="ruleForm.checkGoodsName"
+              v-html="ruleForm.checkGoodsName"
+            ></span>
             <span
               v-if="ruleForm.checkGoodsName && status!==1"
               @click="handleToChooseGoods()"
@@ -775,6 +778,8 @@ export default {
     },
     resultGoodsRow (res) { // 选中商品弹窗回传数据
       console.log(res)
+      res.goodsName = res.goodsName.replace(/color='red'/g, '')
+      console.log(res.goodsName.replace(/color='red'/g, ''))
       this.ruleForm.checkGoodsName = res.goodsName
       this.checkGoodsId = res.goodsId
 
@@ -866,6 +871,9 @@ export default {
     color: #5a8bff;
     border: 1px solid #ddd;
     cursor: pointer;
+    font {
+      color: #fff;
+    }
   }
   /deep/ .el-table__header {
     background-color: #f5f5f5;
