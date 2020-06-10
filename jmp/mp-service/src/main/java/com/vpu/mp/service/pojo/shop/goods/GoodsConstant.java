@@ -96,6 +96,14 @@ public class GoodsConstant {
      */
     public static final Byte OFF_SALE = 0;
 
+    /** 商品仓库类型 在售 */
+    public static final Byte SALE_TYPE_ON_SALE = 0;
+    /** 商品仓库类型 指定时间  */
+    public static final Byte SALE_TYPE_ON_TIME = 1;
+    /** 商品仓库类型 仓库中 */
+    public static final Byte SALE_TYPE_NOT_ON_SALE = 2;
+
+
     /**
      * 售罄
      */

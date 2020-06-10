@@ -76,7 +76,9 @@ export default {
     }
   },
   mounted () {
-    this.activeName = this.$route.query.activeName
+    if (this.$route.query.activeName) {
+      this.activeName = this.$route.query.activeName
+    }
   },
   methods: {
     // tap切换

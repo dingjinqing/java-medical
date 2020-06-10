@@ -13,19 +13,19 @@
 <view class="footer">
   <block wx:if="{{position === 'footer' && !filter.includes([4,8],activity.activityType)}}">
     <view class="small_view" bindtap="backHome">
-      <image class="image" mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
+      <image class="image" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
       <text>首页</text>
     </view>
     <view class="small_view" bindtap="toCartList">
-      <image class="image" mode="widthFix" src="{{imageUrl}}image/wxapp/cart_icon.png"></image>
+      <image class="image"  src="{{imageUrl}}image/wxapp/cart_icon.png"></image>
       <text>购物车</text>
-      <view class="cart_goods_num" style="color:{{main_setting.comColor}};border-color:{{main_setting.comColor}}">{{cartNum}}</view>
+      <view class="cart_goods_num" style="color:{{main_setting.comColor}};border-color:{{main_setting.comColor}};width:{{cartNum > 99 ? '42rpx' : '30rpx'}};border-radius:{{cartNum > 99 ? '15rpx' : '50%'}}">{{cartNum > 99 ? '99+' : cartNum}}</view>
     </view>
   </block>
-  <view class="small_view" wx:if="{{customService && position === 'footer'}}">
-    <image class="image" mode="widthFix" src="{{imageUrl}}image/wxapp/server_icon.png"></image>
+  <button open-type="contact" class="small_view" wx:if="{{customService && position === 'footer'}}">
+    <image class="image" src="{{imageUrl}}image/wxapp/server_icon.png"></image>
     <text>客服</text>
-  </view>
+  </button>
   <!-- <view class="footer_flex_view" bindtap="leftClick" wx:if="{{leftButtonShow}}" style='color:{{(main_setting.comColor != "#ff6666" || !main_setting.comColor)?"#fff":"#f66"}};background:{{main_setting.commonColor}}'>
     <text>{{leftButtonName}}</text>
   </view>

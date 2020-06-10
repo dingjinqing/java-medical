@@ -197,7 +197,7 @@ global.wxPage({
   // 立即使用
   to_search: function (e) {
     var actId = e.currentTarget.dataset.act_id;
-    util.jumpLink(`/pages1/search/search${util.getUrlParams({
+    util.jumpLink(`/pages/search/search${util.getUrlParams({
       pageFrom:20,
       outerPageParam:JSON.stringify({
         actId

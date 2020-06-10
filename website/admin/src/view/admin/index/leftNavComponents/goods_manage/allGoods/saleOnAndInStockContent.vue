@@ -36,7 +36,7 @@
               >
               <div
                 class="nameItem"
-                :title="scope.row.goodsName"
+                :title="scope.row.goodsTitleName"
               >
                 <span
                   v-if="scope.row.sourceName !== null"

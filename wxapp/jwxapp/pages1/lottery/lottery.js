@@ -92,12 +92,12 @@ global.wxPage({
     util.api('/api/wxapp/lottery/get', function (res) {
       if (res.error === 0) {
         let content = res.content
-        that.initRawards(content.lotteryInfo.prizeList)
-        that.initRaffleButton(content.lotteryUserTimeInfo, content.lotteryInfo)
         that.setData({
           lotteryInfo: content.lotteryInfo,
           userInfo: content.lotteryUserTimeInfo
         })
+        that.initRawards(content.lotteryInfo.prizeList)
+        that.initRaffleButton(content.lotteryUserTimeInfo, content.lotteryInfo)
       } else {
         util.showModal('提示', res.message, function () {
           wx.navigateBack({})
@@ -120,8 +120,15 @@ global.wxPage({
           })
           break
         case 1:
+          let thanksGiftIcon = thanksGiftIcon, thanksName = '谢谢参与'
+          if (this.data.lotteryInfo.noAwardImage) {
+            thanksGiftIcon = this.data.imageUrl + this.data.lotteryInfo.noAwardImage
+          }
+          if (this.data.lotteryInfo.noAwardIcon) {
+            thanksName = this.data.lotteryInfo.noAwardIcon
+          }
           lotteryRawards.push({
-            name: '谢谢参与',
+            name: thanksName,
             path: thanksGiftIcon
           })
           break

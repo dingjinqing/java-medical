@@ -41,7 +41,8 @@
     "components/suspend-window/index",
     "components/popup/view_benefits/index",
     "pages/personalcenter/personalcenter",
-    "components/usercenter/useraddress/useraddress"
+    "components/usercenter/useraddress/useraddress",
+    "pages/search/search"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -93,7 +94,6 @@
         "scancode/scancode",
         "comment/comment",
         "history/history",
-        "search/search",
         "fullship/fullship",
         "groupbuyinfo/groupbuyinfo",
         "returnorder/returnorder",

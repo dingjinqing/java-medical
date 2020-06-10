@@ -420,7 +420,7 @@ global.wxPage({
   },
   goCouponSearch(e){
     let {couponId:actId} = e.currentTarget.dataset
-    util.jumpLink(`/pages1/search/search${util.getUrlParams({
+    util.jumpLink(`/pages/search/search${util.getUrlParams({
       pageFrom:20,
       outerPageParam:JSON.stringify({
         actId

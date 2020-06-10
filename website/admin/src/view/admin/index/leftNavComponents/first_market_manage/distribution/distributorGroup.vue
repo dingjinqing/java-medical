@@ -118,7 +118,7 @@
         >
           <template slot-scope="scope">
             <div class="opt">
-              <span @click="editHandler(scope.row.id)">{{$t('distribution.groupEdit')}}</span>
+              <span @click="editHandler(scope.row.id, scope.row.groupName)">{{$t('distribution.groupEdit')}}</span>
               <span @click="delHandler(scope.row.id)">{{$t('distribution.groupDelete')}}</span>
               <span @click="addDistributor(scope.row.id)">{{$t('distribution.addGrouper')}}</span>
             </div>
@@ -140,8 +140,8 @@
 
     <!-- 添加分组弹窗 -->
     <el-dialog
-      :title="$t('distribution.addGroupTitle')"
-      :visible.sync="addGroupDialog"
+      :title="typeFlag === 0 ? $t('distribution.addGroupTitle') : $t('distribution.editGroupTitle')"
+      :visible.sync="groupDialogVisible"
       :close-on-click-modal="false"
       width="40%"
       center
@@ -208,10 +208,13 @@ export default {
   data () {
     // 自定义校验名称
     var validatelevel = (rule, value, callback) => {
-      let result = this.tableData.findIndex(item => { return value === item.groupName })
+      let addResult = this.tableData.findIndex(item => { return value === item.groupName })
+      let editResult = this.tableData.findIndex(item => { return value === item.groupName && value !== this.currentName })
       if (!value) {
         callback(new Error('请填写分组名称'))
-      } else if (result !== -1) {
+      } else if (addResult !== -1 && this.typeFlag === 0) {
+        callback(new Error('分组名称已存在, 请重新填写'))
+      } else if (editResult !== -1 && this.typeFlag === 1) {
         callback(new Error('分组名称已存在, 请重新填写'))
       } else {
         callback()
@@ -238,7 +241,8 @@ export default {
       },
       typeFlag: 0, // 类型: 0添加, 1编辑
       editId: '', // 编辑id
-      addGroupDialog: false, // 分组弹窗
+      currentName: '', // 编辑时当前分组名
+      groupDialogVisible: false, // 分组弹窗
       turnUpDialog: false, // 分销员弹窗
       distributorId: null,
       selectRow: [], // 选中分销员id
@@ -288,16 +292,17 @@ export default {
 
     // 添加按钮
     addGroupHandler () {
-      this.addGroupDialog = true
+      this.groupDialogVisible = true
       this.param.groupName = ''
       this.param.canSelect = 1
     },
 
     // 编辑按钮
-    editHandler (id) {
+    editHandler (id, groupName) {
+      this.currentName = groupName // 编辑当前分组名
       this.typeFlag = 1
       this.editId = id // 要操作的id
-      this.addGroupDialog = true
+      this.groupDialogVisible = true
       distributionGroupEdit(id).then(res => {
         if (res.error === 0) {
           this.param.groupName = res.content.groupName
@@ -311,7 +316,7 @@ export default {
       this.$refs['param'].validate((valid) => {
         if (valid) {
           // 关闭弹窗
-          this.addGroupDialog = false
+          this.groupDialogVisible = false
           this.$refs['param'].resetFields()
           if (this.typeFlag === 0) {
             // 添加保存
@@ -342,7 +347,7 @@ export default {
     // 取消添加分销员分组
     cancelGroupHandler () {
       // 关闭弹窗
-      this.addGroupDialog = false
+      this.groupDialogVisible = false
       this.$refs['param'].resetFields()
     },
 

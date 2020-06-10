@@ -946,6 +946,18 @@ public class CouponGiveService extends ShopBaseService {
                 default:
             }
         }
+        if (param.getStatus() != null) {
+            switch (param.getStatus()) {
+                case CouponConstant.COUPON_STATUS_PROCESSING:
+                    select.where(MRKING_VOUCHER.END_TIME.greaterThan(Util.currentTimeStamp()))
+                        .and(MRKING_VOUCHER.START_TIME.lessThan(Util.currentTimeStamp()));
+                    break;
+                case CouponConstant.COUPON_STATUS_NOT_START:
+                    select.where(MRKING_VOUCHER.START_TIME.greaterThan(Util.currentTimeStamp()));
+                    break;
+                default:
+            }
+        }
     }
 
     /**

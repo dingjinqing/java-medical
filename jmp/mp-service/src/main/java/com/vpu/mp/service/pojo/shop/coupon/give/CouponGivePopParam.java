@@ -24,4 +24,8 @@ public class CouponGivePopParam {
 	/** 分页信息 */
 	private int currentPage;
     private int pageRows;
+    /**
+     * 进行状态 -1全部 0进行中 1未开始
+     */
+    private Byte status;
 }
