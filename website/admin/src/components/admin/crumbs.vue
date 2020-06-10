@@ -153,7 +153,7 @@
       >定向发券使用教程</el-link>
       <el-link
         v-if="$route.name == 'all_message_push'"
-        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=66"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2246"
         type="primary"
         :underline="false"
         target="_blank"
