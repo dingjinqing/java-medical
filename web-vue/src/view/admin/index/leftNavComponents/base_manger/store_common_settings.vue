@@ -576,8 +576,8 @@
                         <div class="">
                           <el-image
                             style="width:220px;"
-                            :src="$imageHost + '/image/admin/pictorial/pictorial_style1.png'"
-                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style1.png']"
+                            :src="$imageHost + '/image/admin/pictorial/pictorial_style1.jpg'"
+                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style1.jpg']"
                           ></el-image>
                         </div>
                         <el-button
@@ -594,8 +594,8 @@
                         <div class="">
                           <el-image
                             style="width:220px;"
-                            :src="$imageHost + '/image/admin/pictorial/pictorial_style2.png'"
-                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style2.png']"
+                            :src="$imageHost + '/image/admin/pictorial/pictorial_style2.jpg'"
+                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style2.jpg']"
                           ></el-image>
                         </div>
                         <el-button
@@ -612,8 +612,8 @@
                         <div class="">
                           <el-image
                             style="width:220px;"
-                            :src="$imageHost + '/image/admin/pictorial/pictorial_style3.png'"
-                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style3.png']"
+                            :src="$imageHost + '/image/admin/pictorial/pictorial_style3.jpg'"
+                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style3.jpg']"
                           ></el-image>
                         </div>
                         <el-button
@@ -630,8 +630,8 @@
                         <div class="">
                           <el-image
                             style="width:220px;"
-                            :src="$imageHost + '/image/admin/pictorial/pictorial_style4.png'"
-                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style4.png']"
+                            :src="$imageHost + '/image/admin/pictorial/pictorial_style4.jpg'"
+                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style4.jpg']"
                           ></el-image>
                         </div>
                         <el-button
@@ -648,8 +648,8 @@
                         <div class="">
                           <el-image
                             style="width:220px;"
-                            :src="$imageHost + '/image/admin/pictorial/pictorial_style5.png'"
-                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style5.png']"
+                            :src="$imageHost + '/image/admin/pictorial/pictorial_style5.jpg'"
+                            :preview-src-list="[$imageHost + '/image/admin/pictorial/pictorial_style5.jpg']"
                           ></el-image>
                         </div>
                         <el-button

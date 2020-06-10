@@ -114,7 +114,7 @@
                     v-model="conditionAddParams2[index].fullMoney"
                     :disabled="fullDeduction == 2 || !!params.id"
                   ></el-input>&nbsp;{{$t('fullCuti18n.yuan')}}，
-                  <span>{{$t('fullCuti18n.yuan')}}</span>
+                  <span>{{$t('fullCuti18n.less')}}</span>
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
@@ -1192,6 +1192,9 @@ export default {
     },
     // 选择商品数据处理-部分
     onlyChooseGoodsHandler () {
+      if (this.params.id) {
+        return false
+      }
       this.isOnlyShowChooseGoods = true
       this.tuneUpChooseGoodsDialog = !this.tuneUpChooseGoodsDialog
     },
