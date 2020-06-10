@@ -339,6 +339,7 @@ export const en = {
   groupDelete: 'Delete',
   addGrouper: 'Add distributor',
   addGroupTitle: 'Add distributor group',
+  editGroupTitle: 'Edit distributor group',
   distributorGroupName: 'Distributor group name',
   supportSelect: 'Support user selection',
   selectTip1: 'support',

@@ -339,6 +339,7 @@ export const cn = {
   groupDelete: '删除',
   addGrouper: '添加分销员',
   addGroupTitle: '添加分销员分组',
+  editGroupTitle: '编辑分销员分组',
   distributorGroupName: '分销员分组名称',
   supportSelect: '是否支持用户选择',
   selectTip1: '支持',
