@@ -274,6 +274,7 @@ global.wxPage({
         if (res.error == 0 && res.content.state === 0) {
           if(!type) util.toast_success('添加成功')
           if(type === 'delete') util.toast_success('删除成功')
+          this.requestGoodsList()
           this.requestCartGoodsList()
         } else if (res.error == 0 && res.content.state !== 0) {
           let errorMessage = {
