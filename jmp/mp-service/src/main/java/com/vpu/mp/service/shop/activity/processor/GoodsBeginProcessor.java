@@ -113,7 +113,7 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
 
             //初始化商品的限制数量
             goods.setLimitMaxNum(goodsRecord.getLimitMaxNum());
-            goods.setLimitBuyNum(goodsRecord.getLimitBuyNum());
+            goods.setLimitBuyNum(goodsRecord.getLimitBuyNum().equals(0)?1:goodsRecord.getLimitBuyNum());
             goods.setPrdNumber(productRecord.getPrdNumber());
             //初始化价格
             goods.setPrdPrice(productRecord.getPrdPrice());

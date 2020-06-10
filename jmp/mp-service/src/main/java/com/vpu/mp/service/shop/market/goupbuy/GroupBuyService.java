@@ -56,6 +56,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -399,7 +400,7 @@ public class GroupBuyService extends ShopBaseService {
                 analysisVo.setTotalPrice(analysisVo.getTotalPrice().add(goodsPrice));
                 analysisVo.setTotalMarketPrice(analysisVo.getTotalMarketPrice().add(marketPric));
                 analysisVo.getRatioList().add(goodsPrice.compareTo(BigDecimal.ZERO) > 0 ?
-                    marketPric.divide(goodsPrice, BigDecimal.ROUND_FLOOR) : BigDecimal.ZERO);
+                    marketPric.divide(goodsPrice,4, RoundingMode.HALF_UP) : BigDecimal.ZERO);
             }
             //新用户数
             OrderActivityUserNum newUser = getUserNum(activeOrderList.getNewUserNum(), dateFormat);
@@ -420,7 +421,7 @@ public class GroupBuyService extends ShopBaseService {
         }
         analysisVo.setTotalNewUser(activeOrderList.getNewUser());
         analysisVo.setTotalOldUser(activeOrderList.getOldUser());
-        BigDecimal divide = analysisVo.getTotalMarketPrice().divide(analysisVo.getTotalPrice(), 4);
+        BigDecimal divide = analysisVo.getTotalPrice().compareTo(BigDecimal.ZERO)>0?analysisVo.getTotalMarketPrice().divide(analysisVo.getTotalPrice(), 4, RoundingMode.HALF_UP):BigDecimal.ZERO;
         analysisVo.setTotalRatio(divide);
         return analysisVo;
     }

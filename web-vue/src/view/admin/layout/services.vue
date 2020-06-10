@@ -33,8 +33,7 @@ export default {
   }
 }
 </script>
-
-<style>
+<style scoped>
 .main-container {
   height: 100%;
   background-color: #fff;

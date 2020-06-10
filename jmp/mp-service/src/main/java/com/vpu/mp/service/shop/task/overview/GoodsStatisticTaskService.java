@@ -253,7 +253,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
         if (param.getBrandId() > 0 || param.getSortId() > 0) {
             joinStep = joinStep.leftJoin(BAK).on(field.eq(BAK.GOODS_ID));
         }
-        if (param.getSortId() > 0) {
+        if (param.getLabelId() > 0) {
             joinStep = joinStep.leftJoin(LABEL).on(LABEL.GTA_ID.eq(field));
         }
 //        return joinStep.where(baseCondition).and(conditionBuilder(param)).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
