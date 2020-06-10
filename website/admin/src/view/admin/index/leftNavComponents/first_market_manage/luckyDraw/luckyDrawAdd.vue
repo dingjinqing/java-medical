@@ -799,7 +799,7 @@ export default {
       }
       callback()
     }
-    let integralReg = /^(\d+)$/
+    let integralReg = /^([1-9]\d*)$/
     // 校验正整数
     function validShareChances (rule, value, callback) {
       let val = that.requestParam.shareChances
@@ -811,7 +811,7 @@ export default {
     // 校验正整数
     function validScorePerChance (rule, value, callback) {
       let val = that.requestParam.scorePerChance
-      if (that.requestParam.canUseScore === 1 && (val === '' || !(Number(val) - 0 >= 0))) {
+      if (that.requestParam.canUseScore === 1 && (val === '' || !(integralReg.test(val)))) {
         callback(new Error(that.$t('luckyDraw.fillInteger')))
       }
       callback()
@@ -819,7 +819,7 @@ export default {
     // 校验正整数
     function validScoreChances (rule, value, callback) {
       let val = that.requestParam.scoreChances
-      if (that.requestParam.canUseScore === 1 && that.payChanceRadio === 1 && (val === '' || !(Number(val) - 0 >= 0))) {
+      if (that.requestParam.canUseScore === 1 && that.payChanceRadio === 1 && (val === '' || !(integralReg.test(val)))) {
         callback(new Error(that.$t('luckyDraw.fillInteger')))
       }
       callback()
@@ -834,10 +834,10 @@ export default {
         freeChances: '', // 免费抽奖次数 0不限制 -1不可免费抽奖
         chanceType: 0,
         canShare: 2,
-        shareChances: 0,
+        shareChances: '',
         canUseScore: 2,
-        scorePerChance: 0,
-        scoreChances: 0,
+        scorePerChance: '',
+        scoreChances: '',
         noAwardScore: '',
         noAwardIcon: this.$t('luckyDraw.thanksParticipation'),
         noAwardImage: '/image/admin/icon_lottery/thank.png',
@@ -882,7 +882,9 @@ export default {
         shareChances: [{ validator: validShareChances, trigger: 'change' }],
         scorePerChance: [{ validator: validScorePerChance, trigger: 'change' }],
         scoreChances: [{ validator: validScoreChances, trigger: 'change' }]
-      }
+      },
+      shareChanceRadio: 1,
+      payChanceRadio: 1
     }
   },
   mounted () {
@@ -894,42 +896,42 @@ export default {
   computed: {
     chooseGoodsBackData () {
       return [this.requestParam.prizeList[this.tabSwitch - 1].prdId]
-    },
-    shareChanceRadio: {
-      get () {
-        console.log('radio get')
-        if (this.requestParam.shareChances !== '') {
-          return 1
-        } else {
-          return 2
-        }
-      },
-      set (val) {
-        console.log('radio set', val)
-        if (val === 2) {
-          this.$set(this.requestParam, 'shareChances', '')
-        } else if (val === 1) {
-          this.$set(this.requestParam, 'shareChances', 0)
-        }
-      }
-    },
-    payChanceRadio: {
-      get () {
-        console.log('pay radio get')
-        if (this.requestParam.scoreChances !== '') {
-          return 1
-        } else {
-          return 2
-        }
-      },
-      set (val) {
-        if (val === 2) {
-          this.$set(this.requestParam, 'scoreChances', '')
-        } else if (val === 1) {
-          this.$set(this.requestParam, 'scoreChances', 0)
-        }
-      }
     }
+    // shareChanceRadio: {
+    //   get () {
+    //     console.log('radio get')
+    //     if (this.requestParam.shareChances !== '') {
+    //       return 1
+    //     } else {
+    //       return 2
+    //     }
+    //   },
+    //   set (val) {
+    //     console.log('radio set', val)
+    //     if (val === 2) {
+    //       this.$set(this.requestParam, 'shareChances', '')
+    //     } else if (val === 1) {
+    //       this.$set(this.requestParam, 'shareChances', 0)
+    //     }
+    //   }
+    // },
+    // payChanceRadio: {
+    //   get () {
+    //     console.log('pay radio get')
+    //     if (this.requestParam.scoreChances !== '') {
+    //       return 1
+    //     } else {
+    //       return 2
+    //     }
+    //   },
+    //   set (val) {
+    //     if (val === 2) {
+    //       this.$set(this.requestParam, 'scoreChances', '')
+    //     } else if (val === 1) {
+    //       this.$set(this.requestParam, 'scoreChances', 0)
+    //     }
+    //   }
+    // }
   },
   watch: {
     datepicker: function (val) {
@@ -986,6 +988,12 @@ export default {
     // 保存
     submitData () {
       this.submitStatus = true
+      if (this.shareChanceRadio === 2) {
+        this.$set(this.requestParam, 'shareChances', '')
+      }
+      if (this.payChanceRadio === 2) {
+        this.$set(this.requestParam, 'scoreChances', '')
+      }
       this.$refs.form.validate((valid) => {
         if (valid) {
           console.log('this.requestParam', this.requestParam)
@@ -1121,6 +1129,21 @@ export default {
         getLottery({ id: this.id }).then(res => {
           if (res.error === 0) {
             this.datepicker = [res.content.startTime, res.content.endTime]
+            // 分享次数和抽奖次数回显
+            if (res.content.canShare === 1) {
+              if (res.content.shareChances && res.content.shareChances > 0) {
+                this.shareChanceRadio = 1
+              } else {
+                this.shareChanceRadio = 2
+              }
+            }
+            if (res.content.canUseScore === 1) {
+              if (res.content.scoreChances && res.content.scoreChances > 0) {
+                this.payChanceRadio = 1
+              } else {
+                this.payChanceRadio = 2
+              }
+            }
             res.content.prizeList.map((item, index) => {
               item.lotteryGrade = item.lotteryGrade.toString()
               item.chance = 100 * item.chanceNumerator / item.chanceDenominator
