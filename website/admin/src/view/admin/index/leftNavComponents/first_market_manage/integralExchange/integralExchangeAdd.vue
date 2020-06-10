@@ -657,7 +657,7 @@ export default {
         })
         let url = ''
         if (this.formBottom.checkImgData) {
-          url = this.formBottom.checkImgData.imgUrl
+          url = this.formBottom.checkImgData.imgPath
         }
         let configParamObj = {
           shareAction: Number(this.formBottom.style),

@@ -26,11 +26,14 @@
                 :src="shopAvatar"
               >
             </span>
-            <span>
-              <label>
-                {{this.accountName}}
+            <span style="position:relative">
+              <label class="accountName">
+                {{accountName}}
               </label>
-              <img :src="imageUrl[2].img_3">
+              <img
+                class="accountIcon"
+                :src="imageUrl[2].img_3"
+              >
             </span>
           </div>
         </div>
@@ -441,5 +444,15 @@ label {
   /* background-color: #f8f8f8; */
   /* color: #5a8bff; */
   display: block !important;
+}
+.accountName {
+  white-space: nowrap;
+  width: 84px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.accountIcon {
+  position: absolute;
+  bottom: 38px;
 }
 </style>
