@@ -97,3 +97,6 @@
   line-height: 32rpx;
   height: 34rpx;
 }
+.not-tap {
+  background-color: #eee;
+}
