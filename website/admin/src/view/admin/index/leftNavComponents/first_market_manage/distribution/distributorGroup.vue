@@ -6,6 +6,7 @@
         v-model="groupName"
         class="inputWidth"
         size="small"
+        clearable
         :placeholder="$t('distribution.contentTip')"
       ></el-input>
       <el-button
@@ -459,7 +460,7 @@ export default {
     // 分销员数量跳转
     amountHandler (id) {
       this.$emit('tabChange')
-      this.$emit('optGroupId', id)
+      this.$emit('distributorGroup', id)
     }
 
   }

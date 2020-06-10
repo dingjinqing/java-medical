@@ -59,6 +59,7 @@
                 size="small"
                 placeholder="请选择等级"
                 class="inputStyle"
+                clearable
               >
                 <el-option
                   v-for="(item, index) in levelDataList"
@@ -77,6 +78,7 @@
                 size="small"
                 placeholder="请选择分组"
                 class="inputStyle"
+                clearable
               >
                 <el-option
                   v-for="(item, index) in groupDataList"
@@ -93,11 +95,13 @@
           <el-button
             type="primary"
             size="small"
+            @click="initDataList()"
           >筛选</el-button>
           <el-button
             type="primary"
             size="small"
             plain
+            @click="resetFromHandler()"
           >重置</el-button>
         </el-row>
       </el-form>
@@ -314,6 +318,18 @@ export default {
       })
     },
 
+    // 重置筛选
+    resetFromHandler () {
+      this.form = {
+        mobile: '',
+        username: '',
+        realName: '',
+        distributorId: '',
+        distributorLevel: '',
+        distributorGroup: ''
+      }
+    },
+
     // 获取选中数据
     handleSelectionChange (val) {
       this.multipleData = val
@@ -333,7 +349,6 @@ export default {
     // 取消添加
     cancelHandler () {
       this.dialogTableVisible = false
-      this.$message.info({ message: '已取消添加!' })
     }
   }
 }

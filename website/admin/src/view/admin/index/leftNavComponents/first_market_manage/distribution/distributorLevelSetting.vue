@@ -152,7 +152,7 @@
           >
             <template slot-scope="scope">
               <span
-                @click="numClickHandler"
+                @click="numClickHandler(scope.row.levelId)"
                 style="color: #5a8bff;cursor: pointer;"
               >{{ scope.row.users ? scope.row.users : 0 }}</span>
             </template>
@@ -467,8 +467,9 @@ export default {
     },
 
     // 跳转分销员列表
-    numClickHandler () {
+    numClickHandler (id) {
       this.$emit('tabChange')
+      this.$emit('distributorLevel', id)
     },
 
     // 校验规则个数
