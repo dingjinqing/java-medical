@@ -31,8 +31,10 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.member.BaseScoreCfgService;
 import com.vpu.mp.service.shop.member.MemberService;
 import jodd.util.StringUtil;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
@@ -71,6 +73,8 @@ public class IntegralConvertService extends ShopBaseService {
     private GoodsService goodsService;
     @Autowired
     private QrCodeService qrCode;
+    @Autowired
+    private BaseScoreCfgService baseScoreCfgService;
     /**
      * 积分兑换弹窗
      * @param param 商品名称 是否上架
@@ -143,7 +147,10 @@ public class IntegralConvertService extends ShopBaseService {
 	 * @param param 活动状态
 	 * @return 活动列表
 	 */
-	public PageResult<IntegralConvertListVo> getList(IntegralConvertListParam param) {
+	public IntegralConvertScoreVo getList(IntegralConvertListParam param) {
+	    IntegralConvertScoreVo vo = new IntegralConvertScoreVo();
+	    //获取店铺积分兑换比
+        Integer scoreProportion = baseScoreCfgService.getScoreProportion();
 		Timestamp nowTime = new Timestamp(System.currentTimeMillis());
 		SelectConditionStep<? extends Record> sql = db().select(imd.ID, imd.NAME, GOODS.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, imd.START_TIME,
 						imd.END_TIME,
@@ -224,7 +231,10 @@ public class IntegralConvertService extends ShopBaseService {
                 }
             }
         }
-		return listVo;
+        vo.setScoreProportion(scoreProportion);
+        vo.setPage(listVo.getPage());
+        vo.setDataList(listVo.getDataList());
+		return vo;
 	}
 
 	/**
