@@ -214,7 +214,7 @@
     <DistributorDialog
       :turnUp="turnUpDialog"
       @handleSelect="handleSelectRow"
-      :level="levelId"
+      :distributorLevel="levelId"
       :userIds="userIds"
     />
 
