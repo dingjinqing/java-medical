@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchAu
 import org.springframework.boot.autoconfigure.elasticsearch.rest.RestClientAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.web.servlet.ServletComponentScan;
 
 import java.util.TimeZone;
 
@@ -15,7 +14,6 @@ import java.util.TimeZone;
  * @author lixinguo
  *
  */
-@ServletComponentScan
 @SpringBootApplication(exclude={DataSourceAutoConfiguration.class,HibernateJpaAutoConfiguration.class,
     ElasticsearchAutoConfiguration.class,RestClientAutoConfiguration.class})
 public class WebApplication {
