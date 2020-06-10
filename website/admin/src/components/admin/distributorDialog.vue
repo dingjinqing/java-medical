@@ -8,29 +8,35 @@
       width="70%"
       center
     >
-      <el-form label-width="140px">
+      <el-form label-width="120px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="分销员手机号：">
               <el-input
+                v-model="form.mobile"
                 size="small"
                 placeholder="请输入手机号"
+                class="inputStyle"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="分销员昵称：">
               <el-input
+                v-model="form.username"
                 size="small"
                 placeholder="请输入昵称"
+                class="inputStyle"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="真实姓名：">
               <el-input
+                v-model="form.realName"
                 size="small"
                 placeholder="请输入姓名"
+                class="inputStyle"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -39,24 +45,26 @@
           <el-col :span="8">
             <el-form-item label="分销员ID：">
               <el-input
+                v-model="form.distributorId"
                 size="small"
                 placeholder="请输入分销员ID"
+                class="inputStyle"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="分销员等级：">
               <el-select
-                class="optionInput"
+                v-model="form.distributorLevel"
                 size="small"
-                v-model="valueLevel"
                 placeholder="请选择等级"
+                class="inputStyle"
               >
                 <el-option
-                  v-for="level in groupLevelList"
-                  :key="level.levelId"
-                  :label="level.label"
-                  :value="level.levelName"
+                  v-for="(item, index) in levelDataList"
+                  :key="index"
+                  :label="item.levelText"
+                  :value="item.id"
                 >
                 </el-option>
               </el-select>
@@ -65,16 +73,16 @@
           <el-col :span="8">
             <el-form-item label="分销员分组：">
               <el-select
-                class="optionInput"
+                v-model="form.distributorGroup"
                 size="small"
-                v-model="valueGroup"
                 placeholder="请选择分组"
+                class="inputStyle"
               >
                 <el-option
-                  v-for="group in groupNameList"
-                  :key="group.id"
-                  :label="group.groupName"
-                  :value="group.groupName"
+                  v-for="(item, index) in groupDataList"
+                  :key="index"
+                  :label="item.groupName"
+                  :value="item.id"
                 >
                 </el-option>
               </el-select>
@@ -95,6 +103,7 @@
       </el-form>
 
       <el-table
+        header-row-class-name="tableClss"
         ref="multipleTable"
         :data="distributorList"
         @selection-change="handleSelectionChange"
@@ -103,6 +112,7 @@
       >
         <el-table-column
           type="selection"
+          align="center"
           width="55"
         >
         </el-table-column>
@@ -140,6 +150,7 @@
           prop="totalFanliMoney"
           label="累计获得佣金金额"
           align="center"
+          width="150"
         >
         </el-table-column>
         <el-table-column
@@ -189,10 +200,13 @@ export default {
       type: Boolean,
       default: () => false
     },
-    // 当前操作的分组id
-    optGroupId: {
-      type: Number,
-      default: () => null
+    // 当前分销员分组
+    distributorGroup: {
+      type: Number
+    },
+    // 当前分销员等级
+    distributorLevel: {
+      type: Number
     },
     // 选中的数据id
     selectRowIds: {
@@ -200,10 +214,6 @@ export default {
       default () {
         return []
       }
-    },
-    // 当前等级
-    level: {
-      type: Number
     },
     // 当前已选中分销员
     userIds: {
@@ -214,15 +224,20 @@ export default {
   data () {
     return {
       dialogTableVisible: false, // 分销员弹框
-      // 分页
+      levelDataList: [], // 分销员等级
+      groupDataList: [], // 分销员分组
+      form: {
+        mobile: '',
+        username: '',
+        realName: '',
+        distributorId: '',
+        distributorLevel: '',
+        distributorGroup: ''
+      },
       pageParams: {
         currentPage: 1,
-        pageRows: 10
+        pageRows: 20
       },
-      valueLevel: '',
-      valueGroup: '',
-      groupLevelList: [], // 分销员等级
-      groupNameList: [], // 分销员分组
       distributorList: [], // 分销员表格
       multipleData: [] // 分销员选中
     }
@@ -230,29 +245,55 @@ export default {
   watch: {
     turnUp (newData) {
       this.dialogTableVisible = true
+
+      this.form.distributorGroup = this.distributorGroup ? this.distributorGroup : '' // 当前分销员分组
+      this.form.distributorLevel = this.distributorLevel ? this.distributorLevel : '' // 当前分销员等级
       this.initDataList()
     }
   },
+  mounted () {
+    // 获取分销员等级数据
+    distributorLevelList().then(res => {
+      if (res.error === 0) {
+        var data = res.content
+        data.map((item, index) => {
+          switch (item.levelId) {
+            case 1:
+              item.levelText = '一级'
+              break
+            case 2:
+              item.levelText = '二级'
+              break
+            case 3:
+              item.levelText = '三级'
+              break
+            case 4:
+              item.levelText = '四级'
+              break
+            case 5:
+              item.levelText = '五级'
+              break
+          }
+        })
+        this.levelDataList = data
+      }
+    })
+    // 获取分销员分组数据
+    distributorAllGroup().then(res => {
+      this.groupDataList = res.content
+    })
+  },
   methods: {
     initDataList () {
-      // 等级下拉框
-      distributorLevelList().then(res => {
-        if (res.error === 0) {
-          this.groupLevelList = res.content
+      var data = this.form
+      for (var key in data) {
+        if (data[key] === '') {
+          delete data[key]
         }
-      })
-      // 获取所有分销员分组
-      distributorAllGroup().then(res => {
-        this.groupNameList = res.content
-      })
-      // 分销员表格
-      var requestParams = {}
-      if (this.optGroupId) {
-        requestParams.optGroupId = this.optGroupId
       }
-      requestParams.currentPage = this.pageParams.currentPage
-      requestParams.pageRows = this.pageParams.pageRows
-      distributorList(requestParams).then(res => {
+      data.currentPage = this.pageParams.currentPage
+      data.pageRows = this.pageParams.pageRows
+      distributorList(data).then(res => {
         if (res.error === 0) {
           this.distributorList = res.content.dataList
           this.pageParams = res.content.page
@@ -299,4 +340,15 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 0;
+}
+.inputStyle {
+  width: 170px;
+}
 </style>

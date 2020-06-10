@@ -134,7 +134,7 @@
     <!-- 添加分销员弹窗 -->
     <DistributorDialog
       :turnUp="turnUpDialog"
-      :optGroupId="distributorId"
+      :distributorGroup="distributorId"
       @handleSelect="handleSelectRow"
     />
 
@@ -202,7 +202,6 @@ import {
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination'),
-    // DistributorDialog: () => import('./distributorDialog')
     DistributorDialog: () => import('@/components/admin/distributorDialog')
   },
   data () {
