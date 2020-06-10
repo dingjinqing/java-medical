@@ -77,7 +77,7 @@ export const cn = {
     shopPriceRequired: '请输入正确价格',
     goodsNumberRequired: '请输入正确商品数量',
     setSuccess: '设置成功',
-    goodsType: ['多人拼团', '分销', '砍价', '积分商品', '秒杀商品'],
+    goodsType: ['拼团', '砍价', '秒杀', '限时降价', '预售'],
     no: '无'
   },
   allGoodsHeaderInputLabel: {

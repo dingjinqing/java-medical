@@ -90,7 +90,7 @@ public class ModuleGoods extends ModuleBase {
     private Byte ifRadius=0;
 
     @JsonProperty("img_title_url")
-    private String imgTitleUr="";
+    private String imgTitleUrl = "";
 
     @JsonProperty("img_url")
     private String imgUrl="";
