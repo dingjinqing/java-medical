@@ -78,4 +78,12 @@ public class CouponConstant {
      * 优惠券类型-分裂优惠券的随机金额
      */
     public static final String ACT_CODE_RANDOM = "random";
+    /**
+     * 进行状态：进行中
+     */
+    public static final byte COUPON_STATUS_PROCESSING =0;
+    /**
+     * 进行状态：未开始
+     */
+    public static final byte COUPON_STATUS_NOT_START =1;
 }
