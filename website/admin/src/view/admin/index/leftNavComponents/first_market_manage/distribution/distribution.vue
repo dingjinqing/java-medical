@@ -153,7 +153,6 @@ export default {
       console.log(this.distributorGroup)
     },
     getLevelId (data) {
-      debugger
       this.distributorLevel = data
       console.log(this.distributorLevel)
     },
