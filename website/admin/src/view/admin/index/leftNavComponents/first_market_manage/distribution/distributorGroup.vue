@@ -118,7 +118,7 @@
         >
           <template slot-scope="scope">
             <div class="opt">
-              <span @click="editHandler(scope.row.id)">{{$t('distribution.groupEdit')}}</span>
+              <span @click="editHandler(scope.row.id, scope.row.groupName)">{{$t('distribution.groupEdit')}}</span>
               <span @click="delHandler(scope.row.id)">{{$t('distribution.groupDelete')}}</span>
               <span @click="addDistributor(scope.row.id)">{{$t('distribution.addGrouper')}}</span>
             </div>
@@ -208,10 +208,13 @@ export default {
   data () {
     // 自定义校验名称
     var validatelevel = (rule, value, callback) => {
-      let result = this.tableData.findIndex(item => { return value === item.groupName })
+      let addResult = this.tableData.findIndex(item => { return value === item.groupName })
+      let editResult = this.tableData.findIndex(item => { return value === item.groupName && value !== this.currentName })
       if (!value) {
         callback(new Error('请填写分组名称'))
-      } else if (result !== -1 && this.typeFlag === 0) {
+      } else if (addResult !== -1 && this.typeFlag === 0) {
+        callback(new Error('分组名称已存在, 请重新填写'))
+      } else if (editResult !== -1 && this.typeFlag === 1) {
         callback(new Error('分组名称已存在, 请重新填写'))
       } else {
         callback()
@@ -238,6 +241,7 @@ export default {
       },
       typeFlag: 0, // 类型: 0添加, 1编辑
       editId: '', // 编辑id
+      currentName: '', // 编辑时当前分组名
       groupDialogVisible: false, // 分组弹窗
       turnUpDialog: false, // 分销员弹窗
       distributorId: null,
@@ -294,7 +298,8 @@ export default {
     },
 
     // 编辑按钮
-    editHandler (id) {
+    editHandler (id, groupName) {
+      this.currentName = groupName // 编辑当前分组名
       this.typeFlag = 1
       this.editId = id // 要操作的id
       this.groupDialogVisible = true
