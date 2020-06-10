@@ -339,7 +339,7 @@ public class PictorialService extends ShopBaseService {
         if (goodsName != null) {
             // 设置商品名称
             int goodsNameHeight = pictorialAddFontName(bgBufferedImage, goodsName, imgPx);
-            imgPx.setPriceY(imgPx.getGoodsNameStartY() + goodsNameHeight + imgPx.getPriceNamePadding());
+            imgPx.setPriceY(imgPx.getBgHeight()-100);
         }
 
         Integer priceX = imgPx.getBottomTextStartX();
@@ -390,7 +390,7 @@ public class PictorialService extends ShopBaseService {
      */
     public int addTextWithBreak(BufferedImage bgBufferedImage, String text, Integer startX, Integer startY, Integer maxWidth, Integer maxRows, Font font) {
         // 名称单个字符高度
-        int nameCharHeight = ImageUtil.getTextAscent(bgBufferedImage, font);
+        int nameCharHeight = ImageUtil.getTextAscent(bgBufferedImage, font)+3;
         // 名称总长度
         int nameTextLength = ImageUtil.getTextWidth(bgBufferedImage, font, text);
 
@@ -398,23 +398,37 @@ public class PictorialService extends ShopBaseService {
             ImageUtil.addFont(bgBufferedImage, text, font, startX, startY, PictorialImgPx.GOODS_NAME_COLOR, false);
             return nameCharHeight;
         } else {
-            double oneCharWidth = Math.ceil(nameTextLength * 1.0 / text.length());
-            int oneLineCharNum = (int) Math.floor(maxWidth / oneCharWidth);
-            if (text.length() > oneLineCharNum * maxRows) {
-                text = text.substring(0, oneLineCharNum * (maxRows - 1) + oneLineCharNum / 2) + "...";
+            int line = 1;
+            int nextTextStartY = startY;
+            String oneLineStr = null;
+            StringBuilder oneLineSb = new StringBuilder();
+            for (int i = 0; i < text.length(); i++) {
+                Integer curWidth = ImageUtil.getTextWidth(bgBufferedImage, font, oneLineSb.toString());
+                if (curWidth >= maxWidth) {
+                    // 最后一行且长度过长
+                    if (line == maxRows) {
+                        oneLineStr = oneLineSb.subSequence(0, oneLineSb.length() / 2).toString();
+                    }else{
+                        oneLineStr = oneLineSb.toString();
+                    }
+                    ImageUtil.addFont(bgBufferedImage,oneLineStr, font, startX, nextTextStartY, PictorialImgPx.GOODS_NAME_COLOR, false);
+                    nextTextStartY +=nameCharHeight;
+                    line++;
+                    oneLineSb = new StringBuilder();
+                    if (line > maxRows) {
+                        break;
+                    }
+                }
+                oneLineSb.append(text.charAt(i));
             }
 
-            int nextTextStartY = startY;
-            String textTemp;
-            for (int i = 0; i < text.length(); i += oneLineCharNum) {
-                if (i + oneLineCharNum >= text.length()) {
-                    textTemp = text.substring(i);
-                } else {
-                    textTemp = text.substring(i, i + oneLineCharNum);
-                }
-                ImageUtil.addFont(bgBufferedImage, textTemp, font, startX, nextTextStartY, PictorialImgPx.GOODS_NAME_COLOR, false);
-                nextTextStartY += nameCharHeight;
+            if (line == maxRows) {
+                oneLineStr = oneLineSb.subSequence(0, oneLineSb.length() / 2).toString()+"...";
+            }else{
+                oneLineStr = oneLineSb.toString();
             }
+            ImageUtil.addFont(bgBufferedImage,oneLineStr, font, startX, nextTextStartY, PictorialImgPx.GOODS_NAME_COLOR, false);
+
             return nextTextStartY - startY;
         }
     }
