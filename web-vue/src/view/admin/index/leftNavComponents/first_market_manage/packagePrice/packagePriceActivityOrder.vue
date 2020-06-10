@@ -82,73 +82,60 @@
     </section>
 
     <div class="table_list">
-      <el-table
-        header-row-class-name="tableHeader"
-        :data="tableData"
-        border
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="orderSn"
-          label="订单号"
-          align="center"
-        ></el-table-column>
-
-        <el-table-column
-          label="商品信息"
-          align="center"
-        >
-          <template slot-scope="scope">
-            <div
-              class="goodImge"
-              v-for="item in scope.row.goods"
-              :key="item.recId"
+      <table class="table_form">
+        <thead>
+          <tr>
+            <th width="20%">订单号</th>
+            <th width="25%">商品信息</th>
+            <th width="15%">商品数量</th>
+            <th width="15%">下单时间</th>
+            <th width="15%">收货人信息</th>
+            <th width="10%">订单状态</th>
+          </tr>
+        </thead>
+        <tbody class="hasborder">
+          <template v-for="(item) in tableData">
+            <tr
+              v-for="(goodsItem,goodsIndex) in item.goods"
+              :key="goodsItem.recId"
             >
-              <div>
-                <img :src="$imageHost+'/'+item.goodsImg">
-              </div>
-              <div class="name">
-                {{item.goodsName}}
-              </div>
-            </div>
+              <td
+                v-if="goodsIndex === 0"
+                :rowspan="item.goods.length"
+              >{{item.orderSn}}</td>
+              <td>
+                <div class="goodImge">
+                  <div>
+                    <img :src="$imageHost+'/'+goodsItem.goodsImg">
+                  </div>
+                  <div class="name">
+                    {{goodsItem.goodsName}}
+                  </div>
+                </div>
+              </td>
+              <td>
+                {{goodsItem.goodsNumber}}
+              </td>
+              <td
+                v-if="goodsIndex === 0"
+                :rowspan="item.goods.length"
+              >{{item.createTime}}</td>
+              <td
+                v-if="goodsIndex === 0"
+                :rowspan="item.goods.length"
+              >
+                {{item.consignee}}<br />
+                <div style="margin-top: 10px;">{{item.mobile}}</div>
+              </td>
+              <td
+                v-if="goodsIndex === 0"
+                :rowspan="item.goods.length"
+              >{{item.orderStatusText}}</td>
+            </tr>
           </template>
-        </el-table-column>
 
-        <el-table-column
-          prop="goodsAmount"
-          label="商品数量"
-          align="center"
-        >
-          <template slot-scope="scope">
-            <div>
-              {{scope.row.goods[0].goodsNumber}}
-            </div>
-          </template>
-        </el-table-column>
-
-        <el-table-column
-          prop="createTime"
-          label="下单时间"
-          align="center"
-        ></el-table-column>
-
-        <el-table-column
-          prop=""
-          label="收货人信息"
-          align="center"
-        >
-          <template slot-scope="scope">
-            <div>{{scope.row.consignee}}</div>
-            <div>{{scope.row.mobile}}</div>
-          </template>
-        </el-table-column>
-
-        <el-table-column
-          prop="orderStatusText"
-          label="订单状态"
-          align="center"
-        ></el-table-column>
-      </el-table>
+        </tbody>
+      </table>
       <pagination
         :page-params.sync="params"
         @pagination="initDataList"
@@ -234,7 +221,12 @@ export default {
         [3, '待发货/待核销'],
         [4, '已发货'],
         [5, '已收货/已自提'],
-        [6, '订单完成']
+        [6, '订单完成'],
+        [7, '售后中'],
+        [8, '售后完成'],
+        [9, '待接单'],
+        [10, '已接单-取件中'],
+        [11, '已取件-配送中']
       ],
       screenLength: 0,
       showFilterInfo: false
@@ -328,9 +320,12 @@ export default {
       }
       /deep/ .areaLinkage {
         .el-select {
-          margin-left: 10px;
+          margin-right: 0;
           &:first-of-type {
             margin-left: 0;
+          }
+          .el-input {
+            width: 112px;
           }
         }
       }
@@ -351,6 +346,24 @@ export default {
     margin: 0 10px;
     padding: 15px;
     background: #fff;
+    .table_form {
+      width: 100%;
+      thead {
+        background-color: #f5f5f5;
+        tr th {
+          padding: 8px 10px;
+          border: 1px solid #eee;
+        }
+      }
+      .hasborder {
+        border: 1px solid #eee;
+        td {
+          border: 1px solid #eee;
+          text-align: center;
+          vertical-align: middle;
+        }
+      }
+    }
   }
   /deep/ .tableHeader th {
     background-color: #f5f5f5;
@@ -369,6 +382,10 @@ export default {
   }
   .goodImge {
     display: flex;
+    padding: 8px 10px;
+    & + .goodImge {
+      border-top: 1px solid #eee;
+    }
     img {
       width: 50px;
       height: 50px;
@@ -377,7 +394,7 @@ export default {
     }
     .name {
       width: 115px;
-      height: 40px;
+      height: 42px;
       text-overflow: ellipsis;
       overflow: hidden;
       -webkit-box-orient: vertical;
@@ -385,6 +402,11 @@ export default {
       display: -webkit-box;
       margin-left: 12px;
       text-align: left;
+    }
+  }
+  .goodsNumber {
+    & + .goodsNumber {
+      border-top: 1px solid #eee;
     }
   }
 }
