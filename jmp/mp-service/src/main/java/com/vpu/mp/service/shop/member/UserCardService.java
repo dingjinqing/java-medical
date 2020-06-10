@@ -1399,6 +1399,9 @@ public class UserCardService extends ShopBaseService {
 		if(StringUtils.isBlank(mCard.getBgColor())) {
 			mCard.setBgColor(CardUtil.getDefaultBgColor());
 		}
+		if(StringUtils.isBlank(userCard.getBgColor())) {
+			userCard.setBgColor(CardUtil.getDefaultBgColor());
+		}
 		boolean isGet = false;
 		if (userCard != null) {
 			logger().info("用户有此卡");
