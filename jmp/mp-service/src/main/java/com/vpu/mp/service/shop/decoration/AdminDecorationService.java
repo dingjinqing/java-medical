@@ -328,7 +328,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     }
                     return moduleGoods;
                 case ModuleConstant.M_GOODS_GROUP:
-                    ModuleGoodsGroup moduleGoodsGroup = objectMapper.readValue(node.getValue().toString(), ModuleGoodsGroup.class);
+                    ModuleGoodsGroup moduleGoodsGroup = saas.getShopApp(getShopId()).mpDecoration.convertGoodsGroupForModule(objectMapper, node, null);
                     if (moduleGoodsGroup.getOtherMessage() == null && moduleGoodsGroup.getShowPrice() == 0) {
                         moduleGoodsGroup.setOtherMessage((byte) 0);
                         moduleGoodsGroup.setShowMarket((byte) 1);
