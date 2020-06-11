@@ -236,6 +236,10 @@
         <text>一口价优惠</text>
         <text>-￥{{orderInfo.packageDiscount}}</text>
       </view>
+      <view class="pay_item" wx:if="{{orderInfo.grouperCheapReduce > 0}}">
+        <text>团长优惠</text>
+        <text>-￥{{orderInfo.grouperCheapReduce}}</text>
+      </view>
       <view class="pay_item" wx:if="{{orderInfo.discount > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.couponReduce")}}</text>
         <text>-￥{{orderInfo.discount}}</text>
