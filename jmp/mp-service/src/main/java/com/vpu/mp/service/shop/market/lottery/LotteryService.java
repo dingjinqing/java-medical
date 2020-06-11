@@ -1,36 +1,5 @@
 package com.vpu.mp.service.shop.market.lottery;
 
-import static com.vpu.mp.db.shop.Tables.LOTTERY;
-import static com.vpu.mp.db.shop.Tables.LOTTERY_PRIZE;
-import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.foundation.data.BaseConstant.*;
-import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TIME_ALL;
-import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TIME_FREE;
-import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TIME_SCORE;
-import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TIME_SHARE;
-import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_OUT;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_LOTTERY;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jooq.AggregateFunction;
-import org.jooq.Record4;
-import org.jooq.Record7;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectSeekStep1;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryShareRecord;
@@ -71,6 +40,39 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreService;
+import org.jooq.AggregateFunction;
+import org.jooq.Record4;
+import org.jooq.Record7;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectSeekStep1;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.Tables.LOTTERY;
+import static com.vpu.mp.db.shop.Tables.LOTTERY_PRIZE;
+import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NO;
+import static com.vpu.mp.service.foundation.data.BaseConstant.YES;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TIME_ALL;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TIME_FREE;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TIME_SCORE;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TIME_SHARE;
+import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_OUT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_LOTTERY;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 /**
  * @author 孔德成
@@ -460,27 +462,33 @@ public class LotteryService extends ShopBaseService {
     public LotteryUserTimeInfo getUserLotteryInfo(Integer userId, Integer lotteryId) {
         LotteryRecord lottery = getLotteryById(lotteryId);
         LotteryUserTimeInfo lotteryTimeInfo =new LotteryUserTimeInfo();
+        Byte chanceType = lottery.getChanceType();
         //全部
         Integer usedAllTime = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId, LOTTERY_TIME_ALL);
         lotteryTimeInfo.setUsedTime(usedAllTime);
         //免费
         lotteryTimeInfo.setFreeTime(lottery.getFreeChances());
-        Integer usedFreeTime = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId, LOTTERY_TIME_FREE);
+        Integer usedFreeTime = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId,LOTTERY_TIME_FREE,chanceType);
         lotteryTimeInfo.setUsedFreeTime(usedFreeTime);
         //分享
         if (lottery.getCanShare().equals(YES)){
             LotteryShareRecord lotteryShareByUser = lotteryShareService.getLotteryShareByUser(userId, lotteryId);
-            lotteryTimeInfo.setShareMaximum(lottery.getShareChances());
             if (lotteryShareByUser!=null){
-                lotteryTimeInfo.setShareTime(lotteryShareByUser.getShareTimes());
-                lotteryTimeInfo.setUsedShareTime(lotteryShareByUser.getUseShareTimes());
+                Integer usedShareRecordTimes = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId,LOTTERY_TIME_SHARE,chanceType);
+                lotteryTimeInfo.setShareTime(lotteryShareByUser.getShareTimes()-lotteryShareByUser.getUseShareTimes()+usedShareRecordTimes);
+                lotteryTimeInfo.setUsedShareTime(usedShareRecordTimes);
+                lotteryTimeInfo.setScore(lotteryShareByUser.getUseScoreTimes());
+            }else {
+                lotteryTimeInfo.setShareTime(0);
+                lotteryTimeInfo.setUsedShareTime(0);
             }
+            lotteryTimeInfo.setShareMaximum(lottery.getShareChances());
         }
         //积分
         if (lottery.getCanUseScore().equals(YES)){
-            Integer usedScoreTime = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId, LOTTERY_TIME_SCORE);
+            Integer userScoreTimes = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId,LOTTERY_TIME_SCORE,chanceType);
             lotteryTimeInfo.setScoreMaximum(lottery.getScoreChances());
-            lotteryTimeInfo.setUsedScoreTime(usedScoreTime);
+            lotteryTimeInfo.setUsedScoreTime(userScoreTimes);
             lotteryTimeInfo.setScore(lottery.getScorePerChance());
         }
         //滚动记录
@@ -524,7 +532,7 @@ public class LotteryService extends ShopBaseService {
         share.setPagePath(QrCodeTypeEnum.LOTTERY.getPathUrl(pathParam));
         return share;
     }
-    
+
     /**
      * 营销日历用id查询活动
      * @param id
@@ -534,7 +542,7 @@ public class LotteryService extends ShopBaseService {
 		return db().select(LOTTERY.ID, LOTTERY.LOTTERY_NAME.as(CalendarAction.ACTNAME), LOTTERY.START_TIME,
 				LOTTERY.END_TIME).from(LOTTERY).where(LOTTERY.ID.eq(id)).fetchAnyInto(MarketVo.class);
     }
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param
