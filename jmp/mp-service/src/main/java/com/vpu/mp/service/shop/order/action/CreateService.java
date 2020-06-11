@@ -891,6 +891,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setTolalDiscountAfterPrice(tolalDiscountAfterPrice);
         vo.setInsteadPayCfg(param.getInsteadPayCfg());
         vo.setPackageDiscount(packageSaleDiscount);
+        vo.setGrouperCheapReduce(param.getGoods().stream().map(Goods::getGrouperTotalReduce).reduce(BigDecimal.ZERO, BigDecimalUtil::add));
         // 积分使用规则
         setScorePayRule(vo);
         logger().info("金额处理赋值(processOrderBeforeVo),end");

@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.order;
 
-import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
 import com.vpu.mp.config.ApiExternalGateConfig;
+import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -22,11 +22,11 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.auth.ShopManageVo;
 import com.vpu.mp.service.foundation.util.api.ApiBasePageParam;
 import com.vpu.mp.service.foundation.util.api.ApiPageResult;
 import com.vpu.mp.service.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
+import com.vpu.mp.service.pojo.shop.auth.ShopManageVo;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
@@ -109,8 +109,8 @@ import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
-import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.action.ReturnService;
 import com.vpu.mp.service.shop.order.action.ShipService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
@@ -1321,6 +1321,12 @@ public class OrderReadService extends ShopBaseService {
         for (ApiOrderListVo order: orders) {
             //商品
             List<ApiOrderGoodsListVo> goods = goodsInfo.get(order.getOrderSn());
+            //积分兑换价格转化
+            goods.forEach(x->{
+                if(x.getGoodsScore() != null && x.getGoodsScore() > 0) {
+                    x.setGoodsPrice(x.getDiscountedGoodsPrice());
+                }
+            });
             order.setOrderGoodsInfo(goods);
             //商品设置配送信息
             List<ShippingInfoVo> goodsShipping = shippingInfo.get(order.getOrderSn());
@@ -1448,13 +1454,9 @@ public class OrderReadService extends ShopBaseService {
                     BigDecimalUtil.BigDecimalPlus.create(order.getDiscount(), BigDecimalUtil.Operator.add),
                     BigDecimalUtil.BigDecimalPlus.create(order.getScoreDiscount(), BigDecimalUtil.Operator.add),
                     BigDecimalUtil.BigDecimalPlus.create(order.getPromotionReduce(), BigDecimalUtil.Operator.add),
+                    BigDecimalUtil.BigDecimalPlus.create(order.getPackageDiscount(), BigDecimalUtil.Operator.add),
+                    BigDecimalUtil.BigDecimalPlus.create(order.getGrouperCheapReduce(), BigDecimalUtil.Operator.add),
                     BigDecimalUtil.BigDecimalPlus.create(order.getMemberCardReduce())
-                ));
-            order.setMoneyPaid(
-                BigDecimalUtil.addOrSubtrac(
-                    BigDecimalUtil.BigDecimalPlus.create(order.getMoneyPaid(), BigDecimalUtil.Operator.add),
-                    BigDecimalUtil.BigDecimalPlus.create(order.getUseAccount(), BigDecimalUtil.Operator.add),
-                    BigDecimalUtil.BigDecimalPlus.create(order.getMemberCardBalance())
                 ));
         }
     }

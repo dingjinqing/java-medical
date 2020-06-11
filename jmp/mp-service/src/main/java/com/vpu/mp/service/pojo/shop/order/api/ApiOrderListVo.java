@@ -54,6 +54,7 @@ public class ApiOrderListVo {
     private BigDecimal promotionReduce;
     private BigDecimal memberCardReduce;
     private BigDecimal memberCardBalance;
+    private BigDecimal packageDiscount;
     private BigDecimal discountAmount;
     @JsonIgnore
     private Integer userId;
@@ -76,4 +77,7 @@ public class ApiOrderListVo {
     @JsonProperty("add_time")
     private Timestamp createTime;
     private Timestamp payTime;
+    @JsonIgnore
+    private BigDecimal grouperCheapReduce;
+
 }
