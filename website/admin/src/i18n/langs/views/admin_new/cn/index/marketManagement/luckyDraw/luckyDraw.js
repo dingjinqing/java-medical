@@ -184,5 +184,16 @@ export const cn = {
   integral: '积分',
   noGift: '不赠送',
   onlyNotPrize: '仅送给未中奖的用户',
-  times: '次'
+  times: '次',
+  sharedNum: '分享抽奖次数',
+  upto: '最多可获得',
+  schance: '次抽奖机会',
+  fillInteger: '请填写正整数',
+  everyDraw: '每次抽奖消耗',
+  paidDraws: '付费抽奖次数',
+  fillFreeTimes: '请填写免费抽奖次数!',
+  fillGiftPoints: '请填写赠送积分数量!',
+  fillWin: '请填写中奖概率',
+  numPrizes: '奖品数量不能大于优惠券可用份数',
+  numPrizes2: '奖品数量不能大于商品库存'
 }

@@ -99,6 +99,7 @@
               :placeholder="$t('distribution.selectTip')"
               size="small"
               class="inputWidth"
+              clearable
             >
               <el-option
                 v-for="level in groupLevelList"
@@ -118,6 +119,7 @@
               :placeholder="$t('distribution.selectTip')"
               size="small"
               class="inputWidth"
+              clearable
             >
               <el-option
                 v-for="group in groupNameList"
@@ -459,9 +461,11 @@ export default {
       type: Boolean,
       default: true
     },
-    optGroupId: {
-      type: Number,
-      default: () => 0
+    distributorGroup: {
+      type: Number
+    },
+    distributorLevel: {
+      type: Number
     }
   },
   data () {
@@ -525,12 +529,10 @@ export default {
     }
   },
   watch: {
-    optGroupId () {
-      console.log(this.optGroupId)
-      this.initDataList()
-    }
   },
   mounted () {
+    this.param.distributorGroup = this.distributorGroup ? this.distributorGroup : ''
+    this.param.distributorLevel = this.distributorLevel ? this.distributorLevel : ''
     this.initDataList()
     this.levelList() // 分销员等级
     this.groupList() // 分销员分组
@@ -546,9 +548,6 @@ export default {
           if (this.param[i]) {
             this.requestParams[i] = this.param[i]
           }
-        }
-        if (this.optGroupId) {
-          this.requestParams.optGroupId = this.optGroupId
         }
         // 排序
         if (this.sortField && this.sortWay) {
@@ -573,7 +572,6 @@ export default {
     levelList () {
       distributorLevelList().then(res => {
         this.groupLevelList = res.content
-        this.distributorLevel = res.content.dataList
       })
     },
     // 获取所有分销员分组
@@ -784,9 +782,9 @@ export default {
           obj[i] = this.param[i]
         }
       }
-      if (this.optGroupId) {
-        obj.optGroupId = this.optGroupId
-      }
+      // if (this.optGroupId) {
+      //   obj.optGroupId = this.optGroupId
+      // }
       distributorListExport(obj).then(res => {
         let fileName = localStorage.getItem('V-content-disposition')
         fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '分销员列表导出.xlsx'

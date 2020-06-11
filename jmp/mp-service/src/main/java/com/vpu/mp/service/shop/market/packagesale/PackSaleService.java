@@ -263,28 +263,26 @@ public class PackSaleService extends ShopBaseService {
 	 * @return
 	 */
 	private PackSaleDefineVo convert2PackSaleDefineVo(PackageSaleRecord record) {
-		if(record == null) {
-			return null;
-		}
-		PackSaleDefineVo defineVo = record.into(PackSaleDefineVo.class);
+        if (record == null) {
+            return null;
+        }
+        PackSaleDefineVo defineVo = record.into(PackSaleDefineVo.class);
 
-		GoodsGroupVo groupVo = convert2GoodsGroupVo(defineVo, record.getGroupName_1(), record.getGoodsNumber_1(), record.getGoodsIds_1(), record.getCatIds_1(), record.getSortIds_1());
-		defineVo.setGroup1(groupVo);
-		
-		if(!record.getGoodsGroup_2().equals(Status.NORMAL)) {
-			return defineVo;
-		}
-		groupVo = convert2GoodsGroupVo(defineVo, record.getGroupName_2(), record.getGoodsNumber_2(), record.getGoodsIds_2(), record.getCatIds_2(), record.getSortIds_2());
-		defineVo.setGroup2(groupVo);
-		
-		if(!record.getGoodsGroup_3().equals(Status.NORMAL)) {
-			return defineVo;
-		}
-		groupVo = convert2GoodsGroupVo(defineVo, record.getGroupName_3(), record.getGoodsNumber_3(), record.getGoodsIds_3(), record.getCatIds_3(), record.getSortIds_3());
-		defineVo.setGroup3(groupVo);
-		
-		return defineVo;
-	}
+        GoodsGroupVo groupVo = convert2GoodsGroupVo(defineVo, record.getGroupName_1(), record.getGoodsNumber_1(), record.getGoodsIds_1(), record.getCatIds_1(), record.getSortIds_1());
+        defineVo.setGroup1(groupVo);
+
+        if (record.getGoodsGroup_2().equals(Status.NORMAL)) {
+            groupVo = convert2GoodsGroupVo(defineVo, record.getGroupName_2(), record.getGoodsNumber_2(), record.getGoodsIds_2(), record.getCatIds_2(), record.getSortIds_2());
+            defineVo.setGroup2(groupVo);
+        }
+
+        if (record.getGoodsGroup_3().equals(Status.NORMAL)) {
+            groupVo = convert2GoodsGroupVo(defineVo, record.getGroupName_3(), record.getGoodsNumber_3(), record.getGoodsIds_3(), record.getCatIds_3(), record.getSortIds_3());
+            defineVo.setGroup3(groupVo);
+        }
+
+        return defineVo;
+    }
 	GoodsGroupVo convert2GoodsGroupVo(PackSaleDefineVo defineVo,String groupName,Integer goodsNumber,String goodsIds,String catIds,String sortIds) {
 		GoodsGroupVo groupVo = defineVo.new GoodsGroupVo();
 		groupVo.setGroupName(groupName);
@@ -640,23 +638,72 @@ public class PackSaleService extends ShopBaseService {
             return vo;
         }
         GoodsSpecProductRecord goodsSpecProductRecord = goodsService.goodsSpecProductService.selectSpecByProId(param.getProductId());
-        if(goodsSpecProductRecord == null){
-            vo.setState((byte)7);
+        if (goodsSpecProductRecord == null) {
+            vo.setState((byte) 7);
             return vo;
         }
-        if(goodsSpecProductRecord.getPrdNumber() < param.getGoodsNumber()){
-            vo.setState((byte)9);
+        if (goodsSpecProductRecord.getPrdNumber() < param.getGoodsNumber()) {
+            vo.setState((byte) 9);
             return vo;
         }
 
         //校验通过
-        packageGoodsCartService.addPackageGoods(param,userId);
+        packageGoodsCartService.addPackageGoods(param, userId);
         return vo;
     }
 
-    private Byte checkPackage(PackageSaleRecord packageSaleRecord){
-        if(packageSaleRecord == null || packageSaleRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
-            return (byte)1;
+    /**
+     * 删除购物车里的某商品
+     *
+     * @param param
+     * @param userId
+     * @return
+     */
+    public PackageSaleAddCartVo deletePackageGoods(PackageSaleGoodsDeleteParam param, int userId) {
+        PackageSaleAddCartVo vo = new PackageSaleAddCartVo();
+
+        PackageSaleRecord packageSaleRecord = getRecord(param.getPackageId());
+        Byte state = checkPackage(packageSaleRecord);
+        if (!state.equals((byte) 0)) {
+            vo.setState(state);
+            return vo;
+        }
+
+        List<PackSaleParam.GoodsGroup> groups = getPackageGroups(packageSaleRecord);
+        if (param.getGroupId() > groups.size()) {
+            vo.setState((byte) 5);
+            return vo;
+        }
+        PackSaleParam.GoodsGroup thisGroup = groups.get(param.getGroupId() - 1);
+        List<Integer> effectiveGoodsIds = getPackageSaleGroupGoodsIds(thisGroup);
+        if (!effectiveGoodsIds.contains(param.getGoodsId())) {
+            vo.setState((byte) 5);
+            return vo;
+        }
+
+        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getGoodsId());
+        if (goodsRecord == null || goodsRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)) {
+            vo.setState((byte) 7);
+            return vo;
+        }
+        if (goodsRecord.getIsOnSale().equals(GoodsConstant.OFF_SALE)) {
+            vo.setState((byte) 8);
+            return vo;
+        }
+        GoodsSpecProductRecord goodsSpecProductRecord = goodsService.goodsSpecProductService.selectSpecByProId(param.getProductId());
+        if (goodsSpecProductRecord == null) {
+            vo.setState((byte) 7);
+            return vo;
+        }
+
+        //校验通过
+        packageGoodsCartService.deletePackageGoods(param, userId);
+        return vo;
+    }
+
+    private Byte checkPackage(PackageSaleRecord packageSaleRecord) {
+        if (packageSaleRecord == null || packageSaleRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)) {
+            return (byte) 1;
         }
         if(packageSaleRecord.getStatus().equals(BaseConstant.ACTIVITY_STATUS_DISABLE)){
             return (byte)2;

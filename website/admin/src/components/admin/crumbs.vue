@@ -123,6 +123,55 @@
         :underline="false"
         target="_blank"
       >砍价活动使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'package'"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2114&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
+        type="primary"
+        :underline="false"
+        target="_blank"
+      >打包一口价使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'integral_convert'"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=54&extra=page=1&filter=sortid&sortid=15"
+        type="primary"
+        :underline="false"
+        target="_blank"
+      >积分兑换使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'comment_gift'"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2121&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
+        type="primary"
+        :underline="false"
+        target="_blank"
+      >评价有礼使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'market_act_give'"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=53&extra=page=1&filter=sortid&sortid=15"
+        type="primary"
+        :underline="false"
+        target="_blank"
+      >定向发券使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'all_message_push'"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2246"
+        type="primary"
+        :underline="false"
+        target="_blank"
+      >消息推送使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'coupon_package'"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2127&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
+        type="primary"
+        :underline="false"
+        target="_blank"
+      >优惠卷礼包使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'payreward'"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=61&extra=page=1&filter=sortid&sortid=15"
+        type="primary"
+        :underline="false"
+        target="_blank"
+      >支付有礼使用教程</el-link>
     </span>
   </div>
 </template>
@@ -367,6 +416,14 @@ export default {
         } else if (routeName === 'activityDetails') {
           this.$router.push({
             name: 'payreward'
+          })
+        } else if (routeName === 'share_polite_detail') {
+          this.$router.push({
+            name: 'share_award'
+          })
+        } else if (routeName === 'share_polite_add') {
+          this.$router.push({
+            name: 'share_award'
           })
         } else if (routeName === 'bargain_activity') {
           this.$router.push({

@@ -46,4 +46,6 @@ public class EsSearchParam {
      */
     private Boolean analyzerStatus;
 
+    private String indexName;
+
 }

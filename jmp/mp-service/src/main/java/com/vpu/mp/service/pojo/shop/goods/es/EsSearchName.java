@@ -111,6 +111,8 @@ public interface EsSearchName {
 
         String PRD_CODES = "prd_codes";
 
+         String PRD_SN = "prd_sn";
+
     }
     interface GRADE{
         String PRD_ID = "prd_id";

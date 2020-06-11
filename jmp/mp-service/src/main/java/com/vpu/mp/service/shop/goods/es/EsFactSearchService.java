@@ -41,10 +41,10 @@ public class EsFactSearchService extends EsBaseSearchService{
 
     public GoodsFilterItemInitVo assemblyFactByAdminGoodsListInit(GoodsFilterItemInitParam initParam) throws Exception {
         GoodsPageListParam goodsPageListParam = new GoodsPageListParam();
-        if (goodsPageListParam.getIsSaleOut() != null) {
+        if (initParam.getIsSaleOut() != null) {
             goodsPageListParam.setIsSaleOut(initParam.getIsSaleOut());
         }
-        if (goodsPageListParam.getIsOnSale() != null) {
+        if (initParam.getIsOnSale() != null) {
             goodsPageListParam.setIsOnSale(initParam.getIsOnSale());
         }
         goodsPageListParam.setIsOnSale(initParam.getIsOnSale());
@@ -56,11 +56,18 @@ public class EsFactSearchService extends EsBaseSearchService{
             .aggregations(assemblyAggregationBuilder(param.getFactList()))
             .build();
         //es查询
-        SearchRequest searchRequest = assemblySearchRequest(
-            assemblySearchSourceBuilder(searchParam)
-            ,EsGoodsConstant.GOODS_ALIA_NAME
-        );
-
+        SearchRequest searchRequest;
+        if( initParam.getSelectType().equals(GoodsPageListParam.GOODS_PRD_LIST) ){
+            searchRequest = assemblySearchRequest(
+                assemblySearchSourceBuilder(searchParam)
+                ,EsGoodsConstant.PRODUCT_ALIA_NAME
+            );
+        }else{
+            searchRequest = assemblySearchRequest(
+                assemblySearchSourceBuilder(searchParam)
+                ,EsGoodsConstant.GOODS_ALIA_NAME
+            );
+        }
        return assemblyGoodsInitialVo(initParam,search(searchRequest));
 
     }

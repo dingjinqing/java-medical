@@ -27,4 +27,6 @@ public class EsFiledTypeConstant {
 
     public static final String OBJECT = "object";
 
+    public static final String NESTED = "nested";
+
 }

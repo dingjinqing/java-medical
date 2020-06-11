@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.task.overview;
 
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.GoodsOverviewSummaryRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewParam;
@@ -79,11 +80,11 @@ public class GoodsStatisticTaskService extends ShopBaseService {
         Condition extCondition = DSL.trueCondition();
         if (param.getBrandId() > 0) {
             // 品牌条件
-            extCondition = extCondition.and(BAK.BRAND_ID.eq(param.getBrandId()));
+            extCondition = extCondition.and(GOODS.BRAND_ID.eq(param.getBrandId()));
         }
         if (param.getSortId() > 0) {
             // 商家分类条件
-            extCondition = extCondition.and(BAK.SORT_ID.eq(param.getSortId()));
+            extCondition = extCondition.and(GOODS.SORT_ID.eq(param.getSortId()));
         }
         if (param.getLabelId() > 0) {
             // 标签条件
@@ -100,19 +101,19 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      */
     public int getSaleGoodsNumber(ProductOverviewParam param) {
         // 基本筛选条件 : 备份时间当天, 商品数量大于0, 在架状态 TODO 备份时间不确定
-        Condition baseCondition = BAK.BAK_DATE.greaterThan(Date.valueOf(param.getStartTime().toLocalDateTime().toLocalDate()))
-            .and(BAK.BAK_DATE.le(Date.valueOf(param.getEndTime().toLocalDateTime().toLocalDate())))
-            .and(BAK.GOODS_NUMBER.greaterThan(INTEGER_ZERO))
-            .and(BAK.IS_ON_SALE.eq(BYTE_ONE));
+        Condition baseCondition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
+            .and(GOODS.GOODS_NUMBER.greaterThan(INTEGER_ZERO))
+            .and(GOODS.IS_ON_SALE.eq(BYTE_ONE))
+            .and(GOODS.SALE_TIME.lessThan(param.getStartTime()));
 
         if (param.getLabelId() > 0) {
-            return db().select(countDistinct(BAK.GOODS_ID)).from(BAK)
-                .leftJoin(LABEL).on(BAK.GOODS_ID.eq(LABEL.GTA_ID))
+            return db().select(countDistinct(GOODS.GOODS_ID)).from(GOODS)
+                .leftJoin(LABEL).on(GOODS.GOODS_ID.eq(LABEL.GTA_ID))
                 .where(baseCondition).and(conditionBuilder(param))
                 .fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
         } else {
-            return db().select(countDistinct(BAK.GOODS_ID))
-                .from(BAK).where(baseCondition).and(conditionBuilder(param))
+            return db().select(countDistinct(GOODS.GOODS_ID))
+                .from(GOODS).where(baseCondition).and(conditionBuilder(param))
                 .fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
         }
     }
@@ -253,7 +254,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
         if (param.getBrandId() > 0 || param.getSortId() > 0) {
             joinStep = joinStep.leftJoin(BAK).on(field.eq(BAK.GOODS_ID));
         }
-        if (param.getSortId() > 0) {
+        if (param.getLabelId() > 0) {
             joinStep = joinStep.leftJoin(LABEL).on(LABEL.GTA_ID.eq(field));
         }
 //        return joinStep.where(baseCondition).and(conditionBuilder(param)).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);

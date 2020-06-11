@@ -50,6 +50,13 @@ public class EsCommand {
             esThreadConfig.doLabelIndexByShopId(x)
         );
     }
+    @ShellMethod("ElasticSearch product Index . --all[false|true]default true --shopId<shopId>")
+    public void esp(@ShellOption(arity = 1, defaultValue = "true") boolean all,@ShellOption( defaultValue = "0")int shopId) {
+        List<Integer> shopIdList = getShopIds(all,shopId);
+        shopIdList.forEach(x->
+            esThreadConfig.doProductIndexByShopId(x)
+        );
+    }
     @ShellMethod("ElasticSearch label Index . --all[false|true]default true --shopId<shopId>")
     public void estest(@ShellOption(arity = 1, defaultValue = "true") boolean all,@ShellOption( defaultValue = "0")int shopId) {
         saas.esMappingUpdateService.updateEsGoodsMapping();

@@ -77,7 +77,7 @@ public enum QrCodeTypeEnum {
     /*我要送礼*/
     PRESENT_GIFT((byte) 34, "pages1/presentinfo/presentinfo"),
     /*商品搜索页*/
-    GOODS_SEARCH((byte) 35, "pages1/search/search"),
+    GOODS_SEARCH((byte) 35, "pages/search/search"),
     /*积分兑换优惠券页*/
     SCORE_COUPON((byte) 36, "pages/receiveCoupon/receiveCoupon"),
     /*砍价详情页分享*/

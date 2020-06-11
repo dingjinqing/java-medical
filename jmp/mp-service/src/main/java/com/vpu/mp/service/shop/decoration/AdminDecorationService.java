@@ -312,20 +312,26 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     moduleMap.setImgPath(imageUrl(moduleMap.getImgPath()));
                     return moduleMap;
                 case ModuleConstant.M_GOODS:
-                    ModuleGoods moduleGoods = objectMapper.readValue(node.getValue().toString(), ModuleGoods.class);
-                    if(moduleGoods.getOtherMessage().equals(0)){
-                        if(StringUtil.isNotEmpty(moduleGoods.getImgUrl()) || StringUtil.isNotEmpty(moduleGoods.getTitle())){
-                            moduleGoods.setGoodsModuleTitle((byte)1);
-                        }else{
-                            moduleGoods.setGoodsModuleTitle((byte)0);
+                    ModuleGoods moduleGoods = saas.getShopApp(getShopId()).mpDecoration.convertGoodsForModule(objectMapper, node, null);
+                    if (moduleGoods.getOtherMessage().equals(0)) {
+                        if (StringUtil.isNotEmpty(moduleGoods.getImgUrl()) || StringUtil.isNotEmpty(moduleGoods.getTitle())) {
+                            moduleGoods.setGoodsModuleTitle((byte) 1);
+                        } else {
+                            moduleGoods.setGoodsModuleTitle((byte) 0);
                         }
+                    }
+                    if (StringUtil.isNotEmpty(moduleGoods.getImgUrl())) {
+                        moduleGoods.setImgUrl(imageUrl(moduleGoods.getImgUrl()));
+                    }
+                    if (StringUtil.isNotEmpty(moduleGoods.getImgTitleUrl())) {
+                        moduleGoods.setImgTitleUrl(imageUrl(moduleGoods.getImgTitleUrl()));
                     }
                     return moduleGoods;
                 case ModuleConstant.M_GOODS_GROUP:
-                    ModuleGoodsGroup moduleGoodsGroup = objectMapper.readValue(node.getValue().toString(), ModuleGoodsGroup.class);
-                    if(moduleGoodsGroup.getOtherMessage() == null && moduleGoodsGroup.getShowPrice() == 0){
-                        moduleGoodsGroup.setOtherMessage((byte)0);
-                        moduleGoodsGroup.setShowMarket((byte)1);
+                    ModuleGoodsGroup moduleGoodsGroup = saas.getShopApp(getShopId()).mpDecoration.convertGoodsGroupForModule(objectMapper, node, null);
+                    if (moduleGoodsGroup.getOtherMessage() == null && moduleGoodsGroup.getShowPrice() == 0) {
+                        moduleGoodsGroup.setOtherMessage((byte) 0);
+                        moduleGoodsGroup.setShowMarket((byte) 1);
                     }
                     return moduleGoodsGroup;
                 case ModuleConstant.M_BARGAIN:
@@ -682,16 +688,26 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                 	return objectMapper.readValue(node.getValue().toString(), Object.class);
                 	
                 case ModuleConstant.M_BARGAIN:
-                	checkAuth(VersionName.SUB_2_M_BARGAIN);
-                	return objectMapper.readValue(node.getValue().toString(), Object.class);
-                	
+                    checkAuth(VersionName.SUB_2_M_BARGAIN);
+                    return objectMapper.readValue(node.getValue().toString(), Object.class);
+
                 case ModuleConstant.M_SECKILL:
-                	checkAuth(VersionName.SUB_2_M_SECKILL_GOODS);
-                	return objectMapper.readValue(node.getValue().toString(), Object.class);
-                	
+                    checkAuth(VersionName.SUB_2_M_SECKILL_GOODS);
+                    return objectMapper.readValue(node.getValue().toString(), Object.class);
+
                 case ModuleConstant.M_PIN_INTEGRATION:
-                	checkAuth(VersionName.SUB_2_M_PIN_INTEGRATION);
-                	return objectMapper.readValue(node.getValue().toString(), Object.class);
+                    checkAuth(VersionName.SUB_2_M_PIN_INTEGRATION);
+                    return objectMapper.readValue(node.getValue().toString(), Object.class);
+
+                case ModuleConstant.M_GOODS:
+                    ModuleGoods moduleGoods = objectMapper.readValue(node.getValue().toString(), ModuleGoods.class);
+                    if (StringUtil.isNotEmpty(moduleGoods.getImgUrl())) {
+                        moduleGoods.setImgUrl(RegexUtil.getUri(moduleGoods.getImgUrl()));
+                    }
+                    if (StringUtil.isNotEmpty(moduleGoods.getImgTitleUrl())) {
+                        moduleGoods.setImgTitleUrl(RegexUtil.getUri(moduleGoods.getImgTitleUrl()));
+                    }
+                    return moduleGoods;
                 //TODO 其他保存前需要处理的模块
                 default:
 

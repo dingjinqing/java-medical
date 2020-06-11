@@ -106,7 +106,11 @@ public class GoodsBatchOperateParam {
                 if (GoodsConstant.ON_SALE.equals(goodsRecord.getIsOnSale())) {
                     Timestamp localDateTime = DateUtil.getLocalDateTime();
                     goodsRecord.setSaleTime(localDateTime);
+                    goodsRecord.setSaleType(GoodsConstant.SALE_TYPE_ON_SALE);
+                }else {
+                    goodsRecord.setSaleType(GoodsConstant.SALE_TYPE_NOT_ON_SALE);
                 }
+
             }
             saleTypeOptional.ifPresent(goodsRecord::setSaleType);
             saleTimeOptional.ifPresent(goodsRecord::setSaleTime);

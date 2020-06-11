@@ -294,17 +294,19 @@
     </view>
 
     <!-- 只有第一级的情况 -->
-    <view class="invite_content invite_one" wx:if='{{returnData.shareRules.length === 1}}'>
-      <view class='share_text'>邀{{shareContent1.invite_num}}人</view>
-      <view class="invite_people">
-        <block wx:for='{{shareContent1.user_info_list}}' wx:key='key' data-index='index'>
-          <image class='border-none' src='{{imageUrl}}/image/wxapp/share_big_people.png'  wx:if='{{item == null}}'></image>
-          <image class='user_image' src='{{item.userAvatar}}' wx:else></image>
-        </block>
+    <view wx:if='{{returnData.shareRules.length === 1}}'>
+      <view wx:for='{{returnData.shareRules}}' wx:key='key' data-index='index' class="invite_content invite_one">
+        <view class='share_text'>邀{{item.invite_num}}人</view>
+        <view class="invite_people">
+          <block wx:for='{{item.user_info_list}}' wx:for-item='items' wx:key='key' data-index='index'>
+            <image class='border-none' src='{{imageUrl}}/image/wxapp/share_big_people.png'  wx:if='{{items == null}}'></image>
+            <image class='user_image' src='{{items.userAvatar}}' wx:else></image>
+          </block>
+        </view>
+        <view class='share_or' wx:if='{{item.share_state === 4}}'>未邀请</view>
+        <view class='share_or' wx:if='{{item.share_state === 0}}'>进行中</view>
+        <view class='share_or get_share' data-type="{{item.reward_type}}" bindtap="getShare" wx:if="{{item.share_state ===  1 || item.share_state ===  2}}">查看奖励</view>
       </view>
-      <view class='share_or' wx:if='{{shareContent1.user_info_list.length === 0}}'>未邀请</view>
-      <view class='share_or' wx:elif='{{shareContent1.user_info_list.length !== shareContent1.invite_num}}'>进行中</view>
-      <view class='share_or get_share' data-type="{{item.reward_type}}" bindtap="getShare" wx:else>查看奖励</view>
     </view>
 
     <!-- 有多级的情况  -->
@@ -327,7 +329,7 @@
          <view>
           <view class='share_or' wx:if='{{item.share_state === 4}}'>未邀请</view>
           <view class='share_or' wx:if='{{item.share_state === 0}}'>进行中</view>
-          <view class='share_or get_share' data-type="{{item.reward_type}}"  data-stock="{{item.stock}}" bindtap="getShare"  wx:if="{{item.share_state ===  1 || item.share_state ===  2}}">查看奖励</view>
+          <view class='share_or get_share' data-type="{{item.reward_type}}"  data-stock="{{item.stock}}" data-lotterty="{{item.lottery}}" bindtap="getShare"  wx:if="{{item.share_state ===  1 || item.share_state ===  2}}">查看奖励</view>
         </view>
 
       </view>

@@ -26,9 +26,9 @@
       </block>
       <block wx:else>
         <view class="num-cfg">
-          <text class="num-minus" data-type="minus" catchtap="changeGoodsNum">-</text>
+          <text class="num-minus {{!canMinus ? 'not-tap':''}}" data-type="minus" catchtap="{{canMinus ? 'changeGoodsNum' :''}}">-</text>
           <input type="number" value="{{goodsData.cartNumber}}" bindblur="changeCartInput"></input>
-          <text class="num-plus" data-type="plus" catchtap="changeGoodsNum">+</text>
+          <text class="num-plus {{!canPlus ? 'not-tap':''}}" data-type="plus" catchtap="{{canPlus ? 'changeGoodsNum' : ''}}">+</text>
         </view>
       </block>
    </view>

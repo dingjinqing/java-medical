@@ -369,7 +369,7 @@ public class EsGoods  {
     /**
      * 商品规格对象
      */
-    @EsFiled(name=EsSearchName.PRDS,type = EsFiledTypeConstant.OBJECT,index = false)
+    @EsFiled(name=EsSearchName.PRDS,type = EsFiledTypeConstant.NESTED)
     private List<EsGoodsProduct> prds;
 
     @EsFiled(name = EsSearchName.GRADES,type = EsFiledTypeConstant.OBJECT)

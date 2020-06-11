@@ -1,7 +1,11 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.google.common.collect.Lists;
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
+import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
+import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -43,7 +47,11 @@ import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.*;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_CHEAP_Y;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
 
 /**
  * 商品列表,下单
@@ -217,11 +225,8 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
             if (goods.getGoodsNumber() > groupBuyProduct.getStock()) {
                 throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX);
             }
-            if (isGrouper.equals(IS_GROUPER_Y) && groupBuyRecord.getIsGrouperCheap().equals(IS_GROUPER_CHEAP_Y)) {
-                goods.setProductPrice(groupBuyProduct.getGrouperPrice());
-            } else {
-                goods.setProductPrice(groupBuyProduct.getGroupPrice());
-            }
+            //团员价格
+            goods.setProductPrice(groupBuyProduct.getGroupPrice());
             goods.setGoodsPriceAction(param.getActivityType());
             // 团长优惠价
             if (groupBuyRecord.getIsGrouperCheap().equals(IS_GROUPER_CHEAP_Y) && isGrouper.equals(IS_GROUPER_Y)) {
@@ -230,6 +235,8 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
                 //拼团价-团长价
                 goods.setGrouperGoodsReduce(groupBuyProduct.getGroupPrice().subtract(groupBuyProduct.getGrouperPrice()));
             }
+            //商品展示价格(团员价格)
+            goods.setGoodsPrice(groupBuyProduct.getGroupPrice());
         }
         if(groupBuyRecord.getActivityTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(groupBuyRecord.getActivityTagId())){
             tagService.userTagSvc.addActivityTag(param.getWxUserInfo().getUserId(), Util.stringToList(groupBuyRecord.getActivityTagId()), TagSrcConstant.GROUPBUY,groupBuyRecord.getId());

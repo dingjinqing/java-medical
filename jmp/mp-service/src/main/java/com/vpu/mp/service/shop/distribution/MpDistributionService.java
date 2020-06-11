@@ -284,10 +284,15 @@ public class MpDistributionService extends ShopBaseService{
      */
     public DistributionDocumentParam getDistributorDoc(){
         DistributionDocumentParam distributionDocument = distributionCfg.getDistributionDocument();
+        if(distributionDocument == null){
+            distributionDocument = new DistributionDocumentParam();
+            distributionDocument.setDocument(null);
+        }
         //获取分销审核开关配置
         Byte activation = this.distributionCfg.getDistributionCfg().getActivation();
         distributionDocument.setActivation(activation);
         return distributionDocument;
+
     }
 
     /**

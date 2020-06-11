@@ -5,7 +5,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
+import com.vpu.mp.service.pojo.shop.goods.es.Fact;
 import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
@@ -18,7 +20,9 @@ import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
+import com.vpu.mp.service.shop.goods.es.goods.product.EsGoodsProductEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +49,7 @@ public class EsGoodsSearchService extends EsBaseSearchService{
 
     private static final EsGoodsConvertInterface<GoodsPageListVo> CONVERT =new GoodsPageListVoConverter();
 
-    private static final EsGoodsConvertInterface<List<GoodsPageListVo>> PRODUCT_CONVERT =new GoodsPageListVoForProductConverter();
+    private static final GoodsPageListVoForProductConverter PRODUCT_CONVERT =new GoodsPageListVoForProductConverter();
 
     /**
      * admin商品列表（商品纬度）
@@ -73,9 +77,10 @@ public class EsGoodsSearchService extends EsBaseSearchService{
         Integer shopId = getShopId();
         assemblyGoodsLabelParam(goodsPageListParam);
         EsSearchParam param = goodsParamConvertEsGoodsParam(goodsPageListParam,shopId);
-        PageResult<EsGoods> pageResult = searchGoodsPageByParamForPage(param);
+        PageResult<EsGoodsProductEntity> pageResult = searchGoodsProductPageByParam(param);
         return esPageConvertProductVoPage(pageResult);
     }
+
 
     /**
      * 对于admin调用 es查询接口传入的param进行预处理
@@ -83,7 +88,15 @@ public class EsGoodsSearchService extends EsBaseSearchService{
      */
     private void assemblyGoodsLabelParam(GoodsPageListParam goodsPageListParam){
         if(goodsPageListParam.getLabelId() != null){
-            goodsPageListParam.setGoodsIds(esGoodsLabelSearchService.getGoodsIdsByLabelIds(Lists.newArrayList(goodsPageListParam.getLabelId()),EsGoodsConstant.GOODS_SEARCH_PAGE));
+            List<Integer> goodsIds = esGoodsLabelSearchService.getGoodsIdsByLabelIds(
+                Lists.newArrayList(goodsPageListParam.getLabelId()),EsGoodsConstant.GOODS_SEARCH_PAGE);
+            //如果根据商品标签搜索不到商品，那么本次搜索的搜索结果就是空
+            if( CollectionUtils.isEmpty(goodsIds) ){
+                goodsPageListParam.setGoodsIds(Lists.newArrayList(-1));
+            }else{
+                goodsPageListParam.setGoodsIds(goodsIds);
+            }
+
             goodsPageListParam.setLabelId(null);
         }
     }
@@ -134,26 +147,25 @@ public class EsGoodsSearchService extends EsBaseSearchService{
         result.setDataList(voList);
         return result;
     }
-    private PageResult<GoodsPageListVo> esPageConvertProductVoPage(PageResult<EsGoods> esPage){
+
+    private PageResult<GoodsPageListVo> esPageConvertProductVoPage(PageResult<EsGoodsProductEntity> esPage){
 
         PageResult<GoodsPageListVo> result = new PageResult<>();
         result.setPage(esPage.getPage());
-        List<EsGoods> esGoodsList = esPage.getDataList();
+        List<EsGoodsProductEntity> esGoodsList = esPage.getDataList();
         List<GoodsPageListVo> voList = Lists.newArrayList();
         if( !esGoodsList.isEmpty() ){
             Map<Integer,List<EsGoodsLabel>> labelMap = getGoodsLabel(
-                esGoodsList.stream().map(EsGoods::getGoodsId).collect(Collectors.toList())
+                esGoodsList.stream().map(EsGoodsProductEntity::getGoodsId).collect(Collectors.toList())
             );
             esGoodsList.forEach(x-> {
-                List<GoodsPageListVo> vos = PRODUCT_CONVERT.convert(x);
-                vos.forEach(vo->{
-                    if( !labelMap.isEmpty() && labelMap.containsKey(vo.getGoodsId()) ){
-                        List<GoodsLabelSelectListVo> labelVos = Lists.newLinkedList();
-                        labelMap.get(vo.getGoodsId()).forEach(y->labelVos.add(new GoodsLabelSelectListVo(y.getId(),y.getName())));
-                        vo.setGoodsPointLabels(labelVos);
-                    }
+                GoodsPageListVo vo = GoodsPageListVoForProductConverter.convert(x);
+                if( !labelMap.isEmpty() && labelMap.containsKey(vo.getGoodsId()) ){
+                    List<GoodsLabelSelectListVo> labelVos = Lists.newLinkedList();
+                    labelMap.get(vo.getGoodsId()).forEach(y->labelVos.add(new GoodsLabelSelectListVo(y.getId(),y.getName())));
+                    vo.setGoodsPointLabels(labelVos);
                     voList.add(vo);
-                });
+                }
 
             });
 

@@ -19,7 +19,7 @@
           </view>
           <view class="info_total">
             <view>{{i18n.$t(localePack,"pages.checkout.my",{name:i18n.$t(localePack,"pages.checkout.integral")})}}：{{userScore}}</view>
-            <view>{{i18n.$t(localePack,"pages.checkout.deduction")+i18n.$t(localePack,"pages.checkout.cash")}}: {{scoreInPut / scoreProportion}}</view>
+            <view>{{i18n.$t(localePack,"pages.checkout.deduction")+i18n.$t(localePack,"pages.checkout.cash")}}：{{scoreInPut / scoreProportion}}</view>
           </view>
         </view>
     </view>

@@ -561,7 +561,7 @@ export default {
                 message: '请选择拼团抽奖活动',
                 showClose: true
               })
-              flag = true
+              flag = false
             }
             break
           case 'm_magic_cube':

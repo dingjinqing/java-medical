@@ -76,7 +76,7 @@ global.wxComponent({
       this.setData({
         canMinus: num <= limitBuyNum ? false : true,
         canPlus: num < limitMaxNum ? true : false,
-        goodsNum:num
+        goodsNum:Number(num)
       })
       this.triggerEvent("goodsNumData", { goodsNum: this.data.goodsNum });
     }

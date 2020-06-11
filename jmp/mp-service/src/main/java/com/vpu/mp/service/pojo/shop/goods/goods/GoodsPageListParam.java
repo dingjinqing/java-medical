@@ -34,6 +34,7 @@ public class GoodsPageListParam {
 
     private Integer goodsId;
     private List<Integer> goodsIds;
+
     /**
      * 	不能包含的goodsId
      */

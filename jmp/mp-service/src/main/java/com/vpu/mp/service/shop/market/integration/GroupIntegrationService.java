@@ -1012,17 +1012,21 @@ public class GroupIntegrationService extends ShopBaseService {
 		Map<GroupIntegrationMaVo, Integer> map = new HashMap<GroupIntegrationMaVo, Integer>();
 		for (GroupIntegrationMaVo item : groupInfo) {
 			int inviteNum = groupIntegrationList.getInviteNum(groupId, item.getUserId(), pinInteId);
-			int inviteNewNum = groupIntegrationList.getInviteNewNum(groupId, item.getUserId());
+			int inviteNewNum = groupIntegrationList.getInviteNewNum(groupId, item.getUserId(),pinInteId);
 			int selfNum = item.getIsNew() == STATUS_ONE ? 2 : 1;
 			int getNum = selfNum + inviteNewNum + inviteNum;
+			logger().info("userId:{},getNum:{}",item.getUserId(),getNum);
 			map.put(item, getNum);
 			getNumTotal += getNum;
 		}
 		int preInte = canIntegration / getNumTotal;
+		logger().info("preInte:{}",preInte);
 		for (GroupIntegrationMaVo item : groupInfo) {
 			if (item.getIsGrouper().equals(STATUS_ZERO)) {
 				int integration = preInte * map.get(item);
+				logger().info("integration:{}",integration);
 				haveDivide += integration;
+				logger().info("haveDivide:{}",haveDivide);
 				execute = groupIntegrationList.updateIntegration(item.getId(), integration);
 				logger().info("更新id:{}；的INTEGRATION为{}", item.getId(), integration);
 				if (execute == 0) {
@@ -1031,6 +1035,7 @@ public class GroupIntegrationService extends ShopBaseService {
 			}
 		}
 		int grouperInte = canIntegration - haveDivide;
+		logger().info("grouperInte:{}",grouperInte);
 		execute = groupIntegrationList.updateGroupperIntegration(pinInteId, groupId, grouperInte);
 		logger().info("更新活动：{}；团：{}的团长的积分为{}", pinInteId, groupId, grouperInte);
 		if (execute == 0) {

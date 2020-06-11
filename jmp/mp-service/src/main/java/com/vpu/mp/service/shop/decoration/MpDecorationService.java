@@ -772,9 +772,9 @@ public class MpDecorationService extends ShopBaseService {
                     String moduleName = node.getValue().get("module_name").asText();
                     switch (moduleName) {
                         case ModuleConstant.M_GOODS:
-                            return this.convertGoodsForModule(objectMapper, node, user);
+                            return this.convertGoodsForModule(objectMapper, node, user.getUserId());
                         case ModuleConstant.M_GOODS_GROUP:
-                            return this.convertGoodsGroupForModule(objectMapper,node,user);
+                            return this.convertGoodsGroupForModule(objectMapper, node, user.getUserId());
                         case ModuleConstant.M_COUPON:
                             return this.convertCouponForModule(objectMapper, node, user);
                         case ModuleConstant.M_CARD:
@@ -806,13 +806,12 @@ public class MpDecorationService extends ShopBaseService {
      *
      * @param objectMapper
      * @param node
-     * @param user
+     * @param userId
      * @return
      * @throws IOException
      */
-    private ModuleGoods convertGoodsForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+    public ModuleGoods convertGoodsForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, Integer userId) throws IOException {
         ModuleGoods moduleGoods = objectMapper.readValue(node.getValue().toString(), ModuleGoods.class);
-        Integer userId = user.getUserId();
         GoodsListMpParam param = new GoodsListMpParam();
         param.setRecommendType(moduleGoods.getRecommendType());
         if (moduleGoods.getGoodsItems() == null) {
@@ -839,24 +838,24 @@ public class MpDecorationService extends ShopBaseService {
 
     /**
      * 商品分组模块
+     *
      * @param objectMapper
      * @param node
-     * @param user
+     * @param userId
      * @return
      * @throws IOException
      */
-    private ModuleGoodsGroup convertGoodsGroupForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException{
+    public ModuleGoodsGroup convertGoodsGroupForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, Integer userId) throws IOException {
         ModuleGoodsGroup moduleGoodsGroup = objectMapper.readValue(node.getValue().toString(), ModuleGoodsGroup.class);
-        Integer userId = user.getUserId();
         GoodsGroupListMpParam param = new GoodsGroupListMpParam();
         param.setUserId(userId);
 
         if (!GoodsConstant.GOODS_GROUP_LIST_TOP_POSITION.equals(moduleGoodsGroup.getPositionStyle()) || !GoodsConstant.GOODS_GROUP_LIST_SHOW_ALL_COLUMN.equals(moduleGoodsGroup.getGroupDisplay())) {
             ModuleGoodsGroup.SortGroup sortGroup = moduleGoodsGroup.getSortGroupArr().get(0);
-            GoodsGroupListMpParam.SortGroup paramGroup = new GoodsGroupListMpParam.SortGroup(sortGroup.getSortId(),sortGroup.getSortType(),sortGroup.getGroupGoodsId(),sortGroup.getIsAll());
+            GoodsGroupListMpParam.SortGroup paramGroup = new GoodsGroupListMpParam.SortGroup(sortGroup.getSortId(), sortGroup.getSortType(), sortGroup.getGroupGoodsId(), sortGroup.getIsAll());
             param.setSortGroupArr(Collections.singletonList(paramGroup));
         } else {
-            List< GoodsGroupListMpParam.SortGroup> groups = new ArrayList<>();
+            List<GoodsGroupListMpParam.SortGroup> groups = new ArrayList<>();
             for (ModuleGoodsGroup.SortGroup sortGroup : moduleGoodsGroup.getSortGroupArr()) {
                 GoodsGroupListMpParam.SortGroup paramGroup = new GoodsGroupListMpParam.SortGroup(sortGroup.getSortId(),sortGroup.getSortType(),sortGroup.getGroupGoodsId(),sortGroup.getIsAll());
                 groups.add(paramGroup);

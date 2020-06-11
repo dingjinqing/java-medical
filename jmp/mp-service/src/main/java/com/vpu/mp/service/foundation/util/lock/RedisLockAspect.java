@@ -67,7 +67,7 @@ public final class RedisLockAspect extends ShopBaseService {
                 throw (MpException)cause;
             } else {
                 logger().error("批量锁执行joinPoint.proceed()异常", throwable);
-                throw new MpException(JsonResultCode.CODE_ORDER_UPDATE_STOCK_FAIL);
+                throw new MpException(JsonResultCode.CODE_FAIL);
             }
             
         }

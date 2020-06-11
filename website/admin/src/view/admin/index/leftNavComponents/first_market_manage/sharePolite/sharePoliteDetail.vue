@@ -237,7 +237,7 @@ export default {
             item.rewardType = '优惠券'
             break
           case 3:
-            item.rewardType = '幸运大转盘'
+            item.rewardType = '幸运大抽奖'
             break
           default:
             item.rewardType = ''

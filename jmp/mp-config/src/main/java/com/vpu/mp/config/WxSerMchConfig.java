@@ -16,4 +16,8 @@ public class WxSerMchConfig {
     protected String wxSrvMchId;
     @Value(value = "${wx.srv.key}")
     protected String wxSrvKey;
+    @Value(value = "${wx.srv.pay.cert}")
+    protected String wxSrvPayCert;
+    @Value(value = "${wx.srv.pay.key}")
+    protected String wxSrvPayKey;
 }

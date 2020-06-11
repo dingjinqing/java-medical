@@ -771,6 +771,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         BigDecimal[] tolalNumberAndPrice = calculate.getTolalNumberAndPriceByType(bos, null, null);
         //预售处理
         OrderPreSale orderPreSale = calculate.calculatePreSale(param, bos, tolalNumberAndPrice, vo);
+        //团长优惠
+        BigDecimal grouperCheapReduce = param.getGoods().stream().map(Goods::getGrouperTotalReduce).reduce(BigDecimal.ZERO, BigDecimalUtil::add);
         BigDecimal preSaleDiscount = calculate.calculateOrderGoodsDiscount(orderPreSale, OrderConstant.D_T_FULL_PRE_SALE);
         //满折满减特殊处理
         List<OrderFullReduce> orderFullReduces = calculate.calculateFullReduce(param, bos);
@@ -805,8 +807,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             BigDecimalUtil.BigDecimalPlus.create(couponDiscount, BigDecimalUtil.Operator.subtrac),
             BigDecimalUtil.BigDecimalPlus.create(fullReduceDiscount, BigDecimalUtil.Operator.subtrac),
             BigDecimalUtil.BigDecimalPlus.create(preSaleDiscount, BigDecimalUtil.Operator.subtrac),
-            BigDecimalUtil.BigDecimalPlus.create(packageSaleDiscount,null)
-        );
+            BigDecimalUtil.BigDecimalPlus.create(packageSaleDiscount,BigDecimalUtil.Operator.subtrac),
+            BigDecimalUtil.BigDecimalPlus.create(grouperCheapReduce)
+
+            );
         //折扣金额(使用大额优惠券，支付金额不为负的，等于运费金额)
         if(BigDecimalUtil.compareTo(tolalDiscountAfterPrice, BigDecimal.ZERO) < 0){
             tolalDiscountAfterPrice = BigDecimal.ZERO;
@@ -891,6 +895,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setTolalDiscountAfterPrice(tolalDiscountAfterPrice);
         vo.setInsteadPayCfg(param.getInsteadPayCfg());
         vo.setPackageDiscount(packageSaleDiscount);
+        vo.setGrouperCheapReduce(grouperCheapReduce);
         // 积分使用规则
         setScorePayRule(vo);
         logger().info("金额处理赋值(processOrderBeforeVo),end");

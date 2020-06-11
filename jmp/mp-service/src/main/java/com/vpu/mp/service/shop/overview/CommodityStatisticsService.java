@@ -153,6 +153,9 @@ public class CommodityStatisticsService extends ShopBaseService {
      * 计算统计数据变化率公式 (now-prefix)/prefix
      */
     private BigDecimal getRate(Object now, Object prefix) {
+        if(now instanceof  Date) {
+            return new BigDecimal("0");
+        }
         BigDecimal n;
         BigDecimal p;
         if (Objects.isNull(now)) {

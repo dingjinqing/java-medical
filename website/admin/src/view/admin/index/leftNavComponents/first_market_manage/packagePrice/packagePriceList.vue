@@ -107,9 +107,10 @@
         <el-table-column
           label="活动时间"
           align="center"
-          width="160"
+          width="170"
         >
-          <template slot-scope="scope">
+          <template slot-scope="
+          scope">
             {{scope.row.startTime}}
             <br />至<br />
             {{scope.row.endTime}}
@@ -357,11 +358,11 @@ export default {
       data.map((item, index) => {
         item.num = item.goodsNumber1
         item.activityGroup1 = `${item.groupName1}:${item.goodsNumber1}件`
-        if (item.goodsGroup2 === 1 && item.groupName2 !== '') {
+        if (item.goodsGroup2 === 1 && (item.groupName2 !== null && item.groupName2 !== '')) {
           item.activityGroup2 = `${item.groupName2}:${item.goodsNumber2}件`
           item.num += item.goodsNumber2
         }
-        if (item.goodsGroup3 === 1 && item.groupName3 !== '') {
+        if (item.goodsGroup3 === 1 && (item.groupName3 !== null && item.groupName3 !== '')) {
           item.activityGroup3 = `${item.groupName3}:${item.goodsNumber3}件`
           item.num += item.goodsNumber3
         }

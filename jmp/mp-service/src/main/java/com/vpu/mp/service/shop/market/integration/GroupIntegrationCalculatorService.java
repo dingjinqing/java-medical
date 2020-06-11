@@ -102,7 +102,7 @@ public class GroupIntegrationCalculatorService extends ShopBaseService{
 		for (GroupIntegrationListParticipationVo vo : participationList) {
 			Integer userId = vo.getUserId();
 			int inviteNum = saas.getShopApp(getShopId()).groupIntegration.groupIntegrationList.getInviteNum(groupId, userId,defineRecord.getId());
-			int inviteNewNum = saas.getShopApp(getShopId()).groupIntegration.groupIntegrationList.getInviteNewNum(groupId, userId);
+			int inviteNewNum = saas.getShopApp(getShopId()).groupIntegration.groupIntegrationList.getInviteNewNum(groupId, userId,defineRecord.getId());
 			int selfNum = vo.getIsNew().equals(IsNew.YES.value())?2:1;
 			int weight = inviteNewNum+ inviteNum + selfNum;
 			weightMap.put(vo, weight);
