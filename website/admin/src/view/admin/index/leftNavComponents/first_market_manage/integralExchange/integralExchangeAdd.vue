@@ -85,10 +85,7 @@
             >
               + {{$t('mintegralExchange.chooseCommodity')}}
             </span>
-            <span
-              v-if="ruleForm.checkGoodsName"
-              v-html="ruleForm.checkGoodsName"
-            ></span>
+            <span v-if="ruleForm.checkGoodsName">{{ruleForm.checkGoodsName}}</span>
             <span
               v-if="ruleForm.checkGoodsName && status!==1"
               @click="handleToChooseGoods()"
@@ -396,6 +393,9 @@ export default {
           } else if (Number(item.exchange.money) > Number(item.originPrice)) {
             flag = true
             callback(new Error(this.$t('mintegralExchange.tipsThree')))
+          } if (this.exchangeProportion === 1000 && (Number(item.exchange.score) % 10 !== 0)) {
+            flag = true
+            callback(new Error('因系统规则限制，当兑换比例为“1000积分=1RMB”时,积分兑换填写的数值必须为10整数倍'))
           } else if (!Number(item.exchange.money) && !Number(item.exchange.score)) {
             flag = true
             callback(new Error('兑换价格或积分不能同时为空'))
@@ -469,6 +469,7 @@ export default {
       }
     }
     return {
+      exchangeProportion: 1, // 积分兑换比例
       isChangeGoods: false,
       isClicktimePicker: true, // 是否可以选择开始时间
       isSureTop: true,
@@ -605,6 +606,10 @@ export default {
       immediate: true
     }
   },
+  mounted () {
+    console.log(localStorage.getItem('V-ScoreProportion'))
+    this.exchangeProportion = Number(localStorage.getItem('V-ScoreProportion'))
+  },
   methods: {
     // 点击保存
     handleToClickSave () {
@@ -657,7 +662,7 @@ export default {
         })
         let url = ''
         if (this.formBottom.checkImgData) {
-          url = this.formBottom.checkImgData.imgPath
+          url = this.formBottom.checkImgData.imgUrl
         }
         let configParamObj = {
           shareAction: Number(this.formBottom.style),
@@ -778,8 +783,6 @@ export default {
     },
     resultGoodsRow (res) { // 选中商品弹窗回传数据
       console.log(res)
-      res.goodsName = res.goodsName.replace(/color='red'/g, '')
-      console.log(res.goodsName.replace(/color='red'/g, ''))
       this.ruleForm.checkGoodsName = res.goodsName
       this.checkGoodsId = res.goodsId
 
@@ -871,9 +874,6 @@ export default {
     color: #5a8bff;
     border: 1px solid #ddd;
     cursor: pointer;
-    font {
-      color: #fff;
-    }
   }
   /deep/ .el-table__header {
     background-color: #f5f5f5;

@@ -34,6 +34,8 @@ public class EsGoodsProduct {
     private String prdImg;
     @EsFiled(name = EsSearchName.PRD.PRD_CODES,type = EsFiledTypeConstant.KEYWORD)
     private String prdCodes;
+    @EsFiled(name = EsSearchName.PRD.PRD_SN,type = EsFiledTypeConstant.KEYWORD)
+    private String prdSn;
 
     public EsGoodsProduct(){}
 
@@ -47,6 +49,15 @@ public class EsGoodsProduct {
         this.prdImg = record.getPrdImg();
         this.prdCodes = record.getPrdCodes();
         this.prdWeight = record.getPrdWeight();
+        this.prdSn = record.getPrdSn();
+    }
+
+    public String getPrdSn() {
+        return prdSn;
+    }
+
+    public void setPrdSn(String prdSn) {
+        this.prdSn = prdSn;
     }
 
     public Integer getPrdId() {

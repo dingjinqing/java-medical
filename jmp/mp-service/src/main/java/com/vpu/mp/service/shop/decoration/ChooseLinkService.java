@@ -4,21 +4,49 @@ import com.vpu.mp.db.shop.tables.records.DecorateLinkRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.decoration.*;
+import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
+import com.vpu.mp.service.pojo.shop.decoration.ActivityVo;
+import com.vpu.mp.service.pojo.shop.decoration.ChooseLinkParam;
+import com.vpu.mp.service.pojo.shop.decoration.GoodsLinkVo;
+import com.vpu.mp.service.pojo.shop.decoration.PageFormVo;
+import com.vpu.mp.service.pojo.shop.decoration.StoreVo;
+import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
+import com.vpu.mp.service.pojo.shop.decoration.XcxLinkListVo;
+import com.vpu.mp.service.pojo.shop.decoration.XcxNameListVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
-import org.jooq.*;
+import org.jooq.Record;
+import org.jooq.Record3;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.ASSESS_ACTIVITY;
+import static com.vpu.mp.db.shop.Tables.COUPON_PACK;
+import static com.vpu.mp.db.shop.Tables.DECORATE_LINK;
+import static com.vpu.mp.db.shop.Tables.FORM_PAGE;
+import static com.vpu.mp.db.shop.Tables.FRIEND_PROMOTE_ACTIVITY;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GROUP_DRAW;
+import static com.vpu.mp.db.shop.Tables.GROUP_INTEGRATION_DEFINE;
+import static com.vpu.mp.db.shop.Tables.LOTTERY;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.MP_JUMP;
+import static com.vpu.mp.db.shop.Tables.MP_JUMP_USABLE;
+import static com.vpu.mp.db.shop.Tables.MRKING_STRATEGY;
+import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
+import static com.vpu.mp.db.shop.Tables.PACKAGE_SALE;
+import static com.vpu.mp.db.shop.Tables.PURCHASE_PRICE_DEFINE;
+import static com.vpu.mp.db.shop.Tables.SORT;
+import static com.vpu.mp.db.shop.Tables.STORE;
 
 /**
  *
@@ -80,7 +108,6 @@ public class ChooseLinkService extends ShopBaseService {
 	}
 
     private void getActivityStatus(List<ActivityVo> list) {
-        Timestamp dateTime = DateUtil.getLocalDateTime();
         list.forEach(activityVo -> {
             Byte actStatus = Util.getActStatus(BaseConstant.ACTIVITY_STATUS_NORMAL, activityVo.getStartTime(), activityVo.getEndTime());
             activityVo.setStatus(actStatus);
@@ -181,6 +208,15 @@ public class ChooseLinkService extends ShopBaseService {
         SelectConditionStep<Record> records = couponBuildOptions(select, couponType);
         Result<Record> record = records.fetch();
         if(record != null){
+            List<ActivityVo> list = record.into(ActivityVo.class);
+            list.forEach(activityVo -> {
+                if (activityVo.getValidityType().equals(CouponConstant.AFTER_RECEIVING)){
+                    activityVo.setStatus(BaseConstant.NAVBAR_TYPE_ONGOING);
+                }else {
+                    Byte actStatus = Util.getActStatus(BaseConstant.ACTIVITY_STATUS_NORMAL, activityVo.getStartTime(), activityVo.getEndTime());
+                    activityVo.setStatus(actStatus);
+                }
+            });
             return record.into(ActivityVo.class);
         }else{
             return null;

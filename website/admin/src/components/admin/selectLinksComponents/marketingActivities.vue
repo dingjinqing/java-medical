@@ -50,7 +50,7 @@
             <td class="tb_decorate_a">
               {{path}}{{item.id}}
             </td>
-            <td class="status">{{item.status?'进行中':'未开始'}}</td>
+            <td class="status">{{item.status===1?'进行中':item.status===2?'未开始':''}}</td>
           </tr>
         </tbody>
 

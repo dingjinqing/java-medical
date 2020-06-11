@@ -24,10 +24,13 @@ public class EsAssemblyProductService {
                 EsGoodsProductEntity entity = new EsGoodsProductEntity();
                 BeanUtils.copyProperties(esGoods,entity);
                 entity.setPrdId(product.getPrdId());
-                entity.setPrdCodes(product.getPrdCodes());
+                entity.setPrdSn(product.getPrdSn());
+                entity.setPrdDesc(product.getPrdDesc());
                 entity.setPrdImg(product.getPrdImg());
+                entity.setPrdNumber(product.getPrdNumber());
                 entity.setPrdRealPrice(product.getPrdRealPrice());
                 entity.setPrdLinePrice(product.getPrdLinePrice());
+                entity.setPrdCodes(product.getPrdCodes());
                 result.add(entity);
             }
         }

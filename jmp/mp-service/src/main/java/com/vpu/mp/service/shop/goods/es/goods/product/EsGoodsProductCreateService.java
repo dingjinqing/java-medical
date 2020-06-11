@@ -51,6 +51,27 @@ public class EsGoodsProductCreateService {
             e.printStackTrace();
         }
     }
+    /**
+     * 批量删除es数据（删除调用）
+     */
+    public void deleteEsGoods(List<EsGoodsProductEntity> entityList,Integer shopId){
+        deleteEsGoods(getProductIds(entityList, shopId));
+    }
+
+    /**
+     * 提交数据更新请求到es
+     */
+    public List<IndexRequest> buildIndexRequest(List<EsGoodsProductEntity> productEntityList){
+        List<IndexRequest> requests = Lists.newArrayList();
+        if( CollectionUtils.isEmpty(productEntityList) ){
+            return requests;
+        }
+        for( EsGoodsProductEntity entity:productEntityList ){
+            IndexRequest request = EsUtil.assemblyRequest(EsGoodsConstant.PRODUCT_ALIA_NAME,entity);
+            requests.add(request);
+        }
+        return requests;
+    }
 
     private List<String> getProductIds(List<EsGoodsProductEntity> productEntities,Integer shopId){
         List<String> results = Lists.newArrayList();

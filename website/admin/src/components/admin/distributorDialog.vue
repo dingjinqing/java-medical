@@ -204,14 +204,6 @@ export default {
       type: Boolean,
       default: () => false
     },
-    // 当前分销员分组
-    // distributorGroup: {
-    //   type: Number
-    // },
-    // 当前分销员等级
-    // distributorLevel: {
-    //   type: Number
-    // },
     // 选中的数据id
     selectRowIds: {
       type: Array,
@@ -249,9 +241,6 @@ export default {
   watch: {
     turnUp (newData) {
       this.dialogTableVisible = true
-
-      // this.form.distributorGroup = this.distributorGroup ? this.distributorGroup : '' // 当前分销员分组
-      // this.form.distributorLevel = this.distributorLevel ? this.distributorLevel : '' // 当前分销员等级
       this.initDataList()
     }
   },
