@@ -64,7 +64,7 @@
                 <el-option
                   v-for="(item, index) in levelDataList"
                   :key="index"
-                  :label="item.levelText"
+                  :label="item.levelName"
                   :value="item.id"
                 >
                 </el-option>
@@ -205,13 +205,13 @@ export default {
       default: () => false
     },
     // 当前分销员分组
-    distributorGroup: {
-      type: Number
-    },
+    // distributorGroup: {
+    //   type: Number
+    // },
     // 当前分销员等级
-    distributorLevel: {
-      type: Number
-    },
+    // distributorLevel: {
+    //   type: Number
+    // },
     // 选中的数据id
     selectRowIds: {
       type: Array,
@@ -250,8 +250,8 @@ export default {
     turnUp (newData) {
       this.dialogTableVisible = true
 
-      this.form.distributorGroup = this.distributorGroup ? this.distributorGroup : '' // 当前分销员分组
-      this.form.distributorLevel = this.distributorLevel ? this.distributorLevel : '' // 当前分销员等级
+      // this.form.distributorGroup = this.distributorGroup ? this.distributorGroup : '' // 当前分销员分组
+      // this.form.distributorLevel = this.distributorLevel ? this.distributorLevel : '' // 当前分销员等级
       this.initDataList()
     }
   },

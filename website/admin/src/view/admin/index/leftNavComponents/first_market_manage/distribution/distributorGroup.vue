@@ -135,7 +135,6 @@
     <!-- 添加分销员弹窗 -->
     <DistributorDialog
       :turnUp="turnUpDialog"
-      :distributorGroup="distributorId"
       @handleSelect="handleSelectRow"
     />
 
