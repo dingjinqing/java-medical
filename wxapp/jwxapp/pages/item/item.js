@@ -186,7 +186,8 @@ global.wxPage({
         ]
       }
     },
-    showLive: true
+    showLive: true,
+    addressId: null
   },
   /**
    * 生命周期函数--监听页面加载
@@ -1256,7 +1257,24 @@ global.wxPage({
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () { },
+  onShow: function () {
+    let pages = getCurrentPages()
+    console.log(pages)
+    if (this.data.addressId) {
+      this.requestAddress()
+    }
+  },
+
+  requestAddress () {
+    let that = this
+    util.api('/api/wxapp/address/get', op => {
+      if (op.error === 0) {
+        that.setData({
+          'deliverFeeAddressVo.address': op.content
+        })
+      }
+    }, {addressId: this.data.addressId})
+  },
 
   /**
    * 生命周期函数--监听页面隐藏

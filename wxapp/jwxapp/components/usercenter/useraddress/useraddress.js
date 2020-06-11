@@ -16,7 +16,8 @@ global.wxComponent({
   data: {
     addressList: [],
     select: '',
-    orderOptions: null
+    orderOptions: null,
+    prevPage: null
   },
 
   ready () {
@@ -181,6 +182,15 @@ global.wxComponent({
         this.setData({
           addressList: addressList
         })
+        let pages = getCurrentPages()
+        let prevPage = pages[pages.length - 2]
+        if (prevPage) {
+          prevPage.setData({
+            addressId: id
+          })
+          wx.navigateBack()
+          return false
+        }
         console.log(this.data.orderOptions)
         let opts = this.stringOpts(this.data.orderOptions)
         console.log(opts, id)
