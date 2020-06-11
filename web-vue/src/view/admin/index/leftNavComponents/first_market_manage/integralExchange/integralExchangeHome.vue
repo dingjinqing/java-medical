@@ -366,6 +366,8 @@ export default {
         console.log(res)
         if (res.error === 0) {
           let data = res.content
+          // scoreProportion
+          localStorage.setItem('V-ScoreProportion', data.scoreProportion)
           this.tableData = data.dataList
           this.pageParams = Object.assign(this.pageParams, data.page)
         }
