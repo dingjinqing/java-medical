@@ -366,6 +366,8 @@ export default {
         console.log(res)
         if (res.error === 0) {
           let data = res.content
+          // scoreProportion
+          localStorage.setItem('V-ScoreProportion', data.scoreProportion)
           this.tableData = data.dataList
           this.pageParams = Object.assign(this.pageParams, data.page)
         }
@@ -509,7 +511,7 @@ export default {
       console.log(flag)
       if (flag) {
         this.showSix = false
-        this.activeName = 'second'
+        this.activeName = 'first'
         this.actState = 0
         this.handleToInit()
       }
@@ -614,7 +616,7 @@ export default {
   }
   .name {
     width: 115px;
-    height: 45px;
+    height: 40px;
     text-overflow: ellipsis;
     overflow: hidden;
     -webkit-box-orient: vertical;
