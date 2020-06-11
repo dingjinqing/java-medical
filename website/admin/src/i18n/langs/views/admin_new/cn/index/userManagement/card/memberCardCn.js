@@ -227,7 +227,7 @@ export const cn = {
   timeDay: '日内有效',
   timeWeek: '周内有效',
   timeMonth: '月内有效',
-  suiteableGoods: '适用商品',
+  suiteableGoods: '兑换商品',
   cardStartUse: '本卡是否启用',
   startUse: '启用',
   stopUse: '停用',

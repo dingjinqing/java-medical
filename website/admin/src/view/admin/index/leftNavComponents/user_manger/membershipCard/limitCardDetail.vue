@@ -207,7 +207,7 @@ export default {
         everyGoodsMaxNum: '',
         exchangFreight: 0,
         exchangGoods: [{goodsIds: [], maxNum: null}],
-        exchangTimeType: null,
+        exchangTimeType: 1,
         exchangTimeRadio: '0',
         exchangTimeNum: null
       },
@@ -298,14 +298,17 @@ export default {
       console.log(this.cardEffectTime.fixedDate)
       this.cardEffectTime.receiveDay = data.receiveDay
       this.cardEffectTime.dateType = data.dateType ? String(data.dateType) : '0'
-      debugger
       // 适用商品
       this.cardSuiteGoodsCfgData.isExchange = data.cardExchangGoods.isExchange
       this.cardSuiteGoodsCfgData.exchangCount = data.cardExchangGoods.exchangCount
       this.cardSuiteGoodsCfgData.everyGoodsMaxNum = data.cardExchangGoods.everyGoodsMaxNum
       this.cardSuiteGoodsCfgData.exchangFreight = data.cardExchangGoods.exchangFreight
       this.cardSuiteGoodsCfgData.exchangGoods = data.cardExchangGoods.exchangGoods
-      this.cardSuiteGoodsCfgData.exchangTimeType = data.cardExchangGoods.exchangTimeType
+      if (data.cardExchangGoods.exchangTimeType !== null && data.cardExchangGoods.exchangTimeType !== 0) {
+        this.cardSuiteGoodsCfgData.exchangTimeType = data.cardExchangGoods.exchangTimeType
+      } else {
+        this.cardSuiteGoodsCfgData.exchangTimeType = 1
+      }
 
       if (!data.cardExchangGoods.exchangGoods) {
         this.cardSuiteGoodsCfgData.exchangGoods = [{goodsIds: [], maxNum: null}]

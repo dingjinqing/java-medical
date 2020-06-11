@@ -26,7 +26,7 @@
           >全部商品</el-radio>
         </div>
         <div
-          v-if="ruleForm.isExchange !== '0'"
+          v-if="Number(ruleForm.isExchange) !== 0"
           class="suite-goods-middle"
         >
           <div class="goods-exchange-times">
@@ -98,7 +98,7 @@
           </div>
         </div>
 
-        <div class="goods-exchange-freight" v-if="ruleForm.isExchange !== '0'">
+        <div class="goods-exchange-freight" v-if="Number(ruleForm.isExchange) !== 0">
             <span>运费策略：</span>
             <el-radio
               v-model="ruleForm.exchangFreight"
@@ -112,7 +112,7 @@
             >使用商品运费策略
             </el-radio>
         </div>
-        <div class="exchang-time" v-if="ruleForm.isExchange !== '0'">
+        <div class="exchang-time" v-if="Number(ruleForm.isExchange) !== 0">
           <ul class="time-row">
             <li class="time-cell">兑换时间限制：</li>
             <li class="time-cell">
