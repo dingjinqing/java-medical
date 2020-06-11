@@ -1927,6 +1927,9 @@ public class UserCardService extends ShopBaseService {
 				userCard.setBgImg(imageUrl);
 			}
 		}
+		if(userCard != null && StringUtils.isBlank(userCard.getBgColor())){
+			userCard.setBgColor(CardUtil.getDefaultBgColor());
+		}
 		return userCard;
 	}
 
