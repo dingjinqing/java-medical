@@ -1153,6 +1153,12 @@ public class OrderReadService extends ShopBaseService {
         for (ApiOrderListVo order: orders) {
             //商品
             List<ApiOrderGoodsListVo> goods = goodsInfo.get(order.getOrderSn());
+            //积分兑换价格转化
+            goods.forEach(x->{
+                if(x.getGoodsScore() != null && x.getGoodsScore() > 0) {
+                    x.setGoodsPrice(x.getDiscountedGoodsPrice());
+                }
+            });
             order.setOrderGoodsInfo(goods);
             //商品设置配送信息
             List<ShippingInfoVo> goodsShipping = shippingInfo.get(order.getOrderSn());
@@ -1280,13 +1286,8 @@ public class OrderReadService extends ShopBaseService {
                     BigDecimalUtil.BigDecimalPlus.create(order.getDiscount(), BigDecimalUtil.Operator.add),
                     BigDecimalUtil.BigDecimalPlus.create(order.getScoreDiscount(), BigDecimalUtil.Operator.add),
                     BigDecimalUtil.BigDecimalPlus.create(order.getPromotionReduce(), BigDecimalUtil.Operator.add),
+                    BigDecimalUtil.BigDecimalPlus.create(order.getPackageDiscount(), BigDecimalUtil.Operator.add),
                     BigDecimalUtil.BigDecimalPlus.create(order.getMemberCardReduce())
-                ));
-            order.setMoneyPaid(
-                BigDecimalUtil.addOrSubtrac(
-                    BigDecimalUtil.BigDecimalPlus.create(order.getMoneyPaid(), BigDecimalUtil.Operator.add),
-                    BigDecimalUtil.BigDecimalPlus.create(order.getUseAccount(), BigDecimalUtil.Operator.add),
-                    BigDecimalUtil.BigDecimalPlus.create(order.getMemberCardBalance())
                 ));
         }
     }

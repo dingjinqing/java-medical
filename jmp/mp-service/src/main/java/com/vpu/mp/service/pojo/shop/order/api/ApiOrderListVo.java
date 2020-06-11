@@ -54,6 +54,7 @@ public class ApiOrderListVo {
     private BigDecimal promotionReduce;
     private BigDecimal memberCardReduce;
     private BigDecimal memberCardBalance;
+    private BigDecimal packageDiscount;
     private BigDecimal discountAmount;
     @JsonIgnore
     private Integer userId;
