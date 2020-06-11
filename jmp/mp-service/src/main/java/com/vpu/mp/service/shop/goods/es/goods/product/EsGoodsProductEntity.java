@@ -331,6 +331,8 @@ public class EsGoodsProductEntity {
     private String prdImg;
     @EsFiled(name = EsSearchName.PRD.PRD_CODES,type = EsFiledTypeConstant.KEYWORD)
     private String prdCodes;
+    @EsFiled(name = EsSearchName.PRD.PRD_SN,type = EsFiledTypeConstant.KEYWORD)
+    private String prdSn;
 
 
 }

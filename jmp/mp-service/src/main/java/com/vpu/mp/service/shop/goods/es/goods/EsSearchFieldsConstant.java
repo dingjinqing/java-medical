@@ -52,6 +52,11 @@ public class EsSearchFieldsConstant {
         ROOM_ID,
         SECONDARY_GOODS_IMAGES,
         PRDS,
-        VIDEO_INFO_JSON
+        VIDEO_INFO_JSON,
+        PRD.PRD_ID,
+        PRD.PRD_SN,
+        PRD.PRD_REAL_PRICE,
+        PRD.PRD_IMG,
+        PRD.PRD_DESC
     };
 }

@@ -150,11 +150,11 @@ public class EsGoodsSearchService extends EsBaseSearchService{
                 esGoodsList.stream().map(EsGoodsProductEntity::getGoodsId).collect(Collectors.toList())
             );
             esGoodsList.forEach(x-> {
-                GoodsPageListVo vo = PRODUCT_CONVERT.convert(x);
-                    if( !labelMap.isEmpty() && labelMap.containsKey(vo.getGoodsId()) ){
-                        List<GoodsLabelSelectListVo> labelVos = Lists.newLinkedList();
-                        labelMap.get(vo.getGoodsId()).forEach(y->labelVos.add(new GoodsLabelSelectListVo(y.getId(),y.getName())));
-                        vo.setGoodsPointLabels(labelVos);
+                GoodsPageListVo vo = GoodsPageListVoForProductConverter.convert(x);
+                if( !labelMap.isEmpty() && labelMap.containsKey(vo.getGoodsId()) ){
+                    List<GoodsLabelSelectListVo> labelVos = Lists.newLinkedList();
+                    labelMap.get(vo.getGoodsId()).forEach(y->labelVos.add(new GoodsLabelSelectListVo(y.getId(),y.getName())));
+                    vo.setGoodsPointLabels(labelVos);
                     voList.add(vo);
                 }
 

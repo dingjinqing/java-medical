@@ -5,7 +5,11 @@ import com.vpu.mp.service.foundation.es.EsUtil;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
+import com.vpu.mp.service.shop.goods.es.goods.product.EsAssemblyProductService;
+import com.vpu.mp.service.shop.goods.es.goods.product.EsGoodsProductCreateService;
+import com.vpu.mp.service.shop.goods.es.goods.product.EsGoodsProductEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.support.WriteRequest;
@@ -31,6 +35,10 @@ public class EsGoodsCreateService extends ShopBaseService {
     private EsManager esManager;
     @Autowired
     private EsAssemblyDataService esAssemblyDataService;
+    @Autowired
+    private EsAssemblyProductService esAssemblyProductService;
+    @Autowired
+    private EsGoodsProductCreateService esGoodsProductCreateService;
 
     /**
      * 批量更新es数据（修改调用）
@@ -39,7 +47,10 @@ public class EsGoodsCreateService extends ShopBaseService {
      */
     public void batchUpdateEsGoodsIndex( List<Integer> goodsIds,Integer shopId){
         List<EsGoods> esGoodsList = esAssemblyDataService.assemblyEsGoods(goodsIds, shopId);
+        List<EsGoodsProductEntity> productEntityList = esAssemblyProductService.getEsProduct(esGoodsList);
+        esGoodsProductCreateService.deleteEsGoods(productEntityList,shopId);
         deleteEsGoods(goodsIds,shopId);
+        batchCommitEsGoodsIndex(esGoodsProductCreateService.buildIndexRequest(productEntityList), WriteRequest.RefreshPolicy.NONE);
         batchCommitEsGoodsIndex(getIndexRequest(esGoodsList));
     }
 
@@ -66,6 +77,18 @@ public class EsGoodsCreateService extends ShopBaseService {
      * @param goodsId 商品id
      */
     public void updateEsGoodsIndex(Integer goodsId,Integer shopId){
+        List<EsGoods> esGoodsList = esAssemblyDataService.assemblyEsGoods(Collections.singletonList(goodsId), shopId);
+        List<EsGoodsProductEntity> productEntityList = esAssemblyProductService.getEsProduct(esGoodsList);
+        deleteEsGoods(goodsId,shopId);
+        esGoodsProductCreateService.deleteEsGoods(productEntityList,shopId);
+        batchCommitEsGoodsIndex(esGoodsProductCreateService.buildIndexRequest(productEntityList), WriteRequest.RefreshPolicy.IMMEDIATE);
+        batchCommitEsGoodsIndex(getIndexRequest(esGoodsList),WriteRequest.RefreshPolicy.IMMEDIATE);
+    }
+    /**
+     * 单个更新es数据（修改调用）
+     * @param goodsId 商品id
+     */
+    public void updateEsGoodsProductIndex(Integer goodsId,Integer productId,Integer shopId){
         List<EsGoods> esGoodsList = esAssemblyDataService.assemblyEsGoods(Collections.singletonList(goodsId), shopId);
         deleteEsGoods(goodsId,shopId);
         batchCommitEsGoodsIndex(getIndexRequest(esGoodsList),WriteRequest.RefreshPolicy.IMMEDIATE);
