@@ -41,4 +41,9 @@ public class ApiOrderGoodsListVo {
     private Timestamp shippingTime;
     @JsonIgnore
     private Integer sendNumber;
+    @JsonIgnore
+    private Integer goodsScore;
+    @JsonIgnore
+    private BigDecimal discountedGoodsPrice;
+
 }
