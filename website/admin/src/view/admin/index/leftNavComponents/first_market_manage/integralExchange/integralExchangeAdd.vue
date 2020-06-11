@@ -387,7 +387,7 @@ export default {
           if (!Number(item.stock) && this.editId === -1) {
             flag = true
             callback(new Error(this.$t('mintegralExchange.cannotBeEmpty')))
-          } else if ((Number(item.stock) !== '') && (Number(item.stock) > item.goodsStock)) {
+          } else if ((Number(item.stock) !== '') && (Number(item.stock) > item.goodsStock) && this.id !== -1) {
             flag = true
             callback(new Error(this.$t('mintegralExchange.tipsTwo')))
           } else if (Number(item.exchange.money) > Number(item.originPrice)) {
@@ -841,7 +841,7 @@ export default {
   background: #ffffff;
   min-height: 500px !important;
   padding-top: 20px;
-  padding-bottom: 90px;
+  padding-bottom: 250px;
   /deep/ .el-input {
     width: auto;
   }
