@@ -531,6 +531,8 @@ export default {
   watch: {
   },
   mounted () {
+    this.param.distributorGroup = this.distributorGroup ? this.distributorGroup : ''
+    this.param.distributorLevel = this.distributorLevel ? this.distributorLevel : ''
     this.initDataList()
     this.levelList() // 分销员等级
     this.groupList() // 分销员分组
@@ -542,8 +544,6 @@ export default {
       return new Promise((resolve, reject) => {
         this.requestParams = {}
         // 搜索条件
-        this.param.distributorGroup = this.distributorGroup ? this.distributorGroup : ''
-        this.param.distributorLevel = this.distributorLevel ? this.distributorLevel : ''
         for (var i in this.param) {
           if (this.param[i]) {
             this.requestParams[i] = this.param[i]
@@ -572,7 +572,6 @@ export default {
     levelList () {
       distributorLevelList().then(res => {
         this.groupLevelList = res.content
-        this.distributorLevel = res.content.dataList
       })
     },
     // 获取所有分销员分组
