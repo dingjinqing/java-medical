@@ -435,7 +435,12 @@ export default {
       this.cardEffectTime.fixedDate = [data.startTime, data.endTime]
       if (data.startTime === null) { this.cardEffectTime.fixedDate = '' }
       console.log(this.cardEffectTime.fixedDate)
-      this.cardEffectTime.receiveDay = data.receiveDay
+      if (data.receiveDay !== null) {
+        this.cardEffectTime.receiveDay = data.receiveDay
+      } else {
+        this.cardEffectTime.receiveDay = void 0
+      }
+
       this.cardEffectTime.dateType = data.dateType ? String(data.dateType) : '0'
       // 包邮信息
       if (data.freeship) {
