@@ -43,6 +43,7 @@ public class EsGoodsCreateService extends ShopBaseService {
         batchCommitEsGoodsIndex(getIndexRequest(esGoodsList));
     }
 
+
     /**
      * 给es新加数据
      * @param esGoodsList {@link EsGoods}集合
@@ -77,7 +78,7 @@ public class EsGoodsCreateService extends ShopBaseService {
      */
     public void deleteEsGoods(Integer goodsId,Integer shopId){
         try {
-            esManager.deleteIndexById(EsGoodsConstant.GOODS_ALIA_NAME,goodsId.toString()+shopId);
+            esManager.deleteIndexById(EsGoodsConstant.GOODS_ALIA_NAME,shopId+goodsId.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }

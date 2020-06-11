@@ -15,7 +15,10 @@ public class EsGoodsConstant {
      * es商品标签索引名称前缀
      */
     public static final String LABEL_INDEX_NAME_PREFIX = "es_goods_label_";
-
+    /**
+     * es商品规格索引名称前缀
+     */
+    public static final String PRODUCT_INDEX_NAME_PREFIX = "es_goods_product_";
 
     /**
      * es商品索引别名
@@ -25,6 +28,10 @@ public class EsGoodsConstant {
      * es商品标签索引别名
      */
     public static final String LABEL_ALIA_NAME = "vpu_label";
+    /**
+     * es商品规格索引别名
+     */
+    public static final String PRODUCT_ALIA_NAME = "vpu_product";
 
 
     /**通用页*/

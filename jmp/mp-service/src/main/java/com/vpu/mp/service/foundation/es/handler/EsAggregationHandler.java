@@ -38,6 +38,22 @@ public class EsAggregationHandler {
     }
 
     /**
+     * 商品规格nested
+     * @param from 分页参数
+     * @param size 分页参数
+     * @return
+     */
+    public AggregationBuilder getGoodsProduct(int from,int size){
+        return AggregationBuilders.nested(EsSearchName.PRDS,EsSearchName.PRDS).
+            subAggregation(
+                AggregationBuilders.
+                    topHits(EsSearchName.PRD.PRD_ID).
+                    from(from).
+                    size(size)
+            );
+    }
+
+    /**
      * assembly LabelAggregationBuilder by goodsId
      * @param groupSize 返回分组的数量
      * @param querySize 每一组返回数据的数量

@@ -75,6 +75,9 @@ public class EsDataInitService implements InitializingBean {
             if(!containIndex(EsGoodsConstant.LABEL_ALIA_NAME)){
                 createIndex(EsGoodsConstant.LABEL_ALIA_NAME);
             }
+            if(!containIndex(EsGoodsConstant.PRODUCT_ALIA_NAME)){
+                createIndex(EsGoodsConstant.PRODUCT_ALIA_NAME);
+            }
             jedisManager.releaseLock(JedisKeyConstant.ES_INIT,requestId);
         }
     }
