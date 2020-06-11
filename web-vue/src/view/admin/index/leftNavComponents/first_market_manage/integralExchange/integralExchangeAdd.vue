@@ -392,6 +392,9 @@ export default {
           } else if (Number(item.exchange.money) > Number(item.originPrice)) {
             flag = true
             callback(new Error(this.$t('mintegralExchange.tipsThree')))
+          } if (this.exchangeProportion === 1000 && (Number(item.exchange.score) % 10 !== 0)) {
+            flag = true
+            callback(new Error('因系统规则限制，当兑换比例为“1000积分=1RMB”时,积分兑换填写的数值必须为10整数倍'))
           } else if (!Number(item.exchange.money) && !Number(item.exchange.score)) {
             flag = true
             callback(new Error('兑换价格或积分不能同时为空'))
@@ -465,6 +468,7 @@ export default {
       }
     }
     return {
+      exchangeProportion: 1, // 积分兑换比例
       isChangeGoods: false,
       isClicktimePicker: true, // 是否可以选择开始时间
       isSureTop: true,
@@ -600,6 +604,10 @@ export default {
       },
       immediate: true
     }
+  },
+  mounted () {
+    console.log(localStorage.getItem('V-ScoreProportion'))
+    this.exchangeProportion = Number(localStorage.getItem('V-ScoreProportion'))
   },
   methods: {
     // 点击保存
