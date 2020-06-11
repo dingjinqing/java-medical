@@ -161,9 +161,10 @@ public class JsonResultMessage {
     public static final String GOODS_EXPORT_COLUMN_GRADE_9_PRICE= "goods.export.column.grade_9_price";
 
     /**
-     * 商品评价
+     * 	商品评价
      */
     public static final String GOODS_COMMENT_NO_PERMISSION = "goods.comment.no_permission";
+    public static final String MIN_GOODS_NUM = "min.goods.num";
 
     /**
      * 营销

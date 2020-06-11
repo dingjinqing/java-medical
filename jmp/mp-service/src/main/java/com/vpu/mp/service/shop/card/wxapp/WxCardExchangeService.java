@@ -189,6 +189,11 @@ public class WxCardExchangeService extends ShopBaseService {
 		CheckedGoodsCartRecord userCheckedGoods = userCheckedGoodsSvc.getUserCheckedGoods(checkedParam);
 		
 		if(NumberUtils.BYTE_ONE.equals(param.getSource())) {
+			Integer prdNumber = param.getPrdNumber();
+			if(NumberUtils.INTEGER_ZERO.equals(prdNumber)) {
+				//	最少购买1件商品
+				throw new MpException(JsonResultCode.MIN_GOODS_NUM);
+			}
 			//	加购更新商品数量转化为添加商品数量
 			param.setPrdNumber(param.getPrdNumber()-userCheckedGoods.getGoodsNumber());
 		}
