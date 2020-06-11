@@ -192,13 +192,12 @@ public class GoodsSearchMpService extends ShopBaseService {
 
 
     /**
-     * 会员卡兑换商品进入
+     *	 会员卡兑换商品进入
      * @return null 表示全部商品 | List 可兑换商品的Id
      */
     private List<Integer> getGoodsIdsLimitedForCardExchangeGoods(GoodsSearchMpParam param) {
         String cardNo = param.getOuterPageParam().getCardNo();
-        List<Integer> goodsIds = wxCardExchangeSvc.getCardExchangGoodsIds(cardNo);
-        return goodsIds == null ? new ArrayList<>() : goodsIds;
+        return wxCardExchangeSvc.getCardExchangGoodsIds(cardNo);
     }
 
     /**
