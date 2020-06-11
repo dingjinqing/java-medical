@@ -230,9 +230,32 @@ global.wxPage({
       source
     })
   },
-  cartChange () {
-    console.log(123)
-    this.requestCartGoodsList()
+  cartChange ({detail:goodsData}) {
+    let {goodsId,productId,goodsNumber,cartNumber} = goodsData
+    let source = 1
+    console.log(cartNumber,goodsNumber)
+    util.api('/api/wxapp/card/change/add', res => {
+      console.log(res)
+      if (res.error === 0) {
+        if (source === 1 && goodsNumber===0){
+          util.toast_success(this.$t('page1.usercardgoods.deleteSucceeded'))
+        }else if (res.id == undefined) {
+          util.toast_success(this.$t('page1.usercardgoods.successfullyAdded'))
+        }
+        this.requestCartGoodsList()
+        this.bindCloseSpec()
+      } else {
+        util.showModal('提示', res.message, function () { }, false, '确定')
+        // util.toast_fail(res.message)
+        this.requestCartGoodsList()
+      }
+    }, {
+      goodsId: goodsId,
+      productId: productId,
+      prdNumber: goodsNumber,
+      cardNo: this.data.cardNo,
+      source
+    })
   },
   goCheckOut () {
     console.log('点击立即兑换跳转结算页面')

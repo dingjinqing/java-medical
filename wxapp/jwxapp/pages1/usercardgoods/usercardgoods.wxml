@@ -72,7 +72,7 @@
 	</view>
 </v-container>
 
-<v-selected bindcartChange="cartChange" custom-delete custom-control-num show="{{showSelectedDialog}}" goods-data="{{cartData}}" binddeletCart="deletCart" bindcartNumChange="cartNumChange" />
+<v-selected bindcartChange="cartChange" custom-delete custom-control-num show="{{showSelectedDialog}}" goods-data="{{cartData}}" binddeletCart="deletCart" bindcartNumChange="cartNumChange" bindcustomCartNum="cartChange"/>
 
 <v-spec-dialog
  wx:if="{{showSpec}}"

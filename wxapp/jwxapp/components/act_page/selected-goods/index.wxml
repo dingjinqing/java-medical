@@ -6,7 +6,7 @@
     </view>
     <view class="goods-content" wx:if="{{goodsData.length > 0}}">
       <block wx:for="{{goodsData}}" wx:for-item="goodsItem" wx:key="cartId">
-        <v-single-col-goods bindcartChange="cartChange" goods-data="{{goodsItem}}" is-edit="{{isEdit}}" enable-num-edit custom-delete="{{customDelete}}" custom-control-num="{{customControlNum}}" binddeletCart="deletCart" bindcartNumChange="cartNumChange"/>
+        <v-single-col-goods bindcartChange="cartChange" goods-data="{{goodsItem}}" is-edit="{{isEdit}}" enable-num-edit custom-delete="{{customDelete}}" custom-control-num="{{customControlNum}}" binddeletCart="deletCart" bindcartNumChange="cartNumChange" bindcustomCartNum="customCartNum"/>
       </block>
     </view>
     <view class="is-null" wx:else>	

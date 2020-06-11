@@ -190,6 +190,7 @@
   bottom: 0;
   background-color: #fff;
   width: 100%;
+  z-index: 1;
 }
 .checkout_footer > text{
   line-height: 100rpx;
