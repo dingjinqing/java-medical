@@ -21,9 +21,10 @@
                   <span v-if='this.memberBasicInfo.inviteUserName'> {{ this.memberBasicInfo.inviteUserName }} </span>
                   <span v-else>{{$t('membershipIntroduction.notExists')}}</span>
                   <span
-                    class="modifyLinkPerson"
                     @click="hanldeModifyPerson()"
-                  >{{$t('membershipIntroduction.Modifycontacts')}}</span></div>
+                    class="iconfont iconbianji iconSpn"
+                  ></span>
+                  </div>
                 <div>{{$t('membershipIntroduction.Becomeacustomer')}}：{{ this.memberBasicInfo.createTime }}</div>
               </li>
               <li>
@@ -1583,6 +1584,15 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
+.iconSpn {
+  display: inline-block;
+  font-size: 22px;
+  color: #5a8bff;
+  cursor: pointer;
+}
+</style>
 
 <style scoped>
 .lebalSpan {
