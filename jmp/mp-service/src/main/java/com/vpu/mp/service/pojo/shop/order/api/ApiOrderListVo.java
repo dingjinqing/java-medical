@@ -77,4 +77,7 @@ public class ApiOrderListVo {
     @JsonProperty("add_time")
     private Timestamp createTime;
     private Timestamp payTime;
+    @JsonIgnore
+    private BigDecimal grouperCheapReduce;
+
 }
