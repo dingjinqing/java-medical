@@ -1233,6 +1233,8 @@ export default {
           // 重新加载数据
           this.loadMemberInfo()
           this.getSuccessMessagePrompt()
+        } else {
+          this.$message.warning(res.message)
         }
       })
     },
