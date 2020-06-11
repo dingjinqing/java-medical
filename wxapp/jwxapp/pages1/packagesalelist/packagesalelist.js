@@ -197,7 +197,7 @@ global.wxPage({
           goodsId: res.content.goodsId,
           goodsImgs: res.content.goodsImgs,
           goodsNumber: res.content.goodsNumber,
-          limitBuyNum: res.content.limitBuyNum,
+          limitBuyNum: 1,
           limitMaxNum: res.content.limitMaxNum,
           products: res.content.products
         }
@@ -249,7 +249,7 @@ global.wxPage({
       packageId,
       groupId
     } = this.data
-    this.cartOperate(packageId,groupId,goodsId, productId,goodsNumber)
+    this.cartOperate(packageId,groupId,goodsId, productId,goodsNumber,'add')
   },
   deletCart({
     detail: goodsData
@@ -275,7 +275,18 @@ global.wxPage({
     let {packageId} = this.data
     let {type,groupId,goodsId,productId} = goodsData
     let goodsNumber = type === 'plus' ? 1 : -1
-    this.cartOperate(packageId,groupId,goodsId, productId,goodsNumber,type)
+    this.cartOperate(packageId,groupId,goodsId, productId,goodsNumber)
+  },
+  customCartNum({detail:goodsData}){
+    let {packageId} = this.data
+    let {groupId,goodsId,productId,goodsNumber,cartNumber} = goodsData
+    if(goodsNumber === cartNumber) return
+    if(goodsNumber > cartNumber) {
+      goodsNumber = goodsNumber - cartNumber
+    } else {
+      goodsNumber = -(cartNumber + (-goodsNumber))
+    }
+    this.cartOperate(packageId,groupId,goodsId, productId,goodsNumber)
   },
   cartOperate(packageId,groupId,goodsId, productId,goodsNumber,type){
     util.api(
@@ -283,8 +294,7 @@ global.wxPage({
       res => {
         console.log(res)
         if (res.error == 0 && res.content.state === 0) {
-          if(!type) util.toast_success('添加成功')
-          if(type === 'delete') util.toast_success('删除成功')
+          if(type === 'add') util.toast_success('添加成功')
           this.requestGoodsList()
           this.requestCartGoodsList()
         } else if (res.error == 0 && res.content.state !== 0) {
@@ -315,6 +325,7 @@ global.wxPage({
           }
           if (res.content.state === 6) {
             util.showModal('提示', `${res.content.groupName}${errorMessage[res.content.state]}`)
+            this.requestCartGoodsList()
           }
         } else {
           util.showModal('提示', res.message);

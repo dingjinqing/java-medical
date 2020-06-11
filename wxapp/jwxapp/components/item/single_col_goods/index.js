@@ -147,8 +147,11 @@ global.wxComponent({
     changeCartInput(e){
       let cartNumber = parseInt(e.detail.value)
       let { productId, activityType, activityId } = this.data.goodsData
+      if(this.data.customControlNum){
+        this.triggerEvent('customCartNum',{...this.data.goodsData,goodsNumber:cartNumber})
+        return
+      }
       if(!isNaN(cartNumber)){
-
         util.api('/api/wxapp/cart/add', res => {
           if (res.error == 0) {
             this.triggerEvent('cartChange') //购物车改变触发

@@ -36,7 +36,7 @@
 	</view>
 </v-container>
 
-<v-selected  show="{{showSelectedDialog}}" goods-data="{{cartData.cartGoodsList}}" custom-footer-left custom-delete custom-control-num binddeletCart="deletCart" bindcartNumChange="cartNumChange">
+<v-selected  show="{{showSelectedDialog}}" goods-data="{{cartData.cartGoodsList}}" custom-footer-left custom-delete custom-control-num binddeletCart="deletCart" bindcartNumChange="cartNumChange" bindcustomCartNum="customCartNum">
 	<view slot="footer-left" class="footer-desc">
 		<view>已选<text style="color:{{comColor}};">{{cartData.totalSelectNumber}}件</text>，</view>
 		<view wx:if="{{totalGoodsNumber - cartData.totalSelectNumber > 0}}">再选<text style="color:{{comColor}};" >{{totalGoodsNumber - cartData.totalSelectNumber}}件</text></view>

@@ -57,8 +57,16 @@ global.wxComponent({
     cartNumChange ({ detail }) {
       this.triggerEvent('cartNumChange', { ...detail })
     },
+    customCartNum ({ detail }){
+      this.triggerEvent('customCartNum', { ...detail })
+    },
     initData(){
-      if(!this.data.goodsData || !this.data.goodsData.length > 0) return
+      if(!this.data.goodsData || !this.data.goodsData.length > 0) {
+        this.setData({
+          selectedNum:0
+        })
+        return
+      }
       this.setData({
         selectedNum:this.data.goodsData.reduce((defaultNum,item)=>{
           return defaultNum += item.cartNumber
