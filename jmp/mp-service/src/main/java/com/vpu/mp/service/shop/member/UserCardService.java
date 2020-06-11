@@ -1386,7 +1386,7 @@ public class UserCardService extends ShopBaseService {
 				userCard.setBgImg(imageUrl);
 			}
 		}
-		if(StringUtils.isBlank(userCard.getBgColor())) {
+		if(userCard != null && StringUtils.isBlank(userCard.getBgColor())) {
 			userCard.setBgColor(CardUtil.getDefaultBgColor());
 		}
 		return userCard;
@@ -1399,12 +1399,12 @@ public class UserCardService extends ShopBaseService {
 		if(StringUtils.isBlank(mCard.getBgColor())) {
 			mCard.setBgColor(CardUtil.getDefaultBgColor());
 		}
-		if(StringUtils.isBlank(userCard.getBgColor())) {
-			userCard.setBgColor(CardUtil.getDefaultBgColor());
-		}
 		boolean isGet = false;
 		if (userCard != null) {
 			logger().info("用户有此卡");
+			if(StringUtils.isBlank(userCard.getBgColor())) {
+				userCard.setBgColor(CardUtil.getDefaultBgColor());
+			}
 			isGet = true;
 		}else {
 			logger().info("用户没有有此卡");
