@@ -150,11 +150,9 @@ export default {
     },
     getGroupId (data) {
       this.distributorGroup = data
-      console.log(this.distributorGroup)
     },
     getLevelId (data) {
       this.distributorLevel = data
-      console.log(this.distributorLevel)
     },
     inviteCodeHandler (val) {
       this.inviteCode = val
