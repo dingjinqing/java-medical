@@ -30,7 +30,6 @@ import java.util.regex.Pattern;
 
 /**
  * 海报下载分享基类
- *
  * @author 李晓冰
  * @date 2020年04月23日
  */
@@ -50,7 +49,6 @@ public abstract class ShareBaseService extends ShopBaseService {
 
     /**
      * 获取活动record信息
-     *
      * @param activityId 活动id
      * @return 活动对应的record类
      */
@@ -58,7 +56,6 @@ public abstract class ShareBaseService extends ShopBaseService {
 
     /**
      * 获取活动或商品的分享配置信息
-     *
      * @param aRecord     活动record
      * @param goodsRecord 商品record
      * @return 分享配置信息
@@ -67,7 +64,6 @@ public abstract class ShareBaseService extends ShopBaseService {
 
     /**
      * 创建默认宣传语
-     *
      * @param lang        语言
      * @param aRecord     活动record
      * @param goodsRecord 商品record
@@ -78,7 +74,6 @@ public abstract class ShareBaseService extends ShopBaseService {
 
     /**
      * 创建分享图片
-     *
      * @param aRecord     分享活动
      * @param goodsRecord 分享的商品
      * @param baseParam   分享请求参数
@@ -88,7 +83,6 @@ public abstract class ShareBaseService extends ShopBaseService {
 
     /**
      * 创建二维码图片
-     *
      * @param aRecord     分享活动
      * @param goodsRecord 分享的商品
      * @param baseParam   分享请求参数
@@ -98,7 +92,6 @@ public abstract class ShareBaseService extends ShopBaseService {
 
     /**
      * 处理海报分享信息
-     *
      * @param qrCodeBufferImg
      * @param goodsImg
      * @param userInfo           用户信息
@@ -113,7 +106,6 @@ public abstract class ShareBaseService extends ShopBaseService {
 
     /**
      * 创建活动分享信息
-     *
      * @param param 分享接口参数
      * @return 分享信息
      */
@@ -172,7 +164,6 @@ public abstract class ShareBaseService extends ShopBaseService {
 
     /**
      * 获取商品海报信息
-     *
      * @param baseParam 请求参数
      * @return 海报获取的信息
      */
@@ -180,7 +171,7 @@ public abstract class ShareBaseService extends ShopBaseService {
         ShopRecord shop = saas.shop.getShopById(getShopId());
         GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
 
-        Record activityRecord = getActivityInfo(baseParam,goodsPictorialInfo);
+        Record activityRecord = getActivityInfo(baseParam, goodsPictorialInfo);
         if (!GoodsPictorialInfo.OK.equals(goodsPictorialInfo.getPictorialCode())) {
             return goodsPictorialInfo;
         }
@@ -195,7 +186,7 @@ public abstract class ShareBaseService extends ShopBaseService {
         PictorialShareConfig shareConfig = getPictorialConfig(activityRecord, goodsRecord);
         shareLog(getActivityName(), "分享配置信息:" + Util.toJson(shareConfig));
 
-        PictorialUserInfo userInfo = getUserInfo(baseParam,shop,goodsPictorialInfo);
+        PictorialUserInfo userInfo = getUserInfo(baseParam, shop, goodsPictorialInfo);
         if (!GoodsPictorialInfo.OK.equals(goodsPictorialInfo.getPictorialCode())) {
             return goodsPictorialInfo;
         }
@@ -213,15 +204,12 @@ public abstract class ShareBaseService extends ShopBaseService {
         pictorialLog(getActivityName(), "获取商品分享语");
         String shareDoc = null;
         if (PictorialShareConfig.DEFAULT_STYLE.equals(shareConfig.getShareAction())) {
-            shareDoc = pictorialService.getCommonConfigDoc(baseParam.getUserName(), goodsRecord.getGoodsName(), baseParam.getRealPrice(), shop.getShopLanguage(), true);
-            if (shareDoc == null) {
-                shareDoc = createDefaultShareDoc(shop.getShopLanguage(), activityRecord, goodsRecord, baseParam);
-            }
+            shareDoc = createDefaultShareDoc(shop.getShopLanguage(), activityRecord, goodsRecord, baseParam);
         } else {
             shareDoc = shareConfig.getShareDoc();
         }
 
-        BufferedImage qrCodeImage =getQrcodInfo(activityRecord,goodsRecord,baseParam,goodsPictorialInfo);
+        BufferedImage qrCodeImage = getQrcodInfo(activityRecord, goodsRecord, baseParam, goodsPictorialInfo);
         if (!GoodsPictorialInfo.OK.equals(goodsPictorialInfo.getPictorialCode())) {
             return goodsPictorialInfo;
         }
@@ -249,7 +237,7 @@ public abstract class ShareBaseService extends ShopBaseService {
      * @param goodsPictorialInfo
      * @return
      */
-    BufferedImage getQrcodInfo(Record aRecord,GoodsRecord goodsRecord,GoodsShareBaseParam baseParam,GoodsPictorialInfo goodsPictorialInfo){
+    BufferedImage getQrcodInfo(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam, GoodsPictorialInfo goodsPictorialInfo) {
         String mpQrCode = createMpQrCode(aRecord, goodsRecord, baseParam);
         BufferedImage qrCodeImage = null;
         try {
@@ -268,8 +256,8 @@ public abstract class ShareBaseService extends ShopBaseService {
      * @param goodsPictorialInfo
      * @return
      */
-    Record getActivityInfo(GoodsShareBaseParam baseParam,GoodsPictorialInfo goodsPictorialInfo){
-        Record activityRecord=null;
+    Record getActivityInfo(GoodsShareBaseParam baseParam, GoodsPictorialInfo goodsPictorialInfo) {
+        Record activityRecord = null;
         if (baseParam.getActivityId() != null) {
             activityRecord = getActivityRecord(baseParam.getActivityId());
             // 活动信息不可用
@@ -288,7 +276,7 @@ public abstract class ShareBaseService extends ShopBaseService {
      * @param goodsPictorialInfo
      * @return
      */
-    PictorialUserInfo getUserInfo(GoodsShareBaseParam baseParam,ShopRecord shop,GoodsPictorialInfo goodsPictorialInfo){
+    PictorialUserInfo getUserInfo(GoodsShareBaseParam baseParam, ShopRecord shop, GoodsPictorialInfo goodsPictorialInfo) {
         PictorialUserInfo userInfo = null;
         try {
             pictorialLog(getActivityName(), "获取用户信息");
@@ -302,7 +290,6 @@ public abstract class ShareBaseService extends ShopBaseService {
 
     /**
      * 创建云盘上的相对路径
-     *
      * @param activityId 活动Id
      * @return 相对路径
      */
@@ -312,7 +299,6 @@ public abstract class ShareBaseService extends ShopBaseService {
 
     /**
      * 活动名称
-     *
      * @return 名称字符串
      */
     abstract String getActivityName();
@@ -321,7 +307,7 @@ public abstract class ShareBaseService extends ShopBaseService {
      * 返回店铺配置样式颜色
      * @return
      */
-    protected Color getShopStyleColor(){
+    protected Color getShopStyleColor() {
         ShopStyleConfig shopStyleConfig = shopStyleConfigService.getShopStyleConfig();
         String shopStyleValue = shopStyleConfig.getShopStyleValue();
         // 店铺配置颜色
@@ -337,7 +323,7 @@ public abstract class ShareBaseService extends ShopBaseService {
                 int green = Integer.parseInt(matcher.group());
                 matcher.find();
                 int blue = Integer.parseInt(matcher.group());
-                shopStyleColor = new Color(red,green,blue);
+                shopStyleColor = new Color(red, green, blue);
             }
         } catch (Exception e) {
         }
@@ -348,14 +334,13 @@ public abstract class ShareBaseService extends ShopBaseService {
      * 获取店铺海报分享配置
      * @return
      */
-    protected Byte getPictorialShareStyle(){
+    protected Byte getPictorialShareStyle() {
         GoodsShareConfig shareConfig = commonConfigService.getGoodsShareConfig();
         return shareConfig.getCustomPictorial();
     }
 
     /**
      * 分享打印日志
-     *
      * @param tag 活动名
      * @param msg 日志信息
      */
@@ -365,7 +350,6 @@ public abstract class ShareBaseService extends ShopBaseService {
 
     /**
      * 海报打印日志
-     *
      * @param tag 活动名
      * @param msg 日志信息
      */
@@ -375,7 +359,6 @@ public abstract class ShareBaseService extends ShopBaseService {
 
     /**
      * 日志
-     *
      * @param type share或pictorial
      * @param tag  活动名
      * @param msg  日志信息
@@ -386,7 +369,7 @@ public abstract class ShareBaseService extends ShopBaseService {
 
     /**
      * 价格取两位小数，加上价格符号
-     * @param lang 国际化
+     * @param lang  国际化
      * @param price 价格
      * @return 字符串价格
      */
@@ -395,6 +378,6 @@ public abstract class ShareBaseService extends ShopBaseService {
             return null;
         }
         String moneyFlag = Util.translateMessage(lang, JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages");
-        return moneyFlag+price.setScale(2,BigDecimal.ROUND_HALF_UP).toString();
+        return moneyFlag + price.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
     }
 }

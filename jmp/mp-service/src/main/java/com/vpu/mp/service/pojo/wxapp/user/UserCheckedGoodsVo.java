@@ -26,6 +26,7 @@ public class UserCheckedGoodsVo {
 	private String prdSpecs;
 	private String prdDesc;
 	private String prdImg;
+	private Integer prdNumber;
 	private String goodsName;
 	private String goodsSn;
 	private BigDecimal marketPrice;

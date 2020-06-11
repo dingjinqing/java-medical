@@ -700,7 +700,7 @@ public class JsonResultMessage {
     public static final String CARD_COUPON_CON_PART = "user.card.coupon.condition.part";
     //用户-地址
     public static final String USER_ADDRESS_COUNT_MORE_THAN_MAX = "user.address.count.more.than.max";
-
+    public static final String USER_INVITED_MSG = "user.invited.msg";
     /**
      * 概览
      */

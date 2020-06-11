@@ -216,12 +216,13 @@ public class GroupIntegrationListService extends ShopBaseService {
 	 * @param userId
 	 * @return
 	 */
-	public int getInviteNewNum(Integer groupId,Integer userId) {
+	public int getInviteNewNum(Integer groupId,Integer userId,Integer pinInteId) {
 		return db().select(DSL.count())
 			.from(GROUP_INTEGRATION_LIST)
 			.where(GROUP_INTEGRATION_LIST.GROUP_ID.eq(groupId))
 			.and(GROUP_INTEGRATION_LIST.INVITE_USER.eq(userId))
 			.and(GROUP_INTEGRATION_LIST.IS_NEW.eq(IsNew.YES.value()))
+			.and(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(pinInteId))
 			.fetchOneInto(Integer.class);
 	}
 	/**

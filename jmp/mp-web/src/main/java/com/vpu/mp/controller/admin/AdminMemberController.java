@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -162,13 +163,12 @@ public class AdminMemberController extends AdminBaseController{
 	
 	
 	/**
-	 * 更新会员信息
+	 * 	更新会员信息
 	 */
 	@PostMapping("/info/update")
-	public JsonResult updateMemberInfo(@RequestBody MemberParam param) {
-		logger().info("");
+	public JsonResult updateMemberInfo(@RequestBody MemberParam param) throws MpException {
+		logger().info("更新用户会员信息");
 		shop().member.updateMemberInfo(param);
-		
 		return success();
 	}
 	

@@ -103,7 +103,12 @@ public class NormalGoodsPictorialService extends ShareBaseService {
 
     @Override
     String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
-        return Util.translateMessage(lang, JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, "", "messages", baseParam.getUserName(), goodsRecord.getGoodsName());
+       String shareDoc = null;
+         shareDoc = pictorialService.getCommonConfigDoc(baseParam.getUserName(), goodsRecord.getGoodsName(), baseParam.getRealPrice(),lang, true);
+        if (shareDoc == null) {
+            shareDoc =  Util.translateMessage(lang, JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, "", "messages", baseParam.getUserName(), goodsRecord.getGoodsName());
+        }
+        return shareDoc;
     }
 
     @Override

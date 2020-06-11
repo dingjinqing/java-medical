@@ -49,10 +49,10 @@ public class IntegralMallPictorialService extends ShareBaseService {
         IntegralMallShareInfoParam param = (IntegralMallShareInfoParam) baseParam;
         String score = param.getScore().toString();
         if (param.getRealPrice() == null || param.getRealPrice().equals(BigDecimal.ZERO)) {
+            return Util.translateMessage(lang, JsonResultMessage.WX_MA_INTEGRAL_MALL_SHARE_NO_MONEY_DOC, "", "messages", score);
+        } else {
             String priceStr = param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
             return Util.translateMessage(lang, JsonResultMessage.WX_MA_INTEGRAL_MALL_SHARE_DOC, "", "messages", priceStr, score);
-        } else {
-            return Util.translateMessage(lang, JsonResultMessage.WX_MA_INTEGRAL_MALL_SHARE_NO_MONEY_DOC, "", "messages", score);
         }
     }
 

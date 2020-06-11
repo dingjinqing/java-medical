@@ -8,6 +8,7 @@ import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserTagRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
@@ -898,19 +899,25 @@ public class MemberService extends ShopBaseService {
 
 
     /**
-     * 更新会员的信息
+     * 	更新会员的信息
      *
      * @param param
+     * @throws MpException 
      */
-    public void updateMemberInfo(MemberParam param) {
-        /** 更新用户邀请人*/
-        if (param.getInviteId() != null) {
-            /** 更新user表*/
-			memberDao.updateMemberInviteId(param.getUserId(),param.getInviteId());
-		}
+    public void updateMemberInfo(MemberParam param) throws MpException {
 		
 		/** 更新user_detail */
 		memberDao.updateMemberInfoSql(param);
+		
+		
+		/** 更新用户邀请人*/
+        if (param.getInviteId() != null && param.getUserId()!=null) {
+        	if(param.getUserId().equals(param.getInviteId())) {
+        		throw new MpException(JsonResultCode.USER_INVITED_MSG);
+        	}
+            /** 更新user表*/
+			memberDao.updateMemberInviteId(param.getUserId(),param.getInviteId());
+		}
 
 	}
 
