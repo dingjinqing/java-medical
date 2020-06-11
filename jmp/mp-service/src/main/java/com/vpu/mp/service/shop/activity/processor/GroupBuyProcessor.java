@@ -225,11 +225,8 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
             if (goods.getGoodsNumber() > groupBuyProduct.getStock()) {
                 throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX);
             }
-            if (isGrouper.equals(IS_GROUPER_Y) && groupBuyRecord.getIsGrouperCheap().equals(IS_GROUPER_CHEAP_Y)) {
-                goods.setProductPrice(groupBuyProduct.getGrouperPrice());
-            } else {
-                goods.setProductPrice(groupBuyProduct.getGroupPrice());
-            }
+            //团员价格
+            goods.setProductPrice(groupBuyProduct.getGroupPrice());
             goods.setGoodsPriceAction(param.getActivityType());
             // 团长优惠价
             if (groupBuyRecord.getIsGrouperCheap().equals(IS_GROUPER_CHEAP_Y) && isGrouper.equals(IS_GROUPER_Y)) {
