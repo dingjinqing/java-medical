@@ -143,6 +143,8 @@ export default {
   methods: {
     handleClick (tab) {
       console.log(tab.index)
+      this.distributorGroup = 0
+      this.distributorLevel = 0
       this.$http.$emit('distributionTap', tab.index)
     },
     tabChange () {

@@ -2,6 +2,7 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsAddParam;
+import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsDeleteParam;
 import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListParam;
 import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleIdParam;
 import org.springframework.validation.annotation.Validated;
@@ -28,22 +29,30 @@ public class WxAppPackageSaleController extends WxAppBaseController  {
      */
     @PostMapping("/api/wxapp/packagesale/checkedlist")
     public JsonResult packageSaleCheckedList(@RequestBody @Validated PackageSaleGoodsListParam param) {
-        return success(shop().packSale.getCheckedGoodsList(param,wxAppAuth.user().getUserId()));
+        return success(shop().packSale.getCheckedGoodsList(param, wxAppAuth.user().getUserId()));
     }
 
     /**
-     * 	商品加购
+     * 商品加购
      */
     @PostMapping("/api/wxapp/packagesale/add")
     public JsonResult addPackageGoods(@RequestBody @Validated PackageSaleGoodsAddParam param) {
-        return success(shop().packSale.addPackageGoodsToCart(param,wxAppAuth.user().getUserId()));
+        return success(shop().packSale.addPackageGoodsToCart(param, wxAppAuth.user().getUserId()));
     }
 
     /**
-     * 	结算前确认
+     * 商品删除
+     */
+    @PostMapping("/api/wxapp/packagesale/delete")
+    public JsonResult deletePackageGoods(@RequestBody @Validated PackageSaleGoodsDeleteParam param) {
+        return success(shop().packSale.deletePackageGoods(param, wxAppAuth.user().getUserId()));
+    }
+
+    /**
+     * 结算前确认
      */
     @PostMapping("/api/wxapp/packagesale/checkout")
     public JsonResult packageGoodsCheckout(@RequestBody @Validated PackageSaleIdParam param) {
-        return success(shop().packSale.toCheckout(param.getPackageId(),wxAppAuth.user().getUserId()));
+        return success(shop().packSale.toCheckout(param.getPackageId(), wxAppAuth.user().getUserId()));
     }
 }

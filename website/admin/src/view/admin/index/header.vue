@@ -456,7 +456,7 @@ label {
   display: flex;
   height: 85px;
   float: left;
-  margin-left: 20px;
+  margin-left: 10px;
 }
 .header_nav > div {
   height: 85px;

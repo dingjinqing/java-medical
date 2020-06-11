@@ -22,6 +22,7 @@ import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
 import com.vpu.mp.service.shop.goods.es.goods.product.EsGoodsProductEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -87,7 +88,15 @@ public class EsGoodsSearchService extends EsBaseSearchService{
      */
     private void assemblyGoodsLabelParam(GoodsPageListParam goodsPageListParam){
         if(goodsPageListParam.getLabelId() != null){
-            goodsPageListParam.setGoodsIds(esGoodsLabelSearchService.getGoodsIdsByLabelIds(Lists.newArrayList(goodsPageListParam.getLabelId()),EsGoodsConstant.GOODS_SEARCH_PAGE));
+            List<Integer> goodsIds = esGoodsLabelSearchService.getGoodsIdsByLabelIds(
+                Lists.newArrayList(goodsPageListParam.getLabelId()),EsGoodsConstant.GOODS_SEARCH_PAGE);
+            //如果根据商品标签搜索不到商品，那么本次搜索的搜索结果就是空
+            if( CollectionUtils.isEmpty(goodsIds) ){
+                goodsPageListParam.setGoodsIds(Lists.newArrayList(-1));
+            }else{
+                goodsPageListParam.setGoodsIds(goodsIds);
+            }
+
             goodsPageListParam.setLabelId(null);
         }
     }
@@ -150,11 +159,11 @@ public class EsGoodsSearchService extends EsBaseSearchService{
                 esGoodsList.stream().map(EsGoodsProductEntity::getGoodsId).collect(Collectors.toList())
             );
             esGoodsList.forEach(x-> {
-                GoodsPageListVo vo = PRODUCT_CONVERT.convert(x);
-                    if( !labelMap.isEmpty() && labelMap.containsKey(vo.getGoodsId()) ){
-                        List<GoodsLabelSelectListVo> labelVos = Lists.newLinkedList();
-                        labelMap.get(vo.getGoodsId()).forEach(y->labelVos.add(new GoodsLabelSelectListVo(y.getId(),y.getName())));
-                        vo.setGoodsPointLabels(labelVos);
+                GoodsPageListVo vo = GoodsPageListVoForProductConverter.convert(x);
+                if( !labelMap.isEmpty() && labelMap.containsKey(vo.getGoodsId()) ){
+                    List<GoodsLabelSelectListVo> labelVos = Lists.newLinkedList();
+                    labelMap.get(vo.getGoodsId()).forEach(y->labelVos.add(new GoodsLabelSelectListVo(y.getId(),y.getName())));
+                    vo.setGoodsPointLabels(labelVos);
                     voList.add(vo);
                 }
 

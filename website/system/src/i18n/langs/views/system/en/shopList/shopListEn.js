@@ -106,5 +106,104 @@ export const en = {
   shopDisabled: 'Disable',
   hideFooter: 'hide',
   save: 'save',
-  prompt: 'Add a new store and create a database for this store. Adding a store can only be disabled and cannot be deleted! Cautiously add '
+  prompt: 'Add a new store and create a database for this store. Adding a store can only be disabled and cannot be deleted! Cautiously add ',
+  language_type: [{
+    value: '',
+    label: 'Choose language'
+  },
+  {
+    value: 'zh_CN',
+    label: 'Chinese'
+  },
+  {
+    value: 'zh_HK',
+    label: 'Chinese (Hong Kong)'
+  },
+  {
+    value: 'zh_TW',
+    label: 'Chinese (Taiwan)'
+  },
+  {
+    value: 'zh_SG',
+    label: 'Chinese (Singapore)'
+  },
+  {
+    value: 'en_US',
+    label: 'English (US)'
+  }
+  ],
+  currency_type: [{
+    value: '',
+    label: 'Choose currency',
+    sign: '¤'
+  },
+  {
+    value: 'CNY',
+    label: 'RMB',
+    sign: '¥'
+  },
+  {
+    value: 'HKD',
+    label: 'HKD',
+    sign: 'HK$'
+  },
+  {
+    value: 'TWD',
+    label: 'Taiwan Dollar',
+    sign: 'NT'
+  },
+  {
+    value: 'USD',
+    label: 'USD',
+    sign: '$'
+  },
+  {
+    value: 'EUR',
+    label: 'Euro',
+    sign: '€'
+  },
+  {
+    value: 'JPY',
+    label: 'Japanese Yen',
+    sign: '￥'
+  },
+  {
+    value: 'GBP',
+    label: 'Pound sterling',
+    sign: '￡'
+  }
+  ],
+  renew_Type: [{
+    value: 1,
+    label: 'Renewal'
+  },
+  {
+    value: 2,
+    label: 'Trial'
+  },
+  {
+    value: 3,
+    label: 'Gift'
+  },
+  {
+    value: 4,
+    label: 'Refund'
+  },
+  {
+    value: 5,
+    label: 'First payment'
+  },
+  {
+    value: 6,
+    label: 'Trial transfer payment'
+  },
+  {
+    value: 7,
+    label: 'Other'
+  },
+  {
+    value: 8,
+    label: 'Upgrade'
+  }
+  ]
 }

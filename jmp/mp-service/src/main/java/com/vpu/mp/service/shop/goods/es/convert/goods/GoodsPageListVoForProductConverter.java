@@ -14,33 +14,28 @@ import java.util.List;
 import java.util.Optional;
 
 public class GoodsPageListVoForProductConverter {
-    public static GoodsPageListVo convert(EsGoodsProductEntity esGoods) {
+    public static GoodsPageListVo convert(EsGoodsProductEntity esProduct) {
             GoodsPageListVo vo = new GoodsPageListVo();
-            BeanUtils.copyProperties(esGoods,vo);
-            vo.setGoodsName(esGoods.getGoodsName()+esGoods.getPrdDesc());
-            if( null != esGoods.getMaxSpecPrdPrices() ){
-                vo.setPrdMaxShopPrice(esGoods.getMaxSpecPrdPrices());
+            BeanUtils.copyProperties(esProduct,vo);
+            vo.setGoodsName(esProduct.getGoodsName()+esProduct.getPrdDesc());
+            if( null != esProduct.getMaxSpecPrdPrices() ){
+                vo.setPrdMaxShopPrice(esProduct.getMaxSpecPrdPrices());
             }
-            vo.setPrdPrice(esGoods.getPrdRealPrice());
-            if( null != esGoods.getMinSpecPrdPrices() ){
-                vo.setPrdMinShopPrice(esGoods.getMinSpecPrdPrices());
+            vo.setPrdPrice(esProduct.getPrdRealPrice());
+            if( null != esProduct.getMinSpecPrdPrices() ){
+                vo.setPrdMinShopPrice(esProduct.getMinSpecPrdPrices());
             }
-            vo.setIsDefaultPrd(esGoods.getDefPrd());
-
-
-                vo.setPrdId(esGoods.getPrdId());
-            vo.setPrdImg(esGoods.getPrdImg());
-            vo.setPrdPrice(Optional.ofNullable(esGoods.getPrdRealPrice()).orElse(BigDecimal.ZERO));
-            vo.setPrdNumber(Optional.ofNullable(esGoods.getPrdNumber()).orElse(0));
-            if(StringUtils.isNotBlank(esGoods.getCatName())){
-                String[] catName = esGoods.getCatName().split(" ");
+            vo.setIsDefaultPrd(esProduct.getDefPrd());
+            vo.setPrdSn(Optional.ofNullable(esProduct.getPrdSn()).orElse(""));
+            vo.setPrdDesc(Optional.ofNullable(esProduct.getPrdDesc()).orElse(""));
+            vo.setPrdId(esProduct.getPrdId());
+            vo.setPrdImg(esProduct.getPrdImg());
+            vo.setPrdPrice(Optional.ofNullable(esProduct.getPrdRealPrice()).orElse(BigDecimal.ZERO));
+            vo.setPrdNumber(Optional.ofNullable(esProduct.getPrdNumber()).orElse(0));
+            if(StringUtils.isNotBlank(esProduct.getCatName())){
+                String[] catName = esProduct.getCatName().split(" ");
                 vo.setCatName(catName[catName.length-1]);
             }
-
-
-
-
-
         return vo;
     }
 }

@@ -58,7 +58,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	@PostMapping("/list")
 	public JsonResult getList(@RequestBody IntegralConvertListParam param) {
 		
-		PageResult<IntegralConvertListVo> pageResult = shop().integralConvertService.getList(param);
+		IntegralConvertScoreVo pageResult = shop().integralConvertService.getList(param);
 		return success(pageResult);
 		
 	}

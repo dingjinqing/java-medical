@@ -7,10 +7,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant;
-import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleCartGoodsVo;
-import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleCheckoutVo;
-import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsAddParam;
-import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListVo;
+import com.vpu.mp.service.pojo.wxapp.market.packagesale.*;
 import jodd.util.StringUtil;
 import org.jooq.Record2;
 import org.jooq.Result;
@@ -172,19 +169,36 @@ public class PackageGoodsCartService extends ShopBaseService {
             .and(PACKAGE_GOODS_CART.GOODS_ID.eq(param.getGoodsId()))
             .and(PACKAGE_GOODS_CART.PRODUCT_ID.eq(param.getProductId()))
             .fetchAny();
-        if(packageGoodsCartRecord == null){
+        if (packageGoodsCartRecord == null) {
             PackageGoodsCartRecord newRecord = db().newRecord(PACKAGE_GOODS_CART);
-            assign(param,newRecord);
+            assign(param, newRecord);
             newRecord.setUserId(userId);
             newRecord.insert();
-        }else{
-            packageGoodsCartRecord.setGoodsNumber(packageGoodsCartRecord.getGoodsNumber() + param.getGoodsNumber() < 0 ? 0 : packageGoodsCartRecord.getGoodsNumber() + param.getGoodsNumber());
+        } else {
+            packageGoodsCartRecord.setGoodsNumber(packageGoodsCartRecord.getGoodsNumber() + param.getGoodsNumber() < 1 ? 1 : packageGoodsCartRecord.getGoodsNumber() + param.getGoodsNumber());
             packageGoodsCartRecord.update();
         }
     }
 
-    public List<PackageSaleCheckoutVo.CheckoutGoods> getUserGroupCartGoods(int packageId,int userId){
-        return db().select(PACKAGE_GOODS_CART.GOODS_ID,PACKAGE_GOODS_CART.PRODUCT_ID,PACKAGE_GOODS_CART.GOODS_NUMBER)
+    /**
+     * 删除购物车里的商品
+     *
+     * @param param
+     * @param userId
+     */
+    public void deletePackageGoods(PackageSaleGoodsDeleteParam param, Integer userId) {
+        PackageGoodsCartRecord packageGoodsCartRecord = db().selectFrom(PACKAGE_GOODS_CART)
+            .where(PACKAGE_GOODS_CART.USER_ID.eq(userId))
+            .and(PACKAGE_GOODS_CART.PACKAGE_ID.eq(param.getPackageId()))
+            .and(PACKAGE_GOODS_CART.GROUP_ID.eq(param.getGroupId()))
+            .and(PACKAGE_GOODS_CART.GOODS_ID.eq(param.getGoodsId()))
+            .and(PACKAGE_GOODS_CART.PRODUCT_ID.eq(param.getProductId()))
+            .fetchAny();
+        packageGoodsCartRecord.delete();
+    }
+
+    public List<PackageSaleCheckoutVo.CheckoutGoods> getUserGroupCartGoods(int packageId, int userId) {
+        return db().select(PACKAGE_GOODS_CART.GOODS_ID, PACKAGE_GOODS_CART.PRODUCT_ID, PACKAGE_GOODS_CART.GOODS_NUMBER)
             .from(PACKAGE_GOODS_CART)
             .where(PACKAGE_GOODS_CART.PACKAGE_ID.eq(packageId))
             .and(PACKAGE_GOODS_CART.USER_ID.eq(userId))
