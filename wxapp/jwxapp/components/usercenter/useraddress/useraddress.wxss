@@ -44,7 +44,8 @@
   margin-left: 10rpx;
 }
 .wd-btn {
-  border: 1px solid #333;
+  border: 1rpx solid #ccc;
+  background: #fff;
   margin-right: 10rpx;
 }
 

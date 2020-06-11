@@ -31,7 +31,7 @@
     </view> 
     <view class="address-list-footer">
       <button bindtap="getWechatAdress" class="wd-btn">
-        <image class="wechat-icon" src="{{imageUrl}}image/wxapp/wechat_icon.png"></image>微信导入
+        <image class="wechat-icon" src="{{imageUrl}}image/wxapp/wechat_icon.png"></image>从微信获取
       </button>
       <button bindtap="newAdressHandle" class="new-btn" style="background:{{comColor}}">新增收货地址</button>
     </view>
@@ -45,7 +45,7 @@
       </view>
       <view class="address-list-footer">
         <button bindtap="getWechatAdress" class="wd-btn">
-          <image class="wechat-icon" src="{{imageUrl}}image/wxapp/wechat_icon.png"></image>微信导入
+          <image class="wechat-icon" src="{{imageUrl}}image/wxapp/wechat_icon.png"></image>微信获取
         </button>
         <button bindtap="newAdressHandle" class="new-btn" style="background:{{comColor}}">新增收货地址</button>
       </view>
