@@ -255,8 +255,19 @@ global.wxPage({
     detail: goodsData
   }) {
     let {packageId} = this.data
-    let {groupId,goodsId,productId,cartNumber} = goodsData
-    this.cartOperate(packageId,groupId,goodsId, productId,-cartNumber,'delete')
+    let {groupId,goodsId,productId} = goodsData
+    util.api('/api/wxapp/packagesale/delete',res => {
+      if(res.error === 0){
+        util.toast_success('删除成功')
+        this.requestGoodsList()
+          this.requestCartGoodsList()
+      }
+    },{
+      packageId,
+      groupId,
+      goodsId,
+      productId
+    })
   },
   cartNumChange({
     detail: goodsData

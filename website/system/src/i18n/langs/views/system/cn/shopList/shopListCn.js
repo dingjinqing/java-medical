@@ -227,6 +227,14 @@ export const cn = {
   {
     value: 6,
     label: '试用转付费'
+  },
+  {
+    value: 7,
+    label: '其他'
+  },
+  {
+    value: 8,
+    label: '升级'
   }
   ]
 }

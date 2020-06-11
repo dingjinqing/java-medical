@@ -210,6 +210,10 @@ export default {
           break
         case 6: row.renewType = '试用转付费'
           break
+        case 7: row.renewType = '其他'
+          break
+        case 8: row.renewType = '升级'
+          break
       }
       return row.renewType
     },
