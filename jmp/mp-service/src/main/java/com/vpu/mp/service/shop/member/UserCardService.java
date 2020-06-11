@@ -1396,7 +1396,7 @@ public class UserCardService extends ShopBaseService {
 		logger().info("用户卡判断");
 		UserCardVo userCard = getUserCardJudge(param);
 		MemberCardRecord mCard = cardDao.getCardById(param.getCardId());
-		if(StringUtils.isBlank(mCard.getBgColor())) {
+		if(mCard != null && StringUtils.isBlank(mCard.getBgColor())) {
 			mCard.setBgColor(CardUtil.getDefaultBgColor());
 		}
 		boolean isGet = false;
