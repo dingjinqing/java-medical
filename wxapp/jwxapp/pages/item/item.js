@@ -238,7 +238,8 @@ global.wxPage({
         res => {
           if (res.error === 0) {
             util.setCache('goods_id', res.content.goodsId)
-            if (res.content.delFlag === 1 || res.content.isOnSale === 0) {
+            if (res.content.delFlag === 1 || (res.content.isOnSale === 0 && !(res.content.activity && res.content.activity.activityType === 4))) {
+              console.log(111)
               let tips = res.content.delFlag === 1 ? '抱歉，该商品已删除' : '抱歉，该商品已下架';
               let pageFlag = getCurrentPages().length > 1
               util.showModal('提示', tips, () => {
