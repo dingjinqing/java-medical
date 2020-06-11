@@ -245,6 +245,9 @@ public class WxCardExchangeService extends ShopBaseService {
 			if(!StringUtils.isBlank(goods.getGoodsImg())) {
 				goods.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
 			}
+			//	不限制商品限购数量
+			goods.setLimitBuyNum(0);
+			goods.setLimitMaxNum(0);
 		}
 		
 		vo.setGoodsList(usercheckedList);
