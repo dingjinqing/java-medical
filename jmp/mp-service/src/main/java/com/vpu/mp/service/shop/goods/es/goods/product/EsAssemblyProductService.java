@@ -27,6 +27,7 @@ public class EsAssemblyProductService {
                 entity.setPrdSn(product.getPrdSn());
                 entity.setPrdDesc(product.getPrdDesc());
                 entity.setPrdImg(product.getPrdImg());
+                entity.setPrdNumber(product.getPrdNumber());
                 entity.setPrdRealPrice(product.getPrdRealPrice());
                 entity.setPrdLinePrice(product.getPrdLinePrice());
                 entity.setPrdCodes(product.getPrdCodes());
