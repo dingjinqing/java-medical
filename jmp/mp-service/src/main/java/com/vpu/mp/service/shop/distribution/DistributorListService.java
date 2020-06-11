@@ -121,7 +121,7 @@ public class DistributorListService extends ShopBaseService{
 		}
 		//创建时间
 		if(param.getStartCreateTime() != null && param.getEndCreateTime() != null) {
-			where.and(a.CREATE_TIME.ge(param.getStartCreateTime())).and(a.CREATE_TIME.le(param.getStartCreateTime()));
+			where.and(d.CREATE_TIME.ge(param.getStartCreateTime())).and(d.CREATE_TIME.le(param.getEndCreateTime()));
 		}
 		//被邀请人昵称 || 手机号
 		if(StringUtil.isNotEmpty(param.getInvitedMobile()) || StringUtil.isNotEmpty(param.getInvitedUserName())) {
@@ -142,19 +142,19 @@ public class DistributorListService extends ShopBaseService{
 		}
 		//分销分组
 		if(param.getDistributorGroup() != null) {
-			where.and(a.INVITE_GROUP.eq(param.getDistributorGroup()));
+			where.and(d.INVITE_GROUP.eq(param.getDistributorGroup()));
 		}
 		//分销等级
 		if(param.getDistributorLevel() != null) {
-			where.and(a.DISTRIBUTOR_LEVEL.eq(param.getDistributorLevel()));
+			where.and(d.DISTRIBUTOR_LEVEL.eq(param.getDistributorLevel()));
 		}
 		//有下级用户
         if(param.getHaveNextUser() !=null &&  param.getHaveNextUser()== 1){
-            where.and(a.USER_ID.in(db().select(a.INVITE_ID).from(a).fetch()));
+            where.and(d.USER_ID.in(db().select(a.INVITE_ID).from(a).fetch()));
         }
         //有手机号
         if(param.getHaveMobile() != null &&  param.getHaveMobile() == 1){
-            where.and(a.MOBILE.ne("null"));
+            where.and(d.MOBILE.ne("null"));
         }
         //有真是姓名
         if(param.getHaveRealName() != null && param.getHaveRealName() == 1){

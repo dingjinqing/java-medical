@@ -183,5 +183,16 @@ export const en = {
   integral: 'integral',
   noGift: 'Do not give away',
   onlyNotPrize: 'Only to users who have not won the prize',
-  times: 'times'
+  times: 'times',
+  sharedNum: 'Number of shared draws',
+  upto: 'up to get',
+  schance: 'second chance to draw',
+  fillInteger: 'Please fill in a positive integer',
+  everyDraw: 'Every draw is consumed',
+  paidDraws: 'Number of paid draws',
+  fillFreeTimes: 'Please fill in the number of free draws!',
+  fillGiftPoints: 'Please fill in the number of gift points!',
+  fillWin: 'Please fill in the probability of winning',
+  numPrizes: 'The number of prizes cannot be greater than the number of coupons available',
+  numPrizes2: 'The number of prizes cannot be greater than the product inventory'
 }

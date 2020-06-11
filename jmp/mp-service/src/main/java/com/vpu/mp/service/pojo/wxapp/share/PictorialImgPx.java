@@ -371,7 +371,7 @@ public class PictorialImgPx {
     /**
      * 商品价格和名字的距离
      */
-    private Integer priceNamePadding = 34;
+    private Integer priceNamePadding = 50;
     /**
      * 底部商品价格开始y,需要根据商品名称行数计算得到
      */

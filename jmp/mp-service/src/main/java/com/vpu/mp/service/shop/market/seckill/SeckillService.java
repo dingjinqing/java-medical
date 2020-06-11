@@ -114,7 +114,7 @@ public class SeckillService extends ShopBaseService{
      *
      */
     public PageResult<SeckillDecoratePageListVo> getPageListDialog(SeckillPageListQueryParam param) {
-        SelectWhereStep<? extends Record> select = db().select(SEC_KILL_PRODUCT_DEFINE.SK_ID,SEC_KILL_PRODUCT_DEFINE.GOODS_ID,DSL.min(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE).as(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE)).
+        SelectWhereStep<? extends Record> select = db().select(SEC_KILL_PRODUCT_DEFINE.SK_ID, SEC_KILL_PRODUCT_DEFINE.GOODS_ID, DSL.min(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE).as(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE), DSL.sum(SEC_KILL_PRODUCT_DEFINE.STOCK).as(SEC_KILL_PRODUCT_DEFINE.STOCK), DSL.sum(SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK).as(SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK)).
             from(SEC_KILL_PRODUCT_DEFINE).leftJoin(SEC_KILL_DEFINE).on(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(SEC_KILL_DEFINE.SK_ID)).leftJoin(GOODS).on(SEC_KILL_PRODUCT_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID));
         select = buildOptions(select,param);
         select.where(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
@@ -143,12 +143,12 @@ public class SeckillService extends ShopBaseService{
             vo.setStartTime(seckill.getStartTime());
             vo.setEndTime(seckill.getEndTime());
             vo.setSkId(bo.getSkId());
-            vo.setStock(seckill.getStock());
+            vo.setStock(bo.getStock());
             vo.setBaseSale(seckill.getBaseSale());
             vo.setSaleNum(seckill.getSaleNum());
             vo.setStatus(seckill.getStatus());
             vo.setLimitAmount(seckill.getLimitAmount());
-            vo.setTotalStock(getTotalStock(bo.getSkId()));
+            vo.setTotalStock(bo.getTotalStock());
 
             dataList.add(vo);
         }

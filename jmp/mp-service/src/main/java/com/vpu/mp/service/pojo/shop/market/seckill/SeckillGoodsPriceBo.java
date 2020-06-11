@@ -15,4 +15,6 @@ public class SeckillGoodsPriceBo {
     private Integer goodsId;
     private Integer skId;
     private BigDecimal secKillPrice;
+    private Integer stock;
+    private Integer totalStock;
 }

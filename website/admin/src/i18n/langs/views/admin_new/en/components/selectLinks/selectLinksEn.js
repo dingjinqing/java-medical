@@ -117,7 +117,7 @@ export const en = {
     },
     {
       title: 'All merchandise',
-      path: 'pages1/search/search',
+      path: 'pages/search/search',
       spanId: ''
     },
     {
@@ -127,34 +127,34 @@ export const en = {
     },
     {
       title: 'Distribution rebate Center',
-      path: 'pages/distribution/distribution',
-      spanId: ''
-    },
-    {
-      title: 'Authorized mobile number',
-      path: 'pages/auth/auth',
-      spanId: ''
-    },
-    {
-      title: 'Points product list',
-      path: 'pages/searchs/search?is_from=integral',
-      spanId: ''
-    },
-    {
-      title: 'Membership card collection page (card number + password)',
-      path: 'pages/getcardpage/getcardpage?type=1',
-      spanId: ''
-    },
-    {
-      title: 'Membership card collection page (collection code)',
-      path: 'pages/getcardpage/getcardpage?type=2',
-      spanId: ''
-    },
-    {
-      title: 'Customer service',
-      path: 'pages/customer/customer',
+      path: 'pages1/distribution/distribution',
       spanId: ''
     }
+    // {
+    //   title: 'Authorized mobile number',
+    //   path: 'pages/auth/auth',
+    //   spanId: ''
+    // },
+    // {
+    //   title: 'Points product list',
+    //   path: 'pages/searchs/search?is_from=integral',
+    //   spanId: ''
+    // },
+    // {
+    //   title: 'Membership card collection page (card number + password)',
+    //   path: 'pages/getcardpage/getcardpage?type=1',
+    //   spanId: ''
+    // },
+    // {
+    //   title: 'Membership card collection page (collection code)',
+    //   path: 'pages/getcardpage/getcardpage?type=2',
+    //   spanId: ''
+    // },
+    // {
+    //   title: 'Customer service',
+    //   path: 'pages/customer/customer',
+    //   spanId: ''
+    // }
   ],
   keyWord: 'Key word',
   keyWordPlaceHold: 'Please enter keywords',

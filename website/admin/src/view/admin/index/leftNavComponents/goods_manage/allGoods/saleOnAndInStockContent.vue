@@ -903,17 +903,17 @@ export default {
             // case 1: item.goodsTypeName = '拼团商品'
             case 1: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[0]
               break
-            // case 2: item.goodsTypeName = '分销'
-            case 2: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[1]
+            // case 3: item.goodsTypeName = '砍价'
+            case 3: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[1]
               break
-            // case 3: item.goodsTypeName = '砍价商品'
-            case 3: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[2]
+            // case 5: item.goodsTypeName = '秒杀'
+            case 5: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[2]
               break
-            // case 4: item.goodsTypeName = '积分商品'
-            case 4: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[3]
+            // case 6: item.goodsTypeName = '限时降价'
+            case 6: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[3]
               break
-            // case 5: item.goodsTypeName = '秒杀商品'
-            case 5: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[4]
+            // case 10: item.goodsTypeName = '预售'
+            case 10: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[4]
               break
             default:
               item.goodsTypeName = null

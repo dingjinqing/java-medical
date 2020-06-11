@@ -117,7 +117,7 @@ export const cn = {
     },
     {
       title: '全部商品',
-      path: 'pages1/search/search',
+      path: 'pages/search/search',
       spanId: ''
     },
     {
@@ -127,34 +127,34 @@ export const cn = {
     },
     {
       title: '分销返利中心',
-      path: 'pages/distribution/distribution',
-      spanId: ''
-    },
-    {
-      title: '授权手机号',
-      path: 'pages/auth/auth',
-      spanId: ''
-    },
-    {
-      title: '积分商品列表',
-      path: 'pages/searchs/search?is_from=integral',
-      spanId: ''
-    },
-    {
-      title: '会员卡领取页（卡号+密码）',
-      path: 'pages/getcardpage/getcardpage?type=1',
-      spanId: ''
-    },
-    {
-      title: '会员卡领取页（领取码）',
-      path: 'pages/getcardpage/getcardpage?type=2',
-      spanId: ''
-    },
-    {
-      title: '客服',
-      path: 'pages/customer/customer',
+      path: 'pages1/distribution/distribution',
       spanId: ''
     }
+    // {
+    //   title: '授权手机号',
+    //   path: 'pages/auth/auth',
+    //   spanId: ''
+    // },
+    // {
+    //   title: '积分商品列表',
+    //   path: 'pages/searchs/search?is_from=integral',
+    //   spanId: ''
+    // },
+    // {
+    //   title: '会员卡领取页（卡号+密码）',
+    //   path: 'pages/getcardpage/getcardpage?type=1',
+    //   spanId: ''
+    // },
+    // {
+    //   title: '会员卡领取页（领取码）',
+    //   path: 'pages/getcardpage/getcardpage?type=2',
+    //   spanId: ''
+    // },
+    // {
+    //   title: '客服',
+    //   path: 'pages/customer/customer',
+    //   spanId: ''
+    // }
   ],
   keyWord: '关键词',
   keyWordPlaceHold: '请输入关键词',

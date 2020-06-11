@@ -28,7 +28,7 @@ public class WxAppAddGoodsToCartParam {
      * 数量
      */
     @NotNull
-    @Min(0)
+    @Min(1)
     private Integer goodsNumber;
     /**
      * 修改数量类型  默认1 直接修改数量, 2添加数量

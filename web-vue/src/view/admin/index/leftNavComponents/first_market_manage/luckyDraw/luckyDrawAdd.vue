@@ -236,7 +236,7 @@
                   <el-radio :label="1">{{$t('luckyDraw.freeDraw')}}
                     <el-input
                       v-model.number="freeChances"
-                      style="width:80px;"
+                      style="width:80px;padding:0 5px;"
                       size="small"
                       :min="1"
                     ></el-input>{{$t('luckyDraw.times')}}
@@ -248,12 +248,36 @@
 
               <el-form-item :label="$t('luckyDraw.shareTheLuckyDraw')+'：'">
                 <el-radio-group v-model="requestParam.canShare">
-                  <el-radio :label="1">{{$t('luckyDraw.allow')}}</el-radio>
+                  <el-radio
+                    :label="1"
+                    :disabled="freeChanceType === -1"
+                  >{{$t('luckyDraw.allow')}}</el-radio>
                   <el-radio :label="2">{{$t('luckyDraw.notAllow')}}</el-radio>
                 </el-radio-group>
                 <div v-if="requestParam.canShare === 1">
                   <span style="color: #999">{{$t('luckyDraw.shareTheLuckyDrawTips')}}</span>
-                  <div>
+                  <el-form-item
+                    :label="$t('luckyDraw.sharedNum')+':'"
+                    prop="shareChances"
+                    label-width="100px"
+                  >
+                    <el-radio
+                      v-model="shareChanceRadio"
+                      :label="1"
+                    >
+                      {{$t('luckyDraw.upto')}}<el-input
+                        style="width:80px;padding:0 5px;"
+                        size="small"
+                        v-model="requestParam.shareChances"
+                      ></el-input>{{$t('luckyDraw.schance')}}
+                    </el-radio>
+                    <span style="color:#999;">{{$t('luckyDraw.fillInteger')}}</span>
+                    <el-radio
+                      v-model="shareChanceRadio"
+                      :label="2"
+                    >{{$t('luckyDraw.unlimitedTime')}}</el-radio>
+                  </el-form-item>
+                  <!-- <div>
                     {{$t('luckyDraw.shareTheLuckyDrawTips1')}}
                     <el-input
                       size="small"
@@ -262,28 +286,58 @@
                       v-model="requestParam.shareChances"
                     ></el-input>
                     {{$t('luckyDraw.shareTheLuckyDrawTips2')}}
-                  </div>
+                  </div> -->
                 </div>
               </el-form-item>
 
               <el-form-item :label="$t('luckyDraw.payLuckyDraw')+'：'">
-                <el-radio-group v-model="requestParam.canUseScore">
-                  <el-radio :label="1">{{$t('luckyDraw.allow')}}</el-radio>
-                  <el-radio :label="2">{{$t('luckyDraw.notAllow')}}</el-radio>
-                </el-radio-group>
+                <el-radio
+                  v-model="requestParam.canUseScore"
+                  :label="1"
+                  :disabled="freeChanceType === -1 || (requestParam.canShare==1 && shareChanceRadio===2)"
+                >{{$t('luckyDraw.allow')}}</el-radio>
+                <el-radio
+                  v-model="requestParam.canUseScore"
+                  :label="2"
+                >{{$t('luckyDraw.notAllow')}}</el-radio>
                 <div v-if="requestParam.canUseScore===1">
                   <span style="color: #999;">{{$t('luckyDraw.payLuckyDrawTips1')}}</span>
-                  <div>
-                    {{$t('luckyDraw.payLuckyDrawTips2')}}：
+                  <el-form-item
+                    :label="$t('luckyDraw.everyDraw')"
+                    label-width="98px"
+                    prop="scorePerChance"
+                    style="margin-bottom: 10px;"
+                  >
                     <el-input
                       size="small"
-                      :placeholder="$t('luckyDraw.consumed')"
-                      style="width:125px"
+                      style="width:100px;padding:0 5px;"
                       v-model="requestParam.scorePerChance"
-                    ></el-input>
-                    <span style="color:#999">{{$t('luckyDraw.payLuckyDrawTips3')}}</span>
-                  </div>
-                  <div>
+                    ></el-input>{{$t('luckyDraw.integral')}}
+                    <span style="color:#999">{{$t('luckyDraw.fillInteger')}}</span>
+                  </el-form-item>
+                  <el-form-item
+                    :label="$t('luckyDraw.paidDraws')+':'"
+                    label-width="100px"
+                    prop="scoreChances"
+                  >
+                    <el-radio
+                      v-model="payChanceRadio"
+                      :label="1"
+                      style="margin-right:10px;"
+                    >
+                      {{$t('luckyDraw.payLuckyDrawTips4')}}<el-input
+                        v-model="requestParam.scoreChances"
+                        style="width:80px;padding:0 5px;"
+                        size="small"
+                      ></el-input>{{$t('luckyDraw.payLuckyDrawTips5')}}
+                    </el-radio>
+                    <span style="color:#999;">{{$t('luckyDraw.fillInteger')}}</span>
+                    <el-radio
+                      v-model="payChanceRadio"
+                      :label="2"
+                    >{{$t('luckyDraw.unlimitedTime')}}</el-radio>
+                  </el-form-item>
+                  <!-- <div>
                     {{$t('luckyDraw.payLuckyDrawTips4')}}
                     <el-input
                       size="small"
@@ -292,7 +346,7 @@
                       v-model="requestParam.scoreChances"
                     ></el-input>
                     {{$t('luckyDraw.payLuckyDrawTips5')}}
-                  </div>
+                  </div> -->
                 </div>
               </el-form-item>
 
@@ -685,19 +739,19 @@ export default {
     let that = this
     function validTime (rule, value, callback) {
       if (new Date(that.requestParam.startTime) > new Date(that.requestParam.endTime)) {
-        callback(new Error('结束时间必须大于开始时间'))
+        callback(new Error(that.$t('luckyDraw.validTime')))
       }
       callback()
     }
     function validFreeChances (rule, value, callback) {
       if (that.freeChanceType === 1 && that.freeChances === '') {
-        callback(new Error('请填写免费抽奖次数！'))
+        callback(new Error(that.$t('luckyDraw.fillFreeTimes')))
       }
       callback()
     }
     function validNoAwardScore (rule, value, callback) {
       if (that.noAwardScoreType === 1 && that.noAwardScore === '') {
-        callback(new Error('请填写赠送积分数量！'))
+        callback(new Error(that.$t('luckyDraw.fillGiftPoints')))
       }
       callback()
     }
@@ -706,13 +760,13 @@ export default {
       let prizeList = that.requestParam.prizeList
       // 规则一：一等奖必须填写
       if ((prizeList[0].chance === '' || prizeList[0].chance === undefined) && (prizeList[0].chanceNumerator === '' || prizeList[0].chanceNumerator === undefined)) {
-        callback(new Error('请填写中奖概率!'))
+        callback(new Error(that.$t('luckyDraw.fillWin')))
       }
       // 规则二：当填写了奖品后，没有填写中奖概率则报错
       for (let i = 0; i < prizeList.length; i++) {
         let prize = prizeList[i]
         if ((prize.chanceNumerator === '' || prize.chanceNumerator === undefined) && (prize.integralScore || prize.account || prize.couponId || prize.goodsName || prize.lotteryDetail)) {
-          callback(new Error('请填写中奖概率!'))
+          callback(new Error(that.$t('luckyDraw.fillWin')))
           break
         }
       }
@@ -733,15 +787,40 @@ export default {
         let couponNum = item.couponNumber
         if (item.lotteryType === 3) {
           if (couponNum !== '不限制' && Number(item.lotteryNumber) > Number(couponNum)) {
-            callback(new Error('奖品数量不能大于优惠券可用份数'))
+            callback(new Error(that.$t('luckyDraw.numPrizes')))
             break
           }
         } else if (item.lotteryType === 4) {
           if (Number(item.goodsNumber) < Number(item.lotteryNumber)) {
-            callback(new Error('奖品数量不能大于商品库存'))
+            callback(new Error(that.$t('luckyDraw.numPrizes2')))
             break
           }
         }
+      }
+      callback()
+    }
+    let integralReg = /^([1-9]\d*)$/
+    // 校验正整数
+    function validShareChances (rule, value, callback) {
+      let val = that.requestParam.shareChances
+      if (that.shareChanceRadio === 1 && (val === '' || !(integralReg.test(val)))) {
+        callback(new Error(that.$t('luckyDraw.fillInteger')))
+      }
+      callback()
+    }
+    // 校验正整数
+    function validScorePerChance (rule, value, callback) {
+      let val = that.requestParam.scorePerChance
+      if (that.requestParam.canUseScore === 1 && (val === '' || !(integralReg.test(val)))) {
+        callback(new Error(that.$t('luckyDraw.fillInteger')))
+      }
+      callback()
+    }
+    // 校验正整数
+    function validScoreChances (rule, value, callback) {
+      let val = that.requestParam.scoreChances
+      if (that.requestParam.canUseScore === 1 && that.payChanceRadio === 1 && (val === '' || !(integralReg.test(val)))) {
+        callback(new Error(that.$t('luckyDraw.fillInteger')))
       }
       callback()
     }
@@ -755,10 +834,10 @@ export default {
         freeChances: '', // 免费抽奖次数 0不限制 -1不可免费抽奖
         chanceType: 0,
         canShare: 2,
-        shareChances: 0,
+        shareChances: '',
         canUseScore: 2,
-        scorePerChance: 0,
-        scoreChances: 0,
+        scorePerChance: '',
+        scoreChances: '',
         noAwardScore: '',
         noAwardIcon: this.$t('luckyDraw.thanksParticipation'),
         noAwardImage: '/image/admin/icon_lottery/thank.png',
@@ -799,8 +878,13 @@ export default {
         prizeList: [{ validator: validChance, trigger: 'change' }],
         prizeNumber: [{ validator: validPrizeNumber, trigger: 'blur' }],
         freeChances: [{ validator: validFreeChances, trigger: 'blur' }],
-        noAwardScore: [{ validator: validNoAwardScore, trigger: 'blur' }]
-      }
+        noAwardScore: [{ validator: validNoAwardScore, trigger: 'blur' }],
+        shareChances: [{ validator: validShareChances, trigger: 'change' }],
+        scorePerChance: [{ validator: validScorePerChance, trigger: 'change' }],
+        scoreChances: [{ validator: validScoreChances, trigger: 'change' }]
+      },
+      shareChanceRadio: 1,
+      payChanceRadio: 1
     }
   },
   mounted () {
@@ -813,6 +897,41 @@ export default {
     chooseGoodsBackData () {
       return [this.requestParam.prizeList[this.tabSwitch - 1].prdId]
     }
+    // shareChanceRadio: {
+    //   get () {
+    //     console.log('radio get')
+    //     if (this.requestParam.shareChances !== '') {
+    //       return 1
+    //     } else {
+    //       return 2
+    //     }
+    //   },
+    //   set (val) {
+    //     console.log('radio set', val)
+    //     if (val === 2) {
+    //       this.$set(this.requestParam, 'shareChances', '')
+    //     } else if (val === 1) {
+    //       this.$set(this.requestParam, 'shareChances', 0)
+    //     }
+    //   }
+    // },
+    // payChanceRadio: {
+    //   get () {
+    //     console.log('pay radio get')
+    //     if (this.requestParam.scoreChances !== '') {
+    //       return 1
+    //     } else {
+    //       return 2
+    //     }
+    //   },
+    //   set (val) {
+    //     if (val === 2) {
+    //       this.$set(this.requestParam, 'scoreChances', '')
+    //     } else if (val === 1) {
+    //       this.$set(this.requestParam, 'scoreChances', 0)
+    //     }
+    //   }
+    // }
   },
   watch: {
     datepicker: function (val) {
@@ -869,6 +988,12 @@ export default {
     // 保存
     submitData () {
       this.submitStatus = true
+      if (this.shareChanceRadio === 2) {
+        this.$set(this.requestParam, 'shareChances', '')
+      }
+      if (this.payChanceRadio === 2) {
+        this.$set(this.requestParam, 'scoreChances', '')
+      }
       this.$refs.form.validate((valid) => {
         if (valid) {
           console.log('this.requestParam', this.requestParam)
@@ -1004,6 +1129,21 @@ export default {
         getLottery({ id: this.id }).then(res => {
           if (res.error === 0) {
             this.datepicker = [res.content.startTime, res.content.endTime]
+            // 分享次数和抽奖次数回显
+            if (res.content.canShare === 1) {
+              if (res.content.shareChances && res.content.shareChances > 0) {
+                this.shareChanceRadio = 1
+              } else {
+                this.shareChanceRadio = 2
+              }
+            }
+            if (res.content.canUseScore === 1) {
+              if (res.content.scoreChances && res.content.scoreChances > 0) {
+                this.payChanceRadio = 1
+              } else {
+                this.payChanceRadio = 2
+              }
+            }
             res.content.prizeList.map((item, index) => {
               item.lotteryGrade = item.lotteryGrade.toString()
               item.chance = 100 * item.chanceNumerator / item.chanceDenominator

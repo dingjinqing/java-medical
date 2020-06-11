@@ -93,4 +93,5 @@ public class OrderInfoMpVo extends OrderListMpVo{
     private Boolean showMall;
     /**商品数量（不包含赠品） */
     private Integer goodsAmount;
+    private BigDecimal packageDiscount;
 }

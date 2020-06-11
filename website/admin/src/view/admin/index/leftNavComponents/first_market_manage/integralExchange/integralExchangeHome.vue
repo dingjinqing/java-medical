@@ -614,7 +614,7 @@ export default {
   }
   .name {
     width: 115px;
-    // height: 40px;
+    height: 45px;
     text-overflow: ellipsis;
     overflow: hidden;
     -webkit-box-orient: vertical;

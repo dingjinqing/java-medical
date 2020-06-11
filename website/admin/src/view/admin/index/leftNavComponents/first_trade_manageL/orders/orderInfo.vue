@@ -1025,9 +1025,8 @@ export default {
         flex: 1;
         background: #ddd;
         height: 48px;
-        padding-right: 30px;
         color: #fff;
-        font-size: 16px;
+        font-size: 14px;
         position: relative;
         display: flex;
         justify-content: center;
@@ -1035,6 +1034,7 @@ export default {
         flex-direction: column;
         > span + span{
           margin-top: 5px;
+          font-size:12px;
         }
         &::after{
           content: '';
@@ -1069,7 +1069,7 @@ export default {
           left: -30px;
         }
         & + div{
-          margin-left: 70px;
+          margin-left: 55px;
           &.active::before{
             border-bottom-color: #5a8bff;
             border-top-color: #5a8bff;

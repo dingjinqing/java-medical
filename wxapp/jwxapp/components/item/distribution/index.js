@@ -35,7 +35,7 @@ global.wxComponent({
   methods: {
     initDistribution(data){
       let distributionShowData = []
-      if(data.rebateRatio.fanliRatio || data.rebateRatio.rebateRatio){
+      if(data.rebateRatio && (data.rebateRatio.fanliRatio || data.rebateRatio.rebateRatio)){
         if(data.rebateRatio.fanliRatio){
           if(data.rebateRatio.selfPurchase === 1){
             distributionShowData = [{name:'预估自购及直接返利',type:1,price:this.getDistributionPrice(1)}]
@@ -43,7 +43,7 @@ global.wxComponent({
             distributionShowData = [{name:'预估直接返利',type:3,price:this.getDistributionPrice(3)}]
           }
         }
-        if(data.rebateRatio.rebateRatio){
+        if(data.rebateRatio && data.rebateRatio.rebateRatio){
           distributionShowData = [...distributionShowData,{name:'预估间接返利',type:data.rebateRatio.selfPurchase === 1 ? 2 : 4,price:this.getDistributionPrice(data.rebateRatio.selfPurchase === 1 ? 2 : 4)}]
         }
       }

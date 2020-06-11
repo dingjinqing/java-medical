@@ -543,7 +543,7 @@ export default {
     // 自定义活动预告
     var validatePreTime = (rule, value, callback) => {
       var re = /^[1-9]\d*$/
-      if (!value) {
+      if (!value && value !== 0) {
         callback(new Error('请选择活动预告类型'))
       } else if (value === 1 && this.form.preTimeValue === '') {
         callback(new Error('请填写活动预告时间'))

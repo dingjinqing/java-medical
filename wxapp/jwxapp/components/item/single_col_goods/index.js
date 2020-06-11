@@ -14,7 +14,10 @@ global.wxComponent({
     },
     goodsData: {
       type: Object,
-      value: null
+      value: null,
+      observer(){
+        this.resetlimitData()
+      }
     },
     delMarket: {
       type: Number,
@@ -37,7 +40,10 @@ global.wxComponent({
   /**
    * 组件的初始数据
    */
-  data: {},
+  data: {
+    canMinus: false,
+    canPlus: false
+  },
   lifetimes: {
     ready() {
       this.setCartData()
@@ -192,6 +198,15 @@ global.wxComponent({
       }
       this.setData({
         actInfo
+      })
+    },
+    resetlimitData(){
+      let { prdNumber,limitBuyNum, limitMaxNum, cartNumber } = this.data.goodsData;
+      limitBuyNum = (limitBuyNum && limitBuyNum > 0) ?  limitBuyNum : 1;
+      limitMaxNum = limitMaxNum && limitMaxNum > 0 && prdNumber > limitMaxNum ? limitMaxNum : prdNumber
+      this.setData({
+        canMinus: cartNumber <= limitBuyNum ? false : true,
+        canPlus: cartNumber < limitMaxNum ? true : false,
       })
     }
   }

@@ -45,13 +45,13 @@
           :label="$t('groupBuy.activtiyLevel') + '：'"
           prop="level"
         >
-          <el-col :span="12">
+          <el-col :span="13">
             <el-input
               v-model="form.level"
               controls-position="right"
               style="width:170px"
               size="small"
-              placeholder="请输入活动名称"
+              placeholder="请输入活动优先级"
             >
             </el-input>
             <div class="prompt">
@@ -1730,5 +1730,9 @@ export default {
   padding: 0 10px;
   margin-right: 10px;
   color: #666;
+}
+.hightest {
+  font-size: 12px;
+  font-weight: bold;
 }
 </style>

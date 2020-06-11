@@ -22,6 +22,7 @@
           <distributorLevelSetting
             v-if="activeName === 'second'"
             @tabChange="tabChange"
+            @distributorLevel="getLevelId"
           />
         </el-tab-pane>
         <el-tab-pane
@@ -37,7 +38,8 @@
           <distributorList
             v-if="activeName === 'fouth'"
             :inviteFlag="inviteCode"
-            :optGroupId="optGroupId"
+            :distributorGroup="distributorGroup"
+            :distributorLevel="distributorLevel"
             @commissionHandler="commissionHandler"
           />
         </el-tab-pane>
@@ -48,7 +50,7 @@
           <distributorGroup
             v-if="activeName === 'fifth'"
             @tabChange="tabChange"
-            @optGroupId="getGroupId"
+            @distributorGroup="getGroupId"
           />
         </el-tab-pane>
         <el-tab-pane
@@ -117,7 +119,8 @@ export default {
     return {
       activeName: 'first',
       inviteCode: '',
-      optGroupId: 0,
+      distributorLevel: 0,
+      distributorGroup: 0,
       userId: null
     }
   },
@@ -146,8 +149,12 @@ export default {
       this.activeName = 'fouth'
     },
     getGroupId (data) {
-      this.optGroupId = data
-      console.log(this.optGroupId)
+      this.distributorGroup = data
+      console.log(this.distributorGroup)
+    },
+    getLevelId (data) {
+      this.distributorLevel = data
+      console.log(this.distributorLevel)
     },
     inviteCodeHandler (val) {
       this.inviteCode = val

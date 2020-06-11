@@ -67,7 +67,7 @@ export const en = {
     shopPriceRequired: 'Please input the right shop price',
     goodsNumberRequired: 'Please input the right number',
     setSuccess: 'Set success',
-    goodsType: ['Buy Group', 'Distribution', 'Bargain', 'Integral', 'SecKill'],
+    goodsType: ['Buy Group', 'Bargain', 'SecKill', 'ReducePrice', 'PreSale'],
     no: 'no'
   },
   allGoodsHeaderInputLabel: {

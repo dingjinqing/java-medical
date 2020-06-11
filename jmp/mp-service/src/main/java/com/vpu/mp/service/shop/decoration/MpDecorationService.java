@@ -772,7 +772,7 @@ public class MpDecorationService extends ShopBaseService {
                     String moduleName = node.getValue().get("module_name").asText();
                     switch (moduleName) {
                         case ModuleConstant.M_GOODS:
-                            return this.convertGoodsForModule(objectMapper, node, user);
+                            return this.convertGoodsForModule(objectMapper, node, user.getUserId());
                         case ModuleConstant.M_GOODS_GROUP:
                             return this.convertGoodsGroupForModule(objectMapper,node,user);
                         case ModuleConstant.M_COUPON:
@@ -806,13 +806,12 @@ public class MpDecorationService extends ShopBaseService {
      *
      * @param objectMapper
      * @param node
-     * @param user
+     * @param userId
      * @return
      * @throws IOException
      */
-    private ModuleGoods convertGoodsForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+    public ModuleGoods convertGoodsForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, Integer userId) throws IOException {
         ModuleGoods moduleGoods = objectMapper.readValue(node.getValue().toString(), ModuleGoods.class);
-        Integer userId = user.getUserId();
         GoodsListMpParam param = new GoodsListMpParam();
         param.setRecommendType(moduleGoods.getRecommendType());
         if (moduleGoods.getGoodsItems() == null) {
