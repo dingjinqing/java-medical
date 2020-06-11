@@ -11,6 +11,7 @@ import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsGrade;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsProduct;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
+import com.vpu.mp.service.shop.goods.es.goods.product.EsGoodsProductEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.admin.indices.alias.Alias;
 import org.elasticsearch.action.index.IndexRequest;
@@ -111,6 +112,13 @@ public class EsUtil {
     private static String getEsLabelIndexName(){
         return EsGoodsConstant.LABEL_INDEX_NAME_PREFIX+ Calendar.getInstance().getTimeInMillis();
     }
+    /**
+     * 生成商品标签索引名称
+     * @return 别名
+     */
+    private static String getEsProductIndexName(){
+        return EsGoodsConstant.PRODUCT_INDEX_NAME_PREFIX+ Calendar.getInstance().getTimeInMillis();
+    }
 
     /**
      * 根据索引名称生成对应的新建索引请求
@@ -126,6 +134,9 @@ public class EsUtil {
         }else if ( aliaName.equals(EsGoodsConstant.LABEL_ALIA_NAME) ){
             indexName = getEsLabelIndexName();
             mapping = EsUtil.createGoodsMapping(EsGoodsLabel.class);
+        }else if ( aliaName.equals(EsGoodsConstant.PRODUCT_ALIA_NAME) ){
+            indexName = getEsProductIndexName();
+            mapping = EsUtil.createGoodsMapping(EsGoodsProductEntity.class);
         }else{
             throw new Error("ElasticSearch create index error");
         }
@@ -145,7 +156,7 @@ public class EsUtil {
                 .startObject()
                 .field("number_of_replicas",0)
                 .field("number_of_shards",1);
-            if( aliaName.equals(EsGoodsConstant.GOODS_ALIA_NAME) ){
+            if( aliaName.equals(EsGoodsConstant.GOODS_ALIA_NAME) || aliaName.equals(EsGoodsConstant.PRODUCT_ALIA_NAME)){
                 getNgramAnalyzerSetting(builder);
             }
             return builder.endObject();
@@ -200,6 +211,11 @@ public class EsUtil {
         if( object instanceof EsGoodsLabel){
             EsGoodsLabel goodsLabel = (EsGoodsLabel)object;
             request.id(goodsLabel.getShopId().toString()+goodsLabel.getGoodsId().toString()+goodsLabel.getId().toString());
+        }
+        //商品标签索引ID设为shopId+goodsId+labelId
+        if( object instanceof EsGoodsProductEntity){
+            EsGoodsProductEntity entity = (EsGoodsProductEntity)object;
+            request.id(entity.getShopId().toString()+entity.getGoodsId().toString()+entity.getPrdId().toString());
         }
         String objectJsonStr = Util.toJson(object, ES_FILED_SERIALIZER);
         Objects.requireNonNull(objectJsonStr);
