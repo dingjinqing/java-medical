@@ -273,8 +273,8 @@ public class CommodityStatisticsService extends ShopBaseService {
         long days = end.toEpochDay() - start.toEpochDay();
         LocalDate prefixStart = start.minusDays(days);
         // 计算得到前一段等长的起止日期
-        param.setStartTime(Timestamp.valueOf(prefixStart.atStartOfDay()));
         param.setEndTime(param.getStartTime());
+        param.setStartTime(Timestamp.valueOf(prefixStart.atStartOfDay()));
 
         ProductOverviewVo prefixData = ProductOverviewVo.builder()
             .onShelfGoodsNum(goodsStatisticTaskService.getSaleGoodsNumber(param))
