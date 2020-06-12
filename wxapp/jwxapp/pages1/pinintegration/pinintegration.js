@@ -251,7 +251,7 @@ global.wxPage({
       }
     }, { 
       activityId: that.data.pinInte_id,
-      targetId: that.data.group_id
+      groupId: that.data.group_id
     })
   },
   // 关闭海报
