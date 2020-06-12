@@ -22,6 +22,7 @@ import static com.vpu.mp.db.shop.tables.GoodsSummary.GOODS_SUMMARY;
 import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 import static com.vpu.mp.db.shop.tables.Cart.CART;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.Sort.SORT;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_THREE;
 import static org.apache.commons.lang3.math.NumberUtils.*;
@@ -83,8 +84,23 @@ public class GoodsStatisticTaskService extends ShopBaseService {
             extCondition = extCondition.and(GOODS.BRAND_ID.eq(param.getBrandId()));
         }
         if (param.getSortId() > 0) {
+            List<Integer> sortIds = new ArrayList<>();
+            sortIds.add(param.getSortId());
+            Byte hasChild = db().select(SORT.HAS_CHILD)
+                .from(SORT)
+                .where(SORT.SORT_ID.eq(param.getSortId()))
+                .fetchOptionalInto(Byte.class).orElse(BYTE_ZERO);
+            if (BYTE_ONE.equals(hasChild)){
+                List<Integer> childIds = db().select(SORT.SORT_ID)
+                    .from(SORT)
+                    .where(SORT.PARENT_ID.eq(param.getSortId()))
+                    .fetchInto(Integer.class);
+                if (null!=childIds&&childIds.size()>0){
+                    sortIds.addAll(childIds);
+                }
+            }
             // 商家分类条件
-            extCondition = extCondition.and(GOODS.SORT_ID.eq(param.getSortId()));
+            extCondition = extCondition.and(GOODS.SORT_ID.in(sortIds));
         }
         if (param.getLabelId() > 0) {
             // 标签条件
