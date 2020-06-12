@@ -47,7 +47,7 @@ export const cn = {
   freeMailDesc: '购物包邮',
   integralExchange: '积分兑换',
   integralExchangeDesc: '使用积分兑换商品',
-  tailPolite: '开屏有礼（原活动有礼）',
+  tailPolite: '开屏有礼',
   tailPoliteDesc: '用户来到小程序引导参与营销互动',
   evaluationPolite: '评价有礼',
   evaluationPoliteDesc: '引导用户评价商品，参与营销活动',
