@@ -174,7 +174,6 @@
             :tuneUpChooseGoods="tuneUpChooseGoods"
             @resultGoodsDatas="choosingGoodsResult"
             :chooseGoodsBack="goodsId"
-            :checkedNumMax="100"
           />
         </div>
         <div class="table">
