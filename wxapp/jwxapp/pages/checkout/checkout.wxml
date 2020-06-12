@@ -60,7 +60,7 @@
         </view>
       </view>
 
-      <view class="pay_type">
+      <view class="pay_type" wx:if="{{payType.length > 0}}">
         <view class="pay_title">{{i18n.$t(localePack,"pages.checkout.paymentMethod")}}</view>
         <view class="pay_type_content">
           <view class="pay_type_item" wx:for="{{payType}}" wx:key="*this" data-pay-type="{{payTypeItem}}" wx:for-index="payTypeIndex" wx:for-item="payTypeItem" bindtap="changePayType"> <text class="iconfont {{choosePayType === payTypeItem ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{choosePayType === payTypeItem ? comColor : ''}}"></text>{{i18n.$t(localePack,"pages.checkout.payType["+payTypeItem+"]")}}</view>
@@ -165,7 +165,7 @@
            </view>
         </view>
       </view>
-      <view class="pay_content invoice">
+      <!-- <view class="pay_content invoice">
         <view class="pay_list_item">
           <text class="pay_list_title">发票</text>
           <view class="pay_list_content">
@@ -184,7 +184,7 @@
             <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
           </view>
         </view>
-      </view>
+      </view> -->
 
       <view class="checkout_detail" wx:if="{{params.activityType != 4}}">
         <view class="detail_item">
