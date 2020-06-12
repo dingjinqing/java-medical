@@ -55,6 +55,8 @@ public class AdminCommodityStatisticsController extends AdminBaseController {
     private void formatDate(ProductOverviewParam param) {
         param.setStartTime(Timestamp.valueOf(LocalDate.now().minusDays(param.getDynamicDate()).atStartOfDay()));
         param.setEndTime(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
+        logger().info("统计开始时间：{}",param.getStartTime());
+        logger().info("统计结束时间：{}",param.getEndTime());
     }
 
     /**
