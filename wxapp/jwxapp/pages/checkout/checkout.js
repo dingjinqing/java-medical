@@ -144,13 +144,13 @@ global.wxPage({
   },
   getPayType (orderinfo) {
     let payType = this.data.payType
-    if (orderinfo.paymentList.wxpay || orderinfo.paymentList.balance || orderinfo.paymentList.score){
+    if (!payType.includes(0) && (orderinfo.paymentList.wxpay || orderinfo.paymentList.balance || orderinfo.paymentList.score)){
       payType.push(0)
       this.setData({
         choosePayType : 0
       })
     }
-    if (orderinfo.paymentList.cod){
+    if (!payType.includes(1) && orderinfo.paymentList.cod){
       payType.push(1)
       if(payType.length === 1){
         this.setData({
