@@ -252,7 +252,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      */
     private Map<Integer, Integer> selectBuilder(ProductOverviewParam param, SelectJoinStep<?> joinStep, Field<Integer> field, Condition baseCondition, Field<?> field1) {
         if (param.getBrandId() > 0 || param.getSortId() > 0) {
-            joinStep = joinStep.leftJoin(BAK).on(field.eq(BAK.GOODS_ID));
+            joinStep = joinStep.leftJoin(GOODS).on(field.eq(GOODS.GOODS_ID));
         }
         if (param.getLabelId() > 0) {
             joinStep = joinStep.leftJoin(LABEL).on(LABEL.GTA_ID.eq(field));
