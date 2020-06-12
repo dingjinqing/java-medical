@@ -522,7 +522,7 @@ export default {
           shareAction: 1,
           shareDoc: '',
           shareImgAction: 1,
-          shareImg: this.$imageHost + '/image/admin/btn_add.png'
+          shareImg: that.$imageHost + '/image/admin/btn_add.png'
         } // 分享设置
       },
       limit: 0,
@@ -988,13 +988,13 @@ export default {
           //   this.$message.warning(this.$t('firstSpecialAdd.validityPeriodTip'))
           //   return false
           // }
-          let goods = params.firstSpecialGoodsParams
+          let goods = this.tableData
           if (goods.length === 0) {
             this.$message.warning(this.$t('firstSpecialAdd.selectEventTip'))
             return false
           }
           let noPriceGoods = goods.find((item, i) => {
-            return !item.goodsPrice
+            return !item.batchFinalPrice
           })
           if (noPriceGoods) {
             this.$message.warning(this.$t('firstSpecialAdd.setDiscountTip'))
@@ -1008,7 +1008,7 @@ export default {
             this.$message.warning(this.$t('firstSpecialAdd.commodity') + hasTips.goodsName + hasTips.tips)
             return false
           }
-          suFn(params)
+          suFn()
         } else {
           console.log('error submit!!')
           return false
@@ -1017,10 +1017,9 @@ export default {
     },
     addSubmit () {
       let _this = this
-      let params = this.paramsAssign()
-      console.log(params)
       // 传参校验
-      this.paramsValid(params, function (params) {
+      this.paramsValid(this.form, function () {
+        let params = _this.paramsAssign()
         addFirstSpecial(params).then(res => {
           if (res.error === 0) {
             _this.$message.success(_this.$t('firstSpecialAdd.successSaved'))
@@ -1040,11 +1039,10 @@ export default {
     },
     updateSubmit () {
       let _this = this
-      let params = this.paramsAssign()
-      params.id = this.id
-      console.log(params)
       // 传参校验
-      _this.paramsValid(params, function (params) {
+      _this.paramsValid(this.form, function () {
+        let params = _this.paramsAssign()
+        params.id = _this.id
         updateFirstSpecial(params).then(res => {
           if (res.error === 0) {
             _this.$message.success(_this.$t('firstSpecialAdd.successUpdated'))
