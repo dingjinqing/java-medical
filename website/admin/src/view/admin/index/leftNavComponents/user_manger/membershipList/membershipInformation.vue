@@ -24,7 +24,7 @@
                     @click="hanldeModifyPerson()"
                     class="iconfont iconbianji iconSpn"
                   ></span>
-                  </div>
+                </div>
                 <div>{{$t('membershipIntroduction.Becomeacustomer')}}：{{ this.memberBasicInfo.createTime }}</div>
               </li>
               <li>
@@ -861,10 +861,10 @@ export default {
           if (Object.prototype.toString.call(Object.values(this.transStatistic)[0]) === '[object Object]') {
             // tab显示
             this.transactionTabFlag = true
-            for (var j in this.transStatistic[0]) {
+            for (var j in this.transStatistic.allTransactionStatistics) {
               this.transactionData.forEach(item => {
                 if (item.value === j) {
-                  item.content = this.transStatistic[0][j]
+                  item.content = this.transStatistic.allTransactionStatistics[j]
                 }
               })
             }
