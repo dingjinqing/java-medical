@@ -224,7 +224,7 @@ export default {
       dailyLimit: 0,
       pageParams: {},
       param: {
-        status: 0,
+        status: 1,
         category: 0,
         // 分页
         currentPage: 0,
