@@ -1120,7 +1120,8 @@ public class JsonResultMessage {
     public static final String WX_MA_GROUP_INTEGRAL_SHARE_DOC= "wx.ma.group.integral.share.doc";
     // 瓜分积分
     public static final String WX_MA_GROUP_INTEGRAL_SHARE_SCORE= "wx.ma.group.integral.share.score";
-
+    // 新用户可瓜分双份
+    public static final String WX_MA_GROUP_INTEGRAL_SHARE_NEW_USER_DOC = "wx.ma.group.integral.share.new.user.doc";
 
     //持卡会员导出
     public static final String USER_CARD_OK = "user.card.ok";

@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -80,13 +83,24 @@ public class GroupIntegrationPictorialService extends ShareBaseService{
         }
 
         createPictorialImg(qrCodeImage,null,userInfo,shareDoc,record,null,shop,baseParam,goodsPictorialInfo);
+
+        BufferedImage bgImg = goodsPictorialInfo.getBgImg();
+        try {
+            FileOutputStream outputStream = new FileOutputStream(new File("E:/a.jpg"));
+            ImageIO.write(bgImg, "jpg", outputStream);
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         return goodsPictorialInfo;
     }
 
     /**
      * 瓜分积分背景图
      */
-    private final String GROUP_INTEGRAL_BG_IMG = "image/wxapp/pin_score_bg.png";
+    private final String GROUP_INTEGRAL_BG_IMG = "image/wxapp/pin_score_bg.jpg";
     /**
      * 瓜分积分金币图片
      */
@@ -110,7 +124,7 @@ public class GroupIntegrationPictorialService extends ShareBaseService{
         }
         BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, null, groupBgImg, shareDoc, null,null , null,null, null, imgPx);
 
-        // 添加
+        // 添加 金币图标和积分数文字
         Integer bgMiddleX = imgPx.getBgWidth()/2;
         int goldIconStartY = (int)(imgPx.getGoodsStartY()+imgPx.getGoodsWidth()*(3.0/4)-70);
         int goldTextGap = 10;
@@ -121,6 +135,17 @@ public class GroupIntegrationPictorialService extends ShareBaseService{
         int goldIconStartX=  bgMiddleX-scoreTextWidth/2;
         ImageUtil.addTwoImage(bgBufferedImage,groupGoldImg,goldIconStartX,goldIconStartY);
         ImageUtil.addFont(bgBufferedImage,scoreText,scoreFont,goldIconStartX+groupGoldImg.getWidth()+goldTextGap,goldIconStartY+groupGoldImg.getHeight(),Color.WHITE,true);
+
+        if (GroupIntegrationService.ACTIVITY_DIVIDE_TYPE_NEW.equals(record.getDivideType())) {
+            // 添加 '新用户可瓜分双份'文字
+            String newUserTextStr = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_INTEGRAL_SHARE_NEW_USER_DOC, "", "messages");
+            Font textFont = ImageUtil.SourceHanSansCN(Font.BOLD,25);
+            Integer newUserTextWidth = ImageUtil.getTextWidth(bgBufferedImage,textFont,newUserTextStr);
+            Integer newUserTextStartX =  bgMiddleX-newUserTextWidth/2;
+            int newUserTextStartY = imgPx.getGoodsStartY()+imgPx.getGoodsWidth()-130;
+            ImageUtil.addFont(bgBufferedImage,newUserTextStr,textFont,newUserTextStartX,newUserTextStartY,Color.WHITE,true);
+        }
+
 
         // 设置二维码
         qrCodeBufferImg = ImageUtil.resizeImageTransparent(imgPx.getQrCodeWidth(), imgPx.getQrCodeWidth(), qrCodeBufferImg);

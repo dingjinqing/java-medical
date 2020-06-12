@@ -133,7 +133,7 @@ public class GroupIntegrationService extends ShopBaseService {
 	public static final Byte STATUS_EIGHT = 8;
 	/** 开团失败 */
 	public static final Byte STATUS_NINE = 9;
-	
+	public static final Byte ACTIVITY_DIVIDE_TYPE_NEW = 0;
 	public static final String LANGUAGE_TYPE_MSG = "messages";
 
 	public List<ActSelectList> getActSelectList() {
