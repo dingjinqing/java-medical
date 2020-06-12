@@ -256,7 +256,7 @@ export default {
       this.cardScoreCfgData.powerScore = data.powerScore ? data.powerScore === 1 : true
       this.cardScoreCfgData.score = data.score
       this.cardScoreCfgData.offset = data.scoreJson ? String(data.scoreJson.offset) : '0'
-      if (data.scoreJson.goodsMoney.length > 0) {
+      if (data.scoreJson.goodsMoney !== null && data.scoreJson.goodsMoney.length > 0) {
         this.cardScoreCfgData.shopingInputLeft = data.scoreJson.goodsMoney[0]
         this.cardScoreCfgData.shopingInputRight = data.scoreJson.getScores[0]
         data.scoreJson.goodsMoney.splice(0, 1)
