@@ -11,7 +11,7 @@ global.wxPage({
     cardBalanceStatus: 0, //使用会员卡余额状态
     couponArray: null, //优惠券列表
     defaultCouponIndex: null, //默认选择优惠券
-    payType: [0,1],
+    payType: [],
     choosePayType: 0, //所选支付方式
     showCardBalanceDialog: false, //是否显示会员卡余额弹框
     showBalanceDialog: false, //是否显示余额弹框
@@ -144,8 +144,27 @@ global.wxPage({
   },
   getPayType (orderinfo) {
     let payType = this.data.payType
+    if (orderinfo.paymentList.wxpay || orderinfo.paymentList.balance || orderinfo.paymentList.score){
+      payType.push(0)
+      this.setData({
+        choosePayType : 0
+      })
+    }
+    if (orderinfo.paymentList.cod){
+      payType.push(1)
+      if(payType.length === 1){
+        this.setData({
+          choosePayType : 1
+        })
+      }
+    }
     if (!payType.includes(2) && orderinfo.insteadPayCfg && orderinfo.insteadPayCfg.status && (orderinfo.insteadPayCfg.singlePay || orderinfo.insteadPayCfg.multiplePay)) {
       payType.push(2)
+      if(payType.length === 1){
+        this.setData({
+          choosePayType : 2
+        })
+      }
     }
     if(this.data.scoreRedeemData && this.data.scoreRedeemData.score){
       payType = [3]
