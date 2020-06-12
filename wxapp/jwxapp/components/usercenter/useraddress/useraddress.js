@@ -21,7 +21,7 @@ global.wxComponent({
   },
 
   ready () {
-    this.initData()
+    
   },
 
   /**
@@ -183,7 +183,8 @@ global.wxComponent({
           addressList: addressList
         })
         let pages = getCurrentPages()
-        let prevPage = pages[pages.length - 2]
+        let sourcePage = this.getPrevPage(pages)
+        let prevPage = sourcePage.page
         console.log(prevPage)
         if (prevPage && (prevPage.route === 'pages/item/item' || prevPage.route === 'pages/checkout/checkout')) {
           if (prevPage.route === 'pages/checkout/checkout') {
@@ -196,7 +197,9 @@ global.wxComponent({
               addressId: id
             })
           }
-          wx.navigateBack()
+          wx.navigateBack({
+            delta: sourcePage.index
+          })
           return false
         }
         console.log(this.data.orderOptions)
@@ -204,6 +207,23 @@ global.wxComponent({
         console.log(opts, id)
         util.navigateTo('/pages/checkout/checkout?addressId='+id+'&'+opts)
       }
+    },
+
+    // 获取
+    getPrevPage (pages) {
+      let len = pages.length
+      let count = 0
+      for(let i = len-1; i>=0; i--) {
+        let page = pages[i]
+        if (page.route === 'pages/item/item' || page.route === 'pages/checkout/checkout') {
+          return {
+            page: page,
+            index: count
+          }
+        }
+        count++
+      }
+      return {}
     },
 
     stringOpts (opts) {
@@ -214,6 +234,11 @@ global.wxComponent({
       }
       str = str.slice(0, str.length-1)
       return str
+    }
+  },
+  pageLifetimes: {
+    show () {
+      this.initData()
     }
   }
 })
