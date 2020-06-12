@@ -29,13 +29,13 @@ public class ApiBasePageParam {
      * 数据更新时间-开始时间，可以为null
      */
     @JsonProperty("start_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     Timestamp startTime;
     /**
      * 数据根系时间-结束时间，可以为null,为null时视具体业务而定
      */
     @JsonProperty("end_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     Timestamp endTime;
 
     public Integer getPage() {
