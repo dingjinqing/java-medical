@@ -20,7 +20,7 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad (options) {
-    console.log(options, this.data);
+    console.log(options, this.data, '首页++++++++++++++++');
 
     this.setData({}, () => {
       var pageCfg = this.data.pageContent.page_info.page_cfg;

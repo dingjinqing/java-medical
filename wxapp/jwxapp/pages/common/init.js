@@ -4,7 +4,7 @@ var init = {
   data: {
     status: 0,
   },
-  onLoad(options) {
+  onLoad (options) {
     console.log(options)
     this._options = options;
     this.currentUrl = util.getCurrentPath(options);
@@ -61,17 +61,17 @@ var init = {
     this._initRequest(options);
     this._initSetCommonData();
   },
-  isBottomPage() {
+  isBottomPage () {
     return util.equalUrl(this.currentUrl, "pages/bottom/bottom", false);
   },
-  bottomPageJump(options) {
+  bottomPageJump (options) {
     var bottom = util.getCache("bottom");
     var url = 'pages/index/index';
     if (options.url) url = decodeURIComponent(options.url);
     console.log("bottom onload jumpLink: ", url);
     util.jumpLink(url, 'reLaunch');
   },
-  loadSetting(options) {
+  loadSetting (options) {
     var _this = this;
     var stack = [this._wxLogin(), this._getUserGlobalConfig()];
 
@@ -83,13 +83,14 @@ var init = {
     return false;
   },
 
-  onShow() {
+  onShow () {
     if (this.loading) return false;
   },
 
-  _initSetCommonData() {
+  _initSetCommonData () {
     var c_url = util.parseUrl(this.currentUrl);
     var idx = this.currentIdx = this._bottomPathIndex(this.currentUrl);
+    console.log(idx, 'idx++++++++++++++++++')
     var show_bottom = idx != -1;
     var show_back = c_url.path != "/pages/index/index" && !show_bottom && getCurrentPages().length == 1;
     var margin_top_nav = 0
@@ -126,7 +127,7 @@ var init = {
   },
 
 
-  _initRequest(options) {
+  _initRequest (options) {
     if (this.user_id && options.invite_id) { //邀请人
       util.api("/api/wxapp/user/invite", function (res) { }, {
         invite_id: options.invite_id
@@ -144,7 +145,7 @@ var init = {
     }
   },
 
-  _needGetUserInfoBtn() {
+  _needGetUserInfoBtn () {
     if (wx.canIUse("button.open-type.getUserInfo")) {
       var user_name = util.getCache('nickName');
       var user_avatar = util.getCache('avatarUrl');
@@ -157,8 +158,8 @@ var init = {
     return false;
   },
 
-  _bottomPathIndex(currentUrl) {
-    function addDefaultParam(url, path, key, value) {
+  _bottomPathIndex (currentUrl) {
+    function addDefaultParam (url, path, key, value) {
       if (url.path == path) {
         url.query[key] = url.query[key] || value;
       }
@@ -184,7 +185,7 @@ var init = {
     return idx;
   },
 
-  _getColors() {
+  _getColors () {
     console.log(this.bottom)
     if (!this.bottom) {
       this.bottom = this._converBottom(util.getCache("bottom"));
@@ -209,7 +210,7 @@ var init = {
     return colors;
   },
 
-  _converBottom(bottom) {
+  _converBottom (bottom) {
     if (!bottom) return bottom;
     for (var i in bottom.img_list) {
       var item = bottom.img_list[i];
@@ -224,14 +225,14 @@ var init = {
     return bottom;
   },
 
-  _wxLogin(options) {
+  _wxLogin (options) {
     return new Promise(function (resolve) {
       util.wxLogin(function () {
         resolve()
       }, options);
     });
   },
-  _getUserGlobalConfig() {
+  _getUserGlobalConfig () {
     return new Promise(function (resolve) {
       if (util.getCache('geographic_location') == 1) {
         util.getUserLocation(function (loc) {
