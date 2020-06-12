@@ -187,7 +187,8 @@ global.wxPage({
       }
     },
     showLive: true,
-    addressId: null
+    addressId: null,
+    deliverTemplateId: null
   },
   /**
    * 生命周期函数--监听页面加载
@@ -239,6 +240,7 @@ global.wxPage({
         customParams.shareAwardLaunchUserId = this.data.shareAwardLaunchUserId || this.data.inviteId || this.data.uid
       }
       if(this.data.rebateSId) customParams.rebateSId = this.data.rebateSId
+      let userlocation = wx.getStorageSync('userLocation')||{}
       util.api(
         '/api/wxapp/goods/detail',
         res => {
@@ -295,7 +297,8 @@ global.wxPage({
               deliverFeeAddressVo,
               shareAwardId,
               showMall,
-              unit
+              unit,
+              deliverTemplateId // 运费模板
             } = res.content
             let goodsMediaInfo = {
               goodsImgs, //商品图片
@@ -330,6 +333,7 @@ global.wxPage({
               ...specParams
             }
             this.setData({
+              deliverTemplateId,
               comment, //评价
               deliverPlace, //发货地
               defaultPrd, //是否单规格
@@ -387,8 +391,8 @@ global.wxPage({
         activityId: this.data.activityId,
         activityType: this.data.activityType,
         userId: util.getCache('user_id'),
-        lon: null,
-        lat: null,
+        lon: userlocation.longitude?userlocation.longitude:null,
+        lat: userlocation.latitude?userlocation.latitude:null,
         ...customParams
       }
       )
@@ -1261,7 +1265,8 @@ global.wxPage({
     let pages = getCurrentPages()
     console.log(pages)
     if (this.data.addressId) {
-      this.requestAddress()
+      // this.requestAddress()
+      this.calculateShipping()
     }
   },
 
@@ -1274,6 +1279,25 @@ global.wxPage({
         })
       }
     }, {addressId: this.data.addressId})
+  },
+
+  calculateShipping () {
+    let that = this
+    util.api('/api/wxapp/address/shipping', res => {
+      if (res.error === 0) {
+        console.log('hasV', res)
+        that.setData({
+          'deliverFeeAddressVo': res.content
+        })
+      }
+    }, {
+      goodsId: that.data.goodsId,
+      addressId: that.data.addressId,
+      deliverTemplateId: that.data.deliverTemplateId,
+      goodsNum: this.data.productInfo.goodsNum,
+      goodsPrice: this.data.productInfo.prdRealPrice,
+      goodsWeight: this.data.productInfo.prdWeight || ''
+    })
   },
 
   /**

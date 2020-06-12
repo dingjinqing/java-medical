@@ -184,10 +184,18 @@ global.wxComponent({
         })
         let pages = getCurrentPages()
         let prevPage = pages[pages.length - 2]
-        if (prevPage) {
-          prevPage.setData({
-            addressId: id
-          })
+        console.log(prevPage)
+        if (prevPage && (prevPage.route === 'pages/item/item' || prevPage.route === 'pages/checkout/checkout')) {
+          if (prevPage.route === 'pages/checkout/checkout') {
+            prevPage.setData ({
+              addressId: id,
+              'params.addressId': id
+            })
+          } else {
+            prevPage.setData({
+              addressId: id
+            })
+          }
           wx.navigateBack()
           return false
         }

@@ -41,7 +41,8 @@ global.wxComponent({
     cartNum:{
       type:Number,
       value:0
-    }
+    },
+    addressId: Number
   },
 
   /**
