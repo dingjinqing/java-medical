@@ -4,6 +4,7 @@ import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GroupIntegrationDefineRecord;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * 瓜分积分海报生成
@@ -123,8 +124,8 @@ public class GroupIntegrationPictorialService extends ShareBaseService{
         ImageUtil.addTwoImage(bgBufferedImage,groupGoldImg,goldIconStartX,goldIconStartY);
         ImageUtil.addFont(bgBufferedImage,scoreText,scoreFont,goldIconStartX+groupGoldImg.getWidth()+goldTextGap,goldIconStartY+groupGoldImg.getHeight(),Color.WHITE,true);
 
+        // 添加 '新用户可瓜分双份'文字
         if (GroupIntegrationService.ACTIVITY_DIVIDE_TYPE_NEW.equals(record.getDivideType())) {
-            // 添加 '新用户可瓜分双份'文字
             String newUserTextStr = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_INTEGRAL_SHARE_NEW_USER_DOC, "", "messages");
             Font textFont = ImageUtil.SourceHanSansCN(Font.BOLD,25);
             Integer newUserTextWidth = ImageUtil.getTextWidth(bgBufferedImage,textFont,newUserTextStr);
@@ -132,6 +133,18 @@ public class GroupIntegrationPictorialService extends ShareBaseService{
             int newUserTextStartY = imgPx.getGoodsStartY()+imgPx.getGoodsWidth()-130;
             ImageUtil.addFont(bgBufferedImage,newUserTextStr,textFont,newUserTextStartX,newUserTextStartY,Color.WHITE,true);
         }
+        // 添加有效时间
+        String startTime = DateUtil.dateFormat(DateUtil.DATE_FORMAT_DOT,record.getStartTime());
+        String endTime = DateUtil.dateFormat(DateUtil.DATE_FORMAT_DOT,record.getEndTime());
+        StringBuilder timeTextSb =new StringBuilder();
+        timeTextSb.append(Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_INTEGRAL_LIMIT_TIME, "", "messages"));
+        timeTextSb.append(startTime).append("-").append(endTime);
+        String timeText = timeTextSb.toString();
+        Font textFont = ImageUtil.SourceHanSansCN(Font.BOLD,20);
+        Integer timeTextWidth = ImageUtil.getTextWidth(bgBufferedImage,textFont,timeText);
+        Integer timeTextStartX =  bgMiddleX-timeTextWidth/2;
+        int timeTextStartY = imgPx.getGoodsStartY()+imgPx.getGoodsWidth()-90;
+        ImageUtil.addFont(bgBufferedImage,timeText,textFont,timeTextStartX,timeTextStartY,Color.WHITE,true);
 
 
         // 设置二维码
@@ -142,7 +155,7 @@ public class GroupIntegrationPictorialService extends ShareBaseService{
         String bottomText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_INTEGRAL_SHARE_SCORE, "", "messages");
         Integer textWidth = ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN,PictorialImgPx.MEDIUM_FONT_SIZE),bottomText);
         int bottomTextStartX = (imgPx.getBgWidth()-textWidth)/2;
-        int bottomTextStartY =imgPx.getBottomStartY()+imgPx.getQrCodeWidth()+50;
+        int bottomTextStartY =imgPx.getBottomStartY()+imgPx.getQrCodeWidth()+40;
         ImageUtil.addFont(bgBufferedImage,bottomText,ImageUtil.SourceHanSansCN(Font.PLAIN,PictorialImgPx.MEDIUM_FONT_SIZE),bottomTextStartX,bottomTextStartY,imgPx.getHeadFontColor(),true);
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);
