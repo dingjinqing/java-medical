@@ -47,7 +47,7 @@ export const en = {
   freeMailDesc: 'Shipping',
   integralExchange: 'integral exchange',
   integralExchangeDesc: 'Use points to redeem goods',
-  tailPolite: 'tail and polite（Activities and polite）',
+  tailPolite: 'tail and polite',
   tailPoliteDesc: 'Users come to the small program to guide participation in marketing interaction',
   evaluationPolite: 'evaluation and polite',
   evaluationPoliteDesc: 'Guide users to evaluate products and participate in marketing activities',

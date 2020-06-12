@@ -190,10 +190,15 @@ export default {
           img_two: this.$imageHost + '/image/admin/icon_mps/icon_no_4.png',
           text: '我的'
         },
+        // {
+        //   img_one: this.$imageHost + '/image/admin/icon_mps/icon_yes_5.png',
+        //   img_two: this.$imageHost + '/image/admin/icon_mps/icon_no_5.png',
+        //   text: '分类'
+        // },
         {
-          img_one: this.$imageHost + '/image/admin/icon_mps/icon_yes_5.png',
-          img_two: this.$imageHost + '/image/admin/icon_mps/icon_no_5.png',
-          text: '分类'
+          img_one: this.$imageHost + '/image/admin/icon_mps/icon_yes_8.png',
+          img_two: this.$imageHost + '/image/admin/icon_mps/icon_no_8.png',
+          text: '全部商品'
         },
         {
           img_one: this.$imageHost + '/image/admin/icon_mps/icon_yes_6.png',
@@ -545,7 +550,7 @@ export default {
 .modifyDialogUl li span {
   display: inline-block;
   margin-right: 10px;
-  width: 42px;
+  width: 60px;
   text-align: left;
 }
 .modifyDialogUl li img {

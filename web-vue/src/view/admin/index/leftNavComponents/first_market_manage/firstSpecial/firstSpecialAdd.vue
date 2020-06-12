@@ -464,6 +464,7 @@
       :tuneUpChooseGoods="tuneUpChooseGoods"
       :onlyShowChooseGoods="isOnlyShowChooseGoods"
       :chooseGoodsBack="goodsIdList"
+      :checkedNumMax="100"
     />
     <!-- 图片上传 -->
     <imageDalog

@@ -207,7 +207,10 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * @return the int
      */
     public int addCartUserNum(ProductOverviewParam param) {
-        return addSingleCartUserNum(param).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+        logger().info("开始计算加购人数");
+        Map<Integer,Integer> addCartUser = addSingleCartUserNum(param);
+        Integer addCartUserNum = addCartUser.values().stream().reduce(INTEGER_ZERO, Integer::sum);
+        return addCartUserNum;
     }
 
     /**
