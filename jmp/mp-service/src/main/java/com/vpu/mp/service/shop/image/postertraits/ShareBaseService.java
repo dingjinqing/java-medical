@@ -241,8 +241,8 @@ public abstract class ShareBaseService extends ShopBaseService {
         String mpQrCode = createMpQrCode(aRecord, goodsRecord, baseParam);
         BufferedImage qrCodeImage = null;
         try {
-//            qrCodeImage = ImageIO.read(new URL(mpQrCode));
-            qrCodeImage = ImageIO.read(new File("E:/qrcode.jpg"));
+            qrCodeImage = ImageIO.read(new URL(mpQrCode));
+//            qrCodeImage = ImageIO.read(new File("E:/qrcode.jpg"));
         } catch (IOException e) {
             pictorialLog(getActivityName(), "获取二维码失败");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
