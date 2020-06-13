@@ -1192,35 +1192,34 @@ public class UserCardService extends ShopBaseService {
             // 商品品牌id
             return true;
         }
-        return false;
-    }
 
-    /**
-     * 王帅 获取该卡打折金额
-     * @param card       会员卡
-     * @param totalPrice 折前总价
-     * @return 折后总价
-     */
-    public BigDecimal getDiscountAmount(OrderMemberVo card, BigDecimal totalPrice) {
-        if (BigDecimalUtil.compareTo(totalPrice, null) < 1) {
-            card.setTotalDiscount(BigDecimal.ZERO);
-        } else if(CardConstant.MCARD_TP_LIMIT.equals(card.getInfo().getCardType())) {
-            // 限次卡
-            card.setTotalDiscount(totalPrice);
-        } else if (BigDecimalUtil.compareTo(card.getInfo().getDiscount(), BigDecimal.ZERO) == -1) {
-            // 如果没有打折权益则为十折
-            card.setTotalDiscount(BigDecimal.ZERO);
-        } else {
-            // 正常打折(价格 * （10 - 折扣（eg:6.66） / 10）)
-            card.setTotalDiscount(
-                BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.DOWN,
-                    BigDecimalUtil.BigDecimalPlus.create(totalPrice, BigDecimalUtil.Operator.multiply),
-                    BigDecimalUtil.BigDecimalPlus.create(
-                        BigDecimalUtil.addOrSubtrac(
-                            BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, BigDecimalUtil.Operator.subtrac),
-                            BigDecimalUtil.BigDecimalPlus.create(card.getInfo().getDiscount(), null)),
-                        BigDecimalUtil.Operator.divide),
-                    BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null))
+		return false;
+	}
+
+	/**
+	 * 王帅 获取该卡打折金额
+	 * @param card       会员卡
+	 * @param totalPrice 折前总价
+	 * @return 折后总价
+	 */
+	public BigDecimal getDiscountAmount(OrderMemberVo card, BigDecimal totalPrice) {
+		if (CardConstant.MCARD_TP_LIMIT.equals(card.getInfo().getCardType())) {
+			// 限次卡
+			card.setTotalDiscount(totalPrice);
+		} else if (BigDecimalUtil.compareTo(card.getInfo().getDiscount(), BigDecimal.ZERO) < 1) {
+			// 如果没有打折权益则为十折
+			card.setTotalDiscount(BigDecimal.ZERO);
+		} else {
+			// 正常打折(价格 * （10 - 折扣（eg:6.66） / 10）)
+			card.setTotalDiscount(
+			    BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.DOWN,
+					BigDecimalUtil.BigDecimalPlus.create(totalPrice, BigDecimalUtil.Operator.multiply),
+					BigDecimalUtil.BigDecimalPlus.create(
+							BigDecimalUtil.addOrSubtrac(
+									BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, BigDecimalUtil.Operator.subtrac),
+									BigDecimalUtil.BigDecimalPlus.create(card.getInfo().getDiscount(), null)),
+							BigDecimalUtil.Operator.divide),
+					BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null))
             );
         }
         return card.getTotalDiscount();
