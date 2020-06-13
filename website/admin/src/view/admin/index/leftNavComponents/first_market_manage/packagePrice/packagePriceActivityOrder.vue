@@ -29,11 +29,11 @@
             placeholder="请选择"
             size="small"
             class="input_width"
-            @change="handleChange"
+            filterable
           >
             <el-option
-              v-for="item in orderStatusOptions"
-              :key="item[0]"
+              v-for="(item,index) in $t('order.orderStatus')"
+              :key="index"
               :label="item[1]"
               :value="item[0]"
             >
@@ -82,64 +82,75 @@
     </section>
 
     <div class="table_list">
-      <table class="table_form">
-        <thead>
-          <tr>
-            <th width="20%">订单号</th>
-            <th width="25%">商品信息</th>
-            <th width="15%">商品数量</th>
-            <th width="15%">下单时间</th>
-            <th width="15%">收货人信息</th>
-            <th width="10%">订单状态</th>
-          </tr>
-        </thead>
-        <tbody class="hasborder">
-          <template v-for="(item) in tableData">
-            <tr
-              v-for="(goodsItem,goodsIndex) in item.goods"
-              :key="goodsItem.recId"
-            >
-              <td
-                v-if="goodsIndex === 0"
-                :rowspan="item.goods.length"
-              >{{item.orderSn}}</td>
-              <td>
-                <div class="goodImge">
-                  <div>
-                    <img :src="$imageHost+'/'+goodsItem.goodsImg">
-                  </div>
-                  <div class="name">
-                    {{goodsItem.goodsName}}
-                  </div>
-                </div>
-              </td>
-              <td>
-                {{goodsItem.goodsNumber}}
-              </td>
-              <td
-                v-if="goodsIndex === 0"
-                :rowspan="item.goods.length"
-              >{{item.createTime}}</td>
-              <td
-                v-if="goodsIndex === 0"
-                :rowspan="item.goods.length"
-              >
-                {{item.consignee}}<br />
-                <div style="margin-top: 10px;">{{item.mobile}}</div>
-              </td>
-              <td
-                v-if="goodsIndex === 0"
-                :rowspan="item.goods.length"
-              >{{item.orderStatusText}}</td>
+      <div v-if="tbodyFlag">
+        <table class="table_form">
+          <thead>
+            <tr>
+              <th width="20%">订单号</th>
+              <th width="25%">商品信息</th>
+              <th width="15%">商品数量</th>
+              <th width="15%">下单时间</th>
+              <th width="15%">收货人信息</th>
+              <th width="10%">订单状态</th>
             </tr>
-          </template>
+          </thead>
+          <tbody class="hasborder">
+            <template v-for="(item) in tableData">
+              <tr
+                v-for="(goodsItem,goodsIndex) in item.goods"
+                :key="goodsItem.goodsId"
+              >
+                <td
+                  v-if="goodsIndex === 0"
+                  :rowspan="item.goods.length"
+                >{{item.orderSn}}</td>
+                <td>
+                  <div class="goodImge">
+                    <div>
+                      <img :src="$imageHost+'/'+goodsItem.goodsImg">
+                    </div>
+                    <div class="name">
+                      {{goodsItem.goodsName}}
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  {{goodsItem.goodsNumber}}
+                </td>
+                <td
+                  v-if="goodsIndex === 0"
+                  :rowspan="item.goods.length"
+                >{{item.createTime}}</td>
+                <td
+                  v-if="goodsIndex === 0"
+                  :rowspan="item.goods.length"
+                >
+                  {{item.consignee}}<br />
+                  <div style="margin-top: 10px;">{{item.mobile}}</div>
+                </td>
+                <td
+                  v-if="goodsIndex === 0"
+                  :rowspan="item.goods.length"
+                >{{item.orderStatusText}}</td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+        <div>
+          <pagination
+            :page-params="pageParams"
+            @pagination="paginationChange"
+          />
+        </div>
+      </div>
 
-        </tbody>
-      </table>
-      <pagination
-        :page-params.sync="params"
-        @pagination="initDataList"
-      />
+      <div
+        class="noData"
+        v-if="!tbodyFlag"
+      >
+        <img :src="noImg">
+        <span>暂无相关数据</span>
+      </div>
     </div>
 
     <!--导出弹窗-->
@@ -182,6 +193,9 @@ export default {
     pagination,
     areaLinkage
   },
+  watch () {
+    this.orderStatusMap = new Map(this.$t('order.orderStatusList'))
+  },
   mounted () {
     if (this.$route.query.id > 0) {
       this.initDataList()
@@ -213,23 +227,29 @@ export default {
       tableData: [],
       dialogVisible: false,
       orderStatusMap: {},
-      orderStatusOptions: [
-        [null, '全部订单'],
-        [0, '待付款'],
-        [1, '订单取消'],
-        [2, '订单关闭'],
-        [3, '待发货/待核销'],
-        [4, '已发货'],
-        [5, '已收货/已自提'],
-        [6, '订单完成'],
-        [7, '售后中'],
-        [8, '售后完成'],
-        [9, '待接单'],
-        [10, '已接单-取件中'],
-        [11, '已取件-配送中']
-      ],
+      // orderStatusOptions: [
+      //   [null, '全部订单'],
+      //   [0, '待付款'],
+      //   [1, '订单取消'],
+      //   [2, '订单关闭'],
+      //   [3, '待发货/待核销'],
+      //   [4, '已发货'],
+      //   [5, '已收货/已自提'],
+      //   [6, '订单完成'],
+      //   [7, '售后中'],
+      //   [8, '售后完成'],
+      //   [9, '待接单'],
+      //   [10, '已接单-取件中'],
+      //   [11, '已取件-配送中']
+      // ],
       screenLength: 0,
-      showFilterInfo: false
+      showFilterInfo: false,
+      tbodyFlag: true,
+      pageParams: {
+        currentPage: 1,
+        pageRows: 20
+      },
+      noImg: this.$imageHost + '/image/admin/no_data.png'
     }
   },
   methods: {
@@ -237,25 +257,38 @@ export default {
       if (this.params.selectedOrderStatus !== null) {
         this.params.orderStatus = []
         this.params.orderStatus.push(this.params.selectedOrderStatus)
-      } else if (this.params.selectedOrderStatus === null) {
+      }
+      if (this.params.selectedOrderStatus === 7) {
+        this.params.orderStatus = [7, 9]
+      }
+      if (this.params.selectedOrderStatus === 8) {
+        this.params.orderStatus = [8, 10]
+      }
+      if (this.params.selectedOrderStatus === null) {
         this.params.orderStatus = []
       }
+      this.params.currentPage = this.pageParams.currentPage
+      this.params.pageRows = this.pageParams.pageRows
       activityOrder(this.params).then(res => {
         if (res.error === 0) {
           console.log(res)
-          this.tableData = res.content.dataList
-          let data = res.content.dataList
-          data.forEach(item => {
-            item.orderStatusText = this.orderStatusMap.get(item.orderStatus)
-          })
-          if (data.length) {
-            this.screenLength = data.length
+          if (res.content.dataList !== null) {
+            this.tableData = res.content.dataList
+            let data = res.content.dataList
+            this.pageParams = res.content.page
+            this.tbodyFlag = true
+            data.forEach(item => {
+              item.orderStatusText = this.orderStatusMap.get(item.orderStatus)
+            })
+            if (data.length) {
+              this.screenLength = data.length
+            }
+          }
+          if (res.content.dataList === null) {
+            this.tbodyFlag = false
           }
         }
       }).catch(err => console.log(err))
-    },
-    handleChange (val) {
-      console.log(val)
     },
     handleAreaData (data) {
       let returnProvince = data.province
@@ -266,6 +299,9 @@ export default {
       }
       this.params.cityCode = data.city
       this.params.districtCode = data.district
+    },
+    paginationChange () {
+      this.initDataList()
     },
     // 筛选
     filter () {
@@ -364,6 +400,17 @@ export default {
         }
       }
     }
+    .noData {
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      border: 1px solid #eee;
+    }
+    .noData span {
+      margin: 10px;
+    }
   }
   /deep/ .tableHeader th {
     background-color: #f5f5f5;
@@ -394,7 +441,8 @@ export default {
     }
     .name {
       width: 115px;
-      height: 42px;
+      height: 36px;
+      line-height: 18px;
       text-overflow: ellipsis;
       overflow: hidden;
       -webkit-box-orient: vertical;
