@@ -453,7 +453,7 @@
                   @click="addGoods(index)"
                 >+&nbsp;{{$t('payReward.addGift')}}</div>
                 <div
-                  v-if="true"
+                  v-if="item.goodsImg"
                   class="goods_modal"
                 >
                   <table>
@@ -465,24 +465,22 @@
                         <th width="20%">{{$t('payReward.goodsStatus')}}</th>
                       </tr>
                     </thead>
-                    <tbody class="tbody">
+                    <tbody class="table_body">
                       <tr>
                         <td>
-                          <section style="overflow:hidden">
+                          <section style="display:flex">
                             <div
                               class="goods_img"
                               style="width:40px;height:40px; float: left"
                             >
                               <el-image
+                                v-if="item.goodsImg"
                                 :src="item.goodsImg"
                                 fit="contain"
                                 style="width:100%; height: 100%;"
                               ></el-image>
                             </div>
-                            <span
-                              class="goods_name"
-                              style="float: right;;"
-                            >
+                            <span class="goods_name">
                               {{ item.goodsName}}
                             </span>
                           </section>
@@ -1619,14 +1617,36 @@ export default {
         .goods_modal {
           display: block;
           margin-top: 10px;
+          .table_body {
+            .goods_img {
+              width: 40px;
+              height: 40px;
+              line-height: 40px;
+            }
+            .goods_name {
+              width: 135px;
+              height: 40;
+              line-height: 20px;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              -webkit-box-orient: vertical;
+              -webkit-line-clamp: 2;
+              display: -webkit-box;
+            }
+          }
+          thead > tr {
+            border: 1px solid #e5e5e5;
+            border-bottom: none;
+          }
           th {
-            padding: 10px 0;
-            border: 1px solid #eee;
+            background-color: #f8f8f8;
           }
           td {
+            padding: 10px;
             border: 1px solid #ddd;
-            background: #fff;
-            padding: 8px 10px;
+            background-color: #fff;
+            text-align: center;
+            vertical-align: middle;
           }
         }
         .tips {
