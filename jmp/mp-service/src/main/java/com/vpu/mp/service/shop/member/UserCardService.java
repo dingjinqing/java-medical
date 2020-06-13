@@ -1312,7 +1312,7 @@ public class UserCardService extends ShopBaseService {
 		if (CardConstant.MCARD_TP_LIMIT.equals(card.getInfo().getCardType())) {
 			// 限次卡
 			card.setTotalDiscount(totalPrice);
-		} else if (BigDecimalUtil.compareTo(card.getInfo().getDiscount(), BigDecimal.ZERO) == -1) {
+		} else if (BigDecimalUtil.compareTo(card.getInfo().getDiscount(), BigDecimal.ZERO) < 1) {
 			// 如果没有打折权益则为十折
 			card.setTotalDiscount(BigDecimal.ZERO);
 		} else {
