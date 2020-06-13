@@ -236,7 +236,6 @@ export default {
       })
     },
     bindBackAndFrontEndData (data) {
-      debugger
       this.cardAvailableCfgData.flag = String(data.flag)
       this.cardId = data.id
       this.cardNameAndBg.cardName = data.cardName
