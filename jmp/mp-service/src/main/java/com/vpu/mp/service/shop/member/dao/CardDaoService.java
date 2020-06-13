@@ -668,12 +668,13 @@ public class CardDaoService extends ShopBaseService {
 	public MemberCardRecord getCardById(Integer cardId) {
 		MemberCardRecord mCard = getInfoByCardId(cardId);
 		// 处理背景图片
-		if(mCard != null && CardUtil.isBgImgType(mCard.getBgType())) {
+		if(mCard != null) {
 			if(!StringUtils.isBlank(mCard.getBgImg())) {
 				String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(mCard.getBgImg());
 				mCard.setBgImg(imageUrl);
 			}
 		}
+		
 		return mCard;
 		
 	}
