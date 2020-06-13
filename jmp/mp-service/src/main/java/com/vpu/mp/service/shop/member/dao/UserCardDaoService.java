@@ -375,9 +375,9 @@ public class UserCardDaoService extends ShopBaseService{
 				.and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
 				.and(USER_CARD.USER_ID.eq(userId))
                 // 判断是否已经激活
-                .and(MEMBER_CARD.FLAG.eq(CardConstant.MCARD_FLAG_USING))
-                .and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-                .and(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_NO).or(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull())))
+                //  .and(MEMBER_CARD.FLAG.eq(CardConstant.MCARD_FLAG_USING))
+                //  .and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+                //  .and(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_NO).or(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull())))
 				.fetchAnyInto(String.class);
     }
 
