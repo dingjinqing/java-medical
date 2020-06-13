@@ -244,7 +244,12 @@ export default {
       this.cardNameAndBg.bgImg = data.bgImg
       // 折扣
       this.disCountData.powerDiscount = data.powerCount === 1
-      this.disCountData.discount = data.disCount
+      if (data.disCount === null) {
+        this.disCountData.discount = void 0
+      } else {
+        this.disCountData.discount = data.disCount
+      }
+
       if (this.isValidValue(data.discountIsAll)) {
         this.disCountData.discountGoodsType = String(data.discountIsAll)
       }
