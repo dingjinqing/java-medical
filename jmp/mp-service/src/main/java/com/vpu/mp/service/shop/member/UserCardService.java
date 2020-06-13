@@ -1275,11 +1275,14 @@ public class UserCardService extends ShopBaseService {
     public UserCardVo getUserCardJudge(UserIdAndCardIdParam param) {
         UserCardVo userCard = userCardDao.getUserCardJudge(param);
         // 处理背景图片
-        if(userCard != null && CardUtil.isBgImgType(userCard.getBgType())) {
+        if(userCard != null) {
             if(!StringUtils.isBlank(userCard.getBgImg())) {
                 String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(userCard.getBgImg());
                 userCard.setBgImg(imageUrl);
             }
+        }
+        if(StringUtils.isBlank(userCard.getBgColor())) {
+            userCard.setBgColor(CardUtil.getDefaultBgColor());
         }
         return userCard;
     }
