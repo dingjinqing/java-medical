@@ -632,9 +632,17 @@ export default {
     prepareCardData () {
       this.dealWithDynamicArrayData()
       let pullPath = this.$imageHost + '/'
+      if (this.cardNameAndBg.bgImg !== null) {
+        if (this.cardNameAndBg.bgImg.includes('https:')) {
+          pullPath = 'https:' + pullPath
+        } else if (this.cardNameAndBg.bgImg.includes('http:')) {
+          pullPath = 'http:' + pullPath
+        }
+      }
       if (this.cardNameAndBg.bgImg) {
         this.cardNameAndBg.bgImg = this.cardNameAndBg.bgImg.replace(pullPath, '')
       }
+      console.log(this.cardNameAndBg.bgImg)
       // 处理领取码
       let batchIds = null
       if (Number(this.cardReceiveCfgData.receiveAction) === 1) {
