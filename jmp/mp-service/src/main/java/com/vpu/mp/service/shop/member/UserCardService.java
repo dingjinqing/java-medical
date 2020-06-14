@@ -8,18 +8,8 @@ import static com.vpu.mp.db.shop.Tables.STORE;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.DEFAULT_ADMIN;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_OUT;
@@ -283,8 +273,12 @@ public class UserCardService extends ShopBaseService {
 	 * @Return  true拥有 ，false 未拥有
 	 */
 	public boolean isHasAvailableGradeCard(Integer userId) {
-		String grade = userCardDao.calcUserGrade(userId);
-		logger().info("当前用户等级"+grade);
+        String grade = db().select(MEMBER_CARD.GRADE)
+            .from(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
+            .where(USER_CARD.FLAG.eq(UCARD_FG_USING))
+            .and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
+            .and(USER_CARD.USER_ID.eq(userId))
+            .fetchAnyInto(String.class);
 		return !StringUtils.isBlank(grade);
 	}
 
@@ -299,11 +293,11 @@ public class UserCardService extends ShopBaseService {
 	 * 	用户卡等级变动
 	 */
 	public void changeUserGradeCard(Integer userId, MemberCardRecord oldCard, MemberCardRecord newCard,
-			String option) {
+			String option,Boolean isActivate) {
 		logger().info("用户会员卡升级");
 		
 		//	更新卡
-		userCardDao.updateUserGradeCardId(userId, newCard.getId());
+		userCardDao.updateUserGradeCardId(userId, newCard.getId(),isActivate);
 		//	保存用户卡等级变动信息
 		cardUpgradeService.recordCardUpdateGrade(userId, oldCard, newCard, option);
 		//	用户卡升级订阅消息通知

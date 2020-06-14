@@ -258,6 +258,8 @@ public class MemberDaoService extends ShopBaseService {
 		.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 		.where(USER_CARD.USER_ID.eq(userId)).and(USER_CARD.FLAG.eq(UCARD_FG_USING))
 		.and(MEMBER_CARD.USE_TIME.in(inData).or(MEMBER_CARD.USE_TIME.isNull()))
+            .and(MEMBER_CARD.CARD_TYPE.in(CardConstant.MCARD_TP_NORMAL,CardConstant.MCARD_TP_LIMIT)
+                .or(MEMBER_CARD.CARD_TYPE.eq(CardConstant.MCARD_TP_GRADE).and(MEMBER_CARD.FLAG.eq(CardConstant.MCARD_FLAG_USING))))
 		.and((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
 				.or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER)))
 		.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.CARD_TYPE.desc(), MEMBER_CARD.GRADE.desc());
