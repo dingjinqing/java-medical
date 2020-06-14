@@ -309,7 +309,7 @@ public class OrderGoodsService extends ShopBaseService{
             goodsAttr(goods.getProductInfo().getPrdDesc()).
             //TODO 需要考虑
             goodsAttrId(StringUtils.EMPTY).
-            goodsImg(goods.getGoodsInfo().getGoodsImg()).
+            goodsImg(StringUtils.isBlank(goods.getProductInfo().getPrdImg()) ? goods.getGoodsInfo().getGoodsImg() : goods.getProductInfo().getPrdImg()).
             //满折满减
             straId(goods.getStraId()).
             perDiscount(goods.getPerDiscount()).
