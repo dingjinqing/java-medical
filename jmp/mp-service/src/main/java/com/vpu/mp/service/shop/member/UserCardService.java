@@ -269,7 +269,7 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 	用户是否有可用的等级卡
+	 * 	用户目前的未被废除的等级卡
 	 * @Return  true拥有 ，false 未拥有
 	 */
 	public boolean isHasAvailableGradeCard(Integer userId) {
@@ -278,7 +278,6 @@ public class UserCardService extends ShopBaseService {
             .where(USER_CARD.USER_ID.eq(userId))
             .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
             .and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
-            .and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
             .fetchAnyInto(String.class);
 		return !StringUtils.isBlank(grade);
 	}
@@ -294,7 +293,6 @@ public class UserCardService extends ShopBaseService {
                     .where(USER_CARD.USER_ID.eq(userId))
                     .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
                     .and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
-                    .and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
                     .fetchAnyInto(String.class);
     }
 

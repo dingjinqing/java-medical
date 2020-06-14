@@ -114,7 +114,6 @@ public class UserCardDaoService extends ShopBaseService{
 				.where(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
 				.and(USER_CARD.USER_ID.eq(userId))
 				.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
-                .and(MEMBER_CARD.FLAG.eq(CardConstant.MCARD_FLAG_USING))
 				.fetchAnyInto(MemberCardRecord.class);
 	}
 

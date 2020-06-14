@@ -53,10 +53,12 @@ public class GradeCardService extends ShopBaseService{
 	    logger().info("清空所有之前的等级卡为废除状态");
 	    this.transaction(()->{
 	        //  user_card 废除所有用户持有的等级卡
-                db().update(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
-                    .set(USER_CARD.FLAG, CardConstant.UCARD_FG_STOP)
-                    .where(USER_CARD.USER_ID.eq(userId))
-                    .and(MEMBER_CARD.CARD_TYPE.eq(CardConstant.MCARD_TP_GRADE));
+            int execute = db().update(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+                .set(USER_CARD.FLAG, CardConstant.UCARD_FG_STOP)
+                .where(USER_CARD.USER_ID.eq(userId))
+                .and(MEMBER_CARD.CARD_TYPE.eq(CardConstant.MCARD_TP_GRADE))
+                .execute();
+            logger().info("USER_CARD执行{}行",execute);
 
             String cardName = db().select(MEMBER_CARD.CARD_NAME).from(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchAnyInto(String.class);
             String userName = db().select(USER.USERNAME).from(USER).where(USER.USER_ID.eq(userId)).fetchAnyInto(String.class);
@@ -73,11 +75,14 @@ public class GradeCardService extends ShopBaseService{
                     desc.append("该审核记录自动不通过: "+userName+"领取卡了新的等级卡"+cardName);
                 }
 
-                db().update(CARD_EXAMINE)
-                    .set(CARD_EXAMINE.REFUSE_DESC,desc.toString())
-                    .set(CARD_EXAMINE.REFUSE_TIME,DateUtil.getLocalDateTime())
-                    .set(CARD_EXAMINE.STATUS,CardVerifyConstant.VSTAT_REFUSED)
-                    .where(CARD_EXAMINE.CARD_ID.in(cardIds).and(CARD_EXAMINE.USER_ID.eq(userId)));
+                int execute1 = db().update(CARD_EXAMINE)
+                    .set(CARD_EXAMINE.REFUSE_DESC, desc.toString())
+                    .set(CARD_EXAMINE.REFUSE_TIME, DateUtil.getLocalDateTime())
+                    .set(CARD_EXAMINE.STATUS, CardVerifyConstant.VSTAT_REFUSED)
+                    .where(CARD_EXAMINE.CARD_ID.in(cardIds).and(CARD_EXAMINE.USER_ID.eq(userId)))
+                    .execute();
+
+                logger().info("CARD_EXAMINE执行{}行",execute1);
 
             }
         });
