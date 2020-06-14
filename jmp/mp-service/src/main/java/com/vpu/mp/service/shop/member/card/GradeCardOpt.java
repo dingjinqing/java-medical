@@ -18,7 +18,6 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
  */
 @Service
 public class GradeCardOpt extends CardOpt {
-	@Autowired GradeCardService gradeCardService;
 	public GradeCardOpt() {
 		super(CardConstant.MCARD_TP_GRADE);
 	}
@@ -30,8 +29,6 @@ public class GradeCardOpt extends CardOpt {
 			//	设置卡等级
 			logger().info("更换等级卡卡号");
 			MemberCardRecord oldCard = userCardService.getUserGradeCard(userId);
-            //  兼容： 先废除所有的之前的等价卡和待激活的等价卡
-            gradeCardService.clearUserAllGrade(userId,cardId,isActivate);
 			MemberCardRecord newCard = cardService.getCardById(cardId);
 			if(oldCard != null && newCard != null) {
 				// 检测是否为同一张卡

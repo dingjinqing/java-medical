@@ -275,12 +275,28 @@ public class UserCardService extends ShopBaseService {
 	public boolean isHasAvailableGradeCard(Integer userId) {
         String grade = db().select(MEMBER_CARD.GRADE)
             .from(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
-            .where(USER_CARD.FLAG.eq(UCARD_FG_USING))
+            .where(USER_CARD.USER_ID.eq(userId))
+            .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
             .and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
-            .and(USER_CARD.USER_ID.eq(userId))
+            .and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
             .fetchAnyInto(String.class);
 		return !StringUtils.isBlank(grade);
 	}
+
+    /**
+     *  获取用户当前可用的等级会员卡号
+     * @param userId
+     * @return
+     */
+	public String getCurrentAvalidGradeCardNo(Integer userId){
+        return  db().select(USER_CARD.CARD_NO)
+                    .from(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
+                    .where(USER_CARD.USER_ID.eq(userId))
+                    .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+                    .and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
+                    .and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
+                    .fetchAnyInto(String.class);
+    }
 
 	/**
 	 * 	获取用户持有的等级卡
