@@ -468,7 +468,7 @@ public class UserCardService extends ShopBaseService {
 		//	升级
 		if(flag) {
 			String operation = "领取等级卡";
-			changeUserGradeCard(userId, oldGradeCard, newGradeCard, operation);
+			changeUserGradeCard(userId, oldGradeCard, newGradeCard, operation,false);
 		}
 		return cardId;
 	}
@@ -553,7 +553,7 @@ public class UserCardService extends ShopBaseService {
 			MemberCardRecord oldGradeCard = getUserGradeCard(userId);
 			MemberCardRecord newGradeCard = memberCardService.getCardById(cardId);
 			String option = "Admin operation";
-			changeUserGradeCard(userId, oldGradeCard, newGradeCard, option);
+			changeUserGradeCard(userId, oldGradeCard, newGradeCard, option,false);
 		} else {
 			// 发放等级卡
 			sendCard(userId, cardId);
@@ -723,7 +723,7 @@ public class UserCardService extends ShopBaseService {
 			MemberCardRecord oldGradeCard = getUserGradeCard(userId);
 			MemberCardRecord newGradeCard = memberCardService.getCardById(card.getId());
 			String option = "Admin operation";
-			changeUserGradeCard(userId, oldGradeCard, newGradeCard, option);
+			changeUserGradeCard(userId, oldGradeCard, newGradeCard, option,false);
 		}
 
 		if (isActivate || isActivateNow(card)) {
@@ -1899,7 +1899,7 @@ public class UserCardService extends ShopBaseService {
 			if (!StringUtils.isBlank(oldCard.getGrade())) {
 				logger().info("升级记录");
 				String operation = "首页领取";
-				changeUserGradeCard(param.getUserId(), oldCard, mCard, operation);
+				changeUserGradeCard(param.getUserId(), oldCard, mCard, operation,false);
 			} else {
 				createNewUserCard(param.getUserId(), mCard, NumberUtils.BYTE_ZERO.equals(mCard.getActivation()));
 			}
