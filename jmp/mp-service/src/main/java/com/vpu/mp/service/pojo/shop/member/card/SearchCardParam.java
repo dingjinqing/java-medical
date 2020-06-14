@@ -25,4 +25,9 @@ public class SearchCardParam {
     private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
     @JsonAlias({"userId", "user_id"})
     private Integer userId;
+
+    /**
+     *	 是否过滤掉停用会员卡
+     */
+    private Boolean filterStop = Boolean.TRUE;
 }
