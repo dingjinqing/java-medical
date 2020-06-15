@@ -956,8 +956,13 @@ export default {
         if (res.error === 0) {
           this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
           this.getDistribution()
+        } else {
+          this.$message.warning(res.message)
         }
       })
+
+      // 分销员审核开关配置
+      localStorage.setItem('distributionJudgeStatus', this.form.judge_status)
     },
 
     // 展开更多配置

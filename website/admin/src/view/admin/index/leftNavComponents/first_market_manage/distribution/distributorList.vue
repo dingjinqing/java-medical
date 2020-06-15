@@ -358,7 +358,10 @@
                 <p @click="inviteUserList(scope.row.userId)">{{$t('distribution.showHasInviteUsers')}}</p>
                 <p @click="commissionDetail(scope.row.userId)">{{$t('distribution.showFanliDetail')}}</p>
                 <p @click="remarksHandler(scope.row.userId)">{{$t('distribution.listTip')}}</p>
-                <p @click="del(scope.row.userId)">{{$t('distribution.listDelete')}}</p>
+                <p
+                  @click="del(scope.row.userId)"
+                  v-if="judgeStatus === 1"
+                >{{$t('distribution.listDelete')}}</p>
               </div>
             </template>
           </el-table-column>
@@ -492,6 +495,7 @@ export default {
       requestParams: {},
       // 表格
       tableData: [],
+      judgeStatus: 1, // 分销配置是否开启
       // 分页
       pageParams: {},
 
@@ -536,6 +540,7 @@ export default {
     this.initDataList()
     this.levelList() // 分销员等级
     this.groupList() // 分销员分组
+    this.judgeStatus = localStorage.getItem('distributionJudgeStatus')
   },
 
   methods: {
