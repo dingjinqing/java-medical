@@ -452,7 +452,7 @@
     </div>
     <div class="footer">
       <el-button
-        @click="isEditFlag?updateSubmit():addSubmit()"
+        @click="submitHandle"
         class="footer-btn"
         type="primary"
         size="small"
@@ -557,6 +557,8 @@ export default {
         this.isEditFlag = false
       }
       this.initEditData()
+    } else {
+      this.isEditFlag = false
     }
   },
   methods: {
@@ -1059,6 +1061,17 @@ export default {
           }
         })
       })
+    },
+    submitHandle () {
+      if (this.isEditFlag) {
+        this.updateSubmit()
+      } else {
+        if (Number(this.$route.query.currentState || 0) === 2) {
+          this.updateSubmit()
+        } else {
+          this.addSubmit()
+        }
+      }
     }
   }
 }
