@@ -269,13 +269,16 @@ global.wxComponent({
     },
     goodsNumber: Number,
     inviteId:Number,
-    roomId: String
+    roomId: String,
+    cartNum:{
+      type:Number,
+      value:0
+    }
   },
   /**
    * 组件的初始数据
    */
   data: {
-    cartNum: 0,
   },
   lifetimes: {
     ready () {
@@ -284,7 +287,7 @@ global.wxComponent({
         rightStyle: `color:#fff;background:${this.data.main_setting.comColor};`,
         notBuyRightStyle: 'background:#666;'
       })
-      this.getCartNum()
+     if(this.data.position === 'footer') this.triggerEvent('getCartNum')
     }
   },
   /**
@@ -431,21 +434,6 @@ global.wxComponent({
       console.log(buttonData)
       return buttonData
     },
-    getCartNum () {
-      util.api('/api/wxapp/cart/list', res => {
-        if (res.error === 0) {
-          let {
-            cartGoodsList: goodsList
-          } = res.content
-          let cartNum = goodsList.reduce((total, item, index) => {
-            return total += item.cartNumber
-          }, 0)
-          this.setData({
-            cartNum
-          })
-        }
-      })
-    },
     // 添加购物车
     addCart () {
       let {
@@ -459,7 +447,7 @@ global.wxComponent({
         res => {
           if (res.error == 0) {
             util.toast_success('添加成功')
-            this.getCartNum()
+            this.triggerEvent('getCartNum')
           } else {
             util.showModal(this.$t("components.decorate.tips"), res.message);
             // util.toast_fail('添加失败')
