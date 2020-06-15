@@ -1080,7 +1080,7 @@ CREATE TABLE `b2c_shop` (
   `logo` varchar(200) DEFAULT NULL COMMENT '小程序logo',
   `currency` varchar(45) NOT NULL DEFAULT 'CNY' COMMENT '币种',
   `shop_language` varchar(45) NOT NULL DEFAULT 'zh-CN' COMMENT '语言',
-  `expire_time` timestamp DEFAULT NULL COMMENT '到期时间',
+  `expire_time` timestamp null DEFAULT NULL COMMENT '到期时间',
   PRIMARY KEY (`shop_id`),
   KEY `mobile` (`mobile`)
 )COMMENT='店铺';
