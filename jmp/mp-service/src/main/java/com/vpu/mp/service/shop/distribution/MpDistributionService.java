@@ -157,13 +157,11 @@ public class MpDistributionService extends ShopBaseService{
 		//获取分销配置，成为分销员是否需要审核
         DistributionParam cfg = this.distributionCfg.getDistributionCfg();
         Integer state = 0;
-        if(cfg.getJudgeStatus() == 0){//自动审核
-            //校验申请提交的邀请码是否有效
-            Integer ret = sentInviteCodeVerify(param.getActivationFields().getInvitationCode());
-            if(ret == 0){
-                //邀请码不存在
-               state = -1;
-            }else{//自动审核通过
+        Integer codeIsExist = sentInviteCodeVerify(param.getActivationFields().getInvitationCode());
+        if(codeIsExist == 0){
+            state = -1;
+        }else{
+            if(cfg.getAutoExamine() == 1){//自动审核
                 String checkInfo = Util.toJson(param.getActivationFields());
                 assign(param, record);
                 record.setActivationFields(checkInfo);
@@ -202,12 +200,12 @@ public class MpDistributionService extends ShopBaseService{
                     .where(USER.USER_ID.eq(res.getUserId())).execute();
                 //审核通过
                 state = 1;
+            }else{//后台手动审核
+                String checkInfo = Util.toJsonNotNull(param.getActivationFields());
+                assign(param, record);
+                record.setActivationFields(checkInfo);
+                db().executeInsert(record);
             }
-        }else{//后台手动审核
-            String checkInfo = Util.toJsonNotNull(param.getActivationFields());
-            assign(param, record);
-            record.setActivationFields(checkInfo);
-            db().executeInsert(record);
         }
         return state;
 	}
