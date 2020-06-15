@@ -15,7 +15,6 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
@@ -81,7 +80,7 @@ public class FirstSpecialService extends ShopBaseService {
             FirstSpecialRecord record = db().newRecord(FIRST_SPECIAL);
             assign(param,record);
             if(param.getShareConfig() != null) {
-                if(param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())){
+                if (StringUtil.isNotEmpty(param.getShareConfig().getShareImg())) {
                     param.getShareConfig().setShareImg(RegexUtil.getUri(param.getShareConfig().getShareImg()));
                 }
                 record.setShareConfig(Util.toJson(param.getShareConfig()));
@@ -176,7 +175,7 @@ public class FirstSpecialService extends ShopBaseService {
             FirstSpecialRecord record = db().newRecord(FIRST_SPECIAL);
             assign(param,record);
             if(param.getShareConfig() != null) {
-                if(param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())){
+                if (StringUtil.isNotEmpty(param.getShareConfig().getShareImg())) {
                     param.getShareConfig().setShareImg(RegexUtil.getUri(param.getShareConfig().getShareImg()));
                 }
                 record.setShareConfig(Util.toJson(param.getShareConfig()));
