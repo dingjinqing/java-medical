@@ -17,7 +17,8 @@ public class GoodsVo extends Goods {
 
     @JsonIgnore
     private List<Integer> goodsLabels;
-    private List<GoodsLabelSelectListVo> goodsLabelListVos;
+    private List<GoodsLabelSelectListVo> goodsLabelPointListVos;
+    private List<GoodsLabelSelectListVo> goodsLabelNormalListVos;
     private String brandName;
     private String sortName;
     private String goodsPageName;
