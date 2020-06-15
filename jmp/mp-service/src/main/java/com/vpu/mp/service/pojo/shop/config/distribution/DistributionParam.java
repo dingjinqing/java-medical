@@ -1,9 +1,12 @@
 package com.vpu.mp.service.pojo.shop.config.distribution;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -172,5 +175,9 @@ public class DistributionParam {
         public String optionTitle;
 
     }
+
+    /**是否有分销员*/
+    @NotNull
+    public Integer hasDistributor;
 
 }

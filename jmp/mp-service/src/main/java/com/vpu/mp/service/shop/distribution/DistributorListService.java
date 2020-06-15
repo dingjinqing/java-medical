@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 
+import javax.validation.constraints.Null;
+
 /**
  * 分销员列表
  * @author 常乐
@@ -293,6 +295,29 @@ public class DistributorListService extends ShopBaseService{
             return 0;
         }
     }
+
+    /**
+     * 根据分销配置自动给没有分销邀请码的分销员生成邀请码
+     * @return
+     */
+    public int autoSetInviteCode(){
+        //没有邀请码的分销员
+        Result<Record1<Integer>> record = db().select(USER.USER_ID).from(USER).where(USER.IS_DISTRIBUTOR.eq((byte) 1)).and(USER.INVITATION_CODE.isNull()).fetch();
+        System.out.println(record);
+        int res = 0;
+        if(record != null){
+            List<Integer> noInvitationCode = record.into(Integer.class);
+            System.out.println(noInvitationCode);
+            for(Integer userId:noInvitationCode){
+                String code = mpDis.generateInvitationCode();
+                SetInviteCodeParam setInviteCodeParam = new SetInviteCodeParam();
+                setInviteCodeParam.setUserId(userId);
+                setInviteCodeParam.setInviteCode(code);
+                res = setInviteCode(setInviteCodeParam);
+            }
+        }
+        return res;
+	}
 
     /**
      * 会员备注列表

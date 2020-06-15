@@ -696,6 +696,15 @@ global.wxPage({
             return item.preSalePrice
           }))
           break;
+        case 22:
+          let priceData = this.data.goodsInfo.products.reduce((defaultData,item)=>{
+            defaultData.realPrice.push(item.prdRealPrice)
+            defaultData.linePrice.push(item.prdLinePrice)
+            return defaultData
+          },{realPrice:[],linePrice:[]})
+          activityData.realPrice = this.getMin(priceData.realPrice)
+          activityData.linePrice = this.getMax(priceData.linePrice)
+          break;
       }
     }
     let shareData = {
