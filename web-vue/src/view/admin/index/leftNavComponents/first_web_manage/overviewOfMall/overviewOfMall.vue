@@ -828,7 +828,10 @@
               >
             </a>
           </div>
-          <div class="one-zx">
+          <div
+            class="one-zx"
+            v-if="noticeList && noticeList.length > 0"
+          >
             <div
               class="single-zx"
               v-for="(item, index) in noticeList"
@@ -842,6 +845,12 @@
               >{{ item.title }}</a>
               <span class="zx-time">{{ item.formatTime }}</span>
             </div>
+          </div>
+          <div
+            class="no-zx"
+            v-else
+          >
+            <div class="single-zx">暂无数据</div>
           </div>
         </div>
         <div class="right-calendar">
@@ -2297,7 +2306,7 @@ img {
 
 .right-notice {
   width: 100%;
-  height: 250px;
+  // height: 250px;
   background-color: #fff;
   margin-bottom: 10px;
   padding: 10px 15px;
@@ -2321,6 +2330,11 @@ img {
 .one-zx {
   width: 100%;
   height: 85%;
+  overflow: hidden;
+}
+.no-zx {
+  width: 100%;
+  text-align: center;
   overflow: hidden;
 }
 

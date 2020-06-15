@@ -112,11 +112,11 @@ public class IncreasePurchaseService extends ShopBaseService {
                 break;
             // 已停用4
             case PURCHASE_TERMINATED:
-                categoryConditon = categoryConditon.and(ppd.STATUS.eq(FLAG_ONE));
+                categoryConditon = categoryConditon.and(ppd.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
                 break;
             // 已过期3
             case PURCHASE_EXPIRED:
-                categoryConditon = categoryConditon.and(ppd.END_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.STATUS.eq(FLAG_ZERO));
+                categoryConditon = categoryConditon.and(ppd.END_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
                 break;
             // 未开始2
             case PURCHASE_PREPARE:
@@ -124,7 +124,7 @@ public class IncreasePurchaseService extends ShopBaseService {
                 break;
             // 默认进行中1
             default:
-                categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.STATUS.eq(FLAG_ZERO));;
+                categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));;
                 break;
         }
         Table<Record9<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Byte, Timestamp>> conditionStep = db().
@@ -160,7 +160,7 @@ public class IncreasePurchaseService extends ShopBaseService {
             Integer purchaseId = vo.getId();
             vo.setResaleQuantity(getResaleQuantity(purchaseId));
             vo.setPurchaseInfo(getPurchaseDetailInfo(purchaseId));
-            vo.setCategory(Util.getActStatus(vo.getStatus().equals(FLAG_ONE) ? (byte)0 : (byte)1,vo.getStartTime(),vo.getEndTime()));
+            vo.setCategory(Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime()));
             vo.setTimestamp(DateUtil.getLocalDateTime());
         }
         return pageResult;
@@ -197,6 +197,7 @@ public class IncreasePurchaseService extends ShopBaseService {
         if(CollectionUtils.isNotEmpty(param.getActivityTagId())){
             defineRecord.setActivityTagId(Util.listToString(param.getActivityTagId()));
         }
+        defineRecord.setStatus(BaseConstant.ACTIVITY_STATUS_NORMAL);
         db().transaction(configuration -> {
             DSLContext db = DSL.using(configuration);
             db.executeInsert(defineRecord);
@@ -297,11 +298,11 @@ public class IncreasePurchaseService extends ShopBaseService {
         switch (param.getStatus()) {
             case CONDITION_ZERO:
                 //启用
-                db().update(ppd).set(ppd.STATUS, FLAG_ZERO).where(ppd.ID.eq(param.getId())).execute();
+                db().update(ppd).set(ppd.STATUS, BaseConstant.ACTIVITY_STATUS_NORMAL).where(ppd.ID.eq(param.getId())).execute();
                 break;
             case CONDITION_ONE:
                 //停用
-                db().update(ppd).set(ppd.STATUS, FLAG_ONE).where(ppd.ID.eq(param.getId())).execute();
+                db().update(ppd).set(ppd.STATUS, BaseConstant.ACTIVITY_STATUS_DISABLE).where(ppd.ID.eq(param.getId())).execute();
                 break;
             case CONDITION_TWO:
                 //删除，更新删除标志和删除时间
@@ -814,7 +815,7 @@ public class IncreasePurchaseService extends ShopBaseService {
 		return db().select(ppd.ID, ppd.NAME.as(CalendarAction.ACTNAME), ppd.START_TIME,
 				ppd.END_TIME).from(ppd).where(ppd.ID.eq(id)).fetchAnyInto(MarketVo.class);
     }
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param

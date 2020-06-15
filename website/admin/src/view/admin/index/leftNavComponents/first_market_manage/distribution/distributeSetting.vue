@@ -8,6 +8,8 @@
       <el-form-item :label="$t('distribution.switch')">
         <el-switch
           v-model="form.status"
+          active-color="#F7931E"
+          inactive-color="#ccc"
           :active-value="1"
           :inactive-value="0"
         ></el-switch>
@@ -24,6 +26,8 @@
       >
         <el-switch
           v-model="form.judge_status"
+          active-color="#F7931E"
+          inactive-color="#ccc"
           :active-value='1'
           :inactive-value='0'
         ></el-switch>
@@ -35,6 +39,7 @@
         </div>
         <template v-if="form.judge_status === 1">
           <div>
+            <!-- disabled -->
             自动审核：<el-checkbox
               v-model="form.auto_examine"
               :true-label='1'
@@ -52,6 +57,8 @@
           <div>
             <el-switch
               v-model="form.activation"
+              active-color="#F7931E"
+              inactive-color="#ccc"
               :active-value='1'
               :inactive-value='0'
             ></el-switch>
@@ -74,10 +81,12 @@
                 >{{ item }}</el-checkbox>
               </div>
               <div>
+                <!-- disabled -->
                 <el-checkbox
                   v-for="(item, index) in checkedList2"
                   :key="index"
                   :label="item"
+                  @change="codeCheckChange($event,item)"
                 >{{ item }}</el-checkbox>
                 <!-- <el-checkbox
                   v-model="form.InvitationCode"
@@ -144,6 +153,8 @@
       >
         <el-switch
           v-model="form.rank_status"
+          active-color="#F7931E"
+          inactive-color="#ccc"
           :active-value='1'
           :inactive-value='0'
         ></el-switch>
@@ -171,6 +182,8 @@
       >
         <el-switch
           v-model="form.rank_status"
+          active-color="#F7931E"
+          inactive-color="#ccc"
           :active-value='1'
           :inactive-value='0'
         ></el-switch>
@@ -336,6 +349,8 @@
         <el-form-item :label="$t('distribution.rebateSettingsSwitch')">
           <el-switch
             v-model="form.withdraw_status"
+            active-color="#F7931E"
+            inactive-color="#ccc"
             :active-value='1'
             :inactive-value='0'
             style="width: 60px;"
@@ -373,6 +388,8 @@
         <el-form-item :label="$t('distribution.withdrawConfig')">
           <el-switch
             v-model="form.withdraw_config"
+            active-color="#F7931E"
+            inactive-color="#ccc"
             :active-value="1"
             :inactive-value="0"
           ></el-switch>
@@ -702,7 +719,8 @@ export default {
       fromRules: {
         custom_type: [{ required: true, message: '请填写选项类型', trigger: 'change' }],
         custom_title: [{ required: true, message: '请填写标题', trigger: 'change' }]
-      }
+      },
+      hasDistribution: true // 是否有分销员
 
     }
   },
@@ -1054,16 +1072,24 @@ export default {
         // 勾选自动审核
         if (hasCheck === false) {
           this.form.activation_cfg.push('邀请码')
+          this.form.activation = 1
         }
       } else {
         // 不勾选自动审核
-        if (hasCheck === true) {
-          this.form.activation_cfg.filter((item, index) => {
-            if (item === '邀请码') {
-              this.form.activation_cfg.splice(index, 1)
-            }
-          })
-        }
+        // if (hasCheck === true) {
+        //   this.form.activation_cfg.filter((item, index) => {
+        //     if (item === '邀请码') {
+        //       this.form.activation_cfg.splice(index, 1)
+        //     }
+        //   })
+        // }
+      }
+    },
+
+    // 邀请码切换
+    codeCheckChange (value, item) {
+      if (item === '邀请码' && value === false) {
+        this.form.auto_examine = 0
       }
     }
 
