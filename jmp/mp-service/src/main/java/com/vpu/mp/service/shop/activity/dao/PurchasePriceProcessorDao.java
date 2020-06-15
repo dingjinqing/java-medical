@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.activity.dao;
 
-import com.vpu.mp.db.main.tables.Cache;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -39,7 +38,7 @@ import static com.vpu.mp.db.shop.tables.PurchasePriceDefine.PURCHASE_PRICE_DEFIN
 @Service
 public class PurchasePriceProcessorDao extends ShopBaseService {
 
-    private static final Byte STATUS_NORMAL = 0;
+
     @Autowired
     private CartService cartService;
     /**
@@ -51,7 +50,7 @@ public class PurchasePriceProcessorDao extends ShopBaseService {
 
         Map<Integer, List<PurchasePricePromotion.PurchasePriceRule>> purchaseRulesMap = db().select(PURCHASE_PRICE_RULE.PURCHASE_PRICE_ID,PURCHASE_PRICE_RULE.FULL_PRICE,PURCHASE_PRICE_RULE.PURCHASE_PRICE)
             .from(PURCHASE_PRICE_DEFINE).innerJoin(PURCHASE_PRICE_RULE).on(PURCHASE_PRICE_DEFINE.ID.eq(PURCHASE_PRICE_RULE.PURCHASE_PRICE_ID))
-            .where(PURCHASE_PRICE_DEFINE.STATUS.eq(STATUS_NORMAL).and(PURCHASE_PRICE_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(PURCHASE_PRICE_RULE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .where(PURCHASE_PRICE_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(PURCHASE_PRICE_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(PURCHASE_PRICE_RULE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                 .and(DslPlus.findInSet(goodsId,PURCHASE_PRICE_DEFINE.GOODS_ID)))
                 .and(PURCHASE_PRICE_DEFINE.START_TIME.le(now)).and(PURCHASE_PRICE_DEFINE.END_TIME.ge(now))).orderBy(PURCHASE_PRICE_DEFINE.LEVEL.desc(), PURCHASE_PRICE_DEFINE.CREATE_TIME.desc())
             .fetchGroups(PURCHASE_PRICE_RULE.PURCHASE_PRICE_ID, PurchasePricePromotion.PurchasePriceRule.class);
@@ -82,7 +81,7 @@ public class PurchasePriceProcessorDao extends ShopBaseService {
         return db().select(PURCHASE_PRICE_DEFINE.ID,PURCHASE_PRICE_RULE.ID, PURCHASE_PRICE_RULE.FULL_PRICE, PURCHASE_PRICE_RULE.PURCHASE_PRICE)
                 .from(PURCHASE_PRICE_DEFINE)
                 .innerJoin(PURCHASE_PRICE_RULE).on(PURCHASE_PRICE_DEFINE.ID.eq(PURCHASE_PRICE_RULE.PURCHASE_PRICE_ID))
-                .where(PURCHASE_PRICE_DEFINE.STATUS.eq(STATUS_NORMAL))
+                .where(PURCHASE_PRICE_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
                 .and(PURCHASE_PRICE_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                 .and(PURCHASE_PRICE_RULE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                 .and(DslPlus.findInSet(goodsId, PURCHASE_PRICE_DEFINE.GOODS_ID))
