@@ -58,6 +58,7 @@ public class CardVerifyDaoService extends ShopBaseService {
 					.from(CARD_EXAMINE)
 					.leftJoin(USER).on(CARD_EXAMINE.USER_ID.eq(USER.USER_ID));
 		buildOptions(select,param);
+		select.orderBy(CARD_EXAMINE.CREATE_TIME.desc());
 		return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), myRecord.getClass());
 	}
 	

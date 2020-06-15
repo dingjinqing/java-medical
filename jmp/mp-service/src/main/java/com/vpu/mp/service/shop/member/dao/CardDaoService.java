@@ -96,7 +96,7 @@ public class CardDaoService extends ShopBaseService {
 							.on(USER_CARD.CARD_NO.eq(GIVE_CARD_RECORD.CARD_NO).and(USER_CARD.FLAG.eq(CardConstant.UCARD_FG_GIVED)));
 
 		buildOptions(param, select);
-		select.where(USER_CARD.CARD_ID.eq(param.getCardId())).orderBy(USER_CARD.USER_ID.desc());
+		select.where(USER_CARD.CARD_ID.eq(param.getCardId())).orderBy(USER_CARD.CREATE_TIME.desc(),USER_CARD.USER_ID.desc());
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), CardHolderVo.class);
 	}
 
