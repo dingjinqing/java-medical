@@ -46,6 +46,10 @@ public class GoodsLabelService extends ShopBaseService {
     @Autowired
     private EsGoodsLabelSearchService esGoodsLabelSearchService;
 
+    public static final Byte POINT_GOODS = 0;
+    public static final Byte ALL_GOODS = 1;
+    public static final Byte NONE_GOODS =2;
+
 
     public PageResult<GoodsLabelPageListVo> getPageList(GoodsLabelPageListParam param) {
         Condition condition = buildCondition(param);
@@ -181,6 +185,12 @@ public class GoodsLabelService extends ShopBaseService {
         }
     }
 
+    /**将标签未选任何商品状态复位*/
+    public void resetLabelIsNone(List<Integer> lableIds){
+        db().update(GOODS_LABEL).set(GOODS_LABEL.IS_ALL,POINT_GOODS)
+            .where(GOODS_LABEL.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS_LABEL.ID.in(lableIds)).and(GOODS_LABEL.IS_ALL.eq(NONE_GOODS)))
+            .execute();
+    }
     /**
      * 插入标签关联的商品，平台，商家分类数据
      * @param param
