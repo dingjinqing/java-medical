@@ -230,7 +230,7 @@
         <div style="height: 40px;line-height: 40px;background: #f8f8f8;padding-left: 10px;margin-bottom: 20px;">分销商品</div>
         <el-form-item
           label=""
-          style="margin-left: -120px;"
+          style="margin-left: -120px;margin-bottom: 100px;"
           prop="recommendType"
         >
           <div>
