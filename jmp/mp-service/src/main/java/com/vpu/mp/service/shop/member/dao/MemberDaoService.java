@@ -574,7 +574,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 	是否是分销员条件
 	 */
@@ -585,7 +585,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 指定时间内有登录 - 开始时间条件
 	 */

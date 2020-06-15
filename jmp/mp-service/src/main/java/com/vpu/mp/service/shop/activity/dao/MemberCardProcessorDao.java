@@ -148,6 +148,7 @@ public class MemberCardProcessorDao extends ShopBaseService {
     public Record2<Integer, String> getUserGradeCard(Integer userId) {
         Record2<Integer, String> gradeCard = db().select(MEMBER_CARD.ID, MEMBER_CARD.GRADE).from(USER_CARD).join(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
             .where(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(MEMBER_CARD.FLAG.eq(CardConstant.MCARD_FLAG_USING))
             .and(USER_CARD.FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(USER_CARD.USER_ID.eq(userId)).and(MEMBER_CARD.CARD_TYPE.eq(CardConstant.MCARD_TP_GRADE))
             // 判断是否已经激活

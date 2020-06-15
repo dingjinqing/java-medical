@@ -222,7 +222,7 @@ public class CardVerifyService extends ShopBaseService {
 	 */
 	public Byte getCardVerifyStatus(String cardNo){
 		if(StringUtils.isBlank(cardNo)) {
-			return VSTAT_REFUSED;
+			return null;
 		}
 		CardVerifyResultVo cardVerifyDaoService = verifyDao.getCardVerifyResult(cardNo);
 		return cardVerifyDaoService != null?cardVerifyDaoService.getStatus():VSTAT_REFUSED;

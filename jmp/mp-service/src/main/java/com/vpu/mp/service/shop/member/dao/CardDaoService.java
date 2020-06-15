@@ -61,7 +61,6 @@ import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RemarkUtil;
@@ -92,7 +91,9 @@ import com.vpu.mp.service.pojo.shop.member.card.export.receive.CardReceiveDownVo
  */
 @Service
 public class CardDaoService extends ShopBaseService {
+
 	public PageResult<CardHolderVo> getAllCardHolder(CardHolderParam param) {
+
 		User invitedUser = USER.as("a");
 		User giveCardUser = USER.as("b");
 		List<Field<?>> f = new ArrayList<>(Arrays.asList(USER_CARD.fields()));
@@ -120,7 +121,7 @@ public class CardDaoService extends ShopBaseService {
 		buildOptions(param, select);
 		select.where(USER_CARD.CARD_ID.eq(param.getCardId()))
 			  .groupBy(myFields)
-			  .orderBy(USER_CARD.CREATE_TIME.desc());		
+			  .orderBy(USER_CARD.CREATE_TIME.desc());
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), CardHolderVo.class);
 	}
 
@@ -179,7 +180,7 @@ public class CardDaoService extends ShopBaseService {
 		if (param.getSecondDateTime() != null) {
 			select.where(USER_CARD.CREATE_TIME.le(param.getSecondDateTime()));
 		}
-		
+
 		/**	是否提交审核申请	*/
 		if(param.getSubmitValue()!=null) {
 			if(CardVerifyConstant.HAS_CONDITION.equals(param.getSubmitValue())) {
@@ -188,7 +189,7 @@ public class CardDaoService extends ShopBaseService {
 				select.where(CARD_EXAMINE.CARD_NO.isNull());
 			}
 		}
-		
+
 		/**	 卡审核状态	*/
 		if(param.getExamineStatusValue()!=null) {
 			if(CardVerifyConstant.VSTAT_CHECKING.equals(param.getExamineStatusValue())) {
@@ -199,7 +200,7 @@ public class CardDaoService extends ShopBaseService {
 				select.where(CARD_EXAMINE.STATUS.eq(CardVerifyConstant.VSTAT_REFUSED));
 			}
 		}
-		
+
 		/**	 有无消费记录	*/
 		if(param.getConsumeRecordValue()!=null) {
 			if(CardVerifyConstant.HAS_CONDITION.equals(param.getConsumeRecordValue())) {
@@ -208,7 +209,7 @@ public class CardDaoService extends ShopBaseService {
 				select.where(CARD_CONSUMER.CARD_NO.isNull());
 			}
 		}
-		
+
 		/**	有无充值记录 */
 		if(param.getChargeRecordValue()!=null) {
 			if(CardVerifyConstant.HAS_CONDITION.equals(param.getChargeRecordValue())) {
@@ -217,7 +218,7 @@ public class CardDaoService extends ShopBaseService {
 				select.where(CHARGE_MONEY.CARD_NO.isNull());
 			}
 		}
-		
+
 	}
 
 	/**
@@ -242,7 +243,7 @@ public class CardDaoService extends ShopBaseService {
 		buildOptionForReceiveCode(param, select);
 		return select;
 	}
-	
+
 	public List<CardReceiveDownVo> toMakeDownList(CodeReceiveParam param,String lang) {
 		SelectConditionStep<?> select = buildSelect(param);
 		List<CardReceiveDownVo> list = select.fetchInto(CardReceiveDownVo.class);
@@ -254,7 +255,7 @@ public class CardDaoService extends ShopBaseService {
 		String normal = Util.translateMessage(lang, JsonResultCode.MSG_CARD_NORMAL.getMessage(), "excel",null);
 		/** 已废除*/
 		String abolished = Util.translateMessage(lang, JsonResultCode.MSG_CARD_NO_ABOLISHED.getMessage(), "excel",null);
-		
+
 		for (CardReceiveDownVo vo : list) {
 			String code = vo.getCode();
 			if(!StringUtils.isBlank(code)) {
@@ -288,9 +289,9 @@ public class CardDaoService extends ShopBaseService {
 		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
 		excelWriter.writeModelList(toMakeDownList(param,lang), CardReceiveDownVo.class);
 		return workbook;
-		
+
 	}
-	
+
 
 	/**
 	 * 会员卡领取详情构建多条件查询参数
@@ -812,7 +813,7 @@ public class CardDaoService extends ShopBaseService {
         if(StringUtils.isBlank(mCard.getBgColor())) {
             mCard.setBgColor(CardUtil.getDefaultBgColor());
         }
-		
+
 		return mCard;
 		
 	}
@@ -961,7 +962,7 @@ public class CardDaoService extends ShopBaseService {
 	 * 	获取系统中未被删除的卡
 	 */
 	public PageResult<MemberCardRecord> selectCardList(SearchCardParam param) {
-		
+
 		/**
 		 * 	滤掉停用会员卡
 		 */

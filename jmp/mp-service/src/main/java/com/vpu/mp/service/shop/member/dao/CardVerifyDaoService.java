@@ -47,6 +47,7 @@ public class CardVerifyDaoService extends ShopBaseService {
 		return db().select(CARD_EXAMINE.ID,CARD_EXAMINE.STATUS,CARD_EXAMINE.REFUSE_DESC,CARD_EXAMINE.REFUSE_TIME,CARD_EXAMINE.PASS_TIME)
 					.from(CARD_EXAMINE)
 					.where(CARD_EXAMINE.CARD_NO.eq(cardNo))
+                    .and(CARD_EXAMINE.DEL_FLAG.eq(VDF_NO))
 					.orderBy(CARD_EXAMINE.ID.desc())
 					.fetchAnyInto(CardVerifyResultVo.class);
 	}
@@ -64,7 +65,7 @@ public class CardVerifyDaoService extends ShopBaseService {
 					.leftJoin(USER).on(CARD_EXAMINE.USER_ID.eq(USER.USER_ID));
 		buildOptions(select,param);
 		select.orderBy(CARD_EXAMINE.CREATE_TIME.desc());
-		
+
 		if(param.getStartNum()!=null && param.getEndNum()!=null) {
 			logger().info("查询区间");
 			Integer startNum = param.getStartNum()-1;
@@ -192,7 +193,10 @@ public class CardVerifyDaoService extends ShopBaseService {
 
 
 	public CardExamineRecord getStatusByNo(String cardNo) {
-		return db().selectFrom(CARD_EXAMINE).where(CARD_EXAMINE.CARD_NO.eq(cardNo)).orderBy(CARD_EXAMINE.ID.desc())
+		return db().selectFrom(CARD_EXAMINE)
+                   .where(CARD_EXAMINE.CARD_NO.eq(cardNo))
+                   .and(CARD_EXAMINE.DEL_FLAG.eq(VDF_NO))
+                   .orderBy(CARD_EXAMINE.ID.desc())
 				.fetchAny();
 	}
 	
