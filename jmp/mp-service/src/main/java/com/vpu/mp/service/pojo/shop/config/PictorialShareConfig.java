@@ -35,7 +35,7 @@ public class PictorialShareConfig {
         }
         config.setShareAction(goodsSharePostConfig.getShareAction());
         config.setShareDoc(goodsSharePostConfig.getShareDoc());
-        config.setShareImg(goodsSharePostConfig.getShareImgPath());
+        config.setShareImg(goodsSharePostConfig.getShareImgUrl());
         config.setShareImgAction(goodsSharePostConfig.getShareImgAction());
         return config;
     }
