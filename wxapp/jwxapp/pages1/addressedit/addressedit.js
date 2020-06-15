@@ -299,6 +299,14 @@ global.wxPage({
     }
     // 处理地址
     this.processAddress()
+    let params = this.data.formData
+    if (!params.provinceName || !params.cityName || !params.districtName) {
+      wx.showToast({
+        title: '请选择完整的地区信息!',
+        icon: 'none'
+      })
+      return false
+    }
     console.log(this.data.formData)
     if (!this.data.addressId) {
       // 新增
