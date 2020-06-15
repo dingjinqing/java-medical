@@ -311,7 +311,7 @@ export const cn = {
     {
       icon: '/image/admin/new_ov/pos.png',
       title: '微铺宝POS',
-      link: 'http://pos.wangdian.cn/'
+      link: 'https://pos.huice.com/'
     },
     {
       icon: '/image/admin/new_ov/ekuai.png',
