@@ -227,7 +227,9 @@ public class DistributorListService extends ShopBaseService{
 		BigDecimal totalGetFanliMoney = new BigDecimal(0);
         DistributorInvitedListVo InviteInfo = new DistributorInvitedListVo();
 		for(InviteUserInfoVo info:invitedList.dataList){
-		    totalGetFanliMoney = totalGetFanliMoney.add(info.getTotalFanliMoney());
+		    if(info.getTotalFanliMoney() != null){
+                totalGetFanliMoney = totalGetFanliMoney.add(info.getTotalFanliMoney());
+            }
         }
         InviteInfo.setTotalGetFanliMoney(totalGetFanliMoney);
 		InviteInfo.setInviteUserInfo(invitedList);
@@ -251,7 +253,7 @@ public class DistributorListService extends ShopBaseService{
 	 * @return
 	 */
 	public SelectConditionStep<? extends Record> getInvitedListOptions(SelectJoinStep<? extends Record> select,DistributorInvitedListParam param) {
-		SelectConditionStep<? extends Record> sql = select.where(USER.INVITE_ID.eq(param.getUserId()).and(USER_FANLI_STATISTICS.REBATE_LEVEL.eq((byte)1)));
+		SelectConditionStep<? extends Record> sql = select.where(USER.INVITE_ID.eq(param.getUserId()));
 
 		if(StringUtil.isNotEmpty(param.getMobile())) {
 			sql = sql.and(USER.MOBILE.eq(param.getMobile()));
