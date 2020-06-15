@@ -297,7 +297,8 @@ public class GroupBuyService extends ShopBaseService {
                 .leftJoin(GOODS).on(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID))
                 .where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(id)).fetch().into(GroupBuyProductVo.class);
         Map<Integer, List<GroupBuyProductVo>> goodsProductMap = buyProductVos.stream().collect(Collectors.groupingBy(GroupBuyProductVo::getGoodsId));
-        List<GoodsView> goodsViews = goodsService.selectGoodsViewList(Util.splitValueToList(groupBuy.getGoodsId()));
+        List<Integer> collect = goodsProductMap.keySet().stream().collect(Collectors.toList());
+        List<GoodsView> goodsViews = goodsService.selectGoodsViewList(collect);
         Map<Integer, GoodsView> goodsMap = goodsViews.stream().collect(Collectors.toMap(GoodsView::getGoodsId, (a) -> a));
         List<GroupBuyDetailVo.GroupBuyGoods> goodsList =new ArrayList<>();
         goodsProductMap.forEach((k,v)->{

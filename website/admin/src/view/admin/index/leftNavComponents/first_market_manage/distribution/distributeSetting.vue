@@ -960,6 +960,9 @@ export default {
           this.$message.warning(res.message)
         }
       })
+
+      // 分销员审核开关配置
+      localStorage.setItem('distributionJudgeStatus', this.form.judge_status)
     },
 
     // 展开更多配置

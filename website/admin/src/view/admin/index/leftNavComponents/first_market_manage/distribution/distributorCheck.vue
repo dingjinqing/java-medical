@@ -96,7 +96,12 @@
             <span
               class="titleStyle"
               v-if="item.activationFields.invitation_code"
-            >邀请码：{{ item.activationFields.invitation_code }}</span>
+            >邀请码：
+              <span
+                class="clickStyle"
+                @click="detailHandler(item.inviteId)"
+              >{{ item.activationFields.invitation_code }}</span>
+            </span>
           </td>
 
           <td
@@ -559,6 +564,10 @@ export default {
   }
   .titleStyle {
     margin-right: 20px;
+  }
+  .clickStyle {
+    color: #5a8bff;
+    cursor: pointer;
   }
   .header {
     display: inline-block;
