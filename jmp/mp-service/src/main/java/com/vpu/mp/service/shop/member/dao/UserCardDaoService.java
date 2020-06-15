@@ -38,6 +38,7 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.shop.card.CardDetailService;
 import com.vpu.mp.service.shop.card.CardFreeShipService;
 import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.member.card.GradeCardService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.AggregateFunction;
