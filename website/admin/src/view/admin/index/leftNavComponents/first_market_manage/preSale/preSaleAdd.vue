@@ -905,9 +905,7 @@ export default {
           }
         })
       }
-
-      // var re = /^\d+(\.\d{1,2})?$/
-      var re = /^(0|\+?[1-9][0-9]*)$/
+      var re = /^\d+(\.\d{1,2})?$/
       if (!value) {
         callback(new Error('活动价格不能为空'))
       } else if (value < 0) {
