@@ -100,7 +100,9 @@
               <span
                 class="clickStyle"
                 @click="detailHandler(item.inviteId)"
-              >{{ item.activationFields.invitation_code }}</span>
+              >{{ item.activationFields.invitation_code }}
+                <span v-if="item.inviteName">({{item.inviteName}})</span>
+              </span>
             </span>
           </td>
 
