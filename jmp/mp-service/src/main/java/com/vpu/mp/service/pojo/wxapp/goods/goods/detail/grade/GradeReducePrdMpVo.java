@@ -19,4 +19,9 @@ public class GradeReducePrdMpVo {
     private BigDecimal activityPrice;
     /**规格原价*/
     private BigDecimal prdPrice;
+    /**限时降价价格
+     * 当规格取会员价的时-分享海报展示需要比较限时降价价格和普通价格的高低-然后进行判断调取的海报接口
+     * 本字段可能为null
+     * */
+    private BigDecimal reducePrice;
 }
