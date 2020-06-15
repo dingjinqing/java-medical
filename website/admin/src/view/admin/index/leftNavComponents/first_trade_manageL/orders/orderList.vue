@@ -543,6 +543,7 @@
                   <td
                     v-if="goodsIndex === 0"
                     :rowspan="orderItem.goods.length"
+                    class="order-status"
                   >
                     <template v-if="orderItem.goodsTypeArray.indexOf('17') != -1 && orderItem.orderSn == orderItem.mainOrderSn && [8,10,13].indexOf(orderItem.orderStatus)">
                       {{$t('order.waitReceive')}}
@@ -1358,6 +1359,14 @@ export default {
               color: #666;
               line-height: 24px;
             }
+            .order-status{
+            /deep/ .el-button{
+              margin-top:6px;
+            }
+            /deep/ .el-button:first-of-type{
+              margin-top: 0;
+            }
+          }
             .goods_info {
               display: flex;
               padding: 8px 10px;
