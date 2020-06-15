@@ -809,6 +809,8 @@ global.wxPage({
             if (res.error == -1) {
               // 申请不成功, 邀请码不存在
               util.showModal("提示", "邀请码不存在");
+            } else if (res.error == 1) {
+              util.showModal("提示", "自动审核通过");
             }
             util.redirectTo({
               url: '/pages/distributionspread/distributionspread'
