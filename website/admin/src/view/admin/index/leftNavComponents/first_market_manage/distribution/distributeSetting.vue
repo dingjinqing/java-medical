@@ -956,6 +956,8 @@ export default {
         if (res.error === 0) {
           this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
           this.getDistribution()
+        } else {
+          this.$message.warning(res.message)
         }
       })
     },

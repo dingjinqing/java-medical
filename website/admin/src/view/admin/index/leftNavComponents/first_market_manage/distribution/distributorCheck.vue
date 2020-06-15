@@ -93,10 +93,10 @@
               class="titleStyle"
               v-if="item.createTime"
             >{{ $t('distribution.reviewTime') + '：' }}{{ item.createTime }}</span>
-            <!-- <div
-                class="header"
-                v-if="item.activationFields.invitation_code"
-              >邀请码：{{ item.activationFields.invitation_code }}</div> -->
+            <span
+              class="titleStyle"
+              v-if="item.activationFields.invitation_code"
+            >邀请码：{{ item.activationFields.invitation_code }}</span>
           </td>
 
           <td
