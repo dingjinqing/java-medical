@@ -37,7 +37,11 @@ global.wxComponent({
     roomId:String,
     canShip:Boolean,
     cardExchange:Object,
-    inviteId:Number
+    inviteId:Number,
+    cartNum:{
+      type:Number,
+      value:0
+    }
   },
 
   /**
@@ -94,6 +98,9 @@ global.wxComponent({
         showSpec: false
       })
       this.triggerEvent('close')
+    },
+    getCartNum(){
+      this.triggerEvent('getCartNum')
     }
   }
 })

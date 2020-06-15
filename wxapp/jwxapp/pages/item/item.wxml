@@ -189,7 +189,7 @@
     <v-address-choose address-info="{{deliverFeeAddressVo.address}}" goods-id="{{specParams.goodsId}}" bindaddressChange="addressChange"/>
 
     <!-- 选择规格（包含无规格情况） -->
-    <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}" invite-id="{{inviteId}}" room-id="{{roomId}}" card-exchange="{{cardExchange}}" can-ship="{{deliverFeeAddressVo.status === 1 ? true : false}}">
+    <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}" invite-id="{{inviteId}}" room-id="{{roomId}}" card-exchange="{{cardExchange}}" can-ship="{{deliverFeeAddressVo.status === 1 ? true : false}}" cart-num="{{cartNum}}" bindgetCartNum="getCartNum">
       <!-- 服务规则 -->
       <view class="flex_box" bindtap="goPledge" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}">
         <view class="item_left">服务</view>
@@ -279,7 +279,7 @@
     <!-- 购买记录  -->
     <v-purchase_record goodsRecords="{{goodsRecords}}"  />
   </view>
-  <v-item-footer wx:if="{{specParams.products}}" product-info="{{productInfo}}" custom-service="{{goodsInfo.customService}}" activity="{{specParams.activity}}" goods-number="{{specParams.goodsNumber}}" invite-id="{{inviteId}}" room-id="{{roomId}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog" products="{{specParams.products}}" card-exchange="{{cardExchange}}" can-ship="{{deliverFeeAddressVo.status === 1 ? true : false}}"/>
+  <v-item-footer wx:if="{{specParams.products}}" product-info="{{productInfo}}" custom-service="{{goodsInfo.customService}}" activity="{{specParams.activity}}" goods-number="{{specParams.goodsNumber}}" invite-id="{{inviteId}}" room-id="{{roomId}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog" products="{{specParams.products}}" card-exchange="{{cardExchange}}" can-ship="{{deliverFeeAddressVo.status === 1 ? true : false}}" cart-num="{{cartNum}}" bindgetCartNum="getCartNum"/>
   <v-pre-sale-rule show="{{preSaleRuleShow}}" />
 
 
