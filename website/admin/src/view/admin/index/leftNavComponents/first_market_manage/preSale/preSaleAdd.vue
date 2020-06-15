@@ -4,6 +4,19 @@
 -->
 <template>
   <div>
+    <div class="tab-wrapper">
+      <el-tabs
+        v-model="tabStatus"
+        :before-leave="beforeLeave"
+      >
+        <el-tab-pane
+          v-for="(item, index) in labels"
+          :key="index"
+          :label="item.name"
+          :name="item.status"
+        ></el-tab-pane>
+      </el-tabs>
+    </div>
     <div class="wrapper">
       <el-form
         label-width="130px"
@@ -785,6 +798,7 @@ export default {
       arrorFlag: true,
       activeIndex: 0,
       isEditeFlag: false,
+      statusFlag: true,
       goodsIdList: [],
       showSpecDialog: false,
       productInfo: {},
@@ -838,7 +852,32 @@ export default {
         first: [
           { required: true, validator: validLevel, trigger: ['blur', 'change'] }
         ]
-      }
+      },
+      labels: [
+        {
+          status: '0',
+          name: '全部定金膨胀活动'
+        },
+        {
+          status: '1',
+          name: this.$t('firstSpecial.processing')
+        },
+        {
+          status: '2',
+          name: this.$t('firstSpecial.notStart')
+        }, {
+          status: '3',
+          name: this.$t('firstSpecial.expired')
+        }, {
+          status: '4',
+          name: this.$t('firstSpecial.terminated')
+        },
+        {
+          status: '5',
+          name: this.$route.query.id ? this.$t('promoteList.editEvent') : this.$t('promoteList.addEvent')
+        }
+      ],
+      tabStatus: '5'
     }
   },
   computed: {
@@ -951,6 +990,17 @@ export default {
         callback()
       }
     },
+    beforeLeave (activeName, oldActiveName) {
+      if (activeName !== '5') {
+        this.$router.push({
+          path: '/admin/home/main/presale',
+          query: {
+            tab: activeName
+          }
+        })
+        return false
+      }
+    },
     // 一阶段定金支付时间
     dateChange (date) {
       this.param.preStartTime = date[0]
@@ -1029,13 +1079,13 @@ export default {
                       console.log(specItem)
                       let { presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, stock } = specItem
                       let goodsId = item.goodsId
-                      let productId = this.isEditeFlag ? specItem.productId : specItem.prdId
+                      let productId = (this.isEditeFlag || this.statusFlag) ? specItem.productId : specItem.prdId
                       let preDiscountMoney2 = specItem.preDiscountMoney2 === 0 ? 'null' : specItem.preDiscountMoney2
                       products.push({ goodsId, productId, presalePrice: Number(presalePrice), presaleNumber: Number(presaleNumber), presaleMoney: Number(presaleMoney), preDiscountMoney1: Number(preDiscountMoney1), preDiscountMoney2: Number(preDiscountMoney2), stock: Number(stock) })
                       this.param.stock += Number(stock)
                     })
                   } else {
-                    if (this.isEditeFlag) {
+                    if (this.isEditeFlag || this.statusFlag) {
                       item.productList.forEach(item => {
                         let { goodsId, productId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, stock } = item
                         let preDiscountMoney2 = item.preDiscountMoney2 === 0 ? 'null' : item.preDiscountMoney2
@@ -1053,7 +1103,6 @@ export default {
                 if (this.update) {
                   console.log(this.param)
                   console.log(products)
-                  console.log()
                   updatePreSale({ ...this.param, products }).then(res => {
                     if (res.error === 0) {
                       console.log(res)
@@ -1426,6 +1475,30 @@ export default {
       if (value) {
         this.$refs.param.validateField('deliverType')
       }
+    },
+    'lang': function (val) {
+      this.labels = [{
+        status: '0',
+        name: '全部定金膨胀活动'
+      },
+      {
+        status: '1',
+        name: this.$t('firstSpecial.processing')
+      },
+      {
+        status: '2',
+        name: this.$t('firstSpecial.notStart')
+      }, {
+        status: '3',
+        name: this.$t('firstSpecial.expired')
+      }, {
+        status: '4',
+        name: this.$t('firstSpecial.terminated')
+      },
+      {
+        status: '5',
+        name: this.$route.query.id ? this.$t('promoteList.editEvent') : this.$t('promoteList.addEvent')
+      }]
     }
   },
   mounted () {
@@ -1437,9 +1510,16 @@ export default {
       this.loadData()
     }
     this.langDefault()
+    console.log(this.$route)
     if (this.$route.query.id > 0) {
-      // 编辑定金膨胀活动
-      this.isEditeFlag = true // 编辑时部分信息不可以修改
+      // 编辑时部分信息不可以修改
+      if (this.$route.query.currentState === 1) {
+        this.isEditeFlag = true
+      }
+      if (this.$route.query.currentState === 2) {
+        this.isEditeFlag = false
+        this.statusFlag = true
+      }
     }
   }
 }
@@ -1505,5 +1585,12 @@ export default {
 /deep/ .el-form-item__error {
   position: relative;
   text-align: left;
+}
+.tab-wrapper {
+  position: relative;
+  background-color: #fff;
+  margin: 10px;
+  padding: 10px 20px 10px 20px;
+  margin-bottom: 10px;
 }
 </style>

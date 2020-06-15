@@ -177,7 +177,7 @@
                 <span
                   style="font-size: 22px;"
                   class="iconfont iconbianji"
-                  @click="gotoEdit(scope.row.id)"
+                  @click="gotoEdit(scope.row.id, scope.row)"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -333,13 +333,13 @@ export default {
       this.$router.push('/admin/home/main/presale/add')
     },
     // 编辑活动
-    gotoEdit (id) {
-      console.log(12345)
-      console.log(id, 'get id')
+    gotoEdit (id, val) {
+      console.log(id, 'get id', val)
       this.$router.push({
         path: `/admin/home/main/presale/edit/${id}`,
         query: {
-          id: id
+          id: id,
+          currentState: val.currentStatus
         }
       })
     },
