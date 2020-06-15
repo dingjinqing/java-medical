@@ -85,7 +85,8 @@ public class AdminDistributionController extends AdminBaseController{
 	public JsonResult setDistributionCfg(@RequestBody DistributionParam param) {
 		int result = shop().config.distributionCfg.setDistributionCfg(param);
 		//自动检测补全邀请码
-		if(param.getInvitationCode() .equals("1")){
+        System.out.println(param.getInvitationCode());
+		if(param.getInvitationCode() != null && param.getInvitationCode().equals("1")){
             shop().distributorList.autoSetInviteCode();
         }
 		return this.success(result);

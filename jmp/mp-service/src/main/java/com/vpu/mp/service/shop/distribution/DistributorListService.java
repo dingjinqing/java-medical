@@ -110,7 +110,7 @@ public class DistributorListService extends ShopBaseService{
         com.vpu.mp.db.shop.tables.User a = USER.as("a");
 		//微信昵称
 		if(StringUtil.isNotEmpty(param.getUsername())) {
-			where.and(d.USERNAME.eq(param.getUsername()));
+			where.and(d.USERNAME.contains(param.getUsername()));
 		}
 
 		//手机号
@@ -156,11 +156,11 @@ public class DistributorListService extends ShopBaseService{
         }
         //有手机号
         if(param.getHaveMobile() != null &&  param.getHaveMobile() == 1){
-            where.and(d.MOBILE.ne("null"));
+            where.and(d.MOBILE.isNotNull());
         }
         //有真是姓名
         if(param.getHaveRealName() != null && param.getHaveRealName() == 1){
-            where.and(USER_DETAIL.REAL_NAME.ne("null"));
+            where.and(USER_DETAIL.REAL_NAME.isNotNull());
         }
         if(param.getOptGroupId() != null){
             where.and(a.INVITE_GROUP.ne(param.getOptGroupId()));
