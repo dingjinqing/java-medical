@@ -94,6 +94,7 @@
     <SelectLinks
       :tuneUpSelectLink="tuneUpSelectLink"
       @selectLinkPath="selectLinkPath"
+      :isHiddenGoods="isHiddenGoods"
     />
     <!--选择图片弹窗 -->
     <ImageDalog
@@ -143,6 +144,7 @@ export default {
   data () {
     return {
       tuneUpSelectLink: false,
+      isHiddenGoods: true,
       ulClickIndex: 0,
       inputValArr: [
         {
