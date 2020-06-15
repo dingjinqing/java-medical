@@ -112,7 +112,7 @@ public class IncreasePurchaseService extends ShopBaseService {
                 break;
             // 已停用4
             case PURCHASE_TERMINATED:
-                categoryConditon = categoryConditon.and(ppd.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
+                categoryConditon = categoryConditon.and(ppd.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE));
                 break;
             // 已过期3
             case PURCHASE_EXPIRED:
@@ -120,7 +120,7 @@ public class IncreasePurchaseService extends ShopBaseService {
                 break;
             // 未开始2
             case PURCHASE_PREPARE:
-                categoryConditon = categoryConditon.and(ppd.START_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())));
+                categoryConditon = categoryConditon.and(ppd.START_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
                 break;
             // 默认进行中1
             default:
