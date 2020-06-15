@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.admin;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -83,6 +84,10 @@ public class AdminDistributionController extends AdminBaseController{
 	@PostMapping("/admin/distribution/set")
 	public JsonResult setDistributionCfg(@RequestBody DistributionParam param) {
 		int result = shop().config.distributionCfg.setDistributionCfg(param);
+		//自动检测补全邀请码
+		if(param.getInvitationCode() .equals("1")){
+            shop().distributorList.autoSetInviteCode();
+        }
 		return this.success(result);
 	}
 

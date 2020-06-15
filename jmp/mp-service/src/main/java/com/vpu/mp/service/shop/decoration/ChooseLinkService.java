@@ -208,6 +208,7 @@ public class ChooseLinkService extends ShopBaseService {
         SelectConditionStep<Record> records = couponBuildOptions(select, couponType);
         Result<Record> record = records.fetch();
         if(record != null){
+
             List<ActivityVo> list = record.into(ActivityVo.class);
             list.forEach(activityVo -> {
                 if (activityVo.getValidityType().equals(CouponConstant.AFTER_RECEIVING)){
@@ -217,7 +218,7 @@ public class ChooseLinkService extends ShopBaseService {
                     activityVo.setStatus(actStatus);
                 }
             });
-            return record.into(ActivityVo.class);
+            return list;
         }else{
             return null;
         }
@@ -250,7 +251,15 @@ public class ChooseLinkService extends ShopBaseService {
                 .and(MEMBER_CARD.FLAG.eq(CardConstant.MCARD_FLAG_USING))
                 .and(MEMBER_CARD.END_TIME.ge(new Timestamp(System.currentTimeMillis())).or(MEMBER_CARD.EXPIRE_TYPE.in((byte)1,(byte)2)))
 				.fetchInto(ActivityVo.class);
-        getActivityStatus(list);
+		 list.forEach(activityVo -> {
+		     if (activityVo.getExpireType().equals(CardConstant.MCARD_ET_FOREVER)||activityVo.getExpireType().equals(CardConstant.MCARD_ET_FIX)){
+                 activityVo.setStatus(BaseConstant.NAVBAR_TYPE_ONGOING);
+             }else {
+                 Byte actStatus = Util.getActStatus(BaseConstant.ACTIVITY_STATUS_NORMAL, activityVo.getStartTime(), activityVo.getEndTime());
+                 activityVo.setStatus(actStatus);
+             }
+
+         });
 		return list;
 	}
 
