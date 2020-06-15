@@ -1026,6 +1026,34 @@ global.wxPage({
     }
     return goodsNumber
   },
+  // 获取购物车中商品数量
+  getCartNum () {
+    util.api('/api/wxapp/cart/list', res => {
+      if (res.error === 0) {
+        let {
+          cartGoodsList,
+          purchasePriceGoodsMap,
+          fullReductionGoodsMap
+        } = res.content
+        let purchaseGoodsList = Object.keys(purchasePriceGoodsMap).reduce((defaultData,item)=>{
+          defaultData = [...defaultData,...purchasePriceGoodsMap[item]]
+          return defaultData
+        },[])
+        let fullReductionGoodsList = Object.keys(fullReductionGoodsMap).reduce((defaultData,item)=>{
+          defaultData = [...defaultData,...fullReductionGoodsMap[item]]
+          return defaultData
+        },[])
+        let goodsList = [...purchaseGoodsList,...fullReductionGoodsList,...cartGoodsList]
+        console.log(goodsList)
+        let cartNum = goodsList.reduce((total, item, index) => {
+          return total += item.cartNumber
+        }, 0)
+        this.setData({
+          cartNum
+        })
+      }
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
