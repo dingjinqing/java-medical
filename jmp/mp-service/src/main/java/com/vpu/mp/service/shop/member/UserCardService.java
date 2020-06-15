@@ -1936,7 +1936,9 @@ public class UserCardService extends ShopBaseService {
 
 	public String getCardNoByUserAndCardId(Integer userId, Integer cardId) {
 		UserCardRecord rec = db().selectFrom(USER_CARD)
-				.where(USER_CARD.USER_ID.eq(userId).and(USER_CARD.CARD_ID.eq(cardId))).fetchAny();
+				.where(USER_CARD.USER_ID.eq(userId).and(USER_CARD.CARD_ID.eq(cardId)))
+                .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+                .fetchAny();
 		return rec != null ? rec.getCardNo() : null;
 	}
 	public UserCardVo getUserCardByCardNo(String cardNo){
