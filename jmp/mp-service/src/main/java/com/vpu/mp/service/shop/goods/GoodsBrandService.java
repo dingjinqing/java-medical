@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.goods;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.vpu.mp.db.shop.tables.records.BrandClassifyRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsBrandRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -205,7 +207,14 @@ public class GoodsBrandService extends ShopBaseService {
                     .execute();
             }
         });
-        esDataUpdateMqService.addEsGoodsIndex(goodsBrand.getOldGoodsIds(),getShopId(),DBOperating.UPDATE);
+        Set<Integer> goodsIds = Sets.newHashSet();
+        if( CollectionUtils.isNotEmpty(goodsBrand.getOldGoodsIds()) ){
+            goodsIds.addAll(goodsBrand.getOldGoodsIds());
+        }
+        if( CollectionUtils.isNotEmpty(goodsBrand.getGoodsIds()) ){
+            goodsIds.addAll(goodsBrand.getGoodsIds());
+        }
+        esDataUpdateMqService.addEsGoodsIndex(Lists.newArrayList(goodsIds.iterator()),getShopId(),DBOperating.UPDATE);
     }
 
     /**
