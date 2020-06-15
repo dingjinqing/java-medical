@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_APPLY;
@@ -35,12 +37,18 @@ public class DistributorCheckService extends ShopBaseService{
      * @return
      */
 	public PageResult<DistributorCheckListVo> getDistributorCheckList(DistributorCheckListParam param) {
-        SelectConditionStep<Record> select = db().select(DISTRIBUTOR_APPLY.fields()).select(USER.USERNAME, USER.MOBILE)
+        SelectConditionStep<Record> select = db().select(DISTRIBUTOR_APPLY.fields()).select(USER.USERNAME, USER.MOBILE,USER.INVITE_ID)
             .from(DISTRIBUTOR_APPLY.leftJoin(USER).on(DISTRIBUTOR_APPLY.USER_ID.eq(USER.USER_ID)))
                .where(DSL.trueCondition());
         buildOptions(select,param);
         PageResult<DistributorCheckListVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), DistributorCheckListVo.class);
         for(DistributorCheckListVo applyInfo: pageResult.getDataList()){
+            //邀请人信息
+            Record record = db().select().from(USER).where(USER.USER_ID.eq(applyInfo.getInviteId())).fetchOne();
+            if(record != null){
+                UserRecord into = record.into(UserRecord.class);
+                applyInfo.setInviteName(into.getUsername());
+            }
             applyInfo.setCheckField(Util.parseJson(applyInfo.getActivationFields(),DistributorApplyParam.InfoField.class));
         }
         return pageResult;

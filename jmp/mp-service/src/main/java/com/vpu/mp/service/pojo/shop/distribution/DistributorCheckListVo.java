@@ -46,6 +46,8 @@ public class DistributorCheckListVo {
      * 是否删除 0：为删除；1：删除
      */
     private Integer delFlag;
+    private Integer inviteId;
+    private String inviteName;
     /**
      * 创建时间
      */
