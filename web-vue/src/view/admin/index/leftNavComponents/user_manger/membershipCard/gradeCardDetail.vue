@@ -263,31 +263,36 @@ export default {
       this.disCountData.choosedPlatformId = data.platformCategoryIds
       this.disCountData.choosedBrandId = data.brandId.map(item => Number(item))
       // 积分
-      this.cardScoreCfgData.powerScore = data.powerScore ? data.powerScore === 1 : true
+      if (data.powerScore !== null) {
+        this.cardScoreCfgData.powerScore = data.powerScore === 1
+      }
       this.cardScoreCfgData.score = data.score
       this.cardScoreCfgData.offSet = data.scoreJson ? String(data.scoreJson.offset) : '0'
-      if (data.scoreJson.goodsMoney !== null && data.scoreJson.goodsMoney.length > 0) {
-        this.cardScoreCfgData.shopingInputLeft = data.scoreJson.goodsMoney[0]
-        this.cardScoreCfgData.shopingInputRight = data.scoreJson.getScores[0]
-        data.scoreJson.goodsMoney.splice(0, 1)
-        data.scoreJson.getScores.splice(0, 1)
-        for (let index in data.scoreJson.goodsMoney) {
-          this.cardScoreCfgData.addIntegralArr.push({
-            leftInput: data.scoreJson.goodsMoney[index],
-            rightInput: data.scoreJson.getScores[index]
-          })
+      if (data.scoreJson !== null) {
+        if (data.scoreJson.goodsMoney !== null && data.scoreJson.goodsMoney.length > 0) {
+          this.cardScoreCfgData.shopingInputLeft = data.scoreJson.goodsMoney[0]
+          this.cardScoreCfgData.shopingInputRight = data.scoreJson.getScores[0]
+          data.scoreJson.goodsMoney.splice(0, 1)
+          data.scoreJson.getScores.splice(0, 1)
+          for (let index in data.scoreJson.goodsMoney) {
+            this.cardScoreCfgData.addIntegralArr.push({
+              leftInput: data.scoreJson.goodsMoney[index],
+              rightInput: data.scoreJson.getScores[index]
+            })
+          }
         }
-      }
-      //  购物每满 多少 送多少分
-      if (data.scoreJson.perGoodsMoney !== null) {
-        this.cardScoreCfgData.shopingInputLeftM = data.scoreJson.perGoodsMoney
-      } else {
-        this.cardScoreCfgData.shopingInputLeftM = 100
-      }
-      if (data.scoreJson.perGetScores !== null) {
-        this.cardScoreCfgData.shopingInputRightM = data.scoreJson.perGetScores
-      } else {
-        this.cardScoreCfgData.shopingInputRightM = 100
+
+        //  购物每满 多少 送多少分
+        if (data.scoreJson.perGoodsMoney !== null) {
+          this.cardScoreCfgData.shopingInputLeftM = data.scoreJson.perGoodsMoney
+        } else {
+          this.cardScoreCfgData.shopingInputLeftM = 100
+        }
+        if (data.scoreJson.perGetScores !== null) {
+          this.cardScoreCfgData.shopingInputRightM = data.scoreJson.perGetScores
+        } else {
+          this.cardScoreCfgData.shopingInputRightM = 100
+        }
       }
 
       // 专享
@@ -398,10 +403,12 @@ export default {
       this.$refs.cardScoreCfgData.$emit('checkRule')
       this.$refs.freeship.$emit('checkRule')
       // 权益判断
-      if (this.cardScoreCfgData.powerScore || this.ownGoodsData.powerOwnGoods || this.disCountData.powerDiscount) {
+      if (this.cardScoreCfgData.powerScore || this.ownGoodsData.powerOwnGoods || this.disCountData.powerDiscount ||
+        this.customRights.customRightsFlag === 'on' || this.freeship.type !== -1) {
 
       } else {
         this.$message.warning('至少选择一项会员权益')
+        return
       }
 
       if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardGradeCfgData.valid &&
