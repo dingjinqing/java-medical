@@ -264,10 +264,20 @@
             href="#"
             style="margin:0 5px;"
           >{{$t('goodsAddEditInfo.basicInfoOther.goodsLabelManage')}}</el-link>
-          <!--已选择标签回显框-->
+          <!--已选普通标签回显框-->
+          <div v-if="labelNormalItems.length>0" style="display: flex;flex-wrap: wrap;align-items:center;background-color: #f8f8f8;height:50px;padding-left: 10px;">
+            <div>{{$t('goodsAddEditInfo.basicInfoOther.normalLabel')}}</div>
+            <div
+                class="selectedWrap"
+                v-for="(item,index) in labelNormalItems"
+                :key="index">
+              {{item.name}}
+            </div>
+          </div>
+          <!--已选择指定标签回显框-->
           <div
             v-if="labelSelectedItems.length>0"
-            style="display: flex;flex-wrap: wrap;align-items:center;background-color: #f8f8f8;"
+            style="display: flex;flex-wrap: wrap;align-items:center;background-color: #f8f8f8;height:50px;margin-top: 10px;padding-left: 10px;"
           >
             <div>{{$t('goodsAddEditInfo.basicInfoOther.alreadySelected')}}</div>
             <div
@@ -565,8 +575,10 @@ export default {
       /* 商品标签辅助数据 */
       // 商品标签下拉框数据
       labelSelectOptions: [],
-      // 标签已选中列表
+      // 标签已选中列表 指定标签使用
       labelSelectedItems: [],
+      // 通用标签
+      labelNormalItems: [],
       // 标签来下框选中瞬间的值
       labelSelectedTempVal: null,
       // 视频辅助数据
@@ -923,11 +935,9 @@ export default {
     },
     /* 初始化商品标签 */
     _initGoodsLabel (goodsData) {
-      let goodsLabelList = goodsData.goodsLabelListVos
-      if (goodsLabelList === null) {
-        return
-      }
-      this.labelSelectedItems = goodsLabelList
+      this.labelNormalItems = goodsData.goodsLabelNormalListVos === null ? [] : goodsData.goodsLabelNormalListVos
+      this.labelSelectedItems = goodsData.goodsLabelPointListVos === null ? [] : goodsData.goodsLabelPointListVos
+
       // 标签下拉框剔除已选中的标签项
       this.labelSelectOptions = this.labelSelectOptions.filter(item => {
         let has = this.labelSelectedItems.some(selectedItem => selectedItem.id === item.id)

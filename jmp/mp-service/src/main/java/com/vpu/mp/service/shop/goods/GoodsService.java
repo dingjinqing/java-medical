@@ -1875,9 +1875,21 @@ public class GoodsService extends ShopBaseService {
         // 设置幅图片
         setGoodsImgs(goodsVo);
 
-        //设置标签
+        //设置商品指定标签
         Map<Integer, List<GoodsLabelSelectListVo>> gtaLabelMap = goodsLabel.getGtaLabelMap(Arrays.asList(goodsId), GoodsLabelCoupleTypeEnum.GOODSTYPE);
-        goodsVo.setGoodsLabelListVos(gtaLabelMap.get(goodsId));
+        goodsVo.setGoodsLabelPointListVos(gtaLabelMap.get(goodsId));
+        goodsVo.setGoodsLabelNormalListVos(new ArrayList<>(5));
+        // 商家分类关联标签
+        if (!GoodsConstant.GOODS_SORT_DEFAULT_VALUE.equals(goodsVo.getSortId())){
+            Map<Integer, List<GoodsLabelSelectListVo>> gtaLabelSortMap = goodsLabel.getGtaLabelMap(Arrays.asList(goodsVo.getSortId()), GoodsLabelCoupleTypeEnum.SORTTYPE);
+            if (gtaLabelSortMap.get(goodsVo.getSortId()) != null && gtaLabelSortMap.get(goodsVo.getSortId()).size() > 0) {
+                goodsVo.getGoodsLabelNormalListVos().addAll(gtaLabelSortMap.get(goodsVo.getSortId()));
+            }
+        }
+        // 绑定全部商品上的标签
+        List<GoodsLabelSelectListVo> allGoodsLabels = goodsLabel.getAllGoodsLabels();
+        goodsVo.getGoodsLabelNormalListVos().addAll(allGoodsLabels);
+
 
         //设置sku
         List<GoodsSpecProduct> goodsSpecProducts = goodsSpecProductService.selectByGoodsId(goodsId);

@@ -102,7 +102,8 @@ public class GoodsConstant {
     public static final Byte SALE_TYPE_ON_TIME = 1;
     /** 商品仓库类型 仓库中 */
     public static final Byte SALE_TYPE_NOT_ON_SALE = 2;
-
+    /** 商品所属商家分类默认值 */
+    public static final Byte GOODS_SORT_DEFAULT_VALUE = 0;
 
     /**
      * 售罄
