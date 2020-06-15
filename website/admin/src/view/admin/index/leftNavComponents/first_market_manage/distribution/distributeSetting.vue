@@ -39,9 +39,9 @@
         </div>
         <template v-if="form.judge_status === 1">
           <div>
-            <!-- disabled -->
             自动审核：<el-checkbox
               v-model="form.auto_examine"
+              :disabled="form.hasDistributor === 0"
               :true-label='1'
               :false-label='0'
               @change="examineChange"
@@ -81,11 +81,11 @@
                 >{{ item }}</el-checkbox>
               </div>
               <div>
-                <!-- disabled -->
                 <el-checkbox
                   v-for="(item, index) in checkedList2"
                   :key="index"
                   :label="item"
+                  :disabled="form.hasDistributor === 0"
                   @change="codeCheckChange($event,item)"
                 >{{ item }}</el-checkbox>
                 <!-- <el-checkbox
@@ -649,6 +649,7 @@ export default {
         activation: 0, // 是否需要提交个人信息
         // 自定义激活项
         custom_options: [],
+        hasDistributor: 1, // 是否有分销员
         // invitationCode: 1, // 邀请码
         activation_cfg: [], // 个人信息内容
         rank_status: 1, // 分销员排名及返佣记录展示
@@ -719,9 +720,7 @@ export default {
       fromRules: {
         custom_type: [{ required: true, message: '请填写选项类型', trigger: 'change' }],
         custom_title: [{ required: true, message: '请填写标题', trigger: 'change' }]
-      },
-      hasDistribution: true // 是否有分销员
-
+      }
     }
   },
   watch: {
