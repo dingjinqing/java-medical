@@ -12,9 +12,9 @@
           v-model="remarksText"
           type="textarea"
           placeholder="请输入备注内容"
-          :rows="2"
+          :autosize="{ minRows: 5 }"
           maxlength="200"
-          show-word-limit
+          :show-word-limit="remarksText ? true : false"
           style="width: 60%;"
         >
         </el-input>
