@@ -544,6 +544,7 @@ public class UserCardDaoService extends ShopBaseService{
         gradeCardService.clearUserAllGrade(userId,cardId,isActivate);
 		return  db().update(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 			.set(USER_CARD.CARD_ID,cardId)
+            .set(USER_CARD.CREATE_TIME,DateUtil.getLocalDateTime())
 			.set(USER_CARD.UPDATE_TIME,DateUtil.getLocalDateTime())
 			.set(USER_CARD.FLAG,UCARD_FG_USING)
 		    .set(USER_CARD.ACTIVATION_TIME,isActivate?DateUtil.getLocalDateTime():null)
