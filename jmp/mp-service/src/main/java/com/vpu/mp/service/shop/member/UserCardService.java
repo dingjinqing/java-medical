@@ -273,15 +273,21 @@ public class UserCardService extends ShopBaseService {
 	 * @Return  true拥有 ，false 未拥有
 	 */
 	public boolean isHasAvailableGradeCard(Integer userId) {
+        String grade = getCurrentAvalidGradeCard(userId);
+		return !StringUtils.isBlank(grade);
+	}
+    /**
+     * 用户目前未被废除的等级卡等级
+     */
+    public String getCurrentAvalidGradeCard(Integer userId){
         String grade = db().select(MEMBER_CARD.GRADE)
             .from(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
             .where(USER_CARD.USER_ID.eq(userId))
             .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
             .and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
             .fetchAnyInto(String.class);
-		return !StringUtils.isBlank(grade);
-	}
-
+        return grade;
+    }
     /**
      *  获取用户当前可用的等级会员卡号
      * @param userId
@@ -442,8 +448,7 @@ public class UserCardService extends ShopBaseService {
 		BigDecimal amount = getUserTotalSpendAmount(userId);
 		// 获取等级卡列表等级升序
 		List<MemberCardRecord> gCardList = getAvailGradeCard();
-
-		String uGrade = userCardDao.getUserCardGrade(userId);
+		String uGrade = getCurrentAvalidGradeCard(userId);
 		// 判断用户是否拥有等级卡
 		if (StringUtils.isBlank(uGrade)) {
 			// 用户第一次领取会员卡，给用户分配一级会员卡
@@ -454,7 +459,7 @@ public class UserCardService extends ShopBaseService {
 			if (isSatisfyUpgradeCondition(userTotalScore, amount, gradeCondition)) {
 				addUserCard(userId, gCard.getId());
 			}
-			uGrade = userCardDao.getUserCardGrade(userId);
+			uGrade = getCurrentAvalidGradeCard(userId);
 		}
 		logger().info("此时的会员卡等级："+uGrade);
 		MemberCardRecord userGradeCard = userCardDao.getUserGradeCard(userId);
@@ -491,7 +496,7 @@ public class UserCardService extends ShopBaseService {
 	 * 	检测可升级到的等级卡
 	 */
 	private Integer checkCardCanUpgrade(Integer userId) throws MemberCardNullException {
-		String userCardGrade = userCardDao.getUserCardGrade(userId);
+		String userCardGrade = getCurrentAvalidGradeCard(userId);
 		final String uGrade;
 		if(StringUtils.isBlank(userCardGrade)) {
 			uGrade = CardConstant.LOWEST_GRADE;
@@ -534,12 +539,12 @@ public class UserCardService extends ShopBaseService {
 
 		GradeConditionJson gradeCondition = Util.parseJson(gCard.getGradeCondition(), GradeConditionJson.class);
 
-		if (BigDecimalUtil.compareTo(gradeCondition.getGradeScore(), BigDecimal.ZERO) < 1) {
-			gradeCondition.setGradeScore(new BigDecimal(userTotalScore + 1000));
+		if (BigDecimalUtil.compareTo(gradeCondition.getGradeScore(), BigDecimal.ZERO) < 0) {
+			//gradeCondition.setGradeScore(new BigDecimal(userTotalScore + 1000));
 		}
 
-		if (BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(), BigDecimal.ZERO) < 1) {
-			gradeCondition.setGradeMoney(amount.add(new BigDecimal(1000)));
+		if (BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(), BigDecimal.ZERO) < 0) {
+			//gradeCondition.setGradeMoney(amount.add(new BigDecimal(1000)));
 		}
 		return gradeCondition;
 	}
@@ -549,8 +554,15 @@ public class UserCardService extends ShopBaseService {
 	 */
 	public boolean isSatisfyUpgradeCondition(Integer userTotalScore, BigDecimal amount,
 			GradeConditionJson gradeCondition) {
-		return gradeCondition.getGradeScore().intValue() <= userTotalScore
-				|| BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(), amount) <= 0;
+	    boolean scoreCheck = false,moneyCheck = false;
+	    if(gradeCondition.getGradeScore() != null){
+	        scoreCheck = gradeCondition.getGradeScore().intValue() <= userTotalScore;
+        }
+
+	    if(gradeCondition.getGradeMoney()!=null){
+	        moneyCheck = BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(), amount) <= 0;
+        }
+		return scoreCheck || moneyCheck;
 	}
 
 	private boolean isCardGradeGtUserGrade(String uGrade, MemberCardRecord gCard) {

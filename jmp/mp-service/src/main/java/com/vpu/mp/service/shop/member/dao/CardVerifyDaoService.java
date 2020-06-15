@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardVerifyResultVo;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -40,6 +41,7 @@ public class CardVerifyDaoService extends ShopBaseService {
 		return db().select(CARD_EXAMINE.ID,CARD_EXAMINE.STATUS,CARD_EXAMINE.REFUSE_DESC,CARD_EXAMINE.REFUSE_TIME,CARD_EXAMINE.PASS_TIME)
 					.from(CARD_EXAMINE)
 					.where(CARD_EXAMINE.CARD_NO.eq(cardNo))
+                    .and(CARD_EXAMINE.DEL_FLAG.eq(VDF_NO))
 					.orderBy(CARD_EXAMINE.ID.desc())
 					.fetchAnyInto(CardVerifyResultVo.class);
 	}
@@ -161,7 +163,10 @@ public class CardVerifyDaoService extends ShopBaseService {
 
 
 	public CardExamineRecord getStatusByNo(String cardNo) {
-		return db().selectFrom(CARD_EXAMINE).where(CARD_EXAMINE.CARD_NO.eq(cardNo)).orderBy(CARD_EXAMINE.ID.desc())
+		return db().selectFrom(CARD_EXAMINE)
+                   .where(CARD_EXAMINE.CARD_NO.eq(cardNo))
+                   .and(CARD_EXAMINE.DEL_FLAG.eq(VDF_NO))
+                   .orderBy(CARD_EXAMINE.ID.desc())
 				.fetchAny();
 	}
 	

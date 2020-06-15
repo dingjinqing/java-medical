@@ -56,6 +56,7 @@ public class GradeCardService extends ShopBaseService{
             int execute = db().update(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
                 .set(USER_CARD.FLAG, CardConstant.UCARD_FG_STOP)
                 .where(USER_CARD.USER_ID.eq(userId))
+                .and(USER_CARD.FLAG.eq(CardConstant.UCARD_FG_USING))
                 .and(MEMBER_CARD.CARD_TYPE.eq(CardConstant.MCARD_TP_GRADE))
                 .execute();
             logger().info("USER_CARD执行{}行",execute);
@@ -65,6 +66,7 @@ public class GradeCardService extends ShopBaseService{
             List<Integer> cardIds = db().select(USER_CARD.CARD_ID)
                 .from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
                 .where(MEMBER_CARD.CARD_TYPE.eq(CardConstant.MCARD_TP_GRADE))
+                .and(USER_CARD.USER_ID.eq(userId))
                 .fetchInto(Integer.class);
             if(cardIds != null && cardIds.size()>0){
                 //  激活审核设置为审核失败，失败原因为“更换等价卡“
@@ -79,7 +81,9 @@ public class GradeCardService extends ShopBaseService{
                     .set(CARD_EXAMINE.REFUSE_DESC, desc.toString())
                     .set(CARD_EXAMINE.REFUSE_TIME, DateUtil.getLocalDateTime())
                     .set(CARD_EXAMINE.STATUS, CardVerifyConstant.VSTAT_REFUSED)
+                    .set(CARD_EXAMINE.DEL_FLAG,CardVerifyConstant.VDF_YES)
                     .where(CARD_EXAMINE.CARD_ID.in(cardIds).and(CARD_EXAMINE.USER_ID.eq(userId)))
+                    .and(CARD_EXAMINE.DEL_FLAG.eq(CardVerifyConstant.VDF_NO))
                     .execute();
 
                 logger().info("CARD_EXAMINE执行{}行",execute1);
