@@ -125,6 +125,7 @@ export default {
     }
   },
   mounted () {
+    this.activeName = localStorage.getItem('distributionTap')
     this.$http.$on('toChangeActiveName', (flag) => {
       if (flag) {
         this.activeName = 'first'
@@ -146,6 +147,8 @@ export default {
       this.distributorGroup = 0
       this.distributorLevel = 0
       this.$http.$emit('distributionTap', tab.index)
+
+      localStorage.setItem('distributionTap', tab.name)
     },
     tabChange () {
       this.activeName = 'fouth'
