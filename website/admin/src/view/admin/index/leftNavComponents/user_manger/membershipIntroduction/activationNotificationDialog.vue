@@ -72,6 +72,7 @@
                   <div
                     class="coupon"
                     v-for="(coupon,index) in coupons"
+                    :class="{'coupon-invalid': coupon.status != 0}"
                     :key="index"
                   >
                     <div class="coupon-info">
@@ -113,7 +114,7 @@
                       </div>
                       <div
                         class="coupon-bottom"
-                        :style="'background: #f66 url('+$imageHost+'/image/admin/coupon_border.png) repeat-x top;'"
+                        :style="'background-image:url('+$imageHost+'/image/admin/coupon_border.png)'"
                       >{{$t('activationNotificationDialog.reseive')}}</div>
                     </div>
                     <p class="coupon-name">{{coupon.actName}}</p>
@@ -226,7 +227,7 @@ export default {
           let mrkingVoucherId = res.content.mrkingVoucherId.split(',')
           if (mrkingVoucherId.length > 0 && mrkingVoucherId[0] !== '') {
             this.form.coupon = true
-            this.form.couponIds = mrkingVoucherId
+            this.form.couponIds = mrkingVoucherId.map(Number)
             this.coupons = res.content.mrkingVoucherList
           } else {
             this.form.coupon = false
@@ -315,6 +316,21 @@ export default {
     .coupon {
       margin-right: 20px;
       text-align: center;
+      &.coupon-invalid {
+        .coupon-info {
+          color: #d5d7d9;
+          border: 1px solid #d5d7d9;
+          .ca-value {
+            color: #d5d7d9;
+          }
+          .coupon-center p {
+            color: #d5d7d9;
+          }
+          .coupon-bottom {
+            background-color: #d5d7d9;
+          }
+        }
+      }
       .coupon-info {
         position: relative;
         width: 100px;
@@ -362,6 +378,9 @@ export default {
           height: 24px;
           line-height: 30px;
           color: #fff;
+          background-color: #f66;
+          background-repeat: repeat-x;
+          background-position: top;
           border-bottom-right-radius: 6px;
           border-bottom-left-radius: 6px;
         }
