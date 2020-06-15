@@ -58,12 +58,17 @@ global.wxComponent({
           api:'/api/wxapp/firstspecial/pictorial/info',
           params:['realPrice','linePrice','activityId','targetId']
         },
+        98:{ //限时降价|会员价
+          api:'/api/wxapp/reduceprice/pictorial/info',
+          params:['realPrice','linePrice','activityId','targetId']
+        },
         'default':{ //普通商品
           api:'/api/wxapp/goods/pictorial/info',
           params:['realPrice','linePrice','activityId','targetId']
         } 
       }
-      let target = [1,3,4,5,6,8,10,18].includes(this.data.shareData.activityType) ? apiInfo[this.data.shareData.activityType] : apiInfo['default']
+      console.log(this.data.shareData)
+      let target = [1,3,4,5,6,8,10,18,98].includes(this.data.shareData.activityType) ? apiInfo[this.data.shareData.activityType] : apiInfo['default']
       let params = this.filterObj(this.data.shareData,target.params)
       wx.showLoading({
         title: '生成中',

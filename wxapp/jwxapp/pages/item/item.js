@@ -669,6 +669,7 @@ global.wxPage({
     if (this.data.goodsInfo.activity != null) {
       activityData.activityId = this.data.goodsInfo.activity.activityId
       activityData.activityType = this.data.goodsInfo.activity.activityType
+      let priceData = {}
       switch (activityData.activityType) {
         case 1:
           activityData.pageType = 1
@@ -697,9 +698,18 @@ global.wxPage({
           }))
           break;
         case 22:
-          let priceData = this.data.goodsInfo.products.reduce((defaultData,item)=>{
-            defaultData.realPrice.push(item.prdRealPrice)
-            defaultData.linePrice.push(item.prdLinePrice)
+          priceData = this.data.goodsInfo.products.reduce((defaultData,item)=>{
+            if(item.prdRealPrice) defaultData.realPrice.push(item.prdRealPrice)
+            if(item.prdLinePrice) defaultData.linePrice.push(item.prdLinePrice)
+            return defaultData
+          },{realPrice:[],linePrice:[]})
+          activityData.realPrice = this.getMin(priceData.realPrice)
+          activityData.linePrice = this.getMax(priceData.linePrice)
+          break;
+        case 98:
+          priceData = this.data.goodsInfo.activity.gradeReducePrdVos.reduce((defaultData,item)=>{
+            if(item.reducePrice) defaultData.realPrice.push(item.reducePrice)
+            if(item.prdPrice) defaultData.linePrice.push(item.prdPrice)
             return defaultData
           },{realPrice:[],linePrice:[]})
           activityData.realPrice = this.getMin(priceData.realPrice)
@@ -713,6 +723,7 @@ global.wxPage({
       linePrice,
       ...activityData
     }
+    console.log(shareData)
     // 提前请求分享内容
     const apiInfo = {
       1: '/api/wxapp/groupbuy/share/info', //拼团
@@ -733,6 +744,7 @@ global.wxPage({
       shareData,
       buttonShareData
     })
+    console.log(this.data.shareData)
   },
   // 分享有礼接口数据请求
   shareInviteData () {
