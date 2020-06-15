@@ -883,7 +883,7 @@ public class UserImportService extends ShopBaseService {
 					&& cfg.getStatus().equals(BYTE_ONE) && !inviteUser.getInviteId().equals(userId)) {
 				logger().info("处理邀请人");
 				userRecord.setInviteId(inviteUser.getUserId());
-				userRecord.setInviteTime(DateUtil.getLocalTimeDate());
+				userRecord.setInviteTime(DateUtil.getSqlTimestamp());
 				Byte vaild = cfg.getVaild();
 				Timestamp time = vaild > BYTE_ZERO
 						? DateUtil.getTimeStampPlus(Integer.valueOf(vaild) - 1, ChronoUnit.DAYS)

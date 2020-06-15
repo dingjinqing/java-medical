@@ -360,7 +360,7 @@
                 <p @click="remarksHandler(scope.row.userId)">{{$t('distribution.listTip')}}</p>
                 <p
                   @click="del(scope.row.userId)"
-                  v-if="judgeStatus === 1"
+                  v-if="judgeStatus === '1'"
                 >{{$t('distribution.listDelete')}}</p>
               </div>
             </template>
@@ -495,7 +495,7 @@ export default {
       requestParams: {},
       // 表格
       tableData: [],
-      judgeStatus: 1, // 分销配置是否开启
+      judgeStatus: '1', // 分销配置是否开启
       // 分页
       pageParams: {},
 

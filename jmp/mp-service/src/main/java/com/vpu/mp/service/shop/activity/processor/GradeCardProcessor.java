@@ -190,8 +190,8 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
                 } else {
                     prdMpVo.setIsGradePrice(true);
                     prdMpVo.setActivityPrice(gradePrd.getGradePrice());
-                    prdMpVo.setReducePrice(reducePricePrdMpVo==null?BigDecimal.valueOf(Double.MAX_VALUE):reducePricePrdMpVo.getReducePrice());
                 }
+                prdMpVo.setReducePrice(reducePricePrdMpVo==null?BigDecimal.valueOf(Double.MAX_VALUE):reducePricePrdMpVo.getReducePrice());
                 gradeReducePrdMpVos.add(prdMpVo);
             });
 
