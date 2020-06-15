@@ -1290,6 +1290,7 @@ public class GoodsService extends ShopBaseService {
 
         if (goods.getGoodsLabels() != null && goods.getGoodsLabels().size() != 0) {
             insertGoodsLabels(goods.getGoodsLabels(), goods.getGoodsId());
+            goodsLabel.resetLabelIsNone(goods.getGoodsLabels());
         }
     }
 
