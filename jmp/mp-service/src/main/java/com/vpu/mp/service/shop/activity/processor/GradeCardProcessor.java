@@ -196,6 +196,9 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
             });
 
             GradeReduceMpVo gradeReduceMpVo =new GradeReduceMpVo();
+            if (capsule.getActivity() != null) {
+                gradeReduceMpVo.setActivityId(capsule.getActivity().getActivityId());
+            }
             gradeReduceMpVo.setActivityType(BaseConstant.ACTIVITY_TYPE_GRADE_REDUCE_PRICE);
             gradeReduceMpVo.setActState(reduceMpVo.getActState());
             gradeReduceMpVo.setNextStartTimestamp(reduceMpVo.getNextStartTimestamp());
