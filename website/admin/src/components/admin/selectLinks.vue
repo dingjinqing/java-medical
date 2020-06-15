@@ -132,7 +132,11 @@ export default {
     classificationOfCommodities
   },
   props: {
-    tuneUpSelectLink: Boolean
+    tuneUpSelectLink: Boolean,
+    isHiddenGoods: {
+      type: Boolean,
+      default: false
+    }
   },
   data () {
     return {
@@ -167,7 +171,16 @@ export default {
       this.suerPath = newData
     },
     tuneUpSelectLink () {
-      console.log(this.dialogVisible)
+      console.log(this.dialogVisible, this.isHiddenGoods)
+      let List1 = JSON.parse(JSON.stringify(this.level_one_DataList))
+      let List2 = JSON.parse(JSON.stringify(this.level_one_DataList))
+      List1.splice(1, 1)
+      if (this.isHiddenGoods) {
+        this.level_one_DataList = List1
+      } else {
+        this.level_one_DataList = List2
+      }
+      console.log(List1, List2)
       this.reFresh = false
       this.$nextTick(() => {
         this.reFresh = true
