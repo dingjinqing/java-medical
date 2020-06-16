@@ -162,7 +162,7 @@ public class MpDistributionGoodsService extends ShopBaseService {
 
     public RebateRatioVo getUserRebateRatio(Integer userId,UserDistributionVo distributionLevel,DistributionStrategyParam goodsRebateStrategy){
         List<Byte> levels = new ArrayList<Byte>(){
-            {add((byte)2);add((byte)3);add((byte)4);add((byte)5);}
+            {add((byte)1);add((byte)2);add((byte)3);add((byte)4);add((byte)5);}
         };
 
         //获取等级状态
