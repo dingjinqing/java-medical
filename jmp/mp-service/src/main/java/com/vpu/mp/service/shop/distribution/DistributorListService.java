@@ -94,6 +94,9 @@ public class DistributorListService extends ShopBaseService{
             }else{
                 dis.setInviteName(null);
             }
+            //备注条数
+            Integer remarkNum = db().selectCount().from(USER_REMARK).where(USER_REMARK.IS_DELETE.eq((byte) 0)).and(USER_REMARK.USER_ID.eq(dis.getUserId())).fetchOne().into(Integer.class);
+            dis.setRemarkNum(remarkNum);
         }
 
 		return distributorList;
