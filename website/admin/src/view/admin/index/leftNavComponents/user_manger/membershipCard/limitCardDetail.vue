@@ -483,6 +483,13 @@ export default {
     },
     prepareCardData () {
       let pullPath = this.$imageHost + '/'
+      if (this.cardNameAndBg.bgImg !== null) {
+        if (this.cardNameAndBg.bgImg.includes('https:')) {
+          pullPath = 'https:' + pullPath
+        } else if (this.cardNameAndBg.bgImg.includes('http:')) {
+          pullPath = 'http:' + pullPath
+        }
+      }
       if (this.cardNameAndBg.bgImg) {
         this.cardNameAndBg.bgImg = this.cardNameAndBg.bgImg.replace(pullPath, '')
       }
