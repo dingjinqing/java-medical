@@ -348,7 +348,7 @@ const routes = [
     path: '/admin/home/main/distribution/inviteUserList',
     name: 'distribution_info_inviteUser',
     meta: {
-      crumbTitle: 'router.distribution_info',
+      crumbTitle: 'router.distribution_inviteUser',
       meta: 'first_market_manage'
     },
     component: () =>

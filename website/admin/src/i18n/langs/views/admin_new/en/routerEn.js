@@ -257,6 +257,7 @@ export const en = {
 
   // 营销管理 分销
   distribution_info: ['Marketing management', 'distribution'],
+  distribution_inviteUser: ['Marketing management', 'distribution', 'List of distributors'],
   // 营销管理 分销 推广测试
   distribution_copyWriting: ['Marketing management', 'distribution', 'Promotion of copywriting'],
   // 营销管理 瓜分积分
