@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.shop.market.bargain;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 /**
@@ -13,8 +12,8 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 public class BargainGoodsUpdateParam {
-    @NotNull
     private Integer id;
+    private Integer goodsId;
     //指定金额结算模式的砍价底价 或 砍到任意金额结算模式的结算金额上限
     private BigDecimal expectationPrice;
     //任意金额结算模式的结算金额底价

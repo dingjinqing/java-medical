@@ -1052,7 +1052,7 @@ export default {
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
       this.searchType = 0
-      let orderStatus = this.filterOrderStatus !== null ? [this.filterOrderStatus] : []
+      let orderStatus = this.filterOrderStatus !== null ? [this.filterOrderStatus] : this.$route.query.customOrderStatus ? [...this.$route.query.customOrderStatus.split(',')] : []
       if (this.filterOrderStatus === 7) orderStatus = [7, 9]
       if (this.filterOrderStatus === 8) orderStatus = [8, 10]
       this.searchParams.orderStatus = orderStatus

@@ -1,10 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.reduceprice;
 
-import java.math.BigDecimal;
+import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-
-import lombok.Data;
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author: 王兵兵
@@ -13,15 +13,26 @@ import lombok.Data;
 @Data
 public class ReducePriceGoodsAddParam {
 
-    /** 商品主键 */
+    /**
+     * 对应表的主键
+     */
+    private Integer id;
+
+    /**
+     * 商品主键
+     */
     @NotNull
     private Integer goodsId;
 
-    /** 打几折 */
+    /**
+     * 打几折
+     */
     @NotNull
     private BigDecimal discount;
 
-    /** 减多少钱 */
+    /**
+     * 减多少钱
+     */
     @NotNull
     private BigDecimal reducePrice;
 
@@ -29,6 +40,8 @@ public class ReducePriceGoodsAddParam {
     @NotNull
     private BigDecimal goodsPrice;
 
-    /** 改价的规格数组 */
-    private ReducePriceGoodsProductAddParam[] reducePriceProduct;
+    /**
+     * 改价的规格数组
+     */
+    private List<ReducePriceGoodsProductAddParam> reducePriceProduct;
 }

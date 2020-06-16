@@ -18,7 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vpu.mp.db.shop.tables.records.UserRemarkRecord;
+import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.distribution.*;
+import com.vpu.mp.service.shop.config.DistributionConfigService;
 import jodd.util.StringUtil;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,9 @@ import javax.validation.constraints.Null;
 public class DistributorListService extends ShopBaseService{
     @Autowired
     public MpDistributionService mpDis;
+
+    @Autowired
+    public DistributionConfigService dcs;
 	/**
 	 * 分销员分页列表
 	 * @param param
@@ -82,7 +87,15 @@ public class DistributorListService extends ShopBaseService{
             .leftJoin(recordTable).on(recordTable.field(USER.USER_ID).eq(d.USER_ID))
             .leftJoin(record2Table).on(record2Table.field(USER.USER_ID).eq(d.USER_ID))
             .leftJoin(record3Table).on(record3Table.field(USER_FANLI_STATISTICS.FANLI_USER_ID).eq(d.USER_ID))
-            .leftJoin(record2Table2).on(record2Table2.field(ORDER_GOODS_REBATE.REBATE_USER_ID).eq(d.USER_ID)).where(d.IS_DISTRIBUTOR.eq((byte) 1));
+            .leftJoin(record2Table2).on(record2Table2.field(ORDER_GOODS_REBATE.REBATE_USER_ID).eq(d.USER_ID)).where(d.USER_ID.gt(0));
+
+        //分销审核开关是否开启
+        DistributionParam distributionCfg = dcs.getDistributionCfg();
+        if(distributionCfg.getJudgeStatus() == 1){//分销审核开关开启展示审核过的分销员
+            where.and(d.IS_DISTRIBUTOR.eq((byte) 1));
+        }else{//分销审核开关关闭 分销员列表默认展示有下级的分销员
+            param.setHaveNextUser((byte)1);
+        }
 
         SelectConditionStep<? extends Record> sql = buildOptions(where, param,record2Table,record3Table,record2Table2,recordTable);
 
@@ -98,7 +111,6 @@ public class DistributorListService extends ShopBaseService{
             Integer remarkNum = db().selectCount().from(USER_REMARK).where(USER_REMARK.IS_DELETE.eq((byte) 0)).and(USER_REMARK.USER_ID.eq(dis.getUserId())).fetchOne().into(Integer.class);
             dis.setRemarkNum(remarkNum);
         }
-
 		return distributorList;
 	}
 
@@ -259,13 +271,13 @@ public class DistributorListService extends ShopBaseService{
 		SelectConditionStep<? extends Record> sql = select.where(USER.INVITE_ID.eq(param.getUserId()));
 
 		if(StringUtil.isNotEmpty(param.getMobile())) {
-			sql = sql.and(USER.MOBILE.eq(param.getMobile()));
+			sql = sql.and(USER.MOBILE.contains(param.getMobile()));
 		}
 		if(StringUtil.isNotEmpty(param.getUsername())) {
-			sql = sql.and(USER.USERNAME.eq(param.getUsername()));
+			sql = sql.and(USER.USERNAME.contains(param.getUsername()));
 		}
         if(StringUtil.isNotEmpty(param.getRealName())) {
-            sql = sql.and(USER_DETAIL.REAL_NAME.eq(param.getRealName()));
+            sql = sql.and(USER_DETAIL.REAL_NAME.contains(param.getRealName()));
         }
 		if(param.getStartCreateTime() != null && param.getEndCreateTime() != null) {
 			sql = sql.and(USER.CREATE_TIME.ge(param.getStartCreateTime()).and(USER.CREATE_TIME.le(param.getEndCreateTime())));

@@ -14,7 +14,7 @@
         <image class="image" src="{{ imageUrl }}image/wxapp/download_img.png" mode='widthFix'></image>
         <text class="text">下载海报</text>
       </view>
-      <view class="view" bindtap='downloadPoster' data-is-multiple>
+      <view class="view" bindtap='downloadPoster' wx:if="{{showMultiple}}" data-is-multiple>
         <image class="image" src="{{ imageUrl }}image/wxapp/get_imgs_item.png" mode='widthFix'></image>
         <text class="text">下载多图</text>
       </view>

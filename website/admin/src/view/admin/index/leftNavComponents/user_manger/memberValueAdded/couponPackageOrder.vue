@@ -49,7 +49,7 @@
               value="balance"
             ></el-option>
             <el-option
-              label="积分支付支付"
+              label="积分支付"
               value="score"
             ></el-option>
           </el-select>
@@ -114,7 +114,9 @@
         :header-cell-style="{
             'background-color':'#f5f5f5',
             'text-align':'center',
-            'border':'none'
+            'border':'none',
+            'font-weight': 'bold',
+            'color': '#000'
           }"
         :cell-style="{
             'text-align':'center'

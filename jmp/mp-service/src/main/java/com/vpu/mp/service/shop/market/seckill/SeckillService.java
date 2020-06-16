@@ -240,38 +240,65 @@ public class SeckillService extends ShopBaseService{
      *
      */
     public void updateSeckill(SeckillUpdateParam param) {
-        SecKillDefineRecord record = new SecKillDefineRecord();
-        assign(param,record);
-        if(param.getShareConfig() != null) {
+        SecKillDefineRecord record = getSeckillActById(param.getSkId());
+        assign(param, record);
+        if (param.getShareConfig() != null) {
             if (StringUtil.isNotEmpty(param.getShareConfig().getShareImg())) {
                 param.getShareConfig().setShareImg(RegexUtil.getUri(param.getShareConfig().getShareImg()));
             }
             record.setShareConfig(Util.toJson(param.getShareConfig()));
         }
-        transaction(()->{
-            int totalStock = 0;
-            if(param.getSecKillProduct() != null && param.getSecKillProduct().length > 0){
-                for(SeckillProductAddParam secKillProduct : param.getSecKillProduct()){
-                    if(secKillProduct.getProductId() != null && secKillProduct.getSecKillPrice() != null && secKillProduct.getStock() != null){
-                        db().update(SEC_KILL_PRODUCT_DEFINE)
-                            .set(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,secKillProduct.getSecKillPrice())
-                            .set(SEC_KILL_PRODUCT_DEFINE.STOCK,secKillProduct.getStock())
-                            .where(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(secKillProduct.getProductId()).and(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(param.getSkId()))).execute();
-                        totalStock += secKillProduct.getStock();
+        if (CollectionUtils.isNotEmpty(param.getActivityTagId())) {
+            record.setActivityTagId(Util.listToString(param.getActivityTagId()));
+        }
+        List<Integer> oldGoodsIds = Util.splitValueToList(record.getGoodsId());
+
+        if (CollectionUtils.isNotEmpty(param.getSecKillProduct())) {
+            record.setGoodsId(Util.listToString(param.getSecKillProduct().stream().map(SeckillProductAddParam::getGoodsId).collect(Collectors.toList())));
+            List<SeckillProductAddParam> newActGoods = param.getSecKillProduct().stream().filter(g -> g.getSkproId() == null).collect(Collectors.toList());
+            param.getSecKillProduct().removeAll(newActGoods);
+            Set<Integer> goodsIds = new HashSet<>();
+            goodsIds.addAll(oldGoodsIds);
+            transaction(() -> {
+
+                int totalStock = 0;
+                if (CollectionUtils.isNotEmpty(param.getSecKillProduct())) {
+                    db().deleteFrom(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(param.getSkId()).and(SEC_KILL_PRODUCT_DEFINE.SKPRO_ID.notIn(param.getSecKillProduct().stream().map(SeckillProductAddParam::getSkproId).collect(Collectors.toList())))).execute();
+
+                    for (SeckillProductAddParam secKillProduct : param.getSecKillProduct()) {
+                        if (secKillProduct.getProductId() != null && secKillProduct.getSecKillPrice() != null && secKillProduct.getStock() != null) {
+                            SecKillProductDefineRecord secKillProductDefineRecord = new SecKillProductDefineRecord();
+                            assign(secKillProduct, secKillProductDefineRecord);
+                            db().executeUpdate(secKillProductDefineRecord);
+                            totalStock += secKillProduct.getStock();
+                            goodsIds.add(secKillProduct.getGoodsId());
+                        }
                     }
                 }
-            }
-            if(totalStock > 0){
-                record.setStock(totalStock);
-            }
+                if (CollectionUtils.isNotEmpty(newActGoods)) {
+                    for (SeckillProductAddParam secKillProduct : newActGoods) {
+                        SecKillProductDefineRecord secKillProductDefineRecord = db().newRecord(SEC_KILL_PRODUCT_DEFINE);
+                        assign(secKillProduct, secKillProductDefineRecord);
+                        secKillProductDefineRecord.setSkId(param.getSkId());
+                        secKillProductDefineRecord.setTotalStock(secKillProduct.getStock());
+                        secKillProductDefineRecord.insert();
+                        goodsIds.add(secKillProduct.getGoodsId());
+                    }
+                }
+                if (totalStock > 0) {
+                    record.setStock(totalStock);
+                }
+                db().executeUpdate(record);
+            });
+            //刷新goodsType
+            saas.getShopApp(getShopId()).shopTaskService.seckillTaskService.monitorGoodsType();
+            esDataUpdateMqService.addEsGoodsIndex(new ArrayList<>(goodsIds), getShopId(), DBOperating.UPDATE);
+        } else {
             db().executeUpdate(record);
-        });
-
-
-        //刷新goodsType
-        saas.getShopApp(getShopId()).shopTaskService.seckillTaskService.monitorGoodsType();
-        esDataUpdateMqService.addEsGoodsIndex(
-            Util.splitValueToList(getSeckillActById(record.getSkId()).getGoodsId()), getShopId(), DBOperating.UPDATE);
+            //刷新goodsType
+            saas.getShopApp(getShopId()).shopTaskService.seckillTaskService.monitorGoodsType();
+            esDataUpdateMqService.addEsGoodsIndex(oldGoodsIds, getShopId(), DBOperating.UPDATE);
+        }
     }
 
     /**
