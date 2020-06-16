@@ -28,14 +28,20 @@
                 <td>{{item.prdPrice}}</td>
                 <td><input
                     type="text"
+                    @change="numberValidate(item.advisePrice,'rebate-advise-'+index, item, 'advisePrice')"
+                    :id="'rebate-advise-'+index"
                     v-model.number="item.advisePrice"
                   /></td>
                 <td><input
                     type="text"
+                    @change="numberValidate(item.minPrice,'rebate-min-'+index, item, 'minPrice')"
+                    :id="'rebate-min-'+index"
                     v-model.number="item.minPrice"
                   /></td>
                 <td><input
                     type="text"
+                    @change="numberValidate(item.maxPrice,'rebate-max-'+index, item, 'maxPrice')"
+                    :id="'rebate-max-'+index"
                     v-model.number="item.maxPrice"
                   /></td>
               </tr>
@@ -72,14 +78,20 @@
                 <td>{{item.prdPrice}}</td>
                 <td><input
                     type="text"
+                    @change="numberValidate(item.advisePrice,'rebate-advise-'+index, item, 'advisePrice')"
+                    :id="'rebate-advise-'+index"
                     v-model.number="item.advisePrice"
                   /></td>
                 <td><input
                     type="text"
+                    @change="numberValidate(item.minPrice,'rebate-min-'+index, item, 'minPrice')"
+                    :id="'rebate-min-'+index"
                     v-model.number="item.minPrice"
                   /></td>
                 <td><input
                     type="text"
+                    @change="numberValidate(item.maxPrice,'rebate-max-'+index, item, 'maxPrice')"
+                    :id="'rebate-max-'+index"
                     v-model.number="item.maxPrice"
                   /></td>
               </tr>
@@ -343,6 +355,17 @@ export default {
         })
       }
     },
+    /* 数字校验 */
+    numberValidate (val, inputId, item, key) {
+      if (typeof val !== 'number') {
+        document.getElementById(inputId).focus()
+        item[key] = null
+        return
+      }
+      if (val < 0) {
+        item[key] = null
+      }
+    },
     setLowestPrice () {
       let minPrice = this.goodsDistributionInfo.goodsRebatePrices[0].minPrice
       this.goodsDistributionInfo.goodsRebatePrices.forEach(item => { item.minPrice = minPrice })
@@ -441,6 +464,51 @@ export default {
     },
     /* 验证数据是否全部合法 */
     validateFormData () {
+      // 校验分销价格信息
+      if (this.goodsDistributionInfo.canRebate) {
+        for (let i = 0; i < this.goodsDistributionInfo.goodsRebatePrices.length; i++) {
+          let item = this.goodsDistributionInfo.goodsRebatePrices[i]
+          if (typeof item.advisePrice !== 'number') {
+            this.$message.warning({ message: '请正确填写分销建议价', type: 'warning' })
+            document.getElementById('rebate-advise-' + i).focus()
+            return false
+          }
+
+          if (typeof item.minPrice !== 'number') {
+            this.$message.warning({ message: '请正确填写分销最低价', type: 'warning' })
+            document.getElementById('rebate-min-' + i).focus()
+            return false
+          }
+
+          if (typeof item.maxPrice !== 'number') {
+            this.$message.warning({ message: '请正确填写分销最高价', type: 'warning' })
+            document.getElementById('rebate-max-' + i).focus()
+            return false
+          }
+
+          if (item.maxPrice > item.prdPrice) {
+            this.$message.warning({ message: '分销最高价格不可大于原价', type: 'warning' })
+            document.getElementById('rebate-max-' + i).focus()
+            return false
+          }
+          if (item.minPrice > item.maxPrice) {
+            this.$message.warning({ message: '分销最低价不可高于最高价', type: 'warning' })
+            document.getElementById('rebate-min-' + i).focus()
+            return false
+          }
+          if (item.maxPrice < item.advisePrice) {
+            this.$message.warning({ message: '建议价不可高于分销最高价', type: 'warning' })
+            document.getElementById('rebate-advise-' + i).focus()
+            return false
+          }
+          if (item.minPrice > item.advisePrice) {
+            this.$message.warning({ message: '建议价不可低于分销最低价', type: 'warning' })
+            document.getElementById('rebate-advise-' + i).focus()
+            return false
+          }
+        }
+      }
+
       // 分销推广语长度超长
       if (this.goodsDistributionInfo.promotionLanguageSwitch && !isStrBlank(this.goodsDistributionInfo.promotionLanguage) &&
         this.goodsDistributionInfo.promotionLanguage.length > 200) {
