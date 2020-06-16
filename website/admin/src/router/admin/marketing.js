@@ -343,7 +343,7 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/distribution/copyWriting'
       )
   },
-  // 分销-分销员已邀请的用户
+  // 分销-分销员列表-分销员已邀请/下级的用户
   {
     path: '/admin/home/main/distribution/inviteUserList',
     name: 'distribution_info_inviteUser',
@@ -354,6 +354,19 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/distribution/inviteUserList'
+      )
+  },
+  // 分销-分销员列表-间接邀请的用户
+  {
+    path: '/admin/home/main/distribution/indirectUserList',
+    name: 'distribution_info_indirectUser',
+    meta: {
+      crumbTitle: 'router.distribution_indirectUser',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/distribution/indirectUserList'
       )
   },
   // 分销-佣金统计
