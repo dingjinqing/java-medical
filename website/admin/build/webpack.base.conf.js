@@ -37,7 +37,8 @@ module.exports = {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src')
+      '@': resolve('src'),
+      'jquery': path.resolve(__dirname, '../static/js/jquery.min.js')
     }
   },
   module: {
