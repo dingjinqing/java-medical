@@ -69,7 +69,7 @@ global.wxPage({
   },
   // 规则详情
   toRule: function () {
-    util.jumpToWeb('/wxapp/promote/help', '&actCode=' + actCode);
+    util.jumpToWeb('/wxapp/wxapp/promote/help', '&actCode=' + actCode);
   },
   // 发起助力
   shareGoods: function (e) {

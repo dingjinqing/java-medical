@@ -854,7 +854,7 @@ global.wxPage({
     })
   },
   goService(){
-    util.jumpToWeb('/wxapp/checkout/services')
+    util.jumpToWeb('/wxapp/wxapp/checkout/services')
   },
   viewPreSaleRule(){
     this.setData({

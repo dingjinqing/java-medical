@@ -163,7 +163,7 @@ global.wxPage({
   },
   lookRule: function (e) {
     var sign_rule = e.currentTarget.dataset.rule;
-    util.jumpToWeb('/wxapp/sign/help', '&sign_rule=' + JSON.stringify(sign_rule))
+    util.jumpToWeb('/wxapp/wxapp/sign/help', '&sign_rule=' + JSON.stringify(sign_rule))
   },
   signScore: function (e) {
     var score = user_center[0].sign_score.sign_data.receive_score;

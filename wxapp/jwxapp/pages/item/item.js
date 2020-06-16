@@ -1063,15 +1063,15 @@ global.wxPage({
     } = e.currentTarget.dataset
     switch (type) {
       case 1:
-        util.jumpToWeb('/wxapp/group/help', '&gid=' + this.data.specParams.activity.activityId)
+        util.jumpToWeb('/wxapp/wxapp/group/help', '&gid=' + this.data.specParams.activity.activityId)
         break
 
       case 3:
-        util.jumpToWeb('/wxapp/bargain/help')
+        util.jumpToWeb('/wxapp/wxapp/bargain/help')
         break
 
       case 8:
-        util.jumpToWeb('/wxapp/pinlottery/help', '&gid=' + this.data.specParams.activity.activityId)
+        util.jumpToWeb('/wxapp/wxapp/pinlottery/help', '&gid=' + this.data.specParams.activity.activityId)
         break
     }
   },

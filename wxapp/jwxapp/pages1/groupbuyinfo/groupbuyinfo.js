@@ -380,7 +380,7 @@ global.wxPage({
 
   // 拼团规则
   toRule: function () {
-    util.jumpToWeb('/wxapp/group/help', '&gid=' + this.data.groupbuyInfo.groupBuyDefineInfo.id)
+    util.jumpToWeb('/wxapp/wxapp/group/help', '&gid=' + this.data.groupbuyInfo.groupBuyDefineInfo.id)
   },
 
   // 规格关闭
