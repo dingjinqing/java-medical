@@ -1063,15 +1063,15 @@ global.wxPage({
     } = e.currentTarget.dataset
     switch (type) {
       case 1:
-        util.jumpToWeb('/wxapp/group/help', '&gid=' + this.data.specParams.activity.activityId)
+        util.jumpToWeb('/wxapp/wxapp/group/help', '&gid=' + this.data.specParams.activity.activityId)
         break
 
       case 3:
-        util.jumpToWeb('/wxapp/bargain/help')
+        util.jumpToWeb('/wxapp/wxapp/bargain/help')
         break
 
       case 8:
-        util.jumpToWeb('/wxapp/pinlottery/help', '&gid=' + this.data.specParams.activity.activityId)
+        util.jumpToWeb('/wxapp/wxapp/pinlottery/help', '&gid=' + this.data.specParams.activity.activityId)
         break
     }
   },
@@ -1106,7 +1106,7 @@ global.wxPage({
     let preActBarStr = ''
     console.log(this.data.productInfo)
     if (this.data.specParams.activity.preSaleType !== 1) {
-      preActBarStr = `付定金立减:￥${this.data.productInfo.actProduct.discountPrice - this.data.productInfo.actProduct.depositPrice}`
+      preActBarStr = `付定金立减:￥${(this.data.productInfo.actProduct.discountPrice - this.data.productInfo.actProduct.depositPrice).toFixed(2)}`
     } else {
       preActBarStr = `定金:￥${this.data.productInfo.actProduct.preSalePrice}`
     }

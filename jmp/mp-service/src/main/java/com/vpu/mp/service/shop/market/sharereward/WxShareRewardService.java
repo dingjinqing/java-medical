@@ -261,7 +261,9 @@ public class WxShareRewardService extends ShopBaseService {
 
     private UserInfo getUserInfo(Integer userId) {
         UserInfo userInfo = userService.getUserInfo(userId);
-        userInfo.setIsNew(saas.getShopApp(getShopId()).readOrder.orderInfo.isNewUser(userId));
+        if (!userInfo.getUserAvatar().startsWith("http")) {
+            userInfo.setUserAvatar(imageUrl(userInfo.getUserAvatar()));
+        }
         return userInfo;
     }
 

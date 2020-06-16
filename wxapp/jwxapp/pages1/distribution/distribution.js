@@ -38,7 +38,7 @@ global.wxPage({
     // util.api('/api/wxapp/rebate/config', function (res) {
     //   util.jumpToWeb('/wxapp/distribution/help', res.content);
     // }, {});
-    util.jumpToWeb('/wxapp/distribution/help');
+    util.jumpToWeb('/wxapp/wxapp/distribution/help');
   },
   // 待返利佣金说明
   a_tips: function () {

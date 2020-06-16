@@ -959,6 +959,9 @@ export default {
 
           // 分销员审核开关配置
           localStorage.setItem('distributionJudgeStatus', this.form.judge_status)
+          // 分销员审核项邀请码
+          var codeFlag = this.form.activation_cfg.find(item => { return item === '邀请码' })
+          localStorage.setItem('distributionCode', codeFlag === undefined ? 0 : 1)
         } else {
           this.$message.warning(res.message)
         }

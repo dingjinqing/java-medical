@@ -61,7 +61,7 @@ global.wxPage({
   },
   // 活动规则
   toRule: function () {
-    util.jumpToWeb('/wxapp/pinintegration/help', '&pid=' + this.data.pinInte_id);
+    util.jumpToWeb('/wxapp/wxapp/pinintegration/help', '&pid=' + this.data.pinInte_id);
   },
   // 跳转参与活动列表
   toActivity: function () {

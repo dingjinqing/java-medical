@@ -333,7 +333,7 @@ global.wxPage({
   },
   // 查看活动规则
   to_rule: function () {
-    util.jumpToWeb('/wxapp/pinlottery/help', '&gid=' + group_draw_id);
+    util.jumpToWeb('/wxapp/wxapp/pinlottery/help', '&gid=' + group_draw_id);
   },
   // 去分享
   to_share: function () {
