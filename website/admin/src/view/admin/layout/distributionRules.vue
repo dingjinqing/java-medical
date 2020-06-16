@@ -1,7 +1,11 @@
 <template>
   <!-- 小程序-分销中心规则页面 -->
   <div class="distributionRules">
-    <el-tabs v-model="activeName">
+    <el-tabs
+      v-model="activeName"
+      @tab-click="handleClick"
+      :stretch="true"
+    >
       <el-tab-pane
         label="返利说明"
         name="first"
