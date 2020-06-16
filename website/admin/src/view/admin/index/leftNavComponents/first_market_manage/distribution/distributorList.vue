@@ -80,6 +80,29 @@
         </div>
         <div>
           <el-form-item
+            label="邀请人："
+            class="item"
+          >
+            <el-input
+              :placeholder="$t('distribution.contentTip')"
+              size="small"
+              class="inputWidth"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="邀请码："
+            class="item"
+            v-if="distributionCode === '1'"
+          >
+            <el-input
+              :placeholder="$t('distribution.contentTip')"
+              size="small"
+              class="inputWidth"
+            ></el-input>
+          </el-form-item>
+        </div>
+        <div>
+          <el-form-item
             :label="$t('distribution.invitedUserName') + '：'"
             class="item"
           >
@@ -171,10 +194,6 @@
 
     </div>
     <div class="tableInfo">
-      <div class="notice">
-        <span>{{$t('distribution.distributorListfont')}}</span>
-        <span>{{$t('distribution.distributorListDesc')}}</span>
-      </div>
       <div class="table_list">
         <el-table
           ref="multipleTable"
@@ -498,6 +517,7 @@ export default {
       // 表格
       tableData: [],
       judgeStatus: '1', // 分销配置是否开启
+      distributionCode: '1', // 分销审核是否开启邀请码
       // 分页
       pageParams: {},
 
@@ -539,10 +559,16 @@ export default {
   mounted () {
     this.param.distributorGroup = this.distributorGroup ? this.distributorGroup : ''
     this.param.distributorLevel = this.distributorLevel ? this.distributorLevel : ''
+    this.judgeStatus = localStorage.getItem('distributionJudgeStatus')
+    this.distributionCode = localStorage.getItem('distributionCode')
+    console.log(this.distributionCode)
+    // 默认是否有下级用户
+    if (this.judgeStatus === '0') {
+      this.param.haveNextUset = 1
+    }
     this.initDataList()
     this.levelList() // 分销员等级
     this.groupList() // 分销员分组
-    this.judgeStatus = localStorage.getItem('distributionJudgeStatus')
   },
 
   methods: {

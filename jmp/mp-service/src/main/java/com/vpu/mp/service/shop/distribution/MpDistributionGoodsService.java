@@ -368,13 +368,16 @@ public class MpDistributionGoodsService extends ShopBaseService {
      * @param param
      * @return
      */
-    private int addRebatePriceRecord(GoodsDetailMpParam param){
+    private void addRebatePriceRecord(GoodsDetailMpParam param){
         String rebateConfigInfo = Util.toJson(param.getRebateConfig());
-        RebatePriceRecordRecord rebatePriceRecord = new RebatePriceRecordRecord();
-        rebatePriceRecord.setDataSign(Util.md5(rebateConfigInfo));
-        rebatePriceRecord.setRebateData(rebateConfigInfo);
-        rebatePriceRecord.setUserId(param.getUserId());
-        int res = db().executeInsert(rebatePriceRecord);
-        return res;
+        String DataSign = Util.md5(rebateConfigInfo);
+        Integer into = db().selectCount().from(REBATE_PRICE_RECORD).where(REBATE_PRICE_RECORD.DATA_SIGN.eq(DataSign)).fetchOne().into(Integer.class);
+        if (into < 1) {
+            RebatePriceRecordRecord rebatePriceRecord = new RebatePriceRecordRecord();
+            rebatePriceRecord.setDataSign(DataSign);
+            rebatePriceRecord.setRebateData(rebateConfigInfo);
+            rebatePriceRecord.setUserId(param.getUserId());
+            db().executeInsert(rebatePriceRecord);
+        }
     }
 }
