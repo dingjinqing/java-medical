@@ -71,4 +71,8 @@ public class DistributorListVo {
 	 * 待返利佣金金额
 	 */
 	private BigDecimal waitFanliMoney;
+    /**
+     * 备注数量
+     */
+	private Integer remarkNum;
 }
