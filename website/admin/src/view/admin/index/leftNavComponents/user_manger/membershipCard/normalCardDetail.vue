@@ -341,8 +341,11 @@ export default {
 
       // 折扣
       this.disCountData.powerDiscount = data.powerCount === 1
-      console.log(this.disCountData.powerDiscount)
-      this.disCountData.discount = data.disCount
+      if (data.disCount !== null) {
+        this.disCountData.discount = data.disCount
+      } else {
+        this.disCountData.discount = void 0
+      }
       if (this.isValidValue(data.discountIsAll)) {
         this.disCountData.discountGoodsType = String(data.discountIsAll)
       }
@@ -597,7 +600,8 @@ export default {
 
       // 至少选择一项会员权益
       if (this.disCountData.powerDiscount || this.ownGoodsData.powerOwnGoods ||
-        this.cardScoreCfgData.powerScore || this.cardChargeCfgData.powerCard || this.cardCouponCfgData.powerCoupon) {
+        this.cardScoreCfgData.powerScore || this.cardChargeCfgData.powerCard || this.cardCouponCfgData.powerCoupon ||
+        this.customRights.customRightsFlag === 'on' || this.freeship.type !== -1) {
         // 检验都通过
         console.log(this.cardChargeCfgData.valid)
         if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardScoreCfgData.valid &&
