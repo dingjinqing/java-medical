@@ -62,7 +62,9 @@
   
   <view class="footer-button">
     <view class='a-tips'>预计最高可返利佣金：{{rebateInfo}}元</view>
-    <button open-type="share" class="btn_share" style="background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})">分享给好友</button>
+    <button bindtap="openShareDialog" class="btn_share" style="background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})">分享给好友</button>
   </view>
 </view>
 <include src="/pages/common/footer.wxml" />
+
+<v-share show="{{showShareDialog}}" share-data="{{customShareData}}" source="shareRebate"/>

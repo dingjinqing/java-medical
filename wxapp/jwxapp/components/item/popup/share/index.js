@@ -6,7 +6,11 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    shareData:Object
+    shareData:Object,
+    source:{
+      type:String,
+      value:''
+    }
   },
 
   /**
@@ -25,55 +29,63 @@ global.wxComponent({
       this.bindClose()
     },
     async downloadPoster(e){
-      const apiInfo = {
-        1:{ //拼团
-          api:'/api/wxapp/groupbuy/pictorial/info',
-          params:['realPrice','linePrice','activityId','targetId','pageType']
-        }, 
-        3:{ //砍价
-          api:'/api/wxapp/bargain/pictorial/info',
-          params: ['realPrice','linePrice','activityId','targetId','pageType']
-        },
-        4:{ //积分兑换
-          api:'/api/wxapp/integral_mall/pictorial/info',
-          params: ['realPrice','linePrice','activityId','targetId','score'],
-        },
-        5:{ //秒杀
-          api:'/api/wxapp/seckill/pictorial/info',
-          params: ['realPrice','linePrice','activityId','targetId']
-        },
-        6:{ //限时降价
-          api:'/api/wxapp/reduceprice/pictorial/info',
-          params:['realPrice','linePrice','activityId','targetId']
-        },
-        8:{ //拼团抽奖
-          api:'/api/wxapp/groupdraw/pictorial/info',
-          params:['realPrice','linePrice','activityId','targetId']
-        },
-        10:{ //定金膨胀
-          api:'/api/wxapp/presale/pictorial/info',
-          params:['realPrice','linePrice','activityId','targetId','depositPrice']
-        },
-        18:{ //首单特惠
-          api:'/api/wxapp/firstspecial/pictorial/info',
-          params:['realPrice','linePrice','activityId','targetId']
-        },
-        98:{ //限时降价|会员价
-          api:'/api/wxapp/reduceprice/pictorial/info',
-          params:['realPrice','linePrice','activityId','targetId']
-        },
-        'default':{ //普通商品
-          api:'/api/wxapp/goods/pictorial/info',
-          params:['realPrice','linePrice','activityId','targetId']
-        } 
+      let target = null,params = null,goodsImage=[]
+      if(!this.data.source){
+        const apiInfo = {
+          1:{ //拼团
+            api:'/api/wxapp/groupbuy/pictorial/info',
+            params:['realPrice','linePrice','activityId','targetId','pageType']
+          }, 
+          3:{ //砍价
+            api:'/api/wxapp/bargain/pictorial/info',
+            params: ['realPrice','linePrice','activityId','targetId','pageType']
+          },
+          4:{ //积分兑换
+            api:'/api/wxapp/integral_mall/pictorial/info',
+            params: ['realPrice','linePrice','activityId','targetId','score'],
+          },
+          5:{ //秒杀
+            api:'/api/wxapp/seckill/pictorial/info',
+            params: ['realPrice','linePrice','activityId','targetId']
+          },
+          6:{ //限时降价
+            api:'/api/wxapp/reduceprice/pictorial/info',
+            params:['realPrice','linePrice','activityId','targetId']
+          },
+          8:{ //拼团抽奖
+            api:'/api/wxapp/groupdraw/pictorial/info',
+            params:['realPrice','linePrice','activityId','targetId']
+          },
+          10:{ //定金膨胀
+            api:'/api/wxapp/presale/pictorial/info',
+            params:['realPrice','linePrice','activityId','targetId','depositPrice']
+          },
+          18:{ //首单特惠
+            api:'/api/wxapp/firstspecial/pictorial/info',
+            params:['realPrice','linePrice','activityId','targetId']
+          },
+          98:{ //限时降价|会员价
+            api:'/api/wxapp/reduceprice/pictorial/info',
+            params:['realPrice','linePrice','activityId','targetId']
+          },
+          'default':{ //普通商品
+            api:'/api/wxapp/goods/pictorial/info',
+            params:['realPrice','linePrice','activityId','targetId']
+          } 
+        }
+        target = [1,3,4,5,6,8,10,18,98].includes(this.data.shareData.activityType) ? apiInfo[this.data.shareData.activityType] : apiInfo['default']
+        params = this.filterObj(this.data.shareData,target.params)
+        goodsImage = e.currentTarget.dataset.isMultiple ? await this.requestGoodsImage(this.data.shareData.targetId) : []
       }
-      console.log(this.data.shareData)
-      let target = [1,3,4,5,6,8,10,18,98].includes(this.data.shareData.activityType) ? apiInfo[this.data.shareData.activityType] : apiInfo['default']
-      let params = this.filterObj(this.data.shareData,target.params)
+      if(this.data.source === 'shareRebate'){
+        target = {api:'/api/wxapp/rebate/pictorial/info'}
+        params = {rebateConfig:JSON.stringify(this.data.shareData.rebateConfig),targetId:this.data.shareData.gid,realPrice:this.data.shareData.realPrice}
+        goodsImage = e.currentTarget.dataset.isMultiple ? await this.requestGoodsImage(this.data.shareData.gid) : []
+      }
       wx.showLoading({
         title: '生成中',
       })
-      let goodsImage = e.currentTarget.dataset.isMultiple ? await this.requestGoodsImage(this.data.shareData.targetId) : []
+      
       console.log(goodsImage)
       this.requestPictorial(target,params,goodsImage)
     },
