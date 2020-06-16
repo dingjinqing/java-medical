@@ -65,7 +65,4 @@ public class UserInfo {
     private String inviteName;
     private Integer invitationCode;
 
-    //是否新用户
-    private Boolean isNew;
-
 }
