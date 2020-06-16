@@ -129,9 +129,9 @@ var init = {
 
   _initRequest (options) {
     console.log('init_request')
-    if (this.user_id && options.inviteId) { //邀请人
+    if (this.user_id && (options.inviteId || options.uid)) { //邀请人
       console.log('邀请++++++')
-      let inviteId = options.inviteId
+      let inviteId = options.inviteId || options.uid
       let userId = this.user_id
       util.api("/api/wxapp/distribution/user/bind", function (res) { }, {
         inviteId,
