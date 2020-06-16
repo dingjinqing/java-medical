@@ -267,6 +267,9 @@ export default {
     },
     checkDiscountVal (val) {
       // 0-10允许两位小数的数字
+      if (Number(val) === 0) {
+        return false
+      }
       return /^((10)||((?:[0-9]|0[1-9])(\.\d{1,2})?))$/.test(val)
     },
     loadAddSymbol () {
