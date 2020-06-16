@@ -2,15 +2,8 @@ package com.vpu.mp.service.shop.order;
 
 import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnStatusChangeRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DistributionConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
@@ -37,34 +30,17 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.order.OrderParam;
-import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
-import com.vpu.mp.service.pojo.shop.order.OrderSimpleInfoVo;
+import com.vpu.mp.service.pojo.shop.order.*;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
-import com.vpu.mp.service.pojo.shop.order.api.ApiOrderGoodsListVo;
-import com.vpu.mp.service.pojo.shop.order.api.ApiOrderListVo;
-import com.vpu.mp.service.pojo.shop.order.api.ApiOrderPageResult;
-import com.vpu.mp.service.pojo.shop.order.api.ApiOrderQueryParam;
-import com.vpu.mp.service.pojo.shop.order.api.ApiReturnGoodsListVo;
-import com.vpu.mp.service.pojo.shop.order.api.ApiReturnOrderListVo;
-import com.vpu.mp.service.pojo.shop.order.api.ApiReturnOrderPageResult;
+import com.vpu.mp.service.pojo.shop.order.api.*;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.order.must.OrderMustVo;
 import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
-import com.vpu.mp.service.pojo.shop.order.refund.OperatorRecord;
-import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
-import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
-import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnListVo;
-import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderInfoVo;
-import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
+import com.vpu.mp.service.pojo.shop.order.refund.*;
 import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
@@ -150,17 +126,8 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -1681,15 +1648,14 @@ public class OrderReadService extends ShopBaseService {
                     order.setShippingName(expressService.get(order.getShippingId()).getShippingName());
                 }
             }
-            if(columns.contains(OrderExportVo.REBATE)){
-                //返利金额
-                Result<OrderGoodsRebateRecord> orderRebate = orderGoodsRebate.get(order.getOrderSn(),order.getRecId());
-                for(OrderGoodsRebateRecord r : orderRebate){
-                    if(r.getRebateLevel().equals(DistributionConstant.REBATE_LEVEL_1)){
-                        order.setRebateLevelOne(r.getRealRebateMoney());
-                    }else if(r.getRebateLevel().equals(DistributionConstant.REBATE_LEVEL_2)){
-                        order.setRebateLevelTwo(r.getRealRebateMoney());
-                    }
+            if(columns.contains(OrderExportVo.REBATE)) {
+                //返利金额，最多有两级
+                Result<OrderGoodsRebateRecord> orderRebate = orderGoodsRebate.get(order.getOrderSn(), order.getRecId());
+                if (orderRebate.size() == 2) {
+                    order.setRebateLevelOne(orderRebate.get(0).getRebateMoney());
+                    order.setRebateLevelTwo(orderRebate.get(1).getRebateMoney());
+                } else if (orderRebate.size() == 1) {
+                    order.setRebateLevelOne(orderRebate.get(0).getRebateMoney());
                 }
             }
         }
