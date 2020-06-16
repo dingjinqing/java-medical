@@ -341,12 +341,18 @@ export default {
 
       // 折扣
       this.disCountData.powerDiscount = data.powerCount === 1
-      console.log(this.disCountData.powerDiscount)
-      this.disCountData.discount = data.disCount
+      if (data.disCount !== null) {
+        this.disCountData.discount = data.disCount
+      } else {
+        this.disCountData.discount = void 0
+      }
       if (this.isValidValue(data.discountIsAll)) {
         this.disCountData.discountGoodsType = String(data.discountIsAll)
       }
-      this.disCountData.choosedGoodsId = data.goodsId
+      this.disCountData.choosedGoodsId = []
+      if (data.goodsId !== null && data.goodsId.length > 0) {
+        this.disCountData.choosedGoodsId.push(...data.goodsId.map(x => Number(x)))
+      }
       this.disCountData.choosedStoreId = data.shopCategoryIds
       this.disCountData.choosedPlatformId = data.platformCategoryIds
       this.disCountData.choosedBrandId = data.brandId.map(item => Number(item))
@@ -384,7 +390,7 @@ export default {
       // 充值
       this.cardChargeCfgData.powerCard = data.powerCard ? data.powerCard === 1 : false
       this.cardChargeCfgData.sendMoney = data.sendMoney ? data.sendMoney : undefined
-      this.cardChargeCfgData.offSet = data.powerCardJson ? String(data.powerCardJson.offsetMoney) : '2'
+      this.cardChargeCfgData.offset = data.powerCardJson ? String(data.powerCardJson.offsetMoney) : '2'
       this.cardChargeCfgData.chargeInputLeftM = data.powerCardJson ? data.powerCardJson.perMoney : 100
       this.cardChargeCfgData.chargeInputRightM = data.powerCardJson ? data.powerCardJson.perGetMoney : 100
       if (data.powerCardJson && data.powerCardJson.money && data.powerCardJson.money.length > 0) {
@@ -425,7 +431,11 @@ export default {
       this.cardEffectTime.fixedDate = [data.startTime, data.endTime]
       if (data.startTime === null) { this.cardEffectTime.fixedDate = '' }
       console.log(this.cardEffectTime.fixedDate)
-      this.cardEffectTime.receiveDay = data.receiveDay
+      if (data.receiveDay !== null) {
+        this.cardEffectTime.receiveDay = data.receiveDay
+      } else {
+        this.cardEffectTime.receiveDay = void 0
+      }
       this.cardEffectTime.dateType = data.dateType ? String(data.dateType) : '0'
       // 包邮信息
       if (data.freeship) {
@@ -590,7 +600,8 @@ export default {
 
       // 至少选择一项会员权益
       if (this.disCountData.powerDiscount || this.ownGoodsData.powerOwnGoods ||
-        this.cardScoreCfgData.powerScore || this.cardChargeCfgData.powerCard || this.cardCouponCfgData.powerCoupon) {
+        this.cardScoreCfgData.powerScore || this.cardChargeCfgData.powerCard || this.cardCouponCfgData.powerCoupon ||
+        this.customRights.customRightsFlag === 'on' || this.freeship.type !== -1) {
         // 检验都通过
         console.log(this.cardChargeCfgData.valid)
         if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardScoreCfgData.valid &&
@@ -613,6 +624,13 @@ export default {
     prepareCardData () {
       this.dealWithDynamicArrayData()
       let pullPath = this.$imageHost + '/'
+      if (this.cardNameAndBg.bgImg !== null) {
+        if (this.cardNameAndBg.bgImg.includes('https:')) {
+          pullPath = 'https:' + pullPath
+        } else if (this.cardNameAndBg.bgImg.includes('http:')) {
+          pullPath = 'http:' + pullPath
+        }
+      }
       if (this.cardNameAndBg.bgImg) {
         this.cardNameAndBg.bgImg = this.cardNameAndBg.bgImg.replace(pullPath, '')
       }

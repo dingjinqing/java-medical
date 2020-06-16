@@ -128,6 +128,7 @@
           prop="createTime"
           :label="$t('distribution.registTime')"
           align="center"
+          width="100px"
         >
         </el-table-column>
         <el-table-column
@@ -145,27 +146,34 @@
         >
         </el-table-column>
         <el-table-column
-          prop="orderNumber"
           :label="$t('distribution.orderNumber')"
           align="center"
         >
+          <template slot-scope="scope">
+            <span>{{scope.row.orderNumber ? scope.row.orderNumber : 0}}</span>
+          </template>
         </el-table-column>
         <el-table-column
-          prop="totalCanFanliMoney"
           :label="$t('distribution.totalCanFanliMoney')"
           align="center"
         >
+          <template slot-scope="scope">
+            <span>{{scope.row.totalCanFanliMoney ? scope.row.totalCanFanliMoney : '0.00'}}</span>
+          </template>
         </el-table-column>
         <el-table-column
-          prop="totalFanliMoney"
           :label="$t('distribution.totalFanliMoney')"
           align="center"
         >
+          <template slot-scope="scope">
+            <span>{{scope.row.totalFanliMoney ? scope.row.totalFanliMoney : '0.00'}}</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="inviteTime"
           :label="$t('distribution.inviteTime')"
           align="center"
+          width="100px"
           v-if="type === 'invite'"
         >
         </el-table-column>

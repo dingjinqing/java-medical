@@ -221,6 +221,7 @@ export default {
     this.langDefault()
     this.$on('checkRule', () => {
       this.$refs.ruleFormScore.validate((valid) => {
+        this.ruleForm.valid = true
         if (!valid) {
           this.ruleForm.valid = false
           this.$message.warning('请输入赠送积分')

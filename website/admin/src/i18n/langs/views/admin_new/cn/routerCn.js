@@ -200,6 +200,7 @@ export const cn = {
 
   // 营销管理 分销
   distribution_info: ['营销管理', '分销'],
+  distribution_inviteUser: ['营销管理', '分销', '分销员列表'],
   // 营销管理 分销 推广测试
   distribution_copyWriting: ['营销管理', '分销', '推广文案配置'],
   // 营销管理 瓜分积分

@@ -255,6 +255,15 @@ export default {
           this.$message.warning('会员折扣请输入0-10的数字')
         }
       })
+      if (this.val.discountGoodsType === '0') {
+        //  检验指定商品必须选择商品
+        if (this.val.choosedGoodsId.length > 0 || this.val.choosedBrandId.length > 0 || this.val.choosedStoreId.length > 0) {
+
+        } else {
+          this.ruleForm.valid = false
+          this.$message.warning('指定商品未设置')
+        }
+      }
     })
   },
 
@@ -267,6 +276,9 @@ export default {
     },
     checkDiscountVal (val) {
       // 0-10允许两位小数的数字
+      if (Number(val) === 0) {
+        return false
+      }
       return /^((10)||((?:[0-9]|0[1-9])(\.\d{1,2})?))$/.test(val)
     },
     loadAddSymbol () {
