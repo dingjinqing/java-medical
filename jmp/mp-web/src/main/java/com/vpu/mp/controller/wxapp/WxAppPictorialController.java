@@ -3,10 +3,7 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
-import com.vpu.mp.service.pojo.wxapp.share.GoodsPictorialInfo;
-import com.vpu.mp.service.pojo.wxapp.share.GoodsShareBaseParam;
-import com.vpu.mp.service.pojo.wxapp.share.GoodsShareInfo;
-import com.vpu.mp.service.pojo.wxapp.share.PictorialConstant;
+import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.firstspecial.FirstSpecialShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
@@ -303,6 +300,17 @@ public class WxAppPictorialController extends WxAppBaseController  {
         } else {
             return success(activityPictorialInfo.getBase64());
         }
+    }
+
+    /**
+     * 根据sceneId获取scene的String
+     *
+     * @param param 参数信息
+     * @return JsonResult
+     */
+    @PostMapping("/api/wxapp/secne/get")
+    public JsonResult getSceneString(@RequestBody SceneGetParam param) {
+        return success(shop().qrCode.getQrCodeParamInfoBySceneId(param.getSceneId()));
     }
 
 }
