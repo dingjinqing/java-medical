@@ -1535,6 +1535,8 @@ export default {
 
     // 切换交易统计tab
     transactionTabSelect (index, value) {
+      //  获取最新的交易数据
+      this.updateTransStatistic()
       this.transactionTabIndex = index
       let item = this.transactionTabIndex + 1
       this.transactionData = this.$t('membershipIntroduction.transactionData' + item)
@@ -1549,6 +1551,13 @@ export default {
           }
         }
       }
+    },
+    updateTransStatistic () {
+      memberInfoRequest(this.userId).then(res => {
+        if (res.error === 0) {
+          this.transStatistic = res.content.transStatistic
+        }
+      })
     },
     // 交易统计查看订单
     jumpToMemberHandler (linkName, index) {
