@@ -114,7 +114,9 @@
         :header-cell-style="{
             'background-color':'#f5f5f5',
             'text-align':'center',
-            'border':'none'
+            'border':'none',
+            'font-weight': 'bold',
+            'color': '#000'
           }"
         :cell-style="{
             'text-align':'center'
