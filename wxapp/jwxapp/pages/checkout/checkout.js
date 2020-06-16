@@ -88,6 +88,11 @@ global.wxPage({
     })
     if (preSaleInfo) {
       preSaleInfo = JSON.parse(preSaleInfo)
+      if(preSaleInfo.preSalePrdInfo && (preSaleInfo.preSalePrdInfo.discountPrice-preSaleInfo.preSalePrdInfo.depositPrice > 0)){
+        this.setData({
+          preSaleDiscountPrice:(preSaleInfo.preSalePrdInfo.discountPrice-preSaleInfo.preSalePrdInfo.depositPrice).toFixed(2)
+        })
+      }
     }
     this.setData({
       'params.goods': goods,

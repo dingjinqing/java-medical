@@ -212,9 +212,9 @@
           <text class="detail_title">一口价优惠</text>
           <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.packageDiscount || '0'})}}</text>
         </view>
-        <view class="detail_item" wx:if="{{preSaleInfo.preSalePrdInfo.discountPrice-preSaleInfo.preSalePrdInfo.depositPrice > 0}}">
+        <view class="detail_item" wx:if="{{preSaleDiscountPrice > 0}}">
           <text class="detail_title">定金抵扣</text>
-          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:preSaleInfo.preSalePrdInfo.discountPrice-preSaleInfo.preSalePrdInfo.depositPrice || '0'})}}</text>
+          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:preSaleDiscountPrice || '0'})}}</text>
         </view>
         <view class="detail_item" wx:if="{{orderInfo.shippingFee}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.freight")}}</text>
