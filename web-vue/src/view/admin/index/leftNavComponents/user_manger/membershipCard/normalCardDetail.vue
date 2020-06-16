@@ -400,7 +400,7 @@ export default {
       // 充值
       this.cardChargeCfgData.powerCard = data.powerCard ? data.powerCard === 1 : false
       this.cardChargeCfgData.sendMoney = data.sendMoney ? data.sendMoney : undefined
-      this.cardChargeCfgData.offSet = data.powerCardJson ? String(data.powerCardJson.offsetMoney) : '2'
+      this.cardChargeCfgData.offset = data.powerCardJson ? String(data.powerCardJson.offsetMoney) : '2'
       this.cardChargeCfgData.chargeInputLeftM = data.powerCardJson ? data.powerCardJson.perMoney : 100
       this.cardChargeCfgData.chargeInputRightM = data.powerCardJson ? data.powerCardJson.perGetMoney : 100
       if (data.powerCardJson && data.powerCardJson.money && data.powerCardJson.money.length > 0) {
