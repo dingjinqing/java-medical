@@ -317,7 +317,7 @@
             <template slot-scope="scope">
               <span
                 class="nameStyle"
-                @click="nextNumberHandler(scope.row.userId)"
+                @click="nextNumberHandler(scope.row.userId, scope.row.username)"
               >{{scope.row.nextNumber ? scope.row.nextNumber : 0}}</span>
             </template>
           </el-table-column>
@@ -331,7 +331,7 @@
             <template slot-scope="scope">
               <span
                 class="nameStyle"
-                @click="sublayerNumberHandler(scope.row.userId)"
+                @click="sublayerNumberHandler(scope.row.userId, scope.row.username)"
               >{{scope.row.sublayerNumber ? scope.row.sublayerNumber : 0}}</span>
             </template>
           </el-table-column>
@@ -376,7 +376,7 @@
           >
             <template slot-scope="scope">
               <div class="opt">
-                <p @click="inviteUserList(scope.row.userId)">{{$t('distribution.showHasInviteUsers')}}</p>
+                <p @click="nextNumberHandler(scope.row.userId, scope.row.username)">{{$t('distribution.showHasInviteUsers')}}</p>
                 <p @click="commissionDetail(scope.row.userId)">{{$t('distribution.showFanliDetail')}}</p>
                 <p @click="remarksHandler(scope.row.userId)">{{$t('distribution.listTip')}}
                   <span v-if="scope.row.remarkNum">({{scope.row.remarkNum}})</span>
@@ -615,16 +615,6 @@ export default {
         this.groupNameList = res.content
       })
     },
-    // 跳转分销员邀请用户列表
-    inviteUserList (userId) {
-      this.$router.push({
-        path: '/admin/home/main/distribution/inviteUserList',
-        query: {
-          userId: userId,
-          type: 'invite'
-        }
-      })
-    },
     // 跳转佣金返利明细
     commissionDetail (userId) {
       this.$emit('commissionHandler', userId)
@@ -717,22 +707,24 @@ export default {
     },
 
     // 下级用户数跳转
-    nextNumberHandler (userId) {
+    nextNumberHandler (userId, username) {
       this.$router.push({
         path: '/admin/home/main/distribution/inviteUserList',
         query: {
           userId: userId,
+          userName: username,
           type: 'invite'
         }
       })
     },
 
     // 间接邀请用户数跳转
-    sublayerNumberHandler (userId) {
+    sublayerNumberHandler (userId, username) {
       this.$router.push({
-        path: '/admin/home/main/distribution/inviteUserList',
+        path: '/admin/home/main/distribution/indirectUserList',
         query: {
           userId: userId,
+          userName: username,
           type: 'indirect'
         }
       })

@@ -260,6 +260,16 @@ export default {
         console.log(data)
         this.titleLeft = data[0]
         this.titleList = data
+      } else if (this.$route.name === 'distribution_info_inviteUser') {
+        data.push(this.$route.query.userName + '-已邀请用户列表')
+        console.log(data)
+        this.titleLeft = data[0]
+        this.titleList = data
+      } else if (this.$route.name === 'distribution_info_indirectUser') {
+        data.push(this.$route.query.userName + '-间接邀请用户列表')
+        console.log(data)
+        this.titleLeft = data[0]
+        this.titleList = data
       } else {
         console.log(data)
         this.titleLeft = data[0]
