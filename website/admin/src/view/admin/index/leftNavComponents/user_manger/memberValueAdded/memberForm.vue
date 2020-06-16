@@ -154,7 +154,7 @@
       class="pagination"
       v-if="pageParams.totalRows>0"
     >
-      <div>{{$t('programVersion.currentPage')}}：{{pageParams.currentPage}}，{{$t('programVersion.totalPage')}}：{{pageParams.pageCount}}，{{$t('programVersion.totalRecord')}}：{{pageParams.totalRows}}</div>
+      <div>当前页面{{pageParams.currentPage}}/{{pageParams.pageCount}} 共 {{pageParams.totalRows}}条</div>
       <el-pagination
         @current-change="handleToQueryData"
         :current-page.sync="pageParams.currentPage"

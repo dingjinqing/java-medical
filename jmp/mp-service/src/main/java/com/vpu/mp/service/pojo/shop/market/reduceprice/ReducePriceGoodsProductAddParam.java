@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.market.reduceprice;
 
-import java.math.BigDecimal;
-
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 /**
  * @author: 王兵兵
@@ -11,9 +11,18 @@ import lombok.Data;
 @Data
 public class ReducePriceGoodsProductAddParam {
 
-    /** 规格ID */
+    /**
+     * 对应表的主键
+     */
+    private Integer id;
+
+    /**
+     * 规格ID
+     */
     private Integer prdId;
 
-    /** 修改后的规格价 */
+    /**
+     * 修改后的规格价
+     */
     private BigDecimal prdPrice;
 }

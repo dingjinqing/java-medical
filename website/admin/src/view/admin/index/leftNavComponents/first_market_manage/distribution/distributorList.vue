@@ -379,7 +379,7 @@
                 <p @click="inviteUserList(scope.row.userId)">{{$t('distribution.showHasInviteUsers')}}</p>
                 <p @click="commissionDetail(scope.row.userId)">{{$t('distribution.showFanliDetail')}}</p>
                 <p @click="remarksHandler(scope.row.userId)">{{$t('distribution.listTip')}}
-                  <!-- <span v-if="scope.row.remarkNum">({{scope.row.remarkNum}})</span> -->
+                  <span v-if="scope.row.remarkNum">({{scope.row.remarkNum}})</span>
                 </p>
                 <p
                   @click="del(scope.row.userId)"
