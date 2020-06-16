@@ -35,7 +35,7 @@ export const en = {
     },
     {
       title: 'Distributor rank',
-      content: 'Distributor Testing'
+      content: ''
     },
     {
       title: 'Distributor grouping',

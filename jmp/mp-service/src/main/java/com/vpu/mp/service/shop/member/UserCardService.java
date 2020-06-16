@@ -5,14 +5,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
-import com.vpu.mp.db.shop.tables.records.CardRenewRecord;
-import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
-import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
-import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
-import com.vpu.mp.db.shop.tables.records.UserCardRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -24,38 +17,23 @@ import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.*;
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
-import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
-import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorSpendVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
-import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackUpdateVo;
-import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.member.account.*;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
 import com.vpu.mp.service.pojo.shop.member.builder.ChargeMoneyRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardParamBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
-import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingParam;
-import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingVo;
-import com.vpu.mp.service.pojo.shop.member.buy.CardOrdeerSnParam;
-import com.vpu.mp.service.pojo.shop.member.buy.CardOrdeerSnVo;
-import com.vpu.mp.service.pojo.shop.member.buy.CardToPayParam;
+import com.vpu.mp.service.pojo.shop.member.buy.*;
 import com.vpu.mp.service.pojo.shop.member.card.*;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
-import com.vpu.mp.service.pojo.shop.member.exception.CardReceiveFailException;
-import com.vpu.mp.service.pojo.shop.member.exception.CardSendRepeatException;
-import com.vpu.mp.service.pojo.shop.member.exception.LimitCardAvailSendNoneException;
-import com.vpu.mp.service.pojo.shop.member.exception.MemberCardNullException;
-import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
+import com.vpu.mp.service.pojo.shop.member.exception.*;
 import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -1328,9 +1306,10 @@ public class UserCardService extends ShopBaseService {
                 String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(userCard.getBgImg());
                 userCard.setBgImg(imageUrl);
             }
-        }
-        if(StringUtils.isBlank(userCard.getBgColor())) {
-            userCard.setBgColor(CardUtil.getDefaultBgColor());
+
+            if(StringUtils.isBlank(userCard.getBgColor())) {
+                userCard.setBgColor(CardUtil.getDefaultBgColor());
+            }
         }
         return userCard;
     }
@@ -2876,7 +2855,7 @@ public class UserCardService extends ShopBaseService {
         if (param.getCardId() != null) {
             select = select.and(CHARGE_MONEY.CARD_ID.eq(param.getCardId()));
         }
-        if (param.getChangeType() != null) {
+        if (param.getChangeType() != null && param.getChangeType() > 0) {
             select = select.and(CHARGE_MONEY.CHANGE_TYPE.eq(param.getChangeType()));
         }
         if (StringUtil.isNotBlank(param.getUserInfo())) {

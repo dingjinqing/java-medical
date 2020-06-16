@@ -49,7 +49,7 @@
               value="balance"
             ></el-option>
             <el-option
-              label="积分支付支付"
+              label="积分支付"
               value="score"
             ></el-option>
           </el-select>
