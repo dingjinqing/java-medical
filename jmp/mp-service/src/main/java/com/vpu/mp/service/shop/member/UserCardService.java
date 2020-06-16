@@ -1328,9 +1328,10 @@ public class UserCardService extends ShopBaseService {
                 String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(userCard.getBgImg());
                 userCard.setBgImg(imageUrl);
             }
-        }
-        if(StringUtils.isBlank(userCard.getBgColor())) {
-            userCard.setBgColor(CardUtil.getDefaultBgColor());
+
+            if(StringUtils.isBlank(userCard.getBgColor())) {
+                userCard.setBgColor(CardUtil.getDefaultBgColor());
+            }
         }
         return userCard;
     }
