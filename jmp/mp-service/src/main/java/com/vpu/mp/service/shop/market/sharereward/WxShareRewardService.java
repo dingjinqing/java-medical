@@ -255,8 +255,14 @@ public class WxShareRewardService extends ShopBaseService {
 
     private List<UserInfo> getBatchUserList(List<Integer> userIds) {
         return new ArrayList<UserInfo>(8) {{
-            userIds.forEach(id -> add(userService.getUserInfo(id)));
+            userIds.forEach(id -> add(getUserInfo(id)));
         }};
+    }
+
+    private UserInfo getUserInfo(Integer userId) {
+        UserInfo userInfo = userService.getUserInfo(userId);
+        userInfo.setIsNew(saas.getShopApp(getShopId()).readOrder.orderInfo.isNewUser(userId));
+        return userInfo;
     }
 
     /**

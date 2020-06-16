@@ -360,7 +360,12 @@ export default {
       if (this.isValidValue(data.discountIsAll)) {
         this.disCountData.discountGoodsType = String(data.discountIsAll)
       }
-      this.disCountData.choosedGoodsId = data.goodsId
+
+      this.disCountData.choosedGoodsId = []
+      if (data.goodsId !== null && data.goodsId.length > 0) {
+        this.disCountData.choosedGoodsId.push(...data.goodsId.map(x => Number(x)))
+      }
+
       this.disCountData.choosedStoreId = data.shopCategoryIds
       this.disCountData.choosedPlatformId = data.platformCategoryIds
       this.disCountData.choosedBrandId = data.brandId.map(item => Number(item))
@@ -609,7 +614,8 @@ export default {
 
       // 至少选择一项会员权益
       if (this.disCountData.powerDiscount || this.ownGoodsData.powerOwnGoods ||
-        this.cardScoreCfgData.powerScore || this.cardChargeCfgData.powerCard || this.cardCouponCfgData.powerCoupon) {
+        this.cardScoreCfgData.powerScore || this.cardChargeCfgData.powerCard || this.cardCouponCfgData.powerCoupon ||
+        this.customRights.customRightsFlag === 'on' || this.freeship.type !== -1) {
         // 检验都通过
         console.log(this.cardChargeCfgData.valid)
         if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardScoreCfgData.valid &&

@@ -344,7 +344,7 @@ export default {
       this.cardStoreCfgData.useTime = String(data.useTime)
       this.cardStoreCfgData.count = data.count
 
-      // 使用须知、
+      // 使用须知
       this.cardUsageCfgData.desc = data.desc
       this.cardUsageCfgData.mobile = data.mobile
 

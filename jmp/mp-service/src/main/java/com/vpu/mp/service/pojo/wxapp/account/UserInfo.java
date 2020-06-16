@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.wxapp.account;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import lombok.Data;
 
 /**
  * 
@@ -54,15 +54,18 @@ public class UserInfo {
 	private Byte maritalStatus;
 	private Integer monthlyIncome;
 	private String cid;
-	private Byte education;
-	
-	private Byte industryInfo;
-	private String bigImage;
-	private String bankUserName;
-	private String shopBank;
-	private String bankNo;
-	private String userAvatar;
-	private String inviteName;
-	private Integer invitationCode;
+    private Byte education;
+
+    private Byte industryInfo;
+    private String bigImage;
+    private String bankUserName;
+    private String shopBank;
+    private String bankNo;
+    private String userAvatar;
+    private String inviteName;
+    private Integer invitationCode;
+
+    //是否新用户
+    private Boolean isNew;
 
 }

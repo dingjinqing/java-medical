@@ -82,6 +82,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 	public JsonResult getCardList(@RequestBody SearchCardParam param) {
 		logger().info("获取会员卡列表");
 		PageResult<? extends BaseCardVo> result = shop().member.card.getCardList(param);
+		
 		return success(result);
 	}
 
@@ -416,7 +417,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		logger().info("根据id数组获取会员卡");
 		return success(shop().member.card.getCardById(param));
 	}
-	
+
 	/**
 	 * 	获取有效的等级卡
 	 */
@@ -425,11 +426,11 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		logger().info("获取有效的等级卡");
 		return success(shop().member.card.gradeCardService.getAllValidGradeCardList());
 	}
-	
-	
+
+
 	/**
 	 * 下载失败数据
-	 * 
+	 *
 	 * @param param
 	 * @param response
 	 */
@@ -443,7 +444,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		export2Excel(workbook, fileName + dateFormat, response);
 		logger().info("结束下载领取详情");
 	}
-	
+
 	/**
 	 * 会员卡审核导出接口
 	 */
@@ -457,5 +458,5 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
 		export2Excel(workbook, cardName+fileName + dateFormat, response);
 	}
-	
+
 }
