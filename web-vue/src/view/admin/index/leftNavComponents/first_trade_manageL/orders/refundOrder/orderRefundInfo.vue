@@ -244,6 +244,7 @@
                       :max="returnInfo.money"
                       size="small"
                       controls-position="right"
+                      :disabled="returnInfo.showRefundFailInfo == 1"
                     ></el-input-number>
                     {{
                          getCurrencyPool_0 + '，' +
@@ -257,6 +258,7 @@
                       :controls="false"
                       :min="0"
                       :max="returnInfo.canReturnShippingFee"
+                      :disabled="returnInfo.showRefundFailInfo == 1"
                     ></el-input-number>
                     {{
                         getCurrencyPool_0 + '，' + $t('order.maxRefundShippingFee') +
