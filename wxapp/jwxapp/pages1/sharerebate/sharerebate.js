@@ -132,6 +132,29 @@ global.wxPage({
     })
     console.log(this.data.checkedCouponIds)
   },
+  openShareDialog(){
+    let rebateConfig = {}
+    let date = new Date();
+    if(this.data.giveCoupon && this.data.checkedCouponIds && this.data.checkedCouponIds.length > 0) rebateConfig['couponIds'] = this.data.checkedCouponIds.join(',')
+    rebateConfig['rebateTime'] = parseInt(date.getTime()/1000)
+    rebateConfig['rebatePrice'] = this.data.productList.reduce((defaultData,item)=>{
+      defaultData[item.prdId] = item.prdPrice
+      return defaultData
+    },{})
+    
+    this.setData({
+      customShareData:{
+        gid:this.data.goodsId,
+        inviteId:util.getCache("user_id"),
+        realPrice:this.getMin(Object.values(rebateConfig.rebatePrice)),
+        rebateConfig:JSON.stringify(rebateConfig)
+      },
+      showShareDialog:true
+    })
+  },
+  getMin (arr) {
+    return Math.min(...arr)
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -178,24 +201,12 @@ global.wxPage({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-    let rebateConfig = {}
-    let date = new Date();
-    if(this.data.giveCoupon && this.data.checkedCouponIds && this.data.checkedCouponIds.length > 0) rebateConfig['couponIds'] = this.data.checkedCouponIds.join(',')
-    rebateConfig['rebateTime'] = parseInt(date.getTime()/1000)
-    rebateConfig['rebatePrice'] = this.data.productList.reduce((defaultData,item)=>{
-      defaultData[item.prdId] = item.prdPrice
-      return defaultData
-    },{})
     console.log(`/pages/item/item${util.getUrlParams({
-      gid:this.data.goodsId,
-      inviteId:util.getCache("user_id"),
-      rebateConfig:JSON.stringify(rebateConfig)
+      ...this.data.customShareData
     })}`)
     return {
       path: `/pages/item/item${util.getUrlParams({
-        gid:this.data.goodsId,
-        inviteId:util.getCache("user_id"),
-        rebateConfig:JSON.stringify(rebateConfig)
+        ...this.data.customShareData
       })}`,
       ...this.data.shareData
     }

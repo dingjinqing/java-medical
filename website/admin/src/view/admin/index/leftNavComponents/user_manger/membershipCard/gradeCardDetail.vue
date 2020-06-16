@@ -334,6 +334,7 @@ export default {
       this.cardActiveCfgData.activation = String(data.activation)
       this.cardActiveCfgData.activationCfgBox = data.activationCfgBox ? data.activationCfgBox : []
       this.cardActiveCfgData.examine = String(data.examine)
+
       // 自定义激活数据
       let action = data.customAction.map(item => {
         return {
@@ -341,9 +342,11 @@ export default {
           title: item.custom_title,
           content: item.option_arr,
           conditionChecked: Boolean(item.option_ver),
-          checked: Boolean(item.is_checked)
+          checked: Boolean(item.is_checked),
+          pictureNumber: item.pictureNumber
         }
       })
+      console.log(action)
       this.cardActiveCfgData.customAction = action
     },
     isValidValue (data) {

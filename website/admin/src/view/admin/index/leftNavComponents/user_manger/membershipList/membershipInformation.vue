@@ -241,7 +241,7 @@
         >查看订单</el-button>
       </div>
     </div>
-    <div class="topContainer">
+    <div class="topContainer" v-if="memberBasicInfo.isDistributor">
       <div class="titleEdit"><span>{{$t('membershipIntroduction.distributionStatistic')}}</span></div>
       <div class="transactionDiv">
         <div
@@ -1082,32 +1082,32 @@ export default {
     // 分销 统计
     dealWithdDistributionData () {
       // 获返利订单数量
-      if (this.transStatistic.rebateOrderNum) {
-        this.distributionData[0].content = this.transStatistic.rebateOrderNum
+      if (this.transStatistic.distributionStatistics.rebateOrderNum) {
+        this.distributionData[0].content = this.transStatistic.distributionStatistics.rebateOrderNum
       }
       // 返利商品总金额(元)
-      if (this.transStatistic.totalCanFanliMoney) {
-        this.distributionData[1].content = this.transStatistic.totalCanFanliMoney
+      if (this.transStatistic.distributionStatistics.totalCanFanliMoney) {
+        this.distributionData[1].content = this.transStatistic.distributionStatistics.totalCanFanliMoney
       }
       // 获返利佣金总金额(元)
-      if (this.transStatistic.rebateMoney) {
-        this.distributionData[2].content = this.transStatistic.rebateMoney
+      if (this.transStatistic.distributionStatistics.rebateMoney) {
+        this.distributionData[2].content = this.transStatistic.distributionStatistics.rebateMoney
       }
       /**  已提现佣金总金额(元) */
-      if (this.transStatistic.withdrawCash) {
-        this.distributionData[3].content = this.transStatistic.withdrawCash
+      if (this.transStatistic.distributionStatistics.withdrawCash) {
+        this.distributionData[3].content = this.transStatistic.distributionStatistics.withdrawCash
       }
       // 下级用户数
-      if (this.transStatistic.sublayerNumber) {
-        this.distributionData[4].content = this.transStatistic.sublayerNumber
+      if (this.transStatistic.distributionStatistics.sublayerNumber) {
+        this.distributionData[4].content = this.transStatistic.distributionStatistics.sublayerNumber
       }
       // 分销员等级
-      if (this.transStatistic.levelName) {
-        this.distributionData[5].content = this.transStatistic.levelName
+      if (this.transStatistic.distributionStatistics.levelName) {
+        this.distributionData[5].content = this.transStatistic.distributionStatistics.levelName
       }
       // 分销员分组
-      if (this.transStatistic.groupName) {
-        this.distributionData[6].content = this.transStatistic.groupName
+      if (this.transStatistic.distributionStatistics.groupName) {
+        this.distributionData[6].content = this.transStatistic.distributionStatistics.groupName
       }
     },
     // 点击查看更多
@@ -1535,6 +1535,8 @@ export default {
 
     // 切换交易统计tab
     transactionTabSelect (index, value) {
+      //  获取最新的交易数据
+      this.updateTransStatistic()
       this.transactionTabIndex = index
       let item = this.transactionTabIndex + 1
       this.transactionData = this.$t('membershipIntroduction.transactionData' + item)
@@ -1549,6 +1551,13 @@ export default {
           }
         }
       }
+    },
+    updateTransStatistic () {
+      memberInfoRequest(this.userId).then(res => {
+        if (res.error === 0) {
+          this.transStatistic = res.content.transStatistic
+        }
+      })
     },
     // 交易统计查看订单
     jumpToMemberHandler (linkName, index) {

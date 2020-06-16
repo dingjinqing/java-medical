@@ -11,12 +11,14 @@ import java.math.BigDecimal;
  **/
 @Data
 public class SeckillProductAddParam {
+    //主键，更新时使用
+    private Integer skproId;
     @NotNull
-    private Integer    goodsId;
+    private Integer goodsId;
     @NotNull
-    private Integer    productId;
+    private Integer productId;
     @NotNull
     private BigDecimal secKillPrice;
     @NotNull
-    private Integer      stock;
+    private Integer stock;
 }

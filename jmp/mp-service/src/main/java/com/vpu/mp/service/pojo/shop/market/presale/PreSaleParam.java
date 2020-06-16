@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.presale;
 
 import lombok.Data;
-import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -46,7 +45,6 @@ public class PreSaleParam {
     /** 尾款支付结束时间 **/
     private Timestamp endTime;
     /** 商品id **/
-    @NotNull
     private String goodsId;
     @NotNull
     /** 预告时间 预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数*/

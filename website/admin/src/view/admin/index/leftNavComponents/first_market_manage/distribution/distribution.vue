@@ -77,6 +77,7 @@
         <el-tab-pane
           :label="$t('distribution.distributorAudit')"
           name="ninth"
+          v-if="judgeStatus === '1'"
         >
           <distributorCheck v-if="activeName === 'ninth'" />
         </el-tab-pane>
@@ -121,10 +122,12 @@ export default {
       inviteCode: '',
       distributorLevel: 0,
       distributorGroup: 0,
-      userId: null
+      userId: null,
+      judgeStatus: '1' // 分销配置是否开启
     }
   },
   mounted () {
+    this.judgeStatus = localStorage.getItem('distributionJudgeStatus')
     this.activeName = localStorage.getItem('distributionTap')
     this.$http.$on('toChangeActiveName', (flag) => {
       if (flag) {
