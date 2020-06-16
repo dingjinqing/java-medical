@@ -255,7 +255,7 @@ export default {
       // 积分
       this.cardScoreCfgData.powerScore = data.powerScore ? data.powerScore === 1 : true
       this.cardScoreCfgData.score = data.score
-      this.cardScoreCfgData.offset = data.scoreJson ? String(data.scoreJson.offset) : '0'
+      this.cardScoreCfgData.offSet = data.scoreJson ? String(data.scoreJson.offset) : '0'
       if (data.scoreJson.goodsMoney !== null && data.scoreJson.goodsMoney.length > 0) {
         this.cardScoreCfgData.shopingInputLeft = data.scoreJson.goodsMoney[0]
         this.cardScoreCfgData.shopingInputRight = data.scoreJson.getScores[0]
@@ -267,6 +267,18 @@ export default {
             rightInput: data.scoreJson.getScores[index]
           })
         }
+      }
+
+      //  购物每满 多少 送多少分
+      if (data.scoreJson.perGoodsMoney !== null) {
+        this.cardScoreCfgData.shopingInputLeftM = data.scoreJson.perGoodsMoney
+      } else {
+        this.cardScoreCfgData.shopingInputLeftM = 100
+      }
+      if (data.scoreJson.perGetScores !== null) {
+        this.cardScoreCfgData.shopingInputRightM = data.scoreJson.perGetScores
+      } else {
+        this.cardScoreCfgData.shopingInputRightM = 100
       }
       // 专享
       this.ownGoodsData.powerOwnGoods = data.powerPayOwnGood === 'on'
