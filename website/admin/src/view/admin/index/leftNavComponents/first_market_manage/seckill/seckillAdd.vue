@@ -772,6 +772,7 @@ export default {
           })
         }
       })
+      console.log(newdata)
       return newdata
     },
 
@@ -807,7 +808,7 @@ export default {
           }
           // 总库存
           this.form.secKillProduct.forEach((item, index) => {
-            item.productId = item.prdId
+            if (item.prdId) item.productId = item.prdId
             item.secKillPrice = Number(item.secKillPrice)
           })
           // 活动预告
@@ -831,19 +832,20 @@ export default {
           this.form.secKillProduct.forEach(item => {
             if (item.goodsSpecProducts) {
               item.goodsSpecProducts.forEach(specItem => {
-                let { secKillPrice, stock } = specItem
+                let {secKillPrice, stock, skproId = null} = specItem
                 let goodsId = item.goodsId
                 let productId = this.isEdite ? specItem.productId : specItem.prdId
-                secKillProduct.push({ goodsId, productId, secKillPrice: Number(secKillPrice), stock: Number(stock) })
+                secKillProduct.push({goodsId, productId, secKillPrice: Number(secKillPrice), stock: Number(stock), skproId})
                 this.form.stock += Number(stock)
               })
             } else {
-              let { goodsId, prdId: productId, secKillPrice, stock } = item
-              secKillProduct.push({ goodsId, productId, secKillPrice, stock: Number(stock) })
+              console.log(item)
+              let { goodsId, productId, secKillPrice, stock, skproId = null } = item
+              secKillProduct.push({ goodsId, productId, secKillPrice, stock: Number(stock), skproId })
               this.form.stock += Number(stock)
             }
           })
-
+          console.log(secKillProduct)
           if (this.isGoing === false) {
             // 添加秒杀
             addSeckillList({ ...this.form, secKillProduct, goodsId }).then((res) => {
