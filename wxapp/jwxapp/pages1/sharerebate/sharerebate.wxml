@@ -67,4 +67,4 @@
 </view>
 <include src="/pages/common/footer.wxml" />
 
-<v-share show="{{showShareDialog}}" share-data="{{customShareData}}" source="shareRebate"/>
+<v-share show="{{showShareDialog}}" share-data="{{customShareData}}" source="shareRebate" show-multiple="{{true}}"/>

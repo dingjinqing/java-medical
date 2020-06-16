@@ -77,7 +77,7 @@ export default {
     }
     return {
       timeValue: [],
-      timeSelect: 7,
+      timeSelect: 1,
       timeRange: [
         { value: 1, label: '今日' },
         { value: 2, label: '昨日' },
