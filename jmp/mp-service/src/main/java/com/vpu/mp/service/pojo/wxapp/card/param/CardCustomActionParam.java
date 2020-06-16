@@ -68,5 +68,7 @@ public class CardCustomActionParam {
 	/**
 	 * 激活上传图片
 	 */
+	@JsonAlias({"pictureLinks","comm_img"})
+    @JsonProperty("pictureLinks")
 	private String[] pictureLinks;
 }

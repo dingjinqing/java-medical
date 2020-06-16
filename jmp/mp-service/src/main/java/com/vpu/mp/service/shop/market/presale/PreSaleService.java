@@ -38,10 +38,7 @@ import org.springframework.util.Assert;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
@@ -465,25 +462,33 @@ public class PreSaleService extends ShopBaseService {
      * 更新活动
      */
     public void updatePreSale(PreSaleParam param) {
-        logger().info("预售活动-更新ID:{}",param.getId());
+        logger().info("预售活动-更新ID:{}", param.getId());
         Integer presaleId = param.getId();
         Assert.notNull(presaleId, "Missing parameter id");
-        PresaleRecord presale = db().newRecord(TABLE, param);
+        PresaleRecord presale = getPresaleRecord(param.getId());
+        assign(param, presale);
         String config = shareConfigJson(param);
         presale.setShareConfig(config);
         validateParam(param);
-        if(param.getPreStartTime2() != null && param.getPreEndTime2() != null){
+        if (param.getPreStartTime2() != null && param.getPreEndTime2() != null) {
             presale.setPreStartTime_2(param.getPreStartTime2());
             presale.setPreEndTime_2(param.getPreEndTime2());
         }
-        presale.update();
-        transaction(()->{
+
+        List<Integer> oldGoodsIds = Util.splitValueToList(presale.getGoodsId());
+        Set<Integer> goodsIds = new HashSet<>();
+        goodsIds.addAll(oldGoodsIds);
+
+        presale.setGoodsId(Util.listToString(param.getProducts().stream().map(ProductParam::getGoodsId).collect(Collectors.toList())));
+
+        transaction(() -> {
+            db().executeUpdate(presale);
             List<Integer> preProductIdRecordIds = new ArrayList<>(param.getProducts().size());
             param.getProducts().forEach(product -> {
                 product.setPresaleId(presaleId);
                 PresaleProductRecord presaleProductRecord = db().newRecord(SUB_TABLE, product);
                 presaleProductRecord.setPreDiscountMoney_1(product.getPreDiscountMoney1());
-                if(product.getPreDiscountMoney2() != null){
+                if (product.getPreDiscountMoney2() != null) {
                     presaleProductRecord.setPreDiscountMoney_2(product.getPreDiscountMoney2());
                 }
                 if (presaleProductRecord.getId() == null) {
@@ -492,13 +497,14 @@ public class PreSaleService extends ShopBaseService {
                     presaleProductRecord.update();
                 }
                 preProductIdRecordIds.add(presaleProductRecord.getId());
+                goodsIds.add(presaleProductRecord.getGoodsId());
             });
             db().delete(SUB_TABLE).where(SUB_TABLE.PRESALE_ID.eq(presaleId).and(SUB_TABLE.ID.notIn(preProductIdRecordIds))).execute();
         });
 
         //刷新goodsType
         saas.getShopApp(getShopId()).shopTaskService.preSaleTaskService.monitorGoodsType();
-        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(param.getGoodsId()), getShopId(), DBOperating.UPDATE);
+        esDataUpdateMqService.addEsGoodsIndex(new ArrayList<>(goodsIds), getShopId(), DBOperating.UPDATE);
     }
 
 

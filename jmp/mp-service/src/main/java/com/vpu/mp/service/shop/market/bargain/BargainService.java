@@ -51,10 +51,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
@@ -232,10 +229,10 @@ public class BargainService extends ShopBaseService  {
 	 *
 	 */
 	public void updateBargain(BargainUpdateParam param) {
-		BargainRecord record = new BargainRecord();
-		assign(param,record);
-		record.setBargainMax(param.getBargainMax());
-		record.setBargainMin(param.getBargainMin());
+        BargainRecord record = getBargainActById(param.getId());
+        assign(param, record);
+        record.setBargainMax(param.getBargainMax());
+        record.setBargainMin(param.getBargainMin());
         if (param.getShareConfig() != null) {
             if (StringUtil.isNotEmpty(param.getShareConfig().getShareImg())) {
                 param.getShareConfig().setShareImg(RegexUtil.getUri(param.getShareConfig().getShareImg()));
@@ -245,21 +242,54 @@ public class BargainService extends ShopBaseService  {
         if (param.getBargainGoods() != null && param.getBargainGoods().size() > 0) {
             record.setStock(param.getBargainGoods().stream().mapToInt((x) -> x.getStock()).sum());
         }
-        this.transaction(() -> {
-            db().executeUpdate(record);
-            if (CollectionUtils.isNotEmpty(param.getBargainGoods())) {
-                param.getBargainGoods().forEach(bargainGoods -> {
-                    BargainGoodsRecord bargainGoodsRecord = db().newRecord(BARGAIN_GOODS);
-                    assign(bargainGoods, bargainGoodsRecord);
-                    bargainGoodsRecord.update();
-                });
-            }
-        });
+        if (CollectionUtils.isNotEmpty(param.getAttendTagId())) {
+            record.setAttendTagId(Util.listToString(param.getAttendTagId()));
+        }
+        if (CollectionUtils.isNotEmpty(param.getLaunchTagId())) {
+            record.setLaunchTagId(Util.listToString(param.getLaunchTagId()));
+        }
 
-        BargainRecord bargainRecord = db().fetchAny(BARGAIN, BARGAIN.ID.eq(param.getId()));
-        //刷新goodsType
-        saas.getShopApp(getShopId()).shopTaskService.bargainTaskService.monitorGoodsType();
-        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(bargainRecord.getGoodsId()), getShopId(), DBOperating.UPDATE);
+        List<Integer> oldGoodsIds = Util.splitValueToList(record.getGoodsId());
+
+        if (CollectionUtils.isNotEmpty(param.getBargainGoods())) {
+            record.setGoodsId(Util.listToString(param.getBargainGoods().stream().map(BargainGoodsUpdateParam::getGoodsId).collect(Collectors.toList())));
+
+            List<BargainGoodsUpdateParam> newActGoods = param.getBargainGoods().stream().filter(g -> g.getId() == null).collect(Collectors.toList());
+            param.getBargainGoods().removeAll(newActGoods);
+            Set<Integer> goodsIds = new HashSet<>();
+            goodsIds.addAll(oldGoodsIds);
+            this.transaction(() -> {
+                db().executeUpdate(record);
+                if (CollectionUtils.isNotEmpty(param.getBargainGoods())) {
+                    db().deleteFrom(BARGAIN_GOODS).where(BARGAIN_GOODS.BARGAIN_ID.eq(param.getId()).and(BARGAIN_GOODS.ID.notIn(param.getBargainGoods().stream().map(BargainGoodsUpdateParam::getId).collect(Collectors.toList())))).execute();
+
+                    for (BargainGoodsUpdateParam goods : param.getBargainGoods()) {
+                        BargainGoodsRecord bargainGoodsRecord = db().newRecord(BARGAIN_GOODS);
+                        assign(goods, bargainGoodsRecord);
+                        db().executeUpdate(bargainGoodsRecord);
+                        goodsIds.add(goods.getGoodsId());
+                    }
+                }
+                if (CollectionUtils.isNotEmpty(newActGoods)) {
+                    for (BargainGoodsUpdateParam goods : newActGoods) {
+                        BargainGoodsRecord bargainGoodsRecord = db().newRecord(BARGAIN_GOODS);
+                        assign(goods, bargainGoodsRecord);
+                        bargainGoodsRecord.setBargainId(param.getId());
+                        bargainGoodsRecord.insert();
+                        goodsIds.add(goods.getGoodsId());
+                    }
+                }
+            });
+
+            //刷新goodsType
+            saas.getShopApp(getShopId()).shopTaskService.bargainTaskService.monitorGoodsType();
+            esDataUpdateMqService.addEsGoodsIndex(new ArrayList<>(goodsIds), getShopId(), DBOperating.UPDATE);
+        } else {
+            db().executeUpdate(record);
+            //刷新goodsType
+            saas.getShopApp(getShopId()).shopTaskService.bargainTaskService.monitorGoodsType();
+            esDataUpdateMqService.addEsGoodsIndex(oldGoodsIds, getShopId(), DBOperating.UPDATE);
+        }
 	}
 
     /**
