@@ -1878,7 +1878,7 @@ public class GoodsService extends ShopBaseService {
 
         //设置商品指定标签
         Map<Integer, List<GoodsLabelSelectListVo>> gtaLabelMap = goodsLabel.getGtaLabelMap(Arrays.asList(goodsId), GoodsLabelCoupleTypeEnum.GOODSTYPE);
-        goodsVo.setGoodsLabelPointListVos(gtaLabelMap.get(goodsId));
+        goodsVo.setGoodsLabelPointListVos(gtaLabelMap.get(goodsId)==null ? new ArrayList<>(0):gtaLabelMap.get(goodsId));
         goodsVo.setGoodsLabelNormalListVos(new ArrayList<>(5));
         // 商家分类关联标签
         if (!GoodsConstant.GOODS_SORT_DEFAULT_VALUE.equals(goodsVo.getSortId())){
