@@ -32,4 +32,6 @@ public class InviteUserInfoVo {
     private Date inviteProtectDate;
     /**邀请时间*/
     private Timestamp inviteTime;
+    /**真是姓名*/
+    private String realName;
 }

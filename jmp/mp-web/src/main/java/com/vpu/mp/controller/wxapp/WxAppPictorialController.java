@@ -250,7 +250,15 @@ public class WxAppPictorialController extends WxAppBaseController  {
     public JsonResult getSeckillPictorial(@RequestBody SeckillShareInfoParam param){
         return getActivityPictorialInfo(param);
     }
-
+    /**
+     * 获取秒杀活动分享图片
+     * @param param 参数信息
+     * @return  JsonResult
+     */
+    @PostMapping("/api/wxapp/rebate/pictorial/info")
+    public JsonResult getRebatePictorial(@RequestBody RebateShareInfoParam param){
+        return getActivityPictorialInfo(param);
+    }
     /**
      * 获取积分兑换活动海报
      * @param param 参数信息

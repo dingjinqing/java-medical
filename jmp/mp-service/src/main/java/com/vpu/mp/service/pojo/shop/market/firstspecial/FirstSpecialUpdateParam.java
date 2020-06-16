@@ -8,6 +8,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author: 王兵兵
@@ -41,9 +42,11 @@ public class FirstSpecialUpdateParam {
     /** 超限购买设置标记，1禁止超限购买，0超限全部恢复原价 */
     private Byte limitFlag;
 
-    /** 改价的商品数组 */
-    @Size(min=1)
-    private FirstSpecialGoodsParam[] firstSpecialGoodsParams;
+    /**
+     * 改价的商品数组
+     */
+    @Size(min = 1)
+    private List<FirstSpecialGoodsParam> firstSpecialGoodsParams;
 
     /** 分享设置 */
     private PictorialShareConfig shareConfig;

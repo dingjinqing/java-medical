@@ -506,7 +506,6 @@ export default {
       this.cardActiveCfgData.activation = String(data.activation)
       this.cardActiveCfgData.activationCfgBox = data.activationCfgBox ? data.activationCfgBox : []
       this.cardActiveCfgData.examine = String(data.examine)
-
       // 自定义激活数据
       let action = data.customAction.map(item => {
         return {

@@ -259,13 +259,13 @@ public class DistributorListService extends ShopBaseService{
 		SelectConditionStep<? extends Record> sql = select.where(USER.INVITE_ID.eq(param.getUserId()));
 
 		if(StringUtil.isNotEmpty(param.getMobile())) {
-			sql = sql.and(USER.MOBILE.eq(param.getMobile()));
+			sql = sql.and(USER.MOBILE.contains(param.getMobile()));
 		}
 		if(StringUtil.isNotEmpty(param.getUsername())) {
-			sql = sql.and(USER.USERNAME.eq(param.getUsername()));
+			sql = sql.and(USER.USERNAME.contains(param.getUsername()));
 		}
         if(StringUtil.isNotEmpty(param.getRealName())) {
-            sql = sql.and(USER_DETAIL.REAL_NAME.eq(param.getRealName()));
+            sql = sql.and(USER_DETAIL.REAL_NAME.contains(param.getRealName()));
         }
 		if(param.getStartCreateTime() != null && param.getEndCreateTime() != null) {
 			sql = sql.and(USER.CREATE_TIME.ge(param.getStartCreateTime()).and(USER.CREATE_TIME.le(param.getEndCreateTime())));

@@ -388,7 +388,8 @@ export default {
           title: item.custom_title,
           content: item.option_arr,
           conditionChecked: Boolean(item.option_ver),
-          checked: Boolean(item.is_checked)
+          checked: Boolean(item.is_checked),
+          pictureNumber: item.pictureNumber
         }
       })
       this.cardActiveCfgData.customAction = action
