@@ -26,6 +26,14 @@ public class DistributorListParam {
      */
 	private String realName;
     /**
+     * 邀请人
+     */
+	private String inviteName;
+    /**
+     * 邀请码
+     */
+	private String invitationCode;
+    /**
      * 被邀请人手机号
      */
 	private String invitedMobile;
