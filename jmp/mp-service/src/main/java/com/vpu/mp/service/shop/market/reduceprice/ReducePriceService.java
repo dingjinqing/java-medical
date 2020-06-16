@@ -117,7 +117,7 @@ public class ReducePriceService extends ShopBaseService {
                 goodsRecord.setReducePriceId(reducePriceId);
                 goodsRecord.insert();
                 Integer goodsId = goodsRecord.getGoodsId();
-                if (goods.getReducePriceProduct() != null && goods.getReducePriceProduct().length > 0) {
+                if (CollectionUtils.isNotEmpty(goods.getReducePriceProduct())) {
                     for (ReducePriceGoodsProductAddParam goodsProduct : goods.getReducePriceProduct()) {
                         ReducePriceProductRecord productRecord = db().newRecord(REDUCE_PRICE_PRODUCT);
                         assign(goodsProduct, productRecord);
@@ -210,7 +210,7 @@ public class ReducePriceService extends ShopBaseService {
      * 更新限时降价活动
      */
     public void updateReducePrice(ReducePriceUpdateParam param) {
-        ReducePriceRecord record = new ReducePriceRecord();
+        ReducePriceRecord record = db().newRecord(REDUCE_PRICE);
         assign(param, record);
         if (param.getShareConfig() != null) {
             if (StringUtil.isNotEmpty(param.getShareConfig().getShareImg())) {
@@ -218,11 +218,79 @@ public class ReducePriceService extends ShopBaseService {
             }
             record.setShareConfig(Util.toJson(param.getShareConfig()));
         }
-        db().executeUpdate(record);
+        if (CollectionUtils.isNotEmpty(param.getActivityTagId())) {
+            record.setActivityTagId(Util.listToString(param.getActivityTagId()));
+        }
+        if (PERIOD_ACTION_NORMAL.equals(param.getPeriodAction())) {
+            //不按周期重复
+            record.setPointTime(null);
+        }
+        if (CollectionUtils.isNotEmpty(param.getReducePriceGoodsAddParams())) {
+            List<ReducePriceGoodsAddParam> newActGoods = param.getReducePriceGoodsAddParams().stream().filter(g -> g.getId() == null).collect(Collectors.toList());
+            param.getReducePriceGoodsAddParams().removeAll(newActGoods);
+            Set<Integer> goodsIds = new HashSet<>();
+            goodsIds.addAll(getActGoodsIds(param.getId()));
+            this.transaction(() -> {
+                db().executeUpdate(record);
+                if (CollectionUtils.isNotEmpty((param.getReducePriceGoodsAddParams()))) {
+                    db().deleteFrom(REDUCE_PRICE_GOODS).where(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID.eq(param.getId()).and(REDUCE_PRICE_GOODS.ID.notIn(param.getReducePriceGoodsAddParams().stream().map(ReducePriceGoodsAddParam::getId).collect(Collectors.toList())))).execute();
 
-        //刷新goodsType
-        saas.getShopApp(getShopId()).shopTaskService.reducePriceTaskService.monitorGoodsType();
-        esDataUpdateMqService.addEsGoodsIndex(getActGoodsIds(param.getId()), getShopId(), DBOperating.UPDATE);
+                    //更新
+                    for (ReducePriceGoodsAddParam goods : param.getReducePriceGoodsAddParams()) {
+                        ReducePriceGoodsRecord goodsRecord = db().fetchAny(REDUCE_PRICE_GOODS, REDUCE_PRICE_GOODS.ID.eq(goods.getId()));
+                        assign(goods, goodsRecord);
+                        goodsRecord.update();
+                        if (CollectionUtils.isNotEmpty(goods.getReducePriceProduct())) {
+                            for (ReducePriceGoodsProductAddParam prd : goods.getReducePriceProduct()) {
+                                ReducePriceProductRecord productRecord = db().fetchAny(REDUCE_PRICE_PRODUCT, REDUCE_PRICE_PRODUCT.ID.eq(prd.getId()));
+                                assign(productRecord, productRecord);
+                                productRecord.update();
+                            }
+                        }
+                        goodsIds.add(goods.getGoodsId());
+                    }
+                }
+                if (CollectionUtils.isNotEmpty(newActGoods)) {
+                    for (ReducePriceGoodsAddParam goods : newActGoods) {
+                        ReducePriceGoodsRecord goodsRecord = db().newRecord(REDUCE_PRICE_GOODS);
+                        assign(goods, goodsRecord);
+                        goodsRecord.setReducePriceId(param.getId());
+                        goodsRecord.insert();
+                        Integer goodsId = goodsRecord.getGoodsId();
+                        if (CollectionUtils.isNotEmpty(goods.getReducePriceProduct())) {
+                            for (ReducePriceGoodsProductAddParam goodsProduct : goods.getReducePriceProduct()) {
+                                ReducePriceProductRecord productRecord = db().newRecord(REDUCE_PRICE_PRODUCT);
+                                assign(goodsProduct, productRecord);
+                                productRecord.setReducePriceId(param.getId());
+                                productRecord.setGoodsId(goodsId);
+                                productRecord.insert();
+                            }
+                        } else {
+                            List<GoodsProductVo> allProductListByGoodsId = goodsService.getAllProductListByGoodsId(goodsId);
+                            GoodsProductVo defaultPrd = allProductListByGoodsId.get(0);
+                            ReducePriceProductRecord productRecord = db().newRecord(REDUCE_PRICE_PRODUCT);
+                            productRecord.setReducePriceId(param.getId());
+                            productRecord.setGoodsId(goodsId);
+                            productRecord.setPrdId(defaultPrd.getPrdId());
+                            productRecord.setPrdPrice(goods.getGoodsPrice());
+                            productRecord.insert();
+                        }
+
+                        goodsIds.add(goods.getGoodsId());
+                    }
+                }
+            });
+            //刷新goodsType
+            saas.getShopApp(getShopId()).shopTaskService.reducePriceTaskService.monitorGoodsType();
+            esDataUpdateMqService.addEsGoodsIndex(new ArrayList<>(goodsIds), getShopId(), DBOperating.UPDATE);
+        } else {
+            db().executeUpdate(record);
+            //刷新goodsType
+            saas.getShopApp(getShopId()).shopTaskService.reducePriceTaskService.monitorGoodsType();
+            esDataUpdateMqService.addEsGoodsIndex(getActGoodsIds(param.getId()), getShopId(), DBOperating.UPDATE);
+        }
+
+
     }
 
     /**

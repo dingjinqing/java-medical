@@ -24,6 +24,7 @@ import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import jodd.util.StringUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.Record5;
@@ -92,11 +93,11 @@ public class FirstSpecialService extends ShopBaseService {
                 assign(goods,goodsRecord);
                 goodsRecord.setFirstSpecialId(firstSpecialId);
                 goodsRecord.insert();
-                if(goods.getGoodsProductParams() != null && goods.getGoodsProductParams().length > 0){
+                if (CollectionUtils.isNotEmpty(goods.getGoodsProductParams())) {
                     Integer goodsId = goodsRecord.getGoodsId();
-                    for(FirstSpecialGoodsProductParam goodsProduct : goods.getGoodsProductParams()){
+                    for (FirstSpecialGoodsProductParam goodsProduct : goods.getGoodsProductParams()) {
                         FirstSpecialProductRecord productRecord = db().newRecord(FIRST_SPECIAL_PRODUCT);
-                        assign(goodsProduct,productRecord);
+                        assign(goodsProduct, productRecord);
                         productRecord.setFirstSpecialId(firstSpecialId);
                         productRecord.setGoodsId(goodsId);
                         productRecord.insert();
@@ -171,32 +172,59 @@ public class FirstSpecialService extends ShopBaseService {
      *
      */
     public void updateFirstSpecial(FirstSpecialUpdateParam param) {
-        this.transaction(()->{
-            FirstSpecialRecord record = db().newRecord(FIRST_SPECIAL);
-            assign(param,record);
-            if(param.getShareConfig() != null) {
-                if (StringUtil.isNotEmpty(param.getShareConfig().getShareImg())) {
-                    param.getShareConfig().setShareImg(RegexUtil.getUri(param.getShareConfig().getShareImg()));
-                }
-                record.setShareConfig(Util.toJson(param.getShareConfig()));
+        FirstSpecialRecord record = db().newRecord(FIRST_SPECIAL);
+        assign(param, record);
+        if (param.getShareConfig() != null) {
+            if (StringUtil.isNotEmpty(param.getShareConfig().getShareImg())) {
+                param.getShareConfig().setShareImg(RegexUtil.getUri(param.getShareConfig().getShareImg()));
             }
-            db().executeUpdate(record);
-            if(param.getFirstSpecialGoodsParams() != null && param.getFirstSpecialGoodsParams().length > 0){
-                for(FirstSpecialGoodsParam goods : param.getFirstSpecialGoodsParams()){
-                    FirstSpecialGoodsRecord goodsRecord = db().newRecord(FIRST_SPECIAL_GOODS);
-                    assign(goods,goodsRecord);
-                    db().executeUpdate(goodsRecord);
-                    if(goods.getGoodsProductParams() != null && goods.getGoodsProductParams().length > 0){
-                        for(FirstSpecialGoodsProductParam goodsProduct : goods.getGoodsProductParams()){
-                            FirstSpecialProductRecord productRecord = db().newRecord(FIRST_SPECIAL_PRODUCT);
-                            assign(goodsProduct,productRecord);
-                            db().executeUpdate(productRecord);
+            record.setShareConfig(Util.toJson(param.getShareConfig()));
+        }
+        if (CollectionUtils.isNotEmpty(param.getFirstSpecialGoodsParams())) {
+            List<FirstSpecialGoodsParam> newActGoods = param.getFirstSpecialGoodsParams().stream().filter(g -> g.getId() == null).collect(Collectors.toList());
+            param.getFirstSpecialGoodsParams().removeAll(newActGoods);
+            this.transaction(() -> {
+                db().executeUpdate(record);
+                if (CollectionUtils.isNotEmpty(param.getFirstSpecialGoodsParams())) {
+                    db().deleteFrom(FIRST_SPECIAL_GOODS).where(FIRST_SPECIAL_GOODS.FIRST_SPECIAL_ID.eq(param.getId()).and(FIRST_SPECIAL_GOODS.ID.notIn(param.getFirstSpecialGoodsParams().stream().map(FirstSpecialGoodsParam::getId).collect(Collectors.toList())))).execute();
+                    for (FirstSpecialGoodsParam goods : param.getFirstSpecialGoodsParams()) {
+                        FirstSpecialGoodsRecord goodsRecord = db().newRecord(FIRST_SPECIAL_GOODS);
+                        assign(goods, goodsRecord);
+                        db().executeUpdate(goodsRecord);
+                        if (CollectionUtils.isNotEmpty(goods.getGoodsProductParams())) {
+                            for (FirstSpecialGoodsProductParam goodsProduct : goods.getGoodsProductParams()) {
+                                FirstSpecialProductRecord productRecord = db().newRecord(FIRST_SPECIAL_PRODUCT);
+                                assign(goodsProduct, productRecord);
+                                db().executeUpdate(productRecord);
+                            }
                         }
                     }
                 }
-            }
+                if (CollectionUtils.isNotEmpty(newActGoods)) {
+                    for (FirstSpecialGoodsParam goods : newActGoods) {
+                        FirstSpecialGoodsRecord goodsRecord = db().newRecord(FIRST_SPECIAL_GOODS);
+                        assign(goods, goodsRecord);
+                        goodsRecord.setFirstSpecialId(param.getId());
+                        goodsRecord.insert();
+                        if (CollectionUtils.isNotEmpty(goods.getGoodsProductParams())) {
+                            Integer goodsId = goodsRecord.getGoodsId();
+                            for (FirstSpecialGoodsProductParam goodsProduct : goods.getGoodsProductParams()) {
+                                FirstSpecialProductRecord productRecord = db().newRecord(FIRST_SPECIAL_PRODUCT);
+                                assign(goodsProduct, productRecord);
+                                productRecord.setFirstSpecialId(param.getId());
+                                productRecord.setGoodsId(goodsId);
+                                productRecord.insert();
+                            }
+                        }
+                    }
+                }
 
-        });
+            });
+        } else {
+            db().executeUpdate(record);
+        }
+
+
     }
 
     /**

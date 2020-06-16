@@ -1,13 +1,13 @@
 package com.vpu.mp.service.pojo.shop.market.firstspecial;
 
-import java.math.BigDecimal;
-
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.validated.FirstSpecialAddValidatedGroup;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.validated.FirstSpecialUpdateValidatedGroup;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author: 王兵兵
@@ -33,7 +33,9 @@ public class FirstSpecialGoodsParam {
     @NotNull(groups = {FirstSpecialAddValidatedGroup.class},message = JsonResultMessage.MSG_PARAM_ERROR)
     private BigDecimal goodsPrice;
 
-    /** 改价的规格数组 */
-    @NotNull(groups = {FirstSpecialUpdateValidatedGroup.class},message = JsonResultMessage.MSG_PARAM_ERROR)
-    private FirstSpecialGoodsProductParam[] goodsProductParams;
+    /**
+     * 改价的规格数组
+     */
+    @NotNull(groups = {FirstSpecialUpdateValidatedGroup.class}, message = JsonResultMessage.MSG_PARAM_ERROR)
+    private List<FirstSpecialGoodsProductParam> goodsProductParams;
 }
