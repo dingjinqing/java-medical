@@ -204,8 +204,10 @@
           border
           style="width: 100%;font-size: 12px;"
         >
-          <el-table-column type="selection">
-          </el-table-column>
+          <el-table-column
+            type="selection"
+            label-class-name="DisabledSelection"
+          ></el-table-column>
           <el-table-column
             prop="userId"
             label="ID"
@@ -921,6 +923,10 @@ export default {
   font-weight: bold;
   color: #000;
   padding: 8px 0px;
+}
+.el-table /deep/.DisabledSelection .cell .el-checkbox__inner {
+  display: none;
+  position: relative;
 }
 .table_list {
   position: relative;
