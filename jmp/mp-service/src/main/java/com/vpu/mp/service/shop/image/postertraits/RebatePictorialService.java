@@ -6,9 +6,13 @@ import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.PictorialRecord;
 import com.vpu.mp.db.shop.tables.records.WxpUnlimitSceneRecord;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSharePostConfig;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsRebateConfigParam;
 import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.rebate.RebateShareInfoParam;
 import org.jooq.Record;
@@ -21,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.Date;
 
 import static com.vpu.mp.db.shop.tables.WxpUnlimitScene.WXP_UNLIMIT_SCENE;
 
@@ -31,7 +36,7 @@ import static com.vpu.mp.db.shop.tables.WxpUnlimitScene.WXP_UNLIMIT_SCENE;
  * @date 2020年04月27日
  */
 @Service
-public class RebatePictorialService extends RebateNormalPictorialBaseService {
+public class RebatePictorialService extends ShareBaseService {
 
     @Override
     Record getActivityRecord(Integer activityId) {
@@ -41,6 +46,12 @@ public class RebatePictorialService extends RebateNormalPictorialBaseService {
     @Override
     String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         return Util.translateMessage(lang, JsonResultMessage.WX_MA_REBATE_DOC, "", "messages");
+    }
+
+    @Override
+    PictorialShareConfig getPictorialConfig(Record aRecord, GoodsRecord goodsRecord) {
+        GoodsSharePostConfig goodsShareConfig = Util.parseJson(goodsRecord.getShareConfig(), GoodsSharePostConfig.class);
+        return PictorialShareConfig.createFromGoodsShareInfoConfig(goodsShareConfig);
     }
 
     /**
@@ -128,6 +139,38 @@ public class RebatePictorialService extends RebateNormalPictorialBaseService {
         Integer sceneId = sceneRecord.getSceneId();
         // 未做补偿
         return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&rebateSId=%d", baseParam.getUserId(), goodsRecord.getGoodsId(),sceneId));
+    }
+
+    @Override
+    @SuppressWarnings("all")
+    void createPictorialImg(BufferedImage qrCodeBufferImg, BufferedImage goodsImg, PictorialUserInfo userInfo, String shareDoc, Record aRecord, GoodsRecord goodsRecord, ShopRecord shop, GoodsShareBaseParam baseParam, GoodsPictorialInfo goodsPictorialInfo) {
+        RebateShareInfoParam rebateShareInfoParam = (RebateShareInfoParam) baseParam;;
+        PictorialImgPx imgPx = new PictorialImgPx(getShopStyleColor());
+        if (BigDecimal.valueOf(0).equals(baseParam.getLinePrice())) {
+            baseParam.setLinePrice(null);
+        }
+        // 活动价
+        String realPriceText = convertPriceWithFlag(shop.getShopLanguage(), baseParam.getRealPrice());
+
+        // 拼装背景图
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(),null,null, realPriceText, null, imgPx);
+
+        String rebateConfig = rebateShareInfoParam.getRebateConfig();
+        GoodsRebateConfigParam goodsRebateConfigParam = Util.parseJson(rebateConfig, GoodsRebateConfigParam.class);
+        Long time =null;
+        if (goodsRebateConfigParam == null) {
+            time = System.currentTimeMillis();
+        } else {
+            time = goodsRebateConfigParam.getRebateTime()*1000;
+        }
+        String endStr = DateUtil.dateFormat(DateUtil.DATE_FORMAT_DOT,new Date(time+24*60*60));
+
+        String timeTipStr = "此价格在"+endStr+"前有效";
+        ImageUtil.addFont(bgBufferedImage, timeTipStr, imgPx.getLinePriceFont(), imgPx.getBottomTextStartX(), imgPx.getPriceY()+40, imgPx.LINE_PRICE_COLOR, false);
+
+        String base64 = ImageUtil.toBase64(bgBufferedImage);
+        goodsPictorialInfo.setBase64(base64);
+        goodsPictorialInfo.setBgImg(bgBufferedImage);
     }
 
     @Override

@@ -339,7 +339,7 @@ public class PictorialService extends ShopBaseService {
         if (goodsName != null) {
             // 设置商品名称
             int goodsNameHeight = pictorialAddFontName(bgBufferedImage, goodsName, imgPx);
-            imgPx.setPriceY(imgPx.getBgHeight()-100);
+            imgPx.setPriceY(imgPx.getBgHeight()-120);
         }
 
         Integer priceX = imgPx.getBottomTextStartX();
@@ -423,7 +423,12 @@ public class PictorialService extends ShopBaseService {
             }
 
             if (line == maxRows) {
-                oneLineStr = oneLineSb.subSequence(0, oneLineSb.length() / 2).toString()+"...";
+                Integer curWidth =ImageUtil.getTextWidth(bgBufferedImage, font, oneLineSb.toString());
+                if (curWidth>maxRows){
+                    oneLineStr = oneLineSb.subSequence(0, oneLineSb.length() / 2).toString()+"...";
+                }else {
+                    oneLineStr = oneLineSb.toString();
+                }
             }else{
                 oneLineStr = oneLineSb.toString();
             }
