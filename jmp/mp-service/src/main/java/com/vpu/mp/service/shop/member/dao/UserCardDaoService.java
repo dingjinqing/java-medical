@@ -122,7 +122,18 @@ public class UserCardDaoService extends ShopBaseService{
 	 * @param cardId 会员卡Id
 	 */
 	public MemberCardRecord getMemberCardById(Integer cardId) {
-		  return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchAny();
+		  MemberCardRecord card  = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchAny();
+		  if(card != null){
+              if(!StringUtils.isBlank(card.getBgImg())) {
+                  String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(userCard.getBgImg());
+                  card.setBgImg(imageUrl);
+              }
+
+              if(StringUtils.isBlank(card.getBgColor())) {
+                  card.setBgColor(CardUtil.getDefaultBgColor());
+              }
+          }
+		  return card;
 	}
 
 	/**
