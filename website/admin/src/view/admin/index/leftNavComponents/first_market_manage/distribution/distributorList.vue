@@ -171,10 +171,6 @@
 
     </div>
     <div class="tableInfo">
-      <div class="notice">
-        <span>{{$t('distribution.distributorListfont')}}</span>
-        <span>{{$t('distribution.distributorListDesc')}}</span>
-      </div>
       <div class="table_list">
         <el-table
           ref="multipleTable"
@@ -539,10 +535,14 @@ export default {
   mounted () {
     this.param.distributorGroup = this.distributorGroup ? this.distributorGroup : ''
     this.param.distributorLevel = this.distributorLevel ? this.distributorLevel : ''
+    this.judgeStatus = localStorage.getItem('distributionJudgeStatus')
+    // 默认是否有下级用户
+    if (this.judgeStatus === '0') {
+      this.param.haveNextUset = 1
+    }
     this.initDataList()
     this.levelList() // 分销员等级
     this.groupList() // 分销员分组
-    this.judgeStatus = localStorage.getItem('distributionJudgeStatus')
   },
 
   methods: {
