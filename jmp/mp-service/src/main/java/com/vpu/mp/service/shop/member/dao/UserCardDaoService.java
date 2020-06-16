@@ -125,7 +125,7 @@ public class UserCardDaoService extends ShopBaseService{
 		  MemberCardRecord card  = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchAny();
 		  if(card != null){
               if(!StringUtils.isBlank(card.getBgImg())) {
-                  String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(userCard.getBgImg());
+                  String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(card.getBgImg());
                   card.setBgImg(imageUrl);
               }
 
