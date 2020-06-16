@@ -39,6 +39,7 @@
             align="right"
             class="selectWidth"
             :placeholder="$t('distribution.chooseDate')"
+            value-format="yyyy-MM-dd HH:mm:ss"
           ></el-date-picker>
           {{$t('distribution.to')}}
           <el-date-picker
@@ -49,6 +50,7 @@
             class="selectWidth"
             default-time="23:59:59"
             :placeholder="$t('distribution.chooseDate')"
+            value-format="yyyy-MM-dd HH:mm:ss"
           ></el-date-picker>
         </el-form-item>
         <el-form-item
@@ -62,6 +64,7 @@
             align="right"
             class="selectWidth"
             :placeholder="$t('distribution.chooseDate')"
+            value-format="yyyy-MM-dd HH:mm:ss"
           ></el-date-picker>
           {{$t('distribution.to')}}
           <el-date-picker
@@ -72,6 +75,7 @@
             class="selectWidth"
             default-time="23:59:59"
             :placeholder="$t('distribution.chooseDate')"
+            value-format="yyyy-MM-dd HH:mm:ss"
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
@@ -119,7 +123,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="realName"
           :label="$t('distribution.realName')"
           align="center"
         >

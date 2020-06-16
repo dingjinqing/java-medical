@@ -205,7 +205,8 @@ global.wxPage({
       cardNo = null,
       cardId = null,
       shareAwardLaunchUserId = null,
-      shareAwardId = null
+      shareAwardId = null,
+      rebateSId = null
     } = options
     this.setData({
       goodsId,
@@ -220,7 +221,8 @@ global.wxPage({
         isChange,
         cardNo,
         cardId
-      }
+      },
+      rebateSId
     })
     this.requestGoodsInfo()
   },
@@ -233,6 +235,7 @@ global.wxPage({
         customParams.shareAwardId = this.data.shareAwardId
         customParams.shareAwardLaunchUserId = this.data.shareAwardLaunchUserId
       }
+      if(this.data.rebateSId) customParams.rebateSId = this.data.rebateSId
       util.api(
         '/api/wxapp/goods/detail',
         res => {

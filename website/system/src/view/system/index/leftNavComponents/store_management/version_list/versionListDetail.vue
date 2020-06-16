@@ -208,7 +208,7 @@
                     <el-form-item label="图片空间大小">
                       <el-input
                         disabled
-                        v-model="this.numConfig.picture_num"
+                        v-model="this.numConfigDef.picture_num"
                       ></el-input>
                       <span v-if="this.isEdit && this.numConfig.picture_num!==-1">+</span>
                       <el-input
@@ -222,7 +222,7 @@
                     <el-form-item label="视频空间大小">
                       <el-input
                         disabled
-                        v-model="this.numConfig.video_num"
+                        v-model="this.numConfigDef.video_num"
                       ></el-input>
                       <span v-if="this.isEdit  && this.numConfig.video_num!==-1">+</span>
                       <el-input
@@ -236,7 +236,7 @@
                     <el-form-item label="商品数量">
                       <el-input
                         disabled
-                        v-model="this.numConfig.goods_num"
+                        v-model="this.numConfigDef.goods_num"
                       ></el-input>
                       <span v-if="this.isEdit  && this.numConfig.goods_num!==-1">+</span>
                       <el-input
@@ -250,7 +250,7 @@
                     <el-form-item label="门店数量">
                       <el-input
                         disabled
-                        v-model="this.numConfig.store_num"
+                        v-model="this.numConfigDef.store_num"
                       ></el-input>
                       <span v-if="this.isEdit && this.numConfig.store_num!==-1">+</span>
                       <el-input
@@ -264,7 +264,7 @@
                     <el-form-item label="装修页面数量">
                       <el-input
                         disabled
-                        v-model="this.numConfig.decorate_num"
+                        v-model="this.numConfigDef.decorate_num"
                       ></el-input>
                       <span v-if="this.isEdit && this.numConfig.decorate_num!==-1">+</span>
                       <el-input
@@ -279,7 +279,7 @@
                     <el-form-item label="表单数量">
                       <el-input
                         disabled
-                        v-model="this.numConfig.form_num"
+                        v-model="this.numConfigDef.form_num"
                       ></el-input>
                       <span v-if="this.isEdit && this.numConfig.form_num!==-1">+</span>
                       <el-input
@@ -371,6 +371,7 @@ export default {
       sub_5List: [],
       shopVersionList: this.$t('versionList.shopVersion'),
       numConfig: {},
+      numConfigDef: {},
       main_config: {},
       sub_0CheckList: [],
       sub_1CheckList: [],
@@ -456,7 +457,7 @@ export default {
           this.sub_5List = data.sub_5
           console.log(this.sub_0CheckList)
           console.log('jieshu')
-          this.numConfig = res.content.content.num_config
+          this.numConfigDef = res.content.content.num_config
           console.log(this.numConfig)
           console.log(this.numConfig.picture_num)
           if (this.isEdit === true && this.sendShopId !== 0) {
