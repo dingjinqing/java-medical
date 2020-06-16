@@ -37,17 +37,19 @@ public class DistributorCheckService extends ShopBaseService{
      * @return
      */
 	public PageResult<DistributorCheckListVo> getDistributorCheckList(DistributorCheckListParam param) {
-        SelectConditionStep<Record> select = db().select(DISTRIBUTOR_APPLY.fields()).select(USER.USERNAME, USER.MOBILE,USER.INVITE_ID)
+        SelectConditionStep<Record> select = db().select(DISTRIBUTOR_APPLY.fields()).select(USER.USERNAME, USER.MOBILE)
             .from(DISTRIBUTOR_APPLY.leftJoin(USER).on(DISTRIBUTOR_APPLY.USER_ID.eq(USER.USER_ID)))
                .where(DSL.trueCondition());
         buildOptions(select,param);
         PageResult<DistributorCheckListVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), DistributorCheckListVo.class);
         for(DistributorCheckListVo applyInfo: pageResult.getDataList()){
+            DistributorApplyParam.InfoField infoField = Util.parseJson(applyInfo.getActivationFields(), DistributorApplyParam.InfoField.class);
             //邀请人信息
-            Record record = db().select().from(USER).where(USER.USER_ID.eq(applyInfo.getInviteId())).fetchOne();
+            Record record = db().select().from(USER).where(USER.INVITATION_CODE.eq(infoField.getInvitationCode())).fetchOne();
             if(record != null){
                 UserRecord into = record.into(UserRecord.class);
                 applyInfo.setInviteName(into.getUsername());
+                applyInfo.setInviteId(into.getUserId());
             }
             applyInfo.setCheckField(Util.parseJson(applyInfo.getActivationFields(),DistributorApplyParam.InfoField.class));
         }
