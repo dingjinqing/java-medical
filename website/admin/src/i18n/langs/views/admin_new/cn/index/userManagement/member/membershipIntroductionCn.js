@@ -432,7 +432,7 @@ export const cn = {
     },
     {
       title: '分销员等级',
-      content: '分销员测试'
+      content: ''
     },
     {
       title: '分销员分组',
