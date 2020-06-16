@@ -93,7 +93,7 @@
               :disabled="isEditFlag"
               @change="rewardTypeChange"
             >{{$t('promoteList.giftCoupons')}}</el-radio>
-            <el-col v-if="form.rewardType==0 || form.rewardType==1">
+            <el-col v-if="(form.rewardType==0 || form.rewardType==1) && !this.isEditFlag">
               <el-button
                 size="small"
                 @click="showChoosingGoods"
