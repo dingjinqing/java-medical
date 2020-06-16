@@ -1577,7 +1577,8 @@ export default {
         name: this.transactionData[0].linkName,
         query: {
           userId: this.userId,
-          userName: this.memberBasicInfo.username
+          userName: this.memberBasicInfo.username,
+          customOrderStatus: '3, 4, 5, 6, 7, 9'
         }
       })
     }
