@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.Map;
 
 import static com.vpu.mp.db.shop.tables.Code.CODE;
+import static com.vpu.mp.db.shop.tables.WxpUnlimitScene.WXP_UNLIMIT_SCENE;
 import static java.lang.String.format;
 
 
@@ -375,15 +376,17 @@ public class QrCodeService extends ShopBaseService {
     	
     	return imageService.imageUrl(relativePath);
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+    /**
+     * 根据sceneId获取分享二维码内的参数信息
+     * @param sceneId
+     * @return
+     */
+    public String getQrCodeParamInfoBySceneId(Integer sceneId) {
+       return db().select(WXP_UNLIMIT_SCENE.SCENE_VALUE)
+            .from(WXP_UNLIMIT_SCENE)
+            .where(WXP_UNLIMIT_SCENE.SCENE_ID.eq(sceneId))
+            .fetchAny(WXP_UNLIMIT_SCENE.SCENE_VALUE);
+    }
+
 }

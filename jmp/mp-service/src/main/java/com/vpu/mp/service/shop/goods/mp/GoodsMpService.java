@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsRebateConfigParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.gift.GoodsGiftPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
@@ -37,6 +38,7 @@ import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.recommend.RecommendService;
 import lombok.extern.slf4j.Slf4j;
@@ -102,7 +104,8 @@ public class GoodsMpService extends ShopBaseService {
     private RecommendService recommendService;
     @Autowired
     private UserCardService userCardService;
-
+    @Autowired
+    private QrCodeService qrCodeService;
     /**
      * 从es或者数据库内获取数据，并交给处理器进行处理
      *
@@ -445,6 +448,16 @@ public class GoodsMpService extends ShopBaseService {
         capsuleParam.setShareAwardLaunchUserId(param.getShareAwardLaunchUserId());
         capsuleParam.setShareAwardId(param.getShareAwardId());
         processorFactory.doProcess(goodsDetailMpBo, capsuleParam);
+        // 处理分销信息临时这样处理，分销返利方法个人不建议在此处处理。
+        if (param.getRebateSId() != null) {
+            try {
+                String qrCodeValue = qrCodeService.getQrCodeParamInfoBySceneId(param.getRebateSId());
+                GoodsRebateConfigParam goodsRebateConfigParam = Util.parseJson(qrCodeValue, GoodsRebateConfigParam.class);
+                param.setRebateConfig(goodsRebateConfigParam);
+            } catch (Exception e) {
+               log.warn("反序列化分销信息错误");
+            }
+        }
         if(param.getRebateConfig() != null){
             mpDisGoods.addRebatePrice(goodsDetailMpBo,param);
             List<CouponListVo> mrkingVoucherRecords = mpDisGoods.sendCoupon(param);

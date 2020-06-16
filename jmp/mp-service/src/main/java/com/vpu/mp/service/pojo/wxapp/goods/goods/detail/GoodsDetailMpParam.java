@@ -43,4 +43,11 @@ public class GoodsDetailMpParam {
     private Integer shareAwardId;
 
     private String userGrade;
+
+    /**
+     * 分销二维码对应参数id，
+     * 由于时间原因此处未能对二维码进行参数统一解析，
+     * 可以和分销活动一起进行代码抽取
+     */
+    private Integer rebateSId;
 }
