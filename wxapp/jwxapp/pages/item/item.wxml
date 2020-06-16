@@ -16,7 +16,7 @@
   <view class="main-container" wx:if="{{goodsInfo}}">
 
     <!-- 分销邀请人信息 -->
-    <v-invite-notice invite-id="{{inviteId}}" />
+    <v-invite-notice invite-id="{{inviteId || uid ? inviteId || uid : null}}" />
     <!-- 商品图片 -->
 
     <view class="goods-image">

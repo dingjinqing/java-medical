@@ -206,7 +206,8 @@ global.wxPage({
       cardId = null,
       shareAwardLaunchUserId = null,
       shareAwardId = null,
-      rebateSId = null
+      rebateSId = null,
+      uid = null
     } = options
     this.setData({
       goodsId,
@@ -222,7 +223,8 @@ global.wxPage({
         cardNo,
         cardId
       },
-      rebateSId
+      rebateSId,
+      uid
     })
     this.requestGoodsInfo()
   },
