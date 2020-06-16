@@ -200,6 +200,10 @@
                       <span>{{item.scoreNumber}}</span>{{ $t('lotteryDraw.rewardTip5') }}
                     </div>
                   </div>
+                  <div
+                    class="coupon_name"
+                    v-if="item.actName"
+                  >{{item.actName}}</div>
                 </section>
                 <span
                   class="deleteIcon"
@@ -216,7 +220,7 @@
               <div
                 class="rewardCouponInfo"
                 @click="handleToCallDialog()"
-                v-if="rewardCouponList.length<5 && !this.isEdite"
+                v-if="(rewardCouponList.length<5 && !this.isEdite) || this.form.rewardCouponIds === null"
                 style="line-height:normal"
               >
                 <div>
@@ -469,6 +473,8 @@ export default {
       getLotteryDetail(this.editId).then((res) => {
         if (res.error === 0) {
           this.form = res.content
+          this.form.rewardCouponIds = res.content.couponIds
+          this.couponIdList = res.content.couponIds
           // 有效期
           this.form.validity = [this.form.startTime, this.form.endTime]
 
@@ -721,6 +727,14 @@ export default {
   background: #f66;
   font-size: 12px;
   background-repeat: repeat-x;
+}
+.coupon_name {
+  width: 96px;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  color: #606266;
 }
 .couponListBottom {
   height: 24px;
