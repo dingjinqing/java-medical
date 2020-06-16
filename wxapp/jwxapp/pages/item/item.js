@@ -656,6 +656,7 @@ global.wxPage({
     this.setData({
       showShareDialog: true
     })
+    this.shareInviteData()
   },
   //请求分享数据
   async getShareData () {
