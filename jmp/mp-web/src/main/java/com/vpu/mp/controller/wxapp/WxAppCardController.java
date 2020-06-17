@@ -144,7 +144,7 @@ public class WxAppCardController extends WxAppBaseController {
 		try {
 			ActivateCardVo vo = shop().user.wxUserCardService.activationCard(param,getLang());
 			if(NumberUtils.BYTE_ONE.equals(param.getIsSetting())) {
-				return success(vo.getMsg());
+				return result(vo.getMsg(),null);
 			}else if(vo != null){
 				return this.success(vo);
 			}
