@@ -895,7 +895,6 @@ export default {
     ...mapActions(['transmitEditGoodsId']),
     // 验证是否选择了商品
     validateMoney (rule, value, callback, prdPrice, row) {
-      console.log(row)
       row.flag1 = false
       // 找到最低活动价格
       if (row.goodsSpecProducts && row.goodsSpecProducts.length > 0) {
@@ -1077,7 +1076,7 @@ export default {
                       console.log(specItem)
                       let { presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, stock } = specItem
                       let goodsId = item.goodsId
-                      let productId = (this.isEditeFlag || this.statusFlag) ? specItem.productId : specItem.prdId
+                      let productId = (this.isEditeFlag && this.statusFlag) ? specItem.productId : specItem.prdId
                       let preDiscountMoney2 = specItem.preDiscountMoney2 === 0 ? 'null' : specItem.preDiscountMoney2
                       products.push({ goodsId, productId, presalePrice: Number(presalePrice), presaleNumber: Number(presaleNumber), presaleMoney: Number(presaleMoney), preDiscountMoney1: Number(preDiscountMoney1), preDiscountMoney2: Number(preDiscountMoney2), stock: Number(stock) })
                       this.param.stock += Number(stock)
@@ -1353,7 +1352,6 @@ export default {
     },
     // 改变活动价格
     changePriceInput (goodsInfo, isDialog = null) {
-      console.log(goodsInfo)
       if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
         goodsInfo.priceErrorMsg = null
         goodsInfo.goodsSpecProducts.forEach((item, index) => {
@@ -1511,9 +1509,11 @@ export default {
     console.log(this.$route)
     if (this.$route.query.id > 0) {
       // 编辑时部分信息不可以修改
+      // 进行中状态
       if (this.$route.query.currentState === 1) {
         this.isEditeFlag = true
       }
+      // 未开始状态
       if (this.$route.query.currentState === 2) {
         this.isEditeFlag = false
         this.statusFlag = true
