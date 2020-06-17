@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.wxapp.share.bargain;
+package com.vpu.mp.service.pojo.wxapp.share.integral;
 
 import com.vpu.mp.service.pojo.wxapp.share.SceneValueBase;
 import lombok.Getter;
@@ -10,6 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class BargainSceneValue extends SceneValueBase {
-    private Integer record_id;
+public class GroupIntegralSceneValue extends SceneValueBase {
+    private Integer pid;
+    private Integer invid;
 }

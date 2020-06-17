@@ -1040,13 +1040,16 @@ public class Calculate extends ShopBaseService {
     private ArrayList<RebateRecord> rebate(DistributionParam cfg, UserRecord userInfo, boolean isFs, DistributionStrategyParam goodsStrategy, Timestamp current) {
         logger().info("正常返利start");
         ArrayList<RebateRecord> result = new ArrayList<>();
+        UserRecord userInfo1 = null;
         //一级返利
         if(userInfo.getInviteExpiryDate() != null && userInfo.getInviteExpiryDate().compareTo(current) > 0) {
             logger().info("正常返利，邀请已过期,自己过期不返直接上级");
         }else if(userInfo.getInviteId() == null || userInfo.getInviteId() == 0) {
             logger().info("正常返利，无直接上级");
         }else {
-            RebateRatioVo userRebateRatio1 = distributionGoods.getUserRebateRatio(userInfo, goodsStrategy, cfg);
+            //直接上级用户信息
+            userInfo1 = user.getUserByUserId(userInfo.getInviteId());
+            RebateRatioVo userRebateRatio1 = distributionGoods.getUserRebateRatio(userInfo1, goodsStrategy, cfg);
             if(userRebateRatio1 != null) {
                 Double rebateRatio1 = (isFs && goodsStrategy.getFirstRebate() == OrderConstant.YES) ? userRebateRatio1.getFirstRatio() : userRebateRatio1.getFanliRatio();
                 if(rebateRatio1 != null) {
@@ -1057,7 +1060,11 @@ public class Calculate extends ShopBaseService {
             }
         }
         //二级返利
-        UserRecord userInfo2 = user.getUserByUserId(userInfo.getInviteId());
+        UserRecord userInfo2 = null;
+        if(userInfo1 != null && userInfo1.getInviteId() != null && userInfo1.getInviteId() != 0) {
+            //间接上级用户信息
+            userInfo2 = user.getUserByUserId(userInfo1.getInviteId());
+        }
         if(userInfo2 == null) {
             logger().info("正常返利，无间接上级");
         } else if(userInfo2.getInviteExpiryDate() != null && userInfo2.getInviteExpiryDate().compareTo(current) > 0) {

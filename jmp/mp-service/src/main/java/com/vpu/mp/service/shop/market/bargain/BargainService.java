@@ -260,9 +260,8 @@ public class BargainService extends ShopBaseService  {
             goodsIds.addAll(oldGoodsIds);
             this.transaction(() -> {
                 db().executeUpdate(record);
+                db().deleteFrom(BARGAIN_GOODS).where(BARGAIN_GOODS.BARGAIN_ID.eq(param.getId()).and(BARGAIN_GOODS.ID.notIn(param.getBargainGoods().stream().map(BargainGoodsUpdateParam::getId).collect(Collectors.toList())))).execute();
                 if (CollectionUtils.isNotEmpty(param.getBargainGoods())) {
-                    db().deleteFrom(BARGAIN_GOODS).where(BARGAIN_GOODS.BARGAIN_ID.eq(param.getId()).and(BARGAIN_GOODS.ID.notIn(param.getBargainGoods().stream().map(BargainGoodsUpdateParam::getId).collect(Collectors.toList())))).execute();
-
                     for (BargainGoodsUpdateParam goods : param.getBargainGoods()) {
                         BargainGoodsRecord bargainGoodsRecord = db().newRecord(BARGAIN_GOODS);
                         assign(goods, bargainGoodsRecord);

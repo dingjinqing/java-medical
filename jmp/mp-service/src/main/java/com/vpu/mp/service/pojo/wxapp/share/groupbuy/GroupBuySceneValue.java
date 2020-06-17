@@ -11,5 +11,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GroupBuySceneValue extends SceneValueBase {
-    private Integer groupId;
+    private Integer group_id;
 }

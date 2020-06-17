@@ -261,9 +261,11 @@ public class SeckillService extends ShopBaseService{
             goodsIds.addAll(oldGoodsIds);
             transaction(() -> {
 
+                db().deleteFrom(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(param.getSkId()).and(SEC_KILL_PRODUCT_DEFINE.SKPRO_ID.notIn(param.getSecKillProduct().stream().map(SeckillProductAddParam::getSkproId).collect(Collectors.toList())))).execute();
+
                 int totalStock = 0;
                 if (CollectionUtils.isNotEmpty(param.getSecKillProduct())) {
-                    db().deleteFrom(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(param.getSkId()).and(SEC_KILL_PRODUCT_DEFINE.SKPRO_ID.notIn(param.getSecKillProduct().stream().map(SeckillProductAddParam::getSkproId).collect(Collectors.toList())))).execute();
+
 
                     for (SeckillProductAddParam secKillProduct : param.getSecKillProduct()) {
                         if (secKillProduct.getProductId() != null && secKillProduct.getSecKillPrice() != null && secKillProduct.getStock() != null) {

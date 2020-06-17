@@ -232,9 +232,8 @@ public class ReducePriceService extends ShopBaseService {
             goodsIds.addAll(getActGoodsIds(param.getId()));
             this.transaction(() -> {
                 db().executeUpdate(record);
+                db().deleteFrom(REDUCE_PRICE_GOODS).where(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID.eq(param.getId()).and(REDUCE_PRICE_GOODS.ID.notIn(param.getReducePriceGoodsAddParams().stream().map(ReducePriceGoodsAddParam::getId).collect(Collectors.toList())))).execute();
                 if (CollectionUtils.isNotEmpty((param.getReducePriceGoodsAddParams()))) {
-                    db().deleteFrom(REDUCE_PRICE_GOODS).where(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID.eq(param.getId()).and(REDUCE_PRICE_GOODS.ID.notIn(param.getReducePriceGoodsAddParams().stream().map(ReducePriceGoodsAddParam::getId).collect(Collectors.toList())))).execute();
-
                     //更新
                     for (ReducePriceGoodsAddParam goods : param.getReducePriceGoodsAddParams()) {
                         ReducePriceGoodsRecord goodsRecord = db().fetchAny(REDUCE_PRICE_GOODS, REDUCE_PRICE_GOODS.ID.eq(goods.getId()));
