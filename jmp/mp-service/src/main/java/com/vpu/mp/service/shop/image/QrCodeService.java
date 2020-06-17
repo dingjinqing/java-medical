@@ -360,7 +360,9 @@ public class QrCodeService extends ShopBaseService {
     	
     	//	头像
     	BufferedImage cardVatar = getCardVatar();
-    	
+    	if(cardVatar == null){
+    	    cardVatar = getBgImg(60,60,"image/wxapp/default_user_avatar.png");
+        }
     	//	会员卡名称
     	ImageUtil.addTwoImage(giveWayBgImg, cardVatar, 30, 20);
     	ImageUtil.addFont(giveWayBgImg, card.getCardName(), ImageUtil.SourceHanSansCN(Font.BOLD, 30), 170, 90,

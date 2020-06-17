@@ -420,6 +420,7 @@ export default {
       cardDataThird: [],
       addStatus: true, // 等级会员卡，九张时值为none
       new_card_img: this.$imageHost + '/image/admin/add_card.png',
+      defaultAvatar: this.$imageHost + '/image/admin/shop_def_y.png',
       gradeCardSettingVisiable: false,
       currentGradeCard: {id: null, cardUseStats: {haveNormalNum: 0}}
     }
@@ -742,7 +743,11 @@ export default {
             // 时间格式
             item.startTime = String(item.startTime).split(' ')[0]
             item.endTime = String(item.endTime).split(' ')[0]
-            item.avatar = this.$imageHost + '/' + item.avatar
+            if (item.avatar) {
+              item.avatar = this.$imageHost + '/' + item.avatar
+            } else {
+              item.avatar = this.defaultAvatar
+            }
 
             // 处理会员卡权益
             this.dealWithCardBehavior(item)
@@ -812,11 +817,6 @@ export default {
         if (item.bgImg) { // 有背景图，设置为该背景图，无则为默认背景色
           return 'backgroundImage:url(' + item.bgImg + ')' + ';backgroundRepeat:no-repeat;background-size: 100% 100%;'
         } else {
-          // 获取初始全局颜色
-          let defaultColor = localStorage.getItem('V-backgroundColor')
-          if (defaultColor) {
-            return `background-color:${defaultColor}`
-          }
           return 'background-color:#e6cb96'
         }
       }

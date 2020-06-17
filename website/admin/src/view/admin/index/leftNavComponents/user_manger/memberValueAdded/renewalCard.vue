@@ -380,16 +380,51 @@ export default {
     handleToExport () {
       let params = JSON.parse(JSON.stringify(this.headerDataSecond))
       let paramsCharge = JSON.parse(JSON.stringify(this.headerDataThird))
+      console.log(this.showHeader, params)
+      let para1 = {}
+      let para2 = {}
+      if (this.showHeader === 'second') {
+        let { cardId, cardName, renewalAmountmax, renewalAmountmin, renewalNo, afterRenewalStartTime, afterRenewalEndTime, renewStartTime, renewEndTime, memberInfo, company } = params
+        para1 = {
+          cardId: cardId,
+          cardName: cardName,
+          endTime: renewEndTime,
+          renewMoneyMax: renewalAmountmax,
+          renewMoneyMin: renewalAmountmin,
+          renewOrderSn: renewalNo,
+          renewTimeMax: afterRenewalStartTime,
+          renewTimeMin: afterRenewalEndTime,
+          renewType: company,
+          startTime: renewStartTime,
+          userInfo: memberInfo
+        }
+      } else {
+        let { cardId, cardName, afterRechargeEndTime, afterRechargeStartTime, memberInfo, rechargeAmountmax, rechargeAmountmin, rechargeEndTime, rechargeMethod, rechargeNo, rechargeStartTime } = paramsCharge
+        para2 = {
+          afterChargeMoneyMax: afterRechargeEndTime,
+          afterChargeMoneyMin: afterRechargeStartTime,
+          cardId: cardId,
+          cardName: cardName,
+          changeType: rechargeMethod,
+          chargeMax: rechargeAmountmax,
+          chargeMin: rechargeAmountmin,
+          createTimeMax: rechargeEndTime,
+          createTimeMin: rechargeStartTime,
+          orderSn: rechargeNo,
+          userInfo: memberInfo
+        }
+      }
+      console.log(paramsCharge)
       switch (this.showHeader) {
         case 'second':
-          renewExport(params).then(res => {
+          renewExport(para1).then(res => {
             let fileName = localStorage.getItem('V-content-disposition')
             fileName = fileName.split(';')[1].split('=')[1]
             download(res, decodeURIComponent(fileName))
           })
           break
         case 'third':
-          chargeExport(paramsCharge).then(res => {
+          chargeExport(para2).then(res => {
             let fileName = localStorage.getItem('V-content-disposition')
             fileName = fileName.split(';')[1].split('=')[1]
             download(res, decodeURIComponent(fileName))

@@ -10,6 +10,10 @@ global.wxComponent({
     source:{
       type:String,
       value:''
+    },
+    showMultiple:{
+      type:Boolean,
+      value:false
     }
   },
 

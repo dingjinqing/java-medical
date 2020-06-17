@@ -136,6 +136,15 @@ public class DistributorListService extends ShopBaseService{
 		if(StringUtil.isNotEmpty(param.getRealName())) {
 			where.and(USER_DETAIL.REAL_NAME.contains(param.getRealName()));
 		}
+		//邀请人
+        if(StringUtil.isNotEmpty(param.getInviteName())){
+            Integer inviteId = db().select(USER.USER_ID).from(USER).where(USER.USERNAME.eq(param.getInviteName())).fetchOne().into(Integer.class);
+            where.and(d.INVITE_ID.eq(inviteId));
+        }
+        //邀请码
+        if(StringUtil.isNotEmpty(param.getInvitationCode())){
+            where.and(d.INVITATION_CODE.eq(param.getInvitationCode()));
+        }
 		//创建时间
 		if(param.getStartCreateTime() != null && param.getEndCreateTime() != null) {
 			where.and(d.CREATE_TIME.ge(param.getStartCreateTime())).and(d.CREATE_TIME.le(param.getEndCreateTime()));

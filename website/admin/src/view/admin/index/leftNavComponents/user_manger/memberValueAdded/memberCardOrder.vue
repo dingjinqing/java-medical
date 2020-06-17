@@ -131,7 +131,7 @@
     <div class="table_box">
       <table>
         <thead v-loading="loading">
-          <tr>
+          <tr style="height:47px;">
             <th width="150px">{{$t('orderCommon.goods')}}</th>
             <th>{{$t('memberCardOrder.memberCardSn')}}</th>
             <th>{{$t('orderCommon.price')}}</th>
@@ -141,9 +141,10 @@
             <th>{{$t('orderCommon.moneyPaid')}}</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody v-if="memberCardOrderList.length">
           <tr>
-            <td colspan="7"></td>
+            <td colspan="7">
+            </td>
           </tr>
         </tbody>
         <template v-for="(orderItem, index) in memberCardOrderList">
@@ -231,11 +232,17 @@
             </tr>
           </tbody>
         </template>
+
       </table>
       <Pagination
         :page-params.sync="pageParams"
         @pagination="initDataList"
       />
+      <!--无数据-->
+      <div
+        v-if="!memberCardOrderList.length"
+        class="el-table__empty-block"
+      ><span class="el-table__empty-text">暂无数据</span></div>
     </div>
     <ManualRefund
       :dataInfo="refundInfo"
@@ -425,7 +432,7 @@ export default {
         background: #f5f5f5;
         > th {
           text-align: center;
-          padding: 8px 0;
+          padding: 15px 0;
           font-size: 14px;
           color: #333;
           font-weight: 600;
@@ -515,6 +522,17 @@ export default {
         border: 1px solid #eee;
       }
     }
+  }
+}
+.el-table__empty-block {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  border: 1px solid #ebeef5;
+  .el-table__empty-text {
+    line-height: 60px;
+    width: 50%;
+    color: #909399;
   }
 }
 </style>

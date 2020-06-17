@@ -29,4 +29,8 @@ public class GoodsDistributionVo {
      * 赠送优惠券信息
      */
     private List<CouponListVo> sendCoupon;
+    /**
+     * 分销推广语
+     */
+    private String promotionLanguage;
 }

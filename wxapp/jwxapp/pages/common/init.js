@@ -22,7 +22,14 @@ var init = {
     if (this._options.scene && this.currentUrl.indexOf('index/index') === -1) {
       let scene = util.resetScene(this._options.scene)
       delete options.scene
-      util.jumpLink(`${util.getCurrentPath(options)}${util.getUrlParams(scene)}`, 'reLaunch');
+      if(!scene.sceneId) util.jumpLink(`${util.getCurrentPath(options)}${util.getUrlParams(scene)}`, 'reLaunch');
+      if(scene.sceneId) {
+        util.api('/api/wxapp/secne/get',res=>{
+          if(res.error === 0){
+            util.jumpLink(`${util.getCurrentPath(options)}?${res.content}`, 'reLaunch')
+          }
+        },{sceneId:scene.sceneId})
+      }
       return false;
     }
 

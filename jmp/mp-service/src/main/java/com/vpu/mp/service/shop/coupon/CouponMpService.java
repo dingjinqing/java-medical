@@ -392,7 +392,7 @@ public class CouponMpService extends ShopBaseService {
         Timestamp nowDate = Util.currentTimeStamp();
         Result<Record> fetch = db().select().from(MRKING_VOUCHER)
             .where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and((MRKING_VOUCHER.END_TIME.ge(nowDate)).or(MRKING_VOUCHER.VALIDITY_TYPE.eq(BaseConstant.COUPON_VALIDITY_TYPE_FLEXIBLE)))
-            .and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_NORMAL)).and(MRKING_VOUCHER.RECOMMEND_GOODS_ID.eq("")).and(MRKING_VOUCHER.SURPLUS.gt(0)).fetch();
+            .and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_NORMAL)).and(MRKING_VOUCHER.RECOMMEND_GOODS_ID.eq("")).and((MRKING_VOUCHER.SURPLUS.gt(0)).or(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte)1))).fetch();
         if(fetch != null) {
             return fetch.into(CouponPageDecorationVo.class);
         } else{
