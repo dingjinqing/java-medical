@@ -7,8 +7,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.foundation.util.I18N;
 import com.vpu.mp.service.pojo.wxapp.card.vo.CardCustomActionVo;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author 黄壮壮
@@ -16,6 +18,8 @@ import lombok.Data;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ActivateCardVo {
 	private Map<String,Object> data;
 	private List<String> fields;
@@ -37,4 +41,9 @@ public class ActivateCardVo {
 	 * 	自定义激活选项
 	 */
 	private List<CardCustomActionVo> customOptions;
+
+    /**
+     * message
+     */
+    private String msg;
 }

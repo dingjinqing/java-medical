@@ -241,7 +241,7 @@ export default {
         obj['日期'] = item
         arr.push(obj)
       })
-      content.dateList.forEach((item, index) => {
+      content.paidOrderNumber.forEach((item, index) => {
         arr[index]['成功支付单数'] = item
       })
       content.paidUserNumber.forEach((item, index) => {

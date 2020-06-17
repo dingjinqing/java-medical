@@ -107,7 +107,7 @@ global.wxPage({
   },
   cartNumChange (res) {
     console.log(res)
-    this.addCart(res.detail,1)
+    this.addCart(res.detail, 1)
   },
   getSearchText (data) { // 点击搜索
     this.setData({
@@ -179,9 +179,9 @@ global.wxPage({
     });
     console.log(this.data.productInfo)
   },
-  addCart (res,flag) {
+  addCart (res, flag) {
     let source = 0
-    if(flag){
+    if (flag) {
       source = flag
     }
     console.log(res.id)
@@ -211,9 +211,9 @@ global.wxPage({
     util.api('/api/wxapp/card/change/add', res => {
       console.log(res)
       if (res.error === 0) {
-        if (source === 1 && paramsPrdNumber===0){
+        if (source === 1 && paramsPrdNumber === 0) {
           util.toast_success(this.$t('page1.usercardgoods.deleteSucceeded'))
-        }else if (res.id == undefined) {
+        } else if (res.id == undefined) {
           util.toast_success(this.$t('page1.usercardgoods.successfullyAdded'))
         }
         this.requestCartGoodsList()
@@ -230,16 +230,16 @@ global.wxPage({
       source
     })
   },
-  cartChange ({detail:goodsData}) {
-    let {goodsId,productId,goodsNumber,cartNumber} = goodsData
+  cartChange ({ detail: goodsData }) {
+    let { goodsId, productId, goodsNumber, cartNumber } = goodsData
     let source = 1
-    console.log(cartNumber,goodsNumber)
+    console.log(cartNumber, goodsNumber)
     util.api('/api/wxapp/card/change/add', res => {
       console.log(res)
       if (res.error === 0) {
-        if (source === 1 && goodsNumber===0){
+        if (source === 1 && goodsNumber === 0) {
           util.toast_success(this.$t('page1.usercardgoods.deleteSucceeded'))
-        }else if (res.id == undefined) {
+        } else if (res.id == undefined) {
           util.toast_success(this.$t('page1.usercardgoods.successfullyAdded'))
         }
         this.requestCartGoodsList()
@@ -260,6 +260,10 @@ global.wxPage({
   goCheckOut () {
     console.log('点击立即兑换跳转结算页面')
     console.log(this.data.cartData)
+    if (!this.data.cartData.length) {
+      util.toast_fail(this.$t('page1.usercardgoods.choiseGoods'))
+      return
+    }
     let goodsList = this.data.cartData.map(item => {
       let { goodsId, prdPrice: prdRealPrice, cartNumber: goodsNum, productId: prdId } = item
       return { goodsId, prdRealPrice, goodsNum, prdId }

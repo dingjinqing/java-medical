@@ -595,7 +595,7 @@ export default {
         card.detailsOfRights.push(this.detailsOfRights[1])
       }
       // 激活审核
-      if (card.examine) {
+      if (card.activation) {
         card.detailsOfRights.push(this.detailsOfRights[2])
       }
 

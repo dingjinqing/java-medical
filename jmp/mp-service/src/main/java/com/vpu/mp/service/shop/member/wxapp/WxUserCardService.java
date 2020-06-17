@@ -53,11 +53,10 @@ public class WxUserCardService extends ShopBaseService {
 	 */
 	public ActivateCardVo activationCard(ActivateCardParam param, String lang) throws CardActivateException {
 		if(NumberUtils.BYTE_ONE.equals(param.getIsSetting())) {
-			wxAppCardActivationService.setActivationCard(param);
+			return wxAppCardActivationService.setActivationCard(param);
 		}else {
 			return wxAppCardActivationService.getActivationCard(param,lang);
 		}
-		return null;
 	}
 	/**
 	 * 	设置为默认会员卡

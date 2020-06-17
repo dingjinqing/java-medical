@@ -827,7 +827,7 @@ global.wxPage({
         util.api('/api/wxapp/activation/card', function (res) {
           console.log(res)
           if (res.error === 0) {
-            util.toast_success('激活成功', function () {
+            util.toast_success(res.message, function () {
               setTimeout(function () {
                 util.redirectTo({
                   url: '/pages/cardlist/cardlist',
