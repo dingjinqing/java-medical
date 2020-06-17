@@ -112,6 +112,7 @@ public class RebateProcess implements Processor,ActivityGoodsListProcessor,Goods
                 goodsDistributionVo.setCanRebate(goodsDetailMpBo.getCanRebate());
                 goodsDistributionVo.setRebateRatio(rebateRatioVo);
                 goodsDetailMpBo.setGoodsDistribution(goodsDistributionVo);
+                goodsDistributionVo.setPromotionLanguage(distributionGoods.getGoodsPromotionLanguage(param.getGoodsId()));
         }
     }
 

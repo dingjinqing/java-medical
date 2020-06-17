@@ -31,6 +31,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,6 +73,10 @@ public class MpDistributionGoodsService extends ShopBaseService {
             return null;
         }else{
             RebateRatioVo userRebateRatio = this.getUserRebateRatio(userId, distributionLevel, goodsRebateStrategy);
+            //获取邀请用户下那首单返利配置
+            if(goodsRebateStrategy.getFirstRebate() == 0){
+                userRebateRatio.setFirstRatio(null);
+            }
             return userRebateRatio;
         }
     }
@@ -378,6 +383,47 @@ public class MpDistributionGoodsService extends ShopBaseService {
             rebatePriceRecord.setRebateData(rebateConfigInfo);
             rebatePriceRecord.setUserId(param.getUserId());
             db().executeInsert(rebatePriceRecord);
+        }
+    }
+
+    /**
+     * 存在有效分销改价记录时从商品详情页进入显示分销价
+     * @param goodsDetailMpBo
+     * @param param
+     */
+    public void isShowRebatePrice(GoodsDetailMpBo goodsDetailMpBo,GoodsDetailMpParam param){
+        Timestamp nowTime = Util.currentTimeStamp();
+        //获取商品规格id
+        List<Integer> prdIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID)
+            .from(GOODS_SPEC_PRODUCT)
+            .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(param.getGoodsId()))
+            .fetchInto(Integer.class);
+        for(Integer prdId:prdIds){
+            Record record1 = db().select().from(USER_REBATE_PRICE).where(USER_REBATE_PRICE.USER_ID.eq(param.getUserId()))
+                .and(USER_REBATE_PRICE.PRODUCT_ID.eq(prdId)).and(USER_REBATE_PRICE.EXPIRE_TIME.gt(nowTime))
+                .fetchOne();
+            if(record1 != null){
+                UserRebatePriceRecord reabatePriceInfo = record1.into(UserRebatePriceRecord.class);
+                for(GoodsPrdMpVo item : goodsDetailMpBo.getProducts()){
+                    if(item.getPrdId().equals(reabatePriceInfo.getProductId())){
+                        item.setPrdRealPrice(reabatePriceInfo.getAdvicePrice());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 获取商品分销推广语
+     * @param goodsId
+     * @return
+     */
+    public String getGoodsPromotionLanguage(Integer goodsId){
+        Record1<String> record = db().select(GOODS.PROMOTION_LANGUAGE).from(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchOne();
+        if(record != null){
+            return record.into(String.class);
+        }else{
+            return null;
         }
     }
 }
