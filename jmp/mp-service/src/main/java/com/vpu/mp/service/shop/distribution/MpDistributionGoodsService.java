@@ -1,9 +1,6 @@
 package com.vpu.mp.service.shop.distribution;
 
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.shop.tables.MrkingVoucher;
-import com.vpu.mp.db.shop.tables.RebatePriceRecord;
-import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.db.shop.tables.records.RebatePriceRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -40,8 +37,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.foundation.util.Util.listToString;
+import static com.vpu.mp.db.shop.Tables.DISTRIBUTION_STRATEGY;
+import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_REBATE_PRICE;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
+import static com.vpu.mp.db.shop.Tables.REBATE_PRICE_RECORD;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
+import static com.vpu.mp.db.shop.Tables.USER_REBATE_PRICE;
 
 /**
  * @Author 常乐
@@ -248,6 +253,7 @@ public class MpDistributionGoodsService extends ShopBaseService {
         DistributorLevelVo levelInfo = distributorLevel.getOneLevelInfo(userInfo.getDistributorLevel());
         if(levelInfo == null || levelInfo.getLevelStatus() == OrderConstant.NO) {
             logger().info("该分销员等级未开启，level：{}", userInfo.getDistributorLevel());
+            return null;
         }
         //该等级返利详情
         RebateRatioVo rebateRatio = new RebateRatioVo();
