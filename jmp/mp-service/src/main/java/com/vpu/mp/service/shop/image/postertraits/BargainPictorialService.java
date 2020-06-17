@@ -139,7 +139,7 @@ public class BargainPictorialService extends ShareBaseService {
         } else {
             BargainSceneValue sceneValue = new BargainSceneValue();
             sceneValue.setUid(param.getUserId());
-            sceneValue.setRecordId(param.getRecordId());
+            sceneValue.setRecord_id(param.getRecordId());
             String sceneParam = addAndGetSceneStr(sceneValue);
             mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_BARGAIN_INFO,sceneParam);
         }
