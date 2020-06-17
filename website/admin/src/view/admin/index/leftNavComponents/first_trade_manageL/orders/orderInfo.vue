@@ -600,7 +600,12 @@
             <tr>
               <th>分销员手机号</th>
               <th>分销员微信昵称</th>
-              <th>分销员真实姓名</th>
+              <th>
+                分销员真实姓名
+                <el-tooltip class="item" effect="dark" content="分销员真实姓名展示优先级：提现申请填写信息>成为分销员申请表填写信息>用户信息" placement="top">
+                  <i class="el-icon-question"></i>
+                </el-tooltip>
+              </th>
               <th>商品名称</th>
               <th>返利商品总金额</th>
               <th>成本价</th>
