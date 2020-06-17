@@ -17,7 +17,7 @@ export const cn = {
   singleCol: '单列',
   chooseEvent: '选择活动',
   addEvent: '添加商品',
-  addEventTip: '仅可以选择进行中以及未开始的砍价活动，将以活动商品形式展示在小程序前端，每个“砍价活动“组件最多可添加6个砍价商品。对砍价活动中商品进行更换时，当前组件商品将同步更新。',
+  addEventTip: '仅可以选择进行中以及未开始的砍价活动，将以活动商品形式展示在小程序前端，每个“砍价活动“组件最多可添加6个砍价商品。',
   productName: '商品名称',
   startTime: '开始时间',
   bottomPrice: '底价',
