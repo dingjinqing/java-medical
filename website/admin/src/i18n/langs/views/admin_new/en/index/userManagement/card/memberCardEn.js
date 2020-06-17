@@ -389,5 +389,6 @@ export const en = {
   repeatSubmit: 'Do not repeat submit',
   addUp: 'add up',
   received: 'Received',
-  notget: 'Not Received'
+  notget: 'Not Received',
+  examineTime: 'Examine'
 }

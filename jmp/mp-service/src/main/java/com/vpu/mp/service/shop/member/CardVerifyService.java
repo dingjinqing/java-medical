@@ -331,7 +331,7 @@ public class CardVerifyService extends ShopBaseService {
 		record.setRefuseTime(DateUtil.getSqlTimestamp());
 		record.setRefuseDesc(param.getRefuseDesc());
 		record.setStatus(REFUSED);
-		UInteger.valueOf(param.getSysId());
+		record.setSysId(UInteger.valueOf(param.getSysId()));
 		return record;
 	}
     

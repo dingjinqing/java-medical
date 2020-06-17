@@ -66,6 +66,7 @@
           <span>{{ $t('memberCard.username') }}：<strong>{{item.username}}</strong></span>
           <span>{{ $t('memberCard.mobile') }}：<strong>{{item.mobile}}</strong></span>
           <span>{{ $t('memberCard.applyTime') }}：<strong>{{item.createTime}}</strong></span>
+          <span v-if="item.examineTime">{{ $t('memberCard.examineTime') }}：<strong>{{item.examineTime}}</strong></span>
           <span class="operate">{{ $t('memberCard.options') }}</span>
         </div>
         <div class="member_content">
@@ -132,6 +133,7 @@
               v-if='item.status === 2'
             >
               <div>{{ $t('memberCard.successAudit') }}</div>
+              <div style="margin-top: 10px;" v-if="item.accountName">审核人：{{item.accountName}}</div>
             </div>
             <div
               class="content"
@@ -142,6 +144,7 @@
                 class="fail-detail"
                 @click="showFailDetail(item)"
               >查看详情</div>
+              <div style="margin-top: 10px;" v-if="item.accountName">审核人：{{item.accountName}}</div>
             </div>
           </div>
         </div>
@@ -523,7 +526,7 @@ export default {
     }
   }
   .fail-detail {
-    padding: 5px 10px;
+    margin-top: 10px;
     color: blue;
     cursor: pointer;
   }
