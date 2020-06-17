@@ -133,13 +133,13 @@ public class BargainPictorialService extends ShareBaseService {
         BargainRecord bargainRecord = (BargainRecord) aRecord;
         String mpQrCode;
         if (GoodsConstant.GOODS_ITEM.equals(param.getPageType())) {
-            SceneValueBase sceneValueBase = new SceneValueBase( param.getUserId(), goodsRecord.getGoodsId(), bargainRecord.getId(), BaseConstant.ACTIVITY_TYPE_BARGAIN);
+            SceneValueBase sceneValueBase = new SceneValueBase(param.getUserId(), goodsRecord.getGoodsId(), bargainRecord.getId(), BaseConstant.ACTIVITY_TYPE_BARGAIN, param.getShareAwardId());
             String sceneParam = addAndGetSceneStr(sceneValueBase);
             mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, sceneParam);
         } else {
             BargainSceneValue sceneValue = new BargainSceneValue();
             sceneValue.setUid(param.getUserId());
-            sceneValue.setRecordId(param.getRecordId());
+            sceneValue.setRecord_id(param.getRecordId());
             String sceneParam = addAndGetSceneStr(sceneValue);
             mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_BARGAIN_INFO,sceneParam);
         }

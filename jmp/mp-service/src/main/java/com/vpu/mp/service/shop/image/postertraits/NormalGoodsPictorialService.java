@@ -49,6 +49,7 @@ public class NormalGoodsPictorialService extends ShareBaseService {
         SceneValueBase sceneValueBase = new SceneValueBase();
         sceneValueBase.setUid(baseParam.getUserId());
         sceneValueBase.setGid(goodsRecord.getGoodsId());
+        sceneValueBase.setShareAwardId(baseParam.getShareAwardId());
         String paramStr = addAndGetSceneStr(sceneValueBase);
         return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, paramStr);
     }

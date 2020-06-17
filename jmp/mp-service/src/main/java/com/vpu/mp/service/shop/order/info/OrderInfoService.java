@@ -459,11 +459,9 @@ public class OrderInfoService extends ShopBaseService {
         if(StringUtils.isBlank(goodsType)) {
             return getGoodsTypeToInsert(orderType);
         }else {
-            StringBuilder sb = new StringBuilder(goodsType);
-            for (Byte type: orderType) {
-                sb.append("[").append(type).append("]");
-            }
-            return sb.toString();
+            ArrayList<Byte> bytes = Lists.newArrayList(orderTypeToByte(goodsType));
+            bytes.addAll(orderType);
+            return getGoodsTypeToInsert(bytes);
         }
     }
 
