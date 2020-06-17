@@ -132,14 +132,10 @@ export default {
     next(vm => {
       if (from.name === null) {
         vm.activeName = localStorage.getItem('distributionTap')
-        // vm.$http.$emit('distributionTap', localStorage.getItem('distributionTapIndex'))
+      } else {
+        localStorage.removeItem('distributionTapIndex')
       }
     })
-  },
-  watch: {
-    activeName (newValue, oldValue) {
-      this.$http.$emit('distributionTap', localStorage.getItem('distributionTapIndex'))
-    }
   },
   mounted () {
     this.judgeStatus = localStorage.getItem('distributionJudgeStatus')
@@ -165,7 +161,7 @@ export default {
       this.distributorLevel = 0
       this.$http.$emit('distributionTap', tab.index)
 
-      localStorage.setItem('distributionTap', tab.name)
+      localStorage.setItem('distributionTap', tab.name) // 刷新保持当前tab名称
       localStorage.setItem('distributionTapIndex', tab.index)
     },
     tabChange () {
