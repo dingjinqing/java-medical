@@ -9,7 +9,7 @@
           label="会员卡购买"
           name="first"
         >
-          <memberCardOrder v-if="activeName ==='first'&!isShowTransactionData" />
+          <memberCardOrder v-if="activeName ==='first'&!isShowTransactionData" :userId="userId"/>
         </el-tab-pane>
         <el-tab-pane
           label="会员卡续费"
@@ -69,6 +69,7 @@ export default {
   },
   data () {
     return {
+      userId: null,
       activeName: 'first',
       bottomFormData: {},
       isShowTransactionData: false, // 是否显示交易数据页面
@@ -78,6 +79,9 @@ export default {
   mounted () {
     if (this.$route.query.activeName) {
       this.activeName = this.$route.query.activeName
+    }
+    if (this.$route.query.userId) {
+      this.userId = this.$route.query.userId
     }
   },
   methods: {
