@@ -22,6 +22,7 @@ import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Record2;
+import org.jooq.SelectConditionStep;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 import org.jooq.lambda.tuple.Tuple2;
@@ -305,12 +306,16 @@ public class VirtualOrderService extends ShopBaseService {
      * @return
      */
     protected Map<Date, List<VirtualOrderAnalysisBo>> getAnalysisOrderMap(AnalysisParam param, Byte goodsType) {
-        List<VirtualOrderAnalysisBo> list = db().select(DSL.date(VIRTUAL_ORDER.CREATE_TIME).as("createTime"), VIRTUAL_ORDER.ORDER_SN, VIRTUAL_ORDER.USER_ID, VIRTUAL_ORDER.ORDER_AMOUNT, VIRTUAL_ORDER.RETURN_MONEY, VIRTUAL_ORDER.RETURN_ACCOUNT, VIRTUAL_ORDER.RETURN_CARD_BALANCE)
+        SelectConditionStep<?> select = db().select(DSL.date(VIRTUAL_ORDER.CREATE_TIME).as("createTime"), VIRTUAL_ORDER.ORDER_SN, VIRTUAL_ORDER.USER_ID, VIRTUAL_ORDER.ORDER_AMOUNT, VIRTUAL_ORDER.RETURN_MONEY, VIRTUAL_ORDER.RETURN_ACCOUNT, VIRTUAL_ORDER.RETURN_CARD_BALANCE)
             .from(VIRTUAL_ORDER)
             .where(VIRTUAL_ORDER.CREATE_TIME.between(param.getStartTime(), param.getEndTime()))
             .and(VIRTUAL_ORDER.GOODS_TYPE.eq(goodsType))
-            .and(VIRTUAL_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED))
-            .fetchInto(VirtualOrderAnalysisBo.class);
+            .and(VIRTUAL_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED));
+        if (GOODS_TYPE_COUPON_PACK.equals(goodsType)) {
+            //优惠券礼包订单过滤掉免费领取的
+            select.and(VIRTUAL_ORDER.ORDER_AMOUNT.gt(BigDecimal.ZERO).or(VIRTUAL_ORDER.USE_SCORE.gt(0)));
+        }
+        List<VirtualOrderAnalysisBo> list = select.fetchInto(VirtualOrderAnalysisBo.class);
         return list.stream().collect(Collectors.groupingBy(VirtualOrderAnalysisBo::getCreateTime));
     }
 
