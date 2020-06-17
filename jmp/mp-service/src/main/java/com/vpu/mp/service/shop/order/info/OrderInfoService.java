@@ -1371,26 +1371,30 @@ public class OrderInfoService extends ShopBaseService {
 				.and(TABLE.USER_ID.eq(userId));
 		if (waitPay) {
 			selectConditionStep
-					.and(TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_CANCELLED, OrderConstant.ORDER_CLOSED));
-		} else {
-			selectConditionStep.and(TABLE.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY));
-		}
-		return selectConditionStep.fetchOne().component1() == 0;
-	}
+                .and(TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_CANCELLED, OrderConstant.ORDER_CLOSED));
+        } else {
+            selectConditionStep.and(TABLE.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY));
+        }
+        return selectConditionStep.fetchOne().component1() == 0;
+    }
 
-	public boolean isNewUser(Integer userId) {
-		return isNewUser(userId, true);
-	}
+    public boolean isNewUser(Integer userId) {
+        return isNewUser(userId, true);
+    }
 
-	/**
-	 * 某用户指定时间段内订单数(开区间)
-	 *
-	 * @return
-	 */
-	public int getUserOrderNumber(Integer userId, Timestamp startTime, Timestamp endTime) {
-		if (userId == null || userId <= 0) {
-			return 0;
-		}
+    public boolean isNewUser(Integer userId, Timestamp createTime) {
+        return !db().fetchExists(TABLE, ORDER_INFO.USER_ID.eq(userId).and(TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_CANCELLED, OrderConstant.ORDER_CLOSED)).and(TABLE.CREATE_TIME.lt(createTime)));
+    }
+
+    /**
+     * 某用户指定时间段内订单数(开区间)
+     *
+     * @return
+     */
+    public int getUserOrderNumber(Integer userId, Timestamp startTime, Timestamp endTime) {
+        if (userId == null || userId <= 0) {
+            return 0;
+        }
 		if (startTime == null && endTime != null) {
 			return db().selectCount().from(TABLE).where(TABLE.USER_ID.eq(userId).and(TABLE.CREATE_TIME.lt(endTime))
 					.and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchOne().into(Integer.class);
