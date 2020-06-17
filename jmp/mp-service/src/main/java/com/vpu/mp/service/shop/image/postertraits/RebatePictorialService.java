@@ -4,7 +4,6 @@ import com.upyun.UpException;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.PictorialRecord;
-import com.vpu.mp.db.shop.tables.records.WxpUnlimitSceneRecord;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.ImageUtil;
@@ -14,6 +13,7 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSharePostConfig;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsRebateConfigParam;
 import com.vpu.mp.service.pojo.wxapp.share.*;
+import com.vpu.mp.service.pojo.wxapp.share.rebate.RebateSceneValue;
 import com.vpu.mp.service.pojo.wxapp.share.rebate.RebateShareInfoParam;
 import org.jooq.Record;
 import org.springframework.stereotype.Service;
@@ -26,8 +26,6 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Date;
-
-import static com.vpu.mp.db.shop.tables.WxpUnlimitScene.WXP_UNLIMIT_SCENE;
 
 /**
  * 分销分销海报生成器
@@ -133,12 +131,12 @@ public class RebatePictorialService extends ShareBaseService {
     @Override
     String createMpQrCode(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         RebateShareInfoParam rebateShareInfoParam = (RebateShareInfoParam) baseParam;
-        WxpUnlimitSceneRecord sceneRecord = db().newRecord(WXP_UNLIMIT_SCENE);
-        sceneRecord.setSceneValue(rebateShareInfoParam.getRebateConfig());
-        sceneRecord.insert();
-        Integer sceneId = sceneRecord.getSceneId();
-        // 未做补偿
-        return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&rebateSId=%d", baseParam.getUserId(), goodsRecord.getGoodsId(),sceneId));
+        RebateSceneValue sceneValue = new RebateSceneValue();
+        sceneValue.setUid(baseParam.getUserId());
+        sceneValue.setGid(baseParam.getUserId());
+        sceneValue.setRebateConfig(rebateShareInfoParam.getRebateConfig());
+        String paramStr = addAndGetSceneStr(sceneValue);
+        return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM,paramStr);
     }
 
     @Override

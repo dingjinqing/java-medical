@@ -90,6 +90,9 @@ public class MemberCardOrderService extends VirtualOrderService {
         Timestamp endTime = param.getEndTime();
         Boolean isRefund = param.getRefund();
         select.where(VIRTUAL_ORDER.GOODS_TYPE.eq(GOODS_TYPE_MEMBER_CARD));
+        if(param.getUserId()!=null){
+            select.and(VIRTUAL_ORDER.USER_ID.eq(param.getUserId()));
+        }
         if (isNotEmpty(orderSn)) {
             select.and(VIRTUAL_ORDER.ORDER_SN.like(format("%s%%", orderSn)));
         }

@@ -7,6 +7,7 @@ import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.RegexUtil;
@@ -162,8 +163,9 @@ public class WxAppCardActivationService extends ShopBaseService {
 	 * 	设置会员卡激活数据
 	 * @throws CardActivateException  激活失败
 	 */
-	public void setActivationCard(ActivateCardParam param) throws CardActivateException {
+	public ActivateCardVo setActivationCard(ActivateCardParam param) throws CardActivateException {
 		logger().info("设置会员卡激活信息");
+        ActivateCardVo vo = new ActivateCardVo();
 		UserCardVo uCard = userCardService.getUserCardByCardNo(param.getCardNo());	
 		if(uCard ==null) {
 			logger().info("激活失败");
@@ -184,8 +186,12 @@ public class WxAppCardActivationService extends ShopBaseService {
 			
 			if(CardUtil.isCardExamine(uCard.getExamine())) {
 				activeData.put("status",CardVerifyConstant.VSTAT_CHECKING);
+				//  提交审核成功
+                vo.setMsg(JsonResultCode.MSG_CARD_EXAMINE_SUBMIT_SUCCESS);
 			}else {
 				activeData.put("status",CardVerifyConstant.VSTAT_PASS);
+				//  激活成功
+                vo.setMsg(JsonResultCode.MSG_CARD_EXAMINE_AUTO_SUCCESS);
 			}
 			Map<String, Object> data = changeKeyFromHumpToUnderline(activeData);
 			
@@ -215,7 +221,7 @@ public class WxAppCardActivationService extends ShopBaseService {
 			logger().info("没有传入激活数据,actovateOption=NullNode");
 			throw new CardActivateException();
 		}
-		
+		return vo;
 	}
 
 	private void setCustomAction(ActivateCardParam param, Map<String, Object> activeData) {

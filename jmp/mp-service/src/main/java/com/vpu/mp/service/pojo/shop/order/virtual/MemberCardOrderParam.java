@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 public class MemberCardOrderParam extends BasePageParam {
+    private Integer userId;
     /** 下单用户信息（下单用户姓名或手机号）**/
     private String userInfo;
     /** 订单编号 **/

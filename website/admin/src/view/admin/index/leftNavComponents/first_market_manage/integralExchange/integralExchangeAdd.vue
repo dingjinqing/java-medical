@@ -597,7 +597,7 @@ export default {
               }
               this.formBottom.copywriting = objectShareConfig.shareDoc
               this.sharedGraph = JSON.stringify(objectShareConfig.shareImgAction)
-              this.formBottom.checkImgData = { imgUrl: objectShareConfig.shareImg }
+              this.formBottom.checkImgData = { imgUrl: this.$imageHost + '/' + objectShareConfig.shareImg, imgPath: objectShareConfig.shareImg }
               console.log(objectShareConfig)
             }
           })

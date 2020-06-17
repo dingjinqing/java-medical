@@ -8,10 +8,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSharePostConfig;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.share.GoodsPictorialInfo;
-import com.vpu.mp.service.pojo.wxapp.share.GoodsShareBaseParam;
-import com.vpu.mp.service.pojo.wxapp.share.PictorialImgPx;
-import com.vpu.mp.service.pojo.wxapp.share.PictorialUserInfo;
+import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +46,11 @@ public class NormalGoodsPictorialService extends ShareBaseService {
 
     @Override
     String createMpQrCode(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
-        return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&aid=&atp=", baseParam.getUserId(), goodsRecord.getGoodsId()));
+        SceneValueBase sceneValueBase = new SceneValueBase();
+        sceneValueBase.setUid(baseParam.getUserId());
+        sceneValueBase.setGid(goodsRecord.getGoodsId());
+        String paramStr = addAndGetSceneStr(sceneValueBase);
+        return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, paramStr);
     }
 
     @Override

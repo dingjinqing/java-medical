@@ -114,10 +114,12 @@ public class GroupDrawPictorialService extends ShareBaseService {
         GroupDrawShareInfoParam param = (GroupDrawShareInfoParam) baseParam;
         GroupDrawRecord groupDrawRecord = (GroupDrawRecord) aRecord;
 
+        SceneValueBase sceneValueBase = new SceneValueBase(param.getUserId(),goodsRecord.getGoodsId(), groupDrawRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_DRAW);
+        String paramStr = addAndGetSceneStr(sceneValueBase);
         if (GoodsConstant.GOODS_ITEM.equals(param.getPageType())) {
-            return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&aid=%d&atp=%d",param.getUserId(),goodsRecord.getGoodsId(), groupDrawRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_DRAW));
+           return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, paramStr);
         } else {
-            return qrCodeService.getMpQrCode(QrCodeTypeEnum.LOTTERY, String.format("uid=%d&gid=%d&aid=%d&atp=%d",param.getUserId(),goodsRecord.getGoodsId(), groupDrawRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_DRAW));
+            return qrCodeService.getMpQrCode(QrCodeTypeEnum.LOTTERY, paramStr);
         }
     }
 

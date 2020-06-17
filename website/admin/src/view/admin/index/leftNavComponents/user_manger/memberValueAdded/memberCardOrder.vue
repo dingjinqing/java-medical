@@ -264,6 +264,7 @@ export default {
     ManualRefund: () => import('./refundDialog'),
     MemberOrderExportDialog: () => import('./memberOrderExportDialog') // 会员卡购买页面数据导出弹窗
   },
+  props: ['userId'],
   data () {
     return {
       loading: false,
@@ -306,6 +307,9 @@ export default {
       this.searchParams.endTime = this.applicationTime1
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
+      if (this.userId) {
+        this.searchParams.userId = this.userId
+      }
       getMemberCardOrderList(this.searchParams).then((res) => {
         if (res.error === 0) {
           this.originalData = res.content.dataList

@@ -13,6 +13,7 @@ import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.*;
+import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuySceneValue;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import org.jooq.Record;
@@ -111,9 +112,15 @@ public class GroupBuyPictorialService extends ShareBaseService {
         GroupBuyDefineRecord groupBuyDefineRecord = (GroupBuyDefineRecord) aRecord;
 
         if (GoodsConstant.GOODS_ITEM.equals(param.getPageType())) {
-            return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&aid=%d&atp=%d", baseParam.getUserId(), goodsRecord.getGoodsId(), groupBuyDefineRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_BUY));
+            SceneValueBase sceneValueBase = new SceneValueBase(baseParam.getUserId(), goodsRecord.getGoodsId(), groupBuyDefineRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_BUY);
+            String paramStr = addAndGetSceneStr(sceneValueBase);
+            return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM,paramStr);
         } else {
-            return qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_GROUP_BOOKING_INFO, String.format("uid=%d&group_id=%d", baseParam.getUserId(), param.getGroupId()));
+            GroupBuySceneValue sceneValue = new GroupBuySceneValue();
+            sceneValue.setUid(baseParam.getUserId());
+            sceneValue.setGroupId(param.getGroupId());
+            String paramStr = addAndGetSceneStr(sceneValue);
+            return qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_GROUP_BOOKING_INFO, paramStr);
         }
     }
 

@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.InputStream;
 
 /**
  * 瓜分积分海报生成
@@ -57,7 +57,12 @@ public class GroupIntegrationPictorialService extends ShareBaseService{
     @Override
     String createMpQrCode(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         GroupIntegralShareInfoParam param = (GroupIntegralShareInfoParam) baseParam;
-        return qrCodeService.getMpQrCode(QrCodeTypeEnum.PARTATION_INTEGRAL,String.format("pid=%d&gid=%d&invid=%d",param.getActivityId(),param.getGroupId(),param.getUserId()));
+        SceneValueBase sceneValueBase =new SceneValueBase();
+        sceneValueBase.setAid(param.getActivityId());
+        sceneValueBase.setGid(param.getGroupId());
+        sceneValueBase.setUid(param.getUserId());
+        String paramStr = addAndGetSceneStr(sceneValueBase);
+        return qrCodeService.getMpQrCode(QrCodeTypeEnum.PARTATION_INTEGRAL,paramStr);
     }
 
     @Override

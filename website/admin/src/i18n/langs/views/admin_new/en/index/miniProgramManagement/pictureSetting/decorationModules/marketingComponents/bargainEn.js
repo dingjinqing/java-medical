@@ -17,7 +17,7 @@ export const en = {
   singleCol: 'single column',
   chooseEvent: 'Choose an event',
   addEvent: 'Add Goods',
-  addEventTip: 'Only you can choose the bargaining activity that is in progress and not started. It will be displayed in the form of active goods in front of the small program. Each "bargaining activity" component can add up to 6 bargaining goods. When the goods in the bargaining event are replaced, the current component items will be updated simultaneously.',
+  addEventTip: 'Only you can choose the bargaining activity that is in progress and not started. It will be displayed in the form of active goods in front of the small program. Each "bargaining activity" component can add up to 6 bargaining goods. ',
   productName: 'product name',
   startTime: 'Starting time',
   bottomPrice: 'Bottom price',

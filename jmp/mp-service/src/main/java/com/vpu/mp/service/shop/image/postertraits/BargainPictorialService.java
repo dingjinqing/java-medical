@@ -2,7 +2,10 @@ package com.vpu.mp.service.shop.image.postertraits;
 
 import com.upyun.UpException;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.BargainRecord;
+import com.vpu.mp.db.shop.tables.records.CodeRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.PictorialRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -13,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainRecordInfo;
 import com.vpu.mp.service.pojo.wxapp.share.*;
+import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainSceneValue;
 import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainShareInfoParam;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import org.jooq.Record;
@@ -29,7 +33,6 @@ import java.math.BigDecimal;
 import java.net.URL;
 
 import static com.vpu.mp.db.shop.tables.Code.CODE;
-import static com.vpu.mp.db.shop.tables.WxpUnlimitScene.WXP_UNLIMIT_SCENE;
 import static java.lang.String.format;
 
 /**
@@ -129,17 +132,16 @@ public class BargainPictorialService extends ShareBaseService {
         BargainShareInfoParam param = (BargainShareInfoParam) baseParam;
         BargainRecord bargainRecord = (BargainRecord) aRecord;
         String mpQrCode;
-        WxpUnlimitSceneRecord sceneRecord = db().newRecord(WXP_UNLIMIT_SCENE);
         if (GoodsConstant.GOODS_ITEM.equals(param.getPageType())) {
-            sceneRecord.setSceneValue(String.format("uid=%d&gid=%d&aid=%d&atp=%d", param.getUserId(), goodsRecord.getGoodsId(), bargainRecord.getId(), BaseConstant.ACTIVITY_TYPE_BARGAIN));
-            sceneRecord.insert();
-            Integer sceneId = sceneRecord.getSceneId();
-            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, "sceneId="+sceneId);
+            SceneValueBase sceneValueBase = new SceneValueBase( param.getUserId(), goodsRecord.getGoodsId(), bargainRecord.getId(), BaseConstant.ACTIVITY_TYPE_BARGAIN);
+            String sceneParam = addAndGetSceneStr(sceneValueBase);
+            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, sceneParam);
         } else {
-            sceneRecord.setSceneValue(String.format("uid=%d&record_id=%d", param.getUserId(), param.getRecordId()));
-            sceneRecord.insert();
-            Integer sceneId = sceneRecord.getSceneId();
-            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_BARGAIN_INFO,"sceneId="+sceneId);
+            BargainSceneValue sceneValue = new BargainSceneValue();
+            sceneValue.setUid(param.getUserId());
+            sceneValue.setRecordId(param.getRecordId());
+            String sceneParam = addAndGetSceneStr(sceneValue);
+            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_BARGAIN_INFO,sceneParam);
         }
 
         return mpQrCode;

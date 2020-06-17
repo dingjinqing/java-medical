@@ -1,12 +1,11 @@
 package com.vpu.mp.service.pojo.wxapp.member.card;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author: 王兵兵
@@ -40,7 +39,7 @@ public class MemberCardPageDecorationVo {
     private Byte dateType;
     private Integer limit;
     private Integer stock;
-    private String shipImg;
+    private String shopImg;
     /**
      * 限次卡门店使用次数
      */

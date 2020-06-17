@@ -106,7 +106,9 @@ public class SeckillPictorialService extends ShareBaseService {
     @Override
     String createMpQrCode(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         SecKillDefineRecord secKillDefineRecord = (SecKillDefineRecord) aRecord;
-        return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&aid=%d&atp=%d",baseParam.getUserId(),goodsRecord.getGoodsId(), secKillDefineRecord.getSkId(), BaseConstant.ACTIVITY_TYPE_SEC_KILL));
+        SceneValueBase sceneValueBase = new SceneValueBase( baseParam.getUserId(), goodsRecord.getGoodsId(), secKillDefineRecord.getSkId(), BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
+        String paramStr = addAndGetSceneStr(sceneValueBase);
+        return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, paramStr);
     }
 
     @Override

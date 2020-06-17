@@ -1387,9 +1387,9 @@ public class MemberCardService extends ShopBaseService {
         //图片域名
         String shopAvatar = saas().shop.getShopAvatarById(getShopId());
         if(StringUtil.isNotEmpty(shopAvatar)){
-            vo.setShipImg(imageUrl(shopAvatar));
+            vo.setShopImg(imageUrl(shopAvatar));
         }else{
-            vo.setShipImg(imageUrl("image/admin/shop_logo_default.png"));
+            vo.setShopImg(null);
         }
         if(StringUtil.isNotEmpty(vo.getBgImg())){
             vo.setBgImg(imageUrl(vo.getBgImg()));

@@ -106,7 +106,9 @@ public class PreSalePictorialService extends ShareBaseService {
     @Override
     String createMpQrCode(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         PresaleRecord presaleRecord = (PresaleRecord) aRecord;
-        return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&aid=%d&atp=%d",baseParam.getUserId(),goodsRecord.getGoodsId(), presaleRecord.getId(), BaseConstant.ACTIVITY_TYPE_PRE_SALE));
+        SceneValueBase sceneValueBase = new SceneValueBase(baseParam.getUserId(),goodsRecord.getGoodsId(), presaleRecord.getId(), BaseConstant.ACTIVITY_TYPE_PRE_SALE);
+        String paramStr = addAndGetSceneStr(sceneValueBase);
+        return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM,paramStr);
     }
 
     @Override

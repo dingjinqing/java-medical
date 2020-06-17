@@ -4,6 +4,7 @@ import com.upyun.UpException;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.CodeRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.WxpUnlimitSceneRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
@@ -389,6 +390,18 @@ public class QrCodeService extends ShopBaseService {
             .from(WXP_UNLIMIT_SCENE)
             .where(WXP_UNLIMIT_SCENE.SCENE_ID.eq(sceneId))
             .fetchAny(WXP_UNLIMIT_SCENE.SCENE_VALUE);
+    }
+
+    /**
+     * 添加scene新项
+     * @param sceneValue
+     * @return
+     */
+    public Integer addScene(String sceneValue){
+        WxpUnlimitSceneRecord sceneRecord = db().newRecord(WXP_UNLIMIT_SCENE);
+        sceneRecord.setSceneValue(sceneValue);
+        sceneRecord.insert();
+        return sceneRecord.getSceneId();
     }
 
 }

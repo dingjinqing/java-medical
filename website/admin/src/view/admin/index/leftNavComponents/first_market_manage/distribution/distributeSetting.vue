@@ -962,6 +962,9 @@ export default {
           // 分销员审核项邀请码
           var codeFlag = this.form.activation_cfg.find(item => { return item === '邀请码' })
           localStorage.setItem('distributionCode', codeFlag === undefined ? 0 : 1)
+
+          // 分销审核开关和分销员审核联动
+          this.$emit('distributionSetting')
         } else {
           this.$message.warning(res.message)
         }

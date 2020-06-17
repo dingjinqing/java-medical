@@ -15,4 +15,5 @@ module.exports = {
   cancel: '取消',
   originalPricePurchase: '原价购买',
   noRedeemableTimes: '此卡无剩余可兑换次数',
+  choiseGoods: '请选择兑换商品'
 }

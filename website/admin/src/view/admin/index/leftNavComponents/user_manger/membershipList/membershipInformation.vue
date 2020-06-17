@@ -1574,6 +1574,7 @@ export default {
       this.$router.push({
         name: linkName,
         query: {
+          userId: this.userId,
           activeName: activeName
         }
       })

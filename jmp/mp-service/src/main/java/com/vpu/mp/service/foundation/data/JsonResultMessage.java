@@ -615,7 +615,8 @@ public class JsonResultMessage {
 	public static final String MSG_CARD_EXAMINE_ING = "member.card.examine.ing";
 	public static final String MSG_CARD_EXAMINE_PASS = "member.card.examine.pass";
 	public static final String MSG_CARD_EXAMINE_REFUSE = "member.card.examine.refuse";
-
+    public static final String MSG_CARD_EXAMINE_SUBMIT_SUCCESS = "member.card.examine.submit.success";
+    public static final String MSG_CARD_EXAMINE_AUTO_SUCCESS = "msg.card.examine.auto.success";
     /**
      * 	用户卡包邮信息
      */
