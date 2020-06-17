@@ -118,7 +118,7 @@ public class GroupBuyPictorialService extends ShareBaseService {
         } else {
             GroupBuySceneValue sceneValue = new GroupBuySceneValue();
             sceneValue.setUid(baseParam.getUserId());
-            sceneValue.setGroupId(param.getGroupId());
+            sceneValue.setGroup_id(param.getGroupId());
             String paramStr = addAndGetSceneStr(sceneValue);
             return qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_GROUP_BOOKING_INFO, paramStr);
         }

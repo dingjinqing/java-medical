@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.*;
+import com.vpu.mp.service.pojo.wxapp.share.integral.GroupIntegralSceneValue;
 import com.vpu.mp.service.pojo.wxapp.share.integral.GroupIntegralShareInfoParam;
 import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
 import org.jooq.Record;
@@ -57,10 +58,10 @@ public class GroupIntegrationPictorialService extends ShareBaseService{
     @Override
     String createMpQrCode(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         GroupIntegralShareInfoParam param = (GroupIntegralShareInfoParam) baseParam;
-        SceneValueBase sceneValueBase =new SceneValueBase();
-        sceneValueBase.setAid(param.getActivityId());
+        GroupIntegralSceneValue sceneValueBase =new GroupIntegralSceneValue();
+        sceneValueBase.setPid(param.getActivityId());
         sceneValueBase.setGid(param.getGroupId());
-        sceneValueBase.setUid(param.getUserId());
+        sceneValueBase.setInvid(param.getUserId());
         String paramStr = addAndGetSceneStr(sceneValueBase);
         return qrCodeService.getMpQrCode(QrCodeTypeEnum.PARTATION_INTEGRAL,paramStr);
     }
