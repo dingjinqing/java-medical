@@ -170,7 +170,7 @@
                     <div>{{ $t('distribution.proportionTip3') }}
                       <el-input
                         v-model="scope.row.fanliRatio"
-                        @change="checkPercentage(scope.$index)"
+                        @input="checkPercentage(scope.$index)"
                         size="mini"
                         style="width: 55px;"
                         :disabled="status === false"
@@ -179,7 +179,7 @@
                     <div style="margin-top: 10px;">{{ $t('distribution.proportionTip4') }}
                       <el-input
                         v-model="scope.row.rebateRatio"
-                        @change="checkPercentage(scope.$index)"
+                        @input="checkPercentage(scope.$index)"
                         size="mini"
                         style="width: 55px;"
                         :disabled="status === false"
@@ -439,7 +439,9 @@ export default {
               }
             })
           })
-          this.handleData(this.tableData)
+          if (this.isEdite === false) {
+            this.handleData(this.tableData)
+          }
         }
       })
     },
@@ -448,8 +450,14 @@ export default {
     handleData (data) {
       data.map((item, index) => {
         // 佣金比例范围
-        item.lowValue = null
-        item.heightValue = null
+        if (this.isEdite === false) {
+          item.lowValue = null
+          item.heightValue = null
+        } else {
+          item.lowValue = item.fanliRatio
+          item.heightValue = item.rebateRatio
+        }
+
         if (item.levelStatus === 0) {
           item.levelName = item.levelName + '(已停用)'
         } else {
@@ -520,6 +528,8 @@ export default {
 
           // this.platClass = data.recommendCatId !== '' ? data.recommendCatId.split(',') : []
           // this.platClass = this.platClass.map(Number)
+
+          this.handleData(this.tableData)
         }
       })
     },
@@ -682,15 +692,15 @@ export default {
 
     // 直接间接返利比例
     checkPercentage (index) {
-      var re = /^([0-9]|([1-4][0-9]|50))(\.\d{1})?$/
-      if (this.tableData[index].fanliRatio !== undefined && !re.test(this.tableData[index].fanliRatio)) {
-        this.tableData[index].fanliRatio = 0
-        this.$message.warning('直接邀请返利比例在0%-50%之间')
-      }
-      if (this.tableData[index].rebateRatio !== undefined && !re.test(this.tableData[index].rebateRatio)) {
-        this.tableData[index].rebateRatio = 0
-        this.$message.warning('间接邀请返利比例在0%-50%之间')
-      }
+      // var re = /^([0-9]|([1-4][0-9]|50))(\.\d{1})?$/
+      // if (this.tableData[index].fanliRatio !== undefined && !re.test(this.tableData[index].fanliRatio)) {
+      //   this.tableData[index].fanliRatio = 0
+      //   this.$message.warning('直接邀请返利比例在0%-50%之间')
+      // }
+      // if (this.tableData[index].rebateRatio !== undefined && !re.test(this.tableData[index].rebateRatio)) {
+      //   this.tableData[index].rebateRatio = 0
+      //   this.$message.warning('间接邀请返利比例在0%-50%之间')
+      // }
 
       var fanliRatio = Number(this.tableData[index].fanliRatio)
       var rebateRatio = Number(this.tableData[index].rebateRatio)

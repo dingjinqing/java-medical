@@ -137,6 +137,7 @@
             align="center"
           >
           </el-table-column>
+
           <el-table-column
             :label="$t('memberCard.codeAndNoTip')"
             align="center"
@@ -157,17 +158,41 @@
 
           </el-table-column>
           <el-table-column
+            prop="receiveTime"
+            :label="$t('memberCard.reveiveStatus')"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <span v-if="scope.row.userId">
+                {{$t('memberCard.received')}}
+              </span>
+              <span v-else>
+                {{$t('memberCard.notget')}}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="receiveTime"
+            :label="$t('memberCard.delStatus')"
+            align="center"
+          >
+           <template slot-scope="scope">
+              <span v-if="scope.row.delFlag===1">
+                {{$t('memberCard.alreadyDelete')}}
+              </span>
+              <span v-else>
+                {{$t('memberCard.cardNomal')}}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column
             :label="$t('memberCard.options')"
             align="center"
             width="120"
           >
-
             <template slot-scope="scope">
-              <span v-if="scope.row.delFlag===1">
-                {{$t('memberCard.alreadyDelete')}}
-              </span>
               <span
-                v-else
+                v-if="scope.row.delFlag!==1"
                 style="cursor:pointer;color:#5a8bff"
                 @click="handleToOperation(scope.row.id)"
               >{{$t('memberCard.toDelete')}}</span>
@@ -296,7 +321,8 @@ export default {
       this.loadAllTableData()
     },
     search (data) {
-      console.log(data)
+      this.pageParams.currentPage = data.currentPage
+      this.loadAllTableData()
     },
     // 用户昵称点击
     handleToUserDetail (userId) {

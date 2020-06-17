@@ -1066,20 +1066,12 @@ public class MemberCardService extends ShopBaseService {
 	 * 返回会员卡所有批次信息
 	 */
 	public List<CardBatchVo> getCardBatchList(Integer cardId) {
-		List<CardBatchRecord> cardBatchList = cardReceiveCode.getAvailableCardBatchByCardId(cardId);
-		if (cardBatchList != null) {
-			List<CardBatchVo> res = new ArrayList<>();
-			for (CardBatchRecord cb : cardBatchList) {
-				CardBatchVo vo = new CardBatchVo();
-				vo.setId(cb.getId());
-				vo.setName(cb.getName());
-				res.add(vo);
-			}
-			return res;
-		} else {
-			return null;
-		}
+        List<CardBatchVo> cardBatchList =  db().select(CARD_BATCH.ID,CARD_BATCH.NAME)
+            .from(CARD_BATCH)
+            .where(CARD_BATCH.CARD_ID.eq(cardId))
+            .fetchInto(CardBatchVo.class);
 
+		return cardBatchList;
 	}
 
 	/**

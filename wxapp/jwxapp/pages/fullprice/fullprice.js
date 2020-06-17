@@ -238,7 +238,7 @@ global.wxPage({
       return false
     }
     util.navigateTo({
-      url: '/pages/buycardlist/buycardlist?strategy_id=' + that.data.strategy_id + "&is_fullprice=" + that.data.strategy_id,
+      url: '/pages/buycardlist/buycardlist?strategy_id=' + this.data.strategy_id + "&is_fullprice=" + this.data.strategy_id,
     })
   },
 
