@@ -160,4 +160,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+/deep/ .el-textarea .el-input__count {
+  line-height: 12px;
+}
+/deep/ .el-textarea__inner {
+  padding-bottom: 20px;
+}
 </style>

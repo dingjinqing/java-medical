@@ -9,10 +9,7 @@ import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.share.GoodsPictorialInfo;
-import com.vpu.mp.service.pojo.wxapp.share.GoodsShareBaseParam;
-import com.vpu.mp.service.pojo.wxapp.share.PictorialImgPx;
-import com.vpu.mp.service.pojo.wxapp.share.PictorialUserInfo;
+import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.integral.IntegralMallShareInfoParam;
 import com.vpu.mp.service.shop.market.integralconvert.IntegralConvertService;
 import org.jooq.Record;
@@ -63,7 +60,9 @@ public class IntegralMallPictorialService extends ShareBaseService {
 
     @Override
     String createMpQrCode(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
-        return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&aid=%d&atp=%d", baseParam.getUserId(), goodsRecord.getGoodsId(), baseParam.getActivityId(), BaseConstant.ACTIVITY_TYPE_INTEGRAL));
+        SceneValueBase sceneValueBase = new SceneValueBase(baseParam.getUserId(), goodsRecord.getGoodsId(), baseParam.getActivityId(), BaseConstant.ACTIVITY_TYPE_INTEGRAL);
+        String paramStr= addAndGetSceneStr(sceneValueBase);
+        return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM,paramStr);
     }
 
     @Override

@@ -368,6 +368,16 @@ public abstract class ShareBaseService extends ShopBaseService {
     }
 
     /**
+     * 将二维码参数存储,并返回包含对应sceneId的url
+     * @param sceneValue
+     * @return
+     */
+    public String addAndGetSceneStr(SceneValueBase sceneValue){
+        Integer sceneId = qrCodeService.addScene(Util.toJson(sceneValue));
+        return "sceneId="+sceneId;
+    }
+
+    /**
      * 价格取两位小数，加上价格符号
      * @param lang  国际化
      * @param price 价格
