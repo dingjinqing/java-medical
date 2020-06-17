@@ -150,7 +150,7 @@
           v-if="isDraggable"
           class="selectImgList"
         >
-          <p>已选{{backArr.length}}长图片,拖动可修改插入顺序</p>
+          <p>已选{{backArr.length}}张图片,拖动可修改插入顺序</p>
           <div class="selectImgContainer">
             <draggable
               class="list-group"
@@ -331,6 +331,7 @@ export default {
       immediate: true
     },
     checked (newData) {
+      this.currentPage3 = 1
       this.queryImgs()
     },
     '$store.getters.picSpaceCropperFlag' () {
