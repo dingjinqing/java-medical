@@ -126,9 +126,21 @@ export default {
       judgeStatus: '1' // 分销配置是否开启
     }
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (from.name === null) {
+        vm.activeName = localStorage.getItem('distributionTap')
+        // vm.$http.$emit('distributionTap', localStorage.getItem('distributionTapIndex'))
+      }
+    })
+  },
+  watch: {
+    activeName (newValue, oldValue) {
+      this.$http.$emit('distributionTap', localStorage.getItem('distributionTapIndex'))
+    }
+  },
   mounted () {
     this.judgeStatus = localStorage.getItem('distributionJudgeStatus')
-    this.activeName = localStorage.getItem('distributionTap')
     this.$http.$on('toChangeActiveName', (flag) => {
       if (flag) {
         this.activeName = 'first'
@@ -152,6 +164,7 @@ export default {
       this.$http.$emit('distributionTap', tab.index)
 
       localStorage.setItem('distributionTap', tab.name)
+      localStorage.setItem('distributionTapIndex', tab.index)
     },
     tabChange () {
       this.activeName = 'fouth'

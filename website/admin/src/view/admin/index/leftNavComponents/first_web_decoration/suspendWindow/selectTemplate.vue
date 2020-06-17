@@ -39,6 +39,7 @@
                 type="primary"
                 size="small"
                 style="margin-top: 5px;"
+                @click="getTemplateData ()"
               >搜索</el-button>
             </el-col>
           </el-row>

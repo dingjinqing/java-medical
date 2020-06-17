@@ -527,7 +527,7 @@ export default {
       allChecked: false,
       checkedValue: '0',
       checkList: [{
-        label: '批量修改分员分组',
+        label: '批量修改分销员分组',
         value: '0'
       }, {
         label: '对选中的分销员修改分组',
