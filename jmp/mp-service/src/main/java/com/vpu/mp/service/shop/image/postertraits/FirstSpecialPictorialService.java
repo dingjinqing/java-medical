@@ -96,7 +96,7 @@ public class FirstSpecialPictorialService extends ShareBaseService {
     @Override
     String createMpQrCode(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         FirstSpecialRecord firstSpecialRecord = (FirstSpecialRecord) aRecord;
-        SceneValueBase sceneValueBase = new SceneValueBase(baseParam.getUserId(), goodsRecord.getGoodsId(), firstSpecialRecord.getId(), BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
+        SceneValueBase sceneValueBase = new SceneValueBase(baseParam.getUserId(), goodsRecord.getGoodsId(), firstSpecialRecord.getId(), BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL, baseParam.getShareAwardId());
         String sceneParam = addAndGetSceneStr(sceneValueBase);
         return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM,sceneParam);
     }
