@@ -63,6 +63,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.Tables.USER_ADDRESS;
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
@@ -921,6 +922,19 @@ public class OrderInfoService extends ShopBaseService {
 				fetchAnyInto(UserAddressVo.class);
 	}
 
+    /**
+     * 获取用户下过单的有效地址
+     * @param userId 用户id
+     * @return list userAddress never null
+     */
+	public List<UserAddressVo> getAllOrderAddress(Integer userId){
+	    return db().select(TABLE.CONSIGNEE, TABLE.PROVINCE_NAME, TABLE.PROVINCE_CODE, TABLE.CITY_NAME, TABLE.CITY_CODE, TABLE.DISTRICT_NAME, TABLE.DISTRICT_CODE, TABLE.CONSIGNEE, TABLE.ADDRESS, TABLE.MOBILE, TABLE.ADDRESS_ID)
+            .from(TABLE)
+            .rightJoin(USER_ADDRESS).on(TABLE.ADDRESS_ID.eq(USER_ADDRESS.ADDRESS_ID))
+            .where(USER_ADDRESS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .orderBy(TABLE.CREATE_TIME.desc())
+            .fetchInto(UserAddressVo.class);
+    }
     /**
      * 创建订单
      */
