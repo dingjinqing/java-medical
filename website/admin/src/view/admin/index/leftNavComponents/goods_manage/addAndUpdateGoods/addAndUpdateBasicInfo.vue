@@ -139,6 +139,7 @@
             </div>
             <div
               class="goodsImgWrap"
+              v-if="this.goodsProductInfo.goodsImgs.length <10"
               @click="addGoodsImg"
             >
               <el-image
