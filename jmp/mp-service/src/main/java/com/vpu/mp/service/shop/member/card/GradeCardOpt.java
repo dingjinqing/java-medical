@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.member.card;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
@@ -17,7 +18,6 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
  */
 @Service
 public class GradeCardOpt extends CardOpt {
-	
 	public GradeCardOpt() {
 		super(CardConstant.MCARD_TP_GRADE);
 	}
@@ -33,7 +33,7 @@ public class GradeCardOpt extends CardOpt {
 			if(oldCard != null && newCard != null) {
 				// 检测是否为同一张卡
 				if(!oldCard.getId().equals(cardId)) {
-					userCardService.changeUserGradeCard(userId, oldCard, newCard, "");
+					userCardService.changeUserGradeCard(userId, oldCard, newCard, "",isActivate);
 					return userCardService.getCardNoByUserAndCardId(userId,cardId);
 				}
 			}

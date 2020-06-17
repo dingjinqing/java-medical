@@ -18,6 +18,7 @@ import com.vpu.mp.db.shop.tables.records.CardUpgradeRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.Tables;
 
+import com.vpu.mp.service.shop.member.card.GradeCardService;
 import org.jooq.impl.DSL;
 import org.jooq.Record;
 import org.jooq.Record2;
@@ -102,6 +103,7 @@ public class UserCardDaoService extends ShopBaseService{
     public final static Byte CARD_OFFLINE = 1;
 	@Autowired private  UserCardService userCardService;
 	@Autowired private CardFreeShipService freeshipSvc;
+    @Autowired private GradeCardService gradeCardService;
 
     /**
 	 * 获取用户持有的等级卡
@@ -361,7 +363,11 @@ public class UserCardDaoService extends ShopBaseService{
 			.where(USER_CARD.USER_ID.eq(userId))
 			.and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
 			.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
-			.fetchAnyInto(String.class);
+            // 判断是否已经激活
+            .and(MEMBER_CARD.FLAG.eq(CardConstant.MCARD_FLAG_USING))
+            .and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_NO).or(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull())))
+            .fetchAnyInto(String.class);
 	}
 	
 	/**
@@ -374,6 +380,10 @@ public class UserCardDaoService extends ShopBaseService{
 				.where(USER_CARD.FLAG.eq(UCARD_FG_USING))
 				.and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
 				.and(USER_CARD.USER_ID.eq(userId))
+                // 判断是否已经激活
+                .and(MEMBER_CARD.FLAG.eq(CardConstant.MCARD_FLAG_USING))
+                .and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+                .and(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_NO).or(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull())))
 				.fetchAnyInto(String.class);
     }
 
@@ -528,13 +538,18 @@ public class UserCardDaoService extends ShopBaseService{
 		return db().fetchCount(USER_CARD, USER_CARD.CARD_ID.eq(cardId));
 	}
 
-	public int updateUserGradeCardId(Integer userId,Integer cardId) {
+	public int updateUserGradeCardId(Integer userId,Integer cardId,Boolean isActivate) {
+        String cardNo = userCardService.getCurrentAvalidGradeCardNo(userId);
+        //  兼容： 先废除所有的之前的等价卡和待激活的等价卡
+        gradeCardService.clearUserAllGrade(userId,cardId,isActivate);
 		return  db().update(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 			.set(USER_CARD.CARD_ID,cardId)
+            .set(USER_CARD.CREATE_TIME,DateUtil.getLocalDateTime())
 			.set(USER_CARD.UPDATE_TIME,DateUtil.getLocalDateTime())
 			.set(USER_CARD.FLAG,UCARD_FG_USING)
-			.where(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
-			.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+		    .set(USER_CARD.ACTIVATION_TIME,isActivate?DateUtil.getLocalDateTime():null)
+			.where(USER_CARD.CARD_NO.eq(cardNo))
+            .and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
 			.and(USER_CARD.USER_ID.eq(userId))
 			.execute();
 	}
@@ -545,7 +560,6 @@ public class UserCardDaoService extends ShopBaseService{
 				   .and(USER_CARD.FLAG.eq(DelFlag.NORMAL_VALUE))
 				   .and(USER_CARD.EXPIRE_TIME.isNull().or(USER_CARD.EXPIRE_TIME.ge(DateUtil.getLocalDateTime())))
 				   );
-					
 	}
 
 	public List<UserCardGradePriceBo> getUserCartGradePrice(Integer userId, List<Integer> prdIdList) {

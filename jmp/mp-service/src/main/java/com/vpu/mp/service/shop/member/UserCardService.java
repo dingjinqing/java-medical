@@ -8,18 +8,8 @@ import static com.vpu.mp.db.shop.Tables.STORE;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.DEFAULT_ADMIN;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_OUT;
@@ -279,14 +269,38 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 	用户是否有可用的等级卡
+	 * 	用户目前的未被废除的等级卡
 	 * @Return  true拥有 ，false 未拥有
 	 */
 	public boolean isHasAvailableGradeCard(Integer userId) {
-		String grade = userCardDao.calcUserGrade(userId);
-		logger().info("当前用户等级"+grade);
+        String grade = getCurrentAvalidGradeCard(userId);
 		return !StringUtils.isBlank(grade);
 	}
+    /**
+     * 用户目前未被废除的等级卡等级
+     */
+    public String getCurrentAvalidGradeCard(Integer userId){
+        String grade = db().select(MEMBER_CARD.GRADE)
+            .from(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
+            .where(USER_CARD.USER_ID.eq(userId))
+            .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+            .and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
+            .fetchAnyInto(String.class);
+        return grade;
+    }
+    /**
+     *  获取用户当前可用的等级会员卡号
+     * @param userId
+     * @return
+     */
+	public String getCurrentAvalidGradeCardNo(Integer userId){
+        return  db().select(USER_CARD.CARD_NO)
+                    .from(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
+                    .where(USER_CARD.USER_ID.eq(userId))
+                    .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+                    .and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
+                    .fetchAnyInto(String.class);
+    }
 
 	/**
 	 * 	获取用户持有的等级卡
@@ -299,11 +313,11 @@ public class UserCardService extends ShopBaseService {
 	 * 	用户卡等级变动
 	 */
 	public void changeUserGradeCard(Integer userId, MemberCardRecord oldCard, MemberCardRecord newCard,
-			String option) {
+			String option,Boolean isActivate) {
 		logger().info("用户会员卡升级");
 		
 		//	更新卡
-		userCardDao.updateUserGradeCardId(userId, newCard.getId());
+		userCardDao.updateUserGradeCardId(userId, newCard.getId(),isActivate);
 		//	保存用户卡等级变动信息
 		cardUpgradeService.recordCardUpdateGrade(userId, oldCard, newCard, option);
 		//	用户卡升级订阅消息通知
@@ -434,8 +448,7 @@ public class UserCardService extends ShopBaseService {
 		BigDecimal amount = getUserTotalSpendAmount(userId);
 		// 获取等级卡列表等级升序
 		List<MemberCardRecord> gCardList = getAvailGradeCard();
-
-		String uGrade = userCardDao.getUserCardGrade(userId);
+		String uGrade = getCurrentAvalidGradeCard(userId);
 		// 判断用户是否拥有等级卡
 		if (StringUtils.isBlank(uGrade)) {
 			// 用户第一次领取会员卡，给用户分配一级会员卡
@@ -446,7 +459,7 @@ public class UserCardService extends ShopBaseService {
 			if (isSatisfyUpgradeCondition(userTotalScore, amount, gradeCondition)) {
 				addUserCard(userId, gCard.getId());
 			}
-			uGrade = userCardDao.getUserCardGrade(userId);
+			uGrade = getCurrentAvalidGradeCard(userId);
 		}
 		logger().info("此时的会员卡等级："+uGrade);
 		MemberCardRecord userGradeCard = userCardDao.getUserGradeCard(userId);
@@ -474,7 +487,7 @@ public class UserCardService extends ShopBaseService {
 		//	升级
 		if(flag) {
 			String operation = "领取等级卡";
-			changeUserGradeCard(userId, oldGradeCard, newGradeCard, operation);
+			changeUserGradeCard(userId, oldGradeCard, newGradeCard, operation,false);
 		}
 		return cardId;
 	}
@@ -483,7 +496,7 @@ public class UserCardService extends ShopBaseService {
 	 * 	检测可升级到的等级卡
 	 */
 	private Integer checkCardCanUpgrade(Integer userId) throws MemberCardNullException {
-		String userCardGrade = userCardDao.getUserCardGrade(userId);
+		String userCardGrade = getCurrentAvalidGradeCard(userId);
 		final String uGrade;
 		if(StringUtils.isBlank(userCardGrade)) {
 			uGrade = CardConstant.LOWEST_GRADE;
@@ -526,12 +539,12 @@ public class UserCardService extends ShopBaseService {
 
 		GradeConditionJson gradeCondition = Util.parseJson(gCard.getGradeCondition(), GradeConditionJson.class);
 
-		if (BigDecimalUtil.compareTo(gradeCondition.getGradeScore(), BigDecimal.ZERO) < 1) {
-			gradeCondition.setGradeScore(new BigDecimal(userTotalScore + 1000));
+		if (BigDecimalUtil.compareTo(gradeCondition.getGradeScore(), BigDecimal.ZERO) < 0) {
+			//gradeCondition.setGradeScore(new BigDecimal(userTotalScore + 1000));
 		}
 
-		if (BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(), BigDecimal.ZERO) < 1) {
-			gradeCondition.setGradeMoney(amount.add(new BigDecimal(1000)));
+		if (BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(), BigDecimal.ZERO) < 0) {
+			//gradeCondition.setGradeMoney(amount.add(new BigDecimal(1000)));
 		}
 		return gradeCondition;
 	}
@@ -541,8 +554,15 @@ public class UserCardService extends ShopBaseService {
 	 */
 	public boolean isSatisfyUpgradeCondition(Integer userTotalScore, BigDecimal amount,
 			GradeConditionJson gradeCondition) {
-		return gradeCondition.getGradeScore().intValue() <= userTotalScore
-				|| BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(), amount) <= 0;
+	    boolean scoreCheck = false,moneyCheck = false;
+	    if(gradeCondition.getGradeScore() != null){
+	        scoreCheck = gradeCondition.getGradeScore().intValue() <= userTotalScore;
+        }
+
+	    if(gradeCondition.getGradeMoney()!=null){
+	        moneyCheck = BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(), amount) <= 0;
+        }
+		return scoreCheck || moneyCheck;
 	}
 
 	private boolean isCardGradeGtUserGrade(String uGrade, MemberCardRecord gCard) {
@@ -559,7 +579,7 @@ public class UserCardService extends ShopBaseService {
 			MemberCardRecord oldGradeCard = getUserGradeCard(userId);
 			MemberCardRecord newGradeCard = memberCardService.getCardById(cardId);
 			String option = "Admin operation";
-			changeUserGradeCard(userId, oldGradeCard, newGradeCard, option);
+			changeUserGradeCard(userId, oldGradeCard, newGradeCard, option,false);
 		} else {
 			// 发放等级卡
 			sendCard(userId, cardId);
@@ -729,7 +749,7 @@ public class UserCardService extends ShopBaseService {
 			MemberCardRecord oldGradeCard = getUserGradeCard(userId);
 			MemberCardRecord newGradeCard = memberCardService.getCardById(card.getId());
 			String option = "Admin operation";
-			changeUserGradeCard(userId, oldGradeCard, newGradeCard, option);
+			changeUserGradeCard(userId, oldGradeCard, newGradeCard, option,false);
 		}
 
 		if (isActivate || isActivateNow(card)) {
@@ -1905,7 +1925,7 @@ public class UserCardService extends ShopBaseService {
 			if (!StringUtils.isBlank(oldCard.getGrade())) {
 				logger().info("升级记录");
 				String operation = "首页领取";
-				changeUserGradeCard(param.getUserId(), oldCard, mCard, operation);
+				changeUserGradeCard(param.getUserId(), oldCard, mCard, operation,false);
 			} else {
 				createNewUserCard(param.getUserId(), mCard, NumberUtils.BYTE_ZERO.equals(mCard.getActivation()));
 			}
@@ -1916,7 +1936,9 @@ public class UserCardService extends ShopBaseService {
 
 	public String getCardNoByUserAndCardId(Integer userId, Integer cardId) {
 		UserCardRecord rec = db().selectFrom(USER_CARD)
-				.where(USER_CARD.USER_ID.eq(userId).and(USER_CARD.CARD_ID.eq(cardId))).fetchAny();
+				.where(USER_CARD.USER_ID.eq(userId).and(USER_CARD.CARD_ID.eq(cardId)))
+                .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+                .fetchAny();
 		return rec != null ? rec.getCardNo() : null;
 	}
 	public UserCardVo getUserCardByCardNo(String cardNo){

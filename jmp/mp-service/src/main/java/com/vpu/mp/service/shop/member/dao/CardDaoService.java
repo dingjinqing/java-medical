@@ -96,7 +96,7 @@ public class CardDaoService extends ShopBaseService {
 							.on(USER_CARD.CARD_NO.eq(GIVE_CARD_RECORD.CARD_NO).and(USER_CARD.FLAG.eq(CardConstant.UCARD_FG_GIVED)));
 
 		buildOptions(param, select);
-		select.where(USER_CARD.CARD_ID.eq(param.getCardId())).orderBy(USER_CARD.USER_ID.desc());
+		select.where(USER_CARD.CARD_ID.eq(param.getCardId())).orderBy(USER_CARD.CREATE_TIME.desc(),USER_CARD.USER_ID.desc());
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), CardHolderVo.class);
 	}
 
@@ -812,9 +812,18 @@ public class CardDaoService extends ShopBaseService {
 	 * 	获取系统中未被删除的卡
 	 */
 	public PageResult<MemberCardRecord> selectCardList(SearchCardParam param) {
+        /**
+         * 	滤掉停用会员卡
+         */
+        Condition condition = DSL.noCondition();
+        if(param.getFilterStop()!=null && Boolean.TRUE.equals(param.getFilterStop())) {
+            condition = condition.and(MEMBER_CARD.FLAG.eq(CardConstant.MCARD_FLAG_USING));
+        }
+
 		SelectSeekStep2<MemberCardRecord, String, Integer> select = db().selectFrom(MEMBER_CARD)
 				.where(MEMBER_CARD.CARD_TYPE.equal(param.getCardType())).and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
-				.orderBy(MEMBER_CARD.GRADE.desc(),MEMBER_CARD.ID.desc());
+			    .and(condition)
+                .orderBy(MEMBER_CARD.GRADE.desc(),MEMBER_CARD.ID.desc());
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MemberCardRecord.class);
 	}

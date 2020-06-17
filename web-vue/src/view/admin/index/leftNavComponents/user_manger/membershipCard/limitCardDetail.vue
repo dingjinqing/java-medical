@@ -313,7 +313,10 @@ export default {
       this.cardSuiteGoodsCfgData.exchangCount = data.exchangCount
       this.cardSuiteGoodsCfgData.isExchange = String(data.isExchange)
       this.cardSuiteGoodsCfgData.exchangFreight = String(data.exchangFreight)
-      this.cardSuiteGoodsCfgData.exchangGoods = data.exchangGoods ? data.exchangGoods : []
+      this.cardSuiteGoodsCfgData.exchangGoods = []
+      if (data.exchangGoods !== null && data.exchangGoods.length > 0) {
+        this.cardSuiteGoodsCfgData.exchangGoods.push(...data.exchangGoods.map(x => Number(x)))
+      }
 
       // 门店
       this.cardStoreCfgData.storeListType = String(data.storeListType)
