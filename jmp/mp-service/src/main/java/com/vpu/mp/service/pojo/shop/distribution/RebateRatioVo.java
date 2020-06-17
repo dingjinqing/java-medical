@@ -28,4 +28,8 @@ public class RebateRatioVo {
      * 间接返利比例
      */
     private Double rebateRatio;
+    /**
+     * 首单返利开关
+     */
+    private Byte firstRebate;
 }
