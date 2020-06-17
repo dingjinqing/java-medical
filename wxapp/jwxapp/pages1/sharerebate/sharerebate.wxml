@@ -40,7 +40,7 @@
       <view data-type="0" bindtap="toogleCouponGive"><text class="iconfont {{!giveCoupon ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{comColor}};"></text>不赠送优惠券</view>
     </view>
     <block wx:for="{{couponData}}" wx:key="id">
-      <view class="coupon-info-content" data-id="{{item.id}}" bindtap="chooseCouponData">
+      <view class="coupon-info-content" wx:if="{{giveCoupon}}" data-id="{{item.id}}" bindtap="chooseCouponData">
         <text class="iconfont {{item.checked ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="color:{{comColor}};"></text>
         <view class="coupon-info">
           <view class="coupon-left" style="background-color:{{comColor}};">

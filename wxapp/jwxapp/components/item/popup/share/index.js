@@ -38,43 +38,43 @@ global.wxComponent({
         const apiInfo = {
           1:{ //拼团
             api:'/api/wxapp/groupbuy/pictorial/info',
-            params:['realPrice','linePrice','activityId','targetId','pageType']
+            params:['realPrice','linePrice','activityId','targetId','pageType','shareAwardId']
           }, 
           3:{ //砍价
             api:'/api/wxapp/bargain/pictorial/info',
-            params: ['realPrice','linePrice','activityId','targetId','pageType']
+            params: ['realPrice','linePrice','activityId','targetId','pageType','shareAwardId']
           },
           4:{ //积分兑换
             api:'/api/wxapp/integral_mall/pictorial/info',
-            params: ['realPrice','linePrice','activityId','targetId','score'],
+            params: ['realPrice','linePrice','activityId','targetId','score','shareAwardId'],
           },
           5:{ //秒杀
             api:'/api/wxapp/seckill/pictorial/info',
-            params: ['realPrice','linePrice','activityId','targetId']
+            params: ['realPrice','linePrice','activityId','targetId','shareAwardId']
           },
           6:{ //限时降价
             api:'/api/wxapp/reduceprice/pictorial/info',
-            params:['realPrice','linePrice','activityId','targetId']
+            params:['realPrice','linePrice','activityId','targetId','shareAwardId']
           },
           8:{ //拼团抽奖
             api:'/api/wxapp/groupdraw/pictorial/info',
-            params:['realPrice','linePrice','activityId','targetId']
+            params:['realPrice','linePrice','activityId','targetId','shareAwardId']
           },
           10:{ //定金膨胀
             api:'/api/wxapp/presale/pictorial/info',
-            params:['realPrice','linePrice','activityId','targetId','depositPrice']
+            params:['realPrice','linePrice','activityId','targetId','depositPrice','shareAwardId']
           },
           18:{ //首单特惠
             api:'/api/wxapp/firstspecial/pictorial/info',
-            params:['realPrice','linePrice','activityId','targetId']
+            params:['realPrice','linePrice','activityId','targetId','shareAwardId']
           },
           98:{ //限时降价|会员价
             api:'/api/wxapp/reduceprice/pictorial/info',
-            params:['realPrice','linePrice','activityId','targetId']
+            params:['realPrice','linePrice','activityId','targetId','shareAwardId']
           },
           'default':{ //普通商品
             api:'/api/wxapp/goods/pictorial/info',
-            params:['realPrice','linePrice','activityId','targetId']
+            params:['realPrice','linePrice','activityId','targetId','shareAwardId']
           } 
         }
         target = [1,3,4,5,6,8,10,18,98].includes(this.data.shareData.activityType) ? apiInfo[this.data.shareData.activityType] : apiInfo['default']

@@ -242,11 +242,11 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 	
 	/**
 	 * 审核用户激活通过
-	 * @param id
 	 * @return
 	 */
 	@PostMapping("/activateAudit/activate")
 	public JsonResult passActivateAudit(@RequestBody ActiveAuditParam param) {
+	    param.setSysId(adminAuth.user().getSysId());
 		shop().member.card.cardVerifyService.passActivateAudit(param);
 		return success();
 	}
@@ -258,6 +258,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 	 */
 	@PostMapping("/activateAudit/reject")
 	public JsonResult rejectActivateAudit(@RequestBody ActiveAuditParam param) {
+        param.setSysId(adminAuth.user().getSysId());
 		shop().member.card.cardVerifyService.rejectActivateAudit(param);
 		return success();
 	}

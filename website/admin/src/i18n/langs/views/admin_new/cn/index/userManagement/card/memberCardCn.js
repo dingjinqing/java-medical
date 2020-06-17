@@ -420,5 +420,6 @@ export const cn = {
   repeatSubmit: '正在处理信息,请勿重复提交',
   addUp: '累计',
   received: '已领取',
-  notget: '未领取'
+  notget: '未领取',
+  examineTime: '审核时间'
 }

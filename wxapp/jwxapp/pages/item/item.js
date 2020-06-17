@@ -233,9 +233,9 @@ global.wxPage({
     let result = new Promise((resolve, reject) => {
       let customParams = {}
       if (this.data.rebateConfig) customParams.rebateConfig = JSON.parse(this.data.rebateConfig)
-      if (this.data.shareAwardId && this.data.shareAwardLaunchUserId) {
-        customParams.shareAwardId = this.data.shareAwardId
-        customParams.shareAwardLaunchUserId = this.data.shareAwardLaunchUserId
+      if (this.data.shareAwardId && (this.data.shareAwardLaunchUserId || this.data.inviteId || this.data.uid)) {
+        customParams.shareAwardId = this.data.shareAwardId 
+        customParams.shareAwardLaunchUserId = this.data.shareAwardLaunchUserId || this.data.inviteId || this.data.uid
       }
       if(this.data.rebateSId) customParams.rebateSId = this.data.rebateSId
       util.api(
@@ -727,6 +727,7 @@ global.wxPage({
       targetId,
       realPrice,
       linePrice,
+      shareAwardId:this.data.shareAwardId || null,
       ...activityData
     }
     console.log(shareData)

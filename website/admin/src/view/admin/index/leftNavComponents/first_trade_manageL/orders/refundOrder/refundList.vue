@@ -669,6 +669,7 @@ export default {
             td {
               vertical-align: middle;
               color: #666;
+              line-height: 20px;
             }
             .goods_info {
               display: flex;

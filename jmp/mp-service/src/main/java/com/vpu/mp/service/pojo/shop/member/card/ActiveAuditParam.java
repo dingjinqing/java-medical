@@ -42,5 +42,7 @@ public class ActiveAuditParam {
 	public Integer startNum;
 	// 结束行
 	public Integer endNum;
+	//  操作员Id
+    public Integer sysId;
 
 }

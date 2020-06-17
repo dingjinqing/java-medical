@@ -331,21 +331,21 @@ public class CardVerifyService extends ShopBaseService {
 		record.setRefuseTime(DateUtil.getSqlTimestamp());
 		record.setRefuseDesc(param.getRefuseDesc());
 		record.setStatus(REFUSED);
+		record.setSysId(UInteger.valueOf(param.getSysId()));
 		return record;
 	}
     
     
 	/**
 	 * 审核通过数据
-	 * 
-	 * @param id
 	 * @return
 	 */
-	private CardExamineRecord setPassData(Integer id, Timestamp now) {
+	private CardExamineRecord setPassData(ActiveAuditParam param, Timestamp now) {
 		CardExamineRecord record = new CardExamineRecord();
-		record.setId(id);
+		record.setId(param.getId());
 		record.setPassTime(now);
 		record.setStatus(VERIFIED);
+        record.setSysId(UInteger.valueOf(param.getSysId()));
 		return record;
 	}
 	
@@ -361,7 +361,7 @@ public class CardVerifyService extends ShopBaseService {
 			Timestamp now = DateUtil.getSqlTimestamp();
 			logger().info("申请激活会员卡通过: " + now);
 			// 更新card_examine 信息
-			CardExamineRecord record = setPassData(param.getId(), now);
+			CardExamineRecord record = setPassData(param, now);
 			cardDaoSvc.updateCardExamine(record);
 			// 更新激活
 			cardDaoSvc.updateUserCardByCardNo(param.getCardNo(), now);
@@ -387,6 +387,7 @@ public class CardVerifyService extends ShopBaseService {
 			List<String> nos = results.dataList.stream().map(x->x.get(CARD_EXAMINE.CARD_NO)).distinct().collect(Collectors.toList());
 			Map<String, MemberCardRecord> cardMap = cardDaoSvc.getCardByNo(nos.toArray(new String[0]));
 			Map<String,List<String>> cardCfgMap = new HashMap<>();
+			Map<Integer,String> shopAccountMap = new HashMap<>();
 			// 提前获取激活的选项
 			for(Map.Entry<String, MemberCardRecord> entry: cardMap.entrySet()) {
 				List<String> cfg = CardUtil.parseActivationCfg(entry.getValue().getActivationCfg());
@@ -401,8 +402,29 @@ public class CardVerifyService extends ShopBaseService {
 				vo.setStatus(record.get(CARD_EXAMINE.STATUS));
 				vo.setId(record.get(CARD_EXAMINE.ID));
 				vo.setRefuseDesc(record.get(CARD_EXAMINE.REFUSE_DESC));
-				
-				
+                //  审核人信息
+                UInteger sysId = record.get(CARD_EXAMINE.SYS_ID);
+                if(sysId != null){
+                    if(shopAccountMap.get(sysId.intValue())!=null){
+                        vo.setAccountName(shopAccountMap.get(sysId.intValue()));
+                    }else{
+                        ShopAccountRecord shopAccount = saas.shop.account.getAccountInfoForId(sysId.intValue());
+                        if(shopAccount != null){
+                            shopAccountMap.put(sysId.intValue(),shopAccount.getUserName());
+                            vo.setAccountName(shopAccountMap.get(sysId.intValue()));
+                        }
+                    }
+                }
+
+                //  审核时间
+                // 审核时间
+                Timestamp passTime = record.get(CARD_EXAMINE.PASS_TIME);
+                Timestamp refuseTime = record.get(CARD_EXAMINE.REFUSE_TIME);
+                if(passTime!=null) {
+                    vo.setExamineTime(passTime);
+                }else if(refuseTime!=null) {
+                    vo.setExamineTime(refuseTime);
+                }
 				// 激活数据项
 				List<String> activationCfg = cardCfgMap.get(vo.getCardNo());
 				for(String name: activationCfg) {
@@ -467,7 +489,7 @@ public class CardVerifyService extends ShopBaseService {
 				activeAuditVo.setProvince(String.valueOf(adMap.get(WxAppCardActivationService.PROVINCE_CODE)));
 				activeAuditVo.setDistrict(String.valueOf(adMap.get(WxAppCardActivationService.DISTRICT_CODE)));
 			}
-			
+
 		}
 		res.setDataList(myList);
 		return res;
@@ -522,7 +544,7 @@ public class CardVerifyService extends ShopBaseService {
 				vo.setAddress(address.toString());
 				
 				// 受教育程度
-				Byte education = record.get(CARD_EXAMINE.INDUSTRY_INFO);
+				Byte education = record.get(CARD_EXAMINE.EDUCATION);
 				if(education != null) {
 					vo.setEducationStr(MemberEducationEnum.getNameByCode((int)education,lang));
 				}

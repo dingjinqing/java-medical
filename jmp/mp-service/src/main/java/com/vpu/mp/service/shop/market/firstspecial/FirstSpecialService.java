@@ -185,8 +185,8 @@ public class FirstSpecialService extends ShopBaseService {
             param.getFirstSpecialGoodsParams().removeAll(newActGoods);
             this.transaction(() -> {
                 db().executeUpdate(record);
+                db().deleteFrom(FIRST_SPECIAL_GOODS).where(FIRST_SPECIAL_GOODS.FIRST_SPECIAL_ID.eq(param.getId()).and(FIRST_SPECIAL_GOODS.ID.notIn(param.getFirstSpecialGoodsParams().stream().map(FirstSpecialGoodsParam::getId).collect(Collectors.toList())))).execute();
                 if (CollectionUtils.isNotEmpty(param.getFirstSpecialGoodsParams())) {
-                    db().deleteFrom(FIRST_SPECIAL_GOODS).where(FIRST_SPECIAL_GOODS.FIRST_SPECIAL_ID.eq(param.getId()).and(FIRST_SPECIAL_GOODS.ID.notIn(param.getFirstSpecialGoodsParams().stream().map(FirstSpecialGoodsParam::getId).collect(Collectors.toList())))).execute();
                     for (FirstSpecialGoodsParam goods : param.getFirstSpecialGoodsParams()) {
                         FirstSpecialGoodsRecord goodsRecord = db().newRecord(FIRST_SPECIAL_GOODS);
                         assign(goods, goodsRecord);
