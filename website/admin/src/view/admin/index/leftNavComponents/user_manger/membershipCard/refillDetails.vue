@@ -77,14 +77,14 @@
           </el-table-column>
           <el-table-column
             v-if="isLimitCard"
-            prop="money"
+            prop="count"
             label="门店使用次数变动明细"
             align="center"
           >
           </el-table-column>
           <el-table-column
             v-if="isLimitCard"
-            prop="money"
+            prop="exchangCount"
             label="商品兑换次数变动明细"
             align="center"
           >

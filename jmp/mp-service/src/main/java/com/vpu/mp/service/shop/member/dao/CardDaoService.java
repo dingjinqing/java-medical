@@ -359,7 +359,7 @@ public class CardDaoService extends ShopBaseService {
 				.from(CHARGE_MONEY.leftJoin(USER).on(CHARGE_MONEY.USER_ID.eq(USER.USER_ID)));
 
 		buildOptionsForCharge(param, select);
-
+        select.orderBy(CHARGE_MONEY.CREATE_TIME.desc());
 		PageResult<ChargeVo> result = getPageResult(select, param.getCurrentPage(), param.getPageRows(), ChargeVo.class);
 		for(ChargeVo vo: result.dataList) {
 			String reason = RemarkUtil.remarkI18N(language, vo.getReasonId(), vo.getReason());
@@ -424,6 +424,7 @@ public class CardDaoService extends ShopBaseService {
 						CARD_CONSUMER.CREATE_TIME, CARD_CONSUMER.MESSAGE)
 				.from(CARD_CONSUMER.leftJoin(USER).on(CARD_CONSUMER.USER_ID.eq(USER.USER_ID)));
 		buildOptionsForConsume(param, select);
+		select.orderBy(CARD_CONSUMER.CREATE_TIME.desc());
 		PageResult<ChargeVo> result = getPageResult(select, param.getCurrentPage(), param.getPageRows(), ChargeVo.class);
 		// 处理国际化
 		for(ChargeVo vo: result.dataList) {

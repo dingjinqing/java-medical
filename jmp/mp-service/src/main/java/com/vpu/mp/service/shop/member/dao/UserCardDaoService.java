@@ -495,19 +495,16 @@ public class UserCardDaoService extends ShopBaseService{
      * @param userInfo
 	 */
 	public void insertIntoCharge(UserCardConsumeBean data) {
-		ChargeMoneyRecord chargeMoney = db().newRecord(CHARGE_MONEY);
-		FieldsUtil.assignNotNull(data, chargeMoney);
-		chargeMoney.insert();
+        db().newRecord(CHARGE_MONEY, data).insert();
 	}
 	/**
 	 * 消费记录
 	 */
 	public void insertConsume(UserCardConsumeBean data) {
-		CardConsumerRecord cardConsumer = db().newRecord(CARD_CONSUMER);
+		CardConsumerRecord cardConsumer = db().newRecord(CARD_CONSUMER,data);
 		if(data.getMoney() != null) {
 			cardConsumer.setMoney(data.getMoney().abs());
 		}
-		FieldsUtil.assignNotNull(data, cardConsumer);
 		cardConsumer.insert();
 	}
 
