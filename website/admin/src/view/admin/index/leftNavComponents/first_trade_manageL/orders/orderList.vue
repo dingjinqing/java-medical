@@ -1303,14 +1303,13 @@ export default {
                   color: #666;
                   justify-content: space-between;
                   > span {
-                    width: 190px;
                     text-align: left;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     cursor: pointer;
-                    &:first-of-type {
-                      width: 260px;
+                    &:last-of-type{
+                      margin-right: 50px;
                     }
                     &.paymentType {
                       img {

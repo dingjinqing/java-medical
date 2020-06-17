@@ -55,6 +55,7 @@
                   <img
                     class="user_head"
                     :src="item.avatar"
+                    v-if="item.avatar"
                   >
                   <div class="card_info_Right">
                     <p class="cardName">{{item.cardName}}</p>
@@ -182,6 +183,7 @@
                   <img
                     class="user_head"
                     :src="item.avatar"
+                    v-if="item.avatar"
                   >
                   <div class="card_info_Right">
                     <p class="cardName">{{item.cardName}}</p>
@@ -301,6 +303,7 @@
                   <img
                     class="user_head"
                     :src="item.avatar"
+                    v-if="item.avatar"
                   >
                   <div class="card_info_Right">
                     <p class="cardName">{{item.cardName}}</p>
@@ -745,8 +748,6 @@ export default {
             item.endTime = String(item.endTime).split(' ')[0]
             if (item.avatar) {
               item.avatar = this.$imageHost + '/' + item.avatar
-            } else {
-              item.avatar = this.defaultAvatar
             }
 
             // 处理会员卡权益
@@ -1075,9 +1076,9 @@ export default {
               width: 40px;
               height: 40px;
               border-radius: 50%;
+              margin-right: 10px;
             }
             .card_info_Right {
-              margin-left: 50px;
               .cardName {
                 color: #fff;
               }

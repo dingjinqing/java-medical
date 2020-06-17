@@ -37,6 +37,7 @@ public final class DateUtil {
     public static final String DATE_FORMAT_SIMPLE = "yyyy-MM-dd";
 	public static final String DATE_FORMAT_FULL = "yyyy-MM-dd HH:mm:ss";
 	public static final String DATE_FORMAT_DOT ="yyyy.MM.dd";
+    public static final String DATE_FORMATE_MONTH = "MM-dd HH:mm:ss";
 
 	public static final String DATE_FORMAT_FULL_NO_UNDERLINE = "yyyyMMddHHmmss";
 

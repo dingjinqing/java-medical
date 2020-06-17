@@ -33,13 +33,22 @@
                 <view class="coupon-r view"><text class="text">优惠券减￥{{item.denomination}}</text></view>
               </block>
             </block>
-            <block wx:else>
+            <block wx:if="{{item.actCode === 'discount'}}">
               <view class="coupon-l view"><text class="text">{{item.denomination}}</text>折</view>
               <block wx:if="{{item.useConsumeRestrict === 1}}">
                 <view class="coupon-r view"><text class="text">满{{item.leastConsume}}打{{item.denomination}}折</text></view>
               </block>
               <block wx:else>
                 <view class="coupon-r view"><text class="text">优惠券打{{item.denomination}}折</text></view>
+              </block>
+            </block>
+            <block wx:if="{{item.actCode === 'random'}}">
+              <view class="coupon-l view"><text class="text">{{item.randomMax}}</text>最高</view>
+              <block wx:if="{{item.useConsumeRestrict === 1}}">
+                <view class="coupon-r view"><text class="text">满{{item.leastConsume}}可用</text></view>
+              </block>
+              <block wx:else>
+                <view class="coupon-r view"><text class="text">最高得{{item.randomMax}}元</text></view>
               </block>
             </block>
           </view>

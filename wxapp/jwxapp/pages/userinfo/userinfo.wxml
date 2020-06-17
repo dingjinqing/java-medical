@@ -15,7 +15,7 @@
         <view class='main_ipt' style="width:350rpx;">{{user_info.username}}</view>
         <button class="btn_info" open-type="getUserInfo" bindgetuserinfo="getUserInfo">获取昵称</button>
       </view>
-      <view wx:if="{{mobile}}">
+      <view>
         <text class='main_txt'>手机号码</text>
         <view class='main_ipt' style="width:350rpx;">{{mobile}}</view>
         <button open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber" class="btn_info">授权手机号</button>

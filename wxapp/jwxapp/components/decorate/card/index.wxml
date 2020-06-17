@@ -5,8 +5,8 @@
       <view class="card_type" wx:if="{{m.card_type==0}}">{{i18n.$t(localePack,'components.decorate.ordinaryCard')}}</view>
       <view class="card_type" wx:if="{{m.card_type==1}}">{{i18n.$t(localePack,'components.decorate.limitCard')}}</view>
       <view class="card_content clearfix" wx:if="{{m.card_type!=2}}">
-        <view class="card_shop_icon" v-if="{{m.shipImg}}">
-          <image class="image" src='{{m.shipImg}}' />
+        <view class="card_shop_icon" wx:if="{{m.shopImg}}">
+          <image class="image" src='{{m.shopImg}}' />
         </view>
         <view class="card_content_right">
           <view style='font-size:28rpx;'>{{m.card_name}}</view>
@@ -17,8 +17,8 @@
         <view class="card_price" wx:if="{{m.is_pay == 1 && m.pay_type == 1}}">{{m.pay_fee}}{{i18n.$t(localePack,'components.decorate.integral')}}</view>
       </view>
       <view class="card_content clearfix" wx:if="{{m.card_type==2}}" >
-        <view class="card_shop_icon" v-if="{{m.shipImg}}">
-          <image class="image" src='{{m.shipImg}}' />
+        <view class="card_shop_icon" wx:if="{{m.shopImg}}">
+          <image class="image" src='{{m.shopImg}}' />
         </view>
         <view class="card_content_right">
           <view style='font-size:28rpx;'>{{i18n.$t(localePack,'components.decorate.membershiGradeCard')}}</view>
@@ -37,8 +37,8 @@
       <view class="card_type" wx:if="{{m.card_type==0}}">{{i18n.$t(localePack,'components.decorate.ordinaryCard')}}</view>
       <view class="card_type" wx:if="{{m.card_type==1}}">{{i18n.$t(localePack,'components.decorate.limitCard')}}</view>
       <view class="card_content clearfix">
-        <view class="card_shop_icon" v-if="{{m.shipImg}}">
-          <image class="image" src='{{m.shipImg}}' />
+        <view class="card_shop_icon" wx:if="{{m.shopImg}}">
+          <image class="image" src='{{m.shopImg}}' />
         </view>
         <view class="card_content_right">
           <view style='font-size:28rpx;'>{{m.card_name}}</view>

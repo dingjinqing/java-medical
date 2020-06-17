@@ -2100,7 +2100,7 @@ public class UserCardService extends ShopBaseService {
             //更新订单信息
             updateOrderInfo(order.getRenewOrderSn());
             //修改会员卡过期时间
-            expireTime = updateExpireTime(memberCard);
+            expireTime = updateExpireTime(memberCard,order.getId());
             memberCard = userCardDao.getUserCardInfo(cardNo);
             money = memberCard.getMoney();
         }
@@ -2120,7 +2120,7 @@ public class UserCardService extends ShopBaseService {
             //更新订单信息
             updateOrderInfo(order.getRenewOrderSn());
             //修改会员卡过期时间
-            expireTime = updateExpireTime(memberCard);
+            expireTime = updateExpireTime(memberCard,order.getId());
             memberCard = userCardDao.getUserCardInfo(cardNo);
             money = memberCard.getMoney();
         }
@@ -2276,7 +2276,7 @@ public class UserCardService extends ShopBaseService {
      * @param memberCard 会员卡信息
      * @return 新的过期时间
      */
-    private Timestamp updateExpireTime(UserCardParam memberCard){
+    private Timestamp updateExpireTime(UserCardParam memberCard,Integer id){
         Timestamp expireTime = DateUtil.getLocalDateTime();
         //已过期
         if (memberCard.getExpireTime()==null||memberCard.getExpireTime().before(DateUtil.getLocalDateTime())){
@@ -2310,6 +2310,7 @@ public class UserCardService extends ShopBaseService {
         db().update(CARD_RENEW)
             .set(CARD_RENEW.RENEW_EXPIRE_TIME,expireTime)
             .where(CARD_RENEW.CARD_NO.eq(memberCard.getCardNo()))
+            .and(CARD_RENEW.ID.eq(id))
             .execute();
         return expireTime;
     }
@@ -2592,7 +2593,7 @@ public class UserCardService extends ShopBaseService {
         updateOrderInfo(order.getRenewOrderSn());
         //修改会员卡过期时间
         UserCardParam memberCard = userCardDao.getUserCardInfo(order.getRenewOrderSn());
-        updateExpireTime(memberCard);
+        updateExpireTime(memberCard,order.getId());
         TradesRecordRecord tradesRecord = db().newRecord(TRADES_RECORD);
         tradesRecord.setTradeNum(paymentRecord.getTotalFee());
         tradesRecord.setTradeSn(paymentRecord.getOrderSn());

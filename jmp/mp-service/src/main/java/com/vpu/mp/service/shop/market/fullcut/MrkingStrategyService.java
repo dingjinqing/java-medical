@@ -777,9 +777,4 @@ public class MrkingStrategyService extends ShopBaseService {
         return map;
     }
 
-    private boolean isNewUser(Integer userId, String orderSn) {
-        return !db().fetchExists(ORDER_INFO, ORDER_INFO.USER_ID.eq(userId).and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED)).and(ORDER_INFO.ORDER_SN.ne(orderSn)));
-    }
-
-
 }

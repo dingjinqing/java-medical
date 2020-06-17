@@ -193,9 +193,14 @@ export default {
       this.showStartTime = this.startTime.split('-')[0] + '年' + this.startTime.split('-')[1] + '月' + this.startTime.split('-')[2] + '日'
       this.showEndTime = this.endTime.split('-')[0] + '年' + this.endTime.split('-')[1] + '月' + this.endTime.split('-')[2] + '日'
       obj.startTime = obj.startTime + ' 00:00:00'
-      obj.endTime = obj.endTime + ' 23:59:59'
+      // obj.endTime = obj.endTime + ' 23:59:59'
       switch (newData) {
         case 'first':
+          if (this.timeSelect === 2) {
+            obj.endTime = obj.endTime + ' 00:00:00'
+          } else {
+            obj.endTime = obj.endTime + ' 23:59:59'
+          }
           getMemberSardPurchase(obj).then(res => {
             console.log(res)
             if (res.error === 0) {
@@ -204,6 +209,11 @@ export default {
           })
           break
         case 'second':
+          if (this.timeSelect === 2) {
+            obj.endTime = obj.endTime + ' 00:00:00'
+          } else {
+            obj.endTime = obj.endTime + ' 23:59:59'
+          }
           getRenewPurchase(obj).then(res => {
             console.log(res)
             if (res.error === 0) {
@@ -212,6 +222,11 @@ export default {
           })
           break
         case 'third':
+          if (this.timeSelect === 2) {
+            obj.endTime = obj.endTime + ' 00:00:00'
+          } else {
+            obj.endTime = obj.endTime + ' 23:59:59'
+          }
           getRechargePurchase(obj).then(res => {
             console.log(res)
             if (res.error === 0) {
@@ -220,6 +235,11 @@ export default {
           })
           break
         case 'fourth':
+          if (this.timeSelect === 2) {
+            obj.endTime = obj.endTime + ' 00:00:00'
+          } else {
+            obj.endTime = obj.endTime + ' 23:59:59'
+          }
           getCouponpackPurchase(obj).then(res => {
             console.log(res)
             if (res.error === 0) {
