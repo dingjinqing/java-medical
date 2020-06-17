@@ -80,7 +80,7 @@ global.wxPage({
         // cardInfo.can_give_away = 1
         // end
         if(cardInfo.cardNo){
-          if ((!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) && ((!cardInfo.examine) || (cardInfo.cardVerifyStatus === 2))) {
+          if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) {
             that.setData({
               carStatus: "已领取"
             })
@@ -206,7 +206,7 @@ global.wxPage({
           that.setData({
             carStatus: "未领取"
           })
-        } else if ((!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) && ((!cardInfo.examine) || (cardInfo.cardVerifyStatus === 2))) {
+        } else if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) {
           that.setData({
             carStatus: "已领取"
           })
