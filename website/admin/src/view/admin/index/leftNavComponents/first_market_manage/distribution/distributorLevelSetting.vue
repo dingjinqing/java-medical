@@ -390,20 +390,22 @@ export default {
     // 设置分销员等级
     setDistributionLevel () {
       console.log(this.form.tableData)
+      // 已启用 && 开启自动升级
+      var result = this.form.tableData.find(item => { return item.levelStatus === 1 && item.levelUpRoute === 0 && !item.inviteNumber && !item.totalDistributionMoney && !item.totalBuyMoney })
+      if (result !== undefined) {
+        this.$message.warning('已启用等级设置不能为空')
+        return false
+      }
+
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          var result = this.form.tableData.find(item => { return item.levelStatus === 1 && item.levelUpRoute === 0 && !item.inviteNumber && !item.totalDistributionMoney && !item.totalBuyMoney })
-          if (result === undefined) {
-            setDistributionLevel(this.form.tableData).then((res) => {
-              if (res.error === 0) {
-                this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
-              } else {
-                this.$message.warning(res.message)
-              }
-            })
-          } else {
-            this.$message.warning('已启用等级设置不能为空')
-          }
+          setDistributionLevel(this.form.tableData).then((res) => {
+            if (res.error === 0) {
+              this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
+            } else {
+              this.$message.warning(res.message)
+            }
+          })
         }
       })
     },

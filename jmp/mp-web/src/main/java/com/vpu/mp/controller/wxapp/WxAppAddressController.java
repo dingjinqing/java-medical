@@ -37,11 +37,13 @@ public class WxAppAddressController extends WxAppBaseController {
     @PostMapping("/choose")
     public JsonResult chooseAddress(@RequestBody @Valid AddressParam param){
         WxAppSessionUser user =wxAppAuth.user();
-        UserAddressRecord address = shop().addressService.chooseAddress(user.getUserId(), param.getWxAddress());
+        param.setUserId(user.getUserId());
+        param.setLang(getLang());
+        ChooseAddressVo address = shop().addressService.chooseAddress(param);
         if (address==null){
             return fail();
         }
-        return success(address.into(UserAddressVo.class));
+        return success(address);
     }
 
     /**
