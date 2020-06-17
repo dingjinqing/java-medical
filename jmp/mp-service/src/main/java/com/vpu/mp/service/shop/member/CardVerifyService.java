@@ -544,7 +544,7 @@ public class CardVerifyService extends ShopBaseService {
 				vo.setAddress(address.toString());
 				
 				// 受教育程度
-				Byte education = record.get(CARD_EXAMINE.INDUSTRY_INFO);
+				Byte education = record.get(CARD_EXAMINE.EDUCATION);
 				if(education != null) {
 					vo.setEducationStr(MemberEducationEnum.getNameByCode((int)education,lang));
 				}
