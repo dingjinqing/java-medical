@@ -387,5 +387,7 @@ export const en = {
   cardNomal: 'Normal',
   cardExpired: 'Expired',
   repeatSubmit: 'Do not repeat submit',
-  addUp: 'add up'
+  addUp: 'add up',
+  received: 'Received',
+  notget: 'Not Received'
 }
