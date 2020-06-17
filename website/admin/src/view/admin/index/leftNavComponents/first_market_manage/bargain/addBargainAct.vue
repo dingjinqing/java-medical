@@ -942,7 +942,7 @@ export default {
         floorPrice: 0,
         effectiveDate: [],
         goodsId: 0,
-        expectationPrice: '',
+        expectationPrice: 0,
         needBindMobile: false,
         initialSales: 0,
         bargainMin: '',
@@ -1322,8 +1322,8 @@ export default {
           this.param.stock = 0
           let bargainGoods = []
           this.param.bargainGoods.forEach(item => {
-            let { goodsId, expectationPrice, floorPrice, stock } = item
-            bargainGoods.push({ goodsId, expectationPrice, floorPrice, stock })
+            let { goodsId, expectationPrice, floorPrice, stock, goodsImg, goodsName, goodsNumber, shopPrice } = item
+            bargainGoods.push({ goodsId, expectationPrice, floorPrice, stock, goodsImg, goodsName, goodsNumber, shopPrice })
             this.param.stock += stock
           })
           console.log(bargainGoods)
@@ -1425,10 +1425,6 @@ export default {
           this.$message.warning(this.$t('addBargainAct.vaildExpectationNumberMin'))
           return false
         }
-        // if (this.param.bargainMin === '' || !this.param.bargainMax) {
-        //   this.$message.warning(this.$t('addBargainAct.vaildProportionalinterval1'))
-        //   return false
-        // }
         if (this.param.bargainMin > this.param.bargainMax) {
           this.$message.warning(this.$t('addBargainAct.vaildProportionalinterval2'))
           return false
@@ -1436,15 +1432,6 @@ export default {
       } else {
         // 砍到任意金额结算
         if (this.param.bargainMoneyType === 0) {
-          // if (!this.param.expectationPrice || this.param.floorPrice === '') {
-          //   this.$message.warning(this.$t('addBargainAct.vaildCalculatedAmount1'))
-          //   return false
-          // }
-          // if (this.param.expectationPrice < this.param.floorPrice) {
-          //   this.$message.warning(this.$t('addBargainAct.vaildCalculatedAmount2'))
-          //   return false
-          // }
-
           // 固定金额模式
           if (!this.param.bargainFixedMoney) {
             this.$message.warning(this.$t('addBargainAct.vaildFixedMoney'))

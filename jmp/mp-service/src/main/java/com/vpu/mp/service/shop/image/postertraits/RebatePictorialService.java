@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.image.postertraits;
 import com.upyun.UpException;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.PictorialRecord;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.ImageUtil;
@@ -59,12 +58,7 @@ public class RebatePictorialService extends ShareBaseService {
 
     @Override
     String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
-        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), null, PictorialConstant.REBATE_ACTION_SHARE, null);
         Color shopStyleColor = getShopStyleColor();
-        // 已存在生成的图片
-        if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), null,shopStyleColor)) {
-            return pictorialRecord.getPath();
-        }
         try (InputStream bgInputStream = Util.loadFile(REBATE_SHARE_BG_IMG)) {
             BufferedImage rebateBufferImg = ImageIO.read(bgInputStream);
             BufferedImage goodsBufferImg = ImageIO.read(new URL(imageService.getImgFullUrl(goodsRecord.getGoodsImg())));
@@ -80,22 +74,23 @@ public class RebatePictorialService extends ShareBaseService {
             int textStartX = toLeft + goodsWidth + 20;
             ShopRecord shop = saas.shop.getShopById(getShopId());
             String moneyFlag = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages");
+            String realPrice = moneyFlag+baseParam.getRealPrice().setScale(2,BigDecimal.ROUND_HALF_UP).toString();
             String linePrice = moneyFlag + baseParam.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
             /**‘专享价格’文字*/
-            String specialText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_REBATE_SPECIAL_DOC, "messages");
+//            String specialText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_REBATE_SPECIAL_DOC, "messages");
 
             // 添加商品名称
             pictorialService.addTextWithBreak(rebateBufferImg,goodsRecord.getGoodsName(),textStartX,toTop + 10,220,3,ImageUtil.SourceHanSansCN(Font.PLAIN, 18));
-            // 添加‘专享价格’文字
-            ImageUtil.addFont(rebateBufferImg, specialText, ImageUtil.SourceHanSansCN(Font.PLAIN, 22), textStartX, toTop + goodsBufferImg.getHeight()-30, getShopStyleColor(),false);
-            Integer textWidth = ImageUtil.getTextWidth(rebateBufferImg, ImageUtil.SourceHanSansCN(Font.PLAIN, 22), specialText);
+            // 添加‘真实价格’文字
+            ImageUtil.addFont(rebateBufferImg, realPrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 22), textStartX, toTop + goodsBufferImg.getHeight()-30, getShopStyleColor(),false);
+            Integer textWidth = ImageUtil.getTextWidth(rebateBufferImg, ImageUtil.SourceHanSansCN(Font.PLAIN, 22), realPrice);
             // 添加划线价￥
             ImageUtil.addFontWithLine(rebateBufferImg, textStartX + textWidth + 20, toTop + goodsBufferImg.getHeight()-25, linePrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 18), PictorialImgPx.LINE_PRICE_COLOR);
 
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(goodsRecord.getGoodsId());
             PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), null,shopStyleColor.getRed(),shopStyleColor.getGreen(),shopStyleColor.getBlue());
-            pictorialService.uploadToUpanYun(rebateBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(), null, PictorialConstant.REBATE_ACTION_SHARE, pictorialRecord, baseParam.getUserId());
+            pictorialService.uploadToUpanYun(rebateBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(), null, PictorialConstant.REBATE_ACTION_SHARE, null, baseParam.getUserId());
 
             return relativePath;
         } catch (IOException e) {

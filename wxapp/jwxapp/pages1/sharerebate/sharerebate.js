@@ -13,7 +13,6 @@ global.wxPage({
    */
   onLoad: function (options) {
     let {goodsPrice,rebateId,rebateRatio,goodsId,linePrice = null} = options
-    console.log(goodsPrice)
     this.setData({
       goodsPrice,
       rebateId,
@@ -22,6 +21,7 @@ global.wxPage({
       linePrice
     })
     this.initShareRebateData()
+    wx.hideShareMenu();
   },
   initShareRebateData(){
     util.api('/api/wxapp/distribution/rebate/goods/config',res=>{
@@ -34,7 +34,6 @@ global.wxPage({
           }),
         })
         this.getRebateInfo()
-        this.getShareImage()
         this.getCouponData(res.content.couponList)
       }
     },{
@@ -78,7 +77,7 @@ global.wxPage({
       rebateInfo:parseFloat(rebateInfo).toFixed(2)
     })
   },
-  getShareImage(){
+  getShareImage(realPrice){
     util.api('/api/wxapp/rebate/share/info',res=>{
       if(res.error === 0){
         this.setData({
@@ -90,6 +89,7 @@ global.wxPage({
       }
       console.log(res)
     },{
+      realPrice,
       targetId:this.data.goodsId,
       linePrice:this.data.linePrice
     })
@@ -140,12 +140,13 @@ global.wxPage({
       defaultData[item.prdId] = item.prdPrice
       return defaultData
     },{})
-    
+    let realPrice = this.getMin(Object.values(rebateConfig.rebatePrice))
+    this.getShareImage(realPrice)
     this.setData({
       customShareData:{
         gid:this.data.goodsId,
         inviteId:util.getCache("user_id"),
-        realPrice:this.getMin(Object.values(rebateConfig.rebatePrice)),
+        realPrice,
         rebateConfig:JSON.stringify(rebateConfig)
       },
       showShareDialog:true
