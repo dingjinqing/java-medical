@@ -713,15 +713,15 @@ export default {
       if (imgObjs == null || imgObjs.length === 0) {
         return
       }
-      if (imgObjs.length > 5) {
-        imgObjs.length = 5
+      if (imgObjs.length > 10) {
+        imgObjs.length = 10
       }
       imgObjs.forEach(imgObj => {
         this.goodsProductInfo.goodsImgs.push({ imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl })
       })
       let imgLength = this.goodsProductInfo.goodsImgs.length
-      if (imgLength > 5) {
-        this.goodsProductInfo.goodsImgs = this.goodsProductInfo.goodsImgs.slice(imgLength - 5)
+      if (imgLength > 10) {
+        this.goodsProductInfo.goodsImgs = this.goodsProductInfo.goodsImgs.slice(imgLength - 10)
       }
     },
     /* 删除商品图片 */
