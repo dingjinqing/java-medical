@@ -6,7 +6,7 @@
         @tab-click="handleClick"
       >
         <el-tab-pane
-          :label="$t('memberCard.chargeDetail')"
+          :label="firstTabName"
           name="first"
         ></el-tab-pane>
         <el-tab-pane
@@ -76,6 +76,21 @@
           >
           </el-table-column>
           <el-table-column
+            v-if="isLimitCard"
+            prop="money"
+            label="门店使用次数变动明细"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            v-if="isLimitCard"
+            prop="money"
+            label="商品兑换次数变动明细"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            v-if="isNormalCard"
             prop="money"
             :label="$t('memberCard.balanceChangeDetail')"
             align="center"
@@ -83,13 +98,13 @@
           </el-table-column>
           <el-table-column
             prop="reason"
-            :label="$t('memberCard.balanceChangeReason')"
+            :label="reasonTableHeadName"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="createTime"
-            :label="$t('memberCard.balanceChangeTime')"
+            :label="timeTableHeadName"
             align="center"
           >
           </el-table-column>
@@ -121,6 +136,7 @@ export default {
       },
       cardId: null,
       cardNo: null,
+      cardType: 0,
       username: null,
       userId: null,
       activeName: 'first',
@@ -131,6 +147,32 @@ export default {
       chargeData: [], // 充值明细数据
       consumeData: [] // 消费明细数据
 
+    }
+  },
+  computed: {
+    firstTabName () {
+      if (Number(this.cardType) === 1) {
+        return '权益变动明细'
+      }
+      return this.$t('memberCard.chargeDetail')
+    },
+    timeTableHeadName () {
+      if (this.isLimitCard) {
+        return '次数变动时间'
+      }
+      return this.$t('memberCard.balanceChangeTime')
+    },
+    reasonTableHeadName () {
+      if (this.isLimitCard) {
+        return '次数变动原因'
+      }
+      return this.$t('memberCard.balanceChangeReason')
+    },
+    isNormalCard () {
+      return Number(this.cardType) === 0
+    },
+    isLimitCard () {
+      return Number(this.cardType) === 1
     }
   },
   created () {
