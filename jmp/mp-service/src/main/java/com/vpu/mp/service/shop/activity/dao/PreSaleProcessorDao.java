@@ -321,7 +321,6 @@ public class PreSaleProcessorDao extends PreSaleService {
         }
         if (activityInfo.getBuyNumber() != null && activityInfo.getBuyNumber() > 0) {
             Integer hasBuyNumber = order.getPreSaletUserBuyNumber(param.getWxUserInfo().getUserId(), activityInfo.getId());
-            param.getGoods().get(0).setIsAlreadylimitNum(true);
             if (hasBuyNumber + param.getGoods().get(0).getGoodsNumber() > activityInfo.getBuyNumber()) {
                 log.error("购买数量已达活动上限");
                 throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_NUMBER_LIMIT);
@@ -366,6 +365,8 @@ public class PreSaleProcessorDao extends PreSaleService {
             param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
         }
         OrderBeforeParam.Goods goods = param.getGoods().get(0);
+        //预售不限制
+        param.getGoods().get(0).setIsAlreadylimitNum(true);
         for (ProductVo productVo : activityInfo.getProducts()) {
             if (productVo.getProductId().equals(goods.getProductId())) {
                 goods.setGoodsPrice(new BigDecimal((productVo.getPresalePrice().toString())));

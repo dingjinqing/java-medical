@@ -890,8 +890,7 @@ public class Calculate extends ShopBaseService {
         //用户信息
         UserRecord userInfo = user.getUserByUserId(param.getWxUserInfo().getUserId());
         //是否首单
-        Byte[] goodsType = OrderInfoService.orderTypeToByte(order.getGoodsType());
-        boolean isFs = Lists.newArrayList(goodsType).contains(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
+        boolean isFs = orderInfoService.isNewUser(userInfo.getUserId());
         //是否进行返利标识
         boolean flag = false;
         //总返利
@@ -899,6 +898,10 @@ public class Calculate extends ShopBaseService {
         for (OrderGoodsBo bo : param.getBos()) {
             if(bo.getIsGift() != null && OrderConstant.YES == bo.getIsGift()) {
                 //赠品不参与
+                continue;
+            }
+            if(bo.getPurchasePriceRuleId() != null && bo.getPurchasePriceRuleId() > 0) {
+                //换购商品不参与
                 continue;
             }
             //折扣价-积分抵扣
@@ -969,7 +972,7 @@ public class Calculate extends ShopBaseService {
             return null;
         }
         Timestamp current = DateUtil.getSqlTimestamp();
-        //自购返利(当自购返利开关开启，若下单人是分销员，则该下单人的间接邀请人不会获得返利，其直接邀请人可获得返利，返利比例为直接邀请人所在等级的间接邀请返利比例)
+
         List<RebateRecord> rebateRecords = selfRebate(cfg, userInfo, isFs, goodsStrategy, current);
         if(CollectionUtils.isEmpty(rebateRecords)) {
             //正常返利
