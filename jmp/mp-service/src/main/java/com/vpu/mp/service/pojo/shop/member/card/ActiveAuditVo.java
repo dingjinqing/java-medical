@@ -70,4 +70,6 @@ public class ActiveAuditVo {
 	
 	// 自定义激活数据
 	private List<CardCustomActionParam> customOptions;
+	//  审核人
+    private String accountName;
 }

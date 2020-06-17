@@ -387,6 +387,7 @@ public class CardVerifyService extends ShopBaseService {
 			List<String> nos = results.dataList.stream().map(x->x.get(CARD_EXAMINE.CARD_NO)).distinct().collect(Collectors.toList());
 			Map<String, MemberCardRecord> cardMap = cardDaoSvc.getCardByNo(nos.toArray(new String[0]));
 			Map<String,List<String>> cardCfgMap = new HashMap<>();
+			Map<Integer,String> shopAccountMap = new HashMap<>();
 			// 提前获取激活的选项
 			for(Map.Entry<String, MemberCardRecord> entry: cardMap.entrySet()) {
 				List<String> cfg = CardUtil.parseActivationCfg(entry.getValue().getActivationCfg());
@@ -401,8 +402,19 @@ public class CardVerifyService extends ShopBaseService {
 				vo.setStatus(record.get(CARD_EXAMINE.STATUS));
 				vo.setId(record.get(CARD_EXAMINE.ID));
 				vo.setRefuseDesc(record.get(CARD_EXAMINE.REFUSE_DESC));
-				
-				
+                //  审核人信息
+                UInteger sysId = record.get(CARD_EXAMINE.SYS_ID);
+                if(sysId != null){
+                    if(shopAccountMap.get(sysId.intValue())!=null){
+                        vo.setAccountName(shopAccountMap.get(sysId.intValue()));
+                    }else{
+                        ShopAccountRecord shopAccount = saas.shop.account.getAccountInfoForId(sysId.intValue());
+                        if(shopAccount != null){
+                            shopAccountMap.put(sysId.intValue(),shopAccount.getAccountName());
+                            vo.setAccountName(shopAccountMap.get(sysId.intValue()));
+                        }
+                    }
+                }
 				// 激活数据项
 				List<String> activationCfg = cardCfgMap.get(vo.getCardNo());
 				for(String name: activationCfg) {
@@ -467,7 +479,7 @@ public class CardVerifyService extends ShopBaseService {
 				activeAuditVo.setProvince(String.valueOf(adMap.get(WxAppCardActivationService.PROVINCE_CODE)));
 				activeAuditVo.setDistrict(String.valueOf(adMap.get(WxAppCardActivationService.DISTRICT_CODE)));
 			}
-			
+
 		}
 		res.setDataList(myList);
 		return res;
