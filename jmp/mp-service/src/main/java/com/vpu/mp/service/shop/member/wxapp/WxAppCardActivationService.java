@@ -162,8 +162,9 @@ public class WxAppCardActivationService extends ShopBaseService {
 	 * 	设置会员卡激活数据
 	 * @throws CardActivateException  激活失败
 	 */
-	public void setActivationCard(ActivateCardParam param) throws CardActivateException {
+	public ActivateCardVo setActivationCard(ActivateCardParam param) throws CardActivateException {
 		logger().info("设置会员卡激活信息");
+        ActivateCardVo vo = new ActivateCardVo();
 		UserCardVo uCard = userCardService.getUserCardByCardNo(param.getCardNo());	
 		if(uCard ==null) {
 			logger().info("激活失败");
@@ -184,8 +185,12 @@ public class WxAppCardActivationService extends ShopBaseService {
 			
 			if(CardUtil.isCardExamine(uCard.getExamine())) {
 				activeData.put("status",CardVerifyConstant.VSTAT_CHECKING);
+				//  提交审核成功
+                vo.setMsg("提交成功");
 			}else {
 				activeData.put("status",CardVerifyConstant.VSTAT_PASS);
+				//  激活成功
+                vo.setMsg("激活成功");
 			}
 			Map<String, Object> data = changeKeyFromHumpToUnderline(activeData);
 			
@@ -215,7 +220,7 @@ public class WxAppCardActivationService extends ShopBaseService {
 			logger().info("没有传入激活数据,actovateOption=NullNode");
 			throw new CardActivateException();
 		}
-		
+		return vo;
 	}
 
 	private void setCustomAction(ActivateCardParam param, Map<String, Object> activeData) {
