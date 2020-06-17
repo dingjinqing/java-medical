@@ -331,21 +331,21 @@ public class CardVerifyService extends ShopBaseService {
 		record.setRefuseTime(DateUtil.getSqlTimestamp());
 		record.setRefuseDesc(param.getRefuseDesc());
 		record.setStatus(REFUSED);
+		UInteger.valueOf(param.getSysId());
 		return record;
 	}
     
     
 	/**
 	 * 审核通过数据
-	 * 
-	 * @param id
 	 * @return
 	 */
-	private CardExamineRecord setPassData(Integer id, Timestamp now) {
+	private CardExamineRecord setPassData(ActiveAuditParam param, Timestamp now) {
 		CardExamineRecord record = new CardExamineRecord();
-		record.setId(id);
+		record.setId(param.getId());
 		record.setPassTime(now);
 		record.setStatus(VERIFIED);
+        record.setSysId(UInteger.valueOf(param.getSysId()));
 		return record;
 	}
 	
@@ -361,7 +361,7 @@ public class CardVerifyService extends ShopBaseService {
 			Timestamp now = DateUtil.getSqlTimestamp();
 			logger().info("申请激活会员卡通过: " + now);
 			// 更新card_examine 信息
-			CardExamineRecord record = setPassData(param.getId(), now);
+			CardExamineRecord record = setPassData(param, now);
 			cardDaoSvc.updateCardExamine(record);
 			// 更新激活
 			cardDaoSvc.updateUserCardByCardNo(param.getCardNo(), now);
