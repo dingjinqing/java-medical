@@ -256,18 +256,14 @@ public class CardDaoService extends ShopBaseService {
 		for (CardReceiveDownVo vo : list) {
 			String code = vo.getCode();
 			if(!StringUtils.isBlank(code)) {
-				int lengthOfCode = code.length() - 4;
-				if (lengthOfCode > 0) {
-					String tmp = IntStream.range(0, lengthOfCode).mapToObj(i -> "*").collect(Collectors.joining());
-					vo.setCardMsg(code.substring(0, 2).concat(tmp).concat(code.substring(lengthOfCode + 2)));
-				}
+				vo.setCardMsg(code);
 			}
 			String cardPwd = vo.getCardPwd();
 			if(!StringUtils.isBlank(cardPwd)) {
-				int lengthOfCardPwd = cardPwd.length() - 4;
-				if (lengthOfCardPwd > 0) {
-					String tmp = IntStream.range(0, lengthOfCardPwd).mapToObj(i -> "*").collect(Collectors.joining());
-					vo.setCardMsg(cardPwd.substring(0, 2).concat(tmp).concat(cardPwd.substring(lengthOfCardPwd + 2)));
+				if(StringUtils.isEmpty(vo.getCardMsg())) {
+					vo.setCardMsg(cardPwd);
+				}else {
+					vo.setCardMsg(vo.getCardMsg().concat("\n").concat(cardPwd));
 				}
 			}
 			vo.setSReveiveStatus(vo.getReceiveTime() != null ? haveReceived : noReceived);
