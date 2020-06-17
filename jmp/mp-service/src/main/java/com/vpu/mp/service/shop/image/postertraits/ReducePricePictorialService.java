@@ -90,7 +90,7 @@ public class ReducePricePictorialService extends ShareBaseService {
     @Override
     String createMpQrCode(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         ReducePriceRecord reducePriceRecord = (ReducePriceRecord) aRecord;
-        SceneValueBase sceneValueBase = new SceneValueBase( baseParam.getUserId(), goodsRecord.getGoodsId(), reducePriceRecord.getId(), BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
+        SceneValueBase sceneValueBase = new SceneValueBase(baseParam.getUserId(), goodsRecord.getGoodsId(), reducePriceRecord.getId(), BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE, baseParam.getShareAwardId());
         String paramStr = addAndGetSceneStr(sceneValueBase);
         return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, paramStr);
     }

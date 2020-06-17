@@ -134,6 +134,7 @@ public class RebatePictorialService extends ShareBaseService {
         RebateSceneValue sceneValue = new RebateSceneValue();
         sceneValue.setUid(baseParam.getUserId());
         sceneValue.setGid(baseParam.getUserId());
+        sceneValue.setShareAwardId(baseParam.getShareAwardId());
         sceneValue.setRebateConfig(rebateShareInfoParam.getRebateConfig());
         String paramStr = addAndGetSceneStr(sceneValue);
         return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM,paramStr);
