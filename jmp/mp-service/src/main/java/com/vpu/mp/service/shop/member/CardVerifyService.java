@@ -410,10 +410,20 @@ public class CardVerifyService extends ShopBaseService {
                     }else{
                         ShopAccountRecord shopAccount = saas.shop.account.getAccountInfoForId(sysId.intValue());
                         if(shopAccount != null){
-                            shopAccountMap.put(sysId.intValue(),shopAccount.getAccountName());
+                            shopAccountMap.put(sysId.intValue(),shopAccount.getUserName());
                             vo.setAccountName(shopAccountMap.get(sysId.intValue()));
                         }
                     }
+                }
+
+                //  审核时间
+                // 审核时间
+                Timestamp passTime = record.get(CARD_EXAMINE.PASS_TIME);
+                Timestamp refuseTime = record.get(CARD_EXAMINE.REFUSE_TIME);
+                if(passTime!=null) {
+                    vo.setExamineTime(passTime);
+                }else if(refuseTime!=null) {
+                    vo.setExamineTime(refuseTime);
                 }
 				// 激活数据项
 				List<String> activationCfg = cardCfgMap.get(vo.getCardNo());

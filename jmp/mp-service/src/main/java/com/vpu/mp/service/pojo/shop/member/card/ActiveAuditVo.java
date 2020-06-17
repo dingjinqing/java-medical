@@ -72,4 +72,6 @@ public class ActiveAuditVo {
 	private List<CardCustomActionParam> customOptions;
 	//  审核人
     private String accountName;
+    //  审核时间
+    private Timestamp examineTime;
 }
