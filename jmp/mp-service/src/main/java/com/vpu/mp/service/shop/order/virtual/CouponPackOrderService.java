@@ -120,7 +120,7 @@ public class CouponPackOrderService extends VirtualOrderService {
 	 */
 	private  SelectConditionStep<? extends Record> buildOptions(SelectWhereStep<? extends Record> select, CouponPackOrderPageParam param) {
 		SelectConditionStep<? extends Record> condition = select.where(VIRTUAL_ORDER.GOODS_TYPE.eq(GOODS_TYPE_COUPON_PACK))
-			  .and(VIRTUAL_ORDER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+            .and(VIRTUAL_ORDER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(VIRTUAL_ORDER.ORDER_AMOUNT.gt(BigDecimal.ZERO).or(VIRTUAL_ORDER.USE_SCORE.gt(0)));
 		if(!StringUtils.isBlank(param.getPackName())) {
 			condition.and(COUPON_PACK.PACK_NAME.like(this.likeValue(param.getPackName())));
 		}

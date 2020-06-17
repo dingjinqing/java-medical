@@ -7,6 +7,7 @@ import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.RegexUtil;
@@ -186,11 +187,11 @@ public class WxAppCardActivationService extends ShopBaseService {
 			if(CardUtil.isCardExamine(uCard.getExamine())) {
 				activeData.put("status",CardVerifyConstant.VSTAT_CHECKING);
 				//  提交审核成功
-                vo.setMsg("提交成功");
+                vo.setMsg(JsonResultCode.MSG_CARD_EXAMINE_SUBMIT_SUCCESS);
 			}else {
 				activeData.put("status",CardVerifyConstant.VSTAT_PASS);
 				//  激活成功
-                vo.setMsg("激活成功");
+                vo.setMsg(JsonResultCode.MSG_CARD_EXAMINE_AUTO_SUCCESS);
 			}
 			Map<String, Object> data = changeKeyFromHumpToUnderline(activeData);
 			

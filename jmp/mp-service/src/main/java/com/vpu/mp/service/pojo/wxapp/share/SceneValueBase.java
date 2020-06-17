@@ -17,4 +17,9 @@ public class SceneValueBase {
     private Integer gid;
     private Integer aid;
     private Byte atp;
+
+    /**
+     * 分享有礼--分享有礼活动ID
+     */
+    private Integer shareAwardId;
 }

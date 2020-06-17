@@ -407,7 +407,7 @@ public class PictorialService extends ShopBaseService {
                 if (curWidth >= maxWidth) {
                     // 最后一行且长度过长
                     if (line == maxRows) {
-                        oneLineStr = oneLineSb.subSequence(0, oneLineSb.length() / 2).toString();
+                        break;
                     }else{
                         oneLineStr = oneLineSb.toString();
                     }
@@ -415,16 +415,13 @@ public class PictorialService extends ShopBaseService {
                     nextTextStartY +=nameCharHeight;
                     line++;
                     oneLineSb = new StringBuilder();
-                    if (line > maxRows) {
-                        break;
-                    }
                 }
                 oneLineSb.append(text.charAt(i));
             }
 
             if (line == maxRows) {
                 Integer curWidth =ImageUtil.getTextWidth(bgBufferedImage, font, oneLineSb.toString());
-                if (curWidth>maxRows){
+                if (curWidth>maxWidth){
                     oneLineStr = oneLineSb.subSequence(0, oneLineSb.length() / 2).toString()+"...";
                 }else {
                     oneLineStr = oneLineSb.toString();

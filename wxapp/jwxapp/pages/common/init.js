@@ -26,7 +26,7 @@ var init = {
       if(scene.sceneId) {
         util.api('/api/wxapp/secne/get',res=>{
           if(res.error === 0){
-            util.jumpLink(`${util.getCurrentPath(options)}?${res.content}`, 'reLaunch')
+            util.jumpLink(`${util.getCurrentPath(options)}${util.getUrlParams(JSON.parse(res.content))}`, 'reLaunch')
           }
         },{sceneId:scene.sceneId})
       }

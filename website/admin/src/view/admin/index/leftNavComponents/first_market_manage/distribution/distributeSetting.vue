@@ -93,14 +93,17 @@
                   :true-label='1'
                   :false-label='0'
                 >邀请码</el-checkbox> -->
+                <!-- listClickHandler -->
                 <span
                   class="text"
                   style="margin-left: 10px;"
-                >{{ $t('distribution.invitationTip1') }} <a
-                    href="javascript:void(0);"
-                    style="color: red;"
-                  >{{ $t('distribution.invitationTip2') }}</a> {{ $t('distribution.invitationTip3') }}
-                  <a href="javascript:void(0);">{{ $t('distribution.invitationTip4') }}</a> {{ $t('distribution.invitationTip5') }}</span>
+                >{{ $t('distribution.invitationTip1') }}
+                  <span style="color: red;">{{ $t('distribution.invitationTip2') }}</span>{{ $t('distribution.invitationTip3') }}
+                  <span
+                    style="color: #5a8bff; cursor: pointer;"
+                    @click="listClickHandler()"
+                  >{{ $t('distribution.invitationTip4') }}</span>{{ $t('distribution.invitationTip5') }}
+                </span>
               </div>
 
             </el-checkbox-group>

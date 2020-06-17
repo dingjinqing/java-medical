@@ -85,7 +85,13 @@ global.wxComponent({
           break;
         case 3:
           distributionTips.title = '直接返利说明'
-          distributionTips.content = `A将分销商品分享给好友B，好友B购买后,A可获得直接返利`;
+          if(this.data.distribution.rebateRatio.firstRatio){
+            let firstMoney = parseFloat(this.data.distribution.rebateRatio.firstRatio) / 100 * this.data.price
+            firstMoney = parseFloat(firstMoney).toFixed(2);
+            distributionTips.content = `A将分销商品分享给好友B，好友B购买后,A可获得直接返利。（注：好友B如果是未在店铺内下单的新用户则按首单返利比例返佣，预估返利金额￥${firstMoney}）`
+          } else {
+            distributionTips.content = `A将分销商品分享给好友B，好友B购买后,A可获得直接返利`
+          }
           break;
         case 4:
           distributionTips.title = '间接返利说明'
@@ -95,10 +101,11 @@ global.wxComponent({
       util.showModal(distributionTips.title, distributionTips.content, function () { }, false,'知道了')
     },
     goShareRebate(){
+      let {rebateRatio = null,fanliRatio = null,firstRatio = null} = this.data.distribution.rebateRatio
       util.jumpLink(`pages1/sharerebate/sharerebate${util.getUrlParams({
         goodsPrice:this.data.goodsPrice,
         rebateId:this.data.distribution.rebateRatio.rebateId,
-        rebateRatio:this.data.distribution.rebateRatio.rebateRatio,
+        rebateRatio:JSON.stringify({rebateRatio,fanliRatio,firstRatio}),
         goodsId:this.data.goodsId,
         linePrice:this.data.linePrice
       })}`,'navigateTo')

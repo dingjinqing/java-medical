@@ -17,7 +17,7 @@ global.wxPage({
     this.setData({
       goodsPrice,
       rebateId,
-      rebateRatio,
+      rebateRatio:this.getMax(Object.values(rebateRatio).filter(item => item > 0)),
       goodsId,
       linePrice
     })
@@ -69,12 +69,11 @@ global.wxPage({
     })
     this.getRebateInfo()
   },
-  getMax () {
-    let arr = this.data.productList.map(item=>{return item.prdPrice})
+  getMax (arr) {
     return Math.max(...arr)
   },
   getRebateInfo(){
-    let rebateInfo = parseFloat(this.data.rebateRatio) / 100 * this.getMax()
+    let rebateInfo = parseFloat(this.data.rebateRatio) / 100 * this.getMax(this.data.productList.map(item=>{return item.prdPrice}))
     this.setData({
       rebateInfo:parseFloat(rebateInfo).toFixed(2)
     })

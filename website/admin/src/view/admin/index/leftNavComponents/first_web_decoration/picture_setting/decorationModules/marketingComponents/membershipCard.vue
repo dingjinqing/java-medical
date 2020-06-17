@@ -15,7 +15,7 @@
         >
           <div class="card_type">{{carData.card_type===0?$t('membershipCard.ordinaryCard'):carData.card_type===1?$t('membershipCard.limitCard'):$t('membershipCard.gradeCard')}}</div>
           <div class="card_content clearfix">
-            <div class="card_shop_icon">
+            <div class="card_shop_icon" v-if="shopAvatar">
               <img :src="shopAvatar">
             </div>
             <div class="card_content_right">
@@ -87,7 +87,7 @@ export default {
         backgroundColor: '#ecc98f',
         bgImgUrl: ''
       },
-      shopAvatar: this.$imageHost + '/image/admin/shop_def_y.png', // 店铺头像
+      shopAvatar: null, // 店铺头像
       overallColor: '#e6cb96' // 默认颜色
     }
   },
@@ -147,7 +147,11 @@ export default {
     // 初始化获取头像
     let avatar = localStorage.getItem('V-shopAvatar')
     if (avatar) {
-      this.shopAvatar = avatar
+      if (avatar === '//jmptestimg.weipubao.cn/image/admin/shop_logo_default.png') {
+        this.shopAvatar = null
+      } else {
+        this.shopAvatar = avatar
+      }
     }
   },
   methods: {

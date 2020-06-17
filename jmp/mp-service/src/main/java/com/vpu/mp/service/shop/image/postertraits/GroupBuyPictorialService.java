@@ -112,7 +112,7 @@ public class GroupBuyPictorialService extends ShareBaseService {
         GroupBuyDefineRecord groupBuyDefineRecord = (GroupBuyDefineRecord) aRecord;
 
         if (GoodsConstant.GOODS_ITEM.equals(param.getPageType())) {
-            SceneValueBase sceneValueBase = new SceneValueBase(baseParam.getUserId(), goodsRecord.getGoodsId(), groupBuyDefineRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_BUY);
+            SceneValueBase sceneValueBase = new SceneValueBase(baseParam.getUserId(), goodsRecord.getGoodsId(), groupBuyDefineRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_BUY, baseParam.getShareAwardId());
             String paramStr = addAndGetSceneStr(sceneValueBase);
             return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM,paramStr);
         } else {
