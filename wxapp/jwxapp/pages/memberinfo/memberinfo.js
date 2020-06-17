@@ -806,15 +806,25 @@ global.wxPage({
         console.log(user_info)
         util.api('/api/wxapp/distribution/distributor/apply', function (res) {
           if (res.error == 0) {
-            if (res.error == -1) {
+            if (res.content == -1) {
               // 申请不成功, 邀请码不存在
               util.showModal("提示", "邀请码不存在");
-            } else if (res.error == 1) {
-              util.showModal("提示", "自动审核通过");
+              return false;
+            } else if (res.content == 1) {
+              util.showModal('提示', '自动审核通过', function () {
+                util.redirectTo({
+                  url: '/pages/distributionspread/distributionspread'
+                })
+              });
+            } else if (res.content === 0) {
+              util.showModal('提示', '申请成功', function () {
+                util.redirectTo({
+                  url: '/pages/distributionspread/distributionspread'
+                })
+              });
             }
-            util.redirectTo({
-              url: '/pages/distributionspread/distributionspread'
-            })
+          } else {
+            util.showModal('提示', res.message)
           }
         }, {
           activationFields: user_info,
