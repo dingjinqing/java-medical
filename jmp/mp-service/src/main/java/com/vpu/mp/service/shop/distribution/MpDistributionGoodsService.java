@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.distribution;
 
 import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.db.shop.tables.records.RebatePriceRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -37,16 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTION_STRATEGY;
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_REBATE_PRICE;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
-import static com.vpu.mp.db.shop.Tables.REBATE_PRICE_RECORD;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
-import static com.vpu.mp.db.shop.Tables.USER_REBATE_PRICE;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * @Author 常乐
@@ -365,13 +357,28 @@ public class MpDistributionGoodsService extends ShopBaseService {
         MpGetCouponParam mpGetCouponParam = new MpGetCouponParam();
         mpGetCouponParam.setUserId(param.getUserId());
         List<Integer> couponIds = Util.stringToList(param.getRebateConfig().getCouponIds());
+
+        List<Integer> effectiveCoupon = new ArrayList<>();
         //发放优惠券
         for(Integer couponId:couponIds){
-            mpGetCouponParam.setCouponId(couponId);
-            Byte res = mpCoupon.fetchCoupon(mpGetCouponParam);
+            //当前用户已领取优惠券数量
+            Record1<Integer> integerRecord1 = db().selectCount().from(CUSTOMER_AVAIL_COUPONS).where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(couponId)).fetchOne();
+            int hasReceive = 0;
+            if(integerRecord1 != null){
+                hasReceive = integerRecord1.into(Integer.class);
+            }
+            //判断优惠券库存和每人限领
+            MrkingVoucherRecord info = db().select().from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(couponId)).fetchOne().into(MrkingVoucherRecord.class);
+
+            if(!((info.getSurplus() <= 0 && info.getLimitSurplusFlag() == 0) || (hasReceive >= info.getReceivePerPerson() && info.getReceivePerPerson() != 0))){
+                mpGetCouponParam.setCouponId(couponId);
+                Byte res = mpCoupon.fetchCoupon(mpGetCouponParam);
+
+                effectiveCoupon.add(couponId);
+            }
         }
         //返回优惠券信息
-        List<CouponListVo> info = db().select().from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.in(couponIds)).fetch().into(CouponListVo.class);
+        List<CouponListVo> info = db().select().from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.in(effectiveCoupon)).fetch().into(CouponListVo.class);
         return info;
     }
 
