@@ -36,6 +36,7 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -106,6 +107,8 @@ public class MrkingStrategyService extends ShopBaseService {
     private MemberCardService memberCardService;
     @Autowired
     private OrderGoodsService orderGoods;
+    @Autowired
+    private OrderInfoService orderInfoService;
 
     /**
      * 新建满折满减活动
@@ -712,7 +715,7 @@ public class MrkingStrategyService extends ShopBaseService {
                 }
                 Map<Integer, List<MrkingStrategyOrderAnalysisBo>> orderListMap = v.stream().collect(Collectors.groupingBy(MrkingStrategyOrderAnalysisBo::getUserId));
                 for (Map.Entry<Integer, List<MrkingStrategyOrderAnalysisBo>> entry : orderListMap.entrySet()) {
-                    if (isNewUser(entry.getKey(), entry.getValue().get(0).getOrderSn())) {
+                    if (orderInfoService.isNewUser(entry.getKey(), entry.getValue().get(0).getCreateTime())) {
                         totalNewUserNumber++;
                     } else {
                         totalOldUserNumber++;
@@ -764,13 +767,13 @@ public class MrkingStrategyService extends ShopBaseService {
      * @return
      */
     private Map<Date, List<MrkingStrategyOrderAnalysisBo>> getFullCutOrderDiscountMoney(MrkingStrategyAnalysisParam param) {
-        List<MrkingStrategyOrderAnalysisBo> list = db().select(DSL.date(ORDER_INFO.CREATE_TIME).as("createTime"), ORDER_INFO.ORDER_SN, ORDER_INFO.USER_ID, ORDER_GOODS.PER_DISCOUNT, ORDER_GOODS.DISCOUNTED_TOTAL_PRICE, ORDER_GOODS.GOODS_NUMBER)
+        List<MrkingStrategyOrderAnalysisBo> list = db().select(DSL.date(ORDER_INFO.CREATE_TIME).as("date"), ORDER_INFO.CREATE_TIME, ORDER_INFO.ORDER_SN, ORDER_INFO.USER_ID, ORDER_GOODS.PER_DISCOUNT, ORDER_GOODS.DISCOUNTED_TOTAL_PRICE, ORDER_GOODS.GOODS_NUMBER)
             .from(ORDER_INFO).leftJoin(ORDER_GOODS).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.ORDER_ID))
             .where(ORDER_GOODS.STRA_ID.eq(param.getId()))
             .and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
             .and(ORDER_INFO.CREATE_TIME.between(param.getStartTime(), param.getEndTime()))
             .fetchInto(MrkingStrategyOrderAnalysisBo.class);
-        Map<Date, List<MrkingStrategyOrderAnalysisBo>> map = list.stream().collect(Collectors.groupingBy(MrkingStrategyOrderAnalysisBo::getCreateTime));
+        Map<Date, List<MrkingStrategyOrderAnalysisBo>> map = list.stream().collect(Collectors.groupingBy(MrkingStrategyOrderAnalysisBo::getDate));
         return map;
     }
 

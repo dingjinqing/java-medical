@@ -74,7 +74,7 @@ public class MpDistributionGoodsService extends ShopBaseService {
         }else{
             RebateRatioVo userRebateRatio = this.getUserRebateRatio(userId, distributionLevel, goodsRebateStrategy);
             //获取邀请用户下那首单返利配置
-            if(goodsRebateStrategy.getFirstRebate() == 0){
+            if(userRebateRatio.getFirstRebate() == 0){
                 userRebateRatio.setFirstRatio(null);
             }
             return userRebateRatio;
@@ -186,6 +186,7 @@ public class MpDistributionGoodsService extends ShopBaseService {
             Byte level = distributionLevel.getDistributorLevel();
             rebateRatio.setSelfPurchase(goodsRebateStrategy.getSelfPurchase());
             getRebateRatio(goodsRebateStrategy, rebateRatio, level);
+            rebateRatio.setFirstRebate(goodsRebateStrategy.getFirstRebate());
         }
         return rebateRatio;
     }

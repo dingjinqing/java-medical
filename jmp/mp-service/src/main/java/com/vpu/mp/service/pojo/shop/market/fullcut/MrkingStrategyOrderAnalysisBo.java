@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * @author: 王兵兵
@@ -13,7 +14,8 @@ import java.sql.Date;
 @Getter
 @Setter
 public class MrkingStrategyOrderAnalysisBo {
-    private Date createTime;
+    private Timestamp createTime;
+    private Date date;
     private String orderSn;
     private Integer userId;
     private BigDecimal perDiscount;
