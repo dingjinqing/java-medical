@@ -13,6 +13,7 @@
             v-if="activeName === 'first'"
             @tabChange="tabChange"
             @inviteCode="inviteCodeHandler"
+            @distributionSetting="distributionSetting"
           />
         </el-tab-pane>
         <el-tab-pane
@@ -116,6 +117,7 @@ export default {
     withdrawDepositCheck,
     distributorCheck
   },
+  inject: ['reload'],
   data () {
     return {
       activeName: 'first',
@@ -182,8 +184,10 @@ export default {
     commissionHandler (data) {
       this.userId = data
       this.activeName = 'sixth'
+    },
+    distributionSetting () {
+      this.reload()
     }
-    // advertisementList()
   }
 }
 
