@@ -113,14 +113,12 @@
         <el-radio
           v-model="reduceData.isLimit"
           label="0"
-          :disabled="isEditFlag"
           @change="limitChange"
         >{{$t('reducePriceList.noLimit')}}</el-radio>
         <br />
         <el-radio
           v-model="reduceData.isLimit"
           label="1"
-          :disabled="isEditFlag"
           @change="limitChange"
         >{{$t('reducePriceList.limitQuantity')}}
           <el-input-number
@@ -129,14 +127,13 @@
             :min="0"
             size="small"
             class="small_input"
-            :disabled="isEditFlag"
           ></el-input-number>
           {{$t('reducePriceList.piece')}}
         </el-radio>
         <div>
           <el-checkbox
             v-model="reduceData.limitFlag"
-            :disabled="reduceData.isLimit === '0' || isEditFlag"
+            :disabled="reduceData.isLimit === '0'"
             :true-label="1"
             :false-label="0"
           >{{$t('reducePriceList.limitQuantityTip')}}</el-checkbox>
@@ -147,7 +144,6 @@
         prop="showGoodsList"
       >
         <el-button
-          :disabled="isEditFlag"
           size="small"
           plain
           @click="showChoosingGoods"
@@ -178,10 +174,7 @@
                 label-width="0px"
                 prop="batchDiscount"
               >
-                <el-radio
-                  :label="1"
-                  :disabled="isEditFlag"
-                >{{$t('reducePriceList.batch')}}
+                <el-radio :label="1">{{$t('reducePriceList.batch')}}
                   <el-input-number
                     :disabled="batchFlag != 1 ? true : false"
                     v-model="reduceData.batchDiscount"
@@ -198,10 +191,7 @@
                 label-width="0px"
                 prop="batchReduce"
               >
-                <el-radio
-                  :label="2"
-                  :disabled="isEditFlag"
-                >{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceReduction')}}
+                <el-radio :label="2">{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceReduction')}}
                   <el-input-number
                     :disabled="batchFlag != 2 ? true : false"
                     v-model="reduceData.batchReduce"
@@ -217,10 +207,7 @@
                 label-width="0px"
                 prop="batchFinalPrice"
               >
-                <el-radio
-                  :label="3"
-                  :disabled="isEditFlag"
-                >{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceAfterDiscount')}}
+                <el-radio :label="3">{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceAfterDiscount')}}
                   <el-input-number
                     :disabled="batchFlag != 3 ? true : false"
                     v-model="reduceData.batchFinalPrice"
@@ -233,13 +220,11 @@
               </el-form-item>
             </el-radio-group>
             <el-button
-              :disabled="isEditFlag"
               type="primary"
               size="small"
               @click="batchSet"
             >{{$t('marketCommon.ok')}}</el-button>
             <el-button
-              :disabled="isEditFlag"
               type="default"
               size="small"
               @click="resetPrice"
@@ -293,7 +278,6 @@
             >
               <template slot-scope="scope">
                 <el-input-number
-                  :disabled="isEditFlag"
                   v-model="scope.row.discount"
                   :controls="false"
                   size="small"
@@ -312,7 +296,6 @@
             >
               <template slot-scope="scope">
                 <el-input-number
-                  :disabled="isEditFlag"
                   v-model="scope.row.reducePrice"
                   :controls="false"
                   size="small"
@@ -332,7 +315,6 @@
               <template slot-scope="scope">
                 <p class="price_red">{{reduceError(scope.row)}}</p>
                 <el-input-number
-                  :disabled="isEditFlag"
                   v-model="scope.row.goodsPrice"
                   :controls="false"
                   size="small"
