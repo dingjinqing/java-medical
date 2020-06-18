@@ -46,10 +46,13 @@
           </label>
           <view style="margin-right: 20rpx" catchtap="handleRecognition"><image class="recognition-icon" src="{{imageUrl}}image/wxapp/recognition.png"></image>定位</view>
         </view>
-        <view class="aei-item">
+        <view class="aei-item detail-address-item">
           <label>
-            <text>详细地址</text>
-            <input value="{{formData.address}}" name="address" placeholder="街道门牌信息"></input>
+            <text class="address-text">详细地址</text>
+            <!-- <input value="{{formData.address}}" name="address" placeholder="街道门牌信息"></input> -->
+            <view class="detail-address">
+              <textarea value="{{formData.address}}" name="address" auto-height="true" placeholder="街道门牌信息"></textarea>
+            </view>
           </label>
         </view>
         <view class="aei-item">
