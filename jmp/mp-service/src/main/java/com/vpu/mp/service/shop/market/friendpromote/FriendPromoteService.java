@@ -824,12 +824,14 @@ public class FriendPromoteService extends ShopBaseService {
             .on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
             .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId))
             .fetchOneInto(String.class);
-        if(goodsInfo.getGoodsImg()==null|| "".equals(goodsInfo.getGoodsImg()) ||StringUtils.isNullOrEmpty(goodsInfo.getGoodsImg())){
-            goodsInfo.setGoodsImg(goodsImage);
+        if (null!=goodsInfo){
+            if(StringUtils.isNullOrEmpty(goodsInfo.getGoodsImg())){
+                goodsInfo.setGoodsImg(goodsImage);
+            }
+            //图片地址添加域名
+            String goodsImg = imageService.getImgFullUrl(goodsInfo.getGoodsImg());
+            goodsInfo.setGoodsImg(goodsImg);
         }
-        //图片地址添加域名
-        String goodsImg = imageService.getImgFullUrl(goodsInfo.getGoodsImg());
-        goodsInfo.setGoodsImg(goodsImg);
         return goodsInfo;
     }
 
