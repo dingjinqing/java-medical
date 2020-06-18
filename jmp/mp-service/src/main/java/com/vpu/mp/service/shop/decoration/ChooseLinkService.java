@@ -252,7 +252,7 @@ public class ChooseLinkService extends ShopBaseService {
                 .and(MEMBER_CARD.END_TIME.ge(new Timestamp(System.currentTimeMillis())).or(MEMBER_CARD.EXPIRE_TYPE.in((byte)1,(byte)2)))
 				.fetchInto(ActivityVo.class);
 		 list.forEach(activityVo -> {
-		     if (activityVo.getExpireType().equals(CardConstant.MCARD_ET_FOREVER)||activityVo.getExpireType().equals(CardConstant.MCARD_ET_FIX)){
+		     if (activityVo.getExpireType().equals(CardConstant.MCARD_ET_FOREVER)||activityVo.getExpireType().equals(CardConstant.MCARD_ET_DURING)){
                  activityVo.setStatus(BaseConstant.NAVBAR_TYPE_ONGOING);
              }else {
                  Byte actStatus = Util.getActStatus(BaseConstant.ACTIVITY_STATUS_NORMAL, activityVo.getStartTime(), activityVo.getEndTime());
