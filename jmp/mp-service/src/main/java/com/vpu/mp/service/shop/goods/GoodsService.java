@@ -408,6 +408,7 @@ public class GoodsService extends ShopBaseService {
 //        return pageResult.getDataList().stream().map(GoodsPageListVo::getGoodsId).collect(Collectors.toList());
         // 拼接过滤条件
         List<Integer> goodsIds;
+        assemblyGoodsPageListParam(goodsPageListParam);
         try {
             goodsIds =  esGoodsSearchService.getGoodsIdsByParam(goodsPageListParam);
         } catch (IOException e) {
