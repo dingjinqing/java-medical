@@ -214,7 +214,7 @@ public class CouponMpService extends ShopBaseService {
         //通过alias_code查看优惠券是否存在
         if (null==couponData) {
            couponGetStatus = 1;
-        }else if(couponData.getValidity() == 1 && couponData.getEndTime().before(nowDate)){//是否过期
+        }else if(couponData.getValidityType() == 0 && couponData.getEndTime().before(nowDate)){//是否过期
             //是否过期
             couponGetStatus = 2;
         } else if (couponData.getEnabled() == 0) {
