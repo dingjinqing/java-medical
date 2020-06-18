@@ -106,24 +106,26 @@
                 >
                   <el-form-item
                     :prop="'tableData.' + scope.$index+ '.inviteNumber'"
-                    :rules="[{ validator: (rule, value, callback)=>{validateLevelNum(rule, value, callback)}, trigger: ['blur', 'change'] }]"
+                    :rules="[{ validator: (rule, value, callback)=>{validateLevelNum(rule, value, callback, scope.row)}, trigger: ['blur', 'change'] }]"
                     style="display: inline-block;"
                   >
                     <div>{{ $t('distribution.levelTip1') }}
                       <el-input
                         v-model="scope.row.inviteNumber"
+                        @input="changeHandler()"
                         size="mini"
                         style="width: 70px;"
                       ></el-input> {{ $t('distribution.levelTip2') }} {{ $t('distribution.levelTip3') }}</div>
                   </el-form-item>
                   <el-form-item
                     :prop="'tableData.' + scope.$index+ '.totalDistributionMoney'"
-                    :rules="[{ validator: (rule, value, callback)=>{validateLevelMoney(rule, value, callback)}, trigger: ['blur', 'change'] }]"
+                    :rules="[{ validator: (rule, value, callback)=>{validateLevelMoney(rule, value, callback, scope.row)}, trigger: ['blur', 'change'] }]"
                     style="display: inline-block;"
                   >
                     <div>{{ $t('distribution.levelTip4') }}
                       <el-input
                         v-model="scope.row.totalDistributionMoney"
+                        @input="changeHandler()"
                         size="mini"
                         style="width: 70px;"
                       ></el-input> {{ $t('distribution.levelTip5') }} {{ $t('distribution.levelTip3') }}</div>
@@ -136,6 +138,7 @@
                     <div>{{ $t('distribution.levelTip6') }}
                       <el-input
                         v-model="scope.row.totalBuyMoney"
+                        @input="changeHandler()"
                         size="mini"
                         style="width: 70px;"
                       ></el-input> {{ $t('distribution.levelTip5') }}</div>
@@ -177,7 +180,7 @@
                 <el-radio-group
                   v-if="scope.row.levelId !== 1"
                   v-model="scope.row.levelStatus"
-                  @change="levelStatusChange()"
+                  @change="changeHandler()"
                 >
                   <el-radio :label="1">启用</el-radio>
                   <el-radio :label="0">禁用</el-radio>
@@ -281,9 +284,9 @@ export default {
           levelId: 1,
           levelName: '',
           levelUpRoute: 0,
-          inviteNumber: 0,
-          totalDistributionMoney: 0,
-          totalBuyMoney: 0,
+          inviteNumber: null,
+          totalDistributionMoney: null,
+          totalBuyMoney: null,
           levelUserIds: null,
           users: '',
           levelStatus: 1,
@@ -293,9 +296,9 @@ export default {
           levelId: 2,
           levelName: '',
           levelUpRoute: 1,
-          inviteNumber: 0,
-          totalDistributionMoney: 0,
-          totalBuyMoney: 0,
+          inviteNumber: null,
+          totalDistributionMoney: null,
+          totalBuyMoney: null,
           levelUserIds: null,
           users: '',
           levelStatus: 0,
@@ -305,9 +308,9 @@ export default {
           levelId: 3,
           levelName: '',
           levelUpRoute: 1,
-          inviteNumber: 0,
-          totalDistributionMoney: 0,
-          totalBuyMoney: 0,
+          inviteNumber: null,
+          totalDistributionMoney: null,
+          totalBuyMoney: null,
           levelUserIds: null,
           users: '',
           levelStatus: 0,
@@ -317,9 +320,9 @@ export default {
           levelId: 4,
           levelName: '',
           levelUpRoute: 1,
-          inviteNumber: 0,
-          totalDistributionMoney: 0,
-          totalBuyMoney: 0,
+          inviteNumber: null,
+          totalDistributionMoney: null,
+          totalBuyMoney: null,
           levelUserIds: null,
           users: '',
           levelStatus: 0,
@@ -329,9 +332,9 @@ export default {
           levelId: 5,
           levelName: '',
           levelUpRoute: 1,
-          inviteNumber: 0,
-          totalDistributionMoney: 0,
-          totalBuyMoney: 0,
+          inviteNumber: null,
+          totalDistributionMoney: null,
+          totalBuyMoney: null,
           levelUserIds: null,
           users: '',
           levelStatus: 0,
@@ -394,14 +397,13 @@ export default {
       console.log(this.form.tableData)
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          setDistributionLevel().then(res => { })
-          // setDistributionLevel(this.form.tableData).then((res) => {
-          //   if (res.error === 0) {
-          //     this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
-          //   } else {
-          //     this.$message.warning(res.message)
-          //   }
-          // })
+          setDistributionLevel(this.form.tableData).then((res) => {
+            if (res.error === 0) {
+              this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
+            } else {
+              this.$message.warning(res.message)
+            }
+          })
         }
       })
     },
@@ -432,8 +434,8 @@ export default {
       this.$emit('distributorLevel', id)
     },
 
-    // 切换启用禁用
-    levelStatusChange () {
+    // 表单值变化
+    changeHandler () {
       this.$refs['form'].validate()
     },
 
@@ -460,21 +462,29 @@ export default {
     },
 
     // 校验规则个数
-    validateLevelNum (rule, value, callback) {
+    validateLevelNum (rule, value, callback, row) {
       var re = /^[1-9]\d*$/
-      if ((value && !re.test(value)) || value === 0 || value === '0') {
-        callback(new Error('请填写正整数'))
+      if (!row.inviteNumber || !row.totalDistributionMoney || !row.totalBuyMoney) {
+        if ((value && !re.test(value)) || value === 0 || value === '0') {
+          callback(new Error('请填写正整数'))
+        } else {
+          callback()
+        }
       } else {
         callback()
       }
     },
 
     // 校验规则金额
-    validateLevelMoney (rule, value, callback) {
+    validateLevelMoney (rule, value, callback, row) {
       var re = /^[1-9]\d*(\.\d{1,2})?$/
       var re1 = /^0\.\d{1,2}$/
-      if ((value && !re.test(value) && !re1.test(value)) || value === 0 || value === '0') {
-        callback(new Error('请填写可以保留两位小数的有效数字'))
+      if (!row.inviteNumber || !row.totalDistributionMoney || !row.totalBuyMoney) {
+        if ((value && !re.test(value) && !re1.test(value)) || value === 0 || value === '0') {
+          callback(new Error('请填写可以保留两位小数的有效数字'))
+        } else {
+          callback()
+        }
       } else {
         callback()
       }
