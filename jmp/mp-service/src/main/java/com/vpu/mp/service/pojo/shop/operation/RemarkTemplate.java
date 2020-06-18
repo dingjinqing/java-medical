@@ -53,10 +53,10 @@ public enum RemarkTemplate {
     ORDER_FINISH_SEND_SCORE(2016,RemarkMessage.MSG_ORDER_FINISH_SEND_SCORE),
     /**	订单完成返利	*/
     ORDER_REBATE(2017,RemarkMessage.MSG_ORDER_REBATE),
-    /**	兑换商品	*/
-    ORDER_LIMIT_EXCHGE_GOODS(2017,RemarkMessage.MSG_ORDER_LIMIT_EXCHGE_GOODS),
     /**	限次卡退次数	*/
     ORDER_RETURN_LIMIT_CARD(2018,RemarkMessage.MSG_ORDER_RETURN_LIMIT_CARD),
+    /**	兑换商品	*/
+    ORDER_LIMIT_EXCHGE_GOODS(2019,RemarkMessage.MSG_ORDER_LIMIT_EXCHGE_GOODS),
 
     /**
 	 * 会员卡

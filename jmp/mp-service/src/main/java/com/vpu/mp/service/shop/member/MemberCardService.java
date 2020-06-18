@@ -794,7 +794,9 @@ public class MemberCardService extends ShopBaseService {
 
 		/** 2.-获取数据库中的存储的信息 */
 		UserCardRecord userCard = getUserCardInfoByCardNo(data.getCardNo());
-
+        if(data.getCardId()==null){
+            data.setCardId(userCard.getCardId());
+        }
 		/** 3-判断是使用还是增加用户卡的卡剩余兑换次数 */
 		if (data.getExchangeCount() < 0) {
 			/** 3.1-减少（使用）卡剩余兑换次数 */
@@ -811,8 +813,6 @@ public class MemberCardService extends ShopBaseService {
 
 		/** 4-更新user_card用户会员卡的卡剩余兑换次数 */
 		updateUserCard(data, userCard, RemarkTemplate.ADMIN_EXCHANGE_GOODS.code);
-		// TODO 模板消息
-
 	}
 
 	/**
@@ -842,7 +842,7 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	private void setDefaultReason(CardConsumpData data, Integer code) {
 		/** 1-若reason原因为空 则设置为默认值 */
-		if (data.getReason()==null) {
+		if (data.getReasonId()==null) {
 			data.setReasonId(code);
 		}
 	}
