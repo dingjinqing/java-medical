@@ -70,11 +70,16 @@
             align="center"
           >
             <template slot-scope="scope">
-              <el-input
-                v-model="scope.row.levelName"
-                size="small"
-                style="width: 170px;"
-              ></el-input>
+              <el-form-item
+                :prop="'tableData.' + scope.$index+ '.levelName'"
+                :rules="[{ validator: (rule, value, callback)=>{validateLevelName(rule, value, callback, scope.row)}, trigger: ['blur', 'change'] }]"
+              >
+                <el-input
+                  v-model="scope.row.levelName"
+                  size="small"
+                  style="width: 170px;"
+                ></el-input>
+              </el-form-item>
             </template>
           </el-table-column>
           <el-table-column
@@ -83,7 +88,10 @@
             width="300px"
           >
             <template slot-scope="scope">
-              <el-form-item :prop="'tableData.' + scope.$index+ '.levelUpRoute'">
+              <el-form-item
+                :prop="'tableData.' + scope.$index+ '.levelUpRoute'"
+                :rules="[{ validator: (rule, value, callback)=>{validatelevelUpRoute(rule, value, callback, scope.row)}, trigger: ['blur', 'change'] }]"
+              >
                 <div v-if="scope.row.levelId === 1">{{ $t('distribution.level1') }}</div>
                 <el-radio-group
                   v-model="scope.row.levelUpRoute"
@@ -151,10 +159,12 @@
             align="center"
           >
             <template slot-scope="scope">
-              <span
-                @click="numClickHandler(scope.row.levelId)"
-                style="color: #5a8bff;cursor: pointer;"
-              >{{ scope.row.users ? scope.row.users : 0 }}</span>
+              <el-form-item :prop="'tableData.' + scope.$index+ '.users'">
+                <span
+                  @click="numClickHandler(scope.row.levelId)"
+                  style="color: #5a8bff;cursor: pointer;"
+                >{{ scope.row.users ? scope.row.users : 0 }}</span>
+              </el-form-item>
             </template>
           </el-table-column>
           <el-table-column
@@ -162,25 +172,20 @@
             align="center"
           >
             <template slot-scope="scope">
-              <p v-if="scope.row.levelId === 1">{{ $t('distribution.levelAlready') }}</p>
-              <div v-if="scope.row.levelId !== 1">
-                <p v-if="scope.row.levelStatus === 1">{{ $t('distribution.levelStart2') }}</p>
-                <p v-if="scope.row.levelStatus === 0">{{ $t('distribution.levelStop2') }}</p>
-                <el-button
-                  type="primary"
-                  size="mini"
-                  @click="startHandler(scope.row.id)"
-                  v-if="scope.row.levelStatus === 0"
-                >{{ $t('distribution.levelStart1') }}</el-button>
-                <el-button
-                  size="mini"
-                  @click="stopHandler(scope.row.id)"
-                  v-if="scope.row.levelStatus === 1"
-                >{{ $t('distribution.levelStop1') }}</el-button>
-              </div>
+              <el-form-item :prop="'tableData.' + scope.$index+ '.levelStatus'">
+                <p v-if="scope.row.levelId === 1">{{ $t('distribution.levelAlready') }}</p>
+                <el-radio-group
+                  v-if="scope.row.levelId !== 1"
+                  v-model="scope.row.levelStatus"
+                  @change="levelStatusChange()"
+                >
+                  <el-radio :label="1">启用</el-radio>
+                  <el-radio :label="0">禁用</el-radio>
+                </el-radio-group>
+              </el-form-item>
             </template>
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             label="首单获佣金(元)"
             align="center"
             v-if="form.config === true"
@@ -197,7 +202,7 @@
                 ></el-input>
               </el-form-item>
             </template>
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
       </el-form-item>
     </el-form>
@@ -243,27 +248,24 @@
 </template>
 
 <script>
-import { getDistributionLevel, setDistributionLevel, startDistribution, stopDistribution, manualAddDistributor } from '@/api/admin/marketManage/distribution.js'
+import { getDistributionLevel, setDistributionLevel, manualAddDistributor } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination'),
     DistributorDialog: () => import('@/components/admin/distributorDialog')
   },
-  props: {
-
-  },
   data () {
-    // 自定义订单金额
-    var validateMoney = (rule, value, callback) => {
-      var re = /^\d+(\.\d{1,2})?$/
-      if (this.form.config === true && !value) {
-        callback(new Error('请填写订单金额'))
-      } else if (this.form.config === true && !re.test(value)) {
-        callback(new Error('请填写非负数, 可以保留两位小数'))
-      } else {
-        callback()
-      }
-    }
+    // 自定义返佣金额
+    // var validateMoney = (rule, value, callback) => {
+    //   var re = /^\d+(\.\d{1,2})?$/
+    //   if (this.form.config === true && !value) {
+    //     callback(new Error('请填写订单金额'))
+    //   } else if (this.form.config === true && !re.test(value)) {
+    //     callback(new Error('请填写非负数, 可以保留两位小数'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     return {
       levelId: null,
       centerDialogVisible: false, // 规则弹框
@@ -277,7 +279,7 @@ export default {
         // 表格数据
         tableData: [{
           levelId: 1,
-          levelName: '分销员测试',
+          levelName: '',
           levelUpRoute: 0,
           inviteNumber: 0,
           totalDistributionMoney: 0,
@@ -289,8 +291,8 @@ export default {
           levelText: '一级'
         }, {
           levelId: 2,
-          levelName: 'v2',
-          levelUpRoute: 0,
+          levelName: '',
+          levelUpRoute: 1,
           inviteNumber: 0,
           totalDistributionMoney: 0,
           totalBuyMoney: 0,
@@ -301,31 +303,31 @@ export default {
           levelText: '二级'
         }, {
           levelId: 3,
-          levelName: '分销员组3',
+          levelName: '',
           levelUpRoute: 1,
           inviteNumber: 0,
           totalDistributionMoney: 0,
           totalBuyMoney: 0,
           levelUserIds: null,
           users: '',
-          levelStatus: 1,
+          levelStatus: 0,
           amount: '',
           levelText: '三级'
         }, {
           levelId: 4,
-          levelName: '分销员组4',
+          levelName: '',
           levelUpRoute: 1,
           inviteNumber: 0,
           totalDistributionMoney: 0,
           totalBuyMoney: 0,
           levelUserIds: null,
           users: '',
-          levelStatus: 1,
+          levelStatus: 0,
           amount: '',
           levelText: '四级'
         }, {
           levelId: 5,
-          levelName: '分销员组5',
+          levelName: '',
           levelUpRoute: 1,
           inviteNumber: 0,
           totalDistributionMoney: 0,
@@ -339,7 +341,7 @@ export default {
       },
       // 校验表单
       fromRules: {
-        configMoney: [{ validator: validateMoney, trigger: 'change' }]
+        // configMoney: [{ validator: validateMoney, trigger: 'change' }]
       }
     }
   },
@@ -390,59 +392,17 @@ export default {
     // 设置分销员等级
     setDistributionLevel () {
       console.log(this.form.tableData)
-      // 已启用 && 开启自动升级
-      var result = this.form.tableData.find(item => { return item.levelStatus === 1 && item.levelUpRoute === 0 && !item.inviteNumber && !item.totalDistributionMoney && !item.totalBuyMoney })
-      if (result !== undefined) {
-        this.$message.warning('已启用等级设置不能为空')
-        return false
-      }
-
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          setDistributionLevel(this.form.tableData).then((res) => {
-            if (res.error === 0) {
-              this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
-            } else {
-              this.$message.warning(res.message)
-            }
-          })
+          setDistributionLevel().then(res => { })
+          // setDistributionLevel(this.form.tableData).then((res) => {
+          //   if (res.error === 0) {
+          //     this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
+          //   } else {
+          //     this.$message.warning(res.message)
+          //   }
+          // })
         }
-      })
-    },
-
-    // 启用
-    startHandler (id) {
-      this.$confirm(this.$t('seckill.startTip'), {
-        confirmButtonText: this.$t('seckill.sure'),
-        cancelButtonText: this.$t('seckill.cancel'),
-        type: 'warning'
-      }).then(() => {
-        startDistribution(id).then((res) => {
-          if (res.error === 0) {
-            this.$message.success({ message: this.$t('seckill.startSuccess') })
-            this.initDataList()
-          }
-        })
-      }).catch(() => {
-        this.$message.info({ message: this.$t('seckill.startFail') })
-      })
-    },
-
-    // 停用
-    stopHandler (id) {
-      this.$confirm(this.$t('seckill.stopTip'), {
-        confirmButtonText: this.$t('seckill.sure'),
-        cancelButtonText: this.$t('seckill.cancel'),
-        type: 'warning'
-      }).then(() => {
-        stopDistribution(id).then((res) => {
-          if (res.error === 0) {
-            this.$message.success({ message: this.$t('seckill.stopSuccess') })
-            this.initDataList()
-          }
-        })
-      }).catch(() => {
-        this.$message.info({ message: this.$t('seckill.stopFail') })
       })
     },
 
@@ -455,7 +415,6 @@ export default {
 
     // 弹窗回显数据
     handleSelectRow (row) {
-      console.log(row)
       manualAddDistributor({
         level: this.levelId,
         userIds: row
@@ -471,6 +430,33 @@ export default {
     numClickHandler (id) {
       this.$emit('tabChange')
       this.$emit('distributorLevel', id)
+    },
+
+    // 切换启用禁用
+    levelStatusChange () {
+      this.$refs['form'].validate()
+    },
+
+    // 校验等级名称
+    validateLevelName (rule, value, callback, row) {
+      if (!value && row.levelStatus === 1 && row.levelId !== 1) {
+        callback(new Error('请填写等级名称'))
+      } else {
+        callback()
+      }
+    },
+
+    // 校验等级规则
+    validatelevelUpRoute (rule, value, callback, row) {
+      if (row.levelStatus === 1 && row.levelId !== 1) {
+        if (value === 0 && !row.inviteNumber && !row.totalDistributionMoney && !row.totalBuyMoney) {
+          callback(new Error('请填写等级规则'))
+        } else {
+          callback()
+        }
+      } else {
+        callback()
+      }
     },
 
     // 校验规则个数
@@ -495,18 +481,18 @@ export default {
     },
 
     // 校验首单佣金
-    validateMoney (rule, value, callback) {
-      var re = /^\d+(\.\d{1,2})?$/
-      if (this.form.config === true) {
-        if (!value) {
-          callback(new Error('请填写佣金'))
-        } else if (!re.test(value)) {
-          callback(new Error('请填写非负数, 可以保留两位小数'))
-        }
-      } else {
-        callback()
-      }
-    },
+    // validateMoney (rule, value, callback) {
+    //   var re = /^\d+(\.\d{1,2})?$/
+    //   if (this.form.config === true) {
+    //     if (!value) {
+    //       callback(new Error('请填写佣金'))
+    //     } else if (!re.test(value)) {
+    //       callback(new Error('请填写非负数, 可以保留两位小数'))
+    //     }
+    //   } else {
+    //     callback()
+    //   }
+    // },
 
     // 首单返佣金配置
     configChange () {
