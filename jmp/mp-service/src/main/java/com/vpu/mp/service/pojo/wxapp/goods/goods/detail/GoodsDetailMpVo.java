@@ -117,7 +117,8 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
      * 该商品可以参加的分享有礼活动ID
      */
     private Integer shareAwardId;
-
+    /**商品单位*/
+    private String unit;
     @Override
     public String toString() {
         return "GoodsDetailMpVo{" +
@@ -155,6 +156,7 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
             ", promotions=" + promotions +
             ", pledgeSwitch=" + pledgeSwitch +
             ", pledgeList=" + pledgeList +
+            ", unit="+unit+
             '}'+super.toString();
     }
 }
