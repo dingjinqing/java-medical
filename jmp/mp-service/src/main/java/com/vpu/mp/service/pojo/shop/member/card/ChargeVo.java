@@ -36,4 +36,5 @@ public class ChargeVo {
 	private Byte type;
 	private Short count;
 	private Short exchangCount;
+
 }
