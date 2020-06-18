@@ -311,7 +311,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         Integer failRetId = orderRefundRecord.getFailReturnOrder(param.getOrderSn());
         if(failRetId != null) {
             ReturnOrderRecord returnOrder = this.returnOrder.getByRetId(failRetId);
-            throw new MpException(JsonResultCode.CODE_ORDER_RETURN_EXIST_WX_REFUND_FAIL_ORDER, returnOrder == null ? null : returnOrder.getReturnOrderSn(), null);
+            throw MpException.initErrorResult(JsonResultCode.CODE_ORDER_RETURN_EXIST_WX_REFUND_FAIL_ORDER, returnOrder == null ? null : returnOrder.getReturnOrderSn(), null);
+
         }
 		Byte isMp = param.getIsMp();
 		RefundVo vo = new RefundVo();
