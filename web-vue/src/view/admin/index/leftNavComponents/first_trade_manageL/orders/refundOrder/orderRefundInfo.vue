@@ -142,11 +142,12 @@
                   type="primary"
                   size="small"
                   @click="showRefund"
-                >{{$t('order.refundBtn_4_1',[returnTypeMap.get(returnInfo.returnType)])}}</el-button>
+                >{{returnInfo.showRefundFailInfo === 1 ? '继续退款' : $t('order.refundBtn_4_1',[returnTypeMap.get(returnInfo.returnType)])}}</el-button>
                 <el-button
                   type="default"
                   size="small"
                   @click="showRefusal"
+                  v-if="returnInfo.showRefundFailInfo !== 1"
                 >{{$t('order.refundBtn_4_2',[returnTypeMap.get(returnInfo.returnType)])}}</el-button>
               </div>
             </template>
@@ -184,7 +185,10 @@
 
       </div>
 
-      <div class="item_box" v-if="returnInfo.showRefundFailInfo === 1">
+      <div
+        class="item_box"
+        v-if="returnInfo.showRefundFailInfo === 1"
+      >
         <h2 class="h2_title">退款失败详情</h2>
         <div class="return-fail-info">
           <div v-if="returnInfo.successMoney">退款成功：￥{{returnInfo.successMoney}}</div>
@@ -919,7 +923,8 @@ export default {
         color: #333;
         font-weight: 600;
       }
-      .refund_status_desc,.return-fail-info {
+      .refund_status_desc,
+      .return-fail-info {
         border: 1px solid #ddd;
         padding: 16px 30px;
         position: relative;
@@ -1026,13 +1031,13 @@ export default {
           }
         }
       }
-      .return-fail-info{
+      .return-fail-info {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         align-items: flex-start;
-        > div + div{
-          margin-top:10px;
+        > div + div {
+          margin-top: 10px;
         }
       }
       .recode {
