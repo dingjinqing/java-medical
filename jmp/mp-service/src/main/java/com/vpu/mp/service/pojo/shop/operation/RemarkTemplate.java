@@ -77,7 +77,10 @@ public enum RemarkTemplate {
     CARD_RENEW(3007,RemarkMessage.CARD_RENEW),
     /**	会员卡续费:  {订单号} */
     CARD_RENEW_ORDER(3008,RemarkMessage.CARD_RENEW_ORDER),
-
+    // 继承转赠卡：{0} - 门店服务次数
+    CARD_GIVE_COUNT(3009,RemarkMessage.CARD_GIVE_COUNT),
+    //  继承转赠卡：{0} - 兑换服务次数
+    CARD_GIVE_EXCHANGCOUNT(3010,RemarkMessage.CARD_GIVE_EXCHANGCOUNT),
 
 	/**
 	 * 营销
