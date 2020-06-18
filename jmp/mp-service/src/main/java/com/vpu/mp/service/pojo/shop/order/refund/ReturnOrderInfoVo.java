@@ -64,6 +64,13 @@ public class ReturnOrderInfoVo {
      */
     private Byte returnService;
     private Byte returnSource;
+    /**
+     * 退款异常信息展示
+     */
+    private Byte showRefundFailInfo;
+    private BigDecimal successMoney;
+    private BigDecimal failMoney;
+    private String failDesc;
 }
 
 

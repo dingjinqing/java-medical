@@ -360,6 +360,13 @@ export default {
           this.returnAmountMap = res.content.returnAmountMap
           this.returnShippingFee = res.content.returnShippingFee
           this.loading = false
+        } else if (res.error === 120060) {
+          this.$router.push({
+            name: 'orderRefundInfo',
+            query: {
+              returnOrderSn: res.content
+            }
+          })
         } else {
           this.$message.error(res.message)
         }
