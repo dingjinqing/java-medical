@@ -2,6 +2,11 @@ var addressList = []; //地址列表
 var zipCodeList = []; //邮编列表
 var zipCode = require("./zipCode.js");
 var util = require('../../util')
+// 加权
+let matchProvince = []; // 粗略匹配上的省份
+let matchCity = []; // 粗略匹配上的市
+let matchCounty = []; //粗略匹配上的区县
+let matchStreet = []; //粗略匹配上的街道查
 
 console.log("正在加载省市区数据...");
 
@@ -126,7 +131,7 @@ function zipCodeFormat(zipCode) {
   return list;
 }
 
-var smartObj = {};
+// var smartObj = {};
 /**
  * 解析邮编
  * @param event识别的地址
@@ -134,6 +139,12 @@ var smartObj = {};
  */
 function smart(event) {
   let obj = {};
+  // 初始化匹配项
+  matchProvince = []
+  matchCity = []
+  matchCounty = []
+  matchStreet = []
+
   event = stripscript(event); //过滤特殊字符
   let copyaddress = JSON.parse(JSON.stringify(event));
   console.log(event);
@@ -168,24 +179,33 @@ function smart(event) {
  * @param {*} event 
  */
 function smatrAddress(event, obj) {
-  smartObj = {};
+  let smartObj = {};
   let address = event;
-  address=  event.replace(/[\s-]/g, ''); //去除空格
+  address=  event.replace(/[\s]/g, ''); //去除空格
   // address = stripscript(address); //过滤特殊字符
+
+  // 如果已经匹配了address，那么过滤这个address
+  if (obj.address && obj.address === event) {
+    return smartObj
+  }
 
   //身份证号匹配
   if (IdentityCodeValid(address)) {
     smartObj.idCard = address;
-    address = address.replace(address, "");
+    address = address.replace(address, " ");
   }
 
   //电话匹配
-  let phone = address.match(
-    /(86-[1][0-9]{10}) | (86[1][0-9]{10})|([1][0-9]{10})/g
+  let phoneArr = address.match(
+    /(86-[1][0-9]{10})|(86[1][0-9]{10})|([1][0-9]{10})/g
   );
-  if (phone) {
-    smartObj.phone = phone[0];
-    address = address.replace(phone[0], "");
+  if (phoneArr) {
+    address = address.replace(phoneArr[0], " ");
+    let phone = phoneArr[0]
+    if (phone.indexOf('86') > -1) {
+      phone = phone.replace(/^86(-)*/, '')
+    }
+    smartObj.phone = phone;
   }
 
   //邮编匹配
@@ -194,37 +214,47 @@ function smatrAddress(event, obj) {
       let num = address.indexOf(res);
       let code = address.slice(num, num + 6);
       smartObj.zipCode = code;
-      address = address.replace(code, "");
+      address = address.replace(code, " ");
     }
   });
 
+  console.log('address:', address)
+  address = address.trim()
+  let addressArr = address ? address.split(/\s+/) : [];
+  console.log(addressArr)
+  let initAddress = '';
   let matchAddress = "";
-  //省匹配 比如输入北京市朝阳区，会用北  北京  北京市 北京市朝 以此类推在addressList里的province中做匹配，会得到北京市  河北省 天津市等等；
-  let matchProvince = []; //粗略匹配上的省份
-  // for (let begIndex = 0; begIndex < address.length; begIndex++) {
-  for (let endIndex = 0; endIndex < address.length; endIndex++) {
-    //  if (endIndex > begIndex) {
-    matchAddress = address.slice(0, endIndex + 2);
-    addressList.forEach(res => {
-      if (res["province"].indexOf(matchAddress) != -1) {
-        matchProvince.push({
-          province: res.province,
-          provinceCode: res.code,
-          matchValue: matchAddress,
-          children: res.children
-        });
+  addressArr.forEach(address => {
+    //省匹配 比如输入北京市朝阳区，会用北  北京  北京市 北京市朝 以此类推在addressList里的province中做匹配，会得到北京市  河北省 天津市等等；
+    let count = 0
+    for (let endIndex = 0; endIndex < address.length; endIndex++) {
+      matchAddress = address.slice(0, endIndex + 2);
+      console.log(matchAddress)
+      addressList.forEach((res, j) => {
+        if (res["province"].indexOf(matchAddress) != -1) {
+          initAddress = address
+          console.log('匹配到省：', res.province)
+          count++
+          console.log(count, endIndex)
+          matchProvince.push({
+            province: res.province,
+            provinceCode: res.code,
+            matchValue: matchAddress
+          });
+        }
+      });
+      if (endIndex >= count) {
+        break;
       }
-    });
-    if (endIndex > matchProvince.length+1) {
-      break;
     }
-  }
+  })
 
-  //统计筛选初略统计出的省份
+  // 统计筛选初略统计出的省份
+  console.log(matchProvince)
   matchProvince.forEach(res => {
     res.index = 0;
     matchProvince.forEach(el => {
-      if (res.province == el.province) {
+      if (res.provinceCode == el.provinceCode) {
         el.index++;
         if (res.matchValue.length > el.matchValue.length) {
           el.matchValue = res.matchValue;
@@ -232,56 +262,64 @@ function smatrAddress(event, obj) {
       }
     });
   });
+  console.log(matchProvince)
   let selectedProvince = {}
-  if (matchProvince.length != 0) {
+  if (matchProvince.length > 0) {
     let province = matchProvince.reduce((p, v) => (p.index < v.index ? v : p));
     selectedProvince = province
     smartObj.province = province.province;
     smartObj.provinceCode = province.provinceCode;
-    address = address.replace(province.matchValue, "");
+    address = address.replace(province.matchValue, " ");
   }
-  //市查找
-  let matchCity = []; //粗略匹配上的市
-  matchAddress = "";
-  for (let endIndex = 0; endIndex < address.length; endIndex++) {
-    matchAddress = address.slice(0, endIndex + 2);
-    if (selectedProvince.children) {
-      selectedProvince.children.forEach(res => {
-        if (res["city"].indexOf(matchAddress) != -1) {
-          matchCity.push({
-            city: res.city,
-            cityCode: res.code,
-            matchValue: matchAddress,
-            children: res.children
-          });
-        }
-      });
-    } else {
-      addressList.forEach(el => {
-        if (el.code == smartObj.provinceCode || !smartObj.provinceCode) {
-          el.children.forEach(res => {
-            if (res["city"].indexOf(matchAddress) != -1) {
-              matchCity.push({
-                city: res.city,
-                cityCode: res.code,
-                matchValue: matchAddress,
-                province: el.province,
-                provinceCode: el.code
-              });
-            }
-          });
-        }
-      });
-    }
 
-    if (endIndex > matchCity.length) {
-      break;
+  //市查找
+  console.log('address:', address)
+  let thisAddress = address
+  addressArr = address.split(/\s+/)
+  console.log('addressArr', addressArr)
+  matchAddress = "";
+  addressArr.forEach(address => {
+    let count = 0
+    for (let endIndex = 0; endIndex < address.length; endIndex++) {
+      matchAddress = address.slice(0, endIndex + 2);
+      console.log(matchAddress)
+      addressList.forEach(el => {
+        el.children.forEach(res => {
+          if (res["city"].indexOf(matchAddress) != -1) {
+            initAddress = address
+            console.log('匹配到市：', res.city)
+            count++
+            // 如果能找到这个市的省，那么省的权限增高
+            let provinceAddress = matchProvince.find(item => item.province === el.province)
+            if (provinceAddress) {
+              matchProvince.push({...provinceAddress, index:10})
+              smartObj.province = provinceAddress.province
+              smartObj.provinceCode = provinceAddress.provinceCode
+              thisAddress = thisAddress.replace(smartObj.province, " ");
+            }
+            // 如果smartObj.province
+            matchCity.push({
+              city: res.city,
+              cityCode: res.code,
+              matchValue: matchAddress,
+              province: el.province,
+              provinceCode: el.code,
+              index: el.province === smartObj.province?10:0
+            });
+          }
+        });
+      });
+      if (endIndex >= count) {
+        break
+      }
     }
-  }
+  })
+  address = thisAddress
 
   //统计筛选初略统计出的市
+  console.log(matchCity)
   matchCity.forEach(res => {
-    res.index = 0;
+    res.index = res.index?res.index:0;
     matchCity.forEach(el => {
       if (res.city == el.city) {
         el.index++;
@@ -297,42 +335,33 @@ function smatrAddress(event, obj) {
     selectedCity = city
     smartObj.city = city.city;
     smartObj.cityCode = city.cityCode;
-    if (!smartObj.province) {
+    if (!smartObj.province && !obj.province) {
       smartObj.province = city.province;
       smartObj.provinceCode = city.provinceCode;
     }
-    address = address.replace(city.matchValue, "");
+    address = address.replace(city.matchValue, " ");
   }
 
   //区县查找
-  let matchCounty = []; //粗略匹配上的区县
+  console.log('address:', address)
   matchAddress = "";
-  for (let endIndex = 0; endIndex < address.length; endIndex++) {
-    
-    matchAddress = address.slice(0, endIndex + 2);
-    if (selectedCity.children) {
-      selectedCity.children.forEach(res => {
-        if (res["county"].indexOf(matchAddress) != -1) {
-          //省/市  || 省
-          if (res.code.slice(0, 2) == smartObj.provinceCode) {
-            matchCounty.push({
-              county: res.county,
-              countyCode: res.code,
-              matchValue: matchAddress,
-              children: res.children
-            });
-          }
-        }
-      });
-    } else {
+  addressArr = address.split(/\s+/)
+  addressArr.forEach(address => {
+    let count = 0
+    for (let endIndex = 0; endIndex < address.length; endIndex++) {
+      matchAddress = address.slice(0, endIndex + 2);
+      console.log(matchAddress)
       addressList.forEach(el => {
         el.children.forEach(item => {
           //  if (item.name == smartObj.city) {
           item.children.forEach(res => {
             if (res["county"].indexOf(matchAddress) != -1) {
+              initAddress = address
+              console.log('匹配到区县:', res.county)
               //省/市  || 省
               if (smartObj.province) {
                 if (res.code.slice(0, 2) == smartObj.provinceCode) {
+                  count++
                   matchCounty.push({
                     county: res.county,
                     countyCode: res.code,
@@ -340,10 +369,12 @@ function smatrAddress(event, obj) {
                     cityCode: item.code,
                     matchValue: matchAddress,
                     province: el.province,
-                    provinceCode: el.code
+                    provinceCode: el.code,
+                    index: 10
                   });
                 }
               } else if (!smartObj.province && !smartObj.city) {
+                count++
                 matchCounty.push({
                   county: res.county,
                   countyCode: res.code,
@@ -358,15 +389,15 @@ function smatrAddress(event, obj) {
           });
         });
       });
+      if (endIndex >= count) {
+        break;
+      }
     }
-    
-    if (endIndex > matchCounty.length) {
-      break;
-    }
-  }
+  })
+  
   //统计筛选初略统计出的区县
   matchCounty.forEach(res => {
-    res.index = 0;
+    res.index = res.index?res.index: 0;
     matchCounty.forEach(el => {
       if (res.city == el.city) {
         el.index++;
@@ -377,49 +408,54 @@ function smatrAddress(event, obj) {
     });
   });
   let selectedCounty = {}
+  console.log(matchCounty)
   if (matchCounty.length != 0) {
     let city = matchCounty.reduce((p, v) => (p.index < v.index ? v : p));
     selectedCounty = city
     smartObj.county = city.county;
     smartObj.countyCode = city.countyCode;
-    if (!smartObj.province) {
+    if (!smartObj.province && !obj.province) {
       smartObj.province = city.province;
       smartObj.provinceCode = city.provinceCode;
     }
-    if (!smartObj.city) {
+    if (!smartObj.city && !obj.city) {
       smartObj.city = city.city;
       smartObj.cityCode = city.cityCode;
     }
     address = address.replace(city.matchValue, "");
+    if (address.charAt(0) === '县'||address.charAt(0) === '市') {
+      address = address.slice(1)
+    }
   }
 
   //街道查找
-  let matchStreet = []; //粗略匹配上的街道查
+  console.log('address:', address)
+  addressArr = address.split(/\s+/)
+  console.log(addressArr)
   matchAddress = "";
-  for (let endIndex = 0; endIndex < address.length; endIndex++) {
-    
-    matchAddress = address.slice(0, endIndex + 3);
-    if (selectedCounty.children) {
-      selectedCounty.children.forEach(item => {
-        if (item["street"].indexOf(matchAddress) != -1) {
-          matchStreet.push({
-            street: item.street,
-            streetCode: item.code,
-            matchValue: matchAddress
-          });
-        }
-      });
-    } else {
+  addressArr.forEach(address => {
+    let count = 0;
+    for (let endIndex = 0; endIndex < address.length; endIndex++) {
+      matchAddress = address.slice(0, endIndex + 3);
+      console.log(matchAddress)
       addressList.forEach(el => {
         el.children.forEach(element => {
-          if (element.name == smartObj.city) {
+          if (element.name == smartObj.city || element.name === obj.city || (!smartObj.city && !obj.city)) {
             element.children.forEach(item => {
-              if (item.name == smartObj.county) {
+              if (item.name == smartObj.county || item.name === obj.county || (!smartObj.county&&!obj.county)) {
                 item.children.forEach(res => {
                   if (res["street"].indexOf(matchAddress) != -1) {
+                    console.log('匹配到街镇：',res.street)
+                    count++
                     matchStreet.push({
                       street: res.street,
                       streetCode: res.code,
+                      county: item.name,
+                      countyCode: item.code,
+                      city: element.name,
+                      cityCode: element.code,
+                      province: el.name,
+                      provinceCode: el.code,
                       matchValue: matchAddress
                     });
                   }
@@ -429,14 +465,18 @@ function smatrAddress(event, obj) {
           }
         });
       });
+      if (endIndex >= count) {
+        break
+      }
     }
-  }
+  })
 
-  //统计筛选初略统计出的区县
+  //统计筛选初略统计出的街道、镇
+  console.log(matchStreet)
   matchStreet.forEach(res => {
     res.index = 0;
     matchStreet.forEach(el => {
-      if (res.city == el.city) {
+      if (res.street == el.street) {
         el.index++;
         if (res.matchValue.length > el.matchValue.length) {
           el.matchValue = res.matchValue;
@@ -444,20 +484,46 @@ function smatrAddress(event, obj) {
       }
     });
   });
-
+  
+  console.log(obj);
   if (matchStreet.length != 0) {
-    let city = matchStreet.reduce((p, v) => (p.index < v.index ? v : p));
-    smartObj.street = city.street;
-    smartObj.streetCode = city.streetCode;
-    address = address.replace(city.matchValue, "");
+    let street = matchStreet.reduce((p, v) => (p.index < v.index ? v : p));
+    smartObj.street = street.street;
+    smartObj.streetCode = street.streetCode;
+    if (!smartObj.county && !obj.county) {
+      smartObj.county = street.county
+      smartObj.countyCode = street.countyCode
+    }
+    if (!smartObj.city && !obj.city) {
+      smartObj.city = street.city
+      smartObj.cityCode = street.cityCode
+    }
+    if (!smartObj.province && !obj.province) {
+      smartObj.province = street.province
+      smartObj.provinceCode = street.provinceCode
+    }
+    let smartObjAddress = addressArr.find(item => item.indexOf(street.matchValue) > -1)
+    address = address.replace(street.matchValue, "").trim();
   }
   
+  console.log('address:',event, address, obj.address)
+  address = address.trim() || ""
+  addressArr = address.split(/\s+/)
   // 详细地址
-  if ((obj.province||smartObj.province) && (!obj.address || address == obj.address)) {
-    smartObj.address = address;
-    address = address.replace(address, "");
+  if (address && !smartObj.address) {
+    console.log(initAddress)
+    if (addressArr.length > 0 && initAddress.length > 0) {
+      let add = addressArr.find(item => initAddress.indexOf(item) > -1)
+      console.log(add)
+      smartObj.address = add
+      address = address.replace(add, "");
+    } else if ((obj.province||smartObj.province) && (!obj.address || address == obj.address)) {
+      smartObj.address = address;
+      address = address.replace(address, "");
+    }
   }
 
+  console.log('address:', address)
   // 收货人
   if (address) {
     smartObj.name = address
@@ -471,7 +537,7 @@ function stripscript(s) {
   s = s.replace(/(\d{3})-(\d{4})-(\d{4})/g, "$1$2$3");
   s = s.replace(/(\d{3}) (\d{4}) (\d{4})/g, "$1$2$3");
   var pattern = new RegExp(
-    "[`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“’。，、？-]"
+    "[`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“’。，、？]"
   );
   var rs = "";
   for (var i = 0; i < s.length; i++) {

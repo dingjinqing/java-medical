@@ -89,7 +89,7 @@ global.wxPage({
     let formData = {
       consignee: address.name,
       mobile: address.phone,
-      address: address.address,
+      address: address.street + address.address,
       districtCode: address.districtCode||'',
       zipcode: address.zipCode,
       isDefault: false
