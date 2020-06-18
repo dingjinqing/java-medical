@@ -214,7 +214,7 @@ global.wxPage({
       activityId: activityId === 'null' ? null : activityId,
       activityType: activityType === 'null' || activityType === '0' ? null : activityType,
       roomId: roomId,
-      rebateConfig,
+      rebateConfig : typeof rebateConfig === 'string' ? JSON.parse(rebateConfig) : rebateConfig,
       inviteId,
       shareAwardLaunchUserId,
       shareAwardId,
