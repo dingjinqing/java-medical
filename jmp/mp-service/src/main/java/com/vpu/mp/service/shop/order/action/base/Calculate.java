@@ -1076,7 +1076,7 @@ public class Calculate extends ShopBaseService {
                 if(rebateRatio2 != null) {
                     logger().info("正常返利间接上级返利");
                     BigDecimal ratio1 = BigDecimalUtil.divide(new BigDecimal(rebateRatio2.toString()), BigDecimalUtil.BIGDECIMAL_100);
-                    result.add(new RebateRecord(goodsStrategy, userInfo2.getInviteId(), DistributionConstant.REBATE_TYPE_INDIRECT, ratio1));
+                    result.add(new RebateRecord(goodsStrategy, userInfo2.getUserId(), DistributionConstant.REBATE_TYPE_INDIRECT, ratio1));
                 }
             }
         }

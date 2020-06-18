@@ -84,7 +84,7 @@ public class RebatePictorialService extends ShareBaseService {
             ImageUtil.addFont(rebateBufferImg, realPrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 22), textStartX, toTop + goodsBufferImg.getHeight()-30, getShopStyleColor(),false);
             Integer textWidth = ImageUtil.getTextWidth(rebateBufferImg, ImageUtil.SourceHanSansCN(Font.PLAIN, 22), realPrice);
             // 添加划线价￥
-            if (BigDecimal.valueOf(0).equals(baseParam.getLinePrice())){
+            if (baseParam.getLinePrice()!=null&&!BigDecimal.valueOf(0).equals(baseParam.getLinePrice())){
                 String linePrice = moneyFlag + baseParam.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
                 ImageUtil.addFontWithLine(rebateBufferImg, textStartX + textWidth + 20, toTop + goodsBufferImg.getHeight()-25, linePrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 18), PictorialImgPx.LINE_PRICE_COLOR);
             }
@@ -159,7 +159,7 @@ public class RebatePictorialService extends ShareBaseService {
         } else {
             time = goodsRebateConfigParam.getRebateTime()*1000;
         }
-        String endStr = DateUtil.dateFormat(DateUtil.DATE_FORMATE_MONTH,new Date(time+24*60*60));
+        String endStr = DateUtil.dateFormat(DateUtil.DATE_FORMATE_MONTH,new Date(time+24*60*60*1000));
 
         String timeTipStr = "此价格在"+endStr+"前有效";
         ImageUtil.addFont(bgBufferedImage, timeTipStr, imgPx.getLinePriceFont(), imgPx.getBottomTextStartX(), imgPx.getPriceY()+40, imgPx.LINE_PRICE_COLOR, false);

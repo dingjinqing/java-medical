@@ -34,6 +34,7 @@ export const cn = {
   mobile: '手机号码',
   pleaseInputMobile: '请输入手机号码',
   balanceChangeTime: '余额变动时间',
+  timesChangeTime: '次数变动时间',
   to: '至',
   startDate: '开始日期',
   overDate: '结束日期',

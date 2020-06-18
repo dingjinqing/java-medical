@@ -37,7 +37,6 @@ import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.BaseScoreCfgService;
 import com.vpu.mp.service.shop.member.MemberService;
 import jodd.util.StringUtil;
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.Record4;
@@ -315,7 +314,17 @@ public class IntegralConvertService extends ShopBaseService {
 		List<IntegralConvertGoodsVo> sql = db().select().from(GOODS_SPEC_PRODUCT)
 				.where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(param.getGoodsId()))
 				.fetchInto(IntegralConvertGoodsVo.class);
-
+		if (null!=sql&&sql.size()>0){
+            sql.forEach(s->{
+                if (StringUtils.isNullOrEmpty(s.getPrdDesc())){
+                    String goodsName = db().select(GOODS.GOODS_NAME)
+                        .from(GOODS)
+                        .where(GOODS.GOODS_ID.eq(param.getGoodsId()))
+                        .fetchOneInto(String.class);
+                s.setPrdDesc(goodsName);
+                }
+            });
+        }
 		return sql;
 	}
 
