@@ -1,6 +1,13 @@
 package com.vpu.mp.service.shop.order;
 
 import com.vpu.mp.config.ApiExternalGateConfig;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.OrderRefundRecordRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnStatusChangeRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -99,6 +106,7 @@ import com.vpu.mp.service.shop.order.must.OrderMustService;
 import com.vpu.mp.service.shop.order.record.ReturnStatusChangeService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
+import com.vpu.mp.service.shop.order.refund.record.OrderRefundRecordService;
 import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
 import com.vpu.mp.service.shop.order.ship.BulkshipmentRecordDetailService;
 import com.vpu.mp.service.shop.order.ship.BulkshipmentRecordService;
@@ -216,6 +224,8 @@ public class OrderReadService extends ShopBaseService {
     private RecommendService recommendService;
     @Autowired
     private UserCardService userCard;
+    @Autowired
+    private OrderRefundRecordService orderRefundRecord;
 	/**
 	 * 订单查询
 	 * @param param
@@ -506,6 +516,8 @@ public class OrderReadService extends ShopBaseService {
         UserInfo userInfo = user.getUserInfo(rOrder.getUserId());
         vo.setUsername(userInfo.getUsername());
         vo.setMobile(userInfo.getMobile());
+        //退款失败处理展示数据
+        showRefundFailInfo(vo);
 		return vo;
 	}
 
@@ -559,12 +571,12 @@ public class OrderReadService extends ShopBaseService {
 	public void setCalculateMoney (ReturnOrderInfoVo vo) {
 		if(vo.getRefundStatus() == OrderConstant.REFUND_STATUS_FINISH) {
 			//成功状态查此次退款记录
-			vo.setCalculateMoney(refundAmountRecord.getReturnAmountMap(Arrays.asList(vo.getOrderSn()),vo.getRetId()));
+			vo.setCalculateMoney(refundAmountRecord.getReturnAmountMap(Arrays.asList(vo.getOrderSn()),vo.getRetId(), null));
 			return;
 		}
 		if(vo.getRefundStatus() == OrderConstant.REFUND_STATUS_AUDIT_PASS || vo.getRefundStatus() == OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) {
 			//查询可退金额
-			LinkedHashMap<String, BigDecimal> returnAmountMap = refundAmountRecord.getReturnAmountMap(Arrays.asList(vo.getOrderSn()),null);
+			LinkedHashMap<String, BigDecimal> returnAmountMap = refundAmountRecord.getReturnAmountMap(Arrays.asList(vo.getOrderSn()),null, null);
 			final BigDecimal amount = orderInfo.getOrderFinalAmount(vo.getOrderInfo() , Boolean.TRUE);
 			vo.setCalculateMoney(orderInfo.getCanReturn(vo.getOrderInfo() , amount , returnAmountMap));
 		}
@@ -1425,6 +1437,25 @@ public class OrderReadService extends ShopBaseService {
                     BigDecimalUtil.BigDecimalPlus.create(order.getGrouperCheapReduce(), BigDecimalUtil.Operator.add),
                     BigDecimalUtil.BigDecimalPlus.create(order.getMemberCardReduce())
                 ));
+        }
+    }
+
+    /**
+     * 展示退款失败信息
+     * @param vo
+     */
+    private void showRefundFailInfo(ReturnOrderInfoVo vo) {
+        if(orderRefundRecord.isExistFail(vo.getRetId())) {
+            List<OrderRefundRecordRecord> successRecords = orderRefundRecord.getSuccessRecord(vo.getRetId());
+            BigDecimal successMoney = successRecords.stream().map(OrderRefundRecordRecord::getRefundAmount).reduce(BigDecimal.ZERO, BigDecimalUtil::add);
+            vo.setShowRefundFailInfo(YES);
+            vo.setSuccessMoney(successMoney);
+            vo.setFailMoney(BigDecimalUtil.addOrSubtrac(
+                BigDecimalUtil.BigDecimalPlus.create(vo.getMoney(), BigDecimalUtil.Operator.add),
+                BigDecimalUtil.BigDecimalPlus.create(vo.getShippingFee(), BigDecimalUtil.Operator.subtrac),
+                BigDecimalUtil.BigDecimalPlus.create(successMoney)
+            ));
+            vo.setFailDesc(orderRefundRecord.getFailRecord(vo.getRetId()).getRemark1());
         }
     }
     /*********************************************************************************************************/

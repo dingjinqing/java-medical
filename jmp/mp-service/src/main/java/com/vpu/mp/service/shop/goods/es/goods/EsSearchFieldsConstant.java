@@ -53,6 +53,7 @@ public class EsSearchFieldsConstant {
         SECONDARY_GOODS_IMAGES,
         PRDS,
         VIDEO_INFO_JSON,
+        UNIT,
         PRD.PRD_ID,
         PRD.PRD_SN,
         PRD.PRD_REAL_PRICE,

@@ -16,11 +16,12 @@ global.wxComponent({
   data: {
     addressList: [],
     select: '',
-    orderOptions: null
+    orderOptions: null,
+    prevPage: null
   },
 
   ready () {
-    this.initData()
+    
   },
 
   /**
@@ -181,11 +182,48 @@ global.wxComponent({
         this.setData({
           addressList: addressList
         })
+        let pages = getCurrentPages()
+        let sourcePage = this.getPrevPage(pages)
+        let prevPage = sourcePage.page
+        console.log(prevPage)
+        if (prevPage && (prevPage.route === 'pages/item/item' || prevPage.route === 'pages/checkout/checkout')) {
+          if (prevPage.route === 'pages/checkout/checkout') {
+            prevPage.setData ({
+              addressId: id,
+              'params.addressId': id
+            })
+          } else {
+            prevPage.setData({
+              addressId: id
+            })
+          }
+          wx.navigateBack({
+            delta: sourcePage.index
+          })
+          return false
+        }
         console.log(this.data.orderOptions)
         let opts = this.stringOpts(this.data.orderOptions)
         console.log(opts, id)
         util.navigateTo('/pages/checkout/checkout?addressId='+id+'&'+opts)
       }
+    },
+
+    // 获取
+    getPrevPage (pages) {
+      let len = pages.length
+      let count = 0
+      for(let i = len-1; i>=0; i--) {
+        let page = pages[i]
+        if (page.route === 'pages/item/item' || page.route === 'pages/checkout/checkout') {
+          return {
+            page: page,
+            index: count
+          }
+        }
+        count++
+      }
+      return {}
     },
 
     stringOpts (opts) {
@@ -196,6 +234,11 @@ global.wxComponent({
       }
       str = str.slice(0, str.length-1)
       return str
+    }
+  },
+  pageLifetimes: {
+    show () {
+      this.initData()
     }
   }
 })

@@ -73,7 +73,6 @@ global.wxPage({
         addressId: addressId,
         'params.addressId': addressId
       })
-      // this.requestAddress()
     }
     JSON.parse(goodsList).forEach(item => {
       let {
@@ -235,31 +234,34 @@ global.wxPage({
     util.api('/api/wxapp/address/get', op => {
       if (op.error === 0) {
         let wxAddress = op.content
-        util.api(
-          '/api/wxapp/address/choose',
-          res => {
-            console.log(res)
-            if (res.error === 0) {
-              that.setData({
-                'params.addressId': res.content.addressId
-              })
-              console.log()
-              that.requestOrder()
-            }
-          },
-          { wxAddress: {
-            errMsg: '',
-            userName: wxAddress.consignee,
-            nationalCode: '',
-            telNumber: wxAddress.mobile,
-            postalCode: wxAddress.provinceCode,
-            provinceName: wxAddress.provinceName,
-            cityName: wxAddress.cityName,
-            cityCode: wxAddress.cityCode,
-            countyName: wxAddress.districtName,
-            detailInfo: wxAddress.address
-          } }
-        )
+        that.setData({
+          'orderInfo.address': wxAddress
+        })
+        // util.api(
+        //   '/api/wxapp/address/choose',
+        //   res => {
+        //     console.log(res)
+        //     if (res.error === 0) {
+        //       that.setData({
+        //         'params.addressId': res.content.addressId
+        //       })
+        //       console.log()
+        //       that.requestOrder()
+        //     }
+        //   },
+        //   { wxAddress: {
+        //     errMsg: '',
+        //     userName: wxAddress.consignee,
+        //     nationalCode: '',
+        //     telNumber: wxAddress.mobile,
+        //     postalCode: wxAddress.provinceCode,
+        //     provinceName: wxAddress.provinceName,
+        //     cityName: wxAddress.cityName,
+        //     cityCode: wxAddress.cityCode,
+        //     countyName: wxAddress.districtName,
+        //     detailInfo: wxAddress.address
+        //   } }
+        // )
       }
     }, {addressId: this.data.addressId})
   },
@@ -881,7 +883,11 @@ global.wxPage({
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () { },
+  onShow: function () {
+    if (this.data.addressId && this.data.params.addressId) {
+      this.requestOrder()
+    }
+  },
 
   /**
    * 生命周期函数--监听页面隐藏

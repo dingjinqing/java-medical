@@ -121,10 +121,10 @@ public class VirtualOrderService extends ShopBaseService {
     				
     				/** TODO 会员卡余额退款服务 */
     				UserCardData userCardData = UserCardData.newBuilder().userId(payInfo.getUserId())
-    						.cardNo(payInfo.getCardNo()).money(param.getMemberCardBalance()).reasonId(RemarkTemplate.ORDER_VIRTUAL_RETURN_DEFAULT.code).
-    				// 普通会员卡
-    				type(CardConstant.MCARD_TP_NORMAL).orderSn(param.getOrderSn()).
-    				tradeOpt(tradeOpt).build();
+                        .cardNo(payInfo.getCardNo()).money(param.getMemberCardBalance()).reasonId(RemarkTemplate.ORDER_VIRTUAL_RETURN_DEFAULT.code).
+                        // 普通会员卡
+                            type(CardConstant.MCARD_TP_NORMAL).orderSn(param.getOrderSn()).
+                            tradeOpt(tradeOpt).chargeType(CardConstant.CHARGE_TYPE_REFUND).build();
     				// 调用退会员卡接口
     				recordMemberTrade.updateUserEconomicData(userCardData);
     			}

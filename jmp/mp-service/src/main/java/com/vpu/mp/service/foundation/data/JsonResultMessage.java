@@ -773,6 +773,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR = "order.return.operation.not.supported.because.status.error";
     public static final String MSG_ORDER_RETURN_RETURN_SHIPPING_FEE_EXCESS = "order.return.return.shipping.fee.excess";
     public static final String MSG_ORDER_RETURN_RETURN_SHIPPING_FEE_NOT_ZERO = "order.return.return.shipping.fee.not.zero";
+    public static final String MSG_ORDER_RETURN_EXIST_WX_REFUND_FAIL_ORDER = "order.return.exist.wx.refund.fail.order";
     public static final String MSG_ORDER_CANCEL_NOT_CANCEL = "order.cancel.not.cancel";
     public static final String MSG_ORDER_CANCEL_FAIL = "order.cancel.fail";
     public static final String MSG_ORDER_CLOSE_NOT_CLOSE = "order.close.not.close";
