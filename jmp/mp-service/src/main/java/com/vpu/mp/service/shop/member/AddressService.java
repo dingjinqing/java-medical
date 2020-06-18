@@ -68,8 +68,11 @@ public class AddressService extends ShopBaseService {
      */
     public List<String> getUserAddressById(Integer userId) {
         logger().info("获取用户" + userId + "的详细地址信息");
-        List<UserAddressVo> list = orderInfoService.getAllOrderAddress(userId);
-        List<String> addressList = list.stream().map(UserAddressVo::getCompleteAddress).collect(Collectors.toList());
+        List<String> addressList = db().select(USER_ADDRESS.COMPLETE_ADDRESS)
+            .from(USER_ADDRESS)
+            .where(USER_ADDRESS.USER_ID.eq(userId))
+            .fetch()
+            .into(String.class);
         addressList.forEach(logger()::info);
         return addressList;
     }
