@@ -443,7 +443,7 @@ public class OrderInfoService extends ShopBaseService {
         Byte[] bytes = new Byte[split.length];
         int i = 0;
         for (String str : split) {
-            bytes[i] = Byte.valueOf(str);
+            bytes[i++] = Byte.valueOf(str);
         }
         return bytes;
     }
