@@ -25,7 +25,8 @@ global.wxPage({
     rebate_show: false, // 转赠弹窗flag
     ifGetSq: 0,
     benefitShow: false,
-    benefitData: []
+    benefitData: [],
+    giveCardNo:''
   },
 
   /**
@@ -40,7 +41,8 @@ global.wxPage({
     let giveCard = options.give_card ? options.give_card : 0;
     if (wx.getStorageSync('openid') && giveCard == 1) {
       this.setData({
-        ifGetSq: 1
+        ifGetSq: 1,
+        giveCardNo:cardNo
       })
     }
     if (options.scene) {
@@ -80,7 +82,7 @@ global.wxPage({
         // cardInfo.can_give_away = 1
         // end
         if(cardInfo.cardNo){
-          if ((!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) && ((!cardInfo.examine) || (cardInfo.cardVerifyStatus === 2))) {
+          if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) {
             that.setData({
               carStatus: "已领取"
             })
@@ -206,7 +208,7 @@ global.wxPage({
           that.setData({
             carStatus: "未领取"
           })
-        } else if ((!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) && ((!cardInfo.examine) || (cardInfo.cardVerifyStatus === 2))) {
+        } else if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) {
           that.setData({
             carStatus: "已领取"
           })
@@ -775,7 +777,7 @@ global.wxPage({
         util.toast_fail(res.message);
       }
     }, {
-      cardNo: cardInfo.cardNo,
+      cardNo: this.data.giveCardNo,
       cardId: cardInfo.cardId
     })
   },

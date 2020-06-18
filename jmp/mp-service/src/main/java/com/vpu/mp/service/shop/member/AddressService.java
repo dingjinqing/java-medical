@@ -20,6 +20,7 @@ import com.vpu.mp.service.pojo.shop.member.address.AddressLocation;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.address.WxAddress;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.common.Strings;
@@ -31,6 +32,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.USER_ADDRESS;
 
@@ -53,6 +55,8 @@ public class AddressService extends ShopBaseService {
     private GoodsMpService goodsMpService;
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private OrderInfoService orderInfoService;
 
 
     /**
@@ -60,12 +64,8 @@ public class AddressService extends ShopBaseService {
      */
     public List<String> getUserAddressById(Integer userId) {
         logger().info("获取用户" + userId + "的详细地址信息");
-        List<String> addressList = db().select(USER_ADDRESS.COMPLETE_ADDRESS)
-            .from(USER_ADDRESS)
-            .where(USER_ADDRESS.USER_ID.eq(userId))
-            .fetch()
-            .into(String.class);
-
+        List<UserAddressVo> list = orderInfoService.getAllOrderAddress(userId);
+        List<String> addressList = list.stream().map(UserAddressVo::getCompleteAddress).collect(Collectors.toList());
         addressList.forEach(logger()::info);
         return addressList;
     }

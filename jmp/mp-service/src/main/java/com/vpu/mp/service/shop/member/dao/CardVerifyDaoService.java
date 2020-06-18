@@ -64,7 +64,7 @@ public class CardVerifyDaoService extends ShopBaseService {
 					.from(CARD_EXAMINE)
 					.leftJoin(USER).on(CARD_EXAMINE.USER_ID.eq(USER.USER_ID));
 		buildOptions(select,param);
-		select.orderBy(CARD_EXAMINE.CREATE_TIME.desc());
+		select.orderBy(CARD_EXAMINE.UPDATE_TIME.desc(),CARD_EXAMINE.CREATE_TIME.desc());
 
 		if(param.getStartNum()!=null && param.getEndNum()!=null) {
 			logger().info("查询区间");
