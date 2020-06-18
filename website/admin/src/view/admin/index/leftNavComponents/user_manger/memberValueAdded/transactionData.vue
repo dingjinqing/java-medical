@@ -131,6 +131,9 @@ export default {
   },
   mounted () {
     console.log(this.activeName)
+    if (this.activeName === 'second') {
+      this.middleData.pop()
+    }
     this.handleToQueryData(this.activeName)
   },
   methods: {
@@ -254,7 +257,10 @@ export default {
       this.middleData[0].num = content.total.totalPaidOrderNumber
       this.middleData[1].num = content.total.totalPaidUserNumber
       this.middleData[2].num = content.total.totalPaymentAmount
-      this.middleData[3].num = content.total.totalReturnAmount
+      if (!flag) {
+        this.middleData[3].num = content.total.totalReturnAmount
+      }
+
       let arr = []
       content.dateList.forEach((item, index) => {
         let obj = {}
@@ -274,6 +280,10 @@ export default {
         arr[index]['退款金额'] = item
       })
       console.log(arr)
+      if (arr.length > 1) {
+        arr.pop()
+        console.log(arr)
+      }
       this.chartData.rows = arr
       //   this.startDate.year = content.startTime.substring(0, 4)
       //   this.startDate.month = content.startTime.substring(4, 6)
