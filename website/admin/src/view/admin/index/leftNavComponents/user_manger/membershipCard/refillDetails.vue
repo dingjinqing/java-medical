@@ -33,7 +33,7 @@
           ></el-input>
         </div>
         <div>
-          <span>{{ $t('memberCard.balanceChangeTime') }}</span>
+          <span>{{ timeTableHeadName }}</span>
           <el-date-picker
             size="small"
             v-model="dateValue"
@@ -158,10 +158,11 @@ export default {
     },
     timeTableHeadName () {
       if (this.isLimitCard) {
-        return '次数变动时间'
+        return this.$t('memberCard.timesChangeTime')
       }
       return this.$t('memberCard.balanceChangeTime')
     },
+
     reasonTableHeadName () {
       if (this.isLimitCard) {
         return '次数变动原因'
