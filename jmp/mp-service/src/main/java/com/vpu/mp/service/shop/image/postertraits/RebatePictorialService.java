@@ -159,7 +159,7 @@ public class RebatePictorialService extends ShareBaseService {
         } else {
             time = goodsRebateConfigParam.getRebateTime()*1000;
         }
-        String endStr = DateUtil.dateFormat(DateUtil.DATE_FORMATE_MONTH,new Date(time+24*60*60));
+        String endStr = DateUtil.dateFormat(DateUtil.DATE_FORMATE_MONTH,new Date(time+24*60*60*1000));
 
         String timeTipStr = "此价格在"+endStr+"前有效";
         ImageUtil.addFont(bgBufferedImage, timeTipStr, imgPx.getLinePriceFont(), imgPx.getBottomTextStartX(), imgPx.getPriceY()+40, imgPx.LINE_PRICE_COLOR, false);
