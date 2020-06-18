@@ -260,7 +260,8 @@ global.wxPage({
               customService,
               goodsDistribution,
               roomDetailMpInfo,
-              shareAwardId
+              shareAwardId,
+              unit
             } = res.content
             let goodsMediaInfo = {
               goodsImgs, //商品图片
@@ -280,7 +281,8 @@ global.wxPage({
               products,
               limitBuyNum,
               limitMaxNum,
-              goodsImgs
+              goodsImgs,
+              unit
             }
 
             let goodsInfo = {
