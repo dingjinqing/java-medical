@@ -71,6 +71,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 /**
  * 
@@ -136,6 +137,12 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	@Override
 	public ExecuteResult execute(RefundParam param) {
         logger.info("退款退货执行start(ReturnService)");
+        //判断该订单是否存在微信退款失败的退款单
+        Integer failRetId = orderRefundRecord.getFailReturnOrder(param.getOrderSn());
+        if(failRetId != null && !orderRefundRecord.isExistFail(param.getRetId())) {
+            ReturnOrderRecord returnOrder = this.returnOrder.getByRetId(param.getRetId());
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_EXIST_WX_REFUND_FAIL_ORDER, returnOrder == null ? null : returnOrder.getReturnOrderSn(), null);
+        }
         //校验
         if(!Byte.valueOf(OrderConstant.RETURN_OPERATE_MP_REVOKE).equals(param.getReturnOperate()) &&
             !Byte.valueOf(OrderConstant.RETURN_OPERATE_MP_SUBMIT_SHIPPING).equals(param.getReturnOperate()) &&
@@ -157,6 +164,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		}
 		//result
         ExecuteResult result = ExecuteResult.create();
+		//微信退款错误信息
+        AtomicReference<String[]> wxRefundErrorInfo = new AtomicReference<String[]>();
         try {
 			transaction(()->{
 				try {
@@ -244,9 +253,15 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 						finishUpdateInfo(order , rOrder , param);
 					}
 				} catch (MpException e) {
-				    //TODO 处理异常状态，判断是否需要回滚
-					throw new MpException(e.getErrorCode());
-				} catch (DataAccessException e) {
+					if(e.getErrorCode().equals(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_ERROR)) {
+                        wxRefundErrorInfo.set(e.getCodeParam());
+                        if(!orderRefundRecord.isExistSucess(((ReturnOrderRecord)result.getResult()).getRetId())) {
+                            throw e;
+                        }
+                    }else {
+                        throw new MpException(e.getErrorCode());
+                    }
+                } catch (DataAccessException e) {
 					Throwable cause = e.getCause();
 					if (cause instanceof MpException) {
 						throw cause;
@@ -268,15 +283,16 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		}
 		//操作记录
 		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_RETURN.code }), new String[] {param.getOrderSn()});
-        //消息推送
         ReturnOrderRecord rOrder = (ReturnOrderRecord)result.getResult();
-        sendMessage.send(rOrder, returnOrderGoods.getReturnGoods(rOrder.getOrderSn(), rOrder.getRetId()));
         //判断
-        if(orderRefundRecord.isReturnSucess(rOrder.getRetId())) {
+        if(!orderRefundRecord.isExistFail(rOrder.getRetId())) {
+            //消息推送
+            sendMessage.send(rOrder, returnOrderGoods.getReturnGoods(rOrder.getOrderSn(), rOrder.getRetId()));
             result.setResult(rOrder.getReturnOrderSn());
             return result;
         }else {
-            result.setErrorCode(JsonResultCode.CODE_ORDER_RETURN_WX_FAIL);
+            result.setErrorCode(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_ERROR);
+            result.setErrorParam(wxRefundErrorInfo.get());
             result.setResult(null);
             return result;
         }
@@ -286,6 +302,12 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     @Override
 	public Object query(OrderOperateQueryParam param) throws MpException {
 		logger.info("获取可退款、退货信息参数为:" + param.toString());
+        //判断该订单是否存在微信退款失败的退款单
+        Integer failRetId = orderRefundRecord.getFailReturnOrder(param.getOrderSn());
+        if(failRetId != null) {
+            ReturnOrderRecord returnOrder = this.returnOrder.getByRetId(failRetId);
+            throw new MpException(JsonResultCode.CODE_ORDER_RETURN_EXIST_WX_REFUND_FAIL_ORDER, returnOrder == null ? null : returnOrder.getReturnOrderSn(), null);
+        }
 		Byte isMp = param.getIsMp();
 		RefundVo vo = new RefundVo();
 		//获取当前订单
@@ -353,7 +375,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 			sns.addAll(cOrderSns);
 		}
 		//退款数据汇总(该汇总信息会在'构造优先级退款信息'复用)
-		LinkedHashMap<String, BigDecimal> returnAmountMap = refundAmountRecord.getReturnAmountMap(sns,null);	
+		LinkedHashMap<String, BigDecimal> returnAmountMap = refundAmountRecord.getReturnAmountMap(sns,null, null);
 		//构造优先级退款信息
 		Map<String, BigDecimal> canReturn = orderInfo.getCanReturn(currentOrder , amount , returnAmountMap);
 		//查询订单下商品(如果为主订单则包含子订单商品)
@@ -454,7 +476,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_MONEY_EXCEEDED);
 		}
 		//当前退款金额大于等于零,进行退款金额参数构造
-		if(BigDecimalUtil.compareTo(currentMoney, BigDecimal.ZERO) > -1 || BigDecimalUtil.compareTo(param.getShippingFee(), currentMoney) > -1) {
+		if(BigDecimalUtil.compareTo(currentMoney, BigDecimal.ZERO) > -1 ||
+            BigDecimalUtil.compareTo(param.getShippingFee(), currentMoney) > -1) {
 			returnOrder.setMoney(currentMoney);
 			returnOrder.setShippingFee(param.getShippingFee());
 			returnOrder.update();
@@ -498,7 +521,10 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 			sns.addAll(cOrderSns);
 		}
 		//优先级退款数据汇总
-		LinkedHashMap<String, BigDecimal> returnAmountMap = refundAmountRecord.getReturnAmountMap(sns,null);
+		LinkedHashMap<String, BigDecimal> returnAmountMap = refundAmountRecord.getReturnAmountMap(sns,null, returnOrder.getRetId());
+        //初始化执行退款数据（先退第三方（微信））
+        LinkedHashMap<String, BigDecimal> executeRefundRecord = refundAmountRecord.executeRefundRecord();
+        //构造优先级退款数据
 		for (Entry<String, BigDecimal> entry : returnAmountMap.entrySet()) {
             logger.info("{}优先级退款", entry.getKey());
 			//当前优先级名称
@@ -509,7 +535,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 			}
 			//当前优先级已退款金额
 			BigDecimal value = entry.getValue();
-			BigDecimal keyCanReturn = FieldsUtil.getFieldValueByFieldName(key,order,BigDecimal.class).subtract(value);
+			BigDecimal keyCanReturn = BigDecimalUtil.subtrac(FieldsUtil.getFieldValueByFieldName(key,order,BigDecimal.class), value);
 			if(BigDecimalUtil.compareTo(keyCanReturn, BigDecimal.ZERO) < 1) {
 				//跳出可退<=0
 				continue;
@@ -523,12 +549,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 				currentReturn = keyCanReturn;
 				returnAmount = returnAmount.subtract(keyCanReturn);
 			}
-            logger.info("{}优先级退款执行", entry.getKey());
-			boolean result = returnMethod.refundMethods(entry.getKey(), order, returnOrder.getRetId(), currentReturn);
-			if(!result) {
-				logger.error("优先级退款调用refundMethods失败,orderSn:{},retId:{},优先级为:{}",order.getOrderSn(),returnOrder.getRetId(),key);
-				throw new MpException(JsonResultCode.CODE_ORDER_RETURNING_RETURN_METHOD_ERROR);
-			}
+			//构造执行退款数据
+            executeRefundRecord.put(entry.getKey(), currentReturn);
 			//微信退款后续处理标识
 			if(key.equals(orderInfo.PS_MONEY_PAID)){
 				flag = true;
@@ -542,6 +564,14 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 			 logger.error("优先级退款完成后本次退款金额>0,orderSn:{},retId:{}",order.getOrderSn(),returnOrder.getRetId());
 			 throw new MpException(JsonResultCode.CODE_ORDER_RETURN_AFTER_RETURNAMOUNT_GREAT_THAN_ZERO);
 		}
+		//优先级退款执行
+        for (Entry<String, BigDecimal> entry : executeRefundRecord.entrySet()) {
+            if(BigDecimalUtil.compareTo(entry.getValue(), null) < 1) {
+                continue;
+            }
+            logger.info("{}优先级退款执行", entry.getKey());
+            returnMethod.refundMethods(entry.getKey(), order, returnOrder.getRetId(), entry.getValue());
+        }
         logger.info("优先级退款end");
 		return flag;
 	}

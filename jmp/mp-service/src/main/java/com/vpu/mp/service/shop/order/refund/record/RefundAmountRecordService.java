@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.refund.record;
 
+import com.google.common.collect.Maps;
 import com.vpu.mp.db.shop.tables.RefundAmountRecord;
 import com.vpu.mp.db.shop.tables.records.RefundAmountRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -46,10 +47,10 @@ public class RefundAmountRecordService extends ShopBaseService{
 	 * @param orderSns
 	 * @return Map<支付种类(细分) , 金额>
 	 */
-	public LinkedHashMap<String , BigDecimal> getReturnAmountMap(List<String> orderSns ,Integer retId){
+	public LinkedHashMap<String , BigDecimal> getReturnAmountMap(List<String> orderSns , Integer retId, Integer ignoreRetid){
 		//构造成功退款的汇总
 		LinkedHashMap<String, BigDecimal> result = new LinkedHashMap<String , BigDecimal>(orderInfo.PAY_SUBDIVISION.length);
-		Map<String, Result<Record2<String, BigDecimal>>> map = getOrderRefundAmount(orderSns , retId);
+		Map<String, Result<Record2<String, BigDecimal>>> map = getOrderRefundAmount(orderSns , retId, ignoreRetid);
 		for (String key : orderInfo.PAY_SUBDIVISION) {
 			if(map.get(key) == null || map.get(key).size() == 0) {
 				result.put(key, BigDecimal.ZERO);
@@ -65,17 +66,31 @@ public class RefundAmountRecordService extends ShopBaseService{
 		}		
 		return result;
 	}
-	
+
+    /**
+     * 退款执行顺序
+     * @return
+     */
+    public LinkedHashMap<String , BigDecimal> executeRefundRecord(){
+        LinkedHashMap<String, BigDecimal> map = Maps.newLinkedHashMapWithExpectedSize(orderInfo.REFUND_SUBDIVISION.length);
+        for (String key : orderInfo.REFUND_SUBDIVISION) {
+            map.put(key, null);
+        }
+        return map;
+    }
 	/**
 	 * 	获取该订单退款记录map
 	 * @param orderSns
 	 * @return Map<String, Record2<String, BigDecimal>>>
 	 */
-	public Map<String, Result<Record2<String, BigDecimal>>> getOrderRefundAmount(List<String> orderSns ,Integer retId){
+	public Map<String, Result<Record2<String, BigDecimal>>> getOrderRefundAmount(List<String> orderSns ,Integer retId, Integer ignoreRetid){
 		SelectConditionStep<Record2<String, BigDecimal>> where = db().select(TABLE.REFUND_FIELD,TABLE.REFUND_MONEY).from(TABLE).where(TABLE.ORDER_SN.in(orderSns));
 		if(Objects.nonNull(retId)) {
 			where.and(TABLE.RET_ID.eq(retId));
 		}
+		if(ignoreRetid != null) {
+            where.and(TABLE.RET_ID.notEqual(ignoreRetid));
+        }
 		Map<String, Result<Record2<String, BigDecimal>>> map = where.fetchGroups(TABLE.REFUND_FIELD);
 		return map;
 	}
