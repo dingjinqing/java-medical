@@ -149,12 +149,8 @@ export const en = {
       title: 'Membership card collection page (collection code)',
       path: 'pages/getcardpage/getcardpage?type=2',
       spanId: ''
-    },
-    {
-      title: 'Customer service',
-      path: 'pages/customer/customer',
-      spanId: ''
     }
+
   ],
   keyWord: 'Key word',
   keyWordPlaceHold: 'Please enter keywords',

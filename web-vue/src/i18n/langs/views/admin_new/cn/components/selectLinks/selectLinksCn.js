@@ -149,12 +149,8 @@ export const cn = {
       title: '会员卡领取页（领取码）',
       path: 'pages/getcardpage/getcardpage?type=2',
       spanId: ''
-    },
-    {
-      title: '客服',
-      path: 'pages/customer/customer',
-      spanId: ''
     }
+
   ],
   keyWord: '关键词',
   keyWordPlaceHold: '请输入关键词',
