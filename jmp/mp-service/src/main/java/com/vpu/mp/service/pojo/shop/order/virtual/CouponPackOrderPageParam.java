@@ -14,6 +14,10 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class CouponPackOrderPageParam {
     /**
+     * 指定用户
+     */
+    private Integer userId;
+    /**
      * 优惠劵包
      */
     private String packName;

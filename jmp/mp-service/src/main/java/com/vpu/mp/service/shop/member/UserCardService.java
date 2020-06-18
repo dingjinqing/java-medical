@@ -2649,6 +2649,9 @@ public class UserCardService extends ShopBaseService {
      * @return
      */
     private SelectConditionStep<? extends Record> renewBuildOptions(SelectConditionStep<? extends Record> select, UserCardRenewListParam param) {
+        if (param.getUserId() != null && param.getUserId() > 0) {
+            select = select.and(CARD_RENEW.USER_ID.eq(param.getUserId()));
+        }
         if (StringUtil.isNotBlank(param.getRenewOrderSn())) {
             select = select.and(CARD_RENEW.RENEW_ORDER_SN.contains(param.getRenewOrderSn()));
         }
@@ -2847,6 +2850,9 @@ public class UserCardService extends ShopBaseService {
      * @return
      */
     private SelectConditionStep<? extends Record> chargeBuildOptions(SelectConditionStep<? extends Record> select, UserCardChargeListParam param) {
+        if (param.getUserId() != null && param.getUserId() > 0) {
+            select = select.and(CHARGE_MONEY.USER_ID.eq(param.getUserId()));
+        }
         if (StringUtil.isNotBlank(param.getOrderSn())) {
             select = select.and(CHARGE_MONEY.ORDER_SN.contains(param.getOrderSn()));
         }

@@ -119,13 +119,16 @@ public class CouponPackOrderService extends VirtualOrderService {
 	 * @return 
 	 */
 	private  SelectConditionStep<? extends Record> buildOptions(SelectWhereStep<? extends Record> select, CouponPackOrderPageParam param) {
-		SelectConditionStep<? extends Record> condition = select.where(VIRTUAL_ORDER.GOODS_TYPE.eq(GOODS_TYPE_COUPON_PACK))
+        SelectConditionStep<? extends Record> condition = select.where(VIRTUAL_ORDER.GOODS_TYPE.eq(GOODS_TYPE_COUPON_PACK))
             .and(VIRTUAL_ORDER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(VIRTUAL_ORDER.ORDER_AMOUNT.gt(BigDecimal.ZERO).or(VIRTUAL_ORDER.USE_SCORE.gt(0)));
-		if(!StringUtils.isBlank(param.getPackName())) {
-			condition.and(COUPON_PACK.PACK_NAME.like(this.likeValue(param.getPackName())));
-		}
-		if(!StringUtils.isBlank(param.getOrderSn())) {
-			condition.and(VIRTUAL_ORDER.ORDER_SN.like(this.likeValue(param.getOrderSn())));
+        if (param.getUserId() != null && param.getUserId() > 0) {
+            condition.and(VIRTUAL_ORDER.USER_ID.eq(param.getUserId()));
+        }
+        if (!StringUtils.isBlank(param.getPackName())) {
+            condition.and(COUPON_PACK.PACK_NAME.like(this.likeValue(param.getPackName())));
+        }
+        if (!StringUtils.isBlank(param.getOrderSn())) {
+            condition.and(VIRTUAL_ORDER.ORDER_SN.like(this.likeValue(param.getOrderSn())));
         }
         if (!StringUtils.isBlank(param.getUserInfo())) {
             condition.and(USER.USERNAME.like(likeValue(param.getUserInfo())).or(USER.MOBILE.like(likeValue(param.getUserInfo()))));
