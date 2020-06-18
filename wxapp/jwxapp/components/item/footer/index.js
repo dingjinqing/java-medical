@@ -281,7 +281,8 @@ global.wxComponent({
     cartNum:{
       type:Number,
       value:0
-    }
+    },
+    addressId: Number
   },
   /**
    * 组件的初始数据
@@ -497,6 +498,7 @@ global.wxComponent({
     toCheckOut () {
       let customParams = {}
       if (this.data.roomId) customParams.roomId = this.data.roomId
+      if (this.data.addressId) customParams.addressId = this.data.addressId
       util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ goodsList: JSON.stringify([this.data.productInfo]), ...customParams })}`, "navigateTo")
       this.triggerEvent('close')
     },
@@ -518,6 +520,7 @@ global.wxComponent({
         params.preSaleInfo = JSON.stringify(params.preSaleInfo)
       }
       if (this.data.roomId) params.roomId = this.data.roomId
+      if (this.data.addressId) params.addressId = this.data.addressId
       if (this.data.activity && this.data.activity.activityType === 8 && this.data.inviteId) params.inviteId = this.data.inviteId
       if (this.data.activity && this.data.activity.activityType === 1) {
         util.getNeedTemplateId('invite', () => {

@@ -16,7 +16,7 @@
           <switch checked="{{autoSwitch}}" bindchange="handleAutoSwicth" color="{{comColor?comColor:'#FF6666'}}"></switch>
         </view>
         <view class="ar-text-area" wx:if="{{autoSwitch}}">
-          <textarea auto-focus class="art-textarea" value="{{textarea}}" bindinput="bindTextAreaInput" placeholder="请输入或粘贴地址文本，可自动识别姓名、电话和地址，如：北京市海淀区西直门北大街54号伊泰大厦。"></textarea>
+          <textarea auto-focus="true" auto-height="true" class="art-textarea" value="{{textarea}}" bindinput="bindTextAreaInput" placeholder="请输入或粘贴地址文本，可自动识别姓名、电话和地址，如：北京市海淀区西直门北大街54号伊泰大厦。"></textarea>
           <button catchtap="handleAutoRecognition" class="auto-recognition-btn" style="color:{{comColor}};border:1px solid {{comColor}};">自动识别</button>
         </view>
       </view>
@@ -46,10 +46,13 @@
           </label>
           <view style="margin-right: 20rpx" catchtap="handleRecognition"><image class="recognition-icon" src="{{imageUrl}}image/wxapp/recognition.png"></image>定位</view>
         </view>
-        <view class="aei-item">
+        <view class="aei-item detail-address-item">
           <label>
-            <text>详细地址</text>
-            <input value="{{formData.address}}" name="address" placeholder="街道门牌信息"></input>
+            <text class="address-text">详细地址</text>
+            <!-- <input value="{{formData.address}}" name="address" placeholder="街道门牌信息"></input> -->
+            <view class="detail-address">
+              <textarea value="{{formData.address}}" name="address" auto-height="true" placeholder="街道门牌信息"></textarea>
+            </view>
           </label>
         </view>
         <view class="aei-item">

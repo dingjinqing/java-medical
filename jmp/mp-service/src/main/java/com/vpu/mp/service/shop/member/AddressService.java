@@ -2,24 +2,28 @@ package com.vpu.mp.service.shop.member;
 
 import com.vpu.mp.config.TxMapLBSConfig;
 import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.HttpsUtils;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.member.address.*;
-import com.vpu.mp.service.shop.goods.GoodsDeliverTemplateService;
-import com.vpu.mp.service.shop.goods.GoodsService;
-import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.pojo.shop.member.address.AddressAddParam;
 import com.vpu.mp.service.pojo.shop.member.address.AddressCode;
+import com.vpu.mp.service.pojo.shop.member.address.AddressGoodsShippingParam;
 import com.vpu.mp.service.pojo.shop.member.address.AddressInfo;
 import com.vpu.mp.service.pojo.shop.member.address.AddressListVo;
 import com.vpu.mp.service.pojo.shop.member.address.AddressLocation;
+import com.vpu.mp.service.pojo.shop.member.address.AddressParam;
+import com.vpu.mp.service.pojo.shop.member.address.ChooseAddressVo;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.address.WxAddress;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.DeliverFeeAddressDetailVo;
+import com.vpu.mp.service.shop.goods.GoodsDeliverTemplateService;
+import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -440,5 +444,36 @@ public class AddressService extends ShopBaseService {
             return checkAndUpdateAddress(address.getProvince(), address.getCity(), address.getDistrict());
         }
         return null;
+    }
+
+    /**
+     * 计算邮费
+     * @param param
+     * @return
+     */
+    public DeliverFeeAddressDetailVo goodsDetailShipping(AddressGoodsShippingParam param) {
+        DeliverFeeAddressDetailVo vo =new DeliverFeeAddressDetailVo();
+        UserAddressVo userAddressVo = get(param.getAddressId(), param.getUserId());
+        vo.setAddress(userAddressVo);
+        if (userAddressVo!=null){
+            try {
+                BigDecimal price = shippingFeeTemplate.getShippingFeeByTemplate(userAddressVo.getDistrictCode(), param.getDeliverTemplateId(), param.getGoodsNum(), param.getGoodsPrice(), param.getGoodsWeight());
+                vo.setDeliverPrice(price);
+            } catch (MpException e) {
+                e.printStackTrace();
+                log.error("商品详情-获取邮费信息失败");
+                String messages = Util.translateMessage("", e.getErrorCode().getMessage(), "messages");
+                vo.setMessage(messages);
+                vo.setStatus((byte)2);
+            }catch (NullPointerException e1){
+                e1.printStackTrace();
+                vo.setMessage(Util.translateMessage("", JsonResultCode.CODE_ORDER_CALCULATE_SHIPPING_FEE_ERROR.getMessage(), "messages"));
+                vo.setStatus((byte)2);
+            }
+        }else {
+            vo.setMessage(Util.translateMessage("", JsonResultCode.CODE_ORDER_CALCULATE_SHIPPING_FEE_ERROR.getMessage(), "messages"));
+            vo.setStatus((byte)2);
+        }
+        return vo;
     }
 }

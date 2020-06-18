@@ -23,7 +23,7 @@ import static com.vpu.mp.service.shop.member.AddressService.USER_ADDRESS_MAX_COU
  * @date 2019/11/15 9:10
  */
 @RestController
-@RequestMapping("/api/wxapp/address")
+@RequestMapping("/api/wxapp")
 @Slf4j
 public class WxAppAddressController extends WxAppBaseController {
 
@@ -34,7 +34,7 @@ public class WxAppAddressController extends WxAppBaseController {
      * @param param
      * @return
      */
-    @PostMapping("/choose")
+    @PostMapping("/address/choose")
     public JsonResult chooseAddress(@RequestBody @Valid AddressParam param){
         WxAppSessionUser user =wxAppAuth.user();
         param.setUserId(user.getUserId());
@@ -47,9 +47,18 @@ public class WxAppAddressController extends WxAppBaseController {
     }
 
     /**
+     * 计算邮费
+     */
+    @PostMapping("/address/shipping")
+    public JsonResult goodsDetailShipping(@RequestBody @Validated AddressGoodsShippingParam param){
+        Integer userId = wxAppAuth.user().getUserId();
+        param.setUserId(userId);
+        return success(shop().addressService.goodsDetailShipping(param));
+    }
+    /**
      * 获取用户地址列表
      */
-    @PostMapping("/list")
+    @PostMapping("/address/list")
     public JsonResult getAddressList(){
         WxAppSessionUser user = wxAppAuth.user();
         AddressListVo addressList = shop().addressService.getAddressList(user.getUserId());
@@ -59,7 +68,7 @@ public class WxAppAddressController extends WxAppBaseController {
     /**
      * 获取地址信息
      */
-    @PostMapping("/get")
+    @PostMapping("/address/get")
     public JsonResult getAddress(@RequestBody @Valid AddressIdParam param){
         Integer userId = wxAppAuth.user().getUserId();
         UserAddressRecord address = shop().addressService.getAddressById(userId, param.getAddressId());
@@ -73,7 +82,7 @@ public class WxAppAddressController extends WxAppBaseController {
      * 新增地址信息
      * @return
      */
-    @PostMapping("/add")
+    @PostMapping("/address/add")
     public JsonResult addAddress(@RequestBody @Valid AddressAddParam param){
         WxAppSessionUser user =wxAppAuth.user();
         Integer addressUserNotDeleteCount = shop().addressService.getAddressUserNotDeleteCount(user.getUserId());
@@ -93,7 +102,7 @@ public class WxAppAddressController extends WxAppBaseController {
      * 添加微信地址
      * @return
      */
-    @PostMapping("/wxadd")
+    @PostMapping("/address/wxadd")
     public JsonResult addWxAddress(@RequestBody @Valid AddressParam param){
         WxAppSessionUser user =wxAppAuth.user();
         Integer addressUserNotDeleteCount = shop().addressService.getAddressUserNotDeleteCount(user.getUserId());
@@ -112,7 +121,7 @@ public class WxAppAddressController extends WxAppBaseController {
      *编辑地址信息
      * @return
      */
-    @PostMapping("/update")
+    @PostMapping("/address/update")
     public JsonResult updateAddress(@RequestBody @Validated(UpdateGroup.class) AddressAddParam param){
         int i = shop().addressService.updateAddress(param);
         if (i>0){
@@ -124,7 +133,7 @@ public class WxAppAddressController extends WxAppBaseController {
     /**
      * 删除地址
      */
-    @PostMapping("/remove")
+    @PostMapping("/address/remove")
     public JsonResult removeAddress(@RequestBody @Validated AddressIdParam param){
         Integer userId = wxAppAuth.user().getUserId();
         int i = shop().addressService.removeAddress(userId, param.getAddressId());
@@ -137,7 +146,7 @@ public class WxAppAddressController extends WxAppBaseController {
     /**
      * 选择默认的地址
      */
-    @PostMapping("/default")
+    @PostMapping("/address/default")
     public JsonResult defaultAddress(@RequestBody @Validated AddressIdParam param){
         Integer userId = wxAppAuth.user().getUserId();
         int i = shop().addressService.defaultAddress(userId, param.getAddressId());
@@ -150,7 +159,7 @@ public class WxAppAddressController extends WxAppBaseController {
     /**
      * 获取地址信息
      */
-    @PostMapping("/getLocation")
+    @PostMapping("/address/getLocation")
     public JsonResult getLocationAddressInfo(@RequestBody @Validated LocationParam param){
         AddressCode addressCode = shop().addressService.getLocationAddressInfo(param.getLat(), param.getLng());
         if (addressCode!=null){
@@ -159,7 +168,7 @@ public class WxAppAddressController extends WxAppBaseController {
         return fail();
     }
 
-    @PostMapping("/database")
+    @PostMapping("/address/database")
     public JsonResult getJson(@RequestBody @Validated AddressDataParam param) {
         String path = String.format("static/mp/address/addressData%s.json", param.getIndex());
         log.info("读取地址文件{}", path);

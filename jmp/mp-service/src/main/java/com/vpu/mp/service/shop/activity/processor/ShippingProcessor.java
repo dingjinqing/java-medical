@@ -66,23 +66,8 @@ public class ShippingProcessor implements Processor,GoodsDetailProcessor {
         UserAddressVo defaultAddress = createService.getDefaultAddress(param.getUserId(), null);
         int defaultNum  = Integer.valueOf(0).equals(goodsDetailMpBo.getLimitBuyNum())? 1:goodsDetailMpBo.getLimitBuyNum();
         BigDecimal prdRealPrice = goodsDetailMpBo.getProducts().stream().max(Comparator.comparing(GoodsPrdMpVo::getPrdRealPrice)).get().getPrdRealPrice();
-        if (defaultAddress!=null){
-            log.info("商品详情-用户地址信息{}",defaultAddress);
-            vo.setAddress(defaultAddress);
-            BigDecimal totalPrice = BigDecimalUtil.multiply(prdRealPrice, BigDecimal.valueOf(defaultNum));
-            BigDecimal totalWeight = BigDecimalUtil.multiply(goodsDetailMpBo.getGoodsWeight(), BigDecimal.valueOf(defaultNum));
-            try {
-                vo.setDeliverPrice(shippingFeeTemplate.getShippingFeeByTemplate(defaultAddress.getDistrictCode(), goodsDetailMpBo.getDeliverTemplateId(), defaultNum, totalPrice, totalWeight));
-            } catch (MpException e) {
-                log.error("商品详情-获取邮费信息失败");
-                String messages = Util.translateMessage("", e.getErrorCode().getMessage(), "messages");
-                vo.setMessage(messages);
-                vo.setStatus((byte)2);
-                e.printStackTrace();
-            }catch (NullPointerException e1){
-                e1.printStackTrace();
-            }
-        }else if (param.getLat()!=null&&param.getLon()!=null){
+        if(defaultAddress==null&&param.getLat()!=null&&param.getLon()!=null){
+            log.info("默认地址为空,去定位地址");
             AddressInfo geocoderAddressInfo = addressService.getGeocoderAddressInfo(param.getLat(), param.getLon());
             AddressCode address = addressService.getUserAddress(geocoderAddressInfo);
             if (address!=null){
@@ -93,23 +78,30 @@ public class ShippingProcessor implements Processor,GoodsDetailProcessor {
                 defaultAddress.setCityName(address.getCityName());
                 defaultAddress.setDistrictCode(address.getDistrictCode());
                 defaultAddress.setDistrictName(address.getDistrictName());
-                vo.setAddress(defaultAddress);
             }
-            // 商品信息在活动创建后又进行了修改，导致两者的规格交集为空
-            if (goodsDetailMpBo.getProducts().size() != 0) {
-                // 处理运费信息
-                log.debug("小程序-商品详情-处理运费信息");
-                BigDecimal deliverPrice = calculate.calculateShippingFee(param.getUserId(),
-                        param.getLon(), param.getLat(),
-                        param.getGoodsId(),
-                        goodsDetailMpBo.getDeliverTemplateId(),
-                        defaultNum,goodsDetailMpBo.getProducts().get(0).getPrdRealPrice(),
-                        goodsDetailMpBo.getGoodsWeight());
-                goodsDetailMpBo.setDeliverPrice(deliverPrice);
+        }
+        log.info("商品详情-用户地址信息{}",defaultAddress);
+        vo.setAddress(defaultAddress);
+        BigDecimal totalPrice = BigDecimalUtil.multiply(prdRealPrice, BigDecimal.valueOf(defaultNum));
+        BigDecimal totalWeight = BigDecimalUtil.multiply(goodsDetailMpBo.getGoodsWeight(), BigDecimal.valueOf(defaultNum));
+        goodsDetailMpBo.setDeliverPrice(BigDecimal.ZERO);
+        try {
+            Integer districtCode =null;
+            if (defaultAddress!=null){
+                districtCode =defaultAddress.getDistrictCode();
             }
-        }else {
+            vo.setDeliverPrice(shippingFeeTemplate.getShippingFeeByTemplate(districtCode, goodsDetailMpBo.getDeliverTemplateId(), defaultNum, totalPrice, totalWeight));
+            goodsDetailMpBo.setDeliverPrice(vo.getDeliverPrice());
+        } catch (MpException e) {
+            log.error("商品详情-获取邮费信息失败");
+            String messages = Util.translateMessage("", e.getErrorCode().getMessage(), "messages");
+            vo.setMessage(messages);
             vo.setStatus((byte)2);
+            e.printStackTrace();
+        }catch (NullPointerException e1){
+            e1.printStackTrace();
             vo.setMessage(Util.translateMessage("", JsonResultCode.CODE_ORDER_CALCULATE_SHIPPING_FEE_ERROR.getMessage(), "messages"));
+            vo.setStatus((byte)2);
         }
         goodsDetailMpBo.setDeliverFeeAddressVo(vo);
     }
