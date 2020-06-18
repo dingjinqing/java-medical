@@ -279,8 +279,11 @@ global.wxPage({
       scoreProportion
     } = orderInfo
     if (isCardPay === 1 && memberCardMoney > 0) {
-      let useCardBalance = moneyPaid - memberCardMoney > 0 ? memberCardMoney : moneyPaid
-      moneyPaid -= useCardBalance
+      console.log(moneyPaid)
+      let useCardBalance = parseFloat(moneyPaid - memberCardMoney > 0 ? memberCardMoney : moneyPaid).toFixed(3)
+      useCardBalance = parseFloat(useCardBalance.substring(0, useCardBalance.length - 1))
+      moneyPaid = parseFloat(moneyPaid - useCardBalance).toFixed(3)
+      moneyPaid = parseFloat(moneyPaid.substring(0, moneyPaid.length - 1)).toFixed(3)
       this.setData({
         'usePayInfo.useCardBalance': useCardBalance,
         cardBalanceStatus: useCardBalance > 0 ? 1 : 0
@@ -292,8 +295,11 @@ global.wxPage({
       })
     }
     if (paymentList.balance && isBalancePay === 1 && userAccount > 0) {
-      let useBalance = moneyPaid - userAccount > 0 ? userAccount : moneyPaid
-      moneyPaid -= useBalance
+      console.log(moneyPaid)
+      let useBalance = parseFloat(moneyPaid - userAccount > 0 ? userAccount : moneyPaid).toFixed(3)
+      useBalance = parseFloat(useBalance.substring(0, useBalance.length - 1))
+      moneyPaid = parseFloat(moneyPaid - useBalance).toFixed(3)
+      moneyPaid = parseFloat(moneyPaid.substring(0, moneyPaid.length - 1)).toFixed(3)
       this.setData({
         'usePayInfo.useBalance': useBalance,
         balanceStatus: useBalance > 0 ? 1 : 0
@@ -305,6 +311,7 @@ global.wxPage({
       })
     }
     if (paymentList.score && isScorePay === 1 && userScore > scorePayNum && userScore > 0) {
+      console.log(moneyPaid)
       let useScore =
         moneyPaid * scoreProportion > scoreMaxDiscount * scoreProportion
           ? scoreMaxDiscount * scoreProportion > userScore
