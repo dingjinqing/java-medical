@@ -84,7 +84,7 @@ public class RebatePictorialService extends ShareBaseService {
             ImageUtil.addFont(rebateBufferImg, realPrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 22), textStartX, toTop + goodsBufferImg.getHeight()-30, getShopStyleColor(),false);
             Integer textWidth = ImageUtil.getTextWidth(rebateBufferImg, ImageUtil.SourceHanSansCN(Font.PLAIN, 22), realPrice);
             // 添加划线价￥
-            if (BigDecimal.valueOf(0).equals(baseParam.getLinePrice())){
+            if (baseParam.getLinePrice()!=null&&!BigDecimal.valueOf(0).equals(baseParam.getLinePrice())){
                 String linePrice = moneyFlag + baseParam.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
                 ImageUtil.addFontWithLine(rebateBufferImg, textStartX + textWidth + 20, toTop + goodsBufferImg.getHeight()-25, linePrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 18), PictorialImgPx.LINE_PRICE_COLOR);
             }
