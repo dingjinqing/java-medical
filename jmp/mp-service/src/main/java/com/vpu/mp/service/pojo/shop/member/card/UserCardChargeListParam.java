@@ -15,6 +15,10 @@ import java.sql.Timestamp;
 @Setter
 public class UserCardChargeListParam {
     /**
+     * 指定用户
+     */
+    private Integer userId;
+    /**
      * 充值单号
      */
     private String orderSn;

@@ -14,6 +14,11 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 public class UserCardRenewListParam {
+
+    /**
+     * 指定用户
+     */
+    private Integer userId;
     /**
      * 续费单号
      */
