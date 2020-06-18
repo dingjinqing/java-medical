@@ -142,16 +142,17 @@ public class ReturnMethodService extends ShopBaseService{
 				.build();
 		
 		UserCardData userCardData = UserCardData.newBuilder().
-		userId(order.getUserId()).
-		cardId(order.getCardId()).
-		cardNo(order.getCardNo()).
-		money(money).
+            userId(order.getUserId()).
+            cardId(order.getCardId()).
+            cardNo(order.getCardNo()).
+            money(money).
 //		reason("订单会员卡余额支付退款").
-		reasonId(RemarkTemplate.ORDER_RETURN_CARD_ACCOUNT.code).
-		//普通会员卡
-		type(CardConstant.MCARD_TP_NORMAL).
-		orderSn(order.getOrderSn()).
-		tradeOpt(tradeOpt).build();
+    reasonId(RemarkTemplate.ORDER_RETURN_CARD_ACCOUNT.code).
+            //普通会员卡
+                type(CardConstant.MCARD_TP_NORMAL).
+                orderSn(order.getOrderSn()).
+                chargeType(CardConstant.CHARGE_TYPE_REFUND).
+                tradeOpt(tradeOpt).build();
 		
 		//调用退会员卡接口
 		recordMemberTrade.updateUserEconomicData(userCardData);

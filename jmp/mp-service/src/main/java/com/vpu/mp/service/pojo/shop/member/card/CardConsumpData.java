@@ -1,19 +1,19 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 /**
-* @author 黄壮壮
-* @Date: 2019年8月26日
-* @Description: 会员卡消费数据 
-*/
+ * @author 黄壮壮
+ * @Date: 2019年8月26日
+ * @Description: 会员卡消费数据
+ */
 @Getter
 @ToString
 public class CardConsumpData {
-	/** 会员id */
+    /** 会员id */
 	private Integer userId;
 	/** 会员卡id */
 	private Integer cardId;
@@ -35,27 +35,40 @@ public class CardConsumpData {
 	private Integer count;
 	/** 备注 */
 	private String message;
-	/** 支付方式 */
-	private String payment;
-	
-	/**-----------为记录充值充值记录表charge_money的字段----------------------*/
-	/** 微信支付id，用于发送模板消息 */
-	private String prepayId;
-	/** 订单状态 0：待支付，1：已取消，2：已完成 */
-	private Byte orderStatus;
-	/** 订单应付金额 */
-	private BigDecimal moneyPaid;
-	/** 0按规则 1自定义 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.CHARGE_TYPE_BY_RULE } */
-	private Byte chargeType;
-	/** 支付宝交易单号 */
-	private String aliTradeNo;
-	
-	public CardConsumpData setUserId(Integer userId) {
-		this.userId = userId;
-		return this;
-	}
-	public CardConsumpData setCardId(Integer cardId) {
-		this.cardId = cardId;
+    /**
+     * 支付方式
+     */
+    private String payment;
+
+    /**-----------为记录充值充值记录表charge_money的字段----------------------*/
+    /**
+     * 微信支付id，用于发送模板消息
+     */
+    private String prepayId;
+    /**
+     * 订单状态 0：待支付，1：已取消，2：已完成
+     */
+    private Byte orderStatus;
+    /**
+     * 订单应付金额
+     */
+    private BigDecimal moneyPaid;
+    /**
+     * 充值类型 1发卡 2用户充值 3 管理员操作 4退款入卡
+     */
+    private Byte chargeType;
+    /**
+     * 支付宝交易单号
+     */
+    private String aliTradeNo;
+
+    public CardConsumpData setUserId(Integer userId) {
+        this.userId = userId;
+        return this;
+    }
+
+    public CardConsumpData setCardId(Integer cardId) {
+        this.cardId = cardId;
 		return this;
 	}
 	public CardConsumpData setCardNo(String cardNo) {
