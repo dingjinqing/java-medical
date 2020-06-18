@@ -1248,6 +1248,27 @@ global.wxPage({
       }
     })
   },
+  handleDownloadCb(){
+    let toast = this.selectComponent('#toast')
+    if(!this.data.goodsDistribution || !this.data.goodsDistribution.promotionLanguage) {
+      toast.showToast({
+        title: '图片已保存到相册',
+        duration:2000
+      })
+    } else {
+      wx.setClipboardData({
+        data: this.data.goodsDistribution.promotionLanguage,
+        success: (res) => {
+          wx.hideToast();
+          toast.showToast({
+            title: '图片已保存到相册',
+            content:`${this.data.goodsDistribution.promotionLanguage} 以上推广语已复制`,
+            duration:4000
+          })
+        }
+      });
+    }
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

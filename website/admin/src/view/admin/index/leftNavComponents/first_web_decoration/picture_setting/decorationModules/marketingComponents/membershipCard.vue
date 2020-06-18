@@ -147,7 +147,7 @@ export default {
     // 初始化获取头像
     let avatar = localStorage.getItem('V-shopAvatar')
     if (avatar) {
-      if (avatar === '//jmptestimg.weipubao.cn/image/admin/shop_logo_default.png') {
+      if (avatar === '//jmptestimg.weipubao.cn/image/admin/shop_logo_default.png' || avatar === 'null') {
         this.shopAvatar = null
       } else {
         this.shopAvatar = avatar

@@ -606,7 +606,7 @@
                   <i class="el-icon-question"></i>
                 </el-tooltip>
               </th>
-              <th>商品名称</th>
+              <th width="270px">商品名称</th>
               <th>返利商品总金额</th>
               <th>成本价</th>
               <th>商品参与返利金额</th>
@@ -618,11 +618,19 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(rebateItem,rebateIndex) in rebateList" :key="rebateIndex">
+            <tr v-for="(rebateItem,rebateIndex) in rebateList" :key="rebateIndex" class="order-tb-body">
               <td v-if="rebateItem.rowSpan" :rowspan="rebateItem.rowSpan">{{rebateItem.mobile}}</td>
               <td v-if="rebateItem.rowSpan" :rowspan="rebateItem.rowSpan">{{rebateItem.username}}</td>
               <td v-if="rebateItem.rowSpan" :rowspan="rebateItem.rowSpan">{{rebateItem.realName}}</td>
-              <td>{{rebateItem.goodsName}}</td>
+              <td>
+                <div class="goods_info">
+                  <div class="right_info">
+                    <div class="goods_name">
+                      <span>{{rebateItem.goodsName}}</span>
+                    </div>
+                  </div>
+                </div>
+              </td>
               <td>{{rebateItem.rebateTotalMoney}}</td>
               <td>{{rebateItem.costPrice}}</td>
               <td>{{rebateItem.canRebateMoney}}</td>
@@ -757,7 +765,7 @@ export default {
   },
   created () {
     this.arrayToMap()
-    this.search(this.$route.query.orderSn)
+    this.search()
     this.langDefault()
   },
   watch: {
@@ -779,8 +787,8 @@ export default {
         return 'no_padding'
       }
     },
-    search (orderSn) {
-      this.searchParam.orderSn = orderSn
+    search () {
+      this.searchParam.orderSn = this.$route.query.orderSn
       info(this.searchParam).then(res => {
         this.order = res.content
         this.goodsTypeArray = this.order.goodsType.substring(1, this.order.goodsType.length - 1).split('][')
@@ -858,6 +866,11 @@ export default {
         action: 3
       }
       close(obj).then(res => {
+        if (res.error === 0) {
+          this.search()
+        } else {
+          this.$message.error(res.message)
+        }
       })
     },
     finish (orderInfo) {
@@ -867,6 +880,11 @@ export default {
         action: 5
       }
       finish(obj).then(res => {
+        if (res.error === 0) {
+          this.search()
+        } else {
+          this.$message.error(res.message)
+        }
       })
     },
     goReturnView (orderSn) {
@@ -1261,6 +1279,13 @@ export default {
   .shipping_address {
     color: #409eff;
     cursor: pointer;
+  }
+  .ellipsis-content{
+    width:300px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 }
 // .status_box {

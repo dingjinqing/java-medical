@@ -1,0 +1,10 @@
+<v-popup show="{{show}}" bind:close="bindClose"  hide_close="{{true}}" horizon="center" vertical="center" bindtap='bindClose' back_style="background:none;">
+  <view class="toast_container">
+        <image class="flex-item" wx:if="{{icon == 'success'}}" src='{{ imageUrl }}image/wxapp/toast_success.png' mode='widthFix'></image>
+        <image class="flex-item" wx:elif="{{icon == 'failed'}}" src='{{ imageUrl }}/images/fail.png' mode='widthFix'></image>
+        <image class="flex-item" wx:elif="{{icon}}" src='{{icon}}' mode='widthFix'></image>
+        <view class="toast_title flex-item" wx:if="{{title}}">{{title}}</view>
+        <view class="line flex-item" wx:if="{{title && content}}"></view>
+        <view class="toast_content flex-item" wx:if="{{content}}">{{content}}</view>
+  </view>
+</v-popup>
