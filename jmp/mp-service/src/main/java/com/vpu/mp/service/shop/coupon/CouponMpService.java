@@ -212,7 +212,7 @@ public class CouponMpService extends ShopBaseService {
         CouponListVo couponData = this.getCouponData(param);
         Byte couponGetStatus;
         //通过alias_code查看优惠券是否存在
-        if (null!=couponData) {
+        if (null==couponData) {
            couponGetStatus = 1;
         }else if(couponData.getValidity() == 1 && couponData.getEndTime().before(nowDate)){//是否过期
             //是否过期
