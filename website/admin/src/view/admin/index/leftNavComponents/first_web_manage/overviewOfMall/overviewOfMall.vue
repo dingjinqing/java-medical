@@ -54,7 +54,7 @@
           </div>
         </div>
         <span class="title_type_par">
-          <span class="title_type">{{ this.$t('overview.edition') }}</span>
+          <span class="title_type">{{ this.shopInfo.shopTypeNes }}</span>
         </span>
       </el-tooltip>
 

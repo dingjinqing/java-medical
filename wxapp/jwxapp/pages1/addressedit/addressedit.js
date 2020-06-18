@@ -89,7 +89,7 @@ global.wxPage({
     let formData = {
       consignee: address.name,
       mobile: address.phone,
-      address: address.address,
+      address: address.street + address.address,
       districtCode: address.districtCode||'',
       zipcode: address.zipCode,
       isDefault: false
@@ -314,7 +314,16 @@ global.wxPage({
         if (res.error === 0) {
           console.log(res)
           util.toast_success('新增成功!')
-          util.navigateTo('/pages/personalcenter/personalcenter?tabIndex=2')
+          let pages = getCurrentPages()
+          let prevPage = pages[pages.length - 2]
+          // if (prevPage.route === 'components/usercenter/useraddress/useraddress') {
+          //   util.navigateTo('components/usercenter/useraddress/useraddress')
+          // } else {
+          //   util.navigateTo('/pages/personalcenter/personalcenter?tabIndex=2')
+          // }
+          wx.navigateBack({
+            complete: (res) => {},
+          })
         } else {
           util.fail_toast(res.message)
         }
@@ -329,7 +338,16 @@ global.wxPage({
         if (res.error === 0) {
           console.log(res)
           util.toast_success('更新成功!')
-          util.navigateTo('/pages/personalcenter/personalcenter?tabIndex=2')
+          let pages = getCurrentPages()
+          let prevPage = pages[pages.length - 2]
+          // if (prevPage.route === 'components/usercenter/useraddress/useraddress') {
+          //   util.navigateTo('components/usercenter/useraddress/useraddress')
+          // } else {
+          //   util.navigateTo('/pages/personalcenter/personalcenter?tabIndex=2')
+          // }
+          wx.navigateBack({
+            complete: (res) => {},
+          })
         } else {
           util.fail_toast(res.message)
         }

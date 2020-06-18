@@ -157,7 +157,8 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
             //普通会员卡
                 type(CardConstant.MCARD_TP_NORMAL).
                 orderSn(order.getOrderSn()).
-                tradeOpt(tradeOpt)
+                tradeOpt(tradeOpt).
+                chargeType(CardConstant.CHARGE_TYPE_REFUND)
             .build();
         //调用退会员卡接口
         recordMemberTrade.updateUserEconomicData(userCardData);

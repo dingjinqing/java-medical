@@ -485,7 +485,7 @@ public class OrderInfoService extends ShopBaseService {
         Byte[] bytes = new Byte[split.length];
         int i = 0;
         for (String str : split) {
-            bytes[i] = Byte.valueOf(str);
+            bytes[i++] = Byte.valueOf(str);
         }
         return bytes;
     }
@@ -1174,7 +1174,7 @@ public class OrderInfoService extends ShopBaseService {
         if(BigDecimalUtil.compareTo(total, null) > 0) {
             orderRecord.setFanliMoney(total);
             orderRecord.setSettlementFlag(OrderConstant.SETTLEMENT_FINISH);
-            db().update(TABLE).set(TABLE.FANLI_MONEY, total).set(TABLE.SETTLEMENT_FLAG, OrderConstant.SETTLEMENT_NOT)
+            db().update(TABLE).set(TABLE.FANLI_MONEY, total).set(TABLE.SETTLEMENT_FLAG, OrderConstant.SETTLEMENT_FINISH)
                 .where(TABLE.ORDER_ID.eq(orderRecord.getOrderId())).execute();
         }else {
             db().update(TABLE).set(TABLE.SETTLEMENT_FLAG, OrderConstant.SETTLEMENT_NOT)
@@ -1596,7 +1596,7 @@ public class OrderInfoService extends ShopBaseService {
     			.and(TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_FINISHED,OrderConstant.ORDER_RETURN_FINISHED,OrderConstant.ORDER_REFUND_FINISHED))
     			.and(TABLE.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[]{BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER})));
 
-    	return db().fetchOne(TABLE, condition);
+    	return db().fetchAny(TABLE, condition);
     }
 
     /**

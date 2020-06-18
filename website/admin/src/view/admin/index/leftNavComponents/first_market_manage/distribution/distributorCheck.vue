@@ -70,180 +70,187 @@
           name="2"
         ></el-tab-pane>
       </el-tabs>
-      <table
-        class="checkList"
-        v-for="(item, index) in tableData"
-        :key="index"
-      >
-        <tr class='title'>
-          <td
-            colspan="6"
-            style="text-align: left;"
-          >
-            <span class="titleStyle">ID：{{ item.userId }}</span>
-            <span class="titleStyle">{{ $t('distribution.reviewName') + '：' }}<span
-                class="active"
-                @click="detailHandler(item.userId)"
-              >{{ item.username }}</span></span>
-            <span
-              class="titleStyle"
-              v-if="item.mobile"
-            >{{ $t('distribution.reviewMobile') + '：' }}{{ item.mobile }}</span>
-            <span
-              class="titleStyle"
-              v-if="item.createTime"
-            >{{ $t('distribution.reviewTime') + '：' }}{{ item.createTime }}</span>
-            <span
-              class="titleStyle"
-              v-if="item.activationFields.invitation_code"
-            >邀请码：
-              <span
-                class="clickStyle"
-                @click="detailHandler(item.inviteId)"
-              >{{ item.activationFields.invitation_code }}
-                <span v-if="item.inviteName">({{item.inviteName}})</span>
-              </span>
-            </span>
-          </td>
-
-          <td
-            style="width: 120px;"
-            v-if="activeName === '0'"
-          >{{ $t('distribution.reviewGroup') }}</td>
-          <td
-            style="width: 170px;"
-            v-if="activeName !== '0'"
-          >{{ $t('distribution.reviewDate') }}</td>
-          <td style="width: 100px;">{{ $t('distribution.reviewStatus') }}</td>
-          <td
-            style="width: 170px;"
-            v-if="activeName === '0'"
-          >{{ $t('distribution.reviewOption') }}</td>
-          <td
-            style="width: 170px;"
-            v-if="activeName === '2'"
-          >{{ $t('distribution.noPassReason') }}</td>
-        </tr>
-
-        <tr>
-          <td v-if="item.configFields !== '[]'">{{ $t('distribution.reviewRealName') }}</td>
-          <td v-if="item.configFields !== '[]'">{{ item.activationFields.real_name ? item.activationFields.real_name : $t('distribution.reviewNo') }}</td>
-          <td v-if="item.configFields !== '[]'">{{ $t('distribution.reviewMobile') }}</td>
-          <td v-if="item.configFields !== '[]'">{{ item.activationFields.mobile ? item.activationFields.mobile : $t('distribution.reviewNo') }}</td>
-          <td v-if="item.configFields !== '[]'">{{ $t('distribution.reviewId') }}</td>
-          <td v-if="item.configFields !== '[]'">{{ item.activationFields.cid ? item.activationFields.cid : $t('distribution.reviewNo') }}</td>
-          <td
-            colspan="6"
-            v-if="item.configFields === '[]'"
-            class="middle"
-          >{{ $t('distribution.reviewTip') }}</td>
-          <td
-            :rowspan="5 + item.rowLength"
-            class="middle"
-            v-if="activeName === '0'"
-          >
-            <p v-if="item.activationFields.rebate_group">{{ item.checkField.rebateGroupName }}</p>
-            <p
-              class="active"
-              v-if="item.activationFields.rebate_group"
-              @click="setGroupHandler(item.userId, item.activationFields.rebate_group)"
-            >{{ $t('distribution.reviewSet') }}</p>
-            <p
-              class="active"
-              v-if="!item.activationFields.rebate_group"
-              @click="setGroupHandler(item.userId)"
-            >{{ $t('distribution.reviewSet') }}</p>
-          </td>
-          <td
-            :rowspan="5 + item.rowLength"
-            class="middle"
-            v-if="activeName !== '0'"
-          >{{ item.updateTime }}</td>
-          <td
-            :rowspan="5 + item.rowLength"
-            class="middle"
-          >{{ item.status }}</td>
-          <td
-            :rowspan="5 + item.rowLength"
-            :class="[item.configFields === '[]' ? 'buttonStyle' : '', 'middle']"
-            v-if="activeName === '0'"
-          >
-            <el-button
-              size="small"
-              type="primary"
-              plain
-              @click="reviewPassHandler(item)"
-            >{{ $t('distribution.passBtn') }}</el-button>
-
-            <el-button
-              size="small"
-              type="info"
-              plain
-              @click="reviewNoPassHandler(item)"
-            >{{ $t('distribution.noPassBtn') }}</el-button>
-          </td>
-          <td
-            :rowspan="5 + item.rowLength"
-            class="middle"
-            v-if="activeName === '2'"
-          >{{ item.msg }}</td>
-
-        </tr>
-        <tr v-if="item.configFields !== '[]'">
-          <td>{{ $t('distribution.reviewSex') }}</td>
-          <td>{{ item.activationFields.sex ? item.checkField.sex : $t('distribution.reviewNo') }}</td>
-          <td>{{ $t('distribution.reviewBirthday') }}</td>
-          <td>{{ item.activationFields.birthday_day ? item.activationFields.birthday : $t('distribution.reviewNo') }}</td>
-          <td>{{ $t('distribution.reviewMarital') }}</td>
-          <td>{{ item.activationFields.marital_status ? item.checkField.maritalName : $t('distribution.reviewNo') }}</td>
-
-        </tr>
-        <tr v-if="item.configFields !== '[]'">
-          <td>{{ $t('distribution.reviewEducation') }}</td>
-          <td>{{ item.activationFields.education ? item.checkField.educationName : $t('distribution.reviewNo') }}</td>
-          <td>{{ $t('distribution.reviewIndustry') }}</td>
-          <td>{{ item.activationFields.industry_info ? item.checkField.industryName : $t('distribution.reviewNo') }}</td>
-          <td>{{ $t('distribution.reviewAddress') }}</td>
-          <td>{{ item.activationFields.address ? item.activationFields.address : $t('distribution.reviewNo') }}</td>
-
-        </tr>
-        <tr v-if="item.configFields !== '[]'">
-          <td>{{ $t('distribution.reviewNote') }}</td>
-          <td colspan="5">{{ item.activationFields.remarks ? item.activationFields.remarks : $t('distribution.reviewNo') }}</td>
-        </tr>
-        <tr v-if="item.configFields !== '[]'">
-          <td>{{ $t('distribution.reviewImg') }}</td>
-          <td colspan="5">
-            <a
-              v-if="item.activationFields.upload_image"
-              :href="item.activationFields.upload_image"
-              target="_blank"
-              style="color: #5a8bff; text-decoration: none;"
-            >查看图片</a>
-            <span v-if="!item.activationFields.upload_image">{{  $t('distribution.reviewNo') }}</span>
-          </td>
-        </tr>
-        <tr
-          v-for="(val, i) in item.activationFields.custom_options"
-          :key="i"
+      <div v-if="tableData && tableData.length > 0">
+        <table
+          class="checkList"
+          v-for="(item, index) in tableData"
+          :key="index"
         >
-          <td>{{ val.custom_title }}
-            <span v-if="val.custom_type === 0">(单选)</span>
-            <span v-if="val.custom_type === 1">(多选)</span>
-          </td>
-          <td colspan="5">
-            <span v-if="val.custom_type === 0 || val.custom_type === 1">
+          <tr class='title'>
+            <td
+              colspan="6"
+              style="text-align: left;"
+            >
+              <span class="titleStyle">ID：{{ item.userId }}</span>
+              <span class="titleStyle">{{ $t('distribution.reviewName') + '：' }}<span
+                  class="active"
+                  @click="detailHandler(item.userId)"
+                >{{ item.username }}</span></span>
               <span
-                v-for="(option, key) in val.option_arr"
-                :key="key"
-              >
-                <span v-if="option.checked === 'true'">{{ option.option_title }}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                class="titleStyle"
+                v-if="item.mobile"
+              >{{ $t('distribution.reviewMobile') + '：' }}{{ item.mobile }}</span>
+              <span
+                class="titleStyle"
+                v-if="item.createTime"
+              >{{ $t('distribution.reviewTime') + '：' }}{{ item.createTime }}</span>
+              <span
+                class="titleStyle"
+                v-if="item.activationFields.invitation_code"
+              >邀请码：
+                <span class="clickStyle">{{ item.activationFields.invitation_code }}
+                  <span
+                    v-if="item.inviteName"
+                    @click="detailHandler(item.inviteId)"
+                  >({{item.inviteName}})</span>
+                </span>
               </span>
-            </span>
-            <span v-if="val.custom_type === 2">{{ val.text }}</span>
-          </td>
-        </tr>
-      </table>
+            </td>
+
+            <td
+              style="width: 120px;"
+              v-if="activeName === '0'"
+            >{{ $t('distribution.reviewGroup') }}</td>
+            <td
+              style="width: 170px;"
+              v-if="activeName !== '0'"
+            >{{ $t('distribution.reviewDate') }}</td>
+            <td style="width: 100px;">{{ $t('distribution.reviewStatus') }}</td>
+            <td
+              style="width: 170px;"
+              v-if="activeName === '0'"
+            >{{ $t('distribution.reviewOption') }}</td>
+            <td
+              style="width: 170px;"
+              v-if="activeName === '2'"
+            >{{ $t('distribution.noPassReason') }}</td>
+          </tr>
+
+          <tr>
+            <td v-if="item.configFields !== '[]'">{{ $t('distribution.reviewRealName') }}</td>
+            <td v-if="item.configFields !== '[]'">{{ item.activationFields.real_name ? item.activationFields.real_name : $t('distribution.reviewNo') }}</td>
+            <td v-if="item.configFields !== '[]'">{{ $t('distribution.reviewMobile') }}</td>
+            <td v-if="item.configFields !== '[]'">{{ item.activationFields.mobile ? item.activationFields.mobile : $t('distribution.reviewNo') }}</td>
+            <td v-if="item.configFields !== '[]'">{{ $t('distribution.reviewId') }}</td>
+            <td v-if="item.configFields !== '[]'">{{ item.activationFields.cid ? item.activationFields.cid : $t('distribution.reviewNo') }}</td>
+            <td
+              colspan="6"
+              v-if="item.configFields === '[]'"
+              class="middle"
+            >{{ $t('distribution.reviewTip') }}</td>
+            <td
+              :rowspan="5 + item.rowLength"
+              class="middle"
+              v-if="activeName === '0'"
+            >
+              <p v-if="item.activationFields.rebate_group">{{ item.checkField.rebateGroupName }}</p>
+              <p
+                class="active"
+                v-if="item.activationFields.rebate_group"
+                @click="setGroupHandler(item.userId, item.activationFields.rebate_group)"
+              >{{ $t('distribution.reviewSet') }}</p>
+              <p
+                class="active"
+                v-if="!item.activationFields.rebate_group"
+                @click="setGroupHandler(item.userId)"
+              >{{ $t('distribution.reviewSet') }}</p>
+            </td>
+            <td
+              :rowspan="5 + item.rowLength"
+              class="middle"
+              v-if="activeName !== '0'"
+            >{{ item.updateTime }}</td>
+            <td
+              :rowspan="5 + item.rowLength"
+              class="middle"
+            >{{ item.status }}</td>
+            <td
+              :rowspan="5 + item.rowLength"
+              :class="[item.configFields === '[]' ? 'buttonStyle' : '', 'middle']"
+              v-if="activeName === '0'"
+            >
+              <el-button
+                size="small"
+                type="primary"
+                plain
+                @click="reviewPassHandler(item)"
+              >{{ $t('distribution.passBtn') }}</el-button>
+
+              <el-button
+                size="small"
+                type="info"
+                plain
+                @click="reviewNoPassHandler(item)"
+              >{{ $t('distribution.noPassBtn') }}</el-button>
+            </td>
+            <td
+              :rowspan="5 + item.rowLength"
+              class="middle"
+              v-if="activeName === '2'"
+            >{{ item.msg }}</td>
+
+          </tr>
+          <tr v-if="item.configFields !== '[]'">
+            <td>{{ $t('distribution.reviewSex') }}</td>
+            <td>{{ item.activationFields.sex ? item.checkField.sex : $t('distribution.reviewNo') }}</td>
+            <td>{{ $t('distribution.reviewBirthday') }}</td>
+            <td>{{ item.activationFields.birthday_day ? item.activationFields.birthday : $t('distribution.reviewNo') }}</td>
+            <td>{{ $t('distribution.reviewMarital') }}</td>
+            <td>{{ item.activationFields.marital_status ? item.checkField.maritalName : $t('distribution.reviewNo') }}</td>
+
+          </tr>
+          <tr v-if="item.configFields !== '[]'">
+            <td>{{ $t('distribution.reviewEducation') }}</td>
+            <td>{{ item.activationFields.education ? item.checkField.educationName : $t('distribution.reviewNo') }}</td>
+            <td>{{ $t('distribution.reviewIndustry') }}</td>
+            <td>{{ item.activationFields.industry_info ? item.checkField.industryName : $t('distribution.reviewNo') }}</td>
+            <td>{{ $t('distribution.reviewAddress') }}</td>
+            <td>{{ item.activationFields.address ? item.activationFields.address : $t('distribution.reviewNo') }}</td>
+
+          </tr>
+          <tr v-if="item.configFields !== '[]'">
+            <td>{{ $t('distribution.reviewNote') }}</td>
+            <td colspan="5">{{ item.activationFields.remarks ? item.activationFields.remarks : $t('distribution.reviewNo') }}</td>
+          </tr>
+          <tr v-if="item.configFields !== '[]'">
+            <td>{{ $t('distribution.reviewImg') }}</td>
+            <td colspan="5">
+              <a
+                v-if="item.activationFields.upload_image"
+                :href="item.activationFields.upload_image"
+                target="_blank"
+                style="color: #5a8bff; text-decoration: none;"
+              >查看图片</a>
+              <span v-if="!item.activationFields.upload_image">{{  $t('distribution.reviewNo') }}</span>
+            </td>
+          </tr>
+          <tr
+            v-for="(val, i) in item.activationFields.custom_options"
+            :key="i"
+          >
+            <td>{{ val.custom_title }}
+              <span v-if="val.custom_type === 0">(单选)</span>
+              <span v-if="val.custom_type === 1">(多选)</span>
+            </td>
+            <td colspan="5">
+              <span v-if="val.custom_type === 0 || val.custom_type === 1">
+                <span
+                  v-for="(option, key) in val.option_arr"
+                  :key="key"
+                >
+                  <span v-if="option.checked === 'true'">{{ option.option_title }}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                </span>
+              </span>
+              <span v-if="val.custom_type === 2">{{ val.text }}</span>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div
+        v-else
+        class="noDataStyle"
+      >暂无数据</div>
+
       <!-- 分页 -->
       <Pagination
         :page-params.sync="pageParams"
@@ -441,14 +448,14 @@ export default {
     // 分销员分组弹窗回调函数
     choosingGroupResult (data) {
       setBatchGroup({
-        userId: this.groupId,
+        userId: [this.groupId],
         groupId: data
       }).then(res => {
         if (res.error === 0) {
           this.$message.success('设置成功')
           this.initDataList()
         } else {
-          this.$message.success(res.message)
+          this.$message.warning(res.message)
         }
       })
     },
@@ -606,5 +613,10 @@ export default {
   border-color: rgb(255, 213, 163);
   border-image: initial;
   margin-bottom: 10px;
+}
+.noDataStyle {
+  text-align: center;
+  line-height: 60px;
+  color: #909399;
 }
 </style>

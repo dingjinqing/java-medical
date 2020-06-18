@@ -166,17 +166,18 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 				.adminUserId(0)
 				.tradeType(RecordTradeEnum.TYPE_CRASH_MCARD_ACCOUNT_REFUND.val())
 				.tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
-				.build();
-		UserCardData userCardData = UserCardData.newBuilder().
-		userId(order.getUserId()).
-		cardId(order.getCardId()).
-		cardNo(order.getCardNo()).
-		money(money).
-        reasonId(RemarkTemplate.ORDER_CLOSE_RETURN_CARD_ACCOUNT.code).
-		//普通会员卡
-		type(CardConstant.MCARD_TP_NORMAL).
-		orderSn(order.getOrderSn()).
-		tradeOpt(tradeOpt).build();
+            .build();
+        UserCardData userCardData = UserCardData.newBuilder().
+            userId(order.getUserId()).
+            cardId(order.getCardId()).
+            cardNo(order.getCardNo()).
+            money(money).
+            reasonId(RemarkTemplate.ORDER_CLOSE_RETURN_CARD_ACCOUNT.code).
+            //普通会员卡
+                type(CardConstant.MCARD_TP_NORMAL).
+                orderSn(order.getOrderSn()).
+                tradeOpt(tradeOpt).
+                chargeType(CardConstant.CHARGE_TYPE_REFUND).build();
 		//调用退会员卡接口
 		recordMemberTrade.updateUserEconomicData(userCardData);
 	}

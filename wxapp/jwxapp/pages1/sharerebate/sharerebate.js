@@ -16,7 +16,7 @@ global.wxPage({
     this.setData({
       goodsPrice,
       rebateId,
-      rebateRatio:this.getMax(Object.values(rebateRatio).filter(item => item > 0)),
+      rebateRatio:this.getMax(Object.values(JSON.parse(rebateRatio)).filter(item => item > 0)),
       goodsId,
       linePrice
     })

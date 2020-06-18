@@ -73,7 +73,6 @@ global.wxPage({
         addressId: addressId,
         'params.addressId': addressId
       })
-      // this.requestAddress()
     }
     JSON.parse(goodsList).forEach(item => {
       let {
@@ -235,31 +234,34 @@ global.wxPage({
     util.api('/api/wxapp/address/get', op => {
       if (op.error === 0) {
         let wxAddress = op.content
-        util.api(
-          '/api/wxapp/address/choose',
-          res => {
-            console.log(res)
-            if (res.error === 0) {
-              that.setData({
-                'params.addressId': res.content.addressId
-              })
-              console.log()
-              that.requestOrder()
-            }
-          },
-          { wxAddress: {
-            errMsg: '',
-            userName: wxAddress.consignee,
-            nationalCode: '',
-            telNumber: wxAddress.mobile,
-            postalCode: wxAddress.provinceCode,
-            provinceName: wxAddress.provinceName,
-            cityName: wxAddress.cityName,
-            cityCode: wxAddress.cityCode,
-            countyName: wxAddress.districtName,
-            detailInfo: wxAddress.address
-          } }
-        )
+        that.setData({
+          'orderInfo.address': wxAddress
+        })
+        // util.api(
+        //   '/api/wxapp/address/choose',
+        //   res => {
+        //     console.log(res)
+        //     if (res.error === 0) {
+        //       that.setData({
+        //         'params.addressId': res.content.addressId
+        //       })
+        //       console.log()
+        //       that.requestOrder()
+        //     }
+        //   },
+        //   { wxAddress: {
+        //     errMsg: '',
+        //     userName: wxAddress.consignee,
+        //     nationalCode: '',
+        //     telNumber: wxAddress.mobile,
+        //     postalCode: wxAddress.provinceCode,
+        //     provinceName: wxAddress.provinceName,
+        //     cityName: wxAddress.cityName,
+        //     cityCode: wxAddress.cityCode,
+        //     countyName: wxAddress.districtName,
+        //     detailInfo: wxAddress.address
+        //   } }
+        // )
       }
     }, {addressId: this.data.addressId})
   },
@@ -279,8 +281,11 @@ global.wxPage({
       scoreProportion
     } = orderInfo
     if (isCardPay === 1 && memberCardMoney > 0) {
-      let useCardBalance = moneyPaid - memberCardMoney > 0 ? memberCardMoney : moneyPaid
-      moneyPaid -= useCardBalance
+      console.log(moneyPaid)
+      let useCardBalance = parseFloat(moneyPaid - memberCardMoney > 0 ? memberCardMoney : moneyPaid).toFixed(3)
+      useCardBalance = parseFloat(useCardBalance.substring(0, useCardBalance.length - 1))
+      moneyPaid = parseFloat(moneyPaid - useCardBalance).toFixed(3)
+      moneyPaid = parseFloat(moneyPaid.substring(0, moneyPaid.length - 1)).toFixed(3)
       this.setData({
         'usePayInfo.useCardBalance': useCardBalance,
         cardBalanceStatus: useCardBalance > 0 ? 1 : 0
@@ -292,8 +297,11 @@ global.wxPage({
       })
     }
     if (paymentList.balance && isBalancePay === 1 && userAccount > 0) {
-      let useBalance = moneyPaid - userAccount > 0 ? userAccount : moneyPaid
-      moneyPaid -= useBalance
+      console.log(moneyPaid)
+      let useBalance = parseFloat(moneyPaid - userAccount > 0 ? userAccount : moneyPaid).toFixed(3)
+      useBalance = parseFloat(useBalance.substring(0, useBalance.length - 1))
+      moneyPaid = parseFloat(moneyPaid - useBalance).toFixed(3)
+      moneyPaid = parseFloat(moneyPaid.substring(0, moneyPaid.length - 1)).toFixed(3)
       this.setData({
         'usePayInfo.useBalance': useBalance,
         balanceStatus: useBalance > 0 ? 1 : 0
@@ -305,6 +313,7 @@ global.wxPage({
       })
     }
     if (paymentList.score && isScorePay === 1 && userScore > scorePayNum && userScore > 0) {
+      console.log(moneyPaid)
       let useScore =
         moneyPaid * scoreProportion > scoreMaxDiscount * scoreProportion
           ? scoreMaxDiscount * scoreProportion > userScore
@@ -874,7 +883,11 @@ global.wxPage({
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () { },
+  onShow: function () {
+    if (this.data.addressId && this.data.params.addressId) {
+      this.requestOrder()
+    }
+  },
 
   /**
    * 生命周期函数--监听页面隐藏

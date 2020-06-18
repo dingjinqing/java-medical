@@ -1,13 +1,12 @@
 package com.vpu.mp.service.pojo.shop.member.data;
 
-import java.math.BigDecimal;
-
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.math.BigDecimal;
 
 /**
 * @author 黄壮壮
@@ -51,18 +50,32 @@ public class UserCardData extends BaseData {
 	private Short exchangeCount;
 	/** 消费次数 */
 	private Integer count;
-	/** 备注 */
-	private String message;
-	/** 支付方式 */
-	private String payment;
-	/** 微信支付id，用于发送模板消息 */
-	private String prepayId;
-	/** 订单状态 0：待支付，1：已取消，2：已完成 */
-	private Byte orderStatus;
-	/** 订单应付金额 */
-	private BigDecimal moneyPaid;
-	/** 0按规则 1自定义  {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.CHARGE_TYPE_BY_RULE }  */
-	private Byte chargeType;
-	/** 支付宝交易单号 */
-	private String aliTradeNo;
+    /**
+     * 备注
+     */
+    private String message;
+    /**
+     * 支付方式
+     */
+    private String payment;
+    /**
+     * 微信支付id，用于发送模板消息
+     */
+    private String prepayId;
+    /**
+     * 订单状态 0：待支付，1：已取消，2：已完成
+     */
+    private Byte orderStatus;
+    /**
+     * 订单应付金额
+     */
+    private BigDecimal moneyPaid;
+    /**
+     * 充值类型 1发卡 2用户充值 3 管理员操作 4退款入卡
+     */
+    private Byte chargeType;
+    /**
+     * 支付宝交易单号
+     */
+    private String aliTradeNo;
 }

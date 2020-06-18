@@ -53,10 +53,10 @@ public enum RemarkTemplate {
     ORDER_FINISH_SEND_SCORE(2016,RemarkMessage.MSG_ORDER_FINISH_SEND_SCORE),
     /**	订单完成返利	*/
     ORDER_REBATE(2017,RemarkMessage.MSG_ORDER_REBATE),
-    /**	兑换商品	*/
-    ORDER_LIMIT_EXCHGE_GOODS(2017,RemarkMessage.MSG_ORDER_LIMIT_EXCHGE_GOODS),
     /**	限次卡退次数	*/
     ORDER_RETURN_LIMIT_CARD(2018,RemarkMessage.MSG_ORDER_RETURN_LIMIT_CARD),
+    /**	兑换商品	*/
+    ORDER_LIMIT_EXCHGE_GOODS(2019,RemarkMessage.MSG_ORDER_LIMIT_EXCHGE_GOODS),
 
     /**
 	 * 会员卡
@@ -77,7 +77,10 @@ public enum RemarkTemplate {
     CARD_RENEW(3007,RemarkMessage.CARD_RENEW),
     /**	会员卡续费:  {订单号} */
     CARD_RENEW_ORDER(3008,RemarkMessage.CARD_RENEW_ORDER),
-
+    // 继承转赠卡：{0} - 门店服务次数
+    CARD_GIVE_COUNT(3009,RemarkMessage.CARD_GIVE_COUNT),
+    //  继承转赠卡：{0} - 兑换服务次数
+    CARD_GIVE_EXCHANGCOUNT(3010,RemarkMessage.CARD_GIVE_EXCHANGCOUNT),
 
 	/**
 	 * 营销

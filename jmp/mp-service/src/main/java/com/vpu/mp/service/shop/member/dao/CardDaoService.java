@@ -391,7 +391,7 @@ public class CardDaoService extends ShopBaseService {
 		}
 		// 用户名
 		if (!StringUtils.isBlank(param.getUsername())) {
-			select.where(USER.USERNAME.eq(param.getUsername()));
+			select.where(USER.USERNAME.like(likeValue(param.getUsername())));
 		}
 
 		// 手机号
@@ -452,7 +452,7 @@ public class CardDaoService extends ShopBaseService {
 		}
 		// 用户名
 		if (!StringUtils.isBlank(param.getUsername())) {
-			select.where(USER.USERNAME.eq(param.getUsername()));
+			select.where(USER.USERNAME.like(likeValue(param.getUsername())));
 		}
 
 		// 手机号

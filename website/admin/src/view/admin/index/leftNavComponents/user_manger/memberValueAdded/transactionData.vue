@@ -217,7 +217,7 @@ export default {
           getRenewPurchase(obj).then(res => {
             console.log(res)
             if (res.error === 0) {
-              this.handleData(res.content)
+              this.handleData(res.content, true)
             }
           })
           break
@@ -250,7 +250,7 @@ export default {
       }
     },
     // 数据处理
-    handleData (content) {
+    handleData (content, flag) {
       this.middleData[0].num = content.total.totalPaidOrderNumber
       this.middleData[1].num = content.total.totalPaidUserNumber
       this.middleData[2].num = content.total.totalPaymentAmount

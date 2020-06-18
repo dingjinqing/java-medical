@@ -79,7 +79,7 @@ public class CardMsgNoticeService extends ShopBaseService {
 						MaTemplateData.builder().config(SubcribeTemplateCategory.USER_GRADE).data(data).build())
 				.mpTemplateData(
 						MpTemplateData.builder().config(MpTemplateConfig.MEMBER_LEVEL_UP).data(mpData).build())
-				.page("pages/cardinfo/cardinfo?card_no="+cardNo).shopId(getShopId())
+				.page("pages/cardinfo/cardinfo?cardNo="+cardNo).shopId(getShopId())
 				.userIdList(arrayList)
 				.type(MessageTemplateConfigConstant.MEMBER_LEVEL_UP).build();
 		saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
@@ -165,7 +165,7 @@ public class CardMsgNoticeService extends ShopBaseService {
 						MaTemplateData.builder().config(SubcribeTemplateCategory.AUDIT).data(data).build())
 				.mpTemplateData(
 						MpTemplateData.builder().config(MpTemplateConfig.AUDIT_FAIL).data(mpData).build())
-				.page("pages/cardinfo/cardinfo?card_no="+cardNo).shopId(getShopId())
+				.page("pages/cardinfo/cardinfo?cardNo="+cardNo).shopId(getShopId())
 				.userIdList(arrayList)
 				.type(MessageTemplateConfigConstant.FAIL_REVIEW).build();
 		saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());

@@ -132,7 +132,7 @@
                   </el-form-item>
                   <el-form-item
                     :prop="'tableData.' + scope.$index+ '.totalBuyMoney'"
-                    :rules="[{ validator: (rule, value, callback)=>{validateLevelMoney(rule, value, callback)}, trigger: ['blur', 'change'] }]"
+                    :rules="[{ validator: (rule, value, callback)=>{validateLevelMoney(rule, value, callback, scope.row)}, trigger: ['blur', 'change'] }]"
                     style="display: inline-block;"
                   >
                     <div>{{ $t('distribution.levelTip6') }}
@@ -283,22 +283,22 @@ export default {
         tableData: [{
           levelId: 1,
           levelName: '',
-          levelUpRoute: 0,
-          inviteNumber: null,
-          totalDistributionMoney: null,
-          totalBuyMoney: null,
+          levelUpRoute: 0, // (0自动, 1手动)
+          inviteNumber: '',
+          totalDistributionMoney: '',
+          totalBuyMoney: '',
           levelUserIds: null,
           users: '',
-          levelStatus: 1,
+          levelStatus: 1, // (1启用, 0禁用)
           amount: '',
           levelText: '一级'
         }, {
           levelId: 2,
           levelName: '',
           levelUpRoute: 1,
-          inviteNumber: null,
-          totalDistributionMoney: null,
-          totalBuyMoney: null,
+          inviteNumber: '',
+          totalDistributionMoney: '',
+          totalBuyMoney: '',
           levelUserIds: null,
           users: '',
           levelStatus: 0,
@@ -308,9 +308,9 @@ export default {
           levelId: 3,
           levelName: '',
           levelUpRoute: 1,
-          inviteNumber: null,
-          totalDistributionMoney: null,
-          totalBuyMoney: null,
+          inviteNumber: '',
+          totalDistributionMoney: '',
+          totalBuyMoney: '',
           levelUserIds: null,
           users: '',
           levelStatus: 0,
@@ -320,9 +320,9 @@ export default {
           levelId: 4,
           levelName: '',
           levelUpRoute: 1,
-          inviteNumber: null,
-          totalDistributionMoney: null,
-          totalBuyMoney: null,
+          inviteNumber: '',
+          totalDistributionMoney: '',
+          totalBuyMoney: '',
           levelUserIds: null,
           users: '',
           levelStatus: 0,
@@ -332,9 +332,9 @@ export default {
           levelId: 5,
           levelName: '',
           levelUpRoute: 1,
-          inviteNumber: null,
-          totalDistributionMoney: null,
-          totalBuyMoney: null,
+          inviteNumber: '',
+          totalDistributionMoney: '',
+          totalBuyMoney: '',
           levelUserIds: null,
           users: '',
           levelStatus: 0,
@@ -371,6 +371,9 @@ export default {
         if (item.levelUserIds !== null) {
           item.levelUserIds = item.levelUserIds.split(',')
         }
+        item.inviteNumber = !item.inviteNumber || item.inviteNumber === '0' ? '' : String(item.inviteNumber)
+        item.totalDistributionMoney = !item.totalDistributionMoney || item.totalDistributionMoney === '0' ? '' : String(item.totalDistributionMoney)
+        item.totalBuyMoney = !item.totalBuyMoney || item.totalBuyMoney === '0' ? '' : String(item.totalBuyMoney)
         switch (item.levelId) {
           case 1:
             item.levelText = '一级'
@@ -441,7 +444,9 @@ export default {
 
     // 校验等级名称
     validateLevelName (rule, value, callback, row) {
-      if (!value && row.levelStatus === 1 && row.levelId !== 1) {
+      if (row.levelId === 1 && !value) {
+        callback(new Error('请填写等级名称'))
+      } else if (row.levelId !== 1 && row.levelStatus === 1 && !value) {
         callback(new Error('请填写等级名称'))
       } else {
         callback()
@@ -450,7 +455,7 @@ export default {
 
     // 校验等级规则
     validatelevelUpRoute (rule, value, callback, row) {
-      if (row.levelStatus === 1 && row.levelId !== 1) {
+      if (row.levelId !== 1 && row.levelStatus === 1) {
         if (value === 0 && !row.inviteNumber && !row.totalDistributionMoney && !row.totalBuyMoney) {
           callback(new Error('请填写等级规则'))
         } else {
@@ -465,7 +470,7 @@ export default {
     validateLevelNum (rule, value, callback, row) {
       var re = /^[1-9]\d*$/
       if (!row.inviteNumber || !row.totalDistributionMoney || !row.totalBuyMoney) {
-        if ((value && !re.test(value)) || value === 0 || value === '0') {
+        if (value && (!re.test(value) || value === '0')) {
           callback(new Error('请填写正整数'))
         } else {
           callback()
@@ -475,12 +480,12 @@ export default {
       }
     },
 
-    // 校验规则金额
+    // 校验推广金额
     validateLevelMoney (rule, value, callback, row) {
       var re = /^[1-9]\d*(\.\d{1,2})?$/
       var re1 = /^0\.\d{1,2}$/
       if (!row.inviteNumber || !row.totalDistributionMoney || !row.totalBuyMoney) {
-        if ((value && !re.test(value) && !re1.test(value)) || value === 0 || value === '0') {
+        if (value && ((!re.test(value) && !re1.test(value)) || value === '0' || value === '0.0' || value === '0.00')) {
           callback(new Error('请填写可以保留两位小数的有效数字'))
         } else {
           callback()
