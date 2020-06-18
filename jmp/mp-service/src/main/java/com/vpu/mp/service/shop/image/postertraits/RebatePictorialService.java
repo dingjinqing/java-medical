@@ -130,7 +130,7 @@ public class RebatePictorialService extends ShareBaseService {
         RebateShareInfoParam rebateShareInfoParam = (RebateShareInfoParam) baseParam;
         RebateSceneValue sceneValue = new RebateSceneValue();
         sceneValue.setUid(baseParam.getUserId());
-        sceneValue.setGid(baseParam.getUserId());
+        sceneValue.setGid(baseParam.getTargetId());
         sceneValue.setShareAwardId(baseParam.getShareAwardId());
         sceneValue.setRebateConfig(rebateShareInfoParam.getRebateConfig());
         String paramStr = addAndGetSceneStr(sceneValue);
