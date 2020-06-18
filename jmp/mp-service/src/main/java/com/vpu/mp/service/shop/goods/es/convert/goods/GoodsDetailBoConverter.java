@@ -36,6 +36,7 @@ public class GoodsDetailBoConverter implements EsGoodsConvertInterface<GoodsDeta
         bo.setIsOnSale(esGoods.getIsOnSale());
         bo.setCatId(esGoods.getCatId());
         bo.setSortId(esGoods.getSortId());
+        bo.setUnit(esGoods.getUnit());
         if( StringUtils.isNotBlank(esGoods.getPrdJson()) ){
             bo.setProducts(strToGoodsPrdMpVos(esGoods.getPrdJson()));
         }

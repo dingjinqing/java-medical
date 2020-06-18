@@ -234,7 +234,7 @@ global.wxPage({
       let customParams = {}
       if (this.data.rebateConfig) customParams.rebateConfig = JSON.parse(this.data.rebateConfig)
       if (this.data.shareAwardId && (this.data.shareAwardLaunchUserId || this.data.inviteId || this.data.uid)) {
-        customParams.shareAwardId = this.data.shareAwardId 
+        customParams.shareAwardId = this.data.shareAwardId
         customParams.shareAwardLaunchUserId = this.data.shareAwardLaunchUserId || this.data.inviteId || this.data.uid
       }
       if(this.data.rebateSId) customParams.rebateSId = this.data.rebateSId
@@ -293,7 +293,8 @@ global.wxPage({
               roomDetailMpInfo,
               deliverFeeAddressVo,
               shareAwardId,
-              showMall
+              showMall,
+              unit
             } = res.content
             let goodsMediaInfo = {
               goodsImgs, //商品图片
@@ -313,7 +314,8 @@ global.wxPage({
               products,
               limitBuyNum,
               limitMaxNum,
-              goodsImgs
+              goodsImgs,
+              unit
             }
             let goodsInfo = {
               goodsSaleNum,
