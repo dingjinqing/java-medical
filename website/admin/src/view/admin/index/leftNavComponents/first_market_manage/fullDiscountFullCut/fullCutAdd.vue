@@ -588,11 +588,11 @@
                 </table>
               </div>
 
-              <div
+              <!-- <div
                 class="add_goods_btn"
                 @click="selectPlatform"
                 v-if="!params.id"
-              > + {{$t('fullCuti18n.slClassify')}}</div>
+              > + {{$t('fullCuti18n.slClassify')}}</div> -->
               <table
                 class="brand_table"
                 v-if="platformList && platformList.length"
