@@ -984,8 +984,8 @@ export default {
 
       activeIndex: 0,
       srcList: {
-        src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
-        src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`,
+        src1: `${this.$imageHost}/image/admin/share/pin_share.jpg`,
+        src2: `${this.$imageHost}/image/admin/share/pin_pictorial.jpg`,
         src3: `${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`
       },
       showImageDialog: false,

@@ -131,9 +131,6 @@ export default {
   },
   mounted () {
     console.log(this.activeName)
-    if (this.activeName === 'second') {
-      this.middleData.pop()
-    }
     this.handleToQueryData(this.activeName)
   },
   methods: {
@@ -257,13 +254,8 @@ export default {
       this.middleData[0].num = content.total.totalPaidOrderNumber
       this.middleData[1].num = content.total.totalPaidUserNumber
       this.middleData[2].num = content.total.totalPaymentAmount
-      if (!flag) {
-        this.middleData[3].num = content.total.totalReturnAmount
-      }
+      this.middleData[3].num = content.total.totalReturnAmount
       let arr = []
-      if (content.dateList.length > 1) {
-        content.dateList.pop()
-      }
       content.dateList.forEach((item, index) => {
         let obj = {}
         obj['日期'] = item
@@ -278,15 +270,23 @@ export default {
       content.paymentAmount.forEach((item, index) => {
         arr[index]['支付金额'] = item
       })
-      if (flag) {
-        content.returnAmount.forEach((item, index) => {
-          arr[index]['退款金额'] = item
-        })
-        console.log('触发')
-        this.chartData.columns.pop()
-      }
-      console.log(this.chartData, arr)
+      content.returnAmount.forEach((item, index) => {
+        arr[index]['退款金额'] = item
+      })
+      console.log(arr)
       this.chartData.rows = arr
+      //   this.startDate.year = content.startTime.substring(0, 4)
+      //   this.startDate.month = content.startTime.substring(4, 6)
+      //   this.startDate.day = content.startTime.substring(6, 8)
+
+      //   this.endDate.year = content.endTime.substring(0, 4)
+      //   this.endDate.month = content.endTime.substring(4, 6)
+      //   this.endDate.day = content.endTime.substring(6, 8)
+      //   content.dailyData.map(item => {
+      //     this.chartChange.date.push(item.date)
+      //     this.chartChange.number.push(item.number)
+      //   })
+      //   // 折线图数据部分
     },
     // 处理时间
     getDay (day) {
