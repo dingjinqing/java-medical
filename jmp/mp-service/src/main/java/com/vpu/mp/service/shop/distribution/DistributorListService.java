@@ -266,7 +266,9 @@ public class DistributorListService extends ShopBaseService{
 	 * @return
 	 */
 	public int delDistributor(Integer userId) {
-		int res = db().update(USER).set(USER.IS_DISTRIBUTOR,(byte)0).where(USER.USER_ID.eq(userId)).execute();
+		int res = db().update(USER).set(USER.IS_DISTRIBUTOR,(byte)0)
+            .set(USER.INVITATION_CODE, (String) null)
+            .where(USER.USER_ID.eq(userId)).execute();
 		return res;
 	}
 
