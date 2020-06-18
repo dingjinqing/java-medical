@@ -148,7 +148,7 @@ public class AdminOrderController extends AdminBaseController {
 		try {
 			return success(shop().orderActionFactory.orderQuery(param));
 		} catch (MpException e) {
-			return fail(e.getErrorCode());
+            return result(e.getErrorCode(), e.getMessage());
 		}
 	}
 	

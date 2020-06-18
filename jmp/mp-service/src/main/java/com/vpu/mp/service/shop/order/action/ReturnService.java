@@ -138,9 +138,10 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	public ExecuteResult execute(RefundParam param) {
         logger.info("退款退货执行start(ReturnService)");
         //判断该订单是否存在微信退款失败的退款单
-        String failReturnOrderSn = orderRefundRecord.getFailReturnOrder(param.getOrderSn());
-        if(StringUtils.isNotBlank(failReturnOrderSn) && !orderRefundRecord.isExistFail(param.getRetId())) {
-            return ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_EXIST_WX_REFUND_FAIL_ORDER, failReturnOrderSn, null);
+        Integer failRetId = orderRefundRecord.getFailReturnOrder(param.getOrderSn());
+        if(failRetId != null && !orderRefundRecord.isExistFail(param.getRetId())) {
+            ReturnOrderRecord returnOrder = this.returnOrder.getByRetId(param.getRetId());
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_EXIST_WX_REFUND_FAIL_ORDER, returnOrder == null ? null : returnOrder.getReturnOrderSn(), null);
         }
         //校验
         if(!Byte.valueOf(OrderConstant.RETURN_OPERATE_MP_REVOKE).equals(param.getReturnOperate()) &&
@@ -302,9 +303,10 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	public Object query(OrderOperateQueryParam param) throws MpException {
 		logger.info("获取可退款、退货信息参数为:" + param.toString());
         //判断该订单是否存在微信退款失败的退款单
-        String failReturnOrderSn = orderRefundRecord.getFailReturnOrder(param.getOrderSn());
-        if(StringUtils.isNotBlank(failReturnOrderSn)) {
-            throw new MpException(JsonResultCode.CODE_ORDER_RETURN_EXIST_WX_REFUND_FAIL_ORDER, failReturnOrderSn, null);
+        Integer failRetId = orderRefundRecord.getFailReturnOrder(param.getOrderSn());
+        if(failRetId != null) {
+            ReturnOrderRecord returnOrder = this.returnOrder.getByRetId(failRetId);
+            throw new MpException(JsonResultCode.CODE_ORDER_RETURN_EXIST_WX_REFUND_FAIL_ORDER, returnOrder == null ? null : returnOrder.getReturnOrderSn(), null);
         }
 		Byte isMp = param.getIsMp();
 		RefundVo vo = new RefundVo();

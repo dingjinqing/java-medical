@@ -110,12 +110,12 @@ public class OrderRefundRecordService extends ShopBaseService{
      * @param orderSn
      * @return
      */
-    public String getFailReturnOrder(String orderSn) {
+    public Integer getFailReturnOrder(String orderSn) {
         OrderRefundRecordRecord record = db().selectFrom(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchAny();
         if(record == null) {
             return null;
         }
-        return record.getOrderSn();
+        return record.getRetId();
     }
 
     /**
