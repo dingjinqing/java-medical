@@ -75,7 +75,6 @@ public class RebatePictorialService extends ShareBaseService {
             ShopRecord shop = saas.shop.getShopById(getShopId());
             String moneyFlag = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages");
             String realPrice = moneyFlag+baseParam.getRealPrice().setScale(2,BigDecimal.ROUND_HALF_UP).toString();
-            String linePrice = moneyFlag + baseParam.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
             /**‘专享价格’文字*/
 //            String specialText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_REBATE_SPECIAL_DOC, "messages");
 
@@ -85,7 +84,10 @@ public class RebatePictorialService extends ShareBaseService {
             ImageUtil.addFont(rebateBufferImg, realPrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 22), textStartX, toTop + goodsBufferImg.getHeight()-30, getShopStyleColor(),false);
             Integer textWidth = ImageUtil.getTextWidth(rebateBufferImg, ImageUtil.SourceHanSansCN(Font.PLAIN, 22), realPrice);
             // 添加划线价￥
-            ImageUtil.addFontWithLine(rebateBufferImg, textStartX + textWidth + 20, toTop + goodsBufferImg.getHeight()-25, linePrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 18), PictorialImgPx.LINE_PRICE_COLOR);
+            if (BigDecimal.valueOf(0).equals(baseParam.getLinePrice())){
+                String linePrice = moneyFlag + baseParam.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+                ImageUtil.addFontWithLine(rebateBufferImg, textStartX + textWidth + 20, toTop + goodsBufferImg.getHeight()-25, linePrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 18), PictorialImgPx.LINE_PRICE_COLOR);
+            }
 
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(goodsRecord.getGoodsId());
@@ -128,7 +130,7 @@ public class RebatePictorialService extends ShareBaseService {
         RebateShareInfoParam rebateShareInfoParam = (RebateShareInfoParam) baseParam;
         RebateSceneValue sceneValue = new RebateSceneValue();
         sceneValue.setUid(baseParam.getUserId());
-        sceneValue.setGid(baseParam.getUserId());
+        sceneValue.setGid(baseParam.getTargetId());
         sceneValue.setShareAwardId(baseParam.getShareAwardId());
         sceneValue.setRebateConfig(rebateShareInfoParam.getRebateConfig());
         String paramStr = addAndGetSceneStr(sceneValue);

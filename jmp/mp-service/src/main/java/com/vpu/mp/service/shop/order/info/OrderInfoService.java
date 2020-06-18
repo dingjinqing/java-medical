@@ -1596,7 +1596,7 @@ public class OrderInfoService extends ShopBaseService {
     			.and(TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_FINISHED,OrderConstant.ORDER_RETURN_FINISHED,OrderConstant.ORDER_REFUND_FINISHED))
     			.and(TABLE.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[]{BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER})));
 
-    	return db().fetchOne(TABLE, condition);
+    	return db().fetchAny(TABLE, condition);
     }
 
     /**
