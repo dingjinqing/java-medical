@@ -84,6 +84,7 @@
             class="item"
           >
             <el-input
+              v-model="param.inviteName"
               :placeholder="$t('distribution.contentTip')"
               size="small"
               class="inputWidth"
@@ -95,6 +96,7 @@
             v-if="distributionCode === '1'"
           >
             <el-input
+              v-model="param.invitationCode"
               :placeholder="$t('distribution.contentTip')"
               size="small"
               class="inputWidth"
@@ -506,6 +508,8 @@ export default {
         invitedMobile: '',
         startCreateTime: '',
         endCreateTime: '',
+        inviteName: '',
+        invitationCode: '',
         invitedUserName: '',
         distributorLevel: '',
         distributorGroup: '',
