@@ -655,16 +655,16 @@ export default {
         hasDistributor: 0, // 是否有分销员
         // invitationCode: 1, // 邀请码
         activation_cfg: [], // 个人信息内容
-        rank_status: 1, // 分销员排名及返佣记录展示
+        rank_status: 0, // 分销员排名及返佣记录展示
         vaild: 0, // 返利有效期
         protect_date: 0, // 分销员保护期
         rebate_center_name: '分销中心', // 分销中心页面名称
         distribution_goods_type: 2, // 推荐商品(自定义)
         recommend_goods_id: '', // 推荐商品ID
         rebate_page_id: '', // 推广模版文案id
-        withdraw_status: 1, // 返利体现开关
+        withdraw_status: 0, // 返利体现开关
         withdraw_source: 'wx_mini', // 返利方式
-        withdraw_config: 1, // 提现设置
+        withdraw_config: 0, // 提现设置
         withdraw_cash: null, // 返利最小提现金额
         desc: '分享给你一个好物店铺快来购物吧！', // 邀请文案
         bg_img: this.$imageHost + '/image/admin/dis_bg_1.jpg' // 海报背景图

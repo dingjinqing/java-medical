@@ -64,6 +64,8 @@ public class CardExchangeProcess extends WxCardExchangeService implements Proces
             logger().info("限次卡兑换免运费设置");
             param.setIsFreeShippingAct(OrderConstant.YES);
         }
+        //取消商品限购
+        param.getGoods().forEach(x->x.setIsAlreadylimitNum(true));
     }
 
     @Override

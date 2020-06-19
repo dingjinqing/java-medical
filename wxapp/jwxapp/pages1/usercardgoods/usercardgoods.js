@@ -136,8 +136,8 @@ global.wxPage({
           goodsId: res.content.goodsId,
           goodsImgs: res.content.goodsImgs,
           goodsNumber: res.content.goodsNumber,
-          limitBuyNum: res.content.limitBuyNum,
-          limitMaxNum: res.content.limitMaxNum,
+          limitBuyNum: 0,
+          limitMaxNum: 0,
           products: res.content.products
         }
         this.setData({

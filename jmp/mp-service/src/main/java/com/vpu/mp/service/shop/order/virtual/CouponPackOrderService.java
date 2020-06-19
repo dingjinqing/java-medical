@@ -476,6 +476,8 @@ public class CouponPackOrderService extends VirtualOrderService {
             .where(VIRTUAL_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED))
             .and(VIRTUAL_ORDER.GOODS_TYPE.eq(GOODS_TYPE_COUPON_PACK))
             .and(VIRTUAL_ORDER.USER_ID.eq(userId))
+            //  虚拟优惠券礼包免费领取不计入，需要计算花了余额或积分的
+            .and(VIRTUAL_ORDER.ORDER_AMOUNT.gt(BigDecimal.ZERO).or(VIRTUAL_ORDER.USE_SCORE.gt(0)))
             .fetchAnyInto(UserOrderBean.class);
     }
 
