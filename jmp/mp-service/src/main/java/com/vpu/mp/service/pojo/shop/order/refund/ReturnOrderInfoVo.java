@@ -57,6 +57,7 @@ public class ReturnOrderInfoVo {
 	private String consignee;
 	private String zipCode;
 	private String currency;
+    private String userId;
     private String username;
     private String mobile;
     /**

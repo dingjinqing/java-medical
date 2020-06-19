@@ -538,9 +538,12 @@ public class OrderInfoService extends ShopBaseService {
 	 * @return
 	 */
 	public Map<String, List<OrderListInfoVo>> getOrders(List<String> orderSn) {
-		List<OrderListInfoVo> orders = db().select(ORDER_INFO.asterisk()).from(ORDER_INFO)
-				.where(ORDER_INFO.MAIN_ORDER_SN.in(orderSn).or(TABLE.ORDER_SN.in(orderSn)))
-				.orderBy(ORDER_INFO.ORDER_ID.desc()).fetchInto(OrderListInfoVo.class);
+		List<OrderListInfoVo> orders = db().select(ORDER_INFO.asterisk(), USER.USERNAME, USER.MOBILE.as("userMobile"))
+            .from(ORDER_INFO)
+            .innerJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID))
+            .where(ORDER_INFO.MAIN_ORDER_SN.in(orderSn).or(TABLE.ORDER_SN.in(orderSn)))
+            .orderBy(ORDER_INFO.ORDER_ID.desc())
+            .fetchInto(OrderListInfoVo.class);
 		orders.forEach(order -> {
 			if (StringUtils.isBlank(order.getMainOrderSn())) {
 				order.setLogicMainOrderSn(order.getOrderSn());
