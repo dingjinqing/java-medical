@@ -853,12 +853,13 @@ public class CardDaoService extends ShopBaseService {
 	
 	public List<CardHolderExcelVo> getAllCardHolderAll(CardHolderParam param) {
 		User invitedUser = USER.as("a");
-		List<Field<?>> f = new ArrayList<>(Arrays.asList(USER_CARD.fields()));
+        Field<Timestamp> cardExamineCreateTime = CARD_EXAMINE.CREATE_TIME.as("card_examine_create_time");
+        List<Field<?>> f = new ArrayList<>(Arrays.asList(USER_CARD.fields()));
 		f.add(USER.USERNAME);
 		f.add(invitedUser.USERNAME.as("invitedName"));
 		f.add(USER.MOBILE);
 		f.add(CARD_EXAMINE.STATUS);
-		f.add(CARD_EXAMINE.CREATE_TIME);
+		f.add(cardExamineCreateTime);
 		SelectJoinStep<?> select = db()
 				.select(f.toArray(new Field<?>[0])).select(DSL.count(CHARGE_MONEY.CARD_NO).as("chargeTimes"),DSL.count(CARD_CONSUMER.CARD_NO).as("consumeTimes"))
 				.from(USER_CARD.leftJoin(USER.leftJoin(invitedUser).on(USER.INVITE_ID.eq(invitedUser.USER_ID))
@@ -873,7 +874,7 @@ public class CardDaoService extends ShopBaseService {
 		f.add(CARD_CONSUMER.CARD_NO);
 		select.where(USER_CARD.CARD_ID.eq(param.getCardId()))
 			.groupBy(f.toArray(new Field<?>[0]))
-			.orderBy(CARD_EXAMINE.CREATE_TIME.desc(),USER_CARD.USER_ID.desc());
+			.orderBy(cardExamineCreateTime.desc(),USER_CARD.USER_ID.desc());
 		List<CardHolderExcelVo> list = new ArrayList<CardHolderExcelVo>();
 		Result<?> fetch = select.fetch();
 		if(fetch!=null) {
