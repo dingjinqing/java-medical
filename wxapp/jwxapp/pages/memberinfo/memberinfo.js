@@ -70,7 +70,8 @@ global.wxPage({
     image: false,
     comm_img: [],
     mobile: util.getCache('mobile'),
-    checkbox_no: imageUrl + '/image/admin/select.png'
+    checkbox_no: imageUrl + '/image/admin/select.png',
+    uploadPictureTitle: '上传图片'
   },
 
   /**
@@ -384,6 +385,11 @@ global.wxPage({
 
           if (custom_arr.length > 0) {
             for (var i in custom_arr) {
+              if(custom_arr[i].customType == 3){
+                that.setData({
+                  uploadPictureTitle: custom_arr[i].customTitle
+                })
+              }
               if (custom_arr[i].customType == 0) {
                 custom_arr[i].custom_select = 0
                 for (var j in custom_arr[i].optionArr) {
