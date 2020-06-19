@@ -316,7 +316,7 @@ export const cn = {
     {
       title: '会员卡续费单数',
       content: '0',
-      tip: '用户在商城给会员卡续费的交易单数（包括已退款续费单）',
+      tip: '用户在商城给会员卡续费的交易单数',
       value: 'memberCardRenewOrderNum',
       linkName: 'member_value_added'
     },
