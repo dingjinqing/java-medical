@@ -12,13 +12,14 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let {goodsPrice,rebateId,rebateRatio,goodsId,linePrice = null} = options
+    let {goodsPrice,rebateId,rebateRatio,goodsId,linePrice = null,promotionLanguage=null} = options
     this.setData({
       goodsPrice,
       rebateId,
       rebateRatio:this.getMax(Object.values(JSON.parse(rebateRatio)).filter(item => item > 0)),
       goodsId,
-      linePrice
+      linePrice,
+      promotionLanguage
     })
     this.initShareRebateData()
     wx.hideShareMenu();
@@ -154,6 +155,27 @@ global.wxPage({
   },
   getMin (arr) {
     return Math.min(...arr)
+  },
+  handleDownloadCb(){
+    let toast = this.selectComponent('#toast')
+    if(!this.data.promotionLanguage) {
+      toast.showToast({
+        title: '图片已保存到相册',
+        duration:2000
+      })
+    } else {
+      wx.setClipboardData({
+        data: this.data.promotionLanguage,
+        success: (res) => {
+          wx.hideToast();
+          toast.showToast({
+            title: '图片已保存到相册',
+            content:`${this.data.promotionLanguage} 以上推广语已复制`,
+            duration:4000
+          })
+        }
+      });
+    }
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
