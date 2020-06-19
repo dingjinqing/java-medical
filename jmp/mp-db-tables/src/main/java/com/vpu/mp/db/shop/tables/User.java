@@ -33,7 +33,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class User extends TableImpl<UserRecord> {
 
-    private static final long serialVersionUID = -1761919245;
+    private static final long serialVersionUID = 616913939;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user</code>
@@ -216,7 +216,7 @@ public class User extends TableImpl<UserRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user.invite_protect_date</code>. 邀请保护时间
      */
-    public final TableField<UserRecord, Date> INVITE_PROTECT_DATE = createField("invite_protect_date", org.jooq.impl.SQLDataType.DATE, this, "邀请保护时间");
+    public final TableField<UserRecord, Timestamp> INVITE_PROTECT_DATE = createField("invite_protect_date", org.jooq.impl.SQLDataType.TIMESTAMP, this, "邀请保护时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_user.look_collect_time</code>. 最近看见收藏有礼图标时间

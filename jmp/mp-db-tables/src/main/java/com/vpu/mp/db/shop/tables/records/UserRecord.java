@@ -5,13 +5,15 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.User;
-import org.jooq.Record1;
-import org.jooq.impl.UpdatableRecordImpl;
 
-import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+
+import javax.annotation.Generated;
+
+import org.jooq.Record1;
+import org.jooq.impl.UpdatableRecordImpl;
 
 
 /**
@@ -27,7 +29,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserRecord extends UpdatableRecordImpl<UserRecord> {
 
-    private static final long serialVersionUID = 967560794;
+    private static final long serialVersionUID = 1026406700;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_user.user_id</code>.
@@ -494,15 +496,15 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> {
     /**
      * Setter for <code>mini_shop_471752.b2c_user.invite_protect_date</code>. 邀请保护时间
      */
-    public void setInviteProtectDate(Date value) {
+    public void setInviteProtectDate(Timestamp value) {
         set(33, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_user.invite_protect_date</code>. 邀请保护时间
      */
-    public Date getInviteProtectDate() {
-        return (Date) get(33);
+    public Timestamp getInviteProtectDate() {
+        return (Timestamp) get(33);
     }
 
     /**
@@ -615,7 +617,7 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> {
     /**
      * Create a detached, initialised UserRecord
      */
-    public UserRecord(Integer userId, Integer shopId, String username, String userPwd, String userCid, String mobile, String userCode, String wxOpenid, String email, Timestamp createTime, Timestamp updateTime, String wechat, Integer fanliGrade, Integer userGrade, Integer invite, String inviteSource, String invitationCode, BigDecimal account, Integer discount, Integer discountGrade, Byte delFlag, Timestamp delTime, Integer growth, Integer score, Integer source, Integer inviteId, Date inviteExpiryDate, String wxUnionId, Byte isDistributor, Integer inviteActId, Byte distributorLevel, String aliUserId, String device, Date inviteProtectDate, Timestamp lookCollectTime, Byte getCollectGift, Integer inviteGroup, BigDecimal unitPrice, Timestamp inviteTime, Integer scene) {
+    public UserRecord(Integer userId, Integer shopId, String username, String userPwd, String userCid, String mobile, String userCode, String wxOpenid, String email, Timestamp createTime, Timestamp updateTime, String wechat, Integer fanliGrade, Integer userGrade, Integer invite, String inviteSource, String invitationCode, BigDecimal account, Integer discount, Integer discountGrade, Byte delFlag, Timestamp delTime, Integer growth, Integer score, Integer source, Integer inviteId, Date inviteExpiryDate, String wxUnionId, Byte isDistributor, Integer inviteActId, Byte distributorLevel, String aliUserId, String device, Timestamp inviteProtectDate, Timestamp lookCollectTime, Byte getCollectGift, Integer inviteGroup, BigDecimal unitPrice, Timestamp inviteTime, Integer scene) {
         super(User.USER);
 
         set(0, userId);
