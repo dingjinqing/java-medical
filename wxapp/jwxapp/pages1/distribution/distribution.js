@@ -207,15 +207,18 @@ global.wxPage({
   },
   // 去首页或申请
   bindRedirectTo: function (e) {
-    if (this.data.dis_info.status == 0) {
-      util.navigateTo({
-        url: "/pages/index/index",
-      })
-    } else {
-      util.navigateTo({
-        url: "/pages/distributionspread/distributionspread",
-      })
-    }
+    util.navigateTo({
+      url: "/pages/index/index",
+    })
+    // if (this.data.dis_info.status == 0) {
+    //   util.navigateTo({
+    //     url: "/pages/index/index",
+    //   })
+    // } else {
+    //   util.navigateTo({
+    //     url: "/pages/distributionspread/distributionspread",
+    //   })
+    // }
   },
   // 申请成为分销员
   apply_get: function (e) {
