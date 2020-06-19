@@ -9,7 +9,7 @@
           label="会员卡购买"
           name="first"
         >
-          <memberCardOrder v-if="activeName ==='first'&!isShowTransactionData" :userId="userId"/>
+          <memberCardOrder v-if="activeName ==='first'&!isShowTransactionData"/>
         </el-tab-pane>
         <el-tab-pane
           label="会员卡续费"
@@ -49,6 +49,7 @@
     <memberForm
       :activeName="activeName"
       :bottomFormData="bottomFormData"
+      :userId="userId"
       v-if="(activeName==='second' || activeName==='third')&!isShowTransactionData"
     />
     <!--查看交易数据组件-->

@@ -2837,8 +2837,7 @@ public class UserCardService extends ShopBaseService {
             //已完成的
             .where(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_NORMAL)
                 .and(CHARGE_MONEY.CHARGE.gt(BigDecimal.ZERO)))
-            .and(CHARGE_MONEY.CHANGE_TYPE.ge(CardConstant.CHARGE_SEND_CARD))
-            .and(CHARGE_MONEY.CHANGE_TYPE.le(CardConstant.CHARGE_ADMIN_OPT));
+                .and(CHARGE_MONEY.CHANGE_TYPE.eq(CardConstant.CHARGE_USER_POWER));
         select = chargeBuildOptions(select, param);
         select = (SelectConditionStep<? extends Record>) select.orderBy(CHARGE_MONEY.CREATE_TIME.desc());
         PageResult<UserCardChargeListVo> result = getPageResult(select, param.getCurrentPage(), param.getPageRows(), UserCardChargeListVo.class);
