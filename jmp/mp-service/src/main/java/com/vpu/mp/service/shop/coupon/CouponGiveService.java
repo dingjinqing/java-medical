@@ -75,7 +75,6 @@ public class CouponGiveService extends ShopBaseService {
      * @return listVo 对应的发券活动信息
      */
     public PageResult<CouponGiveListVo> getCouponGiveList(CouponGiveListParam param) {
-
             // 查询活动信息
             SelectLimitStep<Record> couponGiveListVo =
                 db().select().from(GIVE_VOUCHER).orderBy(GIVE_VOUCHER.ID.desc());
@@ -1058,25 +1057,27 @@ public class CouponGiveService extends ShopBaseService {
     public void sendCouponMessage(List<CustomerAvailCouponsRecord> couponsRecords){
         logger().info("发券事务完成，开始处理发送卡券领取成功公众号消息");
         logger().info("user-coupon记录是否存在：{}",couponsRecords!=null);
-        if (couponsRecords!=null&&couponsRecords.size()>0){
-            logger().info("user-coupon记录为：{}",couponsRecords);
+        if (couponsRecords!=null&&couponsRecords.size()>0) {
+            logger().info("user-coupon记录为：{}", couponsRecords);
+            couponsRecords.forEach(c -> {
+                MrkingVoucherRecord couponDetail = getInfoById(c.getActId());
+                String couponDesc = "";
+                switch (couponDetail.getActCode()) {
+                    case CouponConstant.ACT_CODE_VOUCHER:
+                        couponDesc = couponDetail.getDenomination() + "元";
+                        break;
+                    case CouponConstant.ACT_CODE_DISCOUNT:
+                        couponDesc = couponDetail.getDenomination() + "折";
+                        break;
+                    case CouponConstant.ACT_CODE_RANDOM:
+                        couponDesc = couponDetail.getRandomMin() + "元-" + couponDetail.getRandomMax() + "元";
+                        break;
+                    default:
+                }
+                String duration = c.getStartTime().toString().substring(0,19)+"至"+c.getEndTime().toString().substring(0,19);
+                String procession = DateUtil.getLocalDateFormat();
+                couponMsgNoticeService.sendCouponMsgNotice(c.getUserId(), couponDetail.getActName(), procession, duration, couponDesc);
+            });
         }
-        couponsRecords.forEach(c->{
-            MrkingVoucherRecord couponDetail = getInfoById(c.getActId());
-            String couponDesc = "";
-            switch (couponDetail.getActCode()){
-                case CouponConstant.ACT_CODE_VOUCHER:
-                    couponDesc = couponDetail.getDenomination()+"元";
-                    break;
-                case CouponConstant.ACT_CODE_DISCOUNT:
-                    couponDesc = couponDetail.getDenomination()+"折";
-                    break;
-                case CouponConstant.ACT_CODE_RANDOM:
-                    couponDesc = couponDetail.getRandomMin()+"元-"+couponDetail.getRandomMax()+"元";
-                    break;
-                default:
-            }
-            couponMsgNoticeService.sendCouponMsgNotice(c.getUserId(),couponDetail.getActName(), DateUtil.getSqlTimestamp(),c.getEndTime(),couponDesc);
-        });
     }
 }

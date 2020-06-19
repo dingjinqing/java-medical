@@ -199,7 +199,7 @@
             </view>
             <view class='es_word'>{{i18n.$t(localePack,"page1.usercenter.refund")}}</view>
           </view>
-          <view class='each_service' wx:if='{{item3.icon_name== "distribution" && item3.is_show == 1}}' data-judge_status='{{item3.judge_status}}' data-names='{{item3.rebate_center_name}}' data-is_distributor="{{item3.is_distributor}}" data-can_withdraw="{{item3.withdraw_money}}" bindtap='to_where'>
+          <view class='each_service' wx:if='{{item3.icon_name== "distribution" && item3.is_show == 1}}' data-is_rebate="{{item3.is_rebate}}" data-judge_status='{{item3.judge_status}}' data-names='{{item3.rebate_center_name}}' data-is_distributor="{{item3.is_distributor}}" data-can_withdraw="{{item3.withdraw_money}}" bindtap='to_where'>
             <view class='es_img'>
               <image src='{{item3.icon}}'></image>
             </view>

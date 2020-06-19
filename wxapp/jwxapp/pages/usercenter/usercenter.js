@@ -98,25 +98,61 @@ global.wxPage({
     })
   },
   to_where: function (e) {
+    var is_rebate = e.currentTarget.dataset.is_rebate; // 分销总开关
     var judge_statuss = e.currentTarget.dataset.judge_status; // 分销审核配置
     var is_distributors = e.currentTarget.dataset.is_distributor; // 分销员
     var can_withdraw = parseFloat(e.currentTarget.dataset.can_withdraw); // 提现金额
     var names = e.currentTarget.dataset.names;
-    if (is_distributors == 0 && judge_statuss == 1) {
-      if (can_withdraw > 0) {
+    if (is_rebate === 1) {
+      // 开启分销配置
+      if (judge_statuss == 1) {
+        // 开启分销审核
+        if (is_distributors === 1) {
+          // 是分销员
+          util.navigateTo({
+            url: '/pages/distribution/distribution?names=' + names,
+          })
+        } else {
+          // 有提现佣金
+          if (can_withdraw > 0) {
+            // 去分销中心(展示提现详情)
+            util.navigateTo({
+              url: '/pages/distribution/distribution?names=' + names,
+            })
+          } else {
+            util.navigateTo({
+              url: "/pages/distributionspread/distributionspread",
+            })
+          }
+        }
+      } else {
+        // 去分销中心(全员分销员)
         util.navigateTo({
           url: '/pages/distribution/distribution?names=' + names,
         })
-      } else {
-        util.navigateTo({
-          url: "/pages/distributionspread/distributionspread",
-        })
       }
     } else {
+      // 去分销中心(提示该功能未开启)
       util.navigateTo({
         url: '/pages/distribution/distribution?names=' + names,
       })
     }
+
+    // if (is_distributors == 0 && judge_statuss == 1) {
+    //   if (can_withdraw > 0) {
+    //     util.navigateTo({
+    //       url: '/pages/distribution/distribution?names=' + names,
+    //     })
+    //   } else {
+    //     util.navigateTo({
+    //       url: "/pages/distributionspread/distributionspread",
+    //     })
+    //   }
+    // } else {
+    //   util.navigateTo({
+    //     url: '/pages/distribution/distribution?names=' + names,
+    //   })
+    // }
   },
   toSign: function (e) {
     is_sign = 1;
