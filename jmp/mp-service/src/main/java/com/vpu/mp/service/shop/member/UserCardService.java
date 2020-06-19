@@ -266,7 +266,7 @@ public class UserCardService extends ShopBaseService {
                 for(CardUpgradeVo vo: upgradeList.dataList) {
                     if(oldCardId.equals(vo.getNewCardId())) {
                         upgradeListNew.add(vo);
-                        oldCardId = vo.getNewCardId();
+                        oldCardId = vo.getOldCardId();
                     }else {
                         break;
                     }
