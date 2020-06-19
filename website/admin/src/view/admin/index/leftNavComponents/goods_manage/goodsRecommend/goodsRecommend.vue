@@ -60,7 +60,7 @@
                   placement="top"
                 >
                   <span
-                    class="el-icon-edit-outline operateSpan"
+                    class="iconfont iconbianji"
                     @click="editItem(scope.row)"
                   ></span>
                 </el-tooltip>
@@ -86,7 +86,7 @@
               placement="top"
             >
               <span
-                class="el-icon-edit-outline operateSpan"
+                class="iconfont iconbianji"
                 @click="edit(scope.row.id)"
               ></span>
             </el-tooltip>
@@ -95,12 +95,12 @@
               placement="top"
             >
               <span
-                class="el-icon-circle-close operateSpan"
+                class="iconfont icontingyong"
                 @click="editStatus(scope.row)"
                 v-if="scope.row.status === 0"
               ></span>
               <span
-                class="el-icon-circle-check operateSpan"
+                class="iconfont iconqiyong"
                 @click="editStatus(scope.row)"
                 v-else
               >
@@ -111,7 +111,7 @@
               placement="top"
             >
               <span
-                class="el-icon-delete operateSpan"
+                class="iconfont iconshanchu2"
                 @click="del(scope.row.id)"
               ></span>
             </el-tooltip>
@@ -257,6 +257,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 /deep/ .tableClss th {
   background-color: #f5f5f5;
   border: none;
@@ -311,5 +312,9 @@ export default {
   font-size: 22px;
   color: #5a8bff;
   cursor: pointer !important;
+}
+.iconfont {
+  font-size: 22px;
+  color: #5a8bff;
 }
 </style>
