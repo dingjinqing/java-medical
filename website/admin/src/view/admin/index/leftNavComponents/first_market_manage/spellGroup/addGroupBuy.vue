@@ -272,6 +272,7 @@
             <el-table-column
               label="操作"
               align="center"
+              v-if="!isEdite"
             >
               <template slot-scope="scope">
                 <div
@@ -556,10 +557,11 @@
                       :class="item.status === 0 ? 'coupon_list_bottom': 'coupon_list_bottom_gray'"
                       :style="`background-image: url(${$imageHost}/image/admin/coupon_border.png)`"
                     >
-                      <span v-if="item.scoreNumber === 0">领取</span>
+                      <!-- <span v-if="item.scoreNumber === 0">领取</span>
                       <div v-if="item.scoreNumber !== 0">
                         <span>{{item.scoreNumber}}</span>积分 兑换
-                      </div>
+                      </div> -->
+                      <span>领取</span>
                     </div>
                   </section>
                   <span
@@ -1103,6 +1105,7 @@ export default {
           this.form.shippingType = data.shippingType
           this.form.beginNum = data.beginNum
           this.rewardCouponList = data.couponViews
+          this.goodsIdList = data.goodsList.map(item => item.goodsId)
           // if (data.rewardCouponId) {
           //   this.form.rewardCouponId = data.rewardCouponId.split(',')
           //   this.rewardCouponIds = data.rewardCouponId.split(',')

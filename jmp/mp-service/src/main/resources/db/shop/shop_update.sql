@@ -588,4 +588,6 @@ INSERT IGNORE INTO `b2c_shipping` (`shipping_id`, `shipping_code`, `express100_c
 INSERT IGNORE INTO `b2c_shipping` (`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (41, 'annengwuliu', '',  '安鲜达单', '安鲜达单', '0', 0, 0, '', 0, 0);
 INSERT IGNORE INTO `b2c_shipping` (`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (42, 'no_number_express', '',  '无单号物流', '无单号物流', '0', 0, 1, '', 0, 0);
 
+-- 2020.06.19 修改用户邀请保护时间类型
+ALTER TABLE b2c_user MODIFY COLUMN `invite_protect_date` datetime DEFAULT null COMMENT '邀请保护时间';
 /***********************2.13*********************END*/

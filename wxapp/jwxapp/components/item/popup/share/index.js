@@ -130,6 +130,9 @@ global.wxComponent({
       },{
         ...params
       })
+    },
+    handleDownloadCb(){
+      this.triggerEvent('handleDownloadCb')
     }
   }
 })

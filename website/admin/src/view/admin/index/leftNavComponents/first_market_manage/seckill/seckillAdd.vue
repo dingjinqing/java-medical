@@ -230,6 +230,19 @@
                 >包含{{scope.row.goodsSpecProducts.length}}个规格；库存合计：{{scope.row.totalStock ? scope.row.totalStock : 0}}</div>
               </template>
             </el-table-column>
+            <el-table-column
+              label="操作"
+              align="center"
+              v-if="!isEdite"
+            >
+              <template slot-scope="scope">
+                <div
+                  v-if="scope.row.goodsId"
+                  @click="deleteGoods(scope.row, scope.row.goodsId)"
+                  class="delete"
+                >删除</div>
+              </template>
+            </el-table-column>
             <div
               slot="append"
               class="moreSetUp"
@@ -712,6 +725,7 @@ export default {
           this.form.freeFreight = data.freeFreight
           this.form.first = data.first
           this.form.baseSale = data.baseSale
+          this.form.goodsId = data.goods.map(item => item.goodsId)
           // 展开设置
           this.arrorFlag = false
           // 会员卡
@@ -832,10 +846,10 @@ export default {
           this.form.secKillProduct.forEach(item => {
             if (item.goodsSpecProducts) {
               item.goodsSpecProducts.forEach(specItem => {
-                let {secKillPrice, stock, skproId = null} = specItem
+                let { secKillPrice, stock, skproId = null } = specItem
                 let goodsId = item.goodsId
                 let productId = this.isEdite ? specItem.productId : specItem.prdId
-                secKillProduct.push({goodsId, productId, secKillPrice: Number(secKillPrice), stock: Number(stock), skproId})
+                secKillProduct.push({ goodsId, productId, secKillPrice: Number(secKillPrice), stock: Number(stock), skproId })
                 this.form.stock += Number(stock)
               })
             } else {
@@ -1064,6 +1078,24 @@ export default {
       this.$refs['form'].validateField('cardId')
     },
 
+    // 处理删除商品
+    deleteGoods (data, id) {
+      console.log(data, id)
+      let idList = []
+      this.form.secKillProduct.map(item => {
+        idList.push(item.goodsId)
+      })
+      this.form.goodsId = idList
+      let index = this.form.goodsId.findIndex(item => {
+        return id === item.id
+      })
+      this.form.goodsId.splice(index, 1)
+      let goodsTarget = this.form.secKillProduct.findIndex(item => {
+        return id === item.id
+      })
+      this.form.secKillProduct.splice(goodsTarget, 1)
+    },
+
     // 标签弹窗
     selectLabel () {
       if (this.isEdite === true) {
@@ -1224,5 +1256,9 @@ export default {
   display: -webkit-box;
   margin-left: 12px;
   text-align: left;
+}
+.delete {
+  cursor: pointer;
+  color: #5a8bff;
 }
 </style>

@@ -264,9 +264,9 @@ export default {
     ManualRefund: () => import('./refundDialog'),
     MemberOrderExportDialog: () => import('./memberOrderExportDialog') // 会员卡购买页面数据导出弹窗
   },
-  props: ['userId'],
   data () {
     return {
+      userId: null,
       loading: false,
       showRefund: false,
       refundInfo: null,
@@ -289,6 +289,9 @@ export default {
     }
   },
   mounted () {
+    if (this.$route.query.userId) {
+      this.userId = this.$route.query.userId
+    }
     this.langDefault()
     this.initDataList()
   },

@@ -205,10 +205,14 @@ export default {
       showExportConfirm: false, // 是否展示导出数据弹窗
 
       // 原始表格数据
-      originalData: []
+      originalData: [],
+      userId: null
     }
   },
   mounted () {
+    if (this.$route.query.userId) {
+      this.userId = this.$route.query.userId
+    }
     this.langDefault()
     this.initDataList()
   },
@@ -227,6 +231,9 @@ export default {
       this.searchParams.endTime = this.applicationTime1
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
+      if (this.userId) {
+        this.searchParams.userId = this.userId
+      }
       getCouponPackageOrderList(this.searchParams).then((res) => {
         if (res.error === 0) {
           this.originalData = res.content.dataList

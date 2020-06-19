@@ -266,7 +266,7 @@ public class UserCardService extends ShopBaseService {
                 for(CardUpgradeVo vo: upgradeList.dataList) {
                     if(oldCardId.equals(vo.getNewCardId())) {
                         upgradeListNew.add(vo);
-                        oldCardId = vo.getNewCardId();
+                        oldCardId = vo.getOldCardId();
                     }else {
                         break;
                     }
@@ -384,7 +384,7 @@ public class UserCardService extends ShopBaseService {
 		//	升级
 		if(flag) {
 			String operation = "领取等级卡";
-			changeUserGradeCard(userId, oldGradeCard, newGradeCard, operation,false);
+			changeUserGradeCard(userId, oldGradeCard, newGradeCard, operation,true);
 		}
 		return cardId;
 	}
@@ -2817,6 +2817,8 @@ public class UserCardService extends ShopBaseService {
             .where(CHARGE_MONEY.CREATE_TIME.between(param.getStartTime(), param.getEndTime()))
             .and(CHARGE_MONEY.CHARGE.ge(BigDecimal.ZERO))
             .and(CHARGE_MONEY.TYPE.eq(ZERO))
+            .and(CHARGE_MONEY.CHANGE_TYPE.ge(CardConstant.CHARGE_SEND_CARD))
+            .and(CHARGE_MONEY.CHANGE_TYPE.le(CardConstant.CHARGE_ADMIN_OPT))
             .fetchInto(CardChargeAnalysisBo.class);
         return list.stream().collect(Collectors.groupingBy(CardChargeAnalysisBo::getCreateTime));
     }
@@ -2835,8 +2837,7 @@ public class UserCardService extends ShopBaseService {
             //已完成的
             .where(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_NORMAL)
                 .and(CHARGE_MONEY.CHARGE.gt(BigDecimal.ZERO)))
-            .and(CHARGE_MONEY.CHANGE_TYPE.ge(CardConstant.CHARGE_SEND_CARD))
-            .and(CHARGE_MONEY.CHANGE_TYPE.le(CardConstant.CHARGE_ADMIN_OPT));
+                .and(CHARGE_MONEY.CHANGE_TYPE.eq(CardConstant.CHARGE_USER_POWER));
         select = chargeBuildOptions(select, param);
         select = (SelectConditionStep<? extends Record>) select.orderBy(CHARGE_MONEY.CREATE_TIME.desc());
         PageResult<UserCardChargeListVo> result = getPageResult(select, param.getCurrentPage(), param.getPageRows(), UserCardChargeListVo.class);

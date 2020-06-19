@@ -69,6 +69,7 @@
   "usingComponents": {
     "v-navigation": "/components/custom-navigation/index",
     "v-popup-get-phone-number": "/components/popup/get-phone-number/index",
+    "v-toast":"/components/popup/toast/index",
     "share-button": "plugin://goodsSharePlugin/share-button"
   },
   "subpackages": [

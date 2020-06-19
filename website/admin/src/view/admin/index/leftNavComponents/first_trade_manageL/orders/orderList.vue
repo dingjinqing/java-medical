@@ -369,6 +369,7 @@
               <th width="10%">{{$t('order.goodsSnAndProductSn')}}</th>
               <th width="10%">{{$t('order.goodsPrice')}}</th>
               <th width="10%">{{$t('order.goodsNumber')}}</th>
+              <th width="10%">下单人</th>
               <th width="10%">{{$t('order.consignee')}}</th>
               <th>{{$t('order.orderTime')}}</th>
               <th width="10%">{{$t('order.orderStatusText')}}</th>
@@ -388,7 +389,7 @@
               :value="setGoodsTypeArray(orderItem)"
             >
               <tr class="order-tb-head">
-                <td colspan="8">
+                <td colspan="9">
                   <div class="tb-head_box">
                     <div class="left">
                       <el-tooltip
@@ -457,7 +458,7 @@
                 v-if="orderItem.goodsTypeArray.indexOf('10') != -1 "
                 class="order-tb-head"
               >
-                <td colspan="8">
+                <td colspan="9">
                   <div class="tb-head_box">
                     <div class="left pre-sale-info">
                       <el-tooltip
@@ -520,6 +521,15 @@
                   </td>
                   <td>{{goodsItem.goodsPrice.toFixed(2)}}</td>
                   <td>{{goodsItem.goodsNumber}}</td>
+                  <td
+                    v-if="goodsIndex === 0"
+                    :rowspan="orderItem.goods.length"
+                  >
+                    <div class="pointer" @click="viewUserCenter(orderItem.userId)">
+                      <p>{{orderItem.username}}</p>
+                      <p>{{orderItem.userMobile}}</p>
+                    </div>
+                  </td>
                   <td
                     v-if="goodsIndex === 0"
                     :rowspan="orderItem.goods.length"
@@ -1201,6 +1211,14 @@ export default {
         return new Date(returnTime).getTime() > new Date(refundTime).getTime() ? refundTime : returnTime
       }
       return returnTime || refundTime
+    },
+    viewUserCenter (userId) {
+      this.$router.push({
+        name: 'membershipInformation',
+        query: {
+          userId
+        }
+      })
     }
   }
 }
@@ -1462,6 +1480,10 @@ export default {
   }
   .middle_input{
     width:185px
+  }
+  .pointer{
+    cursor: pointer;
+    color: #409eff;
   }
 }
 </style>

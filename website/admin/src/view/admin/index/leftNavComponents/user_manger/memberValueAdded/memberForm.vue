@@ -180,6 +180,9 @@ export default {
     bottomFormData: {
       Type: Object,
       default: {}
+    },
+    userId: {
+      Type: Number
     }
   },
   data () {
@@ -204,6 +207,9 @@ export default {
       },
       deep: true,
       immediate: true
+    },
+    userId () {
+      this.handleToQueryData()
     }
   },
   methods: {
@@ -226,7 +232,8 @@ export default {
             renewTimeMin: this.propsData.afterRenewalStartTime,
             renewTimeMax: this.propsData.afterRenewalEndTime,
             currentPage: this.pageParams.currentPage,
-            pageRows: 20
+            pageRows: 20,
+            userId: this.userId
           }
           getRenewalDetails(params).then(res => {
             console.log(res)
@@ -252,12 +259,17 @@ export default {
             afterChargeMoneyMin: this.propsData.afterRechargeStartTime,
             afterChargeMoneyMax: this.propsData.afterRechargeEndTime,
             currentPage: this.pageParams.currentPage,
-            pageRows: 20
+            pageRows: 20,
+            userId: this.userId
           }
+
           memberpCarRecharge(params2).then(res => {
             console.log(res)
+            this.tableData1 = []
             if (res.error === 0) {
-              this.tableData1 = res.content.dataList
+              this.tableData1 = []
+              this.tableData1.push(...res.content.dataList)
+              console.log(this.tableData1, this.tableData1.length)
               this.pageParams = res.content.page
               this.loading = false
               console.log(this.pageParams)

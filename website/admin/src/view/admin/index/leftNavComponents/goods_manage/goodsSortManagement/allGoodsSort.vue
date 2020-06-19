@@ -79,7 +79,7 @@
               placement="top"
             >
               <span
-                class="el-icon-edit-outline operateSpan"
+                class="iconfont iconbianji"
                 @click="editGoodsSortClicked(row)"
               ></span>
             </el-tooltip>
@@ -88,7 +88,7 @@
               placement="top"
             >
               <span
-                class="el-icon-delete operateSpan"
+                class="iconfont iconfenxiang1"
                 @click="deleteGoodsSortClicked(row)"
               ></span>
             </el-tooltip>
@@ -179,32 +179,39 @@ export default {
 }
 </script>
 
-<style scoped>
-.goodsSortForm {
-  margin: 10px 0px;
-}
-.collapseIcon {
-  font-size: 20px;
-  margin-right: 4px;
-  margin-left: 20px;
-  color: #5a8bff;
-  cursor: pointer !important;
-}
-.collapseTab {
-  display: inline-block;
-  width: 60px;
-}
-.operateSpan {
-  font-size: 22px;
-  color: #5a8bff;
-  cursor: pointer !important;
-}
-/deep/ .tableClss th {
-  background-color: #f5f5f5;
-  border: none;
-  height: 36px;
-  font-weight: bold;
-  color: #000;
-  padding: 8px 10px;
+<style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
+.allGoodsSort {
+  .goodsSortForm {
+    margin: 10px 0px;
+  }
+  .collapseIcon {
+    font-size: 20px;
+    margin-right: 4px;
+    margin-left: 20px;
+    color: #5a8bff;
+    cursor: pointer !important;
+  }
+  .collapseTab {
+    display: inline-block;
+    width: 60px;
+  }
+  .operateSpan {
+    font-size: 22px;
+    color: #5a8bff;
+    cursor: pointer !important;
+  }
+  /deep/ .tableClss th {
+    background-color: #f5f5f5;
+    border: none;
+    height: 36px;
+    font-weight: bold;
+    color: #000;
+    padding: 8px 10px;
+  }
+  .iconfont {
+    font-size: 22px;
+    color: #5a8bff;
+  }
 }
 </style>

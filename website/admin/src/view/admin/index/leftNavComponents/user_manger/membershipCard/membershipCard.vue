@@ -288,7 +288,7 @@
                   class="hidden"
                   :src="$imageHost+'/image/admin/card_no_use.png'"
                 >
-                <div class="card_status">
+                <div class="card_status" v-show="false">
                   <span v-if="item.flag === 1">
                     {{$t('memberCard.tips')}}
                   </span>
@@ -306,7 +306,8 @@
                     v-if="item.avatar"
                   >
                   <div class="card_info_Right">
-                    <p class="cardName">{{item.cardName}}</p>
+                    <p class="cardName">{{item.cardName}} <span class="right-grade">{{item.grade.toUpperCase()}}</span></p>
+
                     <div class="time">
                       <span v-if="item.expireType === 0">
                         <!-- 固定日期 -->
@@ -1153,5 +1154,13 @@ export default {
       }
     }
   }
+}
+.right-grade{
+  float: right;
+}
+.right-grade::after{
+  content: "";
+  display: table;
+  clear: both;
 }
 </style>

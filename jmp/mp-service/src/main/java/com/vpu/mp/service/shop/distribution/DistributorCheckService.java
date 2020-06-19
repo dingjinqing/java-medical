@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.db.shop.tables.records.DistributorApplyRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -8,10 +9,12 @@ import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionApplyOptParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.UserBindParam;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -30,7 +33,8 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
  */
 @Service
 public class DistributorCheckService extends ShopBaseService{
-
+    @Autowired
+    private MpDistributionService mpd;
     /**
      * 分销员审核列表
      * @param param
@@ -119,13 +123,21 @@ public class DistributorCheckService extends ShopBaseService{
      */
     public boolean applyPass(DistributionApplyOptParam param){
         //获取申请信息
-        Integer userId = db().select(DISTRIBUTOR_APPLY.USER_ID).from(DISTRIBUTOR_APPLY).where(DISTRIBUTOR_APPLY.ID.eq(param.getId())).fetchOne().into(Integer.class);
+        DistributorApplyRecord into = db().select().from(DISTRIBUTOR_APPLY).where(DISTRIBUTOR_APPLY.ID.eq(param.getId())).fetchOne().into(DistributorApplyRecord.class);
         //事务处理
         this.transaction(() -> {
             //更新审核状态 1：审核通过；2：审核拒绝
             changeApplyStatus(param.getId(),(byte)1);
+            //如果有邀请码处理邀请绑定
+            if(param.getInvitationCode() != null){
+                Integer inviteId = db().select(USER.USER_ID).from(USER).where(USER.INVITATION_CODE.eq(param.getInvitationCode())).fetchOne().into(Integer.class);
+                UserBindParam userBindParam = new UserBindParam();
+                userBindParam.setInviteId(inviteId);
+                userBindParam.setUserId(into.getUserId());
+                mpd.userBind(userBindParam);
+            }
             //更新分销身份状态，分组情况
-            updateApplyGroup(userId,param.getGroupId());
+            updateApplyGroup(into.getUserId(),param.getGroupId());
         });
         //TODO：更改分销员的返利信息
         //TODO：操作记录

@@ -29,7 +29,7 @@ global.wxComponent({
     saveImage(){
       this.data.image.forEach(item=>{
         util.base64ImageHandle(item,res=>{
-          console.log(res)
+          this.triggerEvent('handleDownloadCb')
         })
       })
       this.bindClose()

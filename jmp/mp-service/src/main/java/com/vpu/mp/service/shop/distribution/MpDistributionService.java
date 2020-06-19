@@ -46,6 +46,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -156,16 +157,23 @@ public class MpDistributionService extends ShopBaseService{
 		DistributorApplyRecord record = new DistributorApplyRecord();
 		//获取分销配置，成为分销员是否需要审核
         DistributionParam cfg = this.distributionCfg.getDistributionCfg();
-        Integer state = 0;
-        Integer codeIsExist = sentInviteCodeVerify(param.getActivationFields().getInvitationCode());
-        if(codeIsExist == 0){
-            state = -1;
-        }else{
+        Integer state = 0;//返回状态
+        Integer codeIsExist = 1; //邀请码存在或不校验
+        //用户提交邀请码不为空的时候判断邀请码是否存在有效
+        if(param.getActivationFields().getInvitationCode() != null) {
+            codeIsExist = sentInviteCodeVerify(param.getActivationFields().getInvitationCode());
+            if (codeIsExist == 0) {
+                state = -1; //邀请码不存在
+            }
+        }
+        if(state != -1){
             if(cfg.getAutoExamine() == 1){//自动审核
+                //申请信息插入审核记录表
                 String checkInfo = Util.toJson(param.getActivationFields());
                 assign(param, record);
                 record.setActivationFields(checkInfo);
                 db().executeInsert(record);
+
                 DistributorApplyDetailParam res = db().select().from(DISTRIBUTOR_APPLY).where(DISTRIBUTOR_APPLY.USER_ID.eq(param.getUserId())).
                     orderBy(DISTRIBUTOR_APPLY.CREATE_TIME.desc()).limit(1).fetchOne().into(DistributorApplyDetailParam.class);
                 //更新申请表数据
@@ -174,9 +182,13 @@ public class MpDistributionService extends ShopBaseService{
                     .set(DISTRIBUTOR_APPLY.IS_AUTO_PASS,(byte)1)
                     .where(DISTRIBUTOR_APPLY.ID.eq(res.getId())).execute();
 
-                //邀请保护时间
-                Timestamp inviteProtectDate =DateUtil.getTimeStampPlus(cfg.getProtectDate(), ChronoUnit.DAYS);
-                Date pd = new Date(inviteProtectDate.getTime());
+                //建立邀请关系
+                Integer inviteId = db().select(USER.USER_ID).from(USER).where(USER.INVITATION_CODE.eq(param.getActivationFields().getInvitationCode())).fetchOne().into(Integer.class);
+                UserBindParam userBindParam = new UserBindParam();
+                userBindParam.setInviteId(inviteId);
+                userBindParam.setUserId(param.getUserId());
+                userBind(userBindParam);
+
                 //邀请失效时间
                 Timestamp inviteExpiryDate = DateUtil.getTimeStampPlus(cfg.getVaild(), ChronoUnit.DAYS);
                 Date ed = new Date(inviteExpiryDate.getTime());
@@ -192,10 +204,7 @@ public class MpDistributionService extends ShopBaseService{
                 db().update(USER)
                     .set(USER.IS_DISTRIBUTOR, (byte) 1)
                     .set(USER.INVITATION_CODE,inviteCode)
-                    .set(USER.INVITE_EXPIRY_DATE,ed)
-                    .set(USER.INVITE_PROTECT_DATE,pd)
                     .set(USER.INVITE_GROUP,inviteGroup)
-                    .set(USER.INVITE_ID,inviteUserId)
                     .set(USER.INVITE_TIME,DateUtil.getLocalDateTime())
                     .where(USER.USER_ID.eq(res.getUserId())).execute();
                 //审核通过
@@ -587,24 +596,37 @@ public class MpDistributionService extends ShopBaseService{
      * @param param
      */
     public void userBind(UserBindParam param){
-        //当前用户是否绑定邀请人
-        int inviteId = isBind(param);
-        if(inviteId > 0){
-            //判断已绑定邀请人是否为分销员
-            int isDistributor = isDistributor(param.getInviteId());
-            //是分销员，判断保护期是否有效
-            if(isDistributor == 1){
-               int isEffective = inviteProtectIsEffective(param.getUserId());
-               if(isEffective == 0){//不在有效保护期内，可以重新绑定
-                   //与当前邀请人建立绑定关系
-                   confirmUserBind(param);
-               }
-            }else{ //当前邀请人是普通用户，可以与当前用户建立邀请绑定
+        int canBind = 0;  //0不能建立邀请关系；1：可以建立邀请关系；
+        //一、排除二级成环情况
+        //判断邀请人是否有上级，若有返回上级ID
+        int upId = isBind(param.getInviteId());
+        if(upId > 0){//有上级邀请人
+            if(upId != param.getUserId()){// 邀请人的上级不是被邀请人，可以建立邀请关系
+                canBind = 1;
+            }
+        }else{ //无上级邀请人，可建立邀请关系
+            canBind = 1;
+        }
+        //二、建立绑定关系
+        if(canBind == 1){
+            //判断被邀请人是否已有邀请人
+            int inviteId = isBind(param.getUserId());
+            if(inviteId > 0){ //被邀请人已有上级
+                //判断上级是否为分销员
+                int isDistributor = isDistributor(inviteId);
+                //是分销员，判断保护期是否有效
+                if(isDistributor == 1){
+                    int isEffective = inviteProtectIsEffective(param.getUserId());
+                    if(isEffective == 0){//不在有效保护期内，可以重新绑定
+                        //与当前邀请人建立绑定关系
+                        confirmUserBind(param);
+                    }
+                }else{ //当前邀请人是普通用户，可以与当前用户建立邀请绑定
+                    confirmUserBind(param);
+                }
+            }else{//被邀请人没有上级，直接绑定
                 confirmUserBind(param);
             }
-        }else{
-            //没有邀请绑定关系，可以与当前用户建立邀请绑定
-            confirmUserBind(param);
         }
     }
 
@@ -613,6 +635,7 @@ public class MpDistributionService extends ShopBaseService{
      * @param param
      */
     private void confirmUserBind(UserBindParam param){
+        System.out.println("开始建立关系");
         //邀请人是否为分销员
         int isDistributor = isDistributor(param.getInviteId());
         if(!param.getUserId().equals(param.getInviteId())){
@@ -621,9 +644,24 @@ public class MpDistributionService extends ShopBaseService{
                 DistributionParam cfg = this.distributionCfg.getDistributionCfg();
                 //邀请保护时间
                 Timestamp protectDate =DateUtil.getTimeStampPlus(cfg.getProtectDate(), ChronoUnit.DAYS);
-                Date inviteProtectDate = new Date(protectDate.getTime());
+                if(cfg.getProtectDate() == -1){  //-1为永久保护
+                    Date foreverDate = new Date(946656000);
+                    protectDate = Util.getEarlyTimeStamp(foreverDate,1);
+                }
+                if(cfg.getProtectDate() == 0){ //没有保护期
+                    protectDate =Util.currentTimeStamp();
+                }
+
+                //邀请失效时间
+                Timestamp inviteExpiryDate = DateUtil.getTimeStampPlus(cfg.getVaild(), ChronoUnit.DAYS);
+                if(cfg.getVaild() == 0){  //永久返利有效
+                    Date foreverDate = new Date(946656000);
+                    inviteExpiryDate = Util.getEarlyTimeStamp(foreverDate,1);
+                }
+                Date ed = new Date(inviteExpiryDate.getTime());
                 db().update(USER).set(USER.INVITE_ID,param.getInviteId())
-                    .set(USER.INVITE_PROTECT_DATE,inviteProtectDate)
+                    .set(USER.INVITE_EXPIRY_DATE,ed)
+                    .set(USER.INVITE_PROTECT_DATE,protectDate)
                     .set(USER.INVITE_TIME,Util.currentTimeStamp())
                     .where(USER.USER_ID.eq(param.getUserId())).execute();
             }else{//不是分销员，直接建立绑定关系
@@ -636,11 +674,11 @@ public class MpDistributionService extends ShopBaseService{
 
     /**
      * 用户是否已绑定邀请人
-     * @param param
+     * @param userId
      * @return
      */
-     private int isBind(UserBindParam param){
-         Record record = db().select(USER.INVITE_ID).from(USER).where(USER.USER_ID.eq(param.getUserId())).fetchOne();
+     private int isBind(Integer userId){
+         Record record = db().select(USER.INVITE_ID).from(USER).where(USER.USER_ID.eq(userId)).fetchOne();
          if(record != null)
              return record.into(Integer.class);
          else
@@ -665,7 +703,9 @@ public class MpDistributionService extends ShopBaseService{
      private int inviteProtectIsEffective(Integer userId){
          UserRecord info = db().select(USER.INVITE_PROTECT_DATE).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(UserRecord.class);
          Timestamp nowDate = Util.currentTimeStamp();
-         if(nowDate.compareTo(info.getInviteProtectDate())>0)
+         Date foreverDate = new Date(946656000);
+         Timestamp protectDate = Util.getEarlyTimeStamp(foreverDate,3650);
+         if(nowDate.compareTo(info.getInviteProtectDate()) > 0 && info.getInviteProtectDate().compareTo(protectDate)>0)
              return 0; //邀请保护失效
          else
              return 1;  //邀请保护有效

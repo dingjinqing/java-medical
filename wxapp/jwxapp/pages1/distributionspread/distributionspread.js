@@ -43,6 +43,7 @@ global.wxPage({
       return false;
     }
     if (that.data.dis_content.activation == 1) {
+      // 存在审核项
       util.navigateTo({
         url: '/pages/memberinfo/memberinfo?distribution=1'
       })

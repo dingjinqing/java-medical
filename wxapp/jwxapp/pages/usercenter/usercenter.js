@@ -98,25 +98,36 @@ global.wxPage({
     })
   },
   to_where: function (e) {
+    var is_rebate = e.currentTarget.dataset.is_rebate; // 分销总开关
     var judge_statuss = e.currentTarget.dataset.judge_status; // 分销审核配置
     var is_distributors = e.currentTarget.dataset.is_distributor; // 分销员
     var can_withdraw = parseFloat(e.currentTarget.dataset.can_withdraw); // 提现金额
     var names = e.currentTarget.dataset.names;
-    if (is_distributors == 0 && judge_statuss == 1) {
-      if (can_withdraw > 0) {
-        util.navigateTo({
-          url: '/pages/distribution/distribution?names=' + names,
-        })
-      } else {
-        util.navigateTo({
-          url: "/pages/distributionspread/distributionspread",
-        })
-      }
+    if (is_rebate == 1 && judge_statuss == 1 && is_distributors == 0 && can_withdraw == 0) {
+      util.navigateTo({
+        url: "/pages/distributionspread/distributionspread",
+      })
     } else {
       util.navigateTo({
         url: '/pages/distribution/distribution?names=' + names,
       })
     }
+
+    // if (is_distributors == 0 && judge_statuss == 1) {
+    //   if (can_withdraw > 0) {
+    //     util.navigateTo({
+    //       url: '/pages/distribution/distribution?names=' + names,
+    //     })
+    //   } else {
+    //     util.navigateTo({
+    //       url: "/pages/distributionspread/distributionspread",
+    //     })
+    //   }
+    // } else {
+    //   util.navigateTo({
+    //     url: '/pages/distribution/distribution?names=' + names,
+    //   })
+    // }
   },
   toSign: function (e) {
     is_sign = 1;
