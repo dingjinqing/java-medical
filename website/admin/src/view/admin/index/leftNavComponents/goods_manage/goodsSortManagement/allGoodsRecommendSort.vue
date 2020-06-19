@@ -109,7 +109,7 @@
               placement="top"
             >
               <span
-                class="el-icon-edit-outline operateSpan"
+                class="iconfont iconbianji"
                 @click="editGoodsRecommendSortClicked(row)"
               ></span>
             </el-tooltip>
@@ -118,7 +118,7 @@
               placement="top"
             >
               <span
-                class="el-icon-delete operateSpan"
+                class="iconfont iconfenxiang1"
                 @click="deleteGoodsRecommendSortClicked(row)"
               ></span>
             </el-tooltip>
@@ -190,7 +190,7 @@ export default {
     },
     /* 删除图标 */
     deleteSortImg () {
-      this.recommendSortCfg.recommendSortImgObj = {imgUrl: null, imgPath: null}
+      this.recommendSortCfg.recommendSortImgObj = { imgUrl: null, imgPath: null }
     },
     /* 选择链接 */
     chooseImgLink () {
@@ -262,54 +262,61 @@ export default {
 }
 </script>
 
-<style scoped>
-.content {
-  margin: 20px 0px;
-  padding-left: 10px;
-  margin-bottom: 50px;
-}
-.inputTip {
-  color: #999;
-  display: block;
-}
-.deleteIcon {
-  width: 17px;
-  height: 17px;
-  color: #fff;
-  background: #ccc;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  line-height: 17px;
-  text-align: center;
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  cursor: pointer;
-  opacity: 0.8;
-}
-/deep/ .tableClss th {
-  background-color: #f5f5f5;
-  border: none;
-  height: 36px;
-  font-weight: bold;
-  color: #000;
-  padding: 8px 10px;
-}
-.operateSpan {
-  font-size: 22px;
-  color: #5a8bff;
-  cursor: pointer !important;
-}
-.contentFooter {
-  position: absolute;
-  bottom: 0;
-  right: 27px;
-  left: 160px;
-  height: 52px;
-  padding: 10px 0;
-  background-color: #fff;
-  text-align: center;
-  border-top: 1px solid #eee;
-  z-index: 99;
+<style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
+.allGoodsRecommendSort {
+  .content {
+    margin: 20px 0px;
+    padding-left: 10px;
+    margin-bottom: 50px;
+    .inputTip {
+      color: #999;
+      display: block;
+    }
+    .deleteIcon {
+      width: 17px;
+      height: 17px;
+      color: #fff;
+      background: #ccc;
+      border: 1px solid #ccc;
+      border-radius: 50%;
+      line-height: 17px;
+      text-align: center;
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      cursor: pointer;
+      opacity: 0.8;
+    }
+    .operateSpan {
+      font-size: 22px;
+      color: #5a8bff;
+      cursor: pointer !important;
+    }
+  }
+  .contentFooter {
+    position: absolute;
+    bottom: 0;
+    right: 27px;
+    left: 160px;
+    height: 52px;
+    padding: 10px 0;
+    background-color: #fff;
+    text-align: center;
+    border-top: 1px solid #eee;
+    z-index: 99;
+  }
+  /deep/ .tableClss th {
+    background-color: #f5f5f5;
+    border: none;
+    height: 36px;
+    font-weight: bold;
+    color: #000;
+    padding: 8px 10px;
+  }
+  .iconfont {
+    font-size: 22px;
+    color: #5a8bff;
+  }
 }
 </style>

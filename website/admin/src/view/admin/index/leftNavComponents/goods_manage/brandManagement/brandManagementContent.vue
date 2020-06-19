@@ -358,7 +358,7 @@
                 v-if="hiddle_1"
               >
                 <span
-                  class="el-icon-edit-outline operateSpan"
+                  class="iconfont iconbianji"
                   @click="handleEditGoods(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -368,7 +368,7 @@
                 v-if="hiddle_1"
               >
                 <span
-                  class="el-icon-delete operateSpan"
+                  class="iconfont iconshanchu2"
                   @click="deleGrand(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -1015,6 +1015,7 @@ export default {
 }
 </script>
 <style scoped lang='scss'>
+@import "@/assets/aliIcon/iconfont.scss";
 /deep/ .tableClss th {
   background-color: #f5f5f5;
   border: none;
@@ -1291,5 +1292,9 @@ tbody img {
   font-size: 22px;
   color: #5a8bff;
   cursor: pointer !important;
+}
+.iconfont {
+  font-size: 22px !important;
+  color: #5a8bff;
 }
 </style>
