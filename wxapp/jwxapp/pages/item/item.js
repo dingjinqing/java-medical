@@ -211,12 +211,19 @@ global.wxPage({
       rebateSId = null,
       uid = null
     } = options
+    if(rebateConfig){
+      try {
+        rebateConfig = JSON.parse(rebateConfig)
+      } catch (error) {
+        rebateConfig = rebateConfig
+      }
+    }
     this.setData({
       goodsId,
       activityId: activityId === 'null' ? null : activityId,
       activityType: activityType === 'null' || activityType === '0' ? null : activityType,
       roomId: roomId,
-      rebateConfig : typeof rebateConfig === 'string' ? JSON.parse(rebateConfig) : rebateConfig,
+      rebateConfig : rebateConfig,
       inviteId,
       shareAwardLaunchUserId,
       shareAwardId,
@@ -234,7 +241,13 @@ global.wxPage({
   async requestGoodsInfo () {
     let result = new Promise((resolve, reject) => {
       let customParams = {}
-      if (this.data.rebateConfig) customParams.rebateConfig = JSON.parse(this.data.rebateConfig)
+      if (this.data.rebateConfig) {
+        try {
+          customParams.rebateConfig = JSON.parse(this.data.rebateConfig)
+        } catch (error) {
+          customParams.rebateConfig = this.data.rebateConfig
+        }
+      }
       if (this.data.shareAwardId && (this.data.shareAwardLaunchUserId || this.data.inviteId || this.data.uid)) {
         customParams.shareAwardId = this.data.shareAwardId
         customParams.shareAwardLaunchUserId = this.data.shareAwardLaunchUserId || this.data.inviteId || this.data.uid
