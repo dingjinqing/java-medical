@@ -40,17 +40,17 @@ public class DistributionConfigService extends BaseShopConfigService {
     public DistributionParam getDistributionCfg() {
         DistributionParam jsonObject = this.getJsonObject(K_FANLI, DistributionParam.class);
         if(jsonObject == null){
-            jsonObject = new DistributionParam();
-        }
-        //是否有分销员
-        Integer hasDistributor = hasDistributor();
-        if(hasDistributor > 0){
-            jsonObject.setHasDistributor(1);
+            return null;
         }else{
-            jsonObject.setHasDistributor(0);
+            //是否有分销员
+            Integer hasDistributor = hasDistributor();
+            if(hasDistributor > 0){
+                jsonObject.setHasDistributor(1);
+            }else{
+                jsonObject.setHasDistributor(0);
+            }
+            return jsonObject;
         }
-
-        return jsonObject;
     }
 
     /**
