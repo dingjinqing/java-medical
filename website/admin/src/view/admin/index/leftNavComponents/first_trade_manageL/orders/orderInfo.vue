@@ -30,7 +30,7 @@
             <div class="item">{{$t('order.orderTime')}}：{{order.createTime}}</div>
             <div class="item">{{$t('order.deliverTypeText')}}：{{deliverTypeMap.get(order.deliverType)}}</div>
             <div class="item">{{$t('order.orderSn')}}：{{order.orderSn}}</div>
-            <div class="item">{{$t('order.userNameText')}}：{{order.username}}</div>
+            <div class="item">{{$t('order.userNameText')}}：<span class="pointer" @click="viewUserCenter(order.userId)">{{order.username}}</span></div>
             <div class="item">{{$t('order.userMobileText')}}：{{order.userMobile || '无'}}</div>
             <div
               class="item"
@@ -910,6 +910,14 @@ export default {
           returnOrderSn: returnOrderSn
         }
       })
+    },
+    viewUserCenter (userId) {
+      this.$router.push({
+        name: 'membershipInformation',
+        query: {
+          userId
+        }
+      })
     }
   },
   computed: {
@@ -1286,6 +1294,10 @@ export default {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+  }
+  .pointer{
+    cursor: pointer;
+    color: #409eff;
   }
 }
 // .status_box {
