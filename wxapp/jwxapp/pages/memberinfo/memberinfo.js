@@ -804,39 +804,41 @@ global.wxPage({
 
     if (!distribution) user_info.card_no = card_no;
 
-    if (that.data.save_flag == 1) {
-      that.setData({
-        save_flag: 0
-      })
-      if (distribution == 1) {
-        console.log(user_info)
-        util.api('/api/wxapp/distribution/distributor/apply', function (res) {
-          if (res.error == 0) {
-            if (res.content == -1) {
-              // 申请不成功, 邀请码不存在
-              util.showModal("提示", "邀请码不存在");
-              return false;
-            } else if (res.content == 1) {
-              util.showModal('提示', '自动审核通过', function () {
-                util.redirectTo({
-                  url: '/pages/distributionspread/distributionspread'
-                })
-              });
-            } else if (res.content === 0) {
-              util.showModal('提示', '申请成功', function () {
-                util.redirectTo({
-                  url: '/pages/distributionspread/distributionspread'
-                })
-              });
-            }
-          } else {
-            util.showModal('提示', res.message)
+
+    if (distribution == 1) {
+      console.log(user_info)
+      util.api('/api/wxapp/distribution/distributor/apply', function (res) {
+        if (res.error == 0) {
+          if (res.content == -1) {
+            // 申请不成功, 邀请码不存在
+            util.showModal("提示", "邀请码不存在");
+            return false;
+          } else if (res.content == 1) {
+            util.showModal('提示', '自动审核通过', function () {
+              util.redirectTo({
+                url: '/pages/distributionspread/distributionspread'
+              })
+            });
+          } else if (res.content === 0) {
+            util.showModal('提示', '申请成功', function () {
+              util.redirectTo({
+                url: '/pages/distributionspread/distributionspread'
+              })
+            });
           }
-        }, {
-          activationFields: user_info,
-          configFields: JSON.stringify(config)
+        } else {
+          util.showModal('提示', res.message)
+        }
+      }, {
+        activationFields: user_info,
+        configFields: JSON.stringify(config)
+      })
+    } else {
+      if (that.data.save_flag == 1) {
+        that.setData({
+          save_flag: 0
         })
-      } else {
+        
         console.log(card_no)
         console.log(user_info)
 
@@ -967,18 +969,10 @@ global.wxPage({
             user_block: 1
           })
         }, { cardNo: card_no, isSetting: 1, activateOption: user_info, customOptions: custom_options })
-
-
-
+      } else {
+        util.showModal("提示", '请勿重复提交');
       }
-
-    } else {
-      util.showModal("提示", '请勿重复提交');
     }
-
-
-
-
   },
   // 单选 选项
   bindRadiosChange (e) {
