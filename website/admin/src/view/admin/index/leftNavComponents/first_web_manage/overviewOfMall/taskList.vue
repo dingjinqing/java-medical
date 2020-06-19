@@ -1221,6 +1221,8 @@ export default {
       if (name === 'distribution_info') {
         obj.distributorName = 'ninth'
       }
+      localStorage.setItem('distributionTap', 'ninth')
+      localStorage.setItem('distributionTapIndex', 8)
       this.$router.push({
         name: name,
         params: obj

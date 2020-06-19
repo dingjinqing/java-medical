@@ -1434,19 +1434,23 @@ export default {
         // 分销员审核
         let routeData = this.$router.resolve({
           name: 'distribution_info',
-          query: {
+          params: {
             distributorName: 'ninth'
           }
         })
+        localStorage.setItem('distributionTap', 'ninth')
+        localStorage.setItem('distributionTapIndex', 8)
         window.open(routeData.href, '_blank')
       } else if (value === 8) {
         // 分销体现待审核
         let routeData = this.$router.resolve({
           name: 'distribution_info',
-          query: {
+          params: {
             distributorName: 'eighth'
           }
         })
+        localStorage.setItem('distributionTap', 'eighth')
+        localStorage.setItem('distributionTapIndex', 7)
         window.open(routeData.href, '_blank')
       }
     },

@@ -133,7 +133,6 @@ export default {
       if (from.name === null || (to.params.distributorName === 'fouth' && to.name === 'distribution_info' && (from.name === 'distribution_info_inviteUser' || from.name === 'distribution_info_indirectUser'))) {
         vm.activeName = localStorage.getItem('distributionTap')
       } else {
-        vm.activeName = 'first'
         localStorage.removeItem('distributionTapIndex')
       }
     })
