@@ -56,10 +56,18 @@ public class OrderGoodsRebateService extends ShopBaseService {
         }
         //成本控制
         if(rebateRecords.get(0).getStrategy().getCostProtection() == OrderConstant.YES && BigDecimalUtil.compareTo(goodsTotalRebateMoney, check) > 0) {
-            BigDecimal limitRatio = BigDecimalUtil.divide(check, goodsTotalRebateMoney, RoundingMode.HALF_DOWN);
             for (OrderGoodsRebateRecord record: result) {
-                record.setTotalRebateMoney(BigDecimalUtil.multiply(record.getTotalRebateMoney(), limitRatio));
-                record.setRebateMoney(BigDecimalUtil.divide(record.getTotalRebateMoney(), new BigDecimal(bo.getGoodsNumber()), RoundingMode.HALF_DOWN));
+                record.setTotalRebateMoney(BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.HALF_DOWN,
+                    BigDecimalUtil.BigDecimalPlus.create(record.getTotalRebateMoney(), BigDecimalUtil.Operator.multiply),
+                    BigDecimalUtil.BigDecimalPlus.create(check, BigDecimalUtil.Operator.divide),
+                    BigDecimalUtil.BigDecimalPlus.create(goodsTotalRebateMoney))
+                );
+                record.setRebateMoney(BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.HALF_DOWN,
+                    BigDecimalUtil.BigDecimalPlus.create(record.getTotalRebateMoney(), BigDecimalUtil.Operator.multiply),
+                    BigDecimalUtil.BigDecimalPlus.create(check, BigDecimalUtil.Operator.divide),
+                    BigDecimalUtil.BigDecimalPlus.create(goodsTotalRebateMoney, BigDecimalUtil.Operator.divide),
+                    BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(bo.getGoodsNumber()))
+                ));
             }
         }
         return result;

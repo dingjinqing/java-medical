@@ -2817,6 +2817,8 @@ public class UserCardService extends ShopBaseService {
             .where(CHARGE_MONEY.CREATE_TIME.between(param.getStartTime(), param.getEndTime()))
             .and(CHARGE_MONEY.CHARGE.ge(BigDecimal.ZERO))
             .and(CHARGE_MONEY.TYPE.eq(ZERO))
+            .and(CHARGE_MONEY.CHANGE_TYPE.ge(CardConstant.CHARGE_SEND_CARD))
+            .and(CHARGE_MONEY.CHANGE_TYPE.le(CardConstant.CHARGE_ADMIN_OPT))
             .fetchInto(CardChargeAnalysisBo.class);
         return list.stream().collect(Collectors.groupingBy(CardChargeAnalysisBo::getCreateTime));
     }
