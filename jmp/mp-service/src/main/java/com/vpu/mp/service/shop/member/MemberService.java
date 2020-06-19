@@ -48,6 +48,7 @@ import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.wxapp.distribution.UserBindParam;
 import com.vpu.mp.service.saas.area.AreaSelectService;
 import com.vpu.mp.service.shop.card.CardFreeShipService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -915,8 +916,21 @@ public class MemberService extends ShopBaseService {
         	if(param.getUserId().equals(param.getInviteId())) {
         		throw new MpException(JsonResultCode.USER_INVITED_MSG);
         	}
+
+        	//  不能互为邀请人检查
+            int bind = saas.getShopApp(getShopId()).mpDistribution.isBind(param.getInviteId());
+            if(bind == param.getUserId()){
+                throw new MpException(JsonResultCode.USER_INVITED_NOT_EACH_OTHER);
+            }
+
             /** 更新user表*/
-			memberDao.updateMemberInviteId(param.getUserId(),param.getInviteId());
+            memberDao.updateMemberInviteId(param.getUserId(),param.getInviteId());
+            logger().info("设置分销处理");
+            //  分销邀请人处理
+            UserBindParam param2 = new UserBindParam();
+        	param2.setUserId(param.getUserId());
+        	param2.setInviteId(param.getInviteId());
+            saas.getShopApp(getShopId()).mpDistribution.userBind(param2);
 		}
 
 	}
