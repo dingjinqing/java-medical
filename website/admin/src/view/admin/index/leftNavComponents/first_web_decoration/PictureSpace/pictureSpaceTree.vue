@@ -5,7 +5,6 @@
       <div class="dialog_top">
         <el-upload
           class="upload-demo"
-          style="float:left;"
           :before-upload="beforeUpLoad"
           multiple
           :limit="5"
@@ -17,12 +16,12 @@
             size="small"
             type="primary"
           >{{$t('imgageDalog.upload')}}</el-button>
-        </el-upload>
-        <div
+
+          <div
             @mouseover="tip_over()"
             @mouseleave="tip_leave()"
             class="title_tip"
-          >{{$t('imgsSpace.tipTitle')}}<img :src="tip_img">
+          >当前版本为旗舰版，剩余{{memory}}M内存空间<img :src="tip_img">
             <div
               class="tip_hidden"
               v-if="tip_hidden_flag"
@@ -32,7 +31,6 @@
                 <el-button
                   type="primary"
                   size="mini"
-                  @click="goVersionUpgrade"
                 >{{$t('imgsSpace.modeText')}}</el-button>
               </div>
             </div>
@@ -44,6 +42,7 @@
           >
             <img :src="imgUrl[0].img_1">
             {{$t('imgageDalog.tip')}}</div>
+        </el-upload>
       </div>
       <!-- dialog_middle -->
       <div class="dialog_middle">
@@ -281,7 +280,8 @@ export default {
       checkArr: '',
       upImgWidth: '',
       upImgHeight: '',
-      clickUserPicFlag: 1
+      clickUserPicFlag: 1,
+      memory: '' // 内存
 
     }
   },
@@ -389,6 +389,7 @@ export default {
       // console.log(obj)
       queryImgsRequest(obj).then((res) => {
         if (res.error === 0) {
+          this.memory = res.content.freeMemory
           // console.log(res.content.dataList.length)
           if (res.content.dataList.length === 0) {
             this.right_content_hidden = false
@@ -452,6 +453,12 @@ export default {
           if (res.error === 0) {
             localStorage.setItem('contentType', 'application/json;charset=UTF-8')
             _this.detailImgsSearch()
+          } else {
+            console.log('触发')
+            _this.$message.error({
+              message: res.message,
+              showClose: true
+            })
           }
         }).catch(err => {
           console.log(err)
@@ -672,19 +679,12 @@ export default {
     clickUserPic (flag) {
       console.log(flag)
       this.clickUserPicFlag = flag
-      // this.detailImgsSearch()
+      this.detailImgsSearch()
     },
     handleToResetPage () {
       this.currentPage3 = 1
       console.log('触发')
       this.detailImgsSearch()
-    },
-    // 版本升级或续费
-    goVersionUpgrade () {
-      this.$router.push({
-        path: '/admin/home/main/versionUpgrade',
-        query: { mod: '图片空间' }
-      })
     }
   }
 }
@@ -715,7 +715,6 @@ export default {
   text-align: justify;
 }
 .system_info_content_bottom {
-  text-align: center;
   padding-top: 7px;
 }
 .tip_hidden {
