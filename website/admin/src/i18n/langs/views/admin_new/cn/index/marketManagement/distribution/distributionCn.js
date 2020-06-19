@@ -275,7 +275,7 @@ export const cn = {
   invitedUserMobile: '被邀请用户手机号',
   invitedUserName: '被邀请用户昵称',
   distributorLevel: '分销员等级',
-  haveNextUset: '有下级用户',
+  haveNextUser: '有下级用户',
   haveMobile: '有手机号',
   haveRealName: '有真实姓名',
   distributorListfont: '注：',

@@ -112,22 +112,6 @@ global.wxPage({
         url: '/pages/distribution/distribution?names=' + names,
       })
     }
-
-    // if (is_distributors == 0 && judge_statuss == 1) {
-    //   if (can_withdraw > 0) {
-    //     util.navigateTo({
-    //       url: '/pages/distribution/distribution?names=' + names,
-    //     })
-    //   } else {
-    //     util.navigateTo({
-    //       url: "/pages/distributionspread/distributionspread",
-    //     })
-    //   }
-    // } else {
-    //   util.navigateTo({
-    //     url: '/pages/distribution/distribution?names=' + names,
-    //   })
-    // }
   },
   toSign: function (e) {
     is_sign = 1;
