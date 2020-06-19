@@ -42,7 +42,7 @@ public class OrderOperationJudgment {
 			return false;
 		}
 		/**
-		 * 1退款支持状态:待发货 已发货 已收货;
+		 * 1退款支持状态:待发货 已发货 已收货 已完成;
 		 * 2货到付款设置支付金额为0,然后判断支付金额是否>0
 		 * 3余额支付判断积分抵扣金额，余额消费金额，会员卡消费金额，子单金额
 		 */
@@ -65,7 +65,7 @@ public class OrderOperationJudgment {
 	 */
 	public static boolean adminIsReturnGoods(OrderListInfoVo order) {
 		//TODO 此功能为卖家专用，现后台退部分发货已发货不支持，后期做 
-		//已收货,已完成状态
+		//已发货、已收货,已完成状态
 		if(OrderConstant.IS_RETURNGOODS.contains(order.getOrderStatus())){
 			return true;
 		}

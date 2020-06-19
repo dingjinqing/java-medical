@@ -152,65 +152,76 @@ public class MpDistributionService extends ShopBaseService{
 	 * @return state申请状态 -1：邀请码不存在；0：审核中；1：审核通过
 	 */
 	public int distributorApply(DistributorApplyParam param) {
-	    //生成有效邀请码
-        String inviteCode = this.validInviteCode();
-		DistributorApplyRecord record = new DistributorApplyRecord();
-		//获取分销配置，成为分销员是否需要审核
+        Integer state = 0;//返回状态
+        //获取分销配置，成为分销员是否需要审核
         DistributionParam cfg = this.distributionCfg.getDistributionCfg();
-        Integer state = 0;
-        Integer codeIsExist = sentInviteCodeVerify(param.getActivationFields().getInvitationCode());
-        if(codeIsExist == 0){
-            state = -1;
-        }else{
-            if(cfg.getAutoExamine() == 1){//自动审核
-                String checkInfo = Util.toJson(param.getActivationFields());
-                assign(param, record);
-                record.setActivationFields(checkInfo);
-                db().executeInsert(record);
-                DistributorApplyDetailParam res = db().select().from(DISTRIBUTOR_APPLY).where(DISTRIBUTOR_APPLY.USER_ID.eq(param.getUserId())).
-                    orderBy(DISTRIBUTOR_APPLY.CREATE_TIME.desc()).limit(1).fetchOne().into(DistributorApplyDetailParam.class);
-                //更新申请表数据
-                db().update(DISTRIBUTOR_APPLY)
-                    .set(DISTRIBUTOR_APPLY.STATUS, (byte) 1)
-                    .set(DISTRIBUTOR_APPLY.IS_AUTO_PASS,(byte)1)
-                    .where(DISTRIBUTOR_APPLY.ID.eq(res.getId())).execute();
+        if(cfg.getActivation() == 0){  //不提交审核信息，直接成为分销员
+            db().update(USER)
+                .set(USER.IS_DISTRIBUTOR, (byte) 1)
+                .where(USER.USER_ID.eq(param.getUserId())).execute();
+            state = 0;
+        }else {
+            //生成有效邀请码
+            String inviteCode = this.validInviteCode();
+            DistributorApplyRecord record = new DistributorApplyRecord();
 
-                //邀请保护时间
-                Timestamp protectDate =DateUtil.getTimeStampPlus(cfg.getProtectDate(), ChronoUnit.DAYS);
-                if(cfg.getProtectDate() == -1){  //-1为永久保护
-                    protectDate = new Timestamp(1970-01-01);
+            Integer codeIsExist = 1; //邀请码存在或不校验
+            //用户提交邀请码不为空的时候判断邀请码是否存在有效
+            if (param.getActivationFields().getInvitationCode() != null) {
+                codeIsExist = sentInviteCodeVerify(param.getActivationFields().getInvitationCode());
+                if (codeIsExist == 0) {
+                    state = -1; //邀请码不存在
                 }
-                if(cfg.getProtectDate() == 0){ //没有保护期
-                    protectDate =Util.currentTimeStamp();
+            }
+            if (state != -1) {
+                if (cfg.getAutoExamine() == 1) {//自动审核
+                    //申请信息插入审核记录表
+                    String checkInfo = Util.toJson(param.getActivationFields());
+                    assign(param, record);
+                    record.setActivationFields(checkInfo);
+                    db().executeInsert(record);
+
+                    DistributorApplyDetailParam res = db().select().from(DISTRIBUTOR_APPLY).where(DISTRIBUTOR_APPLY.USER_ID.eq(param.getUserId())).
+                        orderBy(DISTRIBUTOR_APPLY.CREATE_TIME.desc()).limit(1).fetchOne().into(DistributorApplyDetailParam.class);
+                    //更新申请表数据
+                    db().update(DISTRIBUTOR_APPLY)
+                        .set(DISTRIBUTOR_APPLY.STATUS, (byte) 1)
+                        .set(DISTRIBUTOR_APPLY.IS_AUTO_PASS, (byte) 1)
+                        .where(DISTRIBUTOR_APPLY.ID.eq(res.getId())).execute();
+
+                    //建立邀请关系
+                    Integer inviteId = db().select(USER.USER_ID).from(USER).where(USER.INVITATION_CODE.eq(param.getActivationFields().getInvitationCode())).fetchOne().into(Integer.class);
+                    UserBindParam userBindParam = new UserBindParam();
+                    userBindParam.setInviteId(inviteId);
+                    userBindParam.setUserId(param.getUserId());
+                    userBind(userBindParam);
+
+                    //邀请失效时间
+                    Timestamp inviteExpiryDate = DateUtil.getTimeStampPlus(cfg.getVaild(), ChronoUnit.DAYS);
+                    Date ed = new Date(inviteExpiryDate.getTime());
+                    //分销分组
+                    Integer inviteGroup = 0;
+                    if (param.getActivationFields().getRebateGroup() != null) {
+                        inviteGroup = param.getActivationFields().getRebateGroup();
+                    }
+                    //邀请人id
+                    Integer inviteUserId = db().select(USER.USER_ID).from(USER)
+                        .where(USER.INVITATION_CODE.eq(param.getActivationFields().getInvitationCode())).fetchOne().into(Integer.class);
+                    //更新用户信息
+                    db().update(USER)
+                        .set(USER.IS_DISTRIBUTOR, (byte) 1)
+                        .set(USER.INVITATION_CODE, inviteCode)
+                        .set(USER.INVITE_GROUP, inviteGroup)
+                        .set(USER.INVITE_TIME, DateUtil.getLocalDateTime())
+                        .where(USER.USER_ID.eq(res.getUserId())).execute();
+                    //审核通过
+                    state = 1;
+                } else {//后台手动审核
+                    String checkInfo = Util.toJsonNotNull(param.getActivationFields());
+                    assign(param, record);
+                    record.setActivationFields(checkInfo);
+                    db().executeInsert(record);
                 }
-                //邀请失效时间
-                Timestamp inviteExpiryDate = DateUtil.getTimeStampPlus(cfg.getVaild(), ChronoUnit.DAYS);
-                Date ed = new Date(inviteExpiryDate.getTime());
-                //分销分组
-                Integer inviteGroup = 0;
-                if(param.getActivationFields().getRebateGroup() != null){
-                    inviteGroup = param.getActivationFields().getRebateGroup();
-                }
-                //邀请人id
-                Integer inviteUserId = db().select(USER.USER_ID).from(USER)
-                    .where(USER.INVITATION_CODE.eq(param.getActivationFields().getInvitationCode())).fetchOne().into(Integer.class);
-                //更新用户信息
-                db().update(USER)
-                    .set(USER.IS_DISTRIBUTOR, (byte) 1)
-                    .set(USER.INVITATION_CODE,inviteCode)
-                    .set(USER.INVITE_EXPIRY_DATE,ed)
-                    .set(USER.INVITE_PROTECT_DATE,protectDate)
-                    .set(USER.INVITE_GROUP,inviteGroup)
-                    .set(USER.INVITE_ID,inviteUserId)
-                    .set(USER.INVITE_TIME,DateUtil.getLocalDateTime())
-                    .where(USER.USER_ID.eq(res.getUserId())).execute();
-                //审核通过
-                state = 1;
-            }else{//后台手动审核
-                String checkInfo = Util.toJsonNotNull(param.getActivationFields());
-                assign(param, record);
-                record.setActivationFields(checkInfo);
-                db().executeInsert(record);
             }
         }
         return state;
@@ -648,8 +659,16 @@ public class MpDistributionService extends ShopBaseService{
                 if(cfg.getProtectDate() == 0){ //没有保护期
                     protectDate =Util.currentTimeStamp();
                 }
-                System.out.println(protectDate);
+
+                //邀请失效时间
+                Timestamp inviteExpiryDate = DateUtil.getTimeStampPlus(cfg.getVaild(), ChronoUnit.DAYS);
+                if(cfg.getVaild() == 0){  //永久返利有效
+                    Date foreverDate = new Date(946656000);
+                    inviteExpiryDate = Util.getEarlyTimeStamp(foreverDate,1);
+                }
+                Date ed = new Date(inviteExpiryDate.getTime());
                 db().update(USER).set(USER.INVITE_ID,param.getInviteId())
+                    .set(USER.INVITE_EXPIRY_DATE,ed)
                     .set(USER.INVITE_PROTECT_DATE,protectDate)
                     .set(USER.INVITE_TIME,Util.currentTimeStamp())
                     .where(USER.USER_ID.eq(param.getUserId())).execute();

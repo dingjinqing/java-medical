@@ -231,9 +231,11 @@
                       v-if="index === 0"
                       :rowspan="orderItem.goods.length"
                     >
-                      {{orderItem.orderUserName}}
-                      <br />
-                      {{orderItem.orderMobile}}
+                      <div class="high-light" @click="viewUserCenter(orderItem.userId)">
+                        {{orderItem.orderUserName}}
+                        <br />
+                        {{orderItem.orderMobile}}
+                      </div>
                     </td>
                     <td
                       v-if="index === 0"
@@ -277,6 +279,16 @@
                   </td>
                   <td>
                     {{returnTypeMap.get(orderItem.returnType)}}
+                    <br />
+                    ({{$t(`order.returnWaysList`).find(item=>item.value === orderItem.returnSource).label}})
+                  </td>
+                  <td
+                  >
+                    <div class="high-light" @click="viewUserCenter(orderItem.userId)">
+                      {{orderItem.orderUserName}}
+                      <br />
+                      {{orderItem.orderMobile}}
+                    </div>
                   </td>
                   <td>
                     {{$t('order.reasonTypeList')[orderItem.reasonType]}}
@@ -560,6 +572,14 @@ export default {
       } else {
         target.endTime = null
       }
+    },
+    viewUserCenter (userId) {
+      this.$router.push({
+        name: 'membershipInformation',
+        query: {
+          userId
+        }
+      })
     }
   }
 }

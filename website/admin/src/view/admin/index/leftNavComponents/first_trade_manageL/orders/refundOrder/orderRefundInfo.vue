@@ -263,7 +263,7 @@
             </tr>
             <tr>
               <td>{{$t('order.orderUserInfo')}}</td>
-              <td colspan="3">{{returnInfo.username}} {{returnInfo.mobile}}</td>
+              <td colspan="3"><span class="high-light" @click="viewUserCenter(returnInfo.userId)">{{returnInfo.username}} {{returnInfo.mobile}}</span></td>
             </tr>
             <tr>
               <td>{{$t('order.returnType')}}</td>
@@ -970,6 +970,14 @@ export default {
         name: 'orderInfo',
         query: {
           orderSn: orderSn
+        }
+      })
+    },
+    viewUserCenter (userId) {
+      this.$router.push({
+        name: 'membershipInformation',
+        query: {
+          userId
         }
       })
     }

@@ -256,7 +256,7 @@
               <el-table-column
                 label="操作"
                 align="center"
-                v-if="addFlag"
+                v-if="!isEditFlag"
                 width="90"
               >
                 <template slot-scope="scope">
@@ -852,6 +852,7 @@ export default {
           this.param.activityCopywriting = JSON.parse(res.content.activityCopywriting)
           this.param.launchTag = Boolean(res.content.launchTag)
           this.param.attendTag = Boolean(res.content.attendTag)
+          this.goodsIdList = res.content.bargainGoods.map(item => item.goodsId)
           if (res.content.launchTagList && res.content.launchTagList.length > 0) {
             this.pickLabel = res.content.launchTagList
             this.param.launchTagId = []
