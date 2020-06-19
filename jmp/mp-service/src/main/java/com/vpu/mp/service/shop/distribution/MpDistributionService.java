@@ -685,7 +685,7 @@ public class MpDistributionService extends ShopBaseService{
      * @param userId
      * @return
      */
-     private int isBind(Integer userId){
+     public int isBind(Integer userId){
          Record record = db().select(USER.INVITE_ID).from(USER).where(USER.USER_ID.eq(userId)).fetchOne();
          if(record != null)
              return record.into(Integer.class);

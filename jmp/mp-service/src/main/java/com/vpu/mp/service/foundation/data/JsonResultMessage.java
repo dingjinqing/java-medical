@@ -703,6 +703,7 @@ public class JsonResultMessage {
     //用户-地址
     public static final String USER_ADDRESS_COUNT_MORE_THAN_MAX = "user.address.count.more.than.max";
     public static final String USER_INVITED_MSG = "user.invited.msg";
+    public static final String USER_INVITED_NOT_EACH_OTHER = "user.invited.not.each.other";
     /**
      * 概览
      */
