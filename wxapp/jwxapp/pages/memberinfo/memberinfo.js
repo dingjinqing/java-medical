@@ -385,7 +385,7 @@ global.wxPage({
 
           if (custom_arr.length > 0) {
             for (var i in custom_arr) {
-              if(custom_arr[i].customType == 3){
+              if (custom_arr[i].customType == 3) {
                 that.setData({
                   uploadPictureTitle: custom_arr[i].customTitle
                 })
@@ -732,6 +732,9 @@ global.wxPage({
             } else if (custom_arr[i].customType == 2 && custom_arr[i].text == '') {
               util.showModal("提示", "请填写" + custom_arr[i].customTitle);
               return;
+            } else if (custom_arr[i].customType === 3 && custom_arr[i].comm_img.length == 0) {
+              util.showModal("提示", "请上传图片");
+              return;
             }
           }
           if (custom_arr[i].customType == 0 || custom_arr[i].customType == 1) {
@@ -748,9 +751,8 @@ global.wxPage({
 
         }
       }
-      console.log(custom_options)
+      console.log(custom_arr)
     }
-
     //激活
     if (user_info.real_name == "" && this.data.if_realname == 1) {
       util.showModal("提示", "请填写真实姓名");
@@ -838,7 +840,7 @@ global.wxPage({
         that.setData({
           save_flag: 0
         })
-        
+
         console.log(card_no)
         console.log(user_info)
 
