@@ -107,7 +107,8 @@ global.wxComponent({
         rebateId:this.data.distribution.rebateRatio.rebateId,
         rebateRatio:JSON.stringify({rebateRatio,fanliRatio,firstRatio}),
         goodsId:this.data.goodsId,
-        linePrice:this.data.linePrice
+        linePrice:this.data.linePrice,
+        promotionLanguage:this.data.distribution.promotionLanguage ? this.data.distribution.promotionLanguage : null
       })}`,'navigateTo')
     },
     setSendCoupon(couponList){
