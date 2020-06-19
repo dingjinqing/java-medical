@@ -1004,7 +1004,7 @@ public class Calculate extends ShopBaseService {
                 BigDecimal ratio = BigDecimalUtil.divide(new BigDecimal(userRebateRatio.getFanliRatio().toString()), BigDecimalUtil.BIGDECIMAL_100);
                 result.add(new RebateRecord(goodsStrategy, userInfo.getUserId(), DistributionConstant.REBATE_TYPE_SELF, ratio));
                 //邀请过期时间校验
-                if(userInfo.getInviteExpiryDate() != null && userInfo.getInviteExpiryDate().compareTo(current) > 0) {
+                if(userInfo.getInviteExpiryDate() != null && userInfo.getInviteExpiryDate().compareTo(DistributionConstant.NO_INVITE_EXPIRY) > 0 && userInfo.getInviteExpiryDate().compareTo(current) > 0) {
                     logger().info("自购，邀请已过期,自己过期不返直接上级");
                 }if((userInfo2 = user.getUserByUserId(userInfo.getInviteId())) == null) {
                     logger().info("自购，无直接上级");
@@ -1042,7 +1042,7 @@ public class Calculate extends ShopBaseService {
         ArrayList<RebateRecord> result = new ArrayList<>();
         UserRecord userInfo1 = null;
         //一级返利
-        if(userInfo.getInviteExpiryDate() != null && userInfo.getInviteExpiryDate().compareTo(current) > 0) {
+        if(userInfo.getInviteExpiryDate() != null && userInfo.getInviteExpiryDate().compareTo(DistributionConstant.NO_INVITE_EXPIRY) > 0 && userInfo.getInviteExpiryDate().compareTo(current) > 0) {
             logger().info("正常返利，邀请已过期,自己过期不返直接上级");
         }else if(userInfo.getInviteId() == null || userInfo.getInviteId() == 0) {
             logger().info("正常返利，无直接上级");
@@ -1067,7 +1067,7 @@ public class Calculate extends ShopBaseService {
         }
         if(userInfo2 == null) {
             logger().info("正常返利，无间接上级");
-        } else if(userInfo2.getInviteExpiryDate() != null && userInfo2.getInviteExpiryDate().compareTo(current) > 0) {
+        } else if(userInfo2.getInviteExpiryDate() != null && userInfo2.getInviteExpiryDate().compareTo(DistributionConstant.NO_INVITE_EXPIRY) > 0 && userInfo2.getInviteExpiryDate().compareTo(current) > 0) {
             logger().info("正常返利，邀请已过期,直接上级过期不返间接上级");
         }else {
             RebateRatioVo userRebateRatio2 = distributionGoods.getUserRebateRatio(userInfo2, goodsStrategy, cfg);

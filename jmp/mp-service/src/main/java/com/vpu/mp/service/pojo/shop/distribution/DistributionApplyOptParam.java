@@ -23,4 +23,8 @@ public class DistributionApplyOptParam {
      * 审核内容
      */
     private String msg;
+    /**
+     * 邀请码
+     */
+    private String invitationCode;
 }

@@ -168,7 +168,7 @@ public class OrderInfoService extends ShopBaseService {
 	public PageResult<String> getOrderSns(OrderPageListQueryParam param, OrderQueryVo result) {
 	    // 数量查询
         calculateOrderCount(param, result);
-		SelectJoinStep<Record1<String>> mainOrder = db().select(TABLE.ORDER_SN).from(TABLE);
+		SelectJoinStep<Record1<String>> mainOrder = db().selectDistinct(TABLE.ORDER_SN).from(TABLE);
 		// 存在子单但是显示不易子单为主所以查询需过滤子单
 		mainOrder.where(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN).or(TABLE.MAIN_ORDER_SN.eq("")));
 		buildOptions(mainOrder, param);
