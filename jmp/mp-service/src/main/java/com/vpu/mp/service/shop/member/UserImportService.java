@@ -895,7 +895,7 @@ public class UserImportService extends ShopBaseService {
 				time = vaild > BYTE_ZERO ? DateUtil.getTimeStampPlus(Integer.valueOf(protectDate) - 1, ChronoUnit.DAYS)
 						: null;
 				if (time != null) {
-					userRecord.setInviteProtectDate(new Date(time.getTime()));
+					userRecord.setInviteProtectDate(Util.currentTimeStamp());
 				}
 				int update = userRecord.update();
 				logger().info("更新" + update);
