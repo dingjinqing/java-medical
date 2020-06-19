@@ -289,10 +289,11 @@
                         class="coupon_list_bottom"
                         :style="'background-image:url('+ $imageHost +'/image/admin/coupon_border.png)'"
                       >
-                        <span v-if="itemC.scoreNumber === 0">领取</span>
+                        <!-- <span v-if="itemC.scoreNumber === 0">领取</span>
                         <div v-if="itemC.scoreNumber !== 0">
                           <span>{{itemC.scoreNumber}}</span>积分 兑换
-                        </div>
+                        </div> -->
+                        <span>领取</span>
                       </div>
                     </section>
                     <span
@@ -371,10 +372,11 @@
                         class="coupon_list_bottom"
                         :style="'background-image:url('+ $imageHost +'/image/admin/coupon_border.png)'"
                       >
-                        <span v-if="itemD.scoreNumber === 0">领取</span>
+                        <!-- <span v-if="itemD.scoreNumber === 0">领取</span>
                         <div v-if="itemD.scoreNumber !== 0">
                           <span>{{itemD.scoreNumber}}</span>积分 兑换
-                        </div>
+                        </div> -->
+                        <span>领取</span>
                       </div>
                     </section>
                     <span
