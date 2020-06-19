@@ -18,4 +18,5 @@ public class UserTotalFanliVo {
 	private Timestamp updateTime;
 	private String username;
 	private String userAvatar;
+	private BigDecimal finalMoney;
 }
