@@ -275,7 +275,7 @@ export const en = {
   invitedUserMobile: 'invited Mobile',
   invitedUserName: 'invited Nickname ',
   distributorLevel: 'Distributor level',
-  haveNextUset: 'subordinate users',
+  haveNextUser: 'subordinate users',
   haveMobile: 'With mobile number',
   haveRealName: 'Have a real name',
   distributorListfont: 'notes：',

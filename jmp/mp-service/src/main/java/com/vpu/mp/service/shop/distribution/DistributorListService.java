@@ -93,7 +93,7 @@ public class DistributorListService extends ShopBaseService{
         DistributionParam distributionCfg = dcs.getDistributionCfg();
         if(distributionCfg.getJudgeStatus() == 1){//分销审核开关开启展示审核过的分销员
             where.and(d.IS_DISTRIBUTOR.eq((byte) 1));
-        }else{//分销审核开关关闭 分销员列表默认展示有下级的分销员
+        }else if(param.getHaveNextUser() == 1){//分销审核开关关闭 分销员列表默认展示有下级的分销员
             param.setHaveNextUser((byte)1);
         }
 
@@ -138,8 +138,8 @@ public class DistributorListService extends ShopBaseService{
 		}
 		//邀请人
         if(StringUtil.isNotEmpty(param.getInviteName())){
-            Integer inviteId = db().select(USER.USER_ID).from(USER).where(USER.USERNAME.eq(param.getInviteName())).fetchOne().into(Integer.class);
-            where.and(d.INVITE_ID.eq(inviteId));
+            List<Integer> inviteIds = db().select(USER.USER_ID).from(USER).where(USER.USERNAME.contains(param.getInviteName())).fetch().into(Integer.class);
+            where.and(d.INVITE_ID.in(inviteIds));
         }
         //邀请码
         if(StringUtil.isNotEmpty(param.getInvitationCode())){
@@ -175,7 +175,7 @@ public class DistributorListService extends ShopBaseService{
 			where.and(d.DISTRIBUTOR_LEVEL.eq(param.getDistributorLevel()));
 		}
 		//有下级用户
-        if(param.getHaveNextUser() !=null &&  param.getHaveNextUser()== 1){
+        if(param.getHaveNextUser() !=null && param.getHaveNextUser()== 1){
             where.and(d.USER_ID.in(db().select(a.INVITE_ID).from(a).fetch()));
         }
         //有手机号

@@ -57,13 +57,14 @@ public class OrderGoodsRebateService extends ShopBaseService {
         //成本控制
         if(rebateRecords.get(0).getStrategy().getCostProtection() == OrderConstant.YES && BigDecimalUtil.compareTo(goodsTotalRebateMoney, check) > 0) {
             for (OrderGoodsRebateRecord record: result) {
+                BigDecimal temp = record.getTotalRebateMoney();
                 record.setTotalRebateMoney(BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.HALF_DOWN,
                     BigDecimalUtil.BigDecimalPlus.create(record.getTotalRebateMoney(), BigDecimalUtil.Operator.multiply),
                     BigDecimalUtil.BigDecimalPlus.create(check, BigDecimalUtil.Operator.divide),
                     BigDecimalUtil.BigDecimalPlus.create(goodsTotalRebateMoney))
                 );
                 record.setRebateMoney(BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.HALF_DOWN,
-                    BigDecimalUtil.BigDecimalPlus.create(record.getTotalRebateMoney(), BigDecimalUtil.Operator.multiply),
+                    BigDecimalUtil.BigDecimalPlus.create(temp, BigDecimalUtil.Operator.multiply),
                     BigDecimalUtil.BigDecimalPlus.create(check, BigDecimalUtil.Operator.divide),
                     BigDecimalUtil.BigDecimalPlus.create(goodsTotalRebateMoney, BigDecimalUtil.Operator.divide),
                     BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(bo.getGoodsNumber()))

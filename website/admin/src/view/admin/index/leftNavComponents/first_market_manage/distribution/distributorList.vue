@@ -162,10 +162,10 @@
             style="float: left;"
           >
             <el-checkbox
-              v-model="param.haveNextUset"
+              v-model="param.haveNextUser"
               :true-label="1"
               :false-label="0"
-            >{{$t('distribution.haveNextUset')}}</el-checkbox>
+            >{{$t('distribution.haveNextUser')}}</el-checkbox>
             <el-checkbox
               v-model="param.haveMobile"
               :true-label="1"
@@ -513,7 +513,7 @@ export default {
         invitedUserName: '',
         distributorLevel: '',
         distributorGroup: '',
-        haveNextUset: 0,
+        haveNextUser: 0,
         haveMobile: 0,
         haveRealName: 0
       },
@@ -570,7 +570,7 @@ export default {
     console.log(this.distributionCode)
     // 默认是否有下级用户
     if (this.judgeStatus === '0') {
-      this.param.haveNextUset = 1
+      this.param.haveNextUser = 1
     }
     this.initDataList()
     this.levelList() // 分销员等级

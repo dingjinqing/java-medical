@@ -385,7 +385,7 @@ global.wxPage({
 
           if (custom_arr.length > 0) {
             for (var i in custom_arr) {
-              if(custom_arr[i].customType == 3){
+              if (custom_arr[i].customType == 3) {
                 that.setData({
                   uploadPictureTitle: custom_arr[i].customTitle
                 })
@@ -732,6 +732,9 @@ global.wxPage({
             } else if (custom_arr[i].customType == 2 && custom_arr[i].text == '') {
               util.showModal("提示", "请填写" + custom_arr[i].customTitle);
               return;
+            } else if (custom_arr[i].customType === 3 && custom_arr[i].comm_img.length == 0) {
+              util.showModal("提示", "请上传图片");
+              return;
             }
           }
           if (custom_arr[i].customType == 0 || custom_arr[i].customType == 1) {
@@ -748,9 +751,8 @@ global.wxPage({
 
         }
       }
-      console.log(custom_options)
+      console.log(custom_arr)
     }
-
     //激活
     if (user_info.real_name == "" && this.data.if_realname == 1) {
       util.showModal("提示", "请填写真实姓名");
@@ -804,39 +806,41 @@ global.wxPage({
 
     if (!distribution) user_info.card_no = card_no;
 
-    if (that.data.save_flag == 1) {
-      that.setData({
-        save_flag: 0
-      })
-      if (distribution == 1) {
-        console.log(user_info)
-        util.api('/api/wxapp/distribution/distributor/apply', function (res) {
-          if (res.error == 0) {
-            if (res.content == -1) {
-              // 申请不成功, 邀请码不存在
-              util.showModal("提示", "邀请码不存在");
-              return false;
-            } else if (res.content == 1) {
-              util.showModal('提示', '自动审核通过', function () {
-                util.redirectTo({
-                  url: '/pages/distributionspread/distributionspread'
-                })
-              });
-            } else if (res.content === 0) {
-              util.showModal('提示', '申请成功', function () {
-                util.redirectTo({
-                  url: '/pages/distributionspread/distributionspread'
-                })
-              });
-            }
-          } else {
-            util.showModal('提示', res.message)
+
+    if (distribution == 1) {
+      console.log(user_info)
+      util.api('/api/wxapp/distribution/distributor/apply', function (res) {
+        if (res.error == 0) {
+          if (res.content == -1) {
+            // 申请不成功, 邀请码不存在
+            util.showModal("提示", "邀请码不存在");
+            return false;
+          } else if (res.content == 1) {
+            util.showModal('提示', '自动审核通过', function () {
+              util.redirectTo({
+                url: '/pages/distributionspread/distributionspread'
+              })
+            });
+          } else if (res.content === 0) {
+            util.showModal('提示', '申请成功', function () {
+              util.redirectTo({
+                url: '/pages/distributionspread/distributionspread'
+              })
+            });
           }
-        }, {
-          activationFields: user_info,
-          configFields: JSON.stringify(config)
+        } else {
+          util.showModal('提示', res.message)
+        }
+      }, {
+        activationFields: user_info,
+        configFields: JSON.stringify(config)
+      })
+    } else {
+      if (that.data.save_flag == 1) {
+        that.setData({
+          save_flag: 0
         })
-      } else {
+
         console.log(card_no)
         console.log(user_info)
 
@@ -967,18 +971,10 @@ global.wxPage({
             user_block: 1
           })
         }, { cardNo: card_no, isSetting: 1, activateOption: user_info, customOptions: custom_options })
-
-
-
+      } else {
+        util.showModal("提示", '请勿重复提交');
       }
-
-    } else {
-      util.showModal("提示", '请勿重复提交');
     }
-
-
-
-
   },
   // 单选 选项
   bindRadiosChange (e) {

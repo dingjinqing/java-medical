@@ -288,7 +288,7 @@
 				<!-- 自定义激活项上传图片 -->
         <view class="main_picker" wx:if='{{item.customType == 3}}' style="padding-bottom:0">
           <view class='customTitle'>
-            <text class="must_choose">*</text>
+            <text class="must_choose" wx:if="{{item.optionVer==1}}">*</text>
             {{uploadPictureTitle}}
             <i style="color: #ccc;margin-left:10rpx">(最多上传{{item.pictureNumber}}张图片)</i>
           </view>

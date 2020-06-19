@@ -322,60 +322,63 @@ public class MpDistributionService extends ShopBaseService{
         rebateCenterVo.setIsDistributor(isDistributor);
         //分销开关是否开启
         DistributionParam distributionCfg = this.distributionCfg.getDistributionCfg();
-        rebateCenterVo.setStatus(distributionCfg.getStatus());
-        //分销审核开关是否开启
-        rebateCenterVo.setJudgeStatus(distributionCfg.getJudgeStatus());
-        //用户信息
-        BigDecimal account = db().select(USER.ACCOUNT).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(BigDecimal.class);
-        //返利信息
-        UserTotalFanliVo userRebate1 = this.userTotalFanli.getUserRebate(userId);
-        if(userRebate1.getTotalMoney() != null && userRebate1.getTotalMoney().compareTo(account)<0){
-            rebateCenterVo.setCanWithdraw(userRebate1.getTotalMoney());
-        }else{
-            rebateCenterVo.setCanWithdraw(account);
-        }
-        Byte rankStatus = disCfg.getDistributionCfg().getRankStatus();
-        rebateCenterVo.setRankStatus(rankStatus);
-        rebateCenterVo.setTotalWithdraw(userRebate1.getTotalMoney());
-        if (distributionCfg.getStatus() != 1 || (isDistributor != 1 && distributionCfg.getJudgeStatus() == 1)){
-            if (distributionCfg.getWithdrawStatus() != 1) {
-                BigDecimal account1 = new BigDecimal("0.00");
-                rebateCenterVo.setCanWithdraw(account1);
+        if(distributionCfg != null) {
+            rebateCenterVo.setStatus(distributionCfg.getStatus());
+            rebateCenterVo.setRankStatus(distributionCfg.getRankStatus());
+            //用户信息
+            BigDecimal account = db().select(USER.ACCOUNT).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(BigDecimal.class);
+            //返利信息
+            UserTotalFanliVo userRebate1 = this.userTotalFanli.getUserRebate(userId);
+            if (userRebate1.getTotalMoney() != null && userRebate1.getTotalMoney().compareTo(account) < 0) {
+                rebateCenterVo.setCanWithdraw(userRebate1.getTotalMoney());
+            } else {
+                rebateCenterVo.setCanWithdraw(account);
             }
+            if (userRebate1.getTotalMoney() == null) {
+                BigDecimal canWithdraw = new BigDecimal("0");
+                rebateCenterVo.setCanWithdraw(canWithdraw);
+            }
+            rebateCenterVo.setTotalWithdraw(userRebate1.getFinalMoney());
+            if (distributionCfg.getStatus() != 1 || (isDistributor != 1 && distributionCfg.getJudgeStatus() == 1)) {
+                if (distributionCfg.getWithdrawStatus() != 1) {
+                    BigDecimal account1 = new BigDecimal("0.00");
+                    rebateCenterVo.setCanWithdraw(account1);
+                }
+            }
+            //待返利佣金
+            BigDecimal waitFanliMoney = this.waitFanliMoney(userId);
+            rebateCenterVo.setWaitWithdraw(waitFanliMoney);
+            //我的邀请码
+            UserRecord userInfo = db().select().from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(UserRecord.class);
+            rebateCenterVo.setInvitationCode(userInfo.getInvitationCode());
+            //邀请用户数
+            Integer inviteUserNum = this.inviteUserNum(userId);
+            rebateCenterVo.setInviteUserNum(inviteUserNum);
+            //返利订单数
+            Integer rebateOrderNum = distributorList.getRebateOrderNum(userId);
+            rebateCenterVo.setRebateOrderNum(rebateOrderNum);
+            //累积商品返利总额
+            BigDecimal TotalCanFanliMoney = this.TotalCanFanliMoney(userId);
+            rebateCenterVo.setTotalCanFanliMoney(TotalCanFanliMoney);
+            //我的等级
+            DistributorLevelParam distributorLevelInfo = this.distributorLevel(userId);
+            rebateCenterVo.setDistributorLevel(distributorLevelInfo.getLevelName());
+            //我的分组
+            DistributorGroupListVo groupInfo = distributorGroup.getGroupByUserId(userId);
+            rebateCenterVo.setDistributorGroup(groupInfo.getGroupName());
+            //返利佣金排行top
+            List<RebateRankingTopVo> rebateRankingTop = this.getRebateRankingTop();
+            rebateCenterVo.setRebateRankingTop(rebateRankingTop);
+            //当前分销员排名
+            Integer rebateRanking = this.getRebateRanking(userId);
+            rebateCenterVo.setRebateRanking(rebateRanking);
+            //当前分销员返利信息
+            UserRebateVo userRebate = this.getUserRebate(userId);
+            rebateCenterVo.setUserRebate(userRebate);
+            //返利轮播信息
+            List<RebateOrderListVo> rebateOrderList = this.getRebateOrderList();
+            rebateCenterVo.setRebateOrderList(rebateOrderList);
         }
-        //待返利佣金
-        BigDecimal waitFanliMoney = this.waitFanliMoney(userId);
-        rebateCenterVo.setWaitWithdraw(waitFanliMoney);
-        //我的邀请码
-        UserRecord userInfo = db().select().from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(UserRecord.class);
-        rebateCenterVo.setInvitationCode(userInfo.getInvitationCode());
-        //邀请用户数
-        Integer inviteUserNum = this.inviteUserNum(userId);
-        rebateCenterVo.setInviteUserNum(inviteUserNum);
-        //返利订单数
-        Integer rebateOrderNum = distributorList.getRebateOrderNum(userId);
-        rebateCenterVo.setRebateOrderNum(rebateOrderNum);
-        //累积商品返利总额
-        BigDecimal TotalCanFanliMoney = this.TotalCanFanliMoney(userId);
-        rebateCenterVo.setTotalCanFanliMoney(TotalCanFanliMoney);
-        //我的等级
-        DistributorLevelParam distributorLevelInfo = this.distributorLevel(userId);
-        rebateCenterVo.setDistributorLevel(distributorLevelInfo.getLevelName());
-        //我的分组
-        DistributorGroupListVo groupInfo = distributorGroup.getGroupByUserId(userId);
-        rebateCenterVo.setDistributorGroup(groupInfo.getGroupName());
-        //返利佣金排行top
-        List<RebateRankingTopVo> rebateRankingTop = this.getRebateRankingTop();
-        rebateCenterVo.setRebateRankingTop(rebateRankingTop);
-        //当前分销员排名
-        Integer rebateRanking = this.getRebateRanking(userId);
-        rebateCenterVo.setRebateRanking(rebateRanking);
-        //当前分销员返利信息
-        UserRebateVo userRebate = this.getUserRebate(userId);
-        rebateCenterVo.setUserRebate(userRebate);
-        //返利轮播信息
-        List<RebateOrderListVo> rebateOrderList = this.getRebateOrderList();
-        rebateCenterVo.setRebateOrderList(rebateOrderList);
         return rebateCenterVo;
 
     }
