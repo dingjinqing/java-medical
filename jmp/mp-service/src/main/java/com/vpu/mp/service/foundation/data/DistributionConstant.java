@@ -1,5 +1,7 @@
 package com.vpu.mp.service.foundation.data;
 
+import java.sql.Date;
+
 /**
  * 分销返利常量
  * @author 王帅
@@ -60,4 +62,9 @@ public class DistributionConstant {
     public static Byte SORT_BY_TOTAL_CAN_FANLI = 3;
     public static Byte SORT_BY_TOTAL_FANLI = 4;
     public static Byte SORT_BY_WAIT_FANLI = 5;
+
+    /**
+     * 永久返利有效期永久有效：1970-01-13
+     */
+    public static Date NO_INVITE_EXPIRY = Date.valueOf("1970-01-13");
 }
