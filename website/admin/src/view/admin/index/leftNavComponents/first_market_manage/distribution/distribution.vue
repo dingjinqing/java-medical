@@ -130,9 +130,10 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
-      if (from.name === null || (to.name === 'distribution_info' && (from.name === 'distribution_info_inviteUser' || from.name === 'distribution_info_indirectUser'))) {
+      if (from.name === null || (to.params.distributorName === 'fouth' && to.name === 'distribution_info' && (from.name === 'distribution_info_inviteUser' || from.name === 'distribution_info_indirectUser'))) {
         vm.activeName = localStorage.getItem('distributionTap')
       } else {
+        vm.activeName = 'first'
         localStorage.removeItem('distributionTapIndex')
       }
     })
