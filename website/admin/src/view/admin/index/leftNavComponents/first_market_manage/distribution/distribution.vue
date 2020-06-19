@@ -130,7 +130,7 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
-      if (from.name === null) {
+      if (from.name === null || (to.name === 'distribution_info' && (from.name === 'distribution_info_inviteUser' || from.name === 'distribution_info_indirectUser'))) {
         vm.activeName = localStorage.getItem('distributionTap')
       } else {
         localStorage.removeItem('distributionTapIndex')
@@ -146,13 +146,17 @@ export default {
     })
 
     // 店铺助手跳转分销审核
-    console.log(this.$route.params)
-    if (this.$route.params.flag === 1) {
-      if (this.$route.params.distributorName) {
-        // tab重新赋值
-        this.activeName = this.$route.params.distributorName
-      }
+    if (this.$route.params.distributorName) {
+      // tab重新赋值
+      this.activeName = this.$route.params.distributorName
     }
+    // console.log(this.$route.params)
+    // if (this.$route.params.flag === 1) {
+    //   if (this.$route.params.distributorName) {
+    //     // tab重新赋值
+    //     this.activeName = this.$route.params.distributorName
+    //   }
+    // }
   },
   methods: {
     handleClick (tab) {
