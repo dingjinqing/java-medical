@@ -384,7 +384,7 @@ public class UserCardService extends ShopBaseService {
 		//	升级
 		if(flag) {
 			String operation = "领取等级卡";
-			changeUserGradeCard(userId, oldGradeCard, newGradeCard, operation,false);
+			changeUserGradeCard(userId, oldGradeCard, newGradeCard, operation,true);
 		}
 		return cardId;
 	}

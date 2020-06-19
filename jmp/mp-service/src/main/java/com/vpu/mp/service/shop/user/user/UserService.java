@@ -658,26 +658,31 @@ public class UserService extends ShopBaseService {
 		data.put("qrcode", qrCode.getMpQrCode(QrCodeTypeEnum.PAGE_BOTTOM,"invite_id="+userId));
 		logger().info("用户等级判断");
 		// 用户等级判断
-		String userGrade = userCard.getUserGrade(userId);
+		String userGrade = userCard.getCurrentAvalidGradeCard(userId);
 		logger().info("用户等级"+userGrade);
-		if (userGrade.equals(CardConstant.LOWEST_GRADE)) {
-			logger().info("进入用户等级为0");
+		if (StringUtils.isBlank(userGrade)) {
+		    // 检测到用户可领取的等级卡
+			logger().info("用户目前无等级卡，查询获取用户可升级的等级会员卡ID");
 			try {
 				Integer cardId = userCard.updateGrade(userId, null, (byte) 0);
 				data.put("get_grade", cardId);
-				logger().info("cardId的值为"+cardId);
+				logger().info("检测到用户可升级到的会员卡cardId的值为"+cardId);
 			} catch (Exception e) {
 				logger().error("userGrade为0时报错");
 				e.printStackTrace();
 			}
 
 		} else {
-			logger().info("进入用户等级为其他");
+		    //  直接检测并自动升级
+			logger().info("直接检测并自动升级");
 			try {
-				int isGet = userCard.updateGrade(userId, null, (byte) 0); // 上面方法返回值is_get
+                int isGet = userCard.updateGrade(userId, null, (byte) 2);
+//				int isGet = userCard.updateGrade(userId, null, (byte) 0); // 上面方法返回值is_get
 				logger().info("isGet的值为"+isGet);
 				if (isGet > 0) {
-					data.put("get_grade", 1);
+//					data.put("get_grade", 1);
+                    logger().info("已经自动升级到等级会员卡："+isGet);
+                    data.put("get_grade", 0);
 				} else {
 					data.put("get_grade", isGet);
 				}

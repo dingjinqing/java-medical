@@ -556,10 +556,11 @@
                       :class="item.status === 0 ? 'coupon_list_bottom': 'coupon_list_bottom_gray'"
                       :style="`background-image: url(${$imageHost}/image/admin/coupon_border.png)`"
                     >
-                      <span v-if="item.scoreNumber === 0">领取</span>
+                      <!-- <span v-if="item.scoreNumber === 0">领取</span>
                       <div v-if="item.scoreNumber !== 0">
                         <span>{{item.scoreNumber}}</span>积分 兑换
-                      </div>
+                      </div> -->
+                      <span>领取</span>
                     </div>
                   </section>
                   <span

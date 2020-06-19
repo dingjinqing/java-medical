@@ -83,10 +83,11 @@
                   type="primary"
                   size="small"
                   @click="showRefund"
-                >{{$t('order.refundBtn_1_4_1')}}</el-button>
+                >{{returnInfo.showRefundFailInfo === 1 ? '继续退款' : $t('order.refundBtn_1_4_1')}}</el-button>
                 <el-button
                   type="default"
                   size="small"
+                  v-if="returnInfo.showRefundFailInfo !== 1"
                   @click="showRefusal"
                 >{{$t('order.refundBtn_1_4_2')}}</el-button>
               </div>
@@ -141,10 +142,11 @@
                   type="primary"
                   size="small"
                   @click="showRefund"
-                >{{$t('order.refundBtn_4_1',[returnTypeMap.get(returnInfo.returnType)])}}</el-button>
+                >{{returnInfo.showRefundFailInfo === 1 ? '继续退款' : $t('order.refundBtn_4_1',[returnTypeMap.get(returnInfo.returnType)])}}</el-button>
                 <el-button
                   type="default"
                   size="small"
+                  v-if="returnInfo.showRefundFailInfo !== 1"
                   @click="showRefusal"
                 >{{$t('order.refundBtn_4_2',[returnTypeMap.get(returnInfo.returnType)])}}</el-button>
               </div>
@@ -182,6 +184,19 @@
         </div>
 
       </div>
+
+      <div
+        class="item_box"
+        v-if="returnInfo.showRefundFailInfo === 1"
+      >
+        <h2 class="h2_title">退款失败详情</h2>
+        <div class="return-fail-info">
+          <div v-if="returnInfo.successMoney">退款成功：￥{{returnInfo.successMoney}}</div>
+          <div v-if="returnInfo.failMoney">退款失败：￥{{returnInfo.failMoney}}</div>
+          <div v-if="returnInfo.failDesc">退款失败原因：{{returnInfo.failDesc}}</div>
+        </div>
+      </div>
+
       <div class="item_box">
         <h2 class="h2_title">{{returnTypeMap.get(returnInfo.returnType)}}{{$t('order.applicationDetails')}}</h2>
         <table class="refund_info_table">
@@ -278,6 +293,7 @@
                       :max="returnInfo.money"
                       size="small"
                       controls-position="right"
+                      :disabled="returnInfo.showRefundFailInfo == 1"
                     ></el-input-number>
                     {{
                          getCurrencyPool_0 + '，' +
@@ -291,6 +307,7 @@
                       :controls="false"
                       :min="0"
                       :max="returnInfo.canReturnShippingFee"
+                      :disabled="returnInfo.showRefundFailInfo == 1"
                     ></el-input-number>
                     {{
                         getCurrencyPool_0 + '，' + $t('order.maxRefundShippingFee') +
@@ -776,6 +793,7 @@ export default {
           this.refusal = false
         } else {
           this.$message.error(res.message)
+          this.search(this.$route.query.returnOrderSn)
         }
       })
     },
@@ -1021,7 +1039,7 @@ export default {
         color: #333;
         font-weight: 600;
       }
-      .refund_status_desc {
+      .refund_status_desc,.return-fail-info {
         border: 1px solid #ddd;
         padding: 16px 30px;
         position: relative;
@@ -1040,6 +1058,15 @@ export default {
         }
         .btn_box {
           display: flex;
+        }
+      }
+      .return-fail-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        > div + div {
+          margin-top: 10px;
         }
       }
       .refund_info_table {
