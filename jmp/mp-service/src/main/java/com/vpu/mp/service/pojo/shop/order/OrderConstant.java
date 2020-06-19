@@ -159,10 +159,10 @@ public class OrderConstant {
 	 * 0当前订单可以退款
 	 * 1当前订单可以退款、退货
 	 */
-	/**退款支持状态:待发货 已发货 已收货*/
-	public final static List<Byte> IS_RETURNMONEY = new ArrayList<Byte>(Arrays.asList(ORDER_WAIT_DELIVERY, ORDER_SHIPPED, ORDER_RECEIVED));
-	/**退货支持状态:已收货 已完成*/
-	public final static List<Byte> IS_RETURNGOODS = new ArrayList<Byte>(Arrays.asList(ORDER_RECEIVED, ORDER_FINISHED));
+	/**退款支持状态:待发货 已发货 已收货 已完成*/
+	public final static List<Byte> IS_RETURNMONEY = new ArrayList<Byte>(Arrays.asList(ORDER_WAIT_DELIVERY, ORDER_SHIPPED, ORDER_RECEIVED, ORDER_FINISHED));
+	/**退货支持状态:已发货 已收货 已完成*/
+	public final static List<Byte> IS_RETURNGOODS = new ArrayList<Byte>(Arrays.asList(ORDER_SHIPPED, ORDER_RECEIVED, ORDER_FINISHED));
 
 	/**
 	 * return_order return_type
