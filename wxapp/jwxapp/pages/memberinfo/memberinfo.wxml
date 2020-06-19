@@ -172,7 +172,7 @@
 				</view>
 			<!-- 上传图片 -->
 			<view class="list" wx:if="{{if_upImage}}">
-				<text class="main_text">上传图片</text>
+				<text class="main_text">{{uploadPictureTitle}}</text>
 				<block wx:if="{{image}}">
 					<block
 					 wx:for="{{comm_img}}"
@@ -289,7 +289,7 @@
         <view class="main_picker" wx:if='{{item.customType == 3}}' style="padding-bottom:0">
           <view class='customTitle'>
             <text class="must_choose">*</text>
-            上传图片
+            {{uploadPictureTitle}}
             <i style="color: #ccc;margin-left:10rpx">(最多上传{{item.pictureNumber}}张图片)</i>
           </view>
           <view class="shai_content">
