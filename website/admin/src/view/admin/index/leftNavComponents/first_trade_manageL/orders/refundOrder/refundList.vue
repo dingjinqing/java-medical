@@ -279,6 +279,16 @@
                   </td>
                   <td>
                     {{returnTypeMap.get(orderItem.returnType)}}
+                    <br />
+                    ({{$t(`order.returnWaysList`).find(item=>item.value === orderItem.returnSource).label}})
+                  </td>
+                  <td
+                  >
+                    <div class="high-light" @click="viewUserCenter(orderItem.userId)">
+                      {{orderItem.orderUserName}}
+                      <br />
+                      {{orderItem.orderMobile}}
+                    </div>
                   </td>
                   <td>
                     {{$t('order.reasonTypeList')[orderItem.reasonType]}}
