@@ -753,7 +753,6 @@ global.wxPage({
       }
       console.log(custom_arr)
     }
-    return
     //激活
     if (user_info.real_name == "" && this.data.if_realname == 1) {
       util.showModal("提示", "请填写真实姓名");
@@ -841,7 +840,7 @@ global.wxPage({
         that.setData({
           save_flag: 0
         })
-        
+
         console.log(card_no)
         console.log(user_info)
 
