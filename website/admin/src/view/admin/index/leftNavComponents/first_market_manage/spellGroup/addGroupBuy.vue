@@ -272,6 +272,7 @@
             <el-table-column
               label="操作"
               align="center"
+              v-if="!isEdite"
             >
               <template slot-scope="scope">
                 <div
@@ -1104,6 +1105,7 @@ export default {
           this.form.shippingType = data.shippingType
           this.form.beginNum = data.beginNum
           this.rewardCouponList = data.couponViews
+          this.goodsIdList = data.goodsList.map(item => item.goodsId)
           // if (data.rewardCouponId) {
           //   this.form.rewardCouponId = data.rewardCouponId.split(',')
           //   this.rewardCouponIds = data.rewardCouponId.split(',')
