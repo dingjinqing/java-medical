@@ -137,15 +137,6 @@
               align="center"
               :label="$t('groupBuy.groupBuyPrice')"
             >
-              <!-- <template slot="append">
-                <span>{{$t('groupBuy.groupBuyPrice')}}</span>
-                <el-button
-                  @click="setCurrent(1)"
-                  size="small"
-                  icon="el-icon-edit"
-                >{{$t('groupBuy.batchOption')}}
-                </el-button>
-              </template> -->
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'product.' +  scope.$index+ '.groupPrice'"
@@ -180,15 +171,6 @@
               :label="$t('groupBuy.commanderPrice')"
               v-if="form.isGrouperCheap === 1"
             >
-              <!-- <template slot="append">
-                <span>{{$t('groupBuy.commanderPrice')}}</span>
-                <el-button
-                  @click="setCurrent(2)"
-                  size="mini"
-                  icon="el-icon-edit"
-                >{{$t('groupBuy.batchOption')}}
-                </el-button>
-              </template> -->
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'product.' +  scope.$index+ '.grouperPrice'"
@@ -231,15 +213,6 @@
               prop="stock"
               :label="$t('groupBuy.groupBuyStock')"
             >
-              <!-- <template slot="append">
-                <span>{{$t('groupBuy.groupBuyStock')}}</span>
-                <el-button
-                  @click="setCurrent(3)"
-                  size="mini"
-                  icon="el-icon-edit"
-                >{{$t('groupBuy.batchOption')}}
-                </el-button>
-              </template> -->
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'product.' +  scope.$index+ '.stock'"
@@ -809,11 +782,8 @@ import choosingGoods from '@/components/admin/choosingGoods'
 import addCouponDialog from '@/components/admin/addCouponDialog'
 import ImageDalog from '@/components/admin/imageDalog'
 import actShare from '@/components/admin/marketManage/marketActivityShareSetting'
-// import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
-// import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { addGroupBuyActivity, getGroupBuyDetail, updateGroupBuy } from '@/api/admin/marketManage/spellGroup.js'
 import { getSelectGoods } from '@/api/admin/marketManage/distribution.js'
-// import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
 
 export default {
   components: {
@@ -1106,11 +1076,7 @@ export default {
           this.form.beginNum = data.beginNum
           this.rewardCouponList = data.couponViews
           this.goodsIdList = data.goodsList.map(item => item.goodsId)
-          // if (data.rewardCouponId) {
-          //   this.form.rewardCouponId = data.rewardCouponId.split(',')
-          //   this.rewardCouponIds = data.rewardCouponId.split(',')
-          //   this.getCouponList(this.rewardCouponIds.map(Number))
-          // }
+
           if (this.form.isGrouperCheap === 1) {
             this.showGrouperPrice = true
           } else {
@@ -1154,22 +1120,6 @@ export default {
         }
       })
     },
-
-    // 获取优惠券信息
-    // getCouponList (ids) {
-    //   console.log(ids, 'ids--')
-    //   this.rewardCouponList = []
-    //   ids.map((item, index) => {
-    //     updateCoupon(item).then((res) => {
-    //       if (res.error === 0) {
-    //         this.rewardCouponList.push(res.content[0])
-    //         console.log(this.rewardCouponList)
-    //         this.couponIdList = this.rewardCouponList.map(item => item.id)
-    //       }
-    //     })
-    //   })
-    // },
-
     // 提交表单 保存
     submitForm (formName) {
       this.submitStatus = true
@@ -1190,7 +1140,6 @@ export default {
 
           // let goodsId = this.form.goodsId.join(',')
           this.form.product.forEach((item, index) => {
-            item.productId = item.prdId
             item.groupPrice = Number(item.groupPrice)
             item.grouperPrice = Number(item.grouperPrice)
           })
@@ -1216,7 +1165,7 @@ export default {
 
           if (this.isGoing) {
             console.log(this.form, 'form--')
-            updateGroupBuy(this.form).then(res => {
+            updateGroupBuy({ ...this.form, product }).then(res => {
               console.log('updateGroupBuy', res)
               if (res.error === 0) {
                 this.$message.success(res.message)
@@ -1229,8 +1178,6 @@ export default {
               this.$message.warning(e.message)
             })
           } else {
-            // this.form.product = groupProduct
-            console.log({ ...this.form, product })
             addGroupBuyActivity({ ...this.form, product }).then(res => {
               console.log('addGroupBuyActivity', res)
               if (res.error === 0) {
@@ -1259,8 +1206,6 @@ export default {
       this.form.goodsId = this.goodsIdList.join(',')
       console.log(this.form.goodsId, 'goodsId--')
       this.form.product = row
-      // 可编辑状态
-      // this.disabledFlag = false
     },
     changeSwitchState (val) {
       if (val === 1) {
@@ -1290,6 +1235,14 @@ export default {
       goods.forEach(item => {
         let expand = item.productList.length < 2 ? { ...item.productList[0], goodsName: item.goodsName } : { ...item.productList[0], goodsSpecProducts: item.productList, goodsName: item.goodsName }
         newdata.push({ ...item, ...expand })
+      })
+      newdata.forEach(item => {
+        if (item.goodsSpecProducts && item.goodsSpecProducts.length > 0) {
+          item.totalStock = 0
+          item.goodsSpecProducts.forEach(val => {
+            item.totalStock += parseInt(val.stock)
+          })
+        }
       })
       return newdata
     },
@@ -1658,16 +1611,6 @@ export default {
   background: #fff;
 }
 
-/deep/ .tableHeader th {
-  line-height: 0 !important;
-  height: 36px !important;
-  font-weight: bold;
-  padding: 8px 10px;
-  background-color: #f5f5f5;
-  color: #000;
-  border: none;
-}
-
 .moreSetUp a {
   margin-right: 10px;
   cursor: pointer;
@@ -1737,5 +1680,16 @@ export default {
 .hightest {
   font-size: 12px;
   font-weight: bold;
+}
+</style>
+<style lang="scss" scoped>
+/deep/ .tableHeader th {
+  line-height: 0 !important;
+  height: 36px !important;
+  font-weight: bold;
+  padding: 8px 10px;
+  background-color: #f5f5f5;
+  color: #000;
+  border: none;
 }
 </style>
