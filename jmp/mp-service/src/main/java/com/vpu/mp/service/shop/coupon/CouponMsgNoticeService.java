@@ -28,7 +28,7 @@ public class CouponMsgNoticeService extends ShopBaseService {
      * @param endTime 有效日期
      * @param couponDesc 优惠内容
      */
-    public void sendCouponMsgNotice(Integer userId, String couponName, Timestamp startTime,Timestamp endTime,String couponDesc){
+    public void sendCouponMsgNotice(Integer userId, String couponName, String startTime,String duration,String couponDesc){
         logger().info("开始处理当前卡券领取成功消息,用户id为：{},优惠券名称为：{}",userId,couponName);
         String shopName = saas().shop.getShopNickName(getShopId());
         String firstData = "您好，您的"+couponDesc+"优惠券已成功领取";
@@ -37,8 +37,8 @@ public class CouponMsgNoticeService extends ShopBaseService {
             {firstData},
             {shopName},
             {couponName},
-            {endTime.toString()},
-            {startTime.toString()},
+            {duration},
+            {startTime},
             {"请及时使用"}
         };
         List<Integer> userIdList = Collections.singletonList(userId);
