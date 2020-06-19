@@ -315,8 +315,6 @@ export default {
       this.$refs['param'].validate((valid) => {
         if (valid) {
           // 关闭弹窗
-          this.groupDialogVisible = false
-          this.$refs['param'].resetFields()
           if (this.typeFlag === 0) {
             // 添加保存
             distributionGroupAdd(this.param).then(res => {
@@ -325,6 +323,7 @@ export default {
                   message: '添加成功!'
                 })
                 this.initGroupList()
+                this.$refs['param'].resetFields()
               }
             })
           } else {
@@ -336,9 +335,11 @@ export default {
                   message: '编辑成功!'
                 })
                 this.initGroupList()
+                this.$refs['param'].resetFields()
               }
             })
           }
+          this.groupDialogVisible = false
         }
       })
     },
