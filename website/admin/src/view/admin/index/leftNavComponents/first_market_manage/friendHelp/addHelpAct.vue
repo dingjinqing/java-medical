@@ -114,12 +114,12 @@
             </el-col>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.rewardSet') + '：'"
+            :label="((form.rewardType==0 || form.rewardType==1)&& goodDataFlag === true) ||  (form.rewardType==2 && couponDataFlag === true)? $t('promoteList.rewardSet') + '：' : ''"
             prop=""
             :required="true"
           >
             <el-table
-              v-if="form.rewardType==0 || form.rewardType==1"
+              v-if="(form.rewardType==0 || form.rewardType==1)&& goodDataFlag === true"
               :data="form.goodsInfo"
               key="goodsList"
               border
@@ -184,9 +184,13 @@
                 </template>
               </el-table-column>
             </el-table>
+            <el-form-item
+              v-if="(form.rewardType==0 || form.rewardType==1)&& goodDataFlag === false"
+              style="color: red;"
+            >活动商品已删除</el-form-item>
 
             <el-table
-              v-if="form.rewardType==2"
+              v-if="form.rewardType==2 && couponDataFlag === true"
               :data="form.coupon_info"
               key="couponList"
               border
@@ -237,6 +241,10 @@
                 </template>
               </el-table-column>
             </el-table>
+            <el-form-item
+              v-if="form.rewardType==2 && couponDataFlag === false"
+              style="color: red;"
+            >活动优惠券已删除</el-form-item>
           </el-form-item>
 
           <el-form-item
@@ -1003,7 +1011,10 @@ export default {
       }, {
         img_2: this.$imageHost + '/image/admin/hid_some.png'
       }],
-      arrorFlag: true // 展开更多配置
+      arrorFlag: true, // 展开更多配置
+
+      goodDataFlag: true, // 商品信息是否存在
+      couponDataFlag: true // 奖励优惠券是否存在
     }
   },
   created () {
@@ -1072,14 +1083,19 @@ export default {
           }
           getGoodsInfo(idParam).then(res => {
             console.log('goodsInfoByPrdId:', res)
-            let goodsItem = {
-              'goodsName': res.content.goodsName,
-              'prdPrice': res.content.goodsPrice,
-              'prdNumber': res.content.goodsStore,
-              'market_store': this.form.rewardSet.market_store
+            if (res.error === 0) {
+              this.goodDataFlag = true
+              let goodsItem = {
+                'goodsName': res.content.goodsName,
+                'prdPrice': res.content.goodsPrice,
+                'prdNumber': res.content.goodsStore,
+                'market_store': this.form.rewardSet.market_store
+              }
+              this.form.goodsInfo = []
+              this.form.goodsInfo.push(goodsItem)
+            } else {
+              this.goodDataFlag = false
             }
-            this.form.goodsInfo = []
-            this.form.goodsInfo.push(goodsItem)
           })
           // selectGoodsApi(goodsIdParam).then(res => {
           //   this.form.goodsInfo = [res.content]
@@ -1093,22 +1109,32 @@ export default {
           }
           getGoodsInfo(idParam).then(res => {
             console.log('goodsInfoByPrdId:', res)
-            let goodsItem = {
-              'goodsName': res.content.goodsName,
-              'prdPrice': res.content.goodsPrice,
-              'prdNumber': res.content.goodsStore,
-              'market_store': this.form.rewardSet.market_store,
-              'market_price': this.form.rewardSet.market_price
+            if (res.error === 0) {
+              this.goodDataFlag = true
+              let goodsItem = {
+                'goodsName': res.content.goodsName,
+                'prdPrice': res.content.goodsPrice,
+                'prdNumber': res.content.goodsStore,
+                'market_store': this.form.rewardSet.market_store,
+                'market_price': this.form.rewardSet.market_price
+              }
+              this.form.goodsInfo = []
+              this.form.goodsInfo.push(goodsItem)
+            } else {
+              this.goodDataFlag = false
             }
-            this.form.goodsInfo = []
-            this.form.goodsInfo.push(goodsItem)
           })
         }
         if (this.form.rewardType === '2') {
           updateCoupon(this.form.rewardSet.reward_ids).then(res => {
-            this.form.coupon_info = res.content
-            this.form.coupon_info[0].send_num = this.form.rewardSet.market_store
-            console.log('couponInfo:', this.form.coupon_info)
+            if (res.error === 0) {
+              this.couponDataFlag = true
+              this.form.coupon_info = res.content
+              this.form.coupon_info[0].send_num = this.form.rewardSet.market_store
+              console.log('couponInfo:', this.form.coupon_info)
+            } else {
+              this.couponDataFlag = false
+            }
           })
         }
         if (this.form.failedSendType === '1') {

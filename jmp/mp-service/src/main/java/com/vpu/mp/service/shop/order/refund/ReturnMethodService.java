@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.order.refund;
 import com.github.binarywang.wxpay.bean.result.WxPayRefundResult;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.OrderRefundRecordRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.SubOrderInfoRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -38,6 +39,7 @@ import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.shop.payment.PaymentRecordService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -89,7 +91,7 @@ public class ReturnMethodService extends ShopBaseService{
 	 * @return
 	 * @throws MpException 
 	 */
-	public boolean refundMethods(String methodName , OrderInfoVo order , Integer retId ,BigDecimal money) throws MpException {
+	public void refundMethods(String methodName , OrderInfoVo order , Integer retId ,BigDecimal money) throws MpException {
 		try {
 			//RETURN_METHOD_PREFIX + methodName获取该优先级退款的具体方法
 			Method method = getClass().getMethod(FieldsUtil.underLineToCamel(RETURN_METHOD_PREFIX + methodName), OrderInfoVo.class,Integer.class,BigDecimal.class);
@@ -98,7 +100,7 @@ public class ReturnMethodService extends ShopBaseService{
 			//反射捕获自定义异常
 			Throwable cause = e.getCause();
 			if (cause instanceof MpException) {
-				throw new MpException(((MpException) cause).getErrorCode(), e.getMessage());
+				throw (MpException)cause;
 			}else {
 				logger().error("退款统一入口调用方法异常(非MpException)retId:"+retId, e);
 				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_METHOD_REFLECT_ERROR, e.getMessage());
@@ -107,7 +109,6 @@ public class ReturnMethodService extends ShopBaseService{
 			logger().error("退款统一入口调用异常retId:"+retId, e);
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_METHOD_REFLECT_ERROR,e.getMessage());
 		}
-		return true;
 	}
 	/**
 	 * 	补款退款
@@ -250,6 +251,8 @@ public class ReturnMethodService extends ShopBaseService{
             String orderSn = orderInfo.isSubOrder(order) ? order.getMainOrderSn() : order.getOrderSn();
             //补款加后缀
             if(Boolean.TRUE.equals(order.getIsReturnBk())) {
+                //重置
+                order.setIsReturnBk(false);
                 orderSn = orderSn + OrderConstant.BK_SN_SUFFIX;
             }
             String refundSn = null;
@@ -258,6 +261,11 @@ public class ReturnMethodService extends ShopBaseService{
             if(payRecord == null) {
                 logger().error("wxPayRefund 微信支付记录未找到 order_sn="+orderSn);
                 throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_NO_RECORD);
+            }
+            //该次退款曾经执行记录
+            OrderRefundRecordRecord returnRecord = orderRefundRecord.getReturnRecord(retId, payRecord.getPaySn(), money);
+            if(returnRecord != null && OrderRefundRecordService.success.equals(returnRecord.getDealStatus())){
+                return;
             }
             //微信退款结果
             WxPayRefundResult refundResult = null;
@@ -268,12 +276,24 @@ public class ReturnMethodService extends ShopBaseService{
                 refundResult = refundByApi(payRecord.getPayCode(), payRecord.getTradeNo(), refundSn,
                     BigDecimalUtil.multiply(payRecord.getTotalFee(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(),
                     BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue());
-                //退款记录
-                orderRefundRecord.addRecord(refundSn, payRecord, refundResult, retId);
+                if(returnRecord != null){
+                    //二次退款恢复记录状态
+                    orderRefundRecord.updateStatus(returnRecord, OrderRefundRecordService.success, StringUtils.EMPTY);
+                }else {
+                    //退款记录
+                    orderRefundRecord.addRecord(refundSn, payRecord, refundResult, retId, money, StringUtils.EMPTY);
+                }
                 logger().info("微信退款（refundMoneyPaid）end");
 			} catch (MpException e) {
-                logger().error("微信退款异常（refundMoneyPaid）,错误信息表ORDER_REFUND_RECORD");
-                orderRefundRecord.addRecord(refundSn, payRecord, refundResult, retId);
+                logger().warn("微信退款异常（refundMoneyPaid）,错误信息表ORDER_REFUND_RECORD");
+                if(returnRecord != null){
+                    //二次退款依然失败
+                    orderRefundRecord.updateStatus(returnRecord, OrderRefundRecordService.fail, e.getCodeParam() == null ? StringUtils.EMPTY : e.getCodeParam().length == 0 ? StringUtils.EMPTY : e.getCodeParam()[0]);
+                }else {
+                    //退款记录
+                    orderRefundRecord.addRecord(refundSn, payRecord, refundResult, retId, money, e.getCodeParam() == null ? StringUtils.EMPTY : e.getCodeParam().length == 0 ? StringUtils.EMPTY : e.getCodeParam()[0]);
+                }
+                throw e;
 			}
 		}
 		if(!OrderConstant.PAY_CODE_COD.equals(order.getPayCode())){
@@ -300,8 +320,8 @@ public class ReturnMethodService extends ShopBaseService{
             try {
                 return mpPayment.refundByTransactionId(tradeNo, returnSn, totalFee, money);
             } catch (WxPayException e) {
-                logger().error("微信退款失败捕获WxPayException：{}", e.getCustomErrorMsg());
-                throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_ERROR,e.getMessage());
+                logger().warn("微信退款失败捕获WxPayException：{}", e.getCustomErrorMsg());
+                throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_ERROR,e.getMessage(), e.getErrCodeDes());
             }
         }else {
             //TODO 将来扩展其他支付
@@ -420,11 +440,11 @@ public class ReturnMethodService extends ShopBaseService{
                 BigDecimalUtil.multiply(payRecord.getTotalFee(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(),
                 BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue());
             //退款记录
-            orderRefundRecord.addRecord(refundSn, payRecord, refundResult, retId);
+            orderRefundRecord.addRecord(refundSn, payRecord, refundResult, retId, money, StringUtils.EMPTY);
             logger().info("微信退款（returnSubOrder）end");
         } catch (MpException e) {
             logger().error("微信退款异常（returnSubOrder）,错误信息表ORDER_REFUND_RECORD");
-            orderRefundRecord.addRecord(refundSn, payRecord, refundResult, retId);
+            orderRefundRecord.addRecord(refundSn, payRecord, refundResult, retId, money, StringUtils.EMPTY);
         }
         //交易记录
         tradesRecord.addRecord(money,orderSn, userId,TradesRecordService.TRADE_CONTENT_MONEY,RecordTradeEnum.TYPE_CASH_REFUND.val(),RecordTradeEnum.TRADE_FLOW_OUT.val(),TradesRecordService.TRADE_STATUS_ARRIVAL);

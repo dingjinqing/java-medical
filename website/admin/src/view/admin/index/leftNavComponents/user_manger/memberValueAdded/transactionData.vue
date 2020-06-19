@@ -260,10 +260,8 @@ export default {
       if (!flag) {
         this.middleData[3].num = content.total.totalReturnAmount
       }
+
       let arr = []
-      if (content.dateList.length > 1) {
-        content.dateList.pop()
-      }
       content.dateList.forEach((item, index) => {
         let obj = {}
         obj['日期'] = item
@@ -278,15 +276,27 @@ export default {
       content.paymentAmount.forEach((item, index) => {
         arr[index]['支付金额'] = item
       })
-      if (flag) {
-        content.returnAmount.forEach((item, index) => {
-          arr[index]['退款金额'] = item
-        })
-        console.log('触发')
-        this.chartData.columns.pop()
+      content.returnAmount.forEach((item, index) => {
+        arr[index]['退款金额'] = item
+      })
+      console.log(arr)
+      if (arr.length > 1) {
+        arr.pop()
+        console.log(arr)
       }
-      console.log(this.chartData, arr)
       this.chartData.rows = arr
+      //   this.startDate.year = content.startTime.substring(0, 4)
+      //   this.startDate.month = content.startTime.substring(4, 6)
+      //   this.startDate.day = content.startTime.substring(6, 8)
+
+      //   this.endDate.year = content.endTime.substring(0, 4)
+      //   this.endDate.month = content.endTime.substring(4, 6)
+      //   this.endDate.day = content.endTime.substring(6, 8)
+      //   content.dailyData.map(item => {
+      //     this.chartChange.date.push(item.date)
+      //     this.chartChange.number.push(item.number)
+      //   })
+      //   // 折线图数据部分
     },
     // 处理时间
     getDay (day) {

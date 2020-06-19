@@ -121,6 +121,9 @@ public class OrderInfoService extends ShopBaseService {
 	public final String[] PAY_SUBDIVISION = { PS_BK_ORDER_MONEY, PS_MEMBER_CARD_BALANCE, PS_USE_ACCOUNT,
 			PS_SCORE_DISCOUNT, PS_MONEY_PAID };
 
+    public final String[] REFUND_SUBDIVISION = { PS_BK_ORDER_MONEY, PS_MONEY_PAID, PS_MEMBER_CARD_BALANCE, PS_USE_ACCOUNT,
+        PS_SCORE_DISCOUNT};
+
 	/** like通配符 */
 	public final static char LIKE = '%';
 

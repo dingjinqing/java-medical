@@ -57,7 +57,7 @@
                   placement="top"
                 >
                   <span
-                    class="el-icon-edit-outline operateSpan"
+                    class="iconfont iconbianji"
                     @click="useModelSettingClicked(row)"
                   ></span>
                 </el-tooltip>
@@ -84,7 +84,7 @@
                 placement="top"
               >
                 <span
-                  class="el-icon-edit-outline operateSpan"
+                  class="iconfont iconbianji"
                   @click="updateLabelSettingClicked(row)"
                 ></span>
               </el-tooltip>
@@ -93,7 +93,7 @@
                 placement="top"
               >
                 <span
-                  class="el-icon-delete operateSpan"
+                  class="iconfont iconshanchu2"
                   @click="deleteLabelSettingClicked(row)"
                 ></span>
               </el-tooltip>
@@ -143,7 +143,10 @@
         <span><em style="color: red;">*</em>{{$t('allGoodsLabel.labelStyle')}}:</span>
         <div style="margin-top: 5px;display: flex;justify-content: space-around;">
           <div style="flex-grow: 1;text-align: center;">
-            <div class="imgWrap" @click="currentData.listPattern=1">
+            <div
+              class="imgWrap"
+              @click="currentData.listPattern=1"
+            >
               <img :src="$imageHost+'/image/admin/new_label_2.jpg'">
             </div>
             <el-radio
@@ -152,7 +155,10 @@
             >{{$t('allGoodsLabel.labelStyle1')}}</el-radio>
           </div>
           <div style="flex-grow: 1;text-align: center;">
-            <div class="imgWrap" @click="currentData.listPattern=2">
+            <div
+              class="imgWrap"
+              @click="currentData.listPattern=2"
+            >
               <img :src="$imageHost+'/image/admin/new_label_3.jpg'">
             </div>
             <el-radio
@@ -161,7 +167,10 @@
             >{{$t('allGoodsLabel.labelStyle2')}}</el-radio>
           </div>
           <div style="flex-grow: 1;text-align: center;">
-            <div class="imgWrap" @click="currentData.listPattern=3">
+            <div
+              class="imgWrap"
+              @click="currentData.listPattern=3"
+            >
               <img :src="$imageHost+'/image/admin/new_label_1.jpg'">
             </div>
             <el-radio
@@ -170,7 +179,10 @@
             >{{$t('allGoodsLabel.labelStyle3')}}</el-radio>
           </div>
           <div style="flex-grow: 1;text-align: center;">
-            <div class="imgWrap" @click="currentData.listPattern=4">
+            <div
+              class="imgWrap"
+              @click="currentData.listPattern=4"
+            >
               <img :src="$imageHost+'/image/admin/new_label_4.jpg'">
             </div>
             <el-radio
@@ -278,7 +290,8 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .contentWrap {
   padding: 10px 10px;
 }
@@ -295,10 +308,10 @@ export default {
   background: #fff;
   padding: 10px;
 }
-.imgWrap{
+.imgWrap {
   cursor: pointer;
 }
-.imgWrap img{
+.imgWrap img {
   width: 85%;
 }
 /deep/.tableClass th {
@@ -319,5 +332,9 @@ ul li {
   font-size: 22px;
   color: #5a8bff;
   cursor: pointer !important;
+}
+.iconfont {
+  font-size: 22px;
+  color: #5a8bff;
 }
 </style>

@@ -26,10 +26,22 @@
         >
           <template slot-scope="{row}">
             <div class="nameImgWrap">
-              <img class="imgItem" :src="row.prdImg===''||row.prdImg===null?row.goodsImg:row.prdImg">
-              <div class="nameItem" :title="row.prdDesc === ''?row.goodsTitleName+$t('allGoods.allGoodsData.noPrdSn'):row.goodsTitleName+row.prdDesc">
-                <span v-if="row.sourceName !== null" class="goodsTypeSpanWrap">{{row.sourceName}}</span>
-                <span v-if="row.goodsTypeName !== null" class="goodsSourceSpanWrap">{{row.goodsTypeName}}</span>
+              <img
+                class="imgItem"
+                :src="row.prdImg===''||row.prdImg===null?row.goodsImg:row.prdImg"
+              >
+              <div
+                class="nameItem"
+                :title="row.prdDesc === ''?row.goodsTitleName+$t('allGoods.allGoodsData.noPrdSn'):row.goodsTitleName+row.prdDesc"
+              >
+                <span
+                  v-if="row.sourceName !== null"
+                  class="goodsTypeSpanWrap"
+                >{{row.sourceName}}</span>
+                <span
+                  v-if="row.goodsTypeName !== null"
+                  class="goodsSourceSpanWrap"
+                >{{row.goodsTypeName}}</span>
                 <span v-html="row.goodsName"></span>
                 <span v-if="row.prdDesc === ''">
                   ({{$t('allGoods.allGoodsData.noPrdSn')}})
@@ -53,8 +65,8 @@
             <span v-if="!row.prdPriceEdit">
               {{row.prdPrice}}
               <span
-                class="el-icon-edit-outline iconSpan"
-                style="margin-left: 10px;"
+                class="iconfont iconbianji"
+                style="margin-left: 10px; font-size: 20px;"
                 @click="prdPriceAndPrdNumberEditClick(row,'price')"
               ></span>
             </span>
@@ -72,7 +84,8 @@
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.prdSn')"
-          width="140">
+          width="140"
+        >
           <template slot-scope="{row}">
             {{row.goodsSn}}
             <span v-if="row.prdSn!==null && row.prdSn.length > 0">
@@ -80,7 +93,7 @@
             </span>
           </template>
         </el-table-column>
-          <!--商家分类-->
+        <!--商家分类-->
         <el-table-column
           align="center"
           prop="sortName"
@@ -107,8 +120,8 @@
             <span v-if="!row.prdNumberEdit">
               {{row.prdNumber}}
               <span
-                class="el-icon-edit-outline iconSpan"
-                style="margin-left: 10px;"
+                class="iconfont iconbianji"
+                style="margin-left: 10px; font-size: 20px"
                 @click="prdPriceAndPrdNumberEditClick(row,'number')"
               ></span>
             </span>
@@ -129,8 +142,11 @@
           width="120"
         >
           <template slot-scope="{row}">
-            <div v-if="row.goodsNormalLabels.length + row.goodsPointLabels.length > 0"  class="goodsLabelSpanWrap">
-              <div  v-if="row.goodsPointLabels.length > 0">
+            <div
+              v-if="row.goodsNormalLabels.length + row.goodsPointLabels.length > 0"
+              class="goodsLabelSpanWrap"
+            >
+              <div v-if="row.goodsPointLabels.length > 0">
                 {{row.goodsPointLabels[0].name}}
               </div>
               <div v-if="row.goodsPointLabels.length === 0 && row.goodsNormalLabels.length > 0">
@@ -140,8 +156,10 @@
                 共{{row.goodsNormalLabels.length + row.goodsPointLabels.length }}个
               </div>
             </div>
-            <div style="cursor: pointer;text-align: center;margin-top: 2px;color: #5a8bff;"
-                 @click="tdLabelSetClick(row)">
+            <div
+              style="cursor: pointer;text-align: center;margin-top: 2px;color: #5a8bff;"
+              @click="tdLabelSetClick(row)"
+            >
               {{$t('allGoods.allGoodsData.setting')}}
             </div>
           </template>
@@ -156,7 +174,7 @@
               placement="top"
             >
               <span
-                class="el-icon-edit-outline iconSpan"
+                class="iconfont iconbianji"
                 @click="editIconClick(row)"
               ></span>
             </el-tooltip>
@@ -165,7 +183,7 @@
               placement="top"
             >
               <span
-                class="el-icon-share iconSpan"
+                class="iconfont iconfenxiang1"
                 @click="shareIconClick(row)"
               ></span>
             </el-tooltip>
@@ -225,13 +243,17 @@
         </el-select>
       </div>
       <!--通用标签-->
-      <div v-if="goodsLabelData.goodsNormalLabels.length>0" style="display: flex;margin-top: 10px;">
+      <div
+        v-if="goodsLabelData.goodsNormalLabels.length>0"
+        style="display: flex;margin-top: 10px;"
+      >
         <div style="width:75px;flex-shrink:0;">通用标签：</div>
         <div class="labelSelectedWrapPanel">
           <div
             class="labelSelectedWrap"
             v-for="(item,index) in goodsLabelData.goodsNormalLabels"
-            :key="index">
+            :key="index"
+          >
             {{item.name}}
           </div>
         </div>
@@ -243,16 +265,17 @@
       >
         <div style="width:75px;flex-shrink:0;">{{this.$t('allGoods.allGoodsData.selected')}}：</div>
         <div class="labelSelectedWrapPanel">
-          <div class="labelSelectedWrap"
-          v-for="(item,index) in goodsLabelData.labelSelectedOptions"
-          :key="index"
-        >
-          {{item.name}}
-          <span
-            @click="tdDeleteLabel(item,index)"
-            class="deleteIcon"
-          >×</span>
-        </div>
+          <div
+            class="labelSelectedWrap"
+            v-for="(item,index) in goodsLabelData.labelSelectedOptions"
+            :key="index"
+          >
+            {{item.name}}
+            <span
+              @click="tdDeleteLabel(item,index)"
+              class="deleteIcon"
+            >×</span>
+          </div>
         </div>
       </div>
       <div slot="footer">
@@ -278,8 +301,8 @@
 </template>
 <script>
 
-import {getGoodsProductList, batchOperateSpecPrdPriceNumber, updateLabelByGoodsId, getGoodsFilterItem} from '@/api/admin/goodsManage/allGoods/allGoods'
-import {getGoodsQrCode} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
+import { getGoodsProductList, batchOperateSpecPrdPriceNumber, updateLabelByGoodsId, getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
+import { getGoodsQrCode } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // 组件导入
 import pagination from '@/components/admin/pagination/pagination'
 import goodsExportConfirmDialog from './goodsExportConfirmDialog'
@@ -376,7 +399,7 @@ export default {
     /** table表单内标签 **/
     /* table表单内标签设置按钮 */
     tdLabelSetClick (row) {
-      getGoodsFilterItem({needGoodsLabel: true}).then(res => {
+      getGoodsFilterItem({ needGoodsLabel: true }).then(res => {
         const { content: { goodsLabels } } = res
         this.goodsLabelData.currentRow = row
         this.goodsLabelData.goodsNormalLabels = row.goodsNormalLabels
@@ -533,6 +556,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 /deep/.tableClass th {
   background-color: #f5f5f5;
   border: none;
@@ -541,16 +565,16 @@ export default {
   color: #000;
   padding: 8px 10px;
 }
-.nameImgWrap{
+.nameImgWrap {
   display: flex;
   text-align: left;
 }
-.nameImgWrap::after{
-  content: '';
+.nameImgWrap::after {
+  content: "";
   display: block;
   clear: both;
 }
-.imgItem{
+.imgItem {
   width: 60px;
   height: 60px;
   border-radius: 2px;
@@ -581,11 +605,11 @@ export default {
   border: 1px solid #cccccc;
   color: #666;
   border-radius: 3px;
-  padding:0px 2px;
+  padding: 0px 2px;
   margin-right: 2px;
   display: inline-block;
 }
-.labelSelectedWrapPanel{
+.labelSelectedWrapPanel {
   width: 80%;
   display: flex;
   justify-content: flex-start;
@@ -627,5 +651,9 @@ export default {
   height: 25px;
   border: 1px solid #ccc;
   text-align: center;
+}
+.iconfont {
+  font-size: 22px;
+  color: #5a8bff;
 }
 </style>

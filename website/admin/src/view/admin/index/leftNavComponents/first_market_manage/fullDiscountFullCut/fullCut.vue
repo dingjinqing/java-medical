@@ -135,7 +135,7 @@
                 placement="top"
               >
                 <span
-                  class="el-icon-tickets"
+                  class="iconfont icondingdan"
                   @click="goOrderList(scope.row)"
                 ></span>
               </el-tooltip>

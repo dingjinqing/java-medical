@@ -287,7 +287,7 @@
 </view>
 <!-- 分享|下载海报|多图弹窗 -->
 <!-- <v-share show="{{showShareDialog}}" share-data="{{shareData}}"/> -->
-<v-share show="{{showShareDialog}}" share-data="{{shareData}}" show-multiple="{{goodsDistribution && goodsDistribution.isDistributor === 1}}">
+<v-share show="{{showShareDialog}}" share-data="{{shareData}}" show-multiple="{{goodsDistribution && goodsDistribution.isDistributor === 1}}" bindhandleDownloadCb="handleDownloadCb">
   <view slot="shareInvite" class="shareInvite" wx:if='{{shareAwardId !== 0}}'>
     <view class="invite_text">
       <view class='invite_friend'>邀好友查看,即可获得活动奖励</view>

@@ -31,7 +31,7 @@ global.wxComponent({
     handleToInit (newVal) {
       console.log(newVal)
 
-      util.api('/api/card/interests/info ', res => {
+      util.api('/api/card/interests/info', res => {
         console.log(res)
         if (res.error === 0) {
           this.setData({
