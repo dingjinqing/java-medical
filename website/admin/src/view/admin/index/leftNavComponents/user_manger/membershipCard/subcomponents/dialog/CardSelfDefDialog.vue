@@ -140,7 +140,12 @@ export default {
       createFlag: true,
       myRules: {
         contentRule: [{required: true, message: '', trigger: 'blur'}],
-        titleRule: [{required: true, message: '', trigger: 'blur'}]
+        titleRule: [
+          {required: true, message: '', trigger: 'blur'},
+          {
+            pattern: /^.{1,20}$/,
+            message: '最多可填20个字'
+          }]
       },
       contentShowItems: [0, 1],
       pictureNumOptions: []
