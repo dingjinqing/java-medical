@@ -68,8 +68,11 @@ public class OrderListInfoVo {
 	/**补款金额*/
 	/**918*/
 	private BigDecimal bkOrderMoney;
-	@JsonIgnore
 	private Integer userId;
+    /**下单人昵称*/
+    private String username;
+    /**下单人手机号*/
+    private String userMobile;
     /**会员卡号*/
 	private String cardNo;
 	@JsonIgnore
