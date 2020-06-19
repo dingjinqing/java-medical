@@ -455,13 +455,10 @@ export default {
 
     // 审核通过
     reviewPassHandler (data) {
-      var groupId = 0
-      if (data.activationFields.rebate_group) {
-        groupId = data.activationFields.rebate_group
-      }
       getCheckPass({
         id: data.id,
-        groupId: groupId
+        groupId: data.activationFields.rebate_group ? data.activationFields.rebate_group : 0,
+        invitation: data.activationFields.invitation_code ? data.activationFields.invitation_code : ''
       }).then((res) => {
         if (res.error === 0) {
           this.$message.success(this.$t('distribution.reviewPass') + '!')
