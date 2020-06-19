@@ -308,7 +308,7 @@
 </template>
 
 <script>
-import { getCheckList, distributionGroup, getCheckPass, getCheckRefuse, setBatchGroup } from '@/api/admin/marketManage/distribution.js'
+import { getCheckList, distributionGroup, getCheckPass, getCheckRefuse } from '@/api/admin/marketManage/distribution.js'
 import chinaData from '@/assets/china-data'
 import { deepCloneObj } from '@/util/deepCloneObj'
 export default {
@@ -447,17 +447,10 @@ export default {
 
     // 分销员分组弹窗回调函数
     choosingGroupResult (data) {
-      setBatchGroup({
-        userId: [this.groupId],
-        groupId: data
-      }).then(res => {
-        if (res.error === 0) {
-          this.$message.success('设置成功')
-          this.initDataList()
-        } else {
-          this.$message.warning(res.message)
-        }
-      })
+      var currentGroup = this.groupNameList.find(item => { return item.id === data })
+      var item = this.tableData.find(item => { return item.userId === this.groupId })
+      this.$set(item.activationFields, 'rebate_group', currentGroup.id)
+      this.$set(item.checkField, 'rebateGroupName', currentGroup.groupName)
     },
 
     // 审核通过
