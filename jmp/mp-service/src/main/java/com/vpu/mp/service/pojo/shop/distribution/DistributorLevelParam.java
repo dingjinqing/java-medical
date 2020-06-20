@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.distribution;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class DistributorLevelParam {
 	private Integer id;
@@ -9,8 +11,8 @@ public class DistributorLevelParam {
 	private String levelName;
 	private Integer levelUpRoute;
 	private Integer inviteNumber;
-	private String totalDistributionMoney;
-	private String totalBuyMoney;
+	private BigDecimal totalDistributionMoney;
+	private BigDecimal totalBuyMoney;
 	private String levelUserIds;
 	private Integer users;
 	private Integer levelStatus;

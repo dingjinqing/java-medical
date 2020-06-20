@@ -50,6 +50,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -366,6 +367,7 @@ public class AdminDistributionController extends AdminBaseController{
 	 */
 	@PostMapping("/admin/distribution/level/save")
 	public JsonResult saveDistributorLevel(@RequestBody DistributorLevelParam[] levelData) {
+        BigDecimal baseMoney = new BigDecimal("0.00");
 		for(DistributorLevelParam level : levelData) {
 			//各等级信息
 			DistributorLevelVo levelInfo = shop().distributorLevel.getOneLevelInfo(level.getLevelId());
@@ -374,7 +376,7 @@ public class AdminDistributionController extends AdminBaseController{
 
 			if(levelInfo != null) {
 				if(levelInfo.getLevelStatus() == 1) { //等级启用中
-					if(level.getLevelUpRoute() == 0 && level.getInviteNumber() == 0 && level.getTotalDistributionMoney() == "0" && level.getTotalBuyMoney() == "0") {
+					if(level.getLevelUpRoute() == 0 && level.getInviteNumber() == 0 && level.getTotalDistributionMoney().compareTo(baseMoney) == 0  && level.getTotalBuyMoney().compareTo(baseMoney) == 0) {
 						return this.fail();//已启用等级设置不能为空
 					}
 
