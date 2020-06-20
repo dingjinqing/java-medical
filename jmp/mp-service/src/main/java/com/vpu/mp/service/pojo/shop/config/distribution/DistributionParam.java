@@ -124,7 +124,7 @@ public class DistributionParam {
 	 * 邀请码
 	 */
 	@JsonProperty(value = "invitation_code")
-	public String invitationCode;
+	public Integer invitationCode;
 
 	@JsonProperty(value = "auto_examine")
     public Byte autoExamine;
