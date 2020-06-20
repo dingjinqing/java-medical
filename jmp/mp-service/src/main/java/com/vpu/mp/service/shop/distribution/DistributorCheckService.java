@@ -48,12 +48,14 @@ public class DistributorCheckService extends ShopBaseService{
         PageResult<DistributorCheckListVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), DistributorCheckListVo.class);
         for(DistributorCheckListVo applyInfo: pageResult.getDataList()){
             DistributorApplyParam.InfoField infoField = Util.parseJson(applyInfo.getActivationFields(), DistributorApplyParam.InfoField.class);
-            //邀请人信息
-            Record record = db().select().from(USER).where(USER.INVITATION_CODE.eq(infoField.getInvitationCode())).fetchOne();
-            if(record != null){
-                UserRecord into = record.into(UserRecord.class);
-                applyInfo.setInviteName(into.getUsername());
-                applyInfo.setInviteId(into.getUserId());
+            if(infoField != null){
+                //邀请人信息
+                Record record = db().select().from(USER).where(USER.INVITATION_CODE.eq(infoField.getInvitationCode())).fetchOne();
+                if(record != null){
+                    UserRecord into = record.into(UserRecord.class);
+                    applyInfo.setInviteName(into.getUsername());
+                    applyInfo.setInviteId(into.getUserId());
+                }
             }
             applyInfo.setCheckField(Util.parseJson(applyInfo.getActivationFields(),DistributorApplyParam.InfoField.class));
         }

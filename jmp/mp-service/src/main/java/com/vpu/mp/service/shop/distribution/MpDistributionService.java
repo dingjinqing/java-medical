@@ -152,18 +152,20 @@ public class MpDistributionService extends ShopBaseService{
 	 * @return state申请状态 -1：邀请码不存在；0：审核中；1：审核通过
 	 */
 	public int distributorApply(DistributorApplyParam param) {
+        DistributorApplyRecord record = new DistributorApplyRecord();
         Integer state = 0;//返回状态
         //获取分销配置，成为分销员是否需要审核
         DistributionParam cfg = this.distributionCfg.getDistributionCfg();
         if(cfg.getActivation() == 0){  //不提交审核信息，直接成为分销员
-            db().update(USER)
-                .set(USER.IS_DISTRIBUTOR, (byte) 1)
-                .where(USER.USER_ID.eq(param.getUserId())).execute();
+            System.out.println(12344444);
+            String checkInfo = Util.toJsonNotNull(param.getActivationFields());
+            assign(param, record);
+            record.setActivationFields(checkInfo);
+            db().executeInsert(record);
             state = 0;
         }else {
             //生成有效邀请码
             String inviteCode = this.validInviteCode();
-            DistributorApplyRecord record = new DistributorApplyRecord();
 
             Integer codeIsExist = 1; //邀请码存在或不校验
             //用户提交邀请码不为空的时候判断邀请码是否存在有效
@@ -341,7 +343,7 @@ public class MpDistributionService extends ShopBaseService{
             rebateCenterVo.setTotalWithdraw(userRebate1.getFinalMoney());
             if (distributionCfg.getStatus() != 1 || (isDistributor != 1 && distributionCfg.getJudgeStatus() == 1)) {
                 if (distributionCfg.getWithdrawStatus() != 1) {
-                    BigDecimal account1 = new BigDecimal("0.00");
+                    BigDecimal account1 = new BigDecimal("0");
                     rebateCenterVo.setCanWithdraw(account1);
                 }
             }

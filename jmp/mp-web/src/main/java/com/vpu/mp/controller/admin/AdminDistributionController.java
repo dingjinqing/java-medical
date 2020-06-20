@@ -722,37 +722,39 @@ public class AdminDistributionController extends AdminBaseController{
 	public JsonResult distributorCheckList(@RequestBody DistributorCheckListParam param){
         PageResult<DistributorCheckListVo> distributorCheckList = shop().distributorCheck.getDistributorCheckList(param);
         for(DistributorCheckListVo list:distributorCheckList.dataList){
-            //转换行业码对应的名称
-            if(list.getCheckField().getIndustryInfo() != null){
-                String industryInfo = MemberIndustryEnum.getNameByCode(list.getCheckField().getIndustryInfo(),getLang());
-                list.getCheckField().setIndustryName(industryInfo);
-            }
-            //教育程度
-            if(list.getCheckField().getEducation() != null){
-                String education = MemberEducationEnum.getNameByCode(list.getCheckField().getEducation(),getLang());
-                list.getCheckField().setEducationName(education);
-            }
-            //性别
-            if(list.getCheckField().getSex()!=null && list.getCheckField().getSex().equalsIgnoreCase("f")){
-                list.getCheckField().setSex("女");
-            }else if(list.getCheckField().getSex()!=null && list.getCheckField().getSex().equalsIgnoreCase("m")){
-                list.getCheckField().setSex("男");
-            }
-            //婚姻状况
-            if(list.getCheckField().getMaritalStatus() != null){
-                String maritalInfo = MemberMarriageEnum.getNameByCode(list.getCheckField().getMaritalStatus(),getLang());
-                list.getCheckField().setMaritalName(maritalInfo);
-            }
-            //分销分组名称
-            if(list.getCheckField().getRebateGroup() != null){
-                DistributorGroupListVo oneInfo = shop().distributorGroup.getOneInfo(list.getCheckField().getRebateGroup());
-                String groupName;
-                if(oneInfo != null){
-                    groupName = oneInfo.getGroupName();
-                }else{
-                    groupName = null;
+            if(list.getCheckField() != null){
+                //转换行业码对应的名称
+                if(list.getCheckField().getIndustryInfo() != null){
+                    String industryInfo = MemberIndustryEnum.getNameByCode(list.getCheckField().getIndustryInfo(),getLang());
+                    list.getCheckField().setIndustryName(industryInfo);
                 }
-                list.getCheckField().setRebateGroupName(groupName);
+                //教育程度
+                if(list.getCheckField().getEducation() != null){
+                    String education = MemberEducationEnum.getNameByCode(list.getCheckField().getEducation(),getLang());
+                    list.getCheckField().setEducationName(education);
+                }
+                //性别
+                if(list.getCheckField().getSex()!=null && list.getCheckField().getSex().equalsIgnoreCase("f")){
+                    list.getCheckField().setSex("女");
+                }else if(list.getCheckField().getSex()!=null && list.getCheckField().getSex().equalsIgnoreCase("m")){
+                    list.getCheckField().setSex("男");
+                }
+                //婚姻状况
+                if(list.getCheckField().getMaritalStatus() != null){
+                    String maritalInfo = MemberMarriageEnum.getNameByCode(list.getCheckField().getMaritalStatus(),getLang());
+                    list.getCheckField().setMaritalName(maritalInfo);
+                }
+                //分销分组名称
+                if(list.getCheckField().getRebateGroup() != null){
+                    DistributorGroupListVo oneInfo = shop().distributorGroup.getOneInfo(list.getCheckField().getRebateGroup());
+                    String groupName;
+                    if(oneInfo != null){
+                        groupName = oneInfo.getGroupName();
+                    }else{
+                        groupName = null;
+                    }
+                    list.getCheckField().setRebateGroupName(groupName);
+                }
             }
 
         }

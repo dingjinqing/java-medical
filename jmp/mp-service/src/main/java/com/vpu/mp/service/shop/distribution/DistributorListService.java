@@ -91,9 +91,9 @@ public class DistributorListService extends ShopBaseService{
 
         //分销审核开关是否开启
         DistributionParam distributionCfg = dcs.getDistributionCfg();
-        if(distributionCfg.getJudgeStatus() == 1){//分销审核开关开启展示审核过的分销员
+        if(distributionCfg.getJudgeStatus() != null && distributionCfg.getJudgeStatus() == 1){//分销审核开关开启展示审核过的分销员
             where.and(d.IS_DISTRIBUTOR.eq((byte) 1));
-        }else if(param.getHaveNextUser() == 1){//分销审核开关关闭 分销员列表默认展示有下级的分销员
+        }else if(param.getHaveNextUser() != null && param.getHaveNextUser() == 1){//分销审核开关关闭 分销员列表默认展示有下级的分销员
             param.setHaveNextUser((byte)1);
         }
 
