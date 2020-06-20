@@ -654,6 +654,7 @@ export default {
         custom_options: [],
         hasDistributor: 0, // 是否有分销员
         // invitationCode: 1, // 邀请码
+        invitation_code: '0', // 邀请码
         activation_cfg: [], // 个人信息内容
         rank_status: 0, // 分销员排名及返佣记录展示
         vaild: 0, // 返利有效期
@@ -945,6 +946,16 @@ export default {
       }
       // 自定义激活项
       this.form.custom_options = this.customList
+
+      // 邀请码
+      if (this.form.activation_cfg && this.form.activation_cfg.length > 0) {
+        var data = this.form.activation_cfg.find(item => { return item === '邀请码' || item === 'Invitation code' })
+        if (data === undefined) {
+          this.form.invitation_code = '0'
+        } else {
+          this.form.invitation_code = '1'
+        }
+      }
 
       // 有效期
       if (this.form.vaild === 1) {
