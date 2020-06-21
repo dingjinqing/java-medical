@@ -30,6 +30,8 @@ public class DistributorInvitedListParam {
 	private Timestamp startInviteTime;
 	/**邀请结束时间*/
 	private Timestamp endInviteTime;
+	/**0:直接邀请；1：间接邀请*/
+	private Byte inviteType = 0;
 
 	private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
 	private Integer pageRows = Page.DEFAULT_PAGE_ROWS;

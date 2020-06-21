@@ -536,6 +536,17 @@ public class AdminDistributionController extends AdminBaseController{
 		return this.success(invitedlist);
 	}
 
+    /**
+     * 分销员间接邀请用户列表
+     * @param param
+     * @return
+     */
+    @PostMapping("/admin/distribution/indirectInvited/list")
+	public JsonResult indirectInviteList(@RequestBody DistributorInvitedListParam param){
+        DistributorInvitedListVo indirectInviteList = shop().distributorList.getIndirectInviteList(param);
+        return this.success(indirectInviteList);
+    }
+
 	/**
 	 * 清除分销员身份
 	 * @param userId
