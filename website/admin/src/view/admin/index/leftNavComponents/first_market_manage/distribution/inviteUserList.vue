@@ -53,10 +53,7 @@
             value-format="yyyy-MM-dd HH:mm:ss"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item
-          :label="$t('distribution.inviteTime') + '：'"
-          v-if="type === 'invite'"
-        >
+        <el-form-item :label="$t('distribution.inviteTime') + '：'">
           <el-date-picker
             v-model="searchParam.startInviteTime"
             type="datetime"
@@ -91,8 +88,7 @@
 
     <div class="main list_content">
       <div class="title_content">
-        <span v-if="type === 'invite'">{{$t('distribution.inviteMoneyTip') + '：'}}</span>
-        <span v-if="type === 'indirect'">{{$t('distribution.indirectMoneyTip') + '：'}}</span>
+        <span>{{$t('distribution.inviteMoneyTip') + '：'}}</span>
         <span style="color: red;">{{totalGetFanliMoney}}</span>
       </div>
     </div>
@@ -136,20 +132,6 @@
         >
         </el-table-column>
         <el-table-column
-          prop=""
-          :label="$t('distribution.higherName')"
-          align="center"
-          v-if="type !== 'invite'"
-        >
-        </el-table-column>
-        <el-table-column
-          prop=""
-          :label="$t('distribution.higherMobile')"
-          align="center"
-          v-if="type !== 'invite'"
-        >
-        </el-table-column>
-        <el-table-column
           :label="$t('distribution.orderNumber')"
           align="center"
         >
@@ -178,13 +160,11 @@
           :label="$t('distribution.inviteTime')"
           align="center"
           width="100px"
-          v-if="type === 'invite'"
         >
         </el-table-column>
         <el-table-column
           :label="$t('distribution.inviteExpiryDate')"
           align="center"
-          v-if="type === 'invite'"
         >
           <template slot-scope="scope">
             <span>{{ scope.row.inviteExpiryDate ? scope.row.inviteExpiryDate : '永久'}}</span>
@@ -194,7 +174,6 @@
           prop="inviteProtectDate"
           :label="$t('distribution.inviteProtectDate')"
           align="center"
-          v-if="type === 'invite'"
         >
         </el-table-column>
       </el-table>
@@ -230,12 +209,10 @@ export default {
         currentPage: 1,
         pageRows: 10
       },
-      userId: '', // 用户id
-      type: 'invite' // 页面类型(invite已邀请用户, indirect间接邀请)
+      userId: '' // 用户id
     }
   },
   mounted () {
-    this.type = this.$route.query.type
     this.userId = this.$route.query.userId
     this.initData()
   },

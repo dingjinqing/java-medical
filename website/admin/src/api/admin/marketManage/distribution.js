@@ -355,6 +355,15 @@ export function inviteUserList (data) {
   })
 }
 
+// 分销员间接邀请用户列表
+export function indirectUserList (data) {
+  return service({
+    url: '/api/admin/distribution/indirectInvited/list',
+    method: 'post',
+    data: data
+  })
+}
+
 // 清除分销员身份
 export function delDistributor (data) {
   return service({

@@ -53,31 +53,6 @@
             value-format="yyyy-MM-dd HH:mm:ss"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item
-          :label="$t('distribution.inviteTime') + '：'"
-          v-if="type === 'invite'"
-        >
-          <el-date-picker
-            v-model="searchParam.startInviteTime"
-            type="datetime"
-            size="small"
-            align="right"
-            class="selectWidth"
-            :placeholder="$t('distribution.chooseDate')"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          ></el-date-picker>
-          {{$t('distribution.to')}}
-          <el-date-picker
-            v-model="searchParam.endInviteTime"
-            type="datetime"
-            size="small"
-            align="right"
-            class="selectWidth"
-            default-time="23:59:59"
-            :placeholder="$t('distribution.chooseDate')"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          ></el-date-picker>
-        </el-form-item>
         <el-form-item>
           <el-button
             @click="initData"
@@ -91,8 +66,7 @@
 
     <div class="main list_content">
       <div class="title_content">
-        <span v-if="type === 'invite'">{{$t('distribution.inviteMoneyTip') + '：'}}</span>
-        <span v-if="type === 'indirect'">{{$t('distribution.indirectMoneyTip') + '：'}}</span>
+        <span>{{$t('distribution.indirectMoneyTip') + '：'}}</span>
         <span style="color: red;">{{totalGetFanliMoney}}</span>
       </div>
     </div>
@@ -139,14 +113,12 @@
           prop=""
           :label="$t('distribution.higherName')"
           align="center"
-          v-if="type !== 'invite'"
         >
         </el-table-column>
         <el-table-column
           prop=""
           :label="$t('distribution.higherMobile')"
           align="center"
-          v-if="type !== 'invite'"
         >
         </el-table-column>
         <el-table-column
@@ -173,30 +145,6 @@
             <span>{{scope.row.totalFanliMoney ? scope.row.totalFanliMoney : '0.00'}}</span>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="inviteTime"
-          :label="$t('distribution.inviteTime')"
-          align="center"
-          width="100px"
-          v-if="type === 'invite'"
-        >
-        </el-table-column>
-        <el-table-column
-          :label="$t('distribution.inviteExpiryDate')"
-          align="center"
-          v-if="type === 'invite'"
-        >
-          <template slot-scope="scope">
-            <span>{{ scope.row.inviteExpiryDate ? scope.row.inviteExpiryDate : '永久'}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="inviteProtectDate"
-          :label="$t('distribution.inviteProtectDate')"
-          align="center"
-          v-if="type === 'invite'"
-        >
-        </el-table-column>
       </el-table>
     </div>
     <pagination
@@ -206,7 +154,7 @@
   </div>
 </template>
 <script>
-import { inviteUserList } from '@/api/admin/marketManage/distribution.js'
+import { indirectUserList } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -230,12 +178,10 @@ export default {
         currentPage: 1,
         pageRows: 10
       },
-      userId: '', // 用户id
-      type: 'invite' // 页面类型(invite已邀请用户, indirect间接邀请)
+      userId: '' // 用户id
     }
   },
   mounted () {
-    this.type = this.$route.query.type
     this.userId = this.$route.query.userId
     this.initData()
   },
@@ -247,7 +193,7 @@ export default {
       paramsData.userId = this.userId
       paramsData.currentPage = this.pageParams.currentPage
       paramsData.pageRows = this.pageParams.pageRows
-      inviteUserList(paramsData).then(res => {
+      indirectUserList(paramsData).then(res => {
         if (res.error === 0) {
           this.totalGetFanliMoney = res.content.totalGetFanliMoney
           this.tableData = res.content.inviteUserInfo.dataList
