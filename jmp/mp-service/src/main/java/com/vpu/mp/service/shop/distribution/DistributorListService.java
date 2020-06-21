@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vpu.mp.db.shop.tables.records.UserRemarkRecord;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.distribution.*;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
@@ -56,8 +57,17 @@ public class DistributorListService extends ShopBaseService{
         Field totalFanliMoney = sum(USER_FANLI_STATISTICS.TOTAL_FANLI_MONEY).as("totalFanliMoney");
         Field waitFanliMoney = sum(ORDER_GOODS_REBATE.REAL_REBATE_MONEY).as("waitFanliMoney");
 
+
         //下级用户数
         Table<Record1<Integer>> recordTable = db().select(d.USER_ID,nextNumber.as("nextNumber")).from(d).leftJoin(a).on(a.INVITE_ID.eq(d.USER_ID)).where(d.IS_DISTRIBUTOR.eq((byte) 1)).groupBy(d.USER_ID).asTable();
+
+        //分销审核开关是否开启
+        DistributionParam distributionCfg = dcs.getDistributionCfg();
+        if(distributionCfg.getJudgeStatus() != null && distributionCfg.getJudgeStatus() == 0){//分销审核开关开启展示审核过的分销员
+            //下级用户数
+            recordTable = db().select(d.USER_ID,nextNumber.as("nextNumber")).from(d).leftJoin(a).on(a.INVITE_ID.eq(d.USER_ID)).groupBy(d.USER_ID).asTable();
+        }
+
         //间接邀请人数
         Table<Record2<Integer, BigDecimal>> record2Table = db().select(d.USER_ID, sublayerNumber.as("sublayerNumber")).from(d).leftJoin(a).on(d.USER_ID.eq(a.INVITE_ID)).leftJoin(USER_TOTAL_FANLI).on(USER_TOTAL_FANLI.USER_ID.eq(a.USER_ID))
             .where(d.IS_DISTRIBUTOR.eq((byte) 1)).groupBy(d.USER_ID).asTable();
@@ -90,13 +100,13 @@ public class DistributorListService extends ShopBaseService{
             .leftJoin(record2Table2).on(record2Table2.field(ORDER_GOODS_REBATE.REBATE_USER_ID).eq(d.USER_ID)).where(d.USER_ID.gt(0));
 
         //分销审核开关是否开启
-        DistributionParam distributionCfg = dcs.getDistributionCfg();
+//        DistributionParam distributionCfg = dcs.getDistributionCfg();
         if(distributionCfg.getJudgeStatus() != null && distributionCfg.getJudgeStatus() == 1){//分销审核开关开启展示审核过的分销员
             where.and(d.IS_DISTRIBUTOR.eq((byte) 1));
-        }else if(param.getHaveNextUser() != null && param.getHaveNextUser() == 1){//分销审核开关关闭 分销员列表默认展示有下级的分销员
+        }
+        if(distributionCfg.getJudgeStatus() != null && distributionCfg.getJudgeStatus() == 0){//分销审核开关关闭 分销员列表默认展示有下级的分销员
             param.setHaveNextUser((byte)1);
         }
-
         SelectConditionStep<? extends Record> sql = buildOptions(where, param,record2Table,record3Table,record2Table2,recordTable);
 
         PageResult<DistributorListVo> distributorList = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), DistributorListVo.class);
@@ -244,9 +254,10 @@ public class DistributorListService extends ShopBaseService{
 	 */
 	public DistributorInvitedListVo getInvitedList(DistributorInvitedListParam param) {
 		SelectJoinStep<? extends Record> select = db().select(USER.USER_ID,USER.USERNAME,USER_DETAIL.REAL_NAME,USER.MOBILE,USER.CREATE_TIME,USER.INVITE_EXPIRY_DATE,USER.INVITE_TIME,USER.INVITE_PROTECT_DATE,sum(USER_FANLI_STATISTICS.ORDER_NUMBER).as("ORDER_NUMBER"),sum(USER_FANLI_STATISTICS.TOTAL_CAN_FANLI_MONEY).as("TOTAL_CAN_FANLI_MONEY"),sum(USER_FANLI_STATISTICS.TOTAL_FANLI_MONEY).as("TOTAL_FANLI_MONEY"))
-				.from(USER.leftJoin(USER_FANLI_STATISTICS).on(USER.USER_ID.eq(USER_FANLI_STATISTICS.USER_ID)))
-                .leftJoin(USER_DETAIL).on(USER.USER_ID.eq(USER_DETAIL.USER_ID));
-		SelectConditionStep<? extends Record> sql = getInvitedListOptions(select,param);
+            .from(USER.leftJoin(USER_FANLI_STATISTICS).on(USER.USER_ID.eq(USER_FANLI_STATISTICS.USER_ID)))
+            .leftJoin(USER_DETAIL).on(USER.USER_ID.eq(USER_DETAIL.USER_ID));
+		List<Integer> userIds = null;
+        SelectConditionStep<? extends Record> sql = getInvitedListOptions(select,param,userIds);
 		PageResult<InviteUserInfoVo> invitedList = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), InviteUserInfoVo.class);
 		BigDecimal totalGetFanliMoney = new BigDecimal(0);
         DistributorInvitedListVo InviteInfo = new DistributorInvitedListVo();
@@ -278,8 +289,14 @@ public class DistributorListService extends ShopBaseService{
 	 * @param param
 	 * @return
 	 */
-	public SelectConditionStep<? extends Record> getInvitedListOptions(SelectJoinStep<? extends Record> select,DistributorInvitedListParam param) {
-		SelectConditionStep<? extends Record> sql = select.where(USER.INVITE_ID.eq(param.getUserId()));
+	public SelectConditionStep<? extends Record> getInvitedListOptions(SelectJoinStep<? extends Record> select,DistributorInvitedListParam param,List<Integer> userIds) {
+        SelectConditionStep<? extends Record> sql = select.where(USER.INVITE_ID.gt(0));
+        if(param.getInviteType() == 0) {
+            sql = select.where(USER.INVITE_ID.eq(param.getUserId()));
+        }
+	    if(param.getInviteType() == 1){
+            sql = select.where(USER.INVITE_ID.in(userIds));
+	    }
 
 		if(StringUtil.isNotEmpty(param.getMobile())) {
 			sql = sql.and(USER.MOBILE.contains(param.getMobile()));
@@ -299,6 +316,37 @@ public class DistributorListService extends ShopBaseService{
 		sql.groupBy(USER_FANLI_STATISTICS.USER_ID,USER.USERNAME,USER.MOBILE,USER.CREATE_TIME,USER.INVITE_EXPIRY_DATE,USER.INVITE_PROTECT_DATE,USER.INVITE_TIME,USER.USER_ID,USER_DETAIL.REAL_NAME);
 		return sql;
 	}
+
+    /**
+     * 间接邀请用户列表
+     * @param param
+     */
+    public DistributorInvitedListVo getIndirectInviteList(DistributorInvitedListParam param){
+	    //直接下级
+        Result<Record1<Integer>> record = db().select(USER.USER_ID).from(USER).where(USER.INVITE_ID.eq(param.getUserId())).fetch();
+        System.out.println("record:"+ record);
+        if(record != null){
+           List<Integer> userIds = record.into(Integer.class);
+            SelectJoinStep<? extends Record> select = db().select(USER.USER_ID,USER.USERNAME,USER_DETAIL.REAL_NAME,USER.MOBILE,USER.CREATE_TIME,USER.INVITE_EXPIRY_DATE,USER.INVITE_TIME,USER.INVITE_PROTECT_DATE,sum(USER_FANLI_STATISTICS.ORDER_NUMBER).as("ORDER_NUMBER"),sum(USER_FANLI_STATISTICS.TOTAL_CAN_FANLI_MONEY).as("TOTAL_CAN_FANLI_MONEY"),sum(USER_FANLI_STATISTICS.TOTAL_FANLI_MONEY).as("TOTAL_FANLI_MONEY"))
+                .from(USER.leftJoin(USER_FANLI_STATISTICS).on(USER.USER_ID.eq(USER_FANLI_STATISTICS.USER_ID)))
+                .leftJoin(USER_DETAIL).on(USER.USER_ID.eq(USER_DETAIL.USER_ID));
+            param.setInviteType((byte)1);
+            SelectConditionStep<? extends Record> sql = getInvitedListOptions(select,param,userIds);
+            PageResult<InviteUserInfoVo> invitedList = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), InviteUserInfoVo.class);
+            BigDecimal totalGetFanliMoney = new BigDecimal(0);
+            DistributorInvitedListVo InviteInfo = new DistributorInvitedListVo();
+            for(InviteUserInfoVo info:invitedList.dataList){
+                if(info.getTotalFanliMoney() != null){
+                    totalGetFanliMoney = totalGetFanliMoney.add(info.getTotalFanliMoney());
+                }
+            }
+            InviteInfo.setTotalGetFanliMoney(totalGetFanliMoney);
+            InviteInfo.setInviteUserInfo(invitedList);
+            return InviteInfo;
+        }else{
+            return null;
+        }
+    }
 
 	/**
 	 * 获取返利订单数量

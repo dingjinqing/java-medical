@@ -59,6 +59,7 @@ import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_FANLI_STATISTICS;
 import static com.vpu.mp.db.shop.Tables.USER_TOTAL_FANLI;
+import static org.jooq.impl.DSL.recordType;
 import static org.jooq.impl.DSL.sum;
 
 /**
@@ -157,7 +158,6 @@ public class MpDistributionService extends ShopBaseService{
         //获取分销配置，成为分销员是否需要审核
         DistributionParam cfg = this.distributionCfg.getDistributionCfg();
         if(cfg.getActivation() == 0){  //不提交审核信息，直接成为分销员
-            System.out.println(12344444);
             String checkInfo = Util.toJsonNotNull(param.getActivationFields());
             assign(param, record);
             record.setActivationFields(checkInfo);
@@ -651,7 +651,9 @@ public class MpDistributionService extends ShopBaseService{
         System.out.println("开始建立关系");
         //邀请人是否为分销员
         int isDistributor = isDistributor(param.getInviteId());
-        if(!param.getUserId().equals(param.getInviteId())){
+        if(!(param.getUserId().equals(param.getInviteId()))){
+            //原始邀请人
+            Integer oldInviteId = db().select(USER.INVITE_ID).from(USER).where(USER.USER_ID.eq(param.getUserId())).fetchOne().into(Integer.class);
             if(isDistributor == 1){//是分销员，需计算邀请保护期
                 //获取分销配置
                 DistributionParam cfg = this.distributionCfg.getDistributionCfg();
@@ -681,6 +683,10 @@ public class MpDistributionService extends ShopBaseService{
                 db().update(USER).set(USER.INVITE_ID,param.getInviteId())
                     .set(USER.INVITE_TIME,Util.currentTimeStamp())
                     .where(USER.USER_ID.eq(param.getUserId())).execute();
+            }
+            updateSublayerNumber(param.getInviteId());
+            if(oldInviteId > 0){
+                updateSublayerNumber(oldInviteId);
             }
         }
     }
@@ -744,5 +750,23 @@ public class MpDistributionService extends ShopBaseService{
              return infoField.getRealName();
          }
          return null;
+     }
+
+    /**
+     * 更新用户下级用户数
+     * @param userId
+     */
+     public void updateSublayerNumber(Integer userId){
+         Integer into = db().selectCount().from(USER_TOTAL_FANLI).where(USER_TOTAL_FANLI.USER_ID.eq(userId)).fetchOne().into(Integer.class);
+         if(into == 0){
+             String mobile = db().select(USER.MOBILE).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(String.class);
+             UserTotalFanliRecord userTotalFanliRecord = new UserTotalFanliRecord();
+             userTotalFanliRecord.setUserId(userId);
+             userTotalFanliRecord.setMobile(mobile);
+             userTotalFanliRecord.setCreateTime(Util.currentTimeStamp());
+             db().executeInsert(userTotalFanliRecord);
+         }
+         Integer sublayerNumber = db().selectCount().from(USER).where(USER.INVITE_ID.eq(userId)).fetchOne().into(Integer.class);
+         db().update(USER_TOTAL_FANLI).set(USER_TOTAL_FANLI.SUBLAYER_NUMBER,sublayerNumber).where(USER_TOTAL_FANLI.USER_ID.eq(userId)).execute();
      }
 }
