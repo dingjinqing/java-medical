@@ -92,6 +92,68 @@ public class DistributorLevelService extends ShopBaseService{
 		distributorLevelCfg.setLevelUserNum(levelUserNum);
 		return distributorLevelCfg;
 	}
+
+	public void saveDistributorLevel(DistributorLevelParam[] levelData){
+        BigDecimal baseMoney = new BigDecimal("0.00");
+        for(DistributorLevelParam level : levelData) {
+            //各等级信息
+            DistributorLevelVo levelInfo = getOneLevelInfo(level.getLevelId());
+            //定义需要重新定等级的用户
+            List<Integer> upUserIds = new ArrayList<Integer>();
+
+            if(levelInfo != null) {
+                if(levelInfo.getLevelStatus() == 1) { //等级启用中
+                    if(level.getLevelUpRoute() == 0 && level.getInviteNumber() == 0 && level.getTotalDistributionMoney().compareTo(baseMoney) == 0  && level.getTotalBuyMoney().compareTo(baseMoney) == 0) {
+                       //已启用等级设置不能为空
+                    }
+
+                    //配置是否有更新
+                    boolean noChange = levelInfo.getInviteNumber().equals(level.getInviteNumber())
+                        && levelInfo.getTotalBuyMoney().equals(level.getTotalBuyMoney())
+                        && levelInfo.getTotalDistributionMoney().equals(level.getTotalDistributionMoney());
+
+                    //编辑配置保存
+                    level.setId(levelInfo.getId());
+                    boolean res = updateLevel(level);
+                    logger().info("noChange:"+noChange);
+                    //自动升级更改
+                    if(res && level.getLevelUpRoute() == 0 && !noChange) {
+                        //可自动升级等级
+                        List<Byte> canUpLevels = getLowerCanUpLevels(level.getLevelId());
+                        for(Byte canUpLevel : canUpLevels) {
+                            //该等级下用户ID
+                            List<Integer> userIds = getLevelUser(canUpLevel);
+                            upUserIds.addAll(userIds);
+                        }
+                        //原来为手动升级，更新为自动升级，该级别的分销员回到第一级重新定级
+                        if(levelInfo.getLevelUpRoute() == 1) {
+                            List<Integer> updateUserIds = getLevelUser(levelInfo.getLevelId());
+                            updateLevelToOne(updateUserIds);
+                            upUserIds.addAll(updateUserIds);
+                        }
+                    }
+
+                    //自动升级改为手动升级
+                    if(res && level.getLevelUpRoute() == 1 && levelInfo.getLevelUpRoute() != 1) {
+                        List<Integer> updateUserIds = getLevelUser(levelInfo.getLevelId());
+                        updateLevelToOne(updateUserIds);
+                        upUserIds.addAll(updateUserIds);
+                    }
+                }else { //未启用，直接更新数据
+                    level.setId(levelInfo.getId());
+                    updateLevel(level);
+                }
+            }else {//没有数据，插入数据
+                System.out.println(level);
+               saveLevel(level);
+            }
+            //受影响的等级用户重新定级
+            if(upUserIds.size() > 0) {
+//                updateUserLevel(upUserIds,"保存更改等级配置");
+            }
+        }
+
+    }
 	
 	/**
 	 * 获取等级用户的数量
