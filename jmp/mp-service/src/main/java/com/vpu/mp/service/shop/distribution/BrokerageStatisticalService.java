@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.shop.distribution.BrokerageListVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import org.jooq.Record;
+import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
 
@@ -104,8 +105,12 @@ public class BrokerageStatisticalService extends ShopBaseService{
 	 * @return
 	 */
 	public List<DistributorLevelVo> getLevelList() {
-		List<DistributorLevelVo> list = db().select().from(DISTRIBUTOR_LEVEL).fetch().into(DistributorLevelVo.class);
-		return list;
+        Result<Record> record = db().select().from(DISTRIBUTOR_LEVEL).fetch();
+        if(record != null){
+            return record.into(DistributorLevelVo.class);
+        }else{
+            return null;
+        }
 	}
 
 	/**
@@ -113,7 +118,11 @@ public class BrokerageStatisticalService extends ShopBaseService{
 	 * @return
 	 */
 	public List<DistributorGroupListVo> getGroupList() {
-		List<DistributorGroupListVo> list = db().select().from(DISTRIBUTOR_GROUP).fetch().into(DistributorGroupListVo.class);
-		return list;
+        Result<Record> record = db().select().from(DISTRIBUTOR_GROUP).where(DISTRIBUTOR_GROUP.DEL_FLAG.eq((byte) 0)).fetch();
+        if(record != null){
+            return record.into(DistributorGroupListVo.class);
+        }else{
+            return null;
+        }
 	}
 }
