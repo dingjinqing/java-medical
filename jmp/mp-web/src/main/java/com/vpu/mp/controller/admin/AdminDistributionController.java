@@ -60,12 +60,12 @@ import java.util.List;
  * 2019年7月17日
  */
 @RestController
-//@RequestMapping("/api")
+@RequestMapping("/api")
 public class AdminDistributionController extends AdminBaseController{
-	@Override
-    protected ShopApplication shop() {
-        return saas.getShopApp(471752);
-    }
+//	@Override
+//    protected ShopApplication shop() {
+//        return saas.getShopApp(471752);
+//    }
 	//分销配置
 	/**
 	 * 获取分销配置
