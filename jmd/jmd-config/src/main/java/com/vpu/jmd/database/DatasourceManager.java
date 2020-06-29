@@ -69,7 +69,6 @@ public class DatasourceManager {
      * @param url
      * @param username
      * @param password
-     * @param driver
      * @return
      */
     protected DataSource dataSource(String url, String username, String password) {

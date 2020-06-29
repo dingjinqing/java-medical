@@ -23,8 +23,8 @@ public class SpringDaoMethodAspect {
     @Scope("prototype")
     public JdkRegexpMethodPointcut druidStatPointcut() {
         JdkRegexpMethodPointcut pointcut = new JdkRegexpMethodPointcut();
-        pointcut.setPattern("com.vpu.mp.db.shop.tables.records.*");
-        pointcut.setPattern("com.vpu.mp.db.main.tables.records.*");
+        pointcut.setPattern("com.vpu.jmd.db.shop.tables.records.*");
+        pointcut.setPattern("com.vpu.jmd.db.main.tables.records.*");
         return pointcut;
     }
 

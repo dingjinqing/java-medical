@@ -1,8 +1,10 @@
 package com.vpu.jmd.database;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.vpu.jmd.database.filter.QueryFilter;
 import com.vpu.jmd.database.filter.SqlExcuteListener;
+import com.vpu.jmd.table.main.tables.records.ShopRecord;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.SQLExec;
@@ -30,6 +32,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import static com.vpu.jmd.table.main.Tables.SHOP;
 
 /**
  * 数据库管理，单例。需要考虑多线程互斥情况
@@ -92,7 +95,7 @@ public class DatabaseManager {
 		if (db == null || !db.getShopId().equals(shopId)) {
 			ShopRecord shop = mainDb().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
 			if (shop != null) {
-				DbConfig dbConfig = Util.parseJson(shop.getDbConfig(), DbConfig.class);
+				DbConfig dbConfig = JSONUtil.toBean(shop.getDbConfig(), DbConfig.class);
 				if (dbConfig == null) {
 					throw new RuntimeException("ShopId " + shopId + " Db not found");
 				}

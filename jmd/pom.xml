@@ -51,8 +51,11 @@
         <logstash-logback.version>4.8</logstash-logback.version>
         <com.upyun.version>4.1.2</com.upyun.version>
         <redis.clients.version>3.3.0</redis.clients.version>
-
+        <project.weixin-open.version>3.5.0</project.weixin-open.version>
         <org.vpu.jmd.version>1.0-SNAPSHOT</org.vpu.jmd.version>
+        <project.coobird.version>0.4.8</project.coobird.version>
+        <project.poi.version>3.17</project.poi.version>
+
     </properties>
 
     <dependencies>
@@ -101,6 +104,11 @@
             <dependency>
                 <groupId>com.vpu.jmd</groupId>
                 <artifactId>jmd-background</artifactId>
+                <version>${org.vpu.jmd.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vpu.jmd</groupId>
+                <artifactId>jmd-config</artifactId>
                 <version>${org.vpu.jmd.version}</version>
             </dependency>
 
@@ -185,6 +193,40 @@
                 <artifactId>lombok</artifactId>
                 <version>1.18.6</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.github.binarywang</groupId>
+                <artifactId>weixin-java-open</artifactId>
+                <version>${project.weixin-open.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.binarywang</groupId>
+                <artifactId>weixin-java-pay</artifactId>
+                <version>${project.weixin-open.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>2.9.3</version>
+            </dependency>
+            <!--剪切图片-->
+            <dependency>
+                <groupId>net.coobird</groupId>
+                <artifactId>thumbnailator</artifactId>
+                <version>${project.coobird.version}</version>
+            </dependency>
+            <!-- 基本依赖，仅操作 xls 格式只需引入此依赖 -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${project.poi.version}</version>
+            </dependency>
+            <!-- 使用 xlsx 格式需要额外引入此依赖 -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${project.poi.version}</version>
             </dependency>
 
         </dependencies>

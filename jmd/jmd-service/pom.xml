@@ -16,9 +16,60 @@
     <name>业务逻辑层</name>
     <dependencies>
         <dependency>
+            <groupId>com.vpu.jmd</groupId>
+            <artifactId>jmd-config</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vpu.jmd</groupId>
+            <artifactId>jmd-common</artifactId>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-open</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-pay</artifactId>
+        </dependency>
+        <!--微信-->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-open</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-pay</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.upyun</groupId>
+            <artifactId>java-sdk</artifactId>
+        </dependency>
+        <!-- 基本依赖，仅操作 xls 格式只需引入此依赖 -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+        </dependency>
+        <!-- 使用 xlsx 格式需要额外引入此依赖 -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
         </dependency>
     </dependencies>
 </project>
