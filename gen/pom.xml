@@ -33,7 +33,7 @@
 			<scope>test</scope>
 		</dependency>
 
-	
+
 
 		<dependency>
 			<groupId>mysql</groupId>
@@ -75,8 +75,8 @@
 			<artifactId>ant</artifactId>
 			<version>1.8.4</version>
 		</dependency>
-	
-	
+
+
 
 		<dependency>
 			<groupId>javax.validation</groupId>
@@ -100,7 +100,7 @@
             <version>5.1.6.RELEASE</version>
             <scope>test</scope>
         </dependency>
-	
+
 
 	</dependencies>
 
@@ -131,15 +131,15 @@
 					<jdbc>
 						<user>root</user>
 						<password>123456</password>
-						<url>jdbc:mysql://127.0.0.1:3306/?serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false
+						<url>jdbc:mysql://47.100.189.83:3306/?serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false
 						</url>
 						<driver>com.mysql.cj.jdbc.Driver</driver>
 
 					</jdbc>
 
 					<generator>
-						<!-- The default code generator. You can override this one, to generate 
-							your own code style. Supported generators: - org.jooq.codegen.JavaGenerator 
+						<!-- The default code generator. You can override this one, to generate
+							your own code style. Supported generators: - org.jooq.codegen.JavaGenerator
 							- org.jooq.codegen.ScalaGenerator Defaults to org.jooq.codegen.JavaGenerator -->
 						<name>org.jooq.codegen.JavaGenerator</name>
 						<strategy>
@@ -150,27 +150,27 @@
 							<!-- The database type. The format here is: org.jooq.meta.[database].[database]Database -->
 							<name>org.jooq.meta.mysql.MySQLDatabase</name>
 
-							<!-- The database schema (or in the absence of schema support, in 
+							<!-- The database schema (or in the absence of schema support, in
 								your RDBMS this can be the owner, user, database name) to be generated -->
 							<inputSchema>${schema}</inputSchema>
 
-							<!-- All elements that are generated from your schema (A Java regular 
-								expression. Use the pipe to separate several expressions) Watch out for case-sensitivity. 
+							<!-- All elements that are generated from your schema (A Java regular
+								expression. Use the pipe to separate several expressions) Watch out for case-sensitivity.
 								Depending on your database, this might be important! -->
 							<includes>${includes}</includes>
 
-							<!-- All elements that are excluded from your schema (A Java regular 
-								expression. Use the pipe to separate several expressions). Excludes match 
+							<!-- All elements that are excluded from your schema (A Java regular
+								expression. Use the pipe to separate several expressions). Excludes match
 								before includes, i.e. excludes have a higher priority -->
 							<excludes></excludes>
 						</database>
 
 						<target>
-							<!-- The destination package of your generated classes (within the 
+							<!-- The destination package of your generated classes (within the
 								destination directory) -->
-							<packageName>com.vpu.mp.db.${packageName}</packageName>
+							<packageName>com.vpu.jmd.db.${packageName}</packageName>
 
-							<!-- The destination directory of your generated classes. Using Maven 
+							<!-- The destination directory of your generated classes. Using Maven
 								directory layout here -->
 							<!-- <directory>D:/svn/java/mp/src/main/java</directory> -->
 							<directory>table/

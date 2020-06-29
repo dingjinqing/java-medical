@@ -15,4 +15,11 @@
 
     <name>数据持久层</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>
