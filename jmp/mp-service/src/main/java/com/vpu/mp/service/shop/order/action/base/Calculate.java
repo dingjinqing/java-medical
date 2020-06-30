@@ -2,20 +2,20 @@ package com.vpu.mp.service.shop.order.action.base;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.DistributionConstant;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
 import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.DistributionConstant;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.config.trade.GoodsPackageParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
@@ -66,6 +66,9 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
@@ -74,9 +77,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
 
 /**
  * 订单模块计算类

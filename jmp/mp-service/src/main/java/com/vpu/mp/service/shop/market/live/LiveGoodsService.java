@@ -18,11 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.base.Splitter;
+import com.vpu.mp.common.foundation.util.DateUtil;
 import com.vpu.mp.db.shop.tables.records.GoodsBrandRecord;
 import com.vpu.mp.db.shop.tables.records.LiveGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.SortRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsLabelsVo;
 import com.vpu.mp.service.pojo.shop.market.live.LiveRomeGoodListVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;

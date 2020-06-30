@@ -6,8 +6,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.shop.member.MemberCardService;

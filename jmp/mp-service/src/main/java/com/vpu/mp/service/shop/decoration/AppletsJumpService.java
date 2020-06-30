@@ -11,8 +11,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.db.shop.tables.records.MpJumpUsableRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpAddPrarm;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpUpdatePrarm;

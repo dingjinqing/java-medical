@@ -1,10 +1,11 @@
 package com.vpu.mp.service.pojo.shop.market.freeshipping;
 
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
+
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

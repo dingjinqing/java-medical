@@ -4,7 +4,7 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.es.Fact;

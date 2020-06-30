@@ -2,9 +2,9 @@ package com.vpu.mp.service.shop.goods.es;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.jedis.data.GoodsBrandDataHelper;
 import com.vpu.mp.service.foundation.jedis.data.SortDataHelper;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;

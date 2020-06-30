@@ -1,9 +1,9 @@
 package com.vpu.mp.schedule;
 
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.saas.SaasApplication;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;

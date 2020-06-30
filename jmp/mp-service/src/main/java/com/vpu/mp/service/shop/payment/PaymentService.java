@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.payment;
 
 import com.github.binarywang.wxpay.exception.WxPayException;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.db.shop.tables.records.*;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;

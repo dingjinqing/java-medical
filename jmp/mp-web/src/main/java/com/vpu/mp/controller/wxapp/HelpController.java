@@ -1,10 +1,10 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.promoteActCopywriting;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupActivityCopyWriting;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupInteMaVo;

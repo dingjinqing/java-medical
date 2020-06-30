@@ -14,9 +14,9 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.qrcode.QrCodeGenerator;
 import com.vpu.mp.service.foundation.util.ImageUtil;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.foundation.util.qrcode.QrCodeGenerator;
 
 /**
 * @author 黄壮壮

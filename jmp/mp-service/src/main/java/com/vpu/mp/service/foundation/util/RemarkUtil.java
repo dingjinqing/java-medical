@@ -2,6 +2,7 @@ package com.vpu.mp.service.foundation.util;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 
 /**

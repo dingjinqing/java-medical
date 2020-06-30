@@ -11,7 +11,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods;

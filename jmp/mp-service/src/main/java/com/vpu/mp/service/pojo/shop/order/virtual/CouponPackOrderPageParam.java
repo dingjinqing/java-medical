@@ -1,10 +1,11 @@
 package com.vpu.mp.service.pojo.shop.order.virtual;
 
-import com.vpu.mp.service.foundation.util.Page;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+
+import com.vpu.mp.common.foundation.util.Page;
 
 /**
  * @author huangronggang

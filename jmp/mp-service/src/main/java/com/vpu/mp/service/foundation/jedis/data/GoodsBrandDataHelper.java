@@ -3,11 +3,11 @@ package com.vpu.mp.service.foundation.jedis.data;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vpu.mp.common.foundation.util.ChineseToPinYinUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.ChineseToPinYinUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpPinYinVo;
 import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpVo;
 import com.vpu.mp.service.shop.goods.GoodsBrandService;

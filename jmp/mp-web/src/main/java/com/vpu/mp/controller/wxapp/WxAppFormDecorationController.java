@@ -1,6 +1,6 @@
 package com.vpu.mp.controller.wxapp;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.market.form.FormDetailVo;
 import com.vpu.mp.service.pojo.shop.market.form.pojo.FormInfoBo;

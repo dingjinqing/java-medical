@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
-import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelColumnNotNull;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelColumn;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelColumnNotNull;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelSheet;
 
 import lombok.Data;
 

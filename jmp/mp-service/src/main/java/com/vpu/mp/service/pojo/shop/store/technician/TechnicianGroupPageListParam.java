@@ -2,8 +2,8 @@ package com.vpu.mp.service.pojo.shop.store.technician;
 
 import javax.validation.constraints.NotNull;
 
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.util.Page;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.util.Page;
 
 import lombok.Data;
 

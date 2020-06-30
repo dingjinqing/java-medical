@@ -1,6 +1,6 @@
 package com.vpu.mp.service.saas;
 
-import com.vpu.mp.service.foundation.database.DatabaseManager;
+import com.vpu.mp.dao.foundation.database.DatabaseManager;
 import com.vpu.mp.service.saas.area.AreaSelectService;
 import com.vpu.mp.service.saas.article.ArticleCategoryService;
 import com.vpu.mp.service.saas.article.ArticleService;

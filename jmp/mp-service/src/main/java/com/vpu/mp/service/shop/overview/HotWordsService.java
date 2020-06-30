@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.overview;
 
+import com.vpu.mp.common.foundation.util.DateUtil;
 import com.vpu.mp.db.shop.tables.records.SearchHistoryRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.config.SearchConfig;
 import com.vpu.mp.service.pojo.shop.overview.hotwords.*;
 import com.vpu.mp.service.shop.config.SearchConfigService;

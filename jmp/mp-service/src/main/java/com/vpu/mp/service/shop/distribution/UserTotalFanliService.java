@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.db.shop.tables.UserTotalFanli;
 import com.vpu.mp.db.shop.tables.records.UserTotalFanliRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.distribution.UserTotalFanliVo;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;

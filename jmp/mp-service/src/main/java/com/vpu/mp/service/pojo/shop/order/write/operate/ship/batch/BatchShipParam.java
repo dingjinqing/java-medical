@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch;
 
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import lombok.Getter;
 import lombok.Setter;

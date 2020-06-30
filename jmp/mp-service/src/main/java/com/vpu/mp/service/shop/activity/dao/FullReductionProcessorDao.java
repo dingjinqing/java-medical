@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.db.shop.tables.MrkingStrategy;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.database.DslPlus;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyCondition;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyVo;

@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.member;
 
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.Util;
 
 /**
 * @author 黄壮壮

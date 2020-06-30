@@ -2,7 +2,7 @@ package com.vpu.mp.service.pojo.shop.market.message;
 
 import java.util.List;
 
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 
 import lombok.Getter;
 import lombok.Setter;

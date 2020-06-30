@@ -1,11 +1,12 @@
 package com.vpu.mp.controller.excel;
 
-import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
+import com.vpu.mp.common.foundation.excel.annotation.ExcelColumn;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelSheet;
 
 /**
  * 每一个Model对象对应一个excel中的sheet
@@ -24,8 +25,8 @@ public class PersonModel {
 
     /**
      * {@link ExcelColumn} 字段在sheet对应的列信息，如果不写则视为使用ExcelColumn默认值，
-     *                      忽略对应的字段{@link com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore}
-     *                      设置字段不可为空{@link com.vpu.mp.service.foundation.excel.annotation.ExcelColumnNotNull}
+     *                      忽略对应的字段{@link com.vpu.mp.common.foundation.excel.annotation.ExcelIgnore}
+     *                      设置字段不可为空{@link com.vpu.mp.common.foundation.excel.annotation.ExcelColumnNotNull}
      *
      * columnName: 指定sheet列名在资源文件中的对应码，如果不写则使用字段名作为对应码，
      *             如果对应码不存在，则列名为对应码{@link ExcelColumn#columnName()},对应的

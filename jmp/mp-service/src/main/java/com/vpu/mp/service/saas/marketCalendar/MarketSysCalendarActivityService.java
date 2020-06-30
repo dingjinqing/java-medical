@@ -8,8 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.db.main.tables.records.MarketCalendarActivityRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.saas.marketCalendar.MarketCalendarParam;
 import com.vpu.mp.service.pojo.saas.marketCalendar.SysCalendarAct;

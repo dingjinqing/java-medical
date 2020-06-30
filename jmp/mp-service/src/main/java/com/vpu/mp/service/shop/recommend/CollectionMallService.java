@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.recommend;
 
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.CartRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.recommend.SendCollectBean;
 import com.vpu.mp.service.pojo.shop.recommend.SkuAttrList;

@@ -2,7 +2,7 @@ package com.vpu.mp.service.pojo.shop.official.message;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.vpu.mp.service.foundation.util.RegexUtil;
+import com.vpu.mp.common.foundation.util.RegexUtil;
 
 import java.util.HashMap;
 import java.util.List;

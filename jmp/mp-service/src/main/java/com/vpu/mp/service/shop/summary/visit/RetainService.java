@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.summary.visit;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.MpDailyRetainRecord;
 import com.vpu.mp.db.shop.tables.records.MpMonthlyRetainRecord;
 import com.vpu.mp.db.shop.tables.records.MpWeeklyRetainRecord;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.summary.visit.AccessRetain;
 import com.vpu.mp.service.pojo.shop.summary.visit.AccessRetainVo;
 import com.vpu.mp.service.pojo.shop.summary.visit.RetainItem;

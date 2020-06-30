@@ -1,11 +1,12 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate;
 
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 
 /**
  *	 订单操作前置查询，得到可以操作的商品

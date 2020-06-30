@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.market.payaward;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.PayAwardPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListVo;
 import org.jooq.Record;

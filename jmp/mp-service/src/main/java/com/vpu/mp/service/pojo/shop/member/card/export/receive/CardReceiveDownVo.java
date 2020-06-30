@@ -2,9 +2,9 @@ package com.vpu.mp.service.pojo.shop.member.card.export.receive;
 
 import java.sql.Timestamp;
 
-import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelColumn;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelIgnore;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelSheet;
 
 import lombok.Data;
 

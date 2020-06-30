@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.goods.mp;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.RecommendGoodsRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsLabelsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecSource;

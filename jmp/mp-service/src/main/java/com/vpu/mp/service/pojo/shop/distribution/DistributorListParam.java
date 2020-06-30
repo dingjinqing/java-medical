@@ -2,7 +2,7 @@ package com.vpu.mp.service.pojo.shop.distribution;
 
 import java.sql.Timestamp;
 
-import com.vpu.mp.service.foundation.util.Page;
+import com.vpu.mp.common.foundation.util.Page;
 
 import lombok.Data;
 

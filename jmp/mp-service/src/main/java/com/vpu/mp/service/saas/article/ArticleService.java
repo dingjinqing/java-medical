@@ -14,12 +14,12 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.main.tables.records.ArticleRecord;
 import com.vpu.mp.db.main.tables.records.ArticleRecordRecord;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleVo;

@@ -1,9 +1,9 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.main.tables.records.ShopUploadedImageRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.image.*;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;

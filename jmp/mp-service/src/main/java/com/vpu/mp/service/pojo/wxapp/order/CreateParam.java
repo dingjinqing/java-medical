@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.wxapp.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustParam;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;

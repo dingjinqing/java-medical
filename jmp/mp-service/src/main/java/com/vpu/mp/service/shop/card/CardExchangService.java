@@ -12,12 +12,12 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.DateUtil.IntervalType;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.DateUtil.IntervalType;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods.GoodsCfg;

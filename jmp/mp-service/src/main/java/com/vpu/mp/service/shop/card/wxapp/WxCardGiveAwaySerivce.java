@@ -1,13 +1,13 @@
 package com.vpu.mp.service.shop.card.wxapp;
 
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.RegexUtil;
 import com.vpu.mp.db.shop.tables.records.GiveCardRecordRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.pojo.shop.member.builder.GiveCardRecordRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.base.UserCardConstant;

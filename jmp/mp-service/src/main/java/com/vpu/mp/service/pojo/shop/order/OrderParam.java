@@ -1,6 +1,5 @@
 package com.vpu.mp.service.pojo.shop.order;
 
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
+
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 
 /**
  * 

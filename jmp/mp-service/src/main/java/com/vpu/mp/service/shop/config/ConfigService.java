@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.config;
 
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.ShopSelectInnerResp;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 import com.vpu.mp.service.pojo.wxapp.config.WxAppConfigVo;

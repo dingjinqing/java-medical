@@ -1,16 +1,16 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
 import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -43,8 +43,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.vpu.mp.common.foundation.data.BaseConstant.*;
 import static com.vpu.mp.db.shop.Tables.PAY_AWARD_RECORD;
-import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_PAY_AWARD;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_BALANCE;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_CUSTOM;

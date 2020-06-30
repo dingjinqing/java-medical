@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.util.RegexUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.foundation.util.RegexUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;

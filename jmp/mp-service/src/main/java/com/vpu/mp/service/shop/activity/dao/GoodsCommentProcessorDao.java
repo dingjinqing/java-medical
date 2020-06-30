@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.activity.dao;
 
-import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.CommentDetailVo;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import lombok.extern.slf4j.Slf4j;

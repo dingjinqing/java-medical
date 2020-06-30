@@ -1,16 +1,16 @@
 package com.vpu.mp.service.shop.image.postertraits;
 
 import com.upyun.UpException;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.PictorialRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.ImageUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.GoodsShareConfig;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
@@ -38,8 +38,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+import static com.vpu.mp.common.foundation.util.DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE;
 import static com.vpu.mp.db.shop.Tables.PICTORIAL;
-import static com.vpu.mp.service.foundation.util.DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**

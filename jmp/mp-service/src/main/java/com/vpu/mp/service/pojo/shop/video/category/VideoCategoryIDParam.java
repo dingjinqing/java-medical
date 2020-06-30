@@ -2,7 +2,7 @@ package com.vpu.mp.service.pojo.shop.video.category;
 
 import javax.validation.constraints.NotNull;
 
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

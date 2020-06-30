@@ -37,7 +37,7 @@ public class AccountData extends BaseData {
 	private String orderSn;
 	/** 支付方式 */
 	private String payment;
-	/** 支付类型，0：充值，1：消费  如： {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.RECHARGE }*/
+	/** 支付类型，0：充值，1：消费  如： {@link com.vpu.mp.common.pojo.shop.operation.RecordTradeEnum.RECHARGE }*/
 	private Byte isPaid;
 	/** 语言-用于国际化 */
 	private String language;

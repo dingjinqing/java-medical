@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.refund;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import lombok.Getter;
 import lombok.Setter;

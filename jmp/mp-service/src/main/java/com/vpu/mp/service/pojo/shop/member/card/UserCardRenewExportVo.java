@@ -1,12 +1,13 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
-import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
+import com.vpu.mp.common.foundation.excel.annotation.ExcelColumn;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelIgnore;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelSheet;
 
 /**
  * @author: 王兵兵

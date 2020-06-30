@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.market.packagesale;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.PackageGoodsCartRecord;
 import com.vpu.mp.db.shop.tables.records.PackageSaleRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant;

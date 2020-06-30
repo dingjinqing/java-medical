@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 /**
  * 	用户导出配置

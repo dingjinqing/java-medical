@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.market.lottery;
 
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
 import lombok.Getter;
 import lombok.Setter;

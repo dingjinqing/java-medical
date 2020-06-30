@@ -2,13 +2,13 @@ package com.vpu.mp.service.pojo.shop.member.card.export.examine;
 
 import java.sql.Timestamp;
 
-import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
-
 import lombok.Data;
 
 import org.jooq.types.UInteger;
+
+import com.vpu.mp.common.foundation.excel.annotation.ExcelColumn;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelIgnore;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelSheet;
 /**
  * 	会员卡审核数据下载对象
  * @author 黄壮壮

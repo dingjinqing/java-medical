@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.goods.mp;
 
-import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.label.GoodsLabelMpVo;

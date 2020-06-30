@@ -3,7 +3,7 @@ package com.vpu.mp.service.pojo.shop.member;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelSheet;
 
 import lombok.Data;
 

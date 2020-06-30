@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.order.marketing.gift;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.shop.market.gift.ProductVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;

@@ -2,7 +2,8 @@ package com.vpu.mp.service.pojo.shop.config.center;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vpu.mp.service.foundation.validator.CharacterValid;
+import com.vpu.mp.common.foundation.validator.CharacterValid;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

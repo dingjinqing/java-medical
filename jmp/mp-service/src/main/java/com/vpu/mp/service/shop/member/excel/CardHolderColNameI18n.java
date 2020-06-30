@@ -3,10 +3,10 @@ package com.vpu.mp.service.shop.member.excel;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.excel.AbstractExcelDisposer;
-import com.vpu.mp.service.foundation.excel.util.IDymicColNameI18n;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.excel.AbstractExcelDisposer;
+import com.vpu.mp.common.foundation.excel.util.IDymicColNameI18n;
+import com.vpu.mp.common.foundation.util.Util;
 /**
  * 	持卡会员列表excel动态字段国际化
  * @author 黄壮壮

@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.order.marketing.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import lombok.Getter;
 import lombok.Setter;

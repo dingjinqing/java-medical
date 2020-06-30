@@ -25,7 +25,7 @@ public class CardHolderParam {
 	private String mobile;
 	/** - 会员卡号 */
 	private String cardNo;
-	/** - 0:正常，1:删除 2 已过期{@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING } */
+	/** - 0:正常，1:删除 2 已过期{@link com.vpu.mp.common.pojo.shop.member.card.CardConstant.CARD_USING } */
 	private Byte flag;
 	/** - 领卡时间 开始范围 */
 	private Timestamp firstDateTime;

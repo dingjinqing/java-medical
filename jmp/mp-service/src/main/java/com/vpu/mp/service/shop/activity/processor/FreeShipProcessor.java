@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;

@@ -14,11 +14,11 @@ import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
 import org.jooq.Record;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.DateUtil;
 import com.vpu.mp.db.shop.tables.PartOrderGoodsShip;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.PartOrderGoodsShipRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo.Goods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;

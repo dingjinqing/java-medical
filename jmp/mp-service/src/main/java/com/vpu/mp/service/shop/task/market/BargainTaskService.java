@@ -1,17 +1,17 @@
 package com.vpu.mp.service.shop.task.market;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.BargainGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;

@@ -4,7 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 
 /**
  * 访问统计

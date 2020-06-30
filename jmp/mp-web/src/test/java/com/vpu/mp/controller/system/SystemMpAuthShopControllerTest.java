@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListParam;
 

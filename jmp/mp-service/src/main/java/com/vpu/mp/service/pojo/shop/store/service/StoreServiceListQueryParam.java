@@ -1,9 +1,10 @@
 package com.vpu.mp.service.pojo.shop.store.service;
 
-import com.vpu.mp.service.foundation.util.Page;
 import lombok.Data;
 
 import javax.validation.constraints.PositiveOrZero;
+
+import com.vpu.mp.common.foundation.util.Page;
 
 /**
  * @author 王兵兵

@@ -12,10 +12,10 @@ import org.jooq.Condition;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.DateUtil;
 import com.vpu.mp.db.shop.tables.records.CardBatchRecord;
 import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 
 /**
 * @author 黄壮壮

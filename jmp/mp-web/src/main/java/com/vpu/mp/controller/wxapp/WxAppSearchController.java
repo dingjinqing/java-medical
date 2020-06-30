@@ -1,6 +1,6 @@
 package com.vpu.mp.controller.wxapp;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.config.SearchConfig;
 import com.vpu.mp.service.pojo.shop.overview.hotwords.*;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;

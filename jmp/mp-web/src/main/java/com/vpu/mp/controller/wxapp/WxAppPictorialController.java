@@ -1,7 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainShareInfoParam;

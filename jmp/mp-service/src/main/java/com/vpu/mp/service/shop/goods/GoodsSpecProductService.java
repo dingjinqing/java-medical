@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.goods;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductBakRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;

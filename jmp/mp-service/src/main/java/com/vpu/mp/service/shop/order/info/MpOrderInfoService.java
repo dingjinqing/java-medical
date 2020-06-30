@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.order.info;
 
 import com.google.common.collect.ImmutableMap;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;

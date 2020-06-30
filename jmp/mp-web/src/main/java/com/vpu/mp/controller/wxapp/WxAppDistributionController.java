@@ -1,7 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.*;
 import com.vpu.mp.service.pojo.wxapp.distribution.*;

@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.overview;
 
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.overview.*;
@@ -41,9 +41,9 @@ import static com.vpu.mp.db.shop.tables.Sort.SORT;
 import static com.vpu.mp.db.shop.tables.UserSummaryTrend.USER_SUMMARY_TREND;
 import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
+import static com.vpu.mp.common.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
+import static com.vpu.mp.common.foundation.util.BigDecimalUtil.DEFAULT_SCALE;
 import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
-import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
-import static com.vpu.mp.service.foundation.util.BigDecimalUtil.DEFAULT_SCALE;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.BYTE_THREE;
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
 import static com.vpu.mp.service.shop.store.store.StoreWxService.BYTE_TWO;

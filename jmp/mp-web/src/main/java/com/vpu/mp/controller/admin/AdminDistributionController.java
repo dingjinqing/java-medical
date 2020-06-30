@@ -1,9 +1,9 @@
 package com.vpu.mp.controller.admin;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.distribution.AddDistributorToGroupParam;
 import com.vpu.mp.service.pojo.shop.distribution.AddDistributorToLevelParam;

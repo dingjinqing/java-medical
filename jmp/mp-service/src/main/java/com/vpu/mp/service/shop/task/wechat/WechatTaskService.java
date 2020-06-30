@@ -29,6 +29,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.MpDailyRetainRecord;
 import com.vpu.mp.db.shop.tables.records.MpDailyVisitRecord;
 import com.vpu.mp.db.shop.tables.records.MpDistributionVisitRecord;
@@ -40,8 +42,6 @@ import com.vpu.mp.db.shop.tables.records.MpVisitPageRecord;
 import com.vpu.mp.db.shop.tables.records.MpWeeklyRetainRecord;
 import com.vpu.mp.db.shop.tables.records.MpWeeklyVisitRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.summary.portrait.MaPortraitResult;
 import com.vpu.mp.service.wechat.api.WxGetWeAnalysService;
 

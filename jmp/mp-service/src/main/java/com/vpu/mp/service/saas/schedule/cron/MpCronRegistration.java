@@ -1,8 +1,8 @@
 package com.vpu.mp.service.saas.schedule.cron;
 
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.db.main.tables.records.CronDefineRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.pojo.saas.schedule.cron.CronDefineParam;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Field;

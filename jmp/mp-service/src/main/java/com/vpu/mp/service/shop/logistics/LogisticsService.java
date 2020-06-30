@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.logistics;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.trade.LogisticsAccountInfo;

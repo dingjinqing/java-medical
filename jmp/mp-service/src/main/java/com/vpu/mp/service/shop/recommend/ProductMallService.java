@@ -11,9 +11,9 @@ import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.recommend.SendProductBean;

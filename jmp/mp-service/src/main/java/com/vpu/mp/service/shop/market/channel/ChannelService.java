@@ -24,14 +24,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.ChannelRecord;
 import com.vpu.mp.db.shop.tables.records.ChannelRecordRecord;
 import com.vpu.mp.db.shop.tables.records.ChannelStatisticalRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelConstant;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelPageInfo;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelPageParam;

@@ -6,7 +6,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 
 import lombok.Data;
 

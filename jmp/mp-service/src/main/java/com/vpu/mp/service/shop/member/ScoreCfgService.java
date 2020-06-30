@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreSetRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.ShopCfgParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreCfgVo;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreFrontParam;

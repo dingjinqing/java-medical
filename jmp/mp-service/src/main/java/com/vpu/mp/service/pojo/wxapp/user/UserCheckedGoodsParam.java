@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.user;
 
-import com.vpu.mp.service.foundation.util.Page;
+import com.vpu.mp.common.foundation.util.Page;
 
 import lombok.Data;
 

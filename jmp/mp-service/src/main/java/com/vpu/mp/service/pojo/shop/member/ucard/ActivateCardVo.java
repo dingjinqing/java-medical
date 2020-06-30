@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.I18N;
 import com.vpu.mp.service.pojo.wxapp.card.vo.CardCustomActionVo;
 

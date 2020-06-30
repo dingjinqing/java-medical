@@ -1,15 +1,15 @@
 package com.vpu.mp.service.shop.member;
 
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RemarkUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
@@ -47,9 +47,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.vpu.mp.common.foundation.data.JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
 import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
 import static com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
-import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
 /**
  * 余额管理

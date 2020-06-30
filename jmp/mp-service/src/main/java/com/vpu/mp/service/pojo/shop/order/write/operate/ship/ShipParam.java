@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.ship;
 
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

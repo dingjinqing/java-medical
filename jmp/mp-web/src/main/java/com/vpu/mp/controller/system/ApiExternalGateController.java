@@ -1,10 +1,10 @@
 package com.vpu.mp.controller.system;
 
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
+import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.saas.api.ApiExternalGateParam;
-import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.saas.api.ApiExternalGateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

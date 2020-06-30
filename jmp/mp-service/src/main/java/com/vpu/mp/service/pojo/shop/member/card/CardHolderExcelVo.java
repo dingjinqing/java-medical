@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Map;
 
-import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelDynamicColumn;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelColumn;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelDynamicColumn;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelIgnore;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelSheet;
 
 import lombok.Data;
 

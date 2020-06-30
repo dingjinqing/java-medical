@@ -1,17 +1,17 @@
 package com.vpu.mp.service.shop.order.action;
 
 import com.beust.jcommander.internal.Lists;
+import com.vpu.mp.common.foundation.data.DistributionConstant;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.FanliGoodsStatisticsRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.service.foundation.data.DistributionConstant;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.member.data.AccountData;
 import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
@@ -58,8 +58,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import static com.vpu.mp.common.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
-import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ONE;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ZERO;
 import static com.vpu.mp.service.shop.member.ScoreCfgService.BUY;

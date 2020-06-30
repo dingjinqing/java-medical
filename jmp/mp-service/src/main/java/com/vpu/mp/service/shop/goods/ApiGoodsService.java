@@ -1,15 +1,15 @@
 package com.vpu.mp.service.shop.goods;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.api.ApiBasePageParam;
+import com.vpu.mp.common.foundation.util.api.ApiPageResult;
+import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductBakRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.api.ApiBasePageParam;
-import com.vpu.mp.service.foundation.util.api.ApiPageResult;
-import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.api.*;

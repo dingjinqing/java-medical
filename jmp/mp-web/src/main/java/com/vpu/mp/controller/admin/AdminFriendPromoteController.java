@@ -1,17 +1,16 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.PageResult;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;

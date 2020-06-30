@@ -1,9 +1,11 @@
 package com.vpu.mp.service.pojo.shop.market.couponpack;
 
-import com.vpu.mp.service.foundation.util.Page;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+
+import com.vpu.mp.common.foundation.util.Page;
+
 import java.sql.Timestamp;
 
 /**

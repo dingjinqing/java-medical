@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.market.gift;
 
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.gift.ProductVo;
 import com.vpu.mp.service.pojo.shop.market.gift.RuleVo;
 import lombok.Getter;

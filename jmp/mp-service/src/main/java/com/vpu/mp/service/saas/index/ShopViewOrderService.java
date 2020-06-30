@@ -1,9 +1,9 @@
 package com.vpu.mp.service.saas.index;
 
 import com.google.common.collect.Lists;
+import com.vpu.mp.common.foundation.util.MathUtil;
 import com.vpu.mp.db.main.tables.records.UserSummaryTrendRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.MathUtil;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.saas.index.cache.ThreadLocalCache;
 import com.vpu.mp.service.saas.index.vo.*;

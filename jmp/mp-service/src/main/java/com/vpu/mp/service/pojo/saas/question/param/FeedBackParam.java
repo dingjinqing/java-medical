@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.saas.question.param;
 
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
-
 import java.sql.Timestamp;
+
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 
 public class FeedBackParam extends BasePageParam {
 

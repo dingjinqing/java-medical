@@ -1,11 +1,12 @@
 package com.vpu.mp.service.pojo.shop.market.groupdraw;
 
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 
 /**
  * 拼团抽奖

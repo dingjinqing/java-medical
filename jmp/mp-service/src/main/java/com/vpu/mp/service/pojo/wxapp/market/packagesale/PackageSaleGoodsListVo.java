@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.market.packagesale;
 
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
 import lombok.Getter;

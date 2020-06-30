@@ -1,10 +1,12 @@
 package com.vpu.mp.service.pojo.shop.market.gift;
 
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotNull;
+
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
+
 import java.sql.Timestamp;
 
 /**

@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.activity;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import lombok.Getter;
 import lombok.Setter;

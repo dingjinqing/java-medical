@@ -1,10 +1,10 @@
 package com.vpu.mp.service.saas.shop.official;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListVo;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;

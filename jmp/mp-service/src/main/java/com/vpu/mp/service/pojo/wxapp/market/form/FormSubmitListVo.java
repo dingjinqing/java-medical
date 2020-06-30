@@ -1,11 +1,12 @@
 package com.vpu.mp.service.pojo.wxapp.market.form;
 
-import com.vpu.mp.service.foundation.validator.ListValid;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.security.Timestamp;
 import java.util.List;
+
+import com.vpu.mp.common.foundation.validator.ListValid;
 
 /**
  * @author 孔德成

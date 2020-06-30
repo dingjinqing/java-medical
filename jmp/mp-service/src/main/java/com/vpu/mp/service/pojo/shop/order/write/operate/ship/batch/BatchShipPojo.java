@@ -1,7 +1,8 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch;
 
-import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelColumn;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelSheet;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

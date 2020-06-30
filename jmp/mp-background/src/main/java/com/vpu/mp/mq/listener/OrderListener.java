@@ -6,10 +6,10 @@ package com.vpu.mp.mq.listener;
  **/
 
 import com.rabbitmq.client.Channel;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.mq.RabbitConfig;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.mq.handler.BaseRabbitHandler;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.ReturnMqParam;
 import com.vpu.mp.service.saas.SaasApplication;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,8 @@
 package com.vpu.mp.service.pojo.wxapp.goods.search;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
+
 import lombok.Getter;
 import lombok.Setter;
 

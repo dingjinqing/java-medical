@@ -37,7 +37,7 @@ public class MemberBasicInfoVo {
 	/** 邀请来源 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String inviteSource;
-	/** 来源名称  如： {@link com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_ACQUIRED } */
+	/** 来源名称  如： {@link com.vpu.mp.common.pojo.shop.member.SourceNameEnum.NOT_ACQUIRED } */
 	@JsonProperty("source")
 	private String sourceName;
 	

@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.user.user;
 
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.db.shop.tables.records.UserLoginRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.pojo.wxapp.account.UserLoginRecordVo;
 import com.vpu.mp.service.shop.user.user.dao.UserLoginRecordDao;
 import org.springframework.beans.factory.annotation.Autowired;

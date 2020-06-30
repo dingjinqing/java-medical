@@ -9,10 +9,10 @@ import org.jooq.SelectSeekStep1;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreSignParam;
 

@@ -1,14 +1,14 @@
 package com.vpu.mp.service.shop.order;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelReader;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelUtil;
 import com.vpu.mp.db.shop.tables.records.BulkshipmentRecordDetailRecord;
 import com.vpu.mp.db.shop.tables.records.BulkshipmentRecordRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelReader;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelUtil;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;

@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vpu.mp.service.foundation.util.Page;
+import com.vpu.mp.common.foundation.util.Page;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

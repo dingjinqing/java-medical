@@ -2,7 +2,7 @@ package com.vpu.mp.service.pojo.shop.member.card;
 
 import java.util.Objects;
 
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.Util;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

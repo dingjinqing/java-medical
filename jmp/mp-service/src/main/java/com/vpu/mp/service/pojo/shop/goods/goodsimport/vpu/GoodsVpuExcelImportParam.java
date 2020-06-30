@@ -1,8 +1,9 @@
 package com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu;
 
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 
 /**
  * 微铺宝商品excel模板导入

@@ -1,14 +1,14 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
@@ -218,7 +218,7 @@ public class AdminGoodsController extends AdminBaseController {
      * 查询字段值在数据库内是否重复
      *
      * @param goodsColumnCheckExistParam
-     * @return {@link com.vpu.mp.service.foundation.data.JsonResult}
+     * @return {@link com.vpu.mp.common.foundation.data.JsonResult}
      */
     @PostMapping("/api/admin/goods/columns/exist")
     public JsonResult isColumnValueExist(@RequestBody GoodsColumnCheckExistParam goodsColumnCheckExistParam) {
@@ -325,7 +325,7 @@ public class AdminGoodsController extends AdminBaseController {
      * 根据id值查询商品信息
      *
      * @param goods 商品信息
-     * @return {@link com.vpu.mp.service.foundation.data.JsonResult}
+     * @return {@link com.vpu.mp.common.foundation.data.JsonResult}
      */
     @PostMapping("/api/admin/goods/select")
     public JsonResult select(@RequestBody Goods goods) {

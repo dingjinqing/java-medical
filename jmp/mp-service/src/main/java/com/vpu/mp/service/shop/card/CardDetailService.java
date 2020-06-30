@@ -12,13 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.CardBatchRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsCardCoupleRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
 import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackUpdateVo;

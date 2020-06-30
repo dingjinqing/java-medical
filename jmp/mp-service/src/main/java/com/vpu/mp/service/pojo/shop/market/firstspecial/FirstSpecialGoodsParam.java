@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.firstspecial;
 
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.validated.FirstSpecialAddValidatedGroup;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.validated.FirstSpecialUpdateValidatedGroup;
 import lombok.Data;

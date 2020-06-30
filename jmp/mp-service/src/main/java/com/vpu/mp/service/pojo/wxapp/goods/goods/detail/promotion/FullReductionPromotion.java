@@ -1,10 +1,11 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+import com.vpu.mp.common.foundation.data.BaseConstant;
 
 /**
  * 满折满减活动策略营销

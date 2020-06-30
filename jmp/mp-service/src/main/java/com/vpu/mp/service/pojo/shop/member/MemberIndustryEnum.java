@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 
 /**

@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.order.info;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.database.DslPlus;
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderGoodsListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;

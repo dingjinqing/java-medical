@@ -17,12 +17,12 @@ import org.jooq.SelectConditionStep;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOperateLogRecord;
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateListParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
 import com.vpu.mp.service.wechat.bean.ma.WxContentTemplate;

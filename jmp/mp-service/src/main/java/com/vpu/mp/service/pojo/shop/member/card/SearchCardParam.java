@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import com.vpu.mp.service.foundation.util.Page;
+import com.vpu.mp.common.foundation.util.Page;
 
 import lombok.Data;
 
@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @Data
 public class SearchCardParam {
-	/** 会员卡类型 如： {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.NORMAL_TYPE } */
+	/** 会员卡类型 如： {@link com.vpu.mp.common.pojo.shop.member.card.CardConstant.NORMAL_TYPE } */
 	private Byte cardType;
 	/** 
 	 * 分页信息

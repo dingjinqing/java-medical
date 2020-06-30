@@ -16,7 +16,7 @@ import com.upyun.AsyncProcessHandler;
 import com.upyun.Result;
 import com.upyun.UpException;
 import com.upyun.UpYunUtils;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.Util;
 
 import lombok.Data;
 

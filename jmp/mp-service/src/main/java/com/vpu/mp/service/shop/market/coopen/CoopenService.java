@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.market.coopen;
 
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
 import static com.vpu.mp.service.pojo.shop.market.coopen.CoopenConstant.COUPON;
 import static com.vpu.mp.service.pojo.shop.market.coopen.CoopenConstant.CUSTOMIZE;
 import static com.vpu.mp.service.pojo.shop.market.coopen.CoopenConstant.DRAW;
@@ -20,14 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.CoopenActivity;
 import com.vpu.mp.db.shop.tables.records.CoopenActivityRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenListParam;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenListVo;

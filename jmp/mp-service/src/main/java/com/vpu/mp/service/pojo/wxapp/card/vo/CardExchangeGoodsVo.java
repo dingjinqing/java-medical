@@ -2,7 +2,7 @@ package com.vpu.mp.service.pojo.wxapp.card.vo;
 
 import java.util.Map;
 
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 

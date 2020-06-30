@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.user.user;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.CheckedGoodsCart;
 import com.vpu.mp.db.shop.tables.records.CheckedGoodsCartRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.wxapp.user.UserCheckedGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.user.UserCheckedGoodsVo;

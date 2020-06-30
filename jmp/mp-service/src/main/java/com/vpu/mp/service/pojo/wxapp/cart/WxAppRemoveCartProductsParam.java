@@ -1,12 +1,14 @@
 package com.vpu.mp.service.pojo.wxapp.cart;
 
-import com.vpu.mp.service.foundation.validator.ListValid;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 
 import javax.validation.constraints.NotNull;
+
+import com.vpu.mp.common.foundation.validator.ListValid;
+
 import java.util.List;
 
 /**

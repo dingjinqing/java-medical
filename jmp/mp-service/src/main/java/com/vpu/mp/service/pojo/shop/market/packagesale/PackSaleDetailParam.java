@@ -2,8 +2,8 @@ package com.vpu.mp.service.pojo.shop.market.packagesale;
 
 import javax.validation.constraints.NotNull;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.util.Page;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.util.Page;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 
 import lombok.AllArgsConstructor;

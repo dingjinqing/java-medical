@@ -11,11 +11,11 @@ import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.AssessActivityRecord;
 import com.vpu.mp.db.shop.tables.records.AssessResultRecord;
 import com.vpu.mp.db.shop.tables.records.AssessTopicRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.assess.AssessActivityListParam;
 import com.vpu.mp.service.pojo.shop.assess.AssessActivityListVo;
 import com.vpu.mp.service.pojo.shop.assess.AssessActivityOneParam;

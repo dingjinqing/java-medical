@@ -1,12 +1,12 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.OrderGoodsRebate;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;

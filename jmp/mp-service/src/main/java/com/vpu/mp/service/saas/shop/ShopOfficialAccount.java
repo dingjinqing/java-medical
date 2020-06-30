@@ -1,13 +1,13 @@
 package com.vpu.mp.service.saas.shop;
 
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOfficeAccountVo;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MaMpBindParam;

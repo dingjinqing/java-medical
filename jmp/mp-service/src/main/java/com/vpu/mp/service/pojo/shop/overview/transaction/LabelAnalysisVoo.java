@@ -1,11 +1,12 @@
 package com.vpu.mp.service.pojo.shop.overview.transaction;
 
-import com.vpu.mp.service.foundation.util.PageResult;
 import lombok.Builder;
 import lombok.Data;
 
 import java.sql.Date;
 import java.util.Map;
+
+import com.vpu.mp.common.foundation.util.PageResult;
 
 /**
  * @author liufei

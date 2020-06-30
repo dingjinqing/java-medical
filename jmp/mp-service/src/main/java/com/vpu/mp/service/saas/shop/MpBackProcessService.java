@@ -7,10 +7,10 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.BackProcessRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpUploadListParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpUploadListVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;

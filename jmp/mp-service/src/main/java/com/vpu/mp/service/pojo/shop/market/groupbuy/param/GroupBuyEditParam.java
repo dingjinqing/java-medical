@@ -1,10 +1,12 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
-import com.vpu.mp.service.foundation.validator.ListValid;
 import lombok.Data;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+
+import com.vpu.mp.common.foundation.validator.ListValid;
+
 import java.sql.Timestamp;
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.list;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 import com.vpu.mp.service.pojo.wxapp.goods.search.SortDirectionEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.search.SortItemEnum;
 import lombok.Getter;

@@ -13,7 +13,7 @@ import lombok.Setter;
 public class AvailableMemberCardVo {
 	/** 会员卡id */
 	public Integer id;
-	/** 0:普通会员卡，1:次卡,2:登记卡   {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.NORMAL_TYPE }*/
+	/** 0:普通会员卡，1:次卡,2:登记卡   {@link com.vpu.mp.common.pojo.shop.member.card.CardConstant.NORMAL_TYPE }*/
 	public Byte cardType;
 	/** 会员卡名称 */
 	public String cardName;

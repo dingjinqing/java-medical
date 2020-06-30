@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2020年5月19日下午2:27:46
  */
 
-import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.recommend.goods.ListProduct;
 import com.vpu.mp.service.pojo.wxapp.recommend.GoodsRecommendParam;
 /**

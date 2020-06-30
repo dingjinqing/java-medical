@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.config.pledge;
 
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.PledgeStateUpdateGroup;
 import lombok.Data;
 import lombok.NoArgsConstructor;

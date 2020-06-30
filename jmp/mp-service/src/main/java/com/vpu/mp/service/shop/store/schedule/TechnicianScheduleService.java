@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.store.schedule;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.db.shop.tables.records.ServiceTechnicianScheduleRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.store.schedule.SchedulePojo;
 import com.vpu.mp.service.pojo.shop.store.schedule.TechnicianScheduleParam;

@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.coupon;
 
+import static com.vpu.mp.common.foundation.util.Util.listToString;
+import static com.vpu.mp.common.foundation.util.Util.stringToList;
 import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
 import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
 import static com.vpu.mp.db.shop.Tables.DIVISION_RECEIVE_RECORD;
@@ -8,8 +10,6 @@ import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.service.foundation.util.Util.listToString;
-import static com.vpu.mp.service.foundation.util.Util.stringToList;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
@@ -41,20 +41,20 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.records.CustomerAvailCouponsRecord;
 import com.vpu.mp.db.shop.tables.records.DivisionReceiveRecordRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponAllParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponAllVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponAndVoucherDetailVo;

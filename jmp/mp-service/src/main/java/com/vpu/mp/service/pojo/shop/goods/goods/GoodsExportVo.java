@@ -1,9 +1,10 @@
 package com.vpu.mp.service.pojo.shop.goods.goods;
 
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelColumn;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelIgnore;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelSheet;
+
 import lombok.Data;
 
 import java.math.BigDecimal;

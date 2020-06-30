@@ -3,7 +3,7 @@ package com.vpu.mp.service.pojo.shop.market.firstspecial;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-import com.vpu.mp.service.foundation.util.Page;
+import com.vpu.mp.common.foundation.util.Page;
 
 import lombok.Data;
 

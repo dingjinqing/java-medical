@@ -1,12 +1,12 @@
 package com.vpu.mp.service.shop.coupon;
 
 import com.mysql.cj.util.StringUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.CustomerAvailCoupons;
 import com.vpu.mp.db.shop.tables.DivisionReceiveRecord;
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import org.jooq.Record;

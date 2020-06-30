@@ -1,9 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.fullcut;
 
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import lombok.Data;
 
 import java.math.BigDecimal;
+
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 
 /**
  * @author: 王兵兵

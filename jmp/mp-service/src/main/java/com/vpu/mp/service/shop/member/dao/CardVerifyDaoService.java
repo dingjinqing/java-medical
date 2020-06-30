@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.member.dao;
 
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.main.tables.DictProvince;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant;

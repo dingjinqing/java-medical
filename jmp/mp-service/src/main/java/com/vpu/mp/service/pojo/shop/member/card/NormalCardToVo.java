@@ -2,7 +2,7 @@ package com.vpu.mp.service.pojo.shop.member.card;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardCouponPack;
 import com.vpu.mp.service.pojo.shop.member.card.base.CardMarketActivity;

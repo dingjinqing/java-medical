@@ -2,7 +2,8 @@ package com.vpu.mp.service.pojo.shop.coupon.give;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

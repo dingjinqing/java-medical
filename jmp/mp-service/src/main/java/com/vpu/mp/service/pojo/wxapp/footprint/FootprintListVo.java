@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.footprint;
 
-import com.vpu.mp.service.foundation.util.Page;
+import com.vpu.mp.common.foundation.util.Page;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import lombok.Getter;
 import lombok.Setter;

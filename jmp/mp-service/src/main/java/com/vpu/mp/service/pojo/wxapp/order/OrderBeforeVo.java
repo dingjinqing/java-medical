@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.wxapp.order;
 
 import com.google.common.collect.Lists;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;

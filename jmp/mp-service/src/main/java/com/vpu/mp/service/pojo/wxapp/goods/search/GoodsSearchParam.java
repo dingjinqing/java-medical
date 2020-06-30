@@ -1,10 +1,11 @@
 package com.vpu.mp.service.pojo.wxapp.goods.search;
 
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 
 /**
  * 查询商品列表

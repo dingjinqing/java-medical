@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.store.store;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.store.validated.StoreAddValidatedGroup;
 import com.vpu.mp.service.pojo.shop.store.validated.StoreCodingCheckValidatedGroup;
 import com.vpu.mp.service.pojo.shop.store.validated.StoreUpdateValidatedGroup;

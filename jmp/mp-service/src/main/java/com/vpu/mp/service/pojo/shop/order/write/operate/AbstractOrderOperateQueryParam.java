@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.order.action.base.IOrderBase;

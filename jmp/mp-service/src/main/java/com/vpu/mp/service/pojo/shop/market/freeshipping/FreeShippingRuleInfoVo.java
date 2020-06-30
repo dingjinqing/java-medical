@@ -1,10 +1,11 @@
 package com.vpu.mp.service.pojo.shop.market.freeshipping;
 
-import com.vpu.mp.service.foundation.validator.ListValid;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+
+import com.vpu.mp.common.foundation.validator.ListValid;
 
 /**
  * 包邮规则 信息 (国际化)

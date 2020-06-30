@@ -2,12 +2,12 @@ package com.vpu.mp.service.saas.question;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.main.tables.records.QfImgRecord;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopQuestionFeedbackRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.question.bo.FeedbackBo;
 import com.vpu.mp.service.pojo.saas.question.param.FeedBackParam;
 import com.vpu.mp.service.pojo.saas.question.vo.FeedbackVo;

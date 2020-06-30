@@ -1,10 +1,10 @@
 package com.vpu.mp.service.saas.db;
 
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.dao.foundation.database.DatabaseManager;
+import com.vpu.mp.dao.foundation.database.MpDefaultDslContext;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.service.foundation.database.DatabaseManager;
-import com.vpu.mp.service.foundation.database.MpDefaultDslContext;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.db.Column;
 import com.vpu.mp.service.pojo.saas.db.Index;
 import com.vpu.mp.service.pojo.saas.db.Table;

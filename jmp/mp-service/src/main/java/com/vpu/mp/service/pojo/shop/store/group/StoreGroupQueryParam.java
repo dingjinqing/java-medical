@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.store.group;
 
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 
 import lombok.Getter;
 import lombok.Setter;

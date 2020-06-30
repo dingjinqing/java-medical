@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.goods.mp;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsGroupListMpParam;

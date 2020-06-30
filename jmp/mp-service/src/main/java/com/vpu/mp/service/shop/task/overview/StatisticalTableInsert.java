@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.task.overview;
 
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.db.shop.tables.records.TradesRecord;
 import com.vpu.mp.db.shop.tables.records.TradesRecordSummaryRecord;
 import com.vpu.mp.db.shop.tables.records.UserRfmSummaryRecord;
 import com.vpu.mp.db.shop.tables.records.UserSummaryTrendRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewParam;
 import com.vpu.mp.service.pojo.shop.overview.realtime.RealTimeBo;
 import org.jooq.Record3;

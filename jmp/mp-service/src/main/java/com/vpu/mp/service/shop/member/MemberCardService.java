@@ -1,17 +1,22 @@
 package com.vpu.mp.service.shop.member;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelReader;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelUtil;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.*;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.excel.*;
+import com.vpu.mp.common.foundation.excel.*;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponSrcConstant;
@@ -187,7 +192,7 @@ public class MemberCardService extends ShopBaseService {
 	 * @param cardId 会员卡id
 	 * @param ownId  专享商品id列表 | 商家分类id列表 | 平台分类id列表
 	 * @param type   标签关联类型 如：
-	 *               {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.GOODS_TYPE }
+	 *               {@link com.vpu.mp.common.pojo.shop.member.card.CardConstant.GOODS_TYPE }
 	 */
 	public void addGoodsCardCouple(Integer cardId, List<Integer> ownId, Byte type) {
 		this.batchUpdateGoods(ownId, Arrays.asList(cardId), type);
@@ -1285,7 +1290,7 @@ public class MemberCardService extends ShopBaseService {
 	/**
 	 * 获取会员卡id列表根据会员卡类型
 	 * 
-	 * @param type {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE }
+	 * @param type {@link com.vpu.mp.common.pojo.shop.member.card.CardConstant.RANK_TYPE }
 	 */
 	public List<Integer> getCardIdByType(Byte type) {
 		return cardDao.getCardIdByType(type);

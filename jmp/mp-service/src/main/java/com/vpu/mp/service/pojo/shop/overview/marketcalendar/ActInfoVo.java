@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.overview.marketcalendar;
 
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

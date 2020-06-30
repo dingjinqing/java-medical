@@ -5,7 +5,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.config.SearchConfig;
 
 /**

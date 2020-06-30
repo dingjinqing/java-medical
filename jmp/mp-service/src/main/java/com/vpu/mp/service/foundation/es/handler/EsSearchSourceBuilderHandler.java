@@ -1,7 +1,7 @@
 package com.vpu.mp.service.foundation.es.handler;
 
+import com.vpu.mp.common.foundation.util.Page;
 import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParam;
-import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Component;

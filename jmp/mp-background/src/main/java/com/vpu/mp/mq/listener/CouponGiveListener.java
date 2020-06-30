@@ -1,9 +1,9 @@
 package com.vpu.mp.mq.listener;
 
 import com.rabbitmq.client.Channel;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.mq.RabbitConfig;
 import com.vpu.mp.service.foundation.mq.handler.BaseRabbitHandler;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.saas.SaasApplication;

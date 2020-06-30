@@ -1,5 +1,6 @@
 package com.vpu.mp.auth;
 
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.AuthConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
@@ -8,7 +9,6 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;

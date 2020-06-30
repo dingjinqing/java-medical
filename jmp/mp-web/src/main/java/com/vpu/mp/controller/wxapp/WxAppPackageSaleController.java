@@ -1,6 +1,6 @@
 package com.vpu.mp.controller.wxapp;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsAddParam;
 import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsDeleteParam;
 import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListParam;

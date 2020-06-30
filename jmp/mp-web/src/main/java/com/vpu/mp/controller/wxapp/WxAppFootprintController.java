@@ -1,8 +1,8 @@
 package com.vpu.mp.controller.wxapp;
 
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListParam;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;

@@ -8,9 +8,9 @@ import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 
 /**

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.distribution;
 
+import static com.vpu.mp.common.foundation.data.DistributionConstant.*;
 import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_GROUP;
 import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS_REBATE;
@@ -9,7 +10,6 @@ import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_FANLI_STATISTICS;
 import static com.vpu.mp.db.shop.Tables.USER_TOTAL_FANLI;
 import static com.vpu.mp.db.shop.Tables.USER_REMARK;
-import static com.vpu.mp.service.foundation.data.DistributionConstant.*;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.sum;
 
@@ -17,8 +17,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.UserRemarkRecord;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.distribution.*;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
@@ -28,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 
 import javax.validation.constraints.Null;
 

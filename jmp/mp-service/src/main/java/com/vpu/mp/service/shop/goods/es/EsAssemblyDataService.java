@@ -2,12 +2,12 @@ package com.vpu.mp.service.shop.goods.es;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.*;
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.jedis.data.SortDataHelper;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandSelectListVo;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;

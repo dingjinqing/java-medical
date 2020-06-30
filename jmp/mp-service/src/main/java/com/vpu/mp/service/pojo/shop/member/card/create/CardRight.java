@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.member.card.create;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.Util;
 
 import lombok.Data;
 /**

@@ -15,11 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.upyun.UpException;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.util.FileUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.image.ShopUploadedImageVo;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.image.BatchDeleteImageParam;
@@ -30,6 +25,11 @@ import com.vpu.mp.service.pojo.shop.image.UploadImageCatNameVo;
 import com.vpu.mp.service.pojo.shop.image.UploadImageParam;
 import com.vpu.mp.service.pojo.shop.image.UploadPath;
 import com.vpu.mp.service.pojo.shop.image.UploadedImageVo;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.FileUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.UploadedImageRecord;
 /**
  * @author 新国

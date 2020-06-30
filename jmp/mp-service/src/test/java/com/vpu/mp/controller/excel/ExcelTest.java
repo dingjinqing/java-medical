@@ -1,10 +1,11 @@
 package com.vpu.mp.controller.excel;
 
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelReader;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
-import com.vpu.mp.service.foundation.excel.bean.ClassList;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelReader;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
+import com.vpu.mp.common.foundation.excel.bean.ClassList;
+
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.After;
 import org.junit.Before;

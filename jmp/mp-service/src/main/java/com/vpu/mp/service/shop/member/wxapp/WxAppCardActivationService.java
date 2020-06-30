@@ -1,17 +1,17 @@
 package com.vpu.mp.service.shop.member.wxapp;
 
 import com.fasterxml.jackson.databind.node.NullNode;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.RegexUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
 import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
-import com.vpu.mp.service.foundation.util.RegexUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardVo;

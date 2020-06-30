@@ -1,13 +1,13 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.common.foundation.data.DistributionConstant;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.db.shop.tables.records.RebatePriceRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.data.DistributionConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
 import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;

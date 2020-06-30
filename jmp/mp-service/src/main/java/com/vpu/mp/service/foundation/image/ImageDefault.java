@@ -19,7 +19,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.jooq.tools.StringUtils;
 
 import com.UpYun;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.CropImageParam;
 import com.vpu.mp.service.pojo.shop.image.ImageDim;
 import com.vpu.mp.service.pojo.shop.image.UploadPath;

@@ -1,10 +1,10 @@
 package com.vpu.mp.service.foundation.es;
 
 import com.google.common.collect.Lists;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.es.annotation.EsFiled;
 import com.vpu.mp.service.foundation.es.annotation.EsFiledSerializer;
 import com.vpu.mp.service.foundation.es.annotation.EsFiledTypeConstant;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;

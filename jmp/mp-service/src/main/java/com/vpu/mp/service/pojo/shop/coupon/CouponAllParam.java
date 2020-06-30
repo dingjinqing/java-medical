@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.coupon;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Data;

@@ -1,12 +1,13 @@
 package com.vpu.mp.service.pojo.shop.config;
 
-import com.vpu.mp.service.foundation.validator.CharacterValid;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
+
+import com.vpu.mp.common.foundation.validator.CharacterValid;
 
 
 /**

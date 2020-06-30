@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
-import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

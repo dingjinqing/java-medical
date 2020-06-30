@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.market.freeshipping;
 
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingRuleInfoVo;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;

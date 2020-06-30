@@ -1,10 +1,11 @@
 package com.vpu.mp.service.pojo.shop.market.presale;
 
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 
 /**
  * 定金膨胀列表查询入参

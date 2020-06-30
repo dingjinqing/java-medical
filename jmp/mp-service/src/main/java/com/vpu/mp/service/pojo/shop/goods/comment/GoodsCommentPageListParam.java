@@ -1,9 +1,10 @@
 package com.vpu.mp.service.pojo.shop.goods.comment;
 
-import com.vpu.mp.service.foundation.util.Page;
 import lombok.Data;
 
 import java.util.List;
+
+import com.vpu.mp.common.foundation.util.Page;
 
 
 /**

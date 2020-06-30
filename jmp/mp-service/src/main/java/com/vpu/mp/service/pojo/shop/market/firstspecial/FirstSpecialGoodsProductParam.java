@@ -2,7 +2,7 @@ package com.vpu.mp.service.pojo.shop.market.firstspecial;
 
 import java.math.BigDecimal;
 
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.validated.FirstSpecialUpdateValidatedGroup;
 import lombok.Data;
 

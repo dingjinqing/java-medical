@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.overview;
 
+import com.vpu.mp.common.foundation.util.PropertiesUtil;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PropertiesUtil;
 import com.vpu.mp.service.pojo.shop.overview.analysis.*;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Field;

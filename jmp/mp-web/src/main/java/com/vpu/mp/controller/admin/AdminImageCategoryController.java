@@ -1,7 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 
-import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryIDParam;
 import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryParam;
 import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryRenameParam;

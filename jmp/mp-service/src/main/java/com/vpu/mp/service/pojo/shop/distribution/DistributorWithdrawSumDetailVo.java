@@ -3,7 +3,7 @@ package com.vpu.mp.service.pojo.shop.distribution;
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 
 import lombok.Builder;
 import lombok.Data;

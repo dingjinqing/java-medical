@@ -1,10 +1,11 @@
 package com.vpu.mp.service.pojo.wxapp.market.lottery;
 
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 
 /**
  * 用户的中奖列表

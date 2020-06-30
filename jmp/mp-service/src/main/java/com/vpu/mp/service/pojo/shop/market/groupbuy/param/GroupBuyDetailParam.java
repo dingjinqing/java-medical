@@ -1,10 +1,11 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 
 /**
  * @author 孔德成

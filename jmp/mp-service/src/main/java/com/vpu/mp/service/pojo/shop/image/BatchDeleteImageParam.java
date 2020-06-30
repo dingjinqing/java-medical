@@ -2,10 +2,11 @@ package com.vpu.mp.service.pojo.shop.image;
 
 import java.util.List;
 
-import com.vpu.mp.service.foundation.validator.ListValid;
 import lombok.Data;
 
 import javax.validation.constraints.Size;
+
+import com.vpu.mp.common.foundation.validator.ListValid;
 
 /**
  * @author 孔德成

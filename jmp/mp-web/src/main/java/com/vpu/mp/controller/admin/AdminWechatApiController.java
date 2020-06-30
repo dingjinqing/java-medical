@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountRecord;
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuditStateVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopToAdminVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;

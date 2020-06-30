@@ -1,11 +1,12 @@
 package com.vpu.mp.service.pojo.shop.market;
 
-import com.vpu.mp.service.foundation.util.Page;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+
+import com.vpu.mp.common.foundation.util.Page;
 
 /**
  * @author 孔德成

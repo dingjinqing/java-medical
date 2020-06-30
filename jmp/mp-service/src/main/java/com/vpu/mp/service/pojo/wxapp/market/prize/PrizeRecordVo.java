@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.market.prize;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import lombok.Getter;
 import lombok.Setter;

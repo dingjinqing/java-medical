@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.config;
 
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import org.springframework.stereotype.Service;
 

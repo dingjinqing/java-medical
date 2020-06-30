@@ -1,7 +1,7 @@
 package com.vpu.mp.service.foundation.exception;
 
 import com.google.common.collect.Lists;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 
 /**
  * MpException:处理

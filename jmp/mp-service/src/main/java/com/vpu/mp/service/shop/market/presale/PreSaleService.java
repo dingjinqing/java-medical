@@ -1,5 +1,10 @@
 package com.vpu.mp.service.shop.market.presale;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.OrderInfo;
@@ -7,13 +12,8 @@ import com.vpu.mp.db.shop.tables.Presale;
 import com.vpu.mp.db.shop.tables.PresaleProduct;
 import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.image.share.ShareConfig;
@@ -41,12 +41,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.common.foundation.data.BaseConstant.*;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
 import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
-import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_ONE_PHASE;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_TWO_PHASE;
 import static org.springframework.util.StringUtils.isEmpty;

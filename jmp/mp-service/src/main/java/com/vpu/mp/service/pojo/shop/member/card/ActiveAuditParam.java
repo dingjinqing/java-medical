@@ -24,7 +24,7 @@ public class ActiveAuditParam {
 	public String cardNo;
 	// 会员卡id
 	private Integer cardId;
-	/** 审核状态 1审核中 2通过 3拒绝  {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.UNDER_REVIEW}*/
+	/** 审核状态 1审核中 2通过 3拒绝  {@link com.vpu.mp.common.pojo.shop.member.card.CardConstant.UNDER_REVIEW}*/
 	private Byte status;
 	// 真实姓名
 	private String realName;

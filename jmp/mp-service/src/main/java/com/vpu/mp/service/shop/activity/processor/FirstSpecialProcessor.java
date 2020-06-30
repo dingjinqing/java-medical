@@ -1,12 +1,12 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialProductBo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
@@ -40,8 +40,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
 import static com.vpu.mp.db.shop.tables.FirstSpecialProduct.FIRST_SPECIAL_PRODUCT;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
 
 /**
  * @author 李晓冰

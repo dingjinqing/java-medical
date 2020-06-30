@@ -5,7 +5,7 @@ package com.vpu.mp.service.pojo.wxapp.card.vo;
  *
  */
 
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.wxapp.user.UserCheckedGoodsVo;
 
 import lombok.Data;

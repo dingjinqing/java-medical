@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.score;
 
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 
 import lombok.Data;

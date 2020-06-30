@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.distribution;
 
 import java.sql.Timestamp;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.DistributorGroupRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.service.pojo.shop.distribution.*;
@@ -12,7 +13,6 @@ import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 
 import static com.vpu.mp.db.shop.Tables.*;
 

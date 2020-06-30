@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.shop.market.lottery;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import lombok.Data;
 

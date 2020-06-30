@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.goods;
 
+import com.vpu.mp.common.foundation.util.DateUtil;
 import com.vpu.mp.db.shop.tables.records.UserGoodsRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserLoginRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
 import com.vpu.mp.service.shop.user.user.UserLoginRecordService;
 import org.springframework.beans.factory.annotation.Autowired;

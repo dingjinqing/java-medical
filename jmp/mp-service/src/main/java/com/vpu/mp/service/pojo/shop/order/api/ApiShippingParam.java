@@ -2,8 +2,9 @@ package com.vpu.mp.service.pojo.shop.order.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.Util;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

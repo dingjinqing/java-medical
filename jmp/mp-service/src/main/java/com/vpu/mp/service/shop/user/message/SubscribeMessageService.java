@@ -17,13 +17,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.google.common.base.Objects;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.RegexUtil;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.SubscribeMessageRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.pojo.wxapp.subscribe.UpdateTemplateParam;

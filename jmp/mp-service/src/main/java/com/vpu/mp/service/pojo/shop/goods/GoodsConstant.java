@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.goods;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.BaseConstant;
 
 /**
  * @author 李晓冰

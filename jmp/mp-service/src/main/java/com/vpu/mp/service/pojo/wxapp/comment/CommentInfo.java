@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.comment;
 
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.CommentDetailVo;
 import lombok.Data;
 

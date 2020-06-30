@@ -1,10 +1,11 @@
 package com.vpu.mp.service.pojo.shop.distribution;
 
-import com.vpu.mp.service.foundation.util.PageResult;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
+import com.vpu.mp.common.foundation.util.PageResult;
 
 /**
  * 返利提现审核详情出参

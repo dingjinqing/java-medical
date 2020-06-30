@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.vpu.mp.common.foundation.util.Util;
+
 /**
  * @author 郑保乐
  */

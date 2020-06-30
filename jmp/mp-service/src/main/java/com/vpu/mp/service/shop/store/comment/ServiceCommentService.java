@@ -1,12 +1,12 @@
 package com.vpu.mp.service.shop.store.comment;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.CommentServiceRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.store.comment.CommentFlagEnum;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentPageListParam;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;

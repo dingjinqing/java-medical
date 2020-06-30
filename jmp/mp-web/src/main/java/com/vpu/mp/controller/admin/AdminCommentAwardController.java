@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardIdParam;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardListParam;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardListVo;

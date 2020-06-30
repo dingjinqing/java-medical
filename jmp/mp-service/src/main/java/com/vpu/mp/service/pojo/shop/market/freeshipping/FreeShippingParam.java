@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.freeshipping;
 
-import com.vpu.mp.service.foundation.validator.ListValid;
+import com.vpu.mp.common.foundation.validator.ListValid;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import lombok.Data;
 import lombok.Getter;

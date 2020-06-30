@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.goods.goods;
 
+import com.vpu.mp.common.foundation.util.DateUtil;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import lombok.Data;
 

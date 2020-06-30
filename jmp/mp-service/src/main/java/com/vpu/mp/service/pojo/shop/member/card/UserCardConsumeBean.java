@@ -58,7 +58,7 @@ public class UserCardConsumeBean {
 	private String prepayId;
 	/**
 	 * 	充值类型 1 发卡，2 用户充值，3 管理员操作 
-	 * {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.CHARGE_SEND_CARD}
+	 * {@link com.vpu.mp.common.pojo.shop.member.card.CardConstant.CHARGE_SEND_CARD}
 	 */
 	private Byte changeType;
 	/**

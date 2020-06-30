@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.vpu.mp.service.foundation.util.RegexUtil;
+import com.vpu.mp.common.foundation.util.RegexUtil;
 
 /**
  * 小程序消息模版类

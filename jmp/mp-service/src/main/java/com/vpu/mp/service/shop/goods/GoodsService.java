@@ -2,6 +2,16 @@ package com.vpu.mp.service.shop.goods;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.Tables;
@@ -14,19 +24,9 @@ import com.vpu.mp.db.shop.tables.records.LiveBroadcastRecord;
 import com.vpu.mp.db.shop.tables.records.SortRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.BatchUpdateGoodsNumAndSaleNumForOrderParam;
@@ -1451,7 +1451,7 @@ public class GoodsService extends ShopBaseService {
      * 商品新增接口数据重复检查（非原子操作）
      *
      * @param goods 商品
-     * @return {@link com.vpu.mp.service.foundation.data.JsonResult}
+     * @return {@link com.vpu.mp.common.foundation.data.JsonResult}
      */
     public GoodsDataIIllegalEnum columnValueExistCheckForInsert(Goods goods) {
         GoodsColumnCheckExistParam gcep = new GoodsColumnCheckExistParam();

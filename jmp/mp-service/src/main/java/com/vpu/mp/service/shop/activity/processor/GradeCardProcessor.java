@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
@@ -40,9 +40,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
 import static com.vpu.mp.db.shop.Tables.GRADE_PRD;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
 
 /**
  * 等级价格

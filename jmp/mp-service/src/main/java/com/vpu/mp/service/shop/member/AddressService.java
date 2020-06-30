@@ -1,14 +1,14 @@
 package com.vpu.mp.service.shop.member;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.HttpsUtils;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.TxMapLBSConfig;
 import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.HttpsUtils;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.address.AddressAddParam;
 import com.vpu.mp.service.pojo.shop.member.address.AddressCode;
 import com.vpu.mp.service.pojo.shop.member.address.AddressGoodsShippingParam;

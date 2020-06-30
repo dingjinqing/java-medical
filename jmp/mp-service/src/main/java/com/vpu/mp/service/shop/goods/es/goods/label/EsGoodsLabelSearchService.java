@@ -2,10 +2,10 @@ package com.vpu.mp.service.shop.goods.es.goods.label;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.es.EsAggregationName;
 import com.vpu.mp.service.foundation.es.EsManager;
 import com.vpu.mp.service.foundation.es.EsUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.es.EsLabelName;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.shop.goods.es.EsBaseSearchService;

@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.packagesale;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.db.shop.tables.records.PackageSaleRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant.ActivityStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;

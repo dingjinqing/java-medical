@@ -1,11 +1,12 @@
 package com.vpu.mp.service.pojo.wxapp.market.bargain;
 
-import com.vpu.mp.service.foundation.util.PageResult;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
+import com.vpu.mp.common.foundation.util.PageResult;
 
 /**
  * @author: 王兵兵

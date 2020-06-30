@@ -1,11 +1,12 @@
 package com.vpu.mp.service.pojo.wxapp.order;
 
-import com.vpu.mp.service.foundation.util.PageResult;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.util.Map;
+
+import com.vpu.mp.common.foundation.util.PageResult;
 
 /**
  * 微信订单中心

@@ -1,9 +1,10 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.common.foundation.util.DateUtil;
 import com.vpu.mp.db.shop.tables.UserRebatePrice;
 import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
+
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
 

@@ -1,9 +1,9 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.FreeShippingRecord;
 import com.vpu.mp.db.shop.tables.records.FreeShippingRuleRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.*;
 import org.jooq.Result;

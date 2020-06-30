@@ -2,13 +2,13 @@ package com.vpu.mp.service.shop.activity.dao;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.db.shop.tables.records.GiftProductRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.market.gift.GiftVo;
 import com.vpu.mp.service.pojo.shop.market.gift.ProductVo;
 import com.vpu.mp.service.pojo.shop.market.gift.RuleVo;

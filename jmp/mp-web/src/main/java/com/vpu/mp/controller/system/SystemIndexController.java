@@ -1,7 +1,7 @@
 package com.vpu.mp.controller.system;
 
 
-import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.saas.question.param.FeedBackParam;
 import com.vpu.mp.service.saas.index.param.ShopViewParam;
 import org.springframework.stereotype.Controller;

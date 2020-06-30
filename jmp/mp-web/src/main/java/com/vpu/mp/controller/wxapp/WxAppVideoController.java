@@ -1,7 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.db.shop.tables.records.UploadedVideoRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionNumConfig;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.video.UploadVideoParam;

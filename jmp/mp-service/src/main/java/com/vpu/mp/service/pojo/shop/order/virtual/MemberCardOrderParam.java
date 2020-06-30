@@ -1,10 +1,11 @@
 package com.vpu.mp.service.pojo.shop.order.virtual;
 
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 
 /**
  * 会员卡订单查询入参

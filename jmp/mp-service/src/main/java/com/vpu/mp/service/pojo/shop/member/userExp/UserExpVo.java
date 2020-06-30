@@ -3,8 +3,8 @@ package com.vpu.mp.service.pojo.shop.member.userExp;
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelColumn;
 
 import lombok.Data;
 

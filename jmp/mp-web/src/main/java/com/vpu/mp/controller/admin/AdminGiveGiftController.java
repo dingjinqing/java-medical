@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftIdParam;
 import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftListParam;
 import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftListVo;

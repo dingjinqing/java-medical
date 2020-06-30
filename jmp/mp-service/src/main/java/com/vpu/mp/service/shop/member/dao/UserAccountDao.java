@@ -9,8 +9,8 @@ import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageInfo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
 

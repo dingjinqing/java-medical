@@ -1,12 +1,13 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+import com.vpu.mp.common.foundation.data.BaseConstant;
 
 /**
  * 加价购促销信息

@@ -1,6 +1,8 @@
 package com.vpu.mp.service.foundation.util;
 
 import com.thoughtworks.xstream.core.util.Base64Encoder;
+import com.vpu.mp.common.foundation.util.Util;
+
 import lombok.extern.slf4j.Slf4j;
 
 import javax.imageio.ImageIO;

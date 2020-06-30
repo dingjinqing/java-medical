@@ -1,8 +1,8 @@
 package com.vpu.mp.service.saas.shop;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.decorate.DecorationTemplatePojo;
 import com.vpu.mp.service.pojo.saas.shop.MpDecorationListQueryParam;
 import jodd.util.StringUtil;

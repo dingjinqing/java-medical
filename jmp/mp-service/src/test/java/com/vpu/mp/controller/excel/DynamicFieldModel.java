@@ -1,11 +1,12 @@
 package com.vpu.mp.controller.excel;
 
-import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelDynamicColumn;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
 import lombok.Data;
 
 import java.util.Map;
+
+import com.vpu.mp.common.foundation.excel.annotation.ExcelColumn;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelDynamicColumn;
+import com.vpu.mp.common.foundation.excel.annotation.ExcelSheet;
 
 /**
  * @author 李晓冰

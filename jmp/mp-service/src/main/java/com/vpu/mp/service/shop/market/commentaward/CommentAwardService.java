@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.market.commentaward;
 
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_IS_FOREVER;
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_NOT_FOREVER;
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
 import static com.vpu.mp.db.shop.Tables.COMMENT_AWARD;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_IS_FOREVER;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_NOT_FOREVER;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
 
 import java.sql.Timestamp;
 
@@ -17,13 +17,13 @@ import org.jooq.SelectConditionStep;
 import org.jooq.SelectSeekStep1;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.CommentAwardRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardIdParam;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardListParam;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardListVo;

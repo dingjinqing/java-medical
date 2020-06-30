@@ -2,12 +2,16 @@ package com.vpu.mp.service.shop.image;
 
 import com.UpYun;
 import com.upyun.UpException;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.HttpsUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.RegexUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.config.StorageConfig;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.*;

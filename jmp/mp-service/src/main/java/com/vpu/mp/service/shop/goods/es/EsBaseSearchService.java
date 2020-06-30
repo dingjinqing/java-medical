@@ -1,15 +1,15 @@
 package com.vpu.mp.service.shop.goods.es;
 
 import com.beust.jcommander.internal.Lists;
+import com.vpu.mp.common.foundation.util.Page;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.es.*;
 import com.vpu.mp.service.foundation.es.handler.EsAggregationHandler;
 import com.vpu.mp.service.foundation.es.handler.EsQueryBuilderHandler;
 import com.vpu.mp.service.foundation.es.handler.EsRequestHandler;
 import com.vpu.mp.service.foundation.es.handler.EsSearchSourceBuilderHandler;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Page;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.es.*;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.shop.goods.es.convert.EsConvertFactory;

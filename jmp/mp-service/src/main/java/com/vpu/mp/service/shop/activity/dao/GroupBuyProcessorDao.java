@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtil;
 import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsActivityAnnounceMpVo;

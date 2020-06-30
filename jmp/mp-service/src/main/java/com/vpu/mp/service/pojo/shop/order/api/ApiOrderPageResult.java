@@ -1,7 +1,8 @@
 package com.vpu.mp.service.pojo.shop.order.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vpu.mp.service.foundation.util.api.ApiPageResult;
+import com.vpu.mp.common.foundation.util.api.ApiPageResult;
+
 import lombok.Getter;
 import lombok.Setter;
 

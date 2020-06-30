@@ -1,18 +1,18 @@
 package com.vpu.mp.service.shop.market.coopen;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.CoopenActivity;
 import com.vpu.mp.db.shop.tables.CoopenActivityRecords;
 import com.vpu.mp.db.shop.tables.records.CoopenActivityRecord;
 import com.vpu.mp.db.shop.tables.records.CoopenActivityRecordsRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;

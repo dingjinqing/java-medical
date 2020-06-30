@@ -1,10 +1,12 @@
 package com.vpu.mp.service.pojo.shop.market.groupdraw.group;
 
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
+
 import java.sql.Timestamp;
 
 /**

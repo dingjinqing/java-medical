@@ -1,9 +1,10 @@
 package com.vpu.mp.service.pojo.wxapp.market.form;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.math.NumberUtils;
+
+import com.vpu.mp.common.foundation.data.BaseConstant;
 
 /**
  * 表单提交id

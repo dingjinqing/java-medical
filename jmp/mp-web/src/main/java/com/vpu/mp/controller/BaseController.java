@@ -1,8 +1,8 @@
 package com.vpu.mp.controller;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.I18N;
 import com.vpu.mp.service.foundation.util.VoTranslator;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;

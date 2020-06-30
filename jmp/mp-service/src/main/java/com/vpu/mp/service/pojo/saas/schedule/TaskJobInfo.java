@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.saas.schedule;
 
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
-
 import java.sql.Timestamp;
+
+import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.Util;
 
 public class TaskJobInfo extends BaseTaskJob {
 

@@ -14,7 +14,7 @@ public class GoodsActivityDetailMp extends GoodsActivityBaseMp {
 
     /**
      * 活动状态码值，对应码值内容：
-     * @see com.vpu.mp.service.foundation.data.BaseConstant#ACTIVITY_STATUS_CAN_USE
+     * @see com.vpu.mp.common.foundation.data.BaseConstant#ACTIVITY_STATUS_CAN_USE
      */
     private Byte actState;
 

@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.image.postertraits;
 
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.GoodsShareConfig;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;

@@ -37,7 +37,7 @@ public class CardHolderVo {
 	private String cardNo;
 	
 	/** 
-	 * 0:正常，1:删除 2 已过期{@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING } 
+	 * 0:正常，1:删除 2 已过期{@link com.vpu.mp.common.pojo.shop.member.card.CardConstant.CARD_USING } 
 	 */
 	private Byte flag;
 	

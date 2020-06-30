@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.store.postsale;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianGroup;
 import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianGroupParam;
 import com.vpu.mp.service.pojo.shop.store.technician.TechnicianGroupPageListParam;

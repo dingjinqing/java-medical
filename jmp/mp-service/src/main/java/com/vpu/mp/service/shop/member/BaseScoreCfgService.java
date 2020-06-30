@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.member;
 
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;

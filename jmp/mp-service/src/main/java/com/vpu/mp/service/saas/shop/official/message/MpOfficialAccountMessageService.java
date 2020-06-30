@@ -6,9 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.wxapp.subscribe.MsgRecordParam;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountService;

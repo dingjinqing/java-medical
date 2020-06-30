@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.apache.poi.ss.usermodel.Row;
 
-import com.vpu.mp.service.foundation.excel.exception.handler.IllegalExcelBinder;
-import com.vpu.mp.service.foundation.excel.exception.handler.IllegalExcelHandler;
+import com.vpu.mp.common.foundation.excel.exception.handler.IllegalExcelBinder;
+import com.vpu.mp.common.foundation.excel.exception.handler.IllegalExcelHandler;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.activity.factory;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.shop.activity.processor.*;
 import lombok.extern.slf4j.Slf4j;

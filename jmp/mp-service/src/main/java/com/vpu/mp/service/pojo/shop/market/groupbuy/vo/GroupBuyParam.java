@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.validator.ListValid;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.validator.ListValid;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyProductParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyShareConfigParam;
 import lombok.Data;

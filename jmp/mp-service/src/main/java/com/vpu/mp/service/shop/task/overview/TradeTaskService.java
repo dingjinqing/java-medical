@@ -18,9 +18,9 @@ import static com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
+import static com.vpu.mp.common.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.db.shop.tables.CardRenew.CARD_RENEW;
 import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
-import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**

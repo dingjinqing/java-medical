@@ -3,7 +3,8 @@ package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
+
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,9 +1,10 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import lombok.Data;
 
 import java.math.BigDecimal;
+
+import com.vpu.mp.common.foundation.data.BaseConstant;
 
 /**
  * 支付有礼促销活动

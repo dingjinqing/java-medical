@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.goods;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainGoodsPriceBo;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;

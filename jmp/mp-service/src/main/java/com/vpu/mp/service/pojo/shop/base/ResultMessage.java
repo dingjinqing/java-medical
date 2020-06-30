@@ -1,11 +1,12 @@
 package com.vpu.mp.service.pojo.shop.base;
 
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
 
 import java.util.List;
+
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 
 /**
  * 用于传递可变的消息

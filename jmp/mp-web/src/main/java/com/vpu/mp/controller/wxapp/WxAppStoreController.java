@@ -1,8 +1,8 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.RequestUtil;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.RequestUtil;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
@@ -11,11 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import static com.vpu.mp.common.foundation.excel.AbstractExcelDisposer.DEFAULT_LANGUAGE;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-
-import static com.vpu.mp.service.foundation.excel.AbstractExcelDisposer.DEFAULT_LANGUAGE;
 
 /**
  * @author 王兵兵

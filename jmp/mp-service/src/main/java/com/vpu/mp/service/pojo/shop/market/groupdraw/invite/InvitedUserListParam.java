@@ -1,10 +1,11 @@
 package com.vpu.mp.service.pojo.shop.market.groupdraw.invite;
 
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 
 /**
  * 新用户列表入参

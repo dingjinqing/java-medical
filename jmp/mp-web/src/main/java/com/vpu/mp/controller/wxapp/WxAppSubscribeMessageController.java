@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateParam;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.pojo.wxapp.subscribe.UpdateTemplateParam;

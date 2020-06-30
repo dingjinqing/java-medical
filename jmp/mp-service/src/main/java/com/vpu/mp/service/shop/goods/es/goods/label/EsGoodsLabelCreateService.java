@@ -2,12 +2,12 @@ package com.vpu.mp.service.shop.goods.es.goods.label;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.vpu.mp.common.foundation.util.DateUtil;
 import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
 import com.vpu.mp.service.foundation.es.EsManager;
 import com.vpu.mp.service.foundation.es.EsUtil;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.es.EsLabelName;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
