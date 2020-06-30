@@ -165,7 +165,9 @@ export default {
         { title: this.$t('adminPageFramework.headerData.title_5'), index: '', meta: 'first_market_manage', name: 'first_market_manage' },
         { title: this.$t('adminPageFramework.headerData.title_6'), index: '', meta: 'user_manger', name: 'user_list' },
         { title: this.$t('adminPageFramework.headerData.title_7'), index: '', meta: 'store_manage', name: 'store_list' },
-        { title: this.$t('adminPageFramework.headerData.title_8'), index: '', meta: 'base_manger', name: 'config_list' }]
+        { title: this.$t('adminPageFramework.headerData.title_8'), index: '', meta: 'base_manger', name: 'config_list' },
+        { title: '医师管理', index: '', meta: 'doctor_manger', name: 'doctorList' },
+        { title: '处方管理', index: '', meta: 'prescription_manger', name: 'prescriptionList' }]
       let data = JSON.parse(JSON.stringify(this.$t('shopData')))
       // this.hiddle_menu_list = this.$t('shopData')
       this.$t('shopData').forEach((item, index) => {

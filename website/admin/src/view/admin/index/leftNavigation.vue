@@ -626,6 +626,38 @@ export default {
             name: 'pledge',
             flag: false
           }
+        ],
+        doctor_manger: [
+          {
+            imgUrl: this.$imageHost + '/image/admin/icon_left/config_list.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/config_list_h.png',
+            span: '',
+            name: 'doctorList',
+            flag: true
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/icon_left/config_list.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/config_list_h.png',
+            span: '',
+            name: 'doctorProfessionalTitle',
+            flag: true
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/icon_left/config_list.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/config_list_h.png',
+            span: '',
+            name: 'officesList',
+            flag: true
+          }
+        ],
+        prescription_manger: [
+          {
+            imgUrl: this.$imageHost + '/image/admin/icon_left/config_list.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/config_list_h.png',
+            span: '',
+            name: 'prescriptionList',
+            flag: true
+          }
         ]
       },
 
@@ -752,6 +784,18 @@ export default {
             this.dataList['base_manger'][index].span = this.$t(`adminPageFramework.leftNavArr.nav8[${index}]`)
           })
           this.navLeftData = this.dataList['base_manger']
+          break
+        case 'doctor_manger':
+          this.dataList['doctor_manger'].map((item, index) => {
+            this.dataList['doctor_manger'][index].span = this.$t(`adminPageFramework.leftNavArr.nav9[${index}]`)
+          })
+          this.navLeftData = this.dataList['doctor_manger']
+          break
+        case 'prescription_manger':
+          this.dataList['prescription_manger'].map((item, index) => {
+            this.dataList['prescription_manger'][index].span = this.$t(`adminPageFramework.leftNavArr.nav10[${index}]`)
+          })
+          this.navLeftData = this.dataList['prescription_manger']
           break
       }
       console.log(this.$route.name)

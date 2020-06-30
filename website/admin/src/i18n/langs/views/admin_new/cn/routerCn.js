@@ -411,5 +411,9 @@ export const cn = {
   // 门店公告 添加公告
   store_announcement_add: ['门店管理', '门店公告', '添加公告'],
   // 门店权限
-  store_permission: ['门店管理', '门店权限']
+  store_permission: ['门店管理', '门店权限'],
+  // 医师管理 医师列表
+  doctorList: ['医师管理', '医师列表'],
+  // 处方管理 处方列表
+  prescriptionList: ['处方管理', '处方列表']
 }
