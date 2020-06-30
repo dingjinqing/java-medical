@@ -116,7 +116,7 @@ public class GoodsSortService extends ShopBaseService {
             sortRecords = tempList;
         }
         // 没有在上上面的递归中一次性转换，为了逻辑清晰点（效率稍有损耗，但是不大）
-        Map<Integer, GoodsSortSelectTreeVo> sortIdMap = retTree.stream().collect(Collectors.toMap(GoodsSortSelectTreeVo::getSortId, Functions.identity()));
+        Map<Integer, GoodsSortSelectTreeVo> sortIdMap = retTree.stream().collect(Collectors.toMap(GoodsSortSelectTreeVo::getSortId,Function.identity()));
         retTree.forEach(vo->{
             GoodsSortSelectTreeVo parent = sortIdMap.get(vo.getParentId());
             while (parent != null) {
