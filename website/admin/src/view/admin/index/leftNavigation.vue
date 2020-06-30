@@ -709,8 +709,9 @@ export default {
       jurisdictionQueryRequest().then((res) => {
         console.log(res)
         for (let i in this.dataList) {
-          this.dataList[i].map((itemp, indexp) => {
-            res.content.menuParam[i].map((itemchildren, indexchildren) => {
+          this.dataList[i].forEach((itemp, indexp) => {
+            if (!res.content.menuParam[i]) return
+            res.content.menuParam[i].forEach((itemchildren, indexchildren) => {
               if (itemp.name === itemchildren) {
                 // console.log(itemp.name, itemchildren)
                 itemp.flag = true

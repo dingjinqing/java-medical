@@ -359,7 +359,7 @@ export default {
   color: #fff;
   background: #5a8bff;
   padding: 0 25px 0 45px;
-  padding-left: 34px;
+  padding-left: 20px;
   position: absolute;
   z-index: 40;
   display: flex;
@@ -376,7 +376,6 @@ export default {
 .middle {
   float: right;
   height: 100%;
-  margin-right: 22px;
   position: relative;
 }
 .account {
@@ -463,7 +462,7 @@ label {
 .header_nav > div {
   height: 85px;
   display: flex;
-  padding: 15px 25px;
+  padding: 15px 15px;
   cursor: pointer;
 }
 /* .headerNavEn {
