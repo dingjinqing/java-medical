@@ -1,7 +1,6 @@
 package com.vpu.mp.service.foundation.util;
 
 import java.util.List;
-
 /**
  * 
  * @author 新国

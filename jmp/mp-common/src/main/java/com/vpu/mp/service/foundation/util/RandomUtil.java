@@ -1,5 +1,6 @@
 package com.vpu.mp.service.foundation.util;
 
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomUtil {

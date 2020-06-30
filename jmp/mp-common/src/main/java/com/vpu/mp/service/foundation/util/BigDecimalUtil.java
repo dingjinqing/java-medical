@@ -15,7 +15,6 @@ import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
  * @author 王帅
  */
 public class BigDecimalUtil {
-    public static final String STRING_ZERO = "0";
     public static final int DEFAULT_SCALE = 2;
     public static final BigDecimal BIGDECIMAL_ZERO = BigDecimal.ZERO.setScale(DEFAULT_SCALE);
     public static final BigDecimal BIGDECIMAL_100 = new BigDecimal("100");
@@ -124,6 +123,7 @@ public class BigDecimalUtil {
      * @return value left/right为null,为0直接返回0.00
      */
     static public BigDecimal divideWithOutCheck(Object left, Object right) {
+    	String STRING_ZERO = "0";
         if (left == null || StringUtils.isBlank(left.toString()) || STRING_ZERO.equals(left.toString())) {
             return BigDecimal.ZERO;
         }

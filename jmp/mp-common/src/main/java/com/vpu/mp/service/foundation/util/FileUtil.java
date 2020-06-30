@@ -1,10 +1,15 @@
 package com.vpu.mp.service.foundation.util;
 
-import com.vpu.mp.service.pojo.base.BASE64DecodedMultipartFile;
+import com.vpu.mp.service.pojo.shop.base.BASE64DecodedMultipartFile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Base64;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
