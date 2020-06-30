@@ -5,8 +5,6 @@ package com.vpu.mp.service.pojo.shop.recommend.order;
 
 import java.math.BigDecimal;
 
-import javax.annotation.Tainted;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;

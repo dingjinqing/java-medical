@@ -29,7 +29,9 @@
 		<module>mp-background</module>
 		<module>mp-service</module>
 		<module>mp-web</module>
-	</modules>
+        <module>mp-common</module>
+        <module>mp-dao</module>
+    </modules>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -70,9 +72,15 @@
 
 			<dependency>
 				<groupId>com.vpu.mp</groupId>
-				<artifactId>mp-command</artifactId>
+				<artifactId>mp-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+
+            <dependency>
+                <groupId>com.vpu.mp</groupId>
+                <artifactId>mp-dao</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
 		</dependencies>
 	</dependencyManagement>
