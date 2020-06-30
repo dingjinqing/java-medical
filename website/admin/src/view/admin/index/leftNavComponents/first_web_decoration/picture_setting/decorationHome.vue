@@ -281,7 +281,8 @@ export default {
     ShopNotices: () => import('./decorationModules/graphicAndTextComponents/shopNotices'), // 店铺公告模块
     OfficialAccount: () => import('./decorationModules/graphicAndTextComponents/officialAccount'), // 公众号模块
     CustomerServiceModule: () => import('./decorationModules/graphicAndTextComponents/customerServiceModule'), // 客服模块
-    PictureHotSpot: () => import('./decorationModules/graphicAndTextComponents/pictureHotSpot') // 图片热区组件
+    PictureHotSpot: () => import('./decorationModules/graphicAndTextComponents/pictureHotSpot'), // 图片热区组件
+    Prescription: () => import('./decorationModules/graphicAndTextComponents/prescription.vue') // 处方模块
   },
   data () {
     return {
@@ -291,7 +292,7 @@ export default {
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'IntegralExchange', 'Spike', 'FightGroup', 'DivideScorePoints', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'PictureHotSpot', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'Guide', 'TitleModule', 'VideoModule', 'ShopNotices', 'OfficialAccount', 'CustomerServiceModule', 'zb', 'ShopRecruit', 'MapModule'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'IntegralExchange', 'Spike', 'FightGroup', 'DivideScorePoints', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'PictureHotSpot', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'Guide', 'TitleModule', 'VideoModule', 'ShopNotices', 'OfficialAccount', 'CustomerServiceModule', 'zb', 'ShopRecruit', 'MapModule', 'Prescription'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -591,6 +592,10 @@ export default {
           break
         case 'm_map':
           moduleNameId = 28
+          break
+        case 'm_prescription':
+          moduleNameId = 29
+          break
       }
       return moduleNameId
     },
@@ -833,6 +838,10 @@ export default {
               break
             case 28:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 28)
+              break
+            case 29:
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 29)
+              break
           }
           console.log(this_.showModulesList, this_.modulesData, insert)
         }

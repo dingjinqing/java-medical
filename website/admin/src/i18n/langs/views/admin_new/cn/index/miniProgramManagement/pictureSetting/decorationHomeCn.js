@@ -21,7 +21,8 @@ export const cn = {
       name: 'm_image_guide'
     },
     {
-      imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/dg_img_advertist.png',
+      imgUrl:
+        vm.$imageHost + '/image/admin/new_shop_beautify/dg_img_advertist.png',
       text: '图片广告',
       id: 13,
       flag: true,
@@ -89,17 +90,20 @@ export const cn = {
       id: 22,
       flag: true,
       name: 'm_video',
-      noJurisdictionUurl: vm.$imageHost + '/image/admin/new_shop_beautify/icon_video_disabled.png'
+      noJurisdictionUurl:
+        vm.$imageHost + '/image/admin/new_shop_beautify/icon_video_disabled.png'
     },
     {
-      imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/shop_announce.png',
+      imgUrl:
+        vm.$imageHost + '/image/admin/new_shop_beautify/shop_announce.png',
       text: '店铺公告',
       id: 23,
       flag: true,
       name: 'm_shop_announce'
     },
     {
-      imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/official_account.png',
+      imgUrl:
+        vm.$imageHost + '/image/admin/new_shop_beautify/official_account.png',
       text: '公众号',
       id: 24,
       flag: true,
@@ -120,7 +124,8 @@ export const cn = {
     //   name: 'm_phone'
     // },
     {
-      imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/dg_navigation.png',
+      imgUrl:
+        vm.$imageHost + '/image/admin/new_shop_beautify/dg_navigation.png',
       text: '店招设置',
       id: 27,
       flag: true,
@@ -132,6 +137,13 @@ export const cn = {
       id: 28,
       flag: true,
       name: 'm_map'
+    },
+    {
+      imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/icon_map.png',
+      text: '处方模块',
+      id: 29,
+      flag: true,
+      name: 'm_prescription'
     }
   ],
   goodsTextConArr: [
@@ -164,7 +176,8 @@ export const cn = {
       id: 1,
       flag: true,
       name: 'm_card',
-      noJurisdictionUurl: vm.$imageHost + '/image/admin/new_shop_beautify/deco_card_disabled.png'
+      noJurisdictionUurl:
+        vm.$imageHost + '/image/admin/new_shop_beautify/deco_card_disabled.png'
     },
     {
       imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/deco_voucher.png',
@@ -172,7 +185,9 @@ export const cn = {
       id: 2,
       flag: true,
       name: 'm_coupon',
-      noJurisdictionUurl: vm.$imageHost + '/image/admin/new_shop_beautify/deco_voucher_disabled.png'
+      noJurisdictionUurl:
+        vm.$imageHost +
+        '/image/admin/new_shop_beautify/deco_voucher_disabled.png'
     },
     {
       imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/bargain.png',
@@ -180,15 +195,19 @@ export const cn = {
       id: 3,
       flag: true,
       name: 'm_bargain',
-      noJurisdictionUurl: vm.$imageHost + '/image/admin/new_shop_beautify/bargain_disabled.png'
+      noJurisdictionUurl:
+        vm.$imageHost + '/image/admin/new_shop_beautify/bargain_disabled.png'
     },
     {
-      imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/icon_integral_deco.png',
+      imgUrl:
+        vm.$imageHost + '/image/admin/new_shop_beautify/icon_integral_deco.png',
       text: '积分兑换',
       id: 4,
       flag: true,
       name: 'm_integral',
-      noJurisdictionUurl: vm.$imageHost + '/image/admin/new_shop_beautify/icon_integral_deco_disabled.png'
+      noJurisdictionUurl:
+        vm.$imageHost +
+        '/image/admin/new_shop_beautify/icon_integral_deco_disabled.png'
     },
     {
       imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/secKill.png',
@@ -196,7 +215,8 @@ export const cn = {
       id: 5,
       flag: true,
       name: 'm_seckill',
-      noJurisdictionUurl: vm.$imageHost + '/image/admin/new_shop_beautify/secKill_disabled.png'
+      noJurisdictionUurl:
+        vm.$imageHost + '/image/admin/new_shop_beautify/secKill_disabled.png'
     },
     {
       imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/fight_group.png',
@@ -204,15 +224,20 @@ export const cn = {
       id: 6,
       flag: true,
       name: 'm_group_draw',
-      noJurisdictionUurl: vm.$imageHost + '/image/admin/new_shop_beautify/fight_group_disabled.png'
+      noJurisdictionUurl:
+        vm.$imageHost +
+        '/image/admin/new_shop_beautify/fight_group_disabled.png'
     },
     {
-      imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
+      imgUrl:
+        vm.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
       text: '瓜分积分',
       id: 7,
       flag: true,
       name: 'm_pin_integration',
-      noJurisdictionUurl: vm.$imageHost + '/image/admin/new_shop_beautify/pin_integration_disabled.png'
+      noJurisdictionUurl:
+        vm.$imageHost +
+        '/image/admin/new_shop_beautify/pin_integration_disabled.png'
     }
   ],
   putItHere: '放这里',

@@ -420,6 +420,12 @@ export default {
             'latitude': '39.92855',
             'longitude': '116.41637'
           }
+          break
+        case 29: // 处方模块
+          obj = {
+            'module_name': 'm_prescription'
+          }
+          break
       }
       console.log(obj)
       return obj
