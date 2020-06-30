@@ -145,6 +145,34 @@
         </view>
       </view>
     </view>
+    <!-- 医药部分 -->
+    <view class='my_appointment each_model {{page_style==1?"":"each_model_radius"}}' 
+          wx:if='{{item.module_name == "prescription_list" && item.is_show == 1 }}'>
+      <view class='ma_title'>
+        <view wx:if='{{item.title != "" && item.title != null}}'>{{item.title}}</view>
+        <view class='to_more' bindtap='allPrescription'>
+          <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
+        </view>
+      </view>
+    </view>
+    <view class='my_appointment each_model {{page_style==1?"":"each_model_radius"}}'
+          wx:if='{{item.module_name == "prescription_medicine_list" && item.is_show == 1 }}'>
+      <view class='ma_title'>
+        <view wx:if='{{item.title != "" && item.title != null}}'>{{item.title}}</view>
+        <view class='to_more' bindtap='allPrescriptionMedical'>
+          <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
+        </view>
+      </view>
+    </view>
+    <view class='my_appointment each_model {{page_style==1?"":"each_model_radius"}}'
+          wx:if='{{item.module_name == "patient_list" && item.is_show == 1 }}'>
+      <view class='ma_title'>
+        <view wx:if='{{item.title != "" && item.title != null}}'>{{item.title}}</view>
+        <view class='to_more' bindtap='allPatient'>
+          <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
+        </view>
+      </view>
+    </view>
     <!-- 我的预约 -->
     <view class='my_appointment each_model {{page_style==1?"":"each_model_radius"}}' wx:if='{{item.module_name == "appointment" && item.is_show == 1 && item.appointment_info!=null }}'>
       <view class='ma_title'>
