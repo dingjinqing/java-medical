@@ -1,18 +1,12 @@
-package com.vpu.mp.service.foundation.service;
+package com.vpu.mp.service.foundation.base;
 
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DatabaseManager;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.api.ApiPageResult;
 import com.vpu.mp.service.pojo.shop.base.BasePageParam;
-import com.vpu.mp.service.saas.SaasApplication;
-import com.vpu.mp.service.wechat.OpenPlatform;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectLimitStep;
@@ -22,23 +16,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * 
  * @author lixinguo
  *
  */
-public abstract  class AbstractCommonBaseService {
+public abstract  class AbstractCommonBaseDao {
 
 	@Autowired
 	protected DatabaseManager databaseManager;
-
-	@Autowired
-	protected OpenPlatform open;
-
-	@Autowired
-	protected SaasApplication saas;
 
 
 	/**
@@ -129,20 +116,6 @@ public abstract  class AbstractCommonBaseService {
 		return LoggerFactory.getLogger(this.getClass());
 	}
 
-	protected OpenPlatform open() {
-		return open;
-	}
-
-	protected SaasApplication saas() {
-		return saas;
-	}
-
-    protected <T> Workbook export(List<T> list,Class<T> clazz){
-        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
-        ExcelWriter excelWriter = new ExcelWriter(workbook);
-        excelWriter.writeModelList(list, clazz);
-        return workbook;
-    }
 
     /**
      * 对外接口分页方法
@@ -153,7 +126,7 @@ public abstract  class AbstractCommonBaseService {
      * @param <T>
      */
     public <T> ApiPageResult<T> getApiPageResult(SelectLimitStep<?> select, Integer currentPage, Integer pageRows,
-                                              Class<T> clazz){
+                                                 Class<T> clazz){
         PageResult<T> pageResult = getPageResult(select, currentPage, pageRows, clazz);
 
         ApiPageResult<T> apiPageResult = new ApiPageResult<>();

@@ -1,14 +1,14 @@
 package com.vpu.mp.service.pojo.shop.coupon.give;
 
-import com.vpu.mp.db.shop.tables.records.CustomerAvailCouponsRecord;
-import lombok.Getter;
-import lombok.Setter;
-import org.checkerframework.checker.units.qual.A;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.vpu.mp.db.shop.tables.records.CustomerAvailCouponsRecord;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 发送优惠卷信息
