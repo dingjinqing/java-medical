@@ -152,13 +152,13 @@ export default {
   methods: {
     initDataList () {
       this.loading = true
-      storeList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
-        console.log(res)
-        this.originalData = res.content.storePageListVo.dataList
-        let originalData = JSON.parse(JSON.stringify(this.originalData))
-        this.handleData(originalData)
-        this.loading = false
-      })
+      // storeList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
+      //   console.log(res)
+      //   this.originalData = res.content.storePageListVo.dataList
+      //   let originalData = JSON.parse(JSON.stringify(this.originalData))
+      //   this.handleData(originalData)
+      //   this.loading = false
+      // })
     },
     handleData (data) {
       this.tableData = data
