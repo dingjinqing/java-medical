@@ -414,6 +414,10 @@ export const cn = {
   store_permission: ['门店管理', '门店权限'],
   // 医师管理 医师列表
   doctorList: ['医师管理', '医师列表'],
+  // 医师管理 医师职称
+  doctorProfessionalTitle: ['医师管理', '医师职称'],
+  // 医师管理 科室管理
+  officesList: ['医师管理', '科室管理'],
   // 处方管理 处方列表
   prescriptionList: ['处方管理', '处方列表']
 }
