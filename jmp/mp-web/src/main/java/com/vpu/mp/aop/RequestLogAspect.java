@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @ConditionalOnProperty(prefix="local",name = "log", havingValue = "on")
 public class RequestLogAspect {
-    @Pointcut("execution(public com.vpu.mp.service.foundation.data.JsonResult com.vpu.mp.controller..*Controller.*(..))")
+    @Pointcut("execution(public com.vpu.mp.common.foundation.data.JsonResult com.vpu.mp.controller..*Controller.*(..))")
     public void controllerLogAspect(){}
 
     @Around(value = "controllerLogAspect()")
