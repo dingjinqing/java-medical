@@ -27,19 +27,61 @@ const routes = [
         '@/view/admin/index/leftNavComponents/doctor_manger/doctorProfessionalTitle/doctorProfessionalTitle'
       )
   },
-  //   科室管理
+  // 科室管理
   {
-    path: '/admin/home/main/doctor/offices/list',
-    name: 'officesList',
+    path: '/admin/home/main/doctor/offices',
+    redirect: '/admin/home/main/doctor/offices/list',
+    name: 'offices',
     meta: {
       crumbTitle: 'router.officesList',
-      meta: 'doctor_manger',
-      category: 'officesList'
+      meta: 'doctor_manger'
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/doctor_manger/offices/officesList'
-      )
+        '@/view/admin/index/leftNavComponents/doctor_manger/offices/officesManagement'
+      ),
+    children: [
+      //  医师管理/科室管理/科室列表
+      {
+        path: '/admin/home/main/doctor/offices/list',
+        name: 'officesList',
+        meta: {
+          crumbTitle: 'router.officesList',
+          meta: 'doctor_manger',
+          category: 'offices'
+        },
+        component: () =>
+          import(
+            '@/view/admin/index/leftNavComponents/doctor_manger/offices/officesList'
+          )
+      },
+      {
+        path: '/admin/home/main/doctor/offices/addOffices',
+        name: 'addOffices',
+        meta: {
+          crumbTitle: 'router.officesList',
+          meta: 'doctor_manger',
+          category: 'officesList'
+        },
+        component: () =>
+          import(
+            '@/view/admin/index/leftNavComponents/doctor_manger/offices/addAndUpdateOffices'
+          )
+      },
+      {
+        path: '/admin/home/main/doctor/offices/updateOffices/:sortId',
+        name: 'updateOffices',
+        meta: {
+          crumbTitle: 'router.officesList',
+          meta: 'doctor_manger',
+          category: 'offices'
+        },
+        component: () =>
+          import(
+            '@/view/admin/index/leftNavComponents/doctor_manger/offices/addAndUpdateOffices'
+          )
+      }
+    ]
   }
 ]
 
