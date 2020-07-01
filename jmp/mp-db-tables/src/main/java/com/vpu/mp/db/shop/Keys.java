@@ -275,6 +275,15 @@ public class Keys {
     public static final Identity<BulkshipmentRecordRecord, Integer> IDENTITY_BULKSHIPMENT_RECORD = Identities0.IDENTITY_BULKSHIPMENT_RECORD;
     public static final Identity<BulkshipmentRecordDetailRecord, Integer> IDENTITY_BULKSHIPMENT_RECORD_DETAIL = Identities0.IDENTITY_BULKSHIPMENT_RECORD_DETAIL;
     public static final Identity<CheckedGoodsCartRecord, Integer> IDENTITY_CHECKED_GOODS_CART = Identities0.IDENTITY_CHECKED_GOODS_CART;
+    public static final Identity<DepartmentRecord, Integer> IDENTITY_DEPARTMENT = Identities0.IDENTITY_DEPARTMENT;
+    public static final Identity<DoctorRecord, Integer> IDENTITY_DOCTOR = Identities0.IDENTITY_DOCTOR;
+    public static final Identity<DoctorTitleRecord, Integer> IDENTITY_DOCTOR_TITLE = Identities0.IDENTITY_DOCTOR_TITLE;
+    public static final Identity<GoodsMedicalInfoRecord, Integer> IDENTITY_GOODS_MEDICAL_INFO = Identities0.IDENTITY_GOODS_MEDICAL_INFO;
+    public static final Identity<PatientRecord, Integer> IDENTITY_PATIENT = Identities0.IDENTITY_PATIENT;
+    public static final Identity<PharmacistRecord, Integer> IDENTITY_PHARMACIST = Identities0.IDENTITY_PHARMACIST;
+    public static final Identity<PrescriptionRecord, Integer> IDENTITY_PRESCRIPTION = Identities0.IDENTITY_PRESCRIPTION;
+    public static final Identity<PrescriptionItemRecord, Integer> IDENTITY_PRESCRIPTION_ITEM = Identities0.IDENTITY_PRESCRIPTION_ITEM;
+    public static final Identity<UserPatientCoupleRecord, Integer> IDENTITY_USER_PATIENT_COUPLE = Identities0.IDENTITY_USER_PATIENT_COUPLE;
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
@@ -537,6 +546,15 @@ public class Keys {
     public static final UniqueKey<BulkshipmentRecordRecord> KEY_B2C_BULKSHIPMENT_RECORD_PRIMARY = Internal.createUniqueKey(BulkshipmentRecord.BULKSHIPMENT_RECORD, "KEY_b2c_bulkshipment_record_PRIMARY", BulkshipmentRecord.BULKSHIPMENT_RECORD.ID);
     public static final UniqueKey<BulkshipmentRecordDetailRecord> KEY_B2C_BULKSHIPMENT_RECORD_DETAIL_PRIMARY = Internal.createUniqueKey(BulkshipmentRecordDetail.BULKSHIPMENT_RECORD_DETAIL, "KEY_b2c_bulkshipment_record_detail_PRIMARY", BulkshipmentRecordDetail.BULKSHIPMENT_RECORD_DETAIL.ID);
     public static final UniqueKey<CheckedGoodsCartRecord> KEY_B2C_CHECKED_GOODS_CART_PRIMARY = UniqueKeys0.KEY_B2C_CHECKED_GOODS_CART_PRIMARY;
+    public static final UniqueKey<DepartmentRecord> KEY_B2C_DEPARTMENT_PRIMARY = UniqueKeys0.KEY_B2C_DEPARTMENT_PRIMARY;
+    public static final UniqueKey<DoctorRecord> KEY_B2C_DOCTOR_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_PRIMARY;
+    public static final UniqueKey<DoctorTitleRecord> KEY_B2C_DOCTOR_TITLE_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_TITLE_PRIMARY;
+    public static final UniqueKey<GoodsMedicalInfoRecord> KEY_B2C_GOODS_MEDICAL_INFO_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_MEDICAL_INFO_PRIMARY;
+    public static final UniqueKey<PatientRecord> KEY_B2C_PATIENT_PRIMARY = UniqueKeys0.KEY_B2C_PATIENT_PRIMARY;
+    public static final UniqueKey<PharmacistRecord> KEY_B2C_PHARMACIST_PRIMARY = UniqueKeys0.KEY_B2C_PHARMACIST_PRIMARY;
+    public static final UniqueKey<PrescriptionRecord> KEY_B2C_PRESCRIPTION_PRIMARY = UniqueKeys0.KEY_B2C_PRESCRIPTION_PRIMARY;
+    public static final UniqueKey<PrescriptionItemRecord> KEY_B2C_PRESCRIPTION_ITEM_PRIMARY = UniqueKeys0.KEY_B2C_PRESCRIPTION_ITEM_PRIMARY;
+    public static final UniqueKey<UserPatientCoupleRecord> KEY_B2C_USER_PATIENT_COUPLE_PRIMARY = UniqueKeys0.KEY_B2C_USER_PATIENT_COUPLE_PRIMARY;
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -778,6 +796,15 @@ public class Keys {
         public static Identity<BulkshipmentRecordRecord, Integer> IDENTITY_BULKSHIPMENT_RECORD = Internal.createIdentity(BulkshipmentRecord.BULKSHIPMENT_RECORD, BulkshipmentRecord.BULKSHIPMENT_RECORD.ID);
         public static Identity<BulkshipmentRecordDetailRecord, Integer> IDENTITY_BULKSHIPMENT_RECORD_DETAIL = Internal.createIdentity(BulkshipmentRecordDetail.BULKSHIPMENT_RECORD_DETAIL, BulkshipmentRecordDetail.BULKSHIPMENT_RECORD_DETAIL.ID);
         public static Identity<CheckedGoodsCartRecord, Integer> IDENTITY_CHECKED_GOODS_CART = Internal.createIdentity(CheckedGoodsCart.CHECKED_GOODS_CART, CheckedGoodsCart.CHECKED_GOODS_CART.ID);
+        public static Identity<DepartmentRecord, Integer> IDENTITY_DEPARTMENT = Internal.createIdentity(Department.DEPARTMENT, Department.DEPARTMENT.ID);
+        public static Identity<DoctorRecord, Integer> IDENTITY_DOCTOR = Internal.createIdentity(Doctor.DOCTOR, Doctor.DOCTOR.ID);
+        public static Identity<DoctorTitleRecord, Integer> IDENTITY_DOCTOR_TITLE = Internal.createIdentity(DoctorTitle.DOCTOR_TITLE, DoctorTitle.DOCTOR_TITLE.ID);
+        public static Identity<GoodsMedicalInfoRecord, Integer> IDENTITY_GOODS_MEDICAL_INFO = Internal.createIdentity(GoodsMedicalInfo.GOODS_MEDICAL_INFO, GoodsMedicalInfo.GOODS_MEDICAL_INFO.ID);
+        public static Identity<PatientRecord, Integer> IDENTITY_PATIENT = Internal.createIdentity(Patient.PATIENT, Patient.PATIENT.ID);
+        public static Identity<PharmacistRecord, Integer> IDENTITY_PHARMACIST = Internal.createIdentity(Pharmacist.PHARMACIST, Pharmacist.PHARMACIST.ID);
+        public static Identity<PrescriptionRecord, Integer> IDENTITY_PRESCRIPTION = Internal.createIdentity(Prescription.PRESCRIPTION, Prescription.PRESCRIPTION.ID);
+        public static Identity<PrescriptionItemRecord, Integer> IDENTITY_PRESCRIPTION_ITEM = Internal.createIdentity(PrescriptionItem.PRESCRIPTION_ITEM, PrescriptionItem.PRESCRIPTION_ITEM.ID);
+        public static Identity<UserPatientCoupleRecord, Integer> IDENTITY_USER_PATIENT_COUPLE = Internal.createIdentity(UserPatientCouple.USER_PATIENT_COUPLE, UserPatientCouple.USER_PATIENT_COUPLE.ID);
     }
 
     private static class UniqueKeys0 {
@@ -1044,5 +1071,15 @@ public class Keys {
         public static final UniqueKey<MarketCalendarActivityRecord> KEY_B2C_MARKET_CALENDAR_ACTIVITY_PRIMARY = Internal.createUniqueKey(MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, "KEY_b2c_market_calendar_activity_PRIMARY", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.ID);
         public static final UniqueKey<MarketCalendarRecord> KEY_B2C_MARKET_CALENDAR_PRIMARY = Internal.createUniqueKey(MarketCalendar.MARKET_CALENDAR, "KEY_b2c_market_calendar_PRIMARY", MarketCalendar.MARKET_CALENDAR.ID);
         public static final UniqueKey<CheckedGoodsCartRecord> KEY_B2C_CHECKED_GOODS_CART_PRIMARY = Internal.createUniqueKey(CheckedGoodsCart.CHECKED_GOODS_CART, "KEY_b2c_checked_goods_cart_PRIMARY", CheckedGoodsCart.CHECKED_GOODS_CART.ID);
+        public static final UniqueKey<DepartmentRecord> KEY_B2C_DEPARTMENT_PRIMARY = Internal.createUniqueKey(Department.DEPARTMENT, "KEY_b2c_department_PRIMARY", Department.DEPARTMENT.ID);
+        public static final UniqueKey<DoctorRecord> KEY_B2C_DOCTOR_PRIMARY = Internal.createUniqueKey(Doctor.DOCTOR, "KEY_b2c_doctor_PRIMARY", Doctor.DOCTOR.ID);
+        public static final UniqueKey<DoctorTitleRecord> KEY_B2C_DOCTOR_TITLE_PRIMARY = Internal.createUniqueKey(DoctorTitle.DOCTOR_TITLE, "KEY_b2c_doctor_title_PRIMARY", DoctorTitle.DOCTOR_TITLE.ID);
+        public static final UniqueKey<GoodsMedicalInfoRecord> KEY_B2C_GOODS_MEDICAL_INFO_PRIMARY = Internal.createUniqueKey(GoodsMedicalInfo.GOODS_MEDICAL_INFO, "KEY_b2c_goods_medical_info_PRIMARY", GoodsMedicalInfo.GOODS_MEDICAL_INFO.ID);
+        public static final UniqueKey<PatientRecord> KEY_B2C_PATIENT_PRIMARY = Internal.createUniqueKey(Patient.PATIENT, "KEY_b2c_patient_PRIMARY", Patient.PATIENT.ID);
+        public static final UniqueKey<PharmacistRecord> KEY_B2C_PHARMACIST_PRIMARY = Internal.createUniqueKey(Pharmacist.PHARMACIST, "KEY_b2c_pharmacist_PRIMARY", Pharmacist.PHARMACIST.ID);
+        public static final UniqueKey<PrescriptionRecord> KEY_B2C_PRESCRIPTION_PRIMARY = Internal.createUniqueKey(Prescription.PRESCRIPTION, "KEY_b2c_prescription_PRIMARY", Prescription.PRESCRIPTION.ID);
+        public static final UniqueKey<PrescriptionItemRecord> KEY_B2C_PRESCRIPTION_ITEM_PRIMARY = Internal.createUniqueKey(PrescriptionItem.PRESCRIPTION_ITEM, "KEY_b2c_prescription_item_PRIMARY", PrescriptionItem.PRESCRIPTION_ITEM.ID);
+        public static final UniqueKey<UserPatientCoupleRecord> KEY_B2C_USER_PATIENT_COUPLE_PRIMARY = Internal.createUniqueKey(UserPatientCouple.USER_PATIENT_COUPLE, "KEY_b2c_user_patient_couple_PRIMARY", UserPatientCouple.USER_PATIENT_COUPLE.ID);
+
     }    
 }

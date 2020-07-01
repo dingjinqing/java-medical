@@ -4686,3 +4686,172 @@ CREATE TABLE `b2c_pin_integration_define` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`)
 );
+
+create table `b2c_goods_medical_info`(
+    `id` int(11) not null auto_increment comment '商品额外信息id',
+    `goods_id` int(11) not null comment '商品id',
+    `goods_common_name` varchar(512) not null default '' comment '通用名',
+    `goods_alias_name` varchar(512) not null default '' comment '别名',
+    `goods_quality_ratio` varchar(512) not null default '' comment '规格系数，通用名和规格系数确定一个药品',
+    `is_medical` tinyint(1) not null default 1 comment '是否药品',
+    `is_rx` tinyint(1) not null default 1 comment '是否处方药,rx处方药 otc非处方药',
+    `insurance_flag` tinyint(1) not null default 0 comment '医保类型 1:甲 2:乙 3:丙 4:科研',
+    `insurance_code` varchar(64) not null default '' comment '医保编码',
+    `insurance_database_name` varchar(128) not null default '' comment '医保库内名称',
+    `goods_basic_unit` varchar(32) default '' comment '商品基本单位',
+    `goods_package_unit` varchar(32) default '' comment '商品包装单位',
+    `goods_unit_convert_factor` int(11) default 0 comment '整包转换系数',
+    `goods_equivalent_quantity` int(11) default 0 comment '等效量',
+    `goods_equivalent_unit` varchar(32) default '' comment '等销量单位',
+    `goods_composition` varchar(512) comment '药品成分',
+    `goods_characters` varchar(512) comment '药品性状',
+    `goods_function` varchar(512) comment '功能主治',
+    `goods_use_method` varchar(512) comment '用法用量',
+    `goods_adverse_reaction` varchar(512) comment '不良反应',
+    `goods_taboos` varchar(512) comment '药品禁忌',
+    `goods_notice_event` varchar(2048) comment '注意事项',
+    `goods_interaction` varchar(1024) comment '相互作用',
+    `goods_store_method` varchar(512) comment '贮藏方法',
+    `goods_package_method` varchar(512) comment '药品包装',
+    `goods_valid_time` varchar(128) comment '有效期',
+    `goods_approval_number` varchar(128) comment '批准文号',
+    `goods_production_enterprise` varchar(512) comment '生产企业',
+    primary key (`id`)
+) comment='商品辅助信息表';
+
+
+-- 患者信息表
+create table `b2c_patient`(
+    `id`   int(11)      not null auto_increment,
+    `name` varchar(32) not null default '' comment '患者名称',
+    `mobile` varchar(32) not null default '' comment '手机号码',
+    `history_inner_no` varchar(64) not null  comment '医院内部编码',
+    `identity_no` varchar(64) not null default '' comment '证件号码',
+    `identity_type` tinyint(1) not null default 1 comment '证件类型: 1：身份证 2：军人证 3：护照 4：社保卡',
+    `treatment_no` varchar(64) not null default '' comment '就诊卡号',
+    `area_type` tinyint(1) not null default 0 comment '患者类型 0本地 1外地 2境外 9其它',
+    `sex` tinyint(1) not null default 1 comment '性别 0：未知 1：男 2：女',
+    `birthday` date null comment '出生年月',
+    `disease_history` varchar(512) not null default '' comment '疾病史',
+    `allergy_history` varchar(512) not null default '' comment '过敏史',
+    `memo` varchar(512) not null default '' comment '备注',
+    `is_delete`     tinyint(1)   not null default '0',
+    `create_time`   timestamp    not null default current_timestamp,
+    `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key(`id`)
+)comment ='患者信息';
+
+create table `b2c_user_patient_couple`(
+    `id`   int(11)      not null auto_increment,
+    `user_id` int(11) not null comment '用户id',
+    `patient_id` int(11) not null comment '患者id',
+    `is_delete`     tinyint(1)   not null default '0',
+    `create_time`   timestamp    not null default current_timestamp,
+    `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key(`id`)
+)comment ='用户患者关联表';
+
+-- 科室表
+create table b2c_department(
+    `id`   int(11)  not null auto_increment,
+    `code` varchar(32) not null comment '科室代码',
+    `name` varchar(32) not null comment '科室名称',
+    `parent_id` int(11) not null default 0 comment '父节点id',
+    `parent_ids` varchar(32) not null default '' comment '祖先节点id集合',
+    `level` int(11) not null default 0 comment '层级',
+    `is_leaf` tinyint(1) not null default 0 comment '是否叶子节点',
+    `is_delete`     tinyint(1)   not null default '0',
+    `create_time`   timestamp    not null default current_timestamp,
+    `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`id`)
+)comment '科室';
+
+-- 职称表
+create table b2c_doctor_title(
+    `id`   int(11)  not null auto_increment,
+    `name` varchar(32) not null comment '职称名称',
+    `is_delete`     tinyint(1)   not null default '0',
+    `create_time`   timestamp    not null default current_timestamp,
+    `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`id`)
+)comment '科室';
+
+-- 医师
+create table b2c_doctor(
+    `id`   int(11)      not null auto_increment,
+    `account_id` int(11) not null comment '医师子账号id',
+    `sex` tinyint(1) not null default 0 comment '0位置 1男 2 女',
+    `hospital_code` varchar(32) not null default '' comment '医师院内编号',
+    `certificate_code` varchar(64) not null default '' comment '医师资格编码',
+    `professional_code` varchar(64) not null default '' comment '医师职业编码',
+    `register_time` date comment '注册时间',
+    `register_hospital` varchar(32) comment '注册医院',
+    `mobile` varchar(32) not null default '' comment '手机号',
+    `department_id` int(11) not null comment '科室id',
+    `title_id` int(11) not null comment '职称id',
+    `status` tinyint(1) not null default 1 comment '是否启用 1启用 0禁用',
+    `is_delete`     tinyint(1)   not null default '0',
+    `create_time`   timestamp    not null default current_timestamp,
+    `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`id`)
+)comment ='医师表';
+
+-- 药师表
+create table b2c_pharmacist(
+    `id`   int(11)      not null auto_increment,
+    `sex` tinyint(1) not null default 0 comment '0位置 1男 2 女',
+    `certificate_code` varchar(64) not null default '' comment '药师资格编码',
+    `professional_code` varchar(64) not null default '' comment '药师职业编码',
+    `mobile` varchar(32) not null default '' comment '手机号',
+    `status` tinyint(1) not null default 1 comment '是否启用 1启用 0禁用',
+    `is_delete`     tinyint(1)   not null default '0',
+    `create_time`   timestamp    not null default current_timestamp,
+    `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`id`)
+)comment ='药师表';
+
+-- 处方信息
+create table `b2c_prescription`(
+    `id`   int(11)      not null auto_increment,
+    `prescription_no` varchar(64) not null default '' comment '处方号',
+    `patient_id` int(11)  not null comment '患者id',
+    `patient_treatment_no` varchar(32) not null comment '患者就诊卡号',
+    `identity_no` varchar(64) not null default '' comment '证件号码',
+    `identity_type` tinyint(1) not null default 1 comment '证件类型: 1：身份证 2：军人证 3：护照 4：社保卡',
+    `patient_name` varchar(32) not null default '' comment '患者名称',
+    `patient_age` int(11) not null comment '患者年龄',
+    `patient_sex` tinyint(1) not null default 1 comment '性别 0：未知 1：男 2：女',
+    `patient_disease_history` varchar(512) not null default '' comment '患者疾病史',
+    `patient_allergy_history` varchar(512) not null default '' comment '患者过敏史',
+    `register_hospital` varchar(32) comment '注册医院',
+    `doctor_advice_code` varchar(32) not null default '' comment '医嘱流水号',
+    `department_code` varchar(32) not null default '' comment '科室编码',
+    `department_name` varchar(32) not null default '' comment '科室名称',
+    `doctor_code` varchar(32) not null comment '诊断医师编码',
+    `doctor_name` varchar(32) not null comment '诊断医师名称',
+    `diagnose_time` timestamp not null comment '诊断时间',
+    `pharmacist_name` varchar(32) not null default '' comment '药师名称',
+    `pharmacist_code` varchar(32) not null default '' comment '药师编码',
+    `sickness_name` varchar(1024) not null default '' comment '疾病名称',
+    `sickness_detail` text not null default '' comment '疾病详情',
+    `patient_complain` varchar(1024) not null default '' comment '患者主诉',
+    `patient_sign` varchar(1024) not null default '' comment '患者体征',
+    `source` tinyint(1) not null default 0 comment '处方来源 0系统内部创建 1医院拉取',
+    `status` tinyint(1) not null default 0 comment '处方审核状态 0待审核 1审核通过 2审核未通过',
+    `status_memo` varchar(1024) not null default '' comment '处方审核医师评价',
+    primary key (`id`)
+)comment='处方信息表';
+
+-- 处方项目明细信息
+create table `b2c_prescription_item`(
+    `id`   int(11)      not null auto_increment,
+    `prescription_no` varchar(64) not null default '' comment '处方号外键',
+    `prescription_detail_no` varchar(64) not null default '' comment '处方项目明细号码（可根据此字段反查批次号）',
+    `goods_id` int(11) default 0 comment '商品id',
+    `goods_common_name` varchar(512) not null default '' comment '通用名',
+    `goods_quality_ratio` varchar(512) not null default '' comment '规格系数，通用名和规格系数确定一个药品',
+    `goods_num` int(11) not null comment '使用药品数量',
+    `status` tinyint(1) not null default 0 comment '处方审核状态 0待审核 1审核通过 2审核未通过',
+    `status_memo` varchar(1024) not null default '' comment '处方审核医师评价',
+    primary key (`id`)
+)comment='处方项目明细表'

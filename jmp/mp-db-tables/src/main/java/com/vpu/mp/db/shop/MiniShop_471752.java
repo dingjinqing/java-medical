@@ -1306,6 +1306,15 @@ public class MiniShop_471752 extends SchemaImpl {
             AttendShareUser.ATTEND_SHARE_USER,
             UserRfmSummary.USER_RFM_SUMMARY,
             BargainGoods.BARGAIN_GOODS,
-            CardRenew.CARD_RENEW);
+            CardRenew.CARD_RENEW,
+            Department.DEPARTMENT,
+            Doctor.DOCTOR,
+            DoctorTitle.DOCTOR_TITLE,
+            GoodsMedicalInfo.GOODS_MEDICAL_INFO,
+            Patient.PATIENT,
+            Pharmacist.PHARMACIST,
+            Prescription.PRESCRIPTION,
+            PrescriptionItem.PRESCRIPTION_ITEM,
+            UserPatientCouple.USER_PATIENT_COUPLE);
     }
 }
