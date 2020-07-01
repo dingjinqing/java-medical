@@ -128,7 +128,6 @@
 </template>
 
 <script>
-import { storeList } from '@/api/admin/storeManage/store'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { pagination },
