@@ -1,0 +1,25 @@
+<view class="prescription-content">
+	<view class="prescription-item">
+		<view class="item-title">电子处方1</view>
+		<view class="item-list-content">
+			<view class="item-list">
+				<view class="list-item">
+					<text class="list-item-dot"></text>
+					<view class="list-item-content">
+						诊断：原发性高血压
+					</view>
+				</view>
+				<view class="list-item">
+					<text class="list-item-dot"></text>
+					<view class="list-item-content">
+						科室：神经科
+					</view>
+				</view>
+			</view>
+		</view>
+    <view class="doctor-info">
+      <text class="doctor-name">医师：张三</text>
+      <text class="item-date">日期：2020.06.30</text>
+    </view>
+	</view>
+</view>

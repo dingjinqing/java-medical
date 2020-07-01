@@ -1,0 +1,73 @@
+.prescription-content{
+  padding: 20rpx 15rpx;
+  display: flex;
+  flex-direction: column;
+}
+.prescription-item{
+  border-radius: 15rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 8rpx rgba(10,16,20,.24),0 0 8rpx rgba(10,16,20,.12);
+}
+.prescription-item + .prescription-item{
+  margin-top: 30rpx;
+}
+.prescription-item > .item-title{
+  line-height: 80rpx;
+  color: #fff;
+  font-size: 30rpx;
+  text-align: center;
+  background-color: skyblue;
+}
+.prescription-item > .item-list-content{
+  padding-left: 30rpx;
+  background-color: #fff;
+  position: relative;
+}
+.prescription-item > .item-list-content::before{
+  content: '';
+  height: 20rpx;
+  width: 20rpx;
+  background-color: #fff;
+  position: absolute;
+  top: -15rpx;
+  left: 50%;
+  transform: rotate(-45deg) translateX(-50%);
+}
+.prescription-item > .item-list-content > .item-list{
+  display: flex;
+  flex-direction: column;
+  line-height: 55rpx;
+  padding: 15rpx 0;
+  border-bottom: 2rpx solid #eee;
+}
+.prescription-item > .item-list-content > .item-list > .list-item{
+  display: flex;
+  align-items: center;
+}
+.prescription-item > .item-list-content > .item-list > .list-item > .list-item-dot{
+  border: 4rpx solid skyblue;
+  border-radius: 50%;
+  height: 10rpx;
+  width: 10rpx;
+  margin-right: 20rpx;
+}
+.prescription-item > .item-list-content > .item-list > .list-item > .list-item-content{
+  color: #666;
+  font-size: 26rpx;
+}
+.prescription-item > .doctor-info{
+  height: 100rpx;
+  padding: 0 30rpx;
+  background-color: #fff;
+  align-items: center;
+  display: flex;
+  color: #999;
+  position: relative;
+}
+.prescription-item > .doctor-info > .doctor-name {
+  margin-right: auto;
+  font-size: 26rpx;
+} 
+.prescription-item > .doctor-info > .item-date {
+  font-size: 26rpx;
+} 

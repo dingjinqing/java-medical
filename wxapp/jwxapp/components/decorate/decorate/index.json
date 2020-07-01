@@ -29,6 +29,7 @@
     "v-goods-group": "../goods-group/index",
     "v-goods-num-cfg": "/components/item/goods_num_cfg/index",
     "v-item-footer": "/components/item/footer/index",
-    "v-spec-dialog": "/components/item/popup/spec_dialog/index"
+    "v-spec-dialog": "/components/item/popup/spec_dialog/index",
+    "v-prescription": "../prescription/index"
   }
 }
