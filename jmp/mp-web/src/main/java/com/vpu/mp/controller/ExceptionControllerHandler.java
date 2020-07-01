@@ -118,7 +118,6 @@ public class ExceptionControllerHandler extends BaseController {
      *
      * @author 郑保乐
      */
-    @ExceptionHandler(IllegalArgumentException.class)
     public JsonResult handleArgumentExceptions(IllegalArgumentException e) {
         return fail(e.getMessage());
     }
