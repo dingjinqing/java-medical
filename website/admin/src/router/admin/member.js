@@ -86,7 +86,10 @@ const routes = [
       meta: 'user_manager',
       category: 'user_import'
     },
-    component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipIntroduction/inactiveMembersList')
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/membershipIntroduction/inactiveMembersList'
+      )
   },
   {
     path: '/admin/home/main/user_card',
@@ -317,6 +320,19 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/user_manger/memberValueAdded/memberValueAddedHome'
+      )
+  },
+  // 患者列表
+  {
+    path: '/admin/home/main/patientManagement',
+    name: 'patient_list',
+    meta: {
+      crumbTitle: 'router.patientList',
+      meta: 'patient_manger'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/patientManagement/patientList'
       )
   }
 ]

@@ -101,6 +101,10 @@ export const cn = {
   memberValueAdded: ['会员管理', '会员增值'],
   // 会员管理 积分管理
   integralManagement: ['会员管理', '积分管理'],
+  // 会员管理 患者列表
+  patientList: ['会员管理', '患者列表'],
+  // 会员管理 患者列表 患者信息
+  patientMessage: ['会员管理', '患者列表', '患者信息'],
   // 积分管理 查看签到会员
   viewSigninMembers: ['积分管理', '查看签到会员'],
   // 积分管理 积分说明

@@ -134,7 +134,7 @@ export default {
     },
     /* 修改分类 */
     editGoodsSortClicked (row) {
-      this.$router.push({ name: 'updateGoodsSort', params: { sortId: row.sortId } })
+      this.$router.push({ name: 'updateOffices', params: { sortId: row.sortId } })
     },
     /* 删除商品分类 */
     deleteGoodsSortClicked (row) {
