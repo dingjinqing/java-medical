@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div class="logo">
-      <img :src="imageUrlData[0].image_1">
+      <!-- <img :src="imageUrlData[0].image_1"> -->
     </div>
     <div
       class="nav2"
@@ -89,14 +89,14 @@
           :class="[activeIndex == 1?'active':'',mar_class]"
           @click="handlenav(1)"
         ><a>{{$t('messages.index_nav_main')}}</a></li>
-        <li
+        <!-- <li
           :class="[activeIndex == 2?'active':'',mar_class]"
           @click="handlenav(2)"
         ><a>{{$t('messages.index_nav_new')}}</a></li>
         <li
           :class="[activeIndex == 3?'active':'',mar_class]"
           @click="handlenav(3)"
-        ><a>{{$t('messages.index_nav_forum')}}</a></li>
+        ><a>{{$t('messages.index_nav_forum')}}</a></li> -->
         <li
           :class="[activeIndex == 4?'active':'',mar_class]"
           @click="handlenav(4)"
@@ -239,7 +239,7 @@ export default {
         case 1:
           this.activeIndex = 1
           this.$router.push({
-            path: '/'
+            path: '/index.html'
           })
           break
         case 2:
