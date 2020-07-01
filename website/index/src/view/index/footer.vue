@@ -1,11 +1,11 @@
 <template>
   <div class="footer">
-    <ul class="footer_ul clearfix" style="display:flex;justify-content:center">
-      <!-- <li>
+    <ul class="footer_ul clearfix">
+      <li>
         <img :src="imageUrlData[0].img_1">
         <p>{{$t('footer.title')}}</p>
-      </li> -->
-      <li style="float:none;width:35%">
+      </li>
+      <li>
         <span>{{$t('footer.link')}}</span>
         <p>TEL：400-010-1039&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$t('footer.server')}}</p>
         <p>QQ：3003715029</p>
@@ -13,15 +13,15 @@
         <span>{{$t('footer.adress')}}</span>
         <p>{{$t('footer.detail_adress')}}</p>
       </li>
-      <!-- <li>
+      <li>
         <img
           :src="imageUrlData[1].img_2"
           width="100px"
         >
         <p>{{$t('footer.content')}}</p>
-      </li> -->
+      </li>
     </ul>
-    <!-- <div class="friend_link">
+    <div class="friend_link">
       {{$t('footer.footer_con_1')}}：
       <a
         href="http://www.wangdian.cn/"
@@ -68,7 +68,7 @@
         href="http://www.wangdian.cn/pc/data.html"
         target="_blank"
       >{{$t('footer.footer_con_7')}}</a>
-    </div> -->
+    </div>
     <div class="footer_div">
       {{$t('footer.footer_con_8')}} &nbsp;
       {{$t('footer.footer_con_9')}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
