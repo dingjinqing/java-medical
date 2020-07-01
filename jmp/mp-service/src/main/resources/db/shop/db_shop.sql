@@ -4833,12 +4833,18 @@ create table `b2c_prescription`(
     `pharmacist_name` varchar(32) not null default '' comment '药师名称',
     `pharmacist_code` varchar(32) not null default '' comment '药师编码',
     `sickness_name` varchar(1024) not null default '' comment '疾病名称',
-    `sickness_detail` text not null default '' comment '疾病详情',
+    `sickness_detail` text comment '疾病详情',
     `patient_complain` varchar(1024) not null default '' comment '患者主诉',
     `patient_sign` varchar(1024) not null default '' comment '患者体征',
     `source` tinyint(1) not null default 0 comment '处方来源 0系统内部创建 1医院拉取',
     `status` tinyint(1) not null default 0 comment '处方审核状态 0待审核 1审核通过 2审核未通过',
     `status_memo` varchar(1024) not null default '' comment '处方审核医师评价',
+    `expire_type`     tinyint(1)   not null default '0' comment '处方有效期类型 0:未知（默认过期），1:永久有效，2:时间段内有效',
+    `prescription_create_time`   timestamp    not null default current_timestamp comment '开方时间',
+    `prescription_expire_time`   timestamp    null default current_timestamp comment '处方过期时间',
+    `is_delete`     tinyint(1)   not null default '0',
+    `create_time`   timestamp    not null default current_timestamp,
+    `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)
 )comment='处方信息表';
 
@@ -4853,5 +4859,8 @@ create table `b2c_prescription_item`(
     `goods_num` int(11) not null comment '使用药品数量',
     `status` tinyint(1) not null default 0 comment '处方审核状态 0待审核 1审核通过 2审核未通过',
     `status_memo` varchar(1024) not null default '' comment '处方审核医师评价',
+    `is_delete`     tinyint(1)   not null default '0',
+    `create_time`   timestamp    not null default current_timestamp,
+    `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)
 )comment='处方项目明细表'
