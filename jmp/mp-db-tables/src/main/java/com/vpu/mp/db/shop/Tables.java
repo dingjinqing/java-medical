@@ -1090,4 +1090,48 @@ public class Tables {
      * The table <code>jmini_shop_489258.b2c_checked_goods_cart</code>.
      */
     public static final CheckedGoodsCart CHECKED_GOODS_CART = com.vpu.mp.db.shop.tables.CheckedGoodsCart.CHECKED_GOODS_CART;
+    /**
+     * 科室
+     */
+    public static final Department DEPARTMENT = com.vpu.mp.db.shop.tables.Department.DEPARTMENT;
+
+    /**
+     * 医师表
+     */
+    public static final Doctor DOCTOR = com.vpu.mp.db.shop.tables.Doctor.DOCTOR;
+
+    /**
+     * 科室
+     */
+    public static final DoctorTitle DOCTOR_TITLE = com.vpu.mp.db.shop.tables.DoctorTitle.DOCTOR_TITLE;
+
+    /**
+     * 商品辅助信息表
+     */
+    public static final GoodsMedicalInfo GOODS_MEDICAL_INFO = com.vpu.mp.db.shop.tables.GoodsMedicalInfo.GOODS_MEDICAL_INFO;
+
+    /**
+     * 患者信息
+     */
+    public static final Patient PATIENT = com.vpu.mp.db.shop.tables.Patient.PATIENT;
+
+    /**
+     * 药师表
+     */
+    public static final Pharmacist PHARMACIST = com.vpu.mp.db.shop.tables.Pharmacist.PHARMACIST;
+
+    /**
+     * 处方信息表
+     */
+    public static final Prescription PRESCRIPTION = com.vpu.mp.db.shop.tables.Prescription.PRESCRIPTION;
+
+    /**
+     * 处方项目明细表
+     */
+    public static final PrescriptionItem PRESCRIPTION_ITEM = com.vpu.mp.db.shop.tables.PrescriptionItem.PRESCRIPTION_ITEM;
+
+    /**
+     * 用户患者关联表
+     */
+    public static final UserPatientCouple USER_PATIENT_COUPLE = com.vpu.mp.db.shop.tables.UserPatientCouple.USER_PATIENT_COUPLE;
 }
