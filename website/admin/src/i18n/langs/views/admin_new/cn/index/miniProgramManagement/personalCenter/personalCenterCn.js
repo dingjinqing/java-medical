@@ -11,9 +11,7 @@ export const cn = {
   appointmentInfo: '预约信息展示项配置',
   shopUseInfo: '店铺使用相关数据展示项配置',
   serveShowInfo: '服务展示项配置',
-  prescriptionList: '处方列表展示项配置',
-  prescriptionMedicineList: '处方药列表展示项配置',
-  patientList: '患者列表展示项配置',
+  currentPatient: '当前患者信息展示项配置',
 
   // 个人信息
   storeColor: '同步店铺配色',
@@ -48,17 +46,10 @@ export const cn = {
   iconTip: '建议尺寸：50px*50px',
   resetIcon: '重置图标',
 
-  // 处方列表
-  prescriptionListLabel: '处方列表：',
-  prescriptionListTip: '开关开启，则展示处方列表',
-
-  // 处方药列表
-  prescriptionMedicineListLabel: '处方药列表：',
-  prescriptionMedicineListTip: '开关开启，则展示处方药列表',
-
-  // 患者列表
-  patientListLabel: '患者列表',
-  patientListTip: '开关开启，则展示患者列表',
+  // 当前患者
+  currentPatientLabel: '当前患者：',
+  currentPatientLabelTip: '开关开启，则展示当前患者信息',
+  currentPatientTitle: '当前患者模块标题，不填写则不显示',
 
   // 预约
   appointmentLabel: '预约：',
@@ -106,6 +97,9 @@ export const cn = {
   viewAllAppointments: '查看全部预约',
   tip1: '单人璀璨睫毛嫁接套餐1次',
   tip2: '预约到店时间：2018-03-05 12:30',
+  viewAllPatients: '查看全部患者',
+  tipMedical1: '患者信息1',
+  tipMedical2: '患者信息2',
 
   save: '保存'
 

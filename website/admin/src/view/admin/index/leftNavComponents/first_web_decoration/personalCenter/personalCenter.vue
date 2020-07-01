@@ -247,80 +247,35 @@
                 >
               </div>
             </div>
-            <!-- 医药相关 -->
-            <!-- 处方列表 -->
+            <!-- 医药相关， 当前患者 -->
             <div
               class="indoor_area_raidus"
               :class="styleChoose=='1'? 'widthActive' : ''"
-              v-if="item.module_name=='prescription_list' && item.is_show=='1'"
+              v-if="item.module_name=='current_patient' && item.is_show=='1'"
             >
-              <div class="orderTitle" style="border-bottom:none;padding-bottom:0">
+              <div class="orderTitle">
                 <div class="titleLeft">{{ item.title }}</div>
                 <div class="titleRight" style="top:11px;padding-bottom:0">
+                  <span>{{ $t('personalCenter.viewAllPatients') }} </span>
                   <img
                       :src="imgHost + '/image/admin/right_into.png'"
                       alt=""
                   >
                 </div>
               </div>
-              <div class="orderOperation">
-                <img
-                  class="up_img"
-                  :src="imgHost + '/image/admin/add_up_use.png'"
-                  alt=""
-                  @click="upClickHandler(leftData, index)"
+              <div class="orderContent">
+                <div
+                  class="app_img"
+                  style="margin-left: 10px; border: 1px solid #ccc; width: 40px; height: 40px; overflow: hidden;flex: 0.2;margin-right: 10px;text-align: left;"
                 >
-                <img
-                  class="down_img"
-                  :src="imgHost + '/image/admin/add_down.png'"
-                  alt=""
-                  @click="downClickHandler(leftData, index)"
-                >
-              </div>
-            </div>
-            <!-- 处方药列表 -->
-            <div
-              class="indoor_area_raidus"
-              :class="styleChoose=='1'? 'widthActive' : ''"
-              v-if="item.module_name=='prescription_medicine_list' && item.is_show=='1'"
-            >
-              <div class="orderTitle" style="border-bottom:none;padding-bottom:0">
-                <div class="titleLeft">{{ item.title }}</div>
-                <div class="titleRight" style="top:11px;padding-bottom:0">
                   <img
-                      :src="imgHost + '/image/admin/right_into.png'"
-                      alt=""
+                    :src="imgHost + '/image/admin/img1.jpg'"
+                    alt=""
                   >
                 </div>
-              </div>
-              <div class="orderOperation">
-                <img
-                  class="up_img"
-                  :src="imgHost + '/image/admin/add_up_use.png'"
-                  alt=""
-                  @click="upClickHandler(leftData, index)"
-                >
-                <img
-                  class="down_img"
-                  :src="imgHost + '/image/admin/add_down.png'"
-                  alt=""
-                  @click="downClickHandler(leftData, index)"
-                >
-              </div>
-            </div>
-            <!-- 患者列表 -->
-            <div
-              class="indoor_area_raidus"
-              :class="styleChoose=='1'? 'widthActive' : ''"
-              v-if="item.module_name=='patient_list' && item.is_show=='1'"
-            >
-              <div class="orderTitle" style="border-bottom:none;padding-bottom:0">
-                <div class="titleLeft">{{ item.title }}</div>
-                <div class="titleRight" style="top:11px;padding-bottom:0">
-                  <img
-                      :src="imgHost + '/image/admin/right_into.png'"
-                      alt=""
-                  >
+                <div class="app_info">
+                  <p>{{ $t('personalCenter.tipMedical1') }}</p>
+                  <p>{{ $t('personalCenter.tipMedical2') }}</p>
                 </div>
               </div>
               <div class="orderOperation">
@@ -966,16 +921,16 @@
                 </el-form>
 
               </el-collapse-item>
-              <!-- 医药部分 -->
+              <!-- 医药部分，当前患者 -->
               <el-collapse-item
-                :title="$t('personalCenter.prescriptionList')"
+                :title="$t('personalCenter.currentPatient')"
                 v-for="(item, index) in rightData"
                 :key="index"
                 name='7'
-                v-if="item.module_name=='prescription_list'"
+                v-if="item.module_name=='current_patient'"
               >
                 <el-form label-width='120px'>
-                  <el-form-item :label="$t('personalCenter.prescriptionListLabel')">
+                  <el-form-item :label="$t('personalCenter.currentPatientLabel')">
                     <el-switch
                       v-model="item.is_show"
                       active-value="1"
@@ -983,47 +938,19 @@
                       @change="changeSwitch(item.module_name, item.is_show)"
                       active-color="#f7931e"
                     ></el-switch>
-                    <span>{{ $t('personalCenter.prescriptionListTip') }}</span>
+                    <span>{{ $t('personalCenter.currentPatientLabelTip') }}</span>
                   </el-form-item>
-                </el-form>
-              </el-collapse-item>
-              <el-collapse-item
-                :title="$t('personalCenter.prescriptionMedicineList')"
-                v-for="(item, index) in rightData"
-                :key="index"
-                name='8'
-                v-if="item.module_name=='prescription_medicine_list'"
-              >
-                <el-form label-width='120px'>
-                  <el-form-item :label="$t('personalCenter.prescriptionMedicineListLabel')">
-                    <el-switch
-                      v-model="item.is_show"
-                      active-value="1"
-                      inactive-value="0"
-                      @change="changeSwitch(item.module_name, item.is_show)"
-                      active-color="#f7931e"
-                    ></el-switch>
-                    <span>{{ $t('personalCenter.prescriptionMedicineListTip') }}</span>
-                  </el-form-item>
-                </el-form>
-              </el-collapse-item>
-              <el-collapse-item
-                :title="$t('personalCenter.patientList')"
-                v-for="(item, index) in rightData"
-                :key="index"
-                name='9'
-                v-if="item.module_name=='patient_list'"
-              >
-                <el-form label-width='120px'>
-                  <el-form-item :label="$t('personalCenter.patientListLabel')">
-                    <el-switch
-                      v-model="item.is_show"
-                      active-value="1"
-                      inactive-value="0"
-                      @change="changeSwitch(item.module_name, item.is_show)"
-                      active-color="#f7931e"
-                    ></el-switch>
-                    <span>{{ $t('personalCenter.patientListTip') }}</span>
+                  <el-form-item :label="$t('personalCenter.title')">
+                    <el-input
+                      :placeholder="$t('personalCenter.inputTip')"
+                      maxlength="10"
+                      show-word-limit
+                      style="width: 170px;"
+                      size="small"
+                      @blur="changeTitle(item.module_name, item.title)"
+                      v-model="item.title"
+                    ></el-input>
+                    <p>{{ $t('personalCenter.currentPatientTitle') }}</p>
                   </el-form-item>
                 </el-form>
               </el-collapse-item>
@@ -1693,17 +1620,9 @@ export default {
           }
         ]
       }, {
-        module_name: 'prescription_list',
+        module_name: 'current_patient',
         is_show: '1',
-        title: '处方列表'
-      }, {
-        module_name: 'prescription_medicine_list',
-        is_show: '1',
-        title: '处方药列表'
-      }, {
-        module_name: 'patient_list',
-        is_show: '1',
-        title: '患者列表'
+        title: '当前患者'
       }, {
         module_name: 'appointment',
         is_show: '1',
@@ -1857,17 +1776,9 @@ export default {
           }
         ]
       }, {
-        module_name: 'prescription_list',
+        module_name: 'current_patient',
         is_show: '1',
-        title: '处方列表'
-      }, {
-        module_name: 'prescription_medicine_list',
-        is_show: '1',
-        title: '处方药列表'
-      }, {
-        module_name: 'patient_list',
-        is_show: '1',
-        title: '患者列表'
+        title: '当前患者'
       }, {
         module_name: 'appointment',
         is_show: '1',
