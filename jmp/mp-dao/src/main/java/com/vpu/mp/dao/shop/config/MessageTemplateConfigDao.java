@@ -10,7 +10,9 @@ import org.jooq.Batch;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.config.message.Config;
 import com.vpu.mp.service.pojo.shop.config.message.MessageConfigVo;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class MessageTemplateConfigDao extends ShopBaseDao {
 
 	/**
