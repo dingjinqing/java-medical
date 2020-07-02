@@ -1,7 +1,7 @@
 package com.vpu.mp.dao.shop.goods;
 
 import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.pojo.shop.goods.dao.GoodsMedicalInfoDo;
+import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.GoodsMedicalInfoRecord;
 import org.springframework.stereotype.Repository;

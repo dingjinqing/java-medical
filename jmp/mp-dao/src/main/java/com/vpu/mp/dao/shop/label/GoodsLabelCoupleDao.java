@@ -1,6 +1,6 @@
 package com.vpu.mp.dao.shop.label;
 
-import com.vpu.mp.common.pojo.shop.label.dao.GoodsLabelCoupleDo;
+import com.vpu.mp.common.pojo.shop.table.GoodsLabelCoupleDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
 import org.springframework.stereotype.Repository;
