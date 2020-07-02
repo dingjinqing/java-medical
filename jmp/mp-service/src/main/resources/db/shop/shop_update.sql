@@ -591,3 +591,9 @@ INSERT IGNORE INTO `b2c_shipping` (`shipping_id`, `shipping_code`, `express100_c
 -- 2020.06.19 修改用户邀请保护时间类型
 ALTER TABLE b2c_user MODIFY COLUMN `invite_protect_date` datetime DEFAULT null COMMENT '邀请保护时间';
 /***********************2.13*********************END*/
+/***********************3.1-医疗*********************START*/
+ALTER TABLE `b2c_order_info` ADD COLUMN `prescription_no` varchar(64) NOT NULL DEFAULT "" COMMENT '处方号外键';
+ALTER TABLE `b2c_order_goods` ADD COLUMN `prescription_detail_no` varchar(64) NOT NULL DEFAULT "" COMMENT '处方项目明细号码（可根据此字段反查批次号）';
+
+
+/***********************3.1-医疗*********************END*/
