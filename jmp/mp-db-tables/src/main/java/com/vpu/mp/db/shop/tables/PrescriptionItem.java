@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
 
-    private static final long serialVersionUID = 2044761899;
+    private static final long serialVersionUID = -250920640;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_prescription_item</code>
@@ -91,6 +91,11 @@ public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
      * The column <code>mini_shop_471752.b2c_prescription_item.goods_num</code>. 使用药品数量
      */
     public final TableField<PrescriptionItemRecord, Integer> GOODS_NUM = createField("goods_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "使用药品数量");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription_item.goods_use_memo</code>. 药品使用方式说明
+     */
+    public final TableField<PrescriptionItemRecord, String> GOODS_USE_MEMO = createField("goods_use_memo", org.jooq.impl.SQLDataType.VARCHAR(1024).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "药品使用方式说明");
 
     /**
      * The column <code>mini_shop_471752.b2c_prescription_item.status</code>. 处方审核状态 0待审核 1审核通过 2审核未通过

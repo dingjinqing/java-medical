@@ -4857,10 +4857,18 @@ create table `b2c_prescription_item`(
     `goods_common_name` varchar(512) not null default '' comment '通用名',
     `goods_quality_ratio` varchar(512) not null default '' comment '规格系数，通用名和规格系数确定一个药品',
     `goods_num` int(11) not null comment '使用药品数量',
+    `goods_use_memo` varchar(1024) not null default '' comment '药品使用方式说明',
     `status` tinyint(1) not null default 0 comment '处方审核状态 0待审核 1审核通过 2审核未通过',
     `status_memo` varchar(1024) not null default '' comment '处方审核医师评价',
     `is_delete`     tinyint(1)   not null default '0',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)
-)comment='处方项目明细表'
+)comment='处方项目明细表';
+
+-- 医嘱表
+create table `b2c_doctor_advice`(
+    `id`   int(11)      not null auto_increment,
+    `prescription_item_id` int(11) comment '处方明细表id',
+    primary key (`id`)
+) comment ='医嘱表'
