@@ -9,6 +9,7 @@ import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.PrescriptionItemRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
 
-    private static final long serialVersionUID = 1853630127;
+    private static final long serialVersionUID = -250920640;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_prescription_item</code>
@@ -92,6 +93,11 @@ public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
     public final TableField<PrescriptionItemRecord, Integer> GOODS_NUM = createField("goods_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "使用药品数量");
 
     /**
+     * The column <code>mini_shop_471752.b2c_prescription_item.goods_use_memo</code>. 药品使用方式说明
+     */
+    public final TableField<PrescriptionItemRecord, String> GOODS_USE_MEMO = createField("goods_use_memo", org.jooq.impl.SQLDataType.VARCHAR(1024).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "药品使用方式说明");
+
+    /**
      * The column <code>mini_shop_471752.b2c_prescription_item.status</code>. 处方审核状态 0待审核 1审核通过 2审核未通过
      */
     public final TableField<PrescriptionItemRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "处方审核状态 0待审核 1审核通过 2审核未通过");
@@ -100,6 +106,21 @@ public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
      * The column <code>mini_shop_471752.b2c_prescription_item.status_memo</code>. 处方审核医师评价
      */
     public final TableField<PrescriptionItemRecord, String> STATUS_MEMO = createField("status_memo", org.jooq.impl.SQLDataType.VARCHAR(1024).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "处方审核医师评价");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription_item.is_delete</code>.
+     */
+    public final TableField<PrescriptionItemRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription_item.create_time</code>.
+     */
+    public final TableField<PrescriptionItemRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription_item.update_time</code>. 最后修改时间
+     */
+    public final TableField<PrescriptionItemRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_prescription_item</code> table reference

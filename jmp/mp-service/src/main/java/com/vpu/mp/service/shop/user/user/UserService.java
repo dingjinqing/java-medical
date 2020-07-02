@@ -5,7 +5,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
@@ -25,7 +25,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.distribution.UserTotalFanliVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -114,7 +113,7 @@ public class UserService extends ShopBaseService {
 
 	@Autowired
 	public WxUserCardService wxUserCardService;
-	
+
 	@Autowired
 	private UserTotalFanliService userTotalFanliService;
 
@@ -881,7 +880,7 @@ public class UserService extends ShopBaseService {
 				userDetail.updateRow(userDetailRecord);
 				//syncMainUserDetail(userDetailRecord);
 				UserCardRecord newRecord = USER_CARD.newRecord();
-				newRecord.setActivationTime(DateUtil.getSqlTimestamp());
+				newRecord.setActivationTime(DateUtils.getSqlTimestamp());
 				int ret = userCard.updateUserCardByNo(param.getCardNo(),newRecord);
 				if(ret>0) {
 					//return $this->response(0, '', '激活成功');

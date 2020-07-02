@@ -1,6 +1,6 @@
 package com.vpu.mp.service.foundation.util;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,7 +33,7 @@ public class IncrSequenceUtil {
      */
     public static String generateOrderSn(String prefix,String dateFormat,String key){
         return new StringBuilder(prefix)
-                .append(DateUtil.dateFormat(dateFormat))
+                .append(DateUtils.dateFormat(dateFormat))
                 .append(jedisManager.getIncrSequence(INCR_SEQUENCE+key)).toString();
     }
 

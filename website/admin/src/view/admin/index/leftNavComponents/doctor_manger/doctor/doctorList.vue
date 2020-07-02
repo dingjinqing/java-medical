@@ -128,9 +128,9 @@
 </template>
 
 <script>
-import pagination from '@/components/admin/pagination/pagination'
+// import pagination from '@/components/admin/pagination/pagination'
 export default {
-  components: { pagination },
+  // components: { pagination },
   data () {
     // let that = this
     return {
@@ -158,24 +158,24 @@ export default {
       //   this.handleData(originalData)
       //   this.loading = false
       // })
-    },
-    handleData (data) {
-      this.tableData = data
-      this.langDefaultFlag = true
     }
-  },
-  watch: {
-    lang () {
-      if (this.langDefaultFlag) {
-        // 重新渲染表格数据
-        let originalData = JSON.parse(JSON.stringify(this.originalData))
-        this.handleData(originalData)
-      }
-    }
-  },
-  mounted () {
-    this.initDataList()
+    // handleData (data) {
+    //   this.tableData = data
+    //   this.langDefaultFlag = true
+    // }
   }
+  // watch: {
+  //   lang () {
+  //     if (this.langDefaultFlag) {
+  //       // 重新渲染表格数据
+  //       let originalData = JSON.parse(JSON.stringify(this.originalData))
+  //       this.handleData(originalData)
+  //     }
+  //   }
+  // },
+  // mounted () {
+  //   this.initDataList()
+  // }
 }
 </script>
 

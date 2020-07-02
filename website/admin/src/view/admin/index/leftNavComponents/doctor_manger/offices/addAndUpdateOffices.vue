@@ -160,7 +160,6 @@
           prop="sortImg"
         >
           <div style="display: flex;justify-content: left;align-items: center;line-height: 20px;">
-            <span style="align-self: flex-start;color: #5a8bff;cursor: pointer;">{{$t('goodsSorts.update')}}</span>
             <div
               style="position: relative;margin: 0px 10px;height: 70px;cursor: pointer;"
               @click="chooseSortImg"

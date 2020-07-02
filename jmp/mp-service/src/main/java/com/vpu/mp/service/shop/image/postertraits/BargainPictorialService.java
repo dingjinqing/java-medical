@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.image.postertraits;
 import com.upyun.UpException;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
@@ -206,7 +206,7 @@ public class BargainPictorialService extends ShareBaseService {
     private String createBargainInfoShareImg(BargainRecordInfo bargainRecordInfo) {
 
         String dir = qrCodeService.getQrCodeImgRelativePath(QrCodeTypeEnum.BARGAIN_INFO_SHARE.getType());
-        String fileName = format("T%sP%s_%s.jpg", QrCodeTypeEnum.BARGAIN_INFO_SHARE.getType(), bargainRecordInfo.getId(), DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE));
+        String fileName = format("T%sP%s_%s.jpg", QrCodeTypeEnum.BARGAIN_INFO_SHARE.getType(), bargainRecordInfo.getId(), DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE));
 
         try (InputStream bgInputStream = Util.loadFile(BARGAIN_INFO_BG_IMG)) {
 

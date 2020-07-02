@@ -6,7 +6,7 @@ import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.excel.bean.ClassList;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.RegexUtil;
 import com.vpu.mp.common.foundation.util.Util;
@@ -116,7 +116,7 @@ public class FirstSpecialService extends ShopBaseService {
             from(FIRST_SPECIAL);
         if(param.getState() > 0) {
             /** 状态过滤*/
-            Timestamp now = DateUtil.getLocalDateTime();
+            Timestamp now = DateUtils.getLocalDateTime();
             switch(param.getState()) {
                 case (byte)1:
                     select.where(FIRST_SPECIAL.STATUS.eq(STATUS_NORMAL)).and(FIRST_SPECIAL.IS_FOREVER.eq(BaseConstant.ACTIVITY_IS_FOREVER).or(FIRST_SPECIAL.START_TIME.lt(now).and(FIRST_SPECIAL.END_TIME.gt(now))));
@@ -234,7 +234,7 @@ public class FirstSpecialService extends ShopBaseService {
     public void delFirstSpecial(Integer id) {
         db().update(FIRST_SPECIAL).
             set(FIRST_SPECIAL.DEL_FLAG,DelFlag.DISABLE.getCode()).
-            set(FIRST_SPECIAL.DEL_TIME,DateUtil.getLocalDateTime()).
+            set(FIRST_SPECIAL.DEL_TIME, DateUtils.getLocalDateTime()).
             where(FIRST_SPECIAL.ID.eq(id)).
             execute();
     }
@@ -306,7 +306,7 @@ public class FirstSpecialService extends ShopBaseService {
      * @return
      */
     public FirstSpecialRecord getActInfoByGoodsId(Integer goodsId) {
-        Timestamp now = DateUtil.getLocalDateTime();
+        Timestamp now = DateUtils.getLocalDateTime();
         Optional<Record> res = db().select(FIRST_SPECIAL_GOODS.fields()).
             from(FIRST_SPECIAL_GOODS.leftJoin(FIRST_SPECIAL).on(FIRST_SPECIAL_GOODS.FIRST_SPECIAL_ID.eq(FIRST_SPECIAL.ID))).
             where(FIRST_SPECIAL_GOODS.GOODS_ID.eq(goodsId)).
@@ -371,7 +371,7 @@ public class FirstSpecialService extends ShopBaseService {
 
         return workbook;
     }
-    
+
     /**
      * 营销日历用id查询活动
      * @param id
@@ -381,7 +381,7 @@ public class FirstSpecialService extends ShopBaseService {
 		return db().select(FIRST_SPECIAL.ID, FIRST_SPECIAL.NAME.as(CalendarAction.ACTNAME), FIRST_SPECIAL.START_TIME,
 				FIRST_SPECIAL.END_TIME,FIRST_SPECIAL.IS_FOREVER.as(CalendarAction.ISPERMANENT)).from(FIRST_SPECIAL).where(FIRST_SPECIAL.ID.eq(id)).fetchAnyInto(MarketVo.class);
     }
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param
@@ -393,7 +393,7 @@ public class FirstSpecialService extends ShopBaseService {
 						FIRST_SPECIAL.END_TIME,FIRST_SPECIAL.IS_FOREVER.as(CalendarAction.ISPERMANENT))
 				.from(FIRST_SPECIAL)
 				.where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(FIRST_SPECIAL.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(FIRST_SPECIAL.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(FIRST_SPECIAL.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(FIRST_SPECIAL.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);

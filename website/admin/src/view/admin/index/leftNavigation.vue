@@ -530,6 +530,13 @@ export default {
             span: '',
             name: 'member_value_added',
             flag: true
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/icon_left/member_value_add.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/member_value_add_h.png',
+            span: '',
+            name: 'patient_list',
+            flag: true
           }
         ],
         store_manage: [

@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -83,7 +83,7 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
         List<GoodsListMpBo> availableCapsules = capsules.stream().filter(x -> BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(x.getActivityType())).collect(Collectors.toList());
         List<Integer> goodsIds = availableCapsules.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
-        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsPreSaleListInfo = preSaleProcessorDao.getGoodsPreSaleListInfo(goodsIds, DateUtil.getLocalDateTime());
+        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsPreSaleListInfo = preSaleProcessorDao.getGoodsPreSaleListInfo(goodsIds, DateUtils.getLocalDateTime());
 
         availableCapsules.forEach(capsule->{
             if (goodsPreSaleListInfo.get(capsule.getGoodsId()) == null) {
@@ -106,14 +106,14 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
 
         if (param.getActivityType() == null && capsule.getActivityAnnounceMpVo() == null) {
             // 探测是否需要进行活动预告
-            capsule.setActivityAnnounceMpVo(preSaleProcessorDao.getAnnounceInfo(capsule.getGoodsId(),DateUtil.getLocalDateTime()));
+            capsule.setActivityAnnounceMpVo(preSaleProcessorDao.getAnnounceInfo(capsule.getGoodsId(), DateUtils.getLocalDateTime()));
             return;
         }
         if (param.getActivityId() == null || !BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType())) {
             return;
         }
 
-        PreSaleMpVo goodsPreSaleInfo = preSaleProcessorDao.getGoodsPreSaleInfo(param.getActivityId(),param.getGoodsId(), DateUtil.getLocalDateTime());
+        PreSaleMpVo goodsPreSaleInfo = preSaleProcessorDao.getGoodsPreSaleInfo(param.getActivityId(),param.getGoodsId(), DateUtils.getLocalDateTime());
 
         if (BaseConstant.ACTIVITY_STATUS_NOT_HAS.equals(goodsPreSaleInfo.getActState())) {
             capsule.setActivity(goodsPreSaleInfo);

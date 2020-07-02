@@ -3,7 +3,7 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
@@ -590,7 +590,7 @@ public class AdminStoreController extends AdminBaseController{
     	if(tradeFlag) {
     	    /**交易完成，更新服务订单状态 **/
     		ServiceOrderUpdateParam updateParam = new ServiceOrderUpdateParam();
-    		updateParam.setFinishedTime(DateUtil.getLocalDateTime());
+    		updateParam.setFinishedTime(DateUtils.getLocalDateTime());
     		updateParam.setVerifyAdmin(adminAuth.user().getUserName());
     		updateParam.setOrderStatus(ServiceOrderService.ORDER_STATUS_FINISHED);
             updateParam.setOrderStatusName(ORDER_STATUS_NAME_FINISHED);
@@ -618,7 +618,7 @@ public class AdminStoreController extends AdminBaseController{
     		return fail(JsonResultCode.CODE_SERVICE_ORDER_CANCEL_REASON_IS_NULL);
     	}
     	ServiceOrderUpdateParam updateParam = new ServiceOrderUpdateParam();
-		updateParam.setCancelledTime(DateUtil.getLocalDateTime());
+		updateParam.setCancelledTime(DateUtils.getLocalDateTime());
 		FieldsUtil.assignNotNull(param, updateParam);
         updateParam.setOrderStatus(ORDER_STATUS_CANCELED);
         updateParam.setOrderStatusName(ORDER_STATUS_NAME_CANCELED);

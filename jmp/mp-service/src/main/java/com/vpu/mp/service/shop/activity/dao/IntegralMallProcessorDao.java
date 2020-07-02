@@ -4,7 +4,7 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.IntegralMallDefineRecord;
 import com.vpu.mp.db.shop.tables.records.IntegralMallProductRecord;
 import com.vpu.mp.db.shop.tables.records.IntegralMallRecordRecord;
@@ -68,7 +68,7 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
 
         IntegralMallDefineRecord integralMallRecord = getRecordByIdDao(activityId);
         int userJoinNum = getUserJoinTime(activityId, userId);
-        Timestamp now = DateUtil.getLocalDateTime();
+        Timestamp now = DateUtils.getLocalDateTime();
         if (integralMallRecord == null) {
             logger().debug("小程序-商品详情-积分兑换商品信息-活动已删除");
             vo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS);

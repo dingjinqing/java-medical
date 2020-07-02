@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -74,7 +74,7 @@ public class BargainProcessor implements Processor,ActivityGoodsListProcessor,Go
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
         List<GoodsListMpBo> availableCapsules = capsules.stream().filter(x -> BaseConstant.ACTIVITY_TYPE_BARGAIN.equals(x.getActivityType())).collect(Collectors.toList());
         List<Integer> goodsIds = availableCapsules.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
-        Map<Integer, BargainGoodsPriceBo> goodsBargainInfo = bargainProcessorDao.getGoodsBargainListInfo(goodsIds, DateUtil.getLocalDateTime());
+        Map<Integer, BargainGoodsPriceBo> goodsBargainInfo = bargainProcessorDao.getGoodsBargainListInfo(goodsIds, DateUtils.getLocalDateTime());
 
         availableCapsules.forEach(capsule->{
             if (goodsBargainInfo.get(capsule.getGoodsId()) == null) {

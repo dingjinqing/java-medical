@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.activity.dao;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -81,7 +81,7 @@ public class GroupBuyProcessorDao extends GroupBuyService {
         // 定时预告判断
         if (GoodsConstant.ACTIVITY_NOT_PRE.compareTo(activityInfo.get(GROUP_BUY_DEFINE.PRE_TIME)) < 0) {
             Integer hours = activityInfo.get(GROUP_BUY_DEFINE.PRE_TIME);
-            int timeHourDifference = DateUtil.getTimeHourDifference(activityInfo.get(GROUP_BUY_DEFINE.START_TIME), date);
+            int timeHourDifference = DateUtils.getTimeHourDifference(activityInfo.get(GROUP_BUY_DEFINE.START_TIME), date);
             if (timeHourDifference > hours) {
                 return null;
             }
@@ -122,7 +122,7 @@ public class GroupBuyProcessorDao extends GroupBuyService {
         vo.setActivityType(BaseConstant.ACTIVITY_TYPE_GROUP_BUY);
 
         GroupBuyDefineRecord groupBuyDefineRecord = getGroupBuyDefinedInfoBuyId(activityId);
-        Timestamp now = DateUtil.getLocalDateTime();
+        Timestamp now = DateUtils.getLocalDateTime();
 
         Byte aByte = canCreatePinGroupOrder(userId, now, activityId, groupBuyDefineRecord);
         vo.setActState(aByte);

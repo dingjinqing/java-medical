@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.activity.dao;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -36,7 +36,7 @@ public class GroupDrawProcessorDao extends ShopBaseService {
         GroupDrawRecord groupDrawRecord = db().selectFrom(GROUP_DRAW).where(GROUP_DRAW.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(GROUP_DRAW.ID.eq(activityId))
             .fetchAny();
 
-        Timestamp now = DateUtil.getLocalDateTime();
+        Timestamp now = DateUtils.getLocalDateTime();
         if (groupDrawRecord == null) {
             logger().debug("小程序-商品详情-拼团抽奖信息-活动已删除");
             vo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS);

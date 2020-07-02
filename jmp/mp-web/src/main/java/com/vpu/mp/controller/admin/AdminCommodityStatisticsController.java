@@ -2,7 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.overview.Tuple2;
@@ -55,7 +55,7 @@ public class AdminCommodityStatisticsController extends AdminBaseController {
      */
     private void formatDate(ProductOverviewParam param) {
         param.setStartTime(Timestamp.valueOf(LocalDate.now().minusDays(param.getDynamicDate()).atStartOfDay()));
-        param.setEndTime(DateUtil.getLocalDateTime());
+        param.setEndTime(DateUtils.getLocalDateTime());
         logger().info("统计开始时间：{}",param.getStartTime());
         logger().info("统计结束时间：{}",param.getEndTime());
     }

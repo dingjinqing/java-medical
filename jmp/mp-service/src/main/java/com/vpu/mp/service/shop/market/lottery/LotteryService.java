@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.market.lottery;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
@@ -554,7 +554,7 @@ public class LotteryService extends ShopBaseService {
 						LOTTERY.END_TIME)
 				.from(LOTTERY)
 				.where(LOTTERY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(LOTTERY.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(LOTTERY.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(LOTTERY.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(LOTTERY.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);

@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.coupon;
 import com.mysql.cj.util.StringUtils;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
@@ -1075,7 +1075,7 @@ public class CouponGiveService extends ShopBaseService {
                     default:
                 }
                 String duration = c.getStartTime().toString().substring(0,19)+"至"+c.getEndTime().toString().substring(0,19);
-                String procession = DateUtil.getLocalDateFormat();
+                String procession = DateUtils.getLocalDateFormat();
                 couponMsgNoticeService.sendCouponMsgNotice(c.getUserId(), couponDetail.getActName(), procession, duration, couponDesc);
             });
         }

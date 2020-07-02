@@ -1,11 +1,12 @@
 package com.vpu.mp.dao.foundation.database;
 
+import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.vpu.mp.config.DatabaseConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,8 +26,8 @@ public class DatasourceManager {
     /**
      * 数据源列表，多线程共用。
      */
-    protected Map<String, HikariDataSource> datasources = Collections
-        .synchronizedMap(new HashMap<String, HikariDataSource>());
+    protected Map<String, DataSource> datasources = Collections
+        .synchronizedMap(new HashMap<String, DataSource>());
 
     /**
      * 得到主数据库配置
@@ -41,14 +42,14 @@ public class DatasourceManager {
     /**
      * 得到主库数据源
      */
-    public HikariDataSource getMainDbDatasource() {
+    public DataSource getMainDbDatasource() {
         return this.getDatasource(getMainDbConfig());
     }
 
     /**
      * 得到即将创建店铺库的数据源
      */
-    public HikariDataSource getToCreateShopDbDatasource() {
+    public DataSource getToCreateShopDbDatasource() {
         return this.getDatasource(new DbConfig(databaseConfig.getShopHost(), databaseConfig.getShopPort(), "",
             databaseConfig.getShopUsername(), databaseConfig.getShopPassword()));
     }
@@ -56,7 +57,7 @@ public class DatasourceManager {
     /**
      * 得到数据源
      */
-    protected HikariDataSource getDatasource(DbConfig dbConfig) {
+    protected DataSource getDatasource(DbConfig dbConfig) {
         String key = dbConfig.getDatasourceKey();
         if (!datasources.containsKey(key)) {
             datasources.put(key,dataSource(getJdbcUrl(dbConfig.host, dbConfig.port, ""), dbConfig.username, dbConfig.password));
@@ -64,29 +65,37 @@ public class DatasourceManager {
         return datasources.get(key);
     }
 
+
     /**
      * 得到配置好的数据源
      *
      * @param url
      * @param username
      * @param password
-     * @param driver
      * @return
      */
-    protected HikariDataSource dataSource(String url, String username, String password) {
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
-        dataSource.setDriverClassName(databaseConfig.getDriver());
+    protected DataSource dataSource(String url, String username, String password) {
+        Map<String,String> map =new HashMap<>();
+        map.put("url",url);
+        map.put("username",username);
+        map.put("password",password);
+        map.put("driverClassName",databaseConfig.getDriver());
         if (databaseConfig.getMaxPoolSize() > 0) {
-            dataSource.setMaximumPoolSize(databaseConfig.getMaxPoolSize());
+            map.put("maxActive",databaseConfig.getMaxPoolSize()+"");
         }
         if (databaseConfig.getMinIdle() > 0) {
-            dataSource.setMinimumIdle(databaseConfig.getMinIdle());
+            map.put("minIdle",databaseConfig.getMinIdle()+"");
+        }
+        map.put("filters","mergeStat");
+        DataSource dataSource = null;
+        try {
+            dataSource = DruidDataSourceFactory.createDataSource(map);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return dataSource;
     }
+
 
     /**
      * 得到JDBC串

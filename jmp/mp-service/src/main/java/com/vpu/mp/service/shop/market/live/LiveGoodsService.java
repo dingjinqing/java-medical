@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.base.Splitter;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.GoodsBrandRecord;
 import com.vpu.mp.db.shop.tables.records.LiveGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.SortRecord;
@@ -32,7 +32,7 @@ import com.vpu.mp.service.wechat.bean.open.WxMaLiveRoomInfoGoods;
 
 /**
  * 直播商品
- * 
+ *
  * @author zhaojianqiang
  * @time 下午4:16:31
  */
@@ -50,7 +50,7 @@ public class LiveGoodsService extends ShopBaseService {
 
 	/**
 	 * 获得直播间商品列表
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -65,7 +65,7 @@ public class LiveGoodsService extends ShopBaseService {
 
 	/**
 	 * 商品列表
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -92,7 +92,7 @@ public class LiveGoodsService extends ShopBaseService {
 
 	/**
 	 * 获取商品列表数量
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -103,7 +103,7 @@ public class LiveGoodsService extends ShopBaseService {
 
 	/**
 	 * 获得加购总数
-	 * 
+	 *
 	 * @param roomId
 	 * @param goodsId
 	 * @return
@@ -116,7 +116,7 @@ public class LiveGoodsService extends ShopBaseService {
 		}
 		return where.fetchAnyInto(Integer.class);
 	}
-	
+
 	/**
 	 * 创建直播间商品
 	 * @param liveId
@@ -140,33 +140,33 @@ public class LiveGoodsService extends ShopBaseService {
 				int update = goodsData.update();
 				logger().info("房间：{}，更新商品id：{}，结果：{}",roomId,goodsData.getGoodsId(), update);
 				if(update>0) {
-					successGoodIds.add(goodsData.getId());					
+					successGoodIds.add(goodsData.getId());
 				}
 			}else {
 				int insert = goodsData.insert();
 				logger().info("房间：{}，插入商品id：{}，结果：{}",roomId,goodsData.getGoodsId(), insert);
 				if(insert>0) {
-					successGoodIds.add(goodsData.getId());					
+					successGoodIds.add(goodsData.getId());
 				}
 			}
 		}
-		
+
 		if(!successGoodIds.isEmpty()) {
-			int execute = db().update(LIVE_GOODS).set(LIVE_GOODS.DEL_FLAG, ONE).set(LIVE_GOODS.DEL_TIME, DateUtil.getSqlTimestamp())
+			int execute = db().update(LIVE_GOODS).set(LIVE_GOODS.DEL_FLAG, ONE).set(LIVE_GOODS.DEL_TIME, DateUtils.getSqlTimestamp())
 					.where(LIVE_GOODS.ID.notIn(successGoodIds).and(LIVE_GOODS.ROOM_ID.eq(roomId).and(LIVE_GOODS.DEL_FLAG.eq(ZERO)))).execute();
 			logger().info("更新失效的商品：{}",execute);
 		}
 		return successGoodIds;
 	}
-	
-	
-	
+
+
+
 	public LiveGoodsRecord getRoomGoodsInfo(Integer roomId, Integer liveId, String url) {
 		return db().selectFrom(LIVE_GOODS)
 				.where(LIVE_GOODS.LIVE_ID.eq(liveId).and(LIVE_GOODS.ROOM_ID.eq(roomId).and(LIVE_GOODS.URL.eq(url))))
 				.fetchAny();
 	}
-	
+
 	/**
 	 * 根据地址反找商品id
 	 * @param url
@@ -201,7 +201,7 @@ public class LiveGoodsService extends ShopBaseService {
 		logger().info("没有2：{}", url);
 		return 0;
 	}
-	
+
 	/**
 	 * 对url进行拆解
 	 * @param url
@@ -212,7 +212,7 @@ public class LiveGoodsService extends ShopBaseService {
 	    Map<String, String> split = Splitter.on("&").withKeyValueSeparator("=").split(params);
 	    return split;
 	}
-	
+
 	/**
 	 * 金额：分转元
 	 * @param money

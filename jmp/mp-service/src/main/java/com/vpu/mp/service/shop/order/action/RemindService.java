@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.order.action;
 
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
@@ -26,13 +26,13 @@ import java.util.Arrays;
 
 @Component
 public class RemindService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam, OrderOperateQueryParam>{
-	
+
 	@Autowired
 	private OrderInfoService orderInfo;
-	
+
 	@Autowired
 	public RecordAdminActionService record;
-	
+
 	@Override
 	public OrderServiceCode getServiceCode() {
 		return OrderServiceCode.REMIND;
@@ -56,7 +56,7 @@ public class RemindService extends ShopBaseService implements IorderOperate<Orde
 			//限制三次
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_REMIND_OPERATION_LIMIT, null);
 		}
-		if(order.getOrderRemindTime() != null && DateUtil.TimestampIsNowDay(order.getOrderRemindTime())) {
+		if(order.getOrderRemindTime() != null && DateUtils.TimestampIsNowDay(order.getOrderRemindTime())) {
 			//限制一天一次
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_REMIND_OPERATION_LIMIT_TODAY, null);
 		}

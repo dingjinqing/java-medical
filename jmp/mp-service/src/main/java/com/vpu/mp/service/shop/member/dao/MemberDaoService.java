@@ -18,7 +18,6 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USI
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +41,7 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
@@ -79,9 +78,9 @@ public class MemberDaoService extends ShopBaseService {
 	@Autowired OrderInfoService orderInfoService;
 	@Autowired UserCardService userCardService;
 	private static final String USER_NAME = "userName";
-	
+
 	/**
-	 * 获取会员列表的基本信息 
+	 * 获取会员列表的基本信息
 	 */
 	public PageResult<MemberInfoVo> getMemberList(MemberPageListParam param) {
 		User aliasUser = USER.as("aliasUser");
@@ -110,24 +109,24 @@ public class MemberDaoService extends ShopBaseService {
 					break;
 			}
 		}
-		
+
 		select.where(buildOptions(param)).orderBy(order);
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), MemberInfoVo.class);
 	}
-	
+
 	/** 获取会员列表的基本信息 */
 	public List<UserRecord> getExportUserList(MemberPageListParam param) {
 		SelectJoinStep<Record> select = db().select(USER.asterisk()).from(USER);
 		buildOptionsForTable(param,select);
-		
+
 		select.where(buildOptions(param))
 			  .orderBy(USER.USER_ID.desc());
-		
+
 		PageResult<UserRecord> memberList = getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				UserRecord.class);
 		return memberList.dataList;
 	}
-	
+
 	/**
 	 * 	获取用户的导出会员 第二版
 	 * @param param
@@ -142,9 +141,9 @@ public class MemberDaoService extends ShopBaseService {
 			  .limit(expParam.getStartNum(), expParam.getEndNum())
 			  .fetchInto(UserExpVo.class);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * 通过活动新增用户
 	 */
@@ -160,11 +159,11 @@ public class MemberDaoService extends ShopBaseService {
 				.and(USER.INVITE_ACT_ID.eq(actId))
 				.and(buildOptions(param))
 				.orderBy(USER.CREATE_TIME.desc());
-				
+
 		return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), MemberInfoVo.class);
 	}
-	
-	
+
+
 
 	/**
 	 * 动态连表
@@ -178,8 +177,8 @@ public class MemberDaoService extends ShopBaseService {
 			select.leftJoin(USER_TAG).on(USER.USER_ID.eq(USER_TAG.USER_ID));
 		}
 	}
-	
-	
+
+
 	/**
 	 * 获取会员用户的详细信息
 	 */
@@ -204,14 +203,14 @@ public class MemberDaoService extends ShopBaseService {
 		return db().select(USER_LOGIN_RECORD.CREATE_TIME, USER_LOGIN_RECORD.UPDATE_TIME).from(USER_LOGIN_RECORD)
 				.where(USER_LOGIN_RECORD.USER_ID.eq(userId)).orderBy(USER_LOGIN_RECORD.ID.desc()).limit(1).fetchOne();
 	}
-	
+
 	/** 获取门店名称 */
 	public Record1<String> getStoreName(String source) {
 		return db().select(STORE.STORE_NAME).from(STORE).where(STORE.STORE_ID.eq(Integer.parseInt(source)))
 				.fetchAny();
 	}
-	
-	/** 
+
+	/**
 	 * 获取一张会员卡信息,此会员卡为等级会员，限次会员卡再到普通会员卡
 	 * @param inData 工作日，休息，或 无限制
 	 */
@@ -220,7 +219,7 @@ public class MemberDaoService extends ShopBaseService {
 		SelectSeekStep3<Record, Byte, Byte, String> sql = getMemberCardSql(inDate,userId);
 		return sql.limit(1).fetchAny();
 	}
-	
+
 	/**
 	 * 获取用户其中的一张卡，改卡的顺序为等级卡》限次卡》普通卡
 	 * @param userIds
@@ -234,8 +233,8 @@ public class MemberDaoService extends ShopBaseService {
 		Map<Integer, UserExpCardVo>  res = getMemberCardSql(inDate,userIds);
 		return res;
 	}
-	
-	
+
+
 	/**
 	 * 获取用户的所有可用会员卡
 	 */
@@ -244,7 +243,7 @@ public class MemberDaoService extends ShopBaseService {
 		SelectSeekStep3<Record, Byte, Byte, String> sql = getMemberCardSql(data,userId);
 		return sql.fetch();
 	}
-	
+
 	/**
 	 * 获取用户会员卡sql
 	 */
@@ -258,7 +257,7 @@ public class MemberDaoService extends ShopBaseService {
 		.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 		.where(USER_CARD.USER_ID.eq(userId)).and(USER_CARD.FLAG.eq(UCARD_FG_USING))
 		.and(MEMBER_CARD.USE_TIME.in(inData).or(MEMBER_CARD.USE_TIME.isNull()))
-		.and((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
+		.and((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX).and(MEMBER_CARD.START_TIME.le(DateUtils.getLocalDateTime())))
 				.or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER)))
 		.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.CARD_TYPE.desc(), MEMBER_CARD.GRADE.desc());
 	}
@@ -272,12 +271,12 @@ public class MemberDaoService extends ShopBaseService {
 						.where(USER_CARD.USER_ID.in(userIds)
 								.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
 								.and(MEMBER_CARD.USE_TIME.in(inData).or(MEMBER_CARD.USE_TIME.isNull()))
-								.and((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
+								.and((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX).and(MEMBER_CARD.START_TIME.le(DateUtils.getLocalDateTime())))
 										.or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER))))
 						.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.CARD_TYPE.desc(), MEMBER_CARD.GRADE.desc())
 						.limit(count)
 						.asTable("nested");
-		
+
 		Map<Integer, UserExpCardVo> res = db().select(nested.field("user_id"),DSL.max(nested.field("card_id")).as("card_id"),
 					DSL.max(nested.field("card_name")).as("card_name"))
 					.from(nested)
@@ -285,15 +284,15 @@ public class MemberDaoService extends ShopBaseService {
 					.fetchMap(nested.field("user_id").cast(Integer.class), UserExpCardVo.class);
 		return res;
 	}
-	
-	
+
+
 	/**
 	 * 更新用户的邀请人id
 	 */
 	public void updateMemberInviteId(Integer userId,Integer invitedId) {
 		db().update(USER).set(USER.INVITE_ID, invitedId).where(USER.USER_ID.eq(userId)).execute();
 	}
-	
+
 	/**
 	 * 更新用户信息
 	 */
@@ -340,7 +339,7 @@ public class MemberDaoService extends ShopBaseService {
 		if(param.getEducation()!=null) {
 			record.setEducation(param.getEducation());
 		}
-		
+
 		/** -行业 */
 		if(param.getIndustory()!= null) {
 			record.setIndustryInfo(param.getIndustory());
@@ -349,21 +348,21 @@ public class MemberDaoService extends ShopBaseService {
 		if(!StringUtils.isBlank(param.getSex())) {
 			record.setSex(param.getSex());
 		}
-		
+
 		if(param.getProvinceCode()!=null) {
 			record.setProvinceCode(param.getProvinceCode());
 		}
-		
+
 		if(param.getCityCode()!=null) {
 			record.setCityCode(param.getCityCode());
 		}
-		
+
 		if(param.getDistrictCode()!=null) {
 			record.setDistrictCode(param.getDistrictCode());
 		}
-		
+
 	}
-	
+
 	/**
 	 *  会员持有会员卡详情
 	 */
@@ -376,7 +375,7 @@ public class MemberDaoService extends ShopBaseService {
 					.orderBy(USER_CARD.CREATE_TIME.desc())
 					.fetch();
 	}
-	
+
 	/**
 	 * 多条件查询构建条件
 	 */
@@ -404,19 +403,19 @@ public class MemberDaoService extends ShopBaseService {
 				.and(getIsForbidLoginCondition(param.getHasDelete()))
 				.and(getRealNameCondition(param.getRealName()))
 				.and(getHasImportCondition(param.getHasImport()))
-				.and(getRegistStartTimeCondition(DateUtil.convertToTimestamp(param.getCreateTime())))
-				.and(getRegistEndTimeCondition(DateUtil.convertToTimestamp(param.getEndTime())))
-				.and(getLoginStartTimeCondition(DateUtil.convertToTimestamp(param.getLoginStartTime())))
-				.and(getLoginEndTimeCondition(DateUtil.convertToTimestamp(param.getLoginEndTime())))
-				.and(getCartStartTimeCondition(DateUtil.convertToTimestamp(param.getCartStartTime())))
-				.and(getCartEndTimeCondition(DateUtil.convertToTimestamp(param.getCartEndTime())))
-				.and(getBuyStartTimeCondition(DateUtil.convertToTimestamp(param.getBuyStartTime())))
-				.and(getBuyEndTimeCondition(DateUtil.convertToTimestamp(param.getBuyEndTime())));
+				.and(getRegistStartTimeCondition(DateUtils.convertToTimestamp(param.getCreateTime())))
+				.and(getRegistEndTimeCondition(DateUtils.convertToTimestamp(param.getEndTime())))
+				.and(getLoginStartTimeCondition(DateUtils.convertToTimestamp(param.getLoginStartTime())))
+				.and(getLoginEndTimeCondition(DateUtils.convertToTimestamp(param.getLoginEndTime())))
+				.and(getCartStartTimeCondition(DateUtils.convertToTimestamp(param.getCartStartTime())))
+				.and(getCartEndTimeCondition(DateUtils.convertToTimestamp(param.getCartEndTime())))
+				.and(getBuyStartTimeCondition(DateUtils.convertToTimestamp(param.getBuyStartTime())))
+				.and(getBuyEndTimeCondition(DateUtils.convertToTimestamp(param.getBuyEndTime())));
 		}
 		return condition;
 	}
 
-	
+
 
 
 	/**
@@ -429,24 +428,24 @@ public class MemberDaoService extends ShopBaseService {
 				.and(getUserIdCondition(param.getUserId()))
 				.and(getMobileCondition(param.getMobile()))
 				.and(getUserNameCondition(param.getUsername()))
-				.and(getReceiveCardStartTimeCondition(DateUtil.convertToTimestamp(param.getCreateTimeFirst())))
-				.and(getReceiveCardEndTimeCondition(DateUtil.convertToTimestamp(param.getCreateTimeSecond())))
+				.and(getReceiveCardStartTimeCondition(DateUtils.convertToTimestamp(param.getCreateTimeFirst())))
+				.and(getReceiveCardEndTimeCondition(DateUtils.convertToTimestamp(param.getCreateTimeSecond())))
 				.and(getCardIdCondition(param.getCardId()))
 				.and(getCardTypeCondition(param.getCardType()));
-			
-			
+
+
 			/** - 卡状态 */
 			if (param.getStatusValue() != null && !NumberUtils.BYTE_MINUS_ONE.equals(param.getStatusValue())) {
 				/** - 状态为过期 */
 				if (CardConstant.UCARD_FG_EXPIRED.equals(param.getStatusValue())) {
-					condition = condition.and(USER_CARD.EXPIRE_TIME.le(DateUtil.getLocalDateTime()));
-					
+					condition = condition.and(USER_CARD.EXPIRE_TIME.le(DateUtils.getLocalDateTime()));
+
 				} else if (CardConstant.UCARD_FG_USING.equals(param.getStatusValue())) {
-					condition = condition.and(USER_CARD.EXPIRE_TIME.ge(DateUtil.getLocalDateTime()).or(USER_CARD.EXPIRE_TIME.isNull()))
+					condition = condition.and(USER_CARD.EXPIRE_TIME.ge(DateUtils.getLocalDateTime()).or(USER_CARD.EXPIRE_TIME.isNull()))
 										.and(USER_CARD.FLAG.eq(param.getStatusValue()));
 				}else if(CardConstant.UCARD_FG_STOP.equals(param.getStatusValue())) {
 					condition = condition.and(USER_CARD.FLAG.eq(param.getStatusValue()));
-					
+
 				}else {
 					//	转赠中或已转赠
 					condition = condition.and(USER_CARD.FLAG.eq(param.getStatusValue()));
@@ -455,7 +454,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 会员id条件
 	 */
@@ -463,7 +462,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		return isNotNull(userId)?condition.and(USER.USER_ID.eq(userId)):condition;
 	}
-	
+
 	/**
 	 * 手机号条件
 	 */
@@ -474,7 +473,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 昵称条件
 	 */
@@ -485,17 +484,17 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 来源条件
 	 * @Param source 来源信息
 	 * @Param type 类型  0 微信，1 门店，2渠道页
 	 * @Param channelId 渠道页
-	 * 
+	 *
 	 */
 	private Condition getSourceCondition(Integer source,Integer type,Integer channelId) {
 		Condition condition = DSL.noCondition();
-		
+
 		if(isNotNull(source) && source != 0) {
 			if(source<0) {
 				// 微信来源
@@ -510,11 +509,11 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
-	
-	
 
-	
+
+
+
+
 	/**
 	 * 邀请人条件
 	 */
@@ -525,16 +524,16 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	private List<Integer> getUserIdByName(String name){
 		return getUserByName(name).getValues(USER.USER_ID,Integer.class);
 	}
-	
+
 	private Result<UserRecord> getUserByName(String name) {
 		String val = likeValue(name);
 		return db().selectFrom(USER).where(USER.USERNAME.like(val)).fetch();
 	}
-	
+
 	/**
 	 * 会员卡条件
 	 */
@@ -547,7 +546,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 注册开始时间查询条件
 	 */
@@ -555,7 +554,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		return isNotNull(time)?condition.and(USER.CREATE_TIME.ge(time)):condition;
 	}
-	
+
 	/**
 	 * 注册结束时间查询条件
 	 */
@@ -563,7 +562,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		return isNotNull(time)?condition.and(USER.CREATE_TIME.le(time)):condition;
 	}
-	
+
 	/**
 	 * 标签查询条件
 	 */
@@ -597,7 +596,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 指定时间内有登录 - 结束时间条件
 	 */
@@ -609,8 +608,8 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
-	
+
+
 	/**
 	 * 指定时间内有加购行为 - 开始时间条件
 	 */
@@ -622,7 +621,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 指定时间内有加购行为 - 结束时间条件
 	 */
@@ -634,7 +633,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 指定时间内有交易记录 - 开始时间条件
 	 */
@@ -646,8 +645,8 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
-	
+
+
 	/**
 	 * 指定时间内有交易记录 - 结束时间条件
 	 */
@@ -659,8 +658,8 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
-	
+
+
 	/**
 	 * 客单价最低查询条件
 	 */
@@ -668,7 +667,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		return isNotNull(price)?condition.and(USER.UNIT_PRICE.ge(price)):condition;
 	}
-	
+
 	/**
 	 * 客单价最高查询条件
 	 */
@@ -676,7 +675,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		return isNotNull(price)?condition.and(USER.UNIT_PRICE.le(price)):condition;
 	}
-	
+
 	/**
 	 * 累计购买次数 - 最低次数条件
 	 */
@@ -688,7 +687,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 累计购买次数 - 最高次数条件
 	 */
@@ -700,7 +699,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 购买指定商品条件
 	 */
@@ -712,7 +711,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 是否有手机号条件
 	 */
@@ -724,7 +723,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 是否有可用积分
 	 */
@@ -735,7 +734,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 是否有可用余额
 	 */
@@ -746,7 +745,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 是否持有会员卡
 	 */
@@ -758,7 +757,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 是否禁止登录条件
 	 */
@@ -769,7 +768,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 真实姓名条件
 	 */
@@ -781,7 +780,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 是否为导入会员
 	 */
@@ -793,7 +792,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 会员卡领取开始时间条件
 	 */
@@ -804,7 +803,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 会员卡领取结束时间条件
 	 */
@@ -815,7 +814,7 @@ public class MemberDaoService extends ShopBaseService {
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 会员卡ID条件
 	 */
@@ -823,7 +822,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		return isNotNull(cardId)?condition.and(MEMBER_CARD.ID.eq(cardId)):condition;
 	}
-	
+
 	/**
 	 * 会员卡类型条件
 	 */
@@ -831,19 +830,19 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		return isNotNull(cardType)?condition.and(MEMBER_CARD.CARD_TYPE.eq(cardType)):condition;
 	}
-		
+
 	private boolean isNotNull(Object obj) {
 		return obj!=null;
 	}
-	
+
 	private boolean isNotBlank(String val) {
 		return !StringUtils.isBlank(val);
 	}
-	
+
 	public void updateUserDetail(UserDetailRecord record) {
 		db().executeUpdate(record, USER_DETAIL.USER_ID.eq(record.getUserId()));
 	}
-	
+
 	/**
 	 * 	获取用户总数
 	 */

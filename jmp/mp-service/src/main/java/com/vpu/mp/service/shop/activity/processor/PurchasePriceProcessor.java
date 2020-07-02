@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceRuleRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
@@ -10,7 +10,6 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
-import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.PurchasePriceCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
@@ -69,7 +68,7 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
 
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
-        List<PurchasePricePromotion> promotions = purchasePriceProcessorDao.getPurchasePriceInfoForDetail(capsule.getGoodsId(), DateUtil.getLocalDateTime());
+        List<PurchasePricePromotion> promotions = purchasePriceProcessorDao.getPurchasePriceInfoForDetail(capsule.getGoodsId(), DateUtils.getLocalDateTime());
         if (promotions == null) {
             return;
         }

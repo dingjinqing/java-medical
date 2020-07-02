@@ -1,6 +1,6 @@
 package com.vpu.mp.service.saas.shop;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.main.tables.records.ChargeRenewRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
@@ -27,7 +27,7 @@ public class ShopApplyService extends MainBaseService {
      */
     public Byte insertChargeRenew(ChargeRenewAddParam param, AdminTokenAuthInfo authInfo) {
         if (
-            db().fetchExists(CHARGE_RENEW, CHARGE_RENEW.APPLY_ID.eq(authInfo.subAccountId == 0 ? authInfo.sysId : authInfo.subAccountId).and(CHARGE_RENEW.APPLY_TYPE.eq(param.getApplyType())).and(CHARGE_RENEW.CREATED.ge(Timestamp.valueOf(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_BEGIN, DateUtil.getLocalDateTime())))))
+            db().fetchExists(CHARGE_RENEW, CHARGE_RENEW.APPLY_ID.eq(authInfo.subAccountId == 0 ? authInfo.sysId : authInfo.subAccountId).and(CHARGE_RENEW.APPLY_TYPE.eq(param.getApplyType())).and(CHARGE_RENEW.CREATED.ge(Timestamp.valueOf(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_BEGIN, DateUtils.getLocalDateTime())))))
         ) {
             return -1;
         } else {
@@ -37,7 +37,7 @@ public class ShopApplyService extends MainBaseService {
             chargeRenewRecord.setSysId(authInfo.sysId);
             chargeRenewRecord.setShopId(authInfo.loginShopId);
             chargeRenewRecord.setShopName(saas.shop.getShopById(authInfo.loginShopId).getShopName());
-            chargeRenewRecord.setCreated(DateUtil.getLocalDateTime());
+            chargeRenewRecord.setCreated(DateUtils.getLocalDateTime());
             chargeRenewRecord.setApplyMod(param.getApplyMod());
             chargeRenewRecord.setApplyType(param.getApplyType());
             chargeRenewRecord.insert();

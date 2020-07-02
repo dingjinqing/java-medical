@@ -5,13 +5,11 @@ import static com.vpu.mp.db.shop.tables.GroupIntegrationList.GROUP_INTEGRATION_L
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.jooq.DatePart;
-import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
@@ -23,7 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.GroupIntegrationDefine;
 import com.vpu.mp.db.shop.tables.GroupIntegrationList;
@@ -55,16 +53,16 @@ import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
  */
 @Service
 public class GroupIntegrationListService extends ShopBaseService {
-	
+
 	public static final byte TRADE_TYPE=10;
 	public static final byte TRADE_FLOW=1;
-	
+
 	public static final byte ZERO=0;
 	public static final String REMARK = "积分瓜分";
-	
+
 	@Autowired private GroupIntegrationCalculatorService calculatorHandler;
 
-	/** 
+	/**
 	 * 参团明细
 	 * @param param
 	 * @return
@@ -78,7 +76,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 			.on(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(GROUP_INTEGRATION_DEFINE.ID));
 		SelectConditionStep<?> step = buildOptionDetail(select,param);
 		return getPageResult(step, param.getCurrentPage(), param.getPageRows(), GroupIntegrationListParticipationVo.class);
-		
+
 	}
 	/**
 	 * 成团明细
@@ -113,9 +111,9 @@ public class GroupIntegrationListService extends ShopBaseService {
 		}
 		return result;
 	}
-	
+
 	/**
-	 * 查某一个团长信息 
+	 * 查某一个团长信息
 	 * @param actId
 	 * @param groupId
 	 * @return
@@ -127,8 +125,8 @@ public class GroupIntegrationListService extends ShopBaseService {
 			.and(GROUP_INTEGRATION_LIST.GROUP_ID.eq(groupId))
 			.and(GROUP_INTEGRATION_LIST.IS_GROUPER.eq(IsGrouper.TRUE.value()))
 			.fetchOneInto(GroupperInfoPojo.class);
-			
-		return pojo;	
+
+		return pojo;
 	}
 
 	/**
@@ -144,7 +142,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 			.fetch();
 		return fetch;
 	}
-	
+
 	/**
 	 * 记录拼团结果
 	 * @param actId
@@ -160,8 +158,8 @@ public class GroupIntegrationListService extends ShopBaseService {
 				.and(GROUP_INTEGRATION_LIST.GROUP_ID.eq(groupId))
 				.execute();
 	}
-	/** 
-	 * 更新某一个团员参团获取的积分 
+	/**
+	 * 更新某一个团员参团获取的积分
 	 * @param id 该团员对应记录的ID
 	 * @param integration
 	 * @return
@@ -182,7 +180,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 			.execute();
 	}
 	/**
-	 * 更新团长获取的积分 
+	 * 更新团长获取的积分
 	 * @param actId
 	 * @param groupId
 	 * @param integration
@@ -226,7 +224,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 			.fetchOneInto(Integer.class);
 	}
 	/**
-	 * 获取参加某活动 某一个团的全部成员参与信息 
+	 * 获取参加某活动 某一个团的全部成员参与信息
 	 * @param actId 拼团活动ID
 	 * @param groupId 团ID
 	 * @return
@@ -253,9 +251,9 @@ public class GroupIntegrationListService extends ShopBaseService {
 	 */
 	@Deprecated
 	public void asyncSuccessGroupIntegration(Integer groupId,Integer actId) {
-//		活动内容 
+//		活动内容
 		GroupIntegrationDefineRecord defineRecord = saas().getShopApp(getShopId()).groupIntegration.selectDefineById(actId);
-//		参与情况 
+//		参与情况
 		List<GroupIntegrationListParticipationVo> listParticipation = getGroupIntegrationListParticipation(actId, groupId);
 		if(listParticipation == null||listParticipation.size()==0) {
 			return ;
@@ -285,8 +283,8 @@ public class GroupIntegrationListService extends ShopBaseService {
 			defineRecord.setIsContinue(GroupIntegrationDefineEnums.IsContinue.FALSE.value());
 			saas().getShopApp(getShopId()).groupIntegration.updateDefine(defineRecord);
 		}
-		
-		
+
+
 	}
 
 	/**
@@ -318,7 +316,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 	 */
 	private boolean isFail(GroupIntegrationDefineRecord defineRecord,
 			List<GroupIntegrationListParticipationVo> listParticipation) {
-//		剩余积分 
+//		剩余积分
 		Integer canIntegration = listParticipation.get(0).getCanIntegration();
 //		积分不足时失败
 		if(canIntegration == 0) {
@@ -331,11 +329,11 @@ public class GroupIntegrationListService extends ShopBaseService {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * @param select
-	 * @param param 
-	 * @return 
+	 * @param param
+	 * @return
 	 */
 	private SelectConditionStep<?> buildOptionDetail(SelectOnConditionStep<?> select, GroupIntegrationListDetailParam param) {
 		SelectConditionStep<?> step = select.where(GROUP_INTEGRATION_DEFINE.ID.eq(param.getActId()))
@@ -371,14 +369,14 @@ public class GroupIntegrationListService extends ShopBaseService {
 			step.and(GROUP_INTEGRATION_LIST.GROUP_ID.eq(param.getGroupId()));
 		}
 		return step;
-			
+
 	}
-	
+
 
 	/**
 	 * @param selectFrom
 	 * @param param
-	 * @return 
+	 * @return
 	 */
 	private SelectConditionStep<?> buildOptionSuccess(SelectJoinStep<?> selectFrom, GroupIntegrationSuccessParam param) {
 		SelectConditionStep<?> select = selectFrom.where(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(param.getActId()));
@@ -398,8 +396,8 @@ public class GroupIntegrationListService extends ShopBaseService {
 		}
 		return select;
 	}
-	
-	
+
+
 	/**
 	 * 获取参团团数
 	 * @param pinInteId
@@ -410,7 +408,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 		Result<GroupIntegrationListRecord> fetch = db().selectFrom(GROUP_INTEGRATION_LIST).where(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(pinInteId)
 				.and(GROUP_INTEGRATION_LIST.USER_ID.eq(userId)).and(GROUP_INTEGRATION_LIST.IS_GROUPER.eq(ZERO))).fetch();
 		return fetch.size();
-		
+
 	}
 
     /**
@@ -432,7 +430,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 				.fetchOneInto(Integer.class);
 		return groupId==null?0:groupId;
     }
-	
+
 	public List<GroupIntegrationMaVo> getPinIntegrationGroupDetail(Integer id, Integer groupId) {
 		List<GroupIntegrationMaVo> fetchInto = db().select(GROUP_INTEGRATION_LIST.fields())
 				.select(USER.USERNAME, USER.MOBILE, USER_DETAIL.USER_AVATAR, GROUP_INTEGRATION_DEFINE.DEL_FLAG,
@@ -448,13 +446,13 @@ public class GroupIntegrationListService extends ShopBaseService {
 				.orderBy(GROUP_INTEGRATION_LIST.INTEGRATION.desc()).fetchInto(GroupIntegrationMaVo.class);
 		return fetchInto;
 	}
-	
+
 	public UserRecord getinviteUser(Integer pinInteId, Integer userId) {
 		return db().selectFrom(USER).where(USER.USER_ID.eq(userId).and(USER.INVITE_SOURCE.eq("pin_integration"))
 				.and(USER.INVITE_ACT_ID.eq(pinInteId))).fetchAny();
 	}
-	
-	
+
+
 	/**
 	 * 是否参加过组团瓜分积分活动  true：参加过 ；false：没参加
 	 * @param userId
@@ -467,7 +465,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 新增拼团详情
 	 * @param groupId
@@ -486,21 +484,21 @@ public class GroupIntegrationListService extends ShopBaseService {
 		newRecord.setIsGrouper(isGrouper);
 		newRecord.setStatus(ZERO);
 		newRecord.setIntegration(0);
-		newRecord.setStartTime(DateUtil.getLocalDateTime());
+		newRecord.setStartTime(DateUtils.getLocalDateTime());
 		newRecord.setIsNew(isNew);
 		newRecord.setInviteUser(inviteUser == null ? 0 : inviteUser);
 		int insert = newRecord.insert();
 		logger().info("新增拼团详情{}",insert);
 		return insert;
 	}
-	
+
 	public GroupIntegrationListRecord getUserIntegrationInfo(Integer userId, Integer pinInteId, Integer groupId) {
 		return db().selectFrom(GROUP_INTEGRATION_LIST).where(GROUP_INTEGRATION_LIST.USER_ID.eq(userId).and(
 				GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(pinInteId).and(GROUP_INTEGRATION_LIST.GROUP_ID.eq(groupId))))
 				.fetchAny();
 	}
 
-	
+
 	public List<GroupIntegrationInfoPojo> getPinGroupByUser(Integer userId, Timestamp time) {
 		return db().select(GROUP_INTEGRATION_LIST.fields())
 				.select(GROUP_INTEGRATION_DEFINE.ID.as("pinInteId"), GROUP_INTEGRATION_DEFINE.NAME,
@@ -511,13 +509,13 @@ public class GroupIntegrationListService extends ShopBaseService {
 						.and(DSL.timestampAdd(GROUP_INTEGRATION_LIST.START_TIME, 5, DatePart.DAY).ge(time)))
 				.orderBy(GROUP_INTEGRATION_LIST.START_TIME.desc()).fetchInto(GroupIntegrationInfoPojo.class);
 	}
-	
+
 	public List<GroupIntegrationListPojo> getGroupInfo(Integer pinInteId, Integer groupId) {
 		return db().selectFrom(GROUP_INTEGRATION_LIST).where(
 				GROUP_INTEGRATION_LIST.GROUP_ID.eq(groupId).and(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(pinInteId)))
 				.fetchInto(GroupIntegrationListPojo.class);
 	}
-	
+
 	/**
 	 * 开团
 	 * @param userId
@@ -544,7 +542,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 
 	/**
 	 * 得已经结束的拼团
-	 * 
+	 *
 	 * @param dateTime
 	 * @return
 	 */
@@ -563,6 +561,6 @@ public class GroupIntegrationListService extends ShopBaseService {
 				.fetchInto(GroupInteGetEndVo.class);
 		return fetchInto;
 	}
-	
+
 }
 

@@ -2,7 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -36,7 +36,7 @@ import java.util.List;
 
 /**
  * 	订单模块
- * 
+ *
  * @author 常乐,王帅 2019年6月27日
  */
 @RestController
@@ -45,7 +45,7 @@ public class AdminOrderController extends AdminBaseController {
 
 	/**
 	 * 	订单综合查询（不包括买单订单、虚拟商品订单）
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -62,7 +62,7 @@ public class AdminOrderController extends AdminBaseController {
 		PageResult<StoreOrderListInfoVo> result = shop().readOrder.getPageList(param);
 		return success(result);
 	}
-	
+
 	/**
 	 * 	买单订单详情查询
 	 */
@@ -74,7 +74,7 @@ public class AdminOrderController extends AdminBaseController {
 
 	/**
 	 * 	订单详情（不包括退款货、买单订单、虚拟商品订单）
-	 * 
+	 *
 	 * @param order
 	 * @return
 	 */
@@ -107,7 +107,7 @@ public class AdminOrderController extends AdminBaseController {
             return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
 		}
 	}
-	
+
 	/**
 	 * 	订单标星切换
 	 */
@@ -116,7 +116,7 @@ public class AdminOrderController extends AdminBaseController {
 		shop().writeOrder.switchStar(param);
 		return success();
 	}
-	
+
 	/**
 	 * 	更新卖家备注
 	 */
@@ -124,7 +124,7 @@ public class AdminOrderController extends AdminBaseController {
 	public JsonResult sellerRemark(@RequestBody @Valid SellerRemarkParam param) {
 		return success(shop().writeOrder.sellerRemark(param));
 	}
-	
+
 	/**
 	 * 	发货_查询可发货商品
 	 */
@@ -137,7 +137,7 @@ public class AdminOrderController extends AdminBaseController {
             return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
 		}
 	}
-	
+
 	/**
 	 * 	发货
 	 */
@@ -152,7 +152,7 @@ public class AdminOrderController extends AdminBaseController {
             return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
 	}
-	
+
 	/**
 	 * 	退款、退货查询
 	 */
@@ -165,7 +165,7 @@ public class AdminOrderController extends AdminBaseController {
             return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
 		}
 	}
-	
+
 	/**
 	 * 退款
 	 */
@@ -180,7 +180,7 @@ public class AdminOrderController extends AdminBaseController {
             return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
 	}
-	
+
 	/**
 	 * 订单关闭
 	 */
@@ -195,7 +195,7 @@ public class AdminOrderController extends AdminBaseController {
             return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
 	}
-	
+
 	/**
 	 * 订单核销
 	 */
@@ -210,7 +210,7 @@ public class AdminOrderController extends AdminBaseController {
             return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
 	}
-	
+
 	/**
 	 * 订单完成
 	 */
@@ -259,7 +259,7 @@ public class AdminOrderController extends AdminBaseController {
     public void orderExport(@RequestBody @Valid OrderExportQueryParam param, HttpServletResponse response) {
         List<String> columns = shop().config.orderExportCfg.getOrderExportList();
         Workbook workbook =shop().readOrder.exportOrderList(param,columns,getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.ORDER_EXPORT_FILE_NAME ,OrderConstant.LANGUAGE_TYPE_EXCEL,OrderConstant.LANGUAGE_TYPE_EXCEL) + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.ORDER_EXPORT_FILE_NAME ,OrderConstant.LANGUAGE_TYPE_EXCEL,OrderConstant.LANGUAGE_TYPE_EXCEL) + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT);
         export2Excel(workbook,fileName,response);
     }
 
@@ -292,6 +292,6 @@ public class AdminOrderController extends AdminBaseController {
     @PostMapping("/ship/batch/fail/download/{batchId}")
     public void downloadFailData(@PathVariable Integer batchId, HttpServletResponse response) {
         Workbook workbook = shop().readOrder.downloadFailData(batchId, getLang());
-        export2Excel(workbook, DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE), response);
+        export2Excel(workbook, DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE), response);
     }
 }

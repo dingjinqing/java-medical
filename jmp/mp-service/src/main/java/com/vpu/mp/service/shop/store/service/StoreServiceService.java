@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.store.service;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.StoreServiceCategoryRecord;
 import com.vpu.mp.db.shop.tables.records.StoreServiceRecord;
@@ -105,7 +105,7 @@ public class StoreServiceService extends ShopBaseService {
         select.and(STORE_SERVICE.STORE_ID.eq(param.getStoreId())).orderBy(STORE_SERVICE.CREATE_TIME.desc());
         PageResult<StoreServiceListQueryVo>  res = getPageResult(select, param.getCurrentPage(), param.getPageRows(), StoreServiceListQueryVo.class);
         res.getDataList().forEach(s->{
-            if(s.getEndDate().before(DateUtil.getLocalDateTime())){
+            if(s.getEndDate().before(DateUtils.getLocalDateTime())){
                 //表示已过期
                 s.setServiceShelf((byte)2);
             }
@@ -144,7 +144,7 @@ public class StoreServiceService extends ShopBaseService {
         return db().selectFrom(STORE_SERVICE).
             where(STORE_SERVICE.STORE_ID.eq(storeId)).
             and(STORE_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).
-            and(STORE_SERVICE.END_DATE.gt(DateUtil.yyyyMmDdDate(DateUtil.getLocalDate()))).
+            and(STORE_SERVICE.END_DATE.gt(DateUtils.yyyyMmDdDate(DateUtils.getLocalDate()))).
             and(STORE_SERVICE.SERVICE_SHELF.eq(BYTE_ONE)).
             fetchInto(StoreServiceListQueryVo.class);
     }

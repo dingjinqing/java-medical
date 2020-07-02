@@ -6,7 +6,7 @@ import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.excel.bean.ClassList;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.foundation.database.DslPlus;
@@ -68,7 +68,7 @@ import static com.vpu.mp.db.shop.tables.User.USER;
  */
 @Service
 public class PackSaleService extends ShopBaseService {
-	
+
 	@Autowired public AdminMarketOrderInfoService orderInfo;
 	@Autowired public QrCodeService qrCodeService;
 	@Autowired public GoodsService goodsService;
@@ -108,12 +108,12 @@ public class PackSaleService extends ShopBaseService {
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * @param step
 	 * @param param
-	 * @return 
+	 * @return
 	 */
 	private SelectConditionStep<?> buildOptions(SelectConditionStep<?> step, PackSalePageParam param) {
 		Timestamp currentTime = Timestamp.valueOf(LocalDateTime.now());
@@ -204,7 +204,7 @@ public class PackSaleService extends ShopBaseService {
 	/**
 	 * 获取分享码
 	 * @param id
-	 * @return 
+	 * @return
 	 */
 	public PackSaleShareVo getMpQrCode(Integer id) {
         String param = "packageId=" + id;
@@ -234,7 +234,7 @@ public class PackSaleService extends ShopBaseService {
 		}
 		return changeStatus(id, BaseConstant.ACTIVITY_STATUS_DISABLE);
 	}
-	
+
 	private int changeStatus(Integer id,Byte status) {
 		return db().update(PACKAGE_SALE)
 				.set(PACKAGE_SALE.STATUS, status)
@@ -287,11 +287,11 @@ public class PackSaleService extends ShopBaseService {
 		GoodsGroupVo groupVo = defineVo.new GoodsGroupVo();
 		groupVo.setGroupName(groupName);
 		groupVo.setGoodsNumber(goodsNumber);
-		
+
 		List<Integer> idList = transformIdList(goodsIds);
 		List<GoodsView> goodsList = goodsService.selectGoodsViewList(idList);
 		groupVo.setGoodsList(goodsList);
-		
+
 		List<Integer> catIdList = transformIdList(catIds);
 		groupVo.setCatIdList(catIdList);
 		List<SysCatevo> cartList = saas.sysCate.getList(catIdList);
@@ -343,7 +343,7 @@ public class PackSaleService extends ShopBaseService {
 	/**
 	 * @param step
 	 * @param param
-	 * @return 
+	 * @return
 	 */
 	private SelectConditionStep<?> buildDetailOptions(SelectConditionStep<?> step, PackSaleDetailParam param) {
         if (!StringUtils.isBlank(param.getMobile())) {
@@ -407,10 +407,10 @@ public class PackSaleService extends ShopBaseService {
         if(packageSaleRecord == null || packageSaleRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
             vo.setState((byte)1);
             return vo;
-        }else if(packageSaleRecord.getStartTime().after(DateUtil.getLocalDateTime())){
+        }else if(packageSaleRecord.getStartTime().after(DateUtils.getLocalDateTime())){
             vo.setState((byte)2);
             return vo;
-        }else if(packageSaleRecord.getEndTime().before(DateUtil.getLocalDateTime())){
+        }else if(packageSaleRecord.getEndTime().before(DateUtils.getLocalDateTime())){
             vo.setState((byte)3);
             return vo;
         }
@@ -708,10 +708,10 @@ public class PackSaleService extends ShopBaseService {
         if(packageSaleRecord.getStatus().equals(BaseConstant.ACTIVITY_STATUS_DISABLE)){
             return (byte)2;
         }
-        if(packageSaleRecord.getEndTime().before(DateUtil.getLocalDateTime())){
+        if(packageSaleRecord.getEndTime().before(DateUtils.getLocalDateTime())){
             return (byte)3;
         }
-        if(packageSaleRecord.getStartTime().after(DateUtil.getLocalDateTime())){
+        if(packageSaleRecord.getStartTime().after(DateUtils.getLocalDateTime())){
             return (byte)4;
         }
         return 0;
@@ -752,8 +752,8 @@ public class PackSaleService extends ShopBaseService {
         vo.setState((byte)0);
         return vo;
     }
-    
-    
+
+
     /**
      * 营销日历用id查询活动
      * @param id
@@ -763,7 +763,7 @@ public class PackSaleService extends ShopBaseService {
 		return db().select(PACKAGE_SALE.ID, PACKAGE_SALE.PACKAGE_NAME.as(CalendarAction.ACTNAME), PACKAGE_SALE.START_TIME,
 				PACKAGE_SALE.END_TIME).from(PACKAGE_SALE).where(PACKAGE_SALE.ID.eq(id)).fetchAnyInto(MarketVo.class);
     }
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param
@@ -775,7 +775,7 @@ public class PackSaleService extends ShopBaseService {
                 PACKAGE_SALE.END_TIME)
             .from(PACKAGE_SALE)
             .where(PACKAGE_SALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(PACKAGE_SALE.STATUS
-                .eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(PACKAGE_SALE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+                .eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(PACKAGE_SALE.END_TIME.gt(DateUtils.getSqlTimestamp()))))
             .orderBy(PACKAGE_SALE.ID.desc());
         PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
             MarketVo.class);

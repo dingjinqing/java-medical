@@ -11,9 +11,6 @@ export const en = {
   appointmentInfo: 'Reservation Information Display Item Configuration',
   shopUseInfo: 'Shop Configuration Using Relevant Data Display Items',
   serveShowInfo: 'Service Show Item Configuration',
-  prescriptionList: 'Prescription List Display Item Configuration',
-  prescriptionMedicineList: 'Prescription Medicine List Display Item Configuration',
-  patientList: 'Patient List Display Item Configuration',
 
   // 个人信息
   storeColor: 'Sync Store Color',
@@ -31,18 +28,6 @@ export const en = {
   card: 'Coupon Card',
   show: 'Show',
   noShow: 'No Show',
-
-  // 处方列表
-  prescriptionListLabel: 'Prescription List：',
-  prescriptionListTip: 'When the switch is on, the prescription list will be displayed',
-
-  // 处方药列表
-  prescriptionMedicineListLabel: 'Prescription Medicine List：',
-  prescriptionMedicineListTip: 'When the switch is on, the prescription medicine list will be displayed',
-
-  // 患者列表
-  patientListLabel: 'Patient List',
-  patientListTip: 'When the switch is on, the patient list will be displayed',
 
   // 订单
   orderLabel: 'Order：',

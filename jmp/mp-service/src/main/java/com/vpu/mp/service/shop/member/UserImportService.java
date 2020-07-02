@@ -33,7 +33,7 @@ import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelReader;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.IdentityUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
@@ -89,7 +89,7 @@ import com.vpu.mp.service.shop.user.user.UserService;
 
 /**
  * 会员导入
- * 
+ *
  * @author zhaojianqiang
  * @time 下午1:51:15
  */
@@ -136,7 +136,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 设置用户导入通知
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -166,7 +166,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 获取用户导入通知
-	 * 
+	 *
 	 * @return
 	 */
 	public SetNoticeJson getActivationNotice() {
@@ -176,7 +176,7 @@ public class UserImportService extends ShopBaseService {
 			return json;
 		}
 		json = Util.parseJson(record.getV(), SetNoticeJson.class);
-		
+
 		return json;
 	}
 
@@ -189,7 +189,7 @@ public class UserImportService extends ShopBaseService {
 		}
 		return new SetNoticeJsonVo(json.getExplain(), json.getScore(), mrkingVoucherId, couponViewByIds);
 	}
-	
+
 	public SetNoticeJsonDetailVo getInfo(String lang) {
 		SetNoticeJson activationNotice = getActivationNotice();
 		String mrkingVoucherId = activationNotice.getMrkingVoucherId();
@@ -209,7 +209,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 获取模板
-	 * 
+	 *
 	 * @param lang
 	 * @return
 	 */
@@ -348,7 +348,7 @@ public class UserImportService extends ShopBaseService {
 			if (StringUtils.isNotEmpty(birthday)) {
 				try {
 					// ExcelUtil.DATE_FORMAT
-					LocalDate parse = LocalDate.parse(birthday, DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT_SIMPLE));
+					LocalDate parse = LocalDate.parse(birthday, DateTimeFormatter.ofPattern(DateUtils.DATE_FORMAT_SIMPLE));
 					//userImportPojo.setBirthday(parse.toString());
 				} catch (Exception e) {
 					logger().info("生日日期格式错误");
@@ -491,7 +491,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 返回Excel文件
-	 * 
+	 *
 	 * @param lang
 	 * @param list
 	 * @return
@@ -505,7 +505,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 错误信息的返回
-	 * 
+	 *
 	 * @param lang
 	 * @param list
 	 * @return
@@ -519,7 +519,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 查询激活成功
-	 * 
+	 *
 	 * @param lang
 	 * @param list
 	 * @return
@@ -533,7 +533,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 查询失败数据
-	 * 
+	 *
 	 * @param batchId
 	 * @return
 	 */
@@ -556,7 +556,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 查询激活成功数据
-	 * 
+	 *
 	 * @param batchId
 	 * @return
 	 */
@@ -572,7 +572,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 返回失败的信息
-	 * 
+	 *
 	 * @param batchId
 	 * @param lang
 	 * @return
@@ -583,7 +583,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 激活成功的用户信息
-	 * 
+	 *
 	 * @param batchId
 	 * @param lang
 	 * @return
@@ -644,7 +644,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 会员导入列表
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -681,7 +681,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 会员导入明细列表
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -773,7 +773,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 赠送积分
-	 * 
+	 *
 	 * @param userId
 	 * @param activationNotice
 	 */
@@ -799,7 +799,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 发放优惠券
-	 * 
+	 *
 	 * @param userId
 	 */
 	private void grantCoupon(Integer userId, SetNoticeJson activationNotice) {
@@ -883,16 +883,16 @@ public class UserImportService extends ShopBaseService {
 					&& cfg.getStatus().equals(BYTE_ONE) && !inviteUser.getInviteId().equals(userId)) {
 				logger().info("处理邀请人");
 				userRecord.setInviteId(inviteUser.getUserId());
-				userRecord.setInviteTime(DateUtil.getSqlTimestamp());
+				userRecord.setInviteTime(DateUtils.getSqlTimestamp());
 				Byte vaild = cfg.getVaild();
 				Timestamp time = vaild > BYTE_ZERO
-						? DateUtil.getTimeStampPlus(Integer.valueOf(vaild) - 1, ChronoUnit.DAYS)
+						? DateUtils.getTimeStampPlus(Integer.valueOf(vaild) - 1, ChronoUnit.DAYS)
 						: null;
 				if (time != null) {
 					userRecord.setInviteExpiryDate(new Date(time.getTime()));
 				}
 				Byte protectDate = cfg.getProtectDate();
-				time = vaild > BYTE_ZERO ? DateUtil.getTimeStampPlus(Integer.valueOf(protectDate) - 1, ChronoUnit.DAYS)
+				time = vaild > BYTE_ZERO ? DateUtils.getTimeStampPlus(Integer.valueOf(protectDate) - 1, ChronoUnit.DAYS)
 						: null;
 				if (time != null) {
 					userRecord.setInviteProtectDate(Util.currentTimeStamp());
@@ -990,7 +990,7 @@ public class UserImportService extends ShopBaseService {
 			userDetail.setCityCode(cityId);
 			userDetail.setDistrictCode(districtId);
 		}
-		
+
 		BigDecimal income = importUser.getIncome();
 		logger().info("判断收入");
 		if (income != null) {

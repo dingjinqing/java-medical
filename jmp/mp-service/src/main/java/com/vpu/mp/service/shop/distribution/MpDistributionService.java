@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.distribution;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.DistributorApplyRecord;
@@ -46,7 +46,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -199,7 +198,7 @@ public class MpDistributionService extends ShopBaseService{
                     userBind(userBindParam);
 
                     //邀请失效时间
-                    Timestamp inviteExpiryDate = DateUtil.getTimeStampPlus(cfg.getVaild(), ChronoUnit.DAYS);
+                    Timestamp inviteExpiryDate = DateUtils.getTimeStampPlus(cfg.getVaild(), ChronoUnit.DAYS);
                     Date ed = new Date(inviteExpiryDate.getTime());
                     //分销分组
                     Integer inviteGroup = 0;
@@ -214,7 +213,7 @@ public class MpDistributionService extends ShopBaseService{
                         .set(USER.IS_DISTRIBUTOR, (byte) 1)
                         .set(USER.INVITATION_CODE, inviteCode)
                         .set(USER.INVITE_GROUP, inviteGroup)
-                        .set(USER.INVITE_TIME, DateUtil.getLocalDateTime())
+                        .set(USER.INVITE_TIME, DateUtils.getLocalDateTime())
                         .where(USER.USER_ID.eq(res.getUserId())).execute();
                     //审核通过
                     state = 1;
@@ -658,7 +657,7 @@ public class MpDistributionService extends ShopBaseService{
                 //获取分销配置
                 DistributionParam cfg = this.distributionCfg.getDistributionCfg();
                 //邀请保护时间
-                Timestamp protectDate =DateUtil.getTimeStampPlus(cfg.getProtectDate(), ChronoUnit.DAYS);
+                Timestamp protectDate = DateUtils.getTimeStampPlus(cfg.getProtectDate(), ChronoUnit.DAYS);
                 if(cfg.getProtectDate() == -1){  //-1为永久保护
                     Date foreverDate = new Date(946656000);
                     protectDate = Util.getEarlyTimeStamp(foreverDate,1);
@@ -668,7 +667,7 @@ public class MpDistributionService extends ShopBaseService{
                 }
 
                 //邀请失效时间
-                Timestamp inviteExpiryDate = DateUtil.getTimeStampPlus(cfg.getVaild(), ChronoUnit.DAYS);
+                Timestamp inviteExpiryDate = DateUtils.getTimeStampPlus(cfg.getVaild(), ChronoUnit.DAYS);
                 if(cfg.getVaild() == 0){  //永久返利有效
                     Date foreverDate = new Date(946656000);
                     inviteExpiryDate = Util.getEarlyTimeStamp(foreverDate,1);

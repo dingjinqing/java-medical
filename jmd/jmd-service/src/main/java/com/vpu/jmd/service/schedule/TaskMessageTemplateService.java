@@ -1,16 +1,16 @@
 package com.vpu.jmd.service.schedule;
 
-import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
-import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
+import com.vpu.jmd.common.DateUtils;
+import com.vpu.jmd.service.base.MainBaseService;
+import com.vpu.jmd.service.schedule.bo.TaskJobsConstant;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.vpu.mp.db.main.tables.TaskJobContent.TASK_JOB_CONTENT;
-import static com.vpu.mp.db.main.tables.TaskJobMain.TASK_JOB_MAIN;
+import static com.vpu.jmd.table.main.Tables.TASK_JOB_CONTENT;
+import static com.vpu.jmd.table.main.Tables.TASK_JOB_MAIN;
+
 
 /**
  * 消息发送TaskService
@@ -28,7 +28,7 @@ public class TaskMessageTemplateService extends MainBaseService {
             .from(TASK_JOB_MAIN)
             .leftJoin(TASK_JOB_CONTENT).on(TASK_JOB_MAIN.CONTENT_ID.eq(TASK_JOB_CONTENT.ID))
             .where(TASK_JOB_MAIN.EXECUTION_TYPE.eq(executionType))
-            .and(TASK_JOB_MAIN.NEXT_EXECUTE_TIME.lessThan(DateUtil.getLocalDateTime()))
+            .and(TASK_JOB_MAIN.NEXT_EXECUTE_TIME.lessThan(DateUtils.getLocalDateTime()))
             .fetch();
     }
     public void sendMessage(Result<Record2<String,Integer>> result, TaskJobsConstant.TaskJobEnum job){
@@ -39,3 +39,4 @@ public class TaskMessageTemplateService extends MainBaseService {
         );
     }
 }
+

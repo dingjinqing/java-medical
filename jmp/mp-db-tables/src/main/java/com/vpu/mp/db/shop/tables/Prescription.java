@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Prescription extends TableImpl<PrescriptionRecord> {
 
-    private static final long serialVersionUID = 1600951887;
+    private static final long serialVersionUID = -412466916;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_prescription</code>
@@ -191,6 +191,36 @@ public class Prescription extends TableImpl<PrescriptionRecord> {
      * The column <code>mini_shop_471752.b2c_prescription.status_memo</code>. 处方审核医师评价
      */
     public final TableField<PrescriptionRecord, String> STATUS_MEMO = createField("status_memo", org.jooq.impl.SQLDataType.VARCHAR(1024).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "处方审核医师评价");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription.expire_type</code>. 处方有效期类型 0:未知（默认过期），1:永久有效，2:时间段内有效
+     */
+    public final TableField<PrescriptionRecord, Byte> EXPIRE_TYPE = createField("expire_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "处方有效期类型 0:未知（默认过期），1:永久有效，2:时间段内有效");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription.prescription_create_time</code>. 开方时间
+     */
+    public final TableField<PrescriptionRecord, Timestamp> PRESCRIPTION_CREATE_TIME = createField("prescription_create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开方时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription.prescription_expire_time</code>. 处方过期时间
+     */
+    public final TableField<PrescriptionRecord, Timestamp> PRESCRIPTION_EXPIRE_TIME = createField("prescription_expire_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "处方过期时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription.is_delete</code>.
+     */
+    public final TableField<PrescriptionRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription.create_time</code>.
+     */
+    public final TableField<PrescriptionRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription.update_time</code>. 最后修改时间
+     */
+    public final TableField<PrescriptionRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_prescription</code> table reference

@@ -146,30 +146,22 @@
       </view>
     </view>
     <!-- 医药部分 -->
-    <view class='my_appointment each_model {{page_style==1?"":"each_model_radius"}}' 
-          wx:if='{{item.module_name == "prescription_list" && item.is_show == 1 }}'>
-      <view class='ma_title'>
-        <view wx:if='{{item.title != "" && item.title != null}}'>{{item.title}}</view>
-        <view class='to_more' bindtap='allPrescription'>
-          <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
-        </view>
-      </view>
-    </view>
-    <view class='my_appointment each_model {{page_style==1?"":"each_model_radius"}}'
-          wx:if='{{item.module_name == "prescription_medicine_list" && item.is_show == 1 }}'>
-      <view class='ma_title'>
-        <view wx:if='{{item.title != "" && item.title != null}}'>{{item.title}}</view>
-        <view class='to_more' bindtap='allPrescriptionMedical'>
-          <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
-        </view>
-      </view>
-    </view>
-    <view class='my_appointment each_model {{page_style==1?"":"each_model_radius"}}'
+    <view class='patient_list each_model {{page_style==1?"":"each_model_radius"}}' 
           wx:if='{{item.module_name == "patient_list" && item.is_show == 1 }}'>
       <view class='ma_title'>
         <view wx:if='{{item.title != "" && item.title != null}}'>{{item.title}}</view>
-        <view class='to_more' bindtap='allPatient'>
+        <view class='to_more' bindtap='allPrescription'>
+          {{i18n.$t(localePack,"page1.usercenter.viewAllPatients")}}
           <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
+        </view>
+      </view>
+      <view class='ma_appoint clearfix'>
+        <view class='app_img'>
+          <image src='{{imageUrl}}/image/wxapp/img1.jpg'></image>
+        </view>
+        <view class='app_info'>
+          <view>huanzhexinxi1</view>
+          <view>huanzhexinxi1</view>
         </view>
       </view>
     </view>

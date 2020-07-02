@@ -7,7 +7,7 @@ import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.excel.bean.ClassList;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
@@ -137,7 +137,7 @@ public class MrkingStrategyService extends ShopBaseService {
             from(MRKING_STRATEGY);
         if(param.getState() > 0) {
             /** 状态过滤*/
-            Timestamp now = DateUtil.getLocalDateTime();
+            Timestamp now = DateUtils.getLocalDateTime();
             switch(param.getState()) {
                 case (byte)1:
                     select.where(MRKING_STRATEGY.STATUS.eq(STATUS_NORMAL)).and(MRKING_STRATEGY.START_TIME.lt(now)).and(MRKING_STRATEGY.END_TIME.gt(now));
@@ -240,10 +240,10 @@ public class MrkingStrategyService extends ShopBaseService {
         if(MrkingStrategyAct == null || MrkingStrategyAct.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
             vo.setState((byte)1);
             return vo;
-        }else if(MrkingStrategyAct.getStartTime().after(DateUtil.getLocalDateTime())){
+        }else if(MrkingStrategyAct.getStartTime().after(DateUtils.getLocalDateTime())){
             vo.setState((byte)2);
             return vo;
-        }else if(MrkingStrategyAct.getEndTime().before(DateUtil.getLocalDateTime())){
+        }else if(MrkingStrategyAct.getEndTime().before(DateUtils.getLocalDateTime())){
             vo.setState((byte)3);
             return vo;
         }
@@ -561,7 +561,7 @@ public class MrkingStrategyService extends ShopBaseService {
                 MRKING_STRATEGY.END_TIME)
             .from(MRKING_STRATEGY)
             .where(MRKING_STRATEGY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(MRKING_STRATEGY.STATUS
-                .eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(MRKING_STRATEGY.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+                .eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(MRKING_STRATEGY.END_TIME.gt(DateUtils.getSqlTimestamp()))))
             .orderBy(MRKING_STRATEGY.ID.desc());
         PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
             MarketVo.class);
@@ -678,9 +678,9 @@ public class MrkingStrategyService extends ShopBaseService {
         Timestamp startDate = param.getStartTime();
         Timestamp endDate = param.getEndTime();
         if (startDate == null || endDate == null) {
-            startDate = DateUtil.currentMonthFirstDay();
+            startDate = DateUtils.currentMonthFirstDay();
             param.setStartTime(startDate);
-            endDate = DateUtil.getLocalDateTime();
+            endDate = DateUtils.getLocalDateTime();
             param.setEndTime(endDate);
         }
 

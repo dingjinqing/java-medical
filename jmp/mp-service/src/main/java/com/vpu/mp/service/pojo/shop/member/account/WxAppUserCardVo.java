@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
@@ -33,7 +33,7 @@ public class WxAppUserCardVo extends UserCardParam {
 	 */
 	private Integer status;
 	/**
-	 * 	 是否过期 
+	 * 	 是否过期
 	 */
 	protected Byte expire;
 	/**
@@ -55,13 +55,13 @@ public class WxAppUserCardVo extends UserCardParam {
 	 */
 	@JsonProperty("customRights")
 	protected CardCustomRights cardCustomRights;
-	
+
 	/**
 	 * 	 使用商品列表
 	 */
 	protected List<GoodsSmallVo> goodsList;
 	/**
-	 * 	 门店id 
+	 * 	 门店id
 	 */
 	@JsonProperty("storeList")
 	protected List<Integer> storeIdList;
@@ -85,7 +85,7 @@ public class WxAppUserCardVo extends UserCardParam {
 	 * 	用户卡的转赠数据
 	 */
 	protected CardGiveVo cardGive;
-	
+
 	/**
 	 *  优惠券列表
 	 */
@@ -124,13 +124,13 @@ public class WxAppUserCardVo extends UserCardParam {
 		if(getExpireTime()==null) {
 			return false;
 		}
-		return getExpireTime().before(DateUtil.getLocalDateTime());
-		
+		return getExpireTime().before(DateUtils.getLocalDateTime());
+
 	}
 	private boolean hasExpireTime() {
 		return getExpireTime() != null;
 	}
-	
+
 	private boolean isPermanent() {
 		return PERMANENT.equals(getExpireType());
 	}

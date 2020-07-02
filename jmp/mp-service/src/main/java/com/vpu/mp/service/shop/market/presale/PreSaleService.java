@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.market.presale;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
@@ -552,17 +552,17 @@ public class PreSaleService extends ShopBaseService {
 	 * @return
 	 */
 	public List<PreSaleVo> getPreSaleListByHour(Integer hours,Byte type) {
-		Timestamp timeStampPlus = DateUtil.getTimeStampPlus(hours, ChronoUnit.HOURS);
-		String date = DateUtil.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
+		Timestamp timeStampPlus = DateUtils.getTimeStampPlus(hours, ChronoUnit.HOURS);
+		String date = DateUtils.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
 		SelectConditionStep<PresaleRecord> fetch = db().selectFrom(PRESALE)
 				.where(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
 		//还没开始
 		if(type.equals((byte) 0)) {
-			fetch.and(dateFormat(PRESALE.END_TIME, DateUtil.DATE_MYSQL_DAY).eq(date));
+			fetch.and(dateFormat(PRESALE.END_TIME, DateUtils.DATE_MYSQL_DAY).eq(date));
 		}
 		//快开始
 		if(type.equals((byte) 1)) {
-			fetch.and(dateFormat(PRESALE.START_TIME, DateUtil.DATE_MYSQL_DAY).eq(date));
+			fetch.and(dateFormat(PRESALE.START_TIME, DateUtils.DATE_MYSQL_DAY).eq(date));
 		}
 		Result<PresaleRecord> fetch2 = fetch.fetch();
 		List<PreSaleVo> into = new ArrayList<PreSaleVo>();
@@ -616,7 +616,7 @@ public class PreSaleService extends ShopBaseService {
 						TABLE.END_TIME)
 				.from(TABLE)
 				.where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(TABLE.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(TABLE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(TABLE.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(TABLE.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);
@@ -630,7 +630,7 @@ public class PreSaleService extends ShopBaseService {
      * @return 可用商品id集合
      */
     public List<Integer> getPreSaleCanUseGoodsIds(Integer activityId,Condition baseCondition) {
-        Timestamp now = DateUtil.getLocalDateTime();
+        Timestamp now = DateUtils.getLocalDateTime();
         // 一阶段或二阶段付定金时间限制
         // 付定金：时间限制在第一阶段或第二阶段内
         //全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）

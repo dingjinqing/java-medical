@@ -2,7 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.overview.asset.AssetDetailParam;
 import com.vpu.mp.service.pojo.shop.overview.asset.RevenueProfileParam;
@@ -49,7 +49,7 @@ public class AdminAssetManagementController extends AdminBaseController {
     @PostMapping("/api/admin/assetmanagement/export2Excel")
     public void export2Excel(@RequestBody @Validated AssetDetailParam param, HttpServletResponse response) {
         Workbook workbook = shop().assetService.export2Excel(param, getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.ASSETS_EXPORT_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.ASSETS_EXPORT_FILE_NAME, "excel", "excel") + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT);
         export2Excel(workbook, fileName, response);
     }
 }

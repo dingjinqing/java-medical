@@ -3,7 +3,7 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.order.virtual.AnalysisParam;
@@ -59,7 +59,7 @@ public class AdminMemberCardOrderController extends AdminBaseController {
     @PostMapping("/export")
     public void export(@RequestBody @Valid MemberCardOrderParam param, HttpServletResponse response) {
         Workbook workbook = shop().memberCardOrder.exportOrderList(param, getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.VIRTUAL_ORDER_MEMBER_CARD_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.VIRTUAL_ORDER_MEMBER_CARD_FILE_NAME, "excel", "excel") + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT);
         export2Excel(workbook, fileName, response);
     }
 }

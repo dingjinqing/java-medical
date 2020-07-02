@@ -45,7 +45,7 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.foundation.database.DslPlus;
@@ -757,7 +757,7 @@ public class CouponService extends ShopBaseService {
         Result<Record1<Integer>> record = db().selectCount().from(CUSTOMER_AVAIL_COUPONS)
             .where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId).and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0)
             		.and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-                .and(CUSTOMER_AVAIL_COUPONS.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+                .and(CUSTOMER_AVAIL_COUPONS.END_TIME.gt(DateUtils.getSqlTimestamp()))))
             .fetch();
         return record.get(0).into(Integer.class);
     }
@@ -942,7 +942,7 @@ public class CouponService extends ShopBaseService {
     public void use(Integer id, String orderSn){
         db().update(CUSTOMER_AVAIL_COUPONS)
             .set(CUSTOMER_AVAIL_COUPONS.IS_USED, COUPON_IS_USED_STATUS_USED)
-            .set(CUSTOMER_AVAIL_COUPONS.USED_TIME, DateUtil.getSqlTimestamp())
+            .set(CUSTOMER_AVAIL_COUPONS.USED_TIME, DateUtils.getSqlTimestamp())
             .set(CUSTOMER_AVAIL_COUPONS.ORDER_SN, orderSn)
             .where(CUSTOMER_AVAIL_COUPONS.ID.eq(id))
             .execute();
@@ -1102,7 +1102,7 @@ public class CouponService extends ShopBaseService {
 				.from(CUSTOMER_AVAIL_COUPONS, MRKING_VOUCHER, USER)
 				.where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)
 						.and(USER.USER_ID.eq(CUSTOMER_AVAIL_COUPONS.USER_ID))
-						.and(CUSTOMER_AVAIL_COUPONS.START_TIME.lt(DateUtil.getLocalDateTime())
+						.and(CUSTOMER_AVAIL_COUPONS.START_TIME.lt(DateUtils.getLocalDateTime())
 								.and(CUSTOMER_AVAIL_COUPONS.END_TIME.ge(time)).and(CUSTOMER_AVAIL_COUPONS.END_TIME
 										.le(time2).and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0)))))
 				.fetch();
@@ -1142,7 +1142,7 @@ public class CouponService extends ShopBaseService {
 		Integer hour = record.getValidityHour();
 		Integer minute = record.getValidityMinute();
 		if (day > 0 || hour > 0 || minute > 0) {
-			into.setStartTime(DateUtil.getSqlTimestamp());
+			into.setStartTime(DateUtils.getSqlTimestamp());
 			Timestamp endTime = Timestamp.valueOf(LocalDateTime.now().plus(day, ChronoUnit.DAYS)
 					.plus(hour, ChronoUnit.HOURS).plus(minute, ChronoUnit.MINUTES));
 			into.setEndTime(endTime);

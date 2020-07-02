@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.market.lottery;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.foundation.database.DslPlus;
@@ -49,7 +49,6 @@ import java.util.Collections;
 import static com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_LOTTERY_AWARD;
-import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_PRIZE_STATUS_RECEIVED;
 import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_PRIZE_STATUS_UNCLAIMED;
 import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TYPE_BALANCE;
@@ -317,7 +316,7 @@ public class LotteryRecordService extends ShopBaseService {
                     recordRecord.setPrdId(lotteryPrizeRecord.getPrdId());
                     recordRecord.setPresentStatus(LOTTERY_PRIZE_STATUS_UNCLAIMED);
                     recordRecord.setLotteryAward("赠品:"+goodsView.getGoodsName());
-                    Timestamp timeStampPlus = DateUtil.getTimeStampPlus(lotteryPrizeRecord.getPrdKeepDays().intValue(), ChronoUnit.DAYS);
+                    Timestamp timeStampPlus = DateUtils.getTimeStampPlus(lotteryPrizeRecord.getPrdKeepDays().intValue(), ChronoUnit.DAYS);
                     recordRecord.setLotteryExpiredTime(timeStampPlus);
                     recordRecord.insert();
                     PrizeRecordRecord prizeRecordRecord = prizeRecordService.savePrize(userId, lotteryRecord.getId(), recordRecord.getId(),

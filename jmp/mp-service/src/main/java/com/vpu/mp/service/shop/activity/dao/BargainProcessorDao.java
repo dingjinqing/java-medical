@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.activity.dao;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.BargainGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -81,7 +81,7 @@ public class BargainProcessorDao extends ShopBaseService {
         vo.setActivityId(activityId);
         vo.setActivityType(BaseConstant.ACTIVITY_TYPE_BARGAIN);
 
-        Timestamp now = DateUtil.getLocalDateTime();
+        Timestamp now = DateUtils.getLocalDateTime();
 
         BargainRecord bargainRecord = db().selectFrom(BARGAIN).where(BARGAIN.ID.eq(activityId).and(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))).fetchAny();
         BargainGoodsRecord bargainGoods = db().fetchAny(BARGAIN_GOODS,BARGAIN_GOODS.BARGAIN_ID.eq(activityId).and(BARGAIN_GOODS.GOODS_ID.eq(goodsId)));
@@ -138,7 +138,7 @@ public class BargainProcessorDao extends ShopBaseService {
     public Byte canApplyBargain(Integer userId, Timestamp date, BargainRecord bargainRecord,Integer goodsId) {
         logger().debug("小程序-商品详情-砍价信息-是否可以发起砍价判断");
         if (date == null) {
-            date = DateUtil.getLocalDateTime();
+            date = DateUtils.getLocalDateTime();
         }
 
         if (bargainRecord == null) {

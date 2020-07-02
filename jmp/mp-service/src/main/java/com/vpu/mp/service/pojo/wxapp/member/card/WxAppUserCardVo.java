@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
@@ -67,13 +67,13 @@ public class WxAppUserCardVo extends UserCardParam {
 		if(!hasExpireTime() && isPermanent()) {
 			return false;
 		}
-		return getExpireTime().before(DateUtil.getLocalDateTime());
-		
+		return getExpireTime().before(DateUtils.getLocalDateTime());
+
 	}
 	private boolean hasExpireTime() {
 		return getExpireTime() != null;
 	}
-	
+
 	private boolean isPermanent() {
 		return PERMANENT.equals(getExpireType());
 	}

@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.order.sub;
 
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.SubOrderInfo;
 import com.vpu.mp.db.shop.tables.UserDetail;
@@ -75,7 +75,7 @@ public class SubOrderService  extends ShopBaseService {
         SubOrderInfoRecord order = get(subOrderSn);
         order.setOrderStatus(OrderConstant.SubOrderConstant.SUB_ORDER_PAY_OK);
         order.setPaySn(record.getPaySn());
-        order.setPayTime(DateUtil.getSqlTimestamp());
+        order.setPayTime(DateUtils.getSqlTimestamp());
         order.update();
     }
 
@@ -95,7 +95,7 @@ public class SubOrderService  extends ShopBaseService {
             record.setOrderStatus(OrderConstant.SubOrderConstant.SUB_ORDER_REFUND_SUCESS);
         }
         record.setRefundMoney(returned);
-        record.setRefundTime(DateUtil.getSqlTimestamp());
+        record.setRefundTime(DateUtils.getSqlTimestamp());
         record.update();
     }
 }

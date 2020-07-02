@@ -38,7 +38,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-import static com.vpu.mp.common.foundation.util.DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE;
+import static com.vpu.mp.common.foundation.util.DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE;
 import static com.vpu.mp.db.shop.Tables.PICTORIAL;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 

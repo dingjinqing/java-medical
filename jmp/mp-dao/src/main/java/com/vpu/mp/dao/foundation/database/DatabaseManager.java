@@ -4,7 +4,6 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DatabaseConfig;
 import com.vpu.mp.dao.foundation.service.QueryFilter;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -29,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.FileCopyUtils;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -67,7 +67,7 @@ public class DatabaseManager {
 	public DefaultDSLContext mainDb() {
 		MpDefaultDslContext db = mainDsl.get();
 		if (db == null) {
-			HikariDataSource ds = datasourceManager.getMainDbDatasource();
+			DataSource ds = datasourceManager.getMainDbDatasource();
 			db = this.getDsl(ds, datasourceManager.getMainDbConfig(), 0);
 		}
 		mainDsl.remove();
@@ -91,7 +91,7 @@ public class DatabaseManager {
 				if (dbConfig == null) {
 					throw new RuntimeException("ShopId " + shopId + " Db not found");
 				}
-				HikariDataSource ds = datasourceManager.getDatasource(dbConfig);
+				DataSource ds = datasourceManager.getDatasource(dbConfig);
 				db = getDsl(ds, dbConfig, shopId);
 				shopDsl.remove();
 				shopDsl.set(db);
@@ -125,7 +125,7 @@ public class DatabaseManager {
 	/**
 	 * 从数据源获取一个连接
 	 */
-	protected MpDefaultDslContext getDsl(HikariDataSource ds, DbConfig dbConfig, Integer shopId) {
+	protected MpDefaultDslContext getDsl(DataSource ds, DbConfig dbConfig, Integer shopId) {
 		MpDefaultDslContext db = new MpDefaultDslContext(configuration(ds, dbConfig.getDatabase()));
 		db.setShopId(shopId);
 		db.setDbConfig(dbConfig);
@@ -141,7 +141,7 @@ public class DatabaseManager {
     public boolean installShopDb(DbConfig dbConfig) {
         try {
             String sql = "create database " + dbConfig.database + " default charset utf8mb4 collate utf8mb4_unicode_ci";
-            HikariDataSource ds = datasourceManager.getToCreateShopDbDatasource();
+			DataSource ds = datasourceManager.getToCreateShopDbDatasource();
             getDsl(ds, dbConfig, 0).execute(sql);
         } catch (DataAccessException e) {
             e.printStackTrace();
@@ -266,7 +266,7 @@ public class DatabaseManager {
 	 * @param dataSource
 	 * @return
 	 */
-	protected DefaultConfiguration configuration(HikariDataSource dataSource, String databaseName) {
+	protected DefaultConfiguration configuration(DataSource dataSource, String databaseName) {
 
 		String jooqMainSchema = "mini_main";
 		String jooqShopSchema = "mini_shop_471752";

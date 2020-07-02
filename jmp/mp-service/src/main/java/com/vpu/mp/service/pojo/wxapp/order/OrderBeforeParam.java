@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
@@ -78,7 +78,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	private OrderCartProductBo orderCartProductBo;
 	/**下单时间*/
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	private Timestamp date = DateUtil.getSqlTimestamp();
+	private Timestamp date = DateUtils.getSqlTimestamp();
     /**活动免运费*/
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Byte isFreeShippingAct;

@@ -2,7 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.pojo.shop.member.account.CardConsumeParam;
@@ -52,7 +52,7 @@ public class AdminUserCardController extends AdminBaseController {
     public JsonResult getStoreValidCardList(@RequestBody @Validated(ValidCon.class) StoreParam param) {
         return this.success(shop().userCard.userCardDao.getStoreValidCardList(param.getUserId(), param.getStoreId()));
     }
-    
+
     /**
      *	 增加减少会员卡余额和次数
      */
@@ -63,7 +63,7 @@ public class AdminUserCardController extends AdminBaseController {
     	UserCardConsumeBeanBuilder consumer = UserCardConsumeBean.builder();
     	Byte cardType = param.getCardType();
     	Boolean isContinue = true;
-    	
+
     	if(CardUtil.isLimitCard(cardType)) {
     		// 限次卡
     		if(NumberUtils.BYTE_ONE.equals(param.getType())) {
@@ -121,7 +121,7 @@ public class AdminUserCardController extends AdminBaseController {
     @PostMapping("/api/admin/user/card/renew/export")
     public void cardRenewExport(@RequestBody @Valid UserCardRenewListParam param, HttpServletResponse response) {
         Workbook workbook = shop().userCard.exportRenewList(param, getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.USER_CARD_RENEW_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.USER_CARD_RENEW_FILE_NAME, "excel", "excel") + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT);
         export2Excel(workbook, fileName, response);
     }
 
@@ -150,7 +150,7 @@ public class AdminUserCardController extends AdminBaseController {
     @PostMapping("/api/admin/user/card/charge/export")
     public void cardChargeExport(@RequestBody @Valid UserCardChargeListParam param, HttpServletResponse response) {
         Workbook workbook = shop().userCard.exportChargeList(param, getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.USER_CARD_CHARGE_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.USER_CARD_CHARGE_FILE_NAME, "excel", "excel") + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT);
         export2Excel(workbook, fileName, response);
     }
 

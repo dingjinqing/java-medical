@@ -30,7 +30,7 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
@@ -147,7 +147,7 @@ public class GroupIntegrationService extends ShopBaseService {
 
 	/**
 	 * 分页查询瓜分积分活动列表
-	 * 
+	 *
 	 * @param pageParam
 	 * @return
 	 */
@@ -169,7 +169,7 @@ public class GroupIntegrationService extends ShopBaseService {
 
 	/**
 	 * 根据iD 查询指定的瓜分积分活动
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -197,7 +197,7 @@ public class GroupIntegrationService extends ShopBaseService {
 
 	/**
 	 * 根据iD 查询指定的瓜分积分活动
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -215,7 +215,7 @@ public class GroupIntegrationService extends ShopBaseService {
 
 	/**
 	 * 新增一个瓜分积分活动
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -260,7 +260,7 @@ public class GroupIntegrationService extends ShopBaseService {
 
 	/**
 	 * 根据ID删除一个瓜分积分活动
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -274,7 +274,7 @@ public class GroupIntegrationService extends ShopBaseService {
 
 	/**
 	 * 更新指定ID的瓜分积分活动
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -297,7 +297,7 @@ public class GroupIntegrationService extends ShopBaseService {
 
 	/**
 	 * 获取分享的小程序码url
-	 * 
+	 *
 	 * @param actId
 	 * @return
 	 */
@@ -317,7 +317,7 @@ public class GroupIntegrationService extends ShopBaseService {
 
 	/**
 	 * 更新指定ID的瓜分积分活动
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -327,7 +327,7 @@ public class GroupIntegrationService extends ShopBaseService {
 
 	/**
 	 * 启用活动，或者停止活动
-	 * 
+	 *
 	 * @param id
 	 * @param status
 	 * @return
@@ -358,14 +358,14 @@ public class GroupIntegrationService extends ShopBaseService {
 				GroupInteRabbitParam param = new GroupInteRabbitParam(item.getGroupId(), item.getInteActivityId(),getShopId(),null);
 				saas.taskJobMainService.dispatchImmediately(param, GroupInteRabbitParam.class.getName(), getShopId(),
 						TaskJobEnum.GROUP_INTEGRATION_MQ.getExecutionType());
-			}			
+			}
 		}
 		return result;
 	}
 
 	/**
 	 * 刷新剩余积分 ：剩余积分 = 当前剩余积分 - 团的积分
-	 * 
+	 *
 	 * @param actId
 	 */
 	public void refreshRemainInte(Integer actId) {
@@ -376,7 +376,7 @@ public class GroupIntegrationService extends ShopBaseService {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param inteGroup   每一个团的总积分
 	 * @param limitAmount 成团人数
 	 * @return
@@ -392,7 +392,7 @@ public class GroupIntegrationService extends ShopBaseService {
 
 	/**
 	 * 将团数量、参与人数 、消耗积分 信息填充到传入的对象中，并设置活动是否过期标志位
-	 * 
+	 *
 	 * @param dataList
 	 * @param activictyInfoMap
 	 */
@@ -413,7 +413,7 @@ public class GroupIntegrationService extends ShopBaseService {
 
 	/**
 	 * 查找 某些活动 的团数量、参与人数 、消耗积分信息
-	 * 
+	 *
 	 * @param dataList
 	 * @return key为活动ID，vlaue 为活动信息
 	 */
@@ -471,7 +471,7 @@ public class GroupIntegrationService extends ShopBaseService {
 
 	/**
 	 * 小程序装修瓜分积分模块显示异步调用
-	 * 
+	 *
 	 * @param moduleGroupIntegration
 	 * @return
 	 */
@@ -498,7 +498,7 @@ public class GroupIntegrationService extends ShopBaseService {
 
 	/**
 	 * 校验活动userId可用状态
-	 * 
+	 *
 	 * @param groupIntegrationDefine
 	 * @param userId
 	 * @return 0正常，1活动不存在，2活动已停用，3活动未开始，4活动已结束
@@ -511,10 +511,10 @@ public class GroupIntegrationService extends ShopBaseService {
 		if (groupIntegrationDefine.getStatus().equals(BaseConstant.ACTIVITY_STATUS_DISABLE)) {
 			return 2;
 		}
-		if (groupIntegrationDefine.getStartTime().after(DateUtil.getLocalDateTime())) {
+		if (groupIntegrationDefine.getStartTime().after(DateUtils.getLocalDateTime())) {
 			return 3;
 		}
-		if (groupIntegrationDefine.getEndTime().before(DateUtil.getLocalDateTime())
+		if (groupIntegrationDefine.getEndTime().before(DateUtils.getLocalDateTime())
 				|| (groupIntegrationDefine.getInteRemain() < groupIntegrationDefine.getInteGroup()
 						&& groupIntegrationDefine.getInteTotal() > 0
 						&& groupIntegrationDefine.getIsDayDivide().equals(IS_DAY_DIVIDE_N))
@@ -537,12 +537,12 @@ public class GroupIntegrationService extends ShopBaseService {
 			//该活动已停用
 			return new CanApplyPinInteVo(STATUS_TWO, Util.translateMessage(lang, JsonResultMessage.GROUP_INTEGRATION_DISABLED, LANGUAGE_TYPE_MSG));
 		}
-		if (pinInteInfo.getStartTime().after(DateUtil.getLocalDateTime())) {
+		if (pinInteInfo.getStartTime().after(DateUtils.getLocalDateTime())) {
 			//该活动未开始
 			return new CanApplyPinInteVo(STATUS_THREE, Util.translateMessage(lang, JsonResultMessage.GROUP_INTEGRATION_NOT_STARTED, LANGUAGE_TYPE_MSG));
 		}
 		if (groupId != null && groupId != 0) {
-			if (pinInteInfo.getEndTime().before(DateUtil.getLocalDateTime())
+			if (pinInteInfo.getEndTime().before(DateUtils.getLocalDateTime())
 					|| pinInteInfo.getIsContinue().equals(IS_DAY_DIVIDE_N)
 					|| (pinInteInfo.getInteRemain().equals(0) && pinInteInfo.getInteTotal() > 0)) {
 				//该活动已结束
@@ -573,7 +573,7 @@ public class GroupIntegrationService extends ShopBaseService {
 			Byte isDayDivide = pinInteInfo.getIsDayDivide();
 			int existGroup = groupIntegrationList.getExistGroup(userId, pinInteId);
 			if (type != null) {
-				if (pinInteInfo.getEndTime().before(DateUtil.getLocalDateTime())
+				if (pinInteInfo.getEndTime().before(DateUtils.getLocalDateTime())
 						|| ((inteRemain < inteGroup && inteTotal > 0 && isDayDivide == IS_DAY_DIVIDE_N)
 								|| (inteRemain <= 0 && inteTotal > 0 && isDayDivide == IS_DAY_DIVIDE_Y))
 								&& existGroup == 0) {
@@ -581,7 +581,7 @@ public class GroupIntegrationService extends ShopBaseService {
 					return new CanApplyPinInteVo(STATUS_FOUR, Util.translateMessage(lang, JsonResultMessage.GROUP_INTEGRATION_ENDED, LANGUAGE_TYPE_MSG));
 				}
 			} else {
-				if (pinInteInfo.getEndTime().before(DateUtil.getLocalDateTime())
+				if (pinInteInfo.getEndTime().before(DateUtils.getLocalDateTime())
 						|| ((inteRemain < inteGroup && inteTotal > 0 && isDayDivide == IS_DAY_DIVIDE_N)
 								|| (inteRemain <= 0 && inteTotal > 0 && isDayDivide == IS_DAY_DIVIDE_Y))) {
 					//该活动已结束
@@ -605,9 +605,9 @@ public class GroupIntegrationService extends ShopBaseService {
 		}
 		if (null == endTime) {
 			endTime = fetch.getEndTime();
-			if (endTime.after(DateUtil.getLocalDateTime())) {
+			if (endTime.after(DateUtils.getLocalDateTime())) {
 				// 结束日期晚于今天
-				endTime = DateUtil.getLocalDateTime();
+				endTime = DateUtils.getLocalDateTime();
 			}
 		}
 
@@ -638,16 +638,16 @@ public class GroupIntegrationService extends ShopBaseService {
 			logger().info("没有数据");
 			return gbaVo;
 		}
-		String format = DateUtil.DATE_FORMAT_SIMPLE;
+		String format = DateUtils.DATE_FORMAT_SIMPLE;
 		for (GroupIntegrationListPojo groupIntegrationListPojo : recordList) {
-			groupIntegrationListPojo.setStartDate(DateUtil.dateFormat(format, groupIntegrationListPojo.getStartTime()));
+			groupIntegrationListPojo.setStartDate(DateUtils.dateFormat(format, groupIntegrationListPojo.getStartTime()));
 		}
 		byte one = 1;
 		int integrationNum = 0;
 		int joinNum = 0;
 		int successUserNum = 0;
 		int newUser = 0;
-		List<String> betweenTime = DateUtil.getBetweenTime(startTime, endTime);
+		List<String> betweenTime = DateUtils.getBetweenTime(startTime, endTime);
 		List<GroupIntegrationAnalysisListVo> returnVo = new ArrayList<GroupIntegrationAnalysisListVo>();
 		for (String date : betweenTime) {
 			GroupIntegrationAnalysisListVo vo = new GroupIntegrationAnalysisListVo();
@@ -697,7 +697,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		CanPinInte canPinInte = new CanPinInte();
 		vo.setInviteUser(inviteUser);
 		long endTime = pinInteInfo.getEndTime().getTime();
-		long nowTime = DateUtil.getLocalDateTime().getTime();
+		long nowTime = DateUtils.getLocalDateTime().getTime();
 		long remainingTime = endTime > nowTime ? endTime - nowTime : 0L;
 		logger().info("剩余时间：{}", remainingTime);
 		canPinInte.setRemainingTime(remainingTime);
@@ -866,7 +866,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		return vo;
 
 	}
-	
+
 	public CanPinInte checkPin(Integer pinInteId, Integer groupId,Integer userId,String lang) {
 		// 0正常，1活动不存在，2活动已停用，3活动未开始，4活动已结束
 		CanPinInte canPinInte = new CanPinInte();
@@ -889,7 +889,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		int userNum = groupInfo.size();
 		int canIntegration = groupInfo.get(0).getCanIntegration();
 		int execute = db().update(GROUP_INTEGRATION_LIST)
-				.set(GROUP_INTEGRATION_LIST.END_TIME, DateUtil.getLocalDateTime()).where(GROUP_INTEGRATION_LIST.GROUP_ID
+				.set(GROUP_INTEGRATION_LIST.END_TIME, DateUtils.getLocalDateTime()).where(GROUP_INTEGRATION_LIST.GROUP_ID
 						.eq(groupId).and(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(pinInteId)))
 				.execute();
 		logger().info("活动id：{},团id：{}，更新结束时间结果：{}", pinInteId, groupId, execute);
@@ -979,7 +979,7 @@ public class GroupIntegrationService extends ShopBaseService {
 				Integer inviteUser = groupIntegrationMaVo.getInviteUser()==0?groupIntegrationMaVo.getUserId():groupIntegrationMaVo.getInviteUser();
 				sendGroupSuccessMessage(pinInteInfo, groupId, groupIntegrationMaVo.getUserId(), groupName, groupSize,inviteUser);
 			}
-			
+
 		}
 		GroupIntegrationDefineRecord pinInteInfoNew = getOneInfoByIdNoInto(pinInteId);
 		if ((pinInteInfoNew.getIsDayDivide().equals(IS_DAY_DIVIDE_Y) && pinInteInfoNew.getInteRemain().equals(0))
@@ -996,7 +996,7 @@ public class GroupIntegrationService extends ShopBaseService {
 
 	/**
 	 * 按邀请好友数量瓜分
-	 * 
+	 *
 	 * @param groupId
 	 * @param pinInteId
 	 * @param groupInfo
@@ -1054,7 +1054,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		}
 		return list;
 	}
-	
+
 	/**
 	 * 组团瓜分积分失败发公众号
 	 */
@@ -1074,8 +1074,8 @@ public class GroupIntegrationService extends ShopBaseService {
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
 				TaskJobEnum.SEND_MESSAGE.getExecutionType());
 	}
-	
-	
+
+
 	/**
 	 * 组团瓜分积分成功发公众号
 	 */
@@ -1095,10 +1095,10 @@ public class GroupIntegrationService extends ShopBaseService {
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
 				TaskJobEnum.SEND_MESSAGE.getExecutionType());
 	}
-	
-	
-	
-	
+
+
+
+
 	public GroupDetailVo pinIntegrationDetail(GroupStartParam param,Integer userId,String lang) {
 		Integer pinInteId = param.getPinInteId();
 		Integer groupId = param.getGroupId() == null ? 0 : param.getGroupId();
@@ -1127,7 +1127,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		long add=24*60*60*1000L;
 		if(groupIntegration.getStatus().equals(STATUS_ZERO)) {
 			long time = startTime + add > endTime ? endTime : startTime + add;
-			Timestamp time1 = DateUtil.getSqlTimestamp();
+			Timestamp time1 = DateUtils.getSqlTimestamp();
 			long now=time1.getTime();
 			vo.setRemainTime(time-now);
 		}
@@ -1141,7 +1141,7 @@ public class GroupIntegrationService extends ShopBaseService {
 				logger().info("userId：{},pinInteId：{},groupId：{}，更新开奖状态为开奖结果{}",userId,pinInteId,groupId,update);
 				pinInteUser.setIsLook(STATUS_ZERO);
 			}
-			vo.setPinInteUser(pinInteUser.into(GroupIntegrationListPojo.class));			
+			vo.setPinInteUser(pinInteUser.into(GroupIntegrationListPojo.class));
 		}
 		vo.setUserNum(userNum);
 		vo.setInviteUser(inviteUser);
@@ -1151,14 +1151,14 @@ public class GroupIntegrationService extends ShopBaseService {
 		vo.setCanPin(canApplyPinInte);
 		return vo;
 	}
-	
+
 	/**
 	 * 我的活动 5天内的
 	 * @param userId
 	 * @return
 	 */
 	public List<GroupIntegrationInfoVo> getMyActivity(Integer userId) {
-		List<GroupIntegrationInfoPojo> userPinInteGroup = groupIntegrationList.getPinGroupByUser(userId,DateUtil.getSqlTimestamp());
+		List<GroupIntegrationInfoPojo> userPinInteGroup = groupIntegrationList.getPinGroupByUser(userId, DateUtils.getSqlTimestamp());
 		List<GroupIntegrationInfoVo> voList=new ArrayList<GroupIntegrationInfoVo>();
 		//0: 拼团中 1:拼团成功 2:拼团失败
 		for (GroupIntegrationInfoPojo item : userPinInteGroup) {
@@ -1193,15 +1193,15 @@ public class GroupIntegrationService extends ShopBaseService {
 			voList.add(vo);
 		}
 		return voList;
-		
+
 	}
-	
+
 	/**
 	 * 处理拼团结果  定时任务用
 	 */
 	public void updateState() {
 		logger().info("处理组团瓜分积分结果  定时任务运行");
-		Timestamp dateTime = DateUtil.getSqlTimestamp();
+		Timestamp dateTime = DateUtils.getSqlTimestamp();
 		List<GroupInteGetEndVo> pinGroup = groupIntegrationList.getAlreadyEndPinGroup(dateTime);
 		System.out.println(pinGroup.size());
 		for (GroupInteGetEndVo item : pinGroup) {
@@ -1210,7 +1210,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		}
 		logger().info("处理组团瓜分积分结果  定时任务结束");
 	}
-	
+
 	/**
 	 * 组团瓜分积分的规则说明
 	 * @param pintInId
@@ -1233,7 +1233,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		}
 		return vo;
 	}
-	
+
 	/**
 	 * 发队列的开奖
 	 * @param groupId
@@ -1242,7 +1242,7 @@ public class GroupIntegrationService extends ShopBaseService {
 	public void asyncSuccessGroupIntegration(GroupInteRabbitParam param) {
 		successPinIntegration(param.getGroupId(), param.getPinInteId());
 	}
-	
+
 	/**
 	 * 获取积分商品
 	 * @return
@@ -1268,7 +1268,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		}
 		return voInfo;
 	}
-	
+
     /**
      * 营销日历用id查询活动
      * @param id
@@ -1278,7 +1278,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		return db().select(GROUP_INTEGRATION_DEFINE.ID, GROUP_INTEGRATION_DEFINE.NAME.as(CalendarAction.ACTNAME), GROUP_INTEGRATION_DEFINE.START_TIME,
 				GROUP_INTEGRATION_DEFINE.END_TIME).from(GROUP_INTEGRATION_DEFINE).where(GROUP_INTEGRATION_DEFINE.ID.eq(id)).fetchAnyInto(MarketVo.class);
     }
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param
@@ -1290,7 +1290,7 @@ public class GroupIntegrationService extends ShopBaseService {
 						GROUP_INTEGRATION_DEFINE.END_TIME)
 				.from(GROUP_INTEGRATION_DEFINE)
 				.where(GROUP_INTEGRATION_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GROUP_INTEGRATION_DEFINE.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(GROUP_INTEGRATION_DEFINE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(GROUP_INTEGRATION_DEFINE.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(GROUP_INTEGRATION_DEFINE.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);

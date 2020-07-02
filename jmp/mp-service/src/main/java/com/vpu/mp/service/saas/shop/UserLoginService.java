@@ -4,7 +4,7 @@ import static com.vpu.mp.db.main.Tables.USER_LOGIN_RECORD;
 
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
@@ -12,7 +12,7 @@ import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 
 /**
  * 店铺登录信息的
- * 
+ *
  * @author zhaojianqiang
  *
  *         2019年12月3日 下午4:15:41
@@ -20,7 +20,7 @@ import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 @Service
 public class UserLoginService extends MainBaseService {
 
-	
+
 	/**
 	 * 切换店铺时候记录登录信息
 	 * @param info
@@ -35,7 +35,7 @@ public class UserLoginService extends MainBaseService {
 		UserLoginRecordRecord res = db().selectFrom(USER_LOGIN_RECORD)
 				.where(USER_LOGIN_RECORD.SYS_ID.eq(info.getSysId()).and(USER_LOGIN_RECORD.SHOP_ID.eq(shop.getShopId()))
 						.and(USER_LOGIN_RECORD.USER_IP.eq(ip)).and(USER_LOGIN_RECORD.USER_ID.eq(userId))
-						.and(USER_LOGIN_RECORD.ADD_TIME.gt(DateUtil.getLocalTimeDateBySelf("yyyy-MM-dd HH:00:00"))))
+						.and(USER_LOGIN_RECORD.ADD_TIME.gt(DateUtils.getLocalTimeDateBySelf("yyyy-MM-dd HH:00:00"))))
 				.fetchAny();
 		if(null==res) {
 			//没有信息，插入新的

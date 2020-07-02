@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.image.postertraits;
 
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
@@ -140,8 +140,8 @@ public class GroupIntegrationPictorialService extends ShareBaseService{
             ImageUtil.addFont(bgBufferedImage,newUserTextStr,textFont,newUserTextStartX,newUserTextStartY,Color.WHITE,true);
         }
         // 添加有效时间
-        String startTime = DateUtil.dateFormat(DateUtil.DATE_FORMAT_DOT,record.getStartTime());
-        String endTime = DateUtil.dateFormat(DateUtil.DATE_FORMAT_DOT,record.getEndTime());
+        String startTime = DateUtils.dateFormat(DateUtils.DATE_FORMAT_DOT,record.getStartTime());
+        String endTime = DateUtils.dateFormat(DateUtils.DATE_FORMAT_DOT,record.getEndTime());
         StringBuilder timeTextSb =new StringBuilder();
         timeTextSb.append(Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_INTEGRAL_LIMIT_TIME, "", "messages"));
         timeTextSb.append(startTime).append("-").append(endTime);

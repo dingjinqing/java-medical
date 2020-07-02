@@ -9,7 +9,7 @@ import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.*;
@@ -77,7 +77,7 @@ public class CouponPackOrderService extends VirtualOrderService {
     public MpPaymentService mpPaymentService;
 
 	/**
-	 * 分页查询优惠劵礼包订单 
+	 * 分页查询优惠劵礼包订单
 	 * @param param
 	 * @return
 	 */
@@ -93,7 +93,7 @@ public class CouponPackOrderService extends VirtualOrderService {
 		SelectConditionStep<? extends Record> select = buildOptions(selectFrom,param);
         select.orderBy(VIRTUAL_ORDER.CREATE_TIME.desc());
 		PageResult<CouponPackOrderVo> pageResult = getPageResult(select,param.getCurrentPage(),param.getPageRows(), CouponPackOrderVo.class);
-		List<CouponPackOrderVo> dataList = pageResult.dataList;	
+		List<CouponPackOrderVo> dataList = pageResult.dataList;
 		if(dataList==null) {
 			return pageResult;
 		}
@@ -108,7 +108,7 @@ public class CouponPackOrderService extends VirtualOrderService {
                 couponPackOrderVo.setReturnFlag((byte)3);
             }
 			//超过一年不能退款
-            if (couponPackOrderVo.getMoneyPaid().compareTo(BigDecimal.ZERO)>0&&couponPackOrderVo.getPayTime()!=null&&DateUtil.getLocalDateTime().after(DateUtil.getTimeStampPlus(couponPackOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
+            if (couponPackOrderVo.getMoneyPaid().compareTo(BigDecimal.ZERO)>0&&couponPackOrderVo.getPayTime()!=null&& DateUtils.getLocalDateTime().after(DateUtils.getTimeStampPlus(couponPackOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
                 couponPackOrderVo.setCanReturn(BaseConstant.NO);
             }else {
                 couponPackOrderVo.setCanReturn(BaseConstant.YES);
@@ -120,7 +120,7 @@ public class CouponPackOrderService extends VirtualOrderService {
 	/**
 	 * @param select
 	 * @param param
-	 * @return 
+	 * @return
 	 */
 	private  SelectConditionStep<? extends Record> buildOptions(SelectWhereStep<? extends Record> select, CouponPackOrderPageParam param) {
         SelectConditionStep<? extends Record> condition = select.where(VIRTUAL_ORDER.GOODS_TYPE.eq(GOODS_TYPE_COUPON_PACK))
@@ -153,7 +153,7 @@ public class CouponPackOrderService extends VirtualOrderService {
         }
         return condition;
     }
-	
+
 	/**
 	 * 返回一个优惠劵包里有多少个优惠劵
 	 * @param couponPackId
@@ -188,7 +188,7 @@ public class CouponPackOrderService extends VirtualOrderService {
 		}
 		return getTotalCouponNum(couponPackId)-getVoucherAccessCount(orderSn);
 	}
-	
+
 	/**
 	 * 手动退款
 	 * @param
@@ -318,7 +318,7 @@ public class CouponPackOrderService extends VirtualOrderService {
         db().update(VIRTUAL_ORDER).
             set(VIRTUAL_ORDER.ORDER_STATUS,ORDER_STATUS_FINISHED).
             set(VIRTUAL_ORDER.PAY_SN,(paymentRecord == null ? "" : paymentRecord.getPaySn())).
-            set(VIRTUAL_ORDER.PAY_TIME, DateUtil.getLocalDateTime()).
+            set(VIRTUAL_ORDER.PAY_TIME, DateUtils.getLocalDateTime()).
             where(VIRTUAL_ORDER.ORDER_SN.eq(orderRecord.getOrderSn())).
             execute();
         orderRecord.refresh();

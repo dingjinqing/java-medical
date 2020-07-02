@@ -1134,4 +1134,9 @@ public class Tables {
      * 用户患者关联表
      */
     public static final UserPatientCouple USER_PATIENT_COUPLE = com.vpu.mp.db.shop.tables.UserPatientCouple.USER_PATIENT_COUPLE;
+
+    /**
+     * 医嘱表
+     */
+    public static final DoctorAdvice DOCTOR_ADVICE = com.vpu.mp.db.shop.tables.DoctorAdvice.DOCTOR_ADVICE;
 }

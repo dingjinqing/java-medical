@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.distribution;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.UserRebatePrice;
 import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -21,6 +21,6 @@ public class UserRebatePriceService extends ShopBaseService {
     private UserRebatePrice TABLE = USER_REBATE_PRICE;
 
     public Result<UserRebatePriceRecord> getUserRebatePrice(Integer userId, Integer[] prdIds) {
-        return db().selectFrom(TABLE).where(TABLE.USER_ID.eq(userId).and(TABLE.PRODUCT_ID.in(prdIds)).and(TABLE.EXPIRE_TIME.gt(DateUtil.getSqlTimestamp()))).fetch();
+        return db().selectFrom(TABLE).where(TABLE.USER_ID.eq(userId).and(TABLE.PRODUCT_ID.in(prdIds)).and(TABLE.EXPIRE_TIME.gt(DateUtils.getSqlTimestamp()))).fetch();
     }
 }

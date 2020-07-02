@@ -5,7 +5,7 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.RegexUtil;
 import com.vpu.mp.common.foundation.util.Util;
@@ -111,7 +111,7 @@ public class BargainService extends ShopBaseService  {
         calendar.add(Calendar.DATE, 1);
         return new Date(calendar.getTime().getTime());
     }
-	
+
 	/**
 	 * 砍价活动列表分页查询
 	 *
@@ -163,7 +163,7 @@ public class BargainService extends ShopBaseService  {
         if(param.getState() != null && param.getState().length > 0) {
             /** 状态过滤*/
             Condition stateCondition = DSL.noCondition();
-            Timestamp now = DateUtil.getLocalDateTime();
+            Timestamp now = DateUtils.getLocalDateTime();
             for(byte state : param.getState()){
                 if(state == 1){
                     stateCondition = stateCondition.or((BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(BARGAIN.START_TIME.lt(now)).and(BARGAIN.END_TIME.gt(now)));
@@ -183,7 +183,7 @@ public class BargainService extends ShopBaseService  {
 
         return select;
     }
-	
+
 	/**
 	 * 新建砍价活动
 	 *
@@ -217,13 +217,13 @@ public class BargainService extends ShopBaseService  {
             }
         });
 
-        if(param.getStartTime().before(DateUtil.getLocalDateTime()) && param.getEndTime().after(DateUtil.getLocalDateTime())){
+        if(param.getStartTime().before(DateUtils.getLocalDateTime()) && param.getEndTime().after(DateUtils.getLocalDateTime())){
             //活动已生效
             saas.getShopApp(getShopId()).shopTaskService.bargainTaskService.monitorGoodsType();
             esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(record.getGoodsId()), getShopId(), DBOperating.UPDATE);
         }
 	}
-	
+
 	/**
 	 * 更新砍价活动
 	 *
@@ -298,7 +298,7 @@ public class BargainService extends ShopBaseService  {
     public void delBargain(Integer id) {
         db().update(BARGAIN).
             set(BARGAIN.DEL_FLAG,DelFlag.DISABLE.getCode()).
-            set(BARGAIN.DEL_TIME,DateUtil.getLocalDateTime()).
+            set(BARGAIN.DEL_TIME, DateUtils.getLocalDateTime()).
             where(BARGAIN.ID.eq(id)).
             execute();
         BargainRecord bargainRecord = db().fetchAny(BARGAIN, BARGAIN.ID.eq(id));
@@ -306,7 +306,7 @@ public class BargainService extends ShopBaseService  {
         saas.getShopApp(getShopId()).shopTaskService.bargainTaskService.monitorGoodsType();
         esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(bargainRecord.getGoodsId()), getShopId(), DBOperating.UPDATE);
     }
-	
+
 	/**
 	 *
 	 * 编辑页面 取单个砍价活动信息
@@ -500,14 +500,14 @@ public class BargainService extends ShopBaseService  {
             bargainGoods.setActDelFlag(bargain.getDelFlag());
             bargainGoods.setActStatus(bargain.getStatus());
             bargainGoods.setBargainNum(bargainGoodsRecord.getStock());
-            if(bargain.getStartTime().after(DateUtil.getLocalDateTime())){
+            if(bargain.getStartTime().after(DateUtils.getLocalDateTime())){
                 //未开始
                 bargainGoods.setTimeState((byte)0);
-                bargainGoods.setRemainingTime((bargain.getStartTime().getTime() - DateUtil.getLocalDateTime().getTime())/1000);
-            }else if(bargain.getEndTime().after(DateUtil.getLocalDateTime())){
+                bargainGoods.setRemainingTime((bargain.getStartTime().getTime() - DateUtils.getLocalDateTime().getTime())/1000);
+            }else if(bargain.getEndTime().after(DateUtils.getLocalDateTime())){
                 //进行中
                 bargainGoods.setTimeState((byte)1);
-                bargainGoods.setRemainingTime((bargain.getEndTime().getTime() - DateUtil.getLocalDateTime().getTime())/1000);
+                bargainGoods.setRemainingTime((bargain.getEndTime().getTime() - DateUtils.getLocalDateTime().getTime())/1000);
             }else{
                 //已结束
                 bargainGoods.setTimeState((byte)2);
@@ -569,7 +569,7 @@ public class BargainService extends ShopBaseService  {
      * @return 可用商品id集合
      */
     public List<Integer> getBargainCanUseGoodsIds(Integer activityId, Condition baseCondition) {
-        Timestamp now = DateUtil.getLocalDateTime();
+        Timestamp now = DateUtils.getLocalDateTime();
         BargainRecord record = getBargainActById(activityId);
         if (record == null || record.getEndTime().compareTo(now) <= 0) {
             logger().debug("小程序-admin-bargain-扫码进小程序搜索列表页-活动已删除或停止");
@@ -618,7 +618,7 @@ public class BargainService extends ShopBaseService  {
 						BARGAIN.END_TIME)
 				.from(BARGAIN)
 				.where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(BARGAIN.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(BARGAIN.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(BARGAIN.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(BARGAIN.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);
