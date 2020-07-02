@@ -20,6 +20,7 @@
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 		<java.version>1.8</java.version>
 		<elasticsearch.version>7.3.2</elasticsearch.version>
+		<com.alibaba.version>1.1.22</com.alibaba.version>
 	</properties>
 
 
@@ -82,6 +83,11 @@
                 <version>${project.version}</version>
             </dependency>
 
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid</artifactId>
+				<version>${com.alibaba.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

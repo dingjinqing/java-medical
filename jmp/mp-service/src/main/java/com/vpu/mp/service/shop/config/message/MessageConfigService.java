@@ -15,7 +15,7 @@ public class MessageConfigService extends ShopBaseService {
 
 	@Autowired
 	MessageTemplateConfigDao messageTemplateConfigDao;
-	
+
     public void updateMessageConfig(MessageConfigParam param){
     	messageTemplateConfigDao.batchUpdate(param.getConfigs());
     }

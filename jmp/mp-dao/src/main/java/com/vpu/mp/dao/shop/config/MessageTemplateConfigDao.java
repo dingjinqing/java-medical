@@ -17,7 +17,7 @@ public class MessageTemplateConfigDao extends ShopBaseDao {
 
 	/**
 	 * 批量更新添加配置消息配置模板
-	 * 
+	 *
 	 * @param configs
 	 */
 	public void batchUpdate(List<Config> configs) {
@@ -28,7 +28,7 @@ public class MessageTemplateConfigDao extends ShopBaseDao {
 
 	/**
 	 * 得到所有消息模板配置
-	 * 
+	 *
 	 * @return
 	 */
 	public List<MessageConfigVo> getAllMessageConfig() {
@@ -37,7 +37,7 @@ public class MessageTemplateConfigDao extends ShopBaseDao {
 
 	/**
 	 * 得到id对应消息模板配置
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -48,7 +48,7 @@ public class MessageTemplateConfigDao extends ShopBaseDao {
 
 	/**
 	 * 校验是否配置开通发送对因类型的消息
-	 * 
+	 *
 	 * @param type 消息类型
 	 * @return true 开通
 	 */
