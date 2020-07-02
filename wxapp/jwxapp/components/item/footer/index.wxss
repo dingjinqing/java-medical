@@ -54,3 +54,16 @@ button.small_view{
   justify-content: center;
   flex-direction: column;
 }
+.button-content{
+  flex: 1;
+  box-sizing: border-box;
+  padding:12rpx 30rpx;
+  background-color: #fff;
+  display: flex;
+}
+.raidus-content{
+  display: flex;
+  flex: 1;
+  border-radius: 40rpx;
+  overflow: hidden;
+}
