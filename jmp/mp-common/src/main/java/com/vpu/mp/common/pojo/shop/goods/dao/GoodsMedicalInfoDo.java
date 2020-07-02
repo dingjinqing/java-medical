@@ -42,38 +42,4 @@ public class GoodsMedicalInfoDo {
     private String goodsValidTime;
     private String goodsApprovalNumber;
     private String goodsProductionEnterprise;
-
-    @Override
-    public String toString() {
-        return "GoodsMedicalInfo{" +
-            "id=" + id +
-            ", goodsId=" + goodsId +
-            ", goodsCommonName='" + goodsCommonName + '\'' +
-            ", goodsAliasName='" + goodsAliasName + '\'' +
-            ", goodsQualityRatio='" + goodsQualityRatio + '\'' +
-            ", isMedical=" + isMedical +
-            ", isRx=" + isRx +
-            ", insuranceFlag=" + insuranceFlag +
-            ", insuranceCode='" + insuranceCode + '\'' +
-            ", insuranceDatabaseName='" + insuranceDatabaseName + '\'' +
-            ", goodsBasicUnit='" + goodsBasicUnit + '\'' +
-            ", goodsPackageUnit='" + goodsPackageUnit + '\'' +
-            ", goodsUnitConvertFactor=" + goodsUnitConvertFactor +
-            ", goodsEquivalentQuantity=" + goodsEquivalentQuantity +
-            ", goodsEquivalentUnit='" + goodsEquivalentUnit + '\'' +
-            ", goodsComposition='" + goodsComposition + '\'' +
-            ", goodsCharacters='" + goodsCharacters + '\'' +
-            ", goodsFunction='" + goodsFunction + '\'' +
-            ", goodsUseMethod='" + goodsUseMethod + '\'' +
-            ", goodsAdverseReaction='" + goodsAdverseReaction + '\'' +
-            ", goodsTaboos='" + goodsTaboos + '\'' +
-            ", goodsNoticeEvent='" + goodsNoticeEvent + '\'' +
-            ", goodsInteraction='" + goodsInteraction + '\'' +
-            ", goodsStoreMethod='" + goodsStoreMethod + '\'' +
-            ", goodsPackageMethod='" + goodsPackageMethod + '\'' +
-            ", goodsValidTime='" + goodsValidTime + '\'' +
-            ", goodsApprovalNumber='" + goodsApprovalNumber + '\'' +
-            ", goodsProductionEnterprise='" + goodsProductionEnterprise + '\'' +
-            '}';
-    }
 }

@@ -2,6 +2,8 @@ package com.vpu.mp.common.pojo.shop.goods.dao;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 规格名
  * @author 李晓冰
@@ -13,12 +15,8 @@ public class SpecDo {
     private Integer goodsId;
     private String specName;
 
-    @Override
-    public String toString() {
-        return "Spec{" +
-            "specId=" + specId +
-            ", goodsId=" + goodsId +
-            ", specName='" + specName + '\'' +
-            '}';
-    }
+    /**
+     * 规格值
+     */
+    List<SpecValDo> specValDos;
 }

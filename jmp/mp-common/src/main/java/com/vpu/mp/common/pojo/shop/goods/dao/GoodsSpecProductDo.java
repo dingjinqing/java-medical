@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * 商品sku表
@@ -30,24 +31,8 @@ public class GoodsSpecProductDo {
     private BigDecimal prdWeight;
     private Byte delFlag;
     private Timestamp createTime;
-
-    @Override
-    public String toString() {
-        return "GoodsSpecProduct{" +
-            "prdId=" + prdId +
-            ", goodsId=" + goodsId +
-            ", prdSn='" + prdSn + '\'' +
-            ", prdPrice=" + prdPrice +
-            ", prdMarketPrice=" + prdMarketPrice +
-            ", prdCostPrice=" + prdCostPrice +
-            ", prdNumber=" + prdNumber +
-            ", prdCodes='" + prdCodes + '\'' +
-            ", prdSpecs='" + prdSpecs + '\'' +
-            ", prdDesc='" + prdDesc + '\'' +
-            ", prdImg='" + prdImg + '\'' +
-            ", prdWeight=" + prdWeight +
-            ", delFlag=" + delFlag +
-            ", createTime=" + createTime +
-            '}';
-    }
+    /**
+     * 规格名
+     */
+    private List<SpecDo> specDos;
 }

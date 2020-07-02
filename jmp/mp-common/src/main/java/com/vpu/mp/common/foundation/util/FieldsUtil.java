@@ -80,6 +80,7 @@ public class FieldsUtil {
      * @param toObject      数据目标对象
      * @param fieldAliasMap 类字段别名
      * @param ignoresField  类需要忽略字段
+     * @param onlyField 指定的要设置的字段，指定外的字段不复制
      */
     public static void assign(Object fromObject, Object toObject, Map<String, String> fieldAliasMap, Set<String> ignoresField, Set<String> onlyField) {
         Class<?> fromClazz = fromObject.getClass();
@@ -152,7 +153,7 @@ public class FieldsUtil {
      * @param toObject     数据目标对象
      * @param ignoresField 类需要忽略字段
      */
-    public static void assginWithIgnoreField(Object fromObject, Object toObject, Set<String> ignoresField) {
+    public static void assignWithIgnoreField(Object fromObject, Object toObject, Set<String> ignoresField) {
         assign(fromObject, toObject, null, ignoresField, null);
     }
 
@@ -162,7 +163,7 @@ public class FieldsUtil {
      * @param toObject     数据目标对象
      * @param onlyField 类需要忽略字段
      */
-    public static void assginWithPointField(Object fromObject, Object toObject, Set<String> onlyField) {
+    public static void assignWithPointField(Object fromObject, Object toObject, Set<String> onlyField) {
         assign(fromObject, toObject, null, null, onlyField);
     }
 
