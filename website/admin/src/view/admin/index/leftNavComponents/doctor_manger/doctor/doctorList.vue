@@ -1,128 +1,126 @@
 <template>
-  <div class="content">
-    <div class="main">
-      <div class="navBox">
-        <div class="filters">
-          <div class="filters_item">
-            <span>医师编号：</span>
-            <el-input
-              v-model="queryParams.doctorNumber"
-              size="small"
-              style="width:190px;"
-              placeholder="请输入医师编号"
-            >
-            </el-input>
-          </div>
-          <div class="filters_item">
-            <span>姓名：</span>
-            <el-input
-              v-model="queryParams.doctorName"
-              size="small"
-              style="width:190px;"
-              placeholder="请输入姓名"
-            >
-            </el-input>
-          </div>
-          <div class="filters_item">
-            <span>科室：</span>
-            <el-input
-              v-model="queryParams.mobile"
-              size="small"
-              style="width:190px;"
-              placeholder="请输入科室"
-            >
-            </el-input>
-          </div>
-          <div class="btn_wrap">
-            <el-button
-              type='primary'
-              size='small'
-              @click="initDataList"
-            >搜索</el-button>
-            <el-button
-              type="primary"
-              size="small"
-
-            >添加</el-button>
-          </div>
+  <div class="main">
+    <div class="navBox">
+      <div class="filters">
+        <div class="filters_item">
+          <span>医师编号：</span>
+          <el-input
+            v-model="queryParams.doctorNumber"
+            size="small"
+            style="width:190px;"
+            placeholder="请输入医师编号"
+          >
+          </el-input>
+        </div>
+        <div class="filters_item">
+          <span>姓名：</span>
+          <el-input
+            v-model="queryParams.doctorName"
+            size="small"
+            style="width:190px;"
+            placeholder="请输入姓名"
+          >
+          </el-input>
+        </div>
+        <div class="filters_item">
+          <span>科室：</span>
+          <el-input
+            v-model="queryParams.mobile"
+            size="small"
+            style="width:190px;"
+            placeholder="请输入科室"
+          >
+          </el-input>
+        </div>
+        <div class="btn_wrap">
+          <el-button
+            type='primary'
+            size='small'
+            @click="initDataList"
+          >搜索</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click='handleAddDoctor'
+          >添加</el-button>
         </div>
       </div>
-      <div class="table_box">
-          <el-table
-            v-loading='loading'
-            :data='tableData'
-            style="width:100%"
-            border
-            :header-cell-style="{
-              'background-color':'#f5f5f5',
-              'text-align':'center',
-              'border':'none',
-              'color': '#000'
-            }"
-            :cell-style="{
-              'text-align':'center'
-            }"
+    </div>
+    <div class="table_box">
+        <el-table
+          v-loading='loading'
+          :data='tableData'
+          style="width:100%"
+          border
+          :header-cell-style="{
+            'background-color':'#f5f5f5',
+            'text-align':'center',
+            'border':'none',
+            'color': '#000'
+          }"
+          :cell-style="{
+            'text-align':'center'
+          }"
+        >
+          <el-table-column
+            prop='storeName'
+            label='医师编号'
+          ></el-table-column>
+          <el-table-column
+            prop='posShopId'
+            label='姓名'
+          ></el-table-column>
+          <el-table-column
+            prop='groupName'
+            label='手机号'
+          ></el-table-column>
+          <el-table-column
+            prop='registeredHospital'
+            label='注册医院'
+          ></el-table-column>
+          <el-table-column
+            prop='department'
+            label='科室'
+          ></el-table-column>
+          <el-table-column
+            prop='jobTitle'
+            label='职称'
+          ></el-table-column>
+          <el-table-column
+            prop='registeredTime'
+            label='注册时间'
+          ></el-table-column>
+          <el-table-column
+            label='操作'
           >
-            <el-table-column
-              prop='storeName'
-              label='医师编号'
-            ></el-table-column>
-            <el-table-column
-              prop='posShopId'
-              label='姓名'
-            ></el-table-column>
-            <el-table-column
-              prop='groupName'
-              label='手机号'
-            ></el-table-column>
-            <el-table-column
-              prop='registeredHospital'
-              label='注册医院'
-            ></el-table-column>
-            <el-table-column
-              prop='department'
-              label='科室'
-            ></el-table-column>
-            <el-table-column
-              prop='jobTitle'
-              label='职称'
-            ></el-table-column>
-            <el-table-column
-              prop='registeredTime'
-              label='注册时间'
-            ></el-table-column>
-            <el-table-column
-              label='操作'
-            >
-              <template slot-scope="scope">
-                  <div class="operation">
-                      <el-tooltip
-                        class="item"
-                        effect="dark"
-                        content="编辑"
-                        placement="top"
-                      >
-                        <a @click='edit("edit",scope.row)'>编辑</a>
-                      </el-tooltip>
-                      <el-tooltip
-                        class="item"
-                        effect="dark"
-                        content="停用"
-                        placement="top"
-                      >
-                        <i
-                          class="iconfont iconshanchu2"
-                        ></i>
-                      </el-tooltip>
-                  </div>
-              </template>
-            </el-table-column>
-          </el-table>
-          <pagination
-            :page-params.sync="pageParams"
-            @pagination="initDataList"
-          />
-      </div>
+            <template slot-scope="scope">
+                <div class="operation">
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      content="编辑"
+                      placement="top"
+                    >
+                      <a @click='edit("edit",scope.row)'>编辑</a>
+                    </el-tooltip>
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      content="停用"
+                      placement="top"
+                    >
+                      <i
+                        class="iconfont iconshanchu2"
+                      ></i>
+                    </el-tooltip>
+                </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <pagination
+          :page-params.sync="pageParams"
+          @pagination="initDataList"
+        />
     </div>
   </div>
 </template>
@@ -158,11 +156,15 @@ export default {
       //   this.handleData(originalData)
       //   this.loading = false
       // })
-    }
+    },
     // handleData (data) {
     //   this.tableData = data
     //   this.langDefaultFlag = true
     // }
+    handleAddDoctor () {
+      this.$router.push({name: 'addDoctor'})
+      console.log(this.$router)
+    }
   }
   // watch: {
   //   lang () {
@@ -181,7 +183,6 @@ export default {
 
 <style scoped lang='scss'>
 .main{
-    padding:10px;
     .navBox{
         display: flex;
         width: 100%;
