@@ -1,0 +1,71 @@
+/* pages1/familylist/familylist.wxss */
+@import "../../css/iconfont.wxss";
+page{
+  background: #f5f5f5;
+}
+.mian-container{
+  padding-top: 20rpx;
+}
+.family_content{
+  width: 700rpx;
+  margin: 0 auto;
+  padding-bottom: 100rpx;
+}
+.each_family{
+  background: #fff;
+  border-radius: 8rpx;
+  padding: 30rpx 0 20rpx;
+  width: 700rpx;
+  margin-bottom: 20rpx;
+}
+.ef_top{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-bottom: 30rpx;
+  border-bottom: 2rpx solid #eee;
+  margin-left: 25rpx;
+  font-weight: bold;
+}
+.ef_top > view:first-of-type{
+  margin-right: 30rpx;
+}
+.ef_bottom{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 20rpx;
+  margin-left: 25rpx;
+}
+.iconfont_set_default{
+  margin-right:16rpx;
+}
+.iconfont_set_default .iconfont{
+  width: 26rpx;
+  height: 26rpx;
+  color: #ccc;
+}
+.family_footer{
+  background: #fff;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+.btn_add_person{
+  width: 700rpx;
+  height: 80rpx;
+  background: #26c4bc;
+  color: #fff;
+  line-height: 80rpx;
+  text-align: center;
+  font-size: 28rpx;
+  border-radius: 50rpx;
+}
+
+
+
+

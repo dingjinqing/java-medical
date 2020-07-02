@@ -156,9 +156,6 @@
         </view>
       </view>
       <view class='ma_appoint clearfix'>
-        <view class='app_img'>
-          <image src='{{imageUrl}}/image/wxapp/img1.jpg'></image>
-        </view>
         <view class='app_info'>
           <view>huanzhexinxi1</view>
           <view>huanzhexinxi1</view>

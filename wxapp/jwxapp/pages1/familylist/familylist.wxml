@@ -1,0 +1,22 @@
+<!--pages1/familylist/familylist.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class="mian-container">
+  <view class="family_content">
+    <view class="each_family">
+      <view class="ef_top">
+        <view>徐依晨</view>
+        <view>13233445566</view>
+      </view>
+      <view class="ef_bottom">
+        <view class="iconfont_set_default">
+          <text class="iconfont icondanxuanbiankuang" wx:if='{{if_checked == 0}}' bindtap="changeDefault"></text>
+          <text class="iconfont icondanxuan" style="color:#26c4bc" wx:if='{{if_checked == 1}}' bindtap="changeDefault"></text>
+        </view>
+        <view bindtap="changeDefault">{{ if_checked == 1 ? "":"设为"}}默认</view>
+      </view>
+    </view>
+  </view>
+  <view class="family_footer">
+    <view class="btn_add_person">添加</view>
+  </view>
+</view>
