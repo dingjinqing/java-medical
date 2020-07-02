@@ -2,7 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitParam;
 import com.vpu.mp.service.pojo.shop.summary.portrait.ProvinceParam;
@@ -81,7 +81,7 @@ public class AdminSummaryController extends AdminBaseController {
     @PostMapping("/api/admin/summary/visit/export")
     public void export(@Valid @RequestBody VisitExportParam param, HttpServletResponse response) {
         Workbook workbook = shop().amount.getVisitExportVo(param,getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.VIST_EXPORT_FILE_NAME, LANGUAGE_TYPE_EXCEL)+DateUtil.getLocalDateTime().toString();
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.VIST_EXPORT_FILE_NAME, LANGUAGE_TYPE_EXCEL)+ DateUtils.getLocalDateTime().toString();
         export2Excel(workbook, fileName, response);
     }
 }

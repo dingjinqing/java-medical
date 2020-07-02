@@ -423,5 +423,7 @@ export const cn = {
   // 医师管理 科室管理
   officesList: ['医师管理', '科室管理'],
   // 处方管理 处方列表
-  prescriptionList: ['处方管理', '处方列表']
+  prescriptionList: ['处方管理', '处方列表'],
+  // 医师管理 添加医师
+  addDoctor: ['医师管理', '添加医师']
 }

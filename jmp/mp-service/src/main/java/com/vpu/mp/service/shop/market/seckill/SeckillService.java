@@ -5,7 +5,7 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.RegexUtil;
 import com.vpu.mp.common.foundation.util.Util;
@@ -165,7 +165,7 @@ public class SeckillService extends ShopBaseService{
         if(param.getState() != null && param.getState().length > 0) {
             /** 状态过滤*/
             Condition stateCondition = DSL.noCondition();
-            Timestamp now = DateUtil.getLocalDateTime();
+            Timestamp now = DateUtils.getLocalDateTime();
             for(byte state : param.getState()){
                 if(state == 1){
                     stateCondition = stateCondition.or((SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.START_TIME.lt(now)).and(SEC_KILL_DEFINE.END_TIME.gt(now)));
@@ -224,7 +224,7 @@ public class SeckillService extends ShopBaseService{
                 db().executeInsert(productRecord);
             }
         });
-        if(param.getStartTime().before(DateUtil.getLocalDateTime()) && param.getEndTime().after(DateUtil.getLocalDateTime())){
+        if(param.getStartTime().before(DateUtils.getLocalDateTime()) && param.getEndTime().after(DateUtils.getLocalDateTime())){
             //活动已生效
             saas.getShopApp(getShopId()).shopTaskService.seckillTaskService.monitorGoodsType();
         }
@@ -310,7 +310,7 @@ public class SeckillService extends ShopBaseService{
     public void delSeckill(Integer skId) {
         db().update(SEC_KILL_DEFINE).
             set(SEC_KILL_DEFINE.DEL_FLAG,DelFlag.DISABLE.getCode()).
-            set(SEC_KILL_DEFINE.DEL_TIME,DateUtil.getLocalDateTime()).
+            set(SEC_KILL_DEFINE.DEL_TIME, DateUtils.getLocalDateTime()).
             where(SEC_KILL_DEFINE.SK_ID.eq(skId)).
             execute();
         SecKillDefineRecord record = getSeckillActById(skId);
@@ -435,8 +435,8 @@ public class SeckillService extends ShopBaseService{
         Timestamp startDate = param.getStartTime();
         Timestamp endDate = param.getEndTime();
         if (startDate == null || endDate == null) {
-            startDate = DateUtil.currentMonthFirstDay();
-            endDate = DateUtil.getLocalDateTime();
+            startDate = DateUtils.currentMonthFirstDay();
+            endDate = DateUtils.getLocalDateTime();
         }
         //获取销售额等金额
         List<ActiveDiscountMoney> discountMoneyList = saas.getShopApp(getShopId()).readOrder.getActiveDiscountMoney(BaseConstant.ACTIVITY_TYPE_SEC_KILL, param.getSkId(), startDate, endDate);
@@ -477,7 +477,7 @@ public class SeckillService extends ShopBaseService{
             } else {
                 analysisVo.getOldUserNumber().add(oldUser.getNum());
             }
-            analysisVo.getDateList().add(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate));
+            analysisVo.getDateList().add(DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE, startDate));
             startDate = Util.getEarlyTimeStamp(startDate, 1);
         }
         SeckillAnalysisTotalVo total = new SeckillAnalysisTotalVo();
@@ -504,7 +504,7 @@ public class SeckillService extends ShopBaseService{
     //用户数
     public static OrderActivityUserNum getUserNum(List<OrderActivityUserNum> list, Timestamp timestamp) {
         for (OrderActivityUserNum activityUserNum : list) {
-            if (activityUserNum.getDate().equals(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, timestamp))) {
+            if (activityUserNum.getDate().equals(DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE, timestamp))) {
                 return activityUserNum;
             }
         }
@@ -530,7 +530,7 @@ public class SeckillService extends ShopBaseService{
      * @return
      */
     private List<SecKillProductDefineRecord> getSecKillWithMonitor(List<Integer> goodsIds){
-        return db().select(SEC_KILL_PRODUCT_DEFINE.fields()).from(SEC_KILL_PRODUCT_DEFINE).leftJoin(SEC_KILL_DEFINE).on(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(SEC_KILL_DEFINE.SK_ID)).where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.START_TIME.lt(DateUtil.getLocalDateTime())).and(SEC_KILL_DEFINE.END_TIME.gt(DateUtil.getLocalDateTime()))).and(SEC_KILL_PRODUCT_DEFINE.GOODS_ID.in(goodsIds)).fetchInto(SecKillProductDefineRecord.class);
+        return db().select(SEC_KILL_PRODUCT_DEFINE.fields()).from(SEC_KILL_PRODUCT_DEFINE).leftJoin(SEC_KILL_DEFINE).on(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(SEC_KILL_DEFINE.SK_ID)).where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.START_TIME.lt(DateUtils.getLocalDateTime())).and(SEC_KILL_DEFINE.END_TIME.gt(DateUtils.getLocalDateTime()))).and(SEC_KILL_PRODUCT_DEFINE.GOODS_ID.in(goodsIds)).fetchInto(SecKillProductDefineRecord.class);
     }
 
     /**
@@ -594,10 +594,10 @@ public class SeckillService extends ShopBaseService{
         if(BaseConstant.ACTIVITY_STATUS_DISABLE.equals(secKill.getStatus())){
             return BaseConstant.ACTIVITY_STATUS_STOP;
         }
-        if(secKill.getStartTime().after(DateUtil.getLocalDateTime())){
+        if(secKill.getStartTime().after(DateUtils.getLocalDateTime())){
             return BaseConstant.ACTIVITY_STATUS_NOT_START;
         }
-        if(secKill.getEndTime().before(DateUtil.getLocalDateTime())){
+        if(secKill.getEndTime().before(DateUtils.getLocalDateTime())){
             return BaseConstant.ACTIVITY_STATUS_END;
         }
         int minStock = goodsNumber < secKill.getStock() ? goodsNumber : secKill.getStock();
@@ -702,14 +702,14 @@ public class SeckillService extends ShopBaseService{
                 }
             }
             seckillGoods.setUnpaidGoodsNum(unpaidSecPrdNum);
-            if(seckill.getStartTime().after(DateUtil.getLocalDateTime())){
+            if(seckill.getStartTime().after(DateUtils.getLocalDateTime())){
                 //未开始
                 seckillGoods.setTimeState((byte)0);
-                seckillGoods.setRemainingTime((seckill.getStartTime().getTime() - DateUtil.getLocalDateTime().getTime())/1000);
-            }else if(seckill.getEndTime().after(DateUtil.getLocalDateTime())){
+                seckillGoods.setRemainingTime((seckill.getStartTime().getTime() - DateUtils.getLocalDateTime().getTime())/1000);
+            }else if(seckill.getEndTime().after(DateUtils.getLocalDateTime())){
                 //进行中
                 seckillGoods.setTimeState((byte)1);
-                seckillGoods.setRemainingTime((seckill.getEndTime().getTime() - DateUtil.getLocalDateTime().getTime())/1000);
+                seckillGoods.setRemainingTime((seckill.getEndTime().getTime() - DateUtils.getLocalDateTime().getTime())/1000);
             }else{
                 //已结束
                 seckillGoods.setTimeState((byte)2);
@@ -763,7 +763,7 @@ public class SeckillService extends ShopBaseService{
      * @return 可用商品id集合
      */
     public List<Integer> getSecKillCanUseGoodsIds(Integer activityId, Condition baseCondition) {
-        Timestamp now = DateUtil.getLocalDateTime();
+        Timestamp now = DateUtils.getLocalDateTime();
         SecKillDefineRecord record = getSeckillActById(activityId);
         if (record == null || record.getEndTime().compareTo(now) <= 0) {
             logger().debug("小程序-admin-seckill-扫码进小程序搜索列表页-活动已删除或停止");
@@ -791,7 +791,7 @@ public class SeckillService extends ShopBaseService{
         return goodsIds;
     }
 
-    
+
     /**
      * 营销日历用id查询活动
      * @param id
@@ -801,7 +801,7 @@ public class SeckillService extends ShopBaseService{
 		return db().select(SEC_KILL_DEFINE.SK_ID.as(CalendarAction.ID), SEC_KILL_DEFINE.NAME.as(CalendarAction.ACTNAME), SEC_KILL_DEFINE.START_TIME,
 				SEC_KILL_DEFINE.END_TIME).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(id)).fetchAnyInto(MarketVo.class);
     }
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param
@@ -813,7 +813,7 @@ public class SeckillService extends ShopBaseService{
 						SEC_KILL_DEFINE.END_TIME)
 				.from(SEC_KILL_DEFINE)
 				.where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(SEC_KILL_DEFINE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(SEC_KILL_DEFINE.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(SEC_KILL_DEFINE.SK_ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);

@@ -6,7 +6,7 @@ import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.excel.bean.ClassList;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.RegexUtil;
 import com.vpu.mp.common.foundation.util.Util;
@@ -153,7 +153,7 @@ public class ReducePriceService extends ShopBaseService {
             from(REDUCE_PRICE);
         if (param.getState() > 0) {
             /** 状态过滤*/
-            Timestamp now = DateUtil.getLocalDateTime();
+            Timestamp now = DateUtils.getLocalDateTime();
             switch (param.getState()) {
                 case (byte) 1:
                     select.where(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(REDUCE_PRICE.START_TIME.lt(now)).and(REDUCE_PRICE.END_TIME.gt(now));
@@ -298,7 +298,7 @@ public class ReducePriceService extends ShopBaseService {
     public void delReducePrice(Integer id) {
         db().update(REDUCE_PRICE).
             set(REDUCE_PRICE.DEL_FLAG, DelFlag.DISABLE.getCode()).
-            set(REDUCE_PRICE.DEL_TIME, DateUtil.getLocalDateTime()).
+            set(REDUCE_PRICE.DEL_TIME, DateUtils.getLocalDateTime()).
             where(REDUCE_PRICE.ID.eq(id)).
             execute();
 
@@ -422,7 +422,7 @@ public class ReducePriceService extends ShopBaseService {
      * @return
      */
     public Map<Integer,Record10<Integer, Integer, BigDecimal, String, String, Byte, Byte, Timestamp, Integer, Byte>> getProductReducePrice(List<Integer> prdIds){
-        Timestamp date = DateUtil.getLocalDateTime();
+        Timestamp date = DateUtils.getLocalDateTime();
         Result<Record10<Integer, Integer, BigDecimal, String, String, Byte, Byte, Timestamp, Integer, Byte>> list =
             db().select(REDUCE_PRICE_PRODUCT.PRD_ID,REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID,REDUCE_PRICE_PRODUCT.PRD_PRICE,
                 REDUCE_PRICE.POINT_TIME,REDUCE_PRICE.EXTEND_TIME,REDUCE_PRICE.PERIOD_ACTION,REDUCE_PRICE.FIRST,REDUCE_PRICE.CREATE_TIME,REDUCE_PRICE.LIMIT_AMOUNT,REDUCE_PRICE.LIMIT_FLAG)
@@ -471,7 +471,7 @@ public class ReducePriceService extends ShopBaseService {
         if (PERIOD_ACTION_NORMAL.equals(periodAction)) {
             currentActivityEndDate = endDate;
         } else {
-            currentActivityEndDate = DateUtil.convertToTimestamp(nowDate, endLocalTime);
+            currentActivityEndDate = DateUtils.convertToTimestamp(nowDate, endLocalTime);
         }
         return currentActivityEndDate;
     }
@@ -490,7 +490,7 @@ public class ReducePriceService extends ShopBaseService {
     public Timestamp getNextActivityStartDate(List<Integer> extendTime, LocalTime startLocalTime, LocalTime endLocalTime, Byte periodAction, Timestamp startDate, Timestamp endDate) {
         Timestamp nextStartTimestamp = null;
 
-        Timestamp nowTimestamp = DateUtil.getLocalDateTime();
+        Timestamp nowTimestamp = DateUtils.getLocalDateTime();
         LocalDate comparedDate = LocalDate.now();
         LocalTime comparedTime = LocalTime.now();
 
@@ -506,7 +506,7 @@ public class ReducePriceService extends ShopBaseService {
             // 当前时刻如果小于活动开始时刻则表明今天的活动尚未开启，否则活动已经结束需等待第二天开始
             int offsetDay = comparedTime.isBefore(startLocalTime) ? 0 : 1;
             comparedDate = comparedDate.plusDays(offsetDay);
-            nextStartTimestamp = DateUtil.convertToTimestamp(comparedDate, startLocalTime);
+            nextStartTimestamp = DateUtils.convertToTimestamp(comparedDate, startLocalTime);
 
         } else if (PERIOD_ACTION_EVERY_MONTH.equals(periodAction)) {
 
@@ -515,7 +515,7 @@ public class ReducePriceService extends ShopBaseService {
                 comparedDate = comparedDate.plusMonths(1);
             }
             LocalDate nextDate = LocalDate.of(comparedDate.getYear(), comparedDate.getMonth(), extendTime.get(0));
-            nextStartTimestamp = DateUtil.convertToTimestamp(nextDate, startLocalTime);
+            nextStartTimestamp = DateUtils.convertToTimestamp(nextDate, startLocalTime);
 
         } else if (PERIOD_ACTION_EVERY_WEEK.equals(periodAction)) {
             // 当前时间是一周的第几天
@@ -523,7 +523,7 @@ public class ReducePriceService extends ShopBaseService {
 
             // 判断是否是今天有活动但是还没到要执行的时间
             if (extendTime.contains(nowDayOfWeek) && comparedTime.isBefore(startLocalTime)) {
-                nextStartTimestamp = DateUtil.convertToTimestamp(comparedDate, startLocalTime);
+                nextStartTimestamp = DateUtils.convertToTimestamp(comparedDate, startLocalTime);
             } else {
                 // 非当天的最近一次活动是一周内的第几天
                 Optional<Integer> optional = extendTime.stream().filter(x -> x > nowDayOfWeek).findFirst();
@@ -532,7 +532,7 @@ public class ReducePriceService extends ShopBaseService {
                 int offsetDays = (nextActivityDayOfWeek + 7 - nowDayOfWeek) % 7;
 
                 comparedDate = comparedDate.plusDays(offsetDays);
-                nextStartTimestamp = DateUtil.convertToTimestamp(comparedDate, startLocalTime);
+                nextStartTimestamp = DateUtils.convertToTimestamp(comparedDate, startLocalTime);
             }
         } else {
             // 仅指定了开始日期和结束日期的时候nextStartDate即为startDate
@@ -593,10 +593,10 @@ public class ReducePriceService extends ShopBaseService {
         if (PERIOD_ACTION_EVERY_DAY.equals(periodAction) || PERIOD_ACTION_NORMAL.equals(periodAction)) {
             return true;
         } else if (PERIOD_ACTION_EVERY_WEEK.equals(periodAction)) {
-            Integer dayOfWeek = DateUtil.getLocalDate().getDayOfWeek().getValue();
+            Integer dayOfWeek = DateUtils.getLocalDate().getDayOfWeek().getValue();
             return dayArray.contains(dayOfWeek);
         } else if (PERIOD_ACTION_EVERY_MONTH.equals(periodAction)) {
-            Integer dayOfMonth = DateUtil.getLocalDate().getDayOfMonth();
+            Integer dayOfMonth = DateUtils.getLocalDate().getDayOfMonth();
             return dayArray.contains(dayOfMonth);
         }
         return false;
@@ -684,7 +684,7 @@ public class ReducePriceService extends ShopBaseService {
 
         //处理限时降价
         //当前生效的活动
-        ReducePriceRecord reducePriceRecord = getOnGoingReducePrice(goodsId, DateUtil.getLocalDateTime());
+        ReducePriceRecord reducePriceRecord = getOnGoingReducePrice(goodsId, DateUtils.getLocalDateTime());
         if (reducePriceRecord != null) {
             List<ReducePriceProductRecord> reducePriceProductRecords = getReducePriceProductRecordByGoodsId(reducePriceRecord.getId(), goodsId);
             if (CollectionUtils.isNotEmpty(reducePriceProductRecords)) {
@@ -747,8 +747,8 @@ public class ReducePriceService extends ShopBaseService {
         if (!periodAction.equals(PERIOD_ACTION_NORMAL)) {
             Timestamp[] ret = new Timestamp[2];
             String[] periodString = reducePriceRecord.getPointTime().split("@");
-            ret[0] = DateUtil.convertToTimestamp(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE) + " " + periodString[0] + ":00");
-            ret[1] = DateUtil.convertToTimestamp(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE) + " " + periodString[1] + ":00");
+            ret[0] = DateUtils.convertToTimestamp(DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE) + " " + periodString[0] + ":00");
+            ret[1] = DateUtils.convertToTimestamp(DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE) + " " + periodString[1] + ":00");
             return ret;
         }
         return null;
@@ -777,7 +777,7 @@ public class ReducePriceService extends ShopBaseService {
 				.from(REDUCE_PRICE)
 				.where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
 						.and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)
-								.and(REDUCE_PRICE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+								.and(REDUCE_PRICE.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(REDUCE_PRICE.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);
@@ -844,8 +844,8 @@ public class ReducePriceService extends ShopBaseService {
         Timestamp startDate = param.getStartTime();
         Timestamp endDate = param.getEndTime();
         if (startDate == null || endDate == null) {
-            startDate = DateUtil.currentMonthFirstDay();
-            endDate = DateUtil.getLocalDateTime();
+            startDate = DateUtils.currentMonthFirstDay();
+            endDate = DateUtils.getLocalDateTime();
         }
         //获取销售额等金额
         List<ActiveDiscountMoney> discountMoneyList = saas.getShopApp(getShopId()).readOrder.getActiveDiscountMoney(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE, param.getId(), startDate, endDate);
@@ -886,7 +886,7 @@ public class ReducePriceService extends ShopBaseService {
             } else {
                 analysisVo.getOldUserNumber().add(oldUser.getNum());
             }
-            analysisVo.getDateList().add(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate));
+            analysisVo.getDateList().add(DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE, startDate));
             startDate = Util.getEarlyTimeStamp(startDate, 1);
         }
         SeckillAnalysisTotalVo total = new SeckillAnalysisTotalVo();

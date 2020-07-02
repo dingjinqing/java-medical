@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.goods.es.goods.label;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
 import com.vpu.mp.service.foundation.es.EsManager;
 import com.vpu.mp.service.foundation.es.EsUtil;
@@ -192,7 +192,7 @@ public class EsGoodsLabelCreateService extends ShopBaseService {
         EsGoodsLabel label = new EsGoodsLabel();
         label.setId(info.getId());
         label.setShopId(shopId);
-        label.setCreateTime(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL,info.getCreateTime()));
+        label.setCreateTime(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL,info.getCreateTime()));
         label.setGoodsId(goodsId);
         label.setType(type);
         label.setDetailShow(info.getGoodsDetail() == 1);

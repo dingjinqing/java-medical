@@ -7,7 +7,7 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.DistributionConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -971,7 +971,7 @@ public class Calculate extends ShopBaseService {
             logger().info("该商品无返利策略，goodsId:{}", bo.getGoodsId());
             return null;
         }
-        Timestamp current = DateUtil.getSqlTimestamp();
+        Timestamp current = DateUtils.getSqlTimestamp();
 
         List<RebateRecord> rebateRecords = selfRebate(cfg, userInfo, isFs, goodsStrategy, current);
         if(CollectionUtils.isEmpty(rebateRecords)) {

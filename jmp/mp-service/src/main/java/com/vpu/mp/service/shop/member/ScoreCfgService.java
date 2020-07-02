@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreSetRecord;
@@ -56,7 +56,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		cfgScoreEffectiveRule(param);
 		// 积分兑换比
 		setScoreProportion(param.getScoreProportion());
-		
+
 		// 积分支付限制
 		Byte scorePayLimit = param.getScorePayLimit();
 		if (NumberUtils.BYTE_ZERO.equals(scorePayLimit)) {
@@ -67,7 +67,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 			setScorePayLimit(scorePayLimit);
 			setScorePayNum(param.getScorePayNum());
 		}
-		
+
 		setScoreDiscountRatio(param.getScoreDiscountRatio());
 
         /** 购物送积分 */
@@ -110,11 +110,11 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		return result;
 	}
 
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * 配置积分有效规则
 	 */
@@ -123,7 +123,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		Assert.isTrue(isEffectiveForever(type) || isEffectiveUtilToYmd(type) ||isEffectiveFromCurrentDay(type)
 			, "配置积分有效规则错误");
 		setScoreLimit(type);
-		if ( isEffectiveUtilToYmd(type)) {	
+		if ( isEffectiveUtilToYmd(type)) {
 			setScoreDay(param.getScoreDay());
 			setScoreMonth(param.getScoreMonth());
 			setScoreYear(param.getScoreYear());
@@ -151,9 +151,9 @@ public class ScoreCfgService extends BaseScoreCfgService {
 	private boolean isEffectiveFromCurrentDay(Byte effectiveType) {
 		return Byte.valueOf((byte) 2).equals(effectiveType);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * 更新设置签到积分
 	 */
@@ -249,16 +249,16 @@ public class ScoreCfgService extends BaseScoreCfgService {
      * @throws IllegalArgumentException
 	 */
 	public ScoreCfgVo getShopScoreCfg() {
-		
+
 		ScoreCfgVo vo = new ScoreCfgVo();
-		
+
 
 		// 查询配置文件的key-value
 		Result<Record2<String, String>> resMap = db().select(SHOP_CFG.K,SHOP_CFG.V).from(SHOP_CFG).fetch();
 		Map<String, String> intoMap = null;
 		if(resMap != null) {
 		 intoMap =  resMap.intoMap(SHOP_CFG.K, SHOP_CFG.V);
-		} 
+		}
 		ObjectMapper objectMapper = new ObjectMapper();
 		// 将查询的结果赋值到pojo
 		vo = objectMapper.convertValue(intoMap, ScoreCfgVo.class);
@@ -281,7 +281,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 			vo.getBuyEachScore().add((String)record.get(1));
 		}
 		logger().info("查询buyEach处理成功");
-		
+
 		// 处理门店买单送积分开关
 		Byte storeScore = getStoreScore();
 		if(ZERO.equals(storeScore)) {
@@ -289,7 +289,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		}else {
 			vo.setStoreScore(BUTTON_ON);
 		}
-		
+
 		// 处理积分开关
 		Byte shoppingScore = getShoppingScore();
 		if(ZERO.equals(shoppingScore)) {
@@ -297,7 +297,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		}else {
 			vo.setShoppingScore(BUTTON_ON);
 		}
-		
+
 		// 处理登录送积分开关
 		Byte loginScore = getLoginScore();
 		if(ZERO.equals(loginScore)) {
@@ -305,7 +305,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		}else {
 			vo.setLoginScore(BUTTON_ON);
 		}
-		
+
         // 处理签到积分
 		logger().info("处理签到积分");
 		UserScoreSetValue userScore = getScoreValueThird(SIGN_IN_SCORE);
@@ -373,7 +373,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 	 * 保存文档
 	 */
 	public void saveScoreDocument(ScoreFrontParam param) {
-		param.setUpdateTime(DateUtil.getLocalDateTime());
+		param.setUpdateTime(DateUtils.getLocalDateTime());
 		String value = Util.toJson(param);
 		logger().info(value);
 		setScoreDocument(value);

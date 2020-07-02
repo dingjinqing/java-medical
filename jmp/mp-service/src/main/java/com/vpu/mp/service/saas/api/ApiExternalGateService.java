@@ -1,7 +1,7 @@
 package com.vpu.mp.service.saas.api;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.foundation.util.api.ApiBasePageParam;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
@@ -88,8 +88,8 @@ public class ApiExternalGateService extends MainBaseService {
             logPrinter(param.getApp_id(), "timestamp 为空");
             return false;
         }
-        Timestamp timestamp = DateUtil.dateFormatToTimeStamp(DateUtil.DATE_FORMAT_API_EXTERNAL, param.getTimestamp());
-        Timestamp now = DateUtil.getLocalDateTime();
+        Timestamp timestamp = DateUtils.dateFormatToTimeStamp(DateUtils.DATE_FORMAT_API_EXTERNAL, param.getTimestamp());
+        Timestamp now = DateUtils.getLocalDateTime();
         // 大于30秒
         if (now.getTime() - timestamp.getTime() > 30000) {
             logPrinter(param.getApp_id(), "timestamp 超时");

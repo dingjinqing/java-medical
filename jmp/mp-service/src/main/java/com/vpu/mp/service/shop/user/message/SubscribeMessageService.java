@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.user.message;
 import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.google.common.base.Objects;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.RegexUtil;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.SubscribeMessageRecord;
@@ -44,7 +43,7 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
  * 小程序订阅消息
- * 
+ *
  * @author zhaojianqiang
  *
  *         2019年12月4日 上午9:26:12
@@ -63,7 +62,7 @@ public class SubscribeMessageService extends ShopBaseService {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	protected JedisManager jedis;
 
@@ -96,7 +95,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	/**
 	 * 获取所需的类目Id ,找第一个符合的
 	 * @return
-	 * @throws WxErrorException 
+	 * @throws WxErrorException
 	 */
 	public Integer getcategoryId() throws WxErrorException {
 		List<Integer> getcategoryList = getcategoryList();
@@ -118,12 +117,12 @@ public class SubscribeMessageService extends ShopBaseService {
 			}
 		}
 		return id;
-		
+
 	}
 
 	/**
 	 * 获取发送时候要的template_id
-	 * 
+	 *
 	 * @param user
 	 * @param templateNo
 	 * @return
@@ -178,7 +177,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			// TODO发送到公众号
 			return false;
 		}
-		
+
 		SubscribeMessageConfig config = SubscribeMessageConfig.getByTempleName(secondId, templateName);
 		if(config==null) {
 			logger().info("类目：{};下没有模板：{}",secondId,templateName);
@@ -203,9 +202,9 @@ public class SubscribeMessageService extends ShopBaseService {
 			logger().info("拼装报文失败，为空");
 			return false;
 		}
-		//进行要发送数据的格式校验 
+		//进行要发送数据的格式校验
 		verification(templateList, templateId, postData);
-		
+
 		logger().info("开始发送：{}",postData.toJson());
 		WxOpenResult sendResult = open.getMaExtService().sendTemplate(getMaAppId(),postData);
 		boolean success = sendResult.isSuccess();
@@ -232,7 +231,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	 * @param touser
 	 * @return
 	 */
-	
+
 	private WxMaSubscribeMessage assembleData(MaSubscribeData data,SubscribeMessageConfig config,String page,String templateId,String touser,Integer secondId) {
 		WxMaSubscribeMessage postData=new WxMaSubscribeMessage();
 		String content = config.getContent();
@@ -257,7 +256,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		postData.setTemplateId(templateId);
 		postData.setTouser(touser);
 		return postData;
-		
+
 	}
 
 	/**
@@ -281,7 +280,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		return stringData;
 	}
-	
+
 	/**
 	 * 返回前端需要的TemplateId
 	 * @param data
@@ -331,11 +330,11 @@ public class SubscribeMessageService extends ShopBaseService {
 			for(int i=0;i<titleList.length;i++) {
 				logger().info("没有定义模板："+titleList[i].getTitle());
 				results[i]=new TemplateVo(addTemplate(titleList[i]), titleList[i].getId(),titleList[i].getTempleName());
-			}	
+			}
 		}
 		return results;
 	}
-	
+
 
 	/**
 	 * 更新表中可用数量
@@ -364,14 +363,14 @@ public class SubscribeMessageService extends ShopBaseService {
 					insertRecord.setTemplateNo(String.valueOf(successConfig.getTid()));
 					insertRecord.setCanUseNum(1);
 					int insert = insertRecord.insert();
-					logger().info("成功的templateId："+success.getTemplateId()+"插入结果"+insert);		
+					logger().info("成功的templateId："+success.getTemplateId()+"插入结果"+insert);
 				}else {
 					record.setStatus((byte)1);
 					record.setCanUseNum(record.getCanUseNum()==null?1:record.getCanUseNum()+1);
 					int update = record.update();
-					logger().info("成功的templateId："+success.getTemplateId()+"更新结果"+update);				
+					logger().info("成功的templateId："+success.getTemplateId()+"更新结果"+update);
 				}
-			}			
+			}
 		}
 		if(rejects!=null) {
 			logger().info("进入rejects的");
@@ -391,14 +390,14 @@ public class SubscribeMessageService extends ShopBaseService {
 							rejrecord.setCanUseNum(canUseNum);
 							if(canUseNum==0) {
 								logger().info("可用次数为0，状态变更为取消");
-								rejrecord.setStatus((byte)0);								
+								rejrecord.setStatus((byte)0);
 							}
 						}
 					}
 					int update = rejrecord.update();
-					logger().info("拒绝的templateId："+reject.getTemplateId()+"更新结果"+update);	
+					logger().info("拒绝的templateId："+reject.getTemplateId()+"更新结果"+update);
 				}
-			}			
+			}
 		}
 		if(bans!=null) {
 			logger().info("进入bans的");
@@ -412,9 +411,9 @@ public class SubscribeMessageService extends ShopBaseService {
 				if(rejrecord!=null) {
 					rejrecord.setStatus((byte)2);
 					int update = rejrecord.update();
-					logger().info("已被后台封禁的templateId："+ban.getTemplateId()+"更新结果"+update);	
+					logger().info("已被后台封禁的templateId："+ban.getTemplateId()+"更新结果"+update);
 				}
-			}			
+			}
 		}
 	}
 	/**
@@ -442,14 +441,14 @@ public class SubscribeMessageService extends ShopBaseService {
 				String.valueOf(config.getTid()), config.getKidList(), config.getTitle());
 		logger().info("创建模板" + config.getTitle()+"。结果："+addTemplate.getErrmsg() + "  " + addTemplate.getErrcode());
 		if (addTemplate.isSuccess()) {
-			
+
 			return addTemplate.getPriTmplId();
 		}
 		return null;
 	}
 	/**
 	 * 当前帐号下的个人模板列表中是否有要用的templateId，有：true；没有false
-	 * 
+	 *
 	 * @param templateId
 	 * @return
 	 * @throws WxErrorException
@@ -479,7 +478,7 @@ public class SubscribeMessageService extends ShopBaseService {
 
 	/**
 	 * 减少用户的订阅数
-	 * 
+	 *
 	 * @param templateIdRecord
 	 */
 	public void decrementSubscribeNum(SubscribeMessageRecord templateIdRecord) {
@@ -494,7 +493,7 @@ public class SubscribeMessageService extends ShopBaseService {
 
 	/**
 	 * 增加用户的发送成功数
-	 * 
+	 *
 	 * @param templateIdRecord
 	 */
 	public void incrementSubscribeNum(SubscribeMessageRecord templateIdRecord) {
@@ -505,7 +504,7 @@ public class SubscribeMessageService extends ShopBaseService {
 
 	/**
 	 * 更新消息订阅状态
-	 * 
+	 *
 	 * @param templateIdRecord
 	 */
 	public void modifySubscribeStatus(SubscribeMessageRecord templateIdRecord) {
@@ -513,7 +512,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		int update = templateIdRecord.update();
 		logger().info(" 更新消息订阅状态"+update);
 	}
-	
+
 	/**
 	 * 是否可用发送
 	 * @param userId
@@ -530,7 +529,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * 对数据的格式进行校验并修改
 	 * @param templateList
@@ -556,7 +555,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		thingRule(postData.getData(),list);
 		logger().info("出格式校验");
 	}
-	
+
 	/**
 	 * 对数据切割，目前没啥用
 	 * @param content
@@ -584,14 +583,14 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		return list;
 	}
-	
+
 	public void ruleCheck(List<String> ruleKeys,List<WxMaSubscribeMessageData> data) {
 		for (int i = 0; i < ruleKeys.size(); i++) {
-			
+
 		}
-		
+
 	}
-	
+
 	private void thingRule(List<WxMaSubscribeMessageData> data,List<String> contentList) {
 		for (int i = 0; i < data.size(); i++) {
 			String name = data.get(i).getName();
@@ -639,14 +638,14 @@ public class SubscribeMessageService extends ShopBaseService {
 			}
 			break;
 		case RuleKey.TIME:
-			boolean specialDate = specialDate(value, DateUtil.DATE_FORMAT_FULL);
+			boolean specialDate = specialDate(value, DateUtils.DATE_FORMAT_FULL);
 			if(!specialDate) {
 				value = toReturnAnLog(name, value,targValue);
 			}
 			break;
 		case RuleKey.DATE:
-			boolean specialDate1 = specialDate(value, DateUtil.DATE_FORMAT_FULL);
-			boolean specialDate2 = specialDate(value, DateUtil.DATE_FORMAT_SIMPLE);
+			boolean specialDate1 = specialDate(value, DateUtils.DATE_FORMAT_FULL);
+			boolean specialDate2 = specialDate(value, DateUtils.DATE_FORMAT_SIMPLE);
 			if(!specialDate1&&!specialDate2) {
 				value = toReturnAnLog(name, value,targValue);
 			}
@@ -733,7 +732,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		logger().info("类型：{}，校验不通过，新值：{}",name,value);
 		return value;
 	}
-	
+
 	/**
 	 * 对末尾的数字类型进行处理
 	 * @param name
@@ -749,7 +748,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		return name;
 	}
-	
+
 	/**
 	 * 长度的截取
 	 * @param value
@@ -764,7 +763,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		return value;
 	}
-	
+
 	/**
 	 * 对时间样式的校验
 	 * @param value
@@ -780,9 +779,9 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		return true;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param value
 	 * @param flag  true:返回为去掉特殊符号的值；false：返回值为特殊符号的值
 	 * @return
@@ -793,7 +792,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			if(flag) {
 				if(RuleKey.SYMBOL_CHARACTERSTR.indexOf(value.charAt(i))<0) {
 					builder.append(value.charAt(i));
-				}				
+				}
 			}else {
 				if(RuleKey.SYMBOL_CHARACTERSTR.indexOf(value.charAt(i))>=0) {
 					builder.append(value.charAt(i));
@@ -803,7 +802,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		value=builder.toString();
 		return value;
 	}
-	
+
     public boolean isChineseChar(char c) {
         try {
             return String.valueOf(c).getBytes("UTF-8").length > 1;

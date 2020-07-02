@@ -5,7 +5,7 @@ import javax.validation.Valid;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisParam;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -115,7 +115,7 @@ public class AdminGroupDrawController extends AdminBaseController {
     @PostMapping("/order/export")
     public void orderExport(@RequestBody @Valid OrderListParam param,HttpServletResponse response) {
         Workbook workbook = shop().groupDraw.groupDrawOrders.orderExport(param,getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GROUP_ORDER_EXPORT, LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtil.getLocalDateTime().toString();
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GROUP_ORDER_EXPORT, LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtils.getLocalDateTime().toString();
         export2Excel(workbook, fileName, response);
     }
     /**

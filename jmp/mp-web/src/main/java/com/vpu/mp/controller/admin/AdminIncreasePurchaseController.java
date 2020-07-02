@@ -2,7 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
@@ -111,7 +111,7 @@ public class AdminIncreasePurchaseController extends AdminBaseController {
     @PostMapping("/api/admin/market/increasepurchase/exportorderlist")
     public void exportOrderList(@RequestBody MarketOrderListParam param, HttpServletResponse response) {
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.REDEMPTION_ORDER_EXCEL, LANGUAGE_TYPE_EXCEL);
-        String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
+        String dateFormat = DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE);
         export2Excel(shop().increaseService.exportOrderList(param), fileName + dateFormat, response);
     }
     /**
@@ -122,7 +122,7 @@ public class AdminIncreasePurchaseController extends AdminBaseController {
     @PostMapping("/api/admin/market/increasepurchase/exportorderdetail")
     public void exportOrderDetail(@RequestBody RedemptionDetailParam param, HttpServletResponse response) {
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.REDEMPTION_DETAIL_EXCEL, LANGUAGE_TYPE_EXCEL);
-        String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
+        String dateFormat = DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE);
         export2Excel(shop().increaseService.exportOrderDetail(param), fileName + dateFormat, response);
     }
 

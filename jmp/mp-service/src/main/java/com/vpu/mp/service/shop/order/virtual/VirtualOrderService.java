@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.order.virtual;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.VirtualOrderRefundRecord;
 import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
@@ -45,10 +45,10 @@ import static com.vpu.mp.db.shop.tables.VirtualOrderRefundRecord.VIRTUAL_ORDER_R
  **/
 @Service
 public class VirtualOrderService extends ShopBaseService {
-	
+
 	@Autowired
 	private RecordTradeService recordMemberTrade;
-	
+
 	@Autowired
 	private ReturnMethodService returnMethod;
     /** 虚拟商品类型：会员卡订单 */
@@ -72,16 +72,16 @@ public class VirtualOrderService extends ShopBaseService {
 
     /**
      * 手动退款
-     * @throws MpException 
+     * @throws MpException
      */
     public void virtualOrderRefund(VirtualOrderRefundParam param) throws MpException {
     	//订单
     	VirtualOrderPayInfo payInfo = getOrderPayInfo(param.getOrderId());
     	//虚拟订单退款限制为1年
-        if (payInfo.getMoneyPaid().compareTo(BigDecimal.ZERO)>0&&payInfo.getPayTime()!=null&&DateUtil.getLocalDateTime().after(DateUtil.getTimeStampPlus(payInfo.getPayTime(),1, ChronoUnit.YEARS))){
+        if (payInfo.getMoneyPaid().compareTo(BigDecimal.ZERO)>0&&payInfo.getPayTime()!=null&& DateUtils.getLocalDateTime().after(DateUtils.getTimeStampPlus(payInfo.getPayTime(),1, ChronoUnit.YEARS))){
             throw new MpException(JsonResultCode.REFUND_REQUEST_PARAMETER_TIME_ONE_YEAR);
         }
-    	
+
         /** 是否退款成功 */
         boolean successFlag = true;
         try {
@@ -108,7 +108,7 @@ public class VirtualOrderService extends ShopBaseService {
     			}
 
     			if (param.getMemberCardBalance().compareTo(BigDecimal.ZERO) > 0) {
-    				
+
     				/**
     				 * 交易记录信息
     				 */
@@ -118,7 +118,7 @@ public class VirtualOrderService extends ShopBaseService {
     						.tradeType(RecordTradeEnum.TYPE_CRASH_MCARD_ACCOUNT_REFUND.val())
     						.tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
     						.build();
-    				
+
     				/** TODO 会员卡余额退款服务 */
     				UserCardData userCardData = UserCardData.newBuilder().userId(payInfo.getUserId())
                         .cardNo(payInfo.getCardNo()).money(param.getMemberCardBalance()).reasonId(RemarkTemplate.ORDER_VIRTUAL_RETURN_DEFAULT.code).
@@ -168,7 +168,7 @@ public class VirtualOrderService extends ShopBaseService {
 			logger().error("退款捕获mp异常", e);
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION);
 		}
-	
+
         BigDecimal finalReturnMoney = payInfo.getReturnMoney().add(param.getMoney());
         BigDecimal finalReturnAccount = payInfo.getReturnAccount().add(param.getAccount());
         BigDecimal finalReturnMemberCardBalance = payInfo.getReturnCardBalance().add(param.getMemberCardBalance());
@@ -191,7 +191,7 @@ public class VirtualOrderService extends ShopBaseService {
                 .set(VIRTUAL_ORDER.RETURN_ACCOUNT, finalReturnAccount)
                 .set(VIRTUAL_ORDER.RETURN_CARD_BALANCE, finalReturnMemberCardBalance)
                 .set(VIRTUAL_ORDER.RETURN_SCORE, finalReturnScore)
-                .set(VIRTUAL_ORDER.RETURN_TIME, DateUtil.getLocalDateTime())
+                .set(VIRTUAL_ORDER.RETURN_TIME, DateUtils.getLocalDateTime())
                 .where(VIRTUAL_ORDER.ORDER_SN.eq(param.getOrderSn())).execute();
         }
     }
@@ -216,11 +216,11 @@ public class VirtualOrderService extends ShopBaseService {
             return true;
         }
     }
-    
+
     public VirtualOrderRecord getInfoByNo(String cardNo) {
     	return  db().selectFrom(VIRTUAL_ORDER).where(VIRTUAL_ORDER.CARD_NO.eq(cardNo)).fetchAny();
     }
-    
+
     /**
      * 获取虚拟订单最近下单时间
      */
@@ -244,9 +244,9 @@ public class VirtualOrderService extends ShopBaseService {
         Timestamp startDate = param.getStartTime();
         Timestamp endDate = param.getEndTime();
         if (startDate == null || endDate == null) {
-            startDate = Timestamp.valueOf(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_BEGIN, DateUtil.getLocalDateTime()));
+            startDate = Timestamp.valueOf(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_BEGIN, DateUtils.getLocalDateTime()));
             param.setStartTime(startDate);
-            endDate = DateUtil.getLocalDateTime();
+            endDate = DateUtils.getLocalDateTime();
             param.setEndTime(endDate);
         }
         Map<Date, List<VirtualOrderAnalysisBo>> orderGoodsMap = getAnalysisOrderMap(param, goodsType);

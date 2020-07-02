@@ -11,7 +11,7 @@ import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
@@ -771,7 +771,7 @@ public class FormStatisticsService extends ShopBaseService {
      * @return  表单详情
      */
     public FormInfoBo getFormDecorationInfo(Integer pageId, Integer userId, String lang) {
-        Timestamp nowDate = DateUtil.getLocalDateTime();
+        Timestamp nowDate = DateUtils.getLocalDateTime();
         FormPageRecord formRecord = getFormRecord(pageId);
         if (formRecord==null){
             log.error("改表单为找到");
@@ -921,7 +921,7 @@ public class FormStatisticsService extends ShopBaseService {
     private boolean checkData(FormSubmitDataParam param, FormSubmitDataVo formSubmitDataVo, FormInfoBo formInfoBo, String lang) {
         FormSubmitListRecord formSubmitListRecord = db().selectFrom(fsl).where(fsl.PAGE_ID.eq(param.getPageId())).and(fsl.USER_ID.eq(param.getUser().getUserId()))
                 .orderBy(fsl.CREATE_TIME.desc()).fetchAny();
-        if (formSubmitListRecord!=null&&formSubmitListRecord.getCreateTime().after(DateUtil.getTimeStampPlus(-60, ChronoUnit.SECONDS))){
+        if (formSubmitListRecord!=null&&formSubmitListRecord.getCreateTime().after(DateUtils.getTimeStampPlus(-60, ChronoUnit.SECONDS))){
             log.error("每个表单每分钟只能提交一次");
             formSubmitDataVo.setStatus((byte)2);
             formSubmitDataVo.setMessage("每个表单每分钟只能提交一次");
@@ -941,7 +941,7 @@ public class FormStatisticsService extends ShopBaseService {
         }
         if (!BaseConstant.YES.equals(formInfoBo.getFormCfgBo().getPost_times())){
             if (formInfoBo.getFormCfgBo().getDay_times()>0){
-                Integer daySubmitTimes = getDaySubmitTime(param.getPageId(), param.getUser().getUserId(), DateUtil.getLocalDateTime());
+                Integer daySubmitTimes = getDaySubmitTime(param.getPageId(), param.getUser().getUserId(), DateUtils.getLocalDateTime());
                 log.info("每天限制提交{}-{}",daySubmitTimes,formInfoBo.getFormCfgBo().getDay_times());
                 if (daySubmitTimes>=formInfoBo.getFormCfgBo().getDay_times()){
                     formSubmitDataVo.setStatus((byte)3);

@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.task.market;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -85,8 +85,8 @@ public class SeckillTaskService  extends ShopBaseService {
         List<SeckillVo> res = db().select(SEC_KILL_DEFINE.STOCK,SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.SK_ID).from(SEC_KILL_DEFINE).where(
             SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
             .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
-            .and(SEC_KILL_DEFINE.START_TIME.lt(DateUtil.getLocalDateTime()))
-            .and(SEC_KILL_DEFINE.END_TIME.gt(DateUtil.getLocalDateTime()))
+            .and(SEC_KILL_DEFINE.START_TIME.lt(DateUtils.getLocalDateTime()))
+            .and(SEC_KILL_DEFINE.END_TIME.gt(DateUtils.getLocalDateTime()))
         ).fetchInto(SeckillVo.class);
         for(SeckillVo seckill : res){
             seckill.setGoods(seckillService.getSecKillGoods(seckill.getSkId()));

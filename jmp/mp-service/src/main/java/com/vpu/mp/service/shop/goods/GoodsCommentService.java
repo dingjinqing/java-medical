@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.CommentGoods;
 import com.vpu.mp.db.shop.tables.records.CommentGoodsRecord;
@@ -1158,7 +1158,7 @@ public class GoodsCommentService extends ShopBaseService {
     public void setTop(GoodsCommentIdParam param){
         db().update(COMMENT_GOODS)
             .set(COMMENT_GOODS.IS_TOP,GoodsCommentPageListParam.TOP)
-            .set(COMMENT_GOODS.TOP_TIME, DateUtil.getSqlTimestamp())
+            .set(COMMENT_GOODS.TOP_TIME, DateUtils.getSqlTimestamp())
             .where(COMMENT_GOODS.ID.eq(param.getId()))
             .execute();
     }
@@ -1295,7 +1295,7 @@ public class GoodsCommentService extends ShopBaseService {
     public void setShow(GoodsCommentIdParam param){
         db().update(COMMENT_GOODS)
             .set(COMMENT_GOODS.IS_SHOW,GoodsCommentPageListParam.SHOW)
-            .set(COMMENT_GOODS.SHOW_TIME, DateUtil.getSqlTimestamp())
+            .set(COMMENT_GOODS.SHOW_TIME, DateUtils.getSqlTimestamp())
             .where(COMMENT_GOODS.ID.eq(param.getId()))
             .execute();
     }

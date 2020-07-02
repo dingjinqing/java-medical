@@ -1,19 +1,14 @@
 package com.vpu.mp.service.shop.member.card;
 
-import org.apache.commons.lang3.math.NumberUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.dao.CardFullDetail;
-import com.vpu.mp.service.shop.member.MemberCardService;
-import com.vpu.mp.service.shop.member.UserCardService;
-import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 
 import static com.vpu.mp.service.pojo.shop.member.card.base.UserCardConstant.SOURCE_GIVE_WAY;
 import static com.vpu.mp.service.pojo.shop.member.card.base.UserCardConstant.SOURCE_NORMAL;
@@ -24,19 +19,19 @@ import static com.vpu.mp.service.pojo.shop.member.card.base.UserCardConstant.SOU
  */
 @Service
 public class LimitCardOpt extends CardOpt {
-	
+
 	public LimitCardOpt() {
 		super(CardConstant.MCARD_TP_LIMIT);
 	}
-	
-	
+
+
 	@Override
 	protected String sendCard(Integer userId,Integer cardId,boolean isActivate) {
 		logger().info("发送限次会员卡");
 		MemberCardRecord card = cardService.getCardById(cardId);
-		return getUserCardRecord(userId,card,null,false,isActivate);	
+		return getUserCardRecord(userId,card,null,false,isActivate);
 	}
-	
+
 	/**
 	 * 	领取转赠的限次卡
 	 * @param userId 领取的用户ID
@@ -53,12 +48,12 @@ public class LimitCardOpt extends CardOpt {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 	获取用户卡记录
-	 * @param userId 
+	 * @param userId
 	 * @param mCard
-	 * @param userCardRecord 
+	 * @param userCardRecord
 	 * @param isGiveWay 是否为转赠
 	 * @isActivate 是否直接激活
 	 */
@@ -67,10 +62,10 @@ public class LimitCardOpt extends CardOpt {
 				.userId(userId)
 				.cardId(mCard.getId())
 				.cardNo(cardService.generateCardNo(mCard.getId()))
-				.createTime(DateUtil.getLocalDateTime())
+				.createTime(DateUtils.getLocalDateTime())
 				.expireTime(userCardService.calcCardExpireTime(mCard))
 				.build();
-		
+
 		if(isGiveWay) {
 			//	转赠获取上一个用户卡的权益值
 			newCard.setCardSource(SOURCE_GIVE_WAY);
@@ -82,7 +77,7 @@ public class LimitCardOpt extends CardOpt {
 			if(uCard.getExchangSurplus()!=null) {
 				newCard.setExchangSurplus(uCard.getExchangSurplus());
 			}
-			
+
 			if(CardUtil.isCardGiveAwayForeverTimes(mCard.getMostGiveAway())) {
 				//	无限转赠
 				newCard.setGiveAwaySurplus(Integer.MAX_VALUE);
@@ -107,9 +102,9 @@ public class LimitCardOpt extends CardOpt {
 		}
 		//	激活设置
 		if(isActivate || !CardUtil.isNeedActive(mCard.getActivation())) {
-			newCard.setActivationTime(DateUtil.getLocalDateTime());
+			newCard.setActivationTime(DateUtils.getLocalDateTime());
 		}
-		
+
 		Integer result = userCardService.insertRow(newCard);
 		if(result>0) {
 			logger().info(String.format("成功向ID为%d的用户，发送了%d张限次会员卡：%s", userId, result,mCard.getCardName()));
@@ -120,10 +115,10 @@ public class LimitCardOpt extends CardOpt {
 			logger().info("领取限次卡失败");
 			return null;
 		}
-	
+
 	}
 
-	
+
 	@Override
 	public boolean canSendCard(Integer userId, Integer cardId) {
 		logger().info("检测是否能够发放该先此限次卡");
@@ -137,11 +132,11 @@ public class LimitCardOpt extends CardOpt {
 		int personCardNum = userCardDao.getNumHasSendUser(userId, card.getId());
 		//	该卡已经发放的总次数
 		int totalSendCard = userCardDao.getHasSend(card.getId());
-		
+
 		//	校验是否满足限次卡的领取条件
 		boolean personGetFlag = true;
 		boolean sendTotalCardFlag = true;
-		
+
 		if(card.getLimit()>0 && personCardNum>=card.getLimit()) {
 			logger().info("个人领取次数达到上限");
 			personGetFlag = false;
@@ -150,11 +145,11 @@ public class LimitCardOpt extends CardOpt {
 			logger().info("卡发放达到上限");
 			sendTotalCardFlag = false;
 		}
-		
+
 		return personGetFlag && sendTotalCardFlag;
 	}
 
-	
+
 	/**
 	 * 	判断这张用户卡是否可以继续转赠
 	 * @param userCardRecord
@@ -169,7 +164,7 @@ public class LimitCardOpt extends CardOpt {
 			//	正常的卡
 			if(CardUtil.isCardSourceNormal(cardSource)) {
 				return true;
-			} 
+			}
 			//	通过转赠获取的卡
 			if(CardUtil.isCardSourceGiveWay(cardSource) && CardUtil.isCardGiveContinue(memberCard.getCardGiveContinue())) {
 				//	检查是否为无限转赠或者是否还有有转赠次数

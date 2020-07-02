@@ -4,14 +4,12 @@ package com.vpu.mp.service.shop.member.dao;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.Lists;
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
 import com.vpu.mp.db.shop.tables.records.CardUpgradeRecord;
-import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
@@ -71,7 +69,6 @@ import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.AVAILABLE_IN_STORE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
@@ -187,12 +184,12 @@ public class UserCardDaoService extends ShopBaseService{
 			.and(USER_CARD.CARD_ID.eq(card.getCardId()))
 			.and(USER_CARD.FLAG.eq(UCARD_FG_USING));
 		if(StringUtils.isBlank(card.getCardName())) {
-			sql.and((USER_CARD.EXPIRE_TIME.isNull()).or(USER_CARD.EXPIRE_TIME.ge(DateUtil.getLocalDateTime())));
+			sql.and((USER_CARD.EXPIRE_TIME.isNull()).or(USER_CARD.EXPIRE_TIME.ge(DateUtils.getLocalDateTime())));
 		}
 
 		 return sql.fetchAny();
 	}
-	
+
 	/**
 	 * 	获取可用的用户卡(未过期，未废除)
 	 */
@@ -201,10 +198,10 @@ public class UserCardDaoService extends ShopBaseService{
 					.where(USER_CARD.CARD_ID.eq(userId))
 					.and(USER_CARD.CARD_ID.eq(cardId))
 					.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
-					.and((USER_CARD.EXPIRE_TIME.isNull()).or(USER_CARD.EXPIRE_TIME.ge(DateUtil.getLocalDateTime())))
+					.and((USER_CARD.EXPIRE_TIME.isNull()).or(USER_CARD.EXPIRE_TIME.ge(DateUtils.getLocalDateTime())))
 					.fetchAny();
 	}
-	
+
 
 	/**
 	 * 获取有效用户会员卡列表
@@ -318,7 +315,7 @@ public class UserCardDaoService extends ShopBaseService{
 							.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
 							.and(MEMBER_CARD.CARD_TYPE.in(cardType))
 							.and(
-									(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()).or(USER_CARD.EXPIRE_TIME.isNull()))
+									(USER_CARD.EXPIRE_TIME.greaterThan(DateUtils.getLocalDateTime()).or(USER_CARD.EXPIRE_TIME.isNull()))
 									.or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER))
 								)
 							.and(
@@ -326,7 +323,7 @@ public class UserCardDaoService extends ShopBaseService{
 									.or(MEMBER_CARD.USE_TIME.isNull())
 								)
 							.and(
-									((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX)).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
+									((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX)).and(MEMBER_CARD.START_TIME.le(DateUtils.getLocalDateTime())))
 									.or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING,MCARD_ET_FOREVER))
 								)
 							.and(
@@ -346,10 +343,10 @@ public class UserCardDaoService extends ShopBaseService{
 			.and(USER_CARD.FLAG.in(CardConstant.UCARD_FG_USING,CardConstant.UCARD_FG_GIVING))
 			.and(
 					(USER_CARD.EXPIRE_TIME.isNull())
-					.or(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
+					.or(USER_CARD.EXPIRE_TIME.greaterThan(DateUtils.getLocalDateTime()))
 				)
             .and(
-					((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX)).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
+					((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX)).and(MEMBER_CARD.START_TIME.le(DateUtils.getLocalDateTime())))
 					.or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING,MCARD_ET_FOREVER))
 				)
 			.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.GRADE.desc())
@@ -380,7 +377,7 @@ public class UserCardDaoService extends ShopBaseService{
             .and(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_NO).or(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull())))
             .fetchAnyInto(String.class);
 	}
-	
+
 	/**
 	 *	 获取用户等级
 	 *	@return 等级 || null
@@ -430,7 +427,7 @@ public class UserCardDaoService extends ShopBaseService{
 				.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 				.where(USER_CARD.CARD_NO.eq(cardNo)).fetchOne();
 	}
-	
+
 	/**
 	 * 获取会员卡详情
 	 */
@@ -452,7 +449,7 @@ public class UserCardDaoService extends ShopBaseService{
 	public void updateUserRankCard(MemberCardRecord cardInfo,Integer userId) {
 		db().update(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 			.set(USER_CARD.CARD_ID,cardInfo.getId())
-			.set(USER_CARD.UPDATE_TIME,DateUtil.getLocalDateTime())
+			.set(USER_CARD.UPDATE_TIME, DateUtils.getLocalDateTime())
 			.set(USER_CARD.FLAG,UCARD_FG_USING)
 			.where(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
 			.and(USER_CARD.USER_ID.eq(userId))
@@ -553,10 +550,10 @@ public class UserCardDaoService extends ShopBaseService{
         gradeCardService.clearUserAllGrade(userId,cardId,isActivate);
 		return  db().update(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 			.set(USER_CARD.CARD_ID,cardId)
-            .set(USER_CARD.CREATE_TIME,DateUtil.getLocalDateTime())
-			.set(USER_CARD.UPDATE_TIME,DateUtil.getLocalDateTime())
+            .set(USER_CARD.CREATE_TIME, DateUtils.getLocalDateTime())
+			.set(USER_CARD.UPDATE_TIME, DateUtils.getLocalDateTime())
 			.set(USER_CARD.FLAG,UCARD_FG_USING)
-		    .set(USER_CARD.ACTIVATION_TIME,isActivate?DateUtil.getLocalDateTime():null)
+		    .set(USER_CARD.ACTIVATION_TIME,isActivate? DateUtils.getLocalDateTime():null)
 			.where(USER_CARD.CARD_NO.eq(cardNo))
             .and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
 			.and(USER_CARD.USER_ID.eq(userId))
@@ -567,7 +564,7 @@ public class UserCardDaoService extends ShopBaseService{
 		return db().fetchCount(USER_CARD, USER_CARD.USER_ID.eq(userId)
 				   .and(USER_CARD.CARD_ID.eq(cardId))
 				   .and(USER_CARD.FLAG.eq(DelFlag.NORMAL_VALUE))
-				   .and(USER_CARD.EXPIRE_TIME.isNull().or(USER_CARD.EXPIRE_TIME.ge(DateUtil.getLocalDateTime())))
+				   .and(USER_CARD.EXPIRE_TIME.isNull().or(USER_CARD.EXPIRE_TIME.ge(DateUtils.getLocalDateTime())))
 				   );
 	}
 
@@ -600,7 +597,7 @@ public class UserCardDaoService extends ShopBaseService{
         ValidUserCardBean card = selectValidCardSQL().where(USER_CARD.CARD_NO.eq(cardNo))
             .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
             .and(
-                (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
+                (USER_CARD.EXPIRE_TIME.greaterThan(DateUtils.getLocalDateTime()))
                     .or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER))
             )
             .and(
@@ -608,7 +605,7 @@ public class UserCardDaoService extends ShopBaseService{
                     .or(MEMBER_CARD.USE_TIME.isNull())
             )
             .and(
-                ((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX)).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
+                ((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX)).and(MEMBER_CARD.START_TIME.le(DateUtils.getLocalDateTime())))
                     .or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER))
             )
             .and(
@@ -626,7 +623,7 @@ public class UserCardDaoService extends ShopBaseService{
             dealWithValidUserCardMarketActivity(card);
             return new OrderMemberVo().init(card);
         }
-        return null; 
+        return null;
     }
 
     private void dealWithValidUserCardMarketActivity(ValidUserCardBean card) {
@@ -653,7 +650,7 @@ public class UserCardDaoService extends ShopBaseService{
 		UserCardParam param = new UserCardParam();
 		BeanUtils.copyProperties(card,param);
 		CardFreeship freeshipData = freeshipSvc.getFreeshipData(param, lang);
-		card.setCardFreeShip(freeshipData);		
+		card.setCardFreeShip(freeshipData);
 	}
 
 	private void dealWithValidUserCardEffectimeAndBgImg(ValidUserCardBean card) {
@@ -704,7 +701,7 @@ public class UserCardDaoService extends ShopBaseService{
     public List<OrderMemberVo> getOrderMembers(Integer userId,Byte[] cardType,Byte type) {
         List<ValidUserCardBean> validCardList = getValidCardList(userId, cardType, type);
         // 会员卡头像处理
-        
+
         for(ValidUserCardBean card: validCardList) {
         	// 处理卡的有效时间
         	dealWithValidUserCardEffectimeAndBgImg(card);
@@ -727,7 +724,7 @@ public class UserCardDaoService extends ShopBaseService{
 	 * 获取持有会员卡的用户id
 	 */
 	public List<Integer> getUserIdThatHasValidCard() {
-		Timestamp localDateTime = DateUtil.getLocalDateTime();
+		Timestamp localDateTime = DateUtils.getLocalDateTime();
 		return db().select(USER_CARD.USER_ID)
 				.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 				.where(USER_CARD.FLAG.eq(UCARD_FG_USING))
@@ -742,7 +739,7 @@ public class UserCardDaoService extends ShopBaseService{
 	 */
 	public void repealCardByCardNo(String cardNo) {
 		int res = db().update(USER_CARD).set(USER_CARD.FLAG,UCARD_FG_STOP)
-						.set(USER_CARD.UPDATE_TIME,DateUtil.getLocalDateTime())
+						.set(USER_CARD.UPDATE_TIME, DateUtils.getLocalDateTime())
 						.where(USER_CARD.CARD_NO.eq(cardNo))
 						.execute();
 		logger().info("废除会员卡: "+cardNo+" "+res+"张");
@@ -768,10 +765,10 @@ public class UserCardDaoService extends ShopBaseService{
     	if(param.getCardId() != null) {
     		condition = condition.and(USER_CARD.CARD_ID.eq(param.getCardId()));
     	}
-    	
+
     	return getUserCard(condition);
     }
- 
+
     public UserCardVo getUserCardByCardNo(String cardNo) {
     	Condition condition = DSL.noCondition();
     	if(!StringUtils.isBlank(cardNo)) {
@@ -779,7 +776,7 @@ public class UserCardDaoService extends ShopBaseService{
     	}
     	return getUserCard(condition);
     }
-    
+
     public UserCardRecord getCardByUserCardId(Integer userId,Integer cardId) {
     	UserCardRecord res = db().select(USER_CARD.CARD_ID,USER_CARD.CARD_NO).from(USER_CARD)
     		.where(USER_CARD.USER_ID.eq(userId))
@@ -791,7 +788,7 @@ public class UserCardDaoService extends ShopBaseService{
 
 
     public UserCardVo getUserCard(Condition condition) {
-		
+
 		return db().select(USER_CARD.USER_ID,USER_CARD.CARD_ID,USER_CARD.FLAG.as("uFlag"),USER_CARD.CARD_NO,USER_CARD.EXPIRE_TIME,USER_CARD.IS_DEFAULT,
 				USER_CARD.MONEY,USER_CARD.SURPLUS,USER_CARD.EXCHANG_SURPLUS,USER_CARD.ACTIVATION_TIME,USER_CARD.CREATE_TIME.as("uCreateTime"),
 				USER_CARD.FREE_LIMIT,USER_CARD.FREE_NUM,MEMBER_CARD.asterisk())
@@ -800,7 +797,7 @@ public class UserCardDaoService extends ShopBaseService{
 			.and(USER_CARD.FLAG.eq(CardConstant.UCARD_FG_USING))
 			.fetchAnyInto(UserCardVo.class);
 	}
-	
+
 	public int getHasSendUser(UserIdAndCardIdParam param) {
 		int res = db().fetchCount(USER_CARD, USER_CARD.CARD_ID.eq(param.getCardId()).and(USER_CARD.USER_ID.eq(param.getUserId())));
 		logger().info("获取这张卡(id="+param.getCardId()+")已经发送给用户("+param.getUserId()+")"+res+"张");
@@ -820,15 +817,15 @@ public class UserCardDaoService extends ShopBaseService{
 	 */
 	public Condition getUserCardValidCondition() {
 		Condition condition = DSL.noCondition();
-		
+
 		// 卡使用中，未被废除
 		condition = condition.and(USER_CARD.FLAG.eq(UCARD_FG_USING));
-		
+
 		// 卡未过期，或卡本身是永久有效
 		condition = condition.and(
-				(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
+				(USER_CARD.EXPIRE_TIME.greaterThan(DateUtils.getLocalDateTime()))
                 .or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER)));
-		
+
 		// 卡的使用时间，针对限次卡
 		condition = condition.and(
 				(MEMBER_CARD.USE_TIME.in(userCardService.useInDate()))
@@ -836,7 +833,7 @@ public class UserCardDaoService extends ShopBaseService{
 				);
 		return condition;
 	}
-	
+
 	/**
 	 * 	更新用户卡为停止使用
 	 */
@@ -853,7 +850,7 @@ public class UserCardDaoService extends ShopBaseService{
 	 * @param cardId 卡ID
 	 */
 	public int getCardNum(Integer cardId) {
-	
+
 		logger().info("查询领取该卡的用户数量");
 		return getSelectRecieveCardSql(cardId,true)
 					.orderBy(DSL.max(USER_CARD.CREATE_TIME).desc())
@@ -867,7 +864,7 @@ public class UserCardDaoService extends ShopBaseService{
 		logger().info("查询该卡被领取的数量");
 		return getSelectRecieveCardSql(cardId).fetchOne(0, int.class);
 	}
-	
+
 	/**
 	 * 	查询可以该卡可以正常使用的数量
 	 */
@@ -882,7 +879,7 @@ public class UserCardDaoService extends ShopBaseService{
 					.and(condition)
 					.fetchOne(0, int.class);
 	}
-	
+
 	/**
 	 * 	查询已经发送出去的卡Sql
 	 */
@@ -891,11 +888,11 @@ public class UserCardDaoService extends ShopBaseService{
 	}
 	private SelectConditionStep<Record2<Integer, Timestamp>> getSelectRecieveCardSql(Integer cardId,boolean isDistinctUserId) {
 		Select<?> subQuery = db().select(DSL.max(CARD_EXAMINE.ID).as(CARD_EXAMINE.ID),CARD_EXAMINE.CARD_NO).from(CARD_EXAMINE).groupBy(CARD_EXAMINE.CARD_NO);
-		
+
 		AggregateFunction<Integer> count = DSL.count();
 		if(isDistinctUserId) {
 			count = DSL.countDistinct(USER_CARD.USER_ID);
-		}		
+		}
 		SelectConditionStep<Record2<Integer, Timestamp>> query = db().select(count,DSL.max(USER_CARD.CREATE_TIME)).from(USER_CARD)
 			.leftJoin(subQuery.asTable("a")).on(DSL.field("a.card_no").eq(USER_CARD.CARD_NO))
 			.leftJoin(CARD_EXAMINE.asTable("b")).on(DSL.field("b.id").eq(DSL.field("a.id")))

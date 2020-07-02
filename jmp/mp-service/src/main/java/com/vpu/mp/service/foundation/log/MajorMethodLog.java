@@ -1,7 +1,7 @@
 package com.vpu.mp.service.foundation.log;
 
 import com.google.common.base.Stopwatch;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +47,7 @@ public class MajorMethodLog {
     public void aroundMethod(ProceedingJoinPoint point) throws Throwable {
         StringBuilder logAfterStr = new StringBuilder();
         String methodName = point.getSignature().getName();
-        String timestamp = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL);
+        String timestamp = DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL);
         logAfterStr.append("\n");
         logAfterStr.append("——————————————————————CHAIN—NODE—BEGIN———————————————————").append("\n");
         logAfterStr.append("Timestamp    :").append(timestamp).append("\n");

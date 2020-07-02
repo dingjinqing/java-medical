@@ -1,7 +1,7 @@
 package com.vpu.mp.service.saas.shop;
 
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
@@ -31,7 +31,7 @@ import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -81,7 +81,7 @@ public class ShopAccountService extends MainBaseService {
 		return db().selectFrom(SHOP_ACCOUNT).where(SHOP_ACCOUNT.USER_NAME.eq(username))
 				.and(SHOP_ACCOUNT.SYS_ID.eq(sysid)).fetchAny();
 	}
-	
+
 	public ShopManageVo getRow(String username, Integer sysid){
 		ShopAccountRecord record = checkByIdAndNameOnMain(username, sysid);
 		ShopManageVo into = new ShopManageVo();
@@ -100,11 +100,11 @@ public class ShopAccountService extends MainBaseService {
 	public Integer getShopAccountNumber(String startTime, String endTime) {
 		SelectWhereStep<Record1<Integer>> select = db().selectCount().from(SHOP_ACCOUNT);
 		if (startTime != null) {
-			Timestamp ts = DateUtil.convertToTimestamp(startTime);
+			Timestamp ts = DateUtils.convertToTimestamp(startTime);
 			select.where(SHOP_ACCOUNT.ADD_TIME.ge(ts));
 		}
 		if (endTime != null) {
-			Timestamp ts = DateUtil.convertToTimestamp(endTime);
+			Timestamp ts = DateUtils.convertToTimestamp(endTime);
 			select.where(SHOP_ACCOUNT.ADD_TIME.le(ts));
 		}
 		return (Integer) select.limit(1).fetchSingle(0);
@@ -112,7 +112,7 @@ public class ShopAccountService extends MainBaseService {
 
 	/**
 	 * 统计将要过期账号数量
-	 * 
+	 *
 	 * @param startTime
 	 * @return
 	 */
@@ -120,7 +120,7 @@ public class ShopAccountService extends MainBaseService {
 		SelectWhereStep<Record1<Integer>> select = db().selectCount().from(SHOP_ACCOUNT);
 		Timestamp startTimestamp = new Timestamp((new Date()).getTime());
 		if (startTime != null) {
-			startTimestamp = DateUtil.convertToTimestamp(startTime);
+			startTimestamp = DateUtils.convertToTimestamp(startTime);
 		}
 		select.where(SHOP_ACCOUNT.END_TIME.ge(startTimestamp));
 
@@ -159,10 +159,10 @@ public class ShopAccountService extends MainBaseService {
 		db().executeUpdate(record);
 		return record;
 	}
-	
+
 	public int updateAccountInfo(ShopAccountRecord updateAccountInfo) {
 		return db().executeUpdate(updateAccountInfo);
-		
+
 	}
 	public int updateById(ShopAccountRecord record) {
 		return db().executeUpdate(record);
@@ -170,7 +170,7 @@ public class ShopAccountService extends MainBaseService {
 
 	/**
 	 * 商家账户添加
-	 * 
+	 *
 	 * @param account
 	 * @return
 	 */
@@ -189,7 +189,7 @@ public class ShopAccountService extends MainBaseService {
 		return true;
 
 	}
-	
+
 	public JsonResultCode editShopAccountService(ShopAccountPojo account) {
 		if (StringUtils.isEmpty(account.getUserName()) || account.getSysId() == null) {
 			//用户名或者sysid为空
@@ -210,7 +210,7 @@ public class ShopAccountService extends MainBaseService {
 		}
 		return JsonResultCode.CODE_FAIL;
 	}
-	
+
 	/**
 	 * 绑定公众号用户
 	 * @param appId
@@ -243,18 +243,18 @@ public class ShopAccountService extends MainBaseService {
 						saas.shop.subAccount.upateBind(accountId, openId, (byte)1);
 						return true;
 					}
-					
+
 				}
 			}
 		}
 		return false;
 	}
-	
+
 	public int updateBind(Integer sysId, String openId, byte bind) {
 		return db().update(SHOP_ACCOUNT).set(SHOP_ACCOUNT.OFFICIAL_OPEN_ID, openId).set(SHOP_ACCOUNT.IS_BIND, bind)
 				.where(SHOP_ACCOUNT.SYS_ID.eq(sysId)).execute();
 	}
-	
+
 	public int updateRowBind(Integer sysId,byte bind) {
 		return db().update(SHOP_ACCOUNT).set(SHOP_ACCOUNT.IS_BIND, bind).where(SHOP_ACCOUNT.SYS_ID.eq(sysId)).execute();
 	}

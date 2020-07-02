@@ -2,7 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
@@ -27,7 +27,7 @@ public class AdminFriendPromoteController extends AdminBaseController{
 	  *  分页查询好友助力活动列表
 	 *
 	 * @param param
-	 * @return 
+	 * @return
 	 */
 	@PostMapping("/list")
 	public JsonResult getList(@RequestBody FriendPromoteListParam param) {
@@ -38,7 +38,7 @@ public class AdminFriendPromoteController extends AdminBaseController{
 	 * 启用或停用活动
 	 *
 	 * @param param
-	 * @return 
+	 * @return
 	 */
 	@PostMapping("/switch")
 	public JsonResult startOrBlock(@RequestBody FriendPromoteOptionParam param) {
@@ -56,50 +56,50 @@ public class AdminFriendPromoteController extends AdminBaseController{
 		shop().friendPromoteService.deleteAct(param);
 		return success();
 	}
-	
+
 	/**
 	 * 活动奖励领取明细
-	 * 
-	 * @param param 
+	 *
+	 * @param param
 	 * @return
 	 */
 	@PostMapping("/receive")
 	public JsonResult receiveDetail(@RequestBody FriendPromoteReceiveParam param) {
-		PageResult<FriendPromoteReceiveVo> pageResult = 
+		PageResult<FriendPromoteReceiveVo> pageResult =
 				shop().friendPromoteService.receiveDetail(param);
 		return success(pageResult);
 	}
 
 	/**
 	 * 活动发起明细
-	 * 
-	 * @param param 
+	 *
+	 * @param param
 	 * @return
 	 */
 	@PostMapping("/launch")
 	public JsonResult launchDetail(@RequestBody FriendPromoteLaunchParam param) {
-		PageResult<FriendPromoteLaunchVo> pageResult = 
+		PageResult<FriendPromoteLaunchVo> pageResult =
 				shop().friendPromoteService.launchDetail(param);
 		return success(pageResult);
 	}
-	
+
 	/**
 	 * 活动参与明细
-	 * 
-	 * @param param 
+	 *
+	 * @param param
 	 * @return
 	 */
 	@PostMapping("/participate")
 	public JsonResult participateDetail(@RequestBody FriendPromoteParticipateParam param) {
-		PageResult<FriendPromoteParticipateVo> pageResult = 
+		PageResult<FriendPromoteParticipateVo> pageResult =
 				shop().friendPromoteService.participateDetail(param);
 		return success(pageResult);
 	}
-	
+
 	/**
 	 * 添加好友助力活动
-	 * 
-	 * @param param 
+	 *
+	 * @param param
 	 * @return
 	 */
 	@PostMapping("/add")
@@ -107,11 +107,11 @@ public class AdminFriendPromoteController extends AdminBaseController{
 		shop().friendPromoteService.addActivity(param);
 		return success();
 	}
-	
+
 	/**
 	 * 查询单个好友助力活动
-	 * 
-	 * @param param 
+	 *
+	 * @param param
 	 * @return
 	 */
 	@PostMapping("/select")
@@ -119,11 +119,11 @@ public class AdminFriendPromoteController extends AdminBaseController{
 		FriendPromoteSelectVo vo	= shop().friendPromoteService.selectOne(param);
 		return success(vo);
 	}
-	
+
 	/**
 	 * 修改好友助力活动信息
-	 * 
-	 * @param param 
+	 *
+	 * @param param
 	 * @return
 	 */
 	@PostMapping("/update")
@@ -174,7 +174,7 @@ public class AdminFriendPromoteController extends AdminBaseController{
     @PostMapping("/launch/export")
     public void launchExport(@RequestBody @Valid FriendPromoteLaunchParam param, HttpServletResponse response){
         Workbook workbook = shop().friendPromoteService.launchExport(param,getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.FRIEND_PROMOTE_LAUNCH_DETAIL,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtil.getLocalDateTime().toString();
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.FRIEND_PROMOTE_LAUNCH_DETAIL,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtils.getLocalDateTime().toString();
         export2Excel(workbook,fileName,response);
     }
     /**
@@ -185,7 +185,7 @@ public class AdminFriendPromoteController extends AdminBaseController{
     @PostMapping("/participate/export")
     public void joinExport(@RequestBody @Valid FriendPromoteParticipateParam param, HttpServletResponse response){
         Workbook workbook = shop().friendPromoteService.joinExport(param,getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.FRIEND_PROMOTE_JOIN_DETAIL,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtil.getLocalDateTime().toString();
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.FRIEND_PROMOTE_JOIN_DETAIL,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtils.getLocalDateTime().toString();
         export2Excel(workbook,fileName,response);
     }
     /**
@@ -196,7 +196,7 @@ public class AdminFriendPromoteController extends AdminBaseController{
     @PostMapping("/receive/export")
     public void receiveExport(@RequestBody @Valid FriendPromoteReceiveParam param, HttpServletResponse response){
         Workbook workbook = shop().friendPromoteService.receiveExport(param,getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.FRIEND_PROMOTE_RECEIVE_DETAIL,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtil.getLocalDateTime().toString();
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.FRIEND_PROMOTE_RECEIVE_DETAIL,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtils.getLocalDateTime().toString();
         export2Excel(workbook,fileName,response);
     }
 }

@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
@@ -85,7 +85,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
             .collect(Collectors.toList());
 
         List<Integer> goodsIds = availableCapsules.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
-        Map<Integer, Result<Record3<Integer, Integer, BigDecimal>>> firstSpecialPrds = firstSpecialProcessorDao.getGoodsFirstSpecialForListInfo(goodsIds, DateUtil.getLocalDateTime());
+        Map<Integer, Result<Record3<Integer, Integer, BigDecimal>>> firstSpecialPrds = firstSpecialProcessorDao.getGoodsFirstSpecialForListInfo(goodsIds, DateUtils.getLocalDateTime());
 
         availableCapsules.forEach(capsule -> {
             Integer goodsId = capsule.getGoodsId();
@@ -115,7 +115,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
             return;
         }
 
-        FirstSpecialMpVo vo = firstSpecialProcessorDao.getFirstSpecialInfo(param.getGoodsId(), DateUtil.getLocalDateTime());
+        FirstSpecialMpVo vo = firstSpecialProcessorDao.getFirstSpecialInfo(param.getGoodsId(), DateUtils.getLocalDateTime());
         // 该商品无有效首单特惠活动
         if (vo == null) {
             return;

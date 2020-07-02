@@ -5,7 +5,7 @@ import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryResult;
 import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
@@ -810,7 +810,7 @@ public class StoreReservation extends ShopBaseService {
         OrderCloseQueenParam param = new OrderCloseQueenParam();
         param.setShopId(shopId);
         param.setOrderSn(orderSn);
-        Timestamp startTime = DateUtil.getDalyedDateTime(60*5);
+        Timestamp startTime = DateUtils.getDalyedDateTime(60*5);
 
         TaskJobInfo info = TaskJobInfo.builder(shopId)
             .type(TaskJobsConstant.EXECUTION_TIMING)
@@ -883,7 +883,7 @@ public class StoreReservation extends ShopBaseService {
      */
     public Result<ServiceOrderRecord> getExpiredUnpaidOrders(){
         int cancelTime = shopCommonConfigService.getCancelTime();
-        Timestamp expiredTime = DateUtil.getDalyedDateTime(- cancelTime * 60);
+        Timestamp expiredTime = DateUtils.getDalyedDateTime(- cancelTime * 60);
         return db().selectFrom(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_STATUS.eq(ORDER_STATUS_WAIT_PAY)).and(SERVICE_ORDER.CREATE_TIME.lt(expiredTime)).fetch();
     }
 }

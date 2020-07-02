@@ -1,6 +1,6 @@
 package com.vpu.mp.service.saas.schedule;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.MathUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.TaskJobContentRecord;
@@ -125,8 +125,8 @@ public class TaskJobMainService extends MainBaseService {
             .type(TaskJobsConstant.TYPE_ONCE)
             .content(param)
             .className(className)
-            .startTime(DateUtil.getLocalDateTime())
-            .endTime(DateUtil.getLocalDateTime())
+            .startTime(DateUtils.getLocalDateTime())
+            .endTime(DateUtils.getLocalDateTime())
             .executionType(Objects.requireNonNull(TaskJobsConstant.TaskJobEnum
                 .getTaskJobEnumByExecutionType(executionType)))
             .builder();
@@ -147,7 +147,7 @@ public class TaskJobMainService extends MainBaseService {
                     .leftJoin(TASK_JOB_CONTENT).on(TASK_JOB_CONTENT.ID.eq(TASK_JOB_MAIN.CONTENT_ID))
                     .where(TASK_JOB_MAIN.STATUS.eq(TaskJobsConstant.STATUS_NEW))
                     .and(TASK_JOB_MAIN.TYPE.notEqual(TaskJobsConstant.TYPE_ONCE))
-                    .and(TASK_JOB_MAIN.NEXT_EXECUTE_TIME.lessOrEqual(DateUtil.getLocalDateTime()))
+                    .and(TASK_JOB_MAIN.NEXT_EXECUTE_TIME.lessOrEqual(DateUtils.getLocalDateTime()))
                     .fetch();
                 List<Integer> jobIds = result.stream().map(x->x.get(TASK_JOB_CONTENT.ID)).collect(Collectors.toList());
                 result.forEach(r->{
@@ -207,7 +207,7 @@ public class TaskJobMainService extends MainBaseService {
             contentRecord.update();
             record.setProgress((byte)(MathUtil.deciMal(allSize-failSize,allSize)*100));
             if( record.getType().equals(TaskJobsConstant.TYPE_CYCLE_ONCE) ){
-                Timestamp next = DateUtil.getDalyedDateTime(record.getCycle());
+                Timestamp next = DateUtils.getDalyedDateTime(record.getCycle());
                 if( next.before(record.getEndTime()) ){
                     record.setNextExecuteTime(next);
                     record.setStatus(TaskJobsConstant.STATUS_EXECUTING);

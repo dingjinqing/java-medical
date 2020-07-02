@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.order.refund.record;
 
 import com.github.binarywang.wxpay.bean.result.WxPayRefundResult;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.OrderRefundRecord;
 import com.vpu.mp.db.shop.tables.records.OrderRefundRecordRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
@@ -21,7 +21,7 @@ import static com.vpu.mp.db.shop.tables.OrderRefundRecord.ORDER_REFUND_RECORD;
  */
 @Service
 public class OrderRefundRecordService extends ShopBaseService{
-	
+
 	public final OrderRefundRecord TABLE = ORDER_REFUND_RECORD;
     public static final Byte success = 1;
     public static final Byte fail = 2;
@@ -37,7 +37,7 @@ public class OrderRefundRecordService extends ShopBaseService{
         record.setPaySn(payRecord.getPaySn());
         record.setOrderSn(payRecord.getOrderSn());
         record.setPayCode(payRecord.getPayCode());
-        record.setRefundTime(DateUtil.getSqlTimestamp());
+        record.setRefundTime(DateUtils.getSqlTimestamp());
         record.setRetId(retId);
         record.setTransSn(payRecord.getTradeNo());
         record.setRefundAmount(money);

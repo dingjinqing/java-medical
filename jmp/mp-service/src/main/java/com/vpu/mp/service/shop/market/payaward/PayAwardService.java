@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
-import org.jooq.Record4;
 import org.jooq.Record5;
 import org.jooq.Record6;
 import org.jooq.Result;
@@ -40,7 +39,7 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
@@ -652,7 +651,7 @@ public class PayAwardService extends ShopBaseService {
         promotion.setMinPayMoney(record6.get(PAY_AWARD.MIN_PAY_MONEY));
         return promotion;
     }
-    
+
     /**
      * 营销日历用id查询活动
      * @param id
@@ -662,7 +661,7 @@ public class PayAwardService extends ShopBaseService {
 		return db().select(PAY_AWARD.ID, PAY_AWARD.ACTIVITY_NAMES.as(CalendarAction.ACTNAME), PAY_AWARD.START_TIME,
 				PAY_AWARD.END_TIME,PAY_AWARD.TIME_TYPE.as(CalendarAction.ISPERMANENT)).from(PAY_AWARD).where(PAY_AWARD.ID.eq(id)).fetchAnyInto(MarketVo.class);
     }
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param
@@ -675,7 +674,7 @@ public class PayAwardService extends ShopBaseService {
 				.from(PAY_AWARD).where(
 						PAY_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
 								.and(PAY_AWARD.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE)
-										.and(PAY_AWARD.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+										.and(PAY_AWARD.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(PAY_AWARD.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);

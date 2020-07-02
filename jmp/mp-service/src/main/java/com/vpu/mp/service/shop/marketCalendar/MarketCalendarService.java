@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.base.Objects;
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Page;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.MarketCalendarRecord;
@@ -26,7 +26,6 @@ import com.vpu.mp.service.pojo.saas.marketCalendar.MarketCalendarSysVo;
 import com.vpu.mp.service.pojo.saas.marketCalendar.MarketMqParam;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.ActInfoVo;
-import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAct;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketCalendarActivityVo;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketCalendarInfoVo;
@@ -45,7 +44,7 @@ public class MarketCalendarService extends ShopBaseService {
 
 	/**
 	 * 创建日历活动
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -62,7 +61,7 @@ public class MarketCalendarService extends ShopBaseService {
 
 	/**
 	 * 编辑日历活动
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -85,7 +84,7 @@ public class MarketCalendarService extends ShopBaseService {
 
 	/**
 	 * 删除
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -97,7 +96,7 @@ public class MarketCalendarService extends ShopBaseService {
 
 	/**
 	 * 营销日历列表 里边的
-	 * 
+	 *
 	 * @param year
 	 * @return
 	 */
@@ -110,7 +109,7 @@ public class MarketCalendarService extends ShopBaseService {
 				.where(MARKET_CALENDAR.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
 						.and(DSL.left(MARKET_CALENDAR.EVENT_TIME.cast(String.class), 4).eq(year)))
 				.orderBy(MARKET_CALENDAR.EVENT_TIME.asc()).fetchInto(MarketCalendarVo.class);
-		Date nowDate = DateUtil.yyyyMmDdDate(LocalDate.now());
+		Date nowDate = DateUtils.yyyyMmDdDate(LocalDate.now());
 		for (int i = 1; i < 13; i++) {
 			MarketListData data = new MarketListData();
 			if (i < 10) {
@@ -175,7 +174,7 @@ public class MarketCalendarService extends ShopBaseService {
 			}
 		}
 
-		if (Objects.equal(hasAct, 0) && param.getEventTime().before(DateUtil.yyyyMmDdDate(LocalDate.now()))) {
+		if (Objects.equal(hasAct, 0) && param.getEventTime().before(DateUtils.yyyyMmDdDate(LocalDate.now()))) {
 			status = CalendarAction.THREE;
 		}
 		if (Objects.equal(overNum, calendarActList.size()) && overNum > 0) {
@@ -373,7 +372,7 @@ public class MarketCalendarService extends ShopBaseService {
 
 	/**
 	 * 返回活动状态
-	 * 
+	 *
 	 * @param actInfo
 	 * @return
 	 */
@@ -383,7 +382,7 @@ public class MarketCalendarService extends ShopBaseService {
 		}
 		Timestamp statrtTime = actInfo.getStartTime();
 		Timestamp endTime = actInfo.getEndTime();
-		Timestamp nowTime = DateUtil.getSqlTimestamp();
+		Timestamp nowTime = DateUtils.getSqlTimestamp();
 		if (null == statrtTime || null == endTime) {
 			logger().info("时间为null");
 			return CalendarAction.FOUR;
@@ -399,7 +398,7 @@ public class MarketCalendarService extends ShopBaseService {
 
 	/**
 	 * 获取日历活动
-	 * 
+	 *
 	 * @param calendarId
 	 * @return
 	 */
@@ -426,7 +425,7 @@ public class MarketCalendarService extends ShopBaseService {
 					actInfo.setIsRecommend(item.getSysCalActId() > 0 ? true : false);
 					actInfoList.add(actInfo);
 				}else {
-					
+
 					MarketVo actInfo=new MarketVo();
 					actInfo.setActivityType(item.getActivityType());
 					actInfo.setRecommendLink(item.getRecommendLink());
@@ -434,7 +433,7 @@ public class MarketCalendarService extends ShopBaseService {
 					actInfo.setCalActId(item.getId());
 					actInfo.setIsRecommend(item.getSysCalActId() > 0 ? true : false);
 					actInfoList.add(actInfo);
-					
+
 				}
 			}else {
 				vo.setHasAct(false);
@@ -444,13 +443,13 @@ public class MarketCalendarService extends ShopBaseService {
 		vo.setActInfo(actInfoList);
 		return vo;
 	}
-	
+
 	/**
 	 * 概览用的营销日历
 	 * @return
 	 */
 	public List<MarketCalendarVo> getOverviewList() {
-		Date nowDate = DateUtil.yyyyMmDdDate(LocalDate.now());
+		Date nowDate = DateUtils.yyyyMmDdDate(LocalDate.now());
 		List<MarketCalendarVo> calendarList = db().selectFrom(MARKET_CALENDAR)
 				.where(MARKET_CALENDAR.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
 						.and(MARKET_CALENDAR.EVENT_TIME.ge(nowDate)))
@@ -471,7 +470,7 @@ public class MarketCalendarService extends ShopBaseService {
 		}
 		return dataList;
 	}
-	
+
 	/**
 	 * 同步和推送
 	 * @param param
@@ -495,7 +494,7 @@ public class MarketCalendarService extends ShopBaseService {
 		}else {
 			record = db().newRecord(MARKET_CALENDAR,vo);
 			record.reset(MARKET_CALENDAR.ID);
-			record.setSource(CalendarAction.ONE);			
+			record.setSource(CalendarAction.ONE);
 			record.setSourceId(vo.getId());
 			int insert = record.insert();
 			logger().info("店铺活动:{}，创建主库活动：{}，结果：{}",record.getId(),vo.getId(),insert);

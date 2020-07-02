@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.task.market;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.ReducePriceRecord;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
@@ -68,8 +68,8 @@ public class ReducePriceTaskService  extends ShopBaseService {
         List<ReducePriceRecord> reducePriceRecordList =  db().select().from(REDUCE_PRICE).where(
             REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
             .and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
-            .and(REDUCE_PRICE.START_TIME.lt(DateUtil.getLocalDateTime()))
-            .and(REDUCE_PRICE.END_TIME.gt(DateUtil.getLocalDateTime()))
+            .and(REDUCE_PRICE.START_TIME.lt(DateUtils.getLocalDateTime()))
+            .and(REDUCE_PRICE.END_TIME.gt(DateUtils.getLocalDateTime()))
         ).fetchInto(ReducePriceRecord.class);
         List<Integer> reducePriceIds = new ArrayList<>();
         reducePriceRecordList.forEach(reducePriceRecord -> {
@@ -92,15 +92,15 @@ public class ReducePriceTaskService  extends ShopBaseService {
     private boolean isValidPeriodReducePriceAct(ReducePriceRecord reducePriceRecord){
         if(ReducePriceService.PERIOD_ACTION_NORMAL.equals(reducePriceRecord.getPeriodAction())){
             //不按周期重复
-            if(reducePriceRecord.getStartTime().before(DateUtil.getLocalDateTime()) && reducePriceRecord.getEndTime().after(DateUtil.getLocalDateTime())){
+            if(reducePriceRecord.getStartTime().before(DateUtils.getLocalDateTime()) && reducePriceRecord.getEndTime().after(DateUtils.getLocalDateTime())){
                 return true;
             }
         }else{
             String []periodString = reducePriceRecord.getPointTime().split("@");
-            Timestamp periodStart = DateUtil.convertToTimestamp(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE) + " " + periodString[0] + ":00");
-            Timestamp periodEnd = DateUtil.convertToTimestamp(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE) + " " + periodString[1] + ":00");
+            Timestamp periodStart = DateUtils.convertToTimestamp(DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE) + " " + periodString[0] + ":00");
+            Timestamp periodEnd = DateUtils.convertToTimestamp(DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE) + " " + periodString[1] + ":00");
             Calendar calendar = Calendar.getInstance();
-            if(DateUtil.getLocalDateTime().after(periodStart) && DateUtil.getLocalDateTime().before(periodEnd)){
+            if(DateUtils.getLocalDateTime().after(periodStart) && DateUtils.getLocalDateTime().before(periodEnd)){
                 if(ReducePriceService.PERIOD_ACTION_EVERY_DAY.equals(reducePriceRecord.getPeriodAction())){
                     //按天重复
                     return true;

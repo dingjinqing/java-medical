@@ -21,7 +21,7 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
@@ -36,7 +36,6 @@ import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
-import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardInsertVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
@@ -48,7 +47,7 @@ import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 
 /**
- * 
+ *
  * @author 黄壮壮
  * @Date: 2019年7月26日
  * @Description: 会员卡管理
@@ -64,7 +63,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		shop().member.card.cardCreateSvc.createMemberCard(card);
 		return this.success();
 	}
-	
+
 	/**
 	 * 会员卡 - 更新
      */
@@ -82,7 +81,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 	public JsonResult getCardList(@RequestBody SearchCardParam param) {
 		logger().info("获取会员卡列表");
 		PageResult<? extends BaseCardVo> result = shop().member.card.getCardList(param);
-		
+
 		return success(result);
 	}
 
@@ -108,7 +107,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 
 	/**
 	 * 获取需要更新的会员卡的详细信息
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -117,8 +116,8 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		logger().info("获取会员卡的详细信息");
 		BaseCardVo card = shop().member.card.cardDetailSvc.getCardDetailById(param);
 		return success(card);
-	}	
-	
+	}
+
 	/**
 	 * 获取所有会员卡弹窗
 	 */
@@ -128,7 +127,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		List<CardBasicVo> allUserCard = shop().member.card.getAllUserCard();
 		return success(allUserCard);
 	}
-	
+
 
 	/**
 	 * 获取所有专属会员卡弹窗
@@ -159,17 +158,17 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		Map<String,Object> result = shop().member.card.getAllCardHolder(param);
 		return success(result);
 	}
-	
+
 	@PostMapping("/cardholder/import/export")
 	public void getAllCardHoldersExport(@RequestBody CardHolderParam param,HttpServletResponse response) {
 		logger().info("导出所有持卡会员");
 		Workbook workbook = shop().member.card.getAllCardHolderExport(param,getLang());
 		String fileName = Util.translateMessage(getLang(), JsonResultMessage.USER_CARD_TEMPLATE_NAME, BaseConstant.LANGUAGE_TYPE_EXCEL,"messages");
-		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
+		String dateFormat = DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE);
 		export2Excel(workbook, fileName + dateFormat, response);
 		logger().info("结束导出所有持卡会员");
 	}
-	
+
 	/**
 	 * 获取会员卡领取详情
 	 */
@@ -179,7 +178,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		PageResult<CodeReceiveVo> result = shop().member.card.getReceiveList(param);
 		return success(result);
 	}
-	
+
 	/**
 	 * 获取会员卡批次
 	 * @param cardId
@@ -191,7 +190,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		List<CardBatchVo> cardBatchList = shop().member.card.getCardBatchList(cardId);
 		return success(cardBatchList);
 	}
-	
+
 	/**
 	 * 废除指定的会员卡批次
 	 * @param cardId
@@ -203,7 +202,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		shop().member.card.deleteCardBatch(id);
 		return success();
 	}
-	
+
 	/**
 	 * 	获取充值明细
 	 * @param param
@@ -214,9 +213,9 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		PageResult<ChargeVo> chargeList = shop().member.card.getChargeList(param,getLang());
 		return success(chargeList);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * 获取消费明细
 	 * @param param
@@ -227,7 +226,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		PageResult<ChargeVo> chargeList = shop().member.card.getConsumeList(param,getLang());
 		return success(chargeList);
 	}
-	
+
 	/**
 	 * 获取激活列表信息
 	 * @param param
@@ -239,7 +238,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		PageResult<ActiveAuditVo> activateAuditList = shop().member.card.cardVerifyService.getActivateAuditList(param);
 		return i18nSuccess(activateAuditList);
 	}
-	
+
 	/**
 	 * 审核用户激活通过
 	 * @return
@@ -250,7 +249,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		shop().member.card.cardVerifyService.passActivateAudit(param);
 		return success();
 	}
-	
+
 	/**
 	 * 拒绝通过审核
 	 * @param param
@@ -271,7 +270,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		PageResult<CardConsumeVo> results = shop().member.card.getCardConsumeOrderList(param);
 		return success(results);
 	}
-	
+
 	/**
 	 * 添加领取批次
 	 */
@@ -289,8 +288,8 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		logger().info("获取领取批次");
 		return success(shop().member.card.getBatchCfg(batchId));
 	}
-	
-	
+
+
 	/**
 	 * 获取等级卡所有等级
 	 */
@@ -299,10 +298,10 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		List<String> res = shop().member.card.getAllNoDeleteCardGrade();
 		return success(res);
 	}
-	
+
 	/**
 	 * 获取导入领取码模板
-	 * 
+	 *
 	 * @param response
 	 */
 	@GetMapping(value = "/card/code/getTemplate")
@@ -313,7 +312,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		export2Excel(workbook, fileName, response);
 		logger().info("结束获取导入领取码模板");
 	}
-	
+
 	/**
 	 * 导入领取码模板
 	 * @param param
@@ -335,7 +334,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		}
 		return fail(code);
 	}
-	
+
 	/**
 	 * 获得生成/导入记录
 	 * @param batchId
@@ -346,10 +345,10 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		BatchGroupVo batchGroupList = shop().member.card.getBatchGroupList(batchId);
 		return success(batchGroupList);
 	}
-	
+
 	/**
 	 * 下载失败数据
-	 * 
+	 *
 	 * @param param
 	 * @param response
 	 */
@@ -359,14 +358,14 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		Workbook workbook = shop().member.card.getExcel(param.getBatchId(), getLang(),false,param.getIsPwd());
 		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_NO_IMPORT_NAME, BaseConstant.LANGUAGE_TYPE_EXCEL,
 				"messages");
-		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
+		String dateFormat = DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE);
 		export2Excel(workbook, fileName + dateFormat, response);
 		logger().info("结束下载领取码失败数据");
 	}
-	
+
 	/**
 	 * 下载成功数据
-	 * 
+	 *
 	 * @param param
 	 * @param response
 	 */
@@ -376,14 +375,14 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		Workbook workbook = shop().member.card.getExcel(param.getBatchId(), getLang(),true,param.getIsPwd());
 		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_NO_IMPORT_NAME, BaseConstant.LANGUAGE_TYPE_EXCEL,
 				"messages");
-		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
+		String dateFormat = DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE);
 		export2Excel(workbook, fileName + dateFormat, response);
 		logger().info("结束下载领取码成功数据");
 	}
-	
+
 	/**
 	 * 获取导入领取码+密码的模板
-	 * 
+	 *
 	 * @param response
 	 */
 	@GetMapping(value = "/card/codePwd/getTemplate")
@@ -394,7 +393,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		export2Excel(workbook, fileName, response);
 		logger().info("结束获取导入领取码模板");
 	}
-	
+
 	/**
 	 * 	获取待审核的卡列表
 	 */
@@ -403,7 +402,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		logger().info("获取待审核的卡列表");
 		return success(shop().mallOverview.cardVerifyService.getCardExamineList());
 	}
-	
+
 	/**
 	 * 	获取会员卡分享码
 	 */
@@ -412,7 +411,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		logger().info("获取卡ID: "+cardId+"的分享码");
 		return success(shop().member.card.getShareCode(cardId));
 	}
-	
+
 	@PostMapping(value="/cards/list/get")
 	public JsonResult getCardByIds(@RequestBody List<Integer> param) {
 		logger().info("根据id数组获取会员卡");
@@ -441,7 +440,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		Workbook workbook = shop().member.card.getReceiveExcel(param, getLang());
 		String fileName = Util.translateMessage(getLang(), JsonResultMessage.USER_CARD_RECEIVE_NAME, BaseConstant.LANGUAGE_TYPE_EXCEL,
 				"messages");
-		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
+		String dateFormat = DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE);
 		export2Excel(workbook, fileName + dateFormat, response);
 		logger().info("结束下载领取详情");
 	}
@@ -456,7 +455,7 @@ public class AdminMemberCardController extends AdminBaseController {	/**
 		Workbook workbook = shop().member.card.cardVerifyService.exportToExcel(param,getLang());
 		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_EXAMINE_FILE_NAME, BaseConstant.LANGUAGE_TYPE_EXCEL,
 				"messages");
-		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
+		String dateFormat = DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE);
 		export2Excel(workbook, cardName+fileName + dateFormat, response);
 	}
 

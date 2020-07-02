@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.market.increasepurchase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
@@ -161,7 +161,7 @@ public class IncreasePurchaseService extends ShopBaseService {
             vo.setResaleQuantity(getResaleQuantity(purchaseId));
             vo.setPurchaseInfo(getPurchaseDetailInfo(purchaseId));
             vo.setCategory(Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime()));
-            vo.setTimestamp(DateUtil.getLocalDateTime());
+            vo.setTimestamp(DateUtils.getLocalDateTime());
         }
         return pageResult;
     }
@@ -578,10 +578,10 @@ public class IncreasePurchaseService extends ShopBaseService {
         if(purchasePriceDefineRecord == null || purchasePriceDefineRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
             vo.setState((byte)1);
             return vo;
-        }else if(purchasePriceDefineRecord.getStartTime().after(DateUtil.getLocalDateTime())){
+        }else if(purchasePriceDefineRecord.getStartTime().after(DateUtils.getLocalDateTime())){
             vo.setState((byte)2);
             return vo;
-        }else if(purchasePriceDefineRecord.getEndTime().before(DateUtil.getLocalDateTime())){
+        }else if(purchasePriceDefineRecord.getEndTime().before(DateUtils.getLocalDateTime())){
             vo.setState((byte)3);
             return vo;
         }
@@ -827,7 +827,7 @@ public class IncreasePurchaseService extends ShopBaseService {
 						ppd.END_TIME)
 				.from(ppd)
 				.where(ppd.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(ppd.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(ppd.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(ppd.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(ppd.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);

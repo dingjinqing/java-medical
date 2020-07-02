@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.task.overview;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.GoodsOverviewSummaryRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -415,7 +415,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      */
     public GoodsOverviewSummaryRecord createOverviewRecord(ProductOverviewParam param) {
         return new GoodsOverviewSummaryRecord() {{
-            setRefDate(DateUtil.yyyyMmDdDate(LocalDate.now()));
+            setRefDate(DateUtils.yyyyMmDdDate(LocalDate.now()));
             setType(param.getDynamicDate());
             setOnShelfGoodsNum(getSaleGoodsNumber(param));
             setSoldGoodsNum(getDySoldGoodsNum(param));
@@ -700,7 +700,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      */
     public void insertGoodsSummary() {
         TYPE_LIST.forEach((e) -> {
-            Date nowDate = DateUtil.yyyyMmDdDate(LocalDate.now());
+            Date nowDate = DateUtils.yyyyMmDdDate(LocalDate.now());
             Timestamp startTimeStamp = Timestamp.valueOf(LocalDate.now().minusDays(e).atStartOfDay());
             Timestamp endTimeStamp = Timestamp.valueOf(LocalDate.now().atStartOfDay());
             ProductOverviewParam param = new ProductOverviewParam() {{

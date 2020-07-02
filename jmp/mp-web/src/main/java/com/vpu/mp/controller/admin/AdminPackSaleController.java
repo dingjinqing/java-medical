@@ -3,7 +3,7 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
@@ -24,7 +24,7 @@ import javax.validation.Valid;
 public class AdminPackSaleController extends AdminBaseController {
 	/**
 	 * 一口价活动分页查询
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -35,7 +35,7 @@ public class AdminPackSaleController extends AdminBaseController {
 
 	/**
 	 * 添加打包一口价活动
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -47,7 +47,7 @@ public class AdminPackSaleController extends AdminBaseController {
 
 	/**
 	 * 编辑打包一口价活动
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -60,7 +60,7 @@ public class AdminPackSaleController extends AdminBaseController {
 
 	/**
 	 * 删除 打包一口价活动
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -75,7 +75,7 @@ public class AdminPackSaleController extends AdminBaseController {
 
 	/**
 	 * 分享打包一口价活动
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -87,7 +87,7 @@ public class AdminPackSaleController extends AdminBaseController {
 
 	/**
 	 * 启用活动
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -99,7 +99,7 @@ public class AdminPackSaleController extends AdminBaseController {
 
 	/**
 	 * 停用活动
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -153,7 +153,7 @@ public class AdminPackSaleController extends AdminBaseController {
     @PostMapping("/order/export")
     public void activityOrderExport(@RequestBody @Valid MarketOrderListParam param, HttpServletResponse response) {
         Workbook workbook = shop().packSale.exportPackSaleOrderList(param, getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.PACKAGE_SALE_ORDER_LIST_FILENAME, OrderConstant.LANGUAGE_TYPE_EXCEL, OrderConstant.LANGUAGE_TYPE_EXCEL) + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.PACKAGE_SALE_ORDER_LIST_FILENAME, OrderConstant.LANGUAGE_TYPE_EXCEL, OrderConstant.LANGUAGE_TYPE_EXCEL) + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT);
         export2Excel(workbook, fileName, response);
     }
 

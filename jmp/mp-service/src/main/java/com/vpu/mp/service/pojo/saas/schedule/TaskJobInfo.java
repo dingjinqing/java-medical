@@ -2,7 +2,7 @@ package com.vpu.mp.service.pojo.saas.schedule;
 
 import java.sql.Timestamp;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 
 public class TaskJobInfo extends BaseTaskJob {
@@ -37,7 +37,7 @@ public class TaskJobInfo extends BaseTaskJob {
         }
         public TaskJobInfo.Builder cycle(Integer cycle){
             this.cycle = cycle;
-            this.nextExecuteTime = DateUtil.getDalyedDateTime(cycle);
+            this.nextExecuteTime = DateUtils.getDalyedDateTime(cycle);
             return this;
         }
         public TaskJobInfo.Builder startTime(Timestamp startTime){
@@ -79,10 +79,10 @@ public class TaskJobInfo extends BaseTaskJob {
             if( builder.startTime!=null ){
                 this.nextExecuteTime = builder.startTime;
             }else{
-                this.nextExecuteTime = DateUtil.getLocalDateTime();
+                this.nextExecuteTime = DateUtils.getLocalDateTime();
             }
         }else if( builder.type.equals(TaskJobsConstant.TYPE_ONCE) ){
-            this.nextExecuteTime = DateUtil.getLocalDateTime();
+            this.nextExecuteTime = DateUtils.getLocalDateTime();
         }else if( builder.type.equals(TaskJobsConstant.EXECUTION_TIMING) ){
             this.nextExecuteTime = builder.startTime;
         }

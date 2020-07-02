@@ -4,7 +4,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelReader;
 import com.vpu.mp.common.foundation.excel.exception.handler.IllegalExcelBinder;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.RegexUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.GoodsImportDetailRecord;
@@ -1386,7 +1386,7 @@ public class GoodsImportService extends ShopBaseService {
      */
     private String createFilePath(Integer shopId, String fileName) {
         return new StringBuilder().append("upload/").append("excel/").append(shopId).append("/")
-            .append(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE))
+            .append(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE))
             .append("_").append(fileName).toString();
     }
 

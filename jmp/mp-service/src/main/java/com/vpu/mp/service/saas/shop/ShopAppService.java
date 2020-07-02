@@ -1,7 +1,7 @@
 package com.vpu.mp.service.saas.shop;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.main.Tables;
 import com.vpu.mp.db.main.tables.records.AppAuthRecord;
 import com.vpu.mp.db.main.tables.records.AppRecord;
@@ -130,7 +130,7 @@ public class ShopAppService  extends MainBaseService {
         int len= 32-shopId.toString().length()-16;
         String sessionKey;
         while (true){
-            sessionKey = "w" +DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE) +
+            sessionKey = "w" + DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE) +
                 RandomStringUtils.randomAlphanumeric(len) +
                 "s" + shopId;
             Record1<Integer> fetchOne = db().selectCount().from(APP_AUTH).where(APP_AUTH.SESSION_KEY.eq(sessionKey)).fetchOne();

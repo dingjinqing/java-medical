@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.order.trade;
 
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.TradesRecord;
 import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -28,7 +28,7 @@ public class TradesRecordService extends ShopBaseService{
 	public final static byte TRADE_STATUS_ENTRY  = 0;
 	/**交易状态：1：已到账*/
 	public final static byte TRADE_STATUS_ARRIVAL = 1;
-	
+
 	/**
 	 * 	添加交易记录
 	 * @param money 金额
@@ -52,7 +52,7 @@ public class TradesRecordService extends ShopBaseService{
 		record.setTradeType(tradeType);
 		record.setTradeFlow(tradeFlow);
 		record.setTradeStatus(tradeStatus);
-		record.setTradeTime(DateUtil.getSqlTimestamp());
+		record.setTradeTime(DateUtils.getSqlTimestamp());
 		record.insert();
 	}
 }

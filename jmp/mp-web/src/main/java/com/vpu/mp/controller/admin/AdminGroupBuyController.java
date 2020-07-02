@@ -2,7 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -58,7 +58,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      */
     @PostMapping("/add")
     public JsonResult addGroupBuy(@RequestBody @Valid GroupBuyParam param) {
-        Timestamp date = DateUtil.getLocalDateTime();
+        Timestamp date = DateUtils.getLocalDateTime();
         shop().groupBuy.addGroupBuy(param);
         return success();
     }

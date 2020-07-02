@@ -11,7 +11,6 @@ import java.sql.Timestamp;
 import javax.validation.Valid;
 
 import org.jooq.Record;
-import org.jooq.Record4;
 import org.jooq.Record5;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectSeekStep1;
@@ -19,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.CommentAwardRecord;
@@ -158,7 +157,7 @@ public class CommentAwardService extends ShopBaseService {
     public int deleteCommentAwardActivity(@Valid CommentAwardIdParam param) {
        return  db().update(COMMENT_AWARD).set(COMMENT_AWARD.DEL_FLAG, DelFlag.DISABLE_VALUE).where(COMMENT_AWARD.ID.eq(param.getId())).execute();
     }
-    
+
     /**
      * 营销日历用id查询活动
      * @param id
@@ -168,7 +167,7 @@ public class CommentAwardService extends ShopBaseService {
 		return db().select(COMMENT_AWARD.ID, COMMENT_AWARD.NAME.as(CalendarAction.ACTNAME), COMMENT_AWARD.START_TIME,
 				COMMENT_AWARD.END_TIME,COMMENT_AWARD.IS_FOREVER.as(CalendarAction.ISPERMANENT)).from(COMMENT_AWARD).where(COMMENT_AWARD.ID.eq(id)).fetchAnyInto(MarketVo.class);
     }
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param
@@ -180,7 +179,7 @@ public class CommentAwardService extends ShopBaseService {
 						COMMENT_AWARD.END_TIME,COMMENT_AWARD.IS_FOREVER.as(CalendarAction.ISPERMANENT))
 				.from(COMMENT_AWARD)
 				.where(COMMENT_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(COMMENT_AWARD.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(COMMENT_AWARD.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(COMMENT_AWARD.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(COMMENT_AWARD.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);

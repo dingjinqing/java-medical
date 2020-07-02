@@ -8,7 +8,7 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
@@ -956,7 +956,7 @@ public class GoodsService extends ShopBaseService {
 
         if (StringUtils.isBlank(goods.getGoodsSn())) {
             int count = db().fetchCount(GOODS) + 1;
-            String timeStr = DateUtil.getLocalDateFullTightFormat();
+            String timeStr = DateUtils.getLocalDateFullTightFormat();
             goods.setGoodsSn(String.format("G%s-%08d", timeStr, count));
         }
 
@@ -2537,7 +2537,7 @@ public class GoodsService extends ShopBaseService {
         List<Integer> goodsIds = db().select().from(GOODS)
             .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS.IS_ON_SALE.eq(GoodsConstant.OFF_SALE))
             .and(GOODS.GOODS_NUMBER.gt(0)).and(GOODS.STATE.ne(GoodsConstant.INVALIDATE_OFF_SALE))
-            .and(GOODS.SALE_TYPE.eq(GoodsConstant.POINT_TIME_TO_ON_SALE)).and(GOODS.SALE_TIME.le(DateUtil.getLocalDateTime()))
+            .and(GOODS.SALE_TYPE.eq(GoodsConstant.POINT_TIME_TO_ON_SALE)).and(GOODS.SALE_TIME.le(DateUtils.getLocalDateTime()))
             .fetch(GOODS.GOODS_ID);
 
         db().update(GOODS).set(GOODS.IS_ON_SALE, GoodsConstant.ON_SALE)
@@ -2681,7 +2681,7 @@ public class GoodsService extends ShopBaseService {
      */
     private GoodsActivityType getGoodsActivityType(Integer goodsId) {
         GoodsActivityType type = new GoodsActivityType();
-        Timestamp now = DateUtil.getLocalDateTime();
+        Timestamp now = DateUtils.getLocalDateTime();
         // 秒杀
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsSecKillListInfo = secKillProcessorDao.getGoodsSecKillListInfo(Collections.singletonList(goodsId), now);
         if (goodsSecKillListInfo.containsKey(goodsId)) {

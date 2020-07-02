@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.card.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.RegexUtil;
 import com.vpu.mp.db.shop.tables.records.GiveCardRecordRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
@@ -35,7 +35,7 @@ import static com.vpu.mp.db.shop.Tables.USER_CARD;
 @Service
 public class WxCardGiveAwaySerivce extends ShopBaseService {
 	/**
-	 * 	转赠记录正常 
+	 * 	转赠记录正常
 	 */
 	public final static Byte FLAG_NORMAL = 0;
 	/**
@@ -46,7 +46,7 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 	 * 转赠记录成功
 	 */
 	public final static Byte FLAG_SUCCESS = 2;
-	
+
 	@Autowired private LimitCardOpt limitCardOpt;
 	@Autowired private QrCodeService qrCodeSvc;
 	/**
@@ -54,22 +54,22 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 	 */
 	public void addLimitCardGiveAwayRecord(DefaultCardParam param) {
 		logger().info("添加限次卡转赠记录信息");
-		Timestamp currentTime = DateUtil.getLocalDateTime();
+		Timestamp currentTime = DateUtils.getLocalDateTime();
 		//	一天之后转赠失效
 		Timestamp tomorrowTime = Timestamp.valueOf(currentTime.toLocalDateTime().plusDays(1));
-		
+
 		UserCardRecord userCardRecord = UserCardRecordBuilder.create()
 			.flag(UserCardConstant.FLAG_CANNOT_USE)
 			.giveAwayStatus(UserCardConstant.GIVE_AWAY_ING)
 			.build();
-		
+
 		GiveCardRecordRecord giveCardRecordRecord = GiveCardRecordRecordBuilder.create(db().newRecord(GIVE_CARD_RECORD))
 			.userId(param.getUserId())
 			.cardNo(param.getCardNo())
 			.createTime(currentTime)
 			.deadline(tomorrowTime)
 			.build();
-		
+
 		this.transaction(()->{
 			//	记录转赠记录
 			giveCardRecordRecord.insert();
@@ -77,51 +77,51 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 			db().executeUpdate(userCardRecord, USER_CARD.CARD_NO.eq(param.getCardNo()));
 		});
 	}
-	
-	
+
+
 	/**
 	 * 	取消限次卡转赠
 	 */
 	public void quitLimitCardGiveAway(DefaultCardParam param) {
 		logger().info("取消限次卡转赠");
-		
+
 		Condition giveCardCondition = GIVE_CARD_RECORD.CARD_NO.eq(param.getCardNo())
 								.and(GIVE_CARD_RECORD.FLAG.eq(FLAG_NORMAL));
 		GiveCardRecordRecord giveCardRecordRecord = new GiveCardRecordRecord();
 		giveCardRecordRecord.setFlag(FLAG_QUIT);
-		
+
 		UserCardRecord userCardRecord = UserCardRecordBuilder.create()
 				.flag(UserCardConstant.FLAG_NORMAL)
 				.giveAwayStatus(UserCardConstant.GIVE_AWAY_NORMAL)
 				.build();
 		Condition userCardCondition = USER_CARD.CARD_NO.eq(param.getCardNo());
-		
+
 		this.transaction(()->{
 			db().executeUpdate(giveCardRecordRecord, giveCardCondition);
 			db().executeUpdate(userCardRecord, userCardCondition);
 		});
 	}
-	
+
 	/**
 	 * 处理判断转赠中的卡
 	 * @param cardNo
 	 */
 	public void dealWithGivingCard(String cardNo) {
 		GiveCardRecordRecord giveWayInfo = getNormalGiveCardRecordByCardNo(cardNo);
-		if(giveWayInfo != null && giveWayInfo.getDeadline().before(DateUtil.getLocalDateTime())) {
+		if(giveWayInfo != null && giveWayInfo.getDeadline().before(DateUtils.getLocalDateTime())) {
 			DefaultCardParam param = new DefaultCardParam();
 			param.setCardNo(cardNo);
 			quitLimitCardGiveAway(param);
 		}
 	}
-	
+
 	/**
 	 * 	领取赠送的会员卡
 	 */
 	public void getGiveAwayCard(DefaultCardParam param) throws MpException {
 		logger().info("领取赠送的会员卡");
 		GiveCardRecordRecord giveWayInfo = getNormalGiveCardRecordByCardNo(param.getCardNo());
-		if(giveWayInfo == null || giveWayInfo.getDeadline().before(DateUtil.getLocalDateTime())) {
+		if(giveWayInfo == null || giveWayInfo.getDeadline().before(DateUtils.getLocalDateTime())) {
 			logger().info("链接已失效");
 			throw new CardReceiveFailException(JsonResultCode.CODE_CARD_RECEIVE_VALIDLINK);
 		}else if(giveWayInfo.getUserId().equals(param.getUserId())) {
@@ -137,17 +137,17 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 					.flag(UserCardConstant.FLAG_GIVE_FINISHED)
 					.giveAwayStatus(UserCardConstant.GIVE_WAY_SUCCESS)
 					.build();
-				
+
 				GiveCardRecordRecord giveCardRecordRecord = GiveCardRecordRecordBuilder.create()
 					.getUserId(param.getUserId())
-					.getTime(DateUtil.getLocalDateTime())
+					.getTime(DateUtils.getLocalDateTime())
 					.getCardNo(cardNo)
 					.flag(FLAG_SUCCESS)
 					.build();
-				
+
 				Condition giveCardCondition = GIVE_CARD_RECORD.CARD_NO.eq(param.getCardNo())
 						.and(GIVE_CARD_RECORD.FLAG.eq(FLAG_NORMAL));
-				
+
 				transaction(()->{
 					db().executeUpdate(userCardRecord, USER_CARD.CARD_NO.eq(param.getCardNo()));
 					db().executeUpdate(giveCardRecordRecord,giveCardCondition);
@@ -155,20 +155,20 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 			}
 		}
 	}
-	
+
 	/**
 	 * 	获取正常转赠的记录
 	 * 	@param cardNo
 	 * 	@return  GiveCardRecordRecord || null 如果没有数据
 	 */
 	public GiveCardRecordRecord getNormalGiveCardRecordByCardNo(String cardNo) {
-		
+
 		Condition condition = GIVE_CARD_RECORD.FLAG.eq(FLAG_NORMAL)
 			.and(GIVE_CARD_RECORD.CARD_NO.eq(cardNo));
-		
+
 		return db().fetchOne(GIVE_CARD_RECORD, condition);
 	}
-	
+
 	/**
 	 * 	获取转赠卡分享图片
 	 * @param CardGiveVo 里面包括图片路径
@@ -183,5 +183,5 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
         cardGiveVo.setShareImg(RegexUtil.getUri(fullShareImg));
         return cardGiveVo;
     }
-	
+
 }

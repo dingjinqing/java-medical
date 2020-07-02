@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.main.tables.records.MarketCalendarActivityRecord;
 import com.vpu.mp.db.main.tables.records.MarketCalendarRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
@@ -23,7 +23,6 @@ import com.vpu.mp.service.pojo.saas.marketCalendar.MarketCalendarParam;
 import com.vpu.mp.service.pojo.saas.marketCalendar.MarketCalendarSysAllVo;
 import com.vpu.mp.service.pojo.saas.marketCalendar.MarketCalendarSysVo;
 import com.vpu.mp.service.pojo.saas.marketCalendar.MarketMqParam;
-import com.vpu.mp.service.pojo.saas.marketCalendar.MarketMqToParam;
 import com.vpu.mp.service.pojo.saas.marketCalendar.MarketSysActivityMqParam;
 import com.vpu.mp.service.pojo.saas.marketCalendar.SysCalendarActVo;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
@@ -34,7 +33,7 @@ import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketListDataVo;
 
 /**
  * system营销日历
- * 
+ *
  * @author zhaojianqiang 2020年4月24日下午2:34:17
  */
 @Service
@@ -44,7 +43,7 @@ public class MarketSysCalendarService extends MainBaseService {
 
 	/**
 	 * 营销日历列表
-	 * 
+	 *
 	 * @param year
 	 * @return
 	 */
@@ -57,7 +56,7 @@ public class MarketSysCalendarService extends MainBaseService {
 				.where(MARKET_CALENDAR.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
 						.and(DSL.left(MARKET_CALENDAR.EVENT_TIME.cast(String.class), 4).eq(year)))
 				.orderBy(MARKET_CALENDAR.EVENT_TIME.asc()).fetchInto(MarketCalendarVo.class);
-		Date nowDate = DateUtil.yyyyMmDdDate(LocalDate.now());
+		Date nowDate = DateUtils.yyyyMmDdDate(LocalDate.now());
 		for (int i = 1; i < 13; i++) {
 			MarketListData data = new MarketListData();
 			if (i < 10) {
@@ -106,7 +105,7 @@ public class MarketSysCalendarService extends MainBaseService {
 
 	/**
 	 * 创建日历活动
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -123,7 +122,7 @@ public class MarketSysCalendarService extends MainBaseService {
 
 	/**
 	 * 编辑日历活动
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -144,12 +143,12 @@ public class MarketSysCalendarService extends MainBaseService {
 		toEditNoPush(calendarId);
 		return update == 1 ? true : false;
 	}
-	
-	
+
+
 	public MarketCalendarRecord getInfoById(Integer id) {
 		return db().selectFrom(MARKET_CALENDAR).where(MARKET_CALENDAR.ID.eq(id)).fetchAny();
 	}
-	
+
 	/**
 	 * 同步消息
 	 * @param calendarId
@@ -179,7 +178,7 @@ public class MarketSysCalendarService extends MainBaseService {
 		logger().info("准备发队列");
 		saas.taskJobMainService.dispatchImmediately(param,MarketMqParam.class.getName(),0,TaskJobEnum.SYS_CALENDAR_MQ.getExecutionType());
 	}
-	
+
 	/**
 	 * 编辑时候推送过的再推送
 	 * @param calendarId
@@ -191,7 +190,7 @@ public class MarketSysCalendarService extends MainBaseService {
 			push(record);
 		}
 	}
-	
+
 	/**
 	 * 删除
 	 * @param id
@@ -206,7 +205,7 @@ public class MarketSysCalendarService extends MainBaseService {
 		}
 		return flag;
 	}
-	
+
 	/**
 	 * 单个信息
 	 * @param calendarId

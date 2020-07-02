@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.task.table;
 
 import com.google.common.collect.Sets;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.main.Tables;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -17,7 +17,7 @@ import java.util.Set;
 
 /**
  * 同步表的操作
- * 
+ *
  * @author zhaojianqiang
  * @time 下午2:28:30
  */
@@ -54,8 +54,8 @@ public class TableTaskService extends ShopBaseService {
             .select(
                 db().selectFrom(com.vpu.mp.db.shop.Tables.ORDER_INFO).
                     where(
-                        com.vpu.mp.db.shop.Tables.ORDER_INFO.CREATE_TIME.greaterOrEqual(DateUtil.getTimestampForStartTime(-1))
-                        .and(com.vpu.mp.db.shop.Tables.ORDER_INFO.CREATE_TIME.le(DateUtil.getTimestampForEndTime(-1)))
+                        com.vpu.mp.db.shop.Tables.ORDER_INFO.CREATE_TIME.greaterOrEqual(DateUtils.getTimestampForStartTime(-1))
+                        .and(com.vpu.mp.db.shop.Tables.ORDER_INFO.CREATE_TIME.le(DateUtils.getTimestampForEndTime(-1)))
                     )
             );
     }

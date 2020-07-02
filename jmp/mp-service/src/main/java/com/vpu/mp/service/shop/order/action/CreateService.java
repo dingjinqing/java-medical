@@ -5,7 +5,7 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
@@ -651,7 +651,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     private void preSaleCheck(Goods temp) throws MpException {
         // key:商品id，value:List<Record3<Integer, Integer, BigDecimal>> PRESALE.ID, PRESALE.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE
-        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsPreSaleListInfo = preSaleProcessorDao.getGoodsPreSaleListInfo(Lists.newArrayList(temp.getGoodsId()), DateUtil.getLocalDateTime());
+        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsPreSaleListInfo = preSaleProcessorDao.getGoodsPreSaleListInfo(Lists.newArrayList(temp.getGoodsId()), DateUtils.getLocalDateTime());
         if(MapUtils.isNotEmpty(goodsPreSaleListInfo)) {
             //当前商品对应的预售信息
             List<Record3<Integer, Integer, BigDecimal>> preSaleInfos = goodsPreSaleListInfo.get(temp.getGoodsId());
@@ -1033,7 +1033,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param beforeVo
      */
     private void setOtherValue(OrderInfoRecord order, CreateOrderBo orderBo, OrderBeforeVo beforeVo){
-        Timestamp currentTime = DateUtil.getSqlTimestamp();
+        Timestamp currentTime = DateUtils.getSqlTimestamp();
         //TODO 订单类型拼接(支付有礼)
         orderBo.getOrderType().addAll(orderGoods.getGoodsType(order, orderBo.getOrderGoodsBo(), order.getInsteadPayMoney()));//支付信息
         if(BigDecimalUtil.addOrSubtrac(
@@ -1098,11 +1098,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         cancelTime = cancelTime < 1 ? OrderConstant.DEFAULT_AUTO_CANCEL_TIME : cancelTime;
         if(beforeVo.getOrderPayWay() != null && OrderConstant.PAY_WAY_FRIEND_PAYMENT == beforeVo.getOrderPayWay()) {
             //代付
-            order.setExpireTime(DateUtil.getTimeStampPlus(1, ChronoUnit.DAYS));
+            order.setExpireTime(DateUtils.getTimeStampPlus(1, ChronoUnit.DAYS));
             order.setInsteadPay(Util.toJson(beforeVo.getInsteadPayCfg()));
             order.setOrderUserMessage(beforeVo.getInsteadPayNum() == 0 ? beforeVo.getInsteadPayCfg().getOrderUserMessageMultiple() : beforeVo.getInsteadPayCfg().getOrderUserMessageSingle());
         }else {
-            order.setExpireTime(DateUtil.getTimeStampPlus(cancelTime, ChronoUnit.MINUTES));
+            order.setExpireTime(DateUtils.getTimeStampPlus(cancelTime, ChronoUnit.MINUTES));
         }
         /**
          * 配置

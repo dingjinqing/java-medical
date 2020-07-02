@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.util.CardUtil;
@@ -34,34 +34,34 @@ public class NormalCardOpt extends CardOpt {
 			.cardNo(cardService.generateCardNo(cardId))
 			.freeLimit(card.getFreeshipLimit())
 			.freeNum(card.getFreeshipNum())
-			.createTime(DateUtil.getLocalDateTime())
+			.createTime(DateUtils.getLocalDateTime())
 			.expireTime(userCardService.calcCardExpireTime(card))
 			.build();
-			
-		
+
+
 		//	开卡送卡余额
 		if(card.getSendMoney() != null) {
 			uCard.setMoney(new BigDecimal(card.getSendMoney()));
-		}		
-		
+		}
+
 		//	设置激活
 		if(isActivate || !CardUtil.isNeedActive(card.getActivation())) {
-			
-			uCard.setActivationTime(DateUtil.getLocalDateTime());
+
+			uCard.setActivationTime(DateUtils.getLocalDateTime());
 			//	开卡送优惠券
 			cardService.sendCoupon(userId,cardId);
 		}
-		
+
 		Integer result = userCardService.insertRow(uCard);
 		logger().info(String.format("成功向ID为%d的用户，发送了%d张普通会员卡：%s", userId, result,card.getCardName()));
-		
+
 		//	开卡送积分
 		userCardService.addUserCardScore(userId, card);
 		//	赠送卡余额记录
 		userCardService.addChargeMoney(card, uCard);
 		//	同步打标签
 		addAcitivityTag(userId,card);
-		
+
 		//	发送模板消息
 		userCardService.sendScoreTemplateMsg(card);
 		return uCard.getCardNo();
