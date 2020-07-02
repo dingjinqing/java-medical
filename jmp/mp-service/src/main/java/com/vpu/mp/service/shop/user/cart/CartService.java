@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.user.cart;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.CartRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
@@ -22,7 +22,6 @@ import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import com.vpu.mp.service.shop.market.live.LiveGoodsService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.recommend.CollectionMallService;
-import jodd.util.CollectionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
@@ -115,7 +114,7 @@ public class CartService extends ShopBaseService {
         WxAppCartBo cartBo = WxAppCartBo.builder()
                 .totalPrice(BigDecimal.ZERO)
                 .totalGoodsNum(appCartGoods.size())
-                .userId(userId).date(DateUtil.getLocalDateTime())
+                .userId(userId).date(DateUtils.getLocalDateTime())
                 .activityId(activityId).activityType(activityType)
                 .productIdList(productIdList).goodsIdList(goodsIdList)
                 .cartGoodsList(appCartGoods).invalidCartList(new ArrayList<>()).build();

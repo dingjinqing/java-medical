@@ -1,6 +1,7 @@
 package com.vpu.mp.common.foundation.excel;
 
 
+import com.vpu.mp.common.foundation.util.DateUtils;
 import org.apache.poi.poifs.filesystem.FileMagic;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,9 +68,9 @@ public class ExcelUtil {
                 	String dataFormatString = cell.getCellStyle().getDataFormatString();
                 	DateFormat formater=null;
                 	if(dataFormatString.equals(DATE_FORMAT_EXCEL)) {
-                		formater = new SimpleDateFormat(com.vpu.mp.common.foundation.util.DateUtil.DATE_FORMAT_SIMPLE);
+                		formater = new SimpleDateFormat(DateUtils.DATE_FORMAT_SIMPLE);
                 	}else {
-                		formater = new SimpleDateFormat(DATE_FORMAT);                		
+                		formater = new SimpleDateFormat(DATE_FORMAT);
                 	}
                     Date date = cell.getDateCellValue();
                     cellValue = formater.format(date);
@@ -283,7 +284,7 @@ public class ExcelUtil {
         Pattern pattern = compile("^[-\\+]?[\\d]*\\.[0]*$");
         return pattern.matcher(str).matches();
     }
-    
+
     /**
      * 返回文件类型校验
      * @param multipartFile

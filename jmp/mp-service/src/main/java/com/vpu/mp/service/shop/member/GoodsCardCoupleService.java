@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.member;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.GoodsCardCoupleRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
@@ -65,7 +65,7 @@ public class GoodsCardCoupleService extends ShopBaseService {
 				.on(MEMBER_CARD.ID.eq(GOODS_CARD_COUPLE.CARD_ID))
 				.where(MEMBER_CARD.CARD_TYPE.eq(CardConstant.MCARD_TP_NORMAL))
 				.and(USER_CARD.FLAG.eq(CardConstant.UCARD_FG_USING)).and(USER_CARD.USER_ID.eq(userId))
-				.and(USER_CARD.EXPIRE_TIME.isNull().or(USER_CARD.EXPIRE_TIME.gt(DateUtil.getLocalDateTime())))
+				.and(USER_CARD.EXPIRE_TIME.isNull().or(USER_CARD.EXPIRE_TIME.gt(DateUtils.getLocalDateTime())))
 				.and(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_NO)
 						.or(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_YES)
 								.and(USER_CARD.ACTIVATION_TIME.isNotNull())))

@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.task.market;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.db.shop.Tables;
@@ -98,8 +98,8 @@ public class BargainTaskService extends ShopBaseService {
         List<Record4<Integer, Integer,Integer,String>> records = db().select(BARGAIN_RECORD.ID,BARGAIN_RECORD.USER_ID,BARGAIN.ID,BARGAIN.REWARD_COUPON_ID).from(BARGAIN_RECORD.leftJoin(BARGAIN).on(BARGAIN_RECORD.BARGAIN_ID.eq(BARGAIN.ID))).where(
             (BARGAIN.DEL_FLAG.eq(DelFlag.DISABLE_VALUE)
             .or(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE))
-            .or(BARGAIN.START_TIME.gt(DateUtil.getLocalDateTime()))
-            .or(BARGAIN.END_TIME.lt(DateUtil.getLocalDateTime())))
+            .or(BARGAIN.START_TIME.gt(DateUtils.getLocalDateTime()))
+            .or(BARGAIN.END_TIME.lt(DateUtils.getLocalDateTime())))
             .and(BARGAIN_RECORD.STATUS.eq(BargainRecordService.STATUS_IN_PROCESS))
         ).fetch();
         if(records != null && records.size() > 0){
@@ -133,7 +133,7 @@ public class BargainTaskService extends ShopBaseService {
             sendBargainProgressNotify(r.get(BARGAIN_RECORD.USER_ID), r.get(BARGAIN_GOODS.EXPECTATION_PRICE), r.get(GOODS.GOODS_NAME), r.get(BARGAIN_RECORD.ID), r.get(BARGAIN_RECORD.USER_NUMBER));
         });
     }
-    
+
     private List<Integer> getPastBargainGoodsId(){
         return db().select(GOODS.GOODS_ID).from(GOODS).where(GOODS.GOODS_TYPE.eq(BaseConstant.ACTIVITY_TYPE_BARGAIN)).fetchInto(Integer.class);
     }
@@ -143,8 +143,8 @@ public class BargainTaskService extends ShopBaseService {
             .leftJoin(BARGAIN_GOODS).on(BARGAIN.ID.eq(BARGAIN_GOODS.BARGAIN_ID))
             .where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
             .and(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
-            .and(BARGAIN.START_TIME.lt(DateUtil.getLocalDateTime()))
-            .and(BARGAIN.END_TIME.gt(DateUtil.getLocalDateTime()))
+            .and(BARGAIN.START_TIME.lt(DateUtils.getLocalDateTime()))
+            .and(BARGAIN.END_TIME.gt(DateUtils.getLocalDateTime()))
         ).fetchInto(Integer.class);
         return res.stream().distinct().collect(Collectors.toList());
     }
@@ -168,8 +168,8 @@ public class BargainTaskService extends ShopBaseService {
             BargainRecord bargain = db().selectFrom(BARGAIN)
                 .where(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
                 .and(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-                .and(BARGAIN.START_TIME.lt(DateUtil.getLocalDateTime()))
-                .and(BARGAIN.END_TIME.gt(DateUtil.getLocalDateTime()))
+                .and(BARGAIN.START_TIME.lt(DateUtils.getLocalDateTime()))
+                .and(BARGAIN.END_TIME.gt(DateUtils.getLocalDateTime()))
                 .and(DslPlus.findInSet(goodsId, BARGAIN.GOODS_ID))
                 .orderBy(BARGAIN.FIRST.desc(),BARGAIN.CREATE_TIME.desc())
                 .fetchAny();
@@ -190,9 +190,9 @@ public class BargainTaskService extends ShopBaseService {
      * @return
      */
     private Result<Record5<Integer, Integer, Integer, String, BigDecimal>> getExpiringBargainRecords() {
-        Timestamp time = DateUtil.getDalyedDateTime(3600 * 3);
-        Timestamp start = DateUtil.convertToTimestamp(DateUtil.dateFormat("yyyy-MM-dd HH:mm:00", time));
-        Timestamp end = DateUtil.convertToTimestamp(DateUtil.dateFormat("yyyy-MM-dd HH:mm:59", time));
+        Timestamp time = DateUtils.getDalyedDateTime(3600 * 3);
+        Timestamp start = DateUtils.convertToTimestamp(DateUtils.dateFormat("yyyy-MM-dd HH:mm:00", time));
+        Timestamp end = DateUtils.convertToTimestamp(DateUtils.dateFormat("yyyy-MM-dd HH:mm:59", time));
         logger().info("定时发送砍价进度");
         return db().select(BARGAIN_RECORD.ID, BARGAIN_RECORD.USER_ID, BARGAIN_RECORD.USER_NUMBER, GOODS.GOODS_NAME, BARGAIN_GOODS.EXPECTATION_PRICE)
             .from(BARGAIN_RECORD)

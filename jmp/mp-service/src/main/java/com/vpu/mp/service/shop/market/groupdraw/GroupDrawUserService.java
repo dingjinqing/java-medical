@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.market.groupdraw;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
@@ -321,7 +321,7 @@ public class GroupDrawUserService extends ShopBaseService {
 
 	/**
 	 * 发送中奖结果
-	 * 
+	 *
 	 * @param userId
 	 * @param groupDrawId
 	 * @param groupId
@@ -360,7 +360,7 @@ public class GroupDrawUserService extends ShopBaseService {
 	 */
 	private void updateGroupInfoByGoodsId(Integer groupDrawId, Integer goodsId) {
 		db().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.DRAW_STATUS, DREW)
-				.set(JOIN_GROUP_LIST.DRAW_TIME, DateUtil.getSqlTimestamp())
+				.set(JOIN_GROUP_LIST.DRAW_TIME, DateUtils.getSqlTimestamp())
 				.where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId).and(JOIN_GROUP_LIST.GOODS_ID.eq(goodsId))).execute();
 	}
 
@@ -426,7 +426,7 @@ public class GroupDrawUserService extends ShopBaseService {
 
 	/**
 	 * 通过商品获得团列表
-	 * 
+	 *
 	 * @param groupDrawId
 	 * @param goodsId
 	 * @param isWinDraw
@@ -463,7 +463,7 @@ public class GroupDrawUserService extends ShopBaseService {
 		saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(),
 				TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
 	}
-	
+
 	/**
 	 * 获得该活动的成团人数
 	 * @param groupDrawId
@@ -473,7 +473,7 @@ public class GroupDrawUserService extends ShopBaseService {
 		return db().selectCount().from(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId))
 				.and(JOIN_GROUP_LIST.STATUS.ge(ONE)).fetchOptionalInto(Integer.class).orElse(0);
 	}
-	
+
 	/**
 	 * 获得该活动的开团数
 	 * @param groupDrawId
@@ -483,7 +483,7 @@ public class GroupDrawUserService extends ShopBaseService {
 		return db().selectCount().from(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId))
 				.and(JOIN_GROUP_LIST.STATUS.ge(ZERO)).and(JOIN_GROUP_LIST.IS_GROUPER.eq(ONE)).fetchOptionalInto(Integer.class).orElse(0);
 	}
-	
+
 	/**
 	 * 获得中奖用户数
 	 * @param groupDrawId

@@ -14,7 +14,7 @@ import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.util.SignUtils;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.config.WxSerMchConfig;
@@ -368,9 +368,9 @@ public class MpPaymentService extends ShopBaseService {
 				.totalFee(BaseWxPayResult.fenToYuan(orderResult.getTotalFee()))
 				.buyerId(orderResult.getOpenid())
 				.sellerId(orderResult.getMchId())
-                .gmtCreate(DateUtil.dateFormatToTimeStamp(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE, orderResult.getTimeEnd()))
-                .notifyTime(DateUtil.dateFormatToTimeStamp(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE, orderResult.getTimeEnd()))
-                .gmtCloseTime(DateUtil.dateFormatToTimeStamp(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE, orderResult.getTimeEnd()))
+                .gmtCreate(DateUtils.dateFormatToTimeStamp(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE, orderResult.getTimeEnd()))
+                .notifyTime(DateUtils.dateFormatToTimeStamp(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE, orderResult.getTimeEnd()))
+                .gmtCloseTime(DateUtils.dateFormatToTimeStamp(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE, orderResult.getTimeEnd()))
 				.created(Timestamp.valueOf(LocalDateTime.now()))
 				.remark2(orderResult.toString())
 				.build();

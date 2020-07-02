@@ -6,7 +6,7 @@ import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -451,7 +451,7 @@ public class AdminGoodsController extends AdminBaseController {
     public void export(@RequestBody @Valid GoodsExportParam param, HttpServletResponse response) {
         shop().config.goodsCfg.setGoodsExportList(param.getColumns());
         Workbook workbook = shop().goods.exportGoodsList(param, getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GOODS_EXPORT_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GOODS_EXPORT_FILE_NAME, "excel", "excel") + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT);
         export2Excel(workbook, fileName, response);
 //        test(param,response);
     }
@@ -466,7 +466,7 @@ public class AdminGoodsController extends AdminBaseController {
         ExcelWriter excelWriter = new ExcelWriter(getLang(), workbook);
         List<GoodsExportVo> goodsList = new ArrayList<>();
         int count = shop().goods.selectGoodsCount();
-        String timeStr = DateUtil.getLocalDateFullTightFormat();
+        String timeStr = DateUtils.getLocalDateFullTightFormat();
         for (int i =1; i <= 2000; i++) {
             GoodsExportVo vo = new GoodsExportVo();
             vo.setSortNameParent("日化用品");

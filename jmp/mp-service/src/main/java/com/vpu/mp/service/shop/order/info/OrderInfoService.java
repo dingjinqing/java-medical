@@ -5,9 +5,9 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.DistributionConstant;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.foundation.util.DateUtil.IntervalType;
+import com.vpu.mp.common.foundation.util.DateUtils.IntervalType;
 import com.vpu.mp.common.foundation.util.api.ApiPageResult;
 import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.db.shop.tables.OrderInfo;
@@ -748,9 +748,9 @@ public class OrderInfoService extends ShopBaseService {
 		switch (returnOrder.getRefundStatus()) {
 		case OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING:
 			if (OrderConstant.RT_ONLY_MONEY == returnOrder.getReturnType()) {
-				set.set(TABLE.REFUND_TIME, DateUtil.getSqlTimestamp());
+				set.set(TABLE.REFUND_TIME, DateUtils.getSqlTimestamp());
 			} else {
-				set.set(TABLE.RETURN_TIME, DateUtil.getSqlTimestamp());
+				set.set(TABLE.RETURN_TIME, DateUtils.getSqlTimestamp());
 			}
 			break;
 		case OrderConstant.REFUND_STATUS_FINISH:
@@ -765,10 +765,10 @@ public class OrderInfoService extends ShopBaseService {
 			// 退款退货订单完成时更新orderinfo订单信息
 			if (OrderConstant.ORDER_WAIT_DELIVERY == order.getOrderStatus()) {
 				set.set(TABLE.ORDER_STATUS, OrderConstant.ORDER_REFUND_FINISHED);
-				set.set(TABLE.REFUND_FINISH_TIME, DateUtil.getSqlTimestamp());
+				set.set(TABLE.REFUND_FINISH_TIME, DateUtils.getSqlTimestamp());
 			} else {
 				set.set(TABLE.ORDER_STATUS, OrderConstant.ORDER_RETURN_FINISHED);
-				set.set(TABLE.RETURN_FINISH_TIME, DateUtil.getSqlTimestamp());
+				set.set(TABLE.RETURN_FINISH_TIME, DateUtils.getSqlTimestamp());
 			}
 			// 返利更新
             if(order.getFanliType() != null && OrderConstant.FANLI_TYPE_DISTRIBUTION_ORDER == order.getFanliType() && order.getSettlementFlag() != null && !order.getSettlementFlag().equals(OrderConstant.SETTLEMENT_FINISH)) {
@@ -778,9 +778,9 @@ public class OrderInfoService extends ShopBaseService {
 			break;
 		default:
             if (OrderConstant.RT_ONLY_MONEY == returnOrder.getReturnType()) {
-                set.set(TABLE.REFUND_TIME, DateUtil.getSqlTimestamp());
+                set.set(TABLE.REFUND_TIME, DateUtils.getSqlTimestamp());
             } else {
-                set.set(TABLE.RETURN_TIME, DateUtil.getSqlTimestamp());
+                set.set(TABLE.RETURN_TIME, DateUtils.getSqlTimestamp());
             }
 			break;
 		}
@@ -794,12 +794,12 @@ public class OrderInfoService extends ShopBaseService {
 		// 发货
 		case OrderConstant.ORDER_SHIPPED:
 			order.setOrderStatus(OrderConstant.ORDER_SHIPPED);
-			order.setShippingTime(DateUtil.getSqlTimestamp());
+			order.setShippingTime(DateUtils.getSqlTimestamp());
 			break;
 		// 取消
 		case OrderConstant.ORDER_CANCELLED:
 			order.setOrderStatus(OrderConstant.ORDER_CANCELLED);
-			order.setCancelledTime(DateUtil.getSqlTimestamp());
+			order.setCancelledTime(DateUtils.getSqlTimestamp());
 			// 返利订单特殊处理
 			if (order.getFanliType() != null && order.getFanliType() == OrderConstant.FANLI_TYPE_DISTRIBUTION_ORDER) {
 				order.setSettlementFlag(OrderConstant.SETTLEMENT_NOT);
@@ -809,7 +809,7 @@ public class OrderInfoService extends ShopBaseService {
 		// 关闭
 		case OrderConstant.ORDER_CLOSED:
 			order.setOrderStatus(OrderConstant.ORDER_CLOSED);
-			order.setClosedTime(DateUtil.getSqlTimestamp());
+			order.setClosedTime(DateUtils.getSqlTimestamp());
             // 返利订单特殊处理
             if (order.getFanliType() != null && order.getFanliType() == OrderConstant.FANLI_TYPE_DISTRIBUTION_ORDER) {
                 order.setSettlementFlag(OrderConstant.SETTLEMENT_NOT);
@@ -819,12 +819,12 @@ public class OrderInfoService extends ShopBaseService {
 		// 核销 收货
 		case OrderConstant.ORDER_RECEIVED:
 			order.setOrderStatus(OrderConstant.ORDER_RECEIVED);
-			order.setConfirmTime(DateUtil.getSqlTimestamp());
+			order.setConfirmTime(DateUtils.getSqlTimestamp());
 			break;
 		// 完成
 		case OrderConstant.ORDER_FINISHED:
 			order.setOrderStatus(OrderConstant.ORDER_FINISHED);
-			order.setFinishedTime(DateUtil.getSqlTimestamp());
+			order.setFinishedTime(DateUtils.getSqlTimestamp());
             // 返利订单特殊处理
             if (order.getFanliType() != null && order.getFanliType() == OrderConstant.FANLI_TYPE_DISTRIBUTION_ORDER) {
                 order.setSettlementFlag(OrderConstant.SETTLEMENT_FINISH);
@@ -887,7 +887,7 @@ public class OrderInfoService extends ShopBaseService {
 	 */
 	public void remind(OrderInfoMpVo order) {
 		db().update(TABLE).set(TABLE.ORDER_REMIND, (byte) (order.getOrderRemind() + 1))
-				.set(TABLE.ORDER_REMIND_TIME, DateUtil.getSqlTimestamp()).where(TABLE.ORDER_ID.eq(order.getOrderId()))
+				.set(TABLE.ORDER_REMIND_TIME, DateUtils.getSqlTimestamp()).where(TABLE.ORDER_ID.eq(order.getOrderId()))
 				.execute();
 	}
 
@@ -909,7 +909,7 @@ public class OrderInfoService extends ShopBaseService {
 	 */
 	public void delete(OrderListMpVo order) {
 		db().update(TABLE).set(TABLE.DEL_FLAG, DelFlag.DISABLE.getCode())
-				.set(TABLE.DEL_TIME, DateUtil.getSqlTimestamp()).where(TABLE.ORDER_ID.eq(order.getOrderId())).execute();
+				.set(TABLE.DEL_TIME, DateUtils.getSqlTimestamp()).where(TABLE.ORDER_ID.eq(order.getOrderId())).execute();
 	}
 
 	/**
@@ -1014,7 +1014,7 @@ public class OrderInfoService extends ShopBaseService {
      */
     public Result<OrderInfoRecord> getCanAutoCloseOrders( ){
         return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).
-            and(TABLE.EXPIRE_TIME.le(DateUtil.getSqlTimestamp())).
+            and(TABLE.EXPIRE_TIME.le(DateUtils.getSqlTimestamp())).
             and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL)).
             and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_NO))).
             fetch();
@@ -1167,8 +1167,8 @@ public class OrderInfoService extends ShopBaseService {
      * @return Timestamp[2] = {start, end}
      */
     private Timestamp[] getCardFreeShipInterval(Byte freeLimit) {
-    	IntervalType[] values = DateUtil.IntervalType.values();
-    	return DateUtil.getInterval(values[1 + values.length - freeLimit]);
+    	IntervalType[] values = DateUtils.IntervalType.values();
+    	return DateUtils.getInterval(values[1 + values.length - freeLimit]);
     }
 
     public void setOrderRebateInfo(OrderInfoRecord orderRecord, BigDecimal total) {
@@ -1199,7 +1199,7 @@ public class OrderInfoService extends ShopBaseService {
             select.where(TABLE.ORDER_SN.eq(param.getOrderSn()));
         }else {
             //只能查询最近30天内的记录
-            select.where(TABLE.CREATE_TIME.ge(DateUtil.getBefore30Day()));
+            select.where(TABLE.CREATE_TIME.ge(DateUtils.getBefore30Day()));
             if(param.getStartTime() != null) {
                 select.where(TABLE.CREATE_TIME.ge(param.getStartTime()));
             }
@@ -1613,7 +1613,7 @@ public class OrderInfoService extends ShopBaseService {
         return  db().select(TABLE.ORDER_SN)
                     .from(TABLE)
                     .where(
-                        TABLE.FINISHED_TIME.between(DateUtil.getTimestampForStartTime(-1),DateUtil.getTimestampForEndTime(-1))
+                        TABLE.FINISHED_TIME.between(DateUtils.getTimestampForStartTime(-1), DateUtils.getTimestampForEndTime(-1))
                         .and(TABLE.ORDER_STATUS.in(ORDER_RETURN_FINISHED, ORDER_REFUND_FINISHED))
                     )
             .fetch(x->x.into(String.class));

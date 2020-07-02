@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.coupon;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.DivisionReceiveRecordRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
@@ -25,7 +25,6 @@ import org.jooq.Record5;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -81,7 +80,7 @@ public class CouponMpService extends ShopBaseService {
                     couponVo.setStatus((byte)4);
                 }
                 if(couponVo.getValidityType().equals(BaseConstant.COUPON_VALIDITY_TYPE_FIXED)){
-                    if(DateUtil.getLocalDateTime().after(couponVo.getEndTime())){
+                    if(DateUtils.getLocalDateTime().after(couponVo.getEndTime())){
                         //已过期
                         couponVo.setStatus((byte)2);
                     }
@@ -207,7 +206,7 @@ public class CouponMpService extends ShopBaseService {
      * @return
      */
     public Byte couponGetStatus(MpGetCouponParam param){
-        Timestamp nowDate = DateUtil.getLocalDateTime();
+        Timestamp nowDate = DateUtils.getLocalDateTime();
         //判断领取限制
         CouponListVo couponData = this.getCouponData(param);
         Byte couponGetStatus;
@@ -312,14 +311,14 @@ public class CouponMpService extends ShopBaseService {
     public MpGetCouponVo getSplitCouponDetail(MpGetSplitCouponParam param) {
         logger().info("分裂优惠券详情");
         MpGetCouponVo vo =new MpGetCouponVo();
-        Timestamp time = DateUtil.getLocalDateTime();
+        Timestamp time = DateUtils.getLocalDateTime();
         MrkingVoucherRecord couponRecord = coupon.couponGiveService.getInfoById(param.getCouponId());
         //分享优惠券用户信息
         Result<Record5<Integer, String, String, Timestamp, BigDecimal>> receiveInfo = getReceiveInfo(param.getCouponSn(), param.getShareUserId());
         List<MpGetCouponVo.UserInfo> userInfos =new ArrayList<>();
         receiveInfo.forEach(userRecord->{
             MpGetCouponVo.UserInfo userInfo = userRecord.into(MpGetCouponVo.UserInfo.class);
-            Integer[] timeDifference = DateUtil.getTimeDifference(time, userRecord.get(DIVISION_RECEIVE_RECORD.CREATE_TIME));
+            Integer[] timeDifference = DateUtils.getTimeDifference(time, userRecord.get(DIVISION_RECEIVE_RECORD.CREATE_TIME));
             userInfo.setTime(timeDifference);
             userInfo.setUsername(userInfo.getUsername()==null?"神秘小伙伴":userInfo.getUsername());
             userInfos.add(userInfo);

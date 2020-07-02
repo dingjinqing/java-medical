@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.market.live;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
@@ -33,17 +33,17 @@ import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 
 /**
  * 直播
- * 
+ *
  * @author zhaojianqiang
  * @time 下午3:42:02
  */
 @Service
 public class LiveService extends ShopBaseService {
 
-	
+
 	@Autowired
 	public LiveGoodsService liveGoods;
-	
+
 	private static final Byte ONE = 1;
 
 	private static final Byte ZERO = 0;
@@ -99,8 +99,8 @@ public class LiveService extends ShopBaseService {
 		selectFrom.orderBy(LIVE_BROADCAST.ROOM_ID.desc());
 		return this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), LiveListVo.class);
 	}
-	
-	
+
+
 	/**
 	 * 授权后的列表
 	 * @param param
@@ -150,7 +150,7 @@ public class LiveService extends ShopBaseService {
     public RoomDetailMpVo getLiveInfoForGoodsMpDetail(Integer roomId) {
         LiveBroadcastRecord liveBroadcastRecord = db().selectFrom(LIVE_BROADCAST)
             .where(LIVE_BROADCAST.ROOM_ID.eq(roomId).and(LIVE_BROADCAST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-                .and(LIVE_BROADCAST.LIVE_STATUS.notIn(Arrays.asList(LIVING_END, LIVING_FORBIDDEN,LIVING_OUT_OF_DATE))).and(LIVE_BROADCAST.END_TIME.gt(DateUtil.getLocalDateTime())))
+                .and(LIVE_BROADCAST.LIVE_STATUS.notIn(Arrays.asList(LIVING_END, LIVING_FORBIDDEN,LIVING_OUT_OF_DATE))).and(LIVE_BROADCAST.END_TIME.gt(DateUtils.getLocalDateTime())))
             .fetchAny();
         if (liveBroadcastRecord == null) {
             return null;
@@ -166,8 +166,8 @@ public class LiveService extends ShopBaseService {
 		return db().select(DSL.count()).from(ORDER_INFO).where(ORDER_INFO.ROOM_ID.eq(roomId))
 				.fetchAnyInto(Integer.class);
 	}
-	
-	
+
+
 	/**
 	 * 【获取直播房间列表】接口，仅供后台调用
 	 * @param appId
@@ -186,14 +186,14 @@ public class LiveService extends ShopBaseService {
 		logger().info("小程序：{}，直播列表为：{}",appId,liveInfo.toString());
 		return liveInfo;
 	}
-	
 
-	
-	
+
+
+
 	/**
-	 * 
+	 *
 	 * 获取所有的直播列表
-	 * @return 
+	 * @return
 	 */
 	public List<WxMaLiveRoomInfo> getliveinfo() {
 		MpAuthShopRecord mpAuthShop = saas.shop.mp.getAuthShopByShopId(getShopId());
@@ -219,11 +219,11 @@ public class LiveService extends ShopBaseService {
 		}
 		return data;
 	}
-	
-	
+
+
 	/**
 	 * 获取所有的直播到数据库中
-	 * @return 
+	 * @return
 	 */
 	public boolean getLiveList() {
 		logger().info("店铺获取直播：{}的开始",getShopId());
@@ -247,7 +247,7 @@ public class LiveService extends ShopBaseService {
 				if(update>0) {
 					successLive.add(record.getId());
 				}
-				
+
 			}else {
 				int insert = record.insert();
 				logger().info("新增直播房间：{}，结果：{}",live.getRoomid(),insert);
@@ -262,30 +262,30 @@ public class LiveService extends ShopBaseService {
 		}
 		if(!successLive.isEmpty()) {
 			int execute = db().update(LIVE_BROADCAST).set(LIVE_BROADCAST.DEL_FLAG, ONE)
-					.set(LIVE_BROADCAST.DEL_TIME, DateUtil.getSqlTimestamp())
+					.set(LIVE_BROADCAST.DEL_TIME, DateUtils.getSqlTimestamp())
 					.where(LIVE_BROADCAST.ID.notIn(successLive).and(LIVE_BROADCAST.DEL_FLAG.eq(ZERO))).execute();
 			logger().info("更新其他直播为失效：{}",execute);
 		}
 		logger().info("店铺获取直播：{}的结束",getShopId());
 		return true;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

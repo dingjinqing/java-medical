@@ -6,7 +6,7 @@ import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
@@ -68,7 +68,7 @@ public class MemberCardOrderService extends VirtualOrderService {
         PageResult<MemberCardOrderVo> pageResult = getPageResult(select, param, MemberCardOrderVo.class);
         pageResult.getDataList().forEach(cardOrderVo->{
             //超过一年不能退款
-            if (cardOrderVo.getMoneyPaid().compareTo(BigDecimal.ZERO)>0&&cardOrderVo.getPayTime()!=null&&DateUtil.getLocalDateTime().after(DateUtil.getTimeStampPlus(cardOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
+            if (cardOrderVo.getMoneyPaid().compareTo(BigDecimal.ZERO)>0&&cardOrderVo.getPayTime()!=null&& DateUtils.getLocalDateTime().after(DateUtils.getTimeStampPlus(cardOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
                 cardOrderVo.setCanReturn(BaseConstant.NO);
             }else {
                 cardOrderVo.setCanReturn(BaseConstant.YES);

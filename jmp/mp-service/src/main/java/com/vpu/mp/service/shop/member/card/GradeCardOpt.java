@@ -1,10 +1,9 @@
 package com.vpu.mp.service.shop.member.card;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.util.CardUtil;
@@ -38,29 +37,29 @@ public class GradeCardOpt extends CardOpt {
 				}
 			}
 			return null;
-			
+
 		}else {
 			//	直接发卡
 			logger().info("直接发卡");
 			MemberCardRecord card = cardService.getCardById(cardId);
-			
+
 			UserCardRecord newCard = UserCardRecordBuilder.create()
 				.userId(userId)
 				.cardId(cardId)
 				.cardNo(userCardService.getRandomCardNo(cardId))
-				.createTime(DateUtil.getLocalDateTime())
+				.createTime(DateUtils.getLocalDateTime())
 				.expireTime(userCardService.calcCardExpireTime(card))
 				.build();
 			if(isActivate || !CardUtil.isNeedActive(card.getActivation())) {
-				newCard.setActivationTime(DateUtil.getLocalDateTime());
+				newCard.setActivationTime(DateUtils.getLocalDateTime());
 			}
-			
+
 			Integer result = userCardService.insertRow(newCard);
 			logger().info(String.format("成功向ID为%d的用户，发送了%d张等级会员卡：%s", userId, result,card.getCardName()));
-			
+
 			//	开卡赠送积分
 			userCardService.addUserCardScore(userId,card);
-			
+
 			return newCard.getCardNo();
 		}
 	}
@@ -68,7 +67,7 @@ public class GradeCardOpt extends CardOpt {
 	@Override
 	public boolean canSendCard(Integer userId, Integer cardId) {
 		// 等待产品规划发放等级卡业务->目前admin后台权限是放开的
-		
+
 		return true;
 	}
 }

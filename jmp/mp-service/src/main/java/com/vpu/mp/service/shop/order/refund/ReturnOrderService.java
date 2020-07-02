@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.order.refund;
 
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil.BigDecimalPlus;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil.Operator;
@@ -238,10 +238,10 @@ public class ReturnOrderService extends ShopBaseService{
         returnOrder.setRefundStatus(param.getReturnType() == OrderConstant.RT_GOODS ? OrderConstant.REFUND_STATUS_AUDITING : OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
 		if(param.getReturnType() == OrderConstant.RT_GOODS) {
 			//退货->申请时间
-			returnOrder.setApplyTime(DateUtil.getSqlTimestamp());
+			returnOrder.setApplyTime(DateUtils.getSqlTimestamp());
 		}else {
 			//非退货->申请时间
-			returnOrder.setShippingOrRefundTime(DateUtil.getSqlTimestamp());
+			returnOrder.setShippingOrRefundTime(DateUtils.getSqlTimestamp());
 		}
 		//售后方式
         if(Byte.valueOf(OrderConstant.IS_MP_Y).equals(param.getIsMp())) {
@@ -266,7 +266,7 @@ public class ReturnOrderService extends ShopBaseService{
 		if(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING != returnOrder.getRefundStatus()) {
 			throw new MpException(JsonResultCode.CODE_ORDER_FINISH_RETURN_STATUS_ERROR);
 		}
-		returnOrder.setRefundSuccessTime(DateUtil.getSqlTimestamp());
+		returnOrder.setRefundSuccessTime(DateUtils.getSqlTimestamp());
 		returnOrder.setRefundStatus(OrderConstant.REFUND_STATUS_FINISH);
 		//TODO 如果存在拆单需要修改一些状态
 		returnOrder.update();
@@ -464,7 +464,7 @@ public class ReturnOrderService extends ShopBaseService{
 		returnOrder.setShippingNo(param.getShippingNo());
 		returnOrder.setPhone(param.getPhone());
 		returnOrder.setVoucherImages(param.getVoucherImages());
-		returnOrder.setShippingOrRefundTime(DateUtil.getSqlTimestamp());
+		returnOrder.setShippingOrRefundTime(DateUtils.getSqlTimestamp());
 		returnOrder.setRefundStatus(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
 		returnOrder.update();
         logger().info("退货提交物流end");
@@ -482,7 +482,7 @@ public class ReturnOrderService extends ShopBaseService{
 		if(returnOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_FINISH) {
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR);
 		}
-		returnOrder.setRefundCancelTime(DateUtil.getSqlTimestamp());
+		returnOrder.setRefundCancelTime(DateUtils.getSqlTimestamp());
 		returnOrder.setRefundStatus(OrderConstant.REFUND_STATUS_CLOSE);
 		returnOrder.update();
 		//TODO php系统撤销未实现
@@ -500,7 +500,7 @@ public class ReturnOrderService extends ShopBaseService{
 		if((returnOrder.getRefundStatus() != OrderConstant.REFUND_STATUS_AUDIT_PASS && returnOrder.getRefundStatus() != OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)) {
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR);
 		}
-		returnOrder.setRefundRefuseTime(DateUtil.getSqlTimestamp());
+		returnOrder.setRefundRefuseTime(DateUtils.getSqlTimestamp());
 		returnOrder.setRefundStatus(OrderConstant.REFUND_STATUS_REFUSE);
 		returnOrder.setRefundRefuseReason(param.getRefundRefuseReason());
 		returnOrder.update();
@@ -519,7 +519,7 @@ public class ReturnOrderService extends ShopBaseService{
         if (returnOrder.getRefundStatus() != OrderConstant.REFUND_STATUS_AUDITING) {
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR);
 		}
-		returnOrder.setApplyPassTime(DateUtil.getSqlTimestamp());
+		returnOrder.setApplyPassTime(DateUtils.getSqlTimestamp());
         returnOrder.setRefundStatus(OrderConstant.REFUND_STATUS_AUDIT_PASS);
 		returnOrder.setConsignee(param.getConsignee());
 		returnOrder.setReturnAddress(param.getReturnAddress());
@@ -541,7 +541,7 @@ public class ReturnOrderService extends ShopBaseService{
         if (returnOrder.getRefundStatus() != OrderConstant.REFUND_STATUS_AUDITING) {
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR);
 		}
-		returnOrder.setApplyNotPassTime(DateUtil.getSqlTimestamp());
+		returnOrder.setApplyNotPassTime(DateUtils.getSqlTimestamp());
 		returnOrder.setRefundStatus(OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS);
 		returnOrder.setApplyNotPassReason(param.getApplyNotPassReason());
 		returnOrder.update();
@@ -611,7 +611,7 @@ public class ReturnOrderService extends ShopBaseService{
                 .and(TABLE.APPLY_PASS_TIME.le(returnPassTime))
         ).fetch();
     }
-    
+
     /**
      * 得到退货/退款总金额（包含退款处理中和退款成功，不包含失败情况）
      * @param orderSn
@@ -685,7 +685,7 @@ public class ReturnOrderService extends ShopBaseService{
 
     private void buildOptions(SelectWhereStep<ReturnOrderRecord> select, ApiBasePageParam param) {
         //只能查询最近30天内的记录
-        select.where(TABLE.CREATE_TIME.ge(DateUtil.getBefore30Day()));
+        select.where(TABLE.CREATE_TIME.ge(DateUtils.getBefore30Day()));
         if (param.getStartTime() != null) {
             select.where(TABLE.CREATE_TIME.ge(param.getStartTime()));
         }

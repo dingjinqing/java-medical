@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -36,28 +36,28 @@ public class WxAppCardReceiveSerive extends ShopBaseService {
 	private JedisManager jedis;
 	/**
 	 * 	领取会员卡通过码
-	 * @throws MpException 
+	 * @throws MpException
 	 */
 	public void receiveCard(ReceiveCardParam param) throws MpException {
 		MemberCardRecord mCard = memberCardServie.getCardById(param.getCardId());
-		
+
 		if(!CardUtil.isValidCard(mCard)) {
 			logger().info("无效卡");
 			throw new CardReceiveFailException(JsonResultCode.CODE_CARD_RECEIVE_INVALID);
 		}
-		
+
 		if(!CardUtil.isNeedReceiveCode(mCard.getIsPay())) {
 			logger().info("领取该卡不需要领取码");
 			throw new CardReceiveFailException(JsonResultCode.CODE_CARD_RECEIVE_NOCODE);
 		}
-		
+
 		CardReceiveCodeRecord record = null;
 		if(CardUtil.isReceiveByCode(mCard.getReceiveAction())) {
 			record = checkReceiveCardByCode(param);
 		}else {
 			record = checkReceiveCardByPwd(param);
 		}
-		
+
 		String cacheKey = String.format("receive_card_code:%s%s_%s",getShopId(),param.getCardId(),param.getCode());
 		String cacheVal = jedis.get(cacheKey);
 		if(!StringUtils.isBlank(cacheVal)) {
@@ -66,39 +66,39 @@ public class WxAppCardReceiveSerive extends ShopBaseService {
 		}
 		jedis.set(cacheKey, "1", 2);
 		String cardNo = null;
-	
+
 		List<String> cardNoList = userCardService.addUserCard(param.getUserId(), param.getCardId());
 		if(cardNoList!=null && cardNoList.size()>0) {
 			cardNo = cardNoList.get(0);
 		}
-		
-		
+
+
 		if(StringUtils.isBlank(cardNo)) {
 			logger().info("您已经有此会员卡");
 			jedis.delete(cacheKey);
 			throw new CardReceiveFailException(JsonResultCode.CODE_CARD_RECEIVE_ALREADYHAS);
 		}
-		
+
 		logger().info("领取码已使用，更新领取码");
 		cardReceiveCodeService.updateRow(
 					CardReceiveCodeRecordBuilder
 					.create()
 					.id(record.getId())
 					.userId(param.getUserId())
-					.receiveTime(DateUtil.getLocalDateTime())
+					.receiveTime(DateUtils.getLocalDateTime())
 					.build()
 				);
-		
+
 		// 开卡送优惠券
 		memberCardServie.sendCoupon(param.getUserId(), param.getCardId());
-		
+
 	}
-	
+
 	/**
 	 * 领取会员卡通过卡号加密码
 	 */
 	private CardReceiveCodeRecord checkReceiveCardByPwd(ReceiveCardParam param) throws CardReceiveFailException{
-		if(StringUtils.isBlank(param.getCardNo()) 
+		if(StringUtils.isBlank(param.getCardNo())
 				|| StringUtils.isBlank(param.getCardPwd())) {
 			logger().info("请填写卡号或密码");
 			throw new CardReceiveFailException(JsonResultCode.CODE_CARD_RECEIVE_PWD);
@@ -118,7 +118,7 @@ public class WxAppCardReceiveSerive extends ShopBaseService {
 
 	/**
 	 * 领取会员卡通过领取码
-	 * @throws CardReceiveFailException 
+	 * @throws CardReceiveFailException
 	 */
 	private CardReceiveCodeRecord checkReceiveCardByCode(ReceiveCardParam param) throws CardReceiveFailException {
 		logger().info("通过领取码领取会员卡");
@@ -127,9 +127,9 @@ public class WxAppCardReceiveSerive extends ShopBaseService {
 			logger().info("您已经领取会员卡，是否前往查看");
 			throw new CardReceiveFailException(JsonResultCode.CODE_CARD_RECEIVE_GOTOLOOK);
 		}
-		
+
 		CardReceiveCodeRecord cardCodeInfo = cardReceiveCodeService.getCardCode(param.getCardId(), param.getCode());
-		
+
 		if(cardCodeInfo == null) {
 			logger().info("没有检测到用户输入的领取码,或该领取码已经被使用");
 			throw new CardReceiveFailException(JsonResultCode.CODE_CARD_RECEIVE_VALIDCODE);

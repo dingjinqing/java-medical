@@ -5,7 +5,7 @@ import com.google.common.collect.Sets;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.db.shop.tables.records.GiftProductRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -191,7 +191,7 @@ public class GiftProcessorDao extends GiftService {
      * 获取所有进行中的活动
      */
     public List<GiftVo> getActiveActivity(){
-        Timestamp now = DateUtil.getSqlTimestamp();
+        Timestamp now = DateUtils.getSqlTimestamp();
         return db().select(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME, TABLE.LEVEL, TABLE.STATUS, TABLE.GOODS_ID, TABLE.RULE, TABLE.EXPLAIN)
             .from(TABLE)
             .where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())
@@ -243,7 +243,7 @@ public class GiftProcessorDao extends GiftService {
             }
         }
         if(rules.getPayStartTime() != null && rules.getPayEndTime() !=null){
-            Timestamp now = DateUtil.getSqlTimestamp();
+            Timestamp now = DateUtils.getSqlTimestamp();
             if(now.after(rules.getPayStartTime()) && now.before(rules.getPayEndTime())){
                 logger().info("赠品：付款时间满足,活动id:{}", giftVo.getId());
                 return packageGift(giftVo.getId(), noJoinRecord, goodsMapCount);
@@ -343,7 +343,7 @@ public class GiftProcessorDao extends GiftService {
      */
     public boolean toPayCheck(Integer giftId, Integer productId, Integer number){
         GiftVo info = getGiftDetail(giftId);
-        if(info == null || info.getEndTime().before(DateUtil.getSqlTimestamp()) || BaseConstant.ACTIVITY_STATUS_DISABLE.equals(info.getStatus()) || !checkStock(info, productId, number)) {
+        if(info == null || info.getEndTime().before(DateUtils.getSqlTimestamp()) || BaseConstant.ACTIVITY_STATUS_DISABLE.equals(info.getStatus()) || !checkStock(info, productId, number)) {
             return false;
         }
         return true;

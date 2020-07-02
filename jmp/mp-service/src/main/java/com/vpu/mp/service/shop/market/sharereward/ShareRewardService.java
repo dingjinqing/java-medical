@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
@@ -608,10 +608,10 @@ public class ShareRewardService extends BaseShopConfigService {
         db().update(AWARD_RECORD).set(AWARD_RECORD.USER_NUMBER, AWARD_RECORD.USER_NUMBER.add(INTEGER_ONE)).where(AWARD_RECORD.ID.eq(id)).execute();
         return db().select(AWARD_RECORD.USER_NUMBER).from(AWARD_RECORD).where(AWARD_RECORD.ID.eq(id)).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
     }
-    
+
 	/**
 	 * 营销日历用id查询活动
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -624,7 +624,7 @@ public class ShareRewardService extends BaseShopConfigService {
 
 	/**
 	 * 营销日历用查询目前正常的活动
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -633,7 +633,7 @@ public class ShareRewardService extends BaseShopConfigService {
 				.select(AWARD.ID, AWARD.NAME.as(CalendarAction.ACTNAME), AWARD.START_TIME, AWARD.END_TIME,
 						AWARD.IS_FOREVER.as(CalendarAction.ISPERMANENT))
 				.from(AWARD).where(AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(AWARD.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(AWARD.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(AWARD.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(AWARD.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);

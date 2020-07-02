@@ -21,6 +21,7 @@
 		<java.version>1.8</java.version>
 		<elasticsearch.version>7.3.2</elasticsearch.version>
 		<com.alibaba.version>1.1.22</com.alibaba.version>
+		<cn.hutool.version>5.3.7</cn.hutool.version>
 	</properties>
 
 
@@ -87,6 +88,11 @@
 				<groupId>com.alibaba</groupId>
 				<artifactId>druid</artifactId>
 				<version>${com.alibaba.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cn.hutool</groupId>
+				<artifactId>hutool-all</artifactId>
+				<version>${cn.hutool.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

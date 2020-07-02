@@ -1,6 +1,6 @@
 package com.vpu.mp.service.foundation.util;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
@@ -27,7 +27,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_PA
 * @Description: 抽离出的关于会员卡的工具类
 */
 public class CardUtil {
-	
+
 	/**
 	 * 	会员卡是颜色背景吗
 	 *	@return true: 是，false: 不是
@@ -35,7 +35,7 @@ public class CardUtil {
 	public static boolean isBgColorType(Byte type) {
 		return CardConstant.MCARD_BGT_COLOR.equals(type);
 	}
-	
+
 	/**
 	 * 	会员卡是图片背景吗
 	 *	@return true: 是，false: 不是
@@ -46,7 +46,7 @@ public class CardUtil {
 		}
 		return CardConstant.MCARD_BGT_IMG.equals(type);
 	}
-	
+
 	/**
 	 * 是否等级会员卡
 	 */
@@ -65,14 +65,14 @@ public class CardUtil {
 	public static boolean isNormalCard(Byte cardType) {
 		return  CardConstant.MCARD_TP_NORMAL.equals(cardType);
 	}
-	
+
 	/**
 	 * 	是否为等级卡或普通卡
 	 */
 	public static boolean isNormalOrGradeCard(Byte cardType) {
 		return isNormalCard(cardType) || isGradeCard(cardType);
 	}
-	
+
 	/**
 	 * 	卡是否需要购买
 	 * @return true 需要，false不需要
@@ -80,7 +80,7 @@ public class CardUtil {
 	public static boolean isNeedToBuy(Byte isPay) {
 		return CardConstant.MCARD_ISP_BUY.equals(isPay);
 	}
-	
+
 	/**
 	 * 卡领取是否需要码
 	 * @return true: 需要；false: 不需要
@@ -95,14 +95,14 @@ public class CardUtil {
 	public static boolean isReceiveByCode(Byte type) {
 		return CardConstant.MCARD_REA_CODE.equals(type);
 	}
-	
+
 	/**
 	 * 卡领取需要密码
 	 */
 	public static boolean isReceiveByPwd(Byte type) {
 		return CardConstant.MCARD_REA_PWD.equals(type);
 	}
-	
+
 	/**
 	 * 	卡是否永久有效
 	 * @return true: 是，false: 不是
@@ -110,7 +110,7 @@ public class CardUtil {
 	public static boolean isCardTimeForever(Byte expireType) {
 		return CardConstant.MCARD_ET_FOREVER.equals(expireType);
 	}
-	
+
 	/**
 	 * 卡是否为自领取之日起
 	 * @param expireType
@@ -119,8 +119,8 @@ public class CardUtil {
 	public static boolean isCardTimeStartFrom(Byte expireType) {
 		return CardConstant.MCARD_ET_DURING.equals(expireType);
 	}
-	
-	
+
+
 	/**
 	 * 	卡固定日期有效
 	 * @return true: 是，false: 不是
@@ -128,7 +128,7 @@ public class CardUtil {
 	public static boolean isCardFixTime(Byte expireType) {
 		return CardConstant.MCARD_ET_FIX.equals(expireType);
 	}
-	
+
 	/**
 	 * 卡是否过期
 	 * @return true: 已经过期，false: 未过期
@@ -137,9 +137,9 @@ public class CardUtil {
 		if(endTime==null) {
 			return false;
 		}
-		return DateUtil.getLocalDateTime().after(endTime);
+		return DateUtils.getLocalDateTime().after(endTime);
 	}
-	
+
 	/**
 	 * 是否可以兑换商品
 	 * @return true: 是，false: 否
@@ -147,7 +147,7 @@ public class CardUtil {
 	public static boolean canExchangGoods(Byte isExchang) {
 		return !CardConstant.MCARD_ISE_NON.equals(isExchang);
 	}
-	
+
 	/**
 	 * 是否可以兑换全部商品
 	 * @return true 是，false 否
@@ -155,7 +155,7 @@ public class CardUtil {
 	public static boolean isExchangAllGoods(Byte isExchange) {
 		return MCARD_ISE_ALL.equals(isExchange);
 	}
-	
+
 	/**
 	 * 是否可以兑换部分商品
 	 * @return true 是，false 否
@@ -163,7 +163,7 @@ public class CardUtil {
 	public static boolean isExchangPartGoods(Byte isExchange) {
 		return MCARD_ISE_PART.equals(isExchange);
 	}
-	
+
 	/**
 	 * 	是否可以再门店使用
 	 * @return true: 可以，false: 不可以
@@ -171,7 +171,7 @@ public class CardUtil {
 	public static boolean canUseInStore(Byte type) {
 		return !CardConstant.MCARD_STP_BAN.equals(type);
 	}
-	
+
 	/**
 	 * 获取卡适用的门店类型
 	 */
@@ -192,9 +192,9 @@ public class CardUtil {
 		}
 		return useStoreType;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * 是否开卡送券
 	 * @return true: 开卡送优惠券；false: 开卡不送优惠券
@@ -202,7 +202,7 @@ public class CardUtil {
 	public static boolean isOpenCardSendCoupon(Byte type) {
 		return CardConstant.MCARD_SEND_COUPON_ON.equals(type);
 	}
-	
+
 	/**
 	 * 送优惠券
 	 */
@@ -215,7 +215,7 @@ public class CardUtil {
 	public static boolean isSendCouponPack(Byte type) {
 		return CardConstant.MCARD_COUPON_PACK_TYPE.equals(type);
 	}
-	
+
 	/**
 	 * 解析卡的使用门店
 	 */
@@ -226,7 +226,7 @@ public class CardUtil {
 		return Util.json2Object(storeList, new TypeReference<List<Integer>>() {
         }, false);
 	}
-	
+
 	/**
 	 * 解析优惠券id
 	 */
@@ -236,7 +236,7 @@ public class CardUtil {
 		}
 		return Util.splitValueToList(couponList);
 	}
-	
+
 	/**
 	 * 	解析激活配置信息
 	 */
@@ -246,7 +246,7 @@ public class CardUtil {
 		}
 		return new ArrayList<String>(Arrays.<String>asList(activationCfg.split(",")));
 	}
-	
+
 	/**
 	 * 卡是否可用
 	 * @reture true: 可用；false: 不可用
@@ -254,7 +254,7 @@ public class CardUtil {
 	public static boolean isCardAvailable(Byte flag) {
 		return CardConstant.MCARD_FLAG_USING.equals(flag);
 	}
-	
+
 	/**
 	 * 卡是否已经删除
 	 * @return true: 已删除；false: 未删除
@@ -262,7 +262,7 @@ public class CardUtil {
 	public static boolean isCardDeleted(Byte type) {
 		return CardConstant.MCARD_DF_YES.equals(type);
 	}
-	
+
 	/**
 	 * 卡是否有效
 	 * @return true: 有效；false: 无效
@@ -286,16 +286,16 @@ public class CardUtil {
 	public static boolean isCardExamine(Byte type) {
 		return CardConstant.MCARD_EXAMINE_ON.equals(type);
 	}
-	
+
 	/**
 	 * 获取会员卡默认背景色
-	 * @return 
+	 * @return
 	 */
 	public static String getDefaultBgColor() {
 		return "#e6cb96";
 	}
-	
-	
+
+
 	/**
 	 * 获取卡的是否有效
 	 * @param expireType 时间类型  0:固定日期 1：自领取之日起 2:不过期
@@ -309,10 +309,10 @@ public class CardUtil {
 		}
 		return status;
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * 	用户卡的有效时间
 	 * @param card 卡信息
@@ -321,7 +321,7 @@ public class CardUtil {
 	public static EffectTimeBean getUserCardEffectTime(EffectTimeParam card) {
 		EffectTimeBean bean = new EffectTimeBean();
 		//	按照领卡的时间快照将进行设置
-		if(isCardFixTime(card.getExpireType()) && 
+		if(isCardFixTime(card.getExpireType()) &&
 				card.getExpireTime() != null) {
 			//	固定时间 取会员卡的设置的起始时间，以及领卡时设置的过期时间
 			if(card.getStartTime() != null) {
@@ -332,7 +332,7 @@ public class CardUtil {
 				bean.setEndDate(card.getExpireTime().toLocalDateTime().toLocalDate());
 				bean.setEndTime(card.getExpireTime());
 			}
-		}else if(isCardTimeStartFrom(card.getExpireType()) || 
+		}else if(isCardTimeStartFrom(card.getExpireType()) ||
 				(isCardTimeForever(card.getExpireType()) &&
 						card.getExpireTime() != null) ) {
 			//	自领取之日起 取用户领卡的时间  或者 永久有效，但是之前设置了有效期也取快照
@@ -340,13 +340,13 @@ public class CardUtil {
 				bean.setStartDate(card.getCreateTime().toLocalDateTime().toLocalDate());
 				bean.setStartTime(card.getCreateTime());
 			}
-			
+
 			if(card.getExpireTime() != null) {
 				bean.setEndDate(card.getExpireTime().toLocalDateTime().toLocalDate());
 				bean.setEndTime(card.getExpireTime());
 			}
 		}
-		
+
 		if(card.getExpireTime() != null) {
 			//	取快照 有效期
 			bean.setExpireType(NumberUtils.BYTE_ONE);
@@ -354,7 +354,7 @@ public class CardUtil {
 			//	永久有效
 			bean.setExpireType((byte)2);
 		}
-		
+
 		return bean;
 	}
 
@@ -365,7 +365,7 @@ public class CardUtil {
 	public static boolean isNeedActive(Byte activte) {
 		return CardConstant.MCARD_ACT_YES.equals(activte);
 	}
-	
+
 	/**
 	 * 	会员卡是否停用
 	 * @return true 是  false 否
@@ -373,7 +373,7 @@ public class CardUtil {
 	public static boolean isStopUsing(Byte flag) {
 		return CardConstant.MCARD_FLAG_STOP.equals(flag);
 	}
-	
+
 	/**
 	 * 将time转化为localdate
 	 */
@@ -393,7 +393,7 @@ public class CardUtil {
 		CardGiveSwitch val = CardGive.CardGiveSwitch.values()[cardGiveWay];
 		return CardGive.CardGiveSwitch.on.equals(val);
 	}
-	
+
 	/**
 	 * 	卡是否允许继续转赠
 	 * 	@return true 可以继续转赠 |  false 不允许继续转赠
@@ -402,7 +402,7 @@ public class CardUtil {
 		CardGiveSwitch val = CardGive.CardGiveSwitch.values()[cardGiveContinue];
 		return CardGive.CardGiveSwitch.on.equals(val);
 	}
-	
+
 	/**
 	 * 	卡来源是否正常
 	 * @return true 正常来源  |  false 非正常来源
@@ -410,10 +410,10 @@ public class CardUtil {
 	public static boolean isCardSourceNormal(Byte cardSource) {
 		return UserCardConstant.SOURCE_NORMAL.equals(cardSource);
 	}
-	
+
 	/**
 	 * 	卡来源与转赠
-	 *	@return true 转赠 | false 非转赠 
+	 *	@return true 转赠 | false 非转赠
 	 */
 	public static boolean isCardSourceGiveWay(Byte cardSource) {
 		return UserCardConstant.SOURCE_GIVE_WAY.equals(cardSource);
@@ -427,8 +427,8 @@ public class CardUtil {
     public static boolean isFreeShipping(Byte exchangFreight) {
         return CardConstant.FREE_SHIPPING.equals(exchangFreight);
     }
-    
-	
+
+
 	/**
 	 * 	是否为无限制转赠
 	 * @return true 无次数限制 || false: 有次数限制

@@ -6,7 +6,7 @@ import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelUtil;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.ImportResultCodeWrap;
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportModel;
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportParam;
@@ -82,7 +82,7 @@ public class AdminGoodsImportController extends AdminBaseController{
     public void downloadExcelImportFailData(@PathVariable Integer batchId, HttpServletResponse response){
         Workbook workbook = shop().goodsImportRecordService.downloadFailData(batchId, getLang());
         Timestamp operateTime = shop().goodsImportRecordService.getOperateTime(batchId);
-        String time = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE, operateTime);
+        String time = DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE, operateTime);
         String fileName = time + "_" + batchId + "_goods";
         export2Excel(workbook, fileName, response);
     }

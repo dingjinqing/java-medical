@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.HttpsUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.RegexUtil;
@@ -20,7 +20,6 @@ import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.*;
 import com.vpu.mp.service.pojo.saas.decorate.DecorationTemplatePojo;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
 import com.vpu.mp.service.pojo.shop.config.SuspendWindowConfig;
@@ -691,7 +690,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                 case ModuleConstant.M_COUPON:
                 	checkAuth(VersionName.SUB_2_M_VOUCHER);
                 	return objectMapper.readValue(node.getValue().toString(), Object.class);
-                	
+
                 case ModuleConstant.M_BARGAIN:
                     checkAuth(VersionName.SUB_2_M_BARGAIN);
                     return objectMapper.readValue(node.getValue().toString(), Object.class);
@@ -773,9 +772,9 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
         param.put("maptype","roadmap");
         param.put("markers","size:large|color:blue|label:A|" + latitude + "," + longitude);
 
-        String relativePath = "upload/" + this.getShopId() + "/map/" + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT) + "/";
+        String relativePath = "upload/" + this.getShopId() + "/map/" + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT) + "/";
         String path = fullPath(relativePath);
-        String fileName = "map_" + DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE) + "_" + Math.round((Math.random()+1) * 1000) + ".png";
+        String fileName = "map_" + DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE) + "_" + Math.round((Math.random()+1) * 1000) + ".png";
         mkdir(path);
         HttpsUtils.get(QQ_MAP_API_STATICMAP_URL,param,true,path,fileName);
 

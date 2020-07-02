@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
@@ -368,11 +368,11 @@ public class ServiceOrderService extends ShopBaseService {
      */
     public JsonResultCode checkServiceOrderAdd(ServiceOrderAddParam param){
         StoreServiceRecord storeServiceRecord = storeService.getStoreServiceById(param.getServiceId());
-        Timestamp serviceTime = DateUtil.convertToTimestamp(param.getServiceDate() + " " + param.getServicePeriod());
+        Timestamp serviceTime = DateUtils.convertToTimestamp(param.getServiceDate() + " " + param.getServicePeriod());
 
         if(serviceTime.after(storeServiceRecord.getStartDate()) && serviceTime.before(storeServiceRecord.getEndDate())){
-            Timestamp storeServiceStartDate = DateUtil.convertToTimestamp(param.getServiceDate() +" " + storeServiceRecord.getStartPeriod() + ":00");
-            Timestamp storeServiceEndDate = DateUtil.convertToTimestamp(param.getServiceDate() +" " + storeServiceRecord.getEndPeriod() + ":00");
+            Timestamp storeServiceStartDate = DateUtils.convertToTimestamp(param.getServiceDate() +" " + storeServiceRecord.getStartPeriod() + ":00");
+            Timestamp storeServiceEndDate = DateUtils.convertToTimestamp(param.getServiceDate() +" " + storeServiceRecord.getEndPeriod() + ":00");
             if(serviceTime.before(storeServiceStartDate) || serviceTime.after(storeServiceEndDate)){
                 return JsonResultCode.CODE_SERVICE_ORDER_WRONG_SERVICE_DATE;
             }
@@ -909,15 +909,15 @@ public class ServiceOrderService extends ShopBaseService {
      * @return
      */
     public List<StoreAppointmentRemindVo> getDealServiceOrder() {
-    	Timestamp timeStampPlus = DateUtil.getTimeStampPlus(1, ChronoUnit.HOURS);
+    	Timestamp timeStampPlus = DateUtils.getTimeStampPlus(1, ChronoUnit.HOURS);
     	//当前时间一小时之后
-    	String date = DateUtil.dateFormat("HH:mm", timeStampPlus);
+    	String date = DateUtils.dateFormat("HH:mm", timeStampPlus);
     	List<StoreAppointmentRemindVo> into=new ArrayList<StoreAppointmentRemindVo>();
 		Result<Record> fetch = db().select(SERVICE_ORDER.asterisk(), USER.WX_OPENID, USER.WX_UNION_ID)
 				.from(SERVICE_ORDER, USER)
 				.where(SERVICE_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(SERVICE_ORDER.USER_ID.eq(USER.USER_ID))
 						.and(SERVICE_ORDER.ORDER_STATUS.eq(ORDER_STATUS_WAIT_PAY)
-								.and(SERVICE_ORDER.SERVICE_DATE.eq(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE)))
+								.and(SERVICE_ORDER.SERVICE_DATE.eq(DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE)))
 								.and(DSL.left(SERVICE_ORDER.SERVICE_PERIOD,5).eq(date))))
 				.fetch();
 		logger().info("查询");
@@ -1021,7 +1021,7 @@ public class ServiceOrderService extends ShopBaseService {
 					.where(SERVICE_ORDER.USER_ID.eq(userId))
 					.orderBy(SERVICE_ORDER.CREATE_TIME.desc())
 					.fetchAnyInto(Timestamp.class);
-		
+
 	}
 
 }

@@ -4,12 +4,11 @@ package com.vpu.mp.service.shop.member.dao;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record;
-import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -66,24 +65,24 @@ public class ScoreDaoService extends ShopBaseService {
 		 logger().info("计算用户累积积分为： "+accumulationScore);
 		 return isNotNull(accumulationScore)?accumulationScore:NumberUtils.INTEGER_ZERO;
 	}
-	
+
 	/**
 	 * 计算用户的所有可使用的积分
 	 */
 	public Integer calculateAvailableScore(Integer userId) {
-	
+
 		/** 根据用户id,status,有效期 */
 		Integer availableScore = db().select(DSL.sum(USER_SCORE.USABLE_SCORE))
 									.from(USER_SCORE)
 									.where(USER_SCORE.USER_ID.eq(userId))
 									.and(USER_SCORE.STATUS.in(AVAILABLE_SCORE_STATUS_LIST))
-									.and(USER_SCORE.EXPIRE_TIME.ge(DateUtil.getLocalDateTime()).or(USER_SCORE.EXPIRE_TIME.isNull()))
+									.and(USER_SCORE.EXPIRE_TIME.ge(DateUtils.getLocalDateTime()).or(USER_SCORE.EXPIRE_TIME.isNull()))
 									.fetchOptionalInto(Integer.class)
 									.orElse(NumberUtils.INTEGER_ZERO);
 		logger().info("计算所有可用积分为： "+availableScore);
 		return availableScore;
-	} 
-	
+	}
+
 	/**
 	 * 计算从现在到指定时间的可用积分
 	 * @param endTime 指定的时间
@@ -94,14 +93,14 @@ public class ScoreDaoService extends ShopBaseService {
 			.from(USER_SCORE)
 			.where(USER_SCORE.USER_ID.eq(userId))
 			.and(USER_SCORE.STATUS.in(AVAILABLE_SCORE_STATUS_LIST))
-			.and(USER_SCORE.EXPIRE_TIME.between(DateUtil.getLocalDateTime(), endTime))
+			.and(USER_SCORE.EXPIRE_TIME.between(DateUtils.getLocalDateTime(), endTime))
 			.fetchOptionalInto(Integer.class)
 			.orElse(NumberUtils.INTEGER_ZERO);
-	
+
 		logger().info("计算在指定时间 "+endTime+" 所有可用积分为： "+willExpireSoonScore);
 		return willExpireSoonScore;
 	}
-	
+
 	/**
 	 * 获取一条用户可用的最早积分记录
 	 */
@@ -109,7 +108,7 @@ public class ScoreDaoService extends ShopBaseService {
 		return db().selectFrom(USER_SCORE)
 			.where(USER_SCORE.USER_ID.eq(userId))
 			.and(USER_SCORE.USABLE_SCORE.greaterThan(0)).and(USER_SCORE.STATUS.in(AVAILABLE_SCORE_STATUS_LIST))
-			.and(USER_SCORE.EXPIRE_TIME.ge(DateUtil.getLocalDateTime()).or(USER_SCORE.EXPIRE_TIME.isNull()))
+			.and(USER_SCORE.EXPIRE_TIME.ge(DateUtils.getLocalDateTime()).or(USER_SCORE.EXPIRE_TIME.isNull()))
 			.orderBy(USER_SCORE.CREATE_TIME)
 			.fetchAny();
 	}
@@ -117,7 +116,7 @@ public class ScoreDaoService extends ShopBaseService {
 	private boolean isNotNull(Object obj) {
 		return obj!=null;
 	}
-	
+
 	/**
 	 * 获取所有签到积分
 	 */
@@ -130,17 +129,17 @@ public class ScoreDaoService extends ShopBaseService {
 		f.add(USER.MOBILE);
 		Field<?>[] myFields = f.toArray(new Field<?>[0]);
 		Record myRecord = db().newRecord(myFields);
-				
+
 		SelectSeekStep1<Record, Timestamp> select = db().select(myFields)
 			.from(USER_SCORE.innerJoin(USER).on(USER_SCORE.USER_ID.eq(USER.USER_ID)).leftJoin(USER_TAG).on(USER_SCORE.USER_ID.eq(USER_TAG.USER_ID)))
 			.where(USER_SCORE.DESC.eq(VersionName.SUB_3_SIGN_SCORE).and(condition))
 			.groupBy(myFields)
 			.orderBy(USER_SCORE.CREATE_TIME.desc());
-		
+
 		PageResult<? extends Record> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), myRecord.getClass());
 		return pageResult;
 	}
-	
+
 	/**
 	 * 构建会员签到列表查询条件
 	 */
@@ -149,22 +148,22 @@ public class ScoreDaoService extends ShopBaseService {
 		if(!StringUtils.isBlank(param.getSearch())) {
 			condition = condition.and(USER.USERNAME.like(likeValue(param.getSearch()))
 									.or(USER.MOBILE.like(likeValue(param.getSearch()))));
-					
+
 		}
 		if(null != param.getStartTime()) {
 			condition = condition.and(USER_SCORE.CREATE_TIME.greaterOrEqual(param.getStartTime()));
 		}
-		
+
 		if(null != param.getEndTime()) {
 			condition = condition.and(USER_SCORE.CREATE_TIME.lessOrEqual(param.getEndTime()));
 		}
-		
+
 		if(param.getTagIds()!=null && param.getTagIds().size()>0) {
 			condition = condition.and(USER_TAG.TAG_ID.in(param.getTagIds()));
 		}
 		return condition;
 	}
-	
+
 	/**
 	 * 获取连续签到天数
 	 * @return Map day=连续签到天数; score=连续签到获得的积分
@@ -177,18 +176,18 @@ public class ScoreDaoService extends ShopBaseService {
 		if(time == null) {
 			return map;
 		}
-		
+
 		int day = 1;
-		
+
 		LocalDateTime refTime = time.toLocalDateTime();
 		do{
 			map.put(SIGN_DAY, day);
 			map.put(SIGN_SCORE,score);
-			
+
 			LocalDateTime pastTime = refTime.minusDays(day);
 			LocalDateTime pastStartTime = pastTime.withHour(0).withMinute(0).withSecond(0);
 			LocalDateTime pastEndTime = pastTime.withHour(23).withMinute(59).withSecond(59);
-			
+
 			UserScoreRecord record = db().selectFrom(USER_SCORE)
 				.where(USER_SCORE.USER_ID.eq(userId))
 				.and(USER_SCORE.DESC.eq(VersionName.SUB_3_SIGN_SCORE))
@@ -203,8 +202,8 @@ public class ScoreDaoService extends ShopBaseService {
 				score += record.getUsableScore();
 			}
 		}while(true);
-		
+
 		return map;
 	}
-	
+
 }

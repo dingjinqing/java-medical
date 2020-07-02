@@ -6,7 +6,7 @@ import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
@@ -71,17 +71,17 @@ public class BargainRecordService extends ShopBaseService {
     private OrderInfoService orderInfo;
     @Autowired
     private BargainPictorialService shareImgService;
-	
+
 	/**
-	 * 状态：正在砍价 
+	 * 状态：正在砍价
 	 */
 	public static final byte STATUS_IN_PROCESS = 0;
 	/**
-	 *  状态：砍价成功 
+	 *  状态：砍价成功
 	 */
 	public static final byte STATUS_SUCCESS = 1;
 	/**
-	 *  状态：砍价失败 
+	 *  状态：砍价失败
 	 */
 	public static final byte STATUS_FAILED = 2;
 
@@ -93,7 +93,7 @@ public class BargainRecordService extends ShopBaseService {
      *  未下单
      */
     public static final Byte IS_ORDERED_N = 0;
-	
+
 	private static final String LANGUAGE_TYPE_EXCEL= "excel";
 
 	/**
@@ -103,7 +103,7 @@ public class BargainRecordService extends ShopBaseService {
 	public Integer getBargainRecordNumberByStatus(int bargainId,byte status) {
 		return db().selectCount().from(BARGAIN_RECORD).where(BARGAIN_RECORD.STATUS.eq(status)).and(BARGAIN_RECORD.BARGAIN_ID.eq(bargainId)).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchOneInto(Integer.class);
 	}
-	
+
 	/**
 	 * 某活动的发起砍价数量
 	 *
@@ -112,7 +112,7 @@ public class BargainRecordService extends ShopBaseService {
 	public Integer getBargainRecordNumber(int bargainId) {
 		return db().selectCount().from(BARGAIN_RECORD).where(BARGAIN_RECORD.BARGAIN_ID.eq(bargainId)).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchOneInto(Integer.class);
 	}
-	
+
 	/**
 	 * 发起记录的分页列表
 	 *
@@ -131,7 +131,7 @@ public class BargainRecordService extends ShopBaseService {
 		select.where(BARGAIN_RECORD.BARGAIN_ID.eq(param.getBargainId())).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
 		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),BargainRecordPageListQueryVo.class);
 	}
-	
+
 	public SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends  Record> select, BargainRecordPageListQueryParam param) {
 		if (param == null) {
 			return select;
@@ -153,7 +153,7 @@ public class BargainRecordService extends ShopBaseService {
 		}
 		return select;
 	}
-	
+
 	/**
 	 * 算出待砍金额
 	 *
@@ -167,7 +167,7 @@ public class BargainRecordService extends ShopBaseService {
 		}
 		return BigDecimal.ZERO;
 	}
-	
+
 	public Workbook exportBargainRecordList(BargainRecordPageListQueryParam param, String lang) {
 		SelectWhereStep<? extends Record> select = db().select(
 				BARGAIN_RECORD.ID,BARGAIN_RECORD.GOODS_ID,GOODS.GOODS_NAME,BARGAIN_RECORD.GOODS_PRICE,USER.USERNAME,USER.MOBILE,BARGAIN_RECORD.CREATE_TIME,BARGAIN_RECORD.BARGAIN_MONEY,
@@ -180,7 +180,7 @@ public class BargainRecordService extends ShopBaseService {
 		select = this.buildOptions(select, param);
 		select.where(BARGAIN_RECORD.BARGAIN_ID.eq(param.getBargainId())).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
 		List<BargainRecordExportVo> bargainRecordList =  select.fetchInto(BargainRecordExportVo.class);
-		
+
 		/**循环处理状态和待砍金额列*/
 		for(BargainRecordExportVo vo : bargainRecordList) {
 			switch(vo.getStatus()) {
@@ -203,7 +203,7 @@ public class BargainRecordService extends ShopBaseService {
 				vo.setSurplusMoney(vo.getGoodsPrice().subtract(bargainGoods.getFloorPrice()).subtract(vo.getBargainMoney()));
 			}
 		}
-		
+
 		Workbook workbook=ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
         excelWriter.writeModelList(bargainRecordList,BargainRecordExportVo.class);
@@ -316,7 +316,7 @@ public class BargainRecordService extends ShopBaseService {
         BargainGoodsRecord bargainGoods = saas.getShopApp(getShopId()).bargain.getBargainGoods(param.getBargainId(),param.getGoodsId());
 
         //校验活动信息
-        Byte res = bargainProcessorDao.canApplyBargain(userId,DateUtil.getLocalDateTime(),bargain,param.getGoodsId());
+        Byte res = bargainProcessorDao.canApplyBargain(userId, DateUtils.getLocalDateTime(),bargain,param.getGoodsId());
 
         if(!res.equals(BaseConstant.ACTIVITY_STATUS_CAN_USE)){
             return res;
@@ -361,7 +361,7 @@ public class BargainRecordService extends ShopBaseService {
             }
 
             //分享配置
-            recordInfo.setRemainingTime((recordInfo.getEndTime().getTime() - DateUtil.getLocalDateTime().getTime())/1000);
+            recordInfo.setRemainingTime((recordInfo.getEndTime().getTime() - DateUtils.getLocalDateTime().getTime())/1000);
             vo.setRecordShareImg(Util.parseJson(recordInfo.getShareConfig(), PictorialShareConfigVo.class));
             if(vo.getRecordShareImg() != null){
                 if(vo.getRecordShareImg().getShareAction().equals(PictorialShareConfigVo.CUSTOMER_STYLE) && vo.getRecordShareImg().getShareImgAction().equals(PictorialShareConfigVo.CUSTOMER_IMG) && StringUtil.isNotEmpty(vo.getRecordShareImg().getShareImg())){
@@ -385,7 +385,7 @@ public class BargainRecordService extends ShopBaseService {
             //帮忙砍价用户
             vo.setRecordUserList(bargainUser.getBargainUserList(recordId));
 
-            vo.setTimestamp(DateUtil.getLocalDateTime());
+            vo.setTimestamp(DateUtils.getLocalDateTime());
             vo.setBargainPrice(recordInfo.getBargainType().equals(BargainService.BARGAIN_MONEY_TYPE_RANDOM) ? recordInfo.getFloorPrice() : recordInfo.getExpectationPrice());
 
             vo.setNeedBindMobile(recordInfo.getNeedBindMobile());
@@ -426,10 +426,10 @@ public class BargainRecordService extends ShopBaseService {
         if(recordInfo == null){
             return 1;
         }
-        if(recordInfo.getStartTime().after(DateUtil.getLocalDateTime())){
+        if(recordInfo.getStartTime().after(DateUtils.getLocalDateTime())){
             return 3;
         }
-        if(recordInfo.getEndTime().before(DateUtil.getLocalDateTime())){
+        if(recordInfo.getEndTime().before(DateUtils.getLocalDateTime())){
             return 4;
         }
 

@@ -48,7 +48,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
@@ -56,7 +56,6 @@ import com.vpu.mp.db.shop.tables.FriendPromoteActivity;
 import com.vpu.mp.db.shop.tables.FriendPromoteDetail;
 import com.vpu.mp.db.shop.tables.FriendPromoteLaunch;
 import com.vpu.mp.db.shop.tables.User;
-import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteLaunchRecord;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteTimesRecord;
@@ -80,24 +79,6 @@ import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.task.wechat.MaMpScheduleTaskService;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Random;
-
-import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 好友助力
@@ -451,13 +432,13 @@ public class FriendPromoteService extends ShopBaseService {
 	 * @return
 	 */
 	public List<FriendPromoteSelectVo> getLaunchListByHour(Integer hours) {
-		Timestamp timeStampPlus = DateUtil.getTimeStampPlus(hours, ChronoUnit.HOURS);
-		String date = DateUtil.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
+		Timestamp timeStampPlus = DateUtils.getTimeStampPlus(hours, ChronoUnit.HOURS);
+		String date = DateUtils.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
 		Result<Record> fetch = db()
 				.select(fpl.asterisk(),fpa.ACT_CODE,fpa.ACT_NAME,fpa.REWARD_CONTENT,fpa.REWARD_TYPE).from(fpl,
 						fpa)
 				.where(fpl.PROMOTE_ID.eq(fpa.ID).and(fpa.DEL_FLAG.eq(ZERO)).and(fpl.DEL_FLAG.eq(ZERO)).and(fpl.PROMOTE_STATUS.eq(ZERO))
-						.and(dateFormat(fpa.END_TIME, DateUtil.DATE_MYSQL_DAY).eq(date)))
+						.and(dateFormat(fpa.END_TIME, DateUtils.DATE_MYSQL_DAY).eq(date)))
 				.fetch();
 		List<FriendPromoteSelectVo> into = new ArrayList<FriendPromoteSelectVo>();
 		if (fetch != null) {
@@ -472,13 +453,13 @@ public class FriendPromoteService extends ShopBaseService {
 	 * @return
 	 */
 	public List<FriendPromoteSelectVo> getPromoteFailedList(Integer hours) {
-		Timestamp timeStampPlus = DateUtil.getTimeStampPlus(hours, ChronoUnit.HOURS);
-		String date = DateUtil.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
+		Timestamp timeStampPlus = DateUtils.getTimeStampPlus(hours, ChronoUnit.HOURS);
+		String date = DateUtils.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
 		Result<Record> fetch = db().select(fpl.asterisk(),fpa.ACT_CODE,fpa.ACT_NAME,fpa.REWARD_CONTENT,fpa.REWARD_TYPE,fpa.FAILED_SEND_TYPE,fpa.FAILED_SEND_CONTENT).from(fpl,
 						fpa)
 				.where(fpl.PROMOTE_ID.eq(fpa.ID).and(
 						fpa.DEL_FLAG.eq(ZERO)).and(fpl.DEL_FLAG.eq(ZERO)).and(fpl.PROMOTE_STATUS.eq(ZERO))
-								.and(dateFormat(fpl.LAUNCH_TIME, DateUtil.DATE_MYSQL_DAY).eq(date).or(fpa.END_TIME.le(DateUtil.getLocalDateTime()))))
+								.and(dateFormat(fpl.LAUNCH_TIME, DateUtils.DATE_MYSQL_DAY).eq(date).or(fpa.END_TIME.le(DateUtils.getLocalDateTime()))))
 				.fetch();
 		List<FriendPromoteSelectVo> into = new ArrayList<FriendPromoteSelectVo>();
 		if (fetch != null) {
@@ -504,8 +485,8 @@ public class FriendPromoteService extends ShopBaseService {
 	 */
 	public List<FriendPromoteSelectVo> getPromoteWaitReceiveList(Integer hours) {
 		logger().info("运行助力失效前一小时的sql");
-		Timestamp timeStampPlus = DateUtil.getTimeStampPlus(hours, ChronoUnit.HOURS);
-		String date = DateUtil.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
+		Timestamp timeStampPlus = DateUtils.getTimeStampPlus(hours, ChronoUnit.HOURS);
+		String date = DateUtils.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
 		SelectConditionStep<Record> where = db()
 				.select(fpl.asterisk(), fpa.ACT_CODE, fpa.ACT_NAME, fpa.REWARD_CONTENT, fpa.REWARD_TYPE).from(fpl, fpa)
 				.where(fpl.PROMOTE_ID.eq(fpa.ID).and(fpa.REWARD_TYPE.in(s)).and(fpa.DEL_FLAG.eq(ZERO))
@@ -616,7 +597,7 @@ public class FriendPromoteService extends ShopBaseService {
             Long successTime = getSuccessTime(launchInfo.getId()).getTime();
             //奖励结束时间
             Long endTime = successTime+duration*1000;
-            Long nowTime = DateUtil.getLocalDateTime().getTime();
+            Long nowTime = DateUtils.getLocalDateTime().getTime();
             Long spurTime = endTime-nowTime>0?(endTime/1000-nowTime/1000):0;
             promoteInfo.setRewardSpurTime(spurTime);
         }
@@ -1131,8 +1112,8 @@ public class FriendPromoteService extends ShopBaseService {
         }
         //判断当天助力次数限制
         if(promoteInfo.getPromoteTimesPerDay()>0){
-            Integer usedPromoteTimesCurrentDay = getHasPromoteTimes(null,promoteInfo.getId(),userId,DateUtil.getLocalDateTime());
-            Integer launchIdTime = getHasPromoteTimes(launchId,promoteInfo.getId(),userId,DateUtil.getLocalDateTime());
+            Integer usedPromoteTimesCurrentDay = getHasPromoteTimes(null,promoteInfo.getId(),userId, DateUtils.getLocalDateTime());
+            Integer launchIdTime = getHasPromoteTimes(launchId,promoteInfo.getId(),userId, DateUtils.getLocalDateTime());
             logger().info("*********");
             logger().info("*判断当天助力次数限制*");
             logger().info("*********");
@@ -1217,7 +1198,7 @@ public class FriendPromoteService extends ShopBaseService {
         //如果助力进度是完成待领取
         if (promoteInfo.getPromoteStatus()==1){
             Long sec = promoteDurationSec(promoteInfo.getLaunchLimitUnit(),promoteInfo.getLaunchLimitDuration());
-            Long surplusSecond = launchInfo.getCreateTime().getTime()+sec*1000-DateUtil.getLocalDateTime().getTime();
+            Long surplusSecond = launchInfo.getCreateTime().getTime()+sec*1000- DateUtils.getLocalDateTime().getTime();
             promoteInfo.setSurplusSecond(surplusSecond>0?surplusSecond/1000:0);
         }
         //活动进行中 助力未开始
@@ -1225,13 +1206,13 @@ public class FriendPromoteService extends ShopBaseService {
             long secDeadTime = 24*60*60*1000;
             long secLaunchTime = launchInfo.getLaunchTime().getTime();
             if (secEndTime<secDeadTime+secLaunchTime){
-                promoteInfo.setSurplusSecond((secEndTime-DateUtil.getLocalDateTime().getTime())/1000);
+                promoteInfo.setSurplusSecond((secEndTime- DateUtils.getLocalDateTime().getTime())/1000);
             }else {
-                promoteInfo.setSurplusSecond((secDeadTime+secLaunchTime-DateUtil.getLocalDateTime().getTime())/1000);
+                promoteInfo.setSurplusSecond((secDeadTime+secLaunchTime- DateUtils.getLocalDateTime().getTime())/1000);
             }
         }
         else {
-            promoteInfo.setSurplusSecond(promoteInfo.getActStatus()==1?(secEndTime-DateUtil.getLocalDateTime().getTime())/1000:0);
+            promoteInfo.setSurplusSecond(promoteInfo.getActStatus()==1?(secEndTime- DateUtils.getLocalDateTime().getTime())/1000:0);
         }
     }
 
@@ -1281,7 +1262,7 @@ public class FriendPromoteService extends ShopBaseService {
             .from(FRIEND_PROMOTE_ACTIVITY)
             .where(FRIEND_PROMOTE_ACTIVITY.IS_BLOCK.eq((byte)0))
             .and(FRIEND_PROMOTE_ACTIVITY.DEL_FLAG.eq((byte)0))
-            .and(FRIEND_PROMOTE_ACTIVITY.END_TIME.greaterThan(DateUtil.getSqlTimestamp()))
+            .and(FRIEND_PROMOTE_ACTIVITY.END_TIME.greaterThan(DateUtils.getSqlTimestamp()))
             .and(FRIEND_PROMOTE_ACTIVITY.ID.notEqual(id))
             .orderBy(FRIEND_PROMOTE_ACTIVITY.ID.desc())
             .limit(10)
@@ -1361,7 +1342,7 @@ public class FriendPromoteService extends ShopBaseService {
      */
     public Integer promoteLaunch(Integer userId,Integer promoteId){
         Integer effectRows = db().insertInto(FRIEND_PROMOTE_LAUNCH,FRIEND_PROMOTE_LAUNCH.USER_ID,FRIEND_PROMOTE_LAUNCH.PROMOTE_ID,FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME)
-            .values(userId,promoteId,DateUtil.getSqlTimestamp())
+            .values(userId,promoteId, DateUtils.getSqlTimestamp())
             .execute();
         return effectRows;
     }
@@ -1425,7 +1406,7 @@ public class FriendPromoteService extends ShopBaseService {
         messageVo.setUserId(launchUserId);
         messageVo.setActCode(record.getActCode());
         messageVo.setActName(record.getActName());
-        messageVo.setSuccessTime(DateUtil.getSqlTimestamp());
+        messageVo.setSuccessTime(DateUtils.getSqlTimestamp());
         messageVo.setRewardType(record.getRewardType());
         messageVo.setRewardContent(record.getRewardContent());
         String officeAppId = saas.shop.mp.findOffcialByShopId(getShopId());
@@ -1533,7 +1514,7 @@ public class FriendPromoteService extends ShopBaseService {
                         if (prdRecord!=null&&prdRecord.getPrdNumber()>0){
                             //计算奖励过期时间
                             Long durationSec = promoteDurationSec(promoteInfo.getRewardDurationUnit(),promoteInfo.getRewardDuration());
-                            Long endSec = DateUtil.getLocalDateTime().getTime()+durationSec*1000;
+                            Long endSec = DateUtils.getLocalDateTime().getTime()+durationSec*1000;
                             Timestamp expiredTime = new Timestamp(endSec);
                             //奖励入库
                             PrizeRecordRecord  prizeRecordRecord = prizeRecordService.savePrize(launchUserId,promoteInfo.getId(),launchId,(byte)1,promoteInfo.getRewardContent().getGoodsIds(),null,expiredTime);
@@ -1738,7 +1719,7 @@ public class FriendPromoteService extends ShopBaseService {
      */
     public void updateSuccessTime(Integer launchId){
         db().update(FRIEND_PROMOTE_LAUNCH)
-            .set(FRIEND_PROMOTE_LAUNCH.SUCCESS_TIME,DateUtil.getSqlTimestamp())
+            .set(FRIEND_PROMOTE_LAUNCH.SUCCESS_TIME, DateUtils.getSqlTimestamp())
             .where(FRIEND_PROMOTE_LAUNCH.ID.eq(launchId))
             .execute();
     }
@@ -1770,7 +1751,7 @@ public class FriendPromoteService extends ShopBaseService {
             .and(PRIZE_RECORD.ACTIVITY_ID.eq(actId))
             .and(PRIZE_RECORD.RECORD_ID.eq(recordId))
             .and(PRIZE_RECORD.ACTIVITY_TYPE.eq((byte)1))
-            .and(PRIZE_RECORD.EXPIRED_TIME.greaterThan(DateUtil.getSqlTimestamp()))
+            .and(PRIZE_RECORD.EXPIRED_TIME.greaterThan(DateUtils.getSqlTimestamp()))
             .fetchOptionalInto(Integer.class)
             .orElse(0);
         return id;
@@ -1789,7 +1770,7 @@ public class FriendPromoteService extends ShopBaseService {
                 .where(FRIEND_PROMOTE_ACTIVITY.ID.eq(param.getId()))
                 .fetchOneInto(FriendPromoteActivityRecord.class);
             //设置筛选起止时间
-            Timestamp todayTime = Timestamp.valueOf(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_END,DateUtil.getLocalDateTime()));
+            Timestamp todayTime = Timestamp.valueOf(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_END, DateUtils.getLocalDateTime()));
             startTime = record.getStartTime();
             endTime = record.getEndTime().before(todayTime)?record.getEndTime():todayTime;
         }
@@ -1798,7 +1779,7 @@ public class FriendPromoteService extends ShopBaseService {
         vo.setEndTime(endTime);
         List<ActEffectData> dataList = new ArrayList<>();
         while (startTime.before(endTime)){
-            Timestamp tempEnd = Timestamp.valueOf(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_END,startTime));
+            Timestamp tempEnd = Timestamp.valueOf(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_END,startTime));
             Integer launch = db().select(DSL.count(FRIEND_PROMOTE_LAUNCH.ID).as("launch"))
                 .from(FRIEND_PROMOTE_LAUNCH)
                 .where(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(param.getId()))
@@ -2001,7 +1982,7 @@ public class FriendPromoteService extends ShopBaseService {
 						FRIEND_PROMOTE_ACTIVITY.END_TIME)
 				.from(FRIEND_PROMOTE_ACTIVITY)
 				.where(FRIEND_PROMOTE_ACTIVITY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(FRIEND_PROMOTE_ACTIVITY.IS_BLOCK
-						.eq(ZERO).and(FRIEND_PROMOTE_ACTIVITY.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+						.eq(ZERO).and(FRIEND_PROMOTE_ACTIVITY.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(FRIEND_PROMOTE_ACTIVITY.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);

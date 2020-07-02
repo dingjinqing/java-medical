@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.config;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.main.tables.records.AppAuthRecord;
 import com.vpu.mp.db.main.tables.records.AppRecord;
 import com.vpu.mp.service.foundation.exception.BusinessException;
@@ -147,7 +147,7 @@ public class ThirdAuthConfigService extends  BaseShopConfigService {
         if (appAuthRecord!=null){
             String s = saas.shop.shopApp.generateUniqueSessionKey(getShopId());
             appAuthRecord.setSessionKey(s);
-            appAuthRecord.setUpdateTime(DateUtil.getLocalDateTime());
+            appAuthRecord.setUpdateTime(DateUtils.getLocalDateTime());
            return appAuthRecord.update();
         }
         return 0;

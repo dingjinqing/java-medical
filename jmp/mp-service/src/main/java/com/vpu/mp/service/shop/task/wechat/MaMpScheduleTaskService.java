@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.task.wechat;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
@@ -122,7 +122,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 			logger().info("userIdList" + userIdList);
 			String[][] data = new String[][] { { keyword1 + couponName + keyword11, "#173177" }, { "", "#173177" },
 					{ couponName, "#173177" },
-					{ DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, couponWxVo.getEndTime()), "#173177" },
+					{ DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL, couponWxVo.getEndTime()), "#173177" },
 					{ "", "#173177" } };
 			RabbitMessageParam param = RabbitMessageParam.builder()
 					.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.COUPON_EXPIRE).data(data).build())
@@ -391,7 +391,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 		String title="恭喜您中奖了";
 		String remark="将尽快为您发货";
 		String[][] data = new String[][] { { title, "#173177" }, {goodsName, "#173177" },{"恭喜中奖", "#173177" },{ remark, "#173177" },
-			{ DateUtil.getLocalDateFormat(), "#173177" }};
+			{ DateUtils.getLocalDateFormat(), "#173177" }};
 		RabbitMessageParam param = RabbitMessageParam.builder()
 				.mpTemplateData(
 						MpTemplateData.builder().config(MpTemplateConfig.ACTIVITY_CONFIG).data(data).build())
@@ -445,7 +445,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 				boolean canUse = subscribeMessageService.getCanUse(vo.getUserId(), tid);
 				String page = "pages1/promoteinfo/promoteinfo?actCode=" + vo.getActCode() + "&launch_id=" + vo.getId();
 				String name2 = "已有好友帮忙助力";
-				String date = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, vo.getSuccessTime());
+				String date = DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL, vo.getSuccessTime());
 				if(!canUse) {
 					logger().info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"不能发送小程序，转发送公众号");
 					//ACTIVITY_CONFIG
@@ -485,7 +485,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 				logger().info("type不为1，为"+type);
 				sendPromoteResultMessage(type, vo, officeAppId, title, content);
 			}
-			
+
 		}
 		return content;
 	}
@@ -505,7 +505,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 			userIdList.add(vo.getUserId());
 			String remake="点击查看详情";
 			String[][] data = new String[][] { { "", "#173177" }, {title, "#173177" },
-				{ vo.getActName(), "#173177" }, { content, "#173177" }, { DateUtil.getLocalDateFormat(), "#173177" },{remake,"#173177"}};
+				{ vo.getActName(), "#173177" }, { content, "#173177" }, { DateUtils.getLocalDateFormat(), "#173177" },{remake,"#173177"}};
 				//发的公众号
 			RabbitMessageParam param = RabbitMessageParam.builder()
 					.mpTemplateData(

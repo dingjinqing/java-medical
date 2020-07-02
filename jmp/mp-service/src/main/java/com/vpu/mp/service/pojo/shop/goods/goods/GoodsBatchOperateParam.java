@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.goods.goods;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import lombok.Data;
@@ -104,7 +104,7 @@ public class GoodsBatchOperateParam {
             if (isOnSaleOptional.isPresent()) {
                 goodsRecord.setIsOnSale(isOnSaleOptional.get());
                 if (GoodsConstant.ON_SALE.equals(goodsRecord.getIsOnSale())) {
-                    Timestamp localDateTime = DateUtil.getLocalDateTime();
+                    Timestamp localDateTime = DateUtils.getLocalDateTime();
                     goodsRecord.setSaleTime(localDateTime);
                     goodsRecord.setSaleType(GoodsConstant.SALE_TYPE_ON_SALE);
                 }else {

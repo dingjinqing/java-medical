@@ -5,7 +5,7 @@ import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.foundation.database.DslPlus;
@@ -97,14 +97,14 @@ public class CommodityStatisticsService extends ShopBaseService {
         byte type = param.getDynamicDate();
         LocalDate now = LocalDate.now();
         LocalDate prefix = now.minusDays(type);
-        ProductOverviewVo nowData = getGoodsOverviewSummary(DateUtil.yyyyMmDdDate(now), type);
+        ProductOverviewVo nowData = getGoodsOverviewSummary(DateUtils.yyyyMmDdDate(now), type);
         if (Objects.isNull(nowData)) {
             return ProductOverviewVo.builder().build();
         }
         nowData.setStartTime(Date.valueOf(prefix));
         nowData.setEndTime(Date.valueOf(now));
         nowData.setVisit2paid(divideWithOutCheck(BigDecimal.valueOf(nowData.getPaidGoodsNum()), BigDecimal.valueOf(nowData.getVisitedGoodsNum())));
-        ProductOverviewVo prefixData = getGoodsOverviewSummary(DateUtil.yyyyMmDdDate(prefix), type);
+        ProductOverviewVo prefixData = getGoodsOverviewSummary(DateUtils.yyyyMmDdDate(prefix), type);
         if (Objects.isNull(prefixData)) {
             return nowData;
         }
@@ -304,7 +304,7 @@ public class CommodityStatisticsService extends ShopBaseService {
      */
     public PageResult<ProductEffectVo> fixedDayEffect(ProductEffectParam param) {
         /** 必要筛选条件 */
-        Condition baseCondition = (GOODS_SUMMARY.REF_DATE.eq(DateUtil.yyyyMmDdDate(LocalDate.now())))
+        Condition baseCondition = (GOODS_SUMMARY.REF_DATE.eq(DateUtils.yyyyMmDdDate(LocalDate.now())))
             .and(GOODS_SUMMARY.TYPE.eq(param.getDynamicDate()));
         SelectJoinStep<?> joinStep = db().select(GOODS_SUMMARY.GOODS_ID
             , GOODS.GOODS_NAME

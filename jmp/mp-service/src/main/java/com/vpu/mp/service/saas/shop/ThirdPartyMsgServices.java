@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
@@ -33,7 +33,7 @@ import com.vpu.mp.service.saas.shop.official.MpOfficialAccountUserService;
 
 /**
  * 概况绑定公众号发送消息功能
- * 
+ *
  * @author zhaojianqiang 2020年4月13日下午2:39:06
  */
 @Service
@@ -128,7 +128,7 @@ public class ThirdPartyMsgServices extends MainBaseService {
 		newRecord.setAccountAction(accountAction);
 		newRecord.setAccountId(accountId);
 		newRecord.setServiceDetail(order.getOrderSn());
-		newRecord.setAddTime(DateUtil.getSqlTimestamp());
+		newRecord.setAddTime(DateUtils.getSqlTimestamp());
 		int insert = newRecord.insert();
 		logger().info("插入结果 "+insert);
 		return true;
@@ -152,8 +152,8 @@ public class ThirdPartyMsgServices extends MainBaseService {
 		if (canSend) {
 			List<Integer> list = db().select(DSL.count(THIRD_PARTY_SERVICES.ACCOUNT_ID)).from(THIRD_PARTY_SERVICES)
 					.where(THIRD_PARTY_SERVICES.SHOP_ID.eq(shopId)
-							.and(dateFormat(THIRD_PARTY_SERVICES.ADD_TIME, DateUtil.DATE_MYSQL_SIMPLE)
-									.eq(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE))))
+							.and(dateFormat(THIRD_PARTY_SERVICES.ADD_TIME, DateUtils.DATE_MYSQL_SIMPLE)
+									.eq(DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE))))
 					.groupBy(THIRD_PARTY_SERVICES.ACCOUNT_ACTION, THIRD_PARTY_SERVICES.ACCOUNT_ID,
 							THIRD_PARTY_SERVICES.SERVICE_ACTION)
 					.having(DSL.count(THIRD_PARTY_SERVICES.ACCOUNT_ID).ge(5)).fetchInto(Integer.class);

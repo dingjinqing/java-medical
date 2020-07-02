@@ -796,7 +796,7 @@ public class Util {
         	if(Objects.isNull(startTime)||Objects.isNull(endTime)){
         		return BaseConstant.NAVBAR_TYPE_NOT_STARTED;
 			}
-            Timestamp now  =DateUtil.getLocalDateTime();
+            Timestamp now  = DateUtils.getLocalDateTime();
             if (Objects.equals(status, BaseConstant.ACTIVITY_STATUS_NORMAL)){
                 if (now.compareTo(startTime)<0){
                     return BaseConstant.NAVBAR_TYPE_NOT_STARTED;

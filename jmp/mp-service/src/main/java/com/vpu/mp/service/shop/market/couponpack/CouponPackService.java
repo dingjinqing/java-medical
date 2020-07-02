@@ -7,7 +7,7 @@ import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
@@ -130,10 +130,10 @@ public class CouponPackService extends ShopBaseService {
 
         return res;
     }
-    
-   
-    
-    
+
+
+
+
 
     /**
      * 查询条件
@@ -141,7 +141,7 @@ public class CouponPackService extends ShopBaseService {
     private void buildOptions(SelectWhereStep<? extends Record> select, CouponPackPageListQueryParam param) {
         if(param.getState() > 0) {
             /** 状态过滤*/
-            Timestamp now = DateUtil.getLocalDateTime();
+            Timestamp now = DateUtils.getLocalDateTime();
             switch(param.getState()) {
                 case (byte)1:
                     select.where(COUPON_PACK.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(COUPON_PACK.START_TIME.lt(now)).and(COUPON_PACK.END_TIME.gt(now));
@@ -177,7 +177,7 @@ public class CouponPackService extends ShopBaseService {
     public void delCouponPack(Integer id) {
         db().update(COUPON_PACK).
             set(COUPON_PACK.DEL_FLAG,DelFlag.DISABLE.getCode()).
-            set(COUPON_PACK.DEL_TIME,DateUtil.getLocalDateTime()).
+            set(COUPON_PACK.DEL_TIME, DateUtils.getLocalDateTime()).
             where(COUPON_PACK.ID.eq(id)).
             execute();
     }
@@ -396,10 +396,10 @@ public class CouponPackService extends ShopBaseService {
      * @return
      */
     private byte checkIsCanOrder(CouponPackRecord couponPackRecord,int userId){
-        if(couponPackRecord.getStatus().equals(BaseConstant.ACTIVITY_STATUS_DISABLE) || couponPackRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE) || couponPackRecord.getEndTime().before(DateUtil.getLocalDateTime())){
+        if(couponPackRecord.getStatus().equals(BaseConstant.ACTIVITY_STATUS_DISABLE) || couponPackRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE) || couponPackRecord.getEndTime().before(DateUtils.getLocalDateTime())){
             return (byte)1;
         }
-        if(couponPackRecord.getStartTime().after(DateUtil.getLocalDateTime())){
+        if(couponPackRecord.getStartTime().after(DateUtils.getLocalDateTime())){
             return (byte)2;
         }
         if(couponPackRecord.getTotalAmount() > 0 && couponPackRecord.getTotalAmount() <= couponPackOrderService.getCouponPackIssueAmount(couponPackRecord.getId())){
@@ -494,7 +494,7 @@ public class CouponPackService extends ShopBaseService {
             List<CouponPackVoucherBo> couponList = couponPackVoucherService.getCouponPackVoucherList(order.getVirtualGoodsId(),order.getUserId(),order.getOrderSn());
             int finishCount = 0;
             for(CouponPackVoucherBo coupon : couponList){
-                if(coupon.getLastSendTime() != null && DateUtil.TimestampIsNowDay(coupon.getLastSendTime())){
+                if(coupon.getLastSendTime() != null && DateUtils.TimestampIsNowDay(coupon.getLastSendTime())){
                     // 说明今天已发送过，校验重复发送
                     continue;
                 }
@@ -519,21 +519,21 @@ public class CouponPackService extends ShopBaseService {
                     }
                     if(coupon.getImmediatelyGrantAmount() < coupon.getTotalAmount()){
                         Timestamp nextTime = null;
-                        if(DateUtil.TimestampIsSameDay(lastTime,order.getPayTime())){
+                        if(DateUtils.TimestampIsSameDay(lastTime,order.getPayTime())){
                             //立即发放之后的第一次周期发放
                             Calendar cal = Calendar.getInstance();
                             switch (coupon.getTimingUnit()){
                                 case CouponPackConstant.TIMING_UNIT_DAY:
-                                    nextTime = DateUtil.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.DAYS);
+                                    nextTime = DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.DAYS);
                                     break;
                                 case CouponPackConstant.TIMING_UNIT_WEEK:
-                                    cal.setTime(DateUtil.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.WEEKS));
+                                    cal.setTime(DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.WEEKS));
                                     cal.setFirstDayOfWeek(Calendar.MONDAY);
                                     cal.add(Calendar.DATE, cal.getFirstDayOfWeek()- cal.get(Calendar.DAY_OF_WEEK) + coupon.getTimingTime() - 1);
                                     nextTime = new Timestamp(cal.getTime().getTime());
                                     break;
                                 case CouponPackConstant.TIMING_UNIT_MONTH:
-                                    cal.setTime(DateUtil.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.MONTHS));
+                                    cal.setTime(DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.MONTHS));
                                     cal.set(Calendar.DATE,coupon.getTimingTime());
                                     nextTime = new Timestamp(cal.getTime().getTime());
                                     break;
@@ -543,18 +543,18 @@ public class CouponPackService extends ShopBaseService {
                             //不是第一次周期发放
                             switch (coupon.getTimingUnit()){
                                 case CouponPackConstant.TIMING_UNIT_DAY:
-                                    nextTime = DateUtil.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.DAYS);
+                                    nextTime = DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.DAYS);
                                     break;
                                 case CouponPackConstant.TIMING_UNIT_WEEK:
-                                    nextTime = DateUtil.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.WEEKS);
+                                    nextTime = DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.WEEKS);
                                     break;
                                 case CouponPackConstant.TIMING_UNIT_MONTH:
-                                    nextTime = DateUtil.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.MONTHS);
+                                    nextTime = DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.MONTHS);
                                     break;
                                 default:
                             }
                         }
-                        if(DateUtil.TimestampIsNowDay(nextTime)){
+                        if(DateUtils.TimestampIsNowDay(nextTime)){
                             sentNum = (coupon.getGrantCouponNumber() + coupon.getTimingAmount()) > coupon.getTotalAmount() ? coupon.getTotalAmount() - coupon.getGrantCouponNumber() : coupon.getTimingAmount();
                         }
                     }
@@ -594,8 +594,8 @@ public class CouponPackService extends ShopBaseService {
             .where(COUPON_PACK.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(COUPON_PACK.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(COUPON_PACK.ISSUED_AMOUNT.lt(COUPON_PACK.TOTAL_AMOUNT))
-            .and(COUPON_PACK.START_TIME.le(DateUtil.getLocalDateTime()))
-            .and(COUPON_PACK.END_TIME.ge(DateUtil.getLocalDateTime()))
+            .and(COUPON_PACK.START_TIME.le(DateUtils.getLocalDateTime()))
+            .and(COUPON_PACK.END_TIME.ge(DateUtils.getLocalDateTime()))
             .and(COUPON_PACK.SHOW_CART.eq(BaseConstant.YES))
             .fetch();
 
@@ -692,19 +692,19 @@ public class CouponPackService extends ShopBaseService {
 				.from(COUPON_PACK)
 				.where(COUPON_PACK.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
 						.and(COUPON_PACK.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)
-								.and(COUPON_PACK.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+								.and(COUPON_PACK.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(COUPON_PACK.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);
 		return pageResult;
 	}
-	
+
 	/**
 	 * 获取所有的可用优惠券礼包活动
-	 */ 
+	 */
 	public List<UserCardCouponPack> getAllValidCouponPack(){
 		/**  状态过滤	*/
-		Timestamp now = DateUtil.getLocalDateTime();
+		Timestamp now = DateUtils.getLocalDateTime();
 		return db().select(COUPON_PACK.ID,COUPON_PACK.ACT_NAME,COUPON_PACK.PACK_NAME)
 				.from(COUPON_PACK)
 				.where(COUPON_PACK.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
@@ -712,7 +712,7 @@ public class CouponPackService extends ShopBaseService {
 				.orderBy(COUPON_PACK.CREATE_TIME.desc())
 				.fetchInto(UserCardCouponPack.class);
 	}
-	
+
 
 
 }

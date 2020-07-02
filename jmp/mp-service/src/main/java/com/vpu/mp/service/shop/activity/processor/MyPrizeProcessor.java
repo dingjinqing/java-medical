@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
@@ -90,7 +90,7 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
             logger().info("奖品已经领取过了");
             throw new MpException(JsonResultCode.MY_PRIZE_ACTIVITY_RECEIVED, null);
         }
-        if (prizeRecord.getPrizeStatus().equals(PRIZE_STATUS_EXPIRE)||prizeRecord.getExpiredTime().compareTo(DateUtil.getLocalDateTime())<=0) {
+        if (prizeRecord.getPrizeStatus().equals(PRIZE_STATUS_EXPIRE)||prizeRecord.getExpiredTime().compareTo(DateUtils.getLocalDateTime())<=0) {
             logger().info("奖品过期了");
             throw new MpException(JsonResultCode.MY_PRIZE_ACTIVITY_EXPIRED, null);
         }

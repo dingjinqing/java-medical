@@ -42,7 +42,7 @@ import org.springframework.util.Assert;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
@@ -627,10 +627,10 @@ public class GiftService extends ShopBaseService {
         if(giftRecord == null || giftRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
             vo.setState((byte)1);
             return vo;
-        }else if(giftRecord.getStartTime().after(DateUtil.getLocalDateTime())){
+        }else if(giftRecord.getStartTime().after(DateUtils.getLocalDateTime())){
             vo.setState((byte)2);
             return vo;
-        }else if(giftRecord.getEndTime().before(DateUtil.getLocalDateTime())){
+        }else if(giftRecord.getEndTime().before(DateUtils.getLocalDateTime())){
             vo.setState((byte)3);
             return vo;
         }
@@ -748,7 +748,7 @@ public class GiftService extends ShopBaseService {
 		return db().select(TABLE.ID, TABLE.NAME.as(CalendarAction.ACTNAME), TABLE.START_TIME,
 				TABLE.END_TIME).from(TABLE).where(TABLE.ID.eq(id)).fetchAnyInto(MarketVo.class);
     }
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param
@@ -760,7 +760,7 @@ public class GiftService extends ShopBaseService {
 						TABLE.END_TIME)
 				.from(TABLE)
 				.where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(TABLE.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(TABLE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(TABLE.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(TABLE.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);

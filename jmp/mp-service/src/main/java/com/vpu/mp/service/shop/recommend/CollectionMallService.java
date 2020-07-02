@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.recommend;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.CartRecord;
@@ -100,7 +100,7 @@ public class CollectionMallService extends ShopMallBaseService {
 			skuProduct.setImageList(imageList);
 			skuProduct.setSrcWxappPath("/pages/item/item?gid=" + goodsRecord.getGoodsId());
 			// 非高并发更新数据的场景不建议填写此字段
-			skuProduct.setVersion((int) DateUtil.getLocalDateTime().getTime());
+			skuProduct.setVersion((int) DateUtils.getLocalDateTime().getTime());
 
 			SkuInfo skuInfo = new SkuInfo();
 			skuInfo.setSkuId(String.valueOf(productRecord.getPrdId()));
@@ -109,7 +109,7 @@ public class CollectionMallService extends ShopMallBaseService {
 					? productRecord.getPrdMarketPrice().multiply(new BigDecimal(100))
 					: productRecord.getPrdPrice().multiply(new BigDecimal(100)));
 			skuInfo.setStatus(ONE.equals(goodsRecord.getIsOnSale()) ? ONE : TWO);
-			skuInfo.setVersion((int) DateUtil.getLocalDateTime().getTime());
+			skuInfo.setVersion((int) DateUtils.getLocalDateTime().getTime());
 			List<SkuAttrList> skuAttrList = goodsService.goodsSpecProductService.getSkuAttrList(productRecord.getPrdDesc());
 			if(skuAttrList.isEmpty()) {
 				skuAttrList.add(new SkuAttrList(goodsRecord.getGoodsName(), goodsRecord.getGoodsName()));

@@ -26,7 +26,7 @@ import java.util.stream.IntStream;
  * @date: 2019-07-26 10:51
  *
  */
-public final class DateUtil {
+public final class DateUtils {
 	public static enum IntervalType{
 		DAY,WEEK,MONTH,SEASON,YEAR
 	}
@@ -42,11 +42,11 @@ public final class DateUtil {
 	public static final String DATE_FORMAT_FULL_NO_UNDERLINE = "yyyyMMddHHmmss";
 
 	public static final String DATE_MYSQL_SIMPLE="%Y-%m-%d";
-	
+
 	public static final String DATE_MYSQL_DAY="%Y-%m-%d %H:%i";
 
 	private static final Integer MILLI_SECOND = 1000;
-	
+
 	public static final String DATE_FORMAT_FULL_BEGIN="yyyy-MM-dd 00:00:00";
 	public static final String DATE_FORMAT_FULL_END="yyyy-MM-dd 23:59:59";
     public static final String DATE_FORMAT_API_EXTERNAL = "yyyyMMddHHmmss";
@@ -480,8 +480,8 @@ public final class DateUtil {
 	 */
 	public static List<String> getBetweenTime(Timestamp startTime, Timestamp endTime) {
 		String format = DATE_FORMAT_SIMPLE;
-		String startDate = DateUtil.dateFormat(format, startTime);
-		String endDate = DateUtil.dateFormat(format, endTime);
+		String startDate = DateUtils.dateFormat(format, startTime);
+		String endDate = DateUtils.dateFormat(format, endTime);
 		List<String> list = new ArrayList<String>();
 		long add = 24 * 60 * 60 * 1000L;
 		list.add(startDate);
@@ -489,7 +489,7 @@ public final class DateUtil {
 			long time = startTime.getTime();
 			time = time + add;
 			startTime = new Timestamp(time);
-			startDate = DateUtil.dateFormat(format, startTime);
+			startDate = DateUtils.dateFormat(format, startTime);
 			list.add(startDate);
 		}
 		return list;
@@ -530,8 +530,8 @@ public final class DateUtil {
             return null;
         }
         Timestamp[] startAndEnd =  new Timestamp[2];
-        startAndEnd[0] = Timestamp.valueOf(LocalDateTime.of(startDate, DateUtil.minTime));
-        startAndEnd[1] = Timestamp.valueOf(LocalDateTime.of(endDate, DateUtil.maxTime));
+        startAndEnd[0] = Timestamp.valueOf(LocalDateTime.of(startDate, DateUtils.minTime));
+        startAndEnd[1] = Timestamp.valueOf(LocalDateTime.of(endDate, DateUtils.maxTime));
         return startAndEnd;
     }
 }

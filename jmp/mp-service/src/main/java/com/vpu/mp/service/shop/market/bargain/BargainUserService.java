@@ -4,7 +4,7 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.Tables;
@@ -66,9 +66,9 @@ public class BargainUserService extends ShopBaseService{
 				leftJoin(USER).on(BARGAIN_USER_LIST.USER_ID.eq(USER.USER_ID));
 		select = this.buildOptions(select, param);
 		select.where(BARGAIN_USER_LIST.RECORD_ID.eq(param.getRecordId())).orderBy(BARGAIN_USER_LIST.CREATE_TIME.desc());
-		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),BargainUserListQueryVo.class); 
+		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),BargainUserListQueryVo.class);
 	}
-	
+
 	private SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends  Record> select, BargainUserListQueryParam param) {
 		if (param == null) {
 			return select;
@@ -109,7 +109,7 @@ public class BargainUserService extends ShopBaseService{
         select.orderBy(BARGAIN_USER_LIST.CREATE_TIME.desc());
         PageResult<BargainUsersListVo.BargainUsers> res = getPageResult(select,param.getCurrentPage(),param.getPageRows(),BargainUsersListVo.BargainUsers.class);
         vo.setBargainUsers(res);
-        vo.setTimestamp(DateUtil.getLocalDateTime());
+        vo.setTimestamp(DateUtils.getLocalDateTime());
         return vo;
     }
 

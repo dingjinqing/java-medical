@@ -16,8 +16,7 @@ import org.jooq.impl.DSL;
 import org.jooq.tools.Convert;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.main.tables.ShopAccount;
 import com.vpu.mp.db.main.tables.ShopRenew;
@@ -29,7 +28,7 @@ import com.vpu.mp.service.pojo.shop.auth.ShopRenewReq;
 import com.vpu.mp.service.pojo.shop.auth.ShopRenewVo;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -58,7 +57,7 @@ public class ShopRenewService extends MainBaseService {
 				a.OPERATOR,a.RENEW_DESC,a.RENEW_TYPE,a.RENEW_DURATION,a.SEND_TYPE,a.SEND_CONTENT,b.ACCOUNT_NAME).from(a, b);
 		select.where(a.SHOP_ID.eq(sParam.getShopId()).and(a.SYS_ID.eq(b.SYS_ID)));
 		select.orderBy(a.ID.desc());
-		
+
 		PageResult<ShopRenewVo> pageResult = this.getPageResult(select, sParam.getCurrentPage(), sParam.getPageRows(),
 				ShopRenewVo.class);
 		for(ShopRenewVo sRenewVo:pageResult.dataList) {
@@ -69,7 +68,7 @@ public class ShopRenewService extends MainBaseService {
 						.where(SYSTEM_CHILD_ACCOUNT.ACCOUNT_ID.eq(sRenewVo.getOperator())).fetchAny();
 				sRenewVo.setOperatorName(record1.getValue(SYSTEM_CHILD_ACCOUNT.ACCOUNT_NAME));
 			}
-			
+
 		}
 		return pageResult;
 	}
@@ -103,7 +102,7 @@ public class ShopRenewService extends MainBaseService {
 		}
 		sRecord.setRenewDuration(sReq.getYear()+","+sReq.getMonth());
 		sRecord.setSendContent(sReq.getSendYear()+","+sReq.getSendMonth());
-		sRecord.setRenewDate(DateUtil.getSqlTimestamp());
+		sRecord.setRenewDate(DateUtils.getSqlTimestamp());
 		if(info.isSubLogin()) {
 			//子账户登录
 			sRecord.setOperator(info.getSubAccountId());

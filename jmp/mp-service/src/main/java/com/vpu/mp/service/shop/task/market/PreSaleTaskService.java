@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.task.market;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -102,7 +102,7 @@ public class PreSaleTaskService extends ShopBaseService {
             .from(PRESALE_PRODUCT).innerJoin(PRESALE).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
             .where(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
             .and(PRESALE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
-            .and((PRESALE.PRE_START_TIME.lt(DateUtil.getLocalDateTime()).and(PRESALE.PRE_END_TIME.gt(DateUtil.getLocalDateTime()))).or(PRESALE.PRE_START_TIME_2.lt(DateUtil.getLocalDateTime()).and(PRESALE.PRE_END_TIME_2.gt(DateUtil.getLocalDateTime()))))
+            .and((PRESALE.PRE_START_TIME.lt(DateUtils.getLocalDateTime()).and(PRESALE.PRE_END_TIME.gt(DateUtils.getLocalDateTime()))).or(PRESALE.PRE_START_TIME_2.lt(DateUtils.getLocalDateTime()).and(PRESALE.PRE_END_TIME_2.gt(DateUtils.getLocalDateTime()))))
         ).fetchInto(Integer.class);
     }
 
@@ -125,7 +125,7 @@ public class PreSaleTaskService extends ShopBaseService {
             ORDER_INFO.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_PRE_SALE}))
             .and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY))
             .and(ORDER_INFO.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT))
-            .and(PRESALE.END_TIME.lt(DateUtil.getLocalDateTime()))
+            .and(PRESALE.END_TIME.lt(DateUtils.getLocalDateTime()))
             .and(ORDER_INFO.BK_ORDER_PAID.gt(OrderConstant.BK_PAY_NO))
         ).fetchInto(OrderInfoRecord.class);
     }

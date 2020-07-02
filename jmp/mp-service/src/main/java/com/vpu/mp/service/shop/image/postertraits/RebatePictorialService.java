@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.image.postertraits;
 
 import com.upyun.UpException;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
@@ -159,7 +159,7 @@ public class RebatePictorialService extends ShareBaseService {
         } else {
             time = goodsRebateConfigParam.getRebateTime()*1000;
         }
-        String endStr = DateUtil.dateFormat(DateUtil.DATE_FORMATE_MONTH,new Date(time+24*60*60*1000));
+        String endStr = DateUtils.dateFormat(DateUtils.DATE_FORMATE_MONTH,new Date(time+24*60*60*1000));
 
         String timeTipStr = "此价格在"+endStr+"前有效";
         ImageUtil.addFont(bgBufferedImage, timeTipStr, imgPx.getLinePriceFont(), imgPx.getBottomTextStartX(), imgPx.getPriceY()+40, imgPx.LINE_PRICE_COLOR, false);

@@ -6,7 +6,7 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
@@ -562,9 +562,9 @@ public class IntegralConvertService extends ShopBaseService {
                     g.setTip((byte)2);
                 }else if(integralMallDefineRecord.getStatus().equals(BaseConstant.ACTIVITY_STATUS_DISABLE)){
                     g.setTip((byte)3);
-                }else if(integralMallDefineRecord.getStartTime().after(DateUtil.getLocalDateTime())){
+                }else if(integralMallDefineRecord.getStartTime().after(DateUtils.getLocalDateTime())){
                     g.setTip((byte)4);
-                }else if(integralMallDefineRecord.getEndTime().before(DateUtil.getLocalDateTime())){
+                }else if(integralMallDefineRecord.getEndTime().before(DateUtils.getLocalDateTime())){
                     g.setTip((byte)5);
                 }else {
                     g.setTip((byte)0);
@@ -792,7 +792,7 @@ public class IntegralConvertService extends ShopBaseService {
 						INTEGRAL_MALL_DEFINE.END_TIME)
 				.from(INTEGRAL_MALL_DEFINE)
 				.where(INTEGRAL_MALL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(INTEGRAL_MALL_DEFINE.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(INTEGRAL_MALL_DEFINE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(INTEGRAL_MALL_DEFINE.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(INTEGRAL_MALL_DEFINE.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);

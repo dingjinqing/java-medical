@@ -4,7 +4,7 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.DistributionConstant;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
@@ -454,7 +454,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * @author kdc
 	 */
     public Result<? extends Record> buyingHistoryGoodsList(Integer userId, String keyWord, Integer currentPages, Integer pageRows){
-		Timestamp timestamp = DateUtil.getTimeStampPlus(-3, ChronoUnit.MONTHS);
+		Timestamp timestamp = DateUtils.getTimeStampPlus(-3, ChronoUnit.MONTHS);
 		SelectConditionStep<? extends Record> select = db().select(TABLE.GOODS_ID, DslPlus.dateFormatDay(TABLE.CREATE_TIME).as("date"))
 				.from(TABLE)
 				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
@@ -477,7 +477,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * @author kdc
 	 */
 	public Integer buyingHistoryGoodsCount(Integer userId, String keyWord){
-		Timestamp timestamp = DateUtil.getTimeStampPlus(-3, ChronoUnit.MONTHS);
+		Timestamp timestamp = DateUtils.getTimeStampPlus(-3, ChronoUnit.MONTHS);
 		SelectConditionStep<Record1<Integer>> select = db().selectCount()
 				.from(TABLE)
 				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))

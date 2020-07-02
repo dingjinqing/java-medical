@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
@@ -45,7 +45,7 @@ public class FreeShipProcessor implements Processor,ActivityGoodsListProcessor,G
     /*****************商品详情处理*******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
-        List<FreeShipPromotion> freeShipProcessorForDetail = freeShipProcessorDao.getFreeShipProcessorForDetail(capsule.getGoodsId(), capsule.getCatId(), capsule.getSortId(), DateUtil.getLocalDateTime());
+        List<FreeShipPromotion> freeShipProcessorForDetail = freeShipProcessorDao.getFreeShipProcessorForDetail(capsule.getGoodsId(), capsule.getCatId(), capsule.getSortId(), DateUtils.getLocalDateTime());
 
         if (freeShipProcessorForDetail != null && freeShipProcessorForDetail.size() > 0) {
             capsule.getPromotions().put(BaseConstant.ACTIVITY_TYPE_FREESHIP_ORDER,freeShipProcessorForDetail);

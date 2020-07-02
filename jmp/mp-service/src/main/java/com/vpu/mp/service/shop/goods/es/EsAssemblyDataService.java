@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.goods.es;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.jedis.data.SortDataHelper;
@@ -11,16 +11,11 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandSelectListVo;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
-import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsGradePrd;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelAndCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
-import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortCacheInfo;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.goods.*;
@@ -28,15 +23,9 @@ import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsGrade;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsProduct;
 import com.vpu.mp.service.shop.image.ImageService;
-import com.vpu.mp.service.shop.market.bargain.BargainService;
-import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
-import com.vpu.mp.service.shop.market.presale.PreSaleService;
-import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
-import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record2;
 import org.jooq.Result;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +36,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
-import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
 
 @Service
 @Slf4j
@@ -218,12 +204,12 @@ public class EsAssemblyDataService extends ShopBaseService {
         esGoods.setShopId(shopId);
         esGoods.setTotalSaleNumber(goodsSaleNumber.orElse(0)+baseSaleNumber.orElse(0));
         esGoods.setGoodsImg(imageService.imageUrl(goods.getGoodsImg()));
-        esGoods.setSaleTime(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, goods.getSaleTime()));
-        esGoods.setCreateTime(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, goods.getCreateTime()));
-        esGoods.setAddEsDate(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, new Date()));
-        esGoods.setUpdateDate(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, goods.getUpdateTime()));
-        esGoods.setCreateTime(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, goods.getCreateTime()));
-        esGoods.setSaleTime(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, goods.getSaleTime()));
+        esGoods.setSaleTime(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL, goods.getSaleTime()));
+        esGoods.setCreateTime(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL, goods.getCreateTime()));
+        esGoods.setAddEsDate(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL, new Date()));
+        esGoods.setUpdateDate(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL, goods.getUpdateTime()));
+        esGoods.setCreateTime(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL, goods.getCreateTime()));
+        esGoods.setSaleTime(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL, goods.getSaleTime()));
         return esGoods;
     }
 

@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardPrizeRecord;
@@ -18,7 +18,6 @@ import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardContentBo;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
-import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
@@ -109,7 +108,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
     /*****************商品详情处理*******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
-        PayAwardPromotion payAwardPromotionInfo = payAwardService.getPayAwardPromotionInfo(capsule.getGoodsId(), capsule.getCatId(), capsule.getSortId(), DateUtil.getLocalDateTime());
+        PayAwardPromotion payAwardPromotionInfo = payAwardService.getPayAwardPromotionInfo(capsule.getGoodsId(), capsule.getCatId(), capsule.getSortId(), DateUtils.getLocalDateTime());
         if (payAwardPromotionInfo == null) {
             return;
         }

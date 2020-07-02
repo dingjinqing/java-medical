@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.overview;
 
 import com.vpu.mp.db.shop.tables.User;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.*;
@@ -49,8 +49,8 @@ public class TransactionStatisticsService extends ShopBaseService {
     public GeographicalCollVo geographical(GeographicalParam param) {
         GeographicalCollVo collVo = new GeographicalCollVo();
         Optional<Date> screeningTime = Optional.of(param.getScreeningTime());
-        Timestamp startTime = DateUtil.currentMonthFirstDay(screeningTime.orElse(new Date()));
-        Timestamp endTime = DateUtil.nextMonthFirstDay(screeningTime.orElse(new Date()));
+        Timestamp startTime = DateUtils.currentMonthFirstDay(screeningTime.orElse(new Date()));
+        Timestamp endTime = DateUtils.nextMonthFirstDay(screeningTime.orElse(new Date()));
         List<GeographicalVo> voList = db().select(min(oi.PROVINCE_NAME).as("province")
                 , min(oi.PROVINCE_CODE).as("provinceCode")
                 , sum(oi.MONEY_PAID.add(oi.SCORE_DISCOUNT).add(oi.USE_ACCOUNT).add(oi.MEMBER_CARD_BALANCE)).as("totalDealMoney")
@@ -144,13 +144,13 @@ public class TransactionStatisticsService extends ShopBaseService {
     public Map<String, java.sql.Date> createDate(LabelAnalysisParam param) {
         if (param.getScreeningTime() > 0) {
             return new HashMap<String, java.sql.Date>(2) {{
-                put(START_TIME, DateUtil.yyyyMmDdDate(LocalDate.now().minusDays(param.getScreeningTime())));
-                put(END_TIME, DateUtil.yyyyMmDdDate(LocalDate.now()));
+                put(START_TIME, DateUtils.yyyyMmDdDate(LocalDate.now().minusDays(param.getScreeningTime())));
+                put(END_TIME, DateUtils.yyyyMmDdDate(LocalDate.now()));
             }};
         }
         return new HashMap<String, java.sql.Date>(2) {{
-            put(START_TIME, DateUtil.yyyyMmDdDate(param.getStartTime().toLocalDateTime().toLocalDate()));
-            put(END_TIME, DateUtil.yyyyMmDdDate(param.getEndTime().toLocalDateTime().toLocalDate()));
+            put(START_TIME, DateUtils.yyyyMmDdDate(param.getStartTime().toLocalDateTime().toLocalDate()));
+            put(END_TIME, DateUtils.yyyyMmDdDate(param.getEndTime().toLocalDateTime().toLocalDate()));
         }};
     }
 

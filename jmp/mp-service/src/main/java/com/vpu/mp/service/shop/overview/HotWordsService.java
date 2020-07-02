@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.overview;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.SearchHistoryRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.SearchConfig;
@@ -90,7 +90,7 @@ public class HotWordsService extends ShopBaseService {
         if (record==null){
             return null;
         }
-        else if (record.getUpdateTime().toString().substring(UPDATE_TIME_START,UPDATE_TIME_END).equals(DateUtil.yyyyMmDdDate(DateUtil.getLocalDate()).toString())){
+        else if (record.getUpdateTime().toString().substring(UPDATE_TIME_START,UPDATE_TIME_END).equals(DateUtils.yyyyMmDdDate(DateUtils.getLocalDate()).toString())){
             return record;
         }else {
             return null;
@@ -110,7 +110,7 @@ public class HotWordsService extends ShopBaseService {
             .where(SEARCH_HISTORY.DEL_FLAG.eq(NOT_DELETE))
             .and(SEARCH_HISTORY.USER_ID.eq(userId))
             .and(SEARCH_HISTORY.HOT_WORDS.eq(words))
-            .and(SEARCH_HISTORY.UPDATE_TIME.greaterThan(Timestamp.valueOf(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_BEGIN,DateUtil.getLocalDateTime()))))
+            .and(SEARCH_HISTORY.UPDATE_TIME.greaterThan(Timestamp.valueOf(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_BEGIN, DateUtils.getLocalDateTime()))))
             .execute();
     }
 
@@ -152,7 +152,7 @@ public class HotWordsService extends ShopBaseService {
     public void clearUserHotWords(UserId param){
         db().update(SEARCH_HISTORY)
             .set(SEARCH_HISTORY.DEL_FLAG,HAS_DELETE)
-            .set(SEARCH_HISTORY.DEL_TIME,DateUtil.getLocalDateTime())
+            .set(SEARCH_HISTORY.DEL_TIME, DateUtils.getLocalDateTime())
             .where(SEARCH_HISTORY.USER_ID.eq(param.getUserId()))
             .and(SEARCH_HISTORY.DEL_FLAG.eq(NOT_DELETE))
             .execute();

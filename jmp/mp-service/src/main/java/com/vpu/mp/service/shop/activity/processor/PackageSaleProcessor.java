@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PackageSaleRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
@@ -67,7 +67,7 @@ public class PackageSaleProcessor implements CreateOrderProcessor, GoodsDetailPr
      **/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
-        List<PackSalePromotion> canUsePackSalePromotion = packSaleService.getCanUsePackSalePromotion(capsule.getGoodsId(), capsule.getSortId(), DateUtil.getLocalDateTime());
+        List<PackSalePromotion> canUsePackSalePromotion = packSaleService.getCanUsePackSalePromotion(capsule.getGoodsId(), capsule.getSortId(), DateUtils.getLocalDateTime());
         if (canUsePackSalePromotion != null && canUsePackSalePromotion.size() > 0) {
             capsule.getPromotions().put(BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE, canUsePackSalePromotion);
         }

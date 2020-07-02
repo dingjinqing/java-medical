@@ -11,7 +11,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FileUtil;
 import com.vpu.mp.config.StorageConfig;
 import com.vpu.mp.db.main.tables.records.TaskJobMainRecord;
@@ -37,8 +37,8 @@ public class DataExportService extends MainBaseService {
 
     public void exportData(){
         String filePath = storageConfig.storagePath("taskJob");
-        String fileName = TASK_JOB_FILE + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE)+".json";
-        String zipFileName = TASK_JOB_FILE + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE)+".zip";
+        String fileName = TASK_JOB_FILE + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE)+".json";
+        String zipFileName = TASK_JOB_FILE + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE)+".zip";
         db().transaction(configuration -> {
             Result<TaskJobMainRecord> result = DSL.using(configuration)
                 .select()
@@ -62,7 +62,7 @@ public class DataExportService extends MainBaseService {
             DSL.using(configuration).deleteFrom(TASK_JOB_MAIN).where(TASK_JOB_MAIN.ID.in(mainIds));
             DSL.using(configuration).deleteFrom(TASK_JOB_CONTENT).where(TASK_JOB_CONTENT.ID.in(contentIds));
         });
-        log.info(DateUtil.getLocalDateTime()+"-数据导出完毕");
+        log.info(DateUtils.getLocalDateTime()+"-数据导出完毕");
 
     }
 }

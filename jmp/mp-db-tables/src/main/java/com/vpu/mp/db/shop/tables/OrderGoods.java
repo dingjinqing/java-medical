@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderGoods extends TableImpl<OrderGoodsRecord> {
 
-    private static final long serialVersionUID = -702874528;
+    private static final long serialVersionUID = -477581110;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_order_goods</code>
@@ -111,7 +111,7 @@ public class OrderGoods extends TableImpl<OrderGoodsRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_goods.goods_number</code>.
      */
-    public final TableField<OrderGoodsRecord, Short> GOODS_NUMBER = createField("goods_number", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.SMALLINT)), this, "");
+    public final TableField<OrderGoodsRecord, Integer> GOODS_NUMBER = createField("goods_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_goods.market_price</code>.
@@ -131,12 +131,12 @@ public class OrderGoods extends TableImpl<OrderGoodsRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_goods.send_number</code>.
      */
-    public final TableField<OrderGoodsRecord, Short> SEND_NUMBER = createField("send_number", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "");
+    public final TableField<OrderGoodsRecord, Integer> SEND_NUMBER = createField("send_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_goods.return_number</code>. 退货/退款成功数量
+     * The column <code>mini_shop_471752.b2c_order_goods.return_number</code>.
      */
-    public final TableField<OrderGoodsRecord, Short> RETURN_NUMBER = createField("return_number", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "退货/退款成功数量");
+    public final TableField<OrderGoodsRecord, Integer> RETURN_NUMBER = createField("return_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_goods.is_real</code>.

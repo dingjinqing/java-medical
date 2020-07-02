@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.google.common.collect.Lists;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
@@ -90,7 +90,7 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
     public void processForList(List<GoodsListMpBo> bos, Integer userId) {
         List<GoodsListMpBo> availableBos = bos.stream().filter(x -> BaseConstant.ACTIVITY_TYPE_GROUP_BUY.equals(x.getActivityType())).collect(Collectors.toList());
         List<Integer> goodsIds = availableBos.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
-        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsGroupBuyListInfo = groupBuyProcessorDao.getGoodsGroupBuyListInfo(goodsIds, DateUtil.getLocalDateTime());
+        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsGroupBuyListInfo = groupBuyProcessorDao.getGoodsGroupBuyListInfo(goodsIds, DateUtils.getLocalDateTime());
 
         availableBos.forEach(bo -> {
             if (goodsGroupBuyListInfo.get(bo.getGoodsId()) == null) {
@@ -114,7 +114,7 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
 
         if (param.getActivityType() == null && capsule.getActivityAnnounceMpVo() == null) {
             // 探测是否需要进行活动预告
-            capsule.setActivityAnnounceMpVo(groupBuyProcessorDao.getAnnounceInfo(capsule.getGoodsId(),DateUtil.getLocalDateTime()));
+            capsule.setActivityAnnounceMpVo(groupBuyProcessorDao.getAnnounceInfo(capsule.getGoodsId(), DateUtils.getLocalDateTime()));
             return;
         }
         if (param.getActivityId() == null || !BaseConstant.ACTIVITY_TYPE_GROUP_BUY.equals(param.getActivityType())) {
@@ -295,7 +295,7 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
             GroupOrderVo byOrder = groupBuyListService.getByOrder(order.getOrderSn());
             if (byOrder.getStatus().equals(STATUS_WAIT_PAY)){
                 log.info("修改拼团这状态");
-                groupBuyProcessorDao.updateGroupSuccess(byOrder.getGroupId(),DateUtil.getLocalDateTime(),byOrder.getOrderSn());
+                groupBuyProcessorDao.updateGroupSuccess(byOrder.getGroupId(), DateUtils.getLocalDateTime(),byOrder.getOrderSn());
             }
             groupBuyProcessorDao.groupBuySuccess(order.getActivityId(), byOrder.getGroupId(), orderGoodsBos.get(0).getGoodsName());
         }
