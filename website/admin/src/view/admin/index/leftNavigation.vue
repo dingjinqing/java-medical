@@ -805,6 +805,12 @@ export default {
           })
           this.navLeftData = this.dataList['prescription_manger']
           break
+        case 'patient_manger':
+          // this.dataList['prescription_manger'].map((item, index) => {
+          //   this.dataList['prescription_manger'][index].span = this.$t(`adminPageFramework.leftNavArr.nav10[${index}]`)
+          // })
+          this.navLeftData = [1, 2]
+          break
       }
       console.log(this.$route.name)
       if (this.$route.name === 'first_market_manage' || this.$route.name === 'ordinary_coupon') {

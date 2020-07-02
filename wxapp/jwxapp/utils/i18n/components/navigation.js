@@ -119,6 +119,8 @@ module.exports = {
     "returndetail": "退货/退款详情",
     "usercardup": '升级记录',
     "aftersaleorder": "退款/售后",
-    "livetransition": "直播"
+    "livetransition": "直播",
+    "prescriptionlist": "处方列表",
+    "familylist": "我的家人"
   }
 }

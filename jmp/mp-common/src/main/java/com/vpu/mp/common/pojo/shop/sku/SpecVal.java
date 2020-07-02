@@ -1,11 +1,13 @@
-package com.vpu.mp.common.pojo.shop.goods.dao;
+package com.vpu.mp.common.pojo.shop.sku;
+
+import lombok.Data;
 
 /**
- * 规格值
  * @author 李晓冰
  * @date 2020年07月02日
  */
-public class SpecValDo {
+@Data
+public class SpecVal {
     private Integer specValId;
     private Integer specId;
     private Integer goodsId;

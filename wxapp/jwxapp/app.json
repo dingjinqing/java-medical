@@ -129,7 +129,9 @@
         "livetransition/livetransition",
         "aftersaleorder/aftersaleorder",
         "packagesalelist/packagesalelist",
-        "addressedit/addressedit"
+        "addressedit/addressedit",
+        "prescriptionlist/prescriptionlist",
+        "familylist/familylist"
       ]
     }
   ],
