@@ -1,6 +1,6 @@
 package com.vpu.mp.dao.shop.goods;
 
-import com.vpu.mp.common.pojo.shop.goods.dao.SpecDo;
+import com.vpu.mp.common.pojo.shop.table.SpecDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.SpecRecord;
 import org.springframework.stereotype.Repository;

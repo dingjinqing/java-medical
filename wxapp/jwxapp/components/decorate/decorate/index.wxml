@@ -53,7 +53,7 @@
 		<!--商品分组-->
 		<v-goods-group class="v-goods-group" wx:elif="{{module.component_name == 'v-goods-group'}}" bindaddCart="getAddCartGoods" module="{{module}}" />
 		<!-- 患者处方列表 -->
-		<v-prescription  wx:if="{{index === pageData.length - 1}}"/>
+		<v-prescription  wx:if="{{TODO}}"/>
 	</block>
 </view>
 <v-spec-dialog wx:if="{{showSpec}}" show="{{showSpec}}" bind:close="bindCloseSpec" products-info="{{productsInfo}}" bindproductData="getProductData">

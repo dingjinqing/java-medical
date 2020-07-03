@@ -1,13 +1,10 @@
 package com.vpu.mp.dao.shop.goods;
 
 import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.pojo.shop.goods.dao.GoodsSpecProductDo;
+import com.vpu.mp.common.pojo.shop.table.GoodsSpecProductDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import org.springframework.stereotype.Repository;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author 李晓冰
@@ -15,12 +12,6 @@ import java.util.Set;
  */
 @Repository
 public class GoodsSpecProductDao extends ShopBaseDao {
-    /**
-     * assign方法基础忽略字段
-     */
-    Set<String> assignIgnoreFieldsBase = new HashSet<String>(){{
-        add("specDos");
-    }};
 
     /**
      * 商品sku新增
@@ -29,7 +20,7 @@ public class GoodsSpecProductDao extends ShopBaseDao {
      */
     public Integer insert(GoodsSpecProductDo goodsSpecProductDo){
         GoodsSpecProductRecord goodsSpecProductRecord = new GoodsSpecProductRecord();
-        FieldsUtil.assignWithIgnoreField(goodsSpecProductRecord,goodsSpecProductDo,assignIgnoreFieldsBase);
+        FieldsUtil.assign(goodsSpecProductRecord,goodsSpecProductDo);
         db().executeInsert(goodsSpecProductRecord);
         return goodsSpecProductRecord.getPrdId();
     }

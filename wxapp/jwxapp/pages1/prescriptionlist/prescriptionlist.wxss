@@ -1,3 +1,4 @@
+/* pages1/prescriptionlist/prescriptionlist.wxss */
 .prescription-content{
   padding: 20rpx 15rpx;
   display: flex;
@@ -7,6 +8,7 @@
   border-radius: 16rpx;
   box-shadow: 0 10rpx 30rpx rgba(13, 19, 24, 0.24),0 0 0rpx rgba(10,16,20,.12);
   position: relative;
+  margin-bottom: 15rpx;
 }
 .prescription-item + .prescription-item{
   margin-top: 30rpx;
