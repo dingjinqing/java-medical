@@ -1,0 +1,18 @@
+<!--components/popup/get-prescription/index.wxml-->
+<v-popup show="{{show}}" bind:close="bindClose" hide-close='{{true}}'>
+  <view>
+    <view class="pre_content">
+      <image src="{{hospital_img}}" class="hospital_img"></image>
+      <view class="pre_info">
+        <view class="btn_to_get" bindtap="bindGetPre">去同步病历</view>
+        <view class="pre_tips">
+          <view>同步后电子病历可随时查看，</view>
+          <view>购买处方药更便捷</view>
+        </view>
+      </view>
+      <view class="btn_close">
+        <image src="{{imageUrl}}image/wxapp/split_btn1.png" bindtap="preClose"></image>
+      </view>
+    </view>
+  </view>
+</v-popup>
