@@ -4780,7 +4780,7 @@ create table b2c_doctor_title(
 create table b2c_doctor(
     `id`   int(11)      not null auto_increment,
     `account_id` int(11) not null comment '医师子账号id',
-    `sex` tinyint(1) not null default 0 comment '0位置 1男 2 女',
+    `sex` tinyint(1) not null default 0 comment '0未知 1男 2 女',
     `hospital_code` varchar(32) not null default '' comment '医师院内编号',
     `certificate_code` varchar(64) not null default '' comment '医师资格编码',
     `professional_code` varchar(64) not null default '' comment '医师职业编码',
@@ -4799,7 +4799,7 @@ create table b2c_doctor(
 -- 药师表
 create table b2c_pharmacist(
     `id`   int(11)      not null auto_increment,
-    `sex` tinyint(1) not null default 0 comment '0位置 1男 2 女',
+    `sex` tinyint(1) not null default 0 comment '0未知 1男 2 女',
     `certificate_code` varchar(64) not null default '' comment '药师资格编码',
     `professional_code` varchar(64) not null default '' comment '药师职业编码',
     `mobile` varchar(32) not null default '' comment '手机号',

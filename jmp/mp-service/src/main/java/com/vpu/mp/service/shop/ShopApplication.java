@@ -14,6 +14,7 @@ import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.MpDecorationService;
 import com.vpu.mp.service.shop.decoration.PageClassificationService;
+import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.distribution.BrokerageStatisticalService;
 import com.vpu.mp.service.shop.distribution.DistributorCheckService;
 import com.vpu.mp.service.shop.distribution.DistributorGroupService;
@@ -583,5 +584,11 @@ public class ShopApplication {
      */
     @Autowired
     public MarketCalendarService calendarService;
+
+    /**
+     * 科室
+     */
+    @Autowired
+    public DepartmentService departmentService;
 
 }
