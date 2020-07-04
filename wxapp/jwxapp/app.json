@@ -133,7 +133,8 @@
         "addressedit/addressedit",
         "prescriptionlist/prescriptionlist",
         "familylist/familylist",
-        "getprescription/getprescription"
+        "getprescription/getprescription",
+        "prescriptioninfo/prescriptioninfo"
       ]
     }
   ],
