@@ -54,7 +54,8 @@ global.wxPage({
       consigneeCid: '',
       custom: ''
     },
-    options: {}
+    options: {},
+    title_bgColor:'#26C4BC'
   },
 
   /**
