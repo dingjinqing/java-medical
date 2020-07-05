@@ -1,4 +1,4 @@
-package com.vpu.mp.common.pojo.shop.goods;
+package com.vpu.mp.service.pojo.shop.goods;
 
 import lombok.Data;
 
@@ -36,4 +36,6 @@ public class GoodsMedicalInfo {
     private String goodsValidTime;
     private String goodsApprovalNumber;
     private String goodsProductionEnterprise;
+    private Byte    goodsLimitDuty;
+    private Byte    goodsLimitAntibacterial;
 }

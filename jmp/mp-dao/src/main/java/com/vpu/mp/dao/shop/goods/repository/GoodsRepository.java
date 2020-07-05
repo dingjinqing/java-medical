@@ -1,7 +1,7 @@
 package com.vpu.mp.dao.shop.goods.repository;
 
 import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.pojo.shop.goods.Goods;
+import com.vpu.mp.service.pojo.shop.goods.Goods;
 import com.vpu.mp.common.pojo.shop.table.GoodsDo;
 import com.vpu.mp.dao.shop.goods.*;
 import com.vpu.mp.dao.shop.label.repository.GoodsLabelRepository;

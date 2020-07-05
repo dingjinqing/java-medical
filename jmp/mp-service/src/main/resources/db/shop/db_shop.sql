@@ -4716,6 +4716,8 @@ create table `b2c_goods_medical_info`(
     `goods_valid_time` varchar(128) comment '有效期',
     `goods_approval_number` varchar(128) comment '批准文号',
     `goods_production_enterprise` varchar(512) comment '生产企业',
+    `goods_limit_duty` tinyint(2) comment '药品最低聘任职务（限制对应医师开方）',
+    `goods_limit_antibacterial` tinyint(2) comment '抗菌限制',
     primary key (`id`)
 ) comment='商品辅助信息表';
 

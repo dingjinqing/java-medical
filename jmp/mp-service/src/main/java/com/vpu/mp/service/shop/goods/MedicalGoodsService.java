@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.goods;
 
-import com.vpu.mp.common.pojo.shop.goods.Goods;
+import com.vpu.mp.service.pojo.shop.goods.Goods;
 import com.vpu.mp.dao.shop.goods.repository.GoodsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

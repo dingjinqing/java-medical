@@ -1,6 +1,6 @@
-package com.vpu.mp.common.pojo.shop.goods;
+package com.vpu.mp.service.pojo.shop.goods;
 
-import com.vpu.mp.common.pojo.shop.sku.GoodsSpecProduct;
+import com.vpu.mp.service.pojo.shop.sku.GoodsSpecProduct;
 import lombok.Data;
 
 import java.math.BigDecimal;
