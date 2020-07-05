@@ -9,9 +9,14 @@ import com.vpu.mp.dao.shop.goods.repository.GoodsSpecProductRepository;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
+import com.vpu.mp.service.pojo.shop.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.entity.Goods;
+import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProduct;
+import com.vpu.mp.service.pojo.shop.sku.entity.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * @author 李晓冰
@@ -33,8 +38,15 @@ public class MedicalGoodsService {
         }
 
         goodsRepository.insert(goods);
-        if (goods.getSpecs() != null && goods.getSpecs().size() > 0) {
-            goodsSpecProductRepository.batchSpecInsert(goods.getSpecs(),goods.getGoodsId());
+        if (MedicalGoodsConstant.DEFAULT_SKU.equals(goods.getIsDefaultProduct())) {
+
+        } else {
+            // 先插入规格组，协助sku生成其规格描述id字符串
+            goodsSpecProductRepository.batchSpecInsert(goods.getSpecs(), goods.getGoodsId());
+            Map<String, Spec> specNameMap = Spec.mapNameToSpec(goods.getSpecs());
+            for (GoodsSpecProduct goodsSpecProduct : goods.getGoodsSpecProducts()) {
+
+            }
         }
 
 
