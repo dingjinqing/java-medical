@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.sku;
+package com.vpu.mp.service.pojo.shop.sku.entity;
 
 import lombok.Data;
 
@@ -26,8 +26,4 @@ public class GoodsSpecProduct {
     private BigDecimal prdWeight;
     private Byte delFlag;
     private Timestamp createTime;
-    /**
-     * 规格名
-     */
-    private List<Spec> specs;
 }

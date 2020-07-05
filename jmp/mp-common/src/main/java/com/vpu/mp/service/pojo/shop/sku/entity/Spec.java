@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.sku;
+package com.vpu.mp.service.pojo.shop.sku.entity;
 
 import lombok.Data;
 

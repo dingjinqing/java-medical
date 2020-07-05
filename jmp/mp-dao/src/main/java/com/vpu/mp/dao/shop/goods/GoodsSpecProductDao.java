@@ -6,6 +6,9 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author 李晓冰
  * @date 2020年07月02日
@@ -15,13 +18,17 @@ public class GoodsSpecProductDao extends ShopBaseDao {
 
     /**
      * 商品sku新增
-     * @param goodsSpecProductDo sku数据
+     * @param goodsSpecProductDos sku数据集合
      * @return sku id
      */
-    public Integer insert(GoodsSpecProductDo goodsSpecProductDo){
-        GoodsSpecProductRecord goodsSpecProductRecord = new GoodsSpecProductRecord();
-        FieldsUtil.assign(goodsSpecProductRecord,goodsSpecProductDo);
-        db().executeInsert(goodsSpecProductRecord);
-        return goodsSpecProductRecord.getPrdId();
+    public void batchInsert(List<GoodsSpecProductDo> goodsSpecProductDos){
+        List<GoodsSpecProductRecord> goodsSpecProductRecords = new ArrayList<>(goodsSpecProductDos.size());
+
+        for (GoodsSpecProductDo goodsSpecProductDo : goodsSpecProductDos) {
+            GoodsSpecProductRecord goodsSpecProductRecord = new GoodsSpecProductRecord();
+            FieldsUtil.assign(goodsSpecProductRecord,goodsSpecProductDo);
+            goodsSpecProductRecords.add(goodsSpecProductRecord);
+        }
+        db().batchInsert(goodsSpecProductRecords).execute();
     }
 }

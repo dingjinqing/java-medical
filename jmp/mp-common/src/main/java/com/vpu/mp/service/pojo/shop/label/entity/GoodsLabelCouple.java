@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.label;
+package com.vpu.mp.service.pojo.shop.label.entity;
 
 /**
  * @author 李晓冰

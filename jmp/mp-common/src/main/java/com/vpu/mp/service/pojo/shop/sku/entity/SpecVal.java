@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.sku;
+package com.vpu.mp.service.pojo.shop.sku.entity;
 
 import lombok.Data;
 
@@ -11,5 +11,5 @@ public class SpecVal {
     private Integer specValId;
     private Integer specId;
     private Integer goodsId;
-    private Integer specValName;
+    private String specValName;
 }

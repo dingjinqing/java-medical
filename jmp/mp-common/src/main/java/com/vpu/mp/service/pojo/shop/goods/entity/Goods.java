@@ -1,6 +1,7 @@
-package com.vpu.mp.service.pojo.shop.goods;
+package com.vpu.mp.service.pojo.shop.goods.entity;
 
-import com.vpu.mp.service.pojo.shop.sku.GoodsSpecProduct;
+import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProduct;
+import com.vpu.mp.service.pojo.shop.sku.entity.Spec;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -44,6 +45,9 @@ public class Goods {
     private Byte delFlag;
     private Timestamp createTime;
     private Timestamp updateTime;
+
+    /**规格组集合*/
+    private List<Spec> specs;
     /**规格信息*/
     private List<GoodsSpecProduct> goodsSpecProducts;
     /**药品信息*/

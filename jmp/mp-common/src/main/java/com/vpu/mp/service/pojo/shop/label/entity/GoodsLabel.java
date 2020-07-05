@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.label;
+package com.vpu.mp.service.pojo.shop.label.entity;
 
 import lombok.Data;
 
