@@ -15,6 +15,7 @@ public class GoodsMedicalInfo {
     private String goodsQualityRatio;
     private Byte isMedical;
     private Byte isRx;
+    private String goodsHospitalCode;
     private Byte insuranceFlag;
     private String insuranceCode;
     private String insuranceDatabaseName;
@@ -38,5 +39,4 @@ public class GoodsMedicalInfo {
     private String goodsProductionEnterprise;
     private Byte    goodsLimitDuty;
     private Byte    goodsLimitAntibacterial;
-
 }
