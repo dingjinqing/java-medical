@@ -21,6 +21,7 @@ public class GoodsMedicalInfoDo {
     private String  goodsQualityRatio;
     private Byte    isMedical;
     private Byte    isRx;
+    private String goodsHospitalCode;
     private Byte    insuranceFlag;
     private String  insuranceCode;
     private String  insuranceDatabaseName;

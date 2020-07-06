@@ -4695,6 +4695,7 @@ create table `b2c_goods_medical_info`(
     `goods_quality_ratio` varchar(512) not null default '' comment '规格系数，通用名和规格系数确定一个药品',
     `is_medical` tinyint(1) not null default 1 comment '是否药品',
     `is_rx` tinyint(1) not null default 1 comment '是否处方药,rx处方药 otc非处方药',
+    `goods_hospital_code` varchar(64) not null default '' comment '医院院内编码',
     `insurance_flag` tinyint(1) not null default 0 comment '医保类型 1:甲 2:乙 3:丙 4:科研',
     `insurance_code` varchar(64) not null default '' comment '医保编码',
     `insurance_database_name` varchar(128) not null default '' comment '医保库内名称',
