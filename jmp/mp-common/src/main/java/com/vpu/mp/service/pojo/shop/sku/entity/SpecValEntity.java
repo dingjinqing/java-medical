@@ -7,7 +7,7 @@ import lombok.Data;
  * @date 2020年07月02日
  */
 @Data
-public class SpecVal {
+public class SpecValEntity {
     private Integer specValId;
     private Integer specId;
     private Integer goodsId;

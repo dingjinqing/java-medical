@@ -5,8 +5,8 @@ import com.vpu.mp.common.pojo.shop.table.GoodsDo;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
-import com.vpu.mp.service.pojo.shop.goods.entity.Goods;
-import com.vpu.mp.service.pojo.shop.goods.entity.GoodsMedicalInfo;
+import com.vpu.mp.service.pojo.shop.goods.entity.GoodsEntity;
+import com.vpu.mp.service.pojo.shop.goods.entity.GoodsMedicalInfoEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,34 +26,34 @@ public class GoodsRepository {
 
     /**
      * 商品新增
-     * @param goods
+     * @param goodsEntity
      */
-    public void insert(Goods goods) {
+    public void insert(GoodsEntity goodsEntity) {
         GoodsDo goodsDo = new GoodsDo();
-        FieldsUtil.assignWithIgnoreField(goods,goodsDo,getGoodsAssignIgnoreFields());
+        FieldsUtil.assignWithIgnoreField(goodsEntity,goodsDo,getGoodsAssignIgnoreFields());
         goodsDao.insert(goodsDo);
         Integer goodsId = goodsDo.getGoodsId();
-        goods.setGoodsId(goodsId);
+        goodsEntity.setGoodsId(goodsId);
 
         GoodsMedicalInfoDo goodsMedicalInfoDo = new GoodsMedicalInfoDo();
-        GoodsMedicalInfo goodsMedicalInfo = goods.getGoodsMedicalInfo();
-        goodsMedicalInfo.setGoodsId(goodsId);
-        FieldsUtil.assign(goodsMedicalInfo,goodsMedicalInfoDo);
+        GoodsMedicalInfoEntity goodsMedicalInfoEntity = goodsEntity.getGoodsMedicalInfo();
+        goodsMedicalInfoEntity.setGoodsId(goodsId);
+        FieldsUtil.assign(goodsMedicalInfoEntity,goodsMedicalInfoDo);
         goodsMedicalInfoDao.insert(goodsMedicalInfoDo);
     }
 
     /**
      * 商品修改
-     * @param goods
+     * @param goodsEntity
      */
-    public void update(Goods goods) {
+    public void update(GoodsEntity goodsEntity) {
         GoodsDo goodsDo = new GoodsDo();
-        FieldsUtil.assignWithIgnoreField(goods,goodsDo,getGoodsAssignIgnoreFields());
+        FieldsUtil.assignWithIgnoreField(goodsEntity,goodsDo,getGoodsAssignIgnoreFields());
         goodsDao.update(goodsDo);
 
         GoodsMedicalInfoDo goodsMedicalInfoDo = new GoodsMedicalInfoDo();
-        GoodsMedicalInfo goodsMedicalInfo = goods.getGoodsMedicalInfo();
-        FieldsUtil.assign(goodsMedicalInfo,goodsMedicalInfoDo);
+        GoodsMedicalInfoEntity goodsMedicalInfoEntity = goodsEntity.getGoodsMedicalInfo();
+        FieldsUtil.assign(goodsMedicalInfoEntity,goodsMedicalInfoDo);
         goodsMedicalInfoDao.update(goodsMedicalInfoDo);
     }
 

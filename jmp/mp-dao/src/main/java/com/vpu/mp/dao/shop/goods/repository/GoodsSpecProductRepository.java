@@ -7,9 +7,9 @@ import com.vpu.mp.common.pojo.shop.table.SpecValDo;
 import com.vpu.mp.dao.shop.goods.GoodsSpecProductDao;
 import com.vpu.mp.dao.shop.goods.SpecDao;
 import com.vpu.mp.dao.shop.goods.SpecValDao;
-import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProduct;
-import com.vpu.mp.service.pojo.shop.sku.entity.Spec;
-import com.vpu.mp.service.pojo.shop.sku.entity.SpecVal;
+import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProductEntity;
+import com.vpu.mp.service.pojo.shop.sku.entity.SpecEntity;
+import com.vpu.mp.service.pojo.shop.sku.entity.SpecValEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -53,15 +53,15 @@ public class GoodsSpecProductRepository {
 
     /**
      * 批量插入sku
-     * @param goodsSpecProducts
+     * @param goodsSpecProductEntities
      */
-    public void batchSkuInsert(List<GoodsSpecProduct> goodsSpecProducts,Integer goodsId){
-        List<GoodsSpecProductDo> goodsSpecProductDos = new ArrayList<>(goodsSpecProducts.size());
+    public void batchSkuInsert(List<GoodsSpecProductEntity> goodsSpecProductEntities, Integer goodsId){
+        List<GoodsSpecProductDo> goodsSpecProductDos = new ArrayList<>(goodsSpecProductEntities.size());
 
-        for (GoodsSpecProduct goodsSpecProduct : goodsSpecProducts) {
-            goodsSpecProduct.setGoodsId(goodsId);
+        for (GoodsSpecProductEntity goodsSpecProductEntity : goodsSpecProductEntities) {
+            goodsSpecProductEntity.setGoodsId(goodsId);
             GoodsSpecProductDo goodsSpecProductDo = new GoodsSpecProductDo();
-            FieldsUtil.assignWithIgnoreField(goodsSpecProduct,goodsSpecProductDo,getSkuAssignIgnoreFields());
+            FieldsUtil.assignWithIgnoreField(goodsSpecProductEntity,goodsSpecProductDo,getSkuAssignIgnoreFields());
             goodsSpecProductDos.add(goodsSpecProductDo);
         }
         goodsSpecProductDao.batchInsert(goodsSpecProductDos);
@@ -69,13 +69,13 @@ public class GoodsSpecProductRepository {
 
     /**
      * 批量更新sku
-     * @param goodsSpecProducts
+     * @param goodsSpecProductEntities
      */
-    public void batchSkuUpdate(List<GoodsSpecProduct> goodsSpecProducts) {
-        List<GoodsSpecProductDo> goodsSpecProductDos = new ArrayList<>(goodsSpecProducts.size());
-        for (GoodsSpecProduct goodsSpecProduct : goodsSpecProducts) {
+    public void batchSkuUpdate(List<GoodsSpecProductEntity> goodsSpecProductEntities) {
+        List<GoodsSpecProductDo> goodsSpecProductDos = new ArrayList<>(goodsSpecProductEntities.size());
+        for (GoodsSpecProductEntity goodsSpecProductEntity : goodsSpecProductEntities) {
             GoodsSpecProductDo goodsSpecProductDo = new GoodsSpecProductDo();
-            FieldsUtil.assignWithIgnoreField(goodsSpecProduct,goodsSpecProductDo,getSkuAssignIgnoreFields());
+            FieldsUtil.assignWithIgnoreField(goodsSpecProductEntity,goodsSpecProductDo,getSkuAssignIgnoreFields());
             goodsSpecProductDos.add(goodsSpecProductDo);
         }
         goodsSpecProductDao.batchUpdate(goodsSpecProductDos);
@@ -83,39 +83,39 @@ public class GoodsSpecProductRepository {
 
     /**
      * 批量插入规格组
-     * @param specs 规格组
+     * @param specEntities 规格组
      */
-    public void batchSpecInsert(List<Spec> specs,Integer goodsId) {
-        List<SpecDo> specDos = new ArrayList<>(specs.size());
+    public void batchSpecInsert(List<SpecEntity> specEntities, Integer goodsId) {
+        List<SpecDo> specDos = new ArrayList<>(specEntities.size());
 
         Set<String> sepcAssignIgnoreFields = getSpecAssignIgnoreFields();
-        for (Spec spec : specs) {
-            spec.setGoodsId(goodsId);
+        for (SpecEntity specEntity : specEntities) {
+            specEntity.setGoodsId(goodsId);
             SpecDo specDo = new SpecDo();
-            FieldsUtil.assignWithIgnoreField(spec,specDo,sepcAssignIgnoreFields);
+            FieldsUtil.assignWithIgnoreField(specEntity,specDo,sepcAssignIgnoreFields);
             specDos.add(specDo);
         }
         specDao.batchInsert(specDos);
 
-        List<SpecVal> specVals = new ArrayList<>(2);
+        List<SpecValEntity> specValEntities = new ArrayList<>(2);
         List<SpecValDo> specValDos = new ArrayList<>(2);
         // 设置specId，提取specVal准备入库
         for (int i = 0; i < specDos.size(); i++) {
-            Spec spec = specs.get(i);
-            spec.setSpecId(specDos.get(i).getSpecId());
+            SpecEntity specEntity = specEntities.get(i);
+            specEntity.setSpecId(specDos.get(i).getSpecId());
 
-            for (SpecVal specVal : spec.getSpecVals()) {
-                specVals.add(specVal);
-                specVal.setGoodsId(goodsId);
-                specVal.setSpecId(spec.getSpecId());
-                SpecValDo specValDo= new SpecValDo(spec.getSpecId(),goodsId,specVal.getSpecValName());
+            for (SpecValEntity specValEntity : specEntity.getSpecValEntities()) {
+                specValEntities.add(specValEntity);
+                specValEntity.setGoodsId(goodsId);
+                specValEntity.setSpecId(specEntity.getSpecId());
+                SpecValDo specValDo= new SpecValDo(specEntity.getSpecId(),goodsId, specValEntity.getSpecValName());
                 specValDos.add(specValDo);
             }
         }
 
         specValDao.batchInsert(specValDos);
         for (int i = 0; i < specValDos.size(); i++) {
-            specVals.get(i).setSpecValId(specValDos.get(i).getSpecValId());
+            specValEntities.get(i).setSpecValId(specValDos.get(i).getSpecValId());
         }
     }
 

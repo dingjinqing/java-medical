@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * @date 2020年07月02日
  */
 @Data
-public class Spec {
+public class SpecEntity {
     private Integer  specId;
     private Integer goodsId;
     private String specName;
@@ -21,16 +21,16 @@ public class Spec {
     /**
      * 规格值
      */
-    List<SpecVal> specVals;
+    List<SpecValEntity> specValEntities;
 
     /**
      * 规格名集合转换为对应的Map
-     * @param specs 代转换规格名集合
+     * @param specEntities 代转换规格名集合
      * @return Map,key是名字，value是实体类
      */
-    public static Map<String,Spec> mapNameToSpec(List<Spec> specs){
-        Map<String, Spec> collect = specs.stream().filter(spec -> StrUtil.isNotBlank(spec.getSpecName()))
-            .collect(Collectors.toMap(Spec::getSpecName, Function.identity(), (x1, x2) -> x1));
+    public static Map<String, SpecEntity> mapNameToSpec(List<SpecEntity> specEntities){
+        Map<String, SpecEntity> collect = specEntities.stream().filter(specEntity -> StrUtil.isNotBlank(specEntity.getSpecName()))
+            .collect(Collectors.toMap(SpecEntity::getSpecName, Function.identity(), (x1, x2) -> x1));
 
         return collect;
     }

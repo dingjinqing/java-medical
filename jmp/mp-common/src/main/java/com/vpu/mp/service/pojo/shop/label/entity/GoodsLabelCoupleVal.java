@@ -12,24 +12,24 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class GoodsLabelCouple {
+public class GoodsLabelCoupleVal {
     private Integer labelId;
     private Integer gtaId;
     private Byte type;
 
 
 
-    public GoodsLabelCouple(Integer labelId, Integer gtaId, Byte type) {
+    public GoodsLabelCoupleVal(Integer labelId, Integer gtaId, Byte type) {
         this.labelId = labelId;
         this.gtaId = gtaId;
         this.type = type;
     }
 
-    public static List<GoodsLabelCouple> generateCouples(List<Integer> labelIds, Integer gtaId, Byte type) {
-         List<GoodsLabelCouple> labelCouples = new ArrayList<>(labelIds.size());
+    public static List<GoodsLabelCoupleVal> generateCouples(List<Integer> labelIds, Integer gtaId, Byte type) {
+         List<GoodsLabelCoupleVal> labelCouples = new ArrayList<>(labelIds.size());
 
         for (Integer labelId : labelIds) {
-            labelCouples.add(new GoodsLabelCouple(labelId,gtaId,type));
+            labelCouples.add(new GoodsLabelCoupleVal(labelId,gtaId,type));
         }
         return labelCouples;
     }

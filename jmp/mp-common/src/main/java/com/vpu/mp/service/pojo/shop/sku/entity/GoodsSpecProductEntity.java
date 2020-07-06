@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * @date 2020年07月02日
  */
 @Data
-public class GoodsSpecProduct {
+public class GoodsSpecProductEntity {
     private Integer prdId;
     private Integer goodsId;
     private String prdSn;
@@ -32,7 +32,7 @@ public class GoodsSpecProduct {
     private Byte delFlag;
     private Timestamp createTime;
 
-    public void calculatePrdSpecs(Map<String, Spec> specNameMap) {
+    public void calculatePrdSpecs(Map<String, SpecEntity> specNameMap) {
         // 没有规格描述可以使用
         if (StrUtil.isBlank(prdDesc)) {
             return;
@@ -51,30 +51,30 @@ public class GoodsSpecProduct {
             }
             String key = split[0];
             String val = split[1];
-            Spec spec = specNameMap.get(key);
+            SpecEntity specEntity = specNameMap.get(key);
             // 没有匹配的规格组
-            if (spec == null) {
+            if (specEntity == null) {
                 throw new IllegalArgumentException("规格组描述信息错误：" + prdDesc);
             }
             if (idStrBuilder.length() != 0) {
                 idStrBuilder.append(MedicalGoodsConstant.PRD_SPEC_SPLITER);
             }
-            idStrBuilder.append(spec.getSpecId()).append(MedicalGoodsConstant.SPEC_NAME_VAL_SPLITER);
+            idStrBuilder.append(specEntity.getSpecId()).append(MedicalGoodsConstant.SPEC_NAME_VAL_SPLITER);
             // 没有填写对应规格值
             if (StrUtil.isBlank(val)) {
                 throw new IllegalArgumentException(String.format("规格组%s名值信息错误：%s", prdDesc, specKV));
             }
 
-            List<SpecVal> specVals = spec.getSpecVals();
+            List<SpecValEntity> specValEntities = specEntity.getSpecValEntities();
             int i = 0;
-            for (; i < specVals.size(); i++) {
-                if (val.equals(specVals.get(i).getSpecValName())) {
-                    idStrBuilder.append(specVals.get(i).getSpecValId());
+            for (; i < specValEntities.size(); i++) {
+                if (val.equals(specValEntities.get(i).getSpecValName())) {
+                    idStrBuilder.append(specValEntities.get(i).getSpecValId());
                     break;
                 }
             }
             // 规格值没法匹配
-            if (i == specVals.size()) {
+            if (i == specValEntities.size()) {
                 throw new IllegalArgumentException(String.format("规格组%s名值信息错误：%s", prdDesc, specKV));
             }
         }
@@ -84,18 +84,18 @@ public class GoodsSpecProduct {
 
     /**
      * 过滤出需要进行修改的集合，根据是否存在sku id
-     * @param goodsSpecProducts 待处理集合
+     * @param goodsSpecProductEntities 待处理集合
      * @return 需要跟新的集合
      */
-    public static List<GoodsSpecProduct> filterSkuForUpdateOrInsert(List<GoodsSpecProduct> goodsSpecProducts,boolean forUpdate) {
-        if (goodsSpecProducts == null) {
+    public static List<GoodsSpecProductEntity> filterSkuForUpdateOrInsert(List<GoodsSpecProductEntity> goodsSpecProductEntities, boolean forUpdate) {
+        if (goodsSpecProductEntities == null) {
             return new ArrayList<>(0);
         }
-        List<GoodsSpecProduct> retList;
+        List<GoodsSpecProductEntity> retList;
         if (forUpdate) {
-            retList = goodsSpecProducts.stream().filter(x -> x.getPrdId() != null).collect(Collectors.toList());
+            retList = goodsSpecProductEntities.stream().filter(x -> x.getPrdId() != null).collect(Collectors.toList());
         } else {
-            retList = goodsSpecProducts.stream().filter(x -> x.getPrdId() ==null).collect(Collectors.toList());
+            retList = goodsSpecProductEntities.stream().filter(x -> x.getPrdId() ==null).collect(Collectors.toList());
         }
 
         return retList;

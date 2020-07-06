@@ -7,6 +7,6 @@ import lombok.Data;
  * @date 2020年07月02日
  */
 @Data
-public class GoodsLabel {
+public class GoodsLabelEntity {
 
 }

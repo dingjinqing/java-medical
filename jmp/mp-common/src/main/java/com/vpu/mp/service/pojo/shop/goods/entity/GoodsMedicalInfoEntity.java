@@ -7,7 +7,7 @@ import lombok.Data;
  * @date 2020年07月02日
  */
 @Data
-public class GoodsMedicalInfo {
+public class GoodsMedicalInfoEntity {
     private Integer id;
     private Integer goodsId;
     private String goodsCommonName;

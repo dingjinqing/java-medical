@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.goods.entity;
 
 import com.vpu.mp.service.pojo.shop.goods.MedicalGoodsConstant;
-import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProduct;
-import com.vpu.mp.service.pojo.shop.sku.entity.Spec;
+import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProductEntity;
+import com.vpu.mp.service.pojo.shop.sku.entity.SpecEntity;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -15,7 +15,7 @@ import java.util.Map;
  * @date 2020年07月02日
  */
 @Data
-public class Goods {
+public class GoodsEntity {
     private Integer goodsId;
     private String goodsSn;
     private String goodsName;
@@ -51,16 +51,16 @@ public class Goods {
     /**
      * 药品信息
      */
-    private GoodsMedicalInfo goodsMedicalInfo;
+    private GoodsMedicalInfoEntity goodsMedicalInfo;
 
     /**
      * 规格组集合
      */
-    private List<Spec> specs;
+    private List<SpecEntity> specEntities;
     /**
      * 规格信息
      */
-    private List<GoodsSpecProduct> goodsSpecProducts;
+    private List<GoodsSpecProductEntity> goodsSpecProducts;
 
     private List<Integer> labelIds;
     /**
@@ -78,7 +78,7 @@ public class Goods {
         BigDecimal smallestGoodsWeight = BigDecimal.valueOf(Double.MAX_VALUE);
 
         Integer goodsNumberSum = 0;
-        for (GoodsSpecProduct specProduct : goodsSpecProducts) {
+        for (GoodsSpecProductEntity specProduct : goodsSpecProducts) {
             goodsNumberSum += specProduct.getPrdNumber();
             if (smallestShopPrice.compareTo(specProduct.getPrdPrice()) > 0) {
                 smallestShopPrice = specProduct.getPrdPrice();
@@ -106,9 +106,9 @@ public class Goods {
      */
     public void calculateSkuPrdSpecsBySpecs() {
         if (!MedicalGoodsConstant.DEFAULT_SKU.equals(isDefaultProduct)) {
-            Map<String, Spec> specNameMap = Spec.mapNameToSpec(specs);
-            for (GoodsSpecProduct goodsSpecProduct : goodsSpecProducts) {
-                goodsSpecProduct.calculatePrdSpecs(specNameMap);
+            Map<String, SpecEntity> specNameMap = SpecEntity.mapNameToSpec(specEntities);
+            for (GoodsSpecProductEntity goodsSpecProductEntity : goodsSpecProducts) {
+                goodsSpecProductEntity.calculatePrdSpecs(specNameMap);
             }
         } else {
             if (goodsSpecProducts != null) {

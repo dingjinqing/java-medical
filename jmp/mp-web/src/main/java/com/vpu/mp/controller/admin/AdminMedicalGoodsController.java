@@ -3,7 +3,7 @@ package com.vpu.mp.controller.admin;
 import cn.hutool.core.util.StrUtil;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.service.pojo.shop.goods.entity.Goods;
+import com.vpu.mp.service.pojo.shop.goods.entity.GoodsEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,28 +17,28 @@ public class AdminMedicalGoodsController extends AdminBaseController{
 
     /**
      * 药品新增
-     * @param goods
+     * @param goodsEntity
      * @return
      */
     @PostMapping("/api/admin/medical/goods/insert")
-    public JsonResult insert(@RequestBody Goods goods){
+    public JsonResult insert(@RequestBody GoodsEntity goodsEntity){
 
         //判断商品名称是否为空
-        if (StrUtil.isBlank(goods.getGoodsName())) {
+        if (StrUtil.isBlank(goodsEntity.getGoodsName())) {
             return fail(JsonResultCode.GOODS_NAME_IS_NULL);
         }
 
         //如果商品使用默认的规格形式，也需要根据默认形式设置一个GoodsSpecProducts参数
-        if (goods.getGoodsSpecProducts() == null || goods.getGoodsSpecProducts().size() == 0) {
+        if (goodsEntity.getGoodsSpecProducts() == null || goodsEntity.getGoodsSpecProducts().size() == 0) {
             return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);
         }
 
         //判断商品主图是否为空
-        if (StrUtil.isBlank(goods.getGoodsImg())) {
+        if (StrUtil.isBlank(goodsEntity.getGoodsImg())) {
             return fail(JsonResultCode.MEDICAL_GOODS_MAIN_IMG_IS_NULL);
         }
         try {
-            shop().medicalGoodsService.insert(shopId(),goods);
+            shop().medicalGoodsService.insert(shopId(), goodsEntity);
         }catch (IllegalArgumentException e){
             log.warn(e.getMessage());
             return fail(JsonResultCode.MEDICAL_GOODS_SKU_CONTENT_ILLEGAL,e.getMessage());
@@ -49,31 +49,31 @@ public class AdminMedicalGoodsController extends AdminBaseController{
 
     /**
      * 药品修改
-     * @param goods
+     * @param goodsEntity
      * @return
      */
     @PostMapping("/api/admin/medical/goods/update")
-    public JsonResult update(@RequestBody Goods goods){
+    public JsonResult update(@RequestBody GoodsEntity goodsEntity){
 
-        if (goods.getGoodsId() == null) {
+        if (goodsEntity.getGoodsId() == null) {
             return fail(JsonResultCode.GOODS_ID_IS_NULL);
         }
         //判断商品名称是否为空
-        if (StrUtil.isBlank(goods.getGoodsName())) {
+        if (StrUtil.isBlank(goodsEntity.getGoodsName())) {
             return fail(JsonResultCode.GOODS_NAME_IS_NULL);
         }
         //如果商品使用默认的规格形式，也需要根据默认形式设置一个GoodsSpecProducts参数
-        if (goods.getGoodsSpecProducts() == null || goods.getGoodsSpecProducts().size() == 0) {
+        if (goodsEntity.getGoodsSpecProducts() == null || goodsEntity.getGoodsSpecProducts().size() == 0) {
             return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);
         }
 
         //判断商品主图是否为空
-        if (StrUtil.isBlank(goods.getGoodsImg())) {
+        if (StrUtil.isBlank(goodsEntity.getGoodsImg())) {
             return fail(JsonResultCode.MEDICAL_GOODS_MAIN_IMG_IS_NULL);
         }
 
         try {
-            shop().medicalGoodsService.update(shopId(),goods);
+            shop().medicalGoodsService.update(shopId(), goodsEntity);
         }catch (IllegalArgumentException e){
             log.warn(e.getMessage());
             return fail(JsonResultCode.MEDICAL_GOODS_SKU_CONTENT_ILLEGAL,e.getMessage());
