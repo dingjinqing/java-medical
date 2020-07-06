@@ -374,6 +374,5 @@
   margin-bottom: 34rpx;
 }
 .prescription-item > .item-title{
-  background: #DBEFEE url(http://medicaldevimg.weipubao.cn/upload/224462/image/20200702/cHqjI9maXz2wGvOzjoHJ.png) no-repeat left top/100% 80rpx;
   color: #26C4BC;
 }

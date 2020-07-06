@@ -12,13 +12,17 @@
 </view>
 <view class="footer">
   <block wx:if="{{position === 'footer' && !filter.includes([4,8],activity.activityType)}}">
-    <view class="small_view" bindtap="backHome">
+    <!-- <view class="small_view" bindtap="backHome">
       <image class="image" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
       <text>首页</text>
+    </view> -->
+    <view class="small_view" bindtap="backHome">
+      <image class="image" src="{{imageUrl}}image/wxapp/item-icon1.png"></image>
+      <text>在线开方</text>
     </view>
     <view class="small_view" bindtap="toCartList">
-      <image class="image"  src="{{imageUrl}}image/wxapp/cart_icon.png"></image>
-      <text>购物车</text>
+      <image class="image"  src="{{imageUrl}}image/wxapp/item-icon2.png"></image>
+      <text>清单</text>
       <view class="cart_goods_num" style="color:{{main_setting.comColor}};border-color:{{main_setting.comColor}};width:{{cartNum > 99 ? '42rpx' : '30rpx'}};border-radius:{{cartNum > 99 ? '15rpx' : '50%'}}">{{cartNum > 99 ? '99+' : cartNum}}</view>
     </view>
   </block>
