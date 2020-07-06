@@ -8,7 +8,7 @@ import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.service.pojo.shop.goods.entity.Goods;
 import com.vpu.mp.service.pojo.shop.goods.entity.GoodsMedicalInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,7 +17,7 @@ import java.util.Set;
  * @author 李晓冰
  * @date 2020年07月02日
  */
-@Repository
+@Component
 public class GoodsRepository {
     @Autowired
     GoodsDao goodsDao;
@@ -67,6 +67,7 @@ public class GoodsRepository {
         Set<String> assignIgnoreField = new HashSet<>(2);
         assignIgnoreField.add("goodsSpecProducts");
         assignIgnoreField.add("goodsMedicalInfo");
+        assignIgnoreField.add("specs");
         return assignIgnoreField;
     }
 }

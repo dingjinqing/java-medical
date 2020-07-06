@@ -11,11 +11,8 @@ import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.sku.entity.Spec;
 import com.vpu.mp.service.pojo.shop.sku.entity.SpecVal;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import redis.clients.jedis.BinaryClient;
+import org.springframework.stereotype.Component;
 
-import javax.swing.plaf.SeparatorUI;
-import javax.swing.text.html.HTMLDocument;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,7 +22,7 @@ import java.util.Set;
  * @author 李晓冰
  * @date 2020年07月02日
  */
-@Repository
+@Component
 public class GoodsSpecProductRepository {
     @Autowired
     GoodsSpecProductDao goodsSpecProductDao;
@@ -65,6 +62,7 @@ public class GoodsSpecProductRepository {
             goodsSpecProduct.setGoodsId(goodsId);
             GoodsSpecProductDo goodsSpecProductDo = new GoodsSpecProductDo();
             FieldsUtil.assignWithIgnoreField(goodsSpecProduct,goodsSpecProductDo,getSkuAssignIgnoreFields());
+            goodsSpecProductDos.add(goodsSpecProductDo);
         }
         goodsSpecProductDao.batchInsert(goodsSpecProductDos);
     }

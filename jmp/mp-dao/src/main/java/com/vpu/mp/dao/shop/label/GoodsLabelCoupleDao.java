@@ -16,7 +16,11 @@ import java.util.List;
 @Repository
 public class GoodsLabelCoupleDao extends ShopBaseDao {
 
-    public void insert(List<GoodsLabelCoupleDo> goodsLabelCoupleDos){
+    /**
+     * 批量新增关联关系
+     * @param goodsLabelCoupleDos
+     */
+    public void batchInsert(List<GoodsLabelCoupleDo> goodsLabelCoupleDos){
         List<GoodsLabelCoupleRecord> goodsLabelCoupleRecords = new ArrayList<>(goodsLabelCoupleDos.size());
 
         for (GoodsLabelCoupleDo goodsLabelCoupleDo : goodsLabelCoupleDos) {

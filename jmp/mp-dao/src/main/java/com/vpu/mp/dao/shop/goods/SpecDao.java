@@ -3,9 +3,9 @@ package com.vpu.mp.dao.shop.goods;
 import com.vpu.mp.common.pojo.shop.table.SpecDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.SpecRecord;
+import org.jooq.impl.DefaultDSLContext;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.SPEC;
@@ -23,17 +23,13 @@ public class SpecDao extends ShopBaseDao {
      * @return 规格名id集合
      */
     public void batchInsert(List<SpecDo> specDos) {
-        List<SpecRecord> specRecords = new ArrayList<>();
+        DefaultDSLContext db = db();
         for (SpecDo specDo : specDos) {
-            SpecRecord record = new SpecRecord();
+            SpecRecord record = db.newRecord(SPEC);
             record.setGoodsId(specDo.getGoodsId());
             record.setSpecName(specDo.getSpecName());
-            specRecords.add(record);
-        }
-        db().batchInsert(specRecords).execute();
-        for (int i = 0; i < specRecords.size(); i++) {
-            specRecords.get(i).refresh(SPEC.SPEC_ID);
-            specDos.get(i).setSpecId(specRecords.get(i).getSpecId());
+            record.insert();
+            specDo.setSpecId(record.getSpecId());
         }
     }
 }

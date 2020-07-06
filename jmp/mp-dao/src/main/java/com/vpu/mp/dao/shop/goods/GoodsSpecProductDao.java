@@ -26,9 +26,9 @@ public class GoodsSpecProductDao extends ShopBaseDao {
 
         for (GoodsSpecProductDo goodsSpecProductDo : goodsSpecProductDos) {
             GoodsSpecProductRecord goodsSpecProductRecord = new GoodsSpecProductRecord();
-            FieldsUtil.assign(goodsSpecProductRecord,goodsSpecProductDo);
+            FieldsUtil.assign(goodsSpecProductDo,goodsSpecProductRecord);
             goodsSpecProductRecords.add(goodsSpecProductRecord);
         }
-        db().batchInsert(goodsSpecProductRecords).execute();
+       db().batchInsert(goodsSpecProductRecords).execute();
     }
 }

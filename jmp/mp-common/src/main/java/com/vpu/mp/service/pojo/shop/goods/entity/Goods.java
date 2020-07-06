@@ -46,10 +46,56 @@ public class Goods {
     private Timestamp createTime;
     private Timestamp updateTime;
 
-    /**规格组集合*/
-    private List<Spec> specs;
-    /**规格信息*/
-    private List<GoodsSpecProduct> goodsSpecProducts;
-    /**药品信息*/
+    /**
+     * 药品信息
+     */
     private GoodsMedicalInfo goodsMedicalInfo;
+
+    /**
+     * 规格组集合
+     */
+    private List<Spec> specs;
+    /**
+     * 规格信息
+     */
+    private List<GoodsSpecProduct> goodsSpecProducts;
+
+    private List<Integer> labelIds;
+    /**
+     * 幅图图片相对地址
+     */
+    private List<String> imgPaths;
+
+    @SuppressWarnings("all")
+    public void calculateGoodsPriceWeight() {
+
+        // 当存在商品规格时，统计商品总数和最低商品价格
+        BigDecimal smallestShopPrice = BigDecimal.valueOf(Double.MAX_VALUE);
+        BigDecimal largestMarketPrice = BigDecimal.valueOf(Double.MIN_VALUE);
+        BigDecimal smallestCostPrice = BigDecimal.valueOf(Double.MAX_VALUE);
+        BigDecimal smallestGoodsWeight = BigDecimal.valueOf(Double.MAX_VALUE);
+
+        Integer goodsNumberSum = 0;
+        for (GoodsSpecProduct specProduct : goodsSpecProducts) {
+            goodsNumberSum += specProduct.getPrdNumber();
+            if (smallestShopPrice.compareTo(specProduct.getPrdPrice()) > 0) {
+                smallestShopPrice = specProduct.getPrdPrice();
+            }
+            if (specProduct.getPrdMarketPrice() != null && largestMarketPrice.compareTo(specProduct.getPrdMarketPrice()) < 0) {
+                largestMarketPrice = specProduct.getPrdMarketPrice();
+            }
+            if (specProduct.getPrdCostPrice() != null && smallestCostPrice.compareTo(specProduct.getPrdCostPrice()) > 0) {
+                smallestCostPrice = specProduct.getPrdCostPrice();
+            }
+            if (specProduct.getPrdWeight() != null && smallestGoodsWeight.compareTo(specProduct.getPrdWeight()) > 0) {
+                smallestGoodsWeight = specProduct.getPrdWeight();
+            }
+        }
+
+        goodsNumber = goodsNumberSum;
+        shopPrice = smallestShopPrice;
+        marketPrice = largestMarketPrice;
+        costPrice = smallestCostPrice;
+        goodsWeight = smallestGoodsWeight;
+    }
 }

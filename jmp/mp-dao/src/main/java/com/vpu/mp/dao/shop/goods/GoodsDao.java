@@ -4,7 +4,6 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.GoodsDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
-import com.vpu.mp.db.shop.tables.Goods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import org.springframework.stereotype.Repository;
 
@@ -23,9 +22,9 @@ public class GoodsDao extends ShopBaseDao {
      * @return 商品id
      */
     public void insert(GoodsDo goodsDo){
-        GoodsRecord goodsRecord = new GoodsRecord();
+        GoodsRecord goodsRecord = db().newRecord(GOODS);
         FieldsUtil.assign(goodsDo,goodsRecord);
-        db().executeInsert(goodsRecord);
+        goodsRecord.insert();
         goodsDo.setGoodsId(goodsRecord.getGoodsId());
     }
 
