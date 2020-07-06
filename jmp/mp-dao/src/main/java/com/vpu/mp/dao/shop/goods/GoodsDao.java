@@ -28,6 +28,12 @@ public class GoodsDao extends ShopBaseDao {
         goodsDo.setGoodsId(goodsRecord.getGoodsId());
     }
 
+    public void udpate(GoodsDo goodsDo) {
+        GoodsRecord goodsRecord=new GoodsRecord();
+        FieldsUtil.assign(goodsDo,goodsRecord);
+        db().executeUpdate(goodsRecord);
+    }
+
     /**
      * 判断goodsSn是否存在
      * @param goodsSn

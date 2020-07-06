@@ -32,4 +32,12 @@ public class SpecDao extends ShopBaseDao {
             specDo.setSpecId(record.getSpecId());
         }
     }
+
+    /**
+     * 根据商品id删除规格组信息
+     * @param goodsId
+     */
+    public void deleteByGoodsId(Integer goodsId) {
+        db().deleteFrom(SPEC).where(SPEC.GOODS_ID.eq(goodsId)).execute();
+    }
 }

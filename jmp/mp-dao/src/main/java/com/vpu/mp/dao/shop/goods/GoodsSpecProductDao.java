@@ -19,7 +19,6 @@ public class GoodsSpecProductDao extends ShopBaseDao {
     /**
      * 商品sku新增
      * @param goodsSpecProductDos sku数据集合
-     * @return sku id
      */
     public void batchInsert(List<GoodsSpecProductDo> goodsSpecProductDos){
         List<GoodsSpecProductRecord> goodsSpecProductRecords = new ArrayList<>(goodsSpecProductDos.size());
@@ -30,5 +29,20 @@ public class GoodsSpecProductDao extends ShopBaseDao {
             goodsSpecProductRecords.add(goodsSpecProductRecord);
         }
        db().batchInsert(goodsSpecProductRecords).execute();
+    }
+
+    /**
+     * 商品sku修改
+     * @param goodsSpecProductDos sku数据集合
+     */
+    public void batchUpdate(List<GoodsSpecProductDo> goodsSpecProductDos){
+        List<GoodsSpecProductRecord> goodsSpecProductRecords = new ArrayList<>(goodsSpecProductDos.size());
+
+        for (GoodsSpecProductDo goodsSpecProductDo : goodsSpecProductDos) {
+            GoodsSpecProductRecord goodsSpecProductRecord = new GoodsSpecProductRecord();
+            FieldsUtil.assign(goodsSpecProductDo,goodsSpecProductRecord);
+            goodsSpecProductRecords.add(goodsSpecProductRecord);
+        }
+        db().batchUpdate(goodsSpecProductRecords).execute();
     }
 }

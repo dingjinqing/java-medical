@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.vpu.mp.db.shop.Tables.GOODS_IMG;
+
 /**
  * @author 李晓冰
  * @date 2020年07月06日
@@ -30,5 +32,13 @@ public class GoodsImgDao extends ShopBaseDao {
         }
 
         db().batchInsert(goodsImgRecords).execute();
+    }
+
+    /**
+     * 根据药品id删除图片
+     * @param goodsId 药品id
+     */
+    public void deleteByGoodsId(Integer goodsId) {
+        db().deleteFrom(GOODS_IMG).where(GOODS_IMG.GOODS_ID.eq(goodsId)).execute();
     }
 }

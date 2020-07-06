@@ -52,7 +52,7 @@ public class GoodsSpecProductRepository {
     }
 
     /**
-     * 插入sku
+     * 批量插入sku
      * @param goodsSpecProducts
      */
     public void batchSkuInsert(List<GoodsSpecProduct> goodsSpecProducts,Integer goodsId){
@@ -65,6 +65,20 @@ public class GoodsSpecProductRepository {
             goodsSpecProductDos.add(goodsSpecProductDo);
         }
         goodsSpecProductDao.batchInsert(goodsSpecProductDos);
+    }
+
+    /**
+     * 批量更新sku
+     * @param goodsSpecProducts
+     */
+    public void batchSkuUpdate(List<GoodsSpecProduct> goodsSpecProducts) {
+        List<GoodsSpecProductDo> goodsSpecProductDos = new ArrayList<>(goodsSpecProducts.size());
+        for (GoodsSpecProduct goodsSpecProduct : goodsSpecProducts) {
+            GoodsSpecProductDo goodsSpecProductDo = new GoodsSpecProductDo();
+            FieldsUtil.assignWithIgnoreField(goodsSpecProduct,goodsSpecProductDo,getSkuAssignIgnoreFields());
+            goodsSpecProductDos.add(goodsSpecProductDo);
+        }
+        goodsSpecProductDao.batchUpdate(goodsSpecProductDos);
     }
 
     /**
@@ -94,7 +108,6 @@ public class GoodsSpecProductRepository {
                 specVals.add(specVal);
                 specVal.setGoodsId(goodsId);
                 specVal.setSpecId(spec.getSpecId());
-
                 SpecValDo specValDo= new SpecValDo(spec.getSpecId(),goodsId,specVal.getSpecValName());
                 specValDos.add(specValDo);
             }
@@ -104,5 +117,14 @@ public class GoodsSpecProductRepository {
         for (int i = 0; i < specValDos.size(); i++) {
             specVals.get(i).setSpecValId(specValDos.get(i).getSpecValId());
         }
+    }
+
+    /**
+     * 根据商品id删除规格组
+     * @param goodsId
+     */
+    public void deleteSpecByGoodsId(Integer goodsId) {
+        specDao.deleteByGoodsId(goodsId);
+        specValDao.deleteByGoodsId(goodsId);
     }
 }

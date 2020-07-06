@@ -21,6 +21,10 @@ public class GoodsLabelRepository {
     @Autowired
     GoodsLabelCoupleDao goodsLabelCoupleDao;
 
+    /**
+     * 批量插入标签关联数据
+     * @param goodsLabelCouples
+     */
     public void batchInsertCouple(List<GoodsLabelCouple> goodsLabelCouples) {
         List<GoodsLabelCoupleDo> goodsLabelCoupleDos = new ArrayList<>(goodsLabelCouples.size());
 
@@ -32,6 +36,14 @@ public class GoodsLabelRepository {
             goodsLabelCoupleDos.add(goodsLabelCoupleDo);
         }
         goodsLabelCoupleDao.batchInsert(goodsLabelCoupleDos);
+    }
 
+    /**
+     * 删除标签关联信息
+     * @param gtaIds 待删除id集合
+     * @param gtaType 要删除的类型
+     */
+    public void deleteCouple(List<Integer> gtaIds, Byte gtaType){
+        goodsLabelCoupleDao.deleteCouple(gtaIds,gtaType);
     }
 }

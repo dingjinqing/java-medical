@@ -28,9 +28,17 @@ public class SpecValDao extends ShopBaseDao {
             SpecValsRecord record = db.newRecord(SPEC_VALS);
             record.setGoodsId(specValDo.getGoodsId());
             record.setSpecId(specValDo.getSpecId());
+            record.setSpecValName(specValDo.getSpecValName());
             record.insert();
             specValDo.setSpecValId(record.getSpecValId());
         }
     }
 
+    /**
+     * 根据商品id删除
+     * @param goodsId
+     */
+    public void deleteByGoodsId(Integer goodsId) {
+        db().deleteFrom(SPEC_VALS).where(SPEC_VALS.GOODS_ID.eq(goodsId)).execute();
+    }
 }

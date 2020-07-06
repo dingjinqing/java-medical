@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
+
 /**
  * @author 李晓冰
  * @date 2020年07月02日
@@ -32,5 +34,15 @@ public class GoodsLabelCoupleDao extends ShopBaseDao {
         }
 
         db().batchInsert(goodsLabelCoupleRecords).execute();
+    }
+
+    /**
+     * 删除标签关联信息
+     * @param gtaIds
+     * @param gtaType
+     */
+    public void deleteCouple(List<Integer> gtaIds, Byte gtaType){
+        db().deleteFrom(GOODS_LABEL_COUPLE).where(GOODS_LABEL_COUPLE.GTA_ID.in(gtaIds).and(GOODS_LABEL_COUPLE.TYPE.eq(gtaType)))
+            .execute();
     }
 }

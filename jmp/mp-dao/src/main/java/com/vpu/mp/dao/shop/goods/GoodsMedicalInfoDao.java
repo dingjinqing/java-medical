@@ -25,4 +25,14 @@ public class GoodsMedicalInfoDao extends ShopBaseDao{
         goodsMedicalInfoRecord.insert();
         goodsMedicalInfoDo.setId(goodsMedicalInfoRecord.getId());
     }
+
+    /**
+     * 修改商品的药品相关信息
+     * @param goodsMedicalInfoDo
+     */
+    public void update(GoodsMedicalInfoDo goodsMedicalInfoDo) {
+        GoodsMedicalInfoRecord goodsMedicalInfoRecord = new GoodsMedicalInfoRecord();
+        FieldsUtil.assign(goodsMedicalInfoDo,goodsMedicalInfoRecord);
+        db().executeUpdate(goodsMedicalInfoRecord);
+    }
 }
