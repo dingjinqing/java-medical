@@ -1,0 +1,73 @@
+<wxs module="filter"> 
+  var includes = function (arr, target) {
+    if (arr.length === 0) return false
+    return arr.indexOf(target) === -1 ? false : true
+  }
+  module.exports = {
+    includes: includes
+  }
+</wxs>
+<v-popup show="{{show}}" bind:close="bindClose" close_pos="outer-bottom" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
+    <view class="prescription-content">
+      <view class="prescription-title-content">
+        <view class="title">电子处方1</view>
+        <view class="card-no title-item">就诊卡号：2006798749374837</view>
+        <view class="no title-item">编号：37845415942125151</view>
+      </view>
+      <view class="prescription-info-content">
+        <view class="prescription-item">
+          <view class="item-title">
+            <text class="list-item-dot"></text>
+            <text class="title">就诊人信息</text>
+          </view>
+          <view class="user-info">
+            <view class="info-item">
+              <text>张三</text>
+              <text>姓名</text>
+            </view>
+            <view class="info-item">
+              <text>男</text>
+              <text>性别</text>
+            </view>
+            <view class="info-item">
+              <text>52岁</text>
+              <text>年龄</text>
+            </view>
+            <view class="info-item">
+              <text>外科</text>
+              <text>科室</text>
+            </view>
+          </view>
+        </view>      
+        <view class="prescription-item">
+          <view class="item-title">
+            <text class="list-item-dot"></text>
+            <text class="title">诊断</text>
+          </view>
+          <view class="item-info">
+            <text class="title">原发性高血压</text>
+          </view>
+        </view>      
+        <view class="prescription-item">
+          <view class="item-title">
+            <text class="list-item-dot"></text>
+            <text class="title">治疗建议</text>
+          </view>
+          <view class="item-info">
+            <text class="title">苯磺酸氨氯地平片</text>
+            <text>用法用量：清晨空腹口服，一次5mg，一日1次，用 药84天</text>
+            <text class="title">苯磺酸氨氯地平片</text>
+            <text>用法用量：清晨空腹口服，一次5mg，一日1次，用 药84天</text>
+            <text class="title">苯磺酸氨氯地平片</text>
+            <text>用法用量：清晨空腹口服，一次5mg，一日1次，用 药84天</text>
+          </view>
+        </view>      
+      </view>
+      <view class="prescription-doctor-info">
+        <view class="doctor-info">
+          <text class="doctor-name">医师：张三</text>
+          <text class="item-date">日期：2020.06.30</text>
+        </view>
+      </view>
+    </view>
+</v-popup>

@@ -1,8 +1,8 @@
 <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="body">
 	<include src="../common/header.wxml" />
-  <view class="top-bg-style"></view>
 	<view class="main-container" style="padding-top:20rpx">
+		<view class="top-bg-style"></view>
 		<!-- <view class="pay_notice">
         <image src="{{imageUrl}}image/wxapp/icon_notice.png"></image>
         <block>
@@ -70,6 +70,30 @@
 						<text class="num">x{{goodsItem.goodsNumber}}</text>
 					</view>
 				</view>
+			</view>
+		</view>
+
+		<view class="prescription-item">
+			<view class="item-title">电子处方1</view>
+			<view class="item-list-content">
+				<view class="item-list">
+					<view class="list-item">
+						<text class="list-item-dot"></text>
+						<view class="list-item-content">
+							诊断：原发性高血压
+						</view>
+					</view>
+					<view class="list-item">
+						<text class="list-item-dot"></text>
+						<view class="list-item-content">
+							科室：神经科
+						</view>
+					</view>
+				</view>
+			</view>
+			<view class="doctor-info">
+				<text class="doctor-name">医师：张三</text>
+				<text class="item-date">日期：2020.06.30</text>
 			</view>
 		</view>
 

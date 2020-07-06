@@ -1,5 +1,5 @@
 <view class="prescription-content">
-	<view class="prescription-item">
+	<view class="prescription-item" bindtap="handleShowDialog">
 		<view class="item-title">电子处方1</view>
 		<view class="item-list-content">
 			<view class="item-list">
@@ -69,3 +69,5 @@
     </view>
 	</view>
 </view>
+
+<v-prescription-dialog show="{{showPrescription}}" />

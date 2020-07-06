@@ -45,7 +45,8 @@ page{
 }
 .main_container{
   min-height: 850rpx;
-  overflow-x: hidden
+  overflow-x: hidden;
+  padding-top: 20rpx;
 }
 .clearfix::after{
   content: "";
@@ -110,6 +111,10 @@ page{
 .normal_goods_container{
   /* margin-top: 20rpx; */
   background: #fff;
+  width: 702rpx;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 16rpx;
 }
 .putong .enen{
   border-top:1px solid #eee;
@@ -148,8 +153,9 @@ page{
 }
 .n_goods_info{
   float: left;
-  width: 640rpx;
+  width: 598rpx;
   margin-right:30rpx;
+
 }
 
 .ng_left{
@@ -175,7 +181,7 @@ page{
 .ng_right{
   float: right;
   height: 180rpx;
-  width: 440rpx;
+  width: 414rpx;
   position: relative;
 }
 .ng_goods_name{
