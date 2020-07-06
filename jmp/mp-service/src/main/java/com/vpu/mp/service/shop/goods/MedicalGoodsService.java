@@ -39,6 +39,11 @@ public class MedicalGoodsService {
     @Autowired
     private GoodsImgDao goodsImgDao;
 
+    /**
+     * 新增
+     * @param shopId
+     * @param goods
+     */
     @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
     public void insert(@RedisLockKeys Integer shopId, Goods goods) {
         // 验证goodsSn是否重复
@@ -77,6 +82,11 @@ public class MedicalGoodsService {
         }
     }
 
+    /**
+     * 修改
+     * @param shopId
+     * @param goods
+     */
     @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
     public void update(@RedisLockKeys Integer shopId, Goods goods) {
         // 验证goodsSn是否重复
@@ -125,6 +135,17 @@ public class MedicalGoodsService {
         }
     }
 
+    /**
+     * 删除药品
+     * @param goodsId
+     */
+    public void deleteByGoodsIds(Integer goodsId){
+        goodsRepository.delete(goodsId);
+        goodsSpecProductRepository.deleteSkuByGoodsId(goodsId);
+        goodsSpecProductRepository.deleteSpecByGoodsId(goodsId);
+        goodsLabelRepository.deleteCouple(Collections.singletonList(goodsId),MedicalLabelConstant.GTA_GOODS);
+        goodsImgDao.deleteByGoodsId(goodsId);
+    }
     /**
      * 当前时间
      * 生成商品GoodsSn

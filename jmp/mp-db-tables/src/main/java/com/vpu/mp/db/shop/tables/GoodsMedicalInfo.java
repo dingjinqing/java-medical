@@ -13,6 +13,7 @@ import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 
 import javax.annotation.Generated;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,7 +31,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsMedicalInfo extends TableImpl<GoodsMedicalInfoRecord> {
 
-    private static final long serialVersionUID = -134282010;
+    private static final long serialVersionUID = 1555587789;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_medical_info</code>
@@ -199,6 +200,21 @@ public class GoodsMedicalInfo extends TableImpl<GoodsMedicalInfoRecord> {
      * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_limit_antibacterial</code>. 抗菌限制
      */
     public final TableField<GoodsMedicalInfoRecord, Byte> GOODS_LIMIT_ANTIBACTERIAL = createField("goods_limit_antibacterial", org.jooq.impl.SQLDataType.TINYINT, this, "抗菌限制");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_medical_info.is_delete</code>.
+     */
+    public final TableField<GoodsMedicalInfoRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_medical_info.create_time</code>.
+     */
+    public final TableField<GoodsMedicalInfoRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_medical_info.update_time</code>. 最后修改时间
+     */
+    public final TableField<GoodsMedicalInfoRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods_medical_info</code> table reference

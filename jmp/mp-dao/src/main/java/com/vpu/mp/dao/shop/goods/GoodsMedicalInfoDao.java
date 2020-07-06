@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.shop.goods;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
@@ -34,5 +35,13 @@ public class GoodsMedicalInfoDao extends ShopBaseDao{
         GoodsMedicalInfoRecord goodsMedicalInfoRecord = new GoodsMedicalInfoRecord();
         FieldsUtil.assign(goodsMedicalInfoDo,goodsMedicalInfoRecord);
         db().executeUpdate(goodsMedicalInfoRecord);
+    }
+
+
+    public void deleteByGoodsId(Integer goodsId) {
+        db().update(GOODS_MEDICAL_INFO)
+            .set(GOODS_MEDICAL_INFO.IS_DELETE, DelFlag.DISABLE_VALUE)
+            .where(GOODS_MEDICAL_INFO.GOODS_ID.eq(goodsId))
+            .execute();
     }
 }

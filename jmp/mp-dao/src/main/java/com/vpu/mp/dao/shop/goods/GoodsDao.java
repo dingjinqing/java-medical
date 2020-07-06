@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.GoodsDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import static com.vpu.mp.db.shop.Tables.GOODS;
@@ -28,10 +29,19 @@ public class GoodsDao extends ShopBaseDao {
         goodsDo.setGoodsId(goodsRecord.getGoodsId());
     }
 
-    public void udpate(GoodsDo goodsDo) {
+    public void update(GoodsDo goodsDo) {
         GoodsRecord goodsRecord=new GoodsRecord();
         FieldsUtil.assign(goodsDo,goodsRecord);
         db().executeUpdate(goodsRecord);
+    }
+
+    public void deleteByGoodsId(Integer goodsId) {
+        db().update(GOODS)
+            .set(GOODS.GOODS_SN, DSL.concat(DelFlag.DEL_ITEM_PREFIX,GOODS.GOODS_SN))
+            .set(GOODS.GOODS_NAME, DSL.concat(DelFlag.DEL_ITEM_PREFIX,GOODS.GOODS_NAME))
+            .set(GOODS.DEL_FLAG,DelFlag.DISABLE_VALUE)
+            .where(GOODS.GOODS_ID.eq(goodsId))
+            .execute();
     }
 
     /**

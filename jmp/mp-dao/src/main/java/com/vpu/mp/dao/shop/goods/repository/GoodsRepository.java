@@ -49,12 +49,21 @@ public class GoodsRepository {
     public void update(Goods goods) {
         GoodsDo goodsDo = new GoodsDo();
         FieldsUtil.assignWithIgnoreField(goods,goodsDo,getGoodsAssignIgnoreFields());
-        goodsDao.udpate(goodsDo);
+        goodsDao.update(goodsDo);
 
         GoodsMedicalInfoDo goodsMedicalInfoDo = new GoodsMedicalInfoDo();
         GoodsMedicalInfo goodsMedicalInfo = goods.getGoodsMedicalInfo();
         FieldsUtil.assign(goodsMedicalInfo,goodsMedicalInfoDo);
         goodsMedicalInfoDao.update(goodsMedicalInfoDo);
+    }
+
+    /**
+     * 商品删除
+     * @param goodId
+     */
+    public void delete(Integer goodId) {
+        goodsDao.deleteByGoodsId(goodId);
+        goodsMedicalInfoDao.deleteByGoodsId(goodId);
     }
 
     /**

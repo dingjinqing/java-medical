@@ -5,10 +5,13 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.GoodsMedicalInfo;
-import org.jooq.Record1;
-import org.jooq.impl.UpdatableRecordImpl;
+
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
+
+import org.jooq.Record1;
+import org.jooq.impl.UpdatableRecordImpl;
 
 
 /**
@@ -24,7 +27,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsMedicalInfoRecord extends UpdatableRecordImpl<GoodsMedicalInfoRecord> {
 
-    private static final long serialVersionUID = -1029001098;
+    private static final long serialVersionUID = -386599488;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_medical_info.id</code>. 商品额外信息id
@@ -460,6 +463,48 @@ public class GoodsMedicalInfoRecord extends UpdatableRecordImpl<GoodsMedicalInfo
         return (Byte) get(30);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods_medical_info.is_delete</code>.
+     */
+    public void setIsDelete(Byte value) {
+        set(31, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods_medical_info.is_delete</code>.
+     */
+    public Byte getIsDelete() {
+        return (Byte) get(31);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods_medical_info.create_time</code>.
+     */
+    public void setCreateTime(Timestamp value) {
+        set(32, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods_medical_info.create_time</code>.
+     */
+    public Timestamp getCreateTime() {
+        return (Timestamp) get(32);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods_medical_info.update_time</code>. 最后修改时间
+     */
+    public void setUpdateTime(Timestamp value) {
+        set(33, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods_medical_info.update_time</code>. 最后修改时间
+     */
+    public Timestamp getUpdateTime() {
+        return (Timestamp) get(33);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -486,7 +531,7 @@ public class GoodsMedicalInfoRecord extends UpdatableRecordImpl<GoodsMedicalInfo
     /**
      * Create a detached, initialised GoodsMedicalInfoRecord
      */
-    public GoodsMedicalInfoRecord(Integer id, Integer goodsId, String goodsCommonName, String goodsAliasName, String goodsQualityRatio, Byte isMedical, Byte isRx, String goodsHospitalCode, Byte insuranceFlag, String insuranceCode, String insuranceDatabaseName, String goodsBasicUnit, String goodsPackageUnit, Integer goodsUnitConvertFactor, Integer goodsEquivalentQuantity, String goodsEquivalentUnit, String goodsComposition, String goodsCharacters, String goodsFunction, String goodsUseMethod, String goodsAdverseReaction, String goodsTaboos, String goodsNoticeEvent, String goodsInteraction, String goodsStoreMethod, String goodsPackageMethod, String goodsValidTime, String goodsApprovalNumber, String goodsProductionEnterprise, Byte goodsLimitDuty, Byte goodsLimitAntibacterial) {
+    public GoodsMedicalInfoRecord(Integer id, Integer goodsId, String goodsCommonName, String goodsAliasName, String goodsQualityRatio, Byte isMedical, Byte isRx, String goodsHospitalCode, Byte insuranceFlag, String insuranceCode, String insuranceDatabaseName, String goodsBasicUnit, String goodsPackageUnit, Integer goodsUnitConvertFactor, Integer goodsEquivalentQuantity, String goodsEquivalentUnit, String goodsComposition, String goodsCharacters, String goodsFunction, String goodsUseMethod, String goodsAdverseReaction, String goodsTaboos, String goodsNoticeEvent, String goodsInteraction, String goodsStoreMethod, String goodsPackageMethod, String goodsValidTime, String goodsApprovalNumber, String goodsProductionEnterprise, Byte goodsLimitDuty, Byte goodsLimitAntibacterial, Byte isDelete, Timestamp createTime, Timestamp updateTime) {
         super(GoodsMedicalInfo.GOODS_MEDICAL_INFO);
 
         set(0, id);
@@ -520,5 +565,8 @@ public class GoodsMedicalInfoRecord extends UpdatableRecordImpl<GoodsMedicalInfo
         set(28, goodsProductionEnterprise);
         set(29, goodsLimitDuty);
         set(30, goodsLimitAntibacterial);
+        set(31, isDelete);
+        set(32, createTime);
+        set(33, updateTime);
     }
 }

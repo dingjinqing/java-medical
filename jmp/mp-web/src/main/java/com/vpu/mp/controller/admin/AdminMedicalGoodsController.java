@@ -5,9 +5,7 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.shop.goods.entity.Goods;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author 李晓冰
@@ -80,6 +78,22 @@ public class AdminMedicalGoodsController extends AdminBaseController{
             log.warn(e.getMessage());
             return fail(JsonResultCode.MEDICAL_GOODS_SKU_CONTENT_ILLEGAL,e.getMessage());
         }
+
+        return success();
+    }
+
+    /**
+     * 药品删除
+     * @param goodsId 药品id
+     * @return
+     */
+    @GetMapping("/api/admin/medical/goods/delete/{goodsId}")
+    public JsonResult delete(@PathVariable("goodsId") Integer goodsId){
+        if (goodsId == null) {
+            return fail(JsonResultCode.GOODS_ID_IS_NULL);
+        }
+
+        shop().medicalGoodsService.deleteByGoodsIds(goodsId);
 
         return success();
     }

@@ -120,6 +120,14 @@ public class GoodsSpecProductRepository {
     }
 
     /**
+     * 删除sku
+     * @param goodsId
+     */
+    public void deleteSkuByGoodsId(Integer goodsId) {
+        goodsSpecProductDao.deleteByGoodsId(goodsId);
+    }
+
+    /**
      * 根据商品id删除规格组
      * @param goodsId
      */
