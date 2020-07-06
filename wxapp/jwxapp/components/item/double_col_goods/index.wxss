@@ -5,6 +5,8 @@
   background-color: #fff;
   flex-direction: column;
   margin-top: 20rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 10rpx rgba(13, 19, 24, 0.24),0 0 0rpx rgba(10,16,20,.12);
 }
 .goods_image {
   height: 346rpx;

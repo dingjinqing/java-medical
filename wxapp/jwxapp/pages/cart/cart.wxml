@@ -371,7 +371,7 @@
 </view>
 
 <!-- 推荐商品 -->
-<v-recommend id="recommend" pageName="item" />
+<v-recommend id="recommend" pageName="cart" />
 <!-- 优惠券礼包弹窗 -->
 <v-coupon-package-dialog show="{{showCouponPackageDialog}}" coupon-package-list="{{couponPackage.packList}}" />
 <include src="../common/footer.wxml" />

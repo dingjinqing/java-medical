@@ -10,8 +10,40 @@
     >
       <!--模块编辑区-->
       <div class="prescription-content">
-        <span>处方内容区域</span>
-        <span>未获取到患者处方时，此处显示暂无</span>
+        <div class="prescription-module-title">
+          <img :src="$imageHost+'/image/wxapp/prescription-icon1.png'" />
+          <span>我的处方</span>
+          <span class="more">更多</span>
+        </div>
+        <div
+          class="prescription-item"
+          bindtap="handleShowDialog"
+        >
+          <div
+            class="item-title"
+            :style="'background:#26c4bc url('+$imageHost+'/image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 40px;'"
+          >电子处方1</div>
+          <div class="item-list-content">
+            <div class="item-list">
+              <div class="list-item">
+                <span class="list-item-dot"></span>
+                <div class="list-item-content">
+                  诊断：原发性高血压
+                </div>
+              </div>
+              <div class="list-item">
+                <span class="list-item-dot"></span>
+                <div class="list-item-content">
+                  科室：神经科
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="doctor-info">
+            <span class="doctor-name">医师：张三</span>
+            <span class="item-date">日期：2020.06.30</span>
+          </div>
+        </div>
       </div>
       <!--模块编辑区结束-->
       <div class="item_module_title">
@@ -155,21 +187,117 @@ export default {
 <style lang="scss" scoped>
 @import '@/style/admin/decorationModules.scss'; // 模块公共
 .prescription-content {
+  padding: 25px 6px 20px;
   display: flex;
-  height: 150px;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
-  > span {
-    font-size: 14px;
-    color: #ccc;
-    & + span {
-      margin-top: 5px;
-    }
-    &:first-of-type {
-      font-size: 15px;
-      color: rgb(51, 51, 51);
-    }
-  }
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+}
+.prescription-item {
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(13, 19, 24, 0.24), 0 0 0px rgba(10, 16, 20, 0.12);
+  position: relative;
+}
+.prescription-item + .prescription-item {
+  margin-top: 15px;
+}
+.prescription-item > .item-title {
+  line-height: 40px;
+  color: #fff;
+  font-size: 15px;
+  text-align: center;
+  background-color: skyblue;
+  height: 50px;
+  border-radius: 16px 16px 0 0;
+}
+.prescription-item > .item-list-content {
+  padding-left: 15px;
+  background-color: #fff;
+  position: relative;
+  border-radius: 16px 16px 0 0;
+  margin-top: -10px;
+}
+.prescription-item > .item-list-content > .item-list {
+  display: flex;
+  flex-direction: column;
+  line-height: 27.5px;
+  padding: 15px 0;
+  border-bottom: 2px solid #eee;
+}
+.prescription-item > .item-list-content > .item-list > .list-item {
+  display: flex;
+  align-items: center;
+}
+.prescription-item
+  > .item-list-content
+  > .item-list
+  > .list-item
+  > .list-item-dot {
+  border: 2px solid skyblue;
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+  margin-right: 10px;
+}
+.prescription-item
+  > .item-list-content
+  > .item-list
+  > .list-item
+  > .list-item-content {
+  color: #666;
+  font-size: 13px;
+}
+.prescription-item > .doctor-info {
+  height: 40px;
+  padding: 0 15px;
+  align-items: center;
+  background: #fff;
+  display: flex;
+  color: #999;
+  position: relative;
+}
+.prescription-item > .doctor-info::after {
+  content: '';
+  position: absolute;
+  height: 8px;
+  width: 100%;
+  bottom: -8px;
+  left: 0;
+  background-image: radial-gradient(
+    5px circle at 12px 8px,
+    transparent 7px,
+    #fff 7px
+  );
+  background-size: 20px 10px;
+}
+.prescription-item > .doctor-info > .doctor-name {
+  margin-right: auto;
+  font-size: 13px;
+}
+.prescription-item > .doctor-info > .item-date {
+  font-size: 13px;
+}
+.prescription-module-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.prescription-module-title > img {
+  width: 17px;
+  height: 17px;
+  margin-right: 12px;
+}
+.prescription-module-title > span {
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+.prescription-module-title > span:first-of-type {
+  margin-right: auto;
+}
+.prescription-module-title > span.more {
+  font-size: 13px;
+  color: #656565;
+  font-weight: 400;
 }
 </style>

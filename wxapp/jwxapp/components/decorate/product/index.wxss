@@ -156,3 +156,28 @@
   vertical-align: top;
 }
 
+.prescription-module-title{
+  display: flex;
+  align-items: center;
+  margin-top: 32rpx;
+  margin-bottom: 12rpx;
+  padding: 0 15rpx;
+}
+.prescription-module-title > image{
+  width: 34rpx;
+  height: 34rpx;
+  margin-right: 24rpx;
+}
+.prescription-module-title > text{
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+}
+.prescription-module-title > text:first-of-type{
+  margin-right: auto;
+}
+.prescription-module-title > text.more{
+  font-size: 26rpx;
+  color: #656565;
+  font-weight: 400;
+}

@@ -1,0 +1,71 @@
+.case-history-content{
+  padding: 50rpx 15rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16rpx 16rpx 0 0;
+}
+.case-history-list{
+  background: #fff;
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+}
+.list-item{
+  padding: 30rpx;
+  display: flex;
+  flex-direction: column;
+}
+.list-item + .list-item{
+  border-top: 2rpx solid #eee;
+}
+.list-item.title{
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+  align-self: center;
+}
+.list-item > .item-line{
+  display: flex;
+  align-items: center;
+}
+.list-item > .item-line > text{
+  color: #333;
+}
+.list-item > .item-line > .item-dot{
+  border: 4rpx solid skyblue;
+  border-radius: 50%;
+  height: 10rpx;
+  width: 10rpx;
+  margin-right: 20rpx;
+}
+.list-item > .item-info{
+  display: flex;
+  flex-direction: column;
+}
+.list-item > .item-line > .item-title{
+  font-weight: 600;
+  color: #333;
+}
+.prescription-module-title{
+  display: flex;
+  align-items: center;
+  margin-bottom: 32rpx;
+}
+.prescription-module-title > image{
+  width: 34rpx;
+  height: 34rpx;
+  margin-right: 24rpx;
+}
+.prescription-module-title > text{
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+}
+.prescription-module-title > text:first-of-type{
+  margin-right: auto;
+}
+.prescription-module-title > text.more{
+  font-size: 26rpx;
+  color: #656565;
+  font-weight: 400;
+}
