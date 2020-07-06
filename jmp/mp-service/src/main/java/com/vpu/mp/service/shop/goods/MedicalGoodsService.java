@@ -12,18 +12,16 @@ import com.vpu.mp.dao.shop.label.repository.GoodsLabelRepository;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
-import com.vpu.mp.service.pojo.shop.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.entity.Goods;
 import com.vpu.mp.service.pojo.shop.label.MedicalLabelConstant;
 import com.vpu.mp.service.pojo.shop.label.entity.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProduct;
-import com.vpu.mp.service.pojo.shop.sku.entity.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author 李晓冰
@@ -55,26 +53,69 @@ public class MedicalGoodsService {
         goods.calculateGoodsPriceWeight();
         goodsRepository.insert(goods);
         // 处理sku
-        if (!MedicalGoodsConstant.DEFAULT_SKU.equals(goods.getIsDefaultProduct())) {
+        if (goods.getSpecs() != null && goods.getSpecs().size() > 0) {
             // 先插入规格组，协助sku生成其规格描述id字符串
             goodsSpecProductRepository.batchSpecInsert(goods.getSpecs(), goods.getGoodsId());
-            Map<String, Spec> specNameMap = Spec.mapNameToSpec(goods.getSpecs());
-            for (GoodsSpecProduct goodsSpecProduct : goods.getGoodsSpecProducts()) {
-                goodsSpecProduct.calculatePrdSpecs(specNameMap);
-            }
         }
+        goods.calculateSkuPrdSpecsBySpecs();
         goodsSpecProductRepository.batchSkuInsert(goods.getGoodsSpecProducts(), goods.getGoodsId());
 
         // 处理标签、图片额外信息
         List<Integer> labelIds = goods.getLabelIds();
         if (labelIds != null && labelIds.size() > 0) {
-            List<GoodsLabelCouple> goodsLabelCouples = new ArrayList<>();
-            for (Integer labelId : labelIds) {
-                goodsLabelCouples.add(new GoodsLabelCouple(labelId, goods.getGoodsId(), MedicalLabelConstant.GTA_GOODS));
-            }
+            List<GoodsLabelCouple> goodsLabelCouples = GoodsLabelCouple.generateCouples(labelIds, goods.getGoodsId(), MedicalLabelConstant.GTA_GOODS);
             goodsLabelRepository.batchInsertCouple(goodsLabelCouples);
         }
+
         // 处理图片
+        if (goods.getImgPaths() != null && goods.getImgPaths().size() > 0) {
+            List<GoodsImgDo> goodsImgDos = new ArrayList<>(goods.getImgPaths().size());
+            for (String imgPath : goods.getImgPaths()) {
+                goodsImgDos.add(new GoodsImgDo(goods.getGoodsId(), imgPath));
+            }
+            goodsImgDao.batchInsert(goodsImgDos);
+        }
+    }
+
+    @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
+    public void update(@RedisLockKeys Integer shopId, Goods goods) {
+        // 验证goodsSn是否重复
+        if (StrUtil.isBlank(goods.getGoodsSn())) {
+            goods.setGoodsSn(generateGoodsSn());
+        } else {
+            if (goodsRepository.isGoodsSnExist(goods.getGoodsSn())) {
+                throw new IllegalArgumentException("商品goodsSn重复");
+            }
+        }
+        // 处理自己的价格
+        goods.calculateGoodsPriceWeight();
+        goodsRepository.update(goods);
+
+        // 删除旧的spec组
+        goodsSpecProductRepository.deleteSpecByGoodsId(goods.getGoodsId());
+        // 处理sku
+        if (goods.getSpecs() != null && goods.getSpecs().size() > 0) {
+            // 先插入规格组，协助sku生成其规格描述id字符串
+            goodsSpecProductRepository.batchSpecInsert(goods.getSpecs(), goods.getGoodsId());
+        }
+        goods.calculateSkuPrdSpecsBySpecs();
+        // 处理需要修改的sku
+        List<GoodsSpecProduct> goodsSpecProducts = GoodsSpecProduct.filterSkuForUpdateOrInsert(goods.getGoodsSpecProducts(), true);
+        goodsSpecProductRepository.batchSkuUpdate(goodsSpecProducts);
+        // 处理需要新增的sku
+        goodsSpecProducts = GoodsSpecProduct.filterSkuForUpdateOrInsert(goods.getGoodsSpecProducts(), false);
+        goodsSpecProductRepository.batchSkuInsert(goodsSpecProducts,goods.getGoodsId());
+
+        // 处理标签
+        goodsLabelRepository.deleteCouple(Collections.singletonList(goods.getGoodsId()),MedicalLabelConstant.GTA_GOODS);
+        List<Integer> labelIds = goods.getLabelIds();
+        if (labelIds != null && labelIds.size() > 0) {
+            List<GoodsLabelCouple> goodsLabelCouples = GoodsLabelCouple.generateCouples(labelIds, goods.getGoodsId(), MedicalLabelConstant.GTA_GOODS);
+            goodsLabelRepository.batchInsertCouple(goodsLabelCouples);
+        }
+
+        // 处理图片
+        goodsImgDao.deleteByGoodsId(goods.getGoodsId());
         if (goods.getImgPaths() != null && goods.getImgPaths().size() > 0) {
             List<GoodsImgDo> goodsImgDos = new ArrayList<>(goods.getImgPaths().size());
             for (String imgPath : goods.getImgPaths()) {

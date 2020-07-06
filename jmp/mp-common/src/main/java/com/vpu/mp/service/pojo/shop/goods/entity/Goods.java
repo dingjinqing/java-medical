@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.goods.entity;
 
+import com.vpu.mp.service.pojo.shop.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.sku.entity.Spec;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 李晓冰
@@ -97,5 +99,21 @@ public class Goods {
         marketPrice = largestMarketPrice;
         costPrice = smallestCostPrice;
         goodsWeight = smallestGoodsWeight;
+    }
+
+    /**
+     * 根据规格组（规格名值id）处理sku prdSpecs内容
+     */
+    public void calculateSkuPrdSpecsBySpecs() {
+        if (!MedicalGoodsConstant.DEFAULT_SKU.equals(isDefaultProduct)) {
+            Map<String, Spec> specNameMap = Spec.mapNameToSpec(specs);
+            for (GoodsSpecProduct goodsSpecProduct : goodsSpecProducts) {
+                goodsSpecProduct.calculatePrdSpecs(specNameMap);
+            }
+        } else {
+            if (goodsSpecProducts != null) {
+                goodsSpecProducts.get(0).setPrdSpecs("");
+            }
+        }
     }
 }

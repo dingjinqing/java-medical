@@ -6,8 +6,10 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author 李晓冰
@@ -40,12 +42,12 @@ public class GoodsSpecProduct {
             throw new IllegalArgumentException("规格组描述信息错误：" + prdDesc);
         }
 
-        StringBuilder idStrBuilder= new StringBuilder();
+        StringBuilder idStrBuilder = new StringBuilder();
 
         for (String specKV : specKVs) {
             String[] split = specKV.split(MedicalGoodsConstant.SPEC_NAME_VAL_SPLITER);
             if (split.length != 2) {
-                throw new IllegalArgumentException(String.format("规格组%s名值信息错误：%s",prdDesc,specKV));
+                throw new IllegalArgumentException(String.format("规格组%s名值信息错误：%s", prdDesc, specKV));
             }
             String key = split[0];
             String val = split[1];
@@ -60,11 +62,11 @@ public class GoodsSpecProduct {
             idStrBuilder.append(spec.getSpecId()).append(MedicalGoodsConstant.SPEC_NAME_VAL_SPLITER);
             // 没有填写对应规格值
             if (StrUtil.isBlank(val)) {
-                throw new IllegalArgumentException(String.format("规格组%s名值信息错误：%s",prdDesc,specKV));
+                throw new IllegalArgumentException(String.format("规格组%s名值信息错误：%s", prdDesc, specKV));
             }
 
             List<SpecVal> specVals = spec.getSpecVals();
-            int i=0;
+            int i = 0;
             for (; i < specVals.size(); i++) {
                 if (val.equals(specVals.get(i).getSpecValName())) {
                     idStrBuilder.append(specVals.get(i).getSpecValId());
@@ -73,10 +75,29 @@ public class GoodsSpecProduct {
             }
             // 规格值没法匹配
             if (i == specVals.size()) {
-                throw new IllegalArgumentException(String.format("规格组%s名值信息错误：%s",prdDesc,specKV));
+                throw new IllegalArgumentException(String.format("规格组%s名值信息错误：%s", prdDesc, specKV));
             }
         }
 
         prdSpecs = idStrBuilder.toString();
+    }
+
+    /**
+     * 过滤出需要进行修改的集合，根据是否存在sku id
+     * @param goodsSpecProducts 待处理集合
+     * @return 需要跟新的集合
+     */
+    public static List<GoodsSpecProduct> filterSkuForUpdateOrInsert(List<GoodsSpecProduct> goodsSpecProducts,boolean forUpdate) {
+        if (goodsSpecProducts == null) {
+            return new ArrayList<>(0);
+        }
+        List<GoodsSpecProduct> retList;
+        if (forUpdate) {
+            retList = goodsSpecProducts.stream().filter(x -> x.getPrdId() != null).collect(Collectors.toList());
+        } else {
+            retList = goodsSpecProducts.stream().filter(x -> x.getPrdId() ==null).collect(Collectors.toList());
+        }
+
+        return retList;
     }
 }

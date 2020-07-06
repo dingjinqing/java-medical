@@ -1,5 +1,5 @@
 // pages1/getprescription/getprescription.js
-var util = require('../../utils/util.js')
+var util = require('../../utils/util.js');
 var app = getApp()
 global.wxPage({
 
@@ -10,7 +10,9 @@ global.wxPage({
     imageUrl: app.globalData.imageUrl,
     real_name: '',
     mobile: '',
-    card_id: ''
+    card_id: '',
+    if_show_agree: 0,
+    if_agree: 0
   },
 
   /**
@@ -29,11 +31,31 @@ global.wxPage({
     this.data.card_id = e.detail.value;
     prescription_info.card_id = this.data.card_id
   },
+  close_modal (e) {
+    this.setData({
+      if_show_agree: 0
+    })
+  },
+  not_agree () {
+    wx.navigateBack({})
+  },
+  agree () {
+    this.setData({
+      if_show_agree: 0,
+      if_agree: 1
+    })
+  },
   getPrescription () {
     let prescription_info = [];
     prescription_info.real_name = this.data.real_name;
     prescription_info.mobile = this.data.mobile;
     prescription_info.card_id = this.data.card_id;
+    if (this.data.if_show_agree == 0 && this.data.if_agree == 0) {
+      this.setData({
+        if_show_agree:1
+      });
+      return false;
+    }
     if (!prescription_info.real_name) {
       util.showModal("提示", "请输入姓名！");
       return false;

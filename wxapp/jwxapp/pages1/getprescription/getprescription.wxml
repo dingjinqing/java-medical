@@ -27,5 +27,19 @@
       <view class="btn_add" bindtap="getPrescription">获取病历</view>
     </view>
   </view>
+  <!-- 需知 -->
+  <view class="modal" wx:if='{{if_show_agree == 1}}'>
+    <view class="modal_bg" catchtap="close_modal"></view>
+    <view class="modal_content">
+      <view class="modal_info">
+        <view class="modal_title">重要提醒</view>
+        <view class="modal_text">这里是没确定的内容这里是没确定的内容这里是没确定的内容这里是没确定的内容这里是没确定的内容这里是没确定的内容</view>
+      </view>
+      <view class="modal_btn_group">
+        <view class="btn_not_agree" bindtap="not_agree">我要离开</view>
+        <view class="btn_agreee" bindtap="agree">同意以上内容</view>
+      </view>
+    </view>
+  </view>
 </view>
 

@@ -268,6 +268,9 @@ global.wxPage({
   to_present: function () {
     util.jumpLink("/pages1/presentlist/presentlist")
   },
+  to_get_pre () {
+    util.jumpLink('/pages1/getprescription/getprescription')
+  },
   /**
    * 生命周期函数--监听页面隐藏
    */

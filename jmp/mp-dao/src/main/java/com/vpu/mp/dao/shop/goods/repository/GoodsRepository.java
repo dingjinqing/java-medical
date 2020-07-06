@@ -43,6 +43,21 @@ public class GoodsRepository {
     }
 
     /**
+     * 商品修改
+     * @param goods
+     */
+    public void update(Goods goods) {
+        GoodsDo goodsDo = new GoodsDo();
+        FieldsUtil.assignWithIgnoreField(goods,goodsDo,getGoodsAssignIgnoreFields());
+        goodsDao.udpate(goodsDo);
+
+        GoodsMedicalInfoDo goodsMedicalInfoDo = new GoodsMedicalInfoDo();
+        GoodsMedicalInfo goodsMedicalInfo = goods.getGoodsMedicalInfo();
+        FieldsUtil.assign(goodsMedicalInfo,goodsMedicalInfoDo);
+        goodsMedicalInfoDao.update(goodsMedicalInfoDo);
+    }
+
+    /**
      * 判断goodsSn是否存在
      * @param goodsSn
      * @return true 是 false 否
