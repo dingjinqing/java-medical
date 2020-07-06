@@ -17,10 +17,10 @@
 			<artifactId>mp-config</artifactId>
 		</dependency>
 
- <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.jooq</groupId>
@@ -35,26 +35,22 @@
 		<dependency>
 			<groupId>net.coobird</groupId>
 			<artifactId>thumbnailator</artifactId>
-			<version>0.4.8</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.tuckey</groupId>
 			<artifactId>urlrewritefilter</artifactId>
-			<version>4.0.4</version>
 		</dependency>
 
 		<!-- 基本依赖，仅操作 xls 格式只需引入此依赖 -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>3.17</version>
 		</dependency>
 		<!-- 使用 xlsx 格式需要额外引入此依赖 -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>3.17</version>
 		</dependency>
 
 		<dependency>
@@ -66,7 +62,6 @@
 		<dependency>
 			<groupId>org.apache.ant</groupId>
 			<artifactId>ant</artifactId>
-			<version>1.8.4</version>
 		</dependency>
 
 		<dependency>
@@ -82,41 +77,34 @@
 		<dependency>
 			<groupId>com.upyun</groupId>
 			<artifactId>java-sdk</artifactId>
-			<version>4.1.2</version>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jooq</groupId>
 			<artifactId>jool</artifactId>
-			<version>0.9.12</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.simpleflatmapper</groupId>
 			<artifactId>sfm-jdbc</artifactId>
-			<version>3.11.2</version>
 		</dependency>
 		<!-- 中文转换对应拼音 -->
 		<dependency>
 			<groupId>com.belerweb</groupId>
 			<artifactId>pinyin4j</artifactId>
-			<version>2.5.0</version>
 		</dependency>
 		<dependency>
 	        <groupId>com.google.zxing</groupId>
 	        <artifactId>core</artifactId>
-	        <version>3.3.0</version>
     	</dependency>
 	    <dependency>
 	        <groupId>com.google.zxing</groupId>
 	        <artifactId>javase</artifactId>
-	        <version>3.3.0</version>
 	    </dependency>
 		<dependency>
 			<groupId>cn.hutool</groupId>
