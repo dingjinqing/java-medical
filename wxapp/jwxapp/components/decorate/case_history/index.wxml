@@ -1,0 +1,32 @@
+<view class="case-history-content">
+	<view class="prescription-module-title">
+		<image src="{{imageUrl}}image/wxapp/prescription-icon1.png"></image>
+		<text>我的病历</text>
+		<text class="more">更多</text>
+	</view>
+	<view class="case-history-list">
+		<view class="list-item title">电子病历1</view>
+		<view class="list-item">
+			<view class="item-line">
+				<text class="item-dot"></text>
+				<text class="item-title">诊断：</text>
+				<text>（J98.800X002）呼吸道感染</text>
+			</view>
+		</view>
+		<view class="list-item">
+			<view class="item-line">
+				<text class="item-dot"></text>
+				<text class="item-title">就诊科室：</text>
+				<text>内科</text>
+			</view>
+		</view>
+		<view class="list-item">
+			<view class="item-line">
+				<text class="item-dot"></text>
+				<text class="item-title">诊疗处理意见：</text>
+			</view>
+			<view class="item-info">
+			</view>
+		</view>
+	</view>
+</view>

@@ -11,6 +11,11 @@
 		</view>
 		<image src='{{m.img_title_url}}' wx:if='{{m.img_title_url}}' mode='widthFix' style='width:100%' data-url='{{m.title_link}}' bindtap='bindJumpLink'></image>
 	</block>
+  <view class="prescription-module-title">
+    <image src="{{imageUrl}}image/wxapp/prescription-icon2.png"></image>
+    <text>我的处方药</text>
+    <text class="more">更多</text>
+  </view>
   <!-- 单列商品 -->
   <v-single-colGoods wx:if="{{m.col_type =='4'}}" bindaddCart="getAddCartGoods" module="{{module}}" />
   <!-- 双列商品 -->

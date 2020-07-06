@@ -2,7 +2,6 @@
   padding: 50rpx 15rpx 20rpx;
   display: flex;
   flex-direction: column;
-  background: #fff;
   border-radius: 16rpx 16rpx 0 0;
 }
 .prescription-item{
@@ -20,7 +19,6 @@
   text-align: center;
   background-color: skyblue;
   height: 100rpx;
-  background:#26c4bc url(http://medicaldevimg.weipubao.cn/upload/224462/image/20200702/cHqjI9maXz2wGvOzjoHJ.png) no-repeat left top/100% 80rpx; 
   border-radius: 16rpx 16rpx 0 0;
 }
 .prescription-item > .item-list-content{
