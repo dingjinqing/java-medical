@@ -264,16 +264,7 @@
                 </div>
               </div>
               <div class="orderContent">
-                <div
-                  class="app_img"
-                  style="margin-left: 10px; border: 1px solid #ccc; width: 40px; height: 40px; overflow: hidden;flex: 0.2;margin-right: 10px;text-align: left;"
-                >
-                  <img
-                    :src="imgHost + '/image/admin/img1.jpg'"
-                    alt=""
-                  >
-                </div>
-                <div class="app_info">
+                <div class="patient_info">
                   <p>{{ $t('personalCenter.tipMedical1') }}</p>
                   <p>{{ $t('personalCenter.tipMedical2') }}</p>
                 </div>
@@ -1622,7 +1613,7 @@ export default {
       }, {
         module_name: 'current_patient',
         is_show: '1',
-        title: '当前患者'
+        title: '当前就诊人'
       }, {
         module_name: 'appointment',
         is_show: '1',
@@ -1778,7 +1769,7 @@ export default {
       }, {
         module_name: 'current_patient',
         is_show: '1',
-        title: '当前患者'
+        title: '当前就诊人'
       }, {
         module_name: 'appointment',
         is_show: '1',
@@ -2651,5 +2642,14 @@ export default {
   text-align: center;
   border-top: 1px solid #eee;
   z-index: 9;
+}
+.patient_info{
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 15px;
+}
+.patient_info > p:last-of-type{
+  color: #999;
+  margin-left: 24px;
 }
 </style>

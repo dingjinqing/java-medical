@@ -643,3 +643,36 @@ view{
 .es_word {
   height: 40rpx;
 }
+.patient_info{
+  float: none;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 50rpx;
+}
+.patient_info > view:last-of-type{
+  color: #999;
+  margin-left: 24rpx;
+}
+.no_patient_area{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 0;
+  width: 100%;
+}
+.brn_get_pre{
+  width: 240rpx;
+  height: 70rpx;
+  border-radius: 50rpx;
+  color: #fff;
+  background: #26C4BC;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.brn_get_pre > image{
+  margin-left: 20rpx;
+  margin-top: 6rpx;
+  width: 16rpx;
+}

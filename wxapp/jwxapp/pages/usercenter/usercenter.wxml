@@ -156,10 +156,15 @@
         </view>
       </view>
       <view class='ma_appoint clearfix'>
-        <view class='app_info'>
-          <view>huanzhexinxi1</view>
-          <view>huanzhexinxi1</view>
+        <view class='patient_info'>
+          <view>张三</view>
+          <view>13244556677</view>
         </view>
+        <!-- <view class="no_patient_area">
+          <view class="brn_get_pre" bindtap="to_get_pre">
+            去同步 <image src="http://medicaldevimg.weipubao.cn/image/wxapp/right_into_white.png" mode='widthFix'></image>
+          </view>
+        </view> -->
       </view>
     </view>
     <!-- 我的预约 -->
