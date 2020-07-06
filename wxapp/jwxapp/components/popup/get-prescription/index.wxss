@@ -1,0 +1,44 @@
+/* components/popup/get-prescription/index.wxss */
+.pre_content{
+  position: fixed;
+  top: 400rpx;
+  left: 45rpx;
+  width: 640rpx;
+  border-radius: 16rpx;
+}
+.hospital_img{
+  width: 100%;
+  height: 316rpx;
+  border-radius: 16rpx 16rpx 0 0;
+}
+.pre_info{
+  padding: 48rpx 0;
+  background: #fff;
+}
+.btn_to_get{
+  width: 580rpx;
+  margin: 0 auto 48rpx;
+  height: 80rpx;
+  border-radius: 50rpx;
+  color: #fff;
+  background: #26C4BC;
+  text-align: center;
+  line-height: 80rpx;
+  font-size: 28rpx;
+}
+.pre_tips{
+  color: #999;
+  margin: 0 auto;
+  text-align: center;
+}
+.pre_tips > view:first{
+  margin-bottom: 10rpx;
+}
+.btn_close{
+  text-align: center;
+  margin-top: 40rpx;
+}
+.btn_close image{
+  width: 80rpx;
+  height: 80rpx;
+}

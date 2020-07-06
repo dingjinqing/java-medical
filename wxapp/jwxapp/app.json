@@ -42,7 +42,8 @@
     "components/popup/view_benefits/index",
     "pages/personalcenter/personalcenter",
     "components/usercenter/useraddress/useraddress",
-    "pages/search/search"
+    "pages/search/search",
+    "components/popup/get-prescription/index"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -69,7 +70,7 @@
   "usingComponents": {
     "v-navigation": "/components/custom-navigation/index",
     "v-popup-get-phone-number": "/components/popup/get-phone-number/index",
-    "v-toast":"/components/popup/toast/index",
+    "v-toast": "/components/popup/toast/index",
     "share-button": "plugin://goodsSharePlugin/share-button"
   },
   "subpackages": [
@@ -131,11 +132,13 @@
         "packagesalelist/packagesalelist",
         "addressedit/addressedit",
         "prescriptionlist/prescriptionlist",
-        "familylist/familylist"
+        "familylist/familylist",
+        "getprescription/getprescription",
+        "prescriptioninfo/prescriptioninfo"
       ]
     }
   ],
-  "navigateToMiniProgramAppIdList":[
+  "navigateToMiniProgramAppIdList": [
     "wx6885acbedba59c14"
   ],
   "sitemapLocation": "sitemap.json"

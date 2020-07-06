@@ -1307,5 +1307,11 @@ public class JsonResultMessage {
      */
     public static final String USER_CARD_CHARGE_FILE_NAME = "user.card.charge.file_name";
 
+    /**
+     * 科室
+     */
+    public static final String DOCTOR_DEPARTMENT_NAME_EXIST = "doctor.department.name.exist";
+    public static final String DOCTOR_DEPARTMENT_NAME_IS_NULL = "doctor.department.name.is.null";
+    public static final String DOCTOR_DEPARTMENT_ID_IS_NULL = "doctor.department.id.is.null";
 
 }

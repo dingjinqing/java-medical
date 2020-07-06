@@ -21,5 +21,6 @@ public class GoodsMedicalInfoDao extends ShopBaseDao{
         GoodsMedicalInfoRecord goodsMedicalInfoRecord = new GoodsMedicalInfoRecord();
         FieldsUtil.assign(goodsMedicalInfoDo,goodsMedicalInfoRecord);
         db().executeInsert(goodsMedicalInfoRecord);
+        goodsMedicalInfoDo.setId(goodsMedicalInfoRecord.getId());
     }
 }

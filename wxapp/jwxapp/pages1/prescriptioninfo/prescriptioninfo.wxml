@@ -1,0 +1,58 @@
+<!--pages1/prescriptioninfo/prescriptioninfo.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class="mian-container">
+  <view class="prescription-content">
+    <view class="prescription-item">
+      <view class="top_info">
+        <view class="item-title">电子处方1</view>
+        <view class="top_content">
+          <view>就诊卡号：2006798749374837</view>
+          <view>编号：2006798749374837</view>
+        </view>
+      </view>
+      <view class="item-list-content">
+        <view class="item-list">
+          <view class="list-item">
+            <text class="list-item-dot"></text>
+            <view class="list-item-content">就诊人信息</view>
+          </view>
+          <view class="list_content list_patient_info">
+            <view class="each_patient_column">
+              <view class="dark_one">张三</view>
+              <view>姓名</view>
+            </view>
+            <view class="each_patient_column">
+              <view class="dark_one">男</view>
+              <view>性别</view>
+            </view>
+            <view class="each_patient_column">
+              <view class="dark_one">52岁</view>
+              <view>年龄</view>
+            </view>
+            <view class="each_patient_column">
+              <view class="dark_one">外科外科外科外科外科外科</view>
+              <view>科室</view>
+            </view>
+          </view>
+          <view class="list-item">
+            <text class="list-item-dot"></text>
+            <view class="list-item-content">诊断</view>
+          </view>
+          <view class="list_content">原发性高血压</view>
+          <view class="list-item">
+            <text class="list-item-dot"></text>
+            <view class="list-item-content">治疗建议</view>
+          </view>
+          <view class="list_content">
+            <view class="medicine_name">苯磺酸氨氯地平片</view>
+            <view class="medicine_spec">用法用量：清晨空腹口服，一次5mg，一日1次，用药84天</view>
+          </view>
+        </view>
+      </view>
+      <view class="doctor-info">
+        <text class="doctor-name">医师：张三</text>
+        <text class="item-date">日期：2020.06.30</text>
+      </view>
+    </view>
+  </view>
+</view>

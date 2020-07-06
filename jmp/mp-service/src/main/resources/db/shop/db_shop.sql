@@ -4716,6 +4716,8 @@ create table `b2c_goods_medical_info`(
     `goods_valid_time` varchar(128) comment '有效期',
     `goods_approval_number` varchar(128) comment '批准文号',
     `goods_production_enterprise` varchar(512) comment '生产企业',
+    `goods_limit_duty` tinyint(2) comment '药品最低聘任职务（限制对应医师开方）',
+    `goods_limit_antibacterial` tinyint(2) comment '抗菌限制',
     primary key (`id`)
 ) comment='商品辅助信息表';
 
@@ -4780,7 +4782,7 @@ create table b2c_doctor_title(
 create table b2c_doctor(
     `id`   int(11)      not null auto_increment,
     `account_id` int(11) not null comment '医师子账号id',
-    `sex` tinyint(1) not null default 0 comment '0位置 1男 2 女',
+    `sex` tinyint(1) not null default 0 comment '0未知 1男 2 女',
     `hospital_code` varchar(32) not null default '' comment '医师院内编号',
     `certificate_code` varchar(64) not null default '' comment '医师资格编码',
     `professional_code` varchar(64) not null default '' comment '医师职业编码',
@@ -4799,7 +4801,7 @@ create table b2c_doctor(
 -- 药师表
 create table b2c_pharmacist(
     `id`   int(11)      not null auto_increment,
-    `sex` tinyint(1) not null default 0 comment '0位置 1男 2 女',
+    `sex` tinyint(1) not null default 0 comment '0未知 1男 2 女',
     `certificate_code` varchar(64) not null default '' comment '药师资格编码',
     `professional_code` varchar(64) not null default '' comment '药师职业编码',
     `mobile` varchar(32) not null default '' comment '手机号',

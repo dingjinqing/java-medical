@@ -1,7 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.pojo.shop.goods.Goods;
+import com.vpu.mp.service.pojo.shop.goods.entity.Goods;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AdminMedicalGoodsController extends AdminBaseController{
     public JsonResult insert(@RequestBody Goods goods){
-
         return success();
     }
 }

@@ -1,0 +1,31 @@
+<!--pages1/getprescription/getprescription.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class="mian-container">
+  <view class="main_content">
+    <view class="top_img" 
+          style='background:url({{imageUrl}}image/wxapp/img1.jpg) 100% top no-repeat;background-size:100% 360rpx;'>
+    </view>
+    <view class="center_info">
+      <view class="each_line">
+        <view class="el_left">姓名 <text>*</text></view>
+        <view class="el_right">
+          <input type="text" placeholder="请输入姓名" bindblur="realName"></input>
+        </view>
+      </view>
+      <view class="each_line">
+        <view class="el_left">手机号 <text>*</text></view>
+        <view class="el_right">
+          <input type="text" placeholder="请输入手机号" bindblur="mobileInput"></input>
+        </view>
+      </view>
+      <view class="each_line">
+        <view class="el_left">身份证号码</view>
+        <view class="el_right">
+          <input type="text" placeholder="请输入身份证号码" bindblur="cardIdInput"></input>
+        </view>
+      </view>
+      <view class="btn_add" bindtap="getPrescription">获取病历</view>
+    </view>
+  </view>
+</view>
+

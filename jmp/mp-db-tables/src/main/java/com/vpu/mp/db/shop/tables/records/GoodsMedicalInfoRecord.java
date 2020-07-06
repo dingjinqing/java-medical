@@ -25,7 +25,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsMedicalInfoRecord extends UpdatableRecordImpl<GoodsMedicalInfoRecord> {
 
-    private static final long serialVersionUID = 1345004695;
+    private static final long serialVersionUID = 790004208;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_medical_info.id</code>. 商品额外信息id
@@ -419,6 +419,34 @@ public class GoodsMedicalInfoRecord extends UpdatableRecordImpl<GoodsMedicalInfo
         return (String) get(27);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods_medical_info.goods_limit_duty</code>. 药品最低聘任职务（限制对应医师开方）
+     */
+    public void setGoodsLimitDuty(Byte value) {
+        set(28, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods_medical_info.goods_limit_duty</code>. 药品最低聘任职务（限制对应医师开方）
+     */
+    public Byte getGoodsLimitDuty() {
+        return (Byte) get(28);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods_medical_info.goods_limit_antibacterial</code>. 抗菌限制
+     */
+    public void setGoodsLimitAntibacterial(Byte value) {
+        set(29, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods_medical_info.goods_limit_antibacterial</code>. 抗菌限制
+     */
+    public Byte getGoodsLimitAntibacterial() {
+        return (Byte) get(29);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -445,7 +473,7 @@ public class GoodsMedicalInfoRecord extends UpdatableRecordImpl<GoodsMedicalInfo
     /**
      * Create a detached, initialised GoodsMedicalInfoRecord
      */
-    public GoodsMedicalInfoRecord(Integer id, Integer goodsId, String goodsCommonName, String goodsAliasName, String goodsQualityRatio, Byte isMedical, Byte isRx, Byte insuranceFlag, String insuranceCode, String insuranceDatabaseName, String goodsBasicUnit, String goodsPackageUnit, Integer goodsUnitConvertFactor, Integer goodsEquivalentQuantity, String goodsEquivalentUnit, String goodsComposition, String goodsCharacters, String goodsFunction, String goodsUseMethod, String goodsAdverseReaction, String goodsTaboos, String goodsNoticeEvent, String goodsInteraction, String goodsStoreMethod, String goodsPackageMethod, String goodsValidTime, String goodsApprovalNumber, String goodsProductionEnterprise) {
+    public GoodsMedicalInfoRecord(Integer id, Integer goodsId, String goodsCommonName, String goodsAliasName, String goodsQualityRatio, Byte isMedical, Byte isRx, Byte insuranceFlag, String insuranceCode, String insuranceDatabaseName, String goodsBasicUnit, String goodsPackageUnit, Integer goodsUnitConvertFactor, Integer goodsEquivalentQuantity, String goodsEquivalentUnit, String goodsComposition, String goodsCharacters, String goodsFunction, String goodsUseMethod, String goodsAdverseReaction, String goodsTaboos, String goodsNoticeEvent, String goodsInteraction, String goodsStoreMethod, String goodsPackageMethod, String goodsValidTime, String goodsApprovalNumber, String goodsProductionEnterprise, Byte goodsLimitDuty, Byte goodsLimitAntibacterial) {
         super(GoodsMedicalInfo.GOODS_MEDICAL_INFO);
 
         set(0, id);
@@ -476,5 +504,7 @@ public class GoodsMedicalInfoRecord extends UpdatableRecordImpl<GoodsMedicalInfo
         set(25, goodsValidTime);
         set(26, goodsApprovalNumber);
         set(27, goodsProductionEnterprise);
+        set(28, goodsLimitDuty);
+        set(29, goodsLimitAntibacterial);
     }
 }

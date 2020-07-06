@@ -166,6 +166,12 @@
           <view class="act-time">{{announceData.startTime}}开始</view>
         </view>
       </view>
+      <view class="flex-wrap">
+        <view class="prescription-tips">
+          <image src="{{imageUrl}}image/wxapp/warn.png"></image>
+          <text>本品为处方药，请在医师指导下使用</text>
+        </view>
+      </view>
     </view>
     <view class="scoreRedeem" wx:if="{{goodsInfo.activity.activityType === 4}}">
       您当前拥有的积分总数为：{{goodsInfo.activity.userScore}}积分

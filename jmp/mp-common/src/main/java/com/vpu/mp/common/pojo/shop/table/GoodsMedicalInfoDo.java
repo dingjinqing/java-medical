@@ -42,4 +42,6 @@ public class GoodsMedicalInfoDo {
     private String  goodsValidTime;
     private String  goodsApprovalNumber;
     private String  goodsProductionEnterprise;
+    private Byte    goodsLimitDuty;
+    private Byte    goodsLimitAntibacterial;
 }

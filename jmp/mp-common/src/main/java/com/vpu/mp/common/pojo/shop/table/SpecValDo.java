@@ -1,5 +1,6 @@
 package com.vpu.mp.common.pojo.shop.table;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -13,9 +14,15 @@ import java.sql.Timestamp;
 public class SpecValDo {
     private Integer   specValId;
     private Integer   specId;
+    private Integer   goodsId;
     private String    specValName;
     private Byte      delFlag;
-    private Integer   goodsId;
     private Timestamp createTime;
     private Timestamp updateTime;
+
+    public SpecValDo(Integer specId, Integer goodsId, String specValName) {
+        this.specId = specId;
+        this.goodsId = goodsId;
+        this.specValName = specValName;
+    }
 }

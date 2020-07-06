@@ -1,10 +1,14 @@
 package com.vpu.mp.dao.shop.goods;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.GoodsDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
+import com.vpu.mp.db.shop.tables.Goods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import org.springframework.stereotype.Repository;
+
+import static com.vpu.mp.db.shop.Tables.GOODS;
 
 /**
  * 商品dao
@@ -18,11 +22,31 @@ public class GoodsDao extends ShopBaseDao {
      * @param goodsDo 商品数据
      * @return 商品id
      */
-    public Integer insert(GoodsDo goodsDo){
+    public void insert(GoodsDo goodsDo){
         GoodsRecord goodsRecord = new GoodsRecord();
         FieldsUtil.assign(goodsDo,goodsRecord);
         db().executeInsert(goodsRecord);
-        return goodsRecord.getGoodsId();
+        goodsDo.setGoodsId(goodsRecord.getGoodsId());
     }
+
+    /**
+     * 判断goodsSn是否存在
+     * @param goodsSn
+     * @return true 是 false 否
+     */
+    public boolean isGoodsSnExist(String goodsSn){
+        int count = db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.eq(goodsSn)));
+        return count>0;
+    }
+
+    /**
+     * 统计商品数量，包含已删除的
+     * @return 商品数量
+     */
+    public int countAllGoods(){
+        return db().fetchCount(GOODS);
+    }
+
+
 
 }
