@@ -1,7 +1,7 @@
 <view class="recommend_content" wx:if="{{dataList[0].length > 0}}">
   <view class="reco_title">
     <image class="image" src="{{imageUrl}}/image/wxapp/re_l.png"></image>
-    <text class="reco_title-text">猜你喜欢</text>
+    <text class="reco_title-text">相关药品</text>
     <image class="image" src="{{imageUrl}}/image/wxapp/re_r.png"></image>
   </view>
   <view class="goods_content">

@@ -1,8 +1,10 @@
+@import '/css/iconfont.wxss';
 .case-history-content{
   padding: 50rpx 15rpx 20rpx;
   display: flex;
   flex-direction: column;
   border-radius: 16rpx 16rpx 0 0;
+  background-color: #fff;
 }
 .case-history-list{
   background: #fff;
@@ -11,9 +13,10 @@
   flex-direction: column;
 }
 .list-item{
-  padding: 30rpx;
+  padding: 15rpx 30rpx;
   display: flex;
   flex-direction: column;
+  line-height: 60rpx;
 }
 .list-item + .list-item{
   border-top: 2rpx solid #eee;
@@ -68,4 +71,51 @@
   font-size: 26rpx;
   color: #656565;
   font-weight: 400;
+}
+.item-info {
+  padding-left: 36rpx;
+}
+.item-info > text{
+  color: #333;
+}
+.doctor-info{
+  display: flex;
+}
+.doctor-info > text{
+  color: #999;
+}
+.doctor-info > text:first-of-type{
+  margin-right: auto;
+}
+.no-content{
+  height: 512rpx;
+  background-color: #fff;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.no-content > image{
+  width: 380rpx;
+  height: 256rpx;
+}
+.no-content > .no-content-tips{
+  margin-top: 20rpx;
+  color: #333;
+}
+.no-content > .update-case{
+  width: 240rpx;
+  line-height: 70rpx;
+  border-radius: 35rpx;
+  background-color: #26C4BC;
+  text-align: center;
+  margin-top: 30rpx;
+  vertical-align: middle;
+}
+.no-content > .update-case > text{
+  color: #fff;
+}
+.no-content > .update-case > .iconjiantou{
+  font-size: 30rpx;
 }

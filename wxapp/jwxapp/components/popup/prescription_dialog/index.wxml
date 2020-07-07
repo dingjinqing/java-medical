@@ -9,10 +9,8 @@
 </wxs>
 <v-popup show="{{show}}" bind:close="bindClose" close_pos="outer-bottom" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
     <view class="prescription-content">
-      <view class="prescription-title-content">
+      <view class="prescription-title-content" style="background:#26c4bc url({{imageUrl}}image/wxapp/prescription_bg.png) no-repeat left top/100% 160rpx;">
         <view class="title">电子处方1</view>
-        <view class="card-no title-item">就诊卡号：2006798749374837</view>
-        <view class="no title-item">编号：37845415942125151</view>
       </view>
       <view class="prescription-info-content">
         <view class="prescription-item">
@@ -65,7 +63,16 @@
       </view>
       <view class="prescription-doctor-info">
         <view class="doctor-info">
-          <text class="doctor-name">医师：张三</text>
+          <text class="doctor-name">处方医师：</text>
+          <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image>
+        </view>
+        <view class="doctor-info">
+          <text class="doctor-name">审核药师：</text>
+          <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image>
+        </view>
+        <view class="doctor-info">
+          <text class="doctor-name">发药药师：</text>
+          <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image>
           <text class="item-date">日期：2020.06.30</text>
         </view>
       </view>

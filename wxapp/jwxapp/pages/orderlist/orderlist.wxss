@@ -49,14 +49,20 @@
 .order_list {
   display: flex;
   flex-direction: column;
-  padding-top: 190rpx;
+  padding-top: 200rpx;
 }
 .order_item {
   color: #333;
+  background-color: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  width: 702rpx;
+  margin: 0 auto;
 }
 .order_item + .order_item {
   margin-top: 20rpx;
 }
+
 .order_sn_status,
 .goods_item,
 .pay_info {
@@ -64,6 +70,14 @@
   font-size: 26rpx;
   padding: 10rpx 14rpx;
   background-color: #fff;
+}
+.order_sn_status{
+  height: 60rpx;
+  align-items: center;
+}
+.pay_info{
+  height: 60rpx;
+  align-items: center;
 }
 .goods_item {
   background-color: #fafafa;
@@ -134,7 +148,7 @@
   display: flex;
   flex-direction: row-reverse;
   background-color: #fff;
-  height: 90rpx;
+  height: 100rpx;
   align-items: center;
   padding: 0 14rpx;
 }
@@ -143,6 +157,7 @@
   border: 1px solid #ccc;
   color: #333;
   margin-left: 10rpx;
+  border-radius: 12rpx;
 }
 .presale_info {
   display: flex;
@@ -196,11 +211,11 @@
   transform: translate(-50%,-50%);
 }
 .is-null image{
-  width: 262rpx;
-  height: 276rpx;
+  width: 750rpx;
+  height: 448rpx;
 }
 .is-null text{
-  margin-top: 20rpx;
+  margin-top: -60rpx;
   color: #999;
 }
 .goods_price view{

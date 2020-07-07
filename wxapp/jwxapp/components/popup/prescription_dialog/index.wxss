@@ -4,7 +4,7 @@
   flex-direction: column;
 }
 .prescription-title-content{
-  height: 270rpx;
+  height: 180rpx;
   background:#26C4BC;
   border-radius: 16rpx 16rpx 0 0;
 }
@@ -13,7 +13,7 @@
   font-size: 40rpx;
   text-align: center;
   font-weight: 600;
-  line-height: 130rpx;
+  line-height: 160rpx;
 }
 .prescription-title-content .title-item{
   color: #fff;
@@ -27,10 +27,10 @@
   background: #fff;
   border-radius: 16rpx 16rpx 0 0;
   margin-top: -20rpx;
-  height: 600rpx;
+  height: 430rpx;
   display: flex;
   flex-direction: column;
-  padding:56rpx 62rpx 0 32rpx;
+  padding:56rpx 62rpx 56rpx 32rpx;
   overflow-y: scroll;
 }
 .prescription-item{
@@ -97,8 +97,10 @@
   background: #fff;
   display: flex;
   color: #999;
-  padding-right: 62rpx;
-  border-top: 2rpx solid #eee;
+  padding-right: 32rpx;
+}
+.prescription-content > .prescription-doctor-info > .doctor-info:first-of-type{
+  border-top:2rpx solid #eee;
 }
 .prescription-content > .prescription-doctor-info::after{
   content: '';
@@ -111,9 +113,14 @@
   background-size: 40rpx 20rpx;
 }
 .prescription-content > .prescription-doctor-info > .doctor-info > .doctor-name {
-  margin-right: auto;
+  color: #333;
   font-size: 26rpx;
 } 
+.prescription-content > .prescription-doctor-info > .doctor-info > .sign-img{
+  width: 200rpx;
+  height: 60rpx;
+}
 .prescription-content > .prescription-doctor-info > .doctor-info > .item-date {
   font-size: 26rpx;
+  margin-left: auto;
 } 

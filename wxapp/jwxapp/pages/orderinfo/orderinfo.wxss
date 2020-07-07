@@ -38,7 +38,7 @@
   display: flex;
   flex-direction: column;
   border-radius: 10rpx;
-  width: 720rpx;
+  width: 702rpx;
   margin: 0 auto;
   margin-top: 16rpx;
   background-color: #fff;
@@ -85,7 +85,11 @@
   padding: 16rpx;
   background-color: #fff;
   color: #333;
-  margin-top: 16rpx;
+  margin: 16rpx auto 0;
+  border-radius: 16rpx 16rpx 0 0;
+  width: 702rpx;
+  box-sizing: border-box;
+
 }
 
 .goods_item {
@@ -93,6 +97,9 @@
   font-size: 26rpx;
   padding: 14rpx 14rpx;
   background-color: #fafafa;
+  box-sizing: border-box;
+  width: 702rpx;
+  margin: 0 auto;
 }
 
 .goods_item>image {
@@ -142,7 +149,10 @@
   flex-direction: column;
   padding: 16rpx 16rpx 0;
   background-color: #fff;
-  margin-top: 16rpx;
+  margin: 16rpx auto 0;
+  border-radius: 16rpx;
+  box-sizing: border-box;
+  width: 702rpx;
 }
 
 .pay_info .pay_item {
@@ -185,15 +195,19 @@
   padding: 0 10rpx;
   border: 2rpx solid #eee;
   margin-left: 10rpx;
+  border-radius: 12rpx;
 }
 
 .order_info {
-  margin-top: 16rpx;
+  margin: 16rpx auto 0;
   background-color: #fff;
   padding: 0 16rpx;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  width: 702rpx;
+  box-sizing: border-box;
+  border-radius: 16rpx;
 }
 
 .order_info .title {

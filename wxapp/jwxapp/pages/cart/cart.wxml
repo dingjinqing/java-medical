@@ -306,7 +306,7 @@
   </block>
   <!-- 底部 -->
   <block wx:if='{{fullList || purchaseList || cartGoodsList}}'>
-    <view class="footer_fixed" style="bottom:{{show_bottom?'100rpx':'0'}};padding-bottom:{{isIpx == 1?'60rpx':'0'}}">
+    <view class="footer_fixed" style="bottom:{{show_bottom?'110rpx':'0'}};padding-bottom:{{isIpx == 1?'60rpx':'0'}}">
       <view class="ff_left" bindtap="changeAllChecked">
         <image src="{{imageUrl}}/image/wxapp/icon_rectangle.png" wx:if='{{isAllCheck == 0}}'></image>
         <text class='iconfont icondanxuan' style='color:{{comColor}};font-size:40rpx;margin-left:20rpx;margin-right:10rpx;' wx:if='{{isAllCheck == 1}}'></text> 全选

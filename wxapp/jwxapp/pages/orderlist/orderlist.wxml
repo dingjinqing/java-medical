@@ -132,8 +132,8 @@
       </block>
     </view>
     <view class="is-null" wx:if="{{dataList[0].length <= 0}}">
-      <image src="{{imageUrl}}image/wxapp/order-no.png"></image>
-      <text>您还没有相关订单哦</text>
+      <image src="{{imageUrl}}image/wxapp/no-order.png"></image>
+      <text>您还没有相关订单</text>
     </view>
     
   </view>
