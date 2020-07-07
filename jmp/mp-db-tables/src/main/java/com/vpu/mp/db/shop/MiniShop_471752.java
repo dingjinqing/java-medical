@@ -1078,6 +1078,8 @@ public class MiniShop_471752 extends SchemaImpl {
      * The table <code>mini_shop_471752..b2c_card_renew</code>.
      */
     public final CardRenew CARD_RENEW = com.vpu.mp.db.shop.tables.CardRenew.CARD_RENEW;
+
+    public final DoctorDepartmentCouple DOCTOR_DEPARTMENT_COUPLE = com.vpu.mp.db.shop.tables.DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE;
     
     /**
      * No further instances allowed
@@ -1315,6 +1317,7 @@ public class MiniShop_471752 extends SchemaImpl {
             Pharmacist.PHARMACIST,
             Prescription.PRESCRIPTION,
             PrescriptionItem.PRESCRIPTION_ITEM,
-            UserPatientCouple.USER_PATIENT_COUPLE);
+            UserPatientCouple.USER_PATIENT_COUPLE,
+            DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE);
     }
 }

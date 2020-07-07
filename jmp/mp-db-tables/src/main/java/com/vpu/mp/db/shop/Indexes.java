@@ -523,6 +523,7 @@ public class Indexes {
     public static final Index PRESCRIPTION_ITEM_PRIMARY = Indexes0.PRESCRIPTION_ITEM_PRIMARY;
     public static final Index USER_PATIENT_COUPLE_PRIMARY = Indexes0.USER_PATIENT_COUPLE_PRIMARY;
     public static final Index DOCTOR_ADVICE_PRIMARY = Indexes0.DOCTOR_ADVICE_PRIMARY;
+    public static final Index DOCTOR_DEPARTMENT_COUPLE_PRIMARY = Indexes0.DOCTOR_DEPARTMENT_COUPLE_PRIMARY;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -1022,5 +1023,6 @@ public class Indexes {
         public static Index PRESCRIPTION_ITEM_PRIMARY = Internal.createIndex("PRIMARY", PrescriptionItem.PRESCRIPTION_ITEM, new OrderField[] { PrescriptionItem.PRESCRIPTION_ITEM.ID }, true);
         public static Index USER_PATIENT_COUPLE_PRIMARY = Internal.createIndex("PRIMARY", UserPatientCouple.USER_PATIENT_COUPLE, new OrderField[] { UserPatientCouple.USER_PATIENT_COUPLE.ID }, true);
         public static Index DOCTOR_ADVICE_PRIMARY = Internal.createIndex("PRIMARY", DoctorAdvice.DOCTOR_ADVICE, new OrderField[] { DoctorAdvice.DOCTOR_ADVICE.ID }, true);
+        public static Index DOCTOR_DEPARTMENT_COUPLE_PRIMARY = Internal.createIndex("PRIMARY", DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE, new OrderField[] { DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE.ID }, true);
     }
 }

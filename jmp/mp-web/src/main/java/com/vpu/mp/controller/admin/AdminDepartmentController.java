@@ -13,7 +13,9 @@ import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
 
 import java.util.*;
 import com.vpu.mp.service.shop.ShopApplication;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
 public class AdminDepartmentController extends AdminBaseController{
     @Override
     protected ShopApplication shop() {
@@ -91,8 +93,8 @@ public class AdminDepartmentController extends AdminBaseController{
      * 根据id获取普通商家分类
      * @param departmentId 普通商家分类id
      */
-    @GetMapping("/api/admin/goods/doctor/department/{departmentId}")
-    public JsonResult getSort(Integer departmentId) {
+    @GetMapping("/api/admin/doctor/department/{departmentId}")
+    public JsonResult getDepartment(Integer departmentId) {
         if (departmentId == null) {
             return fail(JsonResultCode.DOCTOR_DEPARTMENT_ID_IS_NULL);
         }
@@ -103,7 +105,7 @@ public class AdminDepartmentController extends AdminBaseController{
      * 删除商家分类
      * @param departmentId 分类id
      */
-    @GetMapping("/api/admin/goods/sort/delete/{departmentId}")
+    @GetMapping("/api/admin/doctor/department/delete/{departmentId}")
     public JsonResult delete(Integer departmentId) {
         if (departmentId == null) {
             return fail(JsonResultCode.DOCTOR_DEPARTMENT_ID_IS_NULL);

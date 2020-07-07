@@ -1139,4 +1139,9 @@ public class Tables {
      * 医嘱表
      */
     public static final DoctorAdvice DOCTOR_ADVICE = com.vpu.mp.db.shop.tables.DoctorAdvice.DOCTOR_ADVICE;
+
+    /**
+     * 医师科室关联表
+     */
+    public static final DoctorDepartmentCouple DOCTOR_DEPARTMENT_COUPLE = com.vpu.mp.db.shop.tables.DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE;
 }

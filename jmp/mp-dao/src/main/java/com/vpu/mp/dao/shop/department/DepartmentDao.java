@@ -19,11 +19,11 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
-public class DepartmentDao  extends ShopBaseDao {
+public class DepartmentDao extends ShopBaseDao {
     public static final Integer ROOT_ID = 0;
 
     /**
-     * 测评活动列表
+     * 科室列表
      *
      * @param param
      * @return
@@ -49,39 +49,6 @@ public class DepartmentDao  extends ShopBaseDao {
     protected void buildOptions(SelectJoinStep<? extends Record> select, DepartmentListParam param) {
         Timestamp nowDate = new Timestamp(System.currentTimeMillis());
     }
-//    /**
-//     * 反馈数量
-//     *
-//     * @param list
-//     */
-//    public int countRecords(Integer id) {
-//        return db().selectCount().from(ASSESS_RECORD).where(ASSESS_RECORD.ASSESS_ID.eq(id)).fetchOne()
-//            .into(Integer.class);
-//    }
-//
-//    /**
-//     * 测评结果数
-//     *
-//     * @param id
-//     * @return
-//     */
-//    public int countResults(Integer id) {
-//        int resultNum = db().selectCount().from(ASSESS_RESULT).where(ASSESS_RESULT.ASSESS_ID.eq(id)).fetchOne()
-//            .into(Integer.class);
-//        return resultNum;
-//    }
-//
-//    /**
-//     * 测评题目数
-//     *
-//     * @param id
-//     * @return
-//     */
-//    public int countTopics(Integer id) {
-//        int topicNum = db().selectCount().from(ASSESS_TOPIC).where(ASSESS_TOPIC.ASSESS_ID.eq(id)).fetchOne()
-//            .into(Integer.class);
-//        return topicNum;
-//    }
 
     /**
      * 获取一条科室的信息
@@ -188,5 +155,13 @@ public class DepartmentDao  extends ShopBaseDao {
         }
         int count = db().fetchCount(DEPARTMENT, condition);
         return count>0;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public List<DepartmentOneParam> getListByIds(List<Integer> departmentIds) {
+        return db().select(DEPARTMENT.ID, DEPARTMENT.NAME).from(DEPARTMENT).where(DEPARTMENT.ID.in(departmentIds)).fetchInto(DepartmentOneParam.class);
     }
 }

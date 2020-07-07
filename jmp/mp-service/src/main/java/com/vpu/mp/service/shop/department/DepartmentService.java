@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.department;
 
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
+import com.vpu.mp.db.shop.tables.Department;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListParam;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
@@ -88,5 +89,13 @@ public class DepartmentService extends ShopBaseService {
             level = DepartmentConstant.ROOT_LEVEL;
         }
         return level;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public List<DepartmentOneParam> getListByIds(List<Integer> departmentIds) {
+        return departmentDao.getListByIds(departmentIds);
     }
 }
