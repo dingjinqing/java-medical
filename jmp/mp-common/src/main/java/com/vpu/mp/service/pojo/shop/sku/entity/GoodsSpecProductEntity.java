@@ -65,7 +65,7 @@ public class GoodsSpecProductEntity {
                 throw new IllegalArgumentException(String.format("规格组%s名值信息错误：%s", prdDesc, specKV));
             }
 
-            List<SpecValEntity> specValEntities = specEntity.getSpecValEntities();
+            List<SpecValEntity> specValEntities = specEntity.getSpecVals();
             int i = 0;
             for (; i < specValEntities.size(); i++) {
                 if (val.equals(specValEntities.get(i).getSpecValName())) {

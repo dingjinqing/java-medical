@@ -21,7 +21,7 @@ public class SpecEntity {
     /**
      * 规格值
      */
-    List<SpecValEntity> specValEntities;
+    List<SpecValEntity> specVals;
 
     /**
      * 规格名集合转换为对应的Map

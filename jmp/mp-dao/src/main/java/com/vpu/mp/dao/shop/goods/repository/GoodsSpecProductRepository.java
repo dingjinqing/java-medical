@@ -105,7 +105,7 @@ public class GoodsSpecProductRepository {
             SpecEntity specEntity = specEntities.get(i);
             specEntity.setSpecId(specDos.get(i).getSpecId());
 
-            for (SpecValEntity specValEntity : specEntity.getSpecValEntities()) {
+            for (SpecValEntity specValEntity : specEntity.getSpecVals()) {
                 specValEntities.add(specValEntity);
                 specValEntity.setGoodsId(goodsId);
                 specValEntity.setSpecId(specEntity.getSpecId());

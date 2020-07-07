@@ -82,14 +82,18 @@ public class GoodsRepository {
      */
     public GoodsSelectVo getByGoodsId(Integer goodsId) {
         GoodsDo goodsDo = goodsDao.getByGoodsId(goodsId);
+        if (goodsDo == null) {
+            return null;
+        }
         GoodsSelectVo goodsSelectVo = new GoodsSelectVo();
         FieldsUtil.assign(goodsDo,goodsSelectVo);
 
-        GoodsMedicalInfoDo goodsMedicalInfoDo = goodsMedicalInfoDao.getByGoodsId(goodsId);
-        GoodsMedicalInfoVo goodsMedicalInfoVo = new GoodsMedicalInfoVo();
-        FieldsUtil.assign(goodsMedicalInfoDo,goodsMedicalInfoVo);
-        goodsSelectVo.setGoodsMedicalInfoVo(goodsMedicalInfoVo);
-
+        if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(goodsDo.getIsMedical())) {
+            GoodsMedicalInfoDo goodsMedicalInfoDo = goodsMedicalInfoDao.getByGoodsId(goodsId);
+            GoodsMedicalInfoVo goodsMedicalInfoVo = new GoodsMedicalInfoVo();
+            FieldsUtil.assign(goodsMedicalInfoDo,goodsMedicalInfoVo);
+            goodsSelectVo.setGoodsMedicalInfoVo(goodsMedicalInfoVo);
+        }
         return goodsSelectVo;
     }
 

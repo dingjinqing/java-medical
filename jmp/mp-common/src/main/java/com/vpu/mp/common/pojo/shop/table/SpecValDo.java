@@ -1,7 +1,8 @@
 package com.vpu.mp.common.pojo.shop.table;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
@@ -11,6 +12,8 @@ import java.sql.Timestamp;
  * @date 2020年07月02日
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SpecValDo {
     private Integer   specValId;
     private Integer   specId;

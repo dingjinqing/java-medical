@@ -74,9 +74,9 @@ public class MedicalGoodsService {
         goodsEntity.calculateGoodsPriceWeight();
         goodsRepository.insert(goodsEntity);
         // 处理sku
-        if (goodsEntity.getSpecEntities() != null && goodsEntity.getSpecEntities().size() > 0) {
+        if (goodsEntity.getSpecs() != null && goodsEntity.getSpecs().size() > 0) {
             // 先插入规格组，协助sku生成其规格描述id字符串
-            goodsSpecProductRepository.batchSpecInsert(goodsEntity.getSpecEntities(), goodsEntity.getGoodsId());
+            goodsSpecProductRepository.batchSpecInsert(goodsEntity.getSpecs(), goodsEntity.getGoodsId());
         }
         goodsEntity.calculateSkuPrdSpecsBySpecs();
         goodsSpecProductRepository.batchSkuInsert(goodsEntity.getGoodsSpecProducts(), goodsEntity.getGoodsId());
@@ -120,9 +120,9 @@ public class MedicalGoodsService {
         // 删除旧的spec组
         goodsSpecProductRepository.deleteSpecByGoodsId(goodsEntity.getGoodsId());
         // 处理sku
-        if (goodsEntity.getSpecEntities() != null && goodsEntity.getSpecEntities().size() > 0) {
+        if (goodsEntity.getSpecs() != null && goodsEntity.getSpecs().size() > 0) {
             // 先插入规格组，协助sku生成其规格描述id字符串
-            goodsSpecProductRepository.batchSpecInsert(goodsEntity.getSpecEntities(), goodsEntity.getGoodsId());
+            goodsSpecProductRepository.batchSpecInsert(goodsEntity.getSpecs(), goodsEntity.getGoodsId());
         }
         goodsEntity.calculateSkuPrdSpecsBySpecs();
         // 处理需要修改的sku
@@ -133,7 +133,7 @@ public class MedicalGoodsService {
         goodsSpecProductRepository.batchSkuInsert(goodsSpecProductEntities, goodsEntity.getGoodsId());
 
         // 处理标签
-        goodsLabelRepository.deleteCouple(Collections.singletonList(goodsEntity.getGoodsId()),MedicalLabelConstant.GTA_GOODS);
+        goodsLabelRepository.deleteCouple(Collections.singletonList(goodsEntity.getGoodsId()), MedicalLabelConstant.GTA_GOODS);
         List<Integer> labelIds = goodsEntity.getLabelIds();
         if (labelIds != null && labelIds.size() > 0) {
             List<GoodsLabelCoupleVal> goodsLabelCoupleVals = GoodsLabelCoupleVal.generateCouples(labelIds, goodsEntity.getGoodsId(), MedicalLabelConstant.GTA_GOODS);
@@ -155,33 +155,38 @@ public class MedicalGoodsService {
      * 删除药品
      * @param goodsId
      */
-    public void deleteByGoodsIds(Integer goodsId){
+    public void deleteByGoodsId(Integer goodsId) {
         goodsRepository.deleteGoodsById(goodsId);
         goodsSpecProductRepository.deleteSkuByGoodsId(goodsId);
         goodsSpecProductRepository.deleteSpecByGoodsId(goodsId);
-        goodsLabelRepository.deleteCouple(Collections.singletonList(goodsId),MedicalLabelConstant.GTA_GOODS);
+        goodsLabelRepository.deleteCouple(Collections.singletonList(goodsId), MedicalLabelConstant.GTA_GOODS);
         goodsImgDao.deleteByGoodsId(goodsId);
     }
 
     /**
      * 根据商品id搜索商品信息
-     * @param goodsId
+     * @param goodsId 商品id
      */
-    public void selectByGoodsId(Integer goodsId){
+    public GoodsSelectVo getGoodsDetailByGoodsId(Integer goodsId) {
         GoodsSelectVo goodsSelectVo = goodsRepository.getByGoodsId(goodsId);
+        if (goodsSelectVo == null) {
+            return null;
+        }
         //设置sku
         List<GoodsSpecProductVo> skus = goodsSpecProductRepository.getSkuByGoodsId(goodsId);
         goodsSelectVo.setGoodsSpecProducts(skus);
 
         //设置规格组
-        if (!MedicalGoodsConstant.DEFAULT_SKU.equals(goodsSelectVo.getIsDefaultProduct())){
+        if (!MedicalGoodsConstant.DEFAULT_SKU.equals(goodsSelectVo.getIsDefaultProduct())) {
             List<SpecVo> specVos = goodsSpecProductRepository.getSpecListByGoodsId(goodsId);
             goodsSelectVo.setSpecVos(specVos);
         }
 
         // 品牌设置
         GoodsBrandDo goodsBrandDo = goodsBrandDao.getByBrandId(goodsSelectVo.getBrandId());
-        goodsSelectVo.setBrandName(goodsBrandDo.getBrandName());
+        if (goodsBrandDo != null) {
+            goodsSelectVo.setBrandName(goodsBrandDo.getBrandName());
+        }
 
         List<Integer> parentsSortIds = sortDao.getParentsSortIds(goodsSelectVo.getSortId());
         // 标签设置
@@ -192,7 +197,10 @@ public class MedicalGoodsService {
 
         List<String> imgPaths = goodsImgDao.getByGoodsId(goodsId);
         goodsSelectVo.setGoodsImgs(imgPaths);
+
+        return goodsSelectVo;
     }
+
     /**
      * 当前时间
      * 生成商品GoodsSn
@@ -212,6 +220,6 @@ public class MedicalGoodsService {
      * @author 孔德成
      */
     public GoodsMedicalInfoDo getByGoodsId(Integer goodsId) {
-       return goodsMedicalInfoDao.getByGoodsId(goodsId);
+        return goodsMedicalInfoDao.getByGoodsId(goodsId);
     }
 }

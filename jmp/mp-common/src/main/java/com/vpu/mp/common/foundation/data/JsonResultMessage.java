@@ -81,6 +81,7 @@ public class JsonResultMessage {
     public static final String GOODS_SN_EXIST = "goods.sn.exist";
     public static final String GOODS_MAIN_IMG_IS_NULL="goods.main.img.is.null";
     public static final String GOODS_SKU_CONTENT_ILLEGAL="goods.sku.content.illegal";
+    public static final String GOODS_NOT_EXIST = "goods.not.exist";
     /**
      * 商品品牌
      */

@@ -57,7 +57,7 @@ public class GoodsEntity {
     /**
      * 规格组集合
      */
-    private List<SpecEntity> specEntities;
+    private List<SpecEntity> specs;
     /**
      * 规格信息
      */
@@ -107,7 +107,7 @@ public class GoodsEntity {
      */
     public void calculateSkuPrdSpecsBySpecs() {
         if (!MedicalGoodsConstant.DEFAULT_SKU.equals(isDefaultProduct)) {
-            Map<String, SpecEntity> specNameMap = SpecEntity.mapNameToSpec(specEntities);
+            Map<String, SpecEntity> specNameMap = SpecEntity.mapNameToSpec(specs);
             for (GoodsSpecProductEntity goodsSpecProductEntity : goodsSpecProducts) {
                 goodsSpecProductEntity.calculatePrdSpecs(specNameMap);
             }

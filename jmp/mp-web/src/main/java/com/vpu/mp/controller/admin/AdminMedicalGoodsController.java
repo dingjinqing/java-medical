@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.shop.goods.entity.GoodsEntity;
+import com.vpu.mp.service.pojo.shop.goods.vo.GoodsSelectVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -93,8 +94,23 @@ public class AdminMedicalGoodsController extends AdminBaseController{
             return fail(JsonResultCode.GOODS_ID_IS_NULL);
         }
 
-        shop().medicalGoodsService.deleteByGoodsIds(goodsId);
+        shop().medicalGoodsService.deleteByGoodsId(goodsId);
 
         return success();
+    }
+
+    /**
+     * 药品查询
+     * @param goodsId 药品id
+     * @return
+     */
+    @GetMapping("/api/admin/medical/goods/get/{goodsId}")
+    public JsonResult getByGoodsId(@PathVariable("goodsId") Integer goodsId) {
+        if (goodsId == null) {
+            return fail(JsonResultCode.GOODS_ID_IS_NULL);
+        }
+        GoodsSelectVo goodsSelectVo = shop().medicalGoodsService.getGoodsDetailByGoodsId(goodsId);
+
+        return success(goodsSelectVo);
     }
 }
