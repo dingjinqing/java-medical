@@ -31,7 +31,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsMedicalInfo extends TableImpl<GoodsMedicalInfoRecord> {
 
-    private static final long serialVersionUID = 1402027252;
+    private static final long serialVersionUID = -1521973501;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_medical_info</code>
@@ -75,11 +75,6 @@ public class GoodsMedicalInfo extends TableImpl<GoodsMedicalInfoRecord> {
      * The column <code>mini_shop_471752.b2c_goods_medical_info.is_rx</code>. 是否处方药,rx处方药 otc非处方药 1是rx 0是otc
      */
     public final TableField<GoodsMedicalInfoRecord, Byte> IS_RX = createField("is_rx", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否处方药,rx处方药 otc非处方药 1是rx 0是otc");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_hospital_code</code>. 医院院内编码
-     */
-    public final TableField<GoodsMedicalInfoRecord, String> GOODS_HOSPITAL_CODE = createField("goods_hospital_code", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医院院内编码");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_medical_info.insurance_flag</code>. 医保类型 1:甲 2:乙 3:丙 4:科研
