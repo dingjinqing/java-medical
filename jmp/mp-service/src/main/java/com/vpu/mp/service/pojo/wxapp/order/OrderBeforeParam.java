@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.pojo.shop.prescription.PrescriptionVo;
+import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
@@ -110,6 +113,9 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 
     /** 直播订单里的房间号*/
     private Integer roomId;
+    /*******处方列表*************/
+    private List<PrescriptionVo> prescriptionList;
+
     /**
 	 * 商品参数
 	 * @author 王帅
@@ -170,6 +176,13 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
         /**会员专享*/
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         private Byte isCardExclusive;
+
+        //**********药品信息*******//
+        /**药品信息*/
+        private GoodsMedicalInfoDo medicalInfo;
+        /**处方详情*/
+        private PrescriptionItemDo prescriptionItem;
+
 
         public static Goods init(Integer goodsId, Integer goodsNumber, Integer productId) {
             OrderBeforeParam.Goods goods = new OrderBeforeParam.Goods();

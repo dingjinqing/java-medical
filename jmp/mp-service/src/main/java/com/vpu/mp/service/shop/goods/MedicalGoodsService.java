@@ -6,6 +6,8 @@ import cn.hutool.core.util.StrUtil;
 import com.vpu.mp.common.foundation.util.medical.DateFormatStr;
 import com.vpu.mp.common.pojo.shop.table.GoodsBrandDo;
 import com.vpu.mp.common.pojo.shop.table.GoodsImgDo;
+import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
+import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.brand.GoodsBrandDao;
 import com.vpu.mp.dao.shop.goods.repository.GoodsRepository;
 import com.vpu.mp.dao.shop.goods.repository.GoodsSpecProductRepository;
@@ -44,6 +46,9 @@ public class MedicalGoodsService {
     private GoodsLabelRepository goodsLabelRepository;
     @Autowired
     private GoodsImgDao goodsImgDao;
+    @Autowired
+    private GoodsMedicalInfoDao goodsMedicalInfoDao;
+
     @Autowired
     private GoodsBrandDao goodsBrandDao;
 
@@ -186,5 +191,14 @@ public class MedicalGoodsService {
         int count = goodsRepository.countAllGoods();
         String nowStr = DateUtil.format(new DateTime(), DateFormatStr.DATE_FORMAT_FULL_COMPACT);
         return String.format("G%s-%08d", nowStr, count);
+    }
+
+    /**
+     * 获取商品医药信息
+     * @param goodsId 商品id
+     * @return GoodsMedicalInfo or null
+     */
+    public GoodsMedicalInfoDo getByGoodsId(Integer goodsId) {
+       return goodsMedicalInfoDao.getByGoodsId(goodsId);
     }
 }

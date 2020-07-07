@@ -17,6 +17,12 @@
     </view>
   </view>
   <view class="family_footer">
-    <view class="btn_add_person">添加</view>
+    <view class="btn_add_person" bindtap="to_pre">添加</view>
   </view>
+
+  <!-- <view class="no_content">
+    <image src="http://medicaldevimg.weipubao.cn/image/wxapp/no_pre_img.png"></image>
+    <view class="no_word">暂无内容</view>
+    <view class="btn_get_pre" bindtap="to_pre">去添加</view>
+  </view> -->
 </view>

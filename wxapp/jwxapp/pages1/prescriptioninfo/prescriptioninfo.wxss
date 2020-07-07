@@ -17,7 +17,7 @@
   color: #fff;
   background-color: skyblue;
   height: 350rpx;
-  background:#26c4bc url(http://medicaldevimg.weipubao.cn/upload/224462/image/20200702/cHqjI9maXz2wGvOzjoHJ.png) no-repeat left top/100% 80rpx; 
+  background:#26c4bc url(http://medicaldevimg.weipubao.cn/image/wxapp/prescription_info_bg.png) no-repeat left top/100% 275rpx; 
   border-radius: 16rpx 16rpx 0 0;
 }
 .prescription-item > .top_info .item-title{

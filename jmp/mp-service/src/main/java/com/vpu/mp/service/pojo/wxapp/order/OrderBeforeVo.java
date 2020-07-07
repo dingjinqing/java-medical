@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.wxapp.order;
 import com.google.common.collect.Lists;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
@@ -145,6 +146,11 @@ public class OrderBeforeVo {
     private Byte insteadPayNum;
     private Byte isFreeshipCard;
     private BigDecimal freeshipCardMoney;
+
+    /*******处方列表*************/
+    private List<PrescriptionVo> prescriptionList;
+
+
     /**
      * 默认配送方式 0 ，1 ，2
      * @return

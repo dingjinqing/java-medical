@@ -16,7 +16,12 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
   },
-
+  to_pre () {
+    util.jumpLink('/pages1/getprescription/getprescription')
+  },
+  to_info () {
+    util.jumpLink('/pages1/prescriptioninfo/prescriptioninfo')
+  },  
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
