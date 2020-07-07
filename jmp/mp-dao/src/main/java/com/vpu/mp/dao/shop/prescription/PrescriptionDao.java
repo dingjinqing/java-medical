@@ -144,5 +144,9 @@ public class PrescriptionDao extends ShopBaseDao {
     }
 
     public void ListSimpleByprescriptionNo(List<String> prescriptionNoList) {
+        db().select().from(PRESCRIPTION)
+                .where(PRESCRIPTION.PRESCRIPTION_NO.in(prescriptionNoList))
+                .fetchAny();
+
     }
 }

@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
@@ -54,28 +56,28 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
         log.info("药品处方检查-开始");
-        List<PrescriptionVo> itemList =new ArrayList<>();
-        param.getGoods().forEach(goods -> {
+        List<PrescriptionVo> prescriptionList =new ArrayList<>();
+        for (OrderBeforeParam.Goods goods : param.getGoods()) {
             GoodsRecord goodsInfo = goods.getGoodsInfo();
             GoodsMedicalInfoDo medicalInfo = medicalGoodsService.getByGoodsId(goodsInfo.getGoodsId());
             //商品的医疗信息
-            if (medicalInfo!=null){
+            if (medicalInfo != null) {
                 goods.setMedicalInfo(medicalInfo);
                 PrescriptionVo prescriptionVo = prescriptionService
-                        .getByGoodsInfo(goods.getGoodsId(), medicalInfo.getGoodsCommonName(), medicalInfo.getGoodsQualityRatio(),medicalInfo.getGoodsProductionEnterprise());
+                        .getByGoodsInfo(goods.getGoodsId(), medicalInfo.getGoodsCommonName(), medicalInfo.getGoodsQualityRatio(), medicalInfo.getGoodsProductionEnterprise());
                 //处方信息
-                if (prescriptionVo!=null){
-                    itemList.add(prescriptionVo);
-                }else {
-                    log.info("{}药品没有处方信息",goodsInfo.getGoodsName());
+                if (prescriptionVo != null) {
+                    prescriptionList.add(prescriptionVo);
+                } else {
+                    log.info("{}药品没有处方信息", goodsInfo.getGoodsName());
                 }
             }
-        });
-        //处方单号
-        List<String> prescriptionNoList = itemList.stream().map(PrescriptionVo::getPrescriptionNo).distinct().collect(Collectors.toList());
-       prescriptionService.ListSimpleByprescriptionNo(prescriptionNoList);
-
-
+        }
+        //处方单号去重
+        prescriptionList = prescriptionList.stream()
+                .collect(Collectors.collectingAndThen
+                        (Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PrescriptionVo::getPrescriptionNo))), ArrayList::new));
+        param.setPrescriptionList(prescriptionList);
         log.info("药品处方检查-结束");
     }
 
