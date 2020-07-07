@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.goods.vo;
 
+import com.vpu.mp.service.pojo.shop.label.vo.GoodsLabelVo;
 import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductVo;
 import com.vpu.mp.service.pojo.shop.sku.vo.SpecVo;
 import lombok.Getter;
@@ -60,11 +61,11 @@ public class GoodsSelectVo {
     /**
      * 普通标签
      */
-    private List<String> normalLabels;
+    private List<GoodsLabelVo> normalLabels;
     /**
      * 指定标签
      */
-    private List<Integer> pointLabels;
+    private List<GoodsLabelVo> pointLabels;
 
     /**
      * 商品附属图片

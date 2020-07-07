@@ -35,6 +35,15 @@ public class GoodsImgDao extends ShopBaseDao {
     }
 
     /**
+     * 根据商品id查询商品图片
+     * @param goodsId
+     * @return
+     */
+    public List<String> getByGoodsId(Integer goodsId) {
+        return db().select(GOODS_IMG.IMG_URL).from(GOODS_IMG).where(GOODS_IMG.GOODS_ID.eq(goodsId)).fetch(GOODS_IMG.IMG_URL);
+    }
+
+    /**
      * 根据药品id删除图片
      * @param goodsId 药品id
      */

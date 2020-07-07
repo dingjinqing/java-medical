@@ -13,6 +13,7 @@ import com.vpu.mp.dao.shop.goods.repository.GoodsRepository;
 import com.vpu.mp.dao.shop.goods.repository.GoodsSpecProductRepository;
 import com.vpu.mp.dao.shop.img.GoodsImgDao;
 import com.vpu.mp.dao.shop.label.repository.GoodsLabelRepository;
+import com.vpu.mp.dao.shop.sort.SortDao;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
@@ -21,6 +22,7 @@ import com.vpu.mp.service.pojo.shop.goods.entity.GoodsEntity;
 import com.vpu.mp.service.pojo.shop.goods.vo.GoodsSelectVo;
 import com.vpu.mp.service.pojo.shop.label.MedicalLabelConstant;
 import com.vpu.mp.service.pojo.shop.label.entity.GoodsLabelCoupleVal;
+import com.vpu.mp.service.pojo.shop.label.vo.GoodsLabelVo;
 import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProductEntity;
 import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductVo;
 import com.vpu.mp.service.pojo.shop.sku.vo.SpecVo;
@@ -48,9 +50,10 @@ public class MedicalGoodsService {
     private GoodsImgDao goodsImgDao;
     @Autowired
     private GoodsMedicalInfoDao goodsMedicalInfoDao;
-
     @Autowired
     private GoodsBrandDao goodsBrandDao;
+    @Autowired
+    private SortDao sortDao;
 
     /**
      * 新增
@@ -176,11 +179,19 @@ public class MedicalGoodsService {
             goodsSelectVo.setSpecVos(specVos);
         }
 
-
+        // 品牌设置
         GoodsBrandDo goodsBrandDo = goodsBrandDao.getByBrandId(goodsSelectVo.getBrandId());
         goodsSelectVo.setBrandName(goodsBrandDo.getBrandName());
 
+        List<Integer> parentsSortIds = sortDao.getParentsSortIds(goodsSelectVo.getSortId());
+        // 标签设置
+        List<GoodsLabelVo> goodsNormalLabels = goodsLabelRepository.getGoodsNormalLabels(parentsSortIds);
+        List<GoodsLabelVo> goodsPointLabels = goodsLabelRepository.getGoodsPointLabels(goodsId);
+        goodsSelectVo.setPointLabels(goodsPointLabels);
+        goodsSelectVo.setNormalLabels(goodsNormalLabels);
 
+        List<String> imgPaths = goodsImgDao.getByGoodsId(goodsId);
+        goodsSelectVo.setGoodsImgs(imgPaths);
     }
     /**
      * 当前时间
