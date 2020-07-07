@@ -17,7 +17,7 @@
   color: #fff;
   background-color: skyblue;
   height: 350rpx;
-  background:#26c4bc url(http://medicaldevimg.weipubao.cn/image/wxapp/prescription_info_bg.png) no-repeat left top/100% 275rpx; 
+  background:#26c4bc url(http://medicaldevimg.weipubao.cn/image/wxapp/prescription_bg.png) no-repeat left top/100% 160rpx; 
   border-radius: 16rpx 16rpx 0 0;
 }
 .prescription-item > .top_info .item-title{
@@ -38,7 +38,7 @@
   background-color: #fff;
   position: relative;
   border-radius: 16rpx 16rpx 0 0;
-  margin-top: -80rpx;
+  margin-top: -190rpx;
 }
 .prescription-item > .item-list-content > .item-list{
   display: flex;
@@ -62,12 +62,10 @@
   font-weight: bold;
 }
 .prescription-item > .doctor-info{
-  height: 80rpx;
-  padding: 0 30rpx;
+  padding: 0 30rpx 20rpx;
   align-items: center;
   background: #fff;
   display: flex;
-  color: #999;
   position: relative;
 }
 .prescription-item > .doctor-info::after{
@@ -84,8 +82,22 @@
   margin-right: auto;
   font-size: 26rpx;
 } 
+.doctor-name > view{
+  display: flex;
+  align-items: center;
+  margin-top: 30rpx;
+}
+.doctor-name > view image{
+  width: 120rpx;
+  height: 60rpx;
+  border: 2rpx solid #eee;
+}
 .prescription-item > .doctor-info > .item-date {
   font-size: 26rpx;
+  color: #999;
+  position: absolute;
+  bottom: 30rpx;
+  right: 30rpx;
 } 
 .list_content{
   padding: 30rpx;
