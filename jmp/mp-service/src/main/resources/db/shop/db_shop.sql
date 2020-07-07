@@ -1256,6 +1256,7 @@ CREATE TABLE `b2c_goods` (
   `deliver_place` varchar(191) DEFAULT NULL COMMENT '发货地址',
   `share_config` varchar(500) DEFAULT NULL COMMENT '分享配置',
   `is_default_product` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1默认规格，0自定义规格（多规格）',
+  `is_medical` tinyint(1) not null default 1 comment '是否药品 0否 1是',
   PRIMARY KEY (`goods_id`),
   UNIQUE KEY `goods_id` (`goods_id`,`shop_id`),
   UNIQUE KEY `goods_sn` (`goods_sn`,`shop_id`),
@@ -4693,8 +4694,7 @@ create table `b2c_goods_medical_info`(
     `goods_common_name` varchar(512) not null default '' comment '通用名',
     `goods_alias_name` varchar(512) not null default '' comment '别名',
     `goods_quality_ratio` varchar(512) not null default '' comment '规格系数，通用名和规格系数确定一个药品',
-    `is_medical` tinyint(1) not null default 1 comment '是否药品',
-    `is_rx` tinyint(1) not null default 1 comment '是否处方药,rx处方药 otc非处方药',
+    `is_rx` tinyint(1) not null default 1 comment '是否处方药,rx处方药 otc非处方药 1是rx 0是otc',
     `goods_hospital_code` varchar(64) not null default '' comment '医院院内编码',
     `insurance_flag` tinyint(1) not null default 0 comment '医保类型 1:甲 2:乙 3:丙 4:科研',
     `insurance_code` varchar(64) not null default '' comment '医保编码',
@@ -4723,7 +4723,7 @@ create table `b2c_goods_medical_info`(
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     primary key (`id`)
-) comment='商品辅助信息表';
+) comment='商品-药品信息表';
 
 
 -- 患者信息表

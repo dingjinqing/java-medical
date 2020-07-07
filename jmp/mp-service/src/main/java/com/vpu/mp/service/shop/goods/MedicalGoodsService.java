@@ -146,6 +146,14 @@ public class MedicalGoodsService {
         goodsLabelRepository.deleteCouple(Collections.singletonList(goodsId),MedicalLabelConstant.GTA_GOODS);
         goodsImgDao.deleteByGoodsId(goodsId);
     }
+
+    /**
+     * 根据商品id搜索商品信息
+     * @param goodsId
+     */
+    public void selectByGoodsId(Integer goodsId){
+
+    }
     /**
      * 当前时间
      * 生成商品GoodsSn

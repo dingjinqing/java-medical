@@ -44,6 +44,8 @@ public class GoodsDao extends ShopBaseDao {
             .execute();
     }
 
+    
+
     /**
      * 判断goodsSn是否存在
      * @param goodsSn

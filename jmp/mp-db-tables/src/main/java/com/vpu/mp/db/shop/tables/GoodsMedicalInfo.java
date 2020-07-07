@@ -19,7 +19,7 @@ import java.util.List;
 
 
 /**
- * 商品辅助信息表
+ * 商品-药品信息表
  */
 @Generated(
     value = {
@@ -31,7 +31,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsMedicalInfo extends TableImpl<GoodsMedicalInfoRecord> {
 
-    private static final long serialVersionUID = 1555587789;
+    private static final long serialVersionUID = 1402027252;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_medical_info</code>
@@ -72,14 +72,9 @@ public class GoodsMedicalInfo extends TableImpl<GoodsMedicalInfoRecord> {
     public final TableField<GoodsMedicalInfoRecord, String> GOODS_QUALITY_RATIO = createField("goods_quality_ratio", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "规格系数，通用名和规格系数确定一个药品");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_medical_info.is_medical</code>. 是否药品
+     * The column <code>mini_shop_471752.b2c_goods_medical_info.is_rx</code>. 是否处方药,rx处方药 otc非处方药 1是rx 0是otc
      */
-    public final TableField<GoodsMedicalInfoRecord, Byte> IS_MEDICAL = createField("is_medical", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否药品");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_medical_info.is_rx</code>. 是否处方药,rx处方药 otc非处方药
-     */
-    public final TableField<GoodsMedicalInfoRecord, Byte> IS_RX = createField("is_rx", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否处方药,rx处方药 otc非处方药");
+    public final TableField<GoodsMedicalInfoRecord, Byte> IS_RX = createField("is_rx", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否处方药,rx处方药 otc非处方药 1是rx 0是otc");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_hospital_code</code>. 医院院内编码
@@ -242,7 +237,7 @@ public class GoodsMedicalInfo extends TableImpl<GoodsMedicalInfoRecord> {
     }
 
     private GoodsMedicalInfo(Name alias, Table<GoodsMedicalInfoRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment("商品辅助信息表"));
+        super(alias, null, aliased, parameters, DSL.comment("商品-药品信息表"));
     }
 
     public <O extends Record> GoodsMedicalInfo(Table<O> child, ForeignKey<O, GoodsMedicalInfoRecord> key) {
