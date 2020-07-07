@@ -44,6 +44,18 @@ public class GoodsDao extends ShopBaseDao {
             .execute();
     }
 
+    /**
+     * 查询商品详情
+     * @param goodsId 商品id
+     * @return null表示不存在
+     */
+    public GoodsDo getByGoodsId(Integer goodsId){
+        GoodsDo goodsDo = db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
+            .fetchAnyInto(GoodsDo.class);
+
+        return goodsDo;
+    }
+
     
 
     /**

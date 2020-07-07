@@ -40,4 +40,10 @@ public class SpecDao extends ShopBaseDao {
     public void deleteByGoodsId(Integer goodsId) {
         db().deleteFrom(SPEC).where(SPEC.GOODS_ID.eq(goodsId)).execute();
     }
+
+    public List<SpecDo> getSpecsByGoodsId(Integer goodsId) {
+        List<SpecDo> specDos = db().selectFrom(SPEC).where(SPEC.GOODS_ID.eq(goodsId))
+            .fetchInto(SpecDo.class);
+        return specDos;
+    }
 }

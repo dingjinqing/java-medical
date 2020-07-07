@@ -37,6 +37,19 @@ public class GoodsMedicalInfoDao extends ShopBaseDao{
         db().executeUpdate(goodsMedicalInfoRecord);
     }
 
+    /**
+     * 根据商品id查询
+     * @param goodsId
+     * @return
+     */
+    public GoodsMedicalInfoDo getByGoodsId(Integer goodsId) {
+        GoodsMedicalInfoDo goodsMedicalInfoDo = db().selectFrom(GOODS_MEDICAL_INFO)
+            .where(GOODS_MEDICAL_INFO.GOODS_ID.eq(goodsId).and(GOODS_MEDICAL_INFO.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
+            .fetchAnyInto(GoodsMedicalInfoDo.class);
+
+        return goodsMedicalInfoDo;
+    }
+
 
     public void deleteByGoodsId(Integer goodsId) {
         db().update(GOODS_MEDICAL_INFO)

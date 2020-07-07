@@ -50,6 +50,19 @@ public class GoodsSpecProductDao extends ShopBaseDao {
         db().batchUpdate(goodsSpecProductRecords).execute();
     }
 
+    /**
+     * 根据商品id获取其sku信息
+     * @param goodsId
+     * @return
+     */
+    public List<GoodsSpecProductDo> getSkuByGoodsId(Integer goodsId){
+        List<GoodsSpecProductDo> goodsSpecProductDos = db().selectFrom(GOODS_SPEC_PRODUCT)
+            .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId).and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
+            .fetchInto(GoodsSpecProductDo.class);
+
+        return goodsSpecProductDos;
+    }
+
     public void deleteByGoodsId(Integer goodsId) {
         db().update(GOODS_SPEC_PRODUCT)
             .set(GOODS_SPEC_PRODUCT.PRD_SN, DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS_SPEC_PRODUCT.PRD_SN))

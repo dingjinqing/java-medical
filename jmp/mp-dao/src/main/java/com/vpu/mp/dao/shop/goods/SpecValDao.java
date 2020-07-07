@@ -34,6 +34,12 @@ public class SpecValDao extends ShopBaseDao {
         }
     }
 
+    public List<SpecValDo> getSepcValsByGoodsId(Integer goodsId) {
+        List<SpecValDo> specDos = db().selectFrom(SPEC_VALS).where(SPEC_VALS.GOODS_ID.in(goodsId))
+            .fetchInto(SpecValDo.class);
+        return specDos;
+    }
+
     /**
      * 根据商品id删除
      * @param goodsId

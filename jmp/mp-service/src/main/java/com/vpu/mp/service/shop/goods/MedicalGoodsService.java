@@ -4,7 +4,9 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.vpu.mp.common.foundation.util.medical.DateFormatStr;
+import com.vpu.mp.common.pojo.shop.table.GoodsBrandDo;
 import com.vpu.mp.common.pojo.shop.table.GoodsImgDo;
+import com.vpu.mp.dao.shop.brand.GoodsBrandDao;
 import com.vpu.mp.dao.shop.goods.repository.GoodsRepository;
 import com.vpu.mp.dao.shop.goods.repository.GoodsSpecProductRepository;
 import com.vpu.mp.dao.shop.img.GoodsImgDao;
@@ -12,10 +14,14 @@ import com.vpu.mp.dao.shop.label.repository.GoodsLabelRepository;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
+import com.vpu.mp.service.pojo.shop.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.entity.GoodsEntity;
+import com.vpu.mp.service.pojo.shop.goods.vo.GoodsSelectVo;
 import com.vpu.mp.service.pojo.shop.label.MedicalLabelConstant;
 import com.vpu.mp.service.pojo.shop.label.entity.GoodsLabelCoupleVal;
 import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProductEntity;
+import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductVo;
+import com.vpu.mp.service.pojo.shop.sku.vo.SpecVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +44,8 @@ public class MedicalGoodsService {
     private GoodsLabelRepository goodsLabelRepository;
     @Autowired
     private GoodsImgDao goodsImgDao;
+    @Autowired
+    private GoodsBrandDao goodsBrandDao;
 
     /**
      * 新增
@@ -152,6 +160,21 @@ public class MedicalGoodsService {
      * @param goodsId
      */
     public void selectByGoodsId(Integer goodsId){
+        GoodsSelectVo goodsSelectVo = goodsRepository.getByGoodsId(goodsId);
+        //设置sku
+        List<GoodsSpecProductVo> skus = goodsSpecProductRepository.getSkuByGoodsId(goodsId);
+        goodsSelectVo.setGoodsSpecProducts(skus);
+
+        //设置规格组
+        if (!MedicalGoodsConstant.DEFAULT_SKU.equals(goodsSelectVo.getIsDefaultProduct())){
+            List<SpecVo> specVos = goodsSpecProductRepository.getSpecListByGoodsId(goodsId);
+            goodsSelectVo.setSpecVos(specVos);
+        }
+
+
+        GoodsBrandDo goodsBrandDo = goodsBrandDao.getByBrandId(goodsSelectVo.getBrandId());
+        goodsSelectVo.setBrandName(goodsBrandDo.getBrandName());
+
 
     }
     /**

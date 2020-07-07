@@ -10,13 +10,14 @@ import com.vpu.mp.dao.shop.goods.SpecValDao;
 import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProductEntity;
 import com.vpu.mp.service.pojo.shop.sku.entity.SpecEntity;
 import com.vpu.mp.service.pojo.shop.sku.entity.SpecValEntity;
+import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductVo;
+import com.vpu.mp.service.pojo.shop.sku.vo.SpecValVo;
+import com.vpu.mp.service.pojo.shop.sku.vo.SpecVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author 李晓冰
@@ -117,6 +118,53 @@ public class GoodsSpecProductRepository {
         for (int i = 0; i < specValDos.size(); i++) {
             specValEntities.get(i).setSpecValId(specValDos.get(i).getSpecValId());
         }
+    }
+
+    /**
+     * @param goodsId
+     * @return
+     */
+    public List<GoodsSpecProductVo> getSkuByGoodsId(Integer goodsId){
+        List<GoodsSpecProductDo> goodsSpecProductDos = goodsSpecProductDao.getSkuByGoodsId(goodsId);
+
+        List<GoodsSpecProductVo> collect = goodsSpecProductDos.stream().map(sku -> {
+            GoodsSpecProductVo goodsSpecProductVo = new GoodsSpecProductVo();
+            FieldsUtil.assign(sku, goodsSpecProductVo);
+            return goodsSpecProductVo;
+        }).collect(Collectors.toList());
+
+        return collect;
+    }
+
+    public List<SpecVo> getSpecListByGoodsId(Integer goodsId) {
+        List<SpecDo> specDos = specDao.getSpecsByGoodsId(goodsId);
+        List<SpecValDo> specValDos = specValDao.getSepcValsByGoodsId(goodsId);
+
+        List<SpecVo> specVos = new ArrayList<>(specDos.size());
+        for (SpecDo specDo : specDos) {
+            SpecVo specVo = new SpecVo();
+            specVo.setGoodsId(goodsId);
+            specVo.setSpecId(specDo.getSpecId());
+            specVo.setSpecName(specDo.getSpecName());
+            specVos.add(specVo);
+        }
+        Map<Integer, List<SpecValDo>> specValDoGroup = specValDos.stream().collect(Collectors.groupingBy(SpecValDo::getSpecId));
+
+        for (SpecVo specVo : specVos) {
+            List<SpecValDo> svds = specValDoGroup.get(specVo.getSpecId());
+            List<SpecValVo> svls = svds.stream().map(svd -> {
+                SpecValVo vo = new SpecValVo();
+                vo.setGoodsId(goodsId);
+                vo.setSpecId(svd.getSpecId());
+                vo.setSpecValId(svd.getSpecValId());
+                vo.setSpecValName(svd.getSpecValName());
+                return vo;
+            }).collect(Collectors.toList());
+
+            specVo.setSpecValVos(svls);
+        }
+
+        return specVos;
     }
 
     /**

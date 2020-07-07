@@ -8,6 +8,8 @@ import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.service.pojo.shop.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.entity.GoodsEntity;
 import com.vpu.mp.service.pojo.shop.goods.entity.GoodsMedicalInfoEntity;
+import com.vpu.mp.service.pojo.shop.goods.vo.GoodsMedicalInfoVo;
+import com.vpu.mp.service.pojo.shop.goods.vo.GoodsSelectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -71,6 +73,24 @@ public class GoodsRepository {
     public void deleteGoodsById(Integer goodId) {
         goodsDao.deleteByGoodsId(goodId);
         goodsMedicalInfoDao.deleteByGoodsId(goodId);
+    }
+
+    /**
+     * 根据商品id查询
+     * @param goodsId
+     * @return
+     */
+    public GoodsSelectVo getByGoodsId(Integer goodsId) {
+        GoodsDo goodsDo = goodsDao.getByGoodsId(goodsId);
+        GoodsSelectVo goodsSelectVo = new GoodsSelectVo();
+        FieldsUtil.assign(goodsDo,goodsSelectVo);
+
+        GoodsMedicalInfoDo goodsMedicalInfoDo = goodsMedicalInfoDao.getByGoodsId(goodsId);
+        GoodsMedicalInfoVo goodsMedicalInfoVo = new GoodsMedicalInfoVo();
+        FieldsUtil.assign(goodsMedicalInfoDo,goodsMedicalInfoVo);
+        goodsSelectVo.setGoodsMedicalInfoVo(goodsMedicalInfoVo);
+
+        return goodsSelectVo;
     }
 
     /**
