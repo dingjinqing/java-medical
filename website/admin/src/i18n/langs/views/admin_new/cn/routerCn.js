@@ -105,6 +105,8 @@ export const cn = {
   patientList: ['会员管理', '患者列表'],
   // 会员管理 患者列表 患者信息
   patientMessage: ['会员管理', '患者列表', '患者信息'],
+  // 会员管理 患者列表 患者信息 处方详情
+  prescriptionMessage: ['会员管理', '患者列表', '患者信息', '处方详情'],
   // 积分管理 查看签到会员
   viewSigninMembers: ['积分管理', '查看签到会员'],
   // 积分管理 积分说明

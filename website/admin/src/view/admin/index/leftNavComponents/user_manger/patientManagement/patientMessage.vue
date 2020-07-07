@@ -133,150 +133,91 @@
     </div>
     <div class="topContainer">
       <div class="titleEdit"><span>处方记录</span></div>
-      <el-table
-        v-loading='loading'
-        :data='tableData'
-        style="width:100%"
-        border
-        :header-cell-style="{
+      <div class="tablebox">
+        <el-table
+          v-loading='loading'
+          :data='tableData'
+          style="width:100%;"
+          border
+          :header-cell-style="{
               'background-color':'#f5f5f5',
               'text-align':'center',
-              'border':'none',
               'color': '#000',
               'padding':'10px',
             }"
-        :cell-style="{
+          :cell-style="{
               'text-align':'center'
             }"
-      >
-        <el-table-column
-          prop='storeName'
-          label='患者编号'
-        ></el-table-column>
-        <el-table-column
-          prop='posShopId'
-          label='姓名'
-        ></el-table-column>
-        <el-table-column
-          prop='groupName'
-          label='手机号'
-        ></el-table-column>
-        <el-table-column
-          prop='registeredHospital'
-          label='就诊卡号'
-        ></el-table-column>
-        <el-table-column
-          prop='department'
-          label='疾病史'
-        ></el-table-column>
-        <el-table-column
-          prop='jobTitle'
-          label='过敏史'
-        ></el-table-column>
-        <el-table-column
-          prop='registeredTime'
-          label='注册时间'
-        ></el-table-column>
-        <el-table-column label='操作'>
-          <template slot-scope="scope">
-            <div class="operation">
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="查看详情"
-                placement="top"
-              >
-                <a @click='handleSeeMessage(134)'>查看详情</a>
-              </el-tooltip>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <div class="topContainer">
-      <div class="titleEdit"><span>{{$t('membershipIntroduction.Transactionstatistics')}}</span><span @click="jumpToOrderPage">{{$t('membershipIntroduction.OrderList')}}</span></div>
-      <div
-        class="transactionTab"
-        v-if="transactionTabFlag === true"
-      >
-        <p
-          v-for="(item, index) in transactionTab"
-          :key="index"
-          :class="index === transactionTabIndex ? 'hignLight' : ''"
-          @click="transactionTabSelect(index, item.value)"
-        >{{item.label}}</p>
-      </div>
-      <div class="transactionDiv">
-        <div
-          style="flex:1"
-          v-for="(item,index) in transactionData"
-          :key="index"
-          :class="index!==0?'borderLeft':''"
-          v-if="!(transactionTabFlag === false && (item.value === 'unitPrice' || item.value === 'totalMoneyPaid'))"
         >
-          <p>
-            {{item.title}}
-            <el-tooltip
-              effect="light"
-              placement="top"
-            >
-              <div slot="content">{{item.tip}}</div>
-              <i class="el-icon-question icon-style"></i>
-            </el-tooltip>
-          </p>
-          <div
-            class="transactionBottom"
-            v-if="item.value === 'lastOrderTime'"
-          >{{item.content ? item.content : '暂未下单'}}</div>
-          <div
-            class="transactionBottom"
-            v-else-if="item.value === 'unitPrice' || item.value === 'totalMoneyPaid' || item.value === 'returnOrderMoney'"
-          >￥{{item.content ? Number(item.content).toFixed(2) : '0.00'}}</div>
-          <div
-            class="transactionBottom"
-            v-else
-          >{{item.content}}</div>
-          <div
-            v-if="transactionTabIndex === 2"
-            style="text-align: center;margin-top: 10px;"
-          >
-            <el-button
-              type="primary"
-              plain
-              size="small"
-              @click="jumpToMemberHandler(item.linkName, index)"
-            >查看订单</el-button>
-          </div>
-        </div>
-      </div>
-      <div
-        class="transactionOrder"
-        v-if="transactionTabIndex !== 0 && transactionTabIndex !== 2"
-      >
-        <el-button
-          type="primary"
-          plain
-          size="small"
-          @click="jumpToHandler"
-        >查看订单</el-button>
+          <el-table-column
+            prop='prescriptionNo'
+            label='处方号'
+          ></el-table-column>
+          <el-table-column
+            prop='registerHospital'
+            label='注册医院'
+          ></el-table-column>
+          <el-table-column
+            prop='departmentName'
+            label='科室名称'
+          ></el-table-column>
+          <el-table-column
+            prop='doctorName'
+            label='医师名称'
+          ></el-table-column>
+          <el-table-column
+            prop='diagnoseTime'
+            label='就诊时间'
+          ></el-table-column>
+          <el-table-column
+            prop='pharmacistName'
+            label='药师名称'
+          ></el-table-column>
+          <el-table-column
+            prop='pharmacistName'
+            label='疾病名称'
+          ></el-table-column>
+          <el-table-column
+            prop='sicknessName'
+            label='处方来源'
+          ></el-table-column>
+          <el-table-column
+            prop='status'
+            label='审核状态'
+          ></el-table-column>
+          <el-table-column
+            prop='expireType'
+            label='有效期'
+          ></el-table-column>
+          <el-table-column
+            prop='prescriptionCreateTime'
+            label='开方时间'
+          ></el-table-column>
+          <el-table-column label='操作'>
+            <template slot-scope="scope">
+              <div class="operation">
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="查看详情"
+                  placement="top"
+                >
+                  <a @click='handleSeeMessage(scope.row.patientid)'>查看详情</a>
+                </el-tooltip>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
       </div>
     </div>
-    <div
-      class="topContainer"
-      v-if="memberBasicInfo.isDistributor"
-    >
-      <div class="titleEdit"><span>{{$t('membershipIntroduction.distributionStatistic')}}</span></div>
-      <div class="transactionDiv">
-        <div
-          style="flex:1"
-          v-for="(item,index) in distributionData"
-          :key="index"
-          :class="index!==0?'borderLeft':''"
-        >
-          <p>{{item.title}}</p>
-          <div class="transactionBottom">{{item.content}}</div>
-        </div>
-      </div>
+
+    <!--修改邀请人弹窗-->
+    <div class="baseInfo">
+      <!--选择会员弹窗组件-->
+      <ChooseUser
+        :dialogVisible.sync="modifypersonDialogVisible"
+        @rowData="dealRowData"
+      />
     </div>
     <!--基本信息编辑弹窗-->
     <div class="baseInfo">
@@ -438,7 +379,8 @@
 </template>
 <script>
 import ProAndUrbA from '@/components/system/proAndUrbA'
-import { getAllIndustryRequest, membershipListRequest, memberInfoRequest, getTagForMemberRequest, allTagRequest, setTagForMemberRequest, updateMemberInfoRequest } from '@/api/admin/membershipList.js'
+import { getAllIndustryRequest, membershipListRequest, memberInfoRequest, allTagRequest, setTagForMemberRequest, updateMemberInfoRequest } from '@/api/admin/membershipList.js'
+import { getPatientPrescriptionData } from '@/api/admin/memberManage/patientMessage.js'
 import pagination from '@/components/admin/pagination/pagination'
 import ChooseUser from '@/components/admin/chooseUser'
 export default {
@@ -511,37 +453,9 @@ export default {
       provinceCode: null,
       cityCode: null,
       districtCode: null,
-      // 交易统计tab
-      transactionTabFlag: false,
-      transactionTabIndex: 0,
-      transactionTab: [
-        {
-          label: '全部交易统计',
-          value: 'allTransactionStatistics'
-        },
-        {
-          label: '实物商品交易统计',
-          value: 'physicalTransactionStatistics'
-        },
-        // {
-        //   label: '非实物商品交易统计',
-        //   value: ''
-        // },
-        {
-          label: '会员增值交易统计',
-          value: 'appreciationTransactionStatistics'
-        },
-        {
-          label: '门店服务预约交易统计',
-          value: 'storeServiceOrderTransactionStatistics'
-        },
-        {
-          label: '门店买单交易统计',
-          value: 'storeOrderTransactionStatistics'
-        }
-      ],
       tableData: [{
-        storeName: 'liuyang'
+        prescriptionNo: 'p120912312312312',
+        patientid: '134'
       }]
     }
   },
@@ -559,21 +473,16 @@ export default {
   },
   mounted () {
     // 初始化语言
-
-    this.langDefault()
-  },
-  computed: {
-    getCardName () {
-      if (this.cardNameIndex === 0) {
-        return this.$t('membershipIntroduction.normalCardFull')
-      } else if (this.cardNameIndex === 1) {
-        return this.$t('membershipIntroduction.limiteCardFull')
-      } else if (this.cardNameIndex === 2) {
-        return this.$t('membershipIntroduction.gradeCard')
-      }
-      return null
+    var d = {
+      'patientid': 1
     }
+    getPatientPrescriptionData(d).then(res => {
+      if (res.error === 0) {
+        console.log(res)
+      }
+    })
   },
+
   methods: {
     defaultMessage () {
       this.distributionData = this.$t('membershipIntroduction.distributionData')
@@ -653,35 +562,6 @@ export default {
 
           console.log(this.memberBasicInfo)
           this.addressListLength = this.memberBasicInfo.addressList.length
-          // 交易统计
-          this.transStatistic = res.content.transStatistic
-          console.log(this.transStatistic)
-          let item = this.transactionTabIndex + 1
-          this.transactionData = this.$t('membershipIntroduction.transactionData' + item)
-          if (Object.prototype.toString.call(Object.values(this.transStatistic)[0]) === '[object Object]') {
-            // tab显示
-            this.transactionTabFlag = true
-            for (var j in this.transStatistic.allTransactionStatistics) {
-              this.transactionData.forEach(item => {
-                if (item.value === j) {
-                  item.content = this.transStatistic.allTransactionStatistics[j]
-                }
-              })
-            }
-          } else {
-            // tab隐藏
-            this.transactionTabFlag = false
-            for (var key in this.transStatistic) {
-              this.transactionData.forEach(item => {
-                if (item.value === key) {
-                  item.content = this.transStatistic[key]
-                } else if (key === 'lastAddOrder' && item.value === 'lastOrderTime') {
-                  item.content = this.transStatistic[key].replace('T', ' ')
-                }
-              })
-            }
-          }
-
           // 处理时间
           if (this.memberBasicInfo.createTime) {
             this.memberBasicInfo.createTime = this.memberBasicInfo.createTime.split(' ')[0]
@@ -733,15 +613,8 @@ export default {
           this.provinceCode = this.memberBasicInfo.provinceCode
           this.cityCode = this.memberBasicInfo.cityCode
           this.districtCode = this.memberBasicInfo.districtCode
-          // 用户标签信息
-          this.handleToLabel()
-          // 交易 统计
-          // this.dealWithTransactionData()
-          // 分销 统计
-          this.dealWithdDistributionData()
         }
       })
-      this.getAllAvailableMemberCard()
     },
     closeMemberCardDialog () {
       this.memberCardT1DialogVisible = false
@@ -772,26 +645,6 @@ export default {
       })
     },
 
-    // 获取用户标签
-    handleToLabel () {
-      // 获取当前用户所标记的标签
-      let obj = {
-        'userId': this.userId
-      }
-      console.log(obj)
-      // 异步请求
-      getTagForMemberRequest(obj).then(res => {
-        if (res.error === 0) {
-          console.log('查询成功')
-          console.log(res)
-          // 设置默认标签列表
-
-          this.lebalDataIdList = res.content.map(({ id }) => id)
-          this.lebalDataList = res.content
-          console.log(this.labelDialogInput)
-        }
-      })
-    },
     // 将表示单位转化为可读
     changeUnit (unit) {
       switch (unit) {
@@ -801,71 +654,6 @@ export default {
           return this.$t('membershipIntroduction.month')
         case 'Y':
           return this.$t('membershipIntroduction.year')
-      }
-    },
-    // 交易统计
-    dealWithTransactionData () {
-      // 最近下单时间
-      console.log(this.transStatistic.lastAddOrder)
-      if (this.transStatistic.lastAddOrder !== '0') {
-        this.transactionData[0].content = this.transStatistic.lastAddOrder.replace('T', ' ')
-        console.log(this.transactionData[0].content)
-      }
-
-      // 客单价
-      if (this.memberBasicInfo.unitPrice) {
-        let flag = String(this.transactionData[1].content).slice(0, 1)
-
-        this.transactionData[1].content = `${flag} ${this.memberBasicInfo.unitPrice}`
-      }
-
-      // 累计消费金额
-      if (this.memberBasicInfo.totalConsumpAmount) {
-        this.transactionData[2].content = `￥ ${this.memberBasicInfo.totalConsumpAmount}`
-      }
-
-      // 累计消费订单数
-      if (this.transStatistic.orderNum) {
-        this.transactionData[3].content = this.transStatistic.orderNum
-      }
-      // 累计退款
-      if (this.transStatistic.returnOrderMoney) {
-        this.transactionData[4].content = `￥ ${this.transStatistic.returnOrderMoney}`
-      }
-      // 累计退款订单数
-      if (this.transStatistic.returnOrderNum) {
-        this.transactionData[5].content = this.transStatistic.returnOrderNum
-      }
-    },
-    // 分销 统计
-    dealWithdDistributionData () {
-      // 获返利订单数量
-      if (this.transStatistic.distributionStatistics.rebateOrderNum) {
-        this.distributionData[0].content = this.transStatistic.distributionStatistics.rebateOrderNum
-      }
-      // 返利商品总金额(元)
-      if (this.transStatistic.distributionStatistics.totalCanFanliMoney) {
-        this.distributionData[1].content = this.transStatistic.distributionStatistics.totalCanFanliMoney
-      }
-      // 获返利佣金总金额(元)
-      if (this.transStatistic.distributionStatistics.rebateMoney) {
-        this.distributionData[2].content = this.transStatistic.distributionStatistics.rebateMoney
-      }
-      /**  已提现佣金总金额(元) */
-      if (this.transStatistic.distributionStatistics.withdrawCash) {
-        this.distributionData[3].content = this.transStatistic.distributionStatistics.withdrawCash
-      }
-      // 下级用户数
-      if (this.transStatistic.distributionStatistics.sublayerNumber) {
-        this.distributionData[4].content = this.transStatistic.distributionStatistics.sublayerNumber
-      }
-      // 分销员等级
-      if (this.transStatistic.distributionStatistics.levelName) {
-        this.distributionData[5].content = this.transStatistic.distributionStatistics.levelName
-      }
-      // 分销员分组
-      if (this.transStatistic.distributionStatistics.groupName) {
-        this.distributionData[6].content = this.transStatistic.distributionStatistics.groupName
       }
     },
     // 点击查看更多
@@ -1030,58 +818,6 @@ export default {
         this.labelEditValueOptions = res.content
       })
     },
-
-    // 点击标签信息编辑
-    handleLabelEditOpen () {
-      if (this.labelEditValueOptions) {
-        this.getAllTag()
-      }
-      // 将用户实际的标签id加入缓冲
-      this.labelEditValue = this.lebalDataIdList
-      this.labelEditDialogVisible = true
-    },
-
-    // 点击添加新卡
-    hanldeToTurnRows () {
-      this.newCardsT1Flag = !this.newCardsT1Flag
-      this.memberTableFlag = !this.memberTableFlag
-    },
-    // 点击设置会员卡里卡片删除icon
-    hanldeToDelCard (index) {
-      if (this.cardDialogFlag === 0 && this.normalTmpSize > index) {
-        // 普通会员卡
-        this.cardLlabelsdATa.splice(index, 1)
-        this.normalTmpSize--
-      } else if (this.cardDialogFlag === 1 && this.limitTmpSize > index) {
-        // 限次会员卡
-        this.cardLlabelsdATa.splice(index, 1)
-        this.limitTmpSize--
-      } else if (this.cardDialogFlag === 2 && this.rankTmpSize > index) {
-        // 等级会员卡
-        this.cardLlabelsdATa.splice(index, 1)
-        this.rankTmpSize--
-      } else {
-        let tmp = this.cardLlabelsdATa[index]
-        this.cardLlabelsdATa.splice(index, 1)
-
-        for (let card of this.trListTwo) {
-          if (card.id === tmp.id) {
-            card.index = null
-          }
-        }
-      }
-    },
-    // 设置会员卡弹窗表格选中
-    handleClickMemberCard (index) {
-      if (this.trListTwo[index].index === index) {
-        return
-      }
-      console.log(this.cardLlabelsdATa)
-      this.trListTwo[index].index = index
-      this.cardLlabelsdATa.push(this.trListTwo[index])
-      console.log(this.cardLlabelsdATa)
-      console.log(this.trListTwo)
-    },
     // 成功消息弹框
     getSuccessMessagePrompt () {
       var message = this.$t('membershipIntroduction.success')
@@ -1162,63 +898,11 @@ export default {
       }
       this.modifyDialogData.visiable = false
     },
-
-    // 切换交易统计tab
-    transactionTabSelect (index, value) {
-      //  获取最新的交易数据
-      this.updateTransStatistic()
-      this.transactionTabIndex = index
-      let item = this.transactionTabIndex + 1
-      this.transactionData = this.$t('membershipIntroduction.transactionData' + item)
-      for (var i in this.transStatistic) {
-        if (value === i) {
-          for (var j in this.transStatistic[i]) {
-            this.transactionData.forEach(item => {
-              if (item.value === j) {
-                item.content = this.transStatistic[i][j]
-              }
-            })
-          }
-        }
-      }
-    },
-    updateTransStatistic () {
-      memberInfoRequest(this.userId).then(res => {
-        if (res.error === 0) {
-          this.transStatistic = res.content.transStatistic
-        }
-      })
-    },
-    // 交易统计查看订单
-    jumpToMemberHandler (linkName, index) {
-      let activeName = ''
-      if (index === 0) {
-        activeName = 'first'
-      } else if (index === 1) {
-        activeName = 'second'
-      } else if (index === 2) {
-        activeName = 'third'
-      } else {
-        activeName = 'fourth'
-      }
+    handleSeeMessage (patientid) {
       this.$router.push({
-        name: linkName,
+        path: '/admin/home/main/patientManagement/prescriptionMessage',
         query: {
-          userId: this.userId,
-          activeName: activeName
-        }
-      })
-    },
-    jumpToHandler () {
-      if (this.transactionData[0].linkName === '') {
-        return false
-      }
-      this.$router.push({
-        name: this.transactionData[0].linkName,
-        query: {
-          userId: this.userId,
-          userName: this.memberBasicInfo.username,
-          customOrderStatus: '3, 4, 5, 6, 7, 8, 9, 10'
+          patientid: patientid
         }
       })
     }
@@ -1620,5 +1304,12 @@ td {
 .topContainer .transactionOrder {
   padding-bottom: 20px;
   text-align: center;
+}
+.tablebox {
+  padding: 10px;
+}
+.tablebox a {
+  color: #5a8bff;
+  cursor: pointer;
 }
 </style>
