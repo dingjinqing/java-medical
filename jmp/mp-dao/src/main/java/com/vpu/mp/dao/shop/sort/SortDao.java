@@ -24,10 +24,10 @@ public class SortDao extends ShopBaseDao {
      */
     public List<Integer> getParentsSortIds(Integer sortId) {
         List<Integer> parentIds = new ArrayList<>(2);
-        Integer parentId = db().select(SORT.PARENT_ID).where(SORT.SORT_ID.eq(sortId)).fetchAny(SORT.PARENT_ID);
-        while (!MedicalGoodsSortConstant.ROOT_PARENT.equals(parentId)) {
+        Integer parentId = db().select(SORT.PARENT_ID).from(SORT).where(SORT.SORT_ID.eq(sortId)).fetchAny(SORT.PARENT_ID);
+        while (parentId != null && !MedicalGoodsSortConstant.ROOT_PARENT.equals(parentId)) {
             parentIds.add(parentId);
-            parentId = db().select(SORT.PARENT_ID).where(SORT.SORT_ID.eq(parentId)).fetchAny(SORT.PARENT_ID);
+            parentId = db().select(SORT.PARENT_ID).from(SORT).where(SORT.SORT_ID.eq(parentId)).fetchAny(SORT.PARENT_ID);
         }
         return parentIds;
     }
