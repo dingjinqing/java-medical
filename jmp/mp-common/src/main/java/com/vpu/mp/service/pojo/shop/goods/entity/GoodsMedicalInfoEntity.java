@@ -13,7 +13,6 @@ public class GoodsMedicalInfoEntity {
     private String goodsCommonName;
     private String goodsAliasName;
     private String goodsQualityRatio;
-    private Byte isMedical;
     private Byte isRx;
     private String goodsHospitalCode;
     private Byte insuranceFlag;

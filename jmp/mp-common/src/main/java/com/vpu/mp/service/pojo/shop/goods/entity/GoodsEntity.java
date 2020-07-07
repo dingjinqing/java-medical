@@ -44,6 +44,7 @@ public class GoodsEntity {
     private String promotionLanguage;
     private String shareConfig;
     private Byte isDefaultProduct;
+    private Byte isMedical;
     private Byte delFlag;
     private Timestamp createTime;
     private Timestamp updateTime;

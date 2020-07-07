@@ -64,6 +64,7 @@ public class GoodsDo {
     private String     deliverPlace;
     private String     shareConfig;
     private Byte       isDefaultProduct;
+    private Byte isMedical;
     private Integer    pv;
     private Integer    commentNum;
     private Integer    roomId;

@@ -5,6 +5,7 @@ import com.vpu.mp.common.pojo.shop.table.GoodsDo;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
+import com.vpu.mp.service.pojo.shop.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.entity.GoodsEntity;
 import com.vpu.mp.service.pojo.shop.goods.entity.GoodsMedicalInfoEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +36,13 @@ public class GoodsRepository {
         Integer goodsId = goodsDo.getGoodsId();
         goodsEntity.setGoodsId(goodsId);
 
-        GoodsMedicalInfoDo goodsMedicalInfoDo = new GoodsMedicalInfoDo();
-        GoodsMedicalInfoEntity goodsMedicalInfoEntity = goodsEntity.getGoodsMedicalInfo();
-        goodsMedicalInfoEntity.setGoodsId(goodsId);
-        FieldsUtil.assign(goodsMedicalInfoEntity,goodsMedicalInfoDo);
-        goodsMedicalInfoDao.insert(goodsMedicalInfoDo);
+        if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(goodsEntity.getIsMedical())){
+            GoodsMedicalInfoDo goodsMedicalInfoDo = new GoodsMedicalInfoDo();
+            GoodsMedicalInfoEntity goodsMedicalInfoEntity = goodsEntity.getGoodsMedicalInfo();
+            goodsMedicalInfoEntity.setGoodsId(goodsId);
+            FieldsUtil.assign(goodsMedicalInfoEntity,goodsMedicalInfoDo);
+            goodsMedicalInfoDao.insert(goodsMedicalInfoDo);
+        }
     }
 
     /**
@@ -51,17 +54,21 @@ public class GoodsRepository {
         FieldsUtil.assignWithIgnoreField(goodsEntity,goodsDo,getGoodsAssignIgnoreFields());
         goodsDao.update(goodsDo);
 
-        GoodsMedicalInfoDo goodsMedicalInfoDo = new GoodsMedicalInfoDo();
-        GoodsMedicalInfoEntity goodsMedicalInfoEntity = goodsEntity.getGoodsMedicalInfo();
-        FieldsUtil.assign(goodsMedicalInfoEntity,goodsMedicalInfoDo);
-        goodsMedicalInfoDao.update(goodsMedicalInfoDo);
+        if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(goodsEntity.getIsMedical())) {
+            GoodsMedicalInfoDo goodsMedicalInfoDo = new GoodsMedicalInfoDo();
+            GoodsMedicalInfoEntity goodsMedicalInfoEntity = goodsEntity.getGoodsMedicalInfo();
+            FieldsUtil.assign(goodsMedicalInfoEntity, goodsMedicalInfoDo);
+            goodsMedicalInfoDao.update(goodsMedicalInfoDo);
+        } else {
+            goodsMedicalInfoDao.deleteByGoodsId(goodsEntity.getGoodsId());
+        }
     }
 
     /**
      * 商品删除
      * @param goodId
      */
-    public void delete(Integer goodId) {
+    public void deleteGoodsById(Integer goodId) {
         goodsDao.deleteByGoodsId(goodId);
         goodsMedicalInfoDao.deleteByGoodsId(goodId);
     }

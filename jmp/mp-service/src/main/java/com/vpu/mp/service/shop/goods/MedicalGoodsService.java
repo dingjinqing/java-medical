@@ -140,7 +140,7 @@ public class MedicalGoodsService {
      * @param goodsId
      */
     public void deleteByGoodsIds(Integer goodsId){
-        goodsRepository.delete(goodsId);
+        goodsRepository.deleteGoodsById(goodsId);
         goodsSpecProductRepository.deleteSkuByGoodsId(goodsId);
         goodsSpecProductRepository.deleteSpecByGoodsId(goodsId);
         goodsLabelRepository.deleteCouple(Collections.singletonList(goodsId),MedicalLabelConstant.GTA_GOODS);

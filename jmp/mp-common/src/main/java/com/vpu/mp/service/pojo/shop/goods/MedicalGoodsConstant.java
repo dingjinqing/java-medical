@@ -12,6 +12,10 @@ public class MedicalGoodsConstant {
     public static final Byte DEFAULT_SKU = 1;
 
     /**
+     * 是否是药品
+     */
+    public static final Byte GOODS_IS_MEDICAL = 1;
+    /**
      * 颜色:红色;尺寸:xl
      * 2:1!!3:1
      * 规格名值分割符
