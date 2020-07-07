@@ -44,4 +44,15 @@ public class GoodsMedicalInfoDao extends ShopBaseDao{
             .where(GOODS_MEDICAL_INFO.GOODS_ID.eq(goodsId))
             .execute();
     }
+
+    /**
+     * 获取商品药品信息
+     * @param goodsId 商品
+     * @return GoodsMedicalInfo or null
+     */
+    public GoodsMedicalInfoDo getByGoodsId(Integer goodsId) {
+      return db().select().from(GOODS_MEDICAL_INFO).where(GOODS_MEDICAL_INFO.GOODS_ID.eq(goodsId)).fetchAnyInto(GoodsMedicalInfoDo.class);
+    }
+
+
 }

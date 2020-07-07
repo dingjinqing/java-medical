@@ -4865,6 +4865,7 @@ create table `b2c_prescription_item`(
     `goods_quality_ratio` varchar(512) not null default '' comment '规格系数，通用名和规格系数确定一个药品',
     `goods_num` int(11) not null comment '使用药品数量',
     `goods_use_memo` varchar(1024) not null default '' comment '药品使用方式说明',
+    `goods_basic_unit` varchar(128) not null default '' comment '单位',
     `status` tinyint(1) not null default 0 comment '处方审核状态 0待审核 1审核通过 2审核未通过',
     `status_memo` varchar(1024) not null default '' comment '处方审核医师评价',
     `is_delete`     tinyint(1)   not null default '0',

@@ -64,6 +64,12 @@ public class GoodsDao extends ShopBaseDao {
         return db().fetchCount(GOODS);
     }
 
-
+    /**
+     * 根据名称搜索商品
+     */
+    public void getByGoodsName(String goodsName) {
+        db().select().from(GOODS).where(GOODS.GOODS_NAME.eq(goodsName)).fetchAnyInto(GoodsDo.class);
+        return;
+    }
 
 }

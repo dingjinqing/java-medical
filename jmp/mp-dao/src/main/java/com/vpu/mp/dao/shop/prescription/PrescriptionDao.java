@@ -1,7 +1,9 @@
 package com.vpu.mp.dao.shop.prescription;
 
+import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.pojo.shop.prescription.PrescriptionItemVo;
 import com.vpu.mp.common.pojo.shop.prescription.PrescriptionListParam;
 import com.vpu.mp.common.pojo.shop.prescription.PrescriptionListVo;
 import com.vpu.mp.common.pojo.shop.prescription.PrescriptionVo;
@@ -14,7 +16,11 @@ import org.jooq.SelectConditionStep;
 import org.jooq.SelectLimitStep;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+import static com.vpu.mp.db.shop.Tables.GOODS_MEDICAL_INFO;
 import static com.vpu.mp.db.shop.Tables.PRESCRIPTION;
+import static com.vpu.mp.db.shop.Tables.PRESCRIPTION_ITEM;
 
 /**
  * 处方
@@ -67,5 +73,76 @@ public class PrescriptionDao extends ShopBaseDao {
                 .where(PRESCRIPTION.PATIENT_ID.eq(param.getPatientId()))
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
         return getPageResult(and, param, PrescriptionListVo.class);
+    }
+    /**
+     * 获取有效处方通过商品id
+     * @param goodsId 商品id
+     * @return
+     */
+    public PrescriptionVo getValidByGoodsId(Integer goodsId) {
+        return db().select(PRESCRIPTION.asterisk())
+                .from(PRESCRIPTION_ITEM)
+                .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_NO.eq(PRESCRIPTION_ITEM.PRESCRIPTION_NO))
+                .where(PRESCRIPTION_ITEM.GOODS_ID.eq(goodsId))
+                .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.gt(DateUtil.date().toTimestamp()))
+                .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+                .orderBy(PRESCRIPTION.PRESCRIPTION_CREATE_TIME.desc())
+                .fetchAnyInto(PrescriptionVo.class);
+    }
+
+
+
+    /**
+     * 通用有效名查询处方明细
+     * @param goodsCommonName 商品名称
+     * @return
+     */
+    public PrescriptionVo getValidByCommonName(String goodsCommonName){
+        return db().select(PRESCRIPTION.asterisk())
+                .from(PRESCRIPTION_ITEM)
+                .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_NO.eq(PRESCRIPTION_ITEM.PRESCRIPTION_NO))
+                .where(PRESCRIPTION_ITEM.GOODS_COMMON_NAME.eq(goodsCommonName))
+                .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.gt(DateUtil.date().toTimestamp()))
+                .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+                .orderBy(PRESCRIPTION.PRESCRIPTION_CREATE_TIME.desc())
+                .fetchAnyInto(PrescriptionVo.class);
+    }
+
+    /**
+     * 通过有效通用名和规格系数查询处方明细
+     * @param goodsCommonName 通用名
+     * @param goodsQualityRatio 规格系数
+     */
+    public PrescriptionVo getValidByCommonNameAndQualityRatio(String goodsCommonName, String goodsQualityRatio) {
+        return db().select(PRESCRIPTION.asterisk())
+                .from(PRESCRIPTION_ITEM)
+                .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_NO.eq(PRESCRIPTION_ITEM.PRESCRIPTION_NO))
+                .where(PRESCRIPTION_ITEM.GOODS_COMMON_NAME.eq(goodsCommonName))
+                .and(PRESCRIPTION_ITEM.GOODS_QUALITY_RATIO.eq(goodsQualityRatio))
+                .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.gt(DateUtil.date().toTimestamp()))
+                .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+                .orderBy(PRESCRIPTION.PRESCRIPTION_CREATE_TIME.desc())
+                .fetchAnyInto(PrescriptionVo.class);
+    }
+    /**
+     * 通过有效通用名和规格系数查询处方明细
+     * @param goodsCommonName 通用名
+     * @param goodsQualityRatio 规格系数
+     * @param productionEnterprise 生产企业
+     */
+    public PrescriptionVo getValidByCommonNameAndQualityRatio(String goodsCommonName, String goodsQualityRatio,String productionEnterprise) {
+        return db().select(PRESCRIPTION.asterisk())
+                .from(PRESCRIPTION_ITEM)
+                .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_NO.eq(PRESCRIPTION_ITEM.PRESCRIPTION_NO))
+                .leftJoin(GOODS_MEDICAL_INFO).on(GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE.eq(productionEnterprise))
+                .where(PRESCRIPTION_ITEM.GOODS_COMMON_NAME.eq(goodsCommonName))
+                .and(PRESCRIPTION_ITEM.GOODS_QUALITY_RATIO.eq(goodsQualityRatio))
+                .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.gt(DateUtil.date().toTimestamp()))
+                .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+                .orderBy(PRESCRIPTION.PRESCRIPTION_CREATE_TIME.desc())
+                .fetchAnyInto(PrescriptionVo.class);
+    }
+
+    public void ListSimpleByprescriptionNo(List<String> prescriptionNoList) {
     }
 }

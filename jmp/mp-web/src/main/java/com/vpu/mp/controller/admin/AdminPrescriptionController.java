@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value = "/api/admin/prescription")
-public class PrescriptionController extends AdminBaseController {
+public class AdminPrescriptionController extends AdminBaseController {
 
     @Autowired
     private PrescriptionService prescriptionService;
