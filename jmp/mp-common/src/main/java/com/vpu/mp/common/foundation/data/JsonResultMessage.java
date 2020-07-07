@@ -1313,5 +1313,8 @@ public class JsonResultMessage {
     public static final String DOCTOR_DEPARTMENT_NAME_EXIST = "doctor.department.name.exist";
     public static final String DOCTOR_DEPARTMENT_NAME_IS_NULL = "doctor.department.name.is.null";
     public static final String DOCTOR_DEPARTMENT_ID_IS_NULL = "doctor.department.id.is.null";
+    public static final String DOCTOR_TITLE_NAME_EXIST = "doctor.title.name.exist";
+    public static final String DOCTOR_TITLE_NAME_IS_NULL = "doctor.title.name.is.null";
+    public static final String DOCTOR_TITLE_ID_IS_NULL = "doctor.title.id.is.null";
 
 }

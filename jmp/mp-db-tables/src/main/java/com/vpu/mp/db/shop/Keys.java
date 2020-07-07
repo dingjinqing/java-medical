@@ -285,6 +285,7 @@ public class Keys {
     public static final Identity<PrescriptionItemRecord, Integer> IDENTITY_PRESCRIPTION_ITEM = Identities0.IDENTITY_PRESCRIPTION_ITEM;
     public static final Identity<UserPatientCoupleRecord, Integer> IDENTITY_USER_PATIENT_COUPLE = Identities0.IDENTITY_USER_PATIENT_COUPLE;
     public static final Identity<DoctorAdviceRecord, Integer> IDENTITY_DOCTOR_ADVICE = Identities0.IDENTITY_DOCTOR_ADVICE;
+    public static final Identity<DoctorDepartmentCoupleRecord, Integer> IDENTITY_DOCTOR_DEPARTMENT_COUPLE = Identities0.IDENTITY_DOCTOR_DEPARTMENT_COUPLE;
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
@@ -557,6 +558,8 @@ public class Keys {
     public static final UniqueKey<PrescriptionItemRecord> KEY_B2C_PRESCRIPTION_ITEM_PRIMARY = UniqueKeys0.KEY_B2C_PRESCRIPTION_ITEM_PRIMARY;
     public static final UniqueKey<UserPatientCoupleRecord> KEY_B2C_USER_PATIENT_COUPLE_PRIMARY = UniqueKeys0.KEY_B2C_USER_PATIENT_COUPLE_PRIMARY;
     public static final UniqueKey<DoctorAdviceRecord> KEY_B2C_DOCTOR_ADVICE_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_ADVICE_PRIMARY;
+    public static final UniqueKey<DoctorDepartmentCoupleRecord> KEY_B2C_DOCTOR_DEPARTMENT_COUPLE_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_DEPARTMENT_COUPLE_PRIMARY;
+
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -808,6 +811,7 @@ public class Keys {
         public static Identity<PrescriptionItemRecord, Integer> IDENTITY_PRESCRIPTION_ITEM = Internal.createIdentity(PrescriptionItem.PRESCRIPTION_ITEM, PrescriptionItem.PRESCRIPTION_ITEM.ID);
         public static Identity<UserPatientCoupleRecord, Integer> IDENTITY_USER_PATIENT_COUPLE = Internal.createIdentity(UserPatientCouple.USER_PATIENT_COUPLE, UserPatientCouple.USER_PATIENT_COUPLE.ID);
         public static Identity<DoctorAdviceRecord, Integer> IDENTITY_DOCTOR_ADVICE = Internal.createIdentity(DoctorAdvice.DOCTOR_ADVICE, DoctorAdvice.DOCTOR_ADVICE.ID);
+        public static Identity<DoctorDepartmentCoupleRecord, Integer> IDENTITY_DOCTOR_DEPARTMENT_COUPLE = Internal.createIdentity(DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE, DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE.ID);
     }
 
     private static class UniqueKeys0 {
@@ -1084,5 +1088,6 @@ public class Keys {
         public static final UniqueKey<PrescriptionItemRecord> KEY_B2C_PRESCRIPTION_ITEM_PRIMARY = Internal.createUniqueKey(PrescriptionItem.PRESCRIPTION_ITEM, "KEY_b2c_prescription_item_PRIMARY", PrescriptionItem.PRESCRIPTION_ITEM.ID);
         public static final UniqueKey<UserPatientCoupleRecord> KEY_B2C_USER_PATIENT_COUPLE_PRIMARY = Internal.createUniqueKey(UserPatientCouple.USER_PATIENT_COUPLE, "KEY_b2c_user_patient_couple_PRIMARY", UserPatientCouple.USER_PATIENT_COUPLE.ID);
         public static final UniqueKey<DoctorAdviceRecord> KEY_B2C_DOCTOR_ADVICE_PRIMARY = Internal.createUniqueKey(DoctorAdvice.DOCTOR_ADVICE, "KEY_b2c_doctor_advice_PRIMARY", DoctorAdvice.DOCTOR_ADVICE.ID);
+        public static final UniqueKey<DoctorDepartmentCoupleRecord> KEY_B2C_DOCTOR_DEPARTMENT_COUPLE_PRIMARY = Internal.createUniqueKey(DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE, "KEY_b2c_doctor_department_couple_PRIMARY", DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE.ID);
     }    
 }

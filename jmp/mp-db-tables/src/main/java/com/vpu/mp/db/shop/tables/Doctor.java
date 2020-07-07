@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Doctor extends TableImpl<DoctorRecord> {
 
-    private static final long serialVersionUID = -120639535;
+    private static final long serialVersionUID = -140599077;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_doctor</code>
@@ -69,9 +69,14 @@ public class Doctor extends TableImpl<DoctorRecord> {
     public final TableField<DoctorRecord, Integer> ACCOUNT_ID = createField("account_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "医师子账号id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_doctor.sex</code>. 0位置 1男 2 女
+     * The column <code>mini_shop_471752.b2c_doctor.sex</code>. 0未知 1男 2 女
      */
-    public final TableField<DoctorRecord, Byte> SEX = createField("sex", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0位置 1男 2 女");
+    public final TableField<DoctorRecord, Byte> SEX = createField("sex", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0未知 1男 2 女");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor.name</code>. 医师姓名
+     */
+    public final TableField<DoctorRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师姓名");
 
     /**
      * The column <code>mini_shop_471752.b2c_doctor.hospital_code</code>. 医师院内编号

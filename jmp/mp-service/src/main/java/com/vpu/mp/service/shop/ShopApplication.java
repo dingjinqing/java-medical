@@ -8,6 +8,7 @@ import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.decoration.*;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.distribution.*;
+import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.goods.*;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
@@ -69,6 +70,7 @@ import com.vpu.mp.service.shop.order.action.base.OrderOperateFactory;
 import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
 import com.vpu.mp.service.shop.order.virtual.MemberCardOrderService;
 import com.vpu.mp.service.shop.overview.*;
+import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.question.FeedbackService;
 import com.vpu.mp.service.shop.recommend.RecommendService;
@@ -79,6 +81,7 @@ import com.vpu.mp.service.shop.summary.visit.DistributionService;
 import com.vpu.mp.service.shop.summary.visit.PageService;
 import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
+import com.vpu.mp.service.shop.title.TitleService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import com.vpu.mp.service.shop.user.message.MessageRecordService;
 import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
@@ -558,6 +561,24 @@ public class ShopApplication {
      */
     @Autowired
     public DepartmentService departmentService;
+
+    /**
+     * 职称
+     */
+    @Autowired
+    public TitleService titleService;
+
+    /**
+     * 医师
+     */
+    @Autowired
+    public DoctorService doctorService;
+
+    /**
+     * 患者
+     */
+    @Autowired
+    public PatientService patientService;
 
     /**
      * 药品

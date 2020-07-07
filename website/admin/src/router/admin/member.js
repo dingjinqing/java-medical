@@ -341,11 +341,26 @@ const routes = [
     name: 'patient_message',
     meta: {
       crumbTitle: 'router.patientMessage',
-      meta: 'user_manger'
+      meta: 'user_manger',
+      category: 'patient_list'
     },
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/user_manger/patientManagement/patientMessage'
+      )
+  },
+  // 处方详情
+  {
+    path: '/admin/home/main/patientManagement/prescriptionMessage',
+    name: 'prescription_message',
+    meta: {
+      crumbTitle: 'router.prescriptionMessage',
+      meta: 'user_manger',
+      category: 'patient_list'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/patientManagement/prescriptionMessage'
       )
   }
 ]
