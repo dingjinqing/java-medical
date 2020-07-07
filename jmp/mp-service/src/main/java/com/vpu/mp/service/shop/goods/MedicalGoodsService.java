@@ -193,10 +193,12 @@ public class MedicalGoodsService {
         return String.format("G%s-%08d", nowStr, count);
     }
 
+
     /**
      * 获取商品医药信息
      * @param goodsId 商品id
      * @return GoodsMedicalInfo or null
+     * @author 孔德成
      */
     public GoodsMedicalInfoDo getByGoodsId(Integer goodsId) {
        return goodsMedicalInfoDao.getByGoodsId(goodsId);
