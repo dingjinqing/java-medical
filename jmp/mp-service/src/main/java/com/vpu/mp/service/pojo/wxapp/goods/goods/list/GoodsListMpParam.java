@@ -28,6 +28,12 @@ public class GoodsListMpParam extends BasePageParam{
     @JsonProperty("recommend_type")
     private Byte recommendType;
 
+    /**
+     * 0 普通自动推荐（店铺药品） 1处方药
+     */
+    @JsonProperty("auto_recommend_type")
+    private Byte autoRecommendType=0;
+
     @JsonProperty("goods_items")
     private List<Integer> goodsItems;
 

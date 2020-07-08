@@ -87,6 +87,9 @@ public class GoodsConstant {
     public final static Byte AUTO_RECOMMEND = 0;
     public final static Byte POINT_RECOMMEND = 1;
 
+    public final static Byte AUTO_RECOMMEND_COMMON = 0;
+    public final static Byte AUTO_RECOMMEND_PRESCRIPTION = 1;
+
     /**************** 结束 *****************/
 
     /*** 销售状态：在售*/

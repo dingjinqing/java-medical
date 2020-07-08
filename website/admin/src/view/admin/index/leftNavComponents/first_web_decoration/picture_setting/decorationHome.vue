@@ -282,7 +282,8 @@ export default {
     OfficialAccount: () => import('./decorationModules/graphicAndTextComponents/officialAccount'), // 公众号模块
     CustomerServiceModule: () => import('./decorationModules/graphicAndTextComponents/customerServiceModule'), // 客服模块
     PictureHotSpot: () => import('./decorationModules/graphicAndTextComponents/pictureHotSpot'), // 图片热区组件
-    Prescription: () => import('./decorationModules/graphicAndTextComponents/prescription.vue') // 处方模块
+    Prescription: () => import('./decorationModules/graphicAndTextComponents/prescription.vue'), //
+    CaseHistory: () => import('./decorationModules/graphicAndTextComponents/caseHistory.vue') // 病历模块
   },
   data () {
     return {
@@ -292,7 +293,7 @@ export default {
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'IntegralExchange', 'Spike', 'FightGroup', 'DivideScorePoints', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'PictureHotSpot', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'Guide', 'TitleModule', 'VideoModule', 'ShopNotices', 'OfficialAccount', 'CustomerServiceModule', 'zb', 'ShopRecruit', 'MapModule', 'Prescription'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'IntegralExchange', 'Spike', 'FightGroup', 'DivideScorePoints', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'PictureHotSpot', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'Guide', 'TitleModule', 'VideoModule', 'ShopNotices', 'OfficialAccount', 'CustomerServiceModule', 'zb', 'ShopRecruit', 'MapModule', 'Prescription', 'CaseHistory'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -349,7 +350,8 @@ export default {
       isDragFlag: false,
       isClickIcon: false,
       isClickModule: false,
-      isClickPageSetIcon: false
+      isClickPageSetIcon: false,
+      isDragToRight: false
     }
   },
   watch: {
@@ -364,10 +366,10 @@ export default {
       }
     },
     nowRightShowIndex (newData) {
-      if (this.isClickPageSetIcon) { // 如果是点击的页面设置的内容则终止响应操作
-        this.isClickPageSetIcon = false
-        return
-      }
+      // if (this.isClickPageSetIcon) { // 如果是点击的页面设置的内容则终止响应操作
+      //   this.isClickPageSetIcon = false
+      //   return
+      // }
       console.log(newData, this.activeName, this.nowRightModulesData)
       this.handleToModuleHight()
     },
@@ -596,6 +598,9 @@ export default {
         case 'm_prescription':
           moduleNameId = 29
           break
+        case 'm_case_history':
+          moduleNameId = 30
+          break
       }
       return moduleNameId
     },
@@ -691,7 +696,7 @@ export default {
           // setTimeout(() => {
           console.log('qqqqqqqq')
           this_.isDragging = false
-          if (this_.MoveWhiteFlag) return
+          if (this_.MoveWhiteFlag || !this_.isDragToRight) return
           this_.$nextTick(() => {
             let hightMoudleIndex = this_.insertModulesId + 1
             console.log(hightMoudleIndex)
@@ -736,9 +741,11 @@ export default {
             this_.insertModulesId = $(this)[0].__vue__.flag
             console.log($(this)[0].__vue__.flag)
             this_.isAddBottom = false
+            this_.isDragToRight = true
             $('.modules').removeClass('placeholder')
             $(this).addClass('placeholder')
           }
+          this.isDragToRight = false
         })
       }
     },
@@ -841,6 +848,9 @@ export default {
               break
             case 29:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 29)
+              break
+            case 30:
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 30)
               break
           }
           console.log(this_.showModulesList, this_.modulesData, insert)
@@ -1184,9 +1194,9 @@ export default {
     },
     // 右侧点击页面设置重置中部显示
     handleToClearIndex (flag) {
-      if (!flag) {
-        this.isClickPageSetIcon = true
-      }
+      // if (!flag) {
+      //   this.isClickPageSetIcon = true
+      // }
       this.nowRightShowIndex = -1
     },
     // 右侧编辑回显数据
@@ -1282,6 +1292,12 @@ export default {
               duration: 1000
             })
           }
+        } else {
+          this.$message.error({
+            message: res.message,
+            showClose: true,
+            duration: 1000
+          })
         }
       })
 

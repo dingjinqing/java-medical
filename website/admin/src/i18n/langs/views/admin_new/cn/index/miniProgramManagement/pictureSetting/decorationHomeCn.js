@@ -144,6 +144,13 @@ export const cn = {
       id: 29,
       flag: true,
       name: 'm_prescription'
+    },
+    {
+      imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/icon_map.png',
+      text: '病历模块',
+      id: 30,
+      flag: true,
+      name: 'm_case_history'
     }
   ],
   goodsTextConArr: [

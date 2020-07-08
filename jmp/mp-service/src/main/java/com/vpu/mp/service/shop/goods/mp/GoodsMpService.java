@@ -40,6 +40,7 @@ import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.recommend.RecommendService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -106,6 +107,8 @@ public class GoodsMpService extends ShopBaseService {
     private UserCardService userCardService;
     @Autowired
     private QrCodeService qrCodeService;
+    @Autowired
+    private PrescriptionService prescriptionService;
     /**
      * 从es或者数据库内获取数据，并交给处理器进行处理
      *
@@ -113,7 +116,7 @@ public class GoodsMpService extends ShopBaseService {
      * @param userId 用户id
      * @return 对应的商品集合信息
      */
-    public List<? extends GoodsListMpVo> getPageIndexGoodsList(GoodsListMpParam param, Integer userId) {
+    public List<? extends GoodsListMpVo> getPageIndexGoodsList(GoodsListMpParam param, Integer userId, Integer patientId) {
         List<GoodsListMpBo> goodsListCapsules;
 
         param.setSoldOutGoodsShow(canShowSoldOutGoods());
@@ -136,12 +139,12 @@ public class GoodsMpService extends ShopBaseService {
                 log.debug("小程序-es-搜索商品列表结果:{}", goodsListCapsules);
             } catch (Exception e) {
                 log.debug("小程序-es-搜索商品列表错误-转换db获取数据:" + e.getMessage());
-                goodsListCapsules = getPageIndexGoodsListFromDb(param);
+                goodsListCapsules = getPageIndexGoodsListFromDb(param,patientId);
                 log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsules);
             }
         } else {
             log.debug("小程序-db-搜索商品列表");
-            goodsListCapsules = getPageIndexGoodsListFromDb(param);
+            goodsListCapsules = getPageIndexGoodsListFromDb(param,patientId);
             log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsules);
         }
 
@@ -154,13 +157,13 @@ public class GoodsMpService extends ShopBaseService {
      * @param param 装修页面配置的商品获取过滤条件
      * @return 对应的商品集合信息
      */
-    private List<GoodsListMpBo> getPageIndexGoodsListFromDb(GoodsListMpParam param) {
+    private List<GoodsListMpBo> getPageIndexGoodsListFromDb(GoodsListMpParam param,Integer patientId) {
         // 手动推荐展示但是未指定商品数据
         boolean specifiedNoContent = (GoodsConstant.POINT_RECOMMEND.equals(param.getRecommendType())) && (param.getGoodsItems() == null || param.getGoodsItems().size() == 0);
         if (specifiedNoContent) {
             return new ArrayList<>();
         }
-        Condition condition = buildPageIndexCondition(param);
+        Condition condition = buildPageIndexCondition(param,patientId);
         PageResult<GoodsListMpBo> pageResult;
         // 手动推荐拼接排序条件
         if (GoodsConstant.POINT_RECOMMEND.equals(param.getRecommendType())) {
@@ -185,7 +188,7 @@ public class GoodsMpService extends ShopBaseService {
      * @param param 过滤参数
      * @return 拼接后的条件
      */
-    private Condition buildPageIndexCondition(GoodsListMpParam param) {
+    private Condition buildPageIndexCondition(GoodsListMpParam param,Integer patientId) {
         // 获取在售商品
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
 
@@ -196,6 +199,12 @@ public class GoodsMpService extends ShopBaseService {
         // 指定商品列表
         if (GoodsConstant.POINT_RECOMMEND.equals(param.getRecommendType())) {
             condition = condition.and(GOODS.GOODS_ID.in(param.getGoodsItems()));
+            return condition;
+        }
+
+        if (GoodsConstant.AUTO_RECOMMEND_PRESCRIPTION.equals(param.getAutoRecommendType())){
+            List<Integer> goodsIds = prescriptionService.getPrescriptionGoodsIdsByPatientId(patientId);
+            condition = condition.and(GOODS.GOODS_ID.in(goodsIds));
             return condition;
         }
 
@@ -593,7 +602,7 @@ public class GoodsMpService extends ShopBaseService {
         return db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE.as("activity_type"), GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
             GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG,
             GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID)
-            .from(GOODS);
+            .from(GOODS).leftJoin(GOODS_MEDICAL_INFO).on(GOODS_MEDICAL_INFO.GOODS_ID.eq(GOODS.GOODS_ID));
     }
 
     /**

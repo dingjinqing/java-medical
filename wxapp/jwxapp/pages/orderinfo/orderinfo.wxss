@@ -1,3 +1,4 @@
+@import '/components/decorate/prescription/index.wxss';
 .common-footer .footer-text {
   padding-bottom: 120rpx !important;
 }
@@ -450,4 +451,13 @@
 .to_goods_list view{
   color: #666;
   font-size: 24rpx;
+}
+.prescription-item{
+  width: 702rpx;
+  margin: 16rpx auto 0;
+  margin-bottom: 34rpx;
+  box-shadow: none;
+}
+.prescription-item > .item-title{
+  color: #26C4BC;
 }

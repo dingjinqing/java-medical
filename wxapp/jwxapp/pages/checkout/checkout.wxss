@@ -372,6 +372,7 @@
   width: 702rpx;
   margin: 20rpx auto 0;
   margin-bottom: 34rpx;
+  box-shadow: none;
 }
 .prescription-item > .item-title{
   color: #26C4BC;

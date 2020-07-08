@@ -427,6 +427,11 @@ export default {
             'module_name': 'm_prescription'
           }
           break
+        case 30: // 病历模块
+          obj = {
+            'module_name': 'm_case_history'
+          }
+          break
       }
       console.log(obj)
       return obj

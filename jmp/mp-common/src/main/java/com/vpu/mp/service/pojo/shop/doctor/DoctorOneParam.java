@@ -23,4 +23,5 @@ public class DoctorOneParam {
     private Byte      isDelete;
 //    private String    departments;
     private List<DepartmentOneParam> departmentList;
+    private String    titleName;
 }

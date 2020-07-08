@@ -18,8 +18,8 @@ public class TitleService extends ShopBaseService{
     public static final int ZERO = 0;
 
     public PageResult<TitleOneParam> getTitleList(TitleListParam param) {
-        PageResult<TitleOneParam> departmentList = titleDao.getDepartmentList(param);
-        return departmentList;
+        PageResult<TitleOneParam> titleList = titleDao.getTitleList(param);
+        return titleList;
     }
 
     public boolean isNameExist(Integer titleId,String name) {

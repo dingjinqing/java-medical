@@ -876,6 +876,11 @@ global.wxPage({
       preSaleRuleShow:true
     })
   },
+  handleShowDialog(){
+    this.setData({
+      showPrescription:true
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

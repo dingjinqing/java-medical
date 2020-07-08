@@ -17,6 +17,9 @@ public class WxAppCommonParam {
 	
 	@JsonProperty(value = "user_id")
 	Integer userId;
+
+    @JsonProperty(value = "patient_id")
+    Integer patientId;
 	
 	/**
 	 * 小程序版本

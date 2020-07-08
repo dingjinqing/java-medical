@@ -522,7 +522,7 @@ public class AdminGoodsController extends AdminBaseController {
     @PostMapping("/api/admin/goods/mp/list")
     public JsonResult getGoodsList(@RequestBody GoodsListMpParam goodsListMpParam) {
         goodsListMpParam.setFromPage(EsGoodsConstant.GOODS_LIST_PAGE);
-        List<? extends GoodsListMpVo> goodsList = shop().goodsMp.getPageIndexGoodsList(goodsListMpParam, null);
+        List<? extends GoodsListMpVo> goodsList = shop().goodsMp.getPageIndexGoodsList(goodsListMpParam, null, null);
         return success(goodsList);
     }
 

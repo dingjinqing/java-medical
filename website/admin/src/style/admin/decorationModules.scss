@@ -1,75 +1,75 @@
 .membershipCard {
-    .showModule {
-      min-height: 10px;
-      background-color: #ffffff;
-      position: relative;
-      border: 2px dashed #fff;
+  .showModule {
+    min-height: 10px;
+    background-color: #ffffff;
+    position: relative;
+    border: 2px dashed #fff;
+    .item_module_title {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      display: none;
+      z-index: 8;
+      width: 88px;
+      height: 30px;
+      background-color: #9ebbff;
+      color: #fff;
+      text-align: center;
+      line-height: 30px;
+      border-bottom-right-radius: 15px;
+      -webkit-border-bottom-right-radius: 15px;
+      -moz-border-bottom-right-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+    .item_operation {
+      position: absolute;
+      right: 8px;
+      top: 2px;
+      display: none;
+      z-index: 100;
+    }
+    &:hover {
+      border: 2px dashed #5a8bff;
       .item_module_title {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        display: none;
-        z-index: 8;
-        width: 88px;
-        height: 30px;
-        background-color: #9ebbff;
-        color: #fff;
-        text-align: center;
-        line-height: 30px;
-        border-bottom-right-radius: 15px;
-        -webkit-border-bottom-right-radius: 15px;
-        -moz-border-bottom-right-radius: 15px;
-        border-top-right-radius: 15px;
+        display: block;
       }
       .item_operation {
-        position: absolute;
-        right: 8px;
-        top: 2px;
-        display: none;
-        z-index: 100;
+        display: block;
+        z-index: 1000;
       }
-      &:hover {
-        border: 2px dashed #5a8bff;
-        .item_module_title {
-          display: block;
-        }
-        .item_operation {
-          display: block;
-          z-index: 1000;
-        }
-      }
-    }
-    .setHere {
-      height: 40px;
-      text-align: center;
-      line-height: 40px;
-      background-color: #8baeff;
-      font-size: 14px;
-      color: #fff;
-      border: 1px dashed #2589ff;
-    }
-    .activeSetHere {
-      display: none;
     }
   }
-  .activeBorder {
+  .setHere {
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    background-color: #8baeff;
+    font-size: 14px;
+    color: #fff;
+    border: 1px dashed #2589ff;
+  }
+  .activeSetHere {
+    display: none;
+  }
+}
+.activeBorder {
+  border: 2px dashed #5a8bff !important;
+}
+.membershipCard:hover,
+.placeholder {
+  .middleModulesActive {
+    display: block;
+  }
+}
+.placeholder {
+  .activeSetHere {
+    display: block;
+  }
+  .showModule {
     border: 2px dashed #5a8bff !important;
   }
-  .membershipCard:hover,
-  .placeholder {
-    .middleModulesActive {
-      display: block;
-    }
-  }
-  .placeholder {
-    .activeSetHere {
-      display: block;
-    }
-    .showModule {
-      border: 2px dashed #5a8bff !important;
-    }
-  }
-  div {
-    cursor: Move;
-    user-select: none;
-  }
+}
+div {
+  cursor: Move;
+  user-select: none;
+}

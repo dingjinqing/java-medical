@@ -30,10 +30,10 @@ public class DoctorDao extends ShopBaseDao {
         SelectJoinStep<? extends Record> select = db()
             .select(DOCTOR.ID, DOCTOR.NAME, DOCTOR.CREATE_TIME,
                 DOCTOR.HOSPITAL_CODE, DOCTOR.REGISTER_HOSPITAL, DOCTOR.CERTIFICATE_CODE,DOCTOR.PROFESSIONAL_CODE,
-                DOCTOR.REGISTER_HOSPITAL,DOCTOR.REGISTER_TIME,DOCTOR.MOBILE,DOCTOR.DEPARTMENT_ID,DOCTOR.TITLE_ID,
-                DOCTOR.STATUS,DOCTOR_TITLE.NAME)
+                DOCTOR.REGISTER_TIME,DOCTOR.MOBILE,DOCTOR.DEPARTMENT_ID,DOCTOR.TITLE_ID,
+                DOCTOR.STATUS,DOCTOR_TITLE.NAME.as("titleName"))
             .from(DOCTOR).leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID));
-        select.where(DOCTOR.IS_DELETE.eq((byte) 0)).and(DEPARTMENT.LEVEL.eq((int) 1));
+        select.where(DOCTOR.IS_DELETE.eq((byte) 0));
         buildOptions(select, param);
         PageResult<DoctorOneParam> doctorList = this.getPageResult(select, param.getCurrentPage(),
             param.getPageRows(), DoctorOneParam.class);
@@ -58,7 +58,7 @@ public class DoctorDao extends ShopBaseDao {
      */
     public DoctorOneParam getOneInfo(Integer doctorId) {
         DoctorOneParam info = db().select().from(DOCTOR).where(DOCTOR.ID.eq(doctorId))
-            .fetchOne().into(DoctorOneParam.class);
+            .fetchOneInto(DoctorOneParam.class);
         return info;
     }
 

@@ -747,7 +747,7 @@ public class MpDecorationService extends ShopBaseService {
         if (distributionCfg != null && DistributionConfigService.ENABLE_STATUS.equals(distributionCfg.getStatus()) && isDistributor) {
             pageContent = pageContent.replace("pages/distribution/distribution", "pages/distributionspread/distributionspread");
         }
-        Object o = getDetailDecoratePageModule(pageContent, param.getModuleIndex(), userRecord);
+        Object o = getDetailDecoratePageModule(pageContent, param.getModuleIndex(), userRecord, param.getPatientId());
 
         return o;
     }
@@ -757,7 +757,7 @@ public class MpDecorationService extends ShopBaseService {
      * @param keyIdx
      * @param user
      */
-    private Object getDetailDecoratePageModule(String pageContent, String keyIdx, UserRecord user) {
+    private Object getDetailDecoratePageModule(String pageContent, String keyIdx, UserRecord user, Integer patientId) {
         pageContent = StringUtils.isBlank(pageContent) ? "{}" : pageContent;
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -772,7 +772,10 @@ public class MpDecorationService extends ShopBaseService {
                     String moduleName = node.getValue().get("module_name").asText();
                     switch (moduleName) {
                         case ModuleConstant.M_GOODS:
-                            return this.convertGoodsForModule(objectMapper, node, user.getUserId());
+                            ModuleGoods moduleGoods = this.convertGoodsForModule(objectMapper, node, user.getUserId(),patientId);
+                            if (!(GoodsConstant.AUTO_RECOMMEND.equals(moduleGoods.getRecommendType()) && GoodsConstant.AUTO_RECOMMEND_PRESCRIPTION.equals(moduleGoods.getAutoRecommendType())
+                                && moduleGoods.getGoodsListData().size() == 0))
+                            return moduleGoods;
                         case ModuleConstant.M_GOODS_GROUP:
                             return this.convertGoodsGroupForModule(objectMapper, node, user.getUserId());
                         case ModuleConstant.M_COUPON:
@@ -810,10 +813,11 @@ public class MpDecorationService extends ShopBaseService {
      * @return
      * @throws IOException
      */
-    public ModuleGoods convertGoodsForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, Integer userId) throws IOException {
+    public ModuleGoods convertGoodsForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, Integer userId,Integer patientId) throws IOException {
         ModuleGoods moduleGoods = objectMapper.readValue(node.getValue().toString(), ModuleGoods.class);
         GoodsListMpParam param = new GoodsListMpParam();
         param.setRecommendType(moduleGoods.getRecommendType());
+        param.setAutoRecommendType(moduleGoods.getAutoRecommendType());
         if (moduleGoods.getGoodsItems() == null) {
             param.setGoodsItems(new ArrayList<>());
         } else {
@@ -830,7 +834,7 @@ public class MpDecorationService extends ShopBaseService {
         param.setGoodsNum(moduleGoods.getGoodsNum());
         param.setFromPage(EsGoodsConstant.GOODS_LIST_PAGE);
         // 转换实时信息
-        List<? extends GoodsListMpVo> pageIndexGoodsList = goodsMpService.getPageIndexGoodsList(param, userId);
+        List<? extends GoodsListMpVo> pageIndexGoodsList = goodsMpService.getPageIndexGoodsList(param, userId, patientId);
         moduleGoods.setGoodsListData(pageIndexGoodsList);
 
         return moduleGoods;
