@@ -161,7 +161,7 @@ public class GoodsSpecProductRepository {
                 return vo;
             }).collect(Collectors.toList());
 
-            specVo.setSpecValVos(svls);
+            specVo.setGoodsSpecVals(svls);
         }
 
         return specVos;

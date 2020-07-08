@@ -3,12 +3,14 @@ package com.vpu.mp.service.shop.goods;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.medical.DateFormatStr;
 import com.vpu.mp.common.pojo.shop.table.GoodsBrandDo;
 import com.vpu.mp.common.pojo.shop.table.GoodsImgDo;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
-import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
+import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
 import com.vpu.mp.dao.shop.brand.GoodsBrandDao;
+import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.goods.repository.GoodsRepository;
 import com.vpu.mp.dao.shop.goods.repository.GoodsSpecProductRepository;
 import com.vpu.mp.dao.shop.img.GoodsImgDao;
@@ -18,7 +20,10 @@ import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
 import com.vpu.mp.service.pojo.shop.goods.MedicalGoodsConstant;
+import com.vpu.mp.service.pojo.shop.goods.convertor.GoodsParamConvertor;
 import com.vpu.mp.service.pojo.shop.goods.entity.GoodsEntity;
+import com.vpu.mp.service.pojo.shop.goods.param.MedicalGoodsPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.vo.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.vo.GoodsSelectVo;
 import com.vpu.mp.service.pojo.shop.label.MedicalLabelConstant;
 import com.vpu.mp.service.pojo.shop.label.entity.GoodsLabelCoupleVal;
@@ -151,6 +156,8 @@ public class MedicalGoodsService {
         }
     }
 
+
+
     /**
      * 删除药品
      * @param goodsId
@@ -179,7 +186,7 @@ public class MedicalGoodsService {
         //设置规格组
         if (!MedicalGoodsConstant.DEFAULT_SKU.equals(goodsSelectVo.getIsDefaultProduct())) {
             List<SpecVo> specVos = goodsSpecProductRepository.getSpecListByGoodsId(goodsId);
-            goodsSelectVo.setSpecVos(specVos);
+            goodsSelectVo.setGoodsSpecs(specVos);
         }
 
         // 品牌设置
@@ -201,6 +208,19 @@ public class MedicalGoodsService {
         return goodsSelectVo;
     }
 
+    /**
+     * 分页查询商品信息
+     * @param pageListParam
+     */
+    public void getGoodsPageList(MedicalGoodsPageListParam pageListParam){
+        GoodsPageListCondition goodsPageListCondition = GoodsParamConvertor.converPageListConditionFromPageListParam(pageListParam);
+        PageResult<GoodsEntity> goodsEntityPageResult = goodsRepository.getGoodsPageList(goodsPageListCondition, pageListParam.getCurrentPage(), pageListParam.getPageRows());
+        List<GoodsPageListVo> goodsPageListVos = new ArrayList<>(goodsEntityPageResult.getDataList().size());
+        for (GoodsEntity goodsEntity : goodsEntityPageResult.getDataList()) {
+        }
+
+
+    }
     /**
      * 当前时间
      * 生成商品GoodsSn

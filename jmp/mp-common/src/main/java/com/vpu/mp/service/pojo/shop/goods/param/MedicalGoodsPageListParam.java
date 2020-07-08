@@ -29,6 +29,10 @@ public class MedicalGoodsPageListParam extends BasePageParam {
     private Integer brandId;
     private Integer sortId;
     private Integer labelId;
+
+    /**药品信息*/
+    private Byte isMedical;
+    private Byte isRx;
     /**
      * 在查询规格时该字段表示对规格价格进行过滤
      */
