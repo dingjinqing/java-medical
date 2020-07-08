@@ -1,4 +1,4 @@
-package com.vpu.mp.common.pojo.shop.prescription;
+package com.vpu.mp.service.pojo.shop.prescription;
 
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import lombok.Data;
