@@ -590,13 +590,13 @@ INSERT IGNORE INTO `b2c_shipping` (`shipping_id`, `shipping_code`, `express100_c
 
 -- 2020.06.19 修改用户邀请保护时间类型
 ALTER TABLE b2c_user MODIFY COLUMN `invite_protect_date` datetime DEFAULT null COMMENT '邀请保护时间';
+
+-- ws 修改类型
+ALTER TABLE b2c_order_goods MODIFY COLUMN goods_number int(11) NOT NULL DEFAULT 1;
+ALTER TABLE b2c_order_goods MODIFY COLUMN send_number int(11) NOT NULL DEFAULT 0 ;
+ALTER TABLE b2c_order_goods MODIFY COLUMN return_number int(11) NOT NULL DEFAULT 0 ;
 /***********************2.13*********************END*/
 /***********************3.1-医疗*********************START*/
---ws 修改类型
-ALTER TABLE b2c_order_goods
-MODIFY COLUMN goods_number int(11) NOT NULL DEFAULT 1 ,
-MODIFY COLUMN send_number int(11) NOT NULL DEFAULT 0 ,
-MODIFY COLUMN return_number int(11) NOT NULL DEFAULT 0 ;
 
 ALTER TABLE `b2c_order_info` ADD COLUMN `prescription_no` varchar(64) NOT NULL DEFAULT "" COMMENT '处方号外键';
 ALTER TABLE `b2c_order_goods` ADD COLUMN `prescription_detail_no` varchar(64) NOT NULL DEFAULT "" COMMENT '处方项目明细号码（可根据此字段反查批次号）';
