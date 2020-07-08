@@ -10,7 +10,6 @@ import org.jooq.SQLDialect;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DefaultDSLContext;
 
-import com.zaxxer.hikari.HikariDataSource;
 
 import lombok.Getter;
 import lombok.Setter;

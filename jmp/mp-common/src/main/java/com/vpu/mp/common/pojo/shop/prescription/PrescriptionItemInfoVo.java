@@ -28,11 +28,11 @@ public class PrescriptionItemInfoVo {
      */
     private String    goodsUseMemo;
     /**
-     * 药品使用方式说明
+     * 单位
      */
     private String    goodsBasicUnit;
     /**
-     * 生成
+     * 生产企业
      */
     private String    goodsProductionEnterprise;
 
