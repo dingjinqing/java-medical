@@ -73,7 +73,7 @@
 			</view>
 		</view>
 
-		<view class="prescription-item">
+		<view class="prescription-item" bindtap="handleShowDialog">
 			<view class="item-title" style="background: #DBEFEE url({{imageUrl}}image/wxapp/order-prescription-bg.png) no-repeat left top/100% 80rpx;">电子处方1</view>
 			<view class="item-list-content">
 				<view class="item-list">
@@ -328,6 +328,9 @@
 	<v-select-store show="{{showStoreDialog}}" store-data="{{storeDialogData}}" bindsubmit="getSelectStore" />
 	<!-- 好友代付弹窗 -->
 	<v-friend-pay show="{{showFriendPayDialog}}" friend-config="{{orderInfo.insteadPayCfg}}" bindpayEvent="getFriendPayData" />
+	<!-- 定金膨胀发货规则弹窗 -->
 	<v-pre-sale-rule show="{{preSaleRuleShow}}" />
+	<!-- 处方详情展示弹窗 -->
+	<v-prescription-dialog show="{{showPrescription}}" />
 	<include src="../common/footer.wxml" />
 </view>

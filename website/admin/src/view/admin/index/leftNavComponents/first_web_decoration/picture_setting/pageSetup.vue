@@ -66,7 +66,8 @@ export default {
     RiOfficialAccount: () => import('./pageSetupModules/graphicAndTextComponents/riOfficialAccount'), // 公众号模块
     RiCustomerServiceModule: () => import('./pageSetupModules/graphicAndTextComponents/riCustomerServiceModule'), // 客服模块
     RiPictureHotSpot: () => import('./pageSetupModules/graphicAndTextComponents/riPictureHotSpot'), // 右侧图片热区模块
-    RiPrescription: () => import('./pageSetupModules/graphicAndTextComponents/riPrescription') // 右侧处方模块
+    RiPrescription: () => import('./pageSetupModules/graphicAndTextComponents/riPrescription'), // 右侧处方模块
+    RiCaseHistory: () => import('./pageSetupModules/graphicAndTextComponents/riCaseHistory') // 右侧病历模块
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -192,6 +193,10 @@ export default {
         {
           id: 29,
           name: 'RiPrescription'
+        },
+        {
+          id: 30,
+          name: 'RiCaseHistory'
         }
       ],
       showModule: null,
