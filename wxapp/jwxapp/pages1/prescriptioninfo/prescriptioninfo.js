@@ -8,6 +8,8 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
+    prescriptionInfo: [],
+    prescriptionNo: 1
   },
 
   /**
@@ -15,8 +17,21 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
+    this.data.prescriptionNo = options.prescriptionNo || 1;
+    this.requestInfo();
   },
+  requestInfo () {
+    util.api('/api/wxapp/prescription/details', res => {
+      if (res.error == 0) {
+        this.data.prescriptionInfo = res.content;
+        this.setData({
+          prescriptionInfo: this.data.prescriptionInfo
+        })
+      } else {
 
+      }
+    }, {prescriptionNo: this.data.prescriptionNo})
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

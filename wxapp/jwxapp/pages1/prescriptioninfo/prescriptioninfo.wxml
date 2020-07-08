@@ -14,19 +14,19 @@
           </view>
           <view class="list_content list_patient_info">
             <view class="each_patient_column">
-              <view class="dark_one">张三</view>
+              <view class="dark_one">{{prescriptionInfo.patientName}}</view>
               <view>姓名</view>
             </view>
             <view class="each_patient_column">
-              <view class="dark_one">男</view>
+              <view class="dark_one">{{prescriptionInfo.patientSex}}</view>
               <view>性别</view>
             </view>
             <view class="each_patient_column">
-              <view class="dark_one">52岁</view>
+              <view class="dark_one">{{prescriptionInfo.patientAge}}岁</view>
               <view>年龄</view>
             </view>
             <view class="each_patient_column">
-              <view class="dark_one">外科外科外科外科外科外科</view>
+              <view class="dark_one">{{prescriptionInfo.departmentName}}</view>
               <view>科室</view>
             </view>
           </view>
@@ -34,24 +34,24 @@
             <text class="list-item-dot"></text>
             <view class="list-item-content">诊断</view>
           </view>
-          <view class="list_content">原发性高血压</view>
+          <view class="list_content">{{prescriptionInfo.diagnosisDetail}}</view>
           <view class="list-item">
             <text class="list-item-dot"></text>
             <view class="list-item-content">治疗建议</view>
           </view>
           <view class="list_content">
-            <view class="medicine_name">苯磺酸氨氯地平片</view>
-            <view class="medicine_spec">用法用量：清晨空腹口服，一次5mg，一日1次，用药84天</view>
+            <view class="medicine_name">{{prescriptionInfo.itemList.goodsCommonName}}</view>
+            <view class="medicine_spec">用法用量：{{prescriptionInfo.itemList.goodsUseMemo}}</view>
           </view>
         </view>
       </view>
       <view class="doctor-info">
         <view class="doctor-name">
-          <view>处方医师： <image src=""></image></view>
-          <view>审核医师： <image src=""></image></view>
-          <view>发药医师： <image src=""></image></view>
+          <view>处方医师： {{prescriptionInfo.doctorName}}<image src=""></image></view>
+          <view>审核医师： {{prescriptionInfo.pharmacistName}}<image src=""></image></view>
+          <view>发药医师： {{prescriptionInfo.pharmacistName}}<image src=""></image></view>
         </view>
-        <text class="item-date">日期：2020.06.30</text>
+        <text class="item-date">日期：{{prescriptionInfo.prescriptionCreateTime}}</text>
       </view>
     </view>
   </view>

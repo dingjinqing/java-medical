@@ -21,7 +21,7 @@
   </view>
 
   <!-- <view class="no_content">
-    <image src="http://medicaldevimg.weipubao.cn/image/wxapp/no_pre_img.png"></image>
+    <image src="http://medicaldevimg.weipubao.cn/image/wxapp/no_pre_bg1.png"></image>
     <view class="no_word">暂无内容</view>
     <view class="btn_get_pre" bindtap="to_pre">去添加</view>
   </view> -->
