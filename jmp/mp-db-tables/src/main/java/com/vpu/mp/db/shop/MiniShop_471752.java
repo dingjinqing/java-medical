@@ -1080,13 +1080,18 @@ public class MiniShop_471752 extends SchemaImpl {
     public final CardRenew CARD_RENEW = com.vpu.mp.db.shop.tables.CardRenew.CARD_RENEW;
 
     public final DoctorDepartmentCouple DOCTOR_DEPARTMENT_COUPLE = com.vpu.mp.db.shop.tables.DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE;
-    
+    /**
+     * The table <code>jmini_shop_224462.b2c_medical_history</code>.
+     */
+    public final MedicalHistory MEDICAL_HISTORY = MedicalHistory.MEDICAL_HISTORY;
+
     /**
      * No further instances allowed
      */
     private MiniShop_471752() {
         super("mini_shop_471752", null);
     }
+
 
 
     /**
@@ -1318,6 +1323,8 @@ public class MiniShop_471752 extends SchemaImpl {
             Prescription.PRESCRIPTION,
             PrescriptionItem.PRESCRIPTION_ITEM,
             UserPatientCouple.USER_PATIENT_COUPLE,
+            MedicalHistory.MEDICAL_HISTORY,
             DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE);
+
     }
 }

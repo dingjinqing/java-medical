@@ -1353,7 +1353,7 @@ export default {
           left: 0;
           width: 290px;
           height: 40px;
-          background: linear-gradient(top, #feb83c, #fccc52);
+          background: linear-gradient(to top, #feb83c, #fccc52);
           color: #fff;
           text-align: center;
           line-height: 40px;
