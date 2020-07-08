@@ -99,12 +99,12 @@ public class GoodsDao extends ShopBaseDao {
             condition = condition.and(GOODS.GOODS_SN.like(likeValue(goodsPageListCondition.getGoodsSn())));
         }
 
-        if (goodsPageListCondition.getBrandId() != null) {
-            condition = condition.and(GOODS.BRAND_ID.eq(goodsPageListCondition.getBrandId()));
+        if (goodsPageListCondition.getBrandIds() != null) {
+            condition = condition.and(GOODS.BRAND_ID.in(goodsPageListCondition.getBrandIds()));
         }
 
-        if (goodsPageListCondition.getSortId() != null) {
-            condition = condition.and(GOODS.SORT_ID.eq(goodsPageListCondition.getSortId()));
+        if (goodsPageListCondition.getSortIds() != null) {
+            condition = condition.and(GOODS.SORT_ID.in(goodsPageListCondition.getSortIds()));
         }
 
         if (goodsPageListCondition.getLowShopPrice() != null) {

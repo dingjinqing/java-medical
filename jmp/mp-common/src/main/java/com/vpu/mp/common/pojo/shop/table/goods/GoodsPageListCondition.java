@@ -12,12 +12,15 @@ import java.util.List;
 @Data
 public class GoodsPageListCondition {
 
+    /**
+     * null表示不限制，否则表示限制，长度为0的集合表示没有可匹配的id
+     */
     private List<Integer> goodsIdsLimit;
 
     private String goodsName;
     private String goodsSn;
-    private Integer brandId;
-    private Integer sortId;
+    private List<Integer> brandIds;
+    private List<Integer> sortIds;
     /**
      * 在查询规格时该字段表示对规格价格进行过滤
      */

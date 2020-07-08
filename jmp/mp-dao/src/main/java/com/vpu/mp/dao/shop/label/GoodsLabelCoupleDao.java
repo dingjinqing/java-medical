@@ -45,4 +45,16 @@ public class GoodsLabelCoupleDao extends ShopBaseDao {
         db().deleteFrom(GOODS_LABEL_COUPLE).where(GOODS_LABEL_COUPLE.GTA_ID.in(gtaIds).and(GOODS_LABEL_COUPLE.TYPE.eq(gtaType)))
             .execute();
     }
+
+    /**
+     * 根据标签id和标签类型获取对应的gtaId集合
+     * @param labelId
+     * @param type
+     * @return
+     */
+    public List<GoodsLabelCoupleDo>  listByLabelIdAndType(Integer labelId,Byte type){
+        return db().selectFrom(GOODS_LABEL_COUPLE)
+            .where(GOODS_LABEL_COUPLE.TYPE.eq(type).and(GOODS_LABEL_COUPLE.LABEL_ID.eq(labelId)))
+            .fetchInto(GoodsLabelCoupleDo.class);
+    }
 }

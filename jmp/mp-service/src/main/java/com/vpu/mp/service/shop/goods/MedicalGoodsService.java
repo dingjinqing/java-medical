@@ -26,9 +26,11 @@ import com.vpu.mp.service.pojo.shop.goods.param.MedicalGoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.vo.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.vo.GoodsSelectVo;
 import com.vpu.mp.service.pojo.shop.label.MedicalLabelConstant;
+import com.vpu.mp.service.pojo.shop.label.bo.LabelRelationInfoBo;
 import com.vpu.mp.service.pojo.shop.label.entity.GoodsLabelCoupleVal;
 import com.vpu.mp.service.pojo.shop.label.vo.GoodsLabelVo;
 import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProductEntity;
+import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductGoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductVo;
 import com.vpu.mp.service.pojo.shop.sku.vo.SpecVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author 李晓冰
@@ -59,6 +63,9 @@ public class MedicalGoodsService {
     private GoodsBrandDao goodsBrandDao;
     @Autowired
     private SortDao sortDao;
+
+    @Autowired
+    private MedicalGoodsLabelService medicalGoodsLabelService;
 
     /**
      * 新增
@@ -195,7 +202,7 @@ public class MedicalGoodsService {
             goodsSelectVo.setBrandName(goodsBrandDo.getBrandName());
         }
 
-        List<Integer> parentsSortIds = sortDao.getParentsSortIds(goodsSelectVo.getSortId());
+        List<Integer> parentsSortIds = sortDao.getParentSortIds(goodsSelectVo.getSortId());
         // 标签设置
         List<GoodsLabelVo> goodsNormalLabels = goodsLabelRepository.getGoodsNormalLabels(parentsSortIds);
         List<GoodsLabelVo> goodsPointLabels = goodsLabelRepository.getGoodsPointLabels(goodsId);
@@ -214,11 +221,54 @@ public class MedicalGoodsService {
      */
     public void getGoodsPageList(MedicalGoodsPageListParam pageListParam){
         GoodsPageListCondition goodsPageListCondition = GoodsParamConvertor.converPageListConditionFromPageListParam(pageListParam);
-        PageResult<GoodsEntity> goodsEntityPageResult = goodsRepository.getGoodsPageList(goodsPageListCondition, pageListParam.getCurrentPage(), pageListParam.getPageRows());
-        List<GoodsPageListVo> goodsPageListVos = new ArrayList<>(goodsEntityPageResult.getDataList().size());
-        for (GoodsEntity goodsEntity : goodsEntityPageResult.getDataList()) {
+        if (pageListParam.getSortId() != null) {
+            List<Integer> parentsSortIds = sortDao.getParentSortIds(pageListParam.getSortId());
+            parentsSortIds.add(pageListParam.getSortId());
+            goodsPageListCondition.setSortIds(parentsSortIds);
         }
 
+        /**
+         * 标签处理，可以移动至labelService，并且通过中间类进行数据传输。
+         * 标签打在分类上时要单独插入子分类关联
+         */
+        if (pageListParam.getLabelId() != null) {
+            LabelRelationInfoBo labelRealtionInfo = medicalGoodsLabelService.getLabelRelationInfo(pageListParam.getLabelId());
+            if (labelRealtionInfo.getIsAll() != null) {
+                if (labelRealtionInfo.getSortIds() != null) {
+                    goodsPageListCondition.getSortIds().addAll(labelRealtionInfo.getSortIds());
+                }
+                if (labelRealtionInfo.getGoodsIds() != null) {
+                    goodsPageListCondition.setGoodsIdsLimit(labelRealtionInfo.getGoodsIds());
+                }
+            }
+        }
+
+        PageResult<GoodsEntity> goodsEntityPageResult = goodsRepository.getGoodsPageList(goodsPageListCondition, pageListParam.getCurrentPage(), pageListParam.getPageRows());
+        List<GoodsPageListVo> goodsPageListVos = new ArrayList<>(goodsEntityPageResult.getDataList().size());
+        List<Integer> goodsIds = new ArrayList<>(goodsEntityPageResult.getDataList().size());
+        List<Integer> sortIds = new ArrayList<>(goodsEntityPageResult.getDataList().size());
+        for (GoodsEntity goodsEntity : goodsEntityPageResult.getDataList()) {
+            GoodsPageListVo goodsPageListVo = new GoodsPageListVo(goodsEntity);
+            goodsPageListVos.add(goodsPageListVo);
+            goodsIds.add(goodsEntity.getGoodsId());
+            sortIds.add(goodsEntity.getSortId());
+        }
+        PageResult<GoodsPageListVo> retPageResult =new PageResult<>();
+        retPageResult.setPage(goodsEntityPageResult.getPage());
+        retPageResult.setDataList(goodsPageListVos);
+
+        // 准备需要映射的规格信息
+        List<GoodsSpecProductEntity> goodsSpecProductEntities = goodsSpecProductRepository.listSkuByGoodsIds(goodsIds);
+        Map<Integer, List<GoodsSpecProductGoodsPageListVo>> goodsIdSkusMap = goodsSpecProductEntities.stream().map(entity -> {
+            GoodsSpecProductGoodsPageListVo vo = new GoodsSpecProductGoodsPageListVo();
+            vo.setPrdId(entity.getPrdId());
+            vo.setGoodsId(entity.getGoodsId());
+            vo.setPrdNumber(entity.getPrdNumber());
+            vo.setPrdPrice(entity.getPrdPrice());
+            return vo;
+        }).collect(Collectors.groupingBy(GoodsSpecProductGoodsPageListVo::getGoodsId));
+
+        //
 
     }
     /**
