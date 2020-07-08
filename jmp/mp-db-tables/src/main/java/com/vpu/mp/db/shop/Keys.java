@@ -286,6 +286,8 @@ public class Keys {
     public static final Identity<UserPatientCoupleRecord, Integer> IDENTITY_USER_PATIENT_COUPLE = Identities0.IDENTITY_USER_PATIENT_COUPLE;
     public static final Identity<DoctorAdviceRecord, Integer> IDENTITY_DOCTOR_ADVICE = Identities0.IDENTITY_DOCTOR_ADVICE;
     public static final Identity<DoctorDepartmentCoupleRecord, Integer> IDENTITY_DOCTOR_DEPARTMENT_COUPLE = Identities0.IDENTITY_DOCTOR_DEPARTMENT_COUPLE;
+    public static final Identity<MedicalHistoryRecord, Integer> IDENTITY_MEDICAL_HISTORY = Identities0.IDENTITY_MEDICAL_HISTORY;
+
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
@@ -813,6 +815,7 @@ public class Keys {
         public static Identity<UserPatientCoupleRecord, Integer> IDENTITY_USER_PATIENT_COUPLE = Internal.createIdentity(UserPatientCouple.USER_PATIENT_COUPLE, UserPatientCouple.USER_PATIENT_COUPLE.ID);
         public static Identity<DoctorAdviceRecord, Integer> IDENTITY_DOCTOR_ADVICE = Internal.createIdentity(DoctorAdvice.DOCTOR_ADVICE, DoctorAdvice.DOCTOR_ADVICE.ID);
         public static Identity<DoctorDepartmentCoupleRecord, Integer> IDENTITY_DOCTOR_DEPARTMENT_COUPLE = Internal.createIdentity(DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE, DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE.ID);
+        public static Identity<MedicalHistoryRecord, Integer> IDENTITY_MEDICAL_HISTORY = Internal.createIdentity(MedicalHistory.MEDICAL_HISTORY, MedicalHistory.MEDICAL_HISTORY.ID);
 
     }
 
