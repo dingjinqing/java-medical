@@ -316,7 +316,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     moduleMap.setImgPath(imageUrl(moduleMap.getImgPath()));
                     return moduleMap;
                 case ModuleConstant.M_GOODS:
-                    ModuleGoods moduleGoods = saas.getShopApp(getShopId()).mpDecoration.convertGoodsForModule(objectMapper, node, null);
+                    ModuleGoods moduleGoods = saas.getShopApp(getShopId()).mpDecoration.convertGoodsForModule(objectMapper, node, null,null);
                     if (moduleGoods.getOtherMessage().equals(0)) {
                         if (StringUtil.isNotEmpty(moduleGoods.getImgUrl()) || StringUtil.isNotEmpty(moduleGoods.getTitle())) {
                             moduleGoods.setGoodsModuleTitle((byte) 1);

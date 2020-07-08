@@ -10,13 +10,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 public class AdminDoctorController extends AdminBaseController {
-    @Override
-    protected ShopApplication shop() {
-        return saas.getShopApp(471752);
-    }
+//    @Override
+//    protected ShopApplication shop() {
+//        return saas.getShopApp(471752);
+//    }
     /**
      * 医师列表
      * @param param
@@ -72,8 +73,8 @@ public class AdminDoctorController extends AdminBaseController {
      * 根据id获取医师信息
      * @param doctorId 医师id
      */
-    @GetMapping("/api/admin/doctor/{doctorId}")
-    public JsonResult getDoctor(Integer doctorId) {
+    @GetMapping("/api/admin/doctor/info/{doctorId}")
+    public JsonResult getDoctor(@PathVariable Integer doctorId) {
         if (doctorId == null) {
             return fail(JsonResultCode.DOCTOR_DEPARTMENT_ID_IS_NULL);
         }

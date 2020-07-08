@@ -26,15 +26,15 @@ public class TitleDao extends ShopBaseDao{
      * @param param
      * @return
      */
-    public PageResult<TitleOneParam> getDepartmentList(TitleListParam param) {
+    public PageResult<TitleOneParam> getTitleList(TitleListParam param) {
         SelectJoinStep<? extends Record> select = db()
             .select(DOCTOR_TITLE.ID, DOCTOR_TITLE.NAME, DOCTOR_TITLE.CREATE_TIME)
             .from(DOCTOR_TITLE);
         select.where(DOCTOR_TITLE.IS_DELETE.eq((byte) 0));
         buildOptions(select, param);
-        PageResult<TitleOneParam> departmentList = this.getPageResult(select, param.getCurrentPage(),
+        PageResult<TitleOneParam> titleList = this.getPageResult(select, param.getCurrentPage(),
             param.getPageRows(), TitleOneParam.class);
-        return departmentList;
+        return titleList;
     }
 
     /**
@@ -55,7 +55,7 @@ public class TitleDao extends ShopBaseDao{
      */
     public TitleOneParam getOneInfo(Integer titleId) {
         TitleOneParam info = db().select().from(DOCTOR_TITLE).where(DOCTOR_TITLE.ID.eq(titleId))
-            .fetchOne().into(TitleOneParam.class);
+            .fetchOneInto(TitleOneParam.class);
         return info;
     }
 
@@ -117,7 +117,7 @@ public class TitleDao extends ShopBaseDao{
      */
     public List<TitleOneParam> listTitles() {
         List<TitleOneParam> titleList = db().select().from(DOCTOR_TITLE).where(DOCTOR_TITLE.IS_DELETE.eq((byte) 0))
-            .fetch().into(TitleOneParam.class);
+            .fetchInto(TitleOneParam.class);
         return titleList;
     }
 }

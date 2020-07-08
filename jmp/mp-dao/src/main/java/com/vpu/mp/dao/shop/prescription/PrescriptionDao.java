@@ -175,4 +175,13 @@ public class PrescriptionDao extends ShopBaseDao {
                 .fetchAny();
 
     }
+
+    //患者未过期的历史处方
+    public List<String> getValidPrescriptionByPatient(Integer patientId) {
+        return db().select(PRESCRIPTION.PRESCRIPTION_NO).from(PRESCRIPTION)
+            .where(PRESCRIPTION.PATIENT_ID.eq(patientId)
+                .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.gt(DateUtil.date().toTimestamp()))
+                .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
+            .fetchInto(String.class);
+    }
 }
