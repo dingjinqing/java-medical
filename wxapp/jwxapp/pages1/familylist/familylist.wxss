@@ -67,11 +67,11 @@ page{
 }
 .no_content {
   text-align: center;
-  padding-top: 400rpx;
+  padding-top: 350rpx;
 }
 .no_content image{
-  height: 300rpx;
-  width: 500rpx;
+  height: 450rpx;
+  width: 750rpx;
   margin: 0 auto 40rpx;
 }
 .no_content .no_word{

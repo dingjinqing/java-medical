@@ -1,34 +1,34 @@
 <!--pages1/prescriptionlist/prescriptionlist.wxml-->
 <include src="/pages/common/header.wxml"/>
 <view class="mian-container">
-  <view class="prescription-content">
-    <view class="prescription-item" bindtap="to_info">
+  <view class="prescription-content" wx:if='{{ dataList[0].length }}'>
+    <view class="prescription-item" bindtap="to_info" wx:for='{{dataList}}' wx:key='key'>
       <view class="item-title">电子处方1</view>
       <view class="item-list-content">
         <view class="item-list">
           <view class="list-item">
             <text class="list-item-dot"></text>
             <view class="list-item-content">
-              诊断：原发性高血压
+              诊断：{{item.diagnosisName}}
             </view>
           </view>
           <view class="list-item">
             <text class="list-item-dot"></text>
             <view class="list-item-content">
-              科室：神经科
+              科室：{{item.departmentName}}
             </view>
           </view>
         </view>
       </view>
       <view class="doctor-info">
-        <text class="doctor-name">医师：张三</text>
-        <text class="item-date">日期：2020.06.30</text>
+        <text class="doctor-name">医师：{{item.doctorName}}</text>
+        <text class="item-date">日期：{{item.prescriptionCreateTime}}</text>
       </view>
     </view>
   </view>
-  <!-- <view class="no_content">
-    <image src="http://medicaldevimg.weipubao.cn/image/wxapp/no_pre_img.png"></image>
+  <view class="no_content" wx:if='{{ !dataList[0].length }}'>
+    <image src="http://medicaldevimg.weipubao.cn/image/wxapp/no_pre_bg1.png"></image>
     <view class="no_word">暂无内容，您需要同步病历才可查看</view>
     <view class="btn_get_pre" bindtap="to_pre">去同步</view>
-  </view> -->
+  </view>
 </view>
