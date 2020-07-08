@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
 
-    private static final long serialVersionUID = -250920640;
+    private static final long serialVersionUID = 198178197;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_prescription_item</code>
@@ -96,6 +96,16 @@ public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
      * The column <code>mini_shop_471752.b2c_prescription_item.goods_use_memo</code>. 药品使用方式说明
      */
     public final TableField<PrescriptionItemRecord, String> GOODS_USE_MEMO = createField("goods_use_memo", org.jooq.impl.SQLDataType.VARCHAR(1024).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "药品使用方式说明");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription_item.goods_basic_unit</code>. 单位
+     */
+    public final TableField<PrescriptionItemRecord, String> GOODS_BASIC_UNIT = createField("goods_basic_unit", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "单位");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription_item.goods_production_enterprise</code>. 生产企业
+     */
+    public final TableField<PrescriptionItemRecord, String> GOODS_PRODUCTION_ENTERPRISE = createField("goods_production_enterprise", org.jooq.impl.SQLDataType.VARCHAR(512), this, "生产企业");
 
     /**
      * The column <code>mini_shop_471752.b2c_prescription_item.status</code>. 处方审核状态 0待审核 1审核通过 2审核未通过

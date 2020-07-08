@@ -1,9 +1,12 @@
 package com.vpu.mp.service.shop.prescription;
 
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.pojo.shop.prescription.PrescriptionInfoVo;
+import com.vpu.mp.common.pojo.shop.prescription.PrescriptionItemInfoVo;
 import com.vpu.mp.common.pojo.shop.prescription.PrescriptionListParam;
 import com.vpu.mp.common.pojo.shop.prescription.PrescriptionListVo;
 import com.vpu.mp.common.pojo.shop.prescription.PrescriptionParam;
+import com.vpu.mp.common.pojo.shop.prescription.PrescriptionSimpleVo;
 import com.vpu.mp.common.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
@@ -89,5 +92,29 @@ public class PrescriptionService extends ShopBaseService {
      */
     public void ListSimpleByprescriptionNo(List<String> prescriptionNoList) {
         prescriptionDao.ListSimpleByprescriptionNo(prescriptionNoList);
+    }
+
+    /**
+     * 患者的处方列表
+     * @param param
+     * @return
+     */
+    public PageResult<PrescriptionSimpleVo> listPageResultWx(PrescriptionListParam param) {
+        return prescriptionDao.listPageResultWx(param);
+    }
+
+    /**
+     * 处方号
+     * @param prescriptionNo 处方号
+     */
+    public PrescriptionInfoVo getPrescriptionInfo(String prescriptionNo) {
+        /**处方号*/
+        PrescriptionInfoVo byPrescription = prescriptionDao.getByPrescriptionNo(prescriptionNo);
+        if (byPrescription==null){
+            return null;
+        }
+        List<PrescriptionItemInfoVo> prescriptionItemSimpleVos = prescriptionItemDao.listByPrescriptionNo(prescriptionNo);
+        byPrescription.setItemList(prescriptionItemSimpleVos);
+        return byPrescription;
     }
 }

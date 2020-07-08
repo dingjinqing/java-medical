@@ -605,6 +605,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setMust(calculate.getOrderMust(vo.getOrderGoods()));
         //服务条款
         vo.setTerm(calculate.getTermsofservice());
+        //处方信息
+        vo.setPrescriptionList(param.getPrescriptionList());
     }
 
     private void processBeforeUniteActivity(OrderBeforeParam param, OrderBeforeVo vo) {

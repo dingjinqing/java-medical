@@ -3,7 +3,6 @@ package com.vpu.mp.common.pojo.shop.prescription;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import lombok.Data;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 

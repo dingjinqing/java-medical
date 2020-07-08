@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 
+ *
  * @author lixinguo
  *
  */
@@ -28,12 +28,10 @@ public class MpDefaultDslContext extends DefaultDSLContext {
 	@Getter
 	@Setter
 	protected Integer shopId = 0;
-	@Getter
-	@Setter
-	protected HikariDataSource ds;
+
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2971649046754906812L;
 

@@ -26,7 +26,7 @@ import javax.annotation.Generated;
 @Data
 public class PrescriptionDo implements Serializable {
 
-    private static final long serialVersionUID = -1921903809;
+    private static final long serialVersionUID = -908794505;
 
     private Integer   id;
     private String    prescriptionNo;
@@ -40,7 +40,7 @@ public class PrescriptionDo implements Serializable {
     private String    patientDiseaseHistory;
     private String    patientAllergyHistory;
     private String    registerHospital;
-    private String    doctorAdviceCode;
+    private String    posCode;
     private String    departmentCode;
     private String    departmentName;
     private String    doctorCode;
@@ -48,8 +48,8 @@ public class PrescriptionDo implements Serializable {
     private Timestamp diagnoseTime;
     private String    pharmacistName;
     private String    pharmacistCode;
-    private String    sicknessName;
-    private String    sicknessDetail;
+    private String    diagnosisName;
+    private String    diagnosisDetail;
     private String    patientComplain;
     private String    patientSign;
     private Byte      source;

@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> {
 
-    private static final long serialVersionUID = 554339722;
+    private static final long serialVersionUID = 462040608;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.id</code>.
@@ -198,16 +198,16 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_prescription.doctor_advice_code</code>. 医嘱流水号
+     * Setter for <code>mini_shop_471752.b2c_prescription.pos_code</code>. 医嘱编号
      */
-    public void setDoctorAdviceCode(String value) {
+    public void setPosCode(String value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_prescription.doctor_advice_code</code>. 医嘱流水号
+     * Getter for <code>mini_shop_471752.b2c_prescription.pos_code</code>. 医嘱编号
      */
-    public String getDoctorAdviceCode() {
+    public String getPosCode() {
         return (String) get(12);
     }
 
@@ -310,30 +310,30 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_prescription.sickness_name</code>. 疾病名称
+     * Setter for <code>mini_shop_471752.b2c_prescription.diagnosis_name</code>. 诊断名称
      */
-    public void setSicknessName(String value) {
+    public void setDiagnosisName(String value) {
         set(20, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_prescription.sickness_name</code>. 疾病名称
+     * Getter for <code>mini_shop_471752.b2c_prescription.diagnosis_name</code>. 诊断名称
      */
-    public String getSicknessName() {
+    public String getDiagnosisName() {
         return (String) get(20);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_prescription.sickness_detail</code>. 疾病详情
+     * Setter for <code>mini_shop_471752.b2c_prescription.diagnosis_detail</code>. 诊断详情
      */
-    public void setSicknessDetail(String value) {
+    public void setDiagnosisDetail(String value) {
         set(21, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_prescription.sickness_detail</code>. 疾病详情
+     * Getter for <code>mini_shop_471752.b2c_prescription.diagnosis_detail</code>. 诊断详情
      */
-    public String getSicknessDetail() {
+    public String getDiagnosisDetail() {
         return (String) get(21);
     }
 
@@ -517,7 +517,7 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
     /**
      * Create a detached, initialised PrescriptionRecord
      */
-    public PrescriptionRecord(Integer id, String prescriptionNo, Integer patientId, String patientTreatmentNo, String identityNo, Byte identityType, String patientName, Integer patientAge, Byte patientSex, String patientDiseaseHistory, String patientAllergyHistory, String registerHospital, String doctorAdviceCode, String departmentCode, String departmentName, String doctorCode, String doctorName, Timestamp diagnoseTime, String pharmacistName, String pharmacistCode, String sicknessName, String sicknessDetail, String patientComplain, String patientSign, Byte source, Byte status, String statusMemo, Byte expireType, Timestamp prescriptionCreateTime, Timestamp prescriptionExpireTime, Byte isDelete, Timestamp createTime, Timestamp updateTime) {
+    public PrescriptionRecord(Integer id, String prescriptionNo, Integer patientId, String patientTreatmentNo, String identityNo, Byte identityType, String patientName, Integer patientAge, Byte patientSex, String patientDiseaseHistory, String patientAllergyHistory, String registerHospital, String posCode, String departmentCode, String departmentName, String doctorCode, String doctorName, Timestamp diagnoseTime, String pharmacistName, String pharmacistCode, String diagnosisName, String diagnosisDetail, String patientComplain, String patientSign, Byte source, Byte status, String statusMemo, Byte expireType, Timestamp prescriptionCreateTime, Timestamp prescriptionExpireTime, Byte isDelete, Timestamp createTime, Timestamp updateTime) {
         super(Prescription.PRESCRIPTION);
 
         set(0, id);
@@ -532,7 +532,7 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
         set(9, patientDiseaseHistory);
         set(10, patientAllergyHistory);
         set(11, registerHospital);
-        set(12, doctorAdviceCode);
+        set(12, posCode);
         set(13, departmentCode);
         set(14, departmentName);
         set(15, doctorCode);
@@ -540,8 +540,8 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
         set(17, diagnoseTime);
         set(18, pharmacistName);
         set(19, pharmacistCode);
-        set(20, sicknessName);
-        set(21, sicknessDetail);
+        set(20, diagnosisName);
+        set(21, diagnosisDetail);
         set(22, patientComplain);
         set(23, patientSign);
         set(24, source);

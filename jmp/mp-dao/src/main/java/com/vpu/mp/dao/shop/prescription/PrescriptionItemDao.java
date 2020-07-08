@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.shop.prescription;
 
+import com.vpu.mp.common.pojo.shop.prescription.PrescriptionItemInfoVo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PrescriptionItemRecord;
@@ -44,5 +45,14 @@ public class PrescriptionItemDao extends ShopBaseDao {
         return db().batchInsert(doList).execute();
     }
 
-
+    /**
+     * 处方明细
+     * @param prescriptionNo
+     * @return
+     */
+    public List<PrescriptionItemInfoVo> listByPrescriptionNo(String prescriptionNo) {
+        return db().select().from(PRESCRIPTION_ITEM)
+                .where(PRESCRIPTION_ITEM.PRESCRIPTION_NO.eq(prescriptionNo))
+                .fetchInto(PrescriptionItemInfoVo.class);
+    }
 }

@@ -597,7 +597,6 @@ ALTER TABLE b2c_order_goods MODIFY COLUMN send_number int(11) NOT NULL DEFAULT 0
 ALTER TABLE b2c_order_goods MODIFY COLUMN return_number int(11) NOT NULL DEFAULT 0 ;
 /***********************2.13*********************END*/
 /***********************3.1-医疗*********************START*/
-
 ALTER TABLE `b2c_order_info` ADD COLUMN `prescription_no` varchar(64) NOT NULL DEFAULT "" COMMENT '处方号外键';
 ALTER TABLE `b2c_order_goods` ADD COLUMN `prescription_detail_no` varchar(64) NOT NULL DEFAULT "" COMMENT '处方项目明细号码（可根据此字段反查批次号）';
 
