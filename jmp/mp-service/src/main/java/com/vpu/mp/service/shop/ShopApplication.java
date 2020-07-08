@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop;
 
+import com.vpu.mp.db.shop.tables.MedicalHistory;
+import com.vpu.mp.service.medicine.MedicalHistoryService;
 import com.vpu.mp.service.shop.assess.AssessService;
 import com.vpu.mp.service.shop.collection.CollectService;
 import com.vpu.mp.service.shop.config.*;
@@ -585,4 +587,10 @@ public class ShopApplication {
      */
     @Autowired
     public MedicalGoodsService medicalGoodsService;
+
+    /**
+     * 病历
+     */
+    @Autowired
+    public MedicalHistoryService medicalHistoryService;
 }
