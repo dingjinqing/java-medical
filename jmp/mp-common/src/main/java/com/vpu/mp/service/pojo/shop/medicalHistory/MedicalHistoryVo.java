@@ -1,4 +1,4 @@
-package com.vpu.mp.common.pojo.shop.medicalHistory;
+package com.vpu.mp.service.pojo.shop.medicalHistory;
 
 import com.vpu.mp.common.pojo.shop.table.MedicalHistoryDo;
 import lombok.Data;

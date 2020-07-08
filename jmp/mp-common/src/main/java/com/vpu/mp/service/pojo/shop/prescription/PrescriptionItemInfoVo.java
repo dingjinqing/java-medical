@@ -1,8 +1,6 @@
-package com.vpu.mp.common.pojo.shop.prescription;
+package com.vpu.mp.service.pojo.shop.prescription;
 
 import lombok.Data;
-
-import java.sql.Timestamp;
 
 /**
  * @author 孔德成

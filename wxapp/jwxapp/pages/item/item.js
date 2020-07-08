@@ -1,5 +1,5 @@
 var util = require('../../utils/util.js')
-const livePlayer = requirePlugin('live-player-plugin')
+// const livePlayer = requirePlugin('live-player-plugin')
 const actBaseInfo = {
   1: {
     actName: '拼团',

@@ -103,7 +103,6 @@
             <text>￥</text>
             <text class="price">{{goodsInfo.prdRealPrice}}</text>
           </block>
-          <share-button btn-class="share-button" wx:if="{{showMall}}" product="{{shareButtonData}}" bind:error="on_error" type="3" >推荐好物</share-button>
         </view>
         <view class="marking_price" wx:if="{{goodsInfo.prdLinePrice}}">
           ￥

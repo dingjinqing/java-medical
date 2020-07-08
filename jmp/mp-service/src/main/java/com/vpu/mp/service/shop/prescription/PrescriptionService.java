@@ -1,13 +1,13 @@
 package com.vpu.mp.service.shop.prescription;
 
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.pojo.shop.prescription.PrescriptionInfoVo;
-import com.vpu.mp.common.pojo.shop.prescription.PrescriptionItemInfoVo;
-import com.vpu.mp.common.pojo.shop.prescription.PrescriptionListParam;
-import com.vpu.mp.common.pojo.shop.prescription.PrescriptionListVo;
-import com.vpu.mp.common.pojo.shop.prescription.PrescriptionParam;
-import com.vpu.mp.common.pojo.shop.prescription.PrescriptionSimpleVo;
-import com.vpu.mp.common.pojo.shop.prescription.PrescriptionVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionInfoVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemInfoVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionSimpleVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;

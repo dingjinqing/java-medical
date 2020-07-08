@@ -4,7 +4,6 @@
   display: flex;
   flex-direction: column;
   border-radius: 16rpx 16rpx 0 0;
-  background-color: #fff;
 }
 .case-history-list{
   background: #fff;
@@ -18,13 +17,19 @@
   flex-direction: column;
   line-height: 60rpx;
 }
-.list-item + .list-item{
-  border-top: 2rpx solid #eee;
+.list-item+.list-item{
+  border-bottom: 2rpx solid #eee;
+}
+.list-item:last-of-type{
+  border-bottom: none;
 }
 .list-item.title{
   font-size: 28rpx;
   color: #333;
   font-weight: 600;
+  line-height: 100rpx;
+}
+.list-item.title > text{
   align-self: center;
 }
 .list-item > .item-line{

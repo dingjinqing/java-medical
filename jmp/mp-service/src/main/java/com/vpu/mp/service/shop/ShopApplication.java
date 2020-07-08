@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop;
 
-import com.vpu.mp.db.shop.tables.MedicalHistory;
-import com.vpu.mp.service.medicine.MedicalHistoryService;
+import com.vpu.mp.service.shop.medicine.MedicalHistoryService;
 import com.vpu.mp.service.shop.assess.AssessService;
 import com.vpu.mp.service.shop.collection.CollectService;
 import com.vpu.mp.service.shop.config.*;
@@ -62,6 +61,7 @@ import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
 import com.vpu.mp.service.shop.market.sharereward.WxShareRewardService;
 import com.vpu.mp.service.shop.marketCalendar.MarketCalendarService;
+import com.vpu.mp.service.shop.medicine.MedicalHistoryService;
 import com.vpu.mp.service.shop.member.*;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
@@ -526,7 +526,7 @@ public class ShopApplication {
      */
     @Autowired
     public WxShareRewardService wxShareReward;
-    
+
     /**
      * 小程序公众号短信发送记录表
      */

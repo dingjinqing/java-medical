@@ -73,12 +73,12 @@
             </el-select>
           </el-form-item>
           <el-form-item
-            label='所属科室'
-            prop='belongedDepartment'
+            label='聘任职务'
+            prop='hireJobTitle'
           >
             <el-select
-              v-model="doctorFormInfo.belongedDepartment"
-              placeholder="请选择所属科室"
+              v-model="doctorFormInfo.hireJobTitle"
+              placeholder="请选择聘任职务"
             >
               <el-option
                 v-for="item in belongedDepartments"
@@ -86,6 +86,24 @@
                 :label="item.partName"
                 :value="item.partId"
                 ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label='所属科室'
+            prop='belongPartId'
+          >
+            <el-select v-model="doctorFormInfo.belongPartId" multiple placeholder="请选择">
+              <el-option-group
+                v-for="group in belongParts"
+                :key="group.label"
+                :label="group.label">
+                <el-option
+                  v-for="item in group.options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-option-group>
             </el-select>
           </el-form-item>
           <el-form-item
@@ -172,6 +190,14 @@ export default {
         callback()
       }
     }
+    var validatePartId = (rule, value, callback) => {
+      console.log(value)
+      if (!value.length) {
+        callback(new Error('请选择医生所属科室'))
+      } else {
+        callback()
+      }
+    }
     return {
       reload: true,
       doctorFormInfo: {
@@ -180,7 +206,8 @@ export default {
         doctorQualNumber: '',
         doctorPracticeNumber: '',
         doctorJobTitle: '',
-        belongedDepartment: '',
+        hireJobTitle: '',
+        belongPartId: [],
         gender: 1,
         mobile: '',
         childAccount: '',
@@ -192,8 +219,9 @@ export default {
         doctorHospitalNumber: [{required: true, message: '请输入医生院内编号', trigger: 'blur'}],
         doctorQualNumber: [{required: true, message: '请输入医生资格编码', trigger: 'blur'}],
         doctorPracticeNumber: [{required: true, message: '请输入医生执业编码', trigger: 'blur'}],
-        doctorJobTitle: [{required: false, message: '请选择医生职称', trigger: 'change'}],
-        belongedDepartment: [{required: false, message: '请选择医生所属科室', trigger: 'change'}],
+        doctorJobTitle: [{required: true, message: '请选择医生职称', trigger: 'change'}],
+        hireJobTitle: [{required: true, message: '请选择聘任职务', trigger: 'change'}],
+        belongPartId: [{required: true, validator: validatePartId, trigger: 'change'}],
         gender: [{required: true, message: '请选择医生性别', trigger: 'change'}],
         mobile: [
           {required: true, message: '请填写手机号', trigger: 'blur'},
@@ -203,8 +231,27 @@ export default {
         password: [{required: true, validator: validatePass, trigger: 'blur'}],
         checkPassword: [{required: true, validator: validatePassCheck, trigger: 'blur'}]
       },
-      doctorJobTitle: {},
-      belongedDepartments: {}
+      doctorJobTitles: {},
+      belongedDepartments: {},
+      belongParts: [{
+        label: '热门城市',
+        options: [{
+          value: 'Shanghai',
+          label: '上海'
+        }, {
+          value: 'Beijing',
+          label: '北京'
+        }]
+      }, {
+        label: '城市名',
+        options: [{
+          value: 'Chengdu',
+          label: '成都'
+        }, {
+          value: 'Shenzhen',
+          label: '深圳'
+        }]
+      }]
     }
   },
   methods: {
@@ -232,6 +279,10 @@ export default {
   .doctorContent{
     background-color: white;
     padding: 10px 10px 100px;
+    .add_belong_part{
+      cursor: pointer;
+      width: 250px;
+    }
     .el-input{
       width: 300px;
     }

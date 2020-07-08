@@ -1,4 +1,6 @@
 {
   "component": true,
-  "usingComponents": {}
+  "usingComponents": {
+    "v-case-history-dialog": "/components/popup/case_history_dialog/index"
+  }
 }

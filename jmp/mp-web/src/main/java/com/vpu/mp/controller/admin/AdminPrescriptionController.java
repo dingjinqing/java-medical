@@ -1,7 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.pojo.shop.prescription.PrescriptionListParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;

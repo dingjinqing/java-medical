@@ -1,10 +1,9 @@
 package com.vpu.mp.dao.shop.medicalHistory;
-
-import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.pojo.shop.medicalHistory.MedicalHistoryParam;
-import com.vpu.mp.common.pojo.shop.medicalHistory.MedicalHistoryVo;
+import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryParam;
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
+import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryVo;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Repository;

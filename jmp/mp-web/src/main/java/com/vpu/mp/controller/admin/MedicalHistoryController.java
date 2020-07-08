@@ -1,10 +1,13 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
+
+
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.pojo.shop.medicalHistory.MedicalHistoryParam;
-import com.vpu.mp.common.pojo.shop.medicalHistory.MedicalHistoryVo;
-import com.vpu.mp.service.shop.ShopApplication;
+import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryParam;
+import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryVo;
+import com.vpu.mp.service.shop.medicine.MedicalHistoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,10 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/admin/medicine/medicalHistory")
 public class MedicalHistoryController extends AdminBaseController {
 
-    @Override
-    protected ShopApplication shop() {
-        return saas.getShopApp(224462);
-    }
+    @Autowired
+    private MedicalHistoryService medicalHistoryService;
 
     /**
      * 病历分页
@@ -31,7 +32,7 @@ public class MedicalHistoryController extends AdminBaseController {
     @PostMapping(value = "/list")
     public JsonResult listPageResult(MedicalHistoryParam param){
         PageResult<MedicalHistoryVo> medicalHistoryVoPageResult =
-            shop().medicalHistoryService.listPageResult(param);
+            medicalHistoryService.listPageResult(param);
         return success(medicalHistoryVoPageResult);
     }
 

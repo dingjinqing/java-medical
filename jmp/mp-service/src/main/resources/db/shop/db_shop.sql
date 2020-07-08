@@ -4926,4 +4926,30 @@ create table `b2c_doctor_department_couple`(
     primary key(`id`)
 )comment ='医师科室关联表';
 
-
+-- 病历
+create table `b2c_medical_history`
+(
+    `id`   int(11)     not null auto_increment comment 'id',
+    `case_history_code` varchar(128)  not null default '' comment '确定一个病历的编号',
+    `pos_code` varchar(128)  not null default '' comment '确定一个医嘱的编号',
+    `patient_id` int(11)      not null comment '患者id',
+    `patient_name` varchar(32)  not null default '' comment '患者名',
+    `sex` tinyint(1) not null default 0 comment '性别0：未知 1：男 2：女',
+    `age` int(11)  not null default 0 comment '年龄',
+    `department_id` int(11)  not null comment '就诊科id',
+    `department_name` varchar(32) not null default '' comment '就诊科室(门诊)名称',
+    `out_patient_number` varchar(32)  not null  default '' comment '门诊号',
+    `allergy_history` varchar(512) not null default '' comment '过敏史',
+    `patient_complain` varchar(512) not null default '' comment '病人主诉',
+    `disease_history` text not null default '' comment '病史',
+    `physical_examination` text not null default '' comment '体格检查',
+    `auxiliary_physical_examination` text not null default '' comment '辅助检查',
+    `diagnosis_content` text not null default '' comment '诊断',
+    `diagnosis_suggestion` text not null default '' comment '诊疗处理意见',
+    `doctor_code` varchar(128) not null default '' comment '医师编码',
+    `doctor_name` varchar(32)  not null default '' comment '医师姓名',
+    `is_delete`     tinyint(1)   not null default '0',
+    `create_time`   timestamp    not null default current_timestamp,
+    `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`id`)
+)comment ='病历';

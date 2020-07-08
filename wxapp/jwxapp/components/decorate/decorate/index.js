@@ -258,7 +258,9 @@ global.wxComponent({
         "m_official_accounts": "v-official-accounts",
         "m_shop_announce": "v-shop-announce",
         "m_rich_text": "v-rich-text",
-        "m_topnav": "v-top-nav"
+        "m_topnav": "v-top-nav",
+        "m_prescription": "v-prescription",
+        "m_case_history": "v-case-history",
       };
       return modules[tmplateName];
     }

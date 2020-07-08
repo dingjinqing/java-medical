@@ -14,7 +14,6 @@
     "v-distribution": "/components/item/distribution/index",
     "v-address-choose": "/components/item/address_choose/index",
     "v-purchase_record": "/components/item/purchase_record/index",
-    "subscribe": "plugin-private://wx2b03c6e691cd7370/components/subscribe/subscribe",
     "v-invite-notice": "/components/invite_notice/index",
     "v-suspend-window": "/components/suspend-window/index"
   }

@@ -1,7 +1,6 @@
 package com.vpu.mp.dao.shop.prescription;
 
-import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.pojo.shop.prescription.PrescriptionItemInfoVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemInfoVo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PrescriptionItemRecord;
@@ -11,9 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.GOODS_MEDICAL_INFO;
-import static com.vpu.mp.db.shop.Tables.PRESCRIPTION;
 import static com.vpu.mp.db.shop.Tables.PRESCRIPTION_ITEM;
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 
 /**
  * 处方明细

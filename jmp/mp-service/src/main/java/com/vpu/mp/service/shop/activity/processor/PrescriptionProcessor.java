@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.pojo.shop.prescription.PrescriptionVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -20,6 +20,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+
+import static com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_PASS;
 
 /**
  * 药方
@@ -59,7 +61,7 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
             GoodsRecord goodsInfo = goods.getGoodsInfo();
             GoodsMedicalInfoDo medicalInfo = medicalGoodsService.getByGoodsId(goodsInfo.getGoodsId());
             //商品的医疗信息
-            if (medicalInfo != null) {
+            if (medicalInfo != null&&medicalInfo.getIsRx().equals(BaseConstant.YES)) {
                 goods.setMedicalInfo(medicalInfo);
                 PrescriptionVo prescriptionVo = prescriptionService
                         .getByGoodsInfo(goods.getGoodsId(), medicalInfo.getGoodsCommonName(), medicalInfo.getGoodsQualityRatio(), medicalInfo.getGoodsProductionEnterprise());
@@ -67,7 +69,8 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                 if (prescriptionVo != null) {
                     prescriptionList.add(prescriptionVo);
                 } else {
-                    log.info("{}药品没有处方信息", goodsInfo.getGoodsName());
+                    log.info("{}药品没有找到对应的处方信息", goodsInfo.getGoodsName());
+                    goods.setCheckPrescriptionStatus(CHECK_ORDER_PRESCRIPTION_NO_PASS);
                 }
             }
         }

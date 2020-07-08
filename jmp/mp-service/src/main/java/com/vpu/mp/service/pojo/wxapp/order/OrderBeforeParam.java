@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.pojo.shop.prescription.PrescriptionVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
@@ -113,8 +113,15 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 
     /** 直播订单里的房间号*/
     private Integer roomId;
-    /*******处方列表*************/
+    //*******处方-药品****************//
+    /**
+     * 处方列表
+     */
     private List<PrescriptionVo> prescriptionList;
+    /**
+     * 处方药关联处方校验 0不校验 1 通过 2不通过
+     */
+    private Byte checkPrescriptionStatus;
 
     /**
 	 * 商品参数
@@ -182,6 +189,10 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
         private GoodsMedicalInfoDo medicalInfo;
         /**处方详情*/
         private PrescriptionItemDo prescriptionItem;
+        /**
+         * 处方药关联处方校验 0不校验 1 通过 2不通过
+         */
+        private Byte checkPrescriptionStatus;
 
 
         public static Goods init(Integer goodsId, Integer goodsNumber, Integer productId) {

@@ -6,6 +6,11 @@ global.wxComponent({
   methods: {
     updatePage(){
       util.jumpLink('pages1/getprescription/getprescription')
+    },
+    handleShowDialog(){
+      this.setData({
+        showCaseHistory:true
+      })
     }
   }
 });
