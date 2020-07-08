@@ -203,7 +203,7 @@ export default {
   text-align: center;
   background: -webkit-linear-gradient(top, #4564e9, #55b0fd);
   background: -moz-linear-gradient(top, #4564e9, #55b0fd);
-  background: linear-gradient(top, #4564e9, #55b0fd);
+  background: linear-gradient(to top, #4564e9, #55b0fd);
   line-height: 480px;
 }
 

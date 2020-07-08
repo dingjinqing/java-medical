@@ -327,7 +327,7 @@ export default {
   background: -moz-linear-gradient(top, #4564e9, #55b0fd);
   background: -o-linear-gradient(top, #4564e9, #55b0fd);
   background: -ms-linear-gradient(top, #4564e9, #55b0fd);
-  background: linear-gradient(top, #4564e9, #55b0fd);
+  background: linear-gradient(to top, #4564e9, #55b0fd);
   background: -webkit-linear-gradient(top, #4564e9, #55b0fd);
   line-height: 480px;
 }

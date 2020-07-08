@@ -821,7 +821,7 @@ export default {
       .left_content {
         width: 100%;
         min-height: 450px;
-        background: linear-gradient(left, #ff5666, #e6558e);
+        background: linear-gradient(to left, #ff5666, #e6558e);
         position: relative;
         padding-bottom: 20px;
         .content_bg {
@@ -966,7 +966,7 @@ export default {
               line-height: 34px;
               text-align: center;
               color: #c93f0e;
-              background: linear-gradient(top, #ffd47b, #fcc02a);
+              background: linear-gradient(to top, #ffd47b, #fcc02a);
               border-radius: 30px;
               font-weight: bold;
               font-size: 13px;
