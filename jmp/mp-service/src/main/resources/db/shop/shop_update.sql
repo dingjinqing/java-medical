@@ -592,7 +592,7 @@ INSERT IGNORE INTO `b2c_shipping` (`shipping_id`, `shipping_code`, `express100_c
 ALTER TABLE b2c_user MODIFY COLUMN `invite_protect_date` datetime DEFAULT null COMMENT '邀请保护时间';
 /***********************2.13*********************END*/
 /***********************3.1-医疗*********************START*/
---ws 修改类型
+-- ws 修改类型
 ALTER TABLE b2c_order_goods
 MODIFY COLUMN goods_number int(11) NOT NULL DEFAULT 1 ,
 MODIFY COLUMN send_number int(11) NOT NULL DEFAULT 0 ,
