@@ -1,0 +1,62 @@
+.case-history-content{
+  width: 702rpx;
+  background-color: #fff;
+  overflow: hidden;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  box-sizing: border-box;
+}
+.case-history-title{
+  line-height: 127rpx;
+  font-size: 36rpx;
+  color: #000;
+  text-align: center;
+  font-weight: 600;
+}
+.user-info{
+  display: flex;
+  flex-direction: column;
+  color: #000;
+  padding-bottom: 56rpx;
+}
+.user-info > .user-detail{
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+.user-info > text{
+  margin-top: 24rpx;
+}
+.double-line{
+  height: 12rpx;
+  box-sizing: border-box;
+  border-top: 4rpx solid #ccc;
+  border-bottom: 2rpx solid #ccc;
+}
+.case-history-info{
+  height: 500rpx;
+  box-sizing: border-box;
+  padding: 32rpx 0;
+  line-height: 48rpx;
+  color: #000;
+  overflow-y: scroll;
+}
+.margin-t-50{
+  margin-top: 50rpx;
+}
+.line{
+  height: 4rpx;
+  background-color: #ccc;
+}
+.doctor-info{
+  line-height: 46rpx;
+  padding: 23rpx 0;
+  color: #000;
+  display: flex;
+  flex-direction: column;
+}
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  color: transparent;
+}
