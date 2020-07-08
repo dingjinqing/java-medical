@@ -1144,4 +1144,11 @@ public class Tables {
      * 医师科室关联表
      */
     public static final DoctorDepartmentCouple DOCTOR_DEPARTMENT_COUPLE = com.vpu.mp.db.shop.tables.DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE;
+
+    /**
+     * The table <code>jmini_shop_224462.b2c_medical_history</code>.
+     * 病历表
+     */
+    public static final MedicalHistory MEDICAL_HISTORY = com.vpu.mp.db.shop.tables.MedicalHistory.MEDICAL_HISTORY;
+
 }
