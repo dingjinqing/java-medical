@@ -117,4 +117,15 @@ public class PrescriptionService extends ShopBaseService {
         byPrescription.setItemList(prescriptionItemSimpleVos);
         return byPrescription;
     }
+
+    /**
+     * 获取患者的处方药集合（包括已删除，未上架以及售罄的）
+     * @param patientId
+     * @return
+     */
+    public List<Integer> getPrescriptionGoodsIdsByPatientId(Integer patientId) {
+        List<String> prescriptionNos = prescriptionDao.getValidPrescriptionByPatient(patientId);
+        List<Integer> goodsIds = prescriptionItemDao.getPrescriptionGoodsIdsByPrescriptionNos(prescriptionNos);
+        return goodsIds;
+    }
 }

@@ -58,7 +58,7 @@ public class DepartmentDao extends ShopBaseDao {
      */
     public DepartmentOneParam getOneInfo(Integer departmentId) {
         DepartmentOneParam info = db().select().from(DEPARTMENT).where(DEPARTMENT.ID.eq(departmentId))
-            .fetchOne().into(DepartmentOneParam.class);
+            .fetchOneInto(DepartmentOneParam.class);
         return info;
     }
 

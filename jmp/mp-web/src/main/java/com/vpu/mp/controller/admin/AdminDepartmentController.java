@@ -1,8 +1,6 @@
 package com.vpu.mp.controller.admin;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.data.JsonResult;
@@ -13,14 +11,13 @@ import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
 
 import java.util.*;
 import com.vpu.mp.service.shop.ShopApplication;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AdminDepartmentController extends AdminBaseController{
-    @Override
-    protected ShopApplication shop() {
-        return saas.getShopApp(471752);
-    }
+//    @Override
+//    protected ShopApplication shop() {
+//        return saas.getShopApp(471752);
+//    }
     /**
      * 科室列表
      * @param param
@@ -94,7 +91,7 @@ public class AdminDepartmentController extends AdminBaseController{
      * @param departmentId 普通商家分类id
      */
     @GetMapping("/api/admin/doctor/department/{departmentId}")
-    public JsonResult getDepartment(Integer departmentId) {
+    public JsonResult getDepartment(@PathVariable Integer departmentId) {
         if (departmentId == null) {
             return fail(JsonResultCode.DOCTOR_DEPARTMENT_ID_IS_NULL);
         }
@@ -106,7 +103,7 @@ public class AdminDepartmentController extends AdminBaseController{
      * @param departmentId 分类id
      */
     @GetMapping("/api/admin/doctor/department/delete/{departmentId}")
-    public JsonResult delete(Integer departmentId) {
+    public JsonResult delete(@PathVariable Integer departmentId) {
         if (departmentId == null) {
             return fail(JsonResultCode.DOCTOR_DEPARTMENT_ID_IS_NULL);
         }
