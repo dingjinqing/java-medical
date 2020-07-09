@@ -3,11 +3,13 @@ package com.vpu.mp.service.pojo.shop.goods.vo;
 import com.vpu.mp.service.pojo.shop.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.entity.GoodsEntity;
 import com.vpu.mp.service.pojo.shop.goods.entity.GoodsMedicalInfoEntity;
+import com.vpu.mp.service.pojo.shop.label.vo.GoodsLabelVo;
 import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductGoodsPageListVo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,6 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 public class GoodsPageListVo {
     private Integer goodsId;
+    private String goodsName;
     private String goodsImg;
     private String goodsSn;
     private Integer goodsNumber;
@@ -26,7 +29,7 @@ public class GoodsPageListVo {
     private Integer brandId;
     private String brandName;
     private Integer sortId;
-    private Integer sortName;
+    private String sortName;
     private BigDecimal shopPrice;
     private Byte isMedical;
     private Byte isDefaultProduct;
@@ -38,8 +41,12 @@ public class GoodsPageListVo {
 
     private List<GoodsSpecProductGoodsPageListVo> goodsSpecProducts;
 
+    private List<GoodsLabelVo> goodsPointLabels = new ArrayList<>(0);
+    private List<GoodsLabelVo> goodsNormalLabels = new ArrayList<>(0);
+
     public GoodsPageListVo(GoodsEntity goodsEntity) {
         goodsId = goodsEntity.getGoodsId();
+        goodsName = goodsEntity.getGoodsName();
         goodsImg = goodsEntity.getGoodsImg();
         goodsSn = goodsEntity.getGoodsSn();
         goodsNumber = goodsEntity.getGoodsNumber();

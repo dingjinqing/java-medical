@@ -33,6 +33,7 @@ import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProductEntity;
 import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductGoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductVo;
 import com.vpu.mp.service.pojo.shop.sku.vo.SpecVo;
+import com.vpu.mp.service.pojo.shop.sort.vo.GoodsSortVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,6 +67,8 @@ public class MedicalGoodsService {
 
     @Autowired
     private MedicalGoodsLabelService medicalGoodsLabelService;
+    @Autowired
+    private MedicalGoodsSortService medicalGoodsSortService;
 
     /**
      * 新增
@@ -86,9 +89,9 @@ public class MedicalGoodsService {
         goodsEntity.calculateGoodsPriceWeight();
         goodsRepository.insert(goodsEntity);
         // 处理sku
-        if (goodsEntity.getSpecs() != null && goodsEntity.getSpecs().size() > 0) {
+        if (goodsEntity.getGoodsSpecs() != null && goodsEntity.getGoodsSpecs().size() > 0) {
             // 先插入规格组，协助sku生成其规格描述id字符串
-            goodsSpecProductRepository.batchSpecInsert(goodsEntity.getSpecs(), goodsEntity.getGoodsId());
+            goodsSpecProductRepository.batchSpecInsert(goodsEntity.getGoodsSpecs(), goodsEntity.getGoodsId());
         }
         goodsEntity.calculateSkuPrdSpecsBySpecs();
         goodsSpecProductRepository.batchSkuInsert(goodsEntity.getGoodsSpecProducts(), goodsEntity.getGoodsId());
@@ -132,9 +135,9 @@ public class MedicalGoodsService {
         // 删除旧的spec组
         goodsSpecProductRepository.deleteSpecByGoodsId(goodsEntity.getGoodsId());
         // 处理sku
-        if (goodsEntity.getSpecs() != null && goodsEntity.getSpecs().size() > 0) {
+        if (goodsEntity.getGoodsSpecs() != null && goodsEntity.getGoodsSpecs().size() > 0) {
             // 先插入规格组，协助sku生成其规格描述id字符串
-            goodsSpecProductRepository.batchSpecInsert(goodsEntity.getSpecs(), goodsEntity.getGoodsId());
+            goodsSpecProductRepository.batchSpecInsert(goodsEntity.getGoodsSpecs(), goodsEntity.getGoodsId());
         }
         goodsEntity.calculateSkuPrdSpecsBySpecs();
         // 处理需要修改的sku
@@ -219,7 +222,7 @@ public class MedicalGoodsService {
      * 分页查询商品信息
      * @param pageListParam
      */
-    public void getGoodsPageList(MedicalGoodsPageListParam pageListParam){
+    public PageResult<GoodsPageListVo> getGoodsPageList(MedicalGoodsPageListParam pageListParam){
         GoodsPageListCondition goodsPageListCondition = GoodsParamConvertor.converPageListConditionFromPageListParam(pageListParam);
         if (pageListParam.getSortId() != null) {
             List<Integer> parentsSortIds = sortDao.getParentSortIds(pageListParam.getSortId());
@@ -228,17 +231,16 @@ public class MedicalGoodsService {
         }
 
         /**
-         * 标签处理，可以移动至labelService，并且通过中间类进行数据传输。
          * 标签打在分类上时要单独插入子分类关联
          */
         if (pageListParam.getLabelId() != null) {
-            LabelRelationInfoBo labelRealtionInfo = medicalGoodsLabelService.getLabelRelationInfo(pageListParam.getLabelId());
-            if (labelRealtionInfo.getIsAll() != null) {
-                if (labelRealtionInfo.getSortIds() != null) {
-                    goodsPageListCondition.getSortIds().addAll(labelRealtionInfo.getSortIds());
+            LabelRelationInfoBo labelRelationInfo = medicalGoodsLabelService.getLabelRelationInfo(pageListParam.getLabelId());
+            if (labelRelationInfo.getIsAll() != null) {
+                if (labelRelationInfo.getSortIds() != null) {
+                    goodsPageListCondition.getSortIds().addAll(labelRelationInfo.getSortIds());
                 }
-                if (labelRealtionInfo.getGoodsIds() != null) {
-                    goodsPageListCondition.setGoodsIdsLimit(labelRealtionInfo.getGoodsIds());
+                if (labelRelationInfo.getGoodsIds() != null) {
+                    goodsPageListCondition.setGoodsIdsLimit(labelRelationInfo.getGoodsIds());
                 }
             }
         }
@@ -268,8 +270,36 @@ public class MedicalGoodsService {
             return vo;
         }).collect(Collectors.groupingBy(GoodsSpecProductGoodsPageListVo::getGoodsId));
 
-        //
+        //准备标签数据
+        Map<Integer, List<GoodsLabelVo>> goodsIdLabelsMap = medicalGoodsLabelService.getLabelGtaLabelMap(goodsIds, MedicalLabelConstant.GTA_GOODS);
+        Map<Integer, List<GoodsLabelVo>> sortIdLabelsMap = medicalGoodsLabelService.getLabelGtaLabelMap(sortIds, MedicalLabelConstant.GTA_SORT);
+        List<GoodsLabelVo> allGoodsLabels = medicalGoodsLabelService.getRelateAllGoodsLabels();
 
+        // 准备分类数据
+        Map<Integer, GoodsSortVo> goodsSortVosIdMap = medicalGoodsSortService.getGoodsSortVosIdMap(sortIds);
+
+        for (GoodsPageListVo goodsPageListVo : goodsPageListVos) {
+            List<GoodsSpecProductGoodsPageListVo> goodsSpecProductGoodsPageListVos = goodsIdSkusMap.get(goodsPageListVo.getGoodsId());
+            List<GoodsLabelVo> goodsPointLabels = goodsIdLabelsMap.get(goodsPageListVo.getGoodsId());
+            List<GoodsLabelVo> goodsSortLabels = sortIdLabelsMap.get(goodsPageListVo.getSortId());
+            GoodsSortVo goodsSortVo = goodsSortVosIdMap.get(goodsPageListVo.getSortId());
+
+            goodsPageListVo.setGoodsSpecProducts(goodsSpecProductGoodsPageListVos);
+
+            if (goodsSortVo != null) {
+                goodsPageListVo.setSortName(goodsSortVo.getSortName());
+            }
+            if (goodsPointLabels != null) {
+                goodsPageListVo.getGoodsPointLabels().addAll(goodsPointLabels);
+            }
+            if (goodsSortLabels != null) {
+                goodsPageListVo.getGoodsNormalLabels().addAll(goodsSortLabels);
+            }
+            if (allGoodsLabels != null) {
+                goodsPageListVo.getGoodsNormalLabels().addAll(allGoodsLabels);
+            }
+        }
+        return retPageResult;
     }
     /**
      * 当前时间
