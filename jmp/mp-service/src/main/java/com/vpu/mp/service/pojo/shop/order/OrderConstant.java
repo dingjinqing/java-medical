@@ -67,6 +67,14 @@ public class OrderConstant {
 	public final static byte ORDER_PIN_SUCCESSS = 12;
 	/** 礼单(主订单)环节已完成 */
 	public final static byte ORDER_GIVE_GIFT_FINISHED = 13;
+	//********医药*********//
+	/**
+	 * 待审核
+	 * 支付完成即待审核
+	 * 待审核->待发货
+	 */
+	public final static byte ORDER_TO_AUDIT =14;
+
 
 	/**退货状态*/
     /** 退货的默认状态 */

@@ -1204,6 +1204,9 @@ export default {
     _initMemberCards (goodsData) {
       let count = 0
       let goodsGradePrds = goodsData.goodsGradePrds
+      if (goodsGradePrds === null) {
+        return
+      }
       this.memberCards.forEach(card => {
         let has = goodsGradePrds.some(item => item.grade === card.grade)
         card.checked = has
@@ -1356,7 +1359,7 @@ export default {
         // 初始化会员卡信息
         this._initMemberCards(goodsData)
         // 会员价设置是否显示设置
-        this.memberCardPrdShow = goodsData.goodsGradePrds.length > 0
+        this.memberCardPrdShow = goodsData.goodsGradePrds.length !== null && goodsData.goodsGradePrds.length > 0
         // 初始化商品规格会员卡价格
         this._initMemberCardPrice(goodsData, isUseDefaultPrd)
         // 开启监听
@@ -1390,21 +1393,6 @@ export default {
     validateFormData () {
       // 自定义情况验证
       if (this.specInfoSwitch) {
-        // 验证商品规格信息
-        // for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
-        //   let item = this.goodsProductInfo.goodsSpecProducts[i]
-        //   if (isNumberBlank(item.prdPrice) || item.prdPrice < 0) {
-        //     this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsSpec') + item.prdDescTemp + this.$t('goodsAddEditInfo.warningInfo.priceIsWrong'), type: 'warning' })
-        //     document.getElementById('prdPrice_' + item.prdDesc).focus()
-        //     return false
-        //   }
-        //
-        //   if (isNumberBlank(item.prdNumber) || item.prdNumber < 0) {
-        //     this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsSpec') + item.prdDescTemp + this.$t('goodsAddEditInfo.warningInfo.goodsNumIsWrong'), type: 'warning' })
-        //     document.getElementById('prdNumber_' + item.prdDesc).focus()
-        //     return false
-        //   }
-        // }
         // 验证会员价格
         for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
           let specProduct = this.goodsProductInfo.goodsSpecProducts[i]

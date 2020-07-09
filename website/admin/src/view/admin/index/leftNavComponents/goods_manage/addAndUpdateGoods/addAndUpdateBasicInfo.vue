@@ -40,75 +40,6 @@
           />
           <span class="inputTip">{{$t("goodsAddEditInfo.basicInfo.goodsSnTip")}}</span>
         </el-form-item>
-        <!--平台分类-->
-        <!--<el-form-item-->
-          <!--:label="$t('goodsAddEditInfo.basicInfo.catId')"-->
-          <!--prop="catId"-->
-        <!--&gt;-->
-          <!--<el-select-->
-            <!--ref="catSelect"-->
-            <!--v-model="catIdTemp.firstCatId"-->
-            <!--size="small"-->
-            <!--@change="catIdSelectChange(1,$event)"-->
-            <!--style="width:170px;"-->
-          <!--&gt;-->
-            <!--<el-option-->
-              <!--:value="null"-->
-              <!--:label="$t('goodsAddEditInfo.basicInfo.catIdSelectDefault')"-->
-            <!--/>-->
-            <!--<el-option-->
-              <!--v-for="item in catIdTemp.firstCatData"-->
-              <!--:label="item.catName"-->
-              <!--:value="item.catId"-->
-              <!--:key="item.catId"-->
-            <!--/>-->
-          <!--</el-select>-->
-          <!--<el-select-->
-            <!--v-if="!!catIdTemp.firstCatId"-->
-            <!--v-model="catIdTemp.secondCatId"-->
-            <!--size="small"-->
-            <!--@change="catIdSelectChange(2,$event)"-->
-            <!--style="width:170px;"-->
-          <!--&gt;-->
-            <!--<el-option-->
-              <!--:value="null"-->
-              <!--:label="$t('goodsAddEditInfo.basicInfo.catIdSelectDefault')"-->
-            <!--/>-->
-            <!--<el-option-->
-              <!--v-for="item in catIdTemp.secondCatData"-->
-              <!--:label="item.catName"-->
-              <!--:value="item.catId"-->
-              <!--:key="item.catId"-->
-            <!--/>-->
-          <!--</el-select>-->
-          <!--<el-select-->
-            <!--v-if="!!catIdTemp.firstCatId&&!!catIdTemp.secondCatId"-->
-            <!--v-model="catIdTemp.thirdCatId"-->
-            <!--size="small"-->
-            <!--@change="catIdSelectChange(3,$event)"-->
-            <!--style="width:170px;"-->
-          <!--&gt;-->
-            <!--<el-option-->
-              <!--:value="null"-->
-              <!--:label="$t('goodsAddEditInfo.basicInfo.catIdSelectDefault')"-->
-            <!--/>-->
-            <!--<el-option-->
-              <!--v-for="item in catIdTemp.thirdCatData"-->
-              <!--:label="item.catName"-->
-              <!--:value="item.catId"-->
-              <!--:key="item.catId"-->
-            <!--/>-->
-          <!--</el-select>-->
-          <!--<span class="inputTip">-->
-            <!--{{$t("goodsAddEditInfo.basicInfo.catIdTip")}}-->
-          <!--</span>-->
-          <!--<el-link-->
-            <!--type="primary"-->
-            <!--:underline="false"-->
-            <!--href="#"-->
-            <!--target="_blank"-->
-          <!--&gt;{{$t("goodsAddEditInfo.basicInfo.catIdGo")}}</el-link>-->
-        <!--</el-form-item>-->
         <!--商品图片-->
         <el-form-item :label="$t('goodsAddEditInfo.basicInfo.goodsImg')">
           <div style="display: flex;align-items: center;flex-wrap: wrap;">
@@ -119,7 +50,7 @@
             >
               <el-image
                 fit="cover"
-                :src="item.imgUrl"
+                :src="imgHost+item.imgUrl"
                 style="width: 78px; height: 78px;"
               ></el-image>
               <span
@@ -730,7 +661,7 @@ export default {
         imgObjs.length = 10
       }
       imgObjs.forEach(imgObj => {
-        this.goodsProductInfo.goodsImgs.push({ imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl })
+        this.goodsProductInfo.goodsImgs.push(imgObj.imgPath)
       })
       let imgLength = this.goodsProductInfo.goodsImgs.length
       if (imgLength > 10) {
@@ -913,10 +844,10 @@ export default {
     /* 初始化图片 */
     _initGoodsImgs (goodsData) {
       // 选择商品图片时第一张图片默认为主图，其他为幅图，数据返回时主图和幅图不在同一个字段中
-      this.goodsProductInfo.goodsImgs = [{ imgUrl: goodsData.goodsImg, imgPath: goodsData.goodsImgPath }]
+      this.goodsProductInfo.goodsImgs = [goodsData.goodsImg]
       if (goodsData.goodsImgs !== null && goodsData.goodsImgs.length > 0) {
         for (let i = 0; i < goodsData.goodsImgs.length; i++) {
-          this.goodsProductInfo.goodsImgs.push({ imgUrl: goodsData.goodsImgs[i], imgPath: goodsData.goodsImgsPath[i] })
+          this.goodsProductInfo.goodsImgs.push(goodsData.goodsImgs[i])
         }
       }
     },
@@ -936,8 +867,8 @@ export default {
     },
     /* 初始化商品标签 */
     _initGoodsLabel (goodsData) {
-      this.labelNormalItems = goodsData.goodsLabelNormalListVos === null ? [] : goodsData.goodsLabelNormalListVos
-      this.labelSelectedItems = goodsData.goodsLabelPointListVos === null ? [] : goodsData.goodsLabelPointListVos
+      this.labelNormalItems = goodsData.normalLabels === null ? [] : goodsData.normalLabels
+      this.labelSelectedItems = goodsData.pointLabels === null ? [] : goodsData.pointLabels
 
       // 标签下拉框剔除已选中的标签项
       this.labelSelectOptions = this.labelSelectOptions.filter(item => {
@@ -1011,12 +942,6 @@ export default {
         this.$refs.goodsNameInput.focus()
         return false
       }
-      // 平台分类未选中
-      // if (this.goodsProductInfo.catId === null) {
-      //   this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.requirePlatformClassify'), type: 'warning' })
-      //   this.$refs.catSelect.focus()
-      //   return false
-      // }
       // 未选择商品图片
       if (this.goodsProductInfo.goodsImgs.length === 0) {
         this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsImage'), type: 'warning' })
@@ -1048,15 +973,15 @@ export default {
       // 处理商品图片
       // 只有一个商品主图此处数组不可能为null
       if (this.goodsProductInfo.goodsImgs.length === 1) {
-        retData.goodsImg = this.goodsProductInfo.goodsImgs[0].imgPath
+        retData.goodsImg = this.goodsProductInfo.goodsImgs[0]
         retData.goodsImgs = null
       } else if (this.goodsProductInfo.goodsImgs.length > 1) {
         // 有商品主图和幅图
         // 避免和goodsProductInfo共享同一个数组
         retData.goodsImgs = []
-        retData.goodsImg = this.goodsProductInfo.goodsImgs[0].imgPath
+        retData.goodsImg = this.goodsProductInfo.goodsImgs[0]
         for (let i = 1; i < this.goodsProductInfo.goodsImgs.length; i++) {
-          retData.goodsImgs.push(this.goodsProductInfo.goodsImgs[i].imgPath)
+          retData.goodsImgs.push(this.goodsProductInfo.goodsImgs[i])
         }
       }
       return retData

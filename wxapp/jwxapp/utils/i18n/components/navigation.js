@@ -123,6 +123,8 @@ module.exports = {
     "prescriptionlist": "处方列表",
     "familylist": "我的家人",
     "getprescription": "获取病历",
-    "prescriptioninfo":"处方详情"
+    "prescriptioninfo":"处方详情",
+    "medicalrecordlist":"我的病历",
+    "medicalrecordinfo":"病历详情"
   }
 }

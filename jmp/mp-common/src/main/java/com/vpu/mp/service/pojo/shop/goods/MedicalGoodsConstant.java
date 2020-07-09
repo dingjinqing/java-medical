@@ -31,4 +31,14 @@ public class MedicalGoodsConstant {
      * 规格描述分隔符
      */
     public static final String PRD_DESC_SPLITER =";";
+
+    /**
+     * 售罄
+     */
+    public static final Byte SALE_OUT_YES = 1;
+
+    /**
+     * 未售罄
+     */
+    public static final Byte SALE_OUT_NO = 0;
 }

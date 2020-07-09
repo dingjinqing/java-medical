@@ -6,6 +6,7 @@ import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.UpYunConfig;
+import com.vpu.mp.db.shop.tables.Goods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
@@ -116,8 +117,9 @@ public class GoodsMpService extends ShopBaseService {
      * @param userId 用户id
      * @return 对应的商品集合信息
      */
-    public List<? extends GoodsListMpVo> getPageIndexGoodsList(GoodsListMpParam param, Integer userId, Integer patientId) {
+    public PageResult<GoodsListMpBo> getPageIndexGoodsList(GoodsListMpParam param, Integer userId, Integer patientId) {
         List<GoodsListMpBo> goodsListCapsules;
+        PageResult<GoodsListMpBo> goodsListCapsulesPage;
 
         param.setSoldOutGoodsShow(canShowSoldOutGoods());
 
@@ -135,21 +137,24 @@ public class GoodsMpService extends ShopBaseService {
                 }
                 // 从es获取
                 log.debug("小程序-es-搜索商品列表");
-                goodsListCapsules = getPageIndexGoodsListFromEs(param);
-                log.debug("小程序-es-搜索商品列表结果:{}", goodsListCapsules);
+                goodsListCapsulesPage = getPageIndexGoodsPageResultFromEs(param);
+                log.debug("小程序-es-搜索商品列表结果:{}", goodsListCapsulesPage);
             } catch (Exception e) {
                 log.debug("小程序-es-搜索商品列表错误-转换db获取数据:" + e.getMessage());
-                goodsListCapsules = getPageIndexGoodsListFromDb(param,patientId);
-                log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsules);
+                goodsListCapsulesPage = getPageIndexGoodsListFromDb(param,patientId);
+//                goodsListCapsules = goodsListCapsulesPage.getDataList();
+                log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsulesPage);
             }
         } else {
             log.debug("小程序-db-搜索商品列表");
-            goodsListCapsules = getPageIndexGoodsListFromDb(param,patientId);
-            log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsules);
+            goodsListCapsulesPage = getPageIndexGoodsListFromDb(param,patientId);
+//            goodsListCapsules = goodsListCapsulesPage.getDataList();
+            log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsulesPage);
         }
-
+        goodsListCapsules = goodsListCapsulesPage.getDataList();
         disposeGoodsList(goodsListCapsules, userId);
-        return goodsListCapsules;
+        goodsListCapsulesPage.setDataList(goodsListCapsules);
+        return goodsListCapsulesPage;
     }
 
     /**
@@ -157,11 +162,11 @@ public class GoodsMpService extends ShopBaseService {
      * @param param 装修页面配置的商品获取过滤条件
      * @return 对应的商品集合信息
      */
-    private List<GoodsListMpBo> getPageIndexGoodsListFromDb(GoodsListMpParam param,Integer patientId) {
+    private PageResult<GoodsListMpBo> getPageIndexGoodsListFromDb(GoodsListMpParam param,Integer patientId) {
         // 手动推荐展示但是未指定商品数据
         boolean specifiedNoContent = (GoodsConstant.POINT_RECOMMEND.equals(param.getRecommendType())) && (param.getGoodsItems() == null || param.getGoodsItems().size() == 0);
         if (specifiedNoContent) {
-            return new ArrayList<>();
+            return new PageResult<>();
         }
         Condition condition = buildPageIndexCondition(param,patientId);
         PageResult<GoodsListMpBo> pageResult;
@@ -180,7 +185,7 @@ public class GoodsMpService extends ShopBaseService {
             pageResult = findActivityGoodsListCapsulesDao(condition, orderFields, param.getCurrentPage(), param.getGoodsNum(), null);
         }
         logger().debug("商品列表数据信息：" + pageResult.toString());
-        return pageResult.getDataList();
+        return pageResult;
     }
 
     /**
@@ -506,6 +511,16 @@ public class GoodsMpService extends ShopBaseService {
     private List<GoodsListMpBo> getPageIndexGoodsListFromEs(GoodsListMpParam param) throws IOException {
         PageResult<GoodsListMpBo> goodsListMpBoPageResult = esGoodsSearchMpService.queryGoodsByParam(param);
         return goodsListMpBoPageResult.dataList;
+    }
+
+    /**
+     * 商品列表模块中获取配置后的商品集合数据 Es获取
+     * @param param 装修页面配置的商品获取过滤条件
+     * @return 对应的商品集合信息
+     */
+    private PageResult<GoodsListMpBo> getPageIndexGoodsPageResultFromEs(GoodsListMpParam param) throws IOException {
+        PageResult<GoodsListMpBo> goodsListMpBoPageResult = esGoodsSearchMpService.queryGoodsByParam(param);
+        return goodsListMpBoPageResult;
     }
 
     /**

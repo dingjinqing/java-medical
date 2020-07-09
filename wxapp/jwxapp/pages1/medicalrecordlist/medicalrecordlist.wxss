@@ -1,0 +1,84 @@
+/* pages1/medicalrecordlist/medicalrecordlist.wxss */
+page{
+  background: #f5f5f5;
+}
+.mian-container{
+  padding-top: 20rpx;
+}
+.medical_list{
+  width: 700rpx;
+  margin: 0 auto;
+}
+.each_medical_module{
+  border-radius: 16rpx;
+  padding: 0rpx 0rpx 30rpx;
+  background: #fff;
+  margin-bottom: 24rpx;
+}
+.each_medical_module:last-of-type{
+  margin-bottom: 0;
+}
+.for_bg{
+  height: 100rpx;
+  width: 100%;
+  line-height: 100rpx;
+  background:-webkit-linear-gradient(top,#d0edeb,#fff); 
+  margin-bottom: 26rpx;
+  position: relative;
+  border-radius: 16rpx 16rpx 0 0;
+}
+.for_bg image{
+  width: 100%;
+  height: 100rpx;
+  position: absolute;
+}
+.em_title{
+  text-align: center;
+  background: url(http://medicaldevimg.weipubao.cn/image/wxapp/medical_history_bg2.png) no-repeat center 68%/120rpx 14rpx;
+  font-weight: bold;
+  font-size: 28rpx;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9;
+}
+.em_each_line{
+  padding: 0 24rpx 26rpx;
+  border-bottom: 2rpx solid #eee;
+  display: flex;
+  align-items: center;
+  margin-bottom: 26rpx;
+}
+.eline_dot{
+  border: 4rpx solid skyblue;
+  border-radius: 50%;
+  height: 14rpx;
+  width: 14rpx;
+  margin-right: 20rpx;
+  display: block;
+  margin-top: 6rpx;
+}
+.eline_span{
+  font-weight: bold;
+}
+.em_each_line1{
+  padding: 0 24rpx 26rpx;
+  border-bottom: 2rpx solid #eee;
+}
+.doctor_info{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 26rpx 24rpx 0;
+  color: #999;
+}
+.medical_info{
+  margin-left: 38rpx;
+}
+.medical_info > view{
+  margin-top: 20rpx;
+}
+
+

@@ -2,17 +2,13 @@ package com.vpu.mp.service.shop.department;
 
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
-import com.vpu.mp.db.shop.tables.Department;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.department.DepartmentListParam;
-import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
-import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
-import com.vpu.mp.service.pojo.shop.department.DepartmentConstant;
+import com.vpu.mp.service.pojo.shop.department.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class DepartmentService extends ShopBaseService {
@@ -97,5 +93,20 @@ public class DepartmentService extends ShopBaseService {
      */
     public List<DepartmentOneParam> getListByIds(List<Integer> departmentIds) {
         return departmentDao.getListByIds(departmentIds);
+    }
+
+    public List<DepartmentListVo> listDepartmentTree() {
+        List<DepartmentListVo> listDepartmentTree = departmentDao.listDepartmentByParentId(0);
+        for (DepartmentListVo list : listDepartmentTree) {
+            if (DepartmentConstant.LEAF.equals(list.getIsLeaf())) {
+                List<DepartmentListVo> listTemp = new ArrayList<>();
+                listTemp.add(list);
+                list.setChildDepartmentList(listTemp);
+            } else {
+                List<DepartmentListVo> departmentList = departmentDao.listDepartmentByParentId(list.getId());
+                list.setChildDepartmentList(departmentList);
+            }
+        }
+        return listDepartmentTree;
     }
 }

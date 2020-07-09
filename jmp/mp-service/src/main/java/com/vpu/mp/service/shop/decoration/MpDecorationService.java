@@ -7,7 +7,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListVo;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
@@ -30,6 +33,7 @@ import com.vpu.mp.service.pojo.wxapp.decorate.PageCfgVo;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageModuleParam;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageParam;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsGroupListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
@@ -40,6 +44,7 @@ import com.vpu.mp.service.shop.config.SuspendWindowConfigService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -75,6 +80,8 @@ public class MpDecorationService extends ShopBaseService {
     private DomainConfig domainConfig;
     @Autowired
     private SuspendWindowConfigService suspendWindowConfigService;
+    @Autowired
+    private PrescriptionService prescriptionService;
 
     public int setPageCatId(Integer pageId, Integer catId) {
         return db().update(XCX_CUSTOMER_PAGE)
@@ -241,7 +248,7 @@ public class MpDecorationService extends ShopBaseService {
 
         UserRecord userRecord = user.getUserByUserId(param.getUserId());
 
-        Map<String, Object> pageInfo = convertPageContent(pageContent, userRecord);
+        Map<String, Object> pageInfo = convertPageContent(pageContent, userRecord, param.getPatientId());
         WxAppPageVo page = new WxAppPageVo();
         page.setPageInfo(pageInfo);
         page.setIsFirstPage(record.getPageType());
@@ -288,8 +295,8 @@ public class MpDecorationService extends ShopBaseService {
      * @param pageContent
      * @return
      */
-    protected Map<String, Object> convertPageContent(String pageContent, UserRecord user) {
-        return convertPageContent(pageContent, null, user);
+    protected Map<String, Object> convertPageContent(String pageContent, UserRecord user, Integer patientId) {
+        return convertPageContent(pageContent, null, user, patientId);
     }
 
     /**
@@ -300,7 +307,7 @@ public class MpDecorationService extends ShopBaseService {
      * @param user
      * @return
      */
-    protected Map<String, Object> convertPageContent(String pageContent, String keyIdx, UserRecord user) {
+    protected Map<String, Object> convertPageContent(String pageContent, String keyIdx, UserRecord user, Integer patientId) {
         pageContent = StringUtils.isBlank(pageContent) ? "{}" : pageContent;
         Map<String, Object> result = new LinkedHashMap<>();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -313,7 +320,7 @@ public class MpDecorationService extends ShopBaseService {
                 Entry<String, JsonNode> node = elements.next();
                 String key = node.getKey();
                 if (keyIdx == null || key.equals(keyIdx)) {
-                    Object element = this.convertModule(objectMapper, node, user);
+                    Object element = this.convertModule(objectMapper, node, user, patientId);
                     if(element!=null) {
                     	result.put(key, element);                    	
                     }
@@ -335,7 +342,7 @@ public class MpDecorationService extends ShopBaseService {
      * @throws JsonMappingException
      * @throws IOException
      */
-    public Object convertModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user)
+    public Object convertModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user, Integer patientId)
         throws JsonParseException, JsonMappingException, IOException {
         if (node.getKey().startsWith("c_")) {
             String moduleName = node.getValue().get("module_name").asText();
@@ -343,7 +350,12 @@ public class MpDecorationService extends ShopBaseService {
                 case ModuleConstant.M_GOODS_GROUP:
                     return this.convertGoodsGroupForIndex(objectMapper, node, user);
                 case ModuleConstant.M_GOODS:
-                    return this.convertGoodsForIndex(objectMapper, node, user);
+                    ModuleGoods moduleGoods = this.convertGoodsForIndex(objectMapper, node, user);
+                    if (GoodsConstant.AUTO_RECOMMEND.equals(moduleGoods.getRecommendType())
+                        && GoodsConstant.AUTO_RECOMMEND_PRESCRIPTION.equals(moduleGoods.getAutoRecommendType()) && GoodsConstant.ZERO.equals(patientId)) {
+                        return  null;
+                    }
+                    return moduleGoods;
                 case ModuleConstant.M_COUPON:
 					if (isNoAuth(VersionName.SUB_2_M_VOUCHER)) {
 						return null;
@@ -402,6 +414,9 @@ public class MpDecorationService extends ShopBaseService {
 						return null;
 					}
                     return this.convertIntegralForIndex(objectMapper, node, user);
+                case ModuleConstant.M_PRESCRIPTION:
+                    if (GoodsConstant.ZERO.equals(patientId)) return null;
+                    return this.convertPrescriptionForIndex(objectMapper, node, user);
                 /**
                  * TODO: 添加其他模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
@@ -774,7 +789,7 @@ public class MpDecorationService extends ShopBaseService {
                         case ModuleConstant.M_GOODS:
                             ModuleGoods moduleGoods = this.convertGoodsForModule(objectMapper, node, user.getUserId(),patientId);
                             if (!(GoodsConstant.AUTO_RECOMMEND.equals(moduleGoods.getRecommendType()) && GoodsConstant.AUTO_RECOMMEND_PRESCRIPTION.equals(moduleGoods.getAutoRecommendType())
-                                && moduleGoods.getGoodsListData().size() == 0))
+                                && GoodsConstant.ZERO.equals(patientId)))
                             return moduleGoods;
                         case ModuleConstant.M_GOODS_GROUP:
                             return this.convertGoodsGroupForModule(objectMapper, node, user.getUserId());
@@ -792,6 +807,8 @@ public class MpDecorationService extends ShopBaseService {
                             return  this.convertGroupDrawForModule(objectMapper, node, user);
                         case ModuleConstant.M_INTEGRAL:
                             return  this.convertIntegralForModule(objectMapper, node, user);
+                        case ModuleConstant.M_PRESCRIPTION:
+                            return  this.convertPrescriptionForModule(objectMapper, node, user, patientId);
                         //TODO case
                         default:
                     }
@@ -834,8 +851,10 @@ public class MpDecorationService extends ShopBaseService {
         param.setGoodsNum(moduleGoods.getGoodsNum());
         param.setFromPage(EsGoodsConstant.GOODS_LIST_PAGE);
         // 转换实时信息
-        List<? extends GoodsListMpVo> pageIndexGoodsList = goodsMpService.getPageIndexGoodsList(param, userId, patientId);
-        moduleGoods.setGoodsListData(pageIndexGoodsList);
+        PageResult<GoodsListMpBo> pageIndexGoodsList = goodsMpService.getPageIndexGoodsList(param, userId, patientId);
+        List<? extends GoodsListMpVo> goodsList = pageIndexGoodsList.getDataList();
+        moduleGoods.setGoodsListData(goodsList);
+        moduleGoods.setHasMore(pageIndexGoodsList.getPage().getLastPage() > 1);
 
         return moduleGoods;
     }
@@ -985,6 +1004,27 @@ public class MpDecorationService extends ShopBaseService {
         // 转换实时信息
         return saas.getShopApp(getShopId()).integralConvertService.getPageIndexIntegral(moduleIntegral);
     }
+
+    /**
+     * 我的处方模块
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModulePrescription convertPrescriptionForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user, Integer patientId) throws IOException {
+        ModulePrescription moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModulePrescription.class);
+        PrescriptionListParam prescriptionListParam = new PrescriptionListParam();
+        prescriptionListParam.setPageRows((Integer) 3);
+        PageResult<PrescriptionListVo> prescriptionListData = prescriptionService.listPageResult(prescriptionListParam);
+        moduleIntegral.setPrescriptionListData(prescriptionListData.getDataList());
+        moduleIntegral.setHasMore(prescriptionListData.getPage().getLastPage() > 1);
+        return moduleIntegral;
+        // 转换实时信息
+//        return saas.getShopApp(getShopId()).integralConvertService.getPageIndexIntegral(moduleIntegral);
+    }
     
     /**
      * 店招模块
@@ -1017,6 +1057,20 @@ public class MpDecorationService extends ShopBaseService {
         ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
         moduleIntegral.setNeedRequest(true);
         return moduleIntegral;
+    }
+
+    /**
+     * 我的处方模块
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModulePrescription convertPrescriptionForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModulePrescription modulePrescription = objectMapper.readValue(node.getValue().toString(), ModulePrescription.class);
+        modulePrescription.setNeedRequest(true);
+        return modulePrescription;
     }
 
     /**

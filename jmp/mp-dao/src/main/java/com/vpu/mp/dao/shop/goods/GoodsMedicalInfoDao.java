@@ -7,6 +7,8 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.GoodsMedicalInfoRecord;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 import static com.vpu.mp.db.shop.Tables.GOODS_MEDICAL_INFO;
 
 /**
@@ -48,6 +50,17 @@ public class GoodsMedicalInfoDao extends ShopBaseDao{
             .fetchAnyInto(GoodsMedicalInfoDo.class);
 
         return goodsMedicalInfoDo;
+    }
+
+    /**
+     * 根据商品id获取对应的药品信息
+     * @param goodsIds 商品id集合
+     * @return 药品结合
+     */
+    public  List<GoodsMedicalInfoDo> listByGoodsIds(List<Integer> goodsIds) {
+        return db().selectFrom(GOODS_MEDICAL_INFO)
+            .where(GOODS_MEDICAL_INFO.IS_DELETE.eq(DelFlag.NORMAL_VALUE).and(GOODS_MEDICAL_INFO.GOODS_ID.in(goodsIds)))
+            .fetchInto(GoodsMedicalInfoDo.class);
     }
 
 

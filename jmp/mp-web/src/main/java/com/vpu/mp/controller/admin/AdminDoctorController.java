@@ -5,12 +5,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
-import com.vpu.mp.service.shop.ShopApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AdminDoctorController extends AdminBaseController {
@@ -36,7 +31,7 @@ public class AdminDoctorController extends AdminBaseController {
     @PostMapping("/api/admin/doctor/add")
     public JsonResult insert(@RequestBody DoctorOneParam param) {
         if (param.getName()==null) {
-            return fail(JsonResultCode.DOCTOR_DEPARTMENT_NAME_IS_NULL);
+            return fail(JsonResultCode.DOCTOR_NAME_IS_NULL);
         }
 
 //        boolean isExist = shop().departmentService.isNameExist(null,param.getName());
@@ -55,8 +50,8 @@ public class AdminDoctorController extends AdminBaseController {
      */
     @PostMapping("/api/admin/doctor/update")
     public JsonResult update(@RequestBody DoctorOneParam param) {
-        if (param.getName()==null) {
-            return fail(JsonResultCode.DOCTOR_DEPARTMENT_NAME_IS_NULL);
+        if (param.getId()==null) {
+            return fail(JsonResultCode.DOCTOR_ID_IS_NULL);
         }
 
 //        boolean isExist = shop().departmentService.isNameExist(null,param.getName());
@@ -76,7 +71,7 @@ public class AdminDoctorController extends AdminBaseController {
     @GetMapping("/api/admin/doctor/info/{doctorId}")
     public JsonResult getDoctor(@PathVariable Integer doctorId) {
         if (doctorId == null) {
-            return fail(JsonResultCode.DOCTOR_DEPARTMENT_ID_IS_NULL);
+            return fail(JsonResultCode.DOCTOR_ID_IS_NULL);
         }
         return success(shop().doctorService.getOneInfo(doctorId));
     }

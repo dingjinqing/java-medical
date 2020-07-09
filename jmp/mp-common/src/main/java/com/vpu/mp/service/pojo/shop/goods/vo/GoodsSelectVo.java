@@ -52,7 +52,7 @@ public class GoodsSelectVo {
     /**
      * 规格组集合
      */
-    private List<SpecVo> specVos;
+    private List<SpecVo> goodsSpecs;
     /**
      * 规格信息
      */

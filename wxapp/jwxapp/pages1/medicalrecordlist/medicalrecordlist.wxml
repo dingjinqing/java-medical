@@ -1,0 +1,35 @@
+<!--pages1/medicalrecordlist/medicalrecordlist.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class="mian-container">
+  <view class="medical_list">
+    <view class="each_medical_module" bindtap="to_detail">
+      <view class="for_bg">
+        <image src="http://medicaldevimg.weipubao.cn/image/wxapp/medical_history_bg1.png"></image>
+        <view class="em_title">电子病历1电子病历1电子病历1</view>
+      </view>
+      <view class="em_each_line">
+        <text class="eline_dot"></text>
+        <text class="eline_span">诊断：</text>
+        呼吸道感染
+      </view>
+      <view class="em_each_line">
+        <text class="eline_dot"></text>
+        <text class="eline_span">就诊科室：</text>
+        内科
+      </view>
+      <view class="em_each_line1">
+        <text class="eline_dot" style="display:inline-block"></text>
+        <text class="eline_span">诊疗处理意见：</text>
+        <view class="medical_info">
+          <view>处方：</view>
+          <view>检查：</view>
+          <view>检验：</view>
+        </view>
+      </view>
+      <view class="doctor_info">
+        <view>医师：张三</view>
+        <view>日期：2020-02-02</view>
+      </view>
+    </view>
+  </view>
+</view>

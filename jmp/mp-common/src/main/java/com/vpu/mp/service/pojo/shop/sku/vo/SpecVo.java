@@ -17,5 +17,5 @@ public class SpecVo {
     /**
      * 规格值
      */
-    List<SpecValVo> specValVos;
+    List<SpecValVo> goodsSpecVals;
 }

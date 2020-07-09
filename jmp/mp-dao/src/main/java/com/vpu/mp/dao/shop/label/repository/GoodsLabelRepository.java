@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.shop.label.repository;
 
+import com.vpu.mp.common.pojo.shop.repository.GoodsLabelAo;
 import com.vpu.mp.common.pojo.shop.table.GoodsLabelCoupleDo;
 import com.vpu.mp.common.pojo.shop.table.GoodsLabelDo;
 import com.vpu.mp.dao.shop.label.GoodsLabelCoupleDao;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author 李晓冰
@@ -47,16 +49,17 @@ public class GoodsLabelRepository {
      * @param goodsId 商品id
      * @return 标签信息
      */
-    public List<GoodsLabelVo> getGoodsPointLabels(Integer goodsId){
+    public List<GoodsLabelVo> getGoodsPointLabels(Integer goodsId) {
         List<GoodsLabelDo> goodsLabelDos = goodsLabelDao.getLabelByGtaInfo(Collections.singletonList(goodsId), MedicalLabelConstant.GTA_GOODS);
         List<GoodsLabelVo> retList = new ArrayList<>(goodsLabelDos.size());
 
         for (GoodsLabelDo goodsLabelDo : goodsLabelDos) {
-            GoodsLabelVo vo = new GoodsLabelVo(goodsLabelDo.getId(),goodsLabelDo.getName());
+            GoodsLabelVo vo = new GoodsLabelVo(goodsLabelDo.getId(), goodsLabelDo.getName());
             retList.add(vo);
         }
         return retList;
     }
+
 
     /**
      * 获取商品关联的所有标签
@@ -70,19 +73,44 @@ public class GoodsLabelRepository {
 
         List<GoodsLabelVo> retList = new ArrayList<>(sortLabels.size());
         for (GoodsLabelDo goodsLabelDo : sortLabels) {
-            GoodsLabelVo vo = new GoodsLabelVo(goodsLabelDo.getId(),goodsLabelDo.getName());
+            GoodsLabelVo vo = new GoodsLabelVo(goodsLabelDo.getId(), goodsLabelDo.getName());
             retList.add(vo);
         }
         return retList;
     }
 
+    /**
+     * 根据标签id和标签类型获取对应的gtaId集合,
+     * type为{@link MedicalLabelConstant#GTA_ALL} 时返回null表示没有匹配项，否则表示存在全局匹配的标签
+     * @param labelId
+     * @param type
+     * @return
+     */
+    public List<Integer> listGtaIdsByLabelIdAndType(Integer labelId, Byte type) {
+        List<GoodsLabelCoupleDo> goodsLabelCoupleDos = goodsLabelCoupleDao.listByLabelIdAndType(labelId, type);
+
+        if (MedicalLabelConstant.GTA_ALL.equals(type)) {
+            if (goodsLabelCoupleDos.size() == 0) {
+                return null;
+            } else {
+                return new ArrayList<>();
+            }
+        } else {
+            return goodsLabelCoupleDos.stream().map(GoodsLabelCoupleDo::getGtaId).collect(Collectors.toList());
+        }
+    }
+
+    public List<GoodsLabelAo> listGtaInfos(List<Integer> gtaIds, Byte type) {
+        return null;
+    }
+
 
     /**
      * 删除标签关联信息
-     * @param gtaIds 待删除id集合
+     * @param gtaIds  待删除id集合
      * @param gtaType 要删除的类型
      */
-    public void deleteCouple(List<Integer> gtaIds, Byte gtaType){
-        goodsLabelCoupleDao.deleteCouple(gtaIds,gtaType);
+    public void deleteCouple(List<Integer> gtaIds, Byte gtaType) {
+        goodsLabelCoupleDao.deleteCouple(gtaIds, gtaType);
     }
 }

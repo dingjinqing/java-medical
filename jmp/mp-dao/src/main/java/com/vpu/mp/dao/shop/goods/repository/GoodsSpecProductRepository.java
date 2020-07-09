@@ -136,6 +136,29 @@ public class GoodsSpecProductRepository {
         return collect;
     }
 
+    /**
+     * gen
+     * @param goodsIds
+     * @return
+     */
+    public List<GoodsSpecProductEntity> listSkuByGoodsIds(List<Integer> goodsIds){
+        List<GoodsSpecProductDo> goodsSpecProductDos = goodsSpecProductDao.listSkuByGoodsIds(goodsIds);
+        return convertGoodsSpecProductDoToEntity(goodsSpecProductDos);
+    }
+
+    /**
+     * GoodsSpecProduct Do转Entity
+     * @param goodsSpecProductDos
+     * @return
+     */
+    private List<GoodsSpecProductEntity> convertGoodsSpecProductDoToEntity( List<GoodsSpecProductDo> goodsSpecProductDos){
+        return goodsSpecProductDos.stream().map(sku -> {
+            GoodsSpecProductEntity goodsSpecProductEntity = new GoodsSpecProductEntity();
+            FieldsUtil.assign(sku, goodsSpecProductEntity);
+            return goodsSpecProductEntity;
+        }).collect(Collectors.toList());
+    }
+
     public List<SpecVo> getSpecListByGoodsId(Integer goodsId) {
         List<SpecDo> specDos = specDao.getSpecsByGoodsId(goodsId);
         List<SpecValDo> specValDos = specValDao.getSepcValsByGoodsId(goodsId);
@@ -161,7 +184,7 @@ public class GoodsSpecProductRepository {
                 return vo;
             }).collect(Collectors.toList());
 
-            specVo.setSpecValVos(svls);
+            specVo.setGoodsSpecVals(svls);
         }
 
         return specVos;

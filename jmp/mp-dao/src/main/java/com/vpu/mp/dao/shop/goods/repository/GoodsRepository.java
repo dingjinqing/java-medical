@@ -1,8 +1,10 @@
 package com.vpu.mp.dao.shop.goods.repository;
 
 import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.pojo.shop.table.GoodsDo;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
+import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
+import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.service.pojo.shop.goods.MedicalGoodsConstant;
@@ -13,8 +15,9 @@ import com.vpu.mp.service.pojo.shop.goods.vo.GoodsSelectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author 李晓冰
@@ -115,6 +118,41 @@ public class GoodsRepository {
     }
 
     /**
+     * 分页获取商品信息
+     * @param goodsPageListCondition 商品分页统一条件
+     * @param curPage 当前页
+     * @param pageRows 行数
+     * @return 分页信息
+     */
+    public PageResult<GoodsEntity> getGoodsPageList(GoodsPageListCondition goodsPageListCondition,Integer curPage,Integer pageRows) {
+        PageResult<GoodsDo> goodsDoPageResult = goodsDao.getGoodsPageList(goodsPageListCondition, curPage, pageRows);
+        List<GoodsDo> dataList = goodsDoPageResult.dataList;
+        List<Integer> goodsIds = dataList.stream().mapToInt(GoodsDo::getGoodsId).boxed().collect(Collectors.toList());
+
+        List<GoodsMedicalInfoDo> goodsMedicalInfoDos = goodsMedicalInfoDao.listByGoodsIds(goodsIds);
+        Map<Integer, GoodsMedicalInfoEntity> medicalInfoEntityMap = goodsMedicalInfoDos.stream().map(goodsMedicalInfoDo -> {
+            GoodsMedicalInfoEntity goodsMedicalInfoEntity = new GoodsMedicalInfoEntity();
+            FieldsUtil.assign(goodsMedicalInfoDo, goodsMedicalInfoEntity);
+            return goodsMedicalInfoEntity;
+        }).collect(Collectors.toMap(GoodsMedicalInfoEntity::getGoodsId, Function.identity()));
+
+        List<GoodsEntity> retGoodsPageList = new ArrayList<>(dataList.size());
+        Set<String> goodsAssignIgnoreFields = getGoodsAssignIgnoreFields();
+
+        for (GoodsDo goodsDo : dataList) {
+            GoodsEntity goodsEntity = new GoodsEntity();
+            FieldsUtil.assignWithIgnoreField(goodsDo,goodsEntity,goodsAssignIgnoreFields);
+            goodsEntity.setGoodsMedicalInfo(medicalInfoEntityMap.get(goodsEntity.getGoodsId()));
+            retGoodsPageList.add(goodsEntity);
+        }
+
+        PageResult<GoodsEntity> pageResult = new PageResult<>();
+        pageResult.setDataList(retGoodsPageList);
+
+        return pageResult;
+    }
+
+    /**
      * 获取Goods转GoodsDo时忽略的字段
      * @return 需要忽略的字段
      */
@@ -123,6 +161,9 @@ public class GoodsRepository {
         assignIgnoreField.add("goodsSpecProducts");
         assignIgnoreField.add("goodsMedicalInfo");
         assignIgnoreField.add("specs");
+        assignIgnoreField.add("goodsMedicalInfo");
+        assignIgnoreField.add("imgPaths");
+        assignIgnoreField.add("labelIds");
         return assignIgnoreField;
     }
 }

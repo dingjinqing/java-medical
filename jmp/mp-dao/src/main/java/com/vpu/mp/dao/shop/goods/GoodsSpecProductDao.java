@@ -24,27 +24,27 @@ public class GoodsSpecProductDao extends ShopBaseDao {
      * 商品sku新增
      * @param goodsSpecProductDos sku数据集合
      */
-    public void batchInsert(List<GoodsSpecProductDo> goodsSpecProductDos){
+    public void batchInsert(List<GoodsSpecProductDo> goodsSpecProductDos) {
         List<GoodsSpecProductRecord> goodsSpecProductRecords = new ArrayList<>(goodsSpecProductDos.size());
 
         for (GoodsSpecProductDo goodsSpecProductDo : goodsSpecProductDos) {
             GoodsSpecProductRecord goodsSpecProductRecord = new GoodsSpecProductRecord();
-            FieldsUtil.assign(goodsSpecProductDo,goodsSpecProductRecord);
+            FieldsUtil.assign(goodsSpecProductDo, goodsSpecProductRecord);
             goodsSpecProductRecords.add(goodsSpecProductRecord);
         }
-       db().batchInsert(goodsSpecProductRecords).execute();
+        db().batchInsert(goodsSpecProductRecords).execute();
     }
 
     /**
      * 商品sku修改
      * @param goodsSpecProductDos sku数据集合
      */
-    public void batchUpdate(List<GoodsSpecProductDo> goodsSpecProductDos){
+    public void batchUpdate(List<GoodsSpecProductDo> goodsSpecProductDos) {
         List<GoodsSpecProductRecord> goodsSpecProductRecords = new ArrayList<>(goodsSpecProductDos.size());
 
         for (GoodsSpecProductDo goodsSpecProductDo : goodsSpecProductDos) {
             GoodsSpecProductRecord goodsSpecProductRecord = new GoodsSpecProductRecord();
-            FieldsUtil.assign(goodsSpecProductDo,goodsSpecProductRecord);
+            FieldsUtil.assign(goodsSpecProductDo, goodsSpecProductRecord);
             goodsSpecProductRecords.add(goodsSpecProductRecord);
         }
         db().batchUpdate(goodsSpecProductRecords).execute();
@@ -55,19 +55,28 @@ public class GoodsSpecProductDao extends ShopBaseDao {
      * @param goodsId
      * @return
      */
-    public List<GoodsSpecProductDo> getSkuByGoodsId(Integer goodsId){
-        List<GoodsSpecProductDo> goodsSpecProductDos = db().selectFrom(GOODS_SPEC_PRODUCT)
+    public List<GoodsSpecProductDo> getSkuByGoodsId(Integer goodsId) {
+        return db().selectFrom(GOODS_SPEC_PRODUCT)
             .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId).and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(GoodsSpecProductDo.class);
+    }
 
-        return goodsSpecProductDos;
+    /**
+     * 根据商品id集合获取其sku信息
+     * @param goodsIds
+     * @return
+     */
+    public List<GoodsSpecProductDo> listSkuByGoodsIds(List<Integer> goodsIds) {
+        return db().selectFrom(GOODS_SPEC_PRODUCT)
+            .where(GOODS_SPEC_PRODUCT.GOODS_ID.in(goodsIds).and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
+            .fetchInto(GoodsSpecProductDo.class);
     }
 
     public void deleteByGoodsId(Integer goodsId) {
         db().update(GOODS_SPEC_PRODUCT)
             .set(GOODS_SPEC_PRODUCT.PRD_SN, DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS_SPEC_PRODUCT.PRD_SN))
-            .set(GOODS_SPEC_PRODUCT.PRD_CODES,DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS_SPEC_PRODUCT.PRD_CODES))
-            .set(GOODS_SPEC_PRODUCT.DEL_FLAG,DelFlag.DISABLE_VALUE)
+            .set(GOODS_SPEC_PRODUCT.PRD_CODES, DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS_SPEC_PRODUCT.PRD_CODES))
+            .set(GOODS_SPEC_PRODUCT.DEL_FLAG, DelFlag.DISABLE_VALUE)
             .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId))
             .execute();
     }
