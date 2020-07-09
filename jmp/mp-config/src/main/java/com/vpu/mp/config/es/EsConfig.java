@@ -32,7 +32,7 @@ import java.net.ConnectException;
  *
 */
 @Slf4j
-@Configuration
+//@Configuration
 public class EsConfig implements FactoryBean<RestHighLevelClient>, InitializingBean, DisposableBean {
 
     @Value("${spring.elasticsearch.host:localhost}")

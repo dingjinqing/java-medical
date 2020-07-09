@@ -169,12 +169,6 @@ public class PrescriptionDao extends ShopBaseDao {
                 .fetchAnyInto(PrescriptionVo.class);
     }
 
-    public void ListSimpleByprescriptionNo(List<String> prescriptionNoList) {
-        db().select().from(PRESCRIPTION)
-                .where(PRESCRIPTION.PRESCRIPTION_NO.in(prescriptionNoList))
-                .fetchAny();
-
-    }
 
     /**
      * 患者未过期的历史处方no

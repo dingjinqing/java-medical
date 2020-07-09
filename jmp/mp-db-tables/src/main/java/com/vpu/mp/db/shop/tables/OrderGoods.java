@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderGoods extends TableImpl<OrderGoodsRecord> {
 
-    private static final long serialVersionUID = 2485329;
+    private static final long serialVersionUID = -1474039149;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_order_goods</code>
@@ -134,9 +134,9 @@ public class OrderGoods extends TableImpl<OrderGoodsRecord> {
     public final TableField<OrderGoodsRecord, Integer> SEND_NUMBER = createField("send_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_goods.return_number</code>.
+     * The column <code>mini_shop_471752.b2c_order_goods.return_number</code>. 退货/退款成功数量
      */
-    public final TableField<OrderGoodsRecord, Integer> RETURN_NUMBER = createField("return_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<OrderGoodsRecord, Integer> RETURN_NUMBER = createField("return_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "退货/退款成功数量");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_goods.is_real</code>.
@@ -299,9 +299,9 @@ public class OrderGoods extends TableImpl<OrderGoodsRecord> {
     public final TableField<OrderGoodsRecord, Integer> PURCHASE_ID = createField("purchase_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "加价购活动id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_goods.prescription_detail_no</code>. 处方项目明细号码（可根据此字段反查批次号）
+     * The column <code>mini_shop_471752.b2c_order_goods.prescription_no</code>. 处方项目明细号码（可根据此字段反查批次号）
      */
-    public final TableField<OrderGoodsRecord, String> PRESCRIPTION_DETAIL_NO = createField("prescription_detail_no", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "处方项目明细号码（可根据此字段反查批次号）");
+    public final TableField<OrderGoodsRecord, String> PRESCRIPTION_NO = createField("prescription_no", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "处方项目明细号码（可根据此字段反查批次号）");
 
     /**
      * Create a <code>mini_shop_471752.b2c_order_goods</code> table reference

@@ -406,8 +406,7 @@ public class OrderReadService extends ShopBaseService {
         OrderSimpleInfoVo simple = new OrderSimpleInfoVo();
         BeanUtils.copyProperties(orderInfoVo, simple);
         return simple;
-    }
-    /**
+    }    /**
     /**
      * admin显示手动退款退货按钮
      * @param vo

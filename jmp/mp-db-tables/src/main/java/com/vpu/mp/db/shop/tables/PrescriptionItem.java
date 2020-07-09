@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
 
-    private static final long serialVersionUID = 198178197;
+    private static final long serialVersionUID = 791120429;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_prescription_item</code>
@@ -61,6 +61,11 @@ public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
      * The column <code>mini_shop_471752.b2c_prescription_item.id</code>.
      */
     public final TableField<PrescriptionItemRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription_item.pos_detail_code</code>. 医嘱明细单号
+     */
+    public final TableField<PrescriptionItemRecord, String> POS_DETAIL_CODE = createField("pos_detail_code", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医嘱明细单号");
 
     /**
      * The column <code>mini_shop_471752.b2c_prescription_item.prescription_no</code>. 处方号外键
