@@ -158,7 +158,7 @@ export default {
             goods_module_bg: 0, // 背景颜色 0与页面一致  1自定义 y
             goods_bg_color: null, // 背景自定义颜色 y
             goodsListData: [], // 传递商品列表数据,
-            autoRecommendType: 0 // 推荐类别 0店铺药品 | 1我的处方药
+            auto_recommend_type: 0 // 推荐类别 0店铺药品 | 1我的处方药
           }
           break
         case 9: // 商品搜索模块

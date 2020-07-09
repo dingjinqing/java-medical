@@ -5,7 +5,7 @@
 		<text class="more">更多</text>
 	</view>
 	<view class="case-history-list" bindtap="handleShowDialog">
-		<view class="list-item title" style="background:url({{imageUrl}}image/wxapp/case-history-top-bg.png) no-repeat left top/100% 100rpx;" >
+		<view class="list-item title" style="background:url({{imageUrl}}image/wxapp/case-history-top-bg.png) no-repeat left top/100% 100rpx , linear-gradient(#d0edeb, #ffffff);" >
 	   <text>电子病历1</text>
 		</view>
 		<view class="list-item">

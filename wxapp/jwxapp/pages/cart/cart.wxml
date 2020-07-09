@@ -5,7 +5,7 @@
   <block wx:if='{{!fullList && !purchaseList && !cartGoodsList && !invalidCartList}}'>
     <view class="con_img" style='height:{{has_reco_goods == 1?"400rpx":"72%"}};background:{{has_reco_goods == 1?"#fff":"#f5f5f5"}}'>
       <image src="{{imageUrl}}image/wxapp/common_cart_no.png" mode='widthFix' />
-      <view class="p">购物车竟然是空的</view>
+      <view class="p">清单是空的</view>
       <view class='btn_to_index' bindtap='toIndex' style='background:{{comColor}}'>随便逛逛</view>
     </view>
   </block>

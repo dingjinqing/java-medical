@@ -181,10 +181,12 @@ global.wxComponent({
       if (m.component_name == 'v-bargain' || m.component_name == 'v-pinlottery') {
         m.elapse_secs = this.elapse_secs
       }
+      console.log(m)
       console.log(m.module_name)
       if (m.module_name === 'm_card') {
         if ((m.status == 1 || m.status == 4) && m.hidden_card == 1) return null;
       }
+     
       return m;
     },
     detectLoadingMore () {

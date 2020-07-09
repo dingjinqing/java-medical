@@ -4,7 +4,7 @@
       <div class="search_box">
         <div class="filters">
           <div class="filters_item">
-            <span>{{$t('order.goodsName')}}：</span>
+            <span @click="handleShowPrescriptionCheck">{{$t('order.goodsName')}}：</span>
             <el-input
               v-model="searchParams.goodsName"
               :placeholder="$t('order.goodsName')"
@@ -504,12 +504,21 @@
                       <div class="right_info">
                         <div class="goods_name">
                           <span>
-                            <span class="tags red" v-if="goodsItem.activityType">{{$t('order.activityTypeList')[goodsItem.activityType].name}}</span>
-                            <span class="tags red" v-if="goodsItem.isCardExclusive === 1">会员专享</span>
-                            <span class="tags red" v-if="goodsItem.isGift === 1">赠品</span>
-                          {{goodsItem.goodsName}}
+                            <span
+                              class="tags red"
+                              v-if="goodsItem.activityType"
+                            >{{$t('order.activityTypeList')[goodsItem.activityType].name}}</span>
+                            <span
+                              class="tags red"
+                              v-if="goodsItem.isCardExclusive === 1"
+                            >会员专享</span>
+                            <span
+                              class="tags red"
+                              v-if="goodsItem.isGift === 1"
+                            >赠品</span>
+                            {{goodsItem.goodsName}}
                           </span>
-                          </div>
+                        </div>
                         <div class="goods_spec">{{goodsItem.goodsAttr}}</div>
                       </div>
                     </div>
@@ -525,7 +534,10 @@
                     v-if="goodsIndex === 0"
                     :rowspan="orderItem.goods.length"
                   >
-                    <div class="pointer" @click="viewUserCenter(orderItem.userId)">
+                    <div
+                      class="pointer"
+                      @click="viewUserCenter(orderItem.userId)"
+                    >
                       <p>{{orderItem.username}}</p>
                       <p>{{orderItem.userMobile}}</p>
                     </div>
@@ -716,9 +728,18 @@
                         <div class="right_info">
                           <div class="goods_name">
                             <span>
-                              <span class="tags red" v-if="goodsItem.activityType">{{$t('order.activityTypeList')[goodsItem.activityType].name}}</span>
-                              <span class="tags red" v-if="goodsItem.isCardExclusive === 1">会员专享</span>
-                              <span class="tags red" v-if="goodsItem.isGift === 1">赠品</span>
+                              <span
+                                class="tags red"
+                                v-if="goodsItem.activityType"
+                              >{{$t('order.activityTypeList')[goodsItem.activityType].name}}</span>
+                              <span
+                                class="tags red"
+                                v-if="goodsItem.isCardExclusive === 1"
+                              >会员专享</span>
+                              <span
+                                class="tags red"
+                                v-if="goodsItem.isGift === 1"
+                              >赠品</span>
                               {{childGoods.goodsName}}
                             </span>
                           </div>
@@ -873,6 +894,8 @@
       :show.sync="showExportConfirm"
       :param="this.searchParams"
     />
+    <!-- 发货 -->
+    <prescriptionCheck :show.sync="showPrescriptionCheck" />
   </div>
 </template>
 <script>
@@ -888,7 +911,8 @@ export default {
     nodesDialog: () => import('./addNotes'),
     deliveryDialog: () => import('./deliveryDialog'),
     orderExportColumnSelectDialog: () => import('./orderExportColumnSelect.vue'),
-    orderExportConfirmDialog: () => import('./orderExportConfirmDialog.vue')
+    orderExportConfirmDialog: () => import('./orderExportConfirmDialog.vue'),
+    prescriptionCheck: () => import('./prescriptionCheckDialog.vue')
   },
   data () {
     return {
@@ -959,7 +983,7 @@ export default {
         { value: '7', label: '售后中' },
         { value: '8', label: '售后完成' },
         { value: '2', label: '已关闭' },
-        {value: '30', label: '追星订单'}
+        { value: '30', label: '追星订单' }
       ],
       orderList: [
       ],
@@ -986,7 +1010,8 @@ export default {
         disabledDate: time => {
           return time.getTime() < new Date(this.completeTime.startTime).getTime()
         }
-      }
+      },
+      showPrescriptionCheck: false
     }
   },
   inject: ['adminReload'],
@@ -1219,6 +1244,10 @@ export default {
           userId
         }
       })
+    },
+    handleShowPrescriptionCheck () {
+      console.log(111)
+      this.showPrescriptionCheck = true
     }
   }
 }
@@ -1326,7 +1355,7 @@ export default {
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     cursor: pointer;
-                    &:last-of-type{
+                    &:last-of-type {
                       margin-right: 50px;
                     }
                     &.paymentType {
@@ -1376,14 +1405,14 @@ export default {
               color: #666;
               line-height: 24px;
             }
-            .order-status{
-            /deep/ .el-button{
-              margin-top:6px;
+            .order-status {
+              /deep/ .el-button {
+                margin-top: 6px;
+              }
+              /deep/ .el-button:first-of-type {
+                margin-top: 0;
+              }
             }
-            /deep/ .el-button:first-of-type{
-              margin-top: 0;
-            }
-          }
             .goods_info {
               display: flex;
               padding: 8px 10px;
@@ -1410,14 +1439,14 @@ export default {
                     overflow: hidden;
                     -webkit-box-orient: vertical;
                     text-align: left;
-                    >.tags{
+                    > .tags {
                       border: 1px solid;
                       padding: 0 3px;
-                      &.red{
+                      &.red {
                         color: red;
                       }
-                      &.ef8115{
-                        color:#ef8115;
+                      &.ef8115 {
+                        color: #ef8115;
                       }
                     }
                   }
@@ -1478,10 +1507,10 @@ export default {
   .default_input {
     width: 180px;
   }
-  .middle_input{
-    width:185px
+  .middle_input {
+    width: 185px;
   }
-  .pointer{
+  .pointer {
     cursor: pointer;
     color: #409eff;
   }
