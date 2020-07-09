@@ -4948,8 +4948,9 @@ create table `b2c_medical_history`
     `diagnosis_suggestion` text not null default '' comment '诊疗处理意见',
     `doctor_code` varchar(128) not null default '' comment '医师编码',
     `doctor_name` varchar(32)  not null default '' comment '医师姓名',
-    `is_delete`     tinyint(1)   not null default '0',
-    `create_time`   timestamp    not null default current_timestamp,
+    `visit_time`   timestamp    not null default current_timestamp comment '就诊时间',
+    `is_delete`     tinyint(1)   not null default '0' comment '删除标记',
+    `create_time`   timestamp    not null default current_timestamp comment '病历生成时间',
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)
 )comment ='病历';
