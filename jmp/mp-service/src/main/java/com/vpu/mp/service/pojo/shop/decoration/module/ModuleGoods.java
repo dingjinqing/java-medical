@@ -146,4 +146,6 @@ public class ModuleGoods extends ModuleBase {
     private Byte titCenter=0;
 
     private List<?> goodsListData;
+
+    private Boolean hasMore = false;
 }

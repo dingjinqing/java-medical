@@ -66,6 +66,7 @@ public class GoodsConstant {
     public final static Byte ACTIVITY_DISTRIBUTION_PRIORITY = Byte.MAX_VALUE - 1;
     /**************** 结束 *****************/
 
+    public final static Integer ZERO = 0;
 
     /** 小程序海报分享码跳转地址，商品详情页或对应活动页 */
     /**商品详情页*/
