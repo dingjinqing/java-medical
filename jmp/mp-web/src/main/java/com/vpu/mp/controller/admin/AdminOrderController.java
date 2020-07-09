@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListParam;
@@ -24,6 +25,7 @@ import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -294,4 +296,40 @@ public class AdminOrderController extends AdminBaseController {
         Workbook workbook = shop().readOrder.downloadFailData(batchId, getLang());
         export2Excel(workbook, DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE), response);
     }
+    //*******医药**********//
+	/**
+	 * 获取订单关联的处方
+	 * @return
+	 */
+	@PostMapping("/medical/prescription/get")
+	public JsonResult getPrescription(@RequestBody @Validated PrescriptionQueryParam param) throws MpException {
+		param.setIsMp(OrderConstant.IS_MP_ADMIN);
+		param.setAdminInfo(adminAuth.user());
+		try {
+			return success(shop().orderActionFactory.orderQuery(param));
+		} catch (MpException e) {
+			return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
+		}
+	}
+
+	/**
+	 * 续方
+	 *  医师根据历史处方和药品开出新的处方
+	 * @return
+	 */
+	@PostMapping("/medical/prescription/continue")
+	public JsonResult continuePrescription(){
+		return success();
+	}
+
+	/**
+	 * 驳回处方
+	 *  医师根据历史处方和药品驳回订单中的商品
+	 * @return
+	 */
+	@PostMapping("medical/prescription/reject")
+	public JsonResult rejectPrescription(){
+		return success();
+	}
+
 }

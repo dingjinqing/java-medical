@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate;
 
+import com.vpu.mp.db.shop.tables.Prescription;
 import com.vpu.mp.service.shop.order.action.*;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 
@@ -38,6 +39,8 @@ public enum OrderServiceCode {
 	//11:支付
     PAY(PayService.class),
 	//12:好友代付
-    INSTEAD_PAY(InsteadPayService.class);
+    INSTEAD_PAY(InsteadPayService.class),
+	//13:订单得处方续方
+	PRESCRIPTION(OrderPrescriptionService.class);
 	OrderServiceCode(Class<? extends IorderOperate> clz){}
 }
