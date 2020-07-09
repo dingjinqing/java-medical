@@ -29,6 +29,7 @@ public class PrescriptionItemDo implements Serializable {
     private static final long serialVersionUID = -1250728217;
 
     private Integer   id;
+    private String    posDetailCode;
     private String    prescriptionNo;
     private String    prescriptionDetailNo;
     private Integer   goodsId;

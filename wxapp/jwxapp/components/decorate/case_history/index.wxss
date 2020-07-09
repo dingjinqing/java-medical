@@ -10,12 +10,16 @@
   border-radius: 16rpx;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 .list-item{
   padding: 15rpx 30rpx;
   display: flex;
   flex-direction: column;
   line-height: 60rpx;
+}
+.list-item:nth-child(2){
+  padding-top: 0;
 }
 .list-item+.list-item{
   border-bottom: 2rpx solid #eee;
@@ -28,6 +32,8 @@
   color: #333;
   font-weight: 600;
   line-height: 100rpx;
+  padding-bottom: 0;
+  padding-top: 0;
 }
 .list-item.title > text{
   align-self: center;

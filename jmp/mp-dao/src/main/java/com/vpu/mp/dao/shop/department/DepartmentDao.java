@@ -33,7 +33,7 @@ public class DepartmentDao extends ShopBaseDao {
             .select(DEPARTMENT.ID, DEPARTMENT.CODE, DEPARTMENT.CREATE_TIME,
                 DEPARTMENT.NAME, DEPARTMENT.PARENT_ID, DEPARTMENT.PARENT_IDS,DEPARTMENT.LEVEL,DEPARTMENT.IS_LEAF)
             .from(DEPARTMENT);
-        select.where(DEPARTMENT.IS_DELETE.eq((byte) 0)).and(DEPARTMENT.LEVEL.eq((int) 1));
+        select.where(DEPARTMENT.IS_DELETE.eq((byte) 0)).and(DEPARTMENT.LEVEL.eq((Integer) 1));
         buildOptions(select, param);
         PageResult<DepartmentListVo> departmentList = this.getPageResult(select, param.getCurrentPage(),
             param.getPageRows(), DepartmentListVo.class);

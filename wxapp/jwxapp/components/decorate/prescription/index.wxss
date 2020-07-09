@@ -99,3 +99,12 @@
   color: #656565;
   font-weight: 400;
 }
+.no-content{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100rpx;
+  color: #999;
+  border-radius: 16rpx;
+  background-color: #fff;
+}

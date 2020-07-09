@@ -1318,4 +1318,10 @@ public class JsonResultMessage {
     public static final String DOCTOR_TITLE_NAME_IS_NULL = "doctor.title.name.is.null";
     public static final String DOCTOR_TITLE_ID_IS_NULL = "doctor.title.id.is.null";
 
+    /**
+     * 医师
+     */
+    public static final String DOCTOR_NAME_EXIST = "doctor.name.exist";
+    public static final String DOCTOR_NAME_IS_NULL = "doctor.name.is.null";
+    public static final String DOCTOR_ID_IS_NULL = "doctor.id.is.null";
 }

@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderInfo extends TableImpl<OrderInfoRecord> {
 
-    private static final long serialVersionUID = 823726820;
+    private static final long serialVersionUID = -704607645;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_order_info</code>
@@ -762,11 +762,6 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
      * The column <code>mini_shop_471752.b2c_order_info.room_id</code>. 直播间ID
      */
     public final TableField<OrderInfoRecord, Integer> ROOM_ID = createField("room_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "直播间ID");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_order_info.prescription_no</code>. 处方号外键
-     */
-    public final TableField<OrderInfoRecord, String> PRESCRIPTION_NO = createField("prescription_no", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "处方号外键");
 
     /**
      * Create a <code>mini_shop_471752.b2c_order_info</code> table reference

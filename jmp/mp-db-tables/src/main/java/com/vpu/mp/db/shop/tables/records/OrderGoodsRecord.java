@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
 
-    private static final long serialVersionUID = -2141631926;
+    private static final long serialVersionUID = 1538478674;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_order_goods.rec_id</code>.
@@ -241,14 +241,14 @@ public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.return_number</code>.
+     * Setter for <code>mini_shop_471752.b2c_order_goods.return_number</code>. 退货/退款成功数量
      */
     public void setReturnNumber(Integer value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.return_number</code>.
+     * Getter for <code>mini_shop_471752.b2c_order_goods.return_number</code>. 退货/退款成功数量
      */
     public Integer getReturnNumber() {
         return (Integer) get(15);
@@ -703,16 +703,16 @@ public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.prescription_detail_no</code>. 处方项目明细号码（可根据此字段反查批次号）
+     * Setter for <code>mini_shop_471752.b2c_order_goods.prescription_no</code>. 处方项目明细号码（可根据此字段反查批次号）
      */
-    public void setPrescriptionDetailNo(String value) {
+    public void setPrescriptionNo(String value) {
         set(48, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.prescription_detail_no</code>. 处方项目明细号码（可根据此字段反查批次号）
+     * Getter for <code>mini_shop_471752.b2c_order_goods.prescription_no</code>. 处方项目明细号码（可根据此字段反查批次号）
      */
-    public String getPrescriptionDetailNo() {
+    public String getPrescriptionNo() {
         return (String) get(48);
     }
 
@@ -742,7 +742,7 @@ public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
     /**
      * Create a detached, initialised OrderGoodsRecord
      */
-    public OrderGoodsRecord(Integer recId, Integer mainRecId, Integer shopId, Integer orderId, String orderSn, Integer goodsId, String goodsName, String goodsSn, Integer productId, String productSn, Integer goodsNumber, BigDecimal marketPrice, BigDecimal goodsPrice, String goodsAttr, Integer sendNumber, Integer returnNumber, Byte isReal, String goodsAttrId, String goodsImg, Byte refundStatus, Byte commentFlag, Integer straId, BigDecimal perDiscount, Integer isGift, String rGoods, Integer goodsScore, Integer goodsGrowth, BigDecimal discountedGoodsPrice, String discountDetail, Byte fanliType, BigDecimal canCalculateMoney, BigDecimal fanliMoney, BigDecimal discountedTotalPrice, BigDecimal totalFanliMoney, String fanliStrategy, BigDecimal fanliPercent, BigDecimal costPrice, Byte isCardExclusive, String promoteInfo, Integer giftId, Byte isCanReturn, Short reducePriceNum, Byte activityType, Integer activityId, Integer activityRule, Timestamp createTime, Timestamp updateTime, Integer purchaseId, String prescriptionDetailNo) {
+    public OrderGoodsRecord(Integer recId, Integer mainRecId, Integer shopId, Integer orderId, String orderSn, Integer goodsId, String goodsName, String goodsSn, Integer productId, String productSn, Integer goodsNumber, BigDecimal marketPrice, BigDecimal goodsPrice, String goodsAttr, Integer sendNumber, Integer returnNumber, Byte isReal, String goodsAttrId, String goodsImg, Byte refundStatus, Byte commentFlag, Integer straId, BigDecimal perDiscount, Integer isGift, String rGoods, Integer goodsScore, Integer goodsGrowth, BigDecimal discountedGoodsPrice, String discountDetail, Byte fanliType, BigDecimal canCalculateMoney, BigDecimal fanliMoney, BigDecimal discountedTotalPrice, BigDecimal totalFanliMoney, String fanliStrategy, BigDecimal fanliPercent, BigDecimal costPrice, Byte isCardExclusive, String promoteInfo, Integer giftId, Byte isCanReturn, Short reducePriceNum, Byte activityType, Integer activityId, Integer activityRule, Timestamp createTime, Timestamp updateTime, Integer purchaseId, String prescriptionNo) {
         super(OrderGoods.ORDER_GOODS);
 
         set(0, recId);
@@ -793,6 +793,6 @@ public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
         set(45, createTime);
         set(46, updateTime);
         set(47, purchaseId);
-        set(48, prescriptionDetailNo);
+        set(48, prescriptionNo);
     }
 }

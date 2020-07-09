@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.service.shop.medicine.MedicalHistoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class WxAppBaseController  extends BaseController {
 
 	@Autowired
 	protected WxAppAuth wxAppAuth;
+
+    @Autowired
+    protected MedicalHistoryService medicalHistoryService;
 	
 	/**
 	 * 小程序前端语言，是由店铺控制的，需要在店铺读取 

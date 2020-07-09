@@ -69,7 +69,8 @@ public class DoctorDao extends ShopBaseDao {
      * @return
      */
     public int updateDoctor(DoctorOneParam param) {
-        DoctorRecord record = new DoctorRecord();
+        DoctorRecord record = db().select().from(DOCTOR).where(DOCTOR.ID.eq(param.getId()))
+            .fetchOneInto(DoctorRecord.class);
         FieldsUtil.assign(param, record);
         return db().executeUpdate(record);
     }
@@ -127,5 +128,37 @@ public class DoctorDao extends ShopBaseDao {
             .where(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(doctorId)).and(DOCTOR_DEPARTMENT_COUPLE.IS_DELETE.eq((byte) 0))
             .fetchInto(DepartmentOneParam.class);
         return departmentList;
+    }
+
+    /**
+     * 医师科室名集合
+     *
+     * @param doctorId
+     * @return
+     */
+    public List<String> getDepartmentNamesByDoctorId(Integer doctorId) {
+        List<String> departmentNameList = db()
+            .select(DEPARTMENT.NAME)
+            .from(DOCTOR_DEPARTMENT_COUPLE)
+            .leftJoin(DEPARTMENT).on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
+            .where(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(doctorId)).and(DOCTOR_DEPARTMENT_COUPLE.IS_DELETE.eq((byte) 0))
+            .fetchInto(String.class);
+        return departmentNameList;
+    }
+
+    /**
+     * 医师科室名集合
+     *
+     * @param doctorId
+     * @return
+     */
+    public List<Integer> getDepartmentIdsByDoctorId(Integer doctorId) {
+        List<Integer> departmentIdList = db()
+            .select(DEPARTMENT.ID)
+            .from(DOCTOR_DEPARTMENT_COUPLE)
+            .leftJoin(DEPARTMENT).on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
+            .where(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(doctorId)).and(DOCTOR_DEPARTMENT_COUPLE.IS_DELETE.eq((byte) 0))
+            .fetchInto(Integer.class);
+        return departmentIdList;
     }
 }

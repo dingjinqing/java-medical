@@ -15,5 +15,5 @@ import java.util.List;
 public class PrescriptionVo extends PrescriptionDo {
 
 
-    List<PrescriptionItemVo> list =new ArrayList<>();
+
 }

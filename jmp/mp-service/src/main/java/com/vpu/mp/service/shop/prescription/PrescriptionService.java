@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.prescription;
 
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionInfoVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemInfoVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
@@ -86,13 +87,7 @@ public class PrescriptionService extends ShopBaseService {
         return prescriptionItem;
     }
 
-    /**
-     * 获取处方简要信息
-     * @param prescriptionNoList
-     */
-    public void ListSimpleByprescriptionNo(List<String> prescriptionNoList) {
-        prescriptionDao.ListSimpleByprescriptionNo(prescriptionNoList);
-    }
+
 
     /**
      * 患者的处方列表

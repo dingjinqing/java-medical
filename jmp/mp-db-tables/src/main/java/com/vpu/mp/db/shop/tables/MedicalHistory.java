@@ -5,7 +5,6 @@ package com.vpu.mp.db.shop.tables;
 
 
 
-
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
@@ -16,8 +15,16 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.MedicalHistoryRecord;
-import org.jooq.*;
-
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Identity;
+import org.jooq.Index;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 
@@ -35,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MedicalHistory extends TableImpl<MedicalHistoryRecord> {
 
-    private static final long serialVersionUID = -1432014752;
+    private static final long serialVersionUID = -711153403;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_medical_history</code>
@@ -146,14 +153,19 @@ public class MedicalHistory extends TableImpl<MedicalHistoryRecord> {
     public final TableField<MedicalHistoryRecord, String> DOCTOR_NAME = createField("doctor_name", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师姓名");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.is_delete</code>.
+     * The column <code>mini_shop_471752.b2c_medical_history.visit_time</code>. 就诊时间
      */
-    public final TableField<MedicalHistoryRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<MedicalHistoryRecord, Timestamp> VISIT_TIME = createField("visit_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "就诊时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.create_time</code>.
+     * The column <code>mini_shop_471752.b2c_medical_history.is_delete</code>. 删除标记
      */
-    public final TableField<MedicalHistoryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<MedicalHistoryRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除标记");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_medical_history.create_time</code>. 病历生成时间
+     */
+    public final TableField<MedicalHistoryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "病历生成时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_medical_history.update_time</code>. 最后修改时间

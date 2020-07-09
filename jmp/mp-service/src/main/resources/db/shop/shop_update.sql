@@ -88,9 +88,6 @@ ALTER TABLE `b2c_user_remark` MODIFY COLUMN `is_delete` tinyint(1)  NOT NULL DEF
 ALTER TABLE `b2c_package_sale` ADD  COLUMN `package_type` tinyint(1) DEFAULT '0' COMMENT '活动类型0金额1折扣';
 ALTER TABLE `b2c_package_sale` ADD  COLUMN `total_ratio` decimal(4,2) DEFAULT '0.00' COMMENT '结算比例';
 
---2020-03-11 订单增加库存记录
-ALTER TABLE `b2c_order_info` ADD  COLUMN `is_lock` tinyint(1) DEFAULT '0' COMMENT '是否锁库存，0否，1是';
-ALTER TABLE `b2c_order_info` ADD  COLUMN `score_proportion` int(9) DEFAULT '100' COMMENT '积分比例';
 
 --2020-03-30 用户优惠券使用时间允许为null
 ALTER TABLE `b2c_customer_avail_coupons` MODIFY COLUMN `used_time` timestamp NULL DEFAULT '0000-00-00 00:00:00';
@@ -148,8 +145,7 @@ ALTER TABLE b2c_goods_spec_product_bak MODIFY prd_market_price DECIMAL(10,2) COM
 ALTER TABLE `b2c_member_card` ADD COLUMN `cannot_use_coupon` tinyint(1) DEFAULT 0 COMMENT '是否和会员卡一起使用0:可以1：不可以' ;
 -- 2020年03月12日 会员卡表添加自定义权益开关字段
 ALTER TABLE `b2c_member_card` ADD COLUMN `custom_rights_flag` tinyint(1) DEFAULT 0 COMMENT '自定义权益开关';
---2020-03-17 订单增加会员卡包邮标识
-ALTER TABLE `b2c_order_info` ADD  COLUMN `is_freeship_card` tinyint(1) DEFAULT '0' COMMENT '0否，1是';
+
 
 -- 瓜分积分 添加活动规则说明
 -- ALTER TABLE `b2c_group_integration_define` ADD COLUMN `activity_copywriting` TEXT COMMENT '活动规则说明';
@@ -177,8 +173,7 @@ ALTER TABLE `b2c_package_sale` MODIFY COLUMN `goods_number_3` mediumint(11) NULL
 -- 2020-04-17 拼团抽奖表添加活动说明字段
 ALTER TABLE `b2c_group_draw` ADD COLUMN `activity_copywriting` text COMMENT '活动说明';
 
--- 20200423订单商品表增加加价购id
-ALTER TABLE `b2c_order_goods` ADD COLUMN `purchase_id` int(11) NOT NULL DEFAULT 0 COMMENT '加价购活动id';
+
 
 -- 20200427优惠券礼包活动添加购物车展示选项
 ALTER TABLE `b2c_coupon_pack` ADD COLUMN `show_cart` tinyint(1) DEFAULT '1' COMMENT '购物车是否展示，1是';
@@ -317,7 +312,6 @@ CREATE TABLE IF NOT EXISTS `b2c_card_renew` (
 ALTER TABLE b2c_goods_label MODIFY del_flag TINYINT not NULL default 0 COMMENT '是否删除 0否 1是';
 ALTER TABLE b2c_goods_label add COLUMN is_none TINYINT(1) DEFAULT 0 COMMENT '是否不选择商品： 1：是  0： 否';
 
-ALTER TABLE `b2c_order_info` ADD COLUMN `room_id` INT(11) NULL DEFAULT '0' COMMENT '直播间ID';
 -- 商品表添加直播间id字段
 ALTER TABLE b2c_goods add COLUMN room_id int(4) COMMENT '直播间id';
 -- 2020年04月10日 添加自定义激活配置
@@ -395,8 +389,6 @@ ALTER TABLE `b2c_user_tag` ADD COLUMN `times` smallint(5) DEFAULT 1 COMMENT '打
 ALTER TABLE `b2c_order_goods_rebate` ADD COLUMN `rec_id` int(11) NOT NULL DEFAULT 0 COMMENT '商品行ID';
 
 
--- 2020年04月21日 ws
-ALTER TABLE `b2c_order_goods` MODIFY COLUMN `fanli_strategy` VARCHAR ( 2999 ) DEFAULT '' COMMENT '返利配置详情';
 
 
 -- 2020年04月24日 添加 已选活动商品表
@@ -591,10 +583,6 @@ INSERT IGNORE INTO `b2c_shipping` (`shipping_id`, `shipping_code`, `express100_c
 -- 2020.06.19 修改用户邀请保护时间类型
 ALTER TABLE b2c_user MODIFY COLUMN `invite_protect_date` datetime DEFAULT null COMMENT '邀请保护时间';
 
--- ws 修改类型
-ALTER TABLE b2c_order_goods MODIFY COLUMN goods_number int(11) NOT NULL DEFAULT 1;
-ALTER TABLE b2c_order_goods MODIFY COLUMN send_number int(11) NOT NULL DEFAULT 0 ;
-ALTER TABLE b2c_order_goods MODIFY COLUMN return_number int(11) NOT NULL DEFAULT 0 ;
 /***********************2.13*********************END*/
 /***********************3.1-医疗*********************START*/
 /***********************3.1-医疗*********************END*/

@@ -47,8 +47,8 @@ public class MedicalHistoryDo implements Serializable {
     private String    diagnosisSuggestion;
     private String    doctorCode;
     private String    doctorName;
+    private Timestamp visitTime;
     private Byte      isDelete;
     private Timestamp createTime;
     private Timestamp updateTime;
-
 }

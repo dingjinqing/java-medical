@@ -171,5 +171,10 @@ public class ModuleConstant {
 	 * 顶部导航模块
 	 */
 	public static final String M_TOPNAV = "m_topnav";
+
+    /**
+     * 我的处方模块
+     */
+    public static final String M_PRESCRIPTION = "m_prescription";
 	
 }

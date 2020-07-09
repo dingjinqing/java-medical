@@ -330,18 +330,18 @@
             v-if="data.recommend_type === '0'"
           >
             <div class="manual">
-              <div class="goodsPrice price autoRecommendType">
+              <div class="goodsPrice price auto_recommend_type">
                 <span>推荐类别：</span>
                 <el-radio
-                  v-model="data.autoRecommendType"
+                  v-model="data.auto_recommend_type"
                   label="0"
                 >店铺商品</el-radio>
                 <el-radio
-                  v-model="data.autoRecommendType"
+                  v-model="data.auto_recommend_type"
                   label="1"
                 >患者处方药</el-radio>
               </div>
-              <template v-if="data.autoRecommendType === '0'">
+              <template v-if="data.auto_recommend_type === '0'">
                 <div class="goodsNum">
                   <span>{{$t('commodity.quantityOfCommodities')}}：</span>
                   <el-select
@@ -797,7 +797,7 @@ export default {
       brandBackData: [], // 选择商品品牌弹窗回显数据
       labelBackData: [], // 选择商品标签弹窗回显数据
       BusClassBackData: [], // 商家分类、平台分类回显
-      autoRecommendType: '0'// 推荐类别 0店铺药品 | 1我的处方药
+      auto_recommend_type: '0'// 推荐类别 0店铺药品 | 1我的处方药
     }
   },
   watch: {
@@ -833,8 +833,8 @@ export default {
             let d = this.handleToTransformationRangeData(turnToString.goods_area)
             getModulesData.goods_area = d
             // 赋值
-            if (!turnToString.autoRecommendType) turnToString.autoRecommendType = '0'
-            if (!getModulesData.autoRecommendType) getModulesData.autoRecommendType = '0'
+            if (!turnToString.auto_recommend_type) turnToString.auto_recommend_type = '0'
+            if (!getModulesData.auto_recommend_type) getModulesData.auto_recommend_type = '0'
             Object.keys(turnToString).forEach((item, index) => { // 将数据赋值给当前页面数据池
               this.$set(this.data, item, getModulesData[item])
             })
@@ -1871,7 +1871,7 @@ export default {
                 text-decoration: underline;
               }
             }
-            .autoRecommendType {
+            .auto_recommend_type {
               /deep/ .el-radio {
                 padding-top: 8px;
               }
