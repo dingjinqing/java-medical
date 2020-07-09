@@ -34,8 +34,8 @@ public class AdminDepartmentController extends AdminBaseController{
      * @param parentId
      * @return
      */
-    @PostMapping("/api/admin/doctor/department/child/list")
-    public JsonResult departmentListByParentId(@RequestBody Integer parentId) {
+    @GetMapping("/api/admin/doctor/department/child/list/{parentId}")
+    public JsonResult departmentListByParentId(@PathVariable Integer parentId) {
         List<DepartmentListVo> departmentList = shop().departmentService.listDepartmentsByParentId(parentId);
         return this.success(departmentList);
     }

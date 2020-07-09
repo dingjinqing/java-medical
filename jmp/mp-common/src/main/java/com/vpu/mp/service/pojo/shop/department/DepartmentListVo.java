@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.department;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import lombok.Data;
 
@@ -32,4 +33,5 @@ public class DepartmentListVo {
      * 是否叶子节点
      */
     private byte isLeaf;
+    private List<DepartmentListVo> childDepartmentList;
 }

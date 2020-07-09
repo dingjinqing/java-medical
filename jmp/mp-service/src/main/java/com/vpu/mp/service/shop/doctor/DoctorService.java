@@ -21,8 +21,8 @@ public class DoctorService extends ShopBaseService {
     public PageResult<DoctorOneParam> getDoctorList(DoctorListParam param) {
         PageResult<DoctorOneParam> doctorList = doctorDao.getDoctorList(param);
         for (DoctorOneParam list : doctorList.dataList) {
-            List<DepartmentOneParam> departmentList = doctorDao.getDepartmentsByDoctorId(list.getId());
-            list.setDepartmentList(departmentList);
+            List<String> departmentList = doctorDao.getDepartmentNamesByDoctorId(list.getId());
+            list.setDepartmentNames(departmentList);
         }
 
         return doctorList;
