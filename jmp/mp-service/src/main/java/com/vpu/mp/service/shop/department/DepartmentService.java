@@ -23,9 +23,6 @@ public class DepartmentService extends ShopBaseService {
 
     public List<DepartmentListVo> listDepartmentsByParentId(Integer departmentId){
         List<DepartmentListVo> departmentList = departmentDao.listDepartmentByParentId(departmentId);
-        for (DepartmentListVo list : departmentList) {
-
-        }
         return departmentList;
     }
 

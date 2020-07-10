@@ -120,11 +120,11 @@ public class DepartmentDao extends ShopBaseDao {
     public List<DepartmentListVo> listDepartmentByParentId(Integer departmentId) {
 
         if (ROOT_ID.equals(departmentId)) {
-            List<DepartmentListVo> departmentList = db().select().from(DEPARTMENT).where(DEPARTMENT.PARENT_ID.eq(departmentId))
+            List<DepartmentListVo> departmentList = db().select().from(DEPARTMENT)
                 .fetch().into(DepartmentListVo.class);
             return departmentList;
         } else {
-            List<DepartmentListVo> departmentList = db().select().from(DEPARTMENT)
+            List<DepartmentListVo> departmentList = db().select().from(DEPARTMENT).where(DEPARTMENT.PARENT_ID.eq(departmentId))
                 .fetch().into(DepartmentListVo.class);
             return departmentList;
         }
