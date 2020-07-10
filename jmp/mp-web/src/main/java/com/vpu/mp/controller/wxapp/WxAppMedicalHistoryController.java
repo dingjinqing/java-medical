@@ -5,6 +5,7 @@ import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryListParam;
 import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryPageInfoParam;
 import com.vpu.mp.service.shop.medicine.MedicalHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,7 +25,7 @@ public class WxAppMedicalHistoryController extends WxAppBaseController {
      * @return JsonResult
      */
     @RequestMapping("/result")
-    public JsonResult listPageResult(MedicalHistoryListParam medicalHistoryListParam) {
+    public JsonResult listPageResult(@RequestBody MedicalHistoryListParam medicalHistoryListParam) {
         return success(shop().medicalHistoryService.listPageResult(medicalHistoryListParam));
     }
 
@@ -34,7 +35,7 @@ public class WxAppMedicalHistoryController extends WxAppBaseController {
      * @return JsonResult
      */
     @RequestMapping("/list")
-    public JsonResult getHistoryInfo(MedicalHistoryPageInfoParam medicalHistoryPageInfoParam) {
+    public JsonResult getHistoryInfo(@RequestBody MedicalHistoryPageInfoParam medicalHistoryPageInfoParam) {
         return success(shop().medicalHistoryService.getPageInfo(medicalHistoryPageInfoParam));
     }
 }
