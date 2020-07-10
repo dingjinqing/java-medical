@@ -586,6 +586,20 @@ public class OrderConstant {
      */
     /**申请售后时间*/
     public static final byte OQSR_APPLY_RETURN = 1;
+    //*********药品状态*********//
+	/**
+	 * 未审核
+	 */
+	public static final byte MEDICAL_AUDIT_DEFAULT = 0;
+	/**
+	 * 审核通过
+	 */
+	public static final byte MEDICAL_AUDIT_PASS = 1;
+	/**
+	 * 审核未通过
+	 */
+	public static final byte MEDICAL_AUDIT_NOT_PASS = 2;
+
 
 
     /**对外接口 start*/
