@@ -5,6 +5,8 @@ import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryListParam;
 import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryListVo;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
+import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryPageInfoParam;
+import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryPageInfoVo;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Repository;
@@ -34,14 +36,27 @@ public class MedicalHistoryDao extends ShopBaseDao {
     }
 
     /**
-     * 病历表分页查询
-     * @param medicalHistoryListParam 病历表入参
-     * @return getPageResult
+     * 病历详情分页查询
+     *
+     * @param medicalHistoryListParam 病历详情入参
+     * @return PageResult<MedicalHistoryListVo>
      */
     public PageResult<MedicalHistoryListVo> getListPageResult(MedicalHistoryListParam medicalHistoryListParam) {
         SelectConditionStep<Record> and = db().select().from(MEDICAL_HISTORY)
             .where(MEDICAL_HISTORY.ID.eq(medicalHistoryListParam.getPatientId())
-            .and(MEDICAL_HISTORY.IS_DELETE.eq(DelFlag.NORMAL_VALUE)));
+                .and(MEDICAL_HISTORY.IS_DELETE.eq(DelFlag.NORMAL_VALUE)));
         return getPageResult(and, medicalHistoryListParam, MedicalHistoryListVo.class);
+    }
+
+    /**
+     * 病历表列表查询
+     * @param medicalHistoryPageInfoParam 病历表列表入参
+     * @return PageResult<MedicalHistoryPageInfoVo>
+     */
+    public PageResult<MedicalHistoryPageInfoVo> getPageInfo(MedicalHistoryPageInfoParam medicalHistoryPageInfoParam) {
+        SelectConditionStep<Record> and = db().select().from(MEDICAL_HISTORY)
+            .where(MEDICAL_HISTORY.ID.eq(medicalHistoryPageInfoParam.getPatientId())
+                .and(MEDICAL_HISTORY.IS_DELETE.eq(DelFlag.NORMAL_VALUE)));
+        return getPageResult(and, medicalHistoryPageInfoParam, MedicalHistoryPageInfoVo.class);
     }
 }
