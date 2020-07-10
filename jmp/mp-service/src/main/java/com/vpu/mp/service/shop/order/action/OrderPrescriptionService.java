@@ -7,13 +7,11 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
-import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionOrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionInfoVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
@@ -25,13 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * 订单处方处理类
@@ -118,8 +112,9 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
      */
     private void orderGoodsAuditDefault(Map<String, PrescriptionOrderGoodsVo> prescriptionMap, OrderGoodsDo orderGoodsDo, GoodsMedicalInfoDo medicalInfo) {
         if (orderGoodsDo.getMedicalAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_DEFAULT)){
+            //todo  订单表增加患者字段,下单时绑定患者id
             PrescriptionVo prescriptionVo = prescriptionService
-                    .getByGoodsInfo(orderGoodsDo.getGoodsId(), medicalInfo.getGoodsCommonName(), medicalInfo.getGoodsQualityRatio(), medicalInfo.getGoodsProductionEnterprise());
+                    .getByGoodsInfo(orderGoodsDo.getGoodsId(), 1, medicalInfo.getGoodsCommonName(), medicalInfo.getGoodsQualityRatio(), medicalInfo.getGoodsProductionEnterprise());
             //处方信息
             if (prescriptionVo != null) {
                 PrescriptionOrderGoodsVo pog =new PrescriptionOrderGoodsVo();

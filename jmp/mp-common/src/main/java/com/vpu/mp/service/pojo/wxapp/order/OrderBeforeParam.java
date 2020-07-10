@@ -122,6 +122,10 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
      * 处方药关联处方校验 0不校验 1 通过 2不通过
      */
     private Byte checkPrescriptionStatus;
+    /**
+     * 患者id
+     */
+    private Integer  patientId;
 
     /**
 	 * 商品参数

@@ -66,7 +66,7 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
             if (medicalInfo != null&&medicalInfo.getIsRx().equals(BaseConstant.YES)) {
                 goods.setMedicalInfo(medicalInfo);
                 PrescriptionVo prescriptionVo = prescriptionService
-                        .getByGoodsInfo(goods.getGoodsId(), medicalInfo.getGoodsCommonName(), medicalInfo.getGoodsQualityRatio(), medicalInfo.getGoodsProductionEnterprise());
+                        .getByGoodsInfo(goods.getGoodsId(),param.getPatientId(), medicalInfo.getGoodsCommonName(), medicalInfo.getGoodsQualityRatio(), medicalInfo.getGoodsProductionEnterprise());
                 //处方信息
                 if (prescriptionVo != null) {
                     prescriptionList.add(prescriptionVo);
