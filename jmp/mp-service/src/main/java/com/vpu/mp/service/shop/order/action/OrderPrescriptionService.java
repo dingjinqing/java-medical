@@ -47,7 +47,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
 
     @Override
     public OrderServiceCode getServiceCode() {
-        return OrderServiceCode.REMIND;
+        return OrderServiceCode.PRESCRIPTION;
     }
 
     /**
