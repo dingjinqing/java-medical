@@ -27,7 +27,7 @@ import javax.annotation.Generated;
 @Data
 public class OrderGoodsDo implements Serializable {
 
-    private static final long serialVersionUID = 775235510;
+    private static final long serialVersionUID = -389068984;
 
     private Integer    recId;
     private Integer    mainRecId;
@@ -77,6 +77,9 @@ public class OrderGoodsDo implements Serializable {
     private Timestamp  createTime;
     private Timestamp  updateTime;
     private Integer    purchaseId;
+    private String     prescriptionOldNo;
     private String     prescriptionNo;
+    private Byte       medicalAuditStatus;
+    private Timestamp  auditTime;
 
 }

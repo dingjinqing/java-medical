@@ -93,7 +93,8 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
                 }
             }
         }
-        //处方单号去重
+
+
 
         return null;
     }

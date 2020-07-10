@@ -149,6 +149,10 @@ public class OrderBeforeVo {
 
     /*******处方列表*************/
     private List<PrescriptionVo> prescriptionList;
+    /**
+     * 处方药关联处方校验 0不校验 1 通过 2不通过
+     */
+    private Byte checkPrescriptionStatus;
 
 
     /**

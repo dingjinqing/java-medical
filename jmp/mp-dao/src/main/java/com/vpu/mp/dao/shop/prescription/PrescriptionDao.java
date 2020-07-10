@@ -105,7 +105,7 @@ public class PrescriptionDao extends ShopBaseDao {
      * @param goodsId 商品id
      * @return
      */
-    public PrescriptionVo getValidByGoodsId(Integer goodsId) {
+    public PrescriptionVo getValidByGoodsId(Integer goodsId,Boolean vaildTime) {
         return db().select(PRESCRIPTION.asterisk())
                 .from(PRESCRIPTION_ITEM)
                 .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_NO.eq(PRESCRIPTION_ITEM.PRESCRIPTION_NO))

@@ -2384,7 +2384,7 @@ CREATE TABLE `b2c_order_action` (
 )COMMENT='订单操作表 b2c_order_action';
 
 
-
+-- 订单商品
 CREATE TABLE `b2c_order_goods` (
   `rec_id` mediumint(8) NOT NULL AUTO_INCREMENT,
   `main_rec_id` mediumint(8) NOT NULL DEFAULT '0' COMMENT '主订单rec_id',
@@ -2434,7 +2434,10 @@ CREATE TABLE `b2c_order_goods` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   `purchase_id` int(11) NOT NULL DEFAULT 0 COMMENT '加价购活动id',
+  `prescription_old_no` varchar(64)   NOT NULL DEFAULT '' COMMENT '老处方项目明细号码（可根据此字段反查批次号）',
   `prescription_no` varchar(64)   NOT NULL DEFAULT '' COMMENT '处方项目明细号码（可根据此字段反查批次号）',
+  `medical_audit_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '药品审核状态 0未审核 1审核通过 2审核不通过',
+  `audit_time`timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '药品审核时间',
   PRIMARY KEY (`rec_id`),
   KEY `order_id` (`order_id`),
   KEY `order_sn` (`order_sn`),

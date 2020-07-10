@@ -74,7 +74,7 @@ public class PrescriptionService extends ShopBaseService {
      * @return 处方明细
      */
     public PrescriptionVo getByGoodsInfo(Integer goodsId, String goodsCommonName, String goodsQualityRatio,String productionEnterprise) {
-        PrescriptionVo prescriptionItem = prescriptionDao.getValidByGoodsId(goodsId);
+        PrescriptionVo prescriptionItem = prescriptionDao.getValidByGoodsId(goodsId,true);
         if (prescriptionItem==null){
             prescriptionItem=  prescriptionDao.getValidByCommonNameAndQualityRatio(goodsCommonName,goodsQualityRatio,productionEnterprise);
         }
