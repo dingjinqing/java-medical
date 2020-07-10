@@ -54,9 +54,9 @@ public class WxAppAuthInterceptor extends HandlerInterceptorAdapter {
 
 		WxAppSessionUser user = wxAppAuth.user();
 		if (user == null) {
-			errorResponse(request, response, URL_LOGIN,
-					(new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED));
-			return false;
+			return true;
+//			errorResponse(request, response, URL_LOGIN,
+//					(new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED));
 		}
 		databaseManager.switchShopDb(wxAppAuth.shopId());
 		return true;
