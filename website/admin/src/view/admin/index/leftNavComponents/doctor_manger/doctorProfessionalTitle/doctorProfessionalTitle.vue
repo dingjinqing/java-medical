@@ -100,10 +100,10 @@
                 style="color: #5A8BFF;margin-right:10px;cursor: pointer;"
                 @click="removeCatergory(scope.row)"
               >{{$t('pageClassification.remove')}}</a>
-              <a
+              <!-- <a
                 style="color: #5A8BFF;cursor: pointer;"
                 @click="jumpCatergory(scope.row, $event)"
-              >查看详情</a>
+              >查看详情</a> -->
             </template>
           </el-table-column>
 

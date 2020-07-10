@@ -34,58 +34,6 @@
             style="width: 170px;"
           />
         </el-form-item>
-        <el-form-item
-          class="fixBug"
-          label="科室优先级："
-        >
-          <el-input-number
-            :min="1"
-            :max="100"
-            :step="1"
-            step-strictly
-            @change="firstChanged"
-            v-model="goodsSortDataFirst.firstBind"
-            size="small"
-            style="width: 170px;"
-          />
-          <span class="inputTip">可填写1到100间的整数，数字越大前端排列顺序越靠前。优先级重复，则按照科室添加时间排序，添加越早越靠前排列</span>
-        </el-form-item>
-        <el-form-item label="科室头图：">
-          <img
-            v-if="goodsSortDataFirst.sortImgObj === null"
-            @click="chooseSortImg"
-            style=" display:block;width: 230px;height: 90px;cursor:pointer;"
-            :src="$imageHost+'/image/admin/add_simple.png'"
-          />
-          <div
-            v-else
-            style="width: 230px;height: 90px;position: relative;"
-            @click="chooseSortImg"
-          >
-            <img
-              style="width: 100%;height: 100%;cursor: pointer;"
-              :src="goodsSortDataFirst.sortImgObj.imgUrl"
-            />
-            <div style="position:absolute;bottom:0px;width:100%;text-align:center;color:#fff;background-color: rgba(0,0,0,0.5);cursor: pointer;">{{$t('goodsSorts.changeIcon')}}</div>
-            <span
-              @click.stop="deleteSortImg"
-              class="deleteIcon"
-            >×</span>
-          </div>
-          <span class="inputTip">显示在科室页顶部，不填写则不显示，建议尺寸510*200</span>
-          <span style="font-size: 14px;color: #666;">{{$t('goodsSorts.goodsSortHeadImgLink')}}：</span>
-          <el-input
-            v-model="goodsSortDataFirst.imgLink"
-            :readonly="true"
-            size="small"
-            style="width: 170px;"
-          />
-          <el-button
-            @click="chooseImgLink"
-            size="small"
-            style="margin-left: 5px;color: #666666;"
-          >{{$t('goodsSorts.addHeadImgLink')}}</el-button>
-        </el-form-item>
       </el-form>
       <!-- 二级科室表单 -->
       <el-form
@@ -142,43 +90,6 @@
             style="width: 170px;"
           />
         </el-form-item>
-        <el-form-item label="科室优先级：">
-          <el-input-number
-            :min="1"
-            :max="100"
-            :step="1"
-            step-strictly
-            @change="firstChanged"
-            v-model.number="goodsSortDataSecond.firstBind"
-            size="small"
-            style="width: 170px;"
-          />
-          <span class="inputTip">可填写1到100间的整数，数字越大前端排列顺序越靠前。优先级重复，则按照科室添加时间排序，添加越早越靠前排列</span>
-        </el-form-item>
-        <el-form-item
-          label="科室图标："
-          prop="sortImg"
-        >
-          <div style="display: flex;justify-content: left;align-items: center;line-height: 20px;">
-            <div
-              style="position: relative;margin: 0px 10px;height: 70px;cursor: pointer;"
-              @click="chooseSortImg"
-            >
-              <img
-                v-if="goodsSortDataSecond.sortImgObj === null"
-                :src="$imageHost+'/image/admin/sort_moren.png'"
-                style="width: 70px;height: 70px;"
-              >
-              <img
-                v-else
-                :src="goodsSortDataSecond.sortImgObj.imgUrl"
-                style="width: 70px;height: 70px;"
-              >
-              <div style="position:absolute;bottom:0px;width:100%;text-align:center;color:#fff;background-color: rgba(0,0,0,0.5);">{{$t('goodsSorts.changeIcon')}}</div>
-            </div>
-            <span style="align-self: flex-end;">150*140</span>
-          </div>
-        </el-form-item>
       </el-form>
     </div>
     <div class="contentFooter">
@@ -189,17 +100,17 @@
       >{{$t('goodsSorts.save')}}</el-button>
     </div>
     <!--图片dialog-->
-    <ImageDialog
+    <!-- <ImageDialog
       :tuneUp="imgDialogShow"
       pageIndex='pictureSpace'
       :imageSize="[imgWidth,imgHeight]"
       @handleSelectImg='imgDialogSelectedCallback'
-    />
+    /> -->
     <!--链接dialog-->
-    <LinkDialog
+    <!-- <LinkDialog
       :tuneUpSelectLink="linkDialogShow"
       @selectLinkPath="imgLinkDialogSelectedCallback"
-    />
+    /> -->
   </div>
 </template>
 
