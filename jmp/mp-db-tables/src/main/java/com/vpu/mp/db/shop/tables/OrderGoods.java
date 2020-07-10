@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderGoods extends TableImpl<OrderGoodsRecord> {
 
-    private static final long serialVersionUID = -1474039149;
+    private static final long serialVersionUID = -114430433;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_order_goods</code>
@@ -299,9 +299,24 @@ public class OrderGoods extends TableImpl<OrderGoodsRecord> {
     public final TableField<OrderGoodsRecord, Integer> PURCHASE_ID = createField("purchase_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "加价购活动id");
 
     /**
+     * The column <code>mini_shop_471752.b2c_order_goods.prescription_old_no</code>. 老处方项目明细号码（可根据此字段反查批次号）
+     */
+    public final TableField<OrderGoodsRecord, String> PRESCRIPTION_OLD_NO = createField("prescription_old_no", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "老处方项目明细号码（可根据此字段反查批次号）");
+
+    /**
      * The column <code>mini_shop_471752.b2c_order_goods.prescription_no</code>. 处方项目明细号码（可根据此字段反查批次号）
      */
     public final TableField<OrderGoodsRecord, String> PRESCRIPTION_NO = createField("prescription_no", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "处方项目明细号码（可根据此字段反查批次号）");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_goods.medical_audit_status</code>. 药品审核状态 0未审核 1审核通过 2审核不通过
+     */
+    public final TableField<OrderGoodsRecord, Byte> MEDICAL_AUDIT_STATUS = createField("medical_audit_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "药品审核状态 0未审核 1审核通过 2审核不通过");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_goods.audit_time</code>. 药品审核时间
+     */
+    public final TableField<OrderGoodsRecord, Timestamp> AUDIT_TIME = createField("audit_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "药品审核时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_order_goods</code> table reference

@@ -1,27 +1,27 @@
 <template>
-  <div class="allGoodsSort">
-    <allGoodsSortHeaderTab :tabIndex="0" />
+  <div class="allDepartment">
+    <allDepartmentHeaderTab :tabIndex="0" />
     <div class="goodsSortForm">
       <el-button
         type="primary"
         size="small"
-        @click="addGoodsSortClicked"
+        @click="addDepartmentClicked"
       >添加科室</el-button>
     </div>
     <div>
       <el-table
         class="version-manage-table"
         header-row-class-name="tableClss"
-        :data="goodsSortData"
+        :data="departmentData"
         border
         style="width: 100%"
       >
         <el-table-column
-          align="left"
+          align="center"
           label="科室名称"
         >
-          <template slot-scope="{row,$index}">
-            <template v-if="row.level === 0">
+          <template v-slot="{row,$index}">
+            <template v-if="row.isLeaf === 0 && row.level === 1">
               <span
                 v-if="!row.open"
                 class="collapseIcon el-icon-folder-add"
@@ -32,151 +32,144 @@
                 class="collapseIcon el-icon-folder-remove"
                 @click="collapseIconClicked(row,$index)"
               ></span>
-              {{row.sortName}}
+              <span class="n-bold"> {{row.name}}</span>
+
+            </template>
+              <template v-else-if="row.level === 1">
+              <span class="collapseTab" style='width:48px;'></span>
+              {{row.name}}
             </template>
             <template v-else>
               <span class="collapseTab"></span>
-              {{row.sortName}}
+              <span class="n-bold"> {{row.name}}</span>
             </template>
           </template>
         </el-table-column>
+
         <el-table-column
           align="center"
-          label="科室图标"
+          label="操作"
         >
-          <template slot-scope="{row}">
-            <div style="height: 50px;">
-              <img
-                v-if="row.sortImg"
-                :src="row.sortImg"
-                style="height: 50px;min-width: 160px;"
-              />
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="科室链接"
-          prop="imgLink"
-        />
-        <el-table-column
-          align="center"
-          label="科室优先级"
-          prop="first"
-        />
-        <el-table-column
-          align="center"
-          label="添加时间"
-          prop="createTime"
-        />
-        <el-table-column
-          align="center"
-          :label="$t('goodsSorts.goodsSortOperate')"
-        >
-          <template slot-scope="{row}">
+          <template v-slot="scope">
             <el-tooltip
-              :content="$t('goodsSorts.edit')"
+              content="编辑"
               placement="top"
             >
               <span
                 class="iconfont iconbianji"
-                @click="editGoodsSortClicked(row)"
+                @click="editDepartmentClicked(scope.row)"
               ></span>
             </el-tooltip>
             <el-tooltip
-              :content="$t('goodsSorts.delete')"
+              content="删除"
               placement="top"
             >
               <span
                 class="iconfont iconshanchu2"
-                @click="deleteGoodsSortClicked(row)"
+                @click="deleteDepartmentClicked(scope.row)"
               ></span>
             </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="handleQuery"
+      />
     </div>
   </div>
 </template>
 
 <script>
 // 导入api
-import { getGoodsSortList, deleteGoodsSort } from '@/api/admin/goodsManage/goodsSortManagement/goodsSortManagement'
+import { getDepartmentList, getBatchDepartmentList, deleteDepartment } from '@/api/admin/doctorManage/allDepartment/departmentManagement.js'
 // 组件导入
-import allGoodsSortHeaderTab from './officesHeaderTab'
-// 工具函数导入
-import { convertDataFromArrayToTree } from '@/util/goodsSortCatUtil'
+import allDepartmentHeaderTab from './officesHeaderTab'
+
+import pagination from '@/components/admin/pagination/pagination.vue'
 export default {
-  name: 'allGoodsSort',
+  name: 'allDepartment',
   components: {
-    allGoodsSortHeaderTab
+    allDepartmentHeaderTab, pagination
   },
   data () {
     return {
-      goodsSortData: []
+      departmentData: [],
+      pageParams: {
+        pageRows: 3,
+        currentPage: 1
+      },
+      requestParams: {
+        keywords: null,
+        pageRows: 3,
+        currentPage: 1
+      }
     }
   },
   methods: {
-    addGoodsSortClicked () {
+
+    // 查询
+    handleQuery () {
+      this.loading = true
+      let params = Object.assign({}, this.requestParams, this.pageParams)
+      getDepartmentList(params).then(res => {
+        this.loading = false
+        console.log(res)
+        this.pageParams = res.content.page
+        this.requestParams.pageRows = res.content.page.pageRows
+        this.requestParams.currentPage = res.content.page.currentPage
+        this.departmentData = res.content.dataList
+      }).catch(err => {
+        this.loading = false
+        console.log(err)
+      })
+    },
+    addDepartmentClicked () {
       this.$router.push({ name: 'addOffices' })
       console.log(this.$router)
     },
     collapseIconClicked (row, $index) {
       row.open = !row.open
-      if (row.open) {
-        console.log(this.goodsSortData)
-        console.log(this.goodsSortData[$index].children)
-        this.goodsSortData.splice($index + 1, 0, ...this.goodsSortData[$index].children)
-        console.log(this.goodsSortData)
-      } else {
-        this.goodsSortData.splice($index + 1, this.goodsSortData[$index].children.length)
-      }
+      let id = row.id
+      getBatchDepartmentList(id).then(res => {
+        console.log(res)
+        if (row.open) {
+          console.log(this.departmentData)
+          this.departmentData.splice($index + 1, 0, ...res.content)
+          console.log(this.departmentData)
+        } else {
+          this.departmentData.splice($index + 1, res.content.length)
+        }
+      }).catch(err => console.log(err))
     },
-    /* 修改分类 */
-    editGoodsSortClicked (row) {
-      this.$router.push({ name: 'updateOffices', params: { sortId: row.sortId } })
+    /* 修改科室 */
+    editDepartmentClicked (row) {
+      this.$router.push({ name: 'updateOffices', params: { parentId: row.parentId } })
     },
-    /* 删除商品分类 */
-    deleteGoodsSortClicked (row) {
-      let deleteMsg = row.level === 0 ? this.$t('goodsSorts.goodsSortDeleteMsg') : this.$t('goodsSorts.goodsSortDeleteSecondMsg')
-      this.$confirm(deleteMsg, this.$t('goodsSorts.goodsSortDeleteTip'), {
-        confirmButtonText: this.$t('goodsSorts.ok'),
-        cancelButtonText: this.$t('goodsSorts.cancel'),
+    /* 删除商品科室 */
+    deleteDepartmentClicked (row) {
+      let deleteMsg = row.level === 0 ? '删除一级分类，会删除该分类下的所有二级分类，确定删除？' : '确定删除？'
+      this.$confirm(deleteMsg, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteGoodsSort(row.sortId).then(res => {
-          this._fetchGoodsSortData()
+        deleteDepartment(row.parentId).then(res => {
+          this.handleQuery()
         })
       })
-    },
-    /* 获取商品分类 */
-    _fetchGoodsSortData () {
-      getGoodsSortList({ type: 0 }).then(res => {
-        this.goodsSortData = this._disposeGoodsSortData(res.content, 'sortId')
-      })
-    },
-    /* 处理平台分类数据列表为树形结构 */
-    _disposeGoodsSortData (goodsSorts) {
-      let treeArray = convertDataFromArrayToTree(goodsSorts, 'sortId')
-      treeArray.forEach(treeNode => {
-        treeNode.open = false
-        if (treeNode.children === undefined) {
-          treeNode.children = []
-        }
-      })
-      return treeArray
     }
   },
   mounted () {
     this.langDefault()
-    this._fetchGoodsSortData()
+    this.handleQuery()
   }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/aliIcon/iconfont.scss';
-.allGoodsSort {
+.allDepartment {
   .goodsSortForm {
     margin: 10px 0px;
   }
@@ -189,7 +182,7 @@ export default {
   }
   .collapseTab {
     display: inline-block;
-    width: 60px;
+    width: 120px;
   }
   .operateSpan {
     font-size: 22px;
@@ -207,6 +200,9 @@ export default {
   .iconfont {
     font-size: 22px;
     color: #5a8bff;
+  }
+  .n-bold{
+    font-weight: 800;
   }
 }
 </style>

@@ -55,13 +55,23 @@ public class PrescriptionDao extends ShopBaseDao {
      * @param prescriptionNo
      * @return
      */
-    public PrescriptionInfoVo getByPrescriptionNo(String prescriptionNo) {
+    public PrescriptionInfoVo getInfoByPrescriptionNo(String prescriptionNo) {
          return db().select(PRESCRIPTION.PRESCRIPTION_NO,PRESCRIPTION.PATIENT_TREATMENT_NO,
                  PRESCRIPTION.PATIENT_NAME,PRESCRIPTION.PATIENT_AGE,PRESCRIPTION.PATIENT_SEX,PRESCRIPTION.DEPARTMENT_NAME,
                  PRESCRIPTION.DIAGNOSIS_NAME,PRESCRIPTION.PHARMACIST_NAME,PRESCRIPTION.PRESCRIPTION_CREATE_TIME)
                  .from(PRESCRIPTION)
                  .where(PRESCRIPTION.PRESCRIPTION_NO.eq(prescriptionNo))
                  .fetchAnyInto(PrescriptionInfoVo.class);
+    }
+    /**
+     * 获取
+     * @param prescriptionNo
+     * @return
+     */
+    public PrescriptionVo getDoByPrescriptionNo(String prescriptionNo){
+        return db().select().from(PRESCRIPTION)
+                .where(PRESCRIPTION.PRESCRIPTION_NO.eq(prescriptionNo))
+                .fetchAnyInto(PrescriptionVo.class);
     }
 
     /**
@@ -105,7 +115,7 @@ public class PrescriptionDao extends ShopBaseDao {
      * @param goodsId 商品id
      * @return
      */
-    public PrescriptionVo getValidByGoodsId(Integer goodsId) {
+    public PrescriptionVo getValidByGoodsId(Integer goodsId ) {
         return db().select(PRESCRIPTION.asterisk())
                 .from(PRESCRIPTION_ITEM)
                 .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_NO.eq(PRESCRIPTION_ITEM.PRESCRIPTION_NO))

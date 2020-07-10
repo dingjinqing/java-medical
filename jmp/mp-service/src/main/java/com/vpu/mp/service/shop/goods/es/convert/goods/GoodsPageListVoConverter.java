@@ -2,18 +2,15 @@ package com.vpu.mp.service.shop.goods.es.convert.goods;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoodsProduct;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoods;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collector;
 
 /**
  * es

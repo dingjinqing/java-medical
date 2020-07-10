@@ -8,6 +8,7 @@ import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
@@ -57,6 +58,7 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
         log.info("药品处方检查-开始");
         List<PrescriptionVo> prescriptionList =new ArrayList<>();
+        Byte checkPrescriptionStatus = PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED;
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             GoodsRecord goodsInfo = goods.getGoodsInfo();
             GoodsMedicalInfoDo medicalInfo = medicalGoodsService.getByGoodsId(goodsInfo.getGoodsId());
@@ -68,9 +70,11 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                 //处方信息
                 if (prescriptionVo != null) {
                     prescriptionList.add(prescriptionVo);
+                    checkPrescriptionStatus = PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_PASS;
                 } else {
                     log.info("{}药品没有找到对应的处方信息", goodsInfo.getGoodsName());
-                    goods.setCheckPrescriptionStatus(CHECK_ORDER_PRESCRIPTION_NO_PASS);
+                    goods.setCheckPrescriptionStatus(PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_PASS);
+                    checkPrescriptionStatus = PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_PASS;
                 }
             }
         }
@@ -79,6 +83,7 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                 .collect(Collectors.collectingAndThen
                         (Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PrescriptionVo::getPrescriptionNo))), ArrayList::new));
         param.setPrescriptionList(prescriptionList);
+        param.setCheckPrescriptionStatus(checkPrescriptionStatus);
         log.info("药品处方检查-结束");
     }
 

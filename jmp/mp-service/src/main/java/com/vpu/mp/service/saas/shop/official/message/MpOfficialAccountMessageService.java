@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.wxapp.subscribe.MsgRecordParam;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountService;
-import com.vpu.mp.service.shop.user.message.msgRecordConfig.MessageRecordType;
+import com.vpu.mp.service.pojo.shop.market.message.msgRecordConfig.MessageRecordType;
 
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpTemplateMsgService;

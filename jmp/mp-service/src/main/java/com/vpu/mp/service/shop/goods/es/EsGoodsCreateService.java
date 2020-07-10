@@ -15,11 +15,11 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.service.foundation.es.EsManager;
 import com.vpu.mp.service.foundation.es.EsUtil;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoods;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.es.goods.product.EsAssemblyProductService;
 import com.vpu.mp.service.shop.goods.es.goods.product.EsGoodsProductCreateService;
-import com.vpu.mp.service.shop.goods.es.goods.product.EsGoodsProductEntity;
+import com.vpu.mp.service.foundation.es.pojo.goods.product.EsGoodsProductEntity;
 
 import lombok.extern.slf4j.Slf4j;
 

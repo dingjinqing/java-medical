@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.prescription;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * @author 孔德成

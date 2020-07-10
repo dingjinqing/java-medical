@@ -102,15 +102,24 @@ public class PrescriptionService extends ShopBaseService {
      * 处方号
      * @param prescriptionNo 处方号
      */
-    public PrescriptionInfoVo getPrescriptionInfo(String prescriptionNo) {
+    public PrescriptionInfoVo getInfoByPrescriptionNo(String prescriptionNo) {
         /**处方号*/
-        PrescriptionInfoVo byPrescription = prescriptionDao.getByPrescriptionNo(prescriptionNo);
+        PrescriptionInfoVo byPrescription = prescriptionDao.getInfoByPrescriptionNo(prescriptionNo);
         if (byPrescription==null){
             return null;
         }
         List<PrescriptionItemInfoVo> prescriptionItemSimpleVos = prescriptionItemDao.listByPrescriptionNo(prescriptionNo);
         byPrescription.setItemList(prescriptionItemSimpleVos);
         return byPrescription;
+    }
+
+    /**
+     * 处方号
+     * @param prescriptionNo 处方号
+     * @return
+     */
+    public PrescriptionVo getDoByPrescriptionNo(String prescriptionNo){
+        return prescriptionDao.getDoByPrescriptionNo(prescriptionNo);
     }
 
     /**

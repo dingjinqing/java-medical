@@ -1,35 +1,16 @@
 package com.vpu.mp.service.shop.goods.es;
 
-import com.google.common.collect.Lists;
 import com.vpu.mp.service.foundation.es.EsManager;
 import com.vpu.mp.service.foundation.es.EsUtil;
-import com.vpu.mp.service.foundation.es.annotation.EsFiled;
-import com.vpu.mp.service.foundation.es.annotation.EsFiledTypeConstant;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
-import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoodsConstant;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.action.admin.indices.alias.Alias;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.GetIndexRequest;
-import org.elasticsearch.common.Strings;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.json.JsonXContent;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.UUID;
 
 /**
