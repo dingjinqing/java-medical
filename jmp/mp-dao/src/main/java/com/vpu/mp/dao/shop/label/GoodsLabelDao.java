@@ -20,8 +20,20 @@ import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
 public class GoodsLabelDao extends ShopBaseDao {
 
     /**
+     * 根据标签id集合查询有效标签信息
+     * @param labelIds
+     * @return
+     */
+    public List<GoodsLabelDo> getLabelByLabelIds(List<Integer> labelIds) {
+        return db().selectDistinct(GOODS_LABEL.asterisk())
+            .from(GOODS_LABEL)
+            .where(GOODS_LABEL.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS_LABEL.ID.in(labelIds)))
+            .fetchInto(GoodsLabelDo.class);
+    }
+
+    /**
      * 获取不同类型的商品标签
-     * @param gatIds 待限制类型id
+     * @param gatIds  待限制类型id
      * @param gtaType 限制的类型
      * @return
      */

@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.shop.sort;
 
+import com.vpu.mp.common.pojo.shop.table.SortDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.sort.MedicalGoodsSortConstant;
 import org.springframework.stereotype.Repository;
@@ -42,12 +43,21 @@ public class SortDao extends ShopBaseDao {
     public List<Integer> getParentSortIds(List<Integer> sortIds) {
         Set<Integer> retIds = new HashSet<>(6);
         do {
-            sortIds =  db().select(SORT.PARENT_ID).from(SORT).where(SORT.SORT_ID.in(sortIds).and(SORT.PARENT_ID.ne(MedicalGoodsSortConstant.ROOT_PARENT)))
+            sortIds = db().select(SORT.PARENT_ID).from(SORT).where(SORT.SORT_ID.in(sortIds).and(SORT.PARENT_ID.ne(MedicalGoodsSortConstant.ROOT_PARENT)))
                 .fetch(SORT.PARENT_ID);
             retIds.addAll(sortIds);
-        }while (sortIds.size()>0);
+        } while (sortIds.size() > 0);
 
         return new ArrayList<>(retIds);
     }
 
+    /**
+     * 根据分类id集合获取分类信息
+     * @param sortIds 分类id集合
+     * @return
+     */
+    public List<SortDo> listSortDosBySortIds(List<Integer> sortIds) {
+        return db().selectFrom(SORT).where(SORT.SORT_ID.in(sortIds))
+            .fetchInto(SortDo.class);
+    }
 }

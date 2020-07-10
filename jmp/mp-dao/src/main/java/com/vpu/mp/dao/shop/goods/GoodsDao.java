@@ -37,6 +37,8 @@ public class GoodsDao extends ShopBaseDao {
     public void insert(GoodsDo goodsDo) {
         GoodsRecord goodsRecord = db().newRecord(GOODS);
         FieldsUtil.assign(goodsDo, goodsRecord);
+        // 临时添加
+        goodsRecord.setShareConfig("{\"shareAction\":1,\"shareDoc\":null,\"shareImgAction\":1,\"shareImgUrl\":null,\"shareImgPath\":null}");
         goodsRecord.insert();
         goodsDo.setGoodsId(goodsRecord.getGoodsId());
     }
@@ -44,6 +46,8 @@ public class GoodsDao extends ShopBaseDao {
     public void update(GoodsDo goodsDo) {
         GoodsRecord goodsRecord = new GoodsRecord();
         FieldsUtil.assign(goodsDo, goodsRecord);
+        // 临时添加
+        goodsRecord.setShareConfig("{\"shareAction\":1,\"shareDoc\":null,\"shareImgAction\":1,\"shareImgUrl\":null,\"shareImgPath\":null}");
         db().executeUpdate(goodsRecord);
     }
 

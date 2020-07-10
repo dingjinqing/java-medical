@@ -14,7 +14,6 @@ public class GoodsMedicalInfoEntity {
     private String goodsAliasName;
     private String goodsQualityRatio;
     private Byte isRx;
-    private String goodsHospitalCode;
     private Byte insuranceFlag;
     private String insuranceCode;
     private String insuranceDatabaseName;

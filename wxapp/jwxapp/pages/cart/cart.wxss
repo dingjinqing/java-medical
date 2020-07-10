@@ -732,8 +732,7 @@ page{
   margin-top: 40rpx;
 }
 .con_img image{
-	width: 250rpx;
-	margin-top: 0px;
+	width: 750rpx;
   border:none;
   vertical-align:middle;
 }

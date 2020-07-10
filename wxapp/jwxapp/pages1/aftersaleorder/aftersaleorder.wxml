@@ -55,7 +55,7 @@
   <!-- 列表无数据 -->
   <view class="no_status" wx:if='{{!order_info.length}}'>
     <view class="order-no">
-      <image class="order-no-img" src="{{imageUrl}}image/wxapp/order-no.png" />
+      <image class="order-no-img" src="{{imageUrl}}image/wxapp/no-order.png" />
     </view>
     <view class="no-zi" style="margin: 0;margin-bottom: 13px;margin-top:20rpx;">{{i18n.$t(localePack,'page1.aftersaleorder.noOrder')}}</view>
   </view>

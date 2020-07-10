@@ -57,7 +57,7 @@ public class GoodsEntity {
     /**
      * 规格组集合
      */
-    private List<SpecEntity> specs;
+    private List<SpecEntity> goodsSpecs;
     /**
      * 规格信息
      */
@@ -97,9 +97,9 @@ public class GoodsEntity {
 
         goodsNumber = goodsNumberSum;
         shopPrice = smallestShopPrice;
-        marketPrice = largestMarketPrice;
-        costPrice = smallestCostPrice;
-        goodsWeight = smallestGoodsWeight;
+        marketPrice = BigDecimal.valueOf(Double.MIN_VALUE).compareTo(largestMarketPrice) == 0 ? null : largestMarketPrice;
+        costPrice = BigDecimal.valueOf(Double.MAX_VALUE).compareTo(smallestCostPrice) == 0 ? null : smallestCostPrice;
+        goodsWeight = BigDecimal.valueOf(Double.MAX_VALUE).compareTo(smallestGoodsWeight) == 0 ? null : smallestGoodsWeight;
     }
 
     /**
@@ -107,7 +107,7 @@ public class GoodsEntity {
      */
     public void calculateSkuPrdSpecsBySpecs() {
         if (!MedicalGoodsConstant.DEFAULT_SKU.equals(isDefaultProduct)) {
-            Map<String, SpecEntity> specNameMap = SpecEntity.mapNameToSpec(specs);
+            Map<String, SpecEntity> specNameMap = SpecEntity.mapNameToSpec(goodsSpecs);
             for (GoodsSpecProductEntity goodsSpecProductEntity : goodsSpecProducts) {
                 goodsSpecProductEntity.calculatePrdSpecs(specNameMap);
             }

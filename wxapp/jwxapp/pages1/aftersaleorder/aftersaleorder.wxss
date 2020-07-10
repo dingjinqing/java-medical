@@ -185,8 +185,8 @@ padding-top: 104rpx;
   padding-top: 50rpx;
 }
 .order-no-img {
-  width:200rpx;
-  height: 200rpx;
+  width:750rpx;
+  height: 448rpx;
   margin: 0 auto;
   display: block
 }

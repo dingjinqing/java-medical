@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -49,6 +51,7 @@ public class GoodsLabelRepository {
      * @param goodsId 商品id
      * @return 标签信息
      */
+    @Deprecated
     public List<GoodsLabelVo> getGoodsPointLabels(Integer goodsId) {
         List<GoodsLabelDo> goodsLabelDos = goodsLabelDao.getLabelByGtaInfo(Collections.singletonList(goodsId), MedicalLabelConstant.GTA_GOODS);
         List<GoodsLabelVo> retList = new ArrayList<>(goodsLabelDos.size());
@@ -66,6 +69,7 @@ public class GoodsLabelRepository {
      * @param sortIds 商家分类集合
      * @return
      */
+    @Deprecated
     public List<GoodsLabelVo> getGoodsNormalLabels(List<Integer> sortIds) {
         List<GoodsLabelDo> sortLabels = goodsLabelDao.getLabelByGtaInfo(sortIds, MedicalLabelConstant.GTA_SORT);
         List<GoodsLabelDo> allLabels = goodsLabelDao.getLabelByGtaInfo(null, MedicalLabelConstant.GTA_ALL);
@@ -80,7 +84,7 @@ public class GoodsLabelRepository {
     }
 
     /**
-     * 根据标签id和标签类型获取对应的gtaId集合,
+     * 根据标签id和标签关联类型获取对应的gtaId集合,
      * type为{@link MedicalLabelConstant#GTA_ALL} 时返回null表示没有匹配项，否则表示存在全局匹配的标签
      * @param labelId
      * @param type
@@ -100,10 +104,53 @@ public class GoodsLabelRepository {
         }
     }
 
-    public List<GoodsLabelAo> listGtaInfos(List<Integer> gtaIds, Byte type) {
-        return null;
+    /**
+     * 获取所有关联了所有商品的标签
+     * @return
+     */
+    public List<GoodsLabelAo> listLabelAoByType(Byte type){
+        List<GoodsLabelCoupleDo> goodsLabelCoupleDos = goodsLabelCoupleDao.listByType(type);
+        List<Integer> labelIds = goodsLabelCoupleDos.stream().map(GoodsLabelCoupleDo::getLabelId).collect(Collectors.toList());
+        List<GoodsLabelDo> goodsLabelDos = goodsLabelDao.getLabelByLabelIds(labelIds);
+        return convertCoupleDoToAo(goodsLabelCoupleDos,goodsLabelDos);
     }
 
+    /**
+     * 根据关联类型和gtaId集合获取标签聚合信息
+     * @param gtaIds
+     * @param type
+     * @return
+     */
+    public List<GoodsLabelAo> listLabelAoByGtaIdsAndType(List<Integer> gtaIds, Byte type) {
+        List<GoodsLabelCoupleDo> goodsLabelCoupleDos = goodsLabelCoupleDao.listByGtaIdsAndType(gtaIds, type);
+        List<Integer> labelIds= goodsLabelCoupleDos.stream().map(GoodsLabelCoupleDo::getLabelId).collect(Collectors.toList());
+        List<GoodsLabelDo> goodsLabelDos = goodsLabelDao.getLabelByLabelIds(labelIds);
+        return convertCoupleDoToAo(goodsLabelCoupleDos,goodsLabelDos);
+    }
+
+    /**
+     * GoodsLabelCoupleDo集合转GoodsLabelAo
+     * @param goodsLabelCoupleDos
+     * @param labelDos
+     * @return
+     */
+    private List<GoodsLabelAo> convertCoupleDoToAo(List<GoodsLabelCoupleDo> goodsLabelCoupleDos, List<GoodsLabelDo> labelDos) {
+        Map<Integer, GoodsLabelDo> labelDoMap = labelDos.stream().collect(Collectors.toMap(GoodsLabelDo::getId, Function.identity(), (x1, x2) -> x1));
+
+        List<GoodsLabelAo> labelAos = new ArrayList<>(goodsLabelCoupleDos.size());
+        for (GoodsLabelCoupleDo goodsLabelCoupleDo : goodsLabelCoupleDos) {
+            GoodsLabelAo ao =new GoodsLabelAo();
+            GoodsLabelDo goodsLabelDo = labelDoMap.get(goodsLabelCoupleDo.getLabelId());
+            if (goodsLabelDo == null) {
+                continue;
+            }
+            ao.setGtaId(goodsLabelCoupleDo.getGtaId());
+            ao.setId(goodsLabelDo.getId());
+            ao.setLabelName(goodsLabelDo.getName());
+            labelAos.add(ao);
+        }
+        return labelAos;
+    }
 
     /**
      * 删除标签关联信息

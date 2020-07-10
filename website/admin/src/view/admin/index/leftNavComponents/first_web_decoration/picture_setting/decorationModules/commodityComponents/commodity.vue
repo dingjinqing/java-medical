@@ -16,7 +16,7 @@
             <div
               class="hiddenTitle"
               :style="data.tit_center==='1'?'justify-content:center':''"
-              v-if="data.goods_module_title!=='0'&&(data.title || data.img_url || data.img_title_url)&&data.autoRecommendType === '0'"
+              v-if="data.goods_module_title!=='0'&&(data.title || data.img_url || data.img_title_url)&&data.auto_recommend_type === '0'"
             >
               <img
                 v-if="data.goods_module_title==='1'&&data.img_url"
@@ -37,7 +37,7 @@
           <!-- 我的处方药标题 -->
           <div
             class="prescription-module-title"
-            v-if="data.autoRecommendType === '1' && data.recommend_type === '0'"
+            v-if="data.auto_recommend_type === '1' && data.recommend_type === '0'"
           >
             <img :src="$imageHost+'/image/wxapp/prescription-icon2.png'" />
             <span>我的处方药</span>

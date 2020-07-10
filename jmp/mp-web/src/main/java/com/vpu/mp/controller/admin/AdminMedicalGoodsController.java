@@ -3,7 +3,10 @@ package com.vpu.mp.controller.admin;
 import cn.hutool.core.util.StrUtil;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.entity.GoodsEntity;
+import com.vpu.mp.service.pojo.shop.goods.param.MedicalGoodsPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.vo.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.vo.GoodsSelectVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -112,5 +115,17 @@ public class AdminMedicalGoodsController extends AdminBaseController{
         GoodsSelectVo goodsSelectVo = shop().medicalGoodsService.getGoodsDetailByGoodsId(goodsId);
 
         return success(goodsSelectVo);
+    }
+
+    /**
+     * 药品分页查询
+     * @param pageListParam 分页信息
+     * @return
+     */
+    @PostMapping("/api/admin/medical/goods/page/list")
+    public JsonResult getGoodsPageList(@RequestBody MedicalGoodsPageListParam pageListParam){
+        PageResult<GoodsPageListVo> goodsPageList = shop().medicalGoodsService.getGoodsPageList(pageListParam);
+
+        return success(goodsPageList);
     }
 }

@@ -35,7 +35,7 @@ export function openGoodsWeightCfg () {
 // 商品新增，发送请求分为有sku和无sku两个示例
 export function addGoodsApi (data) {
   return service({
-    url: `/api/admin/goods/add`,
+    url: `/api/admin/medical/goods/insert`,
     method: 'post',
     data
   })
@@ -43,17 +43,16 @@ export function addGoodsApi (data) {
 // 商品修改
 export function updateGoodsApi (data) {
   return service({
-    url: `/api/admin/goods/update`,
+    url: `/api/admin/medical/goods/update`,
     method: 'post',
     data
   })
 }
 // 商品查询详细信息，
-export function selectGoodsApi (data) {
+export function selectGoodsApi (goodsId) {
   return service({
-    url: `/api/admin/goods/select`,
-    method: 'post',
-    data
+    url: `/api/admin/medical/goods/get/${goodsId}`,
+    method: 'get'
   })
 }
 // 商品名、商品编码、商品规格编码是否已存在

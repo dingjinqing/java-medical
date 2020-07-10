@@ -147,6 +147,7 @@ public class GoodsRepository {
         }
 
         PageResult<GoodsEntity> pageResult = new PageResult<>();
+        pageResult.setPage(goodsDoPageResult.getPage());
         pageResult.setDataList(retGoodsPageList);
 
         return pageResult;

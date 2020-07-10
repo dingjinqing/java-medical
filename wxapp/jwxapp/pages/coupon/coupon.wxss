@@ -126,7 +126,7 @@ page{
   padding-top: 200rpx;
 }
 .no_cou .icon_no image{
-  width: 200rpx;
+  width: 750rpx;
 }
 .no_cou .no_tips{
   margin-top: 30rpx;
