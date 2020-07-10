@@ -30,7 +30,7 @@ public class MedicalHistoryDao extends ShopBaseDao {
      */
     public PageResult<MedicalHistoryListVo> listPageResult(MedicalHistoryListParam param) {
         SelectConditionStep<Record> and = db().select().from(MEDICAL_HISTORY)
-            .where(MEDICAL_HISTORY.ID.eq(param.getPatientId()))
+            .where(MEDICAL_HISTORY.ID.eq(param.getId()))
             .and(MEDICAL_HISTORY.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
         return getPageResult(and, param, MedicalHistoryListVo.class);
     }
@@ -43,7 +43,7 @@ public class MedicalHistoryDao extends ShopBaseDao {
      */
     public PageResult<MedicalHistoryListVo> getListPageResult(MedicalHistoryListParam medicalHistoryListParam) {
         SelectConditionStep<Record> and = db().select().from(MEDICAL_HISTORY)
-            .where(MEDICAL_HISTORY.ID.eq(medicalHistoryListParam.getPatientId())
+            .where(MEDICAL_HISTORY.ID.eq(medicalHistoryListParam.getId())
                 .and(MEDICAL_HISTORY.IS_DELETE.eq(DelFlag.NORMAL_VALUE)));
         return getPageResult(and, medicalHistoryListParam, MedicalHistoryListVo.class);
     }
@@ -55,7 +55,7 @@ public class MedicalHistoryDao extends ShopBaseDao {
      */
     public PageResult<MedicalHistoryPageInfoVo> getPageInfo(MedicalHistoryPageInfoParam medicalHistoryPageInfoParam) {
         SelectConditionStep<Record> and = db().select().from(MEDICAL_HISTORY)
-            .where(MEDICAL_HISTORY.ID.eq(medicalHistoryPageInfoParam.getPatientId())
+            .where(MEDICAL_HISTORY.PATIENT_ID.eq(medicalHistoryPageInfoParam.getPatientId())
                 .and(MEDICAL_HISTORY.IS_DELETE.eq(DelFlag.NORMAL_VALUE)));
         return getPageResult(and, medicalHistoryPageInfoParam, MedicalHistoryPageInfoVo.class);
     }

@@ -15,7 +15,7 @@ import java.util.List;
 public class MedicalHistoryListParam extends BasePageParam {
 
     /**
-     * 患者ID
+     * 病历ID
      */
-    private int patientId;
+    private int id;
 }
