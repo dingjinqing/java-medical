@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserPatientCouple extends TableImpl<UserPatientCoupleRecord> {
 
-    private static final long serialVersionUID = 985246101;
+    private static final long serialVersionUID = -1003030083;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_patient_couple</code>
@@ -71,6 +71,11 @@ public class UserPatientCouple extends TableImpl<UserPatientCoupleRecord> {
      * The column <code>mini_shop_471752.b2c_user_patient_couple.patient_id</code>. 患者id
      */
     public final TableField<UserPatientCoupleRecord, Integer> PATIENT_ID = createField("patient_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "患者id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_patient_couple.is_default</code>.
+     */
+    public final TableField<UserPatientCoupleRecord, Byte> IS_DEFAULT = createField("is_default", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_patient_couple.is_delete</code>.

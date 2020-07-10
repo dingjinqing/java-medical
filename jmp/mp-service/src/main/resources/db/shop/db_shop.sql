@@ -4790,6 +4790,7 @@ create table `b2c_user_patient_couple`(
     `id`   int(11)      not null auto_increment,
     `user_id` int(11) not null comment '用户id',
     `patient_id` int(11) not null comment '患者id',
+    `is_default`    tinyint(1)   not null default '0',
     `is_delete`     tinyint(1)   not null default '0',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',

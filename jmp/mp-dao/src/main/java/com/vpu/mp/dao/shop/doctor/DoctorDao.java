@@ -47,7 +47,12 @@ public class DoctorDao extends ShopBaseDao {
      * @param param
      */
     protected void buildOptions(SelectJoinStep<? extends Record> select, DoctorListParam param) {
-        Timestamp nowDate = new Timestamp(System.currentTimeMillis());
+        if (param.getName() != null) {
+            select.where(DOCTOR.NAME.like(param.getName()));
+        }
+        if (param.getDoctorNo() != null) {
+            select.where(DOCTOR.HOSPITAL_CODE.like(param.getDoctorNo()));
+        }
     }
 
     /**
@@ -113,52 +118,4 @@ public class DoctorDao extends ShopBaseDao {
 //        int count = db().fetchCount(DEPARTMENT, condition);
 //        return count>0;
 //    }
-
-    /**
-     * 医师列表
-     *
-     * @param doctorId
-     * @return
-     */
-    public List<DepartmentOneParam> getDepartmentsByDoctorId(Integer doctorId) {
-        List<DepartmentOneParam> departmentList = db()
-            .select(DEPARTMENT.ID,DEPARTMENT.NAME)
-            .from(DOCTOR_DEPARTMENT_COUPLE)
-            .leftJoin(DEPARTMENT).on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
-            .where(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(doctorId)).and(DOCTOR_DEPARTMENT_COUPLE.IS_DELETE.eq((byte) 0))
-            .fetchInto(DepartmentOneParam.class);
-        return departmentList;
-    }
-
-    /**
-     * 医师科室名集合
-     *
-     * @param doctorId
-     * @return
-     */
-    public List<String> getDepartmentNamesByDoctorId(Integer doctorId) {
-        List<String> departmentNameList = db()
-            .select(DEPARTMENT.NAME)
-            .from(DOCTOR_DEPARTMENT_COUPLE)
-            .leftJoin(DEPARTMENT).on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
-            .where(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(doctorId)).and(DOCTOR_DEPARTMENT_COUPLE.IS_DELETE.eq((byte) 0))
-            .fetchInto(String.class);
-        return departmentNameList;
-    }
-
-    /**
-     * 医师科室名集合
-     *
-     * @param doctorId
-     * @return
-     */
-    public List<Integer> getDepartmentIdsByDoctorId(Integer doctorId) {
-        List<Integer> departmentIdList = db()
-            .select(DEPARTMENT.ID)
-            .from(DOCTOR_DEPARTMENT_COUPLE)
-            .leftJoin(DEPARTMENT).on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
-            .where(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(doctorId)).and(DOCTOR_DEPARTMENT_COUPLE.IS_DELETE.eq((byte) 0))
-            .fetchInto(Integer.class);
-        return departmentIdList;
-    }
 }
