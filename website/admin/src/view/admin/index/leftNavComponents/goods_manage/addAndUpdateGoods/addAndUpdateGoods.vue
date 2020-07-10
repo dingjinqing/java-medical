@@ -357,7 +357,7 @@ export default {
     },
     /* 初始化待修改商品数据 */
     _initDataForUpdate (goodsId) {
-      selectGoodsApi({ goodsId: goodsId }).then(res => {
+      selectGoodsApi(goodsId).then(res => {
         if (res.error !== 0) {
           this.$message.error({
             type: 'error',

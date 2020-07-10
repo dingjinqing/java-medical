@@ -4,7 +4,8 @@
 		<text>我的处方</text>
 		<text class="more">更多</text>
 	</view>
-	<view class="prescription-item" bindtap="handleShowDialog" wx:if="{{m.prescriptionListData.length}}">
+	<block wx:if="{{m.prescriptionListData.length}}">
+		<view class="prescription-item" bindtap="handleShowDialog">
 		<view class="item-title" style="background:#26c4bc url({{imageUrl}}image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 80rpx; ">电子处方1</view>
 		<view class="item-list-content">
 			<view class="item-list">
@@ -27,9 +28,13 @@
       <text class="item-date">日期：2020.06.30</text>
     </view>
 	</view>
-	<view class="no-content" wx:else>
+	</block>
+	<block wx:else>
+		<view class="no-content" >
 		暂无内容
 	</view>
+	</block>
+	
 </view>
 
 <v-prescription-dialog show="{{showPrescription}}" />

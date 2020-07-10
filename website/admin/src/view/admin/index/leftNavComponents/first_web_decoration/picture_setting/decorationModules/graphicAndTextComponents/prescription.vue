@@ -15,10 +15,7 @@
           <span>我的处方</span>
           <span class="more">更多</span>
         </div>
-        <div
-          class="prescription-item"
-          bindtap="handleShowDialog"
-        >
+        <div class="prescription-item">
           <div
             class="item-title"
             :style="'background:#26c4bc url('+$imageHost+'/image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 40px;'"
