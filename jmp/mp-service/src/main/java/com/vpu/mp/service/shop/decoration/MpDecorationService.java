@@ -1022,6 +1022,7 @@ public class MpDecorationService extends ShopBaseService {
         ModulePrescription moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModulePrescription.class);
         PrescriptionListParam prescriptionListParam = new PrescriptionListParam();
         prescriptionListParam.setPageRows((Integer) 3);
+        prescriptionListParam.setPatientId(patientId);
         PageResult<PrescriptionListVo> prescriptionListData = prescriptionService.listPageResult(prescriptionListParam);
         moduleIntegral.setPrescriptionListData(prescriptionListData.getDataList());
         moduleIntegral.setHasMore(prescriptionListData.getPage().getLastPage() > 1);
