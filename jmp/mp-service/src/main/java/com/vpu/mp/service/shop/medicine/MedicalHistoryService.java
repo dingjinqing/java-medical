@@ -24,11 +24,11 @@ public class MedicalHistoryService extends ShopBaseService {
     private MedicalHistoryDao medicalHistoryDao;
 
     /**
-     * 分页查询病历表详情字段
+     * 查询病历表详情字段
      * @return PageResult<MedicalHistoryListVo>
      */
-    public PageResult<MedicalHistoryListVo> listPageResult(MedicalHistoryListParam medicalHistoryListParam){
-        return medicalHistoryDao.getListPageResult(medicalHistoryListParam);
+    public MedicalHistoryListVo getMedicalHistoryDetail(MedicalHistoryListParam medicalHistoryListParam){
+        return medicalHistoryDao.getMedicalHistoryDetail(medicalHistoryListParam);
     }
 
     /**
@@ -36,7 +36,7 @@ public class MedicalHistoryService extends ShopBaseService {
      * @param medicalHistoryPageInfoParam 病历表分页入参
      * @return PageResult<MedicalHistoryPageInfoVo>
      */
-    public PageResult<MedicalHistoryPageInfoVo> getPageInfo(MedicalHistoryPageInfoParam medicalHistoryPageInfoParam){
-        return medicalHistoryDao.getPageInfo(medicalHistoryPageInfoParam);
+    public PageResult<MedicalHistoryPageInfoVo> getMedicalHistoryPageInfo(MedicalHistoryPageInfoParam medicalHistoryPageInfoParam){
+        return medicalHistoryDao.getMedicalHistoryPageInfo(medicalHistoryPageInfoParam);
     }
 }
