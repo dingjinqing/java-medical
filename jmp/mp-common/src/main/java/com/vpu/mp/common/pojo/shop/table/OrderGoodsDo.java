@@ -79,6 +79,9 @@ public class OrderGoodsDo implements Serializable {
     private Integer    purchaseId;
     private String     prescriptionOldNo;
     private String     prescriptionNo;
+    /**
+     * 药品审核状态 0未审核 1审核通过 2审核不通过
+     */
     private Byte       medicalAuditStatus;
     private Timestamp  auditTime;
 

@@ -7,6 +7,9 @@ public class DoctorListParam {
     private Integer nav;
     private Integer currentPage;
     private Integer pageRows;
+    private String name;
+    private String doctorNo;
+    private Integer departmentId;
 
     @Override
     public String toString() {
@@ -14,6 +17,9 @@ public class DoctorListParam {
             "nav=" + nav +
             ", currentPage=" + currentPage +
             ", pageRows=" + pageRows +
+            ", name=" + name +
+            ", doctorNo=" + doctorNo +
+            ", departmentId=" + departmentId +
             '}';
     }
 }

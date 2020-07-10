@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionAuditParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
@@ -23,6 +24,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipPara
 import com.vpu.mp.service.pojo.shop.order.write.operate.verify.verifyParam;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionNoParam;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
@@ -313,12 +315,14 @@ public class AdminOrderController extends AdminBaseController {
 	}
 
 	/**
-	 * 续方
+	 * 续方/审核通过
 	 *  医师根据历史处方和药品开出新的处方
 	 * @return
 	 */
 	@PostMapping("/medical/prescription/continue")
-	public JsonResult continuePrescription(){
+	public JsonResult continuePrescription(@RequestBody @Validated PrescriptionAuditParam param){
+
+
 		return success();
 	}
 

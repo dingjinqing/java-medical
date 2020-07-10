@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.prescription;
 
+import lombok.Data;
+
 import java.util.List;
 
 /**
@@ -7,13 +9,11 @@ import java.util.List;
  * @author 孔德成
  * @date 2020/7/9 14:00
  */
+@Data
 public class PrescriptionQueryVo {
-    /**
-     * 就诊人信息
-     */
 
     /**
      * 处方列表
      */
-    List<OrderPrescriptionVo> list;
+    List<PrescriptionOrderGoodsVo> list;
 }

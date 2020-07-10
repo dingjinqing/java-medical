@@ -1,7 +1,9 @@
 package com.vpu.mp.service.shop.patient;
 
 import com.vpu.mp.common.foundation.util.PageResult;
+import java.util.List;
 import com.vpu.mp.dao.shop.patient.PatientDao;
+import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.patient.PatientListParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Service;
 public class PatientService extends ShopBaseService{
     @Autowired
     protected PatientDao patientDao;
+    @Autowired
+    protected UserPatientCoupleDao userPatientCoupleDao;
     public static final int ZERO = 0;
 
     public PageResult<PatientOneParam> getPatientList(PatientListParam param) {
@@ -38,5 +42,15 @@ public class PatientService extends ShopBaseService{
 
     public PatientOneParam getOneInfo(Integer patientId) {
         return patientDao.getOneInfo(patientId);
+    }
+
+    public List<PatientOneParam> listPatientByUserId (Integer userId) {
+        List<Integer> patientIds = userPatientCoupleDao.listPatientIdsByUser(userId);
+        List<PatientOneParam> patientList = patientDao.listPatientByIds(patientIds);
+        return patientList;
+    }
+
+    public Integer defaultPatientId (Integer userId) {
+        return userPatientCoupleDao.defaultPatientIdByUser(userId);
     }
 }

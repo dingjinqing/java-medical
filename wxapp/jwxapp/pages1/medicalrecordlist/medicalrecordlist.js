@@ -8,6 +8,9 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
+    pageParams: null,
+    dataList: null,
+    patientId: 1
   },
 
   /**
@@ -15,9 +18,28 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
+    this.data.patientId = options.patientId || 1;
+    this.requestList();
   },
-  to_detail () {
-    util.jumpLink('/pages1/medicalrecordinfo/medicalrecordinfo')
+  to_detail (e) {
+    util.jumpLink('/pages1/medicalrecordinfo/medicalrecordinfo?id=' + e.currentTarget.dataset.id)
+  },
+  requestList () {
+    let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
+    util.api('/api/wxapp/medicine/history/list', res => {
+      if (res.error == 0) {
+        console.log(res);
+        let dataList = JSON.stringify(res.content.dataList);
+        dataList = JSON.parse(dataList)
+        console.log(dataList)
+        this.setData({
+          pageParams: res.content.page,
+          ['dataList[' + (parseInt(currentPage) - 1) + ']']: dataList
+        });
+      } else {
+        util.showModal('提示',res.message)
+      }
+    },{currentPage: currentPage, pageRows: 20, patientId: this.data.patientId })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -58,7 +80,12 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    if (this.data.pageParams && this.data.pageParams.currentPage === this.data.pageParams.lastPage )
+      return;
+    this.setData({
+      'pageParams.currentPage': this.data.pageParams.currentPage + 1
+    });
+    this.requestList();
   },
 
   /**
