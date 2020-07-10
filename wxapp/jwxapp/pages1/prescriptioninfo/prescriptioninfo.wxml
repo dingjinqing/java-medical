@@ -39,9 +39,9 @@
             <text class="list-item-dot"></text>
             <view class="list-item-content">治疗建议</view>
           </view>
-          <view class="list_content">
-            <view class="medicine_name">{{prescriptionInfo.itemList.goodsCommonName}}</view>
-            <view class="medicine_spec">用法用量：{{prescriptionInfo.itemList.goodsUseMemo}}</view>
+          <view class="list_content" wx:for='{{prescriptionInfo.itemList}}' wx:key='key'>
+            <view class="medicine_name">{{item.goodsCommonName}}</view>
+            <view class="medicine_spec">用法用量：{{item.goodsQualityRatio}},{{item.goodsUseMemo}}</view>
           </view>
         </view>
       </view>

@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AdminPatientController extends AdminBaseController {
-    @Override
-    protected ShopApplication shop() {
-        return saas.getShopApp(471752);
-    }
+//    @Override
+//    protected ShopApplication shop() {
+//        return saas.getShopApp(471752);
+//    }
     /**
      * 患者列表
      * @param param
@@ -32,7 +32,7 @@ public class AdminPatientController extends AdminBaseController {
      * 根据id获取患者信息
      * @param patientId 患者id
      */
-    @GetMapping("/api/admin/patient/{patientId}")
+    @GetMapping("/api/admin/patient/info/{patientId}")
     public JsonResult getPatient(Integer patientId) {
         if (patientId == null) {
             return fail(JsonResultCode.DOCTOR_DEPARTMENT_ID_IS_NULL);

@@ -10,6 +10,7 @@ import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.sql.Timestamp;
 
 import static com.vpu.mp.db.shop.Tables.PATIENT;
@@ -105,4 +106,10 @@ public class PatientDao extends ShopBaseDao{
 //        int count = db().fetchCount(DEPARTMENT, condition);
 //        return count>0;
 //    }
+
+    public List<PatientOneParam> listPatientByIds (List<Integer> patientIds) {
+        List<PatientOneParam> patientList = db().select().from(PATIENT).where(PATIENT.ID.in(patientIds))
+            .fetch().into(PatientOneParam.class);
+        return patientList;
+    }
 }

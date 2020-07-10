@@ -28,7 +28,8 @@ global.wxPage({
           prescriptionInfo: this.data.prescriptionInfo
         })
       } else {
-
+        util.showModal('提示', res.message)
+        return false
       }
     }, {prescriptionNo: this.data.prescriptionNo})
   },

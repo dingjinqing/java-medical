@@ -124,7 +124,6 @@ page{
 .putong .enen:first-of-type{
   border-top: none;
   margin-top: 0;
-  padding-top: 20rpx;
 }
 .putong .enen:first-of-type .sec_kill_area{
   margin-top: 0
@@ -181,7 +180,7 @@ page{
 .ng_right{
   float: right;
   height: 180rpx;
-  width: 414rpx;
+  width: 400rpx;
   position: relative;
 }
 .ng_goods_name{
@@ -685,7 +684,7 @@ page{
 }
 .normal_goods .del_btn{
   width: 120rpx;
-  height: 220rpx;
+  height: 180rpx;
   color: #fff;
   background: #f66;
   font-size: 26rpx;
