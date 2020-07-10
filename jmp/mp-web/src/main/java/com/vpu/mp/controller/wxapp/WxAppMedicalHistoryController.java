@@ -19,14 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class WxAppMedicalHistoryController extends WxAppBaseController {
 
     /**
-     * 分页显示病历详情
-     *
+     * 病历详情
      * @param medicalHistoryListParam 病历详情入参
      * @return JsonResult
      */
-    @RequestMapping("/result")
-    public JsonResult listPageResult(@RequestBody MedicalHistoryListParam medicalHistoryListParam) {
-        return success(shop().medicalHistoryService.listPageResult(medicalHistoryListParam));
+    @RequestMapping("/detail")
+    public JsonResult MedicalHistoryDetail(@RequestBody MedicalHistoryListParam medicalHistoryListParam) {
+        return success(shop().medicalHistoryService.getMedicalHistoryDetail(medicalHistoryListParam));
     }
 
     /**
@@ -36,6 +35,6 @@ public class WxAppMedicalHistoryController extends WxAppBaseController {
      */
     @RequestMapping("/list")
     public JsonResult getHistoryInfo(@RequestBody MedicalHistoryPageInfoParam medicalHistoryPageInfoParam) {
-        return success(shop().medicalHistoryService.getPageInfo(medicalHistoryPageInfoParam));
+        return success(shop().medicalHistoryService.getMedicalHistoryPageInfo(medicalHistoryPageInfoParam));
     }
 }
