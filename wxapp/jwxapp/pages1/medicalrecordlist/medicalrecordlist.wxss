@@ -52,7 +52,7 @@ page{
   margin-bottom: 26rpx;
 }
 .eline_dot{
-  border: 4rpx solid skyblue;
+  border: 4rpx solid #26C4BC;
   border-radius: 50%;
   height: 14rpx;
   width: 14rpx;
@@ -76,6 +76,7 @@ page{
 }
 .medical_info{
   margin-left: 38rpx;
+  margin-top: 20rpx;
 }
 .medical_info > view{
   margin-top: 20rpx;
