@@ -96,9 +96,7 @@ public class DepartmentService extends ShopBaseService {
         List<DepartmentListVo> listDepartmentTree = departmentDao.listDepartmentByParentId(0);
         for (DepartmentListVo list : listDepartmentTree) {
             if (DepartmentConstant.LEAF.equals(list.getIsLeaf())) {
-                List<DepartmentListVo> listTemp = new ArrayList<>();
-                listTemp.add(list);
-                list.setChildDepartmentList(listTemp);
+                list.setChildDepartmentList(listDepartmentListVo(list));
             } else {
                 List<DepartmentListVo> departmentList = departmentDao.listDepartmentByParentId(list.getId());
                 list.setChildDepartmentList(departmentList);
@@ -106,4 +104,18 @@ public class DepartmentService extends ShopBaseService {
         }
         return listDepartmentTree;
     }
+
+    public List<DepartmentListVo> listDepartmentListVo(DepartmentListVo department){
+        List<DepartmentListVo> listTemp = new ArrayList<>();
+        DepartmentListVo listSingle = new DepartmentListVo();
+        listSingle.setId(department.getId());
+        listSingle.setCode(department.getCode());
+        listSingle.setName(department.getName());
+        listSingle.setIsLeaf(department.getIsLeaf());
+        listSingle.setLevel(department.getLevel());
+        listSingle.setParentId(department.getParentId());
+        listTemp.add(listSingle);
+        return listTemp;
+    }
+
 }
