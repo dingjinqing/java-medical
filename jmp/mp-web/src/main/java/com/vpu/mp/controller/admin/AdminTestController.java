@@ -1,9 +1,6 @@
 package com.vpu.mp.controller.admin;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.websocket.server.PathParam;
 
 import com.vpu.mp.service.shop.task.wechat.WechatTaskService;
 
@@ -20,14 +17,14 @@ import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.saas.shop.ThirdPartyMsgServices;
 import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
-import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
+import com.vpu.mp.service.pojo.shop.market.message.maConfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.wechat.OpenPlatform;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGeKeywordResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;

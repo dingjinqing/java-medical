@@ -1,13 +1,10 @@
 package com.vpu.mp.service.foundation.es.thread;
 
 import com.google.common.collect.Lists;
-import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.saas.SaasApplication;
 import com.vpu.mp.service.shop.ShopApplication;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoods;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

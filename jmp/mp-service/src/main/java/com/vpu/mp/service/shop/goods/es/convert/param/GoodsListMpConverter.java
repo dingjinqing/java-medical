@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.goods.es.convert.param;
 import com.google.common.collect.Lists;
 import com.vpu.mp.service.pojo.shop.goods.es.*;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
-import com.vpu.mp.service.shop.goods.es.goods.EsSearchSource;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsSearchSource;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.util.CollectionUtils;

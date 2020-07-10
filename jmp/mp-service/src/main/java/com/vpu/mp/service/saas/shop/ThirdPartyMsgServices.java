@@ -27,8 +27,8 @@ import com.vpu.mp.service.pojo.saas.shop.ShopChildAccountPojo;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.CanSendVo;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountUserService;
 
 /**

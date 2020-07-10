@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.goods.es.convert.goods;
 
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMp;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoods;
 
 /**
  * esGoods转换

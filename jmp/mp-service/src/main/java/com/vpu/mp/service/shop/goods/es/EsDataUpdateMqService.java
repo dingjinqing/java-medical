@@ -3,16 +3,14 @@ package com.vpu.mp.service.shop.goods.es;
 
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.mq.RabbitConfig;
-import com.vpu.mp.db.shop.tables.GoodsBrand;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.jedis.data.label.MqEsGoodsLabel;
 import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.es.EsGoodsMqParam;
-import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSortService;
-import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
+import com.vpu.mp.service.foundation.es.pojo.goods.label.EsGoodsLabel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

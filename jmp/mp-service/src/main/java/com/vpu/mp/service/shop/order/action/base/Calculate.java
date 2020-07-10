@@ -559,7 +559,7 @@ public class Calculate extends ShopBaseService {
     public OrderMustVo getOrderMust(List<OrderGoodsBo> orderGoods) {
         OrderMustVo must = new OrderMustVo();
         //初始化赋值
-        must.init(trade);
+        must.init(trade.getOrderRealName(), trade.getOrderCid(), trade.getConsigneeRealName(), trade.getConsigneeCid(), trade.getCustom(), trade.getCustomTitle());
         if (OrderConstant.NO == must.isCheck()) {
             return must;
         }
@@ -606,7 +606,7 @@ public class Calculate extends ShopBaseService {
 
     public OrderTerm getTermsofservice() {
         OrderTerm orderTerm = new OrderTerm();
-        orderTerm.init(trade);
+        orderTerm.init(trade.getServiceTerms(), trade.getServiceName(), trade.getServiceChoose());
         return orderTerm;
     }
 

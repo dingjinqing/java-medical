@@ -1,13 +1,14 @@
 package com.vpu.mp.service.shop.order.action.base;
 
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.pojo.shop.order.base.IOrderBase;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 /**
  * 
  * @author 王帅
  *
  */
-public interface IorderOperate<T extends AbstractOrderOperateQueryParam,E extends AbstractOrderOperateQueryParam> extends IOrderBase{
+public interface IorderOperate<T extends AbstractOrderOperateQueryParam,E extends AbstractOrderOperateQueryParam> extends IOrderBase {
 	/**
 	 * 	操作查询
 	 * @param param 参数

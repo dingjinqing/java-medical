@@ -8,7 +8,7 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoods;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
