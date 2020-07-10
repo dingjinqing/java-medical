@@ -14,7 +14,7 @@
 				<view class="shipping_method" wx:if="{{shipItem === 1}}" bindtap="selectShippingMethod" data-index="{{shipIndex}}" style="border-bottom-color:{{params.deliverType === shipIndex ? comColor : ''}};">{{i18n.$t(localePack,"pages.checkout.deliverType["+shipIndex+"]")}}</view>
 			</block>
 		</view>
-		<view class="address_info" bindtap="selectStore" wx:if="{{params.deliverType !== 0}}" style="background:#fff;border-bottom:2rpx solid #eee;">
+		<view class="address_info" bindtap="selectStore" wx:if="{{params.deliverType !== 0}}" style="background:#fff;border-bottom:2rpx solid #eee;border-radius:{{orderInfo.expressList[1]||orderInfo.expressList[2] ? '0 0 16rpx 16rpx' : '16rpx'}};">
 			<view class="address-user_info">
 				<text class="user_name">王的盛宴</text>
 			</view>
@@ -25,7 +25,7 @@
 				<image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
 			</view>
 		</view>
-		<view class="address_info" bindtap="addAddress" style="background:#fff url({{imageUrl}}image/wxapp/address_bottom.png) no-repeat  left bottom / 100%;">
+		<view class="address_info" bindtap="addAddress" style="background:#fff url({{imageUrl}}image/wxapp/address_bottom.png) no-repeat  left bottom / 100%;border-radius:{{orderInfo.expressList[1]||orderInfo.expressList[2] ? '0 0 16rpx 16rpx' : '16rpx'}};">
 			<view class="address-address_info" wx:if="{{!orderInfo.address}}">
 				<image src="{{imageUrl}}image/wxapp/address.png"></image>
 				<text class="address">{{i18n.$t(localePack,"pages.checkout.createAddress")}}</text>
