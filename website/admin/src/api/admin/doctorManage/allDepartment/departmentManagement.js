@@ -17,9 +17,9 @@ export function getBatchDepartmentList (id) {
 }
 
 // 科室删除
-export function deleteDepartment (departmentId) {
+export function deleteDepartment (id) {
   return service({
-    url: `/api/admin/doctor/department/delete/${departmentId}`,
+    url: `/api/admin/doctor/department/delete/${id}`,
     method: 'get'
   })
 }
@@ -41,9 +41,9 @@ export function updateDepartment (data) {
   })
 }
 // 科室详情查询
-export function getDepartment (departmentId) {
+export function getDepartment (id) {
   return service({
-    url: `/api/admin/doctor/department/update/${departmentId}`,
+    url: `/api/admin/doctor/department/info/${id}`,
     method: 'get'
   })
 }

@@ -113,7 +113,7 @@ const routes = [
           )
       },
       {
-        path: '/admin/home/main/doctor/offices/updateOffices/:sortId',
+        path: '/admin/home/main/doctor/offices/updateOffices/:id',
         name: 'updateOffices',
         meta: {
           crumbTitle: 'router.officesList',
