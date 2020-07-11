@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.goods;
 
-import com.vpu.mp.common.pojo.shop.repository.GoodsLabelAo;
-import com.vpu.mp.dao.shop.label.repository.GoodsLabelRepository;
+import com.vpu.mp.service.pojo.shop.medical.label.bo.GoodsLabelBo;
+import com.vpu.mp.service.shop.goods.aggregate.GoodsLabelRepository;
 import com.vpu.mp.dao.shop.sort.SortDao;
-import com.vpu.mp.service.pojo.shop.label.MedicalLabelConstant;
-import com.vpu.mp.service.pojo.shop.label.bo.LabelRelationInfoBo;
-import com.vpu.mp.service.pojo.shop.label.vo.GoodsLabelVo;
+import com.vpu.mp.service.pojo.shop.medical.label.MedicalLabelConstant;
+import com.vpu.mp.service.pojo.shop.medical.label.bo.LabelRelationInfoBo;
+import com.vpu.mp.service.pojo.shop.medical.label.vo.GoodsLabelVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +56,7 @@ public class MedicalGoodsLabelService {
      * @return
      */
     public List<GoodsLabelVo> getRelateAllGoodsLabels(){
-        List<GoodsLabelAo> labelAos = goodsLabelRepository.listLabelAoByType(MedicalLabelConstant.GTA_ALL);
+        List<GoodsLabelBo> labelAos = goodsLabelRepository.listLabelAoByType(MedicalLabelConstant.GTA_ALL);
 
         return labelAos.stream().map(ao->{
             GoodsLabelVo vo = new GoodsLabelVo();
@@ -73,11 +73,11 @@ public class MedicalGoodsLabelService {
      * @return
      */
     public Map<Integer, List<GoodsLabelVo>> getLabelGtaLabelMap(List<Integer> gtaIds, Byte type) {
-        List<GoodsLabelAo> labelAos = goodsLabelRepository.listLabelAoByGtaIdsAndType(gtaIds, type);
-        Map<Integer, List<GoodsLabelAo>> goodsLabelAoMap = labelAos.stream().collect(Collectors.groupingBy(GoodsLabelAo::getGtaId));
+        List<GoodsLabelBo> labelAos = goodsLabelRepository.listLabelAoByGtaIdsAndType(gtaIds, type);
+        Map<Integer, List<GoodsLabelBo>> goodsLabelAoMap = labelAos.stream().collect(Collectors.groupingBy(GoodsLabelBo::getGtaId));
 
         Map<Integer, List<GoodsLabelVo>> retMap = new HashMap<>(goodsLabelAoMap.size());
-        for (Map.Entry<Integer, List<GoodsLabelAo>> entry : goodsLabelAoMap.entrySet()) {
+        for (Map.Entry<Integer, List<GoodsLabelBo>> entry : goodsLabelAoMap.entrySet()) {
             List<GoodsLabelVo> vos = entry.getValue().stream().map(ao -> {
                 GoodsLabelVo vo = new GoodsLabelVo();
                 vo.setId(ao.getId());

@@ -11,29 +11,29 @@ import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
 import com.vpu.mp.dao.shop.brand.GoodsBrandDao;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
-import com.vpu.mp.dao.shop.goods.repository.GoodsRepository;
-import com.vpu.mp.dao.shop.goods.repository.GoodsSpecProductRepository;
+import com.vpu.mp.service.shop.goods.aggregate.GoodsRepository;
+import com.vpu.mp.service.shop.goods.aggregate.GoodsSpecProductRepository;
 import com.vpu.mp.dao.shop.img.GoodsImgDao;
-import com.vpu.mp.dao.shop.label.repository.GoodsLabelRepository;
+import com.vpu.mp.service.shop.goods.aggregate.GoodsLabelRepository;
 import com.vpu.mp.dao.shop.sort.SortDao;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
-import com.vpu.mp.service.pojo.shop.goods.MedicalGoodsConstant;
-import com.vpu.mp.service.pojo.shop.goods.convertor.GoodsParamConvertor;
-import com.vpu.mp.service.pojo.shop.goods.entity.GoodsEntity;
-import com.vpu.mp.service.pojo.shop.goods.param.MedicalGoodsPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.vo.GoodsPageListVo;
-import com.vpu.mp.service.pojo.shop.goods.vo.GoodsSelectVo;
-import com.vpu.mp.service.pojo.shop.label.MedicalLabelConstant;
-import com.vpu.mp.service.pojo.shop.label.bo.LabelRelationInfoBo;
-import com.vpu.mp.service.pojo.shop.label.entity.GoodsLabelCoupleVal;
-import com.vpu.mp.service.pojo.shop.label.vo.GoodsLabelVo;
+import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
+import com.vpu.mp.service.pojo.shop.medical.goods.convertor.GoodsParamConverter;
+import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsEntity;
+import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsPageListParam;
+import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPageListVo;
+import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
+import com.vpu.mp.service.pojo.shop.medical.label.MedicalLabelConstant;
+import com.vpu.mp.service.pojo.shop.medical.label.bo.LabelRelationInfoBo;
+import com.vpu.mp.service.pojo.shop.medical.label.entity.GoodsLabelCoupleVal;
+import com.vpu.mp.service.pojo.shop.medical.label.vo.GoodsLabelVo;
 import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProductEntity;
 import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductGoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductVo;
 import com.vpu.mp.service.pojo.shop.sku.vo.SpecVo;
-import com.vpu.mp.service.pojo.shop.sort.vo.GoodsSortVo;
+import com.vpu.mp.service.pojo.shop.medical.sort.vo.GoodsSortVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -184,38 +184,38 @@ public class MedicalGoodsService {
      * 根据商品id搜索商品信息
      * @param goodsId 商品id
      */
-    public GoodsSelectVo getGoodsDetailByGoodsId(Integer goodsId) {
-        GoodsSelectVo goodsSelectVo = goodsRepository.getByGoodsId(goodsId);
-        if (goodsSelectVo == null) {
+    public GoodsDetailVo getGoodsDetailByGoodsId(Integer goodsId) {
+        GoodsDetailVo goodsDetailVo = goodsRepository.getByGoodsId(goodsId);
+        if (goodsDetailVo == null) {
             return null;
         }
         //设置sku
         List<GoodsSpecProductVo> skus = goodsSpecProductRepository.getSkuByGoodsId(goodsId);
-        goodsSelectVo.setGoodsSpecProducts(skus);
+        goodsDetailVo.setGoodsSpecProducts(skus);
 
         //设置规格组
-        if (!MedicalGoodsConstant.DEFAULT_SKU.equals(goodsSelectVo.getIsDefaultProduct())) {
+        if (!MedicalGoodsConstant.DEFAULT_SKU.equals(goodsDetailVo.getIsDefaultProduct())) {
             List<SpecVo> specVos = goodsSpecProductRepository.getSpecListByGoodsId(goodsId);
-            goodsSelectVo.setGoodsSpecs(specVos);
+            goodsDetailVo.setGoodsSpecs(specVos);
         }
 
         // 品牌设置
-        GoodsBrandDo goodsBrandDo = goodsBrandDao.getByBrandId(goodsSelectVo.getBrandId());
+        GoodsBrandDo goodsBrandDo = goodsBrandDao.getByBrandId(goodsDetailVo.getBrandId());
         if (goodsBrandDo != null) {
-            goodsSelectVo.setBrandName(goodsBrandDo.getBrandName());
+            goodsDetailVo.setBrandName(goodsBrandDo.getBrandName());
         }
 
-        List<Integer> parentsSortIds = sortDao.getParentSortIds(goodsSelectVo.getSortId());
+        List<Integer> parentsSortIds = sortDao.getParentSortIds(goodsDetailVo.getSortId());
         // 标签设置
         List<GoodsLabelVo> goodsNormalLabels = goodsLabelRepository.getGoodsNormalLabels(parentsSortIds);
         List<GoodsLabelVo> goodsPointLabels = goodsLabelRepository.getGoodsPointLabels(goodsId);
-        goodsSelectVo.setPointLabels(goodsPointLabels);
-        goodsSelectVo.setNormalLabels(goodsNormalLabels);
+        goodsDetailVo.setPointLabels(goodsPointLabels);
+        goodsDetailVo.setNormalLabels(goodsNormalLabels);
 
         List<String> imgPaths = goodsImgDao.getByGoodsId(goodsId);
-        goodsSelectVo.setGoodsImgs(imgPaths);
+        goodsDetailVo.setGoodsImgs(imgPaths);
 
-        return goodsSelectVo;
+        return goodsDetailVo;
     }
 
     /**
@@ -223,7 +223,7 @@ public class MedicalGoodsService {
      * @param pageListParam
      */
     public PageResult<GoodsPageListVo> getGoodsPageList(MedicalGoodsPageListParam pageListParam){
-        GoodsPageListCondition goodsPageListCondition = GoodsParamConvertor.converPageListConditionFromPageListParam(pageListParam);
+        GoodsPageListCondition goodsPageListCondition = GoodsParamConverter.convertPageListConditionFromPageListParam(pageListParam);
         if (pageListParam.getSortId() != null) {
             List<Integer> parentsSortIds = sortDao.getParentSortIds(pageListParam.getSortId());
             parentsSortIds.add(pageListParam.getSortId());

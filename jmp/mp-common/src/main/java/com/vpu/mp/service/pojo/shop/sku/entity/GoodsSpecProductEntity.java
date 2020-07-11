@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.sku.entity;
 
 import cn.hutool.core.util.StrUtil;
-import com.vpu.mp.service.pojo.shop.goods.MedicalGoodsConstant;
+import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import lombok.Data;
 
 import java.math.BigDecimal;

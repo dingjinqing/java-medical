@@ -3,7 +3,7 @@ package com.vpu.mp.dao.shop.label;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.pojo.shop.table.GoodsLabelDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
-import com.vpu.mp.service.pojo.shop.label.MedicalLabelConstant;
+import com.vpu.mp.service.pojo.shop.medical.label.MedicalLabelConstant;
 import org.jooq.Condition;
 import org.springframework.stereotype.Repository;
 
