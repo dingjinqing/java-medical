@@ -163,7 +163,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteDepartment(row.parentId).then(res => {
+        deleteDepartment(row.id).then(res => {
           this.handleQuery()
         })
       })

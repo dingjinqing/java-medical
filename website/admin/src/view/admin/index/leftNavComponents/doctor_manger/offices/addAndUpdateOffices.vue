@@ -145,7 +145,7 @@ export default {
       departmentDataFirst: {
         parentId: null,
         name: null,
-        isLeaf: 0,
+        isLeaf: 1,
         code: null
       },
       departmentDataSecond: {
@@ -189,6 +189,7 @@ export default {
         target.name = department.name
         target.code = department.code
         target.isLeaf = department.isLeaf
+        console.log(target.isLeaf)
         this.level = department.level
         target.parentId = department.parentId
         target.oldParentId = department.parentId
@@ -238,13 +239,13 @@ export default {
         formData.code = this.departmentDataFirst.code
         formData.level = this.level
         formData.parentId = 0
-        formData.isLeaf = 0
+        formData.isLeaf = this.departmentDataFirst.isLeaf
       } else {
         formData.parentId = this.departmentDataSecond.firstDepartmentId
         formData.name = this.departmentDataSecond.name
         formData.code = this.departmentDataSecond.code
         formData.level = this.level
-        formData.isLeaf = this.departmentDataSecond.isLeaf || 1
+        formData.isLeaf = this.departmentDataSecond.isLeaf
       }
       return formData
     },
