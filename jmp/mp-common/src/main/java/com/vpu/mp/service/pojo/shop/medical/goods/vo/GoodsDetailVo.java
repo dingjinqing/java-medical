@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.medical.goods.vo;
 
 import com.vpu.mp.service.pojo.shop.medical.label.vo.GoodsLabelVo;
-import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductVo;
+import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductDetailVo;
 import com.vpu.mp.service.pojo.shop.sku.vo.SpecVo;
 import lombok.Getter;
 import lombok.Setter;
@@ -56,7 +56,7 @@ public class GoodsDetailVo {
     /**
      * 规格信息
      */
-    private List<GoodsSpecProductVo> goodsSpecProducts;
+    private List<GoodsSpecProductDetailVo> goodsSpecProducts;
 
     /**
      * 普通标签

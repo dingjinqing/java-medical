@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * @date 2020年07月02日
  */
 @Component
-public class GoodsRepository {
+public class GoodsAggregate {
     @Autowired
     GoodsDao goodsDao;
     @Autowired

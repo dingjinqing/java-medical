@@ -1,17 +1,15 @@
 package com.vpu.mp.service.shop.goods;
 
-import com.vpu.mp.service.pojo.shop.medical.label.bo.GoodsLabelBo;
-import com.vpu.mp.service.shop.goods.aggregate.GoodsLabelRepository;
-import com.vpu.mp.dao.shop.sort.SortDao;
 import com.vpu.mp.service.pojo.shop.medical.label.MedicalLabelConstant;
+import com.vpu.mp.service.pojo.shop.medical.label.bo.GoodsLabelBo;
 import com.vpu.mp.service.pojo.shop.medical.label.bo.LabelRelationInfoBo;
+import com.vpu.mp.service.pojo.shop.medical.label.entity.GoodsLabelCoupleEntity;
 import com.vpu.mp.service.pojo.shop.medical.label.vo.GoodsLabelVo;
+import com.vpu.mp.service.shop.goods.aggregate.GoodsLabelAggregate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -21,12 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class MedicalGoodsLabelService {
     @Autowired
-    private GoodsLabelRepository goodsLabelRepository;
-    /**
-     * 需要移动至sortService
-     */
-    @Autowired
-    private SortDao sortDao;
+    private GoodsLabelAggregate goodsLabelAggregate;
 
     /**
      * 获取标签关联的所有关联信息
@@ -36,15 +29,15 @@ public class MedicalGoodsLabelService {
     public LabelRelationInfoBo getLabelRelationInfo(Integer labelId) {
         LabelRelationInfoBo labelRelationInfoBo = new LabelRelationInfoBo();
 
-        List<Integer> gtaIds = goodsLabelRepository.listGtaIdsByLabelIdAndType(labelId, MedicalLabelConstant.GTA_ALL);
+        List<Integer> gtaIds = goodsLabelAggregate.listGtaIdsByLabelIdAndType(labelId, MedicalLabelConstant.GTA_ALL);
         labelRelationInfoBo.setIsAll(gtaIds != null);
 
-        gtaIds = goodsLabelRepository.listGtaIdsByLabelIdAndType(labelId, MedicalLabelConstant.GTA_SORT);
+        gtaIds = goodsLabelAggregate.listGtaIdsByLabelIdAndType(labelId, MedicalLabelConstant.GTA_SORT);
         if (gtaIds.size() > 0) {
             labelRelationInfoBo.setSortIds(gtaIds);
         }
 
-        gtaIds = goodsLabelRepository.listGtaIdsByLabelIdAndType(labelId, MedicalLabelConstant.GTA_GOODS);
+        gtaIds = goodsLabelAggregate.listGtaIdsByLabelIdAndType(labelId, MedicalLabelConstant.GTA_GOODS);
         if (gtaIds.size() > 0) {
             labelRelationInfoBo.setGoodsIds(gtaIds);
         }
@@ -55,29 +48,41 @@ public class MedicalGoodsLabelService {
      * 获取关联所有商品的标签
      * @return
      */
-    public List<GoodsLabelVo> getRelateAllGoodsLabels(){
-        List<GoodsLabelBo> labelAos = goodsLabelRepository.listLabelAoByType(MedicalLabelConstant.GTA_ALL);
-
-        return labelAos.stream().map(ao->{
-            GoodsLabelVo vo = new GoodsLabelVo();
-            vo.setId(ao.getId());
-            vo.setLabelName(ao.getLabelName());
-            return vo;
-        }).collect(Collectors.toList());
+    public List<GoodsLabelVo> listAllRelatedLabels(){
+        List<GoodsLabelBo> goodsLabelBos = goodsLabelAggregate.listLabelBoByType(MedicalLabelConstant.GTA_ALL);
+        return goodsLabelBos.stream().map(bo->new GoodsLabelVo(bo.getId(),bo.getLabelName())).collect(Collectors.toList());
+    }
+    /**
+     * 获取商品id所关联的标签信息
+     * @param goodsId 商品id信息
+     * @return
+     */
+    public List<GoodsLabelVo> listGoodsIdRelatedLabels(Integer goodsId){
+        List<GoodsLabelBo> goodsLabelBos = goodsLabelAggregate.listLabelAoByGtaIdsAndType(Collections.singletonList(goodsId), MedicalLabelConstant.GTA_GOODS);
+        return goodsLabelBos.stream().map(bo->new GoodsLabelVo(bo.getId(),bo.getLabelName())).collect(Collectors.toList());
     }
 
     /**
-     * 根据gtaId和type 获取gtaId到其所关联的所有标签的映射
-     * @param gtaIds
-     * @param type
+     * 获取分类关联的标签信息
+     * @param sortIds 分类id集合
      * @return
      */
-    public Map<Integer, List<GoodsLabelVo>> getLabelGtaLabelMap(List<Integer> gtaIds, Byte type) {
-        List<GoodsLabelBo> labelAos = goodsLabelRepository.listLabelAoByGtaIdsAndType(gtaIds, type);
-        Map<Integer, List<GoodsLabelBo>> goodsLabelAoMap = labelAos.stream().collect(Collectors.groupingBy(GoodsLabelBo::getGtaId));
+    public List<GoodsLabelVo> listSortIdsRelatedLabels(List<Integer> sortIds) {
+        List<GoodsLabelBo> goodsLabelBos = goodsLabelAggregate.listLabelAoByGtaIdsAndType(sortIds, MedicalLabelConstant.GTA_SORT);
+        return goodsLabelBos.stream().map(bo->new GoodsLabelVo(bo.getId(),bo.getLabelName())).collect(Collectors.toList());
+    }
+    /**
+     * 根据gtaId和type 获取gtaId到其所关联的所有标签的映射
+     * @param gtaIds 关联对象id
+     * @param type 关联对象类型
+     * @return map key:gtaId value:标签
+     */
+    public Map<Integer, List<GoodsLabelVo>> mapGtaToLabel(List<Integer> gtaIds, Byte type) {
+        List<GoodsLabelBo> labelBos = goodsLabelAggregate.listLabelAoByGtaIdsAndType(gtaIds, type);
+        Map<Integer, List<GoodsLabelBo>> goodsLabelBoMap = labelBos.stream().collect(Collectors.groupingBy(GoodsLabelBo::getGtaId));
 
-        Map<Integer, List<GoodsLabelVo>> retMap = new HashMap<>(goodsLabelAoMap.size());
-        for (Map.Entry<Integer, List<GoodsLabelBo>> entry : goodsLabelAoMap.entrySet()) {
+        Map<Integer, List<GoodsLabelVo>> retMap = new HashMap<>(goodsLabelBoMap.size());
+        for (Map.Entry<Integer, List<GoodsLabelBo>> entry : goodsLabelBoMap.entrySet()) {
             List<GoodsLabelVo> vos = entry.getValue().stream().map(ao -> {
                 GoodsLabelVo vo = new GoodsLabelVo();
                 vo.setId(ao.getId());
@@ -87,5 +92,39 @@ public class MedicalGoodsLabelService {
             retMap.put(entry.getKey(),vos);
         }
         return retMap;
+    }
+
+    /**
+     * 批量添加商品关联标签关系
+     * @param labelIds 标签id集合
+     * @param goodsId 商品id
+     */
+    public void batchInsertGoodsCouple(List<Integer> labelIds, Integer goodsId) {
+        batchInsertCouple(labelIds,goodsId,MedicalLabelConstant.GTA_GOODS);
+    }
+    /**
+     * 批量添加标签关联关系
+     * @param labelIds 标签id集合
+     * @param gtaId 被关联的对象id
+     * @param type 关联类型
+     */
+    public void batchInsertCouple(List<Integer> labelIds, Integer gtaId, Byte type){
+        List<GoodsLabelCoupleEntity> goodsLabelCoupleEntities = new ArrayList<>(labelIds.size());
+        for (Integer labelId : labelIds) {
+            GoodsLabelCoupleEntity goodsLabelCoupleEntity = new GoodsLabelCoupleEntity();
+            goodsLabelCoupleEntity.setLabelId(labelId);
+            goodsLabelCoupleEntity.setGtaId(gtaId);
+            goodsLabelCoupleEntity.setType(type);
+            goodsLabelCoupleEntities.add(goodsLabelCoupleEntity);
+        }
+        goodsLabelAggregate.batchInsertCouple(goodsLabelCoupleEntities);
+    }
+
+    /**
+     * 删除商品关联的标签关联
+     * @param goodsId
+     */
+    public void deleteGoodsCouples(Integer goodsId){
+        goodsLabelAggregate.deleteCouple(Collections.singletonList(goodsId),MedicalLabelConstant.GTA_GOODS);
     }
 }

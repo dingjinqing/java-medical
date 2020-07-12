@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  */
 @Getter
 @Setter
-public class GoodsSpecProductVo extends GoodsSpecProductBaseVo{
+public class GoodsSpecProductDetailVo extends GoodsSpecProductBaseVo{
     private BigDecimal prdMarketPrice;
     private BigDecimal prdCostPrice;
     private String prdCodes;

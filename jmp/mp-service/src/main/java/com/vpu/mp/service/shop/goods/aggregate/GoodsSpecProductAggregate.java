@@ -10,9 +10,6 @@ import com.vpu.mp.dao.shop.goods.SpecValDao;
 import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProductEntity;
 import com.vpu.mp.service.pojo.shop.sku.entity.SpecEntity;
 import com.vpu.mp.service.pojo.shop.sku.entity.SpecValEntity;
-import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductVo;
-import com.vpu.mp.service.pojo.shop.sku.vo.SpecValVo;
-import com.vpu.mp.service.pojo.shop.sku.vo.SpecVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,23 +21,13 @@ import java.util.stream.Collectors;
  * @date 2020年07月02日
  */
 @Component
-public class GoodsSpecProductRepository {
+public class GoodsSpecProductAggregate {
     @Autowired
     GoodsSpecProductDao goodsSpecProductDao;
     @Autowired
     SpecDao specDao;
     @Autowired
     SpecValDao specValDao;
-
-    /**
-     * 获取GoodsSpecProduct转GoodsSpecProductDo时忽略的字段
-     * @return 需要忽略的字段
-     */
-    private static Set<String> getSkuAssignIgnoreFields(){
-        Set<String> assignIgnoreField = new HashSet<>(1);
-        assignIgnoreField.add("specs");
-        return assignIgnoreField;
-    }
 
     /**
      * 获取GoodsSpecProduct转GoodsSpecProductDo时忽略的字段
@@ -53,16 +40,38 @@ public class GoodsSpecProductRepository {
     }
 
     /**
+     * GoodsSpecProduct Do转Entity
+     * @param goodsSpecProductDos
+     * @return
+     */
+    private static List<GoodsSpecProductEntity> convertGoodsSpecProductDoToEntity( List<GoodsSpecProductDo> goodsSpecProductDos){
+        return goodsSpecProductDos.stream().map(skuDo -> {
+            GoodsSpecProductEntity goodsSpecProductEntity = new GoodsSpecProductEntity();
+            FieldsUtil.assign(skuDo, goodsSpecProductEntity);
+            return goodsSpecProductEntity;
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * GoodsSpecProduct entity 转 do
+     * @param goodsSpecProductEntities
+     * @return
+     */
+    private static GoodsSpecProductDo convertGoodsSpecProductEntityToDo(GoodsSpecProductEntity goodsSpecProductEntities){
+        GoodsSpecProductDo goodsSpecProductDo = new GoodsSpecProductDo();
+        FieldsUtil.assign(goodsSpecProductEntities, goodsSpecProductDo);
+        return goodsSpecProductDo;
+    }
+
+
+    /**
      * 批量插入sku
      * @param goodsSpecProductEntities
      */
-    public void batchSkuInsert(List<GoodsSpecProductEntity> goodsSpecProductEntities, Integer goodsId){
+    public void batchSkuInsert(List<GoodsSpecProductEntity> goodsSpecProductEntities){
         List<GoodsSpecProductDo> goodsSpecProductDos = new ArrayList<>(goodsSpecProductEntities.size());
-
         for (GoodsSpecProductEntity goodsSpecProductEntity : goodsSpecProductEntities) {
-            goodsSpecProductEntity.setGoodsId(goodsId);
-            GoodsSpecProductDo goodsSpecProductDo = new GoodsSpecProductDo();
-            FieldsUtil.assignWithIgnoreField(goodsSpecProductEntity,goodsSpecProductDo,getSkuAssignIgnoreFields());
+            GoodsSpecProductDo goodsSpecProductDo = convertGoodsSpecProductEntityToDo(goodsSpecProductEntity);
             goodsSpecProductDos.add(goodsSpecProductDo);
         }
         goodsSpecProductDao.batchInsert(goodsSpecProductDos);
@@ -75,25 +84,51 @@ public class GoodsSpecProductRepository {
     public void batchSkuUpdate(List<GoodsSpecProductEntity> goodsSpecProductEntities) {
         List<GoodsSpecProductDo> goodsSpecProductDos = new ArrayList<>(goodsSpecProductEntities.size());
         for (GoodsSpecProductEntity goodsSpecProductEntity : goodsSpecProductEntities) {
-            GoodsSpecProductDo goodsSpecProductDo = new GoodsSpecProductDo();
-            FieldsUtil.assignWithIgnoreField(goodsSpecProductEntity,goodsSpecProductDo,getSkuAssignIgnoreFields());
+            GoodsSpecProductDo goodsSpecProductDo = convertGoodsSpecProductEntityToDo(goodsSpecProductEntity);
             goodsSpecProductDos.add(goodsSpecProductDo);
         }
         goodsSpecProductDao.batchUpdate(goodsSpecProductDos);
     }
 
     /**
+     * 根据商品id查询对应sku集合
+     * @param goodsId
+     * @return
+     */
+    public List<GoodsSpecProductEntity> listSkuByGoodsId(Integer goodsId){
+        List<GoodsSpecProductDo> goodsSpecProductDos = goodsSpecProductDao.getSkuByGoodsId(goodsId);
+        return convertGoodsSpecProductDoToEntity(goodsSpecProductDos);
+    }
+
+    /**
+     * 根据商品id集合查询对应sku集合
+     * @param goodsIds
+     * @return
+     */
+    public List<GoodsSpecProductEntity> listSkuByGoodsIds(List<Integer> goodsIds){
+        List<GoodsSpecProductDo> goodsSpecProductDos = goodsSpecProductDao.listSkuByGoodsIds(goodsIds);
+        return convertGoodsSpecProductDoToEntity(goodsSpecProductDos);
+    }
+
+    /**
+     * 删除sku
+     * @param goodsId
+     */
+    public void deleteSkuByGoodsId(Integer goodsId) {
+        goodsSpecProductDao.deleteByGoodsId(goodsId);
+    }
+
+    /**
      * 批量插入规格组
      * @param specEntities 规格组
      */
-    public void batchSpecInsert(List<SpecEntity> specEntities, Integer goodsId) {
+    public void batchSpecInsert(List<SpecEntity> specEntities) {
         List<SpecDo> specDos = new ArrayList<>(specEntities.size());
 
-        Set<String> sepcAssignIgnoreFields = getSpecAssignIgnoreFields();
+        Set<String> specAssignIgnoreFields = getSpecAssignIgnoreFields();
         for (SpecEntity specEntity : specEntities) {
-            specEntity.setGoodsId(goodsId);
             SpecDo specDo = new SpecDo();
-            FieldsUtil.assignWithIgnoreField(specEntity,specDo,sepcAssignIgnoreFields);
+            FieldsUtil.assignWithIgnoreField(specEntity,specDo,specAssignIgnoreFields);
             specDos.add(specDo);
         }
         specDao.batchInsert(specDos);
@@ -107,9 +142,8 @@ public class GoodsSpecProductRepository {
 
             for (SpecValEntity specValEntity : specEntity.getGoodsSpecVals()) {
                 specValEntities.add(specValEntity);
-                specValEntity.setGoodsId(goodsId);
                 specValEntity.setSpecId(specEntity.getSpecId());
-                SpecValDo specValDo= new SpecValDo(specEntity.getSpecId(),goodsId, specValEntity.getSpecValName());
+                SpecValDo specValDo= new SpecValDo(specEntity.getSpecId(),specValEntity.getGoodsId(), specValEntity.getSpecValName());
                 specValDos.add(specValDo);
             }
         }
@@ -121,81 +155,39 @@ public class GoodsSpecProductRepository {
     }
 
     /**
+     * 根据商品id获取其对应规格组信息
      * @param goodsId
      * @return
      */
-    public List<GoodsSpecProductVo> getSkuByGoodsId(Integer goodsId){
-        List<GoodsSpecProductDo> goodsSpecProductDos = goodsSpecProductDao.getSkuByGoodsId(goodsId);
-
-        List<GoodsSpecProductVo> collect = goodsSpecProductDos.stream().map(sku -> {
-            GoodsSpecProductVo goodsSpecProductVo = new GoodsSpecProductVo();
-            FieldsUtil.assign(sku, goodsSpecProductVo);
-            return goodsSpecProductVo;
-        }).collect(Collectors.toList());
-
-        return collect;
-    }
-
-    /**
-     * gen
-     * @param goodsIds
-     * @return
-     */
-    public List<GoodsSpecProductEntity> listSkuByGoodsIds(List<Integer> goodsIds){
-        List<GoodsSpecProductDo> goodsSpecProductDos = goodsSpecProductDao.listSkuByGoodsIds(goodsIds);
-        return convertGoodsSpecProductDoToEntity(goodsSpecProductDos);
-    }
-
-    /**
-     * GoodsSpecProduct Do转Entity
-     * @param goodsSpecProductDos
-     * @return
-     */
-    private List<GoodsSpecProductEntity> convertGoodsSpecProductDoToEntity( List<GoodsSpecProductDo> goodsSpecProductDos){
-        return goodsSpecProductDos.stream().map(sku -> {
-            GoodsSpecProductEntity goodsSpecProductEntity = new GoodsSpecProductEntity();
-            FieldsUtil.assign(sku, goodsSpecProductEntity);
-            return goodsSpecProductEntity;
-        }).collect(Collectors.toList());
-    }
-
-    public List<SpecVo> getSpecListByGoodsId(Integer goodsId) {
+    public List<SpecEntity> listSpecListByGoodsId(Integer goodsId) {
         List<SpecDo> specDos = specDao.getSpecsByGoodsId(goodsId);
         List<SpecValDo> specValDos = specValDao.getSepcValsByGoodsId(goodsId);
 
-        List<SpecVo> specVos = new ArrayList<>(specDos.size());
+        List<SpecEntity> specEntities = new ArrayList<>(specDos.size());
         for (SpecDo specDo : specDos) {
-            SpecVo specVo = new SpecVo();
+            SpecEntity specVo = new SpecEntity();
             specVo.setGoodsId(goodsId);
             specVo.setSpecId(specDo.getSpecId());
             specVo.setSpecName(specDo.getSpecName());
-            specVos.add(specVo);
+            specEntities.add(specVo);
         }
         Map<Integer, List<SpecValDo>> specValDoGroup = specValDos.stream().collect(Collectors.groupingBy(SpecValDo::getSpecId));
 
-        for (SpecVo specVo : specVos) {
-            List<SpecValDo> svds = specValDoGroup.get(specVo.getSpecId());
-            List<SpecValVo> svls = svds.stream().map(svd -> {
-                SpecValVo vo = new SpecValVo();
-                vo.setGoodsId(goodsId);
-                vo.setSpecId(svd.getSpecId());
-                vo.setSpecValId(svd.getSpecValId());
-                vo.setSpecValName(svd.getSpecValName());
-                return vo;
+        for (SpecEntity specEntity : specEntities) {
+            List<SpecValDo> svds = specValDoGroup.get(specEntity.getSpecId());
+            List<SpecValEntity> svls = svds.stream().map(svd -> {
+                SpecValEntity specValEntity = new SpecValEntity();
+                specValEntity.setGoodsId(goodsId);
+                specValEntity.setSpecId(svd.getSpecId());
+                specValEntity.setSpecValId(svd.getSpecValId());
+                specValEntity.setSpecValName(svd.getSpecValName());
+                return specValEntity;
             }).collect(Collectors.toList());
 
-            specVo.setGoodsSpecVals(svls);
+            specEntity.setGoodsSpecVals(svls);
         }
 
-        return specVos;
-    }
-
-    /**
-     * 删除sku
-     * @param goodsId
-     */
-    public void deleteSkuByGoodsId(Integer goodsId) {
-        goodsSpecProductDao.deleteByGoodsId(goodsId);
+        return specEntities;
     }
 
     /**
