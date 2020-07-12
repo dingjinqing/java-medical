@@ -35,17 +35,25 @@
               <span class="n-bold"> {{row.name}}</span>
 
             </template>
-              <template v-else-if="row.level === 1">
-              <span class="collapseTab" style='width:48px;'></span>
-              {{row.name}}
+            <template v-else-if="row.level === 1">
+              <span
+                class="collapseTab"
+                style='width:48px;'
+              ></span>
+
+              <span class="n-bold"> {{row.name}}</span>
             </template>
             <template v-else>
               <span class="collapseTab"></span>
-              <span class="n-bold"> {{row.name}}</span>
+              {{row.name}}
             </template>
           </template>
         </el-table-column>
-
+        <el-table-column
+          align="center"
+          label="科室代码"
+          prop="code"
+        />
         <el-table-column
           align="center"
           label="操作"
@@ -144,17 +152,18 @@ export default {
     },
     /* 修改科室 */
     editDepartmentClicked (row) {
-      this.$router.push({ name: 'updateOffices', params: { parentId: row.parentId } })
+      console.log(this.$router, row)
+      this.$router.push({ name: 'updateOffices', params: { id: row.id } })
     },
     /* 删除商品科室 */
     deleteDepartmentClicked (row) {
-      let deleteMsg = row.level === 0 ? '删除一级分类，会删除该分类下的所有二级分类，确定删除？' : '确定删除？'
+      let deleteMsg = row.level === 1 ? '删除一级科室，会删除该分类下的所有二级科室，确定删除？' : '确定删除？'
       this.$confirm(deleteMsg, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteDepartment(row.parentId).then(res => {
+        deleteDepartment(row.id).then(res => {
           this.handleQuery()
         })
       })
@@ -201,7 +210,7 @@ export default {
     font-size: 22px;
     color: #5a8bff;
   }
-  .n-bold{
+  .n-bold {
     font-weight: 800;
   }
 }

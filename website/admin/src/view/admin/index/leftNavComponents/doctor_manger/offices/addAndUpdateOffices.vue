@@ -1,35 +1,46 @@
 <template>
-  <div class="addGoodsRecommendSort">
-    <allGoodsSortHeaderTab :tabIndex="isUpdate ? 4 : 2" />
+  <div class="allDepartment">
+    <allDepartmentHeaderTab :tabIndex="isUpdate ? 4 : 2" />
     <div class="content">
       <el-radio-group
         v-model="level"
         style="margin-bottom: 15px; margin-left: 15px;"
       >
         <el-radio
-          :label="0"
+          :label="1"
           :disabled="isUpdate"
         >添加一级科室</el-radio>
         <el-radio
-          :label="1"
+          :label="2"
           :disabled="isUpdate"
         >添加二级科室</el-radio>
       </el-radio-group>
       <!-- 一级科室表单 -->
       <el-form
-        v-show="level === 0"
-        ref="goodsSortFirstForm"
-        :rules="goodsSortRules"
-        :model="goodsSortDataFirst"
+        v-show="level === 1"
+        ref="departmentFirstForm"
+        :rules="departmentRules"
+        :model="departmentDataFirst"
         label-width="120px"
       >
         <el-form-item
           label="科室名称："
-          prop="sortName"
+          prop="name"
         >
           <el-input
-            ref="sortNameFirst"
-            v-model="goodsSortDataFirst.sortName"
+            ref="nameFirst"
+            v-model="departmentDataFirst.name"
+            size="small"
+            style="width: 170px;"
+          />
+        </el-form-item>
+        <el-form-item
+          label="科室代码："
+          prop="code"
+        >
+          <el-input
+            ref="codeFirst"
+            v-model="departmentDataFirst.code"
             size="small"
             style="width: 170px;"
           />
@@ -37,55 +48,52 @@
       </el-form>
       <!-- 二级科室表单 -->
       <el-form
-        v-show="level === 1"
-        ref="goodsSortSecondForm"
-        :rules="goodsSortRules"
-        :model="goodsSortDataSecond"
+        v-show="level === 2"
+        ref="departmentSecondForm"
+        :rules="departmentRules"
+        :model="departmentDataSecond"
         label-width="120px"
       >
         <el-form-item
           label="一级科室："
-          prop="firstSortId"
+          prop="firstDepartmentId"
         >
           <el-select
-            ref="firstSortIdSelector"
-            v-model="goodsSortDataSecond.firstSortId"
+            ref="firstDepartmentSelector"
+            v-model="departmentDataSecond.firstDepartmentId"
             size="small"
             style="width: 170px;"
           >
             <el-option
-              :label="$t('goodsSorts.pleaseChoose')"
+              label="请选择"
               :value="null"
             />
             <el-option
-              v-for="(item,index) in firstSortOptions"
-              :label="item.sortName"
-              :value="item.sortId"
+              v-for="(item,index) in firstDepartmentOptions"
+              :label="item.name"
+              :value="item.id"
               :key="index"
             />
           </el-select>
-          <el-popover
-            placement="right"
-            trigger="hover"
-          >
-            <el-image
-              :src="$imageHost+'/image/admin/share/goods_info_exapmle.jpg'"
-              fit="scale-down"
-              style="width:220px;height: 400px;"
-            />
-            <span
-              slot="reference"
-              style="color:#409EFF;cursor:pointer;"
-            >{{$t('goodsSorts.lookExample')}}</span>
-          </el-popover>
+        </el-form-item>
+        <el-form-item
+          label="科室代码："
+          prop="code"
+        >
+          <el-input
+            ref="codeSecond"
+            v-model="departmentDataSecond.code"
+            size="small"
+            style="width: 170px;"
+          />
         </el-form-item>
         <el-form-item
           label="科室名称："
-          prop="sortName"
+          prop="name"
         >
           <el-input
-            ref="sortNameSecond"
-            v-model="goodsSortDataSecond.sortName"
+            ref="nameSecond"
+            v-model="departmentDataSecond.name"
             size="small"
             style="width: 170px;"
           />
@@ -97,7 +105,7 @@
         type="primary"
         size="small"
         @click="save"
-      >{{$t('goodsSorts.save')}}</el-button>
+      >保存</el-button>
     </div>
     <!--图片dialog-->
     <!-- <ImageDialog
@@ -116,167 +124,108 @@
 
 <script>
 // 导入api
-import { getGoodsSortSelectList, addGoodsSort, updateGoodsSort, getGoodsSort } from '@/api/admin/goodsManage/goodsSortManagement/goodsSortManagement'
+import { getBatchDepartmentList, addDepartment, updateDepartment, getDepartment } from '@/api/admin/doctorManage/allDepartment/departmentManagement.js'
 // 导入工具
-import { isStrBlank, isNumberBlank } from '@/util/typeUtil'
+import { isStrBlank } from '@/util/typeUtil'
 
 // 组件导入
-import allGoodsSortHeaderTab from './officesHeaderTab'
-import ImageDialog from '@/components/admin/imageDalog'
-import LinkDialog from '@/components/admin/selectLinks'
+import allDepartmentHeaderTab from './officesHeaderTab'
+// import ImageDialog from '@/components/admin/imageDalog'
+// import LinkDialog from '@/components/admin/selectLinks'
 
 export default {
-  name: 'addGoodsRecommendSort',
+  name: 'addDepartment',
   components: {
-    allGoodsSortHeaderTab,
-    ImageDialog,
-    LinkDialog
+    allDepartmentHeaderTab
   },
   data () {
     return {
       isUpdate: false,
-      level: 0,
-      imgWidth: 510,
-      imgHeight: 200,
-      goodsSortDataFirst: {
-        sortId: null,
-        sortName: null,
-        first: 1,
-        firstBind: null,
-        imgLink: null,
-        sortImg: null,
-        sortImgObj: null
+      level: 1,
+      departmentDataFirst: {
+        parentId: null,
+        name: null,
+        isLeaf: 1,
+        code: null
       },
-      goodsSortDataSecond: {
-        firstSortId: null,
-        sortId: null,
-        sortName: null,
-        first: 1,
-        firstBind: null,
-        sortImg: null,
-        sortImgObj: null
+      departmentDataSecond: {
+        firstDepartmentId: null,
+        parentId: null,
+        name: null,
+        isLeaf: 1,
+        code: null
       },
-      goodsSortRules: {
-        sortName: [
+      departmentRules: {
+        name: [
           { required: true, message: '科室名称不可为空', trigger: 'change' }
         ],
-        firstSortId: [
-          { required: true, message: '请选择一级科室', trigger: 'change' }
+        code: [
+          { required: true, message: '科室代码不可为空', trigger: 'change' }
         ],
-        sortImg: [
-          { required: true, message: '请选择科室图标', trigger: 'change' }
+        firstDepartmentId: [
+          { required: true, message: '请选择一级科室', trigger: 'change' }
         ]
       },
-      firstSortOptions: [],
-      imgDialogShow: false,
-      linkDialogShow: false
+      firstDepartmentOptions: []
     }
   },
   methods: {
-    /* 科室优先级改变事件 */
-    firstChanged () {
-      let target = this.level === 0 ? this.goodsSortDataFirst : this.goodsSortDataSecond
-      // 用户输入为空
-      if (isNumberBlank(target.firstBind)) {
-        target.first = null
-      } else if (typeof target.firstBind !== 'number') {
-        // 用户输入的不是数字，则还原数据
-        target.firstBind = target.first
-      } else if (target.firstBind < 0 || target.firstBind > 100) {
-        target.firstBind = target.first
-      } else {
-        target.first = target.firstBind
-      }
-    },
-    /* 选择图标 */
-    chooseSortImg () {
-      if (this.level === 0) {
-        this.imgWidth = 510
-        this.imgHeight = 200
-      } else {
-        this.imgWidth = 150
-        this.imgHeight = 140
-      }
-      this.imgDialogShow = !this.imgDialogShow
-    },
-    /* 选择图标回调 */
-    imgDialogSelectedCallback (imgObj) {
-      if (this.level === 0) {
-        this.goodsSortDataFirst.sortImgObj = { imgUrl: imgObj.imgUrl, imgPath: imgObj.imgPath }
-      } else {
-        this.goodsSortDataSecond.sortImgObj = { imgUrl: imgObj.imgUrl, imgPath: imgObj.imgPath }
-      }
-    },
-    /* 删除图标 */
-    deleteSortImg () {
-      this.goodsSortDataFirst.sortImgObj = null
-    },
-    /* 选择链接 */
-    chooseImgLink () {
-      this.linkDialogShow = !this.linkDialogShow
-    },
-    /* 选择链接回调 */
-    imgLinkDialogSelectedCallback (linkObj) {
-      this.goodsSortDataFirst.imgLink = linkObj
-    },
+
     /* 页面数据初始化 */
-    _initData () {
-      return getGoodsSortSelectList().then(res => {
-        this.firstSortOptions = res.content
+    _initData (parentId) {
+      return getBatchDepartmentList(parentId).then(res => {
+        this.firstDepartmentOptions = res.content
       })
     },
     /* 修改页面初始化数据 */
-    _initDataForUpdate (sortId) {
-      getGoodsSort(sortId).then(res => {
+    _initDataForUpdate (id) {
+      getDepartment(id).then(res => {
         if (res.error !== 0) {
           this.$message.error({ message: res.message })
           return
         }
-
-        let sort = res.content
-        let target = sort.level === 0 ? this.goodsSortDataFirst : this.goodsSortDataSecond
-        target.sortId = sort.sortId
-        target.sortName = sort.sortName
-        target.first = sort.first
-        target.firstBind = sort.first
-        this.level = sort.level
-        if (!isStrBlank(sort.sortImg)) {
-          target.sortImgObj = {
-            imgPath: sort.sortImg,
-            imgUrl: sort.sortImgUrl
-          }
-        }
-        target.imgLink = sort.imgLink
-        target.parentId = sort.parentId
-        target.oldParentId = sort.parentId
-        if (sort.level === 1) {
-          target.firstSortId = sort.parentId
+        let department = res.content
+        let target = department.level === 1 ? this.departmentDataFirst : this.departmentDataSecond
+        target.name = department.name
+        target.code = department.code
+        target.isLeaf = department.isLeaf
+        console.log(target.isLeaf)
+        this.level = department.level
+        target.parentId = department.parentId
+        target.oldParentId = department.parentId
+        if (department.level === 2) {
+          target.firstDepartmentId = department.parentId
         }
       })
     },
     /* 验证数据正确性 */
     _validateFormData () {
-      if (this.level === 0) {
-        if (isStrBlank(this.goodsSortDataFirst.sortName)) {
+      if (this.level === 1) {
+        if (isStrBlank(this.departmentDataFirst.name)) {
           this.$message.warning({ message: '科室名称不可为空' })
-          this.$refs.sortNameFirst.focus()
+          this.$refs.nameFirst.focus()
+          return false
+        }
+        if (isStrBlank(this.departmentDataFirst.code)) {
+          this.$message.warning({ message: '科室代码不可为空' })
+          this.$refs.codeFirst.focus()
           return false
         }
       } else {
-        if (this.goodsSortDataSecond.firstSortId === null) {
+        if (this.departmentDataSecond.firstDepartmentId === null) {
           this.$message.warning({ message: '请选择一级科室' })
-          this.$refs.firstSortIdSelector.focus()
+          this.$refs.firstDepartmentSelector.focus()
           return false
         }
 
-        if (isStrBlank(this.goodsSortDataSecond.sortName)) {
+        if (isStrBlank(this.departmentDataSecond.name)) {
           this.$message.warning({ message: '科室名称不可为空' })
-          this.$refs.sortNameSecond.focus()
+          this.$refs.nameSecond.focus()
           return false
         }
-
-        if (this.goodsSortDataSecond.sortImgObj === null) {
-          this.$message.warning({ message: '请选择科室图标' })
+        if (isStrBlank(this.departmentDataSecond.code)) {
+          this.$message.warning({ message: '科室代码不可为空' })
+          this.$refs.codeSecond.focus()
           return false
         }
       }
@@ -285,24 +234,18 @@ export default {
     /* 获得表单有效数据 */
     _getFormData () {
       let formData = { type: 0 }
-      if (this.level === 0) {
-        formData.sortId = this.goodsSortDataFirst.sortId
-        formData.sortName = this.goodsSortDataFirst.sortName
+      if (this.level === 1) {
+        formData.name = this.departmentDataFirst.name
+        formData.code = this.departmentDataFirst.code
         formData.level = this.level
         formData.parentId = 0
-        formData.first = this.goodsSortDataFirst.first || 1
-        formData.sortImg = this.goodsSortDataFirst.sortImgObj === null ? null : this.goodsSortDataFirst.sortImgObj.imgPath
-        formData.imgLink = this.goodsSortDataFirst.imgLink
+        formData.isLeaf = this.departmentDataFirst.isLeaf
       } else {
-        formData.sortId = this.goodsSortDataSecond.sortId
-        formData.parentId = this.goodsSortDataSecond.firstSortId
-        if (this.isUpdate) {
-          formData.oldParentId = this.goodsSortDataSecond.oldParentId
-        }
-        formData.sortName = this.goodsSortDataSecond.sortName
+        formData.parentId = this.departmentDataSecond.firstDepartmentId
+        formData.name = this.departmentDataSecond.name
+        formData.code = this.departmentDataSecond.code
         formData.level = this.level
-        formData.first = this.goodsSortDataSecond.first || 1
-        formData.sortImg = this.goodsSortDataSecond.sortImgObj === null ? null : this.goodsSortDataSecond.sortImgObj.imgPath
+        formData.isLeaf = this.departmentDataSecond.isLeaf
       }
       return formData
     },
@@ -313,8 +256,10 @@ export default {
       }
       let formData = this._getFormData()
 
-      let execFun = this.isUpdate ? updateGoodsSort : addGoodsSort
-
+      let execFun = this.isUpdate ? updateDepartment : addDepartment
+      if (this.isUpdate) {
+        formData.id = this.$route.params.id
+      }
       execFun(formData).then(res => {
         if (res.error !== 0) {
           this.$message.error({ message: res.message })
@@ -326,12 +271,12 @@ export default {
   },
   mounted () {
     this.langDefault()
-    let sortId = this.$route.params.sortId
-    if (sortId !== undefined) {
+    let id = this.$route.params.id ? this.$route.params.id : 0
+    if (id !== 0) {
       this.isUpdate = true
-      this._initDataForUpdate(sortId)
+      this._initDataForUpdate(id)
     }
-    this._initData()
+    this._initData(0)
   }
 }
 </script>
