@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.patient;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class PatientOneParam {
     private Integer   id;
@@ -17,4 +19,5 @@ public class PatientOneParam {
     private String    allergyHistory;
     private String    memo;
     private Byte      isDelete;
+    private Date      birthday;
 }
