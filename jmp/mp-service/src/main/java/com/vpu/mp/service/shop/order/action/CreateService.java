@@ -303,7 +303,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 atomicOperation.releaseLocks();
             }
         }
-
+        //购物车删除
+        if(OrderConstant.CART_Y.equals(param.getIsCart())){
+            cart.removeCartByProductIds(param.getWxUserInfo().getUserId(), param.getProductIds());
+        }
         //TODO 欧派、嗨购、CRM、自动同步订单微信购物单
         try {
             WebPayVo continuePay = orderPay.isContinuePay(orderAfterRecord,
@@ -312,9 +315,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     orderPay.getGoodsNameForPay(orderAfterRecord, orderBo.getOrderGoodsBo()),
                     param.getClientIp(),
                     param.getWxUserInfo().getWxUser().getOpenId(),
-                    param.getActivityType(),
-                    param.getIsCart()
-            );
+                    param.getActivityType());
             createVo.setWebPayVo(continuePay);
             return ExecuteResult.create(createVo);
         } catch (MpException e) {
