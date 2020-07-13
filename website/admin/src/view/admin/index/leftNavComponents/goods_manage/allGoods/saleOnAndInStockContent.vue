@@ -32,20 +32,20 @@
             <div class="nameImgWrap">
               <img
                 class="imgItem"
-                :src="scope.row.goodsImg"
+                :src="$imageHost+'/'+scope.row.goodsImg"
               >
               <div
                 class="nameItem"
-                :title="scope.row.goodsTitleName"
+                :title="scope.row.goodsName"
               >
-                <span
-                  v-if="scope.row.sourceName !== null"
-                  class="goodsTypeSpanWrap"
-                >{{scope.row.sourceName}}</span>
-                <span
-                  v-if="scope.row.goodsTypeName !== null"
-                  class="goodsSourceSpanWrap"
-                >{{scope.row.goodsTypeName}}</span>
+                <!--<span-->
+                  <!--v-if="scope.row.sourceName !== null"-->
+                  <!--class="goodsTypeSpanWrap"-->
+                <!--&gt;{{scope.row.sourceName}}</span>-->
+                <!--<span-->
+                  <!--v-if="scope.row.goodsTypeName !== null"-->
+                  <!--class="goodsSourceSpanWrap"-->
+                <!--&gt;{{scope.row.goodsTypeName}}</span>-->
                 <span v-html="scope.row.goodsName"></span>
               </div>
             </div>
@@ -62,11 +62,11 @@
           <template slot-scope="{row}">
             <!--非默认规格-->
             <span v-if="!row.isDefaultPrd">
-              <template v-if="row.prdMinShopPrice === row.prdMaxShopPrice">
-                {{row.prdMinShopPrice}}
+              <template v-if="row.minShopPrice === row.maxShopPrice">
+                {{row.maxShopPrice}}
               </template>
               <template v-else>
-                {{row.prdMinShopPrice}}~{{row.prdMaxShopPrice}}
+                {{row.minShopPrice}}~{{row.maxShopPrice}}
               </template>
             </span>
             <template v-else>
@@ -96,56 +96,87 @@
           width="140"
           :label="$t('allGoods.allGoodsData.goodsSn')"
         />
-        <!--商家分类-->
         <el-table-column
           align="center"
-          prop="sortName"
-          :label="$t('allGoods.allGoodsData.sort')"
-          width="120"
+          label="是否药品">
+          <template slot-scope="{row}">
+            {{row.isMedical?'是':'否'}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="goodsCommonName"
+          label="药品通用名"
+        />
+        <el-table-column
+          align="center"
+          prop="goodsAliasName"
+          label="药品别名"
+        />
+        <el-table-column
+          align="center"
+          prop="goodsQualityRatio"
+          label="规格系数"
+        />
+        <!--商家分类-->
+        <el-table-column
+                align="center"
+                prop="sortName"
+                :label="$t('allGoods.allGoodsData.sort')"
+                width="120"
         />
         <!--商品品牌-->
         <el-table-column
-          align="center"
-          prop="brandName"
-          :label="$t('allGoods.allGoodsData.goodsBrand')"
-          width="120"
+                align="center"
+                prop="brandName"
+                :label="$t('allGoods.allGoodsData.goodsBrand')"
+                width="120"
         >
         </el-table-column>
         <!--商品库存-->
         <el-table-column
-          prop="goodsNumber"
-          sortable="custom"
-          align="center"
-          :label="$t('allGoods.allGoodsData.goodsNumber')"
-          width="130"
+                prop="goodsNumber"
+                sortable="custom"
+                align="center"
+                :label="$t('allGoods.allGoodsData.goodsNumber')"
+                width="130"
         >
           <template slot-scope="{row,$index}">
             <span v-if="row.prdId === null">
               {{row.goodsNumber}}
               <span
-                class="iconfont iconbianji"
-                style="margin-left: 10px;font-size:20px"
-                @click="goodsNumEditClick(row)"
+                      class="iconfont iconbianji"
+                      style="margin-left: 10px;font-size:20px"
+                      @click="goodsNumEditClick(row)"
               ></span>
             </span>
             <template v-else>
               <span v-if="!row.goodsNumberEdit">
                 {{row.goodsNumber}}
                 <span
-                  class="iconfont iconbianji"
-                  style="margin-left: 10px; font-size:20px"
-                  @click="shopPriceAndGoodsNumberEditClick(row,'number')"
+                        class="iconfont iconbianji"
+                        style="margin-left: 10px; font-size:20px"
+                        @click="shopPriceAndGoodsNumberEditClick(row,'number')"
                 ></span>
               </span>
               <input
-                v-else
-                :id="'goodsNumber_'+row.goodsId"
-                v-model.number="row.goodsNumberOld"
-                @change="goodsNumberChange(row,$index)"
-                @blur="row.goodsNumberEdit = false"
-                class="editInput"
+                      v-else
+                      :id="'goodsNumber_'+row.goodsId"
+                      v-model.number="row.goodsNumberOld"
+                      @change="goodsNumberChange(row,$index)"
+                      @blur="row.goodsNumberEdit = false"
+                      class="editInput"
               />
             </template>
+          </template>
+        </el-table-column>
+        <!--处方药-->
+        <el-table-column
+          align="center"
+          prop="goodsQualityRatio"
+          label="处方药">
+          <template slot-scope="{row}">
+            {{row.isRx?'是':'否'}}
           </template>
         </el-table-column>
         <!--销售数量-->
@@ -185,6 +216,9 @@
             </div>
           </template>
         </el-table-column>
+        <!--供应商-->
+        <el-table-column align="center" label="供应商" prop="goodsProductionEnterprise"/>
+
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.operate')"
@@ -238,7 +272,7 @@
               ></span>
             </el-tooltip>
             <el-tooltip
-              :content="$t('allGoods.allGoodsData.delete')"
+              content="删除"
               placement="top"
             >
               <span
@@ -500,8 +534,8 @@
 </template>
 <script>
 import { download } from '@/util/excelUtil.js'
-import { goodsExport, getExportTotalRows } from '@/api/admin/goodsManage/allGoods/allGoods.js'
-import { getGoodsList, deleteGoods, batchOperateSpecPrdPriceNumber, batchOperateGoods, updateLabelByGoodsId, getGoodsFilterItem, updateGoodsPrdNumbers, getGoodsPrdInfo } from '@/api/admin/goodsManage/allGoods/allGoods'
+import { goodsExport } from '@/api/admin/goodsManage/allGoods/allGoods.js'
+import { getGoodsList, deleteGoodsById, deleteGoods, batchOperateSpecPrdPriceNumber, batchOperateGoods, updateLabelByGoodsId, getGoodsFilterItem, updateGoodsPrdNumbers, getGoodsPrdInfo } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { getGoodsQrCode } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // 组件导入
 import pagination from '@/components/admin/pagination/pagination'
@@ -801,7 +835,7 @@ export default {
     /* 删除图标按钮点击 */
     deleteIconClick (row, index) {
       this._$confirm(this.$t('allGoods.allGoodsData.deleteTipMsg'), this.$t('allGoods.allGoodsData.deleteOk'), () => {
-        return deleteGoods({ goodsIds: [row.goodsId] }).then((res) => {
+        return deleteGoodsById(row.goodsId).then((res) => {
           if (res.error === 0) {
             this.fetchGoodsData(this.filterData)
           }
@@ -913,45 +947,61 @@ export default {
         this.batchExportOptions_[1].label = this.$t('allGoods.bottomOptions.batchFiltered') + this.pageParams.totalRows + this.$t('allGoods.bottomOptions.commodity')
         dataList.forEach(item => {
           // item.sourceName = item.source === 0 ? '自营' : '非自营'
-          item.sourceName = item.source === 0 ? this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[1] : this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[2]
+          // item.sourceName = item.source === 0 ? this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[1] : this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[2]
 
-          switch (item.goodsType) {
-            // case 1: item.goodsTypeName = '拼团商品'
-            case 1: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[0]
-              break
-            // case 3: item.goodsTypeName = '砍价'
-            case 3: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[1]
-              break
-            // case 5: item.goodsTypeName = '秒杀'
-            case 5: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[2]
-              break
-            // case 6: item.goodsTypeName = '限时降价'
-            case 6: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[3]
-              break
-            // case 10: item.goodsTypeName = '预售'
-            case 10: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[4]
-              break
-            default:
-              item.goodsTypeName = null
-          }
+          // switch (item.goodsType) {
+          //   // case 1: item.goodsTypeName = '拼团商品'
+          //   case 1: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[0]
+          //     break
+          //   // case 3: item.goodsTypeName = '砍价'
+          //   case 3: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[1]
+          //     break
+          //   // case 5: item.goodsTypeName = '秒杀'
+          //   case 5: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[2]
+          //     break
+          //   // case 6: item.goodsTypeName = '限时降价'
+          //   case 6: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[3]
+          //     break
+          //   // case 10: item.goodsTypeName = '预售'
+          //   case 10: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[4]
+          //     break
+          //   default:
+          //     item.goodsTypeName = null
+          // }
 
           item.shopPriceEdit = false
           item.shopPriceOld = item.shopPrice
           item.goodsNumberEdit = false
           item.goodsNumberOld = item.goodsNumber
           item.check = false
+
+          if (!item.isDefaultProduct) {
+            let skus = item.goodsSpecProducts
+            let minShopPrice = skus[0].prdPrice
+            let maxShopPrice = skus[0].prdPrice
+            for (let sku of skus) {
+              if (sku.prdPrice < minShopPrice) {
+                minShopPrice = sku.prdPrice
+              }
+              if (sku.prdPrice > maxShopPrice) {
+                maxShopPrice = sku.prdPrice
+              }
+            }
+            item.minShopPrice = minShopPrice
+            item.maxShopPrice = maxShopPrice
+          }
         })
         this.$set(this, 'goodsData', dataList)
       })
       // 筛选导出
-      this.filterData.exportRowStart = 1
-      this.filterData.exportRowEnd = 5000
-      getExportTotalRows(this.filterData).then(res => {
-        console.log(res)
-        if (res.error === 0) {
-          this.screenNum = res.content
-        }
-      })
+      // this.filterData.exportRowStart = 1
+      // this.filterData.exportRowEnd = 5000
+      // getExportTotalRows(this.filterData).then(res => {
+      //   console.log(res)
+      //   if (res.error === 0) {
+      //     this.screenNum = res.content
+      //   }
+      // })
     },
     showExportDialog (filterData, filterDataString) {
       if (filterData !== undefined) {
