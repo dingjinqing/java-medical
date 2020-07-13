@@ -29,5 +29,4 @@ public class PaymentRecordParam {
 	    private Timestamp created;
 	    private String    remark1;
 	    private String    remark2;
-	private String attach;
 }

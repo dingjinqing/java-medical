@@ -94,7 +94,7 @@ public class OrderPayService extends ShopBaseService{
      * @param activityType 活动类型
      * @throws MpException
      */
-    public WebPayVo isContinuePay(OrderInfoRecord orderInfo, String orderSn, BigDecimal money, String goodsNameForPay,String ClientIp, String openId, Byte activityType,Byte isdCart) throws MpException {
+    public WebPayVo isContinuePay(OrderInfoRecord orderInfo, String orderSn, BigDecimal money, String goodsNameForPay,String ClientIp, String openId, Byte activityType ) throws MpException {
         logger().info("继续支付接口start");
         if(orderInfo.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY || orderInfo.getOrderStatus() == OrderConstant.ORDER_PIN_PAYED_GROUPING){
             thirdPartyMsgServices.thirdPartService(orderInfo);
@@ -106,7 +106,7 @@ public class OrderPayService extends ShopBaseService{
             //非系统金额支付
             try {
                 logger().info("微信预支付调用接口调用start");
-                WebPayVo webPayVo = pay.wxUnitOrder(ClientIp, goodsNameForPay, orderSn, money, openId,isdCart);
+                WebPayVo webPayVo = pay.wxUnitOrder(ClientIp, goodsNameForPay, orderSn, money, openId);
                 webPayVo.setOrderSn(orderInfo.getOrderSn());
                 webPayVo.setOrderType(activityType == null ? null : activityType.toString());
                 order.updatePrepayId(webPayVo.getResult().getPrepayId(), orderInfo.getOrderId(), orderSn);

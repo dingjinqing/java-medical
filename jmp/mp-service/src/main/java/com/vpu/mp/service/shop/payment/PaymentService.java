@@ -241,17 +241,17 @@ public class PaymentService extends ShopBaseService {
 					// 全款支付方式时，则直接标记为尾款已支付
                     orderInfo.setBkOrderPaid(OrderConstant.BK_PAY_FINISH);
 					//状态变为待发货
-					pay.toWaitDeliver(orderInfo, paymentRecord,param.getAttach());
+					pay.toWaitDeliver(orderInfo, paymentRecord);
 				}
 			} else {
 				// 定金已支付，标记为尾款已支付
                 orderInfo.setBkOrderPaid(OrderConstant.BK_PAY_FINISH);
 				//状态变为待发货
-                pay.toWaitDeliver(orderInfo, paymentRecord,param.getAttach());
+                pay.toWaitDeliver(orderInfo, paymentRecord);
 			}
 		} else {
 			//状态变为待发货
-            pay.toWaitDeliver(orderInfo, paymentRecord,param.getAttach());
+            pay.toWaitDeliver(orderInfo, paymentRecord);
 		}
 
 		/**

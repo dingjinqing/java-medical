@@ -190,44 +190,6 @@ public class MpPaymentService extends ShopBaseService {
         this.logger().info("前台支付调用参数result : {}", webParam);
 		return webParam;
 	}
-	/**
-	 * 统一下单
-     *
-	 * @param clientIp  客户IP
-	 * @param goodsName 商品名称
-	 * @param orderSn   订单号
-	 * @param amount    单位分
-	 * @param openId    用户OpenId
-	 * @return
-	 * @throws WxPayException
-	 */
-    public WebPayVo wxUnitOrder(String clientIp, String goodsName, String orderSn, BigDecimal amount, String openId,Byte isCart) throws WxPayException, MpException {
-        logger().info("微信预支付调用接口start,clientIp:{},goodsName:{},orderSn:{},amount:{},openId:{}", clientIp,  goodsName,  orderSn,  amount,  openId);
-		WxPayment wxPayment = this.getMpPay();
-		WxPaymentAttachParam attachParam =new WxPaymentAttachParam();
-		attachParam.setIsCart(isCart);
-		WxPayUnifiedOrderRequest payInfo = WxPayUnifiedOrderRequest.newBuilder()
-            .openid(StringUtils.isBlank(wxPayment.getConfig().getSubAppId()) ? openId : null)
-            .subOpenid(StringUtils.isBlank(wxPayment.getConfig().getSubAppId()) ? null : openId)
-            .outTradeNo(orderSn)
-            // 订单总金额，单位为分
-            .totalFee(amount.multiply(HUNDRED).intValue())
-            .body(Util.filterEmoji(goodsName, ""))
-			//附加数据
-			.attach(JSONUtil.toJsonStr(attachParam))
-            .tradeType(WxPayConstants.TradeType.JSAPI)
-            .spbillCreateIp(clientIp)
-            .notifyUrl(domainConfig.getWxMaPayNotifyUrl(this.getShopId()))
-            .build();
-		this.logger().info("PartnerKey is : {}", wxPayment.getConfig().getMchKey());
-		//已经校验
-		WxPayUnifiedOrderResult result = wxPayment.unifiedOrder(payInfo);
-		this.logger().info("微信预支付调用接口result : {}", result);
-        //获取前台支付调用参数
-        WebPayVo webParam = getWebPayParam(result, wxPayment.getConfig());
-        this.logger().info("前台支付调用参数result : {}", webParam);
-		return webParam;
-	}
 
     /**
      * Continue pay web pay vo.
@@ -405,7 +367,6 @@ public class MpPaymentService extends ShopBaseService {
 				.trdaeOriginStatus(orderResult.getResultCode())
 				.quantity(1)
 				.orderSn(orderResult.getOutTradeNo())
-				.attach(orderResult.getAttach())
 				.totalFee(BaseWxPayResult.fenToYuan(orderResult.getTotalFee()))
 				.buyerId(orderResult.getOpenid())
 				.sellerId(orderResult.getMchId())
