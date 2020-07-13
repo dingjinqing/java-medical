@@ -1041,7 +1041,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     private void checkMedcail(CreateParam param) throws MpException {
         if (PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_PASS.equals(param.getCheckPrescriptionStatus())){
-            throw new MpException(JsonResultCode.CODE_ORDER_MEDICAL_PRESCRIPTION_CHECK);
+            throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);
         }
     }
 

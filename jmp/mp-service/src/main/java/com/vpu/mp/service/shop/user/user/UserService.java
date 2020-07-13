@@ -488,7 +488,7 @@ public class UserService extends ShopBaseService {
 		for(Map<String, Object> module:moduleData) {
 			if (module.get("module_name").equals("center_header")) {
 				logger().info("进入center_header");
-				module=parseCenterHeader(userId, module);
+//				module=parseCenterHeader(userId, module);
 				logger().info("完成center_header");
 			}
 			if (module.get("module_name").equals("account_money")) {
