@@ -636,22 +636,22 @@ export default {
         ],
         doctor_manger: [
           {
-            imgUrl: this.$imageHost + '/image/admin/icon_left/config_list.png',
-            imgUrl_h: this.$imageHost + '/image/admin/icon_left/config_list_h.png',
+            imgUrl: this.$imageHost + '/image/admin/icon_left/doctor_list.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/doctor_list_h.png',
             span: '',
             name: 'doctorList',
             flag: true
           },
           {
-            imgUrl: this.$imageHost + '/image/admin/icon_left/config_list.png',
-            imgUrl_h: this.$imageHost + '/image/admin/icon_left/config_list_h.png',
+            imgUrl: this.$imageHost + '/image/admin/icon_left/doctor_professional_title.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/doctor_professional_title_h.png',
             span: '',
             name: 'doctorProfessionalTitle',
             flag: true
           },
           {
-            imgUrl: this.$imageHost + '/image/admin/icon_left/config_list.png',
-            imgUrl_h: this.$imageHost + '/image/admin/icon_left/config_list_h.png',
+            imgUrl: this.$imageHost + '/image/admin/icon_left/offices_list.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/offices_list_h.png',
             span: '',
             name: 'officesList',
             flag: true
@@ -659,8 +659,8 @@ export default {
         ],
         prescription_manger: [
           {
-            imgUrl: this.$imageHost + '/image/admin/icon_left/config_list.png',
-            imgUrl_h: this.$imageHost + '/image/admin/icon_left/config_list_h.png',
+            imgUrl: this.$imageHost + '/image/admin/icon_left/prescription_list.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/prescription_list_h.png',
             span: '',
             name: 'prescriptionList',
             flag: true

@@ -4,7 +4,7 @@
 		<text>我的病历</text>
 		<text class="more">更多</text>
 	</view>
-	<view class="case-history-list" bindtap="handleShowDialog">
+	<view class="case-history-list" bindtap="handleShowDialog" data-case-history-id="1">
 		<view class="list-item title" style="background:url({{imageUrl}}image/wxapp/case-history-top-bg.png) no-repeat left top/100% 100rpx , linear-gradient(#d0edeb, #ffffff);" >
 	   <text>电子病历1</text>
 		</view>
@@ -50,4 +50,4 @@
 	</view>
 </view>
 
-<v-case-history-dialog show="{{showCaseHistory}}" />
+<v-case-history-dialog show="{{showCaseHistory}}" case-history-data="{{caseHistoryData}}"/>

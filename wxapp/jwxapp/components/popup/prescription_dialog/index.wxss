@@ -27,7 +27,7 @@
   background: #fff;
   border-radius: 16rpx 16rpx 0 0;
   margin-top: -20rpx;
-  height: 430rpx;
+  max-height: 430rpx;
   display: flex;
   flex-direction: column;
   padding:56rpx 62rpx 56rpx 32rpx;

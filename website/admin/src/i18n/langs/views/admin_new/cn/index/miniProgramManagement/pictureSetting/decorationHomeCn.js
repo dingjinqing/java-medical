@@ -139,14 +139,14 @@ export const cn = {
       name: 'm_map'
     },
     {
-      imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/icon_map.png',
+      imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/icon_prescription.png',
       text: '处方模块',
       id: 29,
       flag: true,
       name: 'm_prescription'
     },
     {
-      imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/icon_map.png',
+      imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/icon_case_history.png',
       text: '病历模块',
       id: 30,
       flag: true,

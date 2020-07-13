@@ -75,7 +75,7 @@ public class CartProcessorContext {
         //秒杀-提示
         executeStrategy(seckill,cartBo);
         //分销
-        executeStrategy(rebateProcess,cartBo);
+//        executeStrategy(rebateProcess,cartBo);
         //首单特惠
         executeStrategy(firstSpecial,cartBo);
         //限时降价

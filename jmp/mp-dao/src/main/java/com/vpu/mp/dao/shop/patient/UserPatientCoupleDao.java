@@ -11,9 +11,14 @@ import static com.vpu.mp.db.shop.Tables.USER_PATIENT_COUPLE;
 @Repository
 public class UserPatientCoupleDao  extends ShopBaseDao {
 
+    /**
+     * 获取默认患者 没有为0
+     * @param userId
+     * @return
+     */
     public Integer defaultPatientIdByUser(Integer userId) {
-        Integer patientId = db().select().from(USER_PATIENT_COUPLE).where(USER_PATIENT_COUPLE.USER_ID.eq(userId).and(USER_PATIENT_COUPLE.IS_DEFAULT.eq(PatientConstant.Default)))
-            .fetchOne(0, int.class);
+        Integer patientId = db().select(USER_PATIENT_COUPLE.PATIENT_ID).from(USER_PATIENT_COUPLE).where(USER_PATIENT_COUPLE.USER_ID.eq(userId).and(USER_PATIENT_COUPLE.IS_DEFAULT.eq(PatientConstant.Default)))
+            .fetchOptional(USER_PATIENT_COUPLE.PATIENT_ID, int.class).orElse(0);
         return patientId;
     }
 
