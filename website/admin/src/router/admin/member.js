@@ -324,7 +324,7 @@ const routes = [
   },
   // 患者列表
   {
-    path: '/admin/home/main/patientManagement',
+    path: '/admin/home/main/patientList',
     name: 'patient_list',
     meta: {
       crumbTitle: 'router.patientList',
@@ -346,7 +346,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/user_manger/patientManagement/patientMessage'
+        '@/view/admin/index/leftNavComponents/user_manger/patientManagement/patientManage'
       )
   },
   // 处方详情

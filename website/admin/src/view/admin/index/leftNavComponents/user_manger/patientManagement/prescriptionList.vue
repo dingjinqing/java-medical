@@ -49,32 +49,32 @@
             }"
         >
           <el-table-column
-            prop='id'
+            prop='storeName'
             label='患者编号'
           ></el-table-column>
           <el-table-column
-            prop='name'
+            prop='posShopId'
             label='姓名'
           ></el-table-column>
           <el-table-column
-            prop='mobile'
+            prop='groupName'
             label='手机号'
           ></el-table-column>
           <el-table-column
-            prop='treatmentNo'
+            prop='registeredHospital'
             label='就诊卡号'
           ></el-table-column>
           <el-table-column
-            prop='sex'
-            label='性别'
-          ></el-table-column>
-          <el-table-column
-            prop='diseaseHistory'
+            prop='department'
             label='疾病史'
           ></el-table-column>
-                  <el-table-column
-            prop='allergyHistory'
+          <el-table-column
+            prop='jobTitle'
             label='过敏史'
+          ></el-table-column>
+          <el-table-column
+            prop='registeredTime'
+            label='注册时间'
           ></el-table-column>
           <el-table-column label='操作'>
             <template slot-scope="scope">
@@ -85,42 +85,39 @@
                   content="查看详情"
                   placement="top"
                 >
-                  <a @click='handleSeeMessage(scope.row.id)'>查看详情</a>
+                  <a @click='handleSeeMessage(134)'>查看详情</a>
                 </el-tooltip>
               </div>
             </template>
           </el-table-column>
         </el-table>
-        <pagination
+        <!-- <pagination
           :page-params.sync="pageParams"
           @pagination="initDataList"
-        />
+        /> -->
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import pagination from '@/components/admin/pagination/pagination'
-// 导入api
-import { getPatientList } from '@/api/admin/memberManage/patientManage.js'
+// import pagination from '@/components/admin/pagination/pagination'
 export default {
-  components: { pagination },
+  //   components: { pagination },
   data () {
     return {
       loading: false,
       langDefaultFlag: false,
-      pageParams: {
-        currentPage: 1,
-        pageRows: 20
-      },
-      tableData: [],
+      pageParams: {},
+      tableData: [{
+        storeName: 'liuyang'
+      }
+      ],
+      storeGroup: [],
       queryParams: {
         doctorNumber: null,
         doctorName: null,
-        mobile: null,
-        currentPage: 1,
-        pageRows: 20
+        mobile: null
       },
       // 表格原始数据
       originalData: []
@@ -129,31 +126,28 @@ export default {
   methods: {
     initDataList () {
       this.loading = true
-      this.queryParams.currentPage = this.pageParams.currentPage
-      this.queryParams.pageRows = this.pageParams.pageRows
-      getPatientList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
-        console.log(res)
-        this.originalData = res.content.dataList
-        this.pageParams = res.content.page
-        let originalData = JSON.parse(JSON.stringify(this.originalData))
-        this.handleData(originalData)
-        this.loading = false
-      })
+      // storeList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
+      //   console.log(res)
+      //   this.originalData = res.content.storePageListVo.dataList
+      //   let originalData = JSON.parse(JSON.stringify(this.originalData))
+      //   this.handleData(originalData)
+      //   this.loading = false
+      // })
     },
     handleSeeMessage (userId) {
       console.log(this.$router)
       this.$router.push({
-        name: 'patient_message',
+        name: 'prescription_message',
         query: {
           userId: userId
         }
       })
-    },
-    handleData (data) {
-      this.tableData = data
-      this.langDefaultFlag = true
     }
-  },
+    // handleData (data) {
+    //   this.tableData = data
+    //   this.langDefaultFlag = true
+    // }
+  }
   // watch: {
   //   lang () {
   //     if (this.langDefaultFlag) {
@@ -163,9 +157,9 @@ export default {
   //     }
   //   }
   // },
-  mounted () {
-    this.initDataList()
-  }
+  // mounted () {
+  //   this.initDataList()
+  // }
 }
 </script>
 
@@ -176,7 +170,6 @@ export default {
     display: flex;
     width: 100%;
     background-color: #fff;
-    padding: 15px;
     .filters {
       flex: 2;
       display: flex;
@@ -189,7 +182,7 @@ export default {
         justify-content: flex-end;
         margin-left: 15px;
         > span {
-          width: 120px;
+          width: 70px;
           font-size: 14px;
           text-align: right;
         }

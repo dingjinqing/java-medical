@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.doctor;
 
 import lombok.Data;
+import java.util.List;
 
 @Data
 public class DoctorListParam {
@@ -9,7 +10,8 @@ public class DoctorListParam {
     private Integer pageRows;
     private String name;
     private String doctorNo;
-    private Integer departmentId;
+    private String departmentName;
+    private List<Integer> doctorIds;
 
     @Override
     public String toString() {
@@ -17,9 +19,10 @@ public class DoctorListParam {
             "nav=" + nav +
             ", currentPage=" + currentPage +
             ", pageRows=" + pageRows +
-            ", name=" + name +
-            ", doctorNo=" + doctorNo +
-            ", departmentId=" + departmentId +
+            ", name='" + name + '\'' +
+            ", doctorNo='" + doctorNo + '\'' +
+            ", departmentName='" + departmentName + '\'' +
+            ", doctorIds=" + doctorIds +
             '}';
     }
 }

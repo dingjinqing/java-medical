@@ -41,6 +41,7 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.packsale.OrderPackageSale;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.presale.OrderPreSale;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
+import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
@@ -308,7 +309,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         //TODO 欧派、嗨购、CRM、自动同步订单微信购物单
         try {
-            createVo.setWebPayVo(orderPay.isContinuePay(orderAfterRecord, orderAfterRecord.getOrderSn(), orderAfterRecord.getMoneyPaid(), orderPay.getGoodsNameForPay(orderAfterRecord, orderBo.getOrderGoodsBo()), param.getClientIp(), param.getWxUserInfo().getWxUser().getOpenId(), param.getActivityType()));
+            WebPayVo continuePay = orderPay.isContinuePay(orderAfterRecord,
+                    orderAfterRecord.getOrderSn(),
+                    orderAfterRecord.getMoneyPaid(),
+                    orderPay.getGoodsNameForPay(orderAfterRecord, orderBo.getOrderGoodsBo()),
+                    param.getClientIp(),
+                    param.getWxUserInfo().getWxUser().getOpenId(),
+                    param.getActivityType());
+            createVo.setWebPayVo(continuePay);
             return ExecuteResult.create(createVo);
         } catch (MpException e) {
             return ExecuteResult.create(e.getErrorCode(), null);
@@ -1041,7 +1049,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     private void checkMedcail(CreateParam param) throws MpException {
         if (PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_PASS.equals(param.getCheckPrescriptionStatus())){
-            throw new MpException(JsonResultCode.CODE_ORDER_MEDICAL_PRESCRIPTION_CHECK);
+            throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);
         }
     }
 

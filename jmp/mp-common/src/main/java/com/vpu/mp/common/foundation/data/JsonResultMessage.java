@@ -851,6 +851,11 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_ACTIVITY_END = "order.activity.end";
     public static final String MSG_ORDER_ACTIVITY_NUMBER_LIMIT = "order.activity.number.limit";
     public static final String MSG_ORDER_ACTIVITY_GOODS_OUT_OF_STOCK = "order.activity.goods.out.of.stock";
+    /**
+     * 药品信息校验
+     */
+    public static final String MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK = "order.medical.prescription.check";
+
     /**商品不支持预售*/
     public static final String MSG_ORDER_GOODS_NOT_SUPORT_PRESALE = "order.goods.not.suport.presale";
     public static final String MSG_ORDER_CARD_EXCHGE_NO_CHOOSE_GOODS = "order.card.exchge.no.choose.goods";
@@ -975,10 +980,7 @@ public class JsonResultMessage {
     public static final String ORDER_EXPORT_DELIVER_TYPE_COURIER = "order.export.deliver.type.courier";
     public static final String ORDER_EXPORT_DELIVER_TYPE_SELF = "order.export.deliver.type.self";
     public static final String ORDER_EXPORT_CITY_EXPRESS_SERVICE = "order.export.deliver.type.express";
-    /**
-     * 药品信息校验
-     */
-    public static final String CODE_ORDER_MEDICAL_PRESCRIPTION_CHECK = "order.export.medical.prescription.check";
+
 
     /**
      * 下单必填信息的title
