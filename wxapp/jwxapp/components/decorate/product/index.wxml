@@ -1,4 +1,4 @@
-<view class="product-container person_reconmmend" style='{{m.goods_module_style == 1 ? "width:750rpx;margin-top:18rpx;" : ""}}'>
+<view class="product-container person_reconmmend {{m.topHasRadius ? 'top-has-radius' : ''}} {{m.topIsAdver ? 'top-is-adver' : ''}}" style='{{m.goods_module_style == 1 ? "width:750rpx;margin-top:18rpx;" : ""}}{{m.page_color ? "background-color:"+m.page_color+";":""}}'>
  <block wx:if='{{m.goods_module_title == 1 && (m.recommend_type === 1 || (m.recommend_type === 0 && m.auto_recommend_type === 0))}}'>
 		<view class='module_names' style='{{m.tit_center == 1 ? "justify-content:center" : ""}}' data-url='{{m.title_link}}' bindtap='bindJumpLink' wx:if='{{m.img_url || m.title}}'>
 			<image class="image" src="{{m.img_url}}" wx:if="{{m.img_url}}" />
@@ -11,7 +11,7 @@
 		</view>
 		<image src='{{m.img_title_url}}' wx:if='{{m.img_title_url}}' mode='widthFix' style='width:100%' data-url='{{m.title_link}}' bindtap='bindJumpLink'></image>
 	</block>
-  <view class="prescription-module-title" wx:if="{{m.recommend_type === 0 && m.auto_recommend_type === 1}}">
+  <view class="prescription-module-title" style="{{m.topHasRadius ? 'margin-top:0rpx;' : ''}}" wx:if="{{m.recommend_type === 0 && m.auto_recommend_type === 1}}">
     <image src="{{imageUrl}}image/wxapp/prescription-icon2.png"></image>
     <text>我的处方药</text>
     <text class="more">更多</text>

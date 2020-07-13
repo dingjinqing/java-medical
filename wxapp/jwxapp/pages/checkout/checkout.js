@@ -34,7 +34,8 @@ global.wxPage({
       balance: null, //余额抵扣金额
       cardBalance: null, //会员卡抵扣金额
       orderPayWay: null, //支付方式
-      isCart: 0
+      isCart: 0,
+      patientId:null //患者id
     },
     usePayInfo: {
       moneyPaid: 0, //订单可支付的金额
@@ -119,11 +120,13 @@ global.wxPage({
         if (res.error === 0) {
           let orderInfo = res.content
           this.setCardData(orderInfo)
-          console.log(orderEvent)
           this.setData({
             orderInfo,
             isAward:res.content.activityType === 24, //是否奖品订单
-            isCardExchange:res.content.activityType === 13 //是否限次卡兑换
+            isCardExchange:res.content.activityType === 13, //是否限次卡兑换
+          })
+          this.setData({
+            submitButtonStatus:this.getSubmitButtonStatus()
           })
           if(orderInfo.activityType === 4){ //积分兑换数据
             this.setScoreRedeemData(orderInfo)
@@ -662,6 +665,11 @@ global.wxPage({
       return false
     }
 
+    if(!this.getSubmitButtonStatus()){
+      util.showModal('提示',`请确认药品是否关联处方或\n处方中是否有对应药品`)
+      return false
+    }
+
     return true
   },
   // 关闭弹窗
@@ -810,6 +818,7 @@ global.wxPage({
     }, '?')
   },
   showShareFriend () {
+    if(!this.canSubmit()) return
     this.setData({
       showFriendPayDialog: true
     })
@@ -876,10 +885,25 @@ global.wxPage({
       preSaleRuleShow:true
     })
   },
-  handleShowDialog(){
-    this.setData({
-      showPrescription:true
+  handleShowDialog(e){
+    let {prescriptionNo} = e.currentTarget.dataset
+    util.api('/api/wxapp/prescription/details',res=>{
+      if(res.error === 0){
+        this.setData({
+          showPrescription:true,
+          prescriptionData:res.content
+        })
+      }
+    },{
+      prescriptionNo
     })
+    
+  },
+  getSubmitButtonStatus(){
+    let {checkPrescriptionStatus:status} = this.data.orderInfo
+    console.log()
+    if(status === 2) return false
+    return true
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

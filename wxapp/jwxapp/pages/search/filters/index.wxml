@@ -51,7 +51,7 @@
         <view class="item brand more" bindtap="showBrand">{{i18n.$t(localePack,"page1.search.more")}}...</view>
       </view>
     </view>
-    <view class="filter-item" wx:if="{{activityTypes.length > 0}}">
+    <view class="filter-item" wx:if="{{activityTypes.length}}">
       <view class="item-title-content">
         <text class="title">{{i18n.$t(localePack,"page1.search.actGoods")}}</text>
       </view>
@@ -61,7 +61,7 @@
        </block>
       </view>
     </view>
-    <view class="filter-item" wx:if="{{goodsLabels}}">
+    <view class="filter-item" wx:if="{{goodsLabels.length}}">
       <view class="item-title-content">
         <text class="title">{{i18n.$t(localePack,"page1.search.goodsLabel")}}</text>
       </view>

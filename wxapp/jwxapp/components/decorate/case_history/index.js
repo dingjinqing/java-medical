@@ -20,6 +20,9 @@ global.wxComponent({
         id
       })
       
+    },
+    viewCaseHistoryList(){
+      util.jumpLink('pages1/medicalrecordlist/medicalrecordlist')
     }
   }
 });

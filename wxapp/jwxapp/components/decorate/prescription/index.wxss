@@ -1,8 +1,7 @@
 .prescription-content{
-  padding: 50rpx 15rpx 20rpx;
+  padding: 32rpx 15rpx 20rpx;
   display: flex;
   flex-direction: column;
-  border-radius: 16rpx 16rpx 0 0;
 }
 .prescription-item{
   border-radius: 16rpx;
@@ -107,4 +106,13 @@
   color: #999;
   border-radius: 16rpx;
   background-color: #fff;
+}
+.top-has-radius{
+  padding-top: 50rpx;
+  border-radius: 16rpx 16rpx 0 0;
+}
+.top-is-adver{
+  margin-top:-20rpx;
+  position: relative;
+  z-index: 1;
 }
