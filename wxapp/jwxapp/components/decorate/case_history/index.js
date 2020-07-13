@@ -7,10 +7,19 @@ global.wxComponent({
     updatePage(){
       util.jumpLink('pages1/getprescription/getprescription')
     },
-    handleShowDialog(){
-      this.setData({
-        showCaseHistory:true
+    handleShowDialog(e){
+      let {caseHistoryId:id} = e.currentTarget.dataset
+      util.api('/api/wxapp/medicine/history/detail',res=>{
+        if(res.error === 0){
+          this.setData({
+            showCaseHistory:true,
+            caseHistoryData:res.content
+          })
+        }
+      },{
+        id
       })
+      
     }
   }
 });
