@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.doctor;
 
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -18,10 +19,17 @@ public class DoctorService extends ShopBaseService {
     protected DoctorDao doctorDao;
     @Autowired
     protected DoctorDepartmentCoupleDao doctorDepartmentCoupleDao;
+    @Autowired
+    protected DepartmentDao departmentDao;
 //    public DepartmentService departmentService;
     public static final int ZERO = 0;
 
     public PageResult<DoctorOneParam> getDoctorList(DoctorListParam param) {
+        if (param.getDepartmentName() != null) {
+            List<Integer> departmentIds = departmentDao.getDepartmentIdsByName(param.getDepartmentName());
+            List<Integer> doctorIds = doctorDepartmentCoupleDao.getDoctorIdsByDepartmentIds(departmentIds);
+            param.setDoctorIds(doctorIds);
+        }
         PageResult<DoctorOneParam> doctorList = doctorDao.getDoctorList(param);
         for (DoctorOneParam list : doctorList.dataList) {
             List<String> departmentList = doctorDepartmentCoupleDao.getDepartmentNamesByDoctorId(list.getId());

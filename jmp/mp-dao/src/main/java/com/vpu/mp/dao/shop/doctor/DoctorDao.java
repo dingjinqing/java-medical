@@ -48,10 +48,13 @@ public class DoctorDao extends ShopBaseDao {
      */
     protected void buildOptions(SelectJoinStep<? extends Record> select, DoctorListParam param) {
         if (param.getName() != null) {
-            select.where(DOCTOR.NAME.like(param.getName()));
+            select.where(DOCTOR.NAME.like(likeValue(param.getName())));
         }
         if (param.getDoctorNo() != null) {
             select.where(DOCTOR.HOSPITAL_CODE.like(param.getDoctorNo()));
+        }
+        if (param.getDoctorIds() != null) {
+            select.where(DOCTOR.HOSPITAL_CODE.in(param.getDoctorIds()));
         }
     }
 

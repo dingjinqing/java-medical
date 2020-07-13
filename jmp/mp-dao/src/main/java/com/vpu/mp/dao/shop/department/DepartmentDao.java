@@ -164,4 +164,8 @@ public class DepartmentDao extends ShopBaseDao {
     public List<DepartmentOneParam> getListByIds(List<Integer> departmentIds) {
         return db().select(DEPARTMENT.ID, DEPARTMENT.NAME).from(DEPARTMENT).where(DEPARTMENT.ID.in(departmentIds)).fetchInto(DepartmentOneParam.class);
     }
+
+    public List<Integer> getDepartmentIdsByName(String name) {
+        return db().select(DEPARTMENT.ID).from(DEPARTMENT).where(DEPARTMENT.IS_DELETE.eq((byte) 0).and(DEPARTMENT.NAME.like(likeValue(name)))).fetchInto(Integer.class);
+    }
 }

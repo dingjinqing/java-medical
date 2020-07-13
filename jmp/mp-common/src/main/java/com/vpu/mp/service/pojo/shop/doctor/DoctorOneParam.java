@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.doctor;
 import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Data
@@ -15,6 +16,7 @@ public class DoctorOneParam {
     private String    certificateCode;
     private String    professionalCode;
     private String    registerHospital;
+    private Timestamp registerTime;
     private String    mobile;
     private Integer   departmentId;
     private Integer   titleId;
