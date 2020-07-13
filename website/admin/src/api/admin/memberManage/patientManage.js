@@ -1,9 +1,9 @@
 import service from '@/util/request.js'
 
 // 获取
-export function getPatientPrescriptionData (data) {
+export function getPatientList (data) {
   return service({
-    url: '/api/admin/prescription/list',
+    url: '/api/admin/patient/list',
     method: 'post',
     data: data
   })
