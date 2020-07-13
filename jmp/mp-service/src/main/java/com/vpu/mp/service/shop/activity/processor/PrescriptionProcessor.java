@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
+import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,8 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     private PrescriptionService prescriptionService;
     @Autowired
     private MedicalGoodsService medicalGoodsService;
+    @Autowired
+    private PatientService patientService;
 
 
     @Override
@@ -57,6 +60,10 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
         log.info("药品处方检查-开始");
+        if (param.getPatientId()==null||param.getPatientId().equals(0)){
+            Integer integer = patientService.defaultPatientId(param.getWxUserInfo().getUserId());
+            param.setPatientId(integer);
+        }
         List<PrescriptionVo> prescriptionList =new ArrayList<>();
         Byte checkPrescriptionStatus = PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED;
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
