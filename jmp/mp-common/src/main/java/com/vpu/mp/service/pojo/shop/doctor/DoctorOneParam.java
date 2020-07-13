@@ -27,4 +27,5 @@ public class DoctorOneParam {
     private String    titleName;
     private List<Integer> departmentIds;
     private List<String> departmentNames;
+    private String departmentIdsStr;
 }
