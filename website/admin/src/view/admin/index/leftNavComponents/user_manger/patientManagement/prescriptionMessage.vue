@@ -66,7 +66,6 @@ export default {
 <style  scoped>
 .main {
   padding: 10px;
-  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;

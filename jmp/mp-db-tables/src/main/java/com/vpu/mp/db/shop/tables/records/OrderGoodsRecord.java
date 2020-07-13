@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
 
-    private static final long serialVersionUID = 1538478674;
+    private static final long serialVersionUID = -1425431917;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_order_goods.rec_id</code>.
@@ -703,17 +703,59 @@ public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
     }
 
     /**
+     * Setter for <code>mini_shop_471752.b2c_order_goods.prescription_old_no</code>. 老处方项目明细号码（可根据此字段反查批次号）
+     */
+    public void setPrescriptionOldNo(String value) {
+        set(48, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_order_goods.prescription_old_no</code>. 老处方项目明细号码（可根据此字段反查批次号）
+     */
+    public String getPrescriptionOldNo() {
+        return (String) get(48);
+    }
+
+    /**
      * Setter for <code>mini_shop_471752.b2c_order_goods.prescription_no</code>. 处方项目明细号码（可根据此字段反查批次号）
      */
     public void setPrescriptionNo(String value) {
-        set(48, value);
+        set(49, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_order_goods.prescription_no</code>. 处方项目明细号码（可根据此字段反查批次号）
      */
     public String getPrescriptionNo() {
-        return (String) get(48);
+        return (String) get(49);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_order_goods.medical_audit_status</code>. 药品审核状态 0未审核 1审核通过 2审核不通过
+     */
+    public void setMedicalAuditStatus(Byte value) {
+        set(50, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_order_goods.medical_audit_status</code>. 药品审核状态 0未审核 1审核通过 2审核不通过
+     */
+    public Byte getMedicalAuditStatus() {
+        return (Byte) get(50);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_order_goods.audit_time</code>. 药品审核时间
+     */
+    public void setAuditTime(Timestamp value) {
+        set(51, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_order_goods.audit_time</code>. 药品审核时间
+     */
+    public Timestamp getAuditTime() {
+        return (Timestamp) get(51);
     }
 
     // -------------------------------------------------------------------------
@@ -742,7 +784,7 @@ public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
     /**
      * Create a detached, initialised OrderGoodsRecord
      */
-    public OrderGoodsRecord(Integer recId, Integer mainRecId, Integer shopId, Integer orderId, String orderSn, Integer goodsId, String goodsName, String goodsSn, Integer productId, String productSn, Integer goodsNumber, BigDecimal marketPrice, BigDecimal goodsPrice, String goodsAttr, Integer sendNumber, Integer returnNumber, Byte isReal, String goodsAttrId, String goodsImg, Byte refundStatus, Byte commentFlag, Integer straId, BigDecimal perDiscount, Integer isGift, String rGoods, Integer goodsScore, Integer goodsGrowth, BigDecimal discountedGoodsPrice, String discountDetail, Byte fanliType, BigDecimal canCalculateMoney, BigDecimal fanliMoney, BigDecimal discountedTotalPrice, BigDecimal totalFanliMoney, String fanliStrategy, BigDecimal fanliPercent, BigDecimal costPrice, Byte isCardExclusive, String promoteInfo, Integer giftId, Byte isCanReturn, Short reducePriceNum, Byte activityType, Integer activityId, Integer activityRule, Timestamp createTime, Timestamp updateTime, Integer purchaseId, String prescriptionNo) {
+    public OrderGoodsRecord(Integer recId, Integer mainRecId, Integer shopId, Integer orderId, String orderSn, Integer goodsId, String goodsName, String goodsSn, Integer productId, String productSn, Integer goodsNumber, BigDecimal marketPrice, BigDecimal goodsPrice, String goodsAttr, Integer sendNumber, Integer returnNumber, Byte isReal, String goodsAttrId, String goodsImg, Byte refundStatus, Byte commentFlag, Integer straId, BigDecimal perDiscount, Integer isGift, String rGoods, Integer goodsScore, Integer goodsGrowth, BigDecimal discountedGoodsPrice, String discountDetail, Byte fanliType, BigDecimal canCalculateMoney, BigDecimal fanliMoney, BigDecimal discountedTotalPrice, BigDecimal totalFanliMoney, String fanliStrategy, BigDecimal fanliPercent, BigDecimal costPrice, Byte isCardExclusive, String promoteInfo, Integer giftId, Byte isCanReturn, Short reducePriceNum, Byte activityType, Integer activityId, Integer activityRule, Timestamp createTime, Timestamp updateTime, Integer purchaseId, String prescriptionOldNo, String prescriptionNo, Byte medicalAuditStatus, Timestamp auditTime) {
         super(OrderGoods.ORDER_GOODS);
 
         set(0, recId);
@@ -793,6 +835,9 @@ public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
         set(45, createTime);
         set(46, updateTime);
         set(47, purchaseId);
-        set(48, prescriptionNo);
+        set(48, prescriptionOldNo);
+        set(49, prescriptionNo);
+        set(50, medicalAuditStatus);
+        set(51, auditTime);
     }
 }

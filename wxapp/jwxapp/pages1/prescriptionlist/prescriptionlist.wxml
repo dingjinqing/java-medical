@@ -2,29 +2,31 @@
 <include src="/pages/common/header.wxml"/>
 <view class="mian-container">
   <view class="prescription-content" wx:if='{{ dataList[0].length }}'>
-    <view class="prescription-item" bindtap="to_info" wx:for='{{dataList}}' wx:key='key'>
-      <view class="item-title">电子处方1</view>
-      <view class="item-list-content">
-        <view class="item-list">
-          <view class="list-item">
-            <text class="list-item-dot"></text>
-            <view class="list-item-content">
-              诊断：{{item.diagnosisName}}
+    <block wx:for='{{dataList}}' wx:for-item="pageItem"  wx:key="key" wx:for-index="pageIndex">
+      <view class="prescription-item" bindtap="to_info" wx:for='{{pageItem}}' wx:key='key' data-prescriptionno='{{item.prescriptionNo}}'>
+        <view class="item-title">{{item.prescriptionNo}}</view>
+        <view class="item-list-content">
+          <view class="item-list">
+            <view class="list-item">
+              <text class="list-item-dot"></text>
+              <view class="list-item-content">
+                诊断：{{item.diagnosisName}}
+              </view>
             </view>
-          </view>
-          <view class="list-item">
-            <text class="list-item-dot"></text>
-            <view class="list-item-content">
-              科室：{{item.departmentName}}
+            <view class="list-item">
+              <text class="list-item-dot"></text>
+              <view class="list-item-content">
+                科室：{{item.departmentName}}
+              </view>
             </view>
           </view>
         </view>
+        <view class="doctor-info">
+          <text class="doctor-name">医师：{{item.doctorName}}</text>
+          <text class="item-date">日期：{{item.prescriptionCreateTime}}</text>
+        </view>
       </view>
-      <view class="doctor-info">
-        <text class="doctor-name">医师：{{item.doctorName}}</text>
-        <text class="item-date">日期：{{item.prescriptionCreateTime}}</text>
-      </view>
-    </view>
+    </block>
   </view>
   <view class="no_content" wx:if='{{ !dataList[0].length }}'>
     <image src="http://medicaldevimg.weipubao.cn/image/wxapp/no_pre_bg1.png"></image>

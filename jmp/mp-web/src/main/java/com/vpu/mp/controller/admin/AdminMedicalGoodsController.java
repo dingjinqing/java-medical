@@ -4,10 +4,10 @@ import cn.hutool.core.util.StrUtil;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.entity.GoodsEntity;
-import com.vpu.mp.service.pojo.shop.goods.param.MedicalGoodsPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.vo.GoodsPageListVo;
-import com.vpu.mp.service.pojo.shop.goods.vo.GoodsSelectVo;
+import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsEntity;
+import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsPageListParam;
+import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPageListVo;
+import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -112,9 +112,9 @@ public class AdminMedicalGoodsController extends AdminBaseController{
         if (goodsId == null) {
             return fail(JsonResultCode.GOODS_ID_IS_NULL);
         }
-        GoodsSelectVo goodsSelectVo = shop().medicalGoodsService.getGoodsDetailByGoodsId(goodsId);
+        GoodsDetailVo goodsDetailVo = shop().medicalGoodsService.getGoodsDetailByGoodsId(goodsId);
 
-        return success(goodsSelectVo);
+        return success(goodsDetailVo);
     }
 
     /**

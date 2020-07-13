@@ -30,13 +30,13 @@ public class AdminDepartmentController extends AdminBaseController{
     }
 
     /**
-     * 科室列表根据父节点
-     * @param parentId
+     * 科室列表查询子科室
+     * @param id
      * @return
      */
-    @GetMapping("/api/admin/doctor/department/child/list/{parentId}")
-    public JsonResult departmentListByParentId(@PathVariable Integer parentId) {
-        List<DepartmentListVo> departmentList = shop().departmentService.listDepartmentsByParentId(parentId);
+    @GetMapping("/api/admin/doctor/department/child/list/{id}")
+    public JsonResult departmentListByParentId(@PathVariable Integer id) {
+        List<DepartmentListVo> departmentList = shop().departmentService.listDepartmentsByParentId(id);
         return this.success(departmentList);
     }
 
@@ -90,7 +90,7 @@ public class AdminDepartmentController extends AdminBaseController{
      * 根据id获取普通商家分类
      * @param departmentId 普通商家分类id
      */
-    @GetMapping("/api/admin/doctor/department/{departmentId}")
+    @GetMapping("/api/admin/doctor/department/info/{departmentId}")
     public JsonResult getDepartment(@PathVariable Integer departmentId) {
         if (departmentId == null) {
             return fail(JsonResultCode.DOCTOR_DEPARTMENT_ID_IS_NULL);
@@ -120,4 +120,12 @@ public class AdminDepartmentController extends AdminBaseController{
 //        Set<String> set = new HashSet<>(sortNames);
 //        return set.size()!=sortNames.size();
 //    }
+
+    /**
+     * 科室树状List
+     */
+    @GetMapping("/api/admin/doctor/department/tree/list")
+    public JsonResult getDepartmentTreeList() {
+        return success(shop().departmentService.listDepartmentTree());
+    }
 }

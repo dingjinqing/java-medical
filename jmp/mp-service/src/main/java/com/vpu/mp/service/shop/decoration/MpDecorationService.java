@@ -41,9 +41,10 @@ import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import com.vpu.mp.service.shop.config.SuspendWindowConfigService;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import jodd.util.StringUtil;
@@ -82,6 +83,8 @@ public class MpDecorationService extends ShopBaseService {
     private SuspendWindowConfigService suspendWindowConfigService;
     @Autowired
     private PrescriptionService prescriptionService;
+    @Autowired
+    private PatientService patientService;
 
     public int setPageCatId(Integer pageId, Integer catId) {
         return db().update(XCX_CUSTOMER_PAGE)
@@ -247,8 +250,8 @@ public class MpDecorationService extends ShopBaseService {
         }
 
         UserRecord userRecord = user.getUserByUserId(param.getUserId());
-
-        Map<String, Object> pageInfo = convertPageContent(pageContent, userRecord, param.getPatientId());
+        Integer patientId = patientService.defaultPatientId(param.getUserId());
+        Map<String, Object> pageInfo = convertPageContent(pageContent, userRecord, patientId);
         WxAppPageVo page = new WxAppPageVo();
         page.setPageInfo(pageInfo);
         page.setIsFirstPage(record.getPageType());
@@ -762,7 +765,8 @@ public class MpDecorationService extends ShopBaseService {
         if (distributionCfg != null && DistributionConfigService.ENABLE_STATUS.equals(distributionCfg.getStatus()) && isDistributor) {
             pageContent = pageContent.replace("pages/distribution/distribution", "pages/distributionspread/distributionspread");
         }
-        Object o = getDetailDecoratePageModule(pageContent, param.getModuleIndex(), userRecord, param.getPatientId());
+        Integer patientId = patientService.defaultPatientId(param.getUserId());
+        Object o = getDetailDecoratePageModule(pageContent, param.getModuleIndex(), userRecord, patientId);
 
         return o;
     }
@@ -1018,6 +1022,7 @@ public class MpDecorationService extends ShopBaseService {
         ModulePrescription moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModulePrescription.class);
         PrescriptionListParam prescriptionListParam = new PrescriptionListParam();
         prescriptionListParam.setPageRows((Integer) 3);
+        prescriptionListParam.setPatientId(patientId);
         PageResult<PrescriptionListVo> prescriptionListData = prescriptionService.listPageResult(prescriptionListParam);
         moduleIntegral.setPrescriptionListData(prescriptionListData.getDataList());
         moduleIntegral.setHasMore(prescriptionListData.getPage().getLastPage() > 1);

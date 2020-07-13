@@ -39,7 +39,7 @@ public class GoodsImgDao extends ShopBaseDao {
      * @param goodsId
      * @return
      */
-    public List<String> getByGoodsId(Integer goodsId) {
+    public List<String> listByGoodsId(Integer goodsId) {
         return db().select(GOODS_IMG.IMG_URL).from(GOODS_IMG).where(GOODS_IMG.GOODS_ID.eq(goodsId)).fetch(GOODS_IMG.IMG_URL);
     }
 

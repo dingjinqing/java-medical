@@ -1,15 +1,15 @@
-@import "../../../css/iconfont.wxss";
+@import "/css/iconfont.wxss";
 .goods_item {
   display: flex;
-  width: 346rpx;
+  width: 345rpx;
   background-color: #fff;
   flex-direction: column;
   margin-top: 20rpx;
   border-radius: 16rpx;
-  box-shadow: 0 4rpx 10rpx rgba(13, 19, 24, 0.24),0 0 0rpx rgba(10,16,20,.12);
+  overflow: hidden;
 }
 .goods_image {
-  height: 346rpx;
+  height: 345rpx;
   position: relative;
 }
 .goods_image > .goods-image {
@@ -17,11 +17,14 @@
   height: 100%;
 }
 .goods_bottom {
-  padding: 10rpx;
+  padding: 10rpx 10rpx 20rpx;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 116rpx;
+  height: 146rpx;
+}
+.goods_name{
+  line-height: 50rpx;
 }
 .one_line {
   overflow: hidden;
@@ -70,14 +73,14 @@ font-size: 24rpx;
 }
 .reduce_price{
   background-color: #f9dbdb;
-color: #f66;
-position: absolute;
-width: 100%;
-height: 45rpx;
-line-height: 45rpx;
-text-align: center;
-bottom: 0;
-font-size: 22rpx;
+  color: #f66;
+  position: absolute;
+  width: 100%;
+  height: 45rpx;
+  line-height: 45rpx;
+  text-align: center;
+  bottom: 0;
+  font-size: 22rpx;
 }
 .bargain{
 width: 80%;

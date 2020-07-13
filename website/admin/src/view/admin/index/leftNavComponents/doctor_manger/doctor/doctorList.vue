@@ -5,7 +5,7 @@
         <div class="filters_item">
           <span>医师编号：</span>
           <el-input
-            v-model="queryParams.doctorNumber"
+            v-model="queryParams.hospitalCode"
             size="small"
             style="width:190px;"
             placeholder="请输入医师编号"
@@ -15,7 +15,7 @@
         <div class="filters_item">
           <span>姓名：</span>
           <el-input
-            v-model="queryParams.doctorName"
+            v-model="queryParams.name"
             size="small"
             style="width:190px;"
             placeholder="请输入姓名"
@@ -25,7 +25,7 @@
         <div class="filters_item">
           <span>科室：</span>
           <el-input
-            v-model="queryParams.mobile"
+            v-model="queryParams.departmentList"
             size="small"
             style="width:190px;"
             placeholder="请输入科室"
@@ -126,9 +126,10 @@
 </template>
 
 <script>
-// import pagination from '@/components/admin/pagination/pagination'
+// import { doctorList } from '@/api/admin/doctorManage/doctorInfo/doctor'
+import pagination from '@/components/admin/pagination/pagination'
 export default {
-  // components: { pagination },
+  components: { pagination },
   data () {
     // let that = this
     return {
@@ -136,11 +137,9 @@ export default {
       langDefaultFlag: false,
       pageParams: {},
       tableData: [],
-      storeGroup: [],
       queryParams: {
-        doctorNumber: null,
-        doctorName: null,
-        mobile: null
+        hospitalCode: null,
+        name: null
       },
       // 表格原始数据
       originalData: []
@@ -148,8 +147,8 @@ export default {
   },
   methods: {
     initDataList () {
-      this.loading = true
-      // storeList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
+      // this.loading = true
+      // doctorList(Object.assign({}, this.pageParams)).then((res) => {
       //   console.log(res)
       //   this.originalData = res.content.storePageListVo.dataList
       //   let originalData = JSON.parse(JSON.stringify(this.originalData))
@@ -157,27 +156,27 @@ export default {
       //   this.loading = false
       // })
     },
-    // handleData (data) {
-    //   this.tableData = data
-    //   this.langDefaultFlag = true
-    // }
+    handleData (data) {
+      this.tableData = data
+      this.langDefaultFlag = true
+    },
     handleAddDoctor () {
       this.$router.push({name: 'addDoctor'})
       console.log(this.$router)
     }
+  },
+  watch: {
+    lang () {
+      if (this.langDefaultFlag) {
+        // 重新渲染表格数据
+        let originalData = JSON.parse(JSON.stringify(this.originalData))
+        this.handleData(originalData)
+      }
+    }
+  },
+  mounted () {
+    this.initDataList()
   }
-  // watch: {
-  //   lang () {
-  //     if (this.langDefaultFlag) {
-  //       // 重新渲染表格数据
-  //       let originalData = JSON.parse(JSON.stringify(this.originalData))
-  //       this.handleData(originalData)
-  //     }
-  //   }
-  // },
-  // mounted () {
-  //   this.initDataList()
-  // }
 }
 </script>
 

@@ -6,11 +6,16 @@ package com.vpu.mp.service.pojo.shop.prescription.config;
  */
 public interface PrescriptionConstant {
     /**
-     * 校验商品是否
+     * 不校验
      */
     public static final Byte CHECK_ORDER_PRESCRIPTION_NO_NEED =0;
-
+    /**
+     * 通过
+     */
     public static final Byte CHECK_ORDER_PRESCRIPTION_PASS=1;
+    /**
+     * 不通过
+     */
     public static final Byte CHECK_ORDER_PRESCRIPTION_NO_PASS=2;
 
 

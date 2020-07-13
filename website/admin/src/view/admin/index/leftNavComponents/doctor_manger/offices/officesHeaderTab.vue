@@ -1,5 +1,5 @@
 <template>
-  <div class="allGoodsSortHeaderTab">
+  <div class="allDepartmentHeaderTab">
     <div
       class="tabItem"
       @click="itemClicked('officesList')"
@@ -31,7 +31,7 @@
 
 <script>
 export default {
-  name: 'allGoodsSortHeaderTab',
+  name: 'allDepartmentHeaderTab',
   props: {
     tabIndex: Number
   },
@@ -48,7 +48,7 @@ export default {
 </script>
 
 <style scoped>
-.allGoodsSortHeaderTab {
+.allDepartmentHeaderTab {
   border-bottom: 1px solid #eeeeee;
   color: #666;
   display: flex;

@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.common.pojo.shop.table.SortDo;
 import com.vpu.mp.dao.shop.sort.SortDao;
-import com.vpu.mp.service.pojo.shop.sort.vo.GoodsSortVo;
+import com.vpu.mp.service.pojo.shop.medical.sort.vo.GoodsSortVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -24,24 +24,23 @@ global.wxPage({
   to_pre () {
     util.jumpLink('/pages1/getprescription/getprescription')
   },
-  to_info () {
-    util.jumpLink('/pages1/prescriptioninfo/prescriptioninfo')
+  to_info (e) {
+    util.jumpLink('/pages1/prescriptioninfo/prescriptioninfo?prescriptionNo=' + e.currentTarget.dataset.prescriptionno)
   },  
   requestList () {
     let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
     util.api('/api/wxapp/prescription/list', res => {
       if (res.error == 0) {
         console.log(res);
-        let dataList = res.content.dataList;
+        let dataList = JSON.stringify(res.content.dataList);
+        dataList = JSON.parse(dataList)
+        console.log(dataList)
         this.setData({
           pageParams: res.content.page,
           ['dataList[' + (parseInt(currentPage) - 1) + ']']: dataList
         });
       } else {
-        // util.showModal('提示',res.message)
-        this.setData({
-          ['dataList[0]']: []
-        });
+        util.showModal('提示',res.message)
       }
     },{currentPage: currentPage, pageRows: 20, patientId: this.data.patientId })
   },

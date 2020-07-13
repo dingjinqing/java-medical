@@ -12,10 +12,10 @@ import java.util.List;
  * @create 2020-07-09 09:05
  */
 @Data
-public class MedicalHistoryListParam extends BasePageParam {
+public class MedicalHistoryListParam {
 
     /**
-     * 患者ID
+     * 病历ID
      */
-    private int patientId;
+    private int id;
 }

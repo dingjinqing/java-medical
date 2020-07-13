@@ -38,6 +38,6 @@ public class WxAppPrescriptionController extends WxAppBaseController  {
      */
     @PostMapping("/details")
     public JsonResult getPrescriptionDetails(@RequestBody @Validated PrescriptionNoParam param){
-        return success(prescriptionService.getPrescriptionInfo(param.getPrescriptionNo()));
+        return success(prescriptionService.getInfoByPrescriptionNo(param.getPrescriptionNo()));
     }
 }

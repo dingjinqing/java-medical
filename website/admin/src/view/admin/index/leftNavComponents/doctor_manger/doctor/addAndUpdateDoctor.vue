@@ -22,53 +22,53 @@
           </el-form-item>
           <el-form-item
             label='医生姓名'
-            prop='doctorName'
+            prop='name'
           >
             <el-input
-              v-model="doctorFormInfo.doctorName"
+              v-model="doctorFormInfo.name"
               placeholder="请输入医生姓名"
             ></el-input>
           </el-form-item>
           <el-form-item
             label='医生院内编号'
-            prop='doctorHospitalNumber'
+            prop='hospitalCode'
           >
             <el-input
-              v-model="doctorFormInfo.doctorHospitalNumber"
+              v-model="doctorFormInfo.hospitalCode"
               placeholder="请输入医生院内编号"
             ></el-input>
           </el-form-item>
           <el-form-item
             label='医生资格编码'
-            prop='doctorQualNumber'
+            prop='certificateCode'
           >
             <el-input
-              v-model="doctorFormInfo.doctorQualNumber"
+              v-model="doctorFormInfo.certificateCode"
               placeholder="请输入医生资格编码"
             ></el-input>
           </el-form-item>
           <el-form-item
             label='医生执业编码'
-            prop='doctorPracticeNumber'
+            prop='professionalCode'
           >
             <el-input
-              v-model="doctorFormInfo.doctorPracticeNumber"
+              v-model="doctorFormInfo.professionalCode"
               placeholder="请输入医生执业编码"
             ></el-input>
           </el-form-item>
           <el-form-item
             label='医生职称'
-            prop='doctorJobTitle'
+            prop='titleId'
           >
             <el-select
-              v-model="doctorFormInfo.doctorJobTitle"
+              v-model="doctorFormInfo.titleId"
               placeholder="请选择医生职称"
             >
               <el-option
                 v-for="item in doctorJobTitles"
-                :key="item.titleId"
-                :label="item.titleName"
-                :value="item.titleId"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
                 ></el-option>
             </el-select>
           </el-form-item>
@@ -90,30 +90,30 @@
           </el-form-item>
           <el-form-item
             label='所属科室'
-            prop='belongPartId'
+            prop='departmentIds'
           >
-            <el-select v-model="doctorFormInfo.belongPartId" multiple placeholder="请选择">
+            <el-select v-model="doctorFormInfo.departmentIds" multiple placeholder="请选择">
               <el-option-group
                 v-for="group in belongParts"
-                :key="group.label"
-                :label="group.label">
+                :key="group.name"
+                :label="group.name">
                 <el-option
-                  v-for="item in group.options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                  v-for="item in group.childDepartmentList"
+                  :key="item.name"
+                  :label="item.name"
+                  :value="item.id">
                 </el-option>
               </el-option-group>
             </el-select>
           </el-form-item>
           <el-form-item
             label='性别'
-            prop='gender'
+            prop='sex'
           >
-            <el-radio-group v-model="doctorFormInfo.gender">
+            <el-radio-group v-model="doctorFormInfo.sex">
                 <el-radio :label="1">男</el-radio>
-                <el-radio :label="0">女</el-radio>
-                <el-radio :label="-1">未知</el-radio>
+                <el-radio :label="2">女</el-radio>
+                <el-radio :label="0">未知</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item
@@ -167,29 +167,30 @@
 </template>
 
 <script>
+import { addDoctor, getDoctorTitle, getBelongParts } from '@/api/admin/doctorManage/doctorInfo/doctor'
 export default {
   data () {
-    var validatePass = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error('请输入子账号密码'))
-      } else if (value.length < 6 || value.length > 12) {
-        callback(new Error('请输入6-12个字符'))
-      } else {
-        if (this.doctorFormInfo.checkPassword !== '') {
-          this.$refs.doctorForm.validateField('checkPassword')
-        }
-        callback()
-      }
-    }
-    var validatePassCheck = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error('请再次输入子账号密码'))
-      } else if (value !== this.doctorFormInfo.password) {
-        callback(new Error('两次密码不一致'))
-      } else {
-        callback()
-      }
-    }
+    // var validatePass = (rule, value, callback) => {
+    //   if (!value) {
+    //     callback(new Error('请输入子账号密码'))
+    //   } else if (value.length < 6 || value.length > 12) {
+    //     callback(new Error('请输入6-12个字符'))
+    //   } else {
+    //     if (this.doctorFormInfo.checkPassword !== '') {
+    //       this.$refs.doctorForm.validateField('checkPassword')
+    //     }
+    //     callback()
+    //   }
+    // }
+    // var validatePassCheck = (rule, value, callback) => {
+    //   if (!value) {
+    //     callback(new Error('请再次输入子账号密码'))
+    //   } else if (value !== this.doctorFormInfo.password) {
+    //     callback(new Error('两次密码不一致'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     var validatePartId = (rule, value, callback) => {
       console.log(value)
       if (!value.length) {
@@ -201,70 +202,84 @@ export default {
     return {
       reload: true,
       doctorFormInfo: {
-        doctorName: '',
-        doctorHospitalNumber: '',
-        doctorQualNumber: '',
-        doctorPracticeNumber: '',
-        doctorJobTitle: '',
-        hireJobTitle: '',
-        belongPartId: [],
-        gender: 1,
-        mobile: '',
-        childAccount: '',
-        password: '',
-        checkPassword: ''
+        registerHospital: '医院名称',
+        name: '',
+        hospitalCode: '',
+        certificateCode: '',
+        professionalCode: '',
+        titleId: '',
+        // hireJobTitle: '',
+        departmentIds: [],
+        sex: 1,
+        mobile: ''
+        // childAccount: '',
+        // password: '',
+        // checkPassword: ''
       },
       doctorFormRules: {
-        doctorName: [{required: true, message: '请输入医生姓名', trigger: 'blur'}],
-        doctorHospitalNumber: [{required: true, message: '请输入医生院内编号', trigger: 'blur'}],
-        doctorQualNumber: [{required: true, message: '请输入医生资格编码', trigger: 'blur'}],
-        doctorPracticeNumber: [{required: true, message: '请输入医生执业编码', trigger: 'blur'}],
-        doctorJobTitle: [{required: true, message: '请选择医生职称', trigger: 'change'}],
-        hireJobTitle: [{required: true, message: '请选择聘任职务', trigger: 'change'}],
-        belongPartId: [{required: true, validator: validatePartId, trigger: 'change'}],
-        gender: [{required: true, message: '请选择医生性别', trigger: 'change'}],
+        name: [{required: true, message: '请输入医生姓名', trigger: 'blur'}],
+        hospitalCode: [{required: true, message: '请输入医生院内编号', trigger: 'blur'}],
+        certificateCode: [{required: true, message: '请输入医生资格编码', trigger: 'blur'}],
+        professionalCode: [{required: true, message: '请输入医生执业编码', trigger: 'blur'}],
+        titleId: [{required: true, message: '请选择医生职称', trigger: 'change'}],
+        // hireJobTitle: [{required: false, message: '请选择聘任职务', trigger: 'change'}],
+        departmentIds: [{required: true, validator: validatePartId, trigger: 'change'}],
+        sex: [{required: true, message: '请选择医生性别', trigger: 'change'}],
         mobile: [
           {required: true, message: '请填写手机号', trigger: 'blur'},
           {type: 'number', message: '请填写数字', trigger: 'blur'}
         ],
-        childAccount: [{required: true, message: '请输入子账号名称', trigger: 'blur'}],
-        password: [{required: true, validator: validatePass, trigger: 'blur'}],
-        checkPassword: [{required: true, validator: validatePassCheck, trigger: 'blur'}]
+        childAccount: [{required: false, message: '请输入子账号名称', trigger: 'blur'}]
+        // password: [{required: false, validator: validatePass, trigger: 'blur'}],
+        // checkPassword: [{required: false, validator: validatePassCheck, trigger: 'blur'}]
       },
       doctorJobTitles: {},
       belongedDepartments: {},
-      belongParts: [{
-        label: '热门城市',
-        options: [{
-          value: 'Shanghai',
-          label: '上海'
-        }, {
-          value: 'Beijing',
-          label: '北京'
-        }]
-      }, {
-        label: '城市名',
-        options: [{
-          value: 'Chengdu',
-          label: '成都'
-        }, {
-          value: 'Shenzhen',
-          label: '深圳'
-        }]
-      }]
+      belongParts: {}
     }
   },
+  mounted () {
+    this.initDoctorTitle()
+    this.initDoctorPart()
+  },
   methods: {
+    // 职称查询
+    initDoctorTitle () {
+      let params = {}
+      getDoctorTitle(params).then(res => {
+        console.log(res)
+        this.doctorJobTitles = res.content
+      })
+    },
+    // 科室列表
+    initDoctorPart () {
+      let params = {}
+      getBelongParts(params).then(res => {
+        console.log(res)
+        this.belongParts = res.content
+      })
+    },
     handleSubmit () {
       let that = this
       that.$refs.doctorForm.validate((valid) => {
         if (valid) {
-          this.$message.success({
-            message: 'success'
+          let params = this.doctorFormInfo
+          console.log(params)
+          addDoctor(params).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.$message.success({
+                message: 'success',
+                showClose: true
+              })
+              this.$router.push({ name: 'doctorList' })
+            } else {
+              this.$message.success({
+                message: res.message,
+                showClose: true
+              })
+            }
           })
-          this.$router.push({ name: 'doctorList' })
-        } else {
-          alert('err submit')
         }
       })
     }

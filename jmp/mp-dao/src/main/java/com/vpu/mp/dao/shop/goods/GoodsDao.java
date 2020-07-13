@@ -9,7 +9,7 @@ import com.vpu.mp.common.pojo.shop.table.goods.GoodsSortItem;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.service.pojo.shop.goods.MedicalGoodsConstant;
+import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.SelectSeekStepN;

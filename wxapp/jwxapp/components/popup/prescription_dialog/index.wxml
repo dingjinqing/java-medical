@@ -10,7 +10,7 @@
 <v-popup show="{{show}}" bind:close="bindClose" close_pos="outer-bottom" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
     <view class="prescription-content">
       <view class="prescription-title-content" style="background:#26c4bc url({{imageUrl}}image/wxapp/prescription_bg.png) no-repeat left top/100% 160rpx;">
-        <view class="title">电子处方1</view>
+        <view class="title">电子处方</view>
       </view>
       <view class="prescription-info-content">
         <view class="prescription-item">
@@ -20,19 +20,19 @@
           </view>
           <view class="user-info">
             <view class="info-item">
-              <text>张三</text>
+              <text>{{prescriptionData.patientName}}</text>
               <text>姓名</text>
             </view>
             <view class="info-item">
-              <text>男</text>
+              <text>{{prescriptionData.patientSex}}</text>
               <text>性别</text>
             </view>
             <view class="info-item">
-              <text>52岁</text>
+              <text>{{prescriptionData.patientAge}}岁</text>
               <text>年龄</text>
             </view>
             <view class="info-item">
-              <text>外科</text>
+              <text>{{prescriptionData.departmentName}}</text>
               <text>科室</text>
             </view>
           </view>

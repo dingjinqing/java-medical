@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.prescription;
 
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionInfoVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemInfoVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
@@ -69,20 +68,21 @@ public class PrescriptionService extends ShopBaseService {
      *  获取处方关联商品
      *  1商品id 2通用名+系数 3系数
      * @param goodsId 商品id
+     * @param patientId
      * @param goodsCommonName 商品通用名
      * @param goodsQualityRatio 商品规格系数
      * @return 处方明细
      */
-    public PrescriptionVo getByGoodsInfo(Integer goodsId, String goodsCommonName, String goodsQualityRatio,String productionEnterprise) {
-        PrescriptionVo prescriptionItem = prescriptionDao.getValidByGoodsId(goodsId);
+    public PrescriptionVo getByGoodsInfo(Integer goodsId, Integer patientId, String goodsCommonName, String goodsQualityRatio, String productionEnterprise) {
+        PrescriptionVo prescriptionItem = prescriptionDao.getValidByGoodsId(goodsId,patientId);
         if (prescriptionItem==null){
-            prescriptionItem=  prescriptionDao.getValidByCommonNameAndQualityRatio(goodsCommonName,goodsQualityRatio,productionEnterprise);
+            prescriptionItem=  prescriptionDao.getValidByCommonNameAndQualityRatio(patientId,goodsCommonName,goodsQualityRatio,productionEnterprise);
         }
         if (prescriptionItem==null){
-            prescriptionItem = prescriptionDao.getValidByCommonNameAndQualityRatio(goodsCommonName, goodsQualityRatio);
+            prescriptionItem = prescriptionDao.getValidByCommonNameAndQualityRatio(patientId,goodsCommonName, goodsQualityRatio);
         }
         if (prescriptionItem==null){
-            prescriptionItem = prescriptionDao.getValidByCommonName(goodsCommonName);
+            prescriptionItem = prescriptionDao.getValidByCommonName(patientId,goodsCommonName);
         }
         return prescriptionItem;
     }
@@ -102,15 +102,24 @@ public class PrescriptionService extends ShopBaseService {
      * 处方号
      * @param prescriptionNo 处方号
      */
-    public PrescriptionInfoVo getPrescriptionInfo(String prescriptionNo) {
+    public PrescriptionInfoVo getInfoByPrescriptionNo(String prescriptionNo) {
         /**处方号*/
-        PrescriptionInfoVo byPrescription = prescriptionDao.getByPrescriptionNo(prescriptionNo);
+        PrescriptionInfoVo byPrescription = prescriptionDao.getInfoByPrescriptionNo(prescriptionNo);
         if (byPrescription==null){
             return null;
         }
         List<PrescriptionItemInfoVo> prescriptionItemSimpleVos = prescriptionItemDao.listByPrescriptionNo(prescriptionNo);
         byPrescription.setItemList(prescriptionItemSimpleVos);
         return byPrescription;
+    }
+
+    /**
+     * 处方号
+     * @param prescriptionNo 处方号
+     * @return
+     */
+    public PrescriptionVo getDoByPrescriptionNo(String prescriptionNo){
+        return prescriptionDao.getDoByPrescriptionNo(prescriptionNo);
     }
 
     /**

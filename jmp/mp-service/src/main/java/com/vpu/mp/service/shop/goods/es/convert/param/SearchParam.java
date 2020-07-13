@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.goods.es.convert.param;
 import com.vpu.mp.service.pojo.shop.goods.es.Fact;
 import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
 import com.vpu.mp.service.pojo.shop.goods.es.Sort;
-import com.vpu.mp.service.shop.goods.es.goods.EsSearchSource;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsSearchSource;
 
 import java.util.List;
 

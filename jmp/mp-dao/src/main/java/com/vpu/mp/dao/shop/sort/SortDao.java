@@ -2,7 +2,7 @@ package com.vpu.mp.dao.shop.sort;
 
 import com.vpu.mp.common.pojo.shop.table.SortDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
-import com.vpu.mp.service.pojo.shop.sort.MedicalGoodsSortConstant;
+import com.vpu.mp.service.pojo.shop.medical.sort.MedicalGoodsSortConstant;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
