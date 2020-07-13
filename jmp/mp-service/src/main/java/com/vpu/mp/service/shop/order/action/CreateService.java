@@ -27,6 +27,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.calculate.UniteMarkeingtRecalculateBo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
+import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
@@ -607,6 +608,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setTerm(calculate.getTermsofservice());
         //处方信息
         vo.setPrescriptionList(param.getPrescriptionList());
+        vo.setCheckPrescriptionStatus(param.getCheckPrescriptionStatus());
     }
 
     private void processBeforeUniteActivity(OrderBeforeParam param, OrderBeforeVo vo) {
@@ -1026,6 +1028,21 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         checkExpress(param.getDeliverType());
         //支付方式校验
         checkPayWay(param, vo);
+        //*************医药************//
+        /**
+         * 校验药品
+         */
+        checkMedcail(param);
+    }
+
+    /**
+     * 校验药品
+     * @param param
+     */
+    private void checkMedcail(CreateParam param) throws MpException {
+        if (PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_PASS.equals(param.getCheckPrescriptionStatus())){
+            throw new MpException(JsonResultCode.CODE_ORDER_MEDICAL_PRESCRIPTION_CHECK);
+        }
     }
 
     /**
