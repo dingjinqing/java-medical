@@ -41,6 +41,7 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.packsale.OrderPackageSale;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.presale.OrderPreSale;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
+import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
@@ -302,13 +303,19 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 atomicOperation.releaseLocks();
             }
         }
-        //购物车删除
-        if(OrderConstant.CART_Y.equals(param.getIsCart())){
-            cart.removeCartByProductIds(param.getWxUserInfo().getUserId(), param.getProductIds());
-        }
+
         //TODO 欧派、嗨购、CRM、自动同步订单微信购物单
         try {
-            createVo.setWebPayVo(orderPay.isContinuePay(orderAfterRecord, orderAfterRecord.getOrderSn(), orderAfterRecord.getMoneyPaid(), orderPay.getGoodsNameForPay(orderAfterRecord, orderBo.getOrderGoodsBo()), param.getClientIp(), param.getWxUserInfo().getWxUser().getOpenId(), param.getActivityType()));
+            WebPayVo continuePay = orderPay.isContinuePay(orderAfterRecord,
+                    orderAfterRecord.getOrderSn(),
+                    orderAfterRecord.getMoneyPaid(),
+                    orderPay.getGoodsNameForPay(orderAfterRecord, orderBo.getOrderGoodsBo()),
+                    param.getClientIp(),
+                    param.getWxUserInfo().getWxUser().getOpenId(),
+                    param.getActivityType(),
+                    param.getIsCart()
+            );
+            createVo.setWebPayVo(continuePay);
             return ExecuteResult.create(createVo);
         } catch (MpException e) {
             return ExecuteResult.create(e.getErrorCode(), null);

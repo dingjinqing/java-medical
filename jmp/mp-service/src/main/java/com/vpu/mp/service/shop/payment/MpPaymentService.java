@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.payment;
 
+import cn.hutool.json.JSONUtil;
 import com.github.binarywang.wxpay.bean.entpay.EntPayRequest;
 import com.github.binarywang.wxpay.bean.entpay.EntPayResult;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
@@ -26,6 +27,7 @@ import com.vpu.mp.service.pojo.shop.payment.PaymentRecordParam;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.pojo.wxapp.pay.jsapi.JsApiVo;
 import com.vpu.mp.service.wechat.WxPayment;
+import com.vpu.mp.service.wechat.WxPaymentAttachParam;
 import com.vpu.mp.support.PemToPkcs12;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -175,6 +177,44 @@ public class MpPaymentService extends ShopBaseService {
             // 订单总金额，单位为分
             .totalFee(amount.multiply(HUNDRED).intValue())
             .body(Util.filterEmoji(goodsName, ""))
+            .tradeType(WxPayConstants.TradeType.JSAPI)
+            .spbillCreateIp(clientIp)
+            .notifyUrl(domainConfig.getWxMaPayNotifyUrl(this.getShopId()))
+            .build();
+		this.logger().info("PartnerKey is : {}", wxPayment.getConfig().getMchKey());
+		//已经校验
+		WxPayUnifiedOrderResult result = wxPayment.unifiedOrder(payInfo);
+		this.logger().info("微信预支付调用接口result : {}", result);
+        //获取前台支付调用参数
+        WebPayVo webParam = getWebPayParam(result, wxPayment.getConfig());
+        this.logger().info("前台支付调用参数result : {}", webParam);
+		return webParam;
+	}
+	/**
+	 * 统一下单
+     *
+	 * @param clientIp  客户IP
+	 * @param goodsName 商品名称
+	 * @param orderSn   订单号
+	 * @param amount    单位分
+	 * @param openId    用户OpenId
+	 * @return
+	 * @throws WxPayException
+	 */
+    public WebPayVo wxUnitOrder(String clientIp, String goodsName, String orderSn, BigDecimal amount, String openId,Byte isCart) throws WxPayException, MpException {
+        logger().info("微信预支付调用接口start,clientIp:{},goodsName:{},orderSn:{},amount:{},openId:{}", clientIp,  goodsName,  orderSn,  amount,  openId);
+		WxPayment wxPayment = this.getMpPay();
+		WxPaymentAttachParam attachParam =new WxPaymentAttachParam();
+		attachParam.setIsCart(isCart);
+		WxPayUnifiedOrderRequest payInfo = WxPayUnifiedOrderRequest.newBuilder()
+            .openid(StringUtils.isBlank(wxPayment.getConfig().getSubAppId()) ? openId : null)
+            .subOpenid(StringUtils.isBlank(wxPayment.getConfig().getSubAppId()) ? null : openId)
+            .outTradeNo(orderSn)
+            // 订单总金额，单位为分
+            .totalFee(amount.multiply(HUNDRED).intValue())
+            .body(Util.filterEmoji(goodsName, ""))
+			//附加数据
+			.attach(JSONUtil.toJsonStr(attachParam))
             .tradeType(WxPayConstants.TradeType.JSAPI)
             .spbillCreateIp(clientIp)
             .notifyUrl(domainConfig.getWxMaPayNotifyUrl(this.getShopId()))
@@ -365,6 +405,7 @@ public class MpPaymentService extends ShopBaseService {
 				.trdaeOriginStatus(orderResult.getResultCode())
 				.quantity(1)
 				.orderSn(orderResult.getOutTradeNo())
+				.attach(orderResult.getAttach())
 				.totalFee(BaseWxPayResult.fenToYuan(orderResult.getTotalFee()))
 				.buyerId(orderResult.getOpenid())
 				.sellerId(orderResult.getMchId())

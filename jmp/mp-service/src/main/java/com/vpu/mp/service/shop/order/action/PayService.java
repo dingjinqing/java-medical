@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.action;
 
+import cn.hutool.json.JSONUtil;
 import com.google.common.collect.Lists;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
@@ -42,6 +43,8 @@ import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.trade.OrderPayService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
+import com.vpu.mp.service.shop.user.cart.CartService;
+import com.vpu.mp.service.wechat.WxPaymentAttachParam;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record2;
@@ -114,6 +117,8 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
      */
     @Autowired
     private OrderCreateMpProcessorFactory marketProcessorFactory;
+    @Autowired
+    private CartService cart;
 
     @Override
     public OrderServiceCode getServiceCode() {
@@ -163,7 +168,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
                 orderSn = order.getOrderSn();
                 money = order.getMoneyPaid();
             }
-            result.setWebPayVo(orderPay.isContinuePay(order, orderSn, money, orderPay.getGoodsNameForPay(order, orderGoodsRecord.into(OrderGoodsBo.class)), param.getClientIp(), param.getWxUserInfo().getWxUser().getOpenId(), null));
+            result.setWebPayVo(orderPay.isContinuePay(order, orderSn, money, orderPay.getGoodsNameForPay(order, orderGoodsRecord.into(OrderGoodsBo.class)), param.getClientIp(), param.getWxUserInfo().getWxUser().getOpenId(), null,(byte)0));
             return ExecuteResult.create(result);
         } catch (MpException e) {
             return ExecuteResult.create(e);
@@ -257,8 +262,15 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
      * @param payRecord
      * @throws MpException
      */
-    public void toWaitDeliver(OrderInfoRecord orderInfo, PaymentRecordRecord payRecord) throws MpException {
-
+    public void toWaitDeliver(OrderInfoRecord orderInfo, PaymentRecordRecord payRecord,String attach) throws MpException {
+        if (attach!=null){
+            WxPaymentAttachParam param = JSONUtil.toBean(attach, WxPaymentAttachParam.class);
+            //购物车删除
+            if(OrderConstant.CART_Y.equals(param.getIsCart())){
+                List<Integer> productIds= orderGoodsService.getProductIdByOrderSn(orderInfo.getOrderSn());
+                cart.removeCartByProductIds(orderInfo.getUserId(), productIds);
+            }
+        }
         ArrayList<String> goodsTypes = Lists.newArrayList(OrderInfoService.orderTypeToArray(orderInfo.getGoodsType()));
 
         if(!OrderOperationJudgment.canWaitDeliver(orderInfo.getOrderStatus())) {
