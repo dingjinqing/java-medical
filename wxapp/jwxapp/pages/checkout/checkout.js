@@ -905,6 +905,9 @@ global.wxPage({
     if(status === 2) return false
     return true
   },
+  togglePatient(){
+    util.jumpLink('pages1/familylist/familylist?source=checkout')
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -914,9 +917,7 @@ global.wxPage({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    if (this.data.addressId && this.data.params.addressId) {
-      this.requestOrder()
-    }
+    this.requestOrder()
   },
 
   /**

@@ -16,6 +16,12 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
+    if(options.source){
+      this.setData({
+        source:options.source
+      })
+    }
+    console.log(this.data.source)
   },
   changeDefault(){
     if(this.data.if_checked == 0){
@@ -30,6 +36,15 @@ global.wxPage({
   },
   to_pre () {
     util.jumpLink('/pages1/getprescription/getprescription')
+  },
+  toggleFamily(e){
+    let {patientId} = e.currentTarget.dataset
+    let pageList = getCurrentPages();
+    let prevPage = pageList[pageList.length - 2];
+    prevPage.setData({
+      'params.patientId':patientId
+    })
+    wx.navigateBack()
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
