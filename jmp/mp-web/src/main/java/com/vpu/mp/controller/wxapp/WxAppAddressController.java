@@ -175,4 +175,14 @@ public class WxAppAddressController extends WxAppBaseController {
         return success(Util.loadResource(path));
     }
 
+    /**
+     * 获取json下载地址
+     * @param param
+     * @return
+     */
+    @PostMapping("/address/database/get")
+    public JsonResult getBaseJsonPath(@RequestBody @Validated AddressDataParam param) {
+        return  success(shop().addressService.getBaseJsonPath(param));
+    }
+
 }

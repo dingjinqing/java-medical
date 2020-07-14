@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.member;
 
+import com.upyun.UpException;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
@@ -9,8 +10,10 @@ import com.vpu.mp.config.TxMapLBSConfig;
 import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.upyun.UpYunManager;
 import com.vpu.mp.service.pojo.shop.member.address.AddressAddParam;
 import com.vpu.mp.service.pojo.shop.member.address.AddressCode;
+import com.vpu.mp.service.pojo.shop.member.address.AddressDataParam;
 import com.vpu.mp.service.pojo.shop.member.address.AddressGoodsShippingParam;
 import com.vpu.mp.service.pojo.shop.member.address.AddressInfo;
 import com.vpu.mp.service.pojo.shop.member.address.AddressListVo;
@@ -30,15 +33,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.common.Strings;
 import org.jooq.Record1;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.USER_ADDRESS;
+import static java.lang.String.format;
 
 /**
  * @author 黄壮壮
@@ -61,6 +67,8 @@ public class AddressService extends ShopBaseService {
     private GoodsService goodsService;
     @Autowired
     private OrderInfoService orderInfoService;
+    @Autowired
+    private UpYunManager  upYunManager;
 
 
     /**
@@ -478,5 +486,32 @@ public class AddressService extends ShopBaseService {
             vo.setStatus((byte)2);
         }
         return vo;
+    }
+
+    /**
+     * 获取json地址
+     * @param param
+     * @return
+     */
+    public List<String> getBaseJsonPath(AddressDataParam param) {
+        List<String> pathList =new ArrayList<>();
+        for (int i = 0; i <=6 ; i++) {
+            String relativePath = format("upload/static/address/addressData%s.json", i);
+            try {
+                Map<String, String> fileInfo = upYunManager.getFileInfo(relativePath);
+                if (fileInfo==null){
+                    String path = String.format("static/mp/address/addressData%s.json", i);
+                    log.info("读取地址文件{}", path);
+                    ClassPathResource resource = new ClassPathResource(path);
+                    upYunManager.uploadToUpYun(relativePath,resource.getFile());
+                }
+                pathList.add(relativePath);
+            } catch (IOException | UpException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return pathList;
     }
 }

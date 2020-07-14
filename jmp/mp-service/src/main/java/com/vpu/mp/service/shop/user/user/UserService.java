@@ -518,6 +518,12 @@ public class UserService extends ShopBaseService {
 				module.put("content", parseMyService(userByUserId, (List<Map<String, Object>>)module.get("content")));
 				logger().info("完成service");
 			}
+			if (module.get("module_name").equals("current_patient")) {
+				logger().info("进入当前就诊人");
+				module.put("content", parseMyService(userByUserId, (List<Map<String, Object>>)module.get("content")));
+				logger().info("完成当前就诊人");
+			}
+
 			if(StringUtils.isNotEmpty(String.valueOf(module.get("bg_img")))) {
 				module.put("bg_img", image.imageUrl(String.valueOf(module.get("bg_img"))));
 			}
@@ -596,18 +602,31 @@ public class UserService extends ShopBaseService {
 		for (Map<String, Object> iconItem : data) {
 			iconItem.put("icon", image.imageUrl(String.valueOf(iconItem.get("icon"))));
 			if (iconItem.get("icon_name").equals("wait_pay")) {
+				//代付款
 				iconItem.put("num", orderStatusNum.get(OrderConstant.WAIT_PAY));
 			}
-			if (iconItem.get("icon_name").equals("wait_deliver")) {
-				iconItem.put("num", orderStatusNum.get(OrderConstant.WAIT_DELIVERY));
-			}
 			if (iconItem.get("icon_name").equals("wait_receive")) {
+				//待收货
 				iconItem.put("num", orderStatusNum.get(OrderConstant.SHIPPED));
 			}
-			if (iconItem.get("icon_name").equals("wait_comment")) {
-				iconItem.put("num", orderStatusNum.get(OrderConstant.FINISHED));
+			if (iconItem.get("icon_name").equals("wait_confirm")) {
+				//待审核
+				iconItem.put("num", orderStatusNum.get(OrderConstant.SHIPPED));
+			}
+			if (iconItem.get("icon_name").equals("wait_deliver")) {
+				//代发货
+				iconItem.put("num", orderStatusNum.get(OrderConstant.WAIT_DELIVERY));
+			}
+			if (iconItem.get("icon_name").equals("shipped")) {
+				//已发货
+				iconItem.put("num", orderStatusNum.get(OrderConstant.SHIPPED));
 			}
 			if (iconItem.get("icon_name").equals("refund")) {
+				//退款退款
+				iconItem.put("num", orderStatusNum.get(OrderConstant.REFUND));
+			}
+			if (iconItem.get("icon_name").equals("returning")) {
+				//已取消 (退款退货,未支付取消)
 				iconItem.put("num", orderStatusNum.get(OrderConstant.REFUND));
 			}
 		}
