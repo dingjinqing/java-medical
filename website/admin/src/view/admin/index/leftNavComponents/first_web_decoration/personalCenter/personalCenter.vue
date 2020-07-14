@@ -150,13 +150,13 @@
                       alt=""
                     >
                   </div>
-                  <div class="item_word">{{ $t('personalCenter.wait1') }}</div>
+                  <div class="item_word">待付款</div>
                 </div>
                 <div
                   class="each_item"
                   v-for="(val, key) in item.content"
                   :key="key"
-                  v-if="val.icon_name=='wait_deliver'"
+                  v-if="val.icon_name=='wait_confirm'"
                 >
                   <div class="item_img">
                     <img
@@ -164,13 +164,13 @@
                       alt=""
                     >
                   </div>
-                  <div class="item_word">{{ $t('personalCenter.wait2') }}</div>
+                  <div class="item_word">待审核</div>
                 </div>
                 <div
                   class="each_item"
                   v-for="(val, key) in item.content"
                   :key="key"
-                  v-if="val.icon_name=='wait_receive'"
+                  v-if="val.icon_name=='wait_delivery'"
                 >
                   <div class="item_img">
                     <img
@@ -178,13 +178,13 @@
                       alt=""
                     >
                   </div>
-                  <div class="item_word">{{ $t('personalCenter.wait3') }}</div>
+                  <div class="item_word">待发货</div>
                 </div>
                 <div
                   class="each_item"
                   v-for="(val, key) in item.content"
                   :key="key"
-                  v-if="val.icon_name=='wait_comment' && (isShowOrder=='1' || (isShowOrder=='2' && val.is_show=='1'))"
+                  v-if="val.icon_name=='shipped' && (isShowOrder=='1' || (isShowOrder=='2' && val.is_show=='1'))"
                 >
                   <div class="item_img">
                     <img
@@ -192,13 +192,13 @@
                       alt=""
                     >
                   </div>
-                  <div class="item_word">{{ $t('personalCenter.wait4') }}</div>
+                  <div class="item_word">已发货</div>
                 </div>
                 <div
                   class="each_item"
                   v-for="(val, key) in item.content"
                   :key="key"
-                  v-if="val.icon_name=='refund' && (isShowOrder=='1' || (isShowOrder=='2' && val.is_show=='1'))"
+                  v-if="val.icon_name=='returning' && (isShowOrder=='1' || (isShowOrder=='2' && val.is_show=='1'))"
                 >
                   <div class="item_img">
                     <img
@@ -206,7 +206,7 @@
                       alt=""
                     >
                   </div>
-                  <div class="item_word">{{ $t('personalCenter.wait5') }}</div>
+                  <div class="item_word">已取消</div>
                 </div>
                 <div
                   class="each_item_special"
@@ -255,11 +255,14 @@
             >
               <div class="orderTitle">
                 <div class="titleLeft">{{ item.title }}</div>
-                <div class="titleRight" style="top:11px;padding-bottom:0">
+                <div
+                  class="titleRight"
+                  style="top:11px;padding-bottom:0"
+                >
                   <span>{{ $t('personalCenter.viewAllPatients') }} </span>
                   <img
-                      :src="imgHost + '/image/admin/right_into.png'"
-                      alt=""
+                    :src="imgHost + '/image/admin/right_into.png'"
+                    alt=""
                   >
                 </div>
               </div>
@@ -738,7 +741,7 @@
                       <el-radio label="2">{{ $t('personalCenter.styleRadio2') }}</el-radio>
                     </el-radio-group>
                   </el-form-item>
-                  <el-form-item :label="$t('personalCenter.waitPay')">
+                  <el-form-item label="待付款订单">
                     <div
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
@@ -768,12 +771,12 @@
                       </div>
                     </div>
                   </el-form-item>
-                  <el-form-item :label="$t('personalCenter.waitDeliver')">
+                  <el-form-item label="待审核订单">
                     <div
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="val.icon_name=='wait_deliver'"
+                      v-if="val.icon_name=='wait_confirm'"
                     >
                       <div
                         class="imgContainter"
@@ -798,12 +801,12 @@
                       </div>
                     </div>
                   </el-form-item>
-                  <el-form-item :label="$t('personalCenter.waitReceive')">
+                  <el-form-item label="待发货订单">
                     <div
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="val.icon_name=='wait_receive'"
+                      v-if="val.icon_name=='wait_delivery'"
                     >
                       <div
                         class="imgContainter"
@@ -828,7 +831,7 @@
                       </div>
                     </div>
                   </el-form-item>
-                  <el-form-item :label="$t('personalCenter.waitComment')">
+                  <el-form-item label="已发货订单">
                     <label
                       slot="label"
                       v-if="item.module_style === '2'"
@@ -843,7 +846,7 @@
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="val.icon_name=='wait_comment'"
+                      v-if="val.icon_name=='shipped'"
                     >
                       <div
                         class="imgContainter"
@@ -868,7 +871,7 @@
                       </div>
                     </div>
                   </el-form-item>
-                  <el-form-item :label="$t('personalCenter.refund')">
+                  <el-form-item label="已取消">
                     <label
                       slot="label"
                       v-if="item.module_style === '2'"
@@ -883,7 +886,7 @@
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="val.icon_name=='refund'"
+                      v-if="val.icon_name=='returning'"
                     >
                       <div
                         class="imgContainter"
@@ -1746,22 +1749,22 @@ export default {
             is_show: '1'
           },
           {
-            icon_name: 'wait_deliver',
+            icon_name: 'wait_confirm',
             icon: '/image/admin/uc_config/uc_order_icon2.png',
             is_show: '1'
           },
           {
-            icon_name: 'wait_receive',
+            icon_name: 'wait_delivery',
             icon: '/image/admin/uc_config/uc_order_icon3.png',
             is_show: '1'
           },
           {
-            icon_name: 'wait_comment',
+            icon_name: 'shipped',
             icon: '/image/admin/uc_config/uc_order_icon4.png',
             is_show: '1'
           },
           {
-            icon_name: 'refund',
+            icon_name: 'returning',
             icon: '/image/admin/uc_config/uc_order_icon5.png',
             is_show: '0'
           }
@@ -2591,7 +2594,7 @@ export default {
   margin-top: 10px;
   margin-left: 10px;
   cursor: pointer;
-  background: url(this.imgHost+"/image/admin/add_img_bg.png") no-repeat;
+  background: url(this.imgHost+'/image/admin/add_img_bg.png') no-repeat;
 }
 
 .left_info_headBg {
@@ -2643,12 +2646,12 @@ export default {
   border-top: 1px solid #eee;
   z-index: 9;
 }
-.patient_info{
+.patient_info {
   display: flex;
   justify-content: flex-start;
   margin-left: 15px;
 }
-.patient_info > p:last-of-type{
+.patient_info > p:last-of-type {
   color: #999;
   margin-left: 24px;
 }

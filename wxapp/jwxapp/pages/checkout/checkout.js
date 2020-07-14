@@ -723,6 +723,7 @@ global.wxPage({
       }
       if (this.data.params.roomId) addParams.roomId = Number(this.data.params.roomId)
       if (this.data.inviteId) addParams.inviteId = Number(this.data.inviteId)
+      if (this.data.orderInfo.patientInfo && this.data.orderInfo.patientInfo.id) addParams.patientId = Number(this.data.orderInfo.patientInfo.id)
       console.log(addParams)
       let params = {
         goods,

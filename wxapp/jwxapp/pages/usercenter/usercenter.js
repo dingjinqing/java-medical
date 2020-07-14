@@ -230,13 +230,13 @@ global.wxPage({
   bindOrderNav: function (e) {
     var datas = JSON.stringify(e.currentTarget.dataset);
     console.log(datas)
-    if (e.currentTarget.dataset.type == 'FINISHED') {
-      util.jumpLink('/pages/comment/comment')
-    } else if (e.currentTarget.dataset.type == 'RETURNING') {
-      util.jumpLink('/pages1/aftersaleorder/aftersaleorder')
-    } else {
+    // if (e.currentTarget.dataset.type == 'FINISHED') {
+    //   util.jumpLink('/pages/comment/comment')
+    // } else if (e.currentTarget.dataset.type == 'RETURNING') {
+    //   util.jumpLink('/pages1/aftersaleorder/aftersaleorder')
+    // } else {
       util.navigateTo({ url: '/pages/orderlist/orderlist?datas=' + datas })
-    }
+    // }
 
   },
   to_codeverification: function () {

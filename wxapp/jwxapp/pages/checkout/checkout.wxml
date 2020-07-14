@@ -41,9 +41,9 @@
 				<text class="address">{{orderInfo.address.provinceName+orderInfo.address.cityName+orderInfo.address.districtName+orderInfo.address.address}}</text>
 				<image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
 			</view>
-			<view class="patient-info" catchtap="togglePatient">
+			<view class="patient-info" catchtap="togglePatient" wx:if="{{orderInfo.checkPrescriptionStatus !== 0 }}">
 				<text class="title">当前就诊人：</text>
-				<text class="info">张三 13452165287</text>
+				<text class="info">{{orderInfo.patientInfo.name}} {{orderInfo.patientInfo.mobile}}</text>
 				<text class="toggle">去切换</text>
 				<image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
 			</view>
