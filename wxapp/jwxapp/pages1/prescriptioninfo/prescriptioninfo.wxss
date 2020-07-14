@@ -119,3 +119,8 @@
   color: #999;
   margin-top: 10rpx;
 }
+.pre_tips{
+  color: #999;
+  margin-top: 40rpx;
+  text-align: center;
+}
