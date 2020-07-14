@@ -18,7 +18,7 @@
         </view>
       </view>
     </view>
-    <view class="family_footer">
+    <view class="family_footer" style="padding-bottom:{{isIpx == 1 ? '60rpx':'0'}}">
       <view class="btn_add_person" bindtap="to_pre">添加</view>
     </view>
   </block>
