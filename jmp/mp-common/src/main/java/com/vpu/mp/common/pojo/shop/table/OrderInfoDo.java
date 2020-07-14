@@ -28,7 +28,6 @@ import javax.annotation.Generated;
 public class OrderInfoDo implements Serializable {
 
     private static final long serialVersionUID = -117179862;
-
     private Integer    orderId;
     private Integer    shopId;
     private String     orderSn;
@@ -170,5 +169,10 @@ public class OrderInfoDo implements Serializable {
     private Integer    scoreProportion;
     private Byte       isFreeshipCard;
     private Integer    roomId;
+    private Integer    patientId;
+    private Byte       orderMedicalType;
+    private String     prescriptionCodeList;
+    private Byte       orderAuditStatus;
+    private Timestamp  auditTime;
 
 }
