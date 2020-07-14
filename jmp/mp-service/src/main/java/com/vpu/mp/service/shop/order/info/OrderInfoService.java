@@ -990,6 +990,10 @@ public class OrderInfoService extends ShopBaseService {
             param.getMust().setOrderSn(orderSn);
         }
         order.setCurrency(saas().shop.getCurrency(getShopId()));
+        //药品信息
+        order.setPatientId(param.getPatientId());
+		order.setOrderMedicalType(param.getOrderMedicalType());
+		order.setOrderAuditStatus(param.getCheckPrescriptionStatus());
         return order;
     }
 

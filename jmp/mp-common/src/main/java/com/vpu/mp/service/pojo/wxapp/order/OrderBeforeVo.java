@@ -159,6 +159,7 @@ public class OrderBeforeVo {
      */
     private PatientOneParam patientInfo;
 
+
     /**
      * 默认配送方式 0 ，1 ，2
      * @return

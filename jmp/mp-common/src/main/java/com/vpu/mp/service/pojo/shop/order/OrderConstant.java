@@ -600,6 +600,15 @@ public class OrderConstant {
 	 */
 	public static final byte MEDICAL_AUDIT_NOT_PASS = 2;
 
+	//*******订单药品类型*******//
+	/**
+	 * 非处方药品订单
+	 */
+	public static final Byte MEDICAL_TYPE_OTC = 0;
+	/**
+	 * 处方药
+	 */
+	public static final Byte MEDICAL_TYPE_RX = 1;
 
 
     /**对外接口 start*/

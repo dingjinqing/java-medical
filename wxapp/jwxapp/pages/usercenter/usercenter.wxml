@@ -149,7 +149,7 @@
     </view>
     <!-- 医药部分 -->
     <view class='patient_list each_model {{page_style==1?"":"each_model_radius"}}' 
-          wx:if='{{item.module_name == "patient_list" && item.is_show == 1 }}'>
+          wx:if='{{item.module_name == "current_patient" && item.is_show == 1 }}'>
       <view class='ma_title'>
         <view wx:if='{{item.title != "" && item.title != null}}'>{{item.title}}</view>
         <view class='to_more' bindtap='allPrescription'>
