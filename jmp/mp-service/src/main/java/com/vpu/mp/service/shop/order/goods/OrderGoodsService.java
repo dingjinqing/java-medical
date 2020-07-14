@@ -68,7 +68,7 @@ import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
  *
  */
 @Service
-public class OrderGoodsService extends ShopBaseService{
+public class OrderGoodsService extends ShopBaseService {
 
 	public final OrderGoods TABLE = ORDER_GOODS;
 	@Autowired

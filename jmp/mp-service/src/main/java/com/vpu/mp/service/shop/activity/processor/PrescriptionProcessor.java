@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
@@ -60,10 +61,14 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
         log.info("药品处方检查-开始");
+        //患者
         if (param.getPatientId()==null||param.getPatientId().equals(0)){
             Integer integer = patientService.defaultPatientId(param.getWxUserInfo().getUserId());
             param.setPatientId(integer);
         }
+        PatientOneParam oneInfo = patientService.getOneInfo(param.getPatientId());
+        param.setPatientInfo(oneInfo);
+        //药品处方
         List<PrescriptionVo> prescriptionList =new ArrayList<>();
         Byte checkPrescriptionStatus = PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED;
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
