@@ -1,12 +1,4 @@
-<wxs module="filter"> 
-  var includes = function (arr, target) {
-    if (arr.length === 0) return false
-    return arr.indexOf(target) === -1 ? false : true
-  }
-  module.exports = {
-    includes: includes
-  }
-</wxs>
+<wxs src="../../../utils/wxs/filter.wxs" module="filter"></wxs>
 <v-popup show="{{show}}" bind:close="bindClose" close_pos="outer-bottom" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
     <view class="prescription-content">
       <view class="prescription-title-content" style="background:#26c4bc url({{imageUrl}}image/wxapp/prescription_bg.png) no-repeat left top/100% 160rpx;">
@@ -24,7 +16,7 @@
               <text>姓名</text>
             </view>
             <view class="info-item">
-              <text>{{prescriptionData.patientSex}}</text>
+              <text>{{filter.getSex(prescriptionData.patientSex)}}</text>
               <text>性别</text>
             </view>
             <view class="info-item">
@@ -37,43 +29,43 @@
             </view>
           </view>
         </view>      
-        <view class="prescription-item">
+        <view class="prescription-item" wx:if="{{prescriptionData.diagnosisDetail}}">
           <view class="item-title">
             <text class="list-item-dot"></text>
             <text class="title">诊断</text>
           </view>
           <view class="item-info">
-            <text class="title">原发性高血压</text>
+            <text class="title">{{prescriptionData.diagnosisDetail}}</text>
           </view>
         </view>      
-        <view class="prescription-item">
+        <view class="prescription-item" wx:if="{{prescriptionData.itemList.length}}">
           <view class="item-title">
             <text class="list-item-dot"></text>
             <text class="title">治疗建议</text>
           </view>
           <view class="item-info">
-            <text class="title">苯磺酸氨氯地平片</text>
-            <text>用法用量：清晨空腹口服，一次5mg，一日1次，用 药84天</text>
-            <text class="title">苯磺酸氨氯地平片</text>
-            <text>用法用量：清晨空腹口服，一次5mg，一日1次，用 药84天</text>
-            <text class="title">苯磺酸氨氯地平片</text>
-            <text>用法用量：清晨空腹口服，一次5mg，一日1次，用 药84天</text>
+            <block wx:for="{{prescriptionData.itemList}}" wx:key="index">
+              <text class="title">{{item.goodsCommonName}}</text>
+              <text>用法用量：{{item.goodsUseMemo}}</text>
+            </block>
           </view>
         </view>      
       </view>
       <view class="prescription-doctor-info">
-        <view class="doctor-info">
+        <view class="doctor-info" wx:if="{{prescriptionData.doctorName}}">
           <text class="doctor-name">处方医师：</text>
-          <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image>
+          <!-- <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image> -->
+          <text>{{prescriptionData.doctorName}}</text>
         </view>
-        <view class="doctor-info">
+        <!-- <view class="doctor-info">
           <text class="doctor-name">审核药师：</text>
           <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image>
-        </view>
-        <view class="doctor-info">
+        </view> -->
+        <view class="doctor-info" wx:if="{{prescriptionData.pharmacistName}}">
           <text class="doctor-name">发药药师：</text>
-          <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image>
-          <text class="item-date">日期：2020.06.30</text>
+          <!-- <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image> -->
+          <text>{{prescriptionData.pharmacistName}}</text>
+          <text class="item-date">日期：{{filter.substring(prescriptionData.prescriptionCreateTime,0,10)}}</text>
         </view>
       </view>
     </view>

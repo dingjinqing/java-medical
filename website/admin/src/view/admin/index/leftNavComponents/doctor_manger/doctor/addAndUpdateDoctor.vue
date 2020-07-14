@@ -74,25 +74,25 @@
           </el-form-item>
           <el-form-item
             label='聘任职务'
-            prop='hireJobTitle'
+            prop='duty'
           >
             <el-select
-              v-model="doctorFormInfo.hireJobTitle"
+              v-model="doctorFormInfo.duty"
               placeholder="请选择聘任职务"
             >
               <el-option
-                v-for="item in belongedDepartments"
-                :key="item.partId"
-                :label="item.partName"
-                :value="item.partId"
+                v-for="item in hireJobs"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
                 ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item
             label='所属科室'
-            prop='departmentIds'
+            prop='departmentIdsStr'
           >
-            <el-select v-model="doctorFormInfo.departmentIds" multiple placeholder="请选择">
+            <el-select v-model="doctorFormInfo.departmentIdsStr" multiple placeholder="请选择">
               <el-option-group
                 v-for="group in belongParts"
                 :key="group.name"
@@ -126,33 +126,15 @@
             ></el-input>
           </el-form-item>
           <el-form-item
-            label='子账号名'
-            prop='childAccount'
+            label='注册时间'
+            prop='registerTime'
           >
-            <el-input
-              v-model="doctorFormInfo.childAccount"
-              placeholder="请输入子账号名"
-            ></el-input>
-          </el-form-item>
-          <el-form-item
-            label='密码'
-            prop='password'
-          >
-            <el-input
-              type='password'
-              v-model="doctorFormInfo.password"
-              placeholder="请输入子账号密码(6-12字符)"
-            ></el-input>
-          </el-form-item>
-          <el-form-item
-            label='确认密码'
-            prop='checkPassword'
-          >
-            <el-input
-              type='password'
-              v-model="doctorFormInfo.checkPassword"
-              placeholder="请确认子账号密码(6-12字符)"
-            ></el-input>
+            <el-date-picker
+              v-model="doctorFormInfo.registerTime"
+              type="date"
+              placeholder="请选择注册时间"
+              value-format="yyyy-MM-dd HH:mm:ss"
+            ></el-date-picker>
           </el-form-item>
         </el-form>
       </div>
@@ -167,33 +149,12 @@
 </template>
 
 <script>
-import { addDoctor, getDoctorTitle, getBelongParts } from '@/api/admin/doctorManage/doctorInfo/doctor'
+import { addDoctor, getDoctorTitle, getBelongParts, getDoctor, updateDoctor } from '@/api/admin/doctorManage/doctorInfo/doctor'
 export default {
   data () {
-    // var validatePass = (rule, value, callback) => {
-    //   if (!value) {
-    //     callback(new Error('请输入子账号密码'))
-    //   } else if (value.length < 6 || value.length > 12) {
-    //     callback(new Error('请输入6-12个字符'))
-    //   } else {
-    //     if (this.doctorFormInfo.checkPassword !== '') {
-    //       this.$refs.doctorForm.validateField('checkPassword')
-    //     }
-    //     callback()
-    //   }
-    // }
-    // var validatePassCheck = (rule, value, callback) => {
-    //   if (!value) {
-    //     callback(new Error('请再次输入子账号密码'))
-    //   } else if (value !== this.doctorFormInfo.password) {
-    //     callback(new Error('两次密码不一致'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
     var validatePartId = (rule, value, callback) => {
       console.log(value)
-      if (!value.length) {
+      if (!value) {
         callback(new Error('请选择医生所属科室'))
       } else {
         callback()
@@ -208,13 +169,11 @@ export default {
         certificateCode: '',
         professionalCode: '',
         titleId: '',
-        // hireJobTitle: '',
-        departmentIds: [],
+        duty: '',
+        departmentIdsStr: [],
         sex: 1,
-        mobile: ''
-        // childAccount: '',
-        // password: '',
-        // checkPassword: ''
+        mobile: '',
+        registerTime: ''
       },
       doctorFormRules: {
         name: [{required: true, message: '请输入医生姓名', trigger: 'blur'}],
@@ -222,32 +181,95 @@ export default {
         certificateCode: [{required: true, message: '请输入医生资格编码', trigger: 'blur'}],
         professionalCode: [{required: true, message: '请输入医生执业编码', trigger: 'blur'}],
         titleId: [{required: true, message: '请选择医生职称', trigger: 'change'}],
-        // hireJobTitle: [{required: false, message: '请选择聘任职务', trigger: 'change'}],
-        departmentIds: [{required: true, validator: validatePartId, trigger: 'change'}],
+        duty: [{required: true, message: '请选择聘任职务', trigger: 'change'}],
+        departmentIdsStr: [{required: true, validator: validatePartId, trigger: 'change'}],
         sex: [{required: true, message: '请选择医生性别', trigger: 'change'}],
         mobile: [
           {required: true, message: '请填写手机号', trigger: 'blur'},
           {type: 'number', message: '请填写数字', trigger: 'blur'}
-        ],
-        childAccount: [{required: false, message: '请输入子账号名称', trigger: 'blur'}]
-        // password: [{required: false, validator: validatePass, trigger: 'blur'}],
-        // checkPassword: [{required: false, validator: validatePassCheck, trigger: 'blur'}]
+        ]
       },
       doctorJobTitles: {},
-      belongedDepartments: {},
+      hireJobs: [
+        {
+          id: 5,
+          name: '正高'
+        }, {
+          id: 4,
+          name: '副高'
+        }, {
+          id: 3,
+          name: '中级'
+        }, {
+          id: 2,
+          name: '助理'
+        }, {
+          id: 1,
+          name: '待聘'
+        }, {
+          id: 0,
+          name: '无'
+        }
+      ],
       belongParts: {}
     }
   },
   mounted () {
+    if (this.$route.query.id) {
+      this.id = this.$route.query.id
+      this.initDoctor(this.id)
+    }
     this.initDoctorTitle()
     this.initDoctorPart()
   },
+  watch: {
+    '$route.query.id': function (newVal) {
+      if (newVal) {
+        this.id = this.$route.query.id
+        this.initDoctor(this.id)
+      } else {
+        this.initData()
+      }
+    }
+  },
   methods: {
+    // 初始化数据
+    initData () {
+      this.doctorFormInfo = {
+        registerHospital: '医院名称',
+        name: '',
+        hospitalCode: '',
+        certificateCode: '',
+        professionalCode: '',
+        titleId: '',
+        duty: '',
+        departmentIdsStr: [],
+        sex: 1,
+        mobile: '',
+        registerTime: ''
+      }
+    },
+    // 获取医师详情
+    initDoctor (id) {
+      getDoctor(id).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          let doctorFormInfo = Object.assign({}, this.doctorFormInfo, res.content)
+          doctorFormInfo.mobile = Number(doctorFormInfo.mobile)
+          doctorFormInfo.departmentIdsStr = doctorFormInfo.departmentIds
+          this.doctorFormInfo = doctorFormInfo
+        } else {
+          this.$message.error({
+            message: '获取失败',
+            showClose: true
+          })
+        }
+      })
+    },
     // 职称查询
     initDoctorTitle () {
       let params = {}
       getDoctorTitle(params).then(res => {
-        console.log(res)
         this.doctorJobTitles = res.content
       })
     },
@@ -255,31 +277,53 @@ export default {
     initDoctorPart () {
       let params = {}
       getBelongParts(params).then(res => {
-        console.log(res)
         this.belongParts = res.content
       })
     },
+    // 保存
     handleSubmit () {
       let that = this
       that.$refs.doctorForm.validate((valid) => {
         if (valid) {
           let params = this.doctorFormInfo
+          // 科室需要字符串
+          params.departmentIdsStr = params.departmentIdsStr.join(',')
           console.log(params)
-          addDoctor(params).then(res => {
-            console.log(res)
-            if (res.error === 0) {
-              this.$message.success({
-                message: 'success',
-                showClose: true
-              })
-              this.$router.push({ name: 'doctorList' })
-            } else {
-              this.$message.success({
-                message: res.message,
-                showClose: true
-              })
-            }
-          })
+          if (!this.id) {
+            addDoctor(params).then(res => {
+              console.log(res)
+              if (res.error === 0) {
+                this.$message.success({
+                  message: 'success',
+                  showClose: true
+                })
+                this.$router.push({ name: 'doctorList' })
+              } else {
+                this.$message.error({
+                  message: '添加失败',
+                  showClose: true
+                })
+              }
+            })
+          } else {
+            // 时间需要时分秒，简单粗暴加一个
+            params.registerTime = params.registerTime + ' 00:00:00'
+            updateDoctor(params).then(res => {
+              console.log(res)
+              if (res.error === 0) {
+                this.$message.success({
+                  message: 'success',
+                  showClose: true
+                })
+                this.$router.push({ name: 'doctorList' })
+              } else {
+                this.$message.error({
+                  message: '更新失败',
+                  showClose: true
+                })
+              }
+            })
+          }
         }
       })
     }

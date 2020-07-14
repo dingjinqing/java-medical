@@ -34,7 +34,7 @@
   border-bottom: 2rpx solid #ccc;
 }
 .case-history-info{
-  height: 500rpx;
+  max-height: 500rpx;
   box-sizing: border-box;
   padding: 32rpx 0;
   line-height: 48rpx;

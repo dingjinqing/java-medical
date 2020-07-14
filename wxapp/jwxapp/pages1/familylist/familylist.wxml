@@ -1,28 +1,30 @@
 <!--pages1/familylist/familylist.wxml-->
 <include src="/pages/common/header.wxml"/>
 <view class="mian-container">
-  <view class="family_content">
-    <view class="each_family">
-      <view class="ef_top">
-        <view>徐依晨</view>
-        <view>13233445566</view>
-      </view>
-      <view class="ef_bottom">
-        <view class="iconfont_set_default">
-          <text class="iconfont icondanxuanbiankuang" wx:if='{{if_checked == 0}}' bindtap="changeDefault"></text>
-          <text class="iconfont icondanxuan" style="color:#26c4bc" wx:if='{{if_checked == 1}}' bindtap="changeDefault"></text>
+  <block wx:if='{{patientList}}'>
+    <view class="family_content">
+      <view class="each_family" data-patient-id="{{item.id}}" 
+            bindtap="{{source ? 'toggleFamily' : ''}}" wx:for='{{patientList}}' wx:key='key'> 
+        <view class="ef_top">
+          <view>{{item.name}}</view>
+          <view>{{item.mobile}}</view>
         </view>
-        <view bindtap="changeDefault">{{ if_checked == 1 ? "":"设为"}}默认</view>
+        <view class="ef_bottom">
+          <view class="iconfont_set_default">
+            <text class="iconfont icondanxuanbiankuang" wx:if='{{item.isDefault == 0}}' bindtap="changeDefault" data-id='{{item.id}}'></text>
+            <text class="iconfont icondanxuan" style="color:#26c4bc" wx:if='{{item.isDefault == 1}}' catchtap="changeDefault" data-id='{{item.id}}'></text>
+          </view>
+          <view catchtap="changeDefault" data-id='{{item.id}}'>{{ item.isDefault == 1 ? "":"设为"}}默认</view>
+        </view>
       </view>
     </view>
-  </view>
-  <view class="family_footer">
-    <view class="btn_add_person" bindtap="to_pre">添加</view>
-  </view>
-
-  <!-- <view class="no_content">
+    <view class="family_footer" style="padding-bottom:{{isIpx == 1 ? '60rpx':'0'}}">
+      <view class="btn_add_person" bindtap="to_pre">添加</view>
+    </view>
+  </block>
+  <view class="no_content" wx:else>
     <image src="http://medicaldevimg.weipubao.cn/image/wxapp/no_pre_bg1.png"></image>
     <view class="no_word">暂无内容</view>
     <view class="btn_get_pre" bindtap="to_pre">去添加</view>
-  </view> -->
+  </view>
 </view>

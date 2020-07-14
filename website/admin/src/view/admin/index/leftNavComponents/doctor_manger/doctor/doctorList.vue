@@ -3,12 +3,12 @@
     <div class="navBox">
       <div class="filters">
         <div class="filters_item">
-          <span>医师编号：</span>
+          <span>医师院内编号：</span>
           <el-input
             v-model="queryParams.hospitalCode"
             size="small"
             style="width:190px;"
-            placeholder="请输入医师编号"
+            placeholder="请输入医师院内编号"
           >
           </el-input>
         </div>
@@ -25,7 +25,7 @@
         <div class="filters_item">
           <span>科室：</span>
           <el-input
-            v-model="queryParams.departmentList"
+            v-model="queryParams.departmentName"
             size="small"
             style="width:190px;"
             placeholder="请输入科室"
@@ -63,31 +63,31 @@
           }"
         >
           <el-table-column
-            prop='storeName'
-            label='医师编号'
+            prop='hospitalCode'
+            label='医师院内编号'
           ></el-table-column>
           <el-table-column
-            prop='posShopId'
+            prop='name'
             label='姓名'
           ></el-table-column>
           <el-table-column
-            prop='groupName'
+            prop='mobile'
             label='手机号'
           ></el-table-column>
           <el-table-column
-            prop='registeredHospital'
+            prop='registerHospital'
             label='注册医院'
           ></el-table-column>
           <el-table-column
-            prop='department'
+            prop='departmentNames'
             label='科室'
           ></el-table-column>
           <el-table-column
-            prop='jobTitle'
+            prop='titleName'
             label='职称'
           ></el-table-column>
           <el-table-column
-            prop='registeredTime'
+            prop='registerTime'
             label='注册时间'
           ></el-table-column>
           <el-table-column
@@ -101,16 +101,33 @@
                       content="编辑"
                       placement="top"
                     >
-                      <a @click='edit("edit",scope.row)'>编辑</a>
+                      <i
+                        class="iconfont iconbianji"
+                        @click="editDoctor(scope.row.id)"
+                      ></i>
                     </el-tooltip>
                     <el-tooltip
                       class="item"
                       effect="dark"
                       content="停用"
                       placement="top"
+                      v-if="scope.row.status == 1"
                     >
                       <i
-                        class="iconfont iconshanchu2"
+                        class="iconfont icontingyong"
+                        @click="puaseDoctor(scope.row)"
+                      ></i>
+                    </el-tooltip>
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      content="启用"
+                      placement="top"
+                      v-if="scope.row.status == 0"
+                    >
+                      <i
+                        class="iconfont iconqiyong"
+                        @click="beginDoctor(scope.row)"
                       ></i>
                     </el-tooltip>
                 </div>
@@ -126,7 +143,7 @@
 </template>
 
 <script>
-// import { doctorList } from '@/api/admin/doctorManage/doctorInfo/doctor'
+import { doctorList, enableDoctor } from '@/api/admin/doctorManage/doctorInfo/doctor'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { pagination },
@@ -139,30 +156,108 @@ export default {
       tableData: [],
       queryParams: {
         hospitalCode: null,
-        name: null
+        name: null,
+        departmentName: null
       },
       // 表格原始数据
       originalData: []
     }
   },
   methods: {
+    // 数据初始化
     initDataList () {
-      // this.loading = true
-      // doctorList(Object.assign({}, this.pageParams)).then((res) => {
-      //   console.log(res)
-      //   this.originalData = res.content.storePageListVo.dataList
-      //   let originalData = JSON.parse(JSON.stringify(this.originalData))
-      //   this.handleData(originalData)
-      //   this.loading = false
-      // })
+      this.loading = true
+      if (this.queryParams.hospitalCode === '') {
+        this.queryParams.hospitalCode = null
+      }
+      if (this.queryParams.name === '') {
+        this.queryParams.name = null
+      }
+      if (this.queryParams.departmentName === '') {
+        this.queryParams.departmentName = null
+      }
+      doctorList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
+        console.log(res)
+        this.originalData = res.content.dataList
+        let originalData = JSON.parse(JSON.stringify(this.originalData))
+        for (let i in originalData) {
+          if (originalData[i].departmentNames) {
+            originalData[i].departmentNames = originalData[i].departmentNames.join('，')
+          }
+          if (originalData[i].registerTime !== null) {
+            originalData[i].registerTime = originalData[i].registerTime.substr(0, 10)
+          }
+        }
+        console.log(originalData)
+        this.handleData(originalData)
+        this.pageParams = res.content.page
+        this.loading = false
+      })
     },
+    // 渲染数据
     handleData (data) {
       this.tableData = data
       this.langDefaultFlag = true
     },
+    // 添加医师
     handleAddDoctor () {
       this.$router.push({name: 'addDoctor'})
       console.log(this.$router)
+    },
+    // 停用
+    puaseDoctor (row) {
+      let params = {
+        id: row.id,
+        status: 0
+      }
+      this.$confirm('此操作将停用该医生, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        enableDoctor(params).then(res => {
+          if (res.error === 0) {
+            this.$message.success({ message: '停用成功！' })
+            this.initDataList()
+          } else {
+            this.$message.error({ message: '停用失败' })
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: '已取消停用' })
+      })
+    },
+    // 启用
+    beginDoctor (row) {
+      let params = {
+        id: row.id,
+        status: 1
+      }
+      this.$confirm('此操作将启用该医生, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        enableDoctor(params).then(res => {
+          if (res.error === 0) {
+            this.$message.success({ message: '启用成功！' })
+            this.initDataList()
+          } else {
+            this.$message.error({ message: '启用失败' })
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: '已取消启用' })
+      })
+    },
+    // 编辑
+    editDoctor (id) {
+      this.$router.push({
+        path: '/admin/home/main/doctor/addDoctor',
+        query: {
+          id: id
+        }
+      })
     }
   },
   watch: {
@@ -181,6 +276,7 @@ export default {
 </script>
 
 <style scoped lang='scss'>
+@import "@/assets/aliIcon/iconfont.scss";
 .main{
     .navBox{
         display: flex;
@@ -194,12 +290,12 @@ export default {
             line-height: 32px;
             margin-left: -15px;
             .filters_item {
-                width: 250px;
+                width: 270px;
                 display: flex;
                 justify-content: flex-end;
                 margin-left: 15px;
                 > span {
-                    width: 120px;
+                    width: 140px;
                     font-size: 14px;
                     text-align: right;
                 }
@@ -213,6 +309,16 @@ export default {
         padding: 10px;
         background: #fff;
         margin-top: 10px;
+        .operation {
+          display: flex;
+          justify-content: center;
+          > .item {
+            font-size: 22px;
+            color: #66b1ff;
+            cursor: pointer;
+            margin-right: 8px;
+          }
+        }
     }
 }
 </style>

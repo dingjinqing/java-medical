@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.doctor;
 
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Arrays;
 
 @Service
 public class DoctorService extends ShopBaseService {
@@ -18,10 +20,17 @@ public class DoctorService extends ShopBaseService {
     protected DoctorDao doctorDao;
     @Autowired
     protected DoctorDepartmentCoupleDao doctorDepartmentCoupleDao;
+    @Autowired
+    protected DepartmentDao departmentDao;
 //    public DepartmentService departmentService;
     public static final int ZERO = 0;
 
     public PageResult<DoctorOneParam> getDoctorList(DoctorListParam param) {
+        if (param.getDepartmentName() != null) {
+            List<Integer> departmentIds = departmentDao.getDepartmentIdsByName(param.getDepartmentName());
+            List<Integer> doctorIds = doctorDepartmentCoupleDao.getDoctorIdsByDepartmentIds(departmentIds);
+            param.setDoctorIds(doctorIds);
+        }
         PageResult<DoctorOneParam> doctorList = doctorDao.getDoctorList(param);
         for (DoctorOneParam list : doctorList.dataList) {
             List<String> departmentList = doctorDepartmentCoupleDao.getDepartmentNamesByDoctorId(list.getId());
@@ -32,16 +41,20 @@ public class DoctorService extends ShopBaseService {
     }
 
     public Integer insertDoctor(DoctorOneParam param) {
-        int doctorId = doctorDao.insertDoctor(param);
-        param.setId(doctorId);
-        setDoctorDepartmentCouples(doctorId,param.getDepartmentIds());
+        doctorDao.insertDoctor(param);
+        setDoctorDepartmentCouples(param.getId(),param.getDepartmentIdsStr());
         return param.getId();
     }
 
     public Integer updateDoctor(DoctorOneParam param) {
-        int doctorId = doctorDao.updateDoctor(param);
-        param.setId(doctorId);
-        setDoctorDepartmentCouples(doctorId,param.getDepartmentIds());
+        doctorDao.updateDoctor(param);
+        if(param.getDepartmentIdsStr() != null){
+            setDoctorDepartmentCouples(param.getId(),param.getDepartmentIdsStr());
+        }
+        return param.getId();
+    }
+    public Integer enableDoctor(DoctorOneParam param) {
+        doctorDao.updateDoctor(param);
         return param.getId();
     }
 
@@ -52,9 +65,11 @@ public class DoctorService extends ShopBaseService {
         return doctorInfo;
     }
 
-    public void setDoctorDepartmentCouples (Integer doctorId, List<Integer> departmentIds) {
+    public void setDoctorDepartmentCouples (Integer doctorId, String departmentIdsStr) {
         doctorDepartmentCoupleDao.deleteDepartmentByDoctor(doctorId);
-        for (Integer departmentId : departmentIds) {
+        List<String> result = Arrays.asList(departmentIdsStr.split(","));
+        for (String departmentIdStr : result) {
+            Integer departmentId = Integer.parseInt(departmentIdStr);
             DoctorDepartmentOneParam doctorDepartment = new DoctorDepartmentOneParam();
             doctorDepartment.setDoctorId(doctorId);
             doctorDepartment.setDepartmentId(departmentId);

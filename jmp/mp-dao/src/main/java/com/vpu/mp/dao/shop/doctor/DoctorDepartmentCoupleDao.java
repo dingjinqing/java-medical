@@ -1,22 +1,16 @@
 package com.vpu.mp.dao.shop.doctor;
 
 import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.DoctorDepartmentCoupleRecord;
-import com.vpu.mp.db.shop.tables.records.DoctorRecord;
 import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorDepartmentOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
-import org.jooq.Record;
-import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.DEPARTMENT;
+import static com.vpu.mp.db.shop.Tables.DOCTOR_DEPARTMENT_COUPLE;
 
 @Repository
 public class DoctorDepartmentCoupleDao extends ShopBaseDao{
@@ -90,5 +84,20 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
         DoctorDepartmentCoupleRecord record = new DoctorDepartmentCoupleRecord();
         FieldsUtil.assign(param, record);
         return db().executeInsert(record);
+    }
+
+    /**
+     * 医师科室名集合
+     *
+     * @param departmentIds
+     * @return
+     */
+    public List<Integer> getDoctorIdsByDepartmentIds(List<Integer> departmentIds) {
+        List<Integer> doctorIds = db()
+            .selectDistinct(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID)
+            .from(DOCTOR_DEPARTMENT_COUPLE)
+            .where(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID.in(departmentIds)).and(DOCTOR_DEPARTMENT_COUPLE.IS_DELETE.eq((byte) 0))
+            .fetchInto(Integer.class);
+        return doctorIds;
     }
 }

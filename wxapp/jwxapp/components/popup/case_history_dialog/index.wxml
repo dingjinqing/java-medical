@@ -1,41 +1,30 @@
-<wxs module="filter"> 
-  var includes = function (arr, target) {
-    if (arr.length === 0) return false
-    return arr.indexOf(target) === -1 ? false : true
-  }
-  module.exports = {
-    includes: includes
-  }
-</wxs>
+<wxs src="../../../utils/wxs/filter.wxs" module="filter"></wxs>
 <v-popup show="{{show}}" bind:close="bindClose" close_pos="outer-bottom" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
     <view class="case-history-content">
-      <view class="case-history-title">电子病历1</view>
+      <view class="case-history-title">电子病历</view>
       <view class="user-info">
         <view class="user-detail">
-          <text>姓名：李玉堂</text>
-          <text>年龄：25岁</text>
-          <text>性别：男</text>
+          <text>姓名：{{caseHistoryData.patientName}}</text>
+          <text>年龄：{{caseHistoryData.age}}岁</text>
+          <text>性别：{{filter.getSex(caseHistoryData.sex)}}</text>
         </view>
-        <text>就诊科室：呼吸科</text>
-        <text>过敏史：过敏药物</text>
+        <text>就诊科室：{{caseHistoryData.departmentName}}</text>
+        <text>过敏史：{{caseHistoryData.allergyHistory}}</text>
       </view>
       <view class="double-line"></view>
       <view class="case-history-info">
-        <view class="case-history-item">病人主诉：呼吸道不舒服</view>
-        <view class="case-history-item">病史：咽喉炎</view>
-        <view class="case-history-item">体格检查：T[体温]C, R[呼吸]次/分, P[心率]次/分，BP [收縮压]/[舒张压]mmHg</view>
-        <view class="case-history-item">辅助检查：暂无</view>
-        <view class="case-history-item margin-t-50">诊断：（J98.800x002）呼吸道感染</view>
+        <view class="case-history-item">病人主诉：{{caseHistoryData.patientComplain}}</view>
+        <view class="case-history-item">病史：{{caseHistoryData.diseaseHistory}}</view>
+        <view class="case-history-item">体格检查：{{caseHistoryData.physicalExamination}}</view>
+        <view class="case-history-item">辅助检查：{{caseHistoryData.auxiliaryPhysicalExamination}}</view>
+        <view class="case-history-item margin-t-50">诊断：{{caseHistoryData.diagnosisContent}}</view>
         <view class="case-history-item">诊疗处理意见：</view>
-        <view class="case-history-item">（市）肾功能二项(血清)</view>
-        <view class="case-history-item">（市）电解质四项（血清）</view>
-        <view class="case-history-item">（市）肾功能二项(血清)</view>
-        <view class="case-history-item">葡萄糖注射液（基药）（甲类）50ml：5%</view>
+        <view class="case-history-item">{{caseHistoryData.diagnosisSuggestion}}</view>
       </view>
       <view class="line"></view>
       <view class="doctor-info">
-        <text class="doctor-info-item">就诊时间：2020.08.09</text>
-        <text class="doctor-info-item">医生签名：张三</text>
+        <text class="doctor-info-item">就诊时间：{{filter.substring(caseHistoryData.visitTime,0,10)}}</text>
+        <text class="doctor-info-item">医生签名：{{caseHistoryData.doctorName}}</text>
       </view>
     </view>
 </v-popup>

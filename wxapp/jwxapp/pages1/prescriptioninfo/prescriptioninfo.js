@@ -23,6 +23,7 @@ global.wxPage({
   requestInfo () {
     util.api('/api/wxapp/prescription/details', res => {
       if (res.error == 0) {
+        res.content.prescriptionCreateTime = res.content.prescriptionCreateTime.substr(0, 10);
         this.data.prescriptionInfo = res.content;
         this.setData({
           prescriptionInfo: this.data.prescriptionInfo

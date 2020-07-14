@@ -49,32 +49,24 @@
             }"
         >
           <el-table-column
-            prop='id'
-            label='患者编号'
+            prop='prescriptionNo'
+            label='处方号'
           ></el-table-column>
           <el-table-column
-            prop='name'
-            label='姓名'
+            prop='departmentName'
+            label='科室名称'
           ></el-table-column>
           <el-table-column
-            prop='mobile'
-            label='手机号'
+            prop='doctorName'
+            label='医师名称'
           ></el-table-column>
           <el-table-column
-            prop='treatmentNo'
-            label='就诊卡号'
+            prop='diagnosisName'
+            label='疾病名称'
           ></el-table-column>
           <el-table-column
-            prop='sex'
-            label='性别'
-          ></el-table-column>
-          <el-table-column
-            prop='diseaseHistory'
-            label='疾病史'
-          ></el-table-column>
-          <el-table-column
-            prop='allergyHistory'
-            label='过敏史'
+            prop='diagnoseTime'
+            label='就诊时间'
           ></el-table-column>
           <el-table-column label='操作'>
             <template slot-scope="scope">
@@ -85,7 +77,7 @@
                   content="查看详情"
                   placement="top"
                 >
-                  <a @click='handleSeeMessage(scope.row.id)'>查看详情</a>
+                  <a @click='handleSeeMessage(scope.row.prescriptionNo)'>查看详情</a>
                 </el-tooltip>
               </div>
             </template>
@@ -102,8 +94,7 @@
 
 <script>
 import pagination from '@/components/admin/pagination/pagination'
-// 导入api
-import { getPatientList } from '@/api/admin/memberManage/patientManage.js'
+import { getPrescriptionList } from '@/api/admin/memberManage/patientManage.js'
 export default {
   components: { pagination },
   data () {
@@ -115,21 +106,23 @@ export default {
         pageRows: 20
       },
       tableData: [],
+      storeGroup: [],
       queryParams: {
-        doctorNumber: null,
-        doctorName: null,
-        mobile: null
+        mobile: null,
+        currentPage: 1,
+        pageRows: 20
       },
       // 表格原始数据
       originalData: []
     }
   },
   methods: {
-    initDataList () {
+    initDataList (id) {
       this.loading = true
+      this.queryParams.patientId = id
       this.queryParams.currentPage = this.pageParams.currentPage
       this.queryParams.pageRows = this.pageParams.pageRows
-      getPatientList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
+      getPrescriptionList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
         if (res.error !== 0) {
           this.$message.error({ message: res.message })
           return
@@ -140,14 +133,16 @@ export default {
         let originalData = JSON.parse(JSON.stringify(this.originalData))
         this.handleData(originalData)
         this.loading = false
+      }).catch(error => {
+        console.log(error)
       })
     },
     handleSeeMessage (userId) {
       console.log(this.$router)
       this.$router.push({
-        name: 'patient_message',
+        name: 'prescription_message',
         query: {
-          id: userId
+          userId: userId
         }
       })
     },
@@ -156,9 +151,18 @@ export default {
       this.langDefaultFlag = true
     }
   },
-
+  // watch: {
+  //   lang () {
+  //     if (this.langDefaultFlag) {
+  //       // 重新渲染表格数据
+  //       let originalData = JSON.parse(JSON.stringify(this.originalData))
+  //       this.handleData(originalData)
+  //     }
+  //   }
+  // },
   mounted () {
-    this.initDataList()
+    let id = this.$route.query.id ? this.$route.query.id : 0
+    this.initDataList(id)
   }
 }
 </script>
@@ -170,7 +174,6 @@ export default {
     display: flex;
     width: 100%;
     background-color: #fff;
-    padding: 15px;
     .filters {
       flex: 2;
       display: flex;
@@ -183,7 +186,7 @@ export default {
         justify-content: flex-end;
         margin-left: 15px;
         > span {
-          width: 120px;
+          width: 70px;
           font-size: 14px;
           text-align: right;
         }

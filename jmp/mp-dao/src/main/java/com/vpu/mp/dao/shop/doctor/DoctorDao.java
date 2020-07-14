@@ -48,10 +48,13 @@ public class DoctorDao extends ShopBaseDao {
      */
     protected void buildOptions(SelectJoinStep<? extends Record> select, DoctorListParam param) {
         if (param.getName() != null) {
-            select.where(DOCTOR.NAME.like(param.getName()));
+            select.where(DOCTOR.NAME.like(likeValue(param.getName())));
         }
         if (param.getDoctorNo() != null) {
             select.where(DOCTOR.HOSPITAL_CODE.like(param.getDoctorNo()));
+        }
+        if (param.getDoctorIds() != null) {
+            select.where(DOCTOR.HOSPITAL_CODE.in(param.getDoctorIds()));
         }
     }
 
@@ -73,11 +76,12 @@ public class DoctorDao extends ShopBaseDao {
      * @param param
      * @return
      */
-    public int updateDoctor(DoctorOneParam param) {
+    public void updateDoctor(DoctorOneParam param) {
         DoctorRecord record = db().select().from(DOCTOR).where(DOCTOR.ID.eq(param.getId()))
             .fetchOneInto(DoctorRecord.class);
         FieldsUtil.assign(param, record);
-        return db().executeUpdate(record);
+        record.update();
+        param.setId(record.getId());
     }
 
     /**
@@ -86,10 +90,11 @@ public class DoctorDao extends ShopBaseDao {
      * @param param
      * @return
      */
-    public int insertDoctor(DoctorOneParam param) {
-        DoctorRecord record = new DoctorRecord();
+    public void insertDoctor(DoctorOneParam param) {
+        DoctorRecord record = db().newRecord(DOCTOR);
         FieldsUtil.assign(param, record);
-        return db().executeInsert(record);
+        record.insert();
+        param.setId(record.getId());
     }
 
     /**

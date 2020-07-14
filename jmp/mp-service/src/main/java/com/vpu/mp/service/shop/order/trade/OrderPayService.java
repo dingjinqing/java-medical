@@ -79,8 +79,8 @@ public class OrderPayService extends ShopBaseService{
      */
     public void payMethodInSystem(OrderInfoRecord order, BigDecimal useAccount, BigDecimal score, BigDecimal cardBalance) throws MpException {
         payUseAccount(order, useAccount);
-        payMemberCardBalance(order, cardBalance);
-        payScoreDiscount(order, score);
+//        payMemberCardBalance(order, cardBalance);
+//        payScoreDiscount(order, score);
     }
 
     /**
@@ -94,7 +94,7 @@ public class OrderPayService extends ShopBaseService{
      * @param activityType 活动类型
      * @throws MpException
      */
-    public WebPayVo isContinuePay(OrderInfoRecord orderInfo, String orderSn, BigDecimal money, String goodsNameForPay,String ClientIp, String openId, Byte activityType) throws MpException {
+    public WebPayVo isContinuePay(OrderInfoRecord orderInfo, String orderSn, BigDecimal money, String goodsNameForPay,String ClientIp, String openId, Byte activityType ) throws MpException {
         logger().info("继续支付接口start");
         if(orderInfo.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY || orderInfo.getOrderStatus() == OrderConstant.ORDER_PIN_PAYED_GROUPING){
             thirdPartyMsgServices.thirdPartService(orderInfo);

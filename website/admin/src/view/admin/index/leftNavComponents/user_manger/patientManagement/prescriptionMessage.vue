@@ -50,8 +50,15 @@
             </div>
           </div>
           <div class="doctor-info">
-            <span class="doctor-name">医师：张三</span>
-            <span class="item-date">日期：2020.06.30</span>
+            <div class="doctor-name">
+              <div>处方医师：
+              </div>
+              <div>审核医师：
+              </div>
+              <div>发药医师：
+              </div>
+            </div>
+            <span class="item-date">日期</span>
           </div>
         </div>
       </div>
@@ -89,8 +96,8 @@ export default {
   background-color: skyblue;
   height: 210px;
   background: #26c4bc
-    url(http://medicaldevimg.weipubao.cn/upload/224462/image/20200702/cHqjI9maXz2wGvOzjoHJ.png)
-    no-repeat left top/100% 80px;
+    url(http://medicaldevimg.weipubao.cn/image/wxapp/prescription_bg.png)
+    no-repeat left top/100% 110px;
   border-radius: 16px 16px 0 0;
 }
 .prescription-item > .top_info .item-title {
@@ -117,7 +124,7 @@ export default {
   display: flex;
   flex-direction: column;
   line-height: 27px;
-  padding: 10px 0;
+  padding: 10px 0 0;
   border-bottom: 2px solid #eee;
 }
 .prescription-item > .item-list-content > .item-list > .list-item {
@@ -143,8 +150,7 @@ export default {
   font-weight: bold;
 }
 .prescription-item > .doctor-info {
-  height: 80px;
-  padding: 0 15px;
+  padding: 10px 30px;
   align-items: center;
   background: #fff;
   display: flex;
@@ -169,6 +175,11 @@ export default {
   margin-right: auto;
   font-size: 13px;
 }
+.doctor-name > view {
+  display: flex;
+  align-items: center;
+  margin-top: 30rpx;
+}
 .prescription-item > .doctor-info > .item-date {
   font-size: 13px;
 }
@@ -191,5 +202,16 @@ export default {
 .medicine_spec {
   color: #999;
   margin-top: 10px;
+}
+.doctor-name{
+      height: 70px;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+}
+.item-date{
+  position: absolute;
+    right: 100px;
+    bottom: 17px;
 }
 </style>

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 public class AdminPatientController extends AdminBaseController {
@@ -33,7 +34,7 @@ public class AdminPatientController extends AdminBaseController {
      * @param patientId 患者id
      */
     @GetMapping("/api/admin/patient/info/{patientId}")
-    public JsonResult getPatient(Integer patientId) {
+    public JsonResult getPatient(@PathVariable  Integer patientId) {
         if (patientId == null) {
             return fail(JsonResultCode.DOCTOR_DEPARTMENT_ID_IS_NULL);
         }

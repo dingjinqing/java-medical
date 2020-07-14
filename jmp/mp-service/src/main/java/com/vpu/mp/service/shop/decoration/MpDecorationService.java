@@ -9,6 +9,9 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryListParam;
+import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryPageInfoParam;
+import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryPageInfoVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListVo;
 import com.vpu.mp.config.DomainConfig;
@@ -43,6 +46,7 @@ import com.vpu.mp.service.shop.config.DistributionConfigService;
 import com.vpu.mp.service.shop.config.SuspendWindowConfigService;
 import com.vpu.mp.service.foundation.es.pojo.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
+import com.vpu.mp.service.shop.medicine.MedicalHistoryService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
@@ -85,6 +89,8 @@ public class MpDecorationService extends ShopBaseService {
     private PrescriptionService prescriptionService;
     @Autowired
     private PatientService patientService;
+    @Autowired
+    private MedicalHistoryService medicalHistoryService;
 
     public int setPageCatId(Integer pageId, Integer catId) {
         return db().update(XCX_CUSTOMER_PAGE)
@@ -420,6 +426,8 @@ public class MpDecorationService extends ShopBaseService {
                 case ModuleConstant.M_PRESCRIPTION:
                     if (GoodsConstant.ZERO.equals(patientId)) return null;
                     return this.convertPrescriptionForIndex(objectMapper, node, user);
+                case ModuleConstant.M_CASE_HISTORY:
+                    return this.convertCaseHistoryForIndex(objectMapper, node, user);
                 /**
                  * TODO: 添加其他模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
@@ -813,6 +821,8 @@ public class MpDecorationService extends ShopBaseService {
                             return  this.convertIntegralForModule(objectMapper, node, user);
                         case ModuleConstant.M_PRESCRIPTION:
                             return  this.convertPrescriptionForModule(objectMapper, node, user, patientId);
+                        case ModuleConstant.M_CASE_HISTORY:
+                            return  this.convertCaseHistoryForModule(objectMapper, node, user, patientId);
                         //TODO case
                         default:
                     }
@@ -1030,6 +1040,28 @@ public class MpDecorationService extends ShopBaseService {
         // 转换实时信息
 //        return saas.getShopApp(getShopId()).integralConvertService.getPageIndexIntegral(moduleIntegral);
     }
+
+    /**
+     * 我的处方模块
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleCaseHistory convertCaseHistoryForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user, Integer patientId) throws IOException {
+        ModuleCaseHistory moduleCaseHistory = objectMapper.readValue(node.getValue().toString(), ModuleCaseHistory.class);
+        MedicalHistoryPageInfoParam medicalHistoryPageInfoParam = new MedicalHistoryPageInfoParam();
+        medicalHistoryPageInfoParam.setPageRows((Integer) 3);
+        medicalHistoryPageInfoParam.setPatientId(patientId);
+        PageResult<MedicalHistoryPageInfoVo> medicalHistoryListData = medicalHistoryService.getMedicalHistoryPageInfo(medicalHistoryPageInfoParam);
+        moduleCaseHistory.setCaseHistoryListData(medicalHistoryListData.getDataList());
+        moduleCaseHistory.setHasMore(medicalHistoryListData.getPage().getLastPage() > 1);
+        return moduleCaseHistory;
+        // 转换实时信息
+//        return saas.getShopApp(getShopId()).integralConvertService.getPageIndexIntegral(moduleIntegral);
+    }
     
     /**
      * 店招模块
@@ -1076,6 +1108,20 @@ public class MpDecorationService extends ShopBaseService {
         ModulePrescription modulePrescription = objectMapper.readValue(node.getValue().toString(), ModulePrescription.class);
         modulePrescription.setNeedRequest(true);
         return modulePrescription;
+    }
+
+    /**
+     * 我的病历模块
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleCaseHistory convertCaseHistoryForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleCaseHistory moduleCaseHistory = objectMapper.readValue(node.getValue().toString(), ModuleCaseHistory.class);
+        moduleCaseHistory.setNeedRequest(true);
+        return moduleCaseHistory;
     }
 
     /**

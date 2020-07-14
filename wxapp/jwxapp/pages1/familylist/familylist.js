@@ -1,5 +1,5 @@
 // pages1/familylist/familylist.js
-var util = require('../../utils/util.js')
+var util = require('../../utils/util.js');
 var app = getApp()
 global.wxPage({
 
@@ -9,6 +9,7 @@ global.wxPage({
   data: {
     imageUrl: app.globalData.imageUrl,
     if_checked: 0,
+    patientList: []
   },
 
   /**
@@ -16,20 +17,53 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
-  },
-  changeDefault(){
-    if(this.data.if_checked == 0){
+    if(options.source){
       this.setData({
-        if_checked:1
-      })
-    }else{
-      this.setData({
-        if_checked:0
+        source:options.source
       })
     }
+    console.log(this.data.source)
+    this.requestList();
+  },
+  changeDefault(e){
+    util.api('/api/wxapp/user/patient/set/default', res => {
+      if(res.error == 0){
+        this.requestList();
+      }else{
+        util.showModal('提示',res.message)
+        return false
+      }
+    },{
+      userId: util.getCache('user_id'),
+      patientId: e.currentTarget.dataset.id
+    })
   },
   to_pre () {
     util.jumpLink('/pages1/getprescription/getprescription')
+  },
+  toggleFamily(e){
+    let {patientId} = e.currentTarget.dataset
+    let pageList = getCurrentPages();
+    let prevPage = pageList[pageList.length - 2];
+    prevPage.setData({
+      'params.patientId':patientId
+    })
+    wx.navigateBack()
+  },
+  requestList () {
+    util.api('/api/wxapp/user/patient/list', res => {
+      if (res.error == 0) {
+        this.data.patientList = res.content
+        this.setData({
+          patientList: this.data.patientList
+        })
+      }else{
+        util.showModal('提示',res.message)
+        return false
+      }
+    },{
+      userId: util.getCache('user_id')
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

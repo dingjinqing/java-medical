@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderInfo extends TableImpl<OrderInfoRecord> {
 
-    private static final long serialVersionUID = -704607645;
+    private static final long serialVersionUID = 1384774781;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_order_info</code>
@@ -762,6 +762,31 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
      * The column <code>mini_shop_471752.b2c_order_info.room_id</code>. 直播间ID
      */
     public final TableField<OrderInfoRecord, Integer> ROOM_ID = createField("room_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "直播间ID");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_info.patient_id</code>. 患者id
+     */
+    public final TableField<OrderInfoRecord, Integer> PATIENT_ID = createField("patient_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "患者id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_info.order_medical_type</code>. 订单药品类型 0普通 1处方药
+     */
+    public final TableField<OrderInfoRecord, Byte> ORDER_MEDICAL_TYPE = createField("order_medical_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单药品类型 0普通 1处方药");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_info.prescription_code_list</code>. 处方号外键
+     */
+    public final TableField<OrderInfoRecord, String> PRESCRIPTION_CODE_LIST = createField("prescription_code_list", org.jooq.impl.SQLDataType.VARCHAR(350).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "处方号外键");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_info.order_audit_status</code>. 订单审核状态 0未审核 1审核通过 2审核不通过
+     */
+    public final TableField<OrderInfoRecord, Byte> ORDER_AUDIT_STATUS = createField("order_audit_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单审核状态 0未审核 1审核通过 2审核不通过");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_info.audit_time</code>. 药品审核时间
+     */
+    public final TableField<OrderInfoRecord, Timestamp> AUDIT_TIME = createField("audit_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "药品审核时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_order_info</code> table reference

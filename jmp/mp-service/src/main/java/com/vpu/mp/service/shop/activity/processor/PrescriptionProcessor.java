@@ -1,6 +1,8 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
@@ -11,6 +13,7 @@ import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
+import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +40,8 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     private PrescriptionService prescriptionService;
     @Autowired
     private MedicalGoodsService medicalGoodsService;
+    @Autowired
+    private PatientService patientService;
 
 
     @Override
@@ -57,13 +62,21 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
         log.info("药品处方检查-开始");
+        //患者
+        if (param.getPatientId()==null||param.getPatientId().equals(0)){
+            Integer integer = patientService.defaultPatientId(param.getWxUserInfo().getUserId());
+            param.setPatientId(integer);
+        }
+        //药品处方
         List<PrescriptionVo> prescriptionList =new ArrayList<>();
-        Byte checkPrescriptionStatus = PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED;
+        byte checkPrescriptionStatus = PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED;
+        byte orderMedicalType = OrderConstant.MEDICAL_TYPE_OTC;
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             GoodsRecord goodsInfo = goods.getGoodsInfo();
             GoodsMedicalInfoDo medicalInfo = medicalGoodsService.getByGoodsId(goodsInfo.getGoodsId());
             //商品的医疗信息
             if (medicalInfo != null&&medicalInfo.getIsRx().equals(BaseConstant.YES)) {
+                orderMedicalType =OrderConstant.MEDICAL_TYPE_RX;
                 goods.setMedicalInfo(medicalInfo);
                 PrescriptionVo prescriptionVo = prescriptionService
                         .getByGoodsInfo(goods.getGoodsId(),param.getPatientId(), medicalInfo.getGoodsCommonName(), medicalInfo.getGoodsQualityRatio(), medicalInfo.getGoodsProductionEnterprise());
@@ -78,12 +91,18 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                 }
             }
         }
-        //处方单号去重
-        prescriptionList = prescriptionList.stream()
-                .collect(Collectors.collectingAndThen
-                        (Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PrescriptionVo::getPrescriptionNo))), ArrayList::new));
-        param.setPrescriptionList(prescriptionList);
+        if (OrderConstant.MEDICAL_TYPE_RX.equals(orderMedicalType)){
+            log.info("处方药订单,增加患者和历史处方信息");
+            PatientOneParam oneInfo = patientService.getOneInfo(param.getPatientId());
+            param.setPatientInfo(oneInfo);
+            //处方单号去重
+            prescriptionList = prescriptionList.stream()
+                    .collect(Collectors.collectingAndThen
+                            (Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PrescriptionVo::getPrescriptionNo))), ArrayList::new));
+            param.setPrescriptionList(prescriptionList);
+        }
         param.setCheckPrescriptionStatus(checkPrescriptionStatus);
+        param.setOrderMedicalType(orderMedicalType);
         log.info("药品处方检查-结束");
     }
 

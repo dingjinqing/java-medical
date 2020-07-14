@@ -41,7 +41,12 @@ public class PatientDao extends ShopBaseDao{
      * @param param
      */
     protected void buildOptions(SelectJoinStep<? extends Record> select, PatientListParam param) {
-        Timestamp nowDate = new Timestamp(System.currentTimeMillis());
+        if (param.getName() != null) {
+            select.where(PATIENT.NAME.like(likeValue(param.getName())));
+        }
+        if (param.getMobile() != null) {
+            select.where(PATIENT.MOBILE.like(likeValue(param.getMobile())));
+        }
     }
 
     /**

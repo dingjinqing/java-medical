@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.payment;
 
+import cn.hutool.json.JSONUtil;
 import com.github.binarywang.wxpay.bean.entpay.EntPayRequest;
 import com.github.binarywang.wxpay.bean.entpay.EntPayResult;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
@@ -26,6 +27,7 @@ import com.vpu.mp.service.pojo.shop.payment.PaymentRecordParam;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.pojo.wxapp.pay.jsapi.JsApiVo;
 import com.vpu.mp.service.wechat.WxPayment;
+import com.vpu.mp.service.wechat.WxPaymentAttachParam;
 import com.vpu.mp.support.PemToPkcs12;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

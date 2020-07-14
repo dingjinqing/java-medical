@@ -27,6 +27,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.calculate.UniteMarkeingtRecalculateBo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
+import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
@@ -40,6 +41,7 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.packsale.OrderPackageSale;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.presale.OrderPreSale;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
+import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
@@ -307,7 +309,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         //TODO 欧派、嗨购、CRM、自动同步订单微信购物单
         try {
-            createVo.setWebPayVo(orderPay.isContinuePay(orderAfterRecord, orderAfterRecord.getOrderSn(), orderAfterRecord.getMoneyPaid(), orderPay.getGoodsNameForPay(orderAfterRecord, orderBo.getOrderGoodsBo()), param.getClientIp(), param.getWxUserInfo().getWxUser().getOpenId(), param.getActivityType()));
+            WebPayVo continuePay = orderPay.isContinuePay(orderAfterRecord,
+                    orderAfterRecord.getOrderSn(),
+                    orderAfterRecord.getMoneyPaid(),
+                    orderPay.getGoodsNameForPay(orderAfterRecord, orderBo.getOrderGoodsBo()),
+                    param.getClientIp(),
+                    param.getWxUserInfo().getWxUser().getOpenId(),
+                    param.getActivityType());
+            createVo.setWebPayVo(continuePay);
             return ExecuteResult.create(createVo);
         } catch (MpException e) {
             return ExecuteResult.create(e.getErrorCode(), null);
@@ -593,6 +602,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if(BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType())) {
             vo.getOrderGoods().forEach(x-> x.setGoodsPrice(x.getGoodsScore() != null && x.getGoodsScore() > 0 ? BigDecimalUtil.subtrac(x.getDiscountedGoodsPrice(), BigDecimalUtil.divide(new BigDecimal(x.getGoodsScore()), new BigDecimal(vo.getScoreProportion()))) : x.getDiscountedGoodsPrice()));
         }
+
         // 积分使用规则
         setScorePayRule(vo);
         //支付方式
@@ -607,6 +617,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setTerm(calculate.getTermsofservice());
         //处方信息
         vo.setPrescriptionList(param.getPrescriptionList());
+        vo.setCheckPrescriptionStatus(param.getCheckPrescriptionStatus());
+        vo.setPatientInfo(param.getPatientInfo());
     }
 
     private void processBeforeUniteActivity(OrderBeforeParam param, OrderBeforeVo vo) {
@@ -1026,6 +1038,21 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         checkExpress(param.getDeliverType());
         //支付方式校验
         checkPayWay(param, vo);
+        //*************医药************//
+        /**
+         * 校验药品
+         */
+        checkMedcail(param);
+    }
+
+    /**
+     * 校验药品
+     * @param param
+     */
+    private void checkMedcail(CreateParam param) throws MpException {
+        if (PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_PASS.equals(param.getCheckPrescriptionStatus())){
+            throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);
+        }
     }
 
     /**
@@ -1273,6 +1300,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param param
      * @param orderBo
      * @param order
+     * @param orderBeforeVo
      * @throws MpException
      * @return
      */
@@ -1289,6 +1317,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             logger().info("加锁{}",order.getOrderSn());
             atomicOperation.updateStockandSalesByActFilter(order, orderBo.getOrderGoodsBo(), true);
             logger().info("更新成功{}",order.getOrderSn());
+            logger().info("订单支付成功->待审核状态");
+            if (!param.getCheckPrescriptionStatus().equals(PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED)){
+                order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT);
+            }
             return true;
         }else if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_PAY) && order.getIsLock().equals(YES)) {
             logger().info("下单时待付款且配置为下单减库存或者为秒杀时调用更新库存方法");

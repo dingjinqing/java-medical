@@ -6,6 +6,7 @@ import com.vpu.mp.common.foundation.data.DistributionConstant;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.dao.foundation.database.DslPlus;
+import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
@@ -37,8 +38,10 @@ import org.jooq.SelectConditionStep;
 import org.jooq.SelectHavingStep;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableRecordImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.xml.ws.soap.Addressing;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -65,9 +68,11 @@ import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
  *
  */
 @Service
-public class OrderGoodsService extends ShopBaseService{
+public class OrderGoodsService extends ShopBaseService {
 
 	public final OrderGoods TABLE = ORDER_GOODS;
+	@Autowired
+	private OrderGoodsDao orderGoodsDao;
 
 	/** 商品数量 发货数量 退款成功数量*/
 	public static byte TOTAL_GOODSNUMBER = 0,TOTAL_SENDNUMBER = 1,TOTAL_SUCCESSRETURNNUMBER = 2;
@@ -280,6 +285,15 @@ public class OrderGoodsService extends ShopBaseService{
 				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
 				.leftJoin(GOODS_SPEC_PRODUCT).on(TABLE.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
 				.where(TABLE.ORDER_SN.eq(orderSn)).fetchInto(GoodsAndOrderInfoBo.class);
+	}
+
+	/**
+	 * 获取订单规格id
+	 * @param orderSn 订单号
+	 * @return 规格ids
+	 */
+	public List<Integer> getProductIdByOrderSn(String orderSn){
+		return orderGoodsDao.getProductIdByOrderSn(orderSn);
 	}
 
 	/**

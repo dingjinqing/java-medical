@@ -1,0 +1,21 @@
+var includes = function (arr, target) {
+  if (arr.length === 0) return false
+  return arr.indexOf(target) === -1 ? false : true
+}
+var substring = function (str,start,end) {
+  if(!str) return ''
+  return str.substring(start,end)
+}
+var getSex = function (type){
+  var sexData = {
+    '0':'未知',
+    '1':'男',
+    '2':'女'
+  }
+  return sexData[''+type]
+}
+module.exports = {
+  includes: includes,
+  substring: substring,
+  getSex:getSex
+}

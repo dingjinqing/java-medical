@@ -35,3 +35,29 @@ export function doctorList (data) {
     data: data
   })
 }
+
+// 编辑医师
+export function getDoctor (id) {
+  return service({
+    url: `/api/admin/doctor/info/${id}`,
+    method: 'get'
+  })
+}
+
+// 更新医师
+export function updateDoctor (data) {
+  return service({
+    url: '/api/admin/doctor/update',
+    method: 'post',
+    data: data
+  })
+}
+
+// 停用，启用
+export function enableDoctor (data) {
+  return service({
+    url: '/api/admin/doctor/enable',
+    method: 'post',
+    data: data
+  })
+}

@@ -76,4 +76,23 @@ public class AdminDoctorController extends AdminBaseController {
         return success(shop().doctorService.getOneInfo(doctorId));
     }
 
+    /**
+     *  医生停用启用
+     * @param param {@link DoctorOneParam}
+     */
+    @PostMapping("/api/admin/doctor/enable")
+    public JsonResult enableDoctor(@RequestBody DoctorOneParam param) {
+        if (param.getId()==null) {
+            return fail(JsonResultCode.DOCTOR_ID_IS_NULL);
+        }
+
+//        boolean isExist = shop().departmentService.isNameExist(null,param.getName());
+//        if (isExist) {
+//            return fail(JsonResultCode.DOCTOR_DEPARTMENT_NAME_EXIST);
+//        }
+
+        shop().doctorService.enableDoctor(param);
+
+        return success();
+    }
 }

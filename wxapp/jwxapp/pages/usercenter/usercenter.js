@@ -271,6 +271,9 @@ global.wxPage({
   to_get_pre () {
     util.jumpLink('/pages1/getprescription/getprescription')
   },
+  allPrescription () {
+    util.jumpLink('/pages1/familylist/familylist')
+  },
   /**
    * 生命周期函数--监听页面隐藏
    */

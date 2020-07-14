@@ -714,6 +714,8 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     return moduleGoods;
                 case ModuleConstant.M_PRESCRIPTION:
                     return objectMapper.readValue(node.getValue().toString(), ModulePrescription.class);
+                case ModuleConstant.M_CASE_HISTORY:
+                    return objectMapper.readValue(node.getValue().toString(), ModuleCaseHistory.class);
                 //TODO 其他保存前需要处理的模块
                 default:
 
