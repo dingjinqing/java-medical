@@ -49,32 +49,24 @@
             }"
         >
           <el-table-column
-            prop='storeName'
-            label='患者编号'
+            prop='prescriptionNo'
+            label='处方号'
           ></el-table-column>
           <el-table-column
-            prop='posShopId'
-            label='姓名'
+            prop='departmentName'
+            label='科室名称'
           ></el-table-column>
           <el-table-column
-            prop='groupName'
-            label='手机号'
+            prop='doctorName'
+            label='医师名称'
           ></el-table-column>
           <el-table-column
-            prop='registeredHospital'
-            label='就诊卡号'
+            prop='diagnosisName'
+            label='疾病名称'
           ></el-table-column>
           <el-table-column
-            prop='department'
-            label='疾病史'
-          ></el-table-column>
-          <el-table-column
-            prop='jobTitle'
-            label='过敏史'
-          ></el-table-column>
-          <el-table-column
-            prop='registeredTime'
-            label='注册时间'
+            prop='diagnoseTime'
+            label='就诊时间'
           ></el-table-column>
           <el-table-column label='操作'>
             <template slot-scope="scope">
@@ -85,54 +77,65 @@
                   content="查看详情"
                   placement="top"
                 >
-                  <a @click='handleSeeMessage(134)'>查看详情</a>
+                  <a @click='handleSeeMessage(scope.row.prescriptionNo)'>查看详情</a>
                 </el-tooltip>
               </div>
             </template>
           </el-table-column>
         </el-table>
-        <!-- <pagination
+        <pagination
           :page-params.sync="pageParams"
           @pagination="initDataList"
-        /> -->
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// import pagination from '@/components/admin/pagination/pagination'
+import pagination from '@/components/admin/pagination/pagination'
+import { getPrescriptionList } from '@/api/admin/memberManage/patientManage.js'
 export default {
-  //   components: { pagination },
+  components: { pagination },
   data () {
     return {
       loading: false,
       langDefaultFlag: false,
-      pageParams: {},
-      tableData: [{
-        storeName: 'liuyang'
-      }
-      ],
+      pageParams: {
+        currentPage: 1,
+        pageRows: 20
+      },
+      tableData: [],
       storeGroup: [],
       queryParams: {
-        doctorNumber: null,
-        doctorName: null,
-        mobile: null
+        mobile: null,
+        currentPage: 1,
+        pageRows: 20
       },
       // 表格原始数据
       originalData: []
     }
   },
   methods: {
-    initDataList () {
+    initDataList (id) {
       this.loading = true
-      // storeList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
-      //   console.log(res)
-      //   this.originalData = res.content.storePageListVo.dataList
-      //   let originalData = JSON.parse(JSON.stringify(this.originalData))
-      //   this.handleData(originalData)
-      //   this.loading = false
-      // })
+      this.queryParams.patientId = id
+      this.queryParams.currentPage = this.pageParams.currentPage
+      this.queryParams.pageRows = this.pageParams.pageRows
+      getPrescriptionList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
+        if (res.error !== 0) {
+          this.$message.error({ message: res.message })
+          return
+        }
+        console.log(res)
+        this.originalData = res.content.dataList
+        this.pageParams = res.content.page
+        let originalData = JSON.parse(JSON.stringify(this.originalData))
+        this.handleData(originalData)
+        this.loading = false
+      }).catch(error => {
+        console.log(error)
+      })
     },
     handleSeeMessage (userId) {
       console.log(this.$router)
@@ -142,12 +145,12 @@ export default {
           userId: userId
         }
       })
+    },
+    handleData (data) {
+      this.tableData = data
+      this.langDefaultFlag = true
     }
-    // handleData (data) {
-    //   this.tableData = data
-    //   this.langDefaultFlag = true
-    // }
-  }
+  },
   // watch: {
   //   lang () {
   //     if (this.langDefaultFlag) {
@@ -157,9 +160,10 @@ export default {
   //     }
   //   }
   // },
-  // mounted () {
-  //   this.initDataList()
-  // }
+  mounted () {
+    let id = this.$route.query.id ? this.$route.query.id : 0
+    this.initDataList(id)
+  }
 }
 </script>
 
