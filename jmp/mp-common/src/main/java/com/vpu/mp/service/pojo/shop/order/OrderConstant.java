@@ -69,7 +69,7 @@ public class OrderConstant {
 	public final static byte ORDER_GIVE_GIFT_FINISHED = 13;
 	//********医药*********//
 	/**
-	 * 待审核
+	 * 审核中
 	 * 支付完成即待审核
 	 * 待审核->待发货
 	 */

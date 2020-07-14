@@ -72,7 +72,7 @@
             prop='diseaseHistory'
             label='疾病史'
           ></el-table-column>
-                  <el-table-column
+          <el-table-column
             prop='allergyHistory'
             label='过敏史'
           ></el-table-column>
@@ -118,9 +118,7 @@ export default {
       queryParams: {
         doctorNumber: null,
         doctorName: null,
-        mobile: null,
-        currentPage: 1,
-        pageRows: 20
+        mobile: null
       },
       // 表格原始数据
       originalData: []
@@ -132,6 +130,10 @@ export default {
       this.queryParams.currentPage = this.pageParams.currentPage
       this.queryParams.pageRows = this.pageParams.pageRows
       getPatientList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
+        if (res.error !== 0) {
+          this.$message.error({ message: res.message })
+          return
+        }
         console.log(res)
         this.originalData = res.content.dataList
         this.pageParams = res.content.page
@@ -145,7 +147,7 @@ export default {
       this.$router.push({
         name: 'patient_message',
         query: {
-          userId: userId
+          id: userId
         }
       })
     },
@@ -154,15 +156,7 @@ export default {
       this.langDefaultFlag = true
     }
   },
-  // watch: {
-  //   lang () {
-  //     if (this.langDefaultFlag) {
-  //       // 重新渲染表格数据
-  //       let originalData = JSON.parse(JSON.stringify(this.originalData))
-  //       this.handleData(originalData)
-  //     }
-  //   }
-  // },
+
   mounted () {
     this.initDataList()
   }

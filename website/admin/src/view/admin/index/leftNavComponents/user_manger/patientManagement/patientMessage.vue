@@ -6,49 +6,55 @@
         <li class="details_item">
           <span class="item_label">患者姓名：</span>
           <div class="item_content">
-            <span>张天师</span>
+            <span>{{data.name}}</span>
           </div>
         </li>
         <li class="details_item">
           <span class="item_label">患者编号：</span>
           <div class="item_content">
-            <span>372828828282</span>
+            <span>{{data.id}}</span>
           </div>
         </li>
         <li class="details_item">
           <span class="item_label">手机号：</span>
           <div class="item_content">
-            <span>18822223333</span>
+            <span>{{data.mobile}}</span>
           </div>
         </li>
         <li class="details_item">
           <span class="item_label">性别：</span>
           <div class="item_content">
-            <span>男</span>
+            <span>{{data.sex}}</span>
           </div>
         </li>
         <li class="details_item">
-          <span class="item_label">患者姓名：</span>
-          <div class="item_content">
-            <span>张天师</span>
-          </div>
-        </li>
-        <li class="details_item" style="margin:3px 0">
           <span class="item_label">证件类型：</span>
           <div class="item_content">
-          <span>身份证</span>
+            <span>{{data.identityType}}</span>
           </div>
         </li>
         <li class="details_item">
           <span class="item_label">证件号：</span>
           <div class="item_content">
-            <span>12312323</span>
+            <span>{{data.identityNo}}</span>
           </div>
         </li>
         <li class="details_item">
           <span class="item_label">生日：</span>
           <div class="item_content">
-            <span>2020-08-09</span>
+            <span>{{data.birthday}}</span>
+          </div>
+        </li>
+        <li class="details_item">
+          <span class="item_label">疾病史：</span>
+          <div class="item_content">
+            <span>{{data.diseaseHistory}}</span>
+          </div>
+        </li>
+        <li class="details_item">
+          <span class="item_label">过敏史：</span>
+          <div class="item_content">
+            <span>{{data.allergyHistory}}</span>
           </div>
         </li>
       </ul>
@@ -58,24 +64,31 @@
 </template>
 
 <script>
+import { getPatientMessage } from '@/api/admin/memberManage/patientManage.js'
 export default {
   name: 'patienMessage',
   data () {
     return {
-      data: {
-        shopName: '',
-        businessState: 0, // 0营业 1未营业
-        created: '',
-        expireTime: '', // 店铺到期时间
-        showLogo: 0, // 是否显示小程序店铺logo
-        logoLink: '' // 小程序端店铺链接
-      }
+      data: {}
     }
   },
   created () {
     this.langDefault()
   },
   methods: {
+    inintData (id) {
+      getPatientMessage(id).then(res => {
+        if (res.error !== 0) {
+          this.$message.error({ message: res.message })
+          return
+        }
+        this.data = res.content
+      })
+    }
+  },
+  mounted () {
+    let id = this.$route.query.id ? this.$route.query.id : 0
+    this.inintData(id)
   }
 }
 </script>

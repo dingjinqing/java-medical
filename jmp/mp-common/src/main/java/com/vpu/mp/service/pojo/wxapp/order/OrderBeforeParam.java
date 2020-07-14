@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
@@ -126,6 +127,11 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
      * 患者id
      */
     private Integer  patientId;
+    /**
+     * 患者信息
+     */
+    private PatientOneParam patientInfo; /**
+
 
     /**
 	 * 商品参数

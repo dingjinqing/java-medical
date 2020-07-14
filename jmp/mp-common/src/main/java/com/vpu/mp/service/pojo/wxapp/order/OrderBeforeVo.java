@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.wxapp.order;
 import com.google.common.collect.Lists;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
@@ -153,7 +154,10 @@ public class OrderBeforeVo {
      * 处方药关联处方校验 0不校验 1 通过 2不通过
      */
     private Byte checkPrescriptionStatus;
-
+    /**
+     * 患者信息
+     */
+    private PatientOneParam patientInfo;
 
     /**
      * 默认配送方式 0 ，1 ，2

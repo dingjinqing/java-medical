@@ -617,6 +617,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //处方信息
         vo.setPrescriptionList(param.getPrescriptionList());
         vo.setCheckPrescriptionStatus(param.getCheckPrescriptionStatus());
+        vo.setPatientInfo(param.getPatientInfo());
     }
 
     private void processBeforeUniteActivity(OrderBeforeParam param, OrderBeforeVo vo) {
@@ -1314,6 +1315,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             logger().info("加锁{}",order.getOrderSn());
             atomicOperation.updateStockandSalesByActFilter(order, orderBo.getOrderGoodsBo(), true);
             logger().info("更新成功{}",order.getOrderSn());
+            logger().info("订单支付成功->待审核状态");
+            order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT);
             return true;
         }else if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_PAY) && order.getIsLock().equals(YES)) {
             logger().info("下单时待付款且配置为下单减库存或者为秒杀时调用更新库存方法");
