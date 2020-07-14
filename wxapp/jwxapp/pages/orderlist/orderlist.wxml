@@ -34,11 +34,17 @@
         <view id="WAIT_PAY" bindtap="handleChangeNav" style="{{scrollIntoId === 'WAIT_PAY' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
           {{i18n.$t(localePack,"pages.order.navType.WAIT_PAY")}}({{navStatusNum[1]}})
         </view>
+        <view id="WAIT_CONFIRM" bindtap="handleChangeNav" style="{{scrollIntoId === 'WAIT_CONFIRM' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
+          待审核
+        </view>
         <view id="WAIT_DELIVERY" bindtap="handleChangeNav" style="{{scrollIntoId === 'WAIT_DELIVERY' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
           {{i18n.$t(localePack,"pages.order.navType.WAIT_DELIVERY")}}({{navStatusNum[2]}})
         </view>
         <view id="SHIPPED" bindtap="handleChangeNav" style="{{scrollIntoId === 'SHIPPED' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
-          {{i18n.$t(localePack,"pages.order.navType.SHIPPED")}}({{navStatusNum[3]}})
+          已发货({{navStatusNum[3]}})
+        </view>
+        <view id="RETURNING" bindtap="handleChangeNav" style="{{scrollIntoId === 'RETURNING' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
+          已取消
         </view>
         
       </scroll-view>
