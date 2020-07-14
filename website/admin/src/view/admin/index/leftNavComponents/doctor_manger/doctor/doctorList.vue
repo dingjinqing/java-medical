@@ -115,7 +115,7 @@
                     >
                       <i
                         class="iconfont icontingyong"
-                        @click="puaseDoctor(scope.row.id)"
+                        @click="puaseDoctor(scope.row)"
                       ></i>
                     </el-tooltip>
                     <el-tooltip
@@ -127,7 +127,7 @@
                     >
                       <i
                         class="iconfont iconqiyong"
-                        @click="beginDoctor(scope.row.id)"
+                        @click="beginDoctor(scope.row)"
                       ></i>
                     </el-tooltip>
                 </div>
@@ -143,7 +143,7 @@
 </template>
 
 <script>
-import { doctorList, updateDoctor } from '@/api/admin/doctorManage/doctorInfo/doctor'
+import { doctorList, enableDoctor } from '@/api/admin/doctorManage/doctorInfo/doctor'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { pagination },
@@ -167,6 +167,15 @@ export default {
     // 数据初始化
     initDataList () {
       this.loading = true
+      if (this.queryParams.hospitalCode === '') {
+        this.queryParams.hospitalCode = null
+      }
+      if (this.queryParams.name === '') {
+        this.queryParams.name = null
+      }
+      if (this.queryParams.departmentName === '') {
+        this.queryParams.departmentName = null
+      }
       doctorList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
         console.log(res)
         this.originalData = res.content.dataList
@@ -174,6 +183,9 @@ export default {
         for (let i in originalData) {
           if (originalData[i].departmentNames) {
             originalData[i].departmentNames = originalData[i].departmentNames.join('，')
+          }
+          if (originalData[i].registerTime !== null) {
+            originalData[i].registerTime = originalData[i].registerTime.substr(0, 10)
           }
         }
         console.log(originalData)
@@ -193,13 +205,17 @@ export default {
       console.log(this.$router)
     },
     // 停用
-    puaseDoctor (id) {
+    puaseDoctor (row) {
+      let params = {
+        id: row.id,
+        status: 0
+      }
       this.$confirm('此操作将停用该医生, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        updateDoctor(id).then(res => {
+        enableDoctor(params).then(res => {
           if (res.error === 0) {
             this.$message.success({ message: '停用成功！' })
             this.initDataList()
@@ -212,13 +228,17 @@ export default {
       })
     },
     // 启用
-    beginDoctor (id) {
+    beginDoctor (row) {
+      let params = {
+        id: row.id,
+        status: 1
+      }
       this.$confirm('此操作将启用该医生, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        updateDoctor(id).then(res => {
+        enableDoctor(params).then(res => {
           if (res.error === 0) {
             this.$message.success({ message: '启用成功！' })
             this.initDataList()
