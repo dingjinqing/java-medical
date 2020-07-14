@@ -1,5 +1,5 @@
-<view class="case-history-content">
-	<view class="prescription-module-title">
+<view class="case-history-content {{m.topHasRadius ? 'top-has-radius' : ''}} {{m.topIsAdver ? 'top-is-adver' : ''}}" style="{{m.page_color ? 'background-color:'+m.page_color+';':''}}">
+	<view class="prescription-module-title" bindtap="viewCaseHistoryList">
 		<image src="{{imageUrl}}image/wxapp/prescription-icon1.png"></image>
 		<text>我的病历</text>
 		<text class="more">更多</text>

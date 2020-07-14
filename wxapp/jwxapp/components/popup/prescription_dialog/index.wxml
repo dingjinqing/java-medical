@@ -1,16 +1,4 @@
-<wxs module="filter"> 
-  var includes = function (arr, target) {
-    if (arr.length === 0) return false
-    return arr.indexOf(target) === -1 ? false : true
-  }
-  var substring = function (str,start,end) {
-    return str.substring(start,end)
-  }
-  module.exports = {
-    includes: includes
-    substring: substring
-  }
-</wxs>
+<wxs src="../../../utils/wxs/filter.wxs" module="filter"></wxs>
 <v-popup show="{{show}}" bind:close="bindClose" close_pos="outer-bottom" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
     <view class="prescription-content">
       <view class="prescription-title-content" style="background:#26c4bc url({{imageUrl}}image/wxapp/prescription_bg.png) no-repeat left top/100% 160rpx;">
@@ -28,7 +16,7 @@
               <text>姓名</text>
             </view>
             <view class="info-item">
-              <text>{{prescriptionData.patientSex}}</text>
+              <text>{{filter.getSex(prescriptionData.patientSex)}}</text>
               <text>性别</text>
             </view>
             <view class="info-item">

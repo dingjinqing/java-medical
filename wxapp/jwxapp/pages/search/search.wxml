@@ -27,7 +27,7 @@
       </block>
       <block wx:if="{{loaded && !dataList[0].length}}">
         <view class="is-null" >
-          <image src="{{imageUrl}}image/wxapp/no_result.png"></image>
+          <image src="{{imageUrl}}image/wxapp/no-order.png"></image>
           <text>{{i18n.$t(localePack,"page1.search.errorTips")}}</text>
         </view>
       </block>

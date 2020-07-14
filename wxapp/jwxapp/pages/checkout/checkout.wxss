@@ -372,7 +372,31 @@
   margin: 20rpx auto 0;
   margin-bottom: 34rpx;
   box-shadow: none;
+  position: relative;
+  z-index: 2;
 }
 .prescription-item > .item-title{
   color: #26C4BC;
 }
+.no-prescription-tips{
+  margin: 20rpx auto 0;
+  width: 702rpx;
+  box-sizing: border-box;
+  border-radius: 16rpx;
+  display: flex;
+  background-color: #FFF4E3;
+  height: 80rpx;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  padding: 0 20rpx;
+}
+.no-prescription-tips > image {
+  height: 31rpx;
+  width: 31rpx;
+  margin-right: 20rpx;
+}  
+.no-prescription-tips > text {
+  color: #FF9F15;
+}
+  

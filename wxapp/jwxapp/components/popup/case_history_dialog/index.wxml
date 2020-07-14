@@ -1,16 +1,4 @@
-<wxs module="filter"> 
-  var includes = function (arr, target) {
-    if (arr.length === 0) return false
-    return arr.indexOf(target) === -1 ? false : true
-  }
-  var substring = function (str,start,end) {
-    return str.substring(start,end)
-  }
-  module.exports = {
-    includes: includes
-    substring: substring
-  }
-</wxs>
+<wxs src="../../../utils/wxs/filter.wxs" module="filter"></wxs>
 <v-popup show="{{show}}" bind:close="bindClose" close_pos="outer-bottom" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
     <view class="case-history-content">
       <view class="case-history-title">电子病历</view>
@@ -18,7 +6,7 @@
         <view class="user-detail">
           <text>姓名：{{caseHistoryData.patientName}}</text>
           <text>年龄：{{caseHistoryData.age}}岁</text>
-          <text>性别：{{caseHistoryData.sex}}</text>
+          <text>性别：{{filter.getSex(caseHistoryData.sex)}}</text>
         </view>
         <text>就诊科室：{{caseHistoryData.departmentName}}</text>
         <text>过敏史：{{caseHistoryData.allergyHistory}}</text>

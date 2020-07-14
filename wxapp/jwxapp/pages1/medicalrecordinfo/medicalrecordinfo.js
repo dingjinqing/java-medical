@@ -30,6 +30,7 @@ global.wxPage({
         } else {
           res.content.sex_text = '女'
         }
+        res.content.visitTime = res.content.visitTime.substr(0, 10);
         this.data.medicalInfo = res.content;
         this.setData({
           medicalInfo: this.data.medicalInfo

@@ -39,9 +39,6 @@ global.wxComponent({
         // 转化模块名称
         let componentName = this._convertComponentName(module['module_name']);
         if (!componentName) continue;
-        if (componentName === '') {
-
-        }
         // 模块名称
         module['component_name'] = componentName
         module.elapse_secs = 0;
@@ -54,6 +51,7 @@ global.wxComponent({
         module['margin_bot'] = pageInfo.page_cfg && pageInfo.page_cfg.show_margin == 1 ? pageInfo.page_cfg.margin_val : 0;
         // 是否需要请求数据
         module['need_request'] = module['need_request'] || false;
+        module['page_color'] = pageInfo.page_cfg.bg_types === 0 && pageInfo.page_cfg.page_bg_color ? pageInfo.page_cfg.page_bg_color : null
         pageData.push(module);
       }
 
@@ -93,7 +91,7 @@ global.wxComponent({
           // 添加悬浮组件 和 其他固定数量模块
           if (!d[i].is_float) {
             if (number < 2) {
-              l[i] = data[key] = this._timerConvertModule(d[i]);
+              l[i] = data[key] = this._timerConvertModule(d[i],d[i-1]);
               // console.log(l[i])
               if (l[i].need_request) delayed[i] = `c_${l[i].cur_idx}`;
               // delayed[i] = `c_${l[i].cur_idx}`
@@ -105,14 +103,14 @@ global.wxComponent({
             }
           } else {
             // console.log('触发')
-            l[i] = data[key] = this._timerConvertModule(d[i]);
+            l[i] = data[key] = this._timerConvertModule(d[i],d[i-1]);
             if (l[i].need_request) delayed[i] = `c_${l[i].cur_idx}`;
             loadMore = true;
           }
         } else {  // 则更新数据不同的模块
           // console.log('l有值')
           if (!d[i] || l[i] && (JSON.stringify(d[i]) != JSON.stringify(l[i]))) {
-            l[i] = data[key] = this._timerConvertModule(d[i]) || {};
+            l[i] = data[key] = this._timerConvertModule(d[i],d[i-1]) || {};
             if (l[i].need_request) delayed[i] = `c_${l[i].cur_idx}`;
             // console.log(l[i])
             // delayed[i] = `c_${l[i].cur_idx}`
@@ -165,7 +163,7 @@ global.wxComponent({
           // console.log(this._pageData[i])
           this._pageData[i]['need_request'] = false;
           var key = "pageData[" + i + "]";
-          data[key] = this._timerConvertModule(this._pageData[i]) || {};
+          data[key] = this._timerConvertModule(this._pageData[i],this._pageData[i-1]) || {};
           break;
         }
       }
@@ -176,15 +174,22 @@ global.wxComponent({
       }
 
     },
-    _timerConvertModule (m) {
+    _timerConvertModule (m,prevM = null) {
+      console.log(m,prevM)
       if (!m) return m;
       if (m.component_name == 'v-bargain' || m.component_name == 'v-pinlottery') {
         m.elapse_secs = this.elapse_secs
       }
-      console.log(m)
-      console.log(m.module_name)
       if (m.module_name === 'm_card') {
         if ((m.status == 1 || m.status == 4) && m.hidden_card == 1) return null;
+      }
+      if (m.module_name === 'm_case_history' || m.module_name === 'm_prescription' || (m.module_name === 'm_goods' && m.recommend_type === 0 && m.auto_recommend_type === 1 )){
+        if(prevM.module_name === 'm_image_adver'){
+          m.topIsAdver = true
+        }
+        if(!['m_case_history','m_prescription','m_goods'].includes(prevM.module_name)){
+          m.topHasRadius = true
+        }
       }
      
       return m;

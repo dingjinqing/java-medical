@@ -17,6 +17,9 @@ global.wxComponent({
         prescriptionNo
       })
       
+    },
+    viewPrescriptionList(){
+      util.jumpLink('pages1/prescriptionlist/prescriptionlist')
     }
   }
 });

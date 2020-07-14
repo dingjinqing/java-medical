@@ -43,8 +43,8 @@
   transform: translate(-50%,-50%);
 }
 .is-null image{
-  width: 262rpx;
-  height: 276rpx;
+  width: 750rpx;
+  height: 448rpx;
 }
 .is-null text{
   margin-top: 20rpx;

@@ -1,5 +1,6 @@
-<view class="prescription-content">
-	<view class="prescription-module-title">
+<wxs src="../../../utils/wxs/filter.wxs" module="filter"></wxs>
+<view class="prescription-content {{m.topHasRadius ? 'top-has-radius' : ''}} {{m.topIsAdver ? 'top-is-adver' : ''}}" style="{{m.page_color ? 'background-color:'+m.page_color+';':''}}">
+	<view class="prescription-module-title" bindtap="viewPrescriptionList">
 		<image src="{{imageUrl}}image/wxapp/prescription-icon1.png"></image>
 		<text>我的处方</text>
 		<text class="more">更多</text>
@@ -25,7 +26,7 @@
 		</view>
     <view class="doctor-info">
       <text class="doctor-name">医师：{{item.doctorName}}</text>
-      <text class="item-date">日期：{{item.prescriptionCreateTime}}</text>
+      <text class="item-date">日期：{{filter.substring(item.prescriptionCreateTime,0,10)}}</text>
     </view>
 	</view>
 	</block>

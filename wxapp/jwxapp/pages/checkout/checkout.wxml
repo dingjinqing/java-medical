@@ -1,3 +1,4 @@
+<wxs src="../../utils/wxs/filter.wxs" module="filter"></wxs>
 <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="body">
 	<include src="../common/header.wxml" />
@@ -9,6 +10,7 @@
           <text>付款时间已截至，订单已被取消，请重新下单</text>
         </block>
       </view> -->
+	
 		<view class="shipping_method_content" wx:if="{{orderInfo.expressList[1]||orderInfo.expressList[2]}}">
 			<block wx:for="{{orderInfo.expressList}}" wx:for-item="shipItem" wx:for-index="shipIndex" wx:key="shipIndex">
 				<view class="shipping_method" wx:if="{{shipItem === 1}}" bindtap="selectShippingMethod" data-index="{{shipIndex}}" style="border-bottom-color:{{params.deliverType === shipIndex ? comColor : ''}};">{{i18n.$t(localePack,"pages.checkout.deliverType["+shipIndex+"]")}}</view>
@@ -47,6 +49,11 @@
 			</view>
 		</view>
 
+		<view class="no-prescription-tips" wx:if="{{!submitButtonStatus}}">
+			<image src="{{imageUrl}}image/wxapp/warn.png"></image>
+			<text>该订单含处方药，请确认您的处方。</text>
+		</view>
+
 		<view class="goods-list-content">
 			<view class="goods_item" wx:for="{{orderInfo.orderGoods}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="goodsIndex">
 				<image src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
@@ -73,27 +80,27 @@
 			</view>
 		</view>
 
-		<view class="prescription-item" bindtap="handleShowDialog">
-			<view class="item-title" style="background: #DBEFEE url({{imageUrl}}image/wxapp/order-prescription-bg.png) no-repeat left top/100% 80rpx;">电子处方1</view>
+		<view class="prescription-item" bindtap="handleShowDialog" data-prescription-no="{{item.prescriptionNo}}" wx:for="{{orderInfo.prescriptionList}}" wx:key="id">
+			<view class="item-title" style="background: #DBEFEE url({{imageUrl}}image/wxapp/order-prescription-bg.png) no-repeat left top/100% 80rpx;">电子处方{{index + 1}}</view>
 			<view class="item-list-content">
 				<view class="item-list">
 					<view class="list-item">
 						<text class="list-item-dot"></text>
 						<view class="list-item-content">
-							诊断：原发性高血压
+							诊断：{{item.diagnosisName}}
 						</view>
 					</view>
 					<view class="list-item">
 						<text class="list-item-dot"></text>
 						<view class="list-item-content">
-							科室：神经科
+							科室：{{item.departmentName}}
 						</view>
 					</view>
 				</view>
 			</view>
 			<view class="doctor-info">
-				<text class="doctor-name">医师：张三</text>
-				<text class="item-date">日期：2020.06.30</text>
+				<text class="doctor-name">医师：{{item.doctorName}}</text>
+				<text class="item-date">日期：{{filter.substring(item.prescriptionCreateTime,0,10)}}</text>
 			</view>
 		</view>
 
@@ -313,7 +320,7 @@
 		<view class="checkout_footer">
 			<text class="footer_content" wx:if="{{params.activityType != 4}}" style="color:{{comColor}};">{{i18n.$t(localePack,"pages.checkout.actualPay",{price:usePayInfo.moneyPaid || "0"})}}</text>
 			<text class="footer_content" style="color:{{comColor}};" wx:if="{{params.activityType == 4}}">应付{{scoreRedeemData.money - usePayInfo.useBalance > 0 ? '￥' + (scoreRedeemData.money - usePayInfo.useBalance) : '' }}{{scoreRedeemData.money - usePayInfo.useBalance > 0 && scoreRedeemData.score > 0 ? ' + ' : ''}}{{scoreRedeemData.score > 0 ? scoreRedeemData.score + '积分' : ''}}</text>
-			<text class="footer_button" style="background-color:{{comColor}};" bindtap="{{choosePayType === 2 ? 'showShareFriend' : 'confirmOrder'}}">{{choosePayType === 2 ? '去分享' : i18n.$t(localePack,"pages.checkout.submitOrder")}}</text>
+			<text class="footer_button" style="background-color:{{!submitButtonStatus ? '#999' : comColor}};" bindtap="{{choosePayType === 2 ? 'showShareFriend' : 'confirmOrder'}}">{{choosePayType === 2 ? '去分享' : i18n.$t(localePack,"pages.checkout.submitOrder")}}</text>
 		</view>
 	</view>
 	<!-- 修改余额 -->
@@ -331,6 +338,6 @@
 	<!-- 定金膨胀发货规则弹窗 -->
 	<v-pre-sale-rule show="{{preSaleRuleShow}}" />
 	<!-- 处方详情展示弹窗 -->
-	<v-prescription-dialog show="{{showPrescription}}" />
+	<v-prescription-dialog show="{{showPrescription}}" prescription-data="{{prescriptionData}}"/>
 	<include src="../common/footer.wxml" />
 </view>
