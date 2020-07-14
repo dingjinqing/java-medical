@@ -49,6 +49,13 @@ public class ShopBaseService extends ShopBaseDao {
     }
 
     /**
+     * 溢出当前登录用户
+     */
+    public static void removeCurrentAdminLoginUser() {
+        currentAdminLoginUser.remove();
+    }
+
+    /**
      * 当前线程得到当前登录用户
      *
      * @return
