@@ -9,6 +9,7 @@ import com.vpu.mp.dao.foundation.database.DatabaseManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -160,6 +161,12 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 		}
 		return true;
 	}
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+                                @Nullable Exception ex) throws Exception {
+        ShopBaseService.removeCurrentAdminLoginUser();
+    }
 
 	protected void errorResponse(HttpServletRequest request, HttpServletResponse response, String path,
 			JsonResult result) throws Exception {

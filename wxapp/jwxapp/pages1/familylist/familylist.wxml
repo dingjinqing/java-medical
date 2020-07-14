@@ -2,7 +2,7 @@
 <include src="/pages/common/header.wxml"/>
 <view class="mian-container">
   <view class="family_content">
-    <view class="each_family">
+    <view class="each_family" data-patient-id="1" bindtap="{{source ? 'toggleFamily' : ''}}">
       <view class="ef_top">
         <view>徐依晨</view>
         <view>13233445566</view>
