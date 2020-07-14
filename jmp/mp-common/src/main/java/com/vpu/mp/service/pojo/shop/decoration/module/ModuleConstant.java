@@ -176,5 +176,10 @@ public class ModuleConstant {
      * 我的处方模块
      */
     public static final String M_PRESCRIPTION = "m_prescription";
+
+    /**
+     * 我的病历模块
+     */
+    public static final String M_CASE_HISTORY = "m_case_history";
 	
 }
