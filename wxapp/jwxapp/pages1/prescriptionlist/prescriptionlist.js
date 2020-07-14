@@ -35,6 +35,9 @@ global.wxPage({
         let dataList = JSON.stringify(res.content.dataList);
         dataList = JSON.parse(dataList)
         console.log(dataList)
+        for (let i in dataList) {
+          dataList[i].prescriptionCreateTime = dataList[i].prescriptionCreateTime.substr(0,10)
+        }
         this.setData({
           pageParams: res.content.page,
           ['dataList[' + (parseInt(currentPage) - 1) + ']']: dataList
