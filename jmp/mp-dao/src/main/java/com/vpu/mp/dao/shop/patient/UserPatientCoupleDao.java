@@ -3,6 +3,7 @@ package com.vpu.mp.dao.shop.patient;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -31,5 +32,27 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
             .where(USER_PATIENT_COUPLE.USER_ID.eq(userId).and(PATIENT.IS_DELETE.eq((byte) 0)))
             .fetchInto(PatientOneParam.class);
         return patientList;
+    }
+
+    /**
+     * 设置默认患者 没有为0
+     * @param userPatient
+     * @return
+     */
+    public int setDefaultPatient(UserPatientParam userPatient) {
+        int id = db().update(USER_PATIENT_COUPLE).set(USER_PATIENT_COUPLE.IS_DEFAULT,(byte) 1).where(USER_PATIENT_COUPLE.USER_ID.eq(userPatient.getUserId()).and(USER_PATIENT_COUPLE.PATIENT_ID.eq(userPatient.getPatientId())))
+            .execute();
+        return id;
+    }
+
+    /**
+     * 将用户的患者全置为非默认
+     * @param userId
+     * @return
+     */
+    public int initDefaultUserPatient(Integer userId) {
+        int id = db().update(USER_PATIENT_COUPLE).set(USER_PATIENT_COUPLE.IS_DEFAULT,(byte) 0).where(USER_PATIENT_COUPLE.USER_ID.eq(userId))
+            .execute();
+        return id;
     }
 }

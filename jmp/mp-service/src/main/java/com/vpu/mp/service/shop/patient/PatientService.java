@@ -7,6 +7,7 @@ import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.patient.PatientListParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +52,10 @@ public class PatientService extends ShopBaseService{
 
     public Integer defaultPatientId (Integer userId) {
         return userPatientCoupleDao.defaultPatientIdByUser(userId);
+    }
+
+    public void setDefaultPatient (UserPatientParam userPatient) {
+        userPatientCoupleDao.initDefaultUserPatient(userPatient.getUserId());
+        userPatientCoupleDao.setDefaultPatient(userPatient);
     }
 }

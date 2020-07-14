@@ -48,7 +48,13 @@ public class DoctorService extends ShopBaseService {
 
     public Integer updateDoctor(DoctorOneParam param) {
         doctorDao.updateDoctor(param);
-        setDoctorDepartmentCouples(param.getId(),param.getDepartmentIdsStr());
+        if(param.getDepartmentIdsStr() != null){
+            setDoctorDepartmentCouples(param.getId(),param.getDepartmentIdsStr());
+        }
+        return param.getId();
+    }
+    public Integer enableDoctor(DoctorOneParam param) {
+        doctorDao.updateDoctor(param);
         return param.getId();
     }
 
