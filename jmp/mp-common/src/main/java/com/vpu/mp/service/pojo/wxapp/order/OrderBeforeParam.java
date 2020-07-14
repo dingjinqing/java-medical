@@ -131,9 +131,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
      * 患者信息
      */
     private PatientOneParam patientInfo; /**
-     * 患者信息
-     */
-    private PatientOneParam patientInfo;
+
 
     /**
 	 * 商品参数
