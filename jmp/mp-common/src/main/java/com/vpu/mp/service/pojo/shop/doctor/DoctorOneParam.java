@@ -4,7 +4,6 @@ import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
 import lombok.Data;
 
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.List;
 
 @Data
@@ -12,6 +11,8 @@ public class DoctorOneParam {
     private Integer   id;
     private Integer   accountId;
     private Byte      sex;
+    private Byte      duty;
+    private String    url;
     private String    name;
     private String    hospitalCode;
     private String    certificateCode;

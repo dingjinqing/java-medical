@@ -19,5 +19,6 @@ public class PatientOneParam {
     private String    allergyHistory;
     private String    memo;
     private Byte      isDelete;
+    private Byte      isDefault;
     private Date      birthday;
 }

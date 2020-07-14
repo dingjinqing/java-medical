@@ -45,8 +45,7 @@ public class PatientService extends ShopBaseService{
     }
 
     public List<PatientOneParam> listPatientByUserId (Integer userId) {
-        List<Integer> patientIds = userPatientCoupleDao.listPatientIdsByUser(userId);
-        List<PatientOneParam> patientList = patientDao.listPatientByIds(patientIds);
+        List<PatientOneParam> patientList = userPatientCoupleDao.listPatientIdsByUser(userId);
         return patientList;
     }
 
