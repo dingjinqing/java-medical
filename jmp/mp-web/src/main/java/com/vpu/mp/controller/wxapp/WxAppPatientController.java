@@ -14,9 +14,9 @@ public class WxAppPatientController extends WxAppBaseController {
     /**
      * 	获取用户的患者列表
      */
-    @GetMapping("/api/wxapp/user/patient/list/{userId}")
-    public JsonResult getUserAccountWithdraw(@PathVariable Integer userId) {
-        List<PatientOneParam> patientList = shop().patientService.listPatientByUserId(userId);
+    @PostMapping("/api/wxapp/user/patient/list")
+    public JsonResult getUserAccountWithdraw(@RequestBody UserPatientParam userPatient) {
+        List<PatientOneParam> patientList = shop().patientService.listPatientByUserId(userPatient.getUserId());
         return success(patientList);
     }
 
