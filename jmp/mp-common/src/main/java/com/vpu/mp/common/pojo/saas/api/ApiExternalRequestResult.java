@@ -8,7 +8,7 @@ import lombok.Data;
  * @date 2020年07月15日
  */
 @Data
-public class ApiExternalRequestVo {
+public class ApiExternalRequestResult {
     /**
      * 错误码：非0为错误,对方错误码需要是0或正整数
      */
