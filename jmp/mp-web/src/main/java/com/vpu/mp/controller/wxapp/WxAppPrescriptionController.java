@@ -29,6 +29,8 @@ public class WxAppPrescriptionController extends WxAppBaseController  {
      */
     @PostMapping("/list")
     public JsonResult listPageResultWx(@RequestBody @Validated PrescriptionListParam param){
+        Integer userId = wxAppAuth.user().getUserId();
+        param.setUserId(userId);
         return success(prescriptionService.listPageResultWx(param));
     }
 
@@ -38,6 +40,6 @@ public class WxAppPrescriptionController extends WxAppBaseController  {
      */
     @PostMapping("/details")
     public JsonResult getPrescriptionDetails(@RequestBody @Validated PrescriptionNoParam param){
-        return success(prescriptionService.getInfoByPrescriptionNo(param.getPrescriptionNo()));
+        return success(prescriptionService.getInfoByPrescriptionNo(param.getPrescriptionCode()));
     }
 }

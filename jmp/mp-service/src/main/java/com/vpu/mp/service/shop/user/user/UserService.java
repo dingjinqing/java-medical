@@ -630,7 +630,7 @@ public class UserService extends ShopBaseService {
 				//待审核
 				iconItem.put("num", orderStatusNum.get(OrderConstant.AUDIT));
 			}
-			if (iconItem.get("icon_name").equals("wait_deliver")) {
+			if (iconItem.get("icon_name").equals("wait_delivery")) {
 				//代发货
 				iconItem.put("num", orderStatusNum.get(OrderConstant.WAIT_DELIVERY));
 			}

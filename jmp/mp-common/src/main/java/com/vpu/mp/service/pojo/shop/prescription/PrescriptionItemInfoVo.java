@@ -30,7 +30,7 @@ public class PrescriptionItemInfoVo {
     /**
      * 单次用量
      */
-    private Double per_time_num;
+        private Double per_time_num;
 
     /**
      * 数量单位
