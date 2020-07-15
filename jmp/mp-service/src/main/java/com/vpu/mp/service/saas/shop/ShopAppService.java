@@ -22,10 +22,12 @@ import static com.vpu.mp.db.main.tables.AppAuth.APP_AUTH;
 @Service
 public class ShopAppService  extends MainBaseService {
 	public AppAuthRecord getShopAppByErp(Integer shopId) {
-		return db().selectFrom(APP_AUTH).where(APP_AUTH.SHOP_ID.eq(shopId)).and(APP_AUTH.ACTION.eq((byte)1)).fetchAny();
+		return db().selectFrom(APP_AUTH).where(APP_AUTH.SHOP_ID.eq(shopId)).and(APP_AUTH.APP_ID.eq("200000")).fetchAny();
 	}
     /** 门店对接action 2：pos */
     public static final Byte ACTION_POS = 2;
+    public static final Byte ACTION_ERR = 1;
+    public static final Byte ACTION_CRM = 3;
     /** status默认值0 */
     public static final Byte STATUS_DEFAULT_VALUE = 0;
     /**
@@ -37,7 +39,7 @@ public class ShopAppService  extends MainBaseService {
         Byte status = db().select(Tables.APP_AUTH.STATUS)
             .from(Tables.APP_AUTH)
             .where(Tables.APP_AUTH.SHOP_ID.eq(shopId))
-            .and(Tables.APP_AUTH.ACTION.eq(ACTION_POS))
+            .and(Tables.APP_AUTH.APP_ID.eq("200001"))
             .fetchOptionalInto(Byte.class)
             .orElse(STATUS_DEFAULT_VALUE);
         return status;
@@ -70,7 +72,7 @@ public class ShopAppService  extends MainBaseService {
      * @return
      */
     public AppAuthRecord getAppAuthRecordById(Integer id, Integer shopId,Integer sysId){
-        return db().selectFrom(APP_AUTH).where(APP_AUTH.ID.eq(id.shortValue()))
+        return db().selectFrom(APP_AUTH).where(APP_AUTH.ID.eq(id))
             .and(APP_AUTH.SHOP_ID.eq(shopId))
             .and(APP_AUTH.SYS_ID.eq(sysId))
             .fetchOne();
@@ -94,10 +96,18 @@ public class ShopAppService  extends MainBaseService {
      * @return null 或者授权信息
      */
     public AppAuthRecord getAppAuthInfo(Integer sysId, Integer shopId, Byte action) {
+        String appId = "";
+        if (ACTION_POS.equals(action)) {
+            appId = "200001";
+        } else if (ACTION_ERR.equals(action)) {
+            appId = "200000";
+        } else {
+            appId = "200002";
+        }
         return db().selectFrom(APP_AUTH)
             .where(APP_AUTH.SHOP_ID.eq(shopId))
             .and(APP_AUTH.SYS_ID.eq(sysId))
-            .and(APP_AUTH.ACTION.eq(action)).fetchOne();
+            .and(APP_AUTH.APP_ID.eq(appId)).fetchOne();
 
     }
 
@@ -112,10 +122,17 @@ public class ShopAppService  extends MainBaseService {
         AppAuthRecord appAuthRecord = db().newRecord(APP_AUTH);
         appAuthRecord.setSysId(sysId);
         appAuthRecord.setShopId(shopId);
-        appAuthRecord.setAction(action);
+        String appId = "";
+        if (ACTION_POS.equals(action)) {
+            appId = "200001";
+        } else if (ACTION_ERR.equals(action)) {
+            appId = "200000";
+        } else {
+            appId = "200002";
+        }
+        appAuthRecord.setAppId(appId);
         appAuthRecord.setStatus(BaseConstant.NO);
         appAuthRecord.setSessionKey(generateUniqueSessionKey(shopId));
-        appAuthRecord.setIsSync(BaseConstant.NO);
         appAuthRecord.insert();
         appAuthRecord.refresh();
         return appAuthRecord;
@@ -134,7 +151,9 @@ public class ShopAppService  extends MainBaseService {
                 RandomStringUtils.randomAlphanumeric(len) +
                 "s" + shopId;
             Record1<Integer> fetchOne = db().selectCount().from(APP_AUTH).where(APP_AUTH.SESSION_KEY.eq(sessionKey)).fetchOne();
-            if (fetchOne!=null&&fetchOne.component1()==0) break;
+            if (fetchOne!=null&&fetchOne.component1()==0) {
+                break;
+            }
         }
         return sessionKey;
     }
@@ -142,7 +161,7 @@ public class ShopAppService  extends MainBaseService {
 
     public int updateAppAuthStatus(Integer id, Integer shopId,Integer sysId, Byte status) {
         return db().update(APP_AUTH).set(APP_AUTH.STATUS,status)
-            .where(APP_AUTH.ID.eq(id.shortValue()))
+            .where(APP_AUTH.ID.eq(id))
             .and(APP_AUTH.SYS_ID.eq(sysId))
             .and(APP_AUTH.SHOP_ID.eq(shopId)).execute();
     }
@@ -157,20 +176,10 @@ public class ShopAppService  extends MainBaseService {
      * @return 1
      */
     public int updateAppAuthAppkey(Integer id, Integer sysId, Integer shopId, String appKey, String appSecret) {
-        return db().update(APP_AUTH)
-            .set(APP_AUTH.APP_KEY,appKey)
-            .set(APP_AUTH.APP_SECRET,appSecret)
-            .where(APP_AUTH.ID.eq(id.shortValue()))
-            .and(APP_AUTH.SYS_ID.eq(sysId))
-            .and(APP_AUTH.SHOP_ID.eq(shopId))
-            .execute();
+        return 0;
     }
 
     public int switchProduct(Integer id, Integer sysId, Integer shopId, byte product) {
-       return db().update(APP_AUTH).set(APP_AUTH.PRODUCT,product)
-            .where(APP_AUTH.ID.eq(id.shortValue()))
-            .and(APP_AUTH.SYS_ID.eq(sysId))
-            .and(APP_AUTH.SHOP_ID.eq(shopId))
-            .execute();
+       return 0;
     }
 }

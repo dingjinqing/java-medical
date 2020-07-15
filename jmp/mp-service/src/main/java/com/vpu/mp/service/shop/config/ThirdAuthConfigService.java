@@ -130,14 +130,12 @@ public class ThirdAuthConfigService extends  BaseShopConfigService {
         if (i>0&& param.getAction().equals(CRM_ACTION)&& BaseConstant.YES.equals(param.getStatus())){
             logger().info("授权crm-同步");
             AppAuthRecord appAuthRecord = saas.shop.shopApp.getAppAuthInfo(getSysId(), getShopId(), param.getAction());
-            if (appAuthRecord!=null&&appAuthRecord.getIsSync().equals(BaseConstant.YES)){
                 //TODO
                 /**
                  *   queue_job(function () use ($shopId){
                  *    shop($shopId)->serviceRequest->crmApi->startSyncAllData();
                  *      });
                  */
-            }
         }
         return i;
     }

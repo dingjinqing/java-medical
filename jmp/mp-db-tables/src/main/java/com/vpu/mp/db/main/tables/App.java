@@ -8,24 +8,14 @@ import com.vpu.mp.db.main.Indexes;
 import com.vpu.mp.db.main.Keys;
 import com.vpu.mp.db.main.MiniMain;
 import com.vpu.mp.db.main.tables.records.AppRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -41,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class App extends TableImpl<AppRecord> {
 
-    private static final long serialVersionUID = 461226167;
+    private static final long serialVersionUID = -2040371842;
 
     /**
      * The reference instance of <code>mini_main.b2c_app</code>
@@ -64,17 +54,17 @@ public class App extends TableImpl<AppRecord> {
     /**
      * The column <code>mini_main.b2c_app.app_name</code>. 应用名称
      */
-    public final TableField<AppRecord, String> APP_NAME = createField("app_name", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "应用名称");
+    public final TableField<AppRecord, String> APP_NAME = createField("app_name", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "应用名称");
 
     /**
      * The column <code>mini_main.b2c_app.app_secret</code>.
      */
-    public final TableField<AppRecord, String> APP_SECRET = createField("app_secret", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<AppRecord, String> APP_SECRET = createField("app_secret", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_main.b2c_app.add_time</code>.
+     * The column <code>mini_main.b2c_app.create_time</code>.
      */
-    public final TableField<AppRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
+    public final TableField<AppRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
 
     /**
      * Create a <code>mini_main.b2c_app</code> table reference

@@ -42,7 +42,7 @@ public class Keys {
     public static final Identity<AliMiniAppVersionRecord, Integer> IDENTITY_ALI_MINI_APP_VERSION = Identities0.IDENTITY_ALI_MINI_APP_VERSION;
     public static final Identity<AliMyOrderRecord, Integer> IDENTITY_ALI_MY_ORDER = Identities0.IDENTITY_ALI_MY_ORDER;
     public static final Identity<AliUserTokenRecord, Integer> IDENTITY_ALI_USER_TOKEN = Identities0.IDENTITY_ALI_USER_TOKEN;
-    public static final Identity<AppAuthRecord, Short> IDENTITY_APP_AUTH = Identities0.IDENTITY_APP_AUTH;
+    public static final Identity<AppAuthRecord, Integer> IDENTITY_APP_AUTH = Identities0.IDENTITY_APP_AUTH;
     public static final Identity<ArticleRecord, Integer> IDENTITY_ARTICLE = Identities0.IDENTITY_ARTICLE;
     public static final Identity<ArticleCategoryRecord, Integer> IDENTITY_ARTICLE_CATEGORY = Identities0.IDENTITY_ARTICLE_CATEGORY;
     public static final Identity<ArticleRecordRecord, Integer> IDENTITY_ARTICLE_RECORD = Identities0.IDENTITY_ARTICLE_RECORD;
@@ -233,7 +233,7 @@ public class Keys {
         public static Identity<AliMiniAppVersionRecord, Integer> IDENTITY_ALI_MINI_APP_VERSION = Internal.createIdentity(AliMiniAppVersion.ALI_MINI_APP_VERSION, AliMiniAppVersion.ALI_MINI_APP_VERSION.REC_ID);
         public static Identity<AliMyOrderRecord, Integer> IDENTITY_ALI_MY_ORDER = Internal.createIdentity(AliMyOrder.ALI_MY_ORDER, AliMyOrder.ALI_MY_ORDER.REC_ID);
         public static Identity<AliUserTokenRecord, Integer> IDENTITY_ALI_USER_TOKEN = Internal.createIdentity(AliUserToken.ALI_USER_TOKEN, AliUserToken.ALI_USER_TOKEN.REC_ID);
-        public static Identity<AppAuthRecord, Short> IDENTITY_APP_AUTH = Internal.createIdentity(AppAuth.APP_AUTH, AppAuth.APP_AUTH.ID);
+        public static Identity<AppAuthRecord, Integer> IDENTITY_APP_AUTH = Internal.createIdentity(AppAuth.APP_AUTH, AppAuth.APP_AUTH.ID);
         public static Identity<ArticleRecord, Integer> IDENTITY_ARTICLE = Internal.createIdentity(Article.ARTICLE, Article.ARTICLE.ARTICLE_ID);
         public static Identity<ArticleCategoryRecord, Integer> IDENTITY_ARTICLE_CATEGORY = Internal.createIdentity(ArticleCategory.ARTICLE_CATEGORY, ArticleCategory.ARTICLE_CATEGORY.CATEGORY_ID);
         public static Identity<ArticleRecordRecord, Integer> IDENTITY_ARTICLE_RECORD = Internal.createIdentity(com.vpu.mp.db.main.tables.ArticleRecord.ARTICLE_RECORD, com.vpu.mp.db.main.tables.ArticleRecord.ARTICLE_RECORD.ID);
