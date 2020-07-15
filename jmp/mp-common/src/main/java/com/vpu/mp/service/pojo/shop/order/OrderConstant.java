@@ -424,7 +424,7 @@ public class OrderConstant {
 	//审核中
 	public static final byte AUDIT = 6;
 	//已取消
-	public static final byte RETURNING = 6;
+	public static final byte RETURNING = 7;
 
 	/**
 	 * 是否货到付款订单
