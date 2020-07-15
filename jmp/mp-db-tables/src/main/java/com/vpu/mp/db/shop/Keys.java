@@ -287,6 +287,7 @@ public class Keys {
     public static final Identity<DoctorAdviceRecord, Integer> IDENTITY_DOCTOR_ADVICE = Identities0.IDENTITY_DOCTOR_ADVICE;
     public static final Identity<DoctorDepartmentCoupleRecord, Integer> IDENTITY_DOCTOR_DEPARTMENT_COUPLE = Identities0.IDENTITY_DOCTOR_DEPARTMENT_COUPLE;
     public static final Identity<MedicalHistoryRecord, Integer> IDENTITY_MEDICAL_HISTORY = Identities0.IDENTITY_MEDICAL_HISTORY;
+    public static final Identity<MedicalAdviceRecord, Integer> IDENTITY_MEDICAL_ADVICE = Identities0.IDENTITY_MEDICAL_ADVICE;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -562,6 +563,7 @@ public class Keys {
     public static final UniqueKey<DoctorAdviceRecord> KEY_B2C_DOCTOR_ADVICE_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_ADVICE_PRIMARY;
     public static final UniqueKey<DoctorDepartmentCoupleRecord> KEY_B2C_DOCTOR_DEPARTMENT_COUPLE_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_DEPARTMENT_COUPLE_PRIMARY;
     public static final UniqueKey<MedicalHistoryRecord> KEY_B2C_MEDICAL_HISTORY_PRIMARY = UniqueKeys0.KEY_B2C_MEDICAL_HISTORY_PRIMARY;
+    public static final UniqueKey<MedicalAdviceRecord> KEY_B2C_MEDICAL_ADVICE_PRIMARY = UniqueKeys0.KEY_B2C_MEDICAL_ADVICE_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -816,6 +818,7 @@ public class Keys {
         public static Identity<DoctorAdviceRecord, Integer> IDENTITY_DOCTOR_ADVICE = Internal.createIdentity(DoctorAdvice.DOCTOR_ADVICE, DoctorAdvice.DOCTOR_ADVICE.ID);
         public static Identity<DoctorDepartmentCoupleRecord, Integer> IDENTITY_DOCTOR_DEPARTMENT_COUPLE = Internal.createIdentity(DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE, DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE.ID);
         public static Identity<MedicalHistoryRecord, Integer> IDENTITY_MEDICAL_HISTORY = Internal.createIdentity(MedicalHistory.MEDICAL_HISTORY, MedicalHistory.MEDICAL_HISTORY.ID);
+        public static Identity<MedicalAdviceRecord, Integer> IDENTITY_MEDICAL_ADVICE = Internal.createIdentity(MedicalAdvice.MEDICAL_ADVICE, MedicalAdvice.MEDICAL_ADVICE.ID);
 
     }
 
@@ -1095,5 +1098,6 @@ public class Keys {
         public static final UniqueKey<DoctorAdviceRecord> KEY_B2C_DOCTOR_ADVICE_PRIMARY = Internal.createUniqueKey(DoctorAdvice.DOCTOR_ADVICE, "KEY_b2c_doctor_advice_PRIMARY", DoctorAdvice.DOCTOR_ADVICE.ID);
         public static final UniqueKey<DoctorDepartmentCoupleRecord> KEY_B2C_DOCTOR_DEPARTMENT_COUPLE_PRIMARY = Internal.createUniqueKey(DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE, "KEY_b2c_doctor_department_couple_PRIMARY", DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE.ID);
         public static final UniqueKey<MedicalHistoryRecord> KEY_B2C_MEDICAL_HISTORY_PRIMARY = Internal.createUniqueKey(MedicalHistory.MEDICAL_HISTORY, "KEY_b2c_medical_history_PRIMARY", MedicalHistory.MEDICAL_HISTORY.ID);
+        public static final UniqueKey<MedicalAdviceRecord> KEY_B2C_MEDICAL_ADVICE_PRIMARY = Internal.createUniqueKey(MedicalAdvice.MEDICAL_ADVICE, "KEY_b2c_medical_advice_PRIMARY", MedicalAdvice.MEDICAL_ADVICE.ID);
     }    
 }

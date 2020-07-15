@@ -4736,7 +4736,9 @@ create table `b2c_goods_medical_info`(
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     primary key (`id`)
-) comment='商品-药品信息表';create table `b2c_goods_medical_info`(
+) comment='商品-药品信息表';
+
+    create table `b2c_goods_medical_info`(
     `id` int(11) not null auto_increment comment '商品额外信息id',
     `goods_id` int(11) not null comment '商品id',
     `goods_common_name` varchar(512) not null default '' comment '通用名',
@@ -4968,3 +4970,30 @@ CREATE TABLE `b2c_medical_history` (
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     PRIMARY KEY (`id`)
 )comment ='病历表';
+
+-- 医嘱明细
+CREATE TABLE `b2c_medical_advice` (
+    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+    `pos_code` varchar(128) not null default '' comment '医嘱单号',
+    `pos_detail_code` varchar(128) not null default '' comment '医嘱明细单号',
+    `diagnosis_name` varchar(128) not null default '' comment '诊断名称',
+    `diagnosis_code` varchar(128) not null default '' comment '诊断编码',
+    `diagnosis_content` text not null default '' comment '诊断描述',
+    `order_create_time` timestamp not null default current_timestamp comment '医嘱创建时间',
+    `take_effect_time` timestamp not null default current_timestamp comment '医嘱生效时间',
+    `pos_content` text not null default '' comment '医嘱内容',
+    `goods_num` double not null default 0 comment '总量',
+    `goods_basic_unit` varchar(16) not null default '' comment '单位 例：500',
+    `goods_equivalent_quantity` double not null default 0 comment '单量 例:500',
+    `goods_equivalent_unit` varchar(16) not null default '' comment '单位(单量单位)例:ml',
+    `goods_price` decimal not null  default 0 comment '金额',
+    `goods_use_frequency` varchar(64) not null default '' comment '使用频次',
+    `goods_use_method` varchar(64) not null default '' comment '使用方法',
+    `doctor_memo` text not null default '' comment '医师嘱托',
+    `doctor` varchar(32) not null default '' comment '开嘱医师',
+    `basic_medical` tinyint not null default 0 comment '是否表示当前医嘱明细是个药品 0:否、1:是',
+    `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除标记',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    primary key (`id`)
+)comment '医嘱明细表';
