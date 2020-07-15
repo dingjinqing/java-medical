@@ -4841,7 +4841,7 @@ create table `b2c_prescription`(
     `identity_type` tinyint(1) not null default 1 comment '证件类型: 1：身份证 2：军人证 3：护照 4：社保卡',
     `patient_name` varchar(32) not null default '' comment '患者名称',
     `patient_age` int(11) not null comment '患者年龄',
-    `patient_sex` tinyint(1) not null default 1 comment '性别 0：未知 1：男 2：女',
+    `patient_sex` tinyint(1) not null default 0 comment '性别 0：男 1：女',
     `patient_disease_history` varchar(512) not null default '' comment '患者疾病史',
     `patient_allergy_history` varchar(512) not null default '' comment '患者过敏史',
     `register_hospital` varchar(32) comment '注册医院',
