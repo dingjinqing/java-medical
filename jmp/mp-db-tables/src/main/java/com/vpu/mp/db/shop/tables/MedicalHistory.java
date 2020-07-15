@@ -4,7 +4,6 @@
 package com.vpu.mp.db.shop.tables;
 
 
-
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +29,7 @@ import org.jooq.impl.TableImpl;
 
 
 /**
- * 病历
+ * 病历表
  */
 @Generated(
     value = {
@@ -42,10 +41,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MedicalHistory extends TableImpl<MedicalHistoryRecord> {
 
-    private static final long serialVersionUID = -711153403;
+    private static final long serialVersionUID = -1529142763;
 
     /**
-     * The reference instance of <code>mini_shop_471752.b2c_medical_history</code>
+     * The reference instance of <code>jmini_shop_224462.b2c_medical_history</code>
      */
     public static final MedicalHistory MEDICAL_HISTORY = new MedicalHistory();
 
@@ -58,136 +57,136 @@ public class MedicalHistory extends TableImpl<MedicalHistoryRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.id</code>. id
+     * The column <code>jmini_shop_224462.b2c_medical_history.id</code>. 主键id
      */
-    public final TableField<MedicalHistoryRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "id");
+    public final TableField<MedicalHistoryRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "主键id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.case_history_code</code>. 确定一个病历的编号
+     * The column <code>jmini_shop_224462.b2c_medical_history.case_history_code</code>. 确定一个病历的编号
      */
     public final TableField<MedicalHistoryRecord, String> CASE_HISTORY_CODE = createField("case_history_code", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "确定一个病历的编号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.pos_code</code>. 确定一个医嘱的编号
+     * The column <code>jmini_shop_224462.b2c_medical_history.pos_code</code>. 确定一个医嘱的编号
      */
     public final TableField<MedicalHistoryRecord, String> POS_CODE = createField("pos_code", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "确定一个医嘱的编号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.patient_id</code>. 患者id
+     * The column <code>jmini_shop_224462.b2c_medical_history.patient_id</code>. 患者id
      */
     public final TableField<MedicalHistoryRecord, Integer> PATIENT_ID = createField("patient_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "患者id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.patient_name</code>. 患者名
+     * The column <code>jmini_shop_224462.b2c_medical_history.patient_name</code>. 患者名
      */
     public final TableField<MedicalHistoryRecord, String> PATIENT_NAME = createField("patient_name", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "患者名");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.sex</code>. 性别0：未知 1：男 2：女
+     * The column <code>jmini_shop_224462.b2c_medical_history.sex</code>. 0：男、1：女
      */
-    public final TableField<MedicalHistoryRecord, Byte> SEX = createField("sex", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "性别0：未知 1：男 2：女");
+    public final TableField<MedicalHistoryRecord, Byte> SEX = createField("sex", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0：男、1：女");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.age</code>. 年龄
+     * The column <code>jmini_shop_224462.b2c_medical_history.age</code>. 年龄
      */
     public final TableField<MedicalHistoryRecord, Integer> AGE = createField("age", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "年龄");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.department_id</code>. 就诊科id
+     * The column <code>jmini_shop_224462.b2c_medical_history.department_id</code>. 就诊科id
      */
     public final TableField<MedicalHistoryRecord, Integer> DEPARTMENT_ID = createField("department_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "就诊科id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.department_name</code>. 就诊科室(门诊)名称
+     * The column <code>jmini_shop_224462.b2c_medical_history.department_name</code>. 就诊科室(门诊)名称
      */
     public final TableField<MedicalHistoryRecord, String> DEPARTMENT_NAME = createField("department_name", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "就诊科室(门诊)名称");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.out_patient_number</code>. 门诊号
+     * The column <code>jmini_shop_224462.b2c_medical_history.out_patient_code</code>. 门诊号
      */
-    public final TableField<MedicalHistoryRecord, String> OUT_PATIENT_NUMBER = createField("out_patient_number", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "门诊号");
+    public final TableField<MedicalHistoryRecord, String> OUT_PATIENT_CODE = createField("out_patient_code", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "门诊号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.allergy_history</code>. 过敏史
+     * The column <code>jmini_shop_224462.b2c_medical_history.allergy_history</code>. 过敏史
      */
     public final TableField<MedicalHistoryRecord, String> ALLERGY_HISTORY = createField("allergy_history", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "过敏史");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.patient_complain</code>. 病人主诉
+     * The column <code>jmini_shop_224462.b2c_medical_history.patient_complain</code>. 病人主诉
      */
     public final TableField<MedicalHistoryRecord, String> PATIENT_COMPLAIN = createField("patient_complain", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "病人主诉");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.disease_history</code>. 病史
+     * The column <code>jmini_shop_224462.b2c_medical_history.disease_history</code>. 病史
      */
     public final TableField<MedicalHistoryRecord, String> DISEASE_HISTORY = createField("disease_history", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "病史");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.physical_examination</code>. 体格检查
+     * The column <code>jmini_shop_224462.b2c_medical_history.physical_examination</code>. 体格检查
      */
     public final TableField<MedicalHistoryRecord, String> PHYSICAL_EXAMINATION = createField("physical_examination", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "体格检查");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.auxiliary_physical_examination</code>. 辅助检查
+     * The column <code>jmini_shop_224462.b2c_medical_history.auxiliary_physical_examination</code>. 辅助检查
      */
     public final TableField<MedicalHistoryRecord, String> AUXILIARY_PHYSICAL_EXAMINATION = createField("auxiliary_physical_examination", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "辅助检查");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.diagnosis_content</code>. 诊断
+     * The column <code>jmini_shop_224462.b2c_medical_history.diagnosis_content</code>. 诊断
      */
     public final TableField<MedicalHistoryRecord, String> DIAGNOSIS_CONTENT = createField("diagnosis_content", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "诊断");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.diagnosis_suggestion</code>. 诊疗处理意见
+     * The column <code>jmini_shop_224462.b2c_medical_history.diagnosis_suggestion</code>. 诊疗处理意见
      */
     public final TableField<MedicalHistoryRecord, String> DIAGNOSIS_SUGGESTION = createField("diagnosis_suggestion", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "诊疗处理意见");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.doctor_code</code>. 医师编码
+     * The column <code>jmini_shop_224462.b2c_medical_history.doctor_code</code>. 医师编码
      */
     public final TableField<MedicalHistoryRecord, String> DOCTOR_CODE = createField("doctor_code", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师编码");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.doctor_name</code>. 医师姓名
+     * The column <code>jmini_shop_224462.b2c_medical_history.doctor_name</code>. 医师姓名
      */
     public final TableField<MedicalHistoryRecord, String> DOCTOR_NAME = createField("doctor_name", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师姓名");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.visit_time</code>. 就诊时间
+     * The column <code>jmini_shop_224462.b2c_medical_history.visit_time</code>. 病人就诊时间
      */
-    public final TableField<MedicalHistoryRecord, Timestamp> VISIT_TIME = createField("visit_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "就诊时间");
+    public final TableField<MedicalHistoryRecord, Timestamp> VISIT_TIME = createField("visit_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "病人就诊时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.is_delete</code>. 删除标记
+     * The column <code>jmini_shop_224462.b2c_medical_history.is_delete</code>. 删除标记
      */
     public final TableField<MedicalHistoryRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除标记");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.create_time</code>. 病历生成时间
+     * The column <code>jmini_shop_224462.b2c_medical_history.create_time</code>. 生成时间
      */
-    public final TableField<MedicalHistoryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "病历生成时间");
+    public final TableField<MedicalHistoryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "生成时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_medical_history.update_time</code>. 最后修改时间
+     * The column <code>jmini_shop_224462.b2c_medical_history.update_time</code>. 最后修改时间
      */
     public final TableField<MedicalHistoryRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>mini_shop_471752.b2c_medical_history</code> table reference
+     * Create a <code>jmini_shop_224462.b2c_medical_history</code> table reference
      */
     public MedicalHistory() {
         this(DSL.name("b2c_medical_history"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_medical_history</code> table reference
+     * Create an aliased <code>jmini_shop_224462.b2c_medical_history</code> table reference
      */
     public MedicalHistory(String alias) {
         this(DSL.name(alias), MEDICAL_HISTORY);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_medical_history</code> table reference
+     * Create an aliased <code>jmini_shop_224462.b2c_medical_history</code> table reference
      */
     public MedicalHistory(Name alias) {
         this(alias, MEDICAL_HISTORY);
@@ -198,7 +197,7 @@ public class MedicalHistory extends TableImpl<MedicalHistoryRecord> {
     }
 
     private MedicalHistory(Name alias, Table<MedicalHistoryRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment("病历"));
+        super(alias, null, aliased, parameters, DSL.comment("病历表"));
     }
 
     public <O extends Record> MedicalHistory(Table<O> child, ForeignKey<O, MedicalHistoryRecord> key) {
