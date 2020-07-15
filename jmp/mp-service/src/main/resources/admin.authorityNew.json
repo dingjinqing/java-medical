@@ -80,7 +80,11 @@
 			"child_config",
 			"message_config",
 			"third_auth",
-			"pledge"
+			"pledge",
+      "prescription_list",
+      "doctor_list",
+      "department_list",
+      "title_list"
 		]
 	},
 	{
@@ -735,5 +739,33 @@
 		"linkUrl": "/admin/config/pledge",
 		"topIndex": 7,
 		"includeApi": ["/api/admin/config/pledge/*"]
-	}
+	},
+  {
+    "enName": "prescription_list",
+    "name": "处方列表",
+    "linkUrl": "/api/admin/prescription/list",
+    "topIndex": 8,
+    "includeApi": ["/api/admin/prescription/*"]
+  },
+  {
+    "enName": "doctor_list",
+    "name": "医师列表",
+    "linkUrl": "/api/admin/doctors/list",
+    "topIndex": 9,
+    "includeApi": ["/api/admin/doctors/*"]
+  },
+  {
+    "enName": "department_list",
+    "name": "科室列表",
+    "linkUrl": "/api/admin/doctor/department/list",
+    "topIndex": 9,
+    "includeApi": ["/api/admin/doctor/department/*"]
+  },
+  {
+    "enName": "title_list",
+    "name": "职称列表",
+    "linkUrl": "/api/admin/doctor/title/list",
+    "topIndex": 9,
+    "includeApi": ["/api/admin/doctor/title/*"]
+  }
 ]

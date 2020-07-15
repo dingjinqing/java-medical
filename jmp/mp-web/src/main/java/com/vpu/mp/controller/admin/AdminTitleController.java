@@ -80,7 +80,7 @@ public class AdminTitleController extends AdminBaseController {
      * 根据id获取职称
      * @param titleId 普通商家分类id
      */
-    @GetMapping("/api/admin/doctor/title/{titleId}")
+    @GetMapping("/api/admin/doctor/title/info/{titleId}")
     public JsonResult getTitle(@PathVariable Integer titleId) {
         if (titleId == null) {
             return fail(JsonResultCode.DOCTOR_TITLE_ID_IS_NULL);

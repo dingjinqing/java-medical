@@ -95,6 +95,14 @@
 		"action_record",
 		"pledge"
 	],
+  "prescription_manage": [
+    "prescription_list"
+  ],
+  "doctor_manage": [
+    "doctor_list",
+    "department_list",
+    "title_list"
+  ],
 	"plus": [
 		{
 			"en_name": "sale_on",
