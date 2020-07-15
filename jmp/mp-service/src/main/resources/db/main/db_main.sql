@@ -56,6 +56,7 @@ CREATE TABLE `b2c_external_request_history`(
     `app_id` varchar(20) NOT NULL COMMENT '对接类型',
     `shop_id` int(11) NOT NULL COMMENT '店铺id',
     `service_name` varchar(128) COMMENT '请求服务方法',
+    `error_code` int(11) DEFAULT '0' COMMENT '请求结果状态码',
     `request_param` text COMMENT '',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
     PRIMARY KEY (`id`)

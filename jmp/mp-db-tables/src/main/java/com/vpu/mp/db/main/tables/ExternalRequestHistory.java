@@ -8,25 +8,14 @@ import com.vpu.mp.db.main.Indexes;
 import com.vpu.mp.db.main.Keys;
 import com.vpu.mp.db.main.MiniMain;
 import com.vpu.mp.db.main.tables.records.ExternalRequestHistoryRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -42,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ExternalRequestHistory extends TableImpl<ExternalRequestHistoryRecord> {
 
-    private static final long serialVersionUID = 33866435;
+    private static final long serialVersionUID = -179670918;
 
     /**
      * The reference instance of <code>mini_main.b2c_external_request_history</code>
@@ -76,6 +65,11 @@ public class ExternalRequestHistory extends TableImpl<ExternalRequestHistoryReco
      * The column <code>mini_main.b2c_external_request_history.service_name</code>. 请求服务方法
      */
     public final TableField<ExternalRequestHistoryRecord, String> SERVICE_NAME = createField("service_name", org.jooq.impl.SQLDataType.VARCHAR(128), this, "请求服务方法");
+
+    /**
+     * The column <code>mini_main.b2c_external_request_history.error_code</code>. 请求结果状态码
+     */
+    public final TableField<ExternalRequestHistoryRecord, Integer> ERROR_CODE = createField("error_code", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "请求结果状态码");
 
     /**
      * The column <code>mini_main.b2c_external_request_history.request_param</code>.

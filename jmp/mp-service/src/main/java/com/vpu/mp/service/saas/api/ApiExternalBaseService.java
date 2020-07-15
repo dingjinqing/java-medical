@@ -3,6 +3,7 @@ package com.vpu.mp.service.saas.api;
 import cn.hutool.crypto.SecureUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.ApiExternalConfig;
+import com.vpu.mp.service.saas.external.ExternalRequestHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,8 @@ import java.util.List;
 public class ApiExternalBaseService {
     @Autowired
     ApiExternalConfig apiExternalConfig;
+    @Autowired
+    ExternalRequestHistoryService externalRequestHistoryService;
     /**
      * 生成对应的签名
      * @param appId
@@ -57,6 +60,16 @@ public class ApiExternalBaseService {
         return System.currentTimeMillis() / 1000;
     }
 
+    /**
+     * 添加请求记录
+     * @param appId
+     * @param shopId
+     * @param serviceName
+     * @param param
+     */
+    protected void addRequestHistory(String appId,Integer shopId,String serviceName,String param,Integer status){
+        externalRequestHistoryService.insertRequest(appId,shopId,serviceName,param,status);
+    }
 
     /**
      * app_id码值定义
@@ -69,6 +82,7 @@ public class ApiExternalBaseService {
     /**
      * 响应码
      */
+
     /**成功*/
     public static final Integer ERROR_CODE_SUCCESS = 0;
     /**店铺未配置相应权限*/
