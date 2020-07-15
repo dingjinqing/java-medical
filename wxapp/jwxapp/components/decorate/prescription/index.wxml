@@ -3,7 +3,7 @@
 	<view class="prescription-module-title" bindtap="viewPrescriptionList">
 		<image src="{{imageUrl}}image/wxapp/prescription-icon1.png"></image>
 		<text>我的处方</text>
-		<text class="more">更多</text>
+		<view class="more" wx:if="{{m.hasMore}}">更多</view>
 	</view>
 	<block wx:if="{{m.prescriptionListData.length}}">
 		<view class="prescription-item" bindtap="handleShowDialog" data-prescription-no="{{item.prescriptionNo}}" wx:for="{{m.prescriptionListData}}" wx:key="prescriptionNo">
