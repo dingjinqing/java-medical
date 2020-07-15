@@ -2,23 +2,19 @@ package com.vpu.mp.service.pojo.shop.patient;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.sql.Date;
+import java.sql.Timestamp;
 
 @Data
-public class PatientOneParam {
+public class  PatientOneParam {
     private Integer   id;
     private String    name;
     private String    mobile;
-    private String    historyInnerNo;
-    private String    identityNo;
+    private String    identityCode;
     private Byte      identityType;
-    private String    treatmentNo;
-    private Byte      areaType;
+    private String    treatmentCode;
+    private String    insuranceCardCode;
     private Byte      sex;
-    private String    diseaseHistory;
-    private String    allergyHistory;
-    private String    memo;
-    private Byte      isDelete;
-    private Byte      isDefault;
-    private Date      birthday;
+    private Date birthday;
+    private String    remarks;
 }
