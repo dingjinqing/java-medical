@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.prescription;
 
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionInfoVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemInfoVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
@@ -32,6 +33,8 @@ public class PrescriptionService extends ShopBaseService {
     protected PrescriptionItemDao prescriptionItemDao;
     @Autowired
     protected GoodsMedicalInfoDao goodsMedicalInfoDao;
+    @Autowired
+    protected UserPatientCoupleDao userPatientCoupleDao;
     @Autowired
     protected GoodsDao goodsDao;
 
@@ -65,6 +68,7 @@ public class PrescriptionService extends ShopBaseService {
     }
 
     /**
+     * *****
      *  获取处方关联商品
      *  1商品id 2通用名+系数 3系数
      * @param goodsId 商品id
@@ -95,10 +99,13 @@ public class PrescriptionService extends ShopBaseService {
      * @return
      */
     public PageResult<PrescriptionSimpleVo> listPageResultWx(PrescriptionListParam param) {
+        Integer patientId = userPatientCoupleDao.defaultPatientIdByUser(param.getUserId());
+        param.setPatientId(patientId);
         return prescriptionDao.listPageResultWx(param);
     }
 
     /**
+     * *****
      * 处方号
      * @param prescriptionNo 处方号
      */
@@ -114,6 +121,7 @@ public class PrescriptionService extends ShopBaseService {
     }
 
     /**
+     * *****
      * 处方号
      * @param prescriptionNo 处方号
      * @return
@@ -123,6 +131,7 @@ public class PrescriptionService extends ShopBaseService {
     }
 
     /**
+     * *****
      * 获取患者的处方药集合（包括已删除，未上架以及售罄的）
      * @param patientId
      * @return

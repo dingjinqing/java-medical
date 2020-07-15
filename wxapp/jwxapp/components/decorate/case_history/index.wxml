@@ -3,7 +3,7 @@
 	<view class="prescription-module-title" bindtap="viewCaseHistoryList">
 		<image src="{{imageUrl}}image/wxapp/prescription-icon1.png"></image>
 		<text>我的病历</text>
-		<text class="more">更多</text>
+		<view class="more" wx:if="{{m.hasMore}}">更多</view>
 	</view>
 	<block wx:if="{{m.caseHistoryListData.length}}">
 		<view class="case-history-list" wx:for="{{m.caseHistoryListData}}" bindtap="handleShowDialog" wx:key="id" data-case-history-id="{{item.id}}">

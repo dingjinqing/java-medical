@@ -16,7 +16,7 @@ public class PrescriptionSimpleVo  {
     /**
      * 处方号
      */
-    private String    prescriptionNo;
+    private String    prescriptionCode;
     /**
      * 医师
      */
@@ -30,10 +30,10 @@ public class PrescriptionSimpleVo  {
      */
     private String    departmentName;
     /**
-     * 疾病名称
+     * 诊断名称
      */
     private String    diagnosisName;
 
-    private List<PrescriptionItemInfoVo> itemList;
+//    private List<PrescriptionItemInfoVo> itemList;
 
 }

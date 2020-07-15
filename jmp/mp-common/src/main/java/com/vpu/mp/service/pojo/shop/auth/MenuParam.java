@@ -38,6 +38,12 @@ public class MenuParam {
 	
 	@JsonProperty("base_manger")
 	private List<String> baseManger;
+
+    @JsonProperty("prescription_manage")
+    private List<String> prescriptionManage;
+
+    @JsonProperty("doctor_manage")
+    private List<String> doctorManage;
 	
 	
 	private List<MenuInnerParam> plus;

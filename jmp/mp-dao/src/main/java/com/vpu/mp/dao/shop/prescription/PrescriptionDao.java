@@ -51,26 +51,28 @@ public class PrescriptionDao extends ShopBaseDao {
         return db().selectFrom(PRESCRIPTION).where(PRESCRIPTION.ID.eq(id)).fetchAnyInto(PrescriptionDo.class);
     }
     /**
+     *
      * 获取
-     * @param prescriptionNo
-     * @return
+     * @param prescriptionCode
+     * @return PrescriptionInfoVo
      */
-    public PrescriptionInfoVo getInfoByPrescriptionNo(String prescriptionNo) {
-         return db().select(PRESCRIPTION.PRESCRIPTION_NO,PRESCRIPTION.PATIENT_TREATMENT_NO,
+    public PrescriptionInfoVo getInfoByPrescriptionNo(String prescriptionCode) {
+         return db().select(PRESCRIPTION.PRESCRIPTION_CODE,PRESCRIPTION.PATIENT_TREATMENT_CODE,
                  PRESCRIPTION.PATIENT_NAME,PRESCRIPTION.PATIENT_AGE,PRESCRIPTION.PATIENT_SEX,PRESCRIPTION.DEPARTMENT_NAME,
                  PRESCRIPTION.DIAGNOSIS_NAME,PRESCRIPTION.PHARMACIST_NAME,PRESCRIPTION.PRESCRIPTION_CREATE_TIME)
                  .from(PRESCRIPTION)
-                 .where(PRESCRIPTION.PRESCRIPTION_NO.eq(prescriptionNo))
+                 .where(PRESCRIPTION.PRESCRIPTION_CODE.eq(prescriptionCode))
                  .fetchAnyInto(PrescriptionInfoVo.class);
     }
     /**
+     *
      * 获取
-     * @param prescriptionNo
+     * @param prescriptionCode
      * @return
      */
-    public PrescriptionVo getDoByPrescriptionNo(String prescriptionNo){
+    public PrescriptionVo getDoByPrescriptionNo(String prescriptionCode){
         return db().select().from(PRESCRIPTION)
-                .where(PRESCRIPTION.PRESCRIPTION_NO.eq(prescriptionNo))
+                .where(PRESCRIPTION.PRESCRIPTION_CODE.eq(prescriptionCode))
                 .fetchAnyInto(PrescriptionVo.class);
     }
 
@@ -85,6 +87,7 @@ public class PrescriptionDao extends ShopBaseDao {
     }
 
     /**
+     * *****
      * 分页
      *
      * @param param
@@ -98,6 +101,7 @@ public class PrescriptionDao extends ShopBaseDao {
     }
 
     /**
+     * *****
      * 小程序分页
      * @param param
      * @return
@@ -111,6 +115,7 @@ public class PrescriptionDao extends ShopBaseDao {
 
 
     /**
+     * *****
      * 获取有效处方通过商品id
      * @param goodsId 商品id
      * @param patientId
@@ -119,7 +124,7 @@ public class PrescriptionDao extends ShopBaseDao {
     public PrescriptionVo getValidByGoodsId(Integer goodsId, Integer patientId) {
         return db().select(PRESCRIPTION.asterisk())
                 .from(PRESCRIPTION_ITEM)
-                .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_NO.eq(PRESCRIPTION_ITEM.PRESCRIPTION_NO))
+                .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
                 .where(PRESCRIPTION_ITEM.GOODS_ID.eq(goodsId))
                 .and(PRESCRIPTION.PATIENT_ID.eq(patientId))
                 .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.gt(DateUtil.date().toTimestamp()))
@@ -131,6 +136,7 @@ public class PrescriptionDao extends ShopBaseDao {
 
 
     /**
+     * *****
      * 通用有效名查询处方明细
      *
      * @param patientId
@@ -140,7 +146,7 @@ public class PrescriptionDao extends ShopBaseDao {
     public PrescriptionVo getValidByCommonName(Integer patientId, String goodsCommonName){
         return db().select(PRESCRIPTION.asterisk())
                 .from(PRESCRIPTION_ITEM)
-                .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_NO.eq(PRESCRIPTION_ITEM.PRESCRIPTION_NO))
+                .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
                 .where(PRESCRIPTION_ITEM.GOODS_COMMON_NAME.eq(goodsCommonName))
                 .and(PRESCRIPTION.PATIENT_ID.eq(patientId))
                 .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.gt(DateUtil.date().toTimestamp()))
@@ -150,6 +156,7 @@ public class PrescriptionDao extends ShopBaseDao {
     }
 
     /**
+     * *****
      * 通过有效通用名和规格系数查询处方明细
      * @param patientId
      * @param goodsCommonName 通用名
@@ -158,7 +165,7 @@ public class PrescriptionDao extends ShopBaseDao {
     public PrescriptionVo getValidByCommonNameAndQualityRatio(Integer patientId , String goodsCommonName, String goodsQualityRatio) {
         return db().select(PRESCRIPTION.asterisk())
                 .from(PRESCRIPTION_ITEM)
-                .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_NO.eq(PRESCRIPTION_ITEM.PRESCRIPTION_NO))
+                .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
                 .where(PRESCRIPTION_ITEM.GOODS_COMMON_NAME.eq(goodsCommonName))
                 .and(PRESCRIPTION.PATIENT_ID.eq(patientId))
                 .and(PRESCRIPTION_ITEM.GOODS_QUALITY_RATIO.eq(goodsQualityRatio))
@@ -168,6 +175,7 @@ public class PrescriptionDao extends ShopBaseDao {
                 .fetchAnyInto(PrescriptionVo.class);
     }
     /**
+     * *****
      * 通过有效通用名和规格系数查询处方明细
      * @param goodsCommonName 通用名
      * @param goodsQualityRatio 规格系数
@@ -176,7 +184,7 @@ public class PrescriptionDao extends ShopBaseDao {
     public PrescriptionVo getValidByCommonNameAndQualityRatio(Integer patientId,String goodsCommonName, String goodsQualityRatio,String productionEnterprise) {
         return db().select(PRESCRIPTION.asterisk())
                 .from(PRESCRIPTION_ITEM)
-                .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_NO.eq(PRESCRIPTION_ITEM.PRESCRIPTION_NO))
+                .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
                 .leftJoin(GOODS_MEDICAL_INFO).on(GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE.eq(productionEnterprise))
                 .where(PRESCRIPTION_ITEM.GOODS_COMMON_NAME.eq(goodsCommonName))
                 .and(PRESCRIPTION.PATIENT_ID.eq(patientId))
@@ -189,12 +197,13 @@ public class PrescriptionDao extends ShopBaseDao {
 
 
     /**
+     * *****
      * 患者未过期的历史处方no
      * @param patientId
      * @return
      */
     public List<String> getValidPrescriptionByPatient(Integer patientId) {
-        return db().select(PRESCRIPTION.PRESCRIPTION_NO).from(PRESCRIPTION)
+        return db().select(PRESCRIPTION.PRESCRIPTION_CODE).from(PRESCRIPTION)
             .where(PRESCRIPTION.PATIENT_ID.eq(patientId)
                 .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.gt(DateUtil.date().toTimestamp()))
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))

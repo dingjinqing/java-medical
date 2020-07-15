@@ -18,7 +18,7 @@ public class AdminDoctorController extends AdminBaseController {
      * @param param
      * @return
      */
-    @PostMapping("/api/admin/doctor/list")
+    @PostMapping("/api/admin/doctors/list")
     public JsonResult doctorList(@RequestBody DoctorListParam param) {
         PageResult<DoctorOneParam> doctorList = shop().doctorService.getDoctorList(param);
         return this.success(doctorList);
@@ -28,7 +28,7 @@ public class AdminDoctorController extends AdminBaseController {
      *  医生新增
      * @param param {@link DoctorOneParam}
      */
-    @PostMapping("/api/admin/doctor/add")
+    @PostMapping("/api/admin/doctors/add")
     public JsonResult insert(@RequestBody DoctorOneParam param) {
         if (param.getName()==null) {
             return fail(JsonResultCode.DOCTOR_NAME_IS_NULL);
@@ -48,7 +48,7 @@ public class AdminDoctorController extends AdminBaseController {
      *  医生新增
      * @param param {@link DoctorOneParam}
      */
-    @PostMapping("/api/admin/doctor/update")
+    @PostMapping("/api/admin/doctors/update")
     public JsonResult update(@RequestBody DoctorOneParam param) {
         if (param.getId()==null) {
             return fail(JsonResultCode.DOCTOR_ID_IS_NULL);
@@ -68,7 +68,7 @@ public class AdminDoctorController extends AdminBaseController {
      * 根据id获取医师信息
      * @param doctorId 医师id
      */
-    @GetMapping("/api/admin/doctor/info/{doctorId}")
+    @GetMapping("/api/admin/doctors/info/{doctorId}")
     public JsonResult getDoctor(@PathVariable Integer doctorId) {
         if (doctorId == null) {
             return fail(JsonResultCode.DOCTOR_ID_IS_NULL);
@@ -80,7 +80,7 @@ public class AdminDoctorController extends AdminBaseController {
      *  医生停用启用
      * @param param {@link DoctorOneParam}
      */
-    @PostMapping("/api/admin/doctor/enable")
+    @PostMapping("/api/admin/doctors/enable")
     public JsonResult enableDoctor(@RequestBody DoctorOneParam param) {
         if (param.getId()==null) {
             return fail(JsonResultCode.DOCTOR_ID_IS_NULL);

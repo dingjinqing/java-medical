@@ -20,7 +20,6 @@ public class DoctorOneParam {
     private String    registerHospital;
     private Date registerTime;
     private String    mobile;
-    private Integer   departmentId;
     private Integer   titleId;
     private Byte      status = 1;
     private Byte      isDelete = 0;
