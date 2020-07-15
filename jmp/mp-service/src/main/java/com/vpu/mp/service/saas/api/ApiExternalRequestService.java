@@ -2,8 +2,9 @@ package com.vpu.mp.service.saas.api;
 
 import cn.hutool.http.HttpUtil;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestParam;
-import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestVo;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.saas.app.vo.AppAuthVo;
 import com.vpu.mp.service.saas.external.AppAuthService;
@@ -34,11 +35,11 @@ public class ApiExternalRequestService extends MainBaseService {
      * @param requestContentJson
      * @return
      */
-    public ApiExternalRequestVo externalRequestGate(String appId, Integer shopId, String serviceName, String requestContentJson) {
+    public ApiExternalRequestResult externalRequestGate(String appId, Integer shopId, String serviceName, String requestContentJson) {
         AppAuthVo appAuth = appAuthService.getAppAuth(appId, shopId);
         if (appAuth == null) {
-            ApiExternalRequestVo vo = new ApiExternalRequestVo();
-            vo.setError(ApiExternalBaseService.ERROR_CODE_NOT_AUTH);
+            ApiExternalRequestResult vo = new ApiExternalRequestResult();
+            vo.setError(ApiExternalConstant.ERROR_CODE_NOT_AUTH);
             vo.setMessage("店铺授权信息不存在");
             log.warn("请求外部服务：" + vo.getMessage());
             apiExternalBaseService.addRequestHistory(appId,shopId,serviceName,requestContentJson,vo.getError());
@@ -56,7 +57,7 @@ public class ApiExternalRequestService extends MainBaseService {
         requestParam.setContent(requestContentJson);
         requestParam.setSign(sign);
 
-        ApiExternalRequestVo vo = post(appAuth.getRequestLocation(), requestParam);
+        ApiExternalRequestResult vo = post(appAuth.getRequestLocation(), requestParam);
         apiExternalBaseService.addRequestHistory(appId,shopId,serviceName,requestContentJson,vo.getError());
         return vo;
     }
@@ -66,7 +67,7 @@ public class ApiExternalRequestService extends MainBaseService {
      * @param location
      * @param requestParam
      */
-    private ApiExternalRequestVo post(String location, ApiExternalRequestParam requestParam) {
+    private ApiExternalRequestResult post(String location, ApiExternalRequestParam requestParam) {
         HashMap<String, Object> param = new HashMap<>(7);
         param.put("appId", requestParam.getAppId());
         param.put("appSecret", requestParam.getAppSecret());
@@ -75,25 +76,25 @@ public class ApiExternalRequestService extends MainBaseService {
         param.put("content", requestParam.getContent());
         param.put("curSecond", requestParam.getContent());
         param.put("sign", requestParam.getSign());
-        ApiExternalRequestVo vo = null;
+        ApiExternalRequestResult vo = null;
         String post=null;
 
         try {
             post = HttpUtil.post(location, param);
         } catch (Exception e) {
             log.warn("请求外部服务-网络请求：" + e.getMessage());
-            vo = new ApiExternalRequestVo();
-            vo.setError(ApiExternalBaseService.ERROR_CODE_NET_ILLEGAL);
+            vo = new ApiExternalRequestResult();
+            vo.setError(ApiExternalConstant.ERROR_CODE_NET_ILLEGAL);
             vo.setMessage(e.getMessage());
             return vo;
         }
 
         try {
-            vo = Util.parseJson(post, ApiExternalRequestVo.class);
+            vo = Util.parseJson(post, ApiExternalRequestResult.class);
         } catch (Exception e) {
             log.warn("请求外部服务-解析返回值：" + e.getMessage());
-            vo = new ApiExternalRequestVo();
-            vo.setError(ApiExternalBaseService.ERROR_CODE_PARSE_RETVAL);
+            vo = new ApiExternalRequestResult();
+            vo.setError(ApiExternalConstant.ERROR_CODE_PARSE_RETVAL);
             vo.setMessage(e.getMessage());
         }
         return vo;
