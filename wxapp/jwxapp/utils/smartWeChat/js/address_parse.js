@@ -1,3 +1,4 @@
+
 var addressList = []; //地址列表
 var zipCodeList = []; //邮编列表
 var zipCode = require("./zipCode.js");
@@ -15,52 +16,93 @@ const wx_getaddress = () => {
     let array = [];
     let index = 0;
     let length = 7;
-    // console.log('共计' + length + '条数据')
-    for (let i = 0; i < length; i++) {
+    console.log('共计' + length + '条数据')
+    util.api('/api/wxapp/address/database/get',({content:addressList})=>{
+      for (let i = 0; i < length; i++) {
       if (wx.getStorageSync(i + "")) {
         index++;
         // console.log('第' + index + '条数据在缓存中读取完毕')
         array = [...array, ...JSON.parse(wx.getStorageSync(i + ""))];
         if (index == length) {
+          console.log(array)
           resolve(array);
         }
       } else {
+
         setTimeout(() => {
-          util.api('/api/wxapp/address/database', res => {
-            if (res.error === 0) {
+          wx.request({
+            url: util.getUpyunUrl(addressList[i]),
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            success: function (res) {
+              console.log(res)
               index++;
               wx.setStorage({
                 key: i + "",
-                data: res.content
+                data: JSON.stringify(res.data)
               });
               //  console.log('第' + index + '条数据加载完毕')
-              if (res.content) {
-                array = [...array, ...JSON.parse(res.content)];
+              if (res) {
+                array = [...array, ...res.data];
               }
               if (index == length) {
+                console.log(array)
                 resolve(array);
               }
             }
-          }, {index:i})
-          // wx.request({
-          //   url: "https://wangzc.wang/addressJson/" + i,
-          //   method: "GET",
-          //   success: function(res) {
-          //     index++;
-          //     wx.setStorage({
-          //       key: i + "",
-          //       data: JSON.stringify(res.data)
-          //     });
-          //     console.log('第' + index + '条数据加载完毕', res.data)
-          //     array = [...array, ...res.data];
-          //     if (index == length) {
-          //       resolve(array);
-          //     }
-          //   }
-          // });
+          })
         }, 500 * i);
       }
     }
+    },{index:0})
+    
+    // for (let i = 0; i < length; i++) {
+    //   if (wx.getStorageSync(i + "")) {
+    //     index++;
+    //     // console.log('第' + index + '条数据在缓存中读取完毕')
+    //     array = [...array, ...JSON.parse(wx.getStorageSync(i + ""))];
+    //     if (index == length) {
+    //       resolve(array);
+    //     }
+    //   } else {
+
+    //     setTimeout(() => {
+    //       util.api('/api/wxapp/address/database', res => {
+    //         if (res.error === 0) {
+    //           index++;
+    //           wx.setStorage({
+    //             key: i + "",
+    //             data: res.content
+    //           });
+    //           //  console.log('第' + index + '条数据加载完毕')
+    //           if (res.content) {
+    //             array = [...array, ...JSON.parse(res.content)];
+    //           }
+    //           if (index == length) {
+    //             resolve(array);
+    //           }
+    //         }
+    //       }, {index:i})
+    //       // wx.request({
+    //       //   url: "https://wangzc.wang/addressJson/" + i,
+    //       //   method: "GET",
+    //       //   success: function(res) {
+    //       //     index++;
+    //       //     wx.setStorage({
+    //       //       key: i + "",
+    //       //       data: JSON.stringify(res.data)
+    //       //     });
+    //       //     console.log('第' + index + '条数据加载完毕', res.data)
+    //       //     array = [...array, ...res.data];
+    //       //     if (index == length) {
+    //       //       resolve(array);
+    //       //     }
+    //       //   }
+    //       // });
+    //     }, 500 * i);
+    //   }
+    // }
   });
 };
 
