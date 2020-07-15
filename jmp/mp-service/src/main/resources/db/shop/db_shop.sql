@@ -4942,30 +4942,29 @@ create table `b2c_doctor_department_couple`(
 )comment ='医师科室关联表';
 
 -- 病历
-create table `b2c_medical_history`
-(
-    `id`   int(11)     not null auto_increment comment 'id',
-    `case_history_code` varchar(128)  not null default '' comment '确定一个病历的编号',
-    `pos_code` varchar(128)  not null default '' comment '确定一个医嘱的编号',
-    `patient_id` int(11)      not null comment '患者id',
-    `patient_name` varchar(32)  not null default '' comment '患者名',
-    `sex` tinyint(1) not null default 0 comment '性别0：未知 1：男 2：女',
-    `age` int(11)  not null default 0 comment '年龄',
-    `department_id` int(11)  not null comment '就诊科id',
-    `department_name` varchar(32) not null default '' comment '就诊科室(门诊)名称',
-    `out_patient_number` varchar(32)  not null  default '' comment '门诊号',
-    `allergy_history` varchar(512) not null default '' comment '过敏史',
-    `patient_complain` varchar(512) not null default '' comment '病人主诉',
-    `disease_history` text not null default '' comment '病史',
-    `physical_examination` text not null default '' comment '体格检查',
-    `auxiliary_physical_examination` text not null default '' comment '辅助检查',
-    `diagnosis_content` text not null default '' comment '诊断',
-    `diagnosis_suggestion` text not null default '' comment '诊疗处理意见',
-    `doctor_code` varchar(128) not null default '' comment '医师编码',
-    `doctor_name` varchar(32)  not null default '' comment '医师姓名',
-    `visit_time`   timestamp    not null default current_timestamp comment '就诊时间',
-    `is_delete`     tinyint(1)   not null default '0' comment '删除标记',
-    `create_time`   timestamp    not null default current_timestamp comment '病历生成时间',
-    `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
-    primary key (`id`)
-)comment ='病历';
+CREATE TABLE `b2c_medical_history` (
+    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+    `case_history_code` varchar(128) NOT NULL DEFAULT '' COMMENT '确定一个病历的编号',
+    `pos_code` varchar(128) NOT NULL DEFAULT '' COMMENT '确定一个医嘱的编号',
+    `patient_id` int(11) NOT NULL COMMENT '患者id',
+    `patient_name` varchar(32) NOT NULL DEFAULT '' COMMENT '患者名',
+    `sex` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0：男、1：女',
+    `age` int(11) NOT NULL DEFAULT '0' COMMENT '年龄',
+    `department_id` int(11) NOT NULL COMMENT '就诊科id',
+    `department_name` varchar(32) NOT NULL DEFAULT '' COMMENT '就诊科室(门诊)名称',
+    `out_patient_code` varchar(32) NOT NULL DEFAULT '' COMMENT '门诊号',
+    `allergy_history` varchar(512) NOT NULL DEFAULT '' COMMENT '过敏史',
+    `patient_complain` varchar(512) NOT NULL DEFAULT '' COMMENT '病人主诉',
+    `disease_history` text NOT NULL default '' COMMENT '病史',
+    `physical_examination` text NOT NULL default '' COMMENT '体格检查',
+    `auxiliary_physical_examination` text NOT NULL default '' COMMENT '辅助检查',
+    `diagnosis_content` text NOT NULL default '' COMMENT '诊断',
+    `diagnosis_suggestion` text NOT NULL default '' COMMENT '诊疗处理意见',
+    `doctor_code` varchar(128) NOT NULL DEFAULT '' COMMENT '医师编码',
+    `doctor_name` varchar(32) NOT NULL DEFAULT '' COMMENT '医师姓名',
+    `visit_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '病人就诊时间',
+    `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除标记',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    PRIMARY KEY (`id`)
+)comment ='病历表';

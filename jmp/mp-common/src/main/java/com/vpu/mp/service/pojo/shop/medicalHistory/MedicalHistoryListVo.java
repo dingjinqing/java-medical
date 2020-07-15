@@ -20,7 +20,7 @@ public class MedicalHistoryListVo{
     private Integer   age;
     private Integer   departmentId;
     private String    departmentName;
-    private String    outPatientNumber;
+    private String    outPatientCode;
     private String    allergyHistory;
     private String    patientComplain;
     private String    diseaseHistory;
