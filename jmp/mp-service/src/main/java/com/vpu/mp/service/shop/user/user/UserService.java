@@ -543,10 +543,10 @@ public class UserService extends ShopBaseService {
 	 * @param userId
 	 * @return
 	 */
-	private Map<String,Object> currentPatient(Integer userId) {
+	private PatientOneParam currentPatient(Integer userId) {
 		Integer patientId = userPatientCoupleDao.defaultPatientIdByUser(userId);
-		Map<String, Object> patientMap = patientDao.getPatientMap(patientId);
-		return patientMap;
+		PatientOneParam oneInfo = patientDao.getOneInfo(patientId);
+		return oneInfo;
 	}
 
 	/**
