@@ -41,6 +41,7 @@ public class ApiExternalRequestService extends MainBaseService {
             vo.setError(ApiExternalBaseService.ERROR_CODE_NOT_AUTH);
             vo.setMessage("店铺授权信息不存在");
             log.warn("请求外部服务：" + vo.getMessage());
+            apiExternalBaseService.addRequestHistory(appId,shopId,serviceName,requestContentJson,vo.getError());
             return vo;
         }
         String curSecond =apiExternalBaseService.getCurSecond().toString();
@@ -54,7 +55,10 @@ public class ApiExternalRequestService extends MainBaseService {
         requestParam.setServiceName(serviceName);
         requestParam.setContent(requestContentJson);
         requestParam.setSign(sign);
-        return post(appAuth.getRequestLocation(),requestParam);
+
+        ApiExternalRequestVo vo = post(appAuth.getRequestLocation(), requestParam);
+        apiExternalBaseService.addRequestHistory(appId,shopId,serviceName,requestContentJson,vo.getError());
+        return vo;
     }
 
     /**

@@ -155,6 +155,12 @@ public class MpOrderInfoService extends OrderInfoService{
             case OrderConstant.REFUND:
                 select.where(TABLE.REFUND_STATUS.gt(OrderConstant.REFUND_DEFAULT_STATUS));
                 break;
+            case OrderConstant.AUDIT:
+                select.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_TO_AUDIT));
+                break;
+            case OrderConstant.RETURNING:
+                select.where(TABLE.ORDER_STATUS.in(OrderConstant.ORDER_CANCELLED,OrderConstant.ORDER_CLOSED));
+                break;
             default:
                 break;
         }
