@@ -432,10 +432,10 @@
               <el-input v-model="goodsMedicalInfo.goodsPackageUnit" size="small" style="width:170px" />
           </el-form-item>
           <el-form-item label="整包转换系数:">
-              <el-input v-model="goodsMedicalInfo.goodsUnitConvertFactor" size="small" style="width:170px" />
+              <el-input v-model.number="goodsMedicalInfo.goodsUnitConvertFactor" size="small" style="width:170px" />
           </el-form-item>
           <el-form-item label="等效量:">
-              <el-input v-model="goodsMedicalInfo.goodsEquivalentQuantity" size="small" style="width:170px" />
+              <el-input v-model.number="goodsMedicalInfo.goodsEquivalentQuantity" size="small" style="width:170px" />
           </el-form-item>
           <el-form-item label="等效量单位:">
               <el-input v-model="goodsMedicalInfo.goodsEquivalentUnit" size="small" style="width:170px" />
