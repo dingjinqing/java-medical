@@ -64,6 +64,11 @@ public class MpOrderInfoService extends OrderInfoService{
             .put(OrderConstant.FINISHED,
                 (mapDefaultValue(countMap , OrderConstant.ORDER_FINISHED)) + mapDefaultValue(countMap , OrderConstant.ORDER_RECEIVED))
             .put(OrderConstant.REFUND, returnCount)
+            .put(OrderConstant.AUDIT,
+                    mapDefaultValue(countMap,OrderConstant.ORDER_TO_AUDIT))
+             .put(OrderConstant.RETURNING,
+                     (mapDefaultValue(countMap,OrderConstant.ORDER_CANCELLED)+
+                             mapDefaultValue(countMap,OrderConstant.ORDER_CLOSED)))
             .build();
     }
 

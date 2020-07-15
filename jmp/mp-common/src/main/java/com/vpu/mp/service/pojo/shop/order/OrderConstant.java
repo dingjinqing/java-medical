@@ -421,6 +421,10 @@ public class OrderConstant {
 	public static final byte FINISHED = 4;
 	@Deprecated
 	public static final byte REFUND = 5;
+	//审核中
+	public static final byte AUDIT = 6;
+	//已取消
+	public static final byte RETURNING = 6;
 
 	/**
 	 * 是否货到付款订单

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.prescription;
 
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionInfoVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemInfoVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
@@ -32,6 +33,8 @@ public class PrescriptionService extends ShopBaseService {
     protected PrescriptionItemDao prescriptionItemDao;
     @Autowired
     protected GoodsMedicalInfoDao goodsMedicalInfoDao;
+    @Autowired
+    protected UserPatientCoupleDao userPatientCoupleDao;
     @Autowired
     protected GoodsDao goodsDao;
 
@@ -96,6 +99,8 @@ public class PrescriptionService extends ShopBaseService {
      * @return
      */
     public PageResult<PrescriptionSimpleVo> listPageResultWx(PrescriptionListParam param) {
+        Integer patientId = userPatientCoupleDao.defaultPatientIdByUser(param.getUserId());
+        param.setPatientId(patientId);
         return prescriptionDao.listPageResultWx(param);
     }
 
