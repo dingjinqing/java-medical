@@ -16,8 +16,8 @@ global.wxPage({
       WAIT_PAY: 1,
       WAIT_DELIVERY: 2,
       SHIPPED: 3,
-      RETURNING: 5,
-      WAIT_CONFIRM:2
+      RETURNING: 7,
+      WAIT_CONFIRM:6
     },
     dataList: []
   },
