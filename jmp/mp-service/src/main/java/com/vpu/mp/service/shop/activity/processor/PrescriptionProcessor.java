@@ -98,7 +98,7 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
             //处方单号去重
             prescriptionList = prescriptionList.stream()
                     .collect(Collectors.collectingAndThen
-                            (Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PrescriptionVo::getPrescriptionNo))), ArrayList::new));
+                            (Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PrescriptionVo::getPrescriptionCode))), ArrayList::new));
             param.setPrescriptionList(prescriptionList);
         }
         param.setCheckPrescriptionStatus(checkPrescriptionStatus);

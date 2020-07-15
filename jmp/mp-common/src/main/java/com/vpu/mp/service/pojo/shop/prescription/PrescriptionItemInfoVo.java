@@ -18,20 +18,45 @@ public class PrescriptionItemInfoVo {
      */
     private String    goodsQualityRatio;
     /**
-     * 使用药品数量
-     */
-    private Integer   goodsNum;
-    /**
      * 药品使用方式说明
      */
     private String    goodsUseMemo;
-    /**
-     * 单位
-     */
-    private String    goodsBasicUnit;
+
     /**
      * 生产企业
      */
     private String    goodsProductionEnterprise;
+
+    /**
+     * 单次用量
+     */
+    private Double per_time_num;
+
+    /**
+     * 数量单位
+     */
+    private String per_time_unit;
+
+    /**
+     * 单次剂量
+     */
+    private Double    perTimeDosage;
+    /**
+     * 计量单位
+     */
+    private String    perTimeDosageUnit;
+    /**
+     * 频次
+     */
+    private Double    frequency;
+    /**
+     * 总取药数量
+     */
+    private Integer   dragSumNum;
+    /**
+     * 总取药单位
+     */
+    private String    dragSumUnit;
+
 
 }
