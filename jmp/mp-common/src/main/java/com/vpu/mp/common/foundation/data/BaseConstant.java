@@ -12,13 +12,12 @@ public final  class  BaseConstant {
     public static final String LANGUAGE_TYPE_EXCEL = "excel";
 
 
-    //******************** 营销活动活动*******************/
     /**
-     * 活动启用
+     * 启用
      */
     public static final Byte ACTIVITY_STATUS_NORMAL = 1;
     /**
-     * 活动禁用
+     * 禁用
      */
     public static final Byte ACTIVITY_STATUS_DISABLE = 0;
 
