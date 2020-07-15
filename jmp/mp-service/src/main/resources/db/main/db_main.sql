@@ -29,7 +29,7 @@ CREATE TABLE `b2c_app` (
   `app_id` varchar(20) NOT NULL,
   `app_name` varchar(60) NOT NULL DEFAULT '' COMMENT '应用名称',
   `app_secret` varchar(255) NOT NULL DEFAULT '',
-  `add_time` datetime NOT NULL,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `app_id` (`app_id`),
   UNIQUE KEY `app_name` (`app_name`)
 )COMMENT='应用表';
@@ -37,23 +37,19 @@ CREATE TABLE `b2c_app` (
 
 
 CREATE TABLE `b2c_app_auth` (
-  `id` smallint(5) NOT NULL AUTO_INCREMENT,
-  `action` tinyint(1) DEFAULT '1' COMMENT '1：erp 2：pos',
-  `sys_id` int(11) NOT NULL DEFAULT '0',
-  `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
-  `session_key` varchar(191) NOT NULL DEFAULT '' COMMENT '授权key',
-  `pos_session_key` varchar(100) DEFAULT NULL COMMENT 'pos授权key',
-  `app_key` varchar(200) DEFAULT NULL COMMENT 'crm分配的appKey',
-  `app_secret` varchar(200) DEFAULT NULL COMMENT 'crm分配的appSecret',
-  `product` tinyint(1) DEFAULT '1' COMMENT '产品：1 ERP企业版 2：ERP旗舰版',
-  `is_sync` tinyint(1) DEFAULT '0' COMMENT '是否已同步',
-  `status` tinyint(1) DEFAULT '0' COMMENT '1：启用 0：禁用',
-  `add_time` datetime NOT NULL,
-  `update_time` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `session_key` (`session_key`),
-  KEY `shop_id` (`shop_id`)
-)COMMENT='应用授权表';
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `sys_id` int(11) NOT NULL DEFAULT '0',
+    `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
+    `app_id` varchar(20) COMMENT '对接类型',
+    `session_key` varchar(191) NOT NULL DEFAULT '' COMMENT '授权key,最后一个s字符后面的字符串表示店铺id',
+    `request_location` varchar(512) COMMENT '对方接口请求地址',
+    `request_protocol` tinyint(1) NOT NULL DEFAULT 1 COMMENT '对方请求协议 0 http，1 https',
+    `status` tinyint(1) DEFAULT 1 COMMENT '1：启用 0：禁用',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `session_key` (`session_key`)
+) COMMENT='应用授权表';
 
 
 

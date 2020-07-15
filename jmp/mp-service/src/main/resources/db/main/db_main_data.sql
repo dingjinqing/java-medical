@@ -22,9 +22,10 @@ INSERT INTO `b2c_article` (`article_id`, `category_id`, `title`, `author`, `keyw
 INSERT INTO `b2c_article` (`article_id`, `category_id`, `title`, `author`, `keyword`, `desc`, `content`, `is_recommend`, `is_top`, `status`, `pub_time`, `update_time`, `create_time`, `last_visit_time`, `pv`, `head_pic`) VALUES ('11', '4', '080623test', NULL, '质量管理', NULL, NULL, '1', '0', '1', '2019-06-25 18:34:07', '2019-06-25 18:34:07', '2019-06-25 18:32:27', NULL, NULL, NULL);
 
 ##应用表
-INSERT INTO `b2c_app` (`app_id`, `app_name`, `app_secret`, `add_time`) VALUES ('200000', 'ERP服务', '36a23c125e6fd10420eb3b6ed48ee057', '2018-5-23 09:52:36');
-insert into `b2c_app` (`app_id`, `app_name`, `app_secret`, `add_time`) values('200001','POS服务','b141fbc4bd328822e955aeed011cfc85','2018-11-08 11:16:22');
-INSERT INTO `b2c_app` (`app_id`, `app_name`, `app_secret`, `add_time`) VALUES('200002','CRM服务','2b7212759813c4c03ccc316f8cb1c654','2018-11-08 11:16:22');
+INSERT INTO `b2c_app` (`app_id`, `app_name`, `app_secret`) VALUES ('200000', 'ERP服务', '36a23c125e6fd10420eb3b6ed48ee057');
+insert into `b2c_app` (`app_id`, `app_name`, `app_secret`) values('200001','POS服务','b141fbc4bd328822e955aeed011cfc85');
+INSERT INTO `b2c_app` (`app_id`, `app_name`, `app_secret`) VALUES('200002','CRM服务','2b7212759813c4c03ccc316f8cb1c654');
+INSERT INTO `b2c_app` (`app_id`, `app_name`, `app_secret`) VALUES('200003','HIS服务',' 7472c1efe6ca4215af1353317938b50a');
 
 insert into `b2c_shop_version` (`version_name`, `level`, `content`, `created`, `flag`) values ('体验版', 'v1', '{"main_config":{"sub_0":["basic_yesterday"],"sub_1":["sort"],"sub_2":["m_member_card","m_voucher","m_video"],"sub_3":["charge_card","count_card","tag","sign_score","pay_score"],"sub_4":["full_cut","pin_group","form_decoration","coupon_split","coupon_grant","coupon_gift"],"sub_5":["store_pay","technician","service"]},"num_config":{"picture_num":"100","video_num":"100","goods_num":"10","store_num":"1","decorate_num":"5","form_num":"20"}}', '2018-07-26 15:30:03', '0');
 insert into `b2c_shop_version` (`version_name`, `level`, `content`, `created`, `flag`) values ('基础版', 'v2', '{"main_config":{"sub_0":["basic_yesterday"],"sub_1":["sort"],"sub_2":["m_voucher"],"sub_3":["sign_score","pay_score"],"sub_4":[],"sub_5":["service"]},"num_config":{"picture_num":"500","video_num":"0","goods_num":"500","store_num":"5","decorate_num":"5","form_num":"0"}}', '2018-07-26 15:35:22', '0');
