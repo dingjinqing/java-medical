@@ -94,6 +94,7 @@ public class ApiExternalGateConfig {
     public static final String APP_ID_ERP = "200000";
     public static final String APP_ID_POS = "200001";
     public static final String APP_ID_CRM = "200002";
+    public static final String APP_ID_HIS = "200003";
     public static final Map<String, String> APP_NAMES = new HashMap<>(3);
 
     static {
@@ -101,6 +102,7 @@ public class ApiExternalGateConfig {
         APP_NAMES.put(APP_ID_ERP, "ERP");
         APP_NAMES.put(APP_ID_POS, "POS");
         APP_NAMES.put(APP_ID_CRM, "CRM");
+        APP_NAMES.put(APP_ID_HIS, "HIS");
 
         // 初始化服务名集合
         SERVICE_NAMES.add(SERVICE_GOODS_LIST);

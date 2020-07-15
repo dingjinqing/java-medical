@@ -446,4 +446,9 @@ public class Tables {
     public static final TaskJobMain TASK_JOB_MAIN = com.vpu.mp.db.main.tables.TaskJobMain.TASK_JOB_MAIN;
 
     public static final OrderInfoNew ORDER_INFO_NEW = com.vpu.mp.db.main.tables.OrderInfoNew.ORDER_INFO_NEW;
+
+    /**
+     * 外部接口请求记录表
+     */
+    public static final ExternalRequestHistory EXTERNAL_REQUEST_HISTORY = com.vpu.mp.db.main.tables.ExternalRequestHistory.EXTERNAL_REQUEST_HISTORY;
 }

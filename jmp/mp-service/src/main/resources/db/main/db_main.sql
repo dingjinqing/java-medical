@@ -51,6 +51,15 @@ CREATE TABLE `b2c_app_auth` (
     UNIQUE KEY `session_key` (`session_key`)
 ) COMMENT='应用授权表';
 
+CREATE TABLE `b2c_external_request_history`(
+    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+    `app_id` varchar(20) NOT NULL COMMENT '对接类型',
+    `shop_id` int(11) NOT NULL COMMENT '店铺id',
+    `service_name` varchar(128) COMMENT '请求服务方法',
+    `request_param` text COMMENT '',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
+    PRIMARY KEY (`id`)
+) COMMENT='外部接口请求记录表';
 
 
 CREATE TABLE `b2c_article` (
