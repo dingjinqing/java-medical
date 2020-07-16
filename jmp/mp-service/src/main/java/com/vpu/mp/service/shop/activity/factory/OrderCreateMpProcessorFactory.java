@@ -36,66 +36,66 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
      * 一般营销  首单特惠 会员专享
      */
     private final static List<Byte> GENERAL_ACTIVITY = Arrays.asList(
-            BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
-            BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE,
-            BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE,
-            BaseConstant.ACTIVITY_TYPE_REBATE,
-            BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE,
-            BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION,
-            BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE
+//            BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
+//            BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE,
+//            BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE,
+//            BaseConstant.ACTIVITY_TYPE_REBATE,
+//            BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE,
+//            BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION,
+//            BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE
     );
     /**
      * 全局的活动  支付有礼
      */
     private final static List<Byte> GLOBAL_ACTIVITY = Arrays.asList(
-            BaseConstant.ACTIVITY_TYPE_PRESCRIPTION,
-            BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
-            BaseConstant.ACTIVITY_TYPE_GIFT
+            BaseConstant.ACTIVITY_TYPE_PRESCRIPTION
+//            BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
+//            BaseConstant.ACTIVITY_TYPE_GIFT
     );
 
     /**
      * 单一营销 排他性
      */
     public final static List<Byte> SINGLENESS_ACTIVITY = Arrays.asList(
-            BaseConstant.ACTIVITY_TYPE_GROUP_BUY,
-            BaseConstant.ACTIVITY_TYPE_SEC_KILL,
-            BaseConstant.ACTIVITY_TYPE_BARGAIN,
-            BaseConstant.ACTIVITY_TYPE_MY_PRIZE,
-            BaseConstant.ACTIVITY_TYPE_PRE_SALE,
-            BaseConstant.ACTIVITY_TYPE_GROUP_DRAW,
-            BaseConstant.ACTIVITY_TYPE_INTEGRAL,
-            BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE,
-            BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER
+//            BaseConstant.ACTIVITY_TYPE_GROUP_BUY,
+//            BaseConstant.ACTIVITY_TYPE_SEC_KILL,
+//            BaseConstant.ACTIVITY_TYPE_BARGAIN,
+//            BaseConstant.ACTIVITY_TYPE_MY_PRIZE,
+//            BaseConstant.ACTIVITY_TYPE_PRE_SALE,
+//            BaseConstant.ACTIVITY_TYPE_GROUP_DRAW,
+//            BaseConstant.ACTIVITY_TYPE_INTEGRAL,
+//            BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE,
+//            BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER
     );
 
     /**
      * 退款
      */
     public final static List<Byte> RETURN_ACTIVITY = Arrays.asList(
-            BaseConstant.ACTIVITY_TYPE_GIFT,
-            BaseConstant.ACTIVITY_TYPE_GROUP_BUY,
-            BaseConstant.ACTIVITY_TYPE_SEC_KILL,
-            BaseConstant.ACTIVITY_TYPE_BARGAIN,
-            BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT,
-            BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER,
-            BaseConstant.ACTIVITY_TYPE_INTEGRAL,
-            BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER,
-            BaseConstant.ACTIVITY_TYPE_PRE_SALE
+//            BaseConstant.ACTIVITY_TYPE_GIFT,
+//            BaseConstant.ACTIVITY_TYPE_GROUP_BUY,
+//            BaseConstant.ACTIVITY_TYPE_SEC_KILL,
+//            BaseConstant.ACTIVITY_TYPE_BARGAIN,
+//            BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT,
+//            BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER,
+//            BaseConstant.ACTIVITY_TYPE_INTEGRAL,
+//            BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER,
+//            BaseConstant.ACTIVITY_TYPE_PRE_SALE
     );
 
     /**
      * 取消
      */
     public final static List<Byte> CANCEL_ACTIVITY = Arrays.asList(
-            BaseConstant.ACTIVITY_TYPE_GIFT,
-            BaseConstant.ACTIVITY_TYPE_GROUP_BUY,
-            BaseConstant.ACTIVITY_TYPE_SEC_KILL,
-            BaseConstant.ACTIVITY_TYPE_BARGAIN,
-            BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT,
-            BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER,
-            BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER,
-            BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
-            BaseConstant.ACTIVITY_TYPE_PRE_SALE
+//            BaseConstant.ACTIVITY_TYPE_GIFT,
+//            BaseConstant.ACTIVITY_TYPE_GROUP_BUY,
+//            BaseConstant.ACTIVITY_TYPE_SEC_KILL,
+//            BaseConstant.ACTIVITY_TYPE_BARGAIN,
+//            BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT,
+//            BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER,
+//            BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER,
+//            BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
+//            BaseConstant.ACTIVITY_TYPE_PRE_SALE
     );
 
     /**

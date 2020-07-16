@@ -68,6 +68,7 @@ import com.vpu.mp.service.shop.order.invoice.InvoiceService;
 import com.vpu.mp.service.shop.order.must.OrderMustService;
 import com.vpu.mp.service.shop.order.trade.OrderPayService;
 import com.vpu.mp.service.shop.payment.PaymentService;
+import com.vpu.mp.service.shop.prescription.UploadPrescriptionService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import jodd.util.StringUtil;
@@ -179,6 +180,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     @Autowired
     private WxCardExchangeService  cardExchange;
+    @Autowired
+    private UploadPrescriptionService uploadPrescriptionService;
 
     /**
      * 营销活动processorFactory
@@ -1320,6 +1323,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             logger().info("订单支付成功->待审核状态");
             if (!param.getCheckPrescriptionStatus().equals(PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED)){
                 order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT);
+                uploadPrescriptionService.UploadPrescription(param,orderBo,order);
             }
             return true;
         }else if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_PAY) && order.getIsLock().equals(YES)) {
