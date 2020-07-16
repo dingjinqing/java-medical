@@ -7,9 +7,7 @@ import com.vpu.mp.service.saas.external.ExternalRequestHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author 李晓冰
@@ -57,7 +55,9 @@ public class ApiExternalBaseService {
      * @return
      */
     protected Long getCurSecond() {
-        return System.currentTimeMillis() / 1000;
+        TimeZone timeZone = TimeZone.getDefault();
+        Calendar calendar = Calendar.getInstance(timeZone);
+        return calendar.getTimeInMillis() / 1000;
     }
 
     /**
