@@ -46,7 +46,6 @@ page{
 .main_container{
   min-height: 850rpx;
   overflow-x: hidden;
-  padding-top: 20rpx;
 }
 .clearfix::after{
   content: "";
@@ -109,10 +108,9 @@ page{
 }
 /* 普通商品 */
 .normal_goods_container{
-  /* margin-top: 20rpx; */
   background: #fff;
   width: 702rpx;
-  margin: 0 auto;
+  margin: 20rpx auto 0;
   overflow: hidden;
   border-radius: 16rpx;
 }

@@ -273,14 +273,14 @@
     </view>
     <!-- 失效商品 -->
     <view class='normal_goods_container putong' wx:if="{{invalidCartList && invalidCartList.length > 0}}">
-      <view style="display:flex; justify-content:space-between; padding: 0 20rpx; line-height: 90rpx;margin-top:20rpx;" class='invalid_goods_header'>
+      <view style="display:flex; justify-content:space-between; padding: 0 20rpx; line-height: 90rpx;" class='invalid_goods_header'>
         <view>失效商品
           <text style='color:{{comColor}}'>{{ invalidCartList.length }}</text>件</view>
         <text style='color:{{comColor}}' bindtap='clearCart'>清空</text>
       </view>
       <view wx:for='{{invalidCartList}}' wx:key='key' class='enen' style="{{index == 0 ? 'margin-top:0px' : ''}};margin-left:10rpx;">
         <view class='normal_goods clearfix' bindtouchstart="drawStart"  bindtouchmove="drawMove" bindtouchend="drawEnd" data-id="{{item.cartId}}" data-check_action='{{99}}' style="margin-left:{{item.right}}px">
-          <view class="btn_check" style="width:60rpx;margin-right:10rpx;"><view class="shixiao_icon">失效</view></view>
+          <view class="btn_check" style="width:76rpx;"><view class="shixiao_icon">失效</view></view>
           <view class='n_goods_info' style="margin-right:18rpx;">
             <view class='ng_left' bindtap='to_goods' data-goods_id='{{item.goodsId}}' data-tips='{{item.tip}}'>
               <image src='{{item.goodsImg}}'></image>
