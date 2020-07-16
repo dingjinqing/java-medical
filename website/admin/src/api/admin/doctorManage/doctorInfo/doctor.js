@@ -3,7 +3,7 @@ import service from '@/util/request.js'
 // 医师新增
 export function addDoctor (data) {
   return service({
-    url: '/api/admin/doctor/add',
+    url: '/api/admin/doctors/add',
     method: 'post',
     data: data
   })
@@ -30,7 +30,7 @@ export function getBelongParts (data) {
 // 医生列表
 export function doctorList (data) {
   return service({
-    url: '/api/admin/doctor/list',
+    url: '/api/admin/doctors/list',
     method: 'post',
     data: data
   })
@@ -39,7 +39,7 @@ export function doctorList (data) {
 // 编辑医师
 export function getDoctor (id) {
   return service({
-    url: `/api/admin/doctor/info/${id}`,
+    url: `/api/admin/doctors/info/${id}`,
     method: 'get'
   })
 }
@@ -47,7 +47,7 @@ export function getDoctor (id) {
 // 更新医师
 export function updateDoctor (data) {
   return service({
-    url: '/api/admin/doctor/update',
+    url: '/api/admin/doctors/update',
     method: 'post',
     data: data
   })
@@ -56,7 +56,7 @@ export function updateDoctor (data) {
 // 停用，启用
 export function enableDoctor (data) {
   return service({
-    url: '/api/admin/doctor/enable',
+    url: '/api/admin/doctors/enable',
     method: 'post',
     data: data
   })

@@ -4,7 +4,7 @@ import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsEntity;
 import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsMedicalInfoEntity;
 import com.vpu.mp.service.pojo.shop.medical.label.vo.GoodsLabelVo;
-import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductGoodsPageListVo;
+import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductGoodsPageListVo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

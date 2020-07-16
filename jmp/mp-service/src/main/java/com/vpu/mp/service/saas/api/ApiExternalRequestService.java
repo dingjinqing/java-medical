@@ -40,8 +40,8 @@ public class ApiExternalRequestService extends MainBaseService {
         if (appAuth == null) {
             ApiExternalRequestResult vo = new ApiExternalRequestResult();
             vo.setError(ApiExternalConstant.ERROR_CODE_NOT_AUTH);
-            vo.setMessage("店铺授权信息不存在");
-            log.warn("请求外部服务：" + vo.getMessage());
+            vo.setMsg("店铺授权信息不存在");
+            log.warn("请求外部服务：" + vo.getMsg());
             apiExternalBaseService.addRequestHistory(appId,shopId,serviceName,requestContentJson,vo.getError());
             return vo;
         }
@@ -85,7 +85,7 @@ public class ApiExternalRequestService extends MainBaseService {
             log.warn("请求外部服务-网络请求：" + e.getMessage());
             vo = new ApiExternalRequestResult();
             vo.setError(ApiExternalConstant.ERROR_CODE_NET_ILLEGAL);
-            vo.setMessage(e.getMessage());
+            vo.setMsg(e.getMessage());
             return vo;
         }
 
@@ -95,7 +95,7 @@ public class ApiExternalRequestService extends MainBaseService {
             log.warn("请求外部服务-解析返回值：" + e.getMessage());
             vo = new ApiExternalRequestResult();
             vo.setError(ApiExternalConstant.ERROR_CODE_PARSE_RETVAL);
-            vo.setMessage(e.getMessage());
+            vo.setMsg(e.getMessage());
         }
         return vo;
     }

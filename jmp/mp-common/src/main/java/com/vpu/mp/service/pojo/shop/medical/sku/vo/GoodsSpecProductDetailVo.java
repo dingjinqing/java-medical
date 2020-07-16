@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.sku.vo;
+package com.vpu.mp.service.pojo.shop.medical.sku.vo;
 
 import lombok.Getter;
 import lombok.Setter;

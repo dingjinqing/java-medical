@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.sku.entity;
+package com.vpu.mp.service.pojo.shop.medical.sku.entity;
 
 import cn.hutool.core.util.StrUtil;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;

@@ -9,4 +9,6 @@ public class TitleOneParam {
      * 职称名称
      */
     private String name;
+    private String code;
+    private Byte isDelete=0;
 }

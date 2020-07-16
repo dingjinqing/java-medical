@@ -7,9 +7,9 @@ import com.vpu.mp.common.pojo.shop.table.SpecValDo;
 import com.vpu.mp.dao.shop.goods.GoodsSpecProductDao;
 import com.vpu.mp.dao.shop.goods.SpecDao;
 import com.vpu.mp.dao.shop.goods.SpecValDao;
-import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProductEntity;
-import com.vpu.mp.service.pojo.shop.sku.entity.SpecEntity;
-import com.vpu.mp.service.pojo.shop.sku.entity.SpecValEntity;
+import com.vpu.mp.service.pojo.shop.medical.sku.entity.GoodsSpecProductEntity;
+import com.vpu.mp.service.pojo.shop.medical.sku.entity.SpecEntity;
+import com.vpu.mp.service.pojo.shop.medical.sku.entity.SpecValEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
