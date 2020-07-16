@@ -34,7 +34,7 @@ public class ApiExternalConstant {
     /**拉取患者信息*/
     public static final String SERVICE_NAME_FETCH_PATIENT_INFO = "fetchPatientInfo";
     /**拉取药品信息*/
-    public static final String SERVICE_NAEM_FETCH_MEDICAL_INFOS = "fetchMedicalInfos";
+    public static final String SERVICE_NAME_FETCH_MEDICAL_INFOS = "fetchMedicalInfos";
     /**同步订单药品信息*/
     public static final String SERVICE_NAEM_SYNC_MEDICAL_ORDER_STATUS = "syncMedicalOrderStatus";
     /**同步处方信息*/

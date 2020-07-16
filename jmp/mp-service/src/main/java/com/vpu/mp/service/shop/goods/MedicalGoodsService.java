@@ -3,8 +3,13 @@ package com.vpu.mp.service.shop.goods;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.foundation.util.medical.DateFormatStr;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
@@ -17,17 +22,19 @@ import com.vpu.mp.service.pojo.shop.medical.brand.vo.GoodsBrandVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.medical.goods.convertor.GoodsParamConverter;
 import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsEntity;
+import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsExternalRequestParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
+import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsMedicalExternalRequestVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.medical.label.MedicalLabelConstant;
 import com.vpu.mp.service.pojo.shop.medical.label.bo.LabelRelationInfoBo;
 import com.vpu.mp.service.pojo.shop.medical.label.vo.GoodsLabelVo;
-import com.vpu.mp.service.pojo.shop.medical.sort.vo.GoodsSortVo;
 import com.vpu.mp.service.pojo.shop.medical.sku.entity.GoodsSpecProductEntity;
 import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductDetailVo;
 import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductGoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.medical.sku.vo.SpecVo;
+import com.vpu.mp.service.pojo.shop.medical.sort.vo.GoodsSortVo;
 import com.vpu.mp.service.shop.goods.aggregate.GoodsAggregate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -301,7 +308,35 @@ public class MedicalGoodsService extends ShopBaseService {
         return goodsMedicalInfoDao.getByGoodsId(goodsId);
     }
 
-    public void pullExternalMedicalInfoEg(){
 
+    /**
+     * 拉取医院药品信息
+     * @return
+     */
+    public JsonResult pullExternalMedicalInfo(){
+        String appId = ApiExternalConstant.APP_ID_HIS;
+        Integer shopId =getShopId();
+        String serviceName = ApiExternalConstant.SERVICE_NAME_FETCH_MEDICAL_INFOS;
+
+        Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalConstant.APP_ID_HIS, shopId, ApiExternalConstant.SERVICE_NAME_FETCH_MEDICAL_INFOS);
+        MedicalGoodsExternalRequestParam param =new MedicalGoodsExternalRequestParam();
+        param.setStartTime(lastRequestTime);
+
+        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
+
+        // 数据拉取错误
+        if (!ApiExternalConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())){
+            JsonResult result = new JsonResult();
+            result.setError(apiExternalRequestResult.getError());
+            result.setMessage(apiExternalRequestResult.getMsg());
+            result.setContent(apiExternalRequestResult.getData());
+            return result;
+        }
+        String dataJson = apiExternalRequestResult.getData();
+        ArrayList<GoodsMedicalExternalRequestVo> list = Util.parseJson(dataJson, new TypeReference<List<GoodsMedicalExternalRequestVo>>() {
+        });
+        // TODO: 业务操作
+
+        return JsonResult.success();
     }
 }
