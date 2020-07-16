@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.sku.vo;
+package com.vpu.mp.service.pojo.shop.medical.sku.vo;
 
 /**
  * 商品分页展示sku信息

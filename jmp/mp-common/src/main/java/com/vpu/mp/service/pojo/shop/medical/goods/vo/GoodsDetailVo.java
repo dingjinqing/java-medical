@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.medical.goods.vo;
 
 import com.vpu.mp.service.pojo.shop.medical.label.vo.GoodsLabelVo;
-import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductDetailVo;
-import com.vpu.mp.service.pojo.shop.sku.vo.SpecVo;
+import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductDetailVo;
+import com.vpu.mp.service.pojo.shop.medical.sku.vo.SpecVo;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,13 +1,13 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProductEntity;
-import com.vpu.mp.service.pojo.shop.sku.entity.SpecEntity;
-import com.vpu.mp.service.pojo.shop.sku.entity.SpecValEntity;
-import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductDetailVo;
-import com.vpu.mp.service.pojo.shop.sku.vo.GoodsSpecProductGoodsPageListVo;
-import com.vpu.mp.service.pojo.shop.sku.vo.SpecValVo;
-import com.vpu.mp.service.pojo.shop.sku.vo.SpecVo;
+import com.vpu.mp.service.pojo.shop.medical.sku.entity.GoodsSpecProductEntity;
+import com.vpu.mp.service.pojo.shop.medical.sku.entity.SpecEntity;
+import com.vpu.mp.service.pojo.shop.medical.sku.entity.SpecValEntity;
+import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductDetailVo;
+import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductGoodsPageListVo;
+import com.vpu.mp.service.pojo.shop.medical.sku.vo.SpecValVo;
+import com.vpu.mp.service.pojo.shop.medical.sku.vo.SpecVo;
 import com.vpu.mp.service.shop.goods.aggregate.GoodsSpecProductAggregate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

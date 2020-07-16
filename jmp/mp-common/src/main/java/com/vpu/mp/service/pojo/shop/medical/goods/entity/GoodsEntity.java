@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.medical.goods.entity;
 
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
-import com.vpu.mp.service.pojo.shop.sku.entity.GoodsSpecProductEntity;
-import com.vpu.mp.service.pojo.shop.sku.entity.SpecEntity;
+import com.vpu.mp.service.pojo.shop.medical.sku.entity.GoodsSpecProductEntity;
+import com.vpu.mp.service.pojo.shop.medical.sku.entity.SpecEntity;
 import lombok.Data;
 
 import java.math.BigDecimal;
