@@ -27,6 +27,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -131,7 +132,7 @@ public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
     /**
      * The column <code>jmini_shop_224462.b2c_prescription_item.drag_sum_num</code>. 总取药数量
      */
-    public final TableField<PrescriptionItemRecord, Integer> DRAG_SUM_NUM = createField("drag_sum_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "总取药数量");
+    public final TableField<PrescriptionItemRecord, Double> DRAG_SUM_NUM = createField("drag_sum_num", SQLDataType.DOUBLE.nullable(false).defaultValue(DSL.inline("0", SQLDataType.DOUBLE)), this, "总取药数量");
 
     /**
      * The column <code>jmini_shop_224462.b2c_prescription_item.drag_sum_unit</code>. 总取药的单位

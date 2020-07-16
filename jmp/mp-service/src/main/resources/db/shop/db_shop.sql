@@ -4884,7 +4884,7 @@ create table `b2c_prescription_item`(
     `per_time_dosage` double not null default 0 comment '单次剂量',
     `per_time_dosage_unit` varchar(32) not null default '' comment '剂量单位',
     `frequency` double not null default 0 comment '频次',
-    `drag_sum_num` int(11) not null default 0 comment '总取药数量',
+    `drag_sum_num` double not null default 0 comment '总取药数量',
     `drag_sum_unit` varchar(32) not null default '' comment '总取药的单位',
     `goods_use_memo` varchar(1024) not null default '' comment '药品使用方式说明',
     `goods_production_enterprise` varchar(512) comment '生产企业',

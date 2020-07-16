@@ -42,7 +42,7 @@ public class PrescriptionItemDo implements Serializable {
     private Double    perTimeDosage;
     private String    perTimeDosageUnit;
     private Double    frequency;
-    private Integer   dragSumNum;
+    private Double    dragSumNum;
     private String    dragSumUnit;
     private String    goodsUseMemo;
     private String    goodsProductionEnterprise;
