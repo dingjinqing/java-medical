@@ -4745,6 +4745,7 @@ create table `b2c_patient`(
     `id`   int(11)      not null auto_increment,
     `name` varchar(32) not null default '' comment '患者名称',
     `mobile` varchar(32) not null default '' comment '手机号码',
+    `patient_code` varchar(64) NOT NULL COMMENT '医院内部患者唯一编码',
     `identity_code` varchar(64) not null default '' comment '证件号码',
     `identity_type` tinyint(1) not null default 1 comment '证件类型: 1：身份证 2：军人证 3：护照 4：社保卡',
     `treatment_code` varchar(64) not null default '' comment '就诊卡号',

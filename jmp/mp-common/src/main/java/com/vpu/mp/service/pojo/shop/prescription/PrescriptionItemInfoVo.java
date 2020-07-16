@@ -52,7 +52,7 @@ public class PrescriptionItemInfoVo {
     /**
      * 总取药数量
      */
-    private Integer   dragSumNum;
+    private Double   dragSumNum;
     /**
      * 总取药单位
      */
