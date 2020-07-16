@@ -27,18 +27,21 @@ import javax.annotation.Generated;
 @Data
 public class PatientDo implements Serializable {
 
-    private static final long serialVersionUID = -1017561688;
+    private static final long serialVersionUID = -310538215;
 
     private Integer   id;
     private String    name;
     private String    mobile;
-    private String    identityCode;
+    private String    patientCode;
+    private String    identityNo;
     private Byte      identityType;
-    private String    treatmentCode;
-    private String    insuranceCardCode;
+    private String    treatmentNo;
+    private Byte      areaType;
     private Byte      sex;
     private Date      birthday;
-    private String    remarks;
+    private String    diseaseHistory;
+    private String    allergyHistory;
+    private String    memo;
     private Byte      isDelete;
     private Timestamp createTime;
     private Timestamp updateTime;
