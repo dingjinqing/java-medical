@@ -15,9 +15,9 @@ public final  class  BaseConstant {
     /**启用*/
     public static final Integer EXTERNAL_ITEM_STATE_ENABLE = 1;
     /**禁用*/
-    public static final Integer EXTERNAL_ITEM_STATE_DISABEL = 2;
+    public static final Integer EXTERNAL_ITEM_STATE_DISABLE = 2;
     /**删除*/
-    public static final Integer EXTERNAL_ITEM_STATE_DLEETE= 3;
+    public static final Integer EXTERNAL_ITEM_STATE_DELETE= 3;
 
     /**
      * 启用

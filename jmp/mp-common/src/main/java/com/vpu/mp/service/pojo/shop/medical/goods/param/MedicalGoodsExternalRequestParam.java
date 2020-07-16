@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.medical.goods.param;
 
+import com.vpu.mp.common.foundation.util.Page;
 import lombok.Data;
 
 /**
@@ -7,6 +8,8 @@ import lombok.Data;
  * @date 2020年07月16日
  */
 @Data
-public class MedicalGoodsExternalRequestParam {
+public class MedicalGoodsExternalRequestParam{
     private Long startTime;
+    private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
+    private Integer pageRows = 100;
 }
