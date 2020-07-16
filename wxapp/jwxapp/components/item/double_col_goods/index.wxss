@@ -17,11 +17,11 @@
   height: 100%;
 }
 .goods_bottom {
-  padding: 10rpx 10rpx 20rpx;
+  padding: 20rpx;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 146rpx;
+  height: 152rpx;
 }
 .goods_name{
   line-height: 50rpx;

@@ -77,10 +77,11 @@ public class TitleDao extends ShopBaseDao{
      * @param param
      * @return
      */
-    public int insertTitle(TitleOneParam param) {
-        DoctorTitleRecord record = new DoctorTitleRecord();
+    public void insertTitle(TitleOneParam param) {
+        DoctorTitleRecord record = db().newRecord(DOCTOR_TITLE);
         FieldsUtil.assign(param, record);
-        return db().executeInsert(record);
+        record.insert();
+        param.setId(record.getId());
     }
 
     /**
@@ -119,5 +120,17 @@ public class TitleDao extends ShopBaseDao{
         List<TitleOneParam> titleList = db().select().from(DOCTOR_TITLE).where(DOCTOR_TITLE.IS_DELETE.eq((byte) 0))
             .fetchInto(TitleOneParam.class);
         return titleList;
+    }
+
+
+    /**
+     * 获取一条职称的信息
+     *
+     * @param code
+     * @return
+     */
+    public Integer getTitleByCode(String code) {
+        return db().select(DOCTOR_TITLE.ID).from(DOCTOR_TITLE).where(DOCTOR_TITLE.CODE.eq(code))
+            .fetchOneInto(Integer.class);
     }
 }

@@ -1,16 +1,24 @@
 package com.vpu.mp.service.shop.doctor;
 
+import com.google.common.base.Joiner;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorDepartmentOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorFetchOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.shop.department.DepartmentService;
+import com.vpu.mp.service.shop.title.TitleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.core.type.TypeReference;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 
@@ -22,7 +30,10 @@ public class DoctorService extends ShopBaseService {
     protected DoctorDepartmentCoupleDao doctorDepartmentCoupleDao;
     @Autowired
     protected DepartmentDao departmentDao;
-//    public DepartmentService departmentService;
+    @Autowired
+    public DepartmentService departmentService;
+    @Autowired
+    public TitleService titleService;
     public static final int ZERO = 0;
 
     public PageResult<DoctorOneParam> getDoctorList(DoctorListParam param) {
@@ -76,4 +87,53 @@ public class DoctorService extends ShopBaseService {
             doctorDepartmentCoupleDao.insertDoctorDepartment(doctorDepartment);
         }
     }
+
+    public DoctorOneParam getDoctorByCode(String hospitalCode) {
+        return doctorDao.getDoctorByHospitalCode(hospitalCode);
+    }
+
+    /**
+     * 更新/新增医师
+     * @param doctor
+     */
+    public void synchroDoctor(DoctorOneParam doctor) {
+        if(getDoctorByCode(doctor.getHospitalCode()) == null) {
+            insertDoctor(doctor);
+        } else {
+            DoctorOneParam oldDepartment = getDoctorByCode(doctor.getHospitalCode());
+            doctor.setId(oldDepartment.getId());
+            updateDoctor(doctor);
+        }
+    }
+
+    public void fetchDoctor(String json) {
+        List<DoctorFetchOneParam> doctorFetchList = Util.parseJson(json, new TypeReference<List<DoctorFetchOneParam>>() {
+        });
+        for (DoctorFetchOneParam list : doctorFetchList) {
+            DoctorOneParam doctor = new DoctorOneParam();
+            doctor.setName(list.getDoctorName());
+            doctor.setCertificateCode(list.getCertificateCode());
+            doctor.setHospitalCode(list.getDoctorCode());
+            doctor.setProfessionalCode(list.getProfessionalCode());
+            doctor.setUrl(list.getDocUrl());
+            doctor.setMobile(list.getDocPhone());
+            doctor.setSex((list.getDoctorSex() == 1) ? (byte)0:(byte)1);
+            if (list.getState() == 3) {
+                doctor.setIsDelete((byte) 1);
+            } else if(list.getState() == 2) {
+                doctor.setStatus((byte) 0);
+            }
+            doctor.setTitleId(titleService.getTitleIdNew(list.getPositionCode()));
+
+            List<String> result = Arrays.asList(list.getDepartCode().split(","));
+            List<Integer> departmentIds = new ArrayList<>();
+            for (String code : result) {
+                departmentIds.add(departmentService.getDepartmentIdNew(code));
+            }
+            String departmentStr = Joiner.on(",").join(departmentIds);
+            doctor.setDepartmentIdsStr(departmentStr);
+            synchroDoctor(doctor);
+        }
+    }
+
 }

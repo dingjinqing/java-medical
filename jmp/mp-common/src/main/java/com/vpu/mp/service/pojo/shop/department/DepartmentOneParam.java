@@ -29,4 +29,9 @@ public class DepartmentOneParam {
      * 父节点集合
      */
     private String parentIds;
+
+    /**
+     * 删除状态
+     */
+    private Byte isDelete=0;
 }
