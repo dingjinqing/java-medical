@@ -13,11 +13,11 @@ public final  class  BaseConstant {
 
     /**外部接口数据状态*/
     /**启用*/
-    public static final Byte EXTERNAL_ITEM_STATE_ENABLE = 1;
+    public static final Integer EXTERNAL_ITEM_STATE_ENABLE = 1;
     /**禁用*/
-    public static final Byte EXTERNAL_ITEM_STATE_DISABEL = 2;
+    public static final Integer EXTERNAL_ITEM_STATE_DISABEL = 2;
     /**删除*/
-    public static final Byte EXTERNAL_ITEM_STATE_DLEETE= 3;
+    public static final Integer EXTERNAL_ITEM_STATE_DLEETE= 3;
 
     /**
      * 启用
