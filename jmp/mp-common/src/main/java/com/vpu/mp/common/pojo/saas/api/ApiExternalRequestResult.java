@@ -17,10 +17,10 @@ public class ApiExternalRequestResult {
     /**
      * 错误消息
      */
-    private Object message;
+    private String msg;
 
     /**
      * 返回内容
      */
-    private String content;
+    private String data;
 }
