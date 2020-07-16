@@ -6,7 +6,7 @@
 		<view class="more" wx:if="{{m.hasMore}}">更多</view>
 	</view>
 	<block wx:if="{{m.prescriptionListData.length}}">
-		<view class="prescription-item" bindtap="handleShowDialog" data-prescription-no="{{item.prescriptionNo}}" wx:for="{{m.prescriptionListData}}" wx:key="prescriptionNo">
+		<view class="prescription-item" bindtap="handleShowDialog" data-prescription-code="{{item.prescriptionCode}}" wx:for="{{m.prescriptionListData}}" wx:key="prescriptionCode">
 		<view class="item-title" style="background:#26c4bc url({{imageUrl}}image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 80rpx; ">电子处方{{index + 1}}</view>
 		<view class="item-list-content">
 			<view class="item-list">
