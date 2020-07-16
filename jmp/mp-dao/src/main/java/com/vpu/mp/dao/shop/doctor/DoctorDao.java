@@ -123,4 +123,15 @@ public class DoctorDao extends ShopBaseDao {
 //        int count = db().fetchCount(DEPARTMENT, condition);
 //        return count>0;
 //    }
+
+    /**
+     * 获取一条医师的信息(根据hospitalCode)
+     *
+     * @param hospitalCode
+     * @return
+     */
+    public DoctorOneParam getDoctorByHospitalCode(String hospitalCode) {
+        return db().select().from(DOCTOR).where(DOCTOR.HOSPITAL_CODE.eq(hospitalCode))
+            .fetchOneInto(DoctorOneParam.class);
+    }
 }

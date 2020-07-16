@@ -80,10 +80,11 @@ public class DepartmentDao extends ShopBaseDao {
      * @param param
      * @return
      */
-    public int insertDepartment(DepartmentOneParam param) {
-        DepartmentRecord record = new DepartmentRecord();
+    public void insertDepartment(DepartmentOneParam param) {
+        DepartmentRecord record = db().newRecord(DEPARTMENT);
         FieldsUtil.assign(param, record);
-        return db().executeInsert(record);
+        record.insert();
+        param.setId(record.getId());
     }
 
     /**
@@ -137,8 +138,7 @@ public class DepartmentDao extends ShopBaseDao {
      * @return
      */
     public int countDepartment(Integer departmentId) {
-        int departmentNum = db().selectCount().from(DEPARTMENT).where(DEPARTMENT.PARENT_ID.eq(departmentId)).fetchOne()
-            .into(int.class);
+        int departmentNum = db().selectCount().from(DEPARTMENT).where(DEPARTMENT.PARENT_ID.eq(departmentId)).fetchOneInto(int.class);
         return departmentNum;
     }
 
@@ -167,5 +167,34 @@ public class DepartmentDao extends ShopBaseDao {
 
     public List<Integer> getDepartmentIdsByName(String name) {
         return db().select(DEPARTMENT.ID).from(DEPARTMENT).where(DEPARTMENT.IS_DELETE.eq((byte) 0).and(DEPARTMENT.NAME.like(likeValue(name)))).fetchInto(Integer.class);
+    }
+
+    /**
+     * 获取一条科室的信息(根据code)
+     *
+     * @param code
+     * @return
+     */
+    public DepartmentOneParam getDepartmentByCode(String code) {
+        return db().select().from(DEPARTMENT).where(DEPARTMENT.CODE.eq(code))
+            .fetchOneInto(DepartmentOneParam.class);
+    }
+
+    /**
+     * 科室子节点
+     *
+     * @param departmentId
+     * @return
+     */
+    public List<DepartmentOneParam> getChildDepartment(Integer departmentId) {
+        List<DepartmentOneParam> departments = db().select().from(DEPARTMENT).where(DEPARTMENT.PARENT_ID.eq(departmentId)).fetchInto(DepartmentOneParam.class);
+        return departments;
+    }
+
+    public void updateDepartmentLevel(Integer id, Integer level) {
+        db().update(DEPARTMENT)
+            .set(DEPARTMENT.LEVEL, level)
+            .where(DEPARTMENT.ID.eq(id))
+            .execute();
     }
 }

@@ -7,4 +7,5 @@ public class DepartmentConstant {
      */
     public static final Integer ROOT_LEVEL = 1;
     public static final Byte LEAF = 1;
+    public static final String PID = "-1";
 }
