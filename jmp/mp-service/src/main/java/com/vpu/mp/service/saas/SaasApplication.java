@@ -1,6 +1,7 @@
 package com.vpu.mp.service.saas;
 
 import com.vpu.mp.dao.foundation.database.DatabaseManager;
+import com.vpu.mp.service.saas.api.ApiExternalRequestService;
 import com.vpu.mp.service.saas.area.AreaSelectService;
 import com.vpu.mp.service.saas.article.ArticleCategoryService;
 import com.vpu.mp.service.saas.article.ArticleService;
@@ -113,6 +114,9 @@ public class SaasApplication {
 
     @Autowired
     public EsMappingUpdateService esMappingUpdateService;
+
+    @Autowired
+    public ApiExternalRequestService apiExternalRequestService;
 
 	public ShopApplication getShopApp(Integer shopId) {
 		databaseManager.switchShopDb(shopId);

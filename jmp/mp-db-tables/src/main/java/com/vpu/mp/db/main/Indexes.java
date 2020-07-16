@@ -227,6 +227,8 @@ public class Indexes {
     public static final Index MARKET_CALENDAR_PRIMARY = Indexes0.MARKET_CALENDAR_PRIMARY;
     public static final Index MARKET_CALENDAR_ACTIVITY_CALENDAR_ID = Indexes0.MARKET_CALENDAR_ACTIVITY_CALENDAR_ID;
     public static final Index MARKET_CALENDAR_ACTIVITY_PRIMARY = Indexes0.MARKET_CALENDAR_ACTIVITY_PRIMARY;
+    public static final Index EXTERNAL_REQUEST_HISTORY_PRIMARY = Indexes0.EXTERNAL_REQUEST_HISTORY_PRIMARY;
+
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -430,5 +432,7 @@ public class Indexes {
         public static Index MARKET_CALENDAR_PRIMARY = Internal.createIndex("PRIMARY", MarketCalendar.MARKET_CALENDAR, new OrderField[] { MarketCalendar.MARKET_CALENDAR.ID }, true);
         public static Index MARKET_CALENDAR_ACTIVITY_CALENDAR_ID = Internal.createIndex("calendar_id", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, new OrderField[] { MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.CALENDAR_ID }, false);
         public static Index MARKET_CALENDAR_ACTIVITY_PRIMARY = Internal.createIndex("PRIMARY", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, new OrderField[] { MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.ID }, true);
+        public static Index EXTERNAL_REQUEST_HISTORY_PRIMARY = Internal.createIndex("PRIMARY", ExternalRequestHistory.EXTERNAL_REQUEST_HISTORY, new OrderField[] { ExternalRequestHistory.EXTERNAL_REQUEST_HISTORY.ID }, true);
+
     }
 }

@@ -15,6 +15,6 @@ public class PrescriptionNoParam {
      * 处方号
      */
     @NotNull
-    private String prescriptionNo;
+    private String prescriptionCode;
 
 }

@@ -19,8 +19,8 @@ public class GoodsMedicalInfoEntity {
     private String insuranceDatabaseName;
     private String goodsBasicUnit;
     private String goodsPackageUnit;
-    private Integer goodsUnitConvertFactor;
-    private Integer goodsEquivalentQuantity;
+    private Double goodsUnitConvertFactor;
+    private Double goodsEquivalentQuantity;
     private String goodsEquivalentUnit;
     private String goodsComposition;
     private String goodsCharacters;

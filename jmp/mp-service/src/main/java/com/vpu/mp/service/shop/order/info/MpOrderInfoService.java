@@ -64,6 +64,11 @@ public class MpOrderInfoService extends OrderInfoService{
             .put(OrderConstant.FINISHED,
                 (mapDefaultValue(countMap , OrderConstant.ORDER_FINISHED)) + mapDefaultValue(countMap , OrderConstant.ORDER_RECEIVED))
             .put(OrderConstant.REFUND, returnCount)
+            .put(OrderConstant.AUDIT,
+                    mapDefaultValue(countMap,OrderConstant.ORDER_TO_AUDIT))
+             .put(OrderConstant.RETURNING,
+                     (mapDefaultValue(countMap,OrderConstant.ORDER_CANCELLED)+
+                             mapDefaultValue(countMap,OrderConstant.ORDER_CLOSED)))
             .build();
     }
 
@@ -149,6 +154,12 @@ public class MpOrderInfoService extends OrderInfoService{
                 break;
             case OrderConstant.REFUND:
                 select.where(TABLE.REFUND_STATUS.gt(OrderConstant.REFUND_DEFAULT_STATUS));
+                break;
+            case OrderConstant.AUDIT:
+                select.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_TO_AUDIT));
+                break;
+            case OrderConstant.RETURNING:
+                select.where(TABLE.ORDER_STATUS.in(OrderConstant.ORDER_CANCELLED,OrderConstant.ORDER_CLOSED));
                 break;
             default:
                 break;

@@ -11,7 +11,7 @@ import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.sql.Timestamp;
+import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.PATIENT;
 
@@ -57,9 +57,10 @@ public class PatientDao extends ShopBaseDao{
      */
     public PatientOneParam getOneInfo(Integer patientId) {
         PatientOneParam info = db().select().from(PATIENT).where(PATIENT.ID.eq(patientId))
-            .fetchOne().into(PatientOneParam.class);
+            .fetchOneInto(PatientOneParam.class);
         return info;
     }
+
 
     /**
      * 编辑保存

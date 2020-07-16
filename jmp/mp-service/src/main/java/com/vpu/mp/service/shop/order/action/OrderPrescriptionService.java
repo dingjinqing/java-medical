@@ -98,7 +98,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
             if (prescriptionVo!=null){
                 PrescriptionOrderGoodsVo pog =new PrescriptionOrderGoodsVo();
                 pog.setPrescriptionVo(prescriptionVo);
-                PrescriptionOrderGoodsVo preOrderGoods = prescriptionMap.putIfAbsent(prescriptionVo.getPrescriptionNo(), pog);
+                PrescriptionOrderGoodsVo preOrderGoods = prescriptionMap.putIfAbsent(prescriptionVo.getPrescriptionCode(), pog);
                 preOrderGoods.getOrderGoodsList().add(orderGoodsDo);
             }
         }
@@ -119,7 +119,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
             if (prescriptionVo != null) {
                 PrescriptionOrderGoodsVo pog =new PrescriptionOrderGoodsVo();
                 pog.setPrescriptionVo(prescriptionVo);
-                PrescriptionOrderGoodsVo preOrderGoods = prescriptionMap.putIfAbsent(prescriptionVo.getPrescriptionNo(), pog);
+                PrescriptionOrderGoodsVo preOrderGoods = prescriptionMap.putIfAbsent(prescriptionVo.getPrescriptionCode(), pog);
                 preOrderGoods.getOrderGoodsList().add(orderGoodsDo);
             } else {
                 logger().info("{}药品没有找到对应的处方信息", orderGoodsDo.getGoodsName());

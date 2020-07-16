@@ -15,11 +15,11 @@ public class PrescriptionInfoVo {
     /**
      * 处方号
      */
-    private String    prescriptionNo;
+    private String    prescriptionCode;
     /**
      * 患者就诊号
      */
-    private String    patientTreatmentNo;
+    private String    patientTreatmentCode;
     /**
      * 患者名称
      */

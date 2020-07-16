@@ -1,10 +1,13 @@
 package com.vpu.mp.common.pojo.saas.api;
 
+import lombok.Data;
+
 /**
  * 对接外部系统请求参数包装类
  * @author 李晓冰
  * @date 2020年07月15日
  */
+@Data
 public class ApiExternalRequestParam {
 
     /**

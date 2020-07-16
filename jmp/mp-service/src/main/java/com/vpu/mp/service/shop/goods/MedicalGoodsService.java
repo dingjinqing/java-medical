@@ -10,6 +10,7 @@ import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.sort.SortDao;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
 import com.vpu.mp.service.pojo.shop.medical.brand.vo.GoodsBrandVo;
@@ -40,7 +41,7 @@ import java.util.Map;
  * @date 2020年07月02日
  */
 @Service
-public class MedicalGoodsService {
+public class MedicalGoodsService extends ShopBaseService {
 
     @Autowired
     private GoodsAggregate goodsAggregate;
@@ -298,5 +299,9 @@ public class MedicalGoodsService {
      */
     public GoodsMedicalInfoDo getByGoodsId(Integer goodsId) {
         return goodsMedicalInfoDao.getByGoodsId(goodsId);
+    }
+
+    public void pullExternalMedicalInfoEg(){
+
     }
 }

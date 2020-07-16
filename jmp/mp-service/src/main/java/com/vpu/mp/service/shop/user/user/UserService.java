@@ -7,6 +7,8 @@ import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.dao.shop.patient.PatientDao;
+import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
 import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
@@ -28,6 +30,7 @@ import com.vpu.mp.service.pojo.shop.distribution.UserTotalFanliVo;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetParam;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetVo;
@@ -116,6 +119,10 @@ public class UserService extends ShopBaseService {
 
 	@Autowired
 	private UserTotalFanliService userTotalFanliService;
+	@Autowired
+	private UserPatientCoupleDao userPatientCoupleDao;
+	@Autowired
+	protected PatientDao patientDao;
 
 
     private int[] userActiveEnter = { 1001, 1005, 1006, 1019, 1020, 1024, 1026, 1027, 1023, 1028, 1034, 1035, 1037,
@@ -520,16 +527,26 @@ public class UserService extends ShopBaseService {
 			}
 			if (module.get("module_name").equals("current_patient")) {
 				logger().info("进入当前就诊人");
-				module.put("content", parseMyService(userByUserId, (List<Map<String, Object>>)module.get("content")));
+				module.put("content", currentPatient(userByUserId.getUserId()));
 				logger().info("完成当前就诊人");
 			}
-
 			if(StringUtils.isNotEmpty(String.valueOf(module.get("bg_img")))) {
 				module.put("bg_img", image.imageUrl(String.valueOf(module.get("bg_img"))));
 			}
 		}
 		logger().info("parseCenterModule出");
 		return moduleData;
+	}
+
+	/**
+	 * 当前患者
+	 * @param userId
+	 * @return
+	 */
+	private PatientOneParam currentPatient(Integer userId) {
+		Integer patientId = userPatientCoupleDao.defaultPatientIdByUser(userId);
+		PatientOneParam oneInfo = patientDao.getOneInfo(patientId);
+		return oneInfo;
 	}
 
 	/**
@@ -611,9 +628,9 @@ public class UserService extends ShopBaseService {
 			}
 			if (iconItem.get("icon_name").equals("wait_confirm")) {
 				//待审核
-				iconItem.put("num", orderStatusNum.get(OrderConstant.SHIPPED));
+				iconItem.put("num", orderStatusNum.get(OrderConstant.AUDIT));
 			}
-			if (iconItem.get("icon_name").equals("wait_deliver")) {
+			if (iconItem.get("icon_name").equals("wait_delivery")) {
 				//代发货
 				iconItem.put("num", orderStatusNum.get(OrderConstant.WAIT_DELIVERY));
 			}
@@ -626,8 +643,8 @@ public class UserService extends ShopBaseService {
 				iconItem.put("num", orderStatusNum.get(OrderConstant.REFUND));
 			}
 			if (iconItem.get("icon_name").equals("returning")) {
-				//已取消 (退款退货,未支付取消)
-				iconItem.put("num", orderStatusNum.get(OrderConstant.REFUND));
+				//已取消 (未支付取消)
+				iconItem.put("num", orderStatusNum.get(OrderConstant.RETURNING));
 			}
 		}
 		return data;

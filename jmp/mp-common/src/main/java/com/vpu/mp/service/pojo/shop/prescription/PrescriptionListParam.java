@@ -18,4 +18,6 @@ public class PrescriptionListParam  extends BasePageParam {
     @NotNull
     private Integer patientId;
 
+    private Integer userId;
+
 }

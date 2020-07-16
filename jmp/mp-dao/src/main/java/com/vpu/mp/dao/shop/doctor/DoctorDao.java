@@ -30,7 +30,7 @@ public class DoctorDao extends ShopBaseDao {
         SelectJoinStep<? extends Record> select = db()
             .select(DOCTOR.ID, DOCTOR.NAME, DOCTOR.CREATE_TIME,
                 DOCTOR.HOSPITAL_CODE, DOCTOR.REGISTER_HOSPITAL, DOCTOR.CERTIFICATE_CODE,DOCTOR.PROFESSIONAL_CODE,
-                DOCTOR.REGISTER_TIME,DOCTOR.MOBILE,DOCTOR.DEPARTMENT_ID,DOCTOR.TITLE_ID,
+                DOCTOR.REGISTER_TIME,DOCTOR.MOBILE,DOCTOR.TITLE_ID,
                 DOCTOR.STATUS,DOCTOR_TITLE.NAME.as("titleName"))
             .from(DOCTOR).leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID));
         select.where(DOCTOR.IS_DELETE.eq((byte) 0));

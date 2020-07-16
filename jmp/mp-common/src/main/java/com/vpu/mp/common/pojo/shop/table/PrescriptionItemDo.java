@@ -26,21 +26,26 @@ import javax.annotation.Generated;
 @Data
 public class PrescriptionItemDo implements Serializable {
 
-    private static final long serialVersionUID = -1250728217;
+    private static final long serialVersionUID = -1714718912;
 
     private Integer   id;
+    private String    posCode;
     private String    posDetailCode;
-    private String    prescriptionNo;
-    private String    prescriptionDetailNo;
+    private String    prescriptionCode;
+    private String    prescriptionDetailCode;
     private Integer   goodsId;
     private String    goodsCommonName;
     private String    goodsQualityRatio;
-    private Integer   goodsNum;
+    private String    useMethod;
+    private Double    perTimeNum;
+    private String    perTimeUnit;
+    private Double    perTimeDosage;
+    private String    perTimeDosageUnit;
+    private Double    frequency;
+    private Double    dragSumNum;
+    private String    dragSumUnit;
     private String    goodsUseMemo;
-    private String    goodsBasicUnit;
     private String    goodsProductionEnterprise;
-    private Byte      status;
-    private String    statusMemo;
     private Byte      isDelete;
     private Timestamp createTime;
     private Timestamp updateTime;

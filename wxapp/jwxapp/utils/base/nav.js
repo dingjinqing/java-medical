@@ -14,6 +14,12 @@ var nav = {
     path = path.indexOf("/") === 0 ? path.substr(1) : path;
     return "http://" + config.image_host + "/" + path;
   },
+  getUpyunUrl (path) {
+    path = path || "";
+    path = path.indexOf("/") === 0 ? path.substr(1) : path;
+    var schema = config.schema ? config.schema : "https";
+    return schema + "://" + config.image_host + "/" + path;
+  },
   toMiniProgram (appId, path = '', extraData = {}, envVersion = '') {
     util.jumpLink({
       appId: appId,
