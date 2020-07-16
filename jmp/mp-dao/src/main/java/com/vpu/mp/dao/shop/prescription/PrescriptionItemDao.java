@@ -1,6 +1,5 @@
 package com.vpu.mp.dao.shop.prescription;
 
-import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionItemParam;
 import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionItemVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemInfoVo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;

@@ -240,7 +240,8 @@ public class PrescriptionDao extends ShopBaseDao {
      * @param fetchPrescriptionVo 处方入参
      */
     public void updateHitsPrescription(FetchPrescriptionVo fetchPrescriptionVo){
-        PrescriptionRecord prescriptionRecord = db().select().from(PRESCRIPTION).where(PRESCRIPTION.ID.eq(fetchPrescriptionVo.getId()))
+        PrescriptionRecord prescriptionRecord = db().select().from(PRESCRIPTION)
+            .where(PRESCRIPTION.ID.eq(fetchPrescriptionVo.getId()))
             .fetchOneInto(PrescriptionRecord.class);
         FieldsUtil.assign(fetchPrescriptionVo, prescriptionRecord);
         prescriptionRecord.update();

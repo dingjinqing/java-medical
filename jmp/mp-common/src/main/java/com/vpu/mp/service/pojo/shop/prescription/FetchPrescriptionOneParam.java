@@ -12,7 +12,7 @@ import lombok.NonNull;
 
 @Data
 @NoArgsConstructor
-public class FetchPrescriptionItemParam {
+public class FetchPrescriptionOneParam {
     @NonNull
     private String prescriptionCode;
 }
