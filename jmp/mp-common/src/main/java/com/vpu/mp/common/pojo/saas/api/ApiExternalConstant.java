@@ -34,19 +34,19 @@ public class ApiExternalConstant {
     /**拉取患者信息*/
     public static final String SERVICE_NAME_FETCH_PATIENT_INFO = "fetchPatientInfo";
     /**拉取药品信息*/
-    public static final String SERVICE_NAEM_FETCH_MEDICAL_INFOS = "fetchMedicalInfos";
+    public static final String SERVICE_NAME_FETCH_MEDICAL_INFOS = "fetchMedicalInfos";
     /**同步订单药品信息*/
-    public static final String SERVICE_NAEM_SYNC_MEDICAL_ORDER_STATUS = "syncMedicalOrderStatus";
+    public static final String SERVICE_NAME_SYNC_MEDICAL_ORDER_STATUS = "syncMedicalOrderStatus";
     /**同步处方信息*/
-    public static final String SERVICE_NAEM_FETCH_PRESCRIPTION_INFOS= "fetchPrescriptionInfos";
+    public static final String SERVICE_NAME_FETCH_PRESCRIPTION_INFOS= "fetchPrescriptionInfos";
     /**同步处方详情*/
-    public static final String SERVICE_NAEM_FETCH_PRESCRIPTION_DETAIL= "fetchPrescriptionDetail";
+    public static final String SERVICE_NAME_FETCH_PRESCRIPTION_DETAIL= "fetchPrescriptionDetail";
     /**上传订单处方信息*/
-    public static final String SERVICE_NAEM_UPLODA_ORDER_PRESCRIPTION= "uploadOrderPrescription";
+    public static final String SERVICE_NAME_UPLOAD_ORDER_PRESCRIPTION= "uploadOrderPrescription";
     /**同步医生信息*/
-    public static final String SERVICE_NAEM_FETCH_DOCTOR_INFOS=  "fetchDoctorInfos";
+    public static final String SERVICE_NAME_FETCH_DOCTOR_INFOS=  "fetchDoctorInfos";
     /**同步科室信息*/
-    public static final String SERVICE_NAEM_FETCH_DEPARTMENT_INFOS  = "fetchDepartmentInfos";
+    public static final String SERVICE_NAME_FETCH_DEPARTMENT_INFOS  = "fetchDepartmentInfos";
     /**同步医师职称信息*/
-    public static final String SERVICE_NAEM_FETCH_DOCTOR_TITLE_INFOS=  "fetchDoctorTitleInfos";
+    public static final String SERVICE_NAME_FETCH_DOCTOR_TITLE_INFOS=  "fetchDoctorTitleInfos";
 }
