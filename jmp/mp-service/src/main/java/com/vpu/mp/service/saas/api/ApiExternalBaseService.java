@@ -29,7 +29,7 @@ public class ApiExternalBaseService {
      * @param curSecond 当前时间 秒为单位 字符串
      * @return
      */
-    protected String generateSign(String appId,String appSecret,String sessionKey,String serviceName,String content,String curSecond) {
+    public String generateSign(String appId, String appSecret, String sessionKey, String serviceName, String content, String curSecond) {
         List<String> list = new ArrayList<>(10);
         list.add(appId);
         list.add(appSecret);
