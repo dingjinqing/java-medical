@@ -224,24 +224,21 @@ public class PrescriptionService extends ShopBaseService {
         String serviceName = ApiExternalConstant.SERVICE_NAME_FETCH_PRESCRIPTION_INFOS;
         String str = "[{\"id\":55,\"prescriptionCode\":10,\"posCode\":1,\"patientId\":1,\"patientTreatmentCode\":1,\"identityCode\":11,\"patientName\":\"张麻子\",\"patientAge\":58,\"patientSex\":1,\"list\":[{\"id\":11,\"posCode\":11,\"posDetailCode\":11,\"prescriptionCode\":11,\"prescriptionDetailCode\":11,\"goodsId\":11,\"goodsCommonName\":\"麻黄\"}]}]";
                 //拉取数据
-//        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService
-//            .externalRequestGate(appId, shopId, serviceName, Util.toJson(fetchPrescriptionOneParam));
+        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService
+            .externalRequestGate(appId, shopId, serviceName, Util.toJson(fetchPrescriptionOneParam));
 
-//        // 数据拉取错误
-//        if (!ApiExternalConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
-//            JsonResult result = new JsonResult();
-//            result.setError(apiExternalRequestResult.getError());
-//            result.setMessage(apiExternalRequestResult.getMsg());
-//            result.setContent(apiExternalRequestResult.getData());
-//            return result;
-//        }
+        // 数据拉取错误
+        if (!ApiExternalConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
+            JsonResult result = new JsonResult();
+            result.setError(apiExternalRequestResult.getError());
+            result.setMessage(apiExternalRequestResult.getMsg());
+            result.setContent(apiExternalRequestResult.getData());
+            return result;
+        }
         //得到Data
-        //String dataJson = apiExternalRequestResult.getData();
-        String dataJson = str;
+        String dataJson = apiExternalRequestResult.getData();
         ArrayList<FetchPrescriptionVo> fetchPrescriptionVos = Util.parseJson(dataJson, new TypeReference<List<FetchPrescriptionVo>>() {
         });
-//        FetchPrescriptionVo fetchPrescriptionVos = Util.parseJson(dataJson, FetchPrescriptionVo.class);
-//
         //数据库新增或更新
         for (FetchPrescriptionVo prescriptionVo : fetchPrescriptionVos) {
             //如果没有当前处方就新增

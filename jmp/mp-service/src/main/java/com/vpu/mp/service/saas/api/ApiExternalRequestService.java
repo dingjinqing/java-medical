@@ -1,5 +1,7 @@
 package com.vpu.mp.service.saas.api;
 
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalConstant;
@@ -79,9 +81,17 @@ public class ApiExternalRequestService extends MainBaseService {
         param.put("sign", requestParam.getSign());
         ApiExternalRequestResult vo = null;
         String post=null;
-
         try {
-            post = HttpUtil.post(location, param);
+            HttpResponse response = HttpRequest.post(location).form(param).timeout(-1).execute();
+            if (response.getStatus()==200){
+                post =response.body();
+            }else {
+                log.warn("请求外部服务-放回码{}：" , response.getStatus());
+                vo = new ApiExternalRequestResult();
+                vo.setError(ApiExternalConstant.ERROR_CODE_NET_ILLEGAL);
+                vo.setMsg("返回码"+response.getStatus());
+                return vo;
+            }
         } catch (Exception e) {
             log.warn("请求外部服务-网络请求：" + e.getMessage());
             vo = new ApiExternalRequestResult();

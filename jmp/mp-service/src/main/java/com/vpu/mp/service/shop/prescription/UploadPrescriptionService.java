@@ -63,7 +63,7 @@ public class UploadPrescriptionService extends ShopBaseService {
     /**
      * 上传处方到his系统.
      */
-    public JsonResult UploadPrescription(OrderInfoDo orderInfoDo,List<OrderGoodsBo> orderGoodsBoList) {
+    public JsonResult uploadPrescription(OrderInfoDo orderInfoDo,List<OrderGoodsBo> orderGoodsBoList) {
         PatientOneParam patient = patientDao.getOneInfo(orderInfoDo.getPatientId());
         List<PrescriptionDo> prescriptionDoList = prescriptionDao.listDiagnosis(orderInfoDo.getPatientId());
         List<String> diagnosisNameList = prescriptionDoList.stream().map(PrescriptionDo::getDiagnosisName).collect(Collectors.toList());
@@ -81,13 +81,13 @@ public class UploadPrescriptionService extends ShopBaseService {
         param.setPrescriptionList(posCodeList);
         param.setDiagnosisNameList(diagnosisNameList);
         param.setGoodsMedicalList(goodsParamList);
-        return UploadPrescription(param);
+        return uploadPrescription(param);
     }
 
     /**
      * 上传处方到his系统.
      */
-    public JsonResult UploadPrescription(UploadPrescriptionParam param){
+    public JsonResult uploadPrescription(UploadPrescriptionParam param){
         String requestContentJson =JSONUtil.toJsonStr(param);
         ApiExternalRequestResult apiExternalRequestResult = apiExternalRequestService.externalRequestGate(ApiExternalConstant.APP_ID_HIS, getShopId(), ApiExternalConstant.SERVICE_NAME_UPLOAD_ORDER_PRESCRIPTION, requestContentJson);
         // 数据拉取错误
@@ -108,7 +108,7 @@ public class UploadPrescriptionService extends ShopBaseService {
      * @param order
      * @return
      */
-    public JsonResult UploadPrescription(CreateParam createParam, CreateOrderBo orderBo, OrderInfoRecord order) {
+    public JsonResult uploadPrescription(CreateParam createParam, CreateOrderBo orderBo, OrderInfoRecord order) {
         PatientOneParam patient = patientDao.getOneInfo(createParam.getPatientId());
         List<PrescriptionDo> prescriptionDoList = prescriptionDao.listDiagnosis(createParam.getPatientId());
         List<String> diagnosisNameList = prescriptionDoList.stream().map(PrescriptionDo::getDiagnosisName).collect(Collectors.toList());
@@ -126,18 +126,20 @@ public class UploadPrescriptionService extends ShopBaseService {
         param.setPrescriptionList(posCodeList);
         param.setDiagnosisNameList(diagnosisNameList);
         param.setGoodsMedicalList(goodsParamList);
-        return UploadPrescription(param);
+        return uploadPrescription(param);
     }
 
     private void toGoodsParam(List<UploadPrescriptionGoodsParam> goodsParamList, OrderGoodsBo orderGoodsBo) {
         GoodsMedicalInfoDo medicalInfoDo = goodsMedicalInfoDao.getByGoodsId(orderGoodsBo.getGoodsId());
-        UploadPrescriptionGoodsParam goodsParam = new UploadPrescriptionGoodsParam();
-        goodsParam.setGoodsCode(medicalInfoDo.getGoodsCode());
-        goodsParam.setGoodsCommonName(medicalInfoDo.getGoodsCommonName());
-        goodsParam.setGoodsAliasName(medicalInfoDo.getGoodsAliasName());
-        goodsParam.setGoodsQualityRatio(medicalInfoDo.getGoodsQualityRatio());
-        goodsParam.setOrderNumber(orderGoodsBo.getGoodsNumber());
-        goodsParam.setIsRx(medicalInfoDo.getIsRx());
-        goodsParamList.add(goodsParam);
+        if (medicalInfoDo!=null){
+            UploadPrescriptionGoodsParam goodsParam = new UploadPrescriptionGoodsParam();
+            goodsParam.setGoodsCode(medicalInfoDo.getGoodsCode());
+            goodsParam.setGoodsCommonName(medicalInfoDo.getGoodsCommonName());
+            goodsParam.setGoodsAliasName(medicalInfoDo.getGoodsAliasName());
+            goodsParam.setGoodsQualityRatio(medicalInfoDo.getGoodsQualityRatio());
+            goodsParam.setOrderNumber(orderGoodsBo.getGoodsNumber());
+            goodsParam.setIsRx(medicalInfoDo.getIsRx());
+            goodsParamList.add(goodsParam);
+        }
     }
 }

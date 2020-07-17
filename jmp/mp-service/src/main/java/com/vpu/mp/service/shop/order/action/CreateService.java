@@ -1323,7 +1323,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             logger().info("订单支付成功->待审核状态");
             if (!param.getCheckPrescriptionStatus().equals(PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED)){
                 order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT);
-                uploadPrescriptionService.UploadPrescription(param,orderBo,order);
+                uploadPrescriptionService.uploadPrescription(param,orderBo,order);
             }
             return true;
         }else if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_PAY) && order.getIsLock().equals(YES)) {
