@@ -4,6 +4,7 @@ import cn.hutool.crypto.SecureUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.ApiExternalConfig;
 import com.vpu.mp.service.saas.external.ExternalRequestHistoryService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

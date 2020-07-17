@@ -1,6 +1,8 @@
 package com.vpu.mp.service.shop.prescription;
 
 import cn.hutool.json.JSONUtil;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalConstant;
@@ -9,8 +11,7 @@ import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.dao.foundation.transactional.DbTransactional;
 import com.vpu.mp.dao.foundation.transactional.DbType;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
-import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsExternalRequestParam;
-import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsMedicalExternalRequestVo;
+
 import com.vpu.mp.service.pojo.shop.prescription.*;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
