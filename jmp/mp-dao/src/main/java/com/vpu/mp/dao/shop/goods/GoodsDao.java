@@ -229,8 +229,12 @@ public class GoodsDao extends ShopBaseDao {
      * @param goodsSn
      * @return true 是 false 否
      */
-    public boolean isGoodsSnExist(String goodsSn) {
-        int count = db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.eq(goodsSn)));
+    public boolean isGoodsSnExist(String goodsSn,Integer goodsId) {
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.eq(goodsSn));
+        if (goodsId != null) {
+            condition = condition.and(GOODS.GOODS_ID.ne(goodsId));
+        }
+        int count = db().fetchCount(GOODS, condition);
         return count > 0;
     }
 
