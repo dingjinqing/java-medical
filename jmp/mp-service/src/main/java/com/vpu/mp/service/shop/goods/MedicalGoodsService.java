@@ -339,10 +339,7 @@ public class MedicalGoodsService extends ShopBaseService {
             return JsonResult.success();
         }
 
-        for (Integer curPage = 0; curPage < goodsMedicalExternalRequestBo.getPageSize(); curPage++) {
-            List<GoodsMedicalExternalRequestItemBo> dataList = goodsMedicalExternalRequestBo.getDataList();
-            // 药品数据入库操作
-            batchStoreGoodsMedicalExternalInfo(dataList);
+        for (Integer curPage = 1; curPage <= goodsMedicalExternalRequestBo.getPageSize(); curPage++) {
 
             apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
             // 数据拉取错误
@@ -355,6 +352,10 @@ public class MedicalGoodsService extends ShopBaseService {
             }
             dataJson = apiExternalRequestResult.getData();
             goodsMedicalExternalRequestBo = Util.parseJson(dataJson, GoodsMedicalExternalRequestBo.class);
+
+            List<GoodsMedicalExternalRequestItemBo> dataList = goodsMedicalExternalRequestBo.getDataList();
+            // 药品数据入库操作
+            batchStoreGoodsMedicalExternalInfo(dataList);
         }
         return JsonResult.success();
     }
