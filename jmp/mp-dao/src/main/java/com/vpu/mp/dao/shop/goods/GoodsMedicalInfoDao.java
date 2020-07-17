@@ -7,6 +7,7 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.GoodsMedicalInfoRecord;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.GOODS_MEDICAL_INFO;
@@ -40,6 +41,32 @@ public class GoodsMedicalInfoDao extends ShopBaseDao{
     }
 
     /**
+     * 批量新增
+     * @param goodsMedicalInfoDos
+     */
+    public void batchInsert(List<GoodsMedicalInfoDo> goodsMedicalInfoDos) {
+        List<GoodsMedicalInfoRecord> goodsMedicalInfoRecords = new ArrayList<>(goodsMedicalInfoDos.size());
+
+        for (GoodsMedicalInfoDo goodsMedicalInfoDo : goodsMedicalInfoDos) {
+            GoodsMedicalInfoRecord goodsMedicalInfoRecord = new GoodsMedicalInfoRecord();
+            FieldsUtil.assign(goodsMedicalInfoDo,goodsMedicalInfoRecord);
+            goodsMedicalInfoRecords.add(goodsMedicalInfoRecord);
+        }
+        db().batchInsert(goodsMedicalInfoRecords).execute();
+    }
+
+    public void batchUpdate(List<GoodsMedicalInfoDo> goodsMedicalInfoDos) {
+        List<GoodsMedicalInfoRecord> goodsMedicalInfoRecords = new ArrayList<>(goodsMedicalInfoDos.size());
+
+        for (GoodsMedicalInfoDo goodsMedicalInfoDo : goodsMedicalInfoDos) {
+            GoodsMedicalInfoRecord goodsMedicalInfoRecord = new GoodsMedicalInfoRecord();
+            FieldsUtil.assign(goodsMedicalInfoDo,goodsMedicalInfoRecord);
+            goodsMedicalInfoRecords.add(goodsMedicalInfoRecord);
+        }
+        db().batchUpdate(goodsMedicalInfoRecords).execute();
+    }
+
+    /**
      * 根据商品id查询
      * @param goodsId
      * @return
@@ -60,6 +87,12 @@ public class GoodsMedicalInfoDao extends ShopBaseDao{
     public  List<GoodsMedicalInfoDo> listByGoodsIds(List<Integer> goodsIds) {
         return db().selectFrom(GOODS_MEDICAL_INFO)
             .where(GOODS_MEDICAL_INFO.IS_DELETE.eq(DelFlag.NORMAL_VALUE).and(GOODS_MEDICAL_INFO.GOODS_ID.in(goodsIds)))
+            .fetchInto(GoodsMedicalInfoDo.class);
+    }
+
+    public List<GoodsMedicalInfoDo> listIdWithGoodsId(List<Integer> goodsId){
+         return  db().select(GOODS_MEDICAL_INFO.GOODS_ID, GOODS_MEDICAL_INFO.ID).from(GOODS_MEDICAL_INFO)
+            .where(GOODS_MEDICAL_INFO.IS_DELETE.eq(DelFlag.NORMAL_VALUE).and(GOODS_MEDICAL_INFO.GOODS_ID.in(goodsId)))
             .fetchInto(GoodsMedicalInfoDo.class);
     }
 

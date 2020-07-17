@@ -41,4 +41,9 @@ public class MedicalGoodsConstant {
      * 未售罄
      */
     public static final Byte SALE_OUT_NO = 0;
+
+    /**上架*/
+    public static final Byte ON_SALE = 1;
+    /**下架*/
+    public static final Byte OFF_SALE = 0;
 }

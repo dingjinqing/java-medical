@@ -223,4 +223,16 @@ public class PrescriptionDao extends ShopBaseDao {
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(PrescriptionInfoVo.class);
     }
+
+    /**
+     * 获取患者的历史疾病
+     * @param patientId 患者id
+     * @return
+     */
+    public List<PrescriptionDo> listDiagnosis(Integer patientId) {
+        return db().select(PRESCRIPTION.DIAGNOSIS_NAME,PRESCRIPTION.PATIENT_TREATMENT_CODE)
+                .from(PRESCRIPTION)
+                .where(PRESCRIPTION.PATIENT_ID.eq(patientId))
+                .fetchInto(PrescriptionDo.class);
+    }
 }
