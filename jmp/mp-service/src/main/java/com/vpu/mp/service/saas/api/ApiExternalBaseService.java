@@ -47,7 +47,7 @@ public class ApiExternalBaseService {
             }
         }
         long a=System.currentTimeMillis();
-        String s = Util.md5(sb.toString());
+        String s = SecureUtil.md5(sb.toString());
         long b=System.currentTimeMillis();
         log.info("SecureUtil.md5--{}",a-b);
         s = s + curSecond + apiExternalConfig.getSignKey();

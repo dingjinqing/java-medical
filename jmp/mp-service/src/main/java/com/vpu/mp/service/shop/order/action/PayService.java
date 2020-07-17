@@ -302,7 +302,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         /**
          * 订单同步到his
          */
-        uploadPrescriptionService.UploadPrescription(orderInfo.into(OrderInfoDo.class), goods.into(OrderGoodsBo.class));
+        uploadPrescriptionService.uploadPrescription(orderInfo.into(OrderInfoDo.class), goods.into(OrderGoodsBo.class));
         //TODO 异常订单处理等等
         // 订单生效时营销活动后续处理
         processOrderEffective(orderInfo);
