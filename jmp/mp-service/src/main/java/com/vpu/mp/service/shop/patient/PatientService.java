@@ -95,6 +95,9 @@ public class PatientService extends ShopBaseService{
             UserPatientCoupleDo userPatientCoupleDo=new UserPatientCoupleDo();
             userPatientCoupleDo.setPatientId(patientId);
             userPatientCoupleDo.setUserId(userPatientOneParam.getUserId());
+            List<PatientOneParam> patientList=userPatientCoupleDao.listPatientIdsByUser(userPatientOneParam.getUserId());
+            if(patientList.size()==0)
+                userPatientCoupleDo.setIsDefault((byte) 1);
             userPatientCoupleDao.save(userPatientCoupleDo);
         } else {
             patientDo.setId(patientOneParam.getId());
