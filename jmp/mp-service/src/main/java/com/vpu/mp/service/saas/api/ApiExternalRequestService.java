@@ -2,7 +2,7 @@ package com.vpu.mp.service.saas.api;
 
 import cn.hutool.http.HttpUtil;
 import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.common.pojo.saas.api.ApiExternalConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestParam;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.service.foundation.service.MainBaseService;
@@ -39,7 +39,7 @@ public class ApiExternalRequestService extends MainBaseService {
         AppAuthVo appAuth = appAuthService.getAppAuth(appId, shopId);
         if (appAuth == null) {
             ApiExternalRequestResult vo = new ApiExternalRequestResult();
-            vo.setError(ApiExternalConstant.ERROR_CODE_NOT_AUTH);
+            vo.setError(ApiExternalRequestConstant.ERROR_CODE_NOT_AUTH);
             vo.setMsg("店铺授权信息不存在");
             log.warn("请求外部服务：" + vo.getMsg());
             apiExternalBaseService.addRequestHistory(appId,shopId,serviceName,requestContentJson,vo.getError());
@@ -85,7 +85,7 @@ public class ApiExternalRequestService extends MainBaseService {
         } catch (Exception e) {
             log.warn("请求外部服务-网络请求：" + e.getMessage());
             vo = new ApiExternalRequestResult();
-            vo.setError(ApiExternalConstant.ERROR_CODE_NET_ILLEGAL);
+            vo.setError(ApiExternalRequestConstant.ERROR_CODE_NET_ILLEGAL);
             vo.setMsg(e.getMessage());
             return vo;
         }
@@ -95,19 +95,19 @@ public class ApiExternalRequestService extends MainBaseService {
         } catch (Exception e) {
             log.warn("请求外部服务-解析返回值：" + e.getMessage());
             vo = new ApiExternalRequestResult();
-            vo.setError(ApiExternalConstant.ERROR_CODE_PARSE_RETVAL);
+            vo.setError(ApiExternalRequestConstant.ERROR_CODE_PARSE_RETVAL);
             vo.setMsg(e.getMessage());
         }
         if (vo == null) {
             log.warn("请求外部服务-解析返回值：" +"json解析错误");
             vo = new ApiExternalRequestResult();
-            vo.setError(ApiExternalConstant.ERROR_CODE_PARSE_RETVAL);
+            vo.setError(ApiExternalRequestConstant.ERROR_CODE_PARSE_RETVAL);
             vo.setMsg("json解析错误");
         }
         if (vo.getError() == null) {
             log.warn("请求外部服务-解析返回值：" +"请求返回内容格式错误");
             vo = new ApiExternalRequestResult();
-            vo.setError(ApiExternalConstant.ERROR_CODE);
+            vo.setError(ApiExternalRequestConstant.ERROR_CODE);
             vo.setMsg("请求返回内容格式错误");
         }
         return vo;

@@ -13,25 +13,41 @@ public class ApiExternalGateParam {
     /**
      * 固定值
      * 1> ERP服务:
-     *         app_id: 200000  app_secret:36a23c125e6fd10420eb3b6ed48ee057
+     *         appId: 200000  appSecret:36a23c125e6fd10420eb3b6ed48ee057
      * 2> POS服务
-     *         app_id: 200001  app_secret:b141fbc4bd328822e955aeed011cfc85
+     *         appId: 200001  appSecret:b141fbc4bd328822e955aeed011cfc85
      * 3> CRM服务
-     *         app_id: 200002  app_secret:2b7212759813c4c03ccc316f8cb1c654
+     *         appId: 200002  appSecret:2b7212759813c4c03ccc316f8cb1c654
+     * 4> HIS服务
+     *         appId: 200003  appSecret:7472c1efe6ca4215af1353317938b50a
      * */
-    private String app_id;
-    private String app_secret;
+    private String appId;
+    private String appSecret;
+
     /**
-     * 小程序授权第三方平台对接时生成的sessionKey,
-     * 目前仿照php写法，sessionKey最后一个s字符后面的字符串表示店铺id
-     * */
-    private String session_key;
+     * 店铺配置对接his时动态生成
+     * sessionKey最后一个s字符后面的字符串表示店铺id
+     */
+    private String sessionKey;
+
     /**
      * 服务名称
-     * */
-    private String service_name;
-    private String timestamp;
+     */
+    private String serviceName;
+
+    /**
+     * 业务请求参数对象json字符串
+     */
     private String content;
+
+    /**
+     * 当前时间点，秒为单位的整数字符串
+     */
+    private String curSecond;
+
+    /**
+     * 签名，校验规则
+     */
     private String sign;
 
     /**店铺id，从sessionKey中解析得到*/

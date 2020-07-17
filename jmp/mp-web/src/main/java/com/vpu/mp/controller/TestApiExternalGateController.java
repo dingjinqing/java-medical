@@ -1,19 +1,13 @@
 package com.vpu.mp.controller;
 
-import cn.hutool.json.JSONUtil;
-import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.pojo.saas.api.ApiExternalConstant;
-import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestParam;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.controller.admin.AdminBaseController;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.saas.api.ApiExternalBaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -40,13 +34,13 @@ public class TestApiExternalGateController extends AdminBaseController {
             log.info("解析成功");
             switch (param.getServiceName()){
 
-                case ApiExternalConstant.SERVICE_NAME_FETCH_PATIENT_INFO:
+                case ApiExternalRequestConstant.SERVICE_NAME_FETCH_PATIENT_INFO:
                     log.info("拉取患者信息{}", param.getContent());
                     apiExternalRequestResult.setError(0);
                     apiExternalRequestResult.setMsg("success");
                     apiExternalRequestResult.setData("{\"code\":\"1\",\"name\":\"小明\",\"phone\":\"135\",\"birthday\":\"2020-03-04\",\"state\":1,\"remarks\":\"介绍111\",\"sex\":1,\"age\":13,\"identityType\":1,\"identityNo\":\"411527\",\"visitNo\":\"111\",\"carteVitalNo\":\"112221\"}");
                     return apiExternalRequestResult;
-                case ApiExternalConstant.SERVICE_NAME_UPLOAD_ORDER_PRESCRIPTION:
+                case ApiExternalRequestConstant.SERVICE_NAME_UPLOAD_ORDER_PRESCRIPTION:
                     log.info(":同步订单{}",param.getContent());
                     return apiExternalRequestResult;
                 default:

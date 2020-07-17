@@ -2,14 +2,11 @@ package com.vpu.mp.service.shop.prescription;
 
 import cn.hutool.json.JSONUtil;
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.pojo.saas.api.ApiExternalConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
-import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
-import com.vpu.mp.dao.foundation.transactional.DbTransactional;
-import com.vpu.mp.dao.foundation.transactional.DbType;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.patient.PatientDao;
@@ -28,7 +25,6 @@ import com.vpu.mp.service.saas.api.ApiExternalRequestService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,9 +85,9 @@ public class UploadPrescriptionService extends ShopBaseService {
      */
     public JsonResult UploadPrescription(UploadPrescriptionParam param){
         String requestContentJson =JSONUtil.toJsonStr(param);
-        ApiExternalRequestResult apiExternalRequestResult = apiExternalRequestService.externalRequestGate(ApiExternalConstant.APP_ID_HIS, getShopId(), ApiExternalConstant.SERVICE_NAME_UPLOAD_ORDER_PRESCRIPTION, requestContentJson);
+        ApiExternalRequestResult apiExternalRequestResult = apiExternalRequestService.externalRequestGate(ApiExternalRequestConstant.APP_ID_HIS, getShopId(), ApiExternalRequestConstant.SERVICE_NAME_UPLOAD_ORDER_PRESCRIPTION, requestContentJson);
         // 数据拉取错误
-        if (!ApiExternalConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())){
+        if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())){
             JsonResult result = new JsonResult();
             result.setError(apiExternalRequestResult.getError());
             result.setMessage(apiExternalRequestResult.getMsg());

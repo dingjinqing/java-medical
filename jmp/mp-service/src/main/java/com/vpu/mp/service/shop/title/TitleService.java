@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.common.pojo.saas.api.ApiExternalConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.dao.shop.title.TitleDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -105,18 +105,18 @@ public class TitleService extends ShopBaseService{
      * @return
      */
     public JsonResult fetchExternalTitles(){
-        String appId = ApiExternalConstant.APP_ID_HIS;
+        String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
-        String serviceName = ApiExternalConstant.SERVICE_NAME_FETCH_DOCTOR_TITLE_INFOS;
+        String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_DOCTOR_TITLE_INFOS;
 
-        Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalConstant.APP_ID_HIS, shopId, ApiExternalConstant.SERVICE_NAME_FETCH_DOCTOR_TITLE_INFOS);
+        Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS, shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_DOCTOR_TITLE_INFOS);
         TitleExternalRequestParam param =new TitleExternalRequestParam();
         param.setStartTime(lastRequestTime);
 
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
 
         // 数据拉取错误
-        if (!ApiExternalConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())){
+        if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())){
             JsonResult result = new JsonResult();
             result.setError(apiExternalRequestResult.getError());
             result.setMessage(apiExternalRequestResult.getMsg());

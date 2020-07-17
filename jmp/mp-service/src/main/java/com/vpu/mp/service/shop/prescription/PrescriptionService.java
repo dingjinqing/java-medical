@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.common.pojo.saas.api.ApiExternalConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.dao.foundation.transactional.DbTransactional;
 import com.vpu.mp.dao.foundation.transactional.DbType;
@@ -167,13 +167,13 @@ public class PrescriptionService extends ShopBaseService {
      */
     @DbTransactional(type = DbType.SHOP_DB)
     public JsonResult pullExternalAllPrescriptionInfo(FetchPrescriptionParam fetchPrescriptionParam) {
-        String appId = ApiExternalConstant.APP_ID_HIS;
+        String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
-        String serviceName = ApiExternalConstant.SERVICE_NAME_FETCH_PRESCRIPTION_INFOS;
+        String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_PRESCRIPTION_INFOS;
 
         //增量
-        Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalConstant.APP_ID_HIS,
-            shopId, ApiExternalConstant.SERVICE_NAME_FETCH_PRESCRIPTION_INFOS);
+        Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS,
+            shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_PRESCRIPTION_INFOS);
         fetchPrescriptionParam.setStartTime(lastRequestTime);
 
         //拉取数据
@@ -181,7 +181,7 @@ public class PrescriptionService extends ShopBaseService {
             .externalRequestGate(appId, shopId, serviceName, Util.toJson(fetchPrescriptionParam));
 
         // 数据拉取错误
-        if (!ApiExternalConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
+        if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
             JsonResult result = new JsonResult();
             result.setError(apiExternalRequestResult.getError());
             result.setMessage(apiExternalRequestResult.getMsg());
@@ -224,9 +224,9 @@ public class PrescriptionService extends ShopBaseService {
      */
     @DbTransactional(type = DbType.SHOP_DB)
     public JsonResult pullExternalOnePrescriptionInfo(FetchPrescriptionOneParam fetchPrescriptionOneParam) {
-        String appId = ApiExternalConstant.APP_ID_HIS;
+        String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
-        String serviceName = ApiExternalConstant.SERVICE_NAME_FETCH_PRESCRIPTION_INFOS;
+        String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_PRESCRIPTION_INFOS;
         String str = "[{\"id\":100,\"prescriptionCode\":15,\"posCode\":1,\"patientId\":1,\"patientTreatmentCode\":1,\"identityCode\":11,\"patientName\":\"张麻子\",\"patientAge\":58,\"patientSex\":1,\"list\":[{\"id\":11,\"posCode\":11,\"posDetailCode\":11,\"prescriptionCode\":15,\"prescriptionDetailCode\":11,\"goodsId\":11,\"goodsCommonName\":\"麻黄\"}]}]";
                 //拉取数据
 //        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService
