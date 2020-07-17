@@ -78,16 +78,16 @@ public class PatientService extends ShopBaseService{
         requestParam.setIdentityCode(userPatientOneParam.getIdentityCode());
         requestParam.setMobile(userPatientOneParam.getMobile());
         String requestJson=Util.toJson(requestParam);
-        String s="{\"code\":\"1\",\"name\":\"小明\",\"phone\":\"135\",\"birthday\":\"2020-03-04\",\"state\":1,\"remarks\":\"介绍111\",\"sex\":1,\"age\":13,\"identityType\":1,\"identityNo\":\"411527\",\"visitNo\":\"111\",\"carteVitalNo\":\"112221\"}";
-//        ApiExternalRequestResult apiExternalRequestResult=saas().apiExternalRequestService.externalRequestGate(ApiExternalConstant.APP_ID_HIS,shopId,ApiExternalConstant.SERVICE_NAME_FETCH_PATIENT_INFO,requestJson);
-//        if(ApiExternalConstant.ERROR_CODEequals(apiExternalRequestResult.getError())) {
-//            JsonResult result = new JsonResult();
-//            result.setError(apiExternalRequestResult.getError());
-//            result.setMessage(apiExternalRequestResult.getMsg());
-//            result.setContent(apiExternalRequestResult.getData());
-//            return result;
-//        }
-        PatientExternalVo patientInfoVo = Util.parseJson(s, PatientExternalVo.class);
+//        String s="{\"code\":\"1\",\"name\":\"小明\",\"phone\":\"135\",\"birthday\":\"2020-03-04\",\"state\":1,\"remarks\":\"介绍111\",\"sex\":1,\"age\":13,\"identityType\":1,\"identityNo\":\"411527\",\"visitNo\":\"111\",\"carteVitalNo\":\"112221\"}";
+        ApiExternalRequestResult apiExternalRequestResult=saas().apiExternalRequestService.externalRequestGate(ApiExternalConstant.APP_ID_HIS,shopId,ApiExternalConstant.SERVICE_NAME_FETCH_PATIENT_INFO,requestJson);
+        if(ApiExternalConstant.ERROR_CODE.equals(apiExternalRequestResult.getError())) {
+            JsonResult result = new JsonResult();
+            result.setError(apiExternalRequestResult.getError());
+            result.setMessage(apiExternalRequestResult.getMsg());
+            result.setContent(apiExternalRequestResult.getData());
+            return result;
+        }
+        PatientExternalVo patientInfoVo = Util.parseJson(apiExternalRequestResult.getData(), PatientExternalVo.class);
         PatientDo patientDo=new PatientDo();
         FieldsUtil.assign(patientInfoVo, patientDo);
         PatientOneParam patientOneParam = patientDao.getPatientByNameAndMobile(userPatientOneParam);

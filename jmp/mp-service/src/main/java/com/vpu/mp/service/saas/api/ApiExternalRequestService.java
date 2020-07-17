@@ -75,7 +75,7 @@ public class ApiExternalRequestService extends MainBaseService {
         param.put("sessionKey", requestParam.getSessionKey());
         param.put("serviceName", requestParam.getServiceName());
         param.put("content", requestParam.getContent());
-        param.put("curSecond", requestParam.getContent());
+        param.put("curSecond", requestParam.getCurSecond());
         param.put("sign", requestParam.getSign());
         ApiExternalRequestResult vo = null;
         String post=null;

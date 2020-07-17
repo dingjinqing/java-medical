@@ -6,6 +6,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestParam;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.controller.admin.AdminBaseController;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.saas.api.ApiExternalBaseService;
@@ -31,23 +32,28 @@ public class TestApiExternalGateController extends AdminBaseController {
      * @return
      */
     @PostMapping("/test/api/hospital")
-    public JsonResult test(@RequestBody ApiExternalRequestParam param){
+    public ApiExternalRequestResult test(ApiExternalRequestParam param){
         String serviceName = param.getServiceName();
         String sign = apiExternalBaseService.generateSign(param.getAppId(),param.getAppSecret(),param.getSessionKey(),serviceName,param.getContent(),param.getCurSecond());
-        if (param.equals(sign)){
+        ApiExternalRequestResult apiExternalRequestResult=new ApiExternalRequestResult();
+        if (param.getSign().equals(sign)){
             log.info("解析成功");
             switch (param.getServiceName()){
-                case ApiExternalConstant.SERVICE_NAME_FETCH_MEDICAL_INFOS:
-                    break;
-                case ApiExternalConstant.SERVICE_NAME_UPLOAD_ORDER_PRESCRIPTION:
-                    log.info("上传处方{}", param.getContent());
-                    return success(param);
+
+                case ApiExternalConstant.SERVICE_NAME_FETCH_PATIENT_INFO:
+                    log.info("拉取患者信息{}", param.getContent());
+                    apiExternalRequestResult.setError(0);
+                    apiExternalRequestResult.setMsg("success");
+                    apiExternalRequestResult.setData("{\"code\":\"1\",\"name\":\"小明\",\"phone\":\"135\",\"birthday\":\"2020-03-04\",\"state\":1,\"remarks\":\"介绍111\",\"sex\":1,\"age\":13,\"identityType\":1,\"identityNo\":\"411527\",\"visitNo\":\"111\",\"carteVitalNo\":\"112221\"}");
+                    return apiExternalRequestResult;
                 default:
                     log.info("没有对应服务:[{}]",param.getServiceName());
             }
-            return new JsonResult().fail("zh_CN", JsonResultCode.CODE_FAIL);
+
         }
-        return JsonResult.success();
+        apiExternalRequestResult.setError(1);
+        apiExternalRequestResult.setMsg("");
+        return apiExternalRequestResult;
     }
 
 }
