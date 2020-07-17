@@ -3,8 +3,12 @@ package com.vpu.mp.service.shop.order.goods;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.DistributionConstant;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.db.shop.tables.OrderGoods;
@@ -19,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.api.ApiOrderGoodsListVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.goods.param.MedicalOrderExternalRequestParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.GoodsAndOrderInfoBo;
@@ -591,5 +596,25 @@ public class OrderGoodsService extends ShopBaseService {
             select.and(ORDER_INFO.CREATE_TIME.ge(periodTime[0])).and(ORDER_INFO.CREATE_TIME.le(periodTime[1]));
         }
         return select.fetchAnyInto(int.class);
+    }
+    /**
+     * 拉同步药品出库状态
+     * @param
+     * @return
+     */
+    public JsonResult syncMedicalOrderStatus(MedicalOrderExternalRequestParam medicalOrderExternalRequestParam){
+        String appId = ApiExternalConstant.APP_ID_HIS;
+        Integer shopId =getShopId();
+        String serviceName = ApiExternalConstant.SERVICE_NAME_SYNC_MEDICAL_ORDER_STATUS;
+        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(medicalOrderExternalRequestParam));
+        if (!ApiExternalConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())){
+            JsonResult result = new JsonResult();
+            result.setError(apiExternalRequestResult.getError());
+            result.setMessage(apiExternalRequestResult.getMsg());
+            result.setContent(apiExternalRequestResult.getData());
+            return result;
+        }
+        return JsonResult.success();
+
     }
 }
